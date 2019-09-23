@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 func found(bits uint64, sum []uint64, k int) bool {
@@ -50,6 +49,6 @@ func Sol981D(reader io.Reader, writer io.Writer) {
 	Fprintln(out, ans)
 }
 
-func main() {
-	Sol981D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol981D(os.Stdin, os.Stdout)
+//}
