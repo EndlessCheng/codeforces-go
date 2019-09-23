@@ -31,8 +31,9 @@ func Sol1102E(reader io.Reader, writer io.Writer) {
 	ans := 1
 	for l, r := 0, 0; r < n; {
 		checkVal := arr[r]
-		for _, val := range arr[l:rightI[checkVal]] {
-			r = max(r, rightI[val])
+		for i := l; i < rightI[checkVal]; i++ {
+			r = max(r, rightI[arr[i]])
+			checkVal = arr[r]
 		}
 		if r+1 == n {
 			break
