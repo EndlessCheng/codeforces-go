@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-// https://codeforces.com/problemset/problem/1156/B
-
 func Sol1156B(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
