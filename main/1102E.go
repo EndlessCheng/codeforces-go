@@ -7,14 +7,14 @@ import (
 	"os"
 )
 
-func max(a, b int) int {
-	if a >= b {
-		return a
-	}
-	return b
-}
-
 func Sol1102E(reader io.Reader, writer io.Writer) {
+	max := func(a, b int) int {
+		if a >= b {
+			return a
+		}
+		return b
+	}
+
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
