@@ -8,7 +8,7 @@ import (
 	"sort"
 )
 
-// https://codeforces.com/contest/257/problem/C
+// https://codeforces.com/problemset/problem/257/C
 
 func minF(a, b float64) float64 {
 	if a <= b {
