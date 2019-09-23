@@ -5,17 +5,10 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"os"
 	"sort"
 )
 
 // https://codeforces.com/contest/257/problem/C
-
-var (
-	// for test
-	reader io.Reader = os.Stdin
-	writer io.Writer = os.Stdout
-)
 
 func minF(a, b float64) float64 {
 	if a <= b {
@@ -24,7 +17,8 @@ func minF(a, b float64) float64 {
 	return b
 }
 
-func Ans257C() {
+// for test
+func Ans257C(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()

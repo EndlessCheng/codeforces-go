@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
+func TestAns257C(t *testing.T) {
 	// just copy from website
 	rawData := `2
 2 0
@@ -44,10 +44,8 @@ outputCopy
 	}
 
 	for i, input := range inputs {
-		reader = strings.NewReader(input)
 		buf := &bytes.Buffer{}
-		writer = buf
-		Ans257C()
+		Ans257C(strings.NewReader(input), buf)
 		actualOutput := buf.String()
 		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
 			actualOutput = actualOutput[:len(actualOutput)-1]
