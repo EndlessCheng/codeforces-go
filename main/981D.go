@@ -6,25 +6,25 @@ import (
 	"io"
 )
 
-func found(bits uint64, sum []uint64, k int) bool {
-	n := len(sum) - 1
-	var dp [51][51]bool
-	for r := 1; r <= n; r++ {
-		dp[1][r] = bits&sum[r] == bits
-	}
-	for i := 2; i <= k; i++ {
-		for l := i - 1; l < n; l++ {
-			if dp[i-1][l] {
-				for r := l + 1; r <= n; r++ {
-					dp[i][r] = dp[i][r] || bits&(sum[r]-sum[l]) == bits
+func Sol981D(reader io.Reader, writer io.Writer) {
+	found := func(bits uint64, sum []uint64, k int) bool {
+		n := len(sum) - 1
+		var dp [51][51]bool
+		for r := 1; r <= n; r++ {
+			dp[1][r] = bits&sum[r] == bits
+		}
+		for i := 2; i <= k; i++ {
+			for l := i - 1; l < n; l++ {
+				if dp[i-1][l] {
+					for r := l + 1; r <= n; r++ {
+						dp[i][r] = dp[i][r] || bits&(sum[r]-sum[l]) == bits
+					}
 				}
 			}
 		}
+		return dp[k][n]
 	}
-	return dp[k][n]
-}
 
-func Sol981D(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
