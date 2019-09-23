@@ -4,8 +4,8 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-		"sort"
-	)
+	"sort"
+)
 
 func Sol1133E(reader io.Reader, writer io.Writer) {
 	max := func(a, b int) int {
@@ -55,7 +55,7 @@ func Sol1133E(reader io.Reader, writer io.Writer) {
 			dp[row][j] = max(dp[row][j-1], dp[row^1][posL-1]+j-posL+1)
 		}
 	}
-	Fprintln(out, dp[row][n])
+	Fprintln(out, max(dp[row][n], dp[row^1][n]))
 }
 
 //func main() {
