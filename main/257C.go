@@ -1,10 +1,11 @@
-package cf
+package main
 
 import (
 	"bufio"
 	. "fmt"
 	"io"
 	"math"
+	"os"
 	"sort"
 )
 
@@ -17,8 +18,7 @@ func minF(a, b float64) float64 {
 	return b
 }
 
-// for test
-func Ans257C(reader io.Reader, writer io.Writer) {
+func Sol257C(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
@@ -38,7 +38,7 @@ func Ans257C(reader io.Reader, writer io.Writer) {
 			deg = 360.0 + deg
 		}
 		degs[i] = deg
-		degs[i+n] = 360.0 + deg
+		degs[n+i] = 360.0 + deg
 	}
 	sort.Float64s(degs)
 
@@ -48,4 +48,8 @@ func Ans257C(reader io.Reader, writer io.Writer) {
 		minAngle = minF(minAngle, angle)
 	}
 	Fprintln(out, minAngle)
+}
+
+func main() {
+	Sol257C(os.Stdin, os.Stdout)
 }

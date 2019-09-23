@@ -1,41 +1,15 @@
-package cf
+package testutil
 
 import (
 	"bytes"
 	"github.com/stretchr/testify/assert"
+	"io"
 	"strings"
 	"testing"
 )
 
-func TestAns257C(t *testing.T) {
-	// just copy from website
-	rawData := `2
-2 0
-0 2
-outputCopy
-90.0000000000
-inputCopy
-3
-2 0
-0 2
--2 2
-outputCopy
-135.0000000000
-inputCopy
-4
-2 0
-0 2
--2 0
-0 -2
-outputCopy
-270.0000000000
-inputCopy
-2
-2 1
-1 2
-outputCopy
-36.8698976458`
-	examples := strings.Split(rawData, "\ninputCopy\n")
+func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
+	examples := strings.Split(rawText, "\ninputCopy\n")
 	var inputs, outputs []string
 	for _, e := range examples {
 		splits := strings.Split(e, "\noutputCopy\n")
@@ -45,11 +19,11 @@ outputCopy
 
 	for i, input := range inputs {
 		buf := &bytes.Buffer{}
-		Ans257C(strings.NewReader(input), buf)
+		solFunc(strings.NewReader(input), buf)
 		actualOutput := buf.String()
 		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
 			actualOutput = actualOutput[:len(actualOutput)-1]
 		}
-		assert.Equal(t, outputs[i], actualOutput)
+		assert.Equal(t, outputs[i], actualOutput, "Please check test case %d", i+1)
 	}
 }
