@@ -8,16 +8,14 @@ import (
 	"sort"
 )
 
-// https://codeforces.com/problemset/problem/257/C
-
-func minF(a, b float64) float64 {
-	if a <= b {
-		return a
-	}
-	return b
-}
-
 func Sol257C(reader io.Reader, writer io.Writer) {
+	minF := func(a, b float64) float64 {
+		if a <= b {
+			return a
+		}
+		return b
+	}
+
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
