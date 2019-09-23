@@ -45,7 +45,6 @@ func Sol981D(reader io.Reader, writer io.Writer) {
 			ans |= pow2
 		}
 	}
-
 	Fprintln(out, ans)
 }
 
