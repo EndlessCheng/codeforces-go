@@ -9,13 +9,6 @@ import (
 )
 
 func Sol257C(reader io.Reader, writer io.Writer) {
-	minF := func(a, b float64) float64 {
-		if a <= b {
-			return a
-		}
-		return b
-	}
-
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
@@ -42,7 +35,7 @@ func Sol257C(reader io.Reader, writer io.Writer) {
 	minAngle := 360.0
 	for i := 0; i < n; i++ {
 		angle := degs[n-1+i] - degs[i]
-		minAngle = minF(minAngle, angle)
+		minAngle = math.Min(minAngle, angle)
 	}
 	Fprintln(out, minAngle)
 }
