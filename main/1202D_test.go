@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
-	)
+)
 
 func TestSol1202D(t *testing.T) {
 	// just copy from website

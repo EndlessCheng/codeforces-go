@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 	"strings"
 )
 
@@ -23,6 +24,6 @@ func Sol1202D(reader io.Reader, writer io.Writer) {
 	}
 }
 
-//func main() {
-//	Sol1202D(os.Stdin, os.Stdout)
-//}
+func main() {
+	Sol1202D(os.Stdin, os.Stdout)
+}

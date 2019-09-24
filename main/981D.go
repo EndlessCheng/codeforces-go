@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 func Sol981D(reader io.Reader, writer io.Writer) {
@@ -48,6 +49,6 @@ func Sol981D(reader io.Reader, writer io.Writer) {
 	Fprintln(out, ans)
 }
 
-//func main() {
-//	Sol981D(os.Stdin, os.Stdout)
-//}
+func main() {
+	Sol981D(os.Stdin, os.Stdout)
+}
