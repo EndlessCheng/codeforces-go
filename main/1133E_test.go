@@ -38,8 +38,3 @@ outputCopy
 4`
 	testutil.AssertEqual(t, rawText, Sol1133E)
 }
-
-func TestName(t *testing.T) {
-	arr := make([][6]int, 10)
-	t.Log(arr)
-}
