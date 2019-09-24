@@ -13,8 +13,7 @@ func Sol1202D(reader io.Reader, writer io.Writer) {
 	defer out.Flush()
 
 	var t, n, len3 int
-	Fscan(in, &t)
-	for ; t > 0; t-- {
+	for Fscan(in, &t); t > 0; t-- {
 		Fscan(in, &n)
 		for len3 = 2; (len3+1)*len3 <= 2*n; len3++ {
 		}

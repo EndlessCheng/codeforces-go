@@ -15,8 +15,7 @@ func Sol1156B(reader io.Reader, writer io.Writer) {
 	const na = "No answer"
 
 	var n int
-	Fscan(in, &n)
-	for ; n > 0; n-- {
+	for Fscan(in, &n); n > 0; n-- {
 		var s string
 		Fscan(in, &s)
 

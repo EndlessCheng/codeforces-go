@@ -19,8 +19,7 @@ func Sol1196E(reader io.Reader, writer io.Writer) {
 	defer out.Flush()
 
 	var n int
-	Fscan(in, &n)
-	for ; n > 0; n-- {
+	for Fscan(in, &n); n > 0; n-- {
 		var b, w int
 		Fscan(in, &b, &w)
 
