@@ -1,6 +1,6 @@
 package copypasta
 
-func stringFunc() {
+func stringCollection() {
 	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
 	calcMaxMatchLengths := func(pattern string) []int {
 		n := len(pattern)

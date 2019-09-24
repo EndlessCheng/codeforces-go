@@ -1,6 +1,6 @@
 package copypasta
 
-func commonFunc() {
+func commonCollection() {
 	min := func(a, b int) int {
 		if a <= b {
 			return a
