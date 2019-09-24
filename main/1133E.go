@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -59,6 +58,6 @@ func Sol1133E(reader io.Reader, writer io.Writer) {
 	Fprintln(out, max(dp[row][n], dp[row^1][n]))
 }
 
-func main() {
-	Sol1133E(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1133E(os.Stdin, os.Stdout)
+//}

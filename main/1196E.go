@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 func Sol1196E(reader io.Reader, writer io.Writer) {
@@ -56,6 +55,6 @@ func Sol1196E(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol1196E(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1196E(os.Stdin, os.Stdout)
+//}

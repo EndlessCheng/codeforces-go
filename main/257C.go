@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"os"
 	"sort"
 )
 
@@ -41,6 +40,6 @@ func Sol257C(reader io.Reader, writer io.Writer) {
 	Fprintln(out, minAngle)
 }
 
-func main() {
-	Sol257C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol257C(os.Stdin, os.Stdout)
+//}

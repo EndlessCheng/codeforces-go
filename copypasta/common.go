@@ -15,6 +15,13 @@ func commonCollection() {
 		return b
 	}
 
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
 	const mod = int64(1e9 + 7)
 	quickPow := func(x, n int64) int64 {
 		res := int64(1)
@@ -27,5 +34,5 @@ func commonCollection() {
 		return res
 	}
 
-	_ = []interface{}{min, max, quickPow}
+	_ = []interface{}{min, max, abs, quickPow}
 }
