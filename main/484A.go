@@ -7,9 +7,6 @@ import (
 )
 
 func pow484A(n int64) int64 {
-	if n == 0 {
-		return 0
-	}
 	msb := uint(0)
 	for n >>= 1; n != 0; n >>= 1 {
 		msb++
