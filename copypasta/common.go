@@ -26,4 +26,6 @@ func commonFunc() {
 		}
 		return res
 	}
+
+	_ = []interface{}{min, max, quickPow}
 }
