@@ -9,6 +9,9 @@ import (
 )
 
 func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
+	if rawText[0] == '\n' {
+		rawText = rawText[1:]
+	}
 	examples := strings.Split(rawText, "\ninputCopy\n")
 	var inputs, outputs []string
 	for _, e := range examples {
