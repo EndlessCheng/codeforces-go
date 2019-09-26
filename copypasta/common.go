@@ -41,6 +41,7 @@ func commonCollection() {
 }
 
 // Permute the values at index i to len(arr)-1.
+// See 910C for example.
 func permute(arr []int, i int, f func([]int)) {
 	if i == len(arr) {
 		f(arr)
