@@ -22,7 +22,7 @@ func Sol1102E(reader io.Reader, writer io.Writer) {
 	Fscan(in, &n)
 	arr := make([]int, n)
 	rightI := make(map[int]int, n)
-	for i := 0; i < n; i++ {
+	for i := range arr {
 		Fscan(in, &arr[i])
 		rightI[arr[i]] = i
 	}
