@@ -39,3 +39,17 @@ func commonCollection() {
 
 	_ = []interface{}{min, max, abs, quickPow}
 }
+
+// Permute the values at index i to len(arr)-1.
+func permutations(arr []int, i int, f func([]int)) {
+	if i == len(arr) {
+		f(arr)
+		return
+	}
+	permutations(arr, i+1, f)
+	for j := i + 1; j < len(arr); j++ {
+		arr[i], arr[j] = arr[j], arr[i]
+		permutations(arr, i+1, f)
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+}
