@@ -21,9 +21,10 @@ func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer
 	}
 
 	for i, input := range inputs {
-		buf := &bytes.Buffer{}
-		solFunc(strings.NewReader(input), buf)
-		actualOutput := buf.String()
+		mockReader := strings.NewReader(input)
+		mockWriter := &bytes.Buffer{}
+		solFunc(mockReader, mockWriter)
+		actualOutput := mockWriter.String()
 		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
 			actualOutput = actualOutput[:len(actualOutput)-1]
 		}
