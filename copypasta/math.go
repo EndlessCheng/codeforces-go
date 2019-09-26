@@ -1,14 +1,14 @@
 package copypasta
 
 func mathCollection() {
-	gcd := func(a, b int64) int64 {
+	calcGCD := func(a, b int64) int64 {
 		for b > 0 {
 			a, b = b, a%b
 		}
 		return a
 	}
-	lcm := func(a, b int64) int64 {
-		return a / gcd(a, b) * b
+	calcLCM := func(a, b int64) int64 {
+		return a / calcGCD(a, b) * b
 	}
 
 	isPrime := func(n int) bool {
@@ -23,5 +23,5 @@ func mathCollection() {
 		return true
 	}
 
-	_ = []interface{}{lcm, isPrime}
+	_ = []interface{}{calcLCM, isPrime}
 }

@@ -1,6 +1,9 @@
 package copypasta
 
 func commonCollection() {
+	const inf int = 0x3f3f3f3f
+	const inf64 int64 = 0x3f3f3f3f3f3f3f3f
+
 	min := func(a, b int) int {
 		if a <= b {
 			return a
