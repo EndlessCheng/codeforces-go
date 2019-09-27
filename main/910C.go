@@ -6,15 +6,15 @@ import (
 	"io"
 )
 
-func perm910C(arr []int, i int, f func([]int)) {
+func perm910C(arr []int, i int, do func([]int)) {
 	if i == len(arr) {
-		f(arr)
+		do(arr)
 		return
 	}
-	perm910C(arr, i+1, f)
+	perm910C(arr, i+1, do)
 	for j := i + 1; j < len(arr); j++ {
 		arr[i], arr[j] = arr[j], arr[i]
-		perm910C(arr, i+1, f)
+		perm910C(arr, i+1, do)
 		arr[i], arr[j] = arr[j], arr[i]
 	}
 }
