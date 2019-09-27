@@ -104,27 +104,30 @@ func (g *graph) shortestPaths(v int) (parent []int, dist []int) {
 
 //
 
-type inGraph struct {
+type directedGraph struct {
 	*graph
-	in []int
+	outDegree []int
+	inDegree  []int
 }
 
-func newInGraph(size int) *inGraph {
-	return &inGraph{
-		graph: newGraph(size),
-		in:    make([]int, size+1),
+func newDirectedGraph(size int) *directedGraph {
+	return &directedGraph{
+		graph:     newGraph(size),
+		outDegree: make([]int, size+1),
+		inDegree:  make([]int, size+1),
 	}
 }
 
-func (g *inGraph) add(from, to int, weight int) {
+func (g *directedGraph) add(from, to int, weight int) {
 	g.graph.add(from, to, weight)
-	g.in[to]++
+	g.outDegree[from]++
+	g.inDegree[to]++
 }
 
-func (g *inGraph) topologicalOrder() (vertexes []int, ok bool) {
+func (g *directedGraph) topologicalOrder() (vertexes []int, ok bool) {
 	queue := []int{}
 	for i := 1; i <= g.size; i++ {
-		if g.in[i] == 0 {
+		if g.inDegree[i] == 0 {
 			queue = append(queue, i)
 		}
 	}
@@ -134,8 +137,8 @@ func (g *inGraph) topologicalOrder() (vertexes []int, ok bool) {
 		vertexes = append(vertexes, v)
 		for _, e := range g.edges[v] {
 			w := e.vertex
-			g.in[w]-- // NOTE: copy g.in if reusing is needed.
-			if g.in[w] == 0 {
+			g.inDegree[w]-- // NOTE: copy g.inDegree if reusing is needed.
+			if g.inDegree[w] == 0 {
 				queue = append(queue, w)
 			}
 		}

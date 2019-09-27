@@ -41,7 +41,7 @@ func Test_graph(t *testing.T) {
 }
 
 func Test_inGraph(t *testing.T) {
-	g := newInGraph(6)
+	g := newDirectedGraph(6)
 	g.add(1, 2, 1)
 	g.add(2, 3, 1)
 	g.add(3, 4, 1)
@@ -51,7 +51,7 @@ func Test_inGraph(t *testing.T) {
 	t.Log(vertexes)
 	assert.True(t, ok)
 
-	g = newInGraph(6)
+	g = newDirectedGraph(6)
 	g.add(1, 2, 1)
 	g.add(2, 3, 1)
 	g.add(3, 4, 1)
