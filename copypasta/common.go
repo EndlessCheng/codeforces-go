@@ -42,15 +42,15 @@ func commonCollection() {
 
 // Permute the values at index i to len(arr)-1.
 // See 910C for example.
-func permute(arr []int, i int, f func([]int)) {
+func permute(arr []int, i int, do func([]int)) {
 	if i == len(arr) {
-		f(arr)
+		do(arr)
 		return
 	}
-	permute(arr, i+1, f)
+	permute(arr, i+1, do)
 	for j := i + 1; j < len(arr); j++ {
 		arr[i], arr[j] = arr[j], arr[i]
-		permute(arr, i+1, f)
+		permute(arr, i+1, do)
 		arr[i], arr[j] = arr[j], arr[i]
 	}
 }
