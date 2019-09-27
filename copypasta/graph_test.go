@@ -16,18 +16,18 @@ func Test_graph(t *testing.T) {
 
 	calc := func(start int) (anotherStart int, maxPath int) {
 		const inf = 1e9
-		dis := make([]int, n+1)
-		for i := range dis {
-			dis[i] = inf
+		dist := make([]int, n+1)
+		for i := range dist {
+			dist[i] = inf
 		}
-		dis[start] = 0
+		dist[start] = 0
 		g.reset()
 		g.bfs(start, func(from, to int, weight int) {
-			dis[to] = dis[from] + weight
+			dist[to] = dist[from] + weight
 		})
-		for v := range dis {
-			if dis[v] != inf && dis[v] > maxPath {
-				maxPath = dis[v]
+		for v := range dist {
+			if dist[v] != inf && dist[v] > maxPath {
+				maxPath = dist[v]
 				anotherStart = v
 			}
 		}

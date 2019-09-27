@@ -70,11 +70,11 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 //
 // The time complexity is O((|E| + |V|)⋅log|V|), where |E| is the number of edges
 // and |V| the number of vertices in the graph.
-func (g *graph) shortestPaths(v int) (parent []int, dist []int) {
+func (g *graph) shortestPaths(v int) (parents []int, dist []int) {
 	dist = make([]int, len(g.edges[v]))
-	parent = make([]int, len(g.edges[v]))
+	parents = make([]int, len(g.edges[v]))
 	for i := range dist {
-		dist[i], parent[i] = -1, -1
+		dist[i], parents[i] = -1, -1
 	}
 	dist[v] = 0
 
@@ -91,11 +91,44 @@ func (g *graph) shortestPaths(v int) (parent []int, dist []int) {
 			alt := dist[v] + d
 			switch {
 			case dist[w] == -1:
-				dist[w], parent[w] = alt, v
+				dist[w], parents[w] = alt, v
 				queue.Push(w)
 			case alt < dist[w]:
-				dist[w], parent[w] = alt, v
+				dist[w], parents[w] = alt, v
 				queue.Fix(w)
+			}
+		}
+	}
+	return
+}
+
+// MST computes a minimum spanning tree for each connected component
+// of an undirected weighted graph.
+// The forest of spanning trees is returned as a slice of parent pointers:
+// parent[v] is either the parent of v in a tree,
+// or -1 if v is the root of a tree.
+//
+// The time complexity is O(|E|⋅log|V|), where |E| is the number of edges
+// and |V| the number of vertices in the graph.
+func (g *graph) mst() (parent []int) {
+	const inf int = 0x3f3f3f3f
+	parent = make([]int, g.size)
+	weights := make([]int, g.size)
+	for i := range parent {
+		parent[i] = -1
+		weights[i] = inf
+	}
+
+	// Prim's algorithm
+	queue := newPrioQueue(weights)
+	for queue.Len() > 0 {
+		v := queue.Pop()
+		for _, e := range g.edges[v] {
+			w, weight := e.vertex, e.weight
+			if queue.Contains(w) && weight < weights[w] {
+				weights[w] = weight
+				queue.Fix(w)
+				parent[w] = v
 			}
 		}
 	}
