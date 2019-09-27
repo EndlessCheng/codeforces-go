@@ -6,26 +6,32 @@ type neighbor struct {
 }
 
 type graph struct {
+	size    int
 	edges   [][]neighbor
 	visited []bool
 }
 
 func newGraph(size int) *graph {
 	return &graph{
+		size:    size,
 		edges:   make([][]neighbor, size+1),
 		visited: make([]bool, size+1),
 	}
 }
 
-func (g *graph) addBoth(from, to int, weight int) {
+func (g *graph) add(from, to int, weight int) {
 	g.edges[from] = append(g.edges[from], neighbor{to, weight})
+}
+
+func (g *graph) addBoth(from, to int, weight int) {
+	g.add(from, to, weight)
 	if from != to {
-		g.edges[to] = append(g.edges[to], neighbor{from, weight})
+		g.add(to, from, weight)
 	}
 }
 
 func (g *graph) reset() {
-	g.visited = make([]bool, len(g.edges))
+	g.visited = make([]bool, g.size+1)
 }
 
 func (g *graph) dfs(v int, do func(from, to int, weight int)) {
@@ -94,4 +100,45 @@ func (g *graph) shortestPaths(v int) (parent []int, dist []int) {
 		}
 	}
 	return
+}
+
+//
+
+type inGraph struct {
+	*graph
+	in []int
+}
+
+func newInGraph(size int) *inGraph {
+	return &inGraph{
+		graph: newGraph(size),
+		in:    make([]int, size+1),
+	}
+}
+
+func (g *inGraph) add(from, to int, weight int) {
+	g.graph.add(from, to, weight)
+	g.in[to]++
+}
+
+func (g *inGraph) topologicalOrder() (vertexes []int, ok bool) {
+	queue := []int{}
+	for i := 1; i <= g.size; i++ {
+		if g.in[i] == 0 {
+			queue = append(queue, i)
+		}
+	}
+	var v int
+	for len(queue) > 0 {
+		v, queue = queue[0], queue[1:]
+		vertexes = append(vertexes, v)
+		for _, e := range g.edges[v] {
+			w := e.vertex
+			g.in[w]-- // NOTE: copy g.in if reusing is needed.
+			if g.in[w] == 0 {
+				queue = append(queue, w)
+			}
+		}
+	}
+	return vertexes, len(vertexes) == g.size
 }

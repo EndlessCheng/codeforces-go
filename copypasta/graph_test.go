@@ -1,6 +1,9 @@
 package copypasta
 
-import "testing"
+import (
+	"testing"
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_graph(t *testing.T) {
 	n := 10
@@ -34,4 +37,28 @@ func Test_graph(t *testing.T) {
 	s1, _ := calc(s0)
 	s2, ans := calc(s1)
 	t.Log(s0, s1, s2, ans)
+	assert.Equal(t, ans, 4)
+}
+
+func Test_inGraph(t *testing.T) {
+	g := newInGraph(6)
+	g.add(1, 2, 1)
+	g.add(2, 3, 1)
+	g.add(3, 4, 1)
+	g.add(3, 5, 1)
+	g.add(5, 6, 1)
+	vertexes, ok := g.topologicalOrder()
+	t.Log(vertexes)
+	assert.True(t, ok)
+
+	g = newInGraph(6)
+	g.add(1, 2, 1)
+	g.add(2, 3, 1)
+	g.add(3, 4, 1)
+	g.add(3, 5, 1)
+	g.add(5, 6, 1)
+	g.add(6, 3, 1)
+	vertexes, ok = g.topologicalOrder()
+	t.Log(vertexes)
+	assert.False(t, ok)
 }
