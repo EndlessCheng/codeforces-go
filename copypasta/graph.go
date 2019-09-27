@@ -158,7 +158,7 @@ func (g *directedGraph) add(from, to int, weight int) {
 }
 
 // Kahn's algorithm
-func (g *directedGraph) topsort() (order []int, acyclic bool) {
+func (g *directedGraph) topSort() (order []int, acyclic bool) {
 	queue := []int{}
 	for i := 1; i <= g.size; i++ {
 		if g.inDegree[i] == 0 {

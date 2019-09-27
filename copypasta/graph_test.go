@@ -47,7 +47,7 @@ func Test_inGraph(t *testing.T) {
 	g.add(3, 4, 1)
 	g.add(3, 5, 1)
 	g.add(5, 6, 1)
-	order, acyclic := g.topsort()
+	order, acyclic := g.topSort()
 	t.Log(order)
 	assert.True(t, acyclic)
 
@@ -58,7 +58,7 @@ func Test_inGraph(t *testing.T) {
 	g.add(3, 5, 1)
 	g.add(5, 6, 1)
 	g.add(6, 3, 1)
-	order, acyclic = g.topsort()
+	order, acyclic = g.topSort()
 	t.Log(order)
 	assert.False(t, acyclic)
 }
