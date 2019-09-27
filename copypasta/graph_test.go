@@ -47,9 +47,9 @@ func Test_inGraph(t *testing.T) {
 	g.add(3, 4, 1)
 	g.add(3, 5, 1)
 	g.add(5, 6, 1)
-	vertexes, ok := g.topologicalOrder()
-	t.Log(vertexes)
-	assert.True(t, ok)
+	order, acyclic := g.topsort()
+	t.Log(order)
+	assert.True(t, acyclic)
 
 	g = newDirectedGraph(6)
 	g.add(1, 2, 1)
@@ -58,7 +58,7 @@ func Test_inGraph(t *testing.T) {
 	g.add(3, 5, 1)
 	g.add(5, 6, 1)
 	g.add(6, 3, 1)
-	vertexes, ok = g.topologicalOrder()
-	t.Log(vertexes)
-	assert.False(t, ok)
+	order, acyclic = g.topsort()
+	t.Log(order)
+	assert.False(t, acyclic)
 }

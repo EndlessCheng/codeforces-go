@@ -124,7 +124,8 @@ func (g *directedGraph) add(from, to int, weight int) {
 	g.inDegree[to]++
 }
 
-func (g *directedGraph) topologicalOrder() (vertexes []int, ok bool) {
+// Kahn's algorithm
+func (g *directedGraph) topsort() (order []int, acyclic bool) {
 	queue := []int{}
 	for i := 1; i <= g.size; i++ {
 		if g.inDegree[i] == 0 {
@@ -134,7 +135,7 @@ func (g *directedGraph) topologicalOrder() (vertexes []int, ok bool) {
 	var v int
 	for len(queue) > 0 {
 		v, queue = queue[0], queue[1:]
-		vertexes = append(vertexes, v)
+		order = append(order, v)
 		for _, e := range g.edges[v] {
 			w := e.vertex
 			g.inDegree[w]-- // NOTE: copy g.inDegree if reusing is needed.
@@ -143,5 +144,5 @@ func (g *directedGraph) topologicalOrder() (vertexes []int, ok bool) {
 			}
 		}
 	}
-	return vertexes, len(vertexes) == g.size
+	return order, len(order) == g.size
 }
