@@ -19,7 +19,7 @@ func Test_graph(t *testing.T) {
 		}
 		dis[start] = 0
 		g.reset()
-		g.dfs(start, func(from, to int, weight int) {
+		g.bfs(start, func(from, to int, weight int) {
 			dis[to] = dis[from] + weight
 		})
 		for v := range dis {

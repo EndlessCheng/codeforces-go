@@ -39,6 +39,22 @@ func (g *graph) dfs(v int, do func(from, to int, weight int)) {
 	}
 }
 
+func (g *graph) bfs(v int, do func(from, to int, weight int)) {
+	g.visited[v] = true
+	queue := []int{v}
+	for len(queue) > 0 {
+		v, queue = queue[0], queue[1:]
+		for _, e := range g.edges[v] {
+			w, weight := e.vertex, e.weight
+			if !g.visited[w] {
+				do(v, w, weight)
+				g.visited[w] = true
+				queue = append(queue, w)
+			}
+		}
+	}
+}
+
 // ShortestPaths computes the shortest paths from v to all other vertices.
 // Only edges with non-negative weights are included.
 // The number parent[w] is the predecessor of w on a shortest path from v to w,
