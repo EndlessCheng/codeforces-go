@@ -5,11 +5,11 @@ import "testing"
 func Test_graph(t *testing.T) {
 	n := 10
 	g := newGraph(n)
-	g.addBothWeight(1, 2, 1)
-	g.addBothWeight(2, 3, 1)
-	g.addBothWeight(3, 4, 1)
-	g.addBothWeight(3, 5, 1)
-	g.addBothWeight(5, 6, 1)
+	g.addBoth(1, 2, 1)
+	g.addBoth(2, 3, 1)
+	g.addBoth(3, 4, 1)
+	g.addBoth(3, 5, 1)
+	g.addBoth(5, 6, 1)
 
 	calc := func(start int) (anotherStart int, maxPath int) {
 		const inf = 1e9

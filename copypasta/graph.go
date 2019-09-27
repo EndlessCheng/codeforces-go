@@ -17,7 +17,7 @@ func newGraph(size int) *graph {
 	}
 }
 
-func (g *graph) addBothWeight(from, to int, weight int) {
+func (g *graph) addBoth(from, to int, weight int) {
 	g.edges[from] = append(g.edges[from], neighbor{to, weight})
 	if from != to {
 		g.edges[to] = append(g.edges[to], neighbor{from, weight})
