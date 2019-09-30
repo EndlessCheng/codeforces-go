@@ -6,12 +6,12 @@ import (
 	"io"
 )
 
-type pair struct {
+type pair190C struct {
 	isInt bool
-	a, b  *pair
+	a, b  *pair190C
 }
 
-func (p *pair) read(in *bufio.Reader) bool {
+func (p *pair190C) read(in *bufio.Reader) bool {
 	var s string
 	if n, _ := Fscan(in, &s); n == 0 {
 		return false
@@ -20,18 +20,18 @@ func (p *pair) read(in *bufio.Reader) bool {
 		p.isInt = true
 		return true
 	}
-	p.a = &pair{}
+	p.a = &pair190C{}
 	if !p.a.read(in) {
 		return false
 	}
-	p.b = &pair{}
+	p.b = &pair190C{}
 	if !p.b.read(in) {
 		return false
 	}
 	return true
 }
 
-func (p *pair) print(out *bufio.Writer) {
+func (p *pair190C) print(out *bufio.Writer) {
 	if p.isInt {
 		Fprint(out, "int")
 		return
@@ -51,7 +51,7 @@ func Sol190C(reader io.Reader, writer io.Writer) {
 	const e = "Error occurred"
 	var n int
 	Fscan(in, &n)
-	p := &pair{}
+	p := &pair190C{}
 	if !p.read(in) {
 		Fprint(out, e)
 		return
