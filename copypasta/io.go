@@ -16,3 +16,16 @@ func simpleIO() {
 
 	Fprintln(out, n)
 }
+
+func lineIO() {
+	in := bufio.NewScanner(os.Stdin)
+	in.Buffer(nil, 1e6+5) // default maxTokenSize is 65536
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
+
+	for in.Scan() {
+		line := in.Text()
+
+		Fprintln(out, line)
+	}
+}
