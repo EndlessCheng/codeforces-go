@@ -6,7 +6,6 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
 func Sol1230C(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)

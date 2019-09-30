@@ -7,7 +7,6 @@ import (
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
 func Sol1230D(reader io.Reader, writer io.Writer) {
 	type pair struct {
 		a, b int64
