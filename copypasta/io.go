@@ -13,4 +13,6 @@ func simpleIO() {
 
 	var n int
 	Fscan(in, &n)
+
+	Fprintln(out, n)
 }
