@@ -1,4 +1,4 @@
-# codeforces-go
+# codeforces-go 💭💡🎈
 
 > Notice that sorting problems by the rating also sorts problems with the same rating by solving amount. So, I would say; Choose a rating (for example, I would choose 1400 for you for now); Sort by the rating; And, finally, start solving from the most solved 1400.
 >
