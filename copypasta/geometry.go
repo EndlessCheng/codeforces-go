@@ -10,6 +10,7 @@ type vec struct {
 	x, y int64
 }
 
+func (a vec) less(b vec) bool  { return a.x < b.x || a.x == b.x && a.y < b.y }
 func (a vec) add(b vec) vec    { return vec{a.x + b.x, a.y + b.y} }
 func (a vec) sub(b vec) vec    { return vec{a.x - b.x, a.y - b.y} }
 func (a vec) mul(k int64) vec  { return vec{a.x * k, a.y * k} }
@@ -30,6 +31,7 @@ func (a vec) reverse() vec      { return a.mul(-1) }
 //	return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps
 //}
 
+// 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）
 func isOrthogonal(a, b, c vec) bool           { return a.sub(b).dot(c.sub(b)) == 0 }
 func isRectangle(a, b, c, d vec) bool         { return isOrthogonal(a, b, c) && isOrthogonal(b, c, d) && isOrthogonal(c, d, a) }
 func isRectangleAnyOrder(a, b, c, d vec) bool { return isRectangle(a, b, c, d) || isRectangle(a, b, d, c) || isRectangle(a, c, b, d) }
