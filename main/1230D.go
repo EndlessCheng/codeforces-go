@@ -31,10 +31,10 @@ func Sol1230D(reader io.Reader, writer io.Writer) {
 	}
 
 	sort.Slice(arr, func(i, j int) bool { return arr[i].a < arr[j].a })
-	multi := map[int64]int{}
+	multi := map[int64]bool{}
 	for i := 0; i < n-1; i++ {
 		if arr[i].a == arr[i+1].a {
-			multi[arr[i].a] = 1
+			multi[arr[i].a] = true
 		}
 	}
 	multiList := []int64{}
@@ -44,7 +44,7 @@ func Sol1230D(reader io.Reader, writer io.Writer) {
 	ans := int64(0)
 	for _, p := range arr {
 		a, b := p.a, p.b
-		if _, ok := multi[a]; ok {
+		if multi[a] {
 			ans += b
 		} else {
 			for _, k := range multiList {
