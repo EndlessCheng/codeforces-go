@@ -2,12 +2,10 @@ package copypasta
 
 // 效率是线段树的 3~10 倍（由数据决定）
 func binaryIndexedTree() {
-	lowbit := func(n int) int { return n & -n }
-
 	n := int(1e5)
 	tree := make([]int, n+1)
 	add := func(idx int, val int) {
-		for ; idx <= n; idx += lowbit(idx) {
+		for ; idx <= n; idx += idx & -idx { // idx += lowbit(idx)
 			tree[idx] += val
 		}
 	}
@@ -17,7 +15,7 @@ func binaryIndexedTree() {
 		// now value at i is a[i] + sum(i)
 	}
 	sum := func(idx int) (res int) {
-		for ; idx > 0; idx &= idx - 1 {
+		for ; idx > 0; idx &= idx - 1 { // idx -= lowbit(idx)
 			res += tree[idx]
 		}
 		return
@@ -27,4 +25,28 @@ func binaryIndexedTree() {
 	}
 
 	_ = []interface{}{add, addRange, query}
+}
+
+func multiBinaryIndexedTrees() {
+	n, m := int(1e5), 60
+	trees := make([][]int, m)
+	for i := range trees {
+		trees[i] = make([]int, n+1)
+	}
+	add := func(tree []int, idx int, val int) {
+		for ; idx <= n; idx += idx & -idx {
+			tree[idx] += val
+		}
+	}
+	sum := func(tree []int, idx int) (res int) {
+		for ; idx > 0; idx &= idx - 1 {
+			res += tree[idx]
+		}
+		return
+	}
+	query := func(tree []int, l, r int) int {
+		return sum(tree, r) - sum(tree, l-1)
+	}
+
+	_ = []interface{}{add, query}
 }
