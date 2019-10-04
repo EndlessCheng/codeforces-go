@@ -39,5 +39,16 @@ func stringCollection() {
 		return
 	}
 
-	_ = []interface{}{calcMaxMatchLengths, kmpSearch}
+	calcMinPeriod := func(pattern string) int {
+		maxMatchLengths := calcMaxMatchLengths(pattern)
+		n := len(pattern)
+		if val := maxMatchLengths[n-1]; val > 0 {
+			if n%(n-val) == 0 {
+				return n / (n - val)
+			}
+		}
+		return 0
+	}
+
+	_ = []interface{}{kmpSearch, calcMinPeriod}
 }
