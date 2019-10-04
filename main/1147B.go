@@ -25,8 +25,8 @@ func Sol1147B(reader io.Reader, writer io.Writer) {
 			maxMatchLengths[i] = maxLength
 		}
 		if val := maxMatchLengths[n-1]; val > 0 {
-			if val%(n-val) == 0 {
-				return val/(n-val) + 1
+			if n%(n-val) == 0 {
+				return n / (n - val)
 			}
 		}
 		return 0
@@ -68,28 +68,33 @@ func Sol1147B(reader io.Reader, writer io.Writer) {
 		if len(posList) == 0 {
 			continue
 		}
-		var p int64
+		var p int
 		if segLen*2 < n {
 			sort.Ints(posList)
 			posList = append(posList, posList[0]+n)
 			diffList := make([]int, len(posList)-1)
 			for i := range diffList {
-				diffList[i] = posList[i+1] - posList[i] - segLen
+				diffList[i] = posList[i+1] - posList[i]
 			}
-			p = int64(calcMinPeriod(diffList))
+			p = calcMinPeriod(diffList)
 			if p == 0 {
 				Fprint(out, "No")
 				return
 			}
 		} else if segLen*2 == n {
-			p = int64(segLen)
+			p = 2
 		} else {
 			break
 		}
+		if n%p > 0 {
+			Fprint(out, "No")
+			return
+		}
+		p = n / p
 		if k == -1 {
-			k = p
+			k = int64(p)
 		} else {
-			k = calcLCM(k, p)
+			k = calcLCM(k, int64(p))
 		}
 		if k >= int64(n) {
 			Fprint(out, "No")
