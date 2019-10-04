@@ -19,8 +19,7 @@ func stringCollection() {
 		return maxMatchLengths
 	}
 	// search pattern from text, return all start positions
-	kmpSearch := func(text, pattern string) []int {
-		positions := []int{}
+	kmpSearch := func(text, pattern string) (positions []int) {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
 		count := 0
@@ -37,7 +36,7 @@ func stringCollection() {
 				count = maxMatchLengths[count-1]
 			}
 		}
-		return positions
+		return
 	}
 
 	_ = []interface{}{calcMaxMatchLengths, kmpSearch}
