@@ -1,6 +1,9 @@
 package copypasta
 
-import . "container/heap"
+import (
+	. "container/heap"
+	"sort"
+)
 
 type neighbor struct {
 	vertex int
@@ -8,16 +11,18 @@ type neighbor struct {
 }
 
 type graph struct {
-	size    int
-	edges   [][]neighbor
-	visited []bool
+	size     int
+	edgeSize int
+	edges    [][]neighbor
+	visited  []bool
 }
 
-func newGraph(size int) *graph {
+func newGraph(size, edgeSize int) *graph {
 	return &graph{
-		size:    size,
-		edges:   make([][]neighbor, size+1),
-		visited: make([]bool, size+1),
+		size:     size,
+		edgeSize: edgeSize,
+		edges:    make([][]neighbor, size+1),
+		visited:  make([]bool, size+1),
 	}
 }
 
@@ -110,6 +115,39 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 	return
 }
 
+func (g *graph) mstKruskal() (sum int64) {
+	fa := make([]int, g.size+1)
+	for i := range fa {
+		fa[i] = i
+	}
+	var find func(int) int
+	find = func(i int) int {
+		if fa[i] != i {
+			fa[i] = find(fa[i])
+		}
+		return fa[i]
+	}
+
+	type edge struct {
+		v, w   int
+		weight int
+	}
+	edges := make([]edge, 0, g.edgeSize)
+	for v, es := range g.edges {
+		for _, e := range es {
+			edges = append(edges, edge{v, e.vertex, e.weight})
+		}
+	}
+	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
+	for _, e := range edges {
+		if from, to := find(e.v), find(e.w); from != to {
+			sum += int64(e.weight)
+			fa[from] = to
+		}
+	}
+	return
+}
+
 // MST computes a minimum spanning tree for each connected component
 // of an undirected weighted graph.
 // The forest of spanning trees is returned as a slice of parent pointers:
@@ -151,9 +189,9 @@ type directedGraph struct {
 	inDegree  []int
 }
 
-func newDirectedGraph(size int) *directedGraph {
+func newDirectedGraph(size, edgeSize int) *directedGraph {
 	return &directedGraph{
-		graph:     newGraph(size),
+		graph:     newGraph(size, edgeSize),
 		outDegree: make([]int, size+1),
 		inDegree:  make([]int, size+1),
 	}
