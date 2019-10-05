@@ -5,44 +5,43 @@ import (
 	. "container/heap"
 	. "fmt"
 	"io"
-	"os"
 )
 
-type pair struct {
+type pair20C struct {
 	x int64
 	y int
 }
-type pairHeap []pair
+type pairHeap20C []pair20C
 
-func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].x < h[j].x }
-func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(pair)) }
-func (h *pairHeap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h pairHeap20C) Len() int              { return len(h) }
+func (h pairHeap20C) Less(i, j int) bool    { return h[i].x < h[j].x }
+func (h pairHeap20C) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *pairHeap20C) Push(v interface{})   { *h = append(*h, v.(pair20C)) }
+func (h *pairHeap20C) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
-type neighbor struct {
+type neighbor20C struct {
 	vertex int
 	weight int
 }
 
-type graph struct {
+type graph20C struct {
 	size    int
-	edges   [][]neighbor
+	edges   [][]neighbor20C
 	visited []bool
 }
 
-func (g *graph) add(from, to int, weight int) {
-	g.edges[from] = append(g.edges[from], neighbor{to, weight})
+func (g *graph20C) add(from, to int, weight int) {
+	g.edges[from] = append(g.edges[from], neighbor20C{to, weight})
 }
 
-func (g *graph) addBoth(from, to int, weight int) {
+func (g *graph20C) addBoth(from, to int, weight int) {
 	g.add(from, to, weight)
 	if from != to {
 		g.add(to, from, weight)
 	}
 }
 
-func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
+func (g *graph20C) shortestPaths(start int) (dist []int64, parents []int) {
 	const inf int64 = 1e18
 	dist = make([]int64, g.size+1)
 	for i := range dist {
@@ -54,10 +53,10 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 		parents[i] = -1
 	}
 
-	h := &pairHeap{}
-	Push(h, pair{0, start})
+	h := &pairHeap20C{}
+	Push(h, pair20C{0, start})
 	for h.Len() > 0 {
-		p := Pop(h).(pair)
+		p := Pop(h).(pair20C)
 		v := p.y
 		if g.visited[v] {
 			continue
@@ -68,7 +67,7 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 			if newDist := dist[v] + int64(e.weight); newDist < dist[w] {
 				dist[w] = newDist
 				parents[w] = v
-				Push(h, pair{newDist, w})
+				Push(h, pair20C{newDist, w})
 			}
 		}
 	}
@@ -83,9 +82,9 @@ func Sol20C(reader io.Reader, writer io.Writer) {
 
 	var n, m int
 	Fscan(in, &n, &m)
-	g := &graph{
+	g := &graph20C{
 		size:    n,
-		edges:   make([][]neighbor, n+1),
+		edges:   make([][]neighbor20C, n+1),
 		visited: make([]bool, n+1),
 	}
 	for i := 0; i < m; i++ {
@@ -109,6 +108,6 @@ func Sol20C(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol20C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol20C(os.Stdin, os.Stdout)
+//}
