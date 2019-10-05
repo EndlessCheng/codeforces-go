@@ -1,7 +1,6 @@
 package copypasta
 
-// DSU: Disjoint Set Union
-func dsuCollections() {
+func unionFindCollections() {
 	n := 1e5
 	fa := make([]int, n)
 	for i := range fa {
@@ -17,4 +16,6 @@ func dsuCollections() {
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 
 	_ = []interface{}{merge}
+
+	// TODO: 带权并查集
 }
