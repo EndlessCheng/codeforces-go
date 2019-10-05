@@ -26,6 +26,9 @@ func mathCollection() {
 	_ = []interface{}{calcLCM, isPrime}
 }
 
+// exgcd solve equation ax+by=gcd(a,b)
+// |x|<=b
+// |y|<=a
 func exgcd(a, b int64) (gcd, x, y int64) {
 	if b == 0 {
 		return a, 1, 0
