@@ -21,7 +21,7 @@ func Test_graph(t *testing.T) {
 			dist[i] = inf
 		}
 		dist[start] = 0
-		g.reset()
+		g.resetStates()
 		g.bfs(start, func(from, to int, weight int) {
 			dist[to] = dist[from] + weight
 		})
@@ -40,7 +40,22 @@ func Test_graph(t *testing.T) {
 	assert.Equal(t, ans, 4)
 }
 
-func Test_inGraph(t *testing.T) {
+func Test_graph_shortestPaths(t *testing.T) {
+	defer t.Skip()
+	n := 6
+	g := newGraph(n)
+	g.addBoth(1, 2, 1)
+	g.addBoth(1, 3, 1)
+	g.addBoth(3, 4, 100)
+	g.addBoth(4, 5, 1)
+	g.addBoth(5, 6, 1)
+	g.addBoth(3, 6, 1)
+	dist, parents := g.shortestPaths(1)
+	t.Log(dist[1:])
+	t.Log(parents[1:])
+}
+
+func Test_directedGraph_topSort(t *testing.T) {
 	g := newDirectedGraph(6)
 	g.add(1, 2, 1)
 	g.add(2, 3, 1)

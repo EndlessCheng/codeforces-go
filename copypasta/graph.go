@@ -1,5 +1,7 @@
 package copypasta
 
+import . "container/heap"
+
 type neighbor struct {
 	vertex int
 	weight int
@@ -30,7 +32,7 @@ func (g *graph) addBoth(from, to int, weight int) {
 	}
 }
 
-func (g *graph) reset() {
+func (g *graph) resetStates() {
 	g.visited = make([]bool, g.size+1)
 }
 
@@ -61,44 +63,50 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 	}
 }
 
-// ShortestPaths computes the shortest paths from v to all other vertices.
-// Only edges with non-negative weights are included.
-// The number parent[w] is the predecessor of w on a shortest path from v to w,
+// ShortestPaths uses the Dijkstra's Algorithm to compute the shortest paths from `start` to all other vertices.
+// The number dist[w] equals the length of a shortest path from `start` to w,
+// or is `inf` if w cannot be reached.
+// The number parent[w] is the predecessor of w on a shortest path from `start` to w,
 // or -1 if none exists.
-// The number dist[w] equals the length of a shortest path from v to w,
-// or is -1 if w cannot be reached.
 //
 // The time complexity is O((|E| + |V|)⋅log|V|), where |E| is the number of edges
 // and |V| the number of vertices in the graph.
-func (g *graph) shortestPaths(v int) (parents []int, dist []int) {
-	dist = make([]int, len(g.edges[v]))
-	parents = make([]int, len(g.edges[v]))
+func (g *graph) shortestPaths(start int) (dist []int, parents []int) {
+	const inf int = 1e9
+	dist = make([]int, g.size+1)
 	for i := range dist {
-		dist[i], parents[i] = -1, -1
+		dist[i] = inf
 	}
-	dist[v] = 0
+	dist[start] = 0
+	parents = make([]int, g.size+1)
+	for i := range parents {
+		parents[i] = -1
+	}
 
-	// Dijkstra's algorithm
-	queue := emptyPrioQueue(dist)
-	queue.Push(v)
-	for queue.Len() > 0 {
-		v := queue.Pop()
+	h := &pairHeap{}
+	Push(h, pair{0, start})
+	for h.Len() > 0 {
+		p := Pop(h).(pair)
+		v := p.y
+		if g.visited[v] {
+			continue
+		}
+		g.visited[v] = true
 		for _, e := range g.edges[v] {
-			w, d := e.vertex, e.weight
-			if d < 0 {
-				continue
-			}
-			alt := dist[v] + d
-			switch {
-			case dist[w] == -1:
-				dist[w], parents[w] = alt, v
-				queue.Push(w)
-			case alt < dist[w]:
-				dist[w], parents[w] = alt, v
-				queue.Fix(w)
+			w := e.vertex
+			if newDist := dist[v] + e.weight; newDist < dist[w] {
+				dist[w] = newDist
+				parents[w] = v
+				Push(h, pair{newDist, w})
 			}
 		}
 	}
+
+	// path from n to start
+	//path := []int{}
+	//for v := n; v != -1; v = parents[v] {
+	//	path = append(path, v)
+	//}
 	return
 }
 
@@ -110,10 +118,10 @@ func (g *graph) shortestPaths(v int) (parents []int, dist []int) {
 //
 // The time complexity is O(|E|⋅log|V|), where |E| is the number of edges
 // and |V| the number of vertices in the graph.
-func (g *graph) mst() (parent []int) {
+func (g *graph) mstPrim() (parent []int) {
 	const inf int = 0x3f3f3f3f
-	parent = make([]int, g.size)
-	weights := make([]int, g.size)
+	parent = make([]int, g.size+1)
+	weights := make([]int, g.size+1)
 	for i := range parent {
 		parent[i] = -1
 		weights[i] = inf
