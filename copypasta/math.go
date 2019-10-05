@@ -25,3 +25,12 @@ func mathCollection() {
 
 	_ = []interface{}{calcLCM, isPrime}
 }
+
+func exgcd(a, b int64) (gcd, x, y int64) {
+	if b == 0 {
+		return a, 1, 0
+	}
+	gcd, y, x = exgcd(b, a%b)
+	y -= a / b * x
+	return
+}
