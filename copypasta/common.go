@@ -44,9 +44,12 @@ func commonCollection() {
 			return !f(i)
 		}
 	}
-	//sort.Search(n, reverse(func(i int) bool {}))
+	//sort.Search(n, reverse(func(i int) bool {...}))
 
-	_ = []interface{}{min, max, abs, quickPow, reverse}
+	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+
+	_ = []interface{}{min, max, abs, quickPow, reverse, dirOffset4, dirOffset8}
 }
 
 // Permute the values at index i to len(arr)-1.
