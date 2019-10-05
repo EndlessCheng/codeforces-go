@@ -71,9 +71,9 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 //
 // The time complexity is O((|E| + |V|)⋅log|V|), where |E| is the number of edges
 // and |V| the number of vertices in the graph.
-func (g *graph) shortestPaths(start int) (dist []int, parents []int) {
-	const inf int = 1e9
-	dist = make([]int, g.size+1)
+func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
+	const inf int64 = 1e18
+	dist = make([]int64, g.size+1)
 	for i := range dist {
 		dist[i] = inf
 	}
@@ -94,7 +94,7 @@ func (g *graph) shortestPaths(start int) (dist []int, parents []int) {
 		g.visited[v] = true
 		for _, e := range g.edges[v] {
 			w := e.vertex
-			if newDist := dist[v] + e.weight; newDist < dist[w] {
+			if newDist := dist[v] + int64(e.weight); newDist < dist[w] {
 				dist[w] = newDist
 				parents[w] = v
 				Push(h, pair{newDist, w})

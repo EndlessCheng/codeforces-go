@@ -16,7 +16,8 @@ func (h *intHeap) Pop() (v interface{}) {
 //
 
 type pair struct {
-	x, y int
+	x int64
+	y int
 }
 type pairHeap []pair
 
