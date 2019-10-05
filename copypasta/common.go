@@ -46,10 +46,26 @@ func commonCollection() {
 	}
 	//sort.Search(n, reverse(func(i int) bool {...}))
 
+	// step = 100
+	ternarySearch := func(l, r float64, step int, f func(x float64) float64) float64 {
+		for i := 0; i < step; i++ {
+			m1 := l + (r-l)/3
+			m2 := r - (r-l)/3
+			v1, v2 := f(m1), f(m2)
+			// 也可以加上 if math.Abs(v1-v2) < eps {break}
+			if v1 < v2 {
+				r = m2 // 若求最大值，则 l = m1
+			} else {
+				l = m1 // 若求最大值，则 r = m2
+			}
+		}
+		return (l + r) / 2
+	}
+
 	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 
-	_ = []interface{}{min, max, abs, quickPow, reverse, dirOffset4, dirOffset8}
+	_ = []interface{}{min, max, abs, quickPow, reverse, ternarySearch, dirOffset4, dirOffset8}
 }
 
 // Permute the values at index i to len(arr)-1.
