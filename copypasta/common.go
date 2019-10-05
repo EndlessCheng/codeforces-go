@@ -37,7 +37,16 @@ func commonCollection() {
 		return res
 	}
 
-	_ = []interface{}{min, max, abs, quickPow}
+	// NOTE: Golang already has a binary search function in sort package, see 1077D for example
+	type bsFunc func(int) bool
+	reverse := func(f bsFunc) bsFunc {
+		return func(i int) bool {
+			return !f(i)
+		}
+	}
+	//sort.Search(n, reverse(func(i int) bool {}))
+
+	_ = []interface{}{min, max, abs, quickPow, reverse}
 }
 
 // Permute the values at index i to len(arr)-1.
