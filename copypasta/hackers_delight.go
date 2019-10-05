@@ -1,8 +1,9 @@
 package copypasta
 
 /*
-注意 11100001 的情况
+注意 11100001 的情况（特判 lowbit = 1）
 */
+
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }

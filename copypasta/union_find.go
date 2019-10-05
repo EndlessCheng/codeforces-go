@@ -1,8 +1,8 @@
 package copypasta
 
 func unionFindCollections() {
-	n := 1e5
-	fa := make([]int, n)
+	n := int(1e5)
+	fa := make([]int, n+1)
 	for i := range fa {
 		fa[i] = i
 	}
