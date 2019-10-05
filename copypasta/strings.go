@@ -47,7 +47,7 @@ func stringCollection() {
 				return n / (n - val)
 			}
 		}
-		return 0
+		return 1 // or -1
 	}
 
 	_ = []interface{}{kmpSearch, calcMinPeriod}
