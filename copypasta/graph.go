@@ -68,6 +68,44 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 	}
 }
 
+// Floyd's Algorithm
+// 使用邻接矩阵
+func (g *graph) allShortestPaths() {
+	min := func(a, b int) int {
+		if a <= b {
+			return a
+		}
+		return b
+	}
+	const inf int = 1e9
+
+	var n, m int
+	// read n m
+
+	dist := make([][]int, n+1)
+	for i := range dist {
+		dist[i] = make([]int, n+1)
+		for j := range dist[i] {
+			dist[i][j] = inf
+		}
+	}
+	for i := range dist {
+		dist[i][i] = 0
+	}
+	for i := 0; i < m; i++ {
+		var v, w, weight int
+		// read v w weight
+		dist[v][w] = min(dist[v][w], weight)
+	}
+	for k := 1; k <= n; k++ {
+		for i := 1; i <= n; i++ {
+			for j := 1; j <= n; j++ {
+				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+	}
+}
+
 // ShortestPaths uses the Dijkstra's Algorithm to compute the shortest paths from `start` to all other vertices.
 // The number dist[w] equals the length of a shortest path from `start` to w,
 // or is `inf` if w cannot be reached.
