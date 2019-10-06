@@ -52,3 +52,35 @@ func stringCollection() {
 
 	_ = []interface{}{kmpSearch, calcMinPeriod}
 }
+
+//
+
+type trieNode struct {
+	childIdx [26]int
+	dupCnt   int // 重复插入计数
+	val      int // 节点附加信息
+}
+type trie struct {
+	nodes []*trieNode
+}
+
+func newTrie() *trie {
+	return &trie{
+		nodes: []*trieNode{{}},
+	}
+}
+
+// insert `s` into trie and add `val` at leaf
+func (t *trie) insert(s string, val int) {
+	o := t.nodes[0]
+	for _, c := range s {
+		c -= 'a'
+		if o.childIdx[c] == 0 {
+			o.childIdx[c] = len(t.nodes)
+			t.nodes = append(t.nodes, &trieNode{})
+		}
+		o = t.nodes[o.childIdx[c]]
+	}
+	o.dupCnt++
+	o.val = val
+}
