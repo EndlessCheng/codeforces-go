@@ -8,6 +8,10 @@ import (
 func TestSol126B(t *testing.T) {
 	// just copy from website
 	rawText := `
+aabaaabaaaaab
+outputCopy
+aab
+inputCopy
 abcabcdabcabcabc
 outputCopy
 abcabc

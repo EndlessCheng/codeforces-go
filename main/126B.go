@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"strings"
 )
 
 func Sol126B(reader io.Reader, writer io.Writer) {
@@ -24,6 +23,24 @@ func Sol126B(reader io.Reader, writer io.Writer) {
 		}
 		return maxMatchLengths
 	}
+	kmpSearch := func(text, pattern string) bool {
+		maxMatchLengths := calcMaxMatchLengths(pattern)
+		lenP := len(pattern)
+		count := 0
+		for i := range text {
+			c := text[i]
+			for count > 0 && pattern[count] != c {
+				count = maxMatchLengths[count-1]
+			}
+			if pattern[count] == c {
+				count++
+			}
+			if count == lenP {
+				return true
+			}
+		}
+		return false
+	}
 
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
@@ -40,7 +57,7 @@ func Sol126B(reader io.Reader, writer io.Writer) {
 
 	lens := calcMaxMatchLengths(s)
 	for maxLen := lens[len(s)-1]; maxLen > 0; maxLen = lens[maxLen-1] {
-		if strings.Contains(inS, s[:maxLen]) {
+		if kmpSearch(inS, s[:maxLen]) {
 			Fprint(out, s[:maxLen])
 			return
 		}
