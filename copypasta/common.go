@@ -3,6 +3,7 @@ package copypasta
 func commonCollection() {
 	const inf int = 0x3f3f3f3f
 	const inf64 int64 = 0x3f3f3f3f3f3f3f3f
+	pow2 := [...]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144}
 
 	min := func(a, b int) int {
 		if a <= b {
@@ -10,12 +11,30 @@ func commonCollection() {
 		}
 		return b
 	}
+	mins := func(vals ...int) int {
+		ans := vals[0]
+		for _, val := range vals[1:] {
+			if val < ans {
+				ans = val
+			}
+		}
+		return ans
+	}
 
 	max := func(a, b int) int {
 		if a >= b {
 			return a
 		}
 		return b
+	}
+	maxs := func(vals ...int) int {
+		ans := vals[0]
+		for _, val := range vals[1:] {
+			if val > ans {
+				ans = val
+			}
+		}
+		return ans
 	}
 
 	abs := func(x int) int {
@@ -79,7 +98,7 @@ func commonCollection() {
 	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 
-	_ = []interface{}{min, max, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
+	_ = []interface{}{pow2, min, mins, max, maxs, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
 }
 
 // Permute the values at index i to len(arr)-1.
