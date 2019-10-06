@@ -23,12 +23,17 @@ func mathCollection() {
 		return true
 	}
 
-	_ = []interface{}{calcLCM, isPrime}
+	// ax ≡ 1 (mod m)
+	modInverse := func(a, m int64) int64 {
+		_, x, _ := exgcd(a, m)
+		return (x%m + m) % m
+	}
+
+	_ = []interface{}{calcLCM, isPrime, modInverse}
 }
 
 // exgcd solve equation ax+by=gcd(a,b)
-// |x|<=b
-// |y|<=a
+// we have |x|<=b and |y|<=a in result (x,y)
 func exgcd(a, b int64) (gcd, x, y int64) {
 	if b == 0 {
 		return a, 1, 0
