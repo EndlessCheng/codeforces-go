@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
+func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.Reader, io.Writer)) {
 	if rawText[0] == '\n' {
 		rawText = rawText[1:]
 	}
@@ -21,6 +21,9 @@ func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer
 	}
 
 	for i, input := range inputs {
+		if useCase >= 0 && i+1 != useCase {
+			continue
+		}
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
 		solFunc(mockReader, mockWriter)
@@ -30,4 +33,8 @@ func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer
 		}
 		assert.Equal(t, outputs[i], actualOutput, "Please check test case %d", i+1)
 	}
+}
+
+func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
+	AssertEqualCase(t, rawText, -1, solFunc)
 }
