@@ -1,5 +1,12 @@
 package copypasta
 
+import (
+	"fmt"
+	"index/suffixarray"
+	"reflect"
+	"unsafe"
+)
+
 func stringCollection() {
 	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
 	calcMaxMatchLengths := func(pattern string) []int {
@@ -51,6 +58,50 @@ func stringCollection() {
 	}
 
 	_ = []interface{}{kmpSearch, calcMinPeriod}
+}
+
+func suffixArray() {
+	// lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
+	calcLCP := func(s []byte, sa []int) (lcp []int) {
+		n := len(s)
+		rank := make([]int, n+1)
+		for i := range rank {
+			rank[sa[i]] = i
+		}
+		lcp = make([]int, n, n+1)
+		h := 0
+		for i := range lcp {
+			j := sa[rank[i]-1]
+			if h > 0 {
+				h--
+			}
+			for ; j+h < n && i+h < n; h++ {
+				if s[j+h] != s[i+h] {
+					break
+				}
+			}
+			lcp[rank[i]-1] = h
+		}
+		return
+	}
+
+	var s []byte
+	index := suffixarray.New(s)
+	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(index).Elem().FieldByName("sa").UnsafeAddr()))
+	sa = append([]int{len(s)}, sa...) // 方便定义 lcp
+	lcp := calcLCP(s, sa)
+	lcp = append(lcp, 0)
+
+	// debug
+	for i := range sa {
+		if lcp[i] == 0 {
+			fmt.Println("  " + string(s[sa[i]:]))
+		} else {
+			fmt.Println(lcp[i], string(s[sa[i]:]))
+		}
+	}
+
+	// TODO: []int 的后缀数组
 }
 
 //
