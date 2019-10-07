@@ -6,14 +6,14 @@ import (
 	"io"
 )
 
-type node struct {
+type node339D struct {
 	l, r   int
 	val    int
 	needOR bool
 }
-type segmentTree []node
+type segmentTree339D []node339D
 
-func (t segmentTree) _pushUp(o int) {
+func (t segmentTree339D) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	if lo.needOR {
 		t[o].val = lo.val | ro.val
@@ -22,7 +22,7 @@ func (t segmentTree) _pushUp(o int) {
 	}
 }
 
-func (t segmentTree) _build(arr []int, o, l, r int) {
+func (t segmentTree339D) _build(arr []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].val = arr[l]
@@ -36,7 +36,7 @@ func (t segmentTree) _build(arr []int, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segmentTree) _update(o, idx int, val int) {
+func (t segmentTree339D) _update(o, idx int, val int) {
 	if t[o].l == t[o].r {
 		t[o].val = val
 		return
@@ -49,8 +49,8 @@ func (t segmentTree) _update(o, idx int, val int) {
 	t._pushUp(o)
 }
 
-func (t segmentTree) init(arr []int)          { t._build(arr, 1, 1, len(arr)-1) }
-func (t segmentTree) update(idx int, val int) { t._update(1, idx, val) }
+func (t segmentTree339D) init(arr []int)          { t._build(arr, 1, 1, len(arr)-1) }
+func (t segmentTree339D) update(idx int, val int) { t._update(1, idx, val) }
 
 func Sol339D(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
@@ -65,7 +65,7 @@ func Sol339D(reader io.Reader, writer io.Writer) {
 		Fscan(in, &arr[i])
 	}
 
-	t := make(segmentTree, 2*n)
+	t := make(segmentTree339D, 2*n)
 	t.init(arr)
 	for ; m > 0; m-- {
 		var idx, val int
