@@ -8,6 +8,7 @@ import (
 
 func simpleIO() {
 	in := bufio.NewReader(os.Stdin)
+	//in := bufio.NewReaderSize(os.Stdin, 1e6)
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
