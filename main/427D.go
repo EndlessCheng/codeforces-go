@@ -52,15 +52,16 @@ func Sol427D(reader io.Reader, writer io.Writer) {
 
 	var s, t []byte
 	Fscan(in, &s, &t)
-
 	lenS1 := len(s)
 	s = append(s, '$')
 	s = append(s, t...)
+	n := len(s)
+
 	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
 	sa = append([]int{len(s)}, sa...)
 	lcp := calcLCP(s, sa)
 	lcp = append(lcp, 0)
-	n := len(s)
+
 	const inf int = 1e9
 	ans := inf
 	for i := 2; i < n; i++ {
