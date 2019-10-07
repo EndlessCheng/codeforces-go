@@ -7,6 +7,17 @@ import (
 	"unsafe"
 )
 
+func hashCollection() {
+	const prime uint64 = 1e8 + 7
+
+	var n int
+	powP := make([]uint64, n+1)
+	powP[0] = 1
+	for i := 1; i <= n; i++ {
+		powP[i] = powP[i-1] * prime
+	}
+}
+
 func stringCollection() {
 	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
 	calcMaxMatchLengths := func(pattern string) []int {
