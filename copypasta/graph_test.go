@@ -80,6 +80,26 @@ func Test_graph_mstKruskal(t *testing.T) {
 	assert.EqualValues(t, sum, 15)
 }
 
+func Test_graph_isBipartite(t *testing.T) {
+	assert := assert.New(t)
+
+	n := 6
+	g := newGraph(n, 0)
+	g.addBoth(1, 2, 1)
+	g.addBoth(1, 4, 1)
+	g.addBoth(3, 2, 1)
+	g.addBoth(3, 4, 1)
+	g.addBoth(5, 2, 1)
+	assert.True(g.isBipartite(1))
+
+	g.color = make([]color, g.size+1)
+	assert.True(g.isBipartite(5))
+
+	g.addBoth(1, 5, 1)
+	g.color = make([]color, g.size+1)
+	assert.False(g.isBipartite(5))
+}
+
 func Test_directedGraph_topSort(t *testing.T) {
 	g := newDirectedGraph(6, 0)
 	g.add(1, 2, 1)

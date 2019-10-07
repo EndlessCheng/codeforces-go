@@ -5,6 +5,14 @@ import (
 	"sort"
 )
 
+type color int8
+
+const (
+	colorNone color = iota
+	colorBlack
+	colorWhite
+)
+
 type neighbor struct {
 	vertex int
 	weight int
@@ -15,6 +23,7 @@ type graph struct {
 	edgeSize int
 	edges    [][]neighbor
 	visited  []bool
+	color    []color
 }
 
 func newGraph(size, edgeSize int) *graph {
@@ -23,6 +32,7 @@ func newGraph(size, edgeSize int) *graph {
 		edgeSize: edgeSize,
 		edges:    make([][]neighbor, size+1),
 		visited:  make([]bool, size+1),
+		color:    make([]color, size+1),
 	}
 }
 
@@ -97,9 +107,9 @@ func (g *graph) allShortestPaths() {
 		// read v w weight
 		dist[v][w] = min(dist[v][w], weight)
 	}
-	for k := 1; k <= n; k++ {
-		for i := 1; i <= n; i++ {
-			for j := 1; j <= n; j++ {
+	for k := 1; k <= n; k++ { // 阶段
+		for i := 1; i <= n; i++ { // 状态
+			for j := 1; j <= n; j++ { // 决策
 				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
 			}
 		}
@@ -217,6 +227,27 @@ func (g *graph) mstPrim() (parent []int) {
 		}
 	}
 	return
+}
+
+func (g *graph) _isBipartite(v int) bool {
+	for _, e := range g.edges[v] {
+		w := e.vertex
+		if g.color[w] == g.color[v] {
+			return false
+		}
+		if g.color[w] == colorNone {
+			g.color[w] = 3 - g.color[v]
+			if !g._isBipartite(w) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (g *graph) isBipartite(v int) bool {
+	g.color[v] = colorBlack
+	return g._isBipartite(v)
 }
 
 //
