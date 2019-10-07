@@ -9,11 +9,11 @@ func max(a, b int64) int64 {
 
 //
 
-type node struct {
+type stNode struct {
 	l, r int // 也可以写到方法参数上，实测二者在执行效率上无异。考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 	val  int64
 }
-type segmentTree []node // t := make(segmentTree, 4*n)
+type segmentTree []stNode // t := make(segmentTree, 4*n)
 
 func (t segmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1] // 必要时用指针
@@ -73,12 +73,12 @@ func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) } // 
 
 //
 
-type lazyNode struct {
+type lazySTNode struct {
 	l, r        int
 	sum         int64
 	addChildren int64 // 子节点待更新
 }
-type lazySegmentTree []lazyNode // t := make(lazySegmentTree, 4*n)
+type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
 func (t lazySegmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1] // 必要时用指针
