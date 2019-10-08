@@ -5,6 +5,7 @@ import (
 	. "fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -15,20 +16,36 @@ func Sol5C(reader io.Reader, writer io.Writer) {
 
 	var s string
 	Fscan(in, &s)
+	bs := []byte(s)
 
-	maxLen := map[int]int{0: 1}
-	size, pairCnt := 0, 0
-	for _, c := range s {
+	size := 0
+	for i, c := range s {
 		if c == '(' {
 			size++
 		} else {
 			size--
-			if size >= 0 {
-				pairCnt++
-				maxLen[2*pairCnt]++
-			} else {
-				size, pairCnt = 0, 0
+			if size < 0 {
+				bs[i] = ' '
+				size = 0
 			}
+		}
+	}
+	size = 0
+	for i := len(s) - 1; i >= 0; i-- {
+		if s[i] == ')' {
+			size++
+		} else {
+			size--
+			if size < 0 {
+				bs[i] = ' '
+				size = 0
+			}
+		}
+	}
+	maxLen := map[int]int{0: 1}
+	for _, ss := range strings.Split(string(bs), " ") {
+		if ss != "" {
+			maxLen[len(ss)]++
 		}
 	}
 	ans := 0

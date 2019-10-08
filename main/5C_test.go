@@ -8,6 +8,10 @@ import (
 func TestSol5C(t *testing.T) {
 	// just copy from website
 	rawText := `
+(()())()(())()()())())()((()(()(())()()())((()(())()(()()()()))()(())()(((()())()(()((())()(())(()))
+outputCopy
+28 1
+inputCopy
 ((((()(((
 outputCopy
 2 1
@@ -19,5 +23,5 @@ inputCopy
 ))(
 outputCopy
 0 1`
-	testutil.AssertEqualCase(t, rawText, 2, Sol5C)
+	testutil.AssertEqualCase(t, rawText, -1, Sol5C)
 }
