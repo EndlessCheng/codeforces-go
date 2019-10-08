@@ -1,6 +1,7 @@
 package copypasta
 
 func commonCollection() {
+	// 注意：若有超过两个数相加，要特别注意 inf 的选择！
 	const inf int = 0x3f3f3f3f
 	const inf64 int64 = 0x3f3f3f3f3f3f3f3f
 	pow2 := [...]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144}
