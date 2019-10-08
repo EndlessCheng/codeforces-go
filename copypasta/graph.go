@@ -106,7 +106,10 @@ func (g *graph) allShortestPaths() [][]int {
 		var v, w, weight int
 		// read v w weight
 		weights[v][w] = weight
-		// 或 weights[v][w] = min(weights[v][w], weight)
+		weights[w][v] = weight
+		// 或
+		// weights[v][w] = min(weights[v][w], weight)
+		// weights[w][v] = min(weights[w][v], weight)
 	}
 
 	dist := make([][]int, n+1)
@@ -125,14 +128,14 @@ func (g *graph) allShortestPaths() [][]int {
 }
 
 // Floyd's Algorithm
-func (g *graph) minRingLength() int {
+func (g *graph) shortestCycle() int {
 	min := func(a, b int) int {
 		if a <= b {
 			return a
 		}
 		return b
 	}
-	const inf int = 1e9
+	const inf int = 1e8 // *NOTE*
 
 	var n, m int
 	// read n m
@@ -152,7 +155,7 @@ func (g *graph) minRingLength() int {
 		var v, w, weight int
 		// read v w weight
 		weights[v][w] = weight
-		// 或 weights[v][w] = min(weights[v][w], weight)
+		weights[w][v] = weight
 	}
 
 	dist := make([][]int, n+1)
