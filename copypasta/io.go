@@ -7,8 +7,8 @@ import (
 )
 
 func simpleIO() {
+	// NOTE: just a bufio.NewReader is enough, there is no difference between this and ioutil.ReadAll
 	in := bufio.NewReader(os.Stdin)
-	//in := bufio.NewReaderSize(os.Stdin, 1e6)
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
@@ -16,6 +16,7 @@ func simpleIO() {
 	Fscan(in, &n)
 
 	Fprintln(out, n)
+	// NOTE: to print int as char, use Fprintf(out, "%c", 'a'+1)
 }
 
 func lineIO() {
