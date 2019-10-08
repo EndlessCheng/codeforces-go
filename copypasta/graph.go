@@ -79,8 +79,7 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 }
 
 // Floyd's Algorithm
-// 使用邻接矩阵
-func (g *graph) allShortestPaths() {
+func (g *graph) allShortestPaths() [][]int {
 	min := func(a, b int) int {
 		if a <= b {
 			return a
@@ -92,20 +91,28 @@ func (g *graph) allShortestPaths() {
 	var n, m int
 	// read n m
 
-	dist := make([][]int, n+1)
-	for i := range dist {
-		dist[i] = make([]int, n+1)
-		for j := range dist[i] {
-			dist[i][j] = inf
+	// 该图的邻接矩阵
+	weights := make([][]int, n+1)
+	for i := range weights {
+		weights[i] = make([]int, n+1)
+		for j := range weights[i] {
+			weights[i][j] = inf
 		}
 	}
-	for i := range dist {
-		dist[i][i] = 0
+	for i := range weights {
+		weights[i][i] = 0
 	}
 	for i := 0; i < m; i++ {
 		var v, w, weight int
 		// read v w weight
-		dist[v][w] = min(dist[v][w], weight)
+		weights[v][w] = weight
+		// 或 weights[v][w] = min(weights[v][w], weight)
+	}
+
+	dist := make([][]int, n+1)
+	for i := range dist {
+		dist[i] = make([]int, n+1)
+		copy(dist[i], weights[i])
 	}
 	for k := 1; k <= n; k++ { // 阶段
 		for i := 1; i <= n; i++ { // 状态
@@ -114,6 +121,59 @@ func (g *graph) allShortestPaths() {
 			}
 		}
 	}
+	return dist
+}
+
+// Floyd's Algorithm
+func (g *graph) minRingLength() int {
+	min := func(a, b int) int {
+		if a <= b {
+			return a
+		}
+		return b
+	}
+	const inf int = 1e9
+
+	var n, m int
+	// read n m
+
+	// 该图的邻接矩阵
+	weights := make([][]int, n+1)
+	for i := range weights {
+		weights[i] = make([]int, n+1)
+		for j := range weights[i] {
+			weights[i][j] = inf
+		}
+	}
+	for i := range weights {
+		weights[i][i] = 0
+	}
+	for i := 0; i < m; i++ {
+		var v, w, weight int
+		// read v w weight
+		weights[v][w] = weight
+		// 或 weights[v][w] = min(weights[v][w], weight)
+	}
+
+	dist := make([][]int, n+1)
+	for i := range dist {
+		dist[i] = make([]int, n+1)
+		copy(dist[i], weights[i])
+	}
+	ans := inf
+	for k := 1; k <= n; k++ { // 阶段
+		for i := 1; i < k; i++ { // 状态
+			for j := 1; j < i; j++ { // 决策
+				ans = min(ans, dist[i][j]+weights[i][k]+weights[k][j])
+			}
+		}
+		for i := 1; i <= n; i++ { // 状态
+			for j := 1; j <= n; j++ { // 决策
+				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+	}
+	return ans
 }
 
 // ShortestPaths uses the Dijkstra's Algorithm to compute the shortest paths from `start` to all other vertices.
