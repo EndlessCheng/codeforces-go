@@ -12,6 +12,13 @@ func commonCollection() {
 		}
 		return b
 	}
+	max := func(a, b int) int {
+		if a >= b {
+			return a
+		}
+		return b
+	}
+
 	mins := func(vals ...int) int {
 		ans := vals[0]
 		for _, val := range vals[1:] {
@@ -21,13 +28,6 @@ func commonCollection() {
 		}
 		return ans
 	}
-
-	max := func(a, b int) int {
-		if a >= b {
-			return a
-		}
-		return b
-	}
 	maxs := func(vals ...int) int {
 		ans := vals[0]
 		for _, val := range vals[1:] {
@@ -36,6 +36,13 @@ func commonCollection() {
 			}
 		}
 		return ans
+	}
+
+	ifelse := func(cond bool, r1, r2 string) string {
+		if cond {
+			return r1
+		}
+		return r2
 	}
 
 	abs := func(x int) int {
@@ -99,7 +106,7 @@ func commonCollection() {
 	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 
-	_ = []interface{}{pow2, min, mins, max, maxs, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
+	_ = []interface{}{pow2, min, mins, max, maxs, ifelse, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
 }
 
 // Permute the values at index i to len(arr)-1.
