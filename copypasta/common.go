@@ -38,7 +38,7 @@ func commonCollection() {
 		return ans
 	}
 
-	ifelse := func(cond bool, r1, r2 string) string {
+	ifElse := func(cond bool, r1, r2 string) string {
 		if cond {
 			return r1
 		}
@@ -106,7 +106,7 @@ func commonCollection() {
 	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 
-	_ = []interface{}{pow2, min, mins, max, maxs, ifelse, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
+	_ = []interface{}{pow2, min, mins, max, maxs, ifElse, abs, quickPow, reverse, binarySearchF, ternarySearch, dirOffset4, dirOffset8}
 }
 
 // Permute the values at index i to len(arr)-1.

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"strings"
 )
 
@@ -57,6 +56,6 @@ func Sol5C(reader io.Reader, writer io.Writer) {
 	Fprint(out, ans, maxLen[ans])
 }
 
-func main() {
-	Sol5C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol5C(os.Stdin, os.Stdout)
+//}
