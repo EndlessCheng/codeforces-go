@@ -41,6 +41,9 @@ func commonCollection() {
 
 	// arr need to be sorted
 	unique := func(arr []int) (newArr []int) {
+		if len(arr) == 0 {
+			return
+		}
 		newArr = append(newArr, arr[0])
 		for i := 1; i < len(arr); i++ {
 			if arr[i] != arr[i-1] {
