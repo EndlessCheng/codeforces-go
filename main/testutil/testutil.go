@@ -21,7 +21,7 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 	}
 
 	// TODO: time costs
-	var ok bool
+	ok := true
 	for i, input := range inputs {
 		if useCase >= 0 && i+1 != useCase {
 			continue
@@ -33,10 +33,14 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
 			actualOutput = actualOutput[:len(actualOutput)-1]
 		}
-		ok = assert.Equal(t, outputs[i], actualOutput, "Please check test case %d", i+1)
+		ok = ok && assert.Equal(t, outputs[i], actualOutput, "Please check test case %d", i+1)
 	}
-	if useCase >= 0 && ok {
-		t.Skip("OK, NOW TRY TO TEST ALL CASES!")
+	if ok {
+		if useCase >= 0 {
+			t.Skip("OK, now try to test all cases!")
+		} else {
+			t.Log("OK, submit with main()!")
+		}
 	}
 }
 
