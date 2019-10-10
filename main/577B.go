@@ -32,9 +32,9 @@ func Sol577B(reader io.Reader, writer io.Writer) {
 		arr[i] %= m
 	}
 
-	// dp[i][j]>0: 前i个数组合出了j
-	dp := [2][]int{}
-	for i := 0; i < 2; i++ {
+	// dp[i][j]>0: 前i个数组合出了j的倍数
+	dp := make([][]int, n+1)
+	for i := range dp {
 		dp[i] = make([]int, m)
 		for j := range dp[i] {
 			dp[i][j] = -inf
@@ -42,13 +42,16 @@ func Sol577B(reader io.Reader, writer io.Writer) {
 	}
 	dp[0][0] = 0
 	for i := 1; i <= n; i++ {
-		cur, prev := i&1, (i-1)&1
-		dp[cur][0] = dp[prev][0]
-		for j := range dp[prev] {
-			dp[cur][j] = max(dp[cur][j], dp[prev][(j-arr[i-1]+m)%m]+1)
+		for j := range dp[i] {
+			if dp[i-1][j] >= 0 {
+				dp[i][j] = dp[i-1][j]
+			}
+		}
+		for j := range dp[i-1] {
+			dp[i][j] = max(dp[i][j], dp[i-1][(j-arr[i-1]+m)%m]+1)
 		}
 	}
-	if dp[n&1][0] > 0 {
+	if dp[n][0] > 0 {
 		Fprint(out, "YES")
 	} else {
 		Fprint(out, "NO")
