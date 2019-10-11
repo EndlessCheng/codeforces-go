@@ -8,16 +8,16 @@ import (
 	"sort"
 )
 
-type pair struct {
+type pair140C struct {
 	r, cnt int
 }
-type pairHeap []pair
+type pairHeap140C []pair140C
 
-func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].cnt > h[j].cnt }
-func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(pair)) }
-func (h *pairHeap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h pairHeap140C) Len() int              { return len(h) }
+func (h pairHeap140C) Less(i, j int) bool    { return h[i].cnt > h[j].cnt }
+func (h pairHeap140C) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *pairHeap140C) Push(v interface{})   { *h = append(*h, v.(pair140C)) }
+func (h *pairHeap140C) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
 // github.com/EndlessCheng/codeforces-go
 func Sol140C(reader io.Reader, writer io.Writer) {
@@ -32,16 +32,16 @@ func Sol140C(reader io.Reader, writer io.Writer) {
 		rCnt[r]++
 	}
 
-	_h := make(pairHeap, 0, len(rCnt))
+	_h := make(pairHeap140C, 0, len(rCnt))
 	for r, cnt := range rCnt {
-		_h = append(_h, pair{r, cnt})
+		_h = append(_h, pair140C{r, cnt})
 	}
 	h := &_h
 	Init(h)
 
 	ans := [][3]int{}
 	for len(_h) >= 3 {
-		ps := [3]pair{Pop(h).(pair), Pop(h).(pair), Pop(h).(pair)}
+		ps := [3]pair140C{Pop(h).(pair140C), Pop(h).(pair140C), Pop(h).(pair140C)}
 		ans = append(ans, [3]int{ps[0].r, ps[1].r, ps[2].r})
 		for _, p := range ps {
 			p.cnt--
