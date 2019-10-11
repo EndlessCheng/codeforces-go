@@ -33,7 +33,10 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
 			actualOutput = actualOutput[:len(actualOutput)-1]
 		}
-		ok = ok && assert.Equal(t, outputs[i], actualOutput, "Please check test case %d\nInput:\n%s", i+1, input)
+		_ok := assert.Equal(t, outputs[i], actualOutput, "Please check test case %d\nInput:\n%s", i+1, input)
+		if !_ok {
+			ok = _ok
+		}
 	}
 	if ok {
 		if useCase >= 0 {
