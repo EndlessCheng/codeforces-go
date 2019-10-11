@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 type graph struct {
@@ -28,7 +27,7 @@ func (g *graph) addBoth(from, to int) {
 
 func (g *graph) _isBipartite(v int) bool {
 	for w, e := range g.edges[v] {
-		if e {
+		if e || w == v {
 			continue
 		}
 		if g.color[w] == g.color[v] {
@@ -46,17 +45,44 @@ func (g *graph) _isBipartite(v int) bool {
 
 func (g *graph) isBipartite() bool {
 	checked := false
+	cnt := 0
 	for i, deg := range g.degree {
 		deg = g.size - 1 - deg
 		if deg > 0 {
 			if checked {
-				return false
+				if g.color[i] == 0 {
+					return false
+				}
+				continue
 			}
 			g.color[i] = 1
 			if !g._isBipartite(i) {
 				return false
 			}
+			for w := range g.edges[i] {
+				if g.color[w] == 2 {
+					cnt++
+				}
+			}
 			checked = true
+		}
+	}
+	if cnt > 0 {
+		for v, c := range g.color {
+			if c == 1 {
+				cntW := 0
+				for w, e := range g.edges[v] {
+					if e || w == v {
+						continue
+					}
+					if g.color[w] == 2 {
+						cntW++
+					}
+				}
+				if cntW != cnt {
+					return false
+				}
+			}
 		}
 	}
 	return true
@@ -92,15 +118,11 @@ func Sol623A(reader io.Reader, writer io.Writer) {
 	}
 
 	Fprintln(out, "Yes")
-	for _, c := range g.color[1:] {
-		if c == 1 {
-			Fprint(out, "a")
-		} else {
-			Fprint(out, "c")
-		}
+	for _, c := range g.color {
+		Fprintf(out, "%c", "bac"[c])
 	}
 }
 
-func main() {
-	Sol623A(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol623A(os.Stdin, os.Stdout)
+//}
