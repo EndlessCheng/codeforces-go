@@ -6,26 +6,26 @@ import (
 	"io"
 )
 
-type graph struct {
+type graph623A struct {
 	size   int
 	edges  [][]bool
 	degree []int
 	color  []int
 }
 
-func (g *graph) add(from, to int) {
+func (g *graph623A) add(from, to int) {
 	g.edges[from][to] = true
 	g.degree[from]++
 }
 
-func (g *graph) addBoth(from, to int) {
+func (g *graph623A) addBoth(from, to int) {
 	g.add(from, to)
 	if from != to {
 		g.add(to, from)
 	}
 }
 
-func (g *graph) _isBipartite(v int) bool {
+func (g *graph623A) _isBipartite(v int) bool {
 	for w, e := range g.edges[v] {
 		if e || w == v {
 			continue
@@ -43,7 +43,7 @@ func (g *graph) _isBipartite(v int) bool {
 	return true
 }
 
-func (g *graph) isBipartite() bool {
+func (g *graph623A) isBipartite() bool {
 	checked := false
 	cnt := 0
 	for i, deg := range g.degree {
@@ -96,7 +96,7 @@ func Sol623A(reader io.Reader, writer io.Writer) {
 
 	var n, m int
 	Fscan(in, &n, &m)
-	g := &graph{
+	g := &graph623A{
 		size:   n,
 		edges:  make([][]bool, n),
 		degree: make([]int, n),
