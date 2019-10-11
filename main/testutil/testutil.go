@@ -45,6 +45,7 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 			t.Log("OK, submit with main()!")
 		}
 	}
+	t.Log("if ok, Submit with main()!")
 }
 
 func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
