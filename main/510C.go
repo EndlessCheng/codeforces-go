@@ -6,26 +6,18 @@ import (
 	"io"
 )
 
-type graph struct {
+type graph510C struct {
 	size     int
 	edges    [][]int
 	inDegree []int
 }
 
-func newGraph(size int) *graph {
-	return &graph{
-		size:     size,
-		edges:    make([][]int, size),
-		inDegree: make([]int, size),
-	}
-}
-
-func (g *graph) add(from, to int) {
+func (g *graph510C) add(from, to int) {
 	g.edges[from] = append(g.edges[from], to)
 	g.inDegree[to]++
 }
 
-func (g *graph) topSort() (order []int, acyclic bool) {
+func (g *graph510C) topSort() (order []int, acyclic bool) {
 	queue := []int{}
 	for i := 0; i < g.size; i++ {
 		if g.inDegree[i] == 0 {
@@ -52,7 +44,11 @@ func Sol510C(reader io.Reader, writer io.Writer) {
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
-	g := newGraph(26)
+	g := &graph510C{
+		size:     26,
+		edges:    make([][]int, 26),
+		inDegree: make([]int, 26),
+	}
 	var n int
 	Fscan(in, &n)
 	var prev, cur string
