@@ -86,7 +86,19 @@ func commonCollection() {
 			return !f(i)
 		}
 	}
-	//sort.Search(n, reverse(func(i int) bool {...}))
+	// 写法1: sort.Search(n, reverse(func(i int) bool {...}))
+	// 写法2:
+	// sort.Search(n, func(i int) (ok bool) {
+	//	 defer func() { ok = !ok }()
+	//	 ...
+	// })
+	// 写法3（推荐）:
+	// sort.Search(n, func(i int) (ok bool) {
+	//	 ...
+	//   return !true
+	// })
+	// 最后的 ans := Search(...) - 1
+	// 如果 f 有副作用，需要在 Search 后调用下 f(ans)
 
 	// step = 100
 	binarySearchF := func(l, r float64, step int, f func(x float64) bool) float64 {
