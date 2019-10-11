@@ -4,16 +4,11 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	)
+	"strings"
+)
 
 // github.com/EndlessCheng/codeforces-go
 func Sol1096D(reader io.Reader, writer io.Writer) {
-	min := func(a, b int64) int64 {
-		if a <= b {
-			return a
-		}
-		return b
-	}
 	mins := func(vals ...int64) int64 {
 		ans := vals[0]
 		for _, val := range vals[1:] {
@@ -38,23 +33,17 @@ func Sol1096D(reader io.Reader, writer io.Writer) {
 
 	dp := [2][4]int64{}
 	for i := 1; i <= n; i++ {
-		cur, prev := i&1, (i-1)&1
-		for j := range dp[cur] {
-			dp[cur][j] = dp[prev][j]
+		i1, i0 := i&1, (i-1)&1
+		for j := range dp[i1] {
+			dp[i1][j] = dp[i0][j]
 		}
-		cost := int64(costs[i-1])
-		switch s[i-1] {
-		case 'h':
-			dp[cur][0] += cost
-			dp[cur][1] = min(dp[cur][1], dp[prev][0])
-		case 'a':
-			dp[cur][1] += cost
-			dp[cur][2] = min(dp[cur][2], dp[prev][1])
-		case 'r':
-			dp[cur][2] += cost
-			dp[cur][3] = min(dp[cur][3], dp[prev][2])
-		case 'd':
-			dp[cur][3] += cost
+		j := strings.Index("hard", string(s[i-1]))
+		if j == -1 {
+			continue
+		}
+		dp[i1][j] += int64(costs[i-1])
+		if j < 3 && dp[i0][j] < dp[i1][j+1] {
+			dp[i1][j+1] = dp[i0][j]
 		}
 	}
 	Fprint(out, mins(dp[n&1][:]...))
