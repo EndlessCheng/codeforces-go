@@ -20,3 +20,5 @@ Precedence    Operator
     2         &&
     1         ||
 ```
+
+NOTE: a|b = a^b + a&b
