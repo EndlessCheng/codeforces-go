@@ -65,16 +65,16 @@ func commonCollection() {
 	//
 
 	// NOTE: arr must be sorted
-	unique := func(arr []int) (newArr []int) {
+	unique := func(arr []int) (uniqueArr []int) {
 		n := len(arr)
 		if n == 0 {
 			return
 		}
-		newArr = make([]int, 1, n)
-		newArr[0] = arr[0]
+		uniqueArr = make([]int, 1, n)
+		uniqueArr[0] = arr[0]
 		for i := 1; i < n; i++ {
 			if arr[i] != arr[i-1] {
-				newArr = append(newArr, arr[i])
+				uniqueArr = append(uniqueArr, arr[i])
 			}
 		}
 		return
