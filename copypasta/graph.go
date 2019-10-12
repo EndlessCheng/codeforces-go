@@ -64,8 +64,7 @@ func (g *graph) dfs(v int, do func(from, to int, weight int)) {
 
 func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 	g.visited[v] = true
-	queue := []int{v}
-	for len(queue) > 0 {
+	for queue := []int{v}; len(queue) > 0; {
 		v, queue = queue[0], queue[1:]
 		for _, e := range g.edges[v] {
 			w, weight := e.vertex, e.weight
