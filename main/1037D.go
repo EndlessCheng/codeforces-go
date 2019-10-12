@@ -22,9 +22,6 @@ func Sol1037D(reader io.Reader, writer io.Writer) {
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-	for _, e := range g {
-		sort.Ints(e)
-	}
 
 	g2 := make([][]int, n+1)
 	g2[1] = []int{0}
@@ -38,15 +35,16 @@ func Sol1037D(reader io.Reader, writer io.Writer) {
 			queue = append(queue, w)
 		}
 	}
-	for _, e := range g2 {
-		sort.Ints(e)
-	}
 
+	// 判断 g 和 g2 是否同构
 	for i, e := range g {
-		if len(e) != len(g2[i]) {
+		e2 := g2[i]
+		if len(e) != len(e2) {
 			Fprint(out, "No")
 			return
 		}
+		sort.Ints(e)
+		sort.Ints(e2)
 		for j, w := range e {
 			if w != g2[i][j] {
 				Fprint(out, "No")
