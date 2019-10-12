@@ -44,7 +44,7 @@ func commonCollection() {
 		if len(arr) == 0 {
 			return
 		}
-		newArr = append(newArr, arr[0])
+		newArr = []int{arr[0]}
 		for i := 1; i < len(arr); i++ {
 			if arr[i] != arr[i-1] {
 				newArr = append(newArr, arr[i])

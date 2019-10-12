@@ -1,16 +1,16 @@
 package copypasta
 
 func max(a, b int64) int64 {
-	if a >= b {
+	if a > b {
 		return a
 	}
 	return b
 }
 
-//
-
+// l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
+// 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {
-	l, r int // 也可以写到方法参数上，实测二者在执行效率上无异。考虑到 debug 和 bug free 上的优点，写到结构体参数中。
+	l, r int
 	val  int64
 }
 type segmentTree []stNode // t := make(segmentTree, 4*n)
@@ -24,6 +24,7 @@ func (t segmentTree) _pushUp(o int) {
 func (t segmentTree) _build(arr []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
+		//t[o].val = arr[l-1] // if arr start at 0
 		t[o].val = arr[l]
 		// *custom*
 		return
@@ -66,7 +67,8 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-// NOTE: arr must start at 1
+// if arr start at 0
+// func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) }
 func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)-1) }
 func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }
 func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) } // [l,r]

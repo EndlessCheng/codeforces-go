@@ -40,12 +40,13 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 	}
 	if ok {
 		if useCase >= 0 {
-			t.Skip("OK, now try to test all cases!")
+			t.Skip("OK! Now try to test all cases!")
 		} else {
-			t.Log("OK, submit with main()!")
+			t.Log("OK! Submit with main()!")
 		}
+	} else {
+		t.Log("OK? Submit with main()!")
 	}
-	t.Log("if ok, Submit with main()!")
 }
 
 func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
