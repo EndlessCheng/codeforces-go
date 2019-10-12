@@ -199,9 +199,9 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 	}
 
 	h := &pairHeap{}
-	Push(h, pair{0, start})
+	Push(h, hPair{0, start})
 	for h.Len() > 0 {
-		p := Pop(h).(pair)
+		p := Pop(h).(hPair)
 		v := p.y
 		if g.visited[v] {
 			continue
@@ -212,7 +212,7 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 			if newDist := dist[v] + int64(e.weight); newDist < dist[w] {
 				dist[w] = newDist
 				parents[w] = v
-				Push(h, pair{newDist, w})
+				Push(h, hPair{newDist, w})
 			}
 		}
 	}

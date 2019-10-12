@@ -15,16 +15,16 @@ func (h *intHeap) Pop() (v interface{}) {
 
 //
 
-type pair struct {
+type hPair struct {
 	x int64
 	y int
 }
-type pairHeap []pair
+type pairHeap []hPair
 
 func (h pairHeap) Len() int              { return len(h) }
 func (h pairHeap) Less(i, j int) bool    { return h[i].x < h[j].x || h[i].x == h[j].x && h[i].y < h[j].y }
 func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(pair)) }
+func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
 func (h *pairHeap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
 //
