@@ -17,6 +17,7 @@ func simpleIO() {
 
 	Fprintln(out, n)
 	// NOTE: to print int as char, use Fprintf(out, "%c", 'a'+1)
+	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
 }
 
 func lineIO() {
