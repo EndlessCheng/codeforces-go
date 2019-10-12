@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -17,59 +16,47 @@ func Sol1037D(reader io.Reader, writer io.Writer) {
 	var n, v, w int
 	Fscan(in, &n)
 	g := make([][]int, n+1)
+	g[1] = []int{0}
 	for m := n - 1; m > 0; m-- {
 		Fscan(in, &v, &w)
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
+	for _, e := range g {
+		sort.Ints(e)
+	}
 
-	expectedOrder := make([]int, 0, n)
-	visited := make([]bool, n+1)
-	visited[1] = true
-	for queue := []int{1}; len(queue) > 0; {
+	g2 := make([][]int, n+1)
+	g2[1] = []int{0}
+	Fscan(in, &v)
+	for queue := []int{v}; len(queue) > 0; {
 		v, queue = queue[0], queue[1:]
-		expectedOrder = append(expectedOrder, v)
-		sort.Ints(g[v])
-		for _, w := range g[v] {
-			if !visited[w] {
-				visited[w] = true
-				queue = append(queue, w)
-			}
+		for m := len(g[v]) - 1; m > 0; m-- {
+			Fscan(in, &w)
+			g2[v] = append(g2[v], w)
+			g2[w] = append(g2[w], v)
+			queue = append(queue, w)
 		}
 	}
-
-	//Fscan(in, &v)
-	//if v != 1 {
-	//	Fprint(out, "No")
-	//	return
-	//}
-
-	actualOrder := make([]int, n)
-	for i := range actualOrder {
-		Fscan(in, &actualOrder[i])
-	}
-	l, r := 0, 1
-	visited = make([]bool, n+1)
-	visited[1] = true
-	for queue := []int{1}; len(queue) > 0; {
-		v, queue = queue[0], queue[1:]
-		for _, w := range g[v] {
-			if !visited[w] {
-				visited[w] = true
-				queue = append(queue, w)
-			}
-		}
+	for _, e := range g2 {
+		sort.Ints(e)
 	}
 
-	for i, v := range expectedOrder {
-		if v != actualOrder[i] {
+	for i, e := range g {
+		if len(e) != len(g2[i]) {
 			Fprint(out, "No")
 			return
+		}
+		for j, w := range e {
+			if w != g2[i][j] {
+				Fprint(out, "No")
+				return
+			}
 		}
 	}
 	Fprint(out, "Yes")
 }
 
-func main() {
-	Sol1037D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1037D(os.Stdin, os.Stdout)
+//}
