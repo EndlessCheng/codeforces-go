@@ -2,6 +2,15 @@ package copypasta
 
 /*
 注意 11100001 的情况（特判 lowbit = 1）
+
+Precedence    Operator
+    5         *  /  %  <<  >>  &  &^
+    4         +  -  |  ^
+    3         ==  !=  <  <=  >  >=
+    2         &&
+    1         ||
+
+a|b = a^b + a&b
 */
 
 func bitsCollection() {

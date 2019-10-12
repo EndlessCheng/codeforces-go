@@ -11,14 +11,3 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 > Good luck!
 
 [source](https://codeforces.com/blog/entry/65406?#comment-494043)
-
-```
-Precedence    Operator
-    5         *  /  %  <<  >>  &  &^
-    4         +  -  |  ^
-    3         ==  !=  <  <=  >  >=
-    2         &&
-    1         ||
-```
-
-NOTE: a|b = a^b + a&b
