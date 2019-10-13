@@ -3,6 +3,7 @@ package copypasta
 import "sort"
 
 func commonCollection() {
+	const mod int64 = 1e9 + 7
 	// 注意：若有超过两个数相加，要特别注意 inf 的选择！
 	const inf int = 0x3f3f3f3f
 	const inf64 int64 = 0x3f3f3f3f3f3f3f3f
@@ -50,8 +51,7 @@ func commonCollection() {
 		return x
 	}
 
-	const mod int64 = 1e9 + 7
-	quickPow := func(x, n int64) int64 {
+	quickPow := func(x, n, mod int64) int64 {
 		res := int64(1)
 		for ; n > 0; n >>= 1 {
 			if n&1 == 1 {
@@ -80,18 +80,28 @@ func commonCollection() {
 		return
 	}
 
-	discrete := func(arr []int, start int) (newArr []int) {
+	discrete := func(arr []int, start int) (disArr []int) {
 		n := len(arr)
 		if n == 0 {
 			return
 		}
-		uniqueArr := make([]int, n)
-		copy(uniqueArr, arr)
-		sort.Ints(uniqueArr)
-		uniqueArr = unique(uniqueArr)
-		newArr = make([]int, n)
-		for i, v := range arr {
-			newArr[i] = start + sort.Search(len(uniqueArr), func(j int) bool { return uniqueArr[j] >= v })
+		type pair struct {
+			val int
+			idx int
+		}
+		pairs := make([]pair, n)
+		for i, val := range arr {
+			pairs[i] = pair{val, i}
+		}
+		sort.Slice(pairs, func(i, j int) bool { return pairs[i].val < pairs[j].val })
+		disArr = make([]int, n)
+		disVal := start
+		disArr[pairs[0].idx] = disVal
+		for i := 1; i < n; i++ {
+			if pairs[i].val != pairs[i-1].val {
+				disVal++
+			}
+			disArr[pairs[i].idx] = disVal
 		}
 		return
 	}
@@ -103,7 +113,7 @@ func commonCollection() {
 		return r2
 	}
 
-	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, min, mins, max, maxs, abs, quickPow, discrete, ifElse}
+	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, min, mins, max, maxs, abs, quickPow, unique, discrete, ifElse}
 }
 
 // Permute the values at index i to len(arr)-1.
