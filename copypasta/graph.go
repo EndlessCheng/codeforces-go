@@ -337,13 +337,15 @@ func (g *directedGraph) add(from, to int, weight int) {
 // Kahn's algorithm
 func (g *directedGraph) topSort() (order []int, acyclic bool) {
 	queue := []int{}
+	vOrder := make([]int, g.size+1)
 	for i := 1; i <= g.size; i++ {
 		if g.inDegree[i] == 0 {
 			queue = append(queue, i)
+			vOrder[i] = 1
 		}
 	}
-	var v int
 	for len(queue) > 0 {
+		var v int
 		v, queue = queue[0], queue[1:]
 		order = append(order, v)
 		for _, e := range g.edges[v] {
@@ -351,6 +353,7 @@ func (g *directedGraph) topSort() (order []int, acyclic bool) {
 			g.inDegree[w]-- // NOTE: copy g.inDegree if reusing is needed.
 			if g.inDegree[w] == 0 {
 				queue = append(queue, w)
+				vOrder[w] = vOrder[v] + 1
 			}
 		}
 	}
