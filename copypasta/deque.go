@@ -11,6 +11,14 @@ func (q *deque) len() int {
 	return len(q.stackL) + len(q.stackR)
 }
 
+func (q *deque) topL() int {
+	return q.stackL[len(q.stackL)-1]
+}
+
+func (q *deque) topR() int {
+	return q.stackR[len(q.stackR)-1]
+}
+
 func (q *deque) pushL(v int) {
 	q.stackL = append(q.stackL, v)
 }

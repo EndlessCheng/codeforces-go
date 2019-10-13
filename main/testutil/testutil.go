@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.Reader, io.Writer)) {
+func AssertEqualCase(t *testing.T, rawText string, caseNum int, solFunc func(io.Reader, io.Writer)) {
 	if rawText[0] == '\n' {
 		rawText = rawText[1:]
 	}
@@ -23,7 +23,7 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 	// TODO: time costs
 	ok := true
 	for i, input := range inputs {
-		if useCase >= 0 && i+1 != useCase {
+		if caseNum >= 0 && i+1 != caseNum {
 			continue
 		}
 		mockReader := strings.NewReader(input)
@@ -39,7 +39,7 @@ func AssertEqualCase(t *testing.T, rawText string, useCase int, solFunc func(io.
 		}
 	}
 	if ok {
-		if useCase >= 0 {
+		if caseNum >= 0 {
 			t.Skip("OK! Now try to test all cases!")
 		} else {
 			t.Log("OK! Submit with main()!")
