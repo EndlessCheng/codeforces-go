@@ -50,5 +50,5 @@ inputCopy
 ==
 outputCopy
 No`
-	testutil.AssertEqualCase(t, rawText, 2, Sol1131D)
+	testutil.AssertEqualCase(t, rawText, -1, Sol1131D)
 }
