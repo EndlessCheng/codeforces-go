@@ -1,5 +1,7 @@
 package copypasta
 
+// 另一种实现是直接 make 个一定大小的 slice，然后用两个下标 s t 模拟
+
 // l-1,...1,0,0,1...,r-1
 type deque struct {
 	stackL, stackR []int
