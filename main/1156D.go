@@ -49,6 +49,8 @@ func Sol1156D(reader io.Reader, writer io.Writer) {
 
 	ans := int64(0)
 	for i := range fa[0] {
+		// 考察顶点 v，假设通过 0-边与其相连的点一共有 x 个（包括 v），通过 1-边与其相连的有 y 个（包括 v），
+		// 那么以 x 个点为起点，以 y 个点为终点的路径条数 x*y-1 即为顶点 v 对答案的贡献（-1 是因为 v 到 v 不算）。
 		ans += int64(size[0][find(fa[0], i)])*int64(size[1][find(fa[1], i)]) - 1
 	}
 	Fprint(out, ans)
