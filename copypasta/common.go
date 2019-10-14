@@ -11,6 +11,7 @@ func commonCollection() {
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9}
 	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	orders := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
 	min := func(a, b int) int {
 		if a <= b {
@@ -113,7 +114,7 @@ func commonCollection() {
 		return r2
 	}
 
-	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, min, mins, max, maxs, abs, quickPow, unique, discrete, ifElse}
+	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders, min, mins, max, maxs, abs, quickPow, unique, discrete, ifElse}
 }
 
 // Permute the values at index i to len(arr)-1.
