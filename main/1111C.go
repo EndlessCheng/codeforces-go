@@ -17,10 +17,11 @@ func Sol1111C(reader io.Reader, writer io.Writer) {
 	var n, k int
 	var a, b int64
 	Fscan(in, &n, &k, &a, &b)
-	n = 1 << uint(n)
+	cnt := map[int]int{}
 	arr := make([]int, k)
 	for i := range arr {
 		Fscan(in, &arr[i])
+		cnt[arr[i]]++
 	}
 	sort.Ints(arr)
 
@@ -29,12 +30,12 @@ func Sol1111C(reader io.Reader, writer io.Writer) {
 		if l == r {
 			i := sort.Search(k, func(i int) bool { return arr[i] >= l })
 			if i < k && arr[i] == l {
-				return b
+				return b * int64(cnt[l])
 			}
 			return a
 		}
 		li := sort.Search(k, func(i int) bool { return arr[i] >= l })
-		ri := sort.Search(k, func(i int) bool { return arr[i] >= r })
+		ri := sort.Search(k, func(i int) bool { return arr[i] >= r }) + cnt[r]
 		if li == ri {
 			return a
 		}
@@ -45,7 +46,7 @@ func Sol1111C(reader io.Reader, writer io.Writer) {
 		}
 		return ans
 	}
-	Fprint(out, dfs(1, n))
+	Fprint(out, dfs(1, 1<<uint(n)))
 }
 
 func main() {

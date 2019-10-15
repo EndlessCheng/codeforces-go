@@ -8,6 +8,11 @@ import (
 func TestSol1111C(t *testing.T) {
 	// just copy from website
 	rawText := `
+3 2 5 1
+7 8
+outputCopy
+12
+inputCopy
 2 2 1 2
 1 3
 outputCopy
