@@ -8,6 +8,13 @@ import (
 func TestSol490C(t *testing.T) {
 	// just copy from website
 	rawText := `
+604
+6 4
+outputCopy
+YES
+60
+4
+inputCopy
 116401024
 97 1024
 outputCopy
