@@ -9,6 +9,10 @@ import (
 )
 
 func AssertEqualCase(t *testing.T, rawText string, caseNum int, solFunc func(io.Reader, io.Writer)) {
+	if caseNum == 0 {
+		t.Fatal("caseNum should not be 0.")
+	}
+
 	if rawText[0] == '\n' {
 		rawText = rawText[1:]
 	}
@@ -40,12 +44,13 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solFunc func(io.
 	}
 	if ok {
 		if caseNum >= 0 {
-			t.Skip("OK! Now try to test all cases!")
+			t.Logf("case %d is passed.", caseNum)
+			AssertEqual(t, rawText, solFunc)
 		} else {
-			t.Log("OK! Submit with main()!")
+			t.Log("OK! submit with main()!")
 		}
 	} else {
-		t.Log("OK? Submit with main()!")
+		t.Log("ok? submit with main()!")
 	}
 }
 
