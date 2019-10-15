@@ -27,6 +27,8 @@ func Sol1111C(reader io.Reader, writer io.Writer) {
 	f = func(l, r int) int64 {
 		li := sort.Search(k, func(i int) bool { return arr[i] >= l })
 		ri := sort.Search(k, func(i int) bool { return arr[i] >= r+1 })
+		// 也可以写成下面这样，快一点点(~10%)
+		//ri := sort.Search(k-li, func(i int) bool { return arr[i+li] >= r+1 }) + li
 		if li == ri {
 			return a
 		}
