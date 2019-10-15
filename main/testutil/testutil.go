@@ -50,7 +50,11 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solFunc func(io.
 			t.Log("OK! submit with main()!")
 		}
 	} else {
-		t.Log("ok? submit with main()!")
+		if caseNum >= 0 {
+			t.Skip("ok?")
+		} else {
+			t.Skip("ok? submit with main()!")
+		}
 	}
 }
 
