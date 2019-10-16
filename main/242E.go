@@ -6,19 +6,19 @@ import (
 	"io"
 )
 
-type node struct {
+type node242E struct {
 	l, r        int
 	sum         int
 	revChildren bool
 }
-type segTree []node
+type segTree242E []node242E
 
-func (t segTree) _pushUp(o int) {
+func (t segTree242E) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].sum = lo.sum + ro.sum
 }
 
-func (t segTree) _build(arr []int, pos uint8, o, l, r int) {
+func (t segTree242E) _build(arr []int, pos uint8, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = arr[l-1] >> pos & 1
@@ -30,7 +30,7 @@ func (t segTree) _build(arr []int, pos uint8, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segTree) _spread(o int) {
+func (t segTree242E) _spread(o int) {
 	if t[o].revChildren {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum = lo.r - lo.l + 1 - lo.sum
@@ -41,7 +41,7 @@ func (t segTree) _spread(o int) {
 	}
 }
 
-func (t segTree) _rev(o, l, r int) {
+func (t segTree242E) _rev(o, l, r int) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].sum = or - ol + 1 - t[o].sum
@@ -59,7 +59,7 @@ func (t segTree) _rev(o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segTree) _query(o, l, r int) (res int) {
+func (t segTree242E) _query(o, l, r int) (res int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -74,9 +74,9 @@ func (t segTree) _query(o, l, r int) (res int) {
 	return
 }
 
-func (t segTree) init(arr []int, pos uint8) { t._build(arr, pos, 1, 1, len(arr)) }
-func (t segTree) rev(l, r int)              { t._rev(1, l, r) }
-func (t segTree) query(l, r int) int        { return t._query(1, l, r) }
+func (t segTree242E) init(arr []int, pos uint8) { t._build(arr, pos, 1, 1, len(arr)) }
+func (t segTree242E) rev(l, r int)              { t._rev(1, l, r) }
+func (t segTree242E) query(l, r int) int        { return t._query(1, l, r) }
 
 // github.com/EndlessCheng/codeforces-go
 func Sol242E(reader io.Reader, writer io.Writer) {
@@ -90,9 +90,9 @@ func Sol242E(reader io.Reader, writer io.Writer) {
 	for i := range arr {
 		Fscan(in, &arr[i])
 	}
-	trees := make([]segTree, 20)
+	trees := make([]segTree242E, 20)
 	for i := range trees {
-		trees[i] = make(segTree, 4*n)
+		trees[i] = make(segTree242E, 4*n)
 		trees[i].init(arr, uint8(i))
 	}
 
