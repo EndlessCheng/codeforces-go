@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -16,6 +15,7 @@ func Sol567D(reader io.Reader, writer io.Writer) {
 
 	var n, k, sz, m int
 	Fscan(in, &n, &k, &sz, &m)
+	sz++
 	x := make([]int, m)
 	for i := range x {
 		Fscan(in, &x[i])
@@ -25,18 +25,15 @@ func Sol567D(reader io.Reader, writer io.Writer) {
 		if end == 0 {
 			return false
 		}
-		y := make([]int, end)
+		y := make([]int, end, end+1)
 		copy(y, x)
 		sort.Ints(y)
-		y = append(y, n)
-		cnt := (y[0] - 1) / sz
+		y = append(y, n+1)
+		cnt := y[0] / sz
 		for i := 1; i <= end; i++ {
 			cnt += (y[i] - y[i-1]) / sz
-			if cnt >= k {
-				return false
-			}
 		}
-		return true
+		return cnt < k
 	})
 	if ans == m+1 {
 		ans = -1
@@ -44,6 +41,6 @@ func Sol567D(reader io.Reader, writer io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() {
-	Sol567D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol567D(os.Stdin, os.Stdout)
+//}
