@@ -10,22 +10,29 @@ func max(a, b int64) int64 {
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {
-	l, r int
-	val  int64
+	l, r   int
+	val    int64
+	maxPos int
 }
 type segmentTree []stNode // t := make(segmentTree, 4*n)
 
 func (t segmentTree) _pushUp(o int) {
-	lo, ro := t[o<<1], t[o<<1|1] // 必要时用指针
+	lo, ro := t[o<<1], t[o<<1|1]
 	// *custom*
-	t[o].val = max(lo.val, ro.val)
+	//t[o].val = max(lo.val, ro.val)
+	if ro.val >= lo.val { // maxPos 取最右侧；若为 > 符号则取最左侧
+		t[o].val, t[o].maxPos = ro.val, ro.maxPos
+	} else {
+		t[o].val, t[o].maxPos = lo.val, lo.maxPos
+	}
 }
 
 func (t segmentTree) _build(arr []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		//t[o].val = arr[l-1] // if arr start at 0
-		t[o].val = arr[l]
+		//t[o].val = arr[l] // if arr start at 1
+		t[o].val = arr[l-1]
+		t[o].maxPos = l - 1
 		// *custom*
 		return
 	}
@@ -67,11 +74,30 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-// if arr start at 0
-// func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) }
-func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)-1) }
-func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }
-func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) } // [l,r]
+func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
+	if l <= t[o].l && t[o].r <= r {
+		return t[o].val, t[o].maxPos
+	}
+	mid := (t[o].l + t[o].r) >> 1
+	// *custom*
+	res = -1e9
+	if l <= mid {
+		res, maxPos = t._query2(o<<1, l, r)
+	}
+	if mid < r {
+		if newRes, newMaxPos := t._query2(o<<1|1, l, r); newRes >= res { // maxPos 取最右侧；若为 > 符号则取最左侧
+			res, maxPos = newRes, newMaxPos
+		}
+	}
+	return
+}
+
+// if arr start at 1, end at n
+//func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)-1) }
+func (t segmentTree) init(arr []int64)             { t._build(arr, 1, 1, len(arr)) }
+func (t segmentTree) update(idx int, val int64)    { t._update(1, idx, val) }    // 1<=idx<=n
+func (t segmentTree) query(l, r int) int64         { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
+func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
 
 //
 
@@ -83,7 +109,7 @@ type lazySTNode struct {
 type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
 func (t lazySegmentTree) _pushUp(o int) {
-	lo, ro := t[o<<1], t[o<<1|1] // 必要时用指针
+	lo, ro := t[o<<1], t[o<<1|1]
 	// *custom*
 	t[o].sum = lo.sum + ro.sum
 }
@@ -91,7 +117,8 @@ func (t lazySegmentTree) _pushUp(o int) {
 func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t[o].sum = arr[l]
+		//t[o].sum = arr[l] // if arr start at 1
+		t[o].sum = arr[l-1]
 		// *custom*
 		return
 	}
@@ -149,8 +176,8 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-// if arr start at 0
-// func (t lazySegmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) }
-func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)-1) }
-func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }
-func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) } // [l,r]
+// if arr start at 1, end at n
+//func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)-1) }
+func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)) }
+func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }  // [l,r] 1<=l<=r<=n
+func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) } // [l,r] 1<=l<=r<=n
