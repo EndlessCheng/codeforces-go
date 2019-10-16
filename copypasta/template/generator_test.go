@@ -31,8 +31,8 @@ func copyFile(dst, src string) error {
 
 func Test(t *testing.T) {
 	const contestID = 1244
-	rootPath := fmt.Sprintf("../../dash/%d/", contestID)
 
+	rootPath := fmt.Sprintf("../../dash/%d/", contestID)
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -56,7 +56,6 @@ func Test(t *testing.T) {
 	}); err != nil {
 		t.Fatal(err)
 	}
-
 	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d a a/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 		t.Fatal(err)
