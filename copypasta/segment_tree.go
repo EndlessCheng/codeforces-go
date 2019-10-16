@@ -116,13 +116,14 @@ func (t lazySegmentTree) _spread(o int) {
 }
 
 func (t lazySegmentTree) _update(o, l, r int, add int64) {
-	if l <= t[o].l && t[o].r <= r {
-		t[o].sum += add * int64(t[o].r-t[o].l+1)
+	ol, or := t[o].l, t[o].r
+	if l <= ol && or <= r {
+		t[o].sum += add * int64(or-ol+1)
 		t[o].addChildren += add
 		return
 	}
 	t._spread(o)
-	mid := (t[o].l + t[o].r) >> 1
+	mid := (ol + or) >> 1
 	if l <= mid {
 		t._update(o<<1, l, r, add)
 	}
