@@ -149,7 +149,8 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-// NOTE: arr must start at 1
+// if arr start at 0
+// func (t lazySegmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) }
 func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)-1) }
 func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }
 func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) } // [l,r]
