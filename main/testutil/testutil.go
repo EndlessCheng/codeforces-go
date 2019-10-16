@@ -4,60 +4,101 @@ import (
 	"bytes"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"io/ioutil"
+	"path/filepath"
 	"strings"
 	"testing"
 )
 
-func AssertEqualCase(t *testing.T, rawText string, caseNum int, solFunc func(io.Reader, io.Writer)) {
-	if caseNum == 0 {
-		t.Fatal("caseNum should not be 0.")
+func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	if !assert.Equal(t, len(inputs), len(answers), "missing inputs or answers in test cases.") {
+		return
 	}
 
-	if rawText[0] == '\n' {
-		rawText = rawText[1:]
+	if len(inputs) == 0 {
+		return
 	}
-	examples := strings.Split(rawText, "\ninputCopy\n")
-	var inputs, outputs []string
-	for _, e := range examples {
-		splits := strings.Split(e, "\noutputCopy\n")
-		inputs = append(inputs, splits[0])
-		outputs = append(outputs, splits[1])
+
+	if caseNum < 0 {
+		caseNum = len(inputs) + 1 - caseNum
 	}
 
 	// TODO: time costs
 	ok := true
 	for i, input := range inputs {
-		if caseNum >= 0 && i+1 != caseNum {
+		if caseNum > 0 && i+1 != caseNum {
 			continue
 		}
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
-		solFunc(mockReader, mockWriter)
+		solveFunc(mockReader, mockWriter)
 		actualOutput := mockWriter.String()
-		if actualOutput != "" && actualOutput[len(actualOutput)-1] == '\n' {
-			actualOutput = actualOutput[:len(actualOutput)-1]
-		}
-		_ok := assert.Equal(t, outputs[i], actualOutput, "Please check test case %d\nInput:\n%s", i+1, input)
+
+		// trim space here, may have issue on special problems.
+		answer := answers[i]
+		answer = strings.TrimSpace(answer)
+		actualOutput = strings.TrimSpace(actualOutput)
+
+		_ok := assert.Equal(t, answer, actualOutput, "please check test case [%d]\nInput:\n%s", i+1, input)
 		if !_ok {
 			ok = _ok
 		}
 	}
-	if ok {
-		if caseNum >= 0 {
-			t.Logf("case %d is passed.", caseNum)
-			AssertEqual(t, rawText, solFunc)
-		} else {
-			t.Log("OK! submit with main()!")
-		}
-	} else {
-		if caseNum >= 0 {
-			t.Skip("ok?")
-		} else {
-			t.Skip("ok? submit with main()!")
-		}
+	if !ok {
+		t.Log("ok?")
+		return
 	}
+
+	if caseNum > 0 {
+		t.Logf("case %d is passed.", caseNum)
+		AssertEqualStringCase(t, inputs, answers, 0, solveFunc)
+		return
+	}
+
+	t.Log("OK!")
 }
 
-func AssertEqual(t *testing.T, rawText string, solFunc func(io.Reader, io.Writer)) {
-	AssertEqualCase(t, rawText, -1, solFunc)
+func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	txtFilePaths, _ := filepath.Glob(filepath.Join(dir, "*.txt"))
+	// ans1.txt, ..., in1.txt, ...
+	if len(txtFilePaths) == 0 {
+		return
+	}
+
+	var inputs, answers []string
+	for _, path := range txtFilePaths[:len(txtFilePaths)/2] {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		answers = append(answers, string(data))
+	}
+	for _, path := range txtFilePaths[len(txtFilePaths)/2:] {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		inputs = append(inputs, string(data))
+	}
+
+	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
+}
+
+func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	if rawText[0] == '\n' {
+		rawText = rawText[1:]
+	}
+	examples := strings.Split(rawText, "\ninputCopy\n")
+	var inputs, answers []string
+	for _, e := range examples {
+		splits := strings.Split(e, "\noutputCopy\n")
+		inputs = append(inputs, splits[0])
+		answers = append(answers, splits[1])
+	}
+
+	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
+}
+
+func AssertEqual(t *testing.T, rawText string, solveFunc func(io.Reader, io.Writer)) {
+	AssertEqualCase(t, rawText, 0, solveFunc)
 }
