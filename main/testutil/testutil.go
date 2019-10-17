@@ -45,7 +45,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 		}
 	}
 	if !ok {
-		t.Log("ok?")
+		t.Logf("ok? caseNum is [%d]", caseNum)
 		return
 	}
 
@@ -55,7 +55,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 		return
 	}
 
-	t.Log("OK!")
+	t.Log("OK! SUBMIT!")
 }
 
 func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
