@@ -15,8 +15,6 @@ func solve(reader io.Reader, writer io.Writer) {
 	var n int
 	Fscan(in, &n)
 
-
-	Fprintln(out, )
 }
 
 func main() {
