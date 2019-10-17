@@ -65,6 +65,14 @@ func commonCollection() {
 
 	//
 
+	reverse := func(s []byte) {
+		for i, j := 0, len(s)-1; i < j; {
+			s[i], s[j] = s[j], s[i]
+			i++
+			j++
+		}
+	}
+
 	// NOTE: arr must be sorted
 	unique := func(arr []int) (uniqueArr []int) {
 		n := len(arr)
@@ -114,7 +122,7 @@ func commonCollection() {
 		return r2
 	}
 
-	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders, min, mins, max, maxs, abs, quickPow, unique, discrete, ifElse}
+	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders, min, mins, max, maxs, abs, quickPow, reverse, unique, discrete, ifElse}
 }
 
 // Permute the values at index i to len(arr)-1.
