@@ -1,25 +1,52 @@
 package copypasta
 
-import "testing"
+import (
+	"testing"
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_rbt(t *testing.T) {
-	rbt := NewWithIntComparator()
-	rbt.Put(1, "a")
-	rbt.Put(10, "b")
-	rbt.Put(10, "bb")
-	rbt.Put(100, "c")
+	assert := assert.New(t)
 
-	t.Log(rbt.lookup(10), rbt.lookup(10).Value)
-	t.Log(rbt.Floor(9))
-	t.Log(rbt.Floor(10))
-	t.Log(rbt.Floor(11))
+	rbt := newRBTree()
+	assert.True(rbt.IsEmpty())
+	assert.True(rbt.Begin().IsEnd())
+	assert.True(rbt.RBegin().IsREnd())
 
-	o, _ := rbt.Floor(11)
-	it := rbt.Iterator(o)
-	it.Next()
-	it.Next()
-	t.Log("next:", it.Key())
+	rbt.MultiInsert(1)
+	rbt.MultiInsert(10)
+	rbt.MultiInsert(10)
+	rbt.MultiInsert(100)
 
-	t.Log(rbt.Left())
-	t.Log(rbt.Right())
+	assert.False(rbt.IsEmpty())
+	assert.EqualValues(3, rbt.Size())
+
+	assert.EqualValues([]keyType{1, 10, 10, 100}, rbt.MultiKeys())
+	assert.EqualValues([]valueType{1, 2, 1}, rbt.Values())
+
+	assert.EqualValues(1, rbt.Min().Key)
+	assert.EqualValues(100, rbt.Max().Key)
+
+	assert.Nil(rbt.Lookup(2))
+	assert.NotNil(rbt.Lookup(10))
+	assert.EqualValues(2, rbt.Lookup(10).Value)
+
+	assert.EqualValues(1, rbt.Floor(9).Key)
+	assert.EqualValues(10, rbt.Floor(10).Key)
+	assert.EqualValues(10, rbt.Floor(11).Key)
+
+	assert.EqualValues(10, rbt.Ceiling(9).Key)
+	assert.EqualValues(10, rbt.Ceiling(10).Key)
+	assert.EqualValues(100, rbt.Ceiling(11).Key)
+
+	it := rbt.NewIterator(rbt.Lookup(10))
+	assert.EqualValues(1, it.Prev().node.Key)
+	it = rbt.NewIterator(rbt.Lookup(10))
+	assert.EqualValues(100, it.Next().node.Key)
+
+	rbt.MultiErase(10)
+	assert.NotNil(rbt.Lookup(10))
+	assert.EqualValues(1, rbt.Lookup(10).Value)
+	rbt.MultiErase(10)
+	assert.Nil(rbt.Lookup(10))
 }

@@ -1,87 +1,60 @@
 package copypasta
 
-import (
-	"fmt"
-)
+import "fmt"
 
-type color bool
-
-const (
-	black, red color = true, false
-)
-
-type Comparator func(a, b interface{}) int
-
-func IntComparator(a, b interface{}) int {
-	aAsserted := a.(int)
-	bAsserted := b.(int)
-	switch {
-	case aAsserted > bAsserted:
-		return 1
-	case aAsserted < bAsserted:
-		return -1
-	default:
-		return 0
-	}
-}
-
-// Tree holds elements of the red-black tree
 // http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+type keyType int            // *custom*
+type valueType int          // *custom*
+var zeroValue valueType = 0 // "" for string
+
 type Tree struct {
 	Root       *Node
 	size       int
-	Comparator Comparator
+	comparator func(a, b keyType) int
 }
 
-// Node is a single element within the tree
+type color bool
+
+const black, red color = true, false
+
 type Node struct {
-	Key    interface{}
-	Value  interface{}
-	color  color
 	Left   *Node
 	Right  *Node
 	Parent *Node
+	Key    keyType
+	Value  valueType
+	color  color
 }
 
-// NewWith instantiates a red-black tree with the custom comparator.
-//func NewWith(comparator utils.Comparator) *Tree {
-//	return &Tree{Comparator: comparator}
-//}
-
-// NewWithIntComparator instantiates a red-black tree with the IntComparator, i.e. keys are of type int.
-func NewWithIntComparator() *Tree {
-	return &Tree{Comparator: IntComparator}
+func newRBTree() *Tree {
+	return &Tree{comparator: func(a, b keyType) int {
+		if a < b {
+			return -1
+		}
+		if a > b {
+			return 1
+		}
+		return 0
+	}}
 }
 
-// NewWithStringComparator instantiates a red-black tree with the StringComparator, i.e. keys are of type string.
-//func NewWithStringComparator() *Tree {
-//	return &Tree{Comparator: utils.StringComparator}
-//}
-
-// Put inserts node into the tree.
-// Key should adhere to the comparator's type assertion, otherwise method panics.
-func (tree *Tree) Put(key interface{}, value interface{}) {
+func (t *Tree) Insert(key keyType, value valueType) {
 	var insertedNode *Node
-	if tree.Root == nil {
-		// Assert key is of comparator's type for initial tree
-		tree.Comparator(key, key)
-		tree.Root = &Node{Key: key, Value: value, color: red}
-		insertedNode = tree.Root
+	if t.Root == nil {
+		t.Root = &Node{Key: key, Value: value, color: red}
+		insertedNode = t.Root
 	} else {
-		node := tree.Root
-		loop := true
-		for loop {
-			compare := tree.Comparator(key, node.Key)
+		node := t.Root
+	loop:
+		for {
+			compare := t.comparator(key, node.Key)
 			switch {
-			case compare == 0:
-				node.Key = key
-				node.Value = value
-				return
 			case compare < 0:
 				if node.Left == nil {
 					node.Left = &Node{Key: key, Value: value, color: red}
 					insertedNode = node.Left
-					loop = false
+					break loop
 				} else {
 					node = node.Left
 				}
@@ -89,34 +62,39 @@ func (tree *Tree) Put(key interface{}, value interface{}) {
 				if node.Right == nil {
 					node.Right = &Node{Key: key, Value: value, color: red}
 					insertedNode = node.Right
-					loop = false
+					break loop
 				} else {
 					node = node.Right
 				}
+			default:
+				node.Key = key
+				node.Value = value
+				return
 			}
 		}
 		insertedNode.Parent = node
 	}
-	tree.insertCase1(insertedNode)
-	tree.size++
+	t.insertCase1(insertedNode)
+	t.size++
 }
 
-// Get searches the node in the tree by key and returns its value or nil if key is not found in tree.
-// Second return parameter is true if key was found, otherwise false.
-// Key should adhere to the comparator's type assertion, otherwise method panics.
-func (tree *Tree) Get(key interface{}) (value interface{}, found bool) {
-	node := tree.lookup(key)
-	if node != nil {
-		return node.Value, true
+func (t *Tree) Lookup(key keyType) *Node {
+	for o := t.Root; o != nil; {
+		compare := t.comparator(key, o.Key)
+		switch {
+		case compare < 0:
+			o = o.Left
+		case compare > 0:
+			o = o.Right
+		default:
+			return o
+		}
 	}
-	return nil, false
+	return nil
 }
 
-// Remove remove the node from the tree by key.
-// Key should adhere to the comparator's type assertion, otherwise method panics.
-func (tree *Tree) Remove(key interface{}) {
-	var child *Node
-	node := tree.lookup(key)
+func (t *Tree) Erase(key keyType) {
+	node := t.Lookup(key)
 	if node == nil {
 		return
 	}
@@ -127,6 +105,7 @@ func (tree *Tree) Remove(key interface{}) {
 		node = pred
 	}
 	if node.Left == nil || node.Right == nil {
+		var child *Node
 		if node.Right == nil {
 			child = node.Left
 		} else {
@@ -134,167 +113,129 @@ func (tree *Tree) Remove(key interface{}) {
 		}
 		if node.color == black {
 			node.color = nodeColor(child)
-			tree.deleteCase1(node)
+			t.deleteCase1(node)
 		}
-		tree.replaceNode(node, child)
+		t.replaceNode(node, child)
 		if node.Parent == nil && child != nil {
 			child.color = black
 		}
 	}
-	tree.size--
+	t.size--
 }
 
-// Empty returns true if tree does not contain any nodes
-func (tree *Tree) Empty() bool {
-	return tree.size == 0
+// valueType must be int
+func (t *Tree) MultiInsert(key keyType) {
+	if o := t.Lookup(key); o != nil {
+		o.Value++
+	} else {
+		t.Insert(key, 1)
+	}
 }
 
-// Size returns number of nodes in the tree.
-func (tree *Tree) Size() int {
-	return tree.size
+// valueType must be int
+func (t *Tree) MultiErase(key keyType) {
+	if o := t.Lookup(key); o != nil {
+		o.Value--
+		if o.Value == 0 {
+			t.Erase(key)
+		}
+	}
+}
+
+func (t *Tree) IsEmpty() bool {
+	return t.size == 0
+}
+
+func (t *Tree) Size() int {
+	return t.size
 }
 
 // Keys returns all keys in-order
-//func (tree *Tree) Keys() []interface{} {
-//	keys := make([]interface{}, tree.size)
-//	it := tree.Iterator()
-//	for i := 0; it.Next(); i++ {
-//		keys[i] = it.Key()
-//	}
-//	return keys
-//}
+func (t *Tree) Keys() []keyType {
+	keys := make([]keyType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		keys = append(keys, it.node.Key)
+	}
+	return keys
+}
+
+// valueType must be int
+func (t *Tree) MultiKeys() []keyType {
+	keys := make([]keyType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		k, v := it.node.Key, int(it.node.Value)
+		for i := 0; i < v; i++ {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
 
 // Values returns all values in-order based on the key.
-//func (tree *Tree) Values() []interface{} {
-//	values := make([]interface{}, tree.size)
-//	it := tree.Iterator()
-//	for i := 0; it.Next(); i++ {
-//		values[i] = it.Value()
-//	}
-//	return values
-//}
+func (t *Tree) Values() []valueType {
+	values := make([]valueType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		values = append(values, it.node.Value)
+	}
+	return values
+}
 
-// Left returns the left-most (min) node or nil if tree is empty.
-func (tree *Tree) Left() (o *Node) {
-	for current := tree.Root; current != nil; current = current.Left {
-		o = current
+// Min returns the left-most (min) node or nil if tree is empty.
+func (t *Tree) Min() (min *Node) {
+	for o := t.Root; o != nil; o = o.Left {
+		min = o
 	}
 	return
 }
 
-// Right returns the right-most (max) node or nil if tree is empty.
-func (tree *Tree) Right() (o *Node) {
-	for current := tree.Root; current != nil; current = current.Right {
-		o = current
+// Max returns the right-most (max) node or nil if tree is empty.
+func (t *Tree) Max() (max *Node) {
+	for o := t.Root; o != nil; o = o.Right {
+		max = o
 	}
 	return
 }
 
 // Floor Finds floor node of the input key, return the floor node or nil if no floor is found.
-// Second return parameter is true if floor was found, otherwise false.
 //
 // Floor node is defined as the largest node that is smaller than or equal to the given node.
 // A floor node may not be found, either because the tree is empty, or because
 // all nodes in the tree are larger than the given node.
-func (tree *Tree) Floor(key int) (floor *Node, found bool) {
-	for node := tree.Root; node != nil; {
-		compare := tree.Comparator(key, node.Key)
+func (t *Tree) Floor(key keyType) (floor *Node) {
+	for o := t.Root; o != nil; {
+		compare := t.comparator(key, o.Key)
 		switch {
-		case compare == 0:
-			return node, true
 		case compare < 0:
-			node = node.Left
+			o = o.Left
 		case compare > 0:
-			floor, found = node, true
-			node = node.Right
+			floor = o
+			o = o.Right
+		default:
+			return o
 		}
 	}
 	return
 }
 
 // Ceiling finds ceiling node of the input key, return the ceiling node or nil if no ceiling is found.
-// Second return parameter is true if ceiling was found, otherwise false.
 //
 // Ceiling node is defined as the smallest node that is larger than or equal to the given node.
 // A ceiling node may not be found, either because the tree is empty, or because
 // all nodes in the tree are smaller than the given node.
-func (tree *Tree) Ceiling(key int) (ceiling *Node, found bool) {
-	for node := tree.Root; node != nil; {
-		compare := tree.Comparator(key, node.Key)
+func (t *Tree) Ceiling(key keyType) (ceiling *Node) {
+	for o := t.Root; o != nil; {
+		compare := t.comparator(key, o.Key)
 		switch {
-		case compare == 0:
-			return node, true
 		case compare < 0:
-			ceiling, found = node, true
-			node = node.Left
+			ceiling = o
+			o = o.Left
 		case compare > 0:
-			node = node.Right
+			o = o.Right
+		default:
+			return o
 		}
 	}
 	return
-}
-
-// Clear removes all nodes from the tree.
-func (tree *Tree) Clear() {
-	tree.Root = nil
-	tree.size = 0
-}
-
-// String returns a string representation of container
-func (tree *Tree) String() string {
-	str := "RedBlackTree\n"
-	if !tree.Empty() {
-		output(tree.Root, "", true, &str)
-	}
-	return str
-}
-
-func (node *Node) String() string {
-	return fmt.Sprintf("%v", node.Key)
-}
-
-func output(node *Node, prefix string, isTail bool, str *string) {
-	if node.Right != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "│   "
-		} else {
-			newPrefix += "    "
-		}
-		output(node.Right, newPrefix, false, str)
-	}
-	*str += prefix
-	if isTail {
-		*str += "└── "
-	} else {
-		*str += "┌── "
-	}
-	*str += node.String() + "\n"
-	if node.Left != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "    "
-		} else {
-			newPrefix += "│   "
-		}
-		output(node.Left, newPrefix, true, str)
-	}
-}
-
-func (tree *Tree) lookup(key interface{}) *Node {
-	node := tree.Root
-	for node != nil {
-		compare := tree.Comparator(key, node.Key)
-		switch {
-		case compare == 0:
-			return node
-		case compare < 0:
-			node = node.Left
-		case compare > 0:
-			node = node.Right
-		}
-	}
-	return nil
 }
 
 func (node *Node) grandparent() *Node {
@@ -321,9 +262,9 @@ func (node *Node) sibling() *Node {
 	return node.Parent.Left
 }
 
-func (tree *Tree) rotateLeft(node *Node) {
+func (t *Tree) rotateLeft(node *Node) {
 	right := node.Right
-	tree.replaceNode(node, right)
+	t.replaceNode(node, right)
 	node.Right = right.Left
 	if right.Left != nil {
 		right.Left.Parent = node
@@ -332,9 +273,9 @@ func (tree *Tree) rotateLeft(node *Node) {
 	node.Parent = right
 }
 
-func (tree *Tree) rotateRight(node *Node) {
+func (t *Tree) rotateRight(node *Node) {
 	left := node.Left
-	tree.replaceNode(node, left)
+	t.replaceNode(node, left)
 	node.Left = left.Right
 	if left.Right != nil {
 		left.Right.Parent = node
@@ -343,9 +284,9 @@ func (tree *Tree) rotateRight(node *Node) {
 	node.Parent = left
 }
 
-func (tree *Tree) replaceNode(old *Node, new *Node) {
+func (t *Tree) replaceNode(old *Node, new *Node) {
 	if old.Parent == nil {
-		tree.Root = new
+		t.Root = new
 	} else {
 		if old == old.Parent.Left {
 			old.Parent.Left = new
@@ -358,53 +299,53 @@ func (tree *Tree) replaceNode(old *Node, new *Node) {
 	}
 }
 
-func (tree *Tree) insertCase1(node *Node) {
+func (t *Tree) insertCase1(node *Node) {
 	if node.Parent == nil {
 		node.color = black
 	} else {
-		tree.insertCase2(node)
+		t.insertCase2(node)
 	}
 }
 
-func (tree *Tree) insertCase2(node *Node) {
+func (t *Tree) insertCase2(node *Node) {
 	if nodeColor(node.Parent) == black {
 		return
 	}
-	tree.insertCase3(node)
+	t.insertCase3(node)
 }
 
-func (tree *Tree) insertCase3(node *Node) {
+func (t *Tree) insertCase3(node *Node) {
 	uncle := node.uncle()
 	if nodeColor(uncle) == red {
 		node.Parent.color = black
 		uncle.color = black
 		node.grandparent().color = red
-		tree.insertCase1(node.grandparent())
+		t.insertCase1(node.grandparent())
 	} else {
-		tree.insertCase4(node)
+		t.insertCase4(node)
 	}
 }
 
-func (tree *Tree) insertCase4(node *Node) {
+func (t *Tree) insertCase4(node *Node) {
 	grandparent := node.grandparent()
 	if node == node.Parent.Right && node.Parent == grandparent.Left {
-		tree.rotateLeft(node.Parent)
+		t.rotateLeft(node.Parent)
 		node = node.Left
 	} else if node == node.Parent.Left && node.Parent == grandparent.Right {
-		tree.rotateRight(node.Parent)
+		t.rotateRight(node.Parent)
 		node = node.Right
 	}
-	tree.insertCase5(node)
+	t.insertCase5(node)
 }
 
-func (tree *Tree) insertCase5(node *Node) {
+func (t *Tree) insertCase5(node *Node) {
 	node.Parent.color = black
 	grandparent := node.grandparent()
 	grandparent.color = red
 	if node == node.Parent.Left && node.Parent == grandparent.Left {
-		tree.rotateRight(grandparent)
+		t.rotateRight(grandparent)
 	} else if node == node.Parent.Right && node.Parent == grandparent.Right {
-		tree.rotateLeft(grandparent)
+		t.rotateLeft(grandparent)
 	}
 }
 
@@ -418,41 +359,41 @@ func (node *Node) maximumNode() *Node {
 	return node
 }
 
-func (tree *Tree) deleteCase1(node *Node) {
+func (t *Tree) deleteCase1(node *Node) {
 	if node.Parent == nil {
 		return
 	}
-	tree.deleteCase2(node)
+	t.deleteCase2(node)
 }
 
-func (tree *Tree) deleteCase2(node *Node) {
+func (t *Tree) deleteCase2(node *Node) {
 	sibling := node.sibling()
 	if nodeColor(sibling) == red {
 		node.Parent.color = red
 		sibling.color = black
 		if node == node.Parent.Left {
-			tree.rotateLeft(node.Parent)
+			t.rotateLeft(node.Parent)
 		} else {
-			tree.rotateRight(node.Parent)
+			t.rotateRight(node.Parent)
 		}
 	}
-	tree.deleteCase3(node)
+	t.deleteCase3(node)
 }
 
-func (tree *Tree) deleteCase3(node *Node) {
+func (t *Tree) deleteCase3(node *Node) {
 	sibling := node.sibling()
 	if nodeColor(node.Parent) == black &&
 		nodeColor(sibling) == black &&
 		nodeColor(sibling.Left) == black &&
 		nodeColor(sibling.Right) == black {
 		sibling.color = red
-		tree.deleteCase1(node.Parent)
+		t.deleteCase1(node.Parent)
 	} else {
-		tree.deleteCase4(node)
+		t.deleteCase4(node)
 	}
 }
 
-func (tree *Tree) deleteCase4(node *Node) {
+func (t *Tree) deleteCase4(node *Node) {
 	sibling := node.sibling()
 	if nodeColor(node.Parent) == red &&
 		nodeColor(sibling) == black &&
@@ -461,11 +402,11 @@ func (tree *Tree) deleteCase4(node *Node) {
 		sibling.color = red
 		node.Parent.color = black
 	} else {
-		tree.deleteCase5(node)
+		t.deleteCase5(node)
 	}
 }
 
-func (tree *Tree) deleteCase5(node *Node) {
+func (t *Tree) deleteCase5(node *Node) {
 	sibling := node.sibling()
 	if node == node.Parent.Left &&
 		nodeColor(sibling) == black &&
@@ -473,28 +414,28 @@ func (tree *Tree) deleteCase5(node *Node) {
 		nodeColor(sibling.Right) == black {
 		sibling.color = red
 		sibling.Left.color = black
-		tree.rotateRight(sibling)
+		t.rotateRight(sibling)
 	} else if node == node.Parent.Right &&
 		nodeColor(sibling) == black &&
 		nodeColor(sibling.Right) == red &&
 		nodeColor(sibling.Left) == black {
 		sibling.color = red
 		sibling.Right.color = black
-		tree.rotateLeft(sibling)
+		t.rotateLeft(sibling)
 	}
-	tree.deleteCase6(node)
+	t.deleteCase6(node)
 }
 
-func (tree *Tree) deleteCase6(node *Node) {
+func (t *Tree) deleteCase6(node *Node) {
 	sibling := node.sibling()
 	sibling.color = nodeColor(node.Parent)
 	node.Parent.color = black
 	if node == node.Parent.Left && nodeColor(sibling.Right) == red {
 		sibling.Right.color = black
-		tree.rotateLeft(node.Parent)
+		t.rotateLeft(node.Parent)
 	} else if nodeColor(sibling.Left) == red {
 		sibling.Left.color = black
-		tree.rotateRight(node.Parent)
+		t.rotateRight(node.Parent)
 	}
 }
 
@@ -507,6 +448,10 @@ func nodeColor(node *Node) color {
 
 //
 
+type position byte
+
+const begin, between, end position = 0, 1, 2
+
 // Iterator holding the iterator's state
 type Iterator struct {
 	tree     *Tree
@@ -514,140 +459,147 @@ type Iterator struct {
 	position position
 }
 
-type position byte
-
-const (
-	begin, between, end position = 0, 1, 2
-)
-
 // Iterator returns a stateful iterator whose elements are key/value pairs.
-func (tree *Tree) Iterator(node *Node) *Iterator {
-	return &Iterator{tree: tree, node: node, position: between}
+func (t *Tree) NewIterator(node *Node) *Iterator {
+	return &Iterator{tree: t, node: node, position: between}
 }
 
-// Next moves the iterator to the next element and returns true if there was a next element in the container.
-// If Next() returns true, then next element's key and value can be retrieved by Key() and Value().
-// If Next() was called for the first time, then it will point the iterator to the first element if it exists.
+// Next moves the iterator to the next element and returns itself.
 // Modifies the state of the iterator.
-func (iterator *Iterator) Next() bool {
-	if iterator.position == end {
+func (it *Iterator) Next() *Iterator {
+	if it.position == end {
 		goto end
 	}
-	if iterator.position == begin {
-		left := iterator.tree.Left()
+	if it.position == begin {
+		left := it.tree.Min()
 		if left == nil {
 			goto end
 		}
-		iterator.node = left
+		it.node = left
 		goto between
 	}
-	if iterator.node.Right != nil {
-		iterator.node = iterator.node.Right
-		for iterator.node.Left != nil {
-			iterator.node = iterator.node.Left
+	if it.node.Right != nil {
+		it.node = it.node.Right
+		for it.node.Left != nil {
+			it.node = it.node.Left
 		}
 		goto between
 	}
-	if iterator.node.Parent != nil {
-		node := iterator.node
-		for iterator.node.Parent != nil {
-			iterator.node = iterator.node.Parent
-			if iterator.tree.Comparator(node.Key, iterator.node.Key) <= 0 {
+	if it.node.Parent != nil {
+		node := it.node
+		for it.node.Parent != nil {
+			it.node = it.node.Parent
+			if it.tree.comparator(node.Key, it.node.Key) <= 0 {
 				goto between
 			}
 		}
 	}
 
 end:
-	iterator.node = nil
-	iterator.position = end
-	return false
+	it.node = nil
+	it.position = end
+	return it
 
 between:
-	iterator.position = between
-	return true
+	it.position = between
+	return it
 }
 
-// Prev moves the iterator to the previous element and returns true if there was a previous element in the container.
-// If Prev() returns true, then previous element's key and value can be retrieved by Key() and Value().
+// Prev moves the iterator to the previous element and returns itself.
 // Modifies the state of the iterator.
-func (iterator *Iterator) Prev() bool {
-	if iterator.position == begin {
+func (it *Iterator) Prev() *Iterator {
+	if it.position == begin {
 		goto begin
 	}
-	if iterator.position == end {
-		right := iterator.tree.Right()
+	if it.position == end {
+		right := it.tree.Max()
 		if right == nil {
 			goto begin
 		}
-		iterator.node = right
+		it.node = right
 		goto between
 	}
-	if iterator.node.Left != nil {
-		iterator.node = iterator.node.Left
-		for iterator.node.Right != nil {
-			iterator.node = iterator.node.Right
+	if it.node.Left != nil {
+		it.node = it.node.Left
+		for it.node.Right != nil {
+			it.node = it.node.Right
 		}
 		goto between
 	}
-	if iterator.node.Parent != nil {
-		node := iterator.node
-		for iterator.node.Parent != nil {
-			iterator.node = iterator.node.Parent
-			if iterator.tree.Comparator(node.Key, iterator.node.Key) >= 0 {
+	if it.node.Parent != nil {
+		node := it.node
+		for it.node.Parent != nil {
+			it.node = it.node.Parent
+			if it.tree.comparator(node.Key, it.node.Key) >= 0 {
 				goto between
 			}
 		}
 	}
 
 begin:
-	iterator.node = nil
-	iterator.position = begin
-	return false
+	it.node = nil
+	it.position = begin
+	return it
 
 between:
-	iterator.position = between
-	return true
+	it.position = between
+	return it
 }
 
-// Value returns the current element's value.
-// Does not modify the state of the iterator.
-func (iterator *Iterator) Value() interface{} {
-	return iterator.node.Value
-}
-
-// Key returns the current element's key.
-// Does not modify the state of the iterator.
-func (iterator *Iterator) Key() interface{} {
-	return iterator.node.Key
-}
-
-// Begin resets the iterator to its initial state (one-before-first)
-// Call Next() to fetch the first element if any.
-func (iterator *Iterator) Begin() {
-	iterator.node = nil
-	iterator.position = begin
-}
-
-// End moves the iterator past the last element (one-past-the-end).
-// Call Prev() to fetch the last element if any.
-func (iterator *Iterator) End() {
-	iterator.node = nil
-	iterator.position = end
-}
-
-// First moves the iterator to the first element and returns true if there was a first element in the container.
-// If First() returns true, then first element's key and value can be retrieved by Key() and Value().
+// Begin moves the iterator to the first element and returns true if there was a first element in the container.
 // Modifies the state of the iterator
-func (iterator *Iterator) First() bool {
-	iterator.Begin()
-	return iterator.Next()
+func (t *Tree) Begin() *Iterator {
+	it := &Iterator{tree: t, position: begin}
+	return it.Next()
+}
+func (it *Iterator) IsEnd() bool { return it.position == end }
+
+// RBegin moves the iterator to the last element and returns true if there was a last element in the container.
+// Modifies the state of the iterator.
+func (t *Tree) RBegin() *Iterator {
+	it := &Iterator{tree: t, position: end}
+	return it.Prev()
+}
+func (it *Iterator) IsREnd() bool { return it.position == begin }
+
+//
+
+func (node *Node) String() string {
+	return fmt.Sprint(node.Key)
 }
 
-// Last moves the iterator to the last element and returns true if there was a last element in the container.
-// If Last() returns true, then last element's key and value can be retrieved by Key() and Value().
-// Modifies the state of the iterator.
-func (iterator *Iterator) Last() bool {
-	iterator.End()
-	return iterator.Prev()
+func (node *Node) draw(prefix string, isTail bool, str *string) {
+	if node.Right != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "│   "
+		} else {
+			newPrefix += "    "
+		}
+		node.Right.draw(newPrefix, false, str)
+	}
+	*str += prefix
+	if isTail {
+		*str += "└── "
+	} else {
+		*str += "┌── "
+	}
+	*str += node.String() + "\n"
+	if node.Left != nil {
+		newPrefix := prefix
+		if isTail {
+			newPrefix += "    "
+		} else {
+			newPrefix += "│   "
+		}
+		node.Left.draw(newPrefix, true, str)
+	}
+}
+
+func (t *Tree) String() string {
+	str := "RedBlackTree\n"
+	if !t.IsEmpty() {
+		t.Root.draw("", true, &str)
+	}
+	return str
 }
