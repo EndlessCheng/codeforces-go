@@ -9,16 +9,16 @@ func Test_rbt(t *testing.T) {
 	assert := assert.New(t)
 
 	rbt := newRBTree()
-	assert.True(rbt.IsEmpty())
-	assert.True(rbt.Begin().IsEnd())
-	assert.True(rbt.RBegin().IsREnd())
+	assert.True(rbt.Empty())
+	assert.True(rbt.Begin().End())
+	assert.True(rbt.RBegin().REnd())
 
 	rbt.MultiInsert(1)
 	rbt.MultiInsert(10)
 	rbt.MultiInsert(10)
 	rbt.MultiInsert(100)
 
-	assert.False(rbt.IsEmpty())
+	assert.False(rbt.Empty())
 	assert.EqualValues(3, rbt.Size())
 
 	assert.EqualValues([]keyType{1, 10, 10, 100}, rbt.MultiKeys())

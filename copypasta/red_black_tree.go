@@ -39,6 +39,10 @@ func newRBTree() *Tree {
 	}}
 }
 
+func (t *Tree) Empty() bool { return t.size == 0 }
+
+func (t *Tree) Size() int { return t.size }
+
 func (t *Tree) Insert(key keyType, value valueType) {
 	var insertedNode *Node
 	if t.Root == nil {
@@ -512,7 +516,7 @@ func (t *Tree) Begin() *Iterator {
 	it := &Iterator{tree: t, position: begin}
 	return it.Next()
 }
-func (it *Iterator) IsEnd() bool { return it.position == end }
+func (it *Iterator) End() bool { return it.position == end }
 
 // RBegin moves the iterator to the last element and returns true if there was a last element in the container.
 // Modifies the state of the iterator.
@@ -520,16 +524,12 @@ func (t *Tree) RBegin() *Iterator {
 	it := &Iterator{tree: t, position: end}
 	return it.Prev()
 }
-func (it *Iterator) IsREnd() bool { return it.position == begin }
-
-func (t *Tree) IsEmpty() bool { return t.size == 0 }
-
-func (t *Tree) Size() int { return t.size }
+func (it *Iterator) REnd() bool { return it.position == begin }
 
 // Keys returns all keys in-order
 func (t *Tree) Keys() []keyType {
 	keys := make([]keyType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
+	for it := t.Begin(); !it.End(); it.Next() {
 		keys = append(keys, it.node.Key)
 	}
 	return keys
@@ -538,7 +538,7 @@ func (t *Tree) Keys() []keyType {
 // valueType must be int
 func (t *Tree) MultiKeys() []keyType {
 	keys := make([]keyType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
+	for it := t.Begin(); !it.End(); it.Next() {
 		k, v := it.node.Key, int(it.node.Value)
 		for i := 0; i < v; i++ {
 			keys = append(keys, k)
@@ -550,7 +550,7 @@ func (t *Tree) MultiKeys() []keyType {
 // Values returns all values in-order based on the key.
 func (t *Tree) Values() []valueType {
 	values := make([]valueType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
+	for it := t.Begin(); !it.End(); it.Next() {
 		values = append(values, it.node.Value)
 	}
 	return values
@@ -590,7 +590,7 @@ func (node *Node) draw(prefix string, isTail bool, str *string) {
 
 func (t *Tree) String() string {
 	str := "RedBlackTree\n"
-	if !t.IsEmpty() {
+	if !t.Empty() {
 		t.Root.draw("", true, &str)
 	}
 	return str
