@@ -5,12 +5,12 @@ import (
 	"sort"
 )
 
-type color int8
+type gColor int8
 
 const (
-	colorNone color = iota
-	colorBlack
-	colorWhite
+	gColorNone gColor = iota
+	gColorBlack
+	gColorWhite
 )
 
 type neighbor struct {
@@ -23,7 +23,7 @@ type graph struct {
 	edgeSize int
 	edges    [][]neighbor
 	visited  []bool
-	color    []color
+	color    []gColor
 }
 
 func newGraph(size, edgeSize int) *graph {
@@ -32,7 +32,7 @@ func newGraph(size, edgeSize int) *graph {
 		edgeSize: edgeSize,
 		edges:    make([][]neighbor, size+1),
 		visited:  make([]bool, size+1),
-		color:    make([]color, size+1),
+		color:    make([]gColor, size+1),
 	}
 }
 
@@ -297,7 +297,7 @@ func (g *graph) _isBipartite(v int) bool {
 		if g.color[w] == g.color[v] {
 			return false
 		}
-		if g.color[w] == colorNone {
+		if g.color[w] == gColorNone {
 			g.color[w] = 3 - g.color[v]
 			if !g._isBipartite(w) {
 				return false
@@ -308,7 +308,7 @@ func (g *graph) _isBipartite(v int) bool {
 }
 
 func (g *graph) isBipartite(v int) bool {
-	g.color[v] = colorBlack
+	g.color[v] = gColorBlack
 	return g._isBipartite(v)
 }
 

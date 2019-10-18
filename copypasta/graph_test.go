@@ -92,11 +92,11 @@ func Test_graph_isBipartite(t *testing.T) {
 	g.addBoth(5, 2, 1)
 	assert.True(g.isBipartite(1))
 
-	g.color = make([]color, g.size+1)
+	g.color = make([]gColor, g.size+1)
 	assert.True(g.isBipartite(5))
 
 	g.addBoth(1, 5, 1)
-	g.color = make([]color, g.size+1)
+	g.color = make([]gColor, g.size+1)
 	assert.False(g.isBipartite(5))
 }
 
