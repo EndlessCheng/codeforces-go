@@ -142,60 +142,6 @@ func (t *Tree) MultiErase(key keyType) {
 	}
 }
 
-func (t *Tree) IsEmpty() bool {
-	return t.size == 0
-}
-
-func (t *Tree) Size() int {
-	return t.size
-}
-
-// Keys returns all keys in-order
-func (t *Tree) Keys() []keyType {
-	keys := make([]keyType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
-		keys = append(keys, it.node.Key)
-	}
-	return keys
-}
-
-// valueType must be int
-func (t *Tree) MultiKeys() []keyType {
-	keys := make([]keyType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
-		k, v := it.node.Key, int(it.node.Value)
-		for i := 0; i < v; i++ {
-			keys = append(keys, k)
-		}
-	}
-	return keys
-}
-
-// Values returns all values in-order based on the key.
-func (t *Tree) Values() []valueType {
-	values := make([]valueType, 0, t.size)
-	for it := t.Begin(); !it.IsEnd(); it.Next() {
-		values = append(values, it.node.Value)
-	}
-	return values
-}
-
-// Min returns the left-most (min) node or nil if tree is empty.
-func (t *Tree) Min() (min *Node) {
-	for o := t.Root; o != nil; o = o.Left {
-		min = o
-	}
-	return
-}
-
-// Max returns the right-most (max) node or nil if tree is empty.
-func (t *Tree) Max() (max *Node) {
-	for o := t.Root; o != nil; o = o.Right {
-		max = o
-	}
-	return
-}
-
 // Floor Finds floor node of the input key, return the floor node or nil if no floor is found.
 //
 // Floor node is defined as the largest node that is smaller than or equal to the given node.
@@ -446,8 +392,6 @@ func nodeColor(node *Node) color {
 	return node.color
 }
 
-//
-
 type position byte
 
 const begin, between, end position = 0, 1, 2
@@ -462,6 +406,22 @@ type Iterator struct {
 // Iterator returns a stateful iterator whose elements are key/value pairs.
 func (t *Tree) NewIterator(node *Node) *Iterator {
 	return &Iterator{tree: t, node: node, position: between}
+}
+
+// Min returns the left-most (min) node or nil if tree is empty.
+func (t *Tree) Min() (min *Node) {
+	for o := t.Root; o != nil; o = o.Left {
+		min = o
+	}
+	return
+}
+
+// Max returns the right-most (max) node or nil if tree is empty.
+func (t *Tree) Max() (max *Node) {
+	for o := t.Root; o != nil; o = o.Right {
+		max = o
+	}
+	return
 }
 
 // Next moves the iterator to the next element and returns itself.
@@ -562,11 +522,43 @@ func (t *Tree) RBegin() *Iterator {
 }
 func (it *Iterator) IsREnd() bool { return it.position == begin }
 
+func (t *Tree) IsEmpty() bool { return t.size == 0 }
+
+func (t *Tree) Size() int { return t.size }
+
+// Keys returns all keys in-order
+func (t *Tree) Keys() []keyType {
+	keys := make([]keyType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		keys = append(keys, it.node.Key)
+	}
+	return keys
+}
+
+// valueType must be int
+func (t *Tree) MultiKeys() []keyType {
+	keys := make([]keyType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		k, v := it.node.Key, int(it.node.Value)
+		for i := 0; i < v; i++ {
+			keys = append(keys, k)
+		}
+	}
+	return keys
+}
+
+// Values returns all values in-order based on the key.
+func (t *Tree) Values() []valueType {
+	values := make([]valueType, 0, t.size)
+	for it := t.Begin(); !it.IsEnd(); it.Next() {
+		values = append(values, it.node.Value)
+	}
+	return values
+}
+
 //
 
-func (node *Node) String() string {
-	return fmt.Sprint(node.Key)
-}
+func (node *Node) String() string { return fmt.Sprint(node.Key) }
 
 func (node *Node) draw(prefix string, isTail bool, str *string) {
 	if node.Right != nil {
