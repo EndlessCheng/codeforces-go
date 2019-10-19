@@ -20,7 +20,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 	}
 
 	if caseNum < 0 {
-		caseNum = len(inputs) + 1 - caseNum
+		caseNum += len(inputs) + 1
 	}
 
 	// TODO: time costs
