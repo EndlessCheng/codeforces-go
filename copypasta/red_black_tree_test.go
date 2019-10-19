@@ -8,15 +8,15 @@ import (
 func Test_rbt(t *testing.T) {
 	assert := assert.New(t)
 
-	rbt := newRBTree()
+	rbt := NewRBTree()
 	assert.True(rbt.Empty())
 	assert.True(rbt.Begin().End())
 	assert.True(rbt.RBegin().REnd())
 
-	rbt.MultiInsert(1)
-	rbt.MultiInsert(10)
-	rbt.MultiInsert(10)
-	rbt.MultiInsert(100)
+	rbt.MultiPut(1)
+	rbt.MultiPut(10)
+	rbt.MultiPut(10)
+	rbt.MultiPut(100)
 
 	assert.False(rbt.Empty())
 	assert.EqualValues(3, rbt.Size())
@@ -44,9 +44,9 @@ func Test_rbt(t *testing.T) {
 	it = rbt.NewIterator(rbt.Lookup(10))
 	assert.EqualValues(100, it.Next().node.Key)
 
-	rbt.MultiErase(10)
+	rbt.MultiDelete(10)
 	assert.NotNil(rbt.Lookup(10))
 	assert.EqualValues(1, rbt.Lookup(10).Value)
-	rbt.MultiErase(10)
+	rbt.MultiDelete(10)
 	assert.Nil(rbt.Lookup(10))
 }
