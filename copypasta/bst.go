@@ -61,7 +61,7 @@ func newBST() *bst {
 }
 
 func (t *bst) size() int   { return t.root.size() }
-func (t *bst) empty() bool { return t.size() == 0 }
+func (t *bst) empty() bool { return t.root == nil }
 
 func (t *bst) get(key tKeyType) *tNode {
 	for o := t.root; o != nil; {

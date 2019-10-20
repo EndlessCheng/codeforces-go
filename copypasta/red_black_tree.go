@@ -24,26 +24,6 @@ func (o *rbNode) isRed() bool {
 	return o.c == red
 }
 
-// d=0: left
-// d=1: right
-func (o *rbNode) rotate(d int) *rbNode {
-	x := o.lr[d^1]
-	o.lr[d^1] = x.lr[d]
-	x.lr[d] = o
-	x.c = o.c
-	o.c = red
-	// x.msz = o.msz; o.pushUp()
-	o.pushUp()
-	x.pushUp()
-	return x
-}
-
-func (o *rbNode) flipColors() {
-	o.c = red
-	o.lr[0].c = black
-	o.lr[1].c = black
-}
-
 func (o *rbNode) pushUp() {
 	sz := 1
 	msz := int(o.value)
@@ -57,6 +37,83 @@ func (o *rbNode) pushUp() {
 	}
 	o.sz = sz
 	o.msz = msz
+}
+
+// d=0: left
+// d=1: right
+func (o *rbNode) rotate(d int) *rbNode {
+	x := o.lr[d^1]
+	o.lr[d^1] = x.lr[d]
+	x.lr[d] = o
+	x.c = x.lr[d].c
+	x.lr[d].c = red
+	// x.msz = o.msz; o.pushUp()
+	o.pushUp()
+	x.pushUp()
+	return x
+}
+
+// flip the colors of a node and its two children
+func (o *rbNode) flipColors() {
+	o.c = !o.c
+	o.lr[0].c = !o.lr[0].c
+	o.lr[1].c = !o.lr[1].c
+}
+
+// Assuming that h is red and both h.lr[0] and h.lr[0].lr[0]
+// are black, make h.lr[0] or one of its children red.
+func (o *rbNode) moveRedLeft() *rbNode {
+	o.flipColors()
+	if o.lr[1].lr[0].isRed() {
+		o.lr[1] = o.lr[1].rotate(1)
+		o = o.rotate(0)
+		o.flipColors()
+	}
+	return o
+}
+
+// Assuming that h is red and both o.lr[1] and o.lr[1].lr[0]
+// are black, make o.lr[1] or one of its children red.
+func (o *rbNode) moveRedRight() *rbNode {
+	o.flipColors()
+	if o.lr[0].lr[0].isRed() {
+		o = o.rotate(1)
+		o.flipColors()
+	}
+	return o
+}
+
+// restore red-black tree invariant
+func (o *rbNode) balance() *rbNode {
+	if o.lr[1].isRed() {
+		o = o.rotate(0)
+	}
+	if o.lr[0].isRed() && o.lr[0].lr[0].isRed() {
+		o = o.rotate(1)
+	}
+	if o.lr[0].isRed() && o.lr[1].isRed() {
+		o.flipColors()
+	}
+	o.pushUp()
+	return o
+}
+
+func (o *rbNode) min() *rbNode {
+	for o.lr[0] != nil {
+		o = o.lr[0]
+	}
+	return o
+}
+
+func (o *rbNode) deleteMin() *rbNode {
+	if o.lr[0] == nil {
+		return nil
+	}
+	if !o.lr[0].isRed() && !o.lr[0].lr[0].isRed() {
+		o = o.moveRedLeft()
+	}
+	o.lr[0] = o.lr[0].deleteMin()
+	return o.balance()
 }
 
 type rbTree struct {
@@ -93,8 +150,8 @@ func (t *rbTree) _put(o *rbNode, key rbKeyType, value rbValueType) *rbNode {
 			o.flipColors()
 		}
 	} else {
-		o.value = value
-		//o.value += value
+		//o.value = value
+		o.value += value
 	}
 	o.pushUp()
 	return o
@@ -103,6 +160,84 @@ func (t *rbTree) _put(o *rbNode, key rbKeyType, value rbValueType) *rbNode {
 func (t *rbTree) put(key rbKeyType, value rbValueType) {
 	t.root = t._put(t.root, key, value)
 	t.root.c = black
+}
+
+func (t *rbTree) get(key rbKeyType) *rbNode {
+	for o := t.root; o != nil; {
+		if cmp := t.comparator(key, o.key); cmp >= 0 {
+			o = o.lr[cmp]
+		} else {
+			return o
+		}
+	}
+	return nil
+}
+
+func (t *rbTree) getStack(key rbKeyType) (stack []*rbNode) {
+	for o := t.root; o != nil; {
+		stack = append(stack, o)
+		if cmp := t.comparator(key, o.key); cmp >= 0 {
+			o = o.lr[cmp]
+		} else {
+			return
+		}
+	}
+	return nil
+}
+
+func (t *rbTree) _delete(o *rbNode, key rbKeyType) *rbNode {
+	if cmp := t.comparator(key, o.key); cmp == 0 {
+		if !o.lr[0].isRed() && !o.lr[0].lr[0].isRed() {
+			o = o.moveRedLeft()
+		}
+		o.lr[0] = t._delete(o.lr[0], key)
+	} else {
+		if o.lr[0].isRed() {
+			o = o.rotate(1)
+		}
+		if t.comparator(key, o.key) == -1 && o.lr[1] == nil {
+			return nil
+		}
+		if !o.lr[1].isRed() && !o.lr[1].lr[0].isRed() {
+			o = o.moveRedRight()
+		}
+		if t.comparator(key, o.key) == -1 {
+			x := o.lr[1].min()
+			o.key = x.key
+			o.value = x.value
+			o.lr[1] = o.lr[1].deleteMin()
+		} else {
+			o.lr[1] = t._delete(o.lr[1], key)
+		}
+	}
+	return o.balance()
+}
+
+// 删除前必须检查是否有该节点！
+// 如果删除时保证不会出现根节点为空的情况，使用下面这行代码？
+// func (t *rbTree) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
+func (t *rbTree) delete(key rbKeyType) {
+	var o *rbNode
+	if stack := t.getStack(key); stack != nil {
+		stack, o = stack[:len(stack)-1], stack[len(stack)-1]
+		if o.value > 1 {
+			o.value--
+			o.pushUp()
+			for len(stack) > 0 {
+				stack, o = stack[:len(stack)-1], stack[len(stack)-1]
+				o.pushUp()
+			}
+			return
+		}
+	}
+	// if both children of root are black, set root to red
+	if !t.root.lr[0].isRed() && !t.root.lr[1].isRed() {
+		t.root.c = red
+	}
+	t.root = t._delete(t.root, key)
+	if t.root != nil {
+		t.root.c = black
+	}
 }
 
 //

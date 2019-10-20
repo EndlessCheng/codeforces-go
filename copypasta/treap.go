@@ -30,18 +30,6 @@ type tpNode struct {
 	value    tpValueType
 }
 
-// d=0: left
-// d=1: right
-func (o *tpNode) rotate(d int) *tpNode {
-	x := o.lr[d^1]
-	o.lr[d^1] = x.lr[d]
-	x.lr[d] = o
-	// x.msz = o.msz; o.pushUp()
-	o.pushUp()
-	x.pushUp()
-	return x
-}
-
 func (o *tpNode) pushUp() {
 	sz := 1
 	msz := int(o.value)
@@ -55,6 +43,18 @@ func (o *tpNode) pushUp() {
 	}
 	o.sz = sz
 	o.msz = msz
+}
+
+// d=0: left
+// d=1: right
+func (o *tpNode) rotate(d int) *tpNode {
+	x := o.lr[d^1]
+	o.lr[d^1] = x.lr[d]
+	x.lr[d] = o
+	// x.msz = o.msz; o.pushUp()
+	o.pushUp()
+	x.pushUp()
+	return x
 }
 
 type treap struct {
@@ -85,8 +85,8 @@ func (t *treap) _put(o *tpNode, key tpKeyType, value tpValueType) *tpNode {
 			o = o.rotate(cmp ^ 1)
 		}
 	} else {
-		o.value = value
-		//o.value += value
+		//o.value = value
+		o.value += value
 	}
 	o.pushUp()
 	return o
@@ -101,23 +101,23 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._delete(o.lr[cmp], key)
 	} else {
-		//if o.value > 1 {
-		//	o.value--
-		//} else {
-		if o.lr[1] == nil {
-			return o.lr[0]
+		if o.value > 1 {
+			o.value--
+		} else {
+			if o.lr[1] == nil {
+				return o.lr[0]
+			}
+			if o.lr[0] == nil {
+				return o.lr[1]
+			}
+			// o 有两颗子树，先把优先级高的子树旋转到根，然后递归在另一颗子树中删除 o
+			cmp2 := 0
+			if o.lr[0].priority > o.lr[1].priority {
+				cmp2 = 1
+			}
+			o = o.rotate(cmp2)
+			o.lr[cmp2] = t._delete(o.lr[cmp2], key)
 		}
-		if o.lr[0] == nil {
-			return o.lr[1]
-		}
-		// o 有两颗子树，先把优先级高的子树旋转到根，然后递归在另一颗子树中删除 o
-		cmp2 := 0
-		if o.lr[0].priority > o.lr[1].priority {
-			cmp2 = 1
-		}
-		o = o.rotate(cmp2)
-		o.lr[cmp2] = t._delete(o.lr[cmp2], key)
-		//}
 	}
 	o.pushUp()
 	return o
