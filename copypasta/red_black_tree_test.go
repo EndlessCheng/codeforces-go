@@ -5,13 +5,12 @@ import (
 	"testing"
 )
 
-func Test_treap(t_ *testing.T) {
+func Test_rbTree(t_ *testing.T) {
 	// 使用 https://www.luogu.org/problem/P3369 来测试
 
-	//_x = uint(1)
-	t := newTreap()
+	t := newRBTree()
 	for i := 1; i < 100; i++ {
-		t.put(tpKeyType(i), 1)
+		t.put(rbKeyType(i), 1)
 		fmt.Println(t)
 	}
 }

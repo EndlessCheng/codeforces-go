@@ -13,3 +13,11 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 > [source](https://codeforces.com/blog/entry/65406?#comment-494043)
 
 [Codeforces Visualizer](https://cfviz.netlify.com/virtual-rating-change.html)
+
+## BST
+
+left: treap
+
+right: red black tree
+
+![](misc/bst.png)
