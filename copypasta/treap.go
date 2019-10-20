@@ -1,11 +1,13 @@
 package copypasta
 
+// 耗时大约是红黑树的 1.3 倍
+
 import (
 	. "fmt"
 	"time"
 )
 
-var seed = uint32(time.Now().UnixNano())
+var seed = uint(time.Now().UnixNano())
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
@@ -15,7 +17,7 @@ func fastRand() uint {
 	x ^= x >> 17
 	x ^= x << 5
 	seed = x
-	return uint(x)
+	return x
 }
 
 type tKeyType int   // *custom* 图方便可以全局替换
@@ -44,7 +46,7 @@ func (o *tNode) mSize() int {
 	return 0
 }
 
-func (o *tNode) maintain() {
+func (o *tNode) pushUp() {
 	sz := 1
 	msz := int(o.value)
 	if ol := o.lr[0]; ol != nil {
@@ -86,8 +88,9 @@ func (t *treap) rotate(o *tNode, d int) *tNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
-	o.maintain() // o.sz = x.sz
-	x.maintain()
+	// x.msz = o.msz; o.pushUp()
+	o.pushUp()
+	x.pushUp()
 	return x
 }
 
@@ -104,7 +107,7 @@ func (t *treap) _put(o *tNode, key tKeyType, value tValueType) *tNode {
 		o.value = value
 		//o.value += value
 	}
-	o.maintain()
+	o.pushUp()
 	return o
 }
 
@@ -146,7 +149,7 @@ func (t *treap) _delete(o *tNode, key tKeyType) *tNode {
 		o.lr[cmp2] = t._delete(o.lr[cmp2], key)
 		//}
 	}
-	o.maintain()
+	o.pushUp()
 	return o
 }
 
@@ -169,6 +172,22 @@ func (t *treap) floor(key tKeyType) (floor *tNode) {
 	return
 }
 
+// 前驱（小于 key，且最大的数）
+func (t *treap) prev(key tKeyType) (prev *tNode) {
+	// 另一种写法
+	// rank, _ := t.mRank(key)
+	// return t.mSelect(rank - 1)
+	for o := t.root; o != nil; {
+		if cmp := t.comparator(key, o.key); cmp <= 0 {
+			o = o.lr[0]
+		} else {
+			prev = o
+			o = o.lr[1]
+		}
+	}
+	return
+}
+
 func (t *treap) ceiling(key tKeyType) (ceiling *tNode) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
@@ -179,6 +198,25 @@ func (t *treap) ceiling(key tKeyType) (ceiling *tNode) {
 			o = o.lr[1]
 		default:
 			return o
+		}
+	}
+	return
+}
+
+// 后继（大于 key，且最小的数)
+func (t *treap) next(key tKeyType) (next *tNode) {
+	// 另一种写法
+	// rank, o := t.mRank(key)
+	// if o != nil {
+	// 	 rank += int(o.value)
+	// }
+	// return t.mSelect(rank)
+	for o := t.root; o != nil; {
+		if cmp := t.comparator(key, o.key); cmp != 0 {
+			o = o.lr[1]
+		} else {
+			next = o
+			o = o.lr[0]
 		}
 	}
 	return
@@ -223,19 +261,18 @@ func (t *treap) mSelect(k int) (o *tNode) {
 	return
 }
 
-// 前驱（小于 key，且最大的数）
-func (t *treap) prev(key tKeyType) *tNode {
-	rank, _ := t.mRank(key)
-	return t.mSelect(rank - 1)
+func (t *treap) min() (min *tNode) {
+	for o := t.root; o != nil; o = o.lr[0] {
+		min = o
+	}
+	return
 }
 
-// 后继（大于 key，且最小的数)
-func (t *treap) next(key tKeyType) *tNode {
-	rank, o := t.mRank(key)
-	if o != nil {
-		rank += int(o.value)
+func (t *treap) max() (max *tNode) {
+	for o := t.root; o != nil; o = o.lr[1] {
+		max = o
 	}
-	return t.mSelect(rank)
+	return
 }
 
 //
