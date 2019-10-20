@@ -32,9 +32,13 @@ func (a vec) reverse() vec      { return a.mul(-1) }
 //}
 
 // 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）
-func isOrthogonal(a, b, c vec) bool           { return a.sub(b).dot(c.sub(b)) == 0 }
-func isRectangle(a, b, c, d vec) bool         { return isOrthogonal(a, b, c) && isOrthogonal(b, c, d) && isOrthogonal(c, d, a) }
-func isRectangleAnyOrder(a, b, c, d vec) bool { return isRectangle(a, b, c, d) || isRectangle(a, b, d, c) || isRectangle(a, c, b, d) }
+func isOrthogonal(a, b, c vec) bool { return a.sub(b).dot(c.sub(b)) == 0 }
+func isRectangle(a, b, c, d vec) bool {
+	return isOrthogonal(a, b, c) && isOrthogonal(b, c, d) && isOrthogonal(c, d, a)
+}
+func isRectangleAnyOrder(a, b, c, d vec) bool {
+	return isRectangle(a, b, c, d) || isRectangle(a, b, d, c) || isRectangle(a, c, b, d)
+}
 
 func geometryCollection() {
 	sortVec := func(arr []vec) {
@@ -69,4 +73,19 @@ func geometryCollection() {
 
 type line struct {
 	p0, l vec
+}
+
+//
+
+type vec3 struct {
+	x, y, z int
+	idx     int
+}
+
+func vec3Collections() {
+	var ps []vec3
+	sort.Slice(ps, func(i, j int) bool {
+		pi, pj := ps[i], ps[j]
+		return pi.x < pj.x || pi.x == pj.x && pi.y < pj.y || pi.x == pj.x && pi.y == pj.y && pi.z < pj.z
+	})
 }
