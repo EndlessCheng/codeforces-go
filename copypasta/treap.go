@@ -101,11 +101,8 @@ func (t *treap) _put(o *tNode, key tKeyType, value tValueType) *tNode {
 			o = t.rotate(o, cmp^1)
 		}
 	} else {
-		//o.value = value
-		o.value += value
-		if o.value == 0 {
-			o = t._delete(o, key)
-		}
+		o.value = value
+		//o.value += value
 	}
 	o.maintain()
 	return o
@@ -131,6 +128,9 @@ func (t *treap) _delete(o *tNode, key tKeyType) *tNode {
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._delete(o.lr[cmp], key)
 	} else {
+		//if o.value > 1 {
+		//	o.value--
+		//} else {
 		if o.lr[1] == nil {
 			return o.lr[0]
 		}
@@ -144,6 +144,7 @@ func (t *treap) _delete(o *tNode, key tKeyType) *tNode {
 		}
 		o = t.rotate(o, cmp2)
 		o.lr[cmp2] = t._delete(o.lr[cmp2], key)
+		//}
 	}
 	o.maintain()
 	return o
@@ -183,32 +184,9 @@ func (t *treap) ceiling(key tKeyType) (ceiling *tNode) {
 	return
 }
 
-// 排名为 k 的节点（k 从 0 开始）
-// 即小于节点的键的数量为 k
-func (t *treap) mSelect(k int) *tNode {
-	//if k < 0 {
-	//	return nil
-	//}
-	for o := t.root; o != nil; {
-		switch ls := o.lr[0].mSize(); {
-		case k < ls:
-			o = o.lr[0]
-		case k > ls:
-			k -= int(o.value) + ls
-			if k < 0 {
-				return o
-			}
-			o = o.lr[1]
-		default:
-			return o
-		}
-	}
-	return nil
-}
-
 // 小于 key 的键的数量
-func (t *treap) mRank(key tKeyType) (cnt int) {
-	for o := t.root; o != nil; {
+func (t *treap) mRank(key tKeyType) (cnt int, o *tNode) {
+	for o = t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
 		case cmp == 0:
 			o = o.lr[0]
@@ -221,6 +199,43 @@ func (t *treap) mRank(key tKeyType) (cnt int) {
 		}
 	}
 	return
+}
+
+// 排名为 k 的节点 o（即有 k 个键小于 o.key）
+func (t *treap) mSelect(k int) (o *tNode) {
+	//if k < 0 {
+	//	return
+	//}
+	for o = t.root; o != nil; {
+		switch ls := o.lr[0].mSize(); {
+		case k < ls:
+			o = o.lr[0]
+		case k > ls:
+			k -= int(o.value) + ls
+			if k < 0 {
+				return
+			}
+			o = o.lr[1]
+		default:
+			return
+		}
+	}
+	return
+}
+
+// 前驱（小于 key，且最大的数）
+func (t *treap) prev(key tKeyType) *tNode {
+	rank, _ := t.mRank(key)
+	return t.mSelect(rank - 1)
+}
+
+// 后继（大于 key，且最小的数)
+func (t *treap) next(key tKeyType) *tNode {
+	rank, o := t.mRank(key)
+	if o != nil {
+		rank += int(o.value)
+	}
+	return t.mSelect(rank)
 }
 
 //
