@@ -39,7 +39,12 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 		answer = strings.TrimSpace(answer)
 		actualOutput = strings.TrimSpace(actualOutput)
 
-		_ok := assert.Equal(t, answer, actualOutput, "please check test case [%d]\nInput:\n%s", i+1, input)
+		const maxInputSize = 150
+		inputInfo := input
+		if len(inputInfo) > maxInputSize {
+			inputInfo = inputInfo[:maxInputSize] + "..."
+		}
+		_ok := assert.Equal(t, answer, actualOutput, "please check test case [%d]\nInput:\n%s", i+1, inputInfo)
 		if !_ok {
 			ok = _ok
 		}
