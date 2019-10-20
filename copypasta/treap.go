@@ -7,17 +7,15 @@ import (
 	"time"
 )
 
-var seed = uint(time.Now().UnixNano())
+var _x = uint(time.Now().UnixNano())
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
 func fastRand() uint {
-	x := seed
-	x ^= x << 13
-	x ^= x >> 17
-	x ^= x << 5
-	seed = x
-	return x
+	_x ^= _x << 13
+	_x ^= _x >> 17
+	_x ^= _x << 5
+	return _x
 }
 
 type tKeyType int   // *custom* 图方便可以全局替换
