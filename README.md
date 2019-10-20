@@ -16,7 +16,7 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 
 ## BST
 
-left: treap
+left: treap (xorshift32 random number)
 
 right: red black tree
 
