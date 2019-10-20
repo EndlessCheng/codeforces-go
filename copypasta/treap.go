@@ -37,6 +37,13 @@ func (o *tNode) size() int {
 	return 0
 }
 
+func (o *tNode) mSize() int {
+	if o != nil {
+		return o.msz
+	}
+	return 0
+}
+
 func (o *tNode) maintain() {
 	sz := 1
 	msz := int(o.value)
@@ -86,7 +93,7 @@ func (t *treap) rotate(o *tNode, d int) *tNode {
 
 func (t *treap) _put(o *tNode, key tKeyType, value tValueType) *tNode {
 	if o == nil {
-		return &tNode{priority: fastRand(), sz: 1, key: key, value: value}
+		return &tNode{priority: fastRand(), sz: 1, msz: 1, key: key, value: value}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key, value)
@@ -94,7 +101,11 @@ func (t *treap) _put(o *tNode, key tKeyType, value tValueType) *tNode {
 			o = t.rotate(o, cmp^1)
 		}
 	} else {
-		o.value = value
+		//o.value = value
+		o.value += value
+		if o.value == 0 {
+			o = t._delete(o, key)
+		}
 	}
 	o.maintain()
 	return o
@@ -104,11 +115,11 @@ func (t *treap) put(key tKeyType, value tValueType) { t.root = t._put(t.root, ke
 
 func (t *treap) get(key tKeyType) *tNode {
 	for o := t.root; o != nil; {
-		cmp := t.comparator(key, o.key)
-		if cmp == -1 {
+		if cmp := t.comparator(key, o.key); cmp >= 0 {
+			o = o.lr[cmp]
+		} else {
 			return o
 		}
-		o = o.lr[cmp]
 	}
 	return nil
 }
@@ -142,11 +153,87 @@ func (t *treap) delete(key tKeyType) { t.root = t._delete(t.root, key) }
 
 //
 
-func (o *tNode) String() string {
-	if o.value == 1 {
-		return Sprintf("%v[sz:%d,p:%d]", o.key, o.sz, o.priority)
+func (t *treap) floor(key tKeyType) (floor *tNode) {
+	for o := t.root; o != nil; {
+		switch cmp := t.comparator(key, o.key); {
+		case cmp == 0:
+			o = o.lr[0]
+		case cmp > 0:
+			floor = o
+			o = o.lr[1]
+		default:
+			return o
+		}
 	}
-	return Sprintf("%v(%v)[sz:%d,p:%d]", o.key, o.value, o.sz, o.priority)
+	return
+}
+
+func (t *treap) ceiling(key tKeyType) (ceiling *tNode) {
+	for o := t.root; o != nil; {
+		switch cmp := t.comparator(key, o.key); {
+		case cmp == 0:
+			ceiling = o
+			o = o.lr[0]
+		case cmp > 0:
+			o = o.lr[1]
+		default:
+			return o
+		}
+	}
+	return
+}
+
+// 排名为 k 的节点（k 从 0 开始）
+// 即小于节点的键的数量为 k
+func (t *treap) mSelect(k int) *tNode {
+	//if k < 0 {
+	//	return nil
+	//}
+	for o := t.root; o != nil; {
+		switch ls := o.lr[0].mSize(); {
+		case k < ls:
+			o = o.lr[0]
+		case k > ls:
+			k -= int(o.value) + ls
+			if k < 0 {
+				return o
+			}
+			o = o.lr[1]
+		default:
+			return o
+		}
+	}
+	return nil
+}
+
+// 小于 key 的键的数量
+func (t *treap) mRank(key tKeyType) (cnt int) {
+	for o := t.root; o != nil; {
+		switch cmp := t.comparator(key, o.key); {
+		case cmp == 0:
+			o = o.lr[0]
+		case cmp > 0:
+			cnt += int(o.value) + o.lr[0].mSize()
+			o = o.lr[1]
+		default:
+			cnt += o.lr[0].mSize()
+			return
+		}
+	}
+	return
+}
+
+//
+
+func (o *tNode) String() string {
+	var s string
+	if o.value == 1 {
+		s = Sprintf("%v", o.key)
+	} else {
+		s = Sprintf("%v(%v)", o.key, o.value)
+	}
+	s += Sprintf("[sz:%d,msz:%d,p:%d]", o.sz, o.msz, o.priority)
+	return s
 }
 
 func (o *tNode) draw(prefix string, isTail bool, str *string) {

@@ -14,11 +14,18 @@ func Test_treap(t_ *testing.T) {
 		t.put(tKeyType(i), 1)
 		fmt.Println(t)
 	}
-	t.delete(3)
+
+	fmt.Println("multi put")
+	t.put(3,1)
 	fmt.Println(t)
 
-	//for i := 1; i < 20; i++ {
-	//	t.delete(tKeyType(i))
-	//	fmt.Println(t)
-	//}
+	// must have 3
+	fmt.Println("first delete")
+	t.put(3,-1)
+
+	fmt.Println(t)
+	fmt.Println("second delete")
+	t.put(3,-1)
+	fmt.Println(t)
+
 }
