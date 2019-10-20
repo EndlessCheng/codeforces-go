@@ -1,6 +1,6 @@
-package copypasta
+package main
 
-import "fmt"
+import . "fmt"
 
 // http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
 
@@ -14,6 +14,7 @@ type Node struct {
 	Left, Right, Parent *Node
 
 	N     int // 以该节点为根的子树中的节点总数
+	MN    int
 	Key   keyType
 	Value valueType
 	color color
@@ -36,15 +37,33 @@ func NewRBTree() *Tree {
 	}}
 }
 
-func (t *Tree) size(o *Node) int {
-	if o != nil {
-		return o.N
+/***************************************************************************
+ *  Node helper methods.
+ ***************************************************************************/
+
+func (node *Node) isRed() bool {
+	if node != nil {
+		return node.color == red
+	}
+	return false
+}
+
+func (node *Node) size() int {
+	if node != nil {
+		return node.N
 	}
 	return 0
 }
 
-func (t *Tree) Size() int { return t.size(t.Root) }
+func (node *Node) mSize() int {
+	if node != nil {
+		return node.MN
+	}
+	return 0
+}
 
+func (t *Tree) Size() int   { return t.Root.size() }
+func (t *Tree) MSize() int  { return t.Root.mSize() }
 func (t *Tree) Empty() bool { return t.Size() == 0 }
 
 func (t *Tree) Put(key keyType, value valueType) *Node {
@@ -54,13 +73,13 @@ func (t *Tree) Put(key keyType, value valueType) *Node {
 		t.Root = &Node{Key: key, Value: value, color: red}
 		insertedNode = t.Root
 		insertedNode.N = 1
+		insertedNode.MN = 1
 	} else {
 		o := t.Root
 		stack := []*Node{o}
 	loop:
 		for {
-			cmp := t.comparator(key, o.Key)
-			switch {
+			switch cmp := t.comparator(key, o.Key); {
 			case cmp < 0:
 				if o.Left == nil {
 					// 标准的插入操作，和父节点用红链接相连
@@ -86,9 +105,11 @@ func (t *Tree) Put(key keyType, value valueType) *Node {
 		}
 		insertedNode.Parent = o
 		insertedNode.N = 1
+		insertedNode.MN = 1
 		for len(stack) > 0 {
 			stack, o = stack[:len(stack)-1], stack[len(stack)-1]
-			o.N = 1 + t.size(o.Left) + t.size(o.Right)
+			o.N = 1 + o.Left.size() + o.Right.size()
+			o.MN = int(o.Value) + o.Left.mSize() + o.Right.mSize()
 		}
 	}
 	t.insertCase1(insertedNode)
@@ -98,8 +119,7 @@ func (t *Tree) Put(key keyType, value valueType) *Node {
 // Get
 func (t *Tree) Lookup(key keyType) *Node {
 	for o := t.Root; o != nil; {
-		cmp := t.comparator(key, o.Key)
-		switch {
+		switch cmp := t.comparator(key, o.Key); {
 		case cmp < 0:
 			o = o.Left
 		case cmp > 0:
@@ -109,6 +129,22 @@ func (t *Tree) Lookup(key keyType) *Node {
 		}
 	}
 	return nil
+}
+
+func (t *Tree) LookupStack(key keyType) (stack []*Node, found bool) {
+	for o := t.Root; o != nil; {
+		stack = append(stack, o)
+		switch cmp := t.comparator(key, o.Key); {
+		case cmp < 0:
+			o = o.Left
+		case cmp > 0:
+			o = o.Right
+		default:
+			found = true
+			return
+		}
+	}
+	return
 }
 
 func (t *Tree) Contains(key keyType) bool { return t.Lookup(key) != nil }
@@ -161,6 +197,39 @@ func (t *Tree) MultiDelete(key keyType) {
 	}
 }
 
+// valueType must be int
+func (t *Tree) MultiPutMN(key keyType) *Node {
+	if stack, found := t.LookupStack(key); found {
+		var leaf, o *Node
+		stack, leaf = stack[:len(stack)-1], stack[len(stack)-1]
+		leaf.Value++
+		leaf.MN++
+		for len(stack) > 0 {
+			stack, o = stack[:len(stack)-1], stack[len(stack)-1]
+			o.MN = int(o.Value) + o.Left.mSize() + o.Right.mSize()
+		}
+		return leaf
+	}
+	return t.Put(key, 1)
+}
+
+// valueType must be int
+func (t *Tree) MultiDeleteMN(key keyType) {
+	if stack, found := t.LookupStack(key); found {
+		var leaf, o *Node
+		stack, leaf = stack[:len(stack)-1], stack[len(stack)-1]
+		leaf.Value--
+		leaf.MN--
+		for len(stack) > 0 {
+			stack, o = stack[:len(stack)-1], stack[len(stack)-1]
+			o.MN = int(o.Value) + o.Left.mSize() + o.Right.mSize()
+		}
+		if leaf.Value == 0 {
+			t.Delete(key)
+		}
+	}
+}
+
 // Floor Finds floor node of the input key, return the floor node or nil if no floor is found.
 //
 // Floor node is defined as the largest node that is smaller than or equal to the given node.
@@ -168,8 +237,7 @@ func (t *Tree) MultiDelete(key keyType) {
 // all nodes in the tree are larger than the given node.
 func (t *Tree) Floor(key keyType) (floor *Node) {
 	for o := t.Root; o != nil; {
-		cmp := t.comparator(key, o.Key)
-		switch {
+		switch cmp := t.comparator(key, o.Key); {
 		case cmp < 0:
 			o = o.Left
 		case cmp > 0:
@@ -189,8 +257,7 @@ func (t *Tree) Floor(key keyType) (floor *Node) {
 // all nodes in the tree are smaller than the given node.
 func (t *Tree) Ceiling(key keyType) (ceiling *Node) {
 	for o := t.Root; o != nil; {
-		cmp := t.comparator(key, o.Key)
-		switch {
+		switch cmp := t.comparator(key, o.Key); {
 		case cmp < 0:
 			ceiling = o
 			o = o.Left
@@ -206,9 +273,11 @@ func (t *Tree) Ceiling(key keyType) (ceiling *Node) {
 // 排名为 k 的节点（k 从 0 开始）
 // 即小于节点的键的数量为 k
 func (t *Tree) Select(k int) *Node {
+	if k < 0 {
+		return nil
+	}
 	for o := t.Root; o != nil; {
-		ls := t.size(o.Left)
-		switch {
+		switch ls := o.Left.size(); {
 		case k < ls:
 			o = o.Left
 		case k > ls:
@@ -224,15 +293,54 @@ func (t *Tree) Select(k int) *Node {
 // 小于 key 的键的数量
 func (t *Tree) Rank(key keyType) (cnt int) {
 	for o := t.Root; o != nil; {
-		cmp := t.comparator(key, o.Key)
-		switch {
+		switch cmp := t.comparator(key, o.Key); {
 		case cmp < 0:
 			o = o.Left
 		case cmp > 0:
-			cnt += 1 + t.size(o.Left)
+			cnt += 1 + o.Left.size()
 			o = o.Right
 		default:
-			cnt += t.size(o.Left)
+			cnt += o.Left.size()
+			return
+		}
+	}
+	return
+}
+
+// 排名为 k 的节点（k 从 0 开始）
+// 即小于节点的键的数量为 k
+func (t *Tree) SelectMN(k int) *Node {
+	if k < 0 {
+		return nil
+	}
+	for o := t.Root; o != nil; {
+		switch ls := o.Left.mSize(); {
+		case k < ls:
+			o = o.Left
+		case k > ls:
+			k -= int(o.Value) + ls
+			if k < 0 {
+				return o
+			}
+			o = o.Right
+		default:
+			return o
+		}
+	}
+	return nil
+}
+
+// 小于 key 的键的数量
+func (t *Tree) RankMN(key keyType) (cnt int) {
+	for o := t.Root; o != nil; {
+		switch cmp := t.comparator(key, o.Key); {
+		case cmp < 0:
+			o = o.Left
+		case cmp > 0:
+			cnt += int(o.Value) + o.Left.mSize()
+			o = o.Right
+		default:
+			cnt += o.Left.mSize()
 			return
 		}
 	}
@@ -273,7 +381,9 @@ func (t *Tree) rotateLeft(o *Node) {
 	r.Left = o
 	o.Parent = r
 	r.N = o.N
-	o.N = 1 + t.size(o.Left) + t.size(o.Right)
+	r.MN = o.MN
+	o.N = 1 + o.Left.size() + o.Right.size()
+	o.MN = int(o.Value) + o.Left.mSize() + o.Right.mSize()
 }
 
 func (t *Tree) rotateRight(o *Node) {
@@ -286,7 +396,9 @@ func (t *Tree) rotateRight(o *Node) {
 	l.Right = o
 	o.Parent = l
 	l.N = o.N
-	o.N = 1 + t.size(o.Left) + t.size(o.Right)
+	l.MN = o.MN
+	o.N = 1 + o.Left.size() + o.Right.size()
+	o.MN = int(o.Value) + o.Left.mSize() + o.Right.mSize()
 }
 
 func (t *Tree) replaceParent(old, new *Node) {
@@ -594,7 +706,7 @@ func (t *Tree) Keys() []keyType {
 func (t *Tree) MultiKeys() []keyType {
 	keys := make([]keyType, 0, t.Size())
 	for it := t.Begin(); !it.End(); it.Next() {
-		k, v := it.node.Key, int(it.node.Value)
+		k, v := it.node.Key, int(it.node.Value) // it.node.MN
 		for i := 0; i < v; i++ {
 			keys = append(keys, k)
 		}
@@ -613,7 +725,14 @@ func (t *Tree) Values() []valueType {
 
 //
 
-func (node *Node) String() string { return fmt.Sprint(node.Key) }
+//func (node *Node) String() string {return Sprint(node.Key)}
+
+func (node *Node) String() string {
+	if node.Value == 1 {
+		return Sprint(node.Key)
+	}
+	return Sprintf("%d(%d)", node.Key, node.Value)
+}
 
 func (node *Node) draw(prefix string, isTail bool, str *string) {
 	if node.Right != nil {

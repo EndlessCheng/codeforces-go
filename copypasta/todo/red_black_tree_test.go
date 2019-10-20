@@ -1,10 +1,11 @@
-package copypasta
+package main
 
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
 )
 
+// 可以使用 https://www.luogu.org/problem/P3369 来测试
 func Test_rbt(t *testing.T) {
 	assert := assert.New(t)
 

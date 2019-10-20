@@ -50,3 +50,35 @@ func multiUnionFind() {
 
 	_ = []interface{}{merge, same}
 }
+
+func unionFindWithWeights() {
+	//n := int(1e5)
+	//type pair struct{ i, sum int }
+	//fa := make([]pair, n)
+	//for i := range fa {
+	//	fa[i] = pair{i, 1} // or read sum from stdin
+	//}
+	//var find func(int) pair
+	//find = func(x int) pair {
+	//	if pfa := fa[x]; pfa.i != x {
+	//		fa[x] = find(pfa.i)
+	//		fa[x].sum += pfa.sum
+	//	}
+	//	return fa[x]
+	//}
+	//merge := func(from, to int, val int) bool {
+	//	pf, pt := find(from), find(to)
+	//	if pf.i == pt.i {
+	//		return false
+	//	} else {
+	//		fa[pf] = o2
+	//		// *custom*
+	//	}
+	//}
+	//query := func(i, j int) (sum int, ok bool) {
+	//	pi, pj := find(i), find(j)
+	//	if
+	//}
+	//
+	//_ = []interface{}{merge}
+}
