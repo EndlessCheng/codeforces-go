@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"time"
 )
 
@@ -182,6 +181,6 @@ func Sol527CTreap(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol527CTreap(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol527CTreap(os.Stdin, os.Stdout)
+//}
