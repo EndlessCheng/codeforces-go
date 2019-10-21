@@ -27,5 +27,29 @@ func bitsCollection() {
 		return n
 	}
 
-	_ = []interface{}{maxPow2}
+	bitLength := func(n int) int {
+		c := 1
+		if n>>16 > 0 {
+			c += 16
+			n >>= 16
+		}
+		if n>>8 > 0 {
+			c += 8
+			n >>= 8
+		}
+		if n>>4 > 0 {
+			c += 4
+			n >>= 4
+		}
+		if n>>2 > 0 {
+			c += 2
+			n >>= 2
+		}
+		if n-1 > 0 {
+			c++
+		}
+		return c
+	}
+
+	_ = []interface{}{maxPow2, bitLength}
 }
