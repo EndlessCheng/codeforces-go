@@ -22,44 +22,38 @@ func Sol225C(reader io.Reader, writer io.Writer) {
 	var n, m, x, y int
 	Fscan(in, &n, &m, &x, &y)
 	cnt := make([]int, m)
-	pic := make([]string, n)
-	for i := range pic {
-		Fscan(in, &pic[i])
-		for j, c := range pic[i] {
+	var s string
+	for i := 0; i < n; i++ {
+		Fscan(in, &s)
+		for j, c := range s {
 			if c == '.' {
 				cnt[j]++
 			}
 		}
 	}
 
-	cache := map[string]int{}
-	var f func(int, int8, int) int
-	f = func(i int, isDot int8, con int) (res int) {
-		if i == m {
-			return
-		}
-		if con > y {
-			return 1e8
-		}
-		hash := Sprintf("%d;%d;%d", i, isDot, con)
-		if val, ok := cache[hash]; ok {
-			return val
-		}
-		if isDot == 0 { // #
-			res = f(i+1, isDot, con+1) + cnt[i]
-			if con >= x {
-				res = min(res, f(i+1, isDot^1, 1)+n-cnt[i]) // .
-			}
-		} else { // .
-			res = f(i+1, isDot, con+1) + n - cnt[i]
-			if con >= x {
-				res = min(res, f(i+1, isDot^1, 1)+cnt[i]) // #
-			}
-		}
-		cache[hash] = res
-		return
+	sum := make([][2]int, m+1)
+	for i := 1; i <= m; i++ {
+		sum[i][0] = sum[i-1][0] + cnt[i-1]
+		sum[i][1] = sum[i-1][1] + n - cnt[i-1]
 	}
-	Fprint(out, min(f(1, 0, 1)+cnt[0], f(1, 1, 1)+n-cnt[0]))
+	dp := make([][2]int, m+1)
+	for i := range dp {
+		dp[i][0] = 1e8
+		dp[i][1] = 1e8
+	}
+	dp[0][0] = 0
+	dp[0][1] = 0
+	for i := 1; i <= m; i++ {
+		for j := x; j <= y; j++ {
+			if i-j < 0 {
+				break
+			}
+			dp[i][0] = min(dp[i][0], dp[i-j][1]+sum[i][0]-sum[i-j][0])
+			dp[i][1] = min(dp[i][1], dp[i-j][0]+sum[i][1]-sum[i-j][1])
+		}
+	}
+	Fprint(out, min(dp[m][0], dp[m][1]))
 }
 
 func main() {
