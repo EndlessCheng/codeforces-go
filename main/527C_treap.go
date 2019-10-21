@@ -4,10 +4,9 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"time"
 )
 
-var _x527C = uint(time.Now().UnixNano())
+var _x527C = uint(1)
 
 func fastRand527C() uint {
 	_x527C ^= _x527C << 13
