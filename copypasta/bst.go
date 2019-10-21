@@ -192,6 +192,23 @@ func (t *bst) max() (max *tNode) {
 	return
 }
 
+func (t *bst) keys() (keys []tKeyType) {
+	var o *tNode
+	q := []*tNode{t.root}
+	for len(q) > 0 {
+		o, q = q[0], q[1:]
+		if o == nil {
+			continue
+		}
+		keys = append(keys, o.key)
+		for _, ch := range o.lr {
+			q = append(q, ch)
+		}
+	}
+	//sort.Ints(keys)
+	return
+}
+
 //
 
 func (o *tNode) String() string {
