@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -56,6 +55,6 @@ func Sol225C(reader io.Reader, writer io.Writer) {
 	Fprint(out, min(dp[m][0], dp[m][1]))
 }
 
-func main() {
-	Sol225C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol225C(os.Stdin, os.Stdout)
+//}
