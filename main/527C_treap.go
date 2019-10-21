@@ -4,27 +4,26 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"time"
 )
 
-var _x = uint(time.Now().UnixNano())
+var _x527C = uint(1)
 
-func fastRand() uint {
-	_x ^= _x << 13
-	_x ^= _x >> 17
-	_x ^= _x << 5
-	return _x
+func fastRand527C() uint {
+	_x527C ^= _x527C << 13
+	_x527C ^= _x527C >> 17
+	_x527C ^= _x527C << 5
+	return _x527C
 }
 
-type tNode struct {
-	lr       [2]*tNode
+type node527C struct {
+	lr       [2]*node527C
 	priority uint
 	msz      int
 	key      int
 	value    int
 }
 
-func (o *tNode) pushUp() {
+func (o *node527C) pushUp() {
 	msz := o.value
 	if ol := o.lr[0]; ol != nil {
 		msz += ol.msz
@@ -35,13 +34,13 @@ func (o *tNode) pushUp() {
 	o.msz = msz
 }
 
-type treap struct {
-	root       *tNode
+type treap527C struct {
+	root       *node527C
 	comparator func(a, b int) int
 }
 
-func newTreap() *treap {
-	return &treap{comparator: func(a, b int) int {
+func newTreap527C() *treap527C {
+	return &treap527C{comparator: func(a, b int) int {
 		if a < b {
 			return 0
 		}
@@ -52,7 +51,7 @@ func newTreap() *treap {
 	}}
 }
 
-func (t *treap) rotate(o *tNode, d int) *tNode {
+func (t *treap527C) rotate(o *node527C, d int) *node527C {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
@@ -61,9 +60,9 @@ func (t *treap) rotate(o *tNode, d int) *tNode {
 	return x
 }
 
-func (t *treap) _put(o *tNode, key int) *tNode {
+func (t *treap527C) _put(o *node527C, key int) *node527C {
 	if o == nil {
-		return &tNode{priority: fastRand(), msz: 1, key: key, value: 1}
+		return &node527C{priority: fastRand527C(), msz: 1, key: key, value: 1}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key)
@@ -77,9 +76,9 @@ func (t *treap) _put(o *tNode, key int) *tNode {
 	return o
 }
 
-func (t *treap) put(key int) { t.root = t._put(t.root, key) }
+func (t *treap527C) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *treap) _delete(o *tNode, key int) *tNode {
+func (t *treap527C) _delete(o *node527C, key int) *node527C {
 	if o == nil {
 		return nil
 	}
@@ -107,9 +106,9 @@ func (t *treap) _delete(o *tNode, key int) *tNode {
 	return o
 }
 
-func (t *treap) delete(key int) { t.root = t._delete(t.root, key) }
+func (t *treap527C) delete(key int) { t.root = t._delete(t.root, key) }
 
-func (t *treap) floor(key int) (floor *tNode) {
+func (t *treap527C) floor(key int) (floor *node527C) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
 		case cmp == 0:
@@ -124,7 +123,7 @@ func (t *treap) floor(key int) (floor *tNode) {
 	return
 }
 
-func (t *treap) next(key int) (next *tNode) {
+func (t *treap527C) next(key int) (next *node527C) {
 	for o := t.root; o != nil; {
 		if cmp := t.comparator(key, o.key); cmp != 0 {
 			o = o.lr[1]
@@ -136,7 +135,7 @@ func (t *treap) next(key int) (next *tNode) {
 	return
 }
 
-func (t *treap) max() (max *tNode) {
+func (t *treap527C) max() (max *node527C) {
 	for o := t.root; o != nil; o = o.lr[1] {
 		max = o
 	}
@@ -145,7 +144,7 @@ func (t *treap) max() (max *tNode) {
 
 // github.com/EndlessCheng/codeforces-go
 func Sol527CTreap(reader io.Reader, writer io.Writer) {
-	cut := func(t, mt *treap, mid int) {
+	cut := func(t, mt *treap527C, mid int) {
 		o := t.floor(mid)
 		l := o.key
 		r := t.next(l).key
@@ -159,7 +158,7 @@ func Sol527CTreap(reader io.Reader, writer io.Writer) {
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
-	w, h, mw, mh := newTreap(), newTreap(), newTreap(), newTreap()
+	w, h, mw, mh := newTreap527C(), newTreap527C(), newTreap527C(), newTreap527C()
 	var w0, h0, n int
 	Fscan(in, &w0, &h0, &n)
 	w.put(0)

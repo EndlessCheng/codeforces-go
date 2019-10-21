@@ -1,13 +1,10 @@
 package copypasta
 
-// 耗时大约是红黑树的 1.3 倍
+// 耗时大约是红黑树（父节点实现）的 1.2 倍
 
-import (
-	. "fmt"
-	"time"
-)
+import . "fmt"
 
-var _x = uint(time.Now().UnixNano())
+var _x = uint(1) // uint(time.Now().UnixNano())
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
