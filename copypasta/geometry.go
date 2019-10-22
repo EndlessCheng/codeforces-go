@@ -1,13 +1,24 @@
 package copypasta
 
 import (
+	. "fmt"
+	"io"
+	"math"
 	"sort"
 )
+
+// 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.12f", ans)，这样还可以方便测试
 
 const eps = 1e-6
 
 type vec struct {
 	x, y int64
+}
+
+func read(in io.Reader) vec {
+	var x, y int64
+	Fscan(in, &x, &y)
+	return vec{x, y}
 }
 
 func (a vec) less(b vec) bool  { return a.x < b.x || a.x == b.x && a.y < b.y }
@@ -24,7 +35,8 @@ func (a vec) dot(b vec) int64  { return a.x*b.x + a.y*b.y }
 func (a vec) cross(b vec) int64 { return a.x*b.y - a.y*b.x }
 func (a vec) reverse() vec      { return a.mul(-1) }
 
-//func (a vec) norm() float64     { return math.Hypot(a.x, a.y) }
+func (a vec) len() float64 { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) len2() int64  { return a.x*a.x + a.y*a.y }
 
 // Use equals when x,y is float64, otherwise just use ==
 //func (a vec) equals(b vec) bool {
