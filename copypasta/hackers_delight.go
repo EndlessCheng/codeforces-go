@@ -27,7 +27,17 @@ func bitsCollection() {
 		return n
 	}
 
-	bitLength := func(n int) int {
+	bitLength := func(n int) (c int) {
+		if n == 0 {
+			return 1
+		}
+		for ; n > 0; n >>= 1 {
+			c++
+		}
+		return
+	}
+
+	bitLength = func(n int) int {
 		c := 1
 		if n>>16 > 0 {
 			c += 16
