@@ -40,11 +40,11 @@ func mathCollection() {
 	}
 
 	divisors := func(n int64) (res []int64) {
-		for i := int64(1); i*i <= n; i++ {
-			if n%i == 0 {
-				res = append(res, i)
-				if d := n / i; d != i {
-					res = append(res, d)
+		for d := int64(1); d*d <= n; d++ {
+			if n%d == 0 {
+				res = append(res, d)
+				if d2 := n / d; d2 != d {
+					res = append(res, d2)
 				}
 			}
 		}

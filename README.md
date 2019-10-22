@@ -14,6 +14,8 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 
 [Codeforces Visualizer](https://cfviz.netlify.com/virtual-rating-change.html)
 
+[OEIS](https://oeis.org/)
+
 ## BST
 
 > Binary search tree (BST) based data structures, such as AVL trees, red-black trees, and splay trees, are often used in system software, such as operating system kernels. 
