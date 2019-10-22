@@ -1,7 +1,7 @@
 package copypasta
 
 import (
-	"fmt"
+	. "fmt"
 	"index/suffixarray"
 	"reflect"
 	"unsafe"
@@ -106,9 +106,9 @@ func suffixArray() {
 	// debug
 	for i := range sa {
 		if lcp[i] == 0 {
-			fmt.Println("  " + string(s[sa[i]:]))
+			Println("  " + string(s[sa[i]:]))
 		} else {
-			fmt.Println(lcp[i], string(s[sa[i]:]))
+			Println(lcp[i], string(s[sa[i]:]))
 		}
 	}
 
