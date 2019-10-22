@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 var _x = uint(1)
@@ -201,6 +200,6 @@ func Sol706D(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol706D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol706D(os.Stdin, os.Stdout)
+//}
