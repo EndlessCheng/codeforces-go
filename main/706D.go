@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 var _x = uint(1)
@@ -118,29 +119,6 @@ func (t *treap) floor(key int) int {
 
 // github.com/EndlessCheng/codeforces-go
 func Sol706D(reader io.Reader, writer io.Writer) {
-	bitLength := func(n int) int {
-		c := 1
-		if n>>16 > 0 {
-			c += 16
-			n >>= 16
-		}
-		if n>>8 > 0 {
-			c += 8
-			n >>= 8
-		}
-		if n>>4 > 0 {
-			c += 4
-			n >>= 4
-		}
-		if n>>2 > 0 {
-			c += 2
-			n >>= 2
-		}
-		if n-1 > 0 {
-			c++
-		}
-		return c
-	}
 	min := func(a, b int) int {
 		if a <= b {
 			return a
@@ -185,7 +163,7 @@ func Sol706D(reader io.Reader, writer io.Writer) {
 			}
 			ans := floor ^ x
 			var newFloor int
-			for i := min(bitLength(floor), bitLength(x)) - 1; i >= 0; {
+			for i := min(bits.Len(uint(floor)), bits.Len(uint(x))) - 1; i >= 0; {
 				newFloor, i = nextFloor(i, floor, x)
 				if newFloor == -1 {
 					break
