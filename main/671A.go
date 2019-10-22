@@ -56,11 +56,17 @@ func Sol671A(reader io.Reader, writer io.Writer) {
 
 	sort.Slice(das, func(i, j int) bool { return das[i].d > das[j].d })
 	sort.Slice(dbs, func(i, j int) bool { return dbs[i].d > dbs[j].d })
-	if n == 1 {
+	if n == 1 || das[0].d <= 0 || dbs[0].d <= 0 {
 		ans -= max(das[0].d, dbs[0].d)
 	} else if das[0].idx == dbs[0].idx {
-		sum1 := das[0].d + dbs[1].d
-		sum2 := das[1].d + dbs[0].d
+		sum1 := das[0].d
+		sum2 := dbs[0].d
+		if dbs[1].d > 0 {
+			sum1 += dbs[1].d
+		}
+		if das[1].d > 0 {
+			sum2 += das[1].d
+		}
 		ans -= max(sum1, sum2)
 	} else {
 		ans -= das[0].d + dbs[0].d
