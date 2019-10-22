@@ -114,74 +114,7 @@ func (t *treap) floor(key int) int {
 			return o.key
 		}
 	}
-	if floor == nil {
-		return 0
-	}
 	return floor.key
-}
-
-func (t *treap) ceiling(key int) (ceiling *node) {
-	for o := t.root; o != nil; {
-		switch cmp := t.comparator(key, o.key); {
-		case cmp == 0:
-			ceiling = o
-			o = o.lr[0]
-		case cmp > 0:
-			o = o.lr[1]
-		default:
-			return o
-		}
-	}
-	return
-}
-
-//
-
-func (o *node) String() string {
-	var s string
-	if o.value == 1 {
-		s = Sprintf("%v", o.key)
-	} else {
-		s = Sprintf("%v(%v)", o.key, o.value)
-	}
-	return s
-}
-
-func (o *node) draw(prefix string, isTail bool, str *string) {
-	if o.lr[1] != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "│   "
-		} else {
-			newPrefix += "    "
-		}
-		o.lr[1].draw(newPrefix, false, str)
-	}
-	*str += prefix
-	if isTail {
-		*str += "└── "
-	} else {
-		*str += "┌── "
-	}
-	*str += o.String() + "\n"
-	if o.lr[0] != nil {
-		newPrefix := prefix
-		if isTail {
-			newPrefix += "    "
-		} else {
-			newPrefix += "│   "
-		}
-		o.lr[0].draw(newPrefix, true, str)
-	}
-}
-
-func (t *treap) String() string {
-	if t.root == nil {
-		return "BST (empty)\n"
-	}
-	str := "BST\n"
-	t.root.draw("", true, &str)
-	return str
 }
 
 // github.com/EndlessCheng/codeforces-go
@@ -227,14 +160,11 @@ func Sol706D(reader io.Reader, writer io.Writer) {
 			ui := uint(i)
 			bitFloor := floor >> ui & 1
 			bitX := x >> ui & 1
-			if bitFloor != bitX {
-				continue
-			}
-			if bitFloor == 1 {
+			if bitFloor == 1 && bitX == 1 {
 				// mask floor
 				check := floor&^(1<<ui) | (1<<ui - 1)
 				newFloor := t.floor(check)
-				return newFloor, i
+				return newFloor, i - 1
 			}
 		}
 		return -1, -1
@@ -255,16 +185,15 @@ func Sol706D(reader io.Reader, writer io.Writer) {
 				continue
 			}
 			ans := floor ^ x
-			fl := bitLength(floor)
-			xl := bitLength(x)
-			minL := min(fl, xl)
-			for i := minL - 1; i >= 0; {
-				floor, i = nextFloor(i, floor, x)
-				if floor == -1 {
+			var newFloor int
+			for i := min(bitLength(floor), bitLength(x)) - 1; i >= 0; {
+				newFloor, i = nextFloor(i, floor, x)
+				if newFloor == -1 {
 					break
 				}
-				if newXor := floor ^ x; newXor > ans {
+				if newXor := newFloor ^ x; newXor > ans {
 					ans = newXor
+					floor = newFloor
 				}
 			}
 			Fprintln(out, ans)
