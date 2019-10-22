@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"os"
 	"sort"
 )
 
@@ -74,6 +73,6 @@ func Sol671A(reader io.Reader, writer io.Writer) {
 	Fprintf(out, "%.12f", ans)
 }
 
-func main() {
-	Sol671A(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol671A(os.Stdin, os.Stdout)
+//}
