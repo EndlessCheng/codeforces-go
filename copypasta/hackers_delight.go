@@ -14,6 +14,7 @@ a|b = a^b + a&b
 */
 
 // See "math/bits" for more functions
+// NOTE: bits.Len(0) returns 0 not 1
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }

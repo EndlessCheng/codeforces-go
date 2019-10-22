@@ -1,6 +1,9 @@
 package copypasta
 
-import "sort"
+import (
+	"math/bits"
+	"sort"
+)
 
 func commonCollection() {
 	const mod int64 = 1e9 + 7
@@ -122,7 +125,29 @@ func commonCollection() {
 		return r2
 	}
 
-	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders, min, mins, max, maxs, abs, quickPow, reverse, unique, discrete, ifElse}
+	var d [][20]int
+	rmqInit := func(a []int) {
+		n := len(a)
+		d = make([][20]int, n)
+		for i := range d {
+			d[i][0] = a[i]
+		}
+		for j := uint(1); 1<<j <= n; j++ {
+			for i := 0; i+(1<<j)-1 < n; i++ {
+				d[i][j] = max(d[i][j-1], d[i+(1<<(j-1))][j-1])
+			}
+		}
+	}
+	rmq := func(l, r int) int { // 注意 l r 是从 0 开始算的
+		k := uint(bits.Len(uint(r-l+1)) - 1)
+		return max(d[l][k], d[r-(1<<k)+1][k])
+	}
+
+	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders,
+		min, mins, max, maxs, abs, quickPow,
+		reverse, unique, discrete, ifElse,
+		rmqInit, rmq,
+	}
 }
 
 // Permute the values at index i to len(arr)-1.
