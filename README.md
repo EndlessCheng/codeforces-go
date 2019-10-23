@@ -26,6 +26,15 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 
 [OEIS](https://oeis.org/)
 
+> 1. Don't go to the editorial after some fixed time like 20 minutes of solving a problem. Give up only if you are stuck for 10-30 minutes (10 in case of easy problems, more for harder ones). As long as you have some ideas, do investigate them and maybe you'll solve the problem yourself.
+> 2. Upsolving problems is very important. This way you learn new things. After a contest or virtual participation, try to solve at least one more problem. This should be said early in the PDF, not only in parts about getting red rating.
+> 3. I don't think you should copy segment trees from your code library (reference document). It's better to struggle for some time and implement them every time. You will get faster and will understand them better. Plus this is a must for those who prepare for IOI. My friends and I implement seg-trees from scratch every time. I don't remember if I ever used to copy them.
+> 4. It's unnecessary to do "50+ virtual participations in CF". Just solve problems slightly above your level. Do some virtual participations if you want to.
+> 5. Consider changing "Make a routine that you will do just before the contest. It directly leads to the concentration during the contest." to "don't care about the contest, just have fun solving problems". I'm quite sure people perform better when they are relaxed (but not distracted).
+> 6. "Although I experienced competitive programming for 3 years, I think that I don’t know many techniques" — I think that's because you're doing too much virtual participation. You spend a lot of time on easy problems this way.
+>
+> [source](https://codeforces.com/blog/entry/66909?#comment-517968)
+
 ## BST
 
 > Binary search tree (BST) based data structures, such as AVL trees, red-black trees, and splay trees, are often used in system software, such as operating system kernels. 
