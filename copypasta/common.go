@@ -143,7 +143,8 @@ func commonCollection() {
 		return max(d[l][k], d[r-(1<<k)+1][k])
 	}
 
-	_ = []interface{}{pow2, pow10, dirOffset4, dirOffset8, orders,
+	_ = []interface{}{
+		pow2, pow10, dirOffset4, dirOffset8, orders,
 		min, mins, max, maxs, abs, quickPow,
 		reverse, unique, discrete, ifElse,
 		rmqInit, rmq,

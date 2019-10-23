@@ -3,13 +3,13 @@ package copypasta
 import (
 	"bufio"
 	. "fmt"
-	"os"
+	"io"
 )
 
-func simpleIO() {
+func simpleIO(reader io.Reader, writer io.Writer) {
 	// NOTE: just a bufio.NewReader is enough, there is no difference between this and ioutil.ReadAll
-	in := bufio.NewReader(os.Stdin)
-	out := bufio.NewWriter(os.Stdout)
+	in := bufio.NewReader(reader)
+	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
 	var n int
@@ -20,10 +20,27 @@ func simpleIO() {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
 }
 
-func lineIO() {
-	in := bufio.NewScanner(os.Stdin)
+// 数据量在 ~10^6 时使用，能明显加快运行速度！
+func fastIO(reader io.Reader, writer io.Writer) {
+	in := bufio.NewScanner(reader)
+	in.Split(bufio.ScanWords)
+	out := bufio.NewWriter(writer)
+	defer out.Flush()
+	readInt := func() (x int) {
+		in.Scan()
+		for _, b := range in.Bytes() {
+			x = x*10 + int(b-'0')
+		}
+		return
+	}
+
+	_ = []interface{}{readInt}
+}
+
+func lineIO(reader io.Reader, writer io.Writer) {
+	in := bufio.NewScanner(reader)
 	in.Buffer(nil, 1e6+5) // default maxTokenSize is 65536
-	out := bufio.NewWriter(os.Stdout)
+	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
 	for in.Scan() {
