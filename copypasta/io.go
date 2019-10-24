@@ -33,6 +33,19 @@ func fastIO(reader io.Reader, writer io.Writer) {
 		}
 		return
 	}
+	readInt = func() (x int) {
+		in.Scan()
+		data := in.Bytes()
+		sig := 1
+		if data[0] == '-' {
+			sig = -1
+			data = data[1:]
+		}
+		for _, b := range data {
+			x = x*10 + int(b-'0')
+		}
+		return sig * x
+	}
 
 	_ = []interface{}{readInt}
 }

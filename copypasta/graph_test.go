@@ -1,7 +1,10 @@
 package copypasta
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -121,4 +124,64 @@ func Test_directedGraph_topSort(t *testing.T) {
 	order, acyclic = g.topSort()
 	t.Log(order)
 	assert.False(t, acyclic)
+}
+
+func Test_tree(t *testing.T) {
+	data := `1 2 1
+1 5 2
+1 7 1
+1 9 2
+2 3 2
+2 8 2
+3 4 1
+4 6 1
+6 10 2`
+	min := func(a, b int) int {
+		if a <= b {
+			return a
+		}
+		return b
+	}
+	const inf int = 1e9
+
+	n := 10
+
+	// 该图的邻接矩阵
+	weights := make([][]int, n)
+	for i := range weights {
+		weights[i] = make([]int, n)
+		for j := range weights[i] {
+			weights[i][j] = inf
+		}
+	}
+	for i := range weights {
+		weights[i][i] = 0
+	}
+	for _, edge := range strings.Split(data, "\n") {
+		splits := strings.Split(edge, " ")
+		v, _ := strconv.Atoi(splits[0])
+		w, _ := strconv.Atoi(splits[1])
+		v--
+		w--
+		c, _ := strconv.Atoi(splits[2])
+		weights[v][w] = c
+		weights[w][v] = c
+	}
+
+	dist := make([][]int, n)
+	for i := range dist {
+		dist[i] = make([]int, n)
+		copy(dist[i], weights[i])
+	}
+	for k := 0; k < n; k++ { // 阶段
+		for i := 0; i < n; i++ { // 状态
+			for j := 0; j < n; j++ { // 决策
+				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+	}
+	for _, d := range dist {
+		s := fmt.Sprint(d)
+		fmt.Println(s[1:len(s)-1])
+	}
 }
