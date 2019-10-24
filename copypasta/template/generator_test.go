@@ -37,11 +37,9 @@ func Test(t *testing.T) {
 		if err != nil {
 			return err
 		}
-
 		if path == rootPath || !info.IsDir() {
 			return nil
 		}
-
 		for _, fileName := range [...]string{"main.go", "main_test.go"} {
 			goFilePath := filepath.Join(path, fileName)
 			if _, err := os.Stat(goFilePath); !os.IsNotExist(err) {
@@ -51,11 +49,11 @@ func Test(t *testing.T) {
 				return err
 			}
 		}
-
 		return nil
 	}); err != nil {
 		t.Fatal(err)
 	}
+
 	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d a a/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 		t.Fatal(err)
