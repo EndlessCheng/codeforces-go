@@ -61,7 +61,7 @@ func Sol472D(reader io.Reader, writer io.Writer) {
 		minD2 := int(2e9)
 		for _, idx := range checked[1:] {
 			d2 := d[idx][newIdx]
-			if d[0][idx]+d2 == dis && d2 < minD2 {
+			if d[0][idx]+d2 == dis && d2 < minD2 { // 离的最近的才能真正成为新加的边
 				oldIdx = idx
 				minD2 = d2
 			}
