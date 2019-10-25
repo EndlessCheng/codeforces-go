@@ -68,7 +68,33 @@ func stringCollection() {
 		return 1 // or -1
 	}
 
-	_ = []interface{}{kmpSearch, calcMinPeriod}
+	max := func(a, b int) int {
+		if a >= b {
+			return a
+		}
+		return b
+	}
+	smallestRepresentation := func(s string) string {
+		n := len(s)
+		s += s
+		i := 0
+		for j := 1; j < n; {
+			k := 0
+			for ; k < n && s[i+k] == s[j+k]; k++ {
+			}
+			if k >= n {
+				break
+			}
+			if s[i+k] < s[j+k] {
+				j += k + 1
+			} else {
+				i, j = j, max(j, i+k)+1
+			}
+		}
+		return s[i : i+n]
+	}
+
+	_ = []interface{}{kmpSearch, calcMinPeriod, smallestRepresentation}
 }
 
 func suffixArray() {

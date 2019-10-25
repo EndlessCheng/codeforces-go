@@ -138,7 +138,7 @@ func commonCollection() {
 			}
 		}
 	}
-	rmq := func(l, r int) int { // 注意 l r 是从 0 开始算的
+	rmq := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
 		return max(d[l][k], d[r-(1<<k)+1][k])
 	}
