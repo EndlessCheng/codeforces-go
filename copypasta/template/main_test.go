@@ -22,5 +22,5 @@ func Test_solve(t *testing.T) {
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCase(t, dir, 0, solve)
 	_, problemName := filepath.Split(dir)
-	t.Logf("Current test is [%s]", problemName)
+	t.Logf("Current problem is [%s]", problemName)
 }
