@@ -33,7 +33,6 @@ func Sol1249C2(reader io.Reader, writer io.Writer) {
 					}
 				}
 			}
-
 		}
 		ans := int64(0)
 		pow3 := int64(1)
