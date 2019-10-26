@@ -17,13 +17,13 @@ func commonCollection() {
 	orders := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
 	min := func(a, b int) int {
-		if a <= b {
+		if a < b {
 			return a
 		}
 		return b
 	}
 	max := func(a, b int) int {
-		if a >= b {
+		if a > b {
 			return a
 		}
 		return b

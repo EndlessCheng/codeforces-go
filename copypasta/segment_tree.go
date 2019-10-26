@@ -1,12 +1,5 @@
 package copypasta
 
-func max(a, b int64) int64 {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {
@@ -15,6 +8,20 @@ type stNode struct {
 	maxPos int
 }
 type segmentTree []stNode // t := make(segmentTree, 4*n)
+
+func (segmentTree) min(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func (segmentTree) max(a, b int64) int64 {
+	if a > b {
+		return a
+	}
+	return b
+}
 
 func (t segmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
@@ -66,10 +73,10 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	// *custom*
 	res = -1e9
 	if l <= mid {
-		res = max(res, t._query(o<<1, l, r))
+		res = t.max(res, t._query(o<<1, l, r))
 	}
 	if mid < r {
-		res = max(res, t._query(o<<1|1, l, r))
+		res = t.max(res, t._query(o<<1|1, l, r))
 	}
 	return
 }
@@ -98,6 +105,7 @@ func (t segmentTree) init(arr []int64)             { t._build(arr, 1, 1, len(arr
 func (t segmentTree) update(idx int, val int64)    { t._update(1, idx, val) }    // 1<=idx<=n
 func (t segmentTree) query(l, r int) int64         { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
+//func (t segmentTree) queryAll() int64              { return t._query(1, 1, n) }
 
 //
 

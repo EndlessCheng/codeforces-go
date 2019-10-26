@@ -3,6 +3,15 @@ package copypasta
 import "math"
 
 func mathCollection() {
+	const mod int64 = 1e9 + 7
+	factorial := func(n int) int64 {
+		x := int64(1)
+		for i := int64(2); i <= int64(n); i++ {
+			x = x * i % mod
+		}
+		return x
+	}
+
 	calcGCD := func(a, b int64) int64 {
 		for b > 0 {
 			a, b = b, a%b
@@ -75,7 +84,7 @@ func mathCollection() {
 		return (x%m + m) % m
 	}
 
-	_ = []interface{}{calcLCM, isPrime, sieve, divisors, primeFactors, modInverse}
+	_ = []interface{}{factorial, calcLCM, isPrime, sieve, divisors, primeFactors, modInverse}
 }
 
 // exgcd solve equation ax+by=gcd(a,b)
