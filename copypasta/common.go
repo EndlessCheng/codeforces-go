@@ -12,9 +12,34 @@ func commonCollection() {
 	const inf64 int64 = 0x3f3f3f3f3f3f3f3f
 	pow2 := [...]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144}
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9}
-	dirOffset4 := [4][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
-	dirOffset8 := [8][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dirOffset8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orders := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
+
+	/*
+		遍历以 (centerI, centerJ) 为中心的欧几里得距离为 dis 范围内的格点
+		例如 dis=2 时：
+		  #
+		 # #
+		# * #
+		 # #
+		  #
+	*/
+	searchDirOffset4 := func(n, centerI, centerJ, dis int) {
+		for i, dir := range dirOffset4 {
+			dx := dirOffset4[(i+1)%4][0] - dir[0]
+			dy := dirOffset4[(i+1)%4][1] - dir[1]
+			x := centerI + dir[0]*dis
+			y := centerJ + dir[1]*dis
+			for _i := 0; _i < dis; _i++ {
+				if x >= 0 && x < n && y >= 0 && y < n {
+					// do
+				}
+				x += dx
+				y += dy
+			}
+		}
+	}
 
 	min := func(a, b int) int {
 		if a < b {
@@ -143,8 +168,14 @@ func commonCollection() {
 		return max(d[l][k], d[r-(1<<k)+1][k])
 	}
 
+	var s string
+	cnt := [26]int{}
+	for _, c := range s {
+		cnt[c-'a']++
+	}
+
 	_ = []interface{}{
-		pow2, pow10, dirOffset4, dirOffset8, orders,
+		pow2, pow10, dirOffset4, dirOffset8, orders, searchDirOffset4,
 		min, mins, max, maxs, abs, quickPow,
 		reverse, unique, discrete, ifElse,
 		rmqInit, rmq,
