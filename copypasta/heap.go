@@ -2,6 +2,7 @@ package copypasta
 
 import "sort"
 
+// 最小堆
 type intHeap struct {
 	sort.IntSlice
 }

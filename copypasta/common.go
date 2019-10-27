@@ -28,8 +28,9 @@ func commonCollection() {
 	*/
 	searchDirOffset4 := func(maxI, maxJ, centerI, centerJ, dis int) {
 		for i, dir := range dirOffset4 {
-			dx := dirOffset4[(i+1)%4][0] - dir[0]
-			dy := dirOffset4[(i+1)%4][1] - dir[1]
+			dir2 := dirOffset4[(i+1)%4]
+			dx := dir2[0] - dir[0]
+			dy := dir2[1] - dir[1]
 			x := centerI + dir[0]*dis
 			y := centerJ + dir[1]*dis
 			for _i := 0; _i < dis; _i++ {
@@ -64,7 +65,7 @@ func commonCollection() {
 	*/
 	searchDirOffset4R := func(maxI, maxJ, centerI, centerJ, dis int) {
 		// 上下
-		for _, x := range [2]int{centerI - dis, centerI + dis} {
+		for _, x := range [...]int{centerI - dis, centerI + dis} {
 			if x >= 0 && x < maxI {
 				for y := max(centerJ-dis, 0); y < min(centerJ+dis, maxJ); y++ {
 					// do
@@ -72,7 +73,7 @@ func commonCollection() {
 			}
 		}
 		// 左右
-		for _, y := range [2]int{centerJ - dis, centerJ + dis} {
+		for _, y := range [...]int{centerJ - dis, centerJ + dis} {
 			if y >= 0 && y < maxJ {
 				for x := max(centerI-dis, 0); x < min(centerI+dis, maxI); x++ {
 					// do
@@ -196,9 +197,11 @@ func commonCollection() {
 	}
 
 	var s string
-	cnt := [26]int{}
+	cnt := make([]int, 26)
 	for _, c := range s {
 		cnt[c-'a']++
+		//cnt[c-'A']++
+		//cnt[c-'0']++
 	}
 
 	_ = []interface{}{
