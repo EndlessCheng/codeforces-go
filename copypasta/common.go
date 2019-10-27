@@ -227,3 +227,25 @@ func _permute(arr []int, i int, do func([]int)) {
 	}
 }
 func permute(arr []int, do func([]int)) { _permute(arr, 0, do) }
+
+//func grayCode(length int) []int {
+//	if length == 1 {
+//		return []int{0, 1}
+//	}
+//	part0 := grayCode(length - 1)
+//	part1 := make([]int, len(part0))
+//	for i, v := range part0 {
+//		part1[len(part0)-i-1] = v
+//	}
+//	for i, v := range part1 {
+//		part1[i] = v | 1<<uint(length-1)
+//	}
+//	return append(part0, part1...)
+//}
+func grayCode(length int) []int {
+	ans := make([]int, 1<<uint(length))
+	for i := range ans {
+		ans[i] = i ^ i>>1
+	}
+	return ans
+}
