@@ -38,7 +38,6 @@ func Sol1251D(reader io.Reader, writer io.Writer) {
 		}
 		sort.Slice(ps, func(i, j int) bool { return ps[i].l > ps[j].l })
 		ans := search(money+1e9+1, func(x int64) bool {
-			// 把 r >= x 的 l 找出来计算额外花费（n/2 个即可），然后判断中位数是否已达标，或者 cost <= money
 			cnt := 0
 			cost := baseCost
 			for _, p := range ps {
@@ -48,9 +47,6 @@ func Sol1251D(reader io.Reader, writer io.Writer) {
 						cost += x - p.l
 					}
 					if 2*cnt-1 == n {
-						if p.l > x {
-							return !true
-						}
 						return !(cost <= money)
 					}
 				}
