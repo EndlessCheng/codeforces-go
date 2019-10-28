@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -61,6 +60,6 @@ func Sol1251D(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol1251D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1251D(os.Stdin, os.Stdout)
+//}
