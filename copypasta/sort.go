@@ -4,23 +4,38 @@ func sortCollections() {
 	// NOTE: Golang already has a binary search function in sort package, see 1077D for example
 	type bsFunc func(int) bool
 	reverse := func(f bsFunc) bsFunc {
-		return func(i int) bool {
-			return !f(i)
+		return func(x int) bool {
+			return !f(x)
 		}
 	}
-	// 写法1: sort.Search(n, reverse(func(i int) bool {...}))
+	// 写法1: sort.Search(n, reverse(func(x int) bool {...}))
 	// 写法2:
-	// sort.Search(n, func(i int) (ok bool) {
+	// sort.Search(n, func(x int) (ok bool) {
 	//	 defer func() { ok = !ok }()
 	//	 ...
 	// })
 	// 写法3（推荐）:
-	// sort.Search(n, func(i int) (ok bool) {
+	// sort.Search(n, func(x int) (ok bool) {
 	//	 ...
 	//   return !true
 	// })
 	// 最后的 ans := Search(...) - 1
 	// 如果 f 有副作用，需要在 Search 后调用下 f(ans)
+	// 也可以理解成 return false 就是加大力度，反之减小力度
+
+	search := func(n int64, f func(int64) bool) int64 {
+		// Define f(-1) == false and f(n) == true.
+		i, j := int64(0), n
+		for i < j {
+			h := (i + j) >> 1
+			if f(h) {
+				j = h
+			} else {
+				i = h + 1
+			}
+		}
+		return i
+	}
 
 	// step = 100
 	binarySearchF := func(l, r float64, step int, f func(x float64) bool) float64 {
@@ -52,5 +67,5 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
-	_ = []interface{}{reverse, binarySearchF, ternarySearch}
+	_ = []interface{}{reverse, search, binarySearchF, ternarySearch}
 }
