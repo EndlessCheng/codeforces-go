@@ -8,6 +8,7 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
+// 题解：https://www.luogu.org/blog/endlesscheng/solution-cf1251d
 func Sol1251D(reader io.Reader, writer io.Writer) {
 	search := func(n int64, f func(int64) bool) int64 {
 		i, j := int64(0), n
