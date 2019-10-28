@@ -2,8 +2,8 @@ package copypasta
 
 import . "fmt"
 
-type tKeyType int   // *custom* 图方便可以全局替换
-type tValueType int // *custom* 图方便可以全局替换
+type tKeyType int
+type tValueType int
 
 type tNode struct {
 	lr    [2]*tNode
