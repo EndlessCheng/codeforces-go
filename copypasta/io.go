@@ -20,7 +20,7 @@ func simpleIO(reader io.Reader, writer io.Writer) {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
 }
 
-// 数据量在 ~10^6 时使用，能明显加快运行速度！
+// 数据量在 ~10^6 时使用，能明显加快运行速度！（一倍以上差距）
 func fastIO(reader io.Reader, writer io.Writer) {
 	in := bufio.NewScanner(reader)
 	in.Split(bufio.ScanWords)
