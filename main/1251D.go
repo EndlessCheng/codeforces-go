@@ -36,17 +36,9 @@ func Sol1251D(reader io.Reader, writer io.Writer) {
 			Fscan(in, &ps[i].l, &ps[i].r)
 			baseCost += ps[i].l
 		}
-		sort.Slice(ps, func(i, j int) bool {
-			return ps[i].l > ps[j].l
-		})
-		midL := ps[n/2].l
+		sort.Slice(ps, func(i, j int) bool { return ps[i].l > ps[j].l })
 		ans := search(money+1e9+1, func(x int64) bool {
-			// ! 中位数能否提高至 x
-			if x <= midL {
-				return !true
-			}
-
-			// 把 r >= x 的 l 找出来，若从右往左数第 n/2 个 <=x 则合法，然后判断 cost<=money
+			// 把 r >= x 的 l 找出来计算额外花费（n/2 个即可），然后判断中位数是否已达标，或者 cost <= money
 			cnt := 0
 			cost := baseCost
 			for _, p := range ps {
@@ -55,9 +47,9 @@ func Sol1251D(reader io.Reader, writer io.Writer) {
 					if p.l < x {
 						cost += x - p.l
 					}
-					if cnt*2-1 == n {
+					if 2*cnt-1 == n {
 						if p.l > x {
-							return !false
+							return !true
 						}
 						return !(cost <= money)
 					}

@@ -8,13 +8,25 @@ import (
 func TestSol1251D(t *testing.T) {
 	// just copy from website
 	rawText := `
-3
+4
+
+7 1000000
+1 1000
+2 1000
+3 1000
+4 4
+60 100
+80 80
+100 100
+
 3 26
 10 12
 1 4
 10 11
+
 1 1337
 1 1000000000
+
 5 26
 4 4
 2 4
@@ -22,6 +34,7 @@ func TestSol1251D(t *testing.T) {
 5 6
 2 7
 outputCopy
+100
 11
 1337
 6`
