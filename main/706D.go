@@ -9,7 +9,7 @@ import (
 
 var x706D = uint(1)
 
-func fastRand() uint {
+func fastRand706D() uint {
 	x706D ^= x706D << 13
 	x706D ^= x706D >> 17
 	x706D ^= x706D << 5
@@ -49,7 +49,7 @@ func newTreap706D() *treap706D {
 
 func (t *treap706D) _put(o *node706D, key int) *node706D {
 	if o == nil {
-		return &node706D{priority: fastRand(), key: key, value: 1}
+		return &node706D{priority: fastRand706D(), key: key, value: 1}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key)
