@@ -23,55 +23,48 @@ func newODT(arr []int64) odt {
 	return t
 }
 
-func (t *odt) split(mid int) {
+// [l, r] => [l, mid] [mid+1, r]
+// return index of [mid+1, r]
+// return len(t) if not found
+func (t *odt) split(mid int) int {
 	ot := *t
 	for i, b := range ot {
-		if b.l <= mid && mid < b.r {
+		if b.l == mid+1 {
+			return i
+		}
+		if b.l <= mid && mid < b.r { // mid+1 <= b.r
 			*t = append(ot[:i+1], append(odt{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
 			ot[i].r = mid
-			break
+			return i + 1
 		}
 	}
+	return len(ot)
 }
 
-func (t *odt) prepare(l, r int) {
-	t.split(l - 1)
-	t.split(r)
+func (t *odt) prepare(l, r int) (begin, end int) {
+	begin = t.split(l - 1)
+	end = t.split(r)
+	return
 }
 
-// All op below should first call `prepare(l, r)`
-
-func (t *odt) merge(l, r int, val int64) {
+func (t *odt) merge(begin, end, r int, val int64) {
 	ot := *t
-	for i, b := range ot {
-		if b.l == l {
-			ot[i] = odtBlock{b.l, r, val}
-			j := i + 1
-			for ; j < len(ot) && ot[j].l <= r; j++ {
-			}
-			if j > i+1 {
-				*t = append(ot[:i+1], ot[j:]...)
-			}
-			break
-		}
+	ot[begin].r = r
+	ot[begin].val = val
+	if begin+1 < end {
+		*t = append(ot[:begin+1], ot[end:]...)
 	}
 }
 
-func (t odt) add(l, r int, val int64) {
-	for i, b := range t {
-		if l <= b.l && b.r <= r {
-			t[i].val += val
-		}
+func (t odt) add(begin, end int, val int64) {
+	for i := begin; i < end; i++ {
+		t[i].val += val
 	}
 }
 
-func (t odt) kth(l, r, k int) int64 {
-	blocks := []odtBlock{}
-	for _, b := range t {
-		if l <= b.l && b.r <= r {
-			blocks = append(blocks, b)
-		}
-	}
+func (t odt) kth(begin, end, k int) int64 {
+	blocks := make(odt, end-begin)
+	copy(blocks, t[begin:end])
 	sort.Slice(blocks, func(i, j int) bool { return blocks[i].val < blocks[j].val })
 	k--
 	for _, b := range blocks {
@@ -96,12 +89,10 @@ func (odt) quickPow(x int64, n int, mod int64) int64 {
 	return res
 }
 
-func (t odt) powSum(l, r int, n int, mod int64) (res int64) {
-	for _, b := range t {
-		if l <= b.l && b.r <= r {
-			// 总和能溢出的话这里要额外取模
-			res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
-		}
+func (t odt) powSum(begin, end int, n int, mod int64) (res int64) {
+	for _, b := range t[begin:end] {
+		// 总和能溢出的话这里要额外取模
+		res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
 	}
 	return res % mod
 }
