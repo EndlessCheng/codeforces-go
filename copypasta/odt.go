@@ -23,18 +23,18 @@ func newODT(arr []int64) odt {
 	return t
 }
 
-// [l, r] => [l, mid] [mid+1, r]
-// return index of [mid+1, r]
+// [l, r] => [l, mid-1] [mid, r]
+// return index of [mid, r]
 // return len(t) if not found
 func (t *odt) split(mid int) int {
 	ot := *t
 	for i, b := range ot {
-		if b.l == mid+1 {
+		if b.l == mid {
 			return i
 		}
-		if b.l <= mid && mid < b.r { // mid+1 <= b.r
-			*t = append(ot[:i+1], append(odt{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
-			ot[i].r = mid
+		if b.l < mid && mid <= b.r { // b.l <= mid-1
+			*t = append(ot[:i+1], append(odt{{mid, b.r, b.val}}, ot[i+1:]...)...)
+			ot[i].r = mid - 1
 			return i + 1
 		}
 	}
@@ -42,8 +42,8 @@ func (t *odt) split(mid int) int {
 }
 
 func (t *odt) prepare(l, r int) (begin, end int) {
-	begin = t.split(l - 1)
-	end = t.split(r)
+	begin = t.split(l)
+	end = t.split(r + 1)
 	return
 }
 
