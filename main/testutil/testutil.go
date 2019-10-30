@@ -93,6 +93,9 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(i
 	if rawText[0] == '\n' {
 		rawText = rawText[1:]
 	}
+	if strings.HasPrefix(rawText, "inputCopy") {
+		t.Fatal("please remove the \"inputCopy\" at top")
+	}
 	examples := strings.Split(rawText, "\ninputCopy\n")
 	var inputs, answers []string
 	for _, e := range examples {
