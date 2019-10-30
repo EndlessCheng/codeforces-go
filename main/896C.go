@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -145,6 +144,6 @@ func Sol896C(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol896C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol896C(os.Stdin, os.Stdout)
+//}
