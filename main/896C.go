@@ -14,56 +14,45 @@ type odtBlock896C struct {
 
 type odt896C []odtBlock896C
 
-func (t *odt896C) split(mid int) {
+func (t *odt896C) split(mid int) int {
 	ot := *t
 	for i, b := range ot {
+		if b.l == mid+1 {
+			return i
+		}
 		if b.l <= mid && mid < b.r {
 			*t = append(ot[:i+1], append(odt896C{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
 			ot[i].r = mid
-			break
+			return i + 1
 		}
 	}
+	return len(ot)
 }
 
-func (t *odt896C) prepare(l, r int) {
-	t.split(l - 1)
-	t.split(r)
+func (t *odt896C) prepare(l, r int) (begin, end int) {
+	begin = t.split(l - 1)
+	end = t.split(r)
+	return
 }
 
-func (t odt896C) add(l, r int, val int64) {
-	for i, b := range t {
-		if b.l > r {
-			break
-		}
-		if l <= b.l && b.r <= r {
-			t[i].val += val
-		}
-	}
-}
-
-func (t *odt896C) set(l, r int, val int64) {
+func (t *odt896C) merge(begin, end, r int, val int64) {
 	ot := *t
-	for i, b := range ot {
-		if b.l == l {
-			ot[i] = odtBlock896C{b.l, r, val}
-			j := i + 1
-			for ; j < len(ot) && ot[j].l <= r; j++ {
-			}
-			if j > i+1 {
-				*t = append(ot[:i+1], ot[j:]...)
-			}
-			break
-		}
+	ot[begin].r = r
+	ot[begin].val = val
+	if begin+1 < end {
+		*t = append(ot[:begin+1], ot[end:]...)
 	}
 }
 
-func (t odt896C) kth(l, r, k int) int64 {
-	blocks := []odtBlock896C{}
-	for _, b := range t {
-		if l <= b.l && b.r <= r {
-			blocks = append(blocks, b)
-		}
+func (t odt896C) add(begin, end int, val int64) {
+	for i := begin; i < end; i++ {
+		t[i].val += val
 	}
+}
+
+func (t odt896C) kth(begin, end, k int) int64 {
+	blocks := make(odt896C, end-begin)
+	copy(blocks, t[begin:end])
 	sort.Slice(blocks, func(i, j int) bool { return blocks[i].val < blocks[j].val })
 	k--
 	for _, b := range blocks {
@@ -88,11 +77,9 @@ func (odt896C) quickPow(x int64, n int, mod int64) int64 {
 	return res
 }
 
-func (t odt896C) powSum(l, r int, n int, mod int64) (res int64) {
-	for _, b := range t {
-		if l <= b.l && b.r <= r {
-			res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
-		}
+func (t odt896C) powSum(begin, end int, n int, mod int64) (res int64) {
+	for _, b := range t[begin:end] {
+		res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
 	}
 	return res % mod
 }
@@ -129,17 +116,17 @@ func Sol896C(reader io.Reader, writer io.Writer) {
 		} else {
 			x = rand(vMax) + 1
 		}
-		t.prepare(l, r)
+		begin, end := t.prepare(l, r)
 		switch op {
 		case 1:
-			t.add(l, r, int64(x))
+			t.add(begin, end, int64(x))
 		case 2:
-			t.set(l, r, int64(x))
+			t.merge(begin, end, r, int64(x))
 		case 3:
-			Fprintln(out, t.kth(l, r, x))
+			Fprintln(out, t.kth(begin, end, x))
 		default:
 			y := int64(rand(vMax) + 1)
-			Fprintln(out, t.powSum(l, r, x, y))
+			Fprintln(out, t.powSum(begin, end, x, y))
 		}
 	}
 }
