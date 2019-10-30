@@ -7,30 +7,30 @@ import (
 	"sort"
 )
 
-type odtBlock struct {
+type odtBlock896C struct {
 	l, r int
 	val  int64
 }
 
-type odt []odtBlock
+type odt896C []odtBlock896C
 
-func (t *odt) split(mid int) {
+func (t *odt896C) split(mid int) {
 	ot := *t
 	for i, b := range ot {
 		if b.l <= mid && mid < b.r {
-			*t = append(ot[:i+1], append(odt{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
+			*t = append(ot[:i+1], append(odt896C{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
 			ot[i].r = mid
 			break
 		}
 	}
 }
 
-func (t *odt) prepare(l, r int) {
+func (t *odt896C) prepare(l, r int) {
 	t.split(l - 1)
 	t.split(r)
 }
 
-func (t odt) add(l, r int, val int64) {
+func (t odt896C) add(l, r int, val int64) {
 	for i, b := range t {
 		if b.l > r {
 			break
@@ -41,11 +41,11 @@ func (t odt) add(l, r int, val int64) {
 	}
 }
 
-func (t *odt) set(l, r int, val int64) {
+func (t *odt896C) set(l, r int, val int64) {
 	ot := *t
 	for i, b := range ot {
 		if b.l == l {
-			ot[i] = odtBlock{b.l, r, val}
+			ot[i] = odtBlock896C{b.l, r, val}
 			j := i + 1
 			for ; j < len(ot) && ot[j].l <= r; j++ {
 			}
@@ -57,8 +57,8 @@ func (t *odt) set(l, r int, val int64) {
 	}
 }
 
-func (t odt) kth(l, r, k int) int64 {
-	blocks := []odtBlock{}
+func (t odt896C) kth(l, r, k int) int64 {
+	blocks := []odtBlock896C{}
 	for _, b := range t {
 		if l <= b.l && b.r <= r {
 			blocks = append(blocks, b)
@@ -76,7 +76,7 @@ func (t odt) kth(l, r, k int) int64 {
 	panic(k)
 }
 
-func (odt) quickPow(x int64, n int, mod int64) int64 {
+func (odt896C) quickPow(x int64, n int, mod int64) int64 {
 	x %= mod
 	res := int64(1) % mod
 	for ; n > 0; n >>= 1 {
@@ -88,7 +88,7 @@ func (odt) quickPow(x int64, n int, mod int64) int64 {
 	return res
 }
 
-func (t odt) powSum(l, r int, n int, mod int64) (res int64) {
+func (t odt896C) powSum(l, r int, n int, mod int64) (res int64) {
 	for _, b := range t {
 		if l <= b.l && b.r <= r {
 			res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
@@ -113,9 +113,9 @@ func Sol896C(reader io.Reader, writer io.Writer) {
 		return int(ret) % _n
 	}
 
-	t := make(odt, n)
+	t := make(odt896C, n)
 	for i := range t {
-		t[i] = odtBlock{i, i, int64(rand(vMax) + 1)}
+		t[i] = odtBlock896C{i, i, int64(rand(vMax) + 1)}
 	}
 	for ; m > 0; m-- {
 		op := rand(4) + 1
