@@ -7,36 +7,36 @@ import (
 	"math/bits"
 )
 
-var _x = uint(1)
+var x706D = uint(1)
 
 func fastRand() uint {
-	_x ^= _x << 13
-	_x ^= _x >> 17
-	_x ^= _x << 5
-	return _x
+	x706D ^= x706D << 13
+	x706D ^= x706D >> 17
+	x706D ^= x706D << 5
+	return x706D
 }
 
-type node struct {
-	lr       [2]*node
+type node706D struct {
+	lr       [2]*node706D
 	priority uint
 	key      int
 	value    int
 }
 
-func (o *node) rotate(d int) *node {
+func (o *node706D) rotate(d int) *node706D {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
 	return x
 }
 
-type treap struct {
-	root       *node
+type treap706D struct {
+	root       *node706D
 	comparator func(a, b int) int
 }
 
-func newTreap() *treap {
-	return &treap{comparator: func(a, b int) int {
+func newTreap706D() *treap706D {
+	return &treap706D{comparator: func(a, b int) int {
 		if a < b {
 			return 0
 		}
@@ -47,9 +47,9 @@ func newTreap() *treap {
 	}}
 }
 
-func (t *treap) _put(o *node, key int) *node {
+func (t *treap706D) _put(o *node706D, key int) *node706D {
 	if o == nil {
-		return &node{priority: fastRand(), key: key, value: 1}
+		return &node706D{priority: fastRand(), key: key, value: 1}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key)
@@ -62,9 +62,9 @@ func (t *treap) _put(o *node, key int) *node {
 	return o
 }
 
-func (t *treap) put(key int) { t.root = t._put(t.root, key) }
+func (t *treap706D) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *treap) _delete(o *node, key int) *node {
+func (t *treap706D) _delete(o *node706D, key int) *node706D {
 	if o == nil {
 		return nil
 	}
@@ -91,18 +91,18 @@ func (t *treap) _delete(o *node, key int) *node {
 	return o
 }
 
-func (t *treap) delete(key int) { t.root = t._delete(t.root, key) }
+func (t *treap706D) delete(key int) { t.root = t._delete(t.root, key) }
 
-func (t *treap) max() int {
-	var max *node
+func (t *treap706D) max() int {
+	var max *node706D
 	for o := t.root; o != nil; o = o.lr[1] {
 		max = o
 	}
 	return max.key
 }
 
-func (t *treap) floor(key int) int {
-	var floor *node
+func (t *treap706D) floor(key int) int {
+	var floor *node706D
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
 		case cmp == 0:
@@ -129,7 +129,7 @@ func Sol706D(reader io.Reader, writer io.Writer) {
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
-	t := newTreap()
+	t := newTreap706D()
 	t.put(0)
 
 	nextFloor := func(bitPos int, floor, x int) (f int, i int) {
