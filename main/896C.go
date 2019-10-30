@@ -13,31 +13,15 @@ type odtBlock struct {
 	val  int64
 }
 
-type odt struct {
-	blocks []odtBlock
-	size   int
-}
-
-func newODT(arr []int64) *odt {
-	n := len(arr)
-	blocks := make([]odtBlock, n)
-	for i := range blocks {
-		blocks[i] = odtBlock{i, i, arr[i]}
-	}
-	return &odt{
-		blocks: blocks,
-		size:   n,
-	}
-}
+type odt []odtBlock
 
 func (t *odt) split(mid int) {
-	for i := 0; i < t.size; i++ {
-		b := t.blocks[i]
+	ot := *t
+	for i, b := range ot {
 		if b.l <= mid && mid < b.r {
-			copy(t.blocks[i+1:t.size+1], t.blocks[i:t.size])
-			t.size++
-			t.blocks[i+1] = odtBlock{mid + 1, b.r, b.val}
-			t.blocks[i].r = mid
+			*t = append(ot[:i+1], append(odt{{mid + 1, b.r, b.val}}, ot[i+1:]...)...)
+			ot[i].r = mid
+			break
 		}
 	}
 }
@@ -47,40 +31,36 @@ func (t *odt) prepare(l, r int) {
 	t.split(r)
 }
 
-func (t *odt) add(l, r int, val int64) {
-	for i := 0; i < t.size; i++ {
-		b := t.blocks[i]
+func (t odt) add(l, r int, val int64) {
+	for i, b := range t {
 		if b.l > r {
 			break
 		}
 		if l <= b.l && b.r <= r {
-			t.blocks[i].val += val
+			t[i].val += val
 		}
 	}
 }
 
 func (t *odt) set(l, r int, val int64) {
-	for i := 0; i < t.size; i++ {
-		b := t.blocks[i]
+	ot := *t
+	for i, b := range ot {
 		if b.l == l {
-			t.blocks[i].r = r
-			t.blocks[i].val = val
+			ot[i] = odtBlock{b.l, r, val}
 			j := i + 1
-			for ; j < t.size && t.blocks[j].l <= r; j++ {
+			for ; j < len(ot) && ot[j].l <= r; j++ {
 			}
-			if shift := j - (i + 1); shift > 0 {
-				copy(t.blocks[i+1:t.size-shift], t.blocks[j:t.size])
-				t.size -= shift
+			if j > i+1 {
+				*t = append(ot[:i+1], ot[j:]...)
 			}
 			break
 		}
 	}
 }
 
-func (t *odt) kth(l, r, k int) int64 {
+func (t odt) kth(l, r, k int) int64 {
 	blocks := []odtBlock{}
-	for i := 0; i < t.size; i++ {
-		b := t.blocks[i]
+	for _, b := range t {
 		if l <= b.l && b.r <= r {
 			blocks = append(blocks, b)
 		}
@@ -97,7 +77,7 @@ func (t *odt) kth(l, r, k int) int64 {
 	panic(k)
 }
 
-func (t *odt) quickPow(x int64, n int, mod int64) int64 {
+func (odt) quickPow(x int64, n int, mod int64) int64 {
 	x %= mod
 	res := int64(1) % mod
 	for ; n > 0; n >>= 1 {
@@ -109,9 +89,8 @@ func (t *odt) quickPow(x int64, n int, mod int64) int64 {
 	return res
 }
 
-func (t *odt) powSum(l, r int, n int, mod int64) (res int64) {
-	for i := 0; i < t.size; i++ {
-		b := t.blocks[i]
+func (t odt) powSum(l, r int, n int, mod int64) (res int64) {
+	for _, b := range t {
 		if l <= b.l && b.r <= r {
 			res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
 		}
@@ -135,11 +114,10 @@ func Sol896C(reader io.Reader, writer io.Writer) {
 		return int(ret) % _n
 	}
 
-	arr := make([]int64, n)
-	for i := range arr {
-		arr[i] = int64(rand(vMax) + 1)
+	t := make(odt, n)
+	for i := range t {
+		t[i] = odtBlock{i, i, int64(rand(vMax) + 1)}
 	}
-	t := newODT(arr)
 	for ; m > 0; m-- {
 		op := rand(4) + 1
 		l, r := rand(n), rand(n)
