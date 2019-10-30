@@ -22,6 +22,7 @@ func (t *treap) prepare(l, r int) {
 }
 
 func (t *treap) merge(l, r int, value tpValueType) {
+	//t.prepare(l, r)
 	for o := t.next(l); o != nil && o.l <= r; o = t.next(o.l) {
 		//t.delete(o.l)
 	}

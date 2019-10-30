@@ -47,6 +47,8 @@ func (t *odt) prepare(l, r int) (begin, end int) {
 	return
 }
 
+// 以下方法传入的 begin, end 来自事先计算的 t.prepare
+
 func (t *odt) merge(begin, end, r int, val int64) {
 	ot := *t
 	ot[begin].r = r
