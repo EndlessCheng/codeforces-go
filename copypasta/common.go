@@ -108,8 +108,9 @@ func commonCollection() {
 		return x
 	}
 
-	quickPow := func(x, n, mod int64) int64 {
-		res := int64(1)
+	quickPow := func(x int64, n int, mod int64) int64 {
+		x %= mod
+		res := int64(1) % mod
 		for ; n > 0; n >>= 1 {
 			if n&1 == 1 {
 				res = res * x % mod
