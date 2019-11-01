@@ -10,12 +10,21 @@ import (
 func hashCollection() {
 	const prime uint64 = 1e8 + 7
 
-	var n int
-	powP := make([]uint64, n+1)
+	var maxLen int
+	powP := make([]uint64, maxLen+1)
 	powP[0] = 1
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= maxLen; i++ {
 		powP[i] = powP[i-1] * prime
 	}
+
+	hashVal := func(s string) (val uint64) {
+		for i, c := range s {
+			val += uint64(c) * powP[i]
+		}
+		return
+	}
+
+	_ = hashVal
 }
 
 func stringCollection() {
@@ -68,6 +77,12 @@ func stringCollection() {
 		return 1 // or -1
 	}
 
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
 	max := func(a, b int) int {
 		if a >= b {
 			return a
@@ -94,7 +109,46 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
-	_ = []interface{}{kmpSearch, calcMinPeriod, smallestRepresentation}
+	// https://blog.csdn.net/synapse7/article/details/18908413
+	manacher := func(origin string) int {
+		n := len(origin)
+		s := make([]byte, 2*n+2)
+		s[0] = '$'
+		for i, c := range origin {
+			s[i<<1|1] = '#'
+			s[i<<1+2] = byte(c)
+		}
+		s[n<<1|1] = '#'
+		maxLen := make([]int, 2*n+2)
+		var ans, mid, right int
+		for i := 1; i < 2*n+2; i++ {
+			if i < right {
+				maxLen[i] = min(maxLen[(mid<<1)-i], right-i)
+			} else {
+				maxLen[i] = 1
+			}
+			// 取 min 的原因：记点 i 关于 mid 的对称点为 i'，
+			// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
+			// (此时有 i + len[(mid<<1)-i] >= right，注意 len 是包括中心的半长度)
+			// 则 len[i] 应取 right - i (总不能超过边界吧)
+			for i+maxLen[i] < 2*n+2 && s[i+maxLen[i]] == s[i-maxLen[i]] {
+				maxLen[i]++
+			}
+			ans = max(ans, maxLen[i])
+			if right < i+maxLen[i] {
+				mid = i
+				right = i + maxLen[i]
+			}
+		}
+		return ans - 1
+	}
+
+	// 判断源串中的某一子串 [l...r] 是否为回文串
+	//manacherQuery := func(l, r int) bool {
+	//return maxLen[l+r+2] >= r-l+1
+	//}
+
+	_ = []interface{}{kmpSearch, calcMinPeriod, smallestRepresentation, manacher}
 }
 
 func suffixArray() {
