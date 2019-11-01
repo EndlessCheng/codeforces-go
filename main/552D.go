@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -55,6 +54,6 @@ func Sol552D(reader io.Reader, writer io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() {
-	Sol552D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol552D(os.Stdin, os.Stdout)
+//}
