@@ -110,20 +110,22 @@ func stringCollection() {
 	}
 
 	// https://blog.csdn.net/synapse7/article/details/18908413
+	// http://manacher-viz.s3-website-us-east-1.amazonaws.com/#/
 	manacher := func(origin string) int {
 		n := len(origin)
-		s := make([]byte, 2*n+2)
-		s[0] = '$'
+		s := make([]byte, 2*n+3)
+		s[0] = '^'
 		for i, c := range origin {
 			s[i<<1|1] = '#'
 			s[i<<1+2] = byte(c)
 		}
 		s[n<<1|1] = '#'
-		maxLen := make([]int, 2*n+2)
+		s[n<<1+2] = '$'
+		maxLen := make([]int, 2*n+3)
 		var ans, mid, right int
 		for i := 1; i < 2*n+2; i++ {
 			if i < right {
-				maxLen[i] = min(maxLen[(mid<<1)-i], right-i)
+				maxLen[i] = min(maxLen[mid<<1-i], right-i)
 			} else {
 				maxLen[i] = 1
 			}
@@ -131,7 +133,7 @@ func stringCollection() {
 			// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
 			// (此时有 i + len[(mid<<1)-i] >= right，注意 len 是包括中心的半长度)
 			// 则 len[i] 应取 right - i (总不能超过边界吧)
-			for i+maxLen[i] < 2*n+2 && s[i+maxLen[i]] == s[i-maxLen[i]] {
+			for s[i+maxLen[i]] == s[i-maxLen[i]] {
 				maxLen[i]++
 			}
 			ans = max(ans, maxLen[i])
