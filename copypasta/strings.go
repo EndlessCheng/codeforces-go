@@ -168,10 +168,7 @@ func suffixArray() {
 			if h > 0 {
 				h--
 			}
-			for ; j+h < n && i+h < n; h++ {
-				if s[j+h] != s[i+h] {
-					break
-				}
+			for ; j+h < n && i+h < n && s[j+h] == s[i+h]; h++ {
 			}
 			lcp[rank[i]-1] = h
 		}
