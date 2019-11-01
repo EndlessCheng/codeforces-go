@@ -33,6 +33,7 @@ func (a vec) dot(b vec) int64  { return a.x*b.x + a.y*b.y }
 // - b在a右侧
 // 0 ab平行或重合（共基线）
 // up() 后按逆时针排序 sort.Slice(ps, func(i, j int) bool { return ps[i].cross(ps[j]) > 0 })
+// 排序后保证共线的向量是相邻的（因为范围是 [0, 180) ）
 func (a vec) cross(b vec) int64 { return a.x*b.y - a.y*b.x }
 func (a vec) reverse() vec      { return vec{-a.x, -a.y} }
 func (a vec) up() vec {
