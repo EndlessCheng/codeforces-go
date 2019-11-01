@@ -8,12 +8,12 @@ import (
 	"sort"
 )
 
-type vec struct {
+type vec671A struct {
 	x, y int
 }
 
-func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) len() float64  { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec671A) sub(b vec671A) vec671A { return vec671A{a.x - b.x, a.y - b.y} }
+func (a vec671A) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
 
 // github.com/EndlessCheng/codeforces-go
 func Sol671A(reader io.Reader, writer io.Writer) {
@@ -21,10 +21,10 @@ func Sol671A(reader io.Reader, writer io.Writer) {
 		d   float64
 		idx int
 	}
-	read := func(in io.Reader) vec {
+	read := func(in io.Reader) vec671A {
 		var x, y int
 		Fscan(in, &x, &y)
-		return vec{x, y}
+		return vec671A{x, y}
 	}
 	max := func(a, b float64) float64 {
 		if a > b {
