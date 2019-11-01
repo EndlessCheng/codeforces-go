@@ -32,8 +32,15 @@ func (a vec) dot(b vec) int64  { return a.x*b.x + a.y*b.y }
 // + b在a左侧
 // - b在a右侧
 // 0 ab平行或重合（共基线）
+// up() 后按逆时针排序 sort.Slice(ps, func(i, j int) bool { return ps[i].cross(ps[j]) > 0 })
 func (a vec) cross(b vec) int64 { return a.x*b.y - a.y*b.x }
-func (a vec) reverse() vec      { return a.mul(-1) }
+func (a vec) reverse() vec      { return vec{-a.x, -a.y} }
+func (a vec) up() vec {
+	if a.y < 0 || a.y == 0 && a.x < 0 {
+		return a.reverse()
+	}
+	return a
+}
 
 func (a vec) len() float64 { return math.Hypot(float64(a.x), float64(a.y)) }
 func (a vec) len2() int64  { return a.x*a.x + a.y*a.y }
@@ -98,6 +105,6 @@ func vec3Collections() {
 	var ps []vec3
 	sort.Slice(ps, func(i, j int) bool {
 		pi, pj := ps[i], ps[j]
-		return pi.x < pj.x || pi.x == pj.x && pi.y < pj.y || pi.x == pj.x && pi.y == pj.y && pi.z < pj.z
+		return pi.x < pj.x || pi.x == pj.x && (pi.y < pj.y || pi.y == pj.y && pi.z < pj.z)
 	})
 }
