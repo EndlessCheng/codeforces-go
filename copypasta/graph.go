@@ -225,6 +225,7 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 	return
 }
 
+// 适用于稀疏图
 func (g *graph) mstKruskal() (sum int64) {
 	fa := make([]int, g.size+1)
 	for i := range fa {
@@ -258,33 +259,31 @@ func (g *graph) mstKruskal() (sum int64) {
 	return
 }
 
-// MST computes a minimum spanning tree for each connected component
-// of an undirected weighted graph.
-// The forest of spanning trees is returned as a slice of parent pointers:
-// parent[v] is either the parent of v in a tree,
-// or -1 if v is the root of a tree.
-//
-// The time complexity is O(|E|⋅log|V|), where |E| is the number of edges
-// and |V| the number of vertices in the graph.
-func (g *graph) mstPrim() (parent []int) {
+// 适用于稠密图
+func (*graph) mstPrim(dist [][]int) (sum int) {
+	n := len(dist)
 	const inf int = 0x3f3f3f3f
-	parent = make([]int, g.size+1)
-	weights := make([]int, g.size+1)
-	for i := range parent {
-		parent[i] = -1
-		weights[i] = inf
+	minCost := make([]int, n)
+	for i := range minCost {
+		minCost[i] = inf
 	}
-
-	// Prim's algorithm
-	queue := newPrioQueue(weights)
-	for queue.Len() > 0 {
-		v := queue.Pop()
-		for _, e := range g.edges[v] {
-			w, weight := e.vertex, e.weight
-			if queue.Contains(w) && weight < weights[w] {
-				weights[w] = weight
-				queue.Fix(w)
-				parent[w] = v
+	minCost[0] = 0
+	used := make([]bool, n)
+	for {
+		v := -1
+		for i := 0; i < n; i++ {
+			if !used[i] && (v == -1 || minCost[i] < minCost[v]) {
+				v = i
+			}
+		}
+		if v == -1 {
+			break
+		}
+		used[v] = true
+		sum += minCost[v]
+		for w := 0; w < n; w++ {
+			if dist[v][w] < minCost[w] {
+				minCost[w] = dist[v][w]
 			}
 		}
 	}

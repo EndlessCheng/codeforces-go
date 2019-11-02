@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	contestID = 1249
+	contestID = 1245
 	overwrite = false
 )
 
@@ -59,7 +59,7 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d d d/main.go\n", contestID)
+	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d c c/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 		t.Fatal(err)
 	}

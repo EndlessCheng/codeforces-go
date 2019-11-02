@@ -1,13 +1,15 @@
 package copypasta
 
 func unionFind() {
-	n := int(1e5)
 	// NOTE: 离散化时，可以改用 map[int]int
-	fa := make([]int, n+1)
-	//size := make([]int, n+1)
-	for i := range fa {
-		fa[i] = i
-		//size[i] = 1
+	var fa []int
+	initFa := func(n int) {
+		fa = make([]int, n+1)
+		//size := make([]int, n+1)
+		for i := range fa {
+			fa[i] = i
+			//size[i] = 1
+		}
 	}
 	var find func(int) int
 	find = func(x int) int {
@@ -26,7 +28,7 @@ func unionFind() {
 	//}
 	same := func(x, y int) bool { return find(x) == find(y) }
 
-	_ = []interface{}{merge, same}
+	_ = []interface{}{initFa, merge, same}
 }
 
 func multiUnionFind() {
