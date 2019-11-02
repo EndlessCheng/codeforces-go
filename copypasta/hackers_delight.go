@@ -21,3 +21,5 @@ func bitsCollection() {
 
 	_ = []interface{}{lowbit}
 }
+
+// https://halfrost.com/go_s2_de_bruijn/
