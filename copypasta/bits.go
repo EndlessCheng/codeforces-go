@@ -19,7 +19,17 @@ func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }
 
-	_ = []interface{}{lowbit}
+	bits32 := func(n int) []byte {
+		bits := make([]byte, 32)
+		for i := range bits {
+			if n>>uint(31-i)&1 == 1 {
+				bits[i] = 1
+			}
+		}
+		return bits
+	}
+
+	_ = []interface{}{lowbit, bits32}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/

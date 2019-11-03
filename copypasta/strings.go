@@ -207,7 +207,7 @@ type trie struct {
 
 func newTrie() *trie {
 	return &trie{
-		nodes: []*trieNode{{}},
+		nodes: []*trieNode{{}}, // init with root
 	}
 }
 
@@ -224,4 +224,31 @@ func (t *trie) insert(s string, val int) {
 	}
 	o.dupCnt++
 	o.val = val
+}
+
+func (t *trie) contain(s string) bool {
+	o := t.nodes[0]
+	for _, c := range s {
+		idx := o.childIdx[c-'a']
+		if o.childIdx[idx] == 0 {
+			return false
+		}
+		o = t.nodes[idx]
+	}
+	return true
+}
+
+// childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致
+func (t *trie) maxXor(bits []byte) {
+	o := t.nodes[0]
+	for i, b := range bits {
+		if o.childIdx[b^1] > 0 {
+			bits[i] = 1
+			b ^= 1
+		} else { // o.childIdx[b] > 0
+			bits[i] = 0
+		}
+		o = t.nodes[o.childIdx[b]]
+	}
+	return
 }
