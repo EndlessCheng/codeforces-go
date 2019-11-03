@@ -18,6 +18,13 @@ func mathCollection() {
 		}
 		return a
 	}
+	calcGCDN := func(nums ...int64) (gcd int64) {
+		gcd = nums[0]
+		for _, v := range nums[1:] {
+			gcd = calcGCD(gcd, v)
+		}
+		return
+	}
 	calcLCM := func(a, b int64) int64 {
 		return a / calcGCD(a, b) * b
 	}
@@ -84,7 +91,7 @@ func mathCollection() {
 		return (x%m + m) % m
 	}
 
-	_ = []interface{}{factorial, calcLCM, isPrime, sieve, divisors, primeFactors, modInverse}
+	_ = []interface{}{factorial, calcGCDN, calcLCM, isPrime, sieve, divisors, primeFactors, modInverse}
 }
 
 // exgcd solve equation ax+by=gcd(a,b)
