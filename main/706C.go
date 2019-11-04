@@ -5,20 +5,21 @@ import (
 	. "container/heap"
 	. "fmt"
 	"io"
-	"os"
 )
 
-type hPair struct {
+type hPair706C struct {
 	x int64
 	y int
 }
-type pairHeap []hPair
+type pairHeap706C []hPair706C
 
-func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].x < h[j].x || h[i].x == h[j].x && h[i].y < h[j].y }
-func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
-func (h *pairHeap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h pairHeap706C) Len() int              { return len(h) }
+func (h pairHeap706C) Less(i, j int) bool {
+	return h[i].x < h[j].x || h[i].x == h[j].x && h[i].y < h[j].y
+}
+func (h pairHeap706C) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *pairHeap706C) Push(v interface{})   { *h = append(*h, v.(hPair706C)) }
+func (h *pairHeap706C) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
 // github.com/EndlessCheng/codeforces-go
 func Sol706C(reader io.Reader, writer io.Writer) {
@@ -77,10 +78,10 @@ func Sol706C(reader io.Reader, writer io.Writer) {
 	}
 	dist[0] = 0
 	visited := make([]bool, 2*n+2)
-	h := &pairHeap{}
-	Push(h, hPair{0, 0})
+	h := &pairHeap706C{}
+	Push(h, hPair706C{0, 0})
 	for h.Len() > 0 {
-		p := Pop(h).(hPair)
+		p := Pop(h).(hPair706C)
 		v := p.y
 		if visited[v] {
 			continue
@@ -90,7 +91,7 @@ func Sol706C(reader io.Reader, writer io.Writer) {
 			w := e.vertex
 			if newDist := dist[v] + int64(e.weight); newDist < dist[w] {
 				dist[w] = newDist
-				Push(h, hPair{newDist, w})
+				Push(h, hPair706C{newDist, w})
 			}
 		}
 	}
@@ -101,6 +102,6 @@ func Sol706C(reader io.Reader, writer io.Writer) {
 	Fprintln(out, ans)
 }
 
-func main() {
-	Sol706C(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol706C(os.Stdin, os.Stdout)
+//}
