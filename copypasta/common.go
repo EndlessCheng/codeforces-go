@@ -129,6 +129,14 @@ func commonCollection() {
 			j--
 		}
 	}
+	reverseS := func(ss string) string {
+		n := len(ss)
+		s := make([]byte, n)
+		for i := range s {
+			s[i] = ss[n-1-i]
+		}
+		return string(s)
+	}
 
 	// NOTE: arr must be sorted
 	unique := func(arr []int) (uniqueArr []int) {
@@ -208,7 +216,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders, searchDirOffset4, searchDirOffset4R,
 		min, mins, max, maxs, abs, quickPow,
-		reverse, unique, discrete, ifElse,
+		reverse, reverseS, unique, discrete, ifElse,
 		stInit, stQuery,
 	}
 }
