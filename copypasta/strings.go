@@ -238,7 +238,7 @@ func (t *trie) contain(s string) bool {
 	return true
 }
 
-// childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致
+// childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
 func (t *trie) maxXor(bits []byte) (xor int) {
 	o := t.nodes[0]
 	for i, b := range bits {
