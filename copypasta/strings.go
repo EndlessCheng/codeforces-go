@@ -239,14 +239,12 @@ func (t *trie) contain(s string) bool {
 }
 
 // childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致
-func (t *trie) maxXor(bits []byte) {
+func (t *trie) maxXor(bits []byte) (xor int) {
 	o := t.nodes[0]
 	for i, b := range bits {
 		if o.childIdx[b^1] > 0 {
-			bits[i] = 1
+			xor |= 1 << uint(30-i)
 			b ^= 1
-		} else { // o.childIdx[b] > 0
-			bits[i] = 0
 		}
 		o = t.nodes[o.childIdx[b]]
 	}
