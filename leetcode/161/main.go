@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	. "fmt"
 	"strings"
 )
+
+var _ = Print
 
 func min(a, b int) int {
 	if a < b {
@@ -13,6 +15,18 @@ func min(a, b int) int {
 }
 func max(a, b int) int {
 	if a > b {
+		return a
+	}
+	return b
+}
+func ifElseI(cond bool, a, b int) int {
+	if cond {
+		return a
+	}
+	return b
+}
+func ifElseS(cond bool, a, b string) string {
+	if cond {
 		return a
 	}
 	return b
@@ -149,10 +163,10 @@ func isGoodArray(nums []int) bool {
 }
 
 func main() {
-	fmt.Println(minimumSwap("xx","yy"))
-	fmt.Println(minimumSwap("xy","yx"))
-	fmt.Println(minimumSwap("xx","xy"))
-	fmt.Println(minimumSwap("xxyyxyxyxx","xyyxyxxxyx"))
+	Println(minimumSwap("xx","yy"))
+	Println(minimumSwap("xy","yx"))
+	Println(minimumSwap("xx","xy"))
+	Println(minimumSwap("xxyyxyxyxx","xyyxyxxxyx"))
 	//fmt.Println(minimumSwap("",""))
 	//Println(isGoodArray([]int{12, 5, 7, 23}))
 	//Println(isGoodArray([]int{29, 6, 10}))

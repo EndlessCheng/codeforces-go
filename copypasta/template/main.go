@@ -19,6 +19,18 @@ func max(a, b int) int {
 	}
 	return b
 }
+func ifElseI(cond bool, a, b int) int {
+	if cond {
+		return a
+	}
+	return b
+}
+func ifElseS(cond bool, a, b string) string {
+	if cond {
+		return a
+	}
+	return b
+}
 
 func solve(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)

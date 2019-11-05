@@ -23,8 +23,20 @@ func max(a, b int) int {
 	}
 	return b
 }
+func ifElseI(cond bool, a, b int) int {
+	if cond {
+		return a
+	}
+	return b
+}
+func ifElseS(cond bool, a, b string) string {
+	if cond {
+		return a
+	}
+	return b
+}
 
-const mod int64 = 1e9 + 7
+const mod int = 1e9 + 7
 
 func countCharacters(words []string, chars string) int {
 	cnt := [26]int{}

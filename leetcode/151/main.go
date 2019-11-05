@@ -2,11 +2,13 @@ package main
 
 import (
 	"container/heap"
-	"fmt"
+	. "fmt"
 	"sort"
 	"strconv"
 	"strings"
 )
+
+var _ = Print
 
 func min(a, b int) int {
 	if a < b {
@@ -14,15 +16,26 @@ func min(a, b int) int {
 	}
 	return b
 }
-
 func max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
+func ifElseI(cond bool, a, b int) int {
+	if cond {
+		return a
+	}
+	return b
+}
+func ifElseS(cond bool, a, b string) string {
+	if cond {
+		return a
+	}
+	return b
+}
 
-const mod int64 = 1e9 + 7
+const mod int = 1e9 + 7
 
 func invalidTransactions(transactions []string) (ans []string) {
 	abs := func(x int) int {
@@ -240,11 +253,11 @@ func main() {
 	obj.Push(3)
 	//obj.Push(4)
 	// fmt.Println(obj.Pop())
-	fmt.Println(obj.PopAtStack(0))
+	Println(obj.PopAtStack(0))
 	//obj.Push(2)
-	fmt.Println(obj.PopAtStack(0))
+	Println(obj.PopAtStack(0))
 	obj.Push(1)
-	fmt.Println(obj.PopAtStack(0))
+	Println(obj.PopAtStack(0))
 
-	fmt.Println(obj.stackLen[:5])
+	Println(obj.stackLen[:5])
 }
