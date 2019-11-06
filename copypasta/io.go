@@ -26,14 +26,14 @@ func fastIO(reader io.Reader, writer io.Writer) {
 	in.Split(bufio.ScanWords)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
-	readInt := func() (x int) {
+	read := func() (x int) {
 		in.Scan()
 		for _, b := range in.Bytes() {
 			x = x*10 + int(b-'0')
 		}
 		return
 	}
-	readInt = func() (x int) {
+	read = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
 		sig := 1
@@ -47,12 +47,12 @@ func fastIO(reader io.Reader, writer io.Writer) {
 		return sig * x
 	}
 
-	_ = []interface{}{readInt}
+	_ = []interface{}{read}
 }
 
 func lineIO(reader io.Reader, writer io.Writer) {
 	in := bufio.NewScanner(reader)
-	in.Buffer(nil, 1e6+5) // default maxTokenSize is 65536
+	in.Buffer(nil, 1e9) // default maxTokenSize is 65536
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
 
@@ -62,3 +62,28 @@ func lineIO(reader io.Reader, writer io.Writer) {
 		Fprintln(out, line)
 	}
 }
+
+// 继续优化已无明显意义（对于 2e6 只能减 60ms）
+//scanToken := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+//	n := len(data)
+//	// Skip leading spaces.
+//	start := 0
+//	for ; start < n; start++ {
+//		if r := data[start]; r != ' ' && r != '\n' && r != '\r' {
+//			break
+//		}
+//	}
+//	// Scan until space, marking end of word.
+//	for i := start; i < n; i++ {
+//		if r := data[i]; r == ' ' || r == '\n' || r == '\r' {
+//			return i + 1, data[start:i], nil
+//		}
+//	}
+//	// If we're at EOF and have a non-empty, non-terminated word. Return it.
+//	if atEOF && start < n {
+//		return len(data), data[start:], nil
+//	}
+//	// Request more data.
+//	return start, nil, nil
+//}
+//in.Split(scanToken)
