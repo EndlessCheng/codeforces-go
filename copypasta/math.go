@@ -67,7 +67,7 @@ func mathCollection() {
 		return
 	}
 
-	primeFactors := func(n int64) (factors []int64, exps []int) {
+	primeFactors := func(n int64) (factors []int64, exponents []int) {
 		for i := int64(2); i*i <= n; i++ {
 			cnt := 0
 			for ; n%i == 0; n /= i {
@@ -75,14 +75,83 @@ func mathCollection() {
 			}
 			if cnt > 0 {
 				factors = append(factors, i)
-				exps = append(exps, cnt)
+				exponents = append(exponents, cnt)
 			}
 		}
 		if n != 1 {
 			factors = append(factors, n)
-			exps = append(exps, 1)
+			exponents = append(exponents, 1)
 		}
 		return
+	}
+
+	// https://oeis.org/A001222
+	// Number of prime divisors of n counted with multiplicity (also called bigomega(n) or Omega(n)).
+	// 生成 2-n 的质因数分解的系数和
+	//primeExponentsCount := func(n int) (count []int) {
+	//	count = make([]int, n+1)
+	//	left := make([]int, n+1)
+	//	for i := range left {
+	//		left[i] = i
+	//	}
+	//	i := 2
+	//	for ; i*i <= n; i++ {
+	//		if count[i] == 0 {
+	//			for j := i; j <= n; j += i {
+	//				count[j]++
+	//				left[j] /= i
+	//			}
+	//		} else if left[i] > 1 { // i is non square-free
+	//			count[i] += count[left[i]]
+	//		}
+	//	}
+	//	for ; i <= n; i++ {
+	//		if count[i] == 0 {
+	//			count[i] = 1
+	//		} else if left[i] > 1 { // i is non square-free
+	//			count[i] += count[left[i]]
+	//		}
+	//	}
+	//	return
+	//}
+	primeExponentsCount := func(n int) []int {
+		cnt := make([]int, n+1)
+		primes := make([]int, 0, n/10)
+		for i := 2; i <= n; i++ {
+			if cnt[i] == 0 {
+				primes = append(primes, i)
+				cnt[i] = 1
+			}
+			for _, p := range primes {
+				if j := i * p; j <= n {
+					cnt[j] = cnt[i] + 1
+				} else {
+					break
+				}
+			}
+		}
+		// 前缀和
+		// for i := 3; i <= n; i++ {
+		//		cnt[i] += cnt[i-1]
+		// }
+		return cnt
+	}
+
+	// https://oeis.org/A020639
+	// Lpf(n): least prime dividing n (when n > 1); a(1) = 1.
+	calcLPF := func(n int) []int {
+		lpf := make([]int, n+1)
+		lpf[1] = 1
+		for i := 2; i <= n; i++ {
+			if lpf[i] == 0 {
+				for j := i; j <= n; j += i {
+					if lpf[j] == 0 {
+						lpf[j] = i
+					}
+				}
+			}
+		}
+		return lpf
 	}
 
 	// ax ≡ 1 (mod m)
@@ -91,7 +160,11 @@ func mathCollection() {
 		return (x%m + m) % m
 	}
 
-	_ = []interface{}{factorial, calcGCDN, calcLCM, isPrime, sieve, divisors, primeFactors, modInverse}
+	_ = []interface{}{
+		factorial, calcGCDN, calcLCM,
+		isPrime, sieve, divisors, primeFactors, primeExponentsCount, calcLPF,
+		modInverse,
+	}
 }
 
 // exgcd solve equation ax+by=gcd(a,b)
