@@ -20,7 +20,7 @@ func Sol546D(reader io.Reader, writer io.Writer) {
 		return
 	}
 
-	n := 5000000
+	const n = 5000000
 	cnt := make([]int, n+1)
 	primes := make([]int, 0, 348513)
 	for i := 2; i <= n; i++ {
@@ -39,7 +39,7 @@ func Sol546D(reader io.Reader, writer io.Writer) {
 	for i := 3; i <= n; i++ {
 		cnt[i] += cnt[i-1]
 	}
-	for n := read(); n > 0; n-- {
+	for q := read(); q > 0; q-- {
 		Fprintln(out, cnt[read()]-cnt[read()])
 	}
 }
