@@ -38,17 +38,31 @@ func mathCollection() {
 		return n >= 2
 	}
 
-	sieve := func(n int) (prime []int, isPrime []bool) {
-		isPrime = make([]bool, n+1)
+	sieve := func(n_ int) (primes []int, isPrime []bool) {
+		primes = make([]int, 0, n_/10) // need check
+		isPrime = make([]bool, n_+1)
 		for i := range isPrime {
 			isPrime[i] = true
 		}
 		isPrime[0], isPrime[1] = false, false
-		for i := 2; i <= n; i++ {
+		for i := 2; i <= n_; i++ {
 			if isPrime[i] {
-				prime = append(prime, i)
-				for j := 2 * i; j <= n; j += i {
+				primes = append(primes, i)
+				for j := 2 * i; j <= n_; j += i {
 					isPrime[j] = false
+				}
+			}
+		}
+		return
+	}
+
+	// for i>=2, primes[i][0] == i means i is prime
+	primeFactorsAll := func(n_ int) (primes [][]int) {
+		primes = make([][]int, n_+1)
+		for i := 2; i <= n_; i++ {
+			if len(primes[i]) == 0 {
+				for j := i; j <= n_; j += i {
+					primes[j] = append(primes[j], i)
 				}
 			}
 		}
@@ -116,7 +130,7 @@ func mathCollection() {
 	//}
 	primeExponentsCount := func(n int) []int {
 		cnt := make([]int, n+1)
-		primes := make([]int, 0, n/10)
+		primes := make([]int, 0, n/10) // need check
 		for i := 2; i <= n; i++ {
 			if cnt[i] == 0 {
 				primes = append(primes, i)
@@ -162,7 +176,7 @@ func mathCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
-		isPrime, sieve, divisors, primeFactors, primeExponentsCount, calcLPF,
+		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverse,
 	}
 }
