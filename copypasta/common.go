@@ -17,6 +17,46 @@ func commonCollection() {
 	dirOffset8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orders := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
+	dfsGrids := func(grid [][]int) (comps int) {
+		// grid[i][j] = 0 or 1
+		n, m := len(grid), len(grid[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		var dfs func(i, j int) bool
+		dfs = func(i, j int) bool {
+			if i < 0 || i >= n || j < 0 || j >= m {
+				return false
+			}
+			if grid[i][j] == 1 {
+				return true
+			}
+			if vis[i][j] {
+				return true
+			}
+			vis[i][j] = true
+			res := true
+			for _, dir := range dirOffset4 {
+				if !dfs(i+dir[0], j+dir[1]) {
+					// 遍历完该连通分量再 return
+					res = false
+				}
+			}
+			return res
+		}
+		for i, gi := range grid {
+			for j, gij := range gi {
+				if gij == 0 && !vis[i][j] {
+					if dfs(i, j) {
+						comps++
+					}
+				}
+			}
+		}
+		return
+	}
+
 	/*
 		遍历以 (centerI, centerJ) 为中心的欧几里得距离为 dis 范围内的格点
 		例如 dis=2 时：
@@ -56,6 +96,21 @@ func commonCollection() {
 		return b
 	}
 
+	forSet := func(arr []int) (ans int) {
+		n := uint(len(arr))
+		//outer:
+		for i := 0; i < (1 << n); i++ {
+			sum := 0
+			for j := uint(0); j < n; j++ {
+				if i>>j&1 == 1 {
+					// sum+=do(arr[j]) or continue outer
+				}
+			}
+			ans = max(ans, sum)
+		}
+		return
+	}
+
 	/*
 		#####
 		#   #
@@ -81,6 +136,8 @@ func commonCollection() {
 			}
 		}
 	}
+
+	//
 
 	mins := func(vals ...int) int {
 		ans := vals[0]
@@ -180,7 +237,13 @@ func commonCollection() {
 		return
 	}
 
-	ifElse := func(cond bool, r1, r2 string) string {
+	ifElseI := func(cond bool, r1, r2 int) int {
+		if cond {
+			return r1
+		}
+		return r2
+	}
+	ifElseS := func(cond bool, r1, r2 string) string {
 		if cond {
 			return r1
 		}
@@ -214,9 +277,10 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders, searchDirOffset4, searchDirOffset4R,
+		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders,
 		min, mins, max, maxs, abs, quickPow,
-		reverse, reverseS, unique, discrete, ifElse,
+		dfsGrids, searchDirOffset4, searchDirOffset4R, forSet,
+		reverse, reverseS, unique, discrete, ifElseI, ifElseS,
 		stInit, stQuery,
 	}
 }

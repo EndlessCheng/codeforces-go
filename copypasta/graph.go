@@ -225,7 +225,7 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 	return
 }
 
-// 适用于稀疏图
+// 适用于稀疏图 O(|E|⋅log|E|)
 func (g *graph) mstKruskal() (sum int64) {
 	fa := make([]int, g.size+1)
 	for i := range fa {
@@ -259,7 +259,7 @@ func (g *graph) mstKruskal() (sum int64) {
 	return
 }
 
-// 适用于稠密图
+// 适用于稠密图 O(|V|^2)
 func (*graph) mstPrim(dist [][]int) (sum int) {
 	n := len(dist)
 	const inf int = 0x3f3f3f3f
