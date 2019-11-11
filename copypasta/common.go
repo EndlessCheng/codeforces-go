@@ -156,6 +156,7 @@ func commonCollection() {
 		return
 	}
 
+	// discrete([]int{0,7,3}, 1) => []int{1,3,2}
 	discrete := func(arr []int, start int) (disArr []int) {
 		n := len(arr)
 		if n == 0 {
@@ -200,6 +201,16 @@ func commonCollection() {
 		return i*shift10 + d
 	}
 
+	// floatToRat("1.2", 1e1) => (6, 5)
+	floatToRat := func(floatStr string, shift10 int) (m, n int) {
+		m = floatToInt(floatStr, shift10)
+		n = shift10
+		var gcd int // calcGCD(m, n)
+		m /= gcd
+		n /= gcd
+		return
+	}
+
 	//
 
 	var d [][20]int
@@ -231,7 +242,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders, searchDirOffset4, searchDirOffset4R,
 		min, mins, max, maxs, abs, quickPow,
-		reverse, reverseS, unique, discrete, ifElse, floatToInt,
+		reverse, reverseS, unique, discrete, ifElse, floatToInt, floatToRat,
 		stInit, stQuery,
 	}
 }
