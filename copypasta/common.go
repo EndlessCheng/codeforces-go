@@ -305,7 +305,8 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders,
 		min, mins, max, maxs, abs, quickPow,
-		reverse, reverseS, unique, discrete, ifElse, floatToInt, floatToRat,
+		dfsGrids, searchDirOffset4, searchDirOffset4R, forSet,
+		reverse, reverseS, unique, discrete, ifElseI, ifElseS, floatToRat,
 		stInit, stQuery,
 	}
 }
