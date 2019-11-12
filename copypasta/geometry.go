@@ -9,6 +9,10 @@ import (
 
 // 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.12f", ans)，这样还可以方便测试
 
+// NOTE: always add `eps` when do printf rounding
+// Sprintf("%.1f", 0.25) == "0.2"
+// Sprintf("%.1f", 0.25+eps) == "0.3"
+
 const eps = 1e-6
 
 type vec struct {

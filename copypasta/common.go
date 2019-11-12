@@ -3,6 +3,8 @@ package copypasta
 import (
 	"math/bits"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 func commonCollection() {
@@ -211,6 +213,7 @@ func commonCollection() {
 		return
 	}
 
+	// discrete([]int{0,7,3}, 1) => []int{1,3,2}
 	discrete := func(arr []int, start int) (disArr []int) {
 		n := len(arr)
 		if n == 0 {
@@ -250,6 +253,29 @@ func commonCollection() {
 		return r2
 	}
 
+	// floatStr must contain a .
+	// all decimal part must have same length
+	// floatToInt("3.000100", 1e6) => 3000100
+	// "3.0001" is not allowed
+	floatToInt := func(floatStr string, shift10 int) int {
+		splits := strings.SplitN(floatStr, ".", 2)
+		i, _ := strconv.Atoi(splits[0])
+		d, _ := strconv.Atoi(splits[1])
+		return i*shift10 + d
+	}
+
+	// floatToRat("1.2", 1e1) => (6, 5)
+	floatToRat := func(floatStr string, shift10 int) (m, n int) {
+		m = floatToInt(floatStr, shift10)
+		n = shift10
+		var gcd int // calcGCD(m, n)
+		m /= gcd
+		n /= gcd
+		return
+	}
+
+	//
+
 	var d [][20]int
 	stInit := func(a []int) {
 		n := len(a)
@@ -279,8 +305,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orders,
 		min, mins, max, maxs, abs, quickPow,
-		dfsGrids, searchDirOffset4, searchDirOffset4R, forSet,
-		reverse, reverseS, unique, discrete, ifElseI, ifElseS,
+		reverse, reverseS, unique, discrete, ifElse, floatToInt, floatToRat,
 		stInit, stQuery,
 	}
 }
