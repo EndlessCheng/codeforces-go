@@ -20,8 +20,7 @@ func simpleIO(reader io.Reader, writer io.Writer) {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
 }
 
-// 数据量在 ~10^6 时使用，能明显加快运行速度！（一倍以上差距）
-// > 2e5 也可以加速
+// 一般来说读 1e5 个 int 需要 100ms
 func fastIO(reader io.Reader, writer io.Writer) {
 	in := bufio.NewScanner(reader)
 	in.Split(bufio.ScanWords)
