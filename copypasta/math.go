@@ -174,6 +174,13 @@ func mathCollection() {
 		return (x%m + m) % m
 	}
 
+	//
+
+	// https://oeis.org/A006218
+	// a(n) = Sum_{k=1..n} floor(n/k)
+	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
+	// thus, a(n) % 2 == floor(sqrt(n)) % 2
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
