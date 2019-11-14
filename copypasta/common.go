@@ -276,22 +276,22 @@ func commonCollection() {
 
 	//
 
-	var d [][20]int
+	var st [][20]int
 	stInit := func(a []int) {
 		n := len(a)
-		d = make([][20]int, n)
-		for i := range d {
-			d[i][0] = a[i]
+		st = make([][20]int, n)
+		for i := range st {
+			st[i][0] = a[i]
 		}
 		for j := uint(1); 1<<j <= n; j++ {
 			for i := 0; i+(1<<j)-1 < n; i++ {
-				d[i][j] = max(d[i][j-1], d[i+(1<<(j-1))][j-1])
+				st[i][j] = max(st[i][j-1], st[i+(1<<(j-1))][j-1])
 			}
 		}
 	}
 	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
-		return max(d[l][k], d[r-(1<<k)+1][k])
+		return max(st[l][k], st[r-(1<<k)+1][k])
 	}
 
 	var s string
