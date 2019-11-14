@@ -2,6 +2,8 @@ package copypasta
 
 func sortCollections() {
 	// NOTE: Golang already has a binary search function in sort package, see 1077D for example
+	// NOTE: Pass n+1 if you wanna search range [0,n]
+
 	type bsFunc func(int) bool
 	reverse := func(f bsFunc) bsFunc {
 		return func(x int) bool {
