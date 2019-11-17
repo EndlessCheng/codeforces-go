@@ -7,18 +7,6 @@ import (
 	"os"
 )
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
 func ifElseI(cond bool, a, b int) int {
 	if cond {
 		return a
@@ -27,6 +15,18 @@ func ifElseI(cond bool, a, b int) int {
 }
 func ifElseS(cond bool, a, b string) string {
 	if cond {
+		return a
+	}
+	return b
+}
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+func max(a, b int) int {
+	if a > b {
 		return a
 	}
 	return b
