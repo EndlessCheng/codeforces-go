@@ -5,23 +5,54 @@ import (
 	"sort"
 )
 
-var _ = Print
-
-func ifElseI(cond bool, a, b int) int {
-	if cond {
-		return a
+func collections() {
+	ifElseI := func(cond bool, r1, r2 int) int {
+		if cond {
+			return r1
+		}
+		return r2
 	}
-	return b
+	ifElseS := func(cond bool, r1, r2 string) string {
+		if cond {
+			return r1
+		}
+		return r2
+	}
+
+	const mod int = 1e9 + 7
+	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	_ = []interface{}{Print, ifElseI, ifElseS, dirOffset4, min, max}
 }
 
-func ifElseS(cond bool, a, b string) string {
-	if cond {
-		return a
+func shiftGrid(grid [][]int, k int) [][]int {
+	n, m := len(grid), len(grid[0])
+	g := make([][]int, n)
+	for i := range g {
+		g[i] = make([]int, m)
 	}
-	return b
+	for i, gi := range grid {
+		for j, gij := range gi {
+			newPos := i*m + j + k
+			ni, nj := newPos/m%n, newPos%m
+			g[ni][nj] = gij
+		}
+	}
+	return g
 }
-
-const mod int = 1e9 + 7
 
 type TreeNode struct {
 	Val   int
@@ -34,23 +65,16 @@ type FindElements struct {
 }
 
 func Constructor(root *TreeNode) FindElements {
-	f := FindElements{
-		has: map[int]bool{},
-	}
-	root.Val = 0
-	f.dfs(root)
+	f := FindElements{map[int]bool{}}
+	f.dfs(root, 0)
 	return f
 }
 
-func (f *FindElements) dfs(root *TreeNode) {
-	f.has[root.Val] = true
-	if root.Left != nil {
-		root.Left.Val = root.Val*2 + 1
-		f.dfs(root.Left)
-	}
-	if root.Right != nil {
-		root.Right.Val = root.Val*2 + 2
-		f.dfs(root.Right)
+func (f *FindElements) dfs(o *TreeNode, v int) {
+	if o != nil {
+		f.has[v] = true
+		f.dfs(o.Left, v*2+1)
+		f.dfs(o.Right, v*2+2)
 	}
 }
 
@@ -58,106 +82,72 @@ func (f *FindElements) Find(target int) bool {
 	return f.has[target]
 }
 
-func shiftGrid(grid [][]int, k int) [][]int {
-	n := len(grid)
-	m := len(grid[0])
-	g := make([][]int, len(grid))
-	for i := range g {
-		g[i] = make([]int, len(grid[0]))
-	}
-	for i := range grid {
-		for j := range grid[i] {
-			newPos := i*m + j + k
-			ni, nj := newPos/m%n, newPos%m
-			g[ni][nj] = grid[i][j]
-		}
-	}
-	return g
-}
 func maxSumDivThree(nums []int) int {
-	n1 := []int{}
-	n2 := []int{}
+	arr1 := []int{}
+	arr2 := []int{}
 	ans := 0
 	for _, v := range nums {
 		if v%3 == 0 {
 			ans += v
 		} else if v%3 == 1 {
-			n1 = append(n1, v)
+			arr1 = append(arr1, v)
 		} else {
-			n2 = append(n2, v)
+			arr2 = append(arr2, v)
 		}
 	}
+	sort.Ints(arr1)
+	sort.Ints(arr2)
+	n1, n2 := len(arr1), len(arr2)
 
-	sort.Ints(n1)
-	sort.Ints(n2)
-	if len(n1) >= 6 {
-		start := len(n1)%3 + 3
-		for _, v := range n1[start:] {
+	if len(arr1) >= 6 {
+		start := n1%3 + 3
+		for _, v := range arr1[start:] {
 			ans += v
 		}
-		n1 = n1[:start]
+		arr1 = arr1[:start]
 	}
-	if len(n2) >= 6 {
-		start := len(n2)%3 + 3
-		for _, v := range n2[start:] {
+	if len(arr2) >= 6 {
+		start := n2%3 + 3
+		for _, v := range arr2[start:] {
 			ans += v
 		}
-		n2 = n2[:start]
+		arr2 = arr2[:start]
 	}
+	n1, n2 = len(arr1), len(arr2)
 
-	// choose
-	old := ans
-	min1 := len(n1)
-	min2 := len(n2)
-	for i := 0; i <= min1; i++ {
-		for j := 0; j <= min2; j++ {
-			// choose i n1 ans j n2
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	base := ans
+	for i := 0; i <= n1; i++ {
+		for j := 0; j <= n2; j++ {
+			// choose i arr1 and j arr2
 			if (i+2*j)%3 != 0 {
 				continue
 			}
-			tmp := old
-			cnt := 0
-			if i > 0 {
-				for ii := len(n1) - 1; ii >= 0; ii-- {
-					tmp += n1[ii]
-					cnt++
-					if cnt == i {
-						break
-					}
-				}
+			tmpSum := base
+			for ii := n1 - 1; ii >= n1-i; ii-- {
+				tmpSum += arr1[ii]
 			}
-			cnt = 0
-			if j > 0 {
-				for ii := len(n2) - 1; ii >= 0; ii-- {
-					tmp += n2[ii]
-					cnt++
-					if cnt == j {
-						break
-					}
-				}
+			for ii := n2 - 1; ii >= n2-j; ii-- {
+				tmpSum += arr2[ii]
 			}
-			//Println(tmp,i,j)
-			ans = max(ans, tmp)
+			ans = max(ans, tmpSum)
 		}
 	}
-
 	return ans
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func minPushBox(grid [][]byte) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
 	n, m := len(grid), len(grid[0])
 
 	var initI, initJ, finalI, finalJ int
@@ -301,13 +291,13 @@ func main() {
 	//Println(shiftGrid([][]int{
 	//	{1, 2}, {3, 4}, {5, 6},
 	//}, 100))
-
+	//
 	//Println(maxSumDivThree([]int{3, 6, 5, 1, 8}))
 	//Println(maxSumDivThree([]int{4}))
 	//Println(maxSumDivThree([]int{1, 2, 3, 4, 4}))
 	//Println(maxSumDivThree([]int{5, 2, 2, 2}))
-	//Println(maxSumDivThree([]int{13,21,7,27,40,18,37,7,31,5}))
-	//Println(maxSumDivThree([]int{	366,809,6,792,822,181,210,588,344,618,341,410,121,864,191,749,637,169,123,472,358,908,235,914,322,946,738,754,908,272,267,326,587,267,803,281,586,707,94,627,724,469,568,57,103,984,787,552,14,545,866,494,263,157,479,823,835,100,495,773,729,921,348,871,91,386,183,979,716,806,639,290,612,322,289,910,484,300,195,546,499,213,8,623,490,473,603,721,793,418,551,331,598,670,960,483,154,317,834,352}))
+	//Println(maxSumDivThree([]int{13, 21, 7, 27, 40, 18, 37, 7, 31, 5}))
+	//Println(maxSumDivThree([]int{366, 809, 6, 792, 822, 181, 210, 588, 344, 618, 341, 410, 121, 864, 191, 749, 637, 169, 123, 472, 358, 908, 235, 914, 322, 946, 738, 754, 908, 272, 267, 326, 587, 267, 803, 281, 586, 707, 94, 627, 724, 469, 568, 57, 103, 984, 787, 552, 14, 545, 866, 494, 263, 157, 479, 823, 835, 100, 495, 773, 729, 921, 348, 871, 91, 386, 183, 979, 716, 806, 639, 290, 612, 322, 289, 910, 484, 300, 195, 546, 499, 213, 8, 623, 490, 473, 603, 721, 793, 418, 551, 331, 598, 670, 960, 483, 154, 317, 834, 352}))
 
 	toBytes := func(g [][]string) [][]byte {
 		res := make([][]byte, len(g))
