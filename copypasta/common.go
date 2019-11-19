@@ -101,10 +101,10 @@ func commonCollection() {
 	forSet := func(arr []int) (ans int) {
 		n := uint(len(arr))
 		//outer:
-		for i := 0; i < (1 << n); i++ {
+		for i := 0; i < 1<<n; i++ {
 			sum := 0
 			for j := uint(0); j < n; j++ {
-				if i>>j&1 == 1 {
+				if i>>j&1 == 1 { // choose j in range [0,n)
 					// sum+=do(arr[j]) or continue outer
 				}
 			}
@@ -347,4 +347,19 @@ func grayCode(length int) []int {
 		ans[i] = i ^ i>>1
 	}
 	return ans
+}
+
+// https://oeis.org/A001227
+func consecutiveNumbersSum(n int) (ans int) {
+	for i := 1; i*i <= n; i++ {
+		if n%i == 0 {
+			if i&1 == 1 {
+				ans++
+			}
+			if i*i < n && n/i&1 == 1 {
+				ans++
+			}
+		}
+	}
+	return
 }
