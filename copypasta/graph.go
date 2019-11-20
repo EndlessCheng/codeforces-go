@@ -334,6 +334,7 @@ func (g *directedGraph) add(from, to int, weight int) {
 }
 
 // Kahn's algorithm
+// for fa order, see 1255C
 func (g *directedGraph) topSort() (order []int, acyclic bool) {
 	queue := []int{}
 	vOrder := make([]int, g.size+1)
