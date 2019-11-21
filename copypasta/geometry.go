@@ -131,7 +131,37 @@ func vec2Collection() {
 			isRectangle(a, c, b, d)
 	}
 
-	_ = []interface{}{convexHullLength, isRectangleAnyOrder}
+	// vs 中不能有重复的点
+	minAreaRect := func(vs []vec) float64 {
+		mp := map[vec]bool{}
+		for _, v := range vs {
+			mp[v] = true
+		}
+		ans := int64(math.MaxInt64)
+		for i, va := range vs {
+			for j, vb := range vs {
+				if j == i {
+					continue
+				}
+				for k, vc := range vs {
+					if k == i || k == j {
+						continue
+					}
+					if isOrthogonal(va, vb, vc) && mp[va.add(vc.sub(vb))] {
+						if area := va.sub(vb).len2() * vc.sub(vb).len2(); area < ans {
+							ans = area
+						}
+					}
+				}
+			}
+		}
+		if ans == math.MaxInt64 {
+			ans = 0
+		}
+		return math.Sqrt(float64(ans))
+	}
+
+	_ = []interface{}{convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
 
 //
