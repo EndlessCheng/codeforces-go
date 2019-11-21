@@ -69,7 +69,7 @@ func (a line) intersection(b line) vec {
 	return a.p1.add(va.mul(k))
 }
 
-func geometryCollection() {
+func vec2Collection() {
 	// 凸包
 	// qs[0] == qs[-1]
 	convexHull := func(ps []vec) []vec {
