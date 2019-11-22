@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 	"sort"
 )
 
@@ -94,6 +93,6 @@ func Sol1257D(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol1257D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1257D(os.Stdin, os.Stdout)
+//}
