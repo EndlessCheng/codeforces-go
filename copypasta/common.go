@@ -275,6 +275,20 @@ func commonCollection() {
 		return
 	}
 
+	// a 相对于 [0,n) 的补集
+	// a 必须是升序且无重复元素
+	complement := func(n int, a []int) (res []int) {
+		j := 0
+		for i := 0; i < n; i++ {
+			if j == len(a) || i < a[j] {
+				res = append(res, i)
+			} else {
+				j++
+			}
+		}
+		return
+	}
+
 	//
 
 	var st [][20]int
@@ -307,7 +321,7 @@ func commonCollection() {
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, abs, quickPow,
 		dfsGrids, searchDirOffset4, searchDirOffset4R, forSet,
-		reverse, reverseS, unique, discrete, ifElseI, ifElseS, floatToRat,
+		reverse, reverseS, unique, discrete, ifElseI, ifElseS, floatToRat, complement,
 		stInit, stQuery,
 	}
 }
