@@ -199,20 +199,22 @@ func suffixArray() {
 type trieNode struct {
 	childIdx [26]int
 	dupCnt   int // 重复插入计数
-	val      int // 节点附加信息
+	val      int // 节点附加信息，比如插入的字符串在原数组中的下标
+	// val 也可以是个 []int，重复插入的可以 append，此时 dupCnt == len(val)
 }
+
 type trie struct {
 	nodes []*trieNode
 }
 
 func newTrie() *trie {
 	return &trie{
-		nodes: []*trieNode{{}}, // init with root
+		nodes: []*trieNode{{}}, // init with a root (empty node)
 	}
 }
 
-// insert `s` into trie and add `val` at leaf
-func (t *trie) insert(s string, val int) {
+// 插入的字符串 s 不能为空
+func (t *trie) put(s string, val int) {
 	o := t.nodes[0]
 	for _, c := range s {
 		c -= 'a'
@@ -224,18 +226,55 @@ func (t *trie) insert(s string, val int) {
 	}
 	o.dupCnt++
 	o.val = val
+	//if o.dupCnt == 1 {
+	//	o.val = val
+	//}
+	//
+	//o.val = append(o.val, val)
 }
 
-func (t *trie) contain(s string) bool {
+// 在 trie 中寻找字符串 s，返回其 val 值
+// s 不能为空
+func (t *trie) get(s string) (val int, found bool) {
 	o := t.nodes[0]
 	for _, c := range s {
 		idx := o.childIdx[c-'a']
-		if o.childIdx[idx] == 0 {
-			return false
+		if idx == 0 {
+			return
 		}
 		o = t.nodes[idx]
 	}
-	return true
+	if o.dupCnt == 0 { // s 只是某个字符串的前缀
+		return
+	}
+	return o.val, true
+}
+
+// 在 trie 中寻找字典序最小的以 p 为前缀的字符串，返回该字符串及其 val 值
+// 若没有，返回 "", 0
+// p 不能为空
+func (t *trie) prefix(p string) (s string, val int) {
+	o := t.nodes[0]
+	for _, c := range p {
+		idx := o.childIdx[c-'a']
+		if idx == 0 {
+			return
+		}
+		o = t.nodes[idx]
+	}
+	// 存在字符串 s 使得 p 是 s 的前缀
+
+	bytes := []byte(p)
+	for o.dupCnt == 0 {
+		for i := 0; i < 26; i++ {
+			if idx := o.childIdx[i]; idx > 0 {
+				bytes = append(bytes, byte('a'+i))
+				o = t.nodes[idx]
+				break
+			}
+		}
+	}
+	return string(bytes), o.val
 }
 
 // childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
