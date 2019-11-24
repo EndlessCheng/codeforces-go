@@ -253,7 +253,7 @@ func (t *trie) get(s string) (val int, found bool) {
 // 在 trie 中寻找字典序最小的以 p 为前缀的字符串，返回该字符串及其 val 值
 // 若没有，返回 "", 0
 // p 不能为空
-func (t *trie) prefix(p string) (s string, val int) {
+func (t *trie) minPrefix(p string) (s string, val int) {
 	o := t.nodes[0]
 	for _, c := range p {
 		idx := o.childIdx[c-'a']
