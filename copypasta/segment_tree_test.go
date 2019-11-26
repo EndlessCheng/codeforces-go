@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"github.com/stretchr/testify/assert"
+	"sort"
 	"testing"
 )
 
@@ -34,4 +35,33 @@ func Test_lazySegmentTree(t *testing.T) {
 	assert.EqualValues(200, st.query(3, 3))
 	assert.EqualValues(400, st.query(3, 4))
 	assert.EqualValues(1300, st.query(1, 10))
+}
+
+func Test_pSegmentTree(t *testing.T) {
+	//assert := assert.New(t)
+
+	arr := []int{100, 20, 50, 23}
+	n := len(arr)
+
+	type pair struct{ val, i int }
+	ps := make([]pair, n)
+	for i, v := range arr {
+		ps[i] = pair{v, i}
+	}
+	sort.Slice(ps, func(i, j int) bool { return ps[i].val < ps[j].val })
+	kthArr := make([]int, n)
+	for i, p := range ps {
+		kthArr[p.i] = i + 1
+	}
+
+	st := newPST(n)
+	st.init(n)
+	for i, kth := range kthArr {
+		st.update(i, kth, 1)
+		t.Log("insert", kth)
+	}
+	t.Log(ps[st.queryKth(1, 4, 1)-1].val)
+	t.Log(ps[st.queryKth(1, 4, 2)-1].val)
+	t.Log(ps[st.queryKth(1, 4, 3)-1].val)
+	t.Log(ps[st.queryKth(1, 4, 4)-1].val)
 }

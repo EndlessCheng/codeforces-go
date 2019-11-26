@@ -1,5 +1,7 @@
 package copypasta
 
+import "math/bits"
+
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {
@@ -189,3 +191,86 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)) }
 func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }  // [l,r] 1<=l<=r<=n
 func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) } // [l,r] 1<=l<=r<=n
+
+//
+
+// 可持久化线段树（又称函数式线段树、主席树）
+type pstNode struct {
+	l, r   int
+	lo, ro *pstNode // 由于使用了指针，pstNode 必须存放于一个分配了足够空间的 slice 中，避免扩容时改变了内存位置
+	sum    int
+}
+type pSegmentTree struct {
+	nodes        []pstNode
+	versionRoots []*pstNode
+}
+
+func newPST(n int) *pSegmentTree {
+	// https://oi-wiki.org/ds/persistent-seg/
+	maxNodeSize := n * (3 + bits.Len(uint(n)))
+	return &pSegmentTree{
+		make([]pstNode, 0, maxNodeSize),
+		make([]*pstNode, 1, n+1), // 更新次数+1
+	}
+}
+
+func (*pSegmentTree) _pushUp(o *pstNode) {
+	o.sum = o.lo.sum + o.ro.sum
+}
+
+func (t *pSegmentTree) _build(l, r int) *pstNode {
+	t.nodes = append(t.nodes, pstNode{l: l, r: r})
+	o := &t.nodes[len(t.nodes)-1]
+	if l == r {
+		return o
+	}
+	mid := (l + r) >> 1
+	o.lo = t._build(l, mid)
+	o.ro = t._build(mid+1, r)
+	//t._pushUp(o)
+	return o
+}
+
+func (t *pSegmentTree) _update(o *pstNode, idx int, val int) *pstNode {
+	t.nodes = append(t.nodes, *o)
+	o = &t.nodes[len(t.nodes)-1]
+	if o.l == o.r {
+		o.sum += val
+		return o
+	}
+	if idx <= o.lo.r {
+		o.lo = t._update(o.lo, idx, val)
+	} else {
+		o.ro = t._update(o.ro, idx, val)
+	}
+	t._pushUp(o)
+	return o
+}
+
+func (t *pSegmentTree) _queryKth(o1, o2 *pstNode, k int) (idx int) {
+	if o1.l == o1.r {
+		return o1.l
+	}
+	if d := o2.lo.sum - o1.lo.sum; d >= k {
+		return t._queryKth(o1.lo, o2.lo, k)
+	} else {
+		return t._queryKth(o1.ro, o2.ro, k-d)
+	}
+}
+
+// 初始化，创建版本为 0 的线段树
+func (t *pSegmentTree) init(n int) {
+	t.versionRoots[0] = t._build(1, n)
+}
+
+// 基于版本为 baseVersion 的线段树，更新其 idx 位置上的值为 val（1<=idx<=n）
+// 若查询区间第 k 大，则从大往小更新；查询区间第 k 小则从小往大更新
+func (t *pSegmentTree) update(baseVersion int, idx int, val int) {
+	t.versionRoots = append(t.versionRoots, t._update(t.versionRoots[baseVersion], idx, val))
+}
+
+// 查询区间第 k 大/小，返回该值在原数组中的下标 1<=idx<=n
+// 1<=l<=r<=n
+func (t *pSegmentTree) queryKth(l, r int, k int) (idx int) {
+	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
+}

@@ -214,30 +214,36 @@ func commonCollection() {
 		return
 	}
 
-	// discrete([]int{0,7,3}, 1) => []int{1,3,2}
-	discrete := func(arr []int, start int) (disArr []int) {
+	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
+	// 相当于转换成第几小
+	discrete := func(arr []int, start int) (kthArr []int) {
 		n := len(arr)
 		if n == 0 {
 			return
 		}
-		type pair struct {
-			val int
-			idx int
+
+		type pair struct{ val, i int }
+		ps := make([]pair, n)
+		for i, v := range arr {
+			ps[i] = pair{v, i}
 		}
-		pairs := make([]pair, n)
-		for i, val := range arr {
-			pairs[i] = pair{val, i}
-		}
-		sort.Slice(pairs, func(i, j int) bool { return pairs[i].val < pairs[j].val })
-		disArr = make([]int, n)
-		disVal := start
-		disArr[pairs[0].idx] = disVal
+		sort.Slice(ps, func(i, j int) bool { return ps[i].val < ps[j].val })
+		kthArr = make([]int, n)
+
+		// 有重复
+		kth := start
+		kthArr[ps[0].i] = kth
 		for i := 1; i < n; i++ {
-			if pairs[i].val != pairs[i-1].val {
-				disVal++
+			if ps[i].val != ps[i-1].val {
+				kth++
 			}
-			disArr[pairs[i].idx] = disVal
+			kthArr[ps[i].i] = kth
 		}
+
+		// 无重复
+		//for i, p := range ps {
+		//	kthArr[p.i] = i + start
+		//}
 		return
 	}
 
