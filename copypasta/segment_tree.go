@@ -319,4 +319,7 @@ func (t *pst) query(version int, l, r int) (sum int64) {
 // [l,r] 1<=l<=r<=n
 func (t *pst) queryKth(l, r int, k int) (allKth int) {
 	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
+	// 	sortedArr := make([]int, n)
+	//	copy(sortedArr, a)
+	//	sort.Ints(sortedArr)
 }
