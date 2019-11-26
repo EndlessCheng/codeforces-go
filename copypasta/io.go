@@ -33,6 +33,7 @@ func fastIO(reader io.Reader, writer io.Writer) {
 		}
 		return
 	}
+	// 注意：若有负数请使用下面这个！
 	read = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
