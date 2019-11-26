@@ -38,7 +38,7 @@ func Test_lazySegmentTree(t *testing.T) {
 }
 
 func Test_pSegmentTree(t *testing.T) {
-	//assert := assert.New(t)
+	assert := assert.New(t)
 
 	arr := []int{100, 20, 50, 23}
 	n := len(arr)
@@ -54,14 +54,26 @@ func Test_pSegmentTree(t *testing.T) {
 		kthArr[p.i] = i + 1
 	}
 
-	st := newPST(n)
+	st := newPST(n, n)
 	st.init(n)
 	for i, kth := range kthArr {
-		st.update(i, kth, 1)
+		st.update(i+1, i, kth, 1)
 		t.Log("insert", kth)
 	}
 	t.Log(ps[st.queryKth(1, 4, 1)-1].val)
 	t.Log(ps[st.queryKth(1, 4, 2)-1].val)
 	t.Log(ps[st.queryKth(1, 4, 3)-1].val)
 	t.Log(ps[st.queryKth(1, 4, 4)-1].val)
+
+	n = 4
+	st = newPST(n, 2*n)
+	st.init(n)
+	st.update(1, 0, 2, 10)
+	st.update(1, 1, 1, -5)
+	st.update(2, 1, 1, -100)
+	assert.Equal(5, st.query(1, 1, 2))
+	assert.Equal(10, st.query(1, 2, 2))
+	assert.Equal(-95, st.query(2, 1, 2))
+	assert.Equal(-105, st.query(2, 1, 1))
+	assert.Equal(10, st.query(2, 2, 2))
 }

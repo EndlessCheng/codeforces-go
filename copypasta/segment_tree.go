@@ -195,30 +195,31 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 //
 
 // 可持久化线段树（又称函数式线段树、主席树）
+// Persistent Segment Tree
 type pstNode struct {
 	l, r   int
 	lo, ro *pstNode // 由于使用了指针，pstNode 必须存放于一个分配了足够空间的 slice 中，避免扩容时改变了内存位置
-	sum    int
+	sum    int64
 }
-type pSegmentTree struct {
+type pst struct {
 	nodes        []pstNode
 	versionRoots []*pstNode
 }
 
-func newPST(n int) *pSegmentTree {
+func newPST(n int, maxUpdateTimes int) *pst {
 	// https://oi-wiki.org/ds/persistent-seg/
-	maxNodeSize := n * (3 + bits.Len(uint(n)))
-	return &pSegmentTree{
+	maxNodeSize := 2*n + (bits.Len(uint(n))+1)*maxUpdateTimes
+	return &pst{
 		make([]pstNode, 0, maxNodeSize),
-		make([]*pstNode, 1, n+1), // 更新次数+1
+		make([]*pstNode, n+1), // 版本个数
 	}
 }
 
-func (*pSegmentTree) _pushUp(o *pstNode) {
+func (*pst) _pushUp(o *pstNode) {
 	o.sum = o.lo.sum + o.ro.sum
 }
 
-func (t *pSegmentTree) _build(l, r int) *pstNode {
+func (t *pst) _build(l, r int) *pstNode {
 	t.nodes = append(t.nodes, pstNode{l: l, r: r})
 	o := &t.nodes[len(t.nodes)-1]
 	if l == r {
@@ -231,14 +232,14 @@ func (t *pSegmentTree) _build(l, r int) *pstNode {
 	return o
 }
 
-func (t *pSegmentTree) _update(o *pstNode, idx int, val int) *pstNode {
+func (t *pst) _update(o *pstNode, idx int, val int64) *pstNode {
 	t.nodes = append(t.nodes, *o)
 	o = &t.nodes[len(t.nodes)-1]
 	if o.l == o.r {
 		o.sum += val
 		return o
 	}
-	if idx <= o.lo.r {
+	if mid := o.lo.r; idx <= mid {
 		o.lo = t._update(o.lo, idx, val)
 	} else {
 		o.ro = t._update(o.ro, idx, val)
@@ -247,11 +248,25 @@ func (t *pSegmentTree) _update(o *pstNode, idx int, val int) *pstNode {
 	return o
 }
 
-func (t *pSegmentTree) _queryKth(o1, o2 *pstNode, k int) (idx int) {
+func (t *pst) _query(o *pstNode, l, r int) (res int64) {
+	if l <= o.l && o.r <= r {
+		return o.sum
+	}
+	mid := o.lo.r
+	if l <= mid {
+		res += t._query(o.lo, l, r)
+	}
+	if mid < r {
+		res += t._query(o.ro, l, r)
+	}
+	return
+}
+
+func (t *pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
 	if o1.l == o1.r {
 		return o1.l
 	}
-	if d := o2.lo.sum - o1.lo.sum; d >= k {
+	if d := int(o2.lo.sum - o1.lo.sum); d >= k {
 		return t._queryKth(o1.lo, o2.lo, k)
 	} else {
 		return t._queryKth(o1.ro, o2.ro, k-d)
@@ -259,18 +274,26 @@ func (t *pSegmentTree) _queryKth(o1, o2 *pstNode, k int) (idx int) {
 }
 
 // 初始化，创建版本为 0 的线段树
-func (t *pSegmentTree) init(n int) {
+func (t *pst) init(n int) {
 	t.versionRoots[0] = t._build(1, n)
 }
 
-// 基于版本为 baseVersion 的线段树，更新其 idx 位置上的值为 val（1<=idx<=n）
-// 若查询区间第 k 大，则从大往小更新；查询区间第 k 小则从小往大更新
-func (t *pSegmentTree) update(baseVersion int, idx int, val int) {
-	t.versionRoots = append(t.versionRoots, t._update(t.versionRoots[baseVersion], idx, val))
+// 基于版本为 srcVersion 的线段树，更新其 idx 位置上的值 += val（1<=idx<=n）
+// 用更新后的结果覆盖 dstVersion 版本
+// dstVersion 和 srcVersion 可以相同
+// 若求区间第 k 大，遍历 kthArr 作为 idx 传入
+func (t *pst) update(dstVersion, srcVersion int, idx int, val int64) {
+	t.versionRoots[dstVersion] = t._update(t.versionRoots[srcVersion], idx, val)
 }
 
-// 查询区间第 k 大/小，返回该值在原数组中的下标 1<=idx<=n
-// 1<=l<=r<=n
-func (t *pSegmentTree) queryKth(l, r int, k int) (idx int) {
+// 查询第 version 个版本下的区间和
+// [l,r] 1<=l<=r<=n
+func (t *pst) query(version int, l, r int) (sum int64) {
+	return t._query(t.versionRoots[version], l, r)
+}
+
+// 查询区间第 k 大/小在整个数组上的名次 1<=allKth<=n，即排序后的数组下标 (+1)
+// [l,r] 1<=l<=r<=n
+func (t *pst) queryKth(l, r int, k int) (allKth int) {
 	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
 }
