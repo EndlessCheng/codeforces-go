@@ -34,7 +34,7 @@ func copyFile(dst, src string) error {
 	return nil
 }
 
-func Test(t *testing.T) {
+func TestGenCodeforcesContestTemplates(t *testing.T) {
 	rootPath := fmt.Sprintf("../../dash/%d/", contestID)
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -61,6 +61,54 @@ func Test(t *testing.T) {
 
 	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d b b/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGenCodeforcesNormalTemplates(t *testing.T) {
+	const problemID = "1262C"
+	mainStr := fmt.Sprintf(`package main
+
+import (
+	"bufio"
+	. "fmt"
+	"io"
+	"os"
+)
+
+// github.com/EndlessCheng/codeforces-go
+func Sol%[1]s(reader io.Reader, writer io.Writer) {
+	in := bufio.NewReader(reader)
+	out := bufio.NewWriter(writer)
+	defer out.Flush()
+
+	var n int
+	Fscan(in, &n)
+	
+}
+
+func main() {
+	Sol%[1]s(os.Stdin, os.Stdout)
+}
+`, problemID)
+	mainTestStr := fmt.Sprintf(`package main
+
+import (
+	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"testing"
+)
+
+func TestSol%[1]s(t *testing.T) {
+	// just copy from website
+	rawText := `+"`\n`"+`
+	testutil.AssertEqualCase(t, rawText, 0, Sol%[1]s)
+}
+`, problemID)
+	rootPath := "../../main/"
+	if err := ioutil.WriteFile(rootPath+problemID+".go", []byte(mainStr), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := ioutil.WriteFile(rootPath+problemID+"_test.go", []byte(mainTestStr), 0644); err != nil {
 		t.Fatal(err)
 	}
 }
