@@ -8,26 +8,26 @@ import (
 	"sort"
 )
 
-type pstNode struct {
+type pstNode1262D2 struct {
 	l, r   int
-	lo, ro *pstNode
+	lo, ro *pstNode1262D2
 	sum    int
 }
-type pSegmentTree struct {
-	nodes        []pstNode
-	versionRoots []*pstNode
+type pSegmentTree1262D2 struct {
+	nodes        []pstNode1262D2
+	versionRoots []*pstNode1262D2
 }
 
-func newPST(n int) *pSegmentTree {
+func newPST1262D2(n int) *pSegmentTree1262D2 {
 	maxNodeSize := n * (3 + bits.Len(uint(n)))
-	return &pSegmentTree{
-		make([]pstNode, 0, maxNodeSize),
-		make([]*pstNode, 1, n+1),
+	return &pSegmentTree1262D2{
+		make([]pstNode1262D2, 0, maxNodeSize),
+		make([]*pstNode1262D2, 1, n+1),
 	}
 }
 
-func (t *pSegmentTree) _build(l, r int) *pstNode {
-	t.nodes = append(t.nodes, pstNode{l: l, r: r})
+func (t *pSegmentTree1262D2) _build(l, r int) *pstNode1262D2 {
+	t.nodes = append(t.nodes, pstNode1262D2{l: l, r: r})
 	o := &t.nodes[len(t.nodes)-1]
 	if l == r {
 		return o
@@ -38,7 +38,7 @@ func (t *pSegmentTree) _build(l, r int) *pstNode {
 	return o
 }
 
-func (t *pSegmentTree) _update(o *pstNode, idx int) *pstNode {
+func (t *pSegmentTree1262D2) _update(o *pstNode1262D2, idx int) *pstNode1262D2 {
 	t.nodes = append(t.nodes, *o)
 	o = &t.nodes[len(t.nodes)-1]
 	if o.l == o.r {
@@ -54,7 +54,7 @@ func (t *pSegmentTree) _update(o *pstNode, idx int) *pstNode {
 	return o
 }
 
-func (t *pSegmentTree) _queryKth(o1, o2 *pstNode, k int) (idx int) {
+func (t *pSegmentTree1262D2) _queryKth(o1, o2 *pstNode1262D2, k int) (idx int) {
 	if o1.l == o1.r {
 		return o1.l
 	}
@@ -65,15 +65,15 @@ func (t *pSegmentTree) _queryKth(o1, o2 *pstNode, k int) (idx int) {
 	}
 }
 
-func (t *pSegmentTree) init(n int) {
+func (t *pSegmentTree1262D2) init(n int) {
 	t.versionRoots[0] = t._build(1, n)
 }
 
-func (t *pSegmentTree) update(baseVersion int, idx int) {
+func (t *pSegmentTree1262D2) update(baseVersion int, idx int) {
 	t.versionRoots = append(t.versionRoots, t._update(t.versionRoots[baseVersion], idx))
 }
 
-func (t *pSegmentTree) queryKth(l, r int, k int) (idx int) {
+func (t *pSegmentTree1262D2) queryKth(l, r int, k int) (idx int) {
 	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
 }
 
@@ -102,7 +102,7 @@ func Sol1262D2(reader io.Reader, writer io.Writer) {
 	sort.Slice(ps, func(i, j int) bool {
 		return ps[i].val > ps[j].val || ps[i].val == ps[j].val && ps[i].i < ps[j].i
 	})
-	st := newPST(n)
+	st := newPST1262D2(n)
 	st.init(n)
 	for i, p := range ps {
 		st.update(i, p.i+1)
