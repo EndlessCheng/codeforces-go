@@ -54,7 +54,7 @@ func Test_pSegmentTree(t *testing.T) {
 		kthArr[p.i] = i + 1
 	}
 
-	st := newPST(n, n)
+	st := newPST(n, n, n)
 	st.init(n)
 	for i, kth := range kthArr {
 		st.update(i+1, i, kth, 1)
@@ -66,7 +66,7 @@ func Test_pSegmentTree(t *testing.T) {
 	t.Log(ps[st.queryKth(1, 4, 4)-1].val)
 
 	n = 4
-	st = newPST(n, 2*n)
+	st = newPST(n, n, 2*n)
 	st.init(n)
 	st.update(1, 0, 2, 10)
 	st.update(1, 1, 1, -5)

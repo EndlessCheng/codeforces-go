@@ -206,12 +206,13 @@ type pst struct {
 	versionRoots []*pstNode
 }
 
-func newPST(n int, maxUpdateTimes int) *pst {
+// 区间长度，版本数，最大更新次数
+func newPST(n, versions, maxUpdateTimes int) *pst {
 	// https://oi-wiki.org/ds/persistent-seg/
 	maxNodeSize := 2*n + (bits.Len(uint(n))+1)*maxUpdateTimes
 	return &pst{
 		make([]pstNode, 0, maxNodeSize),
-		make([]*pstNode, n+1), // 版本个数
+		make([]*pstNode, versions+1),
 	}
 }
 
@@ -232,11 +233,26 @@ func (t *pst) _build(l, r int) *pstNode {
 	return o
 }
 
+func (t *pst) _buildArr(arr []int64, l, r int) *pstNode {
+	t.nodes = append(t.nodes, pstNode{l: l, r: r})
+	o := &t.nodes[len(t.nodes)-1]
+	if l == r {
+		o.sum = arr[l]
+		return o
+	}
+	mid := (l + r) >> 1
+	o.lo = t._buildArr(arr, l, mid)
+	o.ro = t._buildArr(arr, mid+1, r)
+	t._pushUp(o)
+	return o
+}
+
 func (t *pst) _update(o *pstNode, idx int, val int64) *pstNode {
 	t.nodes = append(t.nodes, *o)
 	o = &t.nodes[len(t.nodes)-1]
 	if o.l == o.r {
 		o.sum += val
+		//o.sum = val
 		return o
 	}
 	if mid := o.lo.r; idx <= mid {
@@ -276,6 +292,13 @@ func (t *pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
 // 初始化，创建版本为 0 的线段树
 func (t *pst) init(n int) {
 	t.versionRoots[0] = t._build(1, n)
+}
+func (t *pst) initArr(arr []int64) { // arr start at 1
+	t.versionRoots[0] = t._buildArr(arr, 1, len(arr)-1)
+}
+
+func (t *pst) copy(dstVersion, srcVersion int) {
+	t.versionRoots[dstVersion] = t.versionRoots[srcVersion]
 }
 
 // 基于版本为 srcVersion 的线段树，更新其 idx 位置上的值 += val（1<=idx<=n）
