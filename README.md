@@ -28,6 +28,8 @@ Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
 
 [OEIS](https://oeis.org/)
 
+[Wolfram|Alpha](https://www.wolframalpha.com/)
+
 > 1. Don't go to the editorial after some fixed time like 20 minutes of solving a problem. Give up only if you are stuck for 10-30 minutes (10 in case of easy problems, more for harder ones). As long as you have some ideas, do investigate them and maybe you'll solve the problem yourself.
 > 2. Upsolving problems is very important. This way you learn new things. After a contest or virtual participation, try to solve at least one more problem. This should be said early in the PDF, not only in parts about getting red rating.
 > 3. I don't think you should copy segment trees from your code library (reference document). It's better to struggle for some time and implement them every time. You will get faster and will understand them better. Plus this is a must for those who prepare for IOI. My friends and I implement seg-trees from scratch every time. I don't remember if I ever used to copy them.
