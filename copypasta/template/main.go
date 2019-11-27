@@ -8,6 +8,7 @@ import (
 )
 
 func solve(reader io.Reader, writer io.Writer) {
+	// 别忘记取模！
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
