@@ -32,18 +32,6 @@ func main() {
 	solve(os.Stdin, os.Stdout)
 }
 
-func ifElseI(cond bool, a, b int) int {
-	if cond {
-		return a
-	}
-	return b
-}
-func ifElseS(cond bool, a, b string) string {
-	if cond {
-		return a
-	}
-	return b
-}
 func min(a, b int) int {
 	if a < b {
 		return a
@@ -52,6 +40,18 @@ func min(a, b int) int {
 }
 func max(a, b int) int {
 	if a > b {
+		return a
+	}
+	return b
+}
+func ifElseI(cond bool, a, b int) int {
+	if cond {
+		return a
+	}
+	return b
+}
+func ifElseS(cond bool, a, b string) string {
+	if cond {
 		return a
 	}
 	return b

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	contestID = 1262
+	contestID = 1260
 	overwrite = false
 )
 
