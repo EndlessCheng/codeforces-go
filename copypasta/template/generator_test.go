@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -66,7 +67,8 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 }
 
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemID = "1262C"
+	const rawID = "958/F3"
+	problemID := strings.Replace(rawID, "/", "", -1)
 	mainStr := fmt.Sprintf(`package main
 
 import (
