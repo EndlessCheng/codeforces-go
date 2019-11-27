@@ -58,7 +58,7 @@ func (a matrix) sub(b matrix) matrix {
 	c := newMatrix(len(a), len(a[0]))
 	for i := range a {
 		for j, aij := range a[i] {
-			c[i][j] = aij - b[i][j]
+			c[i][j] = aij - b[i][j] // % mod) + mod) % mod
 		}
 	}
 	return c
