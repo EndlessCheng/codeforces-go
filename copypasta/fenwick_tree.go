@@ -1,8 +1,7 @@
 package copypasta
 
 // 效率是线段树的 3~10 倍（由数据决定）
-func binaryIndexedTree() {
-	n := int(1e5)
+func binaryIndexedTree(n int) {
 	tree := make([]int, n+1)
 	add := func(idx int, val int) {
 		for ; idx <= n; idx += idx & -idx { // idx += lowbit(idx)
@@ -27,8 +26,7 @@ func binaryIndexedTree() {
 	_ = []interface{}{add, addRange, query}
 }
 
-func multiBinaryIndexedTrees() {
-	n, m := int(1e5), 60
+func multiBinaryIndexedTrees(n, m int) {
 	trees := make([][]int, m)
 	for i := range trees {
 		trees[i] = make([]int, n+1)

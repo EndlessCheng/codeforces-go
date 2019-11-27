@@ -4,17 +4,6 @@ package copypasta
 
 import . "fmt"
 
-var _x = uint(1) // uint(time.Now().UnixNano())
-
-// https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
-// https://en.wikipedia.org/wiki/Xorshift
-func fastRand() uint {
-	_x ^= _x << 13
-	_x ^= _x >> 17
-	_x ^= _x << 5
-	return _x
-}
-
 type tpKeyType int   // *custom* 图方便可以全局替换
 type tpValueType int // *custom* 图方便可以全局替换
 
@@ -55,26 +44,39 @@ func (o *tpNode) rotate(d int) *tpNode {
 }
 
 type treap struct {
+	seed       uint
 	root       *tpNode
 	comparator func(a, b tpKeyType) int
 }
 
 func newTreap() *treap {
-	// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
-	return &treap{comparator: func(a, b tpKeyType) int {
-		if a < b {
-			return 0
-		}
-		if a > b {
-			return 1
-		}
-		return -1
-	}}
+	return &treap{
+		seed: 1, // uint(time.Now().UnixNano())
+		comparator: func(a, b tpKeyType) int {
+			// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
+			if a < b {
+				return 0
+			}
+			if a > b {
+				return 1
+			}
+			return -1
+		},
+	}
+}
+
+// https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
+// https://en.wikipedia.org/wiki/Xorshift
+func (t *treap) fastRand() uint {
+	t.seed ^= t.seed << 13
+	t.seed ^= t.seed >> 17
+	t.seed ^= t.seed << 5
+	return t.seed
 }
 
 func (t *treap) _put(o *tpNode, key tpKeyType, value tpValueType) *tpNode {
 	if o == nil {
-		return &tpNode{priority: fastRand(), sz: 1, msz: 1, key: key, value: value}
+		return &tpNode{priority: t.fastRand(), sz: 1, msz: 1, key: key, value: value}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key, value)

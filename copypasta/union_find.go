@@ -31,8 +31,7 @@ func unionFind() {
 	_ = []interface{}{initFa, merge, same}
 }
 
-func multiUnionFind() {
-	n, m := int(1e5), 2
+func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
 	for i := range fas {
 		fas[i] = make([]int, n+1)
