@@ -7,6 +7,9 @@ type intHeap struct {
 	sort.IntSlice
 }
 
+//func (h *intHeap) Len() int           { return len(h.IntSlice) }
+//func (h *intHeap) Less(i, j int) bool { return h.IntSlice[i] < h.IntSlice[j] } // > 为最大堆
+//func (h *intHeap) Swap(i, j int)      { h.IntSlice[i], h.IntSlice[j] = h.IntSlice[j], h.IntSlice[i] }
 func (h *intHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *intHeap) Pop() (v interface{}) {
 	n := len(h.IntSlice)
