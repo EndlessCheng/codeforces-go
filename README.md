@@ -2,7 +2,7 @@
 
 ## Algorithm
 
-Gain more power at [OI-wiki](https://oi-wiki.org/graph/min-circle/)
+Gain more power at [OI-wiki](https://oi-wiki.org)
 
 [OI-wiki List](https://github.com/OI-wiki/OI-wiki/issues/187)
 
