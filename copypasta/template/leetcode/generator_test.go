@@ -93,7 +93,7 @@ func writeMainFile(problemID, defaultCode string) error {
 	mainStr := fmt.Sprintf(`package main
 
 %s
-`, defaultCode) // TODO: add main and _ = Print (custom test)
+`, defaultCode)
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", problemID)
 	return ioutil.WriteFile(filePath, []byte(mainStr), 0644)
 }
