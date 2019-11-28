@@ -123,6 +123,7 @@ func parseHTML(fileName string, htmlURL string) error {
 	}
 
 	var funcName string
+	var genTestFile bool
 	for o := bodyNode.FirstChild; o != nil; o = o.NextSibling {
 		if o.Type == html.ElementNode && o.Data == "script" && o.FirstChild != nil {
 			jsText := o.FirstChild.Data
@@ -143,7 +144,7 @@ func parseHTML(fileName string, htmlURL string) error {
 
 				for _, e := range d {
 					if e.Value == "golang" {
-						funcName = parseFuncName(e.DefaultCode)
+						funcName, genTestFile = parseFuncName(e.DefaultCode)
 						if err := writeMainFile(fileName, e.DefaultCode); err != nil {
 							return err
 						}
@@ -153,6 +154,10 @@ func parseHTML(fileName string, htmlURL string) error {
 				break
 			}
 		}
+	}
+
+	if !genTestFile {
+		return nil
 	}
 
 	const (

@@ -40,7 +40,7 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 				}
 			}
 			v = reflect.Append(v, parseRawArg(tp.Elem(), rawArg[start:end]))
-			start = end + 1
+			start = end + 1 // skip ,
 		}
 	}
 	return
