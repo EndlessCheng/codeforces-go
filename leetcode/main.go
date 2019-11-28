@@ -5,19 +5,6 @@ import (
 )
 
 func collections() {
-	ifElseI := func(cond bool, r1, r2 int) int {
-		if cond {
-			return r1
-		}
-		return r2
-	}
-	ifElseS := func(cond bool, r1, r2 string) string {
-		if cond {
-			return r1
-		}
-		return r2
-	}
-
 	const mod int = 1e9 + 7
 	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 
@@ -32,6 +19,18 @@ func collections() {
 			return a
 		}
 		return b
+	}
+	ifElseI := func(cond bool, r1, r2 int) int {
+		if cond {
+			return r1
+		}
+		return r2
+	}
+	ifElseS := func(cond bool, r1, r2 string) string {
+		if cond {
+			return r1
+		}
+		return r2
 	}
 
 	_ = []interface{}{Print, ifElseI, ifElseS, dirOffset4, min, max}

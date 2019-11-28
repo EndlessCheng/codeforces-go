@@ -13,9 +13,15 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 	case reflect.String:
 		// remove " at leftmost and rightmost
 		v = reflect.ValueOf(rawArg[1 : len(rawArg)-1])
+	case reflect.Uint8: // byte
+		// sth like "a"
+		v = reflect.ValueOf(rawArg[1])
 	case reflect.Int:
 		i, _ := strconv.Atoi(rawArg)
 		v = reflect.ValueOf(i)
+	case reflect.Uint:
+		i, _ := strconv.Atoi(rawArg)
+		v = reflect.ValueOf(uint(i))
 	case reflect.Float64:
 		f, _ := strconv.ParseFloat(rawArg, 64)
 		v = reflect.ValueOf(f)
@@ -60,7 +66,9 @@ func simpleValueString(v reflect.Value) string {
 		return res
 	case reflect.String:
 		return fmt.Sprintf(`"%s"`, v.Interface())
-	default: // int float64 bool
+	case reflect.Uint8: // byte
+		return fmt.Sprintf(`"%c"`, v.Interface())
+	default: // int uint float64 bool
 		return fmt.Sprintf(`%v`, v.Interface())
 	}
 }

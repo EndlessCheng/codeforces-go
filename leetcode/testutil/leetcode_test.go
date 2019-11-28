@@ -6,11 +6,11 @@ import (
 )
 
 func TestRunLeetCodeFunc(t *testing.T) {
-	baseF := func(a string, b int, c float64, d bool) (string, int, float64, bool) {
-		fmt.Println("args:", a, b, c, d)
-		return a, b, c, d
+	baseF := func(a string, b int, c float64, d bool, e byte) (string, int, float64, bool, byte) {
+		fmt.Println("args:", a, b, c, d, e)
+		return a, b, c, d, e
 	}
-	data := [][]string{{`"ac"`, `-123`, `1.23`, `true`}}
+	data := [][]string{{`"ac"`, `-123`, `1.23`, `true`, `"a"`}}
 	if err := RunLeetCodeFunc(t, baseF, data, data); err != nil {
 		t.Error(err)
 	}
