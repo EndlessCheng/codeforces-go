@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -29,6 +30,8 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 		v = reflect.ValueOf(rawArg == "true")
 	case reflect.Slice:
 		v = reflect.New(tp).Elem()
+		isStringSlice := strings.Contains(rawArg, `"`)
+		quotCnt := 0
 		// ignore [] at leftmost and rightmost
 		for start, depth := 1, 0; start < len(rawArg)-1; {
 			end := start
@@ -39,8 +42,13 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 					depth++
 				case ']':
 					depth--
+				case '"':
+					quotCnt++
 				case ',':
 					if depth == 0 {
+						if isStringSlice && quotCnt%2 == 1 {
+							continue
+						}
 						break outer
 					}
 				}

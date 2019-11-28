@@ -6,11 +6,21 @@ import (
 )
 
 func TestRunLeetCodeFunc(t *testing.T) {
+	specialF := func(a []string) []string {
+		fmt.Println("args:", a)
+		return a
+	}
+	// , in string slice
+	data := [][]string{{`["alice,20,800,mtv","alice,50,100,beijing"]`}}
+	if err := RunLeetCodeFunc(t, specialF, data, data); err != nil {
+		t.Error(err)
+	}
+
 	baseF := func(a string, b int, c float64, d bool, e byte) (string, int, float64, bool, byte) {
 		fmt.Println("args:", a, b, c, d, e)
 		return a, b, c, d, e
 	}
-	data := [][]string{{`"ac"`, `-123`, `1.23`, `true`, `"a"`}}
+	data = [][]string{{`"ac"`, `-123`, `1.23`, `true`, `"a"`}}
 	if err := RunLeetCodeFunc(t, baseF, data, data); err != nil {
 		t.Error(err)
 	}

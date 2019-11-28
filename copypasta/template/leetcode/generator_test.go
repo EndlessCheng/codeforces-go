@@ -228,7 +228,7 @@ func parseHTML(fileName string, htmlURL string) error {
 	parseSampleText := func(text string, parseArgs bool) (sample []string) {
 		text = strings.TrimSpace(text)
 		text = strings.Replace(text, "\n", "", -1)
-		if !parseArgs {
+		if !parseArgs || !strings.Contains(text, "=") {
 			return []string{text}
 		}
 		splits := strings.Split(text, "=")
