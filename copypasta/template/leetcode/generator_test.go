@@ -21,8 +21,65 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 164
+	contestID = 165
 )
+
+var cookies []*http.Cookie
+
+func init() {
+	return
+
+	csrftokenUrl := fmt.Sprintf("https://%s/graphql/", host)
+	resp, err := grequests.Post(csrftokenUrl, &grequests.RequestOptions{
+		UserAgent: ua,
+		JSON:      map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
+	})
+	if err != nil {
+		panic(err)
+	}
+	if !resp.Ok {
+		panic(resp.StatusCode)
+	}
+	var csrfToken string
+	for _, c := range resp.RawResponse.Cookies() {
+		if c.Name == "csrftoken" {
+			csrfToken = c.Value
+			break
+		}
+	}
+	if csrfToken == "" {
+		panic("csrftoken not found")
+	}
+
+	loginUrl := fmt.Sprintf("https://%s/accounts/login/", host)
+	resp, err = grequests.Post(loginUrl, &grequests.RequestOptions{
+		UserAgent: ua,
+		Data: map[string]string{
+			"csrfmiddlewaretoken": csrfToken, // csrfToken,
+			"login":               os.Getenv("USERNAME"),
+			"password":            os.Getenv("PASSWORD"),
+			"next":                "/",
+		},
+		Headers: map[string]string{
+			"origin":  "https://leetcode-cn.com",
+			"referer": "https://leetcode-cn.com/",
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	if !resp.Ok {
+		panic(resp.StatusCode)
+	}
+	for _, c := range resp.RawResponse.Cookies() {
+		if c.Name == "csrftoken" || c.Name == "LEETCODE_SESSION" {
+			cookies = append(cookies, c)
+		}
+	}
+	if len(cookies) != 2 {
+		panic(cookies)
+	}
+}
 
 var contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
 
@@ -87,7 +144,6 @@ func Test(t *testing.T) {
 }
 
 func parseHTML(fileName string, htmlURL string) error {
-	// TODO: auto update by login
 	resp, err := grequests.Get(htmlURL, &grequests.RequestOptions{
 		UserAgent: ua,
 		Cookies: []*http.Cookie{
