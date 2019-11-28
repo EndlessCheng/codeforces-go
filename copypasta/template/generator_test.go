@@ -60,7 +60,7 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d b b/main.go\n", contestID)
+	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d a a/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 		t.Fatal(err)
 	}
