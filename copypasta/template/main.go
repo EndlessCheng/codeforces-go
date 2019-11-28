@@ -8,10 +8,10 @@ import (
 )
 
 func solve(reader io.Reader, writer io.Writer) {
-	// 别忘记取模！
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
+	const mod int = 1e9 + 7
 
 	var n int
 	Fscan(in, &n)
@@ -20,6 +20,7 @@ func solve(reader io.Reader, writer io.Writer) {
 	Fscan(in, &t)
 	for case_ := 0; case_ < t; case_++ {
 		solveCase(in, out)
+		//Fprintln(out, ifElseS(solveCase(in, out), "YES", "NO"))
 	}
 }
 
