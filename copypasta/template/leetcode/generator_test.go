@@ -227,7 +227,12 @@ func parseHTML(fileName string, htmlURL string) error {
 	var sampleIns, sampleOuts [][]string
 	parseSampleText := func(text string, parseArgs bool) (sample []string) {
 		text = strings.TrimSpace(text)
-		text = strings.Replace(text, "\n", "", -1)
+		// 按 \n split 后 TrimSpace 再合并
+		lines := strings.Split(text, "\n")
+		text = ""
+		for _, l := range lines {
+			text += strings.TrimSpace(l)
+		}
 		if !parseArgs || !strings.Contains(text, "=") {
 			return []string{text}
 		}
@@ -281,6 +286,9 @@ func TestGenLeetCodeTests(t *testing.T) {
 	}{}
 	if err := resp.JSON(&d); err != nil {
 		t.Fatal(err)
+	}
+	if len(d.Questions) == 0 {
+		t.Fatal("未找到比赛或比赛尚未开始")
 	}
 
 	problemURLs := make([]string, len(d.Questions))
