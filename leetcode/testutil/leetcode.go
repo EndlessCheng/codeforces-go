@@ -103,7 +103,7 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 		}
 		actualOut := vFunc.Call(in)
 		for i, expectedRes := range rawOut {
-			assert.Equal(t, expectedRes, simpleValueString(actualOut[i]))
+			assert.Equal(t, expectedRes, simpleValueString(actualOut[i]), "failed at example %d", testCase+1)
 		}
 	}
 	return nil
