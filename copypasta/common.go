@@ -20,6 +20,11 @@ func commonCollection() {
 	dirOffset8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
+	sort3 := func(a ...int) (int, int, int) {
+		sort.Ints(a)
+		return a[0], a[1], a[2]
+	}
+
 	dfsGrids := func(grid [][]int) (comps int) {
 		// grid[i][j] = 0 or 1
 		n, m := len(grid), len(grid[0])
@@ -325,7 +330,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
-		min, mins, max, maxs, abs, quickPow,
+		min, mins, max, maxs, abs, quickPow, sort3,
 		dfsGrids, searchDirOffset4, searchDirOffset4R, forSet,
 		reverse, reverseS, unique, discrete, ifElseI, ifElseS, floatToRat, complement,
 		stInit, stQuery,
