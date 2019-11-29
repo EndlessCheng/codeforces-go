@@ -59,7 +59,6 @@ type TreeNode struct {
 	Left  *TreeNode
 	Right *TreeNode
 }
-
 type FindElements struct {
 	has map[int]bool
 }
@@ -69,7 +68,6 @@ func Constructor(root *TreeNode) FindElements {
 	f.dfs(root, 0)
 	return f
 }
-
 func (f *FindElements) dfs(o *TreeNode, v int) {
 	if o != nil {
 		f.has[v] = true
@@ -77,7 +75,6 @@ func (f *FindElements) dfs(o *TreeNode, v int) {
 		f.dfs(o.Right, v*2+2)
 	}
 }
-
 func (f *FindElements) Find(target int) bool {
 	return f.has[target]
 }
@@ -149,20 +146,22 @@ func minPushBox(grid [][]byte) int {
 		return b
 	}
 	n, m := len(grid), len(grid[0])
+	isValid := func(i, j int) bool {
+		return i >= 0 && i < n && j >= 0 && j < m && grid[i][j] != '#'
+	}
 
-	var initI, initJ, finalI, finalJ int
-
-	for i, gi := range grid {
-		for j, gij := range gi {
-			if gij == 'T' {
-				finalI, finalJ = i, j
-				grid[i][j] = '.'
-			} else if gij == 'S' {
-				initI, initJ = i, j
-				grid[i][j] = '.'
+	findPos := func(c byte) (int, int) {
+		for i, gi := range grid {
+			for j, gij := range gi {
+				if gij == c {
+					return i, j
+				}
 			}
 		}
+		panic(c)
 	}
+	initI, initJ := findPos('S')
+	finalI, finalJ := findPos('T')
 
 	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	var ti, tj int
@@ -170,10 +169,7 @@ func minPushBox(grid [][]byte) int {
 	var vis [20][20]bool
 
 	dfsGrid = func(i, j int) bool {
-		if i < 0 || i == n || j < 0 || j == m {
-			return false
-		}
-		if grid[i][j] != '.' {
+		if !isValid(i, j) {
 			return false
 		}
 		if i == ti && j == tj {
@@ -195,10 +191,7 @@ func minPushBox(grid [][]byte) int {
 	}
 
 	canReach := func(si, sj, i, j int) bool {
-		if i < 0 || i == n || j < 0 || j == m {
-			return false
-		}
-		if grid[i][j] != '.' {
+		if !isValid(i, j) {
 			return false
 		}
 		ti, tj = i, j
@@ -217,13 +210,6 @@ func minPushBox(grid [][]byte) int {
 		return dfsGrid(si, sj)
 	}
 
-	canPushTo := func(i, j int) bool {
-		if i < 0 || i == n || j < 0 || j == m {
-			return false
-		}
-		return grid[i][j] == '.'
-	}
-
 	const inf int = 1e8
 
 	// min steps when box in (i,j)
@@ -237,7 +223,7 @@ func minPushBox(grid [][]byte) int {
 
 	var dfs func(i, j int) int
 	dfs = func(i, j int) int {
-		if i < 0 || i == n || j < 0 || j == m {
+		if !isValid(i, j) {
 			return -1
 		}
 		if i == finalI && j == finalJ {
@@ -253,7 +239,7 @@ func minPushBox(grid [][]byte) int {
 			if !canReach(oldI, oldJ, i-dir[0], j-dir[1]) {
 				continue
 			}
-			if !canPushTo(i+dir[0], j+dir[1]) {
+			if !isValid(i+dir[0], j+dir[1]) {
 				continue
 			}
 			initI, initJ = i+dir[0], j+dir[1]
@@ -272,18 +258,7 @@ func minPushBox(grid [][]byte) int {
 		return ans
 	}
 
-	var boxI, boxJ int
-outer:
-	for i, gi := range grid {
-		for j, gij := range gi {
-			if gij == 'B' {
-				boxI, boxJ = i, j
-				grid[i][j] = '.'
-				break outer
-			}
-		}
-	}
-
+	boxI, boxJ := findPos('B')
 	return dfs(boxI, boxJ)
 }
 
