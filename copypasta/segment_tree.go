@@ -2,6 +2,8 @@ package copypasta
 
 import "math/bits"
 
+// 技巧：对于复杂的区间操作，可以判断区间元素是否相同，然后 lazy
+
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {
