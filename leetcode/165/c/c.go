@@ -1,37 +1,21 @@
 package main
 
-func countSquares(mat [][]int) int {
-	ans := 0
-	n, m := len(mat), len(mat[0])
-
-	const mx = 305
-	sumRow := [mx][mx]int{}
+func countSquares(mat [][]int) (ans int) {
+	sum := make([][]int, len(mat)+1)
+	sum[0] = make([]int, len(mat[0])+1)
 	for i, mi := range mat {
+		sum[i+1] = make([]int, len(mi)+1)
 		for j, mij := range mi {
-			sumRow[i][j+1] = sumRow[i][j] + mij
+			sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + mij
 		}
 	}
-
-	sumCol := [mx][mx]int{}
-	for j := range mat[0] {
-		for i := range mat {
-			sumCol[i+1][j] = sumCol[i][j] + mat[i][j]
-		}
+	querySum2D := func(r1, c1, r2, c2 int) int {
+		return sum[r2][c2] - sum[r2][c1] - sum[r1][c2] + sum[r1][c1]
 	}
-
 	for i, mi := range mat {
-		for j, mij := range mi {
-			if mij == 0 {
-				continue
-			}
-			ans++
-			for sz := 1; i+sz < n && j+sz < m; sz++ {
-				if sumRow[i+sz][j+sz+1]-sumRow[i+sz][j] == sz+1 &&
-					sumCol[i+sz+1][j+sz]-sumCol[i][j+sz] == sz+1 {
-					ans++
-				} else {
-					break
-				}
+		for j := range mi {
+			for sz := 1; i+sz <= len(mat) && j+sz <= len(mi) && querySum2D(i, j, i+sz, j+sz) == sz*sz; sz++ {
+				ans++
 			}
 		}
 	}
