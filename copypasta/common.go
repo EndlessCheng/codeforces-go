@@ -94,6 +94,7 @@ func commonCollection() {
 			}
 		}
 	}
+	// r1<=r<=r2 && c1<=c<=c2
 	querySum2D := func(r1, c1, r2, c2 int) int {
 		r2++
 		c2++
