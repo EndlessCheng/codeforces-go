@@ -1,5 +1,7 @@
 package copypasta
 
+import "math"
+
 func sortCollections() {
 	// NOTE: Golang already has a binary search function in sort package, see 1077D for example
 	// NOTE: Pass n+1 if you wanna search range [0,n]
@@ -39,23 +41,21 @@ func sortCollections() {
 		return i
 	}
 
-	// step = 100
-	binarySearchF := func(l, r float64, step int, f func(x float64) bool) float64 {
+	binarySearch := func(l, r float64, f func(x float64) bool) float64 {
+		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥
 		for i := 0; i < step; i++ {
 			mid := (l + r) / 2
 			if f(mid) {
-				r = mid
+				r = mid // 减小 x
 			} else {
-				l = mid
+				l = mid // 增大 x
 			}
-			// 在精度容易确定时，可以加上 if r-l < eps {break}
-			// 例如保留 4 位小数时，eps 取 1e-6
 		}
 		return (l + r) / 2
 	}
 
-	// step = 100
-	ternarySearch := func(l, r float64, step int, f func(x float64) float64) float64 {
+	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
+		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥
 		for i := 0; i < step; i++ {
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
@@ -69,5 +69,5 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
-	_ = []interface{}{reverse, search, binarySearchF, ternarySearch}
+	_ = []interface{}{reverse, search, binarySearch, ternarySearch}
 }

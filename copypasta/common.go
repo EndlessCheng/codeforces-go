@@ -417,3 +417,6 @@ func consecutiveNumbersSum(n int) (ans int) {
 	}
 	return
 }
+
+// https://oeis.org/A000127
+// n*(n-1)*(n*n-5*n+18)/24+1

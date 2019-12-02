@@ -13,7 +13,7 @@ import (
 // Sprintf("%.1f", 0.25) == "0.2"
 // Sprintf("%.1f", 0.25+eps) == "0.3"
 
-// NOTE: 比较两个大浮点数
+// NOTE: 比较两个大浮点数（相减误差大于 eps）
 // a > b    a > (1+eps)*b
 // a >= b   a > (1-eps)*b
 // a == b   math.Abs(a/b-1) < eps 或 (1-eps)*b < a && a < (1+eps)*b
