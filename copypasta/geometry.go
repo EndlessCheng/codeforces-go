@@ -16,6 +16,7 @@ import (
 // NOTE: 比较两个大浮点数
 // a > b    a > (1+eps)*b
 // a >= b   a > (1-eps)*b
+// a == b   math.Abs(a/b-1) < eps 或 (1-eps)*b < a && a < (1+eps)*b
 
 const eps = 1e-8
 
