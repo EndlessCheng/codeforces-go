@@ -91,6 +91,20 @@ func (a vec) disToSeg(l line) float64 {
 }
 
 func vec2Collection() {
+	// 要求输入的点按顺时针或逆时针顺序输入
+	readPolygon := func(in io.Reader, n int) []line {
+		ps := make([]vec, n)
+		for i := range ps {
+			Fscan(in, &ps[i].x, &ps[i].y)
+		}
+		ls := make([]line, n)
+		for i := 0; i < n-1; i++ {
+			ls[i] = line{ps[i], ps[i+1]}
+		}
+		ls[n-1] = line{ps[n-1], ps[0]}
+		return ls
+	}
+
 	// 凸包
 	// qs[0] == qs[-1]
 	convexHull := func(ps []vec) []vec {
@@ -182,7 +196,7 @@ func vec2Collection() {
 		return math.Sqrt(float64(ans))
 	}
 
-	_ = []interface{}{convexHullLength, isRectangleAnyOrder, minAreaRect}
+	_ = []interface{}{readPolygon, convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
 
 //
