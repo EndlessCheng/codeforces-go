@@ -188,8 +188,7 @@ func vec2Collection() {
 //
 
 type vec3 struct {
-	x, y, z int
-	idx     int
+	x, y, z int64
 }
 
 func vec3Collections() {
