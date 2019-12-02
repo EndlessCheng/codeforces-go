@@ -67,7 +67,7 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 }
 
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const rawID = "613/A"
+	const rawID = "1059/D"
 	problemID := strings.Replace(rawID, "/", "", -1)
 	mainStr := fmt.Sprintf(`package main
 

@@ -7,13 +7,17 @@ import (
 	"sort"
 )
 
-// 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.12f", ans)，这样还可以方便测试
+// 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.16f", ans)，这样还可以方便测试
 
 // NOTE: always add `eps` when do printf rounding
 // Sprintf("%.1f", 0.25) == "0.2"
 // Sprintf("%.1f", 0.25+eps) == "0.3"
 
-const eps = 1e-6
+// NOTE: 比较两个大浮点数
+// a > b    a > (1+eps)*b
+// a >= b   a > (1-eps)*b
+
+const eps = 1e-8
 
 type vec struct {
 	x, y int64
