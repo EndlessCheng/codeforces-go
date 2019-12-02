@@ -7,14 +7,14 @@ import (
 	"sort"
 )
 
-type vec struct {
+type vec552 struct {
 	x, y int
 }
 
-func (a vec) sub(b vec) vec   { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) cross(b vec) int { return a.x*b.y - a.y*b.x }
-func (a vec) reverse() vec    { return vec{-a.x, -a.y} }
-func (a vec) up() vec {
+func (a vec552) sub(b vec552) vec552   { return vec552{a.x - b.x, a.y - b.y} }
+func (a vec552) cross(b vec552) int { return a.x*b.y - a.y*b.x }
+func (a vec552) reverse() vec552    { return vec552{-a.x, -a.y} }
+func (a vec552) up() vec552 {
 	if a.y < 0 || a.y == 0 && a.x < 0 {
 		return a.reverse()
 	}
@@ -33,13 +33,13 @@ func Sol552D(reader io.Reader, writer io.Writer) {
 		Fprint(out, 0)
 		return
 	}
-	ps := make([]vec, n)
+	ps := make([]vec552, n)
 	for i := range ps {
 		Fscan(in, &ps[i].x, &ps[i].y)
 	}
 	ans := int64(n) * int64(n-1) * int64(n-2) / 6
 	for i, pi := range ps {
-		ls := make([]vec, 0, n-i-1)
+		ls := make([]vec552, 0, n-i-1)
 		for j := i + 1; j < n; j++ {
 			ls = append(ls, ps[j].sub(pi).up())
 		}
