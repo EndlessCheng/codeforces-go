@@ -56,17 +56,38 @@ type line struct {
 	p1, p2 vec
 }
 
+// 过点 a 的垂直于 l 的直线
+func (a vec) perpendicular(l line) line {
+	return line{a, a.add(vec{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
+}
+
+// 直线 a b 交点
+// 必须用 float64
+func (a line) intersection(b line) vec {
+	va, vb := a.p2.sub(a.p1), b.p2.sub(b.p1)
+	k := vb.det(b.p1.sub(a.p1)) / vb.det(a.p2.sub(a.p1))
+	return a.p1.add(va.mul(k))
+}
+
 // 点 a 是否在线段 p1-p2 上（a-p1 与 a-p2 共线且方向相反）
 func (a vec) onSeg(l line) bool {
 	p1 := l.p1.sub(a)
 	p2 := l.p2.sub(a)
 	return p1.det(p2) == 0 && p1.dot(p2) <= 0
+	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
 }
 
-func (a line) intersection(b line) vec {
-	va, vb := a.p2.sub(a.p1), b.p2.sub(b.p1)
-	k := vb.det(b.p1.sub(a.p1)) / vb.det(a.p2.sub(a.p1))
-	return a.p1.add(va.mul(k))
+// 点 a 到线段 l 的（最短）距离
+func (a vec) disToSeg(l line) float64 {
+	p := l.intersection(a.perpendicular(l))
+	if !p.onSeg(l) {
+		if l.p2.sub(l.p1).dot(p.sub(l.p1)) < 0 { // < -eps
+			p = l.p1
+		} else {
+			p = l.p2
+		}
+	}
+	return a.sub(p).len()
 }
 
 func vec2Collection() {
