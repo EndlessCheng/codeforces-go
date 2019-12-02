@@ -208,6 +208,9 @@ func commonCollection() {
 		return
 	}
 
+	// 单调栈优化
+	// TODO: CF1237D
+
 	//
 
 	var st [][20]int
