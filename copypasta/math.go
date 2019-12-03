@@ -65,12 +65,12 @@ func mathCollection() {
 	}
 
 	// for i>=2, primes[i][0] == i means i is prime
-	primeFactorsAll := func(n_ int) (primes [][]int) {
-		primes = make([][]int, n_+1)
+	primeFactorsAll := func(n_ int) (factors [][]int) {
+		factors = make([][]int, n_+1)
 		for i := 2; i <= n_; i++ {
-			if len(primes[i]) == 0 {
+			if len(factors[i]) == 0 {
 				for j := i; j <= n_; j += i {
-					primes[j] = append(primes[j], i)
+					factors[j] = append(factors[j], i)
 				}
 			}
 		}
