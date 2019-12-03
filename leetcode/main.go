@@ -36,8 +36,7 @@ func collections() {
 	_ = []interface{}{Print, ifElseI, ifElseS, dirOffset4, min, max}
 }
 
-// slice 先提取出 n, m 等信息
-// 注意，若 slice 对自己切片，n, m 需要更新
+// n, m := len(mat), len(mat[0])
 
 
 
