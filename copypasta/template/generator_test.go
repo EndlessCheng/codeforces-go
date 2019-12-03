@@ -114,3 +114,24 @@ func TestSol%[1]s(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestGenNormalTemplates(t *testing.T) {
+	const rootPath = "../../nowcoder/2720/"
+	for i := 'a'; i <= 'h'; i++ {
+		dir := rootPath + string(i) + "/"
+		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+			t.Fatal(err)
+		}
+		for _, fileName := range [...]string{"main.go", "main_test.go"} {
+			goFilePath := dir + fileName
+			if !overwrite {
+				if _, err := os.Stat(goFilePath); !os.IsNotExist(err) {
+					continue
+				}
+			}
+			if err := copyFile(goFilePath, fileName); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+}
