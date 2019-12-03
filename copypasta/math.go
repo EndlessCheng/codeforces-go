@@ -53,6 +53,14 @@ func mathCollection() {
 				}
 			}
 		}
+		// https://oeis.org/A000720
+		pi := make([]int, n_+1)
+		for i := 2; i <= n_; i++ {
+			pi[i] = pi[i-1]
+			if isPrime[i] {
+				pi[i]++
+			}
+		}
 		return
 	}
 
