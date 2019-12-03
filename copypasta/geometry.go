@@ -58,6 +58,7 @@ func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
 func (a vec) mulVec(b vec) vec { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
 
 type line struct {
+	// 创建 line 时，要求 p1 != p2
 	p1, p2 vec
 }
 
@@ -79,12 +80,14 @@ func (a vec) onSeg(l line) bool {
 	p1 := l.p1.sub(a)
 	p2 := l.p2.sub(a)
 	return p1.det(p2) == 0 && p1.dot(p2) <= 0
+	// 注意！如果 a 已经在 l 上了直接 return p1.dot(p2) < eps
 	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
 }
 
 // 点 a 到线段 l 的（最短）距离
 func (a vec) disToSeg(l line) float64 {
 	p := l.intersection(a.perpendicular(l))
+	// p 已经在 l 上了
 	if !p.onSeg(l) {
 		if l.p2.sub(l.p1).dot(p.sub(l.p1)) < 0 { // < -eps
 			p = l.p1
