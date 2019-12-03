@@ -5,17 +5,9 @@ import (
 	"sort"
 )
 
-type gColor int8
-
-const (
-	gColorNone gColor = iota
-	gColorBlack
-	gColorWhite
-)
-
 type neighbor struct {
-	vertex int
-	weight int
+	to     int
+	weight int64
 }
 
 type graph struct {
@@ -23,7 +15,6 @@ type graph struct {
 	edgeSize int
 	edges    [][]neighbor
 	visited  []bool
-	color    []gColor
 }
 
 func newGraph(size, edgeSize int) *graph {
@@ -32,15 +23,14 @@ func newGraph(size, edgeSize int) *graph {
 		edgeSize: edgeSize,
 		edges:    make([][]neighbor, size+1),
 		visited:  make([]bool, size+1),
-		color:    make([]gColor, size+1),
 	}
 }
 
-func (g *graph) add(from, to int, weight int) {
+func (g *graph) add(from, to int, weight int64) {
 	g.edges[from] = append(g.edges[from], neighbor{to, weight})
 }
 
-func (g *graph) addBoth(from, to int, weight int) {
+func (g *graph) addBoth(from, to int, weight int64) {
 	g.add(from, to, weight)
 	if from != to {
 		g.add(to, from, weight)
@@ -51,10 +41,10 @@ func (g *graph) resetStates() {
 	g.visited = make([]bool, g.size+1)
 }
 
-func (g *graph) dfs(v int, do func(from, to int, weight int)) {
+func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
 	g.visited[v] = true
 	for _, e := range g.edges[v] {
-		w, weight := e.vertex, e.weight
+		w, weight := e.to, e.weight
 		if !g.visited[w] {
 			do(v, w, weight)
 			g.dfs(w, do)
@@ -62,14 +52,14 @@ func (g *graph) dfs(v int, do func(from, to int, weight int)) {
 	}
 }
 
-func (g *graph) bfs(v int, do func(from, to int, weight int)) {
+func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	g.visited[v] = true
 	for queue := []int{v}; len(queue) > 0; {
 		v, queue = queue[0], queue[1:]
 		for _, e := range g.edges[v] {
-			w, weight := e.vertex, e.weight
+			w := e.to
 			if !g.visited[w] {
-				do(v, w, weight)
+				do(v, w, e.weight)
 				g.visited[w] = true
 				queue = append(queue, w)
 			}
@@ -78,47 +68,18 @@ func (g *graph) bfs(v int, do func(from, to int, weight int)) {
 }
 
 // Floyd's Algorithm
-func (g *graph) allShortestPaths() [][]int {
-	min := func(a, b int) int {
-		if a <= b {
+// dist[v][w] == inf 表示没有 v-w 边
+// https://oi-wiki.org/graph/shortest-path/#floyd
+func (*graph) allShortestPaths(dist [][]int64) [][]int64 {
+	min := func(a, b int64) int64 {
+		if a < b {
 			return a
 		}
 		return b
 	}
-	const inf int = 1e9
-
-	var n, m int
-	// read n m
-
-	// 该图的邻接矩阵
-	weights := make([][]int, n+1)
-	for i := range weights {
-		weights[i] = make([]int, n+1)
-		for j := range weights[i] {
-			weights[i][j] = inf
-		}
-	}
-	for i := range weights {
-		weights[i][i] = 0
-	}
-	for i := 0; i < m; i++ {
-		var v, w, weight int
-		// read v w weight
-		weights[v][w] = weight
-		weights[w][v] = weight
-		// 或
-		// weights[v][w] = min(weights[v][w], weight)
-		// weights[w][v] = min(weights[w][v], weight)
-	}
-
-	dist := make([][]int, n+1)
-	for i := range dist {
-		dist[i] = make([]int, n+1)
-		copy(dist[i], weights[i])
-	}
-	for k := 1; k <= n; k++ { // 阶段
-		for i := 1; i <= n; i++ { // 状态
-			for j := 1; j <= n; j++ { // 决策
+	for k := range dist { // 阶段
+		for i := range dist { // 状态
+			for j := range dist { // 决策
 				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
 			}
 		}
@@ -127,50 +88,32 @@ func (g *graph) allShortestPaths() [][]int {
 }
 
 // Floyd's Algorithm
-func (g *graph) shortestCycle() int {
-	min := func(a, b int) int {
+// weights[v][w] == inf 表示没有 v-w 边
+// https://oi-wiki.org/graph/min-circle/#floyd
+func (*graph) shortestCycle(weights [][]int64) int64 {
+	min := func(a, b int64) int64 {
 		if a <= b {
 			return a
 		}
 		return b
 	}
-	const inf int = 1e8 // *NOTE*
-
-	var n, m int
-	// read n m
-
-	// 该图的邻接矩阵
-	weights := make([][]int, n+1)
-	for i := range weights {
-		weights[i] = make([]int, n+1)
-		for j := range weights[i] {
-			weights[i][j] = inf
-		}
-	}
-	for i := range weights {
-		weights[i][i] = 0
-	}
-	for i := 0; i < m; i++ {
-		var v, w, weight int
-		// read v w weight
-		weights[v][w] = weight
-		weights[w][v] = weight
-	}
-
-	dist := make([][]int, n+1)
+	const inf int64 = 1e18
+	//const inf int = 1e8 // *NOTE*
+	n := len(weights)
+	dist := make([][]int64, n)
 	for i := range dist {
-		dist[i] = make([]int, n+1)
+		dist[i] = make([]int64, n)
 		copy(dist[i], weights[i])
 	}
 	ans := inf
-	for k := 1; k <= n; k++ { // 阶段
-		for i := 1; i < k; i++ { // 状态
-			for j := 1; j < i; j++ { // 决策
+	for k := range dist { // 阶段
+		for i := 0; i < k; i++ { // 状态
+			for j := 0; j < i; j++ { // 决策
 				ans = min(ans, dist[i][j]+weights[i][k]+weights[k][j])
 			}
 		}
-		for i := 1; i <= n; i++ { // 状态
-			for j := 1; j <= n; j++ { // 决策
+		for i := range dist { // 状态
+			for j := range dist { // 决策
 				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
 			}
 		}
@@ -178,22 +121,30 @@ func (g *graph) shortestCycle() int {
 	return ans
 }
 
-// ShortestPaths uses the Dijkstra's Algorithm to compute the shortest paths from `start` to all other vertices.
-// The number dist[w] equals the length of a shortest path from `start` to w,
-// or is `inf` if w cannot be reached.
-// The number parent[w] is the predecessor of w on a shortest path from `start` to w,
-// or -1 if none exists.
-//
-// The time complexity is O((|E| + |V|)⋅log|V|), where |E| is the number of edges
-// and |V| the number of vertices in the graph.
-func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
+// Dijkstra's Algorithm
+// 适用于稀疏图 O((|E|+|V|)⋅log|V|)
+// https://oi-wiki.org/graph/shortest-path/#dijkstra
+func (*graph) shortestPaths(n, m, start int) (dist []int64, parents []int) {
+	type neighbor struct {
+		to     int
+		weight int64
+	}
+	g := make([][]neighbor, m)
+	for i := 0; i < m; i++ {
+		var v, w int
+		var weight int64
+		//v, w, weight := read()-1, read()-1, read()
+		g[v] = append(g[v], neighbor{w, weight})
+		g[w] = append(g[w], neighbor{v, weight})
+	}
+
 	const inf int64 = 1e18
-	dist = make([]int64, g.size+1)
+	dist = make([]int64, n)
 	for i := range dist {
 		dist[i] = inf
 	}
 	dist[start] = 0
-	parents = make([]int, g.size+1)
+	parents = make([]int, n)
 	for i := range parents {
 		parents[i] = -1
 	}
@@ -202,54 +153,59 @@ func (g *graph) shortestPaths(start int) (dist []int64, parents []int) {
 	Push(h, hPair{0, start})
 	for h.Len() > 0 {
 		p := Pop(h).(hPair)
-		v := p.y
-		if g.visited[v] {
+		d, v := p.x, p.y
+		if dist[v] < d {
 			continue
 		}
-		g.visited[v] = true
-		for _, e := range g.edges[v] {
-			w := e.vertex
-			if newDist := dist[v] + int64(e.weight); newDist < dist[w] {
-				dist[w] = newDist
+		for _, e := range g[v] {
+			w := e.to
+			if newD := dist[v] + e.weight; newD < dist[w] {
+				dist[w] = newD
 				parents[w] = v
-				Push(h, hPair{newDist, w})
+				Push(h, hPair{newD, w})
 			}
 		}
 	}
 
-	// path from n to start
-	//path := []int{}
-	//for v := n; v != -1; v = parents[v] {
-	//	path = append(path, v)
-	//}
+	// path from end to start
+	var end = n - 1
+	path := []int{}
+	for v := end; v != -1; v = parents[v] {
+		path = append(path, v)
+	}
 	return
 }
 
 // 适用于稀疏图 O(|E|⋅log|E|)
-func (g *graph) mstKruskal() (sum int64) {
-	fa := make([]int, g.size+1)
-	for i := range fa {
-		fa[i] = i
+// https://oi-wiki.org/graph/mst/#kruskal
+func (*graph) mstKruskal(n, m int) (sum int64) {
+	var fa []int
+	initFa := func(n int) {
+		fa = make([]int, n)
+		for i := range fa {
+			fa[i] = i
+		}
 	}
 	var find func(int) int
-	find = func(i int) int {
-		if fa[i] != i {
-			fa[i] = find(fa[i])
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
 		}
-		return fa[i]
+		return fa[x]
 	}
 
 	type edge struct {
 		v, w   int
 		weight int
 	}
-	edges := make([]edge, 0, g.edgeSize)
-	for v, es := range g.edges {
-		for _, e := range es {
-			edges = append(edges, edge{v, e.vertex, e.weight})
-		}
+	edges := make([]edge, m)
+	for i := range edges {
+		var v, w, weight int
+		//v, w, weight := read()-1, read()-1, read()
+		edges[i] = edge{v, w, weight}
 	}
 	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
+	initFa(n)
 	for _, e := range edges {
 		if from, to := find(e.v), find(e.w); from != to {
 			sum += int64(e.weight)
@@ -260,19 +216,27 @@ func (g *graph) mstKruskal() (sum int64) {
 }
 
 // 适用于稠密图 O(|V|^2)
+// dist[v][w] == inf 表示没有 v-w 边
+// https://oi-wiki.org/graph/mst/#prim
 func (*graph) mstPrim(dist [][]int) (sum int) {
-	n := len(dist)
-	const inf int = 0x3f3f3f3f
-	minCost := make([]int, n)
-	for i := range minCost {
-		minCost[i] = inf
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
 	}
-	minCost[0] = 0
+	const inf = 1.1e9
+	n := len(dist)
+	minWeights := make([]int, n)
+	for i := range minWeights {
+		minWeights[i] = inf
+	}
+	minWeights[0] = 0
 	used := make([]bool, n)
 	for {
 		v := -1
-		for i := 0; i < n; i++ {
-			if !used[i] && (v == -1 || minCost[i] < minCost[v]) {
+		for i, use := range used {
+			if !use && (v == -1 || minWeights[i] < minWeights[v]) {
 				v = i
 			}
 		}
@@ -280,17 +244,17 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 			break
 		}
 		used[v] = true
-		sum += minCost[v]
-		for w := 0; w < n; w++ {
-			if dist[v][w] < minCost[w] {
-				minCost[w] = dist[v][w]
-			}
+		sum += minWeights[v]
+		for w := range minWeights {
+			minWeights[w] = min(minWeights[w], dist[v][w])
 		}
 	}
 	return
 }
 
-func (*graph) componentsOfComplementGraph(n, m int) {
+// 反图的连通分量 O(n+m)
+// https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
+func (*graph) inverseGraphComponents(n, m int) [][]int {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -309,29 +273,29 @@ func (*graph) componentsOfComplementGraph(n, m int) {
 	same := func(x, y int) bool { return find(x) == find(y) }
 
 	g := make([][]int, n)
-	for ; m > 0; m-- {
+	for i := 0; i < m; i++ {
 		var v, w int
 		//v, w := read()-1, read()-1
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
 
-	maxDeg0, maxDeg0V := 0, 0
+	maxDegInv, maxDegInvV := 0, 0
 	for v, edges := range g {
-		if deg0 := n - 1 - len(edges); deg0 > maxDeg0 {
-			maxDeg0 = deg0
-			maxDeg0V = v
+		if degInv := n - 1 - len(edges); degInv > maxDegInv {
+			maxDegInv = degInv
+			maxDegInvV = v
 		}
 	}
-	if maxDeg0 == 0 {
-		//Fprintln(out, n)
-		//for i := 1; i <= n; i++ {
-		//	Fprintln(out, 1, i)
-		//}
-		return
+	if maxDegInv == 0 {
+		components := make([][]int, n)
+		for i := range components {
+			components[i] = []int{i + 1}
+		}
+		return components
 	}
 
-	merge0 := func(v int, edges []int) {
+	mergeInv := func(v int, edges []int) {
 		vs := map[int]bool{v: true}
 		for _, w := range edges {
 			vs[w] = true
@@ -343,91 +307,93 @@ func (*graph) componentsOfComplementGraph(n, m int) {
 		}
 	}
 	initFa(n)
-	merge0(maxDeg0V, g[maxDeg0V])
+	mergeInv(maxDegInvV, g[maxDegInvV])
 	for v, edges := range g {
-		if !same(v, maxDeg0V) {
-			merge0(v, edges)
+		if !same(v, maxDegInvV) {
+			mergeInv(v, edges)
 		}
 	}
 
-	cnt := map[int][]interface{}{}
+	componentsMap := map[int][]int{}
 	for i := range fa {
-		v := find(i)
-		cnt[v] = append(cnt[v], i+1)
+		rootV := find(i)
+		componentsMap[rootV] = append(componentsMap[rootV], i+1)
 	}
-	//Fprintln(out, len(cnt))
-	//for _, vs := range cnt {
-	//	Fprint(out, len(vs), " ")
-	//	Fprintln(out, vs...)
-	//}
+	components := make([][]int, 0, len(componentsMap))
+	for _, vs := range componentsMap {
+		components = append(components, vs)
+	}
+	return components
 }
 
-func (g *graph) _isBipartite(v int) bool {
-	for _, e := range g.edges[v] {
-		w := e.vertex
-		if g.color[w] == g.color[v] {
-			return false
-		}
-		if g.color[w] == gColorNone {
-			g.color[w] = 3 - g.color[v]
-			if !g._isBipartite(w) {
+// 二分图判定
+// https://oi-wiki.org/graph/bi-graph/#_3
+func (*graph) isBipartite(n, m int) bool {
+	g := make([][]int, n)
+	for i := 0; i < m; i++ {
+		var v, w int
+		//v, w := read()-1, read()-1
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+	}
+
+	colors := make([]int8, n)
+	var f func(int, int8) bool
+	f = func(v int, c int8) bool {
+		colors[v] = c
+		for _, w := range g[v] {
+			if colors[w] == c {
 				return false
 			}
+			if colors[w] == 0 {
+				if !f(w, 3-c) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	for i, c := range colors {
+		if c == 0 && !f(i, 1) {
+			return false
 		}
 	}
 	return true
 }
 
-func (g *graph) isBipartite(v int) bool {
-	g.color[v] = gColorBlack
-	return g._isBipartite(v)
-}
-
-//
-
-type directedGraph struct {
-	*graph
-	outDegree []int
-	inDegree  []int
-}
-
-func newDirectedGraph(size, edgeSize int) *directedGraph {
-	return &directedGraph{
-		graph:     newGraph(size, edgeSize),
-		outDegree: make([]int, size+1),
-		inDegree:  make([]int, size+1),
-	}
-}
-
-func (g *directedGraph) add(from, to int, weight int) {
-	g.graph.add(from, to, weight)
-	g.outDegree[from]++
-	g.inDegree[to]++
-}
-
+// 有向图-拓扑排序
 // Kahn's algorithm
-// for fa order, see 1255C
-func (g *directedGraph) topSort() (order []int, acyclic bool) {
+// TODO: for fa order, see CF1255C
+func (*graph) topSort(n, m int) (order []int, isDAG bool) {
+	g := make([][]int, n)
+	inDeg := make([]int, n)
+	for i := 0; i < m; i++ {
+		var v, w int
+		//v, w := read()-1, read()-1
+		g[v] = append(g[v], w)
+		inDeg[w]++
+	}
+
+	order = make([]int, 0, n)
 	queue := []int{}
-	vOrder := make([]int, g.size+1)
-	for i := 1; i <= g.size; i++ {
-		if g.inDegree[i] == 0 {
+	levels := make([]int, n)
+	for i, deg := range inDeg {
+		if deg == 0 {
 			queue = append(queue, i)
-			vOrder[i] = 1
+			levels[i] = 1
 		}
 	}
 	for len(queue) > 0 {
 		var v int
 		v, queue = queue[0], queue[1:]
 		order = append(order, v)
-		for _, e := range g.edges[v] {
-			w := e.vertex
-			g.inDegree[w]-- // NOTE: copy g.inDegree if reusing is needed.
-			if g.inDegree[w] == 0 {
+		for _, w := range g[v] {
+			inDeg[w]--
+			if inDeg[w] == 0 {
 				queue = append(queue, w)
-				vOrder[w] = vOrder[v] + 1
+				levels[w] = levels[v] + 1
 			}
 		}
 	}
-	return order, len(order) == g.size
+	return order, len(order) == n
 }
