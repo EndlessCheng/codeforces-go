@@ -99,6 +99,7 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 
 		in := make([]reflect.Value, len(rawIn))
 		for i, rawArg := range rawIn {
+			rawArg = trimSpaceAndNewLine(rawArg)
 			in[i] = parseRawArg(tp.In(i), rawArg)
 		}
 		actualOut := vFunc.Call(in)

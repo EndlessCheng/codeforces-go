@@ -5,10 +5,10 @@ import (
 	"unicode"
 )
 
-func parseFuncName(code string) (string, bool) {
+func parseFuncName(code string) (funcName string, isFuncProblem bool) {
 	code = strings.TrimSpace(code)
 	if !strings.HasPrefix(code, "func ") {
-		return "", false
+		return
 	}
 	i := strings.IndexByte(code, '(')
 	return code[5:i], true
