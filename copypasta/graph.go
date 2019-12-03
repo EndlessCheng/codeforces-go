@@ -361,8 +361,8 @@ func (*graph) isBipartite(n, m int) bool {
 	return true
 }
 
-// 有向图-拓扑排序
 // Kahn's algorithm
+// https://oi-wiki.org/graph/topo/
 // TODO: for fa order, see CF1255C
 func (*graph) topSort(n, m int) (order []int, isDAG bool) {
 	g := make([][]int, n)

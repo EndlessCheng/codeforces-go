@@ -89,6 +89,7 @@ func stringCollection() {
 		}
 		return b
 	}
+	// https://oi-wiki.org/string/minimal-string/
 	smallestRepresentation := func(s string) string {
 		n := len(s)
 		s += s
@@ -111,6 +112,7 @@ func stringCollection() {
 
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
+	// https://oi-wiki.org/string/manacher/#manacher
 	manacher := func(origin string) int {
 		n := len(origin)
 		s := make([]byte, 2*n+3)

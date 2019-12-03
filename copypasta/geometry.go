@@ -7,6 +7,9 @@ import (
 	"sort"
 )
 
+// https://oi-wiki.org/geometry/2d/
+// https://oi-wiki.org/geometry/3d/
+
 // 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.16f", ans)，这样还可以方便测试
 
 // NOTE: always add `eps` when do printf rounding
