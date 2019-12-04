@@ -464,5 +464,16 @@ func (*graph) scc(n, m int) (components [][]int) {
 		}
 	}
 
+	//lastComp := components[len(components)-1]
+	//numCanBeVisitedFromAll := len(lastComp)
+	//_ = numCanBeVisitedFromAll
+	//used = make([]bool, n)
+	//rdfs(lastComp[0])
+	//for _, use := range used {
+	//	if !use {
+	//		numCanBeVisitedFromAll = 0
+	//	}
+	//}
+
 	return
 }
