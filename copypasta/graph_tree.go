@@ -81,6 +81,7 @@ func (*tree) lca(n, root int) {
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 func (*tree) hld(n, root int) {
+	// TODO: 处理边权的情况
 	g := make([][]int, n)
 	for i := 0; i < n-1; i++ {
 		var v, w int
@@ -88,15 +89,22 @@ func (*tree) hld(n, root int) {
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-
-	type node struct {
-		hson                 *node // 重儿子
-		parents, depth, size int   // size 子树大小
+	// 点权
+	vals := make([]int64, n)
+	for i := range vals {
+		var v int64
+		vals[i] = v
+		//vals[i] = read()
 	}
+
+	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
+	type node struct{ hson, fa, depth, size, top, dfn int }
 	nodes := make([]node, n)
+	idv := make([]int, n+1) // idv[nodes[v].dfn] == v
+
 	var build func(v, fa, d int) *node
 	build = func(v, fa, d int) *node {
-		nodes[v] = node{nil, fa, d, 1}
+		nodes[v] = node{hson: -1, fa: fa, depth: d, size: 1}
 		o := &nodes[v]
 		for _, w := range g[v] {
 			if w == fa {
@@ -104,10 +112,78 @@ func (*tree) hld(n, root int) {
 			}
 			son := build(w, v, d+1)
 			o.size += son.size
-			if o.hson == nil || son.size > o.hson.size {
-				o.hson = son
+			if o.hson == -1 || son.size > nodes[o.hson].size {
+				o.hson = w
 			}
 		}
 		return o
 	}
+	build(root, -1, 0)
+
+	dfn := 0
+	var decomposition func(v, fa, top int)
+	decomposition = func(v, fa, top int) {
+		o := &nodes[v]
+		o.top = top
+		dfn++
+		o.dfn = dfn
+		idv[dfn] = v
+		if o.hson != -1 {
+			// 优先遍历重儿子，保证在同一条重链上的点的 DFS 序是连续的
+			decomposition(o.hson, v, top)
+			for _, w := range g[v] {
+				if w != fa && w != o.hson {
+					decomposition(w, v, w)
+				}
+			}
+		}
+	}
+	decomposition(root, -1, root)
+
+	t := make(lazySegmentTree, 4*n)
+	// 点权值必须按照 DFS 序
+	dfnVals := make([]int64, n)
+	for i, v := range vals {
+		dfnVals[nodes[i].dfn-1] = v
+	}
+	t.init(dfnVals)
+
+	doPath := func(v, w int, do func(l, r int)) {
+		ov, ow := nodes[v], nodes[w]
+		for ; ov.top != ow.top; ov, ow = nodes[v], nodes[w] {
+			topv, topw := nodes[ov.top], nodes[ow.top]
+			// v 所处的重链顶点必须比 w 的深
+			if topv.depth < topw.depth {
+				v, w = w, v
+				ov, ow = ow, ov
+				topv, topw = topw, topv
+			}
+			do(topv.dfn, ov.dfn)
+			// TODO: 边权下，处理轻边的情况
+			v = topv.fa
+		}
+		if ov.depth > ow.depth {
+			//v, w = w, v
+			ov, ow = ow, ov
+		}
+		do(ov.dfn, ow.dfn)
+		// TODO: 边权下，处理轻边的情况
+	}
+	updatePath := func(v, w int, add int64) {
+		doPath(v, w, func(l, r int) { t.update(l, r, add) })
+	}
+	queryPath := func(v, w int) (sum int64) {
+		doPath(v, w, func(l, r int) { sum += t.query(l, r) }) // % mod
+		return
+	}
+	updateSubtree := func(v int, add int64) {
+		o := nodes[v]
+		t.update(o.dfn, o.dfn+o.size-1, add)
+	}
+	querySubtree := func(v int) (sum int64) {
+		o := nodes[v]
+		return t.query(o.dfn, o.dfn+o.size-1)
+	}
+
+	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
