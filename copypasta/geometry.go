@@ -58,12 +58,30 @@ func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
 // up() 后按逆时针排序: sort.Slice(ps, func(i, j int) bool { return ps[i].det(ps[j]) > 0 })
 // 排序后保证共线的向量是相邻的（因为范围是 [0, 180) ）
 
-func (a vec) mulVec(b vec) vec { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
+func (a vec) mulVec(b vec) vec    { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
+func (a vec) angle(b vec) float64 { return math.Acos(float64(a.dot(b)) / (a.len() * b.len())) }
+
+//func (a vec) rotate(rad float64) { // 弧度
+//	return vec{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
+//}
+
+// a 的单位法线
+//func (a vec) normal() vec {
+//	l := a.len()
+//	return vec{-a.y / l, a.x / l}
+//}
 
 type line struct {
 	// 创建 line 时，要求 p1 != p2
 	p1, p2 vec
 }
+
+// 点 a 在直线 l 上的投影
+//func (a vec) projection(l line) vec {
+//	v := l.p2.sub(l.p1)
+//	t := v.dot(a.sub(l.p1)) / v.len()
+//	return l.p1.add(v.mul(t))
+//}
 
 // 过点 a 的垂直于 l 的直线
 func (a vec) perpendicular(l line) line {
@@ -73,33 +91,51 @@ func (a vec) perpendicular(l line) line {
 // 直线 a b 交点
 // 必须用 float64
 func (a line) intersection(b line) vec {
-	va, vb := a.p2.sub(a.p1), b.p2.sub(b.p1)
-	k := vb.det(b.p1.sub(a.p1)) / vb.det(a.p2.sub(a.p1))
-	return a.p1.add(va.mul(k))
+	va, vb, u := a.p2.sub(a.p1), b.p2.sub(b.p1), a.p1.sub(b.p1)
+	t := vb.det(u) / va.det(vb)
+	return a.p1.add(va.mul(t))
 }
+
+// 点 a 到直线 l 的距离
+func (a vec) disToLine(l line) float64 {
+	v, u := l.p2.sub(l.p1), a.sub(l.p1)
+	return math.Abs(float64(v.det(u))) / v.len()
+}
+
+// 点 a 到线段 l 的距离
+//func (a vec) disToSeg(l line) float64 {
+//	if l.p1 == l.p2 {
+//		return a.sub(l.p1).len()
+//	}
+//	v, v1, v2 := l.p2.sub(l.p1), a.sub(l.p1), a.sub(l.p2)
+//	if v.dot(v1) < -eps {
+//		return v1.len()
+//	}
+//	if v.dot(v2) > eps {
+//		return v2.len()
+//	}
+//	return math.Abs(v.det(v1)) / v.len()
+//}
 
 // 点 a 是否在线段 p1-p2 上（a-p1 与 a-p2 共线且方向相反）
 func (a vec) onSeg(l line) bool {
 	p1 := l.p1.sub(a)
 	p2 := l.p2.sub(a)
-	return p1.det(p2) == 0 && p1.dot(p2) <= 0
-	// 注意！如果 a 已经在 l 上了直接 return p1.dot(p2) < eps
+	return p1.det(p2) == 0 && p1.dot(p2) <= 0 // 含端点
+	// 如果 a 已经在 l 上了直接 return p1.dot(p2) < eps
 	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
 }
 
-// 点 a 到线段 l 的（最短）距离
-func (a vec) disToSeg(l line) float64 {
-	p := l.intersection(a.perpendicular(l))
-	// p 已经在 l 上了
-	if !p.onSeg(l) {
-		if l.p2.sub(l.p1).dot(p.sub(l.p1)) < 0 { // < -eps
-			p = l.p1
-		} else {
-			p = l.p2
-		}
-	}
-	return a.sub(p).len()
+// 线段规范相交
+func (a line) segProperIntersection(b line) bool {
+	// TODO
 }
+
+type circle struct {
+}
+
+// https://en.wikipedia.org/wiki/Inversive_geometry
+// https://oi-wiki.org/geometry/inverse/
 
 func vec2Collection() {
 	// 要求输入的点按顺时针或逆时针顺序输入

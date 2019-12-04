@@ -8,6 +8,11 @@ import "math/bits"
 // namespace
 type tree struct{}
 
+// https://oi-wiki.org/graph/tree-centroid/
+func (*tree) centroid(n int) {
+
+}
+
 // https://oi-wiki.org/graph/lca/#rmq
 func (*tree) lca(n, root int) {
 	g := make([][]int, n)
