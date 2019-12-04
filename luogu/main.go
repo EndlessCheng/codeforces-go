@@ -20,12 +20,6 @@ func solve(reader io.Reader, writer io.Writer) {
 		}
 		return
 	}
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
 
 	n, q, root := read(), read(), read()-1
 	g := make([][]int, n)
@@ -53,22 +47,32 @@ func solve(reader io.Reader, writer io.Writer) {
 	}
 	dfs(root, -1, 0)
 
-	var st [][20]int
+	type pair struct{ v, i int }
+	var st [][20]pair
 	stInit := func(a []int) {
 		n := len(a)
-		st = make([][20]int, n)
+		st = make([][20]pair, n)
 		for i := range st {
-			st[i][0] = a[i]
+			st[i][0] = pair{a[i], i}
 		}
 		for j := uint(1); 1<<j <= n; j++ {
 			for i := 0; i+(1<<j)-1 < n; i++ {
-				st[i][j] = min(st[i][j-1], st[i+(1<<(j-1))][j-1])
+				st0, st1 := st[i][j-1], st[i+(1<<(j-1))][j-1]
+				if st0.v < st1.v {
+					st[i][j] = st0
+				} else {
+					st[i][j] = st1
+				}
 			}
 		}
 	}
-	stQuery := func(l, r int) int {
+	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
-		return min(st[l][k], st[r-(1<<k)+1][k])
+		st0, st1 := st[l][k], st[r-(1<<k)+1][k]
+		if st0.v < st1.v {
+			return st0.i
+		}
+		return st1.i
 	}
 	calcLCA := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
