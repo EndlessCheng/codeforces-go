@@ -169,10 +169,11 @@ func (*graph) shortestPaths(n, m, start int) (dist []int64, parents []int) {
 
 	// path from end to start
 	var end = n - 1
-	path := []int{}
+	path := make([]int, 0, n)
 	for v := end; v != -1; v = parents[v] {
 		path = append(path, v)
 	}
+
 	return
 }
 
@@ -254,7 +255,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
-func (*graph) inverseGraphComponents(n, m int) [][]int {
+func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -288,11 +289,11 @@ func (*graph) inverseGraphComponents(n, m int) [][]int {
 		}
 	}
 	if maxDegInv == 0 {
-		components := make([][]int, n)
+		components = make([][]int, n)
 		for i := range components {
 			components[i] = []int{i + 1}
 		}
-		return components
+		return
 	}
 
 	mergeInv := func(v int, edges []int) {
@@ -319,11 +320,11 @@ func (*graph) inverseGraphComponents(n, m int) [][]int {
 		rootV := find(i)
 		componentsMap[rootV] = append(componentsMap[rootV], i+1)
 	}
-	components := make([][]int, 0, len(componentsMap))
+	components = make([][]int, 0, len(componentsMap))
 	for _, vs := range componentsMap {
 		components = append(components, vs)
 	}
-	return components
+	return
 }
 
 // 二分图判定
@@ -362,9 +363,9 @@ func (*graph) isBipartite(n, m int) bool {
 }
 
 // Kahn's algorithm
+// isDAG = len(order)==n
 // https://oi-wiki.org/graph/topo/
-// TODO: for fa order, see CF1255C
-func (*graph) topSort(n, m int) (order []int, isDAG bool) {
+func (*graph) topSort(n, m int) (order []int, parents []int) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)
 	for i := 0; i < m; i++ {
@@ -372,6 +373,11 @@ func (*graph) topSort(n, m int) (order []int, isDAG bool) {
 		//v, w := read()-1, read()-1
 		g[v] = append(g[v], w)
 		inDeg[w]++
+	}
+
+	parents = make([]int, n)
+	for i := range parents {
+		parents[i] = -1
 	}
 
 	order = make([]int, 0, n)
@@ -392,8 +398,17 @@ func (*graph) topSort(n, m int) (order []int, isDAG bool) {
 			if inDeg[w] == 0 {
 				queue = append(queue, w)
 				levels[w] = levels[v] + 1
+				parents[w] = v
 			}
 		}
 	}
-	return order, len(order) == n
+
+	// path from end to start
+	var end = n - 1
+	path := make([]int, 0, n)
+	for v := end; v != -1; v = parents[v] {
+		path = append(path, v)
+	}
+
+	return
 }
