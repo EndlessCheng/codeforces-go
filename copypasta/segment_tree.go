@@ -150,6 +150,10 @@ func (t lazySegmentTree) _spread(o int) {
 		ro.sum += add * int64(ro.r-ro.l+1)
 		lo.addChildren += add
 		ro.addChildren += add
+		//lo.sum = (lo.sum + add*int64(lo.r-lo.l+1)) % mod
+		//ro.sum = (ro.sum + add*int64(ro.r-ro.l+1)) % mod
+		//lo.addChildren = (lo.addChildren + add) % mod
+		//ro.addChildren = (ro.addChildren + add) % mod
 		t[o].addChildren = 0
 	}
 }

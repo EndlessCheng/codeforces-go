@@ -92,15 +92,13 @@ func (*tree) hld(n, root int) {
 	// 点权
 	vals := make([]int64, n)
 	for i := range vals {
-		var v int64
-		vals[i] = v
-		//vals[i] = read()
+		vals[i] = 0 // read()
 	}
 
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ hson, fa, depth, size, top, dfn int }
 	nodes := make([]node, n)
-	idv := make([]int, n+1) // idv[nodes[v].dfn] == v
+	//idv := make([]int, n+1) // idv[nodes[v].dfn] == v
 
 	var build func(v, fa, d int) *node
 	build = func(v, fa, d int) *node {
@@ -127,7 +125,7 @@ func (*tree) hld(n, root int) {
 		o.top = top
 		dfn++
 		o.dfn = dfn
-		idv[dfn] = v
+		//idv[dfn] = v
 		if o.hson != -1 {
 			// 优先遍历重儿子，保证在同一条重链上的点的 DFS 序是连续的
 			decomposition(o.hson, v, top)
@@ -173,7 +171,7 @@ func (*tree) hld(n, root int) {
 		doPath(v, w, func(l, r int) { t.update(l, r, add) })
 	}
 	queryPath := func(v, w int) (sum int64) {
-		doPath(v, w, func(l, r int) { sum += t.query(l, r) }) // % mod
+		doPath(v, w, func(l, r int) { sum += t.query(l, r) }) // TODO % mod
 		return
 	}
 	updateSubtree := func(v int, add int64) {
