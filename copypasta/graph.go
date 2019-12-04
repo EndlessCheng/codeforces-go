@@ -412,3 +412,57 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 
 	return
 }
+
+// 强连通分量分解
+// https://oi-wiki.org/graph/scc/#kosaraju
+func (*graph) scc(n, m int) (components [][]int) {
+	g := make([][]int, n)
+	rg := make([][]int, n)
+	for i := 0; i < m; i++ {
+		var v, w int
+		//v, w := read()-1, read()-1
+		g[v] = append(g[v], w)
+		rg[w] = append(rg[w], v)
+	}
+	used := make([]bool, n)
+
+	vs := make([]int, 0, n)
+	var dfs func(int)
+	dfs = func(v int) {
+		used[v] = true
+		for _, w := range g[v] {
+			if !used[w] {
+				dfs(w)
+			}
+		}
+		// 后序遍历
+		vs = append(vs, v)
+	}
+	for v := range g {
+		if !used[v] {
+			dfs(v)
+		}
+	}
+
+	used = make([]bool, n)
+	var comp []int
+	var rdfs func(int)
+	rdfs = func(v int) {
+		used[v] = true
+		comp = append(comp, v)
+		for _, w := range rg[v] {
+			if !used[w] {
+				rdfs(w)
+			}
+		}
+	}
+	for i := len(vs) - 1; i >= 0; i-- {
+		if !used[vs[i]] {
+			comp = []int{}
+			rdfs(vs[i])
+			components = append(components, comp)
+		}
+	}
+
+	return
+}
