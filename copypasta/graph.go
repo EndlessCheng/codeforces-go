@@ -415,7 +415,7 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 
 // 强连通分量分解
 // https://oi-wiki.org/graph/scc/#kosaraju
-func (*graph) scc(n, m int) (components [][]int) {
+func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 	g := make([][]int, n)
 	rg := make([][]int, n)
 	for i := 0; i < m; i++ {
@@ -461,6 +461,13 @@ func (*graph) scc(n, m int) (components [][]int) {
 			comp = []int{}
 			rdfs(vs[i])
 			components = append(components, comp)
+		}
+	}
+
+	sccIDs = make([]int, n)
+	for i, cp := range components {
+		for _, v := range cp {
+			sccIDs[v] = i
 		}
 	}
 
