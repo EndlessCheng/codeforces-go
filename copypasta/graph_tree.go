@@ -139,7 +139,7 @@ func (*tree) hld(n, root int) {
 	decomposition(root, -1, root)
 
 	t := make(lazySegmentTree, 4*n)
-	// 点权值必须按照 DFS 序
+	// 按照 DFS 序初始化
 	dfnVals := make([]int64, n)
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn-1] = v
