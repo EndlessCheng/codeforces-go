@@ -2,14 +2,13 @@ package copypasta
 
 import "math/bits"
 
-// https://oi-wiki.org/graph/lca/#rmq
-
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 // low(u) is the lowest dfn that we can reach from u using a path of descendants followed by at most one back edge
 
 // namespace
 type tree struct{}
 
+// https://oi-wiki.org/graph/lca/#rmq
 func (*tree) lca(n, root int) {
 	g := make([][]int, n)
 	for i := 0; i < n-1; i++ {
@@ -77,4 +76,18 @@ func (*tree) lca(n, root int) {
 	// ...
 
 	_ = calcLCA
+}
+
+// https://en.wikipedia.org/wiki/Heavy_path_decomposition
+// https://oi-wiki.org/graph/hld/
+func (*tree) hld(n, root int) {
+	g := make([][]int, n)
+	for i := 0; i < n-1; i++ {
+		var v, w int
+		//v, w := read()-1, read()-1
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+	}
+
+
 }
