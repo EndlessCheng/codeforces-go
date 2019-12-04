@@ -207,6 +207,25 @@ func exgcd(a, b int64) (gcd, x, y int64) {
 	return
 }
 
+func gameTheoryCollection() {
+	// 异或和不为0零则先手必胜
+	// https://blog.csdn.net/weixin_44023181/article/details/85619512
+	nim := func(a []int) (firstWin bool) {
+		sum := 0
+		for _, v := range a {
+			sum ^= v
+		}
+		return sum != 0
+	}
+
+	var sg []int
+	initSG := func(n int) {
+
+	}
+
+	_ = []interface{}{nim}
+}
+
 type mathF func(x float64) float64
 
 // Simpson's 1/3 rule
