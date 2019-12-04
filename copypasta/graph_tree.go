@@ -19,18 +19,18 @@ func (*tree) lca(n, root int) {
 		g[w] = append(g[w], v)
 	}
 
-	vs := make([]int, 0, 2*n-1) // 欧拉序列
-	pos := make([]int, n)       // pos[v] 表示 v 在 vs 中第一次出现的位置编号
+	dfn := make([]int, 0, 2*n-1) // 欧拉序列
+	pos := make([]int, n)        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	depths := make([]int, 0, 2*n-1)
 	var dfs func(v, fa, d int)
 	dfs = func(v, fa, d int) {
-		pos[v] = len(vs)
-		vs = append(vs, v)
+		pos[v] = len(dfn)
+		dfn = append(dfn, v)
 		depths = append(depths, d)
 		for _, w := range g[v] {
 			if w != fa {
 				dfs(w, v, d+1)
-				vs = append(vs, v)
+				dfn = append(dfn, v)
 				depths = append(depths, d)
 			}
 		}
@@ -70,7 +70,7 @@ func (*tree) lca(n, root int) {
 		if pv > pw {
 			pv, pw = pw, pv
 		}
-		return vs[stQuery(pv, pw)]
+		return dfn[stQuery(pv, pw)]
 	}
 
 	stInit(depths)
