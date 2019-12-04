@@ -89,5 +89,25 @@ func (*tree) hld(n, root int) {
 		g[w] = append(g[w], v)
 	}
 
-
+	type node struct {
+		hson                 *node // 重儿子
+		parents, depth, size int   // size 子树大小
+	}
+	nodes := make([]node, n)
+	var build func(v, fa, d int) *node
+	build = func(v, fa, d int) *node {
+		nodes[v] = node{nil, fa, d, 1}
+		o := &nodes[v]
+		for _, w := range g[v] {
+			if w == fa {
+				continue
+			}
+			son := build(w, v, d+1)
+			o.size += son.size
+			if o.hson == nil || son.size > o.hson.size {
+				o.hson = son
+			}
+		}
+		return o
+	}
 }
