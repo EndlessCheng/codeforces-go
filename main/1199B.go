@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -18,6 +17,6 @@ func Sol1199B(reader io.Reader, writer io.Writer) {
 	Fprintf(out, "%.13f", (l*l-h*h)/(2*h))
 }
 
-func main() {
-	Sol1199B(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1199B(os.Stdin, os.Stdout)
+//}
