@@ -129,7 +129,7 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 		to     int
 		weight int64
 	}
-	g := make([][]neighbor, m)
+	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
 		var v, w int
 		var weight int64
@@ -138,7 +138,7 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 		g[w] = append(g[w], neighbor{v, weight})
 	}
 
-	const inf int64 = 1e18
+	const inf int64 = 1e18 // 1e9+1
 	dist = make([]int64, n)
 	for i := range dist {
 		dist[i] = inf
