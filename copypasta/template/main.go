@@ -32,6 +32,9 @@ func solveCase(in io.Reader, out io.Writer) {
 
 func main() {
 	solve(os.Stdin, os.Stdout)
+	//in, _ := os.Open("input.txt")
+	//out, _ := os.Open("output.txt")
+	//solve(in, out)
 }
 
 func min(a, b int) int {

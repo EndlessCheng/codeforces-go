@@ -10,7 +10,7 @@ type tree struct{}
 
 // https://oi-wiki.org/graph/tree-centroid/
 func (*tree) centroid(n int) {
-
+	// TODO
 }
 
 // https://oi-wiki.org/graph/lca/#rmq
@@ -190,3 +190,5 @@ func (*tree) hld(n, root int) {
 
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
+
+// TODO LCT

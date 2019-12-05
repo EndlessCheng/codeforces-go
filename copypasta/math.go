@@ -220,7 +220,7 @@ func gameTheoryCollection() {
 
 	var sg []int
 	initSG := func(n int) {
-
+		// TODO
 	}
 
 	_ = []interface{}{nim}

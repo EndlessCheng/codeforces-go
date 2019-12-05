@@ -291,3 +291,5 @@ func (t *trie) maxXor(bits []byte) (xor int) {
 	}
 	return
 }
+
+// TODO https://oi-wiki.org/string/ac-automaton/

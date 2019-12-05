@@ -5,10 +5,8 @@ func unionFind() {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n+1)
-		//size := make([]int, n+1)
 		for i := range fa {
 			fa[i] = i
-			//size[i] = 1
 		}
 	}
 	var find func(int) int
@@ -19,13 +17,38 @@ func unionFind() {
 		return fa[x]
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
-	//merge := func(from, to int) {
-	//	from, to := find(from), find(to)
-	//	if from != to {
-	//		fa[from] = to
-	//		size[to] += size[from]
-	//	}
-	//}
+	same := func(x, y int) bool { return find(x) == find(y) }
+
+	_ = []interface{}{initFa, merge, same}
+}
+
+// TODO
+// TODO: xor
+func unionFindWithMaintain() {
+	var fa []int
+	var size []int
+	initFa := func(n int) {
+		fa = make([]int, n+1)
+		size = make([]int, n+1)
+		for i := range fa {
+			fa[i] = i
+			size[i] = 1
+		}
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+	merge := func(from, to int) {
+		from, to = find(from), find(to)
+		if from != to {
+			fa[from] = to
+			size[to] += size[from]
+		}
+	}
 	same := func(x, y int) bool { return find(x) == find(y) }
 
 	_ = []interface{}{initFa, merge, same}
