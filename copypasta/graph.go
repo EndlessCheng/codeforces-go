@@ -70,7 +70,7 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 // Floyd's Algorithm
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
-func (*graph) allShortestPaths(dist [][]int64) [][]int64 {
+func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
 	min := func(a, b int64) int64 {
 		if a < b {
 			return a
@@ -90,7 +90,7 @@ func (*graph) allShortestPaths(dist [][]int64) [][]int64 {
 // Floyd's Algorithm
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
-func (*graph) shortestCycle(weights [][]int64) int64 {
+func (*graph) shortestCycleFloyd(weights [][]int64) int64 {
 	min := func(a, b int64) int64 {
 		if a <= b {
 			return a
@@ -124,7 +124,7 @@ func (*graph) shortestCycle(weights [][]int64) int64 {
 // Dijkstra's Algorithm
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
-func (*graph) shortestPaths(n, m, start int) (dist []int64, parents []int) {
+func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int) {
 	type neighbor struct {
 		to     int
 		weight int64
