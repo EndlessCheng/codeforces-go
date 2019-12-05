@@ -132,6 +132,7 @@ func (a line) segProperIntersection(b line) bool {
 }
 
 type circle struct {
+	// TODO
 }
 
 // https://en.wikipedia.org/wiki/Inversive_geometry

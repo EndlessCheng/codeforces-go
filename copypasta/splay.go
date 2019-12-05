@@ -2,6 +2,8 @@ package copypasta
 
 import "errors"
 
+// TODO: 待整理
+
 type Int int
 
 func (p Int) Equals(key Key) bool {
