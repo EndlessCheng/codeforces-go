@@ -233,6 +233,7 @@ func parseHTML(fileName string, htmlURL string) error {
 
 				for _, e := range d {
 					if e.Value == "golang" {
+						// 模板解析完成，写入 <problemID>.go
 						funcName, isFuncProblem = parseFuncName(e.DefaultCode)
 						if err := writeMainFile(fileName, e.DefaultCode); err != nil {
 							return err
@@ -269,6 +270,7 @@ func parseHTML(fileName string, htmlURL string) error {
 
 		if !isASCII(text) {
 			// 包含中文的话，说明原始数据有误，跳过该数据
+			fmt.Println("[skipped]", text)
 			return nil
 		}
 
@@ -317,6 +319,7 @@ func parseHTML(fileName string, htmlURL string) error {
 	}
 	f(bodyNode)
 
+	// 样例解析完成，写入 <problemID>_test.go
 	if err := writeTestFile(fileName, funcName, sampleIns, sampleOuts); err != nil {
 		return err
 	}
