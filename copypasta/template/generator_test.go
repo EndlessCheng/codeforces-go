@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -14,26 +12,6 @@ const (
 	contestID = 1260
 	overwrite = false
 )
-
-func copyFile(dst, src string) error {
-	in, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer in.Close()
-
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	if _, err := io.Copy(out, in); err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func TestGenCodeforcesContestTemplates(t *testing.T) {
 	rootPath := fmt.Sprintf("../../dash/%d/", contestID)
@@ -67,8 +45,8 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 }
 
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const rawID = "1199B"
-	problemID := strings.Replace(rawID, "/", "", -1)
+	const problemURL = "https://codeforces.ml/contest/908/problem/C"
+	problemID := parseProblemIDFromURL(problemURL)
 	mainStr := fmt.Sprintf(`package main
 
 import (
