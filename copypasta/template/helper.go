@@ -29,7 +29,6 @@ func copyFile(dst, src string) error {
 }
 
 func parseProblemIDFromURL(urlStr string) string {
-	// https://codeforces.ml/contest/908/problem/C
 	splits := strings.Split(urlStr, "/")
 	for _, s := range splits {
 		if _, err := strconv.Atoi(s); err == nil {
