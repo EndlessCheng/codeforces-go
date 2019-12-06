@@ -196,6 +196,22 @@ func mathCollection() {
 		return (x%m + m) % m
 	}
 
+	quickPow := func(x, n, p int64) int64 {
+		x %= p
+		res := int64(1)
+		for ; n > 0; n >>= 1 {
+			if n&1 == 1 {
+				res = res * x % p
+			}
+			x = x * x % p
+		}
+		return res
+	}
+	// ax ≡ 1 (mod p)
+	modInverseP := func(a, p int64) int64 {
+		return quickPow(a, p-2, p)
+	}
+
 	// a/b % m
 	modFrac := func(a, b, m int64) int64 {
 		return a * modInverse(b, m) % m
@@ -211,7 +227,7 @@ func mathCollection() {
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
-		modFrac,
+		modInverseP, modFrac,
 	}
 }
 
