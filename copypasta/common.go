@@ -213,10 +213,11 @@ func commonCollection() {
 
 	//
 
-	var st [][20]int
+	const mx = 17 // 17 for 1e5, 20 for 1e6
+	var st [][mx]int
 	stInit := func(a []int) {
 		n := len(a)
-		st = make([][20]int, n)
+		st = make([][mx]int, n)
 		for i := range st {
 			st[i][0] = a[i]
 		}
