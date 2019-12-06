@@ -3,7 +3,7 @@ package copypasta
 import "math"
 
 func mathCollection() {
-	const mod int64 = 1e9 + 7
+	const mod int64 = 1e9 + 7 // 998244353
 	factorial := func(n int) int64 {
 		x := int64(1)
 		for i := int64(2); i <= int64(n); i++ {
@@ -176,10 +176,29 @@ func mathCollection() {
 		return lpf
 	}
 
+	//
+
+	// exgcd solve equation ax+by=gcd(a,b)
+	// we have |x|<=b and |y|<=a in result (x,y)
+	var exgcd func(a, b int64) (gcd, x, y int64)
+	exgcd = func(a, b int64) (gcd, x, y int64) {
+		if b == 0 {
+			return a, 1, 0
+		}
+		gcd, y, x = exgcd(b, a%b)
+		y -= a / b * x
+		return
+	}
+
 	// ax ≡ 1 (mod m)
 	modInverse := func(a, m int64) int64 {
 		_, x, _ := exgcd(a, m)
 		return (x%m + m) % m
+	}
+
+	// a/b % m
+	modFrac := func(a, b, m int64) int64 {
+		return a * modInverse(b, m) % m
 	}
 
 	//
@@ -192,19 +211,8 @@ func mathCollection() {
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
-		modInverse,
+		modFrac,
 	}
-}
-
-// exgcd solve equation ax+by=gcd(a,b)
-// we have |x|<=b and |y|<=a in result (x,y)
-func exgcd(a, b int64) (gcd, x, y int64) {
-	if b == 0 {
-		return a, 1, 0
-	}
-	gcd, y, x = exgcd(b, a%b)
-	y -= a / b * x
-	return
 }
 
 func gameTheoryCollection() {
