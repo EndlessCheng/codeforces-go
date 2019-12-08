@@ -21,7 +21,7 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 165
+	contestID = 166
 )
 
 var cookies []*http.Cookie
@@ -99,9 +99,6 @@ func writeMainFile(problemID, defaultCode string) error {
 }
 
 func writeTestFile(problemID, funcName string, sampleIns, sampleOuts [][]string) error {
-	if len(sampleIns) != len(sampleOuts) {
-		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(sampleIns), len(sampleOuts))
-	}
 	funcName = strings.TrimSpace(funcName)
 
 	var testStr string
@@ -301,6 +298,7 @@ func parseHTML(fileName string, htmlURL string) error {
 				sample := parseSampleText(raw, true)
 				if sample == nil {
 					fmt.Fprintf(os.Stderr, "错误的输入数据：%s\n", raw)
+					return
 				}
 				sampleIns = append(sampleIns, sample)
 			} else if strings.Contains(o.Data, tokenOutputZH) {
@@ -308,6 +306,7 @@ func parseHTML(fileName string, htmlURL string) error {
 				sample := parseSampleText(raw, true)
 				if sample == nil {
 					fmt.Fprintf(os.Stderr, "错误的输出数据：%s\n", raw)
+					return
 				}
 				sampleOuts = append(sampleOuts, sample)
 			}
@@ -318,6 +317,10 @@ func parseHTML(fileName string, htmlURL string) error {
 		}
 	}
 	f(bodyNode)
+
+	if len(sampleIns) != len(sampleOuts) {
+		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(sampleIns), len(sampleOuts))
+	}
 
 	// 样例解析完成，写入 <problemID>_test.go
 	if err := writeTestFile(fileName, funcName, sampleIns, sampleOuts); err != nil {
