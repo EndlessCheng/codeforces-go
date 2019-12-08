@@ -5,15 +5,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"testing"
 )
 
-const (
-	contestID = "abc146"
-	overwrite = false
-)
-
 func TestGenCodeforcesContestTemplates(t *testing.T) {
+	const contestID = "abc147"
+	const overwrite = false
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -38,9 +36,12 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/main.go\n", contestID)
-	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
-		t.Fatal(err)
+	_, err := strconv.Atoi(contestID)
+	if isCF := err == nil; isCF {
+		tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/main.go\n", contestID)
+		if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
@@ -95,6 +96,7 @@ func TestSol%[1]s(t *testing.T) {
 
 func TestGenNormalTemplates(t *testing.T) {
 	const rootPath = "../../nowcoder/2720/"
+	const overwrite = false
 	for i := 'a'; i <= 'h'; i++ {
 		dir := rootPath + string(i) + "/"
 		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
