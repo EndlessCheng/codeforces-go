@@ -45,6 +45,13 @@ func sortCollections() {
 		}
 		return i
 	}
+	// ……当然，这种情况也可以这样写
+	//sort.Search(r, func(x int) bool {
+	//	if x < l {
+	//		return false
+	//	}
+	//	...
+	//})
 
 	search64 := func(n int64, f func(int64) bool) int64 {
 		// Define f(-1) == false and f(n) == true.

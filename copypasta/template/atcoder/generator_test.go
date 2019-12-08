@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-const contestID = "abc146"
+const contestID = "abc147"
 
 var contestDir = fmt.Sprintf("../../../dash/%s/", contestID)
 
