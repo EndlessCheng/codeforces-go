@@ -12,10 +12,6 @@ import (
 
 const contestID = "abc146"
 
-const (
-	ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
-)
-
 var contestDir = fmt.Sprintf("../../../dash/%s/", contestID)
 
 func createDir(taskID byte) error {
@@ -25,7 +21,7 @@ func createDir(taskID byte) error {
 
 func parseTask(htmlURL string) (sampleIns, sampleOuts []string, err error) {
 	resp, err := grequests.Get(htmlURL, &grequests.RequestOptions{
-		UserAgent: ua,
+		UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
 	})
 	if err != nil {
 		return
