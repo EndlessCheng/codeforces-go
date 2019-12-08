@@ -103,6 +103,28 @@ func commonCollection() {
 
 	//
 
+	copyMat := func(mat [][]int) [][]int {
+		n, m := len(mat), len(mat[0])
+		dst := make([][]int, n)
+		for i, mi := range mat {
+			dst[i] = make([]int, m)
+			copy(dst[i], mi)
+		}
+		return dst
+	}
+
+	hash01Mat := func(mat [][]int) int {
+		hash := 0
+		cnt := uint(0)
+		for _, mi := range mat {
+			for _, mij := range mi {
+				hash |= mij << cnt
+				cnt++
+			}
+		}
+		return hash
+	}
+
 	sort3 := func(a ...int) (int, int, int) {
 		sort.Ints(a)
 		return a[0], a[1], a[2]
@@ -265,7 +287,7 @@ func commonCollection() {
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, quickPow, initSum2D, querySum2D,
-		sort3, reverse, reverseS, unique, discrete, floatToRat, complement,
+		copyMat, hash01Mat, sort3, reverse, reverseS, unique, discrete, floatToRat, complement,
 		stInit, stQuery,
 	}
 }

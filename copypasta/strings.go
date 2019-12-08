@@ -166,11 +166,10 @@ func suffixArray() {
 		lcp = make([]int, n, n+1)
 		h := 0
 		for i := range lcp {
-			j := sa[rank[i]-1]
 			if h > 0 {
 				h--
 			}
-			for ; j+h < n && i+h < n && s[j+h] == s[i+h]; h++ {
+			for j := sa[rank[i]-1]; j+h < n && i+h < n && s[j+h] == s[i+h]; h++ {
 			}
 			lcp[rank[i]-1] = h
 		}
@@ -178,8 +177,7 @@ func suffixArray() {
 	}
 
 	var s []byte
-	index := suffixarray.New(s)
-	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(index).Elem().FieldByName("sa").UnsafeAddr()))
+	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
 	sa = append([]int{len(s)}, sa...) // 方便定义 lcp
 	lcp := calcLCP(s, sa)
 	lcp = append(lcp, 0)

@@ -1,10 +1,14 @@
 package copypasta
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 func sortCollections() {
-	// NOTE: Golang already has a binary search function in sort package, see 1077D for example
+	_ = sort.Search
 	// NOTE: Pass n+1 if you wanna search range [0,n]
+	// NOTE: 二分时特判下限！（例如 0）
 
 	type bsFunc func(int) bool
 	reverse := func(f bsFunc) bsFunc {
@@ -25,9 +29,24 @@ func sortCollections() {
 	// })
 	// 最后的 ans := Search(...) - 1
 	// 如果 f 有副作用，需要在 Search 后调用下 f(ans)
-	// 也可以理解成 return false 就是加大力度，反之减小力度
+	// 也可以理解成 return false 就是抬高下限，反之减小上限
 
-	search := func(n int64, f func(int64) bool) int64 {
+	// 经常遇到需要从 1 开始二分的情况……
+	searchRange := func(l, r int, f func(int) bool) int {
+		// Define f(l-1) == false and f(r) == true.
+		i, j := l, r
+		for i < j {
+			h := (i + j) >> 1
+			if f(h) {
+				j = h
+			} else {
+				i = h + 1
+			}
+		}
+		return i
+	}
+
+	search64 := func(n int64, f func(int64) bool) int64 {
 		// Define f(-1) == false and f(n) == true.
 		i, j := int64(0), n
 		for i < j {
@@ -69,5 +88,5 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
-	_ = []interface{}{reverse, search, binarySearch, ternarySearch}
+	_ = []interface{}{reverse, searchRange, search64, binarySearch, ternarySearch}
 }
