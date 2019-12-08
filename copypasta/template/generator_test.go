@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	contestID = 1260
+	contestID = "abc146"
 	overwrite = false
 )
 
 func TestGenCodeforcesContestTemplates(t *testing.T) {
-	rootPath := fmt.Sprintf("../../dash/%d/", contestID)
+	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -38,7 +38,7 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	tips := fmt.Sprintf("cd %[1]d\ncf submit %[1]d a a/main.go\n", contestID)
+	tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/main.go\n", contestID)
 	if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 		t.Fatal(err)
 	}

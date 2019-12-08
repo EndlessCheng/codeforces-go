@@ -363,6 +363,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 		}
 		if err := parseHTML(problemID, pUrl); err != nil {
 			t.Error(err, problemID, pUrl)
+			continue
 		}
 	}
 }
