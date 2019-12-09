@@ -21,7 +21,7 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 166
+	contestID = 159
 )
 
 var cookies []*http.Cookie
@@ -290,18 +290,20 @@ func parseHTML(fileName string, htmlURL string) error {
 
 		return
 	}
+	isIn := true
 	var f func(*html.Node)
 	f = func(o *html.Node) {
-		if o.Type == html.TextNode {
-			if strings.Contains(o.Data, tokenInputZH) {
+		// 由于官方描述可能会打错字（比如“输入”写成“输出”），用 isIn 来交替 append 样例输入是最稳妥的
+		if o.Type == html.TextNode && (strings.Contains(o.Data, tokenInputZH) || strings.Contains(o.Data, tokenOutputZH)) {
+			if isIn {
 				raw := o.Parent.NextSibling.Data
 				sample := parseSampleText(raw, true)
-				if sample == nil {
+				if sample == nil { // 官方描述打错。例如，“解释”写成了“输出”
 					fmt.Fprintf(os.Stderr, "错误的输入数据：%s\n", raw)
 					return
 				}
 				sampleIns = append(sampleIns, sample)
-			} else if strings.Contains(o.Data, tokenOutputZH) {
+			} else {
 				raw := o.Parent.NextSibling.Data
 				sample := parseSampleText(raw, true)
 				if sample == nil {
@@ -310,6 +312,7 @@ func parseHTML(fileName string, htmlURL string) error {
 				}
 				sampleOuts = append(sampleOuts, sample)
 			}
+			isIn = !isIn
 			return
 		}
 		for c := o.FirstChild; c != nil; c = c.NextSibling {
