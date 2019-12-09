@@ -25,7 +25,7 @@ func login(session *grequests.Session) (err error) {
 		err = fmt.Errorf("GET %s return code %d", home, resp.StatusCode)
 		return
 	}
-	session.RequestOptions.Cookies = resp.RawResponse.Cookies()
+	//session.RequestOptions.Cookies = resp.RawResponse.Cookies()
 
 	var csrfToken string
 	root, err := html.Parse(resp)
@@ -63,7 +63,7 @@ func login(session *grequests.Session) (err error) {
 		err = fmt.Errorf("GET %s return code %d", apiLogin, resp.StatusCode)
 		return
 	}
-	session.RequestOptions.Cookies = resp.RawResponse.Cookies()
+	//session.RequestOptions.Cookies = resp.RawResponse.Cookies()
 	return
 }
 
@@ -129,6 +129,14 @@ func parseTask(htmlURL string) (sampleIns, sampleOuts []string, err error) {
 }
 
 func TestGenAtCoderTests(t *testing.T) {
+	session := grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
+		UseCookieJar: true,
+	})
+	if err := login(session); err != nil {
+		t.Fatal(err)
+	}
+
 	for taskID := byte('a'); taskID <= 'f'; taskID++ {
 		if err := createDir(taskID); err != nil {
 			t.Fatal(err)

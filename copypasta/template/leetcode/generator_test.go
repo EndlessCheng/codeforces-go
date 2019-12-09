@@ -22,6 +22,8 @@ const (
 const (
 	host      = leetCodeZH
 	contestID = 159
+	// TODO: test with UseCookieJar
+	// TODO: 下载之前的比赛，检查 cookie 有没有过期
 )
 
 var cookies []*http.Cookie
