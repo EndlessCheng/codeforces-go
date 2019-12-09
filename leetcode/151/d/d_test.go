@@ -18,7 +18,7 @@ func Test(t *testing.T) {
 `
 	// copy Your answer in the Run Code Result
 	yourAnswers := `
-[null,null,null,null,null,null,3,null,null,20,21,5,4,3,1,-1]
+[null,null,null,null,null,null,2,null,null,20,21,5,4,3,1,-1]
 `
 	assert.Equal(t, strings.TrimSpace(exampleOuts), strings.TrimSpace(yourAnswers))
 }
