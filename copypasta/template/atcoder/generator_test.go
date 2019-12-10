@@ -146,7 +146,7 @@ func TestGenAtCoderTests(t *testing.T) {
 	defer wg.Wait()
 	for taskID := byte('a'); taskID <= 'f'; taskID++ {
 		wg.Add(1)
-		// we don't want spent too much time on waiting response one by one, so we use goroutine !
+		// we don't want spent too much time on waiting responses one by one, so we use goroutine !
 		go func(id byte) {
 			defer wg.Done()
 
