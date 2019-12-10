@@ -1,6 +1,9 @@
 package copypasta
 
-import "math"
+import (
+	"math"
+	"strconv"
+)
 
 func mathCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
@@ -224,10 +227,53 @@ func mathCollection() {
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
+	// https://en.wikipedia.org/wiki/Repeating_decimal
+	// https://oeis.org/A051626 Period of decimal representation of 1/n, or 0 if 1/n terminates.
+	// https://oeis.org/A036275 The periodic part of the decimal expansion of 1/n. Any initial 0's are to be placed at end of cycle.
+	// 例如 (2, -3) => ("-0.", "6")
+	// b must not be zero
+	fractionToDecimal := func(a, b int64) (beforeCycle, cycle []byte) {
+		if a == 0 {
+			return []byte{'0'}, nil
+		}
+		var res []byte
+		if a < 0 && b > 0 || a > 0 && b < 0 {
+			res = []byte{'-'}
+		}
+		if a < 0 {
+			a = -a
+		}
+		if b < 0 {
+			b = -b
+		}
+		res = append(res, strconv.FormatInt(a/b, 10)...)
+
+		r := a % b
+		if r == 0 {
+			return res, nil
+		}
+		res = append(res, '.')
+
+		posMap := map[int64]int{}
+		for r != 0 {
+			if pos, ok := posMap[r]; ok {
+				return res[:pos], res[pos:]
+			}
+			posMap[r] = len(res)
+			r *= 10
+			res = append(res, '0'+byte(r/b))
+			r %= b
+		}
+		return res, nil
+	}
+
+	// TODO: decimalToFraction
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverseP, modFrac,
+		fractionToDecimal,
 	}
 }
 
