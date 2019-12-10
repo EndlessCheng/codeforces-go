@@ -28,6 +28,8 @@ func palindromePartition(str string, k int) int {
 		vis[st][end][seg] = true
 
 		if seg == 1 {
+			// 注：可以 O(len(str)^2) 预处理来简化复杂度
+			// 预处理的方法是枚举对称中心向两侧扩展
 			ans := 0
 			for i, j := 0, len(s)-1; i < j; {
 				if s[i] != s[j] {
