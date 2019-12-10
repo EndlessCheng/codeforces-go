@@ -6,7 +6,6 @@ import (
 	"github.com/levigross/grequests"
 	"golang.org/x/net/html"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -15,32 +14,29 @@ import (
 const (
 	leetCodeZH = "leetcode-cn.com"
 	leetCodeEN = "leetcode.com"
-
-	ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 )
 
 const (
 	host      = leetCodeZH
-	contestID = 159
-	// TODO: test with UseCookieJar
-	// TODO: 下载之前的比赛，检查 cookie 有没有过期
+	contestID = 156
 )
 
-var cookies []*http.Cookie
-
-func init() {
-	return
+func newSession(username, password string) (session *grequests.Session, err error) {
+	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+	session = grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    ua,
+		UseCookieJar: true,
+	})
 
 	csrftokenUrl := fmt.Sprintf("https://%s/graphql/", host)
-	resp, err := grequests.Post(csrftokenUrl, &grequests.RequestOptions{
-		UserAgent: ua,
-		JSON:      map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
+	resp, err := session.Post(csrftokenUrl, &grequests.RequestOptions{
+		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if !resp.Ok {
-		panic(resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", csrftokenUrl, resp.StatusCode)
 	}
 	var csrfToken string
 	for _, c := range resp.RawResponse.Cookies() {
@@ -54,12 +50,11 @@ func init() {
 	}
 
 	loginUrl := fmt.Sprintf("https://%s/accounts/login/", host)
-	resp, err = grequests.Post(loginUrl, &grequests.RequestOptions{
-		UserAgent: ua,
+	resp, err = session.Post(loginUrl, &grequests.RequestOptions{
 		Data: map[string]string{
-			"csrfmiddlewaretoken": csrfToken, // csrfToken,
-			"login":               os.Getenv("USERNAME"),
-			"password":            os.Getenv("PASSWORD"),
+			"csrfmiddlewaretoken": csrfToken,
+			"login":               username,
+			"password":            password,
 			"next":                "/",
 		},
 		Headers: map[string]string{
@@ -71,16 +66,9 @@ func init() {
 		panic(err)
 	}
 	if !resp.Ok {
-		panic(resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", loginUrl, resp.StatusCode)
 	}
-	for _, c := range resp.RawResponse.Cookies() {
-		if c.Name == "csrftoken" || c.Name == "LEETCODE_SESSION" {
-			cookies = append(cookies, c)
-		}
-	}
-	if len(cookies) != 2 {
-		panic(cookies)
-	}
+	return
 }
 
 var contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
@@ -174,20 +162,8 @@ func Test(t *testing.T) {
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }
 
-func parseHTML(fileName string, htmlURL string) error {
-	resp, err := grequests.Get(htmlURL, &grequests.RequestOptions{
-		UserAgent: ua,
-		Cookies: []*http.Cookie{
-			{
-				Name:  "LEETCODE_SESSION",
-				Value: os.Getenv("LEETCODE_SESSION"),
-			},
-			{
-				Name:  "csrftoken",
-				Value: os.Getenv("CSRF_TOKEN"),
-			},
-		},
-	})
+func parseHTML(session *grequests.Session, fileName string, htmlURL string) error {
+	resp, err := session.Get(htmlURL, nil)
 	if err != nil {
 		return err
 	}
@@ -336,8 +312,15 @@ func parseHTML(fileName string, htmlURL string) error {
 }
 
 func TestGenLeetCodeTests(t *testing.T) {
+	username := os.Getenv("USERNAME")
+	password := os.Getenv("PASSWORD")
+	session, err := newSession(username, password)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	apiInfoContest := fmt.Sprintf("https://%s/contest/api/info/weekly-contest-%d/", host, contestID)
-	resp, err := grequests.Get(apiInfoContest, &grequests.RequestOptions{UserAgent: ua})
+	resp, err := session.Get(apiInfoContest, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -366,7 +349,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 		if err := createDir(problemID); err != nil {
 			t.Fatal(err)
 		}
-		if err := parseHTML(problemID, pUrl); err != nil {
+		if err := parseHTML(session, problemID, pUrl); err != nil {
 			t.Error(err, problemID, pUrl)
 			continue
 		}
