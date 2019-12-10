@@ -18,7 +18,7 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 156
+	contestID = 154
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
@@ -28,15 +28,15 @@ func newSession(username, password string) (session *grequests.Session, err erro
 		UseCookieJar: true,
 	})
 
-	csrftokenUrl := fmt.Sprintf("https://%s/graphql/", host)
-	resp, err := session.Post(csrftokenUrl, &grequests.RequestOptions{
+	csrfTokenUrl := fmt.Sprintf("https://%s/graphql/", host)
+	resp, err := session.Post(csrfTokenUrl, &grequests.RequestOptions{
 		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
 	})
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
-		return nil, fmt.Errorf("POST %s return code %d", csrftokenUrl, resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", csrfTokenUrl, resp.StatusCode)
 	}
 	var csrfToken string
 	for _, c := range resp.RawResponse.Cookies() {
@@ -58,8 +58,8 @@ func newSession(username, password string) (session *grequests.Session, err erro
 			"next":                "/",
 		},
 		Headers: map[string]string{
-			"origin":  "https://leetcode-cn.com",
-			"referer": "https://leetcode-cn.com/",
+			"origin":  "https://" + host,
+			"referer": "https://" + host + "/",
 		},
 	})
 	if err != nil {
@@ -68,6 +68,8 @@ func newSession(username, password string) (session *grequests.Session, err erro
 	if !resp.Ok {
 		return nil, fmt.Errorf("POST %s return code %d", loginUrl, resp.StatusCode)
 	}
+
+	fmt.Println("登录成功", host)
 	return
 }
 
@@ -303,6 +305,10 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(sampleIns), len(sampleOuts))
 	}
 
+	if len(sampleIns) == 0 {
+		return fmt.Errorf("解析失败，未找到样例输入输出！")
+	}
+
 	// 样例解析完成，写入 <problemID>_test.go
 	if err := writeTestFile(fileName, funcName, sampleIns, sampleOuts); err != nil {
 		return err
@@ -312,8 +318,8 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 }
 
 func TestGenLeetCodeTests(t *testing.T) {
-	username := os.Getenv("USERNAME")
-	password := os.Getenv("PASSWORD")
+	username := os.Getenv("LEETCODE_USERNAME")
+	password := os.Getenv("LEETCODE_PASSWORD")
 	session, err := newSession(username, password)
 	if err != nil {
 		t.Fatal(err)
@@ -339,6 +345,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal("未找到比赛或比赛尚未开始")
 	}
 
+	fmt.Println("题目链接获取成功，开始解析")
 	problemURLs := make([]string, len(d.Questions))
 	for i, q := range d.Questions {
 		problemURLs[i] = fmt.Sprintf("https://%s/contest/weekly-contest-%d/problems/%s/", host, contestID, q.TitleSlug)

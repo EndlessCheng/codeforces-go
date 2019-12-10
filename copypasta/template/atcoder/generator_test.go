@@ -5,7 +5,6 @@ import (
 	"github.com/levigross/grequests"
 	"golang.org/x/net/html"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"strings"
 	"testing"
@@ -13,19 +12,27 @@ import (
 
 const contestID = "abc147"
 
-var contestDir = fmt.Sprintf("../../../dash/%s/", contestID)
+func newSession(username, password string) (session *grequests.Session, err error) {
+	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+	session = grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    ua,
+		UseCookieJar: true,
+	})
 
-func login(session *grequests.Session) (err error) {
+	var resp *grequests.Response
 	home := "https://atcoder.jp"
-	resp, err := session.Get(home, nil)
-	if err != nil {
-		return
+	for {
+		resp, err = session.Get(home, nil)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			break
+		}
 	}
 	if !resp.Ok {
 		err = fmt.Errorf("GET %s return code %d", home, resp.StatusCode)
 		return
 	}
-	//session.RequestOptions.Cookies = resp.RawResponse.Cookies()
 
 	var csrfToken string
 	root, err := html.Parse(resp)
@@ -63,23 +70,20 @@ func login(session *grequests.Session) (err error) {
 		err = fmt.Errorf("GET %s return code %d", apiLogin, resp.StatusCode)
 		return
 	}
-	//session.RequestOptions.Cookies = resp.RawResponse.Cookies()
+
+	fmt.Println("登录成功")
 	return
 }
+
+var contestDir = fmt.Sprintf("../../../dash/%s/", contestID)
 
 func createDir(taskID byte) error {
 	dirPath := contestDir + string(taskID)
 	return os.MkdirAll(dirPath, os.ModePerm)
 }
 
-func parseTask(htmlURL string) (sampleIns, sampleOuts []string, err error) {
-	resp, err := grequests.Get(htmlURL, &grequests.RequestOptions{
-		UserAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
-		Cookies: []*http.Cookie{{
-			Name:  "REVEL_SESSION",
-			Value: os.Getenv("REVEL_SESSION"),
-		}},
-	})
+func parseTask(session *grequests.Session, htmlURL string) (sampleIns, sampleOuts []string, err error) {
+	resp, err := session.Get(htmlURL, nil)
 	if err != nil {
 		return
 	}
@@ -129,14 +133,14 @@ func parseTask(htmlURL string) (sampleIns, sampleOuts []string, err error) {
 }
 
 func TestGenAtCoderTests(t *testing.T) {
-	session := grequests.NewSession(&grequests.RequestOptions{
-		UserAgent:    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36",
-		UseCookieJar: true,
-	})
-	if err := login(session); err != nil {
+	username := os.Getenv("ATCODER_USERNAME")
+	password := os.Getenv("ATCODER_PASSWORD")
+	session, err := newSession(username, password)
+	if err != nil {
 		t.Fatal(err)
 	}
 
+	fmt.Println("开始解析样例输入输出")
 	for taskID := byte('a'); taskID <= 'f'; taskID++ {
 		if err := createDir(taskID); err != nil {
 			t.Fatal(err)
@@ -144,7 +148,7 @@ func TestGenAtCoderTests(t *testing.T) {
 
 		htmlURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, taskID)
 		fmt.Println(string(taskID), htmlURL)
-		ins, outs, err := parseTask(htmlURL)
+		ins, outs, err := parseTask(session, htmlURL)
 		if err != nil {
 			if strings.Contains(err.Error(), "404") {
 				t.Fatal("未找到比赛或比赛尚未开始")
