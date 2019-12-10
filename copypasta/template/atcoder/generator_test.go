@@ -7,10 +7,11 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 )
 
-const contestID = "abc147"
+const contestID = "abc132"
 
 func newSession(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
@@ -141,33 +142,44 @@ func TestGenAtCoderTests(t *testing.T) {
 	}
 
 	fmt.Println("开始解析样例输入输出")
+	wg := &sync.WaitGroup{}
+	defer wg.Wait()
 	for taskID := byte('a'); taskID <= 'f'; taskID++ {
-		if err := createDir(taskID); err != nil {
-			t.Fatal(err)
-		}
+		wg.Add(1)
+		// we don't want spent too much time on waiting response one by one, so we use goroutine !
+		go func(id byte) {
+			defer wg.Done()
 
-		htmlURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, taskID)
-		fmt.Println(string(taskID), htmlURL)
-		ins, outs, err := parseTask(session, htmlURL)
-		if err != nil {
-			if strings.Contains(err.Error(), "404") {
-				t.Fatal("未找到比赛或比赛尚未开始")
+			if err := createDir(id); err != nil {
+				t.Error(err)
+				return
 			}
-			t.Error(err)
-			continue
-		}
-		if len(ins) == 0 {
-			t.Fatal("未找到比赛或比赛尚未开始")
-		}
 
-		for i, in := range ins {
-			out := outs[i]
-			if err := ioutil.WriteFile(fmt.Sprintf("%s%c/in%d.txt", contestDir, taskID, i+1), []byte(in), 0644); err != nil {
-				t.Fatal(err)
+			htmlURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, id)
+			ins, outs, err := parseTask(session, htmlURL)
+			if err != nil {
+				if strings.Contains(err.Error(), "404") {
+					t.Fatal("未找到比赛或比赛尚未开始")
+				}
+				t.Error(err)
+				return
 			}
-			if err := ioutil.WriteFile(fmt.Sprintf("%s%c/ans%d.txt", contestDir, taskID, i+1), []byte(out), 0644); err != nil {
-				t.Fatal(err)
+			if len(ins) == 0 {
+				t.Error("未找到比赛或比赛尚未开始")
+				return
 			}
-		}
+
+			for i, in := range ins {
+				out := outs[i]
+				if err := ioutil.WriteFile(fmt.Sprintf("%s%c/in%d.txt", contestDir, id, i+1), []byte(in), 0644); err != nil {
+					t.Error(err)
+				}
+				if err := ioutil.WriteFile(fmt.Sprintf("%s%c/ans%d.txt", contestDir, id, i+1), []byte(out), 0644); err != nil {
+					t.Error(err)
+				}
+			}
+
+			fmt.Println("[ok]", string(id), htmlURL)
+		}(taskID)
 	}
 }
