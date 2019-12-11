@@ -76,6 +76,7 @@ func (t *bst) get(key tKeyType) *tNode {
 
 // max <= key
 // return nil if not found
+// same like --upper_bound in C++ STL
 func (t *bst) floor(key tKeyType) (floor *tNode) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
