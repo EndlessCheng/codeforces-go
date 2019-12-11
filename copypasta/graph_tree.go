@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math/bits"
+	"sort"
+)
 
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 // low(u) is the lowest dfn that we can reach from u using a path of descendants followed by at most one back edge
@@ -8,9 +11,112 @@ import "math/bits"
 // namespace
 type tree struct{}
 
-// https://oi-wiki.org/graph/tree-centroid/
-func (*tree) centroid(n int) {
-	// TODO
+// 树的重心 https://oi-wiki.org/graph/tree-centroid/
+// 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
+func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	type neighbor struct {
+		to     int
+		weight int64
+	}
+	g := make([][]neighbor, n+1)
+	for i := 0; i < n-1; i++ {
+		var v, w int
+		var weight int64
+		//v, w, weight := read(), read(), read()
+		g[v] = append(g[v], neighbor{w, weight})
+		g[w] = append(g[w], neighbor{v, weight})
+	}
+	usedCentroid := make([]bool, n+1)
+
+	subtreeSize := make([]int, n+1)
+	var calcSubtreeSize func(v, fa int) int
+	calcSubtreeSize = func(v, fa int) int {
+		sz := 1
+		for _, e := range g[v] {
+			if w := e.to; w != fa && !usedCentroid[w] {
+				sz += calcSubtreeSize(w, v)
+			}
+		}
+		subtreeSize[v] = sz
+		return sz
+	}
+
+	var findCentroid func(v, fa, compSize int) (int, int)
+	findCentroid = func(v, fa, compSize int) (minSize, ct int) {
+		minSize = int(1e9)
+		//ct = -1
+		maxSubSize := 0
+		sizeV := 1 // 除去了 usedCentroid 子树的剩余大小
+		for _, e := range g[v] {
+			if w := e.to; w != fa && !usedCentroid[w] {
+				if minSizeW, ctW := findCentroid(w, v, compSize); minSizeW < minSize {
+					minSize = minSizeW
+					ct = ctW
+				}
+				maxSubSize = max(maxSubSize, subtreeSize[w])
+				sizeV += subtreeSize[w]
+			}
+		}
+		maxSubSize = max(maxSubSize, compSize-sizeV)
+		if maxSubSize < minSize {
+			minSize = maxSubSize
+			ct = v
+		}
+		return
+	}
+
+	var disToCentroid []int64
+	var calcDisToCentroid func(v, fa int, d int64)
+	calcDisToCentroid = func(v, fa int, d int64) {
+		disToCentroid = append(disToCentroid, d)
+		for _, e := range g[v] {
+			if w := e.to; w != fa && !usedCentroid[w] {
+				calcDisToCentroid(w, v, d+e.weight)
+			}
+		}
+	}
+
+	countPairs := func(ds []int64) int64 {
+		cnt := int64(0)
+		//sort.Ints(ds)
+		sort.Slice(ds, func(i, j int) bool { return ds[i] < ds[j] })
+		j := len(ds)
+		for i, di := range ds {
+			for ; j > 0 && di+ds[j-1] > upperDis; j-- {
+			}
+			cnt += int64(j)
+			if j > i {
+				cnt--
+			}
+		}
+		return cnt >> 1
+	}
+
+	var f func(int) int64
+	f = func(v int) (ans int64) {
+		calcSubtreeSize(v, -1)
+		_, ct := findCentroid(v, -1, subtreeSize[v])
+		usedCentroid[ct] = true
+
+		// 统计按 ct 分割后的子树中的点对数
+		for _, e := range g[ct] {
+			if !usedCentroid[e.to] {
+				ans += f(e.to)
+			}
+		}
+
+		// 统计经过 ct 的点对数
+
+
+		return
+	}
+	return f(0)
 }
 
 // https://oi-wiki.org/graph/lca/#rmq
@@ -68,7 +174,7 @@ func (*tree) lca(n, root int) {
 		}
 		return st1.i
 	}
-	// 注意下标的换算，输出的话要 +1
+	// 注意下标的换算，输出 LCA 的话要 +1
 	calcLCA := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
 		if pv > pw {
