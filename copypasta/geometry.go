@@ -173,9 +173,7 @@ func vec2Collection() {
 		m := n >> 1
 		x := ps[m].x
 		d := math.Min(closestPair(ps[:m]), closestPair(ps[m:]))
-		for i, p := range merge(ps[:m], ps[m:]) {
-			ps[i] = p
-		}
+		copy(ps, merge(ps[:m], ps[m:]))
 		checkPs := []vec{}
 		for _, pi := range ps {
 			if math.Abs(float64(pi.x-x)) > d+eps {
