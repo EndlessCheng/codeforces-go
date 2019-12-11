@@ -103,17 +103,25 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 		calcSubtreeSize(v, -1)
 		_, ct := findCentroid(v, -1, subtreeSize[v])
 		usedCentroid[ct] = true
-
 		// 统计按 ct 分割后的子树中的点对数
 		for _, e := range g[ct] {
 			if !usedCentroid[e.to] {
 				ans += f(e.to)
 			}
 		}
-
 		// 统计经过 ct 的点对数
-
-
+		// 0 是方便统计包含 ct 的部分
+		ds := []int64{0}
+		for _, e := range g[ct] {
+			if !usedCentroid[e.to] {
+				disToCentroid = []int64{}
+				calcDisToCentroid(e.to, ct, e.weight)
+				ans -= countPairs(disToCentroid)
+				ds = append(ds, disToCentroid...)
+			}
+		}
+		ans += countPairs(ds)
+		usedCentroid[ct] = false
 		return
 	}
 	return f(0)
