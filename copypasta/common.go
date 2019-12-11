@@ -137,32 +137,54 @@ func commonCollection() {
 			j--
 		}
 	}
-	reverseS := func(ss string) string {
-		n := len(ss)
-		s := make([]byte, n)
+	reverseS := func(s string) string {
+		n := len(s)
+		res := make([]byte, n)
 		for i := range s {
-			s[i] = ss[n-1-i]
+			res[i] = s[n-1-i]
 		}
-		return string(s)
+		return string(res)
 	}
 
-	// NOTE: arr must be sorted
-	unique := func(arr []int) (uniqueArr []int) {
-		n := len(arr)
+	// a b 必须是有序的（可以为空）
+	merge := func(a, b []int) []int {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		res := make([]int, 0, n+m)
+		for {
+			if i == n {
+				return append(res, b[j:]...)
+			}
+			if j == m {
+				return append(res, a[i:]...)
+			}
+			if a[i] < b[j] { // 改成 > 为降序
+				res = append(res, a[i])
+				i++
+			} else {
+				res = append(res, b[j])
+				j++
+			}
+		}
+	}
+
+	// a 必须是有序的
+	unique := func(a []int) (res []int) {
+		n := len(a)
 		if n == 0 {
 			return
 		}
-		uniqueArr = make([]int, 1, n)
-		uniqueArr[0] = arr[0]
+		res = make([]int, 1, n)
+		res[0] = a[0]
 		for i := 1; i < n; i++ {
-			if arr[i] != arr[i-1] {
-				uniqueArr = append(uniqueArr, arr[i])
+			if a[i] != a[i-1] {
+				res = append(res, a[i])
 			}
 		}
 		return
 	}
 
-	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
+	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 相当于转换成第几小
 	discrete := func(arr []int, start int) (kthArr []int) {
 		n := len(arr)
@@ -287,7 +309,7 @@ func commonCollection() {
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, quickPow, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseS, unique, discrete, floatToRat, complement,
+		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement,
 		stInit, stQuery,
 	}
 }
