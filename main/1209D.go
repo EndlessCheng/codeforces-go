@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -45,6 +44,6 @@ func Sol1209D(reader io.Reader, writer io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() {
-	Sol1209D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1209D(os.Stdin, os.Stdout)
+//}

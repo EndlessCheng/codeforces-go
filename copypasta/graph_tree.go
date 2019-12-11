@@ -139,11 +139,13 @@ func (*tree) lca(n, root int) {
 	vs := make([]int, 0, 2*n-1) // 欧拉序列
 	pos := make([]int, n)       // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	depths := make([]int, 0, 2*n-1)
+	dis := make([]int, n) // dis[v] 表示 v 到 root 的距离
 	var dfs func(v, fa, d int)
 	dfs = func(v, fa, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
 		depths = append(depths, d)
+		dis[v] = d
 		for _, w := range g[v] {
 			if w != fa {
 				dfs(w, v, d+1)
@@ -189,11 +191,14 @@ func (*tree) lca(n, root int) {
 		}
 		return vs[stQuery(pv, pw)]
 	}
+	calcDis := func(v, w int) int {
+		return dis[v] + dis[w] - 2*dis[calcLCA(v, w)]
+	}
 
 	stInit(depths)
 	// ...
 
-	_ = calcLCA
+	_ = calcDis
 }
 
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition

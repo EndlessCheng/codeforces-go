@@ -46,7 +46,7 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 }
 
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/contest/1209/problem/D"
+	const problemURL = "https://codeforces.ml/contest/832/problem/D"
 	problemID := parseProblemIDFromURL(problemURL)
 	mainStr := fmt.Sprintf(`package main
 
