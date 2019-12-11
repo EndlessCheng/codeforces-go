@@ -86,18 +86,19 @@ func (*tree) lca(n, root int) {
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 func (*tree) hld(n, root int) {
+	read := func() int { return 0 }
+
 	// TODO: 处理边权的情况
 	g := make([][]int, n)
 	for i := 0; i < n-1; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
+		v, w := read()-1, read()-1
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
 	// 点权
 	vals := make([]int64, n)
 	for i := range vals {
-		vals[i] = 0 // read()
+		vals[i] = int64(read())
 	}
 
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
@@ -144,7 +145,7 @@ func (*tree) hld(n, root int) {
 	decomposition(root, -1, root)
 
 	t := make(lazySegmentTree, 4*n)
-	// 按照 DFS 序初始化
+	// 按照 DFS 序初始化线段树
 	dfnVals := make([]int64, n)
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn-1] = v

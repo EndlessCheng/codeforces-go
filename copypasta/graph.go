@@ -67,7 +67,7 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
-// Floyd's Algorithm
+// 传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
 func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
@@ -87,7 +87,13 @@ func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
 	return dist
 }
 
-// Floyd's Algorithm
+// https://oi-wiki.org/graph/shortest-path/#bellman-ford
+// https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+func (*graph) hasNegativeCycleBellmanFord() bool {
+	// TODO
+}
+
+// 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
 func (*graph) shortestCycleFloyd(weights [][]int64) int64 {
@@ -121,7 +127,6 @@ func (*graph) shortestCycleFloyd(weights [][]int64) int64 {
 	return ans
 }
 
-// Dijkstra's Algorithm
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int) {
@@ -216,7 +221,7 @@ func (*graph) mstKruskal(n, m int) (sum int64) {
 	return
 }
 
-// 适用于稠密图 O(|V|^2)
+// 适用于稠密图 O(|V|^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
 func (*graph) mstPrim(dist [][]int) (sum int) {

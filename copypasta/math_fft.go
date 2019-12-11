@@ -5,7 +5,7 @@ import (
 	"math/bits"
 )
 
-// Fast Fourier transform
+// Fast Fourier Transform
 // https://zhuanlan.zhihu.com/p/31584464
 type fft struct {
 	n               int
