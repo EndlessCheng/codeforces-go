@@ -140,7 +140,7 @@ func (*tree) lca(n, root int) {
 	pos := make([]int, n)       // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	depths := make([]int, 0, 2*n-1)
 	dis := make([]int, n) // dis[v] 表示 v 到 root 的距离
-	var dfs func(v, fa, d int)
+	var dfs func(v, fa, d int) // 对于带边权的题，额外传个 dis 参数
 	dfs = func(v, fa, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
