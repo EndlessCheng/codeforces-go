@@ -127,6 +127,7 @@ func (a vec) onSeg(l line) bool {
 }
 
 // 线段规范相交
+// CCW (Counter Clock Wise) ?
 func (a line) segProperIntersection(b line) bool {
 	// TODO
 }
