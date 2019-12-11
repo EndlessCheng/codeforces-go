@@ -255,6 +255,34 @@ func commonCollection() {
 	// 单调栈优化
 	// TODO: CF1237D
 
+	// 逆序数
+	var mergeCount func([]int) int64
+	mergeCount = func(a []int) int64 {
+		n := len(a)
+		if n <= 1 {
+			return 0
+		}
+		b := make([]int, n/2)
+		c := make([]int, n-n/2)
+		copy(b, a[:n/2])
+		copy(c, a[n/2:])
+		cnt := mergeCount(b) + mergeCount(c)
+		ai, bi, ci := 0, 0, 0
+		for ai < n {
+			// 归并排序的同时计算逆序数
+			if bi < len(b) && (ci == len(c) || b[bi] <= c[ci]) {
+				a[ai] = b[bi]
+				bi++
+			} else {
+				cnt += int64(n/2 - bi)
+				a[ai] = c[ci]
+				ci++
+			}
+			ai++
+		}
+		return cnt
+	}
+
 	//
 
 	const mx = 17 // 17 for 1e5, 20 for 1e6
