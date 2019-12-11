@@ -24,17 +24,17 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 		to     int
 		weight int64
 	}
-	g := make([][]neighbor, n+1)
+	g := make([][]neighbor, n)
 	for i := 0; i < n-1; i++ {
 		var v, w int
 		var weight int64
-		//v, w, weight := read(), read(), read()
+		//v, w, weight := read()-1, read()-1, read()
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
-	usedCentroid := make([]bool, n+1)
+	usedCentroid := make([]bool, n)
 
-	subtreeSize := make([]int, n+1)
+	subtreeSize := make([]int, n)
 	var calcSubtreeSize func(v, fa int) int
 	calcSubtreeSize = func(v, fa int) int {
 		sz := 1
@@ -50,7 +50,6 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 	var findCentroid func(v, fa, compSize int) (int, int)
 	findCentroid = func(v, fa, compSize int) (minSize, ct int) {
 		minSize = int(1e9)
-		//ct = -1
 		maxSubSize := 0
 		sizeV := 1 // 除去了 usedCentroid 子树的剩余大小
 		for _, e := range g[v] {
