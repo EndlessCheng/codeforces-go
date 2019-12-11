@@ -75,6 +75,7 @@ func (t *bst) get(key tKeyType) *tNode {
 }
 
 // max <= key
+// return nil if not found
 func (t *bst) floor(key tKeyType) (floor *tNode) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
@@ -107,7 +108,8 @@ func (t *bst) prev(key tKeyType) (prev *tNode) {
 }
 
 // min >= key
-// 注意这个和 C++ STL 的 upper_bound 是不一样的，STL 等价于 min > key
+// return nil if not found
+// same like lower_bound in C++ STL
 func (t *bst) ceiling(key tKeyType) (ceiling *tNode) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
