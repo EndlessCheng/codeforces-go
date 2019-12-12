@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"math"
 	"math/bits"
 	"sort"
 	"strconv"
@@ -333,12 +334,62 @@ func commonCollection() {
 	//	return st1.i
 	//}
 
+	// TODO: CF220B
+	type bucket struct {
+		l, r           int // [l,r]
+		arr, sortedArr []int
+		//lazyAdd int
+	}
+	var buckets []*bucket
+	sqrtInit := func(a []int) {
+		n := len(a)
+		bucketSize := int(math.Sqrt(float64(n)))
+		//bucketSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+		bucketNum := (n-1)/bucketSize + 1
+		buckets = make([]*bucket, bucketNum)
+		for i, ai := range a {
+			j := i / bucketSize
+			if i%bucketSize == 0 {
+				buckets[j] = &bucket{l: i, arr: make([]int, 0, bucketSize)}
+			}
+			b := buckets[j]
+			b.arr = append(b.arr, ai)
+		}
+		for _, b := range buckets {
+			b.r = b.l + len(b.arr) - 1
+			b.sortedArr = make([]int, len(b.arr))
+			copy(b.sortedArr, b.arr)
+			sort.Ints(b.sortedArr)
+		}
+	}
+	sqrtOp := func(l, r int) { // [l,r], starts at 0
+		for _, b := range buckets {
+			if b.r < l {
+				continue
+			}
+			if b.l > r {
+				break
+			}
+			if l <= b.l && b.r <= r {
+				// do op on full bucket
+			} else {
+				// do op on part bucket
+				bl := max(b.l, l)
+				br := min(b.r, r)
+				for i := bl - b.l; i <= br-b.l; i++ {
+					//b.arr[i]
+				}
+			}
+		}
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, quickPow, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement,
 		stInit, stQuery,
+		sqrtInit, sqrtOp,
 	}
 }
 
