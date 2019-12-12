@@ -139,7 +139,7 @@ func (*tree) lca(n, root int) {
 	vs := make([]int, 0, 2*n-1) // 欧拉序列
 	pos := make([]int, n)       // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	depths := make([]int, 0, 2*n-1)
-	dis := make([]int, n) // dis[v] 表示 v 到 root 的距离
+	dis := make([]int, n)      // dis[v] 表示 v 到 root 的距离
 	var dfs func(v, fa, d int) // 对于带边权的题，额外传个 dis 参数
 	dfs = func(v, fa, d int) {
 		pos[v] = len(vs)
@@ -157,10 +157,10 @@ func (*tree) lca(n, root int) {
 	dfs(root, -1, 0)
 
 	type pair struct{ v, i int }
-	var st [][20]pair
+	var st [][18]pair
 	stInit := func(a []int) {
 		n := len(a)
-		st = make([][20]pair, n)
+		st = make([][18]pair, n)
 		for i := range st {
 			st[i][0] = pair{a[i], i}
 		}
@@ -175,6 +175,7 @@ func (*tree) lca(n, root int) {
 			}
 		}
 	}
+	stInit(depths)
 	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
 		st0, st1 := st[l][k], st[r-(1<<k)+1][k]
@@ -183,6 +184,7 @@ func (*tree) lca(n, root int) {
 		}
 		return st1.i
 	}
+
 	// 注意下标的换算，输出 LCA 的话要 +1
 	calcLCA := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
@@ -194,9 +196,6 @@ func (*tree) lca(n, root int) {
 	calcDis := func(v, w int) int {
 		return dis[v] + dis[w] - 2*dis[calcLCA(v, w)]
 	}
-
-	stInit(depths)
-	// ...
 
 	_ = calcDis
 }
