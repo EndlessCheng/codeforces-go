@@ -18,7 +18,7 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 154
+	contestID = 140
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
