@@ -9,7 +9,8 @@ import (
 	"testing"
 )
 
-func TestGenCodeforcesContestTemplates(t *testing.T) {
+// 生成比赛模板（需要先创建目录）
+func TestGenContestTemplates(t *testing.T) {
 	const contestID = "abc147"
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
@@ -45,6 +46,7 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 	}
 }
 
+// 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
 	const problemURL = "https://codeforces.ml/contest/832/problem/D"
 	problemID := parseProblemIDFromURL(problemURL)
@@ -94,6 +96,7 @@ func TestSol%[1]s(t *testing.T) {
 	}
 }
 
+// 生成单道题目的模板（非 Codeforces）
 func TestGenNormalTemplates(t *testing.T) {
 	const rootPath = "../../nowcoder/2720/"
 	const overwrite = false
