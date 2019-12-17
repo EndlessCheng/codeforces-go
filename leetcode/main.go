@@ -22,6 +22,7 @@ func main() {
 	}
 	_ = toBytes
 
+	Println()
 }
 
 func collections() {
