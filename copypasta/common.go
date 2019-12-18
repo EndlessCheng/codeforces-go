@@ -86,11 +86,12 @@ func commonCollection() {
 
 	var sum2d [][]int
 	initSum2D := func(mat [][]int) {
-		sum2d = make([][]int, len(mat)+1)
-		sum2d[0] = make([]int, len(mat[0])+1)
-		for i, mi := range mat {
-			sum2d[i+1] = make([]int, len(mi)+1)
-			for j, mij := range mi {
+		n, m := len(mat), len(mat[0])
+		sum2d = make([][]int, n+1)
+		sum2d[0] = make([]int, m+1)
+		for i, row := range mat {
+			sum2d[i+1] = make([]int, m+1)
+			for j, mij := range row {
 				sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + mij
 			}
 		}
@@ -107,9 +108,9 @@ func commonCollection() {
 	copyMat := func(mat [][]int) [][]int {
 		n, m := len(mat), len(mat[0])
 		dst := make([][]int, n)
-		for i, mi := range mat {
+		for i, row := range mat {
 			dst[i] = make([]int, m)
-			copy(dst[i], mi)
+			copy(dst[i], row)
 		}
 		return dst
 	}
@@ -117,8 +118,8 @@ func commonCollection() {
 	hash01Mat := func(mat [][]int) int {
 		hash := 0
 		cnt := uint(0)
-		for _, mi := range mat {
-			for _, mij := range mi {
+		for _, row := range mat {
+			for _, mij := range row {
 				hash |= mij << cnt
 				cnt++
 			}
@@ -573,3 +574,33 @@ func consecutiveNumbersSum(n int) (ans int) {
 
 // https://oeis.org/A000127
 // n*(n-1)*(n*n-5*n+18)/24+1
+
+// https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
+func addNegabinary(a1, a2 []int) []int {
+	if len(a1) < len(a2) {
+		a1, a2 = a2, a1
+	}
+	for i, j := len(a1)-1, len(a2)-1; j >= 0; {
+		a1[i] += a2[j]
+		i--
+		j--
+	}
+	ans := append(make([]int, 2), a1...)
+	for i := len(ans) - 1; i >= 0; i-- {
+		if ans[i] >= 2 {
+			ans[i] -= 2
+			if ans[i-1] >= 1 {
+				ans[i-1]--
+			} else {
+				ans[i-1]++
+				ans[i-2]++
+			}
+		}
+	}
+	for i, v := range ans {
+		if v != 0 {
+			return ans[i:]
+		}
+	}
+	return []int{0}
+}
