@@ -2,7 +2,9 @@ package copypasta
 
 import (
 	"math"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 func mathCollection() {
@@ -267,13 +269,31 @@ func mathCollection() {
 		return res, nil
 	}
 
-	// TODO: decimalToFraction
+	r := regexp.MustCompile(`(?P<integerPart>\d+)\.?(?P<nonRepeatingPart>\d*)\(?(?P<repeatingPart>\d*)\)?`)
+	decimalToFraction := func(decimal string) (a, b int64) {
+		match := r.FindStringSubmatch(decimal)
+		integerPart, nonRepeatingPart, repeatingPart := match[1], match[2], match[3]
+		intPartNum, _ := strconv.ParseInt(integerPart, 10, 64)
+		if repeatingPart == "" {
+			repeatingPart = "0"
+		}
+		b, _ = strconv.ParseInt(strings.Repeat("9", len(repeatingPart))+strings.Repeat("0", len(nonRepeatingPart)), 10, 64)
+		a, _ = strconv.ParseInt(nonRepeatingPart+repeatingPart, 10, 64)
+		if nonRepeatingPart != "" {
+			v, _ := strconv.ParseInt(nonRepeatingPart, 10, 64)
+			a -= v
+		}
+		a += intPartNum * b
+		// 后续需要用 gcd 化简
+		// 或者用 return big.NewRat(a, b)
+		return
+	}
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverseP, modFrac,
-		fractionToDecimal,
+		fractionToDecimal, decimalToFraction,
 	}
 }
 
