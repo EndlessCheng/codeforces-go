@@ -48,7 +48,7 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/contest/832/problem/D"
+	const problemURL = "https://codeforces.ml/contest/1278/problem/B"
 	problemID := parseProblemIDFromURL(problemURL)
 	mainStr := fmt.Sprintf(`package main
 
