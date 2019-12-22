@@ -223,6 +223,7 @@ func (t *trie) put(s string, val int) {
 			t.nodes = append(t.nodes, &trieNode{})
 		}
 		o = t.nodes[o.childIdx[c]]
+		//o.dupCnt++ // 这样写表示经过节点 o 的字符串个数
 	}
 	o.dupCnt++
 	o.val = val

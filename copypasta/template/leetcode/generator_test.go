@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/levigross/grequests"
+	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
 	"io/ioutil"
 	"os"
@@ -18,7 +19,7 @@ const (
 
 const (
 	host      = leetCodeZH
-	contestID = 140
+	contestID = 102
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
@@ -350,6 +351,14 @@ func TestGenLeetCodeTests(t *testing.T) {
 	for i, q := range d.Questions {
 		problemURLs[i] = fmt.Sprintf("https://%s/contest/weekly-contest-%d/problems/%s/", host, contestID, q.TitleSlug)
 	}
+
+	// open all urls in browser
+	for _, u := range problemURLs {
+		if err := open.Run(u); err != nil {
+			t.Error(err)
+		}
+	}
+
 	for i, pUrl := range problemURLs {
 		problemID := string('a' + i)
 		fmt.Println(problemID, pUrl)
