@@ -246,10 +246,10 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 			}
 		}
 
-		if !isASCII(text) {
-			// 包含中文的话，说明原始数据有误，跳过该数据
-			fmt.Println("[skipped]", text)
-			return nil
+		if idx := findASCII(text); idx != -1 {
+			// 包含中文的话，说明原始数据有误，截断首个中文字符之后的字符
+			fmt.Println("[warn] 数据有误，截断", text)
+			text = text[:idx]
 		}
 
 		if !parseArgs || !strings.Contains(text, "=") {

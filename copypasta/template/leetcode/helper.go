@@ -14,12 +14,12 @@ func parseFuncName(code string) (funcName string, isFuncProblem bool) {
 	return code[5:i], true
 }
 
-func isASCII(s string) bool {
-	// this is faster than `for _, c := range s`
-	for i := 0; i < len(s); i++ {
+func findASCII(s string) int {
+	// this is faster than `for _, c := range s`, because there is no rune conversion
+	for i := range s {
 		if s[i] > unicode.MaxASCII {
-			return false
+			return i
 		}
 	}
-	return true
+	return -1
 }
