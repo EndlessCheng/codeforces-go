@@ -269,6 +269,8 @@ func mathCollection() {
 		return res, nil
 	}
 
+	// decimal like "2.15(376)", which means "2.15376376376..."
+	// https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%8E%AF%E5%B0%8F%E6%95%B0#%E5%8C%96%E7%82%BA%E5%88%86%E6%95%B8%E7%9A%84%E6%96%B9%E6%B3%95
 	r := regexp.MustCompile(`(?P<integerPart>\d+)\.?(?P<nonRepeatingPart>\d*)\(?(?P<repeatingPart>\d*)\)?`)
 	decimalToFraction := func(decimal string) (a, b int64) {
 		match := r.FindStringSubmatch(decimal)
