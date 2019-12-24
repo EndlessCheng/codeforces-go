@@ -1,7 +1,7 @@
 package copypasta
 
 // 效率是线段树的 3~10 倍（由数据决定）
-func binaryIndexedTree(n int) {
+func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(idx int, val int) {
 		for ; idx <= n; idx += idx & -idx { // idx += lowbit(idx)
@@ -26,7 +26,7 @@ func binaryIndexedTree(n int) {
 	_ = []interface{}{add, addRange, query}
 }
 
-func multiBinaryIndexedTrees(n, m int) {
+func multiFenwickTree(m, n int) {
 	trees := make([][]int, m)
 	for i := range trees {
 		trees[i] = make([]int, n+1)
