@@ -12,14 +12,12 @@ import (
 	"testing"
 )
 
+const contestID = 102
+
 const (
 	leetCodeZH = "leetcode-cn.com"
 	leetCodeEN = "leetcode.com"
-)
-
-const (
-	host      = leetCodeZH
-	contestID = 102
+	host       = leetCodeZH
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
@@ -29,6 +27,7 @@ func newSession(username, password string) (session *grequests.Session, err erro
 		UseCookieJar: true,
 	})
 
+	// TODO: leetCodeEN
 	csrfTokenUrl := fmt.Sprintf("https://%s/graphql/", host)
 	resp, err := session.Post(csrfTokenUrl, &grequests.RequestOptions{
 		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
