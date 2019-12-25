@@ -394,6 +394,7 @@ func commonCollection() {
 	}
 }
 
+//（含组合排列）
 func loopCollection() {
 	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	min := func(a, b int) int {
@@ -516,10 +517,77 @@ func loopCollection() {
 		}
 	}
 
-	_ = []interface{}{loopSet, dfsGrids, searchDirOffset4, searchDirOffset4R}
+	// 从一个长度为 n 的数组中选择 r 个元素，生成所有组合，每个组合用下标表示
+	// r must <= n
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations
+	// https://stackoverflow.com/questions/41694722/algorithm-for-itertools-combinations-in-python
+	combinations := func(n, r int, do func(indexes []int)) {
+		indexes := make([]int, r)
+		for i := range indexes {
+			indexes[i] = i
+		}
+		do(indexes)
+		for {
+			i := r - 1
+			for ; i >= 0; i-- {
+				if indexes[i] != i+n-r {
+					break
+				}
+			}
+			if i == -1 {
+				return
+			}
+			indexes[i]++
+			for j := i + 1; j < r; j++ {
+				indexes[j] = indexes[j-1] + 1
+			}
+			do(indexes)
+		}
+	}
+
+	// 从一个长度为 n 的数组中选择 r 个元素，生成所有排列，每个排列用下标表示
+	// r must <= n
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
+	permutations := func(n, r int, do func(indexes []int)) {
+		indexes := make([]int, n)
+		for i := range indexes {
+			indexes[i] = i
+		}
+		do(indexes[:r])
+		cycles := make([]int, r)
+		for i := range cycles {
+			cycles[i] = n - i
+		}
+		for {
+			i := r - 1
+			for ; i >= 0; i-- {
+				cycles[i]--
+				if cycles[i] == 0 {
+					tmp := indexes[i]
+					copy(indexes[i:], indexes[i+1:])
+					indexes[n-1] = tmp
+					cycles[i] = n - i
+				} else {
+					j := cycles[i]
+					indexes[i], indexes[n-j] = indexes[n-j], indexes[i]
+					do(indexes[:r])
+					break
+				}
+			}
+			if i == -1 {
+				return
+			}
+		}
+	}
+
+	_ = []interface{}{
+		loopSet, dfsGrids, searchDirOffset4, searchDirOffset4R,
+		combinations, permutations,
+	}
 }
 
-// TODO: 部分排列，部分组合
 // Permute the values at index i to len(arr)-1.
 // See 910C for example.
 func _permute(arr []int, i int, do func([]int)) {
