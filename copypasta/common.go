@@ -573,7 +573,10 @@ func consecutiveNumbersSum(n int) (ans int) {
 }
 
 // https://oeis.org/A000127
-// n*(n-1)*(n*n-5*n+18)/24+1
+// Maximal number of regions obtained by joining n points around a circle by straight lines.
+// Also number of regions in 4-space formed by n-1 hyperplanes.
+//
+//     n*(n-1)*(n*n-5*n+18)/24+1
 
 // https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
 func addNegabinary(a1, a2 []int) []int {
