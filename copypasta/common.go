@@ -604,3 +604,14 @@ func addNegabinary(a1, a2 []int) []int {
 	}
 	return []int{0}
 }
+
+// https://leetcode.com/problems/convert-to-base-2/
+func toNegabinary(n int) (res string) {
+	if n == 0 {
+		return "0"
+	}
+	for ; n != 0; n = -(n >> 1) {
+		res = string('0'+n&1) + res
+	}
+	return
+}
