@@ -519,6 +519,7 @@ func loopCollection() {
 	_ = []interface{}{loopSet, dfsGrids, searchDirOffset4, searchDirOffset4R}
 }
 
+// TODO: 部分排列，部分组合
 // Permute the values at index i to len(arr)-1.
 // See 910C for example.
 func _permute(arr []int, i int, do func([]int)) {
