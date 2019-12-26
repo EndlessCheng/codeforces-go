@@ -470,7 +470,7 @@ func loopCollection() {
 		例如 dis=2 时：
 		  #
 		 # #
-		# * #
+		# @ #
 		 # #
 		  #
 	*/
@@ -494,7 +494,7 @@ func loopCollection() {
 	/*
 		#####
 		#   #
-		# * #
+		# @ #
 		#   #
 		#####
 	*/
