@@ -136,11 +136,11 @@ func (*tree) lca(n, root int) {
 		g[w] = append(g[w], v)
 	}
 
-	vs := make([]int, 0, 2*n-1) // 欧拉序列
-	pos := make([]int, n)       // pos[v] 表示 v 在 vs 中第一次出现的位置编号
-	depths := make([]int, 0, 2*n-1)
-	dis := make([]int, n)      // dis[v] 表示 v 到 root 的距离
-	var dfs func(v, fa, d int) // 对于带边权的题，额外传个 dis 参数
+	vs := make([]int, 0, 2*n-1)     // 欧拉序列
+	pos := make([]int, n)           // pos[v] 表示 v 在 vs 中第一次出现的位置编号
+	depths := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
+	dis := make([]int, n)           // dis[v] 表示 v 到 root 的距离
+	var dfs func(v, fa, d int)      // 若有边权需额外传参 dis
 	dfs = func(v, fa, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
@@ -148,7 +148,7 @@ func (*tree) lca(n, root int) {
 		dis[v] = d
 		for _, w := range g[v] {
 			if w != fa {
-				dfs(w, v, d+1)
+				dfs(w, v, d+1) // 若有边权则额外传入 dis+e.weight
 				vs = append(vs, v)
 				depths = append(depths, d)
 			}
@@ -309,4 +309,5 @@ func (*tree) hld(n, root int) {
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
 
-// TODO LCT
+// TODO link/cut tree
+// https://en.wikipedia.org/wiki/Link/cut_tree
