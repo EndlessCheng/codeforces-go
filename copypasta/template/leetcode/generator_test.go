@@ -15,9 +15,10 @@ import (
 const contestID = 102
 
 const (
-	leetCodeZH = "leetcode-cn.com"
-	leetCodeEN = "leetcode.com"
-	host       = leetCodeZH
+	hostZH = "leetcode-cn.com"
+	hostEN = "leetcode.com"
+	host   = hostZH
+	openEN = true
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
@@ -355,6 +356,14 @@ func TestGenLeetCodeTests(t *testing.T) {
 	for _, u := range problemURLs {
 		if err := open.Run(u); err != nil {
 			t.Error(err)
+		}
+	}
+	if openEN {
+		for _, q := range d.Questions {
+			u := fmt.Sprintf("https://%s/contest/weekly-contest-%d/problems/%s/", hostEN, contestID, q.TitleSlug)
+			if err := open.Run(u); err != nil {
+				t.Error(err)
+			}
 		}
 	}
 
