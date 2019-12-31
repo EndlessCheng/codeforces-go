@@ -1,44 +1,23 @@
 package main
 
-import (
-	"bufio"
-	. "fmt"
-	"io"
-)
+import . "fmt"
 
 // github.com/EndlessCheng/codeforces-go
-func Sol727C(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-
-	var n, s12, s13, s23 int
-	Fscan(in, &n)
-	Fprintln(out, "? 1 2")
-	out.Flush()
-	Fscan(in, &s12)
-	Fprintln(out, "? 1 3")
-	out.Flush()
-	Fscan(in, &s13)
-	Fprintln(out, "? 2 3")
-	out.Flush()
-	Fscan(in, &s23)
-
-	ans := make([]int, n)
-	ans[0] = (s12 + s13 - s23) / 2
-	ans[1] = s12 - ans[0]
-	ans[2] = s13 - ans[0]
-	for i := 3; i < n; i++ {
-		Fprintln(out, Sprintf("? 1 %d", i+1))
-		out.Flush()
-		var sum int
-		Fscan(in, &sum)
-		ans[i] = sum - ans[0]
+func Sol727C() {
+	var n int
+	Scan(&n)
+	a := make([]int, n)
+	Println("? 2 3")
+	Scan(&a[0])
+	for i := 1; i < n; i++ {
+		Println(Sprintf("? 1 %d", i+1))
+		Scan(&a[i])
 	}
-	Fprint(out, "!")
-	for _, v := range ans {
-		Fprint(out, " ", v)
+	a[0] = (a[1] + a[2] - a[0]) / 2
+	Print("! ", a[0])
+	for _, v := range a[1:] {
+		Print(" ", v-a[0])
 	}
-	out.Flush()
 }
 
 //func main() {
