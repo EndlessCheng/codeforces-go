@@ -54,13 +54,14 @@ func newTreap() *treap {
 		seed: 1, // uint(time.Now().UnixNano())
 		comparator: func(a, b tpKeyType) int {
 			// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
-			if a < b {
+			switch {
+			case a < b:
 				return 0
-			}
-			if a > b {
+			case a > b:
 				return 1
+			default:
+				return -1
 			}
-			return -1
 		},
 	}
 }
