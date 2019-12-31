@@ -285,6 +285,20 @@ func commonCollection() {
 		return cnt
 	}
 
+	// x 是否包含 y 中的所有元素，且顺序一致
+	containsAll := func(x, y []int) bool {
+		for len(y) < len(x) {
+			if len(y) == 0 {
+				return true
+			}
+			if x[0] == y[0] {
+				y = y[1:]
+			}
+			x = x[1:]
+		}
+		return false
+	}
+
 	//
 
 	const mx = 17 // 17 for 1e5, 20 for 1e6
@@ -388,7 +402,7 @@ func commonCollection() {
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, quickPow, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement,
+		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement, containsAll,
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
 	}
