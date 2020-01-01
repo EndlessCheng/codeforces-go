@@ -2,11 +2,14 @@ package main
 
 import (
 	. "fmt"
+	"strconv"
 )
 
 // n, m := len(mat), len(mat[0])
 
-
+func leastOpsExpressTarget(x int, target int) (ans int) {
+	return
+}
 
 func main() {
 	toBytes := func(g [][]string) [][]byte {
@@ -22,7 +25,7 @@ func main() {
 	}
 	_ = toBytes
 
-	Println()
+	Println(strconv.ParseBool("501", 5,64))
 }
 
 func collections() {

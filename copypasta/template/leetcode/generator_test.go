@@ -12,7 +12,8 @@ import (
 	"testing"
 )
 
-const contestID = 102
+// TODO: sleep when contest not begin.
+const contestID = 169
 
 const (
 	hostZH = "leetcode-cn.com"
@@ -212,8 +213,10 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 				for _, e := range d {
 					if e.Value == "golang" {
 						// 模板解析完成，写入 <problemID>.go
-						funcName, isFuncProblem = parseFuncName(e.DefaultCode)
-						if err := writeMainFile(fileName, e.DefaultCode); err != nil {
+						code := e.DefaultCode
+						funcName, isFuncProblem = parseFuncName(code)
+						code = lowerFirstChar(code)
+						if err := writeMainFile(fileName, code); err != nil {
 							return err
 						}
 						break
