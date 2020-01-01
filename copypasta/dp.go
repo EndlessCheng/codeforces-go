@@ -23,7 +23,7 @@ func dpCollections() {
 	generalDP := func(x, y int) int {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
-		var f func(int, int) int
+		var f func(x, y int) int
 		f = func(x, y int) (ans int) {
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
