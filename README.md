@@ -2,9 +2,9 @@
 
 ## Algorithm
 
-Gain more power at [OI-wiki](https://oi-wiki.org)
+[CP-Algorithms](https://cp-algorithms.com/)
 
-[OI-wiki List](https://github.com/OI-wiki/OI-wiki/issues/187)
+I implement some algorithms in [copypasta](./copypasta).
 
 ## How to Choose Problems
 
@@ -17,6 +17,10 @@ Gain more power at [OI-wiki](https://oi-wiki.org)
 > Good luck!
 >
 > [source](https://codeforces.com/blog/entry/65406?#comment-494043)
+
+## Codeforces Solutions
+
+[main](./main)
 
 ## Rating
 
