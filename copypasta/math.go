@@ -185,6 +185,7 @@ func mathCollection() {
 
 	// exgcd solve equation ax+by=gcd(a,b)
 	// we have |x|<=b and |y|<=a in result (x,y)
+	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
 	var exgcd func(a, b int64) (gcd, x, y int64)
 	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
@@ -299,6 +300,7 @@ func mathCollection() {
 	}
 }
 
+// https://oi-wiki.org/math/game-theory/
 func gameTheoryCollection() {
 	// 异或和不为0零则先手必胜
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
@@ -310,10 +312,11 @@ func gameTheoryCollection() {
 		return sum != 0
 	}
 
-	var sg []int
-	initSG := func(n int) {
-		// TODO
-	}
+	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
+	//var sg []int
+	//initSG := func(n int) {
+	//	// TODO
+	//}
 
 	_ = []interface{}{nim}
 }
@@ -342,4 +345,5 @@ func _asr(l, r, eps, A float64, f mathF) float64 {
 
 // Adaptive Simpson's Rule
 // https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
+// https://cp-algorithms.com/num_methods/simpson-integration.html
 func asr(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }

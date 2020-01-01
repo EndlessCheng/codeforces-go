@@ -1,5 +1,8 @@
 package copypasta
 
+// https://oi-wiki.org/ds/dsu/
+// https://cp-algorithms.com/data_structures/disjoint_set_union.html
+
 func unionFind() {
 	// NOTE: 离散化时，可以改用 map[int]int
 	var fa []int
@@ -22,8 +25,9 @@ func unionFind() {
 	_ = []interface{}{initFa, merge, same}
 }
 
-// TODO
-// TODO: xor
+// https://oi-wiki.org/ds/dsu/#_9
+// TODO: 一般化
+// TODO: https://codeforces.com/contest/1074/problem/D
 func unionFindWithMaintain() {
 	var fa []int
 	var size []int

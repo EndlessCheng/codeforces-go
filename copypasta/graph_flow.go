@@ -84,6 +84,8 @@ func (g *flowGraph) dfs(v, t int, f int) int {
 }
 
 // Dinic's algorithm
+// https://oi-wiki.org/graph/flow/max-flow/#dinic
+// https://cp-algorithms.com/graph/dinic.html
 func (g *flowGraph) maxFlow(s, t int) (flow int) {
 	const inf int = 1e8
 	for {
@@ -134,3 +136,5 @@ func (g *flowGraph) maxFlow(s, t int) (flow int) {
 //		}
 //	}
 //}
+
+// TODO: https://oi-wiki.org/graph/flow/min-cost/

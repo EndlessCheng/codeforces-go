@@ -1,8 +1,11 @@
 package copypasta
 
-// 耗时大约是红黑树（父节点实现）的 1.2 倍
-
 import . "fmt"
+
+// https://oi-wiki.org/ds/treap/
+// 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
+
+// 耗时大约是红黑树（父节点实现）的 1.2 倍
 
 type tpKeyType int   // *custom* 图方便可以全局替换
 type tpValueType int // *custom* 图方便可以全局替换

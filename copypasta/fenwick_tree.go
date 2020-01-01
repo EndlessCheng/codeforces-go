@@ -1,6 +1,9 @@
 package copypasta
 
 // 效率是线段树的 3~10 倍（由数据决定）
+// https://oi-wiki.org/ds/bit/
+// 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
+
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(idx int, val int) {

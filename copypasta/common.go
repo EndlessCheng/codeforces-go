@@ -307,8 +307,32 @@ func commonCollection() {
 		return false
 	}
 
-	//
+	_ = []interface{}{
+		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
+		min, mins, max, maxs, ifElseI, ifElseS,
+		abs, quickPow, toAnyBase, initSum2D, querySum2D,
+		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement, containsAll,
+	}
+}
 
+// https://cp-algorithms.com/sequences/rmq.html
+func rmqCollection() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	// Sparse Table
+	// https://oi-wiki.org/ds/sparse-table/
+	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 	const mx = 17 // 17 for 1e5, 20 for 1e6
 	var st [][mx]int
 	stInit := func(a []int) {
@@ -357,6 +381,10 @@ func commonCollection() {
 	//	return st1.i
 	//}
 
+	// Sqrt Decomposition
+	// https://oi-wiki.org/ds/decompose/
+	// https://oi-wiki.org/ds/block-array/
+	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 	// TODO: CF220B
 	type bucket struct {
 		l, r           int // [l,r]
@@ -406,11 +434,11 @@ func commonCollection() {
 		}
 	}
 
+	// TODO: 莫队算法
+	// https://oi-wiki.org/misc/mo-algo/
+	// https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-4
+
 	_ = []interface{}{
-		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
-		min, mins, max, maxs, ifElseI, ifElseS,
-		abs, quickPow, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement, containsAll,
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
 	}

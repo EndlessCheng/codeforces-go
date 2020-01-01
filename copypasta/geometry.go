@@ -130,6 +130,7 @@ func (a vec) onSeg(l line) bool {
 // CCW (Counter Clock Wise) ?
 func (a line) segProperIntersection(b line) bool {
 	// TODO
+	return false
 }
 
 type circle struct {

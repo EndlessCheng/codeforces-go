@@ -7,16 +7,29 @@ import (
 	"unsafe"
 )
 
-func hashCollection() {
-	const prime uint64 = 1e8 + 7
+func stringCollection() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a >= b {
+			return a
+		}
+		return b
+	}
 
+	// https://oi-wiki.org/string/hash/
+	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
+	const prime uint64 = 1e8 + 7
 	var maxLen int
 	powP := make([]uint64, maxLen+1)
 	powP[0] = 1
 	for i := 1; i <= maxLen; i++ {
 		powP[i] = powP[i-1] * prime
 	}
-
 	hashVal := func(s string) (val uint64) {
 		for i, c := range s {
 			val += uint64(c) * powP[i]
@@ -24,10 +37,9 @@ func hashCollection() {
 		return
 	}
 
-	_ = hashVal
-}
-
-func stringCollection() {
+	// https://oi-wiki.org/string/kmp/
+	// TODO https://oi-wiki.org/string/z-func/
+	// https://cp-algorithms.com/string/prefix-function.html
 	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
 	calcMaxMatchLengths := func(pattern string) []int {
 		n := len(pattern)
@@ -65,7 +77,6 @@ func stringCollection() {
 		}
 		return
 	}
-
 	calcMinPeriod := func(pattern string) int {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		n := len(pattern)
@@ -77,18 +88,7 @@ func stringCollection() {
 		return 1 // or -1
 	}
 
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a >= b {
-			return a
-		}
-		return b
-	}
+	// 最小表示法
 	// https://oi-wiki.org/string/minimal-string/
 	smallestRepresentation := func(s string) string {
 		n := len(s)
@@ -113,6 +113,7 @@ func stringCollection() {
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
+	// https://cp-algorithms.com/string/manacher.html
 	manacher := func(origin string) int {
 		n := len(origin)
 		s := make([]byte, 2*n+3)
@@ -152,9 +153,11 @@ func stringCollection() {
 	//return maxLen[l+r+2] >= r-l+1
 	//}
 
-	_ = []interface{}{kmpSearch, calcMinPeriod, smallestRepresentation, manacher}
+	_ = []interface{}{hashVal, kmpSearch, calcMinPeriod, smallestRepresentation, manacher}
 }
 
+// https://oi-wiki.org/string/sa/#height
+// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
 func suffixArray() {
 	// lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
 	calcLCP := func(s []byte, sa []int) (lcp []int) {
@@ -178,6 +181,7 @@ func suffixArray() {
 
 	var s []byte
 	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
+	// TODO: 感觉要再整理一下
 	sa = append([]int{len(s)}, sa...) // 方便定义 lcp
 	lcp := calcLCP(s, sa)
 	lcp = append(lcp, 0)
@@ -194,8 +198,7 @@ func suffixArray() {
 	// TODO: []int 的后缀数组
 }
 
-//
-
+// https://oi-wiki.org/string/trie/
 type trieNode struct {
 	childIdx [26]int
 	dupCnt   int // 重复插入计数
@@ -291,4 +294,12 @@ func (t *trie) maxXor(bits []byte) (xor int) {
 	return
 }
 
+// Aho–Corasick algorithm
+// https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
 // TODO https://oi-wiki.org/string/ac-automaton/
+// TODO https://cp-algorithms.com/string/aho_corasick.html
+
+// Suffix automaton
+// https://en.wikipedia.org/wiki/Suffix_automaton
+// TODO https://oi-wiki.org/string/sam/
+// TODO https://cp-algorithms.com/string/suffix-automaton.html

@@ -2,6 +2,9 @@ package copypasta
 
 import "math/bits"
 
+// https://oi-wiki.org/ds/seg/
+// 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
+
 // 技巧：对于复杂的区间操作，可以判断区间元素是否相同，然后 lazy
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
@@ -202,6 +205,7 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 
 // 可持久化线段树（又称函数式线段树、主席树）
 // Persistent Segment Tree
+// https://oi-wiki.org/ds/persistent-seg/
 type pstNode struct {
 	l, r   int
 	lo, ro *pstNode // 由于使用了指针，pstNode 必须存放于一个分配了足够空间的 slice 中，避免扩容时改变了内存位置

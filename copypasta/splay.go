@@ -3,6 +3,7 @@ package copypasta
 import "errors"
 
 // TODO: 待整理
+// https://oi-wiki.org/ds/splay/
 
 type Int int
 

@@ -80,6 +80,7 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
+	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
 		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥
 		for i := 0; i < step; i++ {
@@ -94,6 +95,10 @@ func sortCollections() {
 		}
 		return (l + r) / 2
 	}
+
+	// TODO: 整体二分 https://oi-wiki.org/misc/parallel-binsearch/
+
+	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{reverse, searchRange, search64, binarySearch, ternarySearch}
 }

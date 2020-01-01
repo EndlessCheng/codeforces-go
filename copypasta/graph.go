@@ -67,9 +67,17 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
+// https://oi-wiki.org/graph/bridge/
+// https://codeforces.com/blog/entry/68138
+// 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
+func (*graph) findBridges(n, m int) {
+
+}
+
 // 传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
+// 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
 	min := func(a, b int64) int64 {
 		if a < b {
@@ -85,12 +93,6 @@ func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
 		}
 	}
 	return dist
-}
-
-// https://oi-wiki.org/graph/shortest-path/#bellman-ford
-// https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
-func (*graph) hasNegativeCycleBellmanFord() bool {
-	// TODO
 }
 
 // 传入邻接矩阵 weights
@@ -129,6 +131,7 @@ func (*graph) shortestCycleFloyd(weights [][]int64) int64 {
 
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
+// 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int) {
 	type neighbor struct {
 		to     int
@@ -182,8 +185,67 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 	return
 }
 
+// https://oi-wiki.org/graph/shortest-path/#bellman-ford
+// https://cp-algorithms.com/graph/bellman_ford.html
+// https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
+	type neighbor struct {
+		to     int
+		weight int64
+	}
+	g := make([][]neighbor, n)
+	for i := 0; i < m; i++ {
+		var v, w int
+		var weight int64
+		//v, w, weight := read()-1, read()-1, read()
+		g[v] = append(g[v], neighbor{w, weight})
+		g[w] = append(g[w], neighbor{v, weight})
+	}
+
+	const inf int64 = 1e18 // 1e9+1
+	dist = make([]int64, n)
+	for i := range dist {
+		dist[i] = inf
+	}
+	dist[start] = 0
+	onQ := make([]bool, n)
+	onQ[start] = true
+	relaxedCnt := make([]int, n)
+
+	queue := []int{start}
+	for len(queue) > 0 {
+		var v int
+		v, queue = queue[0], queue[1:]
+		onQ[v] = false
+		for _, e := range g[v] {
+			w := e.to
+			if newD := dist[v] + e.weight; newD < dist[w] {
+				dist[w] = newD
+				// there is no reason to put a vertex in the queue if it is already in.
+				if !onQ[w] {
+					queue = append(queue, w)
+					onQ[w] = true
+					relaxedCnt[w]++
+					if relaxedCnt[w] > n {
+						// found negative cycle
+						return nil
+					}
+				}
+			}
+		}
+	}
+	return
+}
+
+// https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
+func (*graph) hasNegativeCycleBellmanFord() bool {
+	// TODO
+	return false
+}
+
 // 适用于稀疏图 O(|E|⋅log|E|)
 // https://oi-wiki.org/graph/mst/#kruskal
+// 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 func (*graph) mstKruskal(n, m int) (sum int64) {
 	var fa []int
 	initFa := func(n int) {
@@ -255,6 +317,14 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 			minWeights[w] = min(minWeights[w], dist[v][w])
 		}
 	}
+	return
+}
+
+// Second best Minimum Spanning Tree
+// Using Kruskal and Lowest Common Ancestor
+// https://cp-algorithms.com/graph/second_best_mst.html
+func (*graph) secondMST(n, m int) (sum int64) {
+	// TODO
 	return
 }
 
@@ -334,6 +404,8 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 
 // 二分图判定
 // https://oi-wiki.org/graph/bi-graph/#_3
+// https://cp-algorithms.com/graph/bipartite-check.html
+// TODO: https://codeforces.com/contest/1144/problem/F
 func (*graph) isBipartite(n, m int) bool {
 	g := make([][]int, n)
 	for i := 0; i < m; i++ {
@@ -370,6 +442,7 @@ func (*graph) isBipartite(n, m int) bool {
 // Kahn's algorithm
 // isDAG = len(order)==n
 // https://oi-wiki.org/graph/topo/
+// https://cp-algorithms.com/graph/topological-sort.html
 func (*graph) topSort(n, m int) (order []int, parents []int) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)
@@ -488,4 +561,11 @@ func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 	//}
 
 	return
+}
+
+// https://oi-wiki.org/graph/2-sat/
+// https://cp-algorithms.com/graph/2SAT.html
+func (*graph) solve2SAT(n, m int) bool {
+	// TODO
+	return false
 }

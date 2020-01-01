@@ -127,6 +127,7 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 }
 
 // https://oi-wiki.org/graph/lca/#rmq
+// 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 func (*tree) lca(n, root int) {
 	g := make([][]int, n)
 	for i := 0; i < n-1; i++ {
@@ -202,6 +203,7 @@ func (*tree) lca(n, root int) {
 
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
+// https://cp-algorithms.com/graph/hld.html
 func (*tree) hld(n, root int) {
 	read := func() int { return 0 }
 
@@ -311,3 +313,4 @@ func (*tree) hld(n, root int) {
 
 // TODO link/cut tree
 // https://en.wikipedia.org/wiki/Link/cut_tree
+// https://oi-wiki.org/ds/lct/
