@@ -25,11 +25,14 @@ func dpCollections() {
 		dp := map[pair]int{}
 		var f func(x, y int) int
 		f = func(x, y int) (ans int) {
+			// 边界检查
+			// ...
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
 				return v
 			}
 			defer func() { dp[p] = ans }()
+			// 转移方程
 			// ...
 			return
 		}
