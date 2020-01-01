@@ -6,11 +6,34 @@ package copypasta
 */
 
 func dpCollections() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	_ = min
 	max := func(a, b int) int {
 		if a > b {
 			return a
 		}
 		return b
+	}
+
+	generalDP := func(x, y int) int {
+		type pair struct{ x, y int }
+		dp := map[pair]int{}
+		var f func(int, int) int
+		f = func(x, y int) (ans int) {
+			p := pair{x, y}
+			if v, ok := dp[p]; ok {
+				return v
+			}
+			defer func() { dp[p] = ans }()
+			// ...
+			return
+		}
+		return f(x, y)
 	}
 
 	knapsack01 := func(values, weights []int, maxW int) int {
@@ -32,5 +55,5 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
-	_ = []interface{}{knapsack01}
+	_ = []interface{}{generalDP, knapsack01}
 }

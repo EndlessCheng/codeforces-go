@@ -84,6 +84,14 @@ func commonCollection() {
 		return res
 	}
 
+	// 从低位到高位
+	toAnyBase := func(x, base int) (res []int) {
+		for ; x > 0; x /= base {
+			res = append(res, x%base)
+		}
+		return
+	}
+
 	var sum2d [][]int
 	initSum2D := func(mat [][]int) {
 		n, m := len(mat), len(mat[0])
@@ -401,7 +409,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
-		abs, quickPow, initSum2D, querySum2D,
+		abs, quickPow, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement, containsAll,
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
