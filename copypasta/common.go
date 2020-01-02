@@ -434,13 +434,64 @@ func rmqCollection() {
 		}
 	}
 
-	// TODO: 莫队算法
+	// 莫队算法
+	// 分块，将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
+	// 这样对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)
+	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
 	// https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-4
+	mo := func(n, q int, a []int) []int {
+		ans := make([]int, q)
+		type query struct {
+			blockIdx  int
+			l, r, idx int
+		}
+		qs := make([]query, q)
+		blockSize := int(math.Sqrt(float64(n)))
+		for i := range qs {
+			var l, r int
+			//Fscan(in, &l, &r)
+			qs[i] = query{l / blockSize, l, r + 1, i}
+		}
+		sort.Slice(qs, func(i, j int) bool {
+			qi, qj := qs[i], qs[j]
+			return qi.blockIdx < qj.blockIdx || qi.blockIdx == qj.blockIdx && qi.r < qj.r
+		})
+
+		update := func(idx, delta int) {
+			// custom data structure
+		}
+		getAns := func() int {
+			// custom
+			return 0
+		}
+
+		// 从 1 开始算，方便 debug
+		l, r := 1, 1
+		for _, q := range qs {
+			for ; l < q.l; l++ {
+				update(l, -1)
+			}
+			for ; r < q.r; r++ {
+				update(r, 1)
+			}
+			for l > q.l {
+				l--
+				update(l, 1)
+			}
+			for r > q.r {
+				r--
+				update(r, -1)
+			}
+			ans[q.idx] = getAns()
+		}
+		return ans
+	}
 
 	_ = []interface{}{
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
+		mo,
 	}
 }
 
