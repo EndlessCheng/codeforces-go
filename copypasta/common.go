@@ -385,7 +385,6 @@ func rmqCollection() {
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
-	// TODO: CF220B
 	type bucket struct {
 		l, r           int // [l,r]
 		arr, sortedArr []int
