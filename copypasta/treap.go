@@ -16,12 +16,12 @@ type tpNode struct {
 	sz       int
 	msz      int
 	key      tpKeyType
-	value    tpValueType
+	val      tpValueType
 }
 
 func (o *tpNode) pushUp() {
 	sz := 1
-	msz := int(o.value)
+	msz := int(o.val)
 	if ol := o.lr[0]; ol != nil {
 		sz += ol.sz
 		msz += ol.msz
@@ -47,14 +47,14 @@ func (o *tpNode) rotate(d int) *tpNode {
 }
 
 type treap struct {
-	seed       uint
+	rd         uint
 	root       *tpNode
 	comparator func(a, b tpKeyType) int
 }
 
 func newTreap() *treap {
 	return &treap{
-		seed: 1, // uint(time.Now().UnixNano())
+		rd: 1,
 		comparator: func(a, b tpKeyType) int {
 			// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
 			switch {
@@ -72,30 +72,30 @@ func newTreap() *treap {
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
 func (t *treap) fastRand() uint {
-	t.seed ^= t.seed << 13
-	t.seed ^= t.seed >> 17
-	t.seed ^= t.seed << 5
-	return t.seed
+	t.rd ^= t.rd << 13
+	t.rd ^= t.rd >> 17
+	t.rd ^= t.rd << 5
+	return t.rd
 }
 
-func (t *treap) _put(o *tpNode, key tpKeyType, value tpValueType) *tpNode {
+func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
 	if o == nil {
-		return &tpNode{priority: t.fastRand(), sz: 1, msz: 1, key: key, value: value}
+		return &tpNode{priority: t.fastRand(), sz: 1, msz: 1, key: key, val: val}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
-		o.lr[cmp] = t._put(o.lr[cmp], key, value)
+		o.lr[cmp] = t._put(o.lr[cmp], key, val)
 		if o.lr[cmp].priority > o.priority {
 			o = o.rotate(cmp ^ 1)
 		}
 	} else {
-		//o.value = value
-		o.value += value
+		//o.val = val
+		o.val += val
 	}
 	o.pushUp()
 	return o
 }
 
-func (t *treap) put(key tpKeyType, value tpValueType) { t.root = t._put(t.root, key, value) }
+func (t *treap) put(key tpKeyType, val tpValueType) { t.root = t._put(t.root, key, val) }
 
 func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 	if o == nil {
@@ -104,8 +104,8 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._delete(o.lr[cmp], key)
 	} else {
-		if o.value > 1 {
-			o.value--
+		if o.val > 1 {
+			o.val--
 		} else {
 			if o.lr[1] == nil {
 				return o.lr[0]
@@ -132,10 +132,10 @@ func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 
 func (o *tpNode) String() string {
 	var s string
-	if o.value == 1 {
+	if o.val == 1 {
 		s = Sprintf("%v", o.key)
 	} else {
-		s = Sprintf("%v(%v)", o.key, o.value)
+		s = Sprintf("%v(%v)", o.key, o.val)
 	}
 	s += Sprintf("[sz:%d,msz:%d]", o.sz, o.msz)
 	return s

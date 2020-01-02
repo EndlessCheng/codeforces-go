@@ -385,27 +385,27 @@ func rmqCollection() {
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
-	type bucket struct {
+	type block struct {
 		l, r           int // [l,r]
 		arr, sortedArr []int
 		//lazyAdd int
 	}
-	var buckets []*bucket
+	var blocks []*block
 	sqrtInit := func(a []int) {
 		n := len(a)
-		bucketSize := int(math.Sqrt(float64(n)))
-		//bucketSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
-		bucketNum := (n-1)/bucketSize + 1
-		buckets = make([]*bucket, bucketNum)
+		blockSize := int(math.Sqrt(float64(n)))
+		//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+		blockNum := (n-1)/blockSize + 1
+		blocks = make([]*block, blockNum)
 		for i, ai := range a {
-			j := i / bucketSize
-			if i%bucketSize == 0 {
-				buckets[j] = &bucket{l: i, arr: make([]int, 0, bucketSize)}
+			j := i / blockSize
+			if i%blockSize == 0 {
+				blocks[j] = &block{l: i, arr: make([]int, 0, blockSize)}
 			}
-			b := buckets[j]
+			b := blocks[j]
 			b.arr = append(b.arr, ai)
 		}
-		for _, b := range buckets {
+		for _, b := range blocks {
 			b.r = b.l + len(b.arr) - 1
 			b.sortedArr = make([]int, len(b.arr))
 			copy(b.sortedArr, b.arr)
@@ -413,7 +413,7 @@ func rmqCollection() {
 		}
 	}
 	sqrtOp := func(l, r int) { // [l,r], starts at 0
-		for _, b := range buckets {
+		for _, b := range blocks {
 			if b.r < l {
 				continue
 			}
@@ -421,9 +421,9 @@ func rmqCollection() {
 				break
 			}
 			if l <= b.l && b.r <= r {
-				// do op on full bucket
+				// do op on full block
 			} else {
-				// do op on part bucket
+				// do op on part block
 				bl := max(b.l, l)
 				br := min(b.r, r)
 				for i := bl - b.l; i <= br-b.l; i++ {
@@ -446,7 +446,7 @@ func rmqCollection() {
 			l, r, idx int
 		}
 		qs := make([]query, q)
-		blockSize := int(math.Sqrt(float64(n)))
+		blockSize := int(math.Round(math.Sqrt(float64(n))))
 		for i := range qs {
 			var l, r int
 			//Fscan(in, &l, &r)
@@ -460,7 +460,8 @@ func rmqCollection() {
 		update := func(idx, delta int) {
 			// custom data structure
 		}
-		getAns := func() int {
+		getAns := func(q query) int {
+			// 提醒：q.r 是加一后的，计算时需要注意
 			// custom
 			return 0
 		}
@@ -468,6 +469,7 @@ func rmqCollection() {
 		// 从 1 开始算，方便 debug
 		l, r := 1, 1
 		for _, q := range qs {
+			// prepare
 			for ; l < q.l; l++ {
 				update(l, -1)
 			}
@@ -482,7 +484,7 @@ func rmqCollection() {
 				r--
 				update(r, -1)
 			}
-			ans[q.idx] = getAns()
+			ans[q.idx] = getAns(q)
 		}
 		return ans
 	}

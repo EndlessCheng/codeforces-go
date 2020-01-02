@@ -28,5 +28,5 @@ func (t *treap) merge(l, r int, value tpValueType) {
 	}
 	o := t.floor(l)
 	o.r = r
-	o.value = value
+	o.val = value
 }
