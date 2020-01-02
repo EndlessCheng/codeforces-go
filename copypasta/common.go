@@ -632,27 +632,28 @@ func loopCollection() {
 		}
 	}
 
+	// Permute the values at index i to len(arr)-1.
+	// See 910C for example.
+	var permute func([]int, int, func([]int))
+	permute = func(arr []int, i int, do func([]int)) {
+		if i == len(arr) {
+			do(arr)
+			return
+		}
+		permute(arr, i+1, do)
+		for j := i + 1; j < len(arr); j++ {
+			arr[i], arr[j] = arr[j], arr[i]
+			permute(arr, i+1, do)
+			arr[i], arr[j] = arr[j], arr[i]
+		}
+	}
+	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
+
 	_ = []interface{}{
 		loopSet, dfsGrids, searchDirOffset4, searchDirOffset4R,
-		combinations, permutations,
+		combinations, permutations, permuteAll,
 	}
 }
-
-// Permute the values at index i to len(arr)-1.
-// See 910C for example.
-func _permute(arr []int, i int, do func([]int)) {
-	if i == len(arr) {
-		do(arr)
-		return
-	}
-	_permute(arr, i+1, do)
-	for j := i + 1; j < len(arr); j++ {
-		arr[i], arr[j] = arr[j], arr[i]
-		_permute(arr, i+1, do)
-		arr[i], arr[j] = arr[j], arr[i]
-	}
-}
-func permute(arr []int, do func([]int)) { _permute(arr, 0, do) }
 
 //func grayCode(length int) []int {
 //	if length == 1 {
