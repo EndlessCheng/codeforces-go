@@ -117,28 +117,26 @@ func (o *rbNode) deleteMin() *rbNode {
 }
 
 type rbTree struct {
-	root       *rbNode
-	comparator func(a, b rbKeyType) int
+	root *rbNode
 }
 
-func newRBTree() *rbTree {
-	// 设置如下返回值是为了方便使用 rbNode 中的 lr 数组
-	return &rbTree{comparator: func(a, b rbKeyType) int {
-		if a < b {
-			return 0
-		}
-		if a > b {
-			return 1
-		}
+// 设置如下返回值是为了方便使用 rbNode 中的 lr 数组
+func (t *rbTree) compare(a, b rbKeyType) int {
+	switch {
+	case a < b:
+		return 0
+	case a > b:
+		return 1
+	default:
 		return -1
-	}}
+	}
 }
 
 func (t *rbTree) _put(o *rbNode, key rbKeyType, value rbValueType) *rbNode {
 	if o == nil {
 		return &rbNode{sz: 1, msz: 1, key: key, value: value, c: red}
 	}
-	if cmp := t.comparator(key, o.key); cmp >= 0 {
+	if cmp := t.compare(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key, value)
 		if o.lr[1].isRed() && !o.lr[0].isRed() {
 			o = o.rotate(0)
@@ -164,7 +162,7 @@ func (t *rbTree) put(key rbKeyType, value rbValueType) {
 
 func (t *rbTree) get(key rbKeyType) *rbNode {
 	for o := t.root; o != nil; {
-		if cmp := t.comparator(key, o.key); cmp >= 0 {
+		if cmp := t.compare(key, o.key); cmp >= 0 {
 			o = o.lr[cmp]
 		} else {
 			return o
@@ -176,7 +174,7 @@ func (t *rbTree) get(key rbKeyType) *rbNode {
 func (t *rbTree) getStack(key rbKeyType) (stack []*rbNode) {
 	for o := t.root; o != nil; {
 		stack = append(stack, o)
-		if cmp := t.comparator(key, o.key); cmp >= 0 {
+		if cmp := t.compare(key, o.key); cmp >= 0 {
 			o = o.lr[cmp]
 		} else {
 			return
@@ -186,7 +184,7 @@ func (t *rbTree) getStack(key rbKeyType) (stack []*rbNode) {
 }
 
 func (t *rbTree) _delete(o *rbNode, key rbKeyType) *rbNode {
-	if cmp := t.comparator(key, o.key); cmp == 0 {
+	if cmp := t.compare(key, o.key); cmp == 0 {
 		if !o.lr[0].isRed() && !o.lr[0].lr[0].isRed() {
 			o = o.moveRedLeft()
 		}
@@ -195,13 +193,13 @@ func (t *rbTree) _delete(o *rbNode, key rbKeyType) *rbNode {
 		if o.lr[0].isRed() {
 			o = o.rotate(1)
 		}
-		if t.comparator(key, o.key) == -1 && o.lr[1] == nil {
+		if t.compare(key, o.key) == -1 && o.lr[1] == nil {
 			return nil
 		}
 		if !o.lr[1].isRed() && !o.lr[1].lr[0].isRed() {
 			o = o.moveRedRight()
 		}
-		if t.comparator(key, o.key) == -1 {
+		if t.compare(key, o.key) == -1 {
 			x := o.lr[1].min()
 			o.key = x.key
 			o.value = x.value

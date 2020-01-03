@@ -5,29 +5,29 @@ import . "fmt"
 type tKeyType int
 type tValueType int
 
-type tNode struct {
-	lr    [2]*tNode
+type tnode struct {
+	lr    [2]*tnode
 	sz    int
 	msz   int
 	key   tKeyType
 	value tValueType
 }
 
-func (o *tNode) size() int {
+func (o *tnode) size() int {
 	if o != nil {
 		return o.sz
 	}
 	return 0
 }
 
-func (o *tNode) mSize() int {
+func (o *tnode) mSize() int {
 	if o != nil {
 		return o.msz
 	}
 	return 0
 }
 
-func (o *tNode) pushUp() {
+func (o *tnode) pushUp() {
 	sz := 1
 	msz := int(o.value)
 	if ol := o.lr[0]; ol != nil {
@@ -43,32 +43,27 @@ func (o *tNode) pushUp() {
 }
 
 type bst struct {
-	root       *tNode
-	comparator func(a, b tKeyType) int
+	root *tnode
 }
 
-func newBST() *bst {
-	// 设置如下返回值是为了方便使用 tNode 中的 lr 数组
-	return &bst{
-		comparator: func(a, b tKeyType) int {
-			switch {
-			case a < b:
-				return 0
-			case a > b:
-				return 1
-			default:
-				return -1
-			}
-		},
+// 设置如下返回值是为了方便使用 tNode 中的 lr 数组
+func (t *bst) compare(a, b tKeyType) int {
+	switch {
+	case a < b:
+		return 0
+	case a > b:
+		return 1
+	default:
+		return -1
 	}
 }
 
 func (t *bst) size() int   { return t.root.size() }
 func (t *bst) empty() bool { return t.root == nil }
 
-func (t *bst) get(key tKeyType) *tNode {
+func (t *bst) get(key tKeyType) *tnode {
 	for o := t.root; o != nil; {
-		if cmp := t.comparator(key, o.key); cmp >= 0 {
+		if cmp := t.compare(key, o.key); cmp >= 0 {
 			o = o.lr[cmp]
 		} else {
 			return o
@@ -80,9 +75,9 @@ func (t *bst) get(key tKeyType) *tNode {
 // max <= key
 // return nil if not found
 // same like --upper_bound in C++ STL
-func (t *bst) floor(key tKeyType) (floor *tNode) {
+func (t *bst) floor(key tKeyType) (floor *tnode) {
 	for o := t.root; o != nil; {
-		switch cmp := t.comparator(key, o.key); {
+		switch cmp := t.compare(key, o.key); {
 		case cmp == 0:
 			o = o.lr[0]
 		case cmp > 0:
@@ -96,12 +91,12 @@ func (t *bst) floor(key tKeyType) (floor *tNode) {
 }
 
 // 前驱（小于 key，且最大的数）
-func (t *bst) prev(key tKeyType) (prev *tNode) {
+func (t *bst) prev(key tKeyType) (prev *tnode) {
 	// 另一种写法
 	// rank, _ := t.mRank(key)
 	// return t.mSelect(rank - 1)
 	for o := t.root; o != nil; {
-		if cmp := t.comparator(key, o.key); cmp <= 0 {
+		if cmp := t.compare(key, o.key); cmp <= 0 {
 			o = o.lr[0]
 		} else {
 			prev = o
@@ -114,9 +109,9 @@ func (t *bst) prev(key tKeyType) (prev *tNode) {
 // min >= key
 // return nil if not found
 // same like lower_bound in C++ STL
-func (t *bst) ceiling(key tKeyType) (ceiling *tNode) {
+func (t *bst) ceiling(key tKeyType) (ceiling *tnode) {
 	for o := t.root; o != nil; {
-		switch cmp := t.comparator(key, o.key); {
+		switch cmp := t.compare(key, o.key); {
 		case cmp == 0:
 			ceiling = o
 			o = o.lr[0]
@@ -130,7 +125,7 @@ func (t *bst) ceiling(key tKeyType) (ceiling *tNode) {
 }
 
 // 后继（大于 key，且最小的数)
-func (t *bst) next(key tKeyType) (next *tNode) {
+func (t *bst) next(key tKeyType) (next *tnode) {
 	// 另一种写法
 	// rank, o := t.mRank(key)
 	// if o != nil {
@@ -138,7 +133,7 @@ func (t *bst) next(key tKeyType) (next *tNode) {
 	// }
 	// return t.mSelect(rank)
 	for o := t.root; o != nil; {
-		if cmp := t.comparator(key, o.key); cmp != 0 {
+		if cmp := t.compare(key, o.key); cmp != 0 {
 			o = o.lr[1]
 		} else {
 			next = o
@@ -149,9 +144,9 @@ func (t *bst) next(key tKeyType) (next *tNode) {
 }
 
 // 小于 key 的键的数量
-func (t *bst) mRank(key tKeyType) (cnt int, o *tNode) {
+func (t *bst) mRank(key tKeyType) (cnt int, o *tnode) {
 	for o = t.root; o != nil; {
-		switch cmp := t.comparator(key, o.key); {
+		switch cmp := t.compare(key, o.key); {
 		case cmp == 0:
 			o = o.lr[0]
 		case cmp > 0:
@@ -166,7 +161,7 @@ func (t *bst) mRank(key tKeyType) (cnt int, o *tNode) {
 }
 
 // 排名为 k 的节点 o（即有 k 个键小于 o.key）
-func (t *bst) mSelect(k int) (o *tNode) {
+func (t *bst) mSelect(k int) (o *tnode) {
 	//if k < 0 {
 	//	return
 	//}
@@ -187,14 +182,14 @@ func (t *bst) mSelect(k int) (o *tNode) {
 	return
 }
 
-func (t *bst) min() (min *tNode) {
+func (t *bst) min() (min *tnode) {
 	for o := t.root; o != nil; o = o.lr[0] {
 		min = o
 	}
 	return
 }
 
-func (t *bst) max() (max *tNode) {
+func (t *bst) max() (max *tnode) {
 	for o := t.root; o != nil; o = o.lr[1] {
 		max = o
 	}
@@ -202,8 +197,8 @@ func (t *bst) max() (max *tNode) {
 }
 
 func (t *bst) keys() (keys []tKeyType) {
-	var o *tNode
-	q := []*tNode{t.root}
+	var o *tnode
+	q := []*tnode{t.root}
 	for len(q) > 0 {
 		o, q = q[0], q[1:]
 		if o == nil {
@@ -220,7 +215,7 @@ func (t *bst) keys() (keys []tKeyType) {
 
 //
 
-func (o *tNode) String() string {
+func (o *tnode) String() string {
 	var s string
 	if o.value == 1 {
 		s = Sprintf("%v", o.key)
@@ -231,7 +226,7 @@ func (o *tNode) String() string {
 	return s
 }
 
-func (o *tNode) draw(prefix string, isTail bool, str *string) {
+func (o *tnode) draw(prefix string, isTail bool, str *string) {
 	if o.lr[1] != nil {
 		newPrefix := prefix
 		if isTail {
