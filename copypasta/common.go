@@ -438,7 +438,7 @@ func rmqCollection() {
 	// 这样对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)
 	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
-	// https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-4
+	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 	mo := func(n, q int, a []int) {
 		type query struct {
 			blockIdx  int
