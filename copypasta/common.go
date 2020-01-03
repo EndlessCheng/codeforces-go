@@ -71,6 +71,13 @@ func commonCollection() {
 		}
 		return x
 	}
+	absAll := func(a []int) {
+		for i, v := range a {
+			if v < 0 {
+				a[i] = -v
+			}
+		}
+	}
 
 	quickPow := func(x int64, n int, mod int64) int64 {
 		x %= mod
@@ -307,11 +314,34 @@ func commonCollection() {
 		return false
 	}
 
+	maxSubArraySum := func(a []int) int {
+		curSum, maxSum := a[0], a[0]
+		for _, v := range a[1:] {
+			curSum = max(curSum+v, v)
+			maxSum = max(maxSum, curSum)
+		}
+		return maxSum
+	}
+
+	maxSubArrayAbsSum := func(a []int) int {
+		//min, max, abs := math.Min, math.Max, math.Abs
+		curMaxSum, maxSum := a[0], a[0]
+		curMinSum, minSum := a[0], a[0]
+		for _, v := range a[1:] {
+			curMaxSum = max(curMaxSum+v, v)
+			maxSum = max(maxSum, curMaxSum)
+			curMinSum = min(curMinSum+v, v)
+			minSum = min(minSum, curMinSum)
+		}
+		return max(abs(maxSum), abs(minSum))
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
-		abs, quickPow, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete, floatToRat, complement, containsAll,
+		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
+		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete,
+		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum,
 	}
 }
 

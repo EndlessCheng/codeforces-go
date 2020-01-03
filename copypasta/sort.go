@@ -67,6 +67,9 @@ func sortCollections() {
 		return i
 	}
 
+	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对查案的影响可以达到 n=2e5 倍，见 CF578C）
+	// 误差 < 1e6 意味着要有 7个0
+
 	binarySearch := func(l, r float64, f func(x float64) bool) float64 {
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥
 		for i := 0; i < step; i++ {
