@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"math"
-	"os"
 	"sort"
 )
 
@@ -260,6 +259,6 @@ func Sol840D(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func main() {
-	Sol840D(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol840D(os.Stdin, os.Stdout)
+//}

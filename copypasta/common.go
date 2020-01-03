@@ -439,7 +439,7 @@ func rmqCollection() {
 	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
 	// https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-4
-	mo := func(n, q int, a []int) []int {
+	mo := func(n, q int, a []int) {
 		ans := make([]int, q)
 		type query struct {
 			blockIdx  int
@@ -457,17 +457,16 @@ func rmqCollection() {
 			return qi.blockIdx < qj.blockIdx || qi.blockIdx == qj.blockIdx && qi.r < qj.r
 		})
 
+		// 从 1 开始算，方便 debug
+		l, r := 1, 1
 		update := func(idx, delta int) {
-			// custom data structure
+
 		}
 		getAns := func(q query) int {
 			// 提醒：q.r 是加一后的，计算时需要注意
-			// custom
+
 			return 0
 		}
-
-		// 从 1 开始算，方便 debug
-		l, r := 1, 1
 		for _, q := range qs {
 			// prepare
 			for ; l < q.l; l++ {
@@ -486,7 +485,10 @@ func rmqCollection() {
 			}
 			ans[q.idx] = getAns(q)
 		}
-		return ans
+		for _, v := range ans {
+			_ = v
+			//Fprintln(out, v)
+		}
 	}
 
 	_ = []interface{}{
