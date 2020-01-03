@@ -469,11 +469,11 @@ func rmqCollection() {
 		}
 		for _, q := range qs {
 			// prepare
-			for ; l < q.l; l++ {
-				update(l, -1)
-			}
 			for ; r < q.r; r++ {
 				update(r, 1)
+			}
+			for ; l < q.l; l++ {
+				update(l, -1)
 			}
 			for l > q.l {
 				l--

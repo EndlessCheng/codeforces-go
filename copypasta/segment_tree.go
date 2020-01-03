@@ -207,6 +207,7 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 // Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/
 // TODO: 补题 https://codeforces.ml/contest/786/problem/C
+// TODO: 补题 https://codeforces.ml/contest/840/problem/D
 type pstNode struct {
 	l, r   int
 	lo, ro *pstNode // 由于使用了指针，pstNode 必须存放于一个分配了足够空间的 slice 中，避免扩容时改变了内存位置
