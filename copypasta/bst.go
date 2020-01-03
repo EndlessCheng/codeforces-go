@@ -205,9 +205,7 @@ func (t *bst) keys() (keys []tKeyType) {
 			continue
 		}
 		keys = append(keys, o.key)
-		for _, ch := range o.lr {
-			q = append(q, ch)
-		}
+		q = append(q, o.lr[0], o.lr[1])
 	}
 	//sort.Ints(keys)
 	return
