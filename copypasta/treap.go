@@ -47,26 +47,12 @@ func (o *tpNode) rotate(d int) *tpNode {
 }
 
 type treap struct {
-	rd         uint
-	root       *tpNode
-	comparator func(a, b tpKeyType) int
+	rd   uint
+	root *tpNode
 }
 
 func newTreap() *treap {
-	return &treap{
-		rd: 1,
-		comparator: func(a, b tpKeyType) int {
-			// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
-			switch {
-			case a < b:
-				return 0
-			case a > b:
-				return 1
-			default:
-				return -1
-			}
-		},
-	}
+	return &treap{rd: 1}
 }
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
@@ -78,11 +64,23 @@ func (t *treap) fastRand() uint {
 	return t.rd
 }
 
+// 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
+func (t *treap) compare(a, b tpKeyType) int {
+	switch {
+	case a < b:
+		return 0
+	case a > b:
+		return 1
+	default:
+		return -1
+	}
+}
+
 func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
 	if o == nil {
 		return &tpNode{priority: t.fastRand(), sz: 1, msz: 1, key: key, val: val}
 	}
-	if cmp := t.comparator(key, o.key); cmp >= 0 {
+	if cmp := t.compare(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key, val)
 		if o.lr[cmp].priority > o.priority {
 			o = o.rotate(cmp ^ 1)
@@ -101,7 +99,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 	if o == nil {
 		return nil
 	}
-	if cmp := t.comparator(key, o.key); cmp >= 0 {
+	if cmp := t.compare(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._delete(o.lr[cmp], key)
 	} else {
 		if o.val > 1 {

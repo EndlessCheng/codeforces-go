@@ -16,25 +16,12 @@ func (o *stpNode) rotate(d int) *stpNode {
 }
 
 type sTreap struct {
-	rd         uint
-	root       *stpNode
-	comparator func(a, b int) int
+	rd   uint
+	root *stpNode
 }
 
 func newSimpleTreap() *sTreap {
-	return &sTreap{
-		rd: 1,
-		comparator: func(a, b int) int {
-			switch {
-			case a < b:
-				return 0
-			case a > b:
-				return 1
-			default:
-				return -1
-			}
-		},
-	}
+	return &sTreap{rd: 1}
 }
 
 func (t *sTreap) fastRand() uint {
@@ -44,11 +31,22 @@ func (t *sTreap) fastRand() uint {
 	return t.rd
 }
 
+func (t *sTreap) compare(a, b int) int {
+	switch {
+	case a < b:
+		return 0
+	case a > b:
+		return 1
+	default:
+		return -1
+	}
+}
+
 func (t *sTreap) _put(o *stpNode, key int) *stpNode {
 	if o == nil {
 		return &stpNode{priority: t.fastRand(), key: key}
 	}
-	cmp := t.comparator(key, o.key)
+	cmp := t.compare(key, o.key)
 	o.lr[cmp] = t._put(o.lr[cmp], key)
 	if o.lr[cmp].priority > o.priority {
 		o = o.rotate(cmp ^ 1)
@@ -62,7 +60,7 @@ func (t *sTreap) _delete(o *stpNode, key int) *stpNode {
 	if o == nil {
 		return nil
 	}
-	if cmp := t.comparator(key, o.key); cmp >= 0 {
+	if cmp := t.compare(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._delete(o.lr[cmp], key)
 	} else {
 		if o.lr[1] == nil {
