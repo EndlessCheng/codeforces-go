@@ -24,6 +24,24 @@ inputCopy
 outputCopy
 9
 4
+4
+inputCopy
+5 3 0
+0 0 0 0 0
+1 5
+2 4
+1 3
+outputCopy
+15
+6
+6
+inputCopy
+29 2 0
+1 1 1 1 1 0 1 0 1 0 1 1 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0 0 0
+1 10
+6 9
+outputCopy
+25
 4`
 	testutil.AssertEqualCase(t, rawText, 0, Sol617E)
 }
