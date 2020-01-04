@@ -24,7 +24,7 @@ func solve(reader io.Reader, writer io.Writer) {
 	}
 }
 
-func solveCase(in io.Reader, out io.Writer) {
+func solveCase(in *bufio.Reader, out *bufio.Writer) {
 	var n int
 	Fscan(in, &n)
 
