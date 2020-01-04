@@ -86,8 +86,19 @@ func mathCollection() {
 		for d := int64(1); d*d <= n; d++ {
 			if n%d == 0 {
 				res = append(res, d)
-				if d2 := n / d; d2 != d {
-					res = append(res, d2)
+				if d*d < n {
+					res = append(res, n/d)
+				}
+			}
+		}
+		return
+	}
+	doDivisors := func(n int, do func(div int)) {
+		for d := 1; d*d <= n; d++ {
+			if n%d == 0 {
+				do(d)
+				if d*d < n {
+					do(n / d)
 				}
 			}
 		}
@@ -294,7 +305,7 @@ func mathCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
-		isPrime, sieve, primeFactorsAll, divisors, primeFactors, primeExponentsCount, calcLPF,
+		isPrime, sieve, primeFactorsAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverseP, modFrac,
 		fractionToDecimal, decimalToFraction,
 	}

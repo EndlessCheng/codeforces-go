@@ -147,20 +147,20 @@ func commonCollection() {
 		return a[0], a[1], a[2]
 	}
 
-	reverse := func(s []byte) {
+	reverseArr := func(s []byte) {
 		for i, j := 0, len(s)-1; i < j; {
 			s[i], s[j] = s[j], s[i]
 			i++
 			j--
 		}
 	}
-	reverseS := func(s string) string {
+	reverseStr := func(s string) []byte {
 		n := len(s)
 		res := make([]byte, n)
 		for i := range s {
 			res[i] = s[n-1-i]
 		}
-		return string(res)
+		return res
 	}
 
 	// a b 必须是有序的（可以为空）
@@ -232,6 +232,15 @@ func commonCollection() {
 		//	kthArr[p.i] = i + start
 		//}
 		return
+	}
+
+	same := func(a ...int) bool {
+		for _, v := range a[1:] {
+			if v != a[0] {
+				return false
+			}
+		}
+		return true
 	}
 
 	// floatStr must contain a .
@@ -340,7 +349,7 @@ func commonCollection() {
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseS, merge, unique, discrete,
+		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum,
 	}
 }
