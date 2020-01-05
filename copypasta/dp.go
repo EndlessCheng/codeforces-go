@@ -14,7 +14,6 @@ func dpCollections() {
 		}
 		return b
 	}
-	_ = min
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -22,7 +21,38 @@ func dpCollections() {
 		return b
 	}
 
-	generalDP := func(x, y int) int {
+	generalDP := func(a []int) int {
+		//const mx = 505
+		//dp := [mx][mx]int{}
+		//vis := [mx][mx]bool{}
+		n := len(a)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, n+1)
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
+		}
+		var f func(l, r int) int
+		f = func(l, r int) (ans int) {
+			// 边界检查
+			if l >= r {
+				return 0
+			}
+			if dp[l][r] != -1 {
+				return dp[l][r]
+			}
+			defer func() { dp[l][r] = ans }()
+			// 转移方程
+			if a[l] == a[r] {
+				return f(l+1, r-1)
+			}
+			return min(f(l+1, r), f(l, r-1)) + 1
+		}
+		return f(0, n-1)
+	}
+
+	generalDP2 := func(x, y int) int {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
 		var f func(x, y int) int
@@ -60,5 +90,5 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
-	_ = []interface{}{generalDP, knapsack01}
+	_ = []interface{}{generalDP, generalDP2, knapsack01}
 }

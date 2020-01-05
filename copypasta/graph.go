@@ -67,6 +67,24 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
+func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
+	visited := make([]bool, len(g))
+	visited[st] = true
+	type pair struct{ v, dep int }
+	queue := []pair{{st, 0}}
+	for len(queue) > 0 {
+		var p pair
+		p, queue = queue[0], queue[1:]
+		do(p.v, p.dep)
+		for _, w := range g[p.v] {
+			if !visited[w] {
+				visited[w] = true
+				queue = append(queue, pair{w, p.dep + 1})
+			}
+		}
+	}
+}
+
 // https://oi-wiki.org/graph/bridge/
 // https://codeforces.com/blog/entry/68138
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2

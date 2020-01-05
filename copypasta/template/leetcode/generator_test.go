@@ -13,7 +13,7 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 169
+const contestID = 170
 
 const (
 	hostZH = "leetcode-cn.com"
