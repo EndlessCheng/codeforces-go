@@ -90,6 +90,9 @@ func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(i
 }
 
 func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	if strings.TrimSpace(rawText) == "" {
+		t.Fatal("rawText is empty")
+	}
 	if rawText[0] == '\n' {
 		rawText = rawText[1:]
 	}

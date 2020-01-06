@@ -6,10 +6,10 @@ import (
 	"io"
 )
 
-func simpleIO(reader io.Reader, writer io.Writer) {
+func simpleIO(_r io.Reader, _w io.Writer) {
 	// NOTE: just a bufio.NewReader is enough, there is no difference between this and ioutil.ReadAll
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	var n int
@@ -21,10 +21,10 @@ func simpleIO(reader io.Reader, writer io.Writer) {
 }
 
 // 一般来说读 1e5 个 int 需要 100ms
-func fastIO(reader io.Reader, writer io.Writer) {
-	in := bufio.NewScanner(reader)
+func fastIO(_r io.Reader, _w io.Writer) {
+	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
-	out := bufio.NewWriter(writer)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	read := func() (x int) {
 		in.Scan()
@@ -51,10 +51,10 @@ func fastIO(reader io.Reader, writer io.Writer) {
 	_ = []interface{}{read}
 }
 
-func lineIO(reader io.Reader, writer io.Writer) {
-	in := bufio.NewScanner(reader)
+func lineIO(_r io.Reader, _w io.Writer) {
+	in := bufio.NewScanner(_r)
 	in.Buffer(nil, 1e9) // default maxTokenSize is 65536
-	out := bufio.NewWriter(writer)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	for in.Scan() {

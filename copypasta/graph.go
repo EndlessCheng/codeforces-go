@@ -426,14 +426,16 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 // 二分图判定
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
-// TODO: https://codeforces.com/contest/1144/problem/F
 func (*graph) isBipartite(n, m int) bool {
 	g := make([][]int, n)
+	type pair struct{ v, w int }
+	edges := make([]pair, m)
 	for i := 0; i < m; i++ {
 		var v, w int
 		//v, w := read()-1, read()-1
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
+		edges[i] = pair{v, w}
 	}
 
 	colors := make([]int8, n)
