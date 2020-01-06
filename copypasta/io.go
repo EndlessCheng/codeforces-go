@@ -47,8 +47,9 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		}
 		return sig * x
 	}
+	readS := func() string { in.Scan(); return string(in.Bytes()) }
 
-	_ = []interface{}{read}
+	_ = []interface{}{read, readS}
 }
 
 func lineIO(_r io.Reader, _w io.Writer) {

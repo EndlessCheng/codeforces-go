@@ -203,11 +203,20 @@ func suffixArray() {
 }
 
 // https://oi-wiki.org/string/trie/
+// 题目推荐 https://codeforces.ml/blog/entry/55274
 type trieNode struct {
 	childIdx [26]int
 	dupCnt   int // 重复插入计数
 	val      int // 节点附加信息，比如插入的字符串在原数组中的下标
 	// val 也可以是个 []int，重复插入的可以 append，此时 dupCnt == len(val)
+	fa          *trieNode
+	subTreeSize int // pushUp 维护
+}
+
+func (o *trieNode) pushUp(delta int) {
+	for fa := o.fa; fa != nil; fa = fa.fa {
+		fa.subTreeSize += delta
+	}
 }
 
 type trie struct {
@@ -233,7 +242,8 @@ func (t *trie) put(s string, val int) {
 		//o.dupCnt++ // 这样写表示经过节点 o 的字符串个数
 	}
 	o.dupCnt++
-	o.val = val
+	o.val += val
+	o.pushUp(val)
 	//if o.dupCnt == 1 {
 	//	o.val = val
 	//}
