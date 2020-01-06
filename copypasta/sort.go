@@ -99,9 +99,29 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
+	ternarySearchInt := func(l, r int, f func(x int) int) int {
+		for l+3 <= r {
+			m1 := l + (r-l)/3
+			m2 := r - (r-l)/3
+			v1, v2 := f(m1), f(m2)
+			if v1 < v2 {
+				r = m2
+			} else {
+				l = m1
+			}
+		}
+		min, minI := f(l), l
+		for i := l + 1; i <= r; i++ {
+			if v := f(i); v < min {
+				min, minI = v, i
+			}
+		}
+		return minI
+	}
+
 	// TODO: 整体二分 https://oi-wiki.org/misc/parallel-binsearch/
 
 	// TODO: https://oi-wiki.org/search/dlx/
 
-	_ = []interface{}{reverse, searchRange, search64, binarySearch, ternarySearch}
+	_ = []interface{}{reverse, searchRange, search64, binarySearch, ternarySearch, ternarySearchInt}
 }

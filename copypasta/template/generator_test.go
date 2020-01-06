@@ -50,7 +50,7 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/problemset/problem/578/C"
+	const problemURL = "https://codeforces.ml/problemset/problem/439/D"
 	statusURL := strings.Replace(problemURL, "problem/", "status/", 1)
 	statusURL = statusURL[:len(statusURL)-1] + "problem/" + statusURL[len(statusURL)-1:]
 	defer open.Run(statusURL)
@@ -65,9 +65,9 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol%[1]s(in io.Reader, out io.Writer) {
-	in = bufio.NewReader(in)
-	out = bufio.NewWriter(out)
+func Sol%[1]s(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	var n int
