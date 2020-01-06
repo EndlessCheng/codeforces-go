@@ -104,21 +104,8 @@ func (t *sTreap) hasValueInRange(l, r int) bool {
 
 type trieNode struct {
 	childIdx       [26]int
-	fa             *trieNode
 	curIndexes     *sTreap
 	subTreeIndexes *sTreap
-}
-
-func (o *trieNode) pushUpAdd(idx int) {
-	for ; o.fa != nil; o = o.fa {
-		o.subTreeIndexes.put(idx)
-	}
-}
-
-func (o *trieNode) pushUpDel(idx int) {
-	for ; o.fa != nil; o = o.fa {
-		o.subTreeIndexes.delete(idx)
-	}
 }
 
 type trie struct {
@@ -132,27 +119,26 @@ func (t *trie) put(s string, idx int) {
 		if o.childIdx[c] == 0 {
 			o.childIdx[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &trieNode{
-				fa:             o,
 				curIndexes:     &sTreap{rd: 1},
 				subTreeIndexes: &sTreap{rd: 1},
 			})
 		}
 		o = t.nodes[o.childIdx[c]]
+		o.subTreeIndexes.put(idx)
 	}
 	o.curIndexes.put(idx)
-	o.pushUpAdd(idx)
 }
 
 func (t *trie) del(s string, idx int) {
 	o := t.nodes[0]
 	for i := range s {
 		o = t.nodes[o.childIdx[s[i]-'a']]
+		o.subTreeIndexes.delete(idx)
 	}
 	o.curIndexes.delete(idx)
-	o.pushUpDel(idx)
 }
 
-func (t *trie) hasPrefixTo(s string, l, r int) bool {
+func (t *trie) hasPrefixOfText(s string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range s {
 		idx := o.childIdx[s[i]-'a']
@@ -167,7 +153,7 @@ func (t *trie) hasPrefixTo(s string, l, r int) bool {
 	return false
 }
 
-func (t *trie) isPrefix(p string, l, r int) bool {
+func (t *trie) hasTextOfPrefix(p string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range p {
 		idx := o.childIdx[p[i]-'a']
@@ -205,14 +191,14 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 			a[idx-1] = s
 		case 2:
 			Fscan(in, &l, &r, &s)
-			if t.hasPrefixTo(s, l, r) {
+			if t.hasPrefixOfText(s, l, r) {
 				Fprintln(out, "Y")
 			} else {
 				Fprintln(out, "N")
 			}
 		default:
 			Fscan(in, &l, &r, &s)
-			if t.isPrefix(s, l, r) {
+			if t.hasTextOfPrefix(s, l, r) {
 				Fprintln(out, "Y")
 			} else {
 				Fprintln(out, "N")

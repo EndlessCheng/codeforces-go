@@ -12,12 +12,14 @@ type iTrieNode struct {
 func (o *iTrieNode) pushUpAdd(idx int) {
 	for ; o.fa != nil; o = o.fa {
 		o.subTreeIndexes.put(idx)
+		// 其余统计量
 	}
 }
 
 func (o *iTrieNode) pushUpDel(idx int) {
 	for ; o.fa != nil; o = o.fa {
 		o.subTreeIndexes.delete(idx)
+		// 其余统计量
 	}
 }
 
