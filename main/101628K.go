@@ -97,15 +97,15 @@ func (t *sTreap) ceiling(key int) (ceiling *sNode) {
 	return
 }
 
-func (t *sTreap) inRange(l, r int) bool {
+func (t *sTreap) hasValueInRange(l, r int) bool {
 	o := t.ceiling(l)
 	return o != nil && o.key <= r
 }
 
 type trieNode struct {
-	childIdx [26]int
-	//dupCnt   int
+	childIdx       [26]int
 	fa             *trieNode
+	curIndexes     *sTreap
 	subTreeIndexes *sTreap
 }
 
@@ -131,12 +131,15 @@ func (t *trie) put(s string, idx int) {
 		c := s[i] - 'a'
 		if o.childIdx[c] == 0 {
 			o.childIdx[c] = len(t.nodes)
-			t.nodes = append(t.nodes, &trieNode{subTreeIndexes: &sTreap{rd: 1}})
+			t.nodes = append(t.nodes, &trieNode{
+				fa:             o,
+				curIndexes:     &sTreap{rd: 1},
+				subTreeIndexes: &sTreap{rd: 1},
+			})
 		}
 		o = t.nodes[o.childIdx[c]]
-		//o.dupCnt++ // 这样写表示经过节点 o 的字符串个数
 	}
-	//o.dupCnt++
+	o.curIndexes.put(idx)
 	o.pushUpAdd(idx)
 }
 
@@ -145,10 +148,26 @@ func (t *trie) del(s string, idx int) {
 	for i := range s {
 		o = t.nodes[o.childIdx[s[i]-'a']]
 	}
+	o.curIndexes.delete(idx)
 	o.pushUpDel(idx)
 }
 
-func (t *trie) hasPrefix(p string, l, r int) bool {
+func (t *trie) hasPrefixTo(s string, l, r int) bool {
+	o := t.nodes[0]
+	for i := range s {
+		idx := o.childIdx[s[i]-'a']
+		if idx == 0 {
+			return false
+		}
+		o = t.nodes[idx]
+		if o.curIndexes.hasValueInRange(l, r) {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *trie) isPrefix(p string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range p {
 		idx := o.childIdx[p[i]-'a']
@@ -157,7 +176,7 @@ func (t *trie) hasPrefix(p string, l, r int) bool {
 		}
 		o = t.nodes[idx]
 	}
-	return o.subTreeIndexes.inRange(l, r)
+	return o.subTreeIndexes.hasValueInRange(l, r)
 }
 
 // github.com/EndlessCheng/codeforces-go
@@ -175,6 +194,7 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 		t.put(a[i], i+1)
 	}
+	Fscan(in, &q)
 	for i := 0; i < q; i++ {
 		Fscan(in, &op)
 		switch op {
@@ -185,14 +205,17 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 			a[idx-1] = s
 		case 2:
 			Fscan(in, &l, &r, &s)
-			// a[l]...a[r] is prefix
-
+			if t.hasPrefixTo(s, l, r) {
+				Fprintln(out, "Y")
+			} else {
+				Fprintln(out, "N")
+			}
 		default:
 			Fscan(in, &l, &r, &s)
-			if t.hasPrefix(s, l, r) {
-				Fprintln(out, 'Y')
+			if t.isPrefix(s, l, r) {
+				Fprintln(out, "Y")
 			} else {
-				Fprintln(out, 'N')
+				Fprintln(out, "N")
 			}
 		}
 	}

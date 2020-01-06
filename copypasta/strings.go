@@ -205,9 +205,9 @@ func suffixArray() {
 // https://oi-wiki.org/string/trie/
 // 题目推荐 https://codeforces.ml/blog/entry/55274
 type trieNode struct {
-	childIdx [26]int
-	dupCnt   int // 重复插入计数
-	val      int // 节点附加信息，比如插入的字符串在原数组中的下标
+	sonIndexes [26]int
+	dupCnt     int // 重复插入计数
+	val        int // 节点附加信息，比如插入的字符串在原数组中的下标
 	// val 也可以是个 []int，重复插入的可以 append，此时 dupCnt == len(val)
 	fa          *trieNode
 	subTreeSize int // pushUp 维护
@@ -234,11 +234,11 @@ func (t *trie) put(s string, val int) {
 	o := t.nodes[0]
 	for i := range s {
 		c := s[i] - 'a'
-		if o.childIdx[c] == 0 {
-			o.childIdx[c] = len(t.nodes)
+		if o.sonIndexes[c] == 0 {
+			o.sonIndexes[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &trieNode{})
 		}
-		o = t.nodes[o.childIdx[c]]
+		o = t.nodes[o.sonIndexes[c]]
 		//o.dupCnt++ // 这样写表示经过节点 o 的字符串个数
 	}
 	o.dupCnt++
@@ -254,7 +254,7 @@ func (t *trie) put(s string, val int) {
 func (t *trie) del(s string) {
 	o := t.nodes[0]
 	for i := range s {
-		o = t.nodes[o.childIdx[s[i]-'a']]
+		o = t.nodes[o.sonIndexes[s[i]-'a']]
 	}
 	o.pushUp(-1)
 }
@@ -265,7 +265,7 @@ func (t *trie) get(s string) (val int, found bool) {
 	o := t.nodes[0]
 	for i := range s {
 		c := s[i] - 'a'
-		idx := o.childIdx[c]
+		idx := o.sonIndexes[c]
 		if idx == 0 {
 			return
 		}
@@ -283,7 +283,7 @@ func (t *trie) get(s string) (val int, found bool) {
 func (t *trie) minPrefix(p string) (s string, val int) {
 	o := t.nodes[0]
 	for i := range p {
-		idx := o.childIdx[p[i]-'a']
+		idx := o.sonIndexes[p[i]-'a']
 		if idx == 0 {
 			return
 		}
@@ -294,7 +294,7 @@ func (t *trie) minPrefix(p string) (s string, val int) {
 	bytes := []byte(p)
 	for o.dupCnt == 0 {
 		for i := 0; i < 26; i++ {
-			if idx := o.childIdx[i]; idx > 0 {
+			if idx := o.sonIndexes[i]; idx > 0 {
 				bytes = append(bytes, byte('a'+i))
 				o = t.nodes[idx]
 				break
@@ -308,11 +308,11 @@ func (t *trie) minPrefix(p string) (s string, val int) {
 func (t *trie) maxXor(bits []byte) (xor int) {
 	o := t.nodes[0]
 	for i, b := range bits {
-		if o.childIdx[b^1] > 0 {
+		if o.sonIndexes[b^1] > 0 {
 			xor |= 1 << uint(30-i)
 			b ^= 1
 		}
-		o = t.nodes[o.childIdx[b]]
+		o = t.nodes[o.sonIndexes[b]]
 	}
 	return
 }

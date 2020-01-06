@@ -143,7 +143,7 @@ func (t *bst) next(key tKeyType) (next *tnode) {
 	return
 }
 
-func (t *bst) inRange(l, r int) bool {
+func (t *bst) hasValueInRange(l, r int) bool {
 	o := t.ceiling(tKeyType(l))
 	return o != nil && int(o.key) <= r
 }

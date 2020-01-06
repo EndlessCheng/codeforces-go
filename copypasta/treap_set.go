@@ -81,3 +81,23 @@ func (t *sTreap) _delete(o *sNode, key int) *sNode {
 }
 
 func (t *sTreap) delete(key int) { t.root = t._delete(t.root, key) }
+
+func (t *sTreap) ceiling(key int) (ceiling *sNode) {
+	for o := t.root; o != nil; {
+		switch cmp := t.compare(key, o.key); {
+		case cmp == 0:
+			ceiling = o
+			o = o.lr[0]
+		case cmp > 0:
+			o = o.lr[1]
+		default:
+			return o
+		}
+	}
+	return
+}
+
+func (t *sTreap) hasValueInRange(l, r int) bool {
+	o := t.ceiling(l)
+	return o != nil && o.key <= r
+}
