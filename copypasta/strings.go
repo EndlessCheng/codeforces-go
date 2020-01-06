@@ -208,7 +208,7 @@ type trieNode struct {
 	sonIndexes [26]int
 	dupCnt     int // 重复插入计数
 	val        int // 节点附加信息，比如插入的字符串在原数组中的下标
-	// val 也可以是个 []int，重复插入的可以 append，此时 dupCnt == len(val)
+	// val 也可以是个 []int 或 map，此时 dupCnt == len(val)
 	fa          *trieNode
 	subTreeSize int // pushUp 维护
 }
