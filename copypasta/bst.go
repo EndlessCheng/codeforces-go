@@ -143,6 +143,11 @@ func (t *bst) next(key tKeyType) (next *tnode) {
 	return
 }
 
+func (t *bst) inRange(l, r int) bool {
+	o := t.ceiling(tKeyType(l))
+	return o != nil && int(o.key) <= r
+}
+
 // 小于 key 的键的数量
 func (t *bst) mRank(key tKeyType) (cnt int, o *tnode) {
 	for o = t.root; o != nil; {

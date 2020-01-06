@@ -1,14 +1,14 @@
 package copypasta
 
-// 无重复 set
+// 无重复元素 set
 
-type stpNode struct {
-	lr       [2]*stpNode
+type sNode struct {
+	lr       [2]*sNode
 	priority uint
 	key      int
 }
 
-func (o *stpNode) rotate(d int) *stpNode {
+func (o *sNode) rotate(d int) *sNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
@@ -17,10 +17,10 @@ func (o *stpNode) rotate(d int) *stpNode {
 
 type sTreap struct {
 	rd   uint
-	root *stpNode
+	root *sNode
 }
 
-func newSimpleTreap() *sTreap {
+func newSetTreap() *sTreap {
 	return &sTreap{rd: 1}
 }
 
@@ -42,21 +42,22 @@ func (t *sTreap) compare(a, b int) int {
 	}
 }
 
-func (t *sTreap) _put(o *stpNode, key int) *stpNode {
+func (t *sTreap) _put(o *sNode, key int) *sNode {
 	if o == nil {
-		return &stpNode{priority: t.fastRand(), key: key}
+		return &sNode{priority: t.fastRand(), key: key}
 	}
-	cmp := t.compare(key, o.key)
-	o.lr[cmp] = t._put(o.lr[cmp], key)
-	if o.lr[cmp].priority > o.priority {
-		o = o.rotate(cmp ^ 1)
+	if cmp := t.compare(key, o.key); cmp >= 0 {
+		o.lr[cmp] = t._put(o.lr[cmp], key)
+		if o.lr[cmp].priority > o.priority {
+			o = o.rotate(cmp ^ 1)
+		}
 	}
 	return o
 }
 
 func (t *sTreap) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *sTreap) _delete(o *stpNode, key int) *stpNode {
+func (t *sTreap) _delete(o *sNode, key int) *sNode {
 	if o == nil {
 		return nil
 	}

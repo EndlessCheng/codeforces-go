@@ -214,8 +214,8 @@ type trieNode struct {
 }
 
 func (o *trieNode) pushUp(delta int) {
-	for fa := o.fa; fa != nil; fa = fa.fa {
-		fa.subTreeSize += delta
+	for ; o.fa != nil; o = o.fa {
+		o.subTreeSize += delta
 	}
 }
 
@@ -249,6 +249,14 @@ func (t *trie) put(s string, val int) {
 	//}
 	//
 	//o.val = append(o.val, val)
+}
+
+func (t *trie) del(s string) {
+	o := t.nodes[0]
+	for i := range s {
+		o = t.nodes[o.childIdx[s[i]-'a']]
+	}
+	o.pushUp(-1)
 }
 
 // 在 trie 中寻找字符串 s，返回其 val 值

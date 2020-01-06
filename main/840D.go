@@ -8,35 +8,35 @@ import (
 	"sort"
 )
 
-type stpNode struct {
-	lr       [2]*stpNode
+type sNode840 struct {
+	lr       [2]*sNode840
 	priority uint
 	key      int
 }
 
-func (o *stpNode) rotate(d int) *stpNode {
+func (o *sNode840) rotate(d int) *sNode840 {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
 	return x
 }
 
-type sTreap struct {
+type sTreap840 struct {
 	rd         uint
-	root       *stpNode
+	root       *sNode840
 	comparator func(a, b int) int
 }
 
-func (t *sTreap) fastRand() uint {
+func (t *sTreap840) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17
 	t.rd ^= t.rd << 5
 	return t.rd
 }
 
-func (t *sTreap) _put(o *stpNode, key int) *stpNode {
+func (t *sTreap840) _put(o *sNode840, key int) *sNode840 {
 	if o == nil {
-		return &stpNode{priority: t.fastRand(), key: key}
+		return &sNode840{priority: t.fastRand(), key: key}
 	}
 	cmp := t.comparator(key, o.key)
 	o.lr[cmp] = t._put(o.lr[cmp], key)
@@ -46,9 +46,9 @@ func (t *sTreap) _put(o *stpNode, key int) *stpNode {
 	return o
 }
 
-func (t *sTreap) put(key int) { t.root = t._put(t.root, key) }
+func (t *sTreap840) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *sTreap) _delete(o *stpNode, key int) *stpNode {
+func (t *sTreap840) _delete(o *sNode840, key int) *sNode840 {
 	if o == nil {
 		return nil
 	}
@@ -71,37 +71,37 @@ func (t *sTreap) _delete(o *stpNode, key int) *stpNode {
 	return o
 }
 
-func (t *sTreap) delete(key int) { t.root = t._delete(t.root, key) }
+func (t *sTreap840) delete(key int) { t.root = t._delete(t.root, key) }
 
-func (t *sTreap) min() (min *stpNode) {
+func (t *sTreap840) min() (min *sNode840) {
 	for o := t.root; o != nil; o = o.lr[0] {
 		min = o
 	}
 	return
 }
 
-type tpNode struct {
-	lr       [2]*tpNode
+type tpNode840 struct {
+	lr       [2]*tpNode840
 	priority uint
 	key      int
-	st       *sTreap
+	st       *sTreap840
 }
 
-func (o *tpNode) rotate(d int) *tpNode {
+func (o *tpNode840) rotate(d int) *tpNode840 {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
 	return x
 }
 
-type treap struct {
+type treap840 struct {
 	rd         uint
-	root       *tpNode
+	root       *tpNode840
 	comparator func(a, b int) int
 }
 
-func newTreap() *treap {
-	return &treap{
+func newTreap840() *treap840 {
+	return &treap840{
 		rd: 1,
 		comparator: func(a, b int) int {
 			switch {
@@ -116,18 +116,18 @@ func newTreap() *treap {
 	}
 }
 
-func (t *treap) fastRand() uint {
+func (t *treap840) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17
 	t.rd ^= t.rd << 5
 	return t.rd
 }
 
-func (t *treap) _put(o *tpNode, key, val int) *tpNode {
+func (t *treap840) _put(o *tpNode840, key, val int) *tpNode840 {
 	if o == nil {
-		st := &sTreap{rd: 1, comparator: t.comparator}
+		st := &sTreap840{rd: 1, comparator: t.comparator}
 		st.put(val)
-		return &tpNode{priority: t.fastRand(), key: key, st: st}
+		return &tpNode840{priority: t.fastRand(), key: key, st: st}
 	}
 	if cmp := t.comparator(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key, val)
@@ -140,9 +140,9 @@ func (t *treap) _put(o *tpNode, key, val int) *tpNode {
 	return o
 }
 
-func (t *treap) put(key, val int) { t.root = t._put(t.root, key, val) }
+func (t *treap840) put(key, val int) { t.root = t._put(t.root, key, val) }
 
-func (t *treap) _delete(o *tpNode, key, val int) *tpNode {
+func (t *treap840) _delete(o *tpNode840, key, val int) *tpNode840 {
 	if o == nil {
 		return nil
 	}
@@ -168,9 +168,9 @@ func (t *treap) _delete(o *tpNode, key, val int) *tpNode {
 	return o
 }
 
-func (t *treap) delete(key, val int) { t.root = t._delete(t.root, key, val) }
+func (t *treap840) delete(key, val int) { t.root = t._delete(t.root, key, val) }
 
-func (t *treap) ceiling(key int) (ceiling *tpNode) {
+func (t *treap840) ceiling(key int) (ceiling *tpNode840) {
 	for o := t.root; o != nil; {
 		switch cmp := t.comparator(key, o.key); {
 		case cmp == 0:
@@ -221,7 +221,7 @@ func Sol840D(reader io.Reader, writer io.Writer) {
 	})
 
 	cntMap := map[int]int{}
-	t := newTreap()
+	t := newTreap840()
 	update := func(idx, delta int) {
 		v := a[idx]
 		cntMap[v] += delta
