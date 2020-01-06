@@ -41,6 +41,7 @@ func (g *graph) resetStates() {
 	g.visited = make([]bool, g.size+1)
 }
 
+// 遍历所有边
 func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
 	g.visited[v] = true
 	for _, e := range g.edges[v] {
@@ -52,6 +53,7 @@ func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
+// 遍历所有边
 func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	g.visited[v] = true
 	for queue := []int{v}; len(queue) > 0; {
@@ -67,6 +69,7 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
+// 遍历所有点
 func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
 	visited := make([]bool, len(g))
 	visited[st] = true
