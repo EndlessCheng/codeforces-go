@@ -90,5 +90,14 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
+	// TODO: 单调队列/单调栈优化
+	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
+
+	// TODO: 斜率优化
+	// https://oi-wiki.org/dp/opt/slope/
+
+	// TODO: 四边形不等式优化
+	// https://oi-wiki.org/dp/opt/quadrangle/
+
 	_ = []interface{}{generalDP, generalDP2, knapsack01}
 }

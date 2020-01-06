@@ -9,7 +9,7 @@ import (
 // https://zhuanlan.zhihu.com/p/31584464
 // https://oi-wiki.org/math/poly/fft/
 // https://cp-algorithms.com/algebra/fft.html
-// TODO: https://cp-algorithms.com/algebra/polynomial.html
+// TODO: 求逆等 https://cp-algorithms.com/algebra/polynomial.html
 
 type fft struct {
 	n               int

@@ -326,7 +326,7 @@ func gameTheoryCollection() {
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
 	//var sg []int
 	//initSG := func(n int) {
-	//	// TODO
+	//	// TODO implement
 	//}
 
 	_ = []interface{}{nim}

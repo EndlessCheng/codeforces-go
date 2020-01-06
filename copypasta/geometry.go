@@ -129,12 +129,12 @@ func (a vec) onSeg(l line) bool {
 // 线段规范相交
 // CCW (Counter Clock Wise) ?
 func (a line) segProperIntersection(b line) bool {
-	// TODO
+	// TODO implement
 	return false
 }
 
 type circle struct {
-	// TODO
+	// TODO implement
 }
 
 // https://en.wikipedia.org/wiki/Inversive_geometry

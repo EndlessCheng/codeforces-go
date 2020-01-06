@@ -257,7 +257,7 @@ func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
 
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
 func (*graph) hasNegativeCycleBellmanFord() bool {
-	// TODO
+	// TODO implement
 	return false
 }
 
@@ -342,7 +342,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 // Using Kruskal and Lowest Common Ancestor
 // https://cp-algorithms.com/graph/second_best_mst.html
 func (*graph) secondMST(n, m int) (sum int64) {
-	// TODO
+	// TODO implement
 	return
 }
 
@@ -584,6 +584,6 @@ func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
 func (*graph) solve2SAT(n, m int) bool {
-	// TODO
+	// TODO implement
 	return false
 }
