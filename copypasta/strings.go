@@ -23,16 +23,18 @@ func stringCollection() {
 
 	// https://oi-wiki.org/string/hash/
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
-	const prime uint64 = 1e8 + 7
-	var maxLen int
-	powP := make([]uint64, maxLen+1)
-	powP[0] = 1
-	for i := 1; i <= maxLen; i++ {
-		powP[i] = powP[i-1] * prime
+	var powP []uint64
+	initPowP := func(maxLen int) {
+		const prime uint64 = 1e8 + 7
+		powP = make([]uint64, maxLen+1)
+		powP[0] = 1
+		for i := 1; i <= maxLen; i++ {
+			powP[i] = powP[i-1] * prime
+		}
 	}
 	hashVal := func(s string) (val uint64) {
-		for i, c := range s {
-			val += uint64(c) * powP[i]
+		for i := range s {
+			val += uint64(s[i]) * powP[i]
 		}
 		return
 	}
@@ -80,10 +82,8 @@ func stringCollection() {
 	calcMinPeriod := func(pattern string) int {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		n := len(pattern)
-		if val := maxMatchLengths[n-1]; val > 0 {
-			if n%(n-val) == 0 {
-				return n / (n - val)
-			}
+		if val := maxMatchLengths[n-1]; val > 0 && n%(n-val) == 0 {
+			return n / (n - val)
 		}
 		return 1 // or -1
 	}
@@ -114,17 +114,18 @@ func stringCollection() {
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
+	var maxLen []int
 	manacher := func(origin string) int {
 		n := len(origin)
 		s := make([]byte, 2*n+3)
 		s[0] = '^'
-		for i, c := range origin {
+		for i := range origin {
 			s[i<<1|1] = '#'
-			s[i<<1+2] = byte(c)
+			s[i<<1+2] = origin[i]
 		}
 		s[n<<1|1] = '#'
 		s[n<<1+2] = '$'
-		maxLen := make([]int, 2*n+3)
+		maxLen = make([]int, 2*n+3)
 		var ans, mid, right int
 		for i := 1; i < 2*n+2; i++ {
 			if i < right {
@@ -149,11 +150,14 @@ func stringCollection() {
 	}
 
 	// 判断源串中的某一子串 [l...r] 是否为回文串
-	//manacherQuery := func(l, r int) bool {
-	//return maxLen[l+r+2] >= r-l+1
-	//}
+	manacherQuery := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
-	_ = []interface{}{hashVal, kmpSearch, calcMinPeriod, smallestRepresentation, manacher}
+	_ = []interface{}{
+		initPowP, hashVal,
+		kmpSearch, calcMinPeriod,
+		smallestRepresentation,
+		manacher, manacherQuery,
+	}
 }
 
 // https://oi-wiki.org/string/sa/#height
@@ -219,8 +223,8 @@ func newTrie() *trie {
 // 插入的字符串 s 不能为空
 func (t *trie) put(s string, val int) {
 	o := t.nodes[0]
-	for _, c := range s {
-		c -= 'a'
+	for i := range s {
+		c := s[i] - 'a'
 		if o.childIdx[c] == 0 {
 			o.childIdx[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &trieNode{})
@@ -241,8 +245,9 @@ func (t *trie) put(s string, val int) {
 // s 不能为空
 func (t *trie) get(s string) (val int, found bool) {
 	o := t.nodes[0]
-	for _, c := range s {
-		idx := o.childIdx[c-'a']
+	for i := range s {
+		c := s[i] - 'a'
+		idx := o.childIdx[c]
 		if idx == 0 {
 			return
 		}
@@ -259,8 +264,8 @@ func (t *trie) get(s string) (val int, found bool) {
 // p 不能为空
 func (t *trie) minPrefix(p string) (s string, val int) {
 	o := t.nodes[0]
-	for _, c := range p {
-		idx := o.childIdx[c-'a']
+	for i := range p {
+		idx := o.childIdx[p[i]-'a']
 		if idx == 0 {
 			return
 		}
