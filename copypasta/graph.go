@@ -259,9 +259,9 @@ func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
 }
 
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
-func (*graph) hasNegativeCycleBellmanFord() bool {
-	// TODO implement
-	return false
+func (*graph) hasNegativeCycleBellmanFord() []int {
+	// TODO implement, return negative cycle
+	return nil
 }
 
 // 适用于稀疏图 O(|E|⋅log|E|)

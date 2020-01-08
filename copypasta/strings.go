@@ -204,19 +204,12 @@ func suffixArray() {
 
 // https://oi-wiki.org/string/trie/
 // 题目推荐 https://codeforces.ml/blog/entry/55274
+// 另见 strings_index_trie.go
 type trieNode struct {
 	sonIndexes [26]int
 	dupCnt     int // 重复插入计数
 	val        int // 节点附加信息，比如插入的字符串在原数组中的下标
 	// val 也可以是个 []int 或 map，此时 dupCnt == len(val)
-	fa          *trieNode
-	subTreeSize int // pushUp 维护
-}
-
-func (o *trieNode) pushUp(delta int) {
-	for ; o.fa != nil; o = o.fa {
-		o.subTreeSize += delta
-	}
 }
 
 type trie struct {
@@ -229,11 +222,14 @@ func newTrie() *trie {
 	}
 }
 
+func (t *trie) ord(c byte) byte { return c - 'a' }
+func (t *trie) chr(v byte) byte { return v + 'a' }
+
 // 插入的字符串 s 不能为空
-func (t *trie) put(s string, val int) {
+func (t *trie) add(s string, val int) {
 	o := t.nodes[0]
 	for i := range s {
-		c := s[i] - 'a'
+		c := t.ord(s[i])
 		if o.sonIndexes[c] == 0 {
 			o.sonIndexes[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &trieNode{})
@@ -243,7 +239,6 @@ func (t *trie) put(s string, val int) {
 	}
 	o.dupCnt++
 	o.val += val
-	o.pushUp(val)
 	//if o.dupCnt == 1 {
 	//	o.val = val
 	//}
@@ -251,12 +246,13 @@ func (t *trie) put(s string, val int) {
 	//o.val = append(o.val, val)
 }
 
+// s 必须在 trie 中存在
 func (t *trie) del(s string) {
 	o := t.nodes[0]
 	for i := range s {
-		o = t.nodes[o.sonIndexes[s[i]-'a']]
+		o = t.nodes[o.sonIndexes[t.ord(s[i])]]
 	}
-	o.pushUp(-1)
+	o.dupCnt--
 }
 
 // 在 trie 中寻找字符串 s，返回其 val 值
@@ -264,8 +260,7 @@ func (t *trie) del(s string) {
 func (t *trie) get(s string) (val int, found bool) {
 	o := t.nodes[0]
 	for i := range s {
-		c := s[i] - 'a'
-		idx := o.sonIndexes[c]
+		idx := o.sonIndexes[t.ord(s[i])]
 		if idx == 0 {
 			return
 		}
@@ -283,19 +278,19 @@ func (t *trie) get(s string) (val int, found bool) {
 func (t *trie) minPrefix(p string) (s string, val int) {
 	o := t.nodes[0]
 	for i := range p {
-		idx := o.sonIndexes[p[i]-'a']
+		idx := o.sonIndexes[t.ord(p[i])]
 		if idx == 0 {
 			return
 		}
 		o = t.nodes[idx]
 	}
-	// 存在字符串 s 使得 p 是 s 的前缀
+	// trie 中存在字符串 s，使得 p 是 s 的前缀
 
 	bytes := []byte(p)
 	for o.dupCnt == 0 {
 		for i := 0; i < 26; i++ {
 			if idx := o.sonIndexes[i]; idx > 0 {
-				bytes = append(bytes, byte('a'+i))
+				bytes = append(bytes, t.chr(byte(i)))
 				o = t.nodes[idx]
 				break
 			}

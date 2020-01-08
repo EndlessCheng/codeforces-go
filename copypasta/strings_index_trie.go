@@ -33,10 +33,12 @@ func newIndexTrie() *iTrie {
 	}
 }
 
+func (t *iTrie) ord(c byte) byte { return c - 'a' }
+
 func (t *iTrie) add(s string, idx int) {
 	o := t.nodes[0]
 	for i := range s {
-		c := s[i] - 'a'
+		c := t.ord(s[i])
 		if o.sonIndexes[c] == 0 {
 			o.sonIndexes[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &iTrieNode{
@@ -54,7 +56,7 @@ func (t *iTrie) add(s string, idx int) {
 func (t *iTrie) del(s string, idx int) {
 	o := t.nodes[0]
 	for i := range s {
-		o = t.nodes[o.sonIndexes[s[i]-'a']]
+		o = t.nodes[o.sonIndexes[t.ord(s[i])]]
 	}
 	o.curIndexes.delete(idx)
 	o.pushUpDel(idx)
@@ -64,7 +66,7 @@ func (t *iTrie) del(s string, idx int) {
 func (t *iTrie) hasPrefixOfText(s string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range s {
-		idx := o.sonIndexes[s[i]-'a']
+		idx := o.sonIndexes[t.ord(s[i])]
 		if idx == 0 {
 			return false
 		}
@@ -80,7 +82,7 @@ func (t *iTrie) hasPrefixOfText(s string, l, r int) bool {
 func (t *iTrie) hasTextOfPrefix(p string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range p {
-		idx := o.sonIndexes[p[i]-'a']
+		idx := o.sonIndexes[t.ord(p[i])]
 		if idx == 0 {
 			return false
 		}
