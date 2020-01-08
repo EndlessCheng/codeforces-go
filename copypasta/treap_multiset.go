@@ -17,19 +17,19 @@ func (o *msNode) rotate(d int) *msNode {
 }
 
 type msTreap struct {
-	rd   uint
+	seed uint
 	root *msNode
 }
 
 func newMultiSetTreap() *msTreap {
-	return &msTreap{rd: 1}
+	return &msTreap{seed: 1}
 }
 
 func (t *msTreap) fastRand() uint {
-	t.rd ^= t.rd << 13
-	t.rd ^= t.rd >> 17
-	t.rd ^= t.rd << 5
-	return t.rd
+	t.seed ^= t.seed << 13
+	t.seed ^= t.seed >> 17
+	t.seed ^= t.seed << 5
+	return t.seed
 }
 
 func (t *msTreap) compare(a, b int) int {

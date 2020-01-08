@@ -43,8 +43,8 @@ func (t *iTrie) add(s string, idx int) {
 			o.sonIndexes[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &iTrieNode{
 				fa:             o,
-				curIndexes:     &sTreap{rd: 1},
-				subTreeIndexes: &sTreap{rd: 1},
+				curIndexes:     &sTreap{seed: 1},
+				subTreeIndexes: &sTreap{seed: 1},
 			})
 		}
 		o = t.nodes[o.sonIndexes[c]]

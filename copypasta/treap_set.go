@@ -16,19 +16,19 @@ func (o *sNode) rotate(d int) *sNode {
 }
 
 type sTreap struct {
-	rd   uint
+	seed uint
 	root *sNode
 }
 
 func newSetTreap() *sTreap {
-	return &sTreap{rd: 1}
+	return &sTreap{seed: 1}
 }
 
 func (t *sTreap) fastRand() uint {
-	t.rd ^= t.rd << 13
-	t.rd ^= t.rd >> 17
-	t.rd ^= t.rd << 5
-	return t.rd
+	t.seed ^= t.seed << 13
+	t.seed ^= t.seed >> 17
+	t.seed ^= t.seed << 5
+	return t.seed
 }
 
 func (t *sTreap) compare(a, b int) int {
