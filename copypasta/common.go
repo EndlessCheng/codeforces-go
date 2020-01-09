@@ -566,10 +566,10 @@ func loopCollection() {
 	loopSet := func(arr []int) (ans int) {
 		n := uint(len(arr))
 		//outer:
-		for i := 0; i < 1<<n; i++ {
+		for i := 0; i < 1<<n; i++ { // i repr a set which elements are in range [0,n)
 			sum := 0
 			for j := uint(0); j < n; j++ {
-				if i>>j&1 == 1 { // choose j in range [0,n)
+				if i>>j&1 == 1 { // choose j in set i
 					// sum+=do(arr[j]) or continue outer
 				}
 			}
