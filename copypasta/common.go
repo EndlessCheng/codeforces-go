@@ -348,12 +348,34 @@ func commonCollection() {
 		return max(abs(maxSum), abs(minSum))
 	}
 
+	// https://cses.fi/book/book.pdf 30.1
+	sweepLine := func(n int) []int {
+		type event struct{ time, delta int }
+		a := make([]event, 0, 2*n)
+		for i := 0; i < n; i++ {
+			var l, r int
+			//Fscan(in, &l, &r)
+			a = append(a, event{l, 1}, event{r, -1})
+		}
+		sort.Slice(a, func(i, j int) bool {
+			ai, aj := a[i], a[j]
+			return ai.time < aj.time || ai.time == aj.time && ai.delta > aj.delta
+		})
+		cnts := make([]int, 2*n)
+		cnt := 0
+		for i, e := range a {
+			cnt += e.delta
+			cnts[i] = cnt
+		}
+		return cnts
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS,
 		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
-		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum,
+		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
 
