@@ -21,8 +21,16 @@ func unionFind() {
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
+	countRoots := func() (cnt int) { // 连通分量个数
+		for i := range fa {
+			if find(i) == i {
+				cnt++
+			}
+		}
+		return
+	}
 
-	_ = []interface{}{initFa, merge, same}
+	_ = []interface{}{initFa, merge, same, countRoots}
 }
 
 // https://oi-wiki.org/ds/dsu/#_9
