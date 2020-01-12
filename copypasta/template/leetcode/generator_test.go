@@ -214,9 +214,13 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 					if e.Value == "golang" {
 						// 模板解析完成，写入 <problemID>.go
 						code := e.DefaultCode
+						code = strings.TrimSpace(code)
 						funcName, isFuncProblem = parseFuncName(code)
-						code = lowerFirstChar(code)
-						code = namedReturn(code, "ans")
+						if isFuncProblem {
+							code = lowerFirstChar(code)
+							code = namedReturn(code, "ans")
+							code = customContent(code, "\t\n\treturn")
+						}
 						if err := writeMainFile(fileName, code); err != nil {
 							return err
 						}

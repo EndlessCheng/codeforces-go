@@ -7,7 +7,6 @@ import (
 )
 
 func parseFuncName(code string) (funcName string, isFuncProblem bool) {
-	code = strings.TrimSpace(code)
 	if !strings.HasPrefix(code, "func ") {
 		return
 	}
@@ -21,10 +20,6 @@ func lowerFirstChar(codeS string) string {
 			return c - 'A' + 'a'
 		}
 		return c
-	}
-	if !strings.HasPrefix(codeS, "func ") {
-		// TODO
-		return codeS
 	}
 	code := []byte(codeS)
 	i := bytes.IndexByte(code, '(')
@@ -43,6 +38,12 @@ func namedReturn(code string, name string) string {
 	i := strings.Index(firstLine, ") ") + 2
 	returnType := firstLine[i : len(firstLine)-2]
 	lines[0] = firstLine[:i] + "(" + name + " " + returnType + ") {"
+	return strings.Join(lines, "\n")
+}
+
+func customContent(code, content string) string {
+	lines := strings.Split(code, "\n")
+	lines = []string{lines[0], content, lines[len(lines)-1]}
 	return strings.Join(lines, "\n")
 }
 
