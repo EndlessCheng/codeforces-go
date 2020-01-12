@@ -22,32 +22,31 @@ func dpCollections() {
 	}
 
 	generalDP := func(a []int) int {
-		//const mx = 505
-		//dp := [mx][mx]int{}
-		//vis := [mx][mx]bool{}
 		n := len(a)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, n+1)
-			for j := range dp[i] {
-				dp[i][j] = -1
-			}
+		cost := func(l, r int) int {
+			return 1
 		}
+		const mx = 505
+		dp := [mx][mx]int{}
+		vis := [mx][mx]bool{}
 		var f func(l, r int) int
 		f = func(l, r int) (ans int) {
 			// 边界检查
 			if l >= r {
 				return 0
 			}
-			if dp[l][r] != -1 {
+			if vis[l][r] {
 				return dp[l][r]
 			}
+			vis[l][r] = true
 			defer func() { dp[l][r] = ans }()
 			// 转移方程
 			if a[l] == a[r] {
 				return f(l+1, r-1)
 			}
-			return min(f(l+1, r), f(l, r-1)) + 1
+			f1 := f(l+1, r) + cost(l, r)
+			f2 := f(l, r-1) + cost(l, r)
+			return min(f1, f2)
 		}
 		return f(0, n-1)
 	}
