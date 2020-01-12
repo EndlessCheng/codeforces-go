@@ -35,21 +35,27 @@ func Sol617E(reader io.Reader, writer io.Writer) {
 	}
 	sort.Slice(qs, func(i, j int) bool {
 		qi, qj := qs[i], qs[j]
-		return qi.blockIdx < qj.blockIdx || qi.blockIdx == qj.blockIdx && qi.r < qj.r
+		if qi.blockIdx != qj.blockIdx {
+			return qi.blockIdx < qj.blockIdx
+		}
+		if qi.blockIdx&1 == 0 {
+			return qi.r < qj.r
+		}
+		return qi.r > qj.r
 	})
 
 	l, r, _ans := 1, 1, int64(0)
-	cnt := make([]int64, 1<<20)
+	cnt := make([]int, 1<<20)
 	cnt[0] = 1
 	update := func(idx, delta int) {
 		s := sum[idx]
 		tar := k ^ s
 		if delta == 1 {
-			_ans += cnt[tar]
+			_ans += int64(cnt[tar])
 			cnt[s]++
 		} else {
 			cnt[s]--
-			_ans -= cnt[tar]
+			_ans -= int64(cnt[tar])
 		}
 	}
 	ans := make([]int64, q)

@@ -217,7 +217,13 @@ func Sol840D(reader io.Reader, writer io.Writer) {
 	}
 	sort.Slice(qs, func(i, j int) bool {
 		qi, qj := qs[i], qs[j]
-		return qi.blockIdx < qj.blockIdx || qi.blockIdx == qj.blockIdx && qi.r < qj.r
+		if qi.blockIdx != qj.blockIdx {
+			return qi.blockIdx < qj.blockIdx
+		}
+		if qi.blockIdx&1 == 0 {
+			return qi.r < qj.r
+		}
+		return qi.r > qj.r
 	})
 
 	cntMap := map[int]int{}
