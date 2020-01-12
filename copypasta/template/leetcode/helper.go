@@ -37,6 +37,15 @@ func lowerFirstChar(codeS string) string {
 	return string(code)
 }
 
+func namedReturn(code string, name string) string {
+	lines := strings.Split(code, "\n")
+	firstLine := lines[0]
+	i := strings.Index(firstLine, ") ") + 2
+	returnType := firstLine[i : len(firstLine)-2]
+	lines[0] = firstLine[:i] + "(" + name + " " + returnType + ") {"
+	return strings.Join(lines, "\n")
+}
+
 func findASCII(s string) int {
 	// this is faster than `for _, c := range s`, because there is no rune conversion
 	for i := range s {

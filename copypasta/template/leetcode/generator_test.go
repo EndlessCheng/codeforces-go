@@ -13,7 +13,7 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 170
+const contestID = 171
 
 const (
 	hostZH = "leetcode-cn.com"
@@ -216,6 +216,7 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 						code := e.DefaultCode
 						funcName, isFuncProblem = parseFuncName(code)
 						code = lowerFirstChar(code)
+						code = namedReturn(code, "ans")
 						if err := writeMainFile(fileName, code); err != nil {
 							return err
 						}
