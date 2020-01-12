@@ -573,6 +573,10 @@ func rmqCollection() {
 		}
 	}
 
+	// TODO: 带修改的莫队
+
+	// TODO: 树上莫队
+
 	_ = []interface{}{
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
