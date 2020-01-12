@@ -7,7 +7,7 @@ func unionFind() {
 	// NOTE: 离散化时，可以改用 map[int]int
 	var fa []int
 	initFa := func(n int) {
-		fa = make([]int, n+1)
+		fa = make([]int, n) // n+1
 		for i := range fa {
 			fa[i] = i
 		}

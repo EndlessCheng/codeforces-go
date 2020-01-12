@@ -69,6 +69,41 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 	}
 }
 
+//
+
+// len(edges[i]) == 2
+func (*graph) edgesToMat(n int, edges [][]int) [][]int {
+	g := make([][]int, n)
+	for _, e := range edges {
+		v, w := e[0], e[1]
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+	}
+	return g
+}
+
+// 标记所有点所属连通块
+func (*graph) dfsAllComps(n int, g [][]int) []int {
+	id := make([]int, n) // id[v] in [1,n]
+	cnt := 0
+	var f func(int)
+	f = func(v int) {
+		id[v] = cnt
+		for _, w := range g[v] {
+			if id[w] == 0 {
+				f(w)
+			}
+		}
+	}
+	for i := 0; i < n; i++ {
+		if id[i] == 0 {
+			cnt++
+			f(i)
+		}
+	}
+	return id
+}
+
 // 遍历所有点
 func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
 	visited := make([]bool, len(g))
