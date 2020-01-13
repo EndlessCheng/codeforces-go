@@ -50,7 +50,7 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/problemset/problem/101628/K"
+	const problemURL = "https://codeforces.ml/problemset/problem/1077/E"
 	statusURL := strings.Replace(problemURL, "problem/", "status/", 1)
 	statusURL = statusURL[:len(statusURL)-1] + "problem/" + statusURL[len(statusURL)-1:]
 	defer open.Run(statusURL)
@@ -65,7 +65,7 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol%[1]s(_r io.Reader, _w io.Writer) {
+func CF%[1]s(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
@@ -76,7 +76,7 @@ func Sol%[1]s(_r io.Reader, _w io.Writer) {
 }
 
 func main() {
-	Sol%[1]s(os.Stdin, os.Stdout)
+	CF%[1]s(os.Stdin, os.Stdout)
 }
 `, problemID)
 	mainTestStr := fmt.Sprintf(`package main
@@ -86,10 +86,10 @@ import (
 	"testing"
 )
 
-func TestSol%[1]s(t *testing.T) {
+func TestCF%[1]s(t *testing.T) {
 	// just copy from website
 	rawText := `+"`\n`"+`
-	testutil.AssertEqualCase(t, rawText, 0, Sol%[1]s)
+	testutil.AssertEqualCase(t, rawText, 0, CF%[1]s)
 }
 `, problemID)
 	rootPath := "../../main/"
