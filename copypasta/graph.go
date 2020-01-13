@@ -14,7 +14,7 @@ type graph struct {
 	size     int
 	edgeSize int
 	edges    [][]neighbor
-	visited  []bool
+	vis      []bool
 }
 
 func newGraph(size, edgeSize int) *graph {
@@ -22,7 +22,7 @@ func newGraph(size, edgeSize int) *graph {
 		size:     size,
 		edgeSize: edgeSize,
 		edges:    make([][]neighbor, size+1),
-		visited:  make([]bool, size+1),
+		vis:      make([]bool, size+1),
 	}
 }
 
@@ -38,15 +38,15 @@ func (g *graph) addBoth(from, to int, weight int64) {
 }
 
 func (g *graph) resetStates() {
-	g.visited = make([]bool, g.size+1)
+	g.vis = make([]bool, g.size+1)
 }
 
 // 遍历所有边
 func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
-	g.visited[v] = true
+	g.vis[v] = true
 	for _, e := range g.edges[v] {
 		w, weight := e.to, e.weight
-		if !g.visited[w] {
+		if !g.vis[w] {
 			do(v, w, weight)
 			g.dfs(w, do)
 		}
@@ -55,14 +55,14 @@ func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
 
 // 遍历所有边
 func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
-	g.visited[v] = true
+	g.vis[v] = true
 	for queue := []int{v}; len(queue) > 0; {
 		v, queue = queue[0], queue[1:]
 		for _, e := range g.edges[v] {
 			w := e.to
-			if !g.visited[w] {
+			if !g.vis[w] {
 				do(v, w, e.weight)
-				g.visited[w] = true
+				g.vis[w] = true
 				queue = append(queue, w)
 			}
 		}
@@ -106,8 +106,8 @@ func (*graph) dfsAllComps(n int, g [][]int) []int {
 
 // 遍历所有点
 func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
-	visited := make([]bool, len(g))
-	visited[st] = true
+	vis := make([]bool, len(g))
+	vis[st] = true
 	type pair struct{ v, dep int }
 	queue := []pair{{st, 0}}
 	for len(queue) > 0 {
@@ -115,8 +115,8 @@ func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
 		p, queue = queue[0], queue[1:]
 		do(p.v, p.dep)
 		for _, w := range g[p.v] {
-			if !visited[w] {
-				visited[w] = true
+			if !vis[w] {
+				vis[w] = true
 				queue = append(queue, pair{w, p.dep + 1})
 			}
 		}
