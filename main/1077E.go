@@ -7,7 +7,6 @@ import (
 	"sort"
 )
 
-// https://vjudge.net/contest/351746#problem/D
 // github.com/EndlessCheng/codeforces-go
 func Sol1077E(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)

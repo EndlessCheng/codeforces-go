@@ -63,6 +63,13 @@ func commonCollection() {
 		}
 		return r2
 	}
+	toInts := func(s []byte) []int {
+		ints := make([]int, len(s))
+		for i, b := range s {
+			ints[i] = int(b)
+		}
+		return ints
+	}
 	// END HELPER
 
 	abs := func(x int) int {
@@ -372,7 +379,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
-		min, mins, max, maxs, ifElseI, ifElseS,
+		min, mins, max, maxs, ifElseI, ifElseS, toInts,
 		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
