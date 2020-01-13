@@ -3,9 +3,17 @@ package copypasta
 import (
 	"math"
 	"sort"
+	"strings"
 )
 
 func sortCollections() {
+	sortString := func(s string) string {
+		// 可以转成 []byte，也可以……
+		a := strings.Split(s, "")
+		sort.Strings(a)
+		return strings.Join(a, "")
+	}
+
 	_ = sort.Search
 	// NOTE: Pass n+1 if you wanna search range [0,n]
 	// NOTE: 二分时特判下限！（例如 0）
@@ -122,5 +130,5 @@ func sortCollections() {
 
 	// TODO: https://oi-wiki.org/search/dlx/
 
-	_ = []interface{}{reverse, searchRange, search64, binarySearch, ternarySearch, ternarySearchInt}
+	_ = []interface{}{sortString, reverse, searchRange, search64, binarySearch, ternarySearch, ternarySearchInt}
 }
