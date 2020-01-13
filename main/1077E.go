@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -42,6 +41,6 @@ func Sol1077E(_r io.Reader, _w io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() {
-	Sol1077E(os.Stdin, os.Stdout)
-}
+//func main() {
+//	Sol1077E(os.Stdin, os.Stdout)
+//}
