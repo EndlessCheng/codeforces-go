@@ -47,6 +47,9 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		}
 		return sig * x
 	}
+
+	// FIXME: why AC with Fscan but WA5 with readS() in CF827A ?
+	in.Buffer(nil, 1e9)
 	readS := func() string { in.Scan(); return string(in.Bytes()) }
 
 	_ = []interface{}{read, readS}
