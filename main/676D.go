@@ -86,7 +86,7 @@ func CF676D(_r io.Reader, _w io.Writer) {
 				for _, i := range dirTable[door] {
 					dir := dir4[i]
 					x, y := s.x+dir[0], s.y+dir[1]
-					if x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '*' {
+					if x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '*' || vis[x][y][rot] {
 						continue
 					}
 					door1 := doorTable[g[x][y]][rot]
