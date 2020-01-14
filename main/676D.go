@@ -58,7 +58,7 @@ func CF676D(_r io.Reader, _w io.Writer) {
 
 	type stat struct{ x, y, rot int }
 	qs := [4][]stat{{{ax - 1, ay - 1, 0}}}
-	vis := map[stat]bool{}
+	vis := [1000][1000][4]bool{}
 	isAllQueueEmpty := func() bool {
 		for _, q := range qs {
 			if len(q) > 0 {
@@ -76,10 +76,10 @@ func CF676D(_r io.Reader, _w io.Writer) {
 				Fprint(out, time)
 				return
 			}
-			if vis[s] {
+			if vis[s.x][s.y][s.rot] {
 				continue
 			}
-			vis[s] = true
+			vis[s.x][s.y][s.rot] = true
 			for rotTimes := 0; rotTimes < 4; rotTimes++ {
 				rot := (s.rot + rotTimes) & 3
 				door := doorTable[g[s.x][s.y]][rot]
