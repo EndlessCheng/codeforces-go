@@ -68,10 +68,9 @@ func CF676D(_r io.Reader, _w io.Writer) {
 		return true
 	}
 	for time := 0; !isAllQueueEmpty(); time++ {
-		curQ := make([]stat, len(qs[time&3]))
-		copy(curQ, qs[time&3])
-		qs[time&3] = []stat{}
-		for _, s := range curQ {
+		q := qs[time&3]
+		sz := len(q)
+		for _, s := range q[:sz] {
 			if s.x == bx && s.y == by {
 				Fprint(out, time)
 				return
@@ -98,6 +97,7 @@ func CF676D(_r io.Reader, _w io.Writer) {
 				}
 			}
 		}
+		qs[time&3] = qs[time&3][sz:]
 	}
 	Fprint(out, -1)
 }
