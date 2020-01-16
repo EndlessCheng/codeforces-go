@@ -139,7 +139,7 @@ func max(a, b int) int {
 
 func collections() {
 	const mod int = 1e9 + 7
-	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 
 	min := func(a, b int) int {
 		if a < b {
@@ -172,5 +172,5 @@ func collections() {
 		return r2
 	}
 
-	_ = []interface{}{fmt.Print, ifElseI, ifElseS, dirOffset4, min, max, abs}
+	_ = []interface{}{fmt.Print, ifElseI, ifElseS, dir4, min, max, abs}
 }

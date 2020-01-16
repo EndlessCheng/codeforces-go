@@ -16,10 +16,10 @@ func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow2 := [...]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144}
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9}
-	// 注意：对于格点来说，dirOffset4 对应的方向是下右上左
-	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
-	dirOffset4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
-	dirOffset8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	// 注意：对于格点来说，dir4 对应的方向是下右上左
+	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dir4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
+	dir8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
 	min := func(a, b int) int {
@@ -379,7 +379,7 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow2, pow10, dirOffset4, dirOffset4R, dirOffset8, orderP3,
+		pow2, pow10, dir4, dir4R, dir8, orderP3,
 		min, mins, max, maxs, ifElseI, ifElseS, toInts,
 		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
@@ -594,7 +594,7 @@ func rmqCollection() {
 
 //（含组合排列）
 func loopCollection() {
-	dirOffset4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -643,7 +643,7 @@ func loopCollection() {
 			}
 			vis[i][j] = true
 			res := true
-			for _, dir := range dirOffset4 {
+			for _, dir := range dir4 {
 				if !dfs(i+dir[0], j+dir[1]) {
 					// 遍历完该连通分量再 return
 					res = false
@@ -672,9 +672,9 @@ func loopCollection() {
 		 # #
 		  #
 	*/
-	searchDirOffset4 := func(maxI, maxJ, centerI, centerJ, dis int) {
-		for i, dir := range dirOffset4 {
-			dir2 := dirOffset4[(i+1)%4]
+	searchDir4 := func(maxI, maxJ, centerI, centerJ, dis int) {
+		for i, dir := range dir4 {
+			dir2 := dir4[(i+1)%4]
 			dx := dir2[0] - dir[0]
 			dy := dir2[1] - dir[1]
 			x := centerI + dir[0]*dis
@@ -696,7 +696,7 @@ func loopCollection() {
 		#   #
 		#####
 	*/
-	searchDirOffset4R := func(maxI, maxJ, centerI, centerJ, dis int) {
+	searchDir4R := func(maxI, maxJ, centerI, centerJ, dis int) {
 		// 上下
 		for _, x := range [...]int{centerI - dis, centerI + dis} {
 			if x >= 0 && x < maxI {
@@ -798,7 +798,7 @@ func loopCollection() {
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
 
 	_ = []interface{}{
-		loopSet, dfsGrids, searchDirOffset4, searchDirOffset4R,
+		loopSet, dfsGrids, searchDir4, searchDir4R,
 		combinations, permutations, permuteAll,
 	}
 }
