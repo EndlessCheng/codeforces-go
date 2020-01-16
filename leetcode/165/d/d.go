@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func palindromePartition(str string, k int) int {
 	min := func(a, b int) int {
 		if a < b {
@@ -61,9 +59,4 @@ func palindromePartition(str string, k int) int {
 	}
 
 	return f(0, len(str), k)
-}
-
-// GoLand debug 失败！
-func main() {
-	fmt.Println(palindromePartition("abc", 2))
 }
