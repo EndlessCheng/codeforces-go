@@ -82,6 +82,33 @@ func (*graph) edgesToMat(n int, edges [][]int) [][]int {
 	return g
 }
 
+func (*graph) simpleSearch(n, st int, g [][]int) {
+	vis := make([]bool, n)
+
+	var f func(int)
+	f = func(v int) {
+		vis[v] = true
+		for _, w := range g[v] {
+			if !vis[w] {
+				f(w)
+			}
+		}
+	}
+	f(st)
+
+	q := []int{st}
+	for len(q) > 0 {
+		var v int
+		v, q = q[0], q[1:]
+		vis[v] = true
+		for _, w := range g[v] {
+			if !vis[w] {
+				q = append(q, w)
+			}
+		}
+	}
+}
+
 // 标记所有点所属连通块
 func (*graph) dfsAllComps(n int, g [][]int) []int {
 	id := make([]int, n) // id[v] in [1,n]
@@ -592,6 +619,7 @@ func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 			}
 		}
 	}
+	components = [][]int{}
 	for i := len(vs) - 1; i >= 0; i-- {
 		if !used[vs[i]] {
 			comp = []int{}
@@ -607,16 +635,25 @@ func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 		}
 	}
 
-	//lastComp := components[len(components)-1]
-	//numCanBeVisitedFromAll := len(lastComp)
-	//_ = numCanBeVisitedFromAll
-	//used = make([]bool, n)
-	//rdfs(lastComp[0])
-	//for _, use := range used {
-	//	if !use {
-	//		numCanBeVisitedFromAll = 0
-	//	}
-	//}
+	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]（注意这会导致 edges 包含重边，可在建图时消去）
+	type edge struct{ v, w int }
+	edges := make([]edge, m)
+	//...
+	for i, e := range edges {
+		edges[i] = edge{sccIDs[e.v], sccIDs[e.w]}
+	}
+
+	// EXTRA: 求有多少个点能被其他所有点访问到
+	lastComp := components[len(components)-1]
+	numCanBeVisitedFromAll := len(lastComp)
+	_ = numCanBeVisitedFromAll
+	used = make([]bool, n)
+	rdfs(lastComp[0])
+	for _, use := range used {
+		if !use {
+			numCanBeVisitedFromAll = 0
+		}
+	}
 
 	return
 }
