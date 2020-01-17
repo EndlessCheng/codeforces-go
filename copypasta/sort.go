@@ -17,6 +17,7 @@ func sortCollections() {
 	_ = sort.Search
 	// NOTE: Pass n+1 if you wanna search range [0,n]
 	// NOTE: 二分时特判下限！（例如 0）
+	// TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
 
 	type bsFunc func(int) bool
 	reverse := func(f bsFunc) bsFunc {
