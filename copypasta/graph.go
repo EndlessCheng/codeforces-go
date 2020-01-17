@@ -578,7 +578,7 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 
 // 强连通分量分解
 // https://oi-wiki.org/graph/scc/#kosaraju
-func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
+func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
 	g := make([][]int, n)
 	rg := make([][]int, n)
 	for i := 0; i < m; i++ {
@@ -619,32 +619,39 @@ func (*graph) scc(n, m int) (components [][]int, sccIDs []int) {
 			}
 		}
 	}
-	components = [][]int{}
+	comps = [][]int{}
 	for i := len(vs) - 1; i >= 0; i-- {
-		if !used[vs[i]] {
+		if v := vs[i]; !used[v] {
 			comp = []int{}
-			rdfs(vs[i])
-			components = append(components, comp)
+			rdfs(v)
+			comps = append(comps, comp)
 		}
 	}
 
 	sccIDs = make([]int, n)
-	for i, cp := range components {
+	for i, cp := range comps {
 		for _, v := range cp {
 			sccIDs[v] = i
 		}
 	}
 
-	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]（注意这会导致 edges 包含重边，可在建图时消去）
+	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
+	// 缩点后的点的编号范围为 [0,len(comps)-1]
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
 	//...
 	for i, e := range edges {
+		// 注意消去重边和自环
 		edges[i] = edge{sccIDs[e.v], sccIDs[e.w]}
 	}
+	//for _, e := range edges {
+	//	if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
+	//
+	//	}
+	//}
 
 	// EXTRA: 求有多少个点能被其他所有点访问到
-	lastComp := components[len(components)-1]
+	lastComp := comps[len(comps)-1]
 	numCanBeVisitedFromAll := len(lastComp)
 	_ = numCanBeVisitedFromAll
 	used = make([]bool, n)
