@@ -5,67 +5,8 @@ import (
 	"sort"
 )
 
-type neighbor struct {
-	to     int
-	weight int64
-}
-
-type graph struct {
-	size     int
-	edgeSize int
-	edges    [][]neighbor
-	vis      []bool
-}
-
-func newGraph(size, edgeSize int) *graph {
-	return &graph{
-		size:     size,
-		edgeSize: edgeSize,
-		edges:    make([][]neighbor, size+1),
-		vis:      make([]bool, size+1),
-	}
-}
-
-func (g *graph) add(from, to int, weight int64) {
-	g.edges[from] = append(g.edges[from], neighbor{to, weight})
-}
-
-func (g *graph) addBoth(from, to int, weight int64) {
-	g.add(from, to, weight)
-	if from != to {
-		g.add(to, from, weight)
-	}
-}
-
-// 遍历所有边
-func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
-	g.vis[v] = true
-	for _, e := range g.edges[v] {
-		w, weight := e.to, e.weight
-		if !g.vis[w] {
-			do(v, w, weight)
-			g.dfs(w, do)
-		}
-	}
-}
-
-// 遍历所有边
-func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
-	g.vis[v] = true
-	for queue := []int{v}; len(queue) > 0; {
-		v, queue = queue[0], queue[1:]
-		for _, e := range g.edges[v] {
-			w := e.to
-			if !g.vis[w] {
-				do(v, w, e.weight)
-				g.vis[w] = true
-				queue = append(queue, w)
-			}
-		}
-	}
-}
-
-//
+// namespace
+type graph struct{}
 
 // deg[v] == len(g[v])
 func (*graph) readGraph(n, m int) [][]int {
@@ -81,20 +22,22 @@ func (*graph) readGraph(n, m int) [][]int {
 	return g
 }
 
-// len(edges[i]) == 2
-func (*graph) edgesToMat(n int, edges [][]int) [][]int {
-	g := make([][]int, n)
-	for _, e := range edges {
-		v, w := e[0], e[1]
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+func (*graph) readWeightedGraph(n, m int) {
+	type neighbor struct{ to, weight int }
+	g := make([][]neighbor, n)
+	for i := 0; i < m; i++ {
+		var v, w, weight int
+		//Fscan(in, &v, &w, &weight)
+		v--
+		w--
+		g[v] = append(g[v], neighbor{w, weight})
+		g[w] = append(g[w], neighbor{v, weight})
 	}
-	return g
 }
 
 func (*graph) simpleSearch(n, st int, g [][]int) {
+	// DFS
 	vis := make([]bool, n)
-
 	var f func(int)
 	f = func(v int) {
 		vis[v] = true
@@ -106,6 +49,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 	f(st)
 
+	// BFS
+	vis = make([]bool, n)
 	q := []int{st}
 	for len(q) > 0 {
 		var v int
@@ -114,6 +59,24 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		for _, w := range g[v] {
 			if !vis[w] {
 				q = append(q, w)
+			}
+		}
+	}
+}
+
+func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
+	vis := make([]bool, len(g))
+	vis[st] = true
+	type pair struct{ v, dep int }
+	queue := []pair{{st, 0}}
+	for len(queue) > 0 {
+		var p pair
+		p, queue = queue[0], queue[1:]
+		do(p.v, p.dep)
+		for _, w := range g[p.v] {
+			if !vis[w] {
+				vis[w] = true
+				queue = append(queue, pair{w, p.dep + 1})
 			}
 		}
 	}
@@ -163,25 +126,6 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 		}
 	}
 	return comps
-}
-
-// 遍历所有点
-func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
-	vis := make([]bool, len(g))
-	vis[st] = true
-	type pair struct{ v, dep int }
-	queue := []pair{{st, 0}}
-	for len(queue) > 0 {
-		var p pair
-		p, queue = queue[0], queue[1:]
-		do(p.v, p.dep)
-		for _, w := range g[p.v] {
-			if !vis[w] {
-				vis[w] = true
-				queue = append(queue, pair{w, p.dep + 1})
-			}
-		}
-	}
 }
 
 // https://oi-wiki.org/graph/bridge/
