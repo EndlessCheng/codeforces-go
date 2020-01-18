@@ -50,11 +50,12 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/999/E"
+	// https://codeforces.com/gym/102253/problem/C
+	const problemURL = "https://codeforces.com/problemset/problem/977/E"
 	// "https://codeforces.com/problemset/status/1031/problem/D"
 	statusURL := strings.Replace(problemURL, "problem/", "status/", 1)
 	statusURL = statusURL[:len(statusURL)-1] + "problem/" + statusURL[len(statusURL)-1:]
-	//defer open.Run(problemURL)
+	defer open.Run(problemURL)
 	defer open.Run(statusURL)
 	problemID := parseProblemIDFromURL(problemURL)
 	mainStr := fmt.Sprintf(`package main

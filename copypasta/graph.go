@@ -37,10 +37,6 @@ func (g *graph) addBoth(from, to int, weight int64) {
 	}
 }
 
-func (g *graph) resetStates() {
-	g.vis = make([]bool, g.size+1)
-}
-
 // 遍历所有边
 func (g *graph) dfs(v int, do func(from, to int, weight int64)) {
 	g.vis[v] = true
@@ -70,6 +66,19 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 }
 
 //
+
+func (*graph) readGraph(n, m int) [][]int {
+	g := make([][]int, n)
+	for i := 0; i < m; i++ {
+		var v, w int
+		//Fscan(in, &v, &w)
+		v--
+		w--
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+	}
+	return g
+}
 
 // len(edges[i]) == 2
 func (*graph) edgesToMat(n int, edges [][]int) [][]int {
@@ -110,7 +119,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 }
 
 // 标记所有点所属连通块
-func (*graph) dfsAllComps(n int, g [][]int) []int {
+func (*graph) markComponentIDs(n int, g [][]int) []int {
 	id := make([]int, n) // id[v] in [1,n]
 	cnt := 0
 	var f func(int)
@@ -129,6 +138,30 @@ func (*graph) dfsAllComps(n int, g [][]int) []int {
 		}
 	}
 	return id
+}
+
+func (*graph) getAllComponents(n int, g [][]int) [][]int {
+	comps := [][]int{}
+	vis := make([]bool, n)
+	var comp []int
+	var f func(int)
+	f = func(v int) {
+		vis[v] = true
+		comp = append(comp, v)
+		for _, w := range g[v] {
+			if !vis[w] {
+				f(w)
+			}
+		}
+	}
+	for i := 0; i < n; i++ {
+		if !vis[i] {
+			comp = []int{}
+			f(i)
+			comps = append(comps, comp)
+		}
+	}
+	return comps
 }
 
 // 遍历所有点

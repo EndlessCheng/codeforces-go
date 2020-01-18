@@ -56,6 +56,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 
 	if caseNum > 0 {
 		t.Logf("case %d is passed.", caseNum)
+		// 单个用例通过，测试所有用例
 		AssertEqualStringCase(t, inputs, answers, 0, solveFunc)
 		return
 	}
