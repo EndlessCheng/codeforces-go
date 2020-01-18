@@ -26,6 +26,10 @@ const (
 	openEN = false
 )
 
+var (
+	apiContestInfo = fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
+)
+
 func newSession(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
@@ -338,13 +342,12 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	apiInfoContest := fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
-	resp, err := session.Get(apiInfoContest, nil)
+	resp, err := session.Get(apiContestInfo, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !resp.Ok {
-		t.Fatalf("GET %s return code %d", apiInfoContest, resp.StatusCode)
+		t.Fatalf("GET %s return code %d", apiContestInfo, resp.StatusCode)
 	}
 	d := struct {
 		Questions []struct {
