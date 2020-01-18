@@ -107,6 +107,55 @@ func longestCommonSubsequence(s1, s2 string) int {
 	return f(0, 0)
 }
 
+func canVillagersWin(_players []string, credibility []int) bool {
+	type player struct {
+		id int
+		name string
+		c int
+	}
+	players := make([]player, len(_players))
+	bearSeen := func() bool {
+		for _, p := range players {
+			if p.name == "bear" {
+				return p.c == 100
+			}
+		}
+		return false
+	}
+
+	for i, p := range _players {
+		players[i] = player{
+			id:   i,
+			name: p,
+			c:    credibility[i],
+		}
+	}
+
+	// 1
+	var killedPlayerIdx int
+	if bearSeen() {
+		for i, p := range players {
+			if p.name == "bear" {
+				killedPlayerIdx = i
+				break
+			}
+		}
+	} else {
+		maxC := 0
+		for i, p := range players {
+			if p.name != "ww" && p.c > maxC {
+				maxC = p.c
+				killedPlayerIdx = i
+			}
+		}
+	}
+	players = append(players[:killedPlayerIdx], players[killedPlayerIdx+1:]...)
+
+	// 2
+
+	return false
+}
+
 func main() {
 	toBytes := func(g [][]string) [][]byte {
 		n, m := len(g), len(g[0])

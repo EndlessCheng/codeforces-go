@@ -13,7 +13,7 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 2020
+const contestID = 172
 
 const (
 	hostZH = "leetcode-cn.com"
@@ -21,9 +21,10 @@ const (
 	host   = hostZH
 
 	contestPrefixWeekly = "weekly-contest-"
-	contestPrefix       = "sf-"
+	contestPrefix       = contestPrefixWeekly
 
-	openEN = false
+	openZH = true
+	openEN = true
 )
 
 var (
@@ -174,7 +175,13 @@ func Test(t *testing.T) {
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }
 
-func parseHTML(session *grequests.Session, fileName string, htmlURL string) error {
+func parseHTML(session *grequests.Session, fileName string, htmlURL string) (retErr error) {
+	defer func() {
+		if er := recover(); er != nil {
+			retErr = fmt.Errorf("%v", er)
+		}
+	}()
+
 	resp, err := session.Get(htmlURL, nil)
 	if err != nil {
 		return err
@@ -292,6 +299,9 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) erro
 	f = func(o *html.Node) {
 		// 由于官方描述可能会打错字（比如“输入”写成“输出”），用 isIn 来交替 append 样例输入是最稳妥的
 		if o.Type == html.TextNode && (strings.Contains(o.Data, tokenInputZH) || strings.Contains(o.Data, tokenOutputZH)) {
+			if o.Parent.NextSibling == nil {
+				return
+			}
 			if isIn {
 				raw := o.Parent.NextSibling.Data
 				sample := parseSampleText(raw, true)
@@ -368,9 +378,11 @@ func TestGenLeetCodeTests(t *testing.T) {
 	}
 
 	// open all urls in browser
-	for _, u := range problemURLs {
-		if err := open.Run(u); err != nil {
-			t.Error(err)
+	if openZH {
+		for _, u := range problemURLs {
+			if err := open.Run(u); err != nil {
+				t.Error(err)
+			}
 		}
 	}
 	if openEN {
@@ -384,6 +396,9 @@ func TestGenLeetCodeTests(t *testing.T) {
 
 	for i, pUrl := range problemURLs {
 		problemID := string('a' + i)
+		//if problemID != "f" {
+		//	continue
+		//}
 		fmt.Println(problemID, pUrl)
 		if err := createDir(problemID); err != nil {
 			t.Fatal(err)
