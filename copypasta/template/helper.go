@@ -3,7 +3,6 @@ package main
 import (
 	"io"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -28,12 +27,7 @@ func copyFile(dst, src string) error {
 	return nil
 }
 
-func parseProblemIDFromURL(urlStr string) string {
+func parseProblemURL(urlStr string) (contestID, problemID string) {
 	splits := strings.Split(urlStr, "/")
-	for _, s := range splits {
-		if _, err := strconv.Atoi(s); err == nil {
-			return s + splits[len(splits)-1]
-		}
-	}
-	panic("invalid url")
+	return splits[len(splits)-2], splits[len(splits)-1]
 }

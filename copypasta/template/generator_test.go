@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -50,14 +49,15 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/954/D"
-	// https://codeforces.com/problemset/status/1031/problem/D
+	const problemURL = "https://codeforces.com/problemset/problem/690/D2"
+	// https://codeforces.com/problemset/status/690/problem/D2
 	// https://codeforces.com/gym/102253/problem/C
-	statusURL := strings.Replace(problemURL, "problem/", "status/", 1)
-	statusURL = statusURL[:len(statusURL)-1] + "problem/" + statusURL[len(statusURL)-1:]
+	contestID, problemID := parseProblemURL(problemURL)
+	statusURL := fmt.Sprintf("https://codeforces.com/problemset/status/%s/problem/%s", contestID, problemID)
 	defer open.Run(problemURL)
 	defer open.Run(statusURL)
-	problemID := parseProblemIDFromURL(problemURL)
+
+	problemID = contestID + problemID
 	mainStr := fmt.Sprintf(`package main
 
 import (
