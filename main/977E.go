@@ -12,43 +12,33 @@ func CF977E(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, m, v, w, ans int
+	var n, m, v, w, ans, c int
 	Fscan(in, &n, &m)
-	deg := make([]int, n)
-	g := make([][]int, n)
-	for i := 0; i < m; i++ {
+	g := make([][]int, n+1)
+	for ; m > 0; m-- {
 		Fscan(in, &v, &w)
-		v--
-		w--
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
-		deg[v]++
-		deg[w]++
 	}
 
-	vis := make([]bool, n)
-	var comp []int
+	vis := make([]bool, n+1)
 	var f func(int)
 	f = func(v int) {
 		vis[v] = true
-		comp = append(comp, v)
+		if len(g[v]) != 2 {
+			c = 0
+		}
 		for _, w := range g[v] {
 			if !vis[w] {
 				f(w)
 			}
 		}
 	}
-	for i := 0; i < n; i++ {
+	for i := 1; i <= n; i++ {
 		if !vis[i] {
-			comp = []int{}
+			c = 1
 			f(i)
-			ans++
-			for _, v := range comp {
-				if deg[v] != 2 {
-					ans--
-					break
-				}
-			}
+			ans += c
 		}
 	}
 	Fprint(out, ans)

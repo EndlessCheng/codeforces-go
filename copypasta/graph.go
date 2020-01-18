@@ -67,6 +67,7 @@ func (g *graph) bfs(v int, do func(from, to int, weight int64)) {
 
 //
 
+// deg[v] == len(g[v])
 func (*graph) readGraph(n, m int) [][]int {
 	g := make([][]int, n)
 	for i := 0; i < m; i++ {
