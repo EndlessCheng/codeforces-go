@@ -13,13 +13,17 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 171
+const contestID = 2020
 
 const (
 	hostZH = "leetcode-cn.com"
 	hostEN = "leetcode.com"
 	host   = hostZH
-	openEN = true
+
+	contestPrefixWeekly = "weekly-contest-"
+	contestPrefix       = "sf-"
+
+	openEN = false
 )
 
 func newSession(username, password string) (session *grequests.Session, err error) {
@@ -334,7 +338,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	apiInfoContest := fmt.Sprintf("https://%s/contest/api/info/weekly-contest-%d/", host, contestID)
+	apiInfoContest := fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
 	resp, err := session.Get(apiInfoContest, nil)
 	if err != nil {
 		t.Fatal(err)
@@ -357,7 +361,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 	fmt.Println("题目链接获取成功，开始解析")
 	problemURLs := make([]string, len(d.Questions))
 	for i, q := range d.Questions {
-		problemURLs[i] = fmt.Sprintf("https://%s/contest/weekly-contest-%d/problems/%s/", host, contestID, q.TitleSlug)
+		problemURLs[i] = fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", host, contestPrefix, contestID, q.TitleSlug)
 	}
 
 	// open all urls in browser
@@ -368,7 +372,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 	}
 	if openEN {
 		for _, q := range d.Questions {
-			u := fmt.Sprintf("https://%s/contest/weekly-contest-%d/problems/%s/", hostEN, contestID, q.TitleSlug)
+			u := fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostEN, contestPrefix, contestID, q.TitleSlug)
 			if err := open.Run(u); err != nil {
 				t.Error(err)
 			}
