@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -25,6 +24,6 @@ func CF359B(_r io.Reader, _w io.Writer) {
 	Fprint(out, a...)
 }
 
-func main() {
-	CF359B(os.Stdin, os.Stdout)
-}
+//func main() {
+//	CF359B(os.Stdin, os.Stdout)
+//}
