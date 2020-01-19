@@ -257,31 +257,25 @@ func (*graph) bfs01(n, m, st int) []int {
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
+
 	dist := make([]int, n)
 	for i := range dist {
 		dist[i] = 1e9
 	}
 	dist[st] = 0
-	vis := make([]bool, n)
-	q := &deque{} // 类型是 neighbor
-	//q.pushL(neighbor{st, 0})
+	q := &deque{}
+	q.pushL(st)
 	for !q.empty() {
-		var v, d int
-		//e := q.popL()
-		//v, d := e.to, e.weight
-		if vis[v] {
-			continue
-		}
-		vis[v] = true
+		v := q.popL()
 		for _, e := range g[v] {
-			w := e.to
-			if d >= dist[w] {
-				continue
-			}
-			if e.weight == 0 {
-				//q.pushL(neighbor{w, d})
-			} else {
-				//q.pushR(neighbor{w, d + e.weight})
+			w, d := e.to, e.weight
+			if dist[v]+d < dist[w] {
+				dist[w] = dist[v] + d
+				if d == 0 {
+					q.pushL(w)
+				} else {
+					q.pushR(w)
+				}
 			}
 		}
 	}

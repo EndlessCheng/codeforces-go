@@ -49,7 +49,7 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/527/D"
+	const problemURL = "https://codeforces.com/problemset/problem/1031/D"
 	// https://codeforces.com/problemset/status/468/problem/C
 	// https://codeforces.com/gym/102253/problem/C
 	contestID, problemID := parseProblemURL(problemURL)
