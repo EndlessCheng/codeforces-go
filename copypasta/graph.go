@@ -246,6 +246,48 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 	return
 }
 
+// https://oi-wiki.org/graph/bfs/#bfs_3
+// https://codeforces.com/blog/entry/22276
+func (*graph) bfs01(n, m, st int) []int {
+	type neighbor struct{ to, weight int }
+	g := make([][]neighbor, n)
+	for i := 0; i < m; i++ {
+		var v, w, weight int
+		//v, w, weight := read()-1, read()-1, read()
+		g[v] = append(g[v], neighbor{w, weight})
+		g[w] = append(g[w], neighbor{v, weight})
+	}
+	dist := make([]int, n)
+	for i := range dist {
+		dist[i] = 1e9
+	}
+	dist[st] = 0
+	vis := make([]bool, n)
+	q := &deque{} // 类型是 neighbor
+	//q.pushL(neighbor{st, 0})
+	for !q.empty() {
+		var v, d int
+		//e := q.popL()
+		//v, d := e.to, e.weight
+		if vis[v] {
+			continue
+		}
+		vis[v] = true
+		for _, e := range g[v] {
+			w := e.to
+			if d >= dist[w] {
+				continue
+			}
+			if e.weight == 0 {
+				//q.pushL(neighbor{w, d})
+			} else {
+				//q.pushR(neighbor{w, d + e.weight})
+			}
+		}
+	}
+	return dist
+}
+
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
