@@ -4,6 +4,11 @@ import "strings"
 
 func printVertically(s string) (ans []string) {
 	bs := [205][205]byte{}
+	for i := range bs {
+		for j := range bs[i] {
+			bs[i][j] = ' '
+		}
+	}
 	splits := strings.Split(s, " ")
 	for i, sp := range splits {
 		for j := range sp {
@@ -11,21 +16,11 @@ func printVertically(s string) (ans []string) {
 		}
 	}
 	for i := range bs {
-		ok := false
 		for j := 204; j >= 0; j-- {
-			if bs[i][j] != 0 {
-				ok = true
-				for k := j; k >= 0; k-- {
-					if bs[i][k] == 0 {
-						bs[i][k] = ' '
-					}
-				}
+			if bs[i][j] != ' ' {
 				ans = append(ans, string(bs[i][:j+1]))
 				break
 			}
-		}
-		if !ok {
-			break
 		}
 	}
 	return
