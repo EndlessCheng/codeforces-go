@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"strings"
 )
 
@@ -38,13 +37,13 @@ func CF812B(_r io.Reader, _w io.Writer) {
 			ansL, ansR = r, r
 			posL, posR = r, r
 		} else {
-			ansL, ansR = min(ansR+posR+l, ansL+m-posL+m-r), min(ansL+posL+r, ansR+m-posR+m-l)
+			ansL, ansR = min(ansL+m-posL, ansR+m-posR)+m-l, min(ansL+posL, ansR+posR)+r
 			posL, posR = l, r
 		}
 	}
 	Fprint(out, min(ansL, ansR)+maxFloor)
 }
 
-func main() {
-	CF812B(os.Stdin, os.Stdout)
-}
+//func main() {
+//	CF812B(os.Stdin, os.Stdout)
+//}
