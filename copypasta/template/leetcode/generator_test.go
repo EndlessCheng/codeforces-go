@@ -91,6 +91,8 @@ func createDir(problemID string) error {
 	return os.MkdirAll(dirPath, os.ModePerm)
 }
 
+var isOpenedMainFile bool
+
 func writeMainFile(problemID, defaultCode string) error {
 	defaultCode = strings.TrimSpace(defaultCode)
 	mainStr := fmt.Sprintf(`package main
@@ -98,6 +100,10 @@ func writeMainFile(problemID, defaultCode string) error {
 %s
 `, defaultCode)
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", problemID)
+	if !isOpenedMainFile {
+		defer open.Run(absPath(filePath))
+		isOpenedMainFile = true
+	}
 	return ioutil.WriteFile(filePath, []byte(mainStr), 0644)
 }
 

@@ -12,9 +12,10 @@ import (
 
 // 生成比赛模板（需要先创建目录）
 func TestGenContestTemplates(t *testing.T) {
-	const contestID = "1284"
+	const contestID = "1202"
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
+	opened := false
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -31,6 +32,10 @@ func TestGenContestTemplates(t *testing.T) {
 			}
 			if err := copyFile(goFilePath, fileName); err != nil {
 				return err
+			}
+			if !opened {
+				open.Run(absPath(goFilePath))
+				opened = true
 			}
 		}
 		return nil
@@ -49,13 +54,13 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/812/B"
-	// https://codeforces.com/problemset/status/1151/problem/B
+	const problemURL = "https://codeforces.com/problemset/problem/1202/B"
+	// https://codeforces.com/problemset/status/812/problem/B
 	// https://codeforces.com/gym/102253/problem/C
 	contestID, problemID := parseProblemURL(problemURL)
 	statusURL := fmt.Sprintf("https://codeforces.com/problemset/status/%s/problem/%s", contestID, problemID)
-	defer open.Run(problemURL)
-	defer open.Run(statusURL)
+	open.Start(problemURL)
+	open.Start(statusURL)
 
 	problemID = contestID + problemID
 	mainStr := fmt.Sprintf(`package main
@@ -95,13 +100,18 @@ func TestCF%[1]s(t *testing.T) {
 	testutil.AssertEqualCase(t, rawText, 0, CF%[1]s)
 }
 `, problemID)
-	rootPath := "../../main/"
-	if err := ioutil.WriteFile(rootPath+problemID+".go", []byte(mainStr), 0644); err != nil {
+
+	const rootPath = "../../main/"
+	mainFilePath := rootPath + problemID + ".go"
+	if err := ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		t.Fatal(err)
 	}
-	if err := ioutil.WriteFile(rootPath+problemID+"_test.go", []byte(mainTestStr), 0644); err != nil {
+	open.Run(absPath(mainFilePath))
+	testFilePath := rootPath + problemID + "_test.go"
+	if err := ioutil.WriteFile(testFilePath, []byte(mainTestStr), 0644); err != nil {
 		t.Fatal(err)
 	}
+	open.Run(absPath(testFilePath))
 }
 
 // 生成单道题目的模板（非 Codeforces）

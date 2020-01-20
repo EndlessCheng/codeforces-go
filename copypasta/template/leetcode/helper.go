@@ -2,6 +2,7 @@ package leetcode
 
 import (
 	"bytes"
+	"path/filepath"
 	"strings"
 	"unicode"
 )
@@ -55,4 +56,9 @@ func findASCII(s string) int {
 		}
 	}
 	return -1
+}
+
+func absPath(path string) string {
+	p, _ := filepath.Abs(path)
+	return p
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -30,4 +31,9 @@ func copyFile(dst, src string) error {
 func parseProblemURL(urlStr string) (contestID, problemID string) {
 	splits := strings.Split(urlStr, "/")
 	return splits[len(splits)-2], splits[len(splits)-1]
+}
+
+func absPath(path string) string {
+	p, _ := filepath.Abs(path)
+	return p
 }
