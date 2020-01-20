@@ -236,6 +236,7 @@ func mathCollection() {
 
 	//
 
+	// 数论分块/除法分块
 	// https://oeis.org/A006218
 	// a(n) = Sum_{k=1..n} floor(n/k)
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2

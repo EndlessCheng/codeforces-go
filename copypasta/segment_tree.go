@@ -5,7 +5,10 @@ import "math/bits"
 // https://oi-wiki.org/ds/seg/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 
-// 技巧：对于复杂的区间操作，可以判断区间元素是否相同，然后 lazy
+// TIPS: 对于复杂的区间操作（如区间开方），可以判断区间元素是否相同，然后 lazy
+// TIPS: 一般来说会有一个核心函数，如 min/max/+/gcd/...
+
+// TODO: 考虑到编译器的优化，试试用*2/2的方式去做？
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
@@ -22,17 +25,22 @@ func (segmentTree) min(a, b int64) int64 {
 	}
 	return b
 }
-
 func (segmentTree) max(a, b int64) int64 {
 	if a > b {
 		return a
 	}
 	return b
 }
+func (segmentTree) gcd(a, b int64) int64 {
+	for b != 0 {
+		a, b = b, a%b
+	}
+	return a
+}
 
 func (t segmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	// *custom*
+	// *custom* 核心函数
 	//t[o].val = max(lo.val, ro.val)
 	if ro.val >= lo.val { // maxPos 取最右侧；若为 > 符号则取最左侧
 		t[o].val, t[o].maxPos = ro.val, ro.maxPos
@@ -47,15 +55,11 @@ func (t segmentTree) _build(arr []int64, o, l, r int) {
 		//t[o].val = arr[l] // if arr start at 1
 		t[o].val = arr[l-1]
 		t[o].maxPos = l - 1
-		// *custom*
 		return
 	}
-	mid := (l + r) >> 1
-	t._build(arr, o<<1, l, mid)
-	t._build(arr, o<<1|1, mid+1, r)
-
-	// *custom* after built children
-
+	m := (l + r) >> 1
+	t._build(arr, o<<1, l, m)
+	t._build(arr, o<<1|1, m+1, r)
 	t._pushUp(o)
 }
 
@@ -76,34 +80,36 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
-	mid := (t[o].l + t[o].r) >> 1
-	// *custom*
-	res = -1e9
-	if l <= mid {
-		res = t.max(res, t._query(o<<1, l, r))
+	m := (t[o].l + t[o].r) >> 1
+	if r <= m {
+		return t._query(o<<1, l, r)
 	}
-	if mid < r {
-		res = t.max(res, t._query(o<<1|1, l, r))
+	if l > m {
+		return t._query(o<<1|1, l, r)
 	}
-	return
+	vl := t._query(o<<1, l, r)
+	vr := t._query(o<<1|1, l, r)
+	// *custom* 核心函数
+	return t.max(vl, vr)
 }
 
 func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val, t[o].maxPos
 	}
-	mid := (t[o].l + t[o].r) >> 1
-	// *custom*
-	res = -1e9
-	if l <= mid {
-		res, maxPos = t._query2(o<<1, l, r)
+	m := (t[o].l + t[o].r) >> 1
+	if r <= m {
+		return t._query2(o<<1, l, r)
 	}
-	if mid < r {
-		if newRes, newMaxPos := t._query2(o<<1|1, l, r); newRes >= res { // maxPos 取最右侧；若为 > 符号则取最左侧
-			res, maxPos = newRes, newMaxPos
-		}
+	if l > m {
+		return t._query2(o<<1|1, l, r)
 	}
-	return
+	vl, pl := t._query2(o<<1, l, r)
+	vr, pr := t._query2(o<<1|1, l, r)
+	if vl <= vr { // 取等号时，返回的是 pl，即最左侧的位置；若写成 <，则会在取等号时返回 pr，即最右侧的位置
+		return vl, pl
+	}
+	return vr, pr
 }
 
 // if arr start at 1, end at n
@@ -137,9 +143,9 @@ func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
 		// *custom*
 		return
 	}
-	mid := (l + r) >> 1
-	t._build(arr, o<<1, l, mid)
-	t._build(arr, o<<1|1, mid+1, r)
+	m := (l + r) >> 1
+	t._build(arr, o<<1, l, m)
+	t._build(arr, o<<1|1, m+1, r)
 
 	// *custom* after built children
 
@@ -169,11 +175,11 @@ func (t lazySegmentTree) _update(o, l, r int, add int64) {
 		return
 	}
 	t._spread(o)
-	mid := (ol + or) >> 1
-	if l <= mid {
+	m := (ol + or) >> 1
+	if l <= m {
 		t._update(o<<1, l, r, add)
 	}
-	if mid < r {
+	if m < r {
 		t._update(o<<1|1, l, r, add)
 	}
 	t._pushUp(o)
@@ -184,12 +190,12 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 		return t[o].sum
 	}
 	t._spread(o)
-	mid := (t[o].l + t[o].r) >> 1
+	m := (t[o].l + t[o].r) >> 1
 	// *custom*
-	if l <= mid {
+	if l <= m {
 		res += t._query(o<<1, l, r)
 	}
-	if mid < r {
+	if m < r {
 		res += t._query(o<<1|1, l, r)
 	}
 	return
@@ -238,9 +244,9 @@ func (t *pst) _build(l, r int) *pstNode {
 	if l == r {
 		return o
 	}
-	mid := (l + r) >> 1
-	o.lo = t._build(l, mid)
-	o.ro = t._build(mid+1, r)
+	m := (l + r) >> 1
+	o.lo = t._build(l, m)
+	o.ro = t._build(m+1, r)
 	//t._pushUp(o)
 	return o
 }
@@ -252,9 +258,9 @@ func (t *pst) _buildArr(arr []int64, l, r int) *pstNode {
 		o.sum = arr[l]
 		return o
 	}
-	mid := (l + r) >> 1
-	o.lo = t._buildArr(arr, l, mid)
-	o.ro = t._buildArr(arr, mid+1, r)
+	m := (l + r) >> 1
+	o.lo = t._buildArr(arr, l, m)
+	o.ro = t._buildArr(arr, m+1, r)
 	t._pushUp(o)
 	return o
 }
@@ -267,7 +273,7 @@ func (t *pst) _update(o *pstNode, idx int, val int64) *pstNode {
 		//o.sum = val
 		return o
 	}
-	if mid := o.lo.r; idx <= mid {
+	if m := o.lo.r; idx <= m {
 		o.lo = t._update(o.lo, idx, val)
 	} else {
 		o.ro = t._update(o.ro, idx, val)
@@ -280,11 +286,11 @@ func (t *pst) _query(o *pstNode, l, r int) (res int64) {
 	if l <= o.l && o.r <= r {
 		return o.sum
 	}
-	mid := o.lo.r
-	if l <= mid {
+	m := o.lo.r
+	if l <= m {
 		res += t._query(o.lo, l, r)
 	}
-	if mid < r {
+	if m < r {
 		res += t._query(o.ro, l, r)
 	}
 	return
