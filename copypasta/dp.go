@@ -104,13 +104,11 @@ func dpCollections() {
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
 	maxMatchingOnTree := func(n int, g [][]int) int {
 		cover, nonCover := make([]int, n), make([]int, n)
-		vis := make([]bool, n)
-		var f func(int)
-		f = func(v int) {
-			vis[v] = true
+		var f func(int, int)
+		f = func(v, fa int) {
 			for _, w := range g[v] {
-				if !vis[w] {
-					f(w)
+				if w != fa {
+					f(w, v)
 					nonCover[v] += max(cover[w], nonCover[w])
 				}
 			}
@@ -118,7 +116,7 @@ func dpCollections() {
 				cover[v] = max(cover[v], 1+nonCover[w]+nonCover[v]-max(cover[w], nonCover[w]))
 			}
 		}
-		f(0)
+		f(0, -1)
 		return max(cover[0], nonCover[0])
 	}
 
