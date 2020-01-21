@@ -8,7 +8,7 @@ type deque struct {
 	stackL, stackR []int
 }
 
-func (q *deque) empty() bool { return len(q.stackL)+len(q.stackR) == 0 }
+func (q *deque) empty() bool { return len(q.stackL) == 0 && len(q.stackR) == 0 }
 func (q *deque) pushL(v int) { q.stackL = append(q.stackL, v) }
 func (q *deque) pushR(v int) { q.stackR = append(q.stackR, v) }
 func (q *deque) popL() (v int) {
