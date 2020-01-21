@@ -68,7 +68,7 @@ func lineIO(_r io.Reader, _w io.Writer) {
 	}
 }
 
-// 继续优化已无明显意义（对于 2e6 只能减 60ms）
+// 由于瓶颈在 Read() 上，使用 buffer 减少调用次数才是关键，优化其余逻辑已无明显意义（对于 2e6 只能减 60ms）
 //scanToken := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
 //	n := len(data)
 //	// Skip leading spaces.
