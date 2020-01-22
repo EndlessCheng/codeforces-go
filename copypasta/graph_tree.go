@@ -11,6 +11,24 @@ import (
 // namespace
 type tree struct{}
 
+// 树上每个子树的大小
+func (*tree) subtreeSize(n, root int, g [][]int) []int {
+	size := make([]int, n)
+	var f func(int, int) int
+	f = func(v, p int) int {
+		sz := 1
+		for _, w := range g[v] {
+			if w != p {
+				sz += f(w, v)
+			}
+		}
+		size[v] = sz
+		return sz
+	}
+	f(root, -1)
+	return size
+}
+
 // 树的重心 https://oi-wiki.org/graph/tree-centroid/
 // 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
 func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
@@ -128,15 +146,7 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 
 // https://oi-wiki.org/graph/lca/#rmq
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
-func (*tree) lca(n, root int) {
-	g := make([][]int, n)
-	for i := 0; i < n-1; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-	}
-
+func (*tree) lca(n, root int, g [][]int) {
 	vs := make([]int, 0, 2*n-1)     // 欧拉序列
 	pos := make([]int, n)           // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	depths := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
@@ -204,22 +214,9 @@ func (*tree) lca(n, root int) {
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
-func (*tree) hld(n, root int) {
-	read := func() int { return 0 }
-
-	// TODO: 处理边权的情况
-	g := make([][]int, n)
-	for i := 0; i < n-1; i++ {
-		v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-	}
-	// 点权
-	vals := make([]int64, n)
-	for i := range vals {
-		vals[i] = int64(read())
-	}
-
+// vals 为点权
+// TODO: 处理边权的情况
+func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ hson, fa, depth, size, top, dfn int }
 	nodes := make([]node, n)

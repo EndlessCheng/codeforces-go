@@ -4,40 +4,38 @@ package copypasta
 
 // l-1,...1,0,0,1...,r-1
 // int 可以替换成自己想要的类型
-type deque struct {
-	stackL, stackR []int
-}
+type deque struct{ l, r []int }
 
-func (q *deque) empty() bool { return len(q.stackL) == 0 && len(q.stackR) == 0 }
-func (q *deque) pushL(v int) { q.stackL = append(q.stackL, v) }
-func (q *deque) pushR(v int) { q.stackR = append(q.stackR, v) }
+func (q *deque) empty() bool { return len(q.l) == 0 && len(q.r) == 0 }
+func (q *deque) pushL(v int) { q.l = append(q.l, v) }
+func (q *deque) pushR(v int) { q.r = append(q.r, v) }
 func (q *deque) popL() (v int) {
-	if len(q.stackL) > 0 {
-		q.stackL, v = q.stackL[:len(q.stackL)-1], q.stackL[len(q.stackL)-1]
+	if len(q.l) > 0 {
+		q.l, v = q.l[:len(q.l)-1], q.l[len(q.l)-1]
 	} else {
-		v, q.stackR = q.stackR[0], q.stackR[1:]
+		v, q.r = q.r[0], q.r[1:]
 	}
 	return
 }
 func (q *deque) popR() (v int) {
-	if len(q.stackR) > 0 {
-		q.stackR, v = q.stackR[:len(q.stackR)-1], q.stackR[len(q.stackR)-1]
+	if len(q.r) > 0 {
+		q.r, v = q.r[:len(q.r)-1], q.r[len(q.r)-1]
 	} else {
-		v, q.stackL = q.stackL[0], q.stackL[1:]
+		v, q.l = q.l[0], q.l[1:]
 	}
 	return
 }
 
-func (q *deque) len() int { return len(q.stackL) + len(q.stackR) }
+func (q *deque) len() int { return len(q.l) + len(q.r) }
 func (q *deque) topL() int {
-	if len(q.stackL) > 0 {
-		return q.stackL[len(q.stackL)-1]
+	if len(q.l) > 0 {
+		return q.l[len(q.l)-1]
 	}
-	return q.stackR[0]
+	return q.r[0]
 }
 func (q *deque) topR() int {
-	if len(q.stackR) > 0 {
-		return q.stackR[len(q.stackR)-1]
+	if len(q.r) > 0 {
+		return q.r[len(q.r)-1]
 	}
-	return q.stackL[0]
+	return q.l[0]
 }

@@ -248,6 +248,7 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 
 // https://oi-wiki.org/graph/bfs/#bfs_3
 // https://codeforces.com/blog/entry/22276
+// 例题: https://codeforces.com/problemset/problem/173/B
 func (*graph) bfs01(n, m, st int) []int {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
@@ -258,9 +259,10 @@ func (*graph) bfs01(n, m, st int) []int {
 		g[w] = append(g[w], neighbor{v, weight})
 	}
 
+	const inf int = 1e9
 	dist := make([]int, n)
 	for i := range dist {
-		dist[i] = 1e9
+		dist[i] = inf
 	}
 	dist[st] = 0
 	q := &deque{}
@@ -427,7 +429,7 @@ func (*graph) secondMST(n, m int) (sum int64) {
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
-func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
+func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -445,14 +447,6 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
 
-	g := make([][]int, n)
-	for i := 0; i < m; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-	}
-
 	maxDegInv, maxDegInvV := 0, 0
 	for v, edges := range g {
 		if degInv := n - 1 - len(edges); degInv > maxDegInv {
@@ -463,7 +457,7 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 	if maxDegInv == 0 {
 		components = make([][]int, n)
 		for i := range components {
-			components[i] = []int{i + 1}
+			components[i] = []int{i} // i+1
 		}
 		return
 	}
@@ -490,7 +484,7 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 	componentsMap := map[int][]int{}
 	for i := range fa {
 		rootV := find(i)
-		componentsMap[rootV] = append(componentsMap[rootV], i+1)
+		componentsMap[rootV] = append(componentsMap[rootV], i) // i+1
 	}
 	components = make([][]int, 0, len(componentsMap))
 	for _, vs := range componentsMap {
@@ -502,18 +496,7 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 // 二分图判定
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
-func (*graph) isBipartite(n, m int) bool {
-	g := make([][]int, n)
-	type pair struct{ v, w int }
-	edges := make([]pair, m)
-	for i := 0; i < m; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-		edges[i] = pair{v, w}
-	}
-
+func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n)
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {

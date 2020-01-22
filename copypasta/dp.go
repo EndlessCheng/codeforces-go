@@ -98,5 +98,30 @@ func dpCollections() {
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
 
-	_ = []interface{}{generalDP, generalDP2, knapsack01}
+	// 树上最大匹配
+	// https://codeforces.com/blog/entry/2059
+	// g[v] = ∑{max(f[son],g[son])}
+	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
+	maxMatchingOnTree := func(n int, g [][]int) int {
+		cover, nonCover := make([]int, n), make([]int, n)
+		var f func(int, int)
+		f = func(v, fa int) {
+			for _, w := range g[v] {
+				if w != fa {
+					f(w, v)
+					nonCover[v] += max(cover[w], nonCover[w])
+				}
+			}
+			for _, w := range g[v] {
+				cover[v] = max(cover[v], 1+nonCover[w]+nonCover[v]-max(cover[w], nonCover[w]))
+			}
+		}
+		f(0, -1)
+		return max(cover[0], nonCover[0])
+	}
+
+	_ = []interface{}{
+		generalDP, generalDP2, knapsack01,
+		maxMatchingOnTree,
+	}
 }
