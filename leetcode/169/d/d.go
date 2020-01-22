@@ -20,41 +20,41 @@ func isSolvable(words []string, result string) bool {
 	idMap := indexMap(allS)
 	n := len(idMap)
 
-	calcWeight := func(s string, a *[10]int) {
+	var canZero, used [10]bool
+	var weights [10]int
+	calcWeight := func(s string, sign int) {
 		w := 1
 		for i := len(s) - 1; i >= 0; i-- {
-			a[idMap[s[i]]] += w
+			weights[idMap[s[i]]] += w * sign
 			w *= 10
 		}
 	}
-	var canZero, used [10]bool
-	var lWeights, rWeights [10]int
 	for i := range canZero {
 		canZero[i] = true
 	}
 	for _, w := range words {
 		canZero[idMap[w[0]]] = false
-		calcWeight(w, &lWeights)
+		calcWeight(w, 1)
 	}
 	canZero[idMap[result[0]]] = false
-	calcWeight(result, &rWeights)
+	calcWeight(result, -1)
 
-	var f func(cur, l, r int) bool
-	f = func(cur, l, r int) bool {
+	var f func(int, int) bool
+	f = func(cur, sum int) bool {
 		if cur == n {
-			return l == r
+			return sum == 0
 		}
 		for i := 0; i < 10; i++ {
 			if i == 0 && !canZero[cur] || used[i] {
 				continue
 			}
 			used[i] = true
-			if f(cur+1, l+i*lWeights[cur], r+i*rWeights[cur]) {
+			if f(cur+1, sum+i*weights[cur]) {
 				return true
 			}
 			used[i] = false
 		}
 		return false
 	}
-	return f(0, 0, 0)
+	return f(0, 0)
 }
