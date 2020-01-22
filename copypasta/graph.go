@@ -259,9 +259,10 @@ func (*graph) bfs01(n, m, st int) []int {
 		g[w] = append(g[w], neighbor{v, weight})
 	}
 
+	const inf int = 1e9
 	dist := make([]int, n)
 	for i := range dist {
-		dist[i] = 1e9
+		dist[i] = inf
 	}
 	dist[st] = 0
 	q := &deque{}
