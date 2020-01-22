@@ -457,7 +457,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	if maxDegInv == 0 {
 		components = make([][]int, n)
 		for i := range components {
-			components[i] = []int{i + 1}
+			components[i] = []int{i} // i+1
 		}
 		return
 	}
@@ -484,7 +484,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	componentsMap := map[int][]int{}
 	for i := range fa {
 		rootV := find(i)
-		componentsMap[rootV] = append(componentsMap[rootV], i+1)
+		componentsMap[rootV] = append(componentsMap[rootV], i) // i+1
 	}
 	components = make([][]int, 0, len(componentsMap))
 	for _, vs := range componentsMap {
