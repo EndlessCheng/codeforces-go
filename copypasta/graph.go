@@ -429,7 +429,7 @@ func (*graph) secondMST(n, m int) (sum int64) {
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
-func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
+func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -446,14 +446,6 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
-
-	g := make([][]int, n)
-	for i := 0; i < m; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-	}
 
 	maxDegInv, maxDegInvV := 0, 0
 	for v, edges := range g {
@@ -504,18 +496,7 @@ func (*graph) inverseGraphComponents(n, m int) (components [][]int) {
 // 二分图判定
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
-func (*graph) isBipartite(n, m int) bool {
-	g := make([][]int, n)
-	type pair struct{ v, w int }
-	edges := make([]pair, m)
-	for i := 0; i < m; i++ {
-		var v, w int
-		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
-		edges[i] = pair{v, w}
-	}
-
+func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n)
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {
