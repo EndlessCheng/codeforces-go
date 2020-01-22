@@ -7,65 +7,57 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF1067B(_r io.Reader, _w io.Writer) {
+func CF1067B(_r io.Reader, _w io.Writer) (ans bool) {
 	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
+	defer func() {
+		if ans {
+			Fprint(_w, "Yes")
+		} else {
+			Fprint(_w, "No")
+		}
+	}()
 
-	var n, k, v, w, ct int
+	var n, k, v, w int
 	Fscan(in, &n, &k)
 	if n < 4 {
-		Fprint(out, "No")
-		return
+		return false
 	}
-	g := make([][]int, n)
+	g := make([][]int, n+1)
 	for i := 1; i < n; i++ {
 		Fscan(in, &v, &w)
-		v--
-		w--
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
 
-	vis := make([]bool, n)
-	centers := map[int]bool{}
+	vis := make([]bool, n+1)
+	centers := map[int]int{}
 	for i, gi := range g {
 		if len(gi) == 1 {
 			vis[i] = true
-			centers[gi[0]] = true
+			centers[gi[0]]++
 		}
 	}
 	for {
 		k--
-		newCenters := map[int]bool{}
-		for v := range centers {
-			cnt1, cnt2 := 0, 0
+		newCenters := map[int]int{}
+		for v, cnt1 := range centers {
+			if cnt1 < 3 {
+				return false
+			}
+			ct := 0
 			for _, w := range g[v] {
-				if vis[w] {
-					cnt1++
-				} else {
-					if centers[w] {
-						Fprint(out, "No")
-						return
+				if !vis[w] {
+					if ct != 0 || centers[w] > 0 {
+						return false
 					}
-					cnt2++
 					ct = w
 				}
 			}
-			if cnt1 < 3 || cnt2 > 1 {
-				Fprint(out, "No")
-				return
-			}
-			if cnt2 == 0 {
-				if k == 0 {
-					Fprint(out, "Yes")
-				} else {
-					Fprint(out, "No")
-				}
-				return
+			if ct == 0 {
+				return k == 0
 			}
 			vis[v] = true
-			newCenters[ct] = true
+			newCenters[ct]++
 		}
 		centers = newCenters
 	}

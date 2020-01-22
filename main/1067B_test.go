@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
 	"testing"
 )
 
@@ -41,5 +42,5 @@ inputCopy
 5 6
 outputCopy
 No`
-	testutil.AssertEqualCase(t, rawText, 0, CF1067B)
+	testutil.AssertEqualCase(t, rawText, 0, func(r io.Reader, w io.Writer) { CF1067B(r, w) })
 }
