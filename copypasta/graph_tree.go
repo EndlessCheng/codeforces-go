@@ -11,6 +11,24 @@ import (
 // namespace
 type tree struct{}
 
+// 树上每个子树的大小
+func (*tree) subtreeSize(n, root int, g [][]int) []int {
+	size := make([]int, n)
+	var f func(int, int) int
+	f = func(v, p int) int {
+		sz := 1
+		for _, w := range g[v] {
+			if w != p {
+				sz += f(w, v)
+			}
+		}
+		size[v] = sz
+		return sz
+	}
+	f(root, -1)
+	return size
+}
+
 // 树的重心 https://oi-wiki.org/graph/tree-centroid/
 // 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
 func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
