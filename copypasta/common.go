@@ -651,7 +651,7 @@ func loopCollection() {
 	// 枚举排列 + 剪枝
 	// 即有 n 个位置，枚举每个位置上可能出现的值（范围在 sets 中），且每个位置上的元素不能重复
 	// 例题见 LC169D
-	loopNumber := func(n int, sets []int) bool {
+	loopPerm := func(n int, sets []int) bool {
 		used := make([]bool, len(sets))
 		//used := [10]bool{}
 		var f func(cur, x, y int) bool
@@ -856,7 +856,7 @@ func loopCollection() {
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
 
 	_ = []interface{}{
-		loopSet, loopNumber, dfsGrids, searchDir4, searchDir4R,
+		loopSet, loopPerm, dfsGrids, searchDir4, searchDir4R,
 		combinations, permutations, permuteAll,
 	}
 }
