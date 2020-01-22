@@ -21,6 +21,14 @@ func unionFind() {
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
+	mergeCheck := func(from, to int) bool {
+		x, y := find(from), find(to)
+		if x == y {
+			return true
+		}
+		fa[x] = y
+		return false
+	}
 	getRoots := func() (roots []int) {
 		for i := range fa {
 			if find(i) == i {
@@ -38,7 +46,7 @@ func unionFind() {
 		return
 	}
 
-	_ = []interface{}{initFa, merge, same, getRoots, countRoots}
+	_ = []interface{}{initFa, merge, same, mergeCheck, getRoots, countRoots}
 }
 
 // https://oi-wiki.org/ds/dsu/#_9
