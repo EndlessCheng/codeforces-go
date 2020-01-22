@@ -16,6 +16,7 @@ func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow2 := [...]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144}
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9}
+	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 	// 注意：对于格点来说，dir4 对应的方向是下右上左
 	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	dir4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
@@ -98,6 +99,14 @@ func commonCollection() {
 			x = x * x % mod
 		}
 		return res
+	}
+
+	calcFactorial := func(n int) int64 {
+		ans := int64(1)
+		for i := 2; i <= n; i++ {
+			ans *= int64(i)
+		}
+		return ans
 	}
 
 	// 从低位到高位
@@ -380,9 +389,9 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow2, pow10, dir4, dir4R, dir8, orderP3,
+		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor,
-		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
+		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
