@@ -71,6 +71,7 @@ func commonCollection() {
 		}
 		return ints
 	}
+	xor := func(b1, b2 bool) bool { return b1 && !b2 || !b1 && b2 }
 	// END HELPER
 
 	abs := func(x int) int {
@@ -380,7 +381,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3,
-		min, mins, max, maxs, ifElseI, ifElseS, toInts,
+		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor,
 		abs, absAll, quickPow, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
