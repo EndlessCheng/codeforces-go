@@ -252,7 +252,21 @@ func commonCollection() {
 		return
 	}
 
-	same := func(a ...int) bool {
+	// 哈希编号，也可以理解成另一种离散化
+	// 编号从 0 开始
+	indexMap := func(bs []byte) map[byte]int {
+		mp := map[byte]int{}
+		id := 0
+		for _, b := range bs {
+			if _, ok := mp[b]; !ok {
+				mp[b] = id
+				id++
+			}
+		}
+		return mp
+	}
+
+	allSame := func(a ...int) bool {
 		for _, v := range a[1:] {
 			if v != a[0] {
 				return false
@@ -392,7 +406,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor,
 		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, same,
+		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
@@ -618,6 +632,7 @@ func loopCollection() {
 		return b
 	}
 
+	// 枚举子集
 	loopSet := func(arr []int) (ans int) {
 		n := uint(len(arr))
 		//outer:
@@ -631,6 +646,39 @@ func loopCollection() {
 			ans = max(ans, sum)
 		}
 		return
+	}
+
+	// 枚举排列 + 剪枝
+	// 即有 n 个位置，枚举每个位置上可能出现的值（范围在 sets 中），且每个位置上的元素不能重复
+	// 例题见 LC169D
+	loopNumber := func(n int, sets []int) bool {
+		used := make([]bool, len(sets))
+		//used := [10]bool{}
+		var f func(cur, x, y int) bool
+		f = func(pos, x, y int) bool {
+			if pos == n {
+				return true // custom
+			}
+			// 对每个位置，枚举可能出现的值，跳过已经枚举的值
+			for i, v := range sets {
+				_ = v
+				// custom pruning
+				//if  {
+				//	continue
+				//}
+				if used[i] {
+					continue
+				}
+				used[i] = true
+				// custom calc x y
+				if f(pos+1, x, y) {
+					return true
+				}
+				used[i] = false
+			}
+			return false
+		}
+		return f(0, 0, 0)
 	}
 
 	dfsGrids := func(grid [][]int) (comps int) {
@@ -808,7 +856,7 @@ func loopCollection() {
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
 
 	_ = []interface{}{
-		loopSet, dfsGrids, searchDir4, searchDir4R,
+		loopSet, loopNumber, dfsGrids, searchDir4, searchDir4R,
 		combinations, permutations, permuteAll,
 	}
 }
