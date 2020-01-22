@@ -248,6 +248,7 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 
 // https://oi-wiki.org/graph/bfs/#bfs_3
 // https://codeforces.com/blog/entry/22276
+// 例题: https://codeforces.com/problemset/problem/173/B
 func (*graph) bfs01(n, m, st int) []int {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
