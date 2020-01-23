@@ -65,8 +65,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 }
 
-func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
-	vis := make([]bool, len(g))
+func (*graph) bfsWithDepth(n, st int, g [][]int, do func(v, dep int)) {
+	vis := make([]bool, n)
 	vis[st] = true
 	type pair struct{ v, dep int }
 	queue := []pair{{st, 0}}
@@ -85,18 +85,17 @@ func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
 
 func (*graph) depthArray(n, st int, g [][]int) []int {
 	depths := make([]int, n)
-	vis := make([]bool, len(g))
+	vis := make([]bool, n)
 	vis[st] = true
-	type pair struct{ v, dep int }
-	queue := []pair{{st, 0}}
+	queue := []int{st}
 	for len(queue) > 0 {
-		var p pair
-		p, queue = queue[0], queue[1:]
-		depths[p.v] = p.dep
-		for _, w := range g[p.v] {
+		var v int
+		v, queue = queue[0], queue[1:]
+		for _, w := range g[v] {
 			if !vis[w] {
 				vis[w] = true
-				queue = append(queue, pair{w, p.dep + 1})
+				depths[w] = depths[v] + 1
+				queue = append(queue, w)
 			}
 		}
 	}
