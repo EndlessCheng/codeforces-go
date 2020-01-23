@@ -32,9 +32,9 @@ func solveCase(in *bufio.Reader, out *bufio.Writer) {
 
 func main() {
 	solve(os.Stdin, os.Stdout)
-	//in, _ := os.Open("input.txt")
-	//out, _ := os.Open("output.txt")
-	//solve(in, out)
+	//r, _ := os.Open("input.txt")
+	//w, _ := os.Open("output.txt")
+	//solve(r, w)
 }
 
 func min(a, b int) int {
