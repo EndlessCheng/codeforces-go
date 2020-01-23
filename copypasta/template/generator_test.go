@@ -103,6 +103,9 @@ func TestCF%[1]s(t *testing.T) {
 
 	const rootPath = "../../main/"
 	mainFilePath := rootPath + problemID + ".go"
+	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
+		t.Fatal("文件已存在！")
+	}
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		t.Fatal(err)
 	}
