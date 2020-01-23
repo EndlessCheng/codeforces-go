@@ -51,13 +51,14 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 
 	// BFS
 	vis = make([]bool, n)
+	vis[st] = true
 	q := []int{st}
 	for len(q) > 0 {
 		var v int
 		v, q = q[0], q[1:]
-		vis[v] = true
 		for _, w := range g[v] {
 			if !vis[w] {
+				vis[w] = true
 				q = append(q, w)
 			}
 		}
@@ -80,6 +81,26 @@ func (*graph) bfsWithDepth(g [][]int, st int, do func(v, dep int)) {
 			}
 		}
 	}
+}
+
+func (*graph) depthArray(n, st int, g [][]int) []int {
+	depths := make([]int, n)
+	vis := make([]bool, len(g))
+	vis[st] = true
+	type pair struct{ v, dep int }
+	queue := []pair{{st, 0}}
+	for len(queue) > 0 {
+		var p pair
+		p, queue = queue[0], queue[1:]
+		depths[p.v] = p.dep
+		for _, w := range g[p.v] {
+			if !vis[w] {
+				vis[w] = true
+				queue = append(queue, pair{w, p.dep + 1})
+			}
+		}
+	}
+	return depths
 }
 
 // 标记所有点所属连通块
