@@ -541,7 +541,55 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 	return true
 }
 
-// Kahn's algorithm
+// 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)
+// https://www.renfei.org/blog/bipartite-matching.html 推荐
+// https://www.geeksforgeeks.org/maximum-bipartite-matching/
+// https://oi-wiki.org/graph/bi-graph/#_9
+// https://zhuanlan.zhihu.com/p/62981901
+func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
+	match = make([]int, n)
+	for i := range match {
+		match[i] = -1
+	}
+	var used []bool
+	var f func(v int) bool
+	f = func(v int) bool {
+		for _, w := range g[v] {
+			if !used[w] {
+				used[w] = true
+				if match[w] == -1 || f(match[w]) {
+					match[w] = v
+					return true
+				}
+			}
+		}
+		return false
+	}
+	for v := range g {
+		used = make([]bool, n)
+		if f(v) {
+			cnt++
+		}
+	}
+	return
+}
+
+// 二分图最大匹配 -  Hopcroft–Karp 算法 O(m√n)
+// http://pepcy.cf/icpc-templates/003Graph/hk.html
+// https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
+func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
+	// TODO
+	return
+}
+
+// 带权二分图最大匹配 - KM 算法 O(n^3)
+// https://zhuanlan.zhihu.com/p/62981901
+func (*graph) maxMatchingKM(n int, g [][]int) (match []int, cnt int) {
+	// TODO
+	return
+}
+
+// 拓扑排序 Kahn's algorithm
 // isDAG = len(order)==n
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
