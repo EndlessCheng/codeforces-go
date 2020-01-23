@@ -7,13 +7,11 @@ import (
 
 func Test_solve(t *testing.T) {
 	customInputs := []string{
-		`3
-1 1
-1 2
-2 2`,
+		`1 1 1
+1 1`,
 	}
 	customAnswers := []string{
-		`1.0000`,
+		`1`,
 	}
 	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, solve)
 }

@@ -571,6 +571,7 @@ func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 			cnt++
 		}
 	}
+	cnt /= 2 // 匹配的对数
 	return
 }
 

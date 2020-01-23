@@ -4,86 +4,56 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math"
 	"os"
-	"sort"
 )
 
 func solve(reader io.Reader, writer io.Writer) {
-	in := bufio.NewScanner(reader)
-	in.Split(bufio.ScanWords)
+	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
-	read := func() (x int) {
-		in.Scan()
-		for _, b := range in.Bytes() {
-			x = x*10 + int(b-'0')
+
+	var n1, n2, m int
+	Fscan(in, &n1, &n2, &m)
+	g := make([][]int, n1+n2)
+	for i := 0; i < m; i++ {
+		var v, w int
+		Fscan(in, &v, &w)
+		if v > n1 || w > n2 {
+			continue
 		}
-		return
+		v--
+		w--
+		w += n1
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
 	}
 
-	type vec struct{ x, y float64 }
-	merge := func(a, b []vec) []vec {
-		i, n := 0, len(a)
-		j, m := 0, len(b)
-		res := make([]vec, 0, n+m)
-		for {
-			if i == n {
-				return append(res, b[j:]...)
-			}
-			if j == m {
-				return append(res, a[i:]...)
-			}
-			if a[i].y < b[j].y {
-				res = append(res, a[i])
-				i++
-			} else {
-				res = append(res, b[j])
-				j++
-			}
-		}
+	cnt := 0
+	match := make([]int, n1+n2)
+	for i := range match {
+		match[i] = -1
 	}
-
-	// 最近点对
-	// 调用前 ps 必须按照 x 坐标排序
-	var closestPair func([]vec) float64
-	closestPair = func(ps []vec) float64 {
-		n := len(ps)
-		if n <= 1 {
-			return math.MaxFloat64
-		}
-		m := n >> 1
-		x := ps[m].x
-		d := math.Min(closestPair(ps[:m]), closestPair(ps[m:]))
-		for i, p := range merge(ps[:m], ps[m:]) {
-			ps[i] = p
-		}
-		checkPs := []vec{}
-		for _, pi := range ps {
-			if math.Abs(pi.x-x) > d+1e-8 {
-				continue
-			}
-			for j := len(checkPs) - 1; j >= 0; j-- {
-				pj := checkPs[j]
-				dy := pi.y - pj.y
-				if dy >= d {
-					break
+	var used []bool
+	var f func(v int) bool
+	f = func(v int) bool {
+		for _, w := range g[v] {
+			if !used[w] {
+				used[w] = true
+				if match[w] == -1 || f(match[w]) {
+					match[w] = v
+					return true
 				}
-				dx := pi.x - pj.x
-				d = math.Min(d, math.Hypot(dx, dy))
 			}
-			checkPs = append(checkPs, pi)
 		}
-		return d
+		return false
 	}
-
-	n := read()
-	ps := make([]vec, n)
-	for i := range ps {
-		ps[i] = vec{float64(read()), float64(read())}
+	for v := range g {
+		used = make([]bool, n1+n2)
+		if f(v) {
+			cnt++
+		}
 	}
-	sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
-	Fprintf(out, "%.4f", closestPair(ps))
+	Fprintln(out, cnt/2)
 }
 
 func main() {
