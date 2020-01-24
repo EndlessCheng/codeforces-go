@@ -575,6 +575,40 @@ func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
+// 另一种写法，适用左右两侧节点有明确区分的情况，g 中存储的是左侧到右侧的单向边
+func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
+	matchL = make([]int, nl)
+	matchR := make([]int, nr)
+	for i := range matchL {
+		matchL[i] = -1
+	}
+	for i := range matchR {
+		matchR[i] = -1
+	}
+	var used []bool
+	var f func(v int) bool
+	f = func(v int) bool {
+		if !used[v] {
+			used[v] = true
+			for _, w := range g[v] {
+				if matchR[w] == -1 || f(matchR[w]) {
+					matchR[w] = v
+					matchL[v] = w
+					return true
+				}
+			}
+		}
+		return false
+	}
+	for v := range g {
+		used = make([]bool, nl)
+		if f(v) {
+			cnt++
+		}
+	}
+	return
+}
+
 // 二分图最大匹配 -  Hopcroft–Karp 算法 O(m√n)
 // http://pepcy.cf/icpc-templates/003Graph/hk.html
 // https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm

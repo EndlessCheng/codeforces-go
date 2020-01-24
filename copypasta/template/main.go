@@ -33,7 +33,7 @@ func solveCase(in *bufio.Reader, out *bufio.Writer) {
 func main() {
 	solve(os.Stdin, os.Stdout)
 	//r, _ := os.Open("input.txt")
-	//w, _ := os.Open("output.txt")
+	//w, _ := os.Create("output.txt")
 	//solve(r, w)
 }
 

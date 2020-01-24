@@ -256,11 +256,9 @@ func commonCollection() {
 	// 编号从 0 开始
 	indexMap := func(bs []byte) map[byte]int {
 		mp := map[byte]int{}
-		id := 0
 		for _, b := range bs {
 			if _, ok := mp[b]; !ok {
-				mp[b] = id
-				id++
+				mp[b] = len(mp)
 			}
 		}
 		return mp
@@ -402,15 +400,30 @@ func commonCollection() {
 		return cnts
 	}
 
-	var ss []string
-	var genSubStrs func(s, sub string)
-	genSubStrs = func(s, sub string) {
-		ss = append(ss, sub)
+	var _ss []string
+	var _genSubStrs func(s, sub string)
+	_genSubStrs = func(s, sub string) {
+		_ss = append(_ss, sub)
 		if len(sub) < 4 { // custom
 			for i := range s {
-				genSubStrs(s[i+1:], sub+string(s[i]))
+				_genSubStrs(s[i+1:], sub+string(s[i]))
 			}
 		}
+	}
+	genSubStrs := func(s string) []string {
+		_ss = []string{}
+		_genSubStrs(s, "")
+		a := _ss[1:] // remove ""
+		sort.Strings(a)
+		n := len(a)
+		res := make([]string, 1, n)
+		res[0] = a[0]
+		for i := 1; i < n; i++ {
+			if a[i] != a[i-1] {
+				res = append(res, a[i])
+			}
+		}
+		return res
 	}
 
 	_ = []interface{}{
