@@ -402,12 +402,23 @@ func commonCollection() {
 		return cnts
 	}
 
+	var ss []string
+	var genSubStrs func(s, sub string)
+	genSubStrs = func(s, sub string) {
+		ss = append(ss, sub)
+		if len(sub) < 4 { // custom
+			for i := range s {
+				genSubStrs(s[i+1:], sub+string(s[i]))
+			}
+		}
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor,
 		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame,
-		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
+		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }
 

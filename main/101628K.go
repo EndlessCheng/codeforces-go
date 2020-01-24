@@ -6,32 +6,32 @@ import (
 	"io"
 )
 
-type sNode struct {
-	lr       [2]*sNode
+type sNode101628 struct {
+	lr       [2]*sNode101628
 	priority uint
 	key      int
 }
 
-func (o *sNode) rotate(d int) *sNode {
+func (o *sNode101628) rotate(d int) *sNode101628 {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
 	return x
 }
 
-type sTreap struct {
+type sTreap101628 struct {
 	rd   uint
-	root *sNode
+	root *sNode101628
 }
 
-func (t *sTreap) fastRand() uint {
+func (t *sTreap101628) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17
 	t.rd ^= t.rd << 5
 	return t.rd
 }
 
-func (t *sTreap) compare(a, b int) int {
+func (t *sTreap101628) compare(a, b int) int {
 	switch {
 	case a < b:
 		return 0
@@ -42,9 +42,9 @@ func (t *sTreap) compare(a, b int) int {
 	}
 }
 
-func (t *sTreap) _put(o *sNode, key int) *sNode {
+func (t *sTreap101628) _put(o *sNode101628, key int) *sNode101628 {
 	if o == nil {
-		return &sNode{priority: t.fastRand(), key: key}
+		return &sNode101628{priority: t.fastRand(), key: key}
 	}
 	if cmp := t.compare(key, o.key); cmp >= 0 {
 		o.lr[cmp] = t._put(o.lr[cmp], key)
@@ -55,9 +55,9 @@ func (t *sTreap) _put(o *sNode, key int) *sNode {
 	return o
 }
 
-func (t *sTreap) put(key int) { t.root = t._put(t.root, key) }
+func (t *sTreap101628) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *sTreap) _delete(o *sNode, key int) *sNode {
+func (t *sTreap101628) _delete(o *sNode101628, key int) *sNode101628 {
 	if o == nil {
 		return nil
 	}
@@ -80,9 +80,9 @@ func (t *sTreap) _delete(o *sNode, key int) *sNode {
 	return o
 }
 
-func (t *sTreap) delete(key int) { t.root = t._delete(t.root, key) }
+func (t *sTreap101628) delete(key int) { t.root = t._delete(t.root, key) }
 
-func (t *sTreap) ceiling(key int) (ceiling *sNode) {
+func (t *sTreap101628) ceiling(key int) (ceiling *sNode101628) {
 	for o := t.root; o != nil; {
 		switch cmp := t.compare(key, o.key); {
 		case cmp == 0:
@@ -97,30 +97,30 @@ func (t *sTreap) ceiling(key int) (ceiling *sNode) {
 	return
 }
 
-func (t *sTreap) hasValueInRange(l, r int) bool {
+func (t *sTreap101628) hasValueInRange(l, r int) bool {
 	o := t.ceiling(l)
 	return o != nil && o.key <= r
 }
 
-type trieNode struct {
+type trieNode101628 struct {
 	childIdx       [26]int
-	curIndexes     *sTreap
-	subTreeIndexes *sTreap
+	curIndexes     *sTreap101628
+	subTreeIndexes *sTreap101628
 }
 
-type trie struct {
-	nodes []*trieNode
+type trie101628 struct {
+	nodes []*trieNode101628
 }
 
-func (t *trie) put(s string, idx int) {
+func (t *trie101628) put(s string, idx int) {
 	o := t.nodes[0]
 	for i := range s {
 		c := s[i] - 'a'
 		if o.childIdx[c] == 0 {
 			o.childIdx[c] = len(t.nodes)
-			t.nodes = append(t.nodes, &trieNode{
-				curIndexes:     &sTreap{rd: 1},
-				subTreeIndexes: &sTreap{rd: 1},
+			t.nodes = append(t.nodes, &trieNode101628{
+				curIndexes:     &sTreap101628{rd: 1},
+				subTreeIndexes: &sTreap101628{rd: 1},
 			})
 		}
 		o = t.nodes[o.childIdx[c]]
@@ -129,7 +129,7 @@ func (t *trie) put(s string, idx int) {
 	o.curIndexes.put(idx)
 }
 
-func (t *trie) del(s string, idx int) {
+func (t *trie101628) del(s string, idx int) {
 	o := t.nodes[0]
 	for i := range s {
 		o = t.nodes[o.childIdx[s[i]-'a']]
@@ -138,7 +138,7 @@ func (t *trie) del(s string, idx int) {
 	o.curIndexes.delete(idx)
 }
 
-func (t *trie) hasPrefixOfText(s string, l, r int) bool {
+func (t *trie101628) hasPrefixOfText(s string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range s {
 		idx := o.childIdx[s[i]-'a']
@@ -153,7 +153,7 @@ func (t *trie) hasPrefixOfText(s string, l, r int) bool {
 	return false
 }
 
-func (t *trie) hasTextOfPrefix(p string, l, r int) bool {
+func (t *trie101628) hasTextOfPrefix(p string, l, r int) bool {
 	o := t.nodes[0]
 	for i := range p {
 		idx := o.childIdx[p[i]-'a']
@@ -174,7 +174,7 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 	var n, q, op, idx, l, r int
 	var s string
 	Fscan(in, &n)
-	t := &trie{nodes: []*trieNode{{}}}
+	t := &trie101628{nodes: []*trieNode101628{{}}}
 	a := make([]string, n)
 	for i := range a {
 		Fscan(in, &a[i])
