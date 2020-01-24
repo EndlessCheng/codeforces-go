@@ -20,6 +20,8 @@ I implement some algorithms in [copypasta](./copypasta).
 >
 > [source](https://codeforces.com/blog/entry/65406?#comment-494043)
 
+[Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
+
 ## Codeforces Solutions
 
 [main](./main)
