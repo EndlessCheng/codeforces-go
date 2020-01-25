@@ -254,11 +254,11 @@ func commonCollection() {
 
 	// 哈希编号，也可以理解成另一种离散化
 	// 编号从 0 开始
-	indexMap := func(bs []byte) map[byte]int {
-		mp := map[byte]int{}
-		for _, b := range bs {
-			if _, ok := mp[b]; !ok {
-				mp[b] = len(mp)
+	indexMap := func(a []string) map[string]int {
+		mp := map[string]int{}
+		for _, v := range a {
+			if _, ok := mp[v]; !ok {
+				mp[v] = len(mp)
 			}
 		}
 		return mp

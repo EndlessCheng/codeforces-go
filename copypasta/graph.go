@@ -739,11 +739,12 @@ func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
 	// 缩点后的点的编号范围为 [0,len(comps)-1]
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
-	//...
+	//... 在 readGraph 时加入原始 edges 的边
 	for i, e := range edges {
-		// 注意消去重边和自环
+		// 修改原始的边为缩点后的边，注意这样会产生重边和自环
 		edges[i] = edge{sccIDs[e.v], sccIDs[e.w]}
 	}
+	// 注意消去重边和自环
 	//for _, e := range edges {
 	//	if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
 	//
