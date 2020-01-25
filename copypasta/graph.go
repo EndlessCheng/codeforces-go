@@ -745,11 +745,11 @@ func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
 		edges[i] = edge{sccIDs[e.v], sccIDs[e.w]}
 	}
 	// 注意消去重边和自环
-	//for _, e := range edges {
-	//	if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
-	//
-	//	}
-	//}
+	for _, e := range edges {
+		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
+			// custom
+		}
+	}
 
 	// EXTRA: 求有多少个点能被其他所有点访问到
 	lastComp := comps[len(comps)-1]
