@@ -14,7 +14,11 @@ func sortCollections() {
 		return strings.Join(a, "")
 	}
 
-	_ = sort.Search
+	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
+	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
+	lowerBound := sort.SearchInts
+	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
+
 	// NOTE: Pass n+1 if you wanna search range [0,n]
 	// NOTE: 二分时特判下限！（例如 0）
 	// TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
@@ -131,5 +135,8 @@ func sortCollections() {
 
 	// TODO: https://oi-wiki.org/search/dlx/
 
-	_ = []interface{}{sortString, reverse, searchRange, search64, binarySearch, ternarySearch, ternarySearchInt}
+	_ = []interface{}{
+		sortString, lowerBound, upperBound, reverse,
+		searchRange, search64, binarySearch, ternarySearch, ternarySearchInt,
+	}
 }

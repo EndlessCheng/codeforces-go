@@ -29,6 +29,18 @@ func unionFind() {
 		fa[x] = y
 		return false
 	}
+	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
+		//if l < 0 {
+		//	l = 0
+		//}
+		//if r > n {
+		//	r = n
+		//}
+		for i := find(l); i <= r; i = find(i + 1) { // initFa 需要开 n+1 空间
+			fa[i] = to
+		}
+	}
+	//rangeFullMerged := func() bool { return find(0) == n }
 	getRoots := func() (roots []int) {
 		for i := range fa {
 			if find(i) == i {
@@ -46,7 +58,7 @@ func unionFind() {
 		return
 	}
 
-	_ = []interface{}{initFa, merge, same, mergeCheck, getRoots, countRoots}
+	_ = []interface{}{initFa, merge, same, mergeCheck, mergeRangeTo, getRoots, countRoots}
 }
 
 // https://oi-wiki.org/ds/dsu/#_9
