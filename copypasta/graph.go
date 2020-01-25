@@ -679,6 +679,8 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 // 强连通分量分解
 // https://oi-wiki.org/graph/scc/#kosaraju
 func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
+	type edge struct{ v, w int }
+	edges := make([]edge, m)
 	g := make([][]int, n)
 	rg := make([][]int, n)
 	for i := 0; i < m; i++ {
@@ -686,6 +688,7 @@ func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
 		//v, w := read()-1, read()-1
 		g[v] = append(g[v], w)
 		rg[w] = append(rg[w], v)
+		edges[i] = edge{v, w}
 	}
 	used := make([]bool, n)
 
@@ -737,14 +740,7 @@ func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
 
 	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
 	// 缩点后的点的编号范围为 [0,len(comps)-1]
-	type edge struct{ v, w int }
-	edges := make([]edge, m)
-	//... 在 readGraph 时加入原始 edges 的边
-	for i, e := range edges {
-		// 修改原始的边为缩点后的边，注意这样会产生重边和自环
-		edges[i] = edge{sccIDs[e.v], sccIDs[e.w]}
-	}
-	// 注意消去重边和自环
+	// 注意这样会产生重边和自环
 	for _, e := range edges {
 		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
 			// custom
