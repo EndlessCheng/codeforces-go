@@ -81,14 +81,19 @@ func simpleValueString(v reflect.Value) string {
 	}
 }
 
-func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string) error {
+func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) error {
 	tp := reflect.TypeOf(f)
 	if tp.Kind() != reflect.Func {
 		return fmt.Errorf("f must be a function")
 	}
 
+	allOk := true
 	vFunc := reflect.ValueOf(f)
 	for testCase, rawIn := range rawInputs {
+		if targetCaseNum > 0 && testCase+1 != targetCaseNum {
+			continue
+		}
+
 		if len(rawIn) != tp.NumIn() {
 			return fmt.Errorf("len(rawIn) is not %d", tp.NumIn())
 		}
@@ -104,8 +109,20 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 		}
 		actualOut := vFunc.Call(in)
 		for i, expectedRes := range rawOut {
-			assert.Equal(t, expectedRes, simpleValueString(actualOut[i]), "please check case %d", testCase+1)
+			if !assert.Equal(t, expectedRes, simpleValueString(actualOut[i]), "please check case %d", testCase+1) {
+				allOk = false
+			}
 		}
 	}
+
+	if targetCaseNum > 0 && allOk {
+		t.Logf("case %d is ok", targetCaseNum)
+		return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
+	}
+
 	return nil
+}
+
+func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string) error {
+	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }

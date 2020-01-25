@@ -170,7 +170,7 @@ func Test(t *testing.T) {
 	// custom test cases or WA cases.
 	//exampleIns = append(exampleIns, []string{`+"``"+`})
 	//exampleOuts = append(exampleOuts, []string{`+"``"+`})
-	if err := testutil.RunLeetCodeFunc(t, %s, exampleIns, exampleOuts); err != nil {
+	if err := testutil.RunLeetCodeFuncWithCase(t, %s, exampleIns, exampleOuts, 0); err != nil {
 		t.Fatal(err)
 	}
 }
