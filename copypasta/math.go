@@ -304,6 +304,9 @@ func mathCollection() {
 		return
 	}
 
+	// 隔板法
+	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM,
 		isPrime, sieve, primeFactorsAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcLPF,

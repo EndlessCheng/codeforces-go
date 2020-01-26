@@ -13,15 +13,16 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 172
+const contestID = 173
 
 const (
 	hostZH = "leetcode-cn.com"
 	hostEN = "leetcode.com"
 	host   = hostZH
 
-	contestPrefixWeekly = "weekly-contest-"
-	contestPrefix       = contestPrefixWeekly
+	contestPrefixWeekly   = "weekly-contest-"
+	contestPrefixBiweekly = "biweekly-contest-"
+	contestPrefix         = contestPrefixWeekly
 
 	openZH = true
 	openEN = true

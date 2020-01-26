@@ -4,6 +4,7 @@ import "math/bits"
 
 // https://oi-wiki.org/ds/seg/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
+// TODO: zkw 线段树 https://codeforces.com/blog/entry/18051
 
 // TIPS: 对于复杂的区间操作（如区间开方），可以判断区间元素是否相同，然后 lazy
 // TIPS: 一般来说会有一个核心函数，如 min/max/+/gcd/...

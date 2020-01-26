@@ -148,6 +148,9 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	return comps
 }
 
+// TODO 割点
+
+// 桥
 // https://oi-wiki.org/graph/bridge/
 // https://codeforces.com/blog/entry/68138
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
@@ -159,12 +162,27 @@ func (*graph) findBridges(n, m int) {
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
-func (*graph) shortestPathFloyd(dist [][]int64) [][]int64 {
-	min := func(a, b int64) int64 {
+func (*graph) shortestPathFloyd(n, m int) [][]int {
+	min := func(a, b int) int { // int64
 		if a < b {
 			return a
 		}
 		return b
+	}
+	const inf int = 1e9
+	dist := make([][]int, n)
+	for i := range dist {
+		dist[i] = make([]int, n)
+		for j := range dist[i] {
+			dist[i][j] = inf
+		}
+		dist[i][i] = 0
+	}
+	for i := 0; i < m; i++ {
+		var v, w, d int
+		//Fscan(in, &v, &m, &d)
+		dist[v][w] = d
+		dist[w][v] = d
 	}
 	for k := range dist { // 阶段
 		for i := range dist { // 状态
