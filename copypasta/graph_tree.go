@@ -5,9 +5,6 @@ import (
 	"sort"
 )
 
-// https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
-// low(u) is the lowest dfn that we can reach from u using a path of descendants followed by at most one back edge
-
 // namespace
 type tree struct{}
 
@@ -27,6 +24,36 @@ func (*tree) subtreeSize(n, root int, g [][]int) []int {
 	}
 	f(root, -1)
 	return size
+}
+
+// 树的直径
+func (*tree) diameter(n int, g [][]int) (dv, dw int) {
+	var u, maxD int
+	var vis []bool
+	var f func(int, int)
+	f = func(v, d int) {
+		vis[v] = true
+		if d > maxD {
+			maxD = d
+			u = v
+		}
+		for _, w := range g[v] {
+			if !vis[w] {
+				f(w, d+1)
+			}
+		}
+	}
+
+	maxD = -1
+	vis = make([]bool, n)
+	f(0, 0)
+	dv = u
+
+	maxD = -1
+	vis = make([]bool, n)
+	f(dv, 0)
+	dw = u
+	return
 }
 
 // 树的重心 https://oi-wiki.org/graph/tree-centroid/

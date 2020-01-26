@@ -148,14 +148,109 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	return comps
 }
 
-// TODO 割点
+// 割点 cut vertices / articulation points
+// https://codeforces.com/blog/entry/68138
+// https://oi-wiki.org/graph/cut/#_1
+// low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
+func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	isCut = make([]bool, n)
+	dfsClock := 0
+	dfn := make([]int, n) // 值从 1 开始
+	//low := make([]int, n)
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		dfsClock++
+		dfn[v] = dfsClock
+		lowV := dfsClock
+		childCnt := 0
+		for _, w := range g[v] {
+			if dfn[w] == 0 {
+				childCnt++
+				lowW := f(w, v)
+				if lowW >= dfn[v] { // 该子树没有反向边能连回 v 的祖先
+					isCut[v] = true
+				}
+				lowV = min(lowV, lowW)
+			} else if w != fa && dfn[w] < dfn[v] { // 找到反向边，用来更新 lowV
+				lowV = min(lowV, dfn[w])
+			}
+		}
+		if fa == -1 && childCnt == 1 { // 特判：只有一个儿子的树根，删除后并没有增加连通分量的个数
+			isCut[v] = false
+		}
+		//low[v] = lowV
+		return lowV
+	}
+	for v, timestamp := range dfn {
+		if timestamp == 0 {
+			f(v, -1)
+		}
+	}
+	vs := make([]int, 0, n)
+	for v, is := range isCut {
+		if is {
+			vs = append(vs, v) // v+1
+		}
+	}
+	return
+}
 
 // 桥
-// https://oi-wiki.org/graph/bridge/
-// https://codeforces.com/blog/entry/68138
+// https://oi-wiki.org/graph/cut/#_4
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
-func (*graph) findBridges(n, m int) {
+func (*graph) findBridges(n, m int, g [][]int) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	type bridge struct{ v, w int }
+	bridges := make([]bridge, 0, m)
+	dfsClock := 0
+	dfn := make([]int, n) // 值从 1 开始
+	//low := make([]int, n)
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		dfsClock++
+		dfn[v] = dfsClock
+		lowV := dfsClock
+		childCnt := 0
+		for _, w := range g[v] {
+			if dfn[w] == 0 {
+				childCnt++
+				lowW := f(w, v)
+				if lowW > dfn[v] { // w 子树的反向边只能连回其自身，所以 v-w 必定是桥
+					bridges = append(bridges, bridge{v, w})
+				}
+				lowV = min(lowV, lowW)
+			} else if w != fa && dfn[w] < dfn[v] { // 找到反向边，用来更新 lowV
+				lowV = min(lowV, dfn[w])
+			}
+		}
+		//low[v] = lowV
+		return lowV
+	}
+	for v, timestamp := range dfn {
+		if timestamp == 0 {
+			f(v, -1)
+		}
+	}
+	// bridges...
+}
+
+// 无向图的双连通分量 biconnected components
+// https://oi-wiki.org/graph/bcc/
+// https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
+func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 	// TODO: implement
+	return
 }
 
 // 传入邻接矩阵 dist
@@ -696,7 +791,7 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 
 // 强连通分量分解
 // https://oi-wiki.org/graph/scc/#kosaraju
-func (*graph) scc(n, m int) (comps [][]int, sccIDs []int) {
+func (*graph) findSCC(n, m int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
 	g := make([][]int, n)
