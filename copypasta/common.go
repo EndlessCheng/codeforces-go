@@ -798,6 +798,18 @@ func loopCollection() {
 		}
 	}
 
+	// 从数组 a 中选择 [0,min(r,len(a))] 个元素，生成所有组合
+	// vals 初始化为 make([]int, 0, min(r,len(a)))
+	var rangeCombinations func(a []int, r int, vals []int, do func(vals []int))
+	rangeCombinations = func(a []int, r int, vals []int, do func([]int)) {
+		do(vals)
+		if len(vals) < r {
+			for i, v := range a {
+				rangeCombinations(a[i+1:], r, append(vals, v), do)
+			}
+		}
+	}
+
 	// 从一个长度为 n 的数组中选择 r 个元素，生成所有组合，每个组合用下标表示
 	// r must <= n
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
@@ -882,7 +894,7 @@ func loopCollection() {
 
 	_ = []interface{}{
 		loopSet, loopPerm, dfsGrids, searchDir4, searchDir4R,
-		combinations, permutations, permuteAll,
+		rangeCombinations, combinations, permutations, permuteAll,
 	}
 }
 
