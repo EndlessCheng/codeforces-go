@@ -1,5 +1,7 @@
 package copypasta
 
+import "sort"
+
 // https://oi-wiki.org/dp/
 
 /*
@@ -51,6 +53,7 @@ func dpCollections() {
 		return f(0, n-1)
 	}
 
+	// 由于数据范围的原因，采用 map 记忆化
 	generalDP2 := func(x, y int) int {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
@@ -70,6 +73,22 @@ func dpCollections() {
 		return f(x, y)
 	}
 
+	// O(nlogn) LIS
+	// https://oi-wiki.org/dp/basic/#_12
+	lis := func(arr []int) int {
+		dp := make([]int, 0, len(arr))
+		for _, v := range arr {
+			if i := sort.SearchInts(dp, v); i < len(dp) {
+				dp[i] = v
+			} else {
+				dp = append(dp, v)
+			}
+		}
+		return len(dp)
+	}
+
+	// 01背包
+	// https://oi-wiki.org/dp/knapsack/
 	knapsack01 := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -121,7 +140,8 @@ func dpCollections() {
 	}
 
 	_ = []interface{}{
-		generalDP, generalDP2, knapsack01,
+		generalDP, generalDP2,
+		lis, knapsack01,
 		maxMatchingOnTree,
 	}
 }
