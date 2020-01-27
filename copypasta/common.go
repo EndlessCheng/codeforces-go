@@ -453,6 +453,7 @@ func rmqCollection() {
 	// Sparse Table
 	// https://oi-wiki.org/ds/sparse-table/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
+	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数，如 gcd 等
 	const mx = 17 // 17 for 1e5, 20 for 1e6
 	var st [][mx]int
 	stInit := func(a []int) {
