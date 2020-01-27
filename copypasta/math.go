@@ -17,21 +17,45 @@ func mathCollection() {
 		return x
 	}
 
-	calcGCD := func(a, b int64) int64 {
+	calcGCD := func(a, b int) int {
 		for b != 0 {
 			a, b = b, a%b
 		}
 		return a
 	}
-	calcGCDN := func(nums ...int64) (gcd int64) {
+	calcGCDN := func(nums ...int) (gcd int) {
 		gcd = nums[0]
 		for _, v := range nums[1:] {
 			gcd = calcGCD(gcd, v)
 		}
 		return
 	}
-	calcLCM := func(a, b int64) int64 {
+	calcLCM := func(a, b int) int {
 		return a / calcGCD(a, b) * b
+	}
+
+	// 给定数组，统计所有区间的 GCD 值
+	// 返回 map[GCD值]等于该值的区间个数
+	cntRangeGCD := func(arr []int) map[int]int64 {
+		n := len(arr)
+		cntMp := map[int]int64{}
+		gcd := make([]int, n)
+		copy(gcd, arr)
+		lPos := make([]int, n)
+		for i, v := range arr {
+			lPos[i] = i
+			// 从当前位置 i 往左遍历，更新 gcd[j] 的同时维护等于 gcd[j] 的区间最左端位置
+			for j := i; j >= 0; j = lPos[j] - 1 {
+				gcd[j] = calcGCD(gcd[j], v)
+				g := gcd[j]
+				for lPos[j] > 0 && calcGCD(gcd[lPos[j]-1], v) == g {
+					lPos[j] = lPos[lPos[j]-1]
+				}
+				// [lPos[j], j], [lPos[j]+1, j], ..., [j, j] 的区间 GCD 值均等于 gcd[j]
+				cntMp[g] += int64(j - lPos[j] + 1)
+			}
+		}
+		return cntMp
 	}
 
 	isPrime := func(n int64) bool {
@@ -308,7 +332,7 @@ func mathCollection() {
 	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 
 	_ = []interface{}{
-		factorial, calcGCDN, calcLCM,
+		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverseP, modFrac,
 		fractionToDecimal, decimalToFraction,
