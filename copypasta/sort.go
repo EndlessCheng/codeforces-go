@@ -103,23 +103,24 @@ func sortCollections() {
 			m2 := r - (r-l)/3
 			v1, v2 := f(m1), f(m2)
 			if v1 < v2 {
-				r = m2 // 若求最大值，则 l = m1
+				r = m2 // 若求最大值写成 l = m1
 			} else {
-				l = m1 // 若求最大值，则 r = m2
+				l = m1 // 若求最大值写成 r = m2
 			}
 		}
 		return (l + r) / 2
 	}
 
+	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for l+3 <= r {
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
 			v1, v2 := f(m1), f(m2)
 			if v1 < v2 {
-				r = m2
+				r = m2 // 若求最大值写成 l = m1
 			} else {
-				l = m1
+				l = m1 // 若求最大值写成 r = m2
 			}
 		}
 		min, minI := f(l), l

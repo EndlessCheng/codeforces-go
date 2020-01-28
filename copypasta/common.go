@@ -464,24 +464,25 @@ func rmqCollection() {
 			}
 		}
 	}
-	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
-		k := uint(bits.Len(uint(r-l+1)) - 1)
-		return max(st[l][k], st[r-(1<<k)+1][k])
+	stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
+		k := uint(bits.Len(uint(r-l)) - 1)
+		return max(st[l][k], st[r-(1<<k)][k])
 	}
 
 	// 下标版本，查询返回的是区间最值的下标
 	//type pair struct{ v, i int }
-	//var st [][20]pair
+	//const mx = 17
+	//var st [][mx]pair
 	//stInit := func(a []int) {
 	//	n := len(a)
-	//	st = make([][20]pair, n)
+	//	st = make([][mx]pair, n)
 	//	for i := range st {
 	//		st[i][0] = pair{a[i], i}
 	//	}
 	//	for j := uint(1); 1<<j <= n; j++ {
 	//		for i := 0; i+(1<<j)-1 < n; i++ {
 	//			st0, st1 := st[i][j-1], st[i+(1<<(j-1))][j-1]
-	//			if st0.v < st1.v { // 最小值
+	//			if st0.v <= st1.v { // 最小值，相等时下标取左侧
 	//				st[i][j] = st0
 	//			} else {
 	//				st[i][j] = st1
@@ -489,10 +490,10 @@ func rmqCollection() {
 	//		}
 	//	}
 	//}
-	//stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
-	//	k := uint(bits.Len(uint(r-l+1)) - 1)
-	//	st0, st1 := st[l][k], st[r-(1<<k)+1][k]
-	//	if st0.v < st1.v { // 最小值
+	//stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
+	//	k := uint(bits.Len(uint(r-l)) - 1)
+	//	st0, st1 := st[l][k], st[r-(1<<k)][k]
+	//	if st0.v <= st1.v { // 最小值，相等时下标取左侧
 	//		return st0.i
 	//	}
 	//	return st1.i
