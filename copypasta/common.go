@@ -53,6 +53,7 @@ func commonCollection() {
 		}
 		return ans
 	}
+	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
 	ifElseI := func(cond bool, r1, r2 int) int {
 		if cond {
 			return r1
@@ -158,11 +159,6 @@ func commonCollection() {
 			}
 		}
 		return hash
-	}
-
-	sort3 := func(a ...int) (int, int, int) {
-		sort.Ints(a)
-		return a[0], a[1], a[2]
 	}
 
 	reverseArr := func(s []byte) {
