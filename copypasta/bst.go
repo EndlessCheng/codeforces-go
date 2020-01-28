@@ -165,6 +165,23 @@ func (t *bst) mRank(key tKeyType) (cnt int, o *tnode) {
 	return
 }
 
+// >= key 的键的数量
+func (t *bst) lowerCount(key tKeyType) (cnt int) {
+	for o := t.root; o != nil; {
+		switch cmp := t.compare(key, o.key); {
+		case cmp == 0:
+			cnt += int(o.value) + o.lr[1].mSize()
+			o = o.lr[0]
+		case cmp > 0:
+			o = o.lr[1]
+		default:
+			cnt += int(o.value) + o.lr[1].mSize()
+			return
+		}
+	}
+	return
+}
+
 // 排名为 k 的节点 o（即有 k 个键小于 o.key）
 func (t *bst) mSelect(k int) (o *tnode) {
 	//if k < 0 {

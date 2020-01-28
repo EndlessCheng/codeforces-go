@@ -11,22 +11,21 @@ func fenwickTree(n int) {
 			tree[idx] += val
 		}
 	}
-	addRange := func(l, r int, val int) { // [l,r]
-		add(l, val)
-		add(r+1, -val)
-		// now value at i is a[i] + sum(i)
-	}
 	sum := func(idx int) (res int) {
 		for ; idx > 0; idx &= idx - 1 { // idx -= lowbit(idx)
 			res += tree[idx]
 		}
 		return
 	}
-	query := func(l, r int) int { // [l,r]
-		return sum(r) - sum(l-1)
+	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
+
+	addRange := func(l, r int, val int) { // [l,r]
+		add(l, val)
+		add(r+1, -val)
+		// now value at i is a[i] + sum(i)
 	}
 
-	_ = []interface{}{add, addRange, query}
+	_ = []interface{}{add, sum, query, addRange}
 }
 
 func multiFenwickTree(m, n int) {
@@ -45,9 +44,7 @@ func multiFenwickTree(m, n int) {
 		}
 		return
 	}
-	query := func(tree []int, l, r int) int {
-		return sum(tree, r) - sum(tree, l-1)
-	}
+	query := func(tree []int, l, r int) int { return sum(tree, r) - sum(tree, l-1) }
 
-	_ = []interface{}{add, query}
+	_ = []interface{}{add, sum, query}
 }
