@@ -62,17 +62,16 @@ func CF1034A(_r io.Reader, _w io.Writer) {
 			}
 		}
 	}
-	ans := 0
+	ans := -1
 	for _, c := range cnt {
 		if c > ans {
 			ans = c
 		}
 	}
-	if ans == 0 {
-		Fprint(out, -1)
-	} else {
-		Fprint(out, n-ans)
+	if ans != -1 {
+		ans = n - ans
 	}
+	Fprint(out, ans)
 }
 
 //func main() {
