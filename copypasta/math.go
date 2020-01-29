@@ -117,7 +117,7 @@ func mathCollection() {
 		}
 		return
 	}
-	doDivisors := func(n int, do func(div int)) {
+	doDivisors := func(n int, do func(d int)) {
 		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
 				do(d)
