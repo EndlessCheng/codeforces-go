@@ -7,13 +7,13 @@ import (
 	"sort"
 )
 
-type stNode struct {
+type stNode961 struct {
 	l, r int
 	vals []int
 }
-type segmentTree []stNode
+type segmentTree961 []stNode961
 
-func (t segmentTree) _pushUp(o int) []int {
+func (t segmentTree961) _pushUp(o int) []int {
 	a, b := t[o<<1].vals, t[o<<1|1].vals
 	i, n := 0, len(a)
 	j, m := 0, len(b)
@@ -35,7 +35,7 @@ func (t segmentTree) _pushUp(o int) []int {
 	}
 }
 
-func (t segmentTree) _build(arr []int, o, l, r int) {
+func (t segmentTree961) _build(arr []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].vals = []int{arr[l-1]}
@@ -47,7 +47,7 @@ func (t segmentTree) _build(arr []int, o, l, r int) {
 	t[o].vals = t._pushUp(o)
 }
 
-func (t segmentTree) _query(o, l, r, x int) (res int) {
+func (t segmentTree961) _query(o, l, r, x int) (res int) {
 	if l <= t[o].l && t[o].r <= r {
 		a := t[o].vals
 		return len(a) - sort.SearchInts(a, x)
@@ -62,8 +62,8 @@ func (t segmentTree) _query(o, l, r, x int) (res int) {
 	return
 }
 
-func (t segmentTree) init(arr []int)        { t._build(arr, 1, 1, len(arr)) }
-func (t segmentTree) query(l, r, x int) int { return t._query(1, l, r, x) }
+func (t segmentTree961) init(arr []int)        { t._build(arr, 1, 1, len(arr)) }
+func (t segmentTree961) query(l, r, x int) int { return t._query(1, l, r, x) }
 
 // github.com/EndlessCheng/codeforces-go
 func CF961E(_r io.Reader, _w io.Writer) {
@@ -84,7 +84,7 @@ func CF961E(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 
-	t := make(segmentTree, 4*n)
+	t := make(segmentTree961, 4*n)
 	t.init(a)
 	ans := int64(0)
 	for i, v := range a[:n-1] {
