@@ -9,6 +9,8 @@ import (
 
 func mathCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
+
+	// 阶乘
 	factorial := func(n int) int64 {
 		x := int64(1)
 		for i := int64(2); i <= int64(n); i++ {
@@ -58,6 +60,7 @@ func mathCollection() {
 		return cntMp
 	}
 
+	// 判断一个数是否为质数
 	isPrime := func(n int64) bool {
 		for i := int64(2); i*i <= n; i++ {
 			if n%i == 0 {
@@ -67,45 +70,79 @@ func mathCollection() {
 		return n >= 2
 	}
 
-	sieve := func(n_ int) (primes []int, isPrime []bool) {
-		primes = make([]int, 0, n_/10) // need check
-		isPrime = make([]bool, n_+1)
+	// 预处理: [2,mx] 范围内的质数
+	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
+	sieve := func() {
+		const mx int = 1e6
+		primes := make([]int, 0, mx/10) // need check
+		isPrime := [mx + 1]bool{}
 		for i := range isPrime {
 			isPrime[i] = true
 		}
 		isPrime[0], isPrime[1] = false, false
-		for i := 2; i <= n_; i++ {
+		for i := 2; i <= mx; i++ {
 			if isPrime[i] {
 				primes = append(primes, i)
-				for j := 2 * i; j <= n_; j += i {
+				for j := 2 * i; j <= mx; j += i {
 					isPrime[j] = false
 				}
 			}
 		}
+
+		// EXTRA: pi(n), the number of primes <= n
 		// https://oeis.org/A000720
-		pi := make([]int, n_+1)
-		for i := 2; i <= n_; i++ {
+		pi := [mx + 1]int{}
+		for i := 2; i <= mx; i++ {
 			pi[i] = pi[i-1]
 			if isPrime[i] {
 				pi[i]++
 			}
 		}
-		return
 	}
 
-	// for i>=2, primes[i][0] == i means i is prime
-	primeFactorsAll := func(n_ int) (factors [][]int) {
-		factors = make([][]int, n_+1)
-		for i := 2; i <= n_; i++ {
+	// 预处理: [2,mx] 范围内数的质因子（例如 factors[12] = [2,3]）
+	// for i>=2, factors[i][0] == i means i is prime
+	primeFactorsAll := func() {
+		const mx int = 1e6
+		factors := [mx + 1][]int{}
+		for i := 2; i <= mx; i++ {
 			if len(factors[i]) == 0 {
-				for j := i; j <= n_; j += i {
+				for j := i; j <= mx; j += i {
 					factors[j] = append(factors[j], i)
 				}
 			}
 		}
-		return
 	}
 
+	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
+	// 先预处理出 LPF，然后对要处理的数 v 不断地除 lpf(v) 直到等于 1
+	// https://oeis.org/A020639
+	// Lpf(n): least prime dividing n (when n > 1); a(1) = 1.
+	calcLPF := func() {
+		const mx int = 1e6
+		lpf := [mx + 1]int{}
+		lpf[1] = 1
+		for i := 2; i <= mx; i++ {
+			if lpf[i] == 0 {
+				for j := i; j <= mx; j += i {
+					if lpf[j] == 0 {
+						lpf[j] = i
+					}
+				}
+			}
+		}
+
+		// EXTRA: 分解 v
+		var v int
+		for v > 1 {
+			p := lpf[v]
+			// 处理 p ...
+			for v /= p; lpf[v] == p; v /= p {
+			}
+		}
+	}
+
+	// 枚举一个数的全部因子
 	divisors := func(n int64) (res []int64) {
 		for d := int64(1); d*d <= n; d++ {
 			if n%d == 0 {
@@ -129,6 +166,7 @@ func mathCollection() {
 		return
 	}
 
+	// 素因数分解 prime factorization
 	primeFactors := func(n int64) (factors []int64, exponents []int) {
 		for i := int64(2); i*i <= n; i++ {
 			cnt := 0
@@ -197,23 +235,6 @@ func mathCollection() {
 		//		cnt[i] += cnt[i-1]
 		// }
 		return cnt
-	}
-
-	// https://oeis.org/A020639
-	// Lpf(n): least prime dividing n (when n > 1); a(1) = 1.
-	calcLPF := func(n int) []int {
-		lpf := make([]int, n+1)
-		lpf[1] = 1
-		for i := 2; i <= n; i++ {
-			if lpf[i] == 0 {
-				for j := i; j <= n; j += i {
-					if lpf[j] == 0 {
-						lpf[j] = i
-					}
-				}
-			}
-		}
-		return lpf
 	}
 
 	//
@@ -352,12 +373,13 @@ func gameTheoryCollection() {
 	}
 
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
-	//var sg []int
-	//initSG := func(n int) {
-	//	// TODO implement
-	//}
+	var sg []int
+	initSG := func(mx int) {
+		_ = sg
+		// TODO: implement
+	}
 
-	_ = []interface{}{nim}
+	_ = []interface{}{nim, initSG}
 }
 
 type mathF func(x float64) float64
