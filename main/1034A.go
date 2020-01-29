@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -62,18 +63,19 @@ func CF1034A(_r io.Reader, _w io.Writer) {
 			}
 		}
 	}
-	ans := -1
+	ans := 0
 	for _, c := range cnt {
 		if c > ans {
 			ans = c
 		}
 	}
-	if ans != -1 {
-		ans = n - ans
+	if ans == 0 {
+		Fprint(out, -1)
+	} else {
+		Fprint(out, n-ans)
 	}
-	Fprint(out, ans)
 }
 
-//func main() {
-//	CF1034A(os.Stdin, os.Stdout)
-//}
+func main() {
+	CF1034A(os.Stdin, os.Stdout)
+}
