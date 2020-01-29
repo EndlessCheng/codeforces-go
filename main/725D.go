@@ -8,13 +8,13 @@ import (
 	"sort"
 )
 
-type int64Heap []int64
+type int64Heap725 []int64
 
-func (h int64Heap) Len() int              { return len(h) }
-func (h int64Heap) Less(i, j int) bool    { return h[i] < h[j] }
-func (h int64Heap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *int64Heap) Push(v interface{})   { *h = append(*h, v.(int64)) }
-func (h *int64Heap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h int64Heap725) Len() int              { return len(h) }
+func (h int64Heap725) Less(i, j int) bool    { return h[i] < h[j] }
+func (h int64Heap725) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *int64Heap725) Push(v interface{})   { *h = append(*h, v.(int64)) }
+func (h *int64Heap725) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
 // github.com/EndlessCheng/codeforces-go
 func CF725D(_r io.Reader, _w io.Writer) {
@@ -41,7 +41,7 @@ func CF725D(_r io.Reader, _w io.Writer) {
 		}
 		ans++
 	}
-	h := &int64Heap{}
+	h := &int64Heap725{}
 	for i := 0; ts[i].balls > 0; {
 		for ; ts[i].balls > myBalls; i++ {
 			Push(h, ts[i].weight-ts[i].balls+1)
