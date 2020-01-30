@@ -115,11 +115,11 @@ func mathCollection() {
 		}
 	}
 
+	// LPF(n): least prime dividing n (when n > 1); a(1) = 1
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
-	// 先预处理出 LPF，然后对要处理的数 v 不断地除 lpf(v) 直到等于 1
+	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
 	// https://oeis.org/A020639
-	// Lpf(n): least prime dividing n (when n > 1); a(1) = 1.
-	calcLPF := func() {
+	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{}
 		lpf[1] = 1
@@ -143,7 +143,11 @@ func mathCollection() {
 		}
 	}
 
-	// 枚举一个数的全部因子
+	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
+	// https://oeis.org/A006530
+	// 可以预处理出 LPF 然后再试除
+
+	// 枚举一个数的全部约数
 	divisors := func(n int64) (res []int64) {
 		for d := int64(1); d*d <= n; d++ {
 			if n%d == 0 {
@@ -179,16 +183,51 @@ func mathCollection() {
 				exponents = append(exponents, cnt)
 			}
 		}
-		if n != 1 {
+		if n > 1 {
 			factors = append(factors, n)
 			exponents = append(exponents, 1)
 		}
+
+		// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n)
+		// https://oeis.org/A000005
+
+		// EXTRA: 约数之和 sigma(n), also called sigma_1(n)
+		// https://oeis.org/A000203
+
 		return
 	}
 
+	// 预处理 [2,mx] 的质因数分解的不同素数个数
+	// Number of distinct primes dividing n (also called omega(n))
+	// https://oeis.org/A001221
+	// TODO
+
+	// 预处理 [2,mx] 的质因数分解的系数和
+	// Number of prime divisors of n counted with multiplicity (also called bigomega(n) or Omega(n))
 	// https://oeis.org/A001222
-	// Number of prime divisors of n counted with multiplicity (also called bigomega(n) or Omega(n)).
-	// 生成 2-n 的质因数分解的系数和
+	primeExponentsCount := func() {
+		const mx int = 1e6
+		cnt := make([]int, mx+1)
+		primes := make([]int, 0, mx/10) // need check
+		for i := 2; i <= mx; i++ {
+			if cnt[i] == 0 {
+				primes = append(primes, i)
+				cnt[i] = 1
+			}
+			for _, p := range primes {
+				if j := i * p; j <= mx {
+					cnt[j] = cnt[i] + 1
+				} else {
+					break
+				}
+			}
+		}
+
+		// EXTRA: 前缀和
+		//for i := 3; i <= mx; i++ {
+		//	cnt[i] += cnt[i-1]
+		//}
+	}
 	//primeExponentsCount := func(n int) (count []int) {
 	//	count = make([]int, n+1)
 	//	left := make([]int, n+1)
@@ -215,27 +254,39 @@ func mathCollection() {
 	//	}
 	//	return
 	//}
-	primeExponentsCount := func(n int) []int {
-		cnt := make([]int, n+1)
-		primes := make([]int, 0, n/10) // need check
-		for i := 2; i <= n; i++ {
-			if cnt[i] == 0 {
-				primes = append(primes, i)
-				cnt[i] = 1
-			}
-			for _, p := range primes {
-				if j := i * p; j <= n {
-					cnt[j] = cnt[i] + 1
-				} else {
-					break
+
+	// n 的欧拉函数（互素的数的个数）Euler totient function
+	calcPhi := func(n int) int {
+		ans := n
+		for i := 2; i*i <= n; i++ {
+			if n%i == 0 {
+				ans = ans / i * (i - 1)
+				for ; n%i == 0; n /= i {
 				}
 			}
 		}
-		// 前缀和
-		// for i := 3; i <= n; i++ {
-		//		cnt[i] += cnt[i-1]
-		// }
-		return cnt
+		if n > 1 {
+			ans = ans / n * (n - 1)
+		}
+		return ans
+	}
+
+	// 预处理 [2,mx] 的欧拉函数（互素的数的个数）Euler totient function
+	// https://oeis.org/A000010
+	// NOTE: phi 的递归调用（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
+	phiAll := func() {
+		const mx int = 1e6
+		phi := [mx + 1]int{}
+		for i := 2; i <= mx; i++ {
+			phi[i] = i
+		}
+		for i := 2; i <= mx; i++ {
+			if phi[i] == i {
+				for j := i; j <= mx; j += i {
+					phi[j] = phi[j] / i * (i - 1)
+				}
+			}
+		}
 	}
 
 	//
@@ -373,7 +424,7 @@ func mathCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorsAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcLPF,
+		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcPhi, phiAll,
 		modInverseP, modFrac,
 		fractionToDecimal, decimalToFraction,
 		moveToRange,
