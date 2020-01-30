@@ -97,7 +97,7 @@ func sortCollections() {
 
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
-		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥
+		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for i := 0; i < step; i++ {
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
