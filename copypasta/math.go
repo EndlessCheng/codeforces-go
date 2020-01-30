@@ -197,26 +197,36 @@ func mathCollection() {
 		return
 	}
 
-	// 预处理 [2,mx] 的质因数分解的不同素数个数
+	// 预处理: [2,mx] 范围内数的质因子个数
 	// Number of distinct primes dividing n (also called omega(n))
 	// https://oeis.org/A001221
-	// TODO
+	distinctPrimesCountAll := func() {
+		const mx int = 1e6
+		cnts := make([]int, mx+1)
+		for i := 2; i <= mx; i++ {
+			if cnts[i] == 0 {
+				for j := i; j <= mx; j += i {
+					cnts[i]++
+				}
+			}
+		}
+	}
 
 	// 预处理 [2,mx] 的质因数分解的系数和
 	// Number of prime divisors of n counted with multiplicity (also called bigomega(n) or Omega(n))
 	// https://oeis.org/A001222
-	primeExponentsCount := func() {
+	primeExponentsCountAll := func() {
 		const mx int = 1e6
-		cnt := make([]int, mx+1)
+		cnts := make([]int, mx+1)
 		primes := make([]int, 0, mx/10) // need check
 		for i := 2; i <= mx; i++ {
-			if cnt[i] == 0 {
+			if cnts[i] == 0 {
 				primes = append(primes, i)
-				cnt[i] = 1
+				cnts[i] = 1
 			}
 			for _, p := range primes {
 				if j := i * p; j <= mx {
-					cnt[j] = cnt[i] + 1
+					cnts[j] = cnts[i] + 1
 				} else {
 					break
 				}
@@ -424,7 +434,7 @@ func mathCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcPhi, phiAll,
+		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInverseP, modFrac,
 		fractionToDecimal, decimalToFraction,
 		moveToRange,
