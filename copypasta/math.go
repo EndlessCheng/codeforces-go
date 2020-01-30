@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// NOTE: a%-b == a%b
 func mathCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
@@ -352,11 +353,30 @@ func mathCollection() {
 	// 隔板法
 	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 
+	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
+	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
+		switch {
+		case st < l:
+			if d <= 0 {
+				return
+			}
+			return l + ((st-l)%d+d)%d, true
+		case st <= r:
+			return st, true
+		default:
+			if d >= 0 {
+				return
+			}
+			return r + ((st-r)%d+d)%d, true
+		}
+	}
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, divisors, doDivisors, primeFactors, primeExponentsCount, calcLPF,
 		modInverseP, modFrac,
 		fractionToDecimal, decimalToFraction,
+		moveToRange,
 	}
 }
 

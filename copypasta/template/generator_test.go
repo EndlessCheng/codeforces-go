@@ -12,7 +12,7 @@ import (
 
 // 生成比赛模板（需要先创建目录）
 func TestGenContestTemplates(t *testing.T) {
-	const contestID = "1202"
+	const contestID = "1295"
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	opened := false
@@ -54,7 +54,7 @@ func TestGenContestTemplates(t *testing.T) {
 
 // 生成单道题目的模板（Codeforces）
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/690/D2"
+	const problemURL = "https://codeforces.com/problemset/problem/1295/B"
 	// https://codeforces.com/problemset/status/617/problem/E
 	// https://codeforces.com/gym/102253/problem/C
 	contestID, problemID := parseProblemURL(problemURL)
