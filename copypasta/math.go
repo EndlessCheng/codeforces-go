@@ -324,10 +324,10 @@ func mathCollection() {
 	// 费马小定理
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
-	modInverseP := func(a, p int) int {
-		quickPow := func(x, n, p int) int {
+	modInverseP := func(a, p int64) int64 {
+		quickPow := func(x, n, p int64) int64 {
 			x %= p
-			res := 1
+			res := int64(1)
 			for ; n > 0; n >>= 1 {
 				if n&1 == 1 {
 					res = res * x % p
@@ -362,8 +362,22 @@ func mathCollection() {
 			x += m * t
 			m *= mi / d
 		}
-		return x % m, m
+		return (x%m + m) % m, m
 	}
+
+	// a*b%mod，原理和 a^n%mod 类似
+	quickMul := func(a, b, mod int64) (res int64) {
+		for ; b > 0; b >>= 1 {
+			if b&1 == 1 {
+				res = (res + a) % mod
+			}
+			a = (a + a) % mod
+		}
+		return
+	}
+
+	// TODO: 扩展中国剩余定理 (EXCRT)
+	// https://www.luogu.com.cn/problemnew/solution/P4777
 
 	//
 
@@ -461,7 +475,7 @@ func mathCollection() {
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
-		modInverseP, modFrac, solveLinearCongruence,
+		modInverseP, modFrac, solveLinearCongruence, quickMul,
 		fractionToDecimal, decimalToFraction,
 		moveToRange,
 	}
