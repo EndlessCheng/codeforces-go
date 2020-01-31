@@ -348,6 +348,7 @@ func mathCollection() {
 	// ai * x ≡ bi (mod mi)
 	// 解为 x ≡ b (mod m)
 	// 有解时返回 (b, m)，无解时返回 (0, -1)
+	// 推导过程见《挑战程序设计竞赛》P292
 	// 注意乘法溢出的可能
 	solveLinearCongruence := func(A, B, M []int) (int, int) {
 		x, m := 0, 1
