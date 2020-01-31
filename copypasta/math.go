@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"math"
+	"math/bits"
 	"regexp"
 	"strconv"
 	"strings"
@@ -454,6 +455,26 @@ func mathCollection() {
 	// 隔板法
 	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 
+	// 容斥原理 Inclusion–exclusion principle
+	// 参考《挑战程序设计竞赛》P296
+	solveInclusionExclusion := func(arr []int) (ans int) {
+		n := uint(len(arr))
+		for i := uint(0); i < 1<<n; i++ { // i repr a set which elements are in range [0,n)
+			res := 0
+			for j := uint(0); j < n; j++ {
+				if i>>j&1 == 1 { // choose j in set i
+					_ = arr[j]
+				}
+			}
+			if bits.OnesCount(i)&1 == 1 {
+				ans += res
+			} else {
+				ans -= res
+			}
+		}
+		return
+	}
+
 	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
 	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
 		switch {
@@ -477,6 +498,7 @@ func mathCollection() {
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInverseP, modFrac, solveLinearCongruence, quickMul,
 		fractionToDecimal, decimalToFraction,
+		solveInclusionExclusion,
 		moveToRange,
 	}
 }
