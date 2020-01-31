@@ -304,8 +304,8 @@ func mathCollection() {
 	// exgcd solve equation ax+by=gcd(a,b)
 	// we have |x|<=b and |y|<=a in result (x,y)
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
-	var exgcd func(a, b int64) (gcd, x, y int64)
-	exgcd = func(a, b int64) (gcd, x, y int64) {
+	var exgcd func(a, b int) (gcd, x, y int)
+	exgcd = func(a, b int) (gcd, x, y int) {
 		if b == 0 {
 			return a, 1, 0
 		}
@@ -314,31 +314,54 @@ func mathCollection() {
 		return
 	}
 
+	// 逆元
 	// ax ≡ 1 (mod m)
-	modInverse := func(a, m int64) int64 {
+	modInverse := func(a, m int) int {
 		_, x, _ := exgcd(a, m)
 		return (x%m + m) % m
 	}
 
-	quickPow := func(x, n, p int64) int64 {
-		x %= p
-		res := int64(1)
-		for ; n > 0; n >>= 1 {
-			if n&1 == 1 {
-				res = res * x % p
-			}
-			x = x * x % p
-		}
-		return res
-	}
+	// 费马小定理
 	// ax ≡ 1 (mod p)
-	modInverseP := func(a, p int64) int64 {
+	// x^-1 ≡ a^(p-2) (mod p)
+	modInverseP := func(a, p int) int {
+		quickPow := func(x, n, p int) int {
+			x %= p
+			res := 1
+			for ; n > 0; n >>= 1 {
+				if n&1 == 1 {
+					res = res * x % p
+				}
+				x = x * x % p
+			}
+			return res
+		}
 		return quickPow(a, p-2, p)
 	}
 
-	// a/b % m
-	modFrac := func(a, b, m int64) int64 {
+	// 计算 a/b (mod m)
+	modFrac := func(a, b, m int) int {
 		return a * modInverse(b, m) % m
+	}
+
+	// 线性同余方程组
+	// ai * x ≡ bi (mod mi)
+	// 解为 x ≡ b (mod m)
+	// 有解时返回 (b, m)，无解时返回 (0, -1)
+	// 注意乘法溢出的可能
+	solveLinearCongruence := func(A, B, M []int) (int, int) {
+		x, m := 0, 1
+		for i, mi := range M {
+			a, b := A[i]*m, B[i]-A[i]*x
+			d := calcGCD(a, mi)
+			if b%d != 0 {
+				return 0, -1
+			}
+			t := modFrac(b/d, a/d, mi/d)
+			x += m * t
+			m *= mi / d
+		}
+		return x % m, m
 	}
 
 	//
@@ -348,6 +371,8 @@ func mathCollection() {
 	// a(n) = Sum_{k=1..n} floor(n/k)
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
+
+	//
 
 	// https://en.wikipedia.org/wiki/Repeating_decimal
 	// https://oeis.org/A051626 Period of decimal representation of 1/n, or 0 if 1/n terminates.
@@ -435,7 +460,7 @@ func mathCollection() {
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
-		modInverseP, modFrac,
+		modInverseP, modFrac, solveLinearCongruence,
 		fractionToDecimal, decimalToFraction,
 		moveToRange,
 	}
