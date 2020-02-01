@@ -74,6 +74,7 @@ func mathCollection() {
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
+	// 也有线性的做法，见 https://oi-wiki.org/math/sieve/
 	sieve := func() {
 		const mx int = 1e6
 		primes := make([]int, 0, mx/10) // need check

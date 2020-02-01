@@ -340,3 +340,9 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // TODO: link/cut tree
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
+
+// TODO: 树上启发式合并 DSU on tree
+// https://oi-wiki.org/graph/dsu-on-tree/
+
+// TODO: 虚树
+// https://oi-wiki.org/graph/virtual-tree/

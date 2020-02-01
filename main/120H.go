@@ -66,14 +66,12 @@ func CF120H(_r io.Reader, _w io.Writer) {
 	var used []bool
 	var f func(v int) bool
 	f = func(v int) bool {
-		if !used[v] {
-			used[v] = true
-			for _, w := range g[v] {
-				if matchR[w] == -1 || f(matchR[w]) {
-					matchR[w] = v
-					matchL[v] = w
-					return true
-				}
+		used[v] = true
+		for _, w := range g[v] {
+			if lv := matchR[w]; lv == -1 || !used[lv] && f(lv) {
+				matchR[w] = v
+				matchL[v] = w
+				return true
 			}
 		}
 		return false

@@ -352,6 +352,7 @@ func commonCollection() {
 		return false
 	}
 
+	// 算法导论 练习4.1-5
 	maxSubArraySum := func(a []int) int {
 		curSum, maxSum := a[0], a[0]
 		for _, v := range a[1:] {
@@ -503,6 +504,7 @@ func rmqCollection() {
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
+	// TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 	type block struct {
 		l, r           int // [l,r]
 		arr, sortedArr []int

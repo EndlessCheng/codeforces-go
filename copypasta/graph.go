@@ -249,7 +249,8 @@ func (*graph) findBridges(n, m int, g [][]int) {
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 func (*graph) findBCC() (comps [][]int, bccIDs []int) {
-	// TODO: implement
+	// TODO: implement！！
+	// 點雙連通、邊雙連通
 	return
 }
 
@@ -667,28 +668,28 @@ func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	var used []bool
 	var f func(v int) bool
 	f = func(v int) bool {
+		used[v] = true
 		for _, w := range g[v] {
-			if !used[w] {
-				used[w] = true
-				if match[w] == -1 || f(match[w]) {
-					match[w] = v
-					return true
-				}
+			if mw := match[w]; mw == -1 || !used[mw] && f(mw) {
+				match[w] = v
+				match[v] = w
+				return true
 			}
 		}
 		return false
 	}
 	for v := range g {
-		used = make([]bool, n)
-		if f(v) {
-			cnt++
+		if match[v] == -1 {
+			used = make([]bool, n)
+			if f(v) {
+				cnt++
+			}
 		}
 	}
-	cnt /= 2 // 匹配的对数
 	return
 }
 
-// 另一种写法，适用左右两侧节点有明确区分的情况，g 中存储的是左侧到右侧的单向边
+// 另一种写法，适用左右两侧节点有明确区分的情况，要求 g 中存储的是左侧到右侧的单向边
 func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
 	matchL = make([]int, nl)
 	matchR := make([]int, nr)
@@ -701,14 +702,12 @@ func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt i
 	var used []bool
 	var f func(v int) bool
 	f = func(v int) bool {
-		if !used[v] {
-			used[v] = true
-			for _, w := range g[v] {
-				if matchR[w] == -1 || f(matchR[w]) {
-					matchR[w] = v
-					matchL[v] = w
-					return true
-				}
+		used[v] = true
+		for _, w := range g[v] {
+			if lv := matchR[w]; lv == -1 || !used[lv] && f(lv) {
+				matchR[w] = v
+				matchL[v] = w
+				return true
 			}
 		}
 		return false
@@ -730,9 +729,9 @@ func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
-// 带权二分图最大匹配 - KM 算法 O(n^3)
+// 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)
 // https://zhuanlan.zhihu.com/p/62981901
-func (*graph) maxMatchingKM(n int, g [][]int) (match []int, cnt int) {
+func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	// TODO
 	return
 }

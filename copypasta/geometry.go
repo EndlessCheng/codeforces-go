@@ -141,6 +141,8 @@ type circle struct {
 // https://oi-wiki.org/geometry/inverse/
 
 func vec2Collection() {
+	// TODO: 扫描线：线段求交 O(nlogn)
+
 	merge := func(a, b []vec) []vec {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
@@ -209,7 +211,7 @@ func vec2Collection() {
 		return ls
 	}
 
-	// 凸包
+	// 求凸包 葛立恒扫描法 Graham's scan
 	// qs[0] == qs[-1]
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
@@ -242,6 +244,8 @@ func vec2Collection() {
 		}
 		return qs
 	}
+
+	// TODO: 旋转卡壳求最远点对
 
 	// 凸包周长
 	convexHullLength := func(ps []vec) (res float64) {
