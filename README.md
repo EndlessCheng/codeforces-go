@@ -6,7 +6,7 @@
 
 [All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
 
-I implement some algorithms in [copypasta](./copypasta).
+I have implemented some algorithms in [copypasta](./copypasta).
 
 ## How to Choose Problems
 
