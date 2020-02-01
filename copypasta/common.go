@@ -656,20 +656,41 @@ func loopCollection() {
 		return b
 	}
 
-	// 枚举子集
-	loopSet := func(arr []int) (ans int) {
+	// 枚举 {0,1,...,n-1} 的全部子集
+	loopSet := func(arr []int) {
 		n := uint(len(arr))
 		//outer:
-		for i := 0; i < 1<<n; i++ { // i repr a set which elements are in range [0,n)
-			sum := 0
-			for j := uint(0); j < n; j++ {
-				if i>>j&1 == 1 { // choose j in set i
-					// sum+=do(arr[j]) or continue outer
+		for sub := 0; sub < 1<<n; sub++ { // sub repr a subset which elements are in range [0,n)
+			// do(sub)
+			for i := uint(0); i < n; i++ {
+				if sub>>i&1 == 1 { // choose i in sub
+					_ = arr[i]
+					// do(arr[i]) or continue outer
 				}
 			}
-			ans = max(ans, sum)
 		}
-		return
+	}
+
+	// 枚举 subset 的全部子集
+	// 作为结束条件，处理完 0 之后，会有 -1&subset == subset
+	loopSubset := func(n, subset int) {
+		sub := subset
+		for ok := true; ok; ok = sub != subset {
+			// do(sub)
+			sub = (sub - 1) & subset
+		}
+	}
+
+	// 枚举 {0,1,...,n-1} 的大小为 k 的子集（按字典序）
+	// 参考《挑战程序设计竞赛》P.156-158
+	loopSubsetK := func(arr []int, k int) {
+		n := uint(len(arr))
+		for sub := 1<<uint(k) - 1; sub < 1<<n; {
+			// do(sub)
+			x := sub & -sub
+			y := sub + x
+			sub = sub&^y/x>>1 | y
+		}
 	}
 
 	// 枚举排列 + 剪枝
@@ -892,7 +913,7 @@ func loopCollection() {
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
 
 	_ = []interface{}{
-		loopSet, loopPerm, dfsGrids, searchDir4, searchDir4R,
+		loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
 		rangeCombinations, combinations, permutations, permuteAll,
 	}
 }

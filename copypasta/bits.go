@@ -11,6 +11,10 @@ Precedence    Operator
     1         ||
 
 a|b = a^b + a&b
+
+S∪{i}: S|1<<i
+S\{i}:  S&^(1<<i)
+
 */
 
 // See "math/bits" for more functions

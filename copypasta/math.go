@@ -460,14 +460,14 @@ func mathCollection() {
 	// 参考《挑战程序设计竞赛》P296
 	solveInclusionExclusion := func(arr []int) (ans int) {
 		n := uint(len(arr))
-		for i := uint(0); i < 1<<n; i++ { // i repr a set which elements are in range [0,n)
+		for sub := uint(0); sub < 1<<n; sub++ {
 			res := 0
-			for j := uint(0); j < n; j++ {
-				if i>>j&1 == 1 { // choose j in set i
-					_ = arr[j]
+			for i := uint(0); i < n; i++ {
+				if sub>>i&1 == 1 {
+					_ = arr[i]
 				}
 			}
-			if bits.OnesCount(i)&1 == 1 {
+			if bits.OnesCount(sub)&1 == 1 {
 				ans += res
 			} else {
 				ans -= res
