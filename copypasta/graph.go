@@ -258,7 +258,7 @@ func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
-func (*graph) shortestPathFloyd(n, m int) [][]int {
+func (*graph) shortestPathFloydWarshall(n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {
 			return a
@@ -293,7 +293,7 @@ func (*graph) shortestPathFloyd(n, m int) [][]int {
 // 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
-func (*graph) shortestCycleFloyd(weights [][]int64) int64 {
+func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	min := func(a, b int64) int64 {
 		if a <= b {
 			return a
