@@ -28,17 +28,11 @@ func maxProduct(root *TreeNode) (ans int) {
 
 	var f2 func(o *TreeNode) int
 	f2 = func(o *TreeNode) int {
-		sum := o.Val
-		if o.Left != nil {
-			s := f2(o.Left)
-			ans = max(ans, s*(all-s))
-			sum += s
+		if o == nil {
+			return 0
 		}
-		if o.Right != nil {
-			s := f2(o.Right)
-			ans = max(ans, s*(all-s))
-			sum += s
-		}
+		sum := o.Val + f2(o.Left) + f2(o.Right)
+		ans = max(ans, sum*(all-sum))
 		return sum
 	}
 	f2(root)
