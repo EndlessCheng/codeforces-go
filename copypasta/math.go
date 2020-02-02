@@ -9,7 +9,7 @@ import (
 )
 
 // NOTE: a%-b == a%b
-func mathCollection() {
+func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
 	// 阶乘
@@ -389,7 +389,55 @@ func mathCollection() {
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
-	//
+	_ = []interface{}{
+		factorial, calcGCDN, calcLCM, cntRangeGCD,
+		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
+		modInverseP, modFrac, solveLinearCongruence, quickMul,
+	}
+}
+
+// 组合、杂项
+func miscCollection() {
+	// 隔板法
+	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+
+	// 容斥原理 Inclusion–exclusion principle
+	// 参考《挑战程序设计竞赛》P296
+	solveInclusionExclusion := func(arr []int) (ans int) {
+		n := uint(len(arr))
+		for sub := uint(0); sub < 1<<n; sub++ {
+			res := 0
+			for i := uint(0); i < n; i++ {
+				if sub>>i&1 == 1 {
+					_ = arr[i]
+				}
+			}
+			if bits.OnesCount(sub)&1 == 1 {
+				ans += res
+			} else {
+				ans -= res
+			}
+		}
+		return
+	}
+
+	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
+	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
+		switch {
+		case st < l:
+			if d <= 0 {
+				return
+			}
+			return l + ((st-l)%d+d)%d, true
+		case st <= r:
+			return st, true
+		default:
+			if d >= 0 {
+				return
+			}
+			return r + ((st-r)%d+d)%d, true
+		}
+	}
 
 	// https://en.wikipedia.org/wiki/Repeating_decimal
 	// https://oeis.org/A051626 Period of decimal representation of 1/n, or 0 if 1/n terminates.
@@ -453,54 +501,10 @@ func mathCollection() {
 		return
 	}
 
-	// 隔板法
-	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
-
-	// 容斥原理 Inclusion–exclusion principle
-	// 参考《挑战程序设计竞赛》P296
-	solveInclusionExclusion := func(arr []int) (ans int) {
-		n := uint(len(arr))
-		for sub := uint(0); sub < 1<<n; sub++ {
-			res := 0
-			for i := uint(0); i < n; i++ {
-				if sub>>i&1 == 1 {
-					_ = arr[i]
-				}
-			}
-			if bits.OnesCount(sub)&1 == 1 {
-				ans += res
-			} else {
-				ans -= res
-			}
-		}
-		return
-	}
-
-	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
-	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
-		switch {
-		case st < l:
-			if d <= 0 {
-				return
-			}
-			return l + ((st-l)%d+d)%d, true
-		case st <= r:
-			return st, true
-		default:
-			if d >= 0 {
-				return
-			}
-			return r + ((st-r)%d+d)%d, true
-		}
-	}
-
 	_ = []interface{}{
-		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
-		modInverseP, modFrac, solveLinearCongruence, quickMul,
-		fractionToDecimal, decimalToFraction,
 		solveInclusionExclusion,
 		moveToRange,
+		fractionToDecimal, decimalToFraction,
 	}
 }
 
@@ -526,29 +530,36 @@ func gameTheoryCollection() {
 	_ = []interface{}{nim, initSG}
 }
 
-type mathF func(x float64) float64
+// 数值分析
+// https://zh.wikipedia.org/wiki/%E6%95%B0%E5%80%BC%E5%88%86%E6%9E%90
+func numericalAnalysisCollection() {
+	type mathF func(x float64) float64
 
-// Simpson's 1/3 rule
-// https://en.wikipedia.org/wiki/Simpson%27s_rule
-// 证明过程 https://phqghume.github.io/2018/05/19/%E8%87%AA%E9%80%82%E5%BA%94%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95/
-func simpson(l, r float64, f mathF) float64 {
-	h := (r - l) / 2
-	return h * (f(l) + 4*f(l+h) + f(r)) / 3
-}
-
-// 不放心的话还可以设置一个最大递归深度 maxDeep
-// 15eps 的证明过程 http://www2.math.umd.edu/~mariakc/teaching/adaptive.pdf
-func _asr(l, r, eps, A float64, f mathF) float64 {
-	mid := l + (r-l)/2
-	L := simpson(l, mid, f)
-	R := simpson(mid, r, f)
-	if math.Abs(L+R-A) <= 15*eps {
-		return L + R + (L+R-A)/15
+	// Simpson's 1/3 rule
+	// https://en.wikipedia.org/wiki/Simpson%27s_rule
+	// 证明过程 https://phqghume.github.io/2018/05/19/%E8%87%AA%E9%80%82%E5%BA%94%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95/
+	simpson := func(l, r float64, f mathF) float64 {
+		h := (r - l) / 2
+		return h * (f(l) + 4*f(l+h) + f(r)) / 3
 	}
-	return _asr(l, mid, eps/2, L, f) + _asr(mid, r, eps/2, R, f)
-}
 
-// Adaptive Simpson's Rule
-// https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
-// https://cp-algorithms.com/num_methods/simpson-integration.html
-func asr(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
+	// 不放心的话还可以设置一个最大递归深度 maxDeep
+	// 15eps 的证明过程 http://www2.math.umd.edu/~mariakc/teaching/adaptive.pdf
+	var _asr func(l, r, eps, A float64, f mathF) float64
+	_asr = func(l, r, eps, A float64, f mathF) float64 {
+		mid := l + (r-l)/2
+		L := simpson(l, mid, f)
+		R := simpson(mid, r, f)
+		if math.Abs(L+R-A) <= 15*eps {
+			return L + R + (L+R-A)/15
+		}
+		return _asr(l, mid, eps/2, L, f) + _asr(mid, r, eps/2, R, f)
+	}
+
+	// 自适应辛普森积分 Adaptive Simpson's Rule
+	// https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
+	// https://cp-algorithms.com/num_methods/simpson-integration.html
+	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
+
+	_ = []interface{}{asr}
+}
