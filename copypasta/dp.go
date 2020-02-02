@@ -10,12 +10,6 @@ import "sort"
 */
 
 func dpCollections() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -38,9 +32,8 @@ func dpCollections() {
 				return dp[p]
 			}
 			defer func() { dp[p] = _ans }()
-			// 转移方程
-			ap := a[p]
-			_ = ap
+			_ = a[p]
+
 			return
 		}
 		//return f(0)
@@ -53,29 +46,24 @@ func dpCollections() {
 
 	generalDP2 := func(a []int) int {
 		n := len(a)
-		cost := func(l, r int) int {
-			return 1
+		dp := make([][]int, n) // n+1
+		for i := range dp {
+			dp[i] = make([]int, n) // n+1
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
 		}
-		const mx int = 505
-		dp := [mx][mx]int{}
-		vis := [mx][mx]bool{}
 		var f func(int, int) int
 		f = func(l, r int) (_ans int) {
 			if l >= r {
 				return 0
 			}
-			if vis[l][r] {
+			if dp[l][r] != -1 {
 				return dp[l][r]
 			}
-			vis[l][r] = true
 			defer func() { dp[l][r] = _ans }()
-			// 转移方程
-			if a[l] == a[r] {
-				return f(l+1, r-1)
-			}
-			f1 := f(l+1, r) + cost(l, r)
-			f2 := f(l, r-1) + cost(l, r)
-			return min(f1, f2)
+
+			return
 		}
 		return f(0, n-1)
 	}
@@ -93,8 +81,7 @@ func dpCollections() {
 				return v
 			}
 			defer func() { dp[p] = _ans }()
-			// 转移方程
-			// ...
+
 			return
 		}
 		return f(x, y)
