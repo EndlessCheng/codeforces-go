@@ -54,13 +54,13 @@ func commonCollection() {
 		return ans
 	}
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
-	ifElseI := func(cond bool, r1, r2 int) int {
+	ternaryI := func(cond bool, r1, r2 int) int {
 		if cond {
 			return r1
 		}
 		return r2
 	}
-	ifElseS := func(cond bool, r1, r2 string) string {
+	ternaryS := func(cond bool, r1, r2 string) string {
 		if cond {
 			return r1
 		}
@@ -441,7 +441,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor, zip, zipI,
+		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,

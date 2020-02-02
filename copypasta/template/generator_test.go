@@ -83,9 +83,7 @@ func CF%[1]s(_r io.Reader, _w io.Writer) {
 	
 }
 
-func main() {
-	CF%[1]s(os.Stdin, os.Stdout)
-}
+func main() { CF%[1]s(os.Stdin, os.Stdout) }
 `, problemID)
 	mainTestStr := fmt.Sprintf(`package main
 

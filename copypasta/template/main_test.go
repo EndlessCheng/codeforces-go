@@ -15,12 +15,12 @@ func Test_solve(t *testing.T) {
 		``,
 	}
 	if len(customInputs) > 0 && strings.TrimSpace(customInputs[0]) != "" {
-		testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, solve)
+		testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
 		t.Log("======================================")
 	}
 
 	dir, _ := filepath.Abs(".")
-	testutil.AssertEqualFileCase(t, dir, 0, solve)
+	testutil.AssertEqualFileCase(t, dir, 0, run)
 	_, problemName := filepath.Split(dir)
 	t.Logf("Current problem is [%s]", problemName)
 }
