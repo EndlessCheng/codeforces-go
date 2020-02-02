@@ -13,6 +13,9 @@ func sortCollections() {
 		sort.Strings(a)
 		return strings.Join(a, "")
 	}
+	reverseSort := func(a []int) {
+		sort.Sort(sort.Reverse(sort.IntSlice(a)))
+	}
 
 	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
@@ -138,7 +141,7 @@ func sortCollections() {
 	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{
-		sortString, lowerBound, upperBound, reverse,
+		sortString, reverseSort, lowerBound, upperBound, reverse,
 		searchRange, search64, binarySearch, ternarySearch, ternarySearchInt,
 	}
 }

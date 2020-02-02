@@ -23,17 +23,44 @@ func dpCollections() {
 		return b
 	}
 
-	generalDP := func(a []int) int {
+	generalDP := func(a []int) (ans int) {
+		n := len(a)
+		dp := make([]int, n) // n+1
+		for i := range dp {
+			dp[i] = -1
+		}
+		var f func(int) int
+		f = func(p int) (_ans int) {
+			if p < 0 || p >= n {
+				return 0
+			}
+			if dp[p] != -1 {
+				return dp[p]
+			}
+			defer func() { dp[p] = _ans }()
+			// 转移方程
+			ap := a[p]
+			_ = ap
+			return
+		}
+		//return f(0)
+		for i := range a {
+			fi := f(i)
+			ans = max(ans, fi)
+		}
+		return
+	}
+
+	generalDP2 := func(a []int) int {
 		n := len(a)
 		cost := func(l, r int) int {
 			return 1
 		}
-		const mx = 505
+		const mx int = 505
 		dp := [mx][mx]int{}
 		vis := [mx][mx]bool{}
-		var f func(l, r int) int
-		f = func(l, r int) (ans int) {
-			// 边界检查
+		var f func(int, int) int
+		f = func(l, r int) (_ans int) {
 			if l >= r {
 				return 0
 			}
@@ -41,7 +68,7 @@ func dpCollections() {
 				return dp[l][r]
 			}
 			vis[l][r] = true
-			defer func() { dp[l][r] = ans }()
+			defer func() { dp[l][r] = _ans }()
 			// 转移方程
 			if a[l] == a[r] {
 				return f(l+1, r-1)
@@ -54,18 +81,18 @@ func dpCollections() {
 	}
 
 	// 由于数据范围的原因，采用 map 记忆化
-	generalDP2 := func(x, y int) int {
+	generalDPMap := func(x, y int) int {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
-		var f func(x, y int) int
-		f = func(x, y int) (ans int) {
+		var f func(int, int) int
+		f = func(x, y int) (_ans int) {
 			// 边界检查
 			// ...
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
 				return v
 			}
-			defer func() { dp[p] = ans }()
+			defer func() { dp[p] = _ans }()
 			// 转移方程
 			// ...
 			return
@@ -140,7 +167,7 @@ func dpCollections() {
 	}
 
 	_ = []interface{}{
-		generalDP, generalDP2,
+		generalDP, generalDP2, generalDPMap,
 		lis, knapsack01,
 		maxMatchingOnTree,
 	}

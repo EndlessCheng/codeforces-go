@@ -74,6 +74,22 @@ func commonCollection() {
 		return ints
 	}
 	xor := func(b1, b2 bool) bool { return b1 && !b2 || !b1 && b2 }
+	zip := func(a, b []int) {
+		n := len(a)
+		type pair struct{ x, y int }
+		ps := make([]pair, n)
+		for i := range ps {
+			ps[i] = pair{a[i], b[i]}
+		}
+	}
+	zipI := func(a []int) {
+		n := len(a)
+		type pair struct{ x, y int }
+		ps := make([]pair, n)
+		for i := range ps {
+			ps[i] = pair{a[i], i}
+		}
+	}
 	// END HELPER
 
 	abs := func(x int) int {
@@ -425,7 +441,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor,
+		min, mins, max, maxs, ifElseI, ifElseS, toInts, xor, zip, zipI,
 		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame,
 		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
