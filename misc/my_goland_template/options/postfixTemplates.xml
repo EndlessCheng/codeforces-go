@@ -1,0 +1,211 @@
+<application>
+  <component name="PostfixTemplates">
+    <template id="makep@userDefined" key=".makep" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$END$ := make([]pair, $EXPR$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="fill@userDefined" key=".fill" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="for i := range $EXPR$ {&#10;    $EXPR$[i] = -1$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="make@userDefined" key=".make" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$END$ := make([]int, $EXPR$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="string@userDefined" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="s$END$ := []byte(strconv.Itoa($EXPR$))&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="reverse@userDefined2" key=".reverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$R := make([]int, len($EXPR$))&#10;for i := range $EXPR$ {&#10;    $EXPR$R[i] = $EXPR$[len($EXPR$)-1-i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="toi@userDefined" key=".toi" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi($EXPR$)&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="size@userDefined" key=".size" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+        <condition id="slice" />
+        <condition id="map" />
+      </conditions>
+      <template name="fakeKey" value="len($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="rfor@userDefined" key=".rfor" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="for i := len($EXPR$) - 1; i &gt;= 0; i-- {&#10;    v$END$ := $EXPR$[i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="max@userDefined" key=".max" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = max($EXPR$, $END$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sq@userDefined" key=".sq" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ * $EXPR$" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="toi@userDefined2" key=".toi" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi(string($EXPR$))&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="tos@userDefined" key=".tos" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="s$END$ := []byte(strconv.Itoa($EXPR$))&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="int@userDefined2" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi(string($EXPR$))&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="makei@userDefined" key=".makei" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$END$ := make([]int, $EXPR$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="reverse@userDefined" key=".reverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$RB := make([]byte, len($EXPR$))&#10;for i := range $EXPR$ {&#10;    $EXPR$RB[i] = $EXPR$[len($EXPR$)-1-i]&#10;}&#10;$EXPR$R := string($EXPR$RB)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="makes@userDefined" key=".makes" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$END$ := make([]string, $EXPR$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="min@userDefined" key=".min" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = min($EXPR$, $END$)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sort64@userDefined" key=".sort64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { return $EXPR$[i] &lt; $EXPR$[j] })" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sortpair@userDefined" key=".sortpair" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool {&#10;  pi, pj := $EXPR$[i], $EXPR$[j]&#10;  return pi.x &lt; pj.x || pi.x == pj.x &amp;&amp; pi.y &lt; pj.y&#10;})&#10;" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="int@userDefined" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi($EXPR$)&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="split@userDefined" key=".split" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="splits := strings.Split($EXPR$, &quot; $END$&quot;)&#10;" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+  </component>
+  <component name="PostfixTemplatesSettings">
+    <option name="providerToDisabledTemplates">
+      <disabled-templates provider="builtin.js">
+        <value>
+          <set>
+            <option value="com.intellij.lang.javascript.template.postfix.JSArgumentPostfixTemplate#.arg" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSAwaitPostfixTemplate#.await" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSDForOfPostfixTemplate#.dforof" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSDestructPostfixTemplate#.destruct" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSElseStatementPostfixTemplate#.else" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSForInPostfixTemplate#.forin" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSForInPostfixTemplate#.itin" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSForOfPostfixTemplate#.forof" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIfInstanceOfPostfixTemplate#.instanceof" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIfStatementPostfixTemplate#.if" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIfTypeOfPostfixTemplate#.typeofif" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIntroduceConstPostfixTemplate#.const" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIntroduceLetPostfixTemplate#.let" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSIntroduceVarPostfixTemplate#.var" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSLogPostfixTemplate#.log" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSNotExpressionPostfixTemplate#!" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSNotExpressionPostfixTemplate#.not" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSNotNullStatementPostfixTemplate#.notnull" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSNullStatementPostfixTemplate#.null" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSParenthesizedPostfixTemplate#.par" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSReturnStatementPostfixTemplate#.return" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSSwitchPostfixTemplate#.switch" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSThrowStatementPostfixTemplate#.throw" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSTypeOfExpressionPostfixTemplate#.typeof" />
+            <option value="com.intellij.lang.javascript.template.postfix.JSUndefPostfixTemplate#.undef" />
+          </set>
+        </value>
+      </disabled-templates>
+      <disabled-templates provider="builtin.ts">
+        <value>
+          <set>
+            <option value="com.intellij.lang.typescript.template.postfix.TypeScriptCastPostfixTemplate#.cast" />
+          </set>
+        </value>
+      </disabled-templates>
+      <disabled-templates provider="com.goide.postfix.GoPostfixTemplateProvider">
+        <value>
+          <set>
+            <option value="appendAssign" />
+            <option value="cap" />
+            <option value="close" />
+            <option value="com.goide.postfix.GoDereferencePostfixTemplate#*" />
+            <option value="com.goide.postfix.GoDereferencePostfixTemplate#.d" />
+            <option value="com.goide.postfix.GoDereferencePostfixTemplate#.dereference" />
+            <option value="com.goide.postfix.GoIfStatementPostfixTemplate#.if" />
+            <option value="com.goide.postfix.GoNotExpressionPostfixTemplate#!" />
+            <option value="com.goide.postfix.GoNotExpressionPostfixTemplate#.not" />
+            <option value="com.goide.postfix.GoParPostfixTemplate#.par" />
+            <option value="com.goide.postfix.GoPointerPostfixTemplate#&amp;" />
+            <option value="com.goide.postfix.GoPointerPostfixTemplate#.p" />
+            <option value="com.goide.postfix.GoPointerPostfixTemplate#.pointer" />
+            <option value="com.goide.postfix.GoReturnPostfixTemplate#.return" />
+            <option value="complex" />
+            <option value="copy" />
+            <option value="imag" />
+            <option value="panic" />
+            <option value="print" />
+            <option value="println" />
+            <option value="real" />
+            <option value="reterr" />
+            <option value="reterrexpr" />
+            <option value="reterrvar" />
+            <option value="rre" />
+            <option value="rrv" />
+            <option value="sort.Sort" />
+            <option value="var" />
+          </set>
+        </value>
+      </disabled-templates>
+    </option>
+  </component>
+</application>
