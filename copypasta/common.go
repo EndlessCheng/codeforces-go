@@ -642,7 +642,7 @@ func monotoneCollection() {
 		type pair struct{ v, i int }
 		stack := []pair{{2e9, -1}}
 		for i, v := range a {
-			for len(stack) > 0 {
+			for { // len(stack) > 0 由于事先压入了一个无穷大的元素到栈底，所以一定栈一定不会为空
 				if top := stack[len(stack)-1]; top.v > v {
 					pos[i] = top.i
 					break
