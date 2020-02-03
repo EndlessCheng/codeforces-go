@@ -636,7 +636,7 @@ func monotoneCollection() {
 	// 单调栈
 	// https://oi-wiki.org/ds/monotonous-stack/
 	monotoneStack := func(a []int) []int {
-		// 举例：返回每个元素左侧大于它的元素位置（不存在为 -1）
+		// 举例：返回每个元素左侧严格大于它的元素位置（不存在则为 -1）
 		pos := make([]int, len(a))
 		type pair struct{ v, i int }
 		stack := []pair{{2e9, -1}}
