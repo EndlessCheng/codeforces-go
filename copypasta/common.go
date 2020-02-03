@@ -104,7 +104,8 @@ func commonCollection() {
 		}
 	}
 
-	quickPow := func(x int64, n int, mod int64) int64 {
+	// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
+	exp := func(x int64, n int, mod int64) int64 {
 		x %= mod
 		res := int64(1) % mod
 		for ; n > 0; n >>= 1 {
@@ -415,7 +416,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
-		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
+		abs, absAll, exp, calcFactorial, toAnyBase, initSum2D, querySum2D,
 		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame, complement, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}

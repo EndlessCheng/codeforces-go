@@ -327,7 +327,7 @@ func numberTheoryCollection() {
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
 	modInverseP := func(a, p int64) int64 {
-		quickPow := func(x, n, p int64) int64 {
+		exp := func(x, n, p int64) int64 {
 			x %= p
 			res := int64(1)
 			for ; n > 0; n >>= 1 {
@@ -338,7 +338,7 @@ func numberTheoryCollection() {
 			}
 			return res
 		}
-		return quickPow(a, p-2, p)
+		return exp(a, p-2, p)
 	}
 
 	// 计算 a/b (mod m)

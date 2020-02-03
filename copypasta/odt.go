@@ -79,7 +79,7 @@ func (t odt) kth(begin, end, k int) int64 {
 	panic(k)
 }
 
-func (odt) quickPow(x int64, n int, mod int64) int64 {
+func (odt) exp(x int64, n int, mod int64) int64 {
 	x %= mod
 	res := int64(1) % mod
 	for ; n > 0; n >>= 1 {
@@ -94,7 +94,7 @@ func (odt) quickPow(x int64, n int, mod int64) int64 {
 func (t odt) powSum(begin, end int, n int, mod int64) (res int64) {
 	for _, b := range t[begin:end] {
 		// 总和能溢出的话这里要额外取模
-		res += int64(b.r-b.l+1) * t.quickPow(b.val, n, mod)
+		res += int64(b.r-b.l+1) * t.exp(b.val, n, mod)
 	}
 	return res % mod
 }

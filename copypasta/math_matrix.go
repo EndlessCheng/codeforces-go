@@ -69,6 +69,7 @@ func (a matrix) mul(b matrix) matrix {
 	for i := range a {
 		for j := range b[0] {
 			for k, aik := range a[i] {
+				// 小心爆 int，必要时用 int64 以及快速乘
 				c[i][j] += aik * b[k][j] // % mod
 			}
 		}
