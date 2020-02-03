@@ -4,8 +4,6 @@ import (
 	"math"
 	"math/bits"
 	"sort"
-	"strconv"
-	"strings"
 )
 
 // 注意：若有超过两个数相加，要特别注意 inf 的选择
@@ -285,27 +283,6 @@ func commonCollection() {
 		return true
 	}
 
-	// floatStr must contain a .
-	// all decimal part must have same length
-	// floatToInt("3.000100", 1e6) => 3000100
-	// "3.0001" is not allowed
-	floatToInt := func(floatStr string, shift10 int) int {
-		splits := strings.SplitN(floatStr, ".", 2)
-		i, _ := strconv.Atoi(splits[0])
-		d, _ := strconv.Atoi(splits[1])
-		return i*shift10 + d
-	}
-
-	// floatToRat("1.2", 1e1) => (6, 5)
-	floatToRat := func(floatStr string, shift10 int) (m, n int) {
-		m = floatToInt(floatStr, shift10)
-		n = shift10
-		var gcd int // calcGCD(m, n)
-		m /= gcd
-		n /= gcd
-		return
-	}
-
 	// a 相对于 [0,n) 的补集
 	// a 必须是升序且无重复元素
 	complement := func(n int, a []int) (res []int) {
@@ -319,12 +296,6 @@ func commonCollection() {
 		}
 		return
 	}
-
-	// TODO: 单调栈/单调队列
-	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
-	// https://oi-wiki.org/ds/monotonous-stack/
-	// https://oi-wiki.org/ds/monotonous-queue/
-	// TODO: CF1237D
 
 	// 逆序数
 	var mergeCount func([]int) int64
@@ -367,6 +338,8 @@ func commonCollection() {
 		}
 		return false
 	}
+
+	//
 
 	// 算法导论 练习4.1-5
 	maxSubArraySum := func(a []int) int {
@@ -443,8 +416,8 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, quickPow, calcFactorial, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame,
-		floatToRat, complement, containsAll, maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
+		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame, complement, containsAll,
+		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }
 
@@ -486,7 +459,7 @@ func rmqCollection() {
 		return max(st[l][k], st[r-(1<<k)][k])
 	}
 
-	// 下标版本，查询返回的是区间最值的下标
+	// ST 下标版本，查询返回的是区间最值的下标
 	//type pair struct{ v, i int }
 	//const mx = 17
 	//var st [][mx]pair
@@ -654,6 +627,38 @@ func rmqCollection() {
 		sqrtInit, sqrtOp,
 		mo,
 	}
+}
+
+// 单调栈/单调队列
+func monotoneCollection() {
+	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
+	// TODO: CF1237D
+
+	// https://oi-wiki.org/ds/monotonous-stack/
+	monotoneStack := func(a []int) []int {
+		// 举例：返回每个元素左侧大于它的元素位置（不存在为 -1）
+		pos := make([]int, len(a))
+		type pair struct{ v, i int }
+		stack := []pair{{2e9, -1}}
+		for i, v := range a {
+			for len(stack) > 0 {
+				if top := stack[len(stack)-1]; top.v > v {
+					pos[i] = top.i
+					break
+				}
+				stack = stack[:len(stack)-1]
+			}
+			stack = append(stack, pair{v, i})
+		}
+		return pos
+	}
+
+	// https://oi-wiki.org/ds/monotonous-queue/
+	monotoneQueue := func() {
+		// TODO
+	}
+
+	_ = []interface{}{monotoneStack, monotoneQueue}
 }
 
 //（含组合排列）
@@ -932,88 +937,4 @@ func loopCollection() {
 		loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
 		rangeCombinations, combinations, permutations, permuteAll,
 	}
-}
-
-//func grayCode(length int) []int {
-//	if length == 1 {
-//		return []int{0, 1}
-//	}
-//	part0 := grayCode(length - 1)
-//	part1 := make([]int, len(part0))
-//	for i, v := range part0 {
-//		part1[len(part0)-i-1] = v
-//	}
-//	for i, v := range part1 {
-//		part1[i] = v | 1<<uint(length-1)
-//	}
-//	return append(part0, part1...)
-//}
-func grayCode(length int) []int {
-	ans := make([]int, 1<<uint(length))
-	for i := range ans {
-		ans[i] = i ^ i>>1
-	}
-	return ans
-}
-
-// https://oeis.org/A001227
-func consecutiveNumbersSum(n int) (ans int) {
-	for i := 1; i*i <= n; i++ {
-		if n%i == 0 {
-			if i&1 == 1 {
-				ans++
-			}
-			if i*i < n && n/i&1 == 1 {
-				ans++
-			}
-		}
-	}
-	return
-}
-
-// https://oeis.org/A000127
-// Maximal number of regions obtained by joining n points around a circle by straight lines.
-// Also number of regions in 4-space formed by n-1 hyperplanes.
-//
-//     n*(n-1)*(n*n-5*n+18)/24+1
-
-// https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
-func addNegabinary(a1, a2 []int) []int {
-	if len(a1) < len(a2) {
-		a1, a2 = a2, a1
-	}
-	for i, j := len(a1)-1, len(a2)-1; j >= 0; {
-		a1[i] += a2[j]
-		i--
-		j--
-	}
-	ans := append(make([]int, 2), a1...)
-	for i := len(ans) - 1; i >= 0; i-- {
-		if ans[i] >= 2 {
-			ans[i] -= 2
-			if ans[i-1] >= 1 {
-				ans[i-1]--
-			} else {
-				ans[i-1]++
-				ans[i-2]++
-			}
-		}
-	}
-	for i, v := range ans {
-		if v != 0 {
-			return ans[i:]
-		}
-	}
-	return []int{0}
-}
-
-// https://leetcode.com/problems/convert-to-base-2/
-func toNegabinary(n int) (res string) {
-	if n == 0 {
-		return "0"
-	}
-	for ; n != 0; n = -(n >> 1) {
-		res = string('0'+n&1) + res
-	}
-	return
 }

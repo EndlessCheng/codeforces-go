@@ -389,10 +389,29 @@ func numberTheoryCollection() {
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
+	//
+
+	// Number of odd divisors of n
+	// https://oeis.org/A001227
+	consecutiveNumbersSum := func(n int) (ans int) {
+		for i := 1; i*i <= n; i++ {
+			if n%i == 0 {
+				if i&1 == 1 {
+					ans++
+				}
+				if i*i < n && n/i&1 == 1 {
+					ans++
+				}
+			}
+		}
+		return
+	}
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInverseP, modFrac, solveLinearCongruence, quickMul,
+		consecutiveNumbersSum,
 	}
 }
 
@@ -437,6 +456,27 @@ func miscCollection() {
 			}
 			return r + ((st-r)%d+d)%d, true
 		}
+	}
+
+	// floatStr must contain a .
+	// all decimal part must have same length
+	// floatToInt("3.000100", 1e6) => 3000100
+	// "3.0001" is not allowed
+	floatToInt := func(floatStr string, shift10 int) int {
+		splits := strings.SplitN(floatStr, ".", 2)
+		i, _ := strconv.Atoi(splits[0])
+		d, _ := strconv.Atoi(splits[1])
+		return i*shift10 + d
+	}
+
+	// floatToRat("1.2", 1e1) => (6, 5)
+	floatToRat := func(floatStr string, shift10 int) (m, n int) {
+		m = floatToInt(floatStr, shift10)
+		n = shift10
+		var g int // g:= calcGCD(m, n)
+		m /= g
+		n /= g
+		return
 	}
 
 	// https://en.wikipedia.org/wiki/Repeating_decimal
@@ -504,7 +544,7 @@ func miscCollection() {
 	_ = []interface{}{
 		solveInclusionExclusion,
 		moveToRange,
-		fractionToDecimal, decimalToFraction,
+		floatToRat, fractionToDecimal, decimalToFraction,
 	}
 }
 
@@ -562,4 +602,75 @@ func numericalAnalysisCollection() {
 	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
 
 	_ = []interface{}{asr}
+}
+
+//
+
+//func grayCode(length int) []int {
+//	if length == 1 {
+//		return []int{0, 1}
+//	}
+//	part0 := grayCode(length - 1)
+//	part1 := make([]int, len(part0))
+//	for i, v := range part0 {
+//		part1[len(part0)-i-1] = v
+//	}
+//	for i, v := range part1 {
+//		part1[i] = v | 1<<uint(length-1)
+//	}
+//	return append(part0, part1...)
+//}
+func grayCode(length int) []int {
+	ans := make([]int, 1<<uint(length))
+	for i := range ans {
+		ans[i] = i ^ i>>1
+	}
+	return ans
+}
+
+// https://oeis.org/A000127
+// Maximal number of regions obtained by joining n points around a circle by straight lines.
+// Also number of regions in 4-space formed by n-1 hyperplanes.
+//
+//     n*(n-1)*(n*n-5*n+18)/24+1
+
+// https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
+func addNegabinary(a1, a2 []int) []int {
+	if len(a1) < len(a2) {
+		a1, a2 = a2, a1
+	}
+	for i, j := len(a1)-1, len(a2)-1; j >= 0; {
+		a1[i] += a2[j]
+		i--
+		j--
+	}
+	ans := append(make([]int, 2), a1...)
+	for i := len(ans) - 1; i >= 0; i-- {
+		if ans[i] >= 2 {
+			ans[i] -= 2
+			if ans[i-1] >= 1 {
+				ans[i-1]--
+			} else {
+				ans[i-1]++
+				ans[i-2]++
+			}
+		}
+	}
+	for i, v := range ans {
+		if v != 0 {
+			return ans[i:]
+		}
+	}
+	return []int{0}
+}
+
+// https://leetcode.com/problems/convert-to-base-2/
+func toNegabinary(n int) (res string) {
+	if n == 0 {
+		return "0"
+	}
+	for ; n != 0; n = -(n >> 1) {
+		res = string('0'+n&1) + res
+	}
+	return
 }
