@@ -635,23 +635,38 @@ func monotoneCollection() {
 
 	// 单调栈
 	// https://oi-wiki.org/ds/monotonous-stack/
-	monotoneStack := func(a []int) []int {
-		// 举例：返回每个元素左侧严格大于它的元素位置（不存在则为 -1）
+	monotoneStack := func(a []int) ([]int, []int) {
+		// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
 		// 这种情况要用一个顶小底大的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
-		pos := make([]int, len(a))
+		n := len(a)
 		type pair struct{ v, i int }
+		posL := make([]int, n)
 		stack := []pair{{2e9, -1}}
 		for i, v := range a {
-			for { // len(stack) > 0 由于事先压入了一个无穷大的元素到栈底，所以一定栈一定不会为空
+			for { // len(stack) > 0 由于事先压入了一个无穷大的元素到栈底，所以栈一定不会为空
 				if top := stack[len(stack)-1]; top.v > v {
-					pos[i] = top.i
+					posL[i] = top.i
 					break
 				}
 				stack = stack[:len(stack)-1]
 			}
 			stack = append(stack, pair{v, i})
 		}
-		return pos
+		posR := make([]int, n)
+		stack = []pair{{2e9, n}}
+		for i := n - 1; i >= 0; i-- {
+			v := a[i]
+			for {
+				if top := stack[len(stack)-1]; top.v > v {
+					posR[i] = top.i
+					break
+				}
+				stack = stack[:len(stack)-1]
+			}
+			stack = append(stack, pair{v, i})
+		}
+
+		return posL, posR
 	}
 
 	// 单调队列
