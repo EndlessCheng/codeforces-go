@@ -43,20 +43,20 @@ func (segmentTree) gcd(a, b int64) int64 {
 func (t segmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	// *custom* 核心函数
-	//t[o].val = max(lo.val, ro.val)
-	if ro.val >= lo.val { // maxPos 取最右侧；若为 > 符号则取最左侧
-		t[o].val, t[o].maxPos = ro.val, ro.maxPos
-	} else {
-		t[o].val, t[o].maxPos = lo.val, lo.maxPos
-	}
+	t[o].val = t.max(lo.val, ro.val)
+	//if ro.val >= lo.val { // maxPos 取最右侧；若为 > 符号则取最左侧
+	//	t[o].val, t[o].maxPos = ro.val, ro.maxPos
+	//} else {
+	//	t[o].val, t[o].maxPos = lo.val, lo.maxPos
+	//}
 }
 
 func (t segmentTree) _build(arr []int64, o, l, r int) {
-	t[o].l, t[o].r = l, r
+	t[o].l, t[o].r = l, r // 注意：一定要初始化 l 和 r
 	if l == r {
 		//t[o].val = arr[l] // if arr start at 1
 		t[o].val = arr[l-1]
-		t[o].maxPos = l - 1
+		//t[o].maxPos = l - 1
 		return
 	}
 	m := (l + r) >> 1
@@ -95,6 +95,13 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	return t.max(vl, vr)
 }
 
+// if arr start at 1, end at n
+//func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)-1) }
+func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) }
+func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }   // 1<=idx<=n
+func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) } // [l,r] 1<=l<=r<=n
+
+// others
 func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val, t[o].maxPos
@@ -113,12 +120,6 @@ func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
 	}
 	return vr, pr
 }
-
-// if arr start at 1, end at n
-//func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)-1) }
-func (t segmentTree) init(arr []int64)             { t._build(arr, 1, 1, len(arr)) }
-func (t segmentTree) update(idx int, val int64)    { t._update(1, idx, val) }    // 1<=idx<=n
-func (t segmentTree) query(l, r int) int64         { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
 //func (t segmentTree) queryAll() int64              { return t._query(1, 1, n) }
 
