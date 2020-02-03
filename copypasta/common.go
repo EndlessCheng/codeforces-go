@@ -629,11 +629,11 @@ func rmqCollection() {
 	}
 }
 
-// 单调栈/单调队列
 func monotoneCollection() {
 	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 	// TODO: CF1237D
 
+	// 单调栈
 	// https://oi-wiki.org/ds/monotonous-stack/
 	monotoneStack := func(a []int) []int {
 		// 举例：返回每个元素左侧大于它的元素位置（不存在为 -1）
@@ -653,6 +653,7 @@ func monotoneCollection() {
 		return pos
 	}
 
+	// 单调队列
 	// https://oi-wiki.org/ds/monotonous-queue/
 	monotoneQueue := func() {
 		// TODO
