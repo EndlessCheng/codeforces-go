@@ -549,6 +549,7 @@ func miscCollection() {
 }
 
 // https://oi-wiki.org/math/game-theory/
+// TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 func gameTheoryCollection() {
 	// 异或和不为0零则先手必胜
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
