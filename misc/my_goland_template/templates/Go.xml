@@ -33,8 +33,8 @@
     </context>
   </template>
   <template name="fa" value="$VAR0$ := make([]int, $VAR1$)&#10;for i := range $VAR0$ {&#10; Fscan(in, &amp;$VAR0$[i])&#10;}&#10;$END$" description="For scan loop" toReformat="true" toShortenFQNames="true">
-    <variable name="VAR0" expression="" defaultValue="&quot;i&quot;" alwaysStopAt="true" />
-    <variable name="VAR1" expression="" defaultValue="" alwaysStopAt="true" />
+    <variable name="VAR0" expression="" defaultValue="&quot;a&quot;" alwaysStopAt="true" />
+    <variable name="VAR1" expression="" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -97,7 +97,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="case" value="solve := func() (ans int) {&#10;&#9;var n int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;$END$&#10;&#9;&#10;&#9;return&#10;}&#10;&#10;var t int&#10;Fscan(in, &amp;t)&#10;for _case := 1; _case &lt;= t; _case++ {&#10;&#9;_ans := solve()&#10;&#9;Fprintln(out, _ans)&#10;}" description="multi test cases" toReformat="false" toShortenFQNames="true">
+  <template name="case" value="solve := func() (ans int) {&#10;&#9;var n int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;$END$&#10;&#9;&#10;&#9;return&#10;}&#10;&#10;var t int&#10;Fscan(in, &amp;t)&#10;for _case := 1; _case &lt;= t; _case++ {&#10;&#9;Fprintln(out, solve())&#10;}" description="multi test cases" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -116,6 +116,19 @@
     <variable name="VAR0" expression="" defaultValue="&quot;solve()&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_EXPRESSION" value="true" />
+    </context>
+  </template>
+  <template name="printf" value="fmt.Printf(&quot;$END$&quot;,$VAR$)" description="printf" toReformat="true" toShortenFQNames="true" deactivated="true">
+    <variable name="VAR" expression="complete()" defaultValue="" alwaysStopAt="true" />
+    <context />
+  </template>
+  <template name="err" value="if $ERR$ != nil {&#10; $END$&#10;}" description="If error" toReformat="true" toShortenFQNames="true" deactivated="true">
+    <variable name="ERR" expression="errorVariable()" defaultValue="&quot;err&quot;" alwaysStopAt="true" />
+    <context />
+  </template>
+  <template name="abs" value="abs := func(x int) int {&#10;&#9;if x &lt; 0 {&#10;&#9;&#9;return -x&#10;&#9;}&#10;&#9;return x&#10;}" description="abs()" toReformat="false" toShortenFQNames="true">
+    <context>
+      <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
 </templateSet>
