@@ -122,18 +122,31 @@ func (a vec) projection(l line) vec {
 	return l.p1.add(v.mul(t))
 }
 
+// 线段规范相交
+// CCW (counterclockwise)
+func (a line) segProperIntersection(b line) bool {
+	sign := func(x float64) int {
+		if math.Abs(x) < eps {
+			return 0
+		}
+		if x < 0 {
+			return -1
+		}
+		return 1
+	}
+	_ = sign
+	va, vb := a.vec(), b.vec()
+	d1, d2 := va.det(b.p1.sub(a.p1)), va.det(b.p2.sub(a.p1))
+	d3, d4 := vb.det(a.p1.sub(b.p1)), vb.det(a.p2.sub(b.p1))
+	return d1*d2 < 0 && d3*d4 < 0
+	//return sign(float64(d1))*sign(float64(d2)) < 0 && sign(float64(d3))*sign(float64(d4)) < 0
+}
+
 // 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
 func (a vec) onSeg(l line) bool {
 	p1, p2 := l.p1.sub(a), l.p2.sub(a)
 	return p1.det(p2) == 0 && p1.dot(p2) <= 0 // 含端点
 	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
-}
-
-// 线段规范相交
-// CCW (Counter Clock Wise) ?
-func (a line) segProperIntersection(b line) bool {
-	// TODO implement
-	return false
 }
 
 // 过点 a 的垂直于 l 的直线
@@ -231,6 +244,15 @@ func vec2Collection() {
 		return ls
 	}
 
+	polygonArea := func(ps []vec) float64 {
+		n := len(ps)
+		area := 0.0
+		for i := 1; i < n-1; i++ {
+			area += float64(ps[i].sub(ps[0]).det(ps[i+1].sub(ps[0])))
+		}
+		return area / 2
+	}
+
 	// 求凸包 葛立恒扫描法 Graham's scan
 	// qs[0] == qs[-1]
 	convexHull := func(ps []vec) []vec {
@@ -320,7 +342,7 @@ func vec2Collection() {
 		return math.Sqrt(minArea)
 	}
 
-	_ = []interface{}{readVec, readPolygon, convexHullLength, isRectangleAnyOrder, minAreaRect}
+	_ = []interface{}{readVec, readPolygon, polygonArea, convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
 
 //
