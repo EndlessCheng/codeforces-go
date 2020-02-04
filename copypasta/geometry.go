@@ -115,6 +115,13 @@ func (a vec) disToSeg(l line) float64 {
 	return math.Abs(float64(v.det(p1a))) / v.len()
 }
 
+// 点 a 在直线 l 上的投影
+func (a vec) projection(l line) vec {
+	v, p1a := l.vec(), a.sub(l.p1)
+	t := v.dot(p1a) / v.len2()
+	return l.p1.add(v.mul(t))
+}
+
 // 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
 func (a vec) onSeg(l line) bool {
 	p1, p2 := l.p1.sub(a), l.p2.sub(a)
@@ -133,13 +140,6 @@ func (a line) segProperIntersection(b line) bool {
 func (a vec) perpendicular(l line) line {
 	return line{a, a.add(vec{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
 }
-
-// 点 a 在直线 l 上的投影
-//func (a vec) projection(l line) vec {
-//	v := l.p2.sub(l.p1)
-//	t := v.dot(a.sub(l.p1)) / v.len()
-//	return l.p1.add(v.mul(t))
-//}
 
 //
 
