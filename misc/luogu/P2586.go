@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"os"
 )
 
 // 一些常量定义
@@ -305,4 +304,4 @@ func p2586(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { p2586(os.Stdin, os.Stdout) }
+//func main() { p2586(os.Stdin, os.Stdout) }
