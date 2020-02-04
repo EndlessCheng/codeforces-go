@@ -40,6 +40,7 @@ det (determinant，行列式，叉积的模，有向面积):
 
 const eps = 1e-8
 
+/* 二维向量（点）*/
 type vec struct{ x, y int64 }
 
 func (a vec) add(b vec) vec   { return vec{a.x + b.x, a.y + b.y} }
@@ -50,10 +51,10 @@ func (a vec) len2() int64     { return a.x*a.x + a.y*a.y }
 func (a vec) dot(b vec) int64 { return a.x*b.x + a.y*b.y }
 func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
 
-//func (a vec) equals(b vec) bool { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
-//func (a vec) less(b vec) bool   { return a.x+eps < b.x || math.Abs(a.x-b.x) < eps && a.y+eps < b.y }
+func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
+func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || math.Abs(a.x-b.x) < eps && a.y+eps < b.y }
 func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.y }
-func (a vec) div(k int64) vec       { return vec{a.x / k, a.y / k} }
+func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
 func (a vec) mulVec(b vec) vec      { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
 func (a vec) angleTo(b vec) float64 { return math.Acos(float64(a.dot(b)) / (a.len() * b.len())) }
 func (a vec) polarAngle() float64   { return math.Atan2(float64(a.y), float64(a.x)) }
@@ -69,54 +70,51 @@ func (a vec) up() vec {
 }
 
 // 向量旋转，传入旋转的弧度
-//func (a vec) rotate(rad float64) {
-//	return vec{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
-//}
+func (a vecF) rotate(rad float64) vecF {
+	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
+}
 
 // a 的单位法线，a 不能是零向量
-//func (a vec) normal() vec {
-//	l := a.len()
-//	return vec{-a.y / l, a.x / l}
-//}
+func (a vecF) normal() vecF { l := a.len(); return vecF{-a.y / l, a.x / l} }
 
-//
-
+/* 二维直线（线段）*/
 type line struct{ p1, p2 vec }
 
 // 方向向量 directional vector
-func (a line) vec() vec { return a.p2.sub(a.p1) }
+func (a line) vec() vec              { return a.p2.sub(a.p1) }
+func (a lineF) point(t float64) vecF { return a.p1.add(a.vec().mul(t)) }
 
 // 直线 a b 交点
-func (a line) intersection(b line) vec {
+func (a lineF) intersection(b lineF) vecF {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
 	t := vb.det(u) / va.det(vb) // a b 不能平行，即 va.det(vb) != 0
-	return a.p1.add(va.mul(t))
+	return a.point(t)
 }
 
 // 点 a 到直线 l 的距离
 // 若不取绝对值得到的是有向距离
-func (a vec) disToLine(l line) float64 {
+func (a vecF) disToLine(l lineF) float64 {
 	v, p1a := l.vec(), a.sub(l.p1)
-	return math.Abs(float64(v.det(p1a))) / v.len()
+	return math.Abs(v.det(p1a)) / v.len()
 }
 
 // 点 a 到线段 l 的距离
-func (a vec) disToSeg(l line) float64 {
+func (a vecF) disToSeg(l lineF) float64 {
 	if l.p1 == l.p2 {
 		return a.sub(l.p1).len()
 	}
 	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
-	if float64(v.dot(p1a)) < -eps {
+	if v.dot(p1a) < -eps {
 		return p1a.len()
 	}
-	if float64(v.dot(p2a)) > eps {
+	if v.dot(p2a) > eps {
 		return p2a.len()
 	}
-	return math.Abs(float64(v.det(p1a))) / v.len()
+	return math.Abs(v.det(p1a)) / v.len()
 }
 
 // 点 a 在直线 l 上的投影
-func (a vec) projection(l line) vec {
+func (a vecF) projection(l lineF) vecF {
 	v, p1a := l.vec(), a.sub(l.p1)
 	t := v.dot(p1a) / v.len2()
 	return l.p1.add(v.mul(t))
@@ -124,7 +122,7 @@ func (a vec) projection(l line) vec {
 
 // 线段规范相交
 // CCW (counterclockwise)
-func (a line) segProperIntersection(b line) bool {
+func (a lineF) segProperIntersection(b lineF) bool {
 	sign := func(x float64) int {
 		if math.Abs(x) < eps {
 			return 0
@@ -134,12 +132,10 @@ func (a line) segProperIntersection(b line) bool {
 		}
 		return 1
 	}
-	_ = sign
 	va, vb := a.vec(), b.vec()
 	d1, d2 := va.det(b.p1.sub(a.p1)), va.det(b.p2.sub(a.p1))
 	d3, d4 := vb.det(a.p1.sub(b.p1)), vb.det(a.p2.sub(b.p1))
-	return d1*d2 < 0 && d3*d4 < 0
-	//return sign(float64(d1))*sign(float64(d2)) < 0 && sign(float64(d3))*sign(float64(d4)) < 0
+	return sign(d1)*sign(d2) < 0 && sign(d3)*sign(d4) < 0
 }
 
 // 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
@@ -154,14 +150,68 @@ func (a vec) perpendicular(l line) line {
 	return line{a, a.add(vec{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
 }
 
-//
-
+/* 圆 */
 type circle struct {
-	// TODO implement
+	vecF
+	r float64
 }
 
-// TODO 直线与圆的交点
-// TODO 两个圆的公切线
+// 直线与圆的交点
+func (o circle) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
+	v := l.vec()
+	a, b, c, d := v.x, l.p1.x-o.x, v.y, l.p1.y-o.y
+	e, f, g := a*a+c*c, 2*(a*b+c*d), b*b+d*d-o.r*o.r
+	switch delta := f*f - 4*e*g; {
+	case delta < -eps: // 相离
+		return
+	case delta < eps: // 相切
+		t := -f / (2 * e)
+		return []vecF{l.point(t)}, t, t
+	default: // 相交
+		t1 = (-f - math.Sqrt(delta)) / (2 * e)
+		t2 = (-f + math.Sqrt(delta)) / (2 * e)
+		ps = []vecF{l.point(t1), l.point(t2)}
+		return
+	}
+}
+
+// 两个圆的公切线
+// 返回每条切线在圆 o 和圆 ob 的切点
+// NOTE: 下面的代码是基于 int64 的，没有判断 eps
+func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
+	a := o
+	if a.r < b.r {
+		a, b = b, a
+	}
+	ab := b.sub(a.vecF)
+	dab2 := ab.len2()
+	diffR, sumR := a.r-b.r, a.r+b.r
+	if dab2 == 0 && diffR == 0 { // 完全重合
+		return nil, true
+	}
+	if dab2 < diffR*diffR { // 内含
+		return
+	}
+	angleAB := math.Atan2(ab.y, ab.x)
+	if dab2 == diffR*diffR { // 内切
+		return []lineF{{a.point(angleAB), b.point(angleAB)}}, false
+	}
+	dab := ab.len()
+	ang := math.Acos(diffR / dab)
+	ls = append(ls, lineF{a.point(angleAB + ang), b.point(angleAB + ang)}) // 两条外公切线
+	ls = append(ls, lineF{a.point(angleAB - ang), b.point(angleAB - ang)})
+	if dab2 == sumR*sumR { // 一条内公切线
+		ls = append(ls, lineF{a.point(angleAB), b.point(angleAB + math.Pi)})
+	} else if dab2 > sumR*sumR { // 两条内公切线
+		ang = math.Acos(sumR / dab)
+		ls = append(ls, lineF{a.point(angleAB + ang), b.point(angleAB + ang + math.Pi)})
+		ls = append(ls, lineF{a.point(angleAB - ang), b.point(angleAB - ang + math.Pi)})
+	}
+	return
+}
+
+// 圆心角对应的点
+func (o circle) point(rad float64) vecF { return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)} }
 
 // 反演变换
 // https://en.wikipedia.org/wiki/Inversive_geometry
@@ -345,9 +395,11 @@ func vec2Collection() {
 	_ = []interface{}{readVec, readPolygon, polygonArea, convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
 
-//
-
+/* 三维向量（点）*/
 type vec3 struct{ x, y, z int64 }
+
+/* 三维直线（线段）*/
+type line3 struct{ p1, p2 vec3 }
 
 func vec3Collections() {
 	var ps []vec3
@@ -356,3 +408,18 @@ func vec3Collections() {
 		return pi.x < pj.x || pi.x == pj.x && (pi.y < pj.y || pi.y == pj.y && pi.z < pj.z)
 	})
 }
+
+// 下面这些仅作为占位符表示，实际使用的时候复制上面的模板，类型改成 float64 同时 vecF 替换成 vec 等
+type vecF struct{ x, y float64 }
+type lineF struct{ p1, p2 vecF }
+type vec3F struct{ x, y, z int64 }
+type line3F struct{ p1, p2 vec3F }
+
+func (vecF) add(vecF) (_ vecF)    { return }
+func (vecF) sub(vecF) (_ vecF)    { return }
+func (vecF) mul(float64) (_ vecF) { return }
+func (vecF) len() (_ float64)     { return }
+func (vecF) len2() (_ float64)    { return }
+func (vecF) dot(vecF) (_ float64) { return }
+func (vecF) det(vecF) (_ float64) { return }
+func (lineF) vec() (_ vecF)       { return }
