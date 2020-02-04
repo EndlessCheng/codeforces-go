@@ -152,12 +152,20 @@ func (a vec) perpendicular(l line) line {
 
 /* 圆 */
 type circle struct {
-	vecF
-	r float64
+	vec
+	r int64
+}
+
+// 圆心角对应的点
+func (o circle) point(rad float64) vecF {
+	return vecF{float64(o.x) + float64(o.r)*math.Cos(rad), float64(o.y) + float64(o.r)*math.Sin(rad)}
+}
+func (o circleF) point(rad float64) vecF {
+	return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)}
 }
 
 // 直线与圆的交点
-func (o circle) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
+func (o circleF) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
 	v := l.vec()
 	a, b, c, d := v.x, l.p1.x-o.x, v.y, l.p1.y-o.y
 	e, f, g := a*a+c*c, 2*(a*b+c*d), b*b+d*d-o.r*o.r
@@ -183,7 +191,7 @@ func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
 	if a.r < b.r {
 		a, b = b, a
 	}
-	ab := b.sub(a.vecF)
+	ab := b.sub(a.vec)
 	dab2 := ab.len2()
 	diffR, sumR := a.r-b.r, a.r+b.r
 	if dab2 == 0 && diffR == 0 { // 完全重合
@@ -192,26 +200,23 @@ func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
 	if dab2 < diffR*diffR { // 内含
 		return
 	}
-	angleAB := math.Atan2(ab.y, ab.x)
+	angleAB := math.Atan2(float64(ab.y), float64(ab.x))
 	if dab2 == diffR*diffR { // 内切
 		return []lineF{{a.point(angleAB), b.point(angleAB)}}, false
 	}
 	dab := ab.len()
-	ang := math.Acos(diffR / dab)
+	ang := math.Acos(float64(diffR) / dab)
 	ls = append(ls, lineF{a.point(angleAB + ang), b.point(angleAB + ang)}) // 两条外公切线
 	ls = append(ls, lineF{a.point(angleAB - ang), b.point(angleAB - ang)})
 	if dab2 == sumR*sumR { // 一条内公切线
 		ls = append(ls, lineF{a.point(angleAB), b.point(angleAB + math.Pi)})
 	} else if dab2 > sumR*sumR { // 两条内公切线
-		ang = math.Acos(sumR / dab)
+		ang = math.Acos(float64(sumR) / dab)
 		ls = append(ls, lineF{a.point(angleAB + ang), b.point(angleAB + ang + math.Pi)})
 		ls = append(ls, lineF{a.point(angleAB - ang), b.point(angleAB - ang + math.Pi)})
 	}
 	return
 }
-
-// 圆心角对应的点
-func (o circle) point(rad float64) vecF { return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)} }
 
 // 反演变换
 // https://en.wikipedia.org/wiki/Inversive_geometry
@@ -414,6 +419,10 @@ type vecF struct{ x, y float64 }
 type lineF struct{ p1, p2 vecF }
 type vec3F struct{ x, y, z int64 }
 type line3F struct{ p1, p2 vec3F }
+type circleF struct {
+	vecF
+	r float64
+}
 
 func (vecF) add(vecF) (_ vecF)    { return }
 func (vecF) sub(vecF) (_ vecF)    { return }
