@@ -299,6 +299,7 @@ func vec2Collection() {
 		return ls
 	}
 
+	// 多边形面积
 	polygonArea := func(ps []vec) float64 {
 		n := len(ps)
 		area := 0.0
@@ -309,13 +310,10 @@ func vec2Collection() {
 	}
 
 	// 求凸包 葛立恒扫描法 Graham's scan
-	// qs[0] == qs[-1]
+	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
-		sort.Slice(ps, func(i, j int) bool {
-			a, b := ps[i], ps[j]
-			return a.x < b.x || a.x == b.x && a.y < b.y
-		})
+		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
 		qs := make([]vec, 2*n)
 		for _, pi := range ps {
 			for {
@@ -339,10 +337,42 @@ func vec2Collection() {
 			}
 			qs = append(qs, pi)
 		}
-		return qs
+		return qs[:len(qs)-1]
 	}
 
-	// TODO: 旋转卡壳求最远点对
+	// 旋转卡壳求最远点对 Rotating calipers
+	// https://en.wikipedia.org/wiki/Rotating_calipers
+	rotatingCalipers := func(ps []vec) (p1, p2 vec) {
+		qs := convexHull(ps)
+		n := len(qs)
+		if n == 2 {
+			return qs[0], qs[1]
+		}
+		i, j := 0, 0 // 对踵点对（左下和右上）
+		for k, p := range qs {
+			if !qs[i].less(p) {
+				i = k
+			}
+			if qs[j].less(p) {
+				j = k
+			}
+		}
+		maxDis2 := int64(0)
+		i0, j0 := i, j
+		for i != j0 || j != i0 {
+			if d2 := qs[i].sub(qs[j]).len2(); d2 > maxDis2 {
+				maxDis2 = d2
+				p1, p2 = qs[i], qs[j]
+			}
+			// 判断先转到边 i-(i+1) 的法线方向还是边 j-(j+1) 的法线方向
+			if qs[(i+1)%n].sub(qs[i]).det(qs[(j+1)%n].sub(qs[j])) < 0 {
+				i = (i + 1) % n
+			} else {
+				j = (j + 1) % n
+			}
+		}
+		return
+	}
 
 	// 凸包周长
 	convexHullLength := func(ps []vec) (res float64) {
@@ -397,7 +427,7 @@ func vec2Collection() {
 		return math.Sqrt(minArea)
 	}
 
-	_ = []interface{}{readVec, readPolygon, polygonArea, convexHullLength, isRectangleAnyOrder, minAreaRect}
+	_ = []interface{}{readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
 
 /* 三维向量（点）*/
@@ -408,10 +438,7 @@ type line3 struct{ p1, p2 vec3 }
 
 func vec3Collections() {
 	var ps []vec3
-	sort.Slice(ps, func(i, j int) bool {
-		pi, pj := ps[i], ps[j]
-		return pi.x < pj.x || pi.x == pj.x && (pi.y < pj.y || pi.y == pj.y && pi.z < pj.z)
-	})
+	sort.Slice(ps, func(i, j int) bool { pi, pj := ps[i], ps[j]; return pi.x < pj.x || pi.x == pj.x && (pi.y < pj.y || pi.y == pj.y && pi.z < pj.z) })
 }
 
 // 下面这些仅作为占位符表示，实际使用的时候复制上面的模板，类型改成 float64 同时 vecF 替换成 vec 等

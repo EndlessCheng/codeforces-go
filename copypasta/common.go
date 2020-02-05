@@ -374,10 +374,7 @@ func commonCollection() {
 			//Fscan(in, &l, &r)
 			a = append(a, event{l, 1}, event{r, -1})
 		}
-		sort.Slice(a, func(i, j int) bool {
-			ai, aj := a[i], a[j]
-			return ai.time < aj.time || ai.time == aj.time && ai.delta > aj.delta
-		})
+		sort.Slice(a, func(i, j int) bool { ai, aj := a[i], a[j]; return ai.time < aj.time || ai.time == aj.time && ai.delta > aj.delta })
 		cnts := make([]int, 2*n)
 		cnt := 0
 		for i, e := range a {
@@ -561,10 +558,6 @@ func rmqCollection() {
 			//Fscan(in, &l, &r)
 			qs[i] = query{l / blockSize, l, r + 1, i}
 		}
-		//sort.Slice(qs, func(i, j int) bool {
-		//	qi, qj := qs[i], qs[j]
-		//	return qi.blockIdx < qj.blockIdx || qi.blockIdx == qj.blockIdx && qi.r < qj.r
-		//})
 		sort.Slice(qs, func(i, j int) bool {
 			qi, qj := qs[i], qs[j]
 			if qi.blockIdx != qj.blockIdx {
