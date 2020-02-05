@@ -788,12 +788,14 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 	return
 }
 
-// 强连通分量分解
+// 强连通分量分解 Strongly connected component
 // https://oi-wiki.org/graph/scc/#kosaraju
-func (*graph) findSCC(n, m int) (comps [][]int, sccIDs []int) {
+// https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+// sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
+func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
-	g := make([][]int, n)
+	g = make([][]int, n)
 	rg := make([][]int, n)
 	for i := 0; i < m; i++ {
 		var v, w int
@@ -874,9 +876,31 @@ func (*graph) findSCC(n, m int) (comps [][]int, sccIDs []int) {
 	return
 }
 
+// TODO: SCC Tarjan
+
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
-func (*graph) solve2SAT(n, m int) bool {
-	// TODO implement
-	return false
+// 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
+// 读入 m 条数据，每条数据表示 (Xa为Ba)∨(Xb为Bb)
+// ¬x 用 x+n 表示
+func (G *graph) solve2SAT(n, m int) []bool {
+	g := make([][]int, 2*n)
+	for i := 0; i < m; i++ {
+		var xa, a, xb, b int
+		xa--
+		xb--
+		v, w := xa+a&1*n, xb+(b^1)*n
+		g[v] = append(g[v], w)
+		v, w = xb+b&1*n, xa+(a^1)*n
+		g[v] = append(g[v], w)
+	}
+	_, sccIDs := G.sccKosaraju(n, m, g)
+	ans := make([]bool, n)
+	for i, id := range sccIDs[:n] {
+		if id == sccIDs[i+n] {
+			return nil
+		}
+		ans[i] = id > sccIDs[i+n]
+	}
+	return ans
 }
