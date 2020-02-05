@@ -797,15 +797,19 @@ func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	edges := make([]edge, m)
 	g = make([][]int, n)
 	rg := make([][]int, n)
+
+	addEdge := func(v, w int) {
+		g[v] = append(g[v], w)
+		rg[w] = append(rg[w], v)
+	}
 	for i := 0; i < m; i++ {
 		var v, w int
 		//v, w := read()-1, read()-1
-		g[v] = append(g[v], w)
-		rg[w] = append(rg[w], v)
+		addEdge(v, w)
 		edges[i] = edge{v, w}
 	}
-	used := make([]bool, n)
 
+	used := make([]bool, n)
 	vs := make([]int, 0, n)
 	var dfs func(int)
 	dfs = func(v int) {
@@ -880,26 +884,30 @@ func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
+// https://zhuanlan.zhihu.com/p/50211772
 // 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
-// 读入 m 条数据，每条数据表示 (Xa为Ba)∨(Xb为Bb)
+// 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
 // ¬x 用 x+n 表示
+// NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 func (G *graph) solve2SAT(n, m int) []bool {
 	g := make([][]int, 2*n)
 	for i := 0; i < m; i++ {
-		var xa, a, xb, b int
-		xa--
-		xb--
-		v, w := xa+a&1*n, xb+(b^1)*n
+		var x, a, y, b int
+		x--
+		y--
+		v, w := x+a&1*n, y+(b^1)*n
 		g[v] = append(g[v], w)
-		v, w = xb+b&1*n, xa+(a^1)*n
+		v, w = y+b&1*n, x+(a^1)*n
 		g[v] = append(g[v], w)
 	}
-	_, sccIDs := G.sccKosaraju(n, m, g)
+	_, sccIDs := G.sccKosaraju(2*n, m, g) // *两倍空间*
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
 		if id == sccIDs[i+n] {
 			return nil
 		}
+		// sccIDs[x] > sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
+		// sccIDs[x] < sccIDs[¬x] ⇔ (x ⇒ ¬x) ⇔ x 为假
 		ans[i] = id > sccIDs[i+n]
 	}
 	return ans
