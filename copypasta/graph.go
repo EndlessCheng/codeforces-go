@@ -889,6 +889,11 @@ func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 // 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
 // ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
+// NOTE: 一些建边的转换：
+//       A,B 必须同时存在 A⇒B, ¬A⇒¬B
+//       A,B 不能同时存在 A⇒¬B, B⇒¬A
+//       A,B 至少存在一个 A∨B，即 ¬A⇒B, ¬B⇒A
+//       A 不能存在      ¬A，即 A⇒¬A
 func (G *graph) solve2SAT(n, m int) []bool {
 	g := make([][]int, 2*n)
 	for i := 0; i < m; i++ {
@@ -903,7 +908,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 	_, sccIDs := G.sccKosaraju(2*n, m, g) // *两倍空间*
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
-		if id == sccIDs[i+n] {
+		if id == sccIDs[i+n] { // x ⇔ ¬x
 			return nil
 		}
 		// sccIDs[x] > sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
