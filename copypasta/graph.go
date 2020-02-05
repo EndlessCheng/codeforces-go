@@ -22,6 +22,34 @@ func (*graph) readGraph(n, m int) [][]int {
 	return g
 }
 
+// 链式前向星
+// https://oi-wiki.org//graph/save/#_14
+func (*graph) readGraphList(n, m int) {
+	type edge struct{ to, prev int }
+	edgeID := make([]int, n)
+	for i := range edgeID {
+		edgeID[i] = -1
+	}
+	edges := make([]edge, m) // 2*m
+	for i := 0; i < m; i++ {
+		var v, w int
+		//Fscan(in, &v, &w)
+		v--
+		w--
+		edges[i] = edge{w, edgeID[v]}
+		edgeID[v] = i
+	}
+
+	// loop all edges start at v
+	var v int
+	for i := edgeID[v]; i != -1; {
+		e := edges[i]
+		w := e.to
+		_ = w // do(w)
+		i = e.prev
+	}
+}
+
 func (*graph) readWeightedGraph(n, m int) {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
