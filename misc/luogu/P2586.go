@@ -9,7 +9,7 @@ import (
 
 // 一些常量定义
 const (
-	eps = 1e-10
+	eps2586 = 1e-10
 
 	maxAnts              = 6   // 最大蚂蚁数
 	antRadius            = 0.5 // 蚂蚁半径
@@ -18,26 +18,26 @@ const (
 )
 
 // 点
-type vec struct {
+type vec2586 struct {
 	x, y int
 }
 
 // 线段
-type line struct {
-	p1, p2 vec
+type line2586 struct {
+	p1, p2 vec2586
 }
 
 // 向量基本运算
-func (a vec) add(b vec) vec { return vec{a.x + b.x, a.y + b.y} }
-func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) len() float64  { return math.Hypot(float64(a.x), float64(a.y)) }
-func (a vec) len2() int     { return a.x*a.x + a.y*a.y }
-func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y }
-func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x }
-func (a line) vec() vec     { return a.p2.sub(a.p1) }
+func (a vec2586) add(b vec2586) vec2586 { return vec2586{a.x + b.x, a.y + b.y} }
+func (a vec2586) sub(b vec2586) vec2586 { return vec2586{a.x - b.x, a.y - b.y} }
+func (a vec2586) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec2586) len2() int             { return a.x*a.x + a.y*a.y }
+func (a vec2586) dot(b vec2586) int     { return a.x*b.x + a.y*b.y }
+func (a vec2586) det(b vec2586) int { return a.x*b.y - a.y*b.x }
+func (a line2586) vec() vec2586     { return a.p2.sub(a.p1) }
 
 // 点到线段的距离
-func (a vec) disToSeg(l line) float64 {
+func (a vec2586) disToSeg(l line2586) float64 {
 	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
 	if v.dot(p1a) < 0 {
 		return p1a.len()
@@ -56,27 +56,27 @@ type grid struct {
 
 // 蚂蚁
 type ant struct {
-	age     int  // 年龄
-	level   int  // 等级
-	maxHP   int  // 初始血量
-	curHP   int  // 当前血量
-	prevPos vec  // 上一秒位置
-	pos     vec  // 当前位置
-	hasCake bool // 是否扛着蛋糕
+	age     int     // 年龄
+	level   int     // 等级
+	maxHP   int     // 初始血量
+	curHP   int     // 当前血量
+	prevPos vec2586 // 上一秒位置
+	pos     vec2586 // 当前位置
+	hasCake bool    // 是否扛着蛋糕
 }
 
 // 炮塔（激光塔）
 type tower struct {
-	damage   int // 伤害
-	atkRange int // 攻击范围
-	pos      vec // 位置
+	damage   int     // 伤害
+	atkRange int     // 攻击范围
+	pos      vec2586 // 位置
 }
 
 // 游戏数据
 type game struct {
 	height, width int      // 长，宽
 	board         [][]grid // 地图格点
-	antNest, cake vec      // 蚁穴位置，蛋糕位置
+	antNest, cake vec2586  // 蚁穴位置，蛋糕位置
 	antWithCake   *ant     // 拿着蛋糕的蚂蚁
 	antGenCounter int      // 蚂蚁生成计数器
 	ants          []*ant   // 蚂蚁
@@ -85,7 +85,7 @@ type game struct {
 
 // 新游戏
 func newGame(height, width int) *game {
-	g := &game{height: height, width: width, cake: vec{height, width}}
+	g := &game{height: height, width: width, cake: vec2586{height, width}}
 	g.board = make([][]grid, height+1)
 	for i := range g.board {
 		g.board[i] = make([]grid, width+1)
@@ -119,7 +119,7 @@ func (g *game) beginSecond() {
 }
 
 // 格点 p 是否可达
-func (g *game) canReach(p vec) bool {
+func (g *game) canReach(p vec2586) bool {
 	return 0 <= p.x && p.x <= g.height && 0 <= p.y && p.y <= g.width && !g.board[p.x][p.y].hasObj
 }
 
@@ -133,7 +133,7 @@ func (a *ant) getCake() {
 }
 
 // 东南西北
-var dir4 = [4]vec{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
+var dir4 = [4]vec2586{{0, 1}, {1, 0}, {0, -1}, {-1, 0}}
 
 // 移动所有蚂蚁
 func (g *game) moveAnts() {
@@ -184,9 +184,9 @@ func (g *game) towerAttack() {
 		// 如果一只蚂蚁扛着蛋糕，任何打得到它的塔的炮口都会对准它
 		if g.antWithCake != nil && t.pos.sub(g.antWithCake.pos).len2() <= t.atkRange*t.atkRange {
 			// 塔到目标蚂蚁圆心的连线上的所有蚂蚁都会被打到并损失 t.damage 血量，这里“被打到”指表示激光的线段与表示蚂蚁的圆有公共点
-			towerToAntSeg := line{t.pos, g.antWithCake.pos}
+			towerToAntSeg := line2586{t.pos, g.antWithCake.pos}
 			for _, a := range g.ants {
-				if a.pos.disToSeg(towerToAntSeg)-eps < antRadius {
+				if a.pos.disToSeg(towerToAntSeg)-eps2586 < antRadius {
 					a.curHP -= t.damage
 				}
 			}
@@ -281,7 +281,7 @@ func p2586(_r io.Reader, _w io.Writer) {
 	for i := range g.towers {
 		var x, y int
 		Fscan(in, &x, &y)
-		g.towers[i] = &tower{damage, atkRange, vec{x, y}}
+		g.towers[i] = &tower{damage, atkRange, vec2586{x, y}}
 		g.board[x][y].hasObj = true
 	}
 
