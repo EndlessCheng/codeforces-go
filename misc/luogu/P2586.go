@@ -39,10 +39,10 @@ func (a line) vec() vec     { return a.p2.sub(a.p1) }
 // 点到线段的距离
 func (a vec) disToSeg(l line) float64 {
 	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
-	if float64(v.dot(p1a)) < -eps {
+	if v.dot(p1a) < 0 {
 		return p1a.len()
 	}
-	if float64(v.dot(p2a)) > eps {
+	if v.dot(p2a) > 0 {
 		return p2a.len()
 	}
 	return math.Abs(float64(v.det(p1a))) / v.len()
