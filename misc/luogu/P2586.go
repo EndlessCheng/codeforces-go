@@ -5,6 +5,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"os"
 )
 
 // 一些常量定义
@@ -202,7 +203,7 @@ func (g *game) towerAttack() {
 			minDis2 := int(1e9)
 			for _, a := range g.ants {
 				if dis2 := t.pos.sub(a.pos).len2(); dis2 < minDis2 && dis2 <= t.atkRange*t.atkRange {
-					dis2 = minDis2
+					minDis2 = dis2
 					targetAnt = a
 				}
 			}
@@ -304,4 +305,4 @@ func p2586(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { p2586(os.Stdin, os.Stdout) }
+func main() { p2586(os.Stdin, os.Stdout) }
