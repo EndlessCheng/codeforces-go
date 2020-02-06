@@ -34,21 +34,16 @@ func p4447(_r io.Reader, _w io.Writer) {
 	endsWith := map[int]*intHeap{}
 	for _, v := range a {
 		minLen := 0
-		h, ok := endsWith[v-1]
-		if ok {
+		if h, ok := endsWith[v-1]; ok {
 			minLen = Pop(h).(int)
 			if h.Len() == 0 {
 				delete(endsWith, v-1)
 			}
-			if h, ok = endsWith[v]; ok {
-				Push(h, minLen+1)
-			}
 		}
-		if !ok {
-			h := &intHeap{}
-			Push(h, minLen+1)
-			endsWith[v] = h
+		if _, ok := endsWith[v]; !ok {
+			endsWith[v] = &intHeap{}
 		}
+		Push(endsWith[v], minLen+1)
 	}
 	ans := int(1e9)
 	for _, h := range endsWith {
