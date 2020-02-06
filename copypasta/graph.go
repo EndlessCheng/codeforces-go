@@ -2,6 +2,8 @@ package copypasta
 
 import (
 	. "container/heap"
+	. "fmt"
+	"io"
 	"sort"
 )
 
@@ -9,11 +11,11 @@ import (
 type graph struct{}
 
 // deg[v] == len(g[v])
-func (*graph) readGraph(n, m int) [][]int {
+func (*graph) readGraph(in io.Reader, n, m int) [][]int {
 	g := make([][]int, n)
 	for i := 0; i < m; i++ {
 		var v, w int
-		//Fscan(in, &v, &w)
+		Fscan(in, &v, &w)
 		v--
 		w--
 		g[v] = append(g[v], w)
@@ -24,7 +26,7 @@ func (*graph) readGraph(n, m int) [][]int {
 
 // 链式前向星
 // https://oi-wiki.org//graph/save/#_14
-func (*graph) readGraphList(n, m int) {
+func (*graph) readGraphList(in io.Reader, n, m int) {
 	type edge struct{ to, prev int }
 	edgeID := make([]int, n)
 	for i := range edgeID {
@@ -33,7 +35,7 @@ func (*graph) readGraphList(n, m int) {
 	edges := make([]edge, m) // 2*m
 	for i := 0; i < m; i++ {
 		var v, w int
-		//Fscan(in, &v, &w)
+		Fscan(in, &v, &w)
 		v--
 		w--
 		edges[i] = edge{w, edgeID[v]}
@@ -50,12 +52,12 @@ func (*graph) readGraphList(n, m int) {
 	}
 }
 
-func (*graph) readWeightedGraph(n, m int) {
+func (*graph) readWeightedGraph(in io.Reader, n, m int) {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
 		var v, w, weight int
-		//Fscan(in, &v, &w, &weight)
+		Fscan(in, &v, &w, &weight)
 		v--
 		w--
 		g[v] = append(g[v], neighbor{w, weight})
@@ -286,7 +288,7 @@ func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
-func (*graph) shortestPathFloydWarshall(n, m int) [][]int {
+func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {
 			return a
@@ -303,10 +305,10 @@ func (*graph) shortestPathFloydWarshall(n, m int) [][]int {
 		dist[i][i] = 0
 	}
 	for i := 0; i < m; i++ {
-		var v, w, d int
-		//Fscan(in, &v, &m, &d)
-		dist[v][w] = d
-		dist[w][v] = d
+		var v, w, dis int
+		Fscan(in, &v, &m, &dis)
+		dist[v][w] = dis
+		dist[w][v] = dis
 	}
 	for k := range dist { // 阶段
 		for i := range dist { // 状态

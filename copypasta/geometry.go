@@ -223,9 +223,9 @@ func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
 // TODO: https://oi-wiki.org/geometry/inverse/
 
 func vec2Collection() {
-	readVec := func() vec {
+	readVec := func(in io.Reader) vec {
 		var x, y int64
-		//Fscan(in, &x, &y)
+		Fscan(in, &x, &y)
 		return vec{x, y}
 	}
 

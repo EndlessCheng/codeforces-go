@@ -1,6 +1,8 @@
 package copypasta
 
 import (
+	. "fmt"
+	"io"
 	"math"
 	"math/bits"
 	"sort"
@@ -366,12 +368,12 @@ func commonCollection() {
 	}
 
 	// https://cses.fi/book/book.pdf 30.1
-	sweepLine := func(n int) []int {
+	sweepLine := func(in io.Reader, n int) []int {
 		type event struct{ time, delta int }
 		a := make([]event, 0, 2*n)
 		for i := 0; i < n; i++ {
 			var l, r int
-			//Fscan(in, &l, &r)
+			Fscan(in, &l, &r)
 			a = append(a, event{l, 1}, event{r, -1})
 		}
 		sort.Slice(a, func(i, j int) bool { ai, aj := a[i], a[j]; return ai.time < aj.time || ai.time == aj.time && ai.delta > aj.delta })
@@ -546,7 +548,7 @@ func rmqCollection() {
 	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
-	mo := func(n, q int, a []int) {
+	mo := func(in io.Reader, n, q int, a []int) {
 		type query struct {
 			blockIdx  int
 			l, r, idx int
@@ -555,7 +557,7 @@ func rmqCollection() {
 		blockSize := int(math.Round(math.Sqrt(float64(n))))
 		for i := range qs {
 			var l, r int
-			//Fscan(in, &l, &r)
+			Fscan(in, &l, &r)
 			qs[i] = query{l / blockSize, l, r + 1, i}
 		}
 		sort.Slice(qs, func(i, j int) bool {
