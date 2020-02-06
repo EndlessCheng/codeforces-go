@@ -5,7 +5,6 @@ import (
 	. "container/heap"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -54,4 +53,4 @@ func p4447(_r io.Reader, _w io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() { p4447(os.Stdin, os.Stdout) }
+//func main() { p4447(os.Stdin, os.Stdout) }
