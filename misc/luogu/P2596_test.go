@@ -57,5 +57,5 @@ func Test_p2586(t *testing.T) {
 2 1 3 0 2
 1 1 4 0 1`,
 	}
-	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 5, p2586)
+	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, p2586)
 }

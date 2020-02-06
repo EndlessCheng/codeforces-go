@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math"
-	"os"
 )
 
 // 一些常量定义
@@ -159,8 +158,7 @@ func (g *game) moveAnts() {
 			// 若此时蚂蚁的年龄为 5n+4，它会在选择方向后不断逆时针转 90°，直到面对一个可达的点，这样定下的方向才是蚂蚁最终要爬去的方向
 			if a.age%5 == 4 {
 				for dirI = (dirI + 3) % 4; ; dirI = (dirI + 3) % 4 {
-					// todo: a.pos == a.prevPos?
-					if p := a.pos.add(dir4[dirI]); (p != a.prevPos || a.pos == a.prevPos) && g.canReach(p) {
+					if p := a.pos.add(dir4[dirI]); p != a.prevPos && g.canReach(p) {
 						break
 					}
 				}
@@ -188,10 +186,6 @@ func (g *game) towerAttack() {
 			// 塔到目标蚂蚁圆心的连线上的所有蚂蚁都会被打到并损失 t.damage 血量，这里“被打到”指表示激光的线段与表示蚂蚁的圆有公共点
 			towerToAntSeg := line{t.pos, g.antWithCake.pos}
 			for _, a := range g.ants {
-				if t.pos.sub(a.pos).len2() > t.atkRange*t.atkRange {
-					// todo: needed?
-					continue
-				}
 				if a.pos.disToSeg(towerToAntSeg)-eps < antRadius {
 					a.curHP -= t.damage
 				}
@@ -305,4 +299,4 @@ func p2586(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { p2586(os.Stdin, os.Stdout) }
+//func main() { p2586(os.Stdin, os.Stdout) }
