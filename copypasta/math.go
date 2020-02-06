@@ -326,7 +326,7 @@ func numberTheoryCollection() {
 	// 费马小定理
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
-	modInverseP := func(a, p int64) int64 {
+	modInv := func(a, p int64) int64 {
 		pow := func(x, n, p int64) int64 {
 			x %= p
 			res := int64(1)
@@ -410,7 +410,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
-		modInverseP, modFrac, solveLinearCongruence, quickMul,
+		modInv, modFrac, solveLinearCongruence, quickMul,
 		consecutiveNumbersSum,
 	}
 }
