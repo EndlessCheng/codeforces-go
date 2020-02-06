@@ -314,7 +314,7 @@ func vec2Collection() {
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
 		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
-		qs := make([]vec, 2*n)
+		qs := make([]vec, 0, 2*n)
 		for _, pi := range ps {
 			for {
 				sz := len(qs)
