@@ -357,7 +357,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int) {
+func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64, parents []int) {
 	type neighbor struct {
 		to     int
 		weight int64
@@ -366,7 +366,9 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 	for i := 0; i < m; i++ {
 		var v, w int
 		var weight int64
-		//v, w, weight := read()-1, read()-1, read()
+		Fscan(in, &v, &w, &weight)
+		v--
+		w--
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
@@ -413,12 +415,14 @@ func (*graph) shortestPathDijkstra(n, m, start int) (dist []int64, parents []int
 // https://oi-wiki.org/graph/bfs/#bfs_3
 // https://codeforces.com/blog/entry/22276
 // 例题: https://codeforces.com/problemset/problem/173/B
-func (*graph) bfs01(n, m, st int) []int {
+func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
 		var v, w, weight int
-		//v, w, weight := read()-1, read()-1, read()
+		Fscan(in, &v, &w, &weight)
+		v--
+		w--
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
@@ -451,7 +455,7 @@ func (*graph) bfs01(n, m, st int) []int {
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
-func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
+func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int64) {
 	type neighbor struct {
 		to     int
 		weight int64
@@ -460,7 +464,9 @@ func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
 	for i := 0; i < m; i++ {
 		var v, w int
 		var weight int64
-		//v, w, weight := read()-1, read()-1, read()
+		Fscan(in, &v, &w, &weight)
+		v--
+		w--
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
@@ -484,15 +490,15 @@ func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
 			w := e.to
 			if newD := dist[v] + e.weight; newD < dist[w] {
 				dist[w] = newD
+				relaxedCnt[w]++
+				if relaxedCnt[w] > n {
+					// found negative cycle
+					return nil
+				}
 				// there is no reason to put a vertex in the queue if it is already in.
 				if !onQ[w] {
 					queue = append(queue, w)
 					onQ[w] = true
-					relaxedCnt[w]++
-					if relaxedCnt[w] > n {
-						// found negative cycle
-						return nil
-					}
 				}
 			}
 		}
@@ -501,15 +507,15 @@ func (*graph) shortestPathBellmanFord(n, m, start int) (dist []int64) {
 }
 
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
-func (*graph) hasNegativeCycleBellmanFord() []int {
-	// TODO implement, return negative cycle
+func (*graph) findNegativeCycleBellmanFord() []int {
+	// TODO return negative cycle
 	return nil
 }
 
 // 适用于稀疏图 O(|E|⋅log|E|)
 // https://oi-wiki.org/graph/mst/#kruskal
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
-func (*graph) mstKruskal(n, m int) (sum int64) {
+func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -532,7 +538,9 @@ func (*graph) mstKruskal(n, m int) (sum int64) {
 	edges := make([]edge, m)
 	for i := range edges {
 		var v, w, weight int
-		//v, w, weight := read()-1, read()-1, read()
+		Fscan(in, &v, &w, &weight)
+		v--
+		w--
 		edges[i] = edge{v, w, weight}
 	}
 	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
@@ -770,12 +778,14 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // isDAG = len(order)==n
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-func (*graph) topSort(n, m int) (order []int, parents []int) {
+func (*graph) topSort(in io.Reader, n, m int) (order []int, parents []int) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)
 	for i := 0; i < m; i++ {
 		var v, w int
-		//v, w := read()-1, read()-1
+		Fscan(in, &v, &w)
+		v--
+		w--
 		g[v] = append(g[v], w)
 		inDeg[w]++
 	}
@@ -822,7 +832,7 @@ func (*graph) topSort(n, m int) (order []int, parents []int) {
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
-func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
+func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
 	g = make([][]int, n)
@@ -834,7 +844,9 @@ func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	}
 	for i := 0; i < m; i++ {
 		var v, w int
-		//v, w := read()-1, read()-1
+		Fscan(in, &v, &w)
+		v--
+		w--
 		addEdge(v, w)
 		edges[i] = edge{v, w}
 	}
@@ -926,10 +938,11 @@ func (*graph) sccKosaraju(n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
 //       A 必须存在       (A)     ¬A⇒A
 //       A 不能存在       (¬A)     A⇒¬A
-func (G *graph) solve2SAT(n, m int) []bool {
+func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	g := make([][]int, 2*n)
 	for i := 0; i < m; i++ {
 		var x, a, y, b int
+		Fscan(in, &x, &a, &y, &b)
 		x--
 		y--
 		v, w := x+a&1*n, y+(b^1)*n
@@ -937,7 +950,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 		v, w = y+b&1*n, x+(a^1)*n
 		g[v] = append(g[v], w)
 	}
-	_, sccIDs := G.sccKosaraju(2*n, m, g) // *两倍空间*
+	_, sccIDs := G.sccKosaraju(in, 2*n, m, g) // *两倍空间*
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
 		if id == sccIDs[i+n] { // x ⇔ ¬x

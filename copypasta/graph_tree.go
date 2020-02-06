@@ -1,6 +1,8 @@
 package copypasta
 
 import (
+	. "fmt"
+	"io"
 	"math/bits"
 	"sort"
 )
@@ -58,7 +60,7 @@ func (*tree) diameter(n int, g [][]int) (dv, dw int) {
 
 // 树的重心 https://oi-wiki.org/graph/tree-centroid/
 // 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
-func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
+func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -73,7 +75,9 @@ func (*tree) numPairsWithDistanceLimit(n int, upperDis int64) int64 {
 	for i := 0; i < n-1; i++ {
 		var v, w int
 		var weight int64
-		//v, w, weight := read()-1, read()-1, read()
+		Fscan(in, &v, &w, &weight)
+		v--
+		w--
 		g[v] = append(g[v], neighbor{w, weight})
 		g[w] = append(g[w], neighbor{v, weight})
 	}
