@@ -573,22 +573,23 @@ func rmqCollection() {
 		})
 
 		// 从 1 开始算，方便 debug
+		cnt := 0
 		l, r := 1, 1
 		update := func(idx, delta int) {
-			// 有些题目在 delta 为 1 和 -1 时逻辑的顺序是对称性的
-			//v := a[idx]
+			// 有些题目在 delta 为 1 和 -1 时逻辑的顺序是严格对称的
+			//v := a[idx-1]
 			if delta == 1 {
-
+				cnt++
 			} else {
-
+				cnt--
 			}
 		}
-		ans := make([]int, q)
 		getAns := func(q query) int {
 			// 提醒：q.r 是加一后的，计算时需要注意
-
-			return 0
+			//l := q.r - q.l
+			return cnt
 		}
+		ans := make([]int, q)
 		for _, q := range qs {
 			// prepare
 			// 有些题目需要维护差分值，因为 [l,r] 的差分是 s(r)-s(l-1)，此时 update 传入的应为 l-1

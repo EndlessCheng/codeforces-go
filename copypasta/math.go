@@ -22,10 +22,10 @@ func numberTheoryCollection() {
 	}
 
 	calcGCD := func(a, b int) int {
-		for b != 0 {
-			a, b = b, a%b
+		for a != 0 {
+			a, b = b%a, a
 		}
-		return a
+		return b
 	}
 	calcGCDN := func(nums ...int) (gcd int) {
 		gcd = nums[0]
