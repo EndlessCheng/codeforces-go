@@ -548,7 +548,7 @@ func rmqCollection() {
 	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
-	mo := func(in io.Reader, n, q int, a []int) {
+	mo := func(in io.Reader, out io.Writer, n, q int, a []int) {
 		type query struct {
 			blockIdx  int
 			l, r, idx int
@@ -609,8 +609,7 @@ func rmqCollection() {
 			ans[q.idx] = getAns(q)
 		}
 		for _, v := range ans {
-			_ = v
-			//Fprintln(out, v)
+			Fprintln(out, v)
 		}
 	}
 
@@ -633,7 +632,9 @@ func monotoneCollection() {
 	// https://oi-wiki.org/ds/monotonous-stack/
 	monotoneStack := func(a []int) ([]int, []int) {
 		// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
-		// 这种情况要用一个顶小底大的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
+		// 如何理解：把数组想象成一列山峰，站在山峰 a[i] 的顶上向两侧的上方看，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
+		// 这就启发我们引入一个顶小底大的单调栈，入栈前不断比较栈顶元素直到找到一个比当前元素大的。
+		// 栈可以存元素值和下标，也可以只存下标但这样写就要判断栈是否为空
 		n := len(a)
 		type pair struct{ v, i int }
 		posL := make([]int, n)
@@ -661,14 +662,47 @@ func monotoneCollection() {
 			}
 			stack = append(stack, pair{v, i})
 		}
-
 		return posL, posR
 	}
 
 	// 单调队列
 	// https://oi-wiki.org/ds/monotonous-queue/
-	monotoneQueue := func() {
-		// TODO
+	// 例题：CF1237D
+	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
+		// 为简单起见，用数组+下标模拟
+		// 举例：固定大小的区间最值（滑动窗口）
+		n := len(a)
+		mins := make([]int, n)
+		deque := make([]int, n)
+		s, t := 0, 0
+		for i, v := range a {
+			for ; s < t && a[deque[t-1]] >= v; t-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
+			}
+			deque[t] = i
+			t++
+			if i+1 >= fixedSize {
+				mins[i+1-fixedSize] = a[deque[s]]
+				if deque[s] == i+1-fixedSize { // popL 的条件随题目的不同而变化
+					s++
+				}
+			}
+		}
+		maxs := make([]int, n)
+		deque = make([]int, n)
+		s, t = 0, 0
+		for i, v := range a {
+			for ; s < t && a[deque[t-1]] <= v; t-- {
+			}
+			deque[t] = i
+			t++
+			if i+1 >= fixedSize {
+				maxs[i+1-fixedSize] = a[deque[s]]
+				if deque[s] == i+1-fixedSize {
+					s++
+				}
+			}
+		}
+		return mins, maxs
 	}
 
 	_ = []interface{}{monotoneStack, monotoneQueue}
