@@ -3,7 +3,7 @@ package copypasta
 import "sort"
 
 // 下面这些都是最小堆
-// h.top() 即 (*h)[0] (assert !empty)
+// h.top() 即 h.IntSlice[0] 或 (*h)[0] （注意判断非空）
 
 type intHeap struct{ sort.IntSlice }
 
