@@ -1,3 +1,5 @@
+// https://loj.ac/submission/56207
+
 #include <cstdio>
 #include <cassert>
 #include <cmath>
