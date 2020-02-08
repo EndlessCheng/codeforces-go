@@ -20,10 +20,24 @@ func run(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
+	readNeg := func() (x int) {
+		in.Scan()
+		data := in.Bytes()
+		if data[0] == '-' {
+			for _, b := range data {
+				x = x*10 + int(b-'0')
+			}
+			return -x
+		}
+		for _, b := range data {
+			x = x*10 + int(b-'0')
+		}
+		return x
+	}
 
 	n := read()
 
-	Fprintln(out, n)
+	Fprintln(out, n, readNeg())
 }
 
 //func main() { run(os.Stdin, os.Stdout) }
