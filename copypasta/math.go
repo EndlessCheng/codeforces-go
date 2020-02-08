@@ -199,8 +199,8 @@ func numberTheoryCollection() {
 		return
 	}
 
-	// 预处理: [2,mx] 范围内数的质因子个数
-	// Number of distinct primes dividing n (also called omega(n))
+	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
+	// Number of distinct primes dividing n
 	// https://oeis.org/A001221
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
@@ -214,8 +214,8 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 预处理 [2,mx] 的质因数分解的系数和
-	// Number of prime divisors of n counted with multiplicity (also called bigomega(n) or Omega(n))
+	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n)
+	// Number of prime divisors of n counted with multiplicity
 	// https://oeis.org/A001222
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
