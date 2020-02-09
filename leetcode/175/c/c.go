@@ -3,45 +3,32 @@ package main
 type node struct {
 	lr       [2]*node
 	priority uint
-	msz      int
 	key      int
 	dupCnt   int
+	sz       int
 }
 
-func (o *node) mSize() int {
+func (o *node) size() int {
 	if o != nil {
-		return o.msz
+		return o.sz
 	}
 	return 0
 }
 
-func (o *node) pushUp() {
-	msz := o.dupCnt
-	if ol := o.lr[0]; ol != nil {
-		msz += ol.msz
-	}
-	if or := o.lr[1]; or != nil {
-		msz += or.msz
-	}
-	o.msz = msz
-}
+func (o *node) pushUp() { o.sz = o.dupCnt + o.lr[0].size() + o.lr[1].size() }
 
-func (o *node) rotate(d int) *node {
+func (o *node) rotate(d int8) *node {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
-	x.msz = o.msz
 	o.pushUp()
+	x.pushUp()
 	return x
 }
 
 type treap struct {
 	rd   uint
 	root *node
-}
-
-func newTreap() *treap {
-	return &treap{rd: 1}
 }
 
 func (t *treap) fastRand() uint {
@@ -51,7 +38,7 @@ func (t *treap) fastRand() uint {
 	return t.rd
 }
 
-func (t *treap) compare(a, b int) int {
+func (t *treap) less(a, b int) int8 {
 	switch {
 	case a < b:
 		return 0
@@ -64,12 +51,12 @@ func (t *treap) compare(a, b int) int {
 
 func (t *treap) _put(o *node, key int) *node {
 	if o == nil {
-		return &node{priority: t.fastRand(), msz: 1, key: key, dupCnt: 1}
+		return &node{priority: t.fastRand(), key: key, dupCnt: 1, sz: 1}
 	}
-	if cmp := t.compare(key, o.key); cmp >= 0 {
-		o.lr[cmp] = t._put(o.lr[cmp], key)
-		if o.lr[cmp].priority > o.priority {
-			o = o.rotate(cmp ^ 1)
+	if d := t.less(key, o.key); d >= 0 {
+		o.lr[d] = t._put(o.lr[d], key)
+		if o.lr[d].priority > o.priority {
+			o = o.rotate(d ^ 1)
 		}
 	} else {
 		o.dupCnt++
@@ -80,30 +67,30 @@ func (t *treap) _put(o *node, key int) *node {
 
 func (t *treap) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *treap) mRank(key int) (cnt int) {
+func (t *treap) rank(key int) (kth int) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
+		switch d := t.less(key, o.key); {
+		case d == 0:
 			o = o.lr[0]
-		case cmp > 0:
-			cnt += o.dupCnt + o.lr[0].mSize()
+		case d > 0:
+			kth += o.dupCnt + o.lr[0].size()
 			o = o.lr[1]
 		default:
-			cnt += o.lr[0].mSize()
+			kth += o.lr[0].size()
 			return
 		}
 	}
 	return
 }
 
+func newTreap() *treap { return &treap{rd: 1} }
+
 type TweetCounts struct {
 	userTweets map[string]*treap
 }
 
 func Constructor() TweetCounts {
-	return TweetCounts{
-		userTweets: map[string]*treap{},
-	}
+	return TweetCounts{map[string]*treap{}}
 }
 
 func (tc *TweetCounts) RecordTweet(tweetName string, time int) {
@@ -134,13 +121,13 @@ func (tc *TweetCounts) GetTweetCountsPerFrequency(freq string, tweetName string,
 	}
 
 	ans = make([]int, 0, ansLen)
-	prevCnt := t.mRank(startTime)
+	prevCnt := t.rank(startTime)
 	for time := startTime + delta; time < endTime; time += delta {
-		cnt := t.mRank(time)
+		cnt := t.rank(time)
 		ans = append(ans, cnt-prevCnt)
 		prevCnt = cnt
 	}
-	cnt := t.mRank(endTime)
+	cnt := t.rank(endTime)
 	ans = append(ans, cnt-prevCnt)
 	return
 }
