@@ -7,18 +7,17 @@ func minSteps(s string, t string) (ans int) {
 		}
 		return x
 	}
-	cntS := [26]int{}
+	cnts := [26]int{}
 	for _, b := range s {
 		b -= 'a'
-		cntS[b]++
+		cnts[b]++
 	}
-	cntT := [26]int{}
 	for _, b := range t {
 		b -= 'a'
-		cntT[b]++
+		cnts[b]--
 	}
-	for i, c := range cntS {
-		ans += abs(c - cntT[i])
+	for _, c := range cnts {
+		ans += abs(c)
 	}
 	return ans / 2
 }

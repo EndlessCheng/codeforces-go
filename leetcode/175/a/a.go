@@ -5,7 +5,7 @@ func checkIfExist(arr []int) (ans bool) {
 	for _, v := range arr {
 		cnts[v]++
 	}
-	if cnts[0] >= 2 {
+	if cnts[0] > 1 {
 		return true
 	}
 	delete(cnts, 0)
