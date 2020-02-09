@@ -5,13 +5,14 @@ import (
 	"github.com/levigross/grequests"
 	"golang.org/x/net/html"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 	"sync"
 	"testing"
 )
 
-const contestID = "abc132"
+const contestID = "abc154"
 
 func newSession(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
@@ -56,7 +57,7 @@ func newSession(username, password string) (session *grequests.Session, err erro
 	}
 	f(root)
 
-	apiLogin := "https://atcoder.jp/login"
+	apiLogin := "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome"
 	resp, err = session.Post(apiLogin, &grequests.RequestOptions{
 		Data: map[string]string{
 			"username":   os.Getenv("ATCODER_USERNAME"),
@@ -141,6 +142,39 @@ func TestGenAtCoderTests(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	//home := "https://atcoder.jp/home"
+	//resp, err := session.Get(home, &grequests.RequestOptions{
+	//	Headers: map[string]string{
+	//		"upgrade-insecure-requests": "1",
+	//	},
+	//})
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//if !resp.Ok {
+	//	t.Fatal("未找到比赛或比赛尚未开始")
+	//}
+
+	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
+	resp, err := session.Get(tasksHome, &grequests.RequestOptions{
+		Cookies: []*http.Cookie{
+			{
+				Name: "REVEL_SESSION",
+				// TODO
+				Value: "",
+			},
+		},
+		//Headers: map[string]string{
+		//	"upgrade-insecure-requests": "1",
+		//},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !resp.Ok {
+		t.Fatal("未找到比赛或比赛尚未开始")
+	}
+
 	fmt.Println("开始解析样例输入输出")
 	wg := &sync.WaitGroup{}
 	defer wg.Wait()
@@ -155,6 +189,7 @@ func TestGenAtCoderTests(t *testing.T) {
 				return
 			}
 
+			// https://atcoder.jp/contests/abc154/tasks
 			htmlURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, id)
 			ins, outs, err := parseTask(session, htmlURL)
 			if err != nil {
