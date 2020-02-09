@@ -43,6 +43,5 @@ func maxStudents(mat [][]byte) (ans int) {
 			}
 		}
 	}
-	ans = validSeatCnt - ans
-	return
+	return validSeatCnt - ans
 }
