@@ -7,8 +7,8 @@ import . "fmt"
 
 // 耗时大约是红黑树（父节点实现）的 1.2 倍
 
-type tpKeyType int   // *custom* 图方便可以全局替换
-type tpValueType int // *custom* 图方便可以全局替换
+type tpKeyType int   // 用 GoLand 的话强烈建议加入到 Live Templates 中，从而间接实现泛型。比赛时直接敲快捷键
+type tpValueType int // 用 GoLand 的话强烈建议加入到 Live Templates 中，从而间接实现泛型。比赛时直接敲快捷键
 
 type tpNode struct {
 	lr       [2]*tpNode
