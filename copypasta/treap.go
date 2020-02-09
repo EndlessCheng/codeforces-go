@@ -51,9 +51,7 @@ type treap struct {
 	root *tpNode
 }
 
-func newTreap() *treap {
-	return &treap{rd: 1}
-}
+func newTreap() *treap { return &treap{rd: 1} }
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
