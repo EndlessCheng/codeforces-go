@@ -964,6 +964,7 @@ func loopCollection() {
 		}
 	}
 
+	// 注意这个不是按照字典序 do 的
 	// Permute the values at index i to len(arr)-1.
 	// See 910C for example.
 	var permute func([]int, int, func([]int))

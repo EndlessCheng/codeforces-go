@@ -12,7 +12,7 @@ import (
 
 // 生成比赛模板（需要先创建目录）
 func TestGenContestTemplates(t *testing.T) {
-	const contestID = "abc154"
+	const contestID = "1300"
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	opened := false

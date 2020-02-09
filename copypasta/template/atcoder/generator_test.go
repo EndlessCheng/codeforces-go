@@ -156,12 +156,12 @@ func TestGenAtCoderTests(t *testing.T) {
 	//}
 
 	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
+	revelSession, _ := ioutil.ReadFile("revel_session.txt")
 	resp, err := session.Get(tasksHome, &grequests.RequestOptions{
 		Cookies: []*http.Cookie{
 			{
 				Name: "REVEL_SESSION",
-				// TODO
-				Value: "",
+				Value: string(revelSession),
 			},
 		},
 		//Headers: map[string]string{
