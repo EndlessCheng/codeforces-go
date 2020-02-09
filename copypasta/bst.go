@@ -90,6 +90,23 @@ func (t *bst) floor(key tKeyType) (floor *tnode) {
 	return
 }
 
+// min >= key
+// return nil if not found
+func (t *bst) lowerBound(key tKeyType) (lb *tnode) {
+	for o := t.root; o != nil; {
+		switch cmp := t.compare(key, o.key); {
+		case cmp == 0:
+			lb = o
+			o = o.lr[0]
+		case cmp > 0:
+			o = o.lr[1]
+		default:
+			return o
+		}
+	}
+	return
+}
+
 // 前驱（小于 key，且最大的数）
 func (t *bst) prev(key tKeyType) (prev *tnode) {
 	// 另一种写法
@@ -101,24 +118,6 @@ func (t *bst) prev(key tKeyType) (prev *tnode) {
 		} else {
 			prev = o
 			o = o.lr[1]
-		}
-	}
-	return
-}
-
-// min >= key
-// return nil if not found
-// same like lower_bound in C++ STL
-func (t *bst) ceiling(key tKeyType) (ceiling *tnode) {
-	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
-			ceiling = o
-			o = o.lr[0]
-		case cmp > 0:
-			o = o.lr[1]
-		default:
-			return o
 		}
 	}
 	return
@@ -144,13 +143,13 @@ func (t *bst) next(key tKeyType) (next *tnode) {
 }
 
 func (t *bst) hasValueInRange(l, r int) bool {
-	o := t.ceiling(tKeyType(l))
+	o := t.lowerBound(tKeyType(l))
 	return o != nil && int(o.key) <= r
 }
 
 // 小于 key 的键的数量
-func (t *bst) mRank(key tKeyType) (cnt int, o *tnode) {
-	for o = t.root; o != nil; {
+func (t *bst) mRank(key tKeyType) (cnt int) {
+	for o := t.root; o != nil; {
 		switch cmp := t.compare(key, o.key); {
 		case cmp == 0:
 			o = o.lr[0]

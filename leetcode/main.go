@@ -1,6 +1,6 @@
 package main
 
-func collections() {
+func main() {
 	toBytes := func(g [][]string) [][]byte {
 		n, m := len(g), len(g[0])
 		bytes := make([][]byte, n)
