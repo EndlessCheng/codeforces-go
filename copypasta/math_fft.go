@@ -66,6 +66,7 @@ func (f *fft) idft(a []complex128) {
 // 计算 A(x) 和 B(x) 的卷积
 // 入参出参都是次项从低到高的系数
 // 建议全程用 int64
+// 模板题 https://www.luogu.com.cn/problem/P3803
 func convolution(a, b []int64) []int64 {
 	n, m := len(a), len(b)
 	limit := 1 << uint(bits.Len(uint(n+m-1)))

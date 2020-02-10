@@ -2,11 +2,18 @@ package copypasta
 
 // CF101628K https://codeforces.com/gym/101628/submission/68323182
 
+type _treap struct {
+	rd              uint
+	put             func(int)
+	delete          func(int)
+	hasValueInRange func(int, int) bool
+}
+
 type iTrieNode struct {
 	sonIndexes     [26]int
 	fa             *iTrieNode
-	curIndexes     *sTreap
-	subTreeIndexes *sTreap
+	curIndexes     *_treap // set
+	subTreeIndexes *_treap // set
 }
 
 func (o *iTrieNode) pushUpAdd(idx int) {
@@ -43,8 +50,8 @@ func (t *iTrie) add(s string, idx int) {
 			o.sonIndexes[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &iTrieNode{
 				fa:             o,
-				curIndexes:     &sTreap{seed: 1},
-				subTreeIndexes: &sTreap{seed: 1},
+				curIndexes:     &_treap{rd: 1},
+				subTreeIndexes: &_treap{rd: 1},
 			})
 		}
 		o = t.nodes[o.sonIndexes[c]]
