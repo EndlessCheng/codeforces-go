@@ -8,12 +8,12 @@ import (
 
 func Test(t *testing.T) {
 	t.Log("Current test is [d]")
-	exampleIns := [][]string{{`[["#",".","#","#",".","#"],[".","#","#","#","#","."],["#",".","#","#",".","#"]]`}, {`[[".","#"],["#","#"],["#","."],["#","#"],[".","#"]]`}, {`[["#",".","`}}
+	exampleIns := [][]string{{`[["#",".","#","#",".","#"],[".","#","#","#","#","."],["#",".","#","#",".","#"]]`}, {`[[".","#"],["#","#"],["#","."],["#","#"],[".","#"]]`}, {`[["#",".",".",".","#"],[".","#",".","#","."],[".",".","#",".","."],[".","#",".","#","."],["#",".",".",".","#"]]`}}
 	exampleOuts := [][]string{{`4`}, {`3`}, {`10`}}
 	// custom test cases or WA cases.
 	//exampleIns = append(exampleIns, []string{``})
 	//exampleOuts = append(exampleOuts, []string{``})
-	if err := testutil.RunLeetCodeFuncWithCase(t, maxStudents, exampleIns, exampleOuts, 3); err != nil {
+	if err := testutil.RunLeetCodeFuncWithCase(t, maxStudents, exampleIns, exampleOuts, 0); err != nil {
 		t.Fatal(err)
 	}
 }
