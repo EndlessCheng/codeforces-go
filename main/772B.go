@@ -7,19 +7,19 @@ import (
 	"math"
 )
 
-type vec struct {
+type vec772 struct {
 	x, y float64
 }
 
-func (a vec) sub(b vec) vec     { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) len() float64      { return math.Hypot(a.x, a.y) }
-func (a vec) det(b vec) float64 { return a.x*b.y - a.y*b.x }
+func (a vec772) sub(b vec772) vec772  { return vec772{a.x - b.x, a.y - b.y} }
+func (a vec772) len() float64         { return math.Hypot(a.x, a.y) }
+func (a vec772) det(b vec772) float64 { return a.x*b.y - a.y*b.x }
 
 type line struct {
-	p1, p2 vec
+	p1, p2 vec772
 }
 
-func (a vec) disToLine(l line) float64 {
+func (a vec772) disToLine(l line) float64 {
 	v, u := l.p2.sub(l.p1), a.sub(l.p1)
 	return math.Abs(v.det(u)) / v.len()
 }
@@ -32,7 +32,7 @@ func Sol772B(reader io.Reader, writer io.Writer) {
 
 	var n int
 	Fscan(in, &n)
-	ps := make([]vec, n, n+2)
+	ps := make([]vec772, n, n+2)
 	for i := range ps {
 		Fscan(in, &ps[i].x, &ps[i].y)
 	}
