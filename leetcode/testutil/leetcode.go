@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
+func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value, err error) {
 	switch tp.Kind() {
 	case reflect.String:
 		// remove " at leftmost and rightmost
@@ -29,14 +29,22 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 	case reflect.Bool:
 		v = reflect.ValueOf(rawArg == "true")
 	case reflect.Slice:
+		// check [] at leftmost and rightmost
+		if len(rawArg) <= 1 || rawArg[0] != '[' || rawArg[len(rawArg)-1] != ']' {
+			err = fmt.Errorf("invalid test data: %s", rawArg)
+			return
+		}
+		// ignore [] at leftmost and rightmost
+		rawArg = rawArg[1:len(rawArg)-1]
+
 		v = reflect.New(tp).Elem()
 		isStringSlice := strings.Contains(rawArg, `"`)
+		depth := 0
 		quotCnt := 0
-		// ignore [] at leftmost and rightmost
-		for start, depth := 1, 0; start < len(rawArg)-1; {
+		for start := 0; start < len(rawArg); {
 			end := start
 		outer:
-			for ; end < len(rawArg)-1; end++ {
+			for ; end < len(rawArg); end++ {
 				switch rawArg[end] {
 				case '[':
 					depth++
@@ -53,8 +61,17 @@ func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value) {
 					}
 				}
 			}
-			v = reflect.Append(v, parseRawArg(tp.Elem(), rawArg[start:end]))
+			_v, er := parseRawArg(tp.Elem(), rawArg[start:end])
+			if er != nil {
+				err = er
+				return
+			}
+			v = reflect.Append(v, _v)
 			start = end + 1 // skip ,
+		}
+		if depth != 0 {
+			err = fmt.Errorf("invalid test data: %s", rawArg)
+			return
 		}
 	}
 	return
@@ -81,7 +98,7 @@ func simpleValueString(v reflect.Value) string {
 	}
 }
 
-func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) error {
+func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) (err error) {
 	tp := reflect.TypeOf(f)
 	if tp.Kind() != reflect.Func {
 		return fmt.Errorf("f must be a function")
@@ -105,8 +122,21 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 		in := make([]reflect.Value, len(rawIn))
 		for i, rawArg := range rawIn {
 			rawArg = trimSpaceAndNewLine(rawArg)
-			in[i] = parseRawArg(tp.In(i), rawArg)
+			in[i], err = parseRawArg(tp.In(i), rawArg)
+			if err != nil {
+				// rawArg 不合法
+				return
+			}
 		}
+		// 额外检测 rawOutputs 是否合法
+		for i, rawArg := range rawOut {
+			rawArg = trimSpaceAndNewLine(rawArg)
+			if _, err = parseRawArg(tp.Out(i), rawArg); err != nil {
+				// rawArg 不合法
+				return
+			}
+		}
+
 		actualOut := vFunc.Call(in)
 		for i, expectedRes := range rawOut {
 			if !assert.Equal(t, expectedRes, simpleValueString(actualOut[i]), "please check case %d", testCase+1) {
