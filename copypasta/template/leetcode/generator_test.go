@@ -151,9 +151,9 @@ func TestOnline(t *testing.T) {
 	t.Log("Current test is [%s]")
 	// copy to the Custom Testcase
 	const exampleIns = `+"`\n%s`"+`
-	exampleOuts := `+"`\n%s`"+`
+	const exampleOuts = `+"`\n%s`"+`
 	// copy Your answer in the Run Code Result
-	yourAnswers := `+"`\n\n`"+`
+	const yourAnswers = `+"`\n\n`"+`
 	assert.Equal(t, strings.TrimSpace(exampleOuts), strings.TrimSpace(yourAnswers))
 }
 `, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.id, sampleToOnlineStr(p.sampleIns), sampleToOnlineStr(p.sampleOuts))
