@@ -262,7 +262,7 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 		// call constructor
 		obj := cFunc.Call(constructorIns)[0]
 
-		// we need a obj pointer cause all methods are declared with a pointer receiver
+		// we need a pointer to obj cause all methods are declared with a pointer receiver
 		pObj := reflect.New(obj.Type())
 		pObj.Elem().Set(obj)
 
