@@ -6,9 +6,7 @@ import (
 	"sort"
 )
 
-type intHeap struct {
-	sort.IntSlice
-}
+type intHeap struct{ sort.IntSlice }
 
 func (h *intHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *intHeap) Pop() (v interface{}) {

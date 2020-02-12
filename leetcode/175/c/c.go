@@ -131,3 +131,10 @@ func (tc *TweetCounts) GetTweetCountsPerFrequency(freq string, tweetName string,
 	ans = append(ans, cnt-prevCnt)
 	return
 }
+
+/**
+ * Your TweetCounts object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.RecordTweet(tweetName,time);
+ * param_2 := obj.GetTweetCountsPerFrequency(freq,tweetName,startTime,endTime);
+ */

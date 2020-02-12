@@ -1,12 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+)
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
 func removeZeroSolve(a []int) []bool {
 	n := len(a)
 	sum := make([]int, n)

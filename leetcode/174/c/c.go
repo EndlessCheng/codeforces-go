@@ -1,11 +1,15 @@
 package main
 
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
 func maxProduct(root *TreeNode) (ans int) {
 	max := func(a, b int) int {
 		if a > b {
