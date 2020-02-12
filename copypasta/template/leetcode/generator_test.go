@@ -13,42 +13,24 @@ import (
 )
 
 // TODO: sleep when contest not begin.
-const contestID = 175
 
-const (
-	hostZH = "leetcode-cn.com"
-	hostEN = "leetcode.com"
-	host   = hostZH
-
-	contestPrefixWeekly   = "weekly-contest-"
-	contestPrefixBiweekly = "biweekly-contest-"
-	contestPrefix         = contestPrefixWeekly
-
-	openZH = true
-	openEN = true
-)
-
-var (
-	apiContestInfo = fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
-)
-
-func newSession(username, password string) (session *grequests.Session, err error) {
+func login(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
 		UserAgent:    ua,
 		UseCookieJar: true,
 	})
 
-	// TODO: leetCodeEN
-	csrfTokenUrl := fmt.Sprintf("https://%s/graphql/", host)
-	resp, err := session.Post(csrfTokenUrl, &grequests.RequestOptions{
+	// "touch" csrfToken
+	csrfTokenURL := fmt.Sprintf("https://%s/graphql/", host)
+	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{
 		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
 	})
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
-		return nil, fmt.Errorf("POST %s return code %d", csrfTokenUrl, resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", csrfTokenURL, resp.StatusCode)
 	}
 	var csrfToken string
 	for _, c := range resp.RawResponse.Cookies() {
@@ -58,11 +40,12 @@ func newSession(username, password string) (session *grequests.Session, err erro
 		}
 	}
 	if csrfToken == "" {
-		panic("csrftoken not found")
+		return nil, fmt.Errorf("csrftoken not found")
 	}
 
-	loginUrl := fmt.Sprintf("https://%s/accounts/login/", host)
-	resp, err = session.Post(loginUrl, &grequests.RequestOptions{
+	// login
+	loginURL := fmt.Sprintf("https://%s/accounts/login/", host)
+	resp, err = session.Post(loginURL, &grequests.RequestOptions{
 		Data: map[string]string{
 			"csrfmiddlewaretoken": csrfToken,
 			"login":               username,
@@ -75,60 +58,96 @@ func newSession(username, password string) (session *grequests.Session, err erro
 		},
 	})
 	if err != nil {
-		panic(err)
+		return
 	}
 	if !resp.Ok {
-		return nil, fmt.Errorf("POST %s return code %d", loginUrl, resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", loginURL, resp.StatusCode)
 	}
-
-	fmt.Println("登录成功", host)
 	return
 }
 
-var contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
-
-func createDir(problemID string) error {
-	dirPath := contestDir + problemID
-	return os.MkdirAll(dirPath, os.ModePerm)
+type problem struct {
+	id            string
+	urlZH         string
+	urlEN         string
+	defaultCode   string
+	funcName      string
+	isFuncProblem bool
+	funcLos       []int
+	sampleIns     [][]string
+	sampleOuts    [][]string
 }
 
-var isOpenedMainFile bool
+func (p *problem) createDir() error {
+	return os.MkdirAll(contestDir+p.id, os.ModePerm)
+}
 
-func writeMainFile(problemID, defaultCode string) error {
-	defaultCode = strings.TrimSpace(defaultCode)
-	mainStr := fmt.Sprintf(`package main
+var _firstMainFileOpened bool
 
-%s
-`, defaultCode)
-	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", problemID)
-	if !isOpenedMainFile {
-		defer open.Run(absPath(filePath))
-		isOpenedMainFile = true
+func (p *problem) writeMainFile() error {
+	imports := ""
+	if strings.Contains(p.defaultCode, "Definition for") {
+		// add imports
+		imports = `
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+`
 	}
-	return ioutil.WriteFile(filePath, []byte(mainStr), 0644)
+	p.defaultCode = strings.TrimSpace(p.defaultCode)
+	fileContent := fmt.Sprintf(`package main
+%s
+%s
+`, imports, p.defaultCode)
+
+	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
+	if !_firstMainFileOpened {
+		_firstMainFileOpened = true
+		defer open.Run(absPath(filePath))
+	}
+	return ioutil.WriteFile(filePath, []byte(fileContent), 0644)
 }
 
-func writeTestFile(problemID, funcName string, sampleIns, sampleOuts [][]string) error {
-	funcName = strings.TrimSpace(funcName)
-
+func (p *problem) writeTestFile() error {
 	var testStr string
-	if funcName == "" {
-		// 编写类
+	if !p.isFuncProblem {
+		// 编写类和类方法
 		sampleToStr := func(samples [][]string) (s string) {
+			for i, text := range samples {
+				if i > 0 {
+					s += ", "
+				}
+				s += "`\n" + text[0] + "`"
+			}
+			return
+		}
+		sampleToOnlineStr := func(samples [][]string) (s string) {
 			for _, text := range samples {
 				s += text[0]
 			}
 			return
 		}
-		testStr = fmt.Sprintf(`package main
+		testStr = fmt.Sprintf(`// Code generated by generator_test.
+package main
 
 import (
+	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 )
 
 func Test(t *testing.T) {
+	t.Log("Current test is [%s]")
+	exampleIns := []string{%s}
+	exampleOuts := []string{%s}
+	// custom test cases or WA cases.
+	//exampleIns = append(exampleIns, `+"``"+`)
+	//exampleOuts = append(exampleOuts, `+"``"+`)
+	if err := testutil.RunLeetCodeClassWithCase(t, Constructor, exampleIns, exampleOuts, 0); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestOnline(t *testing.T) {
 	t.Log("Current test is [%s]")
 	// copy to the Custom Testcase
 	const exampleIns = `+"`\n%s`"+`
@@ -137,7 +156,7 @@ func Test(t *testing.T) {
 	yourAnswers := `+"`\n\n`"+`
 	assert.Equal(t, strings.TrimSpace(exampleOuts), strings.TrimSpace(yourAnswers))
 }
-`, problemID, sampleToStr(sampleIns), sampleToStr(sampleOuts))
+`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.id, sampleToOnlineStr(p.sampleIns), sampleToOnlineStr(p.sampleOuts))
 	} else {
 		// 编写函数
 		sampleToStr := func(samples [][]string) (s string) {
@@ -175,34 +194,73 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-`, problemID, sampleToStr(sampleIns), sampleToStr(sampleOuts), funcName)
+`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.funcName)
 	}
 
-	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", problemID)
+	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", p.id)
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }
 
-func parseHTML(session *grequests.Session, fileName string, htmlURL string) (retErr error) {
+// 解析一个样例输入或输出
+func (p *problem) parseSampleText(text string, parseArgs bool) []string {
+	text = strings.TrimSpace(text)
+	// 按 \n split 后 TrimSpace 再合并
+	lines := strings.Split(text, "\n")
+	text = ""
+	for _, l := range lines {
+		text += strings.TrimSpace(l)
+		if !p.isFuncProblem {
+			text += "\n"
+		}
+	}
+
+	// 包含中文的话，说明原始数据有误，截断首个中文字符之后的字符
+	if idx := findNonASCII(text); idx != -1 {
+		fmt.Println("[warn] 数据有误，截断", text)
+		text = text[:idx]
+	}
+
+	// 只有一个参数
+	if !parseArgs || !strings.Contains(text, "=") {
+		return []string{text}
+	}
+
+	// TODO: 处理参数含有 = 的情况
+	splits := strings.Split(text, "=")
+	sample := make([]string, 0, len(splits)-1)
+	for _, s := range splits[1 : len(splits)-1] {
+		end := strings.LastIndexByte(s, ',')
+		sample = append(sample, strings.TrimSpace(s[:end]))
+	}
+	sample = append(sample, strings.TrimSpace(splits[len(splits)-1]))
+	if !p.isFuncProblem {
+		sample = []string{strings.Join(sample, "\n") + "\n"}
+	}
+	return sample
+}
+
+func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	defer func() {
+		// visit htmlNode may cause panic
 		if er := recover(); er != nil {
-			retErr = fmt.Errorf("%v", er)
+			err = fmt.Errorf("%v", er)
 		}
 	}()
 
-	resp, err := session.Get(htmlURL, nil)
+	resp, err := session.Get(p.urlZH, nil)
 	if err != nil {
-		return err
+		return
 	}
 	if !resp.Ok {
-		return fmt.Errorf("GET %s return code %d", htmlURL, resp.StatusCode)
+		return fmt.Errorf("GET %s return code %d", p.urlZH, resp.StatusCode)
 	}
 
-	root, err := html.Parse(resp)
+	rootNode, err := html.Parse(resp)
 	if err != nil {
 		return err
 	}
 
-	htmlNode := root.FirstChild.NextSibling
+	htmlNode := rootNode.FirstChild.NextSibling
 	var bodyNode *html.Node
 	for o := htmlNode.FirstChild; o != nil; o = o.NextSibling {
 		if o.Type == html.ElementNode && o.Data == "body" {
@@ -211,9 +269,7 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) (ret
 		}
 	}
 
-	// 解析模板（codeDefinition）
-	var funcName string
-	var isFuncProblem bool // 编写函数还是类
+	// parse defaultCode
 	for o := bodyNode.FirstChild; o != nil; o = o.NextSibling {
 		if o.Type == html.ElementNode && o.Data == "script" && o.FirstChild != nil {
 			jsText := o.FirstChild.Data
@@ -224,37 +280,29 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) (ret
 				jsonText = jsonText[:len(jsonText)-3] + "]" // remove , at end
 				jsonText = strings.Replace(jsonText, `'`, `"`, -1)
 
-				d := []struct {
+				data := []struct {
 					Value       string `json:"value"`
 					DefaultCode string `json:"defaultCode"`
 				}{}
-				if err := json.Unmarshal([]byte(jsonText), &d); err != nil {
+				if err := json.Unmarshal([]byte(jsonText), &data); err != nil {
 					return err
 				}
 
-				for _, e := range d {
-					if e.Value == "golang" {
-						// 模板解析完成，写入 <problemID>.go
-						code := e.DefaultCode
-						code = strings.TrimSpace(code)
-						funcName, isFuncProblem = parseFuncName(code)
-						if isFuncProblem {
-							code = lowerFirstChar(code)
-							code = namedReturn(code, "ans")
-							code = customContent(code, "\t\n\treturn")
-						}
-						if err := writeMainFile(fileName, code); err != nil {
-							return err
-						}
+				for _, template := range data {
+					if template.Value == "golang" {
+						p.defaultCode = strings.TrimSpace(template.DefaultCode)
+						// 下面解析样例需要知道 p.isFuncProblem
+						p.funcName, p.isFuncProblem, p.funcLos = parseCode(p.defaultCode)
 						break
 					}
 				}
+				// TODO: when defaultCode not found
 				break
 			}
 		}
 	}
 
-	// 解析样例输入输出
+	// parse sample inputs and sample outputs
 	const (
 		tokenInputZH  = "输入："
 		tokenOutputZH = "输出："
@@ -263,44 +311,6 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) (ret
 		tokenOutputEN = "Output:"
 	)
 
-	var sampleIns, sampleOuts [][]string
-	parseSampleText := func(text string, parseArgs bool) (sample []string) {
-		text = strings.TrimSpace(text)
-		// 按 \n split 后 TrimSpace 再合并
-		lines := strings.Split(text, "\n")
-		text = ""
-		for _, l := range lines {
-			text += strings.TrimSpace(l)
-			if !isFuncProblem {
-				text += "\n"
-			}
-		}
-
-		if idx := findASCII(text); idx != -1 {
-			// 包含中文的话，说明原始数据有误，截断首个中文字符之后的字符
-			fmt.Println("[warn] 数据有误，截断", text)
-			text = text[:idx]
-		}
-
-		if !parseArgs || !strings.Contains(text, "=") {
-			// 只有一个参数
-			return []string{text}
-		}
-
-		splits := strings.Split(text, "=")
-		sample = make([]string, 0, len(splits)-1)
-		for _, s := range splits[1 : len(splits)-1] {
-			end := strings.LastIndexByte(s, ',')
-			sample = append(sample, strings.TrimSpace(s[:end]))
-		}
-		sample = append(sample, strings.TrimSpace(splits[len(splits)-1]))
-
-		if !isFuncProblem {
-			sample = []string{strings.Join(sample, "\n") + "\n"}
-		}
-
-		return
-	}
 	isIn := true
 	var f func(*html.Node)
 	f = func(o *html.Node) {
@@ -311,20 +321,20 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) (ret
 			}
 			if isIn {
 				raw := o.Parent.NextSibling.Data
-				sample := parseSampleText(raw, true)
+				sample := p.parseSampleText(raw, true)
 				if sample == nil { // 官方描述打错。例如，“解释”写成了“输出”
 					fmt.Fprintf(os.Stderr, "错误的输入数据：%s\n", raw)
 					return
 				}
-				sampleIns = append(sampleIns, sample)
+				p.sampleIns = append(p.sampleIns, sample)
 			} else {
 				raw := o.Parent.NextSibling.Data
-				sample := parseSampleText(raw, true)
+				sample := p.parseSampleText(raw, true)
 				if sample == nil {
 					fmt.Fprintf(os.Stderr, "错误的输出数据：%s\n", raw)
 					return
 				}
-				sampleOuts = append(sampleOuts, sample)
+				p.sampleOuts = append(p.sampleOuts, sample)
 			}
 			isIn = !isIn
 			return
@@ -335,36 +345,31 @@ func parseHTML(session *grequests.Session, fileName string, htmlURL string) (ret
 	}
 	f(bodyNode)
 
-	if len(sampleIns) != len(sampleOuts) {
-		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(sampleIns), len(sampleOuts))
+	if len(p.sampleIns) != len(p.sampleOuts) {
+		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(p.sampleIns), len(p.sampleOuts))
 	}
-
-	if len(sampleIns) == 0 {
+	if len(p.sampleIns) == 0 {
 		return fmt.Errorf("解析失败，未找到样例输入输出！")
 	}
-
-	// 样例解析完成，写入 <problemID>_test.go
-	if err := writeTestFile(fileName, funcName, sampleIns, sampleOuts); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func TestGenLeetCodeTests(t *testing.T) {
 	username := os.Getenv("LEETCODE_USERNAME")
 	password := os.Getenv("LEETCODE_PASSWORD")
-	session, err := newSession(username, password)
+	session, err := login(username, password)
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println(host, "登录成功")
 
-	resp, err := session.Get(apiContestInfo, nil)
+	contestInfoAPI := fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
+	resp, err := session.Get(contestInfoAPI, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !resp.Ok {
-		t.Fatalf("GET %s return code %d", apiContestInfo, resp.StatusCode)
+		t.Fatalf("GET %s return code %d", contestInfoAPI, resp.StatusCode)
 	}
 	d := struct {
 		Questions []struct {
@@ -375,44 +380,57 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(d.Questions) == 0 {
-		t.Fatal("未找到比赛或比赛尚未开始")
+		t.Fatalf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
 	}
-
 	fmt.Println("题目链接获取成功，开始解析")
-	problemURLs := make([]string, len(d.Questions))
+
+	problems := make([]*problem, len(d.Questions))
 	for i, q := range d.Questions {
-		problemURLs[i] = fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", host, contestPrefix, contestID, q.TitleSlug)
+		problems[i] = &problem{
+			id:    string('a' + i),
+			urlZH: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostZH, contestPrefix, contestID, q.TitleSlug),
+			urlEN: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostEN, contestPrefix, contestID, q.TitleSlug),
+		}
 	}
 
-	// open all urls in browser
-	if openZH {
-		for _, u := range problemURLs {
-			if err := open.Run(u); err != nil {
+	if openWebPageZH {
+		for _, p := range problems {
+			if err := open.Run(p.urlZH); err != nil {
 				t.Error(err)
 			}
 		}
 	}
-	if openEN {
-		for _, q := range d.Questions {
-			u := fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostEN, contestPrefix, contestID, q.TitleSlug)
-			if err := open.Run(u); err != nil {
+	if openWebPageEN {
+		for _, p := range problems {
+			if err := open.Run(p.urlEN); err != nil {
 				t.Error(err)
 			}
 		}
 	}
 
-	for i, pUrl := range problemURLs {
-		problemID := string('a' + i)
-		//if problemID != "f" {
+	for _, p := range problems {
+		//if p.id != "a" {
 		//	continue
 		//}
-		fmt.Println(problemID, pUrl)
-		if err := createDir(problemID); err != nil {
-			t.Fatal(err)
+		fmt.Println(p.id, p.urlZH)
+		if err := p.parseHTML(session); err != nil {
+			t.Error(p.id, err)
 		}
-		if err := parseHTML(session, problemID, pUrl); err != nil {
-			t.Error(err, problemID, pUrl)
-			continue
+
+		p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
+			toGolangReceiverName,
+			lowerArgsFirstChar,
+			namedReturnFunc("ans"),
+		}, "\t\n\treturn")
+
+		if err := p.createDir(); err != nil {
+			t.Fatal(err) // IO
+		}
+		if err := p.writeMainFile(); err != nil {
+			t.Fatal(err) // IO
+		}
+		if err := p.writeTestFile(); err != nil {
+			t.Fatal(err) // IO
 		}
 	}
 }

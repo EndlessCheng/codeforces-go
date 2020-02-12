@@ -7,48 +7,107 @@ import (
 	"unicode"
 )
 
-func parseFuncName(code string) (funcName string, isFuncProblem bool) {
-	if !strings.HasPrefix(code, "func ") {
-		return
+// 细分的话有四种题目类型：
+// 函数-无预定义类型，绝大多数题目都是这个类型
+// 函数-有预定义类型，如 LC174C
+// 方法-无预定义类型，如 LC175C
+// 方法-有预定义类型，如 LC163B
+func parseCode(code string) (funcName string, isFuncProblem bool, funcLos []int) {
+	lines := strings.Split(code, "\n")
+	if strings.Contains(code, "func Constructor(") {
+		// 编写方法
+		for lo, line := range lines {
+			if strings.HasPrefix(line, "func (") { // 方法定义
+				funcLos = append(funcLos, lo)
+			}
+		}
+	} else {
+		// 编写函数
+		for lo, line := range lines {
+			if strings.HasPrefix(line, "func ") { // 函数定义
+				i := strings.IndexByte(line, '(')
+				return strings.TrimSpace(line[5:i]), true, []int{lo}
+			}
+		}
 	}
-	i := strings.IndexByte(code, '(')
-	return code[5:i], true
+	return
 }
 
-func lowerFirstChar(codeS string) string {
-	lower := func(c byte) byte {
-		if 'A' <= c && c <= 'Z' {
-			return c - 'A' + 'a'
-		}
-		return c
+//
+
+type modifyLineFunc func(funcDefineLine string) string
+
+func toLower(c byte) byte {
+	if 'A' <= c && c <= 'Z' {
+		return c - 'A' + 'a'
 	}
-	code := []byte(codeS)
-	i := bytes.IndexByte(code, '(')
-	code[i+1] = lower(code[i+1])
-	for ; i < len(codeS); i++ {
+	return c
+}
+
+func toGolangReceiverName(funcDefineLine string) string {
+	if !strings.HasPrefix(funcDefineLine, "func (this *") {
+		return funcDefineLine
+	}
+	receiverName := ""
+	for _, r := range funcDefineLine {
+		if r == ')' {
+			break
+		}
+		if unicode.IsUpper(r) {
+			receiverName += string(toLower(byte(r)))
+		}
+	}
+	return "func (" + receiverName + funcDefineLine[10:]
+}
+
+func lowerArgsFirstChar(funcDefineLine string) string {
+	code := []byte(funcDefineLine)
+	i := bytes.LastIndexByte(code, '(')
+	code[i+1] = toLower(code[i+1])
+	for ; i < len(code); i++ {
 		if code[i] == ',' {
-			code[i+2] = lower(code[i+2])
+			code[i+2] = toLower(code[i+2])
 		}
 	}
 	return string(code)
 }
 
-func namedReturn(code string, name string) string {
-	lines := strings.Split(code, "\n")
-	firstLine := lines[0]
-	i := strings.Index(firstLine, ") ") + 2
-	returnType := firstLine[i : len(firstLine)-2]
-	lines[0] = firstLine[:i] + "(" + name + " " + returnType + ") {"
-	return strings.Join(lines, "\n")
+func parseReturnType(line string) string {
+	i := strings.LastIndexByte(line, ')') + 2
+	return line[i : len(line)-2]
 }
 
-func customContent(code, content string) string {
-	lines := strings.Split(code, "\n")
-	lines = []string{lines[0], content, lines[len(lines)-1]}
-	return strings.Join(lines, "\n")
+func namedReturnFunc(name string) modifyLineFunc {
+	return func(funcDefineLine string) string {
+		returnType := parseReturnType(funcDefineLine)
+		if returnType == "" {
+			return funcDefineLine
+		}
+		i := strings.LastIndexByte(funcDefineLine, ')') + 2
+		return funcDefineLine[:i] + "(" + name + " " + returnType + ") {"
+	}
 }
 
-func findASCII(s string) int {
+func modifyDefaultCode(code string, funcLos []int, fs []modifyLineFunc, customFuncContent string) string {
+	sep := "\n"
+	if strings.ContainsRune(code, '\r') {
+		sep = "\r\n"
+	}
+	lines := strings.Split(code, sep)
+	for _, lo := range funcLos {
+		for _, f := range fs {
+			if parseReturnType(lines[lo]) != "" {
+				lines[lo+1] = customFuncContent
+			}
+			lines[lo] = f(lines[lo])
+		}
+	}
+	return strings.Join(lines, sep)
+}
+
+//
+
+func findNonASCII(s string) int {
 	// this is faster than `for _, c := range s`, because there is no rune conversion
 	for i := range s {
 		if s[i] > unicode.MaxASCII {
