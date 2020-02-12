@@ -1,5 +1,7 @@
 package main
 
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+
 func main() {
 	toBytes := func(g [][]string) [][]byte {
 		n, m := len(g), len(g[0])
@@ -13,5 +15,5 @@ func main() {
 		return bytes
 	}
 
-	_ = []interface{}{toBytes}
+	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }

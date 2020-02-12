@@ -9,171 +9,197 @@ import (
 	"testing"
 )
 
-func parseRawArg(tp reflect.Type, rawArg string) (v reflect.Value, err error) {
-	invalidErr := fmt.Errorf("invalid test data: %s", rawArg)
-	switch tp.Kind() {
-	case reflect.String:
-		if len(rawArg) < 2 || rawArg[0] != '"' || rawArg[len(rawArg)-1] != '"' {
-			err = invalidErr
-			return
-		}
-		// remove " at leftmost and rightmost
-		v = reflect.ValueOf(rawArg[1 : len(rawArg)-1])
-	case reflect.Uint8: // byte
-		// sth like "a"
-		if len(rawArg) != 3 || rawArg[0] != '"' || rawArg[2] != '"' {
-			err = invalidErr
-			return
-		}
-		v = reflect.ValueOf(rawArg[1])
-	case reflect.Int:
-		i, er := strconv.Atoi(rawArg)
-		if er != nil {
-			err = invalidErr
-			return
-		}
-		v = reflect.ValueOf(i)
-	case reflect.Uint:
-		i, er := strconv.Atoi(rawArg)
-		if er != nil {
-			err = invalidErr
-			return
-		}
-		v = reflect.ValueOf(uint(i))
-	case reflect.Float64:
-		f, er := strconv.ParseFloat(rawArg, 64)
-		if er != nil {
-			err = invalidErr
-			return
-		}
-		v = reflect.ValueOf(f)
-	case reflect.Bool:
-		if rawArg != "true" && rawArg != "false" {
-			err = invalidErr
-			return
-		}
-		v = reflect.ValueOf(rawArg == "true")
-	case reflect.Slice:
-		// check [] at leftmost and rightmost
-		if len(rawArg) <= 1 || rawArg[0] != '[' || rawArg[len(rawArg)-1] != ']' {
-			err = invalidErr
-			return
-		}
-		// ignore [] at leftmost and rightmost
-		rawArg = rawArg[1 : len(rawArg)-1]
+func parseRawArray(rawArray string) (splits []string, err error) {
+	invalidErr := fmt.Errorf("invalid test data: %s", rawArray)
+	// check [] at leftmost and rightmost
+	if len(rawArray) <= 1 || rawArray[0] != '[' || rawArray[len(rawArray)-1] != ']' {
+		return nil, invalidErr
+	}
+	// ignore [] at leftmost and rightmost
+	rawArray = rawArray[1 : len(rawArray)-1]
 
-		v = reflect.New(tp).Elem()
-		isStringSlice := strings.Contains(rawArg, `"`)
-		depth := 0
-		quotCnt := 0
-		for start := 0; start < len(rawArg); {
-			end := start
-		outer:
-			for ; end < len(rawArg); end++ {
-				switch rawArg[end] {
-				case '[':
-					depth++
-				case ']':
-					depth--
-				case '"':
-					quotCnt++
-				case ',':
-					if depth == 0 {
-						if isStringSlice && quotCnt%2 == 1 {
-							continue
-						}
-						break outer
-					}
+	const sep = ','
+	depth, quotCnt := 0, 0
+	for start := 0; start < len(rawArray); {
+		end := start
+	outer:
+		for ; end < len(rawArray); end++ {
+			switch rawArray[end] {
+			case '[':
+				depth++
+			case ']':
+				depth--
+			case '"':
+				quotCnt++
+			case sep:
+				if depth == 0 && quotCnt%2 == 0 {
+					break outer
 				}
 			}
-			_v, er := parseRawArg(tp.Elem(), rawArg[start:end])
-			if er != nil {
-				err = er
-				return
-			}
-			v = reflect.Append(v, _v)
-			start = end + 1 // skip ,
 		}
-		if depth != 0 || quotCnt%2 != 0 {
-			err = invalidErr
-			return
-		}
-	default:
-		err = fmt.Errorf("unknown type %s", tp.Name())
-		return
+		splits = append(splits, rawArray[start:end])
+		start = end + 1 // skip sep
+	}
+	if depth != 0 || quotCnt%2 != 0 {
+		return nil, invalidErr
 	}
 	return
 }
 
-func simpleValueString(v reflect.Value) string {
+func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
+	invalidErr := fmt.Errorf("invalid test data: %s", rawData)
+	switch tp.Kind() {
+	case reflect.String:
+		if len(rawData) <= 1 || rawData[0] != '"' || rawData[len(rawData)-1] != '"' {
+			return reflect.Value{}, invalidErr
+		}
+		// remove " at leftmost and rightmost
+		v = reflect.ValueOf(rawData[1 : len(rawData)-1])
+	case reflect.Uint8: // byte
+		// rawData like "a"
+		if len(rawData) != 3 || rawData[0] != '"' || rawData[2] != '"' {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(rawData[1])
+	case reflect.Int:
+		i, er := strconv.Atoi(rawData)
+		if er != nil {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(i)
+	case reflect.Uint:
+		i, er := strconv.Atoi(rawData)
+		if er != nil {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(uint(i))
+	case reflect.Float64:
+		f, er := strconv.ParseFloat(rawData, 64)
+		if er != nil {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(f)
+	case reflect.Bool:
+		if rawData != "true" && rawData != "false" {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(rawData == "true")
+	case reflect.Slice:
+		splits, er := parseRawArray(rawData)
+		if er != nil {
+			return reflect.Value{}, er
+		}
+		v = reflect.New(tp).Elem()
+		for _, s := range splits {
+			_v, er := parseRawArg(tp.Elem(), s)
+			if er != nil {
+				return reflect.Value{}, er
+			}
+			v = reflect.Append(v, _v)
+		}
+	case reflect.Ptr: // *TreeNode, *ListNode
+		switch tpName := tp.Elem().Name(); tpName {
+		case "TreeNode":
+			root, er := buildTreeNode(rawData)
+			if er != nil {
+				return reflect.Value{}, er
+			}
+			v = reflect.ValueOf(root)
+		case "ListNode":
+			head, er := buildListNode(rawData)
+			if er != nil {
+				return reflect.Value{}, er
+			}
+			v = reflect.ValueOf(head)
+		default:
+			return reflect.Value{}, fmt.Errorf("unknown type %s", tpName)
+		}
+	default:
+		return reflect.Value{}, fmt.Errorf("unknown type %s", tp.Name())
+	}
+	return
+}
+
+func toRawString(v reflect.Value) (s string, err error) {
 	switch v.Kind() {
 	case reflect.Slice:
-		res := "["
+		s = "["
 		for i := 0; i < v.Len(); i++ {
 			if i > 0 {
-				res += ","
+				s += ","
 			}
-			res += simpleValueString(v.Index(i))
+			_s, er := toRawString(v.Index(i))
+			if er != nil {
+				return "", er
+			}
+			s += _s
 		}
-		res += "]"
-		return res
+		s += "]"
+	case reflect.Ptr: // *TreeNode, *ListNode
+		switch tpName := v.Type().Elem().Name(); tpName {
+		case "TreeNode":
+			s = v.Interface().(*TreeNode).toRawString()
+		case "ListNode":
+			s = v.Interface().(*ListNode).toRawString()
+		default:
+			return "", fmt.Errorf("unknown type %s", tpName)
+		}
 	case reflect.String:
-		return fmt.Sprintf(`"%s"`, v.Interface())
+		s = fmt.Sprintf(`"%s"`, v.Interface())
 	case reflect.Uint8: // byte
-		return fmt.Sprintf(`"%c"`, v.Interface())
+		s = fmt.Sprintf(`"%c"`, v.Interface())
 	default: // int uint float64 bool
-		return fmt.Sprintf(`%v`, v.Interface())
+		s = fmt.Sprintf(`%v`, v.Interface())
 	}
+	return
 }
 
 func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) (err error) {
-	tp := reflect.TypeOf(f)
-	if tp.Kind() != reflect.Func {
+	fType := reflect.TypeOf(f)
+	if fType.Kind() != reflect.Func {
 		return fmt.Errorf("f must be a function")
 	}
 
-	allOk := true
-	vFunc := reflect.ValueOf(f)
+	allCasesOk := true
+	fValue := reflect.ValueOf(f)
 	for testCase, rawIn := range rawInputs {
 		if targetCaseNum > 0 && testCase+1 != targetCaseNum {
 			continue
 		}
 
-		if len(rawIn) != tp.NumIn() {
-			return fmt.Errorf("len(rawIn) is not %d", tp.NumIn())
+		if len(rawIn) != fType.NumIn() {
+			return fmt.Errorf("len(rawIn) is not %d", fType.NumIn())
 		}
-		rawOut := rawOutputs[testCase]
-		if len(rawOut) != tp.NumOut() {
-			return fmt.Errorf("len(rawOut) is not %d", tp.NumOut())
-		}
-
-		in := make([]reflect.Value, len(rawIn))
+		ins := make([]reflect.Value, len(rawIn))
 		for i, rawArg := range rawIn {
 			rawArg = trimSpaceAndNewLine(rawArg)
-			in[i], err = parseRawArg(tp.In(i), rawArg)
+			ins[i], err = parseRawArg(fType.In(i), rawArg)
 			if err != nil {
-				// rawArg 不合法
 				return
 			}
 		}
-		// 额外检测 rawOutputs 是否合法
-		for i, rawArg := range rawOut {
-			rawArg = trimSpaceAndNewLine(rawArg)
-			if _, err = parseRawArg(tp.Out(i), rawArg); err != nil {
-				// rawArg 不合法
+		// just check rawExpectedOuts is valid or not
+		rawExpectedOuts := rawOutputs[testCase]
+		for i := range rawExpectedOuts {
+			rawExpectedOuts[i] = trimSpaceAndNewLine(rawExpectedOuts[i])
+			if _, err = parseRawArg(fType.Out(i), rawExpectedOuts[i]); err != nil {
 				return
 			}
 		}
 
-		actualOuts := vFunc.Call(in)
-		for i, expectedRes := range rawOut {
-			if !assert.Equal(t, expectedRes, simpleValueString(actualOuts[i]), "please check case %d", testCase+1) {
-				allOk = false
+		outs := fValue.Call(ins)
+		for i, out := range outs {
+			rawActualOut, er := toRawString(out)
+			if er != nil {
+				return er
+			}
+			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "please check case %d", testCase+1) {
+				allCasesOk = false
 			}
 		}
 	}
 
-	if targetCaseNum > 0 && allOk {
+	if targetCaseNum > 0 && allCasesOk {
 		t.Logf("case %d is ok", targetCaseNum)
 		return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 	}
@@ -185,54 +211,16 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
 
-func splitClassArgs(rawData string) (rawArgs []string, err error) {
-	invalidErr := fmt.Errorf("invalid test data: %s", rawData)
-	// check [] at leftmost and rightmost
-	if len(rawData) <= 1 || rawData[0] != '[' || rawData[len(rawData)-1] != ']' {
-		return nil, invalidErr
-	}
-	// ignore [] at leftmost and rightmost
-	rawData = rawData[1 : len(rawData)-1]
-
-	hasStringArg := strings.Contains(rawData, `"`)
-	depth := 0
-	quotCnt := 0
-	for start := 0; start < len(rawData); {
-		end := start
-	outer:
-		for ; end < len(rawData); end++ {
-			switch rawData[end] {
-			case '[':
-				depth++
-			case ']':
-				depth--
-			case '"':
-				quotCnt++
-			case ',':
-				if depth == 0 {
-					if hasStringArg && quotCnt%2 == 1 {
-						continue
-					}
-					break outer
-				}
-			}
-		}
-		rawArgs = append(rawArgs, rawData[start:end])
-		start = end + 1 // skip ,
-	}
-	if depth != 0 || quotCnt%2 != 0 {
-		return nil, invalidErr
-	}
-	return
-}
-
 func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string, targetCaseNum int) (err error) {
-	constructorType := reflect.TypeOf(constructor)
-	if constructorType.Kind() != reflect.Func {
+	cType := reflect.TypeOf(constructor)
+	if cType.Kind() != reflect.Func {
 		return fmt.Errorf("constructor must be a function")
 	}
-	allOk := true
-	constructorFunc := reflect.ValueOf(constructor)
+	if cType.NumOut() != 1 {
+		return fmt.Errorf("constructor must have one and only one return value")
+	}
+	allCasesOk := true
+	cFunc := reflect.ValueOf(constructor)
 
 	for testCase, rawIn := range rawInputs {
 		if targetCaseNum > 0 && testCase+1 != targetCaseNum {
@@ -250,7 +238,7 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 		for _, name := range strings.Split(splits[0][1:len(splits[0])-1], ",") {
 			methodNames = append(methodNames, strings.Title(name[1:len(name)-1]))
 		}
-		rawArgsList, er := splitClassArgs(splits[1])
+		rawArgsList, er := parseRawArray(splits[1])
 		if er != nil {
 			return er
 		}
@@ -259,33 +247,36 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 		}
 
 		// parse constructor input
-		constructorArgs, er := splitClassArgs(rawArgsList[0])
+		constructorArgs, er := parseRawArray(rawArgsList[0])
 		if er != nil {
 			return er
 		}
-		constructorIn := make([]reflect.Value, len(constructorArgs))
+		constructorIns := make([]reflect.Value, len(constructorArgs))
 		for i, arg := range constructorArgs {
-			constructorIn[i], err = parseRawArg(constructorType.In(i), arg)
+			constructorIns[i], err = parseRawArg(cType.In(i), arg)
 			if err != nil {
 				return
 			}
 		}
 
 		// call constructor
-		objs := constructorFunc.Call(constructorIn)
+		obj := cFunc.Call(constructorIns)[0]
 
 		// we need a obj pointer cause all methods are declared with a pointer receiver
-		obj := objs[0]
 		pObj := reflect.New(obj.Type())
 		pObj.Elem().Set(obj)
 
-		actualOutStr := "[null"
+		rawActualOut := "[null"
 		for callID := 1; callID < len(rawArgsList); callID++ {
 			method := pObj.MethodByName(methodNames[callID])
+			emptyValue := reflect.Value{}
+			if method == emptyValue {
+				return fmt.Errorf("invalid test data: %s", methodNames[callID])
+			}
 			methodType := method.Type()
 
 			// parse method input
-			methodArgs, er := splitClassArgs(rawArgsList[callID])
+			methodArgs, er := parseRawArray(rawArgsList[callID])
 			if er != nil {
 				return er
 			}
@@ -299,19 +290,24 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 
 			// call method
 			if actualOuts := method.Call(in); len(actualOuts) > 0 {
-				actualOutStr += "," + simpleValueString(actualOuts[0])
+				s, er := toRawString(actualOuts[0])
+				if er != nil {
+					return er
+				}
+				rawActualOut += "," + s
 			} else {
-				actualOutStr += ",null"
+				rawActualOut += ",null"
 			}
 		}
-		actualOutStr += "]"
+		rawActualOut += "]"
 
-		if !assert.Equal(t, rawOutputs[testCase], actualOutStr, "please check case %d", testCase+1) {
-			allOk = false
+		rawExpectedOut := strings.TrimSpace(rawOutputs[testCase])
+		if !assert.Equal(t, rawExpectedOut, rawActualOut, "please check case %d", testCase+1) {
+			allCasesOk = false
 		}
 	}
 
-	if targetCaseNum > 0 && allOk {
+	if targetCaseNum > 0 && allCasesOk {
 		t.Logf("case %d is ok", targetCaseNum)
 		return RunLeetCodeClassWithCase(t, constructor, rawInputs, rawOutputs, 0)
 	}

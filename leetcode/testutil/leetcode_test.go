@@ -58,4 +58,57 @@ func TestRunLeetCodeFunc(t *testing.T) {
 	if err := RunLeetCodeFunc(t, matrixF, data, data); err != nil {
 		t.Error(err)
 	}
+
+	treeNodeF := func(root *TreeNode) *TreeNode {
+		fmt.Println(root.toRawString())
+		return root
+	}
+	data = [][]string{{`[]`}, {`[1]`}, {`[1,2]`}, {`[1,2,3]`}, {`[1,null,2,3]`}, {`[5,4,7,3,null,2,null,-1,null,9]`}, {`[1,null,2,3,4,null,null,5,6]`}}
+	if err := RunLeetCodeFunc(t, treeNodeF, data, data); err != nil {
+		t.Error(err)
+	}
+
+	listNodeF := func(head *ListNode) *ListNode {
+		fmt.Println(head.toRawString())
+		return head
+	}
+	data = [][]string{{`[]`}, {`[1]`}, {`[1,2,3,4,5]`}}
+	if err := RunLeetCodeFunc(t, listNodeF, data, data); err != nil {
+		t.Error(err)
+	}
+}
+
+type foo struct {
+}
+
+func constructor() foo {
+	return foo{}
+}
+
+func (f *foo) F0(a, b int) {
+	fmt.Println("f0", a, b)
+}
+
+func (f *foo) F1(a, b int) int {
+	fmt.Println("f1", a, b)
+	return a + b
+}
+
+func (f *foo) F2(a, b int) []int {
+	fmt.Println("f2", a, b)
+	return []int{a, b}
+}
+
+func TestRunLeetCodeClass(t *testing.T) {
+	sampleIns := []string{`
+["foo","f0","f1","f2"]
+[[],[10,100],[1,2],[11,22]]
+`, `
+["foo","f1","f2"]
+[[],[-1,-2],[-11,-22]]
+`}
+	sampleOuts := []string{`[null,null,3,[11,22]]`, `[null,-3,[-11,-22]]`}
+	if err := RunLeetCodeClass(t, constructor, sampleIns, sampleOuts); err != nil {
+		t.Error(err)
+	}
 }
