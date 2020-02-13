@@ -91,6 +91,7 @@ import (
 )
 
 func TestCF%[1]s(t *testing.T) {
+	// TODO: 测试参数的下界和上界！
 	// just copy from website
 	rawText := `+"`\n`"+`
 	testutil.AssertEqualCase(t, rawText, 0, CF%[1]s)

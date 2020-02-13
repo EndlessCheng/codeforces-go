@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// 生成比赛模板（需要先创建目录）
+// 生成比赛模板（需要先在 dash 中创建对应目录）
 func TestGenContestTemplates(t *testing.T) {
 	const contestID = "1300"
 	const overwrite = false

@@ -324,6 +324,7 @@ func Test(t *testing.T) {
 	exampleIns := []string{%s}
 	exampleOuts := []string{%s}
 	// custom test cases or WA cases.
+	// TODO: 测试参数的下界和上界！
 	//exampleIns = append(exampleIns, `+"``"+`)
 	//exampleOuts = append(exampleOuts, `+"``"+`)
 	if err := testutil.RunLeetCodeClassWithCase(t, Constructor, exampleIns, exampleOuts, 0); err != nil {
@@ -370,6 +371,7 @@ func Test(t *testing.T) {
 	t.Log("Current test is [%s]")
 	exampleIns := [][]string{%s}
 	exampleOuts := [][]string{%s}
+	// TODO: 测试参数的下界和上界！
 	// custom test cases or WA cases.
 	//exampleIns = append(exampleIns, []string{`+"``"+`})
 	//exampleOuts = append(exampleOuts, []string{`+"``"+`})
