@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // 生成比赛模板（需要在创建目录之后）
@@ -20,19 +21,22 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 		if path == rootPath || !info.IsDir() {
 			return nil
 		}
-		for _, fileName := range [...]string{"main.go", "main_test.go"} {
-			goFilePath := filepath.Join(path, fileName)
+		for _, srcFileName := range [...]string{"main.go", "main_test.go"} {
+			// 为了便于区分，把 main 替换成所在目录的名字
+			parentName := filepath.Base(path)
+			dstFileName := strings.Replace(srcFileName, "main", parentName, 1)
+			dstFilePath := filepath.Join(path, dstFileName)
 			if !overwrite {
-				if _, err := os.Stat(goFilePath); !os.IsNotExist(err) {
+				if _, err := os.Stat(dstFilePath); !os.IsNotExist(err) {
 					continue
 				}
 			}
-			if err := copyFile(goFilePath, fileName); err != nil {
+			if err := copyFile(dstFilePath, srcFileName); err != nil {
 				return err
 			}
 			if !openedOneFile {
 				openedOneFile = true
-				open.Run(absPath(goFilePath))
+				open.Run(absPath(dstFilePath))
 			}
 		}
 		return nil

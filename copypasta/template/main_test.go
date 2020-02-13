@@ -11,7 +11,7 @@ import (
 // 1e5~1e6  nlogn nαn n   RMQ 并查集
 // 1e3~1e4  n^2 n√n       RMQ DP 分块
 // 300~500  n^3           DP 二分图
-func Test_solve(t *testing.T) {
+func Test_run(t *testing.T) {
 	// TODO: 测试参数的下界和上界！
 	customInputs := []string{
 		``,
