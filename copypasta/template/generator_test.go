@@ -18,7 +18,7 @@ func TestGenContestTemplates(t *testing.T) {
 // https://codeforces.com/problemset/status/1291/problem/D
 // https://codeforces.com/gym/102253/problem/C
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem/1293/C"
+	const problemURL = "https://codeforces.com/problemset/problem/1303/E"
 	if err := GenCodeforcesNormalTemplates(problemURL); err != nil {
 		t.Fatal(err)
 	}
