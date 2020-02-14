@@ -57,8 +57,16 @@ func unionFind() {
 		}
 		return
 	}
+	getComps := func() (comps map[int][]int) { // 连通分量
+		comps = map[int][]int{}
+		for i := range fa {
+			f := find(i)
+			comps[f] = append(comps[f], i)
+		}
+		return
+	}
 
-	_ = []interface{}{initFa, merge, same, mergeCheck, mergeRangeTo, getRoots, countRoots}
+	_ = []interface{}{initFa, merge, same, mergeCheck, mergeRangeTo, getRoots, countRoots, getComps}
 }
 
 // https://oi-wiki.org/ds/dsu/#_9

@@ -10,11 +10,12 @@ import (
 
 // 从数据范围找思路：
 // 1e9~1e18 √n logn 1     二分 二进制
-// 1e5~1e6  nlogn nαn n   RMQ 并查集
+// 1e5~1e6  nlogn nαn n   二分 RMQ 并查集
 // 1e3~1e4  n^2 n√n       RMQ DP 分块
 // 300~500  n^3           DP 二分图
 
 // 注意：若不止两个数相加，要特别注意 inf 的选择
+// 一个 Golang 的注意事项：for-range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 a[i] 获取
 
 func commonCollection() {
 	// HELPER

@@ -132,28 +132,32 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 	return depths
 }
 
-// 标记所有点所属连通块
+// 标记所属连通块
 func (*graph) markComponentIDs(n int, g [][]int) []int {
-	id := make([]int, n) // id[v] in [1,n]
-	cnt := 0
+	id := make([]int, n)
+	for i := range id {
+		id[i] = -1
+	}
+	idCnt := 0
 	var f func(int)
 	f = func(v int) {
-		id[v] = cnt
+		id[v] = idCnt
 		for _, w := range g[v] {
 			if id[w] == 0 {
 				f(w)
 			}
 		}
 	}
-	for i := 0; i < n; i++ {
-		if id[i] == 0 {
-			cnt++
+	for i, idi := range id {
+		if idi == 0 {
 			f(i)
+			idCnt++
 		}
 	}
 	return id
 }
 
+// 求出所有连通块
 func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	comps := [][]int{}
 	vis := make([]bool, n)
@@ -168,8 +172,8 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 			}
 		}
 	}
-	for i := 0; i < n; i++ {
-		if !vis[i] {
+	for i, vi := range vis {
+		if !vi {
 			comp = []int{}
 			f(i)
 			comps = append(comps, comp)
