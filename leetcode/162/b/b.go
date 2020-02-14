@@ -18,7 +18,7 @@ func reconstructMatrix(upper int, lower int, colsum []int) (ans [][]int) {
 			ans[1][i] = 1
 			upper--
 			lower--
-			// FIXME 反思：比赛时太进张，没有仔细想想其余 return [] 的情况
+			// FIXME 反思：比赛时太紧张，没有仔细想想其余 return [] 的情况
 			if upper < 0 || lower < 0 {
 				return [][]int{}
 			}

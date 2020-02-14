@@ -1,10 +1,6 @@
 package main
 
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
 // 我的憨憨写法
 func removeLeafNodes(root *TreeNode, tar int) *TreeNode {

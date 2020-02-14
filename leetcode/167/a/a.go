@@ -1,12 +1,17 @@
 package main
 
-import "strconv"
+import (
+	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	"strconv"
+)
 
-type ListNode struct {
-	Val  int
-	Next *ListNode
-}
-
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
 func getDecimalValue(o *ListNode) int {
 	s := ""
 	for ; o != nil; o = o.Next {
