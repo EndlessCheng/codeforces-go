@@ -779,10 +779,9 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 }
 
 // 拓扑排序 Kahn's algorithm
-// isDAG = len(order)==n
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-func (*graph) topSort(in io.Reader, n, m int) (order []int, parents []int) {
+func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, levels []int, isDAG bool) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)
 	for i := 0; i < m; i++ {
@@ -790,37 +789,40 @@ func (*graph) topSort(in io.Reader, n, m int) (order []int, parents []int) {
 		Fscan(in, &v, &w)
 		v--
 		w--
-		g[v] = append(g[v], w)
+		g[v] = append(g[v], w) // 注意不能有自环
 		inDeg[w]++
 	}
 
+	// 拓扑排序生成的额外有用信息
 	parents = make([]int, n)
 	for i := range parents {
 		parents[i] = -1
 	}
+	levels = make([]int, n)
 
-	order = make([]int, 0, n)
-	queue := []int{}
-	levels := make([]int, n)
+	orders = make([]int, 0, n)
+	q := []int{}
 	for i, deg := range inDeg {
 		if deg == 0 {
-			queue = append(queue, i)
+			q = append(q, i)
 			levels[i] = 1
 		}
 	}
-	for len(queue) > 0 {
+	for len(q) > 0 {
 		var v int
-		v, queue = queue[0], queue[1:]
-		order = append(order, v)
+		v, q = q[0], q[1:]
+		orders = append(orders, v)
 		for _, w := range g[v] {
 			inDeg[w]--
 			if inDeg[w] == 0 {
-				queue = append(queue, w)
+				q = append(q, w)
 				levels[w] = levels[v] + 1
 				parents[w] = v
 			}
 		}
 	}
+
+	isDAG = len(orders) == n
 
 	// path from end to start
 	var end = n - 1
