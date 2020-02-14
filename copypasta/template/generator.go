@@ -60,7 +60,7 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 // https://codeforces.com/gym/102253/problem/C
 func GenCodeforcesNormalTemplates(problemURL string) error {
 	contestID, problemID := parseProblemURL(problemURL)
-	statusURL := fmt.Sprintf("https://codeforces.com/problemset/status/%s/problem/%s", contestID, problemID)
+	statusURL := fmt.Sprintf("https://codeforces.ml/problemset/status/%s/problem/%s", contestID, problemID)
 	open.Start(problemURL)
 	open.Start(statusURL)
 

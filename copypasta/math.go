@@ -407,11 +407,18 @@ func numberTheoryCollection() {
 		return
 	}
 
+	// 把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
+	partition := func(n, m int) (q, cntQ, cntQ1 int) {
+		// m must > 0
+		return n / m, m - n%m, n % m
+	}
+
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInv, modFrac, solveLinearCongruence, quickMul,
 		consecutiveNumbersSum,
+		partition,
 	}
 }
 
