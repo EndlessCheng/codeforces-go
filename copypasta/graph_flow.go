@@ -1,6 +1,6 @@
 package copypasta
 
-// TODO: 待整理
+// TODO: 待整理，总结几种不同的算法思路，代入模板题感受下实际的复杂度。最后合并到 graph.go 中
 
 type edge struct {
 	to  int
