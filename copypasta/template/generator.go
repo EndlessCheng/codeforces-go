@@ -46,7 +46,7 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 
 	_, err := strconv.Atoi(contestID)
 	if isCF := err == nil; isCF {
-		tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/main.go\n", contestID)
+		tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/a.go\n", contestID)
 		if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
 			return err
 		}
