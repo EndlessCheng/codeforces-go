@@ -327,7 +327,8 @@ func Test(t *testing.T) {
 	// TODO: 测试参数的下界和上界！
 	//exampleIns = append(exampleIns, `+"``"+`)
 	//exampleOuts = append(exampleOuts, `+"``"+`)
-	if err := testutil.RunLeetCodeClassWithCase(t, Constructor, exampleIns, exampleOuts, 0); err != nil {
+	const targetCaseNum = 0
+	if err := testutil.RunLeetCodeClassWithCase(t, Constructor, exampleIns, exampleOuts, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -375,7 +376,8 @@ func Test(t *testing.T) {
 	// custom test cases or WA cases.
 	//exampleIns = append(exampleIns, []string{`+"``"+`})
 	//exampleOuts = append(exampleOuts, []string{`+"``"+`})
-	if err := testutil.RunLeetCodeFuncWithCase(t, %s, exampleIns, exampleOuts, 0); err != nil {
+	const targetCaseNum = 0
+	if err := testutil.RunLeetCodeFuncWithCase(t, %s, exampleIns, exampleOuts, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
