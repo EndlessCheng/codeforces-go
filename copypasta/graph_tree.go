@@ -200,10 +200,11 @@ func (*tree) lca(n, root int, g [][]int) {
 	dfs(root, -1, 0)
 
 	type pair struct{ v, i int }
-	var st [][18]pair
+	const mx = 18 // ceil(log2(最大树节点))+1
+	var st [][mx]pair
 	stInit := func(a []int) {
 		n := len(a)
-		st = make([][18]pair, n)
+		st = make([][mx]pair, n)
 		for i := range st {
 			st[i][0] = pair{a[i], i}
 		}
@@ -221,14 +222,14 @@ func (*tree) lca(n, root int, g [][]int) {
 	stInit(depths)
 	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
-		st0, st1 := st[l][k], st[r-(1<<k)+1][k]
-		if st0.v < st1.v {
-			return st0.i
+		a, b := st[l][k], st[r-(1<<k)+1][k]
+		if a.v < b.v {
+			return a.i
 		}
-		return st1.i
+		return b.i
 	}
 
-	// 注意下标的换算，输出 LCA 的话要 +1
+	// 注意下标的换算，打印 LCA 的话要 +1
 	calcLCA := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
 		if pv > pw {
@@ -236,9 +237,7 @@ func (*tree) lca(n, root int, g [][]int) {
 		}
 		return vs[stQuery(pv, pw)]
 	}
-	calcDis := func(v, w int) int {
-		return dis[v] + dis[w] - 2*dis[calcLCA(v, w)]
-	}
+	calcDis := func(v, w int) int { return dis[v] + dis[w] - dis[calcLCA(v, w)]<<1 }
 
 	_ = calcDis
 }

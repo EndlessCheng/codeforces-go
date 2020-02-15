@@ -374,19 +374,21 @@ func commonCollection() {
 		return max(abs(maxSum), abs(minSum))
 	}
 
+	// 扫描线
 	// https://cses.fi/book/book.pdf 30.1
 	sweepLine := func(in io.Reader, n int) []int {
-		type event struct{ time, delta int }
-		a := make([]event, 0, 2*n)
+		type event struct{ pos, delta int }
+		events := make([]event, 0, 2*n)
 		for i := 0; i < n; i++ {
 			var l, r int
 			Fscan(in, &l, &r)
-			a = append(a, event{l, 1}, event{r, -1})
+			events = append(events, event{l, 1}, event{r, -1})
 		}
-		sort.Slice(a, func(i, j int) bool { ai, aj := a[i], a[j]; return ai.time < aj.time || ai.time == aj.time && ai.delta > aj.delta })
+		sort.Slice(events, func(i, j int) bool { a, b := events[i], events[j]; return a.pos < b.pos || a.pos == b.pos && a.delta > b.delta })
+
 		cnts := make([]int, 2*n)
 		cnt := 0
-		for i, e := range a {
+		for i, e := range events {
 			cnt += e.delta
 			cnts[i] = cnt
 		}
@@ -489,11 +491,11 @@ func rmqCollection() {
 	//}
 	//stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
 	//	k := uint(bits.Len(uint(r-l)) - 1)
-	//	st0, st1 := st[l][k], st[r-(1<<k)][k]
-	//	if st0.v <= st1.v { // 最小值，相等时下标取左侧
-	//		return st0.i
+	//	a, b := st[l][k], st[r-(1<<k)][k]
+	//	if a.v <= b.v { // 最小值，相等时下标取左侧
+	//		return a.i
 	//	}
-	//	return st1.i
+	//	return b.i
 	//}
 
 	// Sqrt Decomposition
