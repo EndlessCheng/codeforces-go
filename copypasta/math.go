@@ -34,9 +34,7 @@ func numberTheoryCollection() {
 		}
 		return
 	}
-	calcLCM := func(a, b int) int {
-		return a / calcGCD(a, b) * b
-	}
+	calcLCM := func(a, b int) int { return a / calcGCD(a, b) * b }
 
 	// 给定数组，统计所有区间的 GCD 值
 	// 返回 map[GCD值]等于该值的区间个数
@@ -318,10 +316,7 @@ func numberTheoryCollection() {
 
 	// 逆元
 	// ax ≡ 1 (mod m)
-	modInverse := func(a, m int) int {
-		_, x, _ := exgcd(a, m)
-		return (x%m + m) % m
-	}
+	modInverse := func(a, m int) int { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理
 	// ax ≡ 1 (mod p)
@@ -342,9 +337,7 @@ func numberTheoryCollection() {
 	}
 
 	// 计算 a/b (mod m)
-	modFrac := func(a, b, m int) int {
-		return a * modInverse(b, m) % m
-	}
+	modFrac := func(a, b, m int) int { return a * modInverse(b, m) % m }
 
 	// 线性同余方程组
 	// ai * x ≡ bi (mod mi)
@@ -586,10 +579,7 @@ func numericalAnalysisCollection() {
 	// Simpson's 1/3 rule
 	// https://en.wikipedia.org/wiki/Simpson%27s_rule
 	// 证明过程 https://phqghume.github.io/2018/05/19/%E8%87%AA%E9%80%82%E5%BA%94%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%B3%95/
-	simpson := func(l, r float64, f mathF) float64 {
-		h := (r - l) / 2
-		return h * (f(l) + 4*f(l+h) + f(r)) / 3
-	}
+	simpson := func(l, r float64, f mathF) float64 { h := (r - l) / 2; return h * (f(l) + 4*f(l+h) + f(r)) / 3 }
 
 	// 不放心的话还可以设置一个最大递归深度 maxDeep
 	// 15eps 的证明过程 http://www2.math.umd.edu/~mariakc/teaching/adaptive.pdf

@@ -332,7 +332,8 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts))
+// %s
+`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.urlZH)
 		// func TestOnline(t *testing.T) {
 		//	t.Log("Current test is [%s]")
 		//	// copy to the Custom Testcase
@@ -385,7 +386,8 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.funcName)
+// %s
+`, p.id, sampleToStr(p.sampleIns), sampleToStr(p.sampleOuts), p.funcName, p.urlZH)
 	}
 
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", p.id)
