@@ -17,7 +17,9 @@ func parseCode(code string) (funcName string, isFuncProblem bool, funcLos []int)
 	if strings.Contains(code, "func Constructor(") {
 		// 编写方法
 		for lo, line := range lines {
-			if strings.HasPrefix(line, "func (") { // 方法定义
+			if strings.HasPrefix(line, "func Constructor(") { // 构造器定义
+				funcLos = append(funcLos, lo)
+			} else if strings.HasPrefix(line, "func (") { // 方法定义
 				funcLos = append(funcLos, lo)
 			}
 		}
@@ -37,54 +39,65 @@ func parseCode(code string) (funcName string, isFuncProblem bool, funcLos []int)
 
 type modifyLineFunc func(funcDefineLine string) string
 
-func toLower(c byte) byte {
+func _toLower(c byte) byte {
 	if 'A' <= c && c <= 'Z' {
 		return c - 'A' + 'a'
 	}
 	return c
 }
 
-func toGolangReceiverName(funcDefineLine string) string {
-	if !strings.HasPrefix(funcDefineLine, "func (this *") {
-		return funcDefineLine
-	}
-	receiverName := ""
-	for _, r := range funcDefineLine {
+var curReceiverName string
+
+func getReceiverName(line string) (receiverName string) {
+	for _, r := range line {
 		if r == ')' {
 			break
 		}
 		if unicode.IsUpper(r) {
-			receiverName += string(toLower(byte(r)))
+			receiverName += string(_toLower(byte(r)))
+			break // just one
 		}
 	}
+	return
+}
+
+func toGolangReceiverName(funcDefineLine string) string {
+	if !strings.HasPrefix(funcDefineLine, "func (this *") {
+		return funcDefineLine
+	}
+	receiverName := getReceiverName(funcDefineLine)
 	return "func (" + receiverName + funcDefineLine[10:]
 }
 
 func lowerArgsFirstChar(funcDefineLine string) string {
 	code := []byte(funcDefineLine)
 	i := bytes.LastIndexByte(code, '(')
-	code[i+1] = toLower(code[i+1])
+	code[i+1] = _toLower(code[i+1])
 	for ; i < len(code); i++ {
 		if code[i] == ',' {
-			code[i+2] = toLower(code[i+2])
+			code[i+2] = _toLower(code[i+2])
 		}
 	}
 	return string(code)
 }
 
-func parseReturnType(line string) string {
+func _parseReturnType(line string) string {
 	i := strings.LastIndexByte(line, ')') + 2
 	return line[i : len(line)-2]
 }
 
 func namedReturnFunc(name string) modifyLineFunc {
 	return func(funcDefineLine string) string {
-		returnType := parseReturnType(funcDefineLine)
+		returnType := _parseReturnType(funcDefineLine)
 		if returnType == "" {
 			return funcDefineLine
+		} // 无返回值
+		returnName := name // save
+		if strings.HasPrefix(funcDefineLine, "func Constructor(") {
+			returnName = curReceiverName
 		}
 		i := strings.LastIndexByte(funcDefineLine, ')') + 2
-		return funcDefineLine[:i] + "(" + name + " " + returnType + ") {"
+		return funcDefineLine[:i] + "(" + returnName + " " + returnType + ") {"
 	}
 }
 
@@ -96,7 +109,7 @@ func modifyDefaultCode(code string, funcLos []int, fs []modifyLineFunc, customFu
 	lines := strings.Split(code, sep)
 	for _, lo := range funcLos {
 		for _, f := range fs {
-			if parseReturnType(lines[lo]) != "" {
+			if _parseReturnType(lines[lo]) != "" {
 				lines[lo+1] = customFuncContent
 			}
 			lines[lo] = f(lines[lo])

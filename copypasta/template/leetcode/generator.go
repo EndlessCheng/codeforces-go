@@ -105,6 +105,7 @@ type problem struct {
 	funcName      string
 	isFuncProblem bool
 	funcLos       []int
+	receiverName  string
 	sampleIns     [][]string
 	sampleOuts    [][]string
 }
@@ -314,8 +315,6 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"github.com/stretchr/testify/assert"
-	"strings"
 	"testing"
 )
 
@@ -429,6 +428,16 @@ func GenLeetCodeTests(username, password string) error {
 		fmt.Println(p.id, p.urlZH)
 		if err := p.parseHTML(session); err != nil {
 			fmt.Fprintln(os.Stderr, err)
+		}
+
+		curReceiverName = ""
+		lines := strings.Split(p.defaultCode, "\n")
+		for _, line := range lines {
+			if name := getReceiverName(line); name != "" {
+				p.receiverName = name
+				curReceiverName = name
+				break
+			}
 		}
 
 		p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
