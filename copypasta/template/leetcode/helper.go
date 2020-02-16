@@ -10,7 +10,7 @@ import (
 
 func getSleepTime(contestID int) time.Duration {
 	utc8, _ := time.LoadLocation("Asia/Shanghai")
-	timeContest170 := time.Date(2020, 1, 5, 10, 30, 0, 0, utc8)
+	timeContest170 := time.Date(2020, 1, 5, 10, 30, 0, 0, utc8) // time.Local
 	timeTarContest := timeContest170.AddDate(0, 0, 7*(contestID-170))
 	return time.Until(timeTarContest)
 }
