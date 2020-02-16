@@ -3,6 +3,7 @@ package atcoder
 import (
 	"fmt"
 	"github.com/levigross/grequests"
+	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
 	"io/ioutil"
 	"net/http"
@@ -12,12 +13,13 @@ import (
 )
 
 func login(username, password string) (session *grequests.Session, err error) {
-	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
 		UserAgent:    ua,
 		UseCookieJar: true,
 	})
 
+	// "touch" home page to get CSRF token
 	var resp *grequests.Response
 	home := "https://atcoder.jp"
 	for {
@@ -33,7 +35,6 @@ func login(username, password string) (session *grequests.Session, err error) {
 		err = fmt.Errorf("GET %s return code %d", home, resp.StatusCode)
 		return
 	}
-
 	var csrfToken string
 	root, err := html.Parse(resp)
 	if err != nil {
@@ -58,20 +59,34 @@ func login(username, password string) (session *grequests.Session, err error) {
 	}
 	f(root)
 
-	loginURL := "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fhome"
+	loginURL := "https://atcoder.jp/login"
 	resp, err = session.Post(loginURL, &grequests.RequestOptions{
 		Data: map[string]string{
-			"username":   os.Getenv("ATCODER_USERNAME"),
-			"password":   os.Getenv("ATCODER_PASSWORD"),
+			"username":   username,
+			"password":   password,
 			"csrf_token": csrfToken,
 		},
+		//Headers: map[string]string{
+		//	"accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+		//	"accept-encoding":           "gzip, deflate, br",
+		//	"accept-language":           "zh-CN,zh;q=0.9,en;q=0.8",
+		//	"cache-control":             "max-age=0",
+		//	"content-type":              "application/x-www-form-urlencoded",
+		//	"origin":                    "https://atcoder.jp",
+		//	"referer":                   "https://atcoder.jp/login",
+		//	"sec-fetch-dest":            "document",
+		//	"sec-fetch-mode":            "navigate",
+		//	"sec-fetch-site":            "same-origin",
+		//	"sec-fetch-user":            "?1",
+		//	"upgrade-insecure-requests": "1",
+		//},
 	})
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
 		return nil, fmt.Errorf("GET %s return code %d", loginURL, resp.StatusCode)
-	}
+	} // resp.StatusCode != http.StatusFound
 	return
 }
 
@@ -131,24 +146,16 @@ func createDir(taskID byte) error {
 }
 
 func GenAtCoderTests(username, password string) error {
+	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
+	tasksPrintURL := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks_print", contestID)
+	open.Start(submitURL)
+	open.Start(tasksPrintURL)
+
 	session, err := login(username, password)
 	if err != nil {
 		return err
 	}
 	fmt.Println("登录成功")
-
-	//home := "https://atcoder.jp/home"
-	//resp, err := session.Get(home, &grequests.RequestOptions{
-	//	Headers: map[string]string{
-	//		"upgrade-insecure-requests": "1",
-	//	},
-	//})
-	//if err != nil {
-	//	t.Fatal(err)
-	//}
-	//if !resp.Ok {
-	//	t.Fatal("未找到比赛或比赛尚未开始")
-	//}
 
 	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
 	revelSession, _ := ioutil.ReadFile("revel_session.txt")
@@ -159,9 +166,6 @@ func GenAtCoderTests(username, password string) error {
 				Value: string(revelSession),
 			},
 		},
-		//Headers: map[string]string{
-		//	"upgrade-insecure-requests": "1",
-		//},
 	})
 	if err != nil {
 		return err
