@@ -5,27 +5,29 @@ import "sort"
 // 下面这些都是最小堆
 // h.top() 即 h.IntSlice[0] 或 (*h)[0] （注意判断非空）
 
-type intHeap struct{ sort.IntSlice }
+type hp struct{ sort.IntSlice }
 
-func (h *intHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *intHeap) Pop() (v interface{}) {
+func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() (v interface{}) {
 	n := len(h.IntSlice)
 	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
 	return
 }
+//func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
 
 //
 
-type int64Heap []int64 // *custom type*
+type hp64 []int64 // 自定义类型
 
-func (h int64Heap) Len() int              { return len(h) }
-func (h int64Heap) Less(i, j int) bool    { return h[i] < h[j] } // > 为最大堆
-func (h int64Heap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *int64Heap) Push(v interface{})   { *h = append(*h, v.(int64)) }
-func (h *int64Heap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h hp64) Len() int              { return len(h) }
+func (h hp64) Less(i, j int) bool    { return h[i] < h[j] } // > 为最大堆
+func (h hp64) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *hp64) Push(v interface{})   { *h = append(*h, v.(int64)) }
+func (h *hp64) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
 
 //
 
+// see graph.shortestPathDijkstra
 type hPair struct {
 	x int64
 	y int
