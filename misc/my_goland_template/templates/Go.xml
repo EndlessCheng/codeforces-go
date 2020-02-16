@@ -42,6 +42,7 @@
   <template name="tp" value="type pair struct { $VAR0$ }" description="type pair struct { $VAR0$ }" toReformat="true" toShortenFQNames="true">
     <variable name="VAR0" expression="" defaultValue="&quot;x, y int&quot;" alwaysStopAt="true" />
     <context>
+      <option name="GO_FILE" value="true" />
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
@@ -74,32 +75,36 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="mod" value="const mod int = 1e9 + 7" description="const mod int = 1e9 + 7" toReformat="true" toShortenFQNames="true">
+  <template name="mod" value="const mod $TYPE$ = 1e9 + 7" description="const mod int = 1e9 + 7" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="min" value="min := func(a, b int) int {&#10;&#9;if a &lt; b {&#10;&#9;&#9;return a&#10;&#9;}&#10;&#9;return b&#10;}" description="min := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+  <template name="min" value="min := func(a, b $TYPE$) $TYPE$ {&#10;&#9;if a &lt; b {&#10;&#9;&#9;return a&#10;&#9;}&#10;&#9;return b&#10;}" description="min := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="max" value="max := func(a, b int) int {&#10;&#9;if a &gt; b {&#10;&#9;&#9;return a&#10;&#9;}&#10;&#9;return b&#10;}" description="max := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+  <template name="max" value="max := func(a, b $TYPE$) $TYPE$ {&#10;&#9;if a &gt; b {&#10;&#9;&#9;return a&#10;&#9;}&#10;&#9;return b&#10;}" description="max := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="case" value="solve := func() (ans int) {&#10;&#9;var n int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;$END$&#10;&#9;&#10;&#9;return&#10;}&#10;&#10;var t int&#10;Fscan(in, &amp;t)&#10;for _case := 1; _case &lt;= t; _case++ {&#10;&#9;Fprintln(out, solve())&#10;}" description="multi test cases" toReformat="true" toShortenFQNames="true">
+  <template name="case" value="solve := func() (ans $TYPE$) {&#10;&#9;var n int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;$END$&#10;&#9;&#10;&#9;return&#10;}&#10;&#10;var t int&#10;Fscan(in, &amp;t)&#10;for _case := 1; _case &lt;= t; _case++ {&#10;&#9;Fprintln(out, solve())&#10;}" description="multi test cases" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="ti" value="ternaryI := func(cond bool, r1, r2 int) int {&#10;&#9;if cond {&#10;&#9;&#9;return r1&#10;&#9;}&#10;&#9;return r2&#10;}" description="cond ? int : int" toReformat="true" toShortenFQNames="true">
+  <template name="ti" value="ternaryI := func(cond bool, r1, r2 int) int {&#10;&#9;if cond {&#10;&#9;&#9;return r1&#10;&#9;}&#10;&#9;return r2&#10;}" description="cond ? int : int" toReformat="true" toShortenFQNames="true" deactivated="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="ts" value="ternaryS := func(cond bool, r1, r2 string) string {&#10;&#9;if cond {&#10;&#9;&#9;return r1&#10;&#9;}&#10;&#9;return r2&#10;}" description="cond ? string : string" toReformat="true" toShortenFQNames="true">
+  <template name="ts" value="ternaryS := func(cond bool, r1, r2 string) string {&#10;&#9;if cond {&#10;&#9;&#9;return r1&#10;&#9;}&#10;&#9;return r2&#10;}" description="cond ? string : string" toReformat="true" toShortenFQNames="true" deactivated="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -123,20 +128,21 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="vs" value="var $VAR0$ $VAR1$&#10;Fscan(in, &amp;$VAR0$)" description="var &amp; Fscan" toReformat="true" toShortenFQNames="true">
+  <template name="vs" value="var $VAR0$ $VAR1$&#10;Fscan(in, &amp;$VAR0$)" description="var name &amp; Fscan" toReformat="true" toShortenFQNames="true">
     <variable name="VAR0" expression="" defaultValue="" alwaysStopAt="true" />
     <variable name="VAR1" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="tpi" value="type int int32&#10;type uint uint32" description="type int int32" toReformat="true" toShortenFQNames="true">
+  <template name="tpi" value="type int int32&#10;type uint uint32" description="type int int32; type uint uint32" toReformat="true" toShortenFQNames="true" deactivated="true">
     <context>
       <option name="GO_EXPRESSION" value="true" />
       <option name="GO_FILE" value="true" />
     </context>
   </template>
-  <template name="gcd" value="calcGCD := func(a, b int) int {&#10;&#9;for a != 0 {&#10;&#9;&#9;a, b = b%a, a&#10;&#9;}&#10;&#9;return b&#10;}" description="calcGCD := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+  <template name="gcd" value="calcGCD := func(a, b $TYPE$) $TYPE$ {&#10;&#9;for a != 0 {&#10;&#9;&#9;a, b = b%a, a&#10;&#9;}&#10;&#9;return b&#10;}" description="calcGCD := func(a, b int) int" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -296,6 +302,52 @@
     <variable name="VAR0" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_EXPRESSION" value="true" />
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="heapint" value="type intHeap struct{ sort.IntSlice }&#10;&#10;func (h *intHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }&#10;func (h *intHeap) Pop() (v interface{}) {&#10;&#9;n := len(h.IntSlice)&#10;&#9;h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]&#10;&#9;return&#10;}" description="intHeap" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO_FILE" value="true" />
+    </context>
+  </template>
+  <template name="unique" value="unique := func(a []$TYPE$) (res []$TYPE$) {&#10;&#9;n := len(a)&#10;&#9;if n == 0 {&#10;&#9;&#9;return&#10;&#9;}&#10;&#9;res = make([]$TYPE$, 1, n)&#10;&#9;res[0] = a[0]&#10;&#9;for i := 1; i &lt; n; i++ {&#10;&#9;&#9;if a[i] != a[i-1] {&#10;&#9;&#9;&#9;res = append(res, a[i])&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return&#10;}" description="unique := func(a []int) (res []int) {" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="fio" value="in := bufio.NewScanner(_r)&#10;in.Split(bufio.ScanWords)&#10;out := bufio.NewWriter(_w)&#10;defer out.Flush()&#10;read := func() (x int) {&#10;&#9;in.Scan()&#10;&#9;for _, b := range in.Bytes() {&#10;&#9;&#9;x = x*10 + int(b-'0')&#10;&#9;}&#10;&#9;return&#10;}" description="fast IO" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="upperbound" value="upperBound := func(a []$TYPE$, x $TYPE$) int { return sort.Search(len(a), func(i int) bool { return a[i] &gt; x }) }" description="upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] &gt; x }) }" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="blr" value="searchRange := func(l, r $TYPE$, f func($TYPE$) bool) $TYPE$ {&#10;&#9;i, j := l, r&#10;&#9;for i &lt; j {&#10;&#9;&#9;h := (i + j) &gt;&gt; 1&#10;&#9;&#9;if f(h) {&#10;&#9;&#9;&#9;j = h&#10;&#9;&#9;} else {&#10;&#9;&#9;&#9;i = h + 1&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return i&#10;}" description="binary search [l,r)" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="lcm" value="calcGCD := func(a, b $TYPE$) $TYPE$ {&#10;&#9;for a != 0 {&#10;&#9;&#9;a, b = b%a, a&#10;&#9;}&#10;&#9;return b&#10;}&#10;calcLCM := func(a, b $TYPE$) $TYPE$ { return a / calcGCD(a, b) * b }" description="calcLCM" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="reverse" value="reverse := func(a []$TYPE$) []$TYPE$ {&#10;&#9;n := len(a)&#10;&#9;r := make([]$TYPE$, n)&#10;&#9;for i, v := range a {&#10;&#9;&#9;r[n-1-i] = v&#10;&#9;}&#10;&#9;return r&#10;}" description="reverse slice" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;byte&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="equal" value="equals := func(a, b []$TYPE$) bool {&#10;&#9;// assert len(a) == len(b)&#10;&#9;for i, v := range a {&#10;&#9;&#9;if v != b[i] {&#10;&#9;&#9;&#9;return false&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return true&#10;}" description="check two slice equal" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
+    <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>

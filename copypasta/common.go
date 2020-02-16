@@ -185,20 +185,30 @@ func commonCollection() {
 		return hash
 	}
 
-	reverseArr := func(s []byte) {
+	reverse := func(a []byte) []byte {
+		n := len(a)
+		r := make([]byte, n)
+		for i, v := range a {
+			r[n-1-i] = v
+		}
+		return r
+	}
+	reverseSelf := func(s []byte) {
 		for i, j := 0, len(s)-1; i < j; {
 			s[i], s[j] = s[j], s[i]
 			i++
 			j--
 		}
 	}
-	reverseStr := func(s string) []byte {
-		n := len(s)
-		res := make([]byte, n)
-		for i := range s {
-			res[i] = s[n-1-i]
+
+	equals := func(a, b []int) bool {
+		// assert len(a) == len(b)
+		for i, v := range a {
+			if v != b[i] {
+				return false
+			}
 		}
-		return res
+		return true
 	}
 
 	// a b 必须是有序的（可以为空）
@@ -425,7 +435,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverseArr, reverseStr, merge, unique, discrete, indexMap, allSame, complement, containsAll,
+		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, discrete, indexMap, allSame, complement, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }
