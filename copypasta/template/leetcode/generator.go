@@ -9,9 +9,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"time"
 )
-
-// TODO: sleep when contest not begin.
 
 func login(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
@@ -399,6 +398,11 @@ func GenLeetCodeTests(username, password string) error {
 		return err
 	}
 	fmt.Println(host, "登录成功")
+
+	if sleepTime := getSleepTime(contestID); sleepTime > 0 {
+		fmt.Println(host, "比赛尚未开始，等待中……", sleepTime)
+		time.Sleep(sleepTime)
+	}
 
 	problems, err := fetchProblems(session)
 	if err != nil {
