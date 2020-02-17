@@ -227,7 +227,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
-// 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的
+// 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大或者查询时有额外的 log 操作的情形
 // https://oi-wiki.org/graph/lca/#rmq
 func (*tree) lcaRMQ(n, root int, g [][]int) {
