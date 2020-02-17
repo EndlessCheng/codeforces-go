@@ -175,25 +175,77 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 	return f(0)
 }
 
-// 最近公共祖先
-// https://oi-wiki.org/graph/lca/#rmq
+// 最近公共祖先 - 其一 - 基于倍增和二分搜索
+// https://oi-wiki.org/graph/lca/#_5
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
-func (*tree) lca(n, root int, g [][]int) {
-	vs := make([]int, 0, 2*n-1)     // 欧拉序列
-	pos := make([]int, n)           // pos[v] 表示 v 在 vs 中第一次出现的位置编号
-	depths := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
-	dis := make([]int, n)           // dis[v] 表示 v 到 root 的距离
-	var dfs func(v, fa, d int)      // 若有边权需额外传参 dis
-	dfs = func(v, fa, d int) {
+func (*tree) lcaBinarySearch(n, root int, g [][]int) {
+	const mx = 18 // floor(log2(最大树节点))+1
+	pa := make([][mx]int, n)
+	dep := make([]int, n)
+	var dfs func(v, p, d int)
+	dfs = func(v, p, d int) {
+		pa[v][0] = p
+		dep[v] = d
+		for _, w := range g[v] {
+			if w != p {
+				dfs(w, v, d+1)
+			}
+		}
+	}
+	dfs(root, -1, 0)
+	for k := 0; k+1 < mx; k++ {
+		for v := range pa {
+			if p := pa[v][k]; p == -1 {
+				pa[v][k+1] = -1
+			} else {
+				pa[v][k+1] = pa[p][k]
+			}
+		}
+	}
+	_lca := func(v, w int) int {
+		if dep[v] > dep[w] {
+			v, w = w, v
+		}
+		for k := uint(0); k < mx; k++ {
+			if (dep[w]-dep[v])>>k&1 == 1 {
+				w = pa[w][k]
+			}
+		}
+		if v == w {
+			return v
+		}
+		for k := mx - 1; k >= 0; k-- {
+			if pa[v][k] != pa[w][k] {
+				v, w = pa[v][k], pa[w][k]
+			}
+		}
+		return pa[v][0]
+	}
+	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
+
+	_ = _d
+}
+
+// 最近公共祖先 - 其二 - 基于 RMQ
+// 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的
+// 优点是查询的复杂度低，适用于查询量大或者查询时有额外的 log 操作的情形
+// https://oi-wiki.org/graph/lca/#rmq
+func (*tree) lcaRMQ(n, root int, g [][]int) {
+	vs := make([]int, 0, 2*n-1)  // 欧拉序列
+	pos := make([]int, n)        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
+	dep := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
+	dis := make([]int, n)        // dis[v] 表示 v 到 root 的距离
+	var dfs func(v, p, d int)    // 若有边权需额外传参 dis
+	dfs = func(v, p, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
-		depths = append(depths, d)
+		dep = append(dep, d)
 		dis[v] = d
 		for _, w := range g[v] {
-			if w != fa {
+			if w != p {
 				dfs(w, v, d+1) // 若有边权则额外传入 dis+e.weight
 				vs = append(vs, v)
-				depths = append(depths, d)
+				dep = append(dep, d)
 			}
 		}
 	}
@@ -218,7 +270,7 @@ func (*tree) lca(n, root int, g [][]int) {
 			}
 		}
 	}
-	stInit(depths)
+	stInit(dep)
 	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
 		k := uint(bits.Len(uint(r-l+1)) - 1)
 		a, b := st[l][k], st[r-(1<<k)+1][k]
