@@ -198,7 +198,6 @@ func (*tree) lca(n, root int, g [][]int) {
 		}
 	}
 	dfs(root, -1, 0)
-
 	type pair struct{ v, i int }
 	const mx = 18 // ceil(log2(最大树节点))+1
 	var st [][mx]pair
@@ -228,18 +227,17 @@ func (*tree) lca(n, root int, g [][]int) {
 		}
 		return b.i
 	}
-
 	// 注意下标的换算，打印 LCA 的话要 +1
-	calcLCA := func(v, w int) int {
+	_lca := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
 		if pv > pw {
 			pv, pw = pw, pv
 		}
 		return vs[stQuery(pv, pw)]
 	}
-	calcDis := func(v, w int) int { return dis[v] + dis[w] - dis[calcLCA(v, w)]<<1 }
+	_d := func(v, w int) int { return dis[v] + dis[w] - dis[_lca(v, w)]<<1 }
 
-	_ = calcDis
+	_ = _d
 }
 
 // 树链剖分

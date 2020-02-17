@@ -42,7 +42,6 @@ func CF1304E(_r io.Reader, _w io.Writer) {
 		}
 	}
 	dfs(0, -1, 0)
-
 	type pair struct{ v, i int }
 	var st [][18]pair
 	stInit := func(a []int) {
