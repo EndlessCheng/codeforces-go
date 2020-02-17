@@ -252,7 +252,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	}
 	dfs(root, -1, 0)
 	type pair struct{ v, i int }
-	const mx = 18 // ceil(log2(最大树节点))+1
+	const mx = 18 // floor(log2(最大树节点))+1
 	var st [][mx]pair
 	stInit := func(a []int) {
 		n := len(a)
