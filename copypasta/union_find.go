@@ -21,6 +21,8 @@ func unionFind() {
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
+
+	// EXTRA
 	mergeCheck := func(from, to int) bool {
 		x, y := find(from), find(to)
 		if x == y {
@@ -66,7 +68,10 @@ func unionFind() {
 		return
 	}
 
-	_ = []interface{}{initFa, merge, same, mergeCheck, mergeRangeTo, getRoots, countRoots, getComps}
+	_ = []interface{}{
+		initFa, merge, same,
+		mergeCheck, mergeRangeTo, getRoots, countRoots, getComps,
+	}
 }
 
 // https://oi-wiki.org/ds/dsu/#_9
@@ -101,6 +106,7 @@ func unionFindWithMaintain() {
 	_ = []interface{}{initFa, merge, same}
 }
 
+// 二维并查集
 func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
 	for i := range fas {

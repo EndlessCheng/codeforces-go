@@ -23,6 +23,7 @@ func stringCollection() {
 
 	// https://oi-wiki.org/string/hash/
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
+	// TODO: 二维 hash
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
@@ -32,7 +33,7 @@ func stringCollection() {
 			powP[i] = powP[i-1] * prime
 		}
 	}
-	hashVal := func(s string) (val uint64) {
+	calcHash := func(s string) (val uint64) {
 		for i := range s {
 			val += uint64(s[i]) * powP[i]
 		}
@@ -153,7 +154,7 @@ func stringCollection() {
 	manacherQuery := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
 	_ = []interface{}{
-		initPowP, hashVal,
+		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		smallestRepresentation,
 		manacher, manacherQuery,
@@ -162,7 +163,7 @@ func stringCollection() {
 
 // https://oi-wiki.org/string/sa/#height
 // 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
-func suffixArray() {
+func suffixArrayCollection() {
 	// lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
 	calcLCP := func(s []byte, sa []int) (lcp []int) {
 		n := len(s)

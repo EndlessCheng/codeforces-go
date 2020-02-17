@@ -7,13 +7,13 @@ import "sort"
 
 type hp struct{ sort.IntSlice }
 
+//func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
 func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *hp) Pop() (v interface{}) {
 	n := len(h.IntSlice)
 	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
 	return
 }
-//func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
 
 //
 

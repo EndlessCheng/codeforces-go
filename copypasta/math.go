@@ -374,6 +374,8 @@ func numberTheoryCollection() {
 	// TODO: 扩展中国剩余定理 (EXCRT)
 	// https://www.luogu.com.cn/problemnew/solution/P4777
 
+	// TODO: 组合数 mod p
+
 	//
 
 	// 数论分块/除法分块
