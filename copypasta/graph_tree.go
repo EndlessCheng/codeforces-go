@@ -176,6 +176,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 }
 
 // 最近公共祖先 - 其一 - 基于倍增和二分搜索
+// 适用于查询量和节点数等同的情形
 // https://oi-wiki.org/graph/lca/#_5
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
