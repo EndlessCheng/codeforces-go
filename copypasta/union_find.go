@@ -116,7 +116,7 @@ func unionFindVertexWeight() {
 
 // 并查集 - 维护边权
 // 维护的是点到其所在集合根节点（代表元）的距离等
-// https://www.bilibili.com/video/av68342657?p=2
+// 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
 // 模板题：https://codeforces.com/problemset/problem/1074/D
 func unionFindEdgeWeight() {
