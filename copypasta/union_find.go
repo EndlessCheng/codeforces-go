@@ -4,7 +4,6 @@ package copypasta
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 func unionFind() {
-	// NOTE: 离散化时，可以改用 map[int]int
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n) // n+1
@@ -21,6 +20,16 @@ func unionFind() {
 	}
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
+
+	// 离散化版本
+	faMap := map[int]int{}
+	find = func(x int) int {
+		if fx, ok := faMap[x]; ok && fx != x {
+			faMap[x] = find(fx)
+			return faMap[x]
+		}
+		return x
+	}
 
 	// EXTRA
 	mergeCheck := func(from, to int) bool {
@@ -75,7 +84,7 @@ func unionFind() {
 }
 
 // 并查集 - 维护点权
-// 维护的可以是集合的大小，也可以是集合的最值、GCD 等
+// 维护的可以是集合的大小，也可以是集合的最值、XOR、GCD 等
 func unionFindVertexWeight() {
 	var fa, size []int
 	initFa := func(n int) {
@@ -109,7 +118,7 @@ func unionFindVertexWeight() {
 // 维护的是点到其所在集合根节点（代表元）的距离等
 // https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
-// TODO: https://codeforces.com/contest/1074/problem/D
+// 模板题：https://codeforces.com/problemset/problem/1074/D
 func unionFindEdgeWeight() {
 	var fa, dis []int
 	initFa := func(n int) {
@@ -128,13 +137,26 @@ func unionFindEdgeWeight() {
 		}
 		return fa[x]
 	}
-	merge := func(from, to int) {
-		from, to = find(from), find(to)
-		if from != to {
-			fa[from] = to
+	merge := func(from, to int, d int) {
+		fFrom, fTo := find(from), find(to)
+		if fFrom != fTo {
+			dis[fFrom] = d + dis[to] - dis[from]
+			fa[fFrom] = fTo
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
+
+	// 离散化版本
+	faMap, disMap := map[int]int{}, map[int]int{}
+	find = func(x int) int {
+		if fx, ok := faMap[x]; ok && fx != x {
+			ffx := find(fx)
+			disMap[x] += disMap[fx]
+			faMap[x] = ffx
+			return ffx
+		}
+		return x
+	}
 
 	_ = []interface{}{initFa, merge, same}
 }
