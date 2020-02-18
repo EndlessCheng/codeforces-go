@@ -1,8 +1,8 @@
 package copypasta
 
+// 普通并查集
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
-
 func unionFind() {
 	// NOTE: 离散化时，可以改用 map[int]int
 	var fa []int
@@ -74,10 +74,9 @@ func unionFind() {
 	}
 }
 
-// https://oi-wiki.org/ds/dsu/#_9
-// TODO: 一般化
-// TODO: https://codeforces.com/contest/1074/problem/D
-func unionFindWithMaintain() {
+// 并查集 - 维护点权
+// 维护的可以是集合的大小，也可以是集合的最值、GCD 等
+func unionFindVertexWeight() {
 	var fa, size []int
 	initFa := func(n int) {
 		fa = make([]int, n)   // n+1
@@ -97,8 +96,41 @@ func unionFindWithMaintain() {
 	merge := func(from, to int) {
 		from, to = find(from), find(to)
 		if from != to {
-			fa[from] = to
 			size[to] += size[from]
+			fa[from] = to
+		}
+	}
+	same := func(x, y int) bool { return find(x) == find(y) }
+
+	_ = []interface{}{initFa, merge, same}
+}
+
+// 并查集 - 维护边权
+// https://www.bilibili.com/video/av68342657?p=2
+// https://oi-wiki.org/ds/dsu/#_9
+// TODO: https://codeforces.com/contest/1074/problem/D
+func unionFindEdgeWeight() {
+	var fa, dis []int
+	initFa := func(n int) {
+		fa = make([]int, n)  // n+1
+		dis = make([]int, n) // n+1
+		for i := range fa {
+			fa[i] = i
+		}
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			ffx := find(fa[x])
+			dis[x] += dis[fa[x]]
+			fa[x] = ffx
+		}
+		return fa[x]
+	}
+	merge := func(from, to int) {
+		from, to = find(from), find(to)
+		if from != to {
+			fa[from] = to
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
@@ -110,7 +142,7 @@ func unionFindWithMaintain() {
 func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
 	for i := range fas {
-		fas[i] = make([]int, n+1)
+		fas[i] = make([]int, n) // n+1
 		for j := range fas[i] {
 			fas[i][j] = j
 		}
