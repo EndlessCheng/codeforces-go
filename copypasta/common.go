@@ -837,7 +837,9 @@ func loopCollection() {
 			for _, dir := range dir4 {
 				if !dfs(i+dir[0], j+dir[1]) {
 					// 遍历完该连通分量再 return
-					res = false
+					//if {
+					//	res = false
+					//}
 				}
 			}
 			return res
