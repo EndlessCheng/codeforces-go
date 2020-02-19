@@ -2,15 +2,19 @@ package copypasta
 
 import "sort"
 
-// https://oi-wiki.org/dp/
-
 /*
+基础 DP 题目推荐：
+https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
+https://zxi.mytechroad.com/blog/leetcode-problem-categories/
+
+https://oi-wiki.org/dp/
+
 若使用滚动数组，注意在下次复用时初始化第一排所有元素
-但是实际情况是使用滚动数组仅降低了内存，执行效率与不使用时无异
+但是实际情况是使用滚动数组仅降低了内存开销，算法运行效率与不使用滚动数组时无异
 
 记忆化耗时大约是递推的 6 倍
 */
-
 func dpCollections() {
 	max := func(a, b int) int {
 		if a > b {

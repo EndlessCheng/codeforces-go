@@ -2,6 +2,8 @@ package copypasta
 
 import . "fmt"
 
+// 二叉树常用函数
+
 type tKeyType int
 type tValueType int
 
