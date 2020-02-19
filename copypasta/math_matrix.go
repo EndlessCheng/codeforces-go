@@ -5,6 +5,8 @@ import (
 	"io"
 )
 
+// 一些题目：https://oi-wiki.org/math/matrix/
+
 type matrix [][]int64
 
 func newMatrix(n, m int) matrix {
@@ -175,3 +177,6 @@ func (matrix) inv(in io.Reader, out io.Writer, n int) bool {
 	}
 	return true
 }
+
+// 高斯消元
+// TODO https://oi-wiki.org/math/gauss/

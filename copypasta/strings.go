@@ -300,6 +300,7 @@ func (t *trie) minPrefix(p string) (s string, val int) {
 	return string(bytes), o.val
 }
 
+// 01-trie
 // childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
 func (t *trie) maxXor(bits []byte) (xor int) {
 	o := t.nodes[0]
@@ -312,6 +313,9 @@ func (t *trie) maxXor(bits []byte) (xor int) {
 	}
 	return
 }
+
+// 可持久化 trie
+// TODO https://oi-wiki.org/ds/persistent-trie/
 
 // Aho–Corasick algorithm
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
