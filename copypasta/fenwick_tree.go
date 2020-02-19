@@ -6,14 +6,14 @@ package copypasta
 
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
-	add := func(idx int, val int) {
-		for ; idx <= n; idx += idx & -idx { // idx += lowbit(idx)
-			tree[idx] += val
+	add := func(i int, val int) {
+		for ; i <= n; i += i & -i { // i += lowbit(i)
+			tree[i] += val
 		}
 	}
-	sum := func(idx int) (res int) {
-		for ; idx > 0; idx &= idx - 1 { // idx -= lowbit(idx)
-			res += tree[idx]
+	sum := func(i int) (res int) {
+		for ; i > 0; i &= i - 1 { // i -= lowbit(i)
+			res += tree[i]
 		}
 		return
 	}
@@ -33,14 +33,14 @@ func multiFenwickTree(m, n int) {
 	for i := range trees {
 		trees[i] = make([]int, n+1)
 	}
-	add := func(tree []int, idx int, val int) {
-		for ; idx <= n; idx += idx & -idx {
-			tree[idx] += val
+	add := func(tree []int, i int, val int) {
+		for ; i <= n; i += i & -i {
+			tree[i] += val
 		}
 	}
-	sum := func(tree []int, idx int) (res int) {
-		for ; idx > 0; idx &= idx - 1 {
-			res += tree[idx]
+	sum := func(tree []int, i int) (res int) {
+		for ; i > 0; i &= i - 1 {
+			res += tree[i]
 		}
 		return
 	}

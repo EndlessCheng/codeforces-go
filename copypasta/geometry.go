@@ -146,9 +146,7 @@ func (a vec) onSeg(l line) bool {
 }
 
 // 过点 a 的垂直于 l 的直线
-func (a vec) perpendicular(l line) line {
-	return line{a, a.add(vec{l.p1.y - l.p2.y, l.p2.x - l.p1.x})}
-}
+func (a vec) perpendicular(l line) line { return line{a, a.add(vec{l.p1.y - l.p2.y, l.p2.x - l.p1.x})} }
 
 /* 圆 */
 type circle struct {
@@ -183,10 +181,54 @@ func (o circleF) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
 	}
 }
 
-// 两个圆的公切线
+// 两圆交点
+func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
+	a := o
+	if a.r < b.r {
+		a, b = b, a
+	}
+	ab := b.sub(a.vec)
+	dab2 := ab.len2()
+	diffR, sumR := a.r-b.r, a.r+b.r
+	if dab2 == 0 {
+		if diffR == 0 {
+			return
+		} // 重合
+		return nil, true
+	}
+	normal = true
+	if sumR*sumR < dab2 || diffR*diffR > dab2 {
+		return
+	}
+
+	angleAB := ab.polarAngle()
+	angleDelta := math.Acos(float64(sumR*diffR+dab2) / (float64(2*a.r) * ab.len())) // 余弦定理
+	p1, p2 := a.point(angleAB-angleDelta), a.point(angleAB+angleDelta)
+	ps = append(ps, p1)
+	if math.Abs(angleDelta) > eps {
+		ps = append(ps, p2)
+	}
+	return
+}
+
+// 点到圆的切线，返回向量即可
+func (o circle) tangents(p vec) (ls []vecF) {
+	po := o.sub(p)
+	d2 := po.len2()
+	if d2 < o.r*o.r {
+		return
+	}
+	if d2 == o.r*o.r {
+		return []vecF{po.rotate(math.Pi / 2)}
+	} // 圆上一点的切线
+	ang := math.Asin(float64(o.r) / po.len())
+	return []vecF{po.rotate(-ang), po.rotate(ang)}
+}
+
+// 两圆公切线
 // 返回每条切线在圆 o 和圆 ob 的切点
 // NOTE: 下面的代码是基于 int64 的，没有判断 eps
-func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
+func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 	a := o
 	if a.r < b.r {
 		a, b = b, a
@@ -200,10 +242,11 @@ func (o circle) tangents(b circle) (ls []lineF, hasInf bool) {
 	if dab2 < diffR*diffR { // 内含
 		return
 	}
-	angleAB := math.Atan2(float64(ab.y), float64(ab.x))
+	angleAB := ab.polarAngle()
 	if dab2 == diffR*diffR { // 内切
 		return []lineF{{a.point(angleAB), b.point(angleAB)}}, false
 	}
+
 	dab := ab.len()
 	ang := math.Acos(float64(diffR) / dab)
 	ls = append(ls, lineF{a.point(angleAB + ang), b.point(angleAB + ang)}) // 两条外公切线
@@ -451,11 +494,12 @@ type circleF struct {
 	r float64
 }
 
-func (vecF) add(vecF) (_ vecF)    { return }
-func (vecF) sub(vecF) (_ vecF)    { return }
-func (vecF) mul(float64) (_ vecF) { return }
-func (vecF) len() (_ float64)     { return }
-func (vecF) len2() (_ float64)    { return }
-func (vecF) dot(vecF) (_ float64) { return }
-func (vecF) det(vecF) (_ float64) { return }
-func (lineF) vec() (_ vecF)       { return }
+func (vecF) add(vecF) (_ vecF)      { return }
+func (vecF) sub(vecF) (_ vecF)      { return }
+func (vecF) mul(float64) (_ vecF)   { return }
+func (vecF) len() (_ float64)       { return }
+func (vecF) len2() (_ float64)      { return }
+func (vecF) dot(vecF) (_ float64)   { return }
+func (vecF) det(vecF) (_ float64)   { return }
+func (vec) rotate(float64) (_ vecF) { return }
+func (lineF) vec() (_ vecF)         { return }
