@@ -10,8 +10,6 @@ import "math/bits"
 // TIPS: 一般来说会有一个核心函数，如 min/max/+/gcd/...
 // CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）
 
-// TODO: 考虑到编译器的优化，试试用*2/2的方式去做？
-
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
 type stNode struct {

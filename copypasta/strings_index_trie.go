@@ -2,13 +2,6 @@ package copypasta
 
 // CF101628K https://codeforces.com/gym/101628/submission/68323182
 
-type _treap struct {
-	rd              uint
-	put             func(int)
-	delete          func(int)
-	hasValueInRange func(int, int) bool
-}
-
 type iTrieNode struct {
 	sonIndexes     [26]int
 	fa             *iTrieNode
@@ -96,4 +89,12 @@ func (t *iTrie) hasTextOfPrefix(p string, l, r int) bool {
 		o = t.nodes[idx]
 	}
 	return o.subTreeIndexes.hasValueInRange(l, r)
+}
+
+// 占位符
+type _treap struct {
+	rd              uint
+	put             func(int)
+	delete          func(int)
+	hasValueInRange func(int, int) bool
 }

@@ -4,8 +4,8 @@ import . "fmt"
 
 // 二叉树常用函数
 
-type tKeyType int
-type tValueType int
+type tKeyType int   // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
+type tValueType int // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
 
 type tnode struct {
 	lr    [2]*tnode

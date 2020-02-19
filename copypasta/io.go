@@ -20,7 +20,7 @@ func simpleIO(_r io.Reader, _w io.Writer) {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
 }
 
-// 一般来说读 1e5 个 int 需要 100ms
+// 一般来说读 1e5 个 int 需要 50-100ms
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)

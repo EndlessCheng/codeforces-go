@@ -2,8 +2,8 @@ package copypasta
 
 import . "fmt"
 
-type rbKeyType int   // *custom* 图方便可以全局替换
-type rbValueType int // *custom* 图方便可以全局替换
+type rbKeyType int
+type rbValueType int
 type rbColor bool
 
 const red, black rbColor = true, false

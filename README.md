@@ -23,8 +23,6 @@ I have implemented some algorithms in [copypasta](./copypasta).
 CF 的难度评分是很有参考意义的：面对一道 1200 难度的题想半小时还没想出来，那我建议直接看题解，因为你可能陷入了某种思维陷阱；
 而对于一道 2400 难度的题想半小时还没想出来，那最好再想想，吃饭的时候想想，躺床上的时候想想，实在想不出来再去看题解，无论有没有想出来，对自身 rating 的突破都是很有帮助的。
 
-[Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
-
 ## Codeforces Solutions
 
 [main](./main)
@@ -51,6 +49,10 @@ CF 的难度评分是很有参考意义的：面对一道 1200 难度的题想�
 > 6. "Although I experienced competitive programming for 3 years, I think that I don’t know many techniques" — I think that's because you're doing too much virtual participation. You spend a lot of time on easy problems this way.
 >
 > [source](https://codeforces.com/blog/entry/66909?#comment-517968)
+
+## Others
+
+[https://www.bilibili.com/video/av43450831](https://www.bilibili.com/video/av43450831)
 
 ## BST
 

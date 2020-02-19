@@ -3,8 +3,19 @@ package copypasta
 import "sort"
 
 /*
-基础 DP 题目推荐：
+参考书籍推荐：《算法竞赛进阶指南》
+
+基础 DP 视频讲解：
+https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
+https://www.bilibili.com/video/av77393700 LCS LIS
+https://www.bilibili.com/video/av83939419 区间 DP
+https://www.bilibili.com/video/av85636122 动态规划 · 零 - Introduction
+https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
+https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
+
+基础 DP 题目推荐/类型总结：
 https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+https://codeforces.com/blog/entry/70018
 https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
 https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 
