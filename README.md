@@ -20,9 +20,6 @@ I have implemented some algorithms in [copypasta](./copypasta).
 >
 > [source](https://codeforces.com/blog/entry/65406?#comment-494043)
 
-CF 的难度评分是很有参考意义的：面对一道 1200 难度的题想半小时还没想出来，那我建议直接看题解，因为你可能陷入了某种思维陷阱；
-而对于一道 2400 难度的题想半小时还没想出来，那最好再想想，吃饭的时候想想，躺床上的时候想想，实在想不出来再去看题解，无论有没有想出来，对自身 rating 的突破都是很有帮助的。
-
 ## Codeforces Solutions
 
 [main](./main)
