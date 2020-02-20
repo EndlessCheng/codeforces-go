@@ -19,37 +19,35 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 		return
 	}
 
+	// 例如，-1 表示最后一个测试用例
 	if caseNum < 0 {
 		caseNum += len(inputs) + 1
 	}
 
-	// TODO: time costs
-	ok := true
-	for i, input := range inputs {
-		if caseNum > 0 && i+1 != caseNum {
+	allPassed := true
+	for curCase, input := range inputs {
+		if caseNum > 0 && curCase+1 != caseNum {
 			continue
 		}
+
+		input = strings.TrimSpace(input)
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
 		solveFunc(mockReader, mockWriter)
 		actualOutput := mockWriter.String()
 
-		// trim space here, may have issue on special problems.
-		answer := answers[i]
-		answer = strings.TrimSpace(answer)
+		expectedOutput := strings.TrimSpace(answers[curCase])
 		actualOutput = strings.TrimSpace(actualOutput)
-
 		const maxInputSize = 150
 		inputInfo := input
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		_ok := assert.Equal(t, answer, actualOutput, "please check test case [%d]\nInput:\n%s", i+1, inputInfo)
-		if !_ok {
-			ok = _ok
+		if !assert.Equal(t, expectedOutput, actualOutput, "please check test case [%d]\nInput:\n%s", curCase+1, inputInfo) {
+			allPassed = false
 		}
 	}
-	if !ok {
+	if !allPassed {
 		t.Logf("ok? caseNum is [%d]", caseNum)
 		return
 	}
@@ -91,21 +89,23 @@ func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(i
 }
 
 func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	if strings.TrimSpace(rawText) == "" {
+	rawText = strings.TrimSpace(rawText)
+	if rawText == "" {
 		t.Fatal("rawText is empty")
 	}
-	if rawText[0] == '\n' {
-		rawText = rawText[1:]
-	}
-	if strings.HasPrefix(rawText, "inputCopy") {
-		t.Fatal("please remove the \"inputCopy\" at top")
-	}
-	examples := strings.Split(rawText, "\ninputCopy\n")
+
+	examples := strings.Split(rawText, "inputCopy")
 	var inputs, answers []string
 	for _, e := range examples {
-		splits := strings.Split(e, "\noutputCopy\n")
-		inputs = append(inputs, splits[0])
-		answers = append(answers, splits[1])
+		e = strings.TrimSpace(e)
+		if e == "" {
+			continue
+		}
+		splits := strings.Split(e, "outputCopy")
+		in := strings.TrimSpace(splits[0])
+		out := strings.TrimSpace(splits[1])
+		inputs = append(inputs, in)
+		answers = append(answers, out)
 	}
 
 	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
