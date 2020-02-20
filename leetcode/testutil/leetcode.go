@@ -162,8 +162,8 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 
 	allCasesOk := true
 	fValue := reflect.ValueOf(f)
-	for testCase, rawIn := range rawInputs {
-		if targetCaseNum > 0 && testCase+1 != targetCaseNum {
+	for curCase, rawIn := range rawInputs {
+		if targetCaseNum > 0 && curCase+1 != targetCaseNum {
 			continue
 		}
 
@@ -179,7 +179,7 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 			}
 		}
 		// just check rawExpectedOuts is valid or not
-		rawExpectedOuts := rawOutputs[testCase]
+		rawExpectedOuts := rawOutputs[curCase]
 		for i := range rawExpectedOuts {
 			rawExpectedOuts[i] = trimSpaceAndNewLine(rawExpectedOuts[i])
 			if _, err = parseRawArg(fType.Out(i), rawExpectedOuts[i]); err != nil {
@@ -193,7 +193,7 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 			if er != nil {
 				return er
 			}
-			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "please check case %d", testCase+1) {
+			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "please check case %d", curCase+1) {
 				allCasesOk = false
 			}
 		}
@@ -222,8 +222,8 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 	allCasesOk := true
 	cFunc := reflect.ValueOf(constructor)
 
-	for testCase, rawIn := range rawInputs {
-		if targetCaseNum > 0 && testCase+1 != targetCaseNum {
+	for curCase, rawIn := range rawInputs {
+		if targetCaseNum > 0 && curCase+1 != targetCaseNum {
 			continue
 		}
 
@@ -301,8 +301,8 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 		}
 		rawActualOut += "]"
 
-		rawExpectedOut := strings.TrimSpace(rawOutputs[testCase])
-		if !assert.Equal(t, rawExpectedOut, rawActualOut, "please check case %d", testCase+1) {
+		rawExpectedOut := strings.TrimSpace(rawOutputs[curCase])
+		if !assert.Equal(t, rawExpectedOut, rawActualOut, "please check case %d", curCase+1) {
 			allCasesOk = false
 		}
 	}

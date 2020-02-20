@@ -80,12 +80,6 @@ func (o *TreeNode) toRawString() string {
 	return s
 }
 
-//switch v := interface{}(TreeNode{}.Val).(type) {
-//case int:
-//case string:
-//default:
-//}
-
 // 注意确认 Val 的类型是否和题目一致（一般都是 int）
 type ListNode struct {
 	Val  int
