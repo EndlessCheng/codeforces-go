@@ -159,15 +159,16 @@ func continuedFractionCollections() {
 		return
 	}
 
+	// 模板题：https://leetcode-cn.com/contest/season/2019-fall/problems/deep-dark-fraction/
 	calcRatByContinuedFraction := func(exp []int64) (a, b int64) {
 		n := len(exp)
 		h := make([]int64, n+2)
 		h[0], h[1] = 0, 1
 		k := make([]int64, n+2)
 		k[0], k[1] = 1, 0
-		for i, a := range exp {
-			h[i+2] = a*h[i+1] + h[i]
-			k[i+2] = a*k[i+1] + k[i]
+		for i, v := range exp {
+			h[i+2] = v*h[i+1] + h[i]
+			k[i+2] = v*k[i+1] + k[i]
 		}
 		return h[n+1], k[n+1]
 	}
