@@ -63,7 +63,10 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 }
 
 func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	txtFilePaths, _ := filepath.Glob(filepath.Join(dir, "*.txt"))
+	txtFilePaths, err := filepath.Glob(filepath.Join(dir, "*.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	// ans1.txt, ..., in1.txt, ...
 	if len(txtFilePaths) == 0 {
 		return
