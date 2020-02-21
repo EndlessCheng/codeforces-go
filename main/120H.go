@@ -92,8 +92,4 @@ func CF120H(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() {
-//	r, _ := os.Open("input.txt")
-//	w, _ := os.Create("output.txt")
-//	CF120H(r, w)
-//}
+//func main() { r, _ := os.Open("input.txt"); w, _ := os.Create("output.txt"); CF120H(r, w) }

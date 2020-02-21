@@ -147,7 +147,7 @@ func unionFindEdgeWeight() {
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
-	sameSet := func(x, y, mod int) bool { find(x); find(y); return ((dis[y]-dis[x])%mod+mod)%mod == 0 }
+	delta := func(x, y, kinds int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds } // 调用前需要保证 same(x, y) == true
 
 	// 离散化版本
 	faMap, disMap := map[int]int{}, map[int]int{}
@@ -161,7 +161,7 @@ func unionFindEdgeWeight() {
 		return x
 	}
 
-	_ = []interface{}{initFa, merge, same, sameSet}
+	_ = []interface{}{initFa, merge, same, delta}
 }
 
 // 二维并查集
