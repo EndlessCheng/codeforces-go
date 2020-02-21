@@ -1,9 +1,9 @@
 package copypasta
 
-// CF101628K https://codeforces.com/gym/101628/submission/68323182
+// 模板题：CF101628K https://codeforces.com/gym/101628/submission/68323182
 
 type iTrieNode struct {
-	sonIndexes     [26]int
+	sonIDs         [26]int
 	fa             *iTrieNode
 	curIndexes     *_treap // set
 	subTreeIndexes *_treap // set
@@ -29,48 +29,49 @@ type iTrie struct {
 
 func newIndexTrie() *iTrie {
 	return &iTrie{
-		nodes: []*iTrieNode{{}}, // init with a root (empty node)
+		nodes: []*iTrieNode{{}}, // init with a root (empty string)
 	}
 }
 
-func (t *iTrie) ord(c byte) byte { return c - 'a' }
+func (*iTrie) ord(c byte) byte { return c - 'a' }
 
-func (t *iTrie) add(s string, idx int) {
+func (t *iTrie) add(s []byte, idx int) {
 	o := t.nodes[0]
-	for i := range s {
-		c := t.ord(s[i])
-		if o.sonIndexes[c] == 0 {
-			o.sonIndexes[c] = len(t.nodes)
+	for _, c := range s {
+		c = t.ord(c)
+		if o.sonIDs[c] == 0 {
+			o.sonIDs[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &iTrieNode{
 				fa:             o,
 				curIndexes:     &_treap{rd: 1},
 				subTreeIndexes: &_treap{rd: 1},
 			})
 		}
-		o = t.nodes[o.sonIndexes[c]]
+		o = t.nodes[o.sonIDs[c]]
 	}
 	o.curIndexes.put(idx)
 	o.pushUpAdd(idx)
 }
 
-func (t *iTrie) del(s string, idx int) {
+// s 必须在 iTrie 中存在
+func (t *iTrie) del(s []byte, idx int) {
 	o := t.nodes[0]
-	for i := range s {
-		o = t.nodes[o.sonIndexes[t.ord(s[i])]]
+	for _, c := range s {
+		o = t.nodes[o.sonIDs[t.ord(c)]]
 	}
 	o.curIndexes.delete(idx)
 	o.pushUpDel(idx)
 }
 
-// 在 trie 中找字符串 s 的前缀
-func (t *iTrie) hasPrefixOfText(s string, l, r int) bool {
+// 在 trie 中找字符串 s 的前缀（这个前缀必须是 trie 中的一个完整字符串）
+func (t *iTrie) hasPrefixOfText(s []byte, l, r int) bool {
 	o := t.nodes[0]
-	for i := range s {
-		idx := o.sonIndexes[t.ord(s[i])]
-		if idx == 0 {
+	for _, c := range s {
+		id := o.sonIDs[t.ord(c)]
+		if id == 0 {
 			return false
 		}
-		o = t.nodes[idx]
+		o = t.nodes[id]
 		if o.curIndexes.hasValueInRange(l, r) {
 			return true
 		}
@@ -79,14 +80,14 @@ func (t *iTrie) hasPrefixOfText(s string, l, r int) bool {
 }
 
 // 在 trie 中找前缀为 p 的字符串
-func (t *iTrie) hasTextOfPrefix(p string, l, r int) bool {
+func (t *iTrie) hasTextOfPrefix(p []byte, l, r int) bool {
 	o := t.nodes[0]
-	for i := range p {
-		idx := o.sonIndexes[t.ord(p[i])]
-		if idx == 0 {
+	for _, c := range p {
+		id := o.sonIDs[t.ord(c)]
+		if id == 0 {
 			return false
 		}
-		o = t.nodes[idx]
+		o = t.nodes[id]
 	}
 	return o.subTreeIndexes.hasValueInRange(l, r)
 }

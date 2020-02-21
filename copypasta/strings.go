@@ -209,13 +209,14 @@ func suffixArrayCollection() {
 	// TODO: []int 的后缀数组
 }
 
+// 字典树
 // https://oi-wiki.org/string/trie/
-// 题目推荐 https://codeforces.ml/blog/entry/55274
 // 另见 strings_index_trie.go
+// 题目推荐 https://codeforces.ml/blog/entry/55274
 type trieNode struct {
-	sonIndexes [26]int
-	dupCnt     int // 重复插入计数
-	val        int // 节点附加信息，比如插入的字符串在原数组中的下标
+	sonIDs [26]int
+	dupCnt int // 重复节点数
+	val    int // 节点附加信息（比如插入的字符串在原数组中的下标）
 	// val 也可以是个 []int 或 map，此时 dupCnt == len(val)
 }
 
@@ -225,103 +226,105 @@ type trie struct {
 
 func newTrie() *trie {
 	return &trie{
-		nodes: []*trieNode{{}}, // init with a root (empty node)
+		nodes: []*trieNode{{}}, // init with a root (empty string)
 	}
 }
 
-func (t *trie) ord(c byte) byte { return c - 'a' }
-func (t *trie) chr(v byte) byte { return v + 'a' }
+func (*trie) ord(c byte) byte { return c - 'a' }
+func (*trie) chr(v byte) byte { return v + 'a' }
 
-// 插入的字符串 s 不能为空
-func (t *trie) add(s string, val int) {
+func (t *trie) add(s []byte, val int) {
 	o := t.nodes[0]
-	for i := range s {
-		c := t.ord(s[i])
-		if o.sonIndexes[c] == 0 {
-			o.sonIndexes[c] = len(t.nodes)
+	for _, c := range s {
+		c = t.ord(c)
+		if o.sonIDs[c] == 0 {
+			o.sonIDs[c] = len(t.nodes)
 			t.nodes = append(t.nodes, &trieNode{})
 		}
-		o = t.nodes[o.sonIndexes[c]]
-		//o.dupCnt++ // 这样写表示经过节点 o 的字符串个数
+		o = t.nodes[o.sonIDs[c]]
+		//o.dupCnt++ // 写在循环内部表示经过节点 o 的字符串个数
 	}
 	o.dupCnt++
-	o.val += val
 	//if o.dupCnt == 1 {
-	//	o.val = val
+	o.val = val
 	//}
-	//
 	//o.val = append(o.val, val)
 }
 
 // s 必须在 trie 中存在
-func (t *trie) del(s string) {
+func (t *trie) del(s []byte) {
 	o := t.nodes[0]
-	for i := range s {
-		o = t.nodes[o.sonIndexes[t.ord(s[i])]]
+	for _, c := range s {
+		o = t.nodes[o.sonIDs[t.ord(c)]]
+		//o.dupCnt--
 	}
 	o.dupCnt--
 }
 
-// 在 trie 中寻找字符串 s，返回其 val 值
-// s 不能为空
-func (t *trie) get(s string) (val int, found bool) {
+func (t *trie) get(s []byte) *trieNode {
 	o := t.nodes[0]
-	for i := range s {
-		idx := o.sonIndexes[t.ord(s[i])]
-		if idx == 0 {
-			return
+	for _, c := range s {
+		id := o.sonIDs[t.ord(c)]
+		if id == 0 {
+			return nil
 		}
-		o = t.nodes[idx]
+		o = t.nodes[id]
 	}
-	if o.dupCnt == 0 { // s 只是某个字符串的前缀
-		return
-	}
-	return o.val, true
+	if o.dupCnt == 0 {
+		return nil
+	} // s 只是某个字符串的前缀
+	return o
 }
 
-// 在 trie 中寻找字典序最小的以 p 为前缀的字符串，返回该字符串及其 val 值
-// 若没有，返回 "", 0
-// p 不能为空
-func (t *trie) minPrefix(p string) (s string, val int) {
+// 在 trie 中寻找字典序最小的以 p 为前缀的字符串
+// 若没有，返回 nil, 0
+func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 	o := t.nodes[0]
-	for i := range p {
-		idx := o.sonIndexes[t.ord(p[i])]
-		if idx == 0 {
+	for _, c := range p {
+		id := o.sonIDs[t.ord(c)]
+		if id == 0 {
 			return
 		}
-		o = t.nodes[idx]
+		o = t.nodes[id]
 	}
 	// trie 中存在字符串 s，使得 p 是 s 的前缀
 
-	bytes := []byte(p)
 	for o.dupCnt == 0 {
-		for i := 0; i < 26; i++ {
-			if idx := o.sonIndexes[i]; idx > 0 {
-				bytes = append(bytes, t.chr(byte(i)))
-				o = t.nodes[idx]
+		for i, id := range o.sonIDs {
+			if id > 0 {
+				s = append(s, t.chr(byte(i)))
+				o = t.nodes[id]
 				break
 			}
 		}
 	}
-	return string(bytes), o.val
+	return s, o
 }
 
 // 01-trie
 // childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
-func (t *trie) maxXor(bits []byte) (xor int) {
+// 参考《算法竞赛进阶指南》0x16
+// 例题：最长异或路径 https://www.luogu.com.cn/problem/P4551
+func (t *trie) maxXor(val int) (xor int) {
+	bits := [32]byte{}
+	for i := range bits {
+		bits[i] = byte(val >> uint(31-i) & 1)
+	}
+
 	o := t.nodes[0]
 	for i, b := range bits {
-		if o.sonIndexes[b^1] > 0 {
+		if o.sonIDs[b^1] > 0 {
 			xor |= 1 << uint(30-i)
 			b ^= 1
 		}
-		o = t.nodes[o.sonIndexes[b]]
+		o = t.nodes[o.sonIDs[b]]
 	}
 	return
 }
 
 // 可持久化 trie
 // TODO https://oi-wiki.org/ds/persistent-trie/
+// 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
 
 // Aho–Corasick algorithm
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
