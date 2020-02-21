@@ -115,8 +115,8 @@ func unionFindVertexWeight() {
 	_ = []interface{}{initFa, merge, same}
 }
 
-// 并查集 - 维护边权
-// 维护的是点到其所在集合根节点（代表元）的距离等
+// 并查集 - 维护边权（种类）
+// 维护的是点到其所在集合根节点（代表元）的距离（种类集合）等
 // 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
 // 模板题 https://codeforces.com/problemset/problem/1074/D
@@ -146,6 +146,7 @@ func unionFindEdgeWeight() {
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
+	sameSet := func(x, y, mod int) bool { return ((dis[y]-dis[x])%mod+mod)%mod == 0 }
 
 	// 离散化版本
 	faMap, disMap := map[int]int{}, map[int]int{}
@@ -159,7 +160,7 @@ func unionFindEdgeWeight() {
 		return x
 	}
 
-	_ = []interface{}{initFa, merge, same}
+	_ = []interface{}{initFa, merge, same, sameSet}
 }
 
 // 二维并查集
