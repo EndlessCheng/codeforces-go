@@ -1,6 +1,9 @@
 package copypasta
 
-import _ "math/bits"
+import (
+	. "fmt"
+	_ "math/bits"
+)
 
 /*
 标准库 "math/bits" 包含了部分位运算需要的函数，如二进制中 1 的个数、二进制表示的长度等
@@ -25,16 +28,17 @@ func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }
 
-	// 也可以用 strconv.FormatInt(n, 2) + 填充前导零 bits.LeadingZeros 来做，注意 n=0 的情况
-	bits32 := func(n int) []byte {
-		bits := make([]byte, 32)
+	bits31 := func(n int) []byte {
+		bits := make([]byte, 31)
 		for i := range bits {
-			bits[i] = byte(n >> uint(31-i) & 1)
+			bits[i] = byte(n >> uint(30-i) & 1)
 		}
 		return bits
 	}
+	_bits31 := func(n int) string { return Sprintf("%031b", n) }
+	_bits32 := func(n uint) string { return Sprintf("%032b", n) }
 
-	_ = []interface{}{lowbit, bits32}
+	_ = []interface{}{lowbit, bits31, _bits31, _bits32}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/

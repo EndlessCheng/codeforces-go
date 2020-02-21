@@ -7,6 +7,10 @@ import (
 	"sort"
 )
 
+/*
+NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的交集，处理一些树上异或的问题可以往这个方向思考
+*/
+
 // namespace
 type tree struct{}
 

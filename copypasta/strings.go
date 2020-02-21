@@ -304,17 +304,17 @@ func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 // 01-trie
 // childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
 // 参考《算法竞赛进阶指南》0x16
-// 例题：最长异或路径 https://www.luogu.com.cn/problem/P4551
-func (t *trie) maxXor(val int) (xor int) {
-	bits := [32]byte{}
+// 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
+func (t *trie) maxXor(val int) (ans int) {
+	bits := [31]byte{}
 	for i := range bits {
-		bits[i] = byte(val >> uint(31-i) & 1)
+		bits[i] = byte(val >> uint(30-i) & 1)
 	}
 
 	o := t.nodes[0]
 	for i, b := range bits {
 		if o.sonIDs[b^1] > 0 {
-			xor |= 1 << uint(30-i)
+			ans |= 1 << uint(30-i)
 			b ^= 1
 		}
 		o = t.nodes[o.sonIDs[b]]
