@@ -131,7 +131,8 @@ type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
 func (t lazySegmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].sum = lo.sum + ro.sum // mod
+	t[o].sum = lo.sum + ro.sum
+	//t[o].sum = (lo.sum + ro.sum) % mod
 }
 
 func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
