@@ -301,8 +301,7 @@ func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 	return s, o
 }
 
-// 01-trie
-// childIdx 长度为 2，且 trie 上所有字符串长度与 bits 一致 (31)
+// 01-trie：val 与树上所有数中的最大异或值
 // 参考《算法竞赛进阶指南》0x16
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 func (t *trie) maxXor(val int) (ans int) {
