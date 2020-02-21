@@ -178,7 +178,9 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 // 最近公共祖先 - 其一 - 基于倍增和二分搜索
 // 适用于查询量和节点数等同的情形
 // https://oi-wiki.org/graph/lca/#_5
+// TODO 模板题 https://www.luogu.com.cn/problem/P3379
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
+// TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 18 // floor(log2(最大树节点))+1
 	pa := make([][mx]int, n)
@@ -293,11 +295,12 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	_ = _d
 }
 
-// 树链剖分
+// 树链剖分（重链剖分）
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
 // vals 为点权
+// 模板题（点权）https://www.luogu.com.cn/problem/P3384
 // TODO: 处理边权的情况
 func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
@@ -394,6 +397,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // TODO: link/cut tree
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
+// 模板题 https://www.luogu.com.cn/problem/P3690
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/

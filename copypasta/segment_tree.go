@@ -123,6 +123,7 @@ func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) }
 
 //
 
+// 模板题 https://www.luogu.com.cn/problem/P3373
 type lazySTNode struct {
 	l, r        int
 	sum         int64
@@ -210,9 +211,9 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 
 //
 
-// 可持久化线段树（又称函数式线段树、主席树）
-// Persistent Segment Tree
+// 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/
+// 模板题 https://www.luogu.com.cn/problem/P3834
 // TODO: 补题 https://codeforces.ml/contest/786/problem/C
 // TODO: 补题 https://codeforces.ml/contest/840/problem/D
 type pstNode struct {

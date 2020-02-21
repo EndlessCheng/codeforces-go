@@ -1,5 +1,6 @@
 package copypasta
 
+// 双端队列
 // 另一种实现是 make 个两倍大小的 slice，然后用两个下标 s t 模拟
 
 // l-1,...1,0,0,1...,r-1

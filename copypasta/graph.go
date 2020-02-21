@@ -184,10 +184,11 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	return comps
 }
 
-// 割点 cut vertices / articulation points
+// 割点（割顶） cut vertices / articulation points
 // https://codeforces.com/blog/entry/68138
 // https://oi-wiki.org/graph/cut/#_1
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
+// 模板题 https://www.luogu.com.cn/problem/P3388
 func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -237,7 +238,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	return
 }
 
-// 桥
+// 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 func (*graph) findBridges(n, m int, g [][]int) {
@@ -290,8 +291,10 @@ func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 	return
 }
 
+// 任意两点最短路
 // 传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
+// https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
@@ -326,6 +329,7 @@ func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	return dist
 }
 
+// 最小环
 // 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
@@ -360,8 +364,10 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	return ans
 }
 
+// 单源最短路 Dijkstra
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
+// 模板题 https://www.luogu.com.cn/problem/P4779
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64, parents []int) {
 	type neighbor struct {
@@ -458,9 +464,11 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	return dist
 }
 
+// 单源最短路 SPFA
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+// 模板题（负环）：https://www.luogu.com.cn/problem/P3385
 func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int64) {
 	type neighbor struct {
 		to     int
@@ -512,14 +520,17 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int
 	return
 }
 
+// 打印负环
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
 func (*graph) findNegativeCycleBellmanFord() []int {
 	// TODO return negative cycle
 	return nil
 }
 
+// 最小生成树 Kruskal
 // 适用于稀疏图 O(|E|⋅log|E|)
 // https://oi-wiki.org/graph/mst/#kruskal
+// 模板题 https://www.luogu.com.cn/problem/P3366
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	var fa []int
@@ -560,6 +571,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	return
 }
 
+// 最小生成树 Prim
 // 适用于稠密图 O(|V|^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
@@ -597,6 +609,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 	return
 }
 
+// 次小生成树
 // Second best Minimum Spanning Tree
 // Using Kruskal and Lowest Common Ancestor
 // https://cp-algorithms.com/graph/second_best_mst.html
@@ -704,13 +717,14 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://oi-wiki.org/graph/bi-graph/#_9
 // https://zhuanlan.zhihu.com/p/62981901
+// 模板题 https://www.luogu.com.cn/problem/P3386
 func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
 		match[i] = -1
 	}
 	var used []bool
-	var f func(v int) bool
+	var f func(int) bool
 	f = func(v int) bool {
 		used[v] = true
 		for _, w := range g[v] {
@@ -733,7 +747,7 @@ func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
-// 另一种写法，适用左右两侧节点有明确区分的情况，要求 g 中存储的是左侧到右侧的单向边
+// 匈牙利算法的另一种写法，适用左右两侧节点有明确区分的情况，要求 g 中存储的是左侧到右侧的单向边
 func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
 	matchL = make([]int, nl)
 	matchR := make([]int, nr)
@@ -779,6 +793,10 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	// TODO
 	return
 }
+
+// 一般图最大匹配（带花树）
+// 模板题 https://www.luogu.com.cn/problem/P6113
+// TODO
 
 // 拓扑排序 Kahn's algorithm
 // https://oi-wiki.org/graph/topo/
@@ -840,6 +858,7 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, leve
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
+// 模板题 https://www.luogu.com.cn/problem/P2341
 func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := make([]edge, m)
@@ -909,13 +928,14 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
 	// 缩点后的点的编号范围为 [0,len(comps)-1]
 	// 注意这样会产生重边和自环
+	// 模板题 https://www.luogu.com.cn/problem/P3387
 	for _, e := range edges {
 		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
 			// custom
 		}
 	}
 
-	// EXTRA: 求有多少个点能被其他所有点访问到
+	// EXTRA: 求有多少个点能被其他所有点访问到 https://www.luogu.com.cn/problem/P2341
 	lastComp := comps[len(comps)-1]
 	numCanBeVisitedFromAll := len(lastComp)
 	_ = numCanBeVisitedFromAll
@@ -932,12 +952,11 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 
 // TODO: SCC Tarjan
 
+// 2-Satisfiability (2-SAT)
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
-// 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
-// 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
-// ¬x 用 x+n 表示
+// 一般 ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // NOTE: 一些建边的转换：
 //       A,B 至少存在一个 (A|B)    ¬A⇒B, ¬B⇒A
@@ -946,6 +965,8 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
 //       A 必须存在       (A)     ¬A⇒A
 //       A 不能存在       (¬A)     A⇒¬A
+// 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
+// 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
 func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	g := make([][]int, 2*n)
 	for i := 0; i < m; i++ {
@@ -970,3 +991,97 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	}
 	return ans
 }
+
+// 最大流 Dinic's algorithm O(n2m)
+// Ford–Fulkerson algorithm (FFA) 的改进版本
+// https://oi-wiki.org/graph/flow/max-flow/#dinic
+// https://cp-algorithms.com/graph/dinic.html
+// 模板题 https://www.luogu.com.cn/problem/P3376
+func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	// st-- end--
+
+	type edge struct {
+		to, rev int // 反向边
+		cap     int
+	}
+	edges := make([][]edge, n)
+	addEdge := func(from, to int, cap int) {
+		edges[from] = append(edges[from], edge{to, len(edges[to]), cap})
+		edges[to] = append(edges[to], edge{from, len(edges[from]) - 1, 0})
+	}
+	for i := 0; i < m; i++ {
+		var v, w int
+		var cap int
+		Fscan(in, &v, &w, &cap)
+		v--
+		w--
+		addEdge(v, w, cap)
+	}
+
+	// 计算从源点 st 出发的距离标号
+	level := make([]int, n)
+	calcLevel := func() bool {
+		for i := range level {
+			level[i] = -1
+		}
+		level[st] = 0
+		q := []int{st}
+		for len(q) > 0 {
+			var v int
+			v, q = q[0], q[1:]
+			for _, e := range edges[v] {
+				if w := e.to; e.cap > 0 && level[w] < 0 {
+					level[w] = level[v] + 1
+					q = append(q, w)
+				}
+			}
+		}
+		return level[end] >= 0
+	}
+	// 寻找增广路
+	var iter []int // 当前弧，在其之前的边已经没有用了
+	var dfs func(int, int) int
+	dfs = func(v int, mf int) int {
+		if v == end {
+			return mf
+		}
+		for i := iter[v]; i < len(edges[v]); i++ {
+			e := &edges[v][i]
+			if w := e.to; e.cap > 0 && level[w] > level[v] {
+				if f := dfs(w, min(mf, e.cap)); f > 0 {
+					e.cap -= f
+					edges[w][e.rev].cap += f
+					return f
+				}
+			}
+			iter[v]++ // 当前弧优化（避免对没有用的边进行多次检查）
+		}
+		return 0
+	}
+	const inf int = 1e9
+	for calcLevel() {
+		iter = make([]int, n)
+		for {
+			if f := dfs(st, inf); f > 0 {
+				maxFlow += f
+			} else {
+				break
+			}
+		}
+	}
+
+	return
+}
+
+// TODO 最大流 加强版 / 预流推进
+// 模板题 https://www.luogu.com.cn/problem/P4722
+
+// TODO 最小费用最大流
+// https://oi-wiki.org/graph/flow/min-cost/
+// 模板题 https://www.luogu.com.cn/problem/P3381

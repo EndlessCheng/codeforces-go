@@ -20,6 +20,8 @@
 
 [https://space.bilibili.com/611212/video](https://space.bilibili.com/611212/video)
 
+[https://space.bilibili.com/4479419/video](https://space.bilibili.com/4479419/video)
+
 ## 其他链接
 
 [算法竞赛入门经典（第二版）](https://github.com/aoapc-book/aoapc-bac2nd)

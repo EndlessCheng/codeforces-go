@@ -3,6 +3,7 @@ package copypasta
 // 普通并查集
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
+// 模板题 https://www.luogu.com.cn/problem/P3367
 func unionFind() {
 	var fa []int
 	initFa := func(n int) {
@@ -118,7 +119,7 @@ func unionFindVertexWeight() {
 // 维护的是点到其所在集合根节点（代表元）的距离等
 // 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
-// 模板题：https://codeforces.com/problemset/problem/1074/D
+// 模板题 https://codeforces.com/problemset/problem/1074/D
 func unionFindEdgeWeight() {
 	var fa, dis []int
 	initFa := func(n int) {

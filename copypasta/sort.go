@@ -99,6 +99,8 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
+	// 实数三分
+	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
 		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
@@ -115,6 +117,7 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
+	// 整数三分
 	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for l+3 <= r {

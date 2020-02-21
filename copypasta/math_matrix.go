@@ -98,11 +98,12 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-// assert len(a) == len(a[0])
-func (a matrix) pow(n int64) matrix {
+// NxN 矩阵快速幂
+// 模板题 https://www.luogu.com.cn/problem/P3390
+func (a matrix) pow(k int64) matrix {
 	res := newMatrixI(len(a))
-	for ; n > 0; n >>= 1 {
-		if n&1 == 1 {
+	for ; k > 0; k >>= 1 {
+		if k&1 == 1 {
 			res = res.mul(a)
 		}
 		a = a.mul(a)
@@ -117,8 +118,9 @@ func (a matrix) trace() (sum int64) {
 	return
 }
 
-// https://www.luogu.com.cn/problem/P4783
-func (matrix) inv(in io.Reader, out io.Writer, n int) bool {
+// NxN 矩阵求逆
+// 模板题 https://www.luogu.com.cn/problem/P4783
+func (matrix) inv(in io.Reader, out io.Writer, n int) matrix {
 	const mod int64 = 1e9 + 7
 	modInv := func(x int64) int64 {
 		x %= mod
@@ -154,7 +156,7 @@ func (matrix) inv(in io.Reader, out io.Writer, n int) bool {
 		}
 		if f[i][i] == 0 {
 			// 矩阵不是满秩的
-			return false
+			return nil
 		}
 		inv := modInv(f[i][i])
 		for j := i; j < m; j++ {
@@ -169,13 +171,13 @@ func (matrix) inv(in io.Reader, out io.Writer, n int) bool {
 			}
 		}
 	}
-	for _, fi := range f {
-		for _, v := range fi[n:] { // 结果保存在右侧
-			Fprint(out, v, " ")
-		}
-		Fprintln(out)
+
+	// 结果保存在右侧
+	ans := make(matrix, n)
+	for i, fi := range f {
+		ans[i] = fi[n:]
 	}
-	return true
+	return ans
 }
 
 // 高斯消元

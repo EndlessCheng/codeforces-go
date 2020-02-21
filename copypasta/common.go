@@ -405,11 +405,12 @@ func commonCollection() {
 		return cnts
 	}
 
+	// 生成字符串 s 的长度至多为 k 的所有（非空）子串
 	var _ss []string
 	var _genSubStrs func(s, sub string)
 	_genSubStrs = func(s, sub string) {
 		_ss = append(_ss, sub)
-		if len(sub) < 4 { // custom
+		if len(sub) < 4 { // custom k
 			for i := range s {
 				_genSubStrs(s[i+1:], sub+string(s[i]))
 			}
@@ -457,8 +458,9 @@ func rmqCollection() {
 
 	// Sparse Table
 	// https://oi-wiki.org/ds/sparse-table/
-	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数，如 gcd 等
+	// 模板题 https://www.luogu.com.cn/problem/P3865
+	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 	const mx = 17 // 17 for 1e5, 20 for 1e6
 	var st [][mx]int
 	stInit := func(a []int) {
@@ -508,7 +510,7 @@ func rmqCollection() {
 	//	return b.i
 	//}
 
-	// Sqrt Decomposition
+	// 分块 Sqrt Decomposition
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
@@ -566,6 +568,7 @@ func rmqCollection() {
 	// 这样对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)
 	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 	// https://oi-wiki.org/misc/mo-algo/
+	// 模板题 https://www.luogu.com.cn/problem/P1494
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 	mo := func(in io.Reader, out io.Writer, n, q int, a []int) {
 		type query struct {
@@ -650,6 +653,7 @@ func monotoneCollection() {
 
 	// 单调栈
 	// https://oi-wiki.org/ds/monotonous-stack/
+	// 模板题 https://www.luogu.com.cn/problem/P5788
 	monotoneStack := func(a []int) ([]int, []int) {
 		// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
 		// 如何理解：把数组想象成一列山峰，站在山峰 a[i] 的顶上向两侧的上方看，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
@@ -687,6 +691,7 @@ func monotoneCollection() {
 
 	// 单调队列
 	// https://oi-wiki.org/ds/monotonous-queue/
+	// 模板题（滑动窗口） https://www.luogu.com.cn/problem/P1886
 	// 例题：CF1237D
 	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
 		// 为简单起见，用数组+下标模拟

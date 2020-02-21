@@ -1,7 +1,9 @@
 package copypasta
 
+// 树状数组
 // 效率是线段树的 3~10 倍（由数据决定）
 // https://oi-wiki.org/ds/bit/
+// 模板题 https://www.luogu.com.cn/problem/P3374
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 
 func fenwickTree(n int) {
@@ -19,6 +21,8 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
+	// 差分树状数组，可用于区间更新
+	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { // [l,r]
 		add(l, val)
 		add(r+1, -val)

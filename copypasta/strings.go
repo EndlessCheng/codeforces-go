@@ -22,6 +22,7 @@ func stringCollection() {
 	}
 
 	// https://oi-wiki.org/string/hash/
+	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// TODO: 二维 hash
 	var powP []uint64
@@ -89,6 +90,9 @@ func stringCollection() {
 		return 1 // or -1
 	}
 
+	// TODO 扩展 KMP
+	// 模板题 https://www.luogu.com.cn/problem/P5410
+
 	// 最小表示法
 	// https://oi-wiki.org/string/minimal-string/
 	smallestRepresentation := func(s string) string {
@@ -115,6 +119,7 @@ func stringCollection() {
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
+	// 模板题 https://www.luogu.com.cn/problem/P3805
 	var maxLen []int
 	manacher := func(origin string) int {
 		n := len(origin)
@@ -163,6 +168,7 @@ func stringCollection() {
 
 // https://oi-wiki.org/string/sa/#height
 // 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
+// 模板题 https://www.luogu.com.cn/problem/P3809
 func suffixArrayCollection() {
 	// lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
 	calcLCP := func(s []byte, sa []int) (lcp []int) {

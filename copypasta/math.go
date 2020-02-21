@@ -301,9 +301,11 @@ func numberTheoryCollection() {
 
 	//
 
+	// 二元一次不定方程
 	// exgcd solve equation ax+by=gcd(a,b)
 	// we have |x|<=b and |y|<=a in result (x,y)
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
+	// 模板题 https://www.luogu.com.cn/problem/P5656
 	var exgcd func(a, b int) (gcd, x, y int)
 	exgcd = func(a, b int) (gcd, x, y int) {
 		if b == 0 {
@@ -316,6 +318,7 @@ func numberTheoryCollection() {
 
 	// 逆元
 	// ax ≡ 1 (mod m)
+	// 模板题 https://www.luogu.com.cn/problem/P3811
 	modInverse := func(a, m int) int { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理
@@ -337,6 +340,7 @@ func numberTheoryCollection() {
 	}
 
 	// 计算 a/b (mod m)
+	// 模板题 https://www.luogu.com.cn/problem/P2613
 	modFrac := func(a, b, m int) int { return a * modInverse(b, m) % m }
 
 	// 线性同余方程组
@@ -555,6 +559,7 @@ func miscCollection() {
 func gameTheoryCollection() {
 	// 异或和不为0零则先手必胜
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
+	// 模板题 https://www.luogu.com.cn/problem/P2197
 	nim := func(a []int) (firstWin bool) {
 		sum := 0
 		for _, v := range a {
@@ -599,6 +604,7 @@ func numericalAnalysisCollection() {
 	// 自适应辛普森积分 Adaptive Simpson's Rule
 	// https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
 	// https://cp-algorithms.com/num_methods/simpson-integration.html
+	// 模板题 https://www.luogu.com.cn/problem/P4525 https://www.luogu.com.cn/problem/P4526
 	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
 
 	_ = []interface{}{asr}

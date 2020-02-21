@@ -3,8 +3,9 @@ package copypasta
 import . "fmt"
 
 // https://oi-wiki.org/ds/treap/
-// 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 // 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
+// 模板题 https://www.luogu.com.cn/problem/P3369
+// 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 
 // 耗时大约是红黑树（父节点实现）的 1.2 倍
 

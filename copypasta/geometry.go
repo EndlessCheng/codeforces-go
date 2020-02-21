@@ -354,6 +354,7 @@ func vec2Collection() {
 
 	// 求凸包 葛立恒扫描法 Graham's scan
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
+	// 模板题 https://www.luogu.com.cn/problem/P2742
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
 		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
@@ -383,8 +384,9 @@ func vec2Collection() {
 		return qs[:len(qs)-1]
 	}
 
-	// 旋转卡壳求最远点对 Rotating calipers
+	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
 	// https://en.wikipedia.org/wiki/Rotating_calipers
+	// 模板题 https://www.luogu.com.cn/problem/P1452
 	rotatingCalipers := func(ps []vec) (p1, p2 vec) {
 		qs := convexHull(ps)
 		n := len(qs)
@@ -469,6 +471,13 @@ func vec2Collection() {
 		}
 		return math.Sqrt(minArea)
 	}
+
+	// TODO 矩形面积并
+	// 扫描线算法
+	// 模板题 https://www.luogu.com.cn/problem/P5490
+
+	// TODO 半平面交
+	// 模板题 https://www.luogu.com.cn/problem/P4196
 
 	_ = []interface{}{readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, isRectangleAnyOrder, minAreaRect}
 }
