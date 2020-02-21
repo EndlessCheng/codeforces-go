@@ -112,6 +112,10 @@ type problem struct {
 // 解析一个样例输入或输出
 func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 	text = strings.TrimSpace(text)
+	if text == "" {
+		return nil
+	}
+
 	// 按 \n split 后 TrimSpace 再合并
 	lines := strings.Split(text, "\n")
 	text = ""
@@ -392,24 +396,7 @@ func Test(t *testing.T) {
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }
 
-func GenLeetCodeTests(username, password string) error {
-	session, err := login(username, password)
-	if err != nil {
-		return err
-	}
-	fmt.Println(host, "登录成功")
-
-	if sleepTime := getSleepTime(contestID); sleepTime > 0 {
-		fmt.Println(host, "比赛尚未开始，等待中……", sleepTime)
-		time.Sleep(sleepTime)
-	}
-
-	problems, err := fetchProblems(session)
-	if err != nil {
-		return err
-	}
-	fmt.Println("题目链接获取成功，开始解析")
-
+func handleProblems(session *grequests.Session, problems []*problem) error {
 	if openWebPageZH {
 		for _, p := range problems {
 			if err := open.Run(p.urlZH); err != nil {
@@ -460,6 +447,44 @@ func GenLeetCodeTests(username, password string) error {
 			return err // IO
 		}
 	}
-
 	return nil
+}
+
+func GenLeetCodeTests(username, password string) error {
+	session, err := login(username, password)
+	if err != nil {
+		return err
+	}
+	fmt.Println(host, "登录成功")
+
+	if sleepTime := getSleepTime(contestID); sleepTime > 0 {
+		fmt.Println(host, "比赛尚未开始，等待中……", sleepTime)
+		time.Sleep(sleepTime)
+	}
+
+	problems, err := fetchProblems(session)
+	if err != nil {
+		return err
+	}
+	fmt.Println("题目链接获取成功，开始解析")
+
+	return handleProblems(session, problems)
+}
+
+func GenLeetCodeSpecialTests(username, password string, urls []string) error {
+	session, err := login(username, password)
+	if err != nil {
+		return err
+	}
+	fmt.Println(host, "登录成功")
+
+	problems := make([]*problem, len(urls))
+	for i, url := range urls {
+		problems[i] = &problem{
+			id:    string('a' + i),
+			urlZH: url,
+		}
+	}
+
+	return handleProblems(session, problems)
 }

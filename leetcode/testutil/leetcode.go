@@ -37,7 +37,7 @@ func parseRawArray(rawArray string) (splits []string, err error) {
 				}
 			}
 		}
-		splits = append(splits, rawArray[start:end])
+		splits = append(splits, strings.TrimSpace(rawArray[start:end]))
 		start = end + 1 // skip sep
 	}
 	if depth != 0 || quotCnt%2 != 0 {
@@ -47,6 +47,7 @@ func parseRawArray(rawArray string) (splits []string, err error) {
 }
 
 func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
+	rawData = strings.TrimSpace(rawData)
 	invalidErr := fmt.Errorf("invalid test data: %s", rawData)
 	switch tp.Kind() {
 	case reflect.String:

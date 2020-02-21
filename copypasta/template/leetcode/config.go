@@ -25,5 +25,7 @@ func init() {
 		contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
 	case contestPrefixBiweekly:
 		contestDir = fmt.Sprintf("../../../leetcode/biweekly/%d/", contestID)
+	default:
+		contestDir = fmt.Sprintf("../../../leetcode/%s/", contestPrefix)
 	}
 }
