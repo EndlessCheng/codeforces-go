@@ -123,9 +123,9 @@ func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) }
 
 // 模板题 https://www.luogu.com.cn/problem/P3373
 type lazySTNode struct {
-	l, r        int
-	sum         int64
-	addChildren int64 // 子节点待更新
+	l, r int
+	sum  int64
+	todo int64
 }
 type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
@@ -149,17 +149,17 @@ func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
 }
 
 func (t lazySegmentTree) _spread(o int) {
-	if add := t[o].addChildren; add != 0 {
+	if add := t[o].todo; add != 0 {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum += add * int64(lo.r-lo.l+1)
 		ro.sum += add * int64(ro.r-ro.l+1)
-		lo.addChildren += add
-		ro.addChildren += add
+		lo.todo += add
+		ro.todo += add
 		//lo.sum = (lo.sum + add*int64(lo.r-lo.l+1)) % mod
 		//ro.sum = (ro.sum + add*int64(ro.r-ro.l+1)) % mod
-		//lo.addChildren = (lo.addChildren + add) % mod
-		//ro.addChildren = (ro.addChildren + add) % mod
-		t[o].addChildren = 0
+		//lo.todo = (lo.todo + add) % mod
+		//ro.todo = (ro.todo + add) % mod
+		t[o].todo = 0
 	}
 }
 
@@ -167,9 +167,9 @@ func (t lazySegmentTree) _update(o, l, r int, add int64) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].sum += add * int64(or-ol+1)
-		t[o].addChildren += add
+		t[o].todo += add
 		//t[o].sum = (t[o].sum + add*int64(or-ol+1)) % mod
-		//t[o].addChildren = (t[o].addChildren + add) % mod
+		//t[o].todo = (t[o].todo + add) % mod
 		return
 	}
 	t._spread(o)
