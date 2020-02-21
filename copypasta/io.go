@@ -37,15 +37,16 @@ func fastIO(_r io.Reader, _w io.Writer) {
 	read = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
-		sig := 1
 		if data[0] == '-' {
-			sig = -1
-			data = data[1:]
+			for _, b := range data[1:] {
+				x = x*10 + int(b-'0')
+			}
+			return -x
 		}
 		for _, b := range data {
 			x = x*10 + int(b-'0')
 		}
-		return sig * x
+		return
 	}
 
 	// FIXME: why AC with Fscan but WA5 with readS() in CF827A ?

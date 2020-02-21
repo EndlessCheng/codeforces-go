@@ -120,6 +120,7 @@ func unionFindVertexWeight() {
 // 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
 // 模板题 https://codeforces.com/problemset/problem/1074/D
+// 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 func unionFindEdgeWeight() {
 	var fa, dis []int
 	initFa := func(n int) {
@@ -146,7 +147,7 @@ func unionFindEdgeWeight() {
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
-	sameSet := func(x, y, mod int) bool { return ((dis[y]-dis[x])%mod+mod)%mod == 0 }
+	sameSet := func(x, y, mod int) bool { find(x); find(y); return ((dis[y]-dis[x])%mod+mod)%mod == 0 }
 
 	// 离散化版本
 	faMap, disMap := map[int]int{}, map[int]int{}
