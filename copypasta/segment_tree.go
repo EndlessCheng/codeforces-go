@@ -133,8 +133,7 @@ type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
 func (t lazySegmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	// *custom*
-	t[o].sum = lo.sum + ro.sum
+	t[o].sum = lo.sum + ro.sum // mod
 }
 
 func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
@@ -142,15 +141,11 @@ func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
 	if l == r {
 		//t[o].sum = arr[l] // if arr start at 1
 		t[o].sum = arr[l-1]
-		// *custom*
 		return
 	}
 	m := (l + r) >> 1
 	t._build(arr, o<<1, l, m)
 	t._build(arr, o<<1|1, m+1, r)
-
-	// *custom* after built children
-
 	t._pushUp(o)
 }
 
@@ -174,6 +169,8 @@ func (t lazySegmentTree) _update(o, l, r int, add int64) {
 	if l <= ol && or <= r {
 		t[o].sum += add * int64(or-ol+1)
 		t[o].addChildren += add
+		//t[o].sum = (t[o].sum + add*int64(or-ol+1)) % mod
+		//t[o].addChildren = (t[o].addChildren + add) % mod
 		return
 	}
 	t._spread(o)
@@ -193,13 +190,13 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 	}
 	t._spread(o)
 	m := (t[o].l + t[o].r) >> 1
-	// *custom*
 	if l <= m {
 		res += t._query(o<<1, l, r)
 	}
 	if m < r {
 		res += t._query(o<<1|1, l, r)
 	}
+	//res %= mod
 	return
 }
 

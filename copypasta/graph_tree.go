@@ -10,22 +10,26 @@ import (
 // namespace
 type tree struct{}
 
-// 树上每个子树的大小
-func (*tree) subtreeSize(n, root int, g [][]int) []int {
-	size := make([]int, n)
-	var f func(int, int) int
-	f = func(v, p int) int {
-		sz := 1
+// 树上每个子树的信息：子树大小，DFS 序
+// 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
+// o.dfn 从 1 开始
+func (*tree) subtreeSize(n, root int, g [][]int) {
+	type node struct{ size, dfn int }
+	nodes := make([]node, n)
+	dfn := 0
+	var buildNode func(int, int) int
+	buildNode = func(v, p int) int {
+		dfn++
+		nodes[v] = node{1, dfn}
+		o := &nodes[v]
 		for _, w := range g[v] {
 			if w != p {
-				sz += f(w, v)
+				o.size += buildNode(w, v)
 			}
 		}
-		size[v] = sz
-		return sz
+		return o.size
 	}
-	f(root, -1)
-	return size
+	buildNode(root, -1)
 }
 
 // 树的直径
