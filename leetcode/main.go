@@ -2,12 +2,9 @@ package main
 
 import (
 	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"strconv"
 )
 
 func main() {
-	_ = strconv.FormatInt(18880, 2)
-
 	toBytes := func(g [][]string) [][]byte {
 		n, m := len(g), len(g[0])
 		bytes := make([][]byte, n)
