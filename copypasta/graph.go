@@ -134,7 +134,7 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 	return depths
 }
 
-// 标记所属连通块
+// DFS 应用：标记所属连通块
 func (*graph) markComponentIDs(n int, g [][]int) []int {
 	id := make([]int, n)
 	for i := range id {
@@ -159,7 +159,7 @@ func (*graph) markComponentIDs(n int, g [][]int) []int {
 	return id
 }
 
-// 求出所有连通块
+// DFS 应用：求出所有连通块
 func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	comps := [][]int{}
 	vis := make([]bool, n)
@@ -183,6 +183,11 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	}
 	return comps
 }
+
+// 欧拉回路
+// https://oi-wiki.org/graph/euler/
+// 模板题 https://www.luogu.com.cn/problem/P2731
+// TODO
 
 // 割点（割顶） cut vertices / articulation points
 // https://codeforces.com/blog/entry/68138
@@ -424,6 +429,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64,
 	return
 }
 
+// 01 最短路
 // https://oi-wiki.org/graph/bfs/#bfs_3
 // https://codeforces.com/blog/entry/22276
 // 例题: https://codeforces.com/problemset/problem/173/B

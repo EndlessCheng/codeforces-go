@@ -21,10 +21,12 @@ https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 
 https://oi-wiki.org/dp/
 
-若使用滚动数组，注意在下次复用时初始化第一排所有元素
-但是实际情况是使用滚动数组仅降低了内存开销，算法运行效率与不使用滚动数组时无异
+线性 DP 经典题：数字三角形 https://www.luogu.com.cn/problem/P1216
 
-记忆化耗时大约是递推的 6 倍
+NOTE: 若使用滚动数组，复用时可能要初始化
+NOTE: 实际情况是使用滚动数组仅降低了内存开销，算法运行效率与不使用滚动数组时无异
+
+记忆化耗时大约是递推的 6 倍？
 */
 func dpCollections() {
 	max := func(a, b int) int {

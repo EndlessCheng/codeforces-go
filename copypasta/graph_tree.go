@@ -66,8 +66,11 @@ func (*tree) diameter(n int, g [][]int) (dv, dw int) {
 	return
 }
 
-// 树的重心 https://oi-wiki.org/graph/tree-centroid/
+// 树的重心
+// 常用作点分治中的一个划分步骤
+// https://oi-wiki.org/graph/tree-centroid/
 // 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
+// TODO: 需要重新整理
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
 		if a > b {
@@ -412,3 +415,12 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 // TODO: 虚树
 // https://oi-wiki.org/graph/virtual-tree/
+
+// 基环树
+// TODO
+
+// 仙人掌图 Cactus graph
+// A connected graph in which any two simple cycles have at most one vertex in common
+// https://en.wikipedia.org/wiki/Cactus_graph
+// TODO 圆方树
+// 模板题 https://www.luogu.com.cn/problem/P5236
