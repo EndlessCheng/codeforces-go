@@ -123,3 +123,21 @@ func (o *ListNode) toRawString() string {
 	s += "]"
 	return s
 }
+
+//
+
+func MustBuildTreeNode(rawArray string) *TreeNode {
+	root, err := buildTreeNode(rawArray)
+	if err != nil {
+		panic(err)
+	}
+	return root
+}
+
+func MustBuildListNode(rawArray string) *ListNode {
+	head, err := buildListNode(rawArray)
+	if err != nil {
+		panic(err)
+	}
+	return head
+}
