@@ -426,6 +426,14 @@ func miscCollection() {
 	// 隔板法
 	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 
+	// n married couples are seated in a row so that every wife is to the left of her husband
+	// 若不考虑顺序，则所有排列的个数为 (2n)!
+	// 考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的
+	// 因此每有一对夫妻，符合条件的排列个数就减半
+	// 所以结果为 a(n) = (2n)!/2^n
+	// https://oeis.org/A000680
+	// https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
+
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
 	solveInclusionExclusion := func(arr []int) (ans int) {

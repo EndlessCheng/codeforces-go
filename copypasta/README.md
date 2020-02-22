@@ -33,3 +33,7 @@
 [算法竞赛入门到进阶](https://github.com/luoyongjun999/code)
 
 [算法竞赛课件分享 by hzwer](https://github.com/hzwer/shareOI)
+
+[All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
+
+[GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)

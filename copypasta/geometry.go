@@ -295,15 +295,13 @@ func vec2Collection() {
 		}
 	}
 
-	// 最近点对
-	// 调用前 ps 必须按照 x 坐标排序
+	// 平面最近点对
+	// 调用前 ps 必须按照 x 坐标排序：
 	// sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
+	// 模板题 https://www.luogu.com.cn/problemnew/solution/P1429
 	var closestPair func([]vec) float64
 	closestPair = func(ps []vec) float64 {
-		n := len(ps)
-		if n <= 1 {
-			return math.MaxFloat64
-		}
+		n := len(ps) // assert n >= 2
 		m := n >> 1
 		x := ps[m].x
 		d := math.Min(closestPair(ps[:m]), closestPair(ps[m:]))

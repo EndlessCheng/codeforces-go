@@ -4,10 +4,11 @@ package copypasta
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 // 模板题 https://www.luogu.com.cn/problem/P3367
+// 题目补充 https://nanti.jisuanke.com/t/43488
 func unionFind() {
 	var fa []int
-	initFa := func(n int) {
-		fa = make([]int, n) // n+1
+	initFa := func(n int) { // n+1
+		fa = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 		}
@@ -88,9 +89,9 @@ func unionFind() {
 // 维护的可以是集合的大小，也可以是集合的最值、XOR、GCD 等
 func unionFindVertexWeight() {
 	var fa, size []int
-	initFa := func(n int) {
-		fa = make([]int, n)   // n+1
-		size = make([]int, n) // n+1
+	initFa := func(n int) { // n+1
+		fa = make([]int, n)
+		size = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 			size[i] = 1
@@ -123,9 +124,9 @@ func unionFindVertexWeight() {
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 func unionFindEdgeWeight() {
 	var fa, dis []int
-	initFa := func(n int) {
-		fa = make([]int, n)  // n+1
-		dis = make([]int, n) // n+1
+	initFa := func(n int) { // n+1
+		fa = make([]int, n)
+		dis = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 		}

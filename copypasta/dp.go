@@ -19,6 +19,9 @@ https://codeforces.com/blog/entry/70018
 https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
 https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 
+其他资料：
+https://codeforces.com/blog/entry/45223 SOS Dynamic Programming
+https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
 https://oi-wiki.org/dp/
 
 线性 DP 经典题：数字三角形 https://www.luogu.com.cn/problem/P1216
@@ -29,6 +32,12 @@ NOTE: 实际情况是使用滚动数组仅降低了内存开销，算法运行�
 记忆化耗时大约是递推的 6 倍？
 */
 func dpCollections() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -120,6 +129,31 @@ func dpCollections() {
 		return len(dp)
 	}
 
+	// 无限背包-恰好装满至少需要多少个物品
+	coinChange := func(coins []int, amount int) int {
+		const inf int = 1e9
+		dp := make([]int, amount+1)
+		for i := range dp {
+			dp[i] = inf
+		}
+		dp[0] = 0
+		for cur := range dp {
+			for _, c := range coins {
+				if c <= cur {
+					dp[cur] = min(dp[cur], dp[cur-c]+1)
+				}
+			}
+		}
+		if dp[amount] < inf {
+			return dp[amount]
+		}
+		return -1
+	}
+
+	/* 背包问题
+	https://en.wikipedia.org/wiki/Knapsack_problem
+	*/
+
 	// 01背包
 	// https://oi-wiki.org/dp/knapsack/
 	knapsack01 := func(values, weights []int, maxW int) int {
@@ -174,7 +208,8 @@ func dpCollections() {
 
 	_ = []interface{}{
 		generalDP, generalDP2, generalDPMap,
-		lis, knapsack01,
+		lis, coinChange,
+		knapsack01,
 		maxMatchingOnTree,
 	}
 }
