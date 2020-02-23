@@ -33,15 +33,16 @@ func unionFind() {
 		return x
 	}
 
-	// EXTRA
-	mergeCheck := func(from, to int) bool {
+	// merge，并返回是否有新的 merge
+	sameMerge := func(from, to int) bool {
 		x, y := find(from), find(to)
 		if x == y {
-			return true
+			return false
 		}
 		fa[x] = y
-		return false
+		return true
 	}
+
 	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
 		//if l < 0 {
 		//	l = 0
@@ -53,7 +54,20 @@ func unionFind() {
 			fa[i] = to
 		}
 	}
+
 	//rangeFullMerged := func() bool { return find(0) == n }
+
+	// 连通分量个数
+	countRoots := func() (cnt int) {
+		for i := range fa {
+			if find(i) == i {
+				cnt++
+			}
+		}
+		return
+	}
+
+	// 所有代表元
 	getRoots := func() (roots []int) {
 		for i := range fa {
 			if find(i) == i {
@@ -62,15 +76,9 @@ func unionFind() {
 		}
 		return
 	}
-	countRoots := func() (cnt int) { // 连通分量个数
-		for i := range fa {
-			if find(i) == i {
-				cnt++
-			}
-		}
-		return
-	}
-	getComps := func() (comps map[int][]int) { // 连通分量
+
+	// 连通分量
+	getComps := func() (comps map[int][]int) {
 		comps = map[int][]int{}
 		for i := range fa {
 			f := find(i)
@@ -81,7 +89,7 @@ func unionFind() {
 
 	_ = []interface{}{
 		initFa, merge, same,
-		mergeCheck, mergeRangeTo, getRoots, countRoots, getComps,
+		sameMerge, mergeRangeTo, getRoots, countRoots, getComps,
 	}
 }
 

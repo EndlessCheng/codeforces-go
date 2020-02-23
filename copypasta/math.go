@@ -170,6 +170,14 @@ func numberTheoryCollection() {
 		}
 		return
 	}
+	doDivisors2 := func(n int, do func(d1, d2 int)) {
+		for d := 1; d*d <= n; d++ {
+			if n%d == 0 {
+				do(d, n/d)
+			}
+		}
+		return
+	}
 
 	// 素因数分解 prime factorization
 	primeFactors := func(n int64) (factors []int64, exponents []int) {
@@ -414,7 +422,7 @@ func numberTheoryCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
+		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInv, modFrac, solveLinearCongruence, quickMul,
 		consecutiveNumbersSum,
 		partition,

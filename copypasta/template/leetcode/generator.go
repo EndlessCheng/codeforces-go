@@ -459,7 +459,7 @@ func GenLeetCodeTests(username, password string) error {
 
 	if sleepTime := getSleepTime(contestID); sleepTime > 0 {
 		fmt.Println(host, "比赛尚未开始，等待中……", sleepTime)
-		time.Sleep(sleepTime)
+		time.Sleep(sleepTime + time.Second) // 多等一秒抹去误差
 	}
 
 	problems, err := fetchProblems(session)

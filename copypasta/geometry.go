@@ -483,12 +483,16 @@ func vec2Collection() {
 /* 三维向量（点）*/
 type vec3 struct{ x, y, z int64 }
 
+func (a vec3) less(b vec3) bool {
+	return a.x < b.x || a.x == b.x && (a.y < b.y || a.y == b.y && a.z < b.z)
+}
+
 /* 三维直线（线段）*/
 type line3 struct{ p1, p2 vec3 }
 
 func vec3Collections() {
 	var ps []vec3
-	sort.Slice(ps, func(i, j int) bool { pi, pj := ps[i], ps[j]; return pi.x < pj.x || pi.x == pj.x && (pi.y < pj.y || pi.y == pj.y && pi.z < pj.z) })
+	sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && (a.y < b.y || a.y == b.y && a.z < b.z) })
 }
 
 // 下面这些仅作为占位符表示，实际使用的时候复制上面的模板，类型改成 float64 同时 vecF 替换成 vec 等
