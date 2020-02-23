@@ -657,20 +657,23 @@ func monotoneCollection() {
 	// TODO: CF1237D
 
 	// 单调栈
+	// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
+	// 如何理解：把数组想象成一列山峰，站在山峰 a[i] 的顶上向两侧的上方看，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
+	// 这就启发我们引入一个顶小底大的单调栈，入栈前不断比较栈顶元素直到找到一个比当前元素大的。
+	// 栈可以存元素值和下标，也可以只存下标但这样写就要判断栈是否为空
+	// 技巧：事先压入一个边界元素到栈底，这样保证循环中栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
+	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
-		// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
-		// 如何理解：把数组想象成一列山峰，站在山峰 a[i] 的顶上向两侧的上方看，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
-		// 这就启发我们引入一个顶小底大的单调栈，入栈前不断比较栈顶元素直到找到一个比当前元素大的。
-		// 栈可以存元素值和下标，也可以只存下标但这样写就要判断栈是否为空
 		n := len(a)
+		const border int = 2e9 // -2e9
 		type pair struct{ v, i int }
 		posL := make([]int, n)
-		stack := []pair{{2e9, -1}}
+		stack := []pair{{border, -1}}
 		for i, v := range a {
-			for { // len(stack) > 0 由于事先压入了一个无穷大的元素到栈底，所以栈一定不会为空
-				if top := stack[len(stack)-1]; top.v > v {
+			for {
+				if top := stack[len(stack)-1]; top.v > v { // 严格大于
 					posL[i] = top.i
 					break
 				}
@@ -679,11 +682,11 @@ func monotoneCollection() {
 			stack = append(stack, pair{v, i})
 		}
 		posR := make([]int, n)
-		stack = []pair{{2e9, n}}
+		stack = []pair{{border, n}}
 		for i := n - 1; i >= 0; i-- {
 			v := a[i]
 			for {
-				if top := stack[len(stack)-1]; top.v > v {
+				if top := stack[len(stack)-1]; top.v > v { // 严格大于
 					posR[i] = top.i
 					break
 				}
@@ -691,6 +694,7 @@ func monotoneCollection() {
 			}
 			stack = append(stack, pair{v, i})
 		}
+
 		return posL, posR
 	}
 
