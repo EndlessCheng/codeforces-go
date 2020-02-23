@@ -126,7 +126,7 @@ func genRange(st, end int) (res []float64) {
 }
 
 func DrawArray(a []float64) error {
-	return DrawChart(genRange(1, len(a)), a, true)
+	return DrawChart(genRange(0, len(a)-1), a, true)
 }
 
 func DrawPrefixSum(a []float64) error {
