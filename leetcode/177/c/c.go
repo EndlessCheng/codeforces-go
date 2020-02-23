@@ -16,17 +16,13 @@ func closestDivisors(num int) (ans []int) {
 		return x
 	}
 	min := int(2e9)
-	doDivisors(num+1, func(d1, d2 int) {
+	f := func(d1, d2 int) {
 		if d := abs(d1 - d2); d < min {
 			min = d
 			ans = []int{d1, d2}
 		}
-	})
-	doDivisors(num+2, func(d1, d2 int) {
-		if d := abs(d1 - d2); d < min {
-			min = d
-			ans = []int{d1, d2}
-		}
-	})
+	}
+	doDivisors(num+1, f)
+	doDivisors(num+2, f)
 	return
 }
