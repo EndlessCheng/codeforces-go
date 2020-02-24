@@ -97,14 +97,23 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(i
 		t.Fatal("rawText is empty")
 	}
 
-	examples := strings.Split(rawText, "inputCopy")
+	sepInput := "inputCopy"
+	if !strings.Contains(rawText, sepInput) {
+		sepInput = "input"
+	}
+	sepOutput := "outputCopy"
+	if !strings.Contains(rawText, sepOutput) {
+		sepOutput = "output"
+	}
+
+	examples := strings.Split(rawText, sepInput)
 	var inputs, answers []string
 	for _, e := range examples {
 		e = strings.TrimSpace(e)
 		if e == "" {
 			continue
 		}
-		splits := strings.Split(e, "outputCopy")
+		splits := strings.Split(e, sepOutput)
 		in := strings.TrimSpace(splits[0])
 		out := strings.TrimSpace(splits[1])
 		inputs = append(inputs, in)

@@ -758,6 +758,39 @@ func loopCollection() {
 		return b
 	}
 
+	loopDiagonal := func(mat [][]int) {
+		n, m := len(mat), len(mat[0])
+		for j := 0; j < m; j++ {
+			for i := 0; i < n; i++ {
+				if i > j {
+					break
+				}
+				_ = mat[i][j-i]
+			}
+		}
+		for i := 1; i < n; i++ {
+			for j := m - 1; j >= 0; j-- {
+				if i+m-1-j >= n {
+					break
+				}
+				_ = mat[i+m-1-j][j]
+			}
+		}
+	}
+
+	loopDiagonal2 := func(n int) {
+		for sum := 0; sum < 2*n-1; sum++ {
+			for x := 0; x <= sum; x++ {
+				y := sum - x
+				if x >= n || y >= n {
+					continue
+				}
+				Println(x, y)
+			}
+			Println()
+		}
+	}
+
 	// 枚举 {0,1,...,n-1} 的全部子集
 	loopSet := func(arr []int) {
 		n := uint(len(arr))
@@ -1018,7 +1051,7 @@ func loopCollection() {
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
 
 	_ = []interface{}{
-		loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
+		loopDiagonal, loopDiagonal2, loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
 		rangeCombinations, combinations, permutations, permuteAll,
 	}
 }
