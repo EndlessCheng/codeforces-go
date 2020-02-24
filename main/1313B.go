@@ -89,7 +89,7 @@ func CF1313B(_r io.Reader, _w io.Writer) {
 // 9 4 5 5 5
 // 9 5 4 5 5
 //10 5 5 5 5
-func table(n int) {
+func printTable(n int) {
 	permutations := func(n, r int, do func(indexes []int)) {
 		indexes := make([]int, n)
 		for i := range indexes {
