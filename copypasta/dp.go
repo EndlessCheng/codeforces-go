@@ -18,6 +18,8 @@ https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patte
 https://codeforces.com/blog/entry/70018
 https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
 https://zxi.mytechroad.com/blog/leetcode-problem-categories/
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
+https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
 
 其他资料：
 https://codeforces.com/blog/entry/45223 SOS Dynamic Programming
