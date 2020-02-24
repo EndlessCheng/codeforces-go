@@ -136,7 +136,7 @@ func table(n int) {
 
 	getPlace := func(indexes1, indexes2 []int) (ans int) {
 		score := indexes1[0] + indexes2[0]
-		for i := 1; i < 5; i++ {
+		for i := 1; i < len(indexes1); i++ {
 			if indexes1[i]+indexes2[i] <= score {
 				ans++
 			}
