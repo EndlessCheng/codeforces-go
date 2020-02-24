@@ -47,65 +47,12 @@ func dpCollections() {
 		return b
 	}
 
-	generalDP := func(a []int) (ans int) {
-		n := len(a)
-		dp := make([]int, n) // n+1
-		for i := range dp {
-			dp[i] = -1
-		}
-		var f func(int) int
-		f = func(p int) (_ans int) {
-			if p < 0 || p >= n {
-				return 0
-			}
-			if dp[p] != -1 {
-				return dp[p]
-			}
-			defer func() { dp[p] = _ans }()
-			_ = a[p]
-
-			return
-		}
-		//return f(0)
-		for i := range a {
-			fi := f(i)
-			ans = max(ans, fi)
-		}
-		return
-	}
-
-	generalDP2 := func(a []int) int {
-		n := len(a)
-		dp := make([][]int, n) // n+1
-		for i := range dp {
-			dp[i] = make([]int, n) // n+1
-			for j := range dp[i] {
-				dp[i][j] = -1
-			}
-		}
-		var f func(int, int) int
-		f = func(l, r int) (_ans int) {
-			if l >= r {
-				return 0
-			}
-			if dp[l][r] != -1 {
-				return dp[l][r]
-			}
-			defer func() { dp[l][r] = _ans }()
-
-			return
-		}
-		return f(0, n-1)
-	}
-
 	// 由于数据范围的原因，采用 map 记忆化
-	generalDPMap := func(x, y int) int {
+	generalDPMap := func() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
 		var f func(int, int) int
 		f = func(x, y int) (_ans int) {
-			// 边界检查
-			// ...
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
 				return v
@@ -114,7 +61,7 @@ func dpCollections() {
 
 			return
 		}
-		return f(x, y)
+		_ = f
 	}
 
 	// O(nlogn) LIS
@@ -131,7 +78,8 @@ func dpCollections() {
 		return len(dp)
 	}
 
-	// 无限背包-恰好装满至少需要多少个物品
+	// 无限物品：恰好装满背包至少需要多少个物品
+	// 无法装满返回 -1
 	coinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
 		dp := make([]int, amount+1)
@@ -209,7 +157,7 @@ func dpCollections() {
 	}
 
 	_ = []interface{}{
-		generalDP, generalDP2, generalDPMap,
+		generalDPMap,
 		lis, coinChange,
 		knapsack01,
 		maxMatchingOnTree,
