@@ -46,13 +46,11 @@ func dpCollections() {
 	}
 
 	// 由于数据范围的原因，采用 map 记忆化
-	generalDPMap := func(x, y int) int {
+	generalDPMap := func() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
 		var f func(int, int) int
 		f = func(x, y int) (_ans int) {
-			// 边界检查
-			// ...
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
 				return v
@@ -61,7 +59,7 @@ func dpCollections() {
 
 			return
 		}
-		return f(x, y)
+		_ = f
 	}
 
 	// O(nlogn) LIS
