@@ -103,49 +103,47 @@ func (t *sTreap101628) hasValueInRange(l, r int) bool {
 }
 
 type trieNode101628 struct {
-	childIdx       [26]int
+	childIdx       [26]*trieNode101628
 	curIndexes     *sTreap101628
 	subTreeIndexes *sTreap101628
 }
 
 type trie101628 struct {
-	nodes []*trieNode101628
+	root *trieNode101628
 }
 
 func (t *trie101628) put(s string, idx int) {
-	o := t.nodes[0]
+	o := t.root
 	for i := range s {
 		c := s[i] - 'a'
-		if o.childIdx[c] == 0 {
-			o.childIdx[c] = len(t.nodes)
-			t.nodes = append(t.nodes, &trieNode101628{
+		if o.childIdx[c] == nil {
+			o.childIdx[c] = &trieNode101628{
 				curIndexes:     &sTreap101628{rd: 1},
 				subTreeIndexes: &sTreap101628{rd: 1},
-			})
+			}
 		}
-		o = t.nodes[o.childIdx[c]]
+		o = o.childIdx[c]
 		o.subTreeIndexes.put(idx)
 	}
 	o.curIndexes.put(idx)
 }
 
 func (t *trie101628) del(s string, idx int) {
-	o := t.nodes[0]
+	o := t.root
 	for i := range s {
-		o = t.nodes[o.childIdx[s[i]-'a']]
+		o = o.childIdx[s[i]-'a']
 		o.subTreeIndexes.delete(idx)
 	}
 	o.curIndexes.delete(idx)
 }
 
 func (t *trie101628) hasPrefixOfText(s string, l, r int) bool {
-	o := t.nodes[0]
+	o := t.root
 	for i := range s {
-		idx := o.childIdx[s[i]-'a']
-		if idx == 0 {
+		o = o.childIdx[s[i]-'a']
+		if o == nil {
 			return false
 		}
-		o = t.nodes[idx]
 		if o.curIndexes.hasValueInRange(l, r) {
 			return true
 		}
@@ -154,13 +152,12 @@ func (t *trie101628) hasPrefixOfText(s string, l, r int) bool {
 }
 
 func (t *trie101628) hasTextOfPrefix(p string, l, r int) bool {
-	o := t.nodes[0]
+	o := t.root
 	for i := range p {
-		idx := o.childIdx[p[i]-'a']
-		if idx == 0 {
+		o = o.childIdx[p[i]-'a']
+		if o == nil {
 			return false
 		}
-		o = t.nodes[idx]
 	}
 	return o.subTreeIndexes.hasValueInRange(l, r)
 }
@@ -174,7 +171,7 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 	var n, q, op, idx, l, r int
 	var s string
 	Fscan(in, &n)
-	t := &trie101628{nodes: []*trieNode101628{{}}}
+	t := &trie101628{&trieNode101628{}}
 	a := make([]string, n)
 	for i := range a {
 		Fscan(in, &a[i])
@@ -207,6 +204,4 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() {
-//	Sol101628K(os.Stdin, os.Stdout)
-//}
+//func main() { Sol101628K(os.Stdin, os.Stdout) }
