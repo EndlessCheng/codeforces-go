@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -168,4 +167,4 @@ func printTable(n int) {
 	}
 }
 
-func main() { CF1313B(os.Stdin, os.Stdout) }
+//func main() { CF1313B(os.Stdin, os.Stdout) }
