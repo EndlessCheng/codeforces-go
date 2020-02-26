@@ -28,15 +28,15 @@ func stringCollection() {
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
-		powP = make([]uint64, maxLen+1)
+		powP = make([]uint64, maxLen)
 		powP[0] = 1
-		for i := 1; i <= maxLen; i++ {
+		for i := 1; i < maxLen; i++ {
 			powP[i] = powP[i-1] * prime
 		}
 	}
-	calcHash := func(s string) (val uint64) {
-		for i := range s {
-			val += uint64(s[i]) * powP[i]
+	calcHash := func(s []byte) (val uint64) {
+		for i, c := range s {
+			val += uint64(c) * powP[i]
 		}
 		return
 	}
@@ -45,16 +45,16 @@ func stringCollection() {
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
-	calcMaxMatchLengths := func(pattern string) []int {
-		n := len(pattern)
+	calcMaxMatchLengths := func(s string) []int {
+		n := len(s)
 		maxMatchLengths := make([]int, n)
 		maxLength := 0
 		for i := 1; i < n; i++ {
-			c := pattern[i]
-			for maxLength > 0 && pattern[maxLength] != c {
+			c := s[i]
+			for maxLength > 0 && s[maxLength] != c {
 				maxLength = maxMatchLengths[maxLength-1]
 			}
-			if pattern[maxLength] == c {
+			if s[maxLength] == c {
 				maxLength++
 			}
 			maxMatchLengths[i] = maxLength
@@ -81,23 +81,25 @@ func stringCollection() {
 		}
 		return
 	}
-	calcMinPeriod := func(pattern string) int {
-		maxMatchLengths := calcMaxMatchLengths(pattern)
-		n := len(pattern)
+	// EXTRA: 最小循环节
+	calcMinPeriod := func(s string) int {
+		n := len(s)
+		maxMatchLengths := calcMaxMatchLengths(s)
 		if val := maxMatchLengths[n-1]; val > 0 && n%(n-val) == 0 {
 			return n / (n - val)
 		}
-		return 1 // or -1
+		return 1 // 无小于 n 的循环节
 	}
 
 	// TODO 扩展 KMP
 	// 模板题 https://www.luogu.com.cn/problem/P5410
 
 	// 最小表示法
+	// TODO：待整理
 	// https://oi-wiki.org/string/minimal-string/
-	smallestRepresentation := func(s string) string {
+	smallestRepresentation := func(s []byte) []byte {
 		n := len(s)
-		s += s
+		s = append(s, s...) // 或者 copy
 		i := 0
 		for j := 1; j < n; {
 			k := 0
@@ -115,27 +117,28 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
+	// TODO：待整理
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	var maxLen []int
-	manacher := func(origin string) int {
+	manacher := func(origin []byte) int {
 		n := len(origin)
 		s := make([]byte, 2*n+3)
 		s[0] = '^'
-		for i := range origin {
-			s[i<<1|1] = '#'
-			s[i<<1+2] = origin[i]
+		for i, c := range origin {
+			s[2*i+1] = '#'
+			s[2*i+2] = c
 		}
-		s[n<<1|1] = '#'
-		s[n<<1+2] = '$'
+		s[2*n+1] = '#'
+		s[2*n+2] = '$'
 		maxLen = make([]int, 2*n+3)
 		var ans, mid, right int
 		for i := 1; i < 2*n+2; i++ {
 			if i < right {
-				maxLen[i] = min(maxLen[mid<<1-i], right-i)
+				maxLen[i] = min(maxLen[2*mid-i], right-i)
 			} else {
 				maxLen[i] = 1
 			}
@@ -154,7 +157,6 @@ func stringCollection() {
 		}
 		return ans - 1
 	}
-
 	// 判断源串中的某一子串 [l...r] 是否为回文串
 	manacherQuery := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
@@ -209,18 +211,19 @@ func suffixArrayCollection() {
 	// TODO: []int 的后缀数组
 }
 
-// 字典树/单词查找树
+// 前缀树/字典树/单词查找树
 // https://oi-wiki.org/string/trie/
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
 // 模板题 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
-// 后缀修饰 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+// 前缀和后缀搜索 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+// 回文对（配合 Manacher 可以做到线性复杂度） https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
 type trieNode struct {
 	son    [26]*trieNode // 2
-	dupCnt int // 重复节点数
-	val    int // 节点附加信息（比如插入的字符串在原数组中的下标）
-	// val 也可以是个 []int 或 map，此时 dupCnt == len(val)
+	dupCnt int
+	val    int
+	// val 也可以是个 string、[]int 或 map，此时 dupCnt == len(val)
 }
 
 func (o *trieNode) empty() bool {
@@ -232,14 +235,11 @@ func (o *trieNode) empty() bool {
 	return true
 }
 
-type trie struct {
-	root *trieNode
-}
+type trie struct{ root *trieNode }
 
 func newTrie() *trie {
-	return &trie{
-		&trieNode{}, // init with a root (empty string)
-	}
+	// init with a root (empty string)
+	return &trie{&trieNode{}}
 }
 
 func (*trie) ord(c byte) byte { return c - 'a' }
@@ -253,13 +253,25 @@ func (t *trie) put(s []byte, val int) {
 			o.son[c] = &trieNode{}
 		}
 		o = o.son[c]
-		//o.dupCnt++ // 写在循环内部表示经过节点 o 的字符串个数
+		//o.dupCnt++ // 经过节点 o 的字符串个数
+		//o.val = val // 更新 s 的所有前缀的值
 	}
 	o.dupCnt++
-	//if o.dupCnt == 1 {
 	o.val = val
-	//}
-	//o.val = append(o.val, val)
+}
+
+func (t *trie) get(s []byte) *trieNode {
+	o := t.root
+	for _, c := range s {
+		o = o.son[t.ord(c)]
+		if o == nil {
+			return nil
+		}
+	}
+	if o.dupCnt == 0 {
+		return nil
+	} // s 只是某个字符串的前缀
+	return o
 }
 
 // s 必须在 trie 中存在
@@ -281,20 +293,6 @@ func (t *trie) del(s []byte) {
 			}
 		}
 	}
-}
-
-func (t *trie) get(s []byte) *trieNode {
-	o := t.root
-	for _, c := range s {
-		o = o.son[t.ord(c)]
-		if o == nil {
-			return nil
-		}
-	}
-	if o.dupCnt == 0 {
-		return nil
-	} // s 只是某个字符串的前缀
-	return o
 }
 
 // 在 trie 中寻找字典序最小的以 p 为前缀的字符串
