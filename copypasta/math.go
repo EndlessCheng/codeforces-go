@@ -196,11 +196,12 @@ func numberTheoryCollection() {
 			exponents = append(exponents, 1)
 		}
 
-		// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n)
-		// https://oeis.org/A000005
+		// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n) https://oeis.org/A000005
+		//        约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
+		//                            = 见下面「数论分块/除法分块」
 
-		// EXTRA: 约数之和 sigma(n), also called sigma_1(n)
-		// https://oeis.org/A000203
+		// EXTRA: 约数之和 sigma(n), also called sigma_1(n) https://oeis.org/A000203
+		//        约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
 
 		return
 	}
@@ -430,10 +431,11 @@ func numberTheoryCollection() {
 }
 
 // 组合、杂项
+// 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+// 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
+// 可重集排列
+// 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 func miscCollection() {
-	// 隔板法
-	// https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
-
 	// n married couples are seated in a row so that every wife is to the left of her husband
 	// 若不考虑顺序，则所有排列的个数为 (2n)!
 	// 考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的

@@ -345,7 +345,8 @@ func commonCollection() {
 		return cnt
 	}
 
-	nthElement := func(a []int) int {
+	// 数组第 k 小
+	nthElement := func(a []int, k int) int {
 		// TODO
 		return 0
 	}
@@ -391,7 +392,11 @@ func commonCollection() {
 
 	// 扫描线
 	// https://cses.fi/book/book.pdf 30.1
-	sweepLine := func(in io.Reader, n int) []int {
+	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
+	// 天际线问题 https://leetcode-cn.com/problems/the-skyline-problem/
+	// TODO 矩形面积并 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
+	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
+	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)
 		for i := 0; i < n; i++ {
@@ -399,15 +404,14 @@ func commonCollection() {
 			Fscan(in, &l, &r)
 			events = append(events, event{l, 1}, event{r, -1})
 		}
-		sort.Slice(events, func(i, j int) bool { a, b := events[i], events[j]; return a.pos < b.pos || a.pos == b.pos && a.delta > b.delta })
+		sort.Slice(events, func(i, j int) bool {
+			a, b := events[i], events[j]
+			return a.pos < b.pos || a.pos == b.pos && a.delta < b.delta // < 先出后进；> 先进后出
+		})
 
-		cnts := make([]int, 2*n)
-		cnt := 0
-		for i, e := range events {
-			cnt += e.delta
-			cnts[i] = cnt
+		for _, e := range events {
+			_ = e
 		}
-		return cnts
 	}
 
 	// 生成字符串 s 的长度至多为 k 的所有（非空）子串

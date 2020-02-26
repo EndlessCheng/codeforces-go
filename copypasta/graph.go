@@ -807,6 +807,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // 拓扑排序 Kahn's algorithm
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
+// LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, levels []int, isDAG bool) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)

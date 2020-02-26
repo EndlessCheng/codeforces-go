@@ -209,39 +209,50 @@ func suffixArrayCollection() {
 	// TODO: []int 的后缀数组
 }
 
-// 字典树
+// 字典树/单词查找树
 // https://oi-wiki.org/string/trie/
 // 另见 strings_index_trie.go
-// 题目推荐 https://codeforces.ml/blog/entry/55274
+// NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
+// 模板题 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
+// 后缀修饰 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+// LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
 type trieNode struct {
-	sonIDs [26]int
+	son    [26]*trieNode // 2
 	dupCnt int // 重复节点数
 	val    int // 节点附加信息（比如插入的字符串在原数组中的下标）
 	// val 也可以是个 []int 或 map，此时 dupCnt == len(val)
 }
 
+func (o *trieNode) empty() bool {
+	for _, son := range o.son {
+		if son != nil {
+			return false
+		}
+	}
+	return true
+}
+
 type trie struct {
-	nodes []*trieNode
+	root *trieNode
 }
 
 func newTrie() *trie {
 	return &trie{
-		nodes: []*trieNode{{}}, // init with a root (empty string)
+		&trieNode{}, // init with a root (empty string)
 	}
 }
 
 func (*trie) ord(c byte) byte { return c - 'a' }
 func (*trie) chr(v byte) byte { return v + 'a' }
 
-func (t *trie) add(s []byte, val int) {
-	o := t.nodes[0]
+func (t *trie) put(s []byte, val int) {
+	o := t.root
 	for _, c := range s {
 		c = t.ord(c)
-		if o.sonIDs[c] == 0 {
-			o.sonIDs[c] = len(t.nodes)
-			t.nodes = append(t.nodes, &trieNode{})
+		if o.son[c] == nil {
+			o.son[c] = &trieNode{}
 		}
-		o = t.nodes[o.sonIDs[c]]
+		o = o.son[c]
 		//o.dupCnt++ // 写在循环内部表示经过节点 o 的字符串个数
 	}
 	o.dupCnt++
@@ -253,22 +264,32 @@ func (t *trie) add(s []byte, val int) {
 
 // s 必须在 trie 中存在
 func (t *trie) del(s []byte) {
-	o := t.nodes[0]
-	for _, c := range s {
-		o = t.nodes[o.sonIDs[t.ord(c)]]
+	fa := make([]*trieNode, len(s)+1)
+	o := t.root
+	for i, c := range s {
+		fa[i] = o
+		o = o.son[t.ord(c)]
 		//o.dupCnt--
 	}
 	o.dupCnt--
+	if o.dupCnt == 0 {
+		for i := len(s) - 1; i >= 0; i-- {
+			f := fa[i]
+			f.son[t.ord(s[i])] = nil
+			if !f.empty() {
+				break
+			}
+		}
+	}
 }
 
 func (t *trie) get(s []byte) *trieNode {
-	o := t.nodes[0]
+	o := t.root
 	for _, c := range s {
-		id := o.sonIDs[t.ord(c)]
-		if id == 0 {
+		o = o.son[t.ord(c)]
+		if o == nil {
 			return nil
 		}
-		o = t.nodes[id]
 	}
 	if o.dupCnt == 0 {
 		return nil
@@ -279,21 +300,20 @@ func (t *trie) get(s []byte) *trieNode {
 // 在 trie 中寻找字典序最小的以 p 为前缀的字符串
 // 若没有，返回 nil, 0
 func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
-	o := t.nodes[0]
+	o := t.root
 	for _, c := range p {
-		id := o.sonIDs[t.ord(c)]
-		if id == 0 {
+		o = o.son[t.ord(c)]
+		if o == nil {
 			return
 		}
-		o = t.nodes[id]
 	}
 	// trie 中存在字符串 s，使得 p 是 s 的前缀
 
 	for o.dupCnt == 0 {
-		for i, id := range o.sonIDs {
-			if id > 0 {
+		for i, son := range o.son {
+			if son != nil {
 				s = append(s, t.chr(byte(i)))
-				o = t.nodes[id]
+				o = son
 				break
 			}
 		}
@@ -310,13 +330,13 @@ func (t *trie) maxXor(val int) (ans int) {
 		bits[i] = byte(val >> uint(30-i) & 1)
 	}
 
-	o := t.nodes[0]
+	o := t.root
 	for i, b := range bits {
-		if o.sonIDs[b^1] > 0 {
+		if o.son[b^1] != nil {
 			ans |= 1 << uint(30-i)
 			b ^= 1
 		}
-		o = t.nodes[o.sonIDs[b]]
+		o = o.son[b]
 	}
 	return
 }

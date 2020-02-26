@@ -13,25 +13,22 @@ https://www.bilibili.com/video/av85636122 动态规划 · 零 - Introduction
 https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
-基础 DP 题目推荐/类型总结：
-https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
-https://codeforces.com/blog/entry/70018
+套题/总结：
+线性 DP 和区间 DP https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+按照相似题目分类 https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
-https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
+状压 DP https://codeforces.com/blog/entry/45223
+CSES DP section editorial https://codeforces.com/blog/entry/70018
+LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
 
 其他资料：
-https://codeforces.com/blog/entry/45223 SOS Dynamic Programming
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
 https://oi-wiki.org/dp/
 
-线性 DP 经典题：数字三角形 https://www.luogu.com.cn/problem/P1216
-
 NOTE: 若使用滚动数组，复用时可能要初始化
 NOTE: 实际情况是使用滚动数组仅降低了内存开销，算法运行效率与不使用滚动数组时无异
-
-记忆化耗时大约是递推的 6 倍？
 */
 func dpCollections() {
 	min := func(a, b int) int {
@@ -63,6 +60,15 @@ func dpCollections() {
 		}
 		_ = f
 	}
+
+	/* 线性 DP
+	数字三角形 https://www.luogu.com.cn/problem/P1216
+	最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
+	最长上升子序列 (LIS) https://leetcode-cn.com/problems/longest-increasing-subsequence/
+	最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
+
+	两个排列的 LCS https://www.luogu.com.cn/problem/P1439
+	*/
 
 	// O(nlogn) LIS
 	// https://oi-wiki.org/dp/basic/#_12
@@ -125,6 +131,15 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
+	/* 区间 DP
+	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
+	石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+	石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
+	*/
+
+	/* 状压 DP
+	*/
+
 	// TODO: 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 
@@ -155,6 +170,9 @@ func dpCollections() {
 		f(0, -1)
 		return max(cover[0], nonCover[0])
 	}
+
+	// 插头 DP / 轮廓线动态规划
+	//《训练指南》6.1
 
 	_ = []interface{}{
 		generalDPMap,
