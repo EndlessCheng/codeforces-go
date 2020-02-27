@@ -64,7 +64,7 @@ func login(username, password string) (session *grequests.Session, err error) {
 	return
 }
 
-func fetchProblems(session *grequests.Session) (problems []*problem, err error) {
+func fetchProblemURLs(session *grequests.Session) (problems []*problem, err error) {
 	contestInfoURL := fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
 	resp, err := session.Get(contestInfoURL, nil)
 	if err != nil {
@@ -75,6 +75,12 @@ func fetchProblems(session *grequests.Session) (problems []*problem, err error) 
 	}
 
 	d := struct {
+		Contest struct {
+			ID              int    `json:"id"`
+			OriginStartTime int64  `json:"origin_start_time"`
+			StartTime       int64  `json:"start_time"`
+			Title           string `json:"title"`
+		} `json:"contest"`
 		Questions []struct {
 			TitleSlug string `json:"title_slug"`
 		} `json:"questions"`
@@ -82,6 +88,14 @@ func fetchProblems(session *grequests.Session) (problems []*problem, err error) 
 	if err = resp.JSON(&d); err != nil {
 		return
 	}
+
+	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
+		sleepTime += time.Second // 消除误差
+		fmt.Printf("%s尚未开始，等待中……\n%v\n", d.Contest.Title, sleepTime)
+		time.Sleep(sleepTime)
+		return fetchProblemURLs(session)
+	}
+
 	if len(d.Questions) == 0 {
 		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
 	}
@@ -457,12 +471,7 @@ func GenLeetCodeTests(username, password string) error {
 	}
 	fmt.Println(host, "登录成功")
 
-	if sleepTime := getSleepTime(contestID); sleepTime > 0 {
-		fmt.Println(host, "比赛尚未开始，等待中……", sleepTime)
-		time.Sleep(sleepTime + time.Second) // 多等一秒抹去误差
-	}
-
-	problems, err := fetchProblems(session)
+	problems, err := fetchProblemURLs(session)
 	if err != nil {
 		return err
 	}

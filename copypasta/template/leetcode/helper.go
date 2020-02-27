@@ -4,16 +4,8 @@ import (
 	"bytes"
 	"path/filepath"
 	"strings"
-	"time"
 	"unicode"
 )
-
-func getSleepTime(contestID int) time.Duration {
-	utc8, _ := time.LoadLocation("Asia/Shanghai")
-	timeContest170 := time.Date(2020, 1, 5, 10, 30, 0, 0, utc8) // time.Local
-	timeTarContest := timeContest170.AddDate(0, 0, 7*(contestID-170))
-	return time.Until(timeTarContest)
-}
 
 // 细分的话有四种题目类型：
 // 函数-无预定义类型，绝大多数题目都是这个类型
