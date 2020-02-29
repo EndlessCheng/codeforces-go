@@ -1,5 +1,7 @@
 package main
 
+// 注：可以用单调队列 DP 优化到 O(n)
+// https://leetcode-cn.com/circle/article/W7083y/
 func maxJumps(a []int, d int) (ans int) {
 	max := func(a, b int) int {
 		if a > b {

@@ -382,6 +382,26 @@ func (t *trie) maxXor(val int) (ans int) {
 	return
 }
 
+// 也可以用哈希表做，效率是一样的
+func findMaximumXOR(a []int) (ans int) {
+	n := len(a)
+	for i := 30; i >= 0; i-- {
+		ans <<= 1
+		prefixes := make(map[int]bool, n)
+		for _, v := range a {
+			prefixes[v>>uint(i)] = true
+		}
+		tmp := ans + 1
+		for p := range prefixes {
+			if prefixes[tmp^p] {
+				ans = tmp
+				break
+			}
+		}
+	}
+	return
+}
+
 // 可持久化 trie
 // TODO https://oi-wiki.org/ds/persistent-trie/
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
