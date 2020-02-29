@@ -321,6 +321,45 @@ func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 	return s, o
 }
 
+// rank 和 kth 分别求小于 s 的字符串个数和第 k 小
+// 此时 o.val 保存子树字符串个数
+func (t *trie) rank(s []byte) (k int) {
+	o := t.root
+	for _, c := range s {
+		c = t.ord(c)
+		for _, son := range o.son[:c] {
+			if son != nil {
+				k += son.val
+			}
+		}
+		o = o.son[c]
+		if o == nil {
+			return
+		}
+	}
+	//k += o.val // 加上这句表示小于等于 s 的字符串个数
+	return
+}
+
+func (t *trie) kth(k int) (s []byte) {
+	o := t.root
+outer:
+	for {
+		for i, son := range o.son {
+			if son != nil {
+				if k >= son.val {
+					k -= son.val
+				} else {
+					o = son
+					s = append(s, t.chr(byte(i)))
+					continue outer
+				}
+			}
+		}
+		return
+	}
+}
+
 // 01-trie：val 与树上所有数中的最大异或值
 // 也可以说这是一颗（所有叶节点深度都相同的）二叉树
 // 参考《算法竞赛进阶指南》0x16
