@@ -57,8 +57,8 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 		// remove " at leftmost and rightmost
 		v = reflect.ValueOf(rawData[1 : len(rawData)-1])
 	case reflect.Uint8: // byte
-		// rawData like "a"
-		if len(rawData) != 3 || rawData[0] != '"' || rawData[2] != '"' {
+		// rawData like "a" or 'a'
+		if len(rawData) != 3 || rawData[0] != '"' && rawData[0] != '\'' || rawData[2] != '"' && rawData[2] != '\'' {
 			return reflect.Value{}, invalidErr
 		}
 		v = reflect.ValueOf(rawData[1])
