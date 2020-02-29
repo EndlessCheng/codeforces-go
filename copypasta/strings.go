@@ -212,6 +212,8 @@ func suffixArrayCollection() {
 }
 
 // 前缀树/字典树/单词查找树
+// 另类解读：如果将字符串长度视作定值的话，trie 树是一种 O(n) 排序，O(1) 查询的数据结构
+//          这点上和哈希表很像，但是 trie 树可以在路径上保存信息，从而能做到一些哈希表做不到的前缀操作
 // https://oi-wiki.org/string/trie/
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
@@ -320,7 +322,9 @@ func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 }
 
 // 01-trie：val 与树上所有数中的最大异或值
+// 也可以说这是一颗（所有叶节点深度都相同的）二叉树
 // 参考《算法竞赛进阶指南》0x16
+// 模板题：数组中两个数的最大异或值 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 func (t *trie) maxXor(val int) (ans int) {
 	bits := [31]byte{}
