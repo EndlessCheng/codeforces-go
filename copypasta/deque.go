@@ -7,7 +7,7 @@ package copypasta
 // int 可以替换成自己想要的类型
 type deque struct{ l, r []int }
 
-func (q *deque) empty() bool { return len(q.l) == 0 && len(q.r) == 0 }
+func (q deque) empty() bool  { return len(q.l) == 0 && len(q.r) == 0 }
 func (q *deque) pushL(v int) { q.l = append(q.l, v) }
 func (q *deque) pushR(v int) { q.r = append(q.r, v) }
 func (q *deque) popL() (v int) {
@@ -27,14 +27,14 @@ func (q *deque) popR() (v int) {
 	return
 }
 
-func (q *deque) len() int { return len(q.l) + len(q.r) }
-func (q *deque) topL() int {
+func (q deque) len() int { return len(q.l) + len(q.r) }
+func (q deque) topL() int {
 	if len(q.l) > 0 {
 		return q.l[len(q.l)-1]
 	}
 	return q.r[0]
 }
-func (q *deque) topR() int {
+func (q deque) topR() int {
 	if len(q.r) > 0 {
 		return q.r[len(q.r)-1]
 	}
