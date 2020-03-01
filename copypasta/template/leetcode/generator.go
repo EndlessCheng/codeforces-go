@@ -91,6 +91,9 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	if err = resp.JSON(&d); err != nil {
 		return
 	}
+	if d.Contest.StartTime == 0 {
+		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
+	}
 
 	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
 		sleepTime += time.Second // 消除误差
