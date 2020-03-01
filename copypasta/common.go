@@ -5,6 +5,7 @@ import (
 	"io"
 	"math"
 	"math/bits"
+	"math/rand"
 	"sort"
 )
 
@@ -345,10 +346,36 @@ func commonCollection() {
 		return cnt
 	}
 
-	// 数组第 k 小
-	nthElement := func(a []int, k int) int {
-		// TODO
-		return 0
+	// 数组第 k 小 (Quick Select)
+	// 调用会改变数组中元素顺序
+	// 模板题 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+	kthElement := func(a []int, k int) int {
+		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
+		l, r := 0, len(a)-1
+		for l < r {
+			// 将数组切分成 a[l...i-1], a[i], a[i+1...r]
+			v := a[l] // 切分元素
+			i, j := l, r+1
+			for {
+				for i++; i < r && a[i] < v; i++ { // > 为第k大
+				}
+				for j--; j > l && a[j] > v; j-- { // < 为第k大
+				}
+				if i >= j {
+					break
+				}
+				a[i], a[j] = a[j], a[i]
+			}
+			a[l], a[j] = a[j], v
+			if j == k {
+				return a[k]
+			} else if j < k {
+				l = j + 1
+			} else {
+				r = j - 1
+			}
+		}
+		return a[k]
 	}
 
 	// x 是否包含 y 中的所有元素，且顺序一致
@@ -445,7 +472,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D,
-		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, discrete, indexMap, allSame, complement, nthElement, containsAll,
+		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, discrete, indexMap, allSame, complement, kthElement, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }

@@ -405,6 +405,8 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
 
+// TODO: Morris Traversal https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
+
 // TODO: link/cut tree
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
