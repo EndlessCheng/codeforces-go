@@ -24,21 +24,13 @@ func isSubPath(head *ListNode, root *TreeNode) (ans bool) {
 	}
 	n := len(a)
 
-	var f func(o *TreeNode, p int) bool
-	f = func(o *TreeNode, p int) bool {
-		if p == n {
-			return true
-		}
-		if o == nil {
-			return false
-		}
-		if o.Val == a[p] {
-			return f(o.Left, p+1) || f(o.Right, p+1)
-		}
-		if o.Val == a[0] {
-			return f(o.Left, 1) || f(o.Right, 1)
-		}
-		return f(o.Left, 0) || f(o.Right, 0)
+	var checkPath func(o *TreeNode, p int) bool
+	checkPath = func(o *TreeNode, p int) bool {
+		return p == n || o != nil && o.Val == a[p] && (checkPath(o.Left, p+1) || checkPath(o.Right, p+1))
 	}
-	return f(root, 0)
+	var f func(o *TreeNode) bool
+	f = func(o *TreeNode) bool {
+		return o != nil && (checkPath(o, 0) || f(o.Left) || f(o.Right))
+	}
+	return f(root)
 }
