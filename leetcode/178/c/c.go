@@ -17,20 +17,10 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
  *     Right *TreeNode
  * }
  */
-func isSubPath(head *ListNode, root *TreeNode) (ans bool) {
-	a := []int{}
-	for o := head; o != nil; o = o.Next {
-		a = append(a, o.Val)
-	}
-	n := len(a)
 
-	var checkPath func(o *TreeNode, p int) bool
-	checkPath = func(o *TreeNode, p int) bool {
-		return p == n || o != nil && o.Val == a[p] && (checkPath(o.Left, p+1) || checkPath(o.Right, p+1))
-	}
-	var f func(o *TreeNode) bool
-	f = func(o *TreeNode) bool {
-		return o != nil && (checkPath(o, 0) || f(o.Left) || f(o.Right))
-	}
-	return f(root)
+func same(l *ListNode, t *TreeNode) bool {
+	return l == nil || t != nil && t.Val == l.Val && (same(l.Next, t.Left) || same(l.Next, t.Right))
+}
+func isSubPath(head *ListNode, t *TreeNode) bool {
+	return t != nil && (same(head, t) || isSubPath(head, t.Left) || isSubPath(head, t.Right))
 }
