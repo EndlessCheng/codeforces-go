@@ -116,7 +116,7 @@ func (*graph) bfsWithDepth(n, st int, g [][]int, do func(v, dep int)) {
 }
 
 func (*graph) depthArray(n, st int, g [][]int) []int {
-	depths := make([]int, n)
+	dep := make([]int, n)
 	vis := make([]bool, n)
 	vis[st] = true
 	queue := []int{st}
@@ -126,12 +126,12 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 		for _, w := range g[v] {
 			if !vis[w] {
 				vis[w] = true
-				depths[w] = depths[v] + 1
+				dep[w] = dep[v] + 1
 				queue = append(queue, w)
 			}
 		}
 	}
-	return depths
+	return dep
 }
 
 // DFS 应用：标记所属连通块
