@@ -101,6 +101,13 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// 哥德巴赫猜想，偶数分解的最小素数
+	// https://oeis.org/A020481
+	// n https://oeis.org/A025018
+	// a(n) https://oeis.org/A025019
+	// 1e9 内最大的为 a(721013438) = 1789
+	// 2e9 内最大的为 a(1847133842) = 1861
+
 	// 预处理: [2,mx] 范围内数的质因子（例如 factors[12] = [2,3]）
 	// for i>=2, factors[i][0] == i means i is prime
 	primeFactorsAll := func() {
