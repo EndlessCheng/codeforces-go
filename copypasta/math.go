@@ -428,18 +428,6 @@ func numberTheoryCollection() {
 		return n / m, m - n%m, n % m
 	}
 
-	// TODO 一道神仙题 https://www.luogu.com.cn/problem/P5891
-	//  尽快录下题解！！ https://class.luogu.com.cn/classroom/lgr66
-	// 参考资料：
-	// https://oeis.org/A010062 a(0)=1; thereafter a(n+1) = a(n) + number of 1's in binary representation of a(n)
-	// https://oeis.org/A010061 numbers not of form m + sum of binary digits of m
-	// https://oeis.org/A096303 Number of iterations of n -> n + (number of 1's in binary representation of n) needed for the trajectory of n to join the trajectory of A010062
-	// https://oeis.org/A229743 Positions of records in A096303
-	// https://oeis.org/A229744 Values of records in A096303
-
-	// TODO 神仙题2 https://www.luogu.com.cn/problem/P6104
-	//  https://class.luogu.com.cn/classroom/lgr69
-
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
