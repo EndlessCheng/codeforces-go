@@ -11,6 +11,13 @@ import (
 )
 
 func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	if len(answers) < len(inputs) {
+		// 用空字符串补齐
+		for need := len(inputs) - len(answers); need > 0; need-- {
+			answers = append(answers, ``)
+		}
+	}
+
 	if !assert.Equal(t, len(inputs), len(answers), "missing inputs or answers in test cases.") {
 		return
 	}
