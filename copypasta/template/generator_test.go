@@ -6,6 +6,7 @@ import (
 
 // 生成比赛模板（需要先在 dash 中创建对应目录）
 func TestGenContestTemplates(t *testing.T) {
+	// TODO 添加闹钟：剩余 10 分钟和剩余 5 分钟时提醒
 	const contestID = "1321"
 	const overwrite = false
 	if err := GenContestTemplates(contestID, overwrite); err != nil {

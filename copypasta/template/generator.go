@@ -14,6 +14,8 @@ import (
 func GenContestTemplates(contestID string, overwrite bool) error {
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	openedOneFile := false
+
+	dirNames := []string{}
 	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -21,9 +23,10 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 		if path == rootPath || !info.IsDir() {
 			return nil
 		}
+		parentName := filepath.Base(path)
+		dirNames = append(dirNames, parentName)
 		for _, srcFileName := range [...]string{"main.go", "main_test.go"} {
 			// 为了便于区分，把 main 替换成所在目录的名字
-			parentName := filepath.Base(path)
 			dstFileName := strings.Replace(srcFileName, "main", parentName, 1)
 			dstFilePath := filepath.Join(path, dstFileName)
 			if !overwrite {
@@ -46,8 +49,11 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 
 	_, err := strconv.Atoi(contestID)
 	if isCF := err == nil; isCF {
-		tips := fmt.Sprintf("cd %[1]s\ncf submit %[1]s a a/a.go\n", contestID)
-		if err := ioutil.WriteFile(rootPath+"tips.txt", []byte(tips), 0644); err != nil {
+		tips := fmt.Sprintf("cd %s\n", contestID)
+		for _, name := range dirNames {
+			tips += fmt.Sprintf("cf submit %s %[2]s %[2]s/%[2]s.go\n", contestID, name)
+		}
+		if err := ioutil.WriteFile(rootPath+"CF_SUBMIT.txt", []byte(tips), 0644); err != nil {
 			return err
 		}
 	}
