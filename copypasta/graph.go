@@ -371,6 +371,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
+// start 也可以是一个点集，这相当于同时对多个点跑最短路
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P4779
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
