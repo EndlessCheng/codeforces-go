@@ -492,59 +492,68 @@ func rmqCollection() {
 		return b
 	}
 
+	// 预处理 log
+	logInit := func() {
+		const mx int = 1e6
+		log := make([]int, mx+1)
+		for i := 2; i <= mx; i++ {
+			log[i] = log[i>>1] + 1
+		}
+	}
+
 	// Sparse Table
 	// https://oi-wiki.org/ds/sparse-table/
-	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数，如 gcd 等
+	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
 	// 模板题 https://www.luogu.com.cn/problem/P3865
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
-	const mx = 17 // 17 for 1e5, 20 for 1e6
+	const mx = 17 // 131072, 262144, 524288, 1048576
 	var st [][mx]int
 	stInit := func(a []int) {
 		n := len(a)
 		st = make([][mx]int, n)
-		for i := range st {
-			st[i][0] = a[i]
+		for i, v := range a {
+			st[i][0] = v
 		}
 		for j := uint(1); 1<<j <= n; j++ {
-			for i := 0; i+(1<<j)-1 < n; i++ {
-				st[i][j] = max(st[i][j-1], st[i+(1<<(j-1))][j-1])
+			for i := 0; i+1<<j <= n; i++ {
+				st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
 			}
 		}
 	}
-	stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
-		k := uint(bits.Len(uint(r-l)) - 1)
-		return max(st[l][k], st[r-(1<<k)][k])
-	}
+	// [l,r) 注意 l r 是从 0 开始算的
+	stQuery := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return max(st[l][k], st[r-1<<uint(k)][k]) }
 
-	// ST 下标版本，查询返回的是区间最值的下标
-	//type pair struct{ v, i int }
-	//const mx = 17
-	//var st [][mx]pair
-	//stInit := func(a []int) {
-	//	n := len(a)
-	//	st = make([][mx]pair, n)
-	//	for i := range st {
-	//		st[i][0] = pair{a[i], i}
-	//	}
-	//	for j := uint(1); 1<<j <= n; j++ {
-	//		for i := 0; i+(1<<j)-1 < n; i++ {
-	//			st0, st1 := st[i][j-1], st[i+(1<<(j-1))][j-1]
-	//			if st0.v <= st1.v { // 最小值，相等时下标取左侧
-	//				st[i][j] = st0
-	//			} else {
-	//				st[i][j] = st1
-	//			}
-	//		}
-	//	}
-	//}
-	//stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
-	//	k := uint(bits.Len(uint(r-l)) - 1)
-	//	a, b := st[l][k], st[r-(1<<k)][k]
-	//	if a.v <= b.v { // 最小值，相等时下标取左侧
-	//		return a.i
-	//	}
-	//	return b.i
-	//}
+	// Sparse Table 下标版本，查询返回的是区间最值的下标
+	{
+		type pair struct{ v, i int }
+		const mx = 17
+		var st [][mx]pair
+		stInit := func(a []int) {
+			n := len(a)
+			st = make([][mx]pair, n)
+			for i, v := range a {
+				st[i][0] = pair{v, i}
+			}
+			for j := uint(1); 1<<j <= n; j++ {
+				for i := 0; i+1<<j <= n; i++ {
+					if a, b := st[i][j-1], st[i+1<<(j-1)][j-1]; a.v <= b.v { // 最小值，相等时下标取左侧
+						st[i][j] = a
+					} else {
+						st[i][j] = b
+					}
+				}
+			}
+		}
+		stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
+			k := bits.Len(uint(r-l)) - 1
+			a, b := st[l][k], st[r-1<<uint(k)][k]
+			if a.v <= b.v { // 最小值，相等时下标取左侧
+				return a.i
+			}
+			return b.i
+		}
+		_, _ = stInit, stQuery
+	}
 
 	// 分块 Sqrt Decomposition
 	// https://oi-wiki.org/ds/decompose/
@@ -677,6 +686,7 @@ func rmqCollection() {
 	// TODO: 树上莫队
 
 	_ = []interface{}{
+		logInit,
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
 		mo,

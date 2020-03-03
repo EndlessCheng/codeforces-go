@@ -213,6 +213,12 @@ func numberTheoryCollection() {
 		return
 	}
 
+	// TODO 高合成数/反素数 Highly Composite Numbers
+	// 一个高合成数一定是由另一个高合成数乘某个素数得到
+	// https://oeis.org/A002182
+	// https://oeis.org/A002183
+	// https://www.luogu.com.cn/problem/P1463
+
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
 	// Number of distinct primes dividing n
 	// https://oeis.org/A001221
