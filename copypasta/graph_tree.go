@@ -270,24 +270,23 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	stInit := func(a []int) {
 		n := len(a)
 		st = make([][mx]pair, n)
-		for i := range st {
-			st[i][0] = pair{a[i], i}
+		for i, v := range a {
+			st[i][0] = pair{v, i}
 		}
 		for j := uint(1); 1<<j <= n; j++ {
-			for i := 0; i+(1<<j)-1 < n; i++ {
-				st0, st1 := st[i][j-1], st[i+(1<<(j-1))][j-1]
-				if st0.v < st1.v {
-					st[i][j] = st0
+			for i := 0; i+1<<j <= n; i++ {
+				if a, b := st[i][j-1], st[i+1<<(j-1)][j-1]; a.v < b.v {
+					st[i][j] = a
 				} else {
-					st[i][j] = st1
+					st[i][j] = b
 				}
 			}
 		}
 	}
 	stInit(dep)
-	stQuery := func(l, r int) int { // [l,r] 注意 l r 是从 0 开始算的
-		k := uint(bits.Len(uint(r-l+1)) - 1)
-		a, b := st[l][k], st[r-(1<<k)+1][k]
+	stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
+		k := bits.Len(uint(r-l)) - 1
+		a, b := st[l][k], st[r-1<<uint(k)][k]
 		if a.v < b.v {
 			return a.i
 		}
@@ -299,7 +298,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 		if pv > pw {
 			pv, pw = pw, pv
 		}
-		return vs[stQuery(pv, pw)]
+		return vs[stQuery(pv, pw+1)]
 	}
 	_d := func(v, w int) int { return dis[v] + dis[w] - dis[_lca(v, w)]<<1 }
 
