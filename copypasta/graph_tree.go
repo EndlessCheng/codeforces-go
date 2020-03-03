@@ -37,31 +37,25 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 }
 
 // 树的直径
-func (*tree) diameter(n int, g [][]int) (dv, dw int) {
+func (*tree) diameter(st int, g [][]int) (dv, dw int) {
 	var u, maxD int
-	var vis []bool
-	var f func(int, int)
-	f = func(v, d int) {
-		vis[v] = true
+	var f func(v, fa, d int)
+	f = func(v, fa, d int) {
 		if d > maxD {
 			maxD = d
 			u = v
 		}
 		for _, w := range g[v] {
-			if !vis[w] {
-				f(w, d+1)
+			if w != fa {
+				f(w, v, d+1)
 			}
 		}
 	}
-
 	maxD = -1
-	vis = make([]bool, n)
-	f(0, 0)
+	f(st, -1, 0)
 	dv = u
-
 	maxD = -1
-	vis = make([]bool, n)
-	f(dv, 0)
+	f(dv, -1, 0)
 	dw = u
 	return
 }
