@@ -50,17 +50,17 @@ func (t segmentTree) _pushUp(o int) {
 	//}
 }
 
-func (t segmentTree) _build(arr []int64, o, l, r int) {
+func (t segmentTree) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r // 注意：一定要初始化 l 和 r
 	if l == r {
-		// arr starts at 0
-		t[o].val = arr[l-1]
+		// a starts at 0
+		t[o].val = a[l-1]
 		//t[o].maxPos = l - 1
 		return
 	}
 	m := (l + r) >> 1
-	t._build(arr, o<<1, l, m)
-	t._build(arr, o<<1|1, m+1, r)
+	t._build(a, o<<1, l, m)
+	t._build(a, o<<1|1, m+1, r)
 	t._pushUp(o)
 }
 
@@ -94,9 +94,9 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	return t.max(vl, vr)
 }
 
-func (t segmentTree) init(arr []int64)          { t._build(arr, 1, 1, len(arr)) } // starts at 0
-func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }        // 1<=idx<=n
-func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) }      // [l,r] 1<=l<=r<=n
+func (t segmentTree) init(a []int64)            { t._build(a, 1, 1, len(a)) } // starts at 0
+func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }    // 1<=idx<=n
+func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 
 // others
 func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
@@ -123,6 +123,7 @@ func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) }
 //
 
 // 模板题 https://www.luogu.com.cn/problem/P3372 https://www.luogu.com.cn/problem/P3373
+// 核心函数为 max: https://codeforces.ml/problemset/problem/1321/E
 type lazySTNode struct {
 	l, r int
 	sum  int64
@@ -136,16 +137,16 @@ func (t lazySegmentTree) _pushUp(o int) {
 	//t[o].sum = (lo.sum + ro.sum) % mod
 }
 
-func (t lazySegmentTree) _build(arr []int64, o, l, r int) {
+func (t lazySegmentTree) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		// arr starts at 0
-		t[o].sum = arr[l-1]
+		// a starts at 0
+		t[o].sum = a[l-1]
 		return
 	}
 	m := (l + r) >> 1
-	t._build(arr, o<<1, l, m)
-	t._build(arr, o<<1|1, m+1, r)
+	t._build(a, o<<1, l, m)
+	t._build(a, o<<1|1, m+1, r)
 	t._pushUp(o)
 }
 
@@ -200,9 +201,9 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-func (t lazySegmentTree) init(arr []int64)           { t._build(arr, 1, 1, len(arr)) } // starts at 0
-func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }       // [l,r] 1<=l<=r<=n
-func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) }      // [l,r] 1<=l<=r<=n
+func (t lazySegmentTree) init(a []int64)             { t._build(a, 1, 1, len(a)) } // starts at 0
+func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }   // [l,r] 1<=l<=r<=n
+func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 
 //
 

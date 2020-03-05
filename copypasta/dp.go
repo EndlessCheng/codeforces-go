@@ -9,6 +9,7 @@ import "sort"
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
 https://www.bilibili.com/video/av77393700 LCS LIS
 https://www.bilibili.com/video/av83939419 区间 DP
+https://www.bilibili.com/video/av93356551 状态压缩 DP
 https://www.bilibili.com/video/av85636122 动态规划 · 零 - Introduction
 https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
