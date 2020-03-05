@@ -9,20 +9,20 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 
-type pair struct{ val, cost int }
-type node struct{ l, r, max, todo int }
-type seg []node
+type pair1321 struct{ val, cost int }
+type node1321 struct{ l, r, max, todo int }
+type seg1321 []node1321
 
-func (seg) max(a, b int) int {
+func (seg1321) max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
 
-func (t seg) _pushUp(o int) { t[o].max = t.max(t[o<<1].max, t[o<<1|1].max) }
+func (t seg1321) _pushUp(o int) { t[o].max = t.max(t[o<<1].max, t[o<<1|1].max) }
 
-func (t seg) _build(a []pair, o, l, r int) {
+func (t seg1321) _build(a []pair1321, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].max = -a[l-1].cost
@@ -34,7 +34,7 @@ func (t seg) _build(a []pair, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t seg) _spread(o int) {
+func (t seg1321) _spread(o int) {
 	if add := t[o].todo; add != 0 {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.max += add
@@ -45,7 +45,7 @@ func (t seg) _spread(o int) {
 	}
 }
 
-func (t seg) _update(o, l, r, add int) {
+func (t seg1321) _update(o, l, r, add int) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].max += add
@@ -63,9 +63,9 @@ func (t seg) _update(o, l, r, add int) {
 	t._pushUp(o)
 }
 
-func (t seg) init(a []pair)        { t._build(a, 1, 1, len(a)) }
-func (t seg) update(l, r, val int) { t._update(1, l, r, val) }
-func (t seg) maxAll() int          { return t[1].max }
+func (t seg1321) init(a []pair1321)    { t._build(a, 1, 1, len(a)) }
+func (t seg1321) update(l, r, val int) { t._update(1, l, r, val) }
+func (t seg1321) maxAll() int          { return t[1].max }
 
 func CF1321E(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
@@ -79,17 +79,17 @@ func CF1321E(_r io.Reader, _w io.Writer) {
 	}
 
 	n, m, p := read(), read(), read()
-	a := make([]pair, n)
+	a := make([]pair1321, n)
 	for i := range a {
-		a[i] = pair{read(), read()}
+		a[i] = pair1321{read(), read()}
 	}
 	sort.Slice(a, func(i, j int) bool { return a[i].val < a[j].val })
-	b := make([]pair, m)
+	b := make([]pair1321, m)
 	for i := range b {
-		b[i] = pair{read(), read()}
+		b[i] = pair1321{read(), read()}
 	}
 	sort.Slice(b, func(i, j int) bool { return b[i].val < b[j].val })
-	t := make(seg, 4*m)
+	t := make(seg1321, 4*m)
 	t.init(b)
 	type monster struct{ x, y, coins int }
 	monsters := make([]monster, p)
