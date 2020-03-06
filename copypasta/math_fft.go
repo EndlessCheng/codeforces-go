@@ -9,6 +9,7 @@ import (
 // https://zhuanlan.zhihu.com/p/31584464
 // https://oi-wiki.org/math/poly/fft/
 // https://cp-algorithms.com/algebra/fft.html
+// https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
 
 // TODO: 求逆 求开方 ... https://cp-algorithms.com/algebra/polynomial.html
 

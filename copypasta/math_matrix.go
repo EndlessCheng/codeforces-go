@@ -120,7 +120,7 @@ func (a matrix) trace() (sum int64) {
 
 // NxN 矩阵求逆
 // 模板题 https://www.luogu.com.cn/problem/P4783
-func (matrix) inv(in io.Reader, out io.Writer, n int) matrix {
+func (matrix) inv(in io.Reader, n int) matrix {
 	const mod int64 = 1e9 + 7
 	modInv := func(x int64) int64 {
 		x %= mod
@@ -137,11 +137,11 @@ func (matrix) inv(in io.Reader, out io.Writer, n int) matrix {
 	m := 2 * n
 	f := make(matrix, n)
 	for i := range f {
-		f[i] = make([]int64, 2*n)
+		f[i] = make([]int64, m)
 		for j := range f {
 			Fscan(in, &f[i][j])
 		}
-		f[i][i+n] = 1 // 单位矩阵
+		f[i][n+i] = 1 // 单位矩阵
 	}
 
 	for i := range f {
@@ -172,10 +172,10 @@ func (matrix) inv(in io.Reader, out io.Writer, n int) matrix {
 		}
 	}
 
-	// 结果保存在右侧
+	// 结果保存在 f 右侧
 	ans := make(matrix, n)
-	for i, fi := range f {
-		ans[i] = fi[n:]
+	for i, row := range f {
+		ans[i] = row[n:]
 	}
 	return ans
 }
