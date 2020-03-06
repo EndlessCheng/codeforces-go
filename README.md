@@ -36,6 +36,10 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 [Wolfram|Alpha](https://www.wolframalpha.com/)
 
+[Draw Geometry](https://csacademy.com/app/geometry_widget/)
+
+[Draw Graph](https://csacademy.com/app/graph_editor/)
+
 [Exercises!](https://musclewiki.org/)
 
 > 1. Don't go to the editorial after some fixed time like 20 minutes of solving a problem. Give up only if you are stuck for 10-30 minutes (10 in case of easy problems, more for harder ones). As long as you have some ideas, do investigate them and maybe you'll solve the problem yourself.
