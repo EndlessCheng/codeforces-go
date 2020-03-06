@@ -14,6 +14,29 @@ NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的�
 // namespace
 type tree struct{}
 
+// 树上两点路径
+func (*tree) path(st, end int, g [][]int) (path []int) {
+	var f func(v, fa int) bool
+	f = func(v, fa int) bool {
+		if v == st {
+			path = append(path, v)
+			return true
+		}
+		for _, w := range g[v] {
+			if w != fa {
+				if f(w, v) {
+					path = append(path, v)
+					return true
+				}
+			}
+		}
+		return false
+	}
+	// 反向寻找
+	f(end, -1)
+	return
+}
+
 // 树上每个子树的信息：子树大小，DFS 序
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
 // o.dfn 从 1 开始
