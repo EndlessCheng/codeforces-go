@@ -8,7 +8,7 @@ import (
 )
 
 /*
-NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的交集，处理一些树上异或的问题可以往这个方向思考
+NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
 */
 
 // namespace
@@ -37,6 +37,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 }
 
 // 树的直径
+// 直径的中点到所有叶子的距离和最小
 func (*tree) diameter(st int, g [][]int) (dv, dw int) {
 	var u, maxD int
 	var f func(v, fa, d int)
@@ -61,9 +62,45 @@ func (*tree) diameter(st int, g [][]int) (dv, dw int) {
 }
 
 // 树的重心
+// 以重心为根时，最大子树结点数最少
+// 性质：
+// - 一棵树最多有两个重心，且相邻
+// - 树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
+// - 把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
+// - 在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
-// 应用：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
+func (*tree) findCentroid(n int, g [][]int) (ans int) {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	minMaxSubSize := int(1e9)
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		size := 1
+		maxSubSize := 0
+		for _, w := range g[v] {
+			if w != fa {
+				sz := f(w, v)
+				size += sz
+				maxSubSize = max(maxSubSize, sz)
+			}
+		}
+		maxSubSize = max(maxSubSize, n-size) // 向上的子树大小
+		if maxSubSize < minMaxSubSize {
+			minMaxSubSize = maxSubSize
+			ans = v
+		}
+		return size
+	}
+	return
+}
+
+// 点分治
+// 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
 // TODO: 需要重新整理
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
@@ -236,7 +273,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 
 // 最近公共祖先 - 其二 - 基于 RMQ
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
-// 优点是查询的复杂度低，适用于查询量大或者查询时有额外的 log 操作的情形
+// 优点是查询的复杂度低，适用于查询量大的情形
 // https://oi-wiki.org/graph/lca/#rmq
 func (*tree) lcaRMQ(n, root int, g [][]int) {
 	vs := make([]int, 0, 2*n-1)  // 欧拉序列
@@ -398,7 +435,8 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
 
-// TODO: Morris Traversal https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
+// TODO: Morris Traversal
+// https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
 
 // TODO: link/cut tree
 // https://en.wikipedia.org/wiki/Link/cut_tree
