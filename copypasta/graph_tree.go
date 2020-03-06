@@ -37,9 +37,8 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 	return
 }
 
-// 树上每个子树的信息：子树大小，DFS 序
+// 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
-// o.dfn 从 1 开始
 func (*tree) subtreeSize(n, root int, g [][]int) {
 	type node struct{ size, dfn int }
 	nodes := make([]node, n)
@@ -411,7 +410,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	decomposition(root, -1, root)
 
 	t := make(lazySegmentTree, 4*n)
-	// 按照 DFS 序初始化线段树
+	// 按照 DFS 序对应的点权初始化线段树
 	dfnVals := make([]int64, n)
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn-1] = v
