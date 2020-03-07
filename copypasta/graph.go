@@ -427,6 +427,14 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64,
 		path = append(path, v)
 	}
 
+	// EXTRA: dist 也可以理解成「时刻」
+	// 这种情况下，dist[v] 表示从 start 出发到 v 的耗时
+
+	// EXTRA: 对于相邻的两点，记边为 e，若有：
+	// abs(dist[v], dist[w]) == e.weight => e 在最短路上（不带绝对值的话就有先后关系）
+	// abs(dist[v], dist[w])  < e.weight => e 不在最短路上（可以想象成一条鼓起的线）
+	// 这里的最短路可以有多条
+
 	return
 }
 

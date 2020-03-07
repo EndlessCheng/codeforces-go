@@ -101,7 +101,8 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 哥德巴赫猜想，偶数分解的最小素数
+	// 哥德巴赫猜想 - 偶数分解的最小素数
+	// 由素数分布可知选到一对素数的概率是 O(1/ln^2(n))
 	// https://oeis.org/A020481
 	// n https://oeis.org/A025018
 	// a(n) https://oeis.org/A025019
