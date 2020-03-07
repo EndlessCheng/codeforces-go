@@ -28,13 +28,7 @@ func maxs(vals []float64) float64 {
 	return ans
 }
 
-func DrawChart(x, y []float64, showLine bool) error {
-	now := time.Now().Format("20060102150405.000")
-	f, err := os.Create(fmt.Sprintf("image.%s.png", now))
-	if err != nil {
-		return err
-	}
-
+func drawChart(x, y []float64, showLine bool) *chart.Chart {
 	xSet := map[float64]struct{}{}
 	for _, v := range x {
 		xSet[v] = struct{}{}
@@ -94,7 +88,7 @@ func DrawChart(x, y []float64, showLine bool) error {
 		}
 	}
 
-	graph := chart.Chart{
+	c := chart.Chart{
 		Width:  graphWidth,
 		Height: graphHeight,
 		XAxis: chart.XAxis{
@@ -109,13 +103,24 @@ func DrawChart(x, y []float64, showLine bool) error {
 			chart.AnnotationSeries{Annotations: yAnno},
 		},
 	}
+	return &c
+}
 
-	if err := graph.Render(chart.PNG, f); err != nil {
-		return err
+func DrawChart(x, y []float64, showLine bool) (err error) {
+	now := time.Now().Format("20060102150405.000")
+	f, err := os.Create(fmt.Sprintf("image.%s.png", now))
+	if err != nil {
+		return
+	}
+
+	c := drawChart(x, y, showLine)
+	if err = c.Render(chart.PNG, f); err != nil {
+		return
 	}
 	f.Close()
+
 	open.Run(f.Name())
-	return nil
+	return
 }
 
 func genRange(st, end int) (res []float64) {
