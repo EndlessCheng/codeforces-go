@@ -207,6 +207,10 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 
 //
 
+// todo 权值线段树
+
+//
+
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/
 // 模板题 https://www.luogu.com.cn/problem/P3834

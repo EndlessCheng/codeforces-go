@@ -12,7 +12,8 @@ import (
 // namespace
 type graph struct{}
 
-// deg[v] == len(g[v])
+// len(g[v]) 表示结点 v 在无向图上的度/有向图上的出度
+// 对于树来说叶结点有 len(g[v]) == 1
 func (*graph) readGraph(in io.Reader, n, m int) [][]int {
 	g := make([][]int, n)
 	for i := 0; i < m; i++ {
