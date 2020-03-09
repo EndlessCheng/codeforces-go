@@ -162,6 +162,17 @@ func commonCollection() {
 		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
 	}
 
+	// 启发式合并：map 版
+	mergeMap := func(a, b map[int]int) map[int]int {
+		if len(a) < len(b) {
+			a, b = b, a
+		}
+		for k, v := range b {
+			a[k] += v
+		}
+		return a
+	}
+
 	//
 
 	copyMat := func(mat [][]int) [][]int {
@@ -471,7 +482,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
-		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D,
+		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, discrete, indexMap, allSame, complement, kthElement, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
