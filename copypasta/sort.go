@@ -47,19 +47,16 @@ func sortCollections() {
 	// 如果 f 有副作用，需要在 Search 后调用下 f(ans)
 	// 也可以理解成 return false 就是抬高下限，反之减小上限
 
-	// 经常遇到需要从 1 开始二分的情况……
 	searchRange := func(l, r int, f func(int) bool) int {
-		// Define f(l-1) == false and f(r) == true.
-		i, j := l, r
-		for i < j {
-			h := (i + j) >> 1
-			if f(h) {
-				j = h
+		for l < r {
+			m := (l + r) >> 1
+			if f(m) {
+				r = m
 			} else {
-				i = h + 1
+				l = m + 1
 			}
 		}
-		return i
+		return l
 	}
 	// ……当然，这种情况也可以这样写
 	//sort.Search(r, func(x int) bool {
