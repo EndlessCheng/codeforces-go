@@ -194,3 +194,6 @@ func multiUnionFind(n, m int) {
 
 	_ = []interface{}{merge, same}
 }
+
+// 可持久化并查集
+// todo

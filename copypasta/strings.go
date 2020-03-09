@@ -24,7 +24,8 @@ func stringCollection() {
 	// https://oi-wiki.org/string/hash/
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
-	// TODO: 二维 hash
+	// TODO 二维 hash
+	// TODO 建议随机 hash 防 hack
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
