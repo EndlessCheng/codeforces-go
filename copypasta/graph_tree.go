@@ -263,10 +263,10 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	dfs(root, -1, 0)
 	for k := 0; k+1 < mx; k++ {
 		for v := range pa {
-			if p := pa[v][k]; p == -1 {
-				pa[v][k+1] = -1
-			} else {
+			if p := pa[v][k]; p != -1 {
 				pa[v][k+1] = pa[p][k]
+			} else {
+				pa[v][k+1] = -1
 			}
 		}
 	}
