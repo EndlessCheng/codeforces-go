@@ -15,6 +15,22 @@ NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的�
 // namespace
 type tree struct{}
 
+// 节点深度
+func (*tree) depth(n, root int, g [][]int) []int {
+	dep := make([]int, n)
+	var f func(v, fa, d int)
+	f = func(v, fa, d int) {
+		dep[v] = d
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v, d+1)
+			}
+		}
+	}
+	f(0, -1, 0)
+	return dep
+}
+
 // 树上两点路径
 func (*tree) path(st, end int, g [][]int) (path []int) {
 	var f func(v, fa int) bool
@@ -291,7 +307,20 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
-	_ = _d
+	// EXTRA: 其他树上二分
+	var dist []int // 预处理略
+	// 二分搜索 dist(x,v) <= d 的离根最近的 x
+	search := func(v int, d int) int {
+		dv := dist[v]
+		for i := mx - 1; i >= 0; i-- {
+			if p := pa[v][i]; p != -1 && dv-dist[p] <= d {
+				v = p
+			}
+		}
+		return v
+	}
+
+	_ = []interface{}{_d, search}
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
