@@ -25,11 +25,11 @@ func CF740D(_r io.Reader, _w io.Writer) {
 	for i := range a {
 		a[i] = int64(read())
 	}
-	type pair struct{ to, l int }
-	g := make([][]pair, n)
+	type edge struct{ to, l int }
+	g := make([][]edge, n)
 	for w := 1; w < n; w++ {
 		v := read() - 1
-		g[v] = append(g[v], pair{w, read()})
+		g[v] = append(g[v], edge{w, read()})
 	}
 
 	const mx = 19
