@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+// TODO https://www.luogu.com.cn/blog/qiyue7ACM/solution-cf739b
+
 // github.com/EndlessCheng/codeforces-go
 func CF740D(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
@@ -19,33 +21,22 @@ func CF740D(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
+	type edge struct{ to, l int }
 
 	n := read()
 	a := make([]int64, n)
 	for i := range a {
 		a[i] = int64(read())
 	}
-	type edge struct{ to, l int }
+	const mx = 19
+	pa := make([][mx]int, n)
+	pa[0][0] = -1
 	g := make([][]edge, n)
 	for w := 1; w < n; w++ {
 		v := read() - 1
 		g[v] = append(g[v], edge{w, read()})
+		pa[w][0] = v
 	}
-
-	const mx = 19
-	pa := make([][mx]int, n)
-	dep := make([]int64, n)
-	var f func(int, int64)
-	f = func(v int, d int64) {
-		dep[v] = d
-		for _, e := range g[v] {
-			w := e.to
-			pa[w][0] = v
-			f(w, d+int64(e.l))
-		}
-	}
-	pa[0][0] = -1
-	f(0, 0)
 	for k := 0; k+1 < mx; k++ {
 		for v := range pa {
 			if p := pa[v][k]; p != -1 {
@@ -56,25 +47,27 @@ func CF740D(_r io.Reader, _w io.Writer) {
 		}
 	}
 
+	dep := make([]int64, n)
+	var f func(int, int64)
+	f = func(v int, d int64) {
+		dep[v] = d
+		for _, e := range g[v] {
+			f(e.to, d+int64(e.l))
+		}
+	}
+	f(0, 0)
+
 	diff := make([]int, n)
 	for v, val := range a {
-		down := v
-	outer:
-		for {
-			dv := dep[v]
-			for i, p := range pa[v] {
-				if p == -1 || dv-dep[p] > val {
-					if i == 0 {
-						break outer
-					}
-					break
-				}
-				v = p
+		u := v
+		dv := dep[v]
+		for i := mx - 1; i >= 0; i-- {
+			if p := pa[u][i]; p != -1 && dv-dep[p] <= val {
+				u = p
 			}
-			val -= dv - dep[v]
 		}
-		diff[v]--
-		diff[down]++
+		diff[v]++
+		diff[u]--
 	}
 
 	ans := make([]interface{}, n)
