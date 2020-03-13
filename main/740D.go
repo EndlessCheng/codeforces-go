@@ -59,14 +59,13 @@ func CF740D(_r io.Reader, _w io.Writer) {
 	diff := make([]int, n)
 	for v, val := range a {
 		down := v
-	o:
+	outer:
 		for {
-			ps := pa[v]
 			dv := dep[v]
-			for i, p := range ps {
+			for i, p := range pa[v] {
 				if p == -1 || dv-dep[p] > val {
 					if i == 0 {
-						break o
+						break outer
 					}
 					break
 				}
