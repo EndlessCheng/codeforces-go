@@ -359,6 +359,36 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	_ = _d
 }
 
+// LCA 应用：树上差分
+// 操作为更新 v-w 路径上的点权或边权（初始为 0）
+// 点权时 diff[lca] -= val
+// 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
+func (*tree) differenceOnTree(n, root int, g [][]int) {
+	diff := make([]int, n)
+	update := func(v, w int, val int) {
+		var lca int // = _lca(v, w)
+		diff[v] += val
+		diff[w] += val
+		diff[lca] -= val
+	}
+
+	// 自底向上求出每个点的点权
+	ans := make([]int, n)
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		sum := diff[v]
+		for _, w := range g[v] {
+			if w != fa {
+				sum += f(w, v)
+			}
+		}
+		ans[v] = sum
+		return sum
+	}
+
+	_ = update
+}
+
 // 树链剖分（重链剖分）
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
