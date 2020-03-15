@@ -25,8 +25,7 @@ func maxPerformance(n int, speed []int, efficiency []int, k int) (ans int) {
 	h := &hp{}
 	for _, p := range ps {
 		if len(h.IntSlice) >= k {
-			v := heap.Pop(h).(int)
-			sumSpd -= v
+			sumSpd -= heap.Pop(h).(int)
 		}
 		heap.Push(h, p.spd)
 		sumSpd += p.spd
