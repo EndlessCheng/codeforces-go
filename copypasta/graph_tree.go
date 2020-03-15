@@ -15,6 +15,22 @@ NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的�
 // namespace
 type tree struct{}
 
+// 节点深度
+func (*tree) depth(n, root int, g [][]int) []int {
+	dep := make([]int, n)
+	var f func(v, fa, d int)
+	f = func(v, fa, d int) {
+		dep[v] = d
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v, d+1)
+			}
+		}
+	}
+	f(0, -1, 0)
+	return dep
+}
+
 // 树上两点路径
 func (*tree) path(st, end int, g [][]int) (path []int) {
 	var f func(v, fa int) bool
@@ -291,7 +307,20 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
-	_ = _d
+	// EXTRA: 其他树上二分
+	var dist []int // 预处理略
+	// 二分搜索 dist(x,v) <= d 的离根最近的 x
+	search := func(v int, d int) int {
+		dv := dist[v]
+		for i := mx - 1; i >= 0; i-- {
+			if p := pa[v][i]; p != -1 && dv-dist[p] <= d {
+				v = p
+			}
+		}
+		return v
+	}
+
+	_ = []interface{}{_d, search}
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
@@ -357,6 +386,36 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	_d := func(v, w int) int { return dis[v] + dis[w] - dis[_lca(v, w)]<<1 }
 
 	_ = _d
+}
+
+// LCA 应用：树上差分
+// 操作为更新 v-w 路径上的点权或边权（初始为 0）
+// 点权时 diff[lca] -= val
+// 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
+func (*tree) differenceOnTree(n, root int, g [][]int) {
+	diff := make([]int, n)
+	update := func(v, w int, val int) {
+		var lca int // = _lca(v, w)
+		diff[v] += val
+		diff[w] += val
+		diff[lca] -= val
+	}
+
+	// 自底向上求出每个点的点权
+	ans := make([]int, n)
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		sum := diff[v]
+		for _, w := range g[v] {
+			if w != fa {
+				sum += f(w, v)
+			}
+		}
+		ans[v] = sum
+		return sum
+	}
+
+	_ = update
 }
 
 // 树链剖分（重链剖分）
