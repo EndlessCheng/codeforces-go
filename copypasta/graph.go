@@ -98,6 +98,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 }
 
+// 应用：求包含某一点的最小环（边权为1）
 func (*graph) bfsWithDepth(n, st int, g [][]int, do func(v, dep int)) {
 	vis := make([]bool, n)
 	vis[st] = true
