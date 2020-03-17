@@ -96,69 +96,114 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 			}
 		}
 	}
-}
 
-// 应用：求包含某一点的最小环（边权为1）
-func (*graph) bfsWithDepth(n, st int, g [][]int, do func(v, dep int)) {
-	vis := make([]bool, n)
-	vis[st] = true
-	type pair struct{ v, dep int }
-	queue := []pair{{st, 0}}
-	for len(queue) > 0 {
-		var p pair
-		p, queue = queue[0], queue[1:]
-		do(p.v, p.dep)
-		for _, w := range g[p.v] {
-			if !vis[w] {
-				vis[w] = true
-				queue = append(queue, pair{w, p.dep + 1})
+	{
+		// BFS with rollback
+		vis = make([]bool, n)
+		vis[st] = true
+		vs := []int{st}
+		type pair struct{ v, fa int }
+		q := []pair{{st, -1}}
+		for len(q) > 0 {
+			var p pair
+			p, q = q[0], q[1:]
+			v, fa := p.v, p.fa
+			for _, w := range g[v] {
+				if !vis[w] {
+					vis[w] = true
+					q = append(q, pair{w, v})
+					vs = append(vs, w)
+				} else if w != fa {
+					// ... (兼容自环和重边)
+				}
 			}
+		}
+		for _, v := range vs {
+			vis[v] = false
 		}
 	}
 }
 
 func (*graph) depthArray(n, st int, g [][]int) []int {
 	dep := make([]int, n)
-	vis := make([]bool, n)
-	vis[st] = true
-	queue := []int{st}
-	for len(queue) > 0 {
+	for i := range dep {
+		dep[i] = -1
+	}
+	dep[st] = 0
+	q := []int{st}
+	for len(q) > 0 {
 		var v int
-		v, queue = queue[0], queue[1:]
+		v, q = q[0], q[1:]
+		// do(v, dep[v])
 		for _, w := range g[v] {
-			if !vis[w] {
-				vis[w] = true
+			if dep[w] == -1 {
 				dep[w] = dep[v] + 1
-				queue = append(queue, w)
+				q = append(q, w)
 			}
 		}
 	}
 	return dep
 }
 
+// BFS 应用：求无向图最小环长度（边权均为 1）
+func (*graph) shortestCycleBFS(n int, g [][]int) int {
+	const inf int = 1e9
+	ans := inf
+	dist := make([]int, n)
+	for i := range dist {
+		dist[i] = -1
+	}
+	type pair struct{ v, fa int }
+	var p pair
+	for st := range g {
+		vs := []int{st}
+		dist[st] = 0
+		q := []pair{{st, -1}}
+		for len(q) > 0 {
+			p, q = q[0], q[1:]
+			v, fa := p.v, p.fa
+			for _, w := range g[v] {
+				if dist[w] == -1 {
+					dist[w] = dist[v] + 1
+					q = append(q, pair{w, v})
+					vs = append(vs, w)
+				} else if w != fa {
+					if l := dist[w] + dist[v] + 1; l < ans {
+						ans = l
+					}
+				}
+			}
+		}
+		for _, v := range vs {
+			dist[v] = -1
+		}
+	}
+	return ans
+}
+
 // DFS 应用：标记所属连通块
 func (*graph) markComponentIDs(n int, g [][]int) []int {
-	id := make([]int, n)
-	for i := range id {
-		id[i] = -1
+	ids := make([]int, n)
+	for i := range ids {
+		ids[i] = -1
 	}
 	idCnt := 0
 	var f func(int)
 	f = func(v int) {
-		id[v] = idCnt
+		ids[v] = idCnt
 		for _, w := range g[v] {
-			if id[w] == 0 {
+			if ids[w] == 0 {
 				f(w)
 			}
 		}
 	}
-	for i, idi := range id {
-		if idi == 0 {
+	for i, id := range ids {
+		if id == 0 {
 			f(i)
 			idCnt++
 		}
 	}
-	return id
+	return ids
 }
 
 // DFS 应用：求出所有连通块
@@ -377,7 +422,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P4779
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64, parents []int) {
+func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, parents []int) {
 	type neighbor struct {
 		to     int
 		weight int64
@@ -398,14 +443,14 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, start int) (dist []int64,
 	for i := range dist {
 		dist[i] = inf
 	}
-	dist[start] = 0
+	dist[st] = 0
 	parents = make([]int, n)
 	for i := range parents {
 		parents[i] = -1
 	}
 
 	h := &pairHeap{}
-	Push(h, hPair{0, start})
+	Push(h, hPair{0, st})
 	for h.Len() > 0 {
 		p := Pop(h).(hPair)
 		d, v := p.x, p.y
@@ -486,7 +531,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
 // 模板题（负环）：https://www.luogu.com.cn/problem/P3385
-func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int64) {
+func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int
 		weight int64
@@ -507,15 +552,15 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int
 	for i := range dist {
 		dist[i] = inf
 	}
-	dist[start] = 0
+	dist[st] = 0
 	onQ := make([]bool, n)
-	onQ[start] = true
+	onQ[st] = true
 	relaxedCnt := make([]int, n)
 
-	queue := []int{start}
-	for len(queue) > 0 {
+	q := []int{st}
+	for len(q) > 0 {
 		var v int
-		v, queue = queue[0], queue[1:]
+		v, q = q[0], q[1:]
 		onQ[v] = false
 		for _, e := range g[v] {
 			w := e.to
@@ -528,7 +573,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, start int) (dist []int
 				}
 				// there is no reason to put a vertex in the queue if it is already in.
 				if !onQ[w] {
-					queue = append(queue, w)
+					q = append(q, w)
 					onQ[w] = true
 				}
 			}
