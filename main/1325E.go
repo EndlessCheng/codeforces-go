@@ -8,8 +8,6 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1325E(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
-
 	const mx, inf int = 1e6, 1e9
 	lpf := [mx + 1]int{1: 1}
 	for i := 2; i <= mx; i++ {
@@ -24,6 +22,7 @@ func CF1325E(_r io.Reader, _w io.Writer) {
 
 	g := make([][]int, mx)
 	var n, v int
+	in := bufio.NewReader(_r)
 	for Fscan(in, &n); n > 0; n-- {
 		Fscan(in, &v)
 		ps := make([]int, 0, 2)
@@ -60,6 +59,7 @@ func CF1325E(_r io.Reader, _w io.Writer) {
 		vs := []int{st}
 		dist[st] = 0
 		q := []pair{{st, -1}}
+	o:
 		for len(q) > 0 {
 			p, q = q[0], q[1:]
 			v, fa := p.v, p.fa
@@ -72,6 +72,7 @@ func CF1325E(_r io.Reader, _w io.Writer) {
 					if l := dist[w] + dist[v] + 1; l < ans {
 						ans = l
 					}
+					break o
 				}
 			}
 		}
