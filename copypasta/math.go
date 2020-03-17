@@ -129,8 +129,7 @@ func numberTheoryCollection() {
 	// https://oeis.org/A020639
 	lpfAll := func() {
 		const mx int = 1e6
-		lpf := [mx + 1]int{}
-		lpf[1] = 1
+		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
 			if lpf[i] == 0 {
 				for j := i; j <= mx; j += i {
@@ -154,6 +153,13 @@ func numberTheoryCollection() {
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
 	// https://oeis.org/A006530
 	// 可以预处理出 LPF 然后再试除
+
+	// Squarefree semiprimes: Numbers that are the product of two distinct primes
+	// https://oeis.org/A006881
+
+	// Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
+	// Also called core(n)
+	// https://oeis.org/A007913
 
 	// 枚举一个数的全部约数
 	divisors := func(n int64) (res []int64) {
@@ -402,6 +408,7 @@ func numberTheoryCollection() {
 	// https://www.luogu.com.cn/problemnew/solution/P4777
 
 	// TODO: 组合数 mod p
+	// todo ? i∈[1,p-1], C(p, i) % p == 0
 
 	//
 
@@ -449,6 +456,7 @@ func numberTheoryCollection() {
 // 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 // 可重集排列
 // 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
+// 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 func miscCollection() {
 	// n married couples are seated in a row so that every wife is to the left of her husband
 	// 若不考虑顺序，则所有排列的个数为 (2n)!

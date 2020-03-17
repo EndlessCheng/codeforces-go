@@ -104,6 +104,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		vs := []int{st}
 		type pair struct{ v, fa int }
 		q := []pair{{st, -1}}
+	outer:
 		for len(q) > 0 {
 			var p pair
 			p, q = q[0], q[1:]
@@ -115,6 +116,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 					vs = append(vs, w)
 				} else if w != fa {
 					// ... (兼容自环和重边)
+					break outer // 提前退出的情况
 				}
 			}
 		}
@@ -159,6 +161,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 		vs := []int{st}
 		dist[st] = 0
 		q := []pair{{st, -1}}
+	outer:
 		for len(q) > 0 {
 			p, q = q[0], q[1:]
 			v, fa := p.v, p.fa
@@ -171,6 +174,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 					if l := dist[w] + dist[v] + 1; l < ans {
 						ans = l
 					}
+					break outer
 				}
 			}
 		}
