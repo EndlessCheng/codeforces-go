@@ -192,7 +192,7 @@ func commonCollection() {
 
 	hash01Mat := func(mat [][]int) int {
 		hash := 0
-		cnt := uint(0)
+		cnt := 0
 		for _, row := range mat {
 			for _, mij := range row {
 				hash |= mij << cnt
@@ -530,14 +530,14 @@ func rmqCollection() {
 		for i, v := range a {
 			st[i][0] = v
 		}
-		for j := uint(1); 1<<j <= n; j++ {
+		for j := 1; 1<<j <= n; j++ {
 			for i := 0; i+1<<j <= n; i++ {
 				st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
 			}
 		}
 	}
 	// [l,r) 注意 l r 是从 0 开始算的
-	stQuery := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return max(st[l][k], st[r-1<<uint(k)][k]) }
+	stQuery := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return max(st[l][k], st[r-1<<k][k]) }
 
 	// Sparse Table 下标版本，查询返回的是区间最值的下标
 	{
@@ -550,7 +550,7 @@ func rmqCollection() {
 			for i, v := range a {
 				st[i][0] = pair{v, i}
 			}
-			for j := uint(1); 1<<j <= n; j++ {
+			for j := 1; 1<<j <= n; j++ {
 				for i := 0; i+1<<j <= n; i++ {
 					if a, b := st[i][j-1], st[i+1<<(j-1)][j-1]; a.v <= b.v { // 最小值，相等时下标取左侧
 						st[i][j] = a
@@ -562,7 +562,7 @@ func rmqCollection() {
 		}
 		stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
 			k := bits.Len(uint(r-l)) - 1
-			a, b := st[l][k], st[r-1<<uint(k)][k]
+			a, b := st[l][k], st[r-1<<k][k]
 			if a.v <= b.v { // 最小值，相等时下标取左侧
 				return a.i
 			}
@@ -850,11 +850,11 @@ func loopCollection() {
 
 	// 枚举 {0,1,...,n-1} 的全部子集
 	loopSet := func(arr []int) {
-		n := uint(len(arr))
+		n := len(arr)
 		//outer:
 		for sub := 0; sub < 1<<n; sub++ { // sub repr a subset which elements are in range [0,n)
 			// do(sub)
-			for i := uint(0); i < n; i++ {
+			for i := 0; i < n; i++ {
 				if sub>>i&1 == 1 { // choose i in sub
 					_ = arr[i]
 					// do(arr[i]) or continue outer
@@ -876,8 +876,8 @@ func loopCollection() {
 	// 枚举 {0,1,...,n-1} 的大小为 k 的子集（按字典序）
 	// 参考《挑战程序设计竞赛》P.156-158
 	loopSubsetK := func(arr []int, k int) {
-		n := uint(len(arr))
-		for sub := 1<<uint(k) - 1; sub < 1<<n; {
+		n := len(arr)
+		for sub := 1<<k - 1; sub < 1<<n; {
 			// do(sub)
 			x := sub & -sub
 			y := sub + x

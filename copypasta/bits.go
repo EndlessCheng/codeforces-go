@@ -33,7 +33,7 @@ func bitsCollection() {
 	bits31 := func(n int) []byte {
 		bits := make([]byte, 31)
 		for i := range bits {
-			bits[i] = byte(n >> uint(30-i) & 1)
+			bits[i] = byte(n >> (30 - i) & 1)
 		}
 		return bits
 	}

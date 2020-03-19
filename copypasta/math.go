@@ -495,10 +495,10 @@ func miscCollection() {
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
 	solveInclusionExclusion := func(arr []int) (ans int) {
-		n := uint(len(arr))
+		n := len(arr)
 		for sub := uint(0); sub < 1<<n; sub++ {
 			res := 0
-			for i := uint(0); i < n; i++ {
+			for i := 0; i < n; i++ {
 				if sub>>i&1 == 1 {
 					_ = arr[i]
 				}
@@ -688,12 +688,12 @@ func numericalAnalysisCollection() {
 //		part1[len(part0)-i-1] = v
 //	}
 //	for i, v := range part1 {
-//		part1[i] = v | 1<<uint(length-1)
+//		part1[i] = v | 1<<(length-1)
 //	}
 //	return append(part0, part1...)
 //}
 func grayCode(length int) []int {
-	ans := make([]int, 1<<uint(length))
+	ans := make([]int, 1<<length)
 	for i := range ans {
 		ans[i] = i ^ i>>1
 	}

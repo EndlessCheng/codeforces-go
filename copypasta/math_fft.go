@@ -71,7 +71,7 @@ func (f *fft) idft(a []complex128) {
 // 模板题 https://www.luogu.com.cn/problem/P3803
 func convolution(a, b []int64) []int64 {
 	n, m := len(a), len(b)
-	limit := 1 << uint(bits.Len(uint(n+m-1)))
+	limit := 1 << bits.Len(uint(n+m-1))
 	f := newFFT(limit)
 	cmplxA := make([]complex128, limit)
 	for i, v := range a {

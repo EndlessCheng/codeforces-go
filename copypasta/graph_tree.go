@@ -292,7 +292,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
-		for k := uint(0); k < mx; k++ {
+		for k := 0; k < mx; k++ {
 			if (dep[w]-dep[v])>>k&1 == 1 {
 				w = pa[w][k]
 			}
@@ -358,7 +358,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 		for i, v := range a {
 			st[i][0] = pair{v, i}
 		}
-		for j := uint(1); 1<<j <= n; j++ {
+		for j := 1; 1<<j <= n; j++ {
 			for i := 0; i+1<<j <= n; i++ {
 				if a, b := st[i][j-1], st[i+1<<(j-1)][j-1]; a.v < b.v {
 					st[i][j] = a
@@ -371,7 +371,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	stInit(dep)
 	stQuery := func(l, r int) int { // [l,r) 注意 l r 是从 0 开始算的
 		k := bits.Len(uint(r-l)) - 1
-		a, b := st[l][k], st[r-1<<uint(k)][k]
+		a, b := st[l][k], st[r-1<<k][k]
 		if a.v < b.v {
 			return a.i
 		}

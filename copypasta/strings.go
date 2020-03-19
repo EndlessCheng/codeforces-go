@@ -369,13 +369,13 @@ outer:
 func (t *trie) maxXor(val int) (ans int) {
 	bits := [31]byte{}
 	for i := range bits {
-		bits[i] = byte(val >> uint(30-i) & 1)
+		bits[i] = byte(val >> (30 - i) & 1)
 	}
 
 	o := t.root
 	for i, b := range bits {
 		if o.son[b^1] != nil {
-			ans |= 1 << uint(30-i)
+			ans |= 1 << (30 - i)
 			b ^= 1
 		}
 		o = o.son[b]
@@ -390,7 +390,7 @@ func findMaximumXOR(a []int) (ans int) {
 		ans <<= 1
 		prefixes := make(map[int]bool, n)
 		for _, v := range a {
-			prefixes[v>>uint(i)] = true
+			prefixes[v>>i] = true
 		}
 		tmp := ans + 1
 		for p := range prefixes {
