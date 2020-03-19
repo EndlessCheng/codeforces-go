@@ -144,11 +144,11 @@ func numberTheoryCollection() {
 		var v int
 		for v > 1 {
 			p := lpf[v]
-			c := 1
+			e := 1
 			for v /= p; lpf[v] == p; v /= p {
-				c++
+				e++
 			}
-			// do(p,c)
+			// do(p,e)
 		}
 	}
 
