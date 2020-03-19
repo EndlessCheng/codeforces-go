@@ -127,6 +127,10 @@ func numberTheoryCollection() {
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
 	// https://oeis.org/A020639
+	//
+	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
+	// https://oeis.org/A006530
+	// 可以预处理出 LPF 然后再试除
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
@@ -152,10 +156,14 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
-	// https://oeis.org/A006530
-	// 可以预处理出 LPF 然后再试除
+	// Squarefree numbers: numbers that are not divisible by a square greater than 1
+	// Lim_{n->infinity} a(n)/n = Pi^2/6
+	// https://oeis.org/A005117 介绍了一种筛法
+	// Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
+	// https://oeis.org/A013929
 
+	// Semiprimes (or biprimes): products of two primes
+	// https://oeis.org/A001358
 	// Squarefree semiprimes: Numbers that are the product of two distinct primes
 	// https://oeis.org/A006881
 
