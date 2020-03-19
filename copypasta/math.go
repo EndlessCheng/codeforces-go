@@ -109,7 +109,7 @@ func numberTheoryCollection() {
 	// 1e9 内最大的为 a(721013438) = 1789
 	// 2e9 内最大的为 a(1847133842) = 1861
 
-	// 预处理: [2,mx] 范围内数的质因子（例如 factors[12] = [2,3]）
+	// 预处理: [2,mx] 范围内数的不同质因子（例如 factors[12] = [2,3]）
 	// for i>=2, factors[i][0] == i means i is prime
 	primeFactorsAll := func() {
 		const mx int = 1e6
@@ -160,6 +160,9 @@ func numberTheoryCollection() {
 	// Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
 	// Also called core(n)
 	// https://oeis.org/A007913
+
+	// Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
+	// https://oeis.org/A007947
 
 	// 枚举一个数的全部约数
 	divisors := func(n int64) (res []int64) {
@@ -239,11 +242,23 @@ func numberTheoryCollection() {
 				}
 			}
 		}
+
+		// EXTRA: 前缀和，即 omega(n!)
+		// https://oeis.org/A013939
+		for i := 3; i <= mx; i++ {
+			cnts[i] += cnts[i-1]
+		}
 	}
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n)
 	// Number of prime divisors of n counted with multiplicity
 	// https://oeis.org/A001222
+	//
+	// Omega(n) - omega(n)
+	// https://oeis.org/A046660
+	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
+	// So a(24) = a(375) since 24 = 2^3 * 3 and 375 = 3 * 5^3 both have prime signature (3, 1)
+	// a(n) = 0 for squarefree n
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
 		cnts := make([]int, mx+1)
@@ -262,10 +277,11 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: 前缀和
-		//for i := 3; i <= mx; i++ {
-		//	cnt[i] += cnt[i-1]
-		//}
+		// EXTRA: 前缀和，即 Omega(n!)
+		// https://oeis.org/A022559
+		for i := 3; i <= mx; i++ {
+			cnts[i] += cnts[i-1]
+		}
 	}
 	//primeExponentsCount := func(n int) (count []int) {
 	//	count = make([]int, n+1)
@@ -312,7 +328,7 @@ func numberTheoryCollection() {
 
 	// 预处理 [2,mx] 的欧拉函数（互素的数的个数）Euler totient function
 	// https://oeis.org/A000010
-	// NOTE: phi 的递归调用（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
+	// NOTE: phi 的迭代（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
 	phiAll := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{}

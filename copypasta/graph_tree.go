@@ -259,6 +259,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 
 // 最近公共祖先 - 其一 - 基于倍增和二分搜索
 // 适用于查询量和节点数等同的情形
+// NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
 // TODO 模板题 https://www.luogu.com.cn/problem/P3379
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
