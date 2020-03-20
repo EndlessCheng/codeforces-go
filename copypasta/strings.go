@@ -158,14 +158,14 @@ func stringCollection() {
 		}
 		return ans - 1
 	}
-	// 判断源串中的某一子串 [l...r] 是否为回文串
-	manacherQuery := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
+	// 判断源串中的某一子串 [l...r] 是否为回文串，0<=l<=r<n
+	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
 	_ = []interface{}{
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		smallestRepresentation,
-		manacher, manacherQuery,
+		manacher, isP,
 	}
 }
 
