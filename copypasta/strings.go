@@ -141,7 +141,7 @@ func stringCollection() {
 			if i < right {
 				// 取 min 的原因：记点 i 关于 mid 的对称点为 i'，
 				// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
-				// (此时有 i + len[(mid<<1)-i] >= right，注意 len 是包括中心的半长度)
+				// (此时有 i + len[2*mid-i] >= right，注意 len 是包括中心的半长度)
 				// 则 len[i] 应取 right - i (总不能超过边界吧)
 				maxLen[i] = min(maxLen[2*mid-i], right-i)
 			} else {
