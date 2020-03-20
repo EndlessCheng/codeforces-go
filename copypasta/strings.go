@@ -151,7 +151,7 @@ func stringCollection() {
 				maxLen[i]++
 			}
 			mx := maxLen[i]
-			if mx > ans {
+			if ans < mx {
 				ans = mx
 			}
 			if right < i+mx {
