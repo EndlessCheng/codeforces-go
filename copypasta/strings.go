@@ -8,12 +8,6 @@ import (
 )
 
 func stringCollection() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
 	max := func(a, b int) int {
 		if a >= b {
 			return a
@@ -126,6 +120,12 @@ func stringCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	var maxLen []int
 	manacher := func(origin []byte) int {
+		min := func(a, b int) int {
+			if a < b {
+				return a
+			}
+			return b
+		}
 		n := len(origin)
 		s := make([]byte, 2*n+3)
 		s[0] = '^'
@@ -139,26 +139,29 @@ func stringCollection() {
 		var ans, mid, right int
 		for i := 1; i < 2*n+2; i++ {
 			if i < right {
+				// 取 min 的原因：记点 i 关于 mid 的对称点为 i'，
+				// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
+				// (此时有 i + len[(mid<<1)-i] >= right，注意 len 是包括中心的半长度)
+				// 则 len[i] 应取 right - i (总不能超过边界吧)
 				maxLen[i] = min(maxLen[2*mid-i], right-i)
 			} else {
 				maxLen[i] = 1
 			}
-			// 取 min 的原因：记点 i 关于 mid 的对称点为 i'，
-			// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
-			// (此时有 i + len[(mid<<1)-i] >= right，注意 len 是包括中心的半长度)
-			// 则 len[i] 应取 right - i (总不能超过边界吧)
 			for s[i+maxLen[i]] == s[i-maxLen[i]] {
 				maxLen[i]++
 			}
-			ans = max(ans, maxLen[i])
-			if right < i+maxLen[i] {
+			mx := maxLen[i]
+			if mx > ans {
+				ans = mx
+			}
+			if right < i+mx {
 				mid = i
-				right = i + maxLen[i]
+				right = i + mx
 			}
 		}
 		return ans - 1
 	}
-	// 判断源串中的某一子串 [l...r] 是否为回文串，0<=l<=r<n
+	// 判断 origin[l:r+1] 是否为回文串，0<=l<=r<n
 	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
 	_ = []interface{}{
