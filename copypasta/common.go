@@ -23,7 +23,7 @@ import (
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
 // 注意：若不止两个数相加，要特别注意 inf 的选择
-// 一个 Golang 的注意事项：for-range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 a[i] 获取
+// 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 
 func commonCollection() {
 	// HELPER
