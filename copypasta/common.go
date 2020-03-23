@@ -411,6 +411,15 @@ func commonCollection() {
 		return a[k]
 	}
 
+	contains := func(a []int, x int) bool {
+		for _, v := range a {
+			if v == x {
+				return true
+			}
+		}
+		return false
+	}
+
 	// x 是否包含 y 中的所有元素，且顺序一致
 	containsAll := func(x, y []int) bool {
 		for len(y) < len(x) {
@@ -505,7 +514,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, containsAll,
+		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }
