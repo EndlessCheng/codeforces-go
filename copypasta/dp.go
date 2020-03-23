@@ -88,7 +88,7 @@ func dpCollections() {
 
 	// 无限物品：恰好装满背包至少需要多少个物品
 	// 无法装满返回 -1
-	coinChange := func(coins []int, amount int) int {
+	minCoinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
 		dp := make([]int, amount+1)
 		for i := range dp {
@@ -133,6 +133,9 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
+	// 完全背包
+	// 多重背包
+
 	/* 区间 DP
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
@@ -140,6 +143,12 @@ func dpCollections() {
 	*/
 
 	/* 状压 DP
+	*/
+
+	/* 数位 DP
+	*/
+
+	/* 计数 DP
 	*/
 
 	// TODO: 单调队列/单调栈优化
@@ -178,7 +187,7 @@ func dpCollections() {
 
 	_ = []interface{}{
 		generalDPMap,
-		lis, coinChange,
+		lis, minCoinChange,
 		knapsack01,
 		maxMatchingOnTree,
 	}
