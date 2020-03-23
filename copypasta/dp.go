@@ -5,11 +5,12 @@ import "sort"
 /*
 参考书籍推荐：《算法竞赛进阶指南》
 
-基础 DP 视频讲解：
+DP 视频讲解：
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
 https://www.bilibili.com/video/av77393700 LCS LIS
 https://www.bilibili.com/video/av83939419 区间 DP
 https://www.bilibili.com/video/av93356551 状态压缩 DP
+https://www.bilibili.com/video/av98090640 树形 DP
 https://www.bilibili.com/video/av85636122 动态规划 · 零 - Introduction
 https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
@@ -29,7 +30,7 @@ https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%9
 https://oi-wiki.org/dp/
 
 NOTE: 若使用滚动数组，复用时可能要初始化
-NOTE: 实际情况是使用滚动数组仅降低了内存开销，算法运行效率与不使用滚动数组时无异
+NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
 */
 func dpCollections() {
 	min := func(a, b int) int {
