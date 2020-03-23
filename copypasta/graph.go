@@ -784,12 +784,13 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 // https://oi-wiki.org/graph/bi-graph/#_9
 // https://zhuanlan.zhihu.com/p/62981901
 // 模板题 https://www.luogu.com.cn/problem/P3386
-// 最小路径覆盖：
+// 有向图最小路径覆盖：
 //   起初把每个点都视作一条路径，这样共有 n 条不相交路径
 //   拆点图：每个点拆成出点和入点，原图的 v->w 相当于拆点图的 出点v->入点w，这说明拆点图一定是二分图
 //   在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
 //   所以找到了多少匹配边，路径数就减少了多少
 //   所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
+// todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
