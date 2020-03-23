@@ -268,6 +268,21 @@ func commonCollection() {
 		return
 	}
 
+	uniqueInPlace := func(a []int) []int {
+		n := len(a)
+		if n == 0 {
+			return nil
+		}
+		j := 0
+		for i := 1; i < n; i++ {
+			if a[j] != a[i] {
+				j++
+				a[j] = a[i]
+			}
+		}
+		return a[:j+1]
+	}
+
 	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 相当于转换成第几小
 	discrete := func(arr []int, start int) (kthArr []int) {
@@ -490,7 +505,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
 		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, discrete, indexMap, allSame, complement, kthElement, containsAll,
+		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
 }
