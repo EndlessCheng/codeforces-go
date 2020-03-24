@@ -43,35 +43,35 @@ func stringCollection() {
 	calcMaxMatchLengths := func(s string) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)
-		maxLength := 0
+		cnt := 0
 		for i := 1; i < n; i++ {
-			c := s[i]
-			for maxLength > 0 && s[maxLength] != c {
-				maxLength = maxMatchLengths[maxLength-1]
+			b := s[i]
+			for cnt > 0 && s[cnt] != b {
+				cnt = maxMatchLengths[cnt-1]
 			}
-			if s[maxLength] == c {
-				maxLength++
+			if s[cnt] == b {
+				cnt++
 			}
-			maxMatchLengths[i] = maxLength
+			maxMatchLengths[i] = cnt
 		}
 		return maxMatchLengths
 	}
 	// search pattern from text, return all start positions
-	kmpSearch := func(text, pattern string) (positions []int) {
+	kmpSearch := func(text, pattern string) (pos []int) {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
-		count := 0
+		cnt := 0
 		for i := range text {
-			c := text[i]
-			for count > 0 && pattern[count] != c {
-				count = maxMatchLengths[count-1]
+			b := text[i]
+			for cnt > 0 && pattern[cnt] != b {
+				cnt = maxMatchLengths[cnt-1]
 			}
-			if pattern[count] == c {
-				count++
+			if pattern[cnt] == b {
+				cnt++
 			}
-			if count == lenP {
-				positions = append(positions, i-lenP+1)
-				count = maxMatchLengths[count-1]
+			if cnt == lenP {
+				pos = append(pos, i-lenP+1)
+				cnt = maxMatchLengths[cnt-1]
 			}
 		}
 		return
