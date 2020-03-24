@@ -226,10 +226,13 @@ func suffixArrayCollection() {
 // 回文对（配合 Manacher 可以做到线性复杂度） https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
 type trieNode struct {
-	son    [26]*trieNode // 2
+	son    [26]*trieNode
 	dupCnt int
-	val    int
-	// val 也可以是个 string、[]int 或 map，此时 dupCnt == len(val)
+	val    int    // val 也可以是个 []int，此时 dupCnt == len(val)
+	str    string // o.str != "" 表示走到了某个字符串的结尾
+
+	// 当 o.son[i] 不能匹配 text 中的某个字符时，o.fail 即为下一个应该查找的结点
+	fail *trieNode
 }
 
 func (o *trieNode) empty() bool {
@@ -264,6 +267,7 @@ func (t *trie) put(s []byte, val int) {
 	}
 	o.dupCnt++
 	o.val = val
+	o.str = string(s)
 }
 
 func (t *trie) get(s []byte) *trieNode {
@@ -406,14 +410,67 @@ func findMaximumXOR(a []int) (ans int) {
 	return
 }
 
+// EXTRA: Aho–Corasick algorithm
+// https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
+// 推荐 https://zhuanlan.zhihu.com/p/80325757
+// 推荐 https://www.cnblogs.com/nullzx/p/7499397.html
+// TODO https://oi-wiki.org/string/ac-automaton/
+// TODO https://cp-algorithms.com/string/aho_corasick.html
+// 模板题 https://leetcode-cn.com/problems/stream-of-characters/
+func (t *trie) buildDFA() {
+	q := []*trieNode{}
+	for _, son := range t.root.son {
+		if son != nil {
+			q = append(q, son)
+			son.fail = t.root
+		}
+	}
+	for len(q) > 0 {
+		var o *trieNode
+		o, q = q[0], q[1:]
+		for i, son := range o.son {
+			if son != nil {
+				q = append(q, son)
+				// 不断往上查找直到找到一个前缀。未找到时指向根节点
+				for f := o.fail; ; f = f.fail {
+					if f == nil {
+						son.fail = t.root
+						break
+					}
+					if fs := f.son[i]; fs != nil {
+						son.fail = fs
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
+// 在 text 中找出所有模式串的所有位置
+func (t *trie) acSearch(text string) map[string][]int {
+	posMp := map[string][]int{}
+	o := t.root
+	for i := range text {
+		c := t.ord(text[i])
+		for ; o != t.root && o.son[c] == nil; o = o.fail {
+		}
+		o = o.son[c]
+		if o == nil {
+			o = t.root
+		}
+		for f := o; f != t.root; f = f.fail {
+			if s := f.str; s != "" {
+				posMp[s] = append(posMp[s], i-len(s)+1)
+			}
+		}
+	}
+	return posMp
+}
+
 // 可持久化 trie
 // TODO https://oi-wiki.org/ds/persistent-trie/
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
-
-// Aho–Corasick algorithm
-// https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
-// TODO https://oi-wiki.org/string/ac-automaton/
-// TODO https://cp-algorithms.com/string/aho_corasick.html
 
 // Suffix automaton
 // https://en.wikipedia.org/wiki/Suffix_automaton
