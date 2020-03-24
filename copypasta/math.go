@@ -109,7 +109,18 @@ func numberTheoryCollection() {
 	// 1e9 内最大的为 a(721013438) = 1789
 	// 2e9 内最大的为 a(1847133842) = 1861
 
-	// 预处理: [2,mx] 范围内数的不同质因子（例如 factors[12] = [2,3]）
+	// 预处理: [1,mx] 范围内数的所有因子
+	factorsAll := func() {
+		const mx int = 1e5
+		factors := [mx + 1][]int{}
+		for i := 1; i <= mx; i++ {
+			for j := i; j <= mx; j += i {
+				factors[j] = append(factors[j], i)
+			}
+		}
+	}
+
+	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
 	// for i>=2, factors[i][0] == i means i is prime
 	primeFactorsAll := func() {
 		const mx int = 1e6
@@ -470,7 +481,7 @@ func numberTheoryCollection() {
 
 	_ = []interface{}{
 		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
+		isPrime, sieve, factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
 		modInv, modFrac, solveLinearCongruence, quickMul,
 		consecutiveNumbersSum,
 		partition,
