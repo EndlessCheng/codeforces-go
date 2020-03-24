@@ -417,6 +417,7 @@ func findMaximumXOR(a []int) (ans int) {
 // TODO https://oi-wiki.org/string/ac-automaton/
 // TODO https://cp-algorithms.com/string/aho_corasick.html
 // 模板题 https://leetcode-cn.com/problems/stream-of-characters/
+// 模板题 https://www.luogu.com.cn/problem/P3796
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
 	for _, son := range t.root.son {
