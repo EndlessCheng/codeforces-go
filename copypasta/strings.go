@@ -413,7 +413,7 @@ func findMaximumXOR(a []int) (ans int) {
 // 推荐 https://zhuanlan.zhihu.com/p/80325757
 // 推荐 https://www.cnblogs.com/nullzx/p/7499397.html
 // https://oi-wiki.org/string/ac-automaton/
-// https://cp-algorithms.com/string/aho_corasick.html
+// EXTRA: https://cp-algorithms.com/string/aho_corasick.html
 // 模板题 https://leetcode-cn.com/problems/stream-of-characters/
 // 模板题 https://www.luogu.com.cn/problem/P3808 https://www.luogu.com.cn/problem/P3796
 // https://codeforces.com/problemset/problem/963/D
@@ -431,7 +431,7 @@ func (t *trie) buildDFA() {
 		for i, son := range o.son {
 			if son != nil {
 				q = append(q, son)
-				// 不断往上查找直到找到一个前缀。未找到时指向根节点
+				// 沿着失配边不断往上查找，直到找到一个匹配的前缀。未找到时指向根节点
 				for f := o.fail; ; f = f.fail {
 					if f == nil {
 						son.fail = t.root
