@@ -412,10 +412,11 @@ func findMaximumXOR(a []int) (ans int) {
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
 // 推荐 https://zhuanlan.zhihu.com/p/80325757
 // 推荐 https://www.cnblogs.com/nullzx/p/7499397.html
-// TODO https://oi-wiki.org/string/ac-automaton/
-// TODO https://cp-algorithms.com/string/aho_corasick.html
+// https://oi-wiki.org/string/ac-automaton/
+// https://cp-algorithms.com/string/aho_corasick.html
 // 模板题 https://leetcode-cn.com/problems/stream-of-characters/
-// 模板题 https://www.luogu.com.cn/problem/P3796
+// 模板题 https://www.luogu.com.cn/problem/P3808 https://www.luogu.com.cn/problem/P3796
+// https://codeforces.com/problemset/problem/963/D
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
 	for _, son := range t.root.son {
@@ -448,6 +449,7 @@ func (t *trie) buildDFA() {
 
 // 返回 text 中所有模式串的所有位置（未找到时对应数组为空）
 // patterns 为模式串数组（无重复元素），为方便起见，数组从 1 开始
+// TODO 后缀链接优化：只算出现次数可以做到 O(len(text))
 func (t *trie) acSearch(text string, patterns []string) [][]int {
 	pos := make([][]int, len(patterns))
 	o := t.root
@@ -472,7 +474,11 @@ func (t *trie) acSearch(text string, patterns []string) [][]int {
 // TODO https://oi-wiki.org/ds/persistent-trie/
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
 
-// Suffix automaton
+// Suffix automaton (SAM)
 // https://en.wikipedia.org/wiki/Suffix_automaton
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
+//《后缀自动机》，陈立杰
+//《后缀自动机在字典树上的拓展》，刘研绎
+//《后缀自动机及其应用》，张天扬
+// 模板题 https://www.luogu.com.cn/problem/P3804
