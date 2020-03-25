@@ -28,6 +28,7 @@ LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
 https://oi-wiki.org/dp/
+https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 
 NOTE: 若使用滚动数组，复用时可能要初始化
 NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异

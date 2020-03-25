@@ -33,6 +33,7 @@ det (determinant，行列式，叉积的模，有向面积):
 + b在a左侧
 - b在a右侧
 0 ab平行或重合（共基线）
+关于有向面积 https://cp-algorithms.com/geometry/oriented-triangle-area.html
 
 1° = (π/180)rad
 1rad = (180/π)°
@@ -341,6 +342,7 @@ func vec2Collection() {
 	}
 
 	// 多边形面积
+	// https://cp-algorithms.com/geometry/area-of-simple-polygon.html
 	polygonArea := func(ps []vec) float64 {
 		n := len(ps)
 		area := 0.0
@@ -425,6 +427,9 @@ func vec2Collection() {
 		}
 		return
 	}
+
+	// Check if point belongs to the convex polygon in O(logN)
+	// todo https://cp-algorithms.com/geometry/point-in-convex-polygon.html
 
 	// 判断 ∠abc 是否为直角
 	// 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）

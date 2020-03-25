@@ -12,15 +12,6 @@ import (
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
-	// 阶乘
-	factorial := func(n int) int64 {
-		x := int64(1)
-		for i := int64(2); i <= int64(n); i++ {
-			x = x * i % mod
-		}
-		return x
-	}
-
 	calcGCD := func(a, b int) int {
 		for a != 0 {
 			a, b = b%a, a
@@ -331,6 +322,9 @@ func numberTheoryCollection() {
 	//	return
 	//}
 
+	// EXTRA: Finding Power of Factorial Divisor
+	// todo https://cp-algorithms.com/algebra/factorial-divisors.html
+
 	// n 的欧拉函数（互素的数的个数）Euler totient function
 	calcPhi := func(n int) int {
 		ans := n
@@ -444,6 +438,40 @@ func numberTheoryCollection() {
 	// TODO: 扩展中国剩余定理 (EXCRT)
 	// https://www.luogu.com.cn/problemnew/solution/P4777
 
+	// 阶乘
+	factorial := func(n int) int64 {
+		res := int64(1) % mod
+		for i := int64(2); i <= int64(n); i++ {
+			res = res * i % mod
+		}
+		return res
+	}
+
+	// 阶乘模质数（模数较小）
+	// https://cp-algorithms.com/algebra/factorial-modulo.html
+	factorialMod := func(n, p int) int {
+		res := 1
+		for ; n > 1; n /= p {
+			if n/p&1 == 1 {
+				res = res * (p - 1) % p
+			}
+			for i := 2; i <= n%p; i++ {
+				res = res * i % p
+			}
+		}
+		return res
+	}
+
+	// 组合数；二项式系数
+	// TODO 组合数模任意数 https://cp-algorithms.com/combinatorics/binomial-coefficients.html
+	cnk := func(n, k int) int {
+		res := 1
+		for i := 1; i <= k; i++ {
+			res = res * (n - k + i) / i
+		}
+		return res
+	}
+
 	// TODO: 组合数 mod p
 	// todo ? i∈[1,p-1], C(p, i) % p == 0
 
@@ -480,9 +508,12 @@ func numberTheoryCollection() {
 	}
 
 	_ = []interface{}{
-		factorial, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll, calcPhi, phiAll,
+		calcGCDN, calcLCM, cntRangeGCD,
+		isPrime, sieve,
+		factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll,
+		calcPhi, phiAll,
 		modInv, modFrac, solveLinearCongruence, quickMul,
+		factorial, factorialMod, cnk,
 		consecutiveNumbersSum,
 		partition,
 	}
