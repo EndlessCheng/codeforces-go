@@ -229,7 +229,6 @@ type trieNode struct {
 	son    [26]*trieNode
 	dupCnt int
 	val    int    // val 也可以是个 []int，此时 dupCnt == len(val)
-	str    string // o.str != "" 表示走到了某个字符串的结尾
 
 	// 当 o.son[i] 不能匹配 text 中的某个字符时，o.fail 即为下一个应该查找的结点
 	fail *trieNode
@@ -267,7 +266,6 @@ func (t *trie) put(s []byte, val int) {
 	}
 	o.dupCnt++
 	o.val = val
-	o.str = string(s)
 }
 
 func (t *trie) get(s []byte) *trieNode {
@@ -448,9 +446,10 @@ func (t *trie) buildDFA() {
 	}
 }
 
-// 在 text 中找出所有模式串的所有位置
-func (t *trie) acSearch(text string) map[string][]int {
-	posMp := map[string][]int{}
+// 返回 text 中所有模式串的所有位置（未找到时对应数组为空）
+// patterns 为模式串数组（无重复元素），为方便起见，数组从 1 开始
+func (t *trie) acSearch(text string, patterns []string) [][]int {
+	pos := make([][]int, len(patterns))
 	o := t.root
 	for i := range text {
 		c := t.ord(text[i])
@@ -461,12 +460,12 @@ func (t *trie) acSearch(text string) map[string][]int {
 			o = t.root
 		}
 		for f := o; f != t.root; f = f.fail {
-			if s := f.str; s != "" {
-				posMp[s] = append(posMp[s], i-len(s)+1)
+			if pid := f.val; pid != 0 {
+				pos[pid] = append(pos[pid], i-len(patterns[pid])+1)
 			}
 		}
 	}
-	return posMp
+	return pos
 }
 
 // 可持久化 trie
