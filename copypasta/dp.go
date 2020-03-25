@@ -161,6 +161,9 @@ func dpCollections() {
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
 
+	// todo 公司聚会/树上最大独立集
+	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
+
 	// 树上最大匹配
 	// https://codeforces.com/blog/entry/2059
 	// g[v] = ∑{max(f[son],g[son])}

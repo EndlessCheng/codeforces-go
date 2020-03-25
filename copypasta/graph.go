@@ -8,6 +8,7 @@ import (
 )
 
 // Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
+// NOTE: 独立集相关问题，可以从染色的角度考虑
 
 // namespace
 type graph struct{}
@@ -270,7 +271,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 					isCut[v] = true
 				}
 				lowV = min(lowV, lowW)
-			} else if w != fa && dfn[w] < dfn[v] { // 找到反向边，用来更新 lowV
+			} else if w != fa && dfn[w] < dfn[v] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
 		}
@@ -314,16 +315,14 @@ func (*graph) findBridges(n, m int, g [][]int) {
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
-		childCnt := 0
 		for _, w := range g[v] {
 			if dfn[w] == 0 {
-				childCnt++
 				lowW := f(w, v)
-				if lowW > dfn[v] { // w 子树的反向边只能连回其自身，所以 v-w 必定是桥
+				if lowW > dfn[v] { // 以 w 为根的子树的反向边只能连回子树内，所以 v-w 必定是桥
 					bridges = append(bridges, bridge{v, w})
 				}
 				lowV = min(lowV, lowW)
-			} else if w != fa && dfn[w] < dfn[v] { // 找到反向边，用来更新 lowV
+			} else if w != fa && dfn[w] < dfn[v] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
 		}
@@ -335,7 +334,7 @@ func (*graph) findBridges(n, m int, g [][]int) {
 			f(v, -1)
 		}
 	}
-	// bridges...
+	// do(bridges) ...
 }
 
 // 无向图的双连通分量 biconnected components
