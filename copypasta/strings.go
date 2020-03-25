@@ -161,7 +161,7 @@ func stringCollection() {
 		}
 		return ans - 1
 	}
-	// 判断 origin[l:r+1] 是否为回文串，0<=l<=r<n
+	// 判断 [l,r] 是否为回文串，范围 0<=l<=r<n
 	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
 	_ = []interface{}{
