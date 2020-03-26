@@ -12,27 +12,27 @@ import (
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
-	calcGCD := func(a, b int) int {
+	calcGCD := func(a, b int64) int64 {
 		for a != 0 {
 			a, b = b%a, a
 		}
 		return b
 	}
-	calcGCDN := func(nums ...int) (gcd int) {
+	calcGCDN := func(nums ...int64) (gcd int64) {
 		gcd = nums[0]
 		for _, v := range nums[1:] {
 			gcd = calcGCD(gcd, v)
 		}
 		return
 	}
-	calcLCM := func(a, b int) int { return a / calcGCD(a, b) * b }
+	calcLCM := func(a, b int64) int64 { return a / calcGCD(a, b) * b }
 
 	// 给定数组，统计所有区间的 GCD 值
 	// 返回 map[GCD值]等于该值的区间个数
-	cntRangeGCD := func(arr []int) map[int]int64 {
+	cntRangeGCD := func(arr []int64) map[int64]int64 {
 		n := len(arr)
-		cntMp := map[int]int64{}
-		gcd := make([]int, n)
+		cntMp := map[int64]int64{}
+		gcd := make([]int64, n)
 		copy(gcd, arr)
 		lPos := make([]int, n)
 		for i, v := range arr {
@@ -381,27 +381,26 @@ func numberTheoryCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P3811
 	modInverse := func(a, m int) int { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
+	pow := func(x, n, p int64) int64 {
+		x %= p
+		res := int64(1)
+		for ; n > 0; n >>= 1 {
+			if n&1 == 1 {
+				res = res * x % p
+			}
+			x = x * x % p
+		}
+		return res
+	}
+
 	// 费马小定理
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
-	modInv := func(a, p int64) int64 {
-		pow := func(x, n, p int64) int64 {
-			x %= p
-			res := int64(1)
-			for ; n > 0; n >>= 1 {
-				if n&1 == 1 {
-					res = res * x % p
-				}
-				x = x * x % p
-			}
-			return res
-		}
-		return pow(a, p-2, p)
-	}
+	inv := func(a, p int64) int64 { return pow(a, p-2, p) }
 
-	// 计算 a/b (mod m)
+	// 计算 a/b (mod p)
 	// 模板题 https://www.luogu.com.cn/problem/P2613
-	modFrac := func(a, b, m int) int { return a * modInverse(b, m) % m }
+	div := func(a, b, p int64) int64 { return a * inv(b, p) % p }
 
 	// 线性同余方程组
 	// ai * x ≡ bi (mod mi)
@@ -409,15 +408,15 @@ func numberTheoryCollection() {
 	// 有解时返回 (b, m)，无解时返回 (0, -1)
 	// 推导过程见《挑战程序设计竞赛》P292
 	// 注意乘法溢出的可能
-	solveLinearCongruence := func(A, B, M []int) (int, int) {
-		x, m := 0, 1
+	solveLinearCongruence := func(A, B, M []int64) (int64, int64) {
+		x, m := int64(0), int64(1)
 		for i, mi := range M {
 			a, b := A[i]*m, B[i]-A[i]*x
 			d := calcGCD(a, mi)
 			if b%d != 0 {
 				return 0, -1
 			}
-			t := modFrac(b/d, a/d, mi/d)
+			t := div(b/d, a/d, mi/d)
 			x += m * t
 			m *= mi / d
 		}
@@ -435,20 +434,29 @@ func numberTheoryCollection() {
 		return
 	}
 
+	muls := func(nums ...int64) int64 {
+		res := nums[0]
+		for _, v := range nums[1:] {
+			res = res * v % mod
+		}
+		return res
+	}
+
 	// TODO: 扩展中国剩余定理 (EXCRT)
 	// https://www.luogu.com.cn/problemnew/solution/P4777
 
 	// 阶乘
 	factorial := func(n int) int64 {
 		res := int64(1) % mod
-		for i := int64(2); i <= int64(n); i++ {
-			res = res * i % mod
+		for i := 2; i <= n; i++ {
+			res = res * int64(i) % mod
 		}
 		return res
 	}
 
 	// 阶乘模质数（模数较小）
 	// https://cp-algorithms.com/algebra/factorial-modulo.html
+	// TODO: 卢卡斯定理
 	factorialMod := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
@@ -463,7 +471,6 @@ func numberTheoryCollection() {
 	}
 
 	// 组合数；二项式系数
-	// TODO 组合数模任意数 https://cp-algorithms.com/combinatorics/binomial-coefficients.html
 	cnk := func(n, k int) int {
 		res := 1
 		for i := 1; i <= k; i++ {
@@ -472,8 +479,41 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// TODO: 组合数 mod p
-	// todo ? i∈[1,p-1], C(p, i) % p == 0
+	const mx int = 2e5
+	fact := [mx + 1]int64{1}
+	initFactorial := func() {
+		for i := 1; i <= mx; i++ {
+			fact[i] = fact[i-1] * int64(i) % mod
+		}
+	}
+
+	// TODO 组合数模任意数 https://cp-algorithms.com/combinatorics/binomial-coefficients.html
+	comb := func(n, k int64) int64 { return div(fact[n], fact[k]*fact[n-k]%mod, mod) }
+
+	{
+		const mod int64 = 1e9 + 7 // 998244353
+		const mx int = 1e5
+		fact := [mx + 1]int64{1}
+		for i := 1; i <= mx; i++ {
+			fact[i] = fact[i-1] * int64(i) % mod
+		}
+		pow := func(x, n int64) int64 {
+			x %= mod
+			res := int64(1)
+			for ; n > 0; n >>= 1 {
+				if n&1 == 1 {
+					res = res * x % mod
+				}
+				x = x * x % mod
+			}
+			return res
+		}
+		inv := func(a int64) int64 { return pow(a, mod-2) }
+		div := func(a, b int64) int64 { return a * inv(b) % mod }
+		comb := func(n, k int64) int64 { return div(fact[n], fact[k]*fact[n-k]%mod) }
+
+		_ = comb
+	}
 
 	//
 
@@ -512,8 +552,8 @@ func numberTheoryCollection() {
 		isPrime, sieve,
 		factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll,
 		calcPhi, phiAll,
-		modInv, modFrac, solveLinearCongruence, quickMul,
-		factorial, factorialMod, cnk,
+		modInverse, inv, div, solveLinearCongruence, quickMul, muls,
+		factorial, factorialMod, cnk, initFactorial, comb,
 		consecutiveNumbersSum,
 		partition,
 	}
