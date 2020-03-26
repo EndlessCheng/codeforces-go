@@ -485,6 +485,42 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, pa
 	// abs(dist[v], dist[w])  < e.weight => e 不在最短路上（可以想象成一条鼓起的线）
 	// 这里的最短路可以有多条
 
+	// EXTRA: 次短路
+	{
+		const inf int64 = 1e18 // 1e9+1
+		dist := make([]int64, n)
+		for i := range dist {
+			dist[i] = inf
+		}
+		dist[st] = 0
+		dist2 := make([]int64, n)
+		for i := range dist2 {
+			dist2[i] = inf
+		}
+
+		h := &pairHeap{}
+		Push(h, hPair{0, st})
+		for h.Len() > 0 {
+			p := Pop(h).(hPair)
+			d, v := p.x, p.y
+			if dist2[v] < d {
+				continue
+			}
+			for _, e := range g[v] {
+				w := e.to
+				newD := d + e.weight
+				if newD < dist[w] {
+					Push(h, hPair{newD, w})
+					dist[w], newD = newD, dist[w]
+				}
+				if newD > dist[w] && newD < dist2[w] {
+					dist2[w] = newD
+					Push(h, hPair{newD, w})
+				}
+			}
+		}
+	}
+
 	return
 }
 

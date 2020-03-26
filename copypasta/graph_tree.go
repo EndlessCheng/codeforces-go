@@ -76,8 +76,9 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	buildNode(root, -1)
 }
 
-// 树的直径
-// 直径的中点到所有叶子的距离和最小
+// 树的直径/最长链
+// 性质：直径的中点到所有叶子的距离和最小
+// 也可以用树形 DP，计算每个根往下的最长链和次长链从而得到答案（维护最大时记录是从哪个节点取到的，维护次大时跳过该节点）
 func (*tree) diameter(st int, g [][]int) (dv, dw int) {
 	var u, maxD int
 	var f func(v, fa, d int)

@@ -67,16 +67,16 @@ func numberTheoryCollection() {
 	sieve := func() {
 		const mx int = 1e6
 		primes := make([]int, 0, mx/10) // need check
-		isPrime := [mx + 1]bool{}
-		for i := range isPrime {
-			isPrime[i] = true
+		isP := [mx + 1]bool{}
+		for i := range isP {
+			isP[i] = true
 		}
-		isPrime[0], isPrime[1] = false, false
+		isP[0], isP[1] = false, false
 		for i := 2; i <= mx; i++ {
-			if isPrime[i] {
+			if isP[i] {
 				primes = append(primes, i)
 				for j := 2 * i; j <= mx; j += i {
-					isPrime[j] = false
+					isP[j] = false
 				}
 			}
 		}
@@ -86,7 +86,7 @@ func numberTheoryCollection() {
 		pi := [mx + 1]int{}
 		for i := 2; i <= mx; i++ {
 			pi[i] = pi[i-1]
-			if isPrime[i] {
+			if isP[i] {
 				pi[i]++
 			}
 		}
