@@ -20,6 +20,8 @@ I have implemented some algorithms in [copypasta](./copypasta).
 >
 > [source](https://codeforces.com/blog/entry/65406?#comment-494043)
 
+[Problem Difficulties](https://codeforces.ml/blog/entry/62865)
+
 ## Codeforces Solutions
 
 [main](./main)
