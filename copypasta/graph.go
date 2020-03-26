@@ -241,6 +241,10 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 // 模板题 https://www.luogu.com.cn/problem/P2731
 // TODO
 
+/* DFS 树
+好题：https://codeforces.com/problemset/problem/1325/F
+*/
+
 // 割点（割顶） cut vertices / articulation points
 // https://codeforces.com/blog/entry/68138
 // https://oi-wiki.org/graph/cut/#_1
