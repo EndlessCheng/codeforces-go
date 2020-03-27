@@ -116,6 +116,7 @@ func sortCollections() {
 
 	// 整数三分
 	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
+	// https://codeforces.ml/problemset/problem/1301/B (只是举例，不用三分也可做)
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for l+3 <= r {
 			m1 := l + (r-l)/3
