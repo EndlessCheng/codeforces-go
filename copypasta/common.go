@@ -272,6 +272,7 @@ func commonCollection() {
 				res = append(res, a[i])
 			}
 		}
+		//n = len(res)
 		return
 	}
 
@@ -287,6 +288,7 @@ func commonCollection() {
 				a[j] = a[i]
 			}
 		}
+		//n = j + 1
 		return a[:j+1]
 	}
 

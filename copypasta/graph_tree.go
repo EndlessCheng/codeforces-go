@@ -544,6 +544,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
+// todo https://ac.nowcoder.com/discuss/394080 E 题
 
 // TODO: 虚树
 // https://oi-wiki.org/graph/virtual-tree/

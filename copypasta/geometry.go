@@ -37,6 +37,8 @@ det (determinant，行列式，叉积的模，有向面积):
 
 1° = (π/180)rad
 1rad = (180/π)°
+
+todo 二维偏序 https://ac.nowcoder.com/discuss/394080 F 题
 */
 
 const eps = 1e-8

@@ -625,12 +625,15 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 	return
 }
 
-// 打印负环
+// EXTRA: 打印负环
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
 func (*graph) findNegativeCycleBellmanFord() []int {
 	// TODO return negative cycle
 	return nil
 }
+
+// EXTRA: 同余最短路
+// 跳楼机 https://www.luogu.com.cn/problem/P3403
 
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(|E|⋅log|E|)
