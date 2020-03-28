@@ -582,6 +582,16 @@ func numberTheoryCollection() {
 // 可重集排列
 // 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 // 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
+// 斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
+// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
+//    将 n 个元素排成 k 个非空循环排列的方法数
+//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
+//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
+// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
+//    将 n 个元素拆分为 k 个非空集的方法数
+//    S2(n, k) = (1/k!) * Sum_{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
+//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
+//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 func miscCollection() {
 	// n married couples are seated in a row so that every wife is to the left of her husband
 	// 若不考虑顺序，则所有排列的个数为 (2n)!
