@@ -523,6 +523,10 @@ func numberTheoryCollection() {
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
+	// 杜教筛 - 积性函数前缀和
+	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700
+	// 模板题 https://www.luogu.com.cn/problem/P4213
+
 	//
 
 	// Number of odd divisors of n

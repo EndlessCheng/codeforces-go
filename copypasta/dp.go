@@ -160,6 +160,7 @@ func dpCollections() {
 
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
+	// https://blog.csdn.net/weixin_43914593/article/details/105150937
 
 	// todo 公司聚会/树上最大独立集
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree

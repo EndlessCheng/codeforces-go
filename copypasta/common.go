@@ -826,6 +826,8 @@ func monotoneCollection() {
 }
 
 // NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
+// 剪枝: https://blog.csdn.net/weixin_43914593/article/details/104613920
+// A*: https://blog.csdn.net/weixin_43914593/article/details/104935011
 func loopCollection() {
 	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	min := func(a, b int) int {

@@ -98,7 +98,7 @@ func (t segmentTree) init(a []int64)            { t._build(a, 1, 1, len(a)) } //
 func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }    // 1<=idx<=n
 func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 
-// others
+// EXTRA: 最值位置
 func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val, t[o].maxPos
@@ -219,7 +219,7 @@ func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) 
 // TODO: 补题 https://codeforces.ml/contest/840/problem/D
 type pstNode struct {
 	l, r   int
-	lo, ro *pstNode // 由于使用了指针，pstNode 必须存放于一个分配了足够空间的 slice 中，避免扩容时改变了内存位置
+	lo, ro *pstNode
 	sum    int64
 }
 type pst struct {
@@ -230,6 +230,7 @@ type pst struct {
 // 区间长度，版本数，最大更新次数
 func newPST(n, versions, maxUpdateTimes int) *pst {
 	// https://oi-wiki.org/ds/persistent-seg/
+	// 预先分配内存，减小运行时的开销和 cache miss
 	maxNodeSize := 2*n + (bits.Len(uint(n))+1)*maxUpdateTimes
 	return &pst{
 		make([]pstNode, 0, maxNodeSize),
@@ -344,3 +345,6 @@ func (t *pst) queryKth(l, r int, k int) (allKth int) {
 	//	copy(sortedArr, a)
 	//	sort.Ints(sortedArr)
 }
+
+// EXTRA: 线段树合并
+// todo
