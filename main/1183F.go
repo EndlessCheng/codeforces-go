@@ -3,14 +3,14 @@ package main
 import (
 	"bufio"
 	. "fmt"
-	"os"
+	"io"
 	"sort"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func main() {
-	in := bufio.NewReader(os.Stdin)
-	out := bufio.NewWriter(os.Stdout)
+func CF1183F(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	max := func(a, b int) int {
 		if a > b {
