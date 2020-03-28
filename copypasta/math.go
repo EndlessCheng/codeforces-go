@@ -12,6 +12,19 @@ import (
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
+	// Least k such that H(k) > n, where H(k) is the harmonic number sum_{i=1..k} 1/i
+	// https://oeis.org/A002387
+	// https://oeis.org/A004080
+	// a(n) = largest m such that the harmonic number H(m)= Sum_{i=1..m} 1/i is < n
+	// https://oeis.org/A115515
+
+	// a(n) = smallest prime p such that Sum_{primes q = 2, ..., p} 1/q exceeds n
+	// 5, 277, 5_195_977, 1801241230056600523
+	// https://oeis.org/A016088
+	// a(n) = largest prime p such that Sum_{primes q = 2, ..., p} 1/q does not exceed n
+	// 3, 271, 5_195_969, 1801241230056600467
+	// https://oeis.org/A223037
+
 	calcGCD := func(a, b int64) int64 {
 		for a != 0 {
 			a, b = b%a, a
