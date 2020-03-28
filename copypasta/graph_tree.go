@@ -541,6 +541,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
 // 模板题 https://www.luogu.com.cn/problem/P3690
+// https://ac.nowcoder.com/discuss/387703 F 题
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
