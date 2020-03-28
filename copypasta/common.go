@@ -150,6 +150,12 @@ func commonCollection() {
 		}
 		return
 	}
+	digits := func(x int) (res []int) {
+		for ; x > 0; x /= 10 {
+			res = append(res, x%10)
+		}
+		return
+	}
 
 	var sum2d [][]int
 	initSum2D := func(mat [][]int) {
@@ -514,7 +520,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
-		abs, absAll, pow, calcFactorial, toAnyBase, initSum2D, querySum2D, mergeMap,
+		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
 	}
