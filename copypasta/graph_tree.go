@@ -76,6 +76,31 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	buildNode(root, -1)
 }
 
+// 每个节点的入出时间戳
+// 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点
+// 例题 https://codeforces.ml/contest/1328/problem/E
+func (*tree) inOutTimestamp(n, root int, g [][]int) {
+	timeIn := make([]int, n)
+	timeOut := make([]int, n)
+	clock := 0
+	var f func(v, fa int)
+	f = func(v, fa int) {
+		clock++
+		timeIn[v] = clock
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v)
+			}
+		}
+		clock++
+		timeOut[v] = clock
+	}
+	f(0, -1)
+	isFa := func(fa, v int) bool { return timeIn[fa] <= timeIn[v] && timeOut[v] <= timeOut[fa] }
+
+	_ = isFa
+}
+
 // 树的直径/最长链
 // 性质：直径的中点到所有叶子的距离和最小
 // 也可以用树形 DP，计算每个根往下的最长链和次长链从而得到答案（维护最大时记录是从哪个节点取到的，维护次大时跳过该节点）
