@@ -87,6 +87,38 @@ func dpCollections() {
 		return len(dp)
 	}
 
+	// 本质不同子序列个数
+	// 定义 dp[i][j] 表示前 i 个字符中长度为 j 的本质不同子序列个数
+	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
+	// 其中 prev[i] 为 s[i] 的上一个相同字符位置
+	// https://ac.nowcoder.com/discuss/394080 C 题
+	// https://codeforces.com/problemset/problem/1183/H
+	distinctSubsequence := func(s string) int64 {
+		n := len(s)
+		prev := [26]int{}
+		dp := make([][]int64, n+1)
+		for i := range dp {
+			dp[i] = make([]int64, n+1)
+		}
+		dp[0][0] = 1
+		for i := 1; i <= n; i++ {
+			c := s[i-1] - 'a'
+			dp[i][0] = 1
+			for j := 1; j <= i; j++ {
+				dp[i][j] = dp[i-1][j] + dp[i-1][j-1]
+				if p := prev[c]; p > 0 {
+					dp[i][j] -= dp[p-1][j-1]
+				}
+			}
+			prev[c] = i
+		}
+		sum := int64(0)
+		for _, cnt := range dp[n][1:] { // 不计入空字符串
+			sum += cnt
+		}
+		return sum
+	}
+
 	// 无限物品：恰好装满背包至少需要多少个物品
 	// 无法装满返回 -1
 	minCoinChange := func(coins []int, amount int) int {
@@ -144,13 +176,13 @@ func dpCollections() {
 	*/
 
 	/* 状压 DP
-	*/
+	 */
 
 	/* 数位 DP
-	*/
+	 */
 
 	/* 计数 DP
-	*/
+	 */
 
 	// TODO: 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
@@ -192,7 +224,8 @@ func dpCollections() {
 
 	_ = []interface{}{
 		generalDPMap,
-		lis, minCoinChange,
+		lis, distinctSubsequence,
+		minCoinChange,
 		knapsack01,
 		maxMatchingOnTree,
 	}
