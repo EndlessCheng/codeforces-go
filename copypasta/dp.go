@@ -1,6 +1,8 @@
 package copypasta
 
-import "sort"
+import (
+	"sort"
+)
 
 /*
 参考书籍推荐：《算法竞赛进阶指南》
@@ -180,9 +182,54 @@ func dpCollections() {
 
 	/* 数位 DP
 	 */
+	digitsDP := func(lower, upper string) int {
+		const mod int = 1e9 + 7
+		n := len(upper) // len(lower) == len(upper)
 
-	/* 计数 DP
-	 */
+		// <=s 的数目
+		calc := func(s string) int {
+			dp := make([][]int, n)
+			for i := range dp {
+				dp[i] = make([]int, n)
+				for j := range dp[i] {
+					dp[i][j] = -1
+				}
+			}
+			var f func(p, p2 int, isUpper bool) int
+			f = func(p, p2 int, isUpper bool) (cnt int) {
+				//if p2... { return 0 }
+				if p >= n {
+					return 1
+				}
+				dv := &dp[p][p2]
+				if !isUpper && *dv >= 0 {
+					return *dv
+				}
+				defer func() {
+					if !isUpper {
+						*dv = cnt
+					}
+				}()
+				up := byte('9')
+				if isUpper {
+					up = s[p]
+				}
+				for digit := byte('0'); digit <= up; digit++ {
+					tmp := p2
+					// do tmp...
+					c := f(p+1, tmp, isUpper && digit == up)
+					cnt = (cnt + c) % mod
+				}
+				return
+			}
+			return f(0, 0, true)
+		}
+		ansLower := calc(lower)
+		ansUpper := calc(upper)
+		ans := ansUpper - ansLower + 1 // lower 算上
+		ans = (ans%mod + mod) % mod
+		return ans
+	}
 
 	// TODO: 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
@@ -227,6 +274,7 @@ func dpCollections() {
 		lis, distinctSubsequence,
 		minCoinChange,
 		knapsack01,
+		digitsDP,
 		maxMatchingOnTree,
 	}
 }
