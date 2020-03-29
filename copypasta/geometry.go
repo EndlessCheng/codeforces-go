@@ -10,6 +10,7 @@ import (
 /*
 https://oi-wiki.org/geometry/2d/
 https://oi-wiki.org/geometry/3d/
+推荐 https://vlecomte.github.io/cp-geo.pdf
 
 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.16f", ans)，这样还可以方便测试
 

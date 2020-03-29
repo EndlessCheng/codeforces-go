@@ -455,8 +455,9 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// TODO: 扩展中国剩余定理 (EXCRT)
-	// https://www.luogu.com.cn/problemnew/solution/P4777
+	// 中国剩余定理 (CRT)
+	// todo https://codeforces.com/blog/entry/61290
+	// todo 扩展中国剩余定理 (EXCRT) https://www.luogu.com.cn/problemnew/solution/P4777
 
 	// 阶乘
 	factorial := func(n int) int64 {

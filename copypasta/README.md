@@ -10,7 +10,7 @@
 
 ## 题库
 
-[https://codeforces.com/blog/entry/55274](https://codeforces.com/blog/entry/55274)
+[Problem Topics](https://codeforces.com/blog/entry/55274)
 
 [Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
 

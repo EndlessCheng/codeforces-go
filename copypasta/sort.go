@@ -97,6 +97,7 @@ func sortCollections() {
 	}
 
 	// 实数三分
+	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
@@ -118,7 +119,7 @@ func sortCollections() {
 	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
 	// https://codeforces.ml/problemset/problem/1301/B (只是举例，不用三分也可做)
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
-		for l+3 <= r {
+		for r-l > 4 { // 最小区间长度根据题目可以扩大点
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
 			v1, v2 := f(m1), f(m2)
@@ -137,9 +138,9 @@ func sortCollections() {
 		return minI
 	}
 
-	// TODO: 整体二分 https://oi-wiki.org/misc/parallel-binsearch/
-
-	// TODO: https://oi-wiki.org/search/dlx/
+	// 整体二分
+	// todo https://oi-wiki.org/misc/parallel-binsearch/
+	// todo https://codeforces.com/blog/entry/45578
 
 	_ = []interface{}{
 		sortString, reverseSort, lowerBound, upperBound, reverse,

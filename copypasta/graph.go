@@ -241,7 +241,8 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 // 模板题 https://www.luogu.com.cn/problem/P2731
 // TODO
 
-/* DFS 树
+/* Topic - DFS 树
+讲解+套题 https://codeforces.com/blog/entry/68138
 好题：https://codeforces.com/problemset/problem/1325/F
 */
 
@@ -1072,6 +1073,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
+// 讲解+套题 https://codeforces.com/blog/entry/16205
 // 一般 ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // NOTE: 一些建边的转换：

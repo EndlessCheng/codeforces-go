@@ -114,6 +114,7 @@ func stringCollection() {
 
 	// TODO：待整理
 	// https://blog.csdn.net/synapse7/article/details/18908413
+	// https://codeforces.com/blog/entry/12143
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
@@ -219,12 +220,14 @@ func suffixArrayCollection() {
 // 另类解读：如果将字符串长度视作定值的话，trie 树是一种 O(n) 排序，O(1) 查询的数据结构
 //          这点上和哈希表很像，但是 trie 树可以在路径上保存信息，从而能做到一些哈希表做不到的前缀操作
 // https://oi-wiki.org/string/trie/
+// https://www.quora.com/q/threadsiiithyderabad/Tutorial-on-Trie-and-example-problems
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
 // 模板题 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 // 前缀和后缀搜索 https://leetcode-cn.com/problems/prefix-and-suffix-search/
 // 回文对（配合 Manacher 可以做到线性复杂度） https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
+// todo https://codeforces.ml/contest/455/problem/B
 type trieNode struct {
 	son    [26]*trieNode
 	dupCnt int
@@ -476,6 +479,7 @@ func (t *trie) acSearch(text string, patterns []string) [][]int {
 
 // Suffix automaton (SAM)
 // https://en.wikipedia.org/wiki/Suffix_automaton
+// todo https://codeforces.com/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
 //《后缀自动机》，陈立杰

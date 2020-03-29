@@ -26,6 +26,8 @@ import (
 // NOTE: 环形可以用 (i+1)%n 来表示下一个相邻元素
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 
+// General ideas https://codeforces.com/blog/entry/48417
+
 func commonCollection() {
 	// HELPER
 	const mod int64 = 1e9 + 7 // 998244353
@@ -554,6 +556,7 @@ func rmqCollection() {
 
 	// Sparse Table
 	// https://oi-wiki.org/ds/sparse-table/
+	// https://codeforces.com/blog/entry/66643
 	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
 	// 模板题 https://www.luogu.com.cn/problem/P3865
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
@@ -1143,6 +1146,9 @@ func loopCollection() {
 		}
 	}
 	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
+
+	// 舞蹈链
+	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{
 		loopDiagonal, loopDiagonal2, loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
