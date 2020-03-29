@@ -50,7 +50,7 @@ func dpCollections() {
 	}
 
 	// 由于数据范围的原因，采用 map 记忆化
-	generalDPMap := func() {
+	mapDP := func() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
 		var f func(int, int) int
@@ -66,7 +66,7 @@ func dpCollections() {
 		_ = f
 	}
 
-	/* 线性 DP
+	/* 线性 DP：前缀/后缀之间的转移
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
 	最长上升子序列 (LIS) https://leetcode-cn.com/problems/longest-increasing-subsequence/
@@ -236,9 +236,10 @@ func dpCollections() {
 	}
 
 	// 完全背包
+
 	// 多重背包
 
-	/* 区间 DP
+	/* 区间 DP / 环形 DP：元素的位置影响结果
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
@@ -248,6 +249,8 @@ func dpCollections() {
 	 */
 
 	/* 数位 DP
+	https://atcoder.jp/contests/abc154/tasks/abc154_e
+	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
 	 */
 	digitsDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
@@ -262,13 +265,13 @@ func dpCollections() {
 					dp[i][j] = -1
 				}
 			}
-			var f func(p, p2 int, isUpper bool) int
-			f = func(p, p2 int, isUpper bool) (cnt int) {
-				//if p2... { return 0 }
+			var f func(p, sum int, isUpper bool) int
+			f = func(p, sum int, isUpper bool) (cnt int) {
+				//if sum... { return 0 }
 				if p >= n {
 					return 1
 				}
-				dv := &dp[p][p2]
+				dv := &dp[p][sum]
 				if !isUpper && *dv >= 0 {
 					return *dv
 				}
@@ -282,7 +285,7 @@ func dpCollections() {
 					up = s[p]
 				}
 				for digit := byte('0'); digit <= up; digit++ {
-					tmp := p2
+					tmp := sum
 					// do tmp...
 					c := f(p+1, tmp, isUpper && digit == up)
 					cnt = (cnt + c) % mod
@@ -338,7 +341,7 @@ func dpCollections() {
 	//《训练指南》6.1
 
 	_ = []interface{}{
-		generalDPMap,
+		mapDP,
 		lcs, lcsPath, lis, distinctSubsequence,
 		minCoinChange,
 		knapsack01,
