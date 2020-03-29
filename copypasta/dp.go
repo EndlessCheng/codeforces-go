@@ -75,8 +75,75 @@ func dpCollections() {
 	两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	*/
 
+	// LCS
+	// 最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
+	// EXTRA: 最短公共超序列 https://leetcode-cn.com/problems/shortest-common-supersequence/
+	// todo 	两个排列的 LCS https://www.luogu.com.cn/problem/P1439
+	lcs := func(s1, s2 string) int {
+		n, m := len(s1), len(s2)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, m+1)
+		}
+		for i, b1 := range s1 {
+			for j, b2 := range s2 {
+				if b1 == b2 {
+					dp[i+1][j+1] = dp[i][j] + 1
+				} else {
+					dp[i+1][j+1] = max(dp[i][j+1], dp[i+1][j])
+				}
+			}
+		}
+		return dp[n][m]
+	}
+	lcsPath := func(s1, s2 string) []byte {
+		n, m := len(s1), len(s2)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, m+1)
+		}
+		fa := make([][]int8, n+1)
+		for i := range fa {
+			fa[i] = make([]int8, m+1)
+		}
+		for i, b1 := range s1 {
+			for j, b2 := range s2 {
+				if b1 == b2 {
+					dp[i+1][j+1] = dp[i][j] + 1
+					fa[i+1][j+1] = 1
+				} else {
+					if dp[i][j+1] > dp[i+1][j] {
+						dp[i+1][j+1] = dp[i][j+1]
+						fa[i+1][j+1] = 2
+					} else {
+						dp[i+1][j+1] = dp[i+1][j]
+						fa[i+1][j+1] = 3
+					}
+				}
+			}
+		}
+		lcs := make([]byte, 0, dp[n][m])
+		var makeLCS func(i, j int)
+		makeLCS = func(i, j int) {
+			if i == 0 || j == 0 {
+				return
+			}
+			if fa[i][j] == 1 {
+				makeLCS(i-1, j-1)
+				lcs = append(lcs, s1[i-1])
+			} else if fa[i][j] == 2 {
+				makeLCS(i-1, j)
+			} else {
+				makeLCS(i, j-1)
+			}
+		}
+		makeLCS(n, m)
+		return lcs
+	}
+
 	// O(nlogn) LIS
 	// https://oi-wiki.org/dp/basic/#_12
+	// 最长上升子序列 (LIS) https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	lis := func(arr []int) int {
 		dp := make([]int, 0, len(arr))
 		for _, v := range arr {
@@ -242,6 +309,7 @@ func dpCollections() {
 	// https://blog.csdn.net/weixin_43914593/article/details/105150937
 
 	// todo 公司聚会/树上最大独立集
+	// 入门经典 p.280
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 
 	// 树上最大匹配
@@ -271,7 +339,7 @@ func dpCollections() {
 
 	_ = []interface{}{
 		generalDPMap,
-		lis, distinctSubsequence,
+		lcs, lcsPath, lis, distinctSubsequence,
 		minCoinChange,
 		knapsack01,
 		digitsDP,
