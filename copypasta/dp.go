@@ -77,8 +77,8 @@ func dpCollections() {
 
 	// LCS
 	// 最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
-	// EXTRA: 最短公共超序列 https://leetcode-cn.com/problems/shortest-common-supersequence/
-	// todo 	两个排列的 LCS https://www.luogu.com.cn/problem/P1439
+	// EXTRA: 最短公共超序列 (SCS) https://leetcode-cn.com/problems/shortest-common-supersequence/
+	// todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	lcs := func(s1, s2 string) int {
 		n, m := len(s1), len(s2)
 		dp := make([][]int, n+1)
