@@ -189,9 +189,6 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // DFS 应用：标记所属连通块
 func (*graph) markComponentIDs(n int, g [][]int) []int {
 	ids := make([]int, n)
-	for i := range ids {
-		ids[i] = -1
-	}
 	idCnt := 0
 	var f func(int)
 	f = func(v int) {
@@ -204,8 +201,8 @@ func (*graph) markComponentIDs(n int, g [][]int) []int {
 	}
 	for i, id := range ids {
 		if id == 0 {
-			f(i)
 			idCnt++
+			f(i)
 		}
 	}
 	return ids
