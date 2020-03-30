@@ -25,6 +25,24 @@ func numberTheoryCollection() {
 	// 3, 271, 5_195_969, 1801241230056600467
 	// https://oeis.org/A223037
 
+	// a*b%m，原理和 a^n%m 类似
+	mul := func(a, b, m int64) (res int64) {
+		for ; b > 0; b >>= 1 {
+			if b&1 == 1 {
+				res = (res + a) % m
+			}
+			a = (a + a) % m
+		}
+		return
+	}
+	muls := func(nums ...int64) int64 {
+		res := nums[0]
+		for _, v := range nums[1:] {
+			res = res * v % mod
+		}
+		return res
+	}
+
 	calcGCD := func(a, b int64) int64 {
 		for a != 0 {
 			a, b = b%a, a
@@ -64,6 +82,9 @@ func numberTheoryCollection() {
 		return cntMp
 	}
 
+	/* 质数
+	 */
+
 	// 判断一个数是否为质数
 	isPrime := func(n int64) bool {
 		for i := int64(2); i*i <= n; i++ {
@@ -74,9 +95,17 @@ func numberTheoryCollection() {
 		return n >= 2
 	}
 
+	// 哥德巴赫猜想 - 偶数分拆的最小质数
+	// 由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
+	// https://oeis.org/A020481
+	// n https://oeis.org/A025018
+	// a(n) https://oeis.org/A025019
+	// 1e9 内最大的为 a(721013438) = 1789
+	// 2e9 内最大的为 a(1847133842) = 1861
+
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
-	// 也有线性的做法，见 https://oi-wiki.org/math/sieve/
+	// 也有线性时间的算法，见 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
 	sieve := func() {
 		const mx int = 1e6
 		primes := make([]int, 0, mx/10) // need check
@@ -105,123 +134,16 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 哥德巴赫猜想 - 偶数分解的最小素数
-	// 由素数分布可知选到一对素数的概率是 O(1/ln^2(n))
-	// https://oeis.org/A020481
-	// n https://oeis.org/A025018
-	// a(n) https://oeis.org/A025019
-	// 1e9 内最大的为 a(721013438) = 1789
-	// 2e9 内最大的为 a(1847133842) = 1861
+	// 区间筛法
+	// 预处理 [2,√R] 的所有质数，去筛 [L,R] 之间的质数
+	// EXTRA: 区间最大质数间隔
+	// Prime gaps: differences between consecutive primes
+	// https://oeis.org/A001223
+	// Indices https://oeis.org/A005669
+	// Records https://oeis.org/A005250
 
-	// 预处理: [1,mx] 范围内数的所有因子
-	factorsAll := func() {
-		const mx int = 1e5
-		factors := [mx + 1][]int{}
-		for i := 1; i <= mx; i++ {
-			for j := i; j <= mx; j += i {
-				factors[j] = append(factors[j], i)
-			}
-		}
-	}
-
-	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
-	// for i>=2, factors[i][0] == i means i is prime
-	primeFactorsAll := func() {
-		const mx int = 1e6
-		factors := [mx + 1][]int{}
-		for i := 2; i <= mx; i++ {
-			if len(factors[i]) == 0 {
-				for j := i; j <= mx; j += i {
-					factors[j] = append(factors[j], i)
-				}
-			}
-		}
-	}
-
-	// LPF(n): least prime dividing n (when n > 1); a(1) = 1
-	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
-	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
-	// https://oeis.org/A020639
-	//
-	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
-	// https://oeis.org/A006530
-	// 可以预处理出 LPF 然后再试除
-	lpfAll := func() {
-		const mx int = 1e6
-		lpf := [mx + 1]int{1: 1}
-		for i := 2; i <= mx; i++ {
-			if lpf[i] == 0 {
-				for j := i; j <= mx; j += i {
-					if lpf[j] == 0 {
-						lpf[j] = i
-					}
-				}
-			}
-		}
-
-		// EXTRA: 分解 v
-		var v int
-		for v > 1 {
-			p := lpf[v]
-			e := 1
-			for v /= p; lpf[v] == p; v /= p {
-				e++
-			}
-			// do(p,e)
-		}
-	}
-
-	// Squarefree numbers: numbers that are not divisible by a square greater than 1
-	// Lim_{n->infinity} a(n)/n = Pi^2/6
-	// https://oeis.org/A005117 介绍了一种筛法
-	// Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
-	// https://oeis.org/A013929
-
-	// Semiprimes (or biprimes): products of two primes
-	// https://oeis.org/A001358
-	// Squarefree semiprimes: Numbers that are the product of two distinct primes
-	// https://oeis.org/A006881
-
-	// Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
-	// Also called core(n)
-	// https://oeis.org/A007913
-
-	// Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
-	// https://oeis.org/A007947
-
-	// 枚举一个数的全部约数
-	divisors := func(n int64) (res []int64) {
-		for d := int64(1); d*d <= n; d++ {
-			if n%d == 0 {
-				res = append(res, d)
-				if d*d < n {
-					res = append(res, n/d)
-				}
-			}
-		}
-		return
-	}
-	doDivisors := func(n int, do func(d int)) {
-		for d := 1; d*d <= n; d++ {
-			if n%d == 0 {
-				do(d)
-				if d*d < n {
-					do(n / d)
-				}
-			}
-		}
-		return
-	}
-	doDivisors2 := func(n int, do func(d1, d2 int)) {
-		for d := 1; d*d <= n; d++ {
-			if n%d == 0 {
-				do(d, n/d)
-			}
-		}
-		return
-	}
-
-	// 素因数分解 prime factorization
+	// 质因数分解 prime factorization
+	// todo 更高效的算法 - Pollard's Rho
 	primeFactors := func(n int64) (factors []int64, exponents []int) {
 		for i := int64(2); i*i <= n; i++ {
 			cnt := 0
@@ -233,47 +155,16 @@ func numberTheoryCollection() {
 				exponents = append(exponents, cnt)
 			}
 		}
-		if n > 1 {
+		if n > 1 { // n 是质数
 			factors = append(factors, n)
 			exponents = append(exponents, 1)
 		}
-
-		// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n) https://oeis.org/A000005
-		//        约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
-		//                            = 见下面「数论分块/除法分块」
-
-		// EXTRA: 约数之和 sigma(n), also called sigma_1(n) https://oeis.org/A000203
-		//        约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
-
 		return
 	}
 
-	// TODO 高合成数/反素数 Highly Composite Numbers
-	// 一个高合成数一定是由另一个高合成数乘某个素数得到
-	// https://oeis.org/A002182
-	// https://oeis.org/A002183
-	// https://www.luogu.com.cn/problem/P1463
-
-	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
-	// Number of distinct primes dividing n
-	// https://oeis.org/A001221
-	distinctPrimesCountAll := func() {
-		const mx int = 1e6
-		cnts := make([]int, mx+1)
-		for i := 2; i <= mx; i++ {
-			if cnts[i] == 0 {
-				for j := i; j <= mx; j += i {
-					cnts[i]++
-				}
-			}
-		}
-
-		// EXTRA: 前缀和，即 omega(n!)
-		// https://oeis.org/A013939
-		for i := 3; i <= mx; i++ {
-			cnts[i] += cnts[i-1]
-		}
-	}
+	// 阶乘的质因数分解 Finding Power of Factorial Divisor
+	// 见进阶指南 p.138
+	// https://cp-algorithms.com/algebra/factorial-divisors.html
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n)
 	// Number of prime divisors of n counted with multiplicity
@@ -335,10 +226,155 @@ func numberTheoryCollection() {
 	//	return
 	//}
 
-	// EXTRA: Finding Power of Factorial Divisor
-	// todo https://cp-algorithms.com/algebra/factorial-divisors.html
+	/* 约数
+	 */
 
-	// n 的欧拉函数（互素的数的个数）Euler totient function
+	// 枚举一个数的全部约数
+	divisors := func(n int64) (res []int64) {
+		for d := int64(1); d*d <= n; d++ {
+			if n%d == 0 {
+				res = append(res, d)
+				if d*d < n {
+					res = append(res, n/d)
+				}
+			}
+		}
+		return
+	}
+	doDivisors := func(n int, do func(d int)) {
+		for d := 1; d*d <= n; d++ {
+			if n%d == 0 {
+				do(d)
+				if d*d < n {
+					do(n / d)
+				}
+			}
+		}
+		return
+	}
+	doDivisors2 := func(n int, do func(d1, d2 int)) {
+		for d := 1; d*d <= n; d++ {
+			if n%d == 0 {
+				do(d, n/d)
+			}
+		}
+		return
+	}
+
+	// 预处理: [1,mx] 范围内数的所有约数
+	// 复杂度 O(nlogn)
+	// 推论：1~n 的约数个数总和大约为 nlogn
+	factorsAll := func() {
+		const mx int = 1e5
+		factors := [mx + 1][]int{}
+		for i := 1; i <= mx; i++ {
+			for j := i; j <= mx; j += i {
+				factors[j] = append(factors[j], i)
+			}
+		}
+	}
+
+	// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n) https://oeis.org/A000005
+	//        约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
+	//                            = 见后文「数论分块/除法分块」
+
+	// EXTRA: 约数之和 sigma(n), also called sigma_1(n) https://oeis.org/A000203
+	//        约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+
+	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
+	// for i>=2, factors[i][0] == i means i is prime
+	primeFactorsAll := func() {
+		const mx int = 1e6
+		factors := [mx + 1][]int{}
+		for i := 2; i <= mx; i++ {
+			if len(factors[i]) == 0 {
+				for j := i; j <= mx; j += i {
+					factors[j] = append(factors[j], i)
+				}
+			}
+		}
+	}
+
+	// LPF(n): least prime dividing n (when n > 1); a(1) = 1
+	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
+	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
+	// https://oeis.org/A020639
+	//
+	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
+	// https://oeis.org/A006530
+	// 可以预处理出 LPF 然后再试除
+	lpfAll := func() {
+		const mx int = 1e6
+		lpf := [mx + 1]int{1: 1}
+		for i := 2; i <= mx; i++ {
+			if lpf[i] == 0 {
+				for j := i; j <= mx; j += i {
+					if lpf[j] == 0 {
+						lpf[j] = i
+					}
+				}
+			}
+		}
+
+		// EXTRA: 分解 v
+		var v int
+		for v > 1 {
+			p := lpf[v]
+			e := 1
+			for v /= p; lpf[v] == p; v /= p {
+				e++
+			}
+			// do(p,e)
+		}
+	}
+
+	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
+	// Number of distinct primes dividing n
+	// https://oeis.org/A001221
+	distinctPrimesCountAll := func() {
+		const mx int = 1e6
+		cnts := make([]int, mx+1)
+		for i := 2; i <= mx; i++ {
+			if cnts[i] == 0 {
+				for j := i; j <= mx; j += i {
+					cnts[i]++
+				}
+			}
+		}
+
+		// EXTRA: 前缀和，即 omega(n!)
+		// https://oeis.org/A013939
+		for i := 3; i <= mx; i++ {
+			cnts[i] += cnts[i-1]
+		}
+	}
+
+	// Squarefree numbers: numbers that are not divisible by a square greater than 1
+	// Lim_{n->infinity} a(n)/n = Pi^2/6
+	// https://oeis.org/A005117 介绍了一种筛法
+	// Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
+	// https://oeis.org/A013929
+
+	// Semiprimes (or biprimes): products of two primes
+	// https://oeis.org/A001358
+	// Squarefree semiprimes: Numbers that are the product of two distinct primes
+	// https://oeis.org/A006881
+
+	// Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
+	// Also called core(n)
+	// https://oeis.org/A007913
+
+	// Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
+	// https://oeis.org/A007947
+
+	// 高合成数/反质数 Highly Composite Numbers
+	// 一个高合成数一定是由另一个高合成数乘某个质数得到
+	// 见进阶指南 p.140-141
+	// https://oeis.org/A002182
+	// https://oeis.org/A002183
+	// https://www.luogu.com.cn/problem/P1463
+
+	// n 的欧拉函数（互质的数的个数）Euler totient function
 	calcPhi := func(n int) int {
 		ans := n
 		for i := 2; i*i <= n; i++ {
@@ -354,7 +390,7 @@ func numberTheoryCollection() {
 		return ans
 	}
 
-	// 预处理 [2,mx] 的欧拉函数（互素的数的个数）Euler totient function
+	// 预处理 [2,mx] 的欧拉函数（互质的数的个数）Euler totient function
 	// https://oeis.org/A000010
 	// NOTE: phi 的迭代（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
 	phiAll := func() {
@@ -372,15 +408,16 @@ func numberTheoryCollection() {
 		}
 	}
 
-	//
+	/* 同余
+	 */
 
 	// 二元一次不定方程
 	// exgcd solve equation ax+by=gcd(a,b)
 	// we have |x|<=b and |y|<=a in result (x,y)
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
 	// 模板题 https://www.luogu.com.cn/problem/P5656
-	var exgcd func(a, b int) (gcd, x, y int)
-	exgcd = func(a, b int) (gcd, x, y int) {
+	var exgcd func(a, b int64) (gcd, x, y int64)
+	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
 			return a, 1, 0
 		}
@@ -389,10 +426,10 @@ func numberTheoryCollection() {
 		return
 	}
 
-	// 逆元
+	// 任意非零模数逆元
 	// ax ≡ 1 (mod m)
-	// 模板题 https://www.luogu.com.cn/problem/P3811
-	modInverse := func(a, m int) int { _, x, _ := exgcd(a, m); return (x%m + m) % m }
+	// 模板题 https://www.luogu.com.cn/problem/P1082 https://www.luogu.com.cn/problem/P3811
+	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	pow := func(x, n, p int64) int64 {
 		x %= p
@@ -406,60 +443,22 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// 费马小定理
+	// 费马小定理求质数逆元
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
-	inv := func(a, p int64) int64 { return pow(a, p-2, p) }
+	invP := func(a, p int64) int64 { return pow(a, p-2, p) }
 
-	// 计算 a/b (mod p)
+	// 有理数取模
 	// 模板题 https://www.luogu.com.cn/problem/P2613
-	div := func(a, b, p int64) int64 { return a * inv(b, p) % p }
+	divM := func(a, b, m int64) int64 { return a * invM(b, m) % m }
+	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
 
-	// 线性同余方程组
-	// ai * x ≡ bi (mod mi)
-	// 解为 x ≡ b (mod m)
-	// 有解时返回 (b, m)，无解时返回 (0, -1)
-	// 推导过程见《挑战程序设计竞赛》P292
-	// 注意乘法溢出的可能
-	solveLinearCongruence := func(A, B, M []int64) (int64, int64) {
-		x, m := int64(0), int64(1)
-		for i, mi := range M {
-			a, b := A[i]*m, B[i]-A[i]*x
-			d := calcGCD(a, mi)
-			if b%d != 0 {
-				return 0, -1
-			}
-			t := div(b/d, a/d, mi/d)
-			x += m * t
-			m *= mi / d
-		}
-		return (x%m + m) % m, m
-	}
-
-	// a*b%mod，原理和 a^n%mod 类似
-	quickMul := func(a, b, mod int64) (res int64) {
-		for ; b > 0; b >>= 1 {
-			if b&1 == 1 {
-				res = (res + a) % mod
-			}
-			a = (a + a) % mod
-		}
-		return
-	}
-
-	muls := func(nums ...int64) int64 {
-		res := nums[0]
-		for _, v := range nums[1:] {
-			res = res * v % mod
-		}
-		return res
-	}
-
-	// 中国剩余定理 (CRT)
+	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// todo https://codeforces.com/blog/entry/61290
-	crt := func(a, m []int) (x int) {
-		M := 1
+	// 模板题 https://www.luogu.com.cn/problem/P1495
+	crt := func(a, m []int64) (x int64) {
+		M := int64(1)
 		for _, mi := range m {
 			M *= mi
 		}
@@ -473,28 +472,84 @@ func numberTheoryCollection() {
 	}
 
 	// 扩展中国剩余定理 (EXCRT)
+	// 证明见进阶指南 p.155
 	// 推荐 https://blog.csdn.net/niiick/article/details/80229217
 	// 模板题 https://www.luogu.com.cn/problemnew/solution/P4777
-	excrt := func(a, m []int) (x int) {
-		x = a[0]
-		M := m[0]
-		for i := 1; i < len(a); i++ {
-			mi := m[i]
-			c := (a[i] - x%mi + mi) % mi
-			gcd, inv, _ := exgcd(M, mi)
-			if c%gcd != 0 {
-				return -1
+	// todo 整理 excrt := func(a, m []int) (x int) {
+	//	x = a[0]
+	//	M := m[0]
+	//	for i := 1; i < len(a); i++ {
+	//		mi := m[i]
+	//		c := (a[i] - x%mi + mi) % mi
+	//		gcd, inv, _ := exgcd(M, mi)
+	//		if c%gcd != 0 {
+	//			return -1
+	//		}
+	//		c /= gcd
+	//		mi /= gcd
+	//		inv = inv * c % mi
+	//		x += inv * M
+	//		M *= mi
+	//		x %= M
+	//	}
+	//	x = (x + M) % M
+	//	return
+	//}
+
+	// ai * x ≡ bi (mod mi)
+	// 解为 x ≡ b (mod m)
+	// 有解时返回 (b, m)，无解时返回 (0, -1)
+	// 推导过程见《挑战程序设计竞赛》P292
+	// 注意乘法溢出的可能
+	excrt := func(A, B, M []int64) (x, m int64) {
+		m = 1
+		for i, mi := range M {
+			a, b := A[i]*m, B[i]-A[i]*x
+			d := calcGCD(a, mi)
+			if b%d != 0 {
+				return 0, -1
 			}
-			c /= gcd
-			mi /= gcd
-			inv = inv * c % mi
-			x += inv * M
-			M *= mi
-			x %= M
+			t := divM(b/d, a/d, mi/d)
+			x += m * t
+			m *= mi / d
 		}
-		x = (x + M) % M
+		x = (x%m + m) % m
 		return
 	}
+
+	// 高次同余方程 a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
+	// 时间复杂度 O(√p)
+	// 见进阶指南 p.155
+	babyStepGiantStep := func(a, b, p int64) int64 {
+		hash := map[int64]int64{}
+		b %= p
+		t := int64(math.Sqrt(float64(p))) + 1
+		for j := int64(0); j < t; j++ {
+			v := b * pow(a, j, p) % p
+			hash[v] = j
+		}
+		a = pow(a, t, p)
+		if a == 0 {
+			if b == 0 {
+				return 1
+			}
+			return -1
+		}
+		for i := int64(0); i < t; i++ {
+			v := pow(a, i, p)
+			if j, ok := hash[v]; ok && i*t >= j {
+				return i*t - j
+			}
+		}
+		return -1
+	}
+
+	// 高次同余方程 x^a ≡ b (mod p) - N次剩余 - 原根
+	// todo
+	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
+
+	/* 组合数；二项式系数
+	 */
 
 	// 阶乘
 	factorial := func(n int) int64 {
@@ -505,11 +560,9 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// 阶乘模质数（模数较小）
+	// 阶乘模质数（质数较小）
+	// 时间复杂度 O(plogn)
 	// https://cp-algorithms.com/algebra/factorial-modulo.html
-	// TODO: 卢卡斯定理
-	// todo: exLucas https://blog.csdn.net/niiick/article/details/81064156
-	// 模板题 https://www.luogu.com.cn/problem/P4720
 	factorialMod := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
@@ -523,7 +576,6 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// 组合数；二项式系数
 	cnk := func(n, k int) int {
 		res := 1
 		for i := 1; i <= k; i++ {
@@ -532,19 +584,8 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	const mx int = 2e5
-	fact := [mx + 1]int64{1}
-	initFactorial := func() {
-		for i := 1; i <= mx; i++ {
-			fact[i] = fact[i-1] * int64(i) % mod
-		}
-	}
-
-	// TODO 组合数模任意数 https://cp-algorithms.com/combinatorics/binomial-coefficients.html
-	comb := func(n, k int64) int64 { return div(fact[n], fact[k]*fact[n-k]%mod, mod) }
-
 	{
-		const mod int64 = 1e9 + 7 // 998244353
+		const mod int64 = 1e9 + 7
 		const mx int = 1e5
 		fact := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
@@ -567,6 +608,38 @@ func numberTheoryCollection() {
 
 		_ = comb
 	}
+
+	{
+		const mod int64 = 1e9 + 7
+		pow := func(x, n int64) int64 {
+			x %= mod
+			res := int64(1)
+			for ; n > 0; n >>= 1 {
+				if n&1 == 1 {
+					res = res * x % mod
+				}
+				x = x * x % mod
+			}
+			return res
+		}
+		inv := func(a int64) int64 { return pow(a, mod-2) }
+		const mx int = 1e5
+		fact := [mx + 1]int64{1}
+		factInv := [mx + 1]int64{inv(1)}
+		for i := 1; i <= mx; i++ {
+			fact[i] = fact[i-1] * int64(i) % mod
+			factInv[i] = inv(fact[i])
+		}
+		comb := func(n, k int64) int64 { return fact[n] * factInv[k] * factInv[n-k] % mod }
+
+		_ = comb
+	}
+
+	// 卢卡斯定理
+	// 扩展卢卡斯
+	// todo https://blog.csdn.net/niiick/article/details/81064156
+	// https://cp-algorithms.com/combinatorics/binomial-coefficients.html
+	// 模板题 https://www.luogu.com.cn/problem/P4720
 
 	//
 
@@ -605,15 +678,12 @@ func numberTheoryCollection() {
 	}
 
 	_ = []interface{}{
-		calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve,
-		factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll,
-		calcPhi, phiAll,
-		modInverse, inv, div, solveLinearCongruence, quickMul, muls,
-		crt, excrt,
-		factorial, factorialMod, cnk, initFactorial, comb,
-		consecutiveNumbersSum,
-		partition,
+		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
+		isPrime, sieve, primeFactors, primeExponentsCountAll,
+		divisors, doDivisors, doDivisors2, factorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
+		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
+		factorial, factorialMod, cnk,
+		consecutiveNumbersSum, partition,
 	}
 }
 
