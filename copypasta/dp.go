@@ -5,7 +5,8 @@ import (
 )
 
 /*
-参考书籍推荐：《算法竞赛进阶指南》
+参考书籍推荐：
+《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，目前市面上讲解 DP 最好的一本书
 
 DP 视频讲解：
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
@@ -27,7 +28,7 @@ https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-
 CSES DP section editorial https://codeforces.com/blog/entry/70018
 LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
 重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
-AT 经典 DP 场 https://atcoder.jp/contests/dp
+AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
 
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
