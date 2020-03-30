@@ -360,40 +360,38 @@ func dpCollections() {
 		g := make([][]edge, n)
 		// read...
 
-		cap0 := make([]int, n)
-		var f func(v, fa int)
-		f = func(v, fa int) {
-			c := 0
+		subCap := make([]int, n)
+		var f func(v, fa int) int
+		f = func(v, fa int) (c int) {
 			for _, e := range g[v] {
 				if w := e.to; w != fa {
-					f(w, v)
 					if len(g[w]) == 1 {
 						c += e.cap
 					} else {
-						c += min(cap0[w], e.cap)
+						c += min(e.cap, f(w, v))
 					}
 				}
 			}
-			cap0[v] = c
+			subCap[v] = c
+			return
 		}
 		f(0, -1)
 
 		ans := make([]int, n)
-		ans[0] = cap0[0]
-		var f2 func(v, fa int)
-		f2 = func(v, fa int) {
+		var f2 func(v, fa, ansV int)
+		f2 = func(v, fa, ansV int) {
+			ans[v] = ansV
 			for _, e := range g[v] {
 				if w, c := e.to, e.cap; w != fa {
-					if len(g[v]) == 1 {
-						ans[w] = cap0[w] + c
+					if sc := subCap[w]; len(g[v]) == 1 {
+						f2(w, v, sc+c)
 					} else {
-						ans[w] = cap0[w] + min(c, ans[v]-min(cap0[w], c))
+						f2(w, v, sc+min(c, ansV-min(sc, c)))
 					}
-					f2(w, v)
 				}
 			}
 		}
-		f2(0, -1)
+		f2(0, -1, subCap[0])
 	}
 
 	// 插头 DP / 轮廓线动态规划
