@@ -259,7 +259,7 @@ func dpCollections() {
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
-	 */
+	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
 		n := len(upper) // len(lower) == len(upper)
@@ -324,7 +324,7 @@ func dpCollections() {
 	/* 树形 DP
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
-	 */
+	*/
 
 	// todo 公司聚会/树上最大独立集
 	// 入门经典 p.280
@@ -352,6 +352,50 @@ func dpCollections() {
 		return max(cover[0], nonCover[0])
 	}
 
+	// 换根 DP
+	// 进阶指南 p.292-295
+	// http://poj.org/problem?id=3585
+	unrootedTreeDP := func(n int) {
+		type edge struct{ to, cap int }
+		g := make([][]edge, n)
+		// read...
+
+		cap0 := make([]int, n)
+		var f func(v, fa int)
+		f = func(v, fa int) {
+			c := 0
+			for _, e := range g[v] {
+				if w := e.to; w != fa {
+					f(w, v)
+					if len(g[w]) == 1 {
+						c += e.cap
+					} else {
+						c += min(cap0[w], e.cap)
+					}
+				}
+			}
+			cap0[v] = c
+		}
+		f(0, -1)
+
+		ans := make([]int, n)
+		ans[0] = cap0[0]
+		var f2 func(v, fa int)
+		f2 = func(v, fa int) {
+			for _, e := range g[v] {
+				if w, c := e.to, e.cap; w != fa {
+					if len(g[v]) == 1 {
+						ans[w] = cap0[w] + c
+					} else {
+						ans[w] = cap0[w] + min(c, ans[v]-min(cap0[w], c))
+					}
+					f2(w, v)
+				}
+			}
+		}
+		f2(0, -1)
+	}
+
 	// 插头 DP / 轮廓线动态规划
 	//《训练指南》6.1
 
@@ -361,6 +405,6 @@ func dpCollections() {
 		minCoinChange,
 		knapsack01,
 		digitDP,
-		maxMatchingOnTree,
+		maxMatchingOnTree, unrootedTreeDP,
 	}
 }
