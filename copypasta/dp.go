@@ -26,6 +26,8 @@ https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-
 状压 DP https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
 LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
+重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
+AT 经典 DP 场 https://atcoder.jp/contests/dp
 
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
@@ -212,6 +214,7 @@ func dpCollections() {
 
 	/* 背包问题
 	https://en.wikipedia.org/wiki/Knapsack_problem
+	https://codeforces.com/blog/entry/59606
 	*/
 
 	// 01背包
@@ -243,16 +246,20 @@ func dpCollections() {
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
+
+	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	*/
 
 	/* 状压 DP
 	 */
 
 	/* 数位 DP
-	https://atcoder.jp/contests/abc154/tasks/abc154_e
+	todo 讲解+套题 https://codeforces.com/blog/entry/53960
+	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
+	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
 	 */
-	digitsDP := func(lower, upper string) int {
+	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
 		n := len(upper) // len(lower) == len(upper)
 
@@ -304,12 +311,18 @@ func dpCollections() {
 	// TODO: 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 
-	// TODO: 斜率优化
+	// TODO: 斜率优化 Convex Hull Trick
 	// https://oi-wiki.org/dp/opt/slope/
+	// https://codeforces.com/blog/entry/63823
 
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// https://blog.csdn.net/weixin_43914593/article/details/105150937
+
+	/* 树形 DP
+	https://codeforces.com/blog/entry/20935
+	https://codeforces.com/blog/entry/63257
+	 */
 
 	// todo 公司聚会/树上最大独立集
 	// 入门经典 p.280
@@ -345,7 +358,7 @@ func dpCollections() {
 		lcs, lcsPath, lis, distinctSubsequence,
 		minCoinChange,
 		knapsack01,
-		digitsDP,
+		digitDP,
 		maxMatchingOnTree,
 	}
 }
