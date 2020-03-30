@@ -509,6 +509,7 @@ func numberTheoryCollection() {
 	// https://cp-algorithms.com/algebra/factorial-modulo.html
 	// TODO: 卢卡斯定理
 	// todo: exLucas https://blog.csdn.net/niiick/article/details/81064156
+	// 模板题 https://www.luogu.com.cn/problem/P4720
 	factorialMod := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
