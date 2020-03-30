@@ -311,9 +311,10 @@ func dpCollections() {
 	// TODO: 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 
-	// TODO: 斜率优化 Convex Hull Trick
+	// TODO: 斜率优化 / 凸包优化 (CHT)
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://codeforces.com/blog/entry/63823
+	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
 
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
