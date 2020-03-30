@@ -585,6 +585,7 @@ func numberTheoryCollection() {
 	}
 
 	{
+		// O(n) 预处理，O(logn) 求组合数
 		const mod int64 = 1e9 + 7
 		const mx int = 1e5
 		fact := [mx + 1]int64{1}
@@ -610,6 +611,7 @@ func numberTheoryCollection() {
 	}
 
 	{
+		// O(nlogn) 预处理，O(1) 求组合数
 		const mod int64 = 1e9 + 7
 		pow := func(x, n int64) int64 {
 			x %= mod
@@ -632,14 +634,25 @@ func numberTheoryCollection() {
 		}
 		comb := func(n, k int64) int64 { return fact[n] * factInv[k] * factInv[n-k] % mod }
 
+		// 卢卡斯定理
+		var lucas func(n, k int64) int64
+		lucas = func(n, k int64) int64 {
+			if k == 0 {
+				return 1
+			}
+			return comb(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
+		}
+
 		_ = comb
 	}
 
-	// 卢卡斯定理
 	// 扩展卢卡斯
 	// todo https://blog.csdn.net/niiick/article/details/81064156
+	// https://blog.csdn.net/skywalkert/article/details/52553048
+	// https://blog.csdn.net/skywalkert/article/details/104681101
 	// https://cp-algorithms.com/combinatorics/binomial-coefficients.html
 	// 模板题 https://www.luogu.com.cn/problem/P4720
+	// 古代猪文 https://www.luogu.com.cn/problem/P2480
 
 	//
 
@@ -651,6 +664,7 @@ func numberTheoryCollection() {
 
 	// 杜教筛 - 积性函数前缀和
 	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700
+	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
 
 	//
