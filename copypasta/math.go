@@ -508,6 +508,7 @@ func numberTheoryCollection() {
 	// 阶乘模质数（模数较小）
 	// https://cp-algorithms.com/algebra/factorial-modulo.html
 	// TODO: 卢卡斯定理
+	// todo: exLucas https://blog.csdn.net/niiick/article/details/81064156
 	factorialMod := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
