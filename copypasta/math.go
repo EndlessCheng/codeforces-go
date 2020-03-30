@@ -456,8 +456,45 @@ func numberTheoryCollection() {
 	}
 
 	// 中国剩余定理 (CRT)
+	// https://blog.csdn.net/synapse7/article/details/9946013
 	// todo https://codeforces.com/blog/entry/61290
-	// todo 扩展中国剩余定理 (EXCRT) https://www.luogu.com.cn/problemnew/solution/P4777
+	crt := func(a, m []int) (x int) {
+		M := 1
+		for _, mi := range m {
+			M *= mi
+		}
+		for i, mi := range m {
+			Mi := M / mi
+			_, inv, _ := exgcd(Mi, mi)
+			x = (x + a[i]*Mi*inv) % M
+		}
+		x = (x + M) % M
+		return
+	}
+
+	// 扩展中国剩余定理 (EXCRT)
+	// 推荐 https://blog.csdn.net/niiick/article/details/80229217
+	// 模板题 https://www.luogu.com.cn/problemnew/solution/P4777
+	excrt := func(a, m []int) (x int) {
+		x = a[0]
+		M := m[0]
+		for i := 1; i < len(a); i++ {
+			mi := m[i]
+			c := (a[i] - x%mi + mi) % mi
+			gcd, inv, _ := exgcd(M, mi)
+			if c%gcd != 0 {
+				return -1
+			}
+			c /= gcd
+			mi /= gcd
+			inv = inv * c % mi
+			x += inv * M
+			M *= mi
+			x %= M
+		}
+		x = (x + M) % M
+		return
+	}
 
 	// 阶乘
 	factorial := func(n int) int64 {
@@ -571,6 +608,7 @@ func numberTheoryCollection() {
 		factorsAll, primeFactorsAll, lpfAll, divisors, doDivisors, doDivisors2, primeFactors, distinctPrimesCountAll, primeExponentsCountAll,
 		calcPhi, phiAll,
 		modInverse, inv, div, solveLinearCongruence, quickMul, muls,
+		crt, excrt,
 		factorial, factorialMod, cnk, initFactorial, comb,
 		consecutiveNumbersSum,
 		partition,
