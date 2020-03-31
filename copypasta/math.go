@@ -656,6 +656,11 @@ func numberTheoryCollection() {
 
 	//
 
+	// 莫比乌斯函数
+	// todo
+
+	//
+
 	// 数论分块/除法分块
 	// https://oeis.org/A006218
 	// a(n) = Sum_{k=1..n} floor(n/k)
@@ -705,6 +710,7 @@ func numberTheoryCollection() {
 // 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 // 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 // 可重集排列
+// 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
 // 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 // 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 // 斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
