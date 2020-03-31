@@ -681,6 +681,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 // 适用于稠密图 O(|V|^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
+// 题目：https://codeforces.ml/contest/1245/problem/D
 func (*graph) mstPrim(dist [][]int) (sum int) {
 	min := func(a, b int) int {
 		if a < b {
@@ -688,7 +689,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 		}
 		return b
 	}
-	const inf = 1.1e9
+	const inf int = 1.1e9
 	n := len(dist)
 	minWeights := make([]int, n)
 	for i := range minWeights {
