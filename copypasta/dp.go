@@ -37,6 +37,7 @@ https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 
 NOTE: 若使用滚动数组，复用时可能要初始化
 NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
+NOTE:（区间 DP）正向计算不易时，试着反向计算
 */
 func dpCollections() {
 	min := func(a, b int) int {
