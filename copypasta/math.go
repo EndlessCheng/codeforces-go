@@ -263,7 +263,9 @@ func numberTheoryCollection() {
 
 	// 预处理: [1,mx] 范围内数的所有约数
 	// 复杂度 O(nlogn)
-	// 推论：1~n 的约数个数总和大约为 nlogn
+	// NOTE: 1~n 的约数个数总和大约为 nlogn
+	// NOTE: factors[x] 为奇数 => x 为完全平方数 https://oeis.org/A000290
+	// NOTE: halfFactors(x) 为 ≤√x 的因数集合 https://oeis.org/A161906
 	factorsAll := func() {
 		const mx int = 1e5
 		factors := [mx + 1][]int{}
@@ -272,6 +274,11 @@ func numberTheoryCollection() {
 				factors[j] = append(factors[j], i)
 			}
 		}
+
+		isSquareNumber := func(x int) bool { return len(factors[x])&1 == 1 }
+		halfFactors := func(x int) []int { f := factors[x]; return f[:(len(f)-1)/2+1] }
+
+		_, _ = isSquareNumber, halfFactors
 	}
 
 	// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n) https://oeis.org/A000005
