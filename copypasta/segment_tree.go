@@ -5,7 +5,8 @@ import "math/bits"
 // https://oi-wiki.org/ds/seg/
 // https://codeforces.com/blog/entry/18051
 // https://codeforces.com/blog/entry/15890
-// TODO: zkw 线段树 https://codeforces.com/blog/entry/18051
+// todo zkw 线段树 https://codeforces.com/blog/entry/18051
+// todo 李超线段树 https://zhuanlan.zhihu.com/p/64946571
 
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
