@@ -576,12 +576,26 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	cnk := func(n, k int) int {
+	comb := func(n, k int) int {
 		res := 1
 		for i := 1; i <= k; i++ {
 			res = res * (n - k + i) / i
 		}
 		return res
+	}
+
+	// https://www.zhihu.com/question/26094736
+	initComb := func() {
+		const mod int = 1e9 + 7
+		const mx int = 2e3
+		C := [mx + 1][mx + 1]int{}
+		for i := 0; i <= mx; i++ {
+			C[i][0] = 1
+			for j := 1; j < i; j++ {
+				C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
+			}
+			C[i][i] = 1
+		}
 	}
 
 	{
@@ -701,7 +715,7 @@ func numberTheoryCollection() {
 		isPrime, sieve, primeFactors, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, factorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
-		factorial, factorialMod, cnk,
+		factorial, factorialMod, comb, initComb,
 		consecutiveNumbersSum, partition,
 	}
 }
