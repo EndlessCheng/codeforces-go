@@ -8,6 +8,10 @@ func numTeams(a []int) (ans int) {
 				if ai < a[j] && a[j] < a[k] || ai > a[j] && a[j] > a[k] {
 					ans++
 				}
+				// or:
+				//if (a[i]-a[j])*(a[j]-a[k]) > 0 {
+				//	ans++
+				//}
 			}
 		}
 	}
