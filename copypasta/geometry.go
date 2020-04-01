@@ -431,8 +431,23 @@ func vec2Collection() {
 		return
 	}
 
-	// Check if point belongs to the convex polygon in O(logN)
-	// todo https://cp-algorithms.com/geometry/point-in-convex-polygon.html
+	// 判断点是否在凸多边形内部 O(logN)
+	// ps 逆时针顺序
+	// https://www.cnblogs.com/yym2013/p/3673616.html
+	// https://cp-algorithms.com/geometry/point-in-convex-polygon.html
+	// 其他 O(n) 方法 https://blog.csdn.net/WilliamSun0122/article/details/77994526
+	inPolygon := func(ps []vec, p vec) bool {
+		n := len(ps)
+		p0 := p.sub(ps[0])
+		// 外：最右射线的右侧或最左射线的左侧
+		if ps[1].sub(ps[0]).det(p0) < 0 || ps[n-1].sub(ps[0]).det(p0) > 0 {
+			return false
+		}
+		// p0 是否在右侧或重合
+		i := sort.Search(n, func(mid int) bool { return ps[mid].sub(ps[0]).det(p0) <= 0 })
+		// 是否在边左侧或与边重合
+		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0
+	}
 
 	// 判断 ∠abc 是否为直角
 	// 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）
@@ -485,7 +500,10 @@ func vec2Collection() {
 	// TODO 半平面交
 	// 模板题 https://www.luogu.com.cn/problem/P4196
 
-	_ = []interface{}{readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, isRectangleAnyOrder, minAreaRect}
+	_ = []interface{}{
+		readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inPolygon,
+		isRectangleAnyOrder, minAreaRect,
+	}
 }
 
 /* 三维向量（点）*/
