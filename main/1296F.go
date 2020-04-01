@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -32,7 +31,7 @@ func CF1296F(_r io.Reader, _w io.Writer) {
 	sort.Slice(qs, func(i, j int) bool { return qs[i][2] > qs[j][2] })
 
 	ans := make([]int, n-1)
-	var ok bool
+	var markNew, foundSame bool
 	var f func(v, fa int) bool
 	f = func(v, fa int) bool {
 		if v == w {
@@ -43,7 +42,9 @@ func CF1296F(_r io.Reader, _w io.Writer) {
 				if f(w, v) {
 					if ans[id] == 0 {
 						ans[id] = min
-						ok = true
+						markNew = true
+					} else if ans[id] == min {
+						foundSame = true
 					}
 					return true
 				}
@@ -51,11 +52,11 @@ func CF1296F(_r io.Reader, _w io.Writer) {
 		}
 		return false
 	}
-	for i, q := range qs {
+	for _, q := range qs {
 		v, w, min = q[0]-1, q[1]-1, q[2]
-		ok = false
+		markNew, foundSame = false, false
 		f(v, -1)
-		if !ok && min != qs[i-1][2] {
+		if !markNew && !foundSame {
 			Fprint(out, -1)
 			return
 		}
@@ -68,4 +69,4 @@ func CF1296F(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { CF1296F(os.Stdin, os.Stdout) }
+//func main() { CF1296F(os.Stdin, os.Stdout) }

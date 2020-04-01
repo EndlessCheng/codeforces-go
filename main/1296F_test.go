@@ -17,7 +17,7 @@ inputCopy
 1 2 5
 1 3 3
 outputCopy
-5 3 5
+5 3 1
 inputCopy
 6
 1 2
