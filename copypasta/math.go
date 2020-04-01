@@ -11,6 +11,8 @@ import (
 // NOTE: a%-b == a%b
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
+	// https://oeis.org/A000040
+	primes := [...]int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
 
 	sqCheck := func(a int64) bool { r := int64(math.Round(math.Sqrt(float64(a)))); return r*r == a }
 	cubeCheck := func(a int64) bool { r := int64(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
@@ -735,6 +737,7 @@ func numberTheoryCollection() {
 	}
 
 	_ = []interface{}{
+		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
 		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactors, primeExponentsCountAll,
