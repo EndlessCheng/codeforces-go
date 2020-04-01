@@ -12,6 +12,9 @@ import (
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
+	sqCheck := func(a int64) bool { r := int64(math.Round(math.Sqrt(float64(a)))); return r*r == a }
+	cubeCheck := func(a int64) bool { r := int64(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
+
 	// Least k such that H(k) > n, where H(k) is the harmonic number sum_{i=1..k} 1/i
 	// https://oeis.org/A002387
 	// https://oeis.org/A004080
@@ -718,6 +721,7 @@ func numberTheoryCollection() {
 	}
 
 	_ = []interface{}{
+		sqCheck, cubeCheck,
 		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
 		isPrime, sieve, primeFactors, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
