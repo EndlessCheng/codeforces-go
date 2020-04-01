@@ -221,6 +221,7 @@ func dpCollections() {
 
 	// 01背包
 	// https://oi-wiki.org/dp/knapsack/
+	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
 	knapsack01 := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
