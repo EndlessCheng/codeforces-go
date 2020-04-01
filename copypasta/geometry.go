@@ -444,7 +444,7 @@ func vec2Collection() {
 		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
 	}
 
-	// 判断点是否在凸多边形内部 O(logN)
+	// 判断点 p 是否在凸多边形 ps 内部 O(logN)
 	// ps 逆时针顺序
 	// https://www.cnblogs.com/yym2013/p/3673616.html
 	// https://cp-algorithms.com/geometry/point-in-convex-polygon.html
