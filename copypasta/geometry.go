@@ -431,6 +431,19 @@ func vec2Collection() {
 		return
 	}
 
+	abs := func(x int64) int64 {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
+	// 点是否在三角形内
+	inTriangle := func(a, b, c, p vec) bool {
+		pa, pb, pc := a.sub(p), b.sub(p), c.sub(p)
+		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
+	}
+
 	// 判断点是否在凸多边形内部 O(logN)
 	// ps 逆时针顺序
 	// https://www.cnblogs.com/yym2013/p/3673616.html
@@ -501,7 +514,7 @@ func vec2Collection() {
 	// 模板题 https://www.luogu.com.cn/problem/P4196
 
 	_ = []interface{}{
-		readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inPolygon,
+		readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inTriangle, inPolygon,
 		isRectangleAnyOrder, minAreaRect,
 	}
 }
