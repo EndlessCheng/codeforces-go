@@ -438,7 +438,7 @@ func vec2Collection() {
 		return x
 	}
 
-	// 点是否在三角形内
+	// 点 p 是否在三角形 △abc 内
 	inTriangle := func(a, b, c, p vec) bool {
 		pa, pb, pc := a.sub(p), b.sub(p), c.sub(p)
 		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
