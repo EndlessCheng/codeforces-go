@@ -15,11 +15,11 @@ func TestGenContestTemplates(t *testing.T) {
 }
 
 // 生成单道题目的模板（Codeforces）
-// https://codeforces.com/problemset/problem/1293/C
-// https://codeforces.com/problemset/status/1291/problem/D
-// https://codeforces.com/gym/102253/problem/C
+// https://codeforces.ml/problemset/problem/1293/C
+// https://codeforces.ml/problemset/status/1291/problem/D
+// https://codeforces.ml/gym/102253/problem/C
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/problemset/problem/13/D"
+	const problemURL = "https://codeforces.ml/problemset/problem/1/D"
 	if err := GenCodeforcesNormalTemplates(problemURL); err != nil {
 		t.Fatal(err)
 	}
