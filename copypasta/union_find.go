@@ -129,8 +129,10 @@ func unionFindVertexWeight() {
 // 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
 // https://oi-wiki.org/ds/dsu/#_9
 // 模板题 https://codeforces.com/problemset/problem/1074/D
+// 种类并查集：同义词反义词 https://codeforces.ml/problemset/problem/766/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 func unionFindEdgeWeight() {
+	const kinds = 2
 	var fa, dis []int
 	initFa := func(n int) { // n+1
 		fa = make([]int, n)
@@ -148,15 +150,16 @@ func unionFindEdgeWeight() {
 		}
 		return fa[x]
 	}
-	merge := func(from, to int, d int) {
-		fFrom, fTo := find(from), find(to)
-		if fFrom != fTo {
+	delta := func(x, y int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds } // 调用前需要保证 same(x, y) 为 true
+	merge := func(from, to int, d int) bool { // 返回是否与已知条件矛盾
+		if fFrom, fTo := find(from), find(to); fFrom != fTo {
 			dis[fFrom] = d + dis[to] - dis[from]
 			fa[fFrom] = fTo
+			return true
 		}
+		return delta(from, to) == d
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
-	delta := func(x, y, kinds int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds } // 调用前需要保证 same(x, y) == true
 
 	// 离散化版本
 	faMap, disMap := map[int]int{}, map[int]int{}

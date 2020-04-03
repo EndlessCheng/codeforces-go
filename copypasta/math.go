@@ -754,6 +754,7 @@ func numberTheoryCollection() {
 // 可重集排列
 // 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
 // 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
+// 范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
 // 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 // 斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
 // Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
