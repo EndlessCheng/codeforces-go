@@ -77,6 +77,12 @@ func numberTheoryCollection() {
 	}
 	calcLCM := func(a, b int64) int64 { return a / calcGCD(a, b) * b }
 
+	// 前 n 个数的 LCM
+	// https://oeis.org/A003418
+	// Mangoldt Function
+	// https://mathworld.wolfram.com/MangoldtFunction.html
+	// https://oeis.org/A014963
+
 	// 给定数组，统计所有区间的 GCD 值
 	// 返回 map[GCD值]等于该值的区间个数
 	cntRangeGCD := func(arr []int64) map[int64]int64 {
