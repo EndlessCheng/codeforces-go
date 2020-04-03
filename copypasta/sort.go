@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// sort.Ints 性能测试 https://codeforces.ml/contest/977/submission/75301978
+
 func sortCollections() {
 	sortString := func(s string) string {
 		// 可以转成 []byte，也可以……

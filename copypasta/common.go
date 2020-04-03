@@ -393,6 +393,7 @@ func commonCollection() {
 	// 数组第 k 小 (Quick Select)
 	// 调用会改变数组中元素顺序
 	// 模板题 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+	// 模板题 https://codeforces.ml/contest/977/problem/C
 	kthElement := func(a []int, k int) int {
 		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
 		l, r := 0, len(a)-1
