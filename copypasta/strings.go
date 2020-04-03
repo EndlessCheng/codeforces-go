@@ -19,7 +19,7 @@ func stringCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// TODO 二维 hash
-	// TODO anti-hash: 最好不要自然溢出 https://codeforces.ml/blog/entry/4898
+	// TODO anti-hash: 最好不要自然溢出 https://codeforces.ml/blog/entry/4898 https://codeforces.ml/blog/entry/60442
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
