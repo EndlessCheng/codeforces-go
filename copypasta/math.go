@@ -131,6 +131,7 @@ func numberTheoryCollection() {
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
 	// 也有线性时间的算法，见 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
+	// 素数个数 π(n) https://oeis.org/A000720
 	sieve := func() {
 		const mx int = 1e6
 		primes := make([]int, 0, mx/10) // need check
