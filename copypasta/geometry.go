@@ -117,6 +117,18 @@ func (a vecF) disToSeg(l lineF) float64 {
 	return math.Abs(v.det(p1a)) / v.len()
 }
 
+// 点 a 到线段 l 的距离 <= r
+func (a vec) withinRange(l line, r int64) bool {
+	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
+	if v.dot(p1a) <= 0 {
+		return p1a.len2() <= r*r
+	}
+	if v.dot(p2a) >= 0 {
+		return p2a.len2() <= r*r
+	}
+	return v.det(p1a)*v.det(p1a) <= v.len2()*r*r
+}
+
 // 点 a 在直线 l 上的投影
 func (a vecF) projection(l lineF) vecF {
 	v, p1a := l.vec(), a.sub(l.p1)
