@@ -108,10 +108,10 @@ func (a vecF) disToSeg(l lineF) float64 {
 		return a.sub(l.p1).len()
 	}
 	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
-	if v.dot(p1a) < -eps {
+	if v.dot(p1a) < eps {
 		return p1a.len()
 	}
-	if v.dot(p2a) > eps {
+	if v.dot(p2a) > -eps {
 		return p2a.len()
 	}
 	return math.Abs(v.det(p1a)) / v.len()
