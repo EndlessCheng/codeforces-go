@@ -8,6 +8,17 @@ import (
 
 // sort.Ints 性能测试 https://codeforces.ml/contest/977/submission/75301978
 
+// 有些 OJ 不支持 sort.Slice，只能用 sort.Sort
+type _pair struct{ x, y int }
+type pairSlice []_pair
+
+func (p pairSlice) Len() int { return len(p) }
+func (p pairSlice) Less(i, j int) bool {
+	a, b := p[i], p[j]
+	return a.x < b.x || a.x == b.x && a.y < b.y
+}
+func (p pairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+
 func sortCollections() {
 	sortString := func(s string) string {
 		// 可以转成 []byte，也可以……
