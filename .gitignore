@@ -13,7 +13,6 @@
 *.out
 
 /.idea
-/hello
-/gym
-*.txt
 /dash
+*.txt
+/main.go
