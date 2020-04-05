@@ -29,6 +29,7 @@ CSES DP section editorial https://codeforces.com/blog/entry/70018
 LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
 重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
 AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
+信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
@@ -254,6 +255,7 @@ func dpCollections() {
 	*/
 
 	/* 状压 DP
+	NOTE: 不能将问题分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	 */
 
 	// 旅行商问题 (TSP) https://en.wikipedia.org/wiki/Travelling_salesman_problem
