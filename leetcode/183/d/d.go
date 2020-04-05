@@ -13,28 +13,28 @@ func stoneGameIII(a []int) (ans string) {
 		dp[i] = 1e9
 	}
 	var f func(p int) int
-	f = func(p int) (_ans int) {
+	f = func(p int) (res int) {
 		if p >= n {
 			return 0
 		}
-		if dp[p] < 1e9 {
+		if dp[p] != 1e9 {
 			return dp[p]
 		}
-		defer func() { dp[p] = _ans }()
-		_ans = a[p] - f(p+1)
+		defer func() { dp[p] = res }()
+		res = a[p] - f(p+1)
 		if p+1 < n {
-			_ans = max(_ans, a[p]+a[p+1]-f(p+2))
+			res = max(res, a[p]+a[p+1]-f(p+2))
 		}
 		if p+2 < n {
-			_ans = max(_ans, a[p]+a[p+1]+a[p+2]-f(p+3))
+			res = max(res, a[p]+a[p+1]+a[p+2]-f(p+3))
 		}
 		return
 	}
-	ret := f(0)
-	if ret > 0 {
+	res := f(0)
+	if res > 0 {
 		return "Alice"
 	}
-	if ret == 0 {
+	if res == 0 {
 		return "Tie"
 	}
 	return "Bob"
