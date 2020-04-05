@@ -58,12 +58,12 @@ func dpCollections() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
 		var f func(int, int) int
-		f = func(x, y int) (_ans int) {
+		f = func(x, y int) (res int) {
 			p := pair{x, y}
 			if v, ok := dp[p]; ok {
 				return v
 			}
-			defer func() { dp[p] = _ans }()
+			defer func() { dp[p] = res }()
 
 			return
 		}
@@ -72,17 +72,13 @@ func dpCollections() {
 
 	/* 线性 DP：前缀/后缀之间的转移
 	数字三角形 https://www.luogu.com.cn/problem/P1216
-	最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
-	最长上升子序列 (LIS) https://leetcode-cn.com/problems/longest-increasing-subsequence/
-	最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
-
-	两个排列的 LCS https://www.luogu.com.cn/problem/P1439
+	todo 最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
+	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	*/
 
 	// LCS
 	// 最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) https://leetcode-cn.com/problems/shortest-common-supersequence/
-	// todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	lcs := func(s1, s2 string) int {
 		n, m := len(s1), len(s2)
 		dp := make([][]int, n+1)
@@ -245,21 +241,75 @@ func dpCollections() {
 
 	// 多重背包
 
-	/* 区间 DP / 环形 DP：元素的位置影响结果
+	/* 区间 DP / 环形 DP
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
-	石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
-	石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
-
+	todo 石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 
-	博弈类线性 DP / 博弈类区间 DP
-	    转移：让「自己的分减去对手的分」最大
+	博弈类 DP
+	    转移：让「自己与对手的分差」最大
 	例题：https://leetcode.com/problems/stone-game-iii/
 	     https://nanti.jisuanke.com/t/48
 	*/
 
 	/* 状压 DP
 	 */
+
+	// 旅行商问题 (TSP) https://en.wikipedia.org/wiki/Travelling_salesman_problem
+	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
+	tsp := func(dist [][]int) int {
+		n := len(dist)
+		const inf int = 1e9
+		dp := make([][]int, 1<<n)
+		for i := range dp {
+			dp[i] = make([]int, n)
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
+		}
+
+		// 记忆化：已经访问的集合 s，当前位置 v
+		var f func(s, v int) int
+		f = func(s, v int) (res int) {
+			dv := &dp[s][v]
+			if *dv >= 0 {
+				return *dv
+			}
+			defer func() { *dv = res }()
+			if s == 1<<n-1 && v == 0 {
+				return
+			} // 访问了所有节点并回到了 0
+			res = inf
+			for w := 0; w < n; w++ {
+				if s>>w&1 == 0 {
+					res = min(res, f(s|1<<w, w)+dist[v][w])
+				}
+			}
+			return
+		}
+		f(0, 0)
+
+		// DP
+		dp = make([][]int, 1<<n)
+		for i := range dp {
+			dp[i] = make([]int, n)
+			for j := range dp[i] {
+				dp[i][j] = inf
+			}
+		}
+		dp[1<<n-1][0] = 0
+		for s := 1<<n - 2; s >= 0; s-- {
+			for v := 0; v < n; v++ {
+				for w := 0; w < n; w++ {
+					if s>>w&1 == 0 {
+						dp[s][v] = min(dp[s][v], dp[s|1<<w][w]+dist[v][w])
+					}
+				}
+			}
+		}
+		return dp[0][0]
+	}
 
 	/* 数位 DP
 	todo 讲解+套题 https://codeforces.com/blog/entry/53960
@@ -409,6 +459,7 @@ func dpCollections() {
 		lcs, lcsPath, lis, distinctSubsequence,
 		minCoinChange,
 		knapsack01,
+		tsp,
 		digitDP,
 		maxMatchingOnTree, unrootedTreeDP,
 	}
