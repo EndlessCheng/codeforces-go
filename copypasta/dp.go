@@ -251,6 +251,11 @@ func dpCollections() {
 	石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
+
+	博弈类线性 DP / 博弈类区间 DP
+	    转移：让「自己的分减去对手的分」最大
+	例题：https://leetcode.com/problems/stone-game-iii/
+	     https://nanti.jisuanke.com/t/48
 	*/
 
 	/* 状压 DP

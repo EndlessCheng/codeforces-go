@@ -910,6 +910,8 @@ func miscCollection() {
 	}
 }
 
+// 博弈论
+// 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 func gameTheoryCollection() {
