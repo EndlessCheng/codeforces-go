@@ -15,8 +15,11 @@ func stringCollection() {
 		return b
 	}
 
+	// 字符串哈希
 	// https://oi-wiki.org/string/hash/
+	// 利用 set 可以求出固定长度的不同子串个数
 	// 模板题 https://www.luogu.com.cn/problem/P3370
+	// 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// TODO 二维 hash
 	// TODO anti-hash: 最好不要自然溢出 https://codeforces.ml/blog/entry/4898 https://codeforces.ml/blog/entry/60442
@@ -165,26 +168,22 @@ func stringCollection() {
 	// 判断 [l,r] 是否为回文串，范围 0<=l<=r<n
 	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
-	_ = []interface{}{
-		initPowP, calcHash,
-		kmpSearch, calcMinPeriod,
-		smallestRepresentation,
-		manacher, isP,
-	}
-}
-
-// https://oi-wiki.org/string/sa/#height
-// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
-// 模板题 https://www.luogu.com.cn/problem/P3809
-func suffixArrayCollection() {
-	// lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
-	calcLCP := func(s []byte, sa []int) (lcp []int) {
+	// 后缀数组
+	// https://oi-wiki.org/string/sa/#height
+	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
+	// 模板题 https://www.luogu.com.cn/problem/P3809
+	// 最长重复子串 https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// todo []int 的后缀数组
+	suffixArray := func(s []byte) {
 		n := len(s)
+		sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
+
+		sa = append([]int{n}, sa...) // todo 方便定义 lcp
 		rank := make([]int, n+1)
 		for i := range rank {
 			rank[sa[i]] = i
 		}
-		lcp = make([]int, n, n+1)
+		lcp := make([]int, n, n+1) // lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
 		h := 0
 		for i := range lcp {
 			if h > 0 {
@@ -194,26 +193,25 @@ func suffixArrayCollection() {
 			}
 			lcp[rank[i]-1] = h
 		}
-		return
-	}
+		lcp = append(lcp, 0) // todo
 
-	var s []byte
-	sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
-	// TODO: 感觉要再整理一下
-	sa = append([]int{len(s)}, sa...) // 方便定义 lcp
-	lcp := calcLCP(s, sa)
-	lcp = append(lcp, 0)
-
-	// debug
-	for i := range sa {
-		if lcp[i] == 0 {
-			Println("  " + string(s[sa[i]:]))
-		} else {
-			Println(lcp[i], string(s[sa[i]:]))
+		// debug
+		for i := range sa {
+			if lcp[i] == 0 {
+				Println("  " + string(s[sa[i]:]))
+			} else {
+				Println(lcp[i], string(s[sa[i]:]))
+			}
 		}
 	}
 
-	// TODO: []int 的后缀数组
+	_ = []interface{}{
+		initPowP, calcHash,
+		kmpSearch, calcMinPeriod,
+		smallestRepresentation,
+		manacher, isP,
+		suffixArray,
+	}
 }
 
 // 前缀树/字典树/单词查找树
@@ -231,7 +229,7 @@ func suffixArrayCollection() {
 type trieNode struct {
 	son    [26]*trieNode
 	dupCnt int
-	val    int    // val 也可以是个 []int，此时 dupCnt == len(val)
+	val    int // val 也可以是个 []int，此时 dupCnt == len(val)
 
 	// 当 o.son[i] 不能匹配 text 中的某个字符时，o.fail 即为下一个应该查找的结点
 	fail *trieNode

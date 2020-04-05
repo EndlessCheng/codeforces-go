@@ -250,8 +250,9 @@ func dpCollections() {
 
 	博弈类 DP
 	    转移：让「自己与对手的分差」最大
-	例题：https://leetcode.com/problems/stone-game-iii/
-	     https://nanti.jisuanke.com/t/48
+	https://leetcode.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
+	https://leetcode.com/problems/stone-game-ii/
+	https://leetcode.com/problems/stone-game-iii/
 	*/
 
 	/* 状压 DP
