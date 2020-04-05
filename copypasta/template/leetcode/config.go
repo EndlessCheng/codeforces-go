@@ -3,7 +3,7 @@ package leetcode
 import "fmt"
 
 const (
-	contestID = 183
+	contestID = 184
 
 	hostZH = "leetcode-cn.com"
 	hostEN = "leetcode.com"
