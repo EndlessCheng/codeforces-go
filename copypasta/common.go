@@ -796,13 +796,13 @@ func monotoneCollection() {
 
 	// 单调队列
 	// https://oi-wiki.org/ds/monotonous-queue/
-	// 模板题（滑动窗口） https://www.luogu.com.cn/problem/P1886
+	// 模板题（滑动窗口最值） https://www.luogu.com.cn/problem/P1886
 	// 例题：CF1237D
 	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
 		// 为简单起见，用数组+下标模拟
 		// 举例：固定大小的区间最值（滑动窗口）
 		n := len(a)
-		mins := make([]int, n)
+		mins := make([]int, n) // mins[i] 表示 min{a[i],...,a[i+fixedSize-1]}
 		deque := make([]int, n)
 		s, t := 0, 0
 		for i, v := range a {

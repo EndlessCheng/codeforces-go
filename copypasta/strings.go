@@ -172,9 +172,12 @@ func stringCollection() {
 	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	// NOTE: Go1.13 开始使用 SA-IS 算法
 	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
+	// 题目总结《后缀数组——处理字符串的有力工具》
 	// 模板题 https://www.luogu.com.cn/problem/P3809
-	// 最长重复子串 https://leetcode-cn.com/problems/longest-duplicate-substring/
-	// 最长不重叠重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223）
+	// 可重叠最长重复子串 https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// 不可重叠最长重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14）
+	// 可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261（height 上的滑动窗口最小值）
+	// 重复次数最多的连续重复子串 http://poj.org/problem?id=3693
 	// todo []int 的后缀数组
 	suffixArray := func(s []byte) {
 		n := len(s)
