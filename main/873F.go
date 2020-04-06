@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"index/suffixarray"
 	"io"
-	"os"
 	"reflect"
 	"unsafe"
 )
@@ -15,19 +14,11 @@ func CF873F(_r io.Reader, _w io.Writer) {
 	var n int
 	var s, forbidden []byte
 	Fscan(bufio.NewReader(_r), &n, &s, &forbidden)
-
-	for i, j := 0, n-1; i < j; i++ {
+	for i, j := 0, n-1; i < j; {
 		s[i], s[j] = s[j], s[i]
 		forbidden[i], forbidden[j] = forbidden[j], forbidden[i]
+		i++
 		j--
-	}
-	ans := int64(0)
-	prefixSum := make([]int, n+1)
-	for i, v := range forbidden {
-		if ans == 0 && v == '0' {
-			ans = int64(n - i)
-		}
-		prefixSum[i+1] = prefixSum[i] + int(v-'0')
 	}
 
 	sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
@@ -47,7 +38,6 @@ func CF873F(_r io.Reader, _w io.Writer) {
 		}
 		height[sai] = h
 	}
-
 	type pair struct{ v, i int }
 	posL := make([]int, n)
 	stack := []pair{{-1, -1}}
@@ -75,9 +65,20 @@ func CF873F(_r io.Reader, _w io.Writer) {
 		stack = append(stack, pair{v, i})
 	}
 
+	ans := int64(0)
+	for i, v := range forbidden {
+		if v == '0' {
+			ans = int64(n - i)
+			break
+		}
+	}
+	prefixSum := make([]int, n+1)
+	for i, p := range sa {
+		prefixSum[i+1] = prefixSum[i] + int('1'-forbidden[p])
+	}
 	for i, h := range height {
 		if h > 0 {
-			if v := int64(h) * int64(posR[i]-posL[i]-(prefixSum[posR[i]]-prefixSum[posL[i]])); v > ans {
+			if v := int64(h) * int64(prefixSum[posR[i]]-prefixSum[posL[i]]); v > ans {
 				ans = v
 			}
 		}
@@ -85,4 +86,4 @@ func CF873F(_r io.Reader, _w io.Writer) {
 	Fprint(_w, ans)
 }
 
-func main() { CF873F(os.Stdin, os.Stdout) }
+//func main() { CF873F(os.Stdin, os.Stdout) }
