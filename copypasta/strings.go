@@ -1,7 +1,6 @@
 package copypasta
 
 import (
-	. "fmt"
 	"index/suffixarray"
 	"reflect"
 	"unsafe"
@@ -169,40 +168,57 @@ func stringCollection() {
 	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
 
 	// 后缀数组
-	// https://oi-wiki.org/string/sa/#height
+	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
+	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
+	// NOTE: Go1.13 开始使用 SA-IS 算法
 	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
 	// 模板题 https://www.luogu.com.cn/problem/P3809
 	// 最长重复子串 https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// 最长不重叠重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223）
 	// todo []int 的后缀数组
 	suffixArray := func(s []byte) {
 		n := len(s)
-		sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
+		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
+		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
-		sa = append([]int{n}, sa...) // todo 方便定义 lcp
-		rank := make([]int, n+1)
+		rank := make([]int, n) // rank[i] 表示 s[i:] 在 sa 中的位置
 		for i := range rank {
 			rank[sa[i]] = i
 		}
-		lcp := make([]int, n, n+1) // lcp[i] = lcp(s[sa[i]:], s[sa[i+1]:])
+		height := make([]int, n) // height[i] = lcp(s[sa[i]:], s[sa[i-1]:])
 		h := 0
-		for i := range lcp {
+		for i, sai := range rank {
 			if h > 0 {
 				h--
 			}
-			for j := sa[rank[i]-1]; j+h < n && i+h < n && s[j+h] == s[i+h]; h++ {
+			if sai > 0 {
+				for j := int(sa[sai-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
+				}
 			}
-			lcp[rank[i]-1] = h
+			height[sai] = h
 		}
-		lcp = append(lcp, 0) // todo
+
+		// 构建 height 的 ST 表……
+		lcp := func(i, j int) (res int) {
+			ri, rj := rank[sa[i]], rank[sa[j]]
+			if ri > rj {
+				ri, rj = rj, ri
+			}
+			//res := stQuery(ri+1, rj) // 左闭右闭
+			return
+		}
 
 		// debug
-		for i := range sa {
-			if lcp[i] == 0 {
-				Println("  " + string(s[sa[i]:]))
+		for i, h := range height {
+			suffix := string(s[sa[i]:])
+			if h == 0 {
+				println(" ", suffix)
 			} else {
-				Println(lcp[i], string(s[sa[i]:]))
+				println(h, suffix)
 			}
 		}
+
+		_ = lcp
 	}
 
 	_ = []interface{}{
