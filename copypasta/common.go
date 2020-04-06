@@ -754,23 +754,23 @@ func monotoneCollection() {
 
 	// 单调栈
 	// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
-	// 如何理解：把数组想象成一列山峰，站在山峰 a[i] 的顶上向两侧的上方看，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
-	// 这就启发我们引入一个顶小底大的单调栈，入栈前不断比较栈顶元素直到找到一个比当前元素大的。
-	// 栈可以存元素值和下标，也可以只存下标但这样写就要判断栈是否为空
-	// 技巧：事先压入一个边界元素到栈底，这样保证循环中栈一定不会为空，从而简化逻辑
+	// 如何理解：把数组想象成一列山峰，站在 a[i] 的山顶仰望两侧的山峰，是看不到高山背后的矮山的，只能看到一座座更高的山峰
+	//          这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
+	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
-	// 模板题 https://www.luogu.com.cn/problem/P5788
+	// 模板题 https://www.luogu.com.cn/problem/P5788 https://leetcode.com/problems/next-greater-element-i/ https://leetcode.com/problems/next-greater-element-ii/
+	// 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
 		n := len(a)
-		const border int = 2e9 // -2e9
+		const border int = -1 // 2e9
 		type pair struct{ v, i int }
 		posL := make([]int, n)
 		stack := []pair{{border, -1}}
 		for i, v := range a {
 			for {
-				if top := stack[len(stack)-1]; top.v > v { // 严格大于
-					posL[i] = top.i
+				if top := stack[len(stack)-1]; top.v < v { // 严格小于
+					posL[i] = top.i //+ 1
 					break
 				}
 				stack = stack[:len(stack)-1]
@@ -782,8 +782,8 @@ func monotoneCollection() {
 		for i := n - 1; i >= 0; i-- {
 			v := a[i]
 			for {
-				if top := stack[len(stack)-1]; top.v > v { // 严格大于
-					posR[i] = top.i
+				if top := stack[len(stack)-1]; top.v < v { // 严格小于
+					posR[i] = top.i //- 1
 					break
 				}
 				stack = stack[:len(stack)-1]

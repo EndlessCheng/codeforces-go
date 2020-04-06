@@ -181,17 +181,21 @@ func stringCollection() {
 	// 不可重叠最长重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14）
 	// 可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261（height 上的滑动窗口最小值）
 	// 重复次数最多的连续重复子串 http://poj.org/problem?id=3693
-	// todo []int 的后缀数组
 	suffixArray := func(s []byte) {
 		n := len(s)
+		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
+		//      后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
 		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
 		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
-		rank := make([]int, n) // rank[i] 表示 s[i:] 在 sa 中的位置
+		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
+		//     rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
+		rank := make([]int, n)
 		for i := range rank {
 			rank[sa[i]] = i
 		}
-		height := make([]int, n) // height[i] = lcp(s[sa[i]:], s[sa[i-1]:])
+		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
+		height := make([]int, n)
 		h := 0
 		for i, sai := range rank {
 			if h > 0 {
@@ -204,9 +208,11 @@ func stringCollection() {
 			height[sai] = h
 		}
 
-		// 构建 height 的 ST 表……
+		// EXTRA: 任意后缀的 LCP
+		// 构建 height 的 ST 表... stInit(height)
+		// 将 s[i:] 和 s[j:] 通过 rank 数组映射为 height 的下标
 		lcp := func(i, j int) (res int) {
-			ri, rj := rank[sa[i]], rank[sa[j]]
+			ri, rj := rank[i], rank[j]
 			if ri > rj {
 				ri, rj = rj, ri
 			}
@@ -214,6 +220,7 @@ func stringCollection() {
 			return
 		}
 
+		// EXTRA: 可重叠最长重复子串
 		longestDupSubstring := func() []byte {
 			maxP, maxH := 0, 0
 			for i, h := range height {
@@ -222,6 +229,14 @@ func stringCollection() {
 				}
 			}
 			return s[sa[maxP] : int(sa[maxP])+maxH]
+		}
+
+		// EXTRA: 按后缀字典序求前缀和
+		// vals[i] 表示 s[i] 的某个属性
+		vals := make([]int, n)
+		prefixSum := make([]int, n+1)
+		for i, p := range sa {
+			prefixSum[i+1] = prefixSum[i] + vals[p]
 		}
 
 		// debug

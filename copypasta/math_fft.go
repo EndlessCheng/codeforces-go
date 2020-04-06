@@ -11,8 +11,8 @@ import (
 // https://oi-wiki.org/math/poly/fft/
 // https://cp-algorithms.com/algebra/fft.html
 // https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
-
 // TODO: 求逆 求开方 ... https://cp-algorithms.com/algebra/polynomial.html
+// EXTRA: 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
 
 type fft struct {
 	n               int
