@@ -24,7 +24,7 @@
         " not ", "don't", "didn't", "doesn't", "can't", "n't", " no ",
         " and all", " or all",
         " and ", " or ",
-        "any", " all ", "every", "both ",
+        " any", " all ", "every", "both ",
         "exactly", "always",
         "unique", "distinct",
         "must", "only",
@@ -33,6 +33,7 @@
 
         // "Note", "note",
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
+        " small ", " big ",
         "at least", "at most",
         "non-zero", "integers", "integer", "pairwise",
         "permutations", "permutation",

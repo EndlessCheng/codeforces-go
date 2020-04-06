@@ -6,6 +6,8 @@ import (
 	"unsafe"
 )
 
+// TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.ml/contest/873/problem/F
+
 func stringCollection() {
 	max := func(a, b int) int {
 		if a >= b {
@@ -169,6 +171,7 @@ func stringCollection() {
 
 	// 后缀数组
 	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
+	// 由于 height 数组的性质，经常需要和单调栈/单调队列结合
 	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	// NOTE: Go1.13 开始使用 SA-IS 算法
 	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
