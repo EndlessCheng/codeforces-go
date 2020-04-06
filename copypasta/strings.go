@@ -208,6 +208,16 @@ func stringCollection() {
 			return
 		}
 
+		longestDupSubstring := func() []byte {
+			maxP, maxH := 0, 0
+			for i, h := range height {
+				if h > maxH {
+					maxP, maxH = i, h
+				}
+			}
+			return s[sa[maxP] : int(sa[maxP])+maxH]
+		}
+
 		// debug
 		for i, h := range height {
 			suffix := string(s[sa[i]:])
@@ -218,7 +228,7 @@ func stringCollection() {
 			}
 		}
 
-		_ = lcp
+		_ = []interface{}{lcp, longestDupSubstring}
 	}
 
 	_ = []interface{}{
