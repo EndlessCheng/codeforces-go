@@ -797,38 +797,38 @@ func monotoneCollection() {
 	// 单调队列
 	// https://oi-wiki.org/ds/monotonous-queue/
 	// 模板题（滑动窗口最值） https://www.luogu.com.cn/problem/P1886
-	// 例题：CF1237D
+	// todo https://codeforces.ml/problemset/problem/1237/D
 	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
-		// 为简单起见，用数组+下标模拟
+		// 为简单起见，这里用数组+双下标模拟双端队列
 		// 举例：固定大小的区间最值（滑动窗口）
 		n := len(a)
 		mins := make([]int, n) // mins[i] 表示 min{a[i],...,a[i+fixedSize-1]}
-		deque := make([]int, n)
-		s, t := 0, 0
+		q := make([]int, n)
+		l, r := 0, 0
 		for i, v := range a {
-			for ; s < t && a[deque[t-1]] >= v; t-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
+			for ; l < r && a[q[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
 			}
-			deque[t] = i
-			t++
+			q[r] = i // pushR
+			r++
 			if i+1 >= fixedSize {
-				mins[i+1-fixedSize] = a[deque[s]]
-				if deque[s] == i+1-fixedSize { // popL 的条件随题目的不同而变化
-					s++
+				mins[i+1-fixedSize] = a[q[l]]
+				if q[l] == i+1-fixedSize { // popL 的条件随题目的不同而变化
+					l++
 				}
 			}
 		}
 		maxs := make([]int, n)
-		deque = make([]int, n)
-		s, t = 0, 0
+		q = make([]int, n)
+		l, r = 0, 0
 		for i, v := range a {
-			for ; s < t && a[deque[t-1]] <= v; t-- {
+			for ; l < r && a[q[r-1]] <= v; r-- {
 			}
-			deque[t] = i
-			t++
+			q[r] = i
+			r++
 			if i+1 >= fixedSize {
-				maxs[i+1-fixedSize] = a[deque[s]]
-				if deque[s] == i+1-fixedSize {
-					s++
+				maxs[i+1-fixedSize] = a[q[l]]
+				if q[l] == i+1-fixedSize {
+					l++
 				}
 			}
 		}
