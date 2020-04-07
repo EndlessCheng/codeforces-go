@@ -235,7 +235,7 @@ type pst struct {
 // 区间长度，版本数，最大更新次数
 func newPST(n, versions, maxUpdateTimes int) *pst {
 	// https://oi-wiki.org/ds/persistent-seg/
-	// 预先分配内存，减小运行时的开销和 cache miss
+	// 预先分配内存，减小运行时的开销和 cache miss（todo 测试下直接 new(pstNode) 的性能对比）
 	maxNodeSize := 2*n + (bits.Len(uint(n))+1)*maxUpdateTimes
 	return &pst{
 		make([]pstNode, 0, maxNodeSize),
