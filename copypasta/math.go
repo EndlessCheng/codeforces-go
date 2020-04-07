@@ -169,21 +169,21 @@ func numberTheoryCollection() {
 	// Records https://oeis.org/A005250
 
 	// 质因数分解 prime factorization
+	// 返回分解出的质数及其指数
+	// https://mathworld.wolfram.com/PrimeFactorization.html
 	// todo 更高效的算法 - Pollard's Rho
-	primeFactors := func(n int64) (factors []int64, exponents []int) {
-		for i := int64(2); i*i <= n; i++ {
-			cnt := 0
+	primeFactorization := func(n int) (factors [][2]int) {
+		for i := 2; i*i <= n; i++ {
+			k := 0
 			for ; n%i == 0; n /= i {
-				cnt++
+				k++
 			}
-			if cnt > 0 {
-				factors = append(factors, i)
-				exponents = append(exponents, cnt)
+			if k > 0 {
+				factors = append(factors, [2]int{i, k})
 			}
 		}
 		if n > 1 { // n 是质数
-			factors = append(factors, n)
-			exponents = append(exponents, 1)
+			factors = append(factors, [2]int{n, 1})
 		}
 		return
 	}
@@ -747,7 +747,7 @@ func numberTheoryCollection() {
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
 		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactors, primeExponentsCountAll,
+		isPrime, sieve, primeFactorization, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
 		factorial, factorialMod, comb, initComb,
