@@ -197,15 +197,15 @@ func stringCollection() {
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
 		height := make([]int, n)
 		h := 0
-		for i, sai := range rank {
+		for i, ri := range rank {
 			if h > 0 {
 				h--
 			}
-			if sai > 0 {
-				for j := int(sa[sai-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
+			if ri > 0 {
+				for j := int(sa[ri-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
 				}
 			}
-			height[sai] = h
+			height[ri] = h
 		}
 
 		// EXTRA: 任意后缀的 LCP
