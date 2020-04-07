@@ -144,7 +144,8 @@ func dpCollections() {
 
 	// O(nlogn) LIS
 	// https://oi-wiki.org/dp/basic/#_12
-	// 最长上升子序列 (LIS) https://leetcode-cn.com/problems/longest-increasing-subsequence/
+	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
+	// 方案数 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	lis := func(arr []int) int {
 		dp := make([]int, 0, len(arr))
 		for _, v := range arr {

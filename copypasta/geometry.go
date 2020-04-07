@@ -434,6 +434,10 @@ func vec2Collection() {
 		return
 	}
 
+	// todo 点集的最大四边形
+	// https://www.luogu.com.cn/problem/P4166
+	// https://codeforces.ml/contest/340/problem/B
+
 	// 凸包周长
 	convexHullLength := func(ps []vec) (res float64) {
 		qs := convexHull(ps)
