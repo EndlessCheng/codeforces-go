@@ -952,14 +952,14 @@ func gameTheoryCollection() {
 				return *ptr
 			}
 			defer func() { *ptr = mex }()
-			vis := map[int]bool{} // 若能确定 mex 上限可以用 bool 数组
+			has := map[int]bool{} // 若能确定 mex 上限可以用 bool 数组
 			for i := 2; i <= x-i; i++ {
-				vis[SG(i, y)^SG(x-i, y)] = true
+				has[SG(i, y)^SG(x-i, y)] = true
 			}
 			for i := 2; i <= y-i; i++ {
-				vis[SG(x, i)^SG(x, y-i)] = true
+				has[SG(x, i)^SG(x, y-i)] = true
 			}
-			for ; vis[mex]; mex++ {
+			for ; has[mex]; mex++ {
 			}
 			return
 		}
