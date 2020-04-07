@@ -34,7 +34,7 @@ func CF1101D(_r io.Reader, _w io.Writer) {
 		g[w] = append(g[w], v)
 	}
 
-	// 关键：从根往下看，每个根上的质数能「延伸」到多远
+	// 关键：从根 v 往下看，根 v 上的各个质数 p 能「延伸」到多远
 	var f func(v, fa int) map[int][2]int
 	f = func(v, fa int) map[int][2]int {
 		res := map[int][2]int{}
