@@ -26,7 +26,7 @@ https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-f
 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
 状压 DP https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
-LC 全部 DP 题 https://leetcode-cn.com/tag/dynamic-programming/
+LC 全部 DP 题 https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
 重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
 AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
@@ -142,10 +142,12 @@ func dpCollections() {
 		return lcs
 	}
 
-	// O(nlogn) LIS
+	// O(n^2) LIS - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
+	// O(nlogn) LIS - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// https://oi-wiki.org/dp/basic/#_12
 	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 方案数 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
+	//       https://www.zhihu.com/question/34905638
 	lis := func(arr []int) int {
 		dp := make([]int, 0, len(arr))
 		for _, v := range arr {
@@ -245,6 +247,7 @@ func dpCollections() {
 
 	/* 区间 DP / 环形 DP
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
+	戳气球 https://leetcode-cn.com/problems/burst-balloons/
 	todo 石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f

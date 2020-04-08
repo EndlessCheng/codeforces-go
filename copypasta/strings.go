@@ -122,7 +122,7 @@ func stringCollection() {
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
-	// 模板题 https://www.luogu.com.cn/problem/P3805
+	// 模板题 https://www.luogu.com.cn/problem/P3805 https://leetcode.com/problems/longest-palindromic-substring/
 	var maxLen []int
 	manacher := func(origin []byte) int {
 		min := func(a, b int) int {

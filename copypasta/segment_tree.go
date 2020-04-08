@@ -2,6 +2,7 @@ package copypasta
 
 import "math/bits"
 
+// https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // https://oi-wiki.org/ds/seg/
 // https://codeforces.com/blog/entry/18051
 // https://codeforces.com/blog/entry/15890
