@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	. "fmt"
 	"math"
 	"math/bits"
 	"regexp"
@@ -929,14 +930,50 @@ func gameTheoryCollection() {
 		return sum != 0
 	}
 
+	// Sprague-Grundy theorem
+	// 有向图游戏的某个局面必胜 <=> 该局面对应节点的 SG 函数值 > 0
+	// 有向图游戏的某个局面必败 <=> 该局面对应节点的 SG 函数值 = 0
+	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
-	var sg []int
-	initSG := func(mx int) {
-		_ = sg
-		// TODO: implement
+	{
+		// http://poj.org/problem?id=2311
+		var n, m int
+		sg := make([][]int, n+1)
+		for i := range sg {
+			sg[i] = make([]int, m+1)
+			for j := range sg[i] {
+				sg[i][j] = -1
+			}
+		}
+		var SG func(int, int) int
+		SG = func(x, y int) (mex int) {
+			ptr := &sg[x][y]
+			if *ptr != -1 {
+				return *ptr
+			}
+			defer func() { *ptr = mex }()
+			has := map[int]bool{} // 若能确定 mex 上限可以用 bool 数组
+			for i := 2; i <= x-i; i++ {
+				has[SG(i, y)^SG(x-i, y)] = true
+			}
+			for i := 2; i <= y-i; i++ {
+				has[SG(x, i)^SG(x, y-i)] = true
+			}
+			for ; has[mex]; mex++ {
+			}
+			return
+		}
+
+		// 设定一些初始必败局面
+		sg[2][2] = 0
+		sg[2][3] = 0
+		sg[3][2] = 0
+		// 计算有向图游戏的 SG 函数值
+		ans := SG(n, m)
+		Println(ans)
 	}
 
-	_ = []interface{}{nim, initSG}
+	_ = []interface{}{nim}
 }
 
 // 数值分析
