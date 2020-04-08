@@ -217,6 +217,7 @@ func dpCollections() {
 	/* 背包问题
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.com/blog/entry/59606
+	套题 https://www.acwing.com/problem/
 	*/
 
 	// 01背包
