@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestSol1262D2(t *testing.T) {
+func TestCF1262D2(t *testing.T) {
 	// just copy from website
 	rawText := `
 3
@@ -47,5 +47,5 @@ outputCopy
 1
 1
 3`
-	testutil.AssertEqualCase(t, rawText, 0, Sol1262D2)
+	testutil.AssertEqualCase(t, rawText, 0, CF1262D2)
 }

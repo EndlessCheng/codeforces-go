@@ -4,43 +4,30 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math/bits"
 	"sort"
 )
 
-type pstNode1262D2 struct {
+type node1262 struct {
 	l, r   int
-	lo, ro *pstNode1262D2
+	lo, ro *node1262
 	sum    int
 }
-type pSegmentTree1262D2 struct {
-	nodes        []pstNode1262D2
-	versionRoots []*pstNode1262D2
-}
+type pst1262 []*node1262
 
-func newPST1262D2(n int) *pSegmentTree1262D2 {
-	maxNodeSize := n * (3 + bits.Len(uint(n)))
-	return &pSegmentTree1262D2{
-		make([]pstNode1262D2, 0, maxNodeSize),
-		make([]*pstNode1262D2, 1, n+1),
-	}
-}
-
-func (t *pSegmentTree1262D2) _build(l, r int) *pstNode1262D2 {
-	t.nodes = append(t.nodes, pstNode1262D2{l: l, r: r})
-	o := &t.nodes[len(t.nodes)-1]
+func (t pst1262) _build(l, r int) *node1262 {
+	o := &node1262{l: l, r: r}
 	if l == r {
 		return o
 	}
-	mid := (l + r) >> 1
-	o.lo = t._build(l, mid)
-	o.ro = t._build(mid+1, r)
+	m := (l + r) >> 1
+	o.lo = t._build(l, m)
+	o.ro = t._build(m+1, r)
 	return o
 }
 
-func (t *pSegmentTree1262D2) _update(o *pstNode1262D2, idx int) *pstNode1262D2 {
-	t.nodes = append(t.nodes, *o)
-	o = &t.nodes[len(t.nodes)-1]
+func (t pst1262) _update(o *node1262, idx int) *node1262 {
+	tmp := *o
+	o = &tmp
 	if o.l == o.r {
 		o.sum++
 		return o
@@ -54,7 +41,7 @@ func (t *pSegmentTree1262D2) _update(o *pstNode1262D2, idx int) *pstNode1262D2 {
 	return o
 }
 
-func (t *pSegmentTree1262D2) _queryKth(o1, o2 *pstNode1262D2, k int) (idx int) {
+func (t pst1262) _queryKth(o1, o2 *node1262, k int) (idx int) {
 	if o1.l == o1.r {
 		return o1.l
 	}
@@ -65,55 +52,36 @@ func (t *pSegmentTree1262D2) _queryKth(o1, o2 *pstNode1262D2, k int) (idx int) {
 	}
 }
 
-func (t *pSegmentTree1262D2) init(n int) {
-	t.versionRoots[0] = t._build(1, n)
-}
-
-func (t *pSegmentTree1262D2) update(baseVersion int, idx int) {
-	t.versionRoots = append(t.versionRoots, t._update(t.versionRoots[baseVersion], idx))
-}
-
-func (t *pSegmentTree1262D2) queryKth(l, r int, k int) (idx int) {
-	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
-}
+func (t pst1262) init(n int)                     { t[0] = t._build(1, n) }
+func (t pst1262) update(ver, idx int)            { t[ver+1] = t._update(t[ver], idx) }
+func (t pst1262) queryKth(l, r, k int) (idx int) { return t._queryKth(t[l-1], t[r], k) }
 
 // github.com/EndlessCheng/codeforces-go
-func Sol1262D2(reader io.Reader, writer io.Writer) {
-	in := bufio.NewScanner(reader)
-	in.Split(bufio.ScanWords)
-	out := bufio.NewWriter(writer)
+func CF1262D2(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	read := func() (x int) {
-		in.Scan()
-		for _, b := range in.Bytes() {
-			x = x*10 + int(b-'0')
-		}
-		return
-	}
+	type pair struct{ v, i int }
 
-	n := read()
+	var n, m, k, p int
+	Fscan(in, &n)
 	a := make([]int, n)
-	type pair struct{ val, i int }
 	ps := make([]pair, n)
 	for i := range ps {
-		a[i] = read()
+		Fscan(in, &a[i])
 		ps[i] = pair{a[i], i}
 	}
-	sort.Slice(ps, func(i, j int) bool {
-		return ps[i].val > ps[j].val || ps[i].val == ps[j].val && ps[i].i < ps[j].i
-	})
-	st := newPST1262D2(n)
-	st.init(n)
-	for i, p := range ps {
-		st.update(i, p.i+1)
-	}
 
-	for m := read(); m > 0; m-- {
-		idx := st.queryKth(1, read(), read()) - 1
-		Fprintln(out, a[idx])
+	sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.v > b.v || a.v == b.v && a.i < b.i })
+	t := make(pst1262, n+1)
+	t.init(n)
+	for i, p := range ps {
+		t.update(i, p.i+1)
+	}
+	for Fscan(in, &m); m > 0; m-- {
+		Fscan(in, &k, &p)
+		Fprintln(out, a[t.queryKth(1, k, p)-1])
 	}
 }
 
-//func main() {
-//	Sol1262D2(os.Stdin, os.Stdout)
-//}
+//func main() { CF1262D2(os.Stdin, os.Stdout) }
