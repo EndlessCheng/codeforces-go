@@ -8,34 +8,40 @@ import (
 
 func Test_pSegmentTree(t *testing.T) {
 	assert := assert.New(t)
+	type pair struct{ v, i int }
 
-	arr := []int{100, 20, 50, 23}
-	n := len(arr)
+	a := []int{100, 20, 50, 50, 30}
+	n := len(a)
 
-	type pair struct{ val, i int }
+	st := make(pst, n+1)
+	st.init(n)
+
 	ps := make([]pair, n)
-	for i, v := range arr {
+	for i, v := range a {
 		ps[i] = pair{v, i}
 	}
-	sort.Slice(ps, func(i, j int) bool { return ps[i].val < ps[j].val })
+	sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v })
 	kthArr := make([]int, n)
 	for i, p := range ps {
 		kthArr[p.i] = i + 1
 	}
-
-	st := newPST(n, n, n)
-	st.init(n)
+	t.Log("kthArr", kthArr)
+	t.Log("按照原数组元素的顺序插入该元素的名次", kthArr)
 	for i, kth := range kthArr {
 		st.update(i+1, i, kth, 1)
-		t.Log("insert", kth)
+		t.Logf("插入元素 %d 的名次 %d", a[i], kth)
 	}
-	t.Log(ps[st.queryKth(1, 4, 1)-1].val)
-	t.Log(ps[st.queryKth(1, 4, 2)-1].val)
-	t.Log(ps[st.queryKth(1, 4, 3)-1].val)
-	t.Log(ps[st.queryKth(1, 4, 4)-1].val)
+	t.Log(ps[st.queryKth(1, 5, 1)-1].v)
+	t.Log(ps[st.queryKth(1, 5, 2)-1].v)
+	t.Log(ps[st.queryKth(1, 5, 3)-1].v)
+	t.Log(ps[st.queryKth(1, 5, 4)-1].v)
+	t.Log(ps[st.queryKth(1, 5, 5)-1].v)
+	t.Log(ps[st.queryKth(3, 5, 1)-1].v)
+	t.Log(ps[st.queryKth(3, 5, 2)-1].v)
+	t.Log(ps[st.queryKth(3, 5, 3)-1].v)
 
 	n = 4
-	st = newPST(n, n, 2*n)
+	st = make(pst, n+1)
 	st.init(n)
 	st.update(1, 0, 2, 10)
 	st.update(1, 1, 1, -5)

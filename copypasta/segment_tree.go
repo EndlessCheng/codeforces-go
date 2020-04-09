@@ -1,7 +1,5 @@
 package copypasta
 
-import "math/bits"
-
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // https://oi-wiki.org/ds/seg/
 // https://codeforces.com/blog/entry/18051
@@ -218,6 +216,8 @@ func (t lazyST) queryAll() int64            { return t[1].sum }
 //
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
+// NOTE: 对于 CF 上的 2e5 数据，直接 new(pstNode) 比在数组上创建指针要慢 700ms
+//       因此建议对时限比较紧的题目改成在数组上创建指针，这里为了简化代码使用的是 new(pstNode)
 // https://oi-wiki.org/ds/persistent-seg/
 // 模板题 https://www.luogu.com.cn/problem/P3834
 // todo 整理模板+重写 https://codeforces.ml/problemset/problem/1262/D2
@@ -229,29 +229,14 @@ type pstNode struct {
 	lo, ro *pstNode
 	sum    int64
 }
-type pst struct {
-	nodes    []pstNode
-	verRoots []*pstNode
-}
+type pst []*pstNode // t := make(pst, versions+1) // 一般 versions 为 n
 
-// 区间长度，版本数，最大更新次数
-func newPST(n, versions, maxUpdateTimes int) *pst {
-	// https://oi-wiki.org/ds/persistent-seg/
-	// 预先分配内存，减小运行时的开销和 cache miss（todo 测试下直接 new(pstNode) 的性能对比）
-	maxNodeSize := 2*n + (bits.Len(uint(n))+1)*maxUpdateTimes
-	return &pst{
-		make([]pstNode, 0, maxNodeSize),
-		make([]*pstNode, versions+1),
-	}
-}
-
-func (*pst) _pushUp(o *pstNode) {
+func (pst) _pushUp(o *pstNode) {
 	o.sum = o.lo.sum + o.ro.sum
 }
 
-func (t *pst) _build(l, r int) *pstNode {
-	t.nodes = append(t.nodes, pstNode{l: l, r: r})
-	o := &t.nodes[len(t.nodes)-1]
+func (t pst) _build(l, r int) *pstNode {
+	o := &pstNode{l: l, r: r}
 	if l == r {
 		return o
 	}
@@ -262,9 +247,8 @@ func (t *pst) _build(l, r int) *pstNode {
 	return o
 }
 
-func (t *pst) _buildArr(arr []int64, l, r int) *pstNode {
-	t.nodes = append(t.nodes, pstNode{l: l, r: r})
-	o := &t.nodes[len(t.nodes)-1]
+func (t pst) _buildArr(arr []int64, l, r int) *pstNode {
+	o := &pstNode{l: l, r: r}
 	if l == r {
 		// arr starts at 1
 		o.sum = arr[l]
@@ -277,9 +261,9 @@ func (t *pst) _buildArr(arr []int64, l, r int) *pstNode {
 	return o
 }
 
-func (t *pst) _update(o *pstNode, idx int, val int64) *pstNode {
-	t.nodes = append(t.nodes, *o)
-	o = &t.nodes[len(t.nodes)-1]
+func (t pst) _update(o *pstNode, idx int, val int64) *pstNode {
+	tmp := *o
+	o = &tmp
 	if o.l == o.r {
 		o.sum += val
 		//o.sum = val
@@ -294,7 +278,7 @@ func (t *pst) _update(o *pstNode, idx int, val int64) *pstNode {
 	return o
 }
 
-func (t *pst) _query(o *pstNode, l, r int) (res int64) {
+func (t pst) _query(o *pstNode, l, r int) (res int64) {
 	if l <= o.l && o.r <= r {
 		return o.sum
 	}
@@ -308,7 +292,7 @@ func (t *pst) _query(o *pstNode, l, r int) (res int64) {
 	return
 }
 
-func (t *pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
+func (t pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
 	if o1.l == o1.r {
 		return o1.l
 	}
@@ -319,26 +303,23 @@ func (t *pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
 	}
 }
 
-func (t *pst) init(n int)              { t.verRoots[0] = t._build(1, n) }                  // 初始化，创建版本为 0 的线段树
-func (t *pst) initArr(arr []int64)     { t.verRoots[0] = t._buildArr(arr, 1, len(arr)-1) } // arr starts at 1
-func (t *pst) copy(dstVer, srcVer int) { t.verRoots[dstVer] = t.verRoots[srcVer] }
+func (t pst) init(n int)              { t[0] = t._build(1, n) }                  // 创建版本为 0 的线段树
+func (t pst) initArr(arr []int64)     { t[0] = t._buildArr(arr, 1, len(arr)-1) } // arr starts at 1
+func (t pst) copy(dstVer, srcVer int) { t[dstVer] = t[srcVer] }
 
 // 单点更新：基于版本为 srcVer 的线段树，用更新后的结果覆盖 dstVer 版本
 // 1<=idx<=n   dstVer 可以和 srcVer 相同
-// EXTRA: 求区间第 k 大时，遍历 kthArr 作为 idx 传入
-func (t *pst) update(dstVer, srcVer, idx int, val int64) {
-	t.verRoots[dstVer] = t._update(t.verRoots[srcVer], idx, val)
-}
+// EXTRA: 求区间第 k 大时，遍历 kthArr 作为 idx 传入，见 segment_tree_test.go
+func (t pst) update(dstVer, srcVer, idx int, val int64) { t[dstVer] = t._update(t[srcVer], idx, val) }
+func (t pst) updateKth(ver, kth int)                    { t[ver+1] = t._update(t[ver], kth, 1) }
 
-// 查询第 version 个版本下的区间值
+// 查询第 ver 个版本下的区间值
 // [l,r] 1<=l<=r<=n
-func (t *pst) query(version, l, r int) (sum int64) { return t._query(t.verRoots[version], l, r) }
+func (t pst) query(ver, l, r int) int64 { return t._query(t[ver], l, r) }
 
 // EXTRA: 查询区间第 k 大/小在整个数组上的名次 1<=allKth<=n，即排序后的数组下标 (+1)
 // [l,r] 1<=l<=r<=n
-func (t *pst) queryKth(l, r, kth int) (allKth int) {
-	return t._queryKth(t.verRoots[l-1], t.verRoots[r], kth)
-}
+func (t pst) queryKth(l, r, kth int) (allKth int) { return t._queryKth(t[l-1], t[r], kth) }
 
 //sortedArr := make([]int, n)
 //copy(sortedArr, a)
