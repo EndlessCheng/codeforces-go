@@ -12,18 +12,19 @@ import "math/bits"
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 
-// TIPS: 对于复杂的区间操作（如区间开方），可以判断区间元素是否相同，然后 lazy
-// TIPS: 一般来说会有一个核心函数，如 min/max/+/gcd/...
-// CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）
+// TIPS: 对于复杂的区间操作（如区间开方），可以从运算性质入手来优化无用操作
+// TIPS: 一般来说会有一个核心函数，如 min/max/gcd/*/+/^/|/...
+// todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
 
-// l 和 r 也可以写到方法参数上，实测二者在执行效率上无异。
-// 考虑到 debug 和 bug free 上的优点，写到结构体参数中。
-type stNode struct {
+// l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
+// 考虑到 debug 和 bug free 上的优点，写到结构体参数中
+
+// t := make(segmentTree, 4*n)
+type segmentTree []struct {
 	l, r   int
 	val    int64
 	maxPos int
 }
-type segmentTree []stNode // t := make(segmentTree, 4*n)
 
 func (segmentTree) min(a, b int64) int64 {
 	if a < b {
@@ -46,9 +47,8 @@ func (segmentTree) gcd(a, b int64) int64 {
 
 func (t segmentTree) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	// *custom* 核心函数
-	t[o].val = t.max(lo.val, ro.val)
-	//if ro.val >= lo.val { // maxPos 取最右侧；若为 > 符号则取最左侧
+	t[o].val = t.max(lo.val, ro.val) // 核心函数
+	//if ro.val >= lo.val { // maxPos 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
 	//	t[o].val, t[o].maxPos = ro.val, ro.maxPos
 	//} else {
 	//	t[o].val, t[o].maxPos = lo.val, lo.maxPos
@@ -95,13 +95,13 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	}
 	vl := t._query(o<<1, l, r)
 	vr := t._query(o<<1|1, l, r)
-	// *custom* 核心函数
-	return t.max(vl, vr)
+	return t.max(vl, vr) // 核心函数
 }
 
 func (t segmentTree) init(a []int64)            { t._build(a, 1, 1, len(a)) } // starts at 0
 func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }    // 1<=idx<=n
 func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
+func (t segmentTree) queryAll() int64           { return t[1].val }
 
 // EXTRA: 最值位置
 func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
@@ -117,32 +117,32 @@ func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
 	}
 	vl, pl := t._query2(o<<1, l, r)
 	vr, pr := t._query2(o<<1|1, l, r)
-	if vl <= vr { // 取等号时，返回的是 pl，即最左侧的位置；若写成 <，则会在取等号时返回 pr，即最右侧的位置
+	if vl < vr { // 取等号时，返回的是 pr，即最右侧的位置；若写成 <=，则会在取等号时返回 pl，即最左侧的位置
 		return vl, pl
 	}
 	return vr, pr
 }
-func (t segmentTree) query2(l, r int) (int64, int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
-//func (t segmentTree) queryAll() int64              { return t._query(1, 1, n) }
+func (t segmentTree) query2(l, r int) (res int64, maxPos int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
 
 //
 
 // 模板题 https://www.luogu.com.cn/problem/P3372 https://www.luogu.com.cn/problem/P3373
 // 核心函数为 max: https://codeforces.ml/problemset/problem/1321/E
-type lazySTNode struct {
-	l, r int
-	sum  int64
-	todo int64
+// 核心函数为 * 及 |: https://codeforces.ml/problemset/problem/1114/F
+// todo 多个运算复合的情况
+// t := make(lazyST, 4*n)
+type lazyST []struct {
+	l, r      int
+	sum, todo int64
 }
-type lazySegmentTree []lazySTNode // t := make(lazySegmentTree, 4*n)
 
-func (t lazySegmentTree) _pushUp(o int) {
+func (t lazyST) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].sum = lo.sum + ro.sum
 	//t[o].sum = (lo.sum + ro.sum) % mod
 }
 
-func (t lazySegmentTree) _build(a []int64, o, l, r int) {
+func (t lazyST) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		// a starts at 0
@@ -155,7 +155,7 @@ func (t lazySegmentTree) _build(a []int64, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t lazySegmentTree) _spread(o int) {
+func (t lazyST) _spread(o int) {
 	if add := t[o].todo; add != 0 {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum += add * int64(lo.r-lo.l+1)
@@ -170,7 +170,7 @@ func (t lazySegmentTree) _spread(o int) {
 	}
 }
 
-func (t lazySegmentTree) _update(o, l, r int, add int64) {
+func (t lazyST) _update(o, l, r int, add int64) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].sum += add * int64(or-ol+1)
@@ -190,7 +190,7 @@ func (t lazySegmentTree) _update(o, l, r int, add int64) {
 	t._pushUp(o)
 }
 
-func (t lazySegmentTree) _query(o, l, r int) (res int64) {
+func (t lazyST) _query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -206,9 +206,10 @@ func (t lazySegmentTree) _query(o, l, r int) (res int64) {
 	return
 }
 
-func (t lazySegmentTree) init(a []int64)             { t._build(a, 1, 1, len(a)) } // starts at 0
-func (t lazySegmentTree) update(l, r int, val int64) { t._update(1, l, r, val) }   // [l,r] 1<=l<=r<=n
-func (t lazySegmentTree) query(l, r int) int64       { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
+func (t lazyST) init(a []int64)             { t._build(a, 1, 1, len(a)) } // starts at 0
+func (t lazyST) update(l, r int, val int64) { t._update(1, l, r, val) }   // [l,r] 1<=l<=r<=n
+func (t lazyST) query(l, r int) int64       { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
+func (t lazyST) queryAll() int64            { return t[1].sum }
 
 //
 
@@ -229,8 +230,8 @@ type pstNode struct {
 	sum    int64
 }
 type pst struct {
-	nodes        []pstNode
-	versionRoots []*pstNode
+	nodes    []pstNode
+	verRoots []*pstNode
 }
 
 // 区间长度，版本数，最大更新次数
@@ -265,6 +266,7 @@ func (t *pst) _buildArr(arr []int64, l, r int) *pstNode {
 	t.nodes = append(t.nodes, pstNode{l: l, r: r})
 	o := &t.nodes[len(t.nodes)-1]
 	if l == r {
+		// arr starts at 1
 		o.sum = arr[l]
 		return o
 	}
@@ -310,47 +312,37 @@ func (t *pst) _queryKth(o1, o2 *pstNode, k int) (allKth int) {
 	if o1.l == o1.r {
 		return o1.l
 	}
-	if d := int(o2.lo.sum - o1.lo.sum); d >= k {
+	if d := o2.lo.sum - o1.lo.sum; d >= int64(k) {
 		return t._queryKth(o1.lo, o2.lo, k)
 	} else {
-		return t._queryKth(o1.ro, o2.ro, k-d)
+		return t._queryKth(o1.ro, o2.ro, k-int(d))
 	}
 }
 
-// 初始化，创建版本为 0 的线段树
-func (t *pst) init(n int) {
-	t.versionRoots[0] = t._build(1, n)
-}
-func (t *pst) initArr(arr []int64) { // arr start at 1
-	t.versionRoots[0] = t._buildArr(arr, 1, len(arr)-1)
+func (t *pst) init(n int)              { t.verRoots[0] = t._build(1, n) }                  // 初始化，创建版本为 0 的线段树
+func (t *pst) initArr(arr []int64)     { t.verRoots[0] = t._buildArr(arr, 1, len(arr)-1) } // arr starts at 1
+func (t *pst) copy(dstVer, srcVer int) { t.verRoots[dstVer] = t.verRoots[srcVer] }
+
+// 单点更新：基于版本为 srcVer 的线段树，用更新后的结果覆盖 dstVer 版本
+// 1<=idx<=n   dstVer 可以和 srcVer 相同
+// EXTRA: 求区间第 k 大时，遍历 kthArr 作为 idx 传入
+func (t *pst) update(dstVer, srcVer, idx int, val int64) {
+	t.verRoots[dstVer] = t._update(t.verRoots[srcVer], idx, val)
 }
 
-func (t *pst) copy(dstVersion, srcVersion int) {
-	t.versionRoots[dstVersion] = t.versionRoots[srcVersion]
-}
-
-// 基于版本为 srcVersion 的线段树，更新其 idx 位置上的值 += val（1<=idx<=n）
-// 用更新后的结果覆盖 dstVersion 版本
-// dstVersion 和 srcVersion 可以相同
-// 若求区间第 k 大，遍历 kthArr 作为 idx 传入
-func (t *pst) update(dstVersion, srcVersion int, idx int, val int64) {
-	t.versionRoots[dstVersion] = t._update(t.versionRoots[srcVersion], idx, val)
-}
-
-// 查询第 version 个版本下的区间和
+// 查询第 version 个版本下的区间值
 // [l,r] 1<=l<=r<=n
-func (t *pst) query(version int, l, r int) (sum int64) {
-	return t._query(t.versionRoots[version], l, r)
+func (t *pst) query(version, l, r int) (sum int64) { return t._query(t.verRoots[version], l, r) }
+
+// EXTRA: 查询区间第 k 大/小在整个数组上的名次 1<=allKth<=n，即排序后的数组下标 (+1)
+// [l,r] 1<=l<=r<=n
+func (t *pst) queryKth(l, r, kth int) (allKth int) {
+	return t._queryKth(t.verRoots[l-1], t.verRoots[r], kth)
 }
 
-// 查询区间第 k 大/小在整个数组上的名次 1<=allKth<=n，即排序后的数组下标 (+1)
-// [l,r] 1<=l<=r<=n
-func (t *pst) queryKth(l, r int, k int) (allKth int) {
-	return t._queryKth(t.versionRoots[l-1], t.versionRoots[r], k)
-	// 	sortedArr := make([]int, n)
-	//	copy(sortedArr, a)
-	//	sort.Ints(sortedArr)
-}
+//sortedArr := make([]int, n)
+//copy(sortedArr, a)
+//sort.Ints(sortedArr)
 
 // EXTRA: 线段树合并
 // todo https://www.luogu.com.cn/problem/P4556

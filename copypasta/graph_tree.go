@@ -497,7 +497,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	}
 	decomposition(root, -1, root)
 
-	t := make(lazySegmentTree, 4*n)
+	t := make(lazyST, 4*n)
 	// 按照 DFS 序对应的点权初始化线段树
 	dfnVals := make([]int64, n)
 	for i, v := range vals {
