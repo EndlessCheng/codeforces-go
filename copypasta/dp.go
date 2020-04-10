@@ -327,7 +327,7 @@ func dpCollections() {
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
-		n := len(upper) // len(lower) == len(upper)
+		n := len(upper) // assert len(lower) == len(upper)
 
 		// <=s 的数目
 		calc := func(s string) int {
@@ -369,7 +369,7 @@ func dpCollections() {
 		}
 		ansLower := calc(lower)
 		ansUpper := calc(upper)
-		ans := ansUpper - ansLower + 1 // lower 算上
+		ans := ansUpper - ansLower + 1 // lower 是否算上?
 		ans = (ans%mod + mod) % mod
 		return ans
 	}
