@@ -17,18 +17,18 @@ func main() {
 		return bytes
 	}
 
-	var dfsTreeNode func(o *TreeNode, f func(o *TreeNode))
-	dfsTreeNode = func(o *TreeNode, f func(*TreeNode)) {
-		if o != nil {
-			f(o)
-			dfsTreeNode(o.Left, f)
-			dfsTreeNode(o.Right, f)
-		}
-	}
 	var root *TreeNode
-	dfsTreeNode(root, func(o *TreeNode) {
 
-	})
+	var f func(*TreeNode)
+	f = func(o *TreeNode) {
+		if o == nil {
+			return
+		}
+
+		f(o.Left)
+		f(o.Right)
+	}
+	f(root)
 
 	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
