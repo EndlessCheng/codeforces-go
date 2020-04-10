@@ -419,6 +419,7 @@ func dpCollections() {
 
 	// 换根 DP
 	// 进阶指南 p.292-295
+	// https://codeforces.ml/blog/entry/20935
 	// http://poj.org/problem?id=3585
 	unrootedTreeDP := func(n int) {
 		type edge struct{ to, cap int }
@@ -443,20 +444,20 @@ func dpCollections() {
 		f(0, -1)
 
 		ans := make([]int, n)
-		var f2 func(v, fa, ansV int)
-		f2 = func(v, fa, ansV int) {
+		var reroot func(v, fa, ansV int)
+		reroot = func(v, fa, ansV int) {
 			ans[v] = ansV
 			for _, e := range g[v] {
 				if w, c := e.to, e.cap; w != fa {
 					if sc := subCap[w]; len(g[v]) == 1 {
-						f2(w, v, sc+c)
+						reroot(w, v, sc+c)
 					} else {
-						f2(w, v, sc+min(c, ansV-min(sc, c)))
+						reroot(w, v, sc+min(c, ansV-min(sc, c)))
 					}
 				}
 			}
 		}
-		f2(0, -1, subCap[0])
+		reroot(0, -1, subCap[0])
 	}
 
 	// 插头 DP / 轮廓线动态规划
