@@ -17,6 +17,7 @@ func Test_run(t *testing.T) {
 	}
 	if len(customInputs) > 0 && strings.TrimSpace(customInputs[0]) != "" {
 		testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
+		//testutil.AssertEqualRunResults(t, customInputs, 0, runAC, run)
 		t.Log("======================================")
 	}
 

@@ -135,3 +135,34 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(i
 func AssertEqual(t *testing.T, rawText string, solveFunc func(io.Reader, io.Writer)) {
 	AssertEqualCase(t, rawText, 0, solveFunc)
 }
+
+// 对拍
+// solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
+func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, solveFuncAC, solveFunc func(io.Reader, io.Writer)) {
+	if len(inputs) == 0 {
+		return
+	}
+	for curCase, input := range inputs {
+		if caseNum > 0 && curCase+1 != caseNum {
+			continue
+		}
+
+		input = strings.TrimSpace(input)
+		mockReader := strings.NewReader(input)
+		mockWriterAC := &bytes.Buffer{}
+		solveFuncAC(mockReader, mockWriterAC)
+		mockReader = strings.NewReader(input)
+		mockWriter := &bytes.Buffer{}
+		solveFunc(mockReader, mockWriter)
+
+		actualOutputAC := mockWriterAC.String()
+		actualOutput := mockWriter.String()
+
+		const maxInputSize = 150
+		inputInfo := input
+		if len(inputInfo) > maxInputSize {
+			inputInfo = inputInfo[:maxInputSize] + "..."
+		}
+		assert.Equal(t, actualOutputAC, actualOutput, "please check test case [%d]\nInput:\n%s", curCase+1, inputInfo)
+	}
+}

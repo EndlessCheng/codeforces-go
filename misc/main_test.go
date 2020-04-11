@@ -13,4 +13,6 @@ func Test_run(t *testing.T) {
 		``,
 	}
 	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
+	//testutil.AssertEqualRunResults(t, customInputs, 0, runAC, run)
+	_ = customAnswers
 }
