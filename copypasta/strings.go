@@ -116,14 +116,17 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
-	// TODO：待整理
+	// 最长回文子串 Manacher
 	// https://blog.csdn.net/synapse7/article/details/18908413
+	// https://www.bilibili.com/video/BV1ft4y117a4
 	// https://codeforces.com/blog/entry/12143
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
 	// 模板题 https://www.luogu.com.cn/problem/P3805 https://leetcode.com/problems/longest-palindromic-substring/
-	var maxLen []int
+	// todo https://codeforces.ml/contest/1326/problem/D2
+	// todo 类似思想 https://codeforces.ml/contest/359/problem/D
+	var maxLen, left []int
 	manacher := func(origin []byte) int {
 		min := func(a, b int) int {
 			if a < b {
@@ -132,7 +135,8 @@ func stringCollection() {
 			return b
 		}
 		n := len(origin)
-		s := make([]byte, 2*n+3)
+		m := 2*n + 2
+		s := make([]byte, m+1)
 		s[0] = '^'
 		for i, c := range origin {
 			s[2*i+1] = '#'
@@ -140,34 +144,55 @@ func stringCollection() {
 		}
 		s[2*n+1] = '#'
 		s[2*n+2] = '$'
-		maxLen = make([]int, 2*n+3)
-		var ans, mid, right int
-		for i := 1; i < 2*n+2; i++ {
-			if i < right {
-				// 取 min 的原因：记点 i 关于 mid 的对称点为 i'，
+		maxLen = make([]int, m+1) // 以处理后的字符 s[i] 为中心的最长回文子串的半长度（包括 s[i]）
+		ans, mid, r := 0, 0, 0
+		for i := 2; i < m; i++ {
+			mx := 1
+			if i < r {
+				// 取 min 的原因：记点 i 关于 mid 的对称点为 i'=2*mid-i，
 				// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
-				// (此时有 i + len[2*mid-i] >= right，注意 len 是包括中心的半长度)
-				// 则 len[i] 应取 right - i (总不能超过边界吧)
-				maxLen[i] = min(maxLen[2*mid-i], right-i)
-			} else {
-				maxLen[i] = 1
+				//（此时有 i + len[2*mid-i] >= r，这里 len 是包括中心的半长度）
+				// 则 len[i] 应取 r - i (总不能超过边界吧)
+				mx = min(maxLen[2*mid-i], r-i)
 			}
-			for s[i+maxLen[i]] == s[i-maxLen[i]] {
-				maxLen[i]++
+			for ; s[i-mx] == s[i+mx]; mx++ {
 			}
-			mx := maxLen[i]
-			if ans < mx {
+			if i+mx > r {
+				mid, r = i, i+mx
+			}
+			if mx > ans {
 				ans = mx
 			}
-			if right < i+mx {
-				mid = i
-				right = i + mx
+			maxLen[i] = mx
+		}
+
+		// EXTRA: 计算以每个位置为起点的最长回文串
+		left = make([]int, m+1)
+		for i := 2; i < m; i++ {
+			if left[i-maxLen[i]+1] < i+1 {
+				left[i-maxLen[i]+1] = i + 1
 			}
 		}
+		for i := 1; i <= m; i++ {
+			if left[i] < left[i-1] {
+				left[i] = left[i-1]
+			}
+		}
+
 		return ans - 1
 	}
-	// 判断 [l,r] 是否为回文串，范围 0<=l<=r<n
-	isP := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
+	// 判断 [l,r] 是否为回文串  0<=l<=r<n
+	isP := func(l, r int) bool { return maxLen[l+r+2]-1 >= r-l+1 }
+	// odd=true: 以下标 x 为中心的最长奇回文子串长度
+	// odd=false: 以下标 x,x+1 中间为中心的最长偶回文子串长度
+	midP := func(x int, odd bool) int {
+		if odd {
+			return maxLen[2*x+2] - 1
+		}
+		return maxLen[2*x+3] - 1
+	}
+	// EXTRA: 从下标 x 开始的最长回文子串长度
+	leftP := func(x int) int { return left[2*x+2] - 2*x - 2 }
 
 	// 后缀数组
 	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
@@ -256,7 +281,7 @@ func stringCollection() {
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		smallestRepresentation,
-		manacher, isP,
+		manacher, isP, midP, leftP,
 		suffixArray,
 	}
 }
