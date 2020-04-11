@@ -13,7 +13,7 @@ func run(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	solve := func(_case int) {
+	solve := func(_case int) string {
 		var n int
 		var s string
 		pres := []string{}
@@ -38,7 +38,7 @@ func run(_r io.Reader, _w io.Writer) {
 			}
 		}
 		mxLen := 0
-		pre, suf := "", ""
+		pre := ""
 		for _, s := range pres {
 			if len(s) > mxLen {
 				mxLen = len(s)
@@ -47,11 +47,11 @@ func run(_r io.Reader, _w io.Writer) {
 		}
 		for _, s := range pres {
 			if !strings.HasPrefix(pre, s) {
-				Fprintln(out, "*")
-				return
+				return "*"
 			}
 		}
 		mxLen = 0
+		suf := ""
 		for _, s := range sufs {
 			if len(s) > mxLen {
 				mxLen = len(s)
@@ -60,18 +60,16 @@ func run(_r io.Reader, _w io.Writer) {
 		}
 		for _, s := range sufs {
 			if !strings.HasSuffix(suf, s) {
-				Fprintln(out, "*")
-				return
+				return "*"
 			}
 		}
-		Fprintln(out, pre+string(mid)+suf)
+		return pre + string(mid) + suf
 	}
 
 	var t int
 	Fscan(in, &t)
 	for _case := 1; _case <= t; _case++ {
-		Fprintf(out, "Case #%d: ", _case)
-		solve(_case)
+		Fprintf(out, "Case #%d: %s\n", _case, solve(_case))
 	}
 }
 
