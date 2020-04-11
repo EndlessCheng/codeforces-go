@@ -52,6 +52,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 		}
 		if !assert.Equal(t, expectedOutput, actualOutput, "please check test case [%d]\nInput:\n%s", curCase+1, inputInfo) {
 			allPassed = false
+			handleOutput(actualOutput)
 		}
 	}
 	if !allPassed {
@@ -70,29 +71,30 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 }
 
 func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	txtFilePaths, err := filepath.Glob(filepath.Join(dir, "*.txt"))
+	var inputs []string
+	inputFilePaths, err := filepath.Glob(filepath.Join(dir, "in*.txt"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	// ans1.txt, ..., in1.txt, ...
-	if len(txtFilePaths) == 0 {
-		return
-	}
-
-	var inputs, answers []string
-	for _, path := range txtFilePaths[:len(txtFilePaths)/2] {
-		data, err := ioutil.ReadFile(path)
-		if err != nil {
-			t.Fatal(err)
-		}
-		answers = append(answers, string(data))
-	}
-	for _, path := range txtFilePaths[len(txtFilePaths)/2:] {
+	for _, path := range inputFilePaths {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			t.Fatal(err)
 		}
 		inputs = append(inputs, string(data))
+	}
+
+	var answers []string
+	answerFilePaths, err := filepath.Glob(filepath.Join(dir, "ans*.txt"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range answerFilePaths {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		answers = append(answers, string(data))
 	}
 
 	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
