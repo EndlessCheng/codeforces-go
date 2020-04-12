@@ -269,6 +269,7 @@ func stringCollection() {
 
 		// EXTRA: 找出数组中的所有字符串，其是某个字符串的子串
 		// 先拼接字符串，然后根据 height 判断前后是否有能匹配的
+		// NOTE: 下面的代码展示了一种「标记 s[i] 属于原数组的哪个元素」的技巧: 在 i>0&&s[i]=='#' 时将 cnt++，其余的 s[i] 指向的 cnt 就是原数组的下标
 		// LC184A https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
 		findAllSubstring := func(a []string) (ans []string) {
 			s := "#" + strings.Join(a, "#")
