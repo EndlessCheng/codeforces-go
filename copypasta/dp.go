@@ -421,7 +421,7 @@ func dpCollections() {
 	// 进阶指南 p.292-295
 	// https://codeforces.ml/blog/entry/20935
 	// http://poj.org/problem?id=3585
-	unrootedTreeDP := func(n int) {
+	rerootDP := func(n int) {
 		type edge struct{ to, cap int }
 		g := make([][]edge, n)
 		// read...
@@ -470,6 +470,6 @@ func dpCollections() {
 		knapsack01,
 		tsp,
 		digitDP,
-		maxMatchingOnTree, unrootedTreeDP,
+		maxMatchingOnTree, rerootDP,
 	}
 }

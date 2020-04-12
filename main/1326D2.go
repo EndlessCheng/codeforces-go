@@ -45,7 +45,7 @@ func CF1326D2(_r io.Reader, _w io.Writer) {
 			}
 		}
 	}
-	q := func(l, r int) bool { return maxLen[l+r+2] >= r-l+1 }
+	q := func(l, r int) bool { return maxLen[l+r+2]-1 >= r-l+1 }
 
 	var t int
 	var s string

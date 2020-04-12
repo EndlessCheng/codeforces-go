@@ -124,7 +124,7 @@ func stringCollection() {
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
 	// 模板题 https://www.luogu.com.cn/problem/P3805 https://leetcode.com/problems/longest-palindromic-substring/
-	// todo https://codeforces.ml/contest/1326/problem/D2
+	// https://codeforces.ml/contest/1326/problem/D2
 	// todo 类似思想 https://codeforces.ml/contest/359/problem/D
 	var maxLen, left []int
 	manacher := func(origin []byte) int {
@@ -166,7 +166,7 @@ func stringCollection() {
 			maxLen[i] = mx
 		}
 
-		// EXTRA: 计算以每个位置为起点的最长回文串
+		// EXTRA: 计算以每个位置为起点的最长回文子串位置
 		left = make([]int, m+1)
 		for i := 2; i < m; i++ {
 			if left[i-maxLen[i]+1] < i+1 {
@@ -178,6 +178,8 @@ func stringCollection() {
 				left[i] = left[i-1]
 			}
 		}
+
+		// todo 以每个位置为终点的...
 
 		return ans - 1
 	}
@@ -303,7 +305,7 @@ type trieNode struct {
 	dupCnt int
 	val    int // val 也可以是个 []int，此时 dupCnt == len(val)
 
-	// 当 o.son[i] 不能匹配 text 中的某个字符时，o.fail 即为下一个应该查找的结点
+	// AC 自动机: 当 o.son[i] 不能匹配 text 中的某个字符时，o.fail 即为下一个应该查找的结点
 	fail *trieNode
 }
 
@@ -334,7 +336,7 @@ func (t *trie) put(s []byte, val int) {
 			o.son[c] = &trieNode{}
 		}
 		o = o.son[c]
-		//o.dupCnt++ // 经过节点 o 的字符串个数
+		//o.dupCnt++ // 经过节点 o 的字符串个数（EXTRA: 统计前缀个数）
 		//o.val = val // 更新 s 的所有前缀的值
 	}
 	o.dupCnt++

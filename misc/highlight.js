@@ -35,7 +35,7 @@
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
         " small ", " big ",
         "at least", "at most",
-        "non-zero", "integers", "integer", "pairwise",
+        "non-zero", "positive", "integers", "integer", "pairwise",
         "permutations", "permutation",
         "lowercase", "uppercase",
         "lexicographically", "lexicographical",
