@@ -18,5 +18,8 @@ func Test(t *testing.T) {
 	if err := testutil.RunLeetCodeFuncWithCase(t, stringMatching, exampleIns, exampleOuts, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
+	if err := testutil.RunLeetCodeFuncWithCase(t, stringMatchingSA, exampleIns, exampleOuts, targetCaseNum); err != nil {
+		t.Fatal(err)
+	}
 }
 // https://leetcode-cn.com/contest/weekly-contest-184/problems/string-matching-in-an-array/
