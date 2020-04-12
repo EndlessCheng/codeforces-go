@@ -597,10 +597,21 @@ func numberTheoryCollection() {
 		return res
 	}
 
+	initFactorial := func() {
+		const mx int = 1e5
+		F := [mx + 1]int64{1}
+		for i := 1; i <= mx; i++ {
+			F[i] = F[i-1] * int64(i) % mod
+		}
+
+		factorial := func(n int) int64 { return F[n] }
+		_ = factorial
+	}
+
 	// 阶乘模质数（质数较小）
 	// 时间复杂度 O(plogn)
-	// https://cp-algorithms.com/algebra/factorial-modulo.html
-	factorialMod := func(n, p int) int {
+	// todo 待整理 https://cp-algorithms.com/algebra/factorial-modulo.html
+	_factorial := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
 			if n/p&1 == 1 {
@@ -628,38 +639,42 @@ func numberTheoryCollection() {
 	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
 	// https://oeis.org/A000984
 
-	comb := func(n, k int) int {
-		res := 1
+	// 仅适用于小范围的 n k
+	// 更大范围的见下面的三种处理方式
+	comb := func(n, k int) int64 {
+		res := int64(1)
 		for i := 1; i <= k; i++ {
-			res = res * (n - k + i) / i
+			res = res * int64(n-k+i) / int64(i)
 		}
 		return res
 	}
 
 	// https://www.zhihu.com/question/26094736
-	initComb := func() {
-		const mod int64 = 1e9 + 7
-		const mx int = 2e3
-		C := [mx + 1][mx + 1]int64{}
-		for i := 0; i <= mx; i++ {
-			C[i][0] = 1
-			for j := 1; j < i; j++ {
-				C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
-			}
-			C[i][i] = 1
-		}
-
-		comb := func(n, k int) int64 { return C[n][k] }
-		_ = comb
-	}
+	// 不推荐，因为逆元可以做到 O(nlogn) 预处理
+	//{
+	//	// O(n^2) 预处理，O(1) 求组合数
+	//	const mod int64 = 1e9 + 7
+	//	const mx int = 2e3
+	//	C := [mx + 1][mx + 1]int64{}
+	//	for i := 0; i <= mx; i++ {
+	//		C[i][0] = 1
+	//		for j := 1; j < i; j++ {
+	//			C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
+	//		}
+	//		C[i][i] = 1
+	//	}
+	//
+	//	comb := func(n, k int) int64 { return C[n][k] }
+	//	_ = comb
+	//}
 
 	{
 		// O(n) 预处理，O(logn) 求组合数
 		const mod int64 = 1e9 + 7
 		const mx int = 1e5
-		fact := [mx + 1]int64{1}
+		F := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
-			fact[i] = fact[i-1] * int64(i) % mod
+			F[i] = F[i-1] * int64(i) % mod
 		}
 		pow := func(x, n int64) int64 {
 			x %= mod
@@ -674,7 +689,7 @@ func numberTheoryCollection() {
 		}
 		inv := func(a int64) int64 { return pow(a, mod-2) }
 		div := func(a, b int64) int64 { return a * inv(b) % mod }
-		comb := func(n, k int64) int64 { return div(fact[n], fact[k]*fact[n-k]%mod) }
+		comb := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
 
 		_ = comb
 	}
@@ -695,13 +710,13 @@ func numberTheoryCollection() {
 		}
 		inv := func(a int64) int64 { return pow(a, mod-2) }
 		const mx int = 1e5
-		fact := [mx + 1]int64{1}
-		factInv := [mx + 1]int64{inv(1)}
+		F := [mx + 1]int64{1}
+		invF := [mx + 1]int64{inv(1)}
 		for i := 1; i <= mx; i++ {
-			fact[i] = fact[i-1] * int64(i) % mod
-			factInv[i] = inv(fact[i])
+			F[i] = F[i-1] * int64(i) % mod
+			invF[i] = inv(F[i])
 		}
-		comb := func(n, k int64) int64 { return fact[n] * factInv[k] * factInv[n-k] % mod }
+		comb := func(n, k int64) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
 
 		// 卢卡斯定理
 		var lucas func(n, k int64) int64
@@ -772,7 +787,7 @@ func numberTheoryCollection() {
 		isPrime, sieve, primeFactorization, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
-		factorial, factorialMod, comb, combHalf, initComb,
+		factorial, initFactorial, _factorial, combHalf, comb,
 		consecutiveNumbersSum, partition,
 	}
 }
