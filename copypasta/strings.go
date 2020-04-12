@@ -3,6 +3,7 @@ package copypasta
 import (
 	"index/suffixarray"
 	"reflect"
+	"strings"
 	"unsafe"
 )
 
@@ -266,6 +267,31 @@ func stringCollection() {
 			prefixSum[i+1] = prefixSum[i] + vals[p]
 		}
 
+		// EXTRA: 找出数组中的所有字符串，其是某个字符串的子串
+		// 先拼接字符串，然后根据 height 判断前后是否有能匹配的
+		// LC184A https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
+		findAllSubstring := func(a []string) (ans []string) {
+			s := "#" + strings.Join(a, "#")
+			n := len(s)
+			lens := make([]int, n) // lens[i] > 0 表示 s[i] 是原数组中的某个字符串的首字母，且 lens[i] 为该字符串长度
+			cnt := 0
+			for i := 1; i < n; i++ {
+				if s[i-1] == '#' {
+					lens[i] = len(a[cnt])
+					cnt++
+				}
+			}
+			// sa & height ...
+			for i, p := range sa {
+				if l := lens[p]; l > 0 {
+					if height[i] >= l || i+1 < n && height[i+1] >= l {
+						ans = append(ans, s[p:int(p)+l])
+					}
+				}
+			}
+			return
+		}
+
 		// debug
 		for i, h := range height {
 			suffix := string(s[sa[i]:])
@@ -276,7 +302,7 @@ func stringCollection() {
 			}
 		}
 
-		_ = []interface{}{lcp, longestDupSubstring}
+		_ = []interface{}{lcp, longestDupSubstring, findAllSubstring}
 	}
 
 	_ = []interface{}{
