@@ -25,7 +25,7 @@ func TestGenCodeforcesNormalTemplates(t *testing.T) {
 	}
 }
 
-// 生成单道题目的模板（非 Codeforces）
+// 批量生成模板（非 Codeforces）
 func TestGenNormalTemplates(t *testing.T) {
 	const rootPath = "../../nowcoder/2720/"
 	const overwrite = false

@@ -128,7 +128,7 @@ func TestCF%[1]s(t *testing.T) {
 	return nil
 }
 
-// 生成单道题目的模板（非 Codeforces）
+// 批量生成模板（非 Codeforces）
 // rootPath like "../../nowcoder/2720/"
 func GenNormalTemplates(rootPath string, overwrite bool) error {
 	for i := 'a'; i <= 'h'; i++ {
