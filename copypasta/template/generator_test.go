@@ -6,8 +6,8 @@ import (
 
 // 生成比赛模板（需要先在 dash 中创建对应目录）
 func TestGenContestTemplates(t *testing.T) {
-	// TODO 勿扰 & 添加闹钟：剩余 10 分钟和剩余 5 分钟时提醒
-	const contestID = "1321"
+	// TODO 勿扰
+	const contestID = ""
 	const overwrite = false
 	if err := GenContestTemplates(contestID, overwrite); err != nil {
 		t.Fatal(err)
@@ -19,8 +19,8 @@ func TestGenContestTemplates(t *testing.T) {
 // https://codeforces.ml/problemset/status/1291/problem/D
 // https://codeforces.ml/gym/102253/problem/C
 func TestGenCodeforcesNormalTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.ml/problemset/problem/1/D"
-	if err := GenCodeforcesNormalTemplates(problemURL); err != nil {
+	const problemURL = "https://codeforces.ml/problemset/problem//D"
+	if err := GenCodeforcesNormalTemplates(problemURL, true); err != nil {
 		t.Fatal(err)
 	}
 }
