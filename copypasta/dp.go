@@ -36,6 +36,9 @@ https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%9
 https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 
+EXTRA: 如何定义子问题，从而简化思考的复杂性、降低计算量？
+https://codeforces.ml/problemset/problem/553/A
+
 NOTE: 若使用滚动数组，复用时可能要初始化
 NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
 NOTE:（区间 DP）正向计算不易时，试着反向计算
@@ -54,7 +57,7 @@ func dpCollections() {
 		return b
 	}
 
-	// 由于数据范围的原因，采用 map 记忆化
+	// EXTRA: 由于数据范围的原因，采用 map 记忆化
 	mapDP := func() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}

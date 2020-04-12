@@ -638,9 +638,9 @@ func numberTheoryCollection() {
 
 	// https://www.zhihu.com/question/26094736
 	initComb := func() {
-		const mod int = 1e9 + 7
+		const mod int64 = 1e9 + 7
 		const mx int = 2e3
-		C := [mx + 1][mx + 1]int{}
+		C := [mx + 1][mx + 1]int64{}
 		for i := 0; i <= mx; i++ {
 			C[i][0] = 1
 			for j := 1; j < i; j++ {
@@ -649,7 +649,7 @@ func numberTheoryCollection() {
 			C[i][i] = 1
 		}
 
-		comb := func(n, k int) int { return C[n][k] }
+		comb := func(n, k int) int64 { return C[n][k] }
 		_ = comb
 	}
 
