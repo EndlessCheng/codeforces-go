@@ -29,7 +29,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 	read := func() (x int) {
 		in.Scan()
 		for _, b := range in.Bytes() {
-			x = x*10 + int(b-'0')
+			x = x*10 + int(b&15)
 		}
 		return
 	}
@@ -39,12 +39,12 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		data := in.Bytes()
 		if data[0] == '-' {
 			for _, b := range data[1:] {
-				x = x*10 + int(b-'0')
+				x = x*10 + int(b&15)
 			}
 			return -x
 		}
 		for _, b := range data {
-			x = x*10 + int(b-'0')
+			x = x*10 + int(b&15)
 		}
 		return
 	}
@@ -60,8 +60,9 @@ func fastIO(_r io.Reader, _w io.Writer) {
 // bufferIO  670 ms
 // fastIO    296 ms
 // fasterIO  202 ms
-// fasterIO  186 ms (use syscall)
+// fasterIO  202 ms (use syscall.Read(syscall.Stdin, buf))
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
+// NOTE: 如果只有数字的话，只需要判断字符与 '0' 的关系就行了；有小写字母的话，与 'z' 的大小判断可以省去（对运行耗时无影响）
 func fasterIO(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
@@ -70,7 +71,6 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	rc := func() byte {
 		if _i == len(buf) {
 			_r.Read(buf)
-			//syscall.Read(syscall.Stdin, buf)
 			_i = 0
 		}
 		b := buf[_i]
@@ -82,7 +82,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		for ; '0' > b || b > '9'; b = rc() {
 		}
 		for ; '0' <= b && b <= '9'; b = rc() {
-			x = x*10 + int(b-'0')
+			x = x*10 + int(b&15)
 		}
 		return
 	}
@@ -96,7 +96,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 			}
 		}
 		for ; '0' <= b && b <= '9'; b = rc() {
-			x = x*10 + int(b-'0')
+			x = x*10 + int(b&15)
 		}
 		if neg {
 			return -x
