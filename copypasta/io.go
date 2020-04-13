@@ -20,7 +20,7 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data) or Fprint(out, string(data))
 }
 
-// 相比 Fscan，读入 1e5 个 int 可以加速 40-50ms
+// 相比 Fscan，每读入 1e5 个 int 可以加速 40-50ms
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
