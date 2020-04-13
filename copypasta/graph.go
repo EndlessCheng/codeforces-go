@@ -82,6 +82,40 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		}
 	}
 	f(st)
+	// 或者（有向图/森林）
+	for i, b := range vis {
+		if !b {
+			f(i)
+		}
+	}
+
+	{
+		// 有向图的环/回边检测
+		//《算法导论》p.334
+		// vis[v] == 0：该顶点未被访问
+		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
+		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
+		vis := make([]int8, n)
+		var f func(int)
+		f = func(v int) {
+			vis[v] = 1
+			for _, w := range g[v] {
+				if b := vis[w]; b == 0 {
+					f(w)
+				} else if b == 1 {
+					// 回边，说明有环
+				} else {
+					// 横叉边或前向边
+				}
+			}
+			vis[v] = 2
+		}
+		for i, b := range vis {
+			if b == 0 {
+				f(i)
+			}
+		}
+	}
 
 	// BFS
 	vis = make([]bool, n)
@@ -979,22 +1013,18 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	edges := make([]edge, m)
 	g = make([][]int, n)
 	rg := make([][]int, n)
-
-	addEdge := func(v, w int) {
-		g[v] = append(g[v], w)
-		rg[w] = append(rg[w], v)
-	}
 	for i := 0; i < m; i++ {
 		var v, w int
 		Fscan(in, &v, &w)
 		v--
 		w--
-		addEdge(v, w)
+		g[v] = append(g[v], w)
+		rg[w] = append(rg[w], v)
 		edges[i] = edge{v, w}
 	}
 
-	used := make([]bool, n)
 	vs := make([]int, 0, n)
+	used := make([]bool, n)
 	var dfs func(int)
 	dfs = func(v int) {
 		used[v] = true
@@ -1029,6 +1059,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 		if v := vs[i]; !used[v] {
 			comp = []int{}
 			rdfs(v)
+			// EXTRA: len(comp) >= 3 说明有环，注意环的个数可能不止一个
 			comps = append(comps, comp)
 		}
 	}
