@@ -60,6 +60,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 // bufferIO  670 ms
 // fastIO    296 ms
 // fasterIO  202 ms
+// fasterIO  186 ms (use syscall)
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
 func fasterIO(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
@@ -69,6 +70,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	rc := func() byte {
 		if _i == len(buf) {
 			_r.Read(buf)
+			//syscall.Read(syscall.Stdin, buf)
 			_i = 0
 		}
 		b := buf[_i]
