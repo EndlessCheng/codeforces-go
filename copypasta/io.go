@@ -6,8 +6,8 @@ import (
 	"io"
 )
 
-func simpleIO(_r io.Reader, _w io.Writer) {
-	// NOTE: just a bufio.NewReader is enough, there is no difference between this and ioutil.ReadAll
+func bufferIO(_r io.Reader, _w io.Writer) {
+	// NOTE: just a bufio.Reader is enough, there is no difference between this and ioutil.ReadAll
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
@@ -16,11 +16,11 @@ func simpleIO(_r io.Reader, _w io.Writer) {
 	Fscan(in, &n)
 
 	Fprintln(out, n)
-	// NOTE: to print int as char, use Fprintf(out, "%c", 'a'+1)
-	// NOTE: to print []byte as string, use Fprintf(out, "%s", data)
+	// NOTE: to print a char, use Fprintf(out, "%c", 'a') or Fprint(out, string('a'))
+	// NOTE: to print []byte as string, use Fprintf(out, "%s", data) or Fprint(out, string(data))
 }
 
-// 一般来说读 1e5 个 int 需要 50-100ms
+// 相比 Fscan，读入 1e5 个 int 可以加速 40-50ms
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
@@ -33,7 +33,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
-	// 注意：若有负数请使用下面这个！
+	// 若有负数使用下面这个
 	read = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
@@ -49,11 +49,70 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		return
 	}
 
-	// FIXME: CF827A 有问题，WA5 是个什么鬼
+	// NOTE: bufio.Scanner 在读长字符串的情况下可能会有奇怪的 bug，所以还是用下面的 fasterIO 吧！（CF827A WA5）
 	in.Buffer(nil, 1e9)
 	readS := func() []byte { in.Scan(); return in.Bytes() }
 
 	_ = []interface{}{read, readS}
+}
+
+// 性能测试 CF1276B 1e6 数据量
+// bufferIO  670 ms
+// fastIO    296 ms
+// fasterIO  202 ms
+// 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
+func fasterIO(_r io.Reader, _w io.Writer) {
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
+	buf := make([]byte, 4096)
+	_i := len(buf)
+	rc := func() byte {
+		if _i == len(buf) {
+			_r.Read(buf)
+			_i = 0
+		}
+		b := buf[_i]
+		_i++
+		return b
+	}
+	r := func() (x int) {
+		b := rc()
+		for ; '0' > b || b > '9'; b = rc() {
+		}
+		for ; '0' <= b && b <= '9'; b = rc() {
+			x = x*10 + int(b-'0')
+		}
+		return
+	}
+	// 若有负数使用下面这个
+	r = func() (x int) {
+		b := rc()
+		neg := false
+		for ; '0' > b || b > '9'; b = rc() {
+			if b == '-' {
+				neg = true
+			}
+		}
+		for ; '0' <= b && b <= '9'; b = rc() {
+			x = x*10 + int(b-'0')
+		}
+		if neg {
+			return -x
+		}
+		return
+	}
+	// 若知道长度可以加上入参 n int 以及 s = make([]byte, 0, n)
+	rs := func() (s []byte) {
+		b := rc()
+		for ; 'a' > b || b > 'z'; b = rc() {
+		}
+		for ; 'a' <= b && b <= 'z'; b = rc() {
+			s = append(s, b)
+		}
+		return
+	}
+
+	_ = []interface{}{r, rs}
 }
 
 func lineIO(_r io.Reader, _w io.Writer) {
@@ -68,28 +127,3 @@ func lineIO(_r io.Reader, _w io.Writer) {
 		Fprintln(out, line)
 	}
 }
-
-// 由于瓶颈在 Read() 上，使用 buffer 减少调用次数才是关键，优化其余逻辑已无明显意义（对于 2e6 只能减 60ms）
-//scanToken := func(data []byte, atEOF bool) (advance int, token []byte, err error) {
-//	n := len(data)
-//	// Skip leading spaces.
-//	start := 0
-//	for ; start < n; start++ {
-//		if r := data[start]; r != ' ' && r != '\n' && r != '\r' {
-//			break
-//		}
-//	}
-//	// Scan until space, marking end of word.
-//	for i := start; i < n; i++ {
-//		if r := data[i]; r == ' ' || r == '\n' || r == '\r' {
-//			return i + 1, data[start:i], nil
-//		}
-//	}
-//	// If we're at EOF and have a non-empty, non-terminated word. Return it.
-//	if atEOF && start < n {
-//		return len(data), data[start:], nil
-//	}
-//	// Request more data.
-//	return start, nil, nil
-//}
-//in.Split(scanToken)
