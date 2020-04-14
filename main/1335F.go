@@ -12,7 +12,7 @@ func CF1335F(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	type pair struct{ x, y int }
-	dir4 := ['Z']pair{
+	dir4 := [...]pair{
 		'U': {-1, 0},
 		'D': {1, 0},
 		'L': {0, -1},
