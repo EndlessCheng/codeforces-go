@@ -18,7 +18,7 @@ func Test_run(t *testing.T) {
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
 		testutil.AssertEqualStringCase(t, customTestCases, 0, run)
 		//testutil.AssertEqualRunResults(t, customTestCases, 0, runAC, run)
-		t.Log("======================================")
+		t.Log("======= custom =======")
 	}
 
 	dir, _ := filepath.Abs(".")
