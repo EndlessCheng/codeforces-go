@@ -103,7 +103,6 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
-	// 若知道长度可以加上入参 n int 以及 s = make([]byte, 0, n)
 	rs := func() (s []byte) {
 		b := rc()
 		for ; 'a' > b || b > 'z'; b = rc() {
@@ -113,8 +112,18 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
+	rsn := func(n int) []byte {
+		b := rc()
+		for ; 'a' > b || b > 'z'; b = rc() {
+		}
+		s := make([]byte, 0, n)
+		for ; 'a' <= b && b <= 'z'; b = rc() {
+			s = append(s, b)
+		}
+		return s
+	}
 
-	_ = []interface{}{r, rs}
+	_ = []interface{}{r, rs, rsn}
 }
 
 func lineIO(_r io.Reader, _w io.Writer) {
