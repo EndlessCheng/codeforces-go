@@ -20,6 +20,7 @@ func run(_r io.Reader, _w io.Writer) {
 		for i := range a {
 			Fscan(in, &a[i])
 		}
+		todo := [][mx]int{}
 		for j := 0; j < mx; j++ {
 			for k, v := range a {
 				b[(k+j)%mx] = v
@@ -28,7 +29,7 @@ func run(_r io.Reader, _w io.Writer) {
 				Fprintln(out, "Twin snowflakes found.")
 				return
 			}
-			s[b] = true
+			todo = append(todo, b)
 			for k := range a {
 				b[(k+j)%mx] = a[mx-1-k]
 			}
@@ -36,7 +37,10 @@ func run(_r io.Reader, _w io.Writer) {
 				Fprintln(out, "Twin snowflakes found.")
 				return
 			}
-			s[b] = true
+			todo = append(todo, b)
+		}
+		for _, v := range todo {
+			s[v] = true
 		}
 	}
 	Fprintln(out, "No two snowflakes are alike.")
