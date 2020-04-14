@@ -1139,6 +1139,42 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	return ans
 }
 
+// 基环树
+func (*graph) treeWithCycle(n int, g [][]int) {
+	// EXTRA: 内向基环树找环
+	inDeg := make([]int, n) // 计算入度 ...
+	visCnt := make([]int8, n)
+	var f func(v int)
+	f = func(v int) {
+		if visCnt[v] == 2 {
+			return
+		}
+		visCnt[v]++
+		w := g[v][0] // 所有点的出度均为一
+		f(w)
+		if visCnt[v] == 1 && visCnt[w] == 2 { // w 为树枝和环的交叉点
+			// EXTRA: 从 v 开始遍历反图可以遍历树枝上的所有点
+			//        遍历时赋值 inDeg[x] = -1 和 visCnt[x] = 1
+		}
+	}
+	for i, d := range inDeg {
+		if d == 0 {
+			f(i)
+		}
+	}
+	for i, c := range visCnt {
+		if c == 0 { // 基环树无树枝
+			f(i)
+		}
+	}
+	cycleSize := 0
+	for _, c := range visCnt {
+		if c == 2 {
+			cycleSize++
+		}
+	}
+}
+
 // 最大流 Dinic's algorithm O(n2m)
 // Ford–Fulkerson algorithm (FFA) 的改进版本
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
