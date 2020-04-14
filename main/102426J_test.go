@@ -6,11 +6,11 @@ import (
 )
 
 func TestCF102426J(t *testing.T) {
-	customInputs := []string{
-		`5`,
+	testCases := [][2]string{
+		{
+			`5`,
+			`13`,
+		},
 	}
-	customAnswers := []string{
-		`13`,
-	}
-	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, CF102426J)
+	testutil.AssertEqualStringCase(t, testCases, 0, CF102426J)
 }
