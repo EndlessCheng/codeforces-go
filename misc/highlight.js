@@ -59,7 +59,7 @@
                 text = replaceAll(text, words[j], "<span style='color: " + color + "'>" + words[j] + "</span>");
             }
             text = text.replace(reDot, ".</p><p>");
-            text = text.replace(reLatex, "'$1'");
+            text = text.replace(reLatex, "‘$1’");
             pNodes[i].innerHTML = text;
         }
     }
