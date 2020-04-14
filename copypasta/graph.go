@@ -1154,7 +1154,9 @@ func (*graph) treeWithCycle(n int, g [][]int) {
 		f(w)
 		if visCnt[v] == 1 && visCnt[w] == 2 { // w 为树枝和环的交叉点
 			// EXTRA: 从 v 开始遍历反图可以遍历树枝上的所有点
-			//        遍历时赋值 inDeg[x] = -1 和 visCnt[x] = 1
+			//        遍历时赋值 visCnt[x] = 1 和 inDeg[x] = -1
+
+			// EXTRA: 环上的反图遍历需要额外判断反图中的点是否满足 visCnt[x] == 2
 		}
 	}
 	for i, d := range inDeg {
