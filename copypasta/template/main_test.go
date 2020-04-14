@@ -9,15 +9,15 @@ import (
 
 func Test_run(t *testing.T) {
 	// TODO: 测试参数的下界和上界！
-	customInputs := []string{
-		``,
+	customTestCases := [][2]string{
+		{
+			``,
+			``,
+		},
 	}
-	customAnswers := []string{
-		``,
-	}
-	if len(customInputs) > 0 && strings.TrimSpace(customInputs[0]) != "" {
-		testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
-		//testutil.AssertEqualRunResults(t, customInputs, 0, runAC, run)
+	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
+		testutil.AssertEqualStringCase(t, customTestCases, 0, run)
+		//testutil.AssertEqualRunResults(t, customTestCases, 0, runAC, run)
 		t.Log("======================================")
 	}
 

@@ -6,13 +6,12 @@ import (
 )
 
 func Test_run(t *testing.T) {
-	customInputs := []string{
-		``,
+	testCases := [][2]string{
+		{
+			``,
+			``,
+		},
 	}
-	customAnswers := []string{
-		``,
-	}
-	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
-	//testutil.AssertEqualRunResults(t, customInputs, 0, runAC, run)
-	_ = customAnswers
+	testutil.AssertEqualStringCase(t, testCases, 0, run)
+	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
 }

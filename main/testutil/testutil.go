@@ -10,47 +10,36 @@ import (
 	"testing"
 )
 
-func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	if len(answers) < len(inputs) {
-		// 用空字符串补齐
-		for need := len(inputs) - len(answers); need > 0; need-- {
-			answers = append(answers, ``)
-		}
-	}
-
-	if !assert.Equal(t, len(inputs), len(answers), "missing inputs or answers in test cases.") {
-		return
-	}
-
-	if len(inputs) == 0 {
+func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+	if len(testCases) == 0 {
 		return
 	}
 
 	// 例如，-1 表示最后一个测试用例
 	if caseNum < 0 {
-		caseNum += len(inputs) + 1
+		caseNum += len(testCases) + 1
 	}
 
 	allPassed := true
-	for curCase, input := range inputs {
-		if caseNum > 0 && curCase+1 != caseNum {
+	for curCaseNum, tc := range testCases {
+		if caseNum > 0 && curCaseNum+1 != caseNum {
 			continue
 		}
 
-		input = strings.TrimSpace(input)
+		input := strings.TrimSpace(tc[0])
+		expectedOutput := strings.TrimSpace(tc[1])
+
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
 		solveFunc(mockReader, mockWriter)
-		actualOutput := mockWriter.String()
+		actualOutput := strings.TrimSpace(mockWriter.String())
 
-		expectedOutput := strings.TrimSpace(answers[curCase])
-		actualOutput = strings.TrimSpace(actualOutput)
 		const maxInputSize = 150
 		inputInfo := input
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		if !assert.Equal(t, expectedOutput, actualOutput, "please check test case [%d]\nInput:\n%s", curCase+1, inputInfo) {
+		if !assert.Equal(t, expectedOutput, actualOutput, "please check test case [%d]\nInput:\n%s", curCaseNum+1, inputInfo) {
 			allPassed = false
 			handleOutput(actualOutput)
 		}
@@ -63,7 +52,7 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 	if caseNum > 0 {
 		t.Logf("case %d is passed.", caseNum)
 		// 单个用例通过，测试所有用例
-		AssertEqualStringCase(t, inputs, answers, 0, solveFunc)
+		AssertEqualStringCase(t, testCases, 0, solveFunc)
 		return
 	}
 
@@ -71,33 +60,35 @@ func AssertEqualStringCase(t *testing.T, inputs []string, answers []string, case
 }
 
 func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	var inputs []string
 	inputFilePaths, err := filepath.Glob(filepath.Join(dir, "in*.txt"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, path := range inputFilePaths {
-		data, err := ioutil.ReadFile(path)
-		if err != nil {
-			t.Fatal(err)
-		}
-		inputs = append(inputs, string(data))
-	}
-
-	var answers []string
 	answerFilePaths, err := filepath.Glob(filepath.Join(dir, "ans*.txt"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, path := range answerFilePaths {
+	if len(inputFilePaths) != len(answerFilePaths) {
+		t.Fatal("missing sample files")
+	}
+
+	testCases := make([][2]string, len(inputFilePaths))
+	for i, path := range inputFilePaths {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			t.Fatal(err)
 		}
-		answers = append(answers, string(data))
+		testCases[i][0] = string(data)
+	}
+	for i, path := range answerFilePaths {
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		testCases[i][1] = string(data)
 	}
 
-	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
+	AssertEqualStringCase(t, testCases, caseNum, solveFunc)
 }
 
 func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
@@ -115,21 +106,17 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(i
 		sepOutput = "output"
 	}
 
+	testCases := [][2]string{}
 	examples := strings.Split(rawText, sepInput)
-	var inputs, answers []string
-	for _, e := range examples {
-		e = strings.TrimSpace(e)
-		if e == "" {
-			continue
+	for _, s := range examples {
+		s = strings.TrimSpace(s)
+		if s != "" {
+			splits := strings.Split(s, sepOutput)
+			testCases = append(testCases, [2]string{splits[0], splits[1]})
 		}
-		splits := strings.Split(e, sepOutput)
-		in := strings.TrimSpace(splits[0])
-		out := strings.TrimSpace(splits[1])
-		inputs = append(inputs, in)
-		answers = append(answers, out)
 	}
 
-	AssertEqualStringCase(t, inputs, answers, caseNum, solveFunc)
+	AssertEqualStringCase(t, testCases, caseNum, solveFunc)
 }
 
 func AssertEqual(t *testing.T, rawText string, solveFunc func(io.Reader, io.Writer)) {
@@ -138,16 +125,17 @@ func AssertEqual(t *testing.T, rawText string, solveFunc func(io.Reader, io.Writ
 
 // 对拍
 // solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
-func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, solveFuncAC, solveFunc func(io.Reader, io.Writer)) {
-	if len(inputs) == 0 {
+func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, solveFuncAC, solveFunc func(io.Reader, io.Writer)) {
+	if len(testCases) == 0 {
 		return
 	}
-	for curCase, input := range inputs {
-		if caseNum > 0 && curCase+1 != caseNum {
+
+	for curCaseNum, tc := range testCases {
+		if caseNum > 0 && curCaseNum+1 != caseNum {
 			continue
 		}
 
-		input = strings.TrimSpace(input)
+		input := strings.TrimSpace(tc[0])
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &bytes.Buffer{}
 		solveFuncAC(mockReader, mockWriterAC)
@@ -163,6 +151,6 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, solveFunc
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		assert.Equal(t, actualOutputAC, actualOutput, "please check test case [%d]\nInput:\n%s", curCase+1, inputInfo)
+		assert.Equal(t, actualOutputAC, actualOutput, "please check test case [%d]\nInput:\n%s", curCaseNum+1, inputInfo)
 	}
 }
