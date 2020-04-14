@@ -47,6 +47,8 @@
         "operations", "Operations", "operation", "Operation",
     ];
 
+    const re = /(\$\$\$.+?\$\$\$)/g;
+
     const tags = ['p', 'li'];
     for (var ti = 0; ti < tags.length; ti++) {
         var pNodes = document.getElementsByTagName(tags[ti]);
@@ -55,6 +57,7 @@
             for (var j = 0; j < words.length; j++) {
                 text = replaceAll(text, words[j], "<span style='color: " + color + "'>" + words[j] + "</span>");
             }
+            text = text.replace(re, "'$1'");
             pNodes[i].innerHTML = text;
         }
     }
