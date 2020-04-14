@@ -261,10 +261,12 @@ func dpCollections() {
 	https://leetcode.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
 	https://leetcode.com/problems/stone-game-ii/
 	https://leetcode.com/problems/stone-game-iii/
+	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
 	*/
 
 	/* 状压 DP
 	NOTE: 不能将问题分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
+	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
 	 */
 
 	// 旅行商问题 (TSP) https://en.wikipedia.org/wiki/Travelling_salesman_problem
@@ -392,16 +394,18 @@ func dpCollections() {
 	/* 树形 DP
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
+	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
+	https://codeforces.ml/problemset/problem/982/C
 	*/
 
 	// todo 公司聚会/树上最大独立集
-	// 入门经典 p.280
+	// 进阶指南 p.289-290
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 
 	// 树上最大匹配
-	// https://codeforces.com/blog/entry/2059
 	// g[v] = ∑{max(f[son],g[son])}
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
+	// https://codeforces.ml/blog/entry/2059
 	maxMatchingOnTree := func(n int, g [][]int) int {
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
