@@ -133,8 +133,8 @@ func lineIO(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 
 	for in.Scan() {
-		line := in.Text()
+		line := in.Bytes()
 
-		Fprintln(out, line)
+		Fprintln(out, string(line))
 	}
 }
