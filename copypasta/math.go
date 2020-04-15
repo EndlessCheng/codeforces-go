@@ -198,6 +198,21 @@ func numberTheoryCollection() {
 		}
 		return
 	}
+	primeDivisors := func(n int) (primes []int) {
+		for i := 2; i*i <= n; i++ {
+			k := 0
+			for ; n%i == 0; n /= i {
+				k++
+			}
+			if k > 0 {
+				primes = append(primes, i)
+			}
+		}
+		if n > 1 { // n 是质数
+			primes = append(primes, n)
+		}
+		return
+	}
 
 	// 阶乘的质因数分解 Finding Power of Factorial Divisor
 	// 见进阶指南 p.138
@@ -792,7 +807,7 @@ func numberTheoryCollection() {
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
 		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
-		isPrime, sieve, primeFactorization, primeExponentsCountAll,
+		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
 		factorial, initFactorial, _factorial, combHalf, comb,
