@@ -273,6 +273,7 @@ func numberTheoryCollection() {
 				}
 			}
 		}
+		//sort.Slice(res, func(i, j int) bool { return res[i] < res[j] })
 		return
 	}
 	doDivisors := func(n int, do func(d int)) {
