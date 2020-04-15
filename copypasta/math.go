@@ -3,6 +3,7 @@ package copypasta
 import (
 	. "fmt"
 	"math"
+	"math/big"
 	"math/bits"
 	"regexp"
 	"strconv"
@@ -125,6 +126,7 @@ func numberTheoryCollection() {
 		}
 		return n >= 2
 	}
+	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
 
 	// 哥德巴赫猜想 - 偶数分拆的最小质数
 	// 由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
