@@ -38,6 +38,8 @@
 
 [GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)
 
+[Pepcy's Templates for OI and ICPC](http://pepcy.cf/icpc-templates/)
+
 ## 算法竞赛训练中较难的部分
 
 https://blog.csdn.net/skywalkert/article/details/48924861
