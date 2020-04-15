@@ -58,9 +58,11 @@
             for (var j = 0; j < words.length; j++) {
                 text = replaceAll(text, words[j], "<span style='color: " + color + "'>" + words[j] + "</span>");
             }
-            text = text.replace("... ", "...");
-            text = text.replace(reDot, ".</p><p>");
-            text = text.replace(reLatex, "‘$1’");
+            text = text.replace("Mr. ", "Mr.")
+                .replace("mr. ", "mr.")
+                .replace("... ", "...")
+                .replace(reDot, ".</p><p>")
+                .replace(reLatex, "‘$1’");
             pNodes[i].innerHTML = text;
         }
     }
