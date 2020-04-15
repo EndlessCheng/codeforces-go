@@ -6,10 +6,10 @@ import (
 	"io"
 )
 
-type vec struct{ x, y int64 }
+type vec1299 struct{ x, y int64 }
 
-func (a vec) sub(b vec) vec   { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
+func (a vec1299) sub(b vec1299) vec1299 { return vec1299{a.x - b.x, a.y - b.y} }
+func (a vec1299) det(b vec1299) int64   { return a.x*b.y - a.y*b.x }
 
 // github.com/EndlessCheng/codeforces-go
 func CF1299C(_r io.Reader, _w io.Writer) {
@@ -27,10 +27,10 @@ func CF1299C(_r io.Reader, _w io.Writer) {
 
 	n := read()
 	s := make([]int64, n+1)
-	ps := make([]vec, 1, n+1)
+	ps := make([]vec1299, 1, n+1)
 	for i := 1; i <= n; i++ {
 		s[i] = s[i-1] + int64(read())
-		p := vec{int64(i), s[i]}
+		p := vec1299{int64(i), s[i]}
 		for {
 			sz := len(ps)
 			if sz <= 1 || ps[sz-1].sub(ps[sz-2]).det(p.sub(ps[sz-1])) > 0 {
