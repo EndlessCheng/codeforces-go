@@ -7,8 +7,14 @@ import (
 	"sort"
 )
 
-// Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
-// NOTE: 独立集相关问题，可以从染色的角度考虑
+/*
+视频资料：
+Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
+
+CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=graphs
+
+NOTE: 独立集相关问题，可以从染色的角度考虑
+*/
 
 // namespace
 type graph struct{}

@@ -27,6 +27,7 @@ https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-
 状压 DP https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
 LC 全部 DP 题 https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
+CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
 重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
 AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php

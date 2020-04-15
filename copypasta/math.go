@@ -9,11 +9,14 @@ import (
 	"strings"
 )
 
-// NOTE: a%-b == a%b
+/*
+todo 待整理 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
 
-// todo 待整理 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
+CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
+CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
 
-// CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
+NOTE: a%-b == a%b
+*/
 
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
