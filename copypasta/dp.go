@@ -19,16 +19,18 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-线性 DP 和区间 DP https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
-按照相似题目分类 https://zxi.mytechroad.com/blog/leetcode-problem-categories/
+状压 DP https://codeforces.com/blog/entry/45223
+CSES DP section editorial https://codeforces.com/blog/entry/70018
+重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
+CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
+力扣上的 DP 问题
+https://leetcode-cn.com/circle/article/NfHhXD/
+https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+https://zxi.mytechroad.com/blog/leetcode-problem-categories/
 https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
 https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
-状压 DP https://codeforces.com/blog/entry/45223
-CSES DP section editorial https://codeforces.com/blog/entry/70018
-LC 全部 DP 题 https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
-CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
-重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
+https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
 AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 

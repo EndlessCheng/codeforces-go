@@ -579,6 +579,7 @@ func (t *trie) acSearch(text string, patterns []string) [][]int {
 
 // Suffix automaton (SAM)
 // https://en.wikipedia.org/wiki/Suffix_automaton
+// todo https://baobaobear.github.io/post/
 // todo https://codeforces.com/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
@@ -586,3 +587,6 @@ func (t *trie) acSearch(text string, patterns []string) [][]int {
 //《后缀自动机在字典树上的拓展》，刘研绎
 //《后缀自动机及其应用》，张天扬
 // 模板题 https://www.luogu.com.cn/problem/P3804
+
+// 回文树 PAM
+// todo https://baobaobear.github.io/post/
