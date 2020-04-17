@@ -270,7 +270,7 @@ func dpCollections() {
 	/* 状压 DP
 	NOTE: 不能将问题分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
-	 */
+	*/
 
 	// 旅行商问题 (TSP) https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
@@ -331,14 +331,16 @@ func dpCollections() {
 	todo 讲解+套题 https://codeforces.com/blog/entry/53960
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
+	入门题 https://leetcode-cn.com/problems/number-of-digit-one/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
 		n := len(upper) // assert len(lower) == len(upper)
 
-		// <=s 的数目
+		// <=s 的符合要求的数字/字符串数目
 		calc := func(s string) int {
+			const lowerC, upperC byte = '0', '9'
 			dp := make([][]int, n)
 			for i := range dp {
 				dp[i] = make([]int, n)
@@ -350,7 +352,7 @@ func dpCollections() {
 			f = func(p, sum int, isUpper bool) (cnt int) {
 				//if sum... { return 0 }
 				if p >= n {
-					return 1
+					return 1 // 0
 				}
 				dv := &dp[p][sum]
 				if !isUpper && *dv >= 0 {
@@ -361,14 +363,15 @@ func dpCollections() {
 						*dv = cnt
 					}
 				}()
-				up := byte('9')
+				up := upperC
 				if isUpper {
 					up = s[p]
 				}
-				for digit := byte('0'); digit <= up; digit++ {
+				for digit := lowerC; digit <= up; digit++ {
 					tmp := sum
 					// do tmp...
 					c := f(p+1, tmp, isUpper && digit == up)
+					// do c...
 					cnt = (cnt + c) % mod
 				}
 				return
@@ -377,7 +380,11 @@ func dpCollections() {
 		}
 		ansLower := calc(lower)
 		ansUpper := calc(upper)
-		ans := ansUpper - ansLower + 1 // lower 是否算上?
+		ans := ansUpper - ansLower
+		// lower 是否算上
+		//if lowerIsValid {
+		//	ans++
+		//}
 		ans = (ans%mod + mod) % mod
 		return ans
 	}

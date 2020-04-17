@@ -777,6 +777,10 @@ func numberTheoryCollection() {
 
 	// 杜教筛 - 积性函数前缀和
 	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700
+	// todo http://baihacker.github.io/main/
+	// The prefix-sum of multiplicative function: the black algorithm http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_the_black_algorithm.html
+	// The prefix-sum of multiplicative function: Dirichlet convolution http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_dirichlet_convolution.html
+	// The prefix-sum of multiplicative function: powerful number sieve http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_powerful_number_sieve.html
 	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
 
