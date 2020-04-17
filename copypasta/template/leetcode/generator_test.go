@@ -13,3 +13,18 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestGenLeetCodeSpecialTests(t *testing.T) {
+	username := os.Getenv("LEETCODE_USERNAME")
+	password := os.Getenv("LEETCODE_PASSWORD")
+	urls := []string{
+		"",
+		"",
+		"",
+		"",
+		"",
+	}
+	if err := GenLeetCodeSpecialTests(username, password, urls); err != nil {
+		t.Fatal(err)
+	}
+}
