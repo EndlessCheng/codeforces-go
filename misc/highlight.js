@@ -60,6 +60,7 @@
             }
             text = text.replace("Mr. ", "Mr.")
                 .replace("mr. ", "mr.")
+                .replace("i.e. ", "i.e.")
                 .replace("... ", "...")
                 .replace(reDot, ".</p><p>")
                 .replace(reLatex, "‘$1’");
