@@ -478,6 +478,7 @@ func commonCollection() {
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
 	// 天际线问题 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
+	// 经典题 https://codeforces.ml/problemset/problem/1000/C
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
