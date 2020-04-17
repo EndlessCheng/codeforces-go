@@ -6,10 +6,6 @@ import (
 	"testing"
 )
 
-// 1e9~1e18 √n logn 1     二分 二进制
-// 1e5~1e6  nlogn nαn n   二分 RMQ 并查集
-// 1e3~1e4  n^2 n√n       RMQ DP 分块
-// 300~500  n^3           DP 二分图
 func Test(t *testing.T) {
 	t.Log("Current test is [a]")
 	exampleIns := [][]string{{`[8,1,2,2,3]`}, {`[6,5,4,8]`}, {`[7,7,7,7]`}}
