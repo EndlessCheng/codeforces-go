@@ -331,7 +331,8 @@ func dpCollections() {
 	todo 讲解+套题 https://codeforces.com/blog/entry/53960
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
-	入门题 https://leetcode-cn.com/problems/number-of-digit-one/
+	https://leetcode-cn.com/problems/number-of-digit-one/
+	https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
 	*/
 	digitDP := func(lower, upper string) int {
@@ -340,6 +341,7 @@ func dpCollections() {
 
 		// <=s 的符合要求的数字/字符串数目
 		calc := func(s string) int {
+			// 有些题 lowerC 要从 1 开始，而 0 的部分单独计算（由于 0 后面可以填所有数字，这部分可以用 ∑_p>0 f(p, false) 来算）
 			const lowerC, upperC byte = '0', '9'
 			dp := make([][]int, n)
 			for i := range dp {
