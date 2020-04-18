@@ -3,6 +3,7 @@ package main
 import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
 func minimalExecTime(o *TreeNode) float64 {
+	// 返回当前节点在单线程下的耗时和双线程下的的耗时
 	var f func(o *TreeNode) (a, b float64)
 	f = func(o *TreeNode) (a, b float64) {
 		if o.Left == nil || o.Right == nil {
