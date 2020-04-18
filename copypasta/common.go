@@ -842,8 +842,6 @@ func monotoneCollection() {
 }
 
 // NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
-// 剪枝: https://blog.csdn.net/weixin_43914593/article/details/104613920
-// A*: https://blog.csdn.net/weixin_43914593/article/details/104935011
 func loopCollection() {
 	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	min := func(a, b int) int {
@@ -857,39 +855,6 @@ func loopCollection() {
 			return a
 		}
 		return b
-	}
-
-	loopDiagonal := func(mat [][]int) {
-		n, m := len(mat), len(mat[0])
-		for j := 0; j < m; j++ {
-			for i := 0; i < n; i++ {
-				if i > j {
-					break
-				}
-				_ = mat[i][j-i]
-			}
-		}
-		for i := 1; i < n; i++ {
-			for j := m - 1; j >= 0; j-- {
-				if i+m-1-j >= n {
-					break
-				}
-				_ = mat[i+m-1-j][j]
-			}
-		}
-	}
-
-	loopDiagonal2 := func(n int) {
-		for sum := 0; sum < 2*n-1; sum++ {
-			for x := 0; x <= sum; x++ {
-				y := sum - x
-				if x >= n || y >= n {
-					continue
-				}
-				Println(x, y)
-			}
-			Println()
-		}
 	}
 
 	// 枚举 {0,1,...,n-1} 的全部子集
@@ -927,81 +892,6 @@ func loopCollection() {
 			y := sub + x
 			sub = sub&^y/x>>1 | y
 		}
-	}
-
-	// 枚举排列 + 剪枝
-	// 即有 n 个位置，枚举每个位置上可能出现的值（范围在 sets 中），且每个位置上的元素不能重复
-	// 例题见 LC169D
-	loopPerm := func(n int, sets []int) bool {
-		used := make([]bool, len(sets))
-		//used := [10]bool{}
-		var f func(cur, x, y int) bool
-		f = func(pos, x, y int) bool {
-			if pos == n {
-				return true // custom
-			}
-			// 对每个位置，枚举可能出现的值，跳过已经枚举的值
-			for i, v := range sets {
-				_ = v
-				// custom pruning
-				//if  {
-				//	continue
-				//}
-				if used[i] {
-					continue
-				}
-				used[i] = true
-				// custom calc x y
-				if f(pos+1, x, y) {
-					return true
-				}
-				used[i] = false
-			}
-			return false
-		}
-		return f(0, 0, 0)
-	}
-
-	dfsGrids := func(grid [][]int) (comps int) {
-		// grid[i][j] = 0 or 1
-		n, m := len(grid), len(grid[0])
-		vis := make([][]bool, n)
-		for i := range vis {
-			vis[i] = make([]bool, m)
-		}
-		var dfs func(i, j int) bool
-		dfs = func(i, j int) bool {
-			if i < 0 || i >= n || j < 0 || j >= m {
-				return false
-			}
-			if grid[i][j] == 1 {
-				return true
-			}
-			if vis[i][j] {
-				return true
-			}
-			vis[i][j] = true
-			res := true
-			for _, dir := range dir4 {
-				if !dfs(i+dir[0], j+dir[1]) {
-					// 遍历完该连通分量再 return
-					//if {
-					//	res = false
-					//}
-				}
-			}
-			return res
-		}
-		for i, gi := range grid {
-			for j, gij := range gi {
-				if gij == 0 && !vis[i][j] {
-					if dfs(i, j) {
-						comps++
-					}
-				}
-			}
-		}
-		return
 	}
 
 	/*
@@ -1056,106 +946,41 @@ func loopCollection() {
 		}
 	}
 
-	// 从数组 a 中选择 [0,min(r,len(a))] 个元素，生成所有组合
-	// vals 初始化为 make([]int, 0, min(r,len(a)))
-	var rangeCombinations func(a []int, r int, vals []int, do func(vals []int))
-	rangeCombinations = func(a []int, r int, vals []int, do func([]int)) {
-		do(vals)
-		if len(vals) < r {
-			for i, v := range a {
-				rangeCombinations(a[i+1:], r, append(vals, v), do)
-			}
-		}
-	}
-
-	// 从一个长度为 n 的数组中选择 r 个元素，生成所有组合，每个组合用下标表示
-	// r must <= n
-	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
-	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations
-	// https://stackoverflow.com/questions/41694722/algorithm-for-itertools-combinations-in-python
-	combinations := func(n, r int, do func(indexes []int)) {
-		indexes := make([]int, r)
-		for i := range indexes {
-			indexes[i] = i
-		}
-		do(indexes)
-		for {
-			i := r - 1
-			for ; i >= 0; i-- {
-				if indexes[i] != i+n-r {
+	loopDiagonal := func(mat [][]int) {
+		n, m := len(mat), len(mat[0])
+		for j := 0; j < m; j++ {
+			for i := 0; i < n; i++ {
+				if i > j {
 					break
 				}
+				_ = mat[i][j-i]
 			}
-			if i == -1 {
-				return
-			}
-			indexes[i]++
-			for j := i + 1; j < r; j++ {
-				indexes[j] = indexes[j-1] + 1
-			}
-			do(indexes)
 		}
-	}
-
-	// 从一个长度为 n 的数组中选择 r 个元素，生成所有排列，每个排列用下标表示
-	// r must <= n
-	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
-	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
-	permutations := func(n, r int, do func(indexes []int)) {
-		indexes := make([]int, n)
-		for i := range indexes {
-			indexes[i] = i
-		}
-		do(indexes[:r])
-		cycles := make([]int, r)
-		for i := range cycles {
-			cycles[i] = n - i
-		}
-		for {
-			i := r - 1
-			for ; i >= 0; i-- {
-				cycles[i]--
-				if cycles[i] == 0 {
-					tmp := indexes[i]
-					copy(indexes[i:], indexes[i+1:])
-					indexes[n-1] = tmp
-					cycles[i] = n - i
-				} else {
-					j := cycles[i]
-					indexes[i], indexes[n-j] = indexes[n-j], indexes[i]
-					do(indexes[:r])
+		for i := 1; i < n; i++ {
+			for j := m - 1; j >= 0; j-- {
+				if i+m-1-j >= n {
 					break
 				}
-			}
-			if i == -1 {
-				return
+				_ = mat[i+m-1-j][j]
 			}
 		}
 	}
 
-	// 注意这个不是按照字典序 do 的
-	// Permute the values at index i to len(arr)-1.
-	// See 910C for example.
-	var permute func([]int, int, func([]int))
-	permute = func(arr []int, i int, do func([]int)) {
-		if i == len(arr) {
-			do(arr)
-			return
-		}
-		permute(arr, i+1, do)
-		for j := i + 1; j < len(arr); j++ {
-			arr[i], arr[j] = arr[j], arr[i]
-			permute(arr, i+1, do)
-			arr[i], arr[j] = arr[j], arr[i]
+	loopDiagonal2 := func(n int) {
+		for sum := 0; sum < 2*n-1; sum++ {
+			for x := 0; x <= sum; x++ {
+				y := sum - x
+				if x >= n || y >= n {
+					continue
+				}
+				Println(x, y)
+			}
+			Println()
 		}
 	}
-	permuteAll := func(arr []int, do func([]int)) { permute(arr, 0, do) }
-
-	// 舞蹈链
-	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{
-		loopDiagonal, loopDiagonal2, loopSet, loopSubset, loopSubsetK, loopPerm, dfsGrids, searchDir4, searchDir4R,
-		rangeCombinations, combinations, permutations, permuteAll,
+		loopSet, loopSubset, loopSubsetK,
+		searchDir4, searchDir4R, loopDiagonal, loopDiagonal2,
 	}
 }

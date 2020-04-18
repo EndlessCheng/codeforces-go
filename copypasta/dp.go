@@ -337,12 +337,12 @@ func dpCollections() {
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
-		n := len(upper) // assert len(lower) == len(upper)
 
 		// <=s 的符合要求的数字/字符串数目
 		calc := func(s string) int {
 			// 有些题 lowerC 要从 1 开始，而 0 的部分单独计算（由于 0 后面可以填所有数字，这部分可以用 ∑_p>0 f(p, false) 来算）
 			const lowerC, upperC byte = '0', '9'
+			n := len(s)
 			dp := make([][]int, n)
 			for i := range dp {
 				dp[i] = make([]int, n)
@@ -397,11 +397,13 @@ func dpCollections() {
 	// TODO: 斜率优化 / 凸包优化 (CHT)
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://codeforces.com/blog/entry/63823
+	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
+	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
 
 	// TODO: 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
-	// https://blog.csdn.net/weixin_43914593/article/details/105150937
+	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937
 
 	/* 树形 DP
 	https://codeforces.com/blog/entry/20935
