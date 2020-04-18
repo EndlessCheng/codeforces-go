@@ -80,6 +80,30 @@ func (o *TreeNode) toRawString() string {
 	return s
 }
 
+func (o *TreeNode) toGraph() {
+	type edge struct{ to, weight int }
+	g := [][]edge{}
+	cnt := 0
+	var build func(o *TreeNode)
+	build = func(o *TreeNode) {
+		g = append(g, []edge{})
+		v := cnt
+		if o.Left != nil {
+			cnt++
+			g[v] = append(g[v], edge{cnt, o.Left.Val})
+			build(o.Left)
+		}
+		if o.Right != nil {
+			cnt++
+			g[v] = append(g[v], edge{cnt, o.Right.Val})
+			build(o.Right)
+		}
+	}
+	build(o)
+}
+
+//
+
 // 注意确认 Val 的类型是否和题目一致（一般都是 int）
 type ListNode struct {
 	Val  int
@@ -122,6 +146,13 @@ func (o *ListNode) toRawString() string {
 	}
 	s += "]"
 	return s
+}
+
+func (o *ListNode) toSlice() (a []int) {
+	for ; o != nil; o = o.Next {
+		a = append(a, o.Val)
+	}
+	return
 }
 
 //
