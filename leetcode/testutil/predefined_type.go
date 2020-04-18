@@ -27,6 +27,7 @@ func buildTreeNode(rawArray string) (root *TreeNode, err error) {
 
 	nodes := make([]*TreeNode, len(splits))
 	for i, s := range splits {
+		s = strings.TrimSpace(s)
 		if s != "null" {
 			nodes[i] = &TreeNode{}
 			nodes[i].Val, _ = strconv.Atoi(s)
@@ -123,6 +124,7 @@ func buildListNode(rawArray string) (head *ListNode, err error) {
 
 	nodes := make([]*ListNode, len(splits))
 	for i, s := range splits {
+		s = strings.TrimSpace(s)
 		nodes[i] = &ListNode{}
 		nodes[i].Val, _ = strconv.Atoi(s)
 		//nodes[i].Val = s[1 : len(s)-1]
