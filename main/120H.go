@@ -9,62 +9,60 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF120H(_r io.Reader, _w io.Writer) {
-	var _ss []string
-	var _gen func(s, sub string)
-	_gen = func(s, sub string) {
-		_ss = append(_ss, sub)
-		if len(sub) < 4 {
-			for i := range s {
-				_gen(s[i+1:], sub+string(s[i]))
-			}
-		}
-	}
-	genSubStrs := func(s string) []string {
-		_ss = []string{}
-		_gen(s, "")
-		a := _ss[1:]
-		n := len(a)
-		sort.Strings(a)
-		res := make([]string, 1, n)
-		res[0] = a[0]
-		for i := 1; i < n; i++ {
-			if a[i] != a[i-1] {
-				res = append(res, a[i])
-			}
-		}
-		return res
-	}
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
+	genSubStrs := func(s string) []string {
+		a := []string{}
+		var f func(s, sub string)
+		f = func(s, sub string) {
+			a = append(a, sub)
+			if len(sub) < 4 {
+				for i, b := range s {
+					f(s[i+1:], sub+string(b))
+				}
+			}
+		}
+		f(s, "")
+		a = a[1:]
+		sort.Strings(a)
+		j := 0
+		for i := 1; i < len(a); i++ {
+			if a[j] != a[i] {
+				j++
+				a[j] = a[i]
+			}
+		}
+		return a[:j+1]
+	}
 	var n int
+	var s string
 	Fscan(in, &n)
-	strID := map[string]int{}
-	idToStr := []string{}
+	sid := map[string]int{}
+	strs := []string{}
 	g := make([][]int, n)
 	for i := range g {
-		var s string
 		Fscan(in, &s)
-		ss := genSubStrs(s)
-		for _, s := range ss {
-			id, ok := strID[s]
+		a := genSubStrs(s)
+		for _, s := range a {
+			id, ok := sid[s]
 			if !ok {
-				id = len(strID)
-				strID[s] = id
-				idToStr = append(idToStr, s)
+				id = len(sid)
+				sid[s] = id
+				strs = append(strs, s)
 			}
 			g[i] = append(g[i], id)
 		}
 	}
 
 	matchL := make([]int, n)
-	matchR := make([]int, len(strID))
+	matchR := make([]int, len(sid))
 	for i := range matchR {
 		matchR[i] = -1
 	}
 	var used []bool
-	var f func(v int) bool
+	var f func(int) bool
 	f = func(v int) bool {
 		used[v] = true
 		for _, w := range g[v] {
@@ -88,7 +86,7 @@ func CF120H(_r io.Reader, _w io.Writer) {
 		return
 	}
 	for _, id := range matchL {
-		Fprintln(out, idToStr[id])
+		Fprintln(out, strs[id])
 	}
 }
 
