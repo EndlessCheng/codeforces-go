@@ -171,6 +171,15 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 	return sample
 }
 
+func (p *problem) parsePossibleSampleTexts(texts []string, parseArgs bool) []string {
+	for _, text := range texts {
+		if sample := p.parseSampleText(text, parseArgs); len(sample) > 0 {
+			return sample
+		}
+	}
+	return nil
+}
+
 func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	defer func() {
 		// visit htmlNode may cause panic
@@ -236,32 +245,57 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 
 	// parse sample inputs and sample outputs
 	const (
-		tokenInputZH  = "输入："
-		tokenOutputZH = "输出："
+		tokenInputZH  = "输入"
+		tokenOutputZH = "输出"
 
-		tokenInputEN  = "Input:"
-		tokenOutputEN = "Output:"
+		tokenInputEN  = "Input"
+		tokenOutputEN = "Output"
 	)
 
 	isIn := true
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 由于官方描述可能会打错字（比如“输入”写成“输出”），用 isIn 来交替 append 样例输入是最稳妥的
-		if o.Type == html.TextNode && (strings.Contains(o.Data, tokenInputZH) || strings.Contains(o.Data, tokenOutputZH)) {
+		if o.Type == html.TextNode && (
+			strings.Contains(o.Data, tokenInputZH+"：") ||
+				strings.Contains(o.Data, tokenInputZH+":") ||
+				strings.Contains(o.Data, tokenOutputZH+"：") ||
+				strings.Contains(o.Data, tokenOutputZH+":")) { // 处理中英文冒号
 			if o.Parent.NextSibling == nil {
 				return
 			}
+
+			raw := o.Parent.NextSibling.Data
+			sample := p.parseSampleText(raw, true)
+			if len(sample) == 0 {
+				// 国服特殊比赛
+				raw = ""
+				for v := o.NextSibling; v != nil; v = v.NextSibling {
+					if v.Type == html.ElementNode && v.Data == "code" {
+						raw += "," + v.FirstChild.Data
+					}
+				}
+				if len(raw) > 0 {
+					raw = raw[1:]
+				}
+				sample = p.parseSampleText(raw, true)
+			}
+			if len(sample) == 0 {
+				// 国服特殊比赛
+				if i := strings.Index(o.Data, "："); i != -1 {
+					sample = p.parseSampleText(o.Data[i+len("："):], true)
+				} else if j := strings.Index(o.Data, ":"); j != -1 {
+					sample = p.parseSampleText(o.Data[i+1:], true)
+				}
+			}
+
 			if isIn {
-				raw := o.Parent.NextSibling.Data
-				sample := p.parseSampleText(raw, true)
 				if sample == nil { // 官方描述打错。例如，“解释”写成了“输出”
 					fmt.Fprintf(os.Stderr, "错误的输入数据：%s\n", raw)
 					return
 				}
 				p.sampleIns = append(p.sampleIns, sample)
 			} else {
-				raw := o.Parent.NextSibling.Data
-				sample := p.parseSampleText(raw, true)
 				if sample == nil {
 					fmt.Fprintf(os.Stderr, "错误的输出数据：%s\n", raw)
 					return
@@ -271,6 +305,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 			isIn = !isIn
 			return
 		}
+
 		for c := o.FirstChild; c != nil; c = c.NextSibling {
 			f(c)
 		}
@@ -482,15 +517,15 @@ func GenLeetCodeTests(username, password string) error {
 	return handleProblems(session, problems)
 }
 
-func GenLeetCodeSpecialTests(username, password string, urls []string) error {
+func GenLeetCodeSpecialTests(username, password string, urlsZHs []string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
 	}
 	fmt.Println(host, "登录成功")
 
-	problems := make([]*problem, len(urls))
-	for i, url := range urls {
+	problems := make([]*problem, len(urlsZHs))
+	for i, url := range urlsZHs {
 		problems[i] = &problem{
 			id:    string('a' + i),
 			urlZH: url,

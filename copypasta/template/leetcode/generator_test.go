@@ -14,17 +14,17 @@ func TestGenLeetCodeTests(t *testing.T) {
 	}
 }
 
-func TestGenLeetCodeSpecialTests(t *testing.T) {
-	username := os.Getenv("LEETCODE_USERNAME")
-	password := os.Getenv("LEETCODE_PASSWORD")
-	urls := []string{
-		"",
-		"",
-		"",
-		"",
-		"",
-	}
-	if err := GenLeetCodeSpecialTests(username, password, urls); err != nil {
-		t.Fatal(err)
-	}
-}
+//func TestGenLeetCodeSpecialTests(t *testing.T) {
+//	username := os.Getenv("LEETCODE_USERNAME")
+//	password := os.Getenv("LEETCODE_PASSWORD")
+//	urlZHs := []string{
+//		"",
+//		"",
+//		"",
+//		"",
+//		"",
+//	}
+//	if err := GenLeetCodeSpecialTests(username, password, urlZHs); err != nil {
+//		t.Fatal(err)
+//	}
+//}
