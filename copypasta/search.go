@@ -2,10 +2,10 @@ package copypasta
 
 import "sort"
 
-// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
 func searchCollection() {
 	// DFS 格点找有多少个连通分量
 	// 下列代码来自 LC162C https://leetcode-cn.com/problems/number-of-closed-islands/
+	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
 	dfsGrids := func(grid [][]int) (comps int) {
 		dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 		n, m := len(grid), len(grid[0])
@@ -19,7 +19,7 @@ func searchCollection() {
 			if i < 0 || i >= n || j < 0 || j >= m {
 				return false
 			}
-			if vis[i][j] || grid[i][j] == 1 {
+			if vis[i][j] || grid[i][j] != 0 {
 				return true
 			}
 			vis[i][j] = true
