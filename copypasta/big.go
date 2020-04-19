@@ -21,6 +21,8 @@ func div(a, b bigInt) bigInt { return bigInt{(&big.Int{}).Quo(a.Int, b.Int)} }
 func mod(a, b bigInt) bigInt { return bigInt{(&big.Int{}).Rem(a.Int, b.Int)} }
 func neg(a bigInt) bigInt    { return bigInt{(&big.Int{}).Neg(a.Int)} }
 
+//
+
 type bigRat struct{ *big.Rat }
 
 func (a bigRat) add(b bigRat) bigRat { a.Add(a.Rat, b.Rat); return a }
