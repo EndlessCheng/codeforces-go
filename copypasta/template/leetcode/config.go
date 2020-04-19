@@ -1,10 +1,11 @@
 package leetcode
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 const (
-	contestID = 186
-
 	hostZH = "leetcode-cn.com"
 	hostEN = "leetcode.com"
 	host   = hostZH
@@ -17,9 +18,16 @@ const (
 	openWebPageEN = true
 )
 
-var contestDir string
+var (
+	contestID  int
+	contestDir string
+)
 
 func init() {
+	if contestID == 0 {
+		contestID = calcNextContestID()
+	}
+
 	switch contestPrefix {
 	case contestPrefixWeekly:
 		contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
@@ -27,5 +35,24 @@ func init() {
 		contestDir = fmt.Sprintf("../../../leetcode/biweekly/%d/", contestID)
 	default:
 		contestDir = fmt.Sprintf("../../../leetcode/%s/", contestPrefix)
+	}
+}
+
+var utc8, _ = time.LoadLocation("Asia/Shanghai")
+
+func calcNextContestID() int {
+	switch contestPrefix {
+	case contestPrefixWeekly:
+		// 以 2020 年第一场周赛的结束时间为基准
+		endTime170 := time.Date(2020, 1, 5, 12, 0, 0, 0, utc8)
+		weeks := int(time.Since(endTime170) / (7 * 24 * time.Hour))
+		return 171 + weeks
+	case contestPrefixBiweekly:
+		// 以 2020 年第一场双周赛的结束时间为基准
+		endTime17 := time.Date(2020, 1, 12, 0, 0, 0, 0, utc8)
+		twoWeeks := int(time.Since(endTime17) / (14 * 24 * time.Hour))
+		return 18 + twoWeeks
+	default:
+		return -1
 	}
 }
