@@ -8,7 +8,7 @@ import (
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，目前市面上讲解 DP 最好的一本书
 
-DP 视频讲解：
+视频讲解：
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
 https://www.bilibili.com/video/av77393700 LCS LIS
 https://www.bilibili.com/video/av83939419 区间 DP
@@ -279,6 +279,7 @@ func dpCollections() {
 	//     起点：(0,j)  j∈[0,sum]
 	//     终点：(n,sum)
 	// 核心函数：方案数（点权汇合），即 +
+	// 例题（需要转换）：https://leetcode-cn.com/problems/target-sum/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)
@@ -291,14 +292,12 @@ func dpCollections() {
 				if j < v {
 					dp[i+1][j] = dpij // 入度为 1，直接转移
 				} else {
-					dp[i+1][j] += dp[i][j-v] // 入度为 2，取核心函数转移
+					dp[i+1][j] = dpij + dp[i][j-v] // 入度为 2，取核心函数转移
 				}
 			}
 		}
 		return dp[n][sum]
 	}
-
-	// todo 变种：https://leetcode-cn.com/problems/target-sum/
 
 	// 完全背包
 
