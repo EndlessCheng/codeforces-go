@@ -45,13 +45,13 @@ func calcNextContestID() int {
 	case contestPrefixWeekly:
 		// 以 2020 年第一场周赛的结束时间为基准
 		endTime170 := time.Date(2020, 1, 5, 12, 0, 0, 0, utc8)
-		weeks := int(time.Since(endTime170) / (7 * 24 * time.Hour))
-		return 171 + weeks
+		weeksSince170 := 1 + int(time.Since(endTime170)/(7*24*time.Hour))
+		return 170 + weeksSince170
 	case contestPrefixBiweekly:
 		// 以 2020 年第一场双周赛的结束时间为基准
 		endTime17 := time.Date(2020, 1, 12, 0, 0, 0, 0, utc8)
-		twoWeeks := int(time.Since(endTime17) / (14 * 24 * time.Hour))
-		return 18 + twoWeeks
+		twoWeeksSince17 := 1 + int(time.Since(endTime17)/(14*24*time.Hour))
+		return 17 + twoWeeksSince17
 	default:
 		return -1
 	}
