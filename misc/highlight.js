@@ -8,6 +8,7 @@
 // @match        https://codeforces.ml/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://atcoder.jp/*
+// @match        https://leetcode-cn.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -45,6 +46,11 @@
         "modulo",
 
         "operations", "Operations", "operation", "Operation",
+
+        // 高亮一些术语
+        "子数组", "子序列", "子字符串", "子串",
+        "升序", "降序",
+        "返回",
     ];
 
     const reDot = /\. /g;
