@@ -671,6 +671,7 @@ func numberTheoryCollection() {
 			res = res * int64(n-k+i) / int64(i)
 		}
 		return res
+		//return big.Int{}.Binomial(n, k).Int64()
 	}
 
 	// https://www.zhihu.com/question/26094736
