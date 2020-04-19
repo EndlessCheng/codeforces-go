@@ -28,6 +28,7 @@ func numOfArrays(n int, m int, K int) (ans int) {
 			return *dv
 		}
 		defer func() { *dv = res }()
+		// 注：这层循环可以用前缀和优化成 O(1)
 		for i := 1; i <= m; i++ {
 			if i <= max {
 				res += f(p+1, max, k)
