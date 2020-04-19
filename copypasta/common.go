@@ -110,6 +110,12 @@ func commonCollection() {
 			ps[i] = pair{a[i], i}
 		}
 	}
+	getCol := func(mat [][]int, j int) (col []int) {
+		for _, row := range mat {
+			col = append(col, row[j])
+		}
+		return
+	}
 	// END HELPER
 
 	abs := func(x int) int {
@@ -527,7 +533,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI,
+		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
