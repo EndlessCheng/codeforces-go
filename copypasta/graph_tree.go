@@ -19,20 +19,23 @@ CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=constructive+al
 // namespace
 type tree struct{}
 
-// 节点深度
-func (*tree) depth(n, root int, g [][]int) []int {
+// 基本信息：节点深度和子树大小
+func (*tree) depthSize(n, root int, g [][]int) {
 	dep := make([]int, n)
-	var f func(v, fa, d int)
-	f = func(v, fa, d int) {
+	size := make([]int, n)
+	var f func(v, fa, d int) int
+	f = func(v, fa, d int) int {
 		dep[v] = d
+		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
-				f(w, v, d+1)
+				sz += f(w, v, d+1)
 			}
 		}
+		size[v] = sz
+		return sz
 	}
-	f(0, -1, 0)
-	return dep
+	f(root, -1, 0)
 }
 
 // 树上两点路径
