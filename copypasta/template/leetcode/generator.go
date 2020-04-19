@@ -28,7 +28,10 @@ func login(username, password string) (session *grequests.Session, err error) {
 		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
 	})
 	if err != nil {
-		return
+		// maybe timeout
+		fmt.Println("访问失败，重试", err)
+		time.Sleep(time.Second)
+		return login(username, password)
 	}
 	if !resp.Ok {
 		return nil, fmt.Errorf("POST %s return code %d", csrfTokenURL, resp.StatusCode)
@@ -59,7 +62,9 @@ func login(username, password string) (session *grequests.Session, err error) {
 		},
 	})
 	if err != nil {
-		return
+		fmt.Println("访问失败，重试", err)
+		time.Sleep(time.Second)
+		return login(username, password)
 	}
 	if !resp.Ok {
 		return nil, fmt.Errorf("POST %s return code %d", loginURL, resp.StatusCode)
