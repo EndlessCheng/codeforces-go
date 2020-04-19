@@ -84,6 +84,9 @@ func dpCollections() {
 	*/
 
 	// LCS
+	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
+	//            s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
+	//                           (i,j-1) -> (i,j) $ 0
 	// 最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) https://leetcode-cn.com/problems/shortest-common-supersequence/
 	lcs := func(s1, s2 string) int {
@@ -149,6 +152,8 @@ func dpCollections() {
 	}
 
 	// O(n^2) LIS - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
+	//              可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
+	//              这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
 	// O(nlogn) LIS - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// https://oi-wiki.org/dp/basic/#_12
 	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
@@ -171,7 +176,7 @@ func dpCollections() {
 	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
 	// 其中 prev[i] 为 s[i] 的上一个相同字符位置
 	// https://ac.nowcoder.com/discuss/394080 C 题
-	// https://codeforces.com/problemset/problem/1183/H
+	// https://codeforces.ml/problemset/problem/1183/H
 	distinctSubsequence := func(s string) int64 {
 		n := len(s)
 		prev := [26]int{}
@@ -198,8 +203,14 @@ func dpCollections() {
 		return sum
 	}
 
-	// 无限物品：恰好装满背包至少需要多少个物品
-	// 无法装满返回 -1
+	// 恰好装满背包至少需要多少个物品，物品无限。无法装满时返回 -1
+	// 基本状态：容量 i  i∈[0,amount]
+	// 点权：最少物品数
+	//     初始值：0=0
+	// 有向无环图：i-wj (wj≤i) -> i $ 1
+	//     起点：0
+	//     终点：amount
+	// 核心函数：最少物品数（最短路），即 min
 	minCoinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
 		dp := make([]int, amount+1)
@@ -207,6 +218,7 @@ func dpCollections() {
 			dp[i] = inf
 		}
 		dp[0] = 0
+		// 按容量遍历以满足拓扑序
 		for cur := range dp {
 			for _, c := range coins {
 				if c <= cur {
@@ -226,7 +238,16 @@ func dpCollections() {
 	套题 https://www.acwing.com/problem/
 	*/
 
-	// 01背包
+	// 0-1 背包 (n 个物品，背包容量为 maxW)
+	// 基本状态：前 i 个物品  i∈[0,n]
+	// 附加状态：容量(上限)为 j  j∈[0,maxW]
+	// 点权：最大价值
+	//     初始值：(0,j)=0  j∈[0,maxW]
+	// 有向无环图：不选第 i 个物品，对各个容量 j，连一条横边，即 (i-1,j) -> (i,j) $ 0
+	//             选第 i 个物品，对各个容量 j (j≥wi)，连边 (i-1,j-wi) -> (i,j) $ vi
+	//     起点：(0,j)  j∈[0,maxW]
+	//     终点：(n,maxW)
+	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
 	knapsack01 := func(values, weights []int, maxW int) int {
@@ -239,14 +260,45 @@ func dpCollections() {
 			wi := weights[i]
 			for j, dpij := range dp[i] {
 				if j < wi {
-					dp[i+1][j] = dpij
+					dp[i+1][j] = dpij // 入度为 1，直接转移
 				} else {
-					dp[i+1][j] = max(dpij, dp[i][j-wi]+vi)
+					dp[i+1][j] = max(dpij, dp[i][j-wi]+vi) // 入度为 2，取核心函数转移
 				}
 			}
 		}
 		return dp[n][maxW]
 	}
+
+	// 从 a 中选出若干个数，总和为 sum 的方案数
+	// 基本状态：前 i 个数  i∈[0,n]
+	// 附加状态：和为 j  j∈[0,sum]
+	// 点权：方案数
+	//     初始值：(0,0)=1
+	// 有向无环图：不选第 i 个数，对各个和 j，连一条横边，即 (i-1,j) -> (i,j)
+	//             选第 i 个数，对各个和 j (j≥ai)，连边 (i-1,j-ai) -> (i,j)
+	//     起点：(0,j)  j∈[0,sum]
+	//     终点：(n,sum)
+	// 核心函数：方案数（点权汇合），即 +
+	waysToSum := func(a []int, sum int) int {
+		n := len(a)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, sum+1)
+		}
+		dp[0][0] = 1
+		for i, v := range a {
+			for j, dpij := range dp[i] {
+				if j < v {
+					dp[i+1][j] = dpij // 入度为 1，直接转移
+				} else {
+					dp[i+1][j] += dp[i][j-v] // 入度为 2，取核心函数转移
+				}
+			}
+		}
+		return dp[n][sum]
+	}
+
+	// todo 变种：https://leetcode-cn.com/problems/target-sum/
 
 	// 完全背包
 
@@ -486,9 +538,8 @@ func dpCollections() {
 
 	_ = []interface{}{
 		mapDP,
-		lcs, lcsPath, lis, distinctSubsequence,
-		minCoinChange,
-		knapsack01,
+		lcs, lcsPath, lis, distinctSubsequence, minCoinChange,
+		knapsack01, waysToSum,
 		tsp,
 		digitDP,
 		maxMatchingOnTree, rerootDP,
