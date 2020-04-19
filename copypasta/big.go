@@ -9,6 +9,7 @@ import "math/big"
 type Int struct{ *big.Int }
 
 func newInt(x int64) Int    { return Int{big.NewInt(x)} }
+func (a Int) set(b Int) Int { a.Set(b.Int); return a }
 func (a Int) add(b Int) Int { a.Add(a.Int, b.Int); return a }
 func (a Int) sub(b Int) Int { a.Sub(a.Int, b.Int); return a }
 func (a Int) mul(b Int) Int { a.Mul(a.Int, b.Int); return a }
@@ -29,6 +30,7 @@ func neg(a Int) Int    { return Int{(&big.Int{}).Neg(a.Int)} }
 type rat struct{ *big.Rat }
 
 func newRat(a, b int64) rat { return rat{big.NewRat(a, b)} }
+func (a rat) set(b rat) rat { a.Set(b.Rat); return a }
 func (a rat) add(b rat) rat { a.Add(a.Rat, b.Rat); return a }
 func (a rat) sub(b rat) rat { a.Sub(a.Rat, b.Rat); return a }
 func (a rat) mul(b rat) rat { a.Mul(a.Rat, b.Rat); return a }
