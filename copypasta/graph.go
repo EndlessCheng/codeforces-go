@@ -75,6 +75,19 @@ func (*graph) readWeightedGraph(in io.Reader, n, m int) {
 	}
 }
 
+// 0-1 矩阵，有向图
+func (*graph) matrixToEdges(mat []string) [][2]int {
+	edges := [][2]int{}
+	for v, row := range mat {
+		for w, weight := range row {
+			if weight != '0' {
+				edges = append(edges, [2]int{v, w})
+			}
+		}
+	}
+	return edges
+}
+
 func (*graph) simpleSearch(n, st int, g [][]int) {
 	// DFS
 	vis := make([]bool, n)
