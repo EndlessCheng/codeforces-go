@@ -28,7 +28,7 @@ func copyFile(dst, src string) error {
 	return nil
 }
 
-func parseProblemURL(urlStr string) (contestID, problemID string) {
+func parseCodeforcesProblemURL(urlStr string) (contestID, problemID string) {
 	splits := strings.Split(urlStr, "/")
 	return splits[len(splits)-2], splits[len(splits)-1]
 }

@@ -62,7 +62,7 @@ func sortCollections() {
 
 	searchRange := func(l, r int, f func(int) bool) int {
 		for l < r {
-			m := (l + r) >> 1
+			m := (l + r) >> 1 // 注意 l+r 是否超 int
 			if f(m) {
 				r = m
 			} else {

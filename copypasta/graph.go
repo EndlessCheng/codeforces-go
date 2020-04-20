@@ -75,6 +75,19 @@ func (*graph) readWeightedGraph(in io.Reader, n, m int) {
 	}
 }
 
+// 0-1 矩阵，有向图
+func (*graph) matrixToEdges(mat []string) [][2]int {
+	edges := [][2]int{}
+	for v, row := range mat {
+		for w, weight := range row {
+			if weight != '0' {
+				edges = append(edges, [2]int{v, w})
+			}
+		}
+	}
+	return edges
+}
+
 func (*graph) simpleSearch(n, st int, g [][]int) {
 	// DFS
 	vis := make([]bool, n)
@@ -394,6 +407,7 @@ func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
+// https://codeforces.ml/problemset/problem/1204/C
 func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {

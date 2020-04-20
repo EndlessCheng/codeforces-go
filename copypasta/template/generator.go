@@ -65,7 +65,7 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 // https://codeforces.com/problemset/status/1291/problem/D
 // https://codeforces.com/gym/102253/problem/C
 func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
-	contestID, problemID := parseProblemURL(problemURL)
+	contestID, problemID := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {
 		return err
 	}
