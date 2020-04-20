@@ -407,6 +407,7 @@ func (*graph) findBCC() (comps [][]int, bccIDs []int) {
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
+// https://codeforces.ml/problemset/problem/1204/C
 func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {
