@@ -57,10 +57,12 @@ func runAC(_r io.Reader, _w io.Writer) {
 		if ans[[2]int{p.x, p.y}] == "" {
 			ans[[2]int{p.x, p.y}] = p.s
 		}
-		q = append(q, tuple{p.x + 1<<len(p.s), p.y, p.s + "E"})
-		q = append(q, tuple{p.x - 1<<len(p.s), p.y, p.s + "W"})
-		q = append(q, tuple{p.x, p.y + 1<<len(p.s), p.s + "N"})
-		q = append(q, tuple{p.x, p.y - 1<<len(p.s), p.s + "S"})
+		q = append(q,
+			tuple{p.x + 1<<len(p.s), p.y, p.s + "E"},
+			tuple{p.x - 1<<len(p.s), p.y, p.s + "W"},
+			tuple{p.x, p.y + 1<<len(p.s), p.s + "N"},
+			tuple{p.x, p.y - 1<<len(p.s), p.s + "S"},
+		)
 	}
 
 	var t int
