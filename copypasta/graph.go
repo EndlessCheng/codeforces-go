@@ -201,7 +201,7 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 	return dep
 }
 
-// BFS 应用：求无向图最小环长度（边权均为 1）
+// BFS 应用：求无向无权图最小环长度
 func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	const inf int = 1e9
 	ans := inf
@@ -444,6 +444,7 @@ func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 // 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
+// NOTE: 无权图的情况见 shortestCycleBFS
 func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	min := func(a, b int64) int64 {
 		if a <= b {
