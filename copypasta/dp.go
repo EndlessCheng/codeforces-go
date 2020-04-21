@@ -6,7 +6,7 @@ import (
 
 /*
 参考书籍推荐：
-《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，目前市面上讲解 DP 最好的一本书
+《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
 视频讲解：
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
@@ -19,19 +19,20 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-状压 DP https://codeforces.com/blog/entry/45223
-CSES DP section editorial https://codeforces.com/blog/entry/70018
-重要技巧总结+套题！ https://codeforces.com/blog/entry/47764
+重要 DP 技巧总结 https://codeforces.ml/blog/entry/47764
+状压 DP https://codeforces.ml/blog/entry/45223
+CSES DP section editorial https://codeforces.ml/blog/entry/70018
 CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
 力扣上的 DP 问题
-https://leetcode-cn.com/circle/article/NfHhXD/
-https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
-https://zxi.mytechroad.com/blog/leetcode-problem-categories/
-https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
-https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
-https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
-https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
-AT 经典 DP 场 https://atcoder.jp/contests/dp 题解 https://www.cnblogs.com/shanxieng/p/10232228.html https://www.hamayanhamayan.com/entry/2019/01/12/163853
+    分类汇总 https://zhuanlan.zhihu.com/p/126546914
+    https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
+    https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
+    https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
+    https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
+    https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
+AT 经典 DP 场 https://atcoder.jp/contests/dp
+    题解 https://www.cnblogs.com/shanxieng/p/10232228.html
+    题解（日语）https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 
 其他资料：
@@ -41,10 +42,14 @@ https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 
 EXTRA: 如何定义子问题，从而简化思考的复杂性、降低计算量？
 https://codeforces.ml/problemset/problem/553/A
+https://codeforces.ml/blog/entry/47764 也有提到
 
 NOTE: 若使用滚动数组，复用时可能要初始化
 NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
 NOTE:（区间 DP）正向计算不易时，试着反向计算
+TIPS: 如果反复在同一个序列上点权汇合，可以考虑用前缀和或者差分来优化
+      - 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
+      https://leetcode-cn.com/problems/new-21-game/
 */
 func dpCollections() {
 	min := func(a, b int) int {
@@ -79,7 +84,7 @@ func dpCollections() {
 
 	/* 线性 DP：前缀/后缀之间的转移
 	数字三角形 https://www.luogu.com.cn/problem/P1216
-	todo 最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
+	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	*/
 
@@ -203,38 +208,9 @@ func dpCollections() {
 		return sum
 	}
 
-	// 恰好装满背包至少需要多少个物品，物品无限。无法装满时返回 -1
-	// 基本状态：容量 i  i∈[0,amount]
-	// 点权：最少物品数
-	//     初始值：0=0
-	// 有向无环图：i-wj (wj≤i) -> i $ 1
-	//     起点：0
-	//     终点：amount
-	// 核心函数：最少物品数（最短路），即 min
-	minCoinChange := func(coins []int, amount int) int {
-		const inf int = 1e9
-		dp := make([]int, amount+1)
-		for i := range dp {
-			dp[i] = inf
-		}
-		dp[0] = 0
-		// 按容量遍历以满足拓扑序
-		for cur := range dp {
-			for _, c := range coins {
-				if c <= cur {
-					dp[cur] = min(dp[cur], dp[cur-c]+1)
-				}
-			}
-		}
-		if dp[amount] < inf {
-			return dp[amount]
-		}
-		return -1
-	}
-
 	/* 背包问题
 	https://en.wikipedia.org/wiki/Knapsack_problem
-	https://codeforces.com/blog/entry/59606
+	https://codeforces.ml/blog/entry/59606
 	套题 https://www.acwing.com/problem/
 	*/
 
@@ -250,7 +226,7 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
-	knapsack01 := func(values, weights []int, maxW int) int {
+	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
 		for i := range dp {
@@ -300,12 +276,61 @@ func dpCollections() {
 	}
 
 	// 完全背包
+	unboundedKnapsack := func(values, weights []int, maxW int) int {
+		n := len(values)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, maxW+1)
+		}
+		for i, vi := range values {
+			wi := weights[i]
+			for j, dpij := range dp[i] {
+				if j < wi {
+					dp[i+1][j] = dpij // 入度为 1，直接转移
+				} else {
+					dp[i+1][j] = max(dpij, dp[i+1][j-wi]+vi) // 入度为 2，取核心函数转移
+				}
+			}
+		}
+		return dp[n][maxW]
+	}
+
+	// 恰好装满背包至少需要多少个物品，物品无限。无法装满时返回 -1
+	// 基本状态：容量 i  i∈[0,amount]
+	// 点权：最少物品数
+	//     初始值：0=0
+	// 有向无环图：i-wj (wj≤i) -> i $ 1
+	//     起点：0
+	//     终点：amount
+	// 核心函数：最少物品数（最短路），即 min
+	minCoinChange := func(coins []int, amount int) int {
+		const inf int = 1e9
+		dp := make([]int, amount+1)
+		for i := range dp {
+			dp[i] = inf
+		}
+		dp[0] = 0
+		// 按容量遍历以满足拓扑序
+		for cur := range dp {
+			for _, c := range coins {
+				if c <= cur {
+					dp[cur] = min(dp[cur], dp[cur-c]+1)
+				}
+			}
+		}
+		if dp[amount] < inf {
+			return dp[amount]
+		}
+		return -1
+	}
 
 	// 多重背包
+	// todo 方法 1：二进制优化
 
 	/* 区间 DP / 环形 DP
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 https://leetcode-cn.com/problems/burst-balloons/
+	打印机 https://leetcode-cn.com/problems/strange-printer/
 	todo 石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
@@ -319,11 +344,12 @@ func dpCollections() {
 	*/
 
 	/* 状压 DP
-	NOTE: 不能将问题分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
+	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
 	*/
 
-	// 旅行商问题 (TSP) https://en.wikipedia.org/wiki/Travelling_salesman_problem
+	// 旅行商问题 (TSP)
+	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
 	tsp := func(dist [][]int) int {
 		n := len(dist)
@@ -379,12 +405,12 @@ func dpCollections() {
 	}
 
 	/* 数位 DP
-	todo 讲解+套题 https://codeforces.com/blog/entry/53960
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
 	https://leetcode-cn.com/problems/number-of-digit-one/
 	https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
+	todo 套题 https://codeforces.ml/blog/entry/53960
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
@@ -442,23 +468,24 @@ func dpCollections() {
 		return ans
 	}
 
-	// TODO: 单调队列/单调栈优化
+	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 
-	// TODO: 斜率优化 / 凸包优化 (CHT)
+	// 斜率优化 / 凸包优化 (CHT)
 	// https://oi-wiki.org/dp/opt/slope/
-	// https://codeforces.com/blog/entry/63823
+	// https://codeforces.ml/blog/entry/63823
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
 	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
+	// 题目 https://qiita.com/drken/items/9b311d553aa434bb26e4#%E4%BE%8B%E9%A1%8C-4-4-4k-anonymous-sequence-poj-no3709
 
-	// TODO: 四边形不等式优化
+	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937
 
 	/* 树形 DP
-	https://codeforces.com/blog/entry/20935
-	https://codeforces.com/blog/entry/63257
+	https://codeforces.ml/blog/entry/20935
+	https://codeforces.ml/blog/entry/63257
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
 	https://codeforces.ml/problemset/problem/982/C
 	*/
@@ -537,8 +564,8 @@ func dpCollections() {
 
 	_ = []interface{}{
 		mapDP,
-		lcs, lcsPath, lis, distinctSubsequence, minCoinChange,
-		knapsack01, waysToSum,
+		lcs, lcsPath, lis, distinctSubsequence,
+		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange,
 		tsp,
 		digitDP,
 		maxMatchingOnTree, rerootDP,
