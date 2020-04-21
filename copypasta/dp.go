@@ -88,11 +88,11 @@ func dpCollections() {
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	*/
 
-	// LCS
+	// 最长公共子序列 (LCS)
 	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
 	//            s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
 	//                           (i,j-1) -> (i,j) $ 0
-	// 最长公共子序列 (LCS) https://leetcode-cn.com/problems/longest-common-subsequence/
+	// 例题 https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) https://leetcode-cn.com/problems/shortest-common-supersequence/
 	lcs := func(s1, s2 string) int {
 		n, m := len(s1), len(s2)
@@ -156,10 +156,11 @@ func dpCollections() {
 		return lcs
 	}
 
-	// O(n^2) LIS - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
-	//              可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
-	//              这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
-	// O(nlogn) LIS - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
+	// 最长上升子序列 (LIS)
+	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
+	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
+	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
+	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// https://oi-wiki.org/dp/basic/#_12
 	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 方案数 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
@@ -226,6 +227,7 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
+	// EXTRA: 恰好装满 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -255,7 +257,7 @@ func dpCollections() {
 	//     起点：(0,j)  j∈[0,sum]
 	//     终点：(n,sum)
 	// 核心函数：方案数（点权汇合），即 +
-	// 例题（需要转换）：https://leetcode-cn.com/problems/target-sum/
+	// 例题（需要转换）https://leetcode-cn.com/problems/target-sum/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)
@@ -303,6 +305,7 @@ func dpCollections() {
 	//     起点：0
 	//     终点：amount
 	// 核心函数：最少物品数（最短路），即 min
+	// https://leetcode-cn.com/problems/coin-change/
 	minCoinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
 		dp := make([]int, amount+1)
@@ -323,6 +326,11 @@ func dpCollections() {
 		}
 		return -1
 	}
+
+	// EXTRA: 完全背包 - 求方案数
+	// https://leetcode-cn.com/problems/coin-change-2/
+
+	// todo 二维费用背包 https://leetcode-cn.com/problems/ones-and-zeroes/
 
 	// 多重背包
 	// todo 方法 1：二进制优化
