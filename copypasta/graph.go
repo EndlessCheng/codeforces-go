@@ -292,12 +292,12 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 // TODO
 
 /* Topic - DFS 树
-讲解+套题 https://codeforces.com/blog/entry/68138
-好题：https://codeforces.com/problemset/problem/1325/F
+讲解+套题 https://codeforces.ml/blog/entry/68138
+好题：https://codeforces.ml/problemset/problem/1325/F
 */
 
 // 割点（割顶） cut vertices / articulation points
-// https://codeforces.com/blog/entry/68138
+// https://codeforces.ml/blog/entry/68138
 // https://oi-wiki.org/graph/cut/#_1
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
@@ -583,8 +583,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, pa
 
 // 01 最短路
 // https://oi-wiki.org/graph/bfs/#bfs_3
-// https://codeforces.com/blog/entry/22276
-// 例题: https://codeforces.com/problemset/problem/173/B
+// https://codeforces.ml/blog/entry/22276
+// 例题: https://codeforces.ml/problemset/problem/173/B
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
@@ -886,7 +886,7 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 //   在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
 //   所以找到了多少匹配边，路径数就减少了多少
 //   所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
-// todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
+// todo 树上最小路径覆盖 http://codeforces.ml/problemset/problem/618/D
 func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
@@ -1123,7 +1123,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
-// 讲解+套题 https://codeforces.com/blog/entry/16205
+// 讲解+套题 https://codeforces.ml/blog/entry/16205
 // 一般 ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // NOTE: 一些建边的转换：

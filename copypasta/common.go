@@ -28,7 +28,7 @@ import (
 // NOTE: 环形可以用 (i+1)%n 来表示下一个相邻元素
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 
-// General ideas https://codeforces.com/blog/entry/48417
+// General ideas https://codeforces.ml/blog/entry/48417
 
 func commonCollection() {
 	// HELPER
@@ -566,7 +566,7 @@ func rmqCollection() {
 
 	// Sparse Table
 	// https://oi-wiki.org/ds/sparse-table/
-	// https://codeforces.com/blog/entry/66643
+	// https://codeforces.ml/blog/entry/66643
 	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
 	// 模板题 https://www.luogu.com.cn/problem/P3865
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
@@ -769,7 +769,7 @@ func monotoneCollection() {
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788 https://leetcode.com/problems/next-greater-element-i/ https://leetcode.com/problems/next-greater-element-ii/
 	// 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
-	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
+	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
 		n := len(a)
 		const border int = -1 // 2e9

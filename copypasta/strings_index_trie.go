@@ -1,6 +1,6 @@
 package copypasta
 
-// 模板题：CF101628K https://codeforces.com/gym/101628/submission/68323182
+// 模板题：CF101628K https://codeforces.ml/gym/101628/submission/68323182
 
 type iTrieNode struct {
 	sonIDs         [26]*iTrieNode

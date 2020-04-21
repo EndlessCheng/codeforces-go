@@ -516,7 +516,7 @@ func numberTheoryCollection() {
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
-	// todo https://codeforces.com/blog/entry/61290
+	// todo https://codeforces.ml/blog/entry/61290
 	// 模板题 https://www.luogu.com.cn/problem/P1495
 	crt := func(a, m []int64) (x int64) {
 		M := int64(1)

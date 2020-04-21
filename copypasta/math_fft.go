@@ -7,7 +7,7 @@ import (
 
 // Fast Fourier Transform
 // https://zhuanlan.zhihu.com/p/31584464
-// https://codeforces.com/blog/entry/43499 https://codeforces.com/blog/entry/48798
+// https://codeforces.ml/blog/entry/43499 https://codeforces.ml/blog/entry/48798
 // https://oi-wiki.org/math/poly/fft/
 // https://cp-algorithms.com/algebra/fft.html
 // https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft

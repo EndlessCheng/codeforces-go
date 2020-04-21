@@ -110,7 +110,7 @@ func sortCollections() {
 	}
 
 	// 实数三分
-	// https://codeforces.com/blog/entry/60702
+	// https://codeforces.ml/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
@@ -153,7 +153,7 @@ func sortCollections() {
 
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
-	// todo https://codeforces.com/blog/entry/45578
+	// todo https://codeforces.ml/blog/entry/45578
 
 	_ = []interface{}{
 		sortString, reverseSort, lowerBound, upperBound, reverse,

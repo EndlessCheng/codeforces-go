@@ -2,9 +2,9 @@ package copypasta
 
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // https://oi-wiki.org/ds/seg/
-// https://codeforces.com/blog/entry/18051
-// https://codeforces.com/blog/entry/15890
-// todo zkw 线段树 https://codeforces.com/blog/entry/18051
+// https://codeforces.ml/blog/entry/18051
+// https://codeforces.ml/blog/entry/15890
+// todo zkw 线段树 https://codeforces.ml/blog/entry/18051
 // todo 李超线段树 https://zhuanlan.zhihu.com/p/64946571
 
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/

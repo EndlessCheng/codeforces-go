@@ -120,7 +120,7 @@ func stringCollection() {
 	// 最长回文子串 Manacher
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// https://www.bilibili.com/video/BV1ft4y117a4
-	// https://codeforces.com/blog/entry/12143
+	// https://codeforces.ml/blog/entry/12143
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
@@ -519,7 +519,7 @@ func findMaximumXOR(a []int) (ans int) {
 // EXTRA: https://cp-algorithms.com/string/aho_corasick.html
 // 模板题 https://leetcode-cn.com/problems/stream-of-characters/
 // 模板题 https://www.luogu.com.cn/problem/P3808 https://www.luogu.com.cn/problem/P3796
-// https://codeforces.com/problemset/problem/963/D
+// https://codeforces.ml/problemset/problem/963/D
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
 	for _, son := range t.root.son {
@@ -580,7 +580,7 @@ func (t *trie) acSearch(text string, patterns []string) [][]int {
 // Suffix automaton (SAM)
 // https://en.wikipedia.org/wiki/Suffix_automaton
 // todo https://baobaobear.github.io/post/
-// todo https://codeforces.com/blog/entry/20861
+// todo https://codeforces.ml/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
 //《后缀自动机》，陈立杰

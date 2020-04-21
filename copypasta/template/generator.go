@@ -61,9 +61,6 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 }
 
 // 生成单道题目的模板（Codeforces）
-// https://codeforces.com/problemset/problem/1293/C
-// https://codeforces.com/problemset/status/1291/problem/D
-// https://codeforces.com/gym/102253/problem/C
 func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 	contestID, problemID := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {

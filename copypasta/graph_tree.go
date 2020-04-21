@@ -551,8 +551,8 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
-// 讲解+套题 https://codeforces.com/blog/entry/44351
-// todo 讲解 https://codeforces.com/blog/entry/67696
+// 讲解+套题 https://codeforces.ml/blog/entry/44351
+// todo 讲解 https://codeforces.ml/blog/entry/67696
 // todo https://ac.nowcoder.com/discuss/394080 E 题
 
 // TODO: 虚树
