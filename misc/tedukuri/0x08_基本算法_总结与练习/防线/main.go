@@ -30,9 +30,9 @@ func run(_r io.Reader, _w io.Writer) {
 				if t.r > x {
 					t.r = x
 				}
-				cnt += 1 + (t.r-t.l)/t.d
+				cnt ^= 1 ^ (t.r-t.l)/t.d
 			}
-			return cnt&1 == 1
+			return cnt == 1
 		})
 		if p == 1<<31 {
 			Fprintln(out, "There's no weakness.")
