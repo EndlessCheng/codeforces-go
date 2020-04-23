@@ -5,7 +5,6 @@ package copypasta
 // https://oi-wiki.org/ds/bit/
 // 模板题 https://www.luogu.com.cn/problem/P3374
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
-
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
@@ -21,17 +20,15 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 差分树状数组，可用于区间更新
+	// 差分树状数组，可用于区间更新+单点查询
+	// 单点查询 query(i) = a[i] + sum(i)
 	// 模板题 https://www.luogu.com.cn/problem/P3368
-	addRange := func(l, r int, val int) { // [l,r]
-		add(l, val)
-		add(r+1, -val)
-		// now value at i is a[i] + sum(i)
-	}
+	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
 	_ = []interface{}{add, sum, query, addRange}
 }
 
+// NOTE: 也可以写成 struct 的形式
 func multiFenwickTree(m, n int) {
 	trees := make([][]int, m)
 	for i := range trees {

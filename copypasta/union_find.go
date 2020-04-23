@@ -177,6 +177,7 @@ func unionFindEdgeWeight() {
 }
 
 // 二维并查集
+// NOTE: 也可以写成 struct 的形式
 func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
 	for i := range fas {
