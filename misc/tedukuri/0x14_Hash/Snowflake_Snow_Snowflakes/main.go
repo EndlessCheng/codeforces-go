@@ -27,7 +27,7 @@ func run(_r io.Reader, _w io.Writer) {
 				b[(k+j)%mx] = v
 			}
 			if s[b] {
-				Fprintln(out, "Twin snowflakes found.")
+				Fprint(out, "Twin snowflakes found.")
 				return
 			}
 			todo = append(todo, b)
@@ -35,7 +35,7 @@ func run(_r io.Reader, _w io.Writer) {
 				b[(k+j)%mx] = a[mx-1-k]
 			}
 			if s[b] {
-				Fprintln(out, "Twin snowflakes found.")
+				Fprint(out, "Twin snowflakes found.")
 				return
 			}
 			todo = append(todo, b)
@@ -44,7 +44,7 @@ func run(_r io.Reader, _w io.Writer) {
 			s[v] = true
 		}
 	}
-	Fprintln(out, "No two snowflakes are alike.")
+	Fprint(out, "No two snowflakes are alike.")
 }
 
 func main() { run(os.Stdin, os.Stdout) }
