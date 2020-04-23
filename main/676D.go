@@ -4,35 +4,38 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
 func CF676D(_r io.Reader, _w io.Writer) {
-	doorTable := [125]string{}
-	doorTable['+'] = "++++"
-	doorTable['-'] = "-|-|"
-	doorTable['|'] = "|-|-"
-	doorTable['^'] = "^>v<"
-	doorTable['>'] = ">v<^"
-	doorTable['v'] = "v<^>"
-	doorTable['<'] = "<^>v"
-	doorTable['U'] = "URDL"
-	doorTable['R'] = "RDLU"
-	doorTable['D'] = "DLUR"
-	doorTable['L'] = "LURD"
+	doorTable := [...]string{
+		'+': "++++",
+		'-': "-|-|",
+		'|': "|-|-",
+		'^': "^>v<",
+		'>': ">v<^",
+		'v': "v<^>",
+		'<': "<^>v",
+		'U': "URDL",
+		'R': "RDLU",
+		'D': "DLUR",
+		'L': "LURD",
+	}
 	dir4 := [4][2]int{{-1, 0}, {0, 1}, {1, 0}, {0, -1}} // 上右下左
-	dirTable := [125][]int{}
-	dirTable['+'] = []int{0, 1, 2, 3}
-	dirTable['-'] = []int{1, 3}
-	dirTable['|'] = []int{0, 2}
-	dirTable['^'] = []int{0}
-	dirTable['>'] = []int{1}
-	dirTable['v'] = []int{2}
-	dirTable['<'] = []int{3}
-	dirTable['U'] = []int{1, 2, 3}
-	dirTable['R'] = []int{0, 2, 3}
-	dirTable['D'] = []int{0, 1, 3}
-	dirTable['L'] = []int{0, 1, 2}
+	dirTable := [...][]int{
+		'+': {0, 1, 2, 3},
+		'-': {1, 3},
+		'|': {0, 2},
+		'^': {0},
+		'>': {1},
+		'v': {2},
+		'<': {3},
+		'U': {1, 2, 3},
+		'R': {0, 2, 3},
+		'D': {0, 1, 3},
+		'L': {0, 1, 2},
+	}
 	canBack := func(from int, backs []int) bool {
 		for _, back := range backs {
 			if (back+2)&3 == from {
@@ -47,7 +50,7 @@ func CF676D(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n, m, ax, ay, bx, by int
 	Fscan(in, &n, &m)
-	g := make([]string, n)
+	g := make([][]byte, n)
 	for i := range g {
 		Fscan(in, &g[i])
 	}
@@ -57,8 +60,7 @@ func CF676D(_r io.Reader, _w io.Writer) {
 
 	type stat struct{ x, y, rot int }
 	qs := [4][]stat{{{ax - 1, ay - 1, 0}}}
-	vis := [1000][1000][4]bool{}
-	isAllQueueEmpty := func() bool {
+	allEmpty := func() bool {
 		for _, q := range qs {
 			if len(q) > 0 {
 				return false
@@ -66,10 +68,11 @@ func CF676D(_r io.Reader, _w io.Writer) {
 		}
 		return true
 	}
-	for time := 0; !isAllQueueEmpty(); time++ {
+	vis := [1000][1000][4]bool{}
+	for time := 0; !allEmpty(); time++ {
 		q := qs[time&3]
-		sz := len(q)
-		for _, s := range q[:sz] {
+		qs[time&3] = []stat{}
+		for _, s := range q {
 			if s.x == bx && s.y == by {
 				Fprint(out, time)
 				return
@@ -82,8 +85,8 @@ func CF676D(_r io.Reader, _w io.Writer) {
 				rot := (s.rot + rotTimes) & 3
 				door := doorTable[g[s.x][s.y]][rot]
 				for _, i := range dirTable[door] {
-					dir := dir4[i]
-					x, y := s.x+dir[0], s.y+dir[1]
+					d := dir4[i]
+					x, y := s.x+d[0], s.y+d[1]
 					if x < 0 || x >= n || y < 0 || y >= m || g[x][y] == '*' || vis[x][y][rot] {
 						continue
 					}
@@ -96,11 +99,8 @@ func CF676D(_r io.Reader, _w io.Writer) {
 				}
 			}
 		}
-		qs[time&3] = qs[time&3][sz:]
 	}
 	Fprint(out, -1)
 }
 
-//func main() {
-//	CF676D(os.Stdin, os.Stdout)
-//}
+func main() { CF676D(os.Stdin, os.Stdout) }
