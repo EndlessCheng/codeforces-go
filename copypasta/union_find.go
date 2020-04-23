@@ -4,7 +4,7 @@ package copypasta
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 // 模板题 https://www.luogu.com.cn/problem/P3367
-// 题目补充 https://nanti.jisuanke.com/t/43488
+// 思维转换题! https://nanti.jisuanke.com/t/43488
 func unionFind() {
 	var fa []int
 	initFa := func(n int) { // n+1
