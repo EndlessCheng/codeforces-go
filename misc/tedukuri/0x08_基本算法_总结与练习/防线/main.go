@@ -36,15 +36,15 @@ func run(_r io.Reader, _w io.Writer) {
 		})
 		if p == 1<<31 {
 			Fprintln(out, "There's no weakness.")
-		} else {
-			cnt := 0
-			for _, t := range a {
-				if t.l <= p && p <= t.r && (p-t.l)%t.d == 0 {
-					cnt++
-				}
-			}
-			Fprintln(out, p, cnt)
+			return
 		}
+		cnt := 0
+		for _, t := range a {
+			if t.l <= p && p <= t.r && (p-t.l)%t.d == 0 {
+				cnt++
+			}
+		}
+		Fprintln(out, p, cnt)
 	}
 
 	var t int
