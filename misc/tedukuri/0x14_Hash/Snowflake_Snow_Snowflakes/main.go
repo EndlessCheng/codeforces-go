@@ -4,15 +4,16 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
-// https://vjudge.net/contest/367107#problem/G
 func run(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	const mx = 6
 
+	// NOTE: 可以用最小表示法来降低空间复杂度
+	const mx = 6
 	s := map[[mx]int]bool{}
 	var n int
 	var a, b [mx]int
@@ -46,4 +47,4 @@ func run(_r io.Reader, _w io.Writer) {
 	Fprintln(out, "No two snowflakes are alike.")
 }
 
-//func main() { run(os.Stdin, os.Stdout) }
+func main() { run(os.Stdin, os.Stdout) }
