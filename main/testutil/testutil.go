@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, runFunc func(io.Reader, io.Writer)) {
 	if len(testCases) == 0 {
 		return
 	}
@@ -31,7 +31,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, sol
 
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
-		solveFunc(mockReader, mockWriter)
+		runFunc(mockReader, mockWriter)
 		actualOutput := strings.TrimSpace(mockWriter.String())
 
 		const maxInputSize = 150
@@ -52,19 +52,19 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, sol
 	if caseNum > 0 {
 		t.Logf("case %d is passed.", caseNum)
 		// 单个用例通过，测试所有用例
-		AssertEqualStringCase(t, testCases, 0, solveFunc)
+		AssertEqualStringCase(t, testCases, 0, runFunc)
 		return
 	}
 
 	t.Log("OK! SUBMIT!")
 }
 
-func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
-	inputFilePaths, err := filepath.Glob(filepath.Join(dir, "in*.txt"))
+func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, caseNum int, runFunc func(io.Reader, io.Writer)) {
+	inputFilePaths, err := filepath.Glob(filepath.Join(dir, inName))
 	if err != nil {
 		t.Fatal(err)
 	}
-	answerFilePaths, err := filepath.Glob(filepath.Join(dir, "ans*.txt"))
+	answerFilePaths, err := filepath.Glob(filepath.Join(dir, ansName))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,10 +88,14 @@ func AssertEqualFileCase(t *testing.T, dir string, caseNum int, solveFunc func(i
 		testCases[i][1] = string(data)
 	}
 
-	AssertEqualStringCase(t, testCases, caseNum, solveFunc)
+	AssertEqualStringCase(t, testCases, caseNum, runFunc)
 }
 
-func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(io.Reader, io.Writer)) {
+func AssertEqualFileCase(t *testing.T, dir string, caseNum int, runFunc func(io.Reader, io.Writer)) {
+	AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", caseNum, runFunc)
+}
+
+func AssertEqualCase(t *testing.T, rawText string, caseNum int, runFunc func(io.Reader, io.Writer)) {
 	rawText = strings.TrimSpace(rawText)
 	if rawText == "" {
 		t.Fatal("rawText is empty")
@@ -116,16 +120,16 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, solveFunc func(i
 		}
 	}
 
-	AssertEqualStringCase(t, testCases, caseNum, solveFunc)
+	AssertEqualStringCase(t, testCases, caseNum, runFunc)
 }
 
-func AssertEqual(t *testing.T, rawText string, solveFunc func(io.Reader, io.Writer)) {
-	AssertEqualCase(t, rawText, 0, solveFunc)
+func AssertEqual(t *testing.T, rawText string, runFunc func(io.Reader, io.Writer)) {
+	AssertEqualCase(t, rawText, 0, runFunc)
 }
 
 // 对拍
 // solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
-func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, solveFuncAC, solveFunc func(io.Reader, io.Writer)) {
+func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, runFuncAC, runFunc func(io.Reader, io.Writer)) {
 	if len(testCases) == 0 {
 		return
 	}
@@ -138,10 +142,10 @@ func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, sol
 		input := strings.TrimSpace(tc[0])
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &bytes.Buffer{}
-		solveFuncAC(mockReader, mockWriterAC)
+		runFuncAC(mockReader, mockWriterAC)
 		mockReader = strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
-		solveFunc(mockReader, mockWriter)
+		runFunc(mockReader, mockWriter)
 
 		actualOutputAC := mockWriterAC.String()
 		actualOutput := mockWriter.String()
