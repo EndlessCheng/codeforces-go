@@ -72,5 +72,10 @@ func heapCollections() {
 		return medians
 	}
 
-	_ = []interface{}{dynamicMedians}
+	// 离线做法，使用链表
+	dynamicMediansOffline := func(a []int) []int {
+		panic("TODO")
+	}
+
+	_ = []interface{}{dynamicMedians, dynamicMediansOffline}
 }
