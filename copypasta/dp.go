@@ -359,6 +359,7 @@ func dpCollections() {
 	// 旅行商问题 (TSP)
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
+	// 建模转换题 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	tsp := func(dist [][]int) int {
 		n := len(dist)
 		const inf int = 1e9
