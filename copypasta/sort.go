@@ -34,6 +34,7 @@ func sortCollections() {
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
+	//upperBound = func(a []int, x int) int { return sort.SearchInts(a, x+1) }
 
 	// NOTE: Pass n+1 if you wanna search range [0,n]
 	// NOTE: 二分时特判下限！（例如 0）
