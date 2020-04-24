@@ -222,9 +222,10 @@ func (t lazyST) queryAll() int64            { return t[1].sum }
 // https://oi-wiki.org/ds/persistent-seg/
 // 模板题 https://www.luogu.com.cn/problem/P3834
 // todo 整理模板+重写 https://codeforces.ml/problemset/problem/1262/D2
+//                   https://codeforces.ml/problemset/problem/813/E
 // TODO 查询出现次数大于区间长度一半的元素 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
 // TODO: 补题 https://codeforces.ml/contest/786/problem/C
-// TODO: 补题 https://codeforces.ml/contest/840/problem/D
+//            https://codeforces.ml/contest/840/problem/D
 type pstNode struct {
 	l, r   int
 	lo, ro *pstNode
