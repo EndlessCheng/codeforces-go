@@ -8,6 +8,7 @@ import (
 func TestSol427D(t *testing.T) {
 	// just copy from website
 	rawText := `
+inputCopy
 apple
 pepperoni
 outputCopy
@@ -27,5 +28,5 @@ testsetses
 teeptes
 outputCopy
 3`
-	testutil.AssertEqualCase(t, rawText, -1, Sol427D)
+	testutil.AssertEqualCase(t, rawText, 0, CF427D)
 }
