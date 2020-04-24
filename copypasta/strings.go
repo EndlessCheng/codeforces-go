@@ -209,6 +209,7 @@ func stringCollection() {
 	// 不可重叠最长重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14）
 	// 可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261（height 上的滑动窗口最小值）
 	// 重复次数最多的连续重复子串 http://poj.org/problem?id=3693
+	// 最短公共唯一子串 https://codeforces.ml/contest/427/problem/D
 	// CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
 	suffixArray := func(s []byte) {
 		n := len(s)
