@@ -182,3 +182,12 @@ func (matrix) inv(in io.Reader, n int) matrix {
 
 // 高斯消元
 // TODO https://oi-wiki.org/math/gauss/
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
+
+// 线性规划（单纯形算法）  linear programming (simplex)
+// https://zh.wikipedia.org/zh-hans/%E5%8D%95%E7%BA%AF%E5%BD%A2%E6%B3%95
+// https://oi-wiki.org/math/simplex/
+// todo 算法第四版 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
+// https://zhuanlan.zhihu.com/p/31644892
+// EXTRA: https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/TwoPersonZeroSumGame.html

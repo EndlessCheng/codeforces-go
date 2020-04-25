@@ -44,7 +44,8 @@ func stringCollection() {
 	// https://oi-wiki.org/string/kmp/
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
-	// code from my answer at https://www.zhihu.com/question/21923021/answer/37475572
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
+	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
 	calcMaxMatchLengths := func(s string) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)
@@ -198,6 +199,8 @@ func stringCollection() {
 	leftP := func(x int) int { return left[2*x+2] - 2*x - 2 }
 
 	// 后缀数组
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArray.java.html
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArrayX.java.html
 	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
 	// 由于 height 数组的性质，经常需要和单调栈/单调队列结合
 	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
@@ -322,6 +325,9 @@ func stringCollection() {
 //          这点上和哈希表很像，但是 trie 树可以在路径上保存信息，从而能做到一些哈希表做不到的前缀操作
 // https://oi-wiki.org/string/trie/
 // https://www.quora.com/q/threadsiiithyderabad/Tutorial-on-Trie-and-example-problems
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieST.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieSET.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
 // 模板题 https://leetcode-cn.com/problems/implement-trie-prefix-tree/

@@ -4,6 +4,8 @@ package copypasta
 // https://oi-wiki.org/ds/seg/
 // https://codeforces.ml/blog/entry/18051
 // https://codeforces.ml/blog/entry/15890
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
+
 // todo zkw 线段树 https://codeforces.ml/blog/entry/18051
 // todo 李超线段树 https://zhuanlan.zhihu.com/p/64946571
 

@@ -3,6 +3,7 @@ package copypasta
 // 树状数组
 // 效率是线段树的 3~10 倍（由数据决定）
 // https://oi-wiki.org/ds/bit/
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3374
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 func fenwickTree(n int) {

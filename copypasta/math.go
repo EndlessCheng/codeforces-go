@@ -979,6 +979,7 @@ func miscCollection() {
 // 博弈论
 // 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
+// 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 func gameTheoryCollection() {
 	// 异或和不为0零则先手必胜
@@ -995,9 +996,11 @@ func gameTheoryCollection() {
 	// Sprague-Grundy theorem
 	// 有向图游戏的某个局面必胜 <=> 该局面对应节点的 SG 函数值 > 0
 	// 有向图游戏的某个局面必败 <=> 该局面对应节点的 SG 函数值 = 0
+	// https://oi-wiki.org/math/game-theory/#sg
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
 	{
+		// 剪纸博弈
 		// http://poj.org/problem?id=2311
 		var n, m int
 		sg := make([][]int, n+1)
@@ -1070,7 +1073,7 @@ func numericalAnalysisCollection() {
 	_ = []interface{}{asr}
 }
 
-//
+/* 杂项 */
 
 //func grayCode(length int) []int {
 //	if length == 1 {

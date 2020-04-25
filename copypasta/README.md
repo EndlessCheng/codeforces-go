@@ -44,6 +44,8 @@
 
 [算法竞赛课件分享 by hzwer](https://github.com/hzwer/shareOI)
 
+[算法第四版 Java 源码](https://algs4.cs.princeton.edu/code/)
+
 [All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
 
 [GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)

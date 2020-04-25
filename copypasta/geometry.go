@@ -314,7 +314,9 @@ func vec2Collection() {
 	// 平面最近点对
 	// 调用前 ps 必须按照 x 坐标排序：
 	// sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
-	// 模板题 https://www.luogu.com.cn/problemnew/solution/P1429
+	// 保证没有重复的点
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/ClosestPair.java.html
+	// 模板题 https://www.luogu.com.cn/problem/P1429
 	var closestPair func([]vec) float64
 	closestPair = func(ps []vec) float64 {
 		n := len(ps) // assert n >= 2
@@ -368,6 +370,7 @@ func vec2Collection() {
 	}
 
 	// 求凸包 葛立恒扫描法 Graham's scan
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742
 	convexHull := func(ps []vec) []vec {
@@ -401,6 +404,7 @@ func vec2Collection() {
 
 	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
 	// https://en.wikipedia.org/wiki/Rotating_calipers
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FarthestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1452
 	rotatingCalipers := func(ps []vec) (p1, p2 vec) {
 		qs := convexHull(ps)
