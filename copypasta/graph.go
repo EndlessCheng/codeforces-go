@@ -110,7 +110,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 
 	{
 		// 有向图的环/回边检测
-		//《算法导论》p.334
+		//《算法导论》p.353 边的分类
 		// vis[v] == 0：该顶点未被访问
 		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
 		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
@@ -120,11 +120,11 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 			vis[v] = 1
 			for _, w := range g[v] {
 				if b := vis[w]; b == 0 {
-					f(w)
+					f(w) // 树边
 				} else if b == 1 {
-					// 回边，说明有环
+					// 后向边，说明有环
 				} else {
-					// 横叉边或前向边
+					// 前向边或横向边
 				}
 			}
 			vis[v] = 2
@@ -141,8 +141,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	vis[st] = true
 	q := []int{st}
 	for len(q) > 0 {
-		var v int
-		v, q = q[0], q[1:]
+		v := q[0]
+		q = q[1:]
 		for _, w := range g[v] {
 			if !vis[w] {
 				vis[w] = true
@@ -160,8 +160,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		q := []pair{{st, -1}}
 	outer:
 		for len(q) > 0 {
-			var p pair
-			p, q = q[0], q[1:]
+			p := q[0]
+			q = q[1:]
 			v, fa := p.v, p.fa
 			for _, w := range g[v] {
 				if !vis[w] {
@@ -188,8 +188,8 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 	dep[st] = 0
 	q := []int{st}
 	for len(q) > 0 {
-		var v int
-		v, q = q[0], q[1:]
+		v := q[0]
+		q = q[1:]
 		// do(v, dep[v])
 		for _, w := range g[v] {
 			if dep[w] == -1 {
@@ -210,14 +210,14 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 		dist[i] = -1
 	}
 	type pair struct{ v, fa int }
-	var p pair
 	for st := range g {
 		vs := []int{st}
 		dist[st] = 0
 		q := []pair{{st, -1}}
 	outer:
 		for len(q) > 0 {
-			p, q = q[0], q[1:]
+			p := q[0]
+			q = q[1:]
 			v, fa := p.v, p.fa
 			for _, w := range g[v] {
 				if dist[w] == -1 {
@@ -655,8 +655,8 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 
 	q := []int{st}
 	for len(q) > 0 {
-		var v int
-		v, q = q[0], q[1:]
+		v := q[0]
+		q = q[1:]
 		onQ[v] = false
 		for _, e := range g[v] {
 			w := e.to
@@ -999,8 +999,8 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, leve
 		}
 	}
 	for len(q) > 0 {
-		var v int
-		v, q = q[0], q[1:]
+		v := q[0]
+		q = q[1:]
 		orders = append(orders, v)
 		for _, w := range g[v] {
 			inDeg[w]--
@@ -1239,8 +1239,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 		level[st] = 0
 		q := []int{st}
 		for len(q) > 0 {
-			var v int
-			v, q = q[0], q[1:]
+			v := q[0]
+			q = q[1:]
 			for _, e := range edges[v] {
 				if w := e.to; e.cap > 0 && level[w] < 0 {
 					level[w] = level[v] + 1

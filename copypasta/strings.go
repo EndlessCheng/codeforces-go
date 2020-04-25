@@ -530,8 +530,8 @@ func (t *trie) buildDFA() {
 		}
 	}
 	for len(q) > 0 {
-		var o *trieNode
-		o, q = q[0], q[1:]
+		o := q[0]
+		q = q[1:]
 		for i, son := range o.son {
 			if son != nil {
 				q = append(q, son)
