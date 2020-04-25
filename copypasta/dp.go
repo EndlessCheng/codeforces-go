@@ -354,12 +354,16 @@ func dpCollections() {
 	/* 状压 DP
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
+	todo 汉密尔顿路径/回路 Hamiltonian path
 	*/
 
 	// 旅行商问题 (TSP)
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
 	// 建模转换题 https://leetcode-cn.com/problems/find-the-shortest-superstring/
+	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
+	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
+	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
 	tsp := func(dist [][]int) int {
 		n := len(dist)
 		const inf int = 1e9

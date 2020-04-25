@@ -290,15 +290,23 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	return comps
 }
 
-// 欧拉路径 欧拉回路
-// https://oi-wiki.org/graph/euler/
-// todo https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianPath.java.html
-//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
-//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianPath.java.html
-//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianCycle.java.html
-//      https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
-// 模板题 https://www.luogu.com.cn/problem/P2731
-// TODO
+// 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
+// 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要这起点的出度比入度大一，终点的入度比出度大一
+// 逐步插入回路法（Hierholzer 算法） https://oi-wiki.org/graph/euler/
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianPath.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianCycle.java.html
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianPath.java.html
+// https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
+// todo 模板题 https://www.luogu.com.cn/problem/P2731
+//       https://www.luogu.com.cn/problem/P1341
+func (*graph) eulerianCycle() {
+	panic("TODO")
+}
+
+func (*graph) eulerianPath() {
+	panic("TODO")
+}
 
 /* Topic - DFS 树
 讲解+套题 https://codeforces.ml/blog/entry/68138
@@ -785,10 +793,9 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 // 次小生成树
 // Second best Minimum Spanning Tree
 // Using Kruskal and Lowest Common Ancestor
-// https://cp-algorithms.com/graph/second_best_mst.html
+// todo https://cp-algorithms.com/graph/second_best_mst.html
 func (*graph) secondMST(n, m int) (sum int64) {
-	// TODO implement
-	return
+	panic("TODO")
 }
 
 // 反图的连通分量 O(n+m)
@@ -1013,8 +1020,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // 拓扑排序 Kahn's algorithm
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-// EXTRA: 拓扑排序是否唯一：算法第四版 p.387 4.2.25
-// EXTRA: 汉密尔顿路径 Hamiltonian path
+// EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	g := make([][]int, n)
