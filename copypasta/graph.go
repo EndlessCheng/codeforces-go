@@ -685,14 +685,12 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 			}
 		}
 	}
-	return
-}
 
-// 寻找负环
-// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BellmanFordSP.java.html
-// https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
-func (*graph) findNegativeCycleBellmanFord() []int {
-	panic("TODO")
+	// EXTRA: 打印负环
+	// https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
+	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BellmanFordSP.java.html
+
+	return
 }
 
 // EXTRA: 同余最短路
