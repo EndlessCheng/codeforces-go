@@ -13,6 +13,8 @@ Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=graphs
 
+TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
+
 NOTE: 独立集相关问题，可以从染色的角度考虑
 */
 
@@ -202,6 +204,7 @@ func (*graph) depthArray(n, st int, g [][]int) []int {
 }
 
 // BFS 应用：求无向无权图最小环长度
+// 好题 https://codeforces.ml/problemset/problem/1325/E
 func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	const inf int = 1e9
 	ans := inf
@@ -239,26 +242,27 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	return ans
 }
 
-// DFS 应用：标记所属连通块
+// DFS 应用：标记所属连通块 (Connected Component, CC)
+// ID 从 1 开始
 func (*graph) markComponentIDs(n int, g [][]int) []int {
-	ids := make([]int, n)
+	ccIDs := make([]int, n)
 	idCnt := 0
 	var f func(int)
 	f = func(v int) {
-		ids[v] = idCnt
+		ccIDs[v] = idCnt
 		for _, w := range g[v] {
-			if ids[w] == 0 {
+			if ccIDs[w] == 0 {
 				f(w)
 			}
 		}
 	}
-	for i, id := range ids {
+	for i, id := range ccIDs {
 		if id == 0 {
 			idCnt++
 			f(i)
 		}
 	}
-	return ids
+	return ccIDs
 }
 
 // DFS 应用：求出所有连通块
@@ -286,8 +290,13 @@ func (*graph) getAllComponents(n int, g [][]int) [][]int {
 	return comps
 }
 
-// 欧拉回路
+// 欧拉路径 欧拉回路
 // https://oi-wiki.org/graph/euler/
+// todo https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianPath.java.html
+//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
+//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianPath.java.html
+//      https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianCycle.java.html
+//      https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // 模板题 https://www.luogu.com.cn/problem/P2731
 // TODO
 
@@ -352,6 +361,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 
 // 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
+// https://algs4.cs.princeton.edu/41graph/Bridge.java.html
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 func (*graph) findBridges(n, m int, g [][]int) {
 	min := func(a, b int) int {
@@ -392,7 +402,7 @@ func (*graph) findBridges(n, m int, g [][]int) {
 	// do(bridges) ...
 }
 
-// 无向图的双连通分量 biconnected components
+// 无向图的双连通分量 Biconnected Components (BCC)
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 func (*graph) findBCC() (comps [][]int, bccIDs []int) {
@@ -482,7 +492,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P4779
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, parents []int) {
+func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int
 		weight int64
@@ -504,9 +514,9 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, pa
 		dist[i] = inf
 	}
 	dist[st] = 0
-	parents = make([]int, n)
-	for i := range parents {
-		parents[i] = -1
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = -1
 	}
 
 	h := &pairHeap{}
@@ -521,17 +531,17 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64, pa
 			w := e.to
 			if newD := dist[v] + e.weight; newD < dist[w] {
 				dist[w] = newD
-				parents[w] = v
+				fa[w] = v
 				Push(h, hPair{newD, w})
 			}
 		}
 	}
 
-	// path from end to start
+	// EXTRA: path from end to start
 	var end = n - 1
-	path := make([]int, 0, n)
-	for v := end; v != -1; v = parents[v] {
-		path = append(path, v)
+	path := []int{}
+	for x := end; x != -1; x = fa[x] {
+		path = append(path, x)
 	}
 
 	// EXTRA: dist 也可以理解成「时刻」
@@ -609,8 +619,8 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 		v := q.popL()
 		for _, e := range g[v] {
 			w, d := e.to, e.weight
-			if dist[v]+d < dist[w] {
-				dist[w] = dist[v] + d
+			if newD := dist[v] + d; newD < dist[w] {
+				dist[w] = newD
 				if d == 0 {
 					q.pushL(w)
 				} else {
@@ -623,11 +633,12 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 }
 
 // 单源最短路 SPFA
+// 有负环时返回 nil
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
 // todo 差分约束  《算法导论》24.4
-// 模板题（负环）：https://www.luogu.com.cn/problem/P3385
+// 模板题 https://www.luogu.com.cn/problem/P3385
 func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int
@@ -663,12 +674,10 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 			w := e.to
 			if newD := dist[v] + e.weight; newD < dist[w] {
 				dist[w] = newD
-				relaxedCnt[w]++
-				if relaxedCnt[w] > n {
-					// found negative cycle
+				relaxedCnt[w] = relaxedCnt[v] + 1
+				if relaxedCnt[w] >= n {
 					return nil
-				}
-				// there is no reason to put a vertex in the queue if it is already in.
+				} // found negative cycle
 				if !onQ[w] {
 					q = append(q, w)
 					onQ[w] = true
@@ -679,19 +688,18 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 	return
 }
 
-// EXTRA: 打印负环
-// 《算法导论》p.381 练习 24.1-6
+// 寻找负环
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BellmanFordSP.java.html
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
 func (*graph) findNegativeCycleBellmanFord() []int {
-	// TODO return negative cycle
-	return nil
+	panic("TODO")
 }
 
 // EXTRA: 同余最短路
 // todo 跳楼机 https://www.luogu.com.cn/problem/P3403
 
 // 最小生成树 Kruskal
-// 适用于稀疏图 O(|E|⋅log|E|)
+// 适用于稀疏图 O(|E|⋅log|E|)，或者边已经按权值排序的情况
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
@@ -773,6 +781,9 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 	return
 }
 
+// Boruvka's algorithm
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
+
 // 次小生成树
 // Second best Minimum Spanning Tree
 // Using Kruskal and Lowest Common Ancestor
@@ -852,18 +863,13 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
 func (*graph) isBipartite(n int, g [][]int) bool {
-	colors := make([]int8, n)
+	colors := make([]int8, n) // 0 表示未访问该节点
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {
 		colors[v] = c
 		for _, w := range g[v] {
-			if colors[w] == c {
+			if colors[w] == c || colors[w] == 0 && !f(w, 3-c) {
 				return false
-			}
-			if colors[w] == 0 {
-				if !f(w, 3-c) {
-					return false
-				}
 			}
 		}
 		return true
@@ -876,11 +882,46 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 	return true
 }
 
+// 寻找二分图中的奇环（无奇环是该图为二分图的充要条件 https://www.zhihu.com/question/52978925）
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Bipartite.java.html
+func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
+	colors := make([]int8, n) // 0 表示未访问该节点
+	fa := make([]int, n)
+	var f func(int, int8) bool
+	f = func(v int, c int8) bool {
+		colors[v] = c
+		for _, w := range g[v] {
+			if colors[w] == c {
+				cycle = append(cycle, w)
+				for x := v; x != w; x = fa[x] {
+					cycle = append(cycle, x)
+				}
+				//cycle = append(cycle, w)
+				return false
+			}
+			if colors[w] == 0 {
+				fa[w] = v
+				if !f(w, 3-c) {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	for i, c := range colors {
+		if c == 0 && !f(i, 1) {
+			return
+		}
+	}
+	return
+}
+
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://oi-wiki.org/graph/bi-graph/#_9
 // https://zhuanlan.zhihu.com/p/62981901
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3386
 // 有向图最小路径覆盖：
 //   起初把每个点都视作一条路径，这样共有 n 条不相交路径
@@ -951,6 +992,7 @@ func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt i
 }
 
 // 二分图最大匹配 -  Hopcroft–Karp 算法 O(m√n)
+// 算法第四版 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/HopcroftKarp.java.html
 // http://pepcy.cf/icpc-templates/003Graph/hk.html
 // https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
 func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
@@ -959,6 +1001,7 @@ func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
 }
 
 // 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // https://zhuanlan.zhihu.com/p/62981901
 func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	// TODO
@@ -972,8 +1015,10 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // 拓扑排序 Kahn's algorithm
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
+// EXTRA: 拓扑排序是否唯一：算法第四版 p.387 4.2.25
+// EXTRA: 汉密尔顿路径 Hamiltonian path
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
-func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, levels []int, isDAG bool) {
+func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	g := make([][]int, n)
 	inDeg := make([]int, n)
 	for i := 0; i < m; i++ {
@@ -985,12 +1030,11 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, leve
 		inDeg[w]++
 	}
 
-	// 拓扑排序生成的额外有用信息
-	parents = make([]int, n)
-	for i := range parents {
-		parents[i] = -1
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = -1
 	}
-	levels = make([]int, n)
+	levels := make([]int, n) // EXTRA
 
 	orders = make([]int, 0, n)
 	q := []int{}
@@ -1007,29 +1051,30 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, parents []int, leve
 		for _, w := range g[v] {
 			inDeg[w]--
 			if inDeg[w] == 0 {
-				q = append(q, w)
+				fa[w] = v
 				levels[w] = levels[v] + 1
-				parents[w] = v
+				q = append(q, w)
 			}
 		}
 	}
 
 	isDAG = len(orders) == n
 
-	// path from end to start
+	// EXTRA: path from end to start
 	var end = n - 1
 	path := make([]int, 0, n)
-	for v := end; v != -1; v = parents[v] {
-		path = append(path, v)
+	for x := end; x != -1; x = fa[x] {
+		path = append(path, x)
 	}
 
 	return
 }
 
-// 强连通分量分解 Strongly connected component
+// 强连通分量分解 Strongly Connected Component (SCC)
+// sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
-// sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://www.luogu.com.cn/problem/P2341
 func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
@@ -1120,6 +1165,10 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 }
 
 // TODO: SCC Tarjan
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
+
+// Gabow's algorithm
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GabowSCC.java.html
 
 // 2-Satisfiability (2-SAT)
 // https://oi-wiki.org/graph/2-sat/
@@ -1199,6 +1248,13 @@ func (*graph) treeWithCycle(n int, g [][]int) {
 		}
 	}
 }
+
+/* 网络流
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FordFulkerson.java.html
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html
+全局最小割 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
+*/
 
 // 最大流 Dinic's algorithm O(n2m)
 // Ford–Fulkerson algorithm (FFA) 的改进版本
