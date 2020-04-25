@@ -626,6 +626,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+// todo 差分约束  《算法导论》24.4
 // 模板题（负环）：https://www.luogu.com.cn/problem/P3385
 func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
@@ -679,6 +680,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 }
 
 // EXTRA: 打印负环
+// 《算法导论》p.381 练习 24.1-6
 // https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
 func (*graph) findNegativeCycleBellmanFord() []int {
 	// TODO return negative cycle
