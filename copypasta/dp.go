@@ -361,10 +361,11 @@ func dpCollections() {
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
 	// 建模转换题 https://leetcode-cn.com/problems/find-the-shortest-superstring/
+	//           https://leetcode-cn.com/problems/xun-bao/
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
-	tsp := func(dist [][]int) int {
+	tsp := func(dist [][]int, st int) int {
 		n := len(dist)
 		const inf int = 1e9
 		dp := make([][]int, 1<<n)
@@ -383,9 +384,9 @@ func dpCollections() {
 				return *dv
 			}
 			defer func() { *dv = res }()
-			if s == 1<<n-1 && v == 0 {
+			if s == 1<<n-1 && v == st {
 				return
-			} // 访问了所有节点并回到了 0
+			} // 访问了所有节点并回到了 st
 			res = inf
 			for w := 0; w < n; w++ {
 				if s>>w&1 == 0 {
@@ -394,7 +395,7 @@ func dpCollections() {
 			}
 			return
 		}
-		f(0, 0)
+		f(0, st)
 
 		// DP
 		dp = make([][]int, 1<<n)
@@ -404,7 +405,7 @@ func dpCollections() {
 				dp[i][j] = inf
 			}
 		}
-		dp[1<<n-1][0] = 0
+		dp[1<<n-1][st] = 0 // 访问了所有节点并回到了 st（多个起点的话就设置多个 dp[1<<n-1][st[i]] = 0）
 		for s := 1<<n - 2; s >= 0; s-- {
 			for v := 0; v < n; v++ {
 				for w := 0; w < n; w++ {
@@ -414,7 +415,10 @@ func dpCollections() {
 				}
 			}
 		}
-		return dp[0][0]
+
+		// NOTE: dp[0][i] 表示从 st 出发，访问完所有位置最后在 i 的最短路径和
+
+		return dp[0][st]
 	}
 
 	/* 数位 DP

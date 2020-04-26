@@ -6,9 +6,9 @@ func searchCollection() {
 	// DFS 格点找有多少个连通分量
 	// 下列代码来自 LC162C https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
-	dfsGrids := func(grid [][]int) (comps int) {
+	dfsGrids := func(g [][]byte) (comps int) {
 		dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-		n, m := len(grid), len(grid[0])
+		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
@@ -19,7 +19,7 @@ func searchCollection() {
 			if i < 0 || i >= n || j < 0 || j >= m {
 				return false
 			}
-			if vis[i][j] || grid[i][j] != 0 {
+			if vis[i][j] || g[i][j] != 0 {
 				return true
 			}
 			vis[i][j] = true
@@ -32,10 +32,87 @@ func searchCollection() {
 			}
 			return validComp
 		}
-		for i, gi := range grid {
+		for i, gi := range g {
 			for j, gij := range gi {
 				if gij == 0 && !vis[i][j] && f(i, j) {
 					comps++
+				}
+			}
+		}
+		return
+	}
+
+	type point struct{ x, y int }
+
+	findOneTargetAnyWhere := func(g [][]byte, tar byte) point {
+		for i, row := range g {
+			for j, b := range row {
+				if b == tar {
+					return point{i, j}
+				}
+			}
+		}
+		return point{-1, -1}
+	}
+
+	countTargetAnyWhere := func(g [][]byte, tar byte) (cnt int) {
+		for _, row := range g {
+			for _, b := range row {
+				if b == tar {
+					cnt++
+				}
+			}
+		}
+		return
+	}
+
+	type pair struct {
+		point
+		dep int
+	}
+
+	// 网格图从 (s.x,s.y) 到 (t.x,t.y) 的最短距离，'#' 为障碍物
+	// 无法到达时返回 -1
+	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	bfsDis := func(g [][]byte, s, t point) int {
+		n, m := len(g), len(g[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		vis[s.x][s.y] = true
+		for q := []pair{{s, 0}}; len(q) > 0; {
+			p := q[0]
+			q = q[1:]
+			if p.point == t {
+				return p.dep
+			}
+			for _, d := range dir4 {
+				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+					vis[xx][yy] = true
+					q = append(q, pair{point{xx, yy}, p.dep + 1})
+				}
+			}
+		}
+		return -1
+	}
+	findAllReachableTargets := func(g [][]byte, s point, tar byte) (ps []point) {
+		n, m := len(g), len(g[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		vis[s.x][s.y] = true
+		for q := []point{s}; len(q) > 0; {
+			p := q[0]
+			q = q[1:]
+			if g[p.x][p.y] == tar {
+				ps = append(ps, p)
+			}
+			for _, d := range dir4 {
+				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+					vis[xx][yy] = true
+					q = append(q, point{xx, yy})
 				}
 			}
 		}
@@ -193,7 +270,7 @@ func searchCollection() {
 	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{
-		dfsPermutations, dfsGrids,
-		genSubStrings, combinations, permutations, permuteAll,
+		dfsGrids, findOneTargetAnyWhere, countTargetAnyWhere, bfsDis, findAllReachableTargets,
+		genSubStrings, dfsPermutations, combinations, permutations, permuteAll,
 	}
 }
