@@ -155,7 +155,8 @@ func toRawString(v reflect.Value) (s string, err error) {
 	return
 }
 
-func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) (err error) {
+// rawExamples[i] = 输入+输出
+func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]string, targetCaseNum int) (err error) {
 	fType := reflect.TypeOf(f)
 	if fType.Kind() != reflect.Func {
 		return fmt.Errorf("f must be a function")
@@ -163,14 +164,16 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 
 	allCasesOk := true
 	fValue := reflect.ValueOf(f)
-	for curCaseNum, rawIn := range rawInputs {
+	for curCaseNum, example := range rawExamples {
 		if targetCaseNum > 0 && curCaseNum+1 != targetCaseNum {
 			continue
 		}
 
-		if len(rawIn) != fType.NumIn() {
-			return fmt.Errorf("len(rawIn) is not %d", fType.NumIn())
+		if len(example) != fType.NumIn()+fType.NumOut() {
+			return fmt.Errorf("len(example) is not %d+%d", fType.NumIn(), fType.NumOut())
 		}
+
+		rawIn := example[:fType.NumIn()]
 		ins := make([]reflect.Value, len(rawIn))
 		for i, rawArg := range rawIn {
 			rawArg = trimSpaceAndNewLine(rawArg)
@@ -180,7 +183,7 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 			}
 		}
 		// just check rawExpectedOuts is valid or not
-		rawExpectedOuts := rawOutputs[curCaseNum]
+		rawExpectedOuts := example[fType.NumIn():]
 		for i := range rawExpectedOuts {
 			rawExpectedOuts[i] = trimSpaceAndNewLine(rawExpectedOuts[i])
 			if _, err = parseRawArg(fType.Out(i), rawExpectedOuts[i]); err != nil {
@@ -202,17 +205,25 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 
 	if targetCaseNum > 0 && allCasesOk {
 		t.Logf("case %d is ok", targetCaseNum)
-		return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
+		return RunLeetCodeFuncWithExamples(t, f, rawExamples, 0)
 	}
 
 	return nil
+}
+
+func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string, targetCaseNum int) (err error) {
+	examples := [][]string{}
+	for i, input := range rawInputs {
+		examples = append(examples, append(append([]string{}, input...), rawOutputs[i]...))
+	}
+	return RunLeetCodeFuncWithExamples(t, f, examples, targetCaseNum)
 }
 
 func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string) error {
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
 
-func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string, targetCaseNum int) (err error) {
+func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][2]string, targetCaseNum int) (err error) {
 	cType := reflect.TypeOf(constructor)
 	if cType.Kind() != reflect.Func {
 		return fmt.Errorf("constructor must be a function")
@@ -223,11 +234,12 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 	allCasesOk := true
 	cFunc := reflect.ValueOf(constructor)
 
-	for curCase, rawIn := range rawInputs {
+	for curCase, example := range rawExamples {
 		if targetCaseNum > 0 && curCase+1 != targetCaseNum {
 			continue
 		}
 
+		rawIn := example[0]
 		invalidErr := fmt.Errorf("invalid test data: %s", rawIn)
 
 		// parse inputs
@@ -302,7 +314,7 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 		}
 		rawActualOut += "]"
 
-		rawExpectedOut := strings.TrimSpace(rawOutputs[curCase])
+		rawExpectedOut := strings.TrimSpace(example[1])
 		if !assert.Equal(t, rawExpectedOut, rawActualOut, "please check case %d", curCase+1) {
 			allCasesOk = false
 		}
@@ -310,10 +322,18 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 
 	if targetCaseNum > 0 && allCasesOk {
 		t.Logf("case %d is ok", targetCaseNum)
-		return RunLeetCodeClassWithCase(t, constructor, rawInputs, rawOutputs, 0)
+		return RunLeetCodeClassWithExamples(t, constructor, rawExamples, 0)
 	}
 
 	return nil
+}
+
+func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string, targetCaseNum int) (err error) {
+	examples := [][2]string{}
+	for i, input := range rawInputs {
+		examples = append(examples, [2]string{input, rawOutputs[i]})
+	}
+	return RunLeetCodeClassWithExamples(t, constructor, examples, targetCaseNum)
 }
 
 func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string) error {
