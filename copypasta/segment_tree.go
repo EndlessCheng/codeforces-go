@@ -19,11 +19,17 @@ package copypasta
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
 
-// t := make(segmentTree, 4*n)
 type segmentTree []struct {
 	l, r   int
-	val    int64
+	val    int64 // replaceAll
 	maxPos int
+}
+
+func newSegmentTree(a []int64) segmentTree {
+	n := len(a)
+	t := make(segmentTree, 4*n)
+	t.init(a)
+	return t
 }
 
 func (segmentTree) min(a, b int64) int64 {
@@ -130,10 +136,16 @@ func (t segmentTree) query2(l, r int) (res int64, maxPos int) { return t._query2
 // 模板 - 核心函数为 max 及 +  https://codeforces.ml/problemset/problem/1321/E
 // 模板 - 核心函数为 * 及 |    https://codeforces.ml/problemset/problem/1114/F
 // todo 多个运算复合的情况
-// t := make(lazyST, 4*n)
 type lazyST []struct {
 	l, r      int
-	sum, todo int64
+	sum, todo int64 // replaceAll
+}
+
+func newLazySegmentTree(a []int64) lazyST {
+	n := len(a)
+	t := make(lazyST, 4*n)
+	t.init(a)
+	return t
 }
 
 func (t lazyST) _pushUp(o int) {
