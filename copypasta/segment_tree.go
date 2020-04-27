@@ -15,6 +15,8 @@ package copypasta
 // TIPS: 对于复杂的区间操作（如区间开方），可以从运算性质入手来优化无用操作
 // TIPS: 一般来说会有一个核心函数，如 min/max/gcd/*/+/^/|/...
 // todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
+// TIPS: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
+//       https://codeforces.ml/problemset/problem/629/D
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中

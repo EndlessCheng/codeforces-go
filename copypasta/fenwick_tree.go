@@ -6,6 +6,7 @@ package copypasta
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3374
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
+// EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.ml/problemset/problem/629/D
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
