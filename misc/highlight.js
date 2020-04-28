@@ -1,15 +1,14 @@
 // ==UserScript==
 // @name         Codeforces Highlight
-// @namespace    http://tampermonkey.net/
+// @namespace    EndlessCheng
 // @version      0.1
 // @description  highlight some important words
 // @author       EndlessCheng
+// @match        https://atcoder.jp/*
 // @match        https://codeforces.com/*
 // @match        https://codeforces.ml/*
 // @match        https://codingcompetitions.withgoogle.com/*
-// @match        https://atcoder.jp/*
 // @match        https://leetcode-cn.com/*
-// @grant        none
 // ==/UserScript==
 
 (function () {
