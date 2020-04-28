@@ -422,6 +422,11 @@ func dpCollections() {
 		return dp[0][st]
 	}
 
+	/* 插头 DP / 轮廓线动态规划
+	《训练指南》6.1
+	https://oi-wiki.org/dp/plug/
+	*/
+
 	/* 数位 DP
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
@@ -492,6 +497,7 @@ func dpCollections() {
 
 	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
+	// https://blog.csdn.net/weixin_43914593/article/details/105791217
 
 	// 斜率优化 / 凸包优化 (CHT)
 	// https://oi-wiki.org/dp/opt/slope/
@@ -580,9 +586,6 @@ func dpCollections() {
 		}
 		reroot(0, -1, subCap[0])
 	}
-
-	// 插头 DP / 轮廓线动态规划
-	//《训练指南》6.1
 
 	_ = []interface{}{
 		mapDP,

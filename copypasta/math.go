@@ -768,6 +768,9 @@ func numberTheoryCollection() {
 	// 莫比乌斯函数
 	// todo
 
+	// 莫比乌斯反演（岛娘推荐！https://zhuanlan.zhihu.com/p/133761303）
+	// https://oi-wiki.org/math/mobius/
+
 	//
 
 	// 数论分块/除法分块
@@ -977,11 +980,40 @@ func miscCollection() {
 }
 
 // 博弈论
+// 定义必胜状态为先手必胜的状态，必败状态为先手必败的状态
+// 定理 1：没有后继状态的状态是必败状态
+// 定理 2：一个状态是必胜状态当且仅当存在至少一个必败状态为它的后继状态
+// 定理 3：一个状态是必败状态当且仅当它的所有后继状态均为必胜状态
+// 对于定理 1，如果游戏进行不下去了，那么这个玩家就输掉了游戏
+// 对于定理 2，如果该状态至少有一个后继状态为必败状态，那么玩家可以通过操作到该必败状态；
+//           此时对手的状态为必败状态——对手必定是失败的，而相反地，自己就获得了胜利
+// 对于定理 3，如果不存在一个后继状态为必败状态，那么无论如何，玩家只能操作到必胜状态；
+//           此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
 // 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
 // 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 func gameTheoryCollection() {
+	{
+		// CF 1194D 打表
+		// 上面三定理的基础题目
+		const mx = 1000
+		const k = 4
+		win := [mx]bool{}
+		win[1] = true
+		win[2] = true
+		for i := 3; i < k; i++ {
+			win[i] = !win[i-1] || !win[i-2]
+		}
+		win[k] = true
+		for i := k + 1; i < mx; i++ {
+			win[i] = !win[i-1] || !win[i-2] || !win[i-k]
+		}
+		for i := 0; i < mx; i++ {
+			Println(i, win[i])
+		}
+	}
+
 	// 异或和不为0零则先手必胜
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
 	// 模板题 https://www.luogu.com.cn/problem/P2197
