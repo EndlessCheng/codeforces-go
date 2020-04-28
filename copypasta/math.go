@@ -72,13 +72,13 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	calcGCD := func(a, b int64) int64 {
+	gcd := func(a, b int64) int64 {
 		for a != 0 {
 			a, b = b%a, a
 		}
 		return b
 	}
-	calcLCM := func(a, b int64) int64 { return a / calcGCD(a, b) * b }
+	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
 	// 前 n 个数的 LCM
 	// https://oeis.org/A003418
@@ -86,10 +86,10 @@ func numberTheoryCollection() {
 	// https://mathworld.wolfram.com/MangoldtFunction.html
 	// https://oeis.org/A014963
 
-	calcGCDN := func(nums ...int64) (gcd int64) {
-		gcd = nums[0]
+	gcds := func(nums ...int64) (g int64) {
+		g = nums[0]
 		for _, v := range nums[1:] {
-			gcd = calcGCD(gcd, v)
+			g = gcd(g, v)
 		}
 		return
 	}
@@ -99,16 +99,16 @@ func numberTheoryCollection() {
 	cntRangeGCD := func(arr []int64) map[int64]int64 {
 		n := len(arr)
 		cntMp := map[int64]int64{}
-		gcd := make([]int64, n)
-		copy(gcd, arr)
+		gcds := make([]int64, n)
+		copy(gcds, arr)
 		lPos := make([]int, n)
 		for i, v := range arr {
 			lPos[i] = i
 			// 从当前位置 i 往左遍历，更新 gcd[j] 的同时维护等于 gcd[j] 的区间最左端位置
 			for j := i; j >= 0; j = lPos[j] - 1 {
-				gcd[j] = calcGCD(gcd[j], v)
-				g := gcd[j]
-				for lPos[j] > 0 && calcGCD(gcd[lPos[j]-1], v) == g {
+				gcds[j] = gcd(gcds[j], v)
+				g := gcds[j]
+				for lPos[j] > 0 && gcd(gcds[lPos[j]-1], v) == g {
 					lPos[j] = lPos[lPos[j]-1]
 				}
 				// [lPos[j], j], [lPos[j]+1, j], ..., [j, j] 的区间 GCD 值均等于 gcd[j]
@@ -566,7 +566,7 @@ func numberTheoryCollection() {
 		m = 1
 		for i, mi := range M {
 			a, b := A[i]*m, B[i]-A[i]*x
-			d := calcGCD(a, mi)
+			d := gcd(a, mi)
 			if b%d != 0 {
 				return 0, -1
 			}
@@ -812,7 +812,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
-		mul, muls, calcGCDN, calcLCM, cntRangeGCD,
+		mul, muls, gcds, lcm, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
