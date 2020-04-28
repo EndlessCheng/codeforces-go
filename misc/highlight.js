@@ -71,13 +71,14 @@
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
                 .replaceAll("i.e. ", "i.e.")
-                .replaceAll("i. e. ", "i.e.")
+                .replaceAll("i. e. ", "i.e.")
                 .replaceAll("...", "⋯") // 特殊处理一些句点+空格，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
                 // The maximum size of an array is $$$k$$$.
                 .replaceAll(". ", ".</p><p>") // 加个换行
                 .replaceAll("⋯", ". . .") // 替换掉省略号
-                .replaceAll("\\dots", "~.~.~.~"); // 替换掉省略号
+                .replaceAll("\\dots", "~.~.~.~") // 替换掉省略号
+                .replaceAll("\\ldots", "~.~.~.~"); // 替换掉省略号
 
             // .replace(/(\$\$\$.+?\$\$\$)/g, "‘$1’"); // 教训：不应该加这个，看似优化实则是帮倒忙
 
