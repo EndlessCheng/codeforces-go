@@ -485,6 +485,10 @@ func dpCollections() {
 		return ans
 	}
 
+	/* 数据结构优化 DP
+	https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
+	*/
+
 	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 
