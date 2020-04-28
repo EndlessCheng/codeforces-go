@@ -9,6 +9,25 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1333C(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	var n, v, l int
+	var ans, s int64
+	sumP := map[int64]int{0: 0}
+	Fscan(in, &n)
+	for i := 1; i <= n; i++ {
+		Fscan(in, &v)
+		s += int64(v)
+		if p, ok := sumP[s]; ok && p+1 > l { // 子区间和为 0 => 出现了两个同样的前缀和
+			l = p + 1
+		}
+		ans += int64(i - l)
+		sumP[s] = i
+	}
+	Fprint(_w, ans)
+}
+
+// 分治做法
+func CF1333C2(_r io.Reader, _w io.Writer) {
 	ans := int64(0)
 	var f func([]int64)
 	f = func(a []int64) {
