@@ -360,6 +360,7 @@ func dpCollections() {
 	*/
 
 	// 旅行商问题 (TSP)
+	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
 	// 建模转换题 https://leetcode-cn.com/problems/find-the-shortest-superstring/
@@ -367,40 +368,11 @@ func dpCollections() {
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
-	tsp := func(dist [][]int, st int) int {
+	tsp := func(dist [][]int, st int) []int {
+		// 记忆化：已经访问的集合 s，当前位置 v
 		n := len(dist)
 		const inf int = 1e9
 		dp := make([][]int, 1<<n)
-		for i := range dp {
-			dp[i] = make([]int, n)
-			for j := range dp[i] {
-				dp[i][j] = -1
-			}
-		}
-
-		// 记忆化：已经访问的集合 s，当前位置 v
-		var f func(s, v int) int
-		f = func(s, v int) (res int) {
-			dv := &dp[s][v]
-			if *dv >= 0 {
-				return *dv
-			}
-			defer func() { *dv = res }()
-			if s == 1<<n-1 && v == st {
-				return
-			} // 访问了所有节点并回到了 st
-			res = inf
-			for w := 0; w < n; w++ {
-				if s>>w&1 == 0 {
-					res = min(res, f(s|1<<w, w)+dist[v][w])
-				}
-			}
-			return
-		}
-		f(0, st)
-
-		// DP
-		dp = make([][]int, 1<<n)
 		for i := range dp {
 			dp[i] = make([]int, n)
 			for j := range dp[i] {
@@ -417,10 +389,40 @@ func dpCollections() {
 				}
 			}
 		}
+		return dp[0]
+	}
 
-		// NOTE: dp[0][i] 表示从 st 出发，访问完所有位置最后在 i 的最短路径和
-
-		return dp[0][st]
+	{
+		_ = func(dist [][]int, st int) int {
+			n := len(dist)
+			dp := make([][]int, 1<<n)
+			for i := range dp {
+				dp[i] = make([]int, n)
+				for j := range dp[i] {
+					dp[i][j] = -1
+				}
+			}
+			// 记忆化：已经访问的集合 s，当前位置 v
+			var f func(s, v int) int
+			f = func(s, v int) (res int) {
+				dv := &dp[s][v]
+				if *dv >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+				if s == 1<<n-1 && v == st {
+					return
+				} // 访问了所有节点并回到了 st
+				res = 1e9
+				for w := 0; w < n; w++ {
+					if s>>w&1 == 0 {
+						res = min(res, f(s|1<<w, w)+dist[v][w])
+					}
+				}
+				return
+			}
+			return f(0, st)
+		}
 	}
 
 	/* 插头 DP / 轮廓线动态规划

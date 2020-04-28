@@ -363,14 +363,13 @@ func numberTheoryCollection() {
 	//
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
 	// https://oeis.org/A006530
-	// 可以预处理出 LPF 然后再试除
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
 			if lpf[i] == 0 {
 				for j := i; j <= mx; j += i {
-					if lpf[j] == 0 {
+					if lpf[j] == 0 { // 去掉这个判断就变成求 GPF，也可以用来（从大到小地）分解质因数
 						lpf[j] = i
 					}
 				}
@@ -378,6 +377,7 @@ func numberTheoryCollection() {
 		}
 
 		// EXTRA: 分解 v
+		// lpf[v]==p 也可以写成 v%p==0
 		var v int
 		for v > 1 {
 			p := lpf[v]
