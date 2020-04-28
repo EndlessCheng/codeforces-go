@@ -40,6 +40,7 @@ AT 经典 DP 场 https://atcoder.jp/contests/dp
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
 https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
+https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
 
 EXTRA: 如何定义子问题，从而简化思考的复杂性、降低计算量？
 https://codeforces.ml/problemset/problem/553/A
