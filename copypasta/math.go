@@ -283,18 +283,27 @@ func numberTheoryCollection() {
 	 */
 
 	// 枚举一个数的全部约数
-	divisors := func(n int64) (res []int64) {
+	divisors := func(n int64) (ds []int64) {
 		for d := int64(1); d*d <= n; d++ {
 			if n%d == 0 {
-				res = append(res, d)
+				ds = append(ds, d)
 				if d*d < n {
-					res = append(res, n/d)
+					ds = append(ds, n/d)
 				}
 			}
 		}
-		//sort.Slice(res, func(i, j int) bool { return res[i] < res[j] })
+		//sort.Slice(ds, func(i, j int) bool { return ds[i] < ds[j] })
 		return
 	}
+	divisorPairs := func(n int64) (ds [][2]int64) {
+		for d := int64(1); d*d <= n; d++ {
+			if n%d == 0 {
+				ds = append(ds, [2]int64{d, n / d})
+			}
+		}
+		return
+	}
+
 	doDivisors := func(n int, do func(d int)) {
 		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
@@ -309,6 +318,17 @@ func numberTheoryCollection() {
 		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
 				do(d, n/d)
+			}
+		}
+	}
+
+	// Largest divisor of n <= sqrt(n)
+	// https://oeis.org/A033676
+	// https://oeis.org/A060775
+	maxSqrtDivisor := func(n int) int {
+		for d := int(math.Sqrt(float64(n))); ; d-- {
+			if n%d == 0 {
+				return d
 			}
 		}
 	}
@@ -333,12 +353,21 @@ func numberTheoryCollection() {
 		_, _ = isSquareNumber, halfDivisors
 	}
 
-	// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n) https://oeis.org/A000005
-	//        约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
+	// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n)
+	//        https://oeis.org/A000005 https://oeis.org/A002182 https://oeis.org/A002183
+	// EXTRA: 约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
 	//                            = 见后文「数论分块/除法分块」
 
 	// EXTRA: 约数之和 sigma(n), also called sigma_1(n) https://oeis.org/A000203
-	//        约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+	// EXTRA: 约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+
+	// 高合成数/反质数 Highly Composite Numbers
+	// 一个高合成数一定是由另一个高合成数乘某个质数得到
+	// 见进阶指南 p.140-141
+	// https://oeis.org/A002182
+	// https://oeis.org/A002183
+	// https://oeis.org/A199337 Number of highly composite numbers not divisible by n
+	// https://www.luogu.com.cn/problem/P1463
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
 	// for i>=2, factors[i][0] == i means i is prime
@@ -429,13 +458,6 @@ func numberTheoryCollection() {
 
 	// Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
 	// https://oeis.org/A007947
-
-	// 高合成数/反质数 Highly Composite Numbers
-	// 一个高合成数一定是由另一个高合成数乘某个质数得到
-	// 见进阶指南 p.140-141
-	// https://oeis.org/A002182
-	// https://oeis.org/A002183
-	// https://www.luogu.com.cn/problem/P1463
 
 	// n 的欧拉函数（互质的数的个数）Euler totient function
 	calcPhi := func(n int) int {
@@ -818,7 +840,7 @@ func numberTheoryCollection() {
 		sqCheck, cubeCheck, sqrt, cbrt,
 		mul, muls, gcds, lcm, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
-		divisors, doDivisors, doDivisors2, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
+		divisors, divisorPairs, doDivisors, doDivisors2, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
 		factorial, initFactorial, _factorial, combHalf, comb,
 		consecutiveNumbersSum, partition,
