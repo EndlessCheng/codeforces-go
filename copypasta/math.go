@@ -828,7 +828,7 @@ func numberTheoryCollection() {
 }
 
 // 组合、杂项
-// 一些恒等式的解释 https://www.zhihu.com/question/26094736
+// 一些组合恒等式的解释 https://www.zhihu.com/question/26094736
 // C(n, k) - C(n-1, k) = C(n-1, k-1)
 // 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 // 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
