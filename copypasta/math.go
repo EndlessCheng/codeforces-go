@@ -304,7 +304,6 @@ func numberTheoryCollection() {
 				}
 			}
 		}
-		return
 	}
 	doDivisors2 := func(n int, do func(d1, d2 int)) {
 		for d := 1; d*d <= n; d++ {
@@ -312,7 +311,6 @@ func numberTheoryCollection() {
 				do(d, n/d)
 			}
 		}
-		return
 	}
 
 	// 预处理: [1,mx] 范围内数的所有约数
