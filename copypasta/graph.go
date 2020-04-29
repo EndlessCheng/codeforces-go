@@ -242,14 +242,16 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	return ans
 }
 
-// DFS 应用：标记所属连通块 (Connected Component, CC)
-// ID 从 1 开始
-func (*graph) markComponentIDs(n int, g [][]int) []int {
-	ccIDs := make([]int, n)
-	idCnt := 0
+// DFS 应用：求连通分量以及每个点所属的连通分量 (Connected Component, CC)
+// ccIDs 的值从 1 开始
+func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
+	ccIDs = make([]int, n)
+	idCnt := 0 // 也可以去掉，用 len(comps)+1 代替
+	var comp []int
 	var f func(int)
 	f = func(v int) {
 		ccIDs[v] = idCnt
+		comp = append(comp, v)
 		for _, w := range g[v] {
 			if ccIDs[w] == 0 {
 				f(w)
@@ -259,35 +261,12 @@ func (*graph) markComponentIDs(n int, g [][]int) []int {
 	for i, id := range ccIDs {
 		if id == 0 {
 			idCnt++
-			f(i)
-		}
-	}
-	return ccIDs
-}
-
-// DFS 应用：求出所有连通块
-func (*graph) getAllComponents(n int, g [][]int) [][]int {
-	comps := [][]int{}
-	vis := make([]bool, n)
-	var comp []int
-	var f func(int)
-	f = func(v int) {
-		vis[v] = true
-		comp = append(comp, v)
-		for _, w := range g[v] {
-			if !vis[w] {
-				f(w)
-			}
-		}
-	}
-	for i, vi := range vis {
-		if !vi {
 			comp = []int{}
 			f(i)
 			comps = append(comps, comp)
 		}
 	}
-	return comps
+	return
 }
 
 // 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
@@ -325,9 +304,10 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 		}
 		return b
 	}
+
 	isCut = make([]bool, n)
-	dfsClock := 0
 	dfn := make([]int, n) // 值从 1 开始
+	dfsClock := 0
 	//low := make([]int, n)
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
@@ -339,7 +319,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 			if dfn[w] == 0 {
 				childCnt++
 				lowW := f(w, v)
-				if lowW >= dfn[v] { // 该子树没有反向边能连回 v 的祖先
+				if lowW >= dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 的祖先（可以连到 v 上，这也算割顶）
 					isCut[v] = true
 				}
 				lowV = min(lowV, lowW)
@@ -358,12 +338,14 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 			f(v, -1)
 		}
 	}
-	vs := make([]int, 0, n)
+
+	cuts := []int{}
 	for v, is := range isCut {
 		if is {
-			vs = append(vs, v) // v+1
+			cuts = append(cuts, v) // v+1
 		}
 	}
+
 	return
 }
 
@@ -371,28 +353,42 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // https://oi-wiki.org/graph/cut/#_4
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
-func (*graph) findBridges(n, m int, g [][]int) {
+func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
 		if a < b {
 			return a
 		}
 		return b
 	}
-	type bridge struct{ v, w int }
-	bridges := make([]bridge, 0, m)
-	dfsClock := 0
+	type neighbor struct{ to, eid int }
+	type edge struct{ v, w int }
+
+	g := make([][]neighbor, n)
+	edges := make([]edge, m)
+	for i := 0; i < m; i++ {
+		var v, w int
+		Fscan(in, &v, &w)
+		v--
+		w--
+		g[v] = append(g[v], neighbor{w, i})
+		g[w] = append(g[w], neighbor{v, i})
+		edges = append(edges, edge{v, w})
+	}
+	isBridge = make([]bool, m)
 	dfn := make([]int, n) // 值从 1 开始
+	dfsClock := 0
 	//low := make([]int, n)
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
-		for _, w := range g[v] {
+		for _, e := range g[v] {
+			w := e.to
 			if dfn[w] == 0 {
 				lowW := f(w, v)
-				if lowW > dfn[v] { // 以 w 为根的子树的反向边只能连回子树内，所以 v-w 必定是桥
-					bridges = append(bridges, bridge{v, w})
+				if lowW > dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 或 v 的祖先，所以 v-w 必定是桥
+					isBridge[e.eid] = true
 				}
 				lowV = min(lowV, lowW)
 			} else if w != fa && dfn[w] < dfn[v] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
@@ -407,15 +403,149 @@ func (*graph) findBridges(n, m int, g [][]int) {
 			f(v, -1)
 		}
 	}
-	// do(bridges) ...
+
+	bridgeIDs := []int{}
+	for eid, is := range isBridge {
+		if is {
+			bridgeIDs = append(bridgeIDs, eid) // eid+1
+		}
+	}
+
+	return
 }
 
 // 无向图的双连通分量 Biconnected Components (BCC)
+// 无割点 v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
-func (*graph) findBCC() (comps [][]int, bccIDs []int) {
-	// TODO: implement！！
-	// 點雙連通、邊雙連通
+func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	type edge struct{ v, w int }
+
+	bccIDs = make([]int, n) // ID 从 1 开始编号
+	idCnt := 0
+	isCut := make([]bool, n)
+
+	dfn := make([]int, n) // 值从 1 开始
+	dfsClock := 0
+	stack := []edge{}
+	var f func(v, fa int) int
+	f = func(v, fa int) int {
+		dfsClock++
+		dfn[v] = dfsClock
+		lowV := dfsClock
+		childCnt := 0
+		for _, w := range g[v] {
+			e := edge{v, w}
+			if dfn[w] == 0 {
+				stack = append(stack, e)
+				childCnt++
+				lowW := f(w, v)
+				if lowW >= dfn[v] {
+					isCut[v] = true
+					idCnt++
+					comp := []int{}
+					for {
+						e, stack = stack[len(stack)-1], stack[:len(stack)-1]
+						if bccIDs[e.v] != idCnt {
+							bccIDs[e.v] = idCnt
+							comp = append(comp, e.v)
+						}
+						if bccIDs[e.w] != idCnt {
+							bccIDs[e.w] = idCnt
+							comp = append(comp, e.w)
+						}
+						if e.v == v && e.w == w {
+							break
+						}
+					}
+					comps = append(comps, comp)
+				}
+				lowV = min(lowV, lowW)
+			} else if w != fa && dfn[w] < dfn[v] {
+				stack = append(stack, e)
+				lowV = min(lowV, dfn[w])
+			}
+		}
+		if fa == -1 && childCnt == 1 {
+			isCut[v] = false
+		}
+		return lowV
+	}
+	for v, timestamp := range dfn {
+		if timestamp == 0 {
+			if len(g[v]) == 0 { // 零度，即孤立点（isolated vertex）
+				idCnt++
+				bccIDs[v] = idCnt
+				comps = append(comps, []int{v})
+				continue
+			}
+			f(v, -1)
+		}
+	}
+
+	// EXTRA: 缩点
+	// BCC 和割点作为新图中的节点，并在每个割点与包含它的所有 BCC 之间连边
+	vid := idCnt
+	cutIDs := make([]int, n) // 接在 BCC 之后给割点编号
+	for i, is := range isCut {
+		if is {
+			vid++
+			cutIDs[i] = vid
+		}
+	}
+	for v, cp := range comps {
+		v++
+		for _, w := range cp {
+			if w = cutIDs[w]; w > 0 {
+				// add(v,w); add(w,v) ...
+			}
+		}
+	}
+
+	return
+}
+
+// 无割边 e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
+func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
+	type neighbor struct{ to, eid int }
+	g := make([][]neighbor, n)
+	// read g ...
+
+	isBridge := G.findBridges(in, n, m)
+
+	bccIDs = make([]int, n)
+	idCnt := 0
+	var comp []int
+	var f func(int)
+	f = func(v int) {
+		bccIDs[v] = idCnt
+		comp = append(comp, v)
+		for _, e := range g[v] {
+			w := e.to
+			if bccIDs[w] == 0 && !isBridge[e.eid] {
+				f(w)
+			}
+		}
+	}
+	for i, id := range bccIDs {
+		if id == 0 {
+			idCnt++
+			comp = []int{}
+			f(i)
+			comps = append(comps, comp)
+		}
+	}
+
+	// EXTRA: 缩点
+	// 遍历 edges，若两端点的 bccIDs 不同则建边
+	// 也可以遍历 bridgeIDs 来做，割边两端点 bccIDs 一定不同
+
 	return
 }
 
@@ -1144,8 +1274,8 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	}
 
 	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
-	// 缩点后的点的编号范围为 [0,len(comps)-1]
-	// 注意这样会产生重边和自环
+	// 缩点后得到了一张 DAG，点的编号范围为 [0,len(comps)-1]
+	// 注意这样可能会产生重边，不能有重边时可以对每个点排序去重
 	// 模板题 https://www.luogu.com.cn/problem/P3387
 	for _, e := range edges {
 		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
@@ -1169,6 +1299,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 }
 
 // TODO: SCC Tarjan
+// 常数比 Kosaraju 小
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 
 // Gabow's algorithm
