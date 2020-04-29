@@ -387,6 +387,10 @@ func numberTheoryCollection() {
 			}
 			// do(p,e)
 		}
+
+		// EXTRA: n 的最大真因子 = n/LPF(n)
+		// https://oeis.org/A032742
+		// n/LPF(n) = Max{gcd(n,j); j=n+1..2n-1}
 	}
 
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
