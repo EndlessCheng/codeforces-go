@@ -3,6 +3,7 @@ package copypasta
 // 普通并查集
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
+// 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 思维转换题! https://nanti.jisuanke.com/t/43488
 func unionFind() {

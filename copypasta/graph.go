@@ -278,58 +278,29 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianPath.java.html
 // https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // NOTE: 递归前对边排序可保证输出的是字典序最小的路径
-// todo 模板题 https://www.luogu.com.cn/problem/P2731
+// 模板题 https://www.luogu.com.cn/problem/P2731
 //       https://www.luogu.com.cn/problem/P1341
-func (*graph) eulerianCycle(n, m int) bool {
+func (*graph) eulerianPath(n, m int) bool {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
 	// read g ...
 
-	for _, es := range g {
-		if len(es)&1 != 0 {
-			return false
-		}
-	}
-
-	path := make([]int, 0, m)
-	iter := make([]int, n)
-	vis := make([]bool, m)
-	var f func(int)
-	f = func(v int) {
-		for ; iter[v] < len(g[v]); {
-			e := g[v][iter[v]]
-			iter[v]++
-			if id := e.eid; !vis[id] {
-				vis[id] = true
-				f(e.to)
-				path = append(path, id)
+	var st int
+	oddDegCnt := 0
+	for i := len(g) - 1; i >= 0; i-- { // 倒着遍历保证起点的字典序最小
+		if deg := len(g[i]); deg > 0 {
+			if deg&1 != 0 {
+				st = i
+				oddDegCnt++
+			} else if oddDegCnt == 0 {
+				st = i
 			}
 		}
 	}
-	f(0)
 
-	// 倒序输出 path...
-
-	return true
-}
-
-func (*graph) eulerianPath(n, m int) {
-	type neighbor struct{ to, eid int }
-	g := make([][]neighbor, n)
-	// read g ...
-
-	st := 0
-	oddCnt := 0
-	for i, es := range g {
-		if len(es)&1 != 0 {
-			st = i
-			oddCnt++
-		}
-	}
-
-	if oddCnt > 2 {
-		return
-	}
+	if oddDegCnt > 2 {
+		return false
+	} // NOTE: 若没有奇度数，则寻找的是欧拉回路
 
 	path := make([]int, 0, m)
 	iter := make([]int, n)
@@ -348,7 +319,11 @@ func (*graph) eulerianPath(n, m int) {
 	}
 	f(st)
 
+	// NOTE: 若输出的是顶点，可以在递归内部 path = append(path, e.to)，最后把 st 添加到末尾
+
 	// 倒序输出 path...
+
+	return true
 }
 
 /* Topic - DFS 树
