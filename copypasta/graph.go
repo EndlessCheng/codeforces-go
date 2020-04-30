@@ -313,7 +313,7 @@ func (*graph) eulerianCycle(n, m int) bool {
 	return true
 }
 
-func (*graph) eulerianPath(n, m int) {
+func (*graph) eulerianPath(n, m int) bool {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
 	// read g ...
@@ -328,7 +328,7 @@ func (*graph) eulerianPath(n, m int) {
 	}
 
 	if oddCnt > 2 {
-		return
+		return false
 	}
 
 	path := make([]int, 0, m)
@@ -349,6 +349,8 @@ func (*graph) eulerianPath(n, m int) {
 	f(st)
 
 	// 倒序输出 path...
+
+	return true
 }
 
 /* Topic - DFS 树
