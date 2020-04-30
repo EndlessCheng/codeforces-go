@@ -506,39 +506,16 @@ func commonCollection() {
 		}
 	}
 
-	// 生成字符串 s 的长度至多为 k 的所有（非空）子串
-	var _ss []string
-	var _genSubStrs func(s, sub string)
-	_genSubStrs = func(s, sub string) {
-		_ss = append(_ss, sub)
-		if len(sub) < 4 { // custom k
-			for i := range s {
-				_genSubStrs(s[i+1:], sub+string(s[i]))
-			}
-		}
-	}
-	genSubStrs := func(s string) []string {
-		_ss = []string{}
-		_genSubStrs(s, "")
-		a := _ss[1:] // remove ""
-		sort.Strings(a)
-		n := len(a)
-		res := make([]string, 1, n)
-		res[0] = a[0]
-		for i := 1; i < n; i++ {
-			if a[i] != a[i-1] {
-				res = append(res, a[i])
-			}
-		}
-		return res
-	}
+	// 悬线法
+	// 求一最大子矩形，矩形内部元素均相同
+	// https://oi-wiki.org/misc/largest-matrix/
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
-		maxSubArraySum, maxSubArrayAbsSum, sweepLine, genSubStrs,
+		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
 

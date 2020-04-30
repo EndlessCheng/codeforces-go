@@ -152,6 +152,9 @@ func sortCollections() {
 		return minI
 	}
 
+	// 0-1 分数规划
+	// https://oi-wiki.org/misc/frac-programming/
+
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
 	// todo https://codeforces.ml/blog/entry/45578
