@@ -118,6 +118,26 @@ func commonCollection() {
 		}
 		return
 	}
+	minString := func(a, b string) string {
+		if len(a) != len(b) {
+			if len(a) < len(b) {
+				return a
+			}
+			return b
+		}
+		if a < b {
+			return a
+		}
+		return b
+	}
+	removeLeadingZero := func(s string) string {
+		for i, b := range s {
+			if b > '0' {
+				return s[i:]
+			}
+		}
+		return "0"
+	}
 	// END HELPER
 
 	abs := func(x int) int {
@@ -512,7 +532,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol,
+		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
