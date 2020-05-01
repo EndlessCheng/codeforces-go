@@ -3,6 +3,13 @@ package copypasta
 import "sort"
 
 func searchCollection() {
+	type point struct{ x, y int }
+
+	valid := func(g [][]byte, p point) bool {
+		n, m := len(g), len(g[0])
+		return p.x >= 0 && p.x < n && p.y >= 0 && p.y < m && g[p.x][p.y] != '#'
+	}
+
 	// DFS 格点找有多少个连通分量
 	// 下列代码来自 LC162C https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
@@ -42,8 +49,6 @@ func searchCollection() {
 		return
 	}
 
-	type point struct{ x, y int }
-
 	findOneTargetAnyWhere := func(g [][]byte, tar byte) point {
 		for i, row := range g {
 			for j, b := range row {
@@ -74,6 +79,28 @@ func searchCollection() {
 	// 网格图从 (s.x,s.y) 到 (t.x,t.y) 的最短距离，'#' 为障碍物
 	// 无法到达时返回 -1
 	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	reachable := func(g [][]byte, s, t point) bool {
+		n, m := len(g), len(g[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		vis[s.x][s.y] = true
+		for q := []point{s}; len(q) > 0; {
+			p := q[0]
+			q = q[1:]
+			if p == t {
+				return true
+			}
+			for _, d := range dir4 {
+				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+					vis[xx][yy] = true
+					q = append(q, point{xx, yy})
+				}
+			}
+		}
+		return false
+	}
 	bfsDis := func(g [][]byte, s, t point) int {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
@@ -270,7 +297,7 @@ func searchCollection() {
 	// TODO: https://oi-wiki.org/search/dlx/
 
 	_ = []interface{}{
-		dfsGrids, findOneTargetAnyWhere, countTargetAnyWhere, bfsDis, findAllReachableTargets,
+		valid, dfsGrids, findOneTargetAnyWhere, countTargetAnyWhere, reachable, bfsDis, findAllReachableTargets,
 		genSubStrings, dfsPermutations, combinations, permutations, permuteAll,
 	}
 }
