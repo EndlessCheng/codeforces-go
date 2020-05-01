@@ -16,6 +16,7 @@ CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=graphs
 TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
 
 NOTE: 独立集相关问题，可以从染色的角度考虑
+NOTE: 度数大于 √M 的点不超过 2√M 个
 */
 
 // namespace
