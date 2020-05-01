@@ -64,13 +64,24 @@ func (a vec) angleTo(b vec) float64 { return math.Acos(float64(a.dot(b)) / (a.le
 func (a vec) polarAngle() float64   { return math.Atan2(float64(a.y), float64(a.x)) }
 func (a vec) reverse() vec          { return vec{-a.x, -a.y} }
 func (a vec) up() vec {
-	// 所有向量 up() 后按逆时针排序:
-	// sort.Slice(ps, func(i, j int) bool { return ps[i].det(ps[j]) > 0 })
-	// 由于 up() 后所有向量的范围是 [0°, 180°)，在排序后共线的向量一定会相邻
 	if a.y < 0 || a.y == 0 && a.x < 0 {
 		return a.reverse()
 	}
 	return a
+}
+
+// 极角排序
+func polarAngleSort(ps []vec) {
+	// (-π, π]
+	// (-1e9,-1) -> (-1e9, 0)
+	// 可以先把每个向量的极角算出来再排序
+	sort.Slice(ps, func(i, j int) bool { return ps[i].polarAngle() < ps[j].polarAngle() })
+
+	// EXTRA: 若将所有向量 up() 后极角排序，由于 up() 后向量的范围是 [0°, 180°)，极角排序后共线的向量一定会相邻
+	for i := range ps {
+		ps[i] = ps[i].up()
+	}
+	sort.Slice(ps, func(i, j int) bool { return ps[i].det(ps[j]) > 0 })
 }
 
 // 向量旋转，传入旋转的弧度
@@ -286,6 +297,23 @@ func vec2Collection() {
 		var x, y int64
 		Fscan(in, &x, &y)
 		return vec{x, y}
+	}
+
+	leftMostVec := func(p0 vec, ps []vec) (idx int) {
+		for i, p := range ps {
+			if ps[idx].sub(p0).det(p.sub(p0)) > 0 {
+				idx = i
+			}
+		}
+		return
+	}
+	rightMostVec := func(p0 vec, ps []vec) (idx int) {
+		for i, p := range ps {
+			if ps[idx].sub(p0).det(p.sub(p0)) < 0 {
+				idx = i
+			}
+		}
+		return
 	}
 
 	// TODO: 扫描线：线段求交 O(nlogn)
@@ -534,7 +562,7 @@ func vec2Collection() {
 	// 模板题 https://www.luogu.com.cn/problem/P4196
 
 	_ = []interface{}{
-		readVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inTriangle, inPolygon,
+		readVec, leftMostVec, rightMostVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inTriangle, inPolygon,
 		isRectangleAnyOrder, minAreaRect,
 	}
 }
