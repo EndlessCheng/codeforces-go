@@ -191,13 +191,18 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			}
 		}
 
+		const maxInputSize = 150
+		inputInfo := strings.Join(rawIn, "\n")
+		if len(inputInfo) > maxInputSize {
+			inputInfo = inputInfo[:maxInputSize] + "..."
+		}
 		outs := fValue.Call(ins)
 		for i, out := range outs {
 			rawActualOut, er := toRawString(out)
 			if er != nil {
 				return er
 			}
-			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "please check case %d", curCaseNum+1) {
+			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 				allCasesOk = false
 			}
 		}
@@ -315,7 +320,7 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		rawActualOut += "]"
 
 		rawExpectedOut := strings.TrimSpace(example[1])
-		if !assert.Equal(t, rawExpectedOut, rawActualOut, "please check case %d", curCase+1) {
+		if !assert.Equal(t, rawExpectedOut, rawActualOut, "WA %d", curCase+1) {
 			allCasesOk = false
 		}
 	}

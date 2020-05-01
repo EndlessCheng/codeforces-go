@@ -39,7 +39,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		if !assert.Equal(t, expectedOutput, actualOutput, "please check test case [%d]\nInput:\n%s", curCaseNum+1, inputInfo) {
+		if !assert.Equal(t, expectedOutput, actualOutput, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 			allPassed = false
 			handleOutput(actualOutput)
 		}
@@ -155,6 +155,6 @@ func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, run
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		assert.Equal(t, actualOutputAC, actualOutput, "please check test case [%d]\nInput:\n%s", curCaseNum+1, inputInfo)
+		assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo)
 	}
 }
