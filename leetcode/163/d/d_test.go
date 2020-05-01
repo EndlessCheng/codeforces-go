@@ -13,3 +13,4 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+// https://leetcode-cn.com/problems/minimum-moves-to-move-a-box-to-their-target-location/
