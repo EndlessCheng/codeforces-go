@@ -20,20 +20,22 @@ func searchCollection() {
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
+		const target byte = '.'
+		var targetsPos [][2]int
 		var f func(i, j int) bool
 		f = func(i, j int) bool {
-			// 出边界的不算
 			if i < 0 || i >= n || j < 0 || j >= m {
 				return false
-			}
-			if vis[i][j] || g[i][j] != 0 {
+			} // 出边界的不算
+			if vis[i][j] || g[i][j] != target {
 				return true
 			}
 			vis[i][j] = true
+			targetsPos = append(targetsPos, [2]int{i, j})
 			validComp := true
+			// 遍历完该连通分量再 return，保证不重不漏
 			for _, dir := range dir4 {
 				if !f(i+dir[0], j+dir[1]) {
-					// 遍历完该连通分量再 return，保证不重不漏
 					validComp = false
 				}
 			}
@@ -41,8 +43,12 @@ func searchCollection() {
 		}
 		for i, gi := range g {
 			for j, gij := range gi {
-				if gij == 0 && !vis[i][j] && f(i, j) {
-					comps++
+				if gij == target && !vis[i][j] {
+					targetsPos = [][2]int{}
+					if f(i, j) {
+						comps++
+						// do targetsPos...
+					}
 				}
 			}
 		}
