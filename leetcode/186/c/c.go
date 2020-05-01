@@ -8,9 +8,7 @@ func findDiagonalOrder(mat [][]int) (ans []int) {
 		}
 	}
 	for _, a := range order {
-		for _, v := range a {
-			ans = append(ans, v)
-		}
+		ans = append(ans, a...)
 	}
 	return
 }
