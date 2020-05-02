@@ -22,16 +22,15 @@ func run(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 
 	solve := func(_case int) [10]byte {
-		var u int
-		var _s, s []byte
-		Fscan(in, &u)
+		var ignore, s []byte
+		Fscan(in, &ignore)
 		heads := make(pairs, 26)
 		for i := range heads {
 			heads[i].i = i
 		}
 		vis := [26]bool{}
 		for i := 0; i < 1e4; i++ {
-			Fscan(in, &_s, &s)
+			Fscan(in, &ignore, &s)
 			heads[s[0]-'A'].cnt++
 			for _, b := range s {
 				vis[b-'A'] = true
