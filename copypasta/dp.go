@@ -11,9 +11,18 @@ import (
 2. 状态的范围是多少，起点状态和终点状态是什么？
 3. 哪些状态是相邻的？（即通过一次转移就能得到）
 4. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）如何优化决策？
-*. 若状态或转移不方便确定，能否转化问题模型（或逆序思考）从而能方便地确定状态或转移？能否通过增加维度的方法来准确地描述状态？
+*. 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+   推荐 https://codeforces.ml/blog/entry/47764
 例题：戳气球 https://leetcode-cn.com/problems/burst-balloons/
-例题：消消乐 https://leetcode-cn.com/problems/remove-boxes/
+     消消乐 https://leetcode-cn.com/problems/remove-boxes/
+     如何定义状态 https://codeforces.ml/problemset/problem/553/A
+
+NOTE: 若使用滚动数组，复用时可能要初始化
+      实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
+NOTE:（区间 DP）正向计算不易时，试着反向计算
+TIPS: 如果反复在同一个序列上点权汇合，可以考虑用前缀和或者差分来优化
+      - 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
+      例题 https://leetcode-cn.com/problems/new-21-game/
 
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
@@ -51,17 +60,6 @@ https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%9
 https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
-
-EXTRA: 如何定义子问题，从而简化思考的复杂性、降低计算量？
-https://codeforces.ml/problemset/problem/553/A
-https://codeforces.ml/blog/entry/47764 也有提到
-
-NOTE: 若使用滚动数组，复用时可能要初始化
-NOTE: 实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
-NOTE:（区间 DP）正向计算不易时，试着反向计算
-TIPS: 如果反复在同一个序列上点权汇合，可以考虑用前缀和或者差分来优化
-      - 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
-      https://leetcode-cn.com/problems/new-21-game/
 */
 func dpCollections() {
 	min := func(a, b int) int {
