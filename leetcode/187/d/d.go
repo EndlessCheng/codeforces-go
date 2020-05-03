@@ -28,7 +28,7 @@ func kthSmallest(mat [][]int, k int) (ans int) {
 	}
 	q.push(pair{sum: sum0})
 	vis[[40]int8{}] = true
-	for !q.empty() {
+	for {
 		p := q.pop()
 		sum, pos := p.sum, p.pos
 		k--
@@ -47,5 +47,4 @@ func kthSmallest(mat [][]int, k int) (ans int) {
 			}
 		}
 	}
-	panic(-1)
 }
