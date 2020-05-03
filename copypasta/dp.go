@@ -4,7 +4,17 @@ import (
 	"sort"
 )
 
-/*
+/* 动态规划
+
+思考过程：
+1. 如何定义本问题的状态，有几个维度的状态？
+2. 状态的范围是多少，起点状态和终点状态是什么？
+3. 哪些状态是相邻的？（即通过一次转移就能得到）
+4. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）如何优化决策？
+*. 若状态或转移不方便确定，能否转化问题模型（或逆序思考）从而能方便地确定状态或转移？能否通过增加维度的方法来准确地描述状态？
+例题：戳气球 https://leetcode-cn.com/problems/burst-balloons/
+例题：消消乐 https://leetcode-cn.com/problems/remove-boxes/
+
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
@@ -229,7 +239,7 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
-	// EXTRA: 恰好装满 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// EXTRA: 能否恰好装满（其实就是下面方案数是否为 0） https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -502,8 +512,9 @@ func dpCollections() {
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 	// https://blog.csdn.net/weixin_43914593/article/details/105791217
 
-	// 斜率优化 / 凸包优化 (CHT)
+	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
+	// https://cp-algorithms.com/geometry/convex_hull_trick.html
 	// https://codeforces.ml/blog/entry/63823
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
