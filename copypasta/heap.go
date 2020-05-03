@@ -1,22 +1,21 @@
 package copypasta
 
 import (
-	. "container/heap"
+	"container/heap"
 	"sort"
 )
 
 // 下面这些都是最小堆
-// h.top() 即 h.IntSlice[0] 或 (*h)[0] （注意判断非空）
 
 type hp struct{ sort.IntSlice }
 
-//func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() (v interface{}) {
-	n := len(h.IntSlice)
-	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
-	return
-}
+//func (h hp) Less(i, j int) bool    { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+func (h *hp) Push(v interface{})   { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() (v interface{}) { a := h.IntSlice; h.IntSlice, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *hp) push(v int)           { heap.Push(h, v) }
+func (h *hp) pop() int             { return heap.Pop(h).(int) }
+func (h hp) empty() bool           { return len(h.IntSlice) == 0 }
+func (h hp) top() int              { return h.IntSlice[0] }
 
 //
 
@@ -26,22 +25,11 @@ func (h hp64) Len() int              { return len(h) }
 func (h hp64) Less(i, j int) bool    { return h[i] < h[j] } // > 为最大堆
 func (h hp64) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
 func (h *hp64) Push(v interface{})   { *h = append(*h, v.(int64)) }
-func (h *hp64) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
-
-//
-
-// see graph.shortestPathDijkstra
-type hPair struct {
-	x int64
-	y int
-}
-type pairHeap []hPair
-
-func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].x < h[j].x || h[i].x == h[j].x && h[i].y < h[j].y }
-func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
-func (h *pairHeap) Pop() (v interface{}) { n := len(*h); *h, v = (*h)[:n-1], (*h)[n-1]; return }
+func (h *hp64) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *hp64) push(v int64)         { heap.Push(h, v) }
+func (h *hp64) pop() int64           { return heap.Pop(h).(int64) }
+func (h hp64) empty() bool           { return len(h) == 0 }
+func (h hp64) top() int64            { return h[0] }
 
 //
 
@@ -53,17 +41,17 @@ func heapCollections() {
 		medians := make([]int, 1, (n+1)/2)
 		medians[0] = a[0]
 		small, big := &hp{}, &hp{}
-		Push(big, a[0]) // 下面保证 big.size() == small.size() || big.size()-1 == small.size()
+		big.push(a[0]) // 下面保证 big.size() == small.size() || big.size()-1 == small.size()
 		for i, v := range a[1:] {
 			if v < big.IntSlice[0] {
-				Push(small, -v)
+				small.push(-v)
 			} else {
-				Push(big, v)
+				big.push(v)
 			}
 			if len(big.IntSlice)-1 > len(small.IntSlice) {
-				Push(small, -Pop(big).(int))
+				small.push(-big.pop())
 			} else if len(small.IntSlice) > len(big.IntSlice) {
-				Push(big, -Pop(small).(int))
+				big.push(-small.pop())
 			}
 			if i&1 == 1 {
 				medians = append(medians, big.IntSlice[0])
