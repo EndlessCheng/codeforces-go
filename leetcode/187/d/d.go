@@ -22,27 +22,28 @@ func kthSmallest(mat [][]int, k int) (ans int) {
 	q := &hp{}
 	vis := map[[40]int8]bool{}
 
-	sum := 0
+	sum0 := 0
 	for _, row := range mat {
-		sum += row[0]
+		sum0 += row[0]
 	}
-	q.push(pair{sum: sum})
+	q.push(pair{sum: sum0})
 	vis[[40]int8{}] = true
 	for !q.empty() {
 		p := q.pop()
+		sum, pos := p.sum, p.pos
 		k--
 		if k == 0 {
-			return p.sum
+			return sum
 		}
 		for i, row := range mat {
-			if p.pos[i]+1 == m {
+			if pos[i]+1 == m {
 				continue
 			}
-			next := p.pos
+			next := pos
 			next[i]++
 			if !vis[next] {
 				vis[next] = true
-				q.push(pair{p.sum + row[next[i]] - row[next[i]-1], next})
+				q.push(pair{sum + row[next[i]] - row[next[i]-1], next})
 			}
 		}
 	}
