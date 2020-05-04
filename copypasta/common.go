@@ -82,6 +82,20 @@ func commonCollection() {
 		return ans
 	}
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
+	// 用堆求前 k 小
+	smallK := func(a []int, k int) []int {
+		k++
+		q := &hp{} // 最大堆
+		for _, v := range a {
+			if q.Len() < k || v < q.top() {
+				q.push(v)
+			}
+			if q.Len() > k {
+				q.pop() // 不断弹出更大的元素，留下的就是较小的
+			}
+		}
+		return q.IntSlice // 注意返回的不是有序数组
+	}
 	ternaryI := func(cond bool, r1, r2 int) int {
 		if cond {
 			return r1
@@ -544,7 +558,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
