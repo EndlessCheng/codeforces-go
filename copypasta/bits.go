@@ -25,6 +25,8 @@ S\{i}:  S&^(1<<i)
 注意 11100001 的情况（特判 lowbit = 1）
 
 构造 2^n-1，即 n 个 1：^(-1<<n)
+
+一些子集的枚举算法见 loopCollection
 */
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n

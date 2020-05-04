@@ -10,12 +10,15 @@ import (
 1. 如何定义本问题的状态，有几个维度的状态？
 2. 状态的范围是多少，起点状态和终点状态是什么？
 3. 哪些状态是相邻的？（即通过一次转移就能得到）
-4. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）如何优化决策？
+4. 状态转移时要计算哪些内容？
+5. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
+6. 若复杂度过高，如何优化决策？
 *. 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
    推荐 https://codeforces.ml/blog/entry/47764
-例题：戳气球 https://leetcode-cn.com/problems/burst-balloons/
-     消消乐 https://leetcode-cn.com/problems/remove-boxes/
-     如何定义状态 https://codeforces.ml/problemset/problem/553/A
+   戳气球 https://leetcode-cn.com/problems/burst-balloons/
+   消消乐 https://leetcode-cn.com/problems/remove-boxes/
+   如何定义状态 https://codeforces.ml/problemset/problem/553/A
+   谁来当 DP 对象 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ 双周赛 25D
 
 NOTE: 若使用滚动数组，复用时可能要初始化
       实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
@@ -268,6 +271,7 @@ func dpCollections() {
 	//     终点：(n,sum)
 	// 核心函数：方案数（点权汇合），即 +
 	// 例题（需要转换）https://leetcode-cn.com/problems/target-sum/
+	// 隐藏的 0-1 背包 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)

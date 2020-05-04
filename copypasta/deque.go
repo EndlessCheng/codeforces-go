@@ -27,7 +27,8 @@ func (q *deque) popR() (v int) {
 	return
 }
 
-func (q deque) len() int { return len(q.l) + len(q.r) }
+// 不常用的
+func (q deque) size() int { return len(q.l) + len(q.r) }
 func (q deque) topL() int {
 	if len(q.l) > 0 {
 		return q.l[len(q.l)-1]
