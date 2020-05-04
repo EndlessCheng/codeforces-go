@@ -155,9 +155,13 @@ func sortCollections() {
 	// 0-1 分数规划
 	// https://oi-wiki.org/misc/frac-programming/
 
+	// CDQ 分治
+	// todo https://oi-wiki.org/misc/cdq-divide/
+	//      https://www.bilibili.com/video/BV1mC4y1s7ic
+
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
-	// todo https://codeforces.ml/blog/entry/45578
+	//      https://codeforces.ml/blog/entry/45578
 
 	_ = []interface{}{
 		sortString, reverseSort, lowerBound, upperBound, reverse,

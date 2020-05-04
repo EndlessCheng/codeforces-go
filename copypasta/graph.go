@@ -1,7 +1,7 @@
 package copypasta
 
 import (
-	. "container/heap"
+	"container/heap"
 	. "fmt"
 	"io"
 	"sort"
@@ -664,6 +664,21 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	return ans
 }
 
+type hPair struct {
+	dis int64
+	v   int
+}
+type pairHeap []hPair
+
+func (h pairHeap) Len() int              { return len(h) }
+func (h pairHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis }
+func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
+func (h *pairHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
+func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
+func (h pairHeap) empty() bool           { return len(h) == 0 }
+
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
 // start 也可以是一个点集，这相当于同时对多个点跑最短路
@@ -698,10 +713,10 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	}
 
 	h := &pairHeap{}
-	Push(h, hPair{0, st})
-	for h.Len() > 0 {
-		p := Pop(h).(hPair)
-		d, v := p.x, p.y
+	h.push(hPair{0, st})
+	for !h.empty() {
+		p := h.pop()
+		d, v := p.dis, p.v
 		if dist[v] < d {
 			continue
 		}
@@ -710,7 +725,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.weight; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
-				Push(h, hPair{newD, w})
+				h.push(hPair{newD, w})
 			}
 		}
 	}
@@ -744,10 +759,10 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		}
 
 		h := &pairHeap{}
-		Push(h, hPair{0, st})
-		for h.Len() > 0 {
-			p := Pop(h).(hPair)
-			d, v := p.x, p.y
+		h.push(hPair{0, st})
+		for !h.empty() {
+			p := h.pop()
+			d, v := p.dis, p.v
 			if dist2[v] < d {
 				continue
 			}
@@ -755,12 +770,12 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 				w := e.to
 				newD := d + e.weight
 				if newD < dist[w] {
-					Push(h, hPair{newD, w})
+					h.push(hPair{newD, w})
 					dist[w], newD = newD, dist[w]
 				}
 				if newD > dist[w] && newD < dist2[w] {
 					dist2[w] = newD
-					Push(h, hPair{newD, w})
+					h.push(hPair{newD, w})
 				}
 			}
 		}
@@ -1092,6 +1107,9 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 }
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)
+// 最大匹配+最小边覆盖=n
+// 最大独立集+最小顶点覆盖=n    最大独立集=n-最大匹配
+// 最大匹配=最小顶点覆盖
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://oi-wiki.org/graph/bi-graph/#_9
@@ -1425,10 +1443,17 @@ func (*graph) treeWithCycle(n int, g [][]int) {
 }
 
 /* 网络流
+上下界网络流 https://oi-wiki.org/graph/flow/bound/
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FordFulkerson.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html
 全局最小割 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
+EXTRA: Disjoint paths
+       Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph,
+                            assuming that the capacity of each edge is one.
+       Node-disjoint paths: 拆点法
+EXTRA: 路径覆盖 Path cover
+		todo
 */
 
 // 最大流 Dinic's algorithm O(n2m)
@@ -1518,9 +1543,10 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 	return
 }
 
-// TODO 最大流 加强版 / 预流推进
+// 预流推进 HLPP 算法（High Level Preflow Push）
+// todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
 
-// TODO 最小费用最大流
-// https://oi-wiki.org/graph/flow/min-cost/
+// 最小费用最大流
+// todo https://oi-wiki.org/graph/flow/min-cost/
 // 模板题 https://www.luogu.com.cn/problem/P3381

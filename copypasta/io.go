@@ -6,6 +6,7 @@ import (
 	"io"
 )
 
+// 带有 IO 缓冲区的输入输出，适用于绝大多数题目
 func bufferIO(_r io.Reader, _w io.Writer) {
 	// NOTE: just a bufio.Reader is enough, there is no difference between this and ioutil.ReadAll
 	in := bufio.NewReader(_r)
@@ -20,7 +21,8 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data) or Fprint(out, string(data))
 }
 
-// 相比 Fscan，每读入 1e5 个 int 可以加速 40-50ms
+// 快读，适用于输入量超过 1e6 的题目
+// 相比 Fscan，每读入 1e6 个 int 可以加速 400ms 左右
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
@@ -56,7 +58,8 @@ func fastIO(_r io.Reader, _w io.Writer) {
 	_ = []interface{}{read, readS}
 }
 
-// 性能测试 CF1276B 1e6 数据量
+// 超快读
+// 以 CF1276B（1e6 数据量）为例，测试结果如下：
 // bufferIO  670 ms
 // fastIO    296 ms
 // fasterIO  202 ms

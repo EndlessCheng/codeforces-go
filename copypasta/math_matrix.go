@@ -180,8 +180,9 @@ func (matrix) inv(in io.Reader, n int) matrix {
 	return ans
 }
 
-// 高斯消元
+// 行列式 高斯消元 Determinant
 // TODO https://oi-wiki.org/math/gauss/
+//      https://cp-algorithms.com/linear_algebra/determinant-gauss.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 

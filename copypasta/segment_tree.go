@@ -18,6 +18,8 @@ package copypasta
 // TIPS: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
 //       https://codeforces.ml/problemset/problem/629/D
 
+// min-max segmentTree 见 LC187C
+
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
 type segmentTree []struct {
@@ -27,8 +29,7 @@ type segmentTree []struct {
 }
 
 func newSegmentTree(a []int64) segmentTree {
-	n := len(a)
-	t := make(segmentTree, 4*n)
+	t := make(segmentTree, 4*len(a))
 	t.init(a)
 	return t
 }
@@ -137,14 +138,14 @@ func (t segmentTree) query2(l, r int) (res int64, maxPos int) { return t._query2
 // 模板 - 核心函数为 max 及 +  https://codeforces.ml/problemset/problem/1321/E
 // 模板 - 核心函数为 * 及 |    https://codeforces.ml/problemset/problem/1114/F
 // todo 多个运算复合的情况
+// EXTRA: 多项式更新，参见 Competitive Programmer’s Handbook Ch.28
 type lazyST []struct {
 	l, r      int
 	sum, todo int64 // replaceAll
 }
 
 func newLazySegmentTree(a []int64) lazyST {
-	n := len(a)
-	t := make(lazyST, 4*n)
+	t := make(lazyST, 4*len(a))
 	t.init(a)
 	return t
 }

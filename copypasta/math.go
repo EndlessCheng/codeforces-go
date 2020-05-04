@@ -94,6 +94,9 @@ func numberTheoryCollection() {
 		return
 	}
 
+	type pair struct{ x, y int64 }
+	frac := func(a, b int64) pair { g := gcd(a, b); return pair{a / g, b / g} }
+
 	// 给定数组，统计所有区间的 GCD 值
 	// 返回 map[GCD值]等于该值的区间个数
 	cntRangeGCD := func(arr []int64) map[int64]int64 {
@@ -368,6 +371,15 @@ func numberTheoryCollection() {
 	// https://oeis.org/A002183
 	// https://oeis.org/A199337 Number of highly composite numbers not divisible by n
 	// https://www.luogu.com.cn/problem/P1463
+
+	// TIPS: Maximal number of divisors (d(n)) of any n-digit number
+	// 方便估计复杂度 - 近似为开立方
+	// https://oeis.org/A066150
+	// 4, 12, 32, 64, 128, 240, 448, 768, 1344, /* 9 */
+	// 2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280 /* 19 */
+
+	// Smallest number with exactly n divisors
+	// https://oeis.org/A005179
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
 	// for i>=2, factors[i][0] == i means i is prime
@@ -786,7 +798,8 @@ func numberTheoryCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P4720
 	// 古代猪文 https://www.luogu.com.cn/problem/P2480
 
-	//
+	// 原根
+	// todo https://cp-algorithms.com/algebra/primitive-root.html
 
 	// 莫比乌斯函数
 	// todo
@@ -838,7 +851,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
-		mul, muls, gcds, lcm, cntRangeGCD,
+		mul, muls, gcds, lcm, frac, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
@@ -847,26 +860,32 @@ func numberTheoryCollection() {
 	}
 }
 
-// 组合、杂项
-// 一些组合恒等式的解释 https://www.zhihu.com/question/26094736
-// C(n, k) - C(n-1, k) = C(n-1, k-1)
-// 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
-// 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
-// 可重集排列
-// 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
-// 错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
-// 范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
-// 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
-// 斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
-// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
-//    将 n 个元素排成 k 个非空循环排列的方法数
-//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
-//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
-// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
-//    将 n 个元素拆分为 k 个非空集的方法数
-//    S2(n, k) = (1/k!) * Sum_{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
-//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
-//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+/* 组合、杂项
+一些组合恒等式的解释 https://www.zhihu.com/question/26094736
+C(n, k) - C(n-1, k) = C(n-1, k-1)
+隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
+可重集排列
+可重集组合 todo https://codeforces.ml/problemset/problem/451/E
+错排 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
+范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
+二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
+斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
+Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
+   将 n 个元素排成 k 个非空循环排列的方法数
+   s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
+   边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
+Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
+   将 n 个元素拆分为 k 个非空集的方法数
+   S2(n, k) = (1/k!) * Sum_{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
+   S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
+   边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
+普吕弗序列 Prüfer sequence: 由树唯一地产生的序列
+约瑟夫问题 Josephus Problem https://cp-algorithms.com/others/josephus_problem.html https://en.wikipedia.org/wiki/Josephus_problem
+Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
+矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
+*/
 func miscCollection() {
 	// n married couples are seated in a row so that every wife is to the left of her husband
 	// 若不考虑顺序，则所有排列的个数为 (2n)!
@@ -1014,6 +1033,12 @@ func miscCollection() {
 //           此时对手的状态为必败状态——对手必定是失败的，而相反地，自己就获得了胜利
 // 对于定理 3，如果不存在一个后继状态为必败状态，那么无论如何，玩家只能操作到必胜状态；
 //           此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
+// The Sprague–Grundy theorem generalizes the strategy used in nim to all games that fulfil the following requirements:
+// - There are two players who move alternately.
+// - The game consists of states, and the possible moves in a state do not depend on whose turn it is.
+// - The game ends when a player cannot make a move.
+// - The game surely ends sooner or later.
+// - The players have complete information about the states and allowed moves, and there is no randomness in the game.
 // 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
 // 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
@@ -1053,6 +1078,7 @@ func gameTheoryCollection() {
 	// Sprague-Grundy theorem
 	// 有向图游戏的某个局面必胜 <=> 该局面对应节点的 SG 函数值 > 0
 	// 有向图游戏的某个局面必败 <=> 该局面对应节点的 SG 函数值 = 0
+	// 推荐资料 Competitive Programmer’s Handbook Ch.25
 	// https://oi-wiki.org/math/game-theory/#sg
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html

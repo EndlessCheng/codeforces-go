@@ -293,7 +293,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
-// TODO 模板题 https://www.luogu.com.cn/problem/P3379
+// 模板题 https://www.luogu.com.cn/problem/P3379
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
@@ -420,6 +420,57 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	_d := func(v, w int) int { return dis[v] + dis[w] - dis[_lca(v, w)]<<1 }
 
 	_ = _d
+}
+
+// 最近公共祖先 - 其三 - Tarjan 离线算法
+// 时间和空间复杂度均为 O(n+q)
+// https://oi-wiki.org/graph/lca/#tarjan
+// https://cp-algorithms.com/graph/lca_tarjan.html
+func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+
+	q := len(_qs) // read
+	lca := make([]int, q)
+	type query struct{ w, i int }
+	qs := make([][]query, n)
+	vis := make([]int8, n)
+	var f func(int)
+	f = func(v int) {
+		vis[v] = 1
+		for _, w := range g[v] {
+			if vis[w] == 0 {
+				f(w)
+				fa[w] = v
+			}
+		}
+		for _, q := range qs[v] {
+			if w := q.w; vis[w] == 2 {
+				lca[q.i] = find(w)
+			}
+		}
+		vis[v] = 2
+	}
+	for i := range lca {
+		x, y := _qs[i][0], _qs[i][1] // read
+		if x != y {
+			qs[x] = append(qs[x], query{y, i})
+			qs[y] = append(qs[y], query{x, i})
+		} else {
+			lca[i] = x
+		}
+	}
+	f(root)
+	return lca
 }
 
 // LCA 应用：树上差分
@@ -557,9 +608,6 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 // TODO: 虚树
 // https://oi-wiki.org/graph/virtual-tree/
-
-// 基环树
-// TODO
 
 // 仙人掌图 Cactus graph
 // A connected graph in which any two simple cycles have at most one vertex in common

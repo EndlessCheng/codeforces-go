@@ -88,6 +88,27 @@ func unionFind() {
 		return
 	}
 
+	{
+		var n int
+		rank := make([]int, n)
+		merge := func(x, y int) {
+			x = find(x)
+			y = find(y)
+			if x == y {
+				return
+			}
+			if rank[x] < rank[y] {
+				fa[x] = y
+			} else {
+				fa[y] = x
+				if rank[x] == rank[y] {
+					rank[x]++
+				}
+			}
+		}
+		_ = merge
+	}
+
 	_ = []interface{}{
 		initFa, merge, same,
 		sameMerge, mergeRangeTo, getRoots, countRoots, getComps,

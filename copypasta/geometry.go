@@ -40,6 +40,11 @@ det (determinant，行列式，叉积的模，有向面积):
 1rad = (180/π)°
 
 todo 二维偏序 https://ac.nowcoder.com/discuss/394080 F 题
+
+Pick 定理
+https://oi-wiki.org/geometry/pick/
+https://cp-algorithms.com/geometry/picks-theorem.html
+https://cp-algorithms.com/geometry/lattice-points.html
 */
 
 const eps = 1e-8
@@ -292,6 +297,10 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 // https://en.wikipedia.org/wiki/Inversive_geometry
 // TODO: https://oi-wiki.org/geometry/inverse/
 
+// 三角剖分
+// todo https://oi-wiki.org/geometry/triangulation/
+//      https://cp-algorithms.com/geometry/delaunay.html
+
 func vec2Collection() {
 	readVec := func(in io.Reader) vec {
 		var x, y int64
@@ -509,6 +518,9 @@ func vec2Collection() {
 		// 是否在边左侧或与边重合
 		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0
 	}
+
+	// todo 判断点 p 是否在多边形 ps 内部
+	// 光线投射算法 Ray casting algorithm
 
 	// 判断 ∠abc 是否为直角
 	// 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）
