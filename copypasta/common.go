@@ -41,6 +41,12 @@ func commonCollection() {
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	dir4C := [...][2]int{ // 西东南北
+		'W': {-1, 0},
+		'E': {1, 0},
+		'S': {0, -1},
+		'N': {0, 1},
+	}
 	dir4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 	dir8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
@@ -421,20 +427,24 @@ func commonCollection() {
 	}
 
 	// 数组第 k 小 (Quick Select)
+	// 0 <= k < len(a)
 	// 调用会改变数组中元素顺序
+	// 代码实现参考算法第四版 p.221
+	// 算法的平均比较次数为 ~2n+2kln(n/k)+2(n-k)ln(n/(n-k))
+	// https://en.wikipedia.org/wiki/Quickselect
+	// https://www.geeksforgeeks.org/quickselect-algorithm/
 	// 模板题 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
 	// 模板题 https://codeforces.ml/contest/977/problem/C
-	kthElement := func(a []int, k int) int {
+	quickSelect := func(a []int, k int) int {
+		//k = len(a) - 1 - k // 求第 k 大
 		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
-		l, r := 0, len(a)-1
-		for l < r {
-			// 将数组切分成 a[l...i-1], a[i], a[i+1...r]
+		for l, r := 0, len(a)-1; l < r; {
 			v := a[l] // 切分元素
 			i, j := l, r+1
 			for {
-				for i++; i < r && a[i] < v; i++ { // > 为第k大
+				for i++; i < r && a[i] < v; i++ {
 				}
-				for j--; j > l && a[j] > v; j-- { // < 为第k大
+				for j--; j > l && a[j] > v; j-- {
 				}
 				if i >= j {
 					break
@@ -443,14 +453,14 @@ func commonCollection() {
 			}
 			a[l], a[j] = a[j], v
 			if j == k {
-				return a[k]
+				break
 			} else if j < k {
 				l = j + 1
 			} else {
 				r = j - 1
 			}
 		}
-		return a[k]
+		return a[k] //  a[:k+1]  a[k:]
 	}
 
 	contains := func(a []int, x int) bool {
@@ -528,13 +538,13 @@ func commonCollection() {
 
 	// 悬线法
 	// 求一最大子矩形，矩形内部元素均相同
-	// https://oi-wiki.org/misc/largest-matrix/
+	// todo https://oi-wiki.org/misc/largest-matrix/
 
 	_ = []interface{}{
-		pow2, pow10, dir4, dir4R, dir8, orderP3, factorial,
+		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, kthElement, contains, containsAll,
+		copyMat, hash01Mat, sort3, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
@@ -625,33 +635,34 @@ func rmqCollection() {
 	// TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 	type block struct {
 		l, r           int // [l,r]
-		arr, sortedArr []int
+		origin, sorted []int
 		//lazyAdd int
 	}
-	var blocks []*block
+	var blocks []block
 	sqrtInit := func(a []int) {
 		n := len(a)
 		blockSize := int(math.Sqrt(float64(n)))
 		//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
 		blockNum := (n-1)/blockSize + 1
-		blocks = make([]*block, blockNum)
-		for i, ai := range a {
+		blocks = make([]block, blockNum)
+		for i, v := range a {
 			j := i / blockSize
 			if i%blockSize == 0 {
-				blocks[j] = &block{l: i, arr: make([]int, 0, blockSize)}
+				blocks[j] = block{l: i, origin: make([]int, 0, blockSize)}
 			}
-			b := blocks[j]
-			b.arr = append(b.arr, ai)
+			blocks[j].origin = append(blocks[j].origin, v)
 		}
-		for _, b := range blocks {
-			b.r = b.l + len(b.arr) - 1
-			b.sortedArr = make([]int, len(b.arr))
-			copy(b.sortedArr, b.arr)
-			sort.Ints(b.sortedArr)
+		for i := range blocks {
+			b := &blocks[i]
+			b.r = b.l + len(b.origin) - 1
+			b.sorted = make([]int, len(b.origin))
+			copy(b.sorted, b.origin)
+			sort.Ints(b.sorted)
 		}
 	}
 	sqrtOp := func(l, r int) { // [l,r], starts at 0
-		for _, b := range blocks {
+		for i := range blocks {
+			b := &blocks[i]
 			if b.r < l {
 				continue
 			}
@@ -664,25 +675,47 @@ func rmqCollection() {
 				// do op on part block
 				bl := max(b.l, l)
 				br := min(b.r, r)
-				for i := bl - b.l; i <= br-b.l; i++ {
-					//b.arr[i]
+				for j := bl - b.l; j <= br-b.l; j++ {
+					// do b.origin[j]...
 				}
 			}
 		}
 	}
 
-	// 莫队算法：对询问分块
-	// 分块，将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
-	// 这样对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)
-	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
-	// https://oi-wiki.org/misc/mo-algo/
-	// 模板题 https://www.luogu.com.cn/problem/P1494
-	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
-	mo := func(in io.Reader, out io.Writer, n, q int, a []int) {
-		type query struct {
-			blockIdx  int
-			l, r, idx int
-		}
+	_ = []interface{}{
+		logInit,
+		stInit, stQuery,
+		sqrtInit, sqrtOp,
+	}
+}
+
+/* 平方根算法：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
+参考 Competitive Programmer’s Handbook Ch.27
+
+有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
+为方便起见，假设 ∑ci 的数量级和 n 一样，下面用 n 表示 ∑ci
+当 ci > √n 时，这样的对象不超过 √n 个，暴力枚举这些对象之间的关系（或者，该对象与其他所有对象的关系），时间复杂度为 O(n) 或 O(n√n)。此乃算法一
+当 ci ≤ √n 时，这样的对象有 O(n) 个，由于统计量 ci 很小，暴力枚举当前对象的统计量，时间复杂度为 O(n√n)。此乃算法二
+这样，以 √n 为界，我们将所有对象划分成了两组，并用两个不同的算法处理
+这两种算法是看待同一个问题的两种不同方式，通过恰当地组合这两个算法，复杂度由 O(n^2) 降至 O(n√n)
+注意：**枚举时要做到不重不漏**
+
+另一种题型是注意到 n 的整数分拆中，不同数字的个数至多有 O(√n) 种
+
+好题 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
+*/
+
+// 莫队算法：对询问分块
+// 分块，将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
+// 这样对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√n)
+// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
+// https://oi-wiki.org/misc/mo-algo/
+// 模板题 https://www.luogu.com.cn/problem/P1494
+// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
+func moAlgorithm() {
+	mo := func(in io.Reader, a []int, q int) []int {
+		n := len(a)
+		type query struct{ blockIdx, l, r, idx int }
 		qs := make([]query, q)
 		blockSize := int(math.Round(math.Sqrt(float64(n))))
 		for i := range qs {
@@ -702,12 +735,12 @@ func rmqCollection() {
 			return qi.r > qj.r
 		})
 
-		// 从 1 开始算，方便 debug
 		cnt := 0
-		l, r := 1, 1
+		l, r := 1, 1 // 区间从 1 开始，方便 debug
 		update := func(idx, delta int) {
-			// 有些题目在 delta 为 1 和 -1 时逻辑的顺序是严格对称的
-			//v := a[idx-1]
+			// NOTE: 有些题目在 delta 为 1 和 -1 时逻辑的顺序是严格对称的
+			// v := a[idx-1]
+			// ...
 			if delta == 1 {
 				cnt++
 			} else {
@@ -716,13 +749,14 @@ func rmqCollection() {
 		}
 		getAns := func(q query) int {
 			// 提醒：q.r 是加一后的，计算时需要注意
-			//l := q.r - q.l
+			// sz := q.r - q.l
+			// ...
 			return cnt
 		}
 		ans := make([]int, q)
 		for _, q := range qs {
 			// prepare
-			// 有些题目需要维护差分值，因为 [l,r] 的差分是 s(r)-s(l-1)，此时 update 传入的应为 l-1
+			// NOTE: 有些题目需要维护差分值，由于 [l,r] 的差分是 s(r)-s(l-1)，此时 update 传入的应为 l-1
 			for ; r < q.r; r++ {
 				update(r, 1)
 			}
@@ -739,21 +773,14 @@ func rmqCollection() {
 			}
 			ans[q.idx] = getAns(q)
 		}
-		for _, v := range ans {
-			Fprintln(out, v)
-		}
+		return ans
 	}
 
 	// TODO: 带修改的莫队
 
 	// TODO: 树上莫队
 
-	_ = []interface{}{
-		logInit,
-		stInit, stQuery,
-		sqrtInit, sqrtOp,
-		mo,
-	}
+	_ = mo
 }
 
 func monotoneCollection() {
@@ -766,7 +793,9 @@ func monotoneCollection() {
 	//          这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
 	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
-	// 模板题 https://www.luogu.com.cn/problem/P5788 https://leetcode.com/problems/next-greater-element-i/ https://leetcode.com/problems/next-greater-element-ii/
+	// 模板题 https://www.luogu.com.cn/problem/P5788
+	//       https://leetcode.com/problems/next-greater-element-i/
+	//       https://leetcode.com/problems/next-greater-element-ii/
 	// 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
@@ -846,9 +875,8 @@ func monotoneCollection() {
 	_ = []interface{}{monotoneStack, monotoneQueue}
 }
 
-// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
 func loopCollection() {
-	dir4 := [...][2]int{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
+	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	min := func(a, b int) int {
 		if a < b {
 			return a
