@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// github.com/EndlessCheng/codeforces-go
 func run(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
