@@ -423,7 +423,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 }
 
 // 最近公共祖先 - 其三 - Tarjan 离线算法
-// 时间和空间复杂度均为 O(n+q)
+// 时间和空间复杂度均为 O(n+q)，虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
 func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {

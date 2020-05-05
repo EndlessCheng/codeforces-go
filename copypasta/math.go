@@ -135,13 +135,22 @@ func numberTheoryCollection() {
 	}
 	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
 
-	// 哥德巴赫猜想 - 偶数分拆的最小质数
+	// 哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture
 	// 由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
+	// https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
 	// https://oeis.org/A020481
 	// n https://oeis.org/A025018
 	// a(n) https://oeis.org/A025019
 	// 1e9 内最大的为 a(721013438) = 1789
 	// 2e9 内最大的为 a(1847133842) = 1861
+
+	// 勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
+	// https://en.wikipedia.org/wiki/Legendre%27s_conjecture
+	// https://oeis.org/A014085 https://oeis.org/A060199
+
+	// 伯特兰-切比雪夫定理 - n ~ 2n 之间至少有一个质数 Bertrand's postulate
+	// https://en.wikipedia.org/wiki/Bertrand%27s_postulate
+	// https://oeis.org/A035250 https://oeis.org/A060715
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
@@ -356,13 +365,19 @@ func numberTheoryCollection() {
 		_, _ = isSquareNumber, halfDivisors
 	}
 
-	// EXTRA: 约数个数 d(n), also called tau(n) or sigma_0(n)
-	//        https://oeis.org/A000005 https://oeis.org/A002182 https://oeis.org/A002183
-	// EXTRA: 约数个数的前缀和 a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
-	//                            = 见后文「数论分块/除法分块」
+	// EXTRA: 约数个数 d(n) τ(n) = Product (ei + 1), ei 为第 i 个质数的系数
+	//        https://oeis.org/A000005
+	//        https://oeis.org/A002182 https://oeis.org/A002183
+	//        前缀和 = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
+	//              = 见后文「数论分块/除法分块」
 
-	// EXTRA: 约数之和 sigma(n), also called sigma_1(n) https://oeis.org/A000203
-	// EXTRA: 约数之和的前缀和 a(n) = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+	// EXTRA: 约数之和 σ(n) = Product (pi^(ei+1)-1)/(pi-1)
+	//        https://oeis.org/A000203
+	//        前缀和 = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+
+	// EXTRA: 约数之积 μ(n) = n^(d(n)/2)
+	//        because we can form d(n)/2 pairs from the factors, each with product n
+	//        https://oeis.org/A007955
 
 	// 高合成数/反质数 Highly Composite Numbers
 	// 一个高合成数一定是由另一个高合成数乘某个质数得到

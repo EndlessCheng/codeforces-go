@@ -45,6 +45,12 @@ Pick 定理
 https://oi-wiki.org/geometry/pick/
 https://cp-algorithms.com/geometry/picks-theorem.html
 https://cp-algorithms.com/geometry/lattice-points.html
+
+TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
+      顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
+      曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
+TIPS: 另一种处理曼哈顿距离的方法是枚举 (x2,y2) 在以 (x1,y1) 为原点的哪个象限，分四种情况讨论
+      例题 https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
 */
 
 const eps = 1e-8
