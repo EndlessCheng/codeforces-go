@@ -455,9 +455,32 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 }
 
 // 无向图的双连通分量 Biconnected Components (BCC)
-// 无割点 v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
+// v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
+// 好题 https://codeforces.ml/problemset/problem/962/F
+/*
+使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
+基础样例 - 一个割点两个简单环
+1 2
+2 3
+3 4
+4 1
+3 5
+5 6
+6 7
+7 3
+基础样例 - 两个割点三个简单环（注意那条含有两个割点的边）
+7 3
+7 4
+1 2
+2 3
+3 1
+3 4
+4 5
+5 6
+6 4
+*/
 func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 	min := func(a, b int) int {
 		if a < b {
@@ -465,7 +488,6 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 		}
 		return b
 	}
-	type edge struct{ v, w int }
 
 	bccIDs = make([]int, n) // ID 从 1 开始编号
 	idCnt := 0
@@ -473,6 +495,7 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
+	type edge struct{ v, w int } // eid
 	stack := []edge{}
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
@@ -481,7 +504,7 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 		lowV := dfsClock
 		childCnt := 0
 		for _, w := range g[v] {
-			e := edge{v, w}
+			e := edge{v, w} // ne.eid
 			if dfn[w] == 0 {
 				stack = append(stack, e)
 				childCnt++
@@ -490,6 +513,7 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 					isCut[v] = true
 					idCnt++
 					comp := []int{}
+					//eids := []int{}
 					for {
 						e, stack = stack[len(stack)-1], stack[:len(stack)-1]
 						if bccIDs[e.v] != idCnt {
@@ -500,10 +524,17 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 							bccIDs[e.w] = idCnt
 							comp = append(comp, e.w)
 						}
+						//eids = append(eids, e.eid)
 						if e.v == v && e.w == w {
 							break
 						}
 					}
+					// 点数和边数相同，说明该 v-BCC 是一个简单环，且环上所有的边只属于一个简单环
+					//if len(comp) == len(eids) {
+					//	for _, eid := range eids {
+					//		onSimpleCycle[eid] = true
+					//	}
+					//}
 					comps = append(comps, comp)
 				}
 				lowV = min(lowV, lowW)
@@ -551,7 +582,7 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 	return
 }
 
-// 无割边 e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
+// e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
 func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
