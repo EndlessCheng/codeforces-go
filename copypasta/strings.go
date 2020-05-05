@@ -9,7 +9,15 @@ import (
 
 // TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.ml/contest/873/problem/F
 
+// 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
+
 func stringCollection() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
 	max := func(a, b int) int {
 		if a >= b {
 			return a
@@ -46,6 +54,7 @@ func stringCollection() {
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
+	// 例题 https://codeforces.ml/problemset/problem/432/D
 	calcMaxMatchLengths := func(s string) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)
@@ -92,8 +101,37 @@ func stringCollection() {
 		return 1 // 无小于 n 的循环节
 	}
 
-	// TODO 扩展 KMP
+	// Z-algorithm（扩展 KMP）
+	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
+	// 参考 Competitive Programmer’s Handbook Ch.26
+	// https://oi-wiki.org/string/z-func/
+	// https://cp-algorithms.com/string/z-function.html
+	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	// 模板题 https://www.luogu.com.cn/problem/P5410
+	// 例题 https://codeforces.ml/problemset/problem/432/D
+	calcZArray := func(s []byte) []int {
+		n := len(s)
+		z := make([]int, n)
+		for i, l, r := 1, 0, 0; i < n; i++ {
+			z[i] = max(0, min(z[i-l], r-i+1))
+			for i+z[i] < n && s[z[i]] == s[i+z[i]] {
+				l, r = i, i+z[i]
+				z[i]++
+			}
+		}
+		z[0] = n
+		return z
+	}
+	zSearch := func(text, pattern []byte) (pos []int) {
+		s := append(append(pattern, '#'), text...)
+		z := calcZArray(s)
+		for i, l := range z[len(pattern)+1:] {
+			if l == len(pattern) {
+				pos = append(pos, i)
+			}
+		}
+		return
+	}
 
 	// 最小表示法
 	// TODO：待整理
@@ -314,6 +352,7 @@ func stringCollection() {
 	_ = []interface{}{
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
+		zSearch,
 		smallestRepresentation,
 		manacher, isP, midP, leftP,
 		suffixArray,
