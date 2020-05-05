@@ -134,11 +134,11 @@ func (t segmentTree) query2(l, r int) (res int64, maxPos int) { return t._query2
 
 //
 
-// 模板题 https://www.luogu.com.cn/problem/P3372 https://www.luogu.com.cn/problem/P3373
+// 模板题 https://www.luogu.com.cn/problem/P3372 +
+//       https://www.luogu.com.cn/problem/P3373 * 和 + 复合
 // 模板 - 核心函数为 max 及 +  https://codeforces.ml/problemset/problem/1321/E
 // 模板 - 核心函数为 * 及 |    https://codeforces.ml/problemset/problem/1114/F
-// todo 多个运算复合的情况
-// EXTRA: 多项式更新，参见 Competitive Programmer’s Handbook Ch.28
+// EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 type lazyST []struct {
 	l, r      int
 	sum, todo int64 // replaceAll
@@ -149,6 +149,17 @@ func newLazySegmentTree(a []int64) lazyST {
 	t.init(a)
 	return t
 }
+
+//func (lazyST) pow(x int64, n int) int64 {
+//	res := int64(1)
+//	for ; n > 0; n >>= 1 {
+//		if n&1 == 1 {
+//			res = res * x % mod
+//		}
+//		x = x * x % mod
+//	}
+//	return res
+//}
 
 func (t lazyST) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
