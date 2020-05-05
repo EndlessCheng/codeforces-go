@@ -830,8 +830,10 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
-// todo 差分约束  《算法导论》24.4
-// 模板题 https://www.luogu.com.cn/problem/P3385
+// EXTRA: 差分约束，若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
+//        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
+//        这样，在无负环时会得到一组非正数解
+//        模板题 https://www.luogu.com.cn/problem/P3385
 func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int

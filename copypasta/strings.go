@@ -133,12 +133,13 @@ func stringCollection() {
 		return
 	}
 
-	// 最小表示法
-	// TODO：待整理
+	// 最小表示法 - 求串的循环同构串中字典序最小的串
+	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
+	// 模板题 https://www.luogu.com.cn/problem/P1368
 	smallestRepresentation := func(s []byte) []byte {
 		n := len(s)
-		s = append(s, s...) // 或者 copy
+		s = append(s, s...)
 		i := 0
 		for j := 1; j < n; {
 			k := 0
@@ -148,8 +149,10 @@ func stringCollection() {
 				break
 			}
 			if s[i+k] < s[j+k] {
+				// j 到 j+k 都不会是最小串的开头位置
 				j += k + 1
 			} else {
+				// i 到 i+k 都不会是最小串的开头位置
 				i, j = j, max(j, i+k)+1
 			}
 		}

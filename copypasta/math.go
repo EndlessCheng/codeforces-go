@@ -184,6 +184,12 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// 线性筛
+	// todo https://www.luogu.com.cn/problem/P3383
+	sieve = func() {
+
+	}
+
 	// 区间筛法
 	// 预处理 [2,√R] 的所有质数，去筛 [L,R] 之间的质数
 	// EXTRA: 区间最大质数间隔
