@@ -289,8 +289,8 @@ func commonCollection() {
 		return true
 	}
 
+	// 合并有序数组
 	// a b 必须是有序的（可以为空）
-	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
 	merge := func(a, b []int) []int {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
@@ -307,6 +307,36 @@ func commonCollection() {
 				i++
 			} else {
 				res = append(res, b[j])
+				j++
+			}
+		}
+	}
+
+	// 分理出单独的和重复的，可以用来求交集、并集、对称差等
+	// a b 必须是有序的（可以为空）
+	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
+	splitUniqueAndSame := func(a, b []int) (uniqueA, uniqueB, same []int) {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		for {
+			if i == n {
+				uniqueB = append(uniqueB, b[j:]...)
+				return
+			}
+			if j == m {
+				uniqueA = append(uniqueA, a[i:]...)
+				return
+			}
+			x, y := a[i], b[j]
+			if x < y { // 改成 > 为降序
+				uniqueA = append(uniqueA, x)
+				i++
+			} else if x > y { // 改成 < 为降序
+				uniqueB = append(uniqueB, y)
+				j++
+			} else {
+				same = append(same, x)
+				i++
 				j++
 			}
 		}
@@ -559,7 +589,7 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, splitUniqueAndSame, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
