@@ -290,6 +290,7 @@ func commonCollection() {
 	}
 
 	// a b 必须是有序的（可以为空）
+	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
 	merge := func(a, b []int) []int {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
