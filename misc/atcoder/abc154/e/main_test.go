@@ -6,15 +6,27 @@ import (
 )
 
 func Test_run(t *testing.T) {
-	customInputs := []string{
-		`100
-1`, `25
-2`, `314159
-2`, `9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+	testCases := [][2]string{
+		{
+			`100
+1`,
+			`19`,
+		},
+		{
+			`25
+2`,
+			`14`,
+		},
+		{
+			`314159
+2`,
+			`937`,
+		},
+		{
+			`9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
 3`,
+			`117879300`,
+		},
 	}
-	customAnswers := []string{
-		`19`, `14`, `937`, `117879300`,
-	}
-	testutil.AssertEqualStringCase(t, customInputs, customAnswers, 0, run)
+	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
