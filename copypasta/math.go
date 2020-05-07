@@ -571,6 +571,20 @@ func numberTheoryCollection() {
 	divM := func(a, b, m int64) int64 { return a * invM(b, m) % m }
 	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
 
+	// 线性求逆元
+	// 求 1, 2, ..., p−1 mod p 的逆元
+	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
+	// https://www.zhihu.com/question/59033693
+	initAllInv := func(p int) []int {
+		inv := make([]int, p)
+		inv[1] = 1
+		for i := 2; i < p; i++ {
+			inv[i] = -(p / i) * inv[p%i]
+			inv[i] = (inv[i]%p + p) % p
+		}
+		return inv
+	}
+
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// todo https://codeforces.ml/blog/entry/61290
@@ -638,6 +652,7 @@ func numberTheoryCollection() {
 	// 高次同余方程 a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
+	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
 	babyStepGiantStep := func(a, b, p int64) int64 {
 		hash := map[int64]int64{}
 		b %= p
@@ -878,7 +893,7 @@ func numberTheoryCollection() {
 		mul, muls, gcds, lcm, frac, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
-		exgcd, invM, invP, divM, divP, crt, excrt, babyStepGiantStep,
+		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
 		factorial, initFactorial, _factorial, combHalf, comb,
 		consecutiveNumbersSum, partition,
 	}
