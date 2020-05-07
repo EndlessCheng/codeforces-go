@@ -885,6 +885,7 @@ func numberTheoryCollection() {
 }
 
 /* 组合、杂项
+
 一些组合恒等式的解释 https://www.zhihu.com/question/26094736
 C(n, k) - C(n-1, k) = C(n-1, k-1)
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
@@ -909,6 +910,8 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 约瑟夫问题 Josephus Problem https://cp-algorithms.com/others/josephus_problem.html https://en.wikipedia.org/wiki/Josephus_problem
 Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
+
+CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
 func miscCollection() {
 	// n married couples are seated in a row so that every wife is to the left of her husband
