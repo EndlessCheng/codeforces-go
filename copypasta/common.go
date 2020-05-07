@@ -960,12 +960,14 @@ func loopCollection() {
 		}
 	}
 
-	// 枚举 {0,1,...,n-1} 的大小为 k 的子集（按字典序）
-	// 参考《挑战程序设计竞赛》P.156-158
+	// 枚举大小为 n 的集合的大小为 k 的子集（按字典序）
+	// 参考《挑战程序设计竞赛》p.156-158
+	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
+	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
 	loopSubsetK := func(arr []int, k int) {
 		n := len(arr)
 		for sub := 1<<k - 1; sub < 1<<n; {
-			// do(sub)
+			// do(arr, sub) ...
 			x := sub & -sub
 			y := sub + x
 			sub = sub&^y/x>>1 | y
