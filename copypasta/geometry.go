@@ -419,30 +419,30 @@ func vec2Collection() {
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
 		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
-		qs := make([]vec, 0, 2*n)
-		for _, pi := range ps {
+		ch := make([]vec, 0, 2*n)
+		for _, p := range ps {
 			for {
-				sz := len(qs)
-				if sz <= 1 || qs[sz-1].sub(qs[sz-2]).det(pi.sub(qs[sz-1])) > 0 {
+				sz := len(ch)
+				if sz <= 1 || ch[sz-1].sub(ch[sz-2]).det(p.sub(ch[sz-1])) > 0 {
 					break
 				}
-				qs = qs[:sz-1]
+				ch = ch[:sz-1]
 			}
-			qs = append(qs, pi)
+			ch = append(ch, p)
 		}
-		downSize := len(qs)
+		downSize := len(ch)
 		for i := n - 2; i >= 0; i-- {
-			pi := ps[i]
+			p := ps[i]
 			for {
-				sz := len(qs)
-				if sz <= downSize || qs[sz-1].sub(qs[sz-2]).det(pi.sub(qs[sz-1])) > 0 {
+				sz := len(ch)
+				if sz <= downSize || ch[sz-1].sub(ch[sz-2]).det(p.sub(ch[sz-1])) > 0 {
 					break
 				}
-				qs = qs[:sz-1]
+				ch = ch[:sz-1]
 			}
-			qs = append(qs, pi)
+			ch = append(ch, p)
 		}
-		return qs[:len(qs)-1]
+		return ch[:len(ch)-1]
 	}
 
 	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
