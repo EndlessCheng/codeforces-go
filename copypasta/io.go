@@ -22,7 +22,7 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 }
 
 // 快读，适用于输入量超过 1e6 的题目
-// 相比 Fscan，每读入 1e6 个 int 可以加速 400ms 左右
+// 相比 Fscan，每读入 1e6 个 int 可以加速约 400-450ms（Codeforces/AtCoder）
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
