@@ -40,15 +40,16 @@ func commonCollection() {
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9} // math.Pow10
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
-	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	dir4C := [...][2]int{ // 西东南北
+	type pair struct{ x, y int }
+	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	dir4C := [...]pair{ // 西东南北
 		'W': {-1, 0},
 		'E': {1, 0},
 		'S': {0, -1},
 		'N': {0, 1},
 	}
-	dir4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
-	dir8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	dir4R := [...]pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
+	dir8 := [...]pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
 	min := func(a, b int) int {
@@ -921,7 +922,6 @@ func monotoneCollection() {
 }
 
 func loopCollection() {
-	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -983,13 +983,15 @@ func loopCollection() {
 		 # #
 		  #
 	*/
+	type pair struct{ x, y int }
+	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	searchDir4 := func(maxI, maxJ, centerI, centerJ, dis int) {
-		for i, dir := range dir4 {
-			dir2 := dir4[(i+1)%4]
-			dx := dir2[0] - dir[0]
-			dy := dir2[1] - dir[1]
-			x := centerI + dir[0]*dis
-			y := centerJ + dir[1]*dis
+		for i, d := range dir4 {
+			d2 := dir4[(i+1)%4]
+			dx := d2.x - d.x
+			dy := d2.y - d.y
+			x := centerI + d.x*dis
+			y := centerJ + d.y*dis
 			for _i := 0; _i < dis; _i++ {
 				if x >= 0 && x < maxI && y >= 0 && y < maxJ {
 					// do
