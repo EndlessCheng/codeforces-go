@@ -926,6 +926,11 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
 
+记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2
+Maximum sum of displacements of elements in a permutation of (1..n)
+For example, with n = 9, permutation (5,6,7,8,9,1,2,3,4) has displacements (4,4,4,4,4,5,5,5,5) with maximal sum = 40
+https://oeis.org/A007590
+
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
 func miscCollection() {

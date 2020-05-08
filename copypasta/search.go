@@ -3,6 +3,9 @@ package copypasta
 import "sort"
 
 func searchCollection() {
+	type _p struct{ x, y int }
+	dir4 := [...]_p{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+
 	type point struct{ x, y int }
 
 	valid := func(g [][]byte, p point) bool {
@@ -14,7 +17,6 @@ func searchCollection() {
 	// 下列代码来自 LC162C https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
 	dfsGrids := func(g [][]byte) (comps int) {
-		dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
@@ -34,8 +36,8 @@ func searchCollection() {
 			targetsPos = append(targetsPos, [2]int{i, j})
 			validComp := true
 			// 遍历完该连通分量再 return，保证不重不漏
-			for _, dir := range dir4 {
-				if !f(i+dir[0], j+dir[1]) {
+			for _, d := range dir4 {
+				if !f(i+d.x, j+d.y) {
 					validComp = false
 				}
 			}
@@ -84,7 +86,6 @@ func searchCollection() {
 
 	// 网格图从 (s.x,s.y) 到 (t.x,t.y) 的最短距离，'#' 为障碍物
 	// 无法到达时返回 -1
-	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	reachable := func(g [][]byte, s, t point) bool {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
@@ -99,7 +100,7 @@ func searchCollection() {
 				return true
 			}
 			for _, d := range dir4 {
-				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+				if xx, yy := p.x+d.x, p.y+d.y; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
 					vis[xx][yy] = true
 					q = append(q, point{xx, yy})
 				}
@@ -121,7 +122,7 @@ func searchCollection() {
 				return p.dep
 			}
 			for _, d := range dir4 {
-				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+				if xx, yy := p.x+d.x, p.y+d.y; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
 					vis[xx][yy] = true
 					q = append(q, pair{point{xx, yy}, p.dep + 1})
 				}
@@ -143,7 +144,7 @@ func searchCollection() {
 				ps = append(ps, p)
 			}
 			for _, d := range dir4 {
-				if xx, yy := p.x+d[0], p.y+d[1]; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
+				if xx, yy := p.x+d.x, p.y+d.y; xx >= 0 && xx < n && yy >= 0 && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
 					vis[xx][yy] = true
 					q = append(q, point{xx, yy})
 				}

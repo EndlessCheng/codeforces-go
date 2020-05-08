@@ -15,8 +15,6 @@ import (
 // 1e3~1e4  n^2 n√n       RMQ DP 分块
 // 300~500  n^3           DP 二分图
 
-// NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 CF1333C
-
 // 异类双变量：固定某变量统计另一变量的 [0,n)
 // 同类双变量①：固定 i 统计 [0,n)
 // 同类双变量②：固定 i 统计 [0,i-1]
@@ -24,7 +22,10 @@ import (
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
-// 正难则反。 all => any, any => all
+// 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
+
+// NOTE: 正难则反。 all => any, any => all
+// NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 CF1333C
 
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 // NOTE: 环形可以用 (i+1)%n 来表示下一个相邻元素
@@ -40,15 +41,16 @@ func commonCollection() {
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9} // math.Pow10
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
-	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	dir4C := [...][2]int{ // 西东南北
+	type pair struct{ x, y int }
+	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	dir4C := [...]pair{ // 西东南北
 		'W': {-1, 0},
 		'E': {1, 0},
 		'S': {0, -1},
 		'N': {0, 1},
 	}
-	dir4R := [...][2]int{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
-	dir8 := [...][2]int{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	dir4R := [...]pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
+	dir8 := [...]pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 
 	min := func(a, b int) int {
@@ -921,7 +923,6 @@ func monotoneCollection() {
 }
 
 func loopCollection() {
-	dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -983,13 +984,15 @@ func loopCollection() {
 		 # #
 		  #
 	*/
+	type pair struct{ x, y int }
+	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	searchDir4 := func(maxI, maxJ, centerI, centerJ, dis int) {
-		for i, dir := range dir4 {
-			dir2 := dir4[(i+1)%4]
-			dx := dir2[0] - dir[0]
-			dy := dir2[1] - dir[1]
-			x := centerI + dir[0]*dis
-			y := centerJ + dir[1]*dis
+		for i, d := range dir4 {
+			d2 := dir4[(i+1)%4]
+			dx := d2.x - d.x
+			dy := d2.y - d.y
+			x := centerI + d.x*dis
+			y := centerJ + d.y*dis
 			for _i := 0; _i < dis; _i++ {
 				if x >= 0 && x < maxI && y >= 0 && y < maxJ {
 					// do
