@@ -16,6 +16,7 @@ func (h *hp) push(v int)           { heap.Push(h, v) }
 func (h *hp) pop() int             { return heap.Pop(h).(int) }
 func (h hp) empty() bool           { return len(h.IntSlice) == 0 }
 func (h hp) top() int              { return h.IntSlice[0] }
+func (h hp) size() int             { return len(h.IntSlice) }
 
 //
 
@@ -30,12 +31,14 @@ func (h *hp64) push(v int64)         { heap.Push(h, v) }
 func (h *hp64) pop() int64           { return heap.Pop(h).(int64) }
 func (h hp64) empty() bool           { return len(h) == 0 }
 func (h hp64) top() int64            { return h[0] }
+func (h hp64) size() int             { return len(h) }
 
 //
 
 func heapCollections() {
 	// 对顶堆求动态中位数（一个数组前 2k+1 项的中位数）
 	// https://www.luogu.com.cn/problem/P1168
+	// https://leetcode-cn.com/problems/find-median-from-data-stream/
 	dynamicMedians := func(a []int) []int {
 		n := len(a)
 		medians := make([]int, 1, (n+1)/2)
@@ -43,18 +46,18 @@ func heapCollections() {
 		small, big := &hp{}, &hp{}
 		big.push(a[0]) // 下面保证 big.size() == small.size() || big.size()-1 == small.size()
 		for i, v := range a[1:] {
-			if v < big.IntSlice[0] {
+			if v < big.top() {
 				small.push(-v)
 			} else {
 				big.push(v)
 			}
-			if len(big.IntSlice)-1 > len(small.IntSlice) {
+			if big.size()-1 > small.size() {
 				small.push(-big.pop())
-			} else if len(small.IntSlice) > len(big.IntSlice) {
+			} else if small.size() > big.size() {
 				big.push(-small.pop())
 			}
 			if i&1 == 1 {
-				medians = append(medians, big.IntSlice[0])
+				medians = append(medians, big.top())
 			}
 		}
 		return medians
