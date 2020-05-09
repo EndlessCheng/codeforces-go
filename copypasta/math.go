@@ -94,6 +94,23 @@ func numberTheoryCollection() {
 		return
 	}
 
+	// GCD 性质统计相关
+	// #{(x,y) | 1<=x<=y<=n, gcd(x,y)=1}   https://oeis.org/A002088
+	//     = ∑phi(i)
+	// #{(x,y) | 1<=x,y<=n, gcd(x,y)=1}   https://oeis.org/A018805
+	//     = 2*(∑phi(i))-1
+	//     = 2*A002088(n)-1
+
+	// GCD 求和相关
+	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)   https://oeis.org/A018804
+	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)   https://oeis.org/A057660
+	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806
+
+	// LCM 求和相关
+	// ∑lcm(n,i) = n*(1+∑{d|n}d*phi(d))/2 = n*(1+A057660(n))/2   https://oeis.org/A051193
+	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
+	// ∑∑lcm(i,j)   https://oeis.org/A064951
+
 	type pair struct{ x, y int64 }
 	frac := func(a, b int64) pair { g := gcd(a, b); return pair{a / g, b / g} }
 
@@ -525,6 +542,10 @@ func numberTheoryCollection() {
 			}
 		}
 	}
+
+	// phi 求和相关
+	// ∑phi(i)
+	// https://oeis.org/A002088
 
 	/* 同余
 	 */
