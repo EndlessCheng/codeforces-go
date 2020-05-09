@@ -231,7 +231,7 @@ func GenAtCoderProblemTemplate(problemURL string) error {
 		return fmt.Errorf("invlaid url %s", problemURL)
 	}
 
-	dirPath := fmt.Sprintf("misc/atcoder/%s/%s/", sp[0], sp[1])
+	dirPath := fmt.Sprintf("../../../misc/atcoder/%s/%s/", sp[0], sp[1])
 	if err := os.MkdirAll(dirPath, 0644); err != nil {
 		return err
 	}
@@ -268,9 +268,9 @@ func main() { run(os.Stdin, os.Stdout) }
 	for i, in := range ins {
 		out := outs[i]
 		examples += "\n\t\t{\n\t\t\t"
-		examples += "`" + in + "`, "
+		examples += "`" + in + "`,"
 		examples += "\n\t\t\t"
-		examples += "`" + out + "`, "
+		examples += "`" + out + "`,"
 		examples += "\n\t\t},"
 	}
 
@@ -287,7 +287,8 @@ func Test_run(t *testing.T) {
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
 }
-`, examples)
+// %s
+`, examples, problemURL)
 	testFilePath := dirPath + "main_test.go"
 	if err := ioutil.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err

@@ -16,7 +16,7 @@ func TestGenAtCoderContestTemplates(t *testing.T) {
 // https://atcoder.jp/contests/abc162/tasks/abc162_e
 // https://atcoder.jp/contests/abc162/submissions
 func TestGenAtCoderProblemTemplate(t *testing.T) {
-	const problemURL = "https://atcoder.jp/contests/abc162/tasks/abc162_a"
+	const problemURL = ""
 	if err := GenAtCoderProblemTemplate(problemURL); err != nil {
 		t.Fatal(err)
 	}
