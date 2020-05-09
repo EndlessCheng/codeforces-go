@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -119,9 +120,11 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 		if o.Type == html.TextNode {
 			if strings.Contains(o.Data, tokenInputJP) {
 				raw := o.Parent.NextSibling.FirstChild.Data
+				raw = strings.TrimSpace(raw)
 				sampleIns = append(sampleIns, raw)
 			} else if strings.Contains(o.Data, tokenOutputJP) {
 				raw := o.Parent.NextSibling.FirstChild.Data
+				raw = strings.TrimSpace(raw)
 				sampleOuts = append(sampleOuts, raw)
 			}
 			return
@@ -145,7 +148,7 @@ func createDir(taskID byte) error {
 	return os.MkdirAll(dirPath, os.ModePerm)
 }
 
-func GenAtCoderTests(username, password string) error {
+func GenAtCoderContestTemplates(username, password string) error {
 	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
 	tasksPrintURL := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks_print", contestID)
 	open.Start(submitURL)
@@ -206,6 +209,88 @@ func GenAtCoderTests(username, password string) error {
 
 			fmt.Println("[ok]", string(id), problemURL)
 		}(taskID)
+	}
+
+	return nil
+}
+
+func GenAtCoderProblemTemplate(problemURL string) error {
+	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
+	session := grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    ua,
+		UseCookieJar: true,
+	})
+
+	ins, outs, err := parseTask(session, problemURL)
+	if err != nil {
+		return err
+	}
+
+	sp := strings.Split(filepath.Base(problemURL), "_")
+	if len(sp) != 2 {
+		return fmt.Errorf("invlaid url %s", problemURL)
+	}
+
+	dirPath := fmt.Sprintf("misc/atcoder/%s/%s/", sp[0], sp[1])
+	if err := os.MkdirAll(dirPath, 0644); err != nil {
+		return err
+	}
+
+	mainFileContent := `package main
+
+import (
+	"bufio"
+	. "fmt"
+	"io"
+	"os"
+)
+
+// github.com/EndlessCheng/codeforces-go
+func run(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
+
+	var n int
+	Fscan(in, &n)
+
+}
+
+func main() { run(os.Stdin, os.Stdout) }
+`
+	mainFilePath := dirPath + "main.go"
+	defer open.Run(absPath(mainFilePath))
+	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
+		return err
+	}
+
+	examples := ""
+	for i, in := range ins {
+		out := outs[i]
+		examples += "\n\t\t{\n\t\t\t"
+		examples += "`" + in + "`, "
+		examples += "\n\t\t\t"
+		examples += "`" + out + "`, "
+		examples += "\n\t\t},"
+	}
+
+	testFileContent := fmt.Sprintf(`package main
+
+import (
+	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"testing"
+)
+
+func Test_run(t *testing.T) {
+	testCases := [][2]string{%s
+	}
+	testutil.AssertEqualStringCase(t, testCases, 0, run)
+	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
+}
+`, examples)
+	testFilePath := dirPath + "main_test.go"
+	if err := ioutil.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
+		return err
 	}
 
 	return nil
