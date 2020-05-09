@@ -226,7 +226,8 @@ func GenAtCoderProblemTemplate(problemURL string) error {
 		return err
 	}
 
-	sp := strings.Split(filepath.Base(problemURL), "_")
+	problemName := filepath.Base(problemURL)
+	sp := strings.Split(problemName, "_")
 	if len(sp) != 2 {
 		return fmt.Errorf("invlaid url %s", problemURL)
 	}
@@ -235,6 +236,9 @@ func GenAtCoderProblemTemplate(problemURL string) error {
 	if err := os.MkdirAll(dirPath, 0644); err != nil {
 		return err
 	}
+
+	statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=4026&f.Status=AC&f.Task=%s&orderBy=source_length", problemName)
+	defer open.Start(statusURL)
 
 	mainFileContent := `package main
 
@@ -259,7 +263,7 @@ func run(_r io.Reader, _w io.Writer) {
 func main() { run(os.Stdin, os.Stdout) }
 `
 	mainFilePath := dirPath + "main.go"
-	defer open.Run(absPath(mainFilePath))
+	defer open.Start(absPath(mainFilePath))
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
 	}
