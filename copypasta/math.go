@@ -550,6 +550,7 @@ func numberTheoryCollection() {
 	// phi 求和相关
 	// ∑phi(i)
 	// https://oeis.org/A002088
+	// todo https://oi-wiki.org/math/min-25/#_7
 
 	/* 同余
 	 */
@@ -865,11 +866,13 @@ func numberTheoryCollection() {
 	// 原根
 	// todo https://cp-algorithms.com/algebra/primitive-root.html
 
-	// 莫比乌斯函数
-	// todo
+	// 莫比乌斯函数 mu
+	// https://oeis.org/A008683
+	// todo https://oi-wiki.org/math/mobius/#_11
+	// 前缀和 https://oi-wiki.org/math/min-25/#_6
 
 	// 莫比乌斯反演（岛娘推荐！https://zhuanlan.zhihu.com/p/133761303）
-	// https://oi-wiki.org/math/mobius/
+	// todo https://oi-wiki.org/math/mobius/
 
 	// 反演魔术：反演原理及二项式反演
 	// http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
