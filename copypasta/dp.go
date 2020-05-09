@@ -99,6 +99,7 @@ func dpCollections() {
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
+	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	*/
 
 	// 最长公共子序列 (LCS)
