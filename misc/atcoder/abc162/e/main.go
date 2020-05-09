@@ -19,18 +19,18 @@ func run(_r io.Reader, _w io.Writer) {
 		}
 		return res
 	}
-	var n, k, s int
+	var n, k, ans int
 	Fscan(_r, &n, &k)
-	ans := make([]int, k+1)
+	cnts := make([]int, k+1)
 	for i := k; i > 0; i-- {
-		v := pow(k/i, n)
+		c := pow(k/i, n)
 		for j := 2 * i; j <= k; j += i {
-			v -= ans[j]
+			c -= cnts[j]
 		}
-		ans[i] = v % m
-		s += i * ans[i]
+		cnts[i] = c % m
+		ans += i * cnts[i]
 	}
-	Fprint(_w, (s%m+m)%m)
+	Fprint(_w, (ans%m+m)%m)
 }
 
 func main() { run(os.Stdin, os.Stdout) }
