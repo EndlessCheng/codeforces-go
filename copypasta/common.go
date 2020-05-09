@@ -15,6 +15,9 @@ import (
 // 1e3~1e4  n^2 n√n       RMQ DP 分块
 // 300~500  n^3           DP 二分图
 
+// General ideas https://codeforces.ml/blog/entry/48417
+// 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
+
 // 异类双变量：固定某变量统计另一变量的 [0,n)
 // 同类双变量①：固定 i 统计 [0,n)
 // 同类双变量②：固定 i 统计 [0,i-1]
@@ -22,17 +25,13 @@ import (
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
-// 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
-
 // NOTE: 正难则反。 all => any, any => all
 // NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 CF1333C
-
+// NOTE: 和式的另一视角：若每一项的值都在一个范围，不妨考虑另一个问题 - 值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 // NOTE: 环形可以用 (i+1)%n 来表示下一个相邻元素
+
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
-
-// General ideas https://codeforces.ml/blog/entry/48417
-
 func commonCollection() {
 	// HELPER
 	const mod int64 = 1e9 + 7 // 998244353

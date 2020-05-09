@@ -95,11 +95,15 @@ func numberTheoryCollection() {
 	}
 
 	// GCD 性质统计相关
-	// #{(x,y) | 1<=x<=y<=n, gcd(x,y)=1}   https://oeis.org/A002088
+	// #{(a,b) | 1<=a<=b<=n, gcd(a,b)=1}   https://oeis.org/A002088
 	//     = ∑phi(i)
-	// #{(x,y) | 1<=x,y<=n, gcd(x,y)=1}   https://oeis.org/A018805
+	// #{(a,b) | 1<=a,b<=n, gcd(a,b)=1}   https://oeis.org/A018805
 	//     = 2*(∑phi(i))-1
 	//     = 2*A002088(n)-1
+	// #{(a,b,c) | 1<=a,b,c<=n, gcd(a,b,c)=1}   https://oeis.org/A071778
+	//     = ∑mu(i)*floor(n/i)^3
+	// #{(a,b,c,d) | 1<=a,b,c,d<=n, gcd(a,b,c,d)=1}   https://oeis.org/A082540
+	//     = ∑mu(i)*floor(n/i)^4
 
 	// GCD 求和相关
 	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)   https://oeis.org/A018804
