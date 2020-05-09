@@ -238,7 +238,7 @@ func GenAtCoderProblemTemplate(problemURL string) error {
 	}
 
 	statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=4026&f.Status=AC&f.Task=%s&orderBy=source_length", problemName)
-	defer open.Start(statusURL)
+	open.Start(statusURL)
 
 	mainFileContent := `package main
 
@@ -263,7 +263,7 @@ func run(_r io.Reader, _w io.Writer) {
 func main() { run(os.Stdin, os.Stdout) }
 `
 	mainFilePath := dirPath + "main.go"
-	defer open.Start(absPath(mainFilePath))
+	open.Start(absPath(mainFilePath))
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
 	}
