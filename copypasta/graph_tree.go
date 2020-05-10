@@ -511,6 +511,7 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 // https://cp-algorithms.com/graph/hld.html
 // vals 为点权
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
+// todo 题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 func (*tree) hld(n, root int, g [][]int, vals []int64) {
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
