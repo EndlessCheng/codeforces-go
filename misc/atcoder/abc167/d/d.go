@@ -17,16 +17,17 @@ func run(_r io.Reader, _w io.Writer) {
 		Fscan(in, &next[i])
 	}
 
-	beforeCycle := []int{}
 	cycle := []int{}
 	vis := make([]int8, n+1)
 	for v := 1; vis[v] < 2; v = next[v] {
 		if vis[v] == 1 {
 			cycle = append(cycle, v)
-		} else {
-			beforeCycle = append(beforeCycle, v)
 		}
 		vis[v]++
+	}
+	beforeCycle := []int{}
+	for v := 1; vis[v] == 1; v = next[v] {
+		beforeCycle = append(beforeCycle, v)
 	}
 	if k < len(beforeCycle) {
 		Fprint(_w, beforeCycle[k])
