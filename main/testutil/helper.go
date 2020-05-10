@@ -2,8 +2,17 @@ package testutil
 
 import (
 	"io/ioutil"
+	"strings"
 	"time"
 )
+
+func removeExtraSpace(s string) string {
+	sp := strings.Split(s, "\n")
+	for i := range sp {
+		sp[i] = strings.TrimSpace(sp[i])
+	}
+	return strings.Join(sp, "\n")
+}
 
 const minLenToFile = 750
 

@@ -27,7 +27,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 		}
 
 		input := strings.TrimSpace(tc[0])
-		expectedOutput := strings.TrimSpace(tc[1])
+		expectedOutput := removeExtraSpace(strings.TrimSpace(tc[1]))
 
 		mockReader := strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
