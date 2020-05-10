@@ -534,6 +534,21 @@ func commonCollection() {
 
 	//
 
+	// 判环
+	// 1<=next[i]<=n
+	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
+		vis := make([]int8, n+1)
+		for v := st; vis[v] < 2; v = next[v] {
+			if vis[v] == 0 {
+				beforeCycle = append(beforeCycle, v)
+			} else {
+				cycle = append(cycle, v)
+			}
+			vis[v]++
+		}
+		return
+	}
+
 	// 算法导论 练习4.1-5
 	maxSubArraySum := func(a []int) int {
 		curSum, maxSum := a[0], a[0]
@@ -591,7 +606,7 @@ func commonCollection() {
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, splitUniqueAndSame, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
-		maxSubArraySum, maxSubArrayAbsSum, sweepLine,
+		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 	}
 }
 
