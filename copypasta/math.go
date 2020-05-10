@@ -934,6 +934,8 @@ func numberTheoryCollection() {
 
 /* 组合、杂项
 
+NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
+
 一些组合恒等式的解释 https://www.zhihu.com/question/26094736
 C(n, k) - C(n-1, k) = C(n-1, k-1)
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95

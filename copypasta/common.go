@@ -539,12 +539,13 @@ func commonCollection() {
 	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
 		vis := make([]int8, n+1)
 		for v := st; vis[v] < 2; v = next[v] {
-			if vis[v] == 0 {
-				beforeCycle = append(beforeCycle, v)
-			} else {
+			if vis[v] == 1 {
 				cycle = append(cycle, v)
 			}
 			vis[v]++
+		}
+		for v := 1; vis[v] == 1; v = next[v] {
+			beforeCycle = append(beforeCycle, v)
 		}
 		return
 	}
