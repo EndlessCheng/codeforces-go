@@ -143,84 +143,8 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 	return
 }
 
-func createDir(taskID byte) error {
-	dirPath := contestDir + string(taskID)
-	return os.MkdirAll(dirPath, os.ModePerm)
-}
-
-func GenAtCoderContestTemplates(username, password string) error {
-	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
-	tasksPrintURL := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks_print", contestID)
-	open.Start(submitURL)
-	open.Start(tasksPrintURL)
-
-	session, err := login(username, password)
-	if err != nil {
-		return err
-	}
-	fmt.Println("登录成功")
-
-	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
-	revelSession, _ := ioutil.ReadFile("revel_session.txt")
-	resp, err := session.Get(tasksHome, &grequests.RequestOptions{
-		Cookies: []*http.Cookie{
-			{
-				Name:  "REVEL_SESSION",
-				Value: string(revelSession),
-			},
-		},
-	})
-	if err != nil {
-		return err
-	}
-	if !resp.Ok {
-		return fmt.Errorf("未找到比赛或比赛尚未开始")
-	}
-
-	fmt.Println("开始解析样例输入输出")
-	wg := &sync.WaitGroup{}
-	defer wg.Wait()
-	for taskID := byte('a'); taskID <= 'f'; taskID++ {
-		wg.Add(1)
-		// we don't want spent too much time on waiting responses one by one, so we use goroutine!
-		go func(id byte) {
-			defer wg.Done()
-
-			problemURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, id)
-			ins, outs, err := parseTask(session, problemURL)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, string(id), err)
-				return
-			}
-
-			if err := createDir(id); err != nil {
-				panic(err)
-			}
-
-			for i, in := range ins {
-				out := outs[i]
-				if err := ioutil.WriteFile(fmt.Sprintf("%s%c/in%d.txt", contestDir, id, i+1), []byte(in), 0644); err != nil {
-					panic(err)
-				}
-				if err := ioutil.WriteFile(fmt.Sprintf("%s%c/ans%d.txt", contestDir, id, i+1), []byte(out), 0644); err != nil {
-					panic(err)
-				}
-			}
-
-			fmt.Println("[ok]", string(id), problemURL)
-		}(taskID)
-	}
-
-	return nil
-}
-
-func GenAtCoderProblemTemplate(problemURL string) error {
-	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
-	session := grequests.NewSession(&grequests.RequestOptions{
-		UserAgent:    ua,
-		UseCookieJar: true,
-	})
-
+func genTemplates(session *grequests.Session, problemURL string, isContest bool) error {
+	// 解析样例输入输出
 	ins, outs, err := parseTask(session, problemURL)
 	if err != nil {
 		return err
@@ -232,14 +156,20 @@ func GenAtCoderProblemTemplate(problemURL string) error {
 		return fmt.Errorf("invlaid url %s", problemURL)
 	}
 
-	dirPath := fmt.Sprintf("../../../misc/atcoder/%s/%s/", sp[0], sp[1])
+	contestID, taskID := sp[0], sp[1]
+
+	// 生成目录
+	dirPath := filepath.Join(contestDir, contestID, taskID) + "/"
 	if err := os.MkdirAll(dirPath, 0644); err != nil {
 		return err
 	}
 
-	statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=4026&f.Status=AC&f.Task=%s&orderBy=source_length", problemName)
-	open.Start(statusURL)
+	if !isContest {
+		statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=4026&f.Status=AC&f.Task=%s&orderBy=source_length", problemName)
+		open.Start(statusURL)
+	}
 
+	// 创建 x.go
 	mainFileContent := `package main
 
 import (
@@ -262,22 +192,24 @@ func run(_r io.Reader, _w io.Writer) {
 
 func main() { run(os.Stdin, os.Stdout) }
 `
-	mainFilePath := dirPath + "main.go"
-	open.Start(absPath(mainFilePath))
+	mainFilePath := dirPath + taskID + ".go"
+	if !isContest || taskID == "a" {
+		// 比赛时，在 IDE 中打开 A 题
+		open.Start(absPath(mainFilePath))
+	}
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
 	}
 
+	// 创建 x_test.go
 	examples := ""
 	for i, in := range ins {
 		out := outs[i]
-		examples += "\n\t\t{\n\t\t\t"
-		examples += "`" + in + "`,"
-		examples += "\n\t\t\t"
-		examples += "`" + out + "`,"
-		examples += "\n\t\t},"
+		examples += "\n\t\t{\n"
+		examples += "\t\t\t`" + in + "`,\n"
+		examples += "\t\t\t`" + out + "`,\n"
+		examples += "\t\t},"
 	}
-
 	testFileContent := fmt.Sprintf(`package main
 
 import (
@@ -286,17 +218,86 @@ import (
 )
 
 func Test_run(t *testing.T) {
+	t.Log("Current test is [%s]")
 	testCases := [][2]string{%s
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
 }
 // %s
-`, examples, problemURL)
-	testFilePath := dirPath + "main_test.go"
+`, taskID, examples, problemURL)
+	testFilePath := dirPath + taskID + "_test.go"
 	if err := ioutil.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func genAtCoderContestTemplates(contestID string, retryTimes int) error {
+	if retryTimes == 0 {
+		submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
+		tasksPrintURL := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks_print", contestID)
+		open.Start(submitURL)
+		open.Start(tasksPrintURL)
+	}
+
+	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
+	session := grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    ua,
+		UseCookieJar: true,
+	})
+
+	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
+	revelSession, err := ioutil.ReadFile("revel_session.txt")
+	if err != nil {
+		return err
+	}
+	resp, err := session.Get(tasksHome, &grequests.RequestOptions{
+		Cookies: []*http.Cookie{
+			{
+				Name:  "REVEL_SESSION",
+				Value: string(revelSession),
+			},
+		},
+	})
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return genAtCoderContestTemplates(contestID, retryTimes+1)
+	}
+	if !resp.Ok {
+		return fmt.Errorf("未找到比赛或比赛尚未开始")
+	}
+
+	fmt.Println("开始解析样例输入输出")
+	wg := &sync.WaitGroup{}
+	defer wg.Wait()
+	for taskID := byte('a'); taskID <= 'f'; taskID++ { // 默认六道题目
+		wg.Add(1)
+		// we don't want spent too much time on waiting responses one by one, so we use goroutine!
+		go func(id byte) {
+			defer wg.Done()
+			problemURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, id)
+			if err := genTemplates(session, problemURL, true); err != nil {
+				fmt.Fprintln(os.Stderr, string(id), err)
+				return
+			}
+			fmt.Println("[ok]", string(id), problemURL)
+		}(taskID)
+	}
+
+	return nil
+}
+
+func GenAtCoderContestTemplates(contestID string) error {
+	return genAtCoderContestTemplates(contestID, 0)
+}
+
+func GenAtCoderProblemTemplate(problemURL string) error {
+	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
+	session := grequests.NewSession(&grequests.RequestOptions{
+		UserAgent:    ua,
+		UseCookieJar: true,
+	})
+	return genTemplates(session, problemURL, false)
 }

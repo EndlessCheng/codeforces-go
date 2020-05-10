@@ -1,14 +1,12 @@
 package atcoder
 
-import (
-	"os"
-	"testing"
-)
+import "testing"
 
 func TestGenAtCoderContestTemplates(t *testing.T) {
-	username := os.Getenv("ATCODER_USERNAME")
-	password := os.Getenv("ATCODER_PASSWORD")
-	if err := GenAtCoderContestTemplates(username, password); err != nil {
+	const contestID = "abc167"
+	//username := os.Getenv("ATCODER_USERNAME")
+	//password := os.Getenv("ATCODER_PASSWORD")
+	if err := GenAtCoderContestTemplates(contestID); err != nil {
 		t.Fatal(err)
 	}
 }
