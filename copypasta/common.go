@@ -217,8 +217,8 @@ func commonCollection() {
 		sum2d[0] = make([]int, m+1)
 		for i, row := range mat {
 			sum2d[i+1] = make([]int, m+1)
-			for j, mij := range row {
-				sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + mij
+			for j, v := range row {
+				sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + v
 			}
 		}
 	}
@@ -256,8 +256,8 @@ func commonCollection() {
 		hash := 0
 		cnt := 0
 		for _, row := range mat {
-			for _, mij := range row {
-				hash |= mij << cnt
+			for _, v := range row {
+				hash |= v << cnt
 				cnt++
 			}
 		}
