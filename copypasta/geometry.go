@@ -67,7 +67,7 @@ func (a vec) dot(b vec) int64 { return a.x*b.x + a.y*b.y }
 func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
 
 func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
-func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || math.Abs(a.x-b.x) < eps && a.y+eps < b.y }
+func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
 func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.y }
 func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
 func (a vec) mulVec(b vec) vec      { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
