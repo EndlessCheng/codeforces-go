@@ -794,9 +794,10 @@ func numberTheoryCollection() {
 	//}
 
 	{
+		// 建议用于组合数数量和 n 差不多的情况
 		// O(n) 预处理，O(logn) 求组合数
 		const mod int64 = 1e9 + 7
-		const mx int = 1e5
+		const mx = 3e5
 		F := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			F[i] = F[i-1] * int64(i) % mod
@@ -814,14 +815,16 @@ func numberTheoryCollection() {
 		}
 		inv := func(a int64) int64 { return pow(a, mod-2) }
 		div := func(a, b int64) int64 { return a * inv(b) % mod }
-		comb := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
+		C := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
 
-		_ = comb
+		_ = C
 	}
 
 	{
+		// 建议用于组合数数量比 n 多的情况
 		// O(nlogn) 预处理，O(1) 求组合数
 		const mod int64 = 1e9 + 7
+		const mx = 3e5
 		pow := func(x, n int64) int64 {
 			x %= mod
 			res := int64(1)
@@ -834,25 +837,24 @@ func numberTheoryCollection() {
 			return res
 		}
 		inv := func(a int64) int64 { return pow(a, mod-2) }
-		const mx int = 1e5
 		F := [mx + 1]int64{1}
 		invF := [mx + 1]int64{inv(1)}
 		for i := 1; i <= mx; i++ {
 			F[i] = F[i-1] * int64(i) % mod
 			invF[i] = inv(F[i])
 		}
-		comb := func(n, k int64) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
+		C := func(n, k int64) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
 
-		// 卢卡斯定理
+		// EXTRA: 卢卡斯定理
 		var lucas func(n, k int64) int64
 		lucas = func(n, k int64) int64 {
 			if k == 0 {
 				return 1
 			}
-			return comb(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
+			return C(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
 		}
 
-		_ = comb
+		_ = C
 	}
 
 	// 扩展卢卡斯
