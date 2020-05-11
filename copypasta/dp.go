@@ -368,6 +368,7 @@ func dpCollections() {
 
 	/* 状压 DP
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
+	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	*/
@@ -441,6 +442,7 @@ func dpCollections() {
 	/* 插头 DP / 轮廓线动态规划
 	《训练指南》6.1
 	https://oi-wiki.org/dp/plug/
+	https://www.luogu.com.cn/blog/efforts-will-pay-off/du-liu-dong-gui-cha-tou-dp
 	*/
 
 	/* 数位 DP
@@ -521,12 +523,14 @@ func dpCollections() {
 	// https://codeforces.ml/blog/entry/63823
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
+	//      浅谈斜率优化 https://www.luogu.com.cn/blog/duyi/xie-lv-you-hua
 	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
 	// 题目 https://qiita.com/drken/items/9b311d553aa434bb26e4#%E4%BE%8B%E9%A1%8C-4-4-4k-anonymous-sequence-poj-no3709
 
 	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937
+	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 
 	/* 树形 DP
 	https://codeforces.ml/blog/entry/20935

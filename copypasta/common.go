@@ -839,6 +839,7 @@ func moAlgorithm() {
 	}
 
 	// TODO: 带修改的莫队
+	// https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 
 	// TODO: 树上莫队
 

@@ -8,13 +8,12 @@ import (
 )
 
 /*
-视频资料：
 Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
+图论的小技巧以及扩展 https://www.luogu.com.cn/blog/chengni5673/tu-lun-di-xiao-ji-qiao-yi-ji-kuo-zhan
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=graphs
 
 TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
-
 NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
 */
@@ -1438,6 +1437,7 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 }
 
 // 基环树
+// https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 func (*graph) treeWithCycle(n int, g [][]int) {
 	// EXTRA: 内向基环树找环
 	inDeg := make([]int, n) // 计算入度 ...
@@ -1474,6 +1474,9 @@ func (*graph) treeWithCycle(n int, g [][]int) {
 		}
 	}
 }
+
+// 圆方树
+// todo https://www.luogu.com.cn/blog/PinkRabbit/Introduction-to-Round-Square-Tree
 
 /* 网络流
 上下界网络流 https://oi-wiki.org/graph/flow/bound/
@@ -1578,6 +1581,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 
 // 预流推进 HLPP 算法（High Level Preflow Push）
 // todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
+//      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
 
 // 最小费用最大流

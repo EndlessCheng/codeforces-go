@@ -6,8 +6,11 @@ package copypasta
 // https://codeforces.ml/blog/entry/15890
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
 
-// todo zkw 线段树 https://codeforces.ml/blog/entry/18051
-// todo 李超线段树 https://zhuanlan.zhihu.com/p/64946571
+// todo zkw 线段树
+//      https://codeforces.ml/blog/entry/18051
+// todo 李超线段树
+//      https://zhuanlan.zhihu.com/p/64946571
+//      https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
@@ -240,6 +243,13 @@ func (t lazyST) queryAll() int64            { return t[1].sum }
 //
 
 // todo 权值线段树
+// 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
+
+//
+
+// EXTRA: 线段树合并
+// todo https://www.luogu.com.cn/blog/styx-ferryman/xian-duan-shu-ge-bing-zong-ru-men-dao-fang-qi
+// todo https://www.luogu.com.cn/problem/P4556
 
 //
 
@@ -353,6 +363,3 @@ func (t pst) queryKth(l, r, kth int) (allKth int) { return t._queryKth(t[l-1], t
 //sortedArr := make([]int, n)
 //copy(sortedArr, a)
 //sort.Ints(sortedArr)
-
-// EXTRA: 线段树合并
-// todo https://www.luogu.com.cn/problem/P4556

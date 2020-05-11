@@ -153,11 +153,20 @@ func sortCollections() {
 	}
 
 	// 0-1 分数规划
+	// 与 0-1 背包结合，即最优比率背包
+	// 与生成树结合，即最优比率生成树
+	// 与负环判定结合，即最优比率环
+	// 与网络流结合，即最大密度子图
+	// 与费用流结合，即最优比率流
+	// 与其他的各种带选择的算法乱套，即最优比率啥啥的
 	// https://oi-wiki.org/misc/frac-programming/
+	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 
 	// CDQ 分治
 	// todo https://oi-wiki.org/misc/cdq-divide/
 	//      https://www.bilibili.com/video/BV1mC4y1s7ic
+	//      [学习笔记]CDQ分治和整体二分 https://www.luogu.com.cn/blog/Owencodeisking/post-xue-xi-bi-ji-cdq-fen-zhi-hu-zheng-ti-er-fen
+	//      https://www.luogu.com.cn/blog/ljc20020730/cdq-fen-zhi-xue-xi-bi-ji
 
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/

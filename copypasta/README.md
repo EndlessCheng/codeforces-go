@@ -52,6 +52,14 @@
 
 [Pepcy's Templates for OI and ICPC](http://pepcy.cf/icpc-templates/)
 
+### 洛谷日报
+
+[2020 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/179788)
+
+[2019 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/92685)
+
+[2018 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/48491)
+
 ## 算法竞赛训练中较难的部分
 
 https://blog.csdn.net/skywalkert/article/details/48924861

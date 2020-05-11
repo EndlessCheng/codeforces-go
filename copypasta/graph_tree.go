@@ -174,6 +174,7 @@ func (*tree) findCentroid(n int, g [][]int) (ans int) {
 }
 
 // 点分治
+// todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
 // TODO: 需要重新整理
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
@@ -479,6 +480,7 @@ func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {
 // 操作为更新 v-w 路径上的点权或边权（初始为 0）
 // 点权时 diff[lca] -= val
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
+// https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
 func (*tree) differenceOnTree(n, root int, g [][]int) {
 	diff := make([]int, n)
 	update := func(v, w int, val int) {
@@ -509,6 +511,8 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
+// dsu on tree学习笔记 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
+// https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // vals 为点权
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
 // todo 题单 https://www.luogu.com.cn/training/1654
@@ -593,6 +597,11 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
+
+// 长链剖分
+// 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
+// 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
+// todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 
 // TODO: Morris Traversal
 // https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html

@@ -302,6 +302,11 @@ func searchCollection() {
 
 	// 舞蹈链
 	// TODO: https://oi-wiki.org/search/dlx/
+	//       https://leverimmy.blog.luogu.org/dlx-xiang-xi-jiang-jie
+	//       https://www.luogu.com.cn/blog/Parabola/qian-tan-shen-xian-suan-fa-dlx
+
+	// 对抗搜索与 Alpha-Beta 剪枝
+	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
 	_ = []interface{}{
 		valid, dfsGrids, findOneTargetAnyWhere, countTargetAnyWhere, reachable, bfsDis, findAllReachableTargets,
