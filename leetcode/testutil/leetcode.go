@@ -162,6 +162,11 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		return fmt.Errorf("f must be a function")
 	}
 
+	// 例如，-1 表示最后一个测试用例
+	if targetCaseNum < 0 {
+		targetCaseNum += len(rawExamples) + 1
+	}
+
 	allCasesOk := true
 	fValue := reflect.ValueOf(f)
 	for curCaseNum, example := range rawExamples {
@@ -238,6 +243,11 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 	}
 	allCasesOk := true
 	cFunc := reflect.ValueOf(constructor)
+
+	// 例如，-1 表示最后一个测试用例
+	if targetCaseNum < 0 {
+		targetCaseNum += len(rawExamples) + 1
+	}
 
 	for curCase, example := range rawExamples {
 		if targetCaseNum > 0 && curCase+1 != targetCaseNum {
