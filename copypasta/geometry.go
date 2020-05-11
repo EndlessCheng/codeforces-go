@@ -60,16 +60,22 @@ type vec struct{ x, y int64 }
 
 func (a vec) add(b vec) vec   { return vec{a.x + b.x, a.y + b.y} }
 func (a vec) sub(b vec) vec   { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) mul(k int64) vec { return vec{a.x * k, a.y * k} }
-func (a vec) len() float64    { return math.Hypot(float64(a.x), float64(a.y)) }
-func (a vec) len2() int64     { return a.x*a.x + a.y*a.y }
-func (a vec) dot(b vec) int64 { return a.x*b.x + a.y*b.y }
 func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
+func (a vec) len2() int64     { return a.x*a.x + a.y*a.y }
 
+func (a *vec) adds(b vec) { a.x += b.x; a.y += b.y }
+func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
+
+// 不常用
+func (a vec) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) dot(b vec) int64       { return a.x*b.x + a.y*b.y }
+func (a vec) mul(k int64) vec       { return vec{a.x * k, a.y * k} }
+func (a *vec) muls(k int64)         { a.x *= k; a.y *= k }
 func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
 func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
 func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.y }
 func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
+func (a *vecF) divs(k float64)      { a.x /= k; a.y /= k }
 func (a vec) mulVec(b vec) vec      { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
 func (a vec) angleTo(b vec) float64 { return math.Acos(float64(a.dot(b)) / (a.len() * b.len())) }
 func (a vec) polarAngle() float64   { return math.Atan2(float64(a.y), float64(a.x)) }
