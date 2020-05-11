@@ -936,8 +936,11 @@ func numberTheoryCollection() {
 
 NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
 
-一些组合恒等式的解释 https://www.zhihu.com/question/26094736
-C(n, k) - C(n-1, k) = C(n-1, k-1)
+一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
+       C(n, k-1) + C(n, k) = C(n+1, k)
+       C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
+       C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
+上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) https://atcoder.jp/contests/abc154/tasks/abc154_f
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 可重集排列
