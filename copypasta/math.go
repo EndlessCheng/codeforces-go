@@ -775,7 +775,7 @@ func numberTheoryCollection() {
 		//return big.Int{}.Binomial(n, k).Int64()
 	}
 
-	// 不推荐，因为逆元可以做到 O(nlogn) 预处理
+	// 不推荐，因为阶乘的逆元可以做到 O(nlogn) 或 O(n) 预处理
 	//{
 	//	// O(n^2) 预处理，O(1) 求组合数
 	//	const mod int64 = 1e9 + 7
@@ -793,17 +793,43 @@ func numberTheoryCollection() {
 	//	_ = comb
 	//}
 
+	// 不推荐，见后面的代码块
+	//{
+	//	// O(n) 预处理，O(logn) 求组合数
+	//	const mod int64 = 1e9 + 7
+	//	const mx = 3e5
+	//	F := [mx + 1]int64{1}
+	//	for i := 1; i <= mx; i++ {
+	//		F[i] = F[i-1] * int64(i) % mod
+	//	}
+	//	pow := func(x, n int64) int64 {
+	//		x %= mod
+	//		res := int64(1)
+	//		for ; n > 0; n >>= 1 {
+	//			if n&1 == 1 {
+	//				res = res * x % mod
+	//			}
+	//			x = x * x % mod
+	//		}
+	//		return res
+	//	}
+	//	inv := func(a int64) int64 { return pow(a, mod-2) }
+	//	div := func(a, b int64) int64 { return a * inv(b) % mod }
+	//	C := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
+	//
+	//	_ = C
+	//}
+
 	{
-		// 建议用于组合数数量和 n 差不多的情况
-		// O(n) 预处理，O(logn) 求组合数
+		// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 		const mod int64 = 1e9 + 7
-		const mx = 3e5
+		const mx int = 3e5
 		F := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			F[i] = F[i-1] * int64(i) % mod
 		}
 		pow := func(x, n int64) int64 {
-			x %= mod
+			//x %= mod
 			res := int64(1)
 			for ; n > 0; n >>= 1 {
 				if n&1 == 1 {
@@ -813,35 +839,9 @@ func numberTheoryCollection() {
 			}
 			return res
 		}
-		inv := func(a int64) int64 { return pow(a, mod-2) }
-		div := func(a, b int64) int64 { return a * inv(b) % mod }
-		C := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
-
-		_ = C
-	}
-
-	{
-		// 建议用于组合数数量比 n 多的情况
-		// O(nlogn) 预处理，O(1) 求组合数
-		const mod int64 = 1e9 + 7
-		const mx = 3e5
-		pow := func(x, n int64) int64 {
-			x %= mod
-			res := int64(1)
-			for ; n > 0; n >>= 1 {
-				if n&1 == 1 {
-					res = res * x % mod
-				}
-				x = x * x % mod
-			}
-			return res
-		}
-		inv := func(a int64) int64 { return pow(a, mod-2) }
-		F := [mx + 1]int64{1}
-		invF := [mx + 1]int64{inv(1)}
-		for i := 1; i <= mx; i++ {
-			F[i] = F[i-1] * int64(i) % mod
-			invF[i] = inv(F[i])
+		invF := [...]int64{mx: pow(F[mx], mod-2)}
+		for i := mx; i > 0; i-- {
+			invF[i-1] = invF[i] * int64(i) % mod
 		}
 		C := func(n, k int64) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
 
