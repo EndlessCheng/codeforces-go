@@ -7,6 +7,7 @@ import (
 	"unsafe"
 )
 
+// TIPS: 对于环形的字符串匹配，可以将文本串复制一倍后再匹配
 // TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.ml/contest/873/problem/F
 
 // 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
@@ -55,7 +56,7 @@ func stringCollection() {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
 	// 例题 https://codeforces.ml/problemset/problem/432/D
-	calcMaxMatchLengths := func(s string) []int {
+	calcMaxMatchLengths := func(s []byte) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)
 		cnt := 0
@@ -72,12 +73,11 @@ func stringCollection() {
 		return maxMatchLengths
 	}
 	// search pattern from text, return all start positions
-	kmpSearch := func(text, pattern string) (pos []int) {
+	kmpSearch := func(text, pattern []byte) (pos []int) {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
 		cnt := 0
-		for i := range text {
-			b := text[i]
+		for i, b := range text {
 			for cnt > 0 && pattern[cnt] != b {
 				cnt = maxMatchLengths[cnt-1]
 			}
@@ -92,7 +92,7 @@ func stringCollection() {
 		return
 	}
 	// EXTRA: 最小循环节
-	calcMinPeriod := func(s string) int {
+	calcMinPeriod := func(s []byte) int {
 		n := len(s)
 		maxMatchLengths := calcMaxMatchLengths(s)
 		if val := maxMatchLengths[n-1]; val > 0 && n%(n-val) == 0 {
@@ -602,11 +602,11 @@ func (t *trie) buildDFA() {
 // 返回 text 中所有模式串的所有位置（未找到时对应数组为空）
 // patterns 为模式串数组（无重复元素），为方便起见，数组从 1 开始
 // TODO 后缀链接优化：只算出现次数可以做到 O(len(text))
-func (t *trie) acSearch(text string, patterns []string) [][]int {
+func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 	pos := make([][]int, len(patterns))
 	o := t.root
-	for i := range text {
-		c := t.ord(text[i])
+	for i, b := range text {
+		c := t.ord(b)
 		for ; o != t.root && o.son[c] == nil; o = o.fail {
 		}
 		o = o.son[c]
