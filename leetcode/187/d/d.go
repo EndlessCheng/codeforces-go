@@ -22,7 +22,7 @@ func kthSmallest(mat [][]int, k int) (ans int) {
 	for _, row := range mat {
 		sum0 += row[0]
 	}
-	q := &hp{{sum: sum0}}
+	q := hp{{sum: sum0}}
 	vis := map[[40]int8]bool{{}: true}
 	for {
 		p := q.pop()

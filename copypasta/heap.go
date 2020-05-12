@@ -58,7 +58,7 @@ func heapCollections() {
 	dynamicMedians := func(a []int) []int {
 		n := len(a)
 		medians := make([]int, 0, (n+1)/2)
-		small, big := &hp{}, &hp{}
+		small, big := hp{}, hp{}
 		for i, v := range a {
 			if small.size() == big.size() {
 				big.push(-small.pushPop(-v))

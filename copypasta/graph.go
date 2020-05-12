@@ -743,7 +743,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		fa[i] = -1
 	}
 
-	h := &pairHeap{{0, st}}
+	h := pairHeap{{0, st}}
 	for !h.empty() {
 		p := h.pop()
 		d, v := p.dis, p.v
@@ -788,7 +788,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			dist2[i] = inf
 		}
 
-		h := &pairHeap{{0, st}}
+		h := pairHeap{{0, st}}
 		for !h.empty() {
 			p := h.pop()
 			d, v := p.dis, p.v
