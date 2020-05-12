@@ -86,7 +86,7 @@ func commonCollection() {
 	// 用堆求前 k 小
 	smallK := func(a []int, k int) []int {
 		k++
-		q := &hp{} // 最大堆
+		q := hp{} // 最大堆
 		for _, v := range a {
 			if q.Len() < k || v < q.top() {
 				q.push(v)
