@@ -715,6 +715,7 @@ func (h pairHeap) empty() bool           { return len(h) == 0 }
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P4779
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
+// 与线段树结合跑单源最短路 https://codeforces.ml/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int
@@ -742,8 +743,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		fa[i] = -1
 	}
 
-	h := &pairHeap{}
-	h.push(hPair{0, st})
+	h := &pairHeap{{0, st}}
 	for !h.empty() {
 		p := h.pop()
 		d, v := p.dis, p.v
@@ -788,8 +788,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			dist2[i] = inf
 		}
 
-		h := &pairHeap{}
-		h.push(hPair{0, st})
+		h := &pairHeap{{0, st}}
 		for !h.empty() {
 			p := h.pop()
 			d, v := p.dis, p.v

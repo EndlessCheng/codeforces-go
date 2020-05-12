@@ -15,19 +15,15 @@ func (h *hp) Push(v interface{})   { *h = append(*h, v.(pair)) }
 func (h *hp) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
 func (h *hp) push(v pair)          { heap.Push(h, v) }
 func (h *hp) pop() pair            { return heap.Pop(h).(pair) }
-func (h hp) empty() bool           { return len(h) == 0 }
 
 func kthSmallest(mat [][]int, k int) (ans int) {
 	m := int8(len(mat[0]))
-	q := &hp{}
-	vis := map[[40]int8]bool{}
-
 	sum0 := 0
 	for _, row := range mat {
 		sum0 += row[0]
 	}
-	q.push(pair{sum: sum0})
-	vis[[40]int8{}] = true
+	q := &hp{{sum: sum0}}
+	vis := map[[40]int8]bool{{}: true}
 	for {
 		p := q.pop()
 		sum, pos := p.sum, p.pos
