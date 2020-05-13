@@ -848,7 +848,6 @@ func moAlgorithm() {
 
 func monotoneCollection() {
 	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
-	// TODO: CF1237D
 
 	// 单调栈
 	// 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
