@@ -174,14 +174,32 @@ func dpCollections() {
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
+	// 变体 https://codeforces.ml/contest/1350/problem/B
+	lisSlow := func(a []int) (ans int) {
+		n := len(a)
+		dp := make([]int, n)
+		for i, v := range a {
+			dp[i] = 1
+			for j, w := range a[:i] {
+				if w < v {
+					dp[i] = max(dp[i], dp[j]+1)
+				}
+			}
+			ans = max(ans, dp[i])
+		}
+		return
+	}
+
+	// 最长上升子序列 (LIS)
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// https://oi-wiki.org/dp/basic/#_12
 	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 方案数 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	//       https://www.zhihu.com/question/34905638
-	lis := func(arr []int) int {
-		dp := make([]int, 0, len(arr))
-		for _, v := range arr {
+	lis := func(a []int) int {
+		n := len(a)
+		dp := make([]int, 0, n)
+		for _, v := range a {
 			if i := sort.SearchInts(dp, v); i < len(dp) {
 				dp[i] = v
 			} else {
@@ -610,7 +628,7 @@ func dpCollections() {
 
 	_ = []interface{}{
 		mapDP,
-		lcs, lcsPath, lis, distinctSubsequence,
+		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange,
 		tsp,
 		digitDP,
