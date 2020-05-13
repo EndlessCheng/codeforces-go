@@ -15,7 +15,7 @@ const (
 	contestPrefix         = contestPrefixWeekly
 
 	openWebPageZH = true
-	openWebPageEN = true
+	openWebPageEN = false
 )
 
 var (
