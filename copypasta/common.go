@@ -1003,6 +1003,25 @@ func monotoneCollection() {
 				l++
 			}
 		}
+
+		{
+			idQ := []int{}
+			for i, j := 0, 0; i < n; i++ {
+				for ; j < 3*n && (len(idQ) == 0 || 2*a[j] >= a[idQ[0]]); j++ {
+					for ; len(idQ) > 0 && a[idQ[len(idQ)-1]] <= a[j]; r-- {
+					}
+					idQ = append(idQ, j)
+				}
+				ans := j - i
+				if ans > 2*n {
+					ans = -1
+				}
+				_ans = append(_ans, ans)
+				if len(idQ) > 0 && idQ[0] == i {
+					idQ = idQ[1:]
+				}
+			}
+		}
 		return
 	}
 
