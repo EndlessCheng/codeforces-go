@@ -4,45 +4,41 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol1237D(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
+func CF1237D(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	var n int
 	Fscan(in, &n)
-	a := make([]int, 3*n)
-	for i := range a[:n] {
+	a := make([]int, n, 3*n)
+	for i := range a {
 		Fscan(in, &a[i])
 	}
-	copy(a[n:2*n], a[:n])
-	copy(a[2*n:], a[:n])
+	a = append(append(a, a...), a...)
 
-	type pair struct{ a, i int }
-	q := []pair{{a[0], 0}}
-	ql, j := 0, 1
+	q := make([]int, 3*n)
+	l, r, j := 0, 0, 0
 	for i := range a[:n] {
-		// 确保 q 是单调递减的，这样最值就是 q[ql].a
-		for ; j < 3*n && (ql == len(q) || 2*a[j] >= q[ql].a); j++ {
-			for ql < len(q) && q[len(q)-1].a < a[j] {
-				q = q[:len(q)-1]
+		for ; j < 3*n && (l == r || 2*a[j] >= a[q[l]]); j++ {
+			for ; l < r && a[q[r-1]] <= a[j]; r-- {
 			}
-			q = append(q, pair{a[j], j})
+			q[r] = j
+			r++
 		}
 		ans := j - i
 		if ans > 2*n {
 			ans = -1
 		}
 		Fprint(out, ans, " ")
-		if ql < len(q) && q[ql].i == i {
-			ql++
+		if l < r && q[l] == i {
+			l++
 		}
 	}
 }
 
-//func main() {
-//	Sol1237D(os.Stdin, os.Stdout)
-//}
+func main() { CF1237D(os.Stdin, os.Stdout) }
