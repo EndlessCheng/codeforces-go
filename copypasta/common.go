@@ -903,31 +903,31 @@ func monotoneCollection() {
 		// 举例：固定大小的区间最值（滑动窗口）
 		n := len(a)
 		mins := make([]int, n) // mins[i] 表示 min{a[i],...,a[i+fixedSize-1]}
-		q := make([]int, n)
-		l, r := 0, 0
+		idQ := make([]int, n)
+		l, r := 0, 0 // 左开右闭
 		for i, v := range a {
-			for ; l < r && a[q[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
+			for ; l < r && a[idQ[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
 			}
-			q[r] = i // pushR
+			idQ[r] = i // pushR
 			r++
 			if i+1 >= fixedSize {
-				mins[i+1-fixedSize] = a[q[l]]
-				if q[l] == i+1-fixedSize { // popL 的条件随题目的不同而变化
+				mins[i+1-fixedSize] = a[idQ[l]]
+				if idQ[l] == i+1-fixedSize { // popL 的条件随题目的不同而变化
 					l++
 				}
 			}
 		}
 		maxs := make([]int, n)
-		q = make([]int, n)
+		idQ = make([]int, n)
 		l, r = 0, 0
 		for i, v := range a {
-			for ; l < r && a[q[r-1]] <= v; r-- {
+			for ; l < r && a[idQ[r-1]] <= v; r-- {
 			}
-			q[r] = i
+			idQ[r] = i
 			r++
 			if i+1 >= fixedSize {
-				maxs[i+1-fixedSize] = a[q[l]]
-				if q[l] == i+1-fixedSize {
+				maxs[i+1-fixedSize] = a[idQ[l]]
+				if idQ[l] == i+1-fixedSize {
 					l++
 				}
 			}
@@ -935,7 +935,37 @@ func monotoneCollection() {
 		return mins, maxs
 	}
 
-	_ = []interface{}{monotoneStack, monotoneQueue}
+	// 单调队列应用 - 和至少为 k 的最短子数组长度
+	// https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
+	shortestSubarray := func(a []int, k int) int {
+		n := len(a)
+		const inf int = 1e9
+		ans := inf
+		sum := make([]int, n+1)
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+		}
+		idQ := make([]int, n+1)
+		l, r := 0, 0 // 左开右闭
+		for i, s := range sum {
+			for ; l < r && sum[idQ[r-1]] >= s; r-- { // 贪心：相等时也弹出
+			}
+			idQ[r] = i
+			r++
+			for ; l < r && s-sum[idQ[l]] >= k; l++ {
+				// 符合要求，更新答案
+				if i-idQ[l] < ans {
+					ans = i - idQ[l]
+				}
+			}
+		}
+		if ans == inf {
+			ans = -1
+		}
+		return ans
+	}
+
+	_ = []interface{}{monotoneStack, monotoneQueue, shortestSubarray}
 }
 
 func loopCollection() {
