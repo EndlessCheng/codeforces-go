@@ -894,25 +894,39 @@ func monotoneCollection() {
 		return posL, posR
 	}
 
-	// 单调队列
-	// https://oi-wiki.org/ds/monotonous-queue/
-	// 模板题（滑动窗口最值） https://www.luogu.com.cn/problem/P1886
-	// todo https://codeforces.ml/problemset/problem/1237/D
+	/* 单调队列
+	需要不断维护队列的单调性，即保证队列(指向)元素从大到小或从小到大
+	为简单起见，这里用数组+双下标模拟双端队列
+	为保证有足够空间，队列初始大小应和原数组相同
+	队列存储的是元素的下标
+	l == r 表示队列为空
+	l < r 表示队列指向元素为 a[idQ[l]], ..., a[idQ[r-1]]（注意：这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间）
+	一般的操作流程是「弹右-插右-更新答案-弹左」：
+	    「弹右-插右」在维护队列单调性的同时，向右扩大了考察的区间范围
+			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 为从大到小的单调队列
+			}
+			idQ[r] = i
+			r++
+	    「(检查是否满足条件)-更新答案-(弹左)」在更新答案之后，若队首在下一个循环中无用，则弹出
+			具体写法随问题不同而不同，参见下面的例子
+	https://oi-wiki.org/ds/monotonous-queue/
+	*/
+
+	// 单调队列模板题 - 固定区间大小的区间最值（滑动窗口）
+	// https://www.luogu.com.cn/problem/P1886
 	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
-		// 为简单起见，这里用数组+双下标模拟双端队列
-		// 举例：固定大小的区间最值（滑动窗口）
 		n := len(a)
 		mins := make([]int, n) // mins[i] 表示 min{a[i],...,a[i+fixedSize-1]}
 		idQ := make([]int, n)
-		l, r := 0, 0 // 左开右闭
+		l, r := 0, 0
 		for i, v := range a {
 			for ; l < r && a[idQ[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
 			}
-			idQ[r] = i // pushR
+			idQ[r] = i
 			r++
 			if i+1 >= fixedSize {
 				mins[i+1-fixedSize] = a[idQ[l]]
-				if idQ[l] == i+1-fixedSize { // popL 的条件随题目的不同而变化
+				if idQ[l] == i+1-fixedSize {
 					l++
 				}
 			}
@@ -946,14 +960,14 @@ func monotoneCollection() {
 			sum[i+1] = sum[i] + v
 		}
 		idQ := make([]int, n+1)
-		l, r := 0, 0 // 左开右闭
+		l, r := 0, 0
 		for i, s := range sum {
-			for ; l < r && sum[idQ[r-1]] >= s; r-- { // 贪心：相等时也弹出
+			for ; l < r && sum[idQ[r-1]] >= s; r-- { // 贪心：相等时也弹出右侧
 			}
 			idQ[r] = i
 			r++
-			for ; l < r && s-sum[idQ[l]] >= k; l++ {
-				// 符合要求，更新答案
+			for ; l < r && s-sum[idQ[l]] >= k; l++ { // 不断弹出左侧直到队列为空或不满足要求
+				// 满足要求，更新答案
 				if i-idQ[l] < ans {
 					ans = i - idQ[l]
 				}
@@ -965,7 +979,35 @@ func monotoneCollection() {
 		return ans
 	}
 
-	_ = []interface{}{monotoneStack, monotoneQueue, shortestSubarray}
+	// https://codeforces.ml/problemset/problem/1237/D
+	cf1237d := func(a []int, n int) (_ans []int) {
+		a = append(append(a, a...), a...)
+		idQ := make([]int, 3*n)
+		l, r := 0, 0
+		for i, j := 0, 0; i < n; i++ {
+			// 维护的是从大到小的单调队列，即，队首为区间最值
+			// 检查当前元素与队首(区间最值)的关系是否满足题目要求，满足则弹右插右
+			for ; j < 3*n && (l == r || 2*a[j] >= a[idQ[l]]); j++ {
+				for ; l < r && a[idQ[r-1]] <= a[j]; r-- {
+				}
+				idQ[r] = j
+				r++
+			}
+			// 更新答案
+			ans := j - i
+			if ans > 2*n {
+				ans = -1
+			}
+			_ans = append(_ans, ans)
+			// 准备：若下一个循环中的队首不在考察区间内，则弹左
+			if l < r && idQ[l] == i {
+				l++
+			}
+		}
+		return
+	}
+
+	_ = []interface{}{monotoneStack, monotoneQueue, shortestSubarray, cf1237d}
 }
 
 func loopCollection() {
