@@ -1392,6 +1392,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 
 // Gabow's algorithm
+// 常数比 Kosaraju 大
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GabowSCC.java.html
 
 // 2-Satisfiability (2-SAT)
