@@ -23,37 +23,37 @@
         return this.replace(new RegExp(escapeRegExp(oldStr), "g"), newStr);
     };
 
-    const color = "#f25e6b";
+    // 关键词高亮，参考 IntelliJ Light
+    const color = "#0033b3";
+    // 高亮的词，一部分类似 Python 的关键字，另一部分是一些术语、修饰词之类
+    // 注意前者要包含后者
     const words = [
-        // 注意前者要包含后者
-        " not ", "don't", "didn't", "doesn't", "can't", "n't", " no ",
-        " and all", " or all",
-        " and ", " or ",
-        " any", " all ", "every", "both ",
-        "exactly", "always",
-        "unique", "distinct",
-        "must", "only",
-        "same", "different",
-        "more",
+        " not ", "don't", "didn't", "doesn't", "can't", " no ", // "n't",
+        "if and only if", "and all", "or all",
+        "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
+        " any", " all ", "every", " both ",
+        "same", "different", "unique", "distinct",
+        "more", "must", "only", "exactly", "always",
 
         // "Note", "note",
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
-        " small ", " big ",
+        " small ", " big ", " large ",
         "at least", "at most",
         "non-zero", "positive", "integers", "an integer", "integer", "pairwise",
+
+        "Initially", "initially", "guaranteed",
+
+        "modulo",
         "permutations", "permutation",
         "lowercase", "uppercase",
         "lexicographically", "lexicographical",
         "expected value",
-
-        "Initially", "initially", "guaranteed",
-        "modulo",
-
         "operations", "Operations", "operation", "Operation",
 
         // 高亮一些术语
         "连续", "子数组", "子区间", "区间", "子序列", "子字符串", "子串",
-        "升序", "降序",
+        "升序", "降序", "字典序",
+        "最小", "最大",
         "返回",
     ];
 
