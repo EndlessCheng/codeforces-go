@@ -523,6 +523,7 @@ outer:
 // 参考《算法竞赛进阶指南》0x16
 // 模板题：数组中两个数的最大异或值 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
+// todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
 func (t *trie) maxXor(val int) (ans int) {
 	bits := [31]byte{}
 	for i := range bits {
