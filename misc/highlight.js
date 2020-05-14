@@ -39,7 +39,7 @@
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
         " small ", " big ", " large ",
         "at least", "at most",
-        "non-zero", "positive", "integers", "an integer", "integer", "pairwise",
+        "non-zero", "positive", "negative", "integers", "an integer", "integer", "pairwise",
 
         "Initially", "initially", "guaranteed",
 
