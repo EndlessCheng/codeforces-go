@@ -8,11 +8,11 @@ import (
 	"sort"
 )
 
-type hp struct{ sort.IntSlice }
+type hp1183 struct{ sort.IntSlice }
 
-func (h hp) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() (v interface{}) {
+func (h hp1183) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
+func (h *hp1183) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp1183) Pop() (v interface{}) {
 	n := len(h.IntSlice)
 	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
 	return
@@ -43,7 +43,7 @@ func CF1183G(_r io.Reader, _w io.Writer) {
 			s := t[0] + t[1]
 			cnts[s] = append(cnts[s], t[1])
 		}
-		h := &hp{}
+		h := &hp1183{}
 		sum, sumF1 := 0, 0
 		for i := n; i > 0; i-- {
 			for _, f1 := range cnts[i] {
