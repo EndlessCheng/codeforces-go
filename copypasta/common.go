@@ -602,12 +602,20 @@ func commonCollection() {
 	// 求一最大子矩形，矩形内部元素均相同
 	// todo https://oi-wiki.org/misc/largest-matrix/
 
+	// 从 st 出发，步长为 gap，不超过 upper 的最大值
+	// st <= upper, gap > 0
+	maxValueStepToUpper := func(st, upper, gap int) int {
+		upper -= st
+		return st + upper - upper%gap
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, splitUniqueAndSame, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
+		maxValueStepToUpper,
 	}
 }
 
