@@ -16,7 +16,7 @@
 
 [洛谷模板题（建议按难度筛选）](https://www.luogu.com.cn/problem/list?keyword=%E6%A8%A1%E6%9D%BF&page=1)
 
-### AtCoder 版《挑战》
+### AtCoder 版《挑战程序设计竞赛》
 
 [AtCoder 版！蟻本 (初級編)](https://qiita.com/drken/items/e77685614f3c6bf86f44)
 
