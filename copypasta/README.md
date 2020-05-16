@@ -26,12 +26,6 @@
 
 [AtCoder 版！蟻本 (発展的トピック編)](https://qiita.com/drken/items/0de3d205690d92307b7c)
 
-## 题解
-
-[https://space.bilibili.com/611212/video](https://space.bilibili.com/611212/video)
-
-[https://space.bilibili.com/4479419/video](https://space.bilibili.com/4479419/video)
-
 ## 其他链接
 
 [算法竞赛入门经典（第二版）](https://github.com/aoapc-book/aoapc-bac2nd)
@@ -63,6 +57,14 @@
 [2019 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/92685)
 
 [2018 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/48491)
+
+## 比赛题解 / 算法讲解
+
+[apiadu](https://space.bilibili.com/4479419/video)
+
+[bewildRan](https://space.bilibili.com/328104520/video)
+
+[Algo张伯威](https://space.bilibili.com/1956975/video)
 
 ## 算法竞赛训练中较难的部分
 
