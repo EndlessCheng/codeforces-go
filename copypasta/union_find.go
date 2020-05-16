@@ -198,7 +198,7 @@ func unionFindEdgeWeight() {
 	_ = []interface{}{initFa, merge, same, delta}
 }
 
-// 二维并查集（一般用于涉及到位运算的题目）
+// 并查集组（一般用于涉及到位运算的题目）
 // NOTE: 也可以写成 struct 的形式
 func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
