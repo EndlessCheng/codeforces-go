@@ -8,6 +8,7 @@ import (
 /*
 标准库 "math/bits" 包含了部分位运算需要的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
+注意：bits.Len(x) 相当于 int(log_2(x))-1
 
 运算符优先级 (https://golang.org/ref/spec#Operators)
 Precedence    Operator

@@ -272,6 +272,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 // 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
 // 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要这起点的出度比入度大一，终点的入度比出度大一
 // 逐步插入回路法（Hierholzer 算法） https://oi-wiki.org/graph/euler/
+// todo 混合图欧拉回路
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianPath.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianCycle.java.html
@@ -1014,6 +1015,10 @@ func (*graph) secondMST(n, m int) (sum int64) {
 	panic("TODO")
 }
 
+// 最小生成树计数 Kirchhoff's theorem
+
+// 最小树形图 - 朱刘算法
+
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
 func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
@@ -1400,6 +1405,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
 // 讲解+套题 https://codeforces.ml/blog/entry/16205
+// 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
 // 一般 ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // NOTE: 一些建边的转换：
@@ -1490,6 +1496,7 @@ EXTRA: Disjoint paths
        Node-disjoint paths: 拆点法
 EXTRA: 路径覆盖 Path cover
 todo Competitive Programmer’s Handbook Ch.20
+     线性规划与网络流24题-最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
 */
 
 // 最大流 Dinic's algorithm O(n2m)

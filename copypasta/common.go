@@ -644,6 +644,7 @@ func rmqCollection() {
 	}
 
 	// Sparse Table
+	// st[i][j] 对应的区间是 [i, i+1<<j)
 	// https://oi-wiki.org/ds/sparse-table/
 	// https://codeforces.ml/blog/entry/66643
 	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
