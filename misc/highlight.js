@@ -80,6 +80,7 @@
                 // So you decided to hold a contest on Codeforces.
                 // The maximum size of an array is $$$k$$$.
                 .replaceAll(". ", ".</p><p>") // 加个换行（英文）
+                .replaceAll(".\n", ".</p><p>") // 加个换行（英文）
                 .replaceAll("。", "。</p><p>") // 加个换行（中文）
                 .replaceAll("\\dots", "~.~.~.~") // 替换掉省略号
                 .replaceAll("\\ldots", "~.~.~.~"); // 替换掉省略号
