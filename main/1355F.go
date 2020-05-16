@@ -2,27 +2,23 @@ package main
 
 import (
 	. "fmt"
-	"math/big"
+	. "math/big"
 )
 
 // github.com/EndlessCheng/codeforces-go
 func CF1355F() {
-	const mx int = 1e3
-	primes := []int{}
-	isP := [mx]bool{}
-	for i := range isP {
-		isP[i] = true
-	}
-	isP[0], isP[1] = false, false
+	const mx = 1e3
+	ps := []int{}
+	v := [mx]bool{}
 	for i := 2; i < mx; i++ {
-		if isP[i] {
-			primes = append(primes, i)
+		if !v[i] {
+			ps = append(ps, i)
 			for j := 2 * i; j < mx; j += i {
-				isP[j] = false
+				v[j] = true
 			}
 		}
 	}
-	upper := big.NewInt(1e18)
+	upper := NewInt(1e18)
 
 	var t int
 	var g int64
@@ -31,13 +27,12 @@ func CF1355F() {
 		es := [mx]int{}
 		for i := 0; i < 22; i++ {
 			checks := []int64{}
-			q := big.NewInt(1)
+			q := NewInt(1)
 		o:
-			for _, p := range primes {
+			for _, p := range ps {
 				if e := es[p]; e >= 0 {
-					for ; e >= 0; e-- {
-						p := big.NewInt(int64(p))
-						if new(big.Int).Mul(q, p).Cmp(upper) > 0 {
+					for p := NewInt(int64(p)); e >= 0; e-- {
+						if new(Int).Mul(q, p).Cmp(upper) > 0 {
 							break o
 						}
 						q.Mul(q, p)
