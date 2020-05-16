@@ -62,13 +62,20 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 
 // 生成单道题目的模板（Codeforces）
 func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
-	contestID, problemID := parseCodeforcesProblemURL(problemURL)
+	contestID, problemID, isGYM := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {
-		return err
+		return fmt.Errorf("invalid URL: %v", err)
 	}
-	statusURL := fmt.Sprintf("https://codeforces.ml/problemset/status/%s/problem/%s", contestID, problemID)
+
 	if openWebsite {
 		open.Start(problemURL)
+
+		var statusURL string
+		if isGYM {
+			statusURL = fmt.Sprintf("https://codeforces.ml/gym/%s/status/%s", contestID, problemID)
+		} else {
+			statusURL = fmt.Sprintf("https://codeforces.ml/problemset/status/%s/problem/%s", contestID, problemID)
+		}
 		open.Start(statusURL)
 	}
 
