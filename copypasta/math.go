@@ -552,6 +552,13 @@ func numberTheoryCollection() {
 	// https://oeis.org/A002088
 	// todo https://oi-wiki.org/math/min-25/#_7
 
+	// Number of numbers "unrelated to n": m < n such that m is neither a divisor of n nor relatively prime to n
+	// a(n) = n + 1 - d(n) - phi(n); where d(n) is the number of divisors of n
+	// http://oeis.org/A045763
+
+	// Unitary totient (or unitary phi) function uphi(n)
+	// http://oeis.org/A047994
+
 	/* 同余
 	 */
 
