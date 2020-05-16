@@ -182,7 +182,7 @@ func numberTheoryCollection() {
 	//         455052511, 4118054813, 37607912018, 346065536839, 3204941750802, 29844570422669, 279238341033925, 2623557157654233, 24739954287740860, 234057667276344607,
 	sieve := func() {
 		const mx int = 1e6
-		primes := make([]int, 0, mx/10) // need check
+		primes := []int{}
 		isP := [mx + 1]bool{}
 		for i := range isP {
 			isP[i] = true
@@ -193,6 +193,21 @@ func numberTheoryCollection() {
 				primes = append(primes, i)
 				for j := 2 * i; j <= mx; j += i {
 					isP[j] = false
+				}
+			}
+		}
+
+		// 另一种写法，用不到 isP 的情况
+		{
+			const mx int = 1e6
+			primes := []int{}
+			vis := [mx + 1]bool{}
+			for i := 2; i <= mx; i++ {
+				if !vis[i] {
+					primes = append(primes, i)
+					for j := 2 * i; j <= mx; j += i {
+						vis[j] = true
+					}
 				}
 			}
 		}
