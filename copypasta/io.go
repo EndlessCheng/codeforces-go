@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
 )
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
@@ -28,7 +29,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 	in.Split(bufio.ScanWords)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	read := func() (x int) {
+	r := func() (x int) {
 		in.Scan()
 		for _, b := range in.Bytes() {
 			x = x*10 + int(b&15)
@@ -36,7 +37,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		return
 	}
 	// 若有负数使用下面这个
-	read = func() (x int) {
+	r = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
 		if data[0] == '-' {
@@ -50,12 +51,34 @@ func fastIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
+	rf := func() float64 {
+		in.Scan()
+		s := in.Bytes()
+		neg := false
+		if s[0] == '-' {
+			neg = true
+			s = s[1:]
+		}
+		dotPos := len(s) - 1
+		f := int64(0)
+		for i, b := range s {
+			if b == '.' {
+				dotPos = i
+			} else {
+				f = f*10 + int64(b&15)
+			}
+		}
+		if neg {
+			f = -f
+		}
+		return float64(f) / math.Pow10(len(s)-1-dotPos)
+	}
 
 	// NOTE: bufio.Scanner 在读长字符串的情况下可能会有奇怪的 bug，所以还是用下面的 fasterIO 吧！（CF827A WA5）
 	in.Buffer(nil, 1e9)
-	readS := func() []byte { in.Scan(); return in.Bytes() }
+	rs := func() []byte { in.Scan(); return in.Bytes() }
 
-	_ = []interface{}{read, readS}
+	_ = []interface{}{r, rf, rs}
 }
 
 // 超快读
