@@ -313,32 +313,78 @@ func commonCollection() {
 		}
 	}
 
-	// 分理出单独的和重复的，可以用来求交集、并集、对称差等
+	// 求 A-B, B-A, A∩B                         差集、交集
+	// union: A∪B = A-B+A∩B                    并集
+	// symmetric_difference: A▲B = A-B ∪ B-A   对称差
 	// a b 必须是有序的（可以为空）
 	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
-	splitUniqueAndSame := func(a, b []int) (uniqueA, uniqueB, same []int) {
+	splitDifferenceAndIntersection := func(a, b []int) (differenceA, differenceB, intersection []int) {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
 		for {
 			if i == n {
-				uniqueB = append(uniqueB, b[j:]...)
+				differenceB = append(differenceB, b[j:]...)
 				return
 			}
 			if j == m {
-				uniqueA = append(uniqueA, a[i:]...)
+				differenceA = append(differenceA, a[i:]...)
 				return
 			}
 			x, y := a[i], b[j]
 			if x < y { // 改成 > 为降序
-				uniqueA = append(uniqueA, x)
+				differenceA = append(differenceA, x)
 				i++
 			} else if x > y { // 改成 < 为降序
-				uniqueB = append(uniqueB, y)
+				differenceB = append(differenceB, y)
 				j++
 			} else {
-				same = append(same, x)
+				intersection = append(intersection, x)
 				i++
 				j++
+			}
+		}
+	}
+
+	// a 是否为 b 的子集（相当于 differenceA 为空）
+	// a b 需要是有序的
+	isSubset := func(a, b []int) bool {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		for {
+			if i == n {
+				return true
+			}
+			if j == m {
+				return false
+			}
+			x, y := a[i], b[j]
+			if x < y { // 改成 > 为降序
+				return false
+			} else if x > y { // 改成 < 为降序
+				j++
+			} else {
+				i++
+				j++
+			}
+		}
+	}
+
+	// 是否为不相交集合（相当于 intersection 为空）
+	// a b 需要是有序的
+	isDisjoint := func(a, b []int) bool {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		for {
+			if i == n || j == m {
+				return true
+			}
+			x, y := a[i], b[j]
+			if x < y { // 改成 > 为降序
+				i++
+			} else if x > y { // 改成 < 为降序
+				j++
+			} else {
+				return false
 			}
 		}
 	}
@@ -613,7 +659,9 @@ func commonCollection() {
 		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals, merge, splitUniqueAndSame, unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
+		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
+		unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 		maxValueStepToUpper,
 	}
