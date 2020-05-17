@@ -3,6 +3,25 @@ package copypasta
 import "sort"
 
 func searchCollection() {
+	// 生成全排列（不保证字典序）
+	// 会修改原数组
+	// Permute the values at index i to len(arr)-1.
+	// https://codeforces.ml/problemset/problem/910/C
+	var _permute func([]int, int, func())
+	_permute = func(a []int, i int, do func()) {
+		if i == len(a) {
+			do()
+			return
+		}
+		_permute(a, i+1, do)
+		for j := i + 1; j < len(a); j++ {
+			a[i], a[j] = a[j], a[i]
+			_permute(a, i+1, do)
+			a[i], a[j] = a[j], a[i]
+		}
+	}
+	permuteAll := func(a []int, do func()) { _permute(a, 0, do) }
+
 	type _p struct{ x, y int }
 	dir4 := [...]_p{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 
@@ -274,25 +293,6 @@ func searchCollection() {
 			}
 		}
 	}
-
-	// 生成全排列（非字典序）
-	// 会修改 arr
-	// Permute the values at index i to len(arr)-1.
-	// https://codeforces.ml/problemset/problem/910/C
-	var _permute func([]int, int, func())
-	_permute = func(arr []int, i int, do func()) {
-		if i == len(arr) {
-			do()
-			return
-		}
-		_permute(arr, i+1, do)
-		for j := i + 1; j < len(arr); j++ {
-			arr[i], arr[j] = arr[j], arr[i]
-			_permute(arr, i+1, do)
-			arr[i], arr[j] = arr[j], arr[i]
-		}
-	}
-	permuteAll := func(arr []int, do func()) { _permute(arr, 0, do) }
 
 	// 剪枝:
 	// todo https://blog.csdn.net/weixin_43914593/article/details/104613920
