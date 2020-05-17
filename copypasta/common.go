@@ -290,7 +290,7 @@ func commonCollection() {
 		return true
 	}
 
-	// 合并有序数组
+	// 合并有序数组，保留重复元素
 	// a b 必须是有序的（可以为空）
 	merge := func(a, b []int) []int {
 		i, n := 0, len(a)
@@ -313,9 +313,9 @@ func commonCollection() {
 		}
 	}
 
-	// 求 A-B, B-A, A∩B                         差集、交集
-	// union: A∪B = A-B+A∩B                    并集
-	// symmetric_difference: A▲B = A-B ∪ B-A   对称差
+	// 求差集 A-B, B-A 和交集 A∩B
+	// EXTRA: 求并集 union: A∪B = A-B+A∩B = merge(differenceA, intersection) 或 merge(differenceB, intersection)
+	// EXTRA: 求对称差 symmetric_difference: A▲B = A-B ∪ B-A = merge(differenceA, differenceB)
 	// a b 必须是有序的（可以为空）
 	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
 	splitDifferenceAndIntersection := func(a, b []int) (differenceA, differenceB, intersection []int) {
