@@ -26,16 +26,12 @@ func peopleIndexes(mat [][]string) (ans []int) {
 	}
 
 	sid := map[string]int{}
-	for _, row := range mat {
+	ids := make([][]int, len(mat))
+	for i, row := range mat {
 		for _, s := range row {
 			if sid[s] == 0 {
 				sid[s] = len(sid) + 1
 			}
-		}
-	}
-	ids := make([][]int, len(mat))
-	for i := range ids {
-		for _, s := range mat[i] {
 			ids[i] = append(ids[i], sid[s])
 		}
 		sort.Ints(ids[i])
