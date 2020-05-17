@@ -4,12 +4,13 @@ import "math"
 
 type vecF struct{ x, y float64 }
 
-func (a vecF) sub(b vecF) vecF { return vecF{a.x - b.x, a.y - b.y} }
-func (a vecF) len2() float64   { return a.x*a.x + a.y*a.y }
+func (a vecF) sub(b vecF) vecF     { return vecF{a.x - b.x, a.y - b.y} }
+func (a vecF) len2() float64       { return a.x*a.x + a.y*a.y }
+func (a vecF) dis2(b vecF) float64 { return a.sub(b).len2() }
 
 func getCircleCenter(a, b vecF, r float64) vecF {
 	mx, my := (a.x+b.x)/2, (a.y+b.y)/2
-	d := math.Sqrt(r*r - b.sub(a).len2()/4)
+	d := math.Sqrt(r*r - a.dis2(b)/4)
 	angle := math.Atan2(b.y-a.y, b.x-a.x)
 	return vecF{mx + d*math.Sin(angle), my - d*math.Cos(angle)}
 }
@@ -27,14 +28,14 @@ func numPoints(points [][]int, R int) (ans int) {
 			if j == i {
 				continue
 			}
-			l := b.sub(a).len2()
+			l := a.dis2(b)
 			if l > 4*r*r+eps {
 				continue
 			}
 			o := getCircleCenter(a, b, r)
 			cnt := 0
 			for _, p := range ps {
-				if o.sub(p).len2() < r*r+eps {
+				if o.dis2(p) < r*r+eps {
 					cnt++
 				}
 			}

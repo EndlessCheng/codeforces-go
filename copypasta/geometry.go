@@ -59,13 +59,14 @@ const eps = 1e-8
 /* 二维向量（点）*/
 type vec struct{ x, y int64 }
 
-func (a vec) add(b vec) vec   { return vec{a.x + b.x, a.y + b.y} }
-func (a vec) sub(b vec) vec   { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) dot(b vec) int64 { return a.x*b.x + a.y*b.y }
-func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
-func (a vec) len2() int64     { return a.x*a.x + a.y*a.y }
-func (a vec) len() float64    { return math.Hypot(float64(a.x), float64(a.y)) }
-func (a vec) vecF() vecF      { return vecF{float64(a.x), float64(a.y)} }
+func (a vec) add(b vec) vec    { return vec{a.x + b.x, a.y + b.y} }
+func (a vec) sub(b vec) vec    { return vec{a.x - b.x, a.y - b.y} }
+func (a vec) dot(b vec) int64  { return a.x*b.x + a.y*b.y }
+func (a vec) det(b vec) int64  { return a.x*b.y - a.y*b.x }
+func (a vec) len2() int64      { return a.x*a.x + a.y*a.y }
+func (a vec) dis2(b vec) int64 { return a.sub(b).len2() }
+func (a vec) len() float64     { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) vecF() vecF       { return vecF{float64(a.x), float64(a.y)} }
 
 func (a *vec) adds(b vec) { a.x += b.x; a.y += b.y }
 func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
