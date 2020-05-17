@@ -39,6 +39,7 @@ det (determinant，行列式，叉积的模，有向面积):
 
 1° = (π/180)rad
 1rad = (180/π)°
+常见的是，弧度为 2*math.Pi*(角度占整个360°的多少)
 
 todo 二维偏序 https://ac.nowcoder.com/discuss/394080 F 题
 
@@ -59,14 +60,15 @@ const eps = 1e-8
 /* 二维向量（点）*/
 type vec struct{ x, y int64 }
 
-func (a vec) add(b vec) vec    { return vec{a.x + b.x, a.y + b.y} }
-func (a vec) sub(b vec) vec    { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) dot(b vec) int64  { return a.x*b.x + a.y*b.y }
-func (a vec) det(b vec) int64  { return a.x*b.y - a.y*b.x }
-func (a vec) len2() int64      { return a.x*a.x + a.y*a.y }
-func (a vec) dis2(b vec) int64 { return a.sub(b).len2() }
-func (a vec) len() float64     { return math.Hypot(float64(a.x), float64(a.y)) }
-func (a vec) vecF() vecF       { return vecF{float64(a.x), float64(a.y)} }
+func (a vec) add(b vec) vec     { return vec{a.x + b.x, a.y + b.y} }
+func (a vec) sub(b vec) vec     { return vec{a.x - b.x, a.y - b.y} }
+func (a vec) dot(b vec) int64   { return a.x*b.x + a.y*b.y }
+func (a vec) det(b vec) int64   { return a.x*b.y - a.y*b.x }
+func (a vec) len2() int64       { return a.x*a.x + a.y*a.y }
+func (a vec) dis2(b vec) int64  { return a.sub(b).len2() }
+func (a vec) len() float64      { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) dis(b vec) float64 { return a.sub(b).len() }
+func (a vec) vecF() vecF        { return vecF{float64(a.x), float64(a.y)} }
 
 func (a *vec) adds(b vec) { a.x += b.x; a.y += b.y }
 func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
@@ -113,12 +115,33 @@ func (a vecF) rotate(rad float64) vecF {
 // a 的单位法线，a 不能是零向量
 func (a vecF) normal() vecF { l := a.len(); return vecF{-a.y / l, a.x / l} }
 
+// 余弦定理，以及两边及夹角，计算对边长度
+func cosineRule(a, b, angle float64) float64 {
+	return math.Sqrt(a*a*b*b - 2*a*b*math.Cos(angle))
+}
+func cosineRuleVec(va, vb vecF, angle float64) float64 {
+	return math.Sqrt(va.len2() + vb.len2() - 2*va.len()*vb.len()*math.Cos(angle))
+}
+
 /* 二维直线（线段）*/
 type line struct{ p1, p2 vec }
 
 // 方向向量 directional vector
 func (a line) vec() vec              { return a.p2.sub(a.p1) }
 func (a lineF) point(t float64) vecF { return a.p1.add(a.vec().mul(t)) }
+
+// 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
+func (a vec) onSeg(l line) bool {
+	p1, p2 := l.p1.sub(a), l.p2.sub(a)
+	return p1.det(p2) == 0 && p1.dot(p2) <= 0 // 含端点
+	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
+}
+
+// 点 a 是否在射线 o-d 上
+func (a vec) onRay(o, d vec) bool {
+	a = a.sub(o)
+	return d.det(a) == 0 && d.dot(a) >= 0 // 含端点
+}
 
 // 直线 a b 交点
 func (a lineF) intersection(b lineF) vecF {
@@ -184,19 +207,6 @@ func (a lineF) segProperIntersection(b lineF) bool {
 	d1, d2 := va.det(b.p1.sub(a.p1)), va.det(b.p2.sub(a.p1))
 	d3, d4 := vb.det(a.p1.sub(b.p1)), vb.det(a.p2.sub(b.p1))
 	return sign(d1)*sign(d2) < 0 && sign(d3)*sign(d4) < 0
-}
-
-// 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
-func (a vec) onSeg(l line) bool {
-	p1, p2 := l.p1.sub(a), l.p2.sub(a)
-	return p1.det(p2) == 0 && p1.dot(p2) <= 0 // 含端点
-	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
-}
-
-// 点 a 是否在射线 o-d 上
-func (a vec) onRay(o, d vec) bool {
-	a = a.sub(o)
-	return d.det(a) == 0 && d.dot(a) >= 0 // 含端点
 }
 
 // 过点 a 的垂直于 l 的直线
