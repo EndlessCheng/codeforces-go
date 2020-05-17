@@ -17,18 +17,5 @@ func main() {
 		return bytes
 	}
 
-	var root *TreeNode
-
-	var f func(*TreeNode)
-	f = func(o *TreeNode) {
-		if o == nil {
-			return
-		}
-
-		f(o.Left)
-		f(o.Right)
-	}
-	f(root)
-
 	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
