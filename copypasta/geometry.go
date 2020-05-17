@@ -73,6 +73,7 @@ func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.
 func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
 func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
 func (a vec) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) onSameLine(b vec) bool { return a.det(b) == 0 }
 func (a vec) mul(k int64) vec       { return vec{a.x * k, a.y * k} }
 func (a *vec) muls(k int64)         { a.x *= k; a.y *= k }
 func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
