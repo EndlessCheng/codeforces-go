@@ -64,6 +64,8 @@ func (a vec) sub(b vec) vec   { return vec{a.x - b.x, a.y - b.y} }
 func (a vec) dot(b vec) int64 { return a.x*b.x + a.y*b.y }
 func (a vec) det(b vec) int64 { return a.x*b.y - a.y*b.x }
 func (a vec) len2() int64     { return a.x*a.x + a.y*a.y }
+func (a vec) len() float64    { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) vecF() vecF      { return vecF{float64(a.x), float64(a.y)} }
 
 func (a *vec) adds(b vec) { a.x += b.x; a.y += b.y }
 func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
@@ -72,7 +74,6 @@ func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
 func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.y }
 func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
 func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
-func (a vec) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
 func (a vec) onSameLine(b vec) bool { return a.det(b) == 0 }
 func (a vec) mul(k int64) vec       { return vec{a.x * k, a.y * k} }
 func (a *vec) muls(k int64)         { a.x *= k; a.y *= k }
@@ -212,6 +213,18 @@ func (o circle) point(rad float64) vecF {
 }
 func (o circleF) point(rad float64) vecF {
 	return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)}
+}
+
+// 给定半径和一条有向的弦，求该弦右侧的圆心（即 ao 在 ab 右侧）
+func getCircleCenter(a, b vec, r int64) vecF {
+	disAB2 := b.sub(a).len2()
+	//if disAB2 > 4*r*r {
+	//	continue
+	//}
+	midX, midY := float64(a.x+b.x)/2, float64(a.y+b.y)/2
+	d := math.Sqrt(float64(r*r) - float64(disAB2/4))
+	angle := math.Atan2(float64(b.y-a.y), float64(b.x-a.x))
+	return vecF{midX + d*math.Sin(angle), midY - d*math.Cos(angle)}
 }
 
 // 直线与圆的交点
