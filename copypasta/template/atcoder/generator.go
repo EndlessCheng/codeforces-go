@@ -111,18 +111,18 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 		tokenInputJP  = "入力例"
 		tokenOutputJP = "出力例"
 
-		tokenInputEN  = "Sample Input"
-		tokenOutputEN = "Sample Output"
+		tokenInputEN  = "Sample Input "
+		tokenOutputEN = "Sample Output "
 	)
 
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		if o.Type == html.TextNode {
-			if strings.Contains(o.Data, tokenInputJP) {
+			if strings.Contains(o.Data, tokenInputEN) {
 				raw := o.Parent.NextSibling.FirstChild.Data
 				raw = strings.TrimSpace(raw)
 				sampleIns = append(sampleIns, raw)
-			} else if strings.Contains(o.Data, tokenOutputJP) {
+			} else if strings.Contains(o.Data, tokenOutputEN) {
 				if o.Parent.NextSibling.FirstChild == nil {
 					// 样例输出为空，例如 https://atcoder.jp/contests/abc150/tasks/abc150_f
 					sampleOuts = append(sampleOuts, "")
