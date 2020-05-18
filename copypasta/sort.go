@@ -111,6 +111,7 @@ func sortCollections() {
 	}
 
 	// 实数三分
+	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理
 	// https://codeforces.ml/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
