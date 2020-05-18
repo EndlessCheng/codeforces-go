@@ -96,6 +96,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	var f func(int)
 	f = func(v int) {
 		vis[v] = true
+		// ...
 		for _, w := range g[v] {
 			if !vis[w] {
 				f(w)
@@ -145,6 +146,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
+		// ...
 		for _, w := range g[v] {
 			if !vis[w] {
 				vis[w] = true
