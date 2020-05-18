@@ -48,6 +48,12 @@ func commonCollection() {
 		'S': {0, -1},
 		'N': {0, 1},
 	}
+	dir4c := [...]pair{ // 左右下上
+		'L': {-1, 0},
+		'R': {1, 0},
+		'D': {0, -1},
+		'U': {0, 1},
+	}
 	dir4R := [...]pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 	dir8 := [...]pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
@@ -656,7 +662,7 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow2, pow10, dir4, dir4C, dir4R, dir8, orderP3, factorial,
+		pow2, pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
