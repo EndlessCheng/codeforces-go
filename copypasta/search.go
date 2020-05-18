@@ -231,69 +231,70 @@ func searchCollection() {
 		return f(0, 0, 0)
 	}
 
-	// 从一个长度为 n 的数组中选择 r 个元素，按字典序生成所有组合，每个组合用下标表示  r <= n
-	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 从 n 个元素中选择 r 个元素，按字典序生成所有组合，每个组合用下标表示  r <= n
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations
 	// https://stackoverflow.com/questions/41694722/algorithm-for-itertools-combinations-in-python
-	combinations := func(n, r int, do func(indexes []int)) {
-		indexes := make([]int, r)
-		for i := range indexes {
-			indexes[i] = i
+	combinations := func(n, r int, do func(ids []int)) {
+		ids := make([]int, r)
+		for i := range ids {
+			ids[i] = i
 		}
-		do(indexes)
+		do(ids)
 		for {
 			i := r - 1
 			for ; i >= 0; i-- {
-				if indexes[i] != i+n-r {
+				if ids[i] != i+n-r {
 					break
 				}
 			}
 			if i == -1 {
 				return
 			}
-			indexes[i]++
+			ids[i]++
 			for j := i + 1; j < r; j++ {
-				indexes[j] = indexes[j-1] + 1
+				ids[j] = ids[j-1] + 1
 			}
-			do(indexes)
+			do(ids)
 		}
 	}
 
-	// 从一个长度为 n 的数组中选择 r 个元素，允许重复选择同一个元素，按字典序生成所有组合，每个组合用下标表示
-	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 从 n 个元素中选择 k 个元素，允许重复选择同一个元素，按字典序生成所有组合，每个组合用下标表示
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement
 	// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
-	// https://oeis.org/A059481
-	combinationsWithRepetition := func(n, r int, do func(indexes []int)) {
-		indexes := make([]int, r)
-		do(indexes)
+	// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
+	// 相当于长度为 k，元素范围在 [0,n-1] 的非降序列的个数
+	combinationsWithRepetition := func(n, k int, do func(ids []int)) {
+		ids := make([]int, k)
+		do(ids)
 		for {
-			i := r - 1
+			i := k - 1
 			for ; i >= 0; i-- {
-				if indexes[i] != n-1 {
+				if ids[i] != n-1 {
 					break
 				}
 			}
 			if i == -1 {
 				return
 			}
-			indexes[i]++
-			for j := i + 1; j < r; j++ {
-				indexes[j] = indexes[i]
+			ids[i]++
+			for j := i + 1; j < k; j++ {
+				ids[j] = ids[i]
 			}
-			do(indexes)
+			do(ids)
 		}
 	}
 
 	// 从一个长度为 n 的数组中选择 r 个元素，按字典序生成所有排列，每个排列用下标表示  r <= n
-	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
-	permutations := func(n, r int, do func(indexes []int)) {
-		indexes := make([]int, n)
-		for i := range indexes {
-			indexes[i] = i
+	permutations := func(n, r int, do func(ids []int)) {
+		ids := make([]int, n)
+		for i := range ids {
+			ids[i] = i
 		}
-		do(indexes[:r])
+		do(ids[:r])
 		cycles := make([]int, r)
 		for i := range cycles {
 			cycles[i] = n - i
@@ -303,14 +304,14 @@ func searchCollection() {
 			for ; i >= 0; i-- {
 				cycles[i]--
 				if cycles[i] == 0 {
-					tmp := indexes[i]
-					copy(indexes[i:], indexes[i+1:])
-					indexes[n-1] = tmp
+					tmp := ids[i]
+					copy(ids[i:], ids[i+1:])
+					ids[n-1] = tmp
 					cycles[i] = n - i
 				} else {
 					j := cycles[i]
-					indexes[i], indexes[n-j] = indexes[n-j], indexes[i]
-					do(indexes[:r])
+					ids[i], ids[n-j] = ids[n-j], ids[i]
+					do(ids[:r])
 					break
 				}
 			}
