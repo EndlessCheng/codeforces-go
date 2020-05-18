@@ -430,38 +430,38 @@ func commonCollection() {
 
 	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 相当于转换成第几小
-	discrete := func(arr []int, start int) (kthArr []int) {
-		n := len(arr)
+	discrete := func(a []int, startIndex int) (kth []int) {
+		n := len(a)
 		if n == 0 {
 			return
 		}
 
-		type pair struct{ val, i int }
+		type pair struct{ v, i int }
 		ps := make([]pair, n)
-		for i, v := range arr {
+		for i, v := range a {
 			ps[i] = pair{v, i}
 		}
-		sort.Slice(ps, func(i, j int) bool { return ps[i].val < ps[j].val })
-		kthArr = make([]int, n)
+		sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v }) // or SliceStable
+		kth = make([]int, n)
 
-		// 有重复
-		kth := start
-		kthArr[ps[0].i] = kth
+		// a 有重复元素
+		k := startIndex
+		kth[ps[0].i] = k
 		for i := 1; i < n; i++ {
-			if ps[i].val != ps[i-1].val {
-				kth++
+			if ps[i].v != ps[i-1].v {
+				k++
 			}
-			kthArr[ps[i].i] = kth
+			kth[ps[i].i] = k
 		}
 
-		// 无重复
+		// a 无重复元素
 		//for i, p := range ps {
-		//	kthArr[p.i] = i + start
+		//	kth[p.i] = i + startIndex
 		//}
 		return
 	}
 
-	// 哈希编号，也可以理解成另一种离散化
+	// 哈希编号，也可以理解成另一种离散化（无序）
 	// 编号从 0 开始
 	indexMap := func(a []string) map[string]int {
 		mp := map[string]int{}
