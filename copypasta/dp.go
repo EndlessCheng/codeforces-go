@@ -457,7 +457,7 @@ func dpCollections() {
 		}
 	}
 
-	/* 插头 DP / 轮廓线动态规划
+	/* 插头 DP / 轮廓线 DP / Broken Profile DP
 	《训练指南》6.1
 	https://oi-wiki.org/dp/plug/
 	https://www.luogu.com.cn/blog/efforts-will-pay-off/du-liu-dong-gui-cha-tou-dp
