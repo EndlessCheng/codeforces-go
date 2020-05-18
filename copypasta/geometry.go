@@ -358,6 +358,56 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 	return
 }
 
+// 最小圆覆盖
+func minCircleCoverAllPoints(ps []vec, r int) int {
+	// todo
+	return 0
+}
+
+// 求一固定半径的圆最多能覆盖多少个点（圆边上也算覆盖） len(ps)>0 && r>0
+// Angular Sweep 算法 O(n^2logn)
+// https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/
+// https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
+func maxCoveredPoints(ps []vec, r int64) int {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	const eps = 1e-8
+	type event struct {
+		angle float64
+		delta int
+	}
+
+	n := len(ps)
+	ans := 1
+	for i, a := range ps {
+		events := make([]event, 0, 2*n-2)
+		for j, b := range ps {
+			if j == i {
+				continue
+			}
+			ab := b.sub(a)
+			if ab.len2() > 4*r*r {
+				continue
+			}
+			at := math.Atan2(float64(ab.y), float64(ab.x))
+			ac := math.Acos(ab.len() / float64(2*r))
+			events = append(events, event{at - ac, 1}, event{at + ac, -1})
+		}
+		sort.Slice(events, func(i, j int) bool { a, b := events[i], events[j]; return a.angle+eps < b.angle || a.angle < b.angle+eps && a.delta > b.delta })
+		mx, cnt := 0, 1 // 1 指当前固定的点 a
+		for _, e := range events {
+			cnt += e.delta
+			mx = max(mx, cnt)
+		}
+		ans = max(ans, mx)
+	}
+	return ans
+}
+
 // 反演变换
 // https://en.wikipedia.org/wiki/Inversive_geometry
 // TODO: https://oi-wiki.org/geometry/inverse/
