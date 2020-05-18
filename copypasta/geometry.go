@@ -359,9 +359,9 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 }
 
 // 最小圆覆盖
-func minCircleCoverAllPoints(ps []vec, r int) int {
+func minCircleCoverAllPoints(ps []vec) circle {
 	// todo
-	return 0
+	panic("todo")
 }
 
 // 求一固定半径的圆最多能覆盖多少个点（圆边上也算覆盖） len(ps)>0 && r>0
