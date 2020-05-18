@@ -3,7 +3,7 @@ package copypasta
 import "sort"
 
 func searchCollection() {
-	// 生成全排列（不保证字典序）
+	// 生成全排列（不保证字典序，若要用保证字典序的，见 permutations）
 	// 会修改原数组
 	// Permute the values at index i to len(arr)-1.
 	// https://codeforces.ml/problemset/problem/910/C
@@ -259,6 +259,32 @@ func searchCollection() {
 		}
 	}
 
+	// 从一个长度为 n 的数组中选择 r 个元素，允许重复选择同一个元素，按字典序生成所有组合，每个组合用下标表示
+	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
+	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations_with_replacement
+	// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
+	// https://oeis.org/A059481
+	combinationsWithRepetition := func(n, r int, do func(indexes []int)) {
+		indexes := make([]int, r)
+		do(indexes)
+		for {
+			i := r - 1
+			for ; i >= 0; i-- {
+				if indexes[i] != n-1 {
+					break
+				}
+			}
+			if i == -1 {
+				return
+			}
+			indexes[i]++
+			for j := i + 1; j < r; j++ {
+				indexes[j] = indexes[i]
+			}
+			do(indexes)
+		}
+	}
+
 	// 从一个长度为 n 的数组中选择 r 个元素，按字典序生成所有排列，每个排列用下标表示  r <= n
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 indexes。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
@@ -310,6 +336,6 @@ func searchCollection() {
 
 	_ = []interface{}{
 		valid, dfsGrids, findOneTargetAnyWhere, countTargetAnyWhere, reachable, bfsDis, findAllReachableTargets,
-		genSubStrings, dfsPermutations, combinations, permutations, permuteAll,
+		genSubStrings, dfsPermutations, combinations, combinationsWithRepetition, permutations, permuteAll,
 	}
 }
