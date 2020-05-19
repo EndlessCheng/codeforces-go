@@ -3,12 +3,15 @@ package copypasta
 import (
 	"math"
 	"sort"
-	"strings"
 )
+
+// NOTE: Pass n+1 if you wanna search range [0,n]
+// NOTE: 二分时特判下限！（例如 0）
+// TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
 
 // sort.Ints 性能测试 https://codeforces.ml/contest/977/submission/75301978
 
-// 有些 OJ 不支持 sort.Slice，只能用 sort.Sort
+// 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
 type _pair struct{ x, y int }
 type pairSlice []_pair
 
@@ -20,46 +23,27 @@ func (p pairSlice) Less(i, j int) bool {
 func (p pairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
 
 func sortCollections() {
-	sortString := func(s string) string {
-		// 可以转成 []byte，也可以……
-		a := strings.Split(s, "")
-		sort.Strings(a)
-		return strings.Join(a, "")
-	}
-	reverseSort := func(a []int) {
-		sort.Sort(sort.Reverse(sort.IntSlice(a)))
-	}
-
-	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
-	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
-	//upperBound = func(a []int, x int) int { return sort.SearchInts(a, x+1) }
+	// 也可以通过 sort.SearchInts(a, x+1) 来搜索 upperBound
+	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
+	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
-	// NOTE: Pass n+1 if you wanna search range [0,n]
-	// NOTE: 二分时特判下限！（例如 0）
-	// TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
-
-	type bsFunc func(int) bool
-	reverse := func(f bsFunc) bsFunc {
-		return func(x int) bool {
-			return !f(x)
-		}
+	// 若要二分的函数 f(x) 对于较小的 x 返回 true，较大的 x 返回 false，如何找到最大的使 f(x) == true 的 x？
+	// 考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其减一就得到了最大的使 f(x) == true 的 x
+	// 由于要对结果减一，sort.Search 应传入 n+1
+	// 注意判断 x 为 0 的情况，若 f(0) == false，则二分结果是 -1
+	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
+	{
+		var n int
+		v := sort.Search(n+1, func(x int) bool {
+			// 注意判断 x 为 0 的情况
+			cnt := 0
+			// ...
+			return !(cnt >= x)
+		}) - 1
+		_ = v
 	}
-	// 写法1: sort.Search(n, reverse(func(x int) bool {...}))
-	// 写法2:
-	// sort.Search(n, func(x int) (ok bool) {
-	//	 defer func() { ok = !ok }()
-	//	 ...
-	// })
-	// 写法3（推荐）:
-	// sort.Search(n, func(x int) (ok bool) {
-	//	 ...
-	//   return !true
-	// })
-	// 最后的 ans := Search(...) - 1
-	// 如果 f 有副作用，需要在 Search 后调用下 f(ans)
-	// 也可以理解成 return false 就是抬高下限，反之减小上限
 
 	searchRange := func(l, r int, f func(int) bool) int {
 		for l < r {
@@ -174,7 +158,7 @@ func sortCollections() {
 	//      https://codeforces.ml/blog/entry/45578
 
 	_ = []interface{}{
-		sortString, reverseSort, lowerBound, upperBound, reverse,
+		lowerBound, upperBound,
 		searchRange, search64, binarySearch, ternarySearch, ternarySearchInt,
 	}
 }
