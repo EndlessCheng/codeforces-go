@@ -24,8 +24,7 @@ func run(_r io.Reader, _w io.Writer) {
 	minSum := sort.Search(2e5+1, func(s int) bool {
 		c := 0
 		for i := n - 1; i >= 0; i-- {
-			j := sort.SearchInts(a, s-a[i])
-			c += n - j
+			c += n - sort.SearchInts(a, s-a[i])
 		}
 		return c < m
 	}) - 1
