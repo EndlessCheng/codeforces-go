@@ -171,7 +171,7 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 
 	if !isContest {
 		languageID := 4026
-		if contestID <= "abc161" { // todo arc agc
+		if "abc" < contestID && contestID <= "abc161" || "agc" < contestID && contestID <= "agc043" || "arc" < contestID && contestID <= "arc103" {
 			languageID = 3013
 		}
 		statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=%d&f.Status=AC&f.Task=%s&orderBy=source_length", languageID, problemName)
