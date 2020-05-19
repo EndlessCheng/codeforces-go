@@ -89,6 +89,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 // fasterIO  202 ms (use syscall.Read(syscall.Stdin, buf))
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
 // NOTE: 如果只有数字的话，只需要判断字符与 '0' 的关系就行了；有小写字母的话，与 'z' 的大小判断可以省去（对运行耗时无影响）
+// NOTE: AtCoder Go1.6 的差距更大，1e6 的读入 bufferIO 和 fasterIO 能相差 1000ms
 func fasterIO(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
