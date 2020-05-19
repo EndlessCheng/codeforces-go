@@ -369,6 +369,7 @@ func dpCollections() {
 	// todo 方法 1：二进制优化
 
 	/* 区间 DP / 环形 DP
+	https://blog.csdn.net/weixin_43914593/article/details/106163859
 	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 https://leetcode-cn.com/problems/strange-printer/
