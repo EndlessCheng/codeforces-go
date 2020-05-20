@@ -7,7 +7,10 @@ import (
 )
 
 func Test_run(t *testing.T) {
-	const _debugCaseNum = 0
+	testRun(t, 0)
+}
+
+func testRun(t *testing.T, debugCaseNum int) {
 	testCases := []int{
 		1,
 		2,
@@ -31,7 +34,7 @@ func Test_run(t *testing.T) {
 		queryCnt := 0
 		return func(_q int64) bool {
 			q := int(_q)
-			if caseNum == _debugCaseNum {
+			if caseNum == debugCaseNum {
 				println(q)
 			}
 			if queryCnt == queryLimit {
@@ -47,12 +50,20 @@ func Test_run(t *testing.T) {
 	}
 
 	// do test
+	if debugCaseNum < 0 {
+		debugCaseNum += len(testCases)
+	}
+	ok := true
 	for i, expectedAns := range testCases {
 		caseNum := i + 1
-		if caseNum == _debugCaseNum {
-			print()
+		if debugCaseNum != 0 && caseNum != debugCaseNum {
+			continue
 		}
 		actualAns := run(checkQuery(caseNum, expectedAns))
-		assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum)
+		ok = ok && assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum)
+	}
+
+	if ok && debugCaseNum != 0 {
+		testRun(t, 0)
 	}
 }
