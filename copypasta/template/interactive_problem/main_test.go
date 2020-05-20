@@ -25,6 +25,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		testCases = append(testCases, i)
 	}
 	// random cases
+	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 1000; i++ {
 		v := 1 + rand.Intn(1e9) // [1,1e9]
 		testCases = append(testCases, v)
