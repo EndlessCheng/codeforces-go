@@ -27,9 +27,10 @@ func Test_run(t *testing.T) {
 		minQueryValue = 1
 		maxQueryValue = 1e18
 	)
-	checkQuery := func(caseNum int, expectedAns int) func(int) bool {
+	checkQuery := func(caseNum int, expectedAns int) func(int64) bool {
 		queryCnt := 0
-		return func(q int) bool {
+		return func(_q int64) bool {
+			q := int(_q)
 			if caseNum == _debugCaseNum {
 				println(q)
 			}
@@ -52,6 +53,6 @@ func Test_run(t *testing.T) {
 			print()
 		}
 		actualAns := run(checkQuery(caseNum, expectedAns))
-		assert.Equal(t, expectedAns, actualAns, "WA %d", caseNum)
+		assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum)
 	}
 }
