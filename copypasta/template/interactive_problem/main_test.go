@@ -11,6 +11,7 @@ func Test_run(t *testing.T) {
 }
 
 func testRun(t *testing.T, debugCaseNum int) {
+	// corner cases
 	testCases := []int{
 		1,
 		2,
@@ -19,7 +20,11 @@ func testRun(t *testing.T, debugCaseNum int) {
 		1e9 - 1,
 		1e9,
 	}
-	// append some random data
+	// small cases
+	for i := 1; i <= 1000; i++ {
+		testCases = append(testCases, i)
+	}
+	// random cases
 	for i := 0; i < 1000; i++ {
 		v := 1 + rand.Intn(1e9) // [1,1e9]
 		testCases = append(testCases, v)
@@ -42,7 +47,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 			}
 			queryCnt++
 			if q < minQueryValue || q > maxQueryValue {
-				panic("invalid query args")
+				panic("invalid query arguments")
 			}
 			// ...
 			return false
@@ -53,17 +58,23 @@ func testRun(t *testing.T, debugCaseNum int) {
 	if debugCaseNum < 0 {
 		debugCaseNum += len(testCases)
 	}
-	ok := true
+	const failedCountLimit = 10
+	failedCount := 0
 	for i, expectedAns := range testCases {
 		caseNum := i + 1
 		if debugCaseNum != 0 && caseNum != debugCaseNum {
 			continue
 		}
 		actualAns := run(checkQuery(caseNum, expectedAns))
-		ok = ok && assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum)
+		if !assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum) {
+			failedCount++
+			if failedCount > failedCountLimit {
+				t.Fatal("too many wrong cases, terminated")
+			}
+		}
 	}
 
-	if ok && debugCaseNum != 0 {
+	if debugCaseNum != 0 && failedCount == 0 {
 		testRun(t, 0)
 	}
 }
