@@ -38,7 +38,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 	)
 	checkQuery := func(caseNum int, expectedAns int) func(int64) bool {
 		queryCnt := 0
-		return func(_q int64) bool {
+		return func(_q int64) (res bool) {
 			q := int(_q)
 			if caseNum == debugCaseNum {
 				println(q)
