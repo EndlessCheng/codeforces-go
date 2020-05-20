@@ -430,13 +430,11 @@ func commonCollection() {
 
 	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 相当于转换成第几小
+	// 若允许修改原数组，可以先将其排序去重后，再调用 discrete，注意去重后 n 需要重新赋值
 	discrete := func(a []int, startIndex int) (kth []int) {
-		n := len(a)
-		if n == 0 {
-			return
-		}
-
+		// assert len(a) > 0
 		type pair struct{ v, i int }
+		n := len(a)
 		ps := make([]pair, n)
 		for i, v := range a {
 			ps[i] = pair{v, i}
@@ -455,9 +453,38 @@ func commonCollection() {
 		}
 
 		// a 无重复元素
-		//for i, p := range ps {
-		//	kth[p.i] = i + startIndex
-		//}
+		for i, p := range ps {
+			kth[p.i] = i + startIndex
+		}
+
+		return
+	}
+
+	// 离散化 discreteMap([]int{100,20,50,50}, 1) => map[int]int{100:3, 20:1, 50:2}
+	// 若允许修改原数组，可以先将其排序去重后，再调用 discreteMap，注意去重后 n 需要重新赋值
+	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
+		// assert len(a) > 0
+		n := len(a)
+		b := make([]int, n)
+		copy(b, a)
+		sort.Ints(b)
+
+		// 有重复元素
+		k := startIndex
+		kth = map[int]int{b[0]: k}
+		for i := 1; i < n; i++ {
+			if b[i] != b[i-1] {
+				k++
+				kth[b[i]] = k
+			}
+		}
+
+		// 无重复元素
+		kth = make(map[int]int, n)
+		for i, v := range b {
+			kth[v] = i + startIndex
+		}
+
 		return
 	}
 
@@ -667,7 +694,7 @@ func commonCollection() {
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
-		unique, uniqueInPlace, discrete, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 		maxValueStepToUpper,
 	}
