@@ -58,7 +58,7 @@ func sortCollections() {
 		}
 		return l
 	}
-	// ……当然，这种情况也可以这样写
+	// 若 l>0，也可以这样写
 	//sort.Search(r, func(x int) bool {
 	//	if x < l {
 	//		return false
