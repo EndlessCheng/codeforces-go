@@ -209,6 +209,10 @@ func dpCollections() {
 		return len(dp)
 	}
 
+	// LIS 相关构造题
+	// https://codeforces.ml/problemset/problem/1304/D
+	// https://atcoder.jp/contests/arc091/tasks/arc091_c
+
 	// 本质不同子序列个数
 	// 定义 dp[i][j] 表示前 i 个字符中长度为 j 的本质不同子序列个数
 	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
