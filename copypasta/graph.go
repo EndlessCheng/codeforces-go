@@ -1506,6 +1506,7 @@ todo Competitive Programmer’s Handbook Ch.20
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
 // 模板题 https://www.luogu.com.cn/problem/P3376
+// 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
 func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 	min := func(a, b int) int {
 		if a < b {

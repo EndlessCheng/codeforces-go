@@ -9,6 +9,8 @@ import (
 // NOTE: 二分时特判下限！（例如 0）
 // TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
 
+// 隐藏的二分 https://codeforces.ml/problemset/problem/1354/D
+
 // sort.Ints 性能测试 https://codeforces.ml/contest/977/submission/75301978
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
