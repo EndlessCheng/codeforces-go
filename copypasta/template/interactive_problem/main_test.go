@@ -11,24 +11,24 @@ func Test_run(t *testing.T) {
 }
 
 func testRun(t *testing.T, debugCaseNum int) {
+	type testCase struct {
+		n   int
+		ans int
+	}
 	// corner cases
-	testCases := []int{
-		1,
-		2,
-		9,
-		10,
-		1e9 - 1,
-		1e9,
+	testCases := []testCase{
+		{ans: 1e9 - 1},
+		{ans: 1e9},
 	}
 	// small cases
 	for i := 1; i <= 1000; i++ {
-		testCases = append(testCases, i)
+		testCases = append(testCases, testCase{ans: i})
 	}
 	// random cases
 	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 1000; i++ {
 		v := 1 + rand.Intn(1e9) // [1,1e9]
-		testCases = append(testCases, v)
+		testCases = append(testCases, testCase{ans: v})
 	}
 
 	const (
@@ -36,17 +36,19 @@ func testRun(t *testing.T, debugCaseNum int) {
 		minQueryValue = 1
 		maxQueryValue = 1e18
 	)
-	checkQuery := func(caseNum int, expectedAns int) func(int64) bool {
+	checkQuery := func(caseNum int, tc testCase) func(int64) bool {
+		//n := tc.n
+		//expectedAns := tc.ans
 		queryCnt := 0
 		return func(_q int64) (res bool) {
 			q := int(_q)
 			if caseNum == debugCaseNum {
 				println(q)
 			}
-			if queryCnt == queryLimit {
+			queryCnt++
+			if queryCnt > queryLimit {
 				panic("query limit exceeded")
 			}
-			queryCnt++
 			if q < minQueryValue || q > maxQueryValue {
 				panic("invalid query arguments")
 			}
@@ -61,12 +63,13 @@ func testRun(t *testing.T, debugCaseNum int) {
 	}
 	const failedCountLimit = 10
 	failedCount := 0
-	for i, expectedAns := range testCases {
+	for i, tc := range testCases {
 		caseNum := i + 1
 		if debugCaseNum != 0 && caseNum != debugCaseNum {
 			continue
 		}
-		actualAns := run(checkQuery(caseNum, expectedAns))
+		expectedAns := tc.ans
+		actualAns := run(tc.n, checkQuery(caseNum, tc))
 		if !assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum) {
 			failedCount++
 			if failedCount > failedCountLimit {
