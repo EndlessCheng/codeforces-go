@@ -243,12 +243,12 @@ func numberTheoryCollection() {
 	// todo 更高效的算法 - Pollard's Rho
 	primeFactorization := func(n int) (factors [][2]int) {
 		for i := 2; i*i <= n; i++ {
-			k := 0
+			e := 0
 			for ; n%i == 0; n /= i {
-				k++
+				e++
 			}
-			if k > 0 {
-				factors = append(factors, [2]int{i, k})
+			if e > 0 {
+				factors = append(factors, [2]int{i, e})
 			}
 		}
 		if n > 1 { // n 是质数
@@ -813,13 +813,13 @@ func numberTheoryCollection() {
 		if k > n-k {
 			k = n - k
 		}
-		p, q := int64(1), int64(1)
+		a, b := int64(1), int64(1)
 		for i := 1; i <= k; i++ {
-			p = p * int64(n) % mod
+			a = a * int64(n) % mod
 			n--
-			q = q * int64(i) % mod
+			b = b * int64(i) % mod
 		}
-		return divP(p, q, mod)
+		return divP(a, b, mod)
 	}
 
 	// 不推荐，因为阶乘的逆元可以做到 O(nlogn) 或 O(n) 预处理
