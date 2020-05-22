@@ -243,12 +243,12 @@ func numberTheoryCollection() {
 	// todo 更高效的算法 - Pollard's Rho
 	primeFactorization := func(n int) (factors [][2]int) {
 		for i := 2; i*i <= n; i++ {
-			k := 0
+			e := 0
 			for ; n%i == 0; n /= i {
-				k++
+				e++
 			}
-			if k > 0 {
-				factors = append(factors, [2]int{i, k})
+			if e > 0 {
+				factors = append(factors, [2]int{i, e})
 			}
 		}
 		if n > 1 { // n 是质数
@@ -793,15 +793,33 @@ func numberTheoryCollection() {
 	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
 	// https://oeis.org/A000984
 
-	// 仅适用于小范围的 n k
-	// 更大范围的见下面的三种处理方式
+	// 求组合数/二项式系数
+	// 不取模，仅适用于小范围的 n 和 k
+	// 更大范围的见线性求逆元
 	comb := func(n, k int) int64 {
+		if k > n-k {
+			k = n - k
+		}
 		res := int64(1)
 		for i := 1; i <= k; i++ {
 			res = res * int64(n-k+i) / int64(i)
 		}
 		return res
 		//return big.Int{}.Binomial(n, k).Int64()
+	}
+
+	// 取模，适用于 n 较大但 k 或 n-k 较小的情况
+	comb = func(n, k int) int64 {
+		if k > n-k {
+			k = n - k
+		}
+		a, b := int64(1), int64(1)
+		for i := 1; i <= k; i++ {
+			a = a * int64(n) % mod
+			n--
+			b = b * int64(i) % mod
+		}
+		return divP(a, b, mod)
 	}
 
 	// 不推荐，因为阶乘的逆元可以做到 O(nlogn) 或 O(n) 预处理
@@ -971,6 +989,7 @@ NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
        C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) https://atcoder.jp/contests/abc154/tasks/abc154_f
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 可重集排列
 可重集组合 todo https://codeforces.ml/problemset/problem/451/E

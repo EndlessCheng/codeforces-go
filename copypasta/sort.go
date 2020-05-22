@@ -58,7 +58,7 @@ func sortCollections() {
 		}
 		return l
 	}
-	// ……当然，这种情况也可以这样写
+	// 若 l>0，也可以这样写
 	//sort.Search(r, func(x int) bool {
 	//	if x < l {
 	//		return false
@@ -81,7 +81,7 @@ func sortCollections() {
 	}
 
 	// NOTE: step 取多少合适：
-	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对查案的影响可以达到 n=2e5 倍，见 CF578C）
+	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 CF578C）
 
 	binarySearch := func(l, r float64, f func(x float64) bool) float64 {
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
@@ -97,7 +97,7 @@ func sortCollections() {
 	}
 
 	// 实数三分
-	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理 AT130F
+	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理 ABC130F
 	// https://codeforces.ml/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
