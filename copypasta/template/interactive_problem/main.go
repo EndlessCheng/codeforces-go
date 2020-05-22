@@ -1,25 +1,30 @@
 package main
 
-import . "fmt"
+import (
+	"bufio"
+	. "fmt"
+	"os"
+)
 
 // github.com/EndlessCheng/codeforces-go
-func run(io func(int64) bool) (ans int64) {
-	var n int
-	Scan(&n)
+func run(n int, Q func(int64) bool) (ans int64) {
 
 	return
 }
 
 func main() {
-	io := func(q int64) bool {
+	in := bufio.NewReader(os.Stdin)
+	Q := func(q int64) bool {
 		Println("?", q)
 		// ... or read int and return it
 		var s []byte
-		Scan(&s)
+		Fscan(in, &s)
 		return s[0] == 'Y'
 	}
 	var t int
-	for Scan(&t); t > 0; t-- {
-		Println("!", run(io))
+	for Fscan(in, &t); t > 0; t-- {
+		var n int
+		Fscan(in, &n)
+		Println("!", run(n, Q))
 	}
 }
