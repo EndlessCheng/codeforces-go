@@ -688,6 +688,140 @@ func commonCollection() {
 		return st + upper - upper%gap
 	}
 
+	// 二维离散化
+	// 代码来源 https://atcoder.jp/contests/abc168/tasks/abc168_f
+	discrete2D := func(n, m int) (ans int) {
+		type line struct{ a, b, c int }
+		lr := make([]line, n)
+		du := make([]line, m)
+		// read ...
+
+		xs := []int{-2e9, 0, 2e9}
+		ys := []int{-2e9, 0, 2e9}
+		for _, l := range lr {
+			a, b, c := l.a, l.b, l.c
+			xs = append(xs, a, b)
+			ys = append(ys, c)
+		}
+		for _, l := range du {
+			a, b, c := l.a, l.b, l.c
+			xs = append(xs, a)
+			ys = append(ys, b, c)
+		}
+		xs = unique(xs)
+		xi := discreteMap(xs, 0)
+		ys = unique(ys)
+		yi := discrete(ys, 0)
+
+		lx, ly := len(xi), len(yi)
+		glr := make([][]int, lx)
+		gdu := make([][]int, lx)
+		vis := make([][]bool, lx)
+		for i := range glr {
+			glr[i] = make([]int, ly)
+			gdu[i] = make([]int, ly)
+			vis[i] = make([]bool, ly)
+		}
+		for _, p := range lr {
+			glr[xi[p.a]][yi[p.c]]++
+			glr[xi[p.b]][yi[p.c]]--
+		}
+		for _, p := range du {
+			gdu[xi[p.a]][yi[p.b]]++
+			gdu[xi[p.a]][yi[p.c]]--
+		}
+		for i := 1; i < lx-1; i++ {
+			for j := 1; j < ly-1; j++ {
+				glr[i][j] += glr[i-1][j]
+				gdu[i][j] += gdu[i][j-1]
+			}
+		}
+
+		type pair struct{ x, y int }
+		q := []pair{{xi[0], yi[0]}}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			x, y := p.x, p.y
+			if x == 0 || x == lx-1 || y == 0 || y == ly-1 {
+				return -1
+			} // 无穷大
+			if !vis[x][y] {
+				vis[x][y] = true
+				ans += (xs[x+1] - xs[x]) * (ys[y+1] - ys[y])
+				if glr[x][y] == 0 {
+					q = append(q, pair{x, y - 1})
+				}
+				if glr[x][y+1] == 0 {
+					q = append(q, pair{x, y + 1})
+				}
+				if gdu[x][y] == 0 {
+					q = append(q, pair{x - 1, y})
+				}
+				if gdu[x+1][y] == 0 {
+					q = append(q, pair{x + 1, y})
+				}
+			}
+		}
+		return
+	}
+
+	// 括号拼接
+	// 代码来源 https://codeforces.ml/gym/101341/problem/A
+	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
+	//         https://codeforces.ml/problemset/problem/1203/F1
+	concatBrackets := func(ss [][]byte) (ids []int) {
+		type pair struct{ x, y, i int }
+
+		d := 0
+		var ls, rs []pair
+		for i, s := range ss {
+			l, r := 0, 0
+			for _, b := range s {
+				if b == '(' {
+					l++
+				} else if l > 0 {
+					l--
+				} else {
+					r++
+				}
+			}
+			if r < l {
+				ls = append(ls, pair{r, l, i})
+			} else {
+				rs = append(rs, pair{l, r, i})
+			}
+			d += l - r
+		}
+
+		sort.Slice(ls, func(i, j int) bool { return ls[i].x < ls[j].x })
+		sort.Slice(rs, func(i, j int) bool { return rs[i].x < rs[j].x })
+		f := func(ps []pair) []int {
+			_ids := []int{}
+			s := 0
+			for _, p := range ps {
+				if s < p.x {
+					return nil
+				}
+				s += p.y - p.x
+				_ids = append(_ids, p.i)
+			}
+			return _ids
+		}
+		idsL := f(ls)
+		idsR := f(rs)
+		if d != 0 || idsL == nil || idsR == nil {
+			return
+		}
+		for _, id := range idsL {
+			ids = append(ids, id)
+		}
+		for i := len(idsR) - 1; i >= 0; i-- {
+			ids = append(ids, idsR[i])
+		}
+		return
+	}
+
 	_ = []interface{}{
 		pow2, pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
@@ -697,6 +831,8 @@ func commonCollection() {
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
 		maxValueStepToUpper,
+		discrete2D,
+		concatBrackets,
 	}
 }
 
