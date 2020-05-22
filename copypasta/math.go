@@ -989,6 +989,7 @@ NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
        C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) https://atcoder.jp/contests/abc154/tasks/abc154_f
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
+放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 可重集排列
 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
