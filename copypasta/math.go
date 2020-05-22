@@ -793,15 +793,33 @@ func numberTheoryCollection() {
 	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
 	// https://oeis.org/A000984
 
-	// 仅适用于小范围的 n k
-	// 更大范围的见下面的三种处理方式
+	// 求组合数/二项式系数
+	// 不取模，仅适用于小范围的 n 和 k
+	// 更大范围的见线性求逆元
 	comb := func(n, k int) int64 {
+		if k > n-k {
+			k = n - k
+		}
 		res := int64(1)
 		for i := 1; i <= k; i++ {
 			res = res * int64(n-k+i) / int64(i)
 		}
 		return res
 		//return big.Int{}.Binomial(n, k).Int64()
+	}
+
+	// 取模，适用于 n 较大但 k 或 n-k 较小的情况
+	comb = func(n, k int) int64 {
+		if k > n-k {
+			k = n - k
+		}
+		p, q := int64(1), int64(1)
+		for i := 1; i <= k; i++ {
+			p = p * int64(n) % mod
+			n--
+			q = q * int64(i) % mod
+		}
+		return divP(p, q, mod)
 	}
 
 	// 不推荐，因为阶乘的逆元可以做到 O(nlogn) 或 O(n) 预处理
