@@ -99,6 +99,7 @@ func (a matrix) mul(b matrix) matrix {
 }
 
 // NxN 矩阵快速幂
+// 注意并不会修改原矩阵的值
 // 模板题 https://www.luogu.com.cn/problem/P3390
 func (a matrix) pow(k int64) matrix {
 	res := newMatrixI(len(a))
@@ -109,6 +110,19 @@ func (a matrix) pow(k int64) matrix {
 		a = a.mul(a)
 	}
 	return res
+}
+
+// 斐波那契数列 - 矩阵快速幂
+// https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
+// https://leetcode-cn.com/problems/fibonacci-number/
+func calcFibonacci(n int64) int64 {
+	if n == 0 {
+		return 0
+	}
+	return matrix{
+		{1, 1},
+		{1, 0},
+	}.pow(n - 1)[0][0]
 }
 
 func (a matrix) trace() (sum int64) {
