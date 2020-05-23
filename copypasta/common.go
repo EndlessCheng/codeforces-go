@@ -180,8 +180,18 @@ func commonCollection() {
 		}
 	}
 
+	mul := func(a, b, mod int64) (res int64) {
+		for ; b > 0; b >>= 1 {
+			if b&1 == 1 {
+				res = (res + a) % mod
+			}
+			a = (a + a) % mod
+		}
+		return
+	}
+
 	// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
-	pow := func(x int64, n int, mod int64) int64 {
+	pow := func(x, n, mod int64) int64 {
 		x %= mod
 		res := int64(1) % mod
 		for ; n > 0; n >>= 1 {
@@ -825,7 +835,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
-		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
+		abs, absAll, pow, mul, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,

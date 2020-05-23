@@ -54,24 +54,6 @@ func numberTheoryCollection() {
 	// 3, 271, 5_195_969, 1801241230056600467
 	// https://oeis.org/A223037
 
-	// a*b%m，原理和 a^n%m 类似
-	mul := func(a, b, m int64) (res int64) {
-		for ; b > 0; b >>= 1 {
-			if b&1 == 1 {
-				res = (res + a) % m
-			}
-			a = (a + a) % m
-		}
-		return
-	}
-	muls := func(nums ...int64) int64 {
-		res := nums[0]
-		for _, v := range nums[1:] {
-			res = res * v % mod
-		}
-		return res
-	}
-
 	gcd := func(a, b int64) int64 {
 		for a != 0 {
 			a, b = b%a, a
@@ -85,14 +67,6 @@ func numberTheoryCollection() {
 	// Mangoldt Function
 	// https://mathworld.wolfram.com/MangoldtFunction.html
 	// https://oeis.org/A014963
-
-	gcds := func(nums ...int64) (g int64) {
-		g = nums[0]
-		for _, v := range nums[1:] {
-			g = gcd(g, v)
-		}
-		return
-	}
 
 	// GCD 性质统计相关
 	// #{(a,b) | 1<=a<=b<=n, gcd(a,b)=1}   https://oeis.org/A002088
@@ -970,7 +944,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
-		mul, muls, gcds, lcm, frac, cntRangeGCD,
+		gcd, lcm, frac, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
