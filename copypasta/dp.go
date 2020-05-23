@@ -44,8 +44,8 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-重要 DP 技巧总结 https://codeforces.ml/blog/entry/47764
-状压 DP https://codeforces.ml/blog/entry/45223
+Non-trivial DP Tricks and Techniques https://codeforces.ml/blog/entry/47764
+SOS Dynamic Programming https://codeforces.ml/blog/entry/45223
 CSES DP section editorial https://codeforces.ml/blog/entry/70018
 CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
 力扣上的 DP 问题
