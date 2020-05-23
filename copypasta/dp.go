@@ -19,6 +19,8 @@ import (
    消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/
    如何定义状态 https://codeforces.ml/problemset/problem/553/A
    谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ 双周赛 25D
+   扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK
+   LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
 
 NOTE: 若使用滚动数组，复用时可能要初始化
       实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
@@ -92,10 +94,22 @@ func dpCollections() {
 
 			return
 		}
-		_ = f
+		f(0, 0)
 	}
 
-	/* 线性 DP：前缀/后缀之间的转移
+	/* 线性 DP
+	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i] (j<i)，这里 dp[i] 可以表示一个状态或一组状态等
+	力扣上有大量这类题目，例如：
+	198,213,123,309,376,276,931 (从dp[i-1] 转移到 dp[i])
+	487,1186 (从 dp[i-1] 转移到 dp[i]，带一个额外的决策维度，长度一般是 2-4)
+	300,368,1105* (从 dp[j] 转移到 dp[i])
+	903
+	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
+	力扣题目 1143,1092,72,97,115,727,583,712,1035,1216,1312
+	983
+	③ 一些题目
+	最大整除子集 LC368 https://leetcode-cn.com/problems/largest-divisible-subset/
+	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
@@ -104,10 +118,16 @@ func dpCollections() {
 
 	// 最长公共子序列 (LCS)
 	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
-	//            s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
-	//                           (i,j-1) -> (i,j) $ 0
-	// 例题 https://leetcode-cn.com/problems/longest-common-subsequence/
-	// EXTRA: 最短公共超序列 (SCS) https://leetcode-cn.com/problems/shortest-common-supersequence/
+	//           s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
+	//                          (i,j-1) -> (i,j) $ 0
+	// 例题 LC1143 https://leetcode-cn.com/problems/longest-common-subsequence/
+	// EXTRA: 最短公共超序列 (SCS) LC1092 https://leetcode-cn.com/problems/shortest-common-supersequence/
+	// 变种 LC97   https://leetcode-cn.com/problems/interleaving-string/
+	//     LC115  https://leetcode-cn.com/problems/distinct-subsequences/
+	//     LC583  https://leetcode-cn.com/problems/delete-operation-for-two-strings/
+	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
+	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
+	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
 	lcs := func(s1, s2 string) int {
 		n, m := len(s1), len(s2)
 		dp := make([][]int, n+1)
@@ -246,6 +266,7 @@ func dpCollections() {
 	}
 
 	/* 背包问题
+	这类问题可以从物品选择次序的无后效性入手
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.ml/blog/entry/59606
 	套题 https://www.acwing.com/problem/
@@ -264,6 +285,9 @@ func dpCollections() {
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
 	// EXTRA: 能否恰好装满（其实就是下面方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// todo LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
+	// todo 二维 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
+	//      LC956 https://leetcode-cn.com/problems/tallest-billboard/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -295,6 +319,7 @@ func dpCollections() {
 	// 核心函数：方案数（点权汇合），即 +
 	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
+	// todo LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)
@@ -367,17 +392,25 @@ func dpCollections() {
 	// EXTRA: 完全背包 - 求方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
 
-	// todo 二维费用背包 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
-
 	// 多重背包
 	// todo 方法 1：二进制优化
 
 	/* 区间 DP / 环形 DP
+	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
+	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
+	此时可以枚举最后一个区间的左端点 j，从 dp[j-1][k-1] 转移到 dp[i][k]，转移时考虑 a[j:i] 对最优解的影响
+	力扣题目 1278,813,410,1335
+	② 求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
+	一般定义 dp[i][j] 表示 a[i:j] 的最优解
+	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
+	力扣题目 516,312,375,1246
+	546
+	③ 一些题目
 	https://blog.csdn.net/weixin_43914593/article/details/106163859
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
-	todo 石子合并：相邻 k 堆 LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+	todo 石子合并：相邻 k 堆（综合①②）LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	*/
@@ -394,6 +427,9 @@ func dpCollections() {
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
+	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
+	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
+	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	*/
 
@@ -556,6 +592,7 @@ func dpCollections() {
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
+	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
 
 	/* 树形 DP
 	https://codeforces.ml/blog/entry/20935
