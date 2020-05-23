@@ -15,17 +15,17 @@ import (
 6. 若复杂度过高，如何优化决策？
 *. 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
    推荐 https://codeforces.ml/blog/entry/47764
-   戳气球 https://leetcode-cn.com/problems/burst-balloons/
-   消消乐 https://leetcode-cn.com/problems/remove-boxes/
+   戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
+   消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/
    如何定义状态 https://codeforces.ml/problemset/problem/553/A
-   谁来当 DP 对象 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ 双周赛 25D
+   谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ 双周赛 25D
 
 NOTE: 若使用滚动数组，复用时可能要初始化
       实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
 NOTE:（区间 DP）正向计算不易时，试着反向计算
 TIPS: 如果反复在同一个序列上点权汇合，可以考虑用前缀和或者差分来优化
       - 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
-      例题 https://leetcode-cn.com/problems/new-21-game/
+      例题 LC837 https://leetcode-cn.com/problems/new-21-game/
 
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
@@ -52,7 +52,7 @@ CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
     https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.md
     https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
     https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
-    https://leetcode.com/problemset/all/?topicSlugs=dynamic-programming
+    https://leetcode-cn.com/tag/dynamic-programming/
 AT 经典 DP 场 https://atcoder.jp/contests/dp
     题解 https://www.cnblogs.com/shanxieng/p/10232228.html
     题解（日语）https://www.hamayanhamayan.com/entry/2019/01/12/163853
@@ -193,8 +193,8 @@ func dpCollections() {
 	// 最长上升子序列 (LIS)
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// https://oi-wiki.org/dp/basic/#_12
-	// 例题 https://leetcode-cn.com/problems/longest-increasing-subsequence/
-	// 方案数 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
+	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
+	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	//       https://www.zhihu.com/question/34905638
 	lis := func(a []int) int {
 		n := len(a)
@@ -263,7 +263,7 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
-	// EXTRA: 能否恰好装满（其实就是下面方案数是否为 0） https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// EXTRA: 能否恰好装满（其实就是下面方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -293,8 +293,8 @@ func dpCollections() {
 	//     起点：(0,j)  j∈[0,sum]
 	//     终点：(n,sum)
 	// 核心函数：方案数（点权汇合），即 +
-	// 例题（需要转换）https://leetcode-cn.com/problems/target-sum/
-	// 隐藏的 0-1 背包 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
+	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
+	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)
@@ -342,7 +342,7 @@ func dpCollections() {
 	//     起点：0
 	//     终点：amount
 	// 核心函数：最少物品数（最短路），即 min
-	// https://leetcode-cn.com/problems/coin-change/
+	// LC322 https://leetcode-cn.com/problems/coin-change/
 	minCoinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
 		dp := make([]int, amount+1)
@@ -365,27 +365,28 @@ func dpCollections() {
 	}
 
 	// EXTRA: 完全背包 - 求方案数
-	// https://leetcode-cn.com/problems/coin-change-2/
+	// LC518 https://leetcode-cn.com/problems/coin-change-2/
 
-	// todo 二维费用背包 https://leetcode-cn.com/problems/ones-and-zeroes/
+	// todo 二维费用背包 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 
 	// 多重背包
 	// todo 方法 1：二进制优化
 
 	/* 区间 DP / 环形 DP
 	https://blog.csdn.net/weixin_43914593/article/details/106163859
-	最优三角剖分 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
-	戳气球 https://leetcode-cn.com/problems/burst-balloons/
-	打印机 https://leetcode-cn.com/problems/strange-printer/
-	todo 石子合并：相邻 k 堆 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
+	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
+	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
+	todo 石子合并：相邻 k 堆 LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
+	*/
 
-	博弈类 DP
-	    转移：让「自己与对手的分差」最大
-	https://leetcode.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
-	https://leetcode.com/problems/stone-game-ii/
-	https://leetcode.com/problems/stone-game-iii/
+	/* 博弈类 DP
+	转移：让「自己与对手的分差」最大
+	LC877 https://leetcode-cn.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
+	LC1140 https://leetcode-cn.com/problems/stone-game-ii/
+	LC1406 https://leetcode-cn.com/problems/stone-game-iii/
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
 	*/
 
@@ -400,8 +401,8 @@ func dpCollections() {
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
-	// 建模转换题 https://leetcode-cn.com/problems/find-the-shortest-superstring/
-	//           https://leetcode-cn.com/problems/xun-bao/
+	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
+	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
@@ -472,8 +473,8 @@ func dpCollections() {
 	/* 数位 DP
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
-	https://leetcode-cn.com/problems/number-of-digit-one/
-	https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
+	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
+	LC902 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
 	todo 套题 https://codeforces.ml/blog/entry/53960
 	*/

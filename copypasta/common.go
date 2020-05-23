@@ -557,7 +557,7 @@ func commonCollection() {
 	// 算法的平均比较次数为 ~2n+2kln(n/k)+2(n-k)ln(n/(n-k))
 	// https://en.wikipedia.org/wiki/Quickselect
 	// https://www.geeksforgeeks.org/quickselect-algorithm/
-	// 模板题 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+	// 模板题 LC215 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
 	// 模板题 https://codeforces.ml/contest/977/problem/C
 	quickSelect := func(a []int, k int) int {
 		//k = len(a) - 1 - k // 求第 k 大
@@ -652,10 +652,11 @@ func commonCollection() {
 	}
 
 	// 扫描线
+	// 某些题目需要配合线段树
 	// https://cses.fi/book/book.pdf 30.1
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
-	// 天际线问题 https://leetcode-cn.com/problems/the-skyline-problem/
-	// TODO 矩形面积并 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
+	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
+	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.ml/problemset/problem/1000/C
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	sweepLine := func(in io.Reader, n int) {
@@ -822,7 +823,7 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow2, pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
+		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
 		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
@@ -989,7 +990,7 @@ func rmqCollection() {
 
 另一种题型是注意到 n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
-好题 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
+好题 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 */
 
 // 莫队算法：对询问分块
@@ -1081,9 +1082,9 @@ func monotoneCollection() {
 	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
-	//       https://leetcode.com/problems/next-greater-element-i/
-	//       https://leetcode.com/problems/next-greater-element-ii/
-	// 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
+	//       LC496 https://leetcode-cn.com/problems/next-greater-element-i/
+	//       LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
+	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
 		n := len(a)

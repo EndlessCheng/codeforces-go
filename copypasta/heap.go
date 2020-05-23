@@ -54,7 +54,7 @@ func (h *hp64) popPush(v int64) int64 { t := (*h)[0]; (*h)[0] = v; heap.Fix(h, 0
 func heapCollections() {
 	// 对顶堆求动态中位数（一个数组前 2k+1 项的中位数）
 	// https://www.luogu.com.cn/problem/P1168
-	// https://leetcode-cn.com/problems/find-median-from-data-stream/
+	// LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/
 	dynamicMedians := func(a []int) []int {
 		n := len(a)
 		medians := make([]int, 0, (n+1)/2)

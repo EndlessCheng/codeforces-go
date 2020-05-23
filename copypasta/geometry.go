@@ -73,7 +73,7 @@ TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
       顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
       曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
 TIPS: 另一种处理曼哈顿距离的方法是枚举 (x2,y2) 在以 (x1,y1) 为原点的哪个象限，分四种情况讨论
-      例题 https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+      例题 LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
 */
 
 const eps = 1e-8
@@ -367,7 +367,7 @@ func minCircleCoverAllPoints(ps []vec) circle {
 // 求一固定半径的圆最多能覆盖多少个点（圆边上也算覆盖） len(ps)>0 && r>0
 // Angular Sweep 算法 O(n^2logn)
 // https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/
-// https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
+// LC1453/周赛189D https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
 func maxCoveredPoints(ps []vec, r int64) int {
 	max := func(a, b int) int {
 		if a > b {

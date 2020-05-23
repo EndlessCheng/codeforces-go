@@ -1026,7 +1026,7 @@ func miscCollection() {
 	// 因此每有一对夫妻，符合条件的排列个数就减半
 	// 所以结果为 a(n) = (2n)!/2^n
 	// https://oeis.org/A000680
-	// https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
+	// LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
 
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
@@ -1319,7 +1319,7 @@ func grayCode(length int) []int {
 //
 //     n*(n-1)*(n*n-5*n+18)/24+1
 
-// https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
+// LC1073 https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
 		a1, a2 = a2, a1
@@ -1349,7 +1349,7 @@ func addNegabinary(a1, a2 []int) []int {
 	return []int{0}
 }
 
-// https://leetcode.com/problems/convert-to-base-2/
+// 负二进制转换 LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
 func toNegabinary(n int) (res string) {
 	if n == 0 {
 		return "0"

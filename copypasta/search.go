@@ -33,7 +33,7 @@ func searchCollection() {
 	}
 
 	// DFS 格点找有多少个连通分量
-	// 下列代码来自 LC162C https://leetcode-cn.com/problems/number-of-closed-islands/
+	// 下列代码来自 LC1254/周赛162C https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
 	dfsGrids := func(g [][]byte) (comps int) {
 		n, m := len(g), len(g[0])
@@ -200,7 +200,7 @@ func searchCollection() {
 
 	// 从左往右枚举排列（可以剪枝）
 	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 sets 中），且每个位置上的元素不能重复
-	// 例题见 LC169D https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
+	// 例题见 LC1307/周赛169D https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
 	dfsPermutations := func(n int, sets []int) bool {
 		used := make([]bool, len(sets))
 		//used := [10]bool{}

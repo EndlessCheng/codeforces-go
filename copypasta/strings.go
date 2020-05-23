@@ -30,7 +30,7 @@ func stringCollection() {
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
 	// 模板题 https://www.luogu.com.cn/problem/P3370
-	// 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// 最长重复子串（二分哈希）LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// TODO 二维 hash
 	// TODO anti-hash: 最好不要自然溢出 https://codeforces.ml/blog/entry/4898 https://codeforces.ml/blog/entry/60442
@@ -166,7 +166,7 @@ func stringCollection() {
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
-	// 模板题 https://www.luogu.com.cn/problem/P3805 https://leetcode.com/problems/longest-palindromic-substring/
+	// 模板题 https://www.luogu.com.cn/problem/P3805 LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.ml/contest/1326/problem/D2
 	// todo 类似思想 https://codeforces.ml/contest/359/problem/D
 	var maxLen, left []int
@@ -249,7 +249,7 @@ func stringCollection() {
 	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
 	// 题目总结《后缀数组——处理字符串的有力工具》
 	// 模板题 https://www.luogu.com.cn/problem/P3809
-	// 可重叠最长重复子串 https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// 可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// 不可重叠最长重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14）
 	// 可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261（height 上的滑动窗口最小值）
 	// 重复次数最多的连续重复子串 http://poj.org/problem?id=3693
@@ -316,7 +316,7 @@ func stringCollection() {
 		// EXTRA: 找出数组中的所有字符串，其是某个字符串的子串
 		// 先拼接字符串，然后根据 height 判断前后是否有能匹配的
 		// NOTE: 下面的代码展示了一种「标记 s[i] 属于原数组的哪个元素」的技巧: 在 i>0&&s[i]=='#' 时将 cnt++，其余的 s[i] 指向的 cnt 就是原数组的下标
-		// LC184A https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
+		// LC1408/周赛184A https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
 		findAllSubstring := func(a []string) (ans []string) {
 			s := "#" + strings.Join(a, "#")
 			n := len(s)
@@ -372,9 +372,9 @@ func stringCollection() {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
-// 模板题 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
-// 前缀和后缀搜索 https://leetcode-cn.com/problems/prefix-and-suffix-search/
-// 回文对（配合 Manacher 可以做到线性复杂度） https://leetcode-cn.com/problems/palindrome-pairs/
+// 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
+// 前缀和后缀搜索 LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+// 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
 // todo https://codeforces.ml/contest/455/problem/B
 type trieNode struct {
@@ -521,7 +521,7 @@ outer:
 // 01-trie：val 与树上所有数中的最大异或值
 // 也可以说这是一颗（所有叶节点深度都相同的）二叉树
 // 参考《算法竞赛进阶指南》0x16
-// 模板题：数组中两个数的最大异或值 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
+// 模板题：数组中两个数的最大异或值 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 // todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
 func (t *trie) maxXor(val int) (ans int) {
@@ -567,7 +567,7 @@ func findMaximumXOR(a []int) (ans int) {
 // 推荐 https://www.cnblogs.com/nullzx/p/7499397.html
 // https://oi-wiki.org/string/ac-automaton/
 // EXTRA: https://cp-algorithms.com/string/aho_corasick.html
-// 模板题 https://leetcode-cn.com/problems/stream-of-characters/
+// 模板题 LC1032 https://leetcode-cn.com/problems/stream-of-characters/
 // 模板题 https://www.luogu.com.cn/problem/P3808 https://www.luogu.com.cn/problem/P3796
 // https://codeforces.ml/problemset/problem/963/D
 func (t *trie) buildDFA() {
