@@ -1,6 +1,7 @@
 package copypasta
 
 // See 915E for example
+// https://codeforces.ml/contest/915/problem/E
 
 type odtNode struct {
 	tpNode
@@ -8,8 +9,8 @@ type odtNode struct {
 }
 
 func (t *treap) put1(l, r int, val tpValueType) {}
-func (t *treap) floor(l int) (floor *odtNode)   { return }
-func (t *treap) next(l int) (next *odtNode)     { return }
+func (t *treap) floor(int) (_ *odtNode)       { return }
+func (t *treap) next(int) (_ *odtNode)        { return }
 
 func (t *treap) split(mid int) {
 	if o := t.floor(mid); o.l < mid && mid <= o.r {
