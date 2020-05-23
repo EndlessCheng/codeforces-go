@@ -1245,6 +1245,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // TODO
 
 // 拓扑排序 Kahn's algorithm
+// 可以用来判断有向图是否有环
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
