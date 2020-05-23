@@ -30,6 +30,7 @@ import (
 // NOTE: 和式的另一视角：若每一项的值都在一个范围，不妨考虑另一个问题 - 值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 // NOTE: 环形可以用 (i+1)%n 来表示下一个相邻元素
+// NOTE: 变换考察角度：对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列，将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.ml/problemset/problem/1284/C
 
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 func commonCollection() {
