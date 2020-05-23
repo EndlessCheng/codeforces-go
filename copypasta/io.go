@@ -143,10 +143,10 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		b := rc()
 		for ; 'a' > b || b > 'z'; b = rc() {
 		}
-		s := make([]byte, n)
-		s[0] = b
+		s := make([]byte, 0, n)
+		s = append(s, b)
 		for i := 1; i < n; i++ {
-			s[i] = rc()
+			s = append(s, rc())
 		}
 		return s
 	}
