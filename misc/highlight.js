@@ -28,10 +28,10 @@
     // 高亮的词，一部分类似 Python 的关键字，另一部分是一些术语、修饰词之类
     // 注意前者要包含后者
     const words = [
-        " not ", "don't", "didn't", "doesn't", "can't", " no ", // "n't",
+        " not ", "don't", "didn't", "doesn't", "can't", " no ", "non-", // "n't",
         "if and only if", "and all", "or all",
         "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
-        " any", " all ", "every", " both ",
+        " any", " all ", "every", " both ", "empty",
         "same", "different", "unique", "distinct",
         "more", "must", "only", "exactly", "always",
 
@@ -54,8 +54,9 @@
         "所有", "任何", "任意", "和", "或",
         "最小", "最大", "最少", "最多", "最短", "最长",
         "至少", "至多",
-        "连续", "子数组", "子区间", "区间", "子序列", "子字符串", "子串",
+        "非空", "连续", "子数组", "子区间", "区间", "子序列", "子字符串", "子串",
         "严格", "递增", "递减", "升序", "降序", "字典序",
+        "叶子",
         "返回",
     ];
 
