@@ -69,23 +69,23 @@ func commonCollection() {
 		}
 		return b
 	}
-	mins := func(vals ...int) int {
-		ans := vals[0]
-		for _, val := range vals[1:] {
-			if val < ans {
-				ans = val
+	mins := func(a ...int) int {
+		res := a[0]
+		for _, v := range a[1:] {
+			if v < res {
+				res = v
 			}
 		}
-		return ans
+		return res
 	}
-	maxs := func(vals ...int) int {
-		ans := vals[0]
-		for _, val := range vals[1:] {
-			if val > ans {
-				ans = val
+	maxs := func(a ...int) int {
+		res := a[0]
+		for _, v := range a[1:] {
+			if v > res {
+				res = v
 			}
 		}
-		return ans
+		return res
 	}
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
 	// 用堆求前 k 小
