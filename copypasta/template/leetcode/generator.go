@@ -90,8 +90,11 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 			Title           string `json:"title"`
 		} `json:"contest"`
 		Questions []struct {
-			TitleSlug string `json:"title_slug"`
+			Credit    int    `json:"credit"`     // 得分/难度
+			Title     string `json:"title"`      // 题目标题
+			TitleSlug string `json:"title_slug"` // 题目链接
 		} `json:"questions"`
+		UserNum int `json:"user_num"` // 参赛人数
 	}{}
 	if err = resp.JSON(&d); err != nil {
 		return
@@ -110,6 +113,12 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	if len(d.Questions) == 0 {
 		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
 	}
+
+	fmt.Println("难度 标题")
+	for _, q := range d.Questions {
+		fmt.Printf("%3d %s\n", q.Credit, q.Title)
+	}
+
 	problems = make([]*problem, len(d.Questions))
 	for i, q := range d.Questions {
 		problems[i] = &problem{
