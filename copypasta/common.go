@@ -87,6 +87,12 @@ func commonCollection() {
 		}
 		return res
 	}
+
+	isDigit := func(b byte) bool { return '0' <= b && b <= '9' }
+	isLower := func(b byte) bool { return 'a' <= b && b <= 'z' }
+	isUpper := func(b byte) bool { return 'A' <= b && b <= 'Z' }
+	isAlpha := func(b byte) bool { return 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z' }
+
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
 	// 用堆求前 k 小
 	smallK := func(a []int, k int) []int {
@@ -834,7 +840,9 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs, ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
+		min, mins, max, maxs,
+		isDigit, isLower, isUpper, isAlpha,
+		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, mul, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
