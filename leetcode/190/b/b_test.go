@@ -33,7 +33,7 @@ func Test(t *testing.T) {
 		
 	}
 	targetCaseNum := 0
-	if err := testutil.RunLeetCodeFuncWithExamples(t, maxVowels, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, maxVowels2, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }

@@ -28,7 +28,7 @@ func Test(t *testing.T) {
 		},
 	}
 	targetCaseNum := 0
-	if err := testutil.RunLeetCodeFuncWithExamples(t, pseudoPalindromicPaths, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, pseudoPalindromicPaths2, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
