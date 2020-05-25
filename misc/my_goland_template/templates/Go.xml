@@ -388,8 +388,8 @@
   <template name="make2" value="$NAME$ := make([][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {&#10;&#9;&#9;$NAME$[i][j] = $INIT$&#10;&#9;}&#10;}" description="make 2D slice" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;mat&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
-    <variable name="SIZE0" expression="complete()" defaultValue="" alwaysStopAt="true" />
-    <variable name="SIZE1" expression="complete()" defaultValue="" alwaysStopAt="true" />
+    <variable name="SIZE0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <variable name="SIZE1" expression="complete()" defaultValue="&quot;m&quot;" alwaysStopAt="true" />
     <variable name="INIT" expression="" defaultValue="&quot;-1&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
@@ -646,8 +646,8 @@
   <template name="make3" value="$NAME$ := make([][][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([][]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {&#10;&#9;&#9;$NAME$[i][j] = make([]$TYPE$, $SIZE2$)&#10;&#9;&#9;for k := range $NAME$[i][j] {&#10;&#9;&#9;&#9;$NAME$[i][j][k] = $INIT$&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="make 3D slice" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;mat&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
-    <variable name="SIZE0" expression="complete()" defaultValue="" alwaysStopAt="true" />
-    <variable name="SIZE1" expression="complete()" defaultValue="" alwaysStopAt="true" />
+    <variable name="SIZE0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <variable name="SIZE1" expression="complete()" defaultValue="&quot;m&quot;" alwaysStopAt="true" />
     <variable name="SIZE2" expression="complete()" defaultValue="" alwaysStopAt="true" />
     <variable name="INIT" expression="" defaultValue="&quot;-1&quot;" alwaysStopAt="true" />
     <context>
