@@ -875,7 +875,12 @@ func numberTheoryCollection() {
 			return C(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
 		}
 
-		_ = C
+		// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
+		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
+		// 相当于长度为 k，元素范围在 [0,n-1] 的非降序列的个数
+		H := func(n, k int64) int64 { return C(n+k-1, k) }
+
+		_, _ = C, H
 	}
 
 	// 扩展卢卡斯
