@@ -653,7 +653,8 @@ func dpCollections() {
 	// 换根 DP
 	// 进阶指南 p.292-295
 	// https://codeforces.ml/blog/entry/20935
-	// http://poj.org/problem?id=3585
+	// 例题 https://codeforces.ml/problemset/problem/219/D
+	// 下面的代码来自 http://poj.org/problem?id=3585
 	rerootDP := func(n int) {
 		type edge struct{ to, cap int }
 		g := make([][]edge, n)
