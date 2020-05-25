@@ -308,6 +308,8 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
+	// todo 价值主导的 0-1 背包
+
 	// 从 a 中选出若干个数，总和为 sum 的方案数
 	// 基本状态：前 i 个数  i∈[0,n]
 	// 附加状态：和为 j  j∈[0,sum]
@@ -393,8 +395,26 @@ func dpCollections() {
 	// EXTRA: 完全背包 - 求方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
 
-	// 多重背包
-	// todo 方法 1：二进制优化
+	// 多重背包 - 未优化
+	// 模板题 https://codeforces.ml/problemset/problem/106/C
+	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
+		n := len(values)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, maxW+1)
+		}
+		for i, vi := range values {
+			si, wi := stocks[i], weights[i]
+			for j := range dp[i] {
+				for k := 0; k <= si && k*wi <= j; k++ {
+					dp[i+1][j] = max(dp[i+1][j], dp[i][j-k*wi]+k*vi)
+				}
+			}
+		}
+		return dp[n][maxW]
+	}
+
+	// todo 多重背包 - 优化 1 - 二进制优化
 
 	/* 区间 DP / 环形 DP
 	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
@@ -674,7 +694,7 @@ func dpCollections() {
 	_ = []interface{}{
 		mapDP,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
-		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange,
+		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack,
 		tsp,
 		digitDP,
 		maxMatchingOnTree, rerootDP,
