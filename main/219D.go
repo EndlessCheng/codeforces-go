@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -14,21 +15,21 @@ func CF219D(_r io.Reader, _w io.Writer) {
 
 	var n, v, w int
 	Fscan(in, &n)
-	g := make([]map[int]bool, n)
-	for i := range g {
-		g[i] = map[int]bool{}
-	}
+	type edge struct{ to, ord int }
+	g := make([][]edge, n)
 	for i := 1; i < n; i++ {
 		Fscan(in, &v, &w)
-		g[v-1][w-1] = true
-		g[w-1][v-1] = false
+		v--
+		w--
+		g[v] = append(g[v], edge{w, 1})
+		g[w] = append(g[w], edge{v, -1})
 	}
 	inv := make([]int, n)
 	var f func(v, fa int)
 	f = func(v, fa int) {
-		for w, b := range g[v] {
-			if w != fa {
-				if !b {
+		for _, e := range g[v] {
+			if w := e.to; w != fa {
+				if e.ord == -1 {
 					inv[0]++
 				}
 				f(w, v)
@@ -37,20 +38,14 @@ func CF219D(_r io.Reader, _w io.Writer) {
 	}
 	f(0, -1)
 	f = func(v, fa int) {
-		if g[v][fa] {
-			inv[v] = inv[fa] - 1
-		} else {
-			inv[v] = inv[fa] + 1
-		}
-		for w := range g[v] {
-			if w != fa {
+		for _, e := range g[v] {
+			if w := e.to; w != fa {
+				inv[w] = inv[v] + e.ord
 				f(w, v)
 			}
 		}
 	}
-	for v := range g[0] {
-		f(v, 0)
-	}
+	f(0, -1)
 	min := n
 	for _, v := range inv {
 		if v < min {
@@ -65,4 +60,4 @@ func CF219D(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { CF219D(os.Stdin, os.Stdout) }
+func main() { CF219D(os.Stdin, os.Stdout) }
