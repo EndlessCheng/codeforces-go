@@ -67,7 +67,6 @@ func sortCollections() {
 	//})
 
 	search64 := func(n int64, f func(int64) bool) int64 {
-		// Define f(-1) == false and f(n) == true.
 		i, j := int64(0), n
 		for i < j {
 			h := (i + j) >> 1
