@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -70,11 +71,17 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 	if openWebsite {
 		open.Start(problemURL)
 
+		urlObj, err := url.Parse(problemURL)
+		if err != nil {
+			return err
+		}
+		host := urlObj.Host
+
 		var statusURL string
 		if isGYM {
-			statusURL = fmt.Sprintf("https://codeforces.ml/gym/%s/status/%s", contestID, problemID)
+			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", host, contestID, problemID)
 		} else {
-			statusURL = fmt.Sprintf("https://codeforces.ml/problemset/status/%s/problem/%s", contestID, problemID)
+			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", host, contestID, problemID)
 		}
 		open.Start(statusURL)
 	}
