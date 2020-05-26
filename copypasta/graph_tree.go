@@ -176,6 +176,7 @@ func (*tree) findCentroid(n int, g [][]int) (ans int) {
 // 点分治
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
+// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 // TODO: 需要重新整理
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
@@ -602,6 +603,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
 // todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
+// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: Morris Traversal
 // https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
@@ -617,6 +619,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // 讲解+套题 https://codeforces.ml/blog/entry/44351
 // todo 讲解 https://codeforces.ml/blog/entry/67696
 // todo https://ac.nowcoder.com/discuss/394080 E 题
+// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: 虚树
 // https://oi-wiki.org/graph/virtual-tree/
