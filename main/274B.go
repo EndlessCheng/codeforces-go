@@ -38,6 +38,7 @@ func CF274B(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 
+	// 目标是得到将子树 v 清零所需的 -操作 和 +操作 的次数，这样就能够从下往上计算
 	var f func(v, fa int) (mi, mx int64)
 	f = func(v, fa int) (mi, mx int64) {
 		x := a[v]
