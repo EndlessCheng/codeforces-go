@@ -5,7 +5,6 @@ import (
 	"bytes"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -39,9 +38,6 @@ func CF1358F(_r io.Reader, out io.Writer) {
 	for i := range b {
 		Fscan(in, &b[i])
 	}
-
-	cntP := int64(0)
-	ans := []byte{}
 	if n == 1 {
 		if a[0] != b[0] {
 			Fprint(out, "IMPOSSIBLE")
@@ -50,6 +46,9 @@ func CF1358F(_r io.Reader, out io.Writer) {
 		}
 		return
 	}
+
+	cntP := int64(0)
+	ans := []byte{}
 	x, y := a[0], a[1]
 	if x > y {
 		x, y = y, x
@@ -88,7 +87,7 @@ func CF1358F(_r io.Reader, out io.Writer) {
 				}
 				continue
 			}
-			for i := len(b) - 1; i > 0; i-- {
+			for i := n - 1; i > 0; i-- {
 				b[i] -= b[i-1]
 			}
 			cntP++
@@ -114,4 +113,4 @@ func CF1358F(_r io.Reader, out io.Writer) {
 	Fprint(out, string(ans))
 }
 
-func main() { CF1358F(os.Stdin, os.Stdout) }
+//func main() { CF1358F(os.Stdin, os.Stdout) }
