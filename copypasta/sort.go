@@ -25,6 +25,14 @@ func (p pairSlice) Less(i, j int) bool {
 func (p pairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
 
 func sortCollections() {
+	{
+		var a []int
+		// 判断是否为非降序列
+		sort.IntsAreSorted(a)
+		// 判断是否为严格递增序列
+		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] <= a[j] })
+	}
+
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
 	// 也可以通过 sort.SearchInts(a, x+1) 来搜索 upperBound
