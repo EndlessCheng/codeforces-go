@@ -433,10 +433,38 @@ func dpCollections() {
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
-	todo 石子合并：相邻 k 堆（综合①②）LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
-	todo 石子合并：环形，相邻 2 堆 https://www.luogu.com.cn/problem/P1880
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	*/
+
+	// 石子合并
+	// https://ac.nowcoder.com/acm/contest/1043/A
+	// 环形的情况 https://www.luogu.com.cn/problem/P1880
+	// 相邻 k 堆的情况（综合①②）LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
+	mergeStones := func(a []int) int {
+		n := len(a)
+		sum := make([]int, n+1)
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+		}
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, n)
+			for j := range dp[i] {
+				dp[i][j] = 1e9
+			}
+			dp[i][i] = 0
+		}
+		for sz := 2; sz <= n; sz++ {
+			for l := 0; l+sz <= n; l++ {
+				r := l + sz - 1
+				for i := l; i < r; i++ {
+					dp[l][r] = min(dp[l][r], dp[l][i]+dp[i+1][r])
+				}
+				dp[l][r] += sum[r+1] - sum[l]
+			}
+		}
+		return dp[0][n-1]
+	}
 
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
@@ -468,7 +496,7 @@ func dpCollections() {
 	tsp := func(dist [][]int, st int) []int {
 		// 记忆化：已经访问的集合 s，当前位置 v
 		n := len(dist)
-		const inf int = 1e9
+		const inf int = 1e9 // 1e18
 		dp := make([][]int, 1<<n)
 		for i := range dp {
 			dp[i] = make([]int, n)
@@ -490,6 +518,7 @@ func dpCollections() {
 	}
 
 	{
+		// 由于 s 的特性，在单起点的情况下，有很多状态是没有访问到的
 		_ = func(dist [][]int, st int) int {
 			n := len(dist)
 			dp := make([][]int, 1<<n)
@@ -499,6 +528,7 @@ func dpCollections() {
 					dp[i][j] = -1
 				}
 			}
+			const inf int = 1e9 // 1e18
 			// 记忆化：已经访问的集合 s，当前位置 v
 			var f func(s, v int) int
 			f = func(s, v int) (res int) {
@@ -510,7 +540,7 @@ func dpCollections() {
 				if s == 1<<n-1 && v == st {
 					return
 				} // 访问了所有节点并回到了 st
-				res = 1e9
+				res = inf
 				for w := 0; w < n; w++ {
 					if s>>w&1 == 0 {
 						res = min(res, f(s|1<<w, w)+dist[v][w])
@@ -698,6 +728,7 @@ func dpCollections() {
 		mapDP,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack,
+		mergeStones,
 		tsp,
 		digitDP,
 		maxMatchingOnTree, rerootDP,
