@@ -287,16 +287,15 @@ func commonCollection() {
 
 	reverse := func(a []byte) []byte {
 		n := len(a)
-		r := make([]byte, n)
+		b := make([]byte, n)
 		for i, v := range a {
-			r[n-1-i] = v
+			b[n-1-i] = v
 		}
-		return r
+		return b
 	}
-	reverseSelf := func(s []byte) {
-		for i, j := 0, len(s)-1; i < j; {
-			s[i], s[j] = s[j], s[i]
-			i++
+	reverseSelf := func(a []byte) {
+		for i, j := 0, len(a)-1; i < j; i++ {
+			a[i], a[j] = a[j], a[i]
 			j--
 		}
 	}
