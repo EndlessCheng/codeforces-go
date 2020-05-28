@@ -325,7 +325,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			}
 		}
 	}
-	moveToDep := func(v, d int) int {
+	uptoDep := func(v, d int) int {
 		for k := 0; k < mx; k++ {
 			if (dep[v]-d)>>k&1 == 1 {
 				v = pa[v][k]
@@ -337,7 +337,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
-		w = moveToDep(w, dep[v])
+		w = uptoDep(w, dep[v])
 		if v == w {
 			return v
 		}
@@ -353,8 +353,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	{
 		// 加权树上二分
 		var dep []int64 // 加权深度，dfs 预处理略
-		// 类似 moveToDep，不断向上寻找 d(v,x) <= d 的离根最近的 x
-		search := func(v int, d int64) int {
+		// 不断向上寻找 d(v,x) <= d 的离根最近的 x
+		uptoDep := func(v int, d int64) int {
 			dv := dep[v]
 			for i := mx - 1; i >= 0; i-- {
 				if p := pa[v][i]; p != -1 && dv-dep[p] <= d {
@@ -363,7 +363,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			}
 			return v
 		}
-		_ = search
+		_ = uptoDep
 	}
 
 	_ = _d
