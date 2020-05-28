@@ -325,6 +325,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			}
 		}
 	}
+	// d<=dep[v]
 	uptoDep := func(v, d int) int {
 		for k := 0; k < mx; k++ {
 			if (dep[v]-d)>>k&1 == 1 {
