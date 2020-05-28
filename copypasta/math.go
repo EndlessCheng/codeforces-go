@@ -1343,7 +1343,7 @@ func toNegabinary(n int) (res string) {
 }
 
 // 表达式计算（无括号）
-// https://leetcode-cn.com/problems/basic-calculator-ii/
+// LC227 https://leetcode-cn.com/problems/basic-calculator-ii/
 func calculate(s string) (ans int) {
 	s = strings.ReplaceAll(s, " ", "")
 	v, sign, stack := 0, '+', []int{}
