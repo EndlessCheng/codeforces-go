@@ -1341,3 +1341,38 @@ func toNegabinary(n int) (res string) {
 	}
 	return
 }
+
+// 表达式计算（无括号）
+// https://leetcode-cn.com/problems/basic-calculator-ii/
+func calculate(s string) (ans int) {
+	s = strings.ReplaceAll(s, " ", "")
+	v, sign, stack := 0, '+', []int{}
+	for i, b := range s {
+		if '0' <= b && b <= '9' {
+			v = v*10 + int(b-'0')
+			if i+1 < len(s) {
+				continue
+			}
+		}
+		switch sign {
+		case '+':
+			stack = append(stack, v)
+		case '-':
+			stack = append(stack, -v)
+		case '*':
+			w := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			stack = append(stack, w*v)
+		default: // '/'
+			w := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			stack = append(stack, w/v)
+		}
+		v = 0
+		sign = b
+	}
+	for _, v := range stack {
+		ans += v
+	}
+	return
+}
