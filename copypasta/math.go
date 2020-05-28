@@ -1301,6 +1301,7 @@ func grayCode(length int) []int {
 //
 //     n*(n-1)*(n*n-5*n+18)/24+1
 
+// 负二进制数相加
 // LC1073 https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
@@ -1331,7 +1332,8 @@ func addNegabinary(a1, a2 []int) []int {
 	return []int{0}
 }
 
-// 负二进制转换 LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
+// 负二进制转换
+// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
 func toNegabinary(n int) (res string) {
 	if n == 0 {
 		return "0"
