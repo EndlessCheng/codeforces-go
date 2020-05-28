@@ -24,9 +24,9 @@ func CF1359C(_r io.Reader, _w io.Writer) {
 		p, q := a*x+c*(x+1), 2*x+1
 		v, w := a*(x+1)+c*(x+2), 2*x+3
 		if p*w+q*v <= 2*b*q*w {
-			Fprintln(out, 2*x+1)
+			Fprintln(out, q)
 		} else {
-			Fprintln(out, 2*x+3)
+			Fprintln(out, w)
 		}
 	}
 }
