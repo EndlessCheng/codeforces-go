@@ -110,10 +110,14 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 }
 
 // 树的直径/最长链
+// 返回树的某条直径的两端点以及直径长度（最长链长度）
+// 树的中心：树的直径的中点。直径长度为偶数时有一个，为奇数时有两个
 // 性质：直径的中点到所有叶子的距离和最小
+// 性质：对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
 // 也可以用树形 DP，计算每个根往下的最长链和次长链从而得到答案（维护最大时记录是从哪个节点取到的，维护次大时跳过该节点）
-func (*tree) diameter(st int, g [][]int) (dv, dw int) {
-	var u, maxD int
+// EXTRA: 森林的情况 https://codeforces.ml/problemset/problem/455/C
+func (*tree) diameter(st int, g [][]int) (dv, dw, maxD int) {
+	var u int
 	var f func(v, fa, d int)
 	f = func(v, fa, d int) {
 		if d > maxD {
