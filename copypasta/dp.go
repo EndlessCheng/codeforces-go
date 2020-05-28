@@ -397,6 +397,10 @@ func dpCollections() {
 	// EXTRA: 完全背包 - 求方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
 
+	// EXTRA: 二维费用完全背包 - 求方案数
+	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
+	// https://codeforces.ml/problemset/problem/543/A
+
 	// 多重背包 - 未优化
 	// 模板题 https://codeforces.ml/problemset/problem/106/C
 	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {

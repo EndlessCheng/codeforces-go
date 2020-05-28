@@ -300,7 +300,7 @@ func commonCollection() {
 		}
 	}
 
-	equals := func(a, b []int) bool {
+	equal := func(a, b []int) bool {
 		// assert len(a) == len(b)
 		for i, v := range a {
 			if v != b[i] {
@@ -312,6 +312,7 @@ func commonCollection() {
 
 	// 合并有序数组，保留重复元素
 	// a b 必须是有序的（可以为空）
+	// 若不保留重复元素，则相当于求 a 和 b 的对称差（见下面 splitDifferenceAndIntersection 函数）
 	merge := func(a, b []int) []int {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
@@ -843,7 +844,7 @@ func commonCollection() {
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
 		abs, absAll, pow, mul, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equals,
+		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
