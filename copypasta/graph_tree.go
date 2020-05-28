@@ -294,6 +294,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 }
 
 // 最近公共祖先 - 其一 - 基于倍增和二分搜索
+// O(nlogn) 预处理，O(logn) 查询
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
@@ -324,15 +325,19 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			}
 		}
 	}
+	moveToDep := func(v, d int) int {
+		for k := 0; k < mx; k++ {
+			if (dep[v]-d)>>k&1 == 1 {
+				v = pa[v][k]
+			}
+		}
+		return v
+	}
 	_lca := func(v, w int) int {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
-		for k := 0; k < mx; k++ {
-			if (dep[w]-dep[v])>>k&1 == 1 {
-				w = pa[w][k]
-			}
-		}
+		w = moveToDep(w, dep[v])
 		if v == w {
 			return v
 		}
@@ -345,23 +350,27 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
-	// EXTRA: 其他树上二分
-	var dist []int // 预处理略
-	// 二分搜索 dist(x,v) <= d 的离根最近的 x
-	search := func(v int, d int) int {
-		dv := dist[v]
-		for i := mx - 1; i >= 0; i-- {
-			if p := pa[v][i]; p != -1 && dv-dist[p] <= d {
-				v = p
+	{
+		// 加权树上二分
+		var dep []int64 // 加权深度，dfs 预处理略
+		// 类似 moveToDep，不断向上寻找 d(v,x) <= d 的离根最近的 x
+		search := func(v int, d int64) int {
+			dv := dep[v]
+			for i := mx - 1; i >= 0; i-- {
+				if p := pa[v][i]; p != -1 && dv-dep[p] <= d {
+					v = p
+				}
 			}
+			return v
 		}
-		return v
+		_ = search
 	}
 
-	_ = []interface{}{_d, search}
+	_ = _d
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
+// O(nlogn) 预处理，O(1) 查询
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大的情形
 // https://oi-wiki.org/graph/lca/#rmq
@@ -427,7 +436,8 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 }
 
 // 最近公共祖先 - 其三 - Tarjan 离线算法
-// 时间和空间复杂度均为 O(n+q)，虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的 https://core.ac.uk/download/pdf/82125836.pdf
+// 时间和空间复杂度均为 O(n+q)
+// 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
 func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {
