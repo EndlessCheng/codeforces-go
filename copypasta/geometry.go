@@ -165,10 +165,28 @@ func (a vec) onRay(o, d vec) bool {
 }
 
 // 直线 a b 交点
+// NOTE: 若输入均为有理数，则输出也为有理数
 func (a lineF) intersection(b lineF) vecF {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
 	t := vb.det(u) / va.det(vb) // a b 不能平行，即 va.det(vb) != 0
 	return a.point(t)
+}
+
+// 射线 a b 交点
+func (a lineF) rayIntersection(b lineF) (vecF, bool) {
+	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
+	det := va.det(vb)
+	if det == 0 {
+		// todo
+	}
+	ta := vb.det(u)
+	tb := va.det(u)
+	if ta < 0 || tb < 0 {
+		return vecF{}, false
+	}
+	ta /= det
+	tb /= det
+	return a.point(ta), true
 }
 
 // 点 a 到直线 l 的距离
@@ -216,11 +234,11 @@ func (a vecF) projection(l lineF) vecF {
 // CCW (counterclockwise)
 func (a lineF) segProperIntersection(b lineF) bool {
 	sign := func(x float64) int {
-		if math.Abs(x) < eps {
-			return 0
-		}
-		if x < 0 {
+		if x < -eps {
 			return -1
+		}
+		if x < eps {
+			return 0
 		}
 		return 1
 	}
