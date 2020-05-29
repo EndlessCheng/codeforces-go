@@ -172,30 +172,34 @@ func (a lineF) intersection(b lineF) vecF {
 	return a.point(t)
 }
 
-// 射线 a b 交点，返回时间
-// 若 ta<0 || tb<0 则无交点
+// 求射线 a b 交点，返回各自到首个交点所需的时间（射线速度由 .vec().len() 决定）
+// 无交点返回 -1
 // 交点为 a.point(ta) 或 b.point(tb)
+// 若题目给了方向向量和速度：https://codeforces.ml/problemset/problem/1359/F
 func (a lineF) rayIntersection(b lineF) (ta, tb float64) {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
-	det := va.det(vb)
-	if det == 0 {
-		// 两射线共线，若非相离（即有无数个交点），按时间顺序返回第一个交点
-		if va.dot(vb) > 0 { // 同向
-			if u.dot(vb) >= 0 {
-				return 0, u.len() / vb.len()
-			} // a 在 b 前面
-			return u.len() / va.len(), 0 // a 在 b 后面
+	if d := va.det(vb); d != 0 {
+		d1, d2 := vb.det(u), va.det(u)
+		if d > 0 && d1 >= 0 && d2 >= 0 || d < 0 && d1 <= 0 && d2 <= 0 {
+			return d1 / d, d2 / d
 		}
-		// 异向
-		t := u.len() / (va.len() + vb.len())
-		if u.dot(vb) >= 0 {
-			return t, t
-		} // a 在 b 前面：相对
-		return -t, -t // a 在 b 后面：相离
+		return -1, -1
 	}
-	ta = vb.det(u) / det
-	tb = va.det(u) / det
-	return
+	if u.det(va) != 0 { // 平行但未共基线
+		return -1, -1
+	}
+	if l := u.len(); va.dot(vb) > 0 { // 同向
+		if u.dot(vb) >= 0 {
+			return 0, l / vb.len()
+		}
+		return l / va.len(), 0
+	} else { // 异向
+		if u.dot(vb) >= 0 {
+			t := l / (va.len() + vb.len())
+			return t, t
+		}
+		return -1, -1
+	}
 }
 
 // 点 a 到直线 l 的距离
