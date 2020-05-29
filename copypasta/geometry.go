@@ -172,21 +172,30 @@ func (a lineF) intersection(b lineF) vecF {
 	return a.point(t)
 }
 
-// 射线 a b 交点
-func (a lineF) rayIntersection(b lineF) (vecF, bool) {
+// 射线 a b 交点，返回时间
+// 若 ta<0 || tb<0 则无交点
+// 交点为 a.point(ta) 或 b.point(tb)
+func (a lineF) rayIntersection(b lineF) (ta, tb float64) {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
 	det := va.det(vb)
 	if det == 0 {
-		// todo
+		// 两射线共线，若非相离（即有无数个交点），按时间顺序返回第一个交点
+		if va.dot(vb) > 0 { // 同向
+			if u.dot(vb) >= 0 {
+				return 0, u.len() / vb.len()
+			} // a 在 b 前面
+			return u.len() / va.len(), 0 // a 在 b 后面
+		}
+		// 异向
+		t := u.len() / (va.len() + vb.len())
+		if u.dot(vb) >= 0 {
+			return t, t
+		} // a 在 b 前面：相对
+		return -t, -t // a 在 b 后面：相离
 	}
-	ta := vb.det(u)
-	tb := va.det(u)
-	if ta < 0 || tb < 0 {
-		return vecF{}, false
-	}
-	ta /= det
-	tb /= det
-	return a.point(ta), true
+	ta = vb.det(u) / det
+	tb = va.det(u) / det
+	return
 }
 
 // 点 a 到直线 l 的距离
