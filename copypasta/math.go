@@ -1378,3 +1378,17 @@ func calculate(s string) (ans int) {
 	}
 	return
 }
+
+// Smallest number h such that n*h is a repunit (111...1), or 0 if no such h exists
+// https://oeis.org/A190301
+// https://oeis.org/A216485 222...2
+
+// Least k such that the decimal representation of k*n contains only 1's and 0's
+// https://oeis.org/A079339
+// 0's and d's (2~9): A096681-A096688
+
+// a(n) is the least value of k such that k*n uses only digits 1 and 2. a(n) = -1 if no such multiple exists
+// https://oeis.org/A216482
+
+// a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
+// https://oeis.org/A181061
