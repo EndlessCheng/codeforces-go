@@ -9,6 +9,7 @@
 // @match        https://codeforces.ml/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/*
+// @match        https://leetcode.com/*
 // ==/UserScript==
 
 (function () {
