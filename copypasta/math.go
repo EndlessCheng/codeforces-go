@@ -847,7 +847,7 @@ func numberTheoryCollection() {
 	{
 		// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 		const mod int64 = 1e9 + 7
-		const mx int = 3e5
+		const mx int = 1e6
 		F := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			F[i] = F[i-1] * int64(i) % mod
@@ -867,7 +867,7 @@ func numberTheoryCollection() {
 		for i := mx; i > 0; i-- {
 			invF[i-1] = invF[i] * int64(i) % mod
 		}
-		C := func(n, k int64) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
+		C := func(n, k int) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
 
 		// EXTRA: 卢卡斯定理
 		var lucas func(n, k int64) int64
@@ -875,13 +875,13 @@ func numberTheoryCollection() {
 			if k == 0 {
 				return 1
 			}
-			return C(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
+			return C(int(n%mod), int(k%mod)) * lucas(n/mod, k/mod) % mod
 		}
 
 		// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
-		// 相当于长度为 k，元素范围在 [0,n-1] 的非降序列的个数
-		H := func(n, k int64) int64 { return C(n+k-1, k) }
+		// 相当于长度为 k，元素范围在 [1,n] 的非降序列的个数
+		H := func(n, k int) int64 { return C(n+k-1, k) }
 
 		_, _ = C, H
 	}
