@@ -9,7 +9,6 @@
 // @match        https://codeforces.ml/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/*
-// @match        https://leetcode.com/*
 // ==/UserScript==
 
 (function () {
@@ -51,7 +50,7 @@
         "expected value",
         "operations", "Operations", "operation", "Operation",
 
-        "没有", "不是",
+        "没有", "不是", "不同",
         "所有", "任何", "任意", "和", "或",
         "最小", "最大", "最少", "最多", "最短", "最长",
         "至少", "至多",
