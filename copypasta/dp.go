@@ -13,7 +13,8 @@ import (
 4. 状态转移时要计算哪些内容？
 5. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
 6. 若复杂度过高，如何优化决策？
-*. 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+*  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+*  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
    推荐 https://codeforces.ml/blog/entry/47764
    戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
    消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/

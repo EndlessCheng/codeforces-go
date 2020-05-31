@@ -832,23 +832,18 @@ func numberTheoryCollection() {
 		return divP(a, b, mod)
 	}
 
-	// 不推荐，因为阶乘的逆元可以做到 O(nlogn) 或 O(n) 预处理
-	//{
-	//	// O(n^2) 预处理，O(1) 求组合数
-	//	const mod int64 = 1e9 + 7
-	//	const mx int = 2e3
-	//	C := [mx + 1][mx + 1]int64{}
-	//	for i := 0; i <= mx; i++ {
-	//		C[i][0] = 1
-	//		for j := 1; j < i; j++ {
-	//			C[i][j] = (C[i-1][j] + C[i-1][j-1]) % mod
-	//		}
-	//		C[i][i] = 1
-	//	}
-	//
-	//	comb := func(n, k int) int64 { return C[n][k] }
-	//	_ = comb
-	//}
+	{
+		// 初始化组合数
+		// 不取模，仅适用于小范围的 n 和 k
+		const mx = 60
+		C := [mx + 1][mx + 1]int64{}
+		for i := 0; i <= mx; i++ {
+			C[i][0], C[i][i] = 1, 1
+			for j := 1; j < i; j++ {
+				C[i][j] = C[i-1][j-1] + C[i-1][j]
+			}
+		}
+	}
 
 	// 不推荐，见后面的代码块
 	//{
