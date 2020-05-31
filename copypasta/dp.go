@@ -328,6 +328,7 @@ func dpCollections() {
 	// 核心函数：方案数（点权汇合），即 +
 	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
+	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	// todo LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
@@ -337,11 +338,10 @@ func dpCollections() {
 		}
 		dp[0][0] = 1
 		for i, v := range a {
-			for j, dpij := range dp[i] {
-				if j < v {
-					dp[i+1][j] = dpij // 入度为 1，直接转移
-				} else {
-					dp[i+1][j] = dpij + dp[i][j-v] // 入度为 2，取核心函数转移
+			for s, dv := range dp[i] {
+				dp[i+1][s] = dv
+				if s >= v {
+					dp[i+1][s] += dp[i][s-v]
 				}
 			}
 		}
