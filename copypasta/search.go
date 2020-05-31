@@ -5,165 +5,18 @@ import (
 	"sort"
 )
 
-/* 枚举
-- 枚举所有 2^n 子集
-- 枚举子集的所有子集
-- 枚举大小为 k 的子集
-- 枚举格点周围（曼哈顿距离、切比雪夫距离）
+/* 状态空间
+一个实际问题的各种可能情况构成的集合
+由小及大：当状态空间位于边界上或某个小范围内等特殊情形，该状态空间的解往往是已知的。
+		若能将此解的应用场景扩大到原问题的状态空间，并且扩展过程的每个步骤具有相似性，就可以考虑使用递推或递归求解。
+		换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」进行求解。
 */
-func loopCollection() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
-	// 枚举 {0,1,...,n-1} 的全部子集
-	loopSet := func(arr []int) {
-		n := len(arr)
-		//outer:
-		for sub := 0; sub < 1<<n; sub++ { // sub repr a subset which elements are in range [0,n)
-			// do(sub)
-			for i := 0; i < n; i++ {
-				if sub>>i&1 == 1 { // choose i in sub
-					_ = arr[i]
-					// do(arr[i]) or continue outer
-				}
-			}
-		}
-	}
-
-	// 枚举 subset 的全部子集
-	// 作为结束条件，处理完 0 之后，会有 -1&subset == subset
-	loopSubset := func(n, subset int) {
-		sub := subset
-		for ok := true; ok; ok = sub != subset {
-			// do(sub)
-			sub = (sub - 1) & subset
-		}
-	}
-
-	// 枚举大小为 n 的集合的大小为 k 的子集（按字典序）
-	// 参考《挑战程序设计竞赛》p.156-158
-	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
-	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
-	loopSubsetK := func(arr []int, k int) {
-		n := len(arr)
-		for sub := 1<<k - 1; sub < 1<<n; {
-			// do(arr, sub) ...
-			x := sub & -sub
-			y := sub + x
-			sub = sub&^y/x>>1 | y
-		}
-	}
-
-	/*
-		遍历以 (centerI, centerJ) 为中心的曼哈顿距离为 dis 范围内的格点
-		例如 dis=2 时：
-		  #
-		 # #
-		# @ #
-		 # #
-		  #
-	*/
-	type pair struct{ x, y int }
-	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	loopAroundManhattan := func(maxI, maxJ, centerI, centerJ, dis int) {
-		for i, d := range dir4 {
-			d2 := dir4[(i+1)%4]
-			dx := d2.x - d.x
-			dy := d2.y - d.y
-			x := centerI + d.x*dis
-			y := centerJ + d.y*dis
-			for _i := 0; _i < dis; _i++ {
-				if x >= 0 && x < maxI && y >= 0 && y < maxJ {
-					// do
-				}
-				x += dx
-				y += dy
-			}
-		}
-	}
-
-	/*
-		遍历以 (centerI, centerJ) 为中心的切比雪夫距离为 dis 范围内的格点
-		#####
-		#   #
-		# @ #
-		#   #
-		#####
-	*/
-	loopAroundChebyshev := func(maxI, maxJ, centerI, centerJ, dis int) {
-		// 上下
-		for _, x := range [...]int{centerI - dis, centerI + dis} {
-			if x >= 0 && x < maxI {
-				for y := max(centerJ-dis, 0); y < min(centerJ+dis, maxJ); y++ {
-					// do
-				}
-			}
-		}
-		// 左右
-		for _, y := range [...]int{centerJ - dis, centerJ + dis} {
-			if y >= 0 && y < maxJ {
-				for x := max(centerI-dis, 0); x < min(centerI+dis, maxI); x++ {
-					// do
-				}
-			}
-		}
-	}
-
-	loopDiagonal := func(mat [][]int) {
-		n, m := len(mat), len(mat[0])
-		for j := 0; j < m; j++ {
-			for i := 0; i < n; i++ {
-				if i > j {
-					break
-				}
-				_ = mat[i][j-i]
-			}
-		}
-		for i := 1; i < n; i++ {
-			for j := m - 1; j >= 0; j-- {
-				if i+m-1-j >= n {
-					break
-				}
-				_ = mat[i+m-1-j][j]
-			}
-		}
-	}
-
-	loopDiagonal2 := func(n int) {
-		for sum := 0; sum < 2*n-1; sum++ {
-			for x := 0; x <= sum; x++ {
-				y := sum - x
-				if x >= n || y >= n {
-					continue
-				}
-				Println(x, y)
-			}
-			Println()
-		}
-	}
-
-	_ = []interface{}{
-		loopSet, loopSubset, loopSubsetK,
-		loopAroundManhattan, loopAroundChebyshev,
-		loopDiagonal, loopDiagonal2,
-	}
-}
 
 /* 排列组合 剪枝
-- 指数型枚举（递归或位运算）
-- 组合型枚举（递归+剪枝）
-- 排列型枚举（递归+跳过以及枚举的值）
-- 搜索+剪枝
+指数型枚举（递归或位运算）
+组合型枚举（递归+剪枝）
+排列型枚举（递归+跳过以及枚举的值）
+搜索+剪枝
 */
 func searchCollection() {
 	// 指数型枚举：从 1~n 中不重复地选取任意个元素（递归写法）
@@ -452,6 +305,160 @@ func searchCollection() {
 		chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
 		combinations, combinationsWithRepetition, permutations, permuteAll,
+	}
+}
+
+/* 枚举
+枚举所有 2^n 子集
+枚举子集的所有子集
+枚举大小为 k 的子集
+枚举格点周围（曼哈顿距离、切比雪夫距离）
+*/
+func loopCollection() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	// 枚举 {0,1,...,n-1} 的全部子集
+	loopSet := func(arr []int) {
+		n := len(arr)
+		//outer:
+		for sub := 0; sub < 1<<n; sub++ { // sub repr a subset which elements are in range [0,n)
+			// do(sub)
+			for i := 0; i < n; i++ {
+				if sub>>i&1 == 1 { // choose i in sub
+					_ = arr[i]
+					// do(arr[i]) or continue outer
+				}
+			}
+		}
+	}
+
+	// 枚举 subset 的全部子集
+	// 作为结束条件，处理完 0 之后，会有 -1&subset == subset
+	loopSubset := func(n, subset int) {
+		sub := subset
+		for ok := true; ok; ok = sub != subset {
+			// do(sub)
+			sub = (sub - 1) & subset
+		}
+	}
+
+	// 枚举大小为 n 的集合的大小为 k 的子集（按字典序）
+	// 参考《挑战程序设计竞赛》p.156-158
+	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
+	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
+	loopSubsetK := func(arr []int, k int) {
+		n := len(arr)
+		for sub := 1<<k - 1; sub < 1<<n; {
+			// do(arr, sub) ...
+			x := sub & -sub
+			y := sub + x
+			sub = sub&^y/x>>1 | y
+		}
+	}
+
+	/*
+		遍历以 (centerI, centerJ) 为中心的曼哈顿距离为 dis 范围内的格点
+		例如 dis=2 时：
+		  #
+		 # #
+		# @ #
+		 # #
+		  #
+	*/
+	type pair struct{ x, y int }
+	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	loopAroundManhattan := func(maxI, maxJ, centerI, centerJ, dis int) {
+		for i, d := range dir4 {
+			d2 := dir4[(i+1)%4]
+			dx := d2.x - d.x
+			dy := d2.y - d.y
+			x := centerI + d.x*dis
+			y := centerJ + d.y*dis
+			for _i := 0; _i < dis; _i++ {
+				if x >= 0 && x < maxI && y >= 0 && y < maxJ {
+					// do
+				}
+				x += dx
+				y += dy
+			}
+		}
+	}
+
+	/*
+		遍历以 (centerI, centerJ) 为中心的切比雪夫距离为 dis 范围内的格点
+		#####
+		#   #
+		# @ #
+		#   #
+		#####
+	*/
+	loopAroundChebyshev := func(maxI, maxJ, centerI, centerJ, dis int) {
+		// 上下
+		for _, x := range [...]int{centerI - dis, centerI + dis} {
+			if x >= 0 && x < maxI {
+				for y := max(centerJ-dis, 0); y < min(centerJ+dis, maxJ); y++ {
+					// do
+				}
+			}
+		}
+		// 左右
+		for _, y := range [...]int{centerJ - dis, centerJ + dis} {
+			if y >= 0 && y < maxJ {
+				for x := max(centerI-dis, 0); x < min(centerI+dis, maxI); x++ {
+					// do
+				}
+			}
+		}
+	}
+
+	loopDiagonal := func(mat [][]int) {
+		n, m := len(mat), len(mat[0])
+		for j := 0; j < m; j++ {
+			for i := 0; i < n; i++ {
+				if i > j {
+					break
+				}
+				_ = mat[i][j-i]
+			}
+		}
+		for i := 1; i < n; i++ {
+			for j := m - 1; j >= 0; j-- {
+				if i+m-1-j >= n {
+					break
+				}
+				_ = mat[i+m-1-j][j]
+			}
+		}
+	}
+
+	loopDiagonal2 := func(n int) {
+		for sum := 0; sum < 2*n-1; sum++ {
+			for x := 0; x <= sum; x++ {
+				y := sum - x
+				if x >= n || y >= n {
+					continue
+				}
+				Println(x, y)
+			}
+			Println()
+		}
+	}
+
+	_ = []interface{}{
+		loopSet, loopSubset, loopSubsetK,
+		loopAroundManhattan, loopAroundChebyshev,
+		loopDiagonal, loopDiagonal2,
 	}
 }
 
