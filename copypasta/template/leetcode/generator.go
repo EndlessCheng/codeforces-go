@@ -24,9 +24,19 @@ func login(username, password string) (session *grequests.Session, err error) {
 
 	// "touch" csrfToken
 	csrfTokenURL := fmt.Sprintf("https://%s/graphql/", host)
-	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{
-		JSON: map[string]string{"operationName": "globalData", "query": "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n"},
-	})
+	var csrfJson interface{}
+	if host == hostZH {
+		csrfJson = map[string]interface{}{
+			"operationName": "globalData",
+			"query":         "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n",
+		}
+	} else {
+		csrfJson = map[string]interface{}{
+			"operationName": "fetchAllLeetcodeTemplates",
+			"query":         "query fetchAllLeetcodeTemplates {\n  allLeetcodePlaygroundTemplates {\n    templateId\n    name\n    nameSlug\n    __typename\n  }\n}\n",
+		}
+	}
+	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{JSON: csrfJson})
 	if err != nil {
 		// maybe timeout
 		fmt.Println("访问失败，重试", err)
@@ -44,18 +54,23 @@ func login(username, password string) (session *grequests.Session, err error) {
 		}
 	}
 	if csrfToken == "" {
-		return nil, fmt.Errorf("csrftoken not found")
+		return nil, fmt.Errorf("csrftoken not found in response")
 	}
 
-	// login
+	// log in
 	loginURL := fmt.Sprintf("https://%s/accounts/login/", host)
+	loginData := map[string]string{
+		"csrfmiddlewaretoken": csrfToken,
+		"login":               username,
+		"password":            password,
+		"next":                "/",
+	}
+	if host == hostEN {
+		// todo
+		loginData["recaptcha_token"] = ""
+	}
 	resp, err = session.Post(loginURL, &grequests.RequestOptions{
-		Data: map[string]string{
-			"csrfmiddlewaretoken": csrfToken,
-			"login":               username,
-			"password":            password,
-			"next":                "/",
-		},
+		Data: loginData,
 		Headers: map[string]string{
 			"origin":  "https://" + host,
 			"referer": "https://" + host + "/",
@@ -107,11 +122,18 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 		sleepTime += time.Second // 消除误差
 		fmt.Printf("%s尚未开始，等待中……\n%v\n", d.Contest.Title, sleepTime)
 		time.Sleep(sleepTime)
-		return fetchProblemURLs(session)
+		for {
+			if _, er := fetchProblemURLs(session); er != nil {
+				fmt.Println(er)
+			} else {
+				break
+			}
+			time.Sleep(time.Second)
+		}
 	}
 
 	if len(d.Questions) == 0 {
-		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
+		return nil, fmt.Errorf("题目链接为空: %s%d", contestPrefix, contestID)
 	}
 
 	fmt.Println("难度 标题")
@@ -251,7 +273,10 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 						break
 					}
 				}
-				// TODO: when defaultCode not found
+				// TODO: use C++ when defaultCode not found
+				if p.defaultCode == "" {
+					fmt.Println("未找到 Go 代码")
+				}
 				break
 			}
 		}
@@ -411,14 +436,14 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 	if openWebPageZH {
 		for _, p := range problems {
 			if err := open.Run(p.urlZH); err != nil {
-				return err
+				fmt.Println("open err:", p.urlZH, err)
 			}
 		}
 	}
 	if openWebPageEN {
 		for _, p := range problems {
 			if err := open.Run(p.urlEN); err != nil {
-				return err
+				fmt.Println("open err:", p.urlEN, err)
 			}
 		}
 	}
