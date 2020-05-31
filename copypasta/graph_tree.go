@@ -174,7 +174,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ans int) {
 		}
 		return size
 	}
-	f(st, 0)
+	f(st, -1)
 	return
 }
 
