@@ -25,7 +25,28 @@ GP: Sn = a1*(pow(q,n)-1)/(q-1), q != 1
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 	// https://oeis.org/A000040
-	primes := [...]int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
+	primes := [...]int{
+		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
+		211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
+		307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397,
+		401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499,
+		503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599,
+		601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691,
+		701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797,
+		809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887,
+		907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997, /* #=168 */
+		1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061, 1063, 1069, 1087, 1091, 1093, 1097,
+		1103, 1109, 1117, 1123, 1129, 1151, 1153, 1163, 1171, 1181, 1187, 1193,
+		1201, 1213, 1217, 1223, 1229, 1231, 1237, 1249, 1259, 1277, 1279, 1283, 1289, 1291, 1297,
+		1301, 1303, 1307, 1319, 1321, 1327, 1361, 1367, 1373, 1381, 1399,
+		1409, 1423, 1427, 1429, 1433, 1439, 1447, 1451, 1453, 1459, 1471, 1481, 1483, 1487, 1489, 1493, 1499,
+		1511, 1523, 1531, 1543, 1549, 1553, 1559, 1567, 1571, 1579, 1583, 1597,
+		1601, 1607, 1609, 1613, 1619, 1621, 1627, 1637, 1657, 1663, 1667, 1669, 1693, 1697, 1699,
+		1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789,
+		1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889,
+		1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, /* #=303 */
+	}
 
 	sqCheck := func(a int64) bool { r := int64(math.Round(math.Sqrt(float64(a)))); return r*r == a }
 	cubeCheck := func(a int64) bool { r := int64(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
@@ -43,19 +64,6 @@ func numberTheoryCollection() {
 		}
 		return -1
 	}
-
-	// Least k such that H(k) > n, where H(k) is the harmonic number sum_{i=1..k} 1/i
-	// https://oeis.org/A002387
-	// https://oeis.org/A004080
-	// a(n) = largest m such that the harmonic number H(m)= Sum_{i=1..m} 1/i is < n
-	// https://oeis.org/A115515
-
-	// a(n) = smallest prime p such that Sum_{primes q = 2, ..., p} 1/q exceeds n
-	// 5, 277, 5_195_977, 1801241230056600523
-	// https://oeis.org/A016088
-	// a(n) = largest prime p such that Sum_{primes q = 2, ..., p} 1/q does not exceed n
-	// 3, 271, 5_195_969, 1801241230056600467
-	// https://oeis.org/A223037
 
 	gcd := func(a, b int64) int64 {
 		for a != 0 {
@@ -92,6 +100,7 @@ func numberTheoryCollection() {
 	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
 	// ∑∑lcm(i,j)   https://oeis.org/A064951
 
+	// 最简分数
 	type pair struct{ x, y int64 }
 	frac := func(a, b int64) pair { g := gcd(a, b); return pair{a / g, b / g} }
 
@@ -119,8 +128,49 @@ func numberTheoryCollection() {
 		return cntMp
 	}
 
-	/* 质数
-	 */
+	/* 质数 质因子分解
+	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture
+	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
+	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
+	https://oeis.org/A020481
+	n https://oeis.org/A025018
+	a(n) https://oeis.org/A025019
+	1e9 内最大的为 a(721013438) = 1789
+	2e9 内最大的为 a(1847133842) = 1861
+
+	勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
+	https://en.wikipedia.org/wiki/Legendre%27s_conjecture
+	https://oeis.org/A014085 https://oeis.org/A060199
+
+	伯特兰-切比雪夫定理 - n ~ 2n 之间至少有一个质数 Bertrand's postulate
+	https://en.wikipedia.org/wiki/Bertrand%27s_postulate
+	https://oeis.org/A035250 https://oeis.org/A060715
+
+	区间最大质数间隔
+	Prime gaps: differences between consecutive primes
+	https://oeis.org/A001223
+	Indices https://oeis.org/A005669
+	Records https://oeis.org/A005250
+
+	Least k such that H(k) > n, where H(k) is the harmonic number sum_{i=1..k} 1/i
+	https://oeis.org/A002387
+	https://oeis.org/A004080
+
+		a(n) = smallest prime p such that Sum_{primes q = 2, ..., p} 1/q exceeds n
+		5, 277, 5_195_977, 1801241230056600523
+		https://oeis.org/A016088
+
+	a(n) = largest m such that the harmonic number H(m)= Sum_{i=1..m} 1/i is < n
+	https://oeis.org/A115515
+
+		a(n) = largest prime p such that Sum_{primes q = 2, ..., p} 1/q does not exceed n
+		3, 271, 5_195_969, 1801241230056600467
+		https://oeis.org/A223037
+
+	Exponent of highest power of 2 dividing n, a.k.a. the binary carry sequence, the ruler sequence, or the 2-adic valuation of n
+	a(n) = 0 if n is odd, otherwise 1 + a(n/2)
+	http://oeis.org/A007814
+	*/
 
 	// 判断一个数是否为质数
 	isPrime := func(n int64) bool {
@@ -132,23 +182,6 @@ func numberTheoryCollection() {
 		return n >= 2
 	}
 	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
-
-	// 哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture
-	// 由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
-	// https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
-	// https://oeis.org/A020481
-	// n https://oeis.org/A025018
-	// a(n) https://oeis.org/A025019
-	// 1e9 内最大的为 a(721013438) = 1789
-	// 2e9 内最大的为 a(1847133842) = 1861
-
-	// 勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
-	// https://en.wikipedia.org/wiki/Legendre%27s_conjecture
-	// https://oeis.org/A014085 https://oeis.org/A060199
-
-	// 伯特兰-切比雪夫定理 - n ~ 2n 之间至少有一个质数 Bertrand's postulate
-	// https://en.wikipedia.org/wiki/Bertrand%27s_postulate
-	// https://oeis.org/A035250 https://oeis.org/A060715
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
@@ -208,11 +241,6 @@ func numberTheoryCollection() {
 
 	// 区间筛法
 	// 预处理 [2,√R] 的所有质数，去筛 [L,R] 之间的质数
-	// EXTRA: 区间最大质数间隔
-	// Prime gaps: differences between consecutive primes
-	// https://oeis.org/A001223
-	// Indices https://oeis.org/A005669
-	// Records https://oeis.org/A005250
 
 	// 质因数分解 prime factorization
 	// 返回分解出的质数及其指数
@@ -314,7 +342,51 @@ func numberTheoryCollection() {
 	//}
 
 	/* 约数
-	 */
+	高合成数/反质数 Highly Composite Numbers
+	一个高合成数一定是由另一个高合成数乘某个质数得到
+	见进阶指南 p.140-141
+	https://oeis.org/A002182
+	https://oeis.org/A002183
+	https://oeis.org/A199337 Number of highly composite numbers not divisible by n
+	https://www.luogu.com.cn/problem/P1463
+
+	TIPS: Maximal number of divisors (d(n)) of any n-digit number
+	方便估计复杂度 - 近似为开立方
+	https://oeis.org/A066150
+	4, 12, 32, 64, 128, 240, 448, 768, 1344,  /9/
+	2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280  /19/
+
+		上面这些数对应的最小的 n
+		https://oeis.org/A066151
+		6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
+		6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
+
+		Smallest number with exactly n divisors
+		https://oeis.org/A005179
+
+	Largest divisor of n having the form 2^i*5^j
+	a(n) = A006519(n)*A060904(n) = 2^A007814(n)*5^A112765(n)
+	http://oeis.org/A132741
+
+	Squarefree numbers: numbers that are not divisible by a square greater than 1
+	Lim_{n->infinity} a(n)/n = Pi^2/6
+	https://oeis.org/A005117 介绍了一种筛法
+	Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
+	https://oeis.org/A013929
+
+	Semiprimes (or biprimes): products of two primes
+	https://oeis.org/A001358
+
+		Squarefree semiprimes: Numbers that are the product of two distinct primes
+		https://oeis.org/A006881
+
+	Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
+	Also called core(n)
+	https://oeis.org/A007913
+
+	Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
+	https://oeis.org/A007947
+	*/
 
 	// 枚举一个数的全部约数
 	divisors := func(n int64) (ds []int64) {
@@ -401,27 +473,6 @@ func numberTheoryCollection() {
 	//        because we can form d(n)/2 pairs from the factors, each with product n
 	//        https://oeis.org/A007955
 
-	// 高合成数/反质数 Highly Composite Numbers
-	// 一个高合成数一定是由另一个高合成数乘某个质数得到
-	// 见进阶指南 p.140-141
-	// https://oeis.org/A002182
-	// https://oeis.org/A002183
-	// https://oeis.org/A199337 Number of highly composite numbers not divisible by n
-	// https://www.luogu.com.cn/problem/P1463
-
-	// TIPS: Maximal number of divisors (d(n)) of any n-digit number
-	// 方便估计复杂度 - 近似为开立方
-	// https://oeis.org/A066150
-	// 4, 12, 32, 64, 128, 240, 448, 768, 1344, /* 9 */
-	// 2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280 /* 19 */
-	// 上面这些数对应的最小的 n
-	// https://oeis.org/A066151
-	// 6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
-	// 6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
-
-	// Smallest number with exactly n divisors
-	// https://oeis.org/A005179
-
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
 	// for i>=2, factors[i][0] == i means i is prime
 	primeFactorsAll := func() {
@@ -493,24 +544,6 @@ func numberTheoryCollection() {
 			cnts[i] += cnts[i-1]
 		}
 	}
-
-	// Squarefree numbers: numbers that are not divisible by a square greater than 1
-	// Lim_{n->infinity} a(n)/n = Pi^2/6
-	// https://oeis.org/A005117 介绍了一种筛法
-	// Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
-	// https://oeis.org/A013929
-
-	// Semiprimes (or biprimes): products of two primes
-	// https://oeis.org/A001358
-	// Squarefree semiprimes: Numbers that are the product of two distinct primes
-	// https://oeis.org/A006881
-
-	// Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
-	// Also called core(n)
-	// https://oeis.org/A007913
-
-	// Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
-	// https://oeis.org/A007947
 
 	// n 的欧拉函数（互质的数的个数）Euler totient function
 	calcPhi := func(n int) int {
@@ -1392,3 +1425,7 @@ func calculate(s string) (ans int) {
 
 // a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 // https://oeis.org/A181061
+
+// 三维 n 皇后
+// Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
+// http://oeis.org/A068940
