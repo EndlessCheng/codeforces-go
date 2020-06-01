@@ -31,7 +31,7 @@
         " not ", "don't", "didn't", "doesn't", "can't", " no ", "non-", // "n't",
         "if and only if", "and all", "or all",
         "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
-        " any", " all ", "every", " both ", "empty",
+        " any", " all ", "every", " both ", "empty ",
         "same", "different", "unique", "distinct",
         "more", "must", "only", "exactly", "always",
 
