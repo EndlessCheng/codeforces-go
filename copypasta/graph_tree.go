@@ -148,7 +148,7 @@ func (*tree) diameter(st int, g [][]int) (dv, dw, maxD int) {
 // - 在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
-func (*tree) findCentroid(n int, g [][]int) (ans int) {
+func (*tree) findCentroid(n, st int, g [][]int) (ans int) {
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -174,6 +174,7 @@ func (*tree) findCentroid(n int, g [][]int) (ans int) {
 		}
 		return size
 	}
+	f(st, -1)
 	return
 }
 

@@ -472,6 +472,9 @@ func vec2Collection() {
 	}
 
 	// TODO: 扫描线：线段求交 O(nlogn)
+	// N 条线段求交的扫描线算法 http://johnhany.net/2013/11/sweep-algorithm-for-segments-intersection/
+	// https://codeforces.ml/problemset/problem/1359/F
+	// 平面扫描思想在 ACM 竞赛中的应用 http://openinx.github.io/2013/01/01/plane-sweep-thinking/
 
 	merge := func(a, b []vec) []vec {
 		i, n := 0, len(a)

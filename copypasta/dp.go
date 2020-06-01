@@ -6,14 +6,20 @@ import (
 
 /* 动态规划
 
+首先请透彻理解何为问题的「状态空间」，见 search.go 开头的注释
+
 思考过程：
-1. 如何定义本问题的状态，有几个维度的状态？
-2. 状态的范围是多少，起点状态和终点状态是什么？
-3. 哪些状态是相邻的？（即通过一次转移就能得到）
-4. 状态转移时要计算哪些内容？
-5. 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
-6. 若复杂度过高，如何优化决策？
-*. 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+1.1 如何把问题形式化为状态空间？（可以从边界、子集的角度思考）
+1.2 子问题是如何重叠的？
+1.3 子问题是怎么逐层递进的？（题目描述、隐含的顺序）
+2.1 如何定义状态？需要用几个维度表示？
+2.2 状态的范围是多少？起点状态和终点状态是什么？
+2.3 哪些状态是相邻的？（即通过一次转移就能得到）
+2.4 状态转移时要计算哪些内容？
+2.5 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
+3.1 若复杂度过高，如何优化决策？
+*  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+*  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
    推荐 https://codeforces.ml/blog/entry/47764
    戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
    消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/
@@ -22,11 +28,9 @@ import (
    扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
 
-NOTE: 若使用滚动数组，复用时可能要初始化
-      实际情况是使用滚动数组仅降低了内存开销，整体运行效率与不使用滚动数组时无异
+NOTE: 若使用滚动数组，注意复用时可能要初始化
 NOTE:（区间 DP）正向计算不易时，试着反向计算
-TIPS: 如果反复在同一个序列上点权汇合，可以考虑用前缀和或者差分来优化
-      - 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
+TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
       例题 LC837 https://leetcode-cn.com/problems/new-21-game/
 
 参考书籍推荐：
@@ -324,6 +328,7 @@ func dpCollections() {
 	// 核心函数：方案数（点权汇合），即 +
 	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
+	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	// todo LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
@@ -333,11 +338,10 @@ func dpCollections() {
 		}
 		dp[0][0] = 1
 		for i, v := range a {
-			for j, dpij := range dp[i] {
-				if j < v {
-					dp[i+1][j] = dpij // 入度为 1，直接转移
-				} else {
-					dp[i+1][j] = dpij + dp[i][j-v] // 入度为 2，取核心函数转移
+			for s, dv := range dp[i] {
+				dp[i+1][s] = dv
+				if s >= v {
+					dp[i+1][s] += dp[i][s-v]
 				}
 			}
 		}
