@@ -12,8 +12,8 @@ func Test_run(t *testing.T) {
 
 func testRun(t *testing.T, debugCaseNum int) {
 	type testCase struct {
-		n   int
-		ans int
+		n   int // input
+		ans int // the guessed
 	}
 	// corner cases
 	testCases := []testCase{
@@ -31,6 +31,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		testCases = append(testCases, testCase{ans: v})
 	}
 
+	// TODO config limits
 	const (
 		queryLimit    = 64
 		minQueryValue = 1
@@ -40,7 +41,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		//n := tc.n
 		//expectedAns := tc.ans
 		queryCnt := 0
-		return func(_q int64) (res bool) {
+		return func(_q int64) (resp bool) {
 			q := int(_q)
 			if caseNum == debugCaseNum {
 				println(q)
