@@ -445,7 +445,7 @@ func dpCollections() {
 	*/
 
 	// 石子合并
-	// https://ac.nowcoder.com/acm/contest/1043/A
+	// https://ac.nowcoder.com/acm/contest/1043/A https://ac.nowcoder.com/acm/problem/51170
 	// 环形的情况 https://www.luogu.com.cn/problem/P1880
 	// 相邻 k 堆的情况（综合①②）LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
 	mergeStones := func(a []int) int {
