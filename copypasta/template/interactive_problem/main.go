@@ -14,8 +14,11 @@ func run(n int, Q func(int64) bool) (ans int64) {
 
 func main() {
 	in := bufio.NewReader(os.Stdin)
+	// if the number of output times is small, just use Println without bufio things
+	out := bufio.NewWriter(os.Stdout)
 	Q := func(q int64) (resp bool) {
-		Println("?", q)
+		Fprintln(out, "?", q)
+		out.Flush()
 		// ... or read int and return it
 		var s []byte
 		Fscan(in, &s)
@@ -27,7 +30,8 @@ func main() {
 		var n int
 		Fscan(in, &n)
 		ans := run(n, Q)
-		Println("!", ans)
+		Fprintln(out, "!", ans)
+		out.Flush()
 		// some problems need to read an extra string like "Correct" or "Incorrect" after guessed the answer
 		//var s []byte
 		//Fscan(in, &s)
