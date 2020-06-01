@@ -1,6 +1,7 @@
 package main
 
 import (
+	. "fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -12,23 +13,32 @@ func Test_run(t *testing.T) {
 
 func testRun(t *testing.T, debugCaseNum int) {
 	type testCase struct {
-		n   int // input
-		ans int // the guessed
+		input
+		guess
+		innerData []int // optional
 	}
 	// corner cases
 	testCases := []testCase{
-		{ans: 1e9 - 1},
-		{ans: 1e9},
+		{
+			input: input{10},
+			guess: guess{1e9},
+		},
 	}
 	// small cases
 	for i := 1; i <= 1000; i++ {
-		testCases = append(testCases, testCase{ans: i})
+		testCases = append(testCases, testCase{
+			input: input{10},
+			guess: guess{i},
+		})
 	}
 	// random cases
 	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 1000; i++ {
 		v := 1 + rand.Intn(1e9) // [1,1e9]
-		testCases = append(testCases, testCase{ans: v})
+		testCases = append(testCases, testCase{
+			input: input{10},
+			guess: guess{v},
+		})
 	}
 
 	// TODO config limits
@@ -37,24 +47,25 @@ func testRun(t *testing.T, debugCaseNum int) {
 		minQueryValue = 1
 		maxQueryValue = 1e18
 	)
-	checkQuery := func(caseNum int, tc testCase) func(int64) bool {
-		//n := tc.n
-		//expectedAns := tc.ans
-		queryCnt := 0
-		return func(_q int64) (resp bool) {
-			q := int(_q)
+	checkQuery := func(caseNum int, tc testCase) func(qIn) qOut {
+		n := tc.n
+		numToGuess := tc.ans
+		_queryCnt := 0
+		return func(qi qIn) (resp qOut) {
+			q := qi.q
 			if caseNum == debugCaseNum {
-				println(q)
+				Println(qi)
 			}
-			queryCnt++
-			if queryCnt > queryLimit {
+			_queryCnt++
+			if _queryCnt > queryLimit {
 				panic("query limit exceeded")
 			}
 			if q < minQueryValue || q > maxQueryValue {
 				panic("invalid query arguments")
 			}
 			// ...
-			return false
+			resp.ok = q >= n+numToGuess
+			return
 		}
 	}
 
@@ -69,8 +80,8 @@ func testRun(t *testing.T, debugCaseNum int) {
 		if debugCaseNum != 0 && caseNum != debugCaseNum {
 			continue
 		}
-		expectedAns := tc.ans
-		actualAns := run(tc.n, checkQuery(caseNum, tc))
+		expectedAns := tc.guess
+		actualAns := run(tc.input, checkQuery(caseNum, tc))
 		if !assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum) {
 			failedCount++
 			if failedCount > failedCountLimit {
