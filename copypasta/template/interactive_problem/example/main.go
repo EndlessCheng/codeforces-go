@@ -19,7 +19,6 @@ type (
 	qOut  struct{ max int }
 )
 
-// github.com/EndlessCheng/codeforces-go
 func run(in input, Q func(qIn) qOut) (gs guess) {
 	n, k, a := in.n, in.k, in.a
 	gs.ans = make([]int, k)
