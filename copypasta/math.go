@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-/*
+/* 数论 组合数学 博弈论 趣味数学（杂项）
+
 todo 待整理 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
@@ -24,7 +25,7 @@ GP: Sn = a1*(pow(q,n)-1)/(q-1), q != 1
 
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
-	// https://oeis.org/A000040
+	// 素数表 https://oeis.org/A000040
 	primes := [...]int{
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
@@ -73,11 +74,10 @@ func numberTheoryCollection() {
 	}
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
-	// 前 n 个数的 LCM
-	// https://oeis.org/A003418
+	// 前 n 个数的 LCM https://oeis.org/A003418
+	// a(n)/a(n-1) = https://oeis.org/A014963
 	// Mangoldt Function
 	// https://mathworld.wolfram.com/MangoldtFunction.html
-	// https://oeis.org/A014963
 
 	// GCD 性质统计相关
 	// #{(a,b) | 1<=a<=b<=n, gcd(a,b)=1}   https://oeis.org/A002088
@@ -129,28 +129,36 @@ func numberTheoryCollection() {
 	}
 
 	/* 质数 质因子分解
-	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture
+	前 n 个质数之和 http://oeis.org/A007504
+	a(n)^2 - a(n-1)^2 = A034960(n)
+	EXTRA: divide odd numbers into groups with prime(n) elements and add together http://oeis.org/A034960
+
+	前 n 个质数之积 prime(n)# https://oeis.org/A002110
+	the least number with n distinct prime factors
+	2, 6, 30, 210, 2310, 30030, 510510, 9699690, 223092870, /9/
+	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
+
+	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
 	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
 	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
-	https://oeis.org/A020481
-	n https://oeis.org/A025018
-	a(n) https://oeis.org/A025019
+	LIS n https://oeis.org/A025018
+	LIS a(n) https://oeis.org/A025019
 	1e9 内最大的为 a(721013438) = 1789
 	2e9 内最大的为 a(1847133842) = 1861
 
 	勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
 	https://en.wikipedia.org/wiki/Legendre%27s_conjecture
-	https://oeis.org/A014085 https://oeis.org/A060199
+	Number of primes between n^2 and (n+1)^2 https://oeis.org/A014085
+	Number of primes between n^3 and (n+1)^3 https://oeis.org/A060199
 
 	伯特兰-切比雪夫定理 - n ~ 2n 之间至少有一个质数 Bertrand's postulate
 	https://en.wikipedia.org/wiki/Bertrand%27s_postulate
-	https://oeis.org/A035250 https://oeis.org/A060715
+	Number of primes between n and 2n (inclusive) https://oeis.org/A035250
+	Number of primes between n and 2n exclusive https://oeis.org/A060715
 
-	区间最大质数间隔
-	Prime gaps: differences between consecutive primes
-	https://oeis.org/A001223
-	Indices https://oeis.org/A005669
-	Records https://oeis.org/A005250
+	相邻质数间隔 https://oeis.org/A001223
+	LIS n https://oeis.org/A005669
+	LIS a(n) https://oeis.org/A005250
 
 	Least k such that H(k) > n, where H(k) is the harmonic number sum_{i=1..k} 1/i
 	https://oeis.org/A002387
@@ -222,8 +230,7 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: pi(n), the number of primes <= n
-		// https://oeis.org/A000720
+		// EXTRA: pi(n), the number of primes <= n https://oeis.org/A000720
 		pi := [mx + 1]int{}
 		for i := 2; i <= mx; i++ {
 			pi[i] = pi[i-1]
@@ -281,12 +288,10 @@ func numberTheoryCollection() {
 	// 见进阶指南 p.138
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
 
-	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n)
+	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
 	// Number of prime divisors of n counted with multiplicity
-	// https://oeis.org/A001222
 	//
-	// Omega(n) - omega(n)
-	// https://oeis.org/A046660
+	// Omega(n) - omega(n) https://oeis.org/A046660
 	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
 	// So a(24) = a(375) since 24 = 2^3 * 3 and 375 = 3 * 5^3 both have prime signature (3, 1)
 	// a(n) = 0 for squarefree n
@@ -308,8 +313,7 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: 前缀和，即 Omega(n!)
-		// https://oeis.org/A022559
+		// EXTRA: 前缀和，即 Omega(n!) https://oeis.org/A022559
 		for i := 3; i <= mx; i++ {
 			cnts[i] += cnts[i-1]
 		}
@@ -342,50 +346,45 @@ func numberTheoryCollection() {
 	//}
 
 	/* 约数
-	高合成数/反质数 Highly Composite Numbers
-	一个高合成数一定是由另一个高合成数乘某个质数得到
+	高合成数/反质数 Highly Composite Numbers https://oeis.org/A002182
+	性质：一个高合成数一定是由另一个高合成数乘一个质数得到
 	见进阶指南 p.140-141
-	https://oeis.org/A002182
-	https://oeis.org/A002183
-	https://oeis.org/A199337 Number of highly composite numbers not divisible by n
-	https://www.luogu.com.cn/problem/P1463
+	Number of divisors of n-th highly composite number https://oeis.org/A002183
+	Number of highly composite numbers not divisible by n https://oeis.org/A199337
+	求出不超过 n 的最大的反质数 https://www.luogu.com.cn/problem/P1463
 
-	TIPS: Maximal number of divisors (d(n)) of any n-digit number
+	TIPS: Maximal number of divisors (d(n)) of any n-digit number https://oeis.org/A066150
 	方便估计复杂度 - 近似为开立方
-	https://oeis.org/A066150
-	4, 12, 32, 64, 128, 240, 448, 768, 1344,  /9/
-	2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280  /19/
+	4, 12, 32, 64, 128, 240, 448, 768, 1344, /9/
+	2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280 /19/
 
-		上面这些数对应的最小的 n
-		https://oeis.org/A066151
+		上面这些数对应的最小的 n https://oeis.org/A066151
 		6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
 		6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
 
-		Smallest number with exactly n divisors
-		https://oeis.org/A005179
+		Smallest number with exactly n divisors https://oeis.org/A005179
 
-	Largest divisor of n having the form 2^i*5^j
+	Largest divisor of n having the form 2^i*5^j http://oeis.org/A132741
 	a(n) = A006519(n)*A060904(n) = 2^A007814(n)*5^A112765(n)
-	http://oeis.org/A132741
 
-	Squarefree numbers: numbers that are not divisible by a square greater than 1
+	Squarefree numbers https://oeis.org/A005117 (介绍了一种筛法)
+	Numbers that are not divisible by a square greater than 1
 	Lim_{n->infinity} a(n)/n = Pi^2/6
-	https://oeis.org/A005117 介绍了一种筛法
-	Numbers that are not squarefree. Numbers that are divisible by a square greater than 1
-	https://oeis.org/A013929
 
-	Semiprimes (or biprimes): products of two primes
-	https://oeis.org/A001358
+		Numbers that are not squarefree https://oeis.org/A013929
+		Numbers that are divisible by a square greater than 1
 
-		Squarefree semiprimes: Numbers that are the product of two distinct primes
-		https://oeis.org/A006881
+	Semiprimes (or biprimes): products of two primes https://oeis.org/A001358
 
-	Squarefree part of n: a(n) is the smallest positive number m such that n/m is a square
-	Also called core(n)
-	https://oeis.org/A007913
+		Squarefree semiprimes https://oeis.org/A006881
+		Numbers that are the product of two distinct primes
 
-	Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
-	https://oeis.org/A007947
+	Squarefree part of n (also called core(n)) https://oeis.org/A007913
+	a(n) is the smallest positive number m such that n/m is a square
+
+	Largest squarefree number dividing n https://oeis.org/A007947
+	the squarefree kernel of n, rad(n), radical of n
+
 	*/
 
 	// 枚举一个数的全部约数
@@ -428,9 +427,9 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// Largest divisor of n <= sqrt(n)
-	// https://oeis.org/A033676
-	// https://oeis.org/A060775
+	// 约数的中位数（偶数个约数时取小的那个）
+	// Lower central (median) divisor of n https://oeis.org/A060775
+	// EXTRA: Largest divisor of n <= sqrt(n) https://oeis.org/A033676
 	maxSqrtDivisor := func(n int) int {
 		for d := int(math.Sqrt(float64(n))); ; d-- {
 			if n%d == 0 {
@@ -459,19 +458,17 @@ func numberTheoryCollection() {
 		_, _ = isSquareNumber, halfDivisors
 	}
 
-	// EXTRA: 约数个数 d(n) τ(n) = Product (ei + 1), ei 为第 i 个质数的系数
-	//        https://oeis.org/A000005
-	//        https://oeis.org/A002182 https://oeis.org/A002183
-	//        前缀和 = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
-	//              = 见后文「数论分块/除法分块」
+	// EXTRA: n 的约数个数 d(n) τ(n) = Product (ei + 1), ei 为第 i 个质数的系数 https://oeis.org/A000005
+	//        LIS n https://oeis.org/A002182
+	//        LIS d(n) https://oeis.org/A002183
+	//        约数个数前缀和 = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
+	//                     = 见后文「数论分块/除法分块」
 
-	// EXTRA: 约数之和 σ(n) = Product (pi^(ei+1)-1)/(pi-1)
-	//        https://oeis.org/A000203
-	//        前缀和 = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
+	// EXTRA: n 的约数之和 σ(n) = Product (pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
+	//        约数之和前缀和 = Sum_{k=1..n} k*floor(n/k) https://oeis.org/A024916
 
-	// EXTRA: 约数之积 μ(n) = n^(d(n)/2)
+	// EXTRA: n 的约数之积 μ(n) = n^(d(n)/2) https://oeis.org/A007955
 	//        because we can form d(n)/2 pairs from the factors, each with product n
-	//        https://oeis.org/A007955
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
 	// for i>=2, factors[i][0] == i means i is prime
@@ -487,13 +484,11 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// LPF(n): least prime dividing n (when n > 1); a(1) = 1
+	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
-	// https://oeis.org/A020639
 	//
-	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1
-	// https://oeis.org/A006530
+	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1 https://oeis.org/A006530
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
@@ -519,14 +514,12 @@ func numberTheoryCollection() {
 			// do(p,e)
 		}
 
-		// EXTRA: n 的最大真因子 = n/LPF(n)
-		// https://oeis.org/A032742
+		// EXTRA: n 的最大真因子 = n/LPF(n) https://oeis.org/A032742
 		// n/LPF(n) = Max{gcd(n,j); j=n+1..2n-1}
 	}
 
-	// 预处理: [2,mx] 的不同的质因子个数 omega(n)
+	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
 	// Number of distinct primes dividing n
-	// https://oeis.org/A001221
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
 		cnts := make([]int, mx+1)
@@ -538,8 +531,7 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: 前缀和，即 omega(n!)
-		// https://oeis.org/A013939
+		// EXTRA: 前缀和，即 omega(n!) https://oeis.org/A013939
 		for i := 3; i <= mx; i++ {
 			cnts[i] += cnts[i-1]
 		}
@@ -561,8 +553,8 @@ func numberTheoryCollection() {
 		return ans
 	}
 
-	// 预处理 [2,mx] 的欧拉函数（互质的数的个数）Euler totient function
-	// https://oeis.org/A000010
+	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
+	// 预处理 [2,mx]
 	// NOTE: phi 的迭代（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
 	phiAll := func() {
 		const mx int = 1e6
@@ -580,16 +572,14 @@ func numberTheoryCollection() {
 	}
 
 	// phi 求和相关
-	// ∑phi(i)
-	// https://oeis.org/A002088
+	// ∑phi(i) https://oeis.org/A002088
 	// todo https://oi-wiki.org/math/min-25/#_7
 
-	// Number of numbers "unrelated to n": m < n such that m is neither a divisor of n nor relatively prime to n
+	// Number of numbers "unrelated to n" http://oeis.org/A045763
+	// m < n such that m is neither a divisor of n nor relatively prime to n
 	// a(n) = n + 1 - d(n) - phi(n); where d(n) is the number of divisors of n
-	// http://oeis.org/A045763
 
-	// Unitary totient (or unitary phi) function uphi(n)
-	// http://oeis.org/A047994
+	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
 
 	/* 同余
 	 */
@@ -788,8 +778,7 @@ func numberTheoryCollection() {
 		return res
 	}
 
-	// EXTRA: binomial(n, floor(n/2))
-	// https://oeis.org/A001405
+	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
 	combHalf := [...]int64{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
 		252, 462, 924, 1716, 3432, 6435, 12870, 24310, 48620, 92378, // C(19,9)
@@ -800,8 +789,7 @@ func numberTheoryCollection() {
 		118264581564861424, 232714176627630544, 465428353255261088, 916312070471295267, 1832624140942590534, 3609714217008132870, 7219428434016265740, // C(66,33)
 	}
 
-	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
-	// https://oeis.org/A000984
+	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2 https://oeis.org/A000984
 
 	// 求组合数/二项式系数
 	// 不取模，仅适用于小范围的 n 和 k
@@ -925,8 +913,7 @@ func numberTheoryCollection() {
 	// 原根
 	// todo https://cp-algorithms.com/algebra/primitive-root.html
 
-	// 莫比乌斯函数 mu
-	// https://oeis.org/A008683
+	// 莫比乌斯函数 mu https://oeis.org/A008683
 	// todo https://oi-wiki.org/math/mobius/#_11
 	// 前缀和 https://oi-wiki.org/math/min-25/#_6
 
@@ -939,8 +926,7 @@ func numberTheoryCollection() {
 	//
 
 	// 数论分块/除法分块
-	// https://oeis.org/A006218
-	// a(n) = Sum_{k=1..n} floor(n/k)
+	// a(n) = Sum_{k=1..n} floor(n/k) https://oeis.org/A006218
 	//      = 2*(Sum_{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
@@ -955,8 +941,7 @@ func numberTheoryCollection() {
 
 	//
 
-	// Number of odd divisors of n
-	// https://oeis.org/A001227
+	// Number of odd divisors of n https://oeis.org/A001227
 	consecutiveNumbersSum := func(n int) (ans int) {
 		for i := 1; i*i <= n; i++ {
 			if n%i == 0 {
@@ -989,7 +974,7 @@ func numberTheoryCollection() {
 	}
 }
 
-/* 组合、杂项
+/* 组合数学
 
 NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
 
@@ -1022,10 +1007,20 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
 
-记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2
+记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2 https://oeis.org/A007590
 Maximum sum of displacements of elements in a permutation of (1..n)
 For example, with n = 9, permutation (5,6,7,8,9,1,2,3,4) has displacements (4,4,4,4,4,5,5,5,5) with maximal sum = 40
-https://oeis.org/A007590
+
+NxN 大小的对称置换矩阵的个数 http://oeis.org/A000085
+这里的对称指仅关于主对角线对称
+a[i] = (a[i-1] + (i-1)*a[i-2]) % mod
+The number of n X n symmetric permutation matrices
+Number of self-inverse permutations on n letters, also known as involutions; number of standard Young tableaux with n cells
+Proof of the recurrence relation a(n) = a(n-1) + (n-1)*a(n-2):
+	number of involutions of [n] containing n as a fixed point is a(n-1);
+	number of involutions of [n] containing n in some cycle (j, n),
+	where 1 <= j <= n-1, is (n-1) times the number of involutions of [n] containing the cycle (n-1 n) = (n-1)*a(n-2)
+相关题目 https://ac.nowcoder.com/acm/contest/5389/C
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
@@ -1036,7 +1031,7 @@ func miscCollection() {
 	// 因此每有一对夫妻，符合条件的排列个数就减半
 	// 所以结果为 a(n) = (2n)!/2^n
 	// https://oeis.org/A000680
-	// LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
+	// 或者见这道题目的背景 LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
 
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
@@ -1098,8 +1093,8 @@ func miscCollection() {
 	}
 
 	// https://en.wikipedia.org/wiki/Repeating_decimal
-	// https://oeis.org/A051626 Period of decimal representation of 1/n, or 0 if 1/n terminates.
-	// https://oeis.org/A036275 The periodic part of the decimal expansion of 1/n. Any initial 0's are to be placed at end of cycle.
+	// Period of decimal representation of 1/n, or 0 if 1/n terminates https://oeis.org/A051626
+	// The periodic part of the decimal expansion of 1/n https://oeis.org/A036275
 	// 例如 (2, -3) => ("-0.", "6")
 	// b must not be zero
 	fractionToDecimal := func(a, b int64) (beforeCycle, cycle []byte) {
@@ -1323,11 +1318,10 @@ func grayCode(length int) []int {
 	return ans
 }
 
-// https://oeis.org/A000127
 // Maximal number of regions obtained by joining n points around a circle by straight lines.
 // Also number of regions in 4-space formed by n-1 hyperplanes.
-//
-//     n*(n-1)*(n*n-5*n+18)/24+1
+// a(n) = n*(n-1)*(n*n-5*n+18)/24+1
+// https://oeis.org/A000127
 
 // 负二进制数相加
 // LC1073 https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
@@ -1408,7 +1402,7 @@ func calculate(s string) (ans int) {
 }
 
 // Smallest number h such that n*h is a repunit (111...1), or 0 if no such h exists
-// https://oeis.org/A190301
+// https://oeis.org/A190301 111...1
 // https://oeis.org/A216485 222...2
 
 // Least k such that the decimal representation of k*n contains only 1's and 0's
@@ -1421,6 +1415,5 @@ func calculate(s string) (ans int) {
 // a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 // https://oeis.org/A181061
 
-// 三维 n 皇后
+// 三维 n 皇后 http://oeis.org/A068940
 // Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
-// http://oeis.org/A068940

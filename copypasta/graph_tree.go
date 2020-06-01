@@ -628,13 +628,13 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
 // 模板题 https://www.luogu.com.cn/problem/P3690
-// https://ac.nowcoder.com/discuss/387703 F 题
+// https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
 // 讲解+套题 https://codeforces.ml/blog/entry/44351
 // todo 讲解 https://codeforces.ml/blog/entry/67696
-// todo https://ac.nowcoder.com/discuss/394080 E 题
+// todo https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: 虚树

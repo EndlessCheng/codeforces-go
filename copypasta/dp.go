@@ -244,7 +244,7 @@ func dpCollections() {
 	// 定义 dp[i][j] 表示前 i 个字符中长度为 j 的本质不同子序列个数
 	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
 	// 其中 prev[i] 为 s[i] 的上一个相同字符位置
-	// https://ac.nowcoder.com/discuss/394080 C 题
+	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
 	// https://codeforces.ml/problemset/problem/1183/H
 	distinctSubsequence := func(s string) int64 {
 		n := len(s)

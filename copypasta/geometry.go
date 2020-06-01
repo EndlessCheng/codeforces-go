@@ -62,7 +62,7 @@ Acos(-1) = π
 (-1, 0) = π
 ( 0, 0) = 0
 
-todo 二维偏序 https://ac.nowcoder.com/discuss/394080 F 题
+todo 二维偏序 https://ac.nowcoder.com/acm/contest/4853/F 题解 https://ac.nowcoder.com/discuss/394080
 
 Pick 定理
 https://oi-wiki.org/geometry/pick/
