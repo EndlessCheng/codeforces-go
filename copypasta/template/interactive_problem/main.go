@@ -14,12 +14,14 @@ type (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func run(in input, Q func(qIn) qOut) (gs guess) {
+func run(in input, _Q func(qIn) qOut) (gs guess) {
+	Q := func(q int) qOut { return _Q(qIn{q}) }
+	n := in.n
 
 	return
 }
 
-func main() {
+func ioq() {
 	in := bufio.NewReader(os.Stdin)
 	// if the number of output times is small, just use Println without bufio things
 	out := bufio.NewWriter(os.Stdout)
@@ -44,3 +46,5 @@ func main() {
 		//Fscan(in, &s)
 	}
 }
+
+func main() { ioq() }
