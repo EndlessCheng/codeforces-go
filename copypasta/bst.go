@@ -4,69 +4,55 @@ import . "fmt"
 
 // 二叉树常用函数
 
-type tKeyType int   // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
-type tValueType int // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
+// 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
+type tKeyType int
+type tValueType int
 
-type tnode struct {
-	lr    [2]*tnode
+type bstNode struct {
+	lr    [2]*bstNode
 	sz    int
 	msz   int
 	key   tKeyType
 	value tValueType
 }
 
-func (o *tnode) size() int {
-	if o != nil {
-		return o.sz
-	}
-	return 0
-}
-
-func (o *tnode) mSize() int {
-	if o != nil {
-		return o.msz
-	}
-	return 0
-}
-
-func (o *tnode) pushUp() {
-	sz := 1
-	msz := int(o.value)
-	if ol := o.lr[0]; ol != nil {
-		sz += ol.sz
-		msz += ol.msz
-	}
-	if or := o.lr[1]; or != nil {
-		sz += or.sz
-		msz += or.msz
-	}
-	o.sz = sz
-	o.msz = msz
-}
-
-type bst struct {
-	root *tnode
-}
-
-// 设置如下返回值是为了方便使用 tNode 中的 lr 数组
-func (t *bst) compare(a, b tKeyType) int {
+// 设置如下返回值是为了方便使用 bstNode 中的 lr 数组
+func (o *bstNode) cmp(b tKeyType) int {
 	switch {
-	case a < b:
+	case b < o.key:
 		return 0
-	case a > b:
+	case b > o.key:
 		return 1
 	default:
 		return -1
 	}
 }
 
+func (o *bstNode) size() int {
+	if o != nil {
+		return o.sz
+	}
+	return 0
+}
+
+func (o *bstNode) mSize() int {
+	if o != nil {
+		return o.msz
+	}
+	return 0
+}
+
+type bst struct {
+	root *bstNode
+}
+
 func (t *bst) size() int   { return t.root.size() }
 func (t *bst) empty() bool { return t.root == nil }
 
-func (t *bst) get(key tKeyType) *tnode {
+func (t *bst) get(key tKeyType) *bstNode {
 	for o := t.root; o != nil; {
-		if cmp := t.compare(key, o.key); cmp >= 0 {
-			o = o.lr[cmp]
+		if c := o.cmp(key); c >= 0 {
+			o = o.lr[c]
 		} else {
 			return o
 		}
@@ -77,12 +63,12 @@ func (t *bst) get(key tKeyType) *tnode {
 // max <= key
 // return nil if not found
 // same like --upper_bound in C++ STL
-func (t *bst) floor(key tKeyType) (floor *tnode) {
+func (t *bst) floor(key tKeyType) (floor *bstNode) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
+		switch c := o.cmp(key); {
+		case c == 0:
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			floor = o
 			o = o.lr[1]
 		default:
@@ -94,13 +80,13 @@ func (t *bst) floor(key tKeyType) (floor *tnode) {
 
 // min >= key
 // return nil if not found
-func (t *bst) lowerBound(key tKeyType) (lb *tnode) {
+func (t *bst) lowerBound(key tKeyType) (lb *bstNode) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
+		switch c := o.cmp(key); {
+		case c == 0:
 			lb = o
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			o = o.lr[1]
 		default:
 			return o
@@ -110,12 +96,12 @@ func (t *bst) lowerBound(key tKeyType) (lb *tnode) {
 }
 
 // 前驱（小于 key，且最大的数）
-func (t *bst) prev(key tKeyType) (prev *tnode) {
+func (t *bst) prev(key tKeyType) (prev *bstNode) {
 	// 另一种写法
 	// rank, _ := t.mRank(key)
 	// return t.mSelect(rank - 1)
 	for o := t.root; o != nil; {
-		if cmp := t.compare(key, o.key); cmp <= 0 {
+		if o.cmp(key) <= 0 {
 			o = o.lr[0]
 		} else {
 			prev = o
@@ -126,7 +112,7 @@ func (t *bst) prev(key tKeyType) (prev *tnode) {
 }
 
 // 后继（大于 key，且最小的数)
-func (t *bst) next(key tKeyType) (next *tnode) {
+func (t *bst) next(key tKeyType) (next *bstNode) {
 	// 另一种写法
 	// rank, o := t.mRank(key)
 	// if o != nil {
@@ -134,7 +120,7 @@ func (t *bst) next(key tKeyType) (next *tnode) {
 	// }
 	// return t.mSelect(rank)
 	for o := t.root; o != nil; {
-		if cmp := t.compare(key, o.key); cmp != 0 {
+		if o.cmp(key) != 0 {
 			o = o.lr[1]
 		} else {
 			next = o
@@ -152,10 +138,10 @@ func (t *bst) hasValueInRange(l, r int) bool {
 // 小于 key 的键的数量
 func (t *bst) mRank(key tKeyType) (cnt int) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
+		switch c := o.cmp(key); {
+		case c == 0:
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			cnt += int(o.value) + o.lr[0].mSize()
 			o = o.lr[1]
 		default:
@@ -169,11 +155,11 @@ func (t *bst) mRank(key tKeyType) (cnt int) {
 // >= key 的键的数量
 func (t *bst) lowerCount(key tKeyType) (cnt int) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
+		switch c := o.cmp(key); {
+		case c == 0:
 			cnt += int(o.value) + o.lr[1].mSize()
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			o = o.lr[1]
 		default:
 			cnt += int(o.value) + o.lr[1].mSize()
@@ -184,7 +170,7 @@ func (t *bst) lowerCount(key tKeyType) (cnt int) {
 }
 
 // 排名为 k 的节点 o（即有 k 个键小于 o.key）
-func (t *bst) mSelect(k int) (o *tnode) {
+func (t *bst) mSelect(k int) (o *bstNode) {
 	//if k < 0 {
 	//	return
 	//}
@@ -205,14 +191,14 @@ func (t *bst) mSelect(k int) (o *tnode) {
 	return
 }
 
-func (t *bst) min() (min *tnode) {
+func (t *bst) min() (min *bstNode) {
 	for o := t.root; o != nil; o = o.lr[0] {
 		min = o
 	}
 	return
 }
 
-func (t *bst) max() (max *tnode) {
+func (t *bst) max() (max *bstNode) {
 	for o := t.root; o != nil; o = o.lr[1] {
 		max = o
 	}
@@ -220,8 +206,8 @@ func (t *bst) max() (max *tnode) {
 }
 
 func (t *bst) keys() (keys []tKeyType) {
-	var o *tnode
-	q := []*tnode{t.root}
+	var o *bstNode
+	q := []*bstNode{t.root}
 	for len(q) > 0 {
 		o, q = q[0], q[1:]
 		if o == nil {
@@ -236,7 +222,7 @@ func (t *bst) keys() (keys []tKeyType) {
 
 //
 
-func (o *tnode) String() string {
+func (o *bstNode) String() string {
 	var s string
 	if o.value == 1 {
 		s = Sprintf("%v", o.key)
@@ -247,7 +233,7 @@ func (o *tnode) String() string {
 	return s
 }
 
-func (o *tnode) draw(prefix string, isTail bool, str *string) {
+func (o *bstNode) draw(prefix string, isTail bool, str *string) {
 	if o.lr[1] != nil {
 		newPrefix := prefix
 		if isTail {
