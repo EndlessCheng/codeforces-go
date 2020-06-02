@@ -525,16 +525,18 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 }
 
 // 树链剖分（重链剖分）
+// 性质：
+// 1. 如果 v-w 是一条轻边，那么 size[w] < size[v]/2
+// 2. 从根结点到任意结点的路所经过的轻重链的个数为 O(logn)
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
-// dsu on tree学习笔记 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
-// https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
-// vals 为点权
+// 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
+// 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
-// todo 题单 https://www.luogu.com.cn/training/1654
+// todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
-func (*tree) hld(n, root int, g [][]int, vals []int64) {
+func (*tree) hld(n, root int, g [][]int, vals []int64) { // vals 为点权
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ hson, fa, depth, size, top, dfn int }
 	nodes := make([]node, n)
@@ -618,6 +620,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 // 长链剖分
 // 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
+// https://oi-wiki.org/graph/hld/#_14
 // todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 // 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 
@@ -632,6 +635,7 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) {
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
+// dsu on tree学习笔记 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.ml/blog/entry/44351
 // todo 讲解 https://codeforces.ml/blog/entry/67696
 // todo https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
