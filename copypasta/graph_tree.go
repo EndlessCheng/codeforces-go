@@ -140,7 +140,7 @@ func (*tree) diameter(st int, g [][]int) (dv, dw, maxD int) {
 }
 
 // 树的重心
-// 以重心为根时，最大子树结点数最少
+// 以重心为根时，最大子树结点数最少，或者说所有子树的大小都不超过 n/2
 // 性质：
 // - 一棵树最多有两个重心，且相邻
 // - 树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
@@ -178,10 +178,11 @@ func (*tree) findCentroid(n, st int, g [][]int) (ans int) {
 	return
 }
 
-// 点分治
+// 点分治 - 重心分解 (CD, Centroid Decomposition)
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
 // 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
+// 好题 https://codeforces.com/contest/1174/problem/F
 // TODO: 需要重新整理
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
@@ -524,7 +525,7 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 	_ = update
 }
 
-// 树链剖分（重链剖分）
+// 树链剖分/重链剖分 (HLD, Heavy Light Decomposition）
 // 性质：
 //   树上每个结点都属于且仅属于一条重链
 //   如果 v-w 是一条轻边，那么 size[w] < size[v]/2
@@ -535,6 +536,7 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
+// 好题 https://codeforces.com/contest/1174/problem/F
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 func (*tree) hld(n, root int, g [][]int, vals []int64) { // vals 为点权
