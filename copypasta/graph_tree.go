@@ -22,6 +22,8 @@ CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=constructive+al
 type tree struct{}
 
 // 基本信息：节点深度和子树大小
+// 性质：
+//    深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
 func (*tree) depthSize(n, root int, g [][]int) {
 	dep := make([]int, n)
 	size := make([]int, n)
@@ -361,7 +363,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	{
 		// 加权树上二分
 		var dep []int64 // 加权深度，dfs 预处理略
-		// 不断向上寻找 d(v,x) <= d 的离根最近的 x
+		// 从 v 开始向根移动至多 d 距离，返回能移动到的离根最近的点
 		uptoDep := func(v int, d int64) int {
 			dv := dep[v]
 			for i := mx - 1; i >= 0; i-- {
@@ -584,13 +586,12 @@ func (*tree) hld(n, root int, g [][]int, vals []int64) { // vals 为点权
 	}
 	decomposition(root, -1, root)
 
-	t := make(lazyST, 4*n)
 	// 按照 DFS 序对应的点权初始化线段树
 	dfnVals := make([]int64, n)
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn-1] = v
 	}
-	t.init(dfnVals)
+	t := newLazySegmentTree(dfnVals)
 
 	doPath := func(v, w int, do func(l, r int)) {
 		ov, ow := nodes[v], nodes[w]
