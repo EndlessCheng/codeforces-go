@@ -526,8 +526,9 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 
 // 树链剖分（重链剖分）
 // 性质：
-// 1. 如果 v-w 是一条轻边，那么 size[w] < size[v]/2
-// 2. 从根结点到任意结点的路所经过的轻重链的个数为 O(logn)
+//   树上每个结点都属于且仅属于一条重链
+//   如果 v-w 是一条轻边，那么 size[w] < size[v]/2
+//   从根结点到任意结点所经过的重链个数为 O(logn)
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
