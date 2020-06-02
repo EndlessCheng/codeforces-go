@@ -32,6 +32,7 @@ import (
 
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
+// 另一个 Golang 的注意事项：switch 内的 break 跳出的是该 switch，不是其外部的循环
 func commonCollection() {
 	// HELPER
 	const mod int64 = 1e9 + 7 // 998244353
