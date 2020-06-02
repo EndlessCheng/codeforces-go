@@ -2,6 +2,7 @@ package atcoder
 
 import "testing"
 
+// TODO: update REVEL_SESSION
 func TestGenAtCoderContestTemplates(t *testing.T) {
 	const contestID = "abc167"
 	//username := os.Getenv("ATCODER_USERNAME")

@@ -1022,6 +1022,12 @@ Proof of the recurrence relation a(n) = a(n-1) + (n-1)*a(n-2):
 	where 1 <= j <= n-1, is (n-1) times the number of involutions of [n] containing the cycle (n-1 n) = (n-1)*a(n-2)
 相关题目 https://ac.nowcoder.com/acm/contest/5389/C
 
+The number of 3 X n matrices of integers for which the upper-left hand corner is a 1,
+the rows and columns are weakly increasing, and two adjacent entries differ by at most 1
+a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
+https://oeis.org/A052913
+相关题目 LC1411/周赛184D https://leetcode-cn.com/contest/weekly-contest-184/problems/number-of-ways-to-paint-n-x-3-grid/
+
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
 func miscCollection() {
@@ -1417,3 +1423,6 @@ func calculate(s string) (ans int) {
 
 // 三维 n 皇后 http://oeis.org/A068940
 // Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
+
+// Smallest positive integer k such that n = +-1+-2+-...+-k for some choice of +'s and -'s https://oeis.org/A140358
+// 相关题目 https://codeforces.com/problemset/problem/1278/B
