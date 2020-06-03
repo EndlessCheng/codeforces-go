@@ -26,7 +26,7 @@ type tpNode struct {
 }
 
 // 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
-func (o *tpNode) cmp(b tpKeyType) int {
+func (o *tpNode) cmp(b tpKeyType) int8 {
 	switch {
 	case b < o.key:
 		return 0 // 左儿子
@@ -59,7 +59,7 @@ func (o *tpNode) pushUp() {
 // 旋转，并维护子树大小
 // d=0: left
 // d=1: right
-func (o *tpNode) rotate(d int) *tpNode {
+func (o *tpNode) rotate(d int8) *tpNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
