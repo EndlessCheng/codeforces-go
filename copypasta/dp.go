@@ -442,6 +442,7 @@ func dpCollections() {
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
+	     https://codeforces.ml/problemset/problem/245/H
 	*/
 
 	// 石子合并
