@@ -15,7 +15,7 @@ type (
 
 // github.com/EndlessCheng/codeforces-go
 func run(in input, _Q func(qIn) qOut) (gs guess) {
-	Q := func(q int) qOut { return _Q(qIn{q}) }
+	Q := func(q int) bool { return _Q(qIn{q}).ok }
 	n := in.n
 
 	return
@@ -25,8 +25,8 @@ func ioq() {
 	in := bufio.NewReader(os.Stdin)
 	// if the number of output times is small, just use Println without bufio things
 	out := bufio.NewWriter(os.Stdout)
-	Q := func(qi qIn) (resp qOut) {
-		Fprintln(out, "?", qi.q)
+	Q := func(q qIn) (resp qOut) {
+		Fprintln(out, "?", q.q)
 		out.Flush()
 		// ... or read int and return it
 		var s []byte
