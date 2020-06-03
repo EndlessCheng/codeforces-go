@@ -144,14 +144,15 @@ func (*tree) diameter(st int, g [][]int) (dv, dw, maxD int) {
 
 // 树的重心
 // 性质：
-//    以重心为根时，最大子树结点数最少，或者说所有子树的大小都不超过 n/2
+//    以重心为根时，最大子树结点数最少，且所有子树的大小都不超过 节点数/2
+//        反之，若存在一颗子树其大小超过 节点数/2，则重心在该子树中
 //    一棵树最多有两个重心，且相邻
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
 //    把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
 //    在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
-func (*tree) findCentroid(n, st int, g [][]int) (c int) {
+func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -173,7 +174,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (c int) {
 		maxSubSize = max(maxSubSize, n-size) // 向上的子树大小
 		if maxSubSize < minMaxSubSize {
 			minMaxSubSize = maxSubSize
-			c = v
+			ct = v
 		}
 		return size
 	}
@@ -183,10 +184,60 @@ func (*tree) findCentroid(n, st int, g [][]int) (c int) {
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
-// 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741
-// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
-// 好题 https://codeforces.com/contest/1174/problem/F
-// TODO: 需要重新整理
+// 好题 https://codeforces.ml/contest/1174/problem/F https://codeforces.ml/contest/1174/submission/82371930
+func (*tree) centroidDecomposition(n, root int, g [][]int) {
+	type node struct{ dep, fa int }
+	nodes := make([]node, n)
+	var build func(v, fa, d int)
+	build = func(v, fa, d int) {
+		nodes[v] = node{d, fa}
+		for _, w := range g[v] {
+			if w != fa {
+				build(w, v, d+1)
+			}
+		}
+	}
+	build(root, -1, 0)
+
+	usedCentroid := make([]bool, n)
+	size := make([]int, n)
+	var calcSize func(v, fa int) int
+	calcSize = func(v, fa int) int {
+		sz := 1
+		for _, w := range g[v] {
+			if w != fa && !usedCentroid[w] {
+				sz += calcSize(w, v)
+			}
+		}
+		size[v] = sz
+		return sz
+	}
+	var compSize int
+	var findCentroid func(v, fa int) int
+	findCentroid = func(v, fa int) int {
+		for _, w := range g[v] {
+			if w != fa && !usedCentroid[w] && size[w] > compSize>>1 {
+				return findCentroid(w, v)
+			}
+		}
+		return v
+	}
+
+	var f func(v int)
+	f = func(v int) {
+		calcSize(v, -1)
+		compSize = size[v]
+		ct := findCentroid(v, -1)
+		usedCentroid[ct] = true
+		//defer func() { usedCentroid[ct] = false }()
+
+		// do ct...
+	}
+	f(0)
+}
+
+// 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741 todo 待整理
+// todo 求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
 	max := func(a, b int) int {
 		if a > b {
@@ -210,32 +261,33 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 	}
 	usedCentroid := make([]bool, n)
 
-	subtreeSize := make([]int, n)
-	var calcSubtreeSize func(v, fa int) int
-	calcSubtreeSize = func(v, fa int) int {
+	size := make([]int, n)
+	var calcSize func(v, fa int) int
+	calcSize = func(v, fa int) int {
 		sz := 1
 		for _, e := range g[v] {
 			if w := e.to; w != fa && !usedCentroid[w] {
-				sz += calcSubtreeSize(w, v)
+				sz += calcSize(w, v)
 			}
 		}
-		subtreeSize[v] = sz
+		size[v] = sz
 		return sz
 	}
 
-	var findCentroid func(v, fa, compSize int) (int, int)
-	findCentroid = func(v, fa, compSize int) (minSize, ct int) {
+	var compSize int
+	var findCentroid func(v, fa int) (int, int)
+	findCentroid = func(v, fa int) (minSize, ct int) {
 		minSize = int(1e9)
 		maxSubSize := 0
 		sizeV := 1 // 除去了 usedCentroid 子树的剩余大小
 		for _, e := range g[v] {
 			if w := e.to; w != fa && !usedCentroid[w] {
-				if minSizeW, ctW := findCentroid(w, v, compSize); minSizeW < minSize {
+				if minSizeW, ctW := findCentroid(w, v); minSizeW < minSize {
 					minSize = minSizeW
 					ct = ctW
 				}
-				maxSubSize = max(maxSubSize, subtreeSize[w])
-				sizeV += subtreeSize[w]
+				maxSubSize = max(maxSubSize, size[w])
+				sizeV += size[w]
 			}
 		}
 		maxSubSize = max(maxSubSize, compSize-sizeV)
@@ -273,33 +325,36 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 		return cnt >> 1
 	}
 
-	var f func(int) int64
-	f = func(v int) (ans int64) {
-		calcSubtreeSize(v, -1)
-		_, ct := findCentroid(v, -1, subtreeSize[v])
+	var f func(v, fa int) int64
+	f = func(v, fa int) (ans int64) {
+		calcSize(v, fa)
+		compSize = size[v]
+		_, ct := findCentroid(v, fa)
 		usedCentroid[ct] = true
+		defer func() { usedCentroid[ct] = false }()
+
 		// 统计按 ct 分割后的子树中的点对数
 		for _, e := range g[ct] {
-			if !usedCentroid[e.to] {
-				ans += f(e.to)
+			if w := e.to; !usedCentroid[w] {
+				ans += f(w, v)
 			}
 		}
+
 		// 统计经过 ct 的点对数
 		// 0 是方便统计包含 ct 的部分
 		ds := []int64{0}
 		for _, e := range g[ct] {
-			if !usedCentroid[e.to] {
+			if w := e.to; !usedCentroid[w] {
 				disToCentroid = []int64{}
-				calcDisToCentroid(e.to, ct, e.weight)
+				calcDisToCentroid(w, ct, e.weight)
 				ans -= countPairs(disToCentroid)
 				ds = append(ds, disToCentroid...)
 			}
 		}
 		ans += countPairs(ds)
-		usedCentroid[ct] = false
 		return
 	}
-	return f(0)
+	return f(0, -1)
 }
 
 // 最近公共祖先 - 其一 - 基于倍增和二分搜索
@@ -360,6 +415,16 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
+	// EXTRA: 输入 u v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
+	down := func(u, v int) int {
+		// assert dep[u] < dep[v]
+		v = uptoDep(v, dep[u]+1)
+		if pa[v][0] == u {
+			return v
+		}
+		return -1
+	}
+
 	{
 		// 加权树上二分
 		var dep []int64 // 加权深度，dfs 预处理略
@@ -376,7 +441,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		_ = uptoDep
 	}
 
-	_ = _d
+	_ = []interface{}{_d, down}
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
@@ -542,29 +607,42 @@ func (*tree) differenceOnTree(n, root int, g [][]int) {
 // 好题 https://codeforces.com/contest/1174/problem/F
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
-func (*tree) hld(n, root int, g [][]int, vals []int64) { // vals 为点权
+func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
 	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
-	type node struct{ hson, fa, depth, size, top, dfn int }
+	type node struct{ depth, size, hson, fa, top, dfn int }
 	nodes := make([]node, n)
 	//idv := make([]int, n+1) // idv[nodes[v].dfn] == v
 
-	var build func(v, fa, d int) *node
-	build = func(v, fa, d int) *node {
-		nodes[v] = node{hson: -1, fa: fa, depth: d, size: 1}
-		o := &nodes[v]
+	var build func(v, fa, d int) int
+	build = func(v, fa, d int) int {
+		sz, hson := 1, -1
 		for _, w := range g[v] {
-			if w == fa {
-				continue
-			}
-			son := build(w, v, d+1)
-			o.size += son.size
-			if o.hson == -1 || son.size > nodes[o.hson].size {
-				o.hson = w
+			if w != fa {
+				s := build(w, v, d+1)
+				sz += s
+				if hson == -1 || s > nodes[hson].size {
+					hson = w
+				}
 			}
 		}
-		return o
+		nodes[v] = node{depth: d, size: sz, hson: hson, fa: fa}
+		return sz
 	}
 	build(root, -1, 0)
+
+	{
+		// EXTRA: 寻找以 st 为重链顶点的重链
+		// hPath[-1] 即为重链末端节点
+		getHP := func(st int) []int {
+			hPath := []int{st}
+			for o := nodes[st]; o.hson != -1; o = nodes[o.hson] {
+				hPath = append(hPath, o.hson)
+			}
+			return hPath
+		}
+
+		_ = getHP
+	}
 
 	dfn := 0
 	var decomposition func(v, fa, top int)
