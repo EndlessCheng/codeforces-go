@@ -515,50 +515,54 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 // 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
-func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {
-	fa := make([]int, n)
-	for i := range fa {
-		fa[i] = i
+func (*tree) lcaTarjan(in io.Reader, n, root int, g [][]int) []int {
+	pa := make([]int, n)
+	for i := range pa {
+		pa[i] = i
 	}
 	var find func(int) int
 	find = func(x int) int {
-		if fa[x] != x {
-			fa[x] = find(fa[x])
+		if pa[x] != x {
+			pa[x] = find(pa[x])
 		}
-		return fa[x]
+		return pa[x]
 	}
-
-	q := len(_qs) // read
+	var q int
+	Fscan(in, &q)
 	lca := make([]int, q)
 	type query struct{ w, i int }
 	qs := make([][]query, n)
 	vis := make([]int8, n)
-	var f func(int)
-	f = func(v int) {
+	var _f func(int)
+	_f = func(v int) {
 		vis[v] = 1
 		for _, w := range g[v] {
 			if vis[w] == 0 {
-				f(w)
-				fa[w] = v
+				_f(w)
+				pa[w] = v
 			}
 		}
 		for _, q := range qs[v] {
 			if w := q.w; vis[w] == 2 {
+				// do(v, w, lca)...
 				lca[q.i] = find(w)
 			}
 		}
 		vis[v] = 2
 	}
 	for i := range lca {
-		x, y := _qs[i][0], _qs[i][1] // read
-		if x != y {
-			qs[x] = append(qs[x], query{y, i})
-			qs[y] = append(qs[y], query{x, i})
+		var v, w int
+		Fscan(in, &v, &w)
+		v--
+		w--
+		if v != w {
+			qs[v] = append(qs[v], query{w, i})
+			qs[w] = append(qs[w], query{v, i})
 		} else {
-			lca[i] = x
+			lca[i] = v
 		}
 	}
-	f(root)
+	_f(root)
 	return lca
 }
 
@@ -567,30 +571,49 @@ func (*tree) lcaTarjan(n, root int, g [][]int, _qs [][2]int) []int {
 // 点权时 diff[lca] -= val
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
-func (*tree) differenceOnTree(n, root int, g [][]int) {
+// 模板题（边权）https://codeforces.com/problemset/problem/191/C
+func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
 	diff := make([]int, n)
 	update := func(v, w int, val int) {
-		var lca int // = _lca(v, w)
+		var lca int
+		//lca := _lca(v, w)
 		diff[v] += val
 		diff[w] += val
 		diff[lca] -= val
+		//diff[lca] -= 2 * val
+	}
+	var q int
+	Fscan(in, &q)
+	for i := 0; i < q; i++ {
+		var v, w, val int
+		Fscan(in, &v, &w, &val)
+		v--
+		w--
+		update(v, w, val)
 	}
 
-	// 自底向上求出每个点的点权
+	// 自底向上求出每个点的点权/边权
 	ans := make([]int, n)
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
 		sum := diff[v]
 		for _, w := range g[v] {
 			if w != fa {
+				// 边权的话在这里记录 ans
+				//s := f(w, v)
+				//ans[e.eid] = s
+				//sum += s
 				sum += f(w, v)
 			}
 		}
+		// 点权的话在这里记录 ans
 		ans[v] = sum
 		return sum
 	}
+	f(0, -1)
 
 	_ = update
+	return ans
 }
 
 // 树链剖分/重链剖分 (HLD, Heavy Light Decomposition）
