@@ -185,6 +185,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+// 模板题 https://codeforces.ml/problemset/problem/321/C
 // 好题 https://codeforces.ml/contest/1174/problem/F https://codeforces.ml/contest/1174/submission/82371930
 func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	type node struct{ dep, fa int }
@@ -233,6 +234,12 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 		//defer func() { usedCentroid[ct] = false }()
 
 		// do ct...
+
+		for _, w := range g[ct] {
+			if !usedCentroid[w] {
+				f(w)
+			}
+		}
 	}
 	f(0)
 }
