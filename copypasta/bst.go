@@ -17,7 +17,7 @@ type bstNode struct {
 }
 
 // 设置如下返回值是为了方便使用 bstNode 中的 lr 数组
-func (o *bstNode) cmp(b tKeyType) int {
+func (o *bstNode) cmp(b tKeyType) int8 {
 	switch {
 	case b < o.key:
 		return 0
