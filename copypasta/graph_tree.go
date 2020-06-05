@@ -69,22 +69,26 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
 func (*tree) subtreeSize(n, root int, g [][]int) {
-	type node struct{ size, dfn int }
+	type node struct{ dfn, size int }
 	nodes := make([]node, n)
 	dfn := 0
-	var buildNode func(int, int) int
-	buildNode = func(v, p int) int {
+	var build func(v, fa int) int
+	build = func(v, fa int) int {
 		dfn++
-		nodes[v] = node{1, dfn}
-		o := &nodes[v]
+		nodes[v].dfn = dfn
+		//nodes[v].dep = d
+		sz := 1
 		for _, w := range g[v] {
-			if w != p {
-				o.size += buildNode(w, v)
+			if w != fa {
+				sz += build(w, v)
 			}
 		}
-		return o.size
+		nodes[v].size = sz
+		return sz
 	}
-	buildNode(root, -1)
+	build(root, -1)
+	//o := nodes[v]
+	//do(o.dfn, o.dfn+o.size-1) // 注意 o.dfn 从 1 开始
 }
 
 // 每个节点的入出时间戳
