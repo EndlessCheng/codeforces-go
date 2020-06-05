@@ -390,7 +390,7 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
 	if !_firstMainFileOpened {
 		_firstMainFileOpened = true
-		open.Start(absPath(filePath))
+		defer open.Run(absPath(filePath))
 	}
 	return ioutil.WriteFile(filePath, []byte(fileContent), 0644)
 }

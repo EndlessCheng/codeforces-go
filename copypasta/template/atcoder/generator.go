@@ -175,7 +175,7 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 			languageID = 3013
 		}
 		statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=%d&f.Status=AC&f.Task=%s&orderBy=source_length", languageID, problemName)
-		open.Start(statusURL)
+		open.Run(statusURL)
 	}
 
 	// 创建 x.go
@@ -204,7 +204,7 @@ func main() { run(os.Stdin, os.Stdout) }
 	mainFilePath := dirPath + taskID + ".go"
 	if !isContest || taskID == "a" {
 		// 比赛时，在 IDE 中打开 A 题
-		open.Start(absPath(mainFilePath))
+		defer open.Run(absPath(mainFilePath))
 	}
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
@@ -248,10 +248,10 @@ func Test_run(t *testing.T) {
 
 func genAtCoderContestTemplates(contestID string, retryTimes int) error {
 	if retryTimes == 0 {
-		submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
+		//submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
+		//open.Run(submitURL)
 		tasksPrintURL := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks_print", contestID)
-		open.Start(submitURL)
-		open.Start(tasksPrintURL)
+		open.Run(tasksPrintURL)
 	}
 
 	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"

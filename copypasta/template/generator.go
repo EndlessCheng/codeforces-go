@@ -69,8 +69,6 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 	}
 
 	if openWebsite {
-		open.Start(problemURL)
-
 		urlObj, err := url.Parse(problemURL)
 		if err != nil {
 			return err
@@ -83,7 +81,8 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 		} else {
 			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", host, contestID, problemID)
 		}
-		open.Start(statusURL)
+		open.Run(statusURL)
+		open.Run(problemURL)
 	}
 
 	problemID = contestID + problemID
@@ -126,7 +125,7 @@ func TestCF%[1]s(t *testing.T) {
 	const rootPath = "../../main/"
 	mainFilePath := rootPath + problemID + ".go"
 	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
-		open.Start(absPath(mainFilePath))
+		open.Run(absPath(mainFilePath))
 		return fmt.Errorf("文件已存在！")
 	}
 	if err := ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
