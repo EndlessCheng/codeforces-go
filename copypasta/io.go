@@ -130,6 +130,13 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
+	// 读一个数字字符
+	r1 := func() byte {
+		b := rc()
+		for ; '0' > b || b > '9'; b = rc() {
+		}
+		return b
+	}
 	rs := func() (s []byte) {
 		b := rc()
 		for ; 'a' > b || b > 'z'; b = rc() {
@@ -151,7 +158,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		return s
 	}
 
-	_ = []interface{}{r, rs, rsn}
+	_ = []interface{}{r, r1, rs, rsn}
 }
 
 func lineIO(_r io.Reader, _w io.Writer) {
