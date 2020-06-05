@@ -12,12 +12,12 @@ package copypasta
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
-		for ; i <= n; i += i & -i { // i += lowbit(i)
+		for ; i <= n; i += i & -i {
 			tree[i] += val
 		}
 	}
 	sum := func(i int) (res int) {
-		for ; i > 0; i &= i - 1 { // i -= lowbit(i)
+		for ; i > 0; i &= i - 1 {
 			res += tree[i]
 		}
 		return
