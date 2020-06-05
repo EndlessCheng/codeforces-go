@@ -172,8 +172,15 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 		return nil
 	}
 
-	// 按 \n split 后 TrimSpace 再合并
 	lines := strings.Split(text, "\n")
+	if !p.isFuncProblem {
+		if len(lines) != 2 {
+			fmt.Println("[warn] 数据有误，截断", text)
+			lines = lines[:2]
+		}
+		return []string{strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1])}
+	}
+	// 按 \n split 后 TrimSpace 再合并
 	text = ""
 	for _, l := range lines {
 		text += strings.TrimSpace(l)
@@ -392,7 +399,7 @@ func (p *problem) writeTestFile() error {
 	exampleType := "[][]string"
 	testUtilFunc := "testutil.RunLeetCodeFuncWithExamples"
 	if !p.isFuncProblem {
-		exampleType = "[][2]string"
+		exampleType = "[][3]string"
 		testUtilFunc = "testutil.RunLeetCodeClassWithExamples"
 	}
 	examples := ""
