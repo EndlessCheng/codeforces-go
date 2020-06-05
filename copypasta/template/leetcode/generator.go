@@ -174,13 +174,19 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 
 	lines := strings.Split(text, "\n")
 	if !p.isFuncProblem {
+		if len(lines) == 1 {
+			lines = strings.Split(lines[0], ", ")
+			if len(lines) == 1 {
+				return []string{strings.TrimSpace(lines[0])}
+			}
+		}
 		if len(lines) != 2 {
 			fmt.Println("[warn] 数据有误，截断", text)
 			lines = lines[:2]
 		}
 		return []string{strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1])}
 	}
-	// 按 \n split 后 TrimSpace 再合并
+	// 按 "\n" split 后，TrimSpace 再合并
 	text = ""
 	for _, l := range lines {
 		text += strings.TrimSpace(l)
@@ -200,7 +206,7 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 		return []string{text}
 	}
 
-	// TODO: 处理参数含有 = 的情况
+	// TODO: 处理参数本身含有 = 的情况
 	splits := strings.Split(text, "=")
 	sample := make([]string, 0, len(splits)-1)
 	for _, s := range splits[1 : len(splits)-1] {
@@ -406,11 +412,18 @@ func (p *problem) writeTestFile() error {
 	for i, inArgs := range p.sampleIns {
 		examples += "\n\t\t{\n\t\t\t"
 		for _, arg := range inArgs {
-			examples += "`" + arg + "`, "
+			examples += "`" + arg + "`,"
+			if p.isFuncProblem {
+				examples += " "
+			} else {
+				examples += "\n\t\t\t"
+			}
 		}
-		examples += "\n\t\t\t"
+		if p.isFuncProblem {
+			examples += "\n\t\t\t"
+		}
 		for _, arg := range p.sampleOuts[i] {
-			examples += "`" + arg + "`, "
+			examples += "`" + arg + "`,"
 		}
 		examples += "\n\t\t},"
 	}

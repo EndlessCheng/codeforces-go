@@ -23,6 +23,7 @@ func parseCode(code string) (funcName string, isFuncProblem bool, funcLos []int)
 				funcLos = append(funcLos, lo)
 			}
 		}
+		funcName = "Constructor"
 	} else {
 		// 编写函数
 		for lo, line := range lines {
