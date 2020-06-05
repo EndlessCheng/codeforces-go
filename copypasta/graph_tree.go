@@ -68,6 +68,8 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
+// 例题 https://codeforces.ml/problemset/problem/383/C
+//     https://codeforces.ml/problemset/problem/877/E
 func (*tree) subtreeSize(n, root int, g [][]int) {
 	type node struct{ dfn, size int }
 	nodes := make([]node, n)
