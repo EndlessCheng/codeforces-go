@@ -233,7 +233,7 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
 
-func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][2]string, targetCaseNum int) (err error) {
+func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][3]string, targetCaseNum int) (err error) {
 	cType := reflect.TypeOf(constructor)
 	if cType.Kind() != reflect.Func {
 		return fmt.Errorf("constructor must be a function")
@@ -254,19 +254,16 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 			continue
 		}
 
-		rawIn := example[0]
-		invalidErr := fmt.Errorf("invalid test data: %s", rawIn)
+		names := strings.TrimSpace(example[0])
+		inputArgs := strings.TrimSpace(example[1])
+		rawExpectedOut := strings.TrimSpace(example[2])
 
 		// parse inputs
-		splits := strings.Split(strings.TrimSpace(rawIn), "\n")
-		if len(splits) != 2 {
-			return invalidErr
-		}
 		methodNames := []string{}
-		for _, name := range strings.Split(splits[0][1:len(splits[0])-1], ",") {
+		for _, name := range strings.Split(names[1:len(names)-1], ",") {
 			methodNames = append(methodNames, strings.Title(name[1:len(name)-1]))
 		}
-		rawArgsList, er := parseRawArray(splits[1])
+		rawArgsList, er := parseRawArray(inputArgs)
 		if er != nil {
 			return er
 		}
@@ -329,7 +326,6 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		}
 		rawActualOut += "]"
 
-		rawExpectedOut := strings.TrimSpace(example[1])
 		if !assert.Equal(t, rawExpectedOut, rawActualOut, "WA %d", curCase+1) {
 			allCasesOk = false
 		}
@@ -344,9 +340,11 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 }
 
 func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string, targetCaseNum int) (err error) {
-	examples := [][2]string{}
+	examples := [][3]string{}
 	for i, input := range rawInputs {
-		examples = append(examples, [2]string{input, rawOutputs[i]})
+		input = strings.TrimSpace(input)
+		lines := strings.Split(input, "\n")
+		examples = append(examples, [3]string{lines[0], lines[1], rawOutputs[i]})
 	}
 	return RunLeetCodeClassWithExamples(t, constructor, examples, targetCaseNum)
 }
