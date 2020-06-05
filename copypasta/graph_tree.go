@@ -365,12 +365,13 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 	return f(0, -1)
 }
 
-// 最近公共祖先 - 其一 - 基于倍增和二分搜索
+// 最近公共祖先 - 其一 - 基于树上倍增和二分搜索
 // O(nlogn) 预处理，O(logn) 查询
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
+// 树上倍增应用（静态路径最值）https://codeforces.ml/problemset/problem/609/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
@@ -635,6 +636,7 @@ func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
+// 与最小生成树结合（边权）https://codeforces.ml/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
