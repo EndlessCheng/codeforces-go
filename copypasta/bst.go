@@ -205,19 +205,20 @@ func (t *bst) max() (max *bstNode) {
 	return
 }
 
-func (t *bst) keys() (keys []tKeyType) {
-	var o *bstNode
-	q := []*bstNode{t.root}
-	for len(q) > 0 {
-		o, q = q[0], q[1:]
+// 中序遍历以返回有序数组
+func (t *bst) keys() []tKeyType {
+	keys := make([]tKeyType, 0, t.size())
+	var f func(o *bstNode)
+	f = func(o *bstNode) {
 		if o == nil {
-			continue
+			return
 		}
+		f(o.lr[0])
 		keys = append(keys, o.key)
-		q = append(q, o.lr[0], o.lr[1])
+		f(o.lr[1])
 	}
-	//sort.Ints(keys)
-	return
+	f(t.root)
+	return keys
 }
 
 //
