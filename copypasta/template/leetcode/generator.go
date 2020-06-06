@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// TODO: 根据构造器传入的参数来预定义结构体的属性
+// TODO: 根据构造器传入的参数来预定义 var()
 // https://leetcode-cn.com/contest/biweekly-contest-20/problems/apply-discount-every-n-orders/
 
 func login(username, password string) (session *grequests.Session, err error) {
@@ -184,7 +184,16 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 			fmt.Println("[warn] 数据有误，截断", text)
 			lines = lines[:2]
 		}
-		return []string{strings.TrimSpace(lines[0]), strings.TrimSpace(lines[1])}
+		res := []string{}
+		for _, s := range lines {
+			if strings.Contains(s, " = ") {
+				// https://leetcode-cn.com/contest/weekly-contest-121/problems/time-based-key-value-store/
+				sp := strings.Split(s, " = ")
+				s = sp[1]
+			}
+			res = append(res, strings.TrimSpace(s))
+		}
+		return res
 	}
 	// 按 "\n" split 后，TrimSpace 再合并
 	text = ""
