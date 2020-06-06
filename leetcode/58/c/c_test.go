@@ -30,3 +30,4 @@ func Test(t *testing.T) {
 	}
 }
 // https://leetcode.com/contest/weekly-contest-58/problems/number-of-atoms/
+// 726
