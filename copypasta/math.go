@@ -81,6 +81,7 @@ func numberTheoryCollection() {
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
+	//       应用：https://codeforces.ml/problemset/problem/1210/C
 	// #{(a,b) | 1<=a<=b<=n, gcd(a,b)=1}   https://oeis.org/A002088
 	//     = ∑phi(i)
 	// #{(a,b) | 1<=a,b<=n, gcd(a,b)=1}   https://oeis.org/A018805
