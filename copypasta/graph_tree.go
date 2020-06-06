@@ -14,6 +14,7 @@ NOTE: 断掉一条树边 v-w，会将这棵树分成两颗树。设 v 为 w 的�
 NOTE: 对于有根树的题，可以考虑加上 g[0] = append(g[0], -1) 来简化代码
 NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
 NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
+NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.ml/problemset/problem/700/B
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=trees
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=constructive+algorithms%2Ctrees
