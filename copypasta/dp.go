@@ -278,6 +278,7 @@ func dpCollections() {
 	这类问题可以从物品选择次序的无后效性入手
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.ml/blog/entry/59606
+	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
 	*/
 
@@ -293,9 +294,9 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
+	// 建模转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// EXTRA: 能否恰好装满（其实就是 waysToSum 的方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
-	// todo LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
