@@ -23,7 +23,7 @@ First weekly contest started at 2016-08-21.
 |[Weekly Contest 100](https://leetcode.com/contest/weekly-contest-100)|896-899|
 |[Weekly Contest 110](https://leetcode.com/contest/weekly-contest-110)|937-940|
 |[Weekly Contest 120](https://leetcode.com/contest/weekly-contest-120)|977-980|
-|[Weekly Contest 130](https://leetcode.com/contest/weekly-contest-130)|1018-1020|
+|[Weekly Contest 130](https://leetcode.com/contest/weekly-contest-130)|1017-1020|
 |[Weekly Contest 140](https://leetcode.com/contest/weekly-contest-140)|1078-1081|
 |[Weekly Contest 150](https://leetcode.com/contest/weekly-contest-150)|1160-1163|
 |[Weekly Contest 160](https://leetcode.com/contest/weekly-contest-160)|1237-1240|
