@@ -1028,7 +1028,7 @@ The number of 3 X n matrices of integers for which the upper-left hand corner is
 the rows and columns are weakly increasing, and two adjacent entries differ by at most 1
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
-相关题目 LC1411/周赛184D https://leetcode-cn.com/contest/weekly-contest-184/problems/number-of-ways-to-paint-n-x-3-grid/
+相关题目 LC1411/周赛184D https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
@@ -1332,7 +1332,7 @@ func grayCode(length int) []int {
 // https://oeis.org/A000127
 
 // 负二进制数相加
-// LC1073 https://leetcode-cn.com/contest/weekly-contest-139/problems/adding-two-negabinary-numbers/
+// LC1073/周赛139C https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
 		a1, a2 = a2, a1
@@ -1363,7 +1363,7 @@ func addNegabinary(a1, a2 []int) []int {
 }
 
 // 负二进制转换
-// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
+// LC1017/周赛130B https://leetcode-cn.com/problems/convert-to-base-2/ https://leetcode-cn.com/contest/weekly-contest-130/
 func toNegabinary(n int) (res string) {
 	if n == 0 {
 		return "0"

@@ -22,10 +22,11 @@ import (
 *  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
    推荐 https://codeforces.ml/blog/entry/47764
    戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
-   消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/
+   消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
    如何定义状态 https://codeforces.ml/problemset/problem/553/A
-   谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ 双周赛 25D
-   扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK
+   如何定义状态 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+   谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
+   扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
 
 NOTE: 若使用滚动数组，注意复用时可能要初始化
@@ -107,13 +108,14 @@ func dpCollections() {
 	198,213,123,309,376,276,931 (从dp[i-1] 转移到 dp[i])
 	487,1186 (从 dp[i-1] 转移到 dp[i]，带一个额外的决策维度，长度一般是 2-4)
 	300,368,1105* (从 dp[j] 转移到 dp[i])
-	903
+	903/周赛101D https://leetcode-cn.com/problems/valid-permutations-for-di-sequence/ https://leetcode-cn.com/contest/weekly-contest-101/
 	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
 	力扣题目 1143,1092,72,97,115,727,583,712,1035,1216,1312
-	983
+	983/周赛121C https://leetcode-cn.com/problems/minimum-cost-for-tickets/ https://leetcode-cn.com/contest/weekly-contest-121/
 	③ 一些题目
 	最大整除子集 LC368 https://leetcode-cn.com/problems/largest-divisible-subset/
 	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/
+	最高的广告牌 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
@@ -291,10 +293,9 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
-	// EXTRA: 能否恰好装满（其实就是下面方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// EXTRA: 能否恰好装满（其实就是 waysToSum 的方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// todo LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
-	// todo 二维 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
-	//      LC956 https://leetcode-cn.com/problems/tallest-billboard/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1)
@@ -326,10 +327,10 @@ func dpCollections() {
 	//     起点：(0,j)  j∈[0,sum]
 	//     终点：(n,sum)
 	// 核心函数：方案数（点权汇合），即 +
+	// 例题 LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
-	// todo LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	waysToSum := func(a []int, sum int) int {
 		n := len(a)
 		dp := make([][]int, n+1)
@@ -435,7 +436,7 @@ func dpCollections() {
 	一般定义 dp[i][j] 表示 a[i:j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
 	力扣题目 516,312,375,1246
-	546
+	移除盒子 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
 	③ 一些题目
 	https://blog.csdn.net/weixin_43914593/article/details/106163859
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
