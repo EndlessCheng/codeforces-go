@@ -1018,6 +1018,9 @@ func (*graph) secondMST(n, m int) (sum int64) {
 	panic("TODO")
 }
 
+// Kruskal 重构树
+// https://oi-wiki.org/graph/mst/#kruskal_1
+
 // 最小生成树计数 Kirchhoff's theorem
 
 // 最小树形图 - 朱刘算法

@@ -26,6 +26,8 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 [Practice problems recommender](https://recommender.codedrills.io/)
 
+[Codeforced](http://codeforced.github.io/handle/)
+
 ## Rating
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)

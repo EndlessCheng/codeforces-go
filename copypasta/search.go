@@ -329,17 +329,20 @@ func loopCollection() {
 	}
 
 	// 枚举 {0,1,...,n-1} 的全部子集
-	loopSet := func(arr []int) {
-		n := len(arr)
-		//outer:
-		for sub := 0; sub < 1<<n; sub++ { // sub repr a subset which elements are in range [0,n)
-			// do(sub)
-			for i := 0; i < n; i++ {
-				if sub>>i&1 == 1 { // choose i in sub
-					_ = arr[i]
-					// do(arr[i]) or continue outer
+	loopSet := func(a []int) {
+		n := len(a)
+		f := func(sub int) (res int) {
+			for i, v := range a {
+				if sub>>i&1 == 1 {
+					// do(v)...
+					_ = v
+
 				}
 			}
+			return
+		}
+		for sub := 0; sub < 1<<n; sub++ {
+			f(sub)
 		}
 	}
 

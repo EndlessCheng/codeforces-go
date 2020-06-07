@@ -28,6 +28,7 @@ import (
    谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
    扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
+   状态优化 https://codeforces.ml/problemset/problem/838/E
 
 NOTE: 若使用滚动数组，注意复用时可能要初始化
 NOTE:（区间 DP）正向计算不易时，试着反向计算
@@ -429,6 +430,7 @@ func dpCollections() {
 	// todo 多重背包 - 优化 1 - 二进制优化
 
 	/* 区间 DP / 环形 DP
+	一般来说转移是合并区间或者分解区间
 	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
 	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
 	此时可以枚举最后一个区间的左端点 j，从 dp[j-1][k-1] 转移到 dp[i][k]，转移时考虑 a[j:i] 对最优解的影响
