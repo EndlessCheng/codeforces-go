@@ -119,17 +119,10 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	}
 
 	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
-		sleepTime += time.Second // 消除误差
+		sleepTime += 2 * time.Second // 消除误差
 		fmt.Printf("%s尚未开始，等待中……\n%v\n", d.Contest.Title, sleepTime)
 		time.Sleep(sleepTime)
-		for {
-			if _, er := fetchProblemURLs(session); er != nil {
-				fmt.Println(er)
-			} else {
-				break
-			}
-			time.Sleep(time.Second)
-		}
+		return fetchProblemURLs(session)
 	}
 
 	if len(d.Questions) == 0 {
@@ -522,12 +515,17 @@ func GenLeetCodeTests(username, password string) error {
 	}
 	fmt.Println(host, "登录成功")
 
-	problems, err := fetchProblemURLs(session)
-	if err != nil {
-		return err
+	var problems []*problem
+	for {
+		problems, err = fetchProblemURLs(session)
+		if err == nil {
+			break
+		}
+		fmt.Println(err)
+		time.Sleep(time.Second)
 	}
-	fmt.Println("题目链接获取成功，开始解析")
 
+	fmt.Println("题目链接获取成功，开始解析")
 	return handleProblems(session, problems)
 }
 
