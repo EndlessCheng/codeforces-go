@@ -567,7 +567,7 @@ func commonCollection() {
 		return cnt
 	}
 
-	// 数组第 k 小 (Quick Select)
+	// 数组第 k 小 (Quick Select) kthElement
 	// 0 <= k < len(a)
 	// 调用会改变数组中元素顺序
 	// 代码实现参考算法第四版 p.221
@@ -583,9 +583,9 @@ func commonCollection() {
 			v := a[l] // 切分元素
 			i, j := l, r+1
 			for {
-				for i++; i < r && a[i] < v; i++ {
+				for i++; i < r && a[i] < v; i++ { // less(i, l)
 				}
-				for j--; j > l && a[j] > v; j-- {
+				for j--; j > l && a[j] > v; j-- { // less(l, j)
 				}
 				if i >= j {
 					break
