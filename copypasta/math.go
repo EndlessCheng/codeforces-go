@@ -1428,3 +1428,8 @@ func calculate(s string) (ans int) {
 
 // Smallest positive integer k such that n = +-1+-2+-...+-k for some choice of +'s and -'s https://oeis.org/A140358
 // 相关题目 https://codeforces.com/problemset/problem/1278/B
+
+// Numbers n such that n is the substring identical to the least significant bits of its base 2 representation.
+// http://oeis.org/A181891
+// http://oeis.org/A181929 前缀
+// http://oeis.org/A038102 子串
