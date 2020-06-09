@@ -781,6 +781,7 @@ func numberTheoryCollection() {
 	}
 
 	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
+	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
 	combHalf := [...]int64{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
 		252, 462, 924, 1716, 3432, 6435, 12870, 24310, 48620, 92378, // C(19,9)
