@@ -86,6 +86,8 @@ func dpCollections() {
 		return b
 	}
 
+	// 用到 map 的 DP https://codeforces.ml/problemset/problem/510/D
+
 	// EXTRA: 由于数据范围的原因，采用 map 记忆化
 	mapDP := func() {
 		type pair struct{ x, y int }
