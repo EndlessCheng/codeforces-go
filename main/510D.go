@@ -3,7 +3,6 @@ package main
 import (
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -41,4 +40,4 @@ func CF510D(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { CF510D(os.Stdin, os.Stdout) }
+//func main() { CF510D(os.Stdin, os.Stdout) }
