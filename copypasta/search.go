@@ -288,10 +288,10 @@ func searchCollection() {
 	//
 
 	// 剪枝:
-	// todo https://blog.csdn.net/weixin_43914593/article/details/104613920
+	// todo https://blog.csdn.net/weixin_43914593/article/details/104613920 算法竞赛专题解析（7）：搜索进阶(2)--剪枝
 
 	// A*:
-	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011
+	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
 
 	// 舞蹈链
 	// TODO: https://oi-wiki.org/search/dlx/

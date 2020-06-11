@@ -125,3 +125,5 @@ https://wcysai.github.io/
 https://blog.csdn.net/calabash_boy/article/details/79973483
 
 https://github.com/dhs347/Dream/blob/master/%E8%AE%A1%E5%88%92/%E8%AE%A1%E5%88%92%E4%B9%A6/A%E8%AE%A1%E5%88%92_%E9%98%B6%E6%AE%B51.md
+
+https://github.com/zimpha/algorithmic-library

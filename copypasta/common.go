@@ -32,6 +32,8 @@ import (
 // NOTE: 正难则反。 all => any, any => all https://codeforces.ml/problemset/problem/621/C
 // NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.ml/problemset/problem/1333/C
 
+// 尺取法套题 https://blog.csdn.net/weixin_43914593/article/details/104090474 算法竞赛专题解析（2）：尺取法（双指针）
+
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 // 另一个 Golang 的注意事项：switch 内的 break 跳出的是该 switch，不是其外部的循环

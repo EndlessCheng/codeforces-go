@@ -934,7 +934,7 @@ func numberTheoryCollection() {
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
 
 	// 杜教筛 - 积性函数前缀和
-	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700
+	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
 	// todo http://baihacker.github.io/main/
 	// The prefix-sum of multiplicative function: the black algorithm http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_the_black_algorithm.html
 	// The prefix-sum of multiplicative function: Dirichlet convolution http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_dirichlet_convolution.html

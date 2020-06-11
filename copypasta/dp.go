@@ -65,6 +65,7 @@ AT 经典 DP 场 https://atcoder.jp/contests/dp
     题解 https://www.cnblogs.com/shanxieng/p/10232228.html
     题解（日语）https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
+算法竞赛专题解析（11）：DP概述和常见DP面试题 https://blog.csdn.net/weixin_43914593/article/details/105444090
 
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
@@ -443,7 +444,7 @@ func dpCollections() {
 	力扣题目 516,312,375,1246
 	移除盒子 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
 	③ 一些题目
-	https://blog.csdn.net/weixin_43914593/article/details/106163859
+	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
@@ -492,6 +493,7 @@ func dpCollections() {
 	/* 状压 DP
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
+	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
 	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
 	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
@@ -644,13 +646,13 @@ func dpCollections() {
 
 	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
-	// https://blog.csdn.net/weixin_43914593/article/details/105791217
+	// https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
 
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
 	// https://codeforces.ml/blog/entry/63823
-	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357
+	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
 	//      浅谈斜率优化 https://www.luogu.com.cn/blog/duyi/xie-lv-you-hua
 	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
@@ -658,7 +660,7 @@ func dpCollections() {
 
 	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
-	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937
+	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
 

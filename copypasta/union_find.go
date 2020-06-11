@@ -1,5 +1,9 @@
 package copypasta
 
+/* 套题
+https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
+*/
+
 // 普通并查集
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
