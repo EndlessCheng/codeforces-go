@@ -200,6 +200,9 @@ func (matrix) inv(in io.Reader, n int) matrix {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 
+// 线性基（子集异或和问题）
+// todo
+
 // 线性规划（单纯形算法）  linear programming (simplex)
 // https://zh.wikipedia.org/zh-hans/%E5%8D%95%E7%BA%AF%E5%BD%A2%E6%B3%95
 // https://oi-wiki.org/math/simplex/
