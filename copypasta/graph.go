@@ -394,6 +394,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
+// 模板题 https://codeforces.ml/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
@@ -414,7 +415,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 		w--
 		g[v] = append(g[v], neighbor{w, i})
 		g[w] = append(g[w], neighbor{v, i})
-		edges = append(edges, edge{v, w})
+		edges[i] = edge{v, w}
 	}
 	isBridge = make([]bool, m)
 	dfn := make([]int, n) // 值从 1 开始
@@ -446,10 +447,10 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 		}
 	}
 
-	bridgeIDs := []int{}
+	bridgeEIDs := []int{}
 	for eid, is := range isBridge {
 		if is {
-			bridgeIDs = append(bridgeIDs, eid) // eid+1
+			bridgeEIDs = append(bridgeEIDs, eid)
 		}
 	}
 
@@ -585,24 +586,29 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 }
 
 // e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
+// 缩点后形成一颗 bridge tree
+// 模板题 https://codeforces.ml/problemset/problem/1000/E
 func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
 	type neighbor struct{ to, eid int }
+	type edge struct{ v, w int }
+
 	g := make([][]neighbor, n)
+	edges := make([]edge, m)
 	// read g ...
 
 	isBridge := G.findBridges(in, n, m)
 
+	// 求原图中每个点的 bccID
 	bccIDs = make([]int, n)
 	idCnt := 0
 	var comp []int
-	var f func(int)
-	f = func(v int) {
+	var f2 func(int)
+	f2 = func(v int) {
 		bccIDs[v] = idCnt
 		comp = append(comp, v)
 		for _, e := range g[v] {
-			w := e.to
-			if bccIDs[w] == 0 && !isBridge[e.eid] {
-				f(w)
+			if w := e.to; bccIDs[w] == 0 && !isBridge[e.eid] {
+				f2(w)
 			}
 		}
 	}
@@ -610,14 +616,30 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 		if id == 0 {
 			idCnt++
 			comp = []int{}
-			f(i)
+			f2(i)
 			comps = append(comps, comp)
 		}
 	}
 
-	// EXTRA: 缩点
-	// 遍历 edges，若两端点的 bccIDs 不同则建边
-	// 也可以遍历 bridgeIDs 来做，割边两端点 bccIDs 一定不同
+	// EXTRA: 缩点，复杂度 O(M)
+	// 遍历 edges，若两端点的 bccIDs 不同（割边）则建边
+	g2 := make([][]int, idCnt)
+	for _, e := range edges {
+		if v, w := bccIDs[e.v]-1, bccIDs[e.w]-1; v != w {
+			g2[v] = append(g2[v], w)
+			g2[w] = append(g2[w], v)
+		}
+	}
+
+	// 也可以遍历 isBridge，割边两端点 bccIDs 一定不同
+	for eid, is := range isBridge {
+		if is {
+			e := edges[eid]
+			v, w := bccIDs[e.v]-1, bccIDs[e.w]-1
+			g2[v] = append(g2[v], w)
+			g2[w] = append(g2[w], v)
+		}
+	}
 
 	return
 }
