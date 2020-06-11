@@ -280,6 +280,8 @@ func dpCollections() {
 
 	/* 背包问题
 	这类问题可以从物品选择次序的无后效性入手
+	子区间 -> 前缀和
+	子序列 -> 背包
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.ml/blog/entry/59606
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
