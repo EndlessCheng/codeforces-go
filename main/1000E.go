@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+// 另一种写法，不需要缩点 https://codeforces.com/problemset/submission/1000/83364650
+
 // github.com/EndlessCheng/codeforces-go
 func CF1000E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
