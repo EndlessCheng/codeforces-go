@@ -20,24 +20,24 @@ func testRun(t *testing.T, debugCaseNum int) {
 	// corner cases
 	testCases := []testCase{
 		{
-			input: input{10},
-			guess: guess{1e9},
+			input: input{4},
+			guess: guess{[]int{1, 2, 1e9 - 1, 1e9}},
 		},
 	}
 	// small cases
 	for i := 1; i <= 1000; i++ {
 		testCases = append(testCases, testCase{
-			input: input{10},
-			guess: guess{i},
+			input: input{1},
+			guess: guess{[]int{i}},
 		})
 	}
 	// random cases
 	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 1000; i++ {
-		v := 1 + rand.Intn(1e9) // [1,1e9]
+		v := rand.Intn(1e9) + 1 // [1,1e9]
 		testCases = append(testCases, testCase{
-			input: input{10},
-			guess: guess{v},
+			input: input{1},
+			guess: guess{[]int{v}},
 		})
 	}
 
@@ -47,24 +47,23 @@ func testRun(t *testing.T, debugCaseNum int) {
 		minQueryValue = 1
 		maxQueryValue = 1e18
 	)
-	checkQuery := func(caseNum int, tc testCase) func(qIn) qOut {
-		n := tc.n
-		numToGuess := tc.ans
+	checkQuery := func(caseNum int, tc testCase) func(req) resp {
+		//n := tc.n
 		_queryCnt := 0
-		return func(qi qIn) (resp qOut) {
-			q := qi.q
+		return func(req req) (resp resp) {
+			q := req.q
 			if caseNum == debugCaseNum {
-				Println(qi)
+				Println(req)
 			}
 			_queryCnt++
 			if _queryCnt > queryLimit {
 				panic("query limit exceeded")
 			}
-			if q < minQueryValue || q > maxQueryValue {
+			if len(q) < minQueryValue || len(q) > maxQueryValue {
 				panic("invalid query arguments")
 			}
 			// ...
-			resp.ok = q >= n+numToGuess
+			resp.v = -1
 			return
 		}
 	}

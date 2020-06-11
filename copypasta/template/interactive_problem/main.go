@@ -8,38 +8,48 @@ import (
 
 type (
 	input struct{ n int }
-	guess struct{ ans int }
-	qIn   struct{ q int }
-	qOut  struct{ ok bool }
+	req   struct{ q []int }
+	resp  struct{ v int }
+	guess struct{ ans []int }
 )
 
 // github.com/EndlessCheng/codeforces-go
-func run(in input, _Q func(qIn) qOut) (gs guess) {
-	Q := func(q int) bool { return _Q(qIn{q}).ok }
+func run(in input, Q func(req) resp) (gs guess) {
+	//P := func(q []int) int { return Q(req{q}).v }
 	n := in.n
 
 	return
 }
 
 func ioq() {
+	// if the number of input & output times is small, just use Scan & Println without bufio things
 	in := bufio.NewReader(os.Stdin)
-	// if the number of output times is small, just use Println without bufio things
 	out := bufio.NewWriter(os.Stdout)
-	Q := func(q qIn) (resp qOut) {
-		Fprintln(out, "?", q.q)
+
+	Q := func(req req) (resp resp) {
+		q := req.q
+		Fprint(out, "? ", len(q))
+		for _, v := range q {
+			Fprint(out, " ", v)
+		}
+		Fprintln(out)
 		out.Flush()
-		// ... or read int and return it
-		var s []byte
-		Fscan(in, &s)
-		resp.ok = s[0] == 'Y'
+		Fscan(in, &resp.v)
 		return
 	}
+
 	var t int
-	for Fscan(in, &t); t > 0; t-- {
+	for Fscan(in, &t); t > 0; t-- { // todo: remove if not multi-cases
 		d := input{}
 		Fscan(in, &d.n)
+
 		gs := run(d, Q)
-		Fprintln(out, "!", gs.ans)
+		ans := gs.ans
+		Fprint(out, "!")
+		for _, v := range ans {
+			Fprint(out, " ", v)
+		}
+		Fprintln(out)
 		out.Flush()
 		// some problems need to read an extra string like "Correct" or "Incorrect" after guessed the answer
 		//var s string
