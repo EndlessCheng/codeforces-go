@@ -20,6 +20,7 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 	Fprintln(out, n)
 	// NOTE: to print a char, use Fprintf(out, "%c", 'a') or Fprint(out, string('a'))
 	// NOTE: to print []byte as string, use Fprintf(out, "%s", data) or Fprint(out, string(data))
+	// NOTE: to print []interface{}, Fprintln is faster than Fprint
 }
 
 // 快读，适用于输入量超过 1e6 的题目
