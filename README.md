@@ -24,7 +24,9 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 ## Useful Tools
 
-[Practice problems recommender](https://recommender.codedrills.io/)
+[Practice Problems Recommender](https://recommender.codedrills.io/)
+
+[Contests Filter](https://codeforceshelper.herokuapp.com/contests)
 
 [Codeforced](http://codeforced.github.io/handle/)
 
