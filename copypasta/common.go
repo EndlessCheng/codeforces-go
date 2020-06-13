@@ -698,6 +698,34 @@ func commonCollection() {
 		}
 	}
 
+	// 扫描线：一维格点刷漆，返回被刷到的格点数
+	countCoveredPoints := func(in io.Reader, m int) int {
+		type pair struct{ p, d int }
+		es := make([]pair, 0, 2*m)
+		for i := 0; i < m; i++ {
+			var l, r int
+			Fscan(in, &l, &r)
+			es = append(es, pair{l, 1}, pair{r, -1})
+		}
+		// assert len(es) > 0
+		sort.Slice(es, func(i, j int) bool { return es[i].p < es[j].p })
+		ans := es[len(es)-1].p - es[0].p + 1
+		// 减去没被刷到的格点
+		eventCnt, st := 0, es[0].p
+		for _, e := range es {
+			if eventCnt == 0 {
+				if d := e.p - st - 1; d > 0 {
+					ans -= d
+				}
+			}
+			eventCnt += e.d
+			if eventCnt == 0 {
+				st = e.p
+			}
+		}
+		return ans
+	}
+
 	// 悬线法
 	// 求一最大子矩形，矩形内部元素均相同
 	// todo https://oi-wiki.org/misc/largest-matrix/
@@ -852,7 +880,7 @@ func commonCollection() {
 		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
-		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine,
+		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine, countCoveredPoints,
 		maxValueStepToUpper,
 		discrete2D,
 		concatBrackets,
@@ -1105,8 +1133,8 @@ func monotoneCollection() {
 	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
-	//       LC496 https://leetcode-cn.com/problems/next-greater-element-i/
-	//       LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
+	//       https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
+	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
