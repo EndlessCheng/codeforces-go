@@ -577,7 +577,10 @@ func numberTheoryCollection() {
 	}
 
 	// phi 求和相关
-	// ∑phi(i) https://oeis.org/A002088
+	// ∑phi(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
+	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
+	// ∑phi(i)-1 http://oeis.org/A015614 #{(x,y): 1<=x<y<=n, gcd(x,y)=1}
+	// 0, 1, 3, 5, 9, 11, 17, 21, 27, 31, 41, 45, 57, 63, 71, 79, 95, 101
 	// todo https://oi-wiki.org/math/min-25/#_7
 
 	// Number of numbers "unrelated to n" http://oeis.org/A045763
