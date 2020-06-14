@@ -93,9 +93,41 @@ func dpCollections() {
 		return x
 	}
 
-	// 用到 map 的 DP https://codeforces.ml/problemset/problem/510/D
+	// 涉及到前缀和/子数组和的问题
+	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
+	// 下面的代码来自 LC双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	prefixSumDP := func(a []int, targetSum int) int {
+		n := len(a)
+		const inf int = 1e9
 
-	// EXTRA: 由于数据范围的原因，采用 map 记忆化
+		ans := inf
+		dp := make([]int, n+1)
+		for _i := range dp {
+			dp[_i] = inf
+		}
+		preSumPos := map[int]int{0: -1} // int64
+		sum := 0
+		for i, v := range a {
+			dp[i+1] = dp[i]
+			sum += v
+			if p, ok := preSumPos[sum-targetSum]; ok {
+				// sum_[p+1,i] == targetSum
+				l := i - p
+				if dp[p+1] < inf {
+					ans = min(ans, dp[p+1]+l)
+				}
+				dp[i+1] = min(dp[i+1], l)
+			}
+			preSumPos[sum] = i
+		}
+		if ans == inf {
+			ans = -1
+		}
+		return ans
+	}
+
+	// https://codeforces.ml/problemset/problem/510/D
+	// 由于数据范围的原因，采用 map 记忆化
 	mapDP := func() {
 		type pair struct{ x, y int }
 		dp := map[pair]int{}
@@ -130,6 +162,7 @@ func dpCollections() {
 	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
+	双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	*/
 
 	// 最大子段和
@@ -776,7 +809,7 @@ func dpCollections() {
 	}
 
 	_ = []interface{}{
-		mapDP,
+		prefixSumDP, mapDP,
 		maxSubArraySum, maxSubArrayAbsSum,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack,
