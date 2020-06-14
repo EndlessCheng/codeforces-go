@@ -1,5 +1,13 @@
 # LeetCode
 
+## Testutil
+
+Support most problems:
+
+- [normal problem](biweekly/27/c/c_test.go)
+- [struct and methods](182/c/c_test.go)
+- [TreeNode](190/c/c_test.go)
+
 ## Contests
 
 First weekly contest started at 2016-08-21.
@@ -32,11 +40,3 @@ First weekly contest started at 2016-08-21.
 |[Weekly Contest 190](https://leetcode.com/contest/weekly-contest-190)|1455-1458|
 
 Includes with biweekly contests, we now (till 2020-06) have about **900** problems from contests.
-
-## testutil
-
-Support most problems:
-
-- [normal problem](biweekly/27/c/c_test.go)
-- [struct and methods](182/c/c_test.go)
-- [TreeNode](190/c/c_test.go)
