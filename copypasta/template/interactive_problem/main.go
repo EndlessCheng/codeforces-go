@@ -21,6 +21,7 @@ func run(in input, Q func(req) resp) (gs guess) {
 	return
 }
 
+// TODO: 提交前运行下，检查输出格式是否正确
 func ioq() {
 	// if the number of input & output times is small, just use Scan & Println without bufio things
 	in := bufio.NewReader(os.Stdin)
@@ -39,7 +40,7 @@ func ioq() {
 	}
 
 	var t int
-	for Fscan(in, &t); t > 0; t-- { // todo: remove if not multi-cases
+	for Fscan(in, &t); t > 0; t-- { // TODO: remove if not multi-cases
 		d := input{}
 		Fscan(in, &d.n)
 
