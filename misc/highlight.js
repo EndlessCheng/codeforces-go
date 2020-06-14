@@ -43,6 +43,7 @@
 
         "Initially", "initially", "guaranteed",
 
+        "adjacent",
         "modulo",
         "permutations", "permutation",
         "lowercase", "uppercase",
