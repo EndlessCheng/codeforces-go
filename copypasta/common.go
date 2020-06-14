@@ -680,6 +680,7 @@ func commonCollection() {
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.ml/problemset/problem/1000/C
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
+	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)

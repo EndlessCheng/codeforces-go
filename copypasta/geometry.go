@@ -339,6 +339,12 @@ func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
 	return
 }
 
+// 圆的面积并 - 两圆的特殊情形
+// todo https://codeforces.com/contest/600/problem/D
+
+// 圆的面积并
+// todo
+
 // 点到圆的切线，返回向量即可
 func (o circle) tangents(p vec) (ls []vecF) {
 	po := o.sub(p)

@@ -86,7 +86,7 @@ func stringCollection() {
 			}
 			if cnt == lenP {
 				pos = append(pos, i-lenP+1)
-				cnt = maxMatchLengths[cnt-1]
+				cnt = maxMatchLengths[cnt-1] // 不允许重叠时 cnt = 0
 			}
 		}
 		return
