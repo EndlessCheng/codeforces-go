@@ -492,6 +492,7 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 		p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
 			toGolangReceiverName,
 			lowerArgsFirstChar,
+			renameInputArgs,
 			namedReturnFunc("ans"),
 		}, "\t\n\treturn")
 

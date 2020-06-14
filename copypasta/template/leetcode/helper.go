@@ -82,6 +82,13 @@ func lowerArgsFirstChar(funcDefineLine string) string {
 	return string(code)
 }
 
+// 替换常见变量名（一般是数组名称）
+func renameInputArgs(funcDefineLine string) string {
+	funcDefineLine = strings.Replace(funcDefineLine, "nums []int", "a []int", 1)
+	funcDefineLine = strings.Replace(funcDefineLine, "arr []int", "a []int", 1)
+	return funcDefineLine
+}
+
 func _parseReturnType(line string) string {
 	i := strings.LastIndexByte(line, ')') + 2
 	return line[i : len(line)-2]
