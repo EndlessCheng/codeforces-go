@@ -86,6 +86,12 @@ func dpCollections() {
 		}
 		return b
 	}
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
 
 	// 用到 map 的 DP https://codeforces.ml/problemset/problem/510/D
 
@@ -125,6 +131,30 @@ func dpCollections() {
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	*/
+
+	// 最大子段和
+	// 算法导论 练习4.1-5
+	maxSubArraySum := func(a []int) int {
+		curSum, maxSum := a[0], a[0]
+		for _, v := range a[1:] {
+			curSum = max(curSum+v, v)
+			maxSum = max(maxSum, curSum)
+		}
+		return maxSum
+	}
+
+	maxSubArrayAbsSum := func(a []int) int {
+		//min, max, abs := math.Min, math.Max, math.Abs
+		curMaxSum, maxSum := a[0], a[0]
+		curMinSum, minSum := a[0], a[0]
+		for _, v := range a[1:] {
+			curMaxSum = max(curMaxSum+v, v)
+			maxSum = max(maxSum, curMaxSum)
+			curMinSum = min(curMinSum+v, v)
+			minSum = min(minSum, curMinSum)
+		}
+		return max(abs(maxSum), abs(minSum))
+	}
 
 	// 最长公共子序列 (LCS)
 	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
@@ -450,6 +480,7 @@ func dpCollections() {
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
+	安排邮筒 双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.ml/problemset/problem/245/H
 	*/
@@ -745,6 +776,7 @@ func dpCollections() {
 
 	_ = []interface{}{
 		mapDP,
+		maxSubArraySum, maxSubArrayAbsSum,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack,
 		mergeStones,

@@ -38,8 +38,6 @@ import (
 // 一个 Golang 的注意事项：forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取
 // 另一个 Golang 的注意事项：switch 内的 break 跳出的是该 switch，不是其外部的循环
 func commonCollection() {
-	// HELPER
-	const mod int64 = 1e9 + 7 // 998244353
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9} // math.Pow10
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
@@ -92,6 +90,19 @@ func commonCollection() {
 		}
 		return res
 	}
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+	absAll := func(a []int) {
+		for i, v := range a {
+			if v < 0 {
+				a[i] = -v
+			}
+		}
+	}
 
 	isDigit := func(b byte) bool { return '0' <= b && b <= '9' }
 	isLower := func(b byte) bool { return 'a' <= b && b <= 'z' }
@@ -99,19 +110,17 @@ func commonCollection() {
 	isAlpha := func(b byte) bool { return 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z' }
 
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
-	// 用堆求前 k 小
-	smallK := func(a []int, k int) []int {
-		k++
-		q := hp{} // 最大堆
-		for _, v := range a {
-			if q.Len() < k || v < q.top() {
-				q.push(v)
+	minString := func(a, b string) string {
+		if len(a) != len(b) {
+			if len(a) < len(b) {
+				return a
 			}
-			if q.Len() > k {
-				q.pop() // 不断弹出更大的元素，留下的就是较小的
-			}
+			return b
 		}
-		return q.IntSlice // 注意返回的不是有序数组
+		if a < b {
+			return a
+		}
+		return b
 	}
 	ternaryI := func(cond bool, r1, r2 int) int {
 		if cond {
@@ -124,13 +133,6 @@ func commonCollection() {
 			return r1
 		}
 		return r2
-	}
-	toInts := func(s []byte) []int {
-		ints := make([]int, len(s))
-		for i, b := range s {
-			ints[i] = int(b)
-		}
-		return ints
 	}
 	xor := func(b1, b2 bool) bool { return b1 && !b2 || !b1 && b2 }
 	zip := func(a, b []int) {
@@ -155,40 +157,21 @@ func commonCollection() {
 		}
 		return
 	}
-	minString := func(a, b string) string {
-		if len(a) != len(b) {
-			if len(a) < len(b) {
-				return a
-			}
-			return b
+	copyMat := func(mat [][]int) [][]int {
+		n, m := len(mat), len(mat[0])
+		dst := make([][]int, n)
+		for i, row := range mat {
+			dst[i] = make([]int, m)
+			copy(dst[i], row)
 		}
-		if a < b {
-			return a
-		}
-		return b
+		return dst
 	}
-	removeLeadingZero := func(s string) string {
+	toInts := func(s []byte) []int {
+		ints := make([]int, len(s))
 		for i, b := range s {
-			if b > '0' {
-				return s[i:]
-			}
+			ints[i] = int(b)
 		}
-		return "0"
-	}
-	// END HELPER
-
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-	absAll := func(a []int) {
-		for i, v := range a {
-			if v < 0 {
-				a[i] = -v
-			}
-		}
+		return ints
 	}
 
 	mul := func(a, b, mod int64) (res int64) {
@@ -212,14 +195,6 @@ func commonCollection() {
 			x = x * x % mod
 		}
 		return res
-	}
-
-	calcFactorial := func(n int) int64 {
-		ans := int64(1)
-		for i := 2; i <= n; i++ {
-			ans *= int64(i)
-		}
-		return ans
 	}
 
 	// 从低位到高位
@@ -255,41 +230,6 @@ func commonCollection() {
 		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
 	}
 
-	// 启发式合并：map 版
-	mergeMap := func(a, b map[int]int) map[int]int {
-		if len(a) < len(b) {
-			a, b = b, a
-		}
-		for k, v := range b {
-			a[k] += v
-		}
-		return a
-	}
-
-	//
-
-	copyMat := func(mat [][]int) [][]int {
-		n, m := len(mat), len(mat[0])
-		dst := make([][]int, n)
-		for i, row := range mat {
-			dst[i] = make([]int, m)
-			copy(dst[i], row)
-		}
-		return dst
-	}
-
-	hash01Mat := func(mat [][]int) int {
-		hash := 0
-		cnt := 0
-		for _, row := range mat {
-			for _, v := range row {
-				hash |= v << cnt
-				cnt++
-			}
-		}
-		return hash
-	}
-
 	reverse := func(a []byte) []byte {
 		n := len(a)
 		b := make([]byte, n)
@@ -313,6 +253,17 @@ func commonCollection() {
 			}
 		}
 		return true
+	}
+
+	// 启发式合并：map 版
+	mergeMap := func(a, b map[int]int) map[int]int {
+		if len(a) < len(b) {
+			a, b = b, a
+		}
+		for k, v := range b {
+			a[k] += v
+		}
+		return a
 	}
 
 	// 合并有序数组，保留重复元素
@@ -543,34 +494,6 @@ func commonCollection() {
 		return
 	}
 
-	// 逆序数
-	var mergeCount func([]int) int64
-	mergeCount = func(a []int) int64 {
-		n := len(a)
-		if n <= 1 {
-			return 0
-		}
-		b := make([]int, n/2)
-		c := make([]int, n-n/2)
-		copy(b, a[:n/2])
-		copy(c, a[n/2:])
-		cnt := mergeCount(b) + mergeCount(c)
-		ai, bi, ci := 0, 0, 0
-		for ai < n {
-			// 归并排序的同时计算逆序数
-			if bi < len(b) && (ci == len(c) || b[bi] <= c[ci]) {
-				a[ai] = b[bi]
-				bi++
-			} else {
-				cnt += int64(n/2 - bi)
-				a[ai] = c[ci]
-				ci++
-			}
-			ai++
-		}
-		return cnt
-	}
-
 	// 数组第 k 小 (Quick Select) kthElement
 	// 0 <= k < len(a)
 	// 调用会改变数组中元素顺序
@@ -631,8 +554,6 @@ func commonCollection() {
 		return false
 	}
 
-	//
-
 	// 判环
 	// 1<=next[i]<=n
 	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
@@ -647,29 +568,6 @@ func commonCollection() {
 			beforeCycle = append(beforeCycle, v)
 		}
 		return
-	}
-
-	// 算法导论 练习4.1-5
-	maxSubArraySum := func(a []int) int {
-		curSum, maxSum := a[0], a[0]
-		for _, v := range a[1:] {
-			curSum = max(curSum+v, v)
-			maxSum = max(maxSum, curSum)
-		}
-		return maxSum
-	}
-
-	maxSubArrayAbsSum := func(a []int) int {
-		//min, max, abs := math.Min, math.Max, math.Abs
-		curMaxSum, maxSum := a[0], a[0]
-		curMinSum, minSum := a[0], a[0]
-		for _, v := range a[1:] {
-			curMaxSum = max(curMaxSum+v, v)
-			maxSum = max(maxSum, curMaxSum)
-			curMinSum = min(curMinSum+v, v)
-			minSum = min(minSum, curMinSum)
-		}
-		return max(abs(maxSum), abs(minSum))
 	}
 
 	// 扫描线
@@ -730,13 +628,6 @@ func commonCollection() {
 	// 悬线法
 	// 求一最大子矩形，矩形内部元素均相同
 	// todo https://oi-wiki.org/misc/largest-matrix/
-
-	// 从 st 出发，步长为 gap，不超过 upper 的最大值
-	// st <= upper, gap > 0
-	maxValueStepToUpper := func(st, upper, gap int) int {
-		upper -= st
-		return st + upper - upper%gap
-	}
 
 	// 二维离散化
 	// 代码来源 https://atcoder.jp/contests/abc168/tasks/abc168_f
@@ -874,15 +765,14 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
-		min, mins, max, maxs,
+		min, mins, max, maxs, abs, absAll,
 		isDigit, isLower, isUpper, isAlpha,
-		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString, removeLeadingZero,
-		abs, absAll, pow, mul, calcFactorial, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, hash01Mat, sort3, smallK, reverse, reverseSelf, equal,
+		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString,
+		pow, mul, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
+		copyMat, sort3, reverse, reverseSelf, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
-		getCycle, maxSubArraySum, maxSubArrayAbsSum, sweepLine, countCoveredPoints,
-		maxValueStepToUpper,
+		getCycle, sweepLine, countCoveredPoints,
 		discrete2D,
 		concatBrackets,
 	}
@@ -901,15 +791,6 @@ func rmqCollection() {
 			return a
 		}
 		return b
-	}
-
-	// 预处理 log
-	logInit := func() {
-		const mx int = 1e6
-		log := make([]int, mx+1)
-		for i := 2; i <= mx; i++ {
-			log[i] = log[i>>1] + 1
-		}
 	}
 
 	// Sparse Table
@@ -1023,7 +904,6 @@ func rmqCollection() {
 	}
 
 	_ = []interface{}{
-		logInit,
 		stInit, stQuery,
 		sqrtInit, sqrtOp,
 	}

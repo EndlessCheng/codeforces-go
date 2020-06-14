@@ -56,6 +56,7 @@ func stringCollection() {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
 	// 例题 https://codeforces.ml/problemset/problem/432/D
+	//     http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)

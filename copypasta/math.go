@@ -5,12 +5,9 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
-/* 数论 组合数学 博弈论 趣味数学（杂项）
+/* 数论 组合数学 博弈论
 
 todo 待整理 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
 
@@ -72,6 +69,25 @@ func numberTheoryCollection() {
 		}
 		return b
 	}
+
+	// 例题 https://nanti.jisuanke.com/t/A1633
+	gcdPrefix := func(a []int64) []int64 {
+		n := len(a)
+		gp := make([]int64, n+1)
+		for i, v := range a {
+			gp[i+1] = gcd(gp[i], v)
+		}
+		return gp
+	}
+	gcdSuffix := func(a []int64) []int64 {
+		n := len(a)
+		gs := make([]int64, n+1)
+		for i := n - 1; i >= 0; i-- {
+			gs[i] = gcd(gs[i+1], a[i])
+		}
+		return gs
+	}
+
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
 	// 前 n 个数的 LCM https://oeis.org/A003418
@@ -432,6 +448,23 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// Number of odd divisors of n https://oeis.org/A001227
+	// 整数分拆成若干连续整数 Number of partitions of n into consecutive positive integers including the trivial partition of length 1
+	// e.g. 9 = 2+3+4 or 4+5 or 9 so a(9)=3
+	oddDivisorsNum := func(n int) (ans int) {
+		for i := 1; i*i <= n; i++ {
+			if n%i == 0 {
+				if i&1 == 1 {
+					ans++
+				}
+				if i*i < n && n/i&1 == 1 {
+					ans++
+				}
+			}
+		}
+		return
+	}
+
 	// 约数的中位数（偶数个约数时取小的那个）
 	// Lower central (median) divisor of n https://oeis.org/A060775
 	// EXTRA: Largest divisor of n <= sqrt(n) https://oeis.org/A033676
@@ -542,7 +575,7 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// n 的欧拉函数（互质的数的个数）Euler totient function
+	// 计算单个数 n 的欧拉函数（互质的数的个数）Euler totient function
 	calcPhi := func(n int) int {
 		ans := n
 		for i := 2; i*i <= n; i++ {
@@ -559,7 +592,7 @@ func numberTheoryCollection() {
 	}
 
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
-	// 预处理 [2,mx]
+	// 预处理所有 [2,mx] 数的欧拉函数
 	// NOTE: phi 的迭代（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
 	phiAll := func() {
 		const mx int = 1e6
@@ -948,50 +981,28 @@ func numberTheoryCollection() {
 	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
 
-	//
-
-	// Number of odd divisors of n https://oeis.org/A001227
-	consecutiveNumbersSum := func(n int) (ans int) {
-		for i := 1; i*i <= n; i++ {
-			if n%i == 0 {
-				if i&1 == 1 {
-					ans++
-				}
-				if i*i < n && n/i&1 == 1 {
-					ans++
-				}
-			}
-		}
-		return
-	}
-
-	// 把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
-	partition := func(n, m int) (q, cntQ, cntQ1 int) {
-		// m must > 0
-		return n / m, m - n%m, n % m
-	}
-
 	_ = []interface{}{
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt,
-		gcd, lcm, frac, cntRangeGCD,
+		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
-		divisors, divisorPairs, doDivisors, doDivisors2, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
+		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
 		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
 		factorial, initFactorial, _factorial, combHalf, comb,
-		consecutiveNumbersSum, partition,
 	}
 }
 
 /* 组合数学
+https://en.wikipedia.org/wiki/Combinatorics
+https://en.wikipedia.org/wiki/Enumerative_combinatorics
 
-NOTE: 相邻 - 可以考虑当前位置和左侧位置所满足的性质
+NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
-       C(n, k-1) + C(n, k) = C(n+1, k)
+       C(n, k-1) + C(n, k) = C(n+1, k)
        C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
-       C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
-上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) https://atcoder.jp/contests/abc154/tasks/abc154_f
+上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)（例题 https://atcoder.jp/contests/abc154/tasks/abc154_f）
+
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
@@ -1016,9 +1027,20 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
 
+* 生成函数/母函数 *
+https://en.wikipedia.org/wiki/Generating_function
+整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
+
 记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2 https://oeis.org/A007590
 Maximum sum of displacements of elements in a permutation of (1..n)
 For example, with n = 9, permutation (5,6,7,8,9,1,2,3,4) has displacements (4,4,4,4,4,5,5,5,5) with maximal sum = 40
+
+n married couples are seated in a row so that every wife is to the left of her husband
+若不考虑顺序，则所有排列的个数为 (2n)!
+考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的
+因此每有一对夫妻，符合条件的排列个数就减半
+所以结果为 a(n) = (2n)!/2^n https://oeis.org/A000680
+或者见这道题目的背景 LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
 
 NxN 大小的对称置换矩阵的个数 http://oeis.org/A000085
 这里的对称指仅关于主对角线对称
@@ -1039,24 +1061,17 @@ https://oeis.org/A052913
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
-func miscCollection() {
-	// n married couples are seated in a row so that every wife is to the left of her husband
-	// 若不考虑顺序，则所有排列的个数为 (2n)!
-	// 考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的
-	// 因此每有一对夫妻，符合条件的排列个数就减半
-	// 所以结果为 a(n) = (2n)!/2^n
-	// https://oeis.org/A000680
-	// 或者见这道题目的背景 LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
-
+func combinatoricsCollection() {
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
-	solveInclusionExclusion := func(arr []int) (ans int) {
-		n := len(arr)
+	solveInclusionExclusion := func(a []int) (ans int) {
+		n := len(a)
 		for sub := uint(0); sub < 1<<n; sub++ {
 			res := 0
-			for i := 0; i < n; i++ {
+			for i, v := range a {
 				if sub>>i&1 == 1 {
-					_ = arr[i]
+					_ = v
+					// do v
 				}
 			}
 			if bits.OnesCount(sub)&1 == 1 {
@@ -1068,111 +1083,8 @@ func miscCollection() {
 		return
 	}
 
-	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
-	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
-		switch {
-		case st < l:
-			if d <= 0 {
-				return
-			}
-			return l + ((st-l)%d+d)%d, true
-		case st <= r:
-			return st, true
-		default:
-			if d >= 0 {
-				return
-			}
-			return r + ((st-r)%d+d)%d, true
-		}
-	}
-
-	// floatStr must contain a .
-	// all decimal part must have same length
-	// floatToInt("3.000100", 1e6) => 3000100
-	// "3.0001" is not allowed
-	floatToInt := func(floatStr string, shift10 int) int {
-		splits := strings.SplitN(floatStr, ".", 2)
-		i, _ := strconv.Atoi(splits[0])
-		d, _ := strconv.Atoi(splits[1])
-		return i*shift10 + d
-	}
-
-	// floatToRat("1.2", 1e1) => (6, 5)
-	floatToRat := func(floatStr string, shift10 int) (m, n int) {
-		m = floatToInt(floatStr, shift10)
-		n = shift10
-		var g int // g:= calcGCD(m, n)
-		m /= g
-		n /= g
-		return
-	}
-
-	// https://en.wikipedia.org/wiki/Repeating_decimal
-	// Period of decimal representation of 1/n, or 0 if 1/n terminates https://oeis.org/A051626
-	// The periodic part of the decimal expansion of 1/n https://oeis.org/A036275
-	// 例如 (2, -3) => ("-0.", "6")
-	// b must not be zero
-	fractionToDecimal := func(a, b int64) (beforeCycle, cycle []byte) {
-		if a == 0 {
-			return []byte{'0'}, nil
-		}
-		var res []byte
-		if a < 0 && b > 0 || a > 0 && b < 0 {
-			res = []byte{'-'}
-		}
-		if a < 0 {
-			a = -a
-		}
-		if b < 0 {
-			b = -b
-		}
-		res = append(res, strconv.FormatInt(a/b, 10)...)
-
-		r := a % b
-		if r == 0 {
-			return res, nil
-		}
-		res = append(res, '.')
-
-		posMap := map[int64]int{}
-		for r != 0 {
-			if pos, ok := posMap[r]; ok {
-				return res[:pos], res[pos:]
-			}
-			posMap[r] = len(res)
-			r *= 10
-			res = append(res, '0'+byte(r/b))
-			r %= b
-		}
-		return res, nil
-	}
-
-	// decimal like "2.15(376)", which means "2.15376376376..."
-	// https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%8E%AF%E5%B0%8F%E6%95%B0#%E5%8C%96%E7%82%BA%E5%88%86%E6%95%B8%E7%9A%84%E6%96%B9%E6%B3%95
-	r := regexp.MustCompile(`(?P<integerPart>\d+)\.?(?P<nonRepeatingPart>\d*)\(?(?P<repeatingPart>\d*)\)?`)
-	decimalToFraction := func(decimal string) (a, b int64) {
-		match := r.FindStringSubmatch(decimal)
-		integerPart, nonRepeatingPart, repeatingPart := match[1], match[2], match[3]
-		intPartNum, _ := strconv.ParseInt(integerPart, 10, 64)
-		if repeatingPart == "" {
-			repeatingPart = "0"
-		}
-		b, _ = strconv.ParseInt(strings.Repeat("9", len(repeatingPart))+strings.Repeat("0", len(nonRepeatingPart)), 10, 64)
-		a, _ = strconv.ParseInt(nonRepeatingPart+repeatingPart, 10, 64)
-		if nonRepeatingPart != "" {
-			v, _ := strconv.ParseInt(nonRepeatingPart, 10, 64)
-			a -= v
-		}
-		a += intPartNum * b
-		// 后续需要用 gcd 化简
-		// 或者用 return big.NewRat(a, b)
-		return
-	}
-
 	_ = []interface{}{
 		solveInclusionExclusion,
-		moveToRange,
-		floatToRat, fractionToDecimal, decimalToFraction,
 	}
 }
 
@@ -1308,135 +1220,3 @@ func numericalAnalysisCollection() {
 
 	_ = []interface{}{asr}
 }
-
-/* 杂项 */
-
-//func grayCode(length int) []int {
-//	if length == 1 {
-//		return []int{0, 1}
-//	}
-//	part0 := grayCode(length - 1)
-//	part1 := make([]int, len(part0))
-//	for i, v := range part0 {
-//		part1[len(part0)-i-1] = v
-//	}
-//	for i, v := range part1 {
-//		part1[i] = v | 1<<(length-1)
-//	}
-//	return append(part0, part1...)
-//}
-func grayCode(length int) []int {
-	ans := make([]int, 1<<length)
-	for i := range ans {
-		ans[i] = i ^ i>>1
-	}
-	return ans
-}
-
-// Maximal number of regions obtained by joining n points around a circle by straight lines.
-// Also number of regions in 4-space formed by n-1 hyperplanes.
-// a(n) = n*(n-1)*(n*n-5*n+18)/24+1
-// https://oeis.org/A000127
-
-// 负二进制数相加
-// LC1073/周赛139C https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
-func addNegabinary(a1, a2 []int) []int {
-	if len(a1) < len(a2) {
-		a1, a2 = a2, a1
-	}
-	for i, j := len(a1)-1, len(a2)-1; j >= 0; {
-		a1[i] += a2[j]
-		i--
-		j--
-	}
-	ans := append(make([]int, 2), a1...)
-	for i := len(ans) - 1; i >= 0; i-- {
-		if ans[i] >= 2 {
-			ans[i] -= 2
-			if ans[i-1] >= 1 {
-				ans[i-1]--
-			} else {
-				ans[i-1]++
-				ans[i-2]++
-			}
-		}
-	}
-	for i, v := range ans {
-		if v != 0 {
-			return ans[i:]
-		}
-	}
-	return []int{0}
-}
-
-// 负二进制转换
-// LC1017/周赛130B https://leetcode-cn.com/problems/convert-to-base-2/ https://leetcode-cn.com/contest/weekly-contest-130/
-func toNegabinary(n int) (res string) {
-	if n == 0 {
-		return "0"
-	}
-	for ; n != 0; n = -(n >> 1) {
-		res = string('0'+n&1) + res
-	}
-	return
-}
-
-// 表达式计算（无括号）
-// LC227 https://leetcode-cn.com/problems/basic-calculator-ii/
-func calculate(s string) (ans int) {
-	s = strings.ReplaceAll(s, " ", "")
-	v, sign, stack := 0, '+', []int{}
-	for i, b := range s {
-		if '0' <= b && b <= '9' {
-			v = v*10 + int(b-'0')
-			if i+1 < len(s) {
-				continue
-			}
-		}
-		switch sign {
-		case '+':
-			stack = append(stack, v)
-		case '-':
-			stack = append(stack, -v)
-		case '*':
-			w := stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
-			stack = append(stack, w*v)
-		default: // '/'
-			w := stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
-			stack = append(stack, w/v)
-		}
-		v = 0
-		sign = b
-	}
-	for _, v := range stack {
-		ans += v
-	}
-	return
-}
-
-// Smallest number h such that n*h is a repunit (111...1), or 0 if no such h exists
-// https://oeis.org/A190301 111...1
-// https://oeis.org/A216485 222...2
-
-// Least k such that the decimal representation of k*n contains only 1's and 0's
-// https://oeis.org/A079339
-// 0's and d's (2~9): A096681-A096688
-
-// a(n) is the least value of k such that k*n uses only digits 1 and 2. a(n) = -1 if no such multiple exists
-// https://oeis.org/A216482
-
-// a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
-// https://oeis.org/A181061
-
-// 三维 n 皇后 http://oeis.org/A068940
-// Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
-
-// Smallest positive integer k such that n = +-1+-2+-...+-k for some choice of +'s and -'s https://oeis.org/A140358
-// 相关题目 https://codeforces.com/problemset/problem/1278/B
-
-// Numbers n such that n is the substring identical to the least significant bits of its base 2 representation.
-// http://oeis.org/A181891
-// http://oeis.org/A181929 前缀
-// http://oeis.org/A038102 子串
