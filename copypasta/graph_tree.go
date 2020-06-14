@@ -396,20 +396,33 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 	}
 	dfs(root, -1, 0)
-	for k := 0; k+1 < mx; k++ {
+	// 倍增
+	for i := 0; i+1 < mx; i++ {
 		for v := range pa {
-			if p := pa[v][k]; p != -1 {
-				pa[v][k+1] = pa[p][k]
+			if p := pa[v][i]; p != -1 {
+				pa[v][i+1] = pa[p][i]
 			} else {
-				pa[v][k+1] = -1
+				pa[v][i+1] = -1
 			}
 		}
 	}
-	// d<=dep[v]
+	// 从 v 开始向上跳 k 步，不存在返回 -1
+	uptoKthPa := func(v, k int) int {
+		for i := 0; i < mx && v != -1; i++ {
+			if k>>i&1 == 1 {
+				v = pa[v][i]
+			}
+		}
+		return v
+	}
+	// 从 v 开始向上跳到指定深度 d，d<=dep[v]
 	uptoDep := func(v, d int) int {
-		for k := 0; k < mx; k++ {
-			if (dep[v]-d)>>k&1 == 1 {
-				v = pa[v][k]
+		for i := 0; i < mx; i++ {
+			if (dep[v]-d)>>i&1 == 1 {
+				v = pa[v][i]
+				//if v == -1 {
+				//	panic(9)
+				//}
 			}
 		}
 		return v
@@ -422,9 +435,9 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		if v == w {
 			return v
 		}
-		for k := mx - 1; k >= 0; k-- {
-			if pa[v][k] != pa[w][k] {
-				v, w = pa[v][k], pa[w][k]
+		for i := mx - 1; i >= 0; i-- {
+			if pa[v][i] != pa[w][i] {
+				v, w = pa[v][i], pa[w][i]
 			}
 		}
 		return pa[v][0]
@@ -457,7 +470,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		_ = uptoDep
 	}
 
-	_ = []interface{}{_d, down}
+	_ = []interface{}{_d, uptoKthPa, down}
 }
 
 // 最近公共祖先 - 其二 - 基于 RMQ
