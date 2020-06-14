@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// TODO: 确认是否登录以及默认语言是否正确
+// TODO: 确认 1.是否登录 2.提交语言是否正确 3.输入法调成英文
 func TestGenLeetCodeTests(t *testing.T) {
 	var username, password string
 	if host == hostZH {
