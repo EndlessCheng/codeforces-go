@@ -167,7 +167,8 @@ func stringCollection() {
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
-	// 模板题 https://www.luogu.com.cn/problem/P3805 LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
+	// 模板题 https://www.luogu.com.cn/problem/P3805
+	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.ml/contest/1326/problem/D2
 	// todo 类似思想 https://codeforces.ml/contest/359/problem/D
 	var maxLen, left []int

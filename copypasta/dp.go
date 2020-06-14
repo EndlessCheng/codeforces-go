@@ -259,6 +259,7 @@ func dpCollections() {
 	// 建模 https://codeforces.ml/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	//       https://www.zhihu.com/question/34905638
+	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
 	lis := func(a []int) int {
 		n := len(a)
 		dp := make([]int, 0, n)

@@ -146,6 +146,7 @@ func miscCollection() {
 }
 
 // 逆序数
+// LC面试题51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 func mergeCount(a []int) int64 {
 	n := len(a)
 	if n <= 1 {
@@ -172,8 +173,13 @@ func mergeCount(a []int) int64 {
 	return cnt
 }
 
+// N 皇后 - 回溯法
+// LC51 https://leetcode-cn.com/problems/n-queens/
+// LC52 https://leetcode-cn.com/problems/n-queens-ii/
+
 // 格雷码 http://oeis.org/A003188
 // https://en.wikipedia.org/wiki/Gray_code
+// LC89 https://leetcode-cn.com/problems/gray-code/
 func grayCode(length int) []int {
 	ans := make([]int, 1<<length)
 	for i := range ans {
