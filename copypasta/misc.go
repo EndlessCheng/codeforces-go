@@ -47,6 +47,13 @@ func miscCollection() {
 		}
 	}
 
+	ceilK := func(n, k int) int {
+		if n%k == 0 {
+			return n
+		}
+		return n + k - n%k
+	}
+
 	// 把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
 	partition := func(n, m int) (q, cntQ, cntQ1 int) {
 		// m must > 0
@@ -137,7 +144,7 @@ func miscCollection() {
 
 	_ = []interface{}{
 		logInit,
-		partition, maxValueStepToUpper, moveToRange,
+		ceilK, partition, maxValueStepToUpper, moveToRange,
 		hash01Mat,
 		smallK,
 		removeLeadingZero,
