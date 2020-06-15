@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// heap with index https://atcoder.jp/contests/abc170/tasks/abc170_e
+
 // 下面这些都是最小堆
 
 type hp struct{ sort.IntSlice }
