@@ -5,8 +5,6 @@ import (
 	"sort"
 )
 
-// heap with index https://atcoder.jp/contests/abc170/tasks/abc170_e
-
 // 下面这些都是最小堆
 
 type hp struct{ sort.IntSlice }
@@ -52,6 +50,28 @@ func (h *hp64) pushPop(v int64) int64 {
 func (h *hp64) popPush(v int64) int64 { t := (*h)[0]; (*h)[0] = v; heap.Fix(h, 0); return t } // h 需要非空
 
 //
+
+// 支持修改、删除指定元素的堆
+// 参考 heap 包下面的 example_pq_test.go
+// 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
+type pvi struct {
+	v int64
+	i int // 必须从 0 开始且连续
+}
+type hpi []*pvi // 由于存储的是指针，可以直接在外面修改 pvi 后调用 h.fix
+
+func (h hpi) Len() int            { return len(h) }
+func (h hpi) Less(i, j int) bool  { return h[i].v < h[j].v } // > 为最大堆
+func (h hpi) Swap(i, j int)       { h[i], h[j] = h[j], h[i]; h[i].i = i; h[j].i = j }
+func (h *hpi) Push(v interface{}) { *h = append(*h, v.(*pvi)) }
+func (h *hpi) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hpi) push(v *pvi)        { v.i = len(*h); heap.Push(h, v) }
+func (h *hpi) pop() *pvi          { return heap.Pop(h).(*pvi) }
+func (h hpi) empty() bool         { return len(h) == 0 }
+func (h hpi) top() *pvi           { return h[0] }
+func (h hpi) size() int           { return len(h) }
+func (h *hpi) fix(i int)          { heap.Fix(h, i) }
+func (h *hpi) remove(i int) *pvi  { return heap.Remove(h, i).(*pvi) }
 
 func heapCollections() {
 	// 对顶堆求动态中位数（一个数组前 2k+1 项的中位数）
