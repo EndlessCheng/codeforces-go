@@ -931,6 +931,7 @@ func rmqCollection() {
 // 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494
+// https://www.luogu.com.cn/problem/P4462
 // 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 func moAlgorithm() {
 	mo := func(in io.Reader, a []int, q int) []int {
