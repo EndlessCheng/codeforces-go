@@ -778,7 +778,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		}
 		for _, e := range g[v] {
 			w := e.to
-			if newD := dist[v] + e.weight; newD < dist[w] {
+			if newD := d + e.weight; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
 				h.push(hPair{newD, w})
