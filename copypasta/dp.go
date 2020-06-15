@@ -95,7 +95,7 @@ func dpCollections() {
 
 	// 涉及到前缀和/子数组和的问题
 	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
-	// 下面的代码来自 LC双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	// 下面的代码来自 LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	prefixSumDP := func(a []int, targetSum int) int {
 		n := len(a)
 		const inf int = 1e9
@@ -162,7 +162,7 @@ func dpCollections() {
 	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
-	双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	*/
 
 	// 最大子段和
@@ -514,7 +514,7 @@ func dpCollections() {
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
-	安排邮筒 双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
+	安排邮筒 LC1478/双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.ml/problemset/problem/245/H
 	*/
