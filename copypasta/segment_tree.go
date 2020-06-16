@@ -22,6 +22,7 @@ package copypasta
 //       https://codeforces.ml/problemset/problem/629/D
 
 // min-max segmentTree 见 LC187C
+// 特殊的 _query 写法，查询区间包含节点范围时也要往下递归：https://codeforces.com/problemset/problem/914/D
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
