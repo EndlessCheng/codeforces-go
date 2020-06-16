@@ -645,7 +645,8 @@ func dpCollections() {
 
 	/* 数位 DP
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
-	入门题 https://atcoder.jp/contests/dp/tasks/dp_s
+	      https://atcoder.jp/contests/dp/tasks/dp_s
+	      https://codeforces.com/problemset/problem/1036/C
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	LC902 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
@@ -654,14 +655,15 @@ func dpCollections() {
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
 
-		// <=s 的符合要求的数字/字符串数目
+		// <=s 的符合要求的字符串数目
 		calc := func(s string) int {
 			// 有些题 lowerC 要从 1 开始，而 0 的部分单独计算（由于 0 后面可以填所有数字，这部分可以用 ∑_p>0 f(p, false) 来算）
 			const lowerC, upperC byte = '0', '9'
 			n := len(s)
+			sumUpper := n
 			dp := make([][]int, n)
 			for i := range dp {
-				dp[i] = make([]int, n)
+				dp[i] = make([]int, sumUpper+1)
 				for j := range dp[i] {
 					dp[i][j] = -1
 				}
@@ -696,7 +698,7 @@ func dpCollections() {
 			}
 			return f(0, 0, true)
 		}
-		ansLower := calc(lower)
+		ansLower := calc(lower) // lower-1
 		ansUpper := calc(upper)
 		ans := ansUpper - ansLower
 		// lower 是否算上

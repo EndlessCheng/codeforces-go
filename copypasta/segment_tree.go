@@ -14,6 +14,7 @@ package copypasta
 
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
+// 经典题 ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
 
 // TIPS: 对于复杂的区间操作（如区间开方），可以从运算性质入手来优化无用操作
 // TIPS: 一般来说会有一个核心函数，如 min/max/gcd/*/+/^/|/...
