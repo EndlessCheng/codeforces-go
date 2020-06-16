@@ -7,17 +7,17 @@ import (
 	"io"
 )
 
-type pr struct {
+type pr20 struct {
 	d int64
 	v int
 }
-type hp []pr
+type hp20 []pr20
 
-func (h hp) Len() int              { return len(h) }
-func (h hp) Less(i, j int) bool    { return h[i].d < h[j].d }
-func (h hp) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{})   { *h = append(*h, v.(pr)) }
-func (h *hp) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h hp20) Len() int              { return len(h) }
+func (h hp20) Less(i, j int) bool    { return h[i].d < h[j].d }
+func (h hp20) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *hp20) Push(v interface{})   { *h = append(*h, v.(pr20)) }
+func (h *hp20) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
 
 // github.com/EndlessCheng/codeforces-go
 func CF20C(_r io.Reader, _w io.Writer) {
@@ -46,9 +46,9 @@ func CF20C(_r io.Reader, _w io.Writer) {
 	}
 	dist[1] = 0
 	fa := make([]int, n+1)
-	h := hp{{0, 1}}
+	h := hp20{{0, 1}}
 	for len(h) > 0 {
-		p := Pop(&h).(pr)
+		p := Pop(&h).(pr20)
 		d, v := p.d, p.v
 		if dist[v] < d {
 			continue
@@ -58,7 +58,7 @@ func CF20C(_r io.Reader, _w io.Writer) {
 			if newD := d + e.w; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
-				Push(&h, pr{newD, w})
+				Push(&h, pr20{newD, w})
 			}
 		}
 	}
