@@ -27,5 +27,5 @@ inputCopy
 3 5 1
 outputCopy
 1 4 3 5 `
-	testutil.AssertEqual(t, rawText, Sol20C)
+	testutil.AssertEqual(t, rawText, CF20C)
 }
