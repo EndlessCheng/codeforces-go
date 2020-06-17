@@ -78,7 +78,7 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 
 		if resp, err := grequests.Head(problemURL, nil); err != nil {
 			fmt.Println(err)
-			// CF 链接失败，打开洛谷的页面
+			// CF 连接失败，打开洛谷的页面
 			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
 		} else if resp.StatusCode != http.StatusOK {
 			fmt.Println(resp.StatusCode, resp)
