@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -73,16 +75,25 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 		if err != nil {
 			return err
 		}
-		host := urlObj.Host
+
+		if resp, err := grequests.Head(problemURL, nil); err != nil {
+			fmt.Println(err)
+			// CF 链接失败，打开洛谷的页面
+			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
+		} else if resp.StatusCode != http.StatusOK {
+			fmt.Println(resp.StatusCode, resp)
+			// CF 维护中，打开洛谷的页面
+			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
+		}
+		open.Run(problemURL)
 
 		var statusURL string
 		if isGYM {
-			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", host, contestID, problemID)
+			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
 		} else {
-			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", host, contestID, problemID)
+			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
 		}
 		open.Run(statusURL)
-		open.Run(problemURL)
 	}
 
 	problemID = contestID + problemID
