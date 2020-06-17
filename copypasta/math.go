@@ -15,9 +15,9 @@ CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 NOTE: a%-b == a%b
-AP: Sn = n*(2*a0+(n-1)*d)/2
-GP: Sn = a1*(pow(q,n)-1)/(q-1), q != 1
-       = a1*n, q == 1
+AP: Sn = n*(2*a1+(n-1)*d)/2
+GP: Sn = a1*(pow(q,n)-1)/(q-1), q!=1
+       = a1*n, q==1
 */
 
 func numberTheoryCollection() {
