@@ -28,6 +28,16 @@ func unionFind() {
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
 
+	// 总是合并到更大的元素上
+	mergeBig := func(from, to int) int {
+		ff, ft := find(from), find(to)
+		if ff > ft {
+			ff, ft = ft, ff
+		}
+		fa[ff] = ft
+		return ft
+	}
+
 	// 离散化版本
 	faMap := map[int]int{}
 	find = func(x int) int {
@@ -115,7 +125,7 @@ func unionFind() {
 
 	_ = []interface{}{
 		initFa, merge, same,
-		sameMerge, mergeRangeTo, getRoots, countRoots, getComps,
+		mergeBig, sameMerge, mergeRangeTo, getRoots, countRoots, getComps,
 	}
 }
 
