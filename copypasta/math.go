@@ -23,7 +23,11 @@ CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
 
-	/* GCD LCM 相关 */
+	/* GCD LCM 相关
+
+	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
+
+	*/
 
 	gcd := func(a, b int64) int64 {
 		for a != 0 {
