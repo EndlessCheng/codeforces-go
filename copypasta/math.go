@@ -561,6 +561,17 @@ func numberTheoryCollection() {
 			}
 		}
 
+		{
+			// 去掉 1 作为约数
+			const mx = 1e6
+			divisors := [mx + 1][]int{1: {1}} // 仅保留 1 的约数 1
+			for i := 2; i <= mx; i++ {
+				for j := i; j <= mx; j += i {
+					divisors[j] = append(divisors[j], i)
+				}
+			}
+		}
+
 		isSquareNumber := func(x int) bool { return len(divisors[x])&1 == 1 }
 		halfDivisors := func(x int) []int { d := divisors[x]; return d[:(len(d)-1)/2+1] }
 
