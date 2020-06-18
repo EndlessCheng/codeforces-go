@@ -9,15 +9,15 @@ import (
 
 /* 数论 组合数学 博弈论
 
-todo 待整理 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
+NOTE: a%-b == a%b
+
+AP: Sn = n*(2*a1+(n-1)*d)/2
+GP: Sn = a1*(pow(q,n)-1)/(q-1), q!=1
+       = a1*n, q==1
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
 
-NOTE: a%-b == a%b
-AP: Sn = n*(2*a1+(n-1)*d)/2
-GP: Sn = a1*(pow(q,n)-1)/(q-1), q!=1
-       = a1*n, q==1
 */
 
 func numberTheoryCollection() {
@@ -339,12 +339,13 @@ func numberTheoryCollection() {
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
-	// Number of prime divisors of n counted with multiplicity
-	//
-	// Omega(n) - omega(n) https://oeis.org/A046660
 	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
 	// So a(24) = a(375) since 24 = 2^3 * 3 and 375 = 3 * 5^3 both have prime signature (3, 1)
-	// a(n) = 0 for squarefree n
+	//
+	// 		Omega(n) - omega(n) https://oeis.org/A046660
+	//
+	// 另一种写法 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
+	// 性质：Omega(nm)=Omega(n)+Omega(m)
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
 		cnts := [mx + 1]int{}
@@ -566,20 +567,6 @@ func numberTheoryCollection() {
 		_, _ = isSquareNumber, halfDivisors
 	}
 
-	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
-	// for i>=2, factors[i][0] == i means i is prime
-	primeFactorsAll := func() {
-		const mx int = 1e6
-		factors := [mx + 1][]int{}
-		for i := 2; i <= mx; i++ {
-			if len(factors[i]) == 0 {
-				for j := i; j <= mx; j += i {
-					factors[j] = append(factors[j], i)
-				}
-			}
-		}
-	}
-
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
@@ -614,8 +601,21 @@ func numberTheoryCollection() {
 		// n/LPF(n) = Max{gcd(n,j); j=n+1..2n-1}
 	}
 
+	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
+	// for i>=2, factors[i][0] == i means i is prime
+	primeFactorsAll := func() {
+		const mx int = 1e6
+		factors := [mx + 1][]int{}
+		for i := 2; i <= mx; i++ {
+			if len(factors[i]) == 0 {
+				for j := i; j <= mx; j += i {
+					factors[j] = append(factors[j], i)
+				}
+			}
+		}
+	}
+
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
-	// Number of distinct primes dividing n
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
 		cnts := make([]int, mx+1)
