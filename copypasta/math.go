@@ -650,11 +650,12 @@ func numberTheoryCollection() {
 	}
 
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
-	// 预处理所有 [2,mx] 数的欧拉函数
-	// NOTE: phi 的迭代（指 phi[phi...[n]]）是 log 级别收敛的：奇数减一，偶数减半
-	phiAll := func() {
+	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
+	// 预处理 [1,mx] 欧拉函数
+	// NOTE: phi[phi...[n]] 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
+	initPhi := func() {
 		const mx int = 1e6
-		phi := [mx + 1]int{}
+		phi := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
 			phi[i] = i
 		}
@@ -680,7 +681,7 @@ func numberTheoryCollection() {
 
 	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
 
-	/* 同余 */
+	/* 同余 逆元 */
 
 	// 二元一次不定方程
 	// exgcd solve equation ax+by=gcd(a,b)
@@ -838,11 +839,12 @@ func numberTheoryCollection() {
 	// todo
 	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
 
-	/* 组合数；二项式系数
-	 */
+	/* 阶乘 组合数/二项式系数 */
 
-	// 阶乘
-	factorial := func(n int) int64 {
+	// https://oeis.org/A000142
+	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
+
+	calcFactorial := func(n int) int64 {
 		res := int64(1) % mod
 		for i := 2; i <= n; i++ {
 			res = res * int64(i) % mod
@@ -1060,14 +1062,25 @@ func numberTheoryCollection() {
 	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
 
+	// 埃及分数 - 不同的单位分数的和 (IDA*)
+	// https://www.luogu.com.cn/problem/UVA12558
+	// 贪婪算法：将一项分数分解成若干项单分子分数后的项数最少，称为第一种好算法；最大的分母数值最小，称为第二种好算法
+	// https://en.wikipedia.org/wiki/Egyptian_fraction
+	// https://oeis.org/A006585 number of solutions
+	// https://oeis.org/A247765 Table of denominators in the Egyptian fraction representation of n/(n+1) by the greedy algorithm
+	// https://oeis.org/A100678 Number of Egyptian fractions in the representation of n/(n+1) via the greedy algorithm
+	// https://oeis.org/A100695	Largest denominator used in the Egyptian fraction representation of n/(n+1) by the greedy algorithm
+	//
+	// 		埃尔德什-施特劳斯猜想（Erdős–Straus conjecture）https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Straus_conjecture
+
 	_ = []interface{}{
 		primes,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
 		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
-		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, phiAll,
+		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, initPhi,
 		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
-		factorial, initFactorial, _factorial, combHalf, comb,
+		factorial, calcFactorial, initFactorial, _factorial, combHalf, comb,
 		muInit,
 	}
 }
@@ -1110,6 +1123,12 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 * 生成函数/母函数 *
 https://en.wikipedia.org/wiki/Generating_function
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
+
+	质数分拆
+	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
+	https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
+	https://oeis.org/A068307 number of partitions of n into a sum of three primes
+	https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
 
 记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2 https://oeis.org/A007590
 Maximum sum of displacements of elements in a permutation of (1..n)

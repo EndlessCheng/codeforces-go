@@ -28,8 +28,10 @@ func continuedFractionCollections() {
 	}
 
 	// sqrt(d) = [exp[0]; exp[1],..., 2*exp[0], exp[1], ..., 2*exp[0], exp[1], ...]
-	// https://en.wikipedia.org/wiki/Pell%27s_equation
+	// https://en.wikipedia.org/wiki/Pell%27s_equation 解 https://oeis.org/A002350 https://oeis.org/A002349
 	// https://www.weiwen.io/post/about-the-pell-equations-2/
+	// 连分数表示 https://oeis.org/A240071
+	// 循环节长度 https://oeis.org/A003285
 	calcSqrtContinuedFraction := func(d int64) (exp []int64) {
 		sqrtD := math.Sqrt(float64(d))
 		base := int64(sqrtD)
@@ -77,16 +79,16 @@ func continuedFractionCollections() {
 	//	return
 	//}
 
-	calcGCD := func(a, b int64) int64 {
+	gcd := func(a, b int64) int64 {
 		for b > 0 {
 			a, b = b, a%b
 		}
 		return a
 	}
-	calcGCDN := func(nums ...int64) (gcd int64) {
-		gcd = nums[0]
-		for _, v := range nums[1:] {
-			gcd = calcGCD(gcd, v)
+	gcds := func(a ...int64) (g int64) {
+		g = a[0]
+		for _, v := range a[1:] {
+			g = gcd(g, v)
 		}
 		return
 	}
@@ -111,11 +113,11 @@ func continuedFractionCollections() {
 			if newC == 0 {
 				return
 			}
-			gcd := calcGCDN(newA, newB, newC)
-			//Println(i, base, newA, newB, newC, gcd)
-			a = append(a, newA/gcd)
-			b = append(b, newB/gcd)
-			c = append(c, newC/gcd)
+			g := gcds(newA, newB, newC)
+			//Println(i, base, newA, newB, newC, g)
+			a = append(a, newA/g)
+			b = append(b, newB/g)
+			c = append(c, newC/g)
 		}
 		return
 	}
@@ -147,14 +149,14 @@ func continuedFractionCollections() {
 			if newC.IsInt64() && newC.Int64() == 0 {
 				return
 			}
-			gcd := big.NewInt(1)
+			g := big.NewInt(1)
 			if !base.IsInt64() || base.Int64() > 0 {
-				gcd.GCD(nil, nil, newA, newB).GCD(nil, nil, gcd, newC)
+				g.GCD(nil, nil, newA, newB).GCD(nil, nil, g, newC)
 			}
 			//Println(i, base, newA, newB, newC, gcd)
-			a = append(a, newA.Quo(newA, gcd))
-			b = append(b, newB.Quo(newB, gcd))
-			c = append(c, newC.Quo(newC, gcd))
+			a = append(a, newA.Quo(newA, g))
+			b = append(b, newB.Quo(newB, g))
+			c = append(c, newC.Quo(newC, g))
 		}
 		return
 	}
