@@ -75,6 +75,13 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 		if err != nil {
 			return err
 		}
+		var statusURL string
+		if isGYM {
+			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
+		} else {
+			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
+		}
+		open.Run(statusURL)
 
 		if resp, err := grequests.Head(problemURL, nil); err != nil {
 			fmt.Println(err)
@@ -86,14 +93,6 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
 		}
 		open.Run(problemURL)
-
-		var statusURL string
-		if isGYM {
-			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
-		} else {
-			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
-		}
-		open.Run(statusURL)
 	}
 
 	problemID = contestID + problemID
