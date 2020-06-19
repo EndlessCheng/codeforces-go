@@ -583,10 +583,12 @@ func numberTheoryCollection() {
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
+	// LPF 前缀和 https://oeis.org/A046669 前缀积 https://oeis.org/A072486
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
 	//
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1 https://oeis.org/A006530
+	// GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
@@ -858,6 +860,8 @@ func numberTheoryCollection() {
 
 	// https://oeis.org/A000142
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
+
+	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
 
 	calcFactorial := func(n int) int64 {
 		res := int64(1) % mod
@@ -1144,6 +1148,20 @@ https://en.wikipedia.org/wiki/Generating_function
 	https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
 	https://oeis.org/A068307 number of partitions of n into a sum of three primes
 	https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
+
+Maximum product of two integers whose sum is n https://oeis.org/A002620
+Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)
+
+	Maximal product of three numbers with sum n: a(n) = max(r*s*t), n = r+s+t https://oeis.org/A006501
+	a(n) = floor(n/3)*floor((n+1)/3)*floor((n+2)/3)
+	Expansion of (1+x^2) / ( (1-x)^2 * (1-x^3)^2 )
+
+	Maximal product of four nonnegative integers whose sum is n https://oeis.org/A008233
+	a(n) = floor(n/4)*floor((n+1)/4)*floor((n+2)/4)*floor((n+3)/4)
+
+	...
+
+	相关题目 https://codeforces.com/problemset/problem/1368/B
 
 记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2 https://oeis.org/A007590
 Maximum sum of displacements of elements in a permutation of (1..n)

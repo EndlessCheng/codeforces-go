@@ -10,6 +10,9 @@ import (
 注意：bits.Len(0) 返回的是 0 而不是 1
 注意：bits.Len(x) 相当于 int(log_2(x))-1
 
+https://oeis.org/A070939 Length of binary representation of n
+https://oeis.org/A083652 前缀和
+
 运算符优先级 (https://golang.org/ref/spec#Operators)
 Precedence    Operator
     5         *  /  %  <<  >>  &  &^
