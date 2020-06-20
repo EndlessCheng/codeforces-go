@@ -1286,10 +1286,11 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // 模板题 https://www.luogu.com.cn/problem/P6113
 // TODO
 
-// 拓扑排序 Kahn's algorithm
-// 可以用来判断有向图是否有环
+// 有向图的拓扑排序 Kahn's algorithm
+// 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
+// 模板题 https://www.luogu.com.cn/problem/P3387
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
@@ -1304,18 +1305,19 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		inDeg[w]++
 	}
 
-	fa := make([]int, n)
-	for i := range fa {
-		fa[i] = -1
-	}
-	levels := make([]int, n) // EXTRA
+	//fa := make([]int, n)
+	//for i := range fa {
+	//	fa[i] = -1
+	//}
+	//levels := make([]int, n)
 
 	orders = make([]int, 0, n)
 	q := []int{}
 	for i, deg := range inDeg {
 		if deg == 0 {
 			q = append(q, i)
-			levels[i] = 1
+			//levels[i] = 1
+			// NOTE: 对于点权型 DAG DP，这里记得对起点初始化
 		}
 	}
 	for len(q) > 0 {
@@ -1325,8 +1327,8 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		for _, w := range g[v] {
 			inDeg[w]--
 			if inDeg[w] == 0 {
-				fa[w] = v
-				levels[w] = levels[v] + 1
+				//fa[w] = v
+				//levels[w] = levels[v] + 1
 				q = append(q, w)
 			}
 		}
@@ -1334,11 +1336,15 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 
 	isDAG = len(orders) == n
 
-	// EXTRA: path from end to start
-	var end = n - 1
-	path := make([]int, 0, n)
-	for x := end; x != -1; x = fa[x] {
-		path = append(path, x)
+	{
+		fa := make([]int, n)
+
+		// EXTRA: path from end to start
+		var end = n - 1
+		path := make([]int, 0, n)
+		for x := end; x != -1; x = fa[x] {
+			path = append(path, x)
+		}
 	}
 
 	return
@@ -1375,7 +1381,6 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 				dfs(w)
 			}
 		}
-		// 后序遍历
 		vs = append(vs, v)
 	}
 	for v := range g {
@@ -1396,6 +1401,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 			}
 		}
 	}
+	// 按照 DFS 逆后序就可以像无向图那样求出 CC
 	comps = [][]int{}
 	for i := len(vs) - 1; i >= 0; i-- {
 		if v := vs[i]; !used[v] {
@@ -1406,6 +1412,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 		}
 	}
 
+	// comps 的结果就是拓扑序
 	sccIDs = make([]int, n)
 	for i, cp := range comps {
 		for _, v := range cp {
