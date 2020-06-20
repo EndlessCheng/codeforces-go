@@ -146,6 +146,8 @@ func numberTheoryCollection() {
 	/* 质数 质因子分解 */
 
 	// 质数表 https://oeis.org/A000040
+	// primes[i]%10 http://oeis.org/A007652
+	// 10-primes[i]%10 http://oeis.org/A072003
 	primes := [...]int{
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
@@ -167,6 +169,35 @@ func numberTheoryCollection() {
 		1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789,
 		1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889,
 		1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, /* #=303 */
+	}
+
+	// map{第几个素数(或小于 10^n 的素数个数): 小于 10^n 的最大素数 (最大的 n 位素数)} http://oeis.org/A006880 http://oeis.org/A003618
+	primes10 := map[int]int64{
+		4:         7,
+		25:        97,
+		168:       997, // 1e3
+		1229:      9973,
+		9592:      99991,
+		78498:     999983, // 1e6
+		664579:    9999991,
+		5761455:   99999989,
+		50847534:  999999937, // 1e9
+		455052511: 9999999967,
+	}
+
+	// 大于 10^n 的最小素数 (最小的 n 位素数) http://oeis.org/A090226 http://oeis.org/A003617
+	primes10_ := [...]int64{
+		2,
+		11,
+		101,
+		1009, // 1e3
+		10007,
+		100003,
+		1000003, // 1e6
+		10000019,
+		100000007,
+		1000000007, //1e9
+		10000000019,
 	}
 
 	/* 质数性质统计相关
@@ -255,10 +286,9 @@ func numberTheoryCollection() {
 		const mx int = 1e6
 		primes := []int{}
 		isP := [mx + 1]bool{}
-		for i := range isP {
+		for i := 2; i <= mx; i++ {
 			isP[i] = true
 		}
-		isP[0], isP[1] = false, false
 		for i := 2; i <= mx; i++ {
 			if isP[i] {
 				primes = append(primes, i)
@@ -295,10 +325,29 @@ func numberTheoryCollection() {
 
 	// 线性筛
 	// 避免多次标记合数
-	// todo https://oi-wiki.org/math/sieve/
-	// todo https://www.luogu.com.cn/problem/P3383
-	sieve = func() {
-
+	// https://www.luogu.com.cn/problem/solution/P3383
+	// https://www.luogu.com.cn/problem/P3383
+	sieveL := func() {
+		const mx int = 1e8
+		primes := []int{}
+		isP := make([]bool, mx+1)
+		for i := 2; i <= mx; i++ {
+			isP[i] = true
+		}
+		for i := 2; i <= mx; i++ {
+			if isP[i] {
+				primes = append(primes, i)
+			}
+			for _, p := range primes {
+				if p*i > mx {
+					break
+				}
+				isP[p*i] = false
+				if i%p == 0 {
+					break
+				}
+			}
+		}
 	}
 
 	// 区间筛法
@@ -1094,10 +1143,10 @@ func numberTheoryCollection() {
 	// 		埃尔德什-施特劳斯猜想（Erdős–Straus conjecture）https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Straus_conjecture
 
 	_ = []interface{}{
-		primes,
+		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
-		isPrime, sieve, primeFactorization, primeDivisors, primeExponentsCountAll,
+		isPrime, sieve, sieveL, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, initPhi,
 		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
 		factorial, calcFactorial, initFactorial, _factorial, combHalf, comb,
