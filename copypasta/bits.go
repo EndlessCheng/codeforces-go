@@ -34,10 +34,16 @@ S\{i}:  S&^(1<<i)
 */
 
 // 参考 strings/strings.go 中的 asciiSet
-type bitset [8]uint32
+// 下面的实现基于 32 位机器（Codeforces）
+type bitset []uint // b := make(bitset, n>>5+1)
 
-func (b *bitset) set(c byte)           { b[c>>5] |= 1 << (c & 31) }
-func (b *bitset) contains(c byte) bool { return 1<<(c&31)&b[c>>5] > 0 }
+func (b bitset) set(c int)           { b[c>>5] |= 1 << (c & 31) }
+func (b bitset) contains(c int) bool { return 1<<(c&31)&b[c>>5] > 0 }
+
+type bitset64 []uint64 // b := make(bitset, n>>6+1)
+
+func (b bitset64) set(c int64)           { b[c>>6] |= 1 << (c & 63) }
+func (b bitset64) contains(c int64) bool { return 1<<(c&63)&b[c>>6] > 0 }
 
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
