@@ -6,14 +6,11 @@ import (
 )
 
 /*
-标准库 "math/bits" 包含了部分位运算需要的函数，如二进制中 1 的个数、二进制表示的长度等
+标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
-注意：bits.Len(x) 相当于 int(log_2(x))-1
+     bits.Len(x) 相当于 int(Log2(x)+eps)+1
 
-https://oeis.org/A070939 Length of binary representation of n
-https://oeis.org/A083652 前缀和
-
-运算符优先级 (https://golang.org/ref/spec#Operators)
+运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
     5         *  /  %  <<  >>  &  &^
     4         +  -  |  ^
@@ -21,16 +18,32 @@ Precedence    Operator
     2         &&
     1         ||
 
-a|b = a^b + a&b
-
+一些子集的枚举算法见 loopCollection
 S∪{i}: S|1<<i
 S\{i}:  S&^(1<<i)
+构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
+a|b = a^b + a&b
 
-注意 11100001 的情况（特判 lowbit = 1）
+https://oeis.org/A070939 a(0)=1, a(i)=bits.Len(i)
+https://oeis.org/A083652 A070939 的前缀和
 
-构造 2^n-1，即 n 个 1：^(-1<<n)
+https://oeis.org/A000120 OnesCount(i)
+https://oeis.org/A000788 A000120 的前缀和 a(2^n)=n*2^(n-1)+1
 
-一些子集的枚举算法见 loopCollection
+	https://oeis.org/A023416 Number of 0's in binary expansion of n
+	a(n) = a(n/2) + 1 - n&1
+	https://oeis.org/A059015 A023416 的前缀和
+
+https://oeis.org/A010061 二进制自我数/哥伦比亚数 numbers not of form m + sum of binary digits of m
+https://oeis.org/A010062 a(0)=1, a(n+1)=a(n)+OnesCount(a(n))
+
+	https://oeis.org/A096303 从 n 出发不断执行 n+=OnesCount(n)，直到 n 在 A010062 中，所需要的迭代次数
+	Number of iterations of n -> n + (number of 1's in binary representation of n) needed for the trajectory of n to join the trajectory of A010062
+		https://oeis.org/A229743 Positions of records
+		https://oeis.org/A229744 Values of records
+
+	相关题目 https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
+
 */
 
 // 参考 strings/strings.go 中的 asciiSet

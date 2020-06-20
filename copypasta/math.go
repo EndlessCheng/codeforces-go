@@ -181,8 +181,8 @@ func numberTheoryCollection() {
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
 	质数差分 https://oeis.org/A001223
-	LIS n https://oeis.org/A005669
-	LIS a(n) https://oeis.org/A005250
+		Positions of records https://oeis.org/A005669
+		Values of records https://oeis.org/A005250
 
 	质数的逆二项变换 Inverse binomial transform of primes https://oeis.org/A007442
 
@@ -193,10 +193,10 @@ func numberTheoryCollection() {
 	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
 	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
 	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
-	LIS n https://oeis.org/A025018
-	LIS a(n) https://oeis.org/A025019
-	1e9 内最大的为 a(721013438) = 1789
-	2e9 内最大的为 a(1847133842) = 1861
+		Positions of records https://oeis.org/A025018
+		Values of records https://oeis.org/A025019
+		1e9 内最大的为 a(721013438) = 1789
+		2e9 内最大的为 a(1847133842) = 1861
 
 	勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
 	https://en.wikipedia.org/wiki/Legendre%27s_conjecture
@@ -402,8 +402,8 @@ func numberTheoryCollection() {
 	/* 约数 因子
 
 	n 的约数个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005（也写作 τ(n)）
-	LIS n https://oeis.org/A002182
-	LIS d(n) https://oeis.org/A002183
+		Positions of records (高合成数) https://oeis.org/A002182
+		Values of records https://oeis.org/A002183
 
 		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
@@ -1190,6 +1190,14 @@ the rows and columns are weakly increasing, and two adjacent entries differ by a
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
 相关题目 LC1411/周赛184D https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
+
+十进制自我数/哥伦比亚数 Self number / Colombian number https://oeis.org/A003052
+https://zh.wikipedia.org/wiki/%E8%87%AA%E6%88%91%E6%95%B0
+1, 3, 5, 7, 9, 20, 31, 42, 53, 64, 75, 86, 97, 108, ...
+
+	自我质数 Self primes https://oeis.org/A006378
+
+一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
