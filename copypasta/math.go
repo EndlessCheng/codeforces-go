@@ -216,6 +216,9 @@ func numberTheoryCollection() {
 		Values of records https://oeis.org/A005250
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
 
+	任意质数之差 https://oeis.org/A030173
+	非任意质数之差 https://oeis.org/A007921
+
 	质数的逆二项变换 Inverse binomial transform of primes https://oeis.org/A007442
 
 	合数前缀和 https://oeis.org/A053767
