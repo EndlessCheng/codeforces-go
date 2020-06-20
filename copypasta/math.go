@@ -180,9 +180,10 @@ func numberTheoryCollection() {
 	2, 6, 30, 210, 2310, 30030, 510510, 9699690, 223092870, /9/
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
-	质数差分 https://oeis.org/A001223
+	质数差分 Gap https://oeis.org/A001223
 		Positions of records https://oeis.org/A005669
 		Values of records https://oeis.org/A005250
+		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
 
 	质数的逆二项变换 Inverse binomial transform of primes https://oeis.org/A007442
 

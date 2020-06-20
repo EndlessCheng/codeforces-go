@@ -777,8 +777,9 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // todo https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
 
-// TODO: 虚树
+// TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
+// https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
 
 // 仙人掌图 Cactus graph
 // A connected graph in which any two simple cycles have at most one vertex in common
