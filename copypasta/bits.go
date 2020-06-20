@@ -32,6 +32,13 @@ S\{i}:  S&^(1<<i)
 
 一些子集的枚举算法见 loopCollection
 */
+
+// 参考 strings/strings.go 中的 asciiSet
+type bitset [8]uint32
+
+func (b *bitset) set(c byte)           { b[c>>5] |= 1 << (c & 31) }
+func (b *bitset) contains(c byte) bool { return 1<<(c&31)&b[c>>5] > 0 }
+
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }
