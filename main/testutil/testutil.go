@@ -71,6 +71,10 @@ func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, case
 	if len(inputFilePaths) != len(answerFilePaths) {
 		t.Fatal("missing sample files")
 	}
+	if len(inputFilePaths) == 0 {
+		t.Log("empty test file")
+		return
+	}
 
 	testCases := make([][2]string, len(inputFilePaths))
 	for i, path := range inputFilePaths {
