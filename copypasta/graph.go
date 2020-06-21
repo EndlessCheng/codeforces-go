@@ -968,6 +968,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
+// 关键边、伪关键边 LC周赛194D https://leetcode-cn.com/contest/weekly-contest-194/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
 func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	var fa []int
 	initFa := func(n int) {
@@ -987,7 +988,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	type edge struct {
 		v, w   int
 		weight int // int64
-		eid    int
+		eid    int // 某些题目需要
 	}
 	edges := make([]edge, m)
 	for i := range edges {
