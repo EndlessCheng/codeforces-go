@@ -171,7 +171,7 @@ func numberTheoryCollection() {
 		1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, /* #=303 */
 	}
 
-	// map{第几个素数(或小于 10^n 的素数个数): 小于 10^n 的最大素数 (最大的 n 位素数)} http://oeis.org/A006880 http://oeis.org/A003618
+	// map{小于 10^n 的素数个数: 小于 10^n 的最大素数} http://oeis.org/A006880 http://oeis.org/A003618   10^n-a(n): http://oeis.org/A033874
 	primes10 := map[int]int64{
 		4:         7,
 		25:        97,
@@ -185,7 +185,7 @@ func numberTheoryCollection() {
 		455052511: 9999999967,
 	}
 
-	// 大于 10^n 的最小素数 (最小的 n 位素数) http://oeis.org/A090226 http://oeis.org/A003617
+	// 大于 10^n 的最小素数 http://oeis.org/A090226 http://oeis.org/A003617    a(n)-10^n: http://oeis.org/A033873
 	primes10_ := [...]int64{
 		2,
 		11,
