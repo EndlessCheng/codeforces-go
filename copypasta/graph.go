@@ -1001,9 +1001,9 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
 	initFa(n)
 	for _, e := range edges {
-		if from, to := find(e.v), find(e.w); from != to {
+		if fv, fw := find(e.v), find(e.w); fv != fw {
 			sum += int64(e.weight)
-			fa[from] = to
+			fa[fv] = fw
 		}
 	}
 	return
