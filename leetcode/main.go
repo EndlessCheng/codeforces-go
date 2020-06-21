@@ -17,5 +17,30 @@ func main() {
 		return bytes
 	}
 
+	_ = MustBuildTreeNode
+
 	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
+}
+
+// LC 124
+func maxPathSum(root *TreeNode) int {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	ans := int(-1e18)
+	var f func(*TreeNode) int
+	f = func(o *TreeNode) int {
+		if o == nil {
+			return -1e18
+		}
+		l := max(f(o.Left), 0)
+		r := max(f(o.Right), 0)
+		ans = max(ans, o.Val+l+r)
+		return o.Val + max(l, r)
+	}
+	f(root)
+	return ans
 }
