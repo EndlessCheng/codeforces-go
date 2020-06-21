@@ -986,7 +986,8 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 
 	type edge struct {
 		v, w   int
-		weight int
+		weight int // int64
+		eid    int
 	}
 	edges := make([]edge, m)
 	for i := range edges {
@@ -994,7 +995,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 		Fscan(in, &v, &w, &weight)
 		v--
 		w--
-		edges[i] = edge{v, w, weight}
+		edges[i] = edge{v, w, weight, i}
 	}
 	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
 	initFa(n)

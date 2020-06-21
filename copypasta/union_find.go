@@ -73,8 +73,9 @@ func unionFind() {
 	//rangeFullMerged := func() bool { return find(0) == n }
 
 	// 连通分量个数
-	countRoots := func() (cnt int) {
-		for i := range fa {
+	// countRoots > 1 表示整个图不连通
+	countRoots := func(st int) (cnt int) {
+		for i := st; i < len(fa); i++ {
 			if find(i) == i {
 				cnt++
 			}
