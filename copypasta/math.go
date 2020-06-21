@@ -360,6 +360,8 @@ func numberTheoryCollection() {
 	// 返回分解出的质数及其指数
 	// https://mathworld.wolfram.com/PrimeFactorization.html
 	// todo 更高效的算法 - Pollard's Rho
+	// n 的质因数分解中 2 的幂次 http://oeis.org/A007814
+	// n 的质因数分解中非 2 的幂次之和 http://oeis.org/A087436
 	primeFactorization := func(n int) (factors [][2]int) {
 		for i := 2; i*i <= n; i++ {
 			e := 0
