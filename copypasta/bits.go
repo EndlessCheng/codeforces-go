@@ -24,6 +24,16 @@ S\{i}:  S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 a|b = a^b + a&b
 
+http://oeis.org/A003987 异或矩阵
+http://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
+http://oeis.org/A145768 异或和 i*i
+http://oeis.org/A126084 异或和 质数
+http://oeis.org/A018252 异或和 合数?
+http://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1)
+	http://oeis.org/A072595 满足 A072594(n)=0 的数
+http://oeis.org/A178910 异或和 因子
+	http://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
+
 https://oeis.org/A070939 a(0)=1, a(i)=bits.Len(i)
 https://oeis.org/A083652 A070939 的前缀和
 
