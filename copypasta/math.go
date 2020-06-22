@@ -708,6 +708,7 @@ func numberTheoryCollection() {
 	// 预处理 [1,mx] 欧拉函数
 	// NOTE: phi[phi...[n]] 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
 	// n+phi[n] http://oeis.org/A121048
+	// n-phi[n] https://oeis.org/A051953 called Cototient
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{1: 1}
