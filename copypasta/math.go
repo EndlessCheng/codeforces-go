@@ -288,30 +288,13 @@ func numberTheoryCollection() {
 	sieve := func() {
 		const mx int = 1e6
 		primes := []int{}
-		isP := [mx + 1]bool{}
+		pid := [mx + 1]int{-1, -1}
 		for i := 2; i <= mx; i++ {
-			isP[i] = true
-		}
-		for i := 2; i <= mx; i++ {
-			if isP[i] {
+			if pid[i] == 0 {
 				primes = append(primes, i)
+				pid[i] = len(primes)
 				for j := 2 * i; j <= mx; j += i {
-					isP[j] = false
-				}
-			}
-		}
-
-		// 另一种写法，用不到 isP 的情况
-		{
-			const mx int = 1e6
-			primes := []int{}
-			vis := [mx + 1]bool{}
-			for i := 2; i <= mx; i++ {
-				if !vis[i] {
-					primes = append(primes, i)
-					for j := 2 * i; j <= mx; j += i {
-						vis[j] = true
-					}
+					pid[j] = -1
 				}
 			}
 		}
@@ -320,7 +303,7 @@ func numberTheoryCollection() {
 		pi := [mx + 1]int{}
 		for i := 2; i <= mx; i++ {
 			pi[i] = pi[i-1]
-			if isP[i] {
+			if pid[i] > 0 {
 				pi[i]++
 			}
 		}
@@ -331,21 +314,19 @@ func numberTheoryCollection() {
 	// https://www.luogu.com.cn/problem/solution/P3383
 	// https://www.luogu.com.cn/problem/P3383
 	sieveL := func() {
-		const mx int = 1e8
+		const mx int = 1e7
 		primes := []int{}
-		isP := make([]bool, mx+1)
+		pid := [mx + 1]int{-1, -1}
 		for i := 2; i <= mx; i++ {
-			isP[i] = true
-		}
-		for i := 2; i <= mx; i++ {
-			if isP[i] {
+			if pid[i] == 0 {
 				primes = append(primes, i)
+				pid[i] = len(primes)
 			}
 			for _, p := range primes {
 				if p*i > mx {
 					break
 				}
-				isP[p*i] = false
+				pid[p*i] = -1
 				if i%p == 0 {
 					break
 				}
