@@ -214,6 +214,7 @@ func numberTheoryCollection() {
 	质数差分 Gap https://oeis.org/A001223
 		Positions of records https://oeis.org/A005669
 		Values of records https://oeis.org/A005250
+		Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
 
 	任意质数之差 https://oeis.org/A030173
