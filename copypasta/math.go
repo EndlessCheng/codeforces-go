@@ -754,7 +754,15 @@ func numberTheoryCollection() {
 
 	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
 
-	/* 同余 逆元 */
+	/* 同余 逆元
+	http://oeis.org/A006254 2^-1 mod p         Numbers k such that 2k-1 is prime
+	http://oeis.org/A283419 3^-1 mod p
+	http://oeis.org/A006093 (p-1)^-1 mod p     prime(n) - 1
+	http://oeis.org/A040976 (p/2)^-1 mod p     prime(n) - 2
+	http://oeis.org/A090938 Least multiple of n == 1 (mod prime(n))
+	http://oeis.org/A090939 Least multiple of n == -1 (mod prime(n))
+	http://oeis.org/A091185 a(n) = A090938(n)/n      n^-1 mod prime(n)
+	*/
 
 	// 二元一次不定方程
 	// exgcd solve equation ax+by=gcd(a,b)
@@ -1147,6 +1155,21 @@ func numberTheoryCollection() {
 	// https://oeis.org/A100695	Largest denominator used in the Egyptian fraction representation of n/(n+1) by the greedy algorithm
 	//
 	// 		埃尔德什-施特劳斯猜想（Erdős–Straus conjecture）https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Straus_conjecture
+
+	/* 斐波那契数列 F(n) http://oeis.org/A000045
+	http://oeis.org/A000071 F(n) 前缀和 = F(n)-1
+	- 异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
+	http://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
+	                                  a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
+	http://oeis.org/A001690 补集
+	http://oeis.org/A022307 F(n) 的不同的质因子个数
+	http://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers
+	                        N(m) = LCM(N(p1^e1), ..., N(pk^ek))
+	http://oeis.org/A060305 N(p) = F%p 的周期
+	http://oeis.org/A003893 F(n)%10
+	http://oeis.org/A001605 使 F(n) 为质数的 n
+	http://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
+	*/
 
 	_ = []interface{}{
 		primes, primes10, primes10_,
