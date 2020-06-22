@@ -470,6 +470,9 @@ func numberTheoryCollection() {
 
 		Smallest number with exactly n divisors https://oeis.org/A005179
 
+	d(d(...d(n))) 迭代至 2 所需要的迭代次数
+	0,0,1,0,2,0,2,1,2,0,3,0,2,2,1,0,3,0,3,2,2,0,3,1,2,2,3
+
 	高合成数/反质数 Highly Composite Numbers https://oeis.org/A002182
 	https://oi-wiki.org/math/prime/#_7
 	性质：一个高合成数一定是由另一个高合成数乘一个质数得到
@@ -599,6 +602,16 @@ func numberTheoryCollection() {
 		for i := 1; i <= mx; i++ {
 			for j := i; j <= mx; j += i {
 				divisors[j] = append(divisors[j], i)
+			}
+		}
+
+		{
+			// 只统计约数个数
+			d := [mx + 1]int{}
+			for i := 1; i <= mx; i++ {
+				for j := i; j <= mx; j += i {
+					d[j]++
+				}
 			}
 		}
 
