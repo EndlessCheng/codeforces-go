@@ -151,6 +151,35 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		}
 	}
 
+	{
+		// 无向图: DFS 找长度至少为 k 的环 https://codeforces.com/problemset/problem/263/D
+		var k, end, st int
+		fa := make([]int, n)
+		dep := make([]int, n)
+		var f func(v, p, d int) bool
+		f = func(v, p, d int) bool {
+			fa[v] = p
+			dep[v] = d
+			for _, w := range g[v] {
+				if dep[w] == 0 {
+					if f(w, v, d+1) {
+						return true
+					}
+				} else if d-dep[w] >= k {
+					end, st = v, w
+					return true
+				}
+			}
+			return false
+		}
+		f(0, -1, 1)
+
+		ans := []interface{}{st + 1} // for print
+		for v := end; v != st; v = fa[v] {
+			ans = append(ans, v+1)
+		}
+	}
+
 	// BFS
 	vis = make([]bool, n)
 	vis[st] = true
