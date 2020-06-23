@@ -776,6 +776,14 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// 扩展欧拉定理（降幂公式）
+	// https://oi-wiki.org/math/fermat/#_5
+	// https://zhuanlan.zhihu.com/p/42632291
+	// https://blog.csdn.net/synapse7/article/details/19610361
+	// a^b ≡ a^(b mod φ(m)) (mod m), gcd(a,m)=1
+	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
+	// 例题 https://codeforces.com/problemset/problem/615/D
+
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
 	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
