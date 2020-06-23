@@ -80,3 +80,19 @@ func bitsCollection() {
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
+
+// LC137 https://leetcode-cn.com/problems/single-number-ii/
+// 除了某个元素只出现一次以外，其余每个元素均出现了三次。返回只出现了一次的元素
+// 		定义两个集合 ones 和 twos，初始为空
+// 		第一次出现就放在 ones 中
+//		第二次出现就在 ones 中删除并放在 twos
+//		第三次出现就从 twos 中删除
+//		这样最终 ones 中就留下了最后的结果
+func singleNumber(a []int) int {
+	ones, twos := 0, 0
+	for _, v := range a {
+		ones = (ones ^ v) &^ twos
+		twos = (twos ^ v) &^ ones
+	}
+	return ones
+}
