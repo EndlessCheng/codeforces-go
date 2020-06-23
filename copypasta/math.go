@@ -202,6 +202,10 @@ func numberTheoryCollection() {
 
 	/* 质数性质统计相关
 
+	质数的幂次组成的集合 {p^k} https://oeis.org/A000961
+		补集 https://oeis.org/A024619
+		Exponential of Mangoldt function https://oeis.org/A014963
+
 	质数前缀和 http://oeis.org/A007504
 	a(n)^2 - a(n-1)^2 = A034960(n)
 	EXTRA: divide odd numbers into groups with prime(n) elements and add together http://oeis.org/A034960
@@ -445,6 +449,13 @@ func numberTheoryCollection() {
 		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
 
+		n+d(n) https://oeis.org/A062249
+		n-d(n) https://oeis.org/A049820   count https://oeis.org/A060990   前缀和 https://oeis.org/A161664
+		n*d(n) https://oeis.org/A038040
+		d(n)|n https://oeis.org/A033950 refactorable numbers / tau numbers
+			n/d(n) https://oeis.org/A036762
+		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
+
 	n 的约数之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
 
 		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
@@ -502,6 +513,8 @@ func numberTheoryCollection() {
 	Largest squarefree number dividing n https://oeis.org/A007947
 	the squarefree kernel of n, rad(n), radical of n
 
+	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
+		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
 	*/
 
 	// 枚举一个数的全部约数
@@ -606,8 +619,9 @@ func numberTheoryCollection() {
 		}
 
 		{
-			// 统计约数个数
+			// 统计约数个数 d(n)
 			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
+			// 相关 OEIS 见上面的注释块
 			d := [mx + 1]int{}
 			for i := 1; i <= mx; i++ {
 				for j := i; j <= mx; j += i {
@@ -634,12 +648,24 @@ func numberTheoryCollection() {
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
-	// LPF 前缀和 https://oeis.org/A046669 前缀积 https://oeis.org/A072486
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
+	// 		LPF 前缀和 https://oeis.org/A046669 前缀积 https://oeis.org/A072486
+	//		n+LPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
+	// 		n-LPF(n) https://oeis.org/A046666
+	//		n*LPF(n) https://oeis.org/A285109
+	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子
 	//
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1 https://oeis.org/A006530
-	// GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
+	// 		GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
+	//		n+GPF(n) https://oeis.org/A070229 the next m>n such that GPF(n)|m
+	// 		n-GPF(n) https://oeis.org/A076563
+	// 		n*GPF(n) https://oeis.org/A253560
+	// 		n/GPF(n) https://oeis.org/A052126
+	//      a(1)=1, a(n+1)=a(n)+GPF(a(n)) https://oeis.org/A076271
+	//
+	// 		n/LPF(n)*GPF(n) https://oeis.org/A130064
+	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
@@ -720,9 +746,18 @@ func numberTheoryCollection() {
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
 	// 预处理 [1,mx] 欧拉函数
-	// NOTE: phi[phi...[n]] 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
-	// n+phi[n] http://oeis.org/A121048
-	// n-phi[n] https://oeis.org/A051953 called Cototient
+	// NOTE: φ(φ...(n)) 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
+	// GCD(n, φ(n)) https://oeis.org/A009195
+	// n+φ(n) http://oeis.org/A121048
+	// n-φ(n) https://oeis.org/A051953 called Cototient
+	// n*φ(n) https://oeis.org/A002618 = φ(n^2)
+	// φ(n)|n https://oeis.org/A007694 iff n = 1 or n = 2^w * 3^u for w > 0 and u >= 0
+	// 		n/φ(n) https://oeis.org/A049237
+	//      the quotients can take only 3 distinct values:
+	//			n/φ(n) = 1 iff n = 1
+	//			n/φ(n) = 2 iff n = 2^w, w >= 1
+	//			n/φ(n) = 3 iff n = 2^w * 3^u, w >= 1, u >= 1
+	// a(1)=1, a(n+1)=a(n)+φ(a(n)) https://oeis.org/A074693
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{1: 1}
@@ -885,7 +920,8 @@ func numberTheoryCollection() {
 	//	return
 	//}
 
-	// 高次同余方程 a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
+	// 离散对数
+	// a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
 	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
@@ -913,9 +949,12 @@ func numberTheoryCollection() {
 		return -1
 	}
 
-	// 高次同余方程 x^a ≡ b (mod p) - N次剩余 - 原根
+	// 原根 / N次剩余 / 高次同余方程 x^a ≡ b (mod p)
 	// todo
 	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
+
+	// Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n https://oeis.org/A072994
+	// Least k > 0 such that the number of solutions to x^k == 1 (mod k) 1 <= x <= k is equal to n, or 0 if no such k exists https://oeis.org/A072995
 
 	/* 阶乘 组合数/二项式系数 */
 
