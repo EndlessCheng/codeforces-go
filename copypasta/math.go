@@ -606,7 +606,8 @@ func numberTheoryCollection() {
 		}
 
 		{
-			// 只统计约数个数
+			// 统计约数个数
+			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
 			d := [mx + 1]int{}
 			for i := 1; i <= mx; i++ {
 				for j := i; j <= mx; j += i {
