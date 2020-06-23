@@ -480,6 +480,8 @@ func numberTheoryCollection() {
 		6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
 
 		Smallest number with exactly n divisors https://oeis.org/A005179
+			相关题目 https://codeforces.com/problemset/problem/27/E
+			质数的情况 https://oeis.org/A061286
 
 	d(d(...d(n))) 迭代至 2 所需要的迭代次数
 	0,0,1,0,2,0,2,1,2,0,3,0,2,2,1,0,3,0,3,2,2,0,3,1,2,2,3
@@ -622,6 +624,7 @@ func numberTheoryCollection() {
 			// 统计约数个数 d(n)
 			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
 			// 相关 OEIS 见上面的注释块
+			const mx int = 1e6
 			d := [mx + 1]int{}
 			for i := 1; i <= mx; i++ {
 				for j := i; j <= mx; j += i {
