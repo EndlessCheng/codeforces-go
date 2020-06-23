@@ -460,8 +460,11 @@ func numberTheoryCollection() {
 
 		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
 
-	n 的约数之积 μ(n) = n^(d(n)/2) https://oeis.org/A007955
+	n 的约数之积 μ(n) = n^(d(n)/2.0) https://oeis.org/A007955
 	because we can form d(n)/2 pairs from the factors, each with product n
+		若 n 是完全平方数，则 ei+1 全为奇数，此时可以计算 [n^(1/2)]^d(n)
+		否则，ei+1 中必有偶数，将其除二
+		相关题目 https://codeforces.com/problemset/problem/615/D
 
 	n 的约数的差分表的最后一个数 https://oeis.org/A187202 https://oeis.org/A187203
 	NOTE: a(2^k) = 1
@@ -798,7 +801,7 @@ func numberTheoryCollection() {
 	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
 
 	/* 同余 逆元
-	http://oeis.org/A006254 2^-1 mod p         Numbers k such that 2k-1 is prime
+	http://oeis.org/A006254 a(n) = 2^-1 mod p         Numbers n such that 2n-1 is prime
 	http://oeis.org/A283419 3^-1 mod p
 	http://oeis.org/A006093 (p-1)^-1 mod p     prime(n) - 1
 	http://oeis.org/A040976 (p/2)^-1 mod p     prime(n) - 2
