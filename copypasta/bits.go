@@ -24,6 +24,7 @@ S\{i}:  S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 a|b = a^b + a&b
 
+异或和相关
 http://oeis.org/A003987 异或矩阵
 http://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
 http://oeis.org/A145768 异或和 i*i
@@ -34,25 +35,45 @@ http://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1)
 http://oeis.org/A178910 异或和 因子
 	http://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
 
-https://oeis.org/A070939 a(0)=1, a(i)=bits.Len(i)
+二进制长度
+https://oeis.org/A070939 a(0)=1, a(n)=bits.Len(n)
 https://oeis.org/A083652 A070939 的前缀和
 
-https://oeis.org/A000120 OnesCount(i)
+OnesCount 相当于二进制的 digsum
+https://oeis.org/A000120 wt(n) = OnesCount(n)
 https://oeis.org/A000788 A000120 的前缀和 a(2^n)=n*2^(n-1)+1
-
-	https://oeis.org/A023416 Number of 0's in binary expansion of n
-	a(n) = a(n/2) + 1 - n&1
-	https://oeis.org/A059015 A023416 的前缀和
-
-https://oeis.org/A010061 二进制自我数/哥伦比亚数 numbers not of form m + sum of binary digits of m
+https://oeis.org/A092391 n+OnesCount(n)
+	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
+https://oeis.org/A011371 n-OnesCount(n) Also highest power of 2 dividing n!
+							a(n) = floor(n/2) + a(floor(n/2))
+https://oeis.org/A245788 n*OnesCount(n)
+https://oeis.org/A049445 OnesCount(n)|n
+	-  n/OnesCount(n)
+https://oeis.org/A199238 n%OnesCount(n)
 https://oeis.org/A010062 a(0)=1, a(n+1)=a(n)+OnesCount(a(n))
-
 	https://oeis.org/A096303 从 n 出发不断执行 n+=OnesCount(n)，直到 n 在 A010062 中，所需要的迭代次数
 	Number of iterations of n -> n + (number of 1's in binary representation of n) needed for the trajectory of n to join the trajectory of A010062
 		https://oeis.org/A229743 Positions of records
 		https://oeis.org/A229744 Values of records
-
 	相关题目 https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
+
+https://oeis.org/A023416 Number of 0's in binary expansion of n
+							a(n) = a(n/2) + 1 - n&1
+https://oeis.org/A059015 A023416 的前缀和
+
+十进制 digsum
+https://oeis.org/A007953 digsum(n)
+https://oeis.org/A062028 n+digsum(n)    质数 https://oeis.org/A047791    合数 https://oeis.org/A107743
+	https://oeis.org/A003052 自我数/哥伦比亚数 Self number / Colombian number
+	https://en.wikipedia.org/wiki/Self_number
+	1, 3, 5, 7, 9, 20, 31, 42, 53, 64, 75, 86, 97, 108, ...
+		https://oeis.org/A006378 自我质数 Self primes
+https://oeis.org/A066568 n-digsum(n)
+https://oeis.org/A057147 n*digsum(n)
+https://oeis.org/A005349 digsum(n)|n   Niven (or Harshad) numbers
+	https://oeis.org/A065877 digsum(n)∤n   Non-Niven (or non-Harshad) numbers
+	https://oeis.org/A001101 Moran numbers: n such that (n / digsum(n)) is prime
+https://oeis.org/A016052 a(1)=3, a(n+1)=a(n)+digsum(a(n))
 
 */
 
