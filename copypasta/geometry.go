@@ -74,6 +74,12 @@ TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
       曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
 TIPS: 另一种处理曼哈顿距离的方法是枚举 (x2,y2) 在以 (x1,y1) 为原点的哪个象限，分四种情况讨论
       例题 LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+
+https://oeis.org/A053411 Circle numbers
+a(n)= number of points (i,j), i,j integers, contained in a circle of diameter n, centered at the origin
+
+https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin centered circle of diameter n
+
 */
 
 const eps = 1e-8
