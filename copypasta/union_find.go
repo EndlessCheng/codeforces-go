@@ -10,6 +10,7 @@ https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专�
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 思维转换题! https://nanti.jisuanke.com/t/43488
+// https://codeforces.com/problemset/problem/292/D
 func unionFind() {
 	var fa []int
 	initFa := func(n int) { // n+1

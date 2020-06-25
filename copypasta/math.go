@@ -454,6 +454,7 @@ func numberTheoryCollection() {
 		n*d(n) https://oeis.org/A038040
 		d(n)|n https://oeis.org/A033950 refactorable numbers / tau numbers
 			n/d(n) https://oeis.org/A036762
+		n%d(n) https://oeis.org/A054008
 		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
 
 	n 的约数之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
@@ -763,6 +764,7 @@ func numberTheoryCollection() {
 	//			n/φ(n) = 1 iff n = 1
 	//			n/φ(n) = 2 iff n = 2^w, w >= 1
 	//			n/φ(n) = 3 iff n = 2^w * 3^u, w >= 1, u >= 1
+	// n%φ(n) https://oeis.org/A068494
 	// a(1)=1, a(n+1)=a(n)+φ(a(n)) https://oeis.org/A074693
 	initPhi := func() {
 		const mx int = 1e6
@@ -1126,10 +1128,17 @@ func numberTheoryCollection() {
 			return C(int(n%mod), int(k%mod)) * lucas(n/mod, k/mod) % mod
 		}
 
-		// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
+		// 可重组合 https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
+		// 相当于把 k 个无区别的球放入 n 个有区别的盒子中，且允许空盒的方案数
+		//		隔板法：把 n 个盒子当做 n-1 个隔板，这样相当于总共有 k+n-1个位置，从中选择 k 个位置放球，剩下的位置放隔板。这样就把 k 个球划分成了 n 份，放入对应的盒子中
 		// 相当于长度为 k，元素范围在 [1,n] 的非降序列的个数
 		H := func(n, k int) int64 { return C(n+k-1, k) }
+
+		pow2 := [mx + 1]int64{1}
+		for i := 1; i <= mx; i++ {
+			pow2[i] = pow2[i-1] << 1 % mod
+		}
 
 		_, _ = C, H
 	}
@@ -1246,6 +1255,7 @@ NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置�
 
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
+	扩展例题 https://codeforces.com/problemset/problem/893/E
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 可重集排列
 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
@@ -1319,12 +1329,6 @@ the rows and columns are weakly increasing, and two adjacent entries differ by a
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
 相关题目 LC1411/周赛184D https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
-
-十进制自我数/哥伦比亚数 Self number / Colombian number https://oeis.org/A003052
-https://zh.wikipedia.org/wiki/%E8%87%AA%E6%88%91%E6%95%B0
-1, 3, 5, 7, 9, 20, 31, 42, 53, 64, 75, 86, 97, 108, ...
-
-	自我质数 Self primes https://oeis.org/A006378
 
 一些二进制的计数问题见 bits.go
 
