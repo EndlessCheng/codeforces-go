@@ -58,7 +58,7 @@ func miscCollection() {
 			}
 			vis[v]++
 		}
-		for v := 1; vis[v] == 1; v = next[v] {
+		for v := st; vis[v] == 1; v = next[v] {
 			beforeCycle = append(beforeCycle, v)
 		}
 		return
