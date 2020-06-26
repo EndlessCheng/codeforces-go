@@ -456,6 +456,10 @@ func numberTheoryCollection() {
 			n/d(n) https://oeis.org/A036762
 		n%d(n) https://oeis.org/A054008
 		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
+		Smallest number with d(x) = n https://oeis.org/A005179
+			a(p) = 2^(p-1) for primes p
+			相关题目 https://codeforces.com/problemset/problem/27/E
+			质数的情况 https://oeis.org/A061286
 
 	n 的约数之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
 
@@ -482,10 +486,6 @@ func numberTheoryCollection() {
 		上面这些数对应的最小的 n https://oeis.org/A066151
 		6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
 		6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
-
-		Smallest number with exactly n divisors https://oeis.org/A005179
-			相关题目 https://codeforces.com/problemset/problem/27/E
-			质数的情况 https://oeis.org/A061286
 
 	d(d(...d(n))) 迭代至 2 所需要的迭代次数
 	0,0,1,0,2,0,2,1,2,0,3,0,2,2,1,0,3,0,3,2,2,0,3,1,2,2,3
@@ -766,6 +766,10 @@ func numberTheoryCollection() {
 	//			n/φ(n) = 3 iff n = 2^w * 3^u, w >= 1, u >= 1
 	// n%φ(n) https://oeis.org/A068494
 	// a(1)=1, a(n+1)=a(n)+φ(a(n)) https://oeis.org/A074693
+	// Least number k such that phi(k) = n https://oeis.org/A002181    Inverse of Euler totient function
+	// Number of values of k such that phi(k) = n https://oeis.org/A058277
+	// φ集合 https://oeis.org/A002202
+	// φ补集 https://oeis.org/A007617
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{1: 1}

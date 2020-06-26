@@ -74,6 +74,8 @@ https://oeis.org/A005349 digsum(n)|n   Niven (or Harshad) numbers
 	https://oeis.org/A065877 digsum(n)∤n   Non-Niven (or non-Harshad) numbers
 	https://oeis.org/A001101 Moran numbers: n such that (n / digsum(n)) is prime
 https://oeis.org/A016052 a(1)=3, a(n+1)=a(n)+digsum(a(n))
+https://oeis.org/A051885 Smallest number whose digsum = n
+https://oeis.org/A118137 digsum(n)+digsum(n+1)
 
 */
 
