@@ -39,7 +39,7 @@ import (
 // 另一个 Golang 的注意事项：switch 内的 break 跳出的是该 switch，不是其外部的循环
 func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	pow10 := [...]int{1, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9} // math.Pow10
+
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	type pair struct{ x, y int }
 	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
@@ -58,6 +58,7 @@ func commonCollection() {
 	dir4R := [...]pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 	dir8 := [...]pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
+	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
 
 	min := func(a, b int) int {
 		if a < b {
