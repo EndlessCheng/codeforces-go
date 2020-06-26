@@ -661,7 +661,7 @@ func numberTheoryCollection() {
 	//		n+LPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
 	// 		n-LPF(n) https://oeis.org/A046666
 	//		n*LPF(n) https://oeis.org/A285109
-	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子
+	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子 = Max{gcd(n,j); j=n+1..2n-1}
 	//
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1 https://oeis.org/A006530
 	// 		GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
@@ -697,9 +697,6 @@ func numberTheoryCollection() {
 			}
 			// do(p,e)
 		}
-
-		// EXTRA: n 的最大真因子 = n/LPF(n) https://oeis.org/A032742
-		// n/LPF(n) = Max{gcd(n,j); j=n+1..2n-1}
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
