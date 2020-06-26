@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -45,6 +46,22 @@ func miscCollection() {
 		for i := 2; i <= mx; i++ {
 			log[i] = log[i>>1] + 1
 		}
+	}
+
+	// 找环
+	// 1<=next[i]<=n
+	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
+		vis := make([]int8, n+1)
+		for v := st; vis[v] < 2; v = next[v] {
+			if vis[v] == 1 {
+				cycle = append(cycle, v)
+			}
+			vis[v]++
+		}
+		for v := 1; vis[v] == 1; v = next[v] {
+			beforeCycle = append(beforeCycle, v)
+		}
+		return
 	}
 
 	ceilK := func(n, k int) int {
@@ -142,13 +159,71 @@ func miscCollection() {
 		return
 	}
 
+	// 括号拼接
+	// 代码来源 https://codeforces.ml/gym/101341/problem/A
+	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
+	//         https://codeforces.ml/problemset/problem/1203/F1
+	concatBrackets := func(ss [][]byte) (ids []int) {
+		type pair struct{ x, y, i int }
+
+		d := 0
+		var ls, rs []pair
+		for i, s := range ss {
+			l, r := 0, 0
+			for _, b := range s {
+				if b == '(' {
+					l++
+				} else if l > 0 {
+					l--
+				} else {
+					r++
+				}
+			}
+			if r < l {
+				ls = append(ls, pair{r, l, i})
+			} else {
+				rs = append(rs, pair{l, r, i})
+			}
+			d += l - r
+		}
+
+		sort.Slice(ls, func(i, j int) bool { return ls[i].x < ls[j].x })
+		sort.Slice(rs, func(i, j int) bool { return rs[i].x < rs[j].x })
+		f := func(ps []pair) []int {
+			_ids := []int{}
+			s := 0
+			for _, p := range ps {
+				if s < p.x {
+					return nil
+				}
+				s += p.y - p.x
+				_ids = append(_ids, p.i)
+			}
+			return _ids
+		}
+		idsL := f(ls)
+		idsR := f(rs)
+		if d != 0 || idsL == nil || idsR == nil {
+			return
+		}
+		for _, id := range idsL {
+			ids = append(ids, id)
+		}
+		for i := len(idsR) - 1; i >= 0; i-- {
+			ids = append(ids, idsR[i])
+		}
+		return
+	}
+
 	_ = []interface{}{
 		logInit,
+		getCycle,
 		ceilK, partition, maxValueStepToUpper, moveToRange,
 		hash01Mat,
 		smallK,
 		removeLeadingZero,
 		floatToRat,
+		concatBrackets,
 	}
 }
 

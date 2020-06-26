@@ -173,6 +173,7 @@ func commonCollection() {
 		return ints
 	}
 
+	// 适用于 a*b 超过 64 位范围的情况
 	mul := func(a, b, mod int64) (res int64) {
 		for ; b > 0; b >>= 1 {
 			if b&1 == 1 {
@@ -210,6 +211,7 @@ func commonCollection() {
 		return
 	}
 
+	// 二维前缀和
 	var sum2d [][]int
 	initSum2D := func(mat [][]int) {
 		n, m := len(mat), len(mat[0])
@@ -237,7 +239,7 @@ func commonCollection() {
 		}
 		return b
 	}
-	reverseSelf := func(a []byte) {
+	reverseInPlace := func(a []byte) {
 		for i, j := 0, len(a)-1; i < j; i++ {
 			a[i], a[j] = a[j], a[i]
 			j--
@@ -553,22 +555,6 @@ func commonCollection() {
 		return false
 	}
 
-	// 判环
-	// 1<=next[i]<=n
-	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
-		vis := make([]int8, n+1)
-		for v := st; vis[v] < 2; v = next[v] {
-			if vis[v] == 1 {
-				cycle = append(cycle, v)
-			}
-			vis[v]++
-		}
-		for v := 1; vis[v] == 1; v = next[v] {
-			beforeCycle = append(beforeCycle, v)
-		}
-		return
-	}
-
 	// 扫描线
 	// 某些题目需要配合线段树
 	// https://cses.fi/book/book.pdf 30.1
@@ -706,74 +692,17 @@ func commonCollection() {
 		return
 	}
 
-	// 括号拼接
-	// 代码来源 https://codeforces.ml/gym/101341/problem/A
-	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
-	//         https://codeforces.ml/problemset/problem/1203/F1
-	concatBrackets := func(ss [][]byte) (ids []int) {
-		type pair struct{ x, y, i int }
-
-		d := 0
-		var ls, rs []pair
-		for i, s := range ss {
-			l, r := 0, 0
-			for _, b := range s {
-				if b == '(' {
-					l++
-				} else if l > 0 {
-					l--
-				} else {
-					r++
-				}
-			}
-			if r < l {
-				ls = append(ls, pair{r, l, i})
-			} else {
-				rs = append(rs, pair{l, r, i})
-			}
-			d += l - r
-		}
-
-		sort.Slice(ls, func(i, j int) bool { return ls[i].x < ls[j].x })
-		sort.Slice(rs, func(i, j int) bool { return rs[i].x < rs[j].x })
-		f := func(ps []pair) []int {
-			_ids := []int{}
-			s := 0
-			for _, p := range ps {
-				if s < p.x {
-					return nil
-				}
-				s += p.y - p.x
-				_ids = append(_ids, p.i)
-			}
-			return _ids
-		}
-		idsL := f(ls)
-		idsR := f(rs)
-		if d != 0 || idsL == nil || idsR == nil {
-			return
-		}
-		for _, id := range idsL {
-			ids = append(ids, id)
-		}
-		for i := len(idsR) - 1; i >= 0; i-- {
-			ids = append(ids, idsR[i])
-		}
-		return
-	}
-
 	_ = []interface{}{
-		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3, factorial,
+		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
 		min, mins, max, maxs, abs, absAll,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
-		copyMat, sort3, reverse, reverseSelf, equal,
+		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
-		getCycle, sweepLine, countCoveredPoints,
+		sweepLine, countCoveredPoints,
 		discrete2D,
-		concatBrackets,
 	}
 }
 
