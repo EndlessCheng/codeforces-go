@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"bytes"
 	"regexp"
 	"sort"
 	"strconv"
@@ -215,6 +216,30 @@ func miscCollection() {
 		return
 	}
 
+	sliceToStr := func(a []int) []byte {
+		b := bytes.Buffer{}
+		b.WriteByte('{')
+		for i, v := range a {
+			if i > 0 {
+				b.WriteByte(',')
+			}
+			b.WriteString(strconv.Itoa(v))
+		}
+		b.WriteString("}\n")
+		return b.Bytes()
+	}
+
+	getMapRangeValues := func(m map[int]int, l, r int) (a []int) {
+		for i := l; i <= r; i++ {
+			v, ok := m[i]
+			if !ok {
+				v = -1
+			}
+			a = append(a, v)
+		}
+		return
+	}
+
 	_ = []interface{}{
 		logInit,
 		getCycle,
@@ -224,6 +249,8 @@ func miscCollection() {
 		removeLeadingZero,
 		floatToRat,
 		concatBrackets,
+		sliceToStr,
+		getMapRangeValues,
 	}
 }
 
