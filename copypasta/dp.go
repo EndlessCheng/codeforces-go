@@ -167,16 +167,23 @@ func dpCollections() {
 
 	// 最大子段和
 	// 算法导论 练习4.1-5
+	// 变体 https://codeforces.com/problemset/problem/1373/D
 	maxSubArraySum := func(a []int) int {
+		if len(a) == 0 {
+			return 0
+		}
 		curSum, maxSum := a[0], a[0]
 		for _, v := range a[1:] {
 			curSum = max(curSum+v, v)
 			maxSum = max(maxSum, curSum)
 		}
-		return maxSum
+		return max(maxSum, 0) // 若不允许非空，返回 maxSum
 	}
 
 	maxSubArrayAbsSum := func(a []int) int {
+		if len(a) == 0 {
+			return 0
+		}
 		//min, max, abs := math.Min, math.Max, math.Abs
 		curMaxSum, maxSum := a[0], a[0]
 		curMinSum, minSum := a[0], a[0]
