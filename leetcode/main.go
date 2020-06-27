@@ -22,6 +22,23 @@ func main() {
 	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
 
+// LC 41
+func firstMissingPositive(a []int) int {
+	n := len(a)
+	for i, v := range a {
+		for 0 < v && v <= n && v != a[v-1] {
+			a[i], a[v-1] = a[v-1], a[i]
+			v = a[i]
+		}
+	}
+	for i, v := range a {
+		if i+1 != v {
+			return i + 1
+		}
+	}
+	return n + 1
+}
+
 // LC 124
 func maxPathSum(root *TreeNode) int {
 	max := func(a, b int) int {
