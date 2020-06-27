@@ -6,40 +6,39 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF87C(in io.Reader, out io.Writer) {
-	n := 0
-	Fscan(in, &n)
+func CF87C(_r io.Reader, _w io.Writer) {
+	type pair struct{ a1, len int }
+	const mx = 1e5 + 5
+	ps := [mx][]pair{}
+	sgSum := [mx]int{}
 
-	type pair struct{ a0, len int }
-	const mx = 1e5
-	ps := [mx + 1][]pair{}
-	for l := 2; l*(l+1)/2 <= mx; l++ {
-		for a0 := 1; ; a0++ {
-			s := (2*a0 + l - 1) * l / 2
-			if s > mx {
+	var n int
+	Scan(&n)
+
+	for len := 2; (len+1)*len/2 <= n; len++ {
+		for a1 := 1; ; a1++ {
+			s := (2*a1 + len - 1) * len / 2
+			if s > n {
 				break
 			}
-			ps[s] = append(ps[s], pair{a0, l})
+			ps[s] = append(ps[s], pair{a1, len})
 		}
 	}
-	sg := [mx + 1]int{}
-	for i := range sg {
+
+	for i := 3; i <= n; i++ {
 		mex := map[int]bool{}
 		for _, p := range ps[i] {
-			s := 0
-			for j := p.a0; j-p.a0 < p.len; j++ {
-				s ^= sg[j]
-			}
+			s := sgSum[p.a1] ^ sgSum[p.a1+p.len]
 			if i == n && s == 0 {
-				Fprint(out, p.len)
+				Print(p.len)
 				return
 			}
 			mex[s] = true
 		}
-		for ; mex[sg[i]]; sg[i]++ {
+		sg := 0
+		for ; mex[sg]; sg++ {
 		}
+		sgSum[i+1] = sgSum[i] ^ sg // SG 前缀和
 	}
-	Fprint(out, -1)
+	Print(-1)
 }
-
-//func main() { CF87C(os.Stdin, os.Stdout) }
