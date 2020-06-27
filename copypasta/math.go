@@ -1295,6 +1295,7 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 * 生成函数/母函数 *
 https://en.wikipedia.org/wiki/Generating_function
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
+http://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
 
 	质数分拆
 	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
