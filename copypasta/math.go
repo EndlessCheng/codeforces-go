@@ -145,9 +145,14 @@ func numberTheoryCollection() {
 
 	/* 质数 质因子分解 */
 
+	// n/2^k http://oeis.org/A000265
+
 	// 质数表 https://oeis.org/A000040
 	// primes[i]%10 http://oeis.org/A007652
 	// 10-primes[i]%10 http://oeis.org/A072003
+	// p-1 http://oeis.org/A006093
+	// p+1 http://oeis.org/A008864
+	// p^2+p+1 http://oeis.org/A060800 = sigma(p^2)
 	primes := [...]int{
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
@@ -220,6 +225,7 @@ func numberTheoryCollection() {
 		Values of records https://oeis.org/A005250
 		Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
+		Numbers whose distance to the closest prime number is a prime number http://oeis.org/A160666
 
 	任意质数之差 https://oeis.org/A030173
 	非任意质数之差 https://oeis.org/A007921
@@ -229,6 +235,8 @@ func numberTheoryCollection() {
 	合数前缀和 https://oeis.org/A053767
 
 	合数前缀积 Compositorial number https://oeis.org/A036691
+
+	不与质数相邻的合数 http://oeis.org/A079364
 
 	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
 	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
@@ -663,7 +671,11 @@ func numberTheoryCollection() {
 	//		n*LPF(n) https://oeis.org/A285109
 	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子 = Max{gcd(n,j); j=n+1..2n-1}
 	//
+	//		只考虑奇质数 http://oeis.org/A078701
+	//
 	// GPF(n): greatest prime dividing n, for n >= 2; a(1)=1 https://oeis.org/A006530
+	//		GPF(p-1) http://oeis.org/A023503
+	//		GPF(p+1) http://oeis.org/A023509
 	// 		GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
 	//		n+GPF(n) https://oeis.org/A070229 the next m>n such that GPF(n)|m
 	// 		n-GPF(n) https://oeis.org/A076563
@@ -673,6 +685,7 @@ func numberTheoryCollection() {
 	//
 	// 		n/LPF(n)*GPF(n) https://oeis.org/A130064
 	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
+	//
 	lpfAll := func() {
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
