@@ -152,7 +152,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 
 	{
-		// 无向图: DFS 找长度至少为 k 的环 https://codeforces.com/problemset/problem/263/D
+		// 无向图: DFS 找长度至少为 k 的环
+		// https://codeforces.com/problemset/problem/263/D
 		var k, end, st int
 		fa := make([]int, n)
 		dep := make([]int, n)
@@ -410,7 +411,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 				lowV = min(lowV, dfn[w])
 			}
 		}
-		if fa == -1 && childCnt == 1 { // 特判：只有一个儿子的树根，删除后并没有增加连通分量的个数
+		if fa == -1 && childCnt == 1 { // 特判：只有一个儿子的树根，删除后并没有增加连通分量的个数，这种情况下不是割顶
 			isCut[v] = false
 		}
 		//low[v] = lowV
@@ -437,6 +438,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
 // 模板题 https://codeforces.ml/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
+// 与 MST 结合 https://codeforces.com/problemset/problem/160/D
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -461,6 +463,10 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	isBridge = make([]bool, m)
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
+	tmpID := make([]int, n) // EXTRA
+	for i := range tmpID {
+		tmpID[i] = -1
+	}
 	//low := make([]int, n)
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
@@ -479,6 +485,22 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 				lowV = min(lowV, dfn[w])
 			}
 		}
+
+		{
+			// EXTRA: 割边上有重边时，不能算作割边 https://codeforces.com/problemset/problem/160/D
+			for _, e := range g[v] {
+				if tmpID[e.to] == -1 {
+					tmpID[e.to] = e.eid
+				} else {
+					isBridge[tmpID[e.to]] = false
+					isBridge[e.eid] = false
+				}
+			}
+			for _, e := range g[v] {
+				tmpID[e.to] = -1
+			}
+		}
+
 		//low[v] = lowV
 		return lowV
 	}
@@ -997,7 +1019,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
-// 关键边、伪关键边 LC周赛194D https://leetcode-cn.com/contest/weekly-contest-194/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
+// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
 func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	var fa []int
 	initFa := func(n int) {
@@ -1027,6 +1049,8 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 		w--
 		edges[i] = edge{v, w, weight, i}
 	}
+
+	// weight 范围小的话也可以用桶排
 	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
 	initFa(n)
 	for _, e := range edges {
