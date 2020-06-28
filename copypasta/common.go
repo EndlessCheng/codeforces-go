@@ -982,25 +982,30 @@ func monotoneCollection() {
 	}
 
 	/* 单调队列
-	需要不断维护队列的单调性，即保证队列(指向)元素从大到小或从小到大
-	为简单起见，这里用数组+双下标模拟双端队列
-	为保证有足够空间，队列初始大小应和原数组相同
-	队列存储的是元素的下标
-	l == r 表示队列为空
-	l < r 表示队列不为空，队列指向元素为 a[idQ[l]], a[idQ[l]+1], ..., a[idQ[r-1]]
-		注意：某些情况下这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间
+	需要不断维护队列的单调性，即保证队列(指向的)数组元素从大到小或从小到大
+		为简单起见，这里用数组+双下标模拟双端队列
+		为保证有足够空间，队列初始大小应和指向的数组长度相同
+		队列存储的是数组元素的下标
+		l == r 表示队列为空
+		l < r 表示队列不为空，队列指向数组元素为 a[idQ[l]], a[idQ[l]+1], ..., a[idQ[r-1]]
+			注意：某些情况下这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间
 
-	若区间范围固定或有上界 M，一般的写法是：
-		1. 初始化单调队列 idQ，队首队尾下标 l,r
+	一般的写法是：
+		1. 初始化单调队列 idQ（初始大小为指向的数组长度），队首队尾下标 l r 指向 0
 		2. 循环枚举右端点 i
-			1. 循环枚举队头 idQ[l]，判断 f(i)-f(idQ[l]) > M，若超出上界则弹出队头，直至队列为空或不超出上界
-			2. （若队列不为空）查询范围最值，此时队头就是右端点为 i 时的最优选择
-			3. 准备插入右端点 i，为保证插入后的队列单调性，需要检查队尾元素并弹出
-			4. 插入右端点 i
+			1. 循环枚举队头 idQ[l]，若区间长度 = i-idQ[l]+1 > 上界 M 则弹出队头，直至队列为空或不超出上界
+				注：这里只是举了一个区间长度上界作为约束的例子，更复杂的约束见后面的代码
+			2. 准备插入右端点 i，为保证插入后的队列单调性，需要检查并弹出若干队尾元素
+			3. 插入右端点 i
+			4. 此时当前区间满足约束，可以查询区间最值等信息，此时队头就是右端点为 i 时的最优选择
+			注意：若查询区间不包含右端点 i，或者说查询的区间右端点是 i-1，则上述步骤需要稍作改动，
+				顺序是 1423，
+				①的+1去掉（因为右端点是 i-1）
+				④需要先检查队列是否为空再查询
 
 	另一种写法是「弹右-插右-更新答案-弹左」：
 	    「弹右-插右」在维护队列单调性的同时，向右扩大了考察的区间范围
-			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 为从大到小的单调队列
+			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 为首大尾小的单调队列
 			}
 			idQ[r] = i
 			r++
@@ -1009,8 +1014,45 @@ func monotoneCollection() {
 	https://oi-wiki.org/ds/monotonous-queue/
 	*/
 
-	// 有上界的区间最值
-	// LC周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
+	// 模板题 - 固定区间大小的区间最值（滑动窗口）
+	// https://www.luogu.com.cn/problem/P1886
+	fixedSizeMinMax := func(a []int, fixedSize int) (mins, maxs []int) {
+		n := len(a)
+
+		idQ := make([]int, n)
+		l, r := 0, 0
+		for i, v := range a {
+			if l < r && i-idQ[l]+1 > fixedSize {
+				l++
+			}
+			for ; l < r && a[idQ[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
+			}
+			idQ[r] = i
+			r++
+			if i+1 >= fixedSize {
+				mins = append(mins, a[idQ[l]])
+			}
+		}
+
+		l, r = 0, 0
+		for i, v := range a {
+			if l < r && i-idQ[l]+1 > fixedSize {
+				l++
+			}
+			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 表示首大尾小
+			}
+			idQ[r] = i
+			r++
+			if i+1 >= fixedSize {
+				maxs = append(maxs, a[idQ[l]])
+			}
+		}
+
+		return
+	}
+
+	// 查询区间的右端点为 i-1
+	// 代码来自 LC周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
 	findMaxValueOfEquation := func(points [][]int, k int) (ans int) {
 		max := func(a, b int) int {
 			if a > b {
@@ -1029,49 +1071,12 @@ func monotoneCollection() {
 			if l < r {
 				ans = max(ans, p[0]+p[1]+f(points[idQ[l]]))
 			}
-			for ; l < r && f(points[idQ[r-1]]) <= f(p); r-- { // 因为查询的是最大值，队列要保证首大尾小的单调性
+			for ; l < r && f(points[idQ[r-1]]) <= f(p); r-- {
 			}
 			idQ[r] = i
 			r++
 		}
 		return
-	}
-
-	// 单调队列模板题 - 固定区间大小的区间最值（滑动窗口）
-	// https://www.luogu.com.cn/problem/P1886
-	monotoneQueue := func(a []int, fixedSize int) ([]int, []int) {
-		n := len(a)
-		mins := make([]int, n) // mins[i] 表示 min{a[i],...,a[i+fixedSize-1]}
-		idQ := make([]int, n)
-		l, r := 0, 0
-		for i, v := range a {
-			for ; l < r && a[idQ[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
-			}
-			idQ[r] = i
-			r++
-			if i+1 >= fixedSize {
-				mins[i+1-fixedSize] = a[idQ[l]]
-				if idQ[l] == i+1-fixedSize {
-					l++
-				}
-			}
-		}
-		maxs := make([]int, n)
-		idQ = make([]int, n)
-		l, r = 0, 0
-		for i, v := range a {
-			for ; l < r && a[idQ[r-1]] <= v; r-- {
-			}
-			idQ[r] = i
-			r++
-			if i+1 >= fixedSize {
-				maxs[i+1-fixedSize] = a[idQ[l]]
-				if idQ[l] == i+1-fixedSize {
-					l++
-				}
-			}
-		}
-		return mins, maxs
 	}
 
 	// 单调队列应用 - 和至少为 k 的最短子数组长度
@@ -1153,6 +1158,6 @@ func monotoneCollection() {
 
 	_ = []interface{}{
 		monotoneStack,
-		monotoneQueue, findMaxValueOfEquation, shortestSubarray, cf1237d,
+		fixedSizeMinMax, findMaxValueOfEquation, shortestSubarray, cf1237d,
 	}
 }
