@@ -1110,6 +1110,37 @@ func monotoneCollection() {
 		return
 	}
 
+	// 有区间上界的最大子数组和
+	// https://ac.nowcoder.com/acm/contest/1006/D
+	upperSizeMaxSum := func(a []int, upperSize int) (ans int) {
+		max := func(a, b int) int {
+			if a > b {
+				return a
+			}
+			return b
+		}
+		n := len(a)
+		ans = -1e18
+
+		sum := make([]int, n+1)
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+		}
+		idQ := make([]int, n+1)
+		l, r := 0, 0
+		for i, s := range sum {
+			if l < r && i-idQ[l] > upperSize {
+				l++
+			}
+			for ; l < r && sum[idQ[r-1]] >= s; r-- {
+			}
+			idQ[r] = i
+			r++
+			ans = max(ans, s-sum[idQ[l]])
+		}
+		return
+	}
+
 	// 枚举区间左端点更为方便的情况
 	// 下面的代码来自 https://codeforces.com/problemset/problem/1237/D
 	cf1237d := func(a []int, n int) (ans []int) {
@@ -1139,6 +1170,6 @@ func monotoneCollection() {
 
 	_ = []interface{}{
 		monotoneStack,
-		fixedSizeMinMax, findMaxValueOfEquation, shortestSubarray, cf1237d,
+		fixedSizeMinMax, findMaxValueOfEquation, shortestSubarray, upperSizeMaxSum, cf1237d,
 	}
 }
