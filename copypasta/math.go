@@ -1242,8 +1242,15 @@ func numberTheoryCollection() {
 	http://oeis.org/A060305 N(p) = F%p 的周期
 	http://oeis.org/A003893 F(n)%10
 	http://oeis.org/A001605 使 F(n) 为质数的 n
+
+	其他相关序列
 	http://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
+	http://oeis.org/A000931 Padovan sequence (or Padovan numbers): a(n)=a(n-2)+a(n-3) with a(0)=1, a(1)=a(2)=0
 	*/
+
+	// https://oeis.org/A195264 Iterate x -> A080670(x) (replace x with the concatenation of the primes and exponents in its prime factorization)
+	// starting at n until reach 1 or a prime; or -1 if a prime is never reached
+	// https://www.zhihu.com/question/48612677/answer/487252829
 
 	_ = []interface{}{
 		primes, primes10, primes10_,
@@ -1268,6 +1275,9 @@ NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置�
        C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)（例题 https://atcoder.jp/contests/abc154/tasks/abc154_f）
 
+隔三组合数 https://oeis.org/A024493 https://oeis.org/A024494 https://oeis.org/A024495 C(n,0) + C(n,3) + ... + C(n,3[n/3])
+隔四组合数 https://oeis.org/A038503 https://oeis.org/A038504 https://oeis.org/A038505 https://oeis.org/A000749
+
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 	扩展例题 https://codeforces.com/problemset/problem/893/E
@@ -1276,7 +1286,6 @@ NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置�
 可重集组合 todo https://codeforces.ml/problemset/problem/451/E
 错排 a[n] = (n-1) * (a[n-1]+a[n-2]) https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98 https://oeis.org/A000166
 范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
-二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
 Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
    将 n 个元素排成 k 个非空循环排列的方法数
@@ -1287,6 +1296,8 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+
+二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
 普吕弗序列 Prüfer sequence: 由树唯一地产生的序列
 约瑟夫问题 Josephus Problem https://cp-algorithms.com/others/josephus_problem.html https://en.wikipedia.org/wiki/Josephus_problem
@@ -1348,6 +1359,12 @@ the rows and columns are weakly increasing, and two adjacent entries differ by a
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
 相关题目 LC1411/周赛184D https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
+
+男厕问题 / 电话问题 https://oeis.org/A185456
+Assume that the first person to use a bank of payphones selects one at the end,
+and all subsequent users select the phone which puts them farthest from the current phone users.
+U(n) is the smallest number of phones such that n may be used without any two adjacent phones being used
+https://www.zhihu.com/question/278361000/answer/1004606685
 
 一些二进制的计数问题见 bits.go
 
