@@ -732,6 +732,9 @@ func vec2Collection() {
 	// 模板题 https://www.luogu.com.cn/problem/P5490
 
 	// TODO 半平面交
+	// 推荐 训练指南 的相关章节
+	// https://oi-wiki.org/geometry/half-plane/
+	// https://zhuanlan.zhihu.com/p/83499723
 	// 模板题 https://www.luogu.com.cn/problem/P4196
 
 	_ = []interface{}{
