@@ -987,8 +987,16 @@ func monotoneCollection() {
 	为保证有足够空间，队列初始大小应和原数组相同
 	队列存储的是元素的下标
 	l == r 表示队列为空
-	l < r 表示队列指向元素为 a[idQ[l]], ..., a[idQ[r-1]]（注意：这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间）
-	一般的操作流程是「弹右-插右-更新答案-弹左」：
+	l < r 表示队列不为空，队列指向元素为 a[idQ[l]], a[idQ[l]+1], ..., a[idQ[r-1]]
+		注意：某些情况下这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间
+
+	若区间范围固定或有上界 M，一般的写法是：
+		1. 循环枚举右端点 r
+			1. 循环枚举队头 l，判断 f(r)-f(l) > M，若超出上界则弹出队头，直至队列为空或不超出上界
+			2. （若队列不为空）查询范围最值，此时队头就是右端点为 r 时的最优选择
+			3. 插入（一个）右端点 r
+
+	另一种写法是「弹右-插右-更新答案-弹左」：
 	    「弹右-插右」在维护队列单调性的同时，向右扩大了考察的区间范围
 			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 为从大到小的单调队列
 			}
@@ -998,6 +1006,34 @@ func monotoneCollection() {
 			具体写法随问题不同而不同，参见下面的例子
 	https://oi-wiki.org/ds/monotonous-queue/
 	*/
+
+	// 有上界的区间最值
+	// LC周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
+	findMaxValueOfEquation := func(points [][]int, k int) (ans int) {
+		max := func(a, b int) int {
+			if a > b {
+				return a
+			}
+			return b
+		}
+		f := func(p []int) int { return p[1] - p[0] }
+
+		ans = -1e18
+		idQ := make([]int, len(points))
+		l, r := 0, 0
+		for i, p := range points {
+			for ; l < r && p[0]-points[idQ[l]][0] > k; l++ {
+			}
+			if l < r {
+				ans = max(ans, p[0]+p[1]+f(points[idQ[l]]))
+			}
+			for ; l < r && f(points[idQ[r-1]]) <= f(p); r-- { // 因为查询的是最大值，队列要保证首大尾小的单调性
+			}
+			idQ[r] = i
+			r++
+		}
+		return
+	}
 
 	// 单调队列模板题 - 固定区间大小的区间最值（滑动窗口）
 	// https://www.luogu.com.cn/problem/P1886
@@ -1113,5 +1149,8 @@ func monotoneCollection() {
 		return
 	}
 
-	_ = []interface{}{monotoneStack, monotoneQueue, shortestSubarray, cf1237d}
+	_ = []interface{}{
+		monotoneStack,
+		monotoneQueue, findMaxValueOfEquation, shortestSubarray, cf1237d,
+	}
 }
