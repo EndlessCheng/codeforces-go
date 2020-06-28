@@ -990,7 +990,7 @@ func monotoneCollection() {
 		l < r 表示队列不为空，队列指向数组元素为 a[idQ[l]], a[idQ[l]+1], ..., a[idQ[r-1]]
 			注意：某些情况下这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间
 
-	一般的写法是：
+	一般的写法是：   [pop]-push-query
 		1. 初始化单调队列 idQ（初始大小为指向的数组长度），队首队尾下标 l r 指向 0
 		2. 循环枚举右端点 i
 			1. 循环枚举队头 idQ[l]，若区间长度 = i-idQ[l]+1 > 上界 M 则弹出队头，直至队列为空或不超出上界
@@ -1000,7 +1000,7 @@ func monotoneCollection() {
 			3. 插入右端点 i
 			4. 此时当前区间满足约束，可以查询区间最值等信息，此时队头就是右端点为 i 时的最优选择
 			注意：若查询区间不包含右端点 i，或者说查询的区间右端点是 i-1，则上述步骤需要稍作改动，
-				顺序是 1423，
+				顺序是 1423    [pop]-query-push
 				①的+1去掉（因为右端点是 i-1）
 				④需要先检查队列是否为空再查询
 
@@ -1009,7 +1009,7 @@ func monotoneCollection() {
 	https://oi-wiki.org/ds/monotonous-queue/
 	*/
 
-	// 模板题 - 固定区间大小的区间最值（滑动窗口）
+	// 模板题 - 固定区间大小的区间最值（滑动窗口）   pop-push-query
 	// https://www.luogu.com.cn/problem/P1886
 	fixedSizeMinMax := func(a []int, fixedSize int) (mins, maxs []int) {
 		n := len(a)
@@ -1046,7 +1046,7 @@ func monotoneCollection() {
 		return
 	}
 
-	// 查询区间的右端点为 i-1
+	// 查询区间的右端点为 i-1    [pop]-query-push
 	// 代码来自 LC周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
 	findMaxValueOfEquation := func(points [][]int, k int) (ans int) {
 		max := func(a, b int) int {
@@ -1074,7 +1074,7 @@ func monotoneCollection() {
 		return
 	}
 
-	// 子数组和至少为 k 的最短子数组长度
+	// 子数组和至少为 k 的最短子数组长度    push-[query-pop]
 	// 由于求的是子数组和，可以转化为前缀和之差，若枚举区间右端点 i，则查询的是 [x,i] 的最小值
 	// x 为右端点为 i 时的符合和至少为 k 的子数组的左端点
 	// LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
@@ -1110,7 +1110,7 @@ func monotoneCollection() {
 		return
 	}
 
-	// 有区间上界的最大子数组和
+	// 有区间上界的最大子数组和     pop-push-query
 	// https://ac.nowcoder.com/acm/contest/1006/D
 	upperSizeMaxSum := func(a []int, upperSize int) (ans int) {
 		max := func(a, b int) int {
@@ -1141,7 +1141,7 @@ func monotoneCollection() {
 		return
 	}
 
-	// 枚举区间左端点更为方便的情况
+	// 枚举区间左端点更为方便的情况    [query-push]-pop
 	// 下面的代码来自 https://codeforces.com/problemset/problem/1237/D
 	cf1237d := func(a []int, n int) (ans []int) {
 		a = append(append(a, a...), a...)
