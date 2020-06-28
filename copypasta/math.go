@@ -590,7 +590,8 @@ func numberTheoryCollection() {
 	}
 
 	// Number of odd divisors of n https://oeis.org/A001227
-	// 亦为整数分拆成若干连续整数的方法数
+	// a(n) = d(2*n) - d(n)
+	// 亦为整数 n 分拆成若干连续整数的方法数
 	// Number of partitions of n into consecutive positive integers including the trivial partition of length 1
 	// e.g. 9 = 2+3+4 or 4+5 or 9 so a(9)=3
 	oddDivisorsNum := func(n int) (ans int) {
@@ -1296,6 +1297,9 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 https://en.wikipedia.org/wiki/Generating_function
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
 http://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
+						a(n)=0 iff n=2^k
+http://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n 的奇因子数 - 1
+						见上面的 oddDivisorsNum 函数
 
 	质数分拆
 	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
@@ -1435,6 +1439,7 @@ func gameTheoryCollection() {
 	// https://oi-wiki.org/math/game-theory/#sg
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
+	// 整数分拆博弈 https://codeforces.com/problemset/problem/87/C
 	{
 		// 剪纸博弈
 		// http://poj.org/problem?id=2311
