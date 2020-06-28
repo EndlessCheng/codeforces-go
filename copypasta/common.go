@@ -995,6 +995,7 @@ func monotoneCollection() {
 		2. 循环枚举右端点 i
 			1. 循环枚举队头 idQ[l]，若区间长度 = i-idQ[l]+1 > 上界 M 则弹出队头，直至队列为空或不超出上界
 				注：这里只是举了一个区间长度上界作为约束的例子，更复杂的约束见后面的代码
+				注：若无约束这一步可忽略
 			2. 准备插入右端点 i，为保证插入后的队列单调性，需要检查并弹出若干队尾元素
 			3. 插入右端点 i
 			4. 此时当前区间满足约束，可以查询区间最值等信息，此时队头就是右端点为 i 时的最优选择
@@ -1003,14 +1004,8 @@ func monotoneCollection() {
 				①的+1去掉（因为右端点是 i-1）
 				④需要先检查队列是否为空再查询
 
-	另一种写法是「弹右-插右-更新答案-弹左」：
-	    「弹右-插右」在维护队列单调性的同时，向右扩大了考察的区间范围
-			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 为首大尾小的单调队列
-			}
-			idQ[r] = i
-			r++
-	    「(检查是否满足条件)-更新答案-(弹左)」在更新答案之后，若队首在下一个循环中无用，则弹出
-			具体写法随问题不同而不同，参见下面的例子
+	有些题目枚举左端点更为方便，细节见下面的 cf1237d
+
 	https://oi-wiki.org/ds/monotonous-queue/
 	*/
 
@@ -1079,12 +1074,21 @@ func monotoneCollection() {
 		return
 	}
 
-	// 单调队列应用 - 和至少为 k 的最短子数组长度
-	// https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
-	shortestSubarray := func(a []int, k int) int {
+	// 子数组和至少为 k 的最短子数组长度
+	// 由于求的是子数组和，可以转化为前缀和之差，若枚举区间右端点 i，则查询的是 [x,i] 的最小值
+	// x 为右端点为 i 时的符合和至少为 k 的子数组的左端点
+	// LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
+	shortestSubarray := func(a []int, k int) (ans int) {
+		min := func(a, b int) int {
+			if a < b {
+				return a
+			}
+			return b
+		}
 		n := len(a)
+
 		const inf int = 1e9
-		ans := inf
+		ans = inf
 		sum := make([]int, n+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
@@ -1092,65 +1096,42 @@ func monotoneCollection() {
 		idQ := make([]int, n+1)
 		l, r := 0, 0
 		for i, s := range sum {
-			for ; l < r && sum[idQ[r-1]] >= s; r-- { // 贪心：相等时也弹出右侧
+			for ; l < r && sum[idQ[r-1]] >= s; r-- {
 			}
 			idQ[r] = i
 			r++
-			for ; l < r && s-sum[idQ[l]] >= k; l++ { // 不断弹出左侧直到队列为空或不满足要求
-				// 满足要求，更新答案
-				if i-idQ[l] < ans {
-					ans = i - idQ[l]
-				}
+			for ; l < r && s-sum[idQ[l]] >= k; l++ { // 不断查询+弹出队首直到队列为空或不满足要求
+				ans = min(ans, i-idQ[l])
 			}
 		}
 		if ans == inf {
 			ans = -1
 		}
-		return ans
+		return
 	}
 
-	// https://codeforces.ml/problemset/problem/1237/D
-	cf1237d := func(a []int, n int) (_ans []int) {
+	// 枚举区间左端点更为方便的情况
+	// 下面的代码来自 https://codeforces.com/problemset/problem/1237/D
+	cf1237d := func(a []int, n int) (ans []int) {
 		a = append(append(a, a...), a...)
-		idQ := make([]int, 3*n)
+		idQ := make([]int, 3*n) // 队首为区间最值
 		l, r := 0, 0
-		for i, j := 0, 0; i < n; i++ {
-			// 维护的是从大到小的单调队列，即，队首为区间最值
-			// 检查当前元素与队首(区间最值)的关系是否满足题目要求，满足则弹右插右
+		for i, j := 0, 0; i < n; i++ { // 枚举区间左端点 i
+			// 不断扩大区间右端点 j 直至不满足题目要求
 			for ; j < 3*n && (l == r || 2*a[j] >= a[idQ[l]]); j++ {
 				for ; l < r && a[idQ[r-1]] <= a[j]; r-- {
 				}
 				idQ[r] = j
 				r++
 			}
-			// 更新答案
-			ans := j - i
-			if ans > 2*n {
-				ans = -1
+			maxLen := j - i
+			if maxLen > 2*n {
+				maxLen = -1
 			}
-			_ans = append(_ans, ans)
-			// 准备：若下一个循环中的队首不在考察区间内，则弹左
+			ans = append(ans, maxLen)
+			// 若 i 不在下一个考察区间内，则弹出队首
 			if l < r && idQ[l] == i {
 				l++
-			}
-		}
-
-		{
-			idQ := []int{}
-			for i, j := 0, 0; i < n; i++ {
-				for ; j < 3*n && (len(idQ) == 0 || 2*a[j] >= a[idQ[0]]); j++ {
-					for ; len(idQ) > 0 && a[idQ[len(idQ)-1]] <= a[j]; r-- {
-					}
-					idQ = append(idQ, j)
-				}
-				ans := j - i
-				if ans > 2*n {
-					ans = -1
-				}
-				_ans = append(_ans, ans)
-				if len(idQ) > 0 && idQ[0] == i {
-					idQ = idQ[1:]
-				}
 			}
 		}
 		return
