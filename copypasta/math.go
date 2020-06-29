@@ -26,6 +26,7 @@ func numberTheoryCollection() {
 	/* GCD LCM 相关
 
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
+	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 
 	*/
 
