@@ -276,9 +276,6 @@ func numberTheoryCollection() {
 	a(n) = 0 if n is odd, otherwise 1 + a(n/2)
 	http://oeis.org/A007814
 
-	Numbers that are not powers of primes p^k http://oeis.org/A024619
-	Powers of primes p^k http://oeis.org/A000961
-
 	*/
 
 	// 判断一个数是否为质数
