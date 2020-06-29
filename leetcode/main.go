@@ -2,6 +2,7 @@ package main
 
 import (
 	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	"sort"
 )
 
 func main() {
@@ -60,4 +61,33 @@ func maxPathSum(root *TreeNode) int {
 	}
 	f(root)
 	return ans
+}
+
+// LC 332
+func findItinerary(tickets [][]string) []string {
+	g := map[string][]string{}
+	for _, p := range tickets {
+		g[p[0]] = append(g[p[0]], p[1])
+	}
+	for _, vs := range g {
+		sort.Strings(vs)
+	}
+
+	path := make([]string, 0, len(tickets)+1)
+	var f func(string)
+	f = func(v string) {
+		for len(g[v]) > 0 {
+			w := g[v][0]
+			g[v] = g[v][1:]
+			f(w)
+		}
+		path = append(path, v)
+	}
+	f("JFK")
+
+	for i, j := 0, len(path)-1; i < j; i++ {
+		path[i], path[j] = path[j], path[i]
+		j--
+	}
+	return path
 }
