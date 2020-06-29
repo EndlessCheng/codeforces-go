@@ -26,6 +26,7 @@ func numberTheoryCollection() {
 	/* GCD LCM 相关
 
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
+	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 
 	*/
 
@@ -274,9 +275,6 @@ func numberTheoryCollection() {
 	Exponent of highest power of 2 dividing n, a.k.a. the binary carry sequence, the ruler sequence, or the 2-adic valuation of n
 	a(n) = 0 if n is odd, otherwise 1 + a(n/2)
 	http://oeis.org/A007814
-
-	Numbers that are not powers of primes p^k http://oeis.org/A024619
-	Powers of primes p^k http://oeis.org/A000961
 
 	*/
 
