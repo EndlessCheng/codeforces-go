@@ -324,18 +324,28 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/DirectedEulerianPath.java.html
 // https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // NOTE: 递归前对边排序可保证输出的是字典序最小的路径
-// 模板题 https://www.luogu.com.cn/problem/P2731
-//       https://www.luogu.com.cn/problem/P1341
-func (*graph) eulerianPath(n, m int) bool {
+// 模板题（输出顶点）
+//		无向图 https://www.luogu.com.cn/problem/P2731
+//      无向图 https://www.luogu.com.cn/problem/P1341
+//      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
 	// read g ...
 
+	// 排序，保证字典序最小
+	for _, vs := range g {
+		sort.Slice(vs, func(i, j int) bool { return vs[i].to < vs[j].to })
+	}
+
 	var st int
 	oddDegCnt := 0
 	for i := len(g) - 1; i >= 0; i-- { // 倒着遍历保证起点的字典序最小
+		//if len(g[i]) == 0 {
+		//	continue
+		//}
 		if deg := len(g[i]); deg > 0 {
-			if deg&1 != 0 {
+			if deg&1 == 1 {
 				st = i
 				oddDegCnt++
 			} else if oddDegCnt == 0 {
@@ -343,33 +353,53 @@ func (*graph) eulerianPath(n, m int) bool {
 			}
 		}
 	}
-
 	if oddDegCnt > 2 {
-		return false
-	} // NOTE: 若没有奇度数，则寻找的是欧拉回路
-
-	path := make([]int, 0, m)
-	iter := make([]int, n)
-	vis := make([]bool, m)
-	var f func(int)
-	f = func(v int) {
-		for ; iter[v] < len(g[v]); {
-			e := g[v][iter[v]]
-			iter[v]++
-			if id := e.eid; !vis[id] {
-				vis[id] = true
-				f(e.to)
-				path = append(path, id)
-			}
-		}
+		return nil
 	}
-	f(st)
 
-	// NOTE: 若输出的是顶点，可以在递归内部 path = append(path, e.to)，最后把 st 添加到末尾
+	// NOTE: 若没有奇度数，则返回的是欧拉回路
+	path := make([]int, 0, m+1)
+	{
+		// 无向图
+		vis := make([]bool, m)
+		var f func(int)
+		f = func(v int) {
+			for len(g[v]) > 0 {
+				e := g[v][0]
+				g[v] = g[v][1:]
+				if i := e.eid; !vis[i] {
+					vis[i] = true
+					f(e.to)
+					// NOTE: 输出边的话移在这里 append i
+				}
+			}
+			path = append(path, v)
+		}
+		f(st)
+	}
 
-	// 倒序输出 path...
+	{
+		// 有向图
+		var f func(int)
+		f = func(v int) {
+			for len(g[v]) > 0 {
+				e := g[v][0]
+				g[v] = g[v][1:]
+				f(e.to)
+				// NOTE: 输出边的话移在这里 append e.eid
+			}
+			path = append(path, v)
+		}
+		f(st)
+	}
 
-	return true
+	// 倒序输出 path
+	for i, j := 0, len(path)-1; i < j; i++ {
+		path[i], path[j] = path[j], path[i]
+		j--
+	}
+
+	return path
 }
 
 /* Topic - DFS 树
