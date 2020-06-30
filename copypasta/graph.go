@@ -1531,10 +1531,14 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
 	// 缩点后得到了一张 DAG，点的编号范围为 [0,len(comps)-1]
 	// 注意这样可能会产生重边，不能有重边时可以对每个点排序去重
-	// 模板题 https://www.luogu.com.cn/problem/P3387
+	// 模板题 点权 https://www.luogu.com.cn/problem/P3387
+	// 		 边权 https://codeforces.com/contest/894/problem/E
 	for _, e := range edges {
 		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
-			// custom
+
+		} else {
+			// EXTRA: 汇合同一个 SCC 的权值 ...
+
 		}
 	}
 
