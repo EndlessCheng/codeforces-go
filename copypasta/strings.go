@@ -245,6 +245,7 @@ func stringCollection() {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArray.java.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArrayX.java.html
 	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
+	// CF 上的课程 https://codeforces.com/edu/course/2
 	// 由于 height 数组的性质，经常需要和单调栈/单调队列结合
 	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	// NOTE: Go1.13 开始使用 SA-IS 算法
