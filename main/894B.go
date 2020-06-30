@@ -18,9 +18,9 @@ func CF894B(in io.Reader, out io.Writer) {
 		}
 		return res
 	}
-	var n, m int64
-	Fscan(in, &n, &m)
-	if n&1 != m&1 {
+	var n, m, k int64
+	Fscan(in, &n, &m, &k)
+	if k == -1 && n&1 != m&1 {
 		Fprint(out, 0)
 	} else {
 		Fprint(out, pow(pow(2, n-1), m-1))
