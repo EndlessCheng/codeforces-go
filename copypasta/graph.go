@@ -135,18 +135,40 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		f = func(v int) {
 			vis[v] = 1
 			for _, w := range g[v] {
-				if b := vis[w]; b == 0 {
-					f(w) // 树边
-				} else if b == 1 {
-					// 后向边，说明有环
-				} else {
-					// 前向边或横向边
+				if t := vis[w]; t == 0 { // 树边
+					f(w)
+				} else if t == 1 { // 后向边，说明有环
+
+				} else { // 前向边或横向边
+
 				}
 			}
 			vis[v] = 2
 		}
-		for i, b := range vis {
-			if b == 0 {
+		for i, t := range vis {
+			if t == 0 {
+				f(i)
+			}
+		}
+	}
+
+	{
+		// 无向图的树边和非树边（含重边）
+		vis := make([]int8, n)
+		var f func(int)
+		f = func(v int) {
+			vis[v] = 1
+			for _, w := range g[v] {
+				if t := vis[w]; t == 0 { // 树边
+					f(w)
+				} else if t == 2 || w == v { // 非树边（没有自环的话可以去掉 w == v）
+
+				}
+			}
+			vis[v] = 2
+		}
+		for i, t := range vis {
+			if t == 0 {
 				f(i)
 			}
 		}
