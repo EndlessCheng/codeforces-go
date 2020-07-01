@@ -267,8 +267,8 @@ func stringCollection() {
 			二分答案，对 height 分组，判定组内元素个数不小于 k
 		不同子串个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			即 n*(n+1)/2-sum(height) https://oi-wiki.org/string/sa/#_13
-		重复次数最多的连续重复子串 todo https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
-			todo
+		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
+			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
 		所有子串的所有公共前后缀个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 			单调栈
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
