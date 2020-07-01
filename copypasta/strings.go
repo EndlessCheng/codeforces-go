@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"index/suffixarray"
+	"math/bits"
 	"reflect"
 	"strings"
 	"unsafe"
@@ -271,7 +272,12 @@ func stringCollection() {
 		for i := range rank {
 			rank[sa[i]] = i
 		}
+
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
+		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
+		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
+		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
+		//    https://codeforces.com/problemset/problem/873/F
 		height := make([]int, n)
 		h := 0
 		for i, ri := range rank {
@@ -285,16 +291,38 @@ func stringCollection() {
 			height[ri] = h
 		}
 
-		// EXTRA: 任意后缀的 LCP
-		// 构建 height 的 ST 表... stInit(height)
-		// 将 s[i:] 和 s[j:] 通过 rank 数组映射为 height 的下标
-		lcp := func(i, j int) (res int) {
+		// 任意两后缀的 LCP
+		const mx = 17 // 131072, 262144, 524288, 1048576
+		st := make([][mx]int, n)
+		for i, v := range height {
+			st[i][0] = v
+		}
+		for j := 1; 1<<j <= n; j++ {
+			for i := 0; i+1<<j <= n; i++ {
+				st[i][j] = min(st[i][j-1], st[i+1<<(j-1)][j-1])
+			}
+		}
+		_q := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return min(st[l][k], st[r-1<<k][k]) }
+		lcp := func(i, j int) int {
+			if i == j {
+				return n - i
+			}
+			// 将 s[i:] 和 s[j:] 通过 rank 数组映射为 height 的下标
 			ri, rj := rank[i], rank[j]
 			if ri > rj {
 				ri, rj = rj, ri
 			}
-			//res := stQuery(ri+1, rj) // 左闭右闭
-			return
+			return _q(ri+1, rj+1)
+		}
+
+		// EXTRA: 比较两个子串 s[l1:r1] s[l2:r2]
+		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
+		compareSub := func(l1, r1, l2, r2 int) bool {
+			len1, len2 := r1-l2, r2-l2
+			if l := lcp(l1, l2); l >= len1 || l >= len2 {
+				return len1 < len2
+			}
+			return rank[l1] < rank[l2] // 或者 s[l1+l] < s[l2+l]
 		}
 
 		// EXTRA: 可重叠最长重复子串
@@ -343,7 +371,7 @@ func stringCollection() {
 		}
 
 		// debug
-		for i, h := range height {
+		for i, h := range height[:n] {
 			suffix := string(s[sa[i]:])
 			if h == 0 {
 				println(" ", suffix)
@@ -352,7 +380,7 @@ func stringCollection() {
 			}
 		}
 
-		_ = []interface{}{lcp, longestDupSubstring, findAllSubstring}
+		_ = []interface{}{compareSub, longestDupSubstring, findAllSubstring}
 	}
 
 	_ = []interface{}{

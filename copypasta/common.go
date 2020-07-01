@@ -948,6 +948,7 @@ func monotoneCollection() {
 	//       https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
 	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
+	// 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
 	monotoneStack := func(a []int) ([]int, []int) {
 		n := len(a)
