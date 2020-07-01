@@ -162,3 +162,25 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 		assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo)
 	}
 }
+
+// 无尽对拍模式
+func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc func(io.Reader, io.Writer)) {
+	for tc := 1; ; tc++ {
+		input := inputGenerator()
+		input = strings.TrimSpace(input)
+		mockReader := strings.NewReader(input)
+		mockWriterAC := &bytes.Buffer{}
+		runFuncAC(mockReader, mockWriterAC)
+		mockReader = strings.NewReader(input)
+		mockWriter := &bytes.Buffer{}
+		runFunc(mockReader, mockWriter)
+
+		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
+		actualOutput := strings.TrimSpace(mockWriter.String())
+		assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input)
+
+		//if tc%1e5 == 0 {
+		//	t.Logf("%d cases passed.\n", tc)
+		//}
+	}
+}
