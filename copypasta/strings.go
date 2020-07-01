@@ -94,6 +94,7 @@ func stringCollection() {
 		return
 	}
 	// EXTRA: 最小循环节
+	// http://poj.org/problem?id=2406
 	calcMinPeriod := func(s []byte) int {
 		n := len(s)
 		maxMatchLengths := calcMaxMatchLengths(s)
@@ -242,23 +243,52 @@ func stringCollection() {
 	// EXTRA: 从下标 x 开始的最长回文子串长度
 	leftP := func(x int) int { return left[2*x+2] - 2*x - 2 }
 
-	// 后缀数组
-	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArray.java.html
-	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArrayX.java.html
-	// 讲解+例题+套题 https://oi-wiki.org/string/sa/
-	// CF 上的课程 https://codeforces.com/edu/course/2
-	// 由于 height 数组的性质，经常需要和单调栈/单调队列结合
-	// SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
-	// NOTE: Go1.13 开始使用 SA-IS 算法
-	// 题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
-	// 题目总结《后缀数组——处理字符串的有力工具》
-	// 模板题 https://www.luogu.com.cn/problem/P3809
-	// 可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
-	// 不可重叠最长重复子串 http://poj.org/problem?id=1743（可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14）
-	// 可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261（height 上的滑动窗口最小值）
-	// 重复次数最多的连续重复子串 http://poj.org/problem?id=3693
-	// 最短公共唯一子串 https://codeforces.ml/contest/427/problem/D
-	// CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
+	/* 后缀数组
+	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
+	NOTE: Go1.13 开始使用 SA-IS 算法
+
+	https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArray.java.html
+	https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArrayX.java.html
+
+	讲解+例题+套题 https://oi-wiki.org/string/sa/
+	CF 上的课程 https://codeforces.com/edu/course/2
+	题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
+	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
+
+	题目总结：（部分参考《后缀数组——处理字符串的有力工具》）
+	单个字符串
+		模板题 https://www.luogu.com.cn/problem/P3809
+		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
+			相当于求 max(height)，实现见下面的 longestDupSubstring
+		不可重叠最长重复子串 http://poj.org/problem?id=1743
+			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14
+			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
+		可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261
+			二分答案，对 height 分组，判定组内元素个数不小于 k
+		不同子串个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
+			即 n*(n+1)/2-sum(height) https://oi-wiki.org/string/sa/#_13
+		重复次数最多的连续重复子串 todo https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
+			todo
+		所有子串的所有公共前后缀个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
+			单调栈
+		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
+			todo
+	两个字符串
+		最长公共子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
+			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
+		长度不小于 k 的公共子串的个数 http://poj.org/problem?id=3415
+			单调栈
+		最短公共唯一子串 https://codeforces.com/contest/427/problem/D
+			唯一性可以用 height[i] 与前后相邻值的大小来判定
+	多个字符串
+		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
+			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
+		在每个字符串中至少出现两次且不重叠的最长子串 spoj220
+			拼接，二分答案，对 height 分组，判定组内元素在每个字符串中至少出现两次且 sa 的最大最小之差不小于二分值（用于判定是否重叠）
+		出现或反转后出现在每个字符串中的最长子串 http://poj.org/problem?id=1226
+			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
+
+	*/
 	suffixArray := func(s []byte) {
 		n := len(s)
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
