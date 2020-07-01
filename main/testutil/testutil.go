@@ -151,8 +151,8 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 		mockWriter := &bytes.Buffer{}
 		runFunc(mockReader, mockWriter)
 
-		actualOutputAC := mockWriterAC.String()
-		actualOutput := mockWriter.String()
+		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
+		actualOutput := strings.TrimSpace(mockWriter.String())
 
 		const maxInputSize = 150
 		inputInfo := input
