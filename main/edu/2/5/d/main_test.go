@@ -6,7 +6,6 @@ import (
 	"io"
 	"math/rand"
 	"testing"
-	"time"
 )
 
 func Test(t *testing.T) {
@@ -58,20 +57,15 @@ outputCopy
 }
 
 func Test2(t *testing.T) {
-	testCases := [][2]string{
-		{
-			`aaabad`,
-			``,
-		},
-	}
-	rand.Seed(time.Now().UnixNano())
+	inputs := []string{}
+	//rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 1000; i++ {
 		s := []byte{}
 		for j := 0; j < 6; j++ {
 			x := byte(rand.Intn(4))
 			s = append(s, 'a'+x)
 		}
-		testCases = append(testCases, [2]string{string(s)})
+		inputs = append(inputs, string(s))
 	}
 
 	runAC := func(in io.Reader, out io.Writer) {
@@ -92,5 +86,5 @@ func Test2(t *testing.T) {
 		Fprint(out, ans)
 	}
 
-	testutil.AssertEqualRunResults(t, testCases, 1, runAC, run)
+	testutil.AssertEqualRunResults(t, inputs, 0, runAC, run)
 }

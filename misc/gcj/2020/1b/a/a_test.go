@@ -18,27 +18,9 @@ func Test_run(t *testing.T) {
 			}
 		}
 	}
-	testCases := [][2]string{
-		{
-			`
-4
-2 3
--2 -3
-3 0
--1 1`,
-			`
-Case #1: SEN
-Case #2: NWS
-Case #3: EE
-Case #4: IMPOSSIBLE`,
-		},
-		{
-			s,
-			``,
-		},
-	}
+	inputs := []string{s}
 	//testutil.AssertEqualStringCase(t, testCases, 0, run)
-	testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
+	testutil.AssertEqualRunResults(t, inputs, 0, runAC, run)
 }
 
 func runAC(_r io.Reader, _w io.Writer) {

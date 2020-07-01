@@ -133,17 +133,17 @@ func AssertEqual(t *testing.T, rawText string, runFunc func(io.Reader, io.Writer
 
 // 对拍
 // solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
-func AssertEqualRunResults(t *testing.T, testCases [][2]string, caseNum int, runFuncAC, runFunc func(io.Reader, io.Writer)) {
-	if len(testCases) == 0 {
+func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC, runFunc func(io.Reader, io.Writer)) {
+	if len(inputs) == 0 {
 		return
 	}
 
-	for curCaseNum, tc := range testCases {
+	for curCaseNum, input := range inputs {
 		if caseNum > 0 && curCaseNum+1 != caseNum {
 			continue
 		}
 
-		input := strings.TrimSpace(tc[0])
+		input = strings.TrimSpace(input)
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &bytes.Buffer{}
 		runFuncAC(mockReader, mockWriterAC)
