@@ -32,6 +32,7 @@ func Test(t *testing.T) {
 
 // 对拍
 func Test2(t *testing.T) {
+	return
 	//rand.Seed(time.Now().UnixNano())
 	inputs := []string{}
 	for i := 0; i < 1000; i++ {
