@@ -602,14 +602,15 @@ func (*tree) lcaTarjan(in io.Reader, n, root int, g [][]int) []int {
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
+	_lca := func(v, w int) (_ int) { return }
+
 	diff := make([]int, n)
 	update := func(v, w int, val int) {
-		var lca int
-		//lca := _lca(v, w)
+		lca := _lca(v, w)
 		diff[v] += val
 		diff[w] += val
-		diff[lca] -= val
-		//diff[lca] -= 2 * val
+		diff[lca] -= val // 点权
+		//diff[lca] -= 2 * val // 边权
 	}
 	var q int
 	Fscan(in, &q)
@@ -639,9 +640,8 @@ func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
 		ans[v] = sum
 		return sum
 	}
-	f(0, -1)
+	f(root, -1)
 
-	_ = update
 	return ans
 }
 
