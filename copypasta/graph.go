@@ -1609,6 +1609,7 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 
 // 基环树
 // https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
+// https://codeforces.com/problemset/problem/1335/F
 func (*graph) treeWithCycle(n int, g [][]int) {
 	// EXTRA: 内向基环树找环
 	inDeg := make([]int, n) // 计算入度 ...
@@ -1670,6 +1671,7 @@ todo Competitive Programmer’s Handbook Ch.20
 // https://cp-algorithms.com/graph/dinic.html
 // 模板题 https://www.luogu.com.cn/problem/P3376
 // 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
+//       https://codeforces.com/problemset/problem/1360/G (满流时有解)
 func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) {
 	min := func(a, b int) int {
 		if a < b {

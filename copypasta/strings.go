@@ -253,7 +253,7 @@ func stringCollection() {
 	讲解+例题+套题 https://oi-wiki.org/string/sa/
 	CF 上的课程 https://codeforces.com/edu/course/2
 	题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
-	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
+	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》）
 	单个字符串
@@ -271,6 +271,9 @@ func stringCollection() {
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
 		所有子串的所有公共前后缀个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 			单调栈
+			思想类似的题目
+				https://codeforces.com/problemset/problem/123/D 本质上和上面求的是同一个
+				https://codeforces.com/problemset/problem/802/I 稍作改动
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
 	两个字符串
