@@ -113,7 +113,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		clock++
 		timeOut[v] = clock
 	}
-	f(0, -1)
+	f(root, -1)
 	isFa := func(fa, v int) bool { return timeIn[fa] <= timeIn[v] && timeOut[v] <= timeOut[fa] }
 
 	_ = isFa
@@ -248,12 +248,12 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 			}
 		}
 	}
-	f(0)
+	f(root)
 }
 
 // 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741 todo 待整理
 // todo 求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
-func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int64 {
+func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64) int64 {
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -369,7 +369,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n int, upperDis int64) int6
 		ans += countPairs(ds)
 		return
 	}
-	return f(0, -1)
+	return f(root, -1)
 }
 
 // 最近公共祖先 - 其一 - 基于树上倍增和二分搜索
