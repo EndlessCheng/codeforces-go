@@ -65,8 +65,9 @@ func (f *fft) dft(a []complex128) {
 
 func (f *fft) idft(a []complex128) {
 	f.transform(a, f.omegaInv)
+	cn := complex(float64(f.n), 0)
 	for i := range a {
-		a[i] /= complex(float64(f.n), 0)
+		a[i] /= cn
 	}
 }
 
