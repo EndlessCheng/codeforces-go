@@ -15,6 +15,10 @@ import (
 
 // 生成比赛模板（需要在创建目录之后）
 func GenContestTemplates(contestID string, overwrite bool) error {
+	if contestID == "" {
+		return nil
+	}
+
 	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
 	openedOneFile := false
 
