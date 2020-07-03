@@ -84,8 +84,10 @@ https://oeis.org/A118137 digsum(n)+digsum(n+1)
 // 参考 strings/strings.go 中的 asciiSet
 type bitset []uint32 // b := make(bitset, n>>5+1)
 
-func (b bitset) set(c int)           { b[c>>5] |= 1 << (c & 31) }
-func (b bitset) contains(c int) bool { return 1<<(c&31)&b[c>>5] > 0 }
+func (b bitset) set(p int)           { b[p>>5] |= 1 << (p & 31) }
+func (b bitset) reset(p int)         { b[p>>5] &^= 1 << (p & 31) }
+func (b bitset) flip(p int)          { b[p>>5] ^= 1 << (p & 31) }
+func (b bitset) contains(p int) bool { return 1<<(p&31)&b[p>>5] > 0 }
 
 func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
