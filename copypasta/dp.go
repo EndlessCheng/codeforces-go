@@ -572,6 +572,10 @@ func dpCollections() {
 	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
 	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
 	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
+
+	枚举子集，复杂度 O(3^n)
+		dp[s] = min(valid dp[s^sub]) + 1
+		todo LC1494/双周赛29D https://leetcode-cn.com/problems/parallel-courses-ii/
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	*/
 

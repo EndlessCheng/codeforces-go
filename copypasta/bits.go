@@ -93,6 +93,8 @@ func bitsCollection() {
 	// ^n+1 = (-1-n)+1 = -n
 	lowbit := func(n int64) int64 { return n & -n }
 
+	isPow2 := func(x int64) bool { return x > 0 || x&(x-1) == 0 }
+
 	bits31 := func(n int) []byte {
 		bits := make([]byte, 31)
 		for i := range bits {
@@ -110,7 +112,7 @@ func bitsCollection() {
 		return
 	}
 
-	_ = []interface{}{lowbit, bits31, _bits31, _bits32, digitSum}
+	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/

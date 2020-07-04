@@ -351,8 +351,33 @@ func loopCollection() {
 	loopSubset := func(n, subset int) {
 		sub := subset
 		for ok := true; ok; ok = sub != subset {
-			// do(sub)
+			// do(sub)...
+
 			sub = (sub - 1) & subset
+		}
+
+		{
+			// 非空子集
+			for sub := subset; sub > 0; sub = (sub - 1) & subset {
+				// do(sub)...
+
+			}
+		}
+
+		{
+			// 真子集
+			for sub := (subset - 1) & subset; sub != subset; sub = (sub - 1) & subset {
+				// do(sub)...
+
+			}
+		}
+
+		{
+			// 非空真子集
+			for sub := (subset - 1) & subset; sub > 0; sub = (sub - 1) & subset {
+				// do(sub)...
+
+			}
 		}
 	}
 
