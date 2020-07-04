@@ -1056,7 +1056,7 @@ func monotoneCollection() {
 	}
 
 	// 查询区间的右端点为 i-1    [pop]-query-push
-	// 代码来自 LC周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
+	// 代码来自 LC1499/周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
 	findMaxValueOfEquation := func(points [][]int, k int) (ans int) {
 		max := func(a, b int) int {
 			if a > b {
