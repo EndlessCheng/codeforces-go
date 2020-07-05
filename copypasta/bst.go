@@ -135,7 +135,7 @@ func (t *bst) hasValueInRange(l, r int) bool {
 	return o != nil && int(o.key) <= r
 }
 
-// 小于 key 的键的数量
+// < key 的元素个数
 func (t *bst) mRank(key tKeyType) (cnt int) {
 	for o := t.root; o != nil; {
 		switch c := o.cmp(key); {
@@ -146,13 +146,15 @@ func (t *bst) mRank(key tKeyType) (cnt int) {
 			o = o.lr[1]
 		default:
 			cnt += o.lr[0].mSize()
+			// 额外加上 1 或 o.dupCnt 就是 <= key 的元素个数
 			return
 		}
 	}
 	return
 }
 
-// >= key 的键的数量
+// >= key 的元素个数
+// 等价于 t.root.size() - t.mRank(key)
 func (t *bst) lowerCount(key tKeyType) (cnt int) {
 	for o := t.root; o != nil; {
 		switch c := o.cmp(key); {
