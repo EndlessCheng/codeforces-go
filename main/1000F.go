@@ -59,7 +59,7 @@ func CF1000F(_r io.Reader, _w io.Writer) {
 
 	cnt := [5e5 + 1]int{}
 	del := [5e5 + 1]int{} // 懒删除标记
-	s := []int{0}
+	s := []int{0} // 事先插入一个元素表示空栈，这样后面取栈元素时不需要判断空栈
 	update := func(i, d int) {
 		v := a[i-1]
 		if cnt[v] == 1 {
