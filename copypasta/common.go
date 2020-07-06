@@ -34,6 +34,8 @@ import (
 
 // 尺取法套题 https://blog.csdn.net/weixin_43914593/article/details/104090474 算法竞赛专题解析（2）：尺取法（双指针）
 
+// 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
+
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 
 // Golang 注意事项：
@@ -873,21 +875,21 @@ func rmqCollection() {
 func moAlgorithm() {
 	mo := func(in io.Reader, a []int, q int) []int {
 		n := len(a)
-		type query struct{ blockIdx, l, r, idx int }
+		type query struct{ bid, l, r, qid int }
 		qs := make([]query, q)
 		blockSize := int(math.Round(math.Sqrt(float64(n))))
 		for i := range qs {
 			var l, r int
-			Fscan(in, &l, &r)
+			Fscan(in, &l, &r) // 从 1 开始
 			qs[i] = query{l / blockSize, l, r + 1, i}
 		}
 		sort.Slice(qs, func(i, j int) bool {
 			qi, qj := qs[i], qs[j]
-			if qi.blockIdx != qj.blockIdx {
-				return qi.blockIdx < qj.blockIdx
+			if qi.bid != qj.bid {
+				return qi.bid < qj.bid
 			}
 			// 奇偶化排序
-			if qi.blockIdx&1 == 0 {
+			if qi.bid&1 == 0 {
 				return qi.r < qj.r
 			}
 			return qi.r > qj.r
@@ -899,7 +901,7 @@ func moAlgorithm() {
 			// NOTE: 有些题目在 delta 为 1 和 -1 时逻辑的顺序是严格对称的
 			// v := a[idx-1]
 			// ...
-			if delta == 1 {
+			if delta > 0 {
 				cnt++
 			} else {
 				cnt--
@@ -929,7 +931,7 @@ func moAlgorithm() {
 				r--
 				update(r, -1)
 			}
-			ans[q.idx] = getAns(q)
+			ans[q.qid] = getAns(q)
 		}
 		return ans
 	}

@@ -745,6 +745,7 @@ func dpCollections() {
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
 
 	/* 树形 DP
+	https://blog.csdn.net/weixin_43914593/article/details/107145592
 	https://codeforces.ml/blog/entry/20935
 	https://codeforces.ml/blog/entry/63257
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
