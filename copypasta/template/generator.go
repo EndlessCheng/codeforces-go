@@ -75,6 +75,9 @@ func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
 	}
 
 	if openWebsite {
+		luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/solution/CF%s%s", contestID, problemID)
+		open.Run(luoguURL)
+
 		urlObj, err := url.Parse(problemURL)
 		if err != nil {
 			return err
