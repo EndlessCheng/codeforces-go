@@ -2,10 +2,12 @@ package testutil
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -165,6 +167,8 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 
 // 无尽对拍模式
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc func(io.Reader, io.Writer)) {
+	needPrint := runtime.GOOS == "darwin"
+
 	for tc := 1; ; tc++ {
 		input := inputGenerator()
 		input = strings.TrimSpace(input)
@@ -177,10 +181,17 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 
 		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
 		actualOutput := strings.TrimSpace(mockWriter.String())
-		assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input)
+		if !assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input) && needPrint {
+			fmt.Println(input)
+			fmt.Println()
+		}
 
-		//if tc%1e5 == 0 {
-		//	t.Logf("%d cases passed.\n", tc)
-		//}
+		if tc%1e5 == 0 {
+			s := fmt.Sprintf("%d cases passed.", tc)
+			if needPrint {
+				fmt.Println(s)
+			}
+			t.Log(s)
+		}
 	}
 }
