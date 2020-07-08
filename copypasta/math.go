@@ -22,6 +22,8 @@ https://oeis.org/A000337 (n-1) * 2^n + 1
 https://oeis.org/A036289 n * 2^n
 https://oeis.org/A036799 (n-1) * 2^(n+1) + 2
 
+https://oeis.org/A000330 平方和 = n*(n+1)*(2*n+1)/6
+
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 	Number of permutations of {1,2,...,n} with exactly one descent
 	Number of partitions of an n-set having exactly one block of size > 1
@@ -474,7 +476,8 @@ func numberTheoryCollection() {
 
 		n+d(n) https://oeis.org/A062249
 		n-d(n) https://oeis.org/A049820   count https://oeis.org/A060990   前缀和 https://oeis.org/A161664
-		n*d(n) https://oeis.org/A038040
+		n*d(n) https://oeis.org/A038040   前缀和 https://oeis.org/A143127 = Sum_{i=1..floor(√n)}i*(i+floor(n/i))*(floor(n/i)+1-i) - 平方和(floor(√n))
+												https://atcoder.jp/contests/abc172/tasks/abc172_d
 		d(n)|n https://oeis.org/A033950 refactorable numbers / tau numbers
 			n/d(n) https://oeis.org/A036762
 		n%d(n) https://oeis.org/A054008

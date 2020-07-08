@@ -165,7 +165,7 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 
 	// 生成目录
 	dirPath := filepath.Join(contestDir, contestID, taskID) + "/"
-	if err := os.MkdirAll(dirPath, 0644); err != nil {
+	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return err
 	}
 
