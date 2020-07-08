@@ -7,6 +7,7 @@ import (
 	"io"
 	"math/rand"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -30,17 +31,19 @@ func Test(t *testing.T) {
 	t.Logf("Current problem is [%s]", filepath.Base(dir))
 }
 
-// 对拍
+// 无尽对拍
 func Test2(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
-	inputs := []string{}
-	for i := 0; i < 1000; i++ {
+	inputGenerator := func() string {
 		buf := &bytes.Buffer{}
-		for j := 0; j < 6; j++ {
-			buf.WriteByte('a' + byte(rand.Intn(4)))
+		n := 10
+		buf.WriteString(strconv.Itoa(n) + "\n")
+		for i := 0; i < n; i++ {
+			buf.WriteString(strconv.Itoa(rand.Intn(n)+1) + " ")
 		}
-		inputs = append(inputs, buf.String())
+		buf.WriteByte('\n')
+		return buf.String()
 	}
 
 	// 暴力算法
@@ -52,5 +55,5 @@ func Test2(t *testing.T) {
 		Fprint(out, ans)
 	}
 
-	testutil.AssertEqualRunResults(t, inputs, 0, runBF, run)
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
 }

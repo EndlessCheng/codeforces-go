@@ -25,9 +25,13 @@ import (
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
-// 横看成岭侧成峰①：和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题 - 值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
-// 横看成岭侧成峰②：对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列，将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.ml/problemset/problem/1284/C
-// 横看成岭侧成峰③：https://codeforces.ml/problemset/problem/1365/C
+/* 横看成岭侧成峰
+考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
+考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
+和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
+对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
+转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
+*/
 
 // NOTE: 正难则反。 all => any, any => all https://codeforces.ml/problemset/problem/621/C
 // NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.ml/problemset/problem/1333/C

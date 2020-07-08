@@ -1421,8 +1421,8 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 
 	orders = make([]int, 0, n)
 	q := []int{}
-	for i, deg := range inDeg {
-		if deg == 0 {
+	for i, d := range inDeg {
+		if d == 0 {
 			q = append(q, i)
 			//levels[i] = 1
 			// NOTE: 对于点权型 DAG DP，这里记得对起点初始化
@@ -1608,41 +1608,56 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 }
 
 // 基环树
+// 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
 // https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
+// https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
-func (*graph) treeWithCycle(n int, g [][]int) {
-	// EXTRA: 内向基环树找环
-	inDeg := make([]int, n) // 计算入度 ...
-	visCnt := make([]int8, n)
-	var f func(v int)
-	f = func(v int) {
-		if visCnt[v] == 2 {
-			return
-		}
-		visCnt[v]++
-		w := g[v][0] // 所有点的出度均为一
-		f(w)
-		if visCnt[v] == 1 && visCnt[w] == 2 { // w 为树枝和环的交叉点
-			// EXTRA: 从 v 开始遍历反图可以遍历树枝上的所有点
-			//        遍历时赋值 visCnt[x] = 1 和 inDeg[x] = -1
+func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
+	inDeg := make([]int, n)
+	// 计算入度 ...
 
-			// EXTRA: 环上的反图遍历需要额外判断反图中的点是否满足 visCnt[x] == 2
-		}
-	}
+	vis := make([]int8, n)
+	// 拓扑排序，之后 vis[v]==0 的点必定在基环上
+	q := []int{}
 	for i, d := range inDeg {
 		if d == 0 {
-			f(i)
+			q = append(q, i)
 		}
 	}
-	for i, c := range visCnt {
-		if c == 0 { // 基环树无树枝
-			f(i)
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		vis[v] = 1
+		w := g[v]
+		inDeg[w]--
+		if inDeg[w] == 0 {
+			q = append(q, w)
 		}
 	}
-	cycleSize := 0
-	for _, c := range visCnt {
-		if c == 2 {
-			cycleSize++
+
+	for i, b := range vis {
+		if b > 0 {
+			continue
+		}
+		cycle := []int{}
+		for v := i; vis[v] == 0; v = g[v] {
+			vis[v] = 2 // 标记为基环上的点
+			cycle = append(cycle, v)
+		}
+
+		sz := len(cycle)
+		for j, cv := range cycle {
+			for _, root := range rg[cv] {
+				if vis[root] == 2 {
+					continue
+				}
+				// EXTRA: 从非基环的根部出发，遍历反图 rg ...
+
+			}
+
+			// EXTRA: 从基环上的位置 j 倒着走 k 步到达的点
+			var k int
+			_ = cycle[((j-k)%sz+sz)%sz]
 		}
 	}
 }

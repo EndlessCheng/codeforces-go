@@ -15,6 +15,21 @@ AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(pow(q,n)-1)/(q-1), q!=1
        = a1*n, q==1
 
+https://oeis.org/A001787 n * 2^(n-1)
+https://oeis.org/A000337 (n-1) * 2^n + 1
+	Number of zeros in binary numbers 1 to 111..1 (n+1 bits)
+
+https://oeis.org/A036289 n * 2^n
+https://oeis.org/A036799 (n-1) * 2^(n+1) + 2
+
+https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
+	Number of permutations of {1,2,...,n} with exactly one descent
+	Number of partitions of an n-set having exactly one block of size > 1
+	a(n-1) is the number of subsets of {1..n} in which the largest element of the set exceeds by at least 2 the next largest element
+		For example, for n = 5, a(4) = 11 and the 11 sets are {1,3}, {1,4}, {1,5}, {2,4}, {2,5}, {3,5}, {1,2,4}, {1,2,5}, {1,3,5}, {2,3,5}, {1,2,3,5}
+	a(n-1) is also the number of subsets of {1..n} in which the second smallest element of the set exceeds by at least 2 the smallest element
+		For example, for n = 5, a(4) = 11 and the 11 sets are {1,3}, {1,4}, {1,5}, {2,4}, {2,5}, {3,5}, {1,3,4}, {1,3,5}, {1,4,5}, {2,4,5}, {1,3,4,5}
+
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
 
@@ -806,6 +821,7 @@ func numberTheoryCollection() {
 
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
+	// 近似为 n^2 / 3   相关题目 https://codeforces.com/problemset/problem/1009/D
 	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
 	// ∑φ(i)-1 http://oeis.org/A015614 #{(x,y): 1<=x<y<=n, gcd(x,y)=1}
 	// 0, 1, 3, 5, 9, 11, 17, 21, 27, 31, 41, 45, 57, 63, 71, 79, 95, 101
