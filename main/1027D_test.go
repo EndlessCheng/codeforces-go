@@ -42,7 +42,7 @@ outputCopy
 }
 
 // 无尽对拍
-func Test2(t *testing.T) {
+func TestCF1027DInf(t *testing.T) {
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
 		buf := &bytes.Buffer{}
