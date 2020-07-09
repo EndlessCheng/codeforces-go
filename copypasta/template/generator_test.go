@@ -28,7 +28,7 @@ func TestGenCodeforcesNormalTemplates(t *testing.T) {
 
 // 批量生成模板（非 Codeforces）
 func TestGenNormalTemplates(t *testing.T) {
-	const rootPath = "../../nowcoder/2720/"
+	const rootPath = "../../misc/nowcoder/6218/"
 	const overwrite = false
 	if err := GenNormalTemplates(rootPath, overwrite); err != nil {
 		t.Fatal(err)
