@@ -1399,6 +1399,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
 // 模板题 https://www.luogu.com.cn/problem/P3387
+// 好题 https://codeforces.com/problemset/problem/915/D
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
