@@ -354,3 +354,45 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string) error {
 	return RunLeetCodeClassWithCase(t, constructor, rawInputs, rawOutputs, 0)
 }
+
+func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
+	ig := reflect.ValueOf(inputGenerator)
+	if ig.Kind() != reflect.Func {
+		t.Fatal("input generator must be a function")
+	}
+	runAC := reflect.ValueOf(runACFunc)
+	run := reflect.ValueOf(runFunc)
+	// just check numbers
+	if runAC.Type().NumIn() != run.Type().NumIn() || runAC.Type().NumOut() != run.Type().NumOut() {
+		t.Fatal("different input/output")
+	}
+
+	for tc := 1; ; tc++ {
+		inArgs := ig.Call(nil)
+		expectedOut := runAC.Call(inArgs)
+		actualOut := run.Call(inArgs)
+
+		//ins := make([]interface{}, len(inArgs))
+		//for i, in := range inArgs {
+		//	ins[i] = in.Interface()
+		//}
+		insStr := []byte{}
+		for i, arg := range inArgs {
+			if i > 0 {
+				insStr = append(insStr, '\n')
+			}
+			s, err := toRawString(arg)
+			if err != nil {
+				t.Fatal(err)
+			}
+			insStr = append(insStr, s...)
+		}
+		for i, eOut := range expectedOut {
+			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "WA %d\nInput:\n%s", tc, insStr)
+		}
+
+		if tc%1e5 == 0 {
+			t.Logf("%d cases passed.", tc)
+		}
+	}
+}
