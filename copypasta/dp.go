@@ -30,6 +30,9 @@ import (
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
    状态优化 https://codeforces.ml/problemset/problem/838/E
 
+NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
+	https://ac.nowcoder.com/acm/contest/6218/B
+	https://codeforces.com/problemset/problem/283/B 活用 012 染色
 NOTE: 若使用滚动数组，注意复用时可能要初始化
 NOTE:（区间 DP）正向计算不易时，试着反向计算
 TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移

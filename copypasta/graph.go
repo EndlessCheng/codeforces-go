@@ -77,34 +77,7 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 	}
 }
 
-func (*graph) readWeightedGraph(in io.Reader, n, m int) {
-	type neighbor struct{ to, weight int }
-	g := make([][]neighbor, n)
-	for i := 0; i < m; i++ {
-		var v, w, weight int
-		Fscan(in, &v, &w, &weight)
-		v--
-		w--
-		g[v] = append(g[v], neighbor{w, weight})
-		g[w] = append(g[w], neighbor{v, weight})
-	}
-}
-
-// 0-1 矩阵，有向图
-func (*graph) matrixToEdges(mat []string) [][2]int {
-	edges := [][2]int{}
-	for v, row := range mat {
-		for w, weight := range row {
-			if weight != '0' {
-				edges = append(edges, [2]int{v, w})
-			}
-		}
-	}
-	return edges
-}
-
-func (*graph) simpleSearch(n, st int, g [][]int) {
-	// DFS
+func (*graph) dfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	var f func(int)
 	f = func(v int) {
@@ -117,7 +90,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 		}
 	}
 	f(st)
-	// 或者（有向图/森林）
+	// 有向图/森林
 	for i, b := range vis {
 		if !b {
 			f(i)
@@ -125,7 +98,7 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 
 	{
-		// 有向图的环/回边检测
+		// 有向图的环/回边检测/012染色
 		//《算法导论》p.353 边的分类
 		// vis[v] == 0：该顶点未被访问
 		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
@@ -196,26 +169,76 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 			}
 			return false
 		}
-		f(0, -1, 1)
+		f(st, -1, 1)
 
-		ans := []interface{}{st + 1} // for print
+		cycle := []interface{}{st + 1} // for print
 		for v := end; v != st; v = fa[v] {
-			ans = append(ans, v+1)
+			cycle = append(cycle, v+1)
 		}
 	}
+}
 
-	// BFS
-	vis = make([]bool, n)
+// DFS 应用：求连通分量以及每个点所属的连通分量 (Connected Component, CC)
+// ccIDs 的值从 1 开始
+func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
+	ccIDs = make([]int, n)
+	idCnt := 0 // 也可以去掉，用 len(comps)+1 代替
+	var comp []int
+	var f func(int)
+	f = func(v int) {
+		ccIDs[v] = idCnt
+		comp = append(comp, v)
+		for _, w := range g[v] {
+			if ccIDs[w] == 0 {
+				f(w)
+			}
+		}
+	}
+	for i, id := range ccIDs {
+		if id == 0 {
+			idCnt++
+			comp = []int{}
+			f(i)
+			comps = append(comps, comp)
+		}
+	}
+	return
+}
+
+func (*graph) bfs(n, st int, g [][]int) {
+	vis := make([]bool, n)
 	vis[st] = true
 	q := []int{st}
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		// ...
+		// do v...
 		for _, w := range g[v] {
 			if !vis[w] {
 				vis[w] = true
 				q = append(q, w)
+			}
+		}
+	}
+
+	{
+		// 构建深度数组
+		dep := make([]int, n)
+		for i := range dep {
+			dep[i] = -1
+		}
+		dep[st] = 0
+		q := []int{st}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			// do(v, dep[v]) ...
+
+			for _, w := range g[v] {
+				if dep[w] == -1 {
+					dep[w] = dep[v] + 1
+					q = append(q, w)
+				}
 			}
 		}
 	}
@@ -249,29 +272,8 @@ func (*graph) simpleSearch(n, st int, g [][]int) {
 	}
 }
 
-func (*graph) depthArray(n, st int, g [][]int) []int {
-	dep := make([]int, n)
-	for i := range dep {
-		dep[i] = -1
-	}
-	dep[st] = 0
-	q := []int{st}
-	for len(q) > 0 {
-		v := q[0]
-		q = q[1:]
-		// do(v, dep[v])
-		for _, w := range g[v] {
-			if dep[w] == -1 {
-				dep[w] = dep[v] + 1
-				q = append(q, w)
-			}
-		}
-	}
-	return dep
-}
-
 // BFS 应用：求无向无权图最小环长度
-// 好题 https://codeforces.ml/problemset/problem/1325/E
+// 好题 https://codeforces.com/problemset/problem/1325/E
 func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	const inf int = 1e9
 	ans := inf
@@ -307,33 +309,6 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 		}
 	}
 	return ans
-}
-
-// DFS 应用：求连通分量以及每个点所属的连通分量 (Connected Component, CC)
-// ccIDs 的值从 1 开始
-func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
-	ccIDs = make([]int, n)
-	idCnt := 0 // 也可以去掉，用 len(comps)+1 代替
-	var comp []int
-	var f func(int)
-	f = func(v int) {
-		ccIDs[v] = idCnt
-		comp = append(comp, v)
-		for _, w := range g[v] {
-			if ccIDs[w] == 0 {
-				f(w)
-			}
-		}
-	}
-	for i, id := range ccIDs {
-		if id == 0 {
-			idCnt++
-			comp = []int{}
-			f(i)
-			comps = append(comps, comp)
-		}
-	}
-	return
 }
 
 // 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
