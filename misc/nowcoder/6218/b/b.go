@@ -1,19 +1,8 @@
 package main
 
-const mx = 2000
-var g = [...][]int{1: {2}, mx: {mx - 1}}
-
-func init() {
-	for i := 2; i < mx; i++ {
-		if i*i <= mx {
-			g[i] = append(g[i], i*i)
-		}
-		g[i] = append(g[i], i-1, i+1)
-	}
-}
-
 // github.com/EndlessCheng/codeforces-go
 func solve(n int, m int) int {
+	const mx int = 2e3
 	vis := [mx + 1]bool{}
 	vis[n] = true
 	type pair struct{ v, d int }
@@ -25,7 +14,17 @@ func solve(n int, m int) int {
 		if v == m {
 			return d
 		}
-		for _, w := range g[v] {
+		ws := []int{}
+		if v < mx {
+			ws = append(ws, v+1)
+		}
+		if v > 1 {
+			ws = append(ws, v-1)
+		}
+		if v*v <= mx {
+			ws = append(ws, v*v)
+		}
+		for _, w := range ws {
 			if !vis[w] {
 				vis[w] = true
 				q = append(q, pair{w, d + 1})
