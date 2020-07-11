@@ -7,7 +7,9 @@ import (
 	"math/bits"
 )
 
-/* 数论 组合数学 博弈论
+/* 数论 组合数学 博弈论 趣味数学
+
+https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 
 NOTE: a%-b == a%b
 
@@ -22,7 +24,9 @@ https://oeis.org/A000337 (n-1) * 2^n + 1
 https://oeis.org/A036289 n * 2^n
 https://oeis.org/A036799 (n-1) * 2^(n+1) + 2
 
+https://en.wikipedia.org/wiki/Faulhaber%27s_formula
 https://oeis.org/A000330 平方和 = n*(n+1)*(2*n+1)/6
+https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
 
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 	Number of permutations of {1,2,...,n} with exactly one descent
@@ -31,6 +35,8 @@ https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 		For example, for n = 5, a(4) = 11 and the 11 sets are {1,3}, {1,4}, {1,5}, {2,4}, {2,5}, {3,5}, {1,2,4}, {1,2,5}, {1,3,5}, {2,3,5}, {1,2,3,5}
 	a(n-1) is also the number of subsets of {1..n} in which the second smallest element of the set exceeds by at least 2 the smallest element
 		For example, for n = 5, a(4) = 11 and the 11 sets are {1,3}, {1,4}, {1,5}, {2,4}, {2,5}, {3,5}, {1,3,4}, {1,3,5}, {1,4,5}, {2,4,5}, {1,3,4,5}
+
+数的韧性 https://en.wikipedia.org/wiki/Persistence_of_a_number 乘法: https://oeis.org/A003001 加法: https://oeis.org/A006050
 
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
@@ -258,6 +264,14 @@ func numberTheoryCollection() {
 
 	不与质数相邻的合数 http://oeis.org/A079364
 
+	半素数 https://oeis.org/A001358 也叫双素数/二次殆素数 Semiprimes (or biprimes): products of two primes
+		https://en.wikipedia.org/wiki/Semiprime
+		https://en.wikipedia.org/wiki/Almost_prime
+		非平方半素数 https://oeis.org/A006881 Squarefree semiprimes: Numbers that are the product of two distinct primes.
+
+	绝对素数 https://oeis.org/A003459 各位数字可以任意交换位置，其结果仍为素数
+		https://en.wikipedia.org/wiki/Permutable_prime
+
 	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
 	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
 	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
@@ -294,6 +308,8 @@ func numberTheoryCollection() {
 	Exponent of highest power of 2 dividing n, a.k.a. the binary carry sequence, the ruler sequence, or the 2-adic valuation of n
 	a(n) = 0 if n is odd, otherwise 1 + a(n/2)
 	http://oeis.org/A007814
+
+	https://oeis.org/A000043 Mersenne exponents: primes p such that 2^p - 1 is prime. Then 2^p - 1 is called a Mersenne prime
 
 	*/
 
@@ -465,9 +481,9 @@ func numberTheoryCollection() {
 	//	return
 	//}
 
-	/* 约数 因子
+	/* 因子/因数/约数
 
-	n 的约数个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005（也写作 τ(n)）
+	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n)
 		Positions of records (高合成数) https://oeis.org/A002182
 		Values of records https://oeis.org/A002183
 
@@ -487,17 +503,23 @@ func numberTheoryCollection() {
 			相关题目 https://codeforces.com/problemset/problem/27/E
 			质数的情况 https://oeis.org/A061286
 
-	n 的约数之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
-
+	n 的因子之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
 		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
+		真因子之和 https://oeis.org/A001065 σ(n)-n
+		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
+			https://en.wikipedia.org/wiki/Perfect_number
+		过剩数/丰数/盈数 https://oeis.org/A005101 Abundant numbers (σ(n) > 2n)
+			https://en.wikipedia.org/wiki/Abundant_number
+		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
+			https://en.wikipedia.org/wiki/Deficient_number
 
-	n 的约数之积 μ(n) = n^(d(n)/2.0) https://oeis.org/A007955
+	n 的因子之积 μ(n) = n^(d(n)/2.0) https://oeis.org/A007955
 	because we can form d(n)/2 pairs from the factors, each with product n
 		若 n 是完全平方数，则 ei+1 全为奇数，此时可以计算 [n^(1/2)]^d(n)
 		否则，ei+1 中必有偶数，将其除二
 		相关题目 https://codeforces.com/problemset/problem/615/D
 
-	n 的约数的差分表的最后一个数 https://oeis.org/A187202 https://oeis.org/A187203
+	n 的因子的差分表的最后一个数 https://oeis.org/A187202 https://oeis.org/A187203
 	NOTE: a(2^k) = 1
 
 		正数 https://oeis.org/A193671
@@ -534,11 +556,6 @@ func numberTheoryCollection() {
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
 
-	Semiprimes (or biprimes): products of two primes https://oeis.org/A001358
-
-		Squarefree semiprimes https://oeis.org/A006881
-		Numbers that are the product of two distinct primes
-
 	Squarefree part of n (also called core(n)) https://oeis.org/A007913
 	a(n) is the smallest positive number m such that n/m is a square
 
@@ -549,7 +566,7 @@ func numberTheoryCollection() {
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
 	*/
 
-	// 枚举一个数的全部约数
+	// 枚举一个数的全部因子
 	divisors := func(n int64) (ds []int64) {
 		for d := int64(1); d*d <= n; d++ {
 			if n%d == 0 {
@@ -626,7 +643,7 @@ func numberTheoryCollection() {
 		return
 	}
 
-	// 约数的中位数（偶数个约数时取小的那个）
+	// 因子的中位数（偶数个因子时取小的那个）
 	// Lower central (median) divisor of n https://oeis.org/A060775
 	// EXTRA: Largest divisor of n <= sqrt(n) https://oeis.org/A033676
 	maxSqrtDivisor := func(n int) int {
@@ -637,9 +654,9 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 预处理: [1,mx] 范围内数的所有约数
+	// 预处理: [1,mx] 范围内数的所有因子
 	// 复杂度 O(nlogn)
-	// NOTE: 1~n 的约数个数总和大约为 nlogn
+	// NOTE: 1~n 的因子个数总和大约为 nlogn
 	// NOTE: divisors[x] 为奇数 => x 为完全平方数 https://oeis.org/A000290
 	// NOTE: halfDivisors(x) 为 ≤√x 的因数集合 https://oeis.org/A161906
 	divisorsAll := func() {
@@ -652,7 +669,7 @@ func numberTheoryCollection() {
 		}
 
 		{
-			// 统计约数个数 d(n)
+			// 统计因子个数 d(n)
 			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
 			// 相关 OEIS 见上面的注释块
 			const mx int = 1e6
@@ -665,9 +682,9 @@ func numberTheoryCollection() {
 		}
 
 		{
-			// 去掉 1 作为约数
+			// 去掉 1 作为因子
 			const mx = 1e6
-			divisors := [mx + 1][]int{1: {1}} // 仅保留 1 的约数 1
+			divisors := [mx + 1][]int{1: {1}} // 仅保留 1 的因子 1
 			for i := 2; i <= mx; i++ {
 				for j := i; j <= mx; j += i {
 					divisors[j] = append(divisors[j], i)

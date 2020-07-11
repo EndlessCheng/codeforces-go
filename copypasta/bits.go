@@ -81,6 +81,23 @@ https://oeis.org/A077196 Smallest possible sum of the digits of a multiple of n 
 							相关题目（0-1 最短路）https://atcoder.jp/contests/arc084/tasks/arc084_b
 https://oeis.org/A118137 digsum(n)+digsum(n+1)
 
+回文数
+https://oeis.org/A002113 十进制回文数
+	https://oeis.org/A043269 digsum(A002113(n))
+	https://oeis.org/A070199 Number of palindromes of length <= n
+https://oeis.org/A002779 回文平方数
+	https://oeis.org/A002778 Numbers whose square is a palindrome
+https://oeis.org/A002781 回文立方数
+	https://oeis.org/A002780 Numbers whose cube is a palindrome
+https://oeis.org/A002385 回文素数
+	https://en.wikipedia.org/wiki/Palindromic_prime
+https://oeis.org/A006567 反素数 emirp (primes whose reversal is a different prime)
+	https://en.wikipedia.org/wiki/Emirp
+https://oeis.org/A003459 绝对素数/可交换素数 Absolute primes (or permutable primes): every permutation of the digits is a prime
+	https://en.wikipedia.org/wiki/Permutable_prime
+https://oeis.org/A007500 Primes whose reversal in base 10 is also prime
+https://oeis.org/A006995 二进制回文数
+
 */
 
 // 参考 strings/strings.go 中的 asciiSet
