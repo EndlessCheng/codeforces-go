@@ -7,25 +7,6 @@ import (
 
 // 一些题目：https://oi-wiki.org/math/matrix/
 
-type matrix [][]int64
-
-func newMatrix(n, m int) matrix {
-	mat := make(matrix, n)
-	for i := range mat {
-		mat[i] = make([]int64, m)
-	}
-	return mat
-}
-
-func newMatrixI(n int) matrix {
-	mat := make(matrix, n)
-	for i := range mat {
-		mat[i] = make([]int64, n)
-		mat[i][i] = 1
-	}
-	return mat
-}
-
 func readMatrix(in io.Reader, n, m int) matrix {
 	mat := make(matrix, n)
 	for i := range mat {
@@ -47,22 +28,25 @@ func copyMatrix(a matrix) matrix {
 	return mat
 }
 
-func (a matrix) swapRows(i, j int) {
-	for k := range a[0] {
-		a[i][k], a[j][k] = a[j][k], a[i][k]
+//
+
+type matrix [][]int64
+
+func newMatrix(n, m int) matrix {
+	mat := make(matrix, n)
+	for i := range mat {
+		mat[i] = make([]int64, m)
 	}
+	return mat
 }
 
-func (a matrix) swapCols(i, j int) {
-	for k := range a {
-		a[k][i], a[k][j] = a[k][j], a[k][i]
+func newMatrixI(n int) matrix {
+	mat := make(matrix, n)
+	for i := range mat {
+		mat[i] = make([]int64, n)
+		mat[i][i] = 1
 	}
-}
-
-func (a matrix) mulRow(i int, k int64) {
-	for j := range a[i] {
-		a[i][j] *= k // % mod
-	}
+	return mat
 }
 
 func (a matrix) add(b matrix) matrix {
@@ -86,12 +70,13 @@ func (a matrix) sub(b matrix) matrix {
 }
 
 func (a matrix) mul(b matrix) matrix {
+	const mod int64 = 1e9 + 7 // 998244353
 	c := newMatrix(len(a), len(b[0]))
 	for i := range a {
 		for j := range b[0] {
 			for k, aik := range a[i] {
 				// 小心爆 int64，必要时用快速乘
-				c[i][j] += aik * b[k][j] // % mod
+				c[i][j] += aik * b[k][j] % mod
 			}
 		}
 	}
@@ -112,17 +97,44 @@ func (a matrix) pow(k int64) matrix {
 	return res
 }
 
-// 斐波那契数列 - 矩阵快速幂
+// 二阶递推数列第 n 项 - 矩阵快速幂
+// a(n) = p*a(n-1) + q*a(n-2)
+// 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
 // https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
-// LC509 https://leetcode-cn.com/problems/fibonacci-number/
-func calcFibonacci(n int64) int64 {
+// https://zhuanlan.zhihu.com/p/56444434
+// 模板题 https://ac.nowcoder.com/acm/contest/6357/A
+func calcFibonacci(p, q, a0, a1, n int64) int64 {
+	const mod int64 = 1e9 + 7 // 998244353
+	//n--
 	if n == 0 {
-		return 0
+		return (a0%mod + mod) % mod
 	}
-	return matrix{
-		{1, 1},
+	if n == 1 {
+		return (a1%mod + mod) % mod
+	}
+	m := matrix{
+		{p, q},
 		{1, 0},
-	}.pow(n - 1)[0][0]
+	}.pow(n - 1)
+	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
+}
+
+func (a matrix) swapRows(i, j int) {
+	for k := range a[0] {
+		a[i][k], a[j][k] = a[j][k], a[i][k]
+	}
+}
+
+func (a matrix) swapCols(i, j int) {
+	for k := range a {
+		a[k][i], a[k][j] = a[k][j], a[k][i]
+	}
+}
+
+func (a matrix) mulRow(i int, k int64) {
+	for j := range a[i] {
+		a[i][j] *= k // % mod
+	}
 }
 
 func (a matrix) trace() (sum int64) {

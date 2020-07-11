@@ -1168,6 +1168,7 @@ func numberTheoryCollection() {
 		for i := mx; i > 0; i-- {
 			invF[i-1] = invF[i] * int64(i) % mod
 		}
+		// NOTE: must have 0<=k&&k<=n
 		C := func(n, k int) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
 
 		// EXTRA: 卢卡斯定理
@@ -1419,28 +1420,28 @@ CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-com
 func combinatoricsCollection() {
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
-	solveInclusionExclusion := func(a []int) (ans int) {
+	// https://ac.nowcoder.com/acm/contest/6219/C
+	solveInclusionExclusion := func(a []int) (ans int64) {
 		n := len(a)
+		const mod int64 = 1e9 + 7 // 998244353
 		for sub := uint(0); sub < 1<<n; sub++ {
-			res := 0
+			res := int64(0)
 			for i, v := range a {
 				if sub>>i&1 == 1 {
-					_ = v
-					// do v
+					_ = v // do v...
+
 				}
 			}
-			if bits.OnesCount(sub)&1 == 1 {
-				ans += res
-			} else {
-				ans -= res
+			if bits.OnesCount(sub)&1 == 1 { // 某些题目是 0
+				res = -res
 			}
+			ans += res // mod
 		}
+		ans = (ans%mod + mod) % mod // 注意最后变为非负
 		return
 	}
 
-	_ = []interface{}{
-		solveInclusionExclusion,
-	}
+	_ = []interface{}{solveInclusionExclusion}
 }
 
 // 博弈论
