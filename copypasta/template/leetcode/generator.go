@@ -199,7 +199,7 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 
 	// 包含中文的话，说明原始数据有误，截断首个中文字符之后的字符
 	if idx := findNonASCII(text); idx != -1 {
-		fmt.Println("[warn] 数据有误，截断", text)
+		fmt.Println("[warn] 样例数据含有非 ASCII 字符，截断，原文为", text)
 		text = text[:idx]
 	}
 
@@ -310,11 +310,8 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 由于官方描述可能会打错字（比如“输入”写成“输出”），用 isIn 来交替 append 样例输入是最稳妥的
-		if o.Type == html.TextNode && (
-			strings.Contains(o.Data, tokenInputZH+"：") ||
-				strings.Contains(o.Data, tokenInputZH+":") ||
-				strings.Contains(o.Data, tokenOutputZH+"：") ||
-				strings.Contains(o.Data, tokenOutputZH+":")) { // 处理中英文冒号
+		o.Data = strings.TrimSpace(o.Data)
+		if o.Type == html.TextNode && (strings.HasPrefix(o.Data, tokenInputZH) || strings.HasPrefix(o.Data, tokenOutputZH)) {
 			if o.Parent.NextSibling == nil {
 				return
 			}
@@ -424,8 +421,10 @@ func (p *problem) writeTestFile() error {
 		if p.isFuncProblem {
 			examples += "\n\t\t\t"
 		}
-		for _, arg := range p.sampleOuts[i] {
-			examples += "`" + arg + "`,"
+		if i < len(p.sampleOuts) {
+			for _, arg := range p.sampleOuts[i] {
+				examples += "`" + arg + "`,"
+			}
 		}
 		examples += "\n\t\t},"
 	}
