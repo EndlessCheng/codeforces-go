@@ -4,33 +4,32 @@ import (
 	"testing"
 )
 
-// 生成比赛模板（需要先在 dash 中创建对应目录）
-func TestGenContestTemplates(t *testing.T) {
-	// TODO 勿扰
+func TestGenCodeforcesContestTemplates(t *testing.T) {
 	const contestID = ""
 	const overwrite = false
-	if err := GenContestTemplates(contestID, overwrite); err != nil {
+	if err := GenCodeforcesContestTemplates(contestID, overwrite); err != nil {
 		t.Fatal(err)
 	}
 }
 
-// 生成单道题目的模板（Codeforces）
 // https://codeforces.com/problemset/problem/1293/C
 // https://codeforces.com/problemset/status/1291/problem/D
 // https://codeforces.com/gym/102253/problem/C
 // https://codeforces.com/gym/102253/status/C
-func TestGenCodeforcesNormalTemplates(t *testing.T) {
+func TestGenCodeforcesProblemTemplates(t *testing.T) {
 	const problemURL = "https://codeforces.com/problemset/problem//E"
-	if err := GenCodeforcesNormalTemplates(problemURL, true); err != nil {
+	if err := GenCodeforcesProblemTemplates(problemURL, true); err != nil {
 		t.Fatal(err)
 	}
 }
 
-// 批量生成模板（非 Codeforces）
-func TestGenNormalTemplates(t *testing.T) {
-	const rootPath = "../../misc/nowcoder/6218/"
-	const overwrite = false
-	if err := GenNormalTemplates(rootPath, overwrite); err != nil {
+func TestGenTemplates(t *testing.T) {
+	const (
+		problemNum = 3
+		rootPath   = "../../misc/nowcoder//"
+		overwrite  = false
+	)
+	if err := GenTemplates(problemNum, rootPath, overwrite); err != nil {
 		t.Fatal(err)
 	}
 }

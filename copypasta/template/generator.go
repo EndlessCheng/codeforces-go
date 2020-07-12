@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-// 生成比赛模板（需要在创建目录之后）
-func GenContestTemplates(contestID string, overwrite bool) error {
+// 生成 CF 比赛模板（需要先 cf race，以确认题目数量）
+func GenCodeforcesContestTemplates(contestID string, overwrite bool) error {
 	if contestID == "" {
 		return nil
 	}
@@ -68,7 +68,7 @@ func GenContestTemplates(contestID string, overwrite bool) error {
 }
 
 // 生成单道题目的模板（Codeforces）
-func GenCodeforcesNormalTemplates(problemURL string, openWebsite bool) error {
+func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	contestID, problemID, isGYM := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {
 		return fmt.Errorf("invalid URL: %v", err)
@@ -157,16 +157,15 @@ func TestCF%[1]s(t *testing.T) {
 	return nil
 }
 
-// 批量生成模板（非 Codeforces）
-// rootPath like "../../nowcoder/2720/"
-func GenNormalTemplates(rootPath string, overwrite bool) error {
-	for i := 'a'; i <= 'h'; i++ {
+// 在某一路径下批量生成模板
+func GenTemplates(problemNum int, rootPath string, overwrite bool) error {
+	for i := 'a'; i < 'a'+int32(problemNum); i++ {
 		dir := rootPath + string(i) + "/"
 		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 			return err
 		}
-		for _, fileName := range [...]string{"main.go", "main_test.go"} {
-			goFilePath := dir + fileName
+		for j, fileName := range [...]string{"main.go", "main_test.go"} {
+			goFilePath := dir + strings.Replace(fileName, "main", string(i), 1)
 			if !overwrite {
 				if _, err := os.Stat(goFilePath); !os.IsNotExist(err) {
 					continue
@@ -174,6 +173,9 @@ func GenNormalTemplates(rootPath string, overwrite bool) error {
 			}
 			if err := copyFile(goFilePath, fileName); err != nil {
 				return err
+			}
+			if i == 'a' && j == 0 {
+				open.Run(absPath(goFilePath))
 			}
 		}
 	}
