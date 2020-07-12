@@ -812,19 +812,18 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 }
 
 type hPair struct {
-	dis int64
 	v   int
+	dis int64
 }
 type pairHeap []hPair
 
 func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis }
+func (h pairHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis } // > 权值最大
 func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
 func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
 func (h *pairHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
 func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
 func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
-func (h pairHeap) empty() bool           { return len(h) == 0 }
 
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O((|E|+|V|)⋅log|V|)
@@ -841,8 +840,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	}
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		var v, w int
-		var weight int64
+		v, w, weight := 0, 0, int64(0)
 		Fscan(in, &v, &w, &weight)
 		v--
 		w--
@@ -856,24 +854,26 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		dist[i] = inf
 	}
 	dist[st] = 0
+	vis := make([]bool, n) // 虽然可以用 dist 来判断是否需要 relax，但是对于一些变形题，用 vis 是最稳的
 	fa := make([]int, n)
 	for i := range fa {
 		fa[i] = -1
 	}
 
-	h := pairHeap{{0, st}}
-	for !h.empty() {
+	h := pairHeap{{st, 0}}
+	for len(h) > 0 {
 		p := h.pop()
-		d, v := p.dis, p.v
-		if dist[v] < d {
+		v, d := p.v, p.dis
+		if vis[v] {
 			continue
 		}
+		vis[v] = true
 		for _, e := range g[v] {
 			w := e.to
-			if newD := d + e.weight; newD < dist[w] {
+			if newD := d + e.weight; newD < dist[w] { // > 权值最大
 				dist[w] = newD
 				fa[w] = v
-				h.push(hPair{newD, w})
+				h.push(hPair{w, newD})
 			}
 		}
 	}
@@ -909,24 +909,26 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		for i := range dist2 {
 			dist2[i] = inf
 		}
+		vis := make([]bool, n)
 
-		h := pairHeap{{0, st}}
-		for !h.empty() {
+		h := pairHeap{{st, 0}}
+		for len(h) > 0 {
 			p := h.pop()
-			d, v := p.dis, p.v
-			if dist2[v] < d {
+			v, d := p.v, p.dis
+			if vis[v] {
 				continue
 			}
+			vis[v] = true
 			for _, e := range g[v] {
 				w := e.to
 				newD := d + e.weight
 				if newD < dist[w] {
-					h.push(hPair{newD, w})
+					h.push(hPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
 				if newD > dist[w] && newD < dist2[w] {
 					dist2[w] = newD
-					h.push(hPair{newD, w})
+					h.push(hPair{w, newD})
 				}
 			}
 		}
@@ -1270,7 +1272,11 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-// 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)
+/* 匹配
+https://en.wikipedia.org/wiki/Matching_(graph_theory)
+*/
+
+// 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
 // 最大匹配+最小边覆盖=n
 // 最大独立集+最小顶点覆盖=n    最大独立集=n-最大匹配
 // 最大匹配=最小顶点覆盖
@@ -1365,9 +1371,13 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
-// 一般图最大匹配（带花树）
+// 一般图最大匹配（带花树 Edmonds's blossom algorithm）
+// https://en.wikipedia.org/wiki/Blossom_algorithm
 // 模板题 https://www.luogu.com.cn/problem/P6113
+//       https://www.luogu.com.cn/problem/P4258
 // TODO
+// EXTRA: 完美匹配 Perfect Match
+// 完美匹配同时也是一个原图的最小边数的边覆盖
 
 // 有向图的拓扑排序 Kahn's algorithm
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
