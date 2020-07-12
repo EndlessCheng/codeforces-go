@@ -221,3 +221,7 @@ func (matrix) inv(in io.Reader, n int) matrix {
 // todo 算法第四版 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
 // https://zhuanlan.zhihu.com/p/31644892
 // EXTRA: https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/TwoPersonZeroSumGame.html
+
+// 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem
+// https://oi-wiki.org/graph/matrix-tree/
+// https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
