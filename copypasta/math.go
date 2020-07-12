@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
+	"math/rand"
 )
 
 /* 数论 组合数学 博弈论 趣味数学
@@ -1168,8 +1169,12 @@ func numberTheoryCollection() {
 		for i := mx; i > 0; i-- {
 			invF[i-1] = invF[i] * int64(i) % mod
 		}
-		// NOTE: must have 0<=k&&k<=n
-		C := func(n, k int) int64 { return F[n] * invF[k] % mod * invF[n-k] % mod }
+		C := func(n, k int) int64 {
+			if k < 0 || k > n {
+				return 0
+			}
+			return F[n] * invF[k] % mod * invF[n-k] % mod
+		}
 
 		// EXTRA: 卢卡斯定理
 		var lucas func(n, k int64) int64
@@ -1315,6 +1320,8 @@ NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置�
 隔三组合数 https://oeis.org/A024493 https://oeis.org/A024494 https://oeis.org/A024495 C(n,0) + C(n,3) + ... + C(n,3[n/3])
 隔四组合数 https://oeis.org/A038503 https://oeis.org/A038504 https://oeis.org/A038505 https://oeis.org/A000749
 
+二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
+
 Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6 http://oeis.org/A000292
 a(n) = Sum_{1<=i<=j<=n} j-i
 a(n) = sum of all the possible products p*q where (p,q) are ordered pairs and p + q = n + 1
@@ -1349,7 +1356,6 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 普吕弗序列 Prüfer sequence: 由树唯一地产生的序列
 约瑟夫问题 Josephus Problem https://cp-algorithms.com/others/josephus_problem.html https://en.wikipedia.org/wiki/Josephus_problem
 Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://cp-algorithms.com/others/stern_brocot_tree_farey_sequences.html
-矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
 
 * 生成函数/母函数 *
 https://en.wikipedia.org/wiki/Generating_function
@@ -1428,6 +1434,7 @@ func combinatoricsCollection() {
 			res := int64(0)
 			for i, v := range a {
 				if sub>>i&1 == 1 {
+					// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
 					_ = v // do v...
 
 				}
