@@ -15,15 +15,19 @@ func newSegmentTree(a []int) seg {
 	return t
 }
 
+func (t seg) _core(minL, cntL, minR, cntR int) (int, int) {
+	if minL == minR {
+		return minL, cntL + cntR
+	}
+	if minL < minR {
+		return minL, cntL
+	}
+	return minR, cntR
+}
+
 func (t seg) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	if lo.min == ro.min {
-		t[o].min, t[o].cnt = lo.min, lo.cnt+ro.cnt
-	} else if lo.min < ro.min {
-		t[o].min, t[o].cnt = lo.min, lo.cnt
-	} else {
-		t[o].min, t[o].cnt = ro.min, ro.cnt
-	}
+	t[o].min, t[o].cnt = t._core(lo.min, lo.cnt, ro.min, ro.cnt)
 }
 
 func (t seg) _build(a []int, o, l, r int) {
@@ -65,13 +69,7 @@ func (t seg) _query(o, l, r int) (int, int) {
 	}
 	minL, cntL := t._query(o<<1, l, r)
 	minR, cntR := t._query(o<<1|1, l, r)
-	if minL == minR {
-		return minL, cntL + cntR
-	} else if minL < minR {
-		return minL, cntL
-	} else {
-		return minR, cntR
-	}
+	return t._core(minL, cntL, minR, cntR)
 }
 
 func (t seg) init(a []int)              { t._build(a, 1, 1, len(a)) }
