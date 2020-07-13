@@ -167,7 +167,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 
 // 无尽对拍模式
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc func(io.Reader, io.Writer)) {
-	needPrint := runtime.GOOS == "darwin"
+	const needPrint = runtime.GOOS == "darwin"
 
 	for tc := 1; ; tc++ {
 		input := inputGenerator()
