@@ -19,7 +19,7 @@ func min(a, b int) int {
 func (t seg) _pushUp(o int) { t[o].min = min(t[o<<1].min, t[o<<1|1].min) }
 
 func (t seg) _build(o, l, r int) {
-	t[o].l, t[o].r = l, r
+	t[o].l, t[o].r, t[o].min = l, r, 2e9
 	if l == r {
 		return
 	}
@@ -50,16 +50,15 @@ func (t seg) _query(o, l, r, upp int) int {
 		t[o].min = 2e9
 		return 1
 	}
-	res := 0
+	defer t._pushUp(o)
 	m := (to.l + to.r) >> 1
-	if l <= m {
-		res += t._query(o<<1, l, r, upp)
+	if r <= m {
+		return t._query(o<<1, l, r, upp)
 	}
-	if m < r {
-		res += t._query(o<<1|1, l, r, upp)
+	if l > m {
+		return t._query(o<<1|1, l, r, upp)
 	}
-	t._pushUp(o)
-	return res
+	return t._query(o<<1, l, r, upp) + t._query(o<<1|1, l, r, upp)
 }
 
 func (t seg) init(n int)              { t._build(1, 1, n) }
@@ -93,9 +92,6 @@ func run(_r io.Reader, _w io.Writer) {
 
 	n := r()
 	t := make(seg, 4*n)
-	for i := range t {
-		t[i].min = 2e9
-	}
 	t.init(n)
 	for q := r(); q > 0; q-- {
 		if r() == 1 {
