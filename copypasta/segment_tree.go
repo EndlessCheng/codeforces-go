@@ -1,10 +1,13 @@
 package copypasta
 
-// https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
+// 本质上来说，每个点对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
+
 // https://oi-wiki.org/ds/seg/
+// https://cp-algorithms.com/data_structures/segment_tree.html
 // https://codeforces.ml/blog/entry/18051
 // https://codeforces.ml/blog/entry/15890
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
+// https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 
 // todo zkw 线段树
 //      https://codeforces.ml/blog/entry/18051
@@ -28,53 +31,55 @@ package copypasta
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
-type segmentTree []struct {
-	l, r   int
-	val    int64 // replaceAll
-	maxPos int
+type seg []struct {
+	l, r int
+	val  int64
 }
 
-func newSegmentTree(a []int64) segmentTree {
-	t := make(segmentTree, 4*len(a))
+func newSegmentTree(a []int64) seg {
+	t := make(seg, 4*len(a))
 	t.init(a)
 	return t
 }
 
-func (segmentTree) min(a, b int64) int64 {
+func (seg) min(a, b int64) int64 {
 	if a < b {
 		return a
 	}
 	return b
 }
-func (segmentTree) max(a, b int64) int64 {
+func (seg) max(a, b int64) int64 {
 	if a > b {
 		return a
 	}
 	return b
 }
-func (segmentTree) gcd(a, b int64) int64 {
-	for b != 0 {
-		a, b = b, a%b
+func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
+	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
+		return b, pb
 	}
-	return a
+	return a, pa
+}
+func (seg) gcd(a, b int64) int64 {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
 }
 
-func (t segmentTree) _pushUp(o int) {
+func (t seg) _core(a, b int64) int64 {
+	return t.max(a, b)
+}
+
+func (t seg) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].val = t.max(lo.val, ro.val) // 核心函数
-	//if ro.val >= lo.val { // maxPos 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
-	//	t[o].val, t[o].maxPos = ro.val, ro.maxPos
-	//} else {
-	//	t[o].val, t[o].maxPos = lo.val, lo.maxPos
-	//}
+	t[o].val = t._core(lo.val, ro.val)
 }
 
-func (t segmentTree) _build(a []int64, o, l, r int) {
+func (t seg) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r // 注意：一定要初始化 l 和 r
 	if l == r {
-		// a starts at 0
 		t[o].val = a[l-1]
-		//t[o].maxPos = l - 1
 		return
 	}
 	m := (l + r) >> 1
@@ -83,20 +88,20 @@ func (t segmentTree) _build(a []int64, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segmentTree) _update(o, idx int, val int64) {
+func (t seg) _update(o, i int, val int64) {
 	if t[o].l == t[o].r {
 		t[o].val = val
 		return
 	}
-	if idx <= (t[o].l+t[o].r)>>1 {
-		t._update(o<<1, idx, val)
+	if i <= (t[o].l+t[o].r)>>1 {
+		t._update(o<<1, i, val)
 	} else {
-		t._update(o<<1|1, idx, val)
+		t._update(o<<1|1, i, val)
 	}
 	t._pushUp(o)
 }
 
-func (t segmentTree) _query(o, l, r int) (res int64) {
+func (t seg) _query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
@@ -110,34 +115,13 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	}
 	vl := t._query(o<<1, l, r)
 	vr := t._query(o<<1|1, l, r)
-	return t.max(vl, vr) // 核心函数
+	return t._core(vl, vr)
 }
 
-func (t segmentTree) init(a []int64)            { t._build(a, 1, 1, len(a)) } // starts at 0
-func (t segmentTree) update(idx int, val int64) { t._update(1, idx, val) }    // 1<=idx<=n
-func (t segmentTree) query(l, r int) int64      { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
-func (t segmentTree) queryAll() int64           { return t[1].val }
-
-// EXTRA: 最值位置
-func (t segmentTree) _query2(o, l, r int) (res int64, maxPos int) {
-	if l <= t[o].l && t[o].r <= r {
-		return t[o].val, t[o].maxPos
-	}
-	m := (t[o].l + t[o].r) >> 1
-	if r <= m {
-		return t._query2(o<<1, l, r)
-	}
-	if l > m {
-		return t._query2(o<<1|1, l, r)
-	}
-	vl, pl := t._query2(o<<1, l, r)
-	vr, pr := t._query2(o<<1|1, l, r)
-	if vl < vr { // 取等号时，返回的是 pr，即最右侧的位置；若写成 <=，则会在取等号时返回 pl，即最左侧的位置
-		return vl, pl
-	}
-	return vr, pr
-}
-func (t segmentTree) query2(l, r int) (res int64, maxPos int) { return t._query2(1, l, r) } // [l,r] 1<=l<=r<=n
+func (t seg) init(a []int64)          { t._build(a, 1, 1, len(a)) } // a starts at 0
+func (t seg) update(i int, val int64) { t._update(1, i, val) }      // 1<=i<=n
+func (t seg) query(l, r int) int64    { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
+func (t seg) queryAll() int64         { return t[1].val }
 
 //
 
