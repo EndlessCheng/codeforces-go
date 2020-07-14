@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-type seg []struct{ l, r, min, max, cnt int }
+type seg []struct{ l, r, min int }
 
 func min(a, b int) int {
 	if a < b {
@@ -15,19 +15,8 @@ func min(a, b int) int {
 	}
 	return b
 }
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
 
-func (t seg) _pushUp(o int) {
-	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].min = min(lo.min, ro.min)
-	t[o].max = max(lo.max, ro.max)
-	t[o].cnt = lo.cnt + ro.cnt
-}
+func (t seg) _pushUp(o int) { t[o].min = min(t[o<<1].min, t[o<<1|1].min) }
 
 func (t seg) _build(o, l, r int) {
 	t[o].l, t[o].r = l, r
@@ -39,25 +28,9 @@ func (t seg) _build(o, l, r int) {
 	t._build(o<<1|1, m+1, r)
 }
 
-func (t seg) _clear(o int) {
-	if t[o].cnt == 0 {
-		return
-	}
-	t[o].min = 0
-	t[o].max = 0
-	t[o].cnt = 0
-	if t[o].l == t[o].r {
-		return
-	}
-	t._clear(o << 1)
-	t._clear(o<<1 | 1)
-}
-
 func (t seg) _update(o, i, v int) {
 	if t[o].l == t[o].r {
 		t[o].min = v
-		t[o].max = v
-		t[o].cnt = 1
 		return
 	}
 	if i <= (t[o].l+t[o].r)>>1 {
@@ -70,14 +43,12 @@ func (t seg) _update(o, i, v int) {
 
 func (t seg) _query(o, l, r, upp int) int {
 	to := t[o]
-	if l <= to.l && to.r <= r {
-		if upp < to.min {
-			return 0
-		}
-		if upp >= to.max {
-			t._clear(o)
-			return to.cnt
-		}
+	if l <= to.l && to.r <= r && upp < to.min {
+		return 0
+	}
+	if to.l == to.r {
+		t[o].min = 2e9
+		return 1
 	}
 	res := 0
 	m := (to.l + to.r) >> 1
@@ -122,6 +93,9 @@ func run(_r io.Reader, _w io.Writer) {
 
 	n := r()
 	t := make(seg, 4*n)
+	for i := range t {
+		t[i].min = 2e9
+	}
 	t.init(n)
 	for q := r(); q > 0; q-- {
 		if r() == 1 {

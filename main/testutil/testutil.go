@@ -177,7 +177,9 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		runFuncAC(mockReader, mockWriterAC)
 		mockReader = strings.NewReader(input)
 		mockWriter := &bytes.Buffer{}
+		//t0 := time.Now()
 		runFunc(mockReader, mockWriter)
+		//fmt.Println(time.Since(t0))
 
 		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
 		actualOutput := strings.TrimSpace(mockWriter.String())

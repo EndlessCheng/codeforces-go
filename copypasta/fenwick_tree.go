@@ -24,9 +24,12 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 常数优化
+	// 常数优化    [l,r]
 	// 参考 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
+		if l > r {
+			panic(9)
+		}
 		l--
 		for ; r > l; r &= r - 1 {
 			s += tree[r]

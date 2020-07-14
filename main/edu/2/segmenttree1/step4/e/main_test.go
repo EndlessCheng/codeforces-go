@@ -36,9 +36,8 @@ func Test2(t *testing.T) {
 	inputGenerator := func() string {
 		buf := &bytes.Buffer{}
 		var n, q int
-		// todo add - quary all
-		n = 100
-		q = 100
+		n = 1e5
+		q = 1e5
 		buf.WriteString(strconv.Itoa(n) + " " + strconv.Itoa(q) + "\n")
 		for i := 0; i < q; i++ {
 			op := rand.Intn(2) + 1
@@ -50,7 +49,7 @@ func Test2(t *testing.T) {
 				l := rand.Intn(n)
 				r := rand.Intn(n-l) + l + 1
 				upp := rand.Intn(10) + 1
-				buf.WriteString(strconv.Itoa(i) + " " + strconv.Itoa(r) + " " + strconv.Itoa(upp))
+				buf.WriteString(strconv.Itoa(l) + " " + strconv.Itoa(r) + " " + strconv.Itoa(upp))
 			}
 			buf.WriteByte('\n')
 		}
@@ -61,7 +60,7 @@ func Test2(t *testing.T) {
 
 	// 暴力算法
 	runBF := func(in io.Reader, out io.Writer) {
-		//return
+		return
 		var n, q, op, i, v, l, r, upp int
 		Fscan(in, &n, &q)
 		a := make([]int, n)
