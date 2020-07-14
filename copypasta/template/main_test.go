@@ -1,13 +1,10 @@
 package main
 
 import (
-	"bytes"
 	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
 	"io"
-	"math/rand"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"testing"
 )
@@ -36,20 +33,23 @@ func Test2(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
-		buf := &bytes.Buffer{}
-		n := 10
-		buf.WriteString(strconv.Itoa(n) + "\n")
-		for i := 0; i < n; i++ {
-			buf.WriteString(strconv.Itoa(rand.Intn(n)+1) + " ")
-		}
-		buf.WriteByte('\n')
-		return buf.String()
+		rg := testutil.NewRandGenerator()
+		n := rg.Int(1, 10)
+		rg.NewLine()
+		rg.Slice(n, 1, n)
+		//Println(rg.String())
+		return rg.String()
 	}
 
 	// 暴力算法
 	runBF := func(in io.Reader, out io.Writer) {
-		var s string
-		Fscan(in, &s)
+		//return
+		var n int
+		Fscan(in, &n)
+		a := make([]int, n)
+		for i := range a {
+			Fscan(in, &a[i])
+		}
 		ans := 0
 
 		Fprint(out, ans)

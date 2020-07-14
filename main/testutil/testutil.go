@@ -1,7 +1,6 @@
 package testutil
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -32,7 +31,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 		expectedOutput := removeExtraSpace(strings.TrimSpace(tc[1]))
 
 		mockReader := strings.NewReader(input)
-		mockWriter := &bytes.Buffer{}
+		mockWriter := &strings.Builder{}
 		runFunc(mockReader, mockWriter)
 		actualOutput := strings.TrimSpace(mockWriter.String())
 
@@ -147,10 +146,10 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 
 		input = strings.TrimSpace(input)
 		mockReader := strings.NewReader(input)
-		mockWriterAC := &bytes.Buffer{}
+		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
 		mockReader = strings.NewReader(input)
-		mockWriter := &bytes.Buffer{}
+		mockWriter := &strings.Builder{}
 		runFunc(mockReader, mockWriter)
 
 		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
@@ -173,10 +172,10 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		input := inputGenerator()
 		input = strings.TrimSpace(input)
 		mockReader := strings.NewReader(input)
-		mockWriterAC := &bytes.Buffer{}
+		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
 		mockReader = strings.NewReader(input)
-		mockWriter := &bytes.Buffer{}
+		mockWriter := &strings.Builder{}
 		//t0 := time.Now()
 		runFunc(mockReader, mockWriter)
 		//fmt.Println(time.Since(t0))
