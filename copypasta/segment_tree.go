@@ -100,6 +100,7 @@ func (t segmentTree) _query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
+	//defer t._pushUp(o)
 	m := (t[o].l + t[o].r) >> 1
 	if r <= m {
 		return t._query(o<<1, l, r)
