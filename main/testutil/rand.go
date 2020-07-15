@@ -20,6 +20,7 @@ type RG struct {
 	sb *strings.Builder
 }
 
+// for random string, see Str
 func (r *RG) String() string {
 	return r.sb.String()
 }
@@ -32,6 +33,7 @@ func (r *RG) NewLine() {
 	r.sb.WriteByte('\n')
 }
 
+// generate a random int in range [min, max], and a space is appended
 func (r *RG) Int(min, max int) int {
 	v := min + rand.Intn(max-min+1)
 	r.sb.WriteString(strconv.Itoa(v))
@@ -39,15 +41,31 @@ func (r *RG) Int(min, max int) int {
 	return v
 }
 
-func (r *RG) Float(min, max float64) float64 {
-	const precision = 6
+// generate a random float in range [min, max] with a fixed precision, and a space is appended
+func (r *RG) Float(min, max float64, precision int) float64 {
 	v := min + rand.Float64()*(max-min)
 	r.sb.WriteString(strconv.FormatFloat(v, 'f', precision, 64))
 	r.Space()
 	return v
 }
 
-func (r *RG) Slice(size, min, max int) []int {
+// generate a random string with length in range [minLen, maxLen] and its chars in range [min, max], and a new line is appended
+func (r *RG) Str(minLen, maxLen int, min, max byte) string {
+	l := minLen + rand.Intn(maxLen-minLen+1)
+	sb := &strings.Builder{}
+	sb.Grow(l)
+	for i := 0; i < l; i++ {
+		c := min + byte(rand.Intn(int(max-min+1)))
+		sb.WriteByte(c)
+	}
+	s := sb.String()
+	r.sb.WriteString(s)
+	r.NewLine()
+	return s
+}
+
+// generate a random int slice with a fixed size and its values in range [min, max], and a new line is appended
+func (r *RG) IntSlice(size int, min, max int) []int {
 	a := make([]int, 0, size)
 	for i := 0; i < size; i++ {
 		a = append(a, r.Int(min, max))
@@ -56,7 +74,17 @@ func (r *RG) Slice(size, min, max int) []int {
 	return a
 }
 
-// 长度为 max-min+1
+// generate a random float slice with a fixed size and its values in range [min, max], and a new line is appended
+func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
+	a := make([]float64, 0, size)
+	for i := 0; i < size; i++ {
+		a = append(a, r.Float(min, max, precision))
+	}
+	r.NewLine()
+	return a
+}
+
+// generate a random permutation with a fixed size max-min+1 and its values in range [min, max]
 func (r *RG) Permutation(min, max int) []int {
 	size := max - min + 1
 	p := make(sort.IntSlice, 0, size)
@@ -72,7 +100,7 @@ func (r *RG) Permutation(min, max int) []int {
 	return p
 }
 
-// tree with n nodes, st-index
+// generate a tree with n nodes, st-index
 func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
 	// random labels
 	labels := make(sort.IntSlice, n)
@@ -94,7 +122,7 @@ func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
 	return
 }
 
-// tree with n nodes, st-index, edge weights in range [minWeight, maxWeight]
+// generate a tree with n nodes, st-index, edge weights in range [minWeight, maxWeight]
 func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int) {
 	// random labels
 	labels := make(sort.IntSlice, n)

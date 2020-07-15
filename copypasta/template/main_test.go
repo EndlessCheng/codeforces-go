@@ -36,7 +36,7 @@ func Test2(t *testing.T) {
 		rg := testutil.NewRandGenerator()
 		n := rg.Int(1, 10)
 		rg.NewLine()
-		rg.Slice(n, 1, n)
+		rg.IntSlice(n, 1, n)
 		//Println(rg.String())
 		return rg.String()
 	}
