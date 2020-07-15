@@ -24,6 +24,10 @@ func (r *RG) String() string {
 	return r.sb.String()
 }
 
+func (r *RG) Space() {
+	r.sb.WriteByte(' ')
+}
+
 func (r *RG) NewLine() {
 	r.sb.WriteByte('\n')
 }
@@ -31,7 +35,7 @@ func (r *RG) NewLine() {
 func (r *RG) Int(min, max int) int {
 	v := min + rand.Intn(max-min+1)
 	r.sb.WriteString(strconv.Itoa(v))
-	r.sb.WriteByte(' ')
+	r.Space()
 	return v
 }
 
@@ -39,7 +43,7 @@ func (r *RG) Float(min, max float64) float64 {
 	const precision = 6
 	v := min + rand.Float64()*(max-min)
 	r.sb.WriteString(strconv.FormatFloat(v, 'f', precision, 64))
-	r.sb.WriteByte(' ')
+	r.Space()
 	return v
 }
 
@@ -61,25 +65,67 @@ func (r *RG) Permutation(min, max int) []int {
 	}
 	rand.Shuffle(size, p.Swap)
 	for _, v := range p {
-		r.sb.WriteString(strconv.Itoa(v) + " ")
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
 	}
 	r.NewLine()
 	return p
 }
 
+// tree with n nodes, st-index
+func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
+	// random labels
+	labels := make(sort.IntSlice, n)
+	for i := range labels {
+		labels[i] = i
+	}
+	rand.Shuffle(n, labels.Swap)
+
+	edges = make([][2]int, 0, n-1)
+	for i := 1; i < n; i++ {
+		v := st + labels[i]
+		w := st + labels[rand.Intn(i)]
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+		r.sb.WriteString(strconv.Itoa(v))
+		r.NewLine()
+		edges = append(edges, [2]int{v, w})
+	}
+	return
+}
+
+// tree with n nodes, st-index, edge weights in range [minWeight, maxWeight]
+func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int) {
+	// random labels
+	labels := make(sort.IntSlice, n)
+	for i := range labels {
+		labels[i] = i
+	}
+	rand.Shuffle(n, labels.Swap)
+
+	edges = make([][3]int, 0, n-1)
+	for i := 1; i < n; i++ {
+		v := st + labels[i]
+		w := st + labels[rand.Intn(i)]
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+		weight := r.Int(minWeight, maxWeight)
+		r.NewLine()
+		edges = append(edges, [3]int{v, w, weight})
+	}
+	return
+}
+
 // todo: weighted
-func (r *RG) Graph(n, m int, directed bool) (edges [][2]int) {
+func (r *RG) GraphEdges(n, m int, directed bool) (edges [][2]int) {
 	// TODO
 	// 无自环重边
 	return
 }
 
-func (r *RG) DAG(n, m int) (edges [][2]int) {
-	// TODO
-	return
-}
-
-func (r *RG) Tree(n int, directed bool) (edges [][2]int) {
+func (r *RG) DAGEdges(n, m int) (edges [][2]int) {
 	// TODO
 	return
 }
