@@ -1,12 +1,12 @@
 package copypasta
 
 // 树状数组
-// 效率是线段树的 3~10 倍（由数据决定）
 // https://oi-wiki.org/ds/bit/
 // todo 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 // todo 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3374
+// 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 // EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.ml/problemset/problem/629/D
 func fenwickTree(n int) {
