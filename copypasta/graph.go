@@ -826,11 +826,12 @@ func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
 func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
 
 // 单源最短路 Dijkstra
-// 适用于稀疏图 O((|E|+|V|)⋅log|V|)
+// 适用于稀疏图 O(|E|⋅log|V|)
 // start 也可以是一个点集，这相当于同时对多个点跑最短路
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
+// 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // 与线段树结合跑单源最短路 https://codeforces.ml/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
