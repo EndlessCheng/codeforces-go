@@ -29,7 +29,7 @@ package copypasta
 // 根号线段树见 https://codeforces.com/problemset/problem/920/F
 // 特殊的 _query 写法，查询区间包含节点范围时也要往下递归：https://codeforces.com/problemset/problem/914/D
 
-// 某个 _core
+// 某个 do
 func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
 	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
 		return b, pb
@@ -44,17 +44,11 @@ type seg []struct {
 	val  int64
 }
 
-func newSegmentTree(a []int64) seg {
-	t := make(seg, 4*len(a))
-	t.init(a)
-	return t
-}
-
-func (t seg) _set(o int, val int64) {
+func (t seg) set(o int, val int64) {
 	t[o].val = val
 }
 
-func (t seg) _core(a, b int64) int64 {
+func (t seg) do(a, b int64) int64 {
 	// + * | & ^ min max gcd maxPos mulMatrix ...
 	if a > b {
 		return a
@@ -62,57 +56,63 @@ func (t seg) _core(a, b int64) int64 {
 	return b
 }
 
-func (t seg) _pushUp(o int) {
+func (t seg) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].val = t._core(lo.val, ro.val)
+	t[o].val = t.do(lo.val, ro.val)
 }
 
-func (t seg) _build(a []int64, o, l, r int) {
-	t[o].l, t[o].r = l, r // 注意：一定要初始化 l 和 r
+func (t seg) build(a []int64, o, l, r int) {
+	t[o].l, t[o].r = l, r
 	if l == r {
-		t._set(o, a[l-1])
+		t.set(o, a[l-1])
 		return
 	}
 	m := (l + r) >> 1
-	t._build(a, o<<1, l, m)
-	t._build(a, o<<1|1, m+1, r)
-	t._pushUp(o)
+	t.build(a, o<<1, l, m)
+	t.build(a, o<<1|1, m+1, r)
+	t.maintain(o)
 }
 
-func (t seg) _update(o, i int, val int64) {
+// o=1  1<=i<=n
+func (t seg) update(o, i int, val int64) {
 	if t[o].l == t[o].r {
-		t._set(o, val)
+		t.set(o, val)
 		return
 	}
 	if i <= (t[o].l+t[o].r)>>1 {
-		t._update(o<<1, i, val)
+		t.update(o<<1, i, val)
 	} else {
-		t._update(o<<1|1, i, val)
+		t.update(o<<1|1, i, val)
 	}
-	t._pushUp(o)
+	t.maintain(o)
 }
 
-func (t seg) _query(o, l, r int) (res int64) {
+// o=1  [l,r] 1<=l<=r<=n
+func (t seg) query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
 	//defer t._pushUp(o)
 	m := (t[o].l + t[o].r) >> 1
 	if r <= m {
-		return t._query(o<<1, l, r)
+		return t.query(o<<1, l, r)
 	}
 	if l > m {
-		return t._query(o<<1|1, l, r)
+		return t.query(o<<1|1, l, r)
 	}
-	vl := t._query(o<<1, l, r)
-	vr := t._query(o<<1|1, l, r)
-	return t._core(vl, vr)
+	vl := t.query(o<<1, l, r)
+	vr := t.query(o<<1|1, l, r)
+	return t.do(vl, vr)
 }
 
-func (t seg) init(a []int64)          { t._build(a, 1, 1, len(a)) } // a starts at 0
-func (t seg) update(i int, val int64) { t._update(1, i, val) }      // 1<=i<=n
-func (t seg) query(l, r int) int64    { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
-func (t seg) queryAll() int64         { return t[1].val }
+func (t seg) queryAll() int64 { return t[1].val }
+
+// a starts at 0
+func newSegmentTree(a []int64) seg {
+	t := make(seg, 4*len(a))
+	t.build(a, 1, 1, len(a))
+	return t
+}
 
 //
 
@@ -126,31 +126,25 @@ type lazyST []struct {
 	sum, todo int64
 }
 
-func newLazySegmentTree(a []int64) lazyST {
-	t := make(lazyST, 4*len(a))
-	t.init(a)
-	return t
-}
-
-func (t lazyST) _pushUp(o int) {
+func (t lazyST) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].sum = lo.sum + ro.sum
 	//t[o].sum = (lo.sum + ro.sum) % mod
 }
 
-func (t lazyST) _build(a []int64, o, l, r int) {
+func (t lazyST) build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = a[l-1]
 		return
 	}
 	m := (l + r) >> 1
-	t._build(a, o<<1, l, m)
-	t._build(a, o<<1|1, m+1, r)
-	t._pushUp(o)
+	t.build(a, o<<1, l, m)
+	t.build(a, o<<1|1, m+1, r)
+	t.maintain(o)
 }
 
-func (t lazyST) _spread(o int) {
+func (t lazyST) spread(o int) {
 	if add := t[o].todo; add != 0 {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum += add * int64(lo.r-lo.l+1)
@@ -165,7 +159,8 @@ func (t lazyST) _spread(o int) {
 	}
 }
 
-func (t lazyST) _update(o, l, r int, add int64) {
+// o=1  [l,r] 1<=l<=r<=n
+func (t lazyST) update(o, l, r int, add int64) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].sum += add * int64(or-ol+1)
@@ -174,38 +169,44 @@ func (t lazyST) _update(o, l, r int, add int64) {
 		//t[o].todo = (t[o].todo + add) % mod
 		return
 	}
-	t._spread(o)
+	t.spread(o)
 	m := (ol + or) >> 1
 	if l <= m {
-		t._update(o<<1, l, r, add)
+		t.update(o<<1, l, r, add)
 	}
 	if m < r {
-		t._update(o<<1|1, l, r, add)
+		t.update(o<<1|1, l, r, add)
 	}
-	t._pushUp(o)
+	t.maintain(o)
 }
 
-func (t lazyST) _query(o, l, r int) (res int64) {
+// o=1  [l,r] 1<=l<=r<=n
+func (t lazyST) query(o, l, r int) (res int64) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		return t[o].sum
 	}
-	t._spread(o)
+	//defer t.maintain(o)
+	t.spread(o)
 	m := (ol + or) >> 1
 	if l <= m {
-		res += t._query(o<<1, l, r)
+		res += t.query(o<<1, l, r)
 	}
 	if m < r {
-		res += t._query(o<<1|1, l, r)
+		res += t.query(o<<1|1, l, r)
 	}
 	//res %= mod
 	return
 }
 
-func (t lazyST) init(a []int64)             { t._build(a, 1, 1, len(a)) } // a starts at 0
-func (t lazyST) update(l, r int, val int64) { t._update(1, l, r, val) }   // [l,r] 1<=l<=r<=n
-func (t lazyST) query(l, r int) int64       { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
-func (t lazyST) queryAll() int64            { return t[1].sum }
+func (t lazyST) queryAll() int64 { return t[1].sum }
+
+// a starts at 0
+func newLazySegmentTree(a []int64) lazyST {
+	t := make(lazyST, 4*len(a))
+	t.build(a, 1, 1, len(a))
+	return t
+}
 
 //
 
