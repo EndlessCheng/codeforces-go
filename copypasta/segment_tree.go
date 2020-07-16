@@ -123,7 +123,7 @@ func (t seg) queryAll() int64         { return t[1].val }
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 type lazyST []struct {
 	l, r      int
-	sum, todo int64 // replaceAll
+	sum, todo int64
 }
 
 func newLazySegmentTree(a []int64) lazyST {
@@ -141,7 +141,6 @@ func (t lazyST) _pushUp(o int) {
 func (t lazyST) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		// a starts at 0
 		t[o].sum = a[l-1]
 		return
 	}
