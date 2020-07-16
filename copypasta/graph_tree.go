@@ -68,9 +68,10 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 }
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
-// 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用线段树维护
-// 例题 https://codeforces.ml/problemset/problem/383/C
-//     https://codeforces.ml/problemset/problem/877/E
+// 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用树状数组/线段树维护
+// 模板题 https://ac.nowcoder.com/acm/contest/6383/B
+// 例题 https://codeforces.com/problemset/problem/383/C
+//     https://codeforces.com/problemset/problem/877/E
 func (*tree) subtreeSize(n, root int, g [][]int) {
 	type node struct{ dfn, size int }
 	nodes := make([]node, n)
@@ -79,7 +80,6 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	build = func(v, fa int) int {
 		dfn++
 		nodes[v].dfn = dfn
-		//nodes[v].dep = d
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
@@ -90,8 +90,18 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 		return sz
 	}
 	build(root, -1)
-	//o := nodes[v]
-	//do(o.dfn, o.dfn+o.size-1) // 注意 o.dfn 从 1 开始
+
+	{
+		var v int
+		var update, query func(int, int)
+		var queryOne func(int)
+
+		// 注意 o.dfn 从 1 开始
+		o := nodes[v]
+		update(o.dfn, o.dfn+o.size-1) // 更新子树
+		query(o.dfn, o.dfn+o.size-1)  // 查询子树
+		queryOne(nodes[v].dfn)        // 查询单个节点
+	}
 }
 
 // 每个节点的入出时间戳

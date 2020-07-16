@@ -24,8 +24,7 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 常数优化    [l,r]
-	// 参考 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
+	// 常数优化，参考 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
 		if l > r {
 			panic(9)
@@ -40,8 +39,8 @@ func fenwickTree(n int) {
 		return
 	}
 
-	// 差分树状数组，可用于区间更新+单点查询
-	// 单点查询 query(i) = a[i] + sum(i)
+	// 差分树状数组，可用于区间更新+单点查询 queryOne(i) = a[i] + sum(i)
+	// r+1 即使超过 n 也没关系，因为不会用到
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
