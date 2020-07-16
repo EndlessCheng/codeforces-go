@@ -1374,6 +1374,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 
 // 一般图最大匹配（带花树 Edmonds's blossom algorithm）
 // https://en.wikipedia.org/wiki/Blossom_algorithm
+// https://www.cnblogs.com/cjyyb/p/8719368.html 带花树算法学习笔记
 // 模板题 https://www.luogu.com.cn/problem/P6113
 //       https://www.luogu.com.cn/problem/P4258
 // TODO

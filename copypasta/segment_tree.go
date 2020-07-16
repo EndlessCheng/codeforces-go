@@ -15,15 +15,15 @@ package copypasta
 //      https://zhuanlan.zhihu.com/p/64946571
 //      https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 
+// TIPS: 对于复杂的区间操作（如区间开方），可以从运算性质入手来优化无用操作
+// todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
+// TIPS: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
+// 		https://codeforces.com/problemset/problem/629/D
+
 // LC 套题 https://leetcode-cn.com/tag/segment-tree/
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // 经典题 ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
-
-// TIPS: 对于复杂的区间操作（如区间开方），可以从运算性质入手来优化无用操作
-// TIPS: 一般来说会有一个核心函数，如 min/max/gcd/*/+/^/|/...
-// todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
-// TIPS: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
-//       https://codeforces.ml/problemset/problem/629/D
+// 「这也能用线段树?!」https://codeforces.com/problemset/problem/1380/F
 
 // min-max segmentTree 见 LC187C
 // 根号线段树见 https://codeforces.com/problemset/problem/920/F
