@@ -15,8 +15,12 @@ package copypasta
 //      https://zhuanlan.zhihu.com/p/64946571
 //      https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 
+// 矩阵转移线段树
+// https://blog.csdn.net/xiaonanxinyi/article/details/100732264
+// https://codeforces.com/problemset/problem/750/E
+// https://codeforces.com/problemset/problem/1380/F
+
 // todo 经典题 ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
-//「这也能用线段树?!」https://codeforces.com/problemset/problem/1380/F
 // 根号线段树思想 https://codeforces.com/problemset/problem/920/F
 // GCD 好题 https://codeforces.com/problemset/problem/914/D
 // todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
