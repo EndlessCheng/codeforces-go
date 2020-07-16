@@ -18,8 +18,10 @@ func parseRawArray(rawArray string) (splits []string, err error) {
 	// ignore [] at leftmost and rightmost
 	rawArray = rawArray[1 : len(rawArray)-1]
 
+	isPoint := rawArray[0] == '('
+
 	const sep = ','
-	depth, quotCnt := 0, 0
+	var depth, quotCnt, bracketCnt int
 	for start := 0; start < len(rawArray); {
 		end := start
 	outer:
@@ -31,9 +33,21 @@ func parseRawArray(rawArray string) (splits []string, err error) {
 				depth--
 			case '"':
 				quotCnt++
+			case '(':
+				bracketCnt++
+			case ')':
+				bracketCnt--
 			case sep:
-				if depth == 0 && quotCnt%2 == 0 {
-					break outer
+				if depth == 0 {
+					if !isPoint {
+						if quotCnt%2 == 0 {
+							break outer
+						}
+					} else {
+						if bracketCnt%2 == 0 {
+							break outer
+						}
+					}
 				}
 			}
 		}
@@ -74,6 +88,12 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 			return reflect.Value{}, invalidErr
 		}
 		v = reflect.ValueOf(uint(i))
+	case reflect.Int64:
+		i, er := strconv.Atoi(rawData)
+		if er != nil {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(int64(i))
 	case reflect.Float64:
 		f, er := strconv.ParseFloat(rawData, 64)
 		if er != nil {
@@ -98,7 +118,7 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 			}
 			v = reflect.Append(v, _v)
 		}
-	case reflect.Ptr: // *TreeNode, *ListNode
+	case reflect.Ptr: // *TreeNode, *ListNode, *Point
 		switch tpName := tp.Elem().Name(); tpName {
 		case "TreeNode":
 			root, er := buildTreeNode(rawData)
@@ -112,6 +132,12 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 				return reflect.Value{}, er
 			}
 			v = reflect.ValueOf(head)
+		case "Point": // nowcoder
+			p, er := buildPoint(rawData)
+			if er != nil {
+				return reflect.Value{}, er
+			}
+			v = reflect.ValueOf(p)
 		default:
 			return reflect.Value{}, fmt.Errorf("unknown type %s", tpName)
 		}
@@ -136,12 +162,14 @@ func toRawString(v reflect.Value) (s string, err error) {
 			s += _s
 		}
 		s += "]"
-	case reflect.Ptr: // *TreeNode, *ListNode
+	case reflect.Ptr: // *TreeNode, *ListNode, *Point
 		switch tpName := v.Type().Elem().Name(); tpName {
 		case "TreeNode":
 			s = v.Interface().(*TreeNode).toRawString()
 		case "ListNode":
 			s = v.Interface().(*ListNode).toRawString()
+		case "Point":
+			s = v.Interface().(*Point).toRawString()
 		default:
 			return "", fmt.Errorf("unknown type %s", tpName)
 		}
@@ -151,7 +179,7 @@ func toRawString(v reflect.Value) (s string, err error) {
 		s = fmt.Sprintf(`"%c"`, v.Interface())
 	case reflect.Float64:
 		s = fmt.Sprintf(`%.5f`, v.Interface())
-	default: // int uint bool
+	default: // int uint int64 bool
 		s = fmt.Sprintf(`%v`, v.Interface())
 	}
 	return
