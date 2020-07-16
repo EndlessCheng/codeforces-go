@@ -726,6 +726,15 @@ func dpCollections() {
 
 	/* 数据结构优化 DP
 	https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
+
+	动态 DP - 线段树维护转移矩阵
+	todo https://www.cnblogs.com/Miracevin/p/9124511.html
+	1. 先不考虑修改，不考虑区间，直接列出整个区间的 DP 转移。
+	2. 列出转移矩阵。由于有很多修改操作，我们将数据集中在一起处理，还可以利用矩阵结合律，并且区间比较好提取（找一段矩阵就好了），修改也方便。
+	3. 线段树维护矩阵。对于修改，我们就是在矩阵上进行修改。对于不同的题目，我们要用不同的修改方式和记录手段，但都是用线段树维护对应区间内的矩阵信息。如矩阵乘积，矩阵和等等。线段树的区间操作可以应对区间修改问题。
+	https://codeforces.com/problemset/problem/1380/F
+	https://codeforces.com/problemset/problem/718/C
+	https://codeforces.com/problemset/problem/750/E
 	*/
 
 	// 单调队列/单调栈优化

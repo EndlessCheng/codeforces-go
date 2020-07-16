@@ -51,7 +51,8 @@ func (o *tpNode) mSize() int {
 	return 0
 }
 
-func (o *tpNode) pushUp() {
+// 对于取名叫 maintain 还是 pushUp，由于操作的对象是当前节点，个人认为取名 maintain 更为准确
+func (o *tpNode) maintain() {
 	o.sz = 1 + o.lr[0].size() + o.lr[1].size()
 	o.msz = int(o.val) + o.lr[0].mSize() + o.lr[1].mSize()
 }
@@ -63,9 +64,9 @@ func (o *tpNode) rotate(d int8) *tpNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
-	// x.sz = o.sz; x.msz = o.msz; o.pushUp()
-	o.pushUp()
-	x.pushUp()
+	// x.sz = o.sz; x.msz = o.msz; o.maintain()
+	o.maintain()
+	x.maintain()
 	return x
 }
 
@@ -102,7 +103,7 @@ func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
 		//o.val = val
 		o.val += val
 	}
-	o.pushUp()
+	o.maintain()
 	return o
 }
 
@@ -135,7 +136,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 			o.lr[d] = t._delete(o.lr[d], key)
 		}
 	}
-	o.pushUp()
+	o.maintain()
 	return o
 }
 
