@@ -29,6 +29,14 @@ package copypasta
 // 根号线段树见 https://codeforces.com/problemset/problem/920/F
 // 特殊的 _query 写法，查询区间包含节点范围时也要往下递归：https://codeforces.com/problemset/problem/914/D
 
+// 某个 _core
+func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
+	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
+		return b, pb
+	}
+	return a, pa
+}
+
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
 type seg []struct {
@@ -42,33 +50,16 @@ func newSegmentTree(a []int64) seg {
 	return t
 }
 
-func (seg) min(a, b int64) int64 {
-	if a < b {
-		return a
-	}
-	return b
+func (t seg) _set(o int, val int64) {
+	t[o].val = val
 }
-func (seg) max(a, b int64) int64 {
+
+func (t seg) _core(a, b int64) int64 {
+	// + * | & ^ min max gcd maxPos mulMatrix ...
 	if a > b {
 		return a
 	}
 	return b
-}
-func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
-	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
-		return b, pb
-	}
-	return a, pa
-}
-func (seg) gcd(a, b int64) int64 {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
-}
-
-func (t seg) _core(a, b int64) int64 {
-	return t.max(a, b)
 }
 
 func (t seg) _pushUp(o int) {
@@ -79,7 +70,7 @@ func (t seg) _pushUp(o int) {
 func (t seg) _build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r // 注意：一定要初始化 l 和 r
 	if l == r {
-		t[o].val = a[l-1]
+		t._set(o, a[l-1])
 		return
 	}
 	m := (l + r) >> 1
@@ -90,7 +81,7 @@ func (t seg) _build(a []int64, o, l, r int) {
 
 func (t seg) _update(o, i int, val int64) {
 	if t[o].l == t[o].r {
-		t[o].val = val
+		t._set(o, val)
 		return
 	}
 	if i <= (t[o].l+t[o].r)>>1 {
@@ -140,17 +131,6 @@ func newLazySegmentTree(a []int64) lazyST {
 	t.init(a)
 	return t
 }
-
-//func (lazyST) pow(x int64, n int) int64 {
-//	res := int64(1)
-//	for ; n > 0; n >>= 1 {
-//		if n&1 == 1 {
-//			res = res * x % mod
-//		}
-//		x = x * x % mod
-//	}
-//	return res
-//}
 
 func (t lazyST) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
@@ -223,7 +203,7 @@ func (t lazyST) _query(o, l, r int) (res int64) {
 	return
 }
 
-func (t lazyST) init(a []int64)             { t._build(a, 1, 1, len(a)) } // starts at 0
+func (t lazyST) init(a []int64)             { t._build(a, 1, 1, len(a)) } // a starts at 0
 func (t lazyST) update(l, r int, val int64) { t._update(1, l, r, val) }   // [l,r] 1<=l<=r<=n
 func (t lazyST) query(l, r int) int64       { return t._query(1, l, r) }  // [l,r] 1<=l<=r<=n
 func (t lazyST) queryAll() int64            { return t[1].sum }
