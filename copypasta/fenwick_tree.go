@@ -7,6 +7,8 @@ package copypasta
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3374
 // 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
+// 经典技巧: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
+// 			https://codeforces.com/problemset/problem/629/D
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 // EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.ml/problemset/problem/629/D
 func fenwickTree(n int) {
