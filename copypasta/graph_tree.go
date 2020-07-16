@@ -755,10 +755,10 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 		do(ov.dfn, ow.dfn)
 		// TODO: 边权下，处理轻边的情况
 	}
-	updatePath := func(v, w int, add int64) { doPath(v, w, func(l, r int) { t.update(l, r, add) }) }
-	queryPath := func(v, w int) (sum int64) { doPath(v, w, func(l, r int) { sum += t.query(l, r) }); return } // % mod
-	updateSubtree := func(v int, add int64) { o := nodes[v]; t.update(o.dfn, o.dfn+o.size-1, add) }
-	querySubtree := func(v int) (sum int64) { o := nodes[v]; return t.query(o.dfn, o.dfn+o.size-1) }
+	updatePath := func(v, w int, add int64) { doPath(v, w, func(l, r int) { t.update(1, l, r, add) }) }
+	queryPath := func(v, w int) (sum int64) { doPath(v, w, func(l, r int) { sum += t.query(1, l, r) }); return } // % mod
+	updateSubtree := func(v int, add int64) { o := nodes[v]; t.update(1, o.dfn, o.dfn+o.size-1, add) }
+	querySubtree := func(v int) (sum int64) { o := nodes[v]; return t.query(1, o.dfn, o.dfn+o.size-1) }
 
 	_ = []interface{}{updatePath, queryPath, updateSubtree, querySubtree}
 }
