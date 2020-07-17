@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // 生成 CF 比赛模板（需要先 cf race，以确认题目数量）
@@ -90,7 +91,7 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 		}
 		open.Run(statusURL)
 
-		if resp, err := grequests.Head(problemURL, nil); err != nil {
+		if resp, err := grequests.Head(problemURL, &grequests.RequestOptions{RequestTimeout: 10 * time.Second}); err != nil {
 			fmt.Println(err)
 			// CF 连接失败，打开洛谷的页面
 			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
