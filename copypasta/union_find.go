@@ -11,14 +11,15 @@ https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专�
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 思维转换题! https://nanti.jisuanke.com/t/43488
 // https://codeforces.com/problemset/problem/292/D
-func unionFind() {
+func unionFind(n int) {
 	var fa []int
-	initFa := func(n int) { // n+1
+	initFa := func(n int) {
 		fa = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 		}
 	}
+	initFa(n + 1) //
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -29,7 +30,7 @@ func unionFind() {
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
 
-	// 总是合并到更大的元素上
+	// 总是合并到代表元更大的树上
 	mergeBig := func(from, to int) int {
 		ff, ft := find(from), find(to)
 		if ff > ft {
@@ -105,7 +106,6 @@ func unionFind() {
 	}
 
 	{
-		var n int
 		rank := make([]int, n)
 		merge := func(x, y int) {
 			x = find(x)
@@ -133,9 +133,9 @@ func unionFind() {
 
 // 并查集 - 维护点权
 // 维护的可以是集合的大小，也可以是集合的最值、XOR、GCD 等
-func unionFindVertexWeight() {
+func unionFindVertexWeight(n int) {
 	var fa, size []int
-	initFa := func(n int) { // n+1
+	initFa := func(n int) {
 		fa = make([]int, n)
 		size = make([]int, n)
 		for i := range fa {
@@ -143,6 +143,7 @@ func unionFindVertexWeight() {
 			size[i] = 1
 		}
 	}
+	initFa(n + 1) //
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -169,16 +170,17 @@ func unionFindVertexWeight() {
 // 模板题 https://codeforces.ml/problemset/problem/1074/D
 // 种类并查集：同义词反义词 https://codeforces.ml/problemset/problem/766/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
-func unionFindEdgeWeight() {
+func unionFindEdgeWeight(n int) {
 	const kinds = 2
 	var fa, dis []int
-	initFa := func(n int) { // n+1
+	initFa := func(n int) {
 		fa = make([]int, n)
 		dis = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 		}
 	}
+	initFa(n + 1) //
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
