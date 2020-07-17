@@ -92,6 +92,13 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	build(root, -1)
 
 	{
+		dfnToNodeID := make([]int, n+1)
+		for i, o := range nodes {
+			dfnToNodeID[o.dfn] = i
+		}
+	}
+
+	{
 		var v int
 		var update, query func(int, int)
 		var queryOne func(int)

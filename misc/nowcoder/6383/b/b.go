@@ -11,13 +11,16 @@ func solve(n int, edges []*Point, _ int, queries []*Point) []int64 {
 		g[w] = append(g[w], v)
 	}
 
+	// 另一种写法是直接在节点上打 lazy tag
 	type node struct{ dfn, size int }
 	nodes := make([]node, n+1)
 	dfn := 0
+	ids := make([]int, n+1)
 	var build func(v, fa int) int
 	build = func(v, fa int) int {
 		dfn++
 		nodes[v].dfn = dfn
+		ids[dfn] = v
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
@@ -29,27 +32,18 @@ func solve(n int, edges []*Point, _ int, queries []*Point) []int64 {
 	}
 	build(1, 0)
 
-	tree := make([]int, n+1)
-	add := func(i, val int) {
-		for ; i <= n; i += i & -i {
-			tree[i] += val
-		}
-	}
-	sum := func(i int) (res int) {
-		for ; i > 0; i &= i - 1 {
-			res += tree[i]
-		}
-		return
-	}
-	addRange := func(l, r, val int) { add(l, val); add(r+1, -val) }
+	diff := make([]int, n+2)
 	for _, q := range queries {
 		o := nodes[q.X]
-		addRange(o.dfn, o.dfn+o.size-1, q.Y)
+		diff[o.dfn] += q.Y
+		diff[o.dfn+o.size] -= q.Y
 	}
 
-	ans := make([]int64, 0, n)
+	ans := make([]int64, n)
+	s := 0
 	for i := 1; i <= n; i++ {
-		ans = append(ans, int64(sum(nodes[i].dfn)))
+		s += diff[i]
+		ans[ids[i]-1] = int64(s)
 	}
 	return ans
 }
