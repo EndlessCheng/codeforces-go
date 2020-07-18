@@ -28,12 +28,12 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 		}
 
 		input := strings.TrimSpace(tc[0])
-		expectedOutput := removeExtraSpace(strings.TrimSpace(tc[1]))
+		expectedOutput := removeExtraSpace(tc[1])
 
 		mockReader := strings.NewReader(input)
 		mockWriter := &strings.Builder{}
 		runFunc(mockReader, mockWriter)
-		actualOutput := strings.TrimSpace(mockWriter.String())
+		actualOutput := removeExtraSpace(mockWriter.String())
 
 		const maxInputSize = 150
 		inputInfo := input
@@ -152,8 +152,8 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 		mockWriter := &strings.Builder{}
 		runFunc(mockReader, mockWriter)
 
-		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
-		actualOutput := strings.TrimSpace(mockWriter.String())
+		actualOutputAC := removeExtraSpace(mockWriterAC.String())
+		actualOutput := removeExtraSpace(mockWriter.String())
 
 		const maxInputSize = 150
 		inputInfo := input
@@ -180,8 +180,8 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		runFunc(mockReader, mockWriter)
 		//fmt.Println(time.Since(t0))
 
-		actualOutputAC := strings.TrimSpace(mockWriterAC.String())
-		actualOutput := strings.TrimSpace(mockWriter.String())
+		actualOutputAC := removeExtraSpace(mockWriterAC.String())
+		actualOutput := removeExtraSpace(mockWriter.String())
 		if !assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input) && needPrint {
 			fmt.Println(input)
 			fmt.Println()
