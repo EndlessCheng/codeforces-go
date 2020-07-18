@@ -8,3 +8,12 @@
 |6219|[牛客编程巅峰赛S1赛季第2场 Div.3](https://ac.nowcoder.com/acm/contest/6219)|
 |6357|[牛客编程巅峰赛S1赛季第2场 Div.2](https://ac.nowcoder.com/acm/contest/6357)|
 |6383|[牛客编程巅峰赛S1赛季第3场 Div.2](https://ac.nowcoder.com/acm/contest/6383)|
+|6384|[牛客编程巅峰赛S1赛季第4场 Div.2](https://ac.nowcoder.com/acm/contest/6384)|
+
+```go
+
+import (
+	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+)
+
+```
