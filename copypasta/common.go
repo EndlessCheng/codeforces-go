@@ -43,7 +43,7 @@ import (
 // NOTE: 若不止两个数相加，要特别注意 inf 的选择
 
 // Golang 注意事项：
-// 		和 slice 不同，forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 获取（猜测是 forr array 会整个拷贝一份？）
+// 		和 slice 不同，forr array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 或 forr a[:] 获取（猜测是 forr array 会整个拷贝一份？）
 // 		for-switch 内的 break 跳出的是该 switch，不是其外部的 for 循环
 // 		对于在堆上申请大量内存且不能回收的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC 能明显减少耗时；
 //			注：主要原因在于 1. 堆越大，堆上分配的对象越多，单次 GC 标记越慢；2. GC 的扫描操作影响了 Cache

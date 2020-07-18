@@ -270,6 +270,29 @@ func (*graph) bfs(n, st int, g [][]int) {
 			vis[v] = false
 		}
 	}
+
+	{
+		// BFS 012 染色
+		// 0 不在队列，未访问
+		// 1 在队列，未访问
+		// 2 不在队列，已访问
+		// 相关题目 https://codeforces.com/contest/1385/problem/E
+		vis := make([]int8, n)
+		vis[st] = 1
+		q := []int{st}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			// do v...
+			for _, w := range g[v] {
+				if vis[w] == 0 {
+					vis[w] = 1
+					q = append(q, w)
+				}
+			}
+			vis[v] = 2
+		}
+	}
 }
 
 // BFS 应用：求无向无权图最小环长度
@@ -1387,6 +1410,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // https://cp-algorithms.com/graph/topological-sort.html
 // 模板题 https://www.luogu.com.cn/problem/P3387
 // 好题 https://codeforces.com/problemset/problem/915/D
+// 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
