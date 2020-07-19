@@ -4,6 +4,46 @@ import "sort"
 
 func smallestStringWithSwaps(s string, pairs [][]int) string {
 	n := len(s)
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+	for _, p := range pairs {
+		fa[find(p[0])] = find(p[1])
+	}
+
+	type pair struct {
+		b []byte
+		i []int
+	}
+	group := make([]pair, n)
+	for i := range s {
+		f := find(i)
+		group[f].b = append(group[f].b, s[i])
+		group[f].i = append(group[f].i, i)
+	}
+
+	ans := make([]byte, n)
+	for _, p := range group {
+		bs, ps := p.b, p.i
+		sort.Slice(bs, func(i, j int) bool { return bs[i] < bs[j] })
+		sort.Ints(ps)
+		for i, v := range bs {
+			ans[ps[i]] = v
+		}
+	}
+	return string(ans)
+}
+
+func smallestStringWithSwapsCC(s string, pairs [][]int) string {
+	n := len(s)
 	ans := make([]byte, n)
 	g := make([][]int, n)
 	for _, p := range pairs {
