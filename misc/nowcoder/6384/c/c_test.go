@@ -17,7 +17,7 @@ func Test(t *testing.T) {
 		
 	}
 	targetCaseNum := 0
-	if err := testutil.RunLeetCodeFuncWithExamples(t,digSum , examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, digSum, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
