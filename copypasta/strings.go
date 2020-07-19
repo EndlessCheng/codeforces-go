@@ -27,6 +27,15 @@ func stringCollection() {
 		return b
 	}
 
+	// 注：如果 s 是常量的话，由于其在编译期分配到只读段，对应的地址是无法写入的
+	unsafeGetBytes := func(s string) []byte {
+		return *(*[]byte)(unsafe.Pointer(&s))
+	}
+
+	unsafeToString := func(b []byte) string {
+		return *(*string)(unsafe.Pointer(&b))
+	}
+
 	// 字符串哈希
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
@@ -417,6 +426,7 @@ func stringCollection() {
 	}
 
 	_ = []interface{}{
+		unsafeGetBytes, unsafeToString,
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		zSearch,
