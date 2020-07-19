@@ -3,6 +3,7 @@ package copypasta
 // 占坑待填
 
 // 从多项式乘法到快速傅里叶变换 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
+// https://zhuanlan.zhihu.com/p/40505277
 // 用到的各种素数 http://blog.miskcoo.com/2014/07/fft-prime-table
 // 关于优化形式幂级数计算的 Newton 法的常数 http://negiizhao.blog.uoj.ac/blog/4671
 

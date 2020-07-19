@@ -1415,14 +1415,14 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // LC 套题 https://leetcode-cn.com/tag/topological-sort/
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	g := make([][]int, n)
-	inDeg := make([]int, n)
+	deg := make([]int, n)
 	for i := 0; i < m; i++ {
-		var v, w int
+		v, w := 0, 0
 		Fscan(in, &v, &w)
 		v--
 		w--
 		g[v] = append(g[v], w) // 注意不能有自环
-		inDeg[w]++
+		deg[w]++
 	}
 
 	//fa := make([]int, n)
@@ -1433,7 +1433,7 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 
 	orders = make([]int, 0, n)
 	q := []int{}
-	for i, d := range inDeg {
+	for i, d := range deg {
 		if d == 0 {
 			q = append(q, i)
 			//levels[i] = 1
@@ -1445,8 +1445,10 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		q = q[1:]
 		orders = append(orders, v)
 		for _, w := range g[v] {
-			inDeg[w]--
-			if inDeg[w] == 0 {
+			// do v-w ...
+
+			deg[w]--
+			if deg[w] == 0 {
 				//fa[w] = v
 				//levels[w] = levels[v] + 1
 				q = append(q, w)
@@ -1462,8 +1464,8 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		// EXTRA: path from end to start
 		var end = n - 1
 		path := make([]int, 0, n)
-		for x := end; x != -1; x = fa[x] {
-			path = append(path, x)
+		for v := end; v != -1; v = fa[v] {
+			path = append(path, v)
 		}
 	}
 

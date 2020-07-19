@@ -10,6 +10,8 @@ import (
 注意：bits.Len(0) 返回的是 0 而不是 1
      bits.Len(x) 相当于 int(Log2(x)+eps)+1
 
+TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
+
 运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
     5         *  /  %  <<  >>  &  &^
