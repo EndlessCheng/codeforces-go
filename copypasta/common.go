@@ -411,9 +411,11 @@ func commonCollection() {
 	// 相当于转换成第几小
 	// 若允许修改原数组，可以先将其排序去重后，再调用 discrete，注意去重后 n 需要重新赋值
 	discrete := func(a []int, startIndex int) (kth []int) {
-		// assert len(a) > 0
 		type pair struct{ v, i int }
 		n := len(a)
+		if n == 0 {
+			return
+		}
 		ps := make([]pair, n)
 		for i, v := range a {
 			ps[i] = pair{v, i}

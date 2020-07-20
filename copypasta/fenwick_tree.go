@@ -6,7 +6,7 @@ package copypasta
 // todo 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3374
-// 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
+// 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 // 经典技巧: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
 // 			https://codeforces.com/problemset/problem/629/D
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
@@ -46,7 +46,32 @@ func fenwickTree(n int) {
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
-	_ = []interface{}{add, sum, query, addRange}
+	// 求逆序对的方法之一
+	cntInversions := func(a []int) (cnt int64) {
+		n := len(a)
+		tree := [1e5 + 1]int{} // 注：如果 a 范围较大则需要离散化
+		add := func(i int) {
+			for ; i <= n; i += i & -i {
+				tree[i]++
+			}
+		}
+		sum := func(i int) (res int) {
+			for ; i > 0; i &= i - 1 {
+				res += tree[i]
+			}
+			return
+		}
+		for i, v := range a {
+			cnt += int64(i - sum(v))
+			add(v)
+		}
+		return
+	}
+
+	_ = []interface{}{
+		add, sum, query, addRange,
+		cntInversions,
+	}
 }
 
 // NOTE: 也可以写成 struct 的形式
