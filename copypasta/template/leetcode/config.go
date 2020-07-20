@@ -38,9 +38,12 @@ func init() {
 	}
 }
 
-var utc8, _ = time.LoadLocation("Asia/Shanghai")
-
 func calcNextContestID() int {
+	utc8, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		panic(err)
+	}
+
 	switch contestPrefix {
 	case contestPrefixWeekly:
 		// 以 2020 年第一场周赛的结束时间为基准
