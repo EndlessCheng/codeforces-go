@@ -101,21 +101,24 @@ func (r *RG) Permutation(min, max int) []int {
 }
 
 // generate a tree with n nodes, st-index
+// TODO: max degree
 func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
 	// random labels
-	labels := make(sort.IntSlice, n)
-	for i := range labels {
-		labels[i] = i
-	}
-	rand.Shuffle(n, labels.Swap)
+	//labels := make(sort.IntSlice, n)
+	//for i := range labels {
+	//	labels[i] = i
+	//}
+	//rand.Shuffle(n, labels.Swap)
 
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
-		v := st + labels[i]
-		w := st + labels[rand.Intn(i)]
+		//v := st + labels[i]
+		//w := st + labels[rand.Intn(i)]
+		v := st + i
+		w := st + rand.Intn(i)
 		r.sb.WriteString(strconv.Itoa(v))
 		r.Space()
-		r.sb.WriteString(strconv.Itoa(v))
+		r.sb.WriteString(strconv.Itoa(w))
 		r.NewLine()
 		edges = append(edges, [2]int{v, w})
 	}
