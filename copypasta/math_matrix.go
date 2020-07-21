@@ -5,6 +5,15 @@ import (
 	"io"
 )
 
+/* 矩阵加速
+https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
+https://zhuanlan.zhihu.com/p/56444434
+https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
+
+模板题 https://ac.nowcoder.com/acm/contest/6357/A
+TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
+*/
+
 // 一些题目：https://oi-wiki.org/math/matrix/
 
 func readMatrix(in io.Reader, n, m int) matrix {
@@ -83,9 +92,6 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-// NxN 矩阵快速幂
-// 注意并不会修改原矩阵的值
-// 模板题 https://www.luogu.com.cn/problem/P3390
 func (a matrix) pow(k int64) matrix {
 	res := newMatrixI(len(a))
 	for ; k > 0; k >>= 1 {
@@ -97,13 +103,8 @@ func (a matrix) pow(k int64) matrix {
 	return res
 }
 
-// 二阶递推数列第 n 项 - 矩阵快速幂   矩阵加速
 // a(n) = p*a(n-1) + q*a(n-2)
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
-// https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
-// https://zhuanlan.zhihu.com/p/56444434
-// 模板题 https://ac.nowcoder.com/acm/contest/6357/A
-// TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 func calcFibonacci(p, q, a0, a1, n int64) int64 {
 	const mod int64 = 1e9 + 7 // 998244353
 	//n--
@@ -119,6 +120,8 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 	}.pow(n - 1)
 	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
 }
+
+//
 
 func (a matrix) swapRows(i, j int) {
 	for k := range a[0] {
