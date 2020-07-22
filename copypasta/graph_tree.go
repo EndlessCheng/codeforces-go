@@ -26,6 +26,8 @@ type tree struct{}
 // 基本信息：节点深度和子树大小
 // 性质：
 //    深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
+// 离线好题 https://codeforces.com/problemset/problem/570/D
+// 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
 func (*tree) depthSize(n, root int, g [][]int) {
 	dep := make([]int, n)
 	size := make([]int, n)

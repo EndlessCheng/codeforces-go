@@ -1408,7 +1408,7 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-// 模板题 https://www.luogu.com.cn/problem/P3387
+// DAG DP https://ac.nowcoder.com/acm/contest/6384/C https://www.luogu.com.cn/problem/P3387
 // 好题 https://codeforces.com/problemset/problem/915/D
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
