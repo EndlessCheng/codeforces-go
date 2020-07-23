@@ -1,4 +1,4 @@
-# LeetCode
+# LeetCode Contests
 
 ## Testutil
 
