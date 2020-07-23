@@ -7,8 +7,14 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF106C(_r io.Reader, _w io.Writer) {
+func CF106C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
 	max := func(a, b int) int {
 		if a > b {
 			return a
@@ -29,19 +35,18 @@ func CF106C(_r io.Reader, _w io.Writer) {
 		stocks[i] = a / b
 	}
 
-	dp := make([][]int, n+1)
-	for i := range dp {
-		dp[i] = make([]int, maxW+1)
-	}
-	for i, vi := range values {
-		si, wi := stocks[i], weights[i]
-		for j := range dp[i] {
-			for k := 0; k <= si && k*wi <= j; k++ {
-				dp[i+1][j] = max(dp[i+1][j], dp[i][j-k*wi]+k*vi)
+	dp := make([]int, maxW+1)
+	for i, v := range values {
+		num, w := stocks[i], weights[i]
+		for k := 1; num > 0; k <<= 1 {
+			K := min(k, num)
+			for j := maxW; j >= K*w; j-- {
+				dp[j] = max(dp[j], dp[j-K*w]+K*v)
 			}
+			num -= K
 		}
 	}
-	Fprint(_w, dp[n][maxW])
+	Fprint(out, dp[maxW])
 }
 
 //func main() { CF106C(os.Stdin, os.Stdout) }
