@@ -12,6 +12,7 @@ https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training c
 
 模板题 https://ac.nowcoder.com/acm/contest/6357/A
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
+挑战 P202 一维方块染色 http://poj.org/problem?id=3734
 */
 
 // 一些题目：https://oi-wiki.org/math/matrix/
@@ -105,6 +106,7 @@ func (a matrix) pow(k int64) matrix {
 
 // a(n) = p*a(n-1) + q*a(n-2)
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
+// m 项递推式，以及包含常数项的情况见《挑战》P201
 func calcFibonacci(p, q, a0, a1, n int64) int64 {
 	const mod int64 = 1e9 + 7 // 998244353
 	//n--
