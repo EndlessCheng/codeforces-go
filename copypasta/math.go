@@ -53,6 +53,7 @@ func numberTheoryCollection() {
 
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
 	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
+	分拆与 LCM  https://ac.nowcoder.com/acm/contest/5961/D https://ac.nowcoder.com/discuss/439005
 
 	*/
 
@@ -1024,6 +1025,10 @@ func numberTheoryCollection() {
 	// Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n https://oeis.org/A072994
 	// Least k > 0 such that the number of solutions to x^k == 1 (mod k) 1 <= x <= k is equal to n, or 0 if no such k exists https://oeis.org/A072995
 
+	// http://oeis.org/A182865 Minimal number of quadratic residues
+	// a(n) is the least integer m such that any nonzero square is congruent (mod n) to one of the squares from 1 to m^2
+	// 把这题的 1000 改成 i，则至多需要枚举到 a(i) https://ac.nowcoder.com/acm/contest/6489/A
+
 	/* 阶乘 组合数/二项式系数 */
 
 	// https://oeis.org/A000142
@@ -1426,6 +1431,7 @@ CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-com
 func combinatoricsCollection() {
 	// 容斥原理 Inclusion–exclusion principle
 	// 参考《挑战程序设计竞赛》P296
+	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
 	solveInclusionExclusion := func(a []int) (ans int64) {
 		n := len(a)

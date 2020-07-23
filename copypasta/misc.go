@@ -72,6 +72,10 @@ func miscCollection() {
 		return n + k - n%k
 	}
 
+	shift1Mod := func(v, mod int) int {
+		return (v-1)%mod + 1
+	}
+
 	// 把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
 	partition := func(n, m int) (q, cntQ, cntQ1 int) {
 		// m must > 0
@@ -240,10 +244,39 @@ func miscCollection() {
 		return
 	}
 
+	// 螺旋矩阵 Spiral Matrix
+	// https://ac.nowcoder.com/acm/contest/6489/C
+	// 另：只考虑枚举顺序 LC54 https://leetcode-cn.com/problems/spiral-matrix/
+	genSpiralMatrix := func(n, m int) [][]int {
+		mat := make([][]int, n)
+		for i := range mat {
+			mat[i] = make([]int, m)
+			for j := range mat[i] { // 如果从 1 开始这里可以不要，下面的 != -1 改成 > 0
+				mat[i][j] = -1
+			}
+		}
+		type pair struct{ x, y int }
+		dir4 := [4]pair{{0, 1}, {1, 0}, {0, -1}, {-1, 0}} // 右下左上
+		x, y, di := 0, 0, 0
+		//pos := make([]pair, n*m+1)
+		for i := 0; i < n*m; i++ { // 从 0 到 n*m-1
+			mat[x][y] = i
+			//pos[i] = pair{x, y}
+			d := dir4[di&3]
+			if xx, yy := x+d.x, y+d.y; xx < 0 || xx >= n || yy < 0 || yy >= m || mat[xx][yy] != -1 {
+				di++
+			}
+			d = dir4[di&3]
+			x += d.x
+			y += d.y
+		}
+		return mat
+	}
+
 	_ = []interface{}{
 		logInit,
 		getCycle,
-		ceilK, partition, maxValueStepToUpper, moveToRange,
+		ceilK, shift1Mod, partition, maxValueStepToUpper, moveToRange,
 		hash01Mat,
 		smallK,
 		removeLeadingZero,
@@ -251,6 +284,7 @@ func miscCollection() {
 		concatBrackets,
 		sliceToStr,
 		getMapRangeValues,
+		genSpiralMatrix,
 	}
 }
 

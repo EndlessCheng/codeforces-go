@@ -25,6 +25,7 @@ import (
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
+转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
 */
 
 // NOTE: 正难则反。 all => any, any => all https://codeforces.ml/problemset/problem/621/C
