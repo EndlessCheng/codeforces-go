@@ -352,6 +352,12 @@ func dpCollections() {
 		return sum
 	}
 
+	// 划分数
+	// todo 挑战 P67
+
+	// 多重集组合数
+	// todo 挑战 P68
+
 	/* 背包问题
 	这类问题可以从物品选择次序的无后效性入手
 	子区间 -> 前缀和
@@ -379,25 +385,18 @@ func dpCollections() {
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 二维费用+至少装满 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
-		n := len(values)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, maxW+1)
-		}
-		for i, vi := range values {
-			wi := weights[i]
-			for j, dpij := range dp[i] {
-				if j < wi {
-					dp[i+1][j] = dpij // 入度为 1，直接转移
-				} else {
-					dp[i+1][j] = max(dpij, dp[i][j-wi]+vi) // 入度为 2，取核心函数转移
-				}
+		dp := make([]int, maxW+1) // int64
+		for i, v := range values {
+			w := weights[i]
+			for j := maxW; j >= w; j-- {
+				dp[j] = max(dp[j], dp[j-w]+v)
 			}
 		}
-		return dp[n][maxW]
+		return dp[maxW]
 	}
 
-	// todo 价值主导的 0-1 背包
+	// 价值主导的 0-1 背包
+	// todo 挑战 P61
 
 	// 从 a 中选出若干个数，总和为 sum 的方案数
 	// 基本状态：前 i 个数  i∈[0,n]
@@ -414,41 +413,26 @@ func dpCollections() {
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	waysToSum := func(a []int, sum int) int {
-		n := len(a)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, sum+1)
-		}
-		dp[0][0] = 1
-		for i, v := range a {
-			for s, dv := range dp[i] {
-				dp[i+1][s] = dv
-				if s >= v {
-					dp[i+1][s] += dp[i][s-v]
-				}
+		dp := make([]int, sum+1) // int64
+		dp[0] = 1
+		for _, v := range a {
+			for s := sum; s >= v; s-- {
+				dp[s] += dp[s-v] // mod
 			}
 		}
-		return dp[n][sum]
+		return dp[sum]
 	}
 
 	// 完全背包
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
-		n := len(values)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, maxW+1)
-		}
-		for i, vi := range values {
-			wi := weights[i]
-			for j, dpij := range dp[i] {
-				if j < wi {
-					dp[i+1][j] = dpij // 入度为 1，直接转移
-				} else {
-					dp[i+1][j] = max(dpij, dp[i+1][j-wi]+vi) // 入度为 2，取核心函数转移
-				}
+		dp := make([]int, maxW+1) // int64
+		for i, v := range values {
+			w := weights[i]
+			for j := w; j <= maxW; j++ {
+				dp[j] = max(dp[j], dp[j-w]+v)
 			}
 		}
-		return dp[n][maxW]
+		return dp[maxW]
 	}
 
 	// 恰好装满背包至少需要多少个物品，物品无限。无法装满时返回 -1
@@ -489,10 +473,11 @@ func dpCollections() {
 	// https://codeforces.ml/problemset/problem/543/A
 
 	// 多重背包 - 未优化
-	// 模板题 https://codeforces.ml/problemset/problem/106/C
+	// 模板题 https://codeforces.com/problemset/problem/106/C
+	// https://codeforces.com/contest/999/problem/F
 	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
 		n := len(values)
-		dp := make([][]int, n+1)
+		dp := make([][]int, n+1) // int64
 		for i := range dp {
 			dp[i] = make([]int, maxW+1)
 		}
@@ -507,7 +492,24 @@ func dpCollections() {
 		return dp[n][maxW]
 	}
 
-	// todo 多重背包 - 优化 1 - 二进制优化
+	// 多重背包 - 优化 1 - 二进制优化
+	boundedKnapsackBinary := func(values, stocks, weights []int, maxW int) int {
+		dp := make([]int, maxW+1) // int64
+		for i, v := range values {
+			num, w := stocks[i], weights[i]
+			for k := 1; num > 0; k <<= 1 {
+				K := min(k, num)
+				for j := maxW; j >= K*w; j-- {
+					dp[j] = max(dp[j], dp[j-K*w]+K*v)
+				}
+				num -= K
+			}
+		}
+		return dp[maxW]
+	}
+
+	// 多重背包 - 优化 2 - 单调队列优化
+	// todo 挑战 P340
 
 	/* 区间 DP / 环形 DP
 	一般来说转移是合并区间或者分解区间
@@ -839,7 +841,7 @@ func dpCollections() {
 		prefixSumDP, mapDP,
 		maxSubArraySum, maxSubArrayAbsSum,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
-		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack,
+		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
 		mergeStones,
 		tsp,
 		digitDP,
