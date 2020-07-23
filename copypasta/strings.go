@@ -60,26 +60,27 @@ func stringCollection() {
 		return
 	}
 
-	// https://oi-wiki.org/string/kmp/
+	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
-	// 例题 https://codeforces.ml/problemset/problem/432/D
-	//     http://acm.hdu.edu.cn/showproblem.php?pid=2087
+	// https://codeforces.com/problemset/problem/432/D
+	// https://codeforces.com/problemset/problem/1003/F
+	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
 		n := len(s)
 		maxMatchLengths := make([]int, n)
-		cnt := 0
+		c := 0
 		for i := 1; i < n; i++ {
 			b := s[i]
-			for cnt > 0 && s[cnt] != b {
-				cnt = maxMatchLengths[cnt-1]
+			for c > 0 && s[c] != b {
+				c = maxMatchLengths[c-1]
 			}
-			if s[cnt] == b {
-				cnt++
+			if s[c] == b {
+				c++
 			}
-			maxMatchLengths[i] = cnt
+			maxMatchLengths[i] = c
 		}
 		return maxMatchLengths
 	}
@@ -87,17 +88,17 @@ func stringCollection() {
 	kmpSearch := func(text, pattern []byte) (pos []int) {
 		maxMatchLengths := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
-		cnt := 0
+		c := 0
 		for i, b := range text {
-			for cnt > 0 && pattern[cnt] != b {
-				cnt = maxMatchLengths[cnt-1]
+			for c > 0 && pattern[c] != b {
+				c = maxMatchLengths[c-1]
 			}
-			if pattern[cnt] == b {
-				cnt++
+			if pattern[c] == b {
+				c++
 			}
-			if cnt == lenP {
+			if c == lenP {
 				pos = append(pos, i-lenP+1)
-				cnt = maxMatchLengths[cnt-1] // 不允许重叠时 cnt = 0
+				c = maxMatchLengths[c-1] // 不允许重叠时 c = 0
 			}
 		}
 		return
