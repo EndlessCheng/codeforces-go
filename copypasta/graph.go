@@ -1296,8 +1296,10 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-/* 匹配
+/* 匹配 独立集
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
+https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
 */
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
