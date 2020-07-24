@@ -5,7 +5,6 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
-	"math/rand"
 )
 
 /* 数论 组合数学 博弈论 趣味数学
@@ -1028,6 +1027,10 @@ func numberTheoryCollection() {
 	// http://oeis.org/A182865 Minimal number of quadratic residues
 	// a(n) is the least integer m such that any nonzero square is congruent (mod n) to one of the squares from 1 to m^2
 	// 把这题的 1000 改成 i，则至多需要枚举到 a(i) https://ac.nowcoder.com/acm/contest/6489/A
+
+	// https://oeis.org/A000224 Number of distinct squares residues mod n
+	// Multiplicative with a(p^e) = floor(p^e/6) + 2 IF p = 2 ELSE floor(p^(e+1)/(2p + 2)) + 1
+	// https://oeis.org/A046530 Number of distinct cubic residues mod n
 
 	/* 阶乘 组合数/二项式系数 */
 
