@@ -1496,43 +1496,53 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	}
 
 	vs := make([]int, 0, n)
-	used := make([]bool, n)
+	vis := make([]bool, n)
 	var dfs func(int)
 	dfs = func(v int) {
-		used[v] = true
+		vis[v] = true
 		for _, w := range g[v] {
-			if !used[w] {
+			if !vis[w] {
 				dfs(w)
 			}
 		}
-		vs = append(vs, v)
+		vs = append(vs, v) // 后序。保证遍历出来的结果的逆后序生成的 SCC 一定是拓扑序
 	}
 	for v := range g {
-		if !used[v] {
+		if !vis[v] {
 			dfs(v)
 		}
 	}
 
-	used = make([]bool, n)
+	vis = make([]bool, n)
 	var comp []int
 	var rdfs func(int)
 	rdfs = func(v int) {
-		used[v] = true
+		vis[v] = true
 		comp = append(comp, v)
 		for _, w := range rg[v] {
-			if !used[w] {
+			if !vis[w] {
 				rdfs(w)
 			}
 		}
 	}
-	// 按照 DFS 逆后序就可以像无向图那样求出 CC
+	// 逆后序遍历，就可以像无向图那样求出 SCC
 	comps = [][]int{}
+o:
 	for i := len(vs) - 1; i >= 0; i-- {
-		if v := vs[i]; !used[v] {
+		if v := vs[i]; !vis[v] {
 			comp = []int{}
 			rdfs(v)
 			// EXTRA: len(comp) >= 3 说明有环，注意环的个数可能不止一个
 			comps = append(comps, comp)
+			// EXTRA: 判断缩点后是否出度为 0
+			for _, u := range comp {
+				for _, w := range g[u] {
+					if !vis[w] {
+						continue o
+					}
+				}
+			}
+			// 出度为 0
 		}
 	}
 
@@ -1561,14 +1571,14 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 	// EXTRA: 求有多少个点能被其他所有点访问到 https://www.luogu.com.cn/problem/P2341
 	lastComp := comps[len(comps)-1]
 	numCanBeVisitedFromAll := len(lastComp)
-	_ = numCanBeVisitedFromAll
-	used = make([]bool, n)
+	vis = make([]bool, n)
 	rdfs(lastComp[0])
-	for _, use := range used {
+	for _, use := range vis {
 		if !use {
 			numCanBeVisitedFromAll = 0
 		}
 	}
+	_ = numCanBeVisitedFromAll
 
 	return
 }
@@ -1576,6 +1586,7 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 // TODO: SCC Tarjan
 // 常数比 Kosaraju 小
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
+// https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
 
 // Gabow's algorithm
 // 常数比 Kosaraju 大
