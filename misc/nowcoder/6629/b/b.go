@@ -3,7 +3,23 @@ package main
 import "sort"
 
 // github.com/EndlessCheng/codeforces-go
-func solve(n int, a []int) int {
+func solve(n int, a []int) (ans int) {
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	sort.Ints(a)
+	ans = max(ans, a[1]-a[0])
+	for i := 2; i < n; i++ {
+		ans = max(ans, a[i]-a[i-2])
+	}
+	return
+}
+
+// 我的憨憨写法
+func solve2(n int, a []int) int {
 	sort.Ints(a)
 	return sort.Search(1e9, func(d int) bool {
 		pre := a[0]
