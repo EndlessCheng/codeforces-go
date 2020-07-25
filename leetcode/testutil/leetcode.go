@@ -11,12 +11,17 @@ import (
 
 func parseRawArray(rawArray string) (splits []string, err error) {
 	invalidErr := fmt.Errorf("invalid test data: %s", rawArray)
+
 	// check [] at leftmost and rightmost
 	if len(rawArray) <= 1 || rawArray[0] != '[' || rawArray[len(rawArray)-1] != ']' {
 		return nil, invalidErr
 	}
+
 	// ignore [] at leftmost and rightmost
 	rawArray = rawArray[1 : len(rawArray)-1]
+	if rawArray == "" {
+		return
+	}
 
 	isPoint := rawArray[0] == '('
 

@@ -20,7 +20,7 @@ func TestRunLeetCodeFunc(t *testing.T) {
 		fmt.Println("args:", a, b, c, d, e)
 		return a, b, c, d, e
 	}
-	data = [][]string{{`"ac"`, `-123`, `1.23`, `true`, `"a"`}}
+	data = [][]string{{`"ac"`, `-123`, `1.23000`, `true`, `"a"`}}
 	if err := RunLeetCodeFunc(t, baseF, data, data); err != nil {
 		t.Error(err)
 	}
@@ -29,7 +29,7 @@ func TestRunLeetCodeFunc(t *testing.T) {
 		fmt.Println("args:", a, b, c, d)
 		return a, b, c, d
 	}
-	data = [][]string{{`["ac","wa","tle"]`, `[-123,3,0,1]`, `[1.23,3]`, `[true,false,true]`}}
+	data = [][]string{{`["ac","wa","tle"]`, `[-123,3,0,1]`, `[1.23000,3.00000]`, `[true,false,true]`}}
 	if err := RunLeetCodeFunc(t, sliceF, data, data); err != nil {
 		t.Error(err)
 	}
