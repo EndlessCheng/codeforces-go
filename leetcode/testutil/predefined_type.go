@@ -85,9 +85,24 @@ func (o *TreeNode) toRawString() string {
 	return s
 }
 
+func (o *TreeNode) CountNodes() int {
+	cnto := 0
+	var _f func(o *TreeNode)
+	_f = func(o *TreeNode) {
+		if o == nil {
+			return
+		}
+		cnto++
+		_f(o.Left)
+		_f(o.Right)
+	}
+	_f(o)
+	return cnto
+}
+
 func (o *TreeNode) ToGraph() {
 	type edge struct{ to, weight int }
-	g := make([][]edge, 1e5+1)
+	g := make([][]edge, 1<<20) // CountNodes
 	cnt := 0
 	var build func(o *TreeNode)
 	build = func(o *TreeNode) {
