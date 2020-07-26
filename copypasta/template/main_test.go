@@ -24,7 +24,8 @@ func Test(t *testing.T) {
 	}
 
 	dir, _ := filepath.Abs(".")
-	testutil.AssertEqualFileCase(t, dir, 0, run)
+	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, run)
+	//testutil.AssertEqualFileCaseWithName(t, dir, "*.in", "*.out", 0, run)
 	t.Logf("Current problem is [%s]", filepath.Base(dir))
 }
 
