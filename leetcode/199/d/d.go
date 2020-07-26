@@ -32,12 +32,12 @@ func getLengthOfOptimalCompression(s string, K int) (ans int) {
 	for i := range s {
 		b := s[i]
 		for k := 0; k <= K; k++ {
-			if k > 0 {
+			if k > 0 { // 决策：删除当前字母
 				dp[i+1][k] = min(dp[i+1][k], dp[i][k-1])
 			}
 			diff, same := 0, 0
 			for j := i; j >= 0; j-- {
-				if s[j] != b {
+				if s[j] != b { // 决策：不删除当前字母，从后往前枚举，把和当前字母不同的全删掉
 					if diff++; diff > k {
 						break
 					}
