@@ -166,6 +166,7 @@ func dpCollections() {
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	*/
 
 	// 最大子段和

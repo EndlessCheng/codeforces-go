@@ -300,7 +300,6 @@ func stringCollection() {
 			拼接，二分答案，对 height 分组，判定组内元素在每个字符串中至少出现两次且 sa 的最大最小之差不小于二分值（用于判定是否重叠）
 		出现或反转后出现在每个字符串中的最长子串 http://poj.org/problem?id=1226
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
-
 	*/
 	suffixArray := func(s []byte) {
 		n := len(s)
@@ -448,7 +447,7 @@ func stringCollection() {
 // 另见 strings_index_trie.go
 // NOTE: 为保证连续性，分隔符可取 'Z'+1 或 'z'+1
 // 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
-// 前缀和后缀搜索 LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+// 好题：前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
 // 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
 // todo https://codeforces.ml/contest/455/problem/B
@@ -480,25 +479,26 @@ func newTrie() *trie {
 func (*trie) ord(c byte) byte { return c - 'a' }
 func (*trie) chr(v byte) byte { return v + 'a' }
 
-func (t *trie) put(s []byte, val int) {
+func (t *trie) put(s []byte, val int) *trieNode {
 	o := t.root
-	for _, c := range s {
-		c = t.ord(c)
-		if o.son[c] == nil {
-			o.son[c] = &trieNode{}
+	for _, b := range s {
+		b = t.ord(b)
+		if o.son[b] == nil {
+			o.son[b] = &trieNode{}
 		}
-		o = o.son[c]
+		o = o.son[b]
 		//o.dupCnt++ // 经过节点 o 的字符串个数（EXTRA: 统计前缀个数）
 		//o.val = val // 更新 s 的所有前缀的值
 	}
 	o.dupCnt++
 	o.val = val
+	return o
 }
 
-func (t *trie) get(s []byte) *trieNode {
+func (t *trie) find(s []byte) *trieNode {
 	o := t.root
-	for _, c := range s {
-		o = o.son[t.ord(c)]
+	for _, b := range s {
+		o = o.son[t.ord(b)]
 		if o == nil {
 			return nil
 		}
@@ -513,10 +513,10 @@ func (t *trie) get(s []byte) *trieNode {
 func (t *trie) del(s []byte) {
 	fa := make([]*trieNode, len(s)+1)
 	o := t.root
-	for i, c := range s {
+	for i, b := range s {
 		fa[i] = o
-		o = o.son[t.ord(c)]
-		//o.dupCnt--
+		o = o.son[t.ord(b)]
+		//o.dupCnt-- // 对应 put 的写法
 	}
 	o.dupCnt--
 	if o.dupCnt == 0 {
@@ -531,17 +531,16 @@ func (t *trie) del(s []byte) {
 }
 
 // 在 trie 中寻找字典序最小的以 p 为前缀的字符串
-// 若没有，返回 nil, 0
-func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
+func (t *trie) minPrefix(p string) (s []byte, node *trieNode) {
 	o := t.root
-	for _, c := range p {
-		o = o.son[t.ord(c)]
+	for i := range p {
+		o = o.son[t.ord(p[i])]
 		if o == nil {
 			return
 		}
 	}
 	// trie 中存在字符串 s，使得 p 是 s 的前缀
-
+	s = []byte(p)
 	for o.dupCnt == 0 {
 		for i, son := range o.son {
 			if son != nil {
@@ -558,19 +557,19 @@ func (t *trie) minPrefix(p []byte) (s []byte, node *trieNode) {
 // 此时 o.val 保存子树字符串个数
 func (t *trie) rank(s []byte) (k int) {
 	o := t.root
-	for _, c := range s {
-		c = t.ord(c)
-		for _, son := range o.son[:c] {
+	for _, b := range s {
+		b = t.ord(b)
+		for _, son := range o.son[:b] {
 			if son != nil {
 				k += son.val
 			}
 		}
-		o = o.son[c]
+		o = o.son[b]
 		if o == nil {
 			return
 		}
 	}
-	//k += o.val // 加上这句表示小于等于 s 的字符串个数
+	//k += o.val // 等于 s 的也算上
 	return
 }
 
@@ -636,60 +635,73 @@ func findMaximumXOR(a []int) (ans int) {
 	return
 }
 
-// EXTRA: Aho–Corasick algorithm
+// EXTRA: AC 自动机 Aho–Corasick algorithm / Deterministic Finite Automaton (DFA)
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
-// 推荐 https://zhuanlan.zhihu.com/p/80325757
-// 推荐 https://www.cnblogs.com/nullzx/p/7499397.html
-// https://oi-wiki.org/string/ac-automaton/
-// EXTRA: https://cp-algorithms.com/string/aho_corasick.html
-// 模板题 LC1032 https://leetcode-cn.com/problems/stream-of-characters/
-// 模板题 https://www.luogu.com.cn/problem/P3808 https://www.luogu.com.cn/problem/P3796
-// https://codeforces.ml/problemset/problem/963/D
+// https://en.wikipedia.org/wiki/Deterministic_finite_automaton
+// 基础实现 https://zhuanlan.zhihu.com/p/80325757
+// 基础实现 https://www.cnblogs.com/nullzx/p/7499397.html
+// 改进实现 https://oi-wiki.org/string/ac-automaton/
+// 应用 https://cp-algorithms.com/string/aho_corasick.html
+// 模板题
+// https://leetcode-cn.com/problems/stream-of-characters/
+// https://www.luogu.com.cn/problem/P3808
+// https://www.luogu.com.cn/problem/P3796
+// https://www.luogu.com.cn/problem/P5357
+// todo https://codeforces.com/problemset/problem/963/D
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
 	for _, son := range t.root.son {
 		if son != nil {
-			q = append(q, son)
 			son.fail = t.root
+			q = append(q, son)
 		}
 	}
 	for len(q) > 0 {
 		o := q[0]
 		q = q[1:]
+		if o.fail == nil {
+			o.fail = t.root
+		}
 		for i, son := range o.son {
 			if son != nil {
+				son.fail = o.fail.son[i]
 				q = append(q, son)
-				// 沿着失配边不断往上查找，直到找到一个匹配的前缀。未找到时指向根节点
-				for f := o.fail; ; f = f.fail {
-					if f == nil {
-						son.fail = t.root
-						break
-					}
-					if fs := f.son[i]; fs != nil {
-						son.fail = fs
-						break
-					}
-				}
+			} else {
+				o.son[i] = o.fail.son[i]
 			}
 		}
 	}
 }
 
+// 有多少个（编号）不同的模式串在文本串 text 里出现过
+func (t *trie) sumCountAllPatterns(text []byte) (cnt int) {
+	o := t.root
+	for _, b := range text {
+		o = o.son[t.ord(b)]
+		if o == nil {
+			o = t.root
+			continue
+		}
+		for f := o; f != nil && f.val > 0; f = f.fail {
+			cnt += f.val
+			f.val = 0
+		}
+	}
+	return
+}
+
 // 返回 text 中所有模式串的所有位置（未找到时对应数组为空）
-// patterns 为模式串数组（无重复元素），为方便起见，数组从 1 开始
-// TODO 后缀链接优化：只算出现次数可以做到 O(len(text))
+// patterns 为模式串数组（无重复元素），为方便起见，patterns 从 1 开始
 func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 	pos := make([][]int, len(patterns))
 	o := t.root
 	for i, b := range text {
-		c := t.ord(b)
-		for ; o != t.root && o.son[c] == nil; o = o.fail {
-		}
-		o = o.son[c]
+		o = o.son[t.ord(b)]
 		if o == nil {
 			o = t.root
+			continue
 		}
-		for f := o; f != t.root; f = f.fail {
+		for f := o; f != nil; f = f.fail {
 			if pid := f.val; pid != 0 {
 				pos[pid] = append(pos[pid], i-len(patterns[pid])+1)
 			}
@@ -698,21 +710,29 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 	return pos
 }
 
+//
+
 // 可持久化 trie
 // TODO https://oi-wiki.org/ds/persistent-trie/
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
+
+//
 
 // Suffix automaton (SAM)
 // https://en.wikipedia.org/wiki/Suffix_automaton
 //《后缀自动机》，陈立杰
 //《后缀自动机在字典树上的拓展》，刘研绎
 //《后缀自动机及其应用》，张天扬
-// todo https://baobaobear.github.io/post/
+// todo https://baobaobear.github.io/post/20200220-sam/
 // todo https://codeforces.ml/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
 //      后缀树简介 https://eternalalexander.github.io/2019/10/31/%E5%90%8E%E7%BC%80%E6%A0%91%E7%AE%80%E4%BB%8B/
 // 模板题 https://www.luogu.com.cn/problem/P3804
 
-// 回文树 PAM
-// todo https://baobaobear.github.io/post/
+// 广义 SAM
+// todo https://www.luogu.com.cn/problem/P6139
+
+// 回文自动机 PAM
+// todo https://baobaobear.github.io/post/20200416-pam/
+//  https://www.luogu.com.cn/problem/P5496

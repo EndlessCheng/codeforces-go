@@ -227,6 +227,7 @@ func newLazySegmentTree(a []int64) lazyST {
 // TODO 查询出现次数大于区间长度一半的元素(强制在线) LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
 // TODO: 补题 https://codeforces.ml/contest/786/problem/C
 //            https://codeforces.ml/contest/840/problem/D
+// todo 标记永久化 一本通 p239
 type pstNode struct {
 	l, r   int
 	lo, ro *pstNode
