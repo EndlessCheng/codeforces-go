@@ -210,7 +210,7 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		}
 
 		if len(example) != fType.NumIn()+fType.NumOut() {
-			return fmt.Errorf("len(example) is not %d+%d", fType.NumIn(), fType.NumOut())
+			return fmt.Errorf("len(example) = %d, but we need %d+%d", len(example), fType.NumIn(), fType.NumOut())
 		}
 
 		rawIn := example[:fType.NumIn()]

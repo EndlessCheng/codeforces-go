@@ -85,22 +85,27 @@ func (o *TreeNode) toRawString() string {
 	return s
 }
 
-func (o *TreeNode) toGraph() {
+func (o *TreeNode) ToGraph() {
 	type edge struct{ to, weight int }
-	g := [][]edge{}
+	g := make([][]edge, 1e5+1)
 	cnt := 0
 	var build func(o *TreeNode)
 	build = func(o *TreeNode) {
-		g = append(g, []edge{})
 		v := cnt
+		if o.Left == nil && o.Right == nil {
+			// do leaf ...
+
+		}
 		if o.Left != nil {
 			cnt++
 			g[v] = append(g[v], edge{cnt, o.Left.Val})
+			g[cnt] = append(g[cnt], edge{v, o.Left.Val})
 			build(o.Left)
 		}
 		if o.Right != nil {
 			cnt++
 			g[v] = append(g[v], edge{cnt, o.Right.Val})
+			g[cnt] = append(g[cnt], edge{v, o.Right.Val})
 			build(o.Right)
 		}
 	}
