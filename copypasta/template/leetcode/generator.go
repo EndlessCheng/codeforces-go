@@ -6,6 +6,7 @@ import (
 	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -316,7 +317,14 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				return
 			}
 
-			raw := o.Parent.NextSibling.Data
+			dataO := o.Parent.NextSibling
+			raw := dataO.Data
+			// handle some cases like https://leetcode-cn.com/contest/weekly-contest-199/problems/shuffle-string/
+			for dataO.NextSibling != nil && dataO.NextSibling.DataAtom == atom.Code {
+				raw += dataO.NextSibling.FirstChild.Data + dataO.NextSibling.NextSibling.Data
+				dataO = dataO.NextSibling.NextSibling
+			}
+
 			sample := p.parseSampleText(raw, true)
 			if len(sample) == 0 {
 				// 国服特殊比赛
