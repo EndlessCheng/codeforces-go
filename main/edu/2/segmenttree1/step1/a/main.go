@@ -31,9 +31,12 @@ func run(_r io.Reader, _w io.Writer) {
 		return
 	}
 	a := make([]int, n)
-	for i := range a {
-		Fscan(in, &a[i])
-		add(i+1, a[i])
+	for i := 1; i <= n; i++ {
+		Fscan(in, &a[i-1])
+		tree[i] += int64(a[i-1])
+		if j := i + i&-i; j <= n {
+			tree[j] += tree[i]
+		}
 	}
 	for ; q > 0; q-- {
 		if Fscan(in, &op); op == 1 {

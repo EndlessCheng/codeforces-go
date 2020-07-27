@@ -26,7 +26,7 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 常数优化，参考 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
+	// 常数优化 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
 		if l > r {
 			panic(9)
@@ -45,6 +45,17 @@ func fenwickTree(n int) {
 	// r+1 即使超过 n 也没关系，因为不会用到
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
+
+	// 常数优化：O(n) 建树 https://oi-wiki.org/ds/fenwick/#tricks
+	init := func(a []int) {
+		n := len(a)
+		for i := 1; i <= n; i++ {
+			tree[i] += a[i-1]
+			if j := i + i&-i; j <= n {
+				tree[j] += tree[i]
+			}
+		}
+	}
 
 	// 求逆序对的方法之一
 	cntInversions := func(a []int) (cnt int64) {
@@ -69,7 +80,7 @@ func fenwickTree(n int) {
 	}
 
 	_ = []interface{}{
-		add, sum, query, addRange,
+		add, sum, query, addRange, init,
 		cntInversions,
 	}
 }
