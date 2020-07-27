@@ -9,11 +9,16 @@ package copypasta
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 
-// todo zkw 线段树
-//      https://codeforces.ml/blog/entry/18051
+// EXTRA: zkw 线段树
+// 虽说写起来很快，但是 debug 就比较难受了
+// 张昆玮《统计的力量》
+// https://zhuanlan.zhihu.com/p/29876526
+// https://zhuanlan.zhihu.com/p/29937723
+// https://codeforces.com/blog/entry/18051 Efficient and easy segment trees
+
 // todo 李超线段树
-//      https://zhuanlan.zhihu.com/p/64946571
-//      https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
+//  https://zhuanlan.zhihu.com/p/64946571
+//  https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 
 // todo 经典题 ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
 // 根号线段树思想 https://codeforces.com/problemset/problem/920/F
