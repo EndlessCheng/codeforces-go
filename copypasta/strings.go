@@ -334,6 +334,7 @@ func stringCollection() {
 		}
 
 		// 任意两后缀的 LCP
+		// 注：若允许离线可以用 Trie+Tarjan 做到线性
 		const mx = 17 // 131072, 262144, 524288, 1048576
 		st := make([][mx]int, n)
 		for i, v := range height {
