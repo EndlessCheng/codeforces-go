@@ -1,6 +1,9 @@
 package copypasta
 
-import . "fmt"
+import (
+	. "fmt"
+	"strings"
+)
 
 // 二叉树常用函数
 
@@ -225,50 +228,85 @@ func (t *bst) keys() []tKeyType {
 
 //
 
-func (o *bstNode) String() string {
-	var s string
+func (o *bstNode) String() (s string) {
 	if o.value == 1 {
 		s = Sprintf("%v", o.key)
 	} else {
 		s = Sprintf("%v(%v)", o.key, o.value)
 	}
 	s += Sprintf("[sz:%d,msz:%d]", o.sz, o.msz)
-	return s
+	return
 }
 
-func (o *bstNode) draw(prefix string, isTail bool, str *string) {
+/* 逆时针旋转 90° 打印这棵树：根节点在最左侧，右子树在上侧，左子树在下侧
+
+效果如下（只打印 key）
+
+Root
+│           ┌── 95
+│       ┌── 94
+│   ┌── 90
+│   │   │           ┌── 89
+│   │   │       ┌── 88
+│   │   │       │   └── 87
+│   │   │       │       └── 81
+│   │   │   ┌── 74
+│   │   └── 66
+└── 62
+    │           ┌── 59
+    │       ┌── 58
+    │       │   └── 56
+    │       │       └── 47
+    │   ┌── 45
+    └── 40
+        │       ┌── 37
+        │   ┌── 28
+        └── 25
+            │           ┌── 18
+            │       ┌── 15
+            │   ┌── 11
+            └── 6
+                └── 0
+
+*/
+func (o *bstNode) draw(treeSB, prefixSB *strings.Builder, isTail bool) {
+	prefix := prefixSB.String()
 	if o.lr[1] != nil {
-		newPrefix := prefix
+		newPrefixSB := &strings.Builder{}
+		newPrefixSB.WriteString(prefix)
 		if isTail {
-			newPrefix += "│   "
+			newPrefixSB.WriteString("│   ")
 		} else {
-			newPrefix += "    "
+			newPrefixSB.WriteString("    ")
 		}
-		o.lr[1].draw(newPrefix, false, str)
+		o.lr[1].draw(treeSB, newPrefixSB, false)
 	}
-	*str += prefix
+	treeSB.WriteString(prefix)
 	if isTail {
-		*str += "└── "
+		treeSB.WriteString("└── ")
 	} else {
-		*str += "┌── "
+		treeSB.WriteString("┌── ")
 	}
-	*str += o.String() + "\n"
+	treeSB.WriteString(o.String())
+	treeSB.WriteByte('\n')
 	if o.lr[0] != nil {
-		newPrefix := prefix
+		newPrefixSB := &strings.Builder{}
+		newPrefixSB.WriteString(prefix)
 		if isTail {
-			newPrefix += "    "
+			newPrefixSB.WriteString("    ")
 		} else {
-			newPrefix += "│   "
+			newPrefixSB.WriteString("│   ")
 		}
-		o.lr[0].draw(newPrefix, true, str)
+		o.lr[0].draw(treeSB, newPrefixSB, true)
 	}
 }
 
 func (t *bst) String() string {
 	if t.root == nil {
-		return "BST (empty)\n"
+		return "Empty\n"
 	}
-	str := "BST\n"
-	t.root.draw("", true, &str)
-	return str
+	treeSB := &strings.Builder{}
+	treeSB.WriteString("Root\n")
+	t.root.draw(treeSB, &strings.Builder{}, true)
+	return treeSB.String()
 }
