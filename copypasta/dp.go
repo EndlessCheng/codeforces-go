@@ -300,10 +300,11 @@ func dpCollections() {
 	// 求下降，可以考虑把序列元素去相反数
 	// https://oi-wiki.org/dp/basic/#_12
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
-	// 建模 https://codeforces.ml/problemset/problem/269/B
+	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	//       https://www.zhihu.com/question/34905638
 	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
+	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
 	lis := func(a []int) int {
 		n := len(a)
 		dp := make([]int, 0, n)
