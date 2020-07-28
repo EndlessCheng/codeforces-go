@@ -223,6 +223,7 @@ func newLazySegmentTree(a []int64) lazyST {
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // NOTE: 对于 CF 上的 2e5 数据，直接 new(pstNode) 比在数组上创建指针要慢 700ms
 //       因此建议对时限比较紧的题目改成在数组上创建指针，这里为了简化代码使用的是 new(pstNode)
+// todo 区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
 // https://oi-wiki.org/ds/persistent-seg/
 // 模板题 https://www.luogu.com.cn/problem/P3834
 // todo 区间元素种类数 https://codeforces.ml/problemset/problem/620/E

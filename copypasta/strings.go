@@ -691,7 +691,7 @@ func (t *trie) sumCountAllPatterns(text []byte) (cnt int) {
 	return
 }
 
-// 返回 text 中所有模式串的所有位置（未找到时对应数组为空）
+// 返回所有模式串 patterns 的开头在文本串 text 的所有位置（未找到时对应数组为空）
 // patterns 为模式串数组（无重复元素），为方便起见，patterns 从 1 开始
 func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 	pos := make([][]int, len(patterns))
@@ -704,7 +704,7 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 		}
 		for f := o; f != nil; f = f.fail {
 			if pid := f.val; pid != 0 {
-				pos[pid] = append(pos[pid], i-len(patterns[pid])+1)
+				pos[pid] = append(pos[pid], i-len(patterns[pid])+1) // 也可以只记录 i，代表模式串末尾在文本的位置
 			}
 		}
 	}
