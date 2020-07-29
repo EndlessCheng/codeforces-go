@@ -183,6 +183,9 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		actualOutputAC := removeExtraSpace(mockWriterAC.String())
 		actualOutput := removeExtraSpace(mockWriter.String())
 		if !assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input) && needPrint {
+			fmt.Printf("[CASE %d]\n", tc)
+			fmt.Println("[AC]", actualOutputAC)
+			fmt.Println("[WA]", actualOutput)
 			fmt.Println(input)
 			fmt.Println()
 		}

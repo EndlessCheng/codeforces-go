@@ -34,6 +34,7 @@ func Test2(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
+		//return ``
 		rg := testutil.NewRandGenerator()
 		n := rg.Int(1, 10)
 		rg.NewLine()
@@ -51,6 +52,7 @@ func Test2(t *testing.T) {
 		for i := range a {
 			Fscan(in, &a[i])
 		}
+
 		ans := 0
 
 		Fprint(out, ans)
