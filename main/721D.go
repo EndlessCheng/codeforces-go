@@ -7,17 +7,17 @@ import (
 	"io"
 )
 
-type pair struct {
+type pair721 struct {
 	v int64
 	i int
 }
-type hp []pair
+type hp721 []pair721
 
-func (h hp) Len() int            { return len(h) }
-func (h hp) Less(i, j int) bool  { return h[i].v < h[j].v }
-func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{}) { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h hp721) Len() int            { return len(h) }
+func (h hp721) Less(i, j int) bool  { return h[i].v < h[j].v }
+func (h hp721) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *hp721) Push(v interface{}) { *h = append(*h, v.(pair721)) }
+func (h *hp721) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 
 // github.com/EndlessCheng/codeforces-go
 func CF721D(_r io.Reader, _w io.Writer) {
@@ -67,9 +67,9 @@ func CF721D(_r io.Reader, _w io.Writer) {
 		}
 		k -= c
 	}
-	h := make(hp, n)
+	h := make(hp721, n)
 	for i, v := range a {
-		h[i] = pair{abs(v), i}
+		h[i] = pair721{abs(v), i}
 	}
 	heap.Init(&h)
 	for ; k > 0; k-- {
