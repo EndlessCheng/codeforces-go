@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -24,10 +23,10 @@ o:
 				continue o
 			}
 		}
-		Fprintln(out, "YES")
+		Fprint(out, "YES")
 		return
 	}
-	Fprintln(out, "NO")
+	Fprint(out, "NO")
 }
 
-func main() { CF1030C(os.Stdin, os.Stdout) }
+//func main() { CF1030C(os.Stdin, os.Stdout) }
