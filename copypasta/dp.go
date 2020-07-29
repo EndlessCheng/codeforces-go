@@ -20,15 +20,16 @@ import (
 3.1 若复杂度过高，如何优化决策？
 *  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
 *  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
-   推荐 https://codeforces.ml/blog/entry/47764
+   推荐 https://codeforces.com/blog/entry/47764
    戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
    消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
-   如何定义状态 https://codeforces.ml/problemset/problem/553/A
+   如何定义状态 https://codeforces.com/problemset/problem/553/A
    如何定义状态 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+   如何定义状态：涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
    谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
    扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
-   状态优化 https://codeforces.ml/problemset/problem/838/E
+   状态优化 https://codeforces.com/problemset/problem/838/E
 
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
 	https://ac.nowcoder.com/acm/contest/6218/B
@@ -167,6 +168,7 @@ func dpCollections() {
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
+	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	*/
 
 	// 最大子段和
