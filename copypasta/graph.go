@@ -1596,6 +1596,7 @@ o:
 // https://oi-wiki.org/graph/2-sat/
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
+// todo https://www.luogu.com.cn/blog/85514/post-2-sat-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.ml/blog/entry/16205
 // 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
 // 一般 ¬x 用 x+n 表示
@@ -1702,7 +1703,7 @@ EXTRA: Disjoint paths
        Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph,
                             assuming that the capacity of each edge is one.
        Node-disjoint paths: 拆点法
-EXTRA: 路径覆盖 Path cover
+EXTRA: todo 路径覆盖 Path cover + 打印
 todo Competitive Programmer’s Handbook Ch.20
      线性规划与网络流24题-最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
 */

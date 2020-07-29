@@ -275,7 +275,7 @@ func stringCollection() {
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		不同子串个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
+		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			即 n*(n+1)/2-sum(height) https://oi-wiki.org/string/sa/#_13
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...

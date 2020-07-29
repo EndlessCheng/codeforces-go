@@ -226,13 +226,14 @@ func newLazySegmentTree(a []int64) lazyST {
 // todo 区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
 // https://oi-wiki.org/ds/persistent-seg/
 // 模板题 https://www.luogu.com.cn/problem/P3834
-// todo 区间元素种类数 https://codeforces.ml/problemset/problem/620/E
-// todo 整理模板+重写 https://codeforces.ml/problemset/problem/1262/D2
-//                   https://codeforces.ml/problemset/problem/813/E
-//      https://codeforces.com/contest/893/problem/F
+// todo 区间元素种类数 https://codeforces.com/problemset/problem/620/E
+// todo 整理模板+重写 https://codeforces.com/problemset/problem/1262/D2
+//                  https://codeforces.com/problemset/problem/813/E
 // TODO 查询出现次数大于区间长度一半的元素(强制在线) LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
-// TODO: 补题 https://codeforces.ml/contest/786/problem/C
-//            https://codeforces.ml/contest/840/problem/D
+// TODO: 补题 https://codeforces.com/contest/786/problem/C
+//  https://codeforces.com/problemset/problem/840/D
+//  https://codeforces.com/problemset/problem/893/F
+//  https://codeforces.com/problemset/problem/837/G
 // todo 标记永久化 一本通 p239
 type pstNode struct {
 	l, r   int
