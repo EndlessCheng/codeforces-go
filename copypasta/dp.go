@@ -568,6 +568,7 @@ func dpCollections() {
 
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
+	图上博弈 https://codeforces.com/problemset/problem/917/B
 	LC877 https://leetcode-cn.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
 	LC1140 https://leetcode-cn.com/problems/stone-game-ii/
 	LC1406 https://leetcode-cn.com/problems/stone-game-iii/
