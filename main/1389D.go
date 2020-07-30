@@ -43,13 +43,13 @@ func CF1389D(_r io.Reader, _w io.Writer) {
 			d = -d
 		}
 		if k <= D {
-			ans = d + k // 只需延长一对线段
+			ans = d + k // 只需延长一对
 		} else {
 			ans = d + D + (k-D)*2 // 完全延长一对+在这对的基础上延长
 			if k <= n*D {
-				ans = min(ans, k/D*(d+D)+min(k%D*2, d+k%D)) // 完全延长 k/D 对，剩余的 k，要么在某个完全延长的对上延长，要么用一个没有延长的对
+				ans = min(ans, k/D*(d+D)+min(k%D*2, d+k%D)) // 完全延长 k/D 对，剩余的 k，要么在某对完全延长的区间上延长，要么用一对没有延长过的区间
 			} else {
-				ans = min(ans, n*(d+D)+(k-n*D)*2) // 完全延长 n 对，剩余的 k 在某个完全延长的对上延长
+				ans = min(ans, n*(d+D)+(k-n*D)*2) // 完全延长 n 对，剩余的 k 在某对完全延长的区间上延长
 			}
 		}
 		Fprintln(out, ans)
