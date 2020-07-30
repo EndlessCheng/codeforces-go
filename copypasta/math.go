@@ -1606,11 +1606,10 @@ func numericalAnalysisCollection() {
 // 技巧：可以在时限内重复跑 SA 取最优值，防止脸黑
 // 模板题 https://www.luogu.com.cn/problem/P1337
 // LC/周赛197D https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
-func simulatedAnnealing() float64 {
+func simulatedAnnealing(f func(x float64) float64) float64 {
 	// 例：最小值
-	var f func(x float64) float64
-	ans := math.MaxFloat64
 	x := 0.0
+	ans := f(x)
 	for t := 1e5; t > 1e-8; t *= 0.99 {
 		xx := x + (2*rand.Float64()-1)*t
 		v := f(xx)
@@ -1621,3 +1620,6 @@ func simulatedAnnealing() float64 {
 	}
 	return ans
 }
+
+// 爬山
+// https://leetcode-cn.com/problems/best-position-for-a-service-centre/solution/fu-wu-zhong-xin-de-zui-jia-wei-zhi-by-leetcode-sol/
