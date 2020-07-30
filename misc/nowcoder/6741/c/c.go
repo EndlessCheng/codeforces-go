@@ -40,33 +40,33 @@ func (t seg) update(o, i, v int) {
 
 func BoomKill(n, m int, players []*Point) (ans int) {
 	m--
-	gx := make([][]int, n+1)
+	rows := make([][]int, n+1)
 	for _, p := range players {
-		gx[p.X] = append(gx[p.X], p.Y)
+		rows[p.X] = append(rows[p.X], p.Y)
 	}
 	t := make(seg, 4*n)
 	t.build(1, 1, n)
 	for i := 1; i <= m; i++ {
-		for _, y := range gx[i] {
+		for _, y := range rows[i] {
 			t.update(1, y, 1)
 		}
 	}
 	for i := 1; i <= n; i++ {
 		if i-m-1 > 0 {
-			for _, y := range gx[i-m-1] {
+			for _, y := range rows[i-m-1] {
 				t.update(1, y, -1)
 			}
 		}
 		if i+m <= n {
-			for _, y := range gx[i+m] {
+			for _, y := range rows[i+m] {
 				t.update(1, y, 1)
 			}
 		}
-		for _, y := range gx[i] {
+		for _, y := range rows[i] {
 			t.update(1, y, -1)
 		}
-		ans = max(ans, len(gx[i])+t[1].max)
-		for _, y := range gx[i] {
+		ans = max(ans, len(rows[i])+t[1].max)
+		for _, y := range rows[i] {
 			t.update(1, y, 1)
 		}
 	}
