@@ -5,6 +5,7 @@ import (
 	"math"
 	"math/big"
 	"math/bits"
+	"math/rand"
 )
 
 /* 数论 组合数学 博弈论 趣味数学
@@ -485,8 +486,9 @@ func numberTheoryCollection() {
 	/* 因子/因数/约数
 
 	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n)
-		Positions of records (高合成数) https://oeis.org/A002182
+		Positions of records (高合成数，反素数) https://oeis.org/A002182
 		Values of records https://oeis.org/A002183
+		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221
 
 		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
@@ -501,7 +503,7 @@ func numberTheoryCollection() {
 		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
 		Smallest number with d(x) = n https://oeis.org/A005179
 			a(p) = 2^(p-1) for primes p
-			相关题目 https://codeforces.com/problemset/problem/27/E
+			相关题目 https://codeforces.com/problemset/problem/27/E https://www.luogu.com.cn/problem/P1128
 			质数的情况 https://oeis.org/A061286
 
 	n 的因子之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
@@ -1592,4 +1594,30 @@ func numericalAnalysisCollection() {
 	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
 
 	_ = []interface{}{asr}
+}
+
+/* 随机算法 */
+
+// 模拟退火 (Simulated Annealing, SA)
+// https://oi-wiki.org/misc/simulated-annealing/
+// https://en.wikipedia.org/wiki/Simulated_annealing
+// https://www.luogu.com.cn/blog/Darth-Che/mu-ni-tui-huo-xue-xi-bi-ji
+// https://zhuanlan.zhihu.com/p/47234502
+// 技巧：可以在时限内重复跑 SA 取最优值，防止脸黑
+// 模板题 https://www.luogu.com.cn/problem/P1337
+// LC/周赛197D https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
+func simulatedAnnealing() float64 {
+	// 例：最小值
+	var f func(x float64) float64
+	ans := math.MaxFloat64
+	x := 0.0
+	for t := 1e5; t > 1e-8; t *= 0.99 {
+		xx := x + (2*rand.Float64()-1)*t
+		v := f(xx)
+		if v < ans || math.Exp((ans-v)/t) > rand.Float64() { // 最小直接取，或者以一定概率接受较大的值
+			ans = v
+			x = xx
+		}
+	}
+	return ans
 }

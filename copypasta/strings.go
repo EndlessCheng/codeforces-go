@@ -647,7 +647,7 @@ func findMaximumXOR(a []int) (ans int) {
 // https://leetcode-cn.com/problems/stream-of-characters/
 // https://www.luogu.com.cn/problem/P3808
 // https://www.luogu.com.cn/problem/P3796
-// https://www.luogu.com.cn/problem/P5357
+// todo https://www.luogu.com.cn/problem/P5357 二次加强版
 // todo https://codeforces.com/problemset/problem/963/D
 func (t *trie) buildDFA() {
 	q := []*trieNode{}

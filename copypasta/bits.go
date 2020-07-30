@@ -82,6 +82,13 @@ https://oeis.org/A051885 Smallest number whose digsum = n
 https://oeis.org/A077196 Smallest possible sum of the digits of a multiple of n https://oeis.org/A077194 https://oeis.org/A077195
 							相关题目（0-1 最短路）https://atcoder.jp/contests/arc084/tasks/arc084_b
 https://oeis.org/A118137 digsum(n)+digsum(n+1)
+https://oeis.org/A003132 Sum of squares of digits of n
+	https://oeis.org/A003621 Number of iterations until n reaches 1 or 4 under x goes to sum of squares of digits map
+https://oeis.org/A055012 Sum of cubes of digits of n
+https://oeis.org/A055013 Sum of 4th powers of digits of n
+https://oeis.org/A055014 Sum of 5th powers of digits of n
+https://oeis.org/A055015 Sum of 6th powers of digits of n
+	相关题目 https://www.luogu.com.cn/problem/P1660
 
 回文数
 https://oeis.org/A002113 十进制回文数
