@@ -20,7 +20,6 @@ func run(_r io.Reader, out io.Writer) {
 	for i := range rank {
 		rank[sa[i]] = i
 	}
-	height := make([]int, n)
 	ans, h := int64(n)*int64(n+1)/2, 0
 	for i, ri := range rank {
 		if h > 0 {
@@ -30,7 +29,6 @@ func run(_r io.Reader, out io.Writer) {
 			for j := int(sa[ri-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
 			}
 		}
-		height[ri] = h
 		ans -= int64(h)
 	}
 	Fprint(out, ans)
