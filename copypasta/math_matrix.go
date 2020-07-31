@@ -59,26 +59,6 @@ func newMatrixI(n int) matrix {
 	return mat
 }
 
-func (a matrix) add(b matrix) matrix {
-	c := newMatrix(len(a), len(a[0]))
-	for i := range a {
-		for j, aij := range a[i] {
-			c[i][j] = aij + b[i][j] // % mod
-		}
-	}
-	return c
-}
-
-func (a matrix) sub(b matrix) matrix {
-	c := newMatrix(len(a), len(a[0]))
-	for i := range a {
-		for j, aij := range a[i] {
-			c[i][j] = aij - b[i][j] // % mod) + mod) % mod
-		}
-	}
-	return c
-}
-
 func (a matrix) mul(b matrix) matrix {
 	const mod int64 = 1e9 + 7 // 998244353
 	c := newMatrix(len(a), len(b[0]))
@@ -124,6 +104,27 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 }
 
 //
+
+func (a matrix) add(b matrix) matrix {
+	c := newMatrix(len(a), len(a[0]))
+	for i := range a {
+		for j, aij := range a[i] {
+			c[i][j] = aij + b[i][j] // % mod
+		}
+	}
+	return c
+}
+
+func (a matrix) sub(b matrix) matrix {
+	c := newMatrix(len(a), len(a[0]))
+	for i := range a {
+		for j, aij := range a[i] {
+			c[i][j] = aij - b[i][j] // % mod) + mod) % mod
+		}
+	}
+	return c
+}
+
 
 func (a matrix) swapRows(i, j int) {
 	for k := range a[0] {
