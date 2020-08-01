@@ -39,7 +39,7 @@ func fetchStartTime(contestID int) (t time.Time, err error) {
 	return time.Unix(int64(ts), 0), nil
 }
 
-func login(email, cipherPwd string) (session *grequests.Session, err error) {
+func login(emailOrPhone, cipherPwd string) (session *grequests.Session, err error) {
 	session = grequests.NewSession(&grequests.RequestOptions{
 		UserAgent:    ua,
 		UseCookieJar: true,
@@ -47,7 +47,7 @@ func login(email, cipherPwd string) (session *grequests.Session, err error) {
 
 	resp, err := session.Post("https://www.nowcoder.com/nccommon/login/do", &grequests.RequestOptions{
 		Data: map[string]string{
-			"email":     email,
+			"email":     emailOrPhone,
 			"cipherPwd": cipherPwd,
 		},
 	})
@@ -192,7 +192,7 @@ func Test(t *testing.T) {
 	return content
 }
 
-func GenNowCoderTemplates(email, cipherPwd, contestDir string, contestID int, funcComment string) error {
+func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID int, funcComment string) error {
 	startTime, err := fetchStartTime(contestID)
 	if err != nil {
 		return err
@@ -209,7 +209,7 @@ func GenNowCoderTemplates(email, cipherPwd, contestDir string, contestID int, fu
 	var problemNum int
 	for {
 		var err error
-		session, err = login(email, cipherPwd)
+		session, err = login(emailOrPhone, cipherPwd)
 		if err != nil {
 			return err
 		}
