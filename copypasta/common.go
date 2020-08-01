@@ -357,6 +357,27 @@ func commonCollection() {
 		}
 	}
 
+	// EXTRA: a 是否为 b 的子序列
+	// https://codeforces.com/problemset/problem/778/A
+	isSubSequence := func(a, b []int) bool {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		for {
+			if i == n {
+				return true
+			}
+			if j == m {
+				return false
+			}
+			if a[i] == b[j] {
+				i++
+				j++
+			} else {
+				j++
+			}
+		}
+	}
+
 	// 是否为不相交集合（相当于 intersection 为空）
 	// a b 需要是有序的
 	isDisjoint := func(a, b []int) bool {
@@ -711,7 +732,7 @@ func commonCollection() {
 		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
 		copyMat, sort3, reverse, reverseInPlace, equal,
-		merge, splitDifferenceAndIntersection, isSubset, isDisjoint,
+		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, countCoveredPoints,
 		discrete2D,
