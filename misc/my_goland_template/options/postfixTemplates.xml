@@ -1,31 +1,17 @@
 <application>
   <component name="PostfixTemplates">
-    <template id="forseg@userDefined" key=".forsegment" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="for i := range $EXPR$ {&#10;&#9;for j := i; j &lt; len($EXPR$); j++ {&#10;&#9;&#9;&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="string@userDefined" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="mul@userDefined" key=".mul" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="number" />
       </conditions>
-      <template name="fakeKey" value="strconv.Itoa($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="$EXPR$ = $EXPR$ * $END$ % mod" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="new@userDefined" key=".new" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="non void" />
-      </conditions>
-      <template name="fakeKey" value="&amp;$EXPR${}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="gcd@userDefined" key=".gcd" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="print@userDefined" key=".print" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="array" />
         <condition id="slice" />
       </conditions>
-      <template name="fakeKey" value="g := 0&#10;for _, v := range $EXPR$ {&#10;&#9;g = gcd(g, v)&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="for _, v := range $EXPR$ {&#10;    Fprint(out, v, &quot; &quot;)&#10;}&#10;Fprintln(out)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="bindxy@userDefined" key=".bindxy" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -33,172 +19,23 @@
       </conditions>
       <template name="fakeKey" value="x, y := $EXPR$.x, $EXPR$.y" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="tos@userDefined" key=".tos" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="strconv.Itoa($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="contains@userDefined" key=".contains" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.Contains($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="copy" key=".copy" provider="com.goide.postfix.GoPostfixTemplateProvider" builtin="copy" topmost="false">
+    <template id="sortpair3@userDefined" key=".sortpair3" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="slice" />
       </conditions>
-      <template name="fakeKey" value="tmp := make([]int, len($EXPR$))&#10;copy(tmp, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { a, b := $EXPR$[i], $EXPR$[j]; return a.x &lt; b.x || a.x == b.x &amp;&amp; (a.y &lt; b.y || a.y == b.y &amp;&amp; a.z &lt; b.z) })" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="inslice@userDefined" key=".inslice" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="sortreverse@userDefined2" key=".sortreverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
-        <condition id="number" />
+        <condition id="type" type="[]string" />
       </conditions>
-      <template name="fakeKey" value="contains($END$, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="forsubset@userDefined" key=".forsubset" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="doSub := func(sub int) (res int) {&#10;&#9;$END$&#10;&#9;for i := 0; i &lt; len($EXPR$); i++ {&#10;&#9;&#9;if sub&gt;&gt;i&amp;1 == 1 { &#10;&#9;&#9;&#9;v := $EXPR$[i]&#10;&#9;&#9;&#9;&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;&#10;&#9;return&#10;}&#10;for sub := 0; sub &lt; 1&lt;&lt;len($EXPR$); sub++ { &#10;&#9;res := doSub(sub)&#10;&#9;&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="last@userDefined" key=".last" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="$EXPR$[len($EXPR$)-1]" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="tomap@userDefined" key=".tomap" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="cntMp := map[int]int{}&#10;for _, v := range $EXPR$ {&#10;&#9;cntMp[v]++&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="forv@userDefined" key=".forv" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for _, v := range $EXPR$ {&#10;&#9;$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="int@userDefined" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="v, _ := strconv.Atoi($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="in@userDefined2" key=".in" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="type" type="byte" />
-      </conditions>
-      <template name="fakeKey" value="strings.Contains($END$, string($EXPR$))" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="sortslice@userDefined" key=".sortij" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { &#10; x, y := $EXPR$[i], $EXPR$[j]&#10; return $END$&#10;})" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="i64@userDefined" key=".i64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="int64($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="make@userDefined" key=".make" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="make([]int, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="cp@userDefined" key=".cp" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="tmp := make([]int, len($EXPR$))&#10;copy(tmp, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="toi@userDefined2" key=".toi" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="v, _ := strconv.Atoi(string($EXPR$))" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="abs@userDefined" key=".abs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="abs($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="filli@userDefined" key=".filli" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;    $EXPR$[_i] = _i&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="sort.Sort(sort.Reverse(sort.StringSlice($EXPR$)))" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="count@userDefined" key=".count" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="string" />
       </conditions>
       <template name="fakeKey" value="strings.Count($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="byte@userDefined2" key=".byte" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="byte($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="t@userDefined" key=".t" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="boolean" />
-      </conditions>
-      <template name="fakeKey" value="map[bool]int{true: $END$, false: -1} [$EXPR$]" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="mul@userDefined" key=".mul" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="$EXPR$ = $EXPR$ * $END$ % mod" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="split@userDefined" key=".split" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.Split($EXPR$, &quot; $END$&quot;)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="for@userDefined" key=".for" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="type" type="*ListNode" />
-      </conditions>
-      <template name="fakeKey" value="for o := $EXPR$; o != nil; o = o.Next {&#10;&#9;v := o.Val&#10;&#9;$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="makes@userDefined" key=".makes" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="make([]string, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="byte@userDefined" key=".byte" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="[]byte($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="forv@userDefined2" key=".forv" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-        <condition id="map" />
-      </conditions>
-      <template name="fakeKey" value="for _, v := range $EXPR$ {&#10;&#9;$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="float@userDefined" key=".float64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -214,24 +51,156 @@
       </conditions>
       <template name="fakeKey" value="for i := len($EXPR$) - 1; i &gt;= 0; i-- {&#10;    v$END$ := $EXPR$[i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="print@userDefined" key=".print" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="values@userDefined" key=".values" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
-        <condition id="array" />
-        <condition id="slice" />
+        <condition id="map" />
       </conditions>
-      <template name="fakeKey" value="for _i, v := range $EXPR$ {&#10;    if _i &gt; 0 {&#10;        Fprint(out, &quot; &quot;)&#10;    }&#10;    Fprint(out, v)&#10;}&#10;Fprintln(out)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="int@userDefined2" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="v, _ := strconv.Atoi(string($EXPR$))" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="vs := make([]int, 0, len($EXPR$))&#10;for _, v := range $EXPR$ {&#10;&#9;vs = append(vs, v)&#10;}&#10;sort.Ints(vs)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="dp@userDefined" key=".dp" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="number" />
       </conditions>
       <template name="fakeKey" value="dv := &amp;$EXPR$&#10;if *dv &gt;= 0 {&#10;&#9;return *dv&#10;}&#10;defer func() { *dv = _ans }()" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="cp@userDefined" key=".cp" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="tmp := make([]int, len($EXPR$))&#10;copy(tmp, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="keys@userDefined" key=".keys" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="map" />
+      </conditions>
+      <template name="fakeKey" value="keys := make([]int, 0, len($EXPR$))&#10;for k := range $EXPR$ {&#10;&#9;keys = append(keys, k)&#10;}&#10;sort.Ints(keys)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="int64@userDefined" key=".int64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="int64($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="byte@userDefined" key=".byte" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="[]byte($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="col@userDefined" key=".col" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+        <condition id="array" />
+      </conditions>
+      <template name="fakeKey" value="col := make([]int, 0, len($EXPR$))&#10;for _, row := range $EXPR$ {&#10;  col = append(col, row[j])&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="min@userDefined" key=".min" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = min($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="bfs@userDefined" key=".bfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+        <condition id="array" />
+      </conditions>
+      <template name="fakeKey" value="vis := make([]bool, len($EXPR$))&#10;vis[st] = true&#10;type pair struct{ v, d int }&#10;q := []pair{{st, 0}}&#10;for len(q) &gt; 0 {&#10;&#9;p := q[0]&#10;&#9;q = q[1:]&#10;&#9;v, d := p.v, p.d&#10;&#9;if v == end {&#10;&#9;    $END$&#10;&#9;}&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if !vis[w] {&#10;&#9;&#9;&#9;vis[w] = true&#10;&#9;&#9;&#9;q = append(q, pair{w, d + 1})&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="lowerbound@userDefined" key=".lowerbound" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.SearchInts($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="popl@userDefined" key=".popl" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="v := $EXPR$[0]&#10;$EXPR$ = $EXPR$[1:]" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="copy" key=".copy" provider="com.goide.postfix.GoPostfixTemplateProvider" builtin="copy" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="tmp := make([]int, len($EXPR$))&#10;copy(tmp, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="haspsuffix@userDefined" key=".haspsuffix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="strings.HasSuffix($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="upperbound@userDefined" key=".upperbound" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.SearchInts($EXPR$, $END$+1) - 1" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="string@userDefined" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="type" type="int" />
+      </conditions>
+      <template name="fakeKey" value="strconv.Itoa($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="int@userDefined" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="repeat@userDefined" key=".repeat" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="strings.Repeat($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="forsubset@userDefined" key=".forsubset" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="f := func(sub int) (res int) {&#10;&#9;for i, v := range $EXPR$ {&#10;&#9;&#9;if sub&gt;&gt;i&amp;1 &gt; 0 { &#10;&#9;&#9;&#9;$END$&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return&#10;}&#10;for sub := 0; sub &lt; 1&lt;&lt;len($EXPR$); sub++ { &#10;&#9;res := f(sub)&#10;&#9;&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="for@userDefined" key=".for" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="type" type="*ListNode" />
+      </conditions>
+      <template name="fakeKey" value="for o := $EXPR$; o != nil; o = o.Next {&#10;&#9;v := o.Val&#10;&#9;$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sort64@userDefined" key=".sortnumber" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { return $EXPR$[i] &lt; $EXPR$[j] })" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="array@userDefined" key=".array" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="for i := range $EXPR$ {&#10;&#9;$END$[i] = $EXPR$[i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="in@userDefined2" key=".in" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="type" type="byte" />
+      </conditions>
+      <template name="fakeKey" value="strings.Contains($END$, string($EXPR$))" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="dfstree@userDefined" key=".dfstree" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+        <condition id="array" />
+      </conditions>
+      <template name="fakeKey" value="var f func(v, fa int)&#10;f = func(v, fa int) {&#10;    $END$&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if w != fa {&#10;&#9;&#9;    &#10;&#9;&#9;&#9;f(w, v)&#10;&#9;&#9;&#9;&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;&#10;&#9;return&#10;}&#10;f(root, -1)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="format@userDefined" key=".formatrix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="for i, row := range $EXPR$ {&#10;&#9;for j, v := range row {&#10;&#9;&#9;_, _ = i, j&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="dfs@userDefined" key=".dfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -245,159 +214,11 @@
       </conditions>
       <template name="fakeKey" value="sort.Sort(sort.Reverse(sort.Float64Slice($EXPR$)))" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="haspsuffix@userDefined" key=".haspsuffix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.HasSuffix($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="cntmp@userDefined" key=".cntmap" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="cntMp := map[int]int{}&#10;for _, v := range $EXPR$ {&#10;&#9;cntMp[v]++&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="bfs@userDefined2" key=".bfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="type" type="*TreeNode" />
-      </conditions>
-      <template name="fakeKey" value="type pair struct {&#10;&#9;o   *TreeNode&#10;&#9;dep int&#10;}&#10;q := []pair{{$EXPR$, 0}}&#10;for len(q) &gt; 0 {&#10;&#9;p := q[0]&#10;&#9;q = q[1:]&#10;&#9;o, dep := p.o, p.dep&#10;&#9;v := o.Val&#10;&#9;$END$&#10;&#9;if o.Left == nil &amp;&amp; o.Right == nil {&#10;&#9;&#9;&#10;&#9;} else {&#10;&#9;&#9;if o.Left != nil {&#10;&#9;&#9;&#9;q = append(q, pair{o.Left, dep + 1})&#10;&#9;&#9;}&#10;&#9;&#9;if o.Right != nil {&#10;&#9;&#9;&#9;q = append(q, pair{o.Right, dep + 1})&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="keys@userDefined" key=".keys" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="map" />
-      </conditions>
-      <template name="fakeKey" value="keys := make([]int, 0, len($EXPR$))&#10;for k := range $EXPR$ {&#10;&#9;keys = append(keys, k)&#10;}&#10;sort.Ints(keys)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="extend@userDefined" key=".extend" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="append($EXPR$, $END$...)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="sortreverse@userDefined2" key=".sortreverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="type" type="[]string" />
-      </conditions>
-      <template name="fakeKey" value="sort.Sort(sort.Reverse(sort.StringSlice($EXPR$)))" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="add@userDefined" key=".add" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="$EXPR$ = ($EXPR$ + $END$) % mod" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="values@userDefined" key=".values" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="map" />
-      </conditions>
-      <template name="fakeKey" value="values := make([]int, 0, len($EXPR$))&#10;for _, v := range $EXPR$ {&#10;&#9;values = append(values, v)&#10;}&#10;sort.Ints(values)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="uint@userDefined" key=".uint" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="uint($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="join@userDefined" key=".join" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="strings.Join($EXPR$, &quot; $END$&quot;)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="pop@userDefined2" key=".popr" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="v := $EXPR$[len($EXPR$)-1]&#10;$EXPR$ = $EXPR$[:len($EXPR$)-1]" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="forij@userDefined" key=".forij" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-        <condition id="map" />
-      </conditions>
-      <template name="fakeKey" value="for i, v := range $EXPR$ {&#10;&#9;for j, w := range $EXPR$ {&#10;&#9;&#9;if j == i {&#10;&#9;&#9;&#9;continue&#10;&#9;&#9;}&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="sortreverse@userDefined" key=".sortreverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="type" type="[]int" />
-      </conditions>
-      <template name="fakeKey" value="sort.Sort(sort.Reverse(sort.IntSlice($EXPR$)))" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="sortpair@userDefined" key=".sortpair" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { a, b := $EXPR$[i], $EXPR$[j]; return a.x &lt; b.x || a.x == b.x &amp;&amp; a.y &lt; b.y })" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="fill@userDefined" key=".fill" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;    $EXPR$[_i] = -1$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="popl@userDefined" key=".popl" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="v := $EXPR$[0]&#10;$EXPR$ = $EXPR$[1:]" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="min@userDefined" key=".min" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="$EXPR$ = min($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="cnts@userDefined" key=".cntarr" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="cnts := [1e5 + 1]int{}&#10;for _, v := range $EXPR$ {&#10;&#9;cnts[v]++&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="toi@userDefined" key=".toi" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="v, _ := strconv.Atoi($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="repeat@userDefined" key=".repeat" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.Repeat($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
     <template id="makei@userDefined" key=".makei" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="number" />
       </conditions>
       <template name="fakeKey" value="make([]int, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="bfs@userDefined" key=".bfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="vis := make([]bool, n)&#10;vis[st] = true&#10;q := []int{st}&#10;for len(q) &gt; 0 {&#10;&#9;v := q[0]&#10;&#9;q = q[1:]&#10;&#9;$END$&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if !vis[w] {&#10;&#9;&#9;&#9;vis[w] = true&#10;&#9;&#9;&#9;q = append(q, w)&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="fill2@userDefined" key=".fill2" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;&#9;$EXPR$[_i] = make([]int, $END$)&#10;&#9;for _j := range $EXPR$[_i] {&#10;&#9;&#9;$EXPR$[_i][_j] = -1&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="int@userDefined3" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="int($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="reverse@userDefined" key=".reverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -405,17 +226,11 @@
       </conditions>
       <template name="fakeKey" value="$EXPR$RB := make([]byte, len($EXPR$))&#10;for i := range $EXPR$ {&#10;    $EXPR$RB[i] = $EXPR$[len($EXPR$)-1-i]&#10;}&#10;$EXPR$R := string($EXPR$RB)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="int64@userDefined" key=".int64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="panic" key=".panic" provider="com.goide.postfix.GoPostfixTemplateProvider" builtin="panic" topmost="true">
       <conditions>
-        <condition id="number" />
+        <condition id="non void" />
       </conditions>
-      <template name="fakeKey" value="int64($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="dfstree@userDefined" key=".dfstree" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="var f func(v, fa int)&#10;f = func(v, fa int) {&#10;    $END$&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if w != fa {&#10;&#9;&#9;    &#10;&#9;&#9;&#9;f(w, v)&#10;&#9;&#9;}&#10;&#9;}&#10;}&#10;f(0, -1)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="if $EXPR$ != nil {&#10;    panic($EXPR$)&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="sum@userDefined" key=".sum" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -425,29 +240,57 @@
       </conditions>
       <template name="fakeKey" value="sum := 0&#10;for _, v := range $EXPR$ {&#10;&#9;sum += v&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="dfs@userDefined2" key=".dfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="bfs@userDefined2" key=".bfs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
-        <condition id="slice" />
+        <condition id="type" type="*TreeNode" />
       </conditions>
-      <template name="fakeKey" value="vis := make([]bool, n)&#10;var f func(int)&#10;f = func(v int) {&#10;&#9;vis[v] = true&#10;&#9;$END$&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if !vis[w] {&#10;&#9;&#9;    &#10;&#9;&#9;&#9;f(w)&#10;&#9;&#9;}&#10;&#9;}&#10;}&#10;f(st)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="type pair struct {&#10;&#9;o   *TreeNode&#10;&#9;dep int&#10;}&#10;q := []pair{{$EXPR$, 0}}&#10;for len(q) &gt; 0 {&#10;&#9;p := q[0]&#10;&#9;q = q[1:]&#10;&#9;o, dep := p.o, p.dep&#10;&#9;v := o.Val&#10;&#9;$END$&#10;&#9;if o.Left == nil &amp;&amp; o.Right == nil {&#10;&#9;&#9;&#10;&#9;} else {&#10;&#9;&#9;if o.Left != nil {&#10;&#9;&#9;&#9;q = append(q, pair{o.Left, dep + 1})&#10;&#9;&#9;}&#10;&#9;&#9;if o.Right != nil {&#10;&#9;&#9;&#9;q = append(q, pair{o.Right, dep + 1})&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="sortpair3@userDefined" key=".sortpair3" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="int@userDefined3" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
-        <condition id="slice" />
+        <condition id="number" />
       </conditions>
-      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { a, b := $EXPR$[i], $EXPR$[j]; return a.x &lt; b.x || a.x == b.x &amp;&amp; (a.y &lt; b.y || a.y == b.y &amp;&amp; a.z &lt; b.z) })" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="int($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="bin@userDefined2" key=".bin" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="split@userDefined" key=".split" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="string" />
       </conditions>
-      <template name="fakeKey" value="v, _ := strconv.ParseInt($EXPR$, 2, 64)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="strings.Split($EXPR$, &quot; $END$&quot;)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="sort64@userDefined" key=".sortnumber" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="delete@userDefined" key=".delete" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="strings.ReplaceAll($EXPR$, &quot;$END$&quot;, &quot;&quot;)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="last@userDefined" key=".last" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$[len($EXPR$)-1]" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="string@userDefined3" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="type" type="int64" />
+      </conditions>
+      <template name="fakeKey" value="strconv.FormatInt($EXPR$, 10)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="fill2@userDefined" key=".fill2" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
         <condition id="slice" />
       </conditions>
-      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { return $EXPR$[i] &lt; $EXPR$[j] })" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;&#9;$EXPR$[_i] = make([]int, $END$)&#10;&#9;for _j := range $EXPR$[_i] {&#10;&#9;&#9;$EXPR$[_i][_j] = -1&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="fill@userDefined" key=".fill" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;    $EXPR$[_i] = -1$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="mk@userDefined" key=".mk" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -455,67 +298,44 @@
       </conditions>
       <template name="fakeKey" value="make([]int, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
+    <template id="new@userDefined" key=".new" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="non void" />
+      </conditions>
+      <template name="fakeKey" value="&amp;$EXPR${}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
     <template id="sq@userDefined" key=".sq" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="number" />
       </conditions>
       <template name="fakeKey" value="$EXPR$ * $EXPR$" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="max@userDefined" key=".max" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="$EXPR$ = max($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="format@userDefined" key=".formatrix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for i, row := range $EXPR$ {&#10;&#9;for j, v := range row {&#10;&#9;&#9;_, _ = i, j&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="hasprefix@userDefined" key=".hasprefix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.HasPrefix($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="mod@userDefined" key=".mod" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="($EXPR$) % mod" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="col@userDefined" key=".col" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-        <condition id="array" />
-      </conditions>
-      <template name="fakeKey" value="col := make([]int, 0, len($EXPR$))&#10;for _, row := range $EXPR$ {&#10;  col = append(col, row[j])&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="forpair@userDefined" key=".forpair" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-        <condition id="string" />
-        <condition id="map" />
-      </conditions>
-      <template name="fakeKey" value="for i, v := range $EXPR$ {&#10;&#9;for j, w := range $EXPR$ {&#10;&#9;&#9;if j == i {&#10;&#9;&#9;&#9;continue&#10;&#9;&#9;}&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="sortpairx@userDefined" key=".sortpairx" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { return $EXPR$[i].x &lt; $EXPR$[j].x })" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="suffixsum@userDefined" key=".suffixsum" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="forseg@userDefined" key=".forlr" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="array" />
         <condition id="slice" />
         <condition id="string" />
       </conditions>
-      <template name="fakeKey" value="suffixSum := make([]int64, len($EXPR$)+1)&#10;for i := len($EXPR$) - 1; i &gt;= 0; i-- {&#10;&#9;suffixSum[i] = suffixSum[i+1] + int64($EXPR$[i])&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="for r := range $EXPR$ {&#10;&#9;for l := 0; l &lt;= r; l++ { // [l,r]&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sortreverse@userDefined" key=".sortreverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="type" type="[]int" />
+      </conditions>
+      <template name="fakeKey" value="sort.Sort(sort.Reverse(sort.IntSlice($EXPR$)))" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="rprint@userDefined" key=".rprint" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="for i := len($EXPR$) - 1; i &gt;= 0; i-- {&#10;&#9;Fprint(out, $EXPR$[i], &quot; &quot;)&#10;}&#10;Fprintln(out)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="bin@userDefined2" key=".bin" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.ParseInt($EXPR$, 2, 64)" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="sub@userDefined" key=".sub" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -523,42 +343,23 @@
       </conditions>
       <template name="fakeKey" value="$EXPR$ = ($EXPR$ - $END$ + mod) % mod" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="for2@userDefined" key=".for2" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="array" />
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="for i, row := range $EXPR$ {&#10;&#9;for j, v := range row {&#10;&#9;&#9;_, _ = i, j&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="string@userDefined2" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="slice" />
-      </conditions>
-      <template name="fakeKey" value="string($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="makep@userDefined" key=".makep" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="number" />
-      </conditions>
-      <template name="fakeKey" value="make([]pair, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
-    <template id="in@userDefined" key=".in" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
-      <conditions>
-        <condition id="string" />
-      </conditions>
-      <template name="fakeKey" value="strings.Contains($END$, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
-    </template>
     <template id="reverse@userDefined2" key=".reverse" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="slice" />
       </conditions>
       <template name="fakeKey" value="$EXPR$R := make([]int, len($EXPR$))&#10;for i := range $EXPR$ {&#10;    $EXPR$R[i] = $EXPR$[len($EXPR$)-1-i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
-    <template id="bin@userDefined" key=".bin" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+    <template id="hasprefix@userDefined" key=".hasprefix" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
-        <condition id="number" />
+        <condition id="string" />
       </conditions>
-      <template name="fakeKey" value="strconv.FormatInt(int64($EXPR$), 2)" description="" toReformat="true" toShortenFQNames="true" />
+      <template name="fakeKey" value="strings.HasPrefix($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sortslice@userDefined" key=".sortij" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { &#10; v, w := $EXPR$[i], $EXPR$[j]&#10; return $END$&#10;})" description="" toReformat="true" toShortenFQNames="true" />
     </template>
     <template id="pos@userDefined" key=".pos" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
@@ -568,6 +369,31 @@
       </conditions>
       <template name="fakeKey" value="pos := []int{}&#10;for i, v := range $EXPR$ {&#10;&#9;if v == $END$ {&#10;&#9;&#9;pos = append(pos, i)&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
+    <template id="makep@userDefined" key=".makep" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="make([]pair, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="add@userDefined" key=".add" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = ($EXPR$ + $END$) % mod" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="gcd@userDefined" key=".gcd" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="g := 0&#10;for _, v := range $EXPR$ {&#10;&#9;g = gcd(g, v)&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sortpairx@userDefined" key=".sortpairx" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { return $EXPR$[i].x &lt; $EXPR$[j].x })" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
     <template id="prefixsum@userDefined" key=".prefixsum" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
       <conditions>
         <condition id="array" />
@@ -575,6 +401,183 @@
         <condition id="string" />
       </conditions>
       <template name="fakeKey" value="sum := make([]int64, len($EXPR$)+1)&#10;for i, v := range $EXPR$ {&#10;&#9;sum[i+1] = sum[i] + int64(v)&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="forpair@userDefined" key=".forany2" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+        <condition id="map" />
+      </conditions>
+      <template name="fakeKey" value="for i, v := range $EXPR$ {&#10;&#9;for j, w := range $EXPR$ {&#10;&#9;&#9;if j == i {&#10;&#9;&#9;&#9;continue&#10;&#9;&#9;}&#10;&#9;&#9;$END$&#10;&#9;}&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="filli@userDefined" key=".filli" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="for _i := range $EXPR$ {&#10;    $EXPR$[_i] = _i&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="bin@userDefined" key=".bin" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="strconv.FormatInt(int64($EXPR$), 2)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="uint@userDefined" key=".uint" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="uint($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="extend@userDefined" key=".extend" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = append($EXPR$, $END$...)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="string@userDefined2" key=".string" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="string($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="suffixsum@userDefined" key=".suffixsum" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="suffixSum := make([]int64, len($EXPR$)+1)&#10;for i := len($EXPR$) - 1; i &gt;= 0; i-- {&#10;&#9;suffixSum[i] = suffixSum[i+1] + int64($EXPR$[i])&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="pop@userDefined2" key=".popr" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="v := $EXPR$[len($EXPR$)-1]&#10;$EXPR$ = $EXPR$[:len($EXPR$)-1]" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="in@userDefined" key=".in" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="strings.Contains($END$, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="max@userDefined" key=".max" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="$EXPR$ = max($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="cntmp@userDefined" key=".cntmap" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="cnts := map[int]int{}&#10;for _, v := range $EXPR$ {&#10;&#9;cnts[v]++&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="byte@userDefined2" key=".byte" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="byte($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="sortpair@userDefined" key=".sortpair" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="sort.Slice($EXPR$, func(i, j int) bool { a, b := $EXPR$[i], $EXPR$[j]; return a.x &lt; b.x || a.x == b.x &amp;&amp; a.y &lt; b.y })" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="dfs@userDefined2" key=".dfsgraph" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+        <condition id="array" />
+      </conditions>
+      <template name="fakeKey" value="vis := make([]bool, len($EXPR$))&#10;var f func(int)&#10;f = func(v int) {&#10;&#9;vis[v] = true&#10;&#9;$END$&#10;&#9;for _, w := range $EXPR$[v] {&#10;&#9;&#9;if !vis[w] {&#10;&#9;&#9;    &#10;&#9;&#9;&#9;f(w)&#10;&#9;&#9;&#9;&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;&#10;&#9;return&#10;}&#10;f(st)" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="makes@userDefined" key=".makes" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="make([]string, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="contains@userDefined" key=".contains" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="strings.Contains($EXPR$, $END$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="i64@userDefined" key=".i64" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="int64($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="make@userDefined" key=".make" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="make([]int, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="cnts@userDefined" key=".cntarr" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="cnts := [1e5 + 1]int{}&#10;for _, v := range $EXPR$ {&#10;&#9;cnts[v]++&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="abs@userDefined" key=".abs" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="abs($EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="join@userDefined" key=".join" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="strings.Join($EXPR$, &quot; $END$&quot;)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="inslice@userDefined" key=".inslice" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="contains($END$, $EXPR$)" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="forv@userDefined2" key=".forv" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="array" />
+        <condition id="slice" />
+        <condition id="string" />
+        <condition id="map" />
+      </conditions>
+      <template name="fakeKey" value="for _, v := range $EXPR$ {&#10;&#9;$END$&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="int@userDefined2" key=".int" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="slice" />
+      </conditions>
+      <template name="fakeKey" value="v, _ := strconv.Atoi(string($EXPR$))" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="mod@userDefined" key=".mod" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="($EXPR$%mod+mod)%mod" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="forsubset@userDefined2" key=".forsubset" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="number" />
+      </conditions>
+      <template name="fakeKey" value="f := func(sub int) (res int) {&#10;    for i := 0; i &lt; $EXPR$; i++ {&#10;&#9;&#9;if sub&gt;&gt;i&amp;1 &gt; 0 { &#10;&#9;&#9;&#9;$END$&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return&#10;}&#10;for sub := 0; sub &lt; 1&lt;&lt;$EXPR$; sub++ { &#10;&#9;res := f(sub)&#10;&#9;&#10;}" description="" toReformat="true" toShortenFQNames="true" />
+    </template>
+    <template id="toarray@userDefined" key=".toarray" provider="com.goide.postfix.GoPostfixTemplateProvider" topmost="false">
+      <conditions>
+        <condition id="string" />
+      </conditions>
+      <template name="fakeKey" value="for i := range $EXPR$ {&#10;&#9;$END$[i] = $EXPR$[i]&#10;}" description="" toReformat="true" toShortenFQNames="true" />
     </template>
   </component>
   <component name="PostfixTemplatesSettings">
@@ -651,11 +654,8 @@
             <option value="dp@userDefined" />
             <option value="errors.As" />
             <option value="errors.Is" />
-            <option value="for2@userDefined" />
-            <option value="forv@userDefined" />
             <option value="imag" />
             <option value="notnilInIfCondition" />
-            <option value="panic" />
             <option value="print" />
             <option value="println" />
             <option value="real" />
@@ -669,10 +669,6 @@
             <option value="rrv" />
             <option value="sort.Slice" />
             <option value="sortpairx@userDefined" />
-            <option value="t@userDefined" />
-            <option value="toi@userDefined" />
-            <option value="toi@userDefined2" />
-            <option value="tos@userDefined" />
             <option value="var" />
           </set>
         </value>
