@@ -1025,6 +1025,7 @@ func monotoneCollection() {
 
 	// 模板题 - 固定区间大小的区间最值（滑动窗口）   pop-push-query
 	// https://www.luogu.com.cn/problem/P1886
+	// https://codeforces.com/problemset/status/940/problem/E
 	fixedSizeMinMax := func(a []int, fixedSize int) (mins, maxs []int) {
 		n := len(a)
 
