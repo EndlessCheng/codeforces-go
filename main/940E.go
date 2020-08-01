@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -44,4 +43,4 @@ func CF940E(_r io.Reader, out io.Writer) {
 	Fprint(out, s-dp[n])
 }
 
-func main() { CF940E(os.Stdin, os.Stdout) }
+//func main() { CF940E(os.Stdin, os.Stdout) }
