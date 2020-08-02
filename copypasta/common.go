@@ -1204,6 +1204,9 @@ func monotoneCollection() {
 		return
 	}
 
+	// 统计区间个数：区间最大值 >= 2*区间最小值
+	// todo https://ac.nowcoder.com/acm/contest/6778/C
+
 	_ = []interface{}{
 		monotoneStack,
 		fixedSizeMinMax, findMaxValueOfEquation, shortestSubarray, upperSizeMaxSum, cf1237d,
