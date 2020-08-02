@@ -157,6 +157,7 @@ type problem struct {
 	receiverName  string
 	sampleIns     [][]string
 	sampleOuts    [][]string
+	customComment string
 }
 
 // 解析一个样例输入或输出
@@ -397,8 +398,8 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	p.defaultCode = strings.TrimSpace(p.defaultCode)
 	fileContent := fmt.Sprintf(`package main
 %s
-%s
-`, imports, p.defaultCode)
+%s%s
+`, imports, p.customComment, p.defaultCode)
 
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
 	if !_firstMainFileOpened {
@@ -516,7 +517,7 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 	return nil
 }
 
-func GenLeetCodeTests(username, password string) error {
+func GenLeetCodeTests(username, password, customComment string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
@@ -533,22 +534,33 @@ func GenLeetCodeTests(username, password string) error {
 		time.Sleep(time.Second)
 	}
 
+	if customComment != "" {
+		customComment += "\n"
+	}
+	for _, p := range problems {
+		p.customComment = customComment
+	}
+
 	fmt.Println("题目链接获取成功，开始解析")
 	return handleProblems(session, problems)
 }
 
-func GenLeetCodeSpecialTests(username, password string, urlsZHs []string) error {
+func GenLeetCodeSpecialTests(username, password, customComment string, urlsZHs []string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
 	}
 	fmt.Println(host, "登录成功")
 
+	if customComment != "" {
+		customComment += "\n"
+	}
 	problems := make([]*problem, len(urlsZHs))
 	for i, url := range urlsZHs {
 		problems[i] = &problem{
-			id:    string('a' + i),
-			urlZH: url,
+			id:            string('a' + i),
+			urlZH:         url,
+			customComment: customComment,
 		}
 	}
 

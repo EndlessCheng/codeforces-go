@@ -15,7 +15,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 		username = os.Getenv("LEETCODE_USERNAME_EN")
 		password = os.Getenv("LEETCODE_PASSWORD_EN")
 	}
-	if err := GenLeetCodeTests(username, password); err != nil {
+	if err := GenLeetCodeTests(username, password, "// github.com/EndlessCheng/codeforces-go"); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -30,7 +30,7 @@ func TestGenLeetCodeTests(t *testing.T) {
 //		"",
 //		"",
 //	}
-//	if err := GenLeetCodeSpecialTests(username, password, urlZHs); err != nil {
+//	if err := GenLeetCodeSpecialTests(username, password, "// github.com/EndlessCheng/codeforces-go", urlZHs); err != nil {
 //		t.Fatal(err)
 //	}
 //}
