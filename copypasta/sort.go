@@ -33,6 +33,19 @@ func sortCollections() {
 		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] <= a[j] })
 	}
 
+	// 插入排序
+	insertionSort := func(a []int) {
+		n := len(a)
+		for i := 1; i < n; i++ {
+			v := a[i]
+			j := i // 也可以用二分求出循环终点从而减少比较次数
+			for ; j > 0 && a[j-1] > v; j-- {
+				a[j] = a[j-1]
+			}
+			a[j] = v
+		}
+	}
+
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
 	// 也可以通过 sort.SearchInts(a, x+1) 来搜索 upperBound
@@ -167,6 +180,7 @@ func sortCollections() {
 	//      https://codeforces.ml/blog/entry/45578
 
 	_ = []interface{}{
+		insertionSort,
 		lowerBound, upperBound,
 		searchRange, search64, binarySearch, ternarySearch, ternarySearchInt,
 	}
