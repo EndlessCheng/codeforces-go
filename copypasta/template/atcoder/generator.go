@@ -11,10 +11,33 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
+const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
+
+func fetchStartTime(contestID string) (t time.Time, err error) {
+	contestHome := "https://atcoder.jp/contests/" + contestID
+	resp, err := grequests.Get(contestHome, &grequests.RequestOptions{UserAgent: ua})
+	if err != nil {
+		return
+	}
+	if !resp.Ok {
+		return time.Time{}, fmt.Errorf("%d", resp.StatusCode)
+	}
+
+	htmlStr := resp.String()
+	const token = `fixtime-full'>`
+	i := strings.Index(htmlStr, token) // 2020-08-02 21:00:00+0900
+	if i == -1 {
+		return time.Time{}, fmt.Errorf("invalid html content %s", htmlStr)
+	}
+
+	datetimeStr := htmlStr[i+len(token) : i+len(token)+24]
+	return time.Parse("2006-01-02 15:04:05-0700", datetimeStr)
+}
+
 func login(username, password string) (session *grequests.Session, err error) {
-	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
 		UserAgent:    ua,
 		UseCookieJar: true,
@@ -233,9 +256,10 @@ import (
 func Test_run(t *testing.T) {
 	t.Log("Current test is [%s]")
 	testCases := [][2]string{%s
+		// TODO 测试参数的下界和上界
+		
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
-	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
 }
 // %s
 // %s
@@ -304,6 +328,17 @@ func genAtCoderContestTemplates(contestID string, retryTimes int) error {
 }
 
 func GenAtCoderContestTemplates(contestID string) error {
+	startTime, err := fetchStartTime(contestID)
+	if err != nil {
+		return err
+	}
+
+	if t := time.Until(startTime); t > 0 {
+		t += time.Second
+		fmt.Println("sleep", t)
+		time.Sleep(t)
+	}
+
 	return genAtCoderContestTemplates(contestID, 0)
 }
 
