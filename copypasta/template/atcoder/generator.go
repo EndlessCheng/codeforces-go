@@ -253,6 +253,7 @@ import (
 	"testing"
 )
 
+// %s
 func Test_run(t *testing.T) {
 	t.Log("Current test is [%s]")
 	testCases := [][2]string{%s
@@ -262,8 +263,7 @@ func Test_run(t *testing.T) {
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
 // %s
-// %s
-`, taskID, examples, problemURL, submitURL)
+`, submitURL, taskID, examples, problemURL)
 	testFilePath := dirPath + taskID + "_test.go"
 	if err := ioutil.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
