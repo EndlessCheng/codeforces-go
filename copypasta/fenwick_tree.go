@@ -9,8 +9,9 @@ package copypasta
 // 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 // 经典技巧: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
 // 			https://codeforces.com/problemset/problem/629/D
+// 静态区间种类 - 离线做法 https://www.luogu.com.cn/problem/P1972 https://atcoder.jp/contests/abc174/tasks/abc174_f
 // 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
-// EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.ml/problemset/problem/629/D
+// EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.com/problemset/problem/629/D
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
@@ -26,21 +27,6 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 常数优化 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
-	query = func(l, r int) (s int) {
-		if l > r {
-			panic(9)
-		}
-		l--
-		for ; r > l; r &= r - 1 {
-			s += tree[r]
-		}
-		for ; l > r; l &= l - 1 {
-			s -= tree[l]
-		}
-		return
-	}
-
 	// 差分树状数组，可用于区间更新+单点查询 queryOne(i) = a[i] + sum(i)
 	// r+1 即使超过 n 也没关系，因为不会用到
 	// 模板题 https://www.luogu.com.cn/problem/P3368
@@ -55,6 +41,21 @@ func fenwickTree(n int) {
 				tree[j] += tree[i]
 			}
 		}
+	}
+
+	// 常数优化（不推荐。实测只快了几毫秒）https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
+	query = func(l, r int) (s int) {
+		if l > r {
+			panic(9)
+		}
+		l--
+		for ; r > l; r &= r - 1 {
+			s += tree[r]
+		}
+		for ; l > r; l &= l - 1 {
+			s -= tree[l]
+		}
+		return
 	}
 
 	// 求逆序对的方法之一
