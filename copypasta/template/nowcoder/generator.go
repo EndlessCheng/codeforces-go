@@ -208,7 +208,6 @@ func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID 
 	var session *grequests.Session
 	var problemNum int
 	for {
-		var err error
 		session, err = login(emailOrPhone, cipherPwd)
 		if err != nil {
 			return err
@@ -231,7 +230,6 @@ o:
 		var code string
 		var examples []string
 		for {
-			var err error
 			code, examples, err = parseCodeAndExamples(session, problemURL)
 			if err != nil {
 				fmt.Println("[error] parseCodeAndExamples", problemURL, err)
@@ -251,14 +249,14 @@ o:
 		testStr := genTestFileContent(id, examples, funcName, problemURL)
 
 		problemDir := contestDir + string(id) + "/"
-		if err := os.MkdirAll(problemDir, os.ModePerm); err != nil {
+		if err = os.MkdirAll(problemDir, os.ModePerm); err != nil {
 			return err
 		}
 		mainFilePath := problemDir + fmt.Sprintf("%c.go", id)
-		if err := ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
+		if err = ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 			return err
 		}
-		if err := ioutil.WriteFile(problemDir+fmt.Sprintf("%c_test.go", id), []byte(testStr), 0644); err != nil {
+		if err = ioutil.WriteFile(problemDir+fmt.Sprintf("%c_test.go", id), []byte(testStr), 0644); err != nil {
 			return err
 		}
 

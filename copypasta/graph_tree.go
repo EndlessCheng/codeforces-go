@@ -781,9 +781,10 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // TODO: Morris Traversal
 // https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
 
-// TODO: link/cut tree
+// TODO: link-cut tree (LCT)
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
+// todo https://codeforces.com/blog/entry/80383
 // 模板题 https://www.luogu.com.cn/problem/P3690
 // https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
 

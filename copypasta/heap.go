@@ -14,9 +14,6 @@ func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 func (h *hp) push(v int)         { heap.Push(h, v) }
 func (h *hp) pop() int           { return heap.Pop(h).(int) }
-func (h hp) empty() bool         { return len(h.IntSlice) == 0 }
-func (h hp) top() int            { return h.IntSlice[0] }
-func (h hp) size() int           { return len(h.IntSlice) }
 func (h *hp) pushPop(v int) int {
 	if len(h.IntSlice) > 0 && v > h.IntSlice[0] { // 大根堆改成 v < h.IntSlice[0]
 		v, h.IntSlice[0] = h.IntSlice[0], v
@@ -37,9 +34,6 @@ func (h *hp64) Push(v interface{}) { *h = append(*h, v.(int64)) }
 func (h *hp64) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 func (h *hp64) push(v int64)       { heap.Push(h, v) }
 func (h *hp64) pop() int64         { return heap.Pop(h).(int64) }
-func (h hp64) empty() bool         { return len(h) == 0 }
-func (h hp64) top() int64          { return h[0] }
-func (h hp64) size() int           { return len(h) }
 func (h *hp64) pushPop(v int64) int64 {
 	if len(*h) > 0 && v > (*h)[0] { // 大根堆改成 v < (*h)[0]
 		v, (*h)[0] = (*h)[0], v
@@ -58,7 +52,7 @@ type pvi struct {
 	v int64
 	i int // 必须从 0 开始且连续
 }
-type hpi []*pvi // 由于存储的是指针，可以直接在外面修改 pvi 后调用 h.fix
+type hpi []*pvi // 由于存储的是指针，可以直接在外面修改后调用 h.fix(p.i)
 
 func (h hpi) Len() int            { return len(h) }
 func (h hpi) Less(i, j int) bool  { return h[i].v < h[j].v } // > 为最大堆
@@ -67,9 +61,6 @@ func (h *hpi) Push(v interface{}) { *h = append(*h, v.(*pvi)) }
 func (h *hpi) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 func (h *hpi) push(v *pvi)        { v.i = len(*h); heap.Push(h, v) }
 func (h *hpi) pop() *pvi          { return heap.Pop(h).(*pvi) }
-func (h hpi) empty() bool         { return len(h) == 0 }
-func (h hpi) top() *pvi           { return h[0] }
-func (h hpi) size() int           { return len(h) }
 func (h *hpi) fix(i int)          { heap.Fix(h, i) }
 func (h *hpi) remove(i int) *pvi  { return heap.Remove(h, i).(*pvi) }
 
@@ -82,13 +73,13 @@ func heapCollections() {
 		medians := make([]int, 0, (n+1)/2)
 		small, big := hp{}, hp{}
 		for i, v := range a {
-			if small.size() == big.size() {
+			if len(small.IntSlice) == len(big.IntSlice) {
 				big.push(-small.pushPop(-v))
 			} else {
 				small.push(-big.pushPop(v))
 			}
 			if i&1 == 0 {
-				medians = append(medians, big.top())
+				medians = append(medians, big.IntSlice[0])
 			}
 		}
 		return medians

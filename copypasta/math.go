@@ -841,6 +841,7 @@ func numberTheoryCollection() {
 	// a^b ≡ a^(b mod φ(m)) (mod m), gcd(a,m)=1
 	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
 	// 例题 https://codeforces.com/problemset/problem/615/D
+	// https://cses.fi/problemset/task/1712
 
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}

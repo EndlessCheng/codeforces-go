@@ -30,6 +30,8 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 [Codeforced](http://codeforced.github.io/handle/)
 
+[Codeforces Upsolving Helper](https://codeforces-upsolving-helper.herokuapp.com/)
+
 ## Rating
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
