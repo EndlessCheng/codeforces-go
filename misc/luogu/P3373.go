@@ -35,8 +35,8 @@ func (t seg3373) doMul(o, v int) {
 }
 func (t seg3373) doAdd(o, v int) {
 	to := &t[o]
-	to.s = (to.s + (to.r-to.l+1)*v) % mod3373
 	to.addTodo = (to.addTodo + v) % mod3373
+	to.s = (to.s + (to.r-to.l+1)*v) % mod3373
 }
 func (t seg3373) spread(o int) {
 	if v := t[o].mulTodo; v != 1 {
