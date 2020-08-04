@@ -27,7 +27,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 			continue
 		}
 
-		input := strings.TrimSpace(tc[0])
+		input := removeExtraSpace(tc[0])
 		expectedOutput := removeExtraSpace(tc[1])
 
 		mockReader := strings.NewReader(input)
@@ -144,7 +144,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 			continue
 		}
 
-		input = strings.TrimSpace(input)
+		input = removeExtraSpace(input)
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
@@ -170,7 +170,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 
 	for tc := 1; ; tc++ {
 		input := inputGenerator()
-		input = strings.TrimSpace(input)
+		input = removeExtraSpace(input)
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
