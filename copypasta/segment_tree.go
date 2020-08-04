@@ -115,20 +115,23 @@ func newSegmentTree(a []int64) seg {
 
 //
 
-// + Σ https://www.luogu.com.cn/problem/P3372
-// * + Σ https://www.luogu.com.cn/problem/P3373
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A https://codeforces.com/problemset/problem/1321/E
+// + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
+// * + Σ https://www.luogu.com.cn/problem/P3373
+// | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
+// = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
+// = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F
 // https://codeforces.com/problemset/problem/1114/F
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 type lazyST []struct {
-	l, r      int
-	sum, todo int64
+	l, r int
+	todo int64
+	sum  int64
 }
 
 func (t lazyST) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].sum = lo.sum + ro.sum
-	//t[o].sum = (lo.sum + ro.sum) % mod
+	t[o].sum = lo.sum + ro.sum // % mod
 }
 
 func (t lazyST) build(a []int64, o, l, r int) {
@@ -143,33 +146,28 @@ func (t lazyST) build(a []int64, o, l, r int) {
 	t.maintain(o)
 }
 
+func (t lazyST) do(o int, v int64) {
+	to := &t[o]
+	to.todo += v                     // % mod
+	to.sum += int64(to.r-to.l+1) * v // % mod
+}
+
 func (t lazyST) spread(o int) {
 	if add := t[o].todo; add != 0 {
-		lo, ro := &t[o<<1], &t[o<<1|1]
-		lo.sum += add * int64(lo.r-lo.l+1)
-		lo.todo += add
-		ro.sum += add * int64(ro.r-ro.l+1)
-		ro.todo += add
-		//lo.sum = (lo.sum + add*int64(lo.r-lo.l+1)) % mod
-		//lo.todo = (lo.todo + add) % mod
-		//ro.sum = (ro.sum + add*int64(ro.r-ro.l+1)) % mod
-		//ro.todo = (ro.todo + add) % mod
+		t.do(o<<1, add)
+		t.do(o<<1|1, add)
 		t[o].todo = 0
 	}
 }
 
 // o=1  [l,r] 1<=l<=r<=n
 func (t lazyST) update(o, l, r int, add int64) {
-	ol, or := t[o].l, t[o].r
-	if l <= ol && or <= r {
-		t[o].sum += add * int64(or-ol+1)
-		t[o].todo += add
-		//t[o].sum = (t[o].sum + add*int64(or-ol+1)) % mod
-		//t[o].todo = (t[o].todo + add) % mod
+	if l <= t[o].l && t[o].r <= r {
+		t.do(o, add)
 		return
 	}
 	t.spread(o)
-	m := (ol + or) >> 1
+	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
 		t.update(o<<1, l, r, add)
 	}
