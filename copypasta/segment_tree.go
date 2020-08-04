@@ -123,6 +123,7 @@ func newSegmentTree(a []int64) seg {
 // = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F
 // https://codeforces.com/problemset/problem/1114/F
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
+// 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
 type lazyST []struct {
 	l, r int
 	todo int64
