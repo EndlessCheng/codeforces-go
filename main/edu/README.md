@@ -2,7 +2,7 @@
 
 ## ITMO Academy: pilot course
 
-Note that some lessons are already published but not translated to English. See [this](https://codeforces.com/edu/course/2?locale=ru) for more detail.
+Note that some lessons were already published but not translated to English. See [this](https://codeforces.com/edu/course/2?locale=ru) for more detail.
 
 |Lesson|Publish Time|
 |---|---|
