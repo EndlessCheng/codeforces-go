@@ -147,12 +147,12 @@ func (t lazyST) spread(o int) {
 	if add := t[o].todo; add != 0 {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum += add * int64(lo.r-lo.l+1)
-		ro.sum += add * int64(ro.r-ro.l+1)
 		lo.todo += add
+		ro.sum += add * int64(ro.r-ro.l+1)
 		ro.todo += add
 		//lo.sum = (lo.sum + add*int64(lo.r-lo.l+1)) % mod
-		//ro.sum = (ro.sum + add*int64(ro.r-ro.l+1)) % mod
 		//lo.todo = (lo.todo + add) % mod
+		//ro.sum = (ro.sum + add*int64(ro.r-ro.l+1)) % mod
 		//ro.todo = (ro.todo + add) % mod
 		t[o].todo = 0
 	}

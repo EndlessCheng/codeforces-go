@@ -27,7 +27,7 @@ func fenwickTree(n int) {
 	}
 	query := func(l, r int) int { return sum(r) - sum(l-1) } // [l,r]
 
-	// 差分树状数组，可用于区间更新+单点查询 queryOne(i) = a[i] + sum(i)
+	// 差分树状数组，可用于区间更新+单点查询 queryOne(i) = a[i] + sum(i) // a 从 1 开始
 	// r+1 即使超过 n 也没关系，因为不会用到
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
