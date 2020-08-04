@@ -91,7 +91,7 @@ func (t seg) query(o, l, r int) (res int64) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
-	//defer t._pushUp(o)
+	//defer t.maintain(o)
 	m := (t[o].l + t[o].r) >> 1
 	if r <= m {
 		return t.query(o<<1, l, r)
@@ -181,21 +181,21 @@ func (t lazyST) update(o, l, r int, add int64) {
 
 // o=1  [l,r] 1<=l<=r<=n
 func (t lazyST) query(o, l, r int) (res int64) {
-	ol, or := t[o].l, t[o].r
-	if l <= ol && or <= r {
+	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
 	//defer t.maintain(o)
 	t.spread(o)
-	m := (ol + or) >> 1
-	if l <= m {
-		res += t.query(o<<1, l, r)
+	m := (t[o].l + t[o].r) >> 1
+	if r <= m {
+		return t.query(o<<1, l, r)
 	}
-	if m < r {
-		res += t.query(o<<1|1, l, r)
+	if l > m {
+		return t.query(o<<1|1, l, r)
 	}
-	//res %= mod
-	return
+	vl := t.query(o<<1, l, r)
+	vr := t.query(o<<1|1, l, r)
+	return vl + vr // % mod
 }
 
 func (t lazyST) queryAll() int64 { return t[1].sum }
