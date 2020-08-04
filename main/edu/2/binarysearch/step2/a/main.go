@@ -14,7 +14,8 @@ func run(in io.Reader, out io.Writer) {
 	l, r = 1, 1e18
 	for l < r {
 		m := (l + r) >> 1
-		if (&big.Int{}).Mul(big.NewInt(m/w), big.NewInt(m/h)).Cmp(big.NewInt(n)) >= 0 {
+		// or float64
+		if new(big.Int).Mul(big.NewInt(m/w), big.NewInt(m/h)).Cmp(big.NewInt(n)) >= 0 {
 			r = m
 		} else {
 			l = m + 1
