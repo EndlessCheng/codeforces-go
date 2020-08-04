@@ -115,10 +115,10 @@ func newSegmentTree(a []int64) seg {
 
 //
 
-// 模板题 https://www.luogu.com.cn/problem/P3372 +
-//       https://www.luogu.com.cn/problem/P3373 * 和 + 复合
-// 模板 - 核心函数为 max 及 +  https://codeforces.ml/problemset/problem/1321/E
-// 模板 - 核心函数为 * 及 |    https://codeforces.ml/problemset/problem/1114/F
+// + Σ https://www.luogu.com.cn/problem/P3372
+// * + Σ https://www.luogu.com.cn/problem/P3373
+// + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A https://codeforces.com/problemset/problem/1321/E
+// https://codeforces.com/problemset/problem/1114/F
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 type lazyST []struct {
 	l, r      int
