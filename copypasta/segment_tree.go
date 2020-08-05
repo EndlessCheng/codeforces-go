@@ -8,6 +8,7 @@ package copypasta
 // https://codeforces.ml/blog/entry/15890
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
+// 总结得比较详细 https://www.acwing.com/blog/content/1684/
 
 // EXTRA: zkw 线段树
 // 虽说写起来很快，但是 debug 就比较难受了
@@ -115,13 +116,18 @@ func newSegmentTree(a []int64) seg {
 
 //
 
+// 单个更新操作：
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A https://codeforces.com/problemset/problem/1321/E
 // + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
-// * + Σ https://www.luogu.com.cn/problem/P3373
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
 // = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F
 // https://codeforces.com/problemset/problem/1114/F
+//
+// 多个更新操作复合：
+// * + Σ https://www.luogu.com.cn/problem/P3373
+// = + Σ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
+//
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 // 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
 type lazyST []struct {

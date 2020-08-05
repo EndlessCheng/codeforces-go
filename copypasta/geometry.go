@@ -110,7 +110,6 @@ func (a *vec) muls(k int64)         { a.x *= k; a.y *= k }
 func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
 func (a *vecF) divs(k float64)      { a.x /= k; a.y /= k }
 func (a vec) mulVec(b vec) vec      { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
-func (a vec) angleTo(b vec) float64 { return math.Acos(float64(a.dot(b)) / (a.len() * b.len())) }
 func (a vec) polarAngle() float64   { return math.Atan2(float64(a.y), float64(a.x)) }
 func (a vec) reverse() vec          { return vec{-a.x, -a.y} }
 func (a vec) up() vec {
@@ -118,6 +117,12 @@ func (a vec) up() vec {
 		return a.reverse()
 	}
 	return a
+}
+
+func (a vec) angleTo(b vec) float64 {
+	v := float64(a.dot(b)) / (a.len() * b.len())
+	v = math.Min(math.Max(v, -1), 1)
+	return math.Acos(v)
 }
 
 // 极角排序
@@ -148,6 +153,42 @@ func cosineRule(a, b, angle float64) float64 {
 }
 func cosineRuleVec(va, vb vecF, angle float64) float64 {
 	return math.Sqrt(va.len2() + vb.len2() - 2*va.len()*vb.len()*math.Cos(angle))
+}
+
+// 三角形外心（外接圆圆心，三条边的垂直平分线的交点）
+// https://codeforces.com/problemset/problem/1/C
+func circumcenter(a, b, c vecF) vecF {
+	a1, b1, a2, b2 := b.x-a.x, b.y-a.y, c.x-a.x, c.y-a.y
+	c1, c2, d := a1*a1+b1*b1, a2*a2+b2*b2, 2*(a1*b2-a2*b1)
+	return vecF{a.x + (c1*b2-c2*b1)/d, a.y + (a1*c2-a2*c1)/d}
+}
+
+// EXTRA: 外接圆半径 R
+// 最好用 det + 正弦定理，误差小
+// https://baike.baidu.com/item/%E5%A4%96%E6%8E%A5%E5%9C%86%E5%8D%8A%E5%BE%84%E5%85%AC%E5%BC%8F
+func circumcenterR(a, b, c vecF) float64 {
+	ab, ac := b.sub(a), c.sub(a)
+	return a.dis(b) * b.dis(c) * c.dis(a) / (2 * math.Abs(ab.det(ac)))
+}
+func circumcenterR2(a, b, c vecF) float64 {
+	ab, ac := b.sub(a), c.sub(a)
+	return a.dis2(b) * b.dis2(c) * c.dis2(a) / (4 * ab.det(ac) * ab.det(ac))
+}
+
+// 三角形垂心（三条高的交点）
+// 欧拉线上的四点中，九点圆圆心到垂心和外心的距离相等，而且重心到外心的距离是重心到垂心距离的一半。注意内心一般不在欧拉线上，除了等腰三角形外
+// https://zh.wikipedia.org/wiki/%E6%AD%90%E6%8B%89%E7%B7%9A
+// https://baike.baidu.com/item/%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%94%E5%BF%83%E5%AE%9A%E5%BE%8B
+func orthocenter(a, b, c vecF) vecF {
+	return a.add(b).add(c).sub(circumcenter(a, b, c).mul(2))
+}
+
+// 三角形内心（三条角平分线的交点）
+// 三点坐标按对边长度加权平均
+func incenter(a, b, c vecF) vecF {
+	bc, ac, ab := b.dis(c), a.dis(c), a.dis(b)
+	sum := bc + ac + ab
+	return vecF{(bc*a.x + ac*b.x + ab*c.x) / sum, (bc*a.y + ac*b.y + ab*c.y) / sum}
 }
 
 /* 二维直线（线段）*/
@@ -771,9 +812,11 @@ type circleF struct {
 func (vecF) add(vecF) (_ vecF)      { return }
 func (vecF) sub(vecF) (_ vecF)      { return }
 func (vecF) mul(float64) (_ vecF)   { return }
-func (vecF) len() (_ float64)       { return }
-func (vecF) len2() (_ float64)      { return }
 func (vecF) dot(vecF) (_ float64)   { return }
 func (vecF) det(vecF) (_ float64)   { return }
+func (vecF) len() (_ float64)       { return }
+func (vecF) len2() (_ float64)      { return }
+func (vecF) dis(vecF) (_ float64)   { return }
+func (vecF) dis2(vecF) (_ float64)  { return }
 func (vec) rotate(float64) (_ vecF) { return }
 func (lineF) vec() (_ vecF)         { return }
