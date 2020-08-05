@@ -4,7 +4,7 @@
 
 Note that some lessons were already published but not translated to English. See [this](https://codeforces.com/edu/course/2?locale=ru) for more detail.
 
-Lesson|Final Publish Time|
+|Lesson|Final Publish Time|
 |---|---|
 |[Suffix Array](https://codeforces.com/blog/entry/79530)|2020-06-30 06:57|
 |[Z-function](https://codeforces.com/edu/course/2/lesson/3/1/practice)||
