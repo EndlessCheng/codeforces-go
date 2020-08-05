@@ -667,8 +667,10 @@ func commonCollection() {
 			xs = append(xs, a)
 			ys = append(ys, b, c)
 		}
+		sort.Ints(xs)
 		xs = unique(xs)
 		xi := discreteMap(xs, 0)
+		sort.Ints(ys)
 		ys = unique(ys)
 		yi := discrete(ys, 0)
 
