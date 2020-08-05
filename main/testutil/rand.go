@@ -60,7 +60,7 @@ func (r *RG) Str(minLen, maxLen int, min, max byte) string {
 	}
 	s := sb.String()
 	r.sb.WriteString(s)
-	r.NewLine()
+	r.Space()
 	return s
 }
 
