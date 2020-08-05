@@ -340,3 +340,10 @@ func (t pst) queryKth(l, r, kth int) (allKth int) { return t._queryKth(t[l-1], t
 //sortedArr := make([]int, n)
 //copy(sortedArr, a)
 //sort.Ints(sortedArr)
+
+//
+
+// Wavelet Trees
+// todo https://www.geeksforgeeks.org/wavelet-trees-introduction/
+// https://codeforces.com/blog/entry/52854
+// https://www.youtube.com/watch?v=4aSv9PcecDw
