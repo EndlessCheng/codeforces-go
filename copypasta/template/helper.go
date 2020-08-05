@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -43,6 +45,17 @@ func parseCodeforcesProblemURL(urlStr string) (contestID, problemID string, isGY
 	default:
 		panic("invalid URL")
 	}
+}
+
+func getDirName(contestID string) string {
+	cid, err := strconv.Atoi(contestID)
+	if err != nil {
+		panic(err)
+	}
+	if cid < 100 {
+		return "1-99"
+	}
+	return fmt.Sprintf("%[1]d00-%[1]d99", cid/100)
 }
 
 func absPath(path string) string {

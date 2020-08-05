@@ -141,7 +141,12 @@ func TestCF%[1]s(t *testing.T) {
 `, problemID)
 
 	const rootPath = "../../main/"
-	mainFilePath := rootPath + problemID + ".go"
+	dir := rootPath + getDirName(contestID) + "/"
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
+	mainFilePath := dir + problemID + ".go"
 	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
 		open.Run(absPath(mainFilePath))
 		return fmt.Errorf("文件已存在！")
@@ -150,7 +155,7 @@ func TestCF%[1]s(t *testing.T) {
 		return err
 	}
 	open.Run(absPath(mainFilePath))
-	testFilePath := rootPath + problemID + "_test.go"
+	testFilePath := dir + problemID + "_test.go"
 	if err := ioutil.WriteFile(testFilePath, []byte(mainTestStr), 0644); err != nil {
 		return err
 	}
