@@ -156,6 +156,7 @@ func sortCollections() {
 	// 与其他的各种带选择的算法乱套，即最优比率啥啥的
 	// https://oi-wiki.org/misc/frac-programming/
 	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
+	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C
 
 	// CDQ 分治
 	// todo https://oi-wiki.org/misc/cdq-divide/
