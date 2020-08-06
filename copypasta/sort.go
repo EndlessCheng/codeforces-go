@@ -70,7 +70,7 @@ func sortCollections() {
 
 	searchRange := func(l, r int, f func(int) bool) int {
 		for l < r {
-			m := (l + r) >> 1 // 注意 l+r 是否超 int
+			m := (l + r) >> 1 // 注意 l+r 是否超 int，必要时使用 int64
 			if f(m) {
 				r = m
 			} else {
@@ -87,23 +87,11 @@ func sortCollections() {
 	//	...
 	//})
 
-	search64 := func(n int64, f func(int64) bool) int64 {
-		i, j := int64(0), n
-		for i < j {
-			h := (i + j) >> 1
-			if f(h) {
-				j = h
-			} else {
-				i = h + 1
-			}
-		}
-		return i
-	}
-
-	// NOTE: step 取多少合适：
+	// NOTE: 二分三分中的 step 取多少合适：
 	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 CF578C）
 
-	binarySearch := func(l, r float64, f func(x float64) bool) float64 {
+	// 实数二分
+	binarySearchF := func(l, r float64, f func(x float64) bool) float64 {
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for ; step > 0; step-- {
 			mid := (l + r) / 2
@@ -121,7 +109,7 @@ func sortCollections() {
 	// https://codeforces.ml/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
-	ternarySearch := func(l, r float64, f func(x float64) float64) float64 {
+	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
 		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for ; step > 0; step-- {
 			m1 := l + (r-l)/3
@@ -182,6 +170,6 @@ func sortCollections() {
 	_ = []interface{}{
 		insertionSort,
 		lowerBound, upperBound,
-		searchRange, search64, binarySearch, ternarySearch, ternarySearchInt,
+		searchRange, binarySearchF, ternarySearchF, ternarySearchInt,
 	}
 }
