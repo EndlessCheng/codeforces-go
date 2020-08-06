@@ -10,6 +10,9 @@ package copypasta
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/
 
+// EXTRA: 离散化线段树
+// https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
+
 // EXTRA: zkw 线段树
 // 虽说写起来很快，但是 debug 就比较难受了
 // 张昆玮《统计的力量》
