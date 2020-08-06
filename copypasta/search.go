@@ -491,14 +491,66 @@ func loopCollection() {
 }
 
 func gridCollection() {
-	type _p struct{ x, y int }
-	dir4 := [...]_p{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-
 	type point struct{ x, y int }
+	dir4 := []point{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	type pair struct {
+		point
+		dep int
+	}
 
-	isValidPoint := func(g [][]byte, p point) bool {
+	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子
+	// 无法到达时返回 1e9
+	// t 也可是别的东西，比如某个特殊符号等
+	// https://ac.nowcoder.com/acm/contest/6781/B
+	disST := func(g [][]byte, s point, t point) int {
 		n, m := len(g), len(g[0])
-		return 0 <= p.x && p.x < n && 0 <= p.y && p.y < m && g[p.x][p.y] != '#'
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		vis[s.x][s.y] = true
+		q := []pair{{s, 0}}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			// g[p.x][p.y] == t
+			if p.point == t {
+				return p.dep
+			}
+			for _, d := range dir4 {
+				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
+					vis[xx][yy] = true
+					q = append(q, pair{point{xx, yy}, p.dep + 1})
+				}
+			}
+		}
+		return 1e9
+	}
+
+	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子
+	// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
+	findAllReachableTargets := func(g [][]byte, s point, t byte) (ps []point) {
+		n, m := len(g), len(g[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		vis[s.x][s.y] = true
+		q := []point{s}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			if g[p.x][p.y] == t {
+				ps = append(ps, p)
+			}
+			for _, d := range dir4 {
+				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
+					vis[xx][yy] = true
+					q = append(q, point{xx, yy})
+				}
+			}
+		}
+		return
 	}
 
 	// DFS 格点找有多少个连通分量
@@ -511,7 +563,7 @@ func gridCollection() {
 			vis[i] = make([]bool, m)
 		}
 		const target byte = '.'
-		var targetsPos [][2]int
+		//var targetsPos []point
 		var f func(i, j int) bool
 		f = func(i, j int) bool {
 			if i < 0 || i >= n || j < 0 || j >= m {
@@ -519,22 +571,21 @@ func gridCollection() {
 			} // 出边界的不算
 			if vis[i][j] || g[i][j] != target {
 				return true
-			}
+			} // 已访问或到达合法边界
 			vis[i][j] = true
-			targetsPos = append(targetsPos, [2]int{i, j})
-			validComp := true
-			// 遍历完该连通分量再 return，保证不重不漏
+			//targetsPos = append(targetsPos, point{i, j})
+			validCC := true
 			for _, d := range dir4 {
 				if !f(i+d.x, j+d.y) {
-					validComp = false
+					validCC = false // 遍历完该连通分量再 return，保证不重不漏
 				}
 			}
-			return validComp
+			return validCC
 		}
 		for i, gi := range g {
 			for j, gij := range gi {
 				if gij == target && !vis[i][j] {
-					targetsPos = [][2]int{}
+					//targetsPos = []point{}
 					if f(i, j) {
 						comps++
 						// do targetsPos...
@@ -543,6 +594,13 @@ func gridCollection() {
 			}
 		}
 		return
+	}
+
+	// other help functions
+
+	isValidPoint := func(g [][]byte, p point) bool {
+		n, m := len(g), len(g[0])
+		return 0 <= p.x && p.x < n && 0 <= p.y && p.y < m && g[p.x][p.y] != '#'
 	}
 
 	findOneTargetAnyWhere := func(g [][]byte, tar byte) point {
@@ -556,89 +614,11 @@ func gridCollection() {
 		return point{-1, -1}
 	}
 
-	countTargetAnyWhere := func(g [][]byte, tar byte) (cnt int) {
-		for _, row := range g {
-			for _, b := range row {
+	findAllTargetsAnyWhere := func(g [][]byte, tar byte) (ps []point) {
+		for i, row := range g {
+			for j, b := range row {
 				if b == tar {
-					cnt++
-				}
-			}
-		}
-		return
-	}
-
-	type pair struct {
-		point
-		dep int
-	}
-
-	// 网格图，能否从 (s.x,s.y) 到 (t.x,t.y)，'#' 为障碍物
-	reachable := func(g [][]byte, s, t point) bool {
-		n, m := len(g), len(g[0])
-		vis := make([][]bool, n)
-		for i := range vis {
-			vis[i] = make([]bool, m)
-		}
-		vis[s.x][s.y] = true
-		for q := []point{s}; len(q) > 0; {
-			p := q[0]
-			q = q[1:]
-			if p == t {
-				return true
-			}
-			for _, d := range dir4 {
-				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
-					vis[xx][yy] = true
-					q = append(q, point{xx, yy})
-				}
-			}
-		}
-		return false
-	}
-
-	// 网格图，从 (s.x,s.y) 到 (t.x,t.y) 的最短距离，'#' 为障碍物
-	// 无法到达时返回 -1
-	bfsDis := func(g [][]byte, s, t point) int {
-		n, m := len(g), len(g[0])
-		vis := make([][]bool, n)
-		for i := range vis {
-			vis[i] = make([]bool, m)
-		}
-		vis[s.x][s.y] = true
-		for q := []pair{{s, 0}}; len(q) > 0; {
-			p := q[0]
-			q = q[1:]
-			if p.point == t {
-				return p.dep
-			}
-			for _, d := range dir4 {
-				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
-					vis[xx][yy] = true
-					q = append(q, pair{point{xx, yy}, p.dep + 1})
-				}
-			}
-		}
-		return -1
-	}
-
-	// 从 s 出发寻找 tar，返回所有 tar 所处的坐标
-	findAllReachableTargets := func(g [][]byte, s point, tar byte) (ps []point) {
-		n, m := len(g), len(g[0])
-		vis := make([][]bool, n)
-		for i := range vis {
-			vis[i] = make([]bool, m)
-		}
-		vis[s.x][s.y] = true
-		for q := []point{s}; len(q) > 0; {
-			p := q[0]
-			q = q[1:]
-			if g[p.x][p.y] == tar {
-				ps = append(ps, p)
-			}
-			for _, d := range dir4 {
-				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' {
-					vis[xx][yy] = true
-					q = append(q, point{xx, yy})
+					ps = append(ps, point{i, j})
 				}
 			}
 		}
@@ -646,9 +626,8 @@ func gridCollection() {
 	}
 
 	_ = []interface{}{
-		isValidPoint,
+		disST, findAllReachableTargets,
 		dfsGrids,
-		findOneTargetAnyWhere, countTargetAnyWhere,
-		reachable, bfsDis, findAllReachableTargets,
+		isValidPoint, findOneTargetAnyWhere, findAllTargetsAnyWhere,
 	}
 }
