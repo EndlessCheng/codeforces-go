@@ -1108,11 +1108,17 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
 	initFa(n)
 	sum := int64(0)
+	cntE := 0
 	for _, e := range edges {
 		if fv, fw := find(e.v), find(e.w); fv != fw {
 			sum += int64(e.wt)
 			fa[fv] = fw
+			cntE++
 		}
+	}
+	// 图不连通
+	if cntE < n-1 {
+		return -1
 	}
 	return sum
 }
