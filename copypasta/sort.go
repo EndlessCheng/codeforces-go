@@ -87,10 +87,12 @@ func sortCollections() {
 	//	...
 	//})
 
-	// NOTE: 二分三分中的 step 取多少合适：
+	// TIPS: 二分三分中的 step 取多少合适：
 	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 CF578C）
+	// TIPS: l 和 r 可以稍微往左右取宽点，从而保证触发相关逻辑，见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
 
 	// 实数二分
+	// 最大化平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	binarySearchF := func(l, r float64, f func(x float64) bool) float64 {
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for ; step > 0; step-- {
