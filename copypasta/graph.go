@@ -1396,9 +1396,11 @@ func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
-// 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)
+// 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)   KM
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // https://zhuanlan.zhihu.com/p/62981901
+// https://www.luogu.com.cn/problem/solution/P6577
+// 模板题 https://www.luogu.com.cn/problem/P3967 https://www.luogu.com.cn/problem/P6577
 func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	// TODO
 	return
