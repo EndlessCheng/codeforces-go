@@ -156,7 +156,31 @@ func sortCollections() {
 	// 与其他的各种带选择的算法乱套，即最优比率啥啥的
 	// https://oi-wiki.org/misc/frac-programming/
 	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
-	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C
+	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
+	search01 := func(ps [][2]int, k int) float64 {
+		// 必须选 k 对，最大化 ∑ai/∑bi
+		n := len(ps)
+		const eps = 1e-8
+		l, r := 0.0, 1e5 // r=max{ai}/min{bi}
+		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
+			mid := (l + r) / 2
+			b := make([]float64, n)
+			for i, p := range ps {
+				b[i] = float64(p[0]) - mid*float64(p[1])
+			}
+			sort.Float64s(b) // 由于只需要求最大的 k 个数，也可以用 nthElement
+			s := 0.0
+			for _, v := range b[n-k:] {
+				s += v
+			}
+			if s < 0 {
+				r = mid
+			} else {
+				l = mid
+			}
+		}
+		return (l + r) / 2
+	}
 
 	// CDQ 分治
 	// todo https://oi-wiki.org/misc/cdq-divide/
@@ -172,5 +196,6 @@ func sortCollections() {
 		insertionSort,
 		lowerBound, upperBound,
 		searchRange, binarySearchF, ternarySearchF, ternarySearchInt,
+		search01,
 	}
 }
