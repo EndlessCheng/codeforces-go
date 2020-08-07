@@ -4,6 +4,7 @@ import (
 	"index/suffixarray"
 	"math/bits"
 	"reflect"
+	"sort"
 	"strings"
 	"unsafe"
 )
@@ -34,6 +35,13 @@ func stringCollection() {
 
 	unsafeToString := func(b []byte) string {
 		return *(*string)(unsafe.Pointer(&b))
+	}
+
+	// 返回 s 中 t 的所有位置
+	indexAll := func(s, t []byte) []int {
+		pos := suffixarray.New(s).Lookup(t, -1)
+		sort.Ints(pos)
+		return pos
 	}
 
 	// 字符串哈希
@@ -120,8 +128,8 @@ func stringCollection() {
 	// https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
-	// 模板题 https://www.luogu.com.cn/problem/P5410
-	// 例题 https://codeforces.ml/problemset/problem/432/D
+	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A https://www.luogu.com.cn/problem/P5410
+	// 例题 https://codeforces.com/problemset/problem/432/D
 	calcZArray := func(s []byte) []int {
 		n := len(s)
 		z := make([]int, n)
@@ -428,6 +436,7 @@ func stringCollection() {
 
 	_ = []interface{}{
 		unsafeGetBytes, unsafeToString,
+		indexAll,
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		zSearch,
