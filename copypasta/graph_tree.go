@@ -787,6 +787,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // todo https://codeforces.com/blog/entry/80383
 // 模板题 https://www.luogu.com.cn/problem/P3690
 // https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
+// 最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/

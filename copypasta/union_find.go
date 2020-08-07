@@ -167,19 +167,21 @@ func unionFindVertexWeight(n int) {
 // 并查集 - 维护边权（种类）
 // 维护的是点到其所在集合根节点（代表元）的距离（种类集合）等
 // 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
+// https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-11
+// https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-12
 // https://oi-wiki.org/ds/dsu/#_9
-// 模板题 https://codeforces.ml/problemset/problem/1074/D
-// 种类并查集：同义词反义词 https://codeforces.ml/problemset/problem/766/D
+// 模板题 https://codeforces.com/problemset/problem/1074/D
+// 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 func unionFindEdgeWeight(n int) {
 	const kinds = 2
 	var fa, dis []int
 	initFa := func(n int) {
 		fa = make([]int, n)
-		dis = make([]int, n)
 		for i := range fa {
 			fa[i] = i
 		}
+		dis = make([]int, n)
 	}
 	initFa(n + 1) //
 	var find func(int) int
