@@ -1071,10 +1071,10 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(|E|⋅log|E|)，或者边已经按权值排序的情况
 // https://oi-wiki.org/graph/mst/#kruskal
-// 模板题 https://www.luogu.com.cn/problem/P3366
+// 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
-func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
+func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -1091,29 +1091,30 @@ func (*graph) mstKruskal(in io.Reader, n, m int) (sum int64) {
 	}
 
 	type edge struct {
-		v, w   int
-		weight int // int64
-		eid    int // 某些题目需要
+		v, w int
+		wt   int // int64
+		eid  int // 某些题目需要
 	}
 	edges := make([]edge, m)
 	for i := range edges {
-		var v, w, weight int
-		Fscan(in, &v, &w, &weight)
+		v, w, wt := 0, 0, 0
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		edges[i] = edge{v, w, weight, i}
+		edges[i] = edge{v, w, wt, i}
 	}
 
-	// weight 范围小的话也可以用桶排
-	sort.Slice(edges, func(i, j int) bool { return edges[i].weight < edges[j].weight })
+	// 边权范围小的话也可以用桶排
+	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
 	initFa(n)
+	sum := int64(0)
 	for _, e := range edges {
 		if fv, fw := find(e.v), find(e.w); fv != fw {
-			sum += int64(e.weight)
+			sum += int64(e.wt)
 			fa[fv] = fw
 		}
 	}
-	return
+	return sum
 }
 
 // 最小生成树 Prim
