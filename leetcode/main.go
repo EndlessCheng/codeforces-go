@@ -40,6 +40,31 @@ func firstMissingPositive(a []int) int {
 	return n + 1
 }
 
+// LC99
+func recoverTree(root *TreeNode) {
+	nodes := []*TreeNode{}
+	var f func(o *TreeNode)
+	f = func(o *TreeNode) {
+		if o == nil {
+			return
+		}
+		f(o.Left)
+		nodes = append(nodes, o)
+		f(o.Right)
+	}
+	f(root)
+	so := make([]*TreeNode, len(nodes))
+	copy(so, nodes)
+	sort.Slice(so, func(i, j int) bool { return so[i].Val < so[j].Val })
+	do := []*TreeNode{}
+	for i, o := range nodes {
+		if o.Val != so[i].Val {
+			do = append(do, o)
+		}
+	}
+	do[0].Val, do[1].Val = do[1].Val, do[0].Val
+}
+
 // LC 124
 func maxPathSum(root *TreeNode) int {
 	max := func(a, b int) int {
