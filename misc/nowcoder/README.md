@@ -11,6 +11,8 @@
 |6629|[牛客编程巅峰赛S1赛季第6场 Div.2](https://ac.nowcoder.com/acm/contest/6629)|
 |6741|[牛客编程巅峰赛S1赛季第7场 Div.1](https://ac.nowcoder.com/acm/contest/6741)|
 |6778|[牛客编程巅峰赛S1赛季第8场 Div.1](https://ac.nowcoder.com/acm/contest/6778)|
+|6781|[牛客编程巅峰赛S1赛季第9场 Div.1](https://ac.nowcoder.com/acm/contest/6781)|
+|6910|[牛客编程巅峰赛S1赛季第10场 Div.1](https://ac.nowcoder.com/acm/contest/6910)|
 
 ```go
 

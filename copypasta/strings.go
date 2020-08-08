@@ -122,14 +122,30 @@ func stringCollection() {
 		return 1 // 无小于 n 的循环节
 	}
 
-	// Z-algorithm（扩展 KMP）
+	// Z-function（扩展 KMP）
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
 	// 参考 Competitive Programmer’s Handbook Ch.26
 	// https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A https://www.luogu.com.cn/problem/P5410
-	// 例题 https://codeforces.com/problemset/problem/432/D
+	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
+	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
+	//		即 strings.Index(s+s, t)
+	// 每个前缀的出现次数 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/C
+	//		用 z[i] 来进行区间更新操作，实现时用一个差分数组即可
+	//		注：字符串倒过来就是每个后缀的出现次数
+	// 既是前缀又是后缀的子串个数 https://codeforces.com/problemset/problem/432/D
+	//		解法之一是 a[z[i]]++ 然后求 a 的后缀和
+	//		解法之二是排序二分，见我的代码
+	//		其他解法有 KMP+DP 或 SA，见 https://www.luogu.com.cn/problem/solution/CF432D
+	// 最长回文前缀 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/D
+	//		构造 s+reverse(s)
+	// 判断是否存在 i 使得 s[i:]+reverse(s[:i]) == t https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/E
+	//		构造 t+s
+	// 最短的包含 s 和 t 的字符串 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/F
+	// 		构造 s+t 和 t+s
+	//
 	calcZArray := func(s []byte) []int {
 		n := len(s)
 		z := make([]int, n)
@@ -284,7 +300,10 @@ func stringCollection() {
 		可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
 		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
-			即 n*(n+1)/2-sum(height) https://oi-wiki.org/string/sa/#_13
+			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
+			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
+		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
+			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
 		所有子串的所有公共前后缀个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D

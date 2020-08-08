@@ -1351,6 +1351,7 @@ NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置�
 Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6 http://oeis.org/A000292
 a(n) = Sum_{1<=i<=j<=n} j-i
 a(n) = sum of all the possible products p*q where (p,q) are ordered pairs and p + q = n + 1
+a(n) = 长度为 n 的字符串的所有子串长度之和
 
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
