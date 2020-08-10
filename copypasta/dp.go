@@ -580,6 +580,8 @@ func dpCollections() {
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
+	todo 题单 https://ac.nowcoder.com/acm/problem/collection/808
+	     题单 https://ac.nowcoder.com/acm/problem/collection/810
 	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
 	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
 	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
@@ -769,12 +771,15 @@ func dpCollections() {
 	https://codeforces.ml/blog/entry/20935
 	https://codeforces.ml/blog/entry/63257
 	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
+	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
+	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.ml/problemset/problem/982/C
 	*/
 
-	// todo 公司聚会/树上最大独立集
+	// todo 没有上司的舞会/树上最大独立集
 	// 进阶指南 p.289-290
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
+	// todo 题目 https://ac.nowcoder.com/acm/problem/51178
 
 	// 树上最大匹配
 	// g[v] = ∑{max(f[son],g[son])}
