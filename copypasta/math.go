@@ -25,6 +25,10 @@ https://oeis.org/A000337 (n-1) * 2^n + 1
 https://oeis.org/A036289 n * 2^n
 https://oeis.org/A036799 (n-1) * 2^(n+1) + 2
 
+https://oeis.org/A027992 a(n) = 2^n*(3n-1)+2 = The total sum of squares of parts in all compositions of n （做 https://codeforces.com/problemset/problem/235/B 时找到的序列）
+https://oeis.org/A271638 a(n) = (13*n-36)*2^(n-1)+6*n+18 = 	The total sum of the cubes of all parts of all compositions of n
+	线性的情况是上面的 A001787
+
 https://en.wikipedia.org/wiki/Faulhaber%27s_formula
 https://oeis.org/A000330 平方和 = n*(n+1)*(2*n+1)/6
 https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
