@@ -63,6 +63,8 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 ## Others
 
+My GoLand `Live Templates` and `Postfix Completion` [settings](./misc/my_goland_template)
+
 [https://www.bilibili.com/video/av43450831](https://www.bilibili.com/video/av43450831)
 
 [Markdown Paste](http://md.aclickall.com/)

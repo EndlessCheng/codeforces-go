@@ -8,6 +8,10 @@
 - 模板补充内容（常见题型中的额外代码、建模技巧等）
 - 相关题目（模板题、经典题、建模转换题等）
 
+## 代码生成与测试
+
+见 [template](./template) 中的 `generator.go` 以及各个文件夹下的 `generator.go`
+
 ## 题库
 
 [Problem Topics](https://codeforces.com/blog/entry/55274)
