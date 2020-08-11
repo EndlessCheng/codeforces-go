@@ -16,3 +16,4 @@
 /dash
 *.txt
 /main.go
+/main_test.go
