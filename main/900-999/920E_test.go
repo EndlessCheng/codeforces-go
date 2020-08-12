@@ -13,5 +13,5 @@ func TestSol920E(t *testing.T) {
 outputCopy
 2
 1 1 `
-	testutil.AssertEqualCase(t, rawText, 0, Sol190E)
+	testutil.AssertEqualCase(t, rawText, 0, Sol920E)
 }
