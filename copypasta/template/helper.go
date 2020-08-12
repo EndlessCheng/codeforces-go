@@ -30,9 +30,9 @@ func copyFile(dst, src string) error {
 	return nil
 }
 
-// https://codeforces.ml/problemset/problem/1293/C
-// https://codeforces.ml/contest/1353/problem/A
-// https://codeforces.ml/gym/102253/problem/C
+// https://codeforces.com/problemset/problem/1293/C
+// https://codeforces.com/contest/1353/problem/A
+// https://codeforces.com/gym/102253/problem/C
 func parseCodeforcesProblemURL(urlStr string) (contestID, problemID string, isGYM bool) {
 	sp := strings.Split(urlStr, "/")
 	switch {
@@ -47,7 +47,7 @@ func parseCodeforcesProblemURL(urlStr string) (contestID, problemID string, isGY
 	}
 }
 
-func getDirName(contestID string) string {
+func genDirName(contestID string) string {
 	cid, err := strconv.Atoi(contestID)
 	if err != nil {
 		panic(err)

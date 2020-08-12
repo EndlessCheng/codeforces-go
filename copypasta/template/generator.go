@@ -141,7 +141,7 @@ func TestCF%[1]s(t *testing.T) {
 `, problemID)
 
 	const rootPath = "../../main/"
-	dir := rootPath + getDirName(contestID) + "/"
+	dir := rootPath + genDirName(contestID) + "/"
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		return err
 	}
