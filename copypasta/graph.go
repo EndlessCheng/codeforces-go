@@ -18,17 +18,7 @@ TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的�
 NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
 
-一个错误的结论：有向图，按照深度奇偶性分类，子图一定不存在长度大于 1 的路径
-from https://codeforces.com/problemset/problem/1368/E
-input
-4 5
-3 5
-1 3
-1 5
-2 3
-3 4
-2 4
-
+环与独立集 https://codeforces.com/problemset/problem/1364/D
 */
 
 // namespace
