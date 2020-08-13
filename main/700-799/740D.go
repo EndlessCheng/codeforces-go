@@ -7,7 +7,6 @@ import (
 )
 
 // TODO https://www.luogu.com.cn/blog/qiyue7ACM/solution-cf739b
-
 // 也可以用一个全局栈记录当前 DFS 链，然后在链上二分。这样做更简单但是适用范围较窄
 
 // github.com/EndlessCheng/codeforces-go
