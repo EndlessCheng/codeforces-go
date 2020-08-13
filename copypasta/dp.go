@@ -386,6 +386,7 @@ func dpCollections() {
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 建模转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// EXTRA: 能否恰好装满（其实就是 waysToSum 的方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 二维费用+至少装满 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {

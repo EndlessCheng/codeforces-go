@@ -671,6 +671,7 @@ func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
+// https://codeforces.com/blog/entry/81317
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
