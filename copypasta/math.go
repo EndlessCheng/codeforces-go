@@ -18,7 +18,7 @@ AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(pow(q,n)-1)/(q-1), q!=1
        = a1*n, q==1
 
-https://oeis.org/A001787 n * 2^(n-1)
+https://oeis.org/A001787 n * 2^(n-1) = 0~n-1 的 1 的个数之和
 https://oeis.org/A000337 (n-1) * 2^n + 1
 	Number of zeros in binary numbers 1 to 111..1 (n+1 bits)
 
