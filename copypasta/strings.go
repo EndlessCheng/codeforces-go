@@ -137,7 +137,7 @@ func stringCollection() {
 	//		注：字符串倒过来就是每个后缀的出现次数
 	// 既是前缀又是后缀的子串个数 https://codeforces.com/problemset/problem/432/D
 	//		解法之一是 a[z[i]]++ 然后求 a 的后缀和
-	//		解法之二是排序二分，见我的代码
+	//		解法之二是对 z 排序二分，见我的代码
 	//		其他解法有 KMP+DP 或 SA，见 https://www.luogu.com.cn/problem/solution/CF432D
 	// 最长回文前缀 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/D
 	//		构造 s+reverse(s)
@@ -169,6 +169,7 @@ func stringCollection() {
 		}
 		return
 	}
+	// todo 反向：z[i] = LCS(s, s[:i])  串与串前缀的最长公共后缀
 
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
 	// 找到位置 i，从这个位置输出即得到字典序最小的串

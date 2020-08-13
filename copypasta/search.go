@@ -12,37 +12,69 @@ import (
 		换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」进行求解。
 */
 
-/* 排列组合 剪枝
-指数型枚举（递归或位运算）
-组合型枚举（递归+剪枝）
-排列型枚举（递归+跳过以及枚举的值）
-搜索+剪枝
+/* 搜索+剪枝
+任意子集（不需要剪枝的话可以直接位运算枚举）
+部分子集
+排列（递归+跳过已经枚举的值）
 */
 func searchCollection() {
-	// 指数型枚举：从 1~n 中不重复地选取任意个元素（递归写法）
+	// 任意子集：从集合 1~n 中不重复地选取任意个元素
+	// 位运算写法见下面的 loopCollection
+	// 模板题 https://ac.nowcoder.com/acm/contest/6913/A
 	chooseAny := func(n int) {
-		chosen := []int{}
-		var f func(p int)
-		f = func(p int) {
-			if p == n+1 {
-				// do chosen...
+		{
+			cnt := 0
+			chosen := []int{}
+			var f func(int)
+			f = func(p int) {
+				if p == n+1 {
+					// do chosen... or just cnt++
+					cnt++
+					return
+				}
 
-				return
+				// 不选 p
+				f(p + 1)
+
+				// 选 p
+				// 剪枝：能否选 p（是否与 chosen 中的元素冲突等）...
+
+				chosen = append(chosen, p)
+				f(p + 1)
+				chosen = chosen[:len(chosen)-1]
 			}
-			// 不选 p
-			f(p + 1)
-			// 选 p
-			chosen = append(chosen, p)
-			f(p + 1)
-			chosen = chosen[:len(chosen)-1]
+			f(1)
 		}
-		f(1)
+
+		{
+			cnt := 0
+			used := make([]bool, n+1)
+			var f func(int)
+			f = func(p int) {
+				if p == n+1 {
+					// do used... or just cnt++
+					cnt++
+					return
+				}
+
+				// 不选 p
+				f(p + 1)
+
+				// 选 p
+				// 剪枝：能否选 p（是否与 used 中的元素冲突等）...
+
+				used[p] = true
+				f(p + 1)
+				used[p] = false
+			}
+			f(1)
+		}
 	}
 
-	// 组合型枚举：从 1~n 中不重复地选取至多 m 个元素 (0<=m<=n)
+	// 部分子集：从集合 1~n 中不重复地选取至多 m 个元素 (0<=m<=n)
 	chooseAtMost := func(n, m int) {
 		chosen := []int{}
-		var f func(p int)
+		var f func(int)
 		f = func(p int) {
 			if len(chosen) > m || len(chosen)+n-p+1 < m {
 				return
@@ -62,11 +94,11 @@ func searchCollection() {
 		f(1)
 	}
 
-	// 组合型枚举（可重复）
+	// 可重复组合
+	// 以 LC1467/周赛191D 为例 https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	// 每个数至多可选 upper[i] 个，从中随机选择 m 个（m<=∑upper），求满足题设条件的概率
 	// 枚举每个数选了多少个，根据乘法原理计算某个组合的个数（例如 upper=[4,3,1]，m=4，其中选2个0，2个1就有C(4,2)*C(3,2)种）
 	// 总数有 C(∑upper,m) 种
-	// 以 LC1467/周赛191D 为例 https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	searchCombinations := func(upper []int) float64 {
 		const mx = 48
 		C := [mx + 1][mx + 1]int{}
@@ -112,8 +144,9 @@ func searchCollection() {
 		return float64(okWays) / float64(C[2*sum][sum])
 	}
 
-	// 排列型枚举（不能重复）
+	// 排列（不能重复）
 	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 a 中且不能重复）
+	// 对比上面的子集搜索，那是对每个位置枚举是否选择（两个分支），而这里每个位置有 n 个分支
 	// 例题见 LC1307/周赛169D https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
 	searchPermutations := func(a []int) bool {
 		n := len(a)
