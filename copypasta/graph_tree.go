@@ -396,6 +396,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
+// 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径最值）https://codeforces.ml/problemset/problem/609/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // TODO log 优化
@@ -500,13 +501,13 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	vs := make([]int, 0, 2*n-1)  // 欧拉序列
 	pos := make([]int, n)        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	dep := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
-	dis := make([]int, n)        // dis[v] 表示 v 到 root 的距离
+	disRoot := make([]int, n)    // disRoot[v] 表示 v 到 root 的距离
 	var dfs func(v, p, d int)    // 若有边权需额外传参 dis
 	dfs = func(v, p, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
 		dep = append(dep, d)
-		dis[v] = d
+		disRoot[v] = d
 		for _, w := range g[v] {
 			if w != p {
 				dfs(w, v, d+1) // 若有边权则额外传入 dis+e.weight
@@ -552,7 +553,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 		}
 		return vs[stQuery(pv, pw+1)]
 	}
-	_d := func(v, w int) int { return dis[v] + dis[w] - dis[_lca(v, w)]<<1 }
+	_d := func(v, w int) int { return disRoot[v] + disRoot[w] - disRoot[_lca(v, w)]<<1 }
 
 	_ = _d
 }
@@ -562,7 +563,16 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 // 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
-func (*tree) lcaTarjan(in io.Reader, n, root int, g [][]int) []int {
+func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
+	g := make([][]int, n)
+	for i := 1; i < n; i++ {
+		v, w := 0, 0
+		Fscan(in, &v, &w)
+		v--
+		w--
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+	}
 	pa := make([]int, n)
 	for i := range pa {
 		pa[i] = i
@@ -574,31 +584,13 @@ func (*tree) lcaTarjan(in io.Reader, n, root int, g [][]int) []int {
 		}
 		return pa[x]
 	}
-	var q int
-	Fscan(in, &q)
+
 	lca := make([]int, q)
+	dis := make([]int, q) // dis(q.v,q.w)
 	type query struct{ w, i int }
 	qs := make([][]query, n)
-	vis := make([]int8, n)
-	var _f func(int)
-	_f = func(v int) {
-		vis[v] = 1
-		for _, w := range g[v] {
-			if vis[w] == 0 {
-				_f(w)
-				pa[w] = v
-			}
-		}
-		for _, q := range qs[v] {
-			if w := q.w; vis[w] == 2 {
-				// do(v, w, lca)...
-				lca[q.i] = find(w)
-			}
-		}
-		vis[v] = 2
-	}
-	for i := range lca {
-		var v, w int
+	for i := 0; i < q; i++ {
+		v, w := 0, 0
 		Fscan(in, &v, &w)
 		v--
 		w--
@@ -606,10 +598,34 @@ func (*tree) lcaTarjan(in io.Reader, n, root int, g [][]int) []int {
 			qs[v] = append(qs[v], query{w, i})
 			qs[w] = append(qs[w], query{v, i})
 		} else {
+			// do v==w...
 			lca[i] = v
 		}
 	}
-	_f(root)
+
+	dep := make([]int, n)
+	vis := make([]int8, n)
+	var _f func(v, d int)
+	_f = func(v, d int) {
+		dep[v] = d
+		vis[v] = 1
+		for _, w := range g[v] {
+			if vis[w] == 0 {
+				_f(w, d+1)
+				pa[w] = v
+			}
+		}
+		for _, q := range qs[v] {
+			if w := q.w; vis[w] == 2 {
+				// do(v, w, lcaVW)...
+				lcaVW := find(w)
+				lca[q.i] = lcaVW
+				dis[q.i] = dep[v] + dep[w] - dep[lcaVW]<<1
+			}
+		}
+		vis[v] = 2
+	}
+	_f(root, 0)
 	return lca
 }
 
