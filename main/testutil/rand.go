@@ -49,7 +49,7 @@ func (r *RG) Float(min, max float64, precision int) float64 {
 	return v
 }
 
-// Str generates a random string with length in range [minLen, maxLen] and its chars in range [min, max], and a new line is appended
+// Str generates a random string with length in range [minLen, maxLen] and its chars in range [min, max], and a space is appended
 func (r *RG) Str(minLen, maxLen int, min, max byte) string {
 	l := minLen + rand.Intn(maxLen-minLen+1)
 	sb := &strings.Builder{}
