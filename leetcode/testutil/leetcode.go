@@ -106,10 +106,11 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 		}
 		v = reflect.ValueOf(f)
 	case reflect.Bool:
-		if rawData != "true" && rawData != "false" {
+		b, er := strconv.ParseBool(rawData)
+		if er != nil {
 			return reflect.Value{}, invalidErr
 		}
-		v = reflect.ValueOf(rawData == "true")
+		v = reflect.ValueOf(b)
 	case reflect.Slice:
 		splits, er := parseRawArray(rawData)
 		if er != nil {
