@@ -33,7 +33,7 @@ func (r *RG) NewLine() {
 	r.sb.WriteByte('\n')
 }
 
-// Int generates a random int in range [min, max], and a space is appended
+// Int generates a random int in range [min, max]
 func (r *RG) Int(min, max int) int {
 	v := min + rand.Intn(max-min+1)
 	r.sb.WriteString(strconv.Itoa(v))
@@ -41,7 +41,7 @@ func (r *RG) Int(min, max int) int {
 	return v
 }
 
-// Float generates a random float in range [min, max] with a fixed precision, and a space is appended
+// Float generates a random float in range [min, max] with a fixed precision
 func (r *RG) Float(min, max float64, precision int) float64 {
 	v := min + rand.Float64()*(max-min)
 	r.sb.WriteString(strconv.FormatFloat(v, 'f', precision, 64))
@@ -49,7 +49,7 @@ func (r *RG) Float(min, max float64, precision int) float64 {
 	return v
 }
 
-// Str generates a random string with length in range [minLen, maxLen] and its chars in range [min, max], and a space is appended
+// Str generates a random string with length in range [minLen, maxLen] and its chars in range [min, max]
 func (r *RG) Str(minLen, maxLen int, min, max byte) string {
 	l := minLen + rand.Intn(maxLen-minLen+1)
 	sb := &strings.Builder{}
@@ -64,7 +64,7 @@ func (r *RG) Str(minLen, maxLen int, min, max byte) string {
 	return s
 }
 
-// IntSlice generates a random int slice with a fixed size and its values in range [min, max], and a new line is appended
+// IntSlice generates a random int slice with a fixed size and its values in range [min, max]
 func (r *RG) IntSlice(size int, min, max int) []int {
 	a := make([]int, 0, size)
 	for i := 0; i < size; i++ {
@@ -74,7 +74,7 @@ func (r *RG) IntSlice(size int, min, max int) []int {
 	return a
 }
 
-// FloatSlice generates a random float slice with a fixed size and its values in range [min, max], and a new line is appended
+// FloatSlice generates a random float slice with a fixed size and its values in range [min, max]
 func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	a := make([]float64, 0, size)
 	for i := 0; i < size; i++ {
