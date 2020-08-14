@@ -19,6 +19,7 @@ NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
 
 环与独立集 https://codeforces.com/problemset/problem/1364/D
+匹配与独立集 https://codeforces.com/problemset/problem/1198/C
 */
 
 // namespace
