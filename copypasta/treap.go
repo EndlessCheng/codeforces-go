@@ -98,9 +98,9 @@ func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
 	}
 	if d := o.cmp(key); d >= 0 {
 		o.lr[d] = t._put(o.lr[d], key, val)
-		// 如果当前节点的优先级比根大就旋转
+		// 优先级比根大就旋转
 		if o.lr[d].priority > o.priority {
-			// 如果当前节点是根的左儿子就右旋，反之左旋
+			// 是根的左儿子就右旋，反之左旋
 			o = o.rotate(d ^ 1)
 		}
 	} else {
