@@ -638,7 +638,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
-func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
+func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 	_lca := func(v, w int) (_ int) { return }
 
 	diff := make([]int, n)

@@ -780,9 +780,11 @@ func dpCollections() {
 	// 树上最大独立集
 	// 返回最大点权和（最大独立集的情形即所有点权均为一）
 	// 进阶指南 p.289-290
+	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 https://ac.nowcoder.com/acm/problem/51178
-	maxIndependentSetOnTree := func(n, root int, g [][]int, a []int) int {
+	// 注：最大独立集+最小顶点覆盖=n
+	maxIndependentSetInTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (int, int) // int64
 		f = func(v, fa int) (notChosen, chosen int) {
 			chosen = a[v]
@@ -795,7 +797,7 @@ func dpCollections() {
 			}
 			return
 		}
-		nc, c := f(root, -1)
+		nc, c := f(0, -1)
 		return max(nc, c)
 	}
 
@@ -803,7 +805,7 @@ func dpCollections() {
 	// g[v] = ∑{max(f[son],g[son])}
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
 	// https://codeforces.com/blog/entry/2059
-	maxMatchingOnTree := func(n, root int, g [][]int) int {
+	maxMatchingInTree := func(n int, g [][]int) int { // 无根树
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
 		f = func(v, fa int) {
@@ -817,8 +819,8 @@ func dpCollections() {
 				cover[v] = max(cover[v], 1+nonCover[w]+nonCover[v]-max(cover[w], nonCover[w]))
 			}
 		}
-		f(root, -1)
-		return max(cover[root], nonCover[root])
+		f(0, -1)
+		return max(cover[0], nonCover[0])
 	}
 
 	// 换根 DP
@@ -873,6 +875,6 @@ func dpCollections() {
 		mergeStones,
 		tsp,
 		digitDP,
-		maxIndependentSetOnTree, maxMatchingOnTree, rerootDP,
+		maxIndependentSetInTree, maxMatchingInTree, rerootDP,
 	}
 }

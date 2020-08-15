@@ -22,28 +22,28 @@ func nc51178(_r io.Reader, out io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	son := make([]bool, n)
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
 		Fscan(in, &w, &v)
-		son[w-1] = true
-		g[v-1] = append(g[v-1], w-1)
+		v--
+		w--
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
 	}
 
-	rt := 0
-	for ; rt < n && son[rt]; rt++ {
-	}
-	var f func(int) (int, int)
-	f = func(v int) (notChosen, chosen int) {
+	var f func(int, int) (int, int)
+	f = func(v, fa int) (notChosen, chosen int) {
 		chosen = a[v]
 		for _, w := range g[v] {
-			nc, c := f(w)
-			notChosen += max(nc, c)
-			chosen += nc
+			if w != fa {
+				nc, c := f(w, v)
+				notChosen += max(nc, c)
+				chosen += nc
+			}
 		}
 		return
 	}
-	nc, c := f(rt)
+	nc, c := f(0, -1)
 	Fprint(out, max(nc, c))
 }
 
