@@ -54,10 +54,10 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-Non-trivial DP Tricks and Techniques https://codeforces.ml/blog/entry/47764
-SOS Dynamic Programming https://codeforces.ml/blog/entry/45223
-CSES DP section editorial https://codeforces.ml/blog/entry/70018
-CF 全部 DP 题  https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp
+Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
+SOS Dynamic Programming https://codeforces.com/blog/entry/45223
+CSES DP section editorial https://codeforces.com/blog/entry/70018
+CF 全部 DP 题  https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp
 力扣上的 DP 问题
     分类汇总 https://zhuanlan.zhihu.com/p/126546914
     https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
@@ -130,7 +130,7 @@ func dpCollections() {
 		return ans
 	}
 
-	// https://codeforces.ml/problemset/problem/510/D
+	// https://codeforces.com/problemset/problem/510/D
 	// 由于数据范围的原因，采用 map 记忆化
 	mapDP := func() {
 		type pair struct{ x, y int }
@@ -163,7 +163,7 @@ func dpCollections() {
 	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/
 	最高的广告牌 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
-	todo 最长公共上升子序列 (LCIS) https://codeforces.ml/problemset/problem/10/D
+	todo 最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
 	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
@@ -281,7 +281,7 @@ func dpCollections() {
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
-	// 变体 https://codeforces.ml/problemset/problem/1350/B
+	// 变体 https://codeforces.com/problemset/problem/1350/B
 	lisSlow := func(a []int) (ans int) {
 		n := len(a)
 		dp := make([]int, n)
@@ -321,7 +321,7 @@ func dpCollections() {
 	}
 
 	// LIS 相关构造题
-	// https://codeforces.ml/problemset/problem/1304/D
+	// https://codeforces.com/problemset/problem/1304/D
 	// https://atcoder.jp/contests/arc091/tasks/arc091_c
 
 	// 本质不同子序列个数
@@ -329,7 +329,7 @@ func dpCollections() {
 	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
 	// 其中 prev[i] 为 s[i] 的上一个相同字符位置
 	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
-	// https://codeforces.ml/problemset/problem/1183/H
+	// https://codeforces.com/problemset/problem/1183/H
 	distinctSubsequence := func(s string) int64 {
 		n := len(s)
 		prev := [26]int{}
@@ -367,7 +367,7 @@ func dpCollections() {
 	子区间 -> 前缀和
 	子序列 -> 背包
 	https://en.wikipedia.org/wiki/Knapsack_problem
-	https://codeforces.ml/blog/entry/59606
+	https://codeforces.com/blog/entry/59606
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
 	*/
@@ -475,7 +475,7 @@ func dpCollections() {
 
 	// EXTRA: 二维费用完全背包 - 求方案数
 	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
-	// https://codeforces.ml/problemset/problem/543/A
+	// https://codeforces.com/problemset/problem/543/A
 
 	// 多重背包 - 未优化
 	// 模板题 https://codeforces.com/problemset/problem/106/C
@@ -534,7 +534,7 @@ func dpCollections() {
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
 	安排邮筒 LC1478/双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
-	     https://codeforces.ml/problemset/problem/245/H
+	     https://codeforces.com/problemset/problem/245/H
 	*/
 
 	// 石子合并
@@ -573,14 +573,14 @@ func dpCollections() {
 	LC877 https://leetcode-cn.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
 	LC1140 https://leetcode-cn.com/problems/stone-game-ii/
 	LC1406 https://leetcode-cn.com/problems/stone-game-iii/
-	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
+	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
 	*/
 
 	/* 状压 DP
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
-	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
+	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/808
 	     题单 https://ac.nowcoder.com/acm/problem/collection/810
 	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
@@ -675,7 +675,7 @@ func dpCollections() {
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	LC902 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
-	todo 套题 https://codeforces.ml/blog/entry/53960
+	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
@@ -735,7 +735,7 @@ func dpCollections() {
 	}
 
 	/* 数据结构优化 DP
-	https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
+	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
 	动态 DP - 线段树维护转移矩阵
 	todo https://www.cnblogs.com/Miracevin/p/9124511.html
@@ -754,7 +754,7 @@ func dpCollections() {
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
-	// https://codeforces.ml/blog/entry/63823
+	// https://codeforces.com/blog/entry/63823
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
 	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
 	//      浅谈斜率优化 https://www.luogu.com.cn/blog/duyi/xie-lv-you-hua
@@ -769,12 +769,12 @@ func dpCollections() {
 
 	/* 树形 DP
 	https://blog.csdn.net/weixin_43914593/article/details/107145592
-	https://codeforces.ml/blog/entry/20935
-	https://codeforces.ml/blog/entry/63257
-	CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
+	https://codeforces.com/blog/entry/20935
+	https://codeforces.com/blog/entry/63257
+	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
-	https://codeforces.ml/problemset/problem/982/C
+	https://codeforces.com/problemset/problem/982/C
 	*/
 
 	// todo 没有上司的舞会/树上最大独立集
@@ -785,7 +785,7 @@ func dpCollections() {
 	// 树上最大匹配
 	// g[v] = ∑{max(f[son],g[son])}
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
-	// https://codeforces.ml/blog/entry/2059
+	// https://codeforces.com/blog/entry/2059
 	maxMatchingOnTree := func(n int, g [][]int) int {
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
@@ -806,8 +806,8 @@ func dpCollections() {
 
 	// 换根 DP
 	// 进阶指南 p.292-295
-	// https://codeforces.ml/blog/entry/20935
-	// 例题 https://codeforces.ml/problemset/problem/219/D
+	// https://codeforces.com/blog/entry/20935
+	// 例题 https://codeforces.com/problemset/problem/219/D
 	// 下面的代码来自 http://poj.org/problem?id=3585
 	rerootDP := func(n int) {
 		type edge struct{ to, cap int }
