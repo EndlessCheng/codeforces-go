@@ -779,14 +779,14 @@ func dpCollections() {
 
 	// 树上最大独立集
 	// 返回最大点权和（最大独立集的情形即所有点权均为一）
-	// 进阶指南 p.289-290
+	// 每个点有选和不选两种决策，接受子树转移时，选的决策只能加上不选子树，而不选的决策可以加上 max{不选子树, 选子树}
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
-	// 经典题：没有上司的舞会 https://ac.nowcoder.com/acm/problem/51178
+	// 经典题：没有上司的舞会 https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
 	// 注：最大独立集+最小顶点覆盖=n
 	maxIndependentSetInTree := func(n int, g [][]int, a []int) int { // 无根树
-		var f func(int, int) (int, int) // int64
-		f = func(v, fa int) (notChosen, chosen int) {
+		var f func(int, int) (notChosen, chosen int)
+		f = func(v, fa int) (notChosen, chosen int) { // int64
 			chosen = a[v]
 			for _, w := range g[v] {
 				if w != fa {
@@ -801,10 +801,46 @@ func dpCollections() {
 		return max(nc, c)
 	}
 
+	// 树上最小支配集
+	// 返回最小点权和（最小支配集的情形即所有点权均为一）
+	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
+	// dp[i][0]：i 属于支配集 = a[i]+∑min(dp[w][0],dp[w][1],dp[w][2])
+	// dp[i][1]：i 不属于支配集，且被儿子支配 = ∑min(dp[w][0],dp[w][1]) + 如果全选 dp[w][1] 则补上 min{dp[w][0]-dp[w][1]}
+	// dp[i][2]：i 不属于支配集，且被父亲支配 = ∑min(dp[w][0],dp[w][1])
+	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
+	// 经典题：保安站岗 https://www.luogu.com.cn/problem/P2458 手机网络 https://www.luogu.com.cn/problem/P2899 https://ac.nowcoder.com/acm/problem/24953
+	// todo EXTRA: 消防局的设立（支配距离为 2）https://www.luogu.com.cn/problem/P2279
+	minDominatingSetInTree := func(n int, g [][]int, a []int) int { // 无根树
+		const inf int = 1e9 // 1e18
+		var f func(int, int) (chosen, bySon, byFa int)
+		f = func(v, fa int) (chosen, bySon, byFa int) { // int64
+			chosen = a[v]
+			extra := inf
+			for _, w := range g[v] {
+				if w != fa {
+					c, bs, bf := f(w, v)
+					m := min(c, bs)
+					chosen += min(m, bf)
+					bySon += m
+					byFa += m
+					extra = min(extra, c-bs)
+				}
+			}
+			if extra > 0 {
+				bySon += extra
+			}
+			return
+		}
+		chosen, bySon, _ := f(0, -1)
+		return min(chosen, bySon)
+	}
+
 	// 树上最大匹配
 	// g[v] = ∑{max(f[son],g[son])}
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
 	// https://codeforces.com/blog/entry/2059
+	// https://blog.csdn.net/lycheng1215/article/details/78368002
+	// https://vijos.org/p/1892
 	maxMatchingInTree := func(n int, g [][]int) int { // 无根树
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
@@ -875,6 +911,6 @@ func dpCollections() {
 		mergeStones,
 		tsp,
 		digitDP,
-		maxIndependentSetInTree, maxMatchingInTree, rerootDP,
+		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree, rerootDP,
 	}
 }
