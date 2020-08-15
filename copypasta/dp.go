@@ -777,10 +777,27 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/982/C
 	*/
 
-	// todo 没有上司的舞会/树上最大独立集
+	// 树上最大独立集
+	// 返回最大点权和（最大独立集的情形即所有点权均为一）
 	// 进阶指南 p.289-290
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
-	// todo 题目 https://ac.nowcoder.com/acm/problem/51178
+	// 经典题：没有上司的舞会 https://ac.nowcoder.com/acm/problem/51178
+	maxIndependentSetOnTree := func(n int, g [][]int, a []int) int {
+		var f func(int, int) (int, int) // int64
+		f = func(v, fa int) (notChosen, chosen int) {
+			chosen = a[v]
+			for _, w := range g[v] {
+				if w != fa {
+					nc, c := f(w, v)
+					notChosen += max(nc, c)
+					chosen += nc
+				}
+			}
+			return
+		}
+		nc, c := f(0, -1)
+		return max(nc, c)
+	}
 
 	// 树上最大匹配
 	// g[v] = ∑{max(f[son],g[son])}
@@ -856,6 +873,6 @@ func dpCollections() {
 		mergeStones,
 		tsp,
 		digitDP,
-		maxMatchingOnTree, rerootDP,
+		maxIndependentSetOnTree, maxMatchingOnTree, rerootDP,
 	}
 }
