@@ -9,7 +9,7 @@ import (
 	"sort"
 )
 
-// General ideas https://codeforces.ml/blog/entry/48417
+// General ideas https://codeforces.com/blog/entry/48417
 // 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
@@ -29,8 +29,8 @@ import (
 不解释，自己感受 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 */
 
-// NOTE: 正难则反。 all => any, any => all https://codeforces.ml/problemset/problem/621/C
-// NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.ml/problemset/problem/1333/C
+// NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
+// NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.com/problemset/problem/1333/C
 
 // 尺取法套题 https://blog.csdn.net/weixin_43914593/article/details/104090474 算法竞赛专题解析（2）：尺取法（双指针）
 
@@ -306,7 +306,7 @@ func commonCollection() {
 	// EXTRA: 求并集 union: A∪B = A-B+A∩B = merge(differenceA, intersection) 或 merge(differenceB, intersection)
 	// EXTRA: 求对称差 symmetric_difference: A▲B = A-B ∪ B-A = merge(differenceA, differenceB)
 	// a b 必须是有序的（可以为空）
-	// 与图论结合 https://codeforces.ml/problemset/problem/243/B
+	// 与图论结合 https://codeforces.com/problemset/problem/243/B
 	splitDifferenceAndIntersection := func(a, b []int) (differenceA, differenceB, intersection []int) {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
@@ -537,7 +537,7 @@ func commonCollection() {
 	// https://en.wikipedia.org/wiki/Quickselect
 	// https://www.geeksforgeeks.org/quickselect-algorithm/
 	// 模板题 LC215 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
-	// 模板题 https://codeforces.ml/contest/977/problem/C
+	// 模板题 https://codeforces.com/contest/977/problem/C
 	quickSelect := func(a []int, k int) int {
 		//k = len(a) - 1 - k // 求第 k 大
 		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
@@ -595,7 +595,7 @@ func commonCollection() {
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
 	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
-	// 经典题 https://codeforces.ml/problemset/problem/1000/C
+	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
@@ -760,7 +760,7 @@ func rmqCollection() {
 	// Sparse Table
 	// st[i][j] 对应的区间是 [i, i+1<<j)
 	// https://oi-wiki.org/ds/sparse-table/
-	// https://codeforces.ml/blog/entry/66643
+	// https://codeforces.com/blog/entry/66643
 	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
 	// 模板题 https://www.luogu.com.cn/problem/P3865
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
@@ -984,7 +984,7 @@ func monotoneCollection() {
 	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
-	// 与 DP 结合 https://codeforces.ml/problemset/problem/1313/C2
+	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 	monotoneStack := func(a []int) ([]int, []int) {
 		n := len(a)

@@ -151,9 +151,9 @@ func miscCollection() {
 	}
 
 	// 括号拼接
-	// 代码来源 https://codeforces.ml/gym/101341/problem/A
+	// 代码来源 https://codeforces.com/gym/101341/problem/A
 	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
-	//         https://codeforces.ml/problemset/problem/1203/F1
+	//         https://codeforces.com/problemset/problem/1203/F1
 	concatBrackets := func(ss [][]byte) (ids []int) {
 		type pair struct{ x, y, i int }
 

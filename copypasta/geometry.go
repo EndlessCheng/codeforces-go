@@ -222,7 +222,7 @@ func (a lineF) intersection(b lineF) vecF {
 // 求射线 a b 交点，返回各自到首个交点所需的时间（射线速度由 .vec().len() 决定）
 // 无交点返回 -1
 // 交点为 a.point(ta) 或 b.point(tb)
-// 若题目给了方向向量和速度：https://codeforces.ml/problemset/problem/1359/F
+// 若题目给了方向向量和速度：https://codeforces.com/problemset/problem/1359/F
 func (a lineF) rayIntersection(b lineF) (ta, tb float64) {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
 	if d := va.det(vb); d != 0 {
@@ -526,7 +526,7 @@ func vec2Collection() {
 
 	// TODO: 扫描线：线段求交 O(nlogn)
 	// N 条线段求交的扫描线算法 http://johnhany.net/2013/11/sweep-algorithm-for-segments-intersection/
-	// https://codeforces.ml/problemset/problem/1359/F
+	// https://codeforces.com/problemset/problem/1359/F
 	// 平面扫描思想在 ACM 竞赛中的应用 http://openinx.github.io/2013/01/01/plane-sweep-thinking/
 
 	merge := func(a, b []vec) []vec {
@@ -680,7 +680,7 @@ func vec2Collection() {
 
 	// todo 点集的最大四边形
 	// https://www.luogu.com.cn/problem/P4166
-	// https://codeforces.ml/contest/340/problem/B
+	// https://codeforces.com/contest/340/problem/B
 
 	// 凸包周长
 	convexHullLength := func(ps []vec) (res float64) {

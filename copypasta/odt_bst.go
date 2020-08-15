@@ -1,7 +1,7 @@
 package copypasta
 
 // See 915E for example
-// https://codeforces.ml/contest/915/problem/E
+// https://codeforces.com/contest/915/problem/E
 
 type odtNode struct {
 	tpNode

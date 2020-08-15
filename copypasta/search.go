@@ -181,7 +181,7 @@ func searchCollection() {
 	//
 
 	// 生成字符串 s 的所有长度至多为 m 的非空子串（去重，按字典序返回）
-	// https://codeforces.ml/problemset/problem/120/H
+	// https://codeforces.com/problemset/problem/120/H
 	genSubStrings := func(s string, m int) []string {
 		ss := []string{}
 		var f func(s, sub string)
@@ -302,7 +302,7 @@ func searchCollection() {
 	// 生成全排列（不保证字典序，若要用保证字典序的，见 permutations）
 	// 会修改原数组
 	// Permute the values at index i to len(arr)-1.
-	// https://codeforces.ml/problemset/problem/910/C
+	// https://codeforces.com/problemset/problem/910/C
 	var _permute func([]int, int, func())
 	_permute = func(a []int, i int, do func()) {
 		if i == len(a) {

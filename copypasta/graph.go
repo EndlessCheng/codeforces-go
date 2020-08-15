@@ -11,7 +11,7 @@ import (
 Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
 图论的小技巧以及扩展 https://www.luogu.com.cn/blog/chengni5673/tu-lun-di-xiao-ji-qiao-yi-ji-kuo-zhan
 
-CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=graphs
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 构造 https://codeforces.com/problemset/problem/41/E
 
 TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
@@ -414,12 +414,12 @@ func (*graph) eulerianPath(n, m int) []int {
 }
 
 /* Topic - DFS 树
-讲解+套题 https://codeforces.ml/blog/entry/68138
-好题：https://codeforces.ml/problemset/problem/1325/F
+讲解+套题 https://codeforces.com/blog/entry/68138
+好题：https://codeforces.com/problemset/problem/1325/F
 */
 
 // 割点（割顶） cut vertices / articulation points
-// https://codeforces.ml/blog/entry/68138
+// https://codeforces.com/blog/entry/68138
 // https://oi-wiki.org/graph/cut/#_1
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
@@ -478,7 +478,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
-// 模板题 https://codeforces.ml/problemset/problem/1000/E
+// 模板题 https://codeforces.com/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
@@ -566,7 +566,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 // v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
-// 好题 https://codeforces.ml/problemset/problem/962/F
+// 好题 https://codeforces.com/problemset/problem/962/F
 /*
 使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
 基础样例 - 一个割点两个简单环
@@ -692,7 +692,7 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 
 // e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
 // 缩点后形成一颗 bridge tree
-// 模板题 https://codeforces.ml/problemset/problem/1000/E
+// 模板题 https://codeforces.com/problemset/problem/1000/E
 func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
 	type neighbor struct{ to, eid int }
 	type edge struct{ v, w int }
@@ -755,8 +755,8 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
-// https://codeforces.ml/problemset/problem/1204/C
-// 好题 https://codeforces.ml/problemset/problem/295/B
+// https://codeforces.com/problemset/problem/1204/C
+// 好题 https://codeforces.com/problemset/problem/295/B
 func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {
@@ -847,7 +847,7 @@ func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
 //       https://codeforces.com/problemset/problem/20/C
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-// 与线段树结合跑单源最短路 https://codeforces.ml/problemset/problem/786/B
+// 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to     int
@@ -954,8 +954,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 
 // 01 最短路
 // https://oi-wiki.org/graph/bfs/#bfs_3
-// https://codeforces.ml/blog/entry/22276
-// 例题: https://codeforces.ml/problemset/problem/173/B
+// https://codeforces.com/blog/entry/22276
+// 例题: https://codeforces.com/problemset/problem/173/B
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, weight int }
 	g := make([][]neighbor, n)
@@ -1118,7 +1118,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // 适用于稠密图 O(|V|^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
-// 题目：https://codeforces.ml/contest/1245/problem/D
+// 题目：https://codeforces.com/contest/1245/problem/D
 func (*graph) mstPrim(dist [][]int) (sum int) {
 	min := func(a, b int) int {
 		if a < b {
@@ -1320,7 +1320,7 @@ https://en.wikipedia.org/wiki/Vertex_cover
 //   在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
 //   所以找到了多少匹配边，路径数就减少了多少
 //   所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
-// todo 树上最小路径覆盖 http://codeforces.ml/problemset/problem/618/D
+// todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
@@ -1601,7 +1601,7 @@ o:
 // https://cp-algorithms.com/graph/2SAT.html
 // https://zhuanlan.zhihu.com/p/50211772
 // todo https://www.luogu.com.cn/blog/85514/post-2-sat-xue-xi-bi-ji
-// 讲解+套题 https://codeforces.ml/blog/entry/16205
+// 讲解+套题 https://codeforces.com/blog/entry/16205
 // 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
 // 一般 ¬x 用 x+n 表示
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示

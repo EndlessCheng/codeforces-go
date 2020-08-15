@@ -58,8 +58,8 @@ https://oeis.org/A216485 222...2
 	a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 	https://oeis.org/A181061
 
-CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=number+theory
-CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=combinatorics
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=number+theory
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 */
 
@@ -110,7 +110,7 @@ func numberTheoryCollection() {
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
-	//       应用：https://codeforces.ml/problemset/problem/1210/C
+	//       应用：https://codeforces.com/problemset/problem/1210/C
 	// #{(a,b) | 1<=a<=b<=n, gcd(a,b)=1}   https://oeis.org/A002088
 	//     = ∑phi(i)
 	// #{(a,b) | 1<=a,b<=n, gcd(a,b)=1}   https://oeis.org/A018805
@@ -947,7 +947,7 @@ func numberTheoryCollection() {
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
-	// todo https://codeforces.ml/blog/entry/61290
+	// todo https://codeforces.com/blog/entry/61290
 	// 模板题 https://www.luogu.com.cn/problem/P1495
 	crt := func(a, m []int64) (x int64) {
 		M := int64(1)
@@ -1362,7 +1362,7 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 	扩展例题 https://codeforces.com/problemset/problem/893/E
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
 可重集排列
-可重集组合 todo https://codeforces.ml/problemset/problem/451/E
+可重集组合 todo https://codeforces.com/problemset/problem/451/E
 https://oeis.org/A000166 错排 subfactorial numbers  a[n]=(n-1)*(a[n-1]+a[n-2])  https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 	https://oeis.org/A082491 n! * A000166(n)   a(n+2) = (n+2)*(n+1)*(a(n+1)+(n+1)*a(n))
 	https://oeis.org/A000255 错排的比较对象的范围是 [1,n+1]  a(n) = n*a(n-1) + (n-1)*a(n-2), a(0) = a(1) = 1

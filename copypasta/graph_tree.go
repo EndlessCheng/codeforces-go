@@ -16,10 +16,10 @@ NOTE: 断掉一条树边 v-w，会将这棵树分成两颗树。设 v 为 w 的�
 NOTE: 对于有根树的题，可以考虑加上 g[0] = append(g[0], -1) 来简化代码
 NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
 NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
-NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.ml/problemset/problem/700/B
+NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.com/problemset/problem/700/B
 
-CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=trees
-CF tag https://codeforces.ml/problemset?order=BY_RATING_ASC&tags=constructive+algorithms%2Ctrees
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=trees
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=constructive+algorithms%2Ctrees
 */
 
 // namespace
@@ -117,7 +117,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 
 // 每个节点的入出时间戳
 // 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点
-// 例题 https://codeforces.ml/contest/1328/problem/E
+// 例题 https://codeforces.com/contest/1328/problem/E
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
@@ -147,7 +147,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
 // 也可以用树形 DP，计算每个根往下的最长链和次长链从而得到答案（维护最大时记录是从哪个节点取到的，维护次大时跳过该节点）
-// EXTRA: 森林的情况 https://codeforces.ml/problemset/problem/455/C
+// EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	var maxD, u int
 	var f func(v, fa, d int)
@@ -212,8 +212,8 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
-// 模板题 https://codeforces.ml/problemset/problem/321/C
-// 好题 https://codeforces.ml/contest/1174/problem/F https://codeforces.ml/contest/1174/submission/82371930
+// 模板题 https://codeforces.com/problemset/problem/321/C
+// 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
 func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	type node struct{ dep, fa int }
 	nodes := make([]node, n)
@@ -272,7 +272,7 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 }
 
 // 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741 todo 待整理
-// todo 求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
+// todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64) int64 {
 	max := func(a, b int) int {
 		if a > b {
@@ -399,7 +399,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
-// 树上倍增应用（静态路径最值）https://codeforces.ml/problemset/problem/609/E
+// 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
@@ -694,7 +694,7 @@ func (*tree) differenceOnTree(in io.Reader, n, root int, g [][]int) []int {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
-// 与最小生成树结合（边权）https://codeforces.ml/problemset/problem/609/E
+// 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
@@ -796,7 +796,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
 // https://oi-wiki.org/graph/hld/#_14
 // todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
-// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
+// 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: Morris Traversal
 // https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
@@ -812,10 +812,10 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // TODO: 树上启发式合并 DSU on tree
 // https://oi-wiki.org/graph/dsu-on-tree/
 // dsu on tree学习笔记 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
-// 讲解+套题 https://codeforces.ml/blog/entry/44351
-// todo 讲解 https://codeforces.ml/blog/entry/67696
+// 讲解+套题 https://codeforces.com/blog/entry/44351
+// todo 讲解 https://codeforces.com/blog/entry/67696
 // todo https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
-// 例：求树上距离等于 k 的点对数 https://codeforces.ml/problemset/problem/161/D 可以参考洛谷的代码
+// 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/

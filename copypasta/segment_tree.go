@@ -4,8 +4,8 @@ package copypasta
 
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
-// https://codeforces.ml/blog/entry/18051
-// https://codeforces.ml/blog/entry/15890
+// https://codeforces.com/blog/entry/18051
+// https://codeforces.com/blog/entry/15890
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/

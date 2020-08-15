@@ -10,7 +10,7 @@ import (
 )
 
 // TIPS: 对于环形的字符串匹配，可以将文本串复制一倍后再匹配
-// TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.ml/contest/873/problem/F
+// TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.com/contest/873/problem/F
 
 // 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
 
@@ -51,7 +51,7 @@ func stringCollection() {
 	// 最长重复子串（二分哈希）LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// TODO 二维 hash
-	// TODO anti-hash: 最好不要自然溢出 https://codeforces.ml/blog/entry/4898 https://codeforces.ml/blog/entry/60442
+	// TODO anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898 https://codeforces.com/blog/entry/60442
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
@@ -200,14 +200,14 @@ func stringCollection() {
 	// 最长回文子串 Manacher
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// https://www.bilibili.com/video/BV1ft4y117a4
-	// https://codeforces.ml/blog/entry/12143
+	// https://codeforces.com/blog/entry/12143
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	// https://oi-wiki.org/string/manacher/#manacher
 	// https://cp-algorithms.com/string/manacher.html
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
-	// https://codeforces.ml/contest/1326/problem/D2
-	// todo 类似思想 https://codeforces.ml/contest/359/problem/D
+	// https://codeforces.com/contest/1326/problem/D2
+	// todo 类似思想 https://codeforces.com/contest/359/problem/D
 	var maxLen, left []int
 	manacher := func(origin []byte) int {
 		min := func(a, b int) int {
@@ -480,7 +480,7 @@ func stringCollection() {
 // 好题：前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
 // 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 // LC 套题（推荐困难难度的题） https://leetcode-cn.com/tag/trie/
-// todo https://codeforces.ml/contest/455/problem/B
+// todo https://codeforces.com/contest/455/problem/B
 type trieNode struct {
 	son    [26]*trieNode
 	dupCnt int
@@ -754,7 +754,7 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 //《后缀自动机在字典树上的拓展》，刘研绎
 //《后缀自动机及其应用》，张天扬
 // todo https://baobaobear.github.io/post/20200220-sam/
-// todo https://codeforces.ml/blog/entry/20861
+// todo https://codeforces.com/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
 //      后缀树简介 https://eternalalexander.github.io/2019/10/31/%E5%90%8E%E7%BC%80%E6%A0%91%E7%AE%80%E4%BB%8B/

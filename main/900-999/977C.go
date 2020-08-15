@@ -16,7 +16,7 @@ func CF977C(_r io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	sort.Ints(a) // 此题用作测试 Go 的快排性能，见 https://codeforces.ml/contest/977/submission/75301978
+	sort.Ints(a) // 此题用作测试 Go 的快排性能，见 https://codeforces.com/contest/977/submission/75301978
 	if k == n {
 		Fprint(_w, int(1e9))
 	} else if k > 0 && a[k-1] != a[k] {

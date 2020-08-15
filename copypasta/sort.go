@@ -9,9 +9,9 @@ import (
 // NOTE: 二分时特判下限！（例如 0）
 // TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
 
-// 隐藏的二分 https://codeforces.ml/problemset/problem/1354/D
+// 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 
-// sort.Ints 性能测试 https://codeforces.ml/contest/977/submission/75301978
+// sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
 type _pair struct{ x, y int }
@@ -108,7 +108,7 @@ func sortCollections() {
 
 	// 实数三分
 	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理 ABC130F
-	// https://codeforces.ml/blog/entry/60702
+	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
@@ -128,7 +128,7 @@ func sortCollections() {
 
 	// 整数三分
 	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
-	// https://codeforces.ml/problemset/problem/1301/B (只是举例，不用三分也可做)
+	// https://codeforces.com/problemset/problem/1301/B (只是举例，不用三分也可做)
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for r-l > 4 { // 最小区间长度根据题目可以扩大点
 			m1 := l + (r-l)/3
@@ -192,7 +192,7 @@ func sortCollections() {
 
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
-	//      https://codeforces.ml/blog/entry/45578
+	//      https://codeforces.com/blog/entry/45578
 
 	_ = []interface{}{
 		insertionSort,
