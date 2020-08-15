@@ -1294,16 +1294,20 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-/* 匹配 独立集
+/* 匹配 独立集 覆盖（边覆盖 顶点覆盖）
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
 https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+https://en.wikipedia.org/wiki/Edge_cover
+https://en.wikipedia.org/wiki/Vertex_cover
+
+最大匹配+最小边覆盖=n （图中无孤立点）
+最大独立集+最小顶点覆盖=n
+对于二分图，最小顶点覆盖=最大匹配，最大独立集=n-最大匹配
+
 不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
 */
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
-// 最大匹配+最小边覆盖=n
-// 最大独立集+最小顶点覆盖=n    最大独立集=n-最大匹配
-// 最大匹配=最小顶点覆盖
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://oi-wiki.org/graph/bi-graph/#_9
