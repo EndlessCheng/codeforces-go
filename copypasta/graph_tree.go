@@ -8,6 +8,8 @@ import (
 )
 
 /*
+注：这里的代码偏向于数据结构，其余的树上统计类算法见 dp.go 中的树形 DP 部分
+
 从特殊到一般：先思考一条链的情况，然后逐渐增加分支来思考一般的情况
 
 NOTE: 断掉一条树边 v-w，会将这棵树分成两颗树。设 v 为 w 的父节点，则两棵树的顶点数为 size[w] 和 n-size[w]
@@ -600,6 +602,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		} else {
 			// do v==w...
 			lca[i] = v
+			dis[i] = 0
 		}
 	}
 
