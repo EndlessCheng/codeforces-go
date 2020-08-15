@@ -782,7 +782,7 @@ func dpCollections() {
 	// 进阶指南 p.289-290
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 https://ac.nowcoder.com/acm/problem/51178
-	maxIndependentSetOnTree := func(n int, g [][]int, a []int) int {
+	maxIndependentSetOnTree := func(n, root int, g [][]int, a []int) int {
 		var f func(int, int) (int, int) // int64
 		f = func(v, fa int) (notChosen, chosen int) {
 			chosen = a[v]
@@ -795,7 +795,7 @@ func dpCollections() {
 			}
 			return
 		}
-		nc, c := f(0, -1)
+		nc, c := f(root, -1)
 		return max(nc, c)
 	}
 
@@ -803,7 +803,7 @@ func dpCollections() {
 	// g[v] = ∑{max(f[son],g[son])}
 	// f[v] = max{1+g[son]+g[v]−max(f[son],g[son])}
 	// https://codeforces.com/blog/entry/2059
-	maxMatchingOnTree := func(n int, g [][]int) int {
+	maxMatchingOnTree := func(n, root int, g [][]int) int {
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
 		f = func(v, fa int) {
@@ -817,8 +817,8 @@ func dpCollections() {
 				cover[v] = max(cover[v], 1+nonCover[w]+nonCover[v]-max(cover[w], nonCover[w]))
 			}
 		}
-		f(0, -1)
-		return max(cover[0], nonCover[0])
+		f(root, -1)
+		return max(cover[root], nonCover[root])
 	}
 
 	// 换根 DP
@@ -826,7 +826,7 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/20935
 	// 例题 https://codeforces.com/problemset/problem/219/D
 	// 下面的代码来自 http://poj.org/problem?id=3585
-	rerootDP := func(n int) {
+	rerootDP := func(n int) { // 无根树
 		type edge struct{ to, cap int }
 		g := make([][]edge, n)
 		// read...
