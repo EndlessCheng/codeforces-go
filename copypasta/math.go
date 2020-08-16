@@ -58,6 +58,8 @@ https://oeis.org/A216485 222...2
 	a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 	https://oeis.org/A181061
 
+椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
+
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 

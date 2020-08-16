@@ -131,21 +131,43 @@ func dpCollections() {
 	}
 
 	// https://codeforces.com/problemset/problem/510/D
-	// 由于数据范围的原因，采用 map 记忆化
-	mapDP := func() {
-		type pair struct{ x, y int }
-		dp := map[pair]int{}
-		var f func(int, int) int
-		f = func(x, y int) (res int) {
-			p := pair{x, y}
-			if v, ok := dp[p]; ok {
-				return v
-			}
-			defer func() { dp[p] = res }()
+	// 由于数据范围的原因，采用 map 记忆化         dpMap
+	mapDP := func(n int) {
+		{
+			dp := map[int]int{}
+			var f func(int) int
+			f = func(x int) (res int) {
+				//if x == 0 {
+				//	return
+				//}
+				if v, ok := dp[x]; ok {
+					return v
+				}
+				defer func() { dp[x] = res }()
 
-			return
+				return
+			}
+			f(n)
 		}
-		f(0, 0)
+
+		{
+			type pair struct{ x, y int }
+			dp := map[pair]int{}
+			var f func(int, int) int
+			f = func(x, y int) (res int) {
+				//if x == n {
+				//  return
+				//}
+				p := pair{x, y}
+				if v, ok := dp[p]; ok {
+					return v
+				}
+				defer func() { dp[p] = res }()
+
+				return
+			}
+			f(0, 0)
+		}
 	}
 
 	/* 线性 DP
