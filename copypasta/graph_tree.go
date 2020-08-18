@@ -157,7 +157,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 		}
 		for _, w := range g[v] {
 			if w != fa {
-				f(w, v, d+1) // weight
+				f(w, v, d+1) // d+e.wt
 			}
 		}
 	}
@@ -281,18 +281,18 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 		return b
 	}
 	type neighbor struct {
-		to     int
-		weight int64
+		to int
+		wt int64
 	}
 	g := make([][]neighbor, n)
 	for i := 0; i < n-1; i++ {
 		var v, w int
-		var weight int64
-		Fscan(in, &v, &w, &weight)
+		var wt int64
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		g[v] = append(g[v], neighbor{w, weight})
-		g[w] = append(g[w], neighbor{v, weight})
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
 	}
 	usedCentroid := make([]bool, n)
 
@@ -339,7 +339,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 		disToCentroid = append(disToCentroid, d)
 		for _, e := range g[v] {
 			if w := e.to; w != fa && !usedCentroid[w] {
-				calcDisToCentroid(w, v, d+e.weight)
+				calcDisToCentroid(w, v, d+e.wt)
 			}
 		}
 	}
@@ -381,7 +381,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 		for _, e := range g[ct] {
 			if w := e.to; !usedCentroid[w] {
 				disToCentroid = []int64{}
-				calcDisToCentroid(w, ct, e.weight)
+				calcDisToCentroid(w, ct, e.wt)
 				ans -= countPairs(disToCentroid)
 				ds = append(ds, disToCentroid...)
 			}
@@ -512,7 +512,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 		disRoot[v] = d
 		for _, w := range g[v] {
 			if w != p {
-				dfs(w, v, d+1) // 若有边权则额外传入 dis+e.weight
+				dfs(w, v, d+1) // d+e.wt
 				vs = append(vs, v)
 				dep = append(dep, d)
 			}

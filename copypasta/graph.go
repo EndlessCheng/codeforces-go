@@ -850,17 +850,17 @@ func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
 // 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
-		to     int
-		weight int64
+		to int
+		wt int64
 	}
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		v, w, weight := 0, 0, int64(0)
-		Fscan(in, &v, &w, &weight)
+		v, w, wt := 0, 0, int64(0)
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		g[v] = append(g[v], neighbor{w, weight})
-		g[w] = append(g[w], neighbor{v, weight})
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
 	}
 
 	const inf int64 = 1e18 // 1e9+1
@@ -885,7 +885,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		vis[v] = true
 		for _, e := range g[v] {
 			w := e.to
-			if newD := d + e.weight; newD < dist[w] { // > 权值最大
+			if newD := d + e.wt; newD < dist[w] { // > 权值最大
 				dist[w] = newD
 				fa[w] = v
 				h.push(hPair{w, newD})
@@ -908,8 +908,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// 这种情况下，dist[v] 表示从 start 出发到 v 的耗时
 
 	// EXTRA: 对于相邻的两点，记边为 e，若有：
-	// abs(dist[v], dist[w]) == e.weight => e 在最短路上（不带绝对值的话就有先后关系）
-	// abs(dist[v], dist[w])  < e.weight => e 不在最短路上（可以想象成一条鼓起的线）
+	// abs(dist[v], dist[w]) == e.wt  =>  e 在最短路上（不带绝对值的话就有先后关系）
+	// abs(dist[v], dist[w])  < e.wt  =>  e 不在最短路上（可以想象成一条鼓起的线）
 	// 这里的最短路可以有多条
 
 	// EXTRA: 次短路
@@ -936,7 +936,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			vis[v] = true
 			for _, e := range g[v] {
 				w := e.to
-				newD := d + e.weight
+				newD := d + e.wt
 				if newD < dist[w] {
 					h.push(hPair{w, newD})
 					dist[w], newD = newD, dist[w]
@@ -957,15 +957,15 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 // https://codeforces.com/blog/entry/22276
 // 例题: https://codeforces.com/problemset/problem/173/B
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
-	type neighbor struct{ to, weight int }
+	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		var v, w, weight int
-		Fscan(in, &v, &w, &weight)
+		var v, w, wt int
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		g[v] = append(g[v], neighbor{w, weight})
-		g[w] = append(g[w], neighbor{v, weight})
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
 	}
 
 	const inf int = 1e9
@@ -979,7 +979,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	for !q.empty() {
 		v := q.popL()
 		for _, e := range g[v] {
-			w, d := e.to, e.weight
+			w, d := e.to, e.wt
 			if newD := dist[v] + d; newD < dist[w] {
 				dist[w] = newD
 				if d == 0 {
@@ -1004,18 +1004,17 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 //        模板题 https://www.luogu.com.cn/problem/P3385
 func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
-		to     int
-		weight int64
+		to int
+		wt int64
 	}
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		var v, w int
-		var weight int64
-		Fscan(in, &v, &w, &weight)
+		v, w, wt := 0, 0, int64(0)
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		g[v] = append(g[v], neighbor{w, weight})
-		g[w] = append(g[w], neighbor{v, weight})
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
 	}
 
 	const inf int64 = 1e18 // 1e9+1
@@ -1035,7 +1034,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 		onQ[v] = false
 		for _, e := range g[v] {
 			w := e.to
-			if newD := dist[v] + e.weight; newD < dist[w] {
+			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				relaxedCnt[w] = relaxedCnt[v] + 1
 				if relaxedCnt[w] >= n {
