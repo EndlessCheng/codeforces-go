@@ -1457,7 +1457,7 @@ https://www.zhihu.com/question/278361000/answer/1004606685
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
 */
 func combinatoricsCollection() {
-	// 容斥原理 Inclusion–exclusion principle
+	// 容斥原理 (PIE, the principle of inclusion and exclusion)
 	// 参考《挑战程序设计竞赛》P296
 	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
