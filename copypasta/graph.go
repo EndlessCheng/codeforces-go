@@ -840,14 +840,14 @@ func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
 func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
 
 // 单源最短路 Dijkstra
-// 适用于稀疏图 O(|E|⋅log|V|)
+// 适用于稀疏图 O(mlogn)
 // start 也可以是一个点集，这相当于同时对多个点跑最短路
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
-// 模板题 https://www.luogu.com.cn/problem/P4779
+// 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-// 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
+// todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -875,25 +875,26 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		fa[i] = -1
 	}
 
-	h := pairHeap{{st, 0}}
-	for len(h) > 0 {
-		p := h.pop()
-		v, d := p.v, p.dis
-		if vis[v] {
+	q := pairHeap{{st, 0}}
+	for len(q) > 0 {
+		p := q.pop()
+		v := p.v
+		// 注：不要 vis 相关的代码也可以，对运行速度几乎没有影响
+		if vis[v] { // dist[v] < p.dis
 			continue
 		}
 		vis[v] = true
 		for _, e := range g[v] {
 			w := e.to
-			if newD := d + e.wt; newD < dist[w] { // > 权值最大
+			if newD := dist[v] + e.wt; newD < dist[w] { // > 权值最大
 				dist[w] = newD
 				fa[w] = v
-				h.push(hPair{w, newD})
+				q.push(hPair{w, newD})
 			}
 		}
 	}
 
-	//if dist[n-1] == inf {
+	//if dist[end] == inf {
 	//	return -1
 	//}
 
@@ -926,24 +927,23 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		}
 		vis := make([]bool, n)
 
-		h := pairHeap{{st, 0}}
-		for len(h) > 0 {
-			p := h.pop()
-			v, d := p.v, p.dis
+		q := pairHeap{{st, 0}}
+		for len(q) > 0 {
+			v := q.pop().v
 			if vis[v] {
 				continue
 			}
 			vis[v] = true
 			for _, e := range g[v] {
 				w := e.to
-				newD := d + e.wt
+				newD := dist[v] + e.wt
 				if newD < dist[w] {
-					h.push(hPair{w, newD})
+					q.push(hPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
 				if newD > dist[w] && newD < dist2[w] {
 					dist2[w] = newD
-					h.push(hPair{w, newD})
+					q.push(hPair{w, newD})
 				}
 			}
 		}
@@ -993,7 +993,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	return dist
 }
 
-// 单源最短路 SPFA
+// 单源最短路 SPFA O(nm)   Bellman-Ford
 // 有负环时返回 nil
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
@@ -1002,7 +1002,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 //        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
 //        这样，在无负环时会得到一组非正数解
 //        模板题 https://www.luogu.com.cn/problem/P3385
-func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64) {
+func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
 		wt int64
@@ -1026,7 +1026,6 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 	onQ := make([]bool, n)
 	onQ[st] = true
 	relaxedCnt := make([]int, n)
-
 	q := []int{st}
 	for len(q) > 0 {
 		v := q[0]
@@ -1059,7 +1058,7 @@ func (*graph) shortestPathBellmanFord(in io.Reader, n, m, st int) (dist []int64)
 // todo 跳楼机 https://www.luogu.com.cn/problem/P3403
 
 // 最小生成树 Kruskal
-// 适用于稀疏图 O(|E|⋅log|E|)，或者边已经按权值排序的情况
+// 适用于稀疏图 O(mlogm)，或者边已经按权值排序的情况
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
@@ -1114,7 +1113,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 }
 
 // 最小生成树 Prim
-// 适用于稠密图 O(|V|^2)，传入邻接矩阵 dist
+// 适用于稠密图 O(n^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
 // 题目：https://codeforces.com/contest/1245/problem/D
@@ -1713,7 +1712,7 @@ todo Competitive Programmer’s Handbook Ch.20
      线性规划与网络流24题-最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
 */
 
-// 最大流 Dinic's algorithm O(n2m)
+// 最大流 Dinic's algorithm O(n^2 * m)
 // Ford–Fulkerson algorithm (FFA) 的改进版本
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
@@ -1721,21 +1720,18 @@ todo Competitive Programmer’s Handbook Ch.20
 // 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
 //       https://codeforces.com/problemset/problem/1360/G (满流时有解)
 //       https://codeforces.com/problemset/problem/546/E
-func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
+func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 	min := func(a, b int) int {
 		if a < b {
 			return a
 		}
 		return b
 	}
-	// st-- end--
+	// st--; end--
 
-	type neighbor struct {
-		to, rid int // rid 为反向边在邻接表中的下标
-		cap     int // int64
-	}
+	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
-	addEdge := func(from, to int, cap int) {
+	addEdge := func(from, to, cap int) {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
@@ -1786,6 +1782,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 		}
 		return 0
 	}
+
+	maxFlow := 0        // int64
 	const inf int = 1e9 // 1e18
 	for calcLevel() {
 		iter = make([]int, n)
@@ -1800,14 +1798,172 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 
 	// EXTRA: 打印流的分配方案，输出反向边上的 cap
 
-	return
+	return maxFlow
 }
 
-// 预流推进 HLPP 算法（High Level Preflow Push）
+// 最高标号预流推进 (HLPP, High Level Preflow Push)
+// https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 // todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
 //      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
 
-// 最小费用最大流
-// todo https://oi-wiki.org/graph/flow/min-cost/
+// 最小费用流
+// 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
+// 要求图中无负圈
+// https://oi-wiki.org/graph/flow/min-cost/
+// 基于 Capacity Scaling 的弱多项式复杂度最小费用流算法 https://ouuan.github.io/post/%E5%9F%BA%E4%BA%8E-capacity-scaling-%E7%9A%84%E5%BC%B1%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%B5%81%E7%AE%97%E6%B3%95/
 // 模板题 https://www.luogu.com.cn/problem/P3381
+// todo 对比下 lrj 的建图方式
+func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
+	// st--; end--
+
+	type neighbor struct{ to, rid, cap, cost int } // rid 为反向边在邻接表中的下标
+	g := make([][]neighbor, n)
+	addEdge := func(from, to, cap, cost int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+	}
+	for i := 0; i < m; i++ {
+		var v, w, cap, cost int
+		Fscan(in, &v, &w, &cap, &cost)
+		v--
+		w--
+		addEdge(v, w, cap, cost)
+	}
+
+	const inf int64 = 1e18
+	dist := make([]int64, n)
+	type pair struct{ v, i int }
+	fa := make([]pair, n)
+	spfa := func() bool {
+		for i := range dist {
+			dist[i] = inf
+		}
+		dist[st] = 0
+		onQ := make([]bool, n)
+		onQ[st] = true
+		q := []int{st}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			onQ[v] = false
+			for i, e := range g[v] {
+				if e.cap == 0 {
+					continue
+				}
+				w := e.to
+				if newD := dist[v] + int64(e.cost); newD < dist[w] {
+					dist[w] = newD
+					fa[w] = pair{v, i}
+					if !onQ[w] {
+						q = append(q, w)
+						onQ[w] = true
+					}
+				}
+			}
+		}
+		return dist[end] < inf
+	}
+	minCost := int64(0)
+	for F > 0 && spfa() { // 若求最小费用最大流 MCMF，把 F>0 去掉
+		// 沿 st-end 的最短路尽量增广
+		minF := F // inf
+		for v := end; v != st; {
+			p := fa[v]
+			if c := g[p.v][p.i].cap; c < minF {
+				minF = c
+			}
+			v = p.v
+		}
+		F -= minF // maxFlow += minF
+		minCost += dist[end] * int64(minF)
+		for v := end; v != st; {
+			p := fa[v]
+			e := &g[p.v][p.i]
+			e.cap -= minF
+			g[v][e.rid].cap += minF
+			v = p.v
+		}
+	}
+	if F > 0 {
+		return -1
+	}
+	return minCost
+}
+
+func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
+	// st--; end--
+
+	type neighbor struct{ to, rid, cap, cost int }
+	g := make([][]neighbor, n)
+	addEdge := func(from, to, cap, cost int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+	}
+	for i := 0; i < m; i++ {
+		var v, w, cap, cost int
+		Fscan(in, &v, &w, &cap, &cost)
+		v--
+		w--
+		addEdge(v, w, cap, cost)
+	}
+
+	const inf int64 = 1e18
+	h := make([]int64, n) // 顶点的势
+	dist := make([]int64, n)
+	type pair struct{ v, i int }
+	fa := make([]pair, n)
+	dijkstra := func() bool {
+		for i := range dist {
+			dist[i] = inf
+		}
+		dist[st] = 0
+		q := pairHeap{{st, 0}}
+		for len(q) > 0 {
+			p := q.pop()
+			v := p.v
+			if dist[v] < p.dis {
+				continue
+			}
+			for i, e := range g[v] {
+				if e.cap == 0 {
+					continue
+				}
+				w := e.to
+				if newD := dist[v] + int64(e.cost) + h[v] - h[w]; newD < dist[w] {
+					dist[w] = newD
+					fa[w] = pair{v, i}
+					q.push(hPair{w, newD})
+				}
+			}
+		}
+		return dist[end] < inf
+	}
+	minCost := int64(0)
+	for F > 0 && dijkstra() {
+		for i, d := range dist {
+			h[i] += d
+		}
+		minF := F // inf
+		for v := end; v != st; {
+			p := fa[v]
+			if c := g[p.v][p.i].cap; c < minF {
+				minF = c
+			}
+			v = p.v
+		}
+		F -= minF // maxFlow += minF
+		minCost += dist[end] * int64(minF)
+		for v := end; v != st; {
+			p := fa[v]
+			e := &g[p.v][p.i]
+			e.cap -= minF
+			g[v][e.rid].cap += minF
+			v = p.v
+		}
+	}
+	if F > 0 {
+		return -1
+	}
+	return minCost
+}
