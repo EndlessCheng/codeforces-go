@@ -1023,14 +1023,14 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 		dist[i] = inf
 	}
 	dist[st] = 0
-	onQ := make([]bool, n)
-	onQ[st] = true
+	inQ := make([]bool, n)
+	inQ[st] = true
 	relaxedCnt := make([]int, n)
 	q := []int{st}
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		onQ[v] = false
+		inQ[v] = false
 		for _, e := range g[v] {
 			w := e.to
 			if newD := dist[v] + e.wt; newD < dist[w] {
@@ -1039,9 +1039,9 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 				if relaxedCnt[w] >= n {
 					return nil
 				} // found negative cycle
-				if !onQ[w] {
+				if !inQ[w] {
 					q = append(q, w)
-					onQ[w] = true
+					inQ[w] = true
 				}
 			}
 		}
@@ -1843,13 +1843,13 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 			dist[i] = inf
 		}
 		dist[st] = 0
-		onQ := make([]bool, n)
-		onQ[st] = true
+		inQ := make([]bool, n)
+		inQ[st] = true
 		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
-			onQ[v] = false
+			inQ[v] = false
 			for i, e := range g[v] {
 				if e.cap == 0 {
 					continue
@@ -1858,9 +1858,9 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 				if newD := dist[v] + int64(e.cost); newD < dist[w] {
 					dist[w] = newD
 					fa[w] = pair{v, i}
-					if !onQ[w] {
+					if !inQ[w] {
 						q = append(q, w)
-						onQ[w] = true
+						inQ[w] = true
 					}
 				}
 			}
