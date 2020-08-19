@@ -1060,6 +1060,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 // https://oi-wiki.org/graph/shortest-path/#johnson
 // 模板题 https://www.luogu.com.cn/problem/P5905
 func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
+	const inf int64 = 1e18 // 1e9+1
 	type neighbor struct {
 		to int
 		wt int64
@@ -1084,17 +1085,22 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 		return nil
 	}
 
-	// 求新边的边权
+	// 求新的边权
 	for v := 1; v <= n; v++ {
 		for i, e := range g[v] {
 			g[v][i].wt += h[v] - h[e.to]
 		}
 	}
 
-	// 以每个点为源点跑一遍 Dijkstra
+	// 以每个点为源点跑一遍 Dijkstra，代码略（注意点数为 n+1）
 	dist := make([][]int64, n+1)
 	for st := 1; st <= n; st++ {
 		dist[st] = G.shortestPathDijkstra(in, n+1, m, st)
+		for w, d := range dist[st] {
+			if d < inf {
+				dist[st][w] -= h[st] - h[w]
+			}
+		}
 	}
 	return dist
 }
