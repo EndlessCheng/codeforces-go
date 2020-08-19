@@ -19,7 +19,7 @@ First weekly contest started at 2016-08-21.
 |[Weekly Contest 3](https://leetcode.com/contest/leetcode-weekly-contest-3)|392-395|
 |[Weekly Contest 4](https://leetcode.com/contest/leetcode-weekly-contest-4)|396-399|
 |[Weekly Contest 5](https://leetcode.com/contest/leetcode-weekly-contest-5)|400-403|
-|[Weekly Contest 10](https://leetcode.com/contest/leetcode-weekly-contest-10)|464-465|
+|[Weekly Contest 10](https://leetcode.com/contest/leetcode-weekly-contest-10)|462-465|
 |[Weekly Contest 20](https://leetcode.com/contest/leetcode-weekly-contest-20)|520 526 525 517|
 |[Weekly Contest 30](https://leetcode.com/contest/leetcode-weekly-contest-30)|566 560 567 568|
 |[Weekly Contest 40](https://leetcode.com/contest/leetcode-weekly-contest-40)|637-640|
@@ -39,5 +39,9 @@ First weekly contest started at 2016-08-21.
 |[Weekly Contest 180](https://leetcode.com/contest/weekly-contest-180)|1380-1383|
 |[Weekly Contest 190](https://leetcode.com/contest/weekly-contest-190)|1455-1458|
 |[Weekly Contest 200](https://leetcode.com/contest/weekly-contest-200)|1534-1537|
+|[Biweekly Contest 1](https://leetcode.com/contest/biweekly-contest-1)|1064-1067|
+|[Biweekly Contest 10](https://leetcode.com/contest/biweekly-contest-10)|1213-1216|
+|[Biweekly Contest 20](https://leetcode.com/contest/biweekly-contest-20)|1356-1359|
+|[Biweekly Contest 30](https://leetcode.com/contest/biweekly-contest-30)|1507-1510|
 
 Includes with biweekly contests, we now (till 2020-06) have about **900** problems from contests.

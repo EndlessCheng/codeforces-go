@@ -195,6 +195,7 @@ func dpCollections() {
 
 	// 最大子段和
 	// 算法导论 练习4.1-5
+	// 变体 https://codeforces.com/problemset/problem/1155/D
 	// 变体 https://codeforces.com/problemset/problem/1373/D
 	maxSubArraySum := func(a []int) int {
 		if len(a) == 0 {
