@@ -1721,7 +1721,7 @@ todo Competitive Programmer’s Handbook Ch.20
 // 模板题 https://www.luogu.com.cn/problem/P3376
 // 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
 //       https://codeforces.com/problemset/problem/1360/G (满流时有解)
-func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) {
+func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -1730,18 +1730,17 @@ func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) 
 	}
 	// st-- end--
 
-	type edge struct {
-		to, rev int // 反向边
-		cap     int
+	type neighbor struct {
+		to, rid int // rid 为反向边在邻接表中的下标
+		cap     int // int64
 	}
-	edges := make([][]edge, numV)
+	g := make([][]neighbor, n)
 	addEdge := func(from, to int, cap int) {
-		edges[from] = append(edges[from], edge{to, len(edges[to]), cap})
-		edges[to] = append(edges[to], edge{from, len(edges[from]) - 1, 0})
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
-	for i := 0; i < numE; i++ {
-		var v, w int
-		var cap int
+	for i := 0; i < m; i++ {
+		var v, w, cap int
 		Fscan(in, &v, &w, &cap)
 		v--
 		w--
@@ -1749,7 +1748,7 @@ func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) 
 	}
 
 	// 计算从源点 st 出发的距离标号
-	level := make([]int, numV)
+	level := make([]int, n)
 	calcLevel := func() bool {
 		for i := range level {
 			level[i] = -1
@@ -1759,7 +1758,7 @@ func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) 
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
-			for _, e := range edges[v] {
+			for _, e := range g[v] {
 				if w := e.to; e.cap > 0 && level[w] < 0 {
 					level[w] = level[v] + 1
 					q = append(q, w)
@@ -1769,28 +1768,27 @@ func (*graph) maxFlowDinic(in io.Reader, numV, numE, st, end int) (maxFlow int) 
 		return level[end] >= 0
 	}
 	// 寻找增广路
-	var iter []int // 当前弧，在其之前的边已经没有用了
+	var iter []int // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
 	var dfs func(int, int) int
-	dfs = func(v int, mf int) int {
+	dfs = func(v int, minF int) int {
 		if v == end {
-			return mf
+			return minF
 		}
-		for i := iter[v]; i < len(edges[v]); i++ {
-			e := &edges[v][i]
+		for ; iter[v] < len(g[v]); iter[v]++ {
+			e := &g[v][iter[v]]
 			if w := e.to; e.cap > 0 && level[w] > level[v] {
-				if f := dfs(w, min(mf, e.cap)); f > 0 {
+				if f := dfs(w, min(minF, e.cap)); f > 0 {
 					e.cap -= f
-					edges[w][e.rev].cap += f
+					g[w][e.rid].cap += f
 					return f
 				}
 			}
-			iter[v]++ // 当前弧优化（避免对没有用的边进行多次检查）
 		}
 		return 0
 	}
 	const inf int = 1e9 // 1e18
 	for calcLevel() {
-		iter = make([]int, numV)
+		iter = make([]int, n)
 		for {
 			if f := dfs(st, inf); f > 0 {
 				maxFlow += f
