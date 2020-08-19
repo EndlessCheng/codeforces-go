@@ -1869,7 +1869,6 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 // https://oi-wiki.org/graph/flow/min-cost/
 // 模板题 https://www.luogu.com.cn/problem/P3381
 // 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s   Dijkstra 1.91s
-// todo 对比下 lrj 的建图方式
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
 
