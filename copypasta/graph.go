@@ -1096,9 +1096,9 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 	dist := make([][]int64, n+1)
 	for st := 1; st <= n; st++ {
 		dist[st] = G.shortestPathDijkstra(in, n+1, m, st)
-		for w, d := range dist[st] {
+		for end, d := range dist[st] {
 			if d < inf {
-				dist[st][w] -= h[st] - h[w]
+				dist[st][end] -= h[st] - h[end]
 			}
 		}
 	}
