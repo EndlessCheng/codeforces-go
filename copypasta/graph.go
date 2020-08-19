@@ -1403,12 +1403,15 @@ func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 
 // 一般图最大匹配（带花树 Edmonds's blossom algorithm）
 // https://en.wikipedia.org/wiki/Blossom_algorithm
-// https://www.cnblogs.com/cjyyb/p/8719368.html 带花树算法学习笔记
+// TODO https://www.cnblogs.com/cjyyb/p/8719368.html 带花树算法学习笔记
 // 模板题 https://www.luogu.com.cn/problem/P6113
 //       https://www.luogu.com.cn/problem/P4258
-// TODO
+
 // EXTRA: 完美匹配 Perfect Match
 // 完美匹配同时也是一个原图的最小边数的边覆盖
+
+// EXTRA: Min Cost Perfect Matching (MCPM)
+// https://courses.engr.illinois.edu/cs598csc/sp2010/Lectures/Lecture11.pdf
 
 // 有向图的拓扑排序 Kahn's algorithm
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
@@ -1811,8 +1814,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 // 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
 // 要求图中无负圈
 // https://oi-wiki.org/graph/flow/min-cost/
-// 基于 Capacity Scaling 的弱多项式复杂度最小费用流算法 https://ouuan.github.io/post/%E5%9F%BA%E4%BA%8E-capacity-scaling-%E7%9A%84%E5%BC%B1%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%B5%81%E7%AE%97%E6%B3%95/
 // 模板题 https://www.luogu.com.cn/problem/P3381
+// 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s   Dijkstra 1.91s
 // todo 对比下 lrj 的建图方式
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
@@ -1891,6 +1894,8 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	return minCost
 }
 
+// 基于原始对偶方法 (primal-dual method)
+// https://blog.xehoth.cc/DurationPlan-Primal-Dual/
 func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
 
@@ -1953,7 +1958,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			v = p.v
 		}
 		F -= minF // maxFlow += minF
-		minCost += dist[end] * int64(minF)
+		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
 		for v := end; v != st; {
 			p := fa[v]
 			e := &g[p.v][p.i]
@@ -1967,3 +1972,8 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 	}
 	return minCost
 }
+
+// todo 基于 Capacity Scaling 的弱多项式复杂度最小费用流算法 https://ouuan.github.io/post/%E5%9F%BA%E4%BA%8E-capacity-scaling-%E7%9A%84%E5%BC%B1%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%A4%8D%E6%9D%82%E5%BA%A6%E6%9C%80%E5%B0%8F%E8%B4%B9%E7%94%A8%E6%B5%81%E7%AE%97%E6%B3%95/
+
+// ZKW 费用流
+// https://artofproblemsolving.com/community/c1368h1020435
