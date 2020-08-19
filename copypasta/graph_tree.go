@@ -211,6 +211,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 }
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
+// https://codeforces.com/blog/entry/81661
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // 模板题 https://codeforces.com/problemset/problem/321/C
 // 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
