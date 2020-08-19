@@ -1798,6 +1798,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) (maxFlow int) {
 		}
 	}
 
+	// EXTRA: 打印流的分配方案，输出反向边上的 cap
+
 	return
 }
 
