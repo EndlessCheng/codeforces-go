@@ -764,8 +764,9 @@ func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
 func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
 
 // 单源最短路 Dijkstra
-// 适用于稀疏图 O(mlogn)
-// start 也可以是一个点集，这相当于同时对多个点跑最短路
+// 适用于稀疏图 O(mlogm)
+// 根据《算法(第4版)》，这里实现的是 lazy 版本的 Dijkstra，复杂度为 O(mlogm)；若在插入堆时元素已在堆中，改成更新元素而不是插入元素可使复杂度降为 O(mlogn)
+// st 也可以是一个点集，这相当于同时对多个点跑最短路
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
@@ -1054,7 +1055,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	return ans
 }
 
-// 任意两点最短路 Johnson O(nmlogn)
+// 任意两点最短路 Johnson O(nmlogm)
 // 若有负环返回 nil
 // https://en.wikipedia.org/wiki/Johnson%27s_algorithm
 // https://oi-wiki.org/graph/shortest-path/#johnson

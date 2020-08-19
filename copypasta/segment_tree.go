@@ -236,7 +236,7 @@ func newLazySegmentTree(a []int64) lazyST {
 // 模板题 https://www.luogu.com.cn/problem/P3834
 // todo 区间元素种类数 https://codeforces.com/problemset/problem/620/E
 // todo 整理模板+重写 https://codeforces.com/problemset/problem/1262/D2
-//                  https://codeforces.com/problemset/problem/813/E
+//                  https://codeforces.com/problemset/problem/813/E (差分)
 // TODO 查询出现次数大于区间长度一半的元素(强制在线) LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
 // TODO: 补题 https://codeforces.com/contest/786/problem/C
 //  https://codeforces.com/problemset/problem/840/D
