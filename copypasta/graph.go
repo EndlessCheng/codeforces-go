@@ -749,82 +749,6 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	return
 }
 
-// 任意两点最短路
-// 传入邻接矩阵 dist
-// dist[v][w] == inf 表示没有 v-w 边
-// https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
-// https://oi-wiki.org/graph/shortest-path/#floyd
-// 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
-// https://codeforces.com/problemset/problem/1204/C
-// 好题 https://codeforces.com/problemset/problem/295/B
-func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
-	min := func(a, b int) int { // int64
-		if a < b {
-			return a
-		}
-		return b
-	}
-	const inf int = 1e9
-	dist := make([][]int, n)
-	for i := range dist {
-		dist[i] = make([]int, n)
-		for j := range dist[i] {
-			dist[i][j] = inf
-		}
-		dist[i][i] = 0
-	}
-	for i := 0; i < m; i++ {
-		var v, w, dis int
-		Fscan(in, &v, &m, &dis)
-		dist[v][w] = dis
-		dist[w][v] = dis
-	}
-	for k := range dist { // 阶段
-		for i := range dist { // 状态
-			for j := range dist { // 决策
-				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
-			}
-		}
-	}
-	return dist
-}
-
-// 最小环
-// 传入邻接矩阵 weights
-// weights[v][w] == inf 表示没有 v-w 边
-// https://oi-wiki.org/graph/min-circle/#floyd
-// NOTE: 无权图的情况见 shortestCycleBFS
-func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
-	min := func(a, b int64) int64 {
-		if a <= b {
-			return a
-		}
-		return b
-	}
-	const inf int64 = 1e18
-	//const inf int = 1e8 // *NOTE*
-	n := len(weights)
-	dist := make([][]int64, n)
-	for i := range dist {
-		dist[i] = make([]int64, n)
-		copy(dist[i], weights[i])
-	}
-	ans := inf
-	for k := range dist { // 阶段
-		for i := 0; i < k; i++ { // 状态
-			for j := 0; j < i; j++ { // 决策
-				ans = min(ans, dist[i][j]+weights[i][k]+weights[k][j])
-			}
-		}
-		for i := range dist { // 状态
-			for j := range dist { // 决策
-				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
-			}
-		}
-	}
-	return ans
-}
-
 type hPair struct {
 	v   int
 	dis int64
@@ -1052,6 +976,127 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BellmanFordSP.java.html
 
 	return
+}
+
+// 任意两点最短路 Floyd-Warshall O(n^3)
+// 传入邻接矩阵 dist
+// dist[v][w] == inf 表示没有 v-w 边
+// https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+// https://oi-wiki.org/graph/shortest-path/#floyd
+// 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
+// https://codeforces.com/problemset/problem/1204/C
+// 好题 https://codeforces.com/problemset/problem/295/B
+func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
+	min := func(a, b int) int { // int64
+		if a < b {
+			return a
+		}
+		return b
+	}
+	const inf int = 1e9
+	dist := make([][]int, n)
+	for i := range dist {
+		dist[i] = make([]int, n)
+		for j := range dist[i] {
+			dist[i][j] = inf
+		}
+		dist[i][i] = 0
+	}
+	for i := 0; i < m; i++ {
+		var v, w, wt int
+		Fscan(in, &v, &m, &wt)
+		dist[v][w] = wt
+		dist[w][v] = wt
+	}
+	for k := range dist { // 阶段
+		for i := range dist { // 状态
+			for j := range dist { // 决策
+				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+	}
+	return dist
+}
+
+// 最小环
+// 传入邻接矩阵 weights
+// weights[v][w] == inf 表示没有 v-w 边
+// https://oi-wiki.org/graph/min-circle/#floyd
+// NOTE: 无权图的情况见 shortestCycleBFS
+func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
+	min := func(a, b int64) int64 {
+		if a <= b {
+			return a
+		}
+		return b
+	}
+	const inf int64 = 1e18
+	//const inf int = 1e8 // *NOTE*
+	n := len(weights)
+	dist := make([][]int64, n)
+	for i := range dist {
+		dist[i] = make([]int64, n)
+		copy(dist[i], weights[i])
+	}
+	ans := inf
+	for k := range dist { // 阶段
+		for i := 0; i < k; i++ { // 状态
+			for j := 0; j < i; j++ { // 决策
+				ans = min(ans, dist[i][j]+weights[i][k]+weights[k][j])
+			}
+		}
+		for i := range dist { // 状态
+			for j := range dist { // 决策
+				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+			}
+		}
+	}
+	return ans
+}
+
+// 任意两点最短路 Johnson O(nmlogn)
+// 若有负环返回 nil
+// https://en.wikipedia.org/wiki/Johnson%27s_algorithm
+// https://oi-wiki.org/graph/shortest-path/#johnson
+// 模板题 https://www.luogu.com.cn/problem/P5905
+func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
+	type neighbor struct {
+		to int
+		wt int64
+	}
+	g := make([][]neighbor, n+1)
+	for i := 0; i < m; i++ {
+		v, w, wt := 0, 0, int64(0)
+		Fscan(in, &v, &w, &wt)
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
+	}
+
+	// 建虚拟节点 0 并且往其他的点都连一条边权为 0 的边
+	for v := 1; v <= n; v++ {
+		g[0] = append(g[0], neighbor{v, 0})
+		g[v] = append(g[v], neighbor{})
+	}
+
+	// 跑 SPFA，代码略（注意点数为 n+1）
+	h := G.shortestPathSPFA(in, n+1, m, 0)
+	if h == nil {
+		return nil
+	}
+
+	// 求新边的边权
+	for v := 1; v <= n; v++ {
+		for i, e := range g[v] {
+			g[v][i].wt += h[v] - h[e.to]
+		}
+	}
+
+	// 以每个点为源点跑一遍 Dijkstra
+	dist := make([][]int64, n+1)
+	for st := 1; st <= n; st++ {
+		dist[st] = G.shortestPathDijkstra(in, n+1, m, st)
+	}
+	return dist
 }
 
 // EXTRA: 同余最短路
@@ -1959,7 +2004,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			}
 			v = p.v
 		}
-		F -= minF // maxFlow += minF
+		F -= minF                       // maxFlow += minF
 		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
 		for v := end; v != st; {
 			p := fa[v]
