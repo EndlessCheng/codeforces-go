@@ -73,6 +73,7 @@ func stringCollection() {
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
+	// 模板题 https://www.luogu.com.cn/problem/P3375
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087

@@ -218,8 +218,10 @@ func (matrix) inv(in io.Reader, n int) matrix {
 //      https://cp-algorithms.com/linear_algebra/determinant-gauss.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
+// 模板题 https://www.luogu.com.cn/problem/P3389
 
 // 线性基（子集异或和问题）
+// 模板题 https://www.luogu.com.cn/problem/P3812
 // todo https://codeforces.com/problemset/problem/895/C
 //  https://codeforces.com/problemset/problem/845/G
 

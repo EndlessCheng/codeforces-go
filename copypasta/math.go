@@ -861,6 +861,7 @@ func numberTheoryCollection() {
 	// https://blog.csdn.net/synapse7/article/details/19610361
 	// a^b ≡ a^(b mod φ(m)) (mod m), gcd(a,m)=1
 	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
+	// 模板题 https://www.luogu.com.cn/problem/P5091
 	// 例题 https://codeforces.com/problemset/problem/615/D
 	// https://cses.fi/problemset/task/1712
 
@@ -893,6 +894,7 @@ func numberTheoryCollection() {
 	// we have |x|<=b and |y|<=a in result (x,y)
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
 	// 模板题 https://www.luogu.com.cn/problem/P5656
+	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	var exgcd func(a, b int64) (gcd, x, y int64)
 	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
@@ -905,7 +907,7 @@ func numberTheoryCollection() {
 
 	// 任意非零模数逆元
 	// ax ≡ 1 (mod m)
-	// 模板题 https://www.luogu.com.cn/problem/P1082 https://www.luogu.com.cn/problem/P3811
+	// 模板题 https://www.luogu.com.cn/problem/P1082
 	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	pow := func(x, n, p int64) int64 {
@@ -930,10 +932,11 @@ func numberTheoryCollection() {
 	divM := func(a, b, m int64) int64 { return a * invM(b, m) % m }
 	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
 
-	// 线性求逆元
+	// 线性求逆元·其一
 	// 求 1, 2, ..., p−1 mod p 的逆元
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
+	// 模板题 https://www.luogu.com.cn/problem/P3811
 	initAllInv := func(p int) []int {
 		inv := make([]int, p)
 		inv[1] = 1
@@ -944,8 +947,10 @@ func numberTheoryCollection() {
 		return inv
 	}
 
-	// 离线求逆元
+	// 线性求逆元·其二（离线逆元）
+	// 求 a1, a2, ..., an mod p 的逆元
 	// https://zhuanlan.zhihu.com/p/86561431
+	// 模板题 https://www.luogu.com.cn/problem/P5431
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013

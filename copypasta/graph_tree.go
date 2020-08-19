@@ -393,6 +393,9 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 	return f(root, -1)
 }
 
+// 点分树
+// todo 模板题 https://www.luogu.com.cn/problem/P6329
+
 // 最近公共祖先 - 其一 - 基于树上倍增和二分搜索
 // O(nlogn) 预处理，O(logn) 查询
 // 适用于查询量和节点数等同的情形
