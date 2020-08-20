@@ -259,6 +259,11 @@ func miscCollection() {
 		return mat
 	}
 
+	// 最小栈，支持动态 push pop，查询栈中最小元素
+	// 思路是用另一个栈，同步 push pop，处理 push 时压入 min(当前元素,栈顶元素)，注意栈为空的时候直接压入元素
+	// https://ac.nowcoder.com/acm/contest/1055/A
+	// https://blog.nowcoder.net/n/ceb3214b89594af481ef9b794c75a929
+
 	_ = []interface{}{
 		logInit,
 		getCycle,
