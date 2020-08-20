@@ -67,6 +67,17 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 func numberTheoryCollection() {
 	const mod int64 = 1e9 + 7 // 998244353
+	pow := func(x, n, p int64) (res int64) {
+		x %= p
+		res = 1
+		for ; n > 0; n >>= 1 {
+			if n&1 == 1 {
+				res = res * x % p
+			}
+			x = x * x % p
+		}
+		return
+	}
 
 	/* GCD LCM 相关
 
@@ -864,6 +875,13 @@ func numberTheoryCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P5091
 	// 例题 https://codeforces.com/problemset/problem/615/D
 	// https://cses.fi/problemset/task/1712
+	exPhi := func(a, b int64, m int) int64 {
+		phi := int64(calcPhi(m))
+		if b >= phi {
+			b = b%phi + phi
+		}
+		return pow(a, b, int64(m))
+	}
 
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
@@ -909,18 +927,6 @@ func numberTheoryCollection() {
 	// ax ≡ 1 (mod m)
 	// 模板题 https://www.luogu.com.cn/problem/P1082
 	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
-
-	pow := func(x, n, p int64) int64 {
-		x %= p
-		res := int64(1)
-		for ; n > 0; n >>= 1 {
-			if n&1 == 1 {
-				res = res * x % p
-			}
-			x = x * x % p
-		}
-		return res
-	}
 
 	// 费马小定理求质数逆元
 	// ax ≡ 1 (mod p)
@@ -1336,7 +1342,8 @@ func numberTheoryCollection() {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
 		isPrime, sieve, sieveL, primeFactorization, primeDivisors, primeExponentsCountAll,
-		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll, calcPhi, initPhi,
+		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
+		calcPhi, initPhi, exPhi,
 		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
 		factorial, calcFactorial, initFactorial, _factorial, combHalf, comb,
 		muInit,
