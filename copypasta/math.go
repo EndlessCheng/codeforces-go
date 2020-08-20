@@ -947,8 +947,7 @@ func numberTheoryCollection() {
 		inv := make([]int, p)
 		inv[1] = 1
 		for i := 2; i < p; i++ {
-			inv[i] = -(p / i) * inv[p%i]
-			inv[i] = (inv[i]%p + p) % p
+			inv[i] = (p - p/i) * inv[p%i] % p
 		}
 		return inv
 	}
