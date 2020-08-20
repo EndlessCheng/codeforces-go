@@ -943,19 +943,39 @@ func numberTheoryCollection() {
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
 	// 模板题 https://www.luogu.com.cn/problem/P3811
-	initAllInv := func(p int) []int {
-		inv := make([]int, p)
+	initAllInv := func(p int) []int64 {
+		inv := make([]int64, p)
 		inv[1] = 1
 		for i := 2; i < p; i++ {
-			inv[i] = (p - p/i) * inv[p%i] % p
+			inv[i] = int64(p-p/i) * inv[p%i] % int64(p)
 		}
 		return inv
 	}
 
 	// 线性求逆元·其二（离线逆元）
 	// 求 a1, a2, ..., an mod p 的逆元
+	// 根据 ai^-1 ≡ Πai/ai * (Πai)^-1 (mod p)，求出 Πai 的前缀积和后缀积可以得到 Πai/ai，从而求出 ai^-1 mod p
 	// https://zhuanlan.zhihu.com/p/86561431
 	// 模板题 https://www.luogu.com.cn/problem/P5431
+	calcAllInv := func(a []int64, p int64) []int64 {
+		n := len(a)
+		pre := make([]int64, n+1)
+		pre[0] = 1
+		for i, v := range a {
+			pre[i+1] = pre[i] * v % p
+		}
+		invMulAll := invP(pre[n], p)
+		suf := make([]int64, n+1)
+		suf[n] = 1
+		for i := len(a) - 1; i > 0; i-- { // i=0 不用求
+			suf[i] = suf[i+1] * a[i] % p
+		}
+		inv := make([]int64, n)
+		for i, pm := range pre[:n] {
+			inv[i] = pm * suf[i+1] % p * invMulAll % p
+		}
+		return inv
+	}
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
@@ -1343,7 +1363,9 @@ func numberTheoryCollection() {
 		isPrime, sieve, sieveL, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
-		exgcd, invM, invP, divM, divP, initAllInv, crt, excrt, babyStepGiantStep,
+		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
+		crt, excrt,
+		babyStepGiantStep,
 		factorial, calcFactorial, initFactorial, _factorial, combHalf, comb,
 		muInit,
 	}
