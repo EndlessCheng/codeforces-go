@@ -1271,7 +1271,18 @@ func numberTheoryCollection() {
 	// 古代猪文 https://www.luogu.com.cn/problem/P2480
 
 	// 原根
+	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
+	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
+	// https://oeis.org/A046145 Smallest primitive root modulo n, or 0 if no root exists
+	// https://oeis.org/A001918 Smallest primitive root of n-th prime
+	// https://oeis.org/A046146 Largest primitive root (<n) modulo n, or 0 if no root exists
+	// https://oeis.org/A071894 Largest primitive root (<p) of n-th prime p
+	// https://oeis.org/A046144 Number of primitive roots modulo n
+	// https://oeis.org/A008330 Number of primitive roots of n-th prime = phi(p-1)
+	// https://oeis.org/A056619 Smallest prime with primitive root of n or 0 if no such prime exists
+	// https://oeis.org/A023049 Smallest prime > n having primitive root n, or 0 if no such prime exists
 	// todo https://cp-algorithms.com/algebra/primitive-root.html
+	// todo 模板题 https://www.luogu.com.cn/problem/P6091
 
 	// 莫比乌斯函数 mu https://oeis.org/A008683
 	// 基于线性筛方法
