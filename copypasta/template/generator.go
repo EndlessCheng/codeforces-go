@@ -2,16 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"io/ioutil"
-	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // 生成 CF 比赛模板（需要先 cf race，以确认题目数量）
@@ -70,19 +67,19 @@ func GenCodeforcesContestTemplates(contestID string, overwrite bool) error {
 
 // 生成单道题目的模板（Codeforces）
 func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
+	urlObj, err := url.Parse(problemURL)
+	if err != nil {
+		return err
+	}
+
 	contestID, problemID, isGYM := parseCodeforcesProblemURL(problemURL)
 	if _, err := strconv.Atoi(contestID); err != nil {
 		return fmt.Errorf("invalid URL: %v", err)
 	}
 
 	if openWebsite {
-		luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/solution/CF%s%s", contestID, problemID)
+		luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
 		open.Run(luoguURL)
-
-		urlObj, err := url.Parse(problemURL)
-		if err != nil {
-			return err
-		}
 		var statusURL string
 		if isGYM {
 			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
@@ -90,16 +87,6 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
 		}
 		open.Run(statusURL)
-
-		if resp, err := grequests.Head(problemURL, &grequests.RequestOptions{RequestTimeout: 10 * time.Second}); err != nil {
-			fmt.Println(err)
-			// CF 连接失败，打开洛谷的页面
-			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
-		} else if resp.StatusCode != http.StatusOK {
-			fmt.Println(resp.StatusCode, resp)
-			// CF 维护中，打开洛谷的页面
-			problemURL = fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
-		}
 		open.Run(problemURL)
 	}
 
