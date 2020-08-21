@@ -1360,6 +1360,7 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 */
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
+// 注：使用 Dinic 可以达到 O(m√n) 的复杂度
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://oi-wiki.org/graph/bi-graph/#_9
@@ -1864,7 +1865,10 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 	return maxFlow
 }
 
-// 最高标号预流推进 (HLPP, High Level Preflow Push)
+// ISAP, Improved Shortest Augmenting Path O(n^2 * m)    gap 优化
+// todo https://oi-wiki.org/graph/flow/max-flow/#isap
+
+// 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 // todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
 //      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
