@@ -538,7 +538,7 @@ func numberTheoryCollection() {
 			相关题目 https://codeforces.com/problemset/problem/27/E https://www.luogu.com.cn/problem/P1128
 			质数的情况 https://oeis.org/A061286
 
-	n 的因子之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203
+	n 的因子之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203 todo 相关题目 https://www.luogu.com.cn/problem/P1593
 		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
 		真因子之和 https://oeis.org/A001065 σ(n)-n
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
