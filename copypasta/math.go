@@ -1315,9 +1315,6 @@ func numberTheoryCollection() {
 	// 莫比乌斯反演（岛娘推荐！https://zhuanlan.zhihu.com/p/133761303）
 	// todo https://oi-wiki.org/math/mobius/
 
-	// 反演魔术：反演原理及二项式反演
-	// http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
-
 	//
 
 	// 数论分块/除法分块

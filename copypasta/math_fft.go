@@ -18,6 +18,10 @@ import (
 //        http://blog.miskcoo.com/2015/05/polynomial-inverse
 // EXTRA: 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
 
+// 反演魔术：反演原理及二项式反演
+// http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
+// https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
+
 type fft struct {
 	n               int
 	omega, omegaInv []complex128
