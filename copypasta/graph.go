@@ -1765,6 +1765,12 @@ EXTRA: Disjoint paths
 EXTRA: todo 路径覆盖 Path cover + 打印
 todo Competitive Programmer’s Handbook Ch.20
      线性规划与网络流24题-最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
+todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
+  网络流从入门到入土 #1 https://www.luogu.com.cn/training/12097#problems
+  网络流从入门到入土 #2 https://www.luogu.com.cn/training/12098#problems
+  网络流从入门到入土 #3 https://www.luogu.com.cn/training/12099#problems
+  网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
+  网络流经典题目 https://www.luogu.com.cn/training/3144#problems
 */
 
 // 最大流 Dinic's algorithm O(n^2 * m)

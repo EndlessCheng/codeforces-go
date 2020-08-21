@@ -70,6 +70,8 @@ AT 经典 DP 场 https://atcoder.jp/contests/dp
     题解（日语）https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 算法竞赛专题解析（11）：DP概述和常见DP面试题 https://blog.csdn.net/weixin_43914593/article/details/105444090
+todo 题目推荐 https://www.luogu.com.cn/blog/wyy2020/dp-qian-tan
+  https://www.cnblogs.com/flashhu/p/9480669.html
 
 其他资料：
 https://github.com/hzwer/shareOI/tree/master/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92
