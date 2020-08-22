@@ -201,3 +201,39 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		//break
 	}
 }
+
+type OutputChecker func(string) bool
+
+// 无尽验证模式
+// inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入验证该输出是否正确
+func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc func(io.Reader, io.Writer)) {
+	const needPrint = runtime.GOOS == "darwin"
+
+	for tc := 1; ; tc++ {
+		input, checker := inputGenerator()
+		input = removeExtraSpace(input)
+		mockReader := strings.NewReader(input)
+		mockWriter := &strings.Builder{}
+		//t0 := time.Now()
+		runFunc(mockReader, mockWriter)
+		//fmt.Println(time.Since(t0))
+
+		actualOutput := removeExtraSpace(mockWriter.String())
+		if !assert.Truef(t, checker(actualOutput), "WA %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput) && needPrint {
+			fmt.Printf("[CASE %d]\n", tc)
+			fmt.Println("[WA]", actualOutput)
+			fmt.Println(input)
+			fmt.Println()
+		}
+
+		if tc%1e5 == 0 {
+			s := fmt.Sprintf("%d cases passed.", tc)
+			if needPrint {
+				fmt.Println(s)
+			}
+			t.Log(s)
+		}
+
+		//break
+	}
+}

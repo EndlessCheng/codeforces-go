@@ -3,6 +3,7 @@ package main
 import (
 	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"path/filepath"
 	"strings"
@@ -30,7 +31,7 @@ func Test(t *testing.T) {
 }
 
 // 无尽对拍
-func Test2(t *testing.T) {
+func TestCompare(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
@@ -59,4 +60,40 @@ func Test2(t *testing.T) {
 	}
 
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
+}
+
+// 无尽检查输出是否正确
+func TestCheck(t *testing.T) {
+	return
+	assert := assert.New(t)
+
+	//rand.Seed(time.Now().UnixNano())
+	inputGenerator := func() (string, testutil.OutputChecker) {
+		//return ``
+		rg := testutil.NewRandGenerator()
+		n := rg.Int(1, 10)
+		rg.NewLine()
+		a := rg.IntSlice(n, 1, n)
+		//Println(rg.String())
+		return rg.String(), func(output string) (_b bool) {
+			in := strings.NewReader(output)
+			var outN int
+			Fscan(in, &outN)
+			if !assert.Equal(n, outN) {
+				return
+			}
+
+			outA := make([]int, outN)
+			for i := range outA {
+				Fscan(in, &outA[i])
+			}
+			if !assert.EqualValues(a, outA) {
+				return
+			}
+
+			return true
+		}
+	}
+
+	testutil.CheckRunResultsInf(t, inputGenerator, run)
 }
