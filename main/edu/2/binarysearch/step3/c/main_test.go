@@ -25,6 +25,11 @@ func Test(t *testing.T) {
 1 100`,
 			`99`,
 		},
+		{
+			`5 1
+1 2 3 4 5`,
+			`4`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, customTestCases, 0, run)
 }
