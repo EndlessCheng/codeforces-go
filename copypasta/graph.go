@@ -1867,19 +1867,21 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 
 // ISAP, Improved Shortest Augmenting Path O(n^2 * m)    gap 优化
 // todo https://oi-wiki.org/graph/flow/max-flow/#isap
+// todo 性能对比
 
 // 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 // todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
 //      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
+// todo 性能对比
 
 // 最小费用流
 // 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
 // 要求图中无负圈
 // https://oi-wiki.org/graph/flow/min-cost/
 // 模板题 https://www.luogu.com.cn/problem/P3381
-// 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s   Dijkstra 1.91s
+// 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s(max 365ms)   Dijkstra 1.91s(max 688ms)
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
 
