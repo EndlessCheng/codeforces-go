@@ -1774,7 +1774,7 @@ todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
   网络流经典题目 https://www.luogu.com.cn/training/3144#problems
 */
 
-// 最大流 Dinic's algorithm O(n^2 * m)
+// 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)
 // Ford–Fulkerson algorithm (FFA) 的改进版本
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
@@ -1845,8 +1845,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 		return 0
 	}
 
-	maxFlow := 0        // int64
 	const inf int = 1e9 // 1e18
+	maxFlow := 0        // int64
 	for calcLevel() {
 		iter = make([]int, n)
 		for {
@@ -1865,11 +1865,105 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 	return maxFlow
 }
 
-// ISAP, Improved Shortest Augmenting Path O(n^2 * m)    gap 优化
-// todo https://oi-wiki.org/graph/flow/max-flow/#isap
-// todo 性能对比
+// ISAP, Improved Shortest Augmenting Path O(n^2 * m)
+// https://oi-wiki.org/graph/flow/max-flow/#isap
+// https://www.renfei.org/blog/isap.html
+// todo 目前来看性能比 Dinic 好一点点，需要找数据量更大的做对比
+// todo 非二分图上 Dinic 据说更快？
+func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
+	// st--; end--
 
-// 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)
+	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
+	g := make([][]neighbor, n)
+	addEdge := func(from, to, cap int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
+	}
+	for i := 0; i < m; i++ {
+		var v, w, cap int
+		Fscan(in, &v, &w, &cap)
+		v--
+		w--
+		addEdge(v, w, cap)
+	}
+
+	// 计算从汇点 end 出发的高度
+	d := make([]int, n)
+	for i := range d {
+		d[i] = -1
+	}
+	d[end] = 0
+	cd := make([]int, n+1) // 注意有 d[i] == n 的情况
+	q := []int{end}
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		cd[d[v]]++
+		for _, e := range g[v] {
+			if w := e.to; d[w] < 0 {
+				d[w] = d[v] + 1
+				q = append(q, w)
+			}
+		}
+	}
+
+	// 寻找增广路
+	const inf int = 1e9 // 1e18
+	maxFlow := 0        // int64
+	iter := make([]int, n)
+	type pair struct{ v, i int }
+	fa := make([]pair, n)
+o:
+	for v := st; d[st] < n; {
+		if v == end {
+			minF := inf
+			for v := end; v != st; {
+				p := fa[v]
+				if c := g[p.v][p.i].cap; c < minF {
+					minF = c
+				}
+				v = p.v
+			}
+			for v := end; v != st; {
+				p := fa[v]
+				e := &g[p.v][p.i]
+				e.cap -= minF
+				g[v][e.rid].cap += minF
+				v = p.v
+			}
+			maxFlow += minF
+			v = st
+		}
+		for i := iter[v]; i < len(g[v]); i++ {
+			e := g[v][i]
+			if w := e.to; e.cap > 0 && d[w] < d[v] {
+				fa[w] = pair{v, i}
+				iter[v] = i
+				v = w
+				continue o
+			}
+		}
+		if cd[d[v]] == 1 {
+			break // gap 优化
+		}
+		cd[d[v]]--
+		minD := n - 1
+		for _, e := range g[v] {
+			if e.cap > 0 && d[e.to] < minD {
+				minD = d[e.to]
+			}
+		}
+		d[v] = minD + 1
+		cd[d[v]]++
+		iter[v] = 0
+		if v != st {
+			v = fa[v].v
+		}
+	}
+	return maxFlow
+}
+
+// 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)   复杂度上界相比 Dinic/ISAP 比较紧
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 // todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
 //      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
@@ -1943,8 +2037,6 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 			}
 			v = p.v
 		}
-		F -= minF // maxFlow += minF
-		minCost += dist[end] * int64(minF)
 		for v := end; v != st; {
 			p := fa[v]
 			e := &g[p.v][p.i]
@@ -1952,6 +2044,8 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 			g[v][e.rid].cap += minF
 			v = p.v
 		}
+		F -= minF // maxFlow += minF
+		minCost += dist[end] * int64(minF)
 	}
 	if F > 0 {
 		return -1
@@ -2022,8 +2116,6 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			}
 			v = p.v
 		}
-		F -= minF                       // maxFlow += minF
-		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
 		for v := end; v != st; {
 			p := fa[v]
 			e := &g[p.v][p.i]
@@ -2031,6 +2123,8 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			g[v][e.rid].cap += minF
 			v = p.v
 		}
+		F -= minF                       // maxFlow += minF
+		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
 	}
 	if F > 0 {
 		return -1
