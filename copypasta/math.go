@@ -1663,8 +1663,10 @@ func numericalAnalysisCollection() {
 /* 随机算法 */
 
 // 模拟退火 (Simulated Annealing, SA)
+// 基于 Metropolis 准则
 // https://oi-wiki.org/misc/simulated-annealing/
 // https://en.wikipedia.org/wiki/Simulated_annealing
+// https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm
 // https://www.luogu.com.cn/blog/Darth-Che/mu-ni-tui-huo-xue-xi-bi-ji
 // https://zhuanlan.zhihu.com/p/47234502
 // 技巧：可以在时限内重复跑 SA 取最优值，防止脸黑

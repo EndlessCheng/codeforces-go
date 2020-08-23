@@ -94,6 +94,8 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// vis[v] == 0：该顶点未被访问
 		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
 		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
+		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
+		// https://codeforces.com/problemset/problem/698/B
 		vis := make([]int8, n)
 		var f func(int)
 		f = func(v int) {
@@ -117,30 +119,9 @@ func (*graph) dfs(n, st int, g [][]int) {
 	}
 
 	{
-		// 无向图的树边和非树边（含重边）
-		vis := make([]int8, n)
-		var f func(int)
-		f = func(v int) {
-			vis[v] = 1
-			for _, w := range g[v] {
-				if t := vis[w]; t == 0 { // 树边
-					f(w)
-				} else if t == 2 || w == v { // 非树边（没有自环的话可以去掉 w == v）
-
-				}
-			}
-			vis[v] = 2
-		}
-		for i, t := range vis {
-			if t == 0 {
-				f(i)
-			}
-		}
-	}
-
-	{
 		// 无向图: DFS 找长度至少为 k 的环
-		// https://codeforces.com/problemset/problem/263/D
+		// 模板题 https://codeforces.com/problemset/problem/263/D
+		// https://codeforces.com/problemset/problem/1325/F
 		var k, end, st int
 		fa := make([]int, n)
 		dep := make([]int, n)
@@ -1965,8 +1946,9 @@ o:
 
 // 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)   复杂度上界相比 Dinic/ISAP 比较紧
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
-// todo https://oi-wiki.org/graph/flow/max-flow/#hlpp
-//      https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
+// https://blog.xehoth.cc/DurationPlan-ISAP-HLPP/
+// https://oi-wiki.org/graph/flow/max-flow/#hlpp
+// https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
 // todo 性能对比
 
