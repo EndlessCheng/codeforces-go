@@ -44,15 +44,18 @@ func stoneGameV(a []int) (ans int) {
 		}
 		return
 	}
-	cnt:=0
-	for i, row := range dp {
-		for j, v := range row[i+1:] {
-			_, _ = i, j
-			if v == -1 {
-				cnt++
-			}
-		}
-	}
-	println(cnt)
+	// 记忆化有大量状态没有用到
+	// 21
+	// 28
+	// 1
+	//cnt:=0
+	//for i, row := range dp {
+	//	for _, v := range row[i+1:] {
+	//		if v == -1 {
+	//			cnt++
+	//		}
+	//	}
+	//}
+	//println(cnt)
 	return f(0, n)
 }
