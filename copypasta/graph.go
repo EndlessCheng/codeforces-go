@@ -730,19 +730,19 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	return
 }
 
-type hPair struct {
+type vdPair struct {
 	v   int
 	dis int64
 }
-type pairHeap []hPair
+type vdHeap []vdPair
 
-func (h pairHeap) Len() int              { return len(h) }
-func (h pairHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis } // > 权值最大
-func (h pairHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *pairHeap) Push(v interface{})   { *h = append(*h, v.(hPair)) }
-func (h *pairHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
-func (h *pairHeap) push(v hPair)         { heap.Push(h, v) }
-func (h *pairHeap) pop() hPair           { return heap.Pop(h).(hPair) }
+func (h vdHeap) Len() int              { return len(h) }
+func (h vdHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis } // > 权值最大
+func (h vdHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *vdHeap) Push(v interface{})   { *h = append(*h, v.(vdPair)) }
+func (h *vdHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *vdHeap) push(v vdPair)        { heap.Push(h, v) }
+func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O(mlogm)
@@ -781,7 +781,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		fa[i] = -1
 	}
 
-	q := pairHeap{{st, 0}}
+	q := vdHeap{{st, 0}}
 	for len(q) > 0 {
 		p := q.pop()
 		v := p.v
@@ -795,7 +795,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.wt; newD < dist[w] { // > 权值最大
 				dist[w] = newD
 				fa[w] = v
-				q.push(hPair{w, newD})
+				q.push(vdPair{w, newD})
 			}
 		}
 	}
@@ -833,7 +833,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		}
 		vis := make([]bool, n)
 
-		q := pairHeap{{st, 0}}
+		q := vdHeap{{st, 0}}
 		for len(q) > 0 {
 			v := q.pop().v
 			if vis[v] {
@@ -844,12 +844,12 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 				w := e.to
 				newD := dist[v] + e.wt
 				if newD < dist[w] {
-					q.push(hPair{w, newD})
+					q.push(vdPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
 				if newD > dist[w] && newD < dist2[w] {
 					dist2[w] = newD
-					q.push(hPair{w, newD})
+					q.push(vdPair{w, newD})
 				}
 			}
 		}
@@ -1786,25 +1786,25 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 		addEdge(v, w, cap)
 	}
 
-	// 计算从源点 st 出发的距离标号
-	level := make([]int, n)
-	calcLevel := func() bool {
-		for i := range level {
-			level[i] = -1
+	// 计算从源点 st 出发的距离
+	d := make([]int, n)
+	bfs := func() bool {
+		for i := range d {
+			d[i] = -1
 		}
-		level[st] = 0
+		d[st] = 0
 		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
 			for _, e := range g[v] {
-				if w := e.to; e.cap > 0 && level[w] < 0 {
-					level[w] = level[v] + 1
+				if w := e.to; e.cap > 0 && d[w] < 0 {
+					d[w] = d[v] + 1
 					q = append(q, w)
 				}
 			}
 		}
-		return level[end] >= 0
+		return d[end] >= 0
 	}
 	// 寻找增广路
 	var iter []int // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
@@ -1815,7 +1815,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 		}
 		for ; iter[v] < len(g[v]); iter[v]++ {
 			e := &g[v][iter[v]]
-			if w := e.to; e.cap > 0 && level[w] > level[v] {
+			if w := e.to; e.cap > 0 && d[w] > d[v] {
 				if f := dfs(w, min(minF, e.cap)); f > 0 {
 					e.cap -= f
 					g[w][e.rid].cap += f
@@ -1828,7 +1828,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 
 	const inf int = 1e9 // 1e18
 	maxFlow := 0        // int64
-	for calcLevel() {
+	for bfs() {
 		iter = make([]int, n)
 		for {
 			if f := dfs(st, inf); f > 0 {
@@ -1868,7 +1868,7 @@ func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 		addEdge(v, w, cap)
 	}
 
-	// 计算从汇点 end 出发的高度
+	// 计算从汇点 end 出发的距离
 	d := make([]int, n)
 	for i := range d {
 		d[i] = -1
@@ -1886,6 +1886,9 @@ func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 				q = append(q, w)
 			}
 		}
+	}
+	if d[st] < 0 {
+		return -1
 	}
 
 	// 寻找增广路
@@ -1946,11 +1949,122 @@ o:
 
 // 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)   复杂度上界相比 Dinic/ISAP 比较紧
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
-// https://blog.xehoth.cc/DurationPlan-ISAP-HLPP/
+// https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm#Highest_label_selection_rule
 // https://oi-wiki.org/graph/flow/max-flow/#hlpp
-// https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
 // todo 性能对比
+type dHeap struct{ vs, d []int }
+
+func (h dHeap) Len() int              { return len(h.vs) }
+func (h dHeap) Less(i, j int) bool    { return h.d[h.vs[i]] > h.d[h.vs[j]] } // 处于堆中的节点的 d 值不会改变，所以可以直接比较
+func (h dHeap) Swap(i, j int)         { h.vs[i], h.vs[j] = h.vs[j], h.vs[i] }
+func (h *dHeap) Push(v interface{})   { h.vs = append(h.vs, v.(int)) }
+func (h *dHeap) Pop() (v interface{}) { a := h.vs; h.vs, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *dHeap) push(v int)           { heap.Push(h, v) }
+func (h *dHeap) pop() int             { return heap.Pop(h).(int) }
+
+func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	// st--; end--
+
+	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
+	g := make([][]neighbor, n)
+	addEdge := func(from, to, cap int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
+	}
+	for i := 0; i < m; i++ {
+		var v, w, cap int
+		Fscan(in, &v, &w, &cap)
+		v--
+		w--
+		addEdge(v, w, cap)
+	}
+
+	// 计算从汇点 end 出发的距离
+	d := make([]int, n)
+	for i := range d {
+		d[i] = -1
+	}
+	d[end] = 0
+	cd := make([]int, 2*n)
+	_q := []int{end}
+	for len(_q) > 0 {
+		v := _q[0]
+		_q = _q[1:]
+		cd[d[v]]++
+		for _, e := range g[v] {
+			if w := e.to; d[w] < 0 {
+				d[w] = d[v] + 1
+				_q = append(_q, w)
+			}
+		}
+	}
+	if d[st] < 0 {
+		return -1
+	}
+	d[st] = n
+
+	exFlow := make([]int, n)
+	q := dHeap{d: d}
+	inQ := make([]bool, n)
+	push := func(v, f int, e *neighbor) {
+		w := e.to
+		e.cap -= f
+		g[w][e.rid].cap += f
+		exFlow[v] -= f
+		exFlow[w] += f
+		if w != st && w != end && !inQ[w] {
+			q.push(w)
+			inQ[w] = true
+		}
+	}
+	// 将源点的所有边都满流地推送出去
+	for i := range g[st] {
+		if e := &g[st][i]; e.cap > 0 {
+			push(st, e.cap, e)
+		}
+	}
+	for len(q.vs) > 0 {
+		v := q.pop()
+		inQ[v] = false
+	o:
+		for {
+			for i := range g[v] {
+				if e := &g[v][i]; e.cap > 0 && d[e.to] < d[v] {
+					push(v, min(e.cap, exFlow[v]), e)
+					if exFlow[v] == 0 {
+						break o
+					}
+				}
+			}
+			dv := d[v]
+			cd[dv]--
+			if cd[dv] == 0 { // gap 优化
+				for i, h := range d {
+					if i != st && i != end && dv < h && h <= n {
+						d[i] = n + 1 // 超过 n，从而尽快将流量推回 st
+					}
+				}
+			}
+			// relabel
+			minD := int(1e9)
+			for _, e := range g[v] {
+				if w := e.to; e.cap > 0 && d[w] < minD {
+					minD = d[w]
+				}
+			}
+			d[v] = minD + 1
+			cd[d[v]]++
+		}
+	}
+	return exFlow[end]
+}
 
 // 最小费用流
 // 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
@@ -2064,7 +2178,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			dist[i] = inf
 		}
 		dist[st] = 0
-		q := pairHeap{{st, 0}}
+		q := vdHeap{{st, 0}}
 		for len(q) > 0 {
 			p := q.pop()
 			v := p.v
@@ -2079,7 +2193,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 				if newD := dist[v] + int64(e.cost) + h[v] - h[w]; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = pair{v, i}
-					q.push(hPair{w, newD})
+					q.push(vdPair{w, newD})
 				}
 			}
 		}
