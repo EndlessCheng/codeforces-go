@@ -1952,16 +1952,17 @@ o:
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm#Highest_label_selection_rule
 // https://oi-wiki.org/graph/flow/max-flow/#hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
-// todo 性能对比
-type dHeap struct{ vs, d []int }
+// todo 双端队列优化 https://www.luogu.com.cn/record/37110373
+type dh struct {
+	sort.IntSlice
+	d []int
+}
 
-func (h dHeap) Len() int              { return len(h.vs) }
-func (h dHeap) Less(i, j int) bool    { return h.d[h.vs[i]] > h.d[h.vs[j]] } // 处于堆中的节点的 d 值不会改变，所以可以直接比较
-func (h dHeap) Swap(i, j int)         { h.vs[i], h.vs[j] = h.vs[j], h.vs[i] }
-func (h *dHeap) Push(v interface{})   { h.vs = append(h.vs, v.(int)) }
-func (h *dHeap) Pop() (v interface{}) { a := h.vs; h.vs, v = a[:len(a)-1], a[len(a)-1]; return }
-func (h *dHeap) push(v int)           { heap.Push(h, v) }
-func (h *dHeap) pop() int             { return heap.Pop(h).(int) }
+func (h dh) Less(i, j int) bool  { return h.d[h.IntSlice[i]] > h.d[h.IntSlice[j]] } // 处于堆中的节点的 d 值不会改变，所以可以直接比较
+func (h *dh) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *dh) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *dh) push(v int)         { heap.Push(h, v) }
+func (h *dh) pop() int           { return heap.Pop(h).(int) }
 
 func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 	min := func(a, b int) int {
@@ -2011,7 +2012,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 	d[st] = n
 
 	exFlow := make([]int, n)
-	q := dHeap{d: d}
+	q := dh{d: d}
 	inQ := make([]bool, n)
 	push := func(v, f int, e *neighbor) {
 		w := e.to
@@ -2030,7 +2031,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 			push(st, e.cap, e)
 		}
 	}
-	for len(q.vs) > 0 {
+	for len(q.IntSlice) > 0 {
 		v := q.pop()
 		inQ[v] = false
 	o:
