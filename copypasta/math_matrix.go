@@ -3,6 +3,7 @@ package copypasta
 import (
 	. "fmt"
 	"io"
+	"math"
 )
 
 /* 矩阵加速
@@ -65,7 +66,7 @@ func (a matrix) mul(b matrix) matrix {
 	for i := range a {
 		for j := range b[0] {
 			for k, aik := range a[i] {
-				// 小心爆 int64，必要时用快速乘
+				// 小心爆 int64，必要时用模乘
 				c[i][j] += aik * b[k][j] % mod
 			}
 		}
@@ -124,7 +125,6 @@ func (a matrix) sub(b matrix) matrix {
 	}
 	return c
 }
-
 
 func (a matrix) swapRows(i, j int) {
 	for k := range a[0] {
@@ -213,12 +213,58 @@ func (matrix) inv(in io.Reader, n int) matrix {
 	return ans
 }
 
-// 行列式 高斯消元 Determinant
-// TODO https://oi-wiki.org/math/gauss/
-//      https://cp-algorithms.com/linear_algebra/determinant-gauss.html
+// 高斯消元 Gaussian elimination O(n^3)
+// 求解 Ax=b，A 为方阵
+// todo EXTRA: 求行列式
+// https://en.wikipedia.org/wiki/Gaussian_elimination
+// https://oi-wiki.org/math/gauss/
+// https://cp-algorithms.com/linear_algebra/determinant-gauss.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3389
+func gaussJordanElimination(a matrix, b []int64) []float64 {
+	const eps = 1e-8
+	n := len(a)
+	c := make([][]float64, n)
+	for i, row := range a {
+		c[i] = make([]float64, n+1)
+		for j, v := range row {
+			c[i][j] = float64(v)
+		}
+		c[i][n] = float64(b[i])
+	}
+	for i := range c {
+		// 减小误差，把正在处理的未知数系数的绝对值最大的式子换到第 i 行
+		pivot := i
+		for j := i; j < n; j++ {
+			if math.Abs(c[j][i]) > math.Abs(c[pivot][i]) {
+				pivot = j
+			}
+		}
+		c[i], c[pivot] = c[pivot], c[i]
+		// 无解或有无穷多解
+		if math.Abs(c[i][i]) < eps {
+			return nil
+		}
+		// 把正在处理的未知数的系数变为 1
+		for j := i + 1; j <= n; j++ {
+			c[i][j] /= c[i][i]
+		}
+		for j := 0; j < n; j++ {
+			if j != i {
+				// 从第 j 个式子中消去第 i 个未知数
+				for k := i + 1; k <= n; k++ {
+					c[j][k] -= c[j][i] * c[i][k]
+				}
+			}
+		}
+	}
+	res := make([]float64, n)
+	for i, row := range c {
+		res[i] = row[n]
+	}
+	return res
+}
 
 // 线性基（子集异或和问题）
 // 模板题 https://www.luogu.com.cn/problem/P3812
