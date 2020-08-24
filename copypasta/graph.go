@@ -1739,7 +1739,6 @@ func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FordFulkerson.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html
-全局最小割 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
 EXTRA: Disjoint paths
        Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph,
                             assuming that the capacity of each edge is one.
@@ -1753,6 +1752,11 @@ todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
   网络流从入门到入土 #3 https://www.luogu.com.cn/training/12099#problems
   网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
   网络流经典题目 https://www.luogu.com.cn/training/3144#problems
+
+全局最小割 Stoer-Wagner 算法 O(nm+n^2logn)
+https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
+模板题 https://www.luogu.com.cn/problem/P5632
 */
 
 // 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)

@@ -798,6 +798,9 @@ type line3 struct{ p1, p2 vec3 }
 func vec3Collections() {
 	var ps []vec3
 	sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && (a.y < b.y || a.y == b.y && a.z < b.z) })
+
+	// 三维凸包
+	// todo 模板题 https://www.luogu.com.cn/problem/P4724
 }
 
 // 下面这些仅作为占位符表示，实际使用的时候复制上面的模板，类型改成 float64 同时 vecF 替换成 vec 等
