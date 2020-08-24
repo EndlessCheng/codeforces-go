@@ -1952,7 +1952,7 @@ o:
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm#Highest_label_selection_rule
 // https://oi-wiki.org/graph/flow/max-flow/#hlpp
 // 模板题 https://www.luogu.com.cn/problem/P4722
-// todo 双端队列优化 https://www.luogu.com.cn/record/37110373
+// todo deque 优化 + 全局重贴标签等 https://www.luogu.com.cn/problem/solution/P4722
 type dh struct {
 	sort.IntSlice
 	d []int
