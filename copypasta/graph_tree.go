@@ -272,7 +272,8 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	f(root)
 }
 
-// 例：求树上距离不超过 upperDis 的点对数 http://poj.org/problem?id=1741 todo 待整理
+// 点分治：求树上距离不超过 upperDis 的点对数
+// todo 待整理 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
 // todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64) int64 {
 	max := func(a, b int) int {

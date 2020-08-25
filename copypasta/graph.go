@@ -908,6 +908,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 //        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
 //        这样，在无负环时会得到一组非正数解
 //        模板题 https://www.luogu.com.cn/problem/P3385
+//        https://www.luogu.com.cn/problem/SP116
 func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -1337,6 +1338,7 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 最大独立集+最小顶点覆盖=n
 对于二分图，最小顶点覆盖=最大匹配，最大独立集=n-最大匹配
 
+激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
 不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
 */
 
@@ -1739,13 +1741,60 @@ func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FordFulkerson.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html
-EXTRA: Disjoint paths
-       Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph,
-                            assuming that the capacity of each edge is one.
-       Node-disjoint paths: 拆点法
-EXTRA: todo 路径覆盖 Path cover + 打印
+
+Disjoint paths
+Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph, assuming that the capacity of each edge is one.
+Node-disjoint paths: 拆点法
+
+路径覆盖 Path cover + 打印
 todo Competitive Programmer’s Handbook Ch.20
-     线性规划与网络流24题-最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
+todo 线性规划与网络流 24 题 - 最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
+
+全局最小割 Stoer-Wagner 算法 O(nm+n^2logn)
+https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
+模板题 https://www.luogu.com.cn/problem/P5632
+
+最大权闭合子图
+*/
+
+/* 网络流建模技巧
+标准建模（指派问题）：
+	http://poj.org/problem?id=2175
+	http://poj.org/problem?id=3686
+顶点上有容量限制：
+	可以将其拆成两个，边容量为顶点容量
+有最小容量限制-最大流（挑战 p.214）：
+	增加源点 S 和汇点 T，修改每条边 v-w 的 cap-=minCap，并 S->v 连边 cap=minCap，w->T 连边 cap=minCap
+	检查最大流是否为 ΣminCap（不是满流无解）
+	S->st 连边 cap=inf，end->T 连边 cap=inf
+	最大流为 maxFlow-ΣminCap
+有最小容量限制-最小费用最大流（挑战 p.227）：
+	对每条边新增一条边 e'
+	e.cap-=minCap
+	e'.cap=minCap
+	e'.cost=e.cost-M // 一个足够大的常数
+	跑完 MCMF 后加上 M*ΣminCap
+边容量增加：
+	重新跑增广路
+边容量减少：
+	若 flow<=cap' 则最大流不变；若 flow>cap' 需要将多出的流退回去 todo
+流量任意：
+	todo
+容量为负数：
+	todo
+费用为负数：
+	todo 挑战 p.228
+一对多的最大匹配：
+	Dining https://www.luogu.com.cn/problem/P2891 http://poj.org/problem?id=3281
+求最小割划分成两个集合：
+	Dual Core CPU http://poj.org/problem?id=3469
+无重复边的往返最短路：
+	http://poj.org/problem?id=2135
+	转换成流量为 2 的最小费用流
+
+todo 线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
+
 todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
   网络流从入门到入土 #1 https://www.luogu.com.cn/training/12097#problems
   网络流从入门到入土 #2 https://www.luogu.com.cn/training/12098#problems
@@ -1753,10 +1802,7 @@ todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
   网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
   网络流经典题目 https://www.luogu.com.cn/training/3144#problems
 
-全局最小割 Stoer-Wagner 算法 O(nm+n^2logn)
-https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
-模板题 https://www.luogu.com.cn/problem/P5632
+CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 */
 
 // 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)
@@ -1780,7 +1826,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 	g := make([][]neighbor, n)
 	addEdge := func(from, to, cap int) {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0}) // 无向图上 0 改 cap
 	}
 	for i := 0; i < m; i++ {
 		var v, w, cap int
@@ -2084,7 +2130,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	g := make([][]neighbor, n)
 	addEdge := func(from, to, cap, cost int) {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost}) // 无向图上 0 改 cap
 	}
 	for i := 0; i < m; i++ {
 		var v, w, cap, cost int

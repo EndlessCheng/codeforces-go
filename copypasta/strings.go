@@ -299,7 +299,7 @@ func stringCollection() {
 		不可重叠最长重复子串 http://poj.org/problem?id=1743
 			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
-		可重叠的至少出现 k 次的最长重复子串 http://poj.org/problem?id=3261
+		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
 		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
@@ -325,7 +325,7 @@ func stringCollection() {
 	多个字符串
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
-		在每个字符串中至少出现两次且不重叠的最长子串 spoj220
+		在每个字符串中至少出现两次且不重叠的最长子串 https://www.luogu.com.cn/problem/SP220
 			拼接，二分答案，对 height 分组，判定组内元素在每个字符串中至少出现两次且 sa 的最大最小之差不小于二分值（用于判定是否重叠）
 		出现或反转后出现在每个字符串中的最长子串 http://poj.org/problem?id=1226
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
