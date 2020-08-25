@@ -357,6 +357,7 @@ func (o circleF) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
 }
 
 // 两圆交点
+// 另一种写法是解二元二次方程组，精度更优
 func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
 	a := o
 	if a.r < b.r {
@@ -385,6 +386,13 @@ func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
 	}
 	return
 }
+
+// 与两圆外切的圆的圆心
+// 挑战 p.275
+// 记圆心在 (x,y)，半径为 r 的圆为 O1，
+// 另有一半径为 R 的圆 O，若 O 与 O1 相切，
+// 则 O 的圆心轨迹形成了一个圆心在 (x,y)，半径为 R-r 的圆
+// 因此，问题变成了求两个圆的交点
 
 // 圆的面积并 - 两圆的特殊情形
 // todo https://codeforces.com/contest/600/problem/D

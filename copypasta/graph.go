@@ -1340,6 +1340,13 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 
 激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
 不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
+DAG 上的最小路径覆盖（挑战 p.272）：
+    起初把每个点都视作一条路径，这样共有 n 条不相交路径
+    拆点图：每个点拆成出点和入点，原图的 v->w 相当于拆点图的 出点v->入点w，这说明拆点图一定是二分图
+    在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
+    所以找到了多少匹配边，路径数就减少了多少
+    所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
+todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 */
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
@@ -1350,13 +1357,6 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 // https://zhuanlan.zhihu.com/p/62981901
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3386
-// 有向图最小路径覆盖：
-//   起初把每个点都视作一条路径，这样共有 n 条不相交路径
-//   拆点图：每个点拆成出点和入点，原图的 v->w 相当于拆点图的 出点v->入点w，这说明拆点图一定是二分图
-//   在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
-//   所以找到了多少匹配边，路径数就减少了多少
-//   所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
-// todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
