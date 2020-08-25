@@ -1434,10 +1434,12 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 * 生成函数/母函数 *
 https://en.wikipedia.org/wiki/Generating_function
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
-http://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
+https://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
 						a(n)=0 iff n=2^k
-http://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n 的奇因子数 - 1
+https://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n 的奇因子数 - 1
 						见上面的 oddDivisorsNum 函数
+https://oeis.org/A018819 Binary partition function: number of partitions of n into powers of 2
+	相关题目 https://www.luogu.com.cn/problem/P6065 http://poj.org/problem?id=2229
 
 	质数分拆
 	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q

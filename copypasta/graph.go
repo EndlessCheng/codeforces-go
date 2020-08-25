@@ -1205,6 +1205,9 @@ func (*graph) secondMST(n, m int) (sum int64) {
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
+// https://codeforces.com/contest/190/problem/E
+// https://codeforces.com/contest/920/problem/E
+// https://codeforces.com/contest/1243/problem/D
 func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	var fa []int
 	initFa := func(n int) {

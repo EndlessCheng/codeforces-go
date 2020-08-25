@@ -54,9 +54,32 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-todo 《挑战程序设计竞赛》上的练习题
-  2.3 POJ 3176 2229 2385 3616 3280 1742 3046 3181 1065 1631 3666 2392 2184
-  3.4 POJ 2686 1769 2441 3254 2836 1795 3411 3420 3735 3171
+todo《挑战程序设计竞赛》上的练习题（均为 POJ）
+2.3 节
+3176 https://www.luogu.com.cn/problem/P1216 数字三角形
+2229 https://www.luogu.com.cn/problem/P6065 将 n 分拆为若干个 2 的次幂的和的方法数 https://oeis.org/A018819
+2385 https://www.luogu.com.cn/problem/P2690
+3616 https://www.luogu.com.cn/problem/P2889
+3280 https://www.luogu.com.cn/problem/P2890
+1742
+3046
+3181 https://www.luogu.com.cn/problem/P6205
+1065
+1631
+3666 https://www.luogu.com.cn/problem/P2893
+2392 https://www.luogu.com.cn/problem/P6771
+2184 https://www.luogu.com.cn/problem/P2340
+3.4 节
+2686 https://www.luogu.com.cn/problem/SP1700
+1769 https://www.luogu.com.cn/problem/SP90 https://www.luogu.com.cn/problem/UVA1322
+2441
+3254 https://www.luogu.com.cn/problem/P1879
+2836
+1795 https://www.luogu.com.cn/problem/SP1776
+3411 https://www.luogu.com.cn/problem/SP3953
+3420
+3735
+3171 https://www.luogu.com.cn/problem/P4644
 Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
 SOS Dynamic Programming https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
@@ -411,7 +434,7 @@ func dpCollections() {
 	//     终点：(n,maxW)
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
-	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_d
+	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 建模转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// EXTRA: 能否恰好装满（其实就是 waysToSum 的方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
