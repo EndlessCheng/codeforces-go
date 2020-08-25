@@ -54,6 +54,9 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
+todo 《挑战程序设计竞赛》上的练习题
+  2.3 POJ 3176 2229 2385 3616 3280 1742 3046 3181 1065 1631 3666 2392 2184
+  3.4 POJ 2686 1769 2441 3254 2836 1795 3411 3420 3735 3171
 Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
 SOS Dynamic Programming https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
