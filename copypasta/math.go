@@ -60,6 +60,22 @@ https://oeis.org/A216485 222...2
 
 椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
 
+挑战 2.6 节练习题
+2429
+1930
+3126
+3421
+3292
+3641
+1995
+4.1 节练习题（模运算的世界）
+1150
+1284
+2115
+3708
+2720
+GCJ Japan 2011 Final B
+
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
