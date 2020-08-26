@@ -141,10 +141,11 @@ func miscCollection() {
 	}
 
 	// floatToRat("1.2", 1e1) => (6, 5)
+	// https://www.luogu.com.cn/problem/UVA10555
 	floatToRat := func(floatStr string, shift10 int) (m, n int) {
 		m = floatToInt(floatStr, shift10)
 		n = shift10
-		var g int // g:= calcGCD(m, n)
+		var g int // g := gcd(m, n)
 		m /= g
 		n /= g
 		return

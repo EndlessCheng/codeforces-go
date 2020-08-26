@@ -61,13 +61,12 @@ https://oeis.org/A216485 222...2
 椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
 
 挑战 2.6 节练习题
-2429
-1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166
-3126 https://www.luogu.com.cn/problem/UVA12101 https://www.luogu.com.cn/problem/SP1841
-3421
-3292 https://www.luogu.com.cn/problem/UVA11105
-3641 https://www.luogu.com.cn/problem/UVA11287
-1995
+2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
+1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
+3126 https://www.luogu.com.cn/problem/UVA12101 https://www.luogu.com.cn/problem/SP1841 BFS
+3421 质因数幂次和 可重排列
+3292 https://www.luogu.com.cn/problem/UVA11105 在 Z={4k+1} 上筛素数
+3641 https://www.luogu.com.cn/problem/UVA11287 Carmichael Numbers https://oeis.org/A002997
 4.1 节练习题（模运算的世界）
 1150 https://www.luogu.com.cn/problem/UVA10212
 1284
