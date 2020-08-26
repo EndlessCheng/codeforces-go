@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // todo 2-SAT 可否？
@@ -47,4 +46,4 @@ o:
 	}
 }
 
-func main() { CF1400C(os.Stdin, os.Stdout) }
+//func main() { CF1400C(os.Stdin, os.Stdout) }
