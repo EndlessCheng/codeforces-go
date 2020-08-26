@@ -62,14 +62,14 @@ https://oeis.org/A216485 222...2
 
 挑战 2.6 节练习题
 2429
-1930
-3126
+1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166
+3126 https://www.luogu.com.cn/problem/UVA12101 https://www.luogu.com.cn/problem/SP1841
 3421
-3292
-3641
+3292 https://www.luogu.com.cn/problem/UVA11105
+3641 https://www.luogu.com.cn/problem/UVA11287
 1995
 4.1 节练习题（模运算的世界）
-1150
+1150 https://www.luogu.com.cn/problem/UVA10212
 1284
 2115
 3708
