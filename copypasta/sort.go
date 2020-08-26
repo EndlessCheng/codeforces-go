@@ -5,13 +5,28 @@ import (
 	"sort"
 )
 
-// NOTE: Pass n+1 if you wanna search range [0,n]
-// NOTE: 二分时特判下限！（例如 0）
-// TIPS: 如果输出的不是二分值而是一个与之相关的值，可以在 return false/true 前记录该值
+/*
+sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-// 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
+NOTE: 二分时特判下限！（例如 0）
 
-// sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
+todo 《挑战》3.1 节练习题
+3258
+3273
+3104
+3045
+2976
+3111
+3579
+3685
+2010
+3662
+1759
+3484
+
+隐藏的二分 https://codeforces.com/problemset/problem/1354/D
+
+ */
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
 type _pair struct{ x, y int }

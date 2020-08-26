@@ -58,13 +58,13 @@ todo《挑战程序设计竞赛》上的练习题（均为 POJ）
 2.3 节
 3176 https://www.luogu.com.cn/problem/P1216 数字三角形
 2229 https://www.luogu.com.cn/problem/P6065 将 n 分拆为若干个 2 的次幂的和的方法数 https://oeis.org/A018819
-2385 https://www.luogu.com.cn/problem/P2690
-3616 https://www.luogu.com.cn/problem/P2889
-3280 https://www.luogu.com.cn/problem/P2890
-1742
-3046
-3181 https://www.luogu.com.cn/problem/P6205
-1065
+2385 https://www.luogu.com.cn/problem/P2690 dp[i分钟][j移动次数] = max(dp[i-1][j], dp[i-1][j-1]) + 当前分钟是否有苹果落在 j 次移动后的位置   最后答案为 max{dp[n-1]}
+3616 https://www.luogu.com.cn/problem/P2889 todo
+3280 https://www.luogu.com.cn/problem/P2890 增删取 min，跑区间 DP
+1742 多重背包
+3046 todo
+3181 https://www.luogu.com.cn/problem/P6205 完全背包
+1065 todo n 轮 LIS
 1631
 3666 https://www.luogu.com.cn/problem/P2893
 2392 https://www.luogu.com.cn/problem/P6771
@@ -499,6 +499,7 @@ func dpCollections() {
 	//     起点：0
 	//     终点：amount
 	// 核心函数：最少物品数（最短路），即 min
+	// https://www.luogu.com.cn/problem/P6205
 	// LC322 https://leetcode-cn.com/problems/coin-change/
 	minCoinChange := func(coins []int, amount int) int {
 		const inf int = 1e9
@@ -566,6 +567,7 @@ func dpCollections() {
 
 	// 多重背包 - 优化 2 - 单调队列优化
 	// todo 挑战 P340
+	// http://poj.org/problem?id=1742
 
 	/* 区间 DP / 环形 DP
 	一般来说转移是合并区间或者分解区间
