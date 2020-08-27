@@ -55,7 +55,7 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
-todo《挑战程序设计竞赛》上的练习题（均为 POJ）
+《挑战程序设计竞赛》上的练习题（均为 POJ）
 2.3 节
 3176 https://www.luogu.com.cn/problem/P1216 数字三角形
 2229 https://www.luogu.com.cn/problem/P6065 将 n 分拆为若干个 2 的次幂的和的方法数 https://oeis.org/A018819
@@ -73,7 +73,7 @@ todo《挑战程序设计竞赛》上的练习题（均为 POJ）
      https://www.luogu.com.cn/problem/P4597 加强版
 2392 https://www.luogu.com.cn/problem/P6771 多重背包，按高度限制排序。高度既是价值也是体积
 2184 https://www.luogu.com.cn/problem/P2340 把 IQ 看成体积，EQ 看成价值，注意把负数偏移到非负数，以及负数的转移写法
-3.4 节
+todo 3.4 节
 2686 https://www.luogu.com.cn/problem/SP1700
 1769 https://www.luogu.com.cn/problem/SP90 https://www.luogu.com.cn/problem/UVA1322
 2441

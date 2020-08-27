@@ -11,18 +11,18 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 NOTE: 二分时特判下限！（例如 0）
 
 todo 《挑战》3.1 节练习题
-3258
-3273
-3104
-3045
-2976
-3111
-3579
-3685
-2010
-3662
-1759
-3484
+3258 https://www.luogu.com.cn/problem/P2855
+3273 https://www.luogu.com.cn/problem/P2884
+3104 https://codeforces.com/gym/101649 D http://poj.org/problem?id=3104
+3045 https://www.luogu.com.cn/problem/P1842
+2976 http://poj.org/problem?id=2976
+3111 https://codeforces.com/gym/101649 K http://poj.org/problem?id=3111
+3579 http://poj.org/problem?id=3579
+3685 http://poj.org/problem?id=3685
+2010 https://www.luogu.com.cn/problem/P4952
+3662 https://www.luogu.com.cn/problem/P1948
+1759 http://poj.org/problem?id=1759
+3484 http://poj.org/problem?id=3484
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 
