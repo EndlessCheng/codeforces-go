@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"container/heap"
 	"sort"
 )
 
@@ -69,8 +70,8 @@ todo《挑战程序设计竞赛》上的练习题（均为 POJ）
 3666 https://www.luogu.com.cn/problem/P2893
      https://codeforces.com/problemset/problem/13/C
      https://codeforces.com/problemset/problem/713/C
-     https://www.luogu.com.cn/problem/P4597 加强版 todo
-2392 https://www.luogu.com.cn/problem/P6771 多重背包 todo
+     https://www.luogu.com.cn/problem/P4597 加强版
+2392 https://www.luogu.com.cn/problem/P6771 多重背包，按高度限制排序。高度既是价值也是体积
 2184 https://www.luogu.com.cn/problem/P2340 把 IQ 看成体积，EQ 看成价值，注意把负数偏移到非负数，以及负数的转移写法
 3.4 节
 2686 https://www.luogu.com.cn/problem/SP1700
@@ -254,6 +255,27 @@ func dpCollections() {
 			minSum = min(minSum, curMinSum)
 		}
 		return max(abs(maxSum), abs(minSum))
+	}
+
+	// 调整序列为非降或非增的最小调整次数
+	// 原理见 https://codeforces.com/blog/entry/47094?#comment-315161（这个题是严格单调递增的）
+	// https://www.luogu.com.cn/problem/P2893 http://poj.org/problem?id=3666
+	// https://codeforces.com/problemset/problem/13/C
+	// https://codeforces.com/problemset/problem/713/C 严格单调递增
+	// https://www.luogu.com.cn/problem/P4597 (加强版)
+	minCostSorted := func(a []int) int64 {
+		// 下面是调整为非降的算法
+		h := hp{} // 大根堆
+		ans := int64(0)
+		for _, v := range a {
+			h.push(v)
+			if d := h.IntSlice[0] - v; d > 0 {
+				ans += int64(d)
+				h.IntSlice[0] = v
+				heap.Fix(&h, 0)
+			}
+		}
+		return ans
 	}
 
 	// 最长公共子序列 (LCS)
@@ -534,8 +556,6 @@ func dpCollections() {
 	// https://codeforces.com/problemset/problem/543/A
 
 	// 多重背包 - 未优化
-	// 模板题 https://codeforces.com/problemset/problem/106/C
-	// https://codeforces.com/contest/999/problem/F
 	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1) // int64
@@ -571,7 +591,10 @@ func dpCollections() {
 
 	// 多重背包 - 优化 2 - 单调队列优化
 	// todo 挑战 P340
-	// http://poj.org/problem?id=1742
+	// 模板题 https://codeforces.com/problemset/problem/106/C
+	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
+	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
+	// https://codeforces.com/contest/999/problem/F
 
 	/* 区间 DP / 环形 DP
 	一般来说转移是合并区间或者分解区间
@@ -963,6 +986,7 @@ func dpCollections() {
 	_ = []interface{}{
 		prefixSumDP, mapDP,
 		maxSubArraySum, maxSubArrayAbsSum,
+		minCostSorted,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
 		mergeStones,
