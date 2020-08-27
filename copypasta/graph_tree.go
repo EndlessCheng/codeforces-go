@@ -214,6 +214,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 // https://codeforces.com/blog/entry/81661
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // 模板题 https://codeforces.com/problemset/problem/321/C
+// todo poj2114 uva12161 spoj QTREE5
 // 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
 func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	type node struct{ dep, fa int }
@@ -406,6 +407,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
+// todo poj1986 poj3728
 // TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 18 // floor(log2(最大树节点))+1

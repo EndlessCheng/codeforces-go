@@ -11,15 +11,46 @@ import (
 Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P
 图论的小技巧以及扩展 https://www.luogu.com.cn/blog/chengni5673/tu-lun-di-xiao-ji-qiao-yi-ji-kuo-zhan
 
-CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
-构造 https://codeforces.com/problemset/problem/41/E
-
 TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
 NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
 
+CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
+
 环与独立集 https://codeforces.com/problemset/problem/1364/D
 匹配与独立集 https://codeforces.com/problemset/problem/1198/C
+
+构造 https://codeforces.com/problemset/problem/41/E
+
+todo《挑战》例题+练习题
+2.5 节 - 最短路 & 最小生成树
+AOJ 0189
+2139
+3259
+3268
+AOJ 2249
+AOJ 2200
+1258
+2377
+AOJ 2224
+2395
+3.5 节 - 二分图
+1274
+2112
+1486
+1466
+3692
+2724
+2226
+AOJ 2251
+3.5节 - 网络流
+todo
+4.3 节 - SCC & 2SAT
+3180
+1236
+3678
+2723
+2749
 */
 
 // namespace
