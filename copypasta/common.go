@@ -530,7 +530,7 @@ func commonCollection() {
 		return
 	}
 
-	// 数组第 k 小 (Quick Select) kthElement
+	// 数组第 k 小 (Quick Select)       kthElement nthElement
 	// 0 <= k < len(a)
 	// 调用会改变数组中元素顺序
 	// 代码实现参考算法第四版 p.221

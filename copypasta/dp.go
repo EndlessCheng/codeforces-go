@@ -257,14 +257,24 @@ func dpCollections() {
 		return max(abs(maxSum), abs(minSum))
 	}
 
-	// 调整序列为非降或非增的最小调整次数
-	// 原理见 https://codeforces.com/blog/entry/47094?#comment-315161（这个题是严格单调递增的）
+	// 修改序列为非降或非增的最小修改次数
+	// 通过一个例子来解释这个基于堆的算法：1 5 10 4 2 2 2 2
+	// 假设当前维护的是非降序列，前三个数直接插入，不需要任何修改
+	// 插入 4 的时候，可以修改为 1 5 5 5，或 1 5 6 6，或... 1 5 10 10，修改次数均为 6
+	// 但我们也可以把修改后的序列视作 1 5 4 4，虽然序列不为非降序列，但修改的次数仍然为 6
+	// 接下来插入 2，基于 1 5 5 5 的话，修改后的序列就是 1 5 5 5 5，总的修改次数为 9
+	// 但我们也可以把修改后的序列视作 1 2 4 4 2，总的修改次数仍然为 9
+	// 接下来插入 2，如果基于 1 5 5 5 5 变成 1 5 5 5 5 5，会得到错误的修改次数 12
+	// 但是实际上有更优的修改 1 4 4 4 4 4，总的修改次数为 11
+	// 同上，把这个序列视作 1 2 2 4 2 2，总的修改次数仍然为 11
+	// ...
 	// https://www.luogu.com.cn/problem/P2893 http://poj.org/problem?id=3666
 	// https://codeforces.com/problemset/problem/13/C
-	// https://codeforces.com/problemset/problem/713/C 严格单调递增
+	// https://codeforces.com/problemset/problem/713/C 严格单调递增 https://codeforces.com/blog/entry/47094?#comment-315161
+	//     这道题做了一个 a[i]-=i 的操作（i 从 1 开始），把严格单调递增变成了非降的情况，从而可以应用该算法
+	//     这一技巧的原理是，对于整数来说，单调递增的最小情况是 y=x+C，减去这一函数，就得到了非降序列的最小情况 y=C
 	// https://www.luogu.com.cn/problem/P4597 (加强版)
 	minCostSorted := func(a []int) int64 {
-		// 下面是调整为非降的算法
 		h := hp{} // 大根堆
 		ans := int64(0)
 		for _, v := range a {
