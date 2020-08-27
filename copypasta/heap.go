@@ -65,6 +65,9 @@ func (h *hpi) fix(i int)          { heap.Fix(h, i) }
 func (h *hpi) remove(i int) *pvi  { return heap.Remove(h, i).(*pvi) }
 
 func heapCollections() {
+	// 求前缀/后缀的最小的 k 个元素和（k 固定）
+	// https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
+
 	// 对顶堆求动态中位数（一个数组前 2k+1 项的中位数）
 	// https://www.luogu.com.cn/problem/P1168
 	// LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/

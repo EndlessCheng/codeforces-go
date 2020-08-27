@@ -10,23 +10,25 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 NOTE: 二分时特判下限！（例如 0）
 
-todo 《挑战》3.1 节练习题
-3258 https://www.luogu.com.cn/problem/P2855
-3273 https://www.luogu.com.cn/problem/P2884
-3104 https://codeforces.com/gym/101649 D http://poj.org/problem?id=3104
-3045 https://www.luogu.com.cn/problem/P1842
-2976 http://poj.org/problem?id=2976
-3111 https://codeforces.com/gym/101649 K http://poj.org/problem?id=3111
-3579 http://poj.org/problem?id=3579
-3685 http://poj.org/problem?id=3685
-2010 https://www.luogu.com.cn/problem/P4952
-3662 https://www.luogu.com.cn/problem/P1948
-1759 http://poj.org/problem?id=1759
-3484 http://poj.org/problem?id=3484
+《挑战》3.1 节练习题
+3258 https://www.luogu.com.cn/problem/P2855 二分最小值
+3273 https://www.luogu.com.cn/problem/P2884 二分最大值
+3104 https://codeforces.com/gym/101649 D http://poj.org/problem?id=3104 二分答案，判断条件是 Σmax(0,(ai-t)/k)<=t
+3045 https://www.luogu.com.cn/problem/P1842 贪心，按 s+w 排序
+2976 http://poj.org/problem?id=2976 0-1 分数规划
+3111 https://codeforces.com/gym/101649 K http://poj.org/problem?id=3111 0-1 分数规划
+3579 http://poj.org/problem?id=3579 排序后二分答案
+3685 http://poj.org/problem?id=3685 斜着二分可以保证但单调性
+2010 https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
+	算法一：排序后二分中位数，copy 数组两侧搞 nthElement
+	算法二：排序后用两个堆来维护前缀最小 k 个元素和，以及后缀最小 k 个元素和，然后枚举中位数
+3662 https://www.luogu.com.cn/problem/P1948 二分答案，判断条件是 0-1 最短路 <=k
+1759 http://poj.org/problem?id=1759 todo
+3484 http://poj.org/problem?id=3484 todo
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 
- */
+*/
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
 type _pair struct{ x, y int }
@@ -174,6 +176,7 @@ func sortCollections() {
 	// https://oi-wiki.org/misc/frac-programming/
 	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
+	//       https://codeforces.com/gym/101649 K
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须选 k 对，最大化 ∑ai/∑bi
 		n := len(ps)
