@@ -59,16 +59,19 @@ todo《挑战程序设计竞赛》上的练习题（均为 POJ）
 3176 https://www.luogu.com.cn/problem/P1216 数字三角形
 2229 https://www.luogu.com.cn/problem/P6065 将 n 分拆为若干个 2 的次幂的和的方法数 https://oeis.org/A018819
 2385 https://www.luogu.com.cn/problem/P2690 dp[i分钟][j移动次数] = max(dp[i-1][j], dp[i-1][j-1]) + 当前分钟是否有苹果落在 j 次移动后的位置   最后答案为 max{dp[n-1]}
-3616 https://www.luogu.com.cn/problem/P2889 todo
+3616 https://www.luogu.com.cn/problem/P2889 DAG 最长路
 3280 https://www.luogu.com.cn/problem/P2890 增删取 min，跑区间 DP
-1742 多重背包
-3046 todo
+1742 http://acm.hdu.edu.cn/showproblem.php?pid=2844 多重背包
+3046 http://poj.org/problem?id=3046 todo
 3181 https://www.luogu.com.cn/problem/P6205 完全背包
-1065 todo n 轮 LIS
-1631
+1065 http://acm.hdu.edu.cn/showproblem.php?pid=1051 n 轮 LIS
+1631 http://acm.hdu.edu.cn/showproblem.php?pid=1950 转换成 LIS
 3666 https://www.luogu.com.cn/problem/P2893
-2392 https://www.luogu.com.cn/problem/P6771
-2184 https://www.luogu.com.cn/problem/P2340
+     https://codeforces.com/problemset/problem/13/C
+     https://codeforces.com/problemset/problem/713/C
+     https://www.luogu.com.cn/problem/P4597 加强版 todo
+2392 https://www.luogu.com.cn/problem/P6771 多重背包 todo
+2184 https://www.luogu.com.cn/problem/P2340 把 IQ 看成体积，EQ 看成价值，注意把负数偏移到非负数，以及负数的转移写法
 3.4 节
 2686 https://www.luogu.com.cn/problem/SP1700
 1769 https://www.luogu.com.cn/problem/SP90 https://www.luogu.com.cn/problem/UVA1322
@@ -332,6 +335,7 @@ func dpCollections() {
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
+	// 转换 http://acm.hdu.edu.cn/showproblem.php?pid=1950
 	// 变体 https://codeforces.com/problemset/problem/1350/B
 	lisSlow := func(a []int) (ans int) {
 		n := len(a)
