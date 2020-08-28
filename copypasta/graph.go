@@ -24,17 +24,21 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
-AOJ 0189
-2139
-3259
-3268
-AOJ 2249
-AOJ 2200
-1258
-2377
-AOJ 2224
+3255 https://www.luogu.com.cn/problem/P2865 次短路
+3723 http://poj.org/problem?id=3723 建模+MST
+3169 https://www.luogu.com.cn/problem/P4878 差分约束
+2139 http://poj.org/problem?id=2139
+3259 https://www.luogu.com.cn/problem/P2850
+3268 https://www.luogu.com.cn/problem/P1821
+http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2249
+http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2200
+1258 https://www.luogu.com.cn/problem/P1546
+2377 http://poj.org/problem?id=2377
+http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2224
 2395
 3.5 节 - 二分图
+3041
+3057
 1274
 2112
 1486
@@ -46,6 +50,8 @@ AOJ 2251
 3.5节 - 网络流
 todo
 4.3 节 - SCC & 2SAT
+2186
+3683
 3180
 1236
 3678
@@ -938,6 +944,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 //        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
 //        这样，在无负环时会得到一组非正数解
 //        模板题 https://www.luogu.com.cn/problem/P3385
+//        模板题 https://www.luogu.com.cn/problem/P4878 todo 需要复习
 //        https://www.luogu.com.cn/problem/SP116
 func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
