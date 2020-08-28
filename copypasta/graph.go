@@ -811,7 +811,6 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for i := range fa {
 		fa[i] = -1
 	}
-
 	q := vdHeap{{st, 0}}
 	for len(q) > 0 {
 		p := q.pop()
@@ -851,6 +850,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// 这里的最短路可以有多条
 
 	// EXTRA: 次短路
+	// 模板题 https://www.luogu.com.cn/problem/P2865
 	{
 		const inf int64 = 1e18 // 1e9+1
 		dist := make([]int64, n)
@@ -862,28 +862,27 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		for i := range dist2 {
 			dist2[i] = inf
 		}
-		vis := make([]bool, n)
-
 		q := vdHeap{{st, 0}}
 		for len(q) > 0 {
-			v := q.pop().v
-			if vis[v] {
+			p := q.pop()
+			v, d := p.v, p.dis
+			if dist2[v] < d { // 注意是 dist2
 				continue
 			}
-			vis[v] = true
 			for _, e := range g[v] {
 				w := e.to
-				newD := dist[v] + e.wt
+				newD := d + e.wt
 				if newD < dist[w] {
 					q.push(vdPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
-				if newD > dist[w] && newD < dist2[w] {
+				if dist[w] < newD && newD < dist2[w] {
 					dist2[w] = newD
 					q.push(vdPair{w, newD})
 				}
 			}
 		}
+		_ = dist2[end]
 	}
 
 	return
