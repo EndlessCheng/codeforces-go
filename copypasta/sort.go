@@ -23,8 +23,8 @@ NOTE: 二分时特判下限！（例如 0）
 	算法一：排序后二分中位数，copy 数组两侧搞 nthElement
 	算法二：排序后用两个堆来维护前缀最小 k 个元素和，以及后缀最小 k 个元素和，然后枚举中位数
 3662 https://www.luogu.com.cn/problem/P1948 二分答案，判断条件是 0-1 最短路 <=k
-1759 http://poj.org/problem?id=1759 todo
-3484 http://poj.org/problem?id=3484 todo
+1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
+3484 http://poj.org/problem?id=3484 见「防线」
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 
