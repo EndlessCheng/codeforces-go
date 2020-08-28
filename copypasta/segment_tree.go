@@ -31,6 +31,8 @@ package copypasta
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的动态 DP 部分
+// todo poj 2991 3264 3368 3470 1201
+//      uva 11990
 
 // 某个 do
 func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
