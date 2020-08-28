@@ -123,13 +123,14 @@ func stringCollection() {
 		return 1 // 无小于 n 的循环节
 	}
 
-	// Z-function（扩展 KMP）
+	// Z-function（扩展 KMP）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
 	// 参考 Competitive Programmer’s Handbook Ch.26
 	// https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
-	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A https://www.luogu.com.cn/problem/P5410
+	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
+	// todo 常数优化 https://www.luogu.com.cn/problem/P5410
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
@@ -146,8 +147,7 @@ func stringCollection() {
 	//		构造 t+s
 	// 最短的包含 s 和 t 的字符串 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/F
 	// 		构造 s+t 和 t+s
-	//
-	calcZArray := func(s []byte) []int {
+	calcZ := func(s []byte) []int {
 		n := len(s)
 		z := make([]int, n)
 		for i, l, r := 1, 0, 0; i < n; i++ {
@@ -162,7 +162,7 @@ func stringCollection() {
 	}
 	zSearch := func(text, pattern []byte) (pos []int) {
 		s := append(append(pattern, '#'), text...)
-		z := calcZArray(s)
+		z := calcZ(s)
 		for i, l := range z[len(pattern)+1:] {
 			if l == len(pattern) {
 				pos = append(pos, i)
@@ -170,7 +170,6 @@ func stringCollection() {
 		}
 		return
 	}
-	// todo 反向：z[i] = LCS(s, s[:i])  串与串前缀的最长公共后缀
 
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
