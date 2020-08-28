@@ -27,15 +27,15 @@ todo《挑战》例题+练习题
 3255 https://www.luogu.com.cn/problem/P2865 次短路
 3723 http://poj.org/problem?id=3723 建模+MST
 3169 https://www.luogu.com.cn/problem/P4878 差分约束
-2139 http://poj.org/problem?id=2139
-3259 https://www.luogu.com.cn/problem/P2850
-3268 https://www.luogu.com.cn/problem/P1821
-http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2249
-http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2200
-1258 https://www.luogu.com.cn/problem/P1546
-2377 http://poj.org/problem?id=2377
-http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2224
-2395
+2139 http://poj.org/problem?id=2139 Floyd
+3259 https://www.luogu.com.cn/problem/P2850 多源 SPFA（建议读原文，洛谷翻译不完整）
+3268 https://www.luogu.com.cn/problem/P1821 反图 Dij
+https://onlinejudge.u-aizu.ac.jp/problems/2249 Dij 的过程中更新花费，注意距离相等时取花费最小值
+https://onlinejudge.u-aizu.ac.jp/problems/2200 todo
+1258 https://www.luogu.com.cn/problem/P1546 Prim
+2377 http://poj.org/problem?id=2377 最大生成树
+https://onlinejudge.u-aizu.ac.jp/problems/2224 为了让原图无环，需要去除不在最大生成树上的边
+2395 https://www.luogu.com.cn/problem/P1547 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度
 3.5 节 - 二分图
 3041
 3057
@@ -967,10 +967,10 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 		dist[i] = inf
 	}
 	dist[st] = 0
+	q := []int{st}
 	inQ := make([]bool, n)
 	inQ[st] = true
 	relaxedCnt := make([]int, n)
-	q := []int{st}
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
@@ -1134,6 +1134,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
+// 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 	var fa []int
 	initFa := func(n int) {
@@ -1187,7 +1188,8 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // 适用于稠密图 O(n^2)，传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
-// 题目：https://codeforces.com/contest/1245/problem/D
+// 模板题 https://www.luogu.com.cn/problem/P1546
+// 建模+打印方案 https://codeforces.com/contest/1245/problem/D
 func (*graph) mstPrim(dist [][]int) (sum int) {
 	min := func(a, b int) int {
 		if a < b {
@@ -1201,12 +1203,12 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 	for i := range minWeights {
 		minWeights[i] = inf
 	}
-	minWeights[0] = 0
+	minWeights[0] = 0 // 任选一点为起点
 	used := make([]bool, n)
 	for {
 		v := -1
-		for i, use := range used {
-			if !use && (v == -1 || minWeights[i] < minWeights[v]) {
+		for i, u := range used {
+			if !u && (v == -1 || minWeights[i] < minWeights[v]) {
 				v = i
 			}
 		}
@@ -1214,7 +1216,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 			break
 		}
 		used[v] = true
-		sum += minWeights[v]
+		sum += minWeights[v] // int64
 		for w := range minWeights {
 			minWeights[w] = min(minWeights[w], dist[v][w])
 		}
