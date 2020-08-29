@@ -988,28 +988,36 @@ func monotoneCollection() {
 	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 	monotoneStack := func(a []int) ([]int, []int) {
-		n := len(a)
-		const border int = -1 // 2e9
+		const border int = 2e9 // 两侧小的话用 -1
 		type pair struct{ v, i int }
+
+		n := len(a)
 		posL := make([]int, n)
+		for i := range posL {
+			posL[i] = -1
+		}
 		stack := []pair{{border, -1}}
 		for i, v := range a {
 			for {
-				if top := stack[len(stack)-1]; top.v < v { // 严格小于
-					posL[i] = top.i //+ 1
+				if top := stack[len(stack)-1]; top.v > v { // 严格大于
+					posL[i] = top.i
 					break
 				}
 				stack = stack[:len(stack)-1]
 			}
 			stack = append(stack, pair{v, i})
 		}
+
 		posR := make([]int, n)
+		for i := range posR {
+			posR[i] = n
+		}
 		stack = []pair{{border, n}}
 		for i := n - 1; i >= 0; i-- {
 			v := a[i]
 			for {
-				if top := stack[len(stack)-1]; top.v < v { // 严格小于
-					posR[i] = top.i //- 1
+				if top := stack[len(stack)-1]; top.v > v { // 严格大于
+					posR[i] = top.i
 					break
 				}
 				stack = stack[:len(stack)-1]
