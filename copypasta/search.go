@@ -586,10 +586,38 @@ func gridCollection() {
 		return
 	}
 
-	// DFS 格点找有多少个连通分量
+	// DFS 格点找有多少个连通分量   dfsGrid
+	cntCC := func(g [][]byte) (cnt int) {
+		n, m := len(g), len(g[0])
+		vis := make([][]bool, n)
+		for i := range vis {
+			vis[i] = make([]bool, m)
+		}
+		const valid byte = '.'
+		var f func(int, int)
+		f = func(x, y int) {
+			if x < 0 || x >= n || y < 0 || y >= m || vis[x][y] || g[x][y] != valid {
+				return
+			}
+			vis[x][y] = true
+			for _, d := range dir4 {
+				f(x+d.x, y+d.y)
+			}
+		}
+		for i, row := range g {
+			for j, v := range row {
+				if v == valid && !vis[i][j] {
+					cnt++
+					f(i, j)
+				}
+			}
+		}
+		return
+	}
+
 	// 下列代码来自 LC1254/周赛162C https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
-	dfsGrids := func(g [][]byte) (comps int) {
+	dfsValidGrids := func(g [][]byte) (comps int) {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
@@ -615,9 +643,9 @@ func gridCollection() {
 			}
 			return validCC
 		}
-		for i, gi := range g {
-			for j, gij := range gi {
-				if gij == target && !vis[i][j] {
+		for i, row := range g {
+			for j, v := range row {
+				if v == target && !vis[i][j] {
 					//targetsPos = []point{}
 					if f(i, j) {
 						comps++
@@ -660,7 +688,7 @@ func gridCollection() {
 
 	_ = []interface{}{
 		disST, findAllReachableTargets,
-		dfsGrids,
+		cntCC, dfsValidGrids,
 		isValidPoint, findOneTargetAnyWhere, findAllTargetsAnyWhere,
 	}
 }
