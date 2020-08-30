@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -62,4 +61,4 @@ o:
 	}
 }
 
-func main() { p2850(os.Stdin, os.Stdout) }
+//func main() { p2850(os.Stdin, os.Stdout) }

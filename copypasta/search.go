@@ -531,7 +531,7 @@ func gridCollection() {
 		dep int
 	}
 
-	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子
+	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGrid
 	// 无法到达时返回 1e9
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
