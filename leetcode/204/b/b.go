@@ -2,24 +2,17 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func getMaxLen(a []int) (ans int) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
-	nz, neg, p := 0, 0, -1
+	nz, neg, p := 0, false, -1
 	for i, v := range a {
 		if v == 0 {
-			nz, neg, p = 0, 0, -1
+			nz, neg, p = 0, false, -1
 			continue
 		}
 		nz++
 		if v < 0 {
-			neg++
+			neg = !neg
 		}
-		if neg&1 == 0 {
+		if !neg {
 			ans = max(ans, nz)
 		} else if p == -1 {
 			p = i
@@ -28,4 +21,11 @@ func getMaxLen(a []int) (ans int) {
 		}
 	}
 	return
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
