@@ -32,7 +32,7 @@ func Test(t *testing.T) {
 		// TODO 测试参数的下界和上界
 		
 	}
-	targetCaseNum := 3
+	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, numOfWays, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}

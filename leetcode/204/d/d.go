@@ -28,37 +28,26 @@ func init() {
 }
 
 func numOfWays(a []int) int {
-	g := make([][2]int, len(a)+1)
-	root := a[0]
-	var v int
-	var put func(int)
-	put = func(o int) {
-		d := 0
-		if v > o {
-			d = 1
-		}
-		if g[o][d] == 0 {
-			g[o][d] = v
-		} else {
-			put(g[o][d])
-		}
-	}
-	for _, v = range a[1:] {
-		put(root)
-	}
-
 	ans := 1
-	var f func(int) int
-	f = func(v int) int {
-		if v == 0 {
+	var f func([]int) int
+	f = func(a []int) int {
+		if len(a) == 0 {
 			return 0
 		}
-		l, r := f(g[v][0]), f(g[v][1])
+		var b, c []int
+		for _, v := range a[1:] {
+			if v < a[0] {
+				b = append(b, v)
+			} else {
+				c = append(c, v)
+			}
+		}
+		l, r := f(b), f(c)
 		if l > 0 && r > 0 {
 			ans = ans * F[l+r] % mod * invF[l] % mod * invF[r] % mod
 		}
 		return 1 + l + r
 	}
-	f(root)
+	f(a)
 	return (ans + mod - 1) % mod
 }
