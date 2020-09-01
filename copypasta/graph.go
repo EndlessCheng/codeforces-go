@@ -1136,6 +1136,22 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
 // 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
+	type edge struct {
+		v, w int
+		wt   int // int64
+		eid  int // 某些题目需要
+	}
+	edges := make([]edge, m)
+	for i := range edges {
+		v, w, wt := 0, 0, 0
+		Fscan(in, &v, &w, &wt)
+		v--
+		w--
+		edges[i] = edge{v, w, wt, i}
+	}
+	// 边权范围小的话也可以用桶排
+	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
+
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -1150,23 +1166,6 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 		}
 		return fa[x]
 	}
-
-	type edge struct {
-		v, w int
-		wt   int // int64
-		eid  int // 某些题目需要
-	}
-	edges := make([]edge, m)
-	for i := range edges {
-		v, w, wt := 0, 0, 0
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
-		edges[i] = edge{v, w, wt, i}
-	}
-
-	// 边权范围小的话也可以用桶排
-	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
 	initFa(n)
 	sum := int64(0)
 	cntE := 0
@@ -1177,6 +1176,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 			cntE++
 		}
 	}
+
 	// 图不连通
 	if cntE < n-1 {
 		return -1

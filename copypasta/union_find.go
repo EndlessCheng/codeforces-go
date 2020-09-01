@@ -11,6 +11,7 @@ https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专�
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 思维转换题! https://nanti.jisuanke.com/t/43488
 // https://codeforces.com/problemset/problem/292/D
+// 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
 func unionFind(n int) {
 	var fa []int
 	initFa := func(n int) {
@@ -173,6 +174,7 @@ func unionFindVertexWeight(n int) {
 // 模板题 https://codeforces.com/problemset/problem/1074/D https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
 // 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
+// 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
 func unionFindEdgeWeight(n int) {
 	const kinds = 2
 	var fa, dis []int // dis 表示点到其所在集合根节点（代表元）的距离
@@ -193,7 +195,8 @@ func unionFindEdgeWeight(n int) {
 		}
 		return fa[x]
 	}
-	delta := func(x, y int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds } // 调用前需要保证 same(x, y) 为 true
+	// 调用前需要：1. 调用 find(x); find(y)  2. 保证 same(x, y) 为 true
+	delta := func(x, y int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds }
 	merge := func(from, to int, d int) bool { // 返回是否与已知条件矛盾
 		if fFrom, fTo := find(from), find(to); fFrom != fTo {
 			dis[fFrom] = d + dis[to] - dis[from]
