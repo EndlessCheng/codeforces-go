@@ -1562,6 +1562,7 @@ func combinatoricsCollection() {
 // 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
 // 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
+// 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 // 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
 func gameTheoryCollection() {
