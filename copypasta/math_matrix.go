@@ -127,9 +127,7 @@ func (a matrix) sub(b matrix) matrix {
 }
 
 func (a matrix) swapRows(i, j int) {
-	for k := range a[0] {
-		a[i][k], a[j][k] = a[j][k], a[i][k]
-	}
+	a[i], a[j] = a[j], a[i]
 }
 
 func (a matrix) swapCols(i, j int) {
@@ -213,57 +211,71 @@ func (matrix) inv(in io.Reader, n int) matrix {
 	return ans
 }
 
-// 高斯消元 Gaussian elimination O(n^3)
-// 求解 Ax=b，A 为方阵
+// 高斯消元 Gaussian elimination O(n^3)   列主元消去法
+// 求解 Ax=B，A 为方阵，返回解（无解或有无穷多组解）
 // todo EXTRA: 求行列式
 // https://en.wikipedia.org/wiki/Gaussian_elimination
+// https://en.wikipedia.org/wiki/Pivot_element#Partial_and_complete_pivoting
 // https://oi-wiki.org/math/gauss/
+// 总结 https://cloud.tencent.com/developer/article/1087352
 // https://cp-algorithms.com/linear_algebra/determinant-gauss.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
-// 模板题 https://www.luogu.com.cn/problem/P3389
-func gaussJordanElimination(a matrix, b []int64) []float64 {
+// 模板题 https://www.luogu.com.cn/problem/P3389 https://www.luogu.com.cn/problem/P2455
+func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 	const eps = 1e-8
-	n := len(a)
-	c := make([][]float64, n)
-	for i, row := range a {
-		c[i] = make([]float64, n+1)
+	n := len(A)
+	// 构造增广矩阵 (or read)
+	a := make([][]float64, n)
+	for i, row := range A {
+		a[i] = make([]float64, n+1)
 		for j, v := range row {
-			c[i][j] = float64(v)
+			a[i][j] = float64(v)
 		}
-		c[i][n] = float64(b[i])
+		a[i][n] = float64(B[i])
 	}
-	for i := range c {
-		// 减小误差，把正在处理的未知数系数的绝对值最大的式子换到第 i 行
-		pivot := i
-		for j := i; j < n; j++ {
-			if math.Abs(c[j][i]) > math.Abs(c[pivot][i]) {
-				pivot = j
+	row := 0
+	for col := 0; col < n; col++ {
+		// 列主元消去法：减小误差，把正在处理的未知数系数的绝对值最大的式子换到第 row 行
+		pivot := row
+		for i := row; i < n; i++ {
+			if math.Abs(a[i][col]) > math.Abs(a[pivot][col]) {
+				pivot = i
 			}
 		}
-		c[i], c[pivot] = c[pivot], c[i]
-		// 无解或有无穷多解
-		if math.Abs(c[i][i]) < eps {
-			return nil
+		// 这一列全为 0，表明无解或有无穷多解，具体是哪一种需要消元完成后才知道
+		if math.Abs(a[pivot][col]) < eps {
+			continue
 		}
-		// 把正在处理的未知数的系数变为 1
-		for j := i + 1; j <= n; j++ {
-			c[i][j] /= c[i][i]
+		a[row], a[pivot] = a[pivot], a[row]
+		// 初等行变换：把正在处理的未知数的系数变为 1
+		for j := col + 1; j <= n; j++ {
+			a[row][j] /= a[row][col]
 		}
-		for j := 0; j < n; j++ {
-			if j != i {
-				// 从第 j 个式子中消去第 i 个未知数
-				for k := i + 1; k <= n; k++ {
-					c[j][k] -= c[j][i] * c[i][k]
+		// 消元，构造简化行梯阵式
+		for i := range a {
+			if i != row {
+				// 用当前行对其余行进行消元：从第 i 个式子中消去第 col 个未知数
+				for j := col + 1; j <= n; j++ {
+					a[i][j] -= a[i][col] * a[row][j]
 				}
 			}
 		}
+		row++
+	}
+	if row < n {
+		for _, r := range a[row:] {
+			if math.Abs(r[n]) > eps {
+				return nil, false
+			}
+		}
+		return nil, true
 	}
 	res := make([]float64, n)
-	for i, row := range c {
-		res[i] = row[n]
+	for i, r := range a {
+		res[i] = r[n]
 	}
-	return res
+	return res, false
 }
 
 // 线性基（子集异或和问题）
