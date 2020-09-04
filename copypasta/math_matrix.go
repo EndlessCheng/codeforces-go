@@ -151,64 +151,63 @@ func (a matrix) trace() (sum int64) {
 
 // NxN 矩阵求逆
 // 模板题 https://www.luogu.com.cn/problem/P4783
-func (matrix) inv(in io.Reader, n int) matrix {
+func (matrix) inv(A matrix) matrix {
 	const mod int64 = 1e9 + 7
-	modInv := func(x int64) int64 {
-		x %= mod
-		res := int64(1)
+	pow := func(x int64) (res int64) {
+		//x %= mod
+		res = 1
 		for n := mod - 2; n > 0; n >>= 1 {
 			if n&1 == 1 {
 				res = res * x % mod
 			}
 			x = x * x % mod
 		}
-		return res
+		return
 	}
 
+	// 增广一个单位矩阵
+	n := len(A)
 	m := 2 * n
-	f := make(matrix, n)
-	for i := range f {
-		f[i] = make([]int64, m)
-		for j := range f {
-			Fscan(in, &f[i][j])
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int64, m)
+		for j := range a {
+			a[i][j] = A[i][j] // or read
 		}
-		f[i][n+i] = 1 // 单位矩阵
+		a[i][n+i] = 1
 	}
 
-	for i := range f {
+	for i := range a {
 		for j := i; j < n; j++ {
-			if f[j][i] != 0 {
-				// swapRows(i,j)
-				for k := range f[0] {
-					f[i][k], f[j][k] = f[j][k], f[i][k]
-				}
+			if a[j][i] != 0 {
+				a[i], a[j] = a[j], a[i]
 				break
 			}
 		}
-		if f[i][i] == 0 {
+		if a[i][i] == 0 {
 			// 矩阵不是满秩的
 			return nil
 		}
-		inv := modInv(f[i][i])
+		inv := pow(a[i][i])
 		for j := i; j < m; j++ {
-			f[i][j] = f[i][j] * inv % mod
+			a[i][j] = a[i][j] * inv % mod
 		}
-		for j := range f {
+		for j := range a {
 			if j != i {
-				inv := f[j][i]
+				inv := a[j][i]
 				for k := i; k < m; k++ {
-					f[j][k] = (f[j][k] - inv*f[i][k]%mod + mod) % mod
+					a[j][k] = (a[j][k] - inv*a[i][k]%mod + mod) % mod
 				}
 			}
 		}
 	}
 
-	// 结果保存在 f 右侧
-	ans := make(matrix, n)
-	for i, row := range f {
-		ans[i] = row[n:]
+	// 结果保存在 a 右侧
+	res := make(matrix, n)
+	for i, row := range a {
+		res[i] = row[n:]
 	}
-	return ans
+	return res
 }
 
 // 高斯消元 Gaussian elimination O(n^3)   列主元消去法

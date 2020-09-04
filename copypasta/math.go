@@ -1017,7 +1017,7 @@ func numberTheoryCollection() {
 	// 推导过程见《挑战程序设计竞赛》P292
 	// 注意乘法溢出的可能
 	// 推荐 https://blog.csdn.net/niiick/article/details/80229217
-	// 模板题 https://www.luogu.com.cn/problemnew/solution/P4777
+	// todo 模板题 https://www.luogu.com.cn/problem/P4777 https://www.luogu.com.cn/problem/P4774
 	excrt := func(A, B, M []int64) (x, m int64) {
 		m = 1
 		for i, mi := range M {
