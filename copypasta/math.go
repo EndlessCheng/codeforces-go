@@ -1154,38 +1154,9 @@ func numberTheoryCollection() {
 
 	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2 https://oeis.org/A000984
 
-	// 求组合数/二项式系数
+	// 组合数/二项式系数
 	// 不取模，仅适用于小范围的 n 和 k
-	// 更大范围的见线性求逆元
-	comb := func(n, k int) int64 {
-		if k > n-k {
-			k = n - k
-		}
-		res := int64(1)
-		for i := 1; i <= k; i++ {
-			res = res * int64(n-k+i) / int64(i)
-		}
-		return res
-		//return big.Int{}.Binomial(n, k).Int64()
-	}
-
-	// 取模，适用于 n 较大但 k 或 n-k 较小的情况
-	comb = func(n, k int) int64 {
-		if k > n-k {
-			k = n - k
-		}
-		a, b := int64(1), int64(1)
-		for i := 1; i <= k; i++ {
-			a = a * int64(n) % mod
-			n--
-			b = b * int64(i) % mod
-		}
-		return divP(a, b, mod)
-	}
-
-	{
-		// 初始化组合数
-		// 不取模，仅适用于小范围的 n 和 k
+	initComb := func() {
 		const mx = 60
 		C := [mx + 1][mx + 1]int64{}
 		for i := 0; i <= mx; i++ {
@@ -1196,35 +1167,8 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 不推荐，见后面的代码块
-	//{
-	//	// O(n) 预处理，O(logn) 求组合数
-	//	const mod int64 = 1e9 + 7
-	//	const mx = 3e5
-	//	F := [mx + 1]int64{1}
-	//	for i := 1; i <= mx; i++ {
-	//		F[i] = F[i-1] * int64(i) % mod
-	//	}
-	//	pow := func(x, n int64) int64 {
-	//		x %= mod
-	//		res := int64(1)
-	//		for ; n > 0; n >>= 1 {
-	//			if n&1 == 1 {
-	//				res = res * x % mod
-	//			}
-	//			x = x * x % mod
-	//		}
-	//		return res
-	//	}
-	//	inv := func(a int64) int64 { return pow(a, mod-2) }
-	//	div := func(a, b int64) int64 { return a * inv(b) % mod }
-	//	C := func(n, k int64) int64 { return div(F[n], F[k]*F[n-k]%mod) }
-	//
-	//	_ = C
-	//}
-
+	// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 	{
-		// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 		const mod int64 = 1e9 + 7
 		const mx int = 1e6
 		F := [mx + 1]int64{1}
@@ -1269,12 +1213,34 @@ func numberTheoryCollection() {
 		// 相当于长度为 k，元素范围在 [1,n] 的非降序列的个数
 		H := func(n, k int) int64 { return C(n+k-1, k) }
 
+		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			pow2[i] = pow2[i-1] << 1 % mod
 		}
 
 		_, _ = C, H
+	}
+
+	// 适用于 n 巨大但 k 或 n-k 较小的情况
+	comb := func(n, k int) int64 {
+		if k > n-k {
+			k = n - k
+		}
+		var a, b int64 = 1, 1
+		for i := 1; i <= k; i++ {
+			a = a * int64(n) % mod
+			n--
+			b = b * int64(i) % mod
+		}
+		return divP(a, b, mod)
+	}
+
+	// 另类组合数求法
+	{
+		var n, k int64
+		_ = new(big.Int).Binomial(n, k).Int64()
+		_ = int64(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
 	}
 
 	// 扩展卢卡斯
@@ -1389,7 +1355,7 @@ func numberTheoryCollection() {
 		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
-		factorial, calcFactorial, initFactorial, _factorial, combHalf, comb,
+		factorial, calcFactorial, initFactorial, _factorial, combHalf, initComb, comb,
 		muInit,
 	}
 }
