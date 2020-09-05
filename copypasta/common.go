@@ -223,6 +223,21 @@ func commonCollection() {
 		return
 	}
 
+	// 带权(等差数列)前缀和
+	{
+		var n int // read
+		a := make([]int64, n)
+		sum := make([]int64, n+1)
+		iSum := make([]int64, n+1)
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+			iSum[i+1] = iSum[i] + int64(i+1)*v
+		}
+		query := func(l, r int) int64 { return iSum[r] - iSum[l] - int64(l)*(sum[r]-sum[l]) } // [l,r)
+
+		_ = query
+	}
+
 	// 二维前缀和
 	var sum2d [][]int
 	initSum2D := func(mat [][]int) {
