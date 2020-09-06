@@ -223,7 +223,7 @@ func unionFindEdgeWeight(n int) {
 }
 
 // 并查集组（一般用于涉及到位运算的题目）
-// NOTE: 也可以写成 struct 的形式
+// 也可以写成后面的 struct 形式
 func multiUnionFind(n, m int) {
 	fas := make([][]int, m)
 	for i := range fas {
@@ -248,6 +248,48 @@ func multiUnionFind(n, m int) {
 	}
 
 	_ = []interface{}{merge, same, mergeRange}
+}
+
+type uf struct {
+	fa []int
+}
+
+func newUnionFind(n int) uf {
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	return uf{fa}
+}
+func newUnionFinds(m, n int) []uf {
+	us := make([]uf, m)
+	for i := range us {
+		us[i] = newUnionFind(n)
+	}
+	return us
+}
+func (u uf) find(x int) int {
+	if u.fa[x] != x {
+		u.fa[x] = u.find(u.fa[x])
+	}
+	return u.fa[x]
+}
+func (u uf) merge(from, to int) (isNewMerge bool) {
+	x, y := u.find(from), u.find(to)
+	if x == y {
+		return false
+	}
+	u.fa[x] = y
+	return true
+}
+func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }
+func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
+	for i := st; i < len(u.fa); i++ {
+		if u.find(i) == i {
+			cnt++
+		}
+	}
+	return
 }
 
 // 可持久化并查集
