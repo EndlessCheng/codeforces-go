@@ -40,7 +40,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, run
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		if !assert.Equal(t, expectedOutput, actualOutput, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+		if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 			allPassed = false
 			handleOutput(actualOutput)
 		}
@@ -160,7 +160,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC
 		if len(inputInfo) > maxInputSize {
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo)
+		assert.Equal(t, actualOutputAC, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo)
 	}
 }
 
@@ -182,7 +182,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 
 		actualOutputAC := removeExtraSpace(mockWriterAC.String())
 		actualOutput := removeExtraSpace(mockWriter.String())
-		if !assert.Equal(t, actualOutputAC, actualOutput, "WA %d\nInput:\n%s", tc, input) && needPrint {
+		if !assert.Equal(t, actualOutputAC, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input) && needPrint {
 			fmt.Printf("[CASE %d]\n", tc)
 			fmt.Println("[AC]", actualOutputAC)
 			fmt.Println("[WA]", actualOutput)
@@ -219,7 +219,7 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 		//fmt.Println(time.Since(t0))
 
 		actualOutput := removeExtraSpace(mockWriter.String())
-		if !assert.Truef(t, checker(actualOutput), "WA %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput) && needPrint {
+		if !assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput) && needPrint {
 			fmt.Printf("[CASE %d]\n", tc)
 			fmt.Println("[WA]", actualOutput)
 			fmt.Println(input)

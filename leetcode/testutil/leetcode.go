@@ -243,7 +243,7 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			if er != nil {
 				return er
 			}
-			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "WA %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 				allCasesOk = false
 			}
 		}
@@ -362,7 +362,7 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		}
 		rawActualOut += "]"
 
-		if !assert.Equal(t, rawExpectedOut, rawActualOut, "WA %d", curCase+1) {
+		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCase+1) {
 			allCasesOk = false
 		}
 	}
@@ -422,7 +422,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 			insStr = append(insStr, s...)
 		}
 		for i, eOut := range expectedOut {
-			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "WA %d\nInput:\n%s", tc, insStr)
+			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, insStr)
 		}
 
 		if tc%1e5 == 0 {

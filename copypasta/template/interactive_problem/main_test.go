@@ -81,7 +81,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		}
 		expectedAns := tc.guess
 		actualAns := run(tc.input, checkQuery(caseNum, tc))
-		if !assert.EqualValues(t, expectedAns, actualAns, "WA %d", caseNum) {
+		if !assert.EqualValues(t, expectedAns, actualAns, "Wrong Answer %d", caseNum) {
 			failedCount++
 			if failedCount > failedCountLimit {
 				t.Fatal("too many wrong cases, terminated")
