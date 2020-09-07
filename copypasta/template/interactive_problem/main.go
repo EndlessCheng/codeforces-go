@@ -15,7 +15,7 @@ type (
 
 // github.com/EndlessCheng/codeforces-go
 func run(in input, Q func(req) resp) (gs guess) {
-	//P := func(q []int) int { return Q(req{q}).v }
+	//io := func(q []int) int { return Q(req{q}).v }
 	n := in.n
 
 	return
