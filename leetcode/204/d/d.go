@@ -51,7 +51,7 @@ func numOfWays(a []int) int {
 	g := make([][2]int, n+1)
 	for i := len(a) - 1; i >= 0; i-- {
 		fa := a[i]
-		// BST 的中序遍历就是 1~n。存在某个 BST，对于 fa 来说，其左子树的根为 fa-1，右子树的根为 fa+1
+		// BST 的中序遍历就是 1~n，对于数组 a，必定是先访问 fa-1 和 fa+1 才会访问到 fa
 		// 这样就可以倒序遍历 a，用并查集建树，注意 merge 的方向
 		if vis[fa-1] {
 			son := u.find(fa - 1)
