@@ -167,6 +167,26 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD = -1
 	f(dv, -1, 0)
 	dw := u
+
+	// EXTRA: 获取直径上的所有节点 ds
+	// ds[len(ds)/2] 即为树的中心
+	ds := []int{}
+	var f2 func(v, fa int) bool
+	f2 = func(v, fa int) bool {
+		if v == u {
+			ds = append(ds, v)
+			return true
+		}
+		for _, w := range g[v] {
+			if w != fa && f2(w, v) {
+				ds = append(ds, v)
+				return true
+			}
+		}
+		return false
+	}
+	f2(dv, -1)
+
 	return dv, dw, maxD
 }
 
