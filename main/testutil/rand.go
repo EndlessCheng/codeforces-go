@@ -33,6 +33,10 @@ func (r *RG) NewLine() {
 	r.sb.WriteByte('\n')
 }
 
+func (r *RG) Byte(b byte) {
+	r.sb.WriteByte(b)
+}
+
 // Int generates a random int in range [min, max]
 func (r *RG) Int(min, max int) int {
 	v := min + rand.Intn(max-min+1)

@@ -186,7 +186,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 			fmt.Printf("[CASE %d]\n", tc)
 			fmt.Println("[AC]", actualOutputAC)
 			fmt.Println("[WA]", actualOutput)
-			fmt.Println(input)
+			fmt.Println("[INPUT]", input)
 			fmt.Println()
 		}
 
