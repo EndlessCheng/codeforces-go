@@ -23,6 +23,70 @@ func main() {
 	_ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
 
+// LC 39
+func combinationSum(a []int, target int) (ans [][]int) {
+	b := []int{}
+	var f func(p, rest int)
+	f = func(p, rest int) {
+		if p == len(a) {
+			return
+		}
+		if rest == 0 {
+			ans = append(ans, append([]int(nil), b...))
+			return
+		}
+		f(p+1, rest)
+		if rest-a[p] >= 0 {
+			b = append(b, a[p])
+			f(p, rest-a[p])
+			b = b[:len(b)-1]
+		}
+	}
+	f(0, target)
+	return
+}
+
+// LC 40
+func combinationSum2(a []int, target int) (ans [][]int) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+
+	sort.Ints(a)
+	var freq [][2]int
+	for _, v := range a {
+		if freq == nil || v != freq[len(freq)-1][0] {
+			freq = append(freq, [2]int{v, 1})
+		} else {
+			freq[len(freq)-1][1]++
+		}
+	}
+
+	var b []int
+	var f func(p, rest int)
+	f = func(p, rest int) {
+		if rest == 0 {
+			ans = append(ans, append([]int(nil), b...))
+			return
+		}
+		if p == len(freq) || rest < freq[p][0] {
+			return
+		}
+		f(p+1, rest)
+		most := min(rest/freq[p][0], freq[p][1])
+		for i := 1; i <= most; i++ {
+			b = append(b, freq[p][0])
+			f(p+1, rest-i*freq[p][0])
+		}
+		b = b[:len(b)-most]
+	}
+	f(0, target)
+	return
+}
+
 // LC 41
 func firstMissingPositive(a []int) int {
 	n := len(a)
