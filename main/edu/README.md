@@ -11,5 +11,5 @@ Note that some lessons were already published but not translated to English. See
 |[Segment Tree, part 1](https://codeforces.com/blog/entry/80031)|2020-07-12 23:32|
 |[Segment Tree, part 2](https://codeforces.com/blog/entry/80985)|2020-08-04 00:03|
 |[Binary Search](https://codeforces.com/blog/entry/81729)|2020-08-21 09:16|
-|[Disjoint Set](https://codeforces.com/blog/entry/82413)|2020-09-08 06:36|
+|[Disjoint Sets Union](https://codeforces.com/blog/entry/82413)|2020-09-08 06:36|
 |[Introduction to Graph Theory](https://codeforces.com/edu/course/2/lesson/8/1/practice)||
