@@ -982,6 +982,7 @@ func moAlgorithm() {
 	// https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 
 	// TODO: 树上莫队
+	// https://blog.csdn.net/weixin_43914593/article/details/108485396
 
 	_ = mo
 }
@@ -1000,7 +1001,9 @@ func monotoneCollection() {
 	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
 	// 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
-	// 与 DP 结合 https://codeforces.com/problemset/problem/1313/C2
+	// 与 DP 结合
+	//     https://codeforces.com/problemset/problem/1313/C2
+	//     https://codeforces.com/problemset/problem/1407/D
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 	monotoneStack := func(a []int) ([]int, []int) {
 		const border int = 2e9 // 求两侧小的话用 -1
