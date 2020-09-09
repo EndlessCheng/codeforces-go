@@ -18,6 +18,8 @@ NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的�
 NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
 NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.com/problemset/problem/700/B
 
+树上统计（从下往上）的典型题目：https://codeforces.com/problemset/problem/766/E
+
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=trees
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=constructive+algorithms%2Ctrees
 */
