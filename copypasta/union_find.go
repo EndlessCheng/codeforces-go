@@ -1,5 +1,10 @@
 package copypasta
 
+import (
+	. "fmt"
+	"io"
+)
+
 /* 套题
 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 */
@@ -294,4 +299,113 @@ func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
 }
 
 // 可持久化并查集
-// todo
+// todo 模板题 https://www.luogu.com.cn/problem/P3402
+
+// 动态图连通性（求 CC 个数）
+// https://codeforces.com/gym/100551/problem/A https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
+func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
+	if q == 0 {
+		return
+	}
+
+	type edge struct{ v, w int }
+	type query struct {
+		edge
+		t int
+		// 记 i 为 query 在 qs 中的下标
+		// t > i 表示 i 时刻的加边操作对应的删边时间为 t
+		// t < i 表示 i 时刻的删边操作对应的加边时间为 t
+	}
+	qs := make([]query, q)
+	addTime := map[edge]int{}
+	for i := range qs {
+		var op string
+		if Fscan(in, &op); op[0] == '?' {
+			qs[i].t = -1 // 表示要输出答案
+			continue
+		}
+		var v, w int
+		Fscan(in, &v, &w)
+		if v > w {
+			v, w = w, v
+		}
+		e := edge{v, w}
+		qs[i].edge = e
+		if op[0] == '+' {
+			addTime[e] = i
+		} else {
+			addT := addTime[e]
+			delete(addTime, e)
+			qs[i].t = addT
+			qs[addT].t = i
+		}
+	}
+	for e, t := range addTime {
+		qs[t].t = len(qs)
+		qs = append(qs, query{e, t})
+	}
+
+	cc := n
+	fa := make([]int, n+1)
+	sz := make([]int, n+1)
+	for i := range fa {
+		fa[i] = i
+		sz[i] = 1
+	}
+	undo := []int{}
+	find := func(x int) int {
+		for ; x != fa[x]; x = fa[x] {
+		}
+		return x
+	}
+	merge := func(x, y int) {
+		if x, y = find(x), find(y); x != y {
+			if sz[x] > sz[y] {
+				x, y = y, x
+			}
+			fa[x] = y
+			sz[y] += sz[x]
+			undo = append(undo, x)
+			cc--
+		}
+	}
+	rollbackTo := func(tar int) {
+		for len(undo) > tar {
+			x := undo[len(undo)-1]
+			undo = undo[:len(undo)-1]
+			sz[fa[x]] -= sz[x]
+			fa[x] = x
+			cc++
+		}
+	}
+	var f func(l, r int)
+	f = func(l, r int) {
+		if l+1 == r {
+			if qs[l].t < 0 {
+				ans = append(ans, cc) // Fprintln(out, cc)
+			}
+			return
+		}
+		mid := (l + r) >> 1
+		initSize := len(undo)
+		// 遍历 [l,mid) 之前，连接所有在 l 时刻前连接的，且不在 mid 时刻前删除的边
+		for _, q := range qs[mid:r] {
+			if q.t < l {
+				merge(q.v, q.w)
+			}
+		}
+		f(l, mid)
+		rollbackTo(initSize)
+		// 遍历 [mid,r) 之前，连接所有在 mid 时刻前连接的，且不在 r 时刻前删除的边
+		for _, q := range qs[l:mid] {
+			if q.t >= r {
+				merge(q.v, q.w)
+			}
+		}
+		f(mid, r)
+		rollbackTo(initSize)
+	}
+	f(0, len(qs))
+
+	return
+}
