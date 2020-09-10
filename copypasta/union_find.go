@@ -303,6 +303,7 @@ func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
 
 // 动态图连通性（求 CC 个数或判断 v 和 w 是否连通）
 // https://codeforces.com/gym/100551/problem/A https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
+// todo Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	if q == 0 {
 		return
@@ -354,7 +355,8 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	}
 	undo := []int{}
 	find := func(x int) int {
-		for ; x != fa[x]; x = fa[x] {
+		for x != fa[x] {
+			x = fa[x]
 		}
 		return x
 	}
