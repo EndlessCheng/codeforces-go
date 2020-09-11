@@ -83,7 +83,7 @@ todo 3.4 节
 3411 https://www.luogu.com.cn/problem/SP3953
 3420
 3735
-3171 https://www.luogu.com.cn/problem/P4644
+3171 https://www.luogu.com.cn/problem/P4644 见 graph.shortestPathDijkstra
 Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
 SOS Dynamic Programming https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
@@ -670,7 +670,10 @@ func dpCollections() {
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
+
+	https://www.luogu.com.cn/problem/P1879
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
+
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/808
 	     题单 https://ac.nowcoder.com/acm/problem/collection/810
 	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/

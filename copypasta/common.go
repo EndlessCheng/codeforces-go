@@ -47,7 +47,6 @@ import (
 //		其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
 //		对于多组数据的情况，禁用 GC 若 MLE，可在每组数据的开头或者末尾调用 debug.FreeOSMemory() 手动 GC
 //		参考 https://zhuanlan.zhihu.com/p/77943973 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
-//		一个性能上的结论：耗时 forv slice < fori array << fori slice
 func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
