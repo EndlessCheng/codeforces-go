@@ -386,7 +386,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 		if l+1 == r {
 			if qs[l].t < 0 {
 				ans = append(ans, cc) // Fprintln(out, cc)
-				//ans = append(ans, find(qs[l].v) == find(qs[l].w))
+				//ans = append(ans, find(qs[l].e.v) == find(qs[l].e.w))
 			}
 			return
 		}
