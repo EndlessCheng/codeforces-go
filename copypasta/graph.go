@@ -21,6 +21,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 匹配与独立集 https://codeforces.com/problemset/problem/1198/C
 
 构造 https://codeforces.com/problemset/problem/41/E
+转换 https://codeforces.com/problemset/problem/788/B
 
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
@@ -345,6 +346,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 
 // 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
 // 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要这起点的出度比入度大一，终点的入度比出度大一
+// 半欧拉图：具有欧拉路径而无欧拉回路的图
 // 逐步插入回路法（Hierholzer 算法） https://oi-wiki.org/graph/euler/
 // todo 混合图欧拉回路
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
@@ -789,6 +791,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
+// 建模题 https://www.luogu.com.cn/problem/P4644
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
@@ -1695,6 +1698,7 @@ o:
 //       A 不能存在       (¬A)     A⇒¬A
 // 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
 // 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
+// todo 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_h
 func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	g := make([][]int, 2*n)
 	for i := 0; i < m; i++ {

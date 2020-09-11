@@ -5,6 +5,12 @@ import (
 	"sort"
 )
 
+/*
+思维转换
+    https://www.luogu.com.cn/problem/P2859
+    https://www.luogu.com.cn/problem/P4952 枚举中位数
+*/
+
 // 下面这些都是最小堆
 
 type hp struct{ sort.IntSlice }
