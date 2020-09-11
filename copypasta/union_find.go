@@ -302,6 +302,7 @@ func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
 // todo 模板题 https://www.luogu.com.cn/problem/P3402
 
 // 动态图连通性（求 CC 个数或判断 v 和 w 是否连通）
+// https://en.wikipedia.org/wiki/Dynamic_connectivity
 // https://codeforces.com/gym/100551/problem/A https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
 // todo Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
@@ -311,7 +312,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 
 	type edge struct{ v, w int }
 	type query struct {
-		edge
+		e edge
 		t int
 		// 记 i 为 query 在 qs 中的下标
 		// t > i 表示 i 时刻的加边操作对应的删边时间为 t
@@ -331,7 +332,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 			v, w = w, v
 		}
 		e := edge{v, w}
-		qs[i].edge = e
+		qs[i].e = e
 		if op[0] == '+' {
 			addTime[e] = i
 		} else {
@@ -360,8 +361,8 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 		}
 		return x
 	}
-	merge := func(x, y int) {
-		if x, y = find(x), find(y); x != y {
+	merge := func(e edge) {
+		if x, y := find(e.v), find(e.w); x != y {
 			if sz[x] > sz[y] {
 				x, y = y, x
 			}
@@ -371,8 +372,8 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 			cc--
 		}
 	}
-	rollbackTo := func(tar int) {
-		for len(undo) > tar {
+	rollbackTo := func(k int) {
+		for len(undo) > k {
 			x := undo[len(undo)-1]
 			undo = undo[:len(undo)-1]
 			sz[fa[x]] -= sz[x]
@@ -394,7 +395,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 		// 遍历 [l,mid) 之前，连接所有在 l 时刻前连接的，且不在 mid 时刻前删除的边
 		for _, q := range qs[mid:r] {
 			if q.t < l {
-				merge(q.v, q.w)
+				merge(q.e)
 			}
 		}
 		f(l, mid)
@@ -402,7 +403,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 		// 遍历 [mid,r) 之前，连接所有在 mid 时刻前连接的，且不在 r 时刻前删除的边
 		for _, q := range qs[l:mid] {
 			if q.t >= r {
-				merge(q.v, q.w)
+				merge(q.e)
 			}
 		}
 		f(mid, r)
