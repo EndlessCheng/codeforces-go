@@ -57,6 +57,8 @@ func searchCollection() {
 					return
 				}
 
+				// 剪枝：能否继续...
+
 				// 不选 p
 				f(p + 1)
 
@@ -64,7 +66,7 @@ func searchCollection() {
 				// 剪枝：能否选 p（是否与 chosen 中的元素冲突等）...
 
 				chosen = append(chosen, p)
-				f(p + 1)
+				f(p + 1) // 如果可以重复，这里写 f(p)
 				chosen = chosen[:len(chosen)-1]
 			}
 			f(1)
@@ -80,6 +82,8 @@ func searchCollection() {
 					cnt++
 					return
 				}
+
+				// 剪枝：能否继续...
 
 				// 不选 p
 				f(p + 1)
