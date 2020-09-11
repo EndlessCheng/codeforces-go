@@ -62,14 +62,14 @@ func run(_r io.Reader, _w io.Writer) {
 	ans := make([]interface{}, q)
 	type query struct{ l, r, i int }
 	blockSize := int(math.Round(math.Sqrt(float64(m))))
-	qs := make([][]query, (m-1)/blockSize+1)
+	blocks := make([][]query, (m-1)/blockSize+1)
 	for i := 0; i < q; i++ {
 		Fscan(in, &l, &r)
 		l--
 		j := l / blockSize
-		qs[j] = append(qs[j], query{l, r, i})
+		blocks[j] = append(blocks[j], query{l, r, i})
 	}
-	for i, b := range qs {
+	for i, b := range blocks {
 		r := (i + 1) * blockSize
 		maxR := r
 		sort.Slice(b, func(i, j int) bool { return b[i].r < b[j].r })
