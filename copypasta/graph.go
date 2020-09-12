@@ -158,6 +158,7 @@ func (*graph) dfs(n, st int, g [][]int) {
 
 	{
 		// 无向图: DFS 找长度至少为 k 的环
+		// 注：如果只有一个环（基环树），也可以跑拓扑排序
 		// 模板题 https://codeforces.com/problemset/problem/263/D
 		// https://codeforces.com/problemset/problem/1325/F
 		var k, end, st int
@@ -1001,10 +1002,11 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	return
 }
 
-// 任意两点最短路 Floyd-Warshall O(n^3)
+// 任意两点最短路 Floyd-Warshall O(n^3)    本质是求 Min-plus matrix multiplication
 // 传入邻接矩阵 dist
 // dist[v][w] == inf 表示没有 v-w 边
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
+// https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 // https://codeforces.com/problemset/problem/1204/C
@@ -1549,6 +1551,14 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	isDAG = len(orders) == n
 
 	{
+		// EXTRA: 基环树：剩余的 deg > 0 的点即为在环上的点
+		onCycle := make([]bool, n)
+		for i, d := range deg {
+			onCycle[i] = d > 0
+		}
+	}
+
+	{
 		fa := make([]int, n)
 
 		// EXTRA: path from end to start
@@ -1724,11 +1734,13 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	return ans
 }
 
-// 基环树
+// 基环树（环套树）
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
 // https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
+// todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
+// todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
 func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
 	inDeg := make([]int, n)
 	// 计算入度 ...

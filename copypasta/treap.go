@@ -19,6 +19,7 @@ https://en.wikipedia.org/wiki/Treap
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 
 EXTRA: FHQ Treap https://baobaobear.github.io/post/20191215-fhq-treap/
+FHQ-Treap 学习笔记 + 一堆题目 https://www.luogu.com.cn/blog/85514/fhq-treap-xue-xi-bi-ji
 */
 
 // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键

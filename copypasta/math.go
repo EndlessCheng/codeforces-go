@@ -1525,6 +1525,8 @@ func combinatoricsCollection() {
 // - The game ends when a player cannot make a move.
 // - The game surely ends sooner or later.
 // - The players have complete information about the states and allowed moves, and there is no randomness in the game.
+// todo 推荐论文《组合游戏略述——浅谈 SG 游戏的若干拓展及变形》
+// todo Anti-SG
 // 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 // https://oi-wiki.org/math/game-theory/
 // 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
