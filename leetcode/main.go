@@ -143,6 +143,7 @@ func exist(board [][]byte, word string) bool {
 }
 
 // LC 94
+// Morris 中序遍历
 func inorderTraversal(root *TreeNode) (res []int) {
 	for root != nil {
 		if root.Left != nil {
