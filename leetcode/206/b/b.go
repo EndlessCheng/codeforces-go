@@ -11,7 +11,7 @@ func unhappyFriends(n int, preferences [][]int, pairs [][]int) (ans int) {
 	}
 	f := func(x, y, u, v int) bool { return a[x][u] > a[x][y] && a[u][x] > a[u][v] }
 	unh := make([]bool, n)
-	f2 := func(x, y, u, v int) { unh[x] = f(x, y, u, v) || f(x, y, v, u) }
+	f2 := func(x, y, u, v int) { unh[x] = unh[x] || f(x, y, u, v) || f(x, y, v, u) }
 	for i, p := range pairs {
 		for j, q := range pairs {
 			if j != i {
