@@ -1555,7 +1555,9 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		// EXTRA: 基环树：剩余的 deg > 0 的点即为在环上的点
 		onCycle := make([]bool, n)
 		for i, d := range deg {
-			onCycle[i] = d > 0
+			if d > 0 {
+				onCycle[i] = true
+			}
 		}
 	}
 
