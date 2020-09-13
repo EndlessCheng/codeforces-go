@@ -138,7 +138,7 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	problems = make([]*problem, len(d.Questions))
 	for i, q := range d.Questions {
 		problems[i] = &problem{
-			id:    string('a' + i),
+			id:    string(byte('a' + i)),
 			urlZH: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostZH, contestPrefix, contestID, q.TitleSlug),
 			urlEN: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostEN, contestPrefix, contestID, q.TitleSlug),
 		}
@@ -300,77 +300,56 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	}
 
 	// parse sample inputs and sample outputs
-	const (
-		tokenInputZH  = "输入"
-		tokenOutputZH = "输出"
-
-		tokenInputEN  = "Input"
-		tokenOutputEN = "Output"
-	)
-
-	isIn := true
+	// 注：官方描述可能会打错字（比如「输入」写成「输出」），这里只匹配第一个字
+	parseData := func(o *html.Node) (next *html.Node, data string) {
+		for o = o.NextSibling; ; o = o.NextSibling.NextSibling {
+			data += o.Data
+			if o.NextSibling == nil {
+				break
+			}
+			s := strings.TrimSpace(o.NextSibling.FirstChild.Data)
+			if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") {
+				break
+			}
+			data += s
+		}
+		return o.NextSibling, data
+	}
 	var f func(*html.Node)
 	f = func(o *html.Node) {
-		// 由于官方描述可能会打错字（比如“输入”写成“输出”），用 isIn 来交替 append 样例输入是最稳妥的
-		o.Data = strings.TrimSpace(o.Data)
-		if o.Type == html.TextNode && (strings.HasPrefix(o.Data, tokenInputZH) || strings.HasPrefix(o.Data, tokenOutputZH)) {
-			if o.Parent.NextSibling == nil {
-				return
-			}
-
-			dataO := o.Parent.NextSibling
-			raw := dataO.Data
-			// handle some cases like https://leetcode-cn.com/contest/weekly-contest-199/problems/shuffle-string/
-			for dataO.NextSibling != nil && dataO.NextSibling.DataAtom == atom.Code {
-				raw += dataO.NextSibling.FirstChild.Data + dataO.NextSibling.NextSibling.Data
-				dataO = dataO.NextSibling.NextSibling
-			}
-
-			sample := p.parseSampleText(raw, true)
-			if len(sample) == 0 {
-				// 国服特殊比赛
-				raw = ""
-				for v := o.NextSibling; v != nil; v = v.NextSibling {
-					if v.Type == html.ElementNode && v.Data == "code" {
-						raw += "," + v.FirstChild.Data
-					}
-				}
-				if len(raw) > 0 {
-					raw = raw[1:]
-				}
-				sample = p.parseSampleText(raw, true)
-			}
-			if len(sample) == 0 {
-				// 国服特殊比赛
-				if i := strings.Index(o.Data, "："); i != -1 {
-					sample = p.parseSampleText(o.Data[i+len("："):], true)
-				} else if j := strings.Index(o.Data, ":"); j != -1 {
-					sample = p.parseSampleText(o.Data[i+1:], true)
-				}
-			}
-
-			if isIn {
-				if sample == nil { // 官方描述打错。例如，“解释”写成了“输出”
-					fmt.Fprintf(os.Stderr, "错误的输入数据：%s\n", raw)
-					return
-				}
-				p.sampleIns = append(p.sampleIns, sample)
-			} else {
-				if sample == nil {
-					fmt.Fprintf(os.Stderr, "错误的输出数据：%s\n", raw)
-					return
-				}
-				p.sampleOuts = append(p.sampleOuts, sample)
-			}
-			isIn = !isIn
+		// 解析每个 <pre> 块内的文本（以中文为基准解析	）
+		if o.DataAtom == atom.Pre && strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") {
+			next, input := parseData(o.FirstChild)
+			p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
+			_, output := parseData(next)
+			p.sampleOuts = append(p.sampleOuts, p.parseSampleText(output, true))
 			return
 		}
-
 		for c := o.FirstChild; c != nil; c = c.NextSibling {
 			f(c)
 		}
 	}
 	f(bodyNode)
+	if len(p.sampleIns) == 0 {
+		// 没找到 <pre>，国服特殊比赛（春秋赛等）
+		f = func(o *html.Node) {
+			if o.DataAtom == atom.Div && o.FirstChild != nil && strings.Contains(o.FirstChild.Data, "示例") {
+				raw := o.FirstChild.Data
+				sp := strings.Split(raw, "`")
+				for i, s := range sp {
+					if strings.Contains(s, ">输入") {
+						p.sampleIns = append(p.sampleIns, p.parseSampleText(sp[i+1], true))
+					} else if strings.Contains(s, ">输出") {
+						p.sampleOuts = append(p.sampleOuts, p.parseSampleText(sp[i+1], true))
+					}
+				}
+			}
+			for c := o.FirstChild; c != nil; c = c.NextSibling {
+				f(c)
+			}
+		}
+		f(bodyNode)
+	}
 
 	if len(p.sampleIns) != len(p.sampleOuts) {
 		return fmt.Errorf("len(sampleIns) != len(sampleOuts) : %d != %d", len(p.sampleIns), len(p.sampleOuts))
@@ -558,7 +537,7 @@ func GenLeetCodeSpecialTests(username, password, customComment string, urlsZHs [
 	problems := make([]*problem, len(urlsZHs))
 	for i, url := range urlsZHs {
 		problems[i] = &problem{
-			id:            string('a' + i),
+			id:            string(byte('a' + i)),
 			urlZH:         url,
 			customComment: customComment,
 		}
