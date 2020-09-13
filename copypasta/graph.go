@@ -1195,7 +1195,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // https://oi-wiki.org/graph/mst/#prim
 // 模板题 https://www.luogu.com.cn/problem/P1546
 // 建模+打印方案 https://codeforces.com/contest/1245/problem/D
-func (*graph) mstPrim(dist [][]int) (sum int) {
+func (*graph) mstPrim(dist [][]int) int {
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -1210,6 +1210,7 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 	}
 	minWeights[0] = 0 // 任选一点为起点
 	used := make([]bool, n)
+	ans := 0 // int64
 	for {
 		v := -1
 		for i, u := range used {
@@ -1221,12 +1222,12 @@ func (*graph) mstPrim(dist [][]int) (sum int) {
 			break
 		}
 		used[v] = true
-		sum += minWeights[v] // int64
+		ans += minWeights[v]
 		for w := range minWeights {
 			minWeights[w] = min(minWeights[w], dist[v][w])
 		}
 	}
-	return
+	return ans
 }
 
 // Boruvka's algorithm

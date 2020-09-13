@@ -388,6 +388,7 @@ func dpCollections() {
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// 求下降，可以考虑把序列元素去相反数
 	// https://oi-wiki.org/dp/basic/#_12
+	// 最小划分数 Dilworth's theorem https://en.wikipedia.org/wiki/Dilworth%27s_theorem
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
@@ -398,8 +399,8 @@ func dpCollections() {
 		n := len(a)
 		dp := make([]int, 0, n)
 		for _, v := range a {
-			if i := sort.SearchInts(dp, v); i < len(dp) { // 改成 v+1 为非降
-				dp[i] = v
+			if p := sort.SearchInts(dp, v); p < len(dp) { // 改成 v+1 为非降
+				dp[p] = v
 			} else {
 				dp = append(dp, v)
 			}
