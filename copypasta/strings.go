@@ -174,7 +174,7 @@ func stringCollection() {
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
-	// 模板题 https://www.luogu.com.cn/problem/P1368
+	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509
 	smallestRepresentation := func(s []byte) []byte {
 		n := len(s)
 		s = append(s, s...)
@@ -290,6 +290,8 @@ func stringCollection() {
 	题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
 
+	todo http://poj.org/problem?id=3581
+
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》）
 	单个字符串
 		模板题 https://www.luogu.com.cn/problem/P3809
@@ -307,11 +309,11 @@ func stringCollection() {
 			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
-		所有子串的所有公共前后缀个数 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
-			单调栈
-			思想类似的题目
-				https://codeforces.com/problemset/problem/123/D 本质上和上面求的是同一个
-				https://codeforces.com/problemset/problem/802/I 稍作改动
+		子串统计类题目
+			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
+			https://codeforces.com/problemset/problem/123/D (注：这是挑战上推荐的题目)
+			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D 本质上就是 CF123D
+			https://codeforces.com/problemset/problem/802/I 稍作改动
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
 	两个字符串
@@ -321,6 +323,9 @@ func stringCollection() {
 			单调栈
 		最短公共唯一子串 https://codeforces.com/contest/427/problem/D
 			唯一性可以用 height[i] 与前后相邻值的大小来判定
+		公共回文子串 http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2292
+			todo
+		todo http://poj.org/problem?id=3729
 	多个字符串
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
