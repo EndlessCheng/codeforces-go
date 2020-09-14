@@ -827,9 +827,9 @@ func rmqCollection() {
 	// 分块 Sqrt Decomposition
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
-	// 好题 https://codeforces.com/problemset/problem/91/E
-	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 	// TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
+	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
+	// 好题 https://codeforces.com/problemset/problem/91/E
 	type block struct {
 		l, r           int // [l,r]
 		origin, sorted []int
