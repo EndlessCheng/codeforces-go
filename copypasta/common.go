@@ -659,10 +659,6 @@ func commonCollection() {
 		return ans
 	}
 
-	// 悬线法
-	// 求一最大子矩形，矩形内部元素均相同
-	// todo https://oi-wiki.org/misc/largest-matrix/
-
 	// 二维离散化
 	// 代码来源 https://atcoder.jp/contests/abc168/tasks/abc168_f
 	discrete2D := func(n, m int) (ans int) {
@@ -997,9 +993,10 @@ func monotoneCollection() {
 	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
+	//       https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
 	//       https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
 	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
-	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/
+	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 	// 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 	// 与 DP 结合
 	//     https://codeforces.com/problemset/problem/1313/C2
@@ -1074,10 +1071,12 @@ func monotoneCollection() {
 	有些题目枚举左端点更为方便，细节见下面的 cf1237d
 
 	https://oi-wiki.org/ds/monotonous-queue/
+
+	todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
 	*/
 
 	// 模板题 - 固定区间大小的区间最值（滑动窗口）   pop-push-query
-	// https://www.luogu.com.cn/problem/P1886
+	// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 	// https://codeforces.com/problemset/status/940/problem/E
 	fixedSizeMinMax := func(a []int, fixedSize int) (mins, maxs []int) {
 		n := len(a)

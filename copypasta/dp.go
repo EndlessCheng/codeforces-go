@@ -456,8 +456,11 @@ func dpCollections() {
 	子序列 -> 背包
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.com/blog/entry/59606
+
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
+
+	TODO 多重背包+完全背包 https://www.luogu.com.cn/problem/P2851
 	*/
 
 	// 0-1 背包 (n 个物品，背包容量为 maxW)
@@ -844,7 +847,7 @@ func dpCollections() {
 	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 	// https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
-	// todo poj 3709
+	// todo https://www.luogu.com.cn/problem/P2627
 
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
@@ -855,6 +858,8 @@ func dpCollections() {
 	//      浅谈斜率优化 https://www.luogu.com.cn/blog/duyi/xie-lv-you-hua
 	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
 	// 题目 https://qiita.com/drken/items/9b311d553aa434bb26e4#%E4%BE%8B%E9%A1%8C-4-4-4k-anonymous-sequence-poj-no3709
+	// todo http://poj.org/problem?id=3709
+	// todo http://poj.org/problem?id=1180
 
 	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
