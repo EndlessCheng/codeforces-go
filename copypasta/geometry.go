@@ -621,6 +621,7 @@ func vec2Collection() {
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742
 	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
+	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
 		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })

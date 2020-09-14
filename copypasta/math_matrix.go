@@ -14,6 +14,8 @@ https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training c
 模板题 https://ac.nowcoder.com/acm/contest/6357/A
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
+
+todo poj 2345 3532 3526
 */
 
 // 一些题目：https://oi-wiki.org/math/matrix/

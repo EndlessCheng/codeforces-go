@@ -844,6 +844,7 @@ func dpCollections() {
 	// 单调队列/单调栈优化
 	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
 	// https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
+	// todo poj 3709
 
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
