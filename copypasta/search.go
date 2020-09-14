@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	. "fmt"
+	"math/bits"
 	"sort"
 )
 
@@ -455,6 +456,17 @@ func loopCollection() {
 			x := sub & -sub
 			y := sub + x
 			sub = sub&^y/x>>1 | y
+		}
+	}
+
+	// 枚举各个 1 位的另一种方法
+	// 每次统计尾 0 的个数，然后移除最右侧的 1
+	// benchmark 了一下，效率比一个个位上去检查是否为 1 要快
+	{
+		var mask uint
+		for ; mask > 0; mask &= mask - 1 {
+			p := bits.TrailingZeros(mask)
+			_ = p
 		}
 	}
 
