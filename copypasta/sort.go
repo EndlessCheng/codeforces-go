@@ -207,6 +207,7 @@ func sortCollections() {
 	//      https://www.bilibili.com/video/BV1mC4y1s7ic
 	//      [学习笔记]CDQ分治和整体二分 https://www.luogu.com.cn/blog/Owencodeisking/post-xue-xi-bi-ji-cdq-fen-zhi-hu-zheng-ti-er-fen
 	//      https://www.luogu.com.cn/blog/ljc20020730/cdq-fen-zhi-xue-xi-bi-ji
+	//      动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/

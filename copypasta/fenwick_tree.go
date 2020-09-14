@@ -13,12 +13,11 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 静态区间种类 - 离线做法 https://www.luogu.com.cn/problem/P1972 https://atcoder.jp/contests/abc174/tasks/abc174_f
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.com/problemset/problem/629/D
-
-1990 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
-3109 https://codeforces.com/gym/101649 I
-2155 http://poj.org/problem?id=2155 todo
-2886 http://poj.org/problem?id=2886
- */
+好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
+https://codeforces.com/gym/101649 I
+todo http://poj.org/problem?id=2155
+http://poj.org/problem?id=2886
+*/
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
