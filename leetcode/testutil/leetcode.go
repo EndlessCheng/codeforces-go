@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
 	"testing"
@@ -390,6 +391,8 @@ func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutpu
 }
 
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
+	const needPrint = runtime.GOOS == "darwin"
+
 	ig := reflect.ValueOf(inputGenerator)
 	if ig.Kind() != reflect.Func {
 		t.Fatal("input generator must be a function")
@@ -422,11 +425,20 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 			insStr = append(insStr, s...)
 		}
 		for i, eOut := range expectedOut {
-			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, insStr)
+			if !assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, insStr) && needPrint {
+				fmt.Printf("[CASE %d]\n", tc)
+				fmt.Println("[AC]", eOut.Interface())
+				fmt.Println("[WA]", actualOut[i].Interface())
+				fmt.Printf("[INPUT]\n%s\n\n", insStr)
+			}
 		}
 
 		if tc%1e5 == 0 {
-			t.Logf("%d cases passed.", tc)
+			s := fmt.Sprintf("%d cases passed.", tc)
+			t.Log(s)
+			if needPrint {
+				fmt.Println(s)
+			}
 		}
 	}
 }
