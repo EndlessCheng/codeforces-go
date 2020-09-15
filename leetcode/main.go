@@ -320,6 +320,18 @@ func combinationSum3(k int, n int) (ans [][]int) {
     return
 }
 
+// LC 226
+func invertTree(root *TreeNode) *TreeNode {
+    if root == nil {
+        return nil
+    }
+    left := invertTree(root.Left)
+    right := invertTree(root.Right)
+    root.Left = right
+    root.Right = left
+    return root
+}
+
 // LC 332
 func findItinerary(tickets [][]string) []string {
     g := map[string][]string{}
