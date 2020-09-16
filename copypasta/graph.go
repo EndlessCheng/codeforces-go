@@ -389,9 +389,6 @@ func (*graph) eulerianPath(n, m int) []int {
 	var st int
 	oddDegCnt := 0
 	for i := len(g) - 1; i >= 0; i-- { // 倒着遍历保证起点的字典序最小
-		//if len(g[i]) == 0 {
-		//	continue
-		//}
 		if deg := len(g[i]); deg > 0 {
 			if deg&1 == 1 {
 				st = i
@@ -425,7 +422,6 @@ func (*graph) eulerianPath(n, m int) []int {
 		}
 		f(st)
 	}
-
 	{
 		// 有向图
 		var f func(int)
@@ -441,7 +437,7 @@ func (*graph) eulerianPath(n, m int) []int {
 		f(st)
 	}
 
-	// 倒序输出 path
+	// 倒序变正序
 	for i, j := 0, len(path)-1; i < j; i++ {
 		path[i], path[j] = path[j], path[i]
 		j--
