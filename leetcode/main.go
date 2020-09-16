@@ -176,6 +176,34 @@ func firstMissingPositive(a []int) int {
     return n + 1
 }
 
+// LC 47
+// 给定一个可包含重复数字的序列，返回所有不重复的全排列
+func permuteUnique(nums []int) (ans [][]int) {
+    n := len(nums)
+    sort.Ints(nums)
+    perm := []int{}
+    vis := make([]bool, n)
+    var f func(int)
+    f = func(p int) {
+        if p == n {
+            ans = append(ans, append([]int(nil), perm...))
+            return
+        }
+        for i, v := range nums {
+            if vis[i] || i > 0 && !vis[i-1] && v == nums[i-1] {
+                continue
+            }
+            perm = append(perm, v)
+            vis[i] = true
+            f(p + 1)
+            vis[i] = false
+            perm = perm[:len(perm)-1]
+        }
+    }
+    f(0)
+    return
+}
+
 // LC 79
 func exist(board [][]byte, word string) bool {
     type pair struct{ x, y int }
