@@ -177,8 +177,10 @@ func sortCollections() {
 	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
 	//       https://codeforces.com/gym/101649 K
+	// 连续子段的算数平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A https://codeforces.com/problemset/problem/1003/C
 	search01 := func(ps [][2]int, k int) float64 {
-		// 必须选 k 对，最大化 ∑ai/∑bi
+		// 必须/至少选 k 对，最大化 ∑ai/∑bi
+		// 如果是算术平均值的话，bi=1
 		n := len(ps)
 		const eps = 1e-8
 		l, r := 0.0, 1e5 // r=max{ai}/min{bi}
