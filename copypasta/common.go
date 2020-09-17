@@ -992,6 +992,9 @@ func monotoneCollection() {
 	// 如何理解：把数组想象成一列山峰，站在 a[i] 的山顶仰望两侧的山峰，是看不到高山背后的矮山的，只能看到一座座更高的山峰
 	//          这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
 	// 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
+	// 一些转换：
+	//     若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > posL[r]
+	//     若区间 [l,r] 的最大值等于 a[l]，则 r 必须 < posR[l]
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
 	//       https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
