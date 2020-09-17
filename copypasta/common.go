@@ -995,6 +995,7 @@ func monotoneCollection() {
 	// 一些转换：
 	//     若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > posL[r]
 	//     若区间 [l,r] 的最大值等于 a[l]，则 r 必须 < posR[l]
+	//     这一结论可以用于思考一些双变量的题目
 	// https://oi-wiki.org/ds/monotonous-stack/
 	// 模板题 https://www.luogu.com.cn/problem/P5788
 	//       https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
@@ -1006,6 +1007,7 @@ func monotoneCollection() {
 	//     https://codeforces.com/problemset/problem/1313/C2
 	//     https://codeforces.com/problemset/problem/1407/D
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
+	// 已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
 	monotoneStack := func(a []int) ([]int, []int) {
 		const border int = 2e9 // 求两侧小的话用 -1
 		type pair struct{ v, i int }
