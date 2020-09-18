@@ -12,6 +12,8 @@ import (
 
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 
+todo 期望与贡献 https://codeforces.com/blog/entry/62690 https://codeforces.com/blog/entry/62792
+
 NOTE: a%-b == a%b
 
 AP: Sn = n*(2*a1+(n-1)*d)/2
@@ -32,6 +34,8 @@ https://oeis.org/A271638 a(n) = (13*n-36)*2^(n-1)+6*n+18 = 	The total sum of the
 https://en.wikipedia.org/wiki/Faulhaber%27s_formula
 https://oeis.org/A000330 平方和 = n*(n+1)*(2*n+1)/6
 https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
+
+https://oeis.org/A061168 Σfloor(log2(i)) = Σ(bits.Len(i)-1)
 
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 	Number of permutations of {1,2,...,n} with exactly one descent
