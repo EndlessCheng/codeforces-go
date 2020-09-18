@@ -257,6 +257,17 @@ func commonCollection() {
 		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
 	}
 
+	// 利用每个数产生的贡献计算 Σ|ai-aj|, i!=j
+	// 相关题目 https://codeforces.com/contest/1311/problem/F
+	contributionSum := func(a []int) (sum int64) {
+		n := len(a)
+		sort.Ints(a)
+		for i, v := range a {
+			sum += int64(v) * int64(2*i+1-n)
+		}
+		return
+	}
+
 	reverse := func(a []byte) []byte {
 		n := len(a)
 		b := make([]byte, n)
@@ -744,7 +755,7 @@ func commonCollection() {
 		min, mins, max, maxs, abs, absAll,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString,
-		pow, mul, toAnyBase, digits, initSum2D, querySum2D, mergeMap,
+		pow, mul, toAnyBase, digits, initSum2D, querySum2D, contributionSum, mergeMap,
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
