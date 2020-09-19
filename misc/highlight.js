@@ -19,8 +19,12 @@
         return s.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
 
-    String.prototype.replaceAll = function (oldStr, newStr) {
-        return this.replace(new RegExp(escapeRegExp(oldStr), "g"), newStr);
+    String.prototype.replaceAll = function (oldSubstr, newSubstr) {
+        return this.replace(new RegExp(escapeRegExp(oldSubstr), "g"), newSubstr);
+    };
+
+    String.prototype.highlight = function (substr, color) {
+        return this.replaceAll(substr, "<span style='color: " + color + "'>" + substr + "</span>");
     };
 
     // 关键词高亮，参考 IntelliJ Light
@@ -69,8 +73,12 @@
             let text = pNodes[i].innerHTML;
 
             for (let j = 0; j < words.length; j++) {
-                text = text.replaceAll(words[j], "<span style='color: " + color + "'>" + words[j] + "</span>");
+                text = text.highlight(words[j], color);
             }
+
+            // 额外高亮
+            const colorGreen = "#ff0000";
+            text = text.highlight("取模", colorGreen).highlight("取余", colorGreen);
 
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
