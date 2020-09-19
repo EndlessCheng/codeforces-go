@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io/ioutil"
+	"strings"
 	"testing"
 )
 
@@ -17,7 +19,11 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 // https://codeforces.com/gym/102253/problem/C
 // https://codeforces.com/gym/102253/status/C
 func TestGenCodeforcesProblemTemplates(t *testing.T) {
-	const problemURL = "https://codeforces.com/problemset/problem//E"
+	raw, err := ioutil.ReadFile("data.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	problemURL := strings.TrimSpace(string(raw))
 	if err := GenCodeforcesProblemTemplates(problemURL, true); err != nil {
 		t.Fatal(err)
 	}
