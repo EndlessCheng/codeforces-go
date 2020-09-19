@@ -100,9 +100,38 @@ func (o *TreeNode) CountNodes() int {
 	return cnto
 }
 
+// 加权图见下面的 ToWeightedGraph
 func (o *TreeNode) ToGraph() {
+	n := o.CountNodes()
+	g := make([][]int, n)
+	cnt := 0
+	var build func(o *TreeNode)
+	build = func(o *TreeNode) {
+		v := cnt
+		if o.Left == nil && o.Right == nil {
+			// do leaf ...
+
+		}
+		if o.Left != nil {
+			cnt++
+			g[v] = append(g[v], cnt)
+			g[cnt] = append(g[cnt], v)
+			build(o.Left)
+		}
+		if o.Right != nil {
+			cnt++
+			g[v] = append(g[v], cnt)
+			g[cnt] = append(g[cnt], v)
+			build(o.Right)
+		}
+	}
+	build(o)
+}
+
+func (o *TreeNode) ToWeightedGraph() {
 	type edge struct{ to, weight int }
-	g := make([][]edge, 1<<20) // CountNodes
+	n := o.CountNodes()
+	g := make([][]edge, n)
 	cnt := 0
 	var build func(o *TreeNode)
 	build = func(o *TreeNode) {
