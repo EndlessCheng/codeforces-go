@@ -92,7 +92,7 @@ func fenwickTree(n int) {
 	}
 }
 
-// NOTE: 也可以写成 struct 的形式
+// 也可以写成后面的 struct 形式
 func multiFenwickTree(m, n int) {
 	trees := make([][]int, m)
 	for i := range trees {
@@ -112,4 +112,26 @@ func multiFenwickTree(m, n int) {
 	query := func(tree []int, l, r int) int { return sum(tree, r) - sum(tree, l-1) }
 
 	_ = []interface{}{add, sum, query}
+}
+
+type fenwick struct {
+	tree []int // int64
+}
+
+func newFenwickTree(n int) fenwick {
+	return fenwick{make([]int, n+1)}
+}
+func (f fenwick) add(i int, val int) {
+	for ; i < len(f.tree); i += i & -i {
+		f.tree[i] += val
+	}
+}
+func (f fenwick) sum(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f.tree[i]
+	}
+	return
+}
+func (f fenwick) query(l, r int) (res int) { // [l,r]
+	return f.sum(r) - f.sum(l-1)
 }
