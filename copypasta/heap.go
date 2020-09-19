@@ -74,22 +74,20 @@ func heapCollections() {
 	// 求前缀/后缀的最小的 k 个元素和（k 固定）
 	// https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
 
-	// 对顶堆求动态中位数（一个数组前 2k+1 项的中位数）
+	// 对顶堆求动态中位数：medians[i] = a[:i+1] 的中位数
 	// https://www.luogu.com.cn/problem/P1168
 	// LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/
 	dynamicMedians := func(a []int) []int {
 		n := len(a)
-		medians := make([]int, 0, (n+1)/2)
-		small, big := hp{}, hp{}
-		for i, v := range a {
+		medians := make([]int, 0, n)
+		var small, big hp
+		for _, v := range a {
 			if len(small.IntSlice) == len(big.IntSlice) {
 				big.push(-small.pushPop(-v))
 			} else {
 				small.push(-big.pushPop(v))
 			}
-			if i&1 == 0 {
-				medians = append(medians, big.IntSlice[0])
-			}
+			medians = append(medians, big.IntSlice[0])
 		}
 		return medians
 	}
