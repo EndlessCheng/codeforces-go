@@ -2,18 +2,16 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"math/rand"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
 func TestCompare(t *testing.T) {
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() (a []int) {
-		n := 5
-		a = make([]int, n)
-		for i := range a {
-			a[i] = rand.Intn(10) + 1
-		}
+		rg := testutil2.NewRandGenerator()
+		n := rg.Int(1, 9)
+		a = rg.IntSlice(n, 1, 9)
 		return
 	}
 
@@ -22,10 +20,13 @@ func TestCompare(t *testing.T) {
 		return
 	}
 
-	run := func(a []int) (ans int) {
+	// test runAC before run CompareInf
+	examples := [][]string{
 
-		return
 	}
-
-	testutil.CompareInf(t, inputGenerator, runAC, run)
+	if err := testutil.RunLeetCodeFuncWithExamples(t, runAC, examples, 0); err != nil {
+		t.Fatal(err)
+	}
+	return
+	testutil.CompareInf(t, inputGenerator, runAC, nil /* fill the func to compare */)
 }
