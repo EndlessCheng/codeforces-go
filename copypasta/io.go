@@ -159,7 +159,30 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		return s
 	}
 
-	_ = []interface{}{r, r1, rs, rsn}
+	// 如果只有/还剩下一个长度未知的字符串
+	readStringUntilEOF := func() (s []byte) {
+		// 若之前 Read 过……
+		for _i < len(buf) && buf[_i] < 'a' {
+			_i++
+		}
+		s = append(s, buf[_i:]...)
+
+		// 核心是这一段
+		for {
+			n, _ := _r.Read(buf)
+			if n == 0 {
+				break
+			}
+			s = append(s, buf[:n]...)
+		}
+
+		// 注意末尾有 \r \n 的情况
+		for ; s[len(s)-1] < 'a'; s = s[:len(s)-1] {
+		}
+		return
+	}
+
+	_ = []interface{}{r, r1, rs, rsn, readStringUntilEOF}
 }
 
 func lineIO(_r io.Reader, _w io.Writer) {
