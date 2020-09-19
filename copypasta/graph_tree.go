@@ -120,6 +120,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 // 每个节点的入出时间戳
 // 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点
 // 例题 https://codeforces.com/contest/1328/problem/E
+// 与深度时间戳结合，二分求某个子树在某个深度的节点范围 https://codeforces.com/problemset/problem/570/D
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
