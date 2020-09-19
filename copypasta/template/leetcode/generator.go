@@ -237,7 +237,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	defer func() {
 		// visit htmlNode may cause panic
 		if er := recover(); er != nil {
-			err = fmt.Errorf("%v", er)
+			err = fmt.Errorf("need fix: %v", er)
 		}
 	}()
 
@@ -308,7 +308,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				break
 			}
 			s := strings.TrimSpace(o.NextSibling.FirstChild.Data)
-			if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") {
+			if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
 				break
 			}
 			data += s
@@ -318,7 +318,9 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 解析每个 <pre> 块内的文本（以中文为基准解析	）
-		if o.DataAtom == atom.Pre && strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") {
+		// 还需要判断 <pre> 内部第一个 tag 是不是 <strong> https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
+		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom == atom.Strong &&
+			strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
 			next, input := parseData(o.FirstChild)
 			p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
 			_, output := parseData(next)
@@ -338,7 +340,12 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				sp := strings.Split(raw, "`")
 				for i, s := range sp {
 					if strings.Contains(s, ">输入") {
-						p.sampleIns = append(p.sampleIns, p.parseSampleText(sp[i+1], true))
+						text := sp[i+1]
+						if !p.isFuncProblem {
+							// https://leetcode-cn.com/contest/season/2020-fall/problems/IQvJ9i/
+							text += "\n" + sp[i+3] // 跳过 sp[i+2]
+						}
+						p.sampleIns = append(p.sampleIns, p.parseSampleText(text, true))
 					} else if strings.Contains(s, ">输出") {
 						p.sampleOuts = append(p.sampleOuts, p.parseSampleText(sp[i+1], true))
 					}
