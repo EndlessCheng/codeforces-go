@@ -77,6 +77,7 @@ func heapCollections() {
 	// 对顶堆求动态中位数：medians[i] = a[:i+1] 的中位数
 	// https://www.luogu.com.cn/problem/P1168
 	// LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/
+	// 与树状数组结合 https://leetcode-cn.com/contest/season/2020-fall/problems/5TxKeK/
 	dynamicMedians := func(a []int) []int {
 		n := len(a)
 		medians := make([]int, 0, n)
