@@ -144,7 +144,6 @@ func commonCollection() {
 		}
 		return r2
 	}
-	xor := func(b1, b2 bool) bool { return b1 && !b2 || !b1 && b2 }
 	zip := func(a, b []int) {
 		n := len(a)
 		type pair struct{ x, y int }

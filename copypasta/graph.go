@@ -1000,8 +1000,8 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 					return nil
 				} // found negative cycle
 				if !inQ[w] {
-					q = append(q, w)
 					inQ[w] = true
+					q = append(q, w)
 				}
 			}
 		}
