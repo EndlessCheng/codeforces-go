@@ -758,6 +758,7 @@ func numberTheoryCollection() {
 	// 		LPF 前缀和 https://oeis.org/A046669 前缀积 https://oeis.org/A072486
 	//		n+LPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
 	// 		n-LPF(n) https://oeis.org/A046666
+	// 			迭代至 0 的次数 https://oeis.org/A175126 相关题目 https://codeforces.com/contest/1076/problem/B
 	//		n*LPF(n) https://oeis.org/A285109
 	// 		n/LPF(n) https://oeis.org/A032742 即 n 的最大因子 = Max{gcd(n,j); j=n+1..2n-1}
 	//
@@ -769,6 +770,7 @@ func numberTheoryCollection() {
 	// 		GPF 前缀和 https://oeis.org/A046670 前缀积 https://oeis.org/A104350
 	//		n+GPF(n) https://oeis.org/A070229 the next m>n such that GPF(n)|m
 	// 		n-GPF(n) https://oeis.org/A076563
+	// 			迭代至 0 的次数 https://oeis.org/A309892
 	// 		n*GPF(n) https://oeis.org/A253560
 	// 		n/GPF(n) https://oeis.org/A052126
 	//      a(1)=1, a(n+1)=a(n)+GPF(a(n)) https://oeis.org/A076271
