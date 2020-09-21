@@ -125,6 +125,7 @@ func newSegmentTree(a []int64) seg {
 
 // 单个更新操作：
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A https://codeforces.com/problemset/problem/1321/E
+// + min/max 转换 https://codeforces.com/gym/294041/problem/E
 // + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E

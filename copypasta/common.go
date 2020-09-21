@@ -471,12 +471,12 @@ func commonCollection() {
 			ps[i] = pair{v, i}
 		}
 		sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v }) // or SliceStable
-		kth = make([]int, n)
+		kth = make([]int, len(a))
 
 		// a 有重复元素
 		k := startIndex
 		kth[ps[0].i] = k
-		for i := 1; i < n; i++ {
+		for i := 1; i < len(ps); i++ {
 			if ps[i].v != ps[i-1].v {
 				k++
 			}
