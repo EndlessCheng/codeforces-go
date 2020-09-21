@@ -38,7 +38,7 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
 
-[Codeforces Visualizer](https://cfviz.netlify.com/virtual-rating-change.html)
+[Codeforces Visualizer](https://cfviz.netlify.app/)
 
 ## Tips
 
