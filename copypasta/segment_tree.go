@@ -28,6 +28,7 @@ package copypasta
 // 根号线段树思想 https://codeforces.com/problemset/problem/920/F
 // GCD 好题 https://codeforces.com/problemset/problem/914/D
 // todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
+// 转换的好题 https://codeforces.com/contest/1187/problem/D
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的动态 DP 部分
