@@ -15,11 +15,12 @@ func maxProductPath(g [][]int) (ans int) {
 		}
 		return b
 	}
-	doMax := func(v [2]int, w int) int { return max(v[0]*w, v[1]*w) }
-	doMin := func(v [2]int, w int) int { return min(v[0]*w, v[1]*w) }
+	do := func(v [2]int, w int) [2]int {
+		return [2]int{min(v[0]*w, v[1]*w), max(v[0]*w, v[1]*w)}
+	}
 
 	n, m := len(g), len(g[0])
-	dp := make([][][2]int, n) // max, min
+	dp := make([][][2]int, n) // min, max
 	for i := range dp {
 		dp[i] = make([][2]int, m)
 	}
@@ -31,16 +32,16 @@ func maxProductPath(g [][]int) (ans int) {
 	}
 	for i := 1; i < n; i++ {
 		for j, v := range g[i] {
-			dp[i][j][0] = doMax(dp[i-1][j], v)
-			dp[i][j][1] = doMin(dp[i-1][j], v)
+			dp[i][j] = do(dp[i-1][j], v)
 			if j > 0 {
-				dp[i][j][0] = max(dp[i][j][0], doMax(dp[i][j-1], v))
-				dp[i][j][1] = min(dp[i][j][1], doMin(dp[i][j-1], v))
+				p := do(dp[i][j-1], v)
+				dp[i][j][0] = min(dp[i][j][0], p[0])
+				dp[i][j][1] = max(dp[i][j][1], p[1])
 			}
 		}
 	}
 
-	ans = dp[n-1][m-1][0]
+	ans = dp[n-1][m-1][1]
 	if ans < 0 {
 		return -1
 	}
