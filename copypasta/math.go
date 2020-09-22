@@ -293,6 +293,7 @@ func numberTheoryCollection() {
 	质数前缀和 http://oeis.org/A007504
 	a(n)^2 - a(n-1)^2 = A034960(n)
 	EXTRA: divide odd numbers into groups with prime(n) elements and add together http://oeis.org/A034960
+		仍然是质数的前缀和 http://oeis.org/A013918 对应的前缀和下标 http://oeis.org/A013916
 
 	质数前缀积 prime(n)# https://oeis.org/A002110
 	the least number with n distinct prime factors
