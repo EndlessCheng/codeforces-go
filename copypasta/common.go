@@ -753,7 +753,7 @@ func commonCollection() {
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
 		min, mins, max, maxs, abs, absAll,
 		isDigit, isLower, isUpper, isAlpha,
-		ternaryI, ternaryS, toInts, xor, zip, zipI, getCol, minString,
+		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits, initSum2D, querySum2D, contributionSum, mergeMap,
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
@@ -778,14 +778,16 @@ func rmqCollection() {
 		return b
 	}
 
-	// Sparse Table
+	// 稀疏表 Sparse Table
 	// st[i][j] 对应的区间是 [i, i+1<<j)
 	// https://oi-wiki.org/ds/sparse-table/
 	// https://codeforces.com/blog/entry/66643
-	// 模板中的核心函数 max 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
+	// 模板中的核心函数 core 可以换成其他具有区间合并性质的函数（允许区间重叠），如 gcd 等
 	// 模板题 https://www.luogu.com.cn/problem/P3865
+	// 变长/种类 https://www.jisuanke.com/contest/11346/challenges
 	// 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
-	const mx = 17 // 131072, 262144, 524288, 1048576
+	const mx = 17 // 17: n<131072, 18: n<262144, 19: n<524288, 20: n<1048576     mx = bits.Len(uint(n))
+	core := max
 	var st [][mx]int
 	stInit := func(a []int) {
 		n := len(a)
@@ -795,12 +797,12 @@ func rmqCollection() {
 		}
 		for j := 1; 1<<j <= n; j++ {
 			for i := 0; i+1<<j <= n; i++ {
-				st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
+				st[i][j] = core(st[i][j-1], st[i+1<<(j-1)][j-1])
 			}
 		}
 	}
 	// [l,r) 注意 l r 是从 0 开始算的
-	stQuery := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return max(st[l][k], st[r-1<<k][k]) }
+	stQuery := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return core(st[l][k], st[r-1<<k][k]) }
 
 	// Sparse Table 下标版本，查询返回的是区间最值的下标
 	{
