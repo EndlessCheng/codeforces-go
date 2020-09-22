@@ -27,30 +27,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=constructive+a
 // namespace
 type tree struct{}
 
-// 基本信息：节点深度和子树大小
-// 性质：
-//    深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
-// 离线好题 https://codeforces.com/problemset/problem/570/D
-// 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
-func (*tree) depthSize(n, root int, g [][]int) {
-	dep := make([]int, n)
-	size := make([]int, n)
-	var f func(v, fa, d int) int
-	f = func(v, fa, d int) int {
-		dep[v] = d
-		sz := 1
-		for _, w := range g[v] {
-			if w != fa {
-				sz += f(w, v, d+1)
-			}
-		}
-		size[v] = sz
-		return sz
-	}
-	f(root, -1, 0)
-}
-
-// 树上两点路径
+// DFS: 树上两点路径
 func (*tree) path(st, end int, g [][]int) (path []int) {
 	var f func(v, fa int) bool
 	f = func(v, fa int) bool {
@@ -71,6 +48,36 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 	// 反向寻找
 	f(end, -1)
 	return
+}
+
+// 两个基本信息：节点深度和子树大小
+// 节点深度：
+// - 深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
+// - 与 DFS 序结合，可以表达子树在某个深度上的一段信息（见 tree.inOutTimestamp）
+// - 直径 中心（见 tree.diameter）
+// 子树大小：
+// - 与 DFS 序结合，把子树转化成区间（见 tree.subtreeSize）
+// - 重心 点分治（见 tree.findCentroid 等）
+// - 重链剖分（见 tree.heavyLightDecomposition）
+//
+// 离线好题 https://codeforces.com/problemset/problem/570/D
+// 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
+func (*tree) depthSize(n, root int, g [][]int) {
+	dep := make([]int, n)
+	size := make([]int, n)
+	var f func(v, fa, d int) int
+	f = func(v, fa, d int) int {
+		dep[v] = d
+		sz := 1
+		for _, w := range g[v] {
+			if w != fa {
+				sz += f(w, v, d+1)
+			}
+		}
+		size[v] = sz
+		return sz
+	}
+	f(root, -1, 0)
 }
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
@@ -120,7 +127,6 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 // 每个节点的入出时间戳
 // 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点
 // 例题 https://codeforces.com/contest/1328/problem/E
-// 与深度时间戳结合，二分求某个子树在某个深度的节点范围 https://codeforces.com/problemset/problem/570/D
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
@@ -139,6 +145,35 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	}
 	f(root, -1)
 	isFa := func(fa, v int) bool { return timeIn[fa] <= timeIn[v] && timeOut[v] <= timeOut[fa] }
+
+	{
+		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
+		// https://codeforces.com/problemset/problem/570/D
+		// https://codeforces.com/problemset/problem/1076/E
+		tin := make([]int, n)
+		tout := make([]int, n)
+		depT := make([][]int, n+1)
+		t := 0
+		var f func(v, d int)
+		f = func(v, d int) {
+			t++
+			tin[v] = t
+			depT[d] = append(depT[d], t)
+			for _, w := range g[v] {
+				f(w, d+1)
+			}
+			tout[v] = t
+		}
+		f(0, 0)
+
+		// 深度 d 上的这一排节点与子树 v 求交集，返回对应的深度 d 的节点区间 [l,r)
+		query := func(v, d int) (int, int) {
+			l := sort.SearchInts(depT[d], tin[v])
+			r := sort.SearchInts(depT[d], tout[v]+1)
+			return l, r
+		}
+		_ = query
+	}
 
 	_ = isFa
 }
