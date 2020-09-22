@@ -388,3 +388,44 @@ func findItinerary(tickets [][]string) []string {
     }
     return path
 }
+
+// LC 538 1038
+// 反序中序遍历
+func convertBST(root *TreeNode) *TreeNode {
+    sum := 0
+    var f func(*TreeNode)
+    f = func(o *TreeNode) {
+        if o != nil {
+            f(o.Right)
+            sum += o.Val
+            o.Val = sum
+            f(o.Left)
+        }
+    }
+    f(root)
+    return root
+}
+
+// LC 968
+func minCameraCover(root *TreeNode) int {
+    min := func(a, b int) int {
+        if a < b {
+            return a
+        }
+        return b
+    }
+    var f func(*TreeNode) (a, b, c int)
+    f = func(o *TreeNode) (a, b, c int) {
+        if o == nil {
+            return 1e9, 0, 0
+        }
+        la, lb, lc := f(o.Left)
+        ra, rb, rc := f(o.Right)
+        a = lc + rc + 1
+        b = min(a, min(la+rb, ra+lb))
+        c = min(a, lb+rb)
+        return
+    }
+    _, ans, _ := f(root)
+    return ans
+}
