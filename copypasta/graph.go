@@ -1260,6 +1260,7 @@ func (*graph) secondMST(n, m int) (sum int64) {
 // 最小生成树计数 Kirchhoff's theorem
 
 // 最小树形图 - 朱刘算法
+// todo 模板题 https://www.luogu.com.cn/problem/P4716
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
@@ -1799,17 +1800,15 @@ o:
 // todo https://www.luogu.com.cn/blog/85514/post-2-sat-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/16205
 // 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
-// 一般 ¬x 用 x+n 表示
-// NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
-// NOTE: 一些建边的转换：
-//       A,B 至少存在一个 (A|B)    ¬A⇒B, ¬B⇒A
-//       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A
+// NOTE: 一些建边的转换：（¬x 用 x+n 表示）
+//       A,B 至少存在一个 (A|B)    ¬A⇒B, ¬B⇒A 意思是一个为假的时候，另一个一定为真 https://www.luogu.com.cn/problem/P4782
+//       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A 就是上面的式子替换了一下
 //       A,B 必须且只一个 (A^B)    A⇒¬B, B⇒¬A, ¬A⇒B, ¬B⇒A
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
 //       A 必须存在       (A)     ¬A⇒A
 //       A 不能存在       (¬A)     A⇒¬A
+// NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
-// 读入 m 条数据，每条数据表示 (x为a)∨(y为b)，a b 为 0 或 1
 // todo 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_h
 func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	g := make([][]int, 2*n)
@@ -1826,7 +1825,8 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	_, sccIDs := G.sccKosaraju(in, 2*n, m, g) // *两倍空间*
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
-		if id == sccIDs[i+n] { // x ⇔ ¬x
+		// x 和 ¬x 处于同一个 SCC 时无解，即 x ⇔ ¬x
+		if id == sccIDs[i+n] {
 			return nil
 		}
 		// sccIDs[x] > sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
