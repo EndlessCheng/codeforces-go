@@ -152,19 +152,21 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		// https://codeforces.com/problemset/problem/1076/E
 		tin := make([]int, n)
 		tout := make([]int, n)
-		depT := make([][]int, n+1)
+		depT := make([][]int, n)
 		t := 0
-		var f func(v, d int)
-		f = func(v, d int) {
+		var f func(v, fa, d int)
+		f = func(v, fa, d int) {
 			t++
 			tin[v] = t
 			depT[d] = append(depT[d], t)
 			for _, w := range g[v] {
-				f(w, d+1)
+				if w != fa {
+					f(w, v, d+1)
+				}
 			}
 			tout[v] = t
 		}
-		f(0, 0)
+		f(root, -1, 0)
 
 		// 深度 d 上的这一排节点与子树 v 求交集，返回对应的深度 d 的节点区间 [l,r)
 		query := func(v, d int) (int, int) {
