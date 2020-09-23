@@ -1331,6 +1331,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 }
 
 // 二分图判定
+// https://en.wikipedia.org/wiki/Bipartite_graph
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
 func (*graph) isBipartite(n int, g [][]int) bool {
@@ -1387,8 +1388,9 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-/* 匹配 独立集 覆盖（边覆盖 顶点覆盖） 支配集
+/* 匹配 带权匹配 独立集 边覆盖 顶点覆盖 支配集
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
+https://en.wikipedia.org/wiki/Maximum_weight_matching
 https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
 https://en.wikipedia.org/wiki/Edge_cover
 https://en.wikipedia.org/wiki/Vertex_cover
@@ -1413,12 +1415,12 @@ todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
 // 注：使用 Dinic 可以达到 O(m√n) 的复杂度
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
-// https://www.geeksforgeeks.org/maximum-bipartite-matching/
-// https://oi-wiki.org/graph/bi-graph/#_9
+// https://oi-wiki.org/topic/graph-matching/bigraph-match/
 // https://zhuanlan.zhihu.com/p/62981901
+// https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3386
-func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
+func (*graph) maxBipartiteMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 	match = make([]int, n)
 	for i := range match {
 		match[i] = -1
@@ -1448,7 +1450,7 @@ func (*graph) maxMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
 }
 
 // 匈牙利算法的另一种写法，适用左右两侧节点有明确区分的情况，要求 g 中存储的是左侧到右侧的单向边
-func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
+func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
 	matchL = make([]int, nl)
 	matchR := make([]int, nr)
 	for i := range matchL {
@@ -1480,39 +1482,105 @@ func (*graph) maxMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt i
 }
 
 // 二分图最大匹配 -  Hopcroft–Karp 算法 O(m√n)
-// 算法第四版 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/HopcroftKarp.java.html
-// http://pepcy.cf/icpc-templates/003Graph/hk.html
 // https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
-func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
-	// TODO
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/HopcroftKarp.java.html
+// todo http://pepcy.cf/icpc-templates/003Graph/hk.html
+func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
 	return
 }
 
-// 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)   KM
+// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - Kuhn–Munkres 算法 O(n^3)   KM
+// 左右各有 n 个点
+// https://en.wikipedia.org/wiki/Assignment_problem
+// https://en.wikipedia.org/wiki/Hungarian_algorithm
 // https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
-// https://zhuanlan.zhihu.com/p/62981901
-// https://www.luogu.com.cn/problem/solution/P6577
+// 直观理解 KM 算法 https://www.cnblogs.com/wenruo/p/5264235.html
+// https://resources.mpi-inf.mpg.de/departments/d1/teaching/ss12/AdvancedGraphAlgorithms/Slides06.pdf
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
-// 模板题 https://www.luogu.com.cn/problem/P3967 https://www.luogu.com.cn/problem/P6577
-func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
-	// TODO
-	return
-}
-
+// 模板题 https://www.luogu.com.cn/problem/P6577
+// https://www.luogu.com.cn/problem/P3967
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
 // https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match []int, sum int64) {
+	const inf int = 1e9
+	// 右部点匹配了哪一个左部点
+	match = make([]int, n)
+	for i := range match {
+		match[i] = -1
+	}
+	la := make([]int, n)
+	for i, row := range wt {
+		la[i] = -inf
+		for _, v := range row {
+			if v > la[i] {
+				la[i] = v
+			}
+		}
+	}
+	lb := make([]int, n)
+	slack := make([]int, n)
+	for i := 0; i < n; i++ {
+		for {
+			va := make([]bool, n)
+			vb := make([]bool, n)
+			for j := range slack {
+				slack[j] = inf
+			}
+			var f func(int) bool
+			f = func(v int) bool {
+				va[v] = true
+				for w, b := range vb {
+					if !b {
+						if d := la[v] + lb[w] - wt[v][w]; d == 0 {
+							vb[w] = true
+							if match[w] == -1 || f(match[w]) {
+								match[w] = v
+								return true
+							}
+						} else if d < slack[w] {
+							slack[w] = d
+						}
+					}
+				}
+				return false
+			}
+			if f(i) {
+				break
+			}
+			d := inf
+			for j, b := range vb {
+				if !b && slack[j] < d {
+					d = slack[j]
+				}
+			}
+			for j := 0; j < n; j++ {
+				if va[j] {
+					la[j] -= d
+				}
+				if vb[j] {
+					lb[j] += d
+				}
+			}
+		}
+	}
+	for w, v := range match {
+		sum += int64(wt[v][w])
+	}
+	return
+}
 
-// 一般图（带权）最大匹配（带花树 Edmonds's blossom algorithm）
+// 一般图（带权）最大匹配（带花树 Edmonds's blossom algorithm）    MWM
 // https://en.wikipedia.org/wiki/Maximum_weight_matching
 // https://en.wikipedia.org/wiki/Blossom_algorithm
 // https://oi-wiki.org/topic/graph-matching/general-match/
 // https://oi-wiki.org/topic/graph-matching/general-weight-match/
 // TODO https://www.cnblogs.com/cjyyb/p/8719368.html 带花树算法学习笔记
+// todo http://pepcy.cf/icpc-templates/003Graph/bls.html
 // 模板题 https://www.luogu.com.cn/problem/P6113
 //       https://www.luogu.com.cn/problem/P4258
 
-// EXTRA: 完美匹配 Perfect Match
+// EXTRA: 完美匹配 Perfect Match     MWPM
 // 完美匹配同时也是一个原图的最小边数的边覆盖
 
 // EXTRA: Min Cost Perfect Matching (MCPM)
