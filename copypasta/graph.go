@@ -1489,8 +1489,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 	return
 }
 
-// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - Kuhn–Munkres 算法 O(n^4)   KM
-// 左右各有 n 个点
+// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - KM(Kuhn–Munkres) 算法 O(n^4)  todo BFS 优化后的 O(n^3)
 // https://en.wikipedia.org/wiki/Assignment_problem
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
 // https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
@@ -1499,22 +1498,26 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // 模板题 https://www.luogu.com.cn/problem/P6577
 // https://www.luogu.com.cn/problem/P3967
+// http://acm.hdu.edu.cn/showproblem.php?pid=2426
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
 // https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
 func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match []int, sum int64) {
-	const inf int = 1e9
+	const inf int = 2e9
+	// NOTE: 若需要判断是否不存在完备匹配，wt 应初始化为 -inf，否则初始化为 0
+
 	// 右部点匹配了哪一个左部点
 	match = make([]int, n)
 	for i := range match {
 		match[i] = -1
 	}
+	// 顶标
 	la := make([]int, n)
-	for i, row := range wt {
-		la[i] = -inf
-		for _, v := range row {
-			if v > la[i] {
-				la[i] = v
+	for i, r := range wt {
+		la[i] = r[0]
+		for _, w := range r[1:] {
+			if w > la[i] {
+				la[i] = w
 			}
 		}
 	}
@@ -1565,6 +1568,11 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 		}
 	}
 	for w, v := range match {
+		// 无解，或者不选
+		if v == -1 {
+			//continue
+			return nil, 0
+		}
 		sum += int64(wt[v][w])
 	}
 	return
