@@ -10,6 +10,7 @@ import (
 	https://oi-wiki.org/ds/cartesian-tree/
 	https://en.wikipedia.org/wiki/Cartesian_tree
 	https://www.luogu.com.cn/problem/P5854
+	todo https://www.luogu.com.cn/blog/AAAbbb123/di-ka-er-shu-xue-xi-bi-ji
 https://oi-wiki.org/ds/treap/
 https://en.wikipedia.org/wiki/Treap
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp

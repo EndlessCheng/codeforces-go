@@ -1019,7 +1019,7 @@ func monotoneCollection() {
 	//     https://codeforces.com/problemset/problem/1313/C2
 	//     https://codeforces.com/problemset/problem/1407/D
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
-	// 已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
+	// * 已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
 	monotoneStack := func(a []int) ([]int, []int) {
 		const border int = 2e9 // 求两侧小的话用 -1
 		type pair struct{ v, i int }
