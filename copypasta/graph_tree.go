@@ -150,28 +150,31 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
 		// https://codeforces.com/problemset/problem/570/D
 		// https://codeforces.com/problemset/problem/1076/E
-		tin := make([]int, n)
-		tout := make([]int, n)
+		type info struct{ tin, tout, dep int }
+		is := make([]info, n)
 		depT := make([][]int, n)
 		t := 0
 		var f func(v, fa, d int)
 		f = func(v, fa, d int) {
 			t++
-			tin[v] = t
+			is[v].tin = t
+			is[v].dep = d
 			depT[d] = append(depT[d], t)
 			for _, w := range g[v] {
 				if w != fa {
 					f(w, v, d+1)
 				}
 			}
-			tout[v] = t
+			is[v].tout = t
 		}
 		f(root, -1, 0)
 
 		// 深度 d 上的这一排节点与子树 v 求交集，返回对应的深度 d 的节点区间 [l,r)
 		query := func(v, d int) (int, int) {
-			l := sort.SearchInts(depT[d], tin[v])
-			r := sort.SearchInts(depT[d], tout[v]+1)
+			info := is[v]
+			//d += info.dep // 如果 d 是从 v 开始算的话还要加上节点在整棵树的深度
+			l := sort.SearchInts(depT[d], info.tin)
+			r := sort.SearchInts(depT[d], info.tout+1)
 			return l, r
 		}
 		_ = query
