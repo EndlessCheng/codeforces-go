@@ -1489,7 +1489,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 	return
 }
 
-// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - Kuhn–Munkres 算法 O(n^3)   KM
+// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - Kuhn–Munkres 算法 O(n^4)   KM
 // 左右各有 n 个点
 // https://en.wikipedia.org/wiki/Assignment_problem
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
