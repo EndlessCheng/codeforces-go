@@ -869,9 +869,6 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 // todo 树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
 
-// TODO: Morris Traversal
-// https://www.cnblogs.com/anniekim/archive/2013/06/15/morristraversal.html
-
 // TODO: link-cut tree (LCT)
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // https://oi-wiki.org/ds/lct/
