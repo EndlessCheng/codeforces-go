@@ -1489,17 +1489,25 @@ func (*graph) maxMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
 }
 
 // 带权二分图最大匹配 - Kuhn–Munkres 算法 O(n^3)   KM
-// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
+// https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
 // https://zhuanlan.zhihu.com/p/62981901
 // https://www.luogu.com.cn/problem/solution/P6577
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3967 https://www.luogu.com.cn/problem/P6577
 func (*graph) maxMatchingKuhnMunkres(n int, g [][]int) (match []int, cnt int) {
 	// TODO
 	return
 }
 
-// 一般图最大匹配（带花树 Edmonds's blossom algorithm）
+// EXTRA: 带权二分图最小边覆盖
+// 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
+// https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
+
+// 一般图（带权）最大匹配（带花树 Edmonds's blossom algorithm）
+// https://en.wikipedia.org/wiki/Maximum_weight_matching
 // https://en.wikipedia.org/wiki/Blossom_algorithm
+// https://oi-wiki.org/topic/graph-matching/general-match/
+// https://oi-wiki.org/topic/graph-matching/general-weight-match/
 // TODO https://www.cnblogs.com/cjyyb/p/8719368.html 带花树算法学习笔记
 // 模板题 https://www.luogu.com.cn/problem/P6113
 //       https://www.luogu.com.cn/problem/P4258
