@@ -406,6 +406,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 
 	for tc := 1; ; tc++ {
 		inArgs := ig.Call(nil)
+		// todo deep copy slice
 		expectedOut := runAC.Call(inArgs)
 		actualOut := run.Call(inArgs)
 

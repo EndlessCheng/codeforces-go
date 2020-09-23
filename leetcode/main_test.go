@@ -16,6 +16,7 @@ func TestCompare(t *testing.T) {
 	}
 
 	runAC := func(a []int) (ans int) {
+		// 若要修改 a，必须先 copy 一份，在 copied 上修改
 
 		return
 	}
