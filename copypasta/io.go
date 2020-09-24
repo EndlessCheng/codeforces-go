@@ -94,11 +94,13 @@ func fastIO(_r io.Reader, _w io.Writer) {
 func fasterIO(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	buf := make([]byte, 4096)
-	_i := len(buf)
+	_i, _n, buf := 0, 0, make([]byte, 1<<12) // 4KB
 	rc := func() byte {
-		if _i == len(buf) {
-			_r.Read(buf)
+		if _i == _n {
+			_n, _ = _r.Read(buf)
+			if _n == 0 { // EOF
+				return 0
+			}
 			_i = 0
 		}
 		b := buf[_i]
