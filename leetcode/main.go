@@ -300,6 +300,25 @@ func recoverTree(root *TreeNode) {
     do[0].Val, do[1].Val = do[1].Val, do[0].Val
 }
 
+// LC 106
+// 从中序与后序遍历序列构造二叉树
+func buildTree(inorder []int, postorder []int) *TreeNode {
+    if len(inorder) == 0 {
+        return nil
+    }
+    rootVal := postorder[len(postorder)-1]
+    for i, v := range inorder {
+        if v == rootVal {
+            return &TreeNode{
+                rootVal,
+                buildTree(inorder[:i], postorder[:i]),
+                buildTree(inorder[i+1:], postorder[i:len(postorder)-1]),
+            }
+        }
+    }
+    panic(1)
+}
+
 // LC 124
 func maxPathSum(root *TreeNode) int {
     max := func(a, b int) int {
@@ -320,6 +339,28 @@ func maxPathSum(root *TreeNode) int {
         return o.Val + max(l, r)
     }
     f(root)
+    return ans
+}
+
+// LC 152
+func maxProduct(a []int) int {
+    min := func(a, b int) int {
+        if a < b {
+            return a
+        }
+        return b
+    }
+    max := func(a, b int) int {
+        if a > b {
+            return a
+        }
+        return b
+    }
+    mi, mx, ans := a[0], a[0], a[0]
+    for _, v := range a[1:] {
+        mi, mx = min(v, min(v*mi, v*mx)), max(v, max(v*mi, v*mx))
+        ans = max(ans, mx)
+    }
     return ans
 }
 
