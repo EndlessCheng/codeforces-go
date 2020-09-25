@@ -401,6 +401,20 @@ func invertTree(root *TreeNode) *TreeNode {
     return root
 }
 
+// LC 235
+func lowestCommonAncestor(root, p, q *TreeNode) (ancestor *TreeNode) {
+    ancestor = root
+    for {
+        if p.Val < ancestor.Val && q.Val < ancestor.Val {
+            ancestor = ancestor.Left
+        } else if p.Val > ancestor.Val && q.Val > ancestor.Val {
+            ancestor = ancestor.Right
+        } else {
+            return
+        }
+    }
+}
+
 // LC 332
 func findItinerary(tickets [][]string) []string {
     g := map[string][]string{}
@@ -428,6 +442,37 @@ func findItinerary(tickets [][]string) []string {
         j--
     }
     return path
+}
+
+// LC 501
+func findMode(root *TreeNode) (ans []int) {
+    var base, cnt, maxCnt int
+
+    update := func(x int) {
+        if x == base {
+            cnt++
+        } else {
+            base, cnt = x, 1
+        }
+        if cnt == maxCnt {
+            ans = append(ans, base)
+        } else if cnt > maxCnt {
+            maxCnt = cnt
+            ans = []int{base}
+        }
+    }
+
+    var f func(*TreeNode)
+    f = func(o *TreeNode) {
+        if o == nil {
+            return
+        }
+        f(o.Left)
+        update(o.Val)
+        f(o.Right)
+    }
+    f(root)
+    return
 }
 
 // LC 538 1038
