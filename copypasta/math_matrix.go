@@ -71,6 +71,7 @@ func (a matrix) mul(b matrix) matrix {
 				// 小心爆 int64，必要时用模乘
 				c[i][j] += aik * b[k][j] % mod
 			}
+			c[i][j] %= mod
 		}
 	}
 	return c
