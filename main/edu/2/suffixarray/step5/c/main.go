@@ -70,18 +70,19 @@ func run(_r io.Reader, _w io.Writer) {
 	ps := make([]pair, m)
 	for i := range ps {
 		Fscan(in, &ps[i].l, &ps[i].r)
+		ps[i].l--
 	}
 	sort.Slice(ps, func(i, j int) bool {
 		a, b := ps[i], ps[j]
-		la, lb := a.r-a.l+1, b.r-b.l+1
-		l := lcp(a.l-1, b.l-1)
+		la, lb := a.r-a.l, b.r-b.l
+		l := lcp(a.l, b.l)
 		if l >= la || l >= lb {
 			return la < lb || la == lb && (a.l < b.l || a.l == b.l && a.r < b.r)
 		}
-		return rank[a.l-1] < rank[b.l-1]
+		return rank[a.l] < rank[b.l]
 	})
 	for _, p := range ps {
-		Fprintln(out, p.l, p.r)
+		Fprintln(out, p.l+1, p.r)
 	}
 }
 

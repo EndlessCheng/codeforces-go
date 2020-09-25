@@ -81,6 +81,28 @@ func run(_r io.Reader, out io.Writer) {
 		ans += h * w * (w - 1) / 2
 	}
 	Fprint(out, ans)
+
+	{
+		// 更优雅的写法
+		ans, sum := int64(n)*int64(n+1)/2, int64(0)
+		type pair struct{ w, h int }
+		st := []pair{}
+		for _, h := range height[1:] {
+			w := 1
+			for len(st) > 0 {
+				p := st[len(st)-1]
+				if p.h < h {
+					break
+				}
+				st = st[:len(st)-1]
+				w += p.w
+				sum -= int64(p.w) * int64(p.h) // 去重
+			}
+			st = append(st, pair{w, h})
+			sum += int64(w) * int64(h)
+			ans += sum
+		}
+	}
 }
 
 func main() { run(os.Stdin, os.Stdout) }

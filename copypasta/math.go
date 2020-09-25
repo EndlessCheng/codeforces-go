@@ -1540,6 +1540,8 @@ func combinatoricsCollection() {
 // 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 // 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
+// todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
+// todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 func gameTheoryCollection() {
 	{
 		// CF 1194D 打表

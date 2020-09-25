@@ -24,6 +24,8 @@ http://oeis.org/A038102 子串
 Maximal number of regions obtained by joining n points around a circle by straight lines.
 Also number of regions in 4-space formed by n-1 hyperplanes.
 a(n) = n*(n-1)*(n*n-5*n+18)/24+1 https://oeis.org/A000127
+
+找规律 https://codeforces.com/problemset/problem/1034/B
 */
 func miscCollection() {
 	// 预处理 log 的整数部分

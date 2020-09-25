@@ -22,6 +22,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 
 构造 https://codeforces.com/problemset/problem/41/E
 转换 https://codeforces.com/problemset/problem/788/B
+第k小路径 https://codeforces.com/problemset/problem/1196/F
 
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
@@ -1444,7 +1445,7 @@ func (*graph) maxBipartiteMatchingHungarian(n int, g [][]int) (match []int, cnt 
 		if match[v] == -1 {
 			used = make([]bool, n)
 			if f(v) {
-				cnt++
+				cnt++ // +=2
 			}
 		}
 	}
@@ -1477,7 +1478,7 @@ func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []i
 	for v := range g {
 		used = make([]bool, nl)
 		if f(v) {
-			cnt++
+			cnt++ // +=2
 		}
 	}
 	return
