@@ -213,7 +213,7 @@ func (t *bst) max() (max *bstNode) {
 // 中序遍历以返回有序数组
 func (t *bst) keys() []tKeyType {
 	keys := make([]tKeyType, 0, t.size())
-	var f func(o *bstNode)
+	var f func(*bstNode)
 	f = func(o *bstNode) {
 		if o == nil {
 			return

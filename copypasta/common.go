@@ -276,9 +276,8 @@ func commonCollection() {
 		return b
 	}
 	reverseInPlace := func(a []byte) {
-		for i, j := 0, len(a)-1; i < j; i++ {
-			a[i], a[j] = a[j], a[i]
-			j--
+		for i, n := 0, len(a); i < n/2; i++ {
+			a[i], a[n-1-i] = a[n-1-i], a[i]
 		}
 	}
 
@@ -621,6 +620,7 @@ func commonCollection() {
 	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
+	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {

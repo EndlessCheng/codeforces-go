@@ -9,6 +9,9 @@ import (
 思维转换
     https://www.luogu.com.cn/problem/P2859
     https://www.luogu.com.cn/problem/P4952 枚举中位数
+    https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操作次数 (+1/-1)
+        https://codeforces.com/blog/entry/47094?#comment-315068
+        https://codeforces.com/blog/entry/77298 Slope trick
 */
 
 // 下面这些都是最小堆

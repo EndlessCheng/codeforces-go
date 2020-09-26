@@ -395,6 +395,7 @@ func dpCollections() {
 	//       https://www.zhihu.com/question/34905638
 	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
+	// 两个排列的 LCS 转换成 LIS https://www.luogu.com.cn/problem/P1439
 	lis := func(a []int) int {
 		n := len(a)
 		dp := make([]int, 0, n)
