@@ -4,6 +4,7 @@ import (
     . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
     "math/bits"
     "sort"
+    "strings"
 )
 
 func main() {
@@ -514,4 +515,27 @@ func minCameraCover(root *TreeNode) int {
     }
     _, ans, _ := f(root)
     return ans
+}
+
+// LC 1190
+func reverse(a []byte) string {
+    for i, n := 0, len(a); i < n/2; i++ {
+        a[i], a[n-1-i] = a[n-1-i], a[i]
+    }
+    return string(a)
+}
+func reverseParentheses(s string) string {
+    l := strings.IndexByte(s, '(')
+    if l == -1 {
+        return s
+    }
+    for r, c := l+1, 1; ; r++ {
+        if s[r] == '(' {
+            c++
+        } else if s[r] == ')' {
+            if c--; c == 0 {
+                return s[:l] + reverse([]byte(reverseParentheses(s[l+1:r]))) + reverseParentheses(s[r+1:])
+            }
+        }
+    }
 }
