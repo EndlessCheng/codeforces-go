@@ -66,8 +66,10 @@ func toGolangReceiverName(funcDefineLine string) string {
 	if !strings.HasPrefix(funcDefineLine, "func (this *") {
 		return funcDefineLine
 	}
-	receiverName := getReceiverName(funcDefineLine)
-	return "func (" + receiverName + funcDefineLine[10:]
+	// 由于采用的是全局变量的写法，receiver 可以去掉
+	return strings.Replace(funcDefineLine, "this *", "", 1)
+	//receiverName := getReceiverName(funcDefineLine)
+	//return "func (" + receiverName + funcDefineLine[10:]
 }
 
 func lowerArgsFirstChar(funcDefineLine string) string {

@@ -168,36 +168,17 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 	}
 
 	lines := strings.Split(text, "\n")
+	for i, s := range lines {
+		lines[i] = strings.TrimSpace(s)
+	}
+
+	// 由于新版的样例不是这种格式了，这种特殊情况就不处理了
+	// 见 https://leetcode-cn.com/contest/weekly-contest-121/problems/time-based-key-value-store/
 	if !p.isFuncProblem {
-		if len(lines) == 1 {
-			lines = strings.Split(lines[0], ", ")
-			if len(lines) == 1 {
-				return []string{strings.TrimSpace(lines[0])}
-			}
-		}
-		if len(lines) != 2 {
-			fmt.Println("[warn] 数据有误，截断", text)
-			lines = lines[:2]
-		}
-		res := []string{}
-		for _, s := range lines {
-			if strings.Contains(s, " = ") {
-				// https://leetcode-cn.com/contest/weekly-contest-121/problems/time-based-key-value-store/
-				sp := strings.Split(s, " = ")
-				s = sp[1]
-			}
-			res = append(res, strings.TrimSpace(s))
-		}
-		return res
+		return lines
 	}
-	// 按 "\n" split 后，TrimSpace 再合并
-	text = ""
-	for _, l := range lines {
-		text += strings.TrimSpace(l)
-		if !p.isFuncProblem {
-			text += "\n"
-		}
-	}
+
+	text = strings.Join(lines, "")
 
 	// 包含中文的话，说明原始数据有误，截断首个中文字符之后的字符
 	if idx := findNonASCII(text); idx != -1 {
@@ -205,7 +186,7 @@ func (p *problem) parseSampleText(text string, parseArgs bool) []string {
 		text = text[:idx]
 	}
 
-	// 只有一个参数
+	// 不含等号，说明只有一个参数
 	if !parseArgs || !strings.Contains(text, "=") {
 		return []string{text}
 	}
@@ -290,7 +271,6 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 						break
 					}
 				}
-				// TODO: use C++ when defaultCode not found
 				if p.defaultCode == "" {
 					fmt.Println("未找到 Go 代码")
 				}
@@ -319,13 +299,14 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	f = func(o *html.Node) {
 		// 解析每个 <pre> 块内的文本（以中文为基准解析	）
 		// 还需要判断 <pre> 内部第一个 tag 是不是 <strong> https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
-		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom == atom.Strong &&
-			strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
-			next, input := parseData(o.FirstChild)
-			p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
-			_, output := parseData(next)
-			p.sampleOuts = append(p.sampleOuts, p.parseSampleText(output, true))
-			return
+		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom == atom.Strong {
+			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
+				next, input := parseData(o.FirstChild)
+				p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
+				_, output := parseData(next)
+				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(output, true))
+				return
+			}
 		}
 		for c := o.FirstChild; c != nil; c = c.NextSibling {
 			f(c)
