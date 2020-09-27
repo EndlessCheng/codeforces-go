@@ -154,6 +154,8 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 
 func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 
+// 其余和 BST 有关的方法见 bst.go
+
 //
 
 func (o *tpNode) String() (s string) {
