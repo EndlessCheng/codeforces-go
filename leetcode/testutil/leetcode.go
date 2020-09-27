@@ -295,11 +295,19 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		inputArgs := strings.TrimSpace(example[1])
 		rawExpectedOut := strings.TrimSpace(example[2])
 
-		// parse inputs
-		methodNames := []string{}
-		for _, name := range strings.Split(names[1:len(names)-1], ",") {
-			methodNames = append(methodNames, strings.Title(name[1:len(name)-1]))
+		// parse called names
+		// 调用 parseRawArray 确保数据是合法的
+		methodNames, er := parseRawArray(names)
+		if er != nil {
+			return er
 		}
+		for i, name := range methodNames {
+			name = name[1 : len(name)-1] // 移除引号
+			name = strings.Title(name)   // 首字母大写以匹配模板方法名称
+			methodNames[i] = name
+		}
+
+		// parse inputs
 		rawArgsList, er := parseRawArray(inputArgs)
 		if er != nil {
 			return er
@@ -321,30 +329,31 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 			}
 		}
 
-		// call constructor
+		// call constructor, get struct instance
 		obj := cFunc.Call(constructorIns)[0]
 
-		// we need a pointer to obj cause all methods are declared with a pointer receiver
+		// use a pointer to call methods
 		pObj := reflect.New(obj.Type())
 		pObj.Elem().Set(obj)
 
 		rawActualOut := "[null"
-		for callID := 1; callID < len(rawArgsList); callID++ {
-			method := pObj.MethodByName(methodNames[callID])
+		for callIndex := 1; callIndex < len(rawArgsList); callIndex++ {
+			name := methodNames[callIndex]
+			method := pObj.MethodByName(name)
 			emptyValue := reflect.Value{}
 			if method == emptyValue {
-				return fmt.Errorf("invalid test data: %s", methodNames[callID])
+				return fmt.Errorf("invalid test data: %s", methodNames[callIndex])
 			}
 			methodType := method.Type()
 
 			// parse method input
-			methodArgs, er := parseRawArray(rawArgsList[callID])
+			methodArgs, er := parseRawArray(rawArgsList[callIndex])
 			if er != nil {
 				return er
 			}
-			in := make([]reflect.Value, len(methodArgs))
-			for i, arg := range methodArgs {
-				in[i], err = parseRawArg(methodType.In(i), arg)
+			in := make([]reflect.Value, methodType.NumIn()) // 注意：若入参为空，methodArgs 可能是 [] 也可能是 [null]
+			for i := range in {
+				in[i], err = parseRawArg(methodType.In(i), methodArgs[i])
 				if err != nil {
 					return
 				}
@@ -363,6 +372,8 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		}
 		rawActualOut += "]"
 
+		// 比较前，去除 rawExpectedOut 中逗号后的空格
+		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
 		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCase+1) {
 			allCasesOk = false
 		}
