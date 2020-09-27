@@ -320,6 +320,32 @@ func buildTree(inorder []int, postorder []int) *TreeNode {
     panic(1)
 }
 
+// LC 117, O(1) 空间复杂度
+func connect(root *Node) *Node {
+    start := root
+    for start != nil {
+        var nextStart, last *Node
+        do := func(cur *Node) {
+            if cur == nil {
+                return
+            }
+            if nextStart == nil {
+                nextStart = cur
+            }
+            if last != nil {
+                last.Next = cur
+            }
+            last = cur
+        }
+        for o := start; o != nil; o = o.Next {
+            do(o.Left)
+            do(o.Right)
+        }
+        start = nextStart
+    }
+    return root
+}
+
 // LC 124
 func maxPathSum(root *TreeNode) int {
     max := func(a, b int) int {

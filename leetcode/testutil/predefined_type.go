@@ -231,3 +231,13 @@ func MustBuildListNode(rawArray string) *ListNode {
 	}
 	return head
 }
+
+//
+
+// https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/
+type Node struct {
+	Val   int
+	Left  *Node
+	Right *Node
+	Next  *Node
+}
