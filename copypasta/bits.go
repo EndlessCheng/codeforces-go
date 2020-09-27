@@ -28,15 +28,15 @@ a|b = a^b + a&b
 检测是否只有一个 1：x&(x-1) == 0
 
 异或和相关
-http://oeis.org/A003987 异或矩阵
-http://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
-http://oeis.org/A145768 异或和 i*i
-http://oeis.org/A126084 异或和 质数
-http://oeis.org/A018252 异或和 合数?
-http://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1)
-	http://oeis.org/A072595 满足 A072594(n)=0 的数
-http://oeis.org/A178910 异或和 因子
-	http://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
+https://oeis.org/A003987 异或矩阵
+https://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
+https://oeis.org/A145768 异或和 i*i
+https://oeis.org/A126084 异或和 质数
+https://oeis.org/A018252 异或和 合数?
+https://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1)
+	https://oeis.org/A072595 满足 A072594(n)=0 的数
+https://oeis.org/A178910 异或和 因子
+	https://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
 
 二进制长度
 https://oeis.org/A070939 a(0)=1, a(n)=bits.Len(n)

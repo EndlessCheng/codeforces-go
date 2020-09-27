@@ -47,6 +47,8 @@ https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 
 数的韧性 https://en.wikipedia.org/wiki/Persistence_of_a_number 乘法: https://oeis.org/A003001 加法: https://oeis.org/A006050
 
+类欧几里得算法 https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis
+
 Smallest number h such that n*h is a repunit (111...1), or 0 if no such h exists
 https://oeis.org/A190301 111...1
 https://oeis.org/A216485 222...2
@@ -947,7 +949,7 @@ func numberTheoryCollection() {
 
 	// 任意非零模数逆元
 	// ax ≡ 1 (mod m)
-	// 模板题 https://www.luogu.com.cn/problem/P1082
+	// todo 模板题 https://www.luogu.com.cn/problem/P1082
 	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理求质数逆元
@@ -1110,7 +1112,10 @@ func numberTheoryCollection() {
 
 	/* 阶乘 组合数/二项式系数 */
 
+	// https://en.wikipedia.org/wiki/Factorial
 	// https://oeis.org/A000142
+	// https://en.wikipedia.org/wiki/Stirling%27s_approximation
+	// n! ~ √(2πn)*(n/e)^n
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
 	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
@@ -1148,6 +1153,8 @@ func numberTheoryCollection() {
 	}
 
 	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
+	// a(n) ~ 2^n / sqrt(π * n/2)
+	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
 	combHalf := [...]int64{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
@@ -1319,6 +1326,11 @@ func numberTheoryCollection() {
 	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
 
+	// Min25 筛 - 积性函数前缀和
+	// https://zhuanlan.zhihu.com/p/60378354
+	// https://oi-wiki.org/math/min-25/
+	// todo 模板题 https://www.luogu.com.cn/problem/P5325
+
 	// 埃及分数 - 不同的单位分数的和 (IDA*)
 	// https://www.luogu.com.cn/problem/UVA12558
 	// 贪婪算法：将一项分数分解成若干项单分子分数后的项数最少，称为第一种好算法；最大的分母数值最小，称为第二种好算法
@@ -1331,13 +1343,14 @@ func numberTheoryCollection() {
 	// 		埃尔德什-施特劳斯猜想（Erdős–Straus conjecture）https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Straus_conjecture
 
 	/* 斐波那契数列 F(n) http://oeis.org/A000045
+	性质 https://oi-wiki.org/math/fibonacci/
 	http://oeis.org/A000071 F(n) 前缀和 = F(n)-1
 	- 异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
 	http://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
 	                                  a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
 	http://oeis.org/A001690 补集
 	http://oeis.org/A022307 F(n) 的不同的质因子个数
-	http://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers
+	http://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
 	                        N(m) = LCM(N(p1^e1), ..., N(pk^ek))
 	http://oeis.org/A060305 N(p) = F%p 的周期
 	http://oeis.org/A003893 F(n)%10
@@ -1370,18 +1383,19 @@ func numberTheoryCollection() {
 /* 组合数学
 https://en.wikipedia.org/wiki/Combinatorics
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
+二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
 
-NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
-
+todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
        C(n, k-1) + C(n, k) = C(n+1, k)
        C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)（例题 https://atcoder.jp/contests/abc154/tasks/abc154_f）
+范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
+
+NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
 隔三组合数 https://oeis.org/A024493 https://oeis.org/A024494 https://oeis.org/A024495 C(n,0) + C(n,3) + ... + C(n,3[n/3])
 隔四组合数 https://oeis.org/A038503 https://oeis.org/A038504 https://oeis.org/A038505 https://oeis.org/A000749
-
-二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
 
 Tetrahedral (or triangular pyramidal) numbers: a(n) = C(n+2,3) = n*(n+1)*(n+2)/6 http://oeis.org/A000292
 a(n) = Sum_{1<=i<=j<=n} j-i
@@ -1391,18 +1405,19 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
 放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 	扩展例题 https://codeforces.com/problemset/problem/893/E
-圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
-可重集排列
-可重集组合 todo https://codeforces.com/problemset/problem/451/E
-https://oeis.org/A000166 错排 subfactorial numbers  a[n]=(n-1)*(a[n-1]+a[n-2])  https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
+todo 可重集排列组合 https://oi-wiki.org/math/combination/
+todo https://codeforces.com/problemset/problem/451/E
+不相邻的排列 https://oi-wiki.org/math/combination/#_10
+错排 https://oeis.org/A000166 subfactorial numbers  a[n]=(n-1)*(a[n-1]+a[n-2])  https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 	https://oeis.org/A082491 n! * A000166(n)   a(n+2) = (n+2)*(n+1)*(a(n+1)+(n+1)*a(n))
 	https://oeis.org/A000255 错排的比较对象的范围是 [1,n+1]  a(n) = n*a(n-1) + (n-1)*a(n-2), a(0) = a(1) = 1
 	https://oeis.org/A000153 错排的比较对象的范围是 [1,n+2]  a(n) = n*a(n-1) + (n-2)*a(n-2), a(0) = 0, a(1) = 1
 	https://oeis.org/A000261 错排的比较对象的范围是 [1,n+3]  a(n) = n*a(n-1) + (n-3)*a(n-2), a(1) = 0, a(2) = 1
 	https://oeis.org/A001909 错排的比较对象的范围是 [1,n+4]  a(n) = n*a(n-1) + (n-4)*a(n-2), a(2) = 0, a(3) = 1
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
-范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
-斯特林数 https://blog.csdn.net/ACdreamers/article/details/8521134
+圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
+
+斯特林数 https://oi-wiki.org/math/stirling/ https://blog.csdn.net/ACdreamers/article/details/8521134
 Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
    将 n 个元素排成 k 个非空循环排列的方法数
    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
@@ -1412,6 +1427,13 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
+todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
+
+康托展开 Cantor Expansion
+https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
+https://oi-wiki.org/math/cantor/
+todo https://www.luogu.com.cn/problem/P5367
 
 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
@@ -1421,6 +1443,8 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 
 * 生成函数/母函数 *
 https://en.wikipedia.org/wiki/Generating_function
+https://oi-wiki.org/math/gen-func/intro/
+todo 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
 https://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
 						a(n)=0 iff n=2^k
@@ -1483,6 +1507,15 @@ and all subsequent users select the phone which puts them farthest from the curr
 U(n) is the smallest number of phones such that n may be used without any two adjacent phones being used
 https://www.zhihu.com/question/278361000/answer/1004606685
 
+https://oeis.org/A089934 Table T(n,k) of the number of n X k matrices on {0,1} without adjacent 0's in any row or column
+https://oeis.org/A006506 上面这个 table 的对角线
+    Number of configurations of non-attacking princes on an n X n board, where a "prince" attacks the four adjacent (non-diagonal) squares
+    Also number of independent vertex sets in an n X n grid
+
+https://oeis.org/A001224 The number of inequivalent ways to pack a 2 X n rectangle with dominoes
+    If F(n) is the n-th Fibonacci number, then a(2n) = (F(2n+1) + F(n+2))/2 and a(2n+1) = (F(2n+2) + F(n+1))/2
+    https://oeis.org/A060312
+
 一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
@@ -1540,6 +1573,7 @@ func combinatoricsCollection() {
 // 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
 // TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 // 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
+// todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
 // todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 // todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 func gameTheoryCollection() {
@@ -1563,7 +1597,7 @@ func gameTheoryCollection() {
 		}
 	}
 
-	// 异或和不为0零则先手必胜
+	// 异或和不为零则先手必胜
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
 	// 模板题 https://www.luogu.com.cn/problem/P2197
 	nim := func(a []int) (firstWin bool) {
@@ -1571,7 +1605,7 @@ func gameTheoryCollection() {
 		for _, v := range a {
 			sum ^= v
 		}
-		return sum != 0
+		return sum > 0
 	}
 
 	// Sprague-Grundy theorem

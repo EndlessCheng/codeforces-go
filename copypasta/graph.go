@@ -250,7 +250,7 @@ func (*graph) bfs(n, st int, g [][]int) {
 	}
 
 	{
-		// 构建深度数组
+		// 构建深度数组/最短路
 		dep := make([]int, n)
 		for i := range dep {
 			dep[i] = -1
@@ -266,6 +266,29 @@ func (*graph) bfs(n, st int, g [][]int) {
 				if dep[w] == -1 {
 					dep[w] = dep[v] + 1
 					q = append(q, w)
+				}
+			}
+		}
+	}
+
+	{
+		// 全源最短路
+		dist := make([][]int, n)
+		for i := range dist {
+			dist[i] = make([]int, n)
+			for j := range dist[i] {
+				dist[i][j] = -1
+			}
+			dist[i][i] = 0
+			q := []int{i}
+			for len(q) > 0 {
+				v := q[0]
+				q = q[1:]
+				for _, w := range g[v] {
+					if dist[i][w] == -1 {
+						dist[i][w] = dist[i][v] + 1
+						q = append(q, w)
+					}
 				}
 			}
 		}

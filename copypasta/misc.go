@@ -10,16 +10,16 @@ import (
 
 /* 其他无法分类的算法
 
-三维 n 皇后 http://oeis.org/A068940
+三维 n 皇后 https://oeis.org/A068940
 Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
 
 Smallest positive integer k such that n = +-1+-2+-...+-k for some choice of +'s and -'s https://oeis.org/A140358
 相关题目 https://codeforces.com/problemset/problem/1278/B
 
 Numbers n such that n is the substring identical to the least significant bits of its base 2 representation.
-http://oeis.org/A181891
-http://oeis.org/A181929 前缀
-http://oeis.org/A038102 子串
+https://oeis.org/A181891
+https://oeis.org/A181929 前缀
+https://oeis.org/A038102 子串
 
 Maximal number of regions obtained by joining n points around a circle by straight lines.
 Also number of regions in 4-space formed by n-1 hyperplanes.
@@ -314,7 +314,7 @@ func mergeCount(a []int) int64 {
 // LC51 https://leetcode-cn.com/problems/n-queens/
 // LC52 https://leetcode-cn.com/problems/n-queens-ii/
 
-// 格雷码 http://oeis.org/A003188
+// 格雷码 https://oeis.org/A003188
 // https://en.wikipedia.org/wiki/Gray_code
 // LC89 https://leetcode-cn.com/problems/gray-code/
 func grayCode(length int) []int {

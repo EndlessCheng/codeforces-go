@@ -11,7 +11,7 @@ https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%8
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
 
-模板题 https://ac.nowcoder.com/acm/contest/6357/A
+模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
 
@@ -72,6 +72,9 @@ func (a matrix) mul(b matrix) matrix {
 				c[i][j] += aik * b[k][j] % mod
 			}
 			c[i][j] %= mod
+			if c[i][j] < 0 {
+				c[i][j] += mod
+			}
 		}
 	}
 	return c
@@ -104,6 +107,7 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 		{p, q},
 		{1, 0},
 	}.pow(n - 1)
+	//return m[0][0]
 	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
 }
 
