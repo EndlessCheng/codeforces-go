@@ -33,17 +33,21 @@
     // 注意前者要包含后者
     const words = [
         " not ", "don't", "didn't", "doesn't", "can't", " no ", "non-", // "n't",
-        "if and only if", "and all", "or all",
-        "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
+        "if and only if",
+        // "and all", "or all",
+        // "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
         " any", " all ", "every", " both ", "empty ",
         "same", "different", "unique", "distinct",
-        "more", "must", "only", "exactly", "always",
+        // "more",
+        "must", "only", "exactly", "always",
 
         // "Note", "note",
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
         " small ", " big ", " large ",
         "at least", "at most",
-        "non-zero", "positive", "negative", "integers", "an integer", "integer", "pairwise",
+        "non-zero", "positive", "negative",
+        // "integers", "an integer", "integer",
+        "pairwise",
 
         "Initially", "initially", "guaranteed",
 
@@ -53,7 +57,7 @@
         "lowercase", "uppercase",
         "lexicographically", "lexicographical",
         "expected value",
-        "operations", "Operations", "operation", "Operation",
+        // "operations", "Operations", "operation", "Operation",
 
         "没有", "不是", "不同", "不需要",
         "所有", "任何", "任意", "和", "并且", "且", "或", "之一", "反之", "必须", "仅",
