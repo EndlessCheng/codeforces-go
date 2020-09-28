@@ -45,7 +45,7 @@
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
         " small ", " big ", " large ",
         "at least", "at most",
-        "non-zero", "positive", "negative",
+        "zero", "positive", "negative",
         // "integers", "an integer", "integer",
         "pairwise",
 
@@ -58,6 +58,7 @@
         "lexicographically", "lexicographical",
         "expected value",
         // "operations", "Operations", "operation", "Operation",
+        "undirected", "directed",
 
         "没有", "不是", "不同", "不需要",
         "所有", "任何", "任意", "和", "并且", "且", "或", "之一", "反之", "必须", "仅",
