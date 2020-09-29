@@ -51,13 +51,13 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](./misc/my_goland_
 
 [Wolfram|Alpha](https://www.wolframalpha.com/)
 
-[Practice Problems Recommender](https://recommender.codedrills.io/)
+[UpSolve.me](https://upsolve.me/)
 
 [Contests Filter](https://codeforceshelper.herokuapp.com/contests)
 
-[Codeforces Upsolving Helper](https://codeforces-upsolving-helper.herokuapp.com/)
+[Practice Problems Recommender](https://recommender.codedrills.io/)
 
-[UpSolve.me](https://upsolve.me/)
+[Codeforces Upsolving Helper](https://codeforces-upsolving-helper.herokuapp.com/)
 
 [Codeforced](http://codeforced.github.io/handle/)
 
