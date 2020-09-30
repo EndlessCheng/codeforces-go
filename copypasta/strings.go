@@ -670,6 +670,51 @@ func findMaximumXOR(a []int) (ans int) {
 	return
 }
 
+// n 个 [0, 2^30) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
+// n*(30-logn) + 2^(logn+1) - 1, logn = int(log_2(n))
+// 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
+// 传入 n 和数据范围上限 maxV
+// 返回 n 个数，每个数的范围在 [0, maxV] 中
+// 当 maxV = 2^30-1 时，各个 n 下的 0-1 trie 节点数
+//   n   节点数
+// 1e5 1531071
+// 2e5 2862143
+// 3e5 4124287
+// 4e5 5324287
+// 5e5 6524287
+// 6e5 7648575
+// 7e5 8748575
+// 8e5 9848575
+// 9e5 10948575
+// 1e6 12048575
+// 当 maxV = 1e9 时，各个 n 下的 0-1 trie 节点数
+//   n   节点数
+// 1e5 1522076
+// 2e5 2844147
+// 3e5 4088288
+// 4e5 5288288
+// 5e5 6511723
+// 6e5 7576570
+// 7e5 8676570
+// 8e5 9776570
+// 9e5 10876570
+// 1e6 12023441
+func buildMaxNodes01Trie(n, maxV int) []int {
+	shift := bits.Len(uint(maxV)) - bits.Len(uint(n)) + 1
+	a := make([]int, 0, n)
+	// 构建一颗上半部分为完全二叉树，下半部分为一串 0...0 的 01-trie
+	for i := 0; i<<shift <= maxV; i++ {
+		v := i << shift
+		a = append(a, v)
+	}
+	// 填充上半部分的下一层，由于下半部分的开头是 0，这里要用一个奇数 shift
+	for i := 0; len(a) < n; i++ {
+		v := (i<<1 | 1) << (shift - 1)
+		a = append(a, v)
+	}
+	return a
+}
+
 // EXTRA: AC 自动机 Aho–Corasick algorithm / Deterministic Finite Automaton (DFA)
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
 // https://en.wikipedia.org/wiki/Deterministic_finite_automaton
