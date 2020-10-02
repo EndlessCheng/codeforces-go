@@ -411,20 +411,15 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 	runAC := reflect.ValueOf(runACFunc)
 	run := reflect.ValueOf(runFunc)
 	// just check numbers
-	if runAC.Type().NumIn() != run.Type().NumIn() || runAC.Type().NumOut() != run.Type().NumOut() {
+	if !assert.Equal(t, run.Type().NumIn(), runAC.Type().NumIn()) ||
+		!assert.Equal(t, run.Type().NumOut(), runAC.Type().NumOut()) {
 		t.Fatal("different input/output")
 	}
 
 	for tc := 1; ; tc++ {
 		inArgs := ig.Call(nil)
-		// todo deep copy slice
-		expectedOut := runAC.Call(inArgs)
-		actualOut := run.Call(inArgs)
 
-		//ins := make([]interface{}, len(inArgs))
-		//for i, in := range inArgs {
-		//	ins[i] = in.Interface()
-		//}
+		// 先生成字符串，以免 inArgs 被修改
 		insStr := []byte{}
 		for i, arg := range inArgs {
 			if i > 0 {
@@ -436,6 +431,11 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 			}
 			insStr = append(insStr, s...)
 		}
+
+		// todo deep copy slice
+		expectedOut := runAC.Call(inArgs)
+		actualOut := run.Call(inArgs)
+
 		for i, eOut := range expectedOut {
 			if !assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, insStr) && needPrint {
 				fmt.Printf("[CASE %d]\n", tc)
