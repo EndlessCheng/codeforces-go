@@ -29,5 +29,5 @@ func TestCompare(t *testing.T) {
 		t.Fatal(err)
 	}
 	return
-	testutil.CompareInf(t, inputGenerator, runAC, nil /* fill the func to compare */)
+	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
 }
