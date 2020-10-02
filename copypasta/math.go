@@ -172,23 +172,22 @@ func numberTheoryCollection() {
 	// todo 待整理
 	// 给定数组，统计所有区间的 GCD 值
 	// 返回 map[GCD值]等于该值的区间个数
-	cntRangeGCD := func(arr []int64) map[int64]int64 {
-		n := len(arr)
+	cntRangeGCD := func(a []int64) map[int64]int64 {
+		n := len(a)
 		cntMp := map[int64]int64{}
-		gcds := make([]int64, n)
-		copy(gcds, arr)
-		lPos := make([]int, n)
-		for i, v := range arr {
-			lPos[i] = i
+		gcds := append([]int64(nil), a...)
+		posL := make([]int, n)
+		for i, v := range a {
+			posL[i] = i
 			// 从当前位置 i 往左遍历，更新 gcd[j] 的同时维护等于 gcd[j] 的区间最左端位置
-			for j := i; j >= 0; j = lPos[j] - 1 {
+			for j := i; j >= 0; j = posL[j] - 1 {
 				gcds[j] = gcd(gcds[j], v)
 				g := gcds[j]
-				for lPos[j] > 0 && gcd(gcds[lPos[j]-1], v) == g {
-					lPos[j] = lPos[lPos[j]-1]
+				for posL[j] > 0 && gcd(gcds[posL[j]-1], v) == g {
+					posL[j] = posL[posL[j]-1]
 				}
-				// [lPos[j], j], [lPos[j]+1, j], ..., [j, j] 的区间 GCD 值均等于 gcd[j]
-				cntMp[g] += int64(j - lPos[j] + 1)
+				// [posL[j], j], [posL[j]+1, j], ..., [j, j] 的区间 GCD 值均等于 gcd[j]
+				cntMp[g] += int64(j - posL[j] + 1)
 			}
 		}
 		return cntMp
@@ -947,9 +946,9 @@ func numberTheoryCollection() {
 		return
 	}
 
-	// 任意非零模数逆元
-	// ax ≡ 1 (mod m)
-	// todo 模板题 https://www.luogu.com.cn/problem/P1082
+	// 任意非零模数逆元 ax ≡ 1 (mod m)
+	// 返回最小正整数解
+	// 模板题 https://www.luogu.com.cn/problem/P1082
 	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理求质数逆元
