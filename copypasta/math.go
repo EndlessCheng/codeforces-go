@@ -45,6 +45,9 @@ https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 	a(n-1) is also the number of subsets of {1..n} in which the second smallest element of the set exceeds by at least 2 the smallest element
 		For example, for n = 5, a(4) = 11 and the 11 sets are {1,3}, {1,4}, {1,5}, {2,4}, {2,5}, {3,5}, {1,3,4}, {1,3,5}, {1,4,5}, {2,4,5}, {1,3,4,5}
 
+https://oeis.org/A064413 EKG sequence (or ECG sequence)
+a(1) = 1; a(2) = 2; for n > 2, a(n) = smallest number not already used which shares a factor with a(n-1)
+
 数的韧性 https://en.wikipedia.org/wiki/Persistence_of_a_number 乘法: https://oeis.org/A003001 加法: https://oeis.org/A006050
 
 类欧几里得算法 https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis

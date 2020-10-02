@@ -274,8 +274,10 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 }
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
+// https://oi-wiki.org/graph/tree-divide/
 // https://codeforces.com/blog/entry/81661
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+// todo 模板题 https://www.luogu.com.cn/problem/P3806
 // 模板题 https://codeforces.com/problemset/problem/321/C
 // todo poj1741 poj2114 uva12161 spoj QTREE5
 // 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
@@ -458,7 +460,9 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 	return f(root, -1)
 }
 
+// 动态树分治 动态点分治
 // 点分树
+// todo https://oi-wiki.org/graph/dynamic-tree-divide/
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 
 // 最近公共祖先 - 其一 - 基于树上倍增和二分搜索
@@ -864,21 +868,21 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 长链剖分
 // 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
-// https://oi-wiki.org/graph/hld/#_14
+// todo https://oi-wiki.org/graph/hld/#_14
 // todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 // 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 // todo 树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
 
-// TODO: link-cut tree (LCT)
+// link-cut tree (LCT)
 // https://en.wikipedia.org/wiki/Link/cut_tree
-// https://oi-wiki.org/ds/lct/
+// todo https://oi-wiki.org/ds/lct/
 // todo https://codeforces.com/blog/entry/80383
 // 模板题 https://www.luogu.com.cn/problem/P3690
 // https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
 // 最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
 
-// TODO: 树上启发式合并 DSU on tree
-// https://oi-wiki.org/graph/dsu-on-tree/
+// 树上启发式合并 DSU on tree
+// todo https://oi-wiki.org/graph/dsu-on-tree/
 // dsu on tree学习笔记 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/44351
 // todo 讲解 https://codeforces.com/blog/entry/67696
