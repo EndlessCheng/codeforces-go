@@ -537,6 +537,7 @@ func vec2Collection() {
 	// https://codeforces.com/problemset/problem/1359/F
 	// 平面扫描思想在 ACM 竞赛中的应用 http://openinx.github.io/2013/01/01/plane-sweep-thinking/
 
+	// 按 y 归并
 	merge := func(a, b []vec) []vec {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
@@ -566,11 +567,12 @@ func vec2Collection() {
 	// 模板题 https://www.luogu.com.cn/problem/P1429
 	var closestPair func([]vec) float64
 	closestPair = func(ps []vec) float64 {
-		n := len(ps) // assert n >= 2
+		n := len(ps)
+		// assert n >= 2
 		m := n >> 1
 		x := ps[m].x
 		d := math.Min(closestPair(ps[:m]), closestPair(ps[m:]))
-		copy(ps, merge(ps[:m], ps[m:]))
+		copy(ps, merge(ps[:m], ps[m:])) // copy 是因为要修改 slice 的内容
 		checkPs := []vec{}
 		for _, pi := range ps {
 			if math.Abs(float64(pi.x-x)) > d+eps {
