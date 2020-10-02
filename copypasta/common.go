@@ -167,11 +167,10 @@ func commonCollection() {
 		return
 	}
 	copyMat := func(mat [][]int) [][]int {
-		n, m := len(mat), len(mat[0])
+		n := len(mat)
 		dst := make([][]int, n)
 		for i, row := range mat {
-			dst[i] = make([]int, m)
-			copy(dst[i], row)
+			dst[i] = append([]int(nil), row...)
 		}
 		return dst
 	}
@@ -495,8 +494,7 @@ func commonCollection() {
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
 		// assert len(a) > 0
 		n := len(a)
-		b := make([]int, n)
-		copy(b, a)
+		b := append([]int(nil), a...)
 		sort.Ints(b)
 
 		// 有重复元素
@@ -865,8 +863,7 @@ func rmqCollection() {
 		for i := range blocks {
 			b := &blocks[i]
 			b.r = b.l + len(b.origin) - 1
-			b.sorted = make([]int, len(b.origin))
-			copy(b.sorted, b.origin)
+			b.sorted = append([]int(nil), b.origin...)
 			sort.Ints(b.sorted)
 		}
 	}

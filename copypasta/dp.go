@@ -457,6 +457,7 @@ func dpCollections() {
 	子序列 -> 背包
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.com/blog/entry/59606
+	浅谈 ZKP 问题 https://www.luogu.com.cn/blog/xww666/qian-tan-zkp-wen-ti-gai-post
 
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
@@ -910,6 +911,7 @@ func dpCollections() {
 	// dp[i][2]：i 不属于支配集，且被父亲支配 = ∑min(dp[w][0],dp[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：保安站岗 https://www.luogu.com.cn/problem/P2458 手机网络 https://www.luogu.com.cn/problem/P2899 https://ac.nowcoder.com/acm/problem/24953
+	// 监控二叉树 https://leetcode-cn.com/problems/binary-tree-cameras/
 	// todo EXTRA: 消防局的设立（支配距离为 2）https://www.luogu.com.cn/problem/P2279
 	minDominatingSetInTree := func(n int, g [][]int, a []int) int { // 无根树
 		const inf int = 1e9 // 1e18

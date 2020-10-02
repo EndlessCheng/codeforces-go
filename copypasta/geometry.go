@@ -786,6 +786,7 @@ func vec2Collection() {
 	// 推荐 训练指南 的相关章节
 	// https://oi-wiki.org/geometry/half-plane/
 	// https://zhuanlan.zhihu.com/p/83499723
+	// todo https://www.luogu.com.cn/blog/105254/dui-ban-ping-mian-jiao-suan-fa-zheng-que-xing-xie-shi-di-tan-suo
 	// 模板题 https://www.luogu.com.cn/problem/P4196
 
 	_ = []interface{}{

@@ -25,6 +25,10 @@ Maximal number of regions obtained by joining n points around a circle by straig
 Also number of regions in 4-space formed by n-1 hyperplanes.
 a(n) = n*(n-1)*(n*n-5*n+18)/24+1 https://oeis.org/A000127
 
+https://oeis.org/A001069 Log2*(n) (version 2): take log_2 of n this many times to get a number < 2
+https://oeis.org/A211667 Number of iterations sqrt(sqrt(sqrt(...(n)...))) such that the result is < 2
+    a(n) = 1, 2, 3, 4, 5, ... for n = 2^1, 2^2, 2^4, 2^8, 2^16, ..., i.e., n = 2, 4, 16, 256, 65536, ... = https://oeis.org/A001146
+
 找规律 https://codeforces.com/problemset/problem/1034/B
 */
 func miscCollection() {
@@ -282,21 +286,19 @@ func miscCollection() {
 	}
 }
 
-// 逆序数
+// 逆序对
 // LC面试题51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 func mergeCount(a []int) int64 {
 	n := len(a)
 	if n <= 1 {
 		return 0
 	}
-	b := make([]int, n/2)
-	c := make([]int, n-n/2)
-	copy(b, a[:n/2])
-	copy(c, a[n/2:])
+	b := append([]int(nil), a[:n/2]...)
+	c := append([]int(nil), a[n/2:]...)
 	cnt := mergeCount(b) + mergeCount(c)
 	ai, bi, ci := 0, 0, 0
 	for ai < n {
-		// 归并排序的同时计算逆序数
+		// 归并排序的同时计算逆序对
 		if bi < len(b) && (ci == len(c) || b[bi] <= c[ci]) {
 			a[ai] = b[bi]
 			bi++

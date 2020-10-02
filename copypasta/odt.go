@@ -65,8 +65,7 @@ func (t odt) add(begin, end int, val int64) {
 }
 
 func (t odt) kth(begin, end, k int) int64 {
-	blocks := make(odt, end-begin)
-	copy(blocks, t[begin:end])
+	blocks := append(odt(nil), t[begin:end]...)
 	sort.Slice(blocks, func(i, j int) bool { return blocks[i].val < blocks[j].val })
 	k--
 	for _, b := range blocks {
