@@ -1097,8 +1097,7 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
 	n := len(weights)
 	dist := make([][]int64, n)
 	for i := range dist {
-		dist[i] = make([]int64, n)
-		copy(dist[i], weights[i])
+		dist[i] = append([]int64(nil), weights[i]...)
 	}
 	ans := inf
 	for k := range dist { // 阶段
@@ -1168,7 +1167,19 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 }
 
 // EXTRA: 同余最短路
+// todo https://oi-wiki.org/graph/mod-shortest-path/
 // todo 跳楼机 https://www.luogu.com.cn/problem/P3403
+
+// k 短路
+// A* 算法
+// 可持久化可并堆优化
+// https://en.wikipedia.org/wiki/K_shortest_path_routing
+// todo https://oi-wiki.org/graph/kth-path/
+// todo 模板题 https://www.luogu.com.cn/problem/P2483
+
+// 最小斯坦纳树
+// https://oi-wiki.org/graph/steiner-tree/
+// todo 模板题 https://www.luogu.com.cn/problem/P6192
 
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(mlogm)，或者边已经按权值排序的情况
@@ -1270,12 +1281,13 @@ func (*graph) mstPrim(dist [][]int) int {
 // Boruvka's algorithm
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
 
-// 次小生成树
-// Second best Minimum Spanning Tree
+// 次小生成树 Second best Minimum Spanning Tree
 // Using Kruskal and Lowest Common Ancestor
-// todo https://cp-algorithms.com/graph/second_best_mst.html
+// https://oi-wiki.org/graph/mst/#_9
+// https://cp-algorithms.com/graph/second_best_mst.html
+// todo 模板题 https://www.luogu.com.cn/problem/P4180
 func (*graph) secondMST(n, m int) (sum int64) {
-	panic("TODO")
+	return
 }
 
 // Kruskal 重构树
@@ -1613,6 +1625,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 // todo http://pepcy.cf/icpc-templates/003Graph/bls.html
 // 模板题 https://www.luogu.com.cn/problem/P6113
 //       https://www.luogu.com.cn/problem/P4258
+//       https://www.luogu.com.cn/problem/P6699
 
 // EXTRA: 完美匹配 Perfect Match     MWPM
 // 完美匹配同时也是一个原图的最小边数的边覆盖
@@ -2467,3 +2480,45 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 
 // ZKW 费用流
 // https://artofproblemsolving.com/community/c1368h1020435
+
+//
+
+// 支配树
+// todo 模板题 https://www.luogu.com.cn/problem/P5180
+
+// 弦图：任意长度大于 3 的环都有一个弦（连接环中不相邻两点的边）的图称为弦图
+// 单纯点 完美消除序列
+// 最大势算法 Maximum Cardinality Search (MCS) http://www.ii.uib.no/~pinar/MCS-M.pdf
+// https://oi-wiki.org/graph/chord/
+// https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
+
+// todo 最大团
+
+// todo 极大团计数
+
+// todo 图的同构
+
+// todo 树的同构
+// AHU 算法
+// https://oi-wiki.org/graph/tree-ahu/
+
+//
+
+// 支配树
+// todo 模板题 https://www.luogu.com.cn/problem/P5180
+
+// 弦图：任意长度大于 3 的环都有一个弦（连接环中不相邻两点的边）的图称为弦图
+// 单纯点 完美消除序列
+// 最大势算法 Maximum Cardinality Search (MCS) http://www.ii.uib.no/~pinar/MCS-M.pdf
+// https://oi-wiki.org/graph/chord/
+// https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
+
+// todo 最大团
+
+// todo 极大团计数
+
+// todo 图的同构
+
+// todo 树的同构
+// AHU 算法
+// https://oi-wiki.org/graph/tree-ahu/
