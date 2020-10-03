@@ -25,6 +25,36 @@ func main() {
     _ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
 
+// LC 18
+func fourSum(a []int, target int) (ans [][]int) {
+    sort.Ints(a)
+    n := len(a)
+    for i := 0; i < n-3 && a[i]+a[i+1]+a[i+2]+a[i+3] <= target; i++ {
+        if i > 0 && a[i] == a[i-1] || a[i]+a[n-3]+a[n-2]+a[n-1] < target {
+            continue
+        }
+        for j := i + 1; j < n-2 && a[i]+a[j]+a[j+1]+a[j+2] <= target; j++ {
+            if j > i+1 && a[j] == a[j-1] || a[i]+a[j]+a[n-2]+a[n-1] < target {
+                continue
+            }
+            for l, r := j+1, n-1; l < r; {
+                if s := a[i] + a[j] + a[l] + a[r]; s == target {
+                    ans = append(ans, []int{a[i], a[j], a[l], a[r]})
+                    for l++; l < r && a[l] == a[l-1]; l++ {
+                    }
+                    for r--; l < r && a[r] == a[r+1]; r-- {
+                    }
+                } else if s < target {
+                    l++
+                } else {
+                    r--
+                }
+            }
+        }
+    }
+    return
+}
+
 // LC 37
 func solveSudoku(board [][]byte) {
     var line, column [9]uint
