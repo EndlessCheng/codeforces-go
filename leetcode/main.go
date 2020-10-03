@@ -27,8 +27,8 @@ func main() {
 
 // LC 37
 func solveSudoku(board [][]byte) {
-    var line, column [9]int
-    var block [3][3]int
+    var line, column [9]uint
+    var block [3][3]uint
     var spaces [][2]int
 
     flip := func(i, j int, digit byte) {
@@ -53,7 +53,7 @@ func solveSudoku(board [][]byte) {
                 if b != '.' {
                     continue
                 }
-                mask := 0x1ff &^ uint(line[i]|column[j]|block[i/3][j/3])
+                mask := 0x1ff &^ (line[i] | column[j] | block[i/3][j/3])
                 if mask&(mask-1) == 0 {
                     digit := byte(bits.TrailingZeros(mask))
                     flip(i, j, digit)
@@ -81,7 +81,7 @@ func solveSudoku(board [][]byte) {
             return true
         }
         i, j := spaces[pos][0], spaces[pos][1]
-        mask := 0x1ff &^ uint(line[i]|column[j]|block[i/3][j/3])
+        mask := 0x1ff &^ (line[i] | column[j] | block[i/3][j/3])
         for ; mask > 0; mask &= mask - 1 {
             digit := byte(bits.TrailingZeros(mask))
             flip(i, j, digit)
