@@ -227,6 +227,8 @@ func dpCollections() {
 
 	// 最大子段和
 	// 算法导论 练习4.1-5
+	// [推荐] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
+	// 变体 环状最大两段子段和 https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 变体 https://codeforces.com/problemset/problem/1155/D
 	// 变体 https://codeforces.com/problemset/problem/1373/D
 	maxSubArraySum := func(a []int) int {
@@ -477,8 +479,9 @@ func dpCollections() {
 	// 核心函数：最大价值（最长路），即 max
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
-	// 建模转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
-	// EXTRA: 能否恰好装满（其实就是 waysToSum 的方案数是否为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
+	// 转换 https://codeforces.com/problemset/problem/1381/B
+	// EXTRA: 恰好装满（相当于 waysToSum 的方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 二维费用+至少装满 https://ac.nowcoder.com/acm/contest/6218/C
