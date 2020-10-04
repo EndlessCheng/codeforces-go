@@ -57,6 +57,19 @@ func miscCollection() {
 		return
 	}
 
+	// max record pos
+	// 相关题目 https://codeforces.com/problemset/problem/1381/B
+	recordPos := func(a []int) []int {
+		pos := []int{0}
+		for i, v := range a {
+			if v > a[pos[len(pos)-1]] {
+				pos = append(pos, i)
+			}
+		}
+		//pos = append(pos, len(a))
+		return pos
+	}
+
 	ceilK := func(n, k int) int {
 		if n%k == 0 {
 			return n
@@ -274,6 +287,7 @@ func miscCollection() {
 	_ = []interface{}{
 		logInit,
 		getCycle,
+		recordPos,
 		ceilK, shift1Mod, partition, maxValueStepToUpper, moveToRange,
 		hash01Mat,
 		smallK,
