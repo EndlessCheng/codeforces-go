@@ -319,8 +319,7 @@ func recoverTree(root *TreeNode) {
         f(o.Right)
     }
     f(root)
-    so := make([]*TreeNode, len(nodes))
-    copy(so, nodes)
+    so := append([]*TreeNode(nil), nodes...)
     sort.Slice(so, func(i, j int) bool { return so[i].Val < so[j].Val })
     do := []*TreeNode{}
     for i, o := range nodes {
@@ -547,6 +546,60 @@ func convertBST(root *TreeNode) *TreeNode {
     }
     f(root)
     return root
+}
+
+// LC 834
+// 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
+func sumOfDistancesInTree(n int, edges [][]int) []int {
+    g := make([][]int, n)
+    for _, e := range edges {
+        v, w := e[0], e[1]
+        g[v] = append(g[v], w)
+        g[w] = append(g[w], v)
+    }
+
+    size := make([]int, n)
+    sum := make([]int, n)
+    var f func(v, fa int) int
+    f = func(v, fa int) int {
+        sz := 1
+        for _, w := range g[v] {
+            if w == fa {
+                continue
+            }
+            s := f(w, v)
+            sum[v] += sum[w] + s
+            sz += s
+        }
+        size[v] = sz
+        return sz
+    }
+    f(0, -1)
+
+    ans := make([]int, n)
+    var f2 func(u, f int)
+    f2 = func(v, fa int) {
+        ans[v] = sum[v]
+        for _, w := range g[v] {
+            if w == fa {
+                continue
+            }
+            sumV, sumW := sum[v], sum[w]
+            sizeV, sizeW := size[v], size[w]
+
+            sum[v] -= sum[w] + size[w]
+            size[v] -= size[w]
+            sum[w] += sum[v] + size[v]
+            size[w] += size[v]
+
+            f2(w, v)
+
+            sum[v], sum[w] = sumV, sumW
+            size[v], size[w] = sizeV, sizeW
+        }
+    }
+    f2(0, -1)
+    return ans
 }
 
 // LC 968
