@@ -8,7 +8,7 @@ import (
 /*
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-NOTE: 二分时特判下限！（例如 0）
+NOTE: 二分时注意特判下限（例如 0）
 
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
@@ -51,6 +51,7 @@ func sortCollections() {
 	}
 
 	// 插入排序
+	// 相关题目 LC1536 https://leetcode-cn.com/contest/weekly-contest-200/problems/minimum-swaps-to-arrange-a-binary-grid/
 	insertionSort := func(a []int) {
 		n := len(a)
 		for i := 1; i < n; i++ {
@@ -65,22 +66,25 @@ func sortCollections() {
 
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
-	// 也可以通过 sort.SearchInts(a, x+1) 来搜索 upperBound
+	// 也可以通过 sort.SearchInts(a, x+1) 求得 upperBound
 	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
-	// 若要二分的函数 f(x) 对于较小的 x 返回 true，较大的 x 返回 false，如何找到最大的使 f(x) == true 的 x？
-	// 考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其减一就得到了最大的使 f(x) == true 的 x
-	// 由于要对结果减一，sort.Search 应传入 n+1
-	// 注意判断 x 为 0 的情况，若 f(0) == false，则二分结果是 -1
+	// 若要二分的函数 f(x) 对于较小的 x 返回 true，较大的 x 返回 false
+	// 目标是找到最大的使 f(x) == true 的 x
+	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其减一就得到了最大的使 f(x) == true 的 x
+	// 由于要对结果减一，sort.Search 应传入上界+1
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
 	{
-		var n int
-		v := sort.Search(n+1, func(x int) bool {
-			// 注意判断 x 为 0 的情况
-			cnt := 0
+		var upper int
+		v := sort.Search(upper+1, func(x int) bool {
+			if x == 0 {
+				// ...
+				return false
+			}
+			var ok bool
 			// ...
-			return !(cnt >= x)
+			return !ok
 		}) - 1
 		_ = v
 	}
@@ -105,8 +109,9 @@ func sortCollections() {
 	//})
 
 	// TIPS: 二分三分中的 step 取多少合适：
-	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 CF578C）
-	// TIPS: l 和 r 可以稍微往左右取宽点，从而保证触发相关逻辑，见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
+	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 https://codeforces.com/problemset/problem/578/C）
+	// NOTE: l 和 r 最好稍微往左右取宽点，从而保证触发相关逻辑
+	// 见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
 
 	// 实数二分
 	// 最大化平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
