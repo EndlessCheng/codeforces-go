@@ -34,9 +34,8 @@ func readMatrix(in io.Reader, n, m int) matrix {
 
 func copyMatrix(a matrix) matrix {
 	mat := make(matrix, len(a))
-	for i, ai := range a {
-		mat[i] = make([]int64, len(ai))
-		copy(mat[i], ai)
+	for i, row := range a {
+		mat[i] = append([]int64(nil), row...)
 	}
 	return mat
 }

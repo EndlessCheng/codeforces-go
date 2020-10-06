@@ -60,7 +60,7 @@ Acos(-1) = π
 ( 0, 1) = π/2
 (-1, 1) = 3π/4
 (-1, 0) = π
-( 0, 0) = 0
+( 0, 0) = 0   建议特殊处理
 
 todo 二维偏序 https://ac.nowcoder.com/acm/contest/4853/F 题解 https://ac.nowcoder.com/discuss/394080
 

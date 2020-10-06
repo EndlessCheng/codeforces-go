@@ -15,6 +15,7 @@ https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专�
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 思维转换题! https://nanti.jisuanke.com/t/43488
+// 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
 // https://codeforces.com/problemset/problem/292/D
 // 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
 func unionFind(n int) {

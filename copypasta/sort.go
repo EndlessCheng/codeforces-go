@@ -167,14 +167,13 @@ func sortCollections() {
 	}
 
 	// 0-1 分数规划
-	// 与 0-1 背包结合，即最优比率背包
-	// 与生成树结合，即最优比率生成树
-	// 与负环判定结合，即最优比率环
-	// 与网络流结合，即最大密度子图
-	// 与费用流结合，即最优比率流
-	// 与其他的各种带选择的算法乱套，即最优比率啥啥的
 	// https://oi-wiki.org/misc/frac-programming/
-	// todo https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
+	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
+	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
+	// 与生成树结合，即最优比率生成树 https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
+	// 与负环判定结合，即最优比率环 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
+	// 与网络流结合，即最大密度子图 https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
+	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
 	//       https://codeforces.com/gym/101649 K
 	// 连续子段的算数平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A https://codeforces.com/problemset/problem/1003/C
@@ -183,19 +182,22 @@ func sortCollections() {
 		// 如果是算术平均值的话，bi=1
 		n := len(ps)
 		const eps = 1e-8
-		l, r := 0.0, 1e5 // r=max{ai}/min{bi}
-		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
-			mid := (l + r) / 2
-			b := make([]float64, n)
+		f := func(rate float64) bool {
+			a := make([]float64, n)
 			for i, p := range ps {
-				b[i] = float64(p[0]) - mid*float64(p[1])
+				a[i] = float64(p[0]) - rate*float64(p[1])
 			}
-			sort.Float64s(b) // 由于只需要求最大的 k 个数，也可以用 nthElement
+			sort.Float64s(a) // 由于只需要求最大的 k 个数，也可以用 nthElement
 			s := 0.0
-			for _, v := range b[n-k:] {
+			for _, v := range a[n-k:] {
 				s += v
 			}
-			if s < 0 {
+			return s < 0
+		}
+		l, r := 0.0, 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
+		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
+			mid := (l + r) / 2
+			if f(mid) {
 				r = mid
 			} else {
 				l = mid

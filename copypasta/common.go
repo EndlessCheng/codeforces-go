@@ -632,11 +632,15 @@ func commonCollection() {
 		}
 		sort.Slice(events, func(i, j int) bool {
 			a, b := events[i], events[j]
-			return a.pos < b.pos || a.pos == b.pos && a.delta < b.delta // < 先出后进；> 先进后出
+			return a.pos < b.pos || a.pos == b.pos && a.delta < b.delta // 先出后进。改成 a.delta > b.delta 为先进后出
 		})
 
 		for _, e := range events {
-			_ = e
+			if e.delta > 0 {
+
+			} else {
+
+			}
 		}
 	}
 

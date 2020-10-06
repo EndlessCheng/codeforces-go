@@ -29,6 +29,8 @@ https://oeis.org/A001069 Log2*(n) (version 2): take log_2 of n this many times t
 https://oeis.org/A211667 Number of iterations sqrt(sqrt(sqrt(...(n)...))) such that the result is < 2
     a(n) = 1, 2, 3, 4, 5, ... for n = 2^1, 2^2, 2^4, 2^8, 2^16, ..., i.e., n = 2, 4, 16, 256, 65536, ... = https://oeis.org/A001146
 
+https://oeis.org/A002024 n appears n times; a(n) = floor(sqrt(2n) + 1/2) https://www.zhihu.com/question/25045244
+
 找规律 https://codeforces.com/problemset/problem/1034/B
 */
 func miscCollection() {
