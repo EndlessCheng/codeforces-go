@@ -498,7 +498,7 @@ func dpCollections() {
 
 	// EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
 	// 二维费用的情况 https://ac.nowcoder.com/acm/contest/6218/C
-	zeroOneKnapsack2 := func(values, weights []int, maxW int) int {
+	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
 		for i, v := range values {
 			w := weights[i]
@@ -1028,7 +1028,7 @@ func dpCollections() {
 		maxSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
-		zeroOneKnapsack, zeroOneKnapsack2, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
+		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
 		mergeStones,
 		tsp,
 		digitDP,
