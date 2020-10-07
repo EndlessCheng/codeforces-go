@@ -284,9 +284,64 @@ func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 }
 
 // 线性基（子集异或和问题）
+// https://oi.men.ci/linear-basis-notes/
 // 模板题 https://www.luogu.com.cn/problem/P3812
+// todo 题单 https://www.luogu.com.cn/training/11251
 // todo https://codeforces.com/problemset/problem/895/C
 //  https://codeforces.com/problemset/problem/845/G
+func xorBasis() {
+	const mx = 62
+	b := [mx + 1]int64{}
+	canZero := false
+	insert := func(x int64) {
+		for i := mx; i >= 0; i-- {
+			if x>>i&1 > 0 {
+				if b[i] == 0 {
+					b[i] = x
+					return
+				}
+				x ^= b[i]
+			}
+		}
+		canZero = true
+	}
+	decompose := func(x int64) bool {
+		for i := mx; i >= 0; i-- {
+			if x>>i&1 > 0 {
+				if b[i] == 0 {
+					return false
+				}
+				x ^= b[i]
+			}
+		}
+		return true
+	}
+	maxEle := func() (max int64) {
+		for i := mx; i >= 0; i-- {
+			if max^b[i] > max {
+				max ^= b[i]
+			}
+		}
+		return
+	}
+	minEle := func() int64 {
+		if canZero {
+			return 0
+		}
+		for i := 0; ; i++ {
+			if b[i] > 0 {
+				return b[i]
+			}
+		}
+	}
+	// http://acm.hdu.edu.cn/showproblem.php?pid=3949
+	kthEle := func(k int64) int64 {
+		// todo
+		return 0
+	}
+
+	_ = []interface{}{insert, decompose, minEle, maxEle, kthEle}
+}
 
 // 线性规划（单纯形算法）  linear programming (simplex)
 // https://zh.wikipedia.org/zh-hans/%E5%8D%95%E7%BA%AF%E5%BD%A2%E6%B3%95
