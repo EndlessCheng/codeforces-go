@@ -506,6 +506,18 @@ func dpCollections() {
 				dp[j] = max(dp[j], dp[max(j-w, 0)]+v)
 			}
 		}
+
+		{
+			// 另一种写法
+			for i, v := range values {
+				w := weights[i]
+				for j := maxW; j >= 0; j-- {
+					k := min(j+w, maxW)
+					dp[k] = max(dp[k], dp[j]+v)
+				}
+			}
+		}
+
 		return dp[maxW]
 	}
 
