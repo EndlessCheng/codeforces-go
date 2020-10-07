@@ -927,6 +927,8 @@ func rmqCollection() {
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494
 // https://www.luogu.com.cn/problem/P4462
+// 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
+//     反向构造题 https://www.luogu.com.cn/problem/P6852
 // 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 func moAlgorithm() {
 	// 若 block 改变会对询问有影响，可以先放入不同的 block 然后再排序

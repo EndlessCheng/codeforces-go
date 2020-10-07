@@ -226,22 +226,50 @@ func dpCollections() {
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	*/
 
-	// 最大子段和
+	// 最大子段和 https://www.luogu.com.cn/problem/P1115
 	// 算法导论 练习4.1-5
-	// [推荐] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
-	// 变体 环状最大两段子段和 https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
+	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
+	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
+	// 子段长度有下限的最大子段和：转换为前缀和之差，维护 min(sum[j])
+	// 最大两段子段和：求每个位置上的前缀最大字段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
+	// 最大 m 段子段和 https://acm.hdu.edu.cn/showproblem.php?pid=1024
+	// 环状最大子段和：转换为非环状的 max(最大子段和, 总和减去最小子段和) https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
+	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 变体 https://codeforces.com/problemset/problem/1155/D
 	// 变体 https://codeforces.com/problemset/problem/1373/D
 	maxSubArraySum := func(a []int) int {
 		if len(a) == 0 {
 			return 0
 		}
-		curSum, maxSum := a[0], a[0]
+		curSum, maxSum := a[0], a[0] // int64
 		for _, v := range a[1:] {
 			curSum = max(curSum+v, v)
 			maxSum = max(maxSum, curSum)
 		}
 		return max(maxSum, 0) // 若不允许非空，返回 maxSum
+	}
+
+	// 最大两段子段和（两段必须间隔至少 gap 个数）
+	maxTwoSubArraySum := func(a []int, gap int) int {
+		// 注意下界
+		n := len(a)
+		suf := make([]int, n) // int64
+		suf[n-1] = a[n-1]
+		curSum := a[n-1]
+		for i := n - 2; i >= 0; i-- {
+			v := a[i]
+			curSum = max(curSum+v, v)
+			suf[i] = max(suf[i+1], curSum)
+		}
+		curSum, pre := a[0], a[0]
+		ans := pre + suf[1+gap]
+		for i := 1; i < n-1-gap; i++ {
+			v := a[i]
+			curSum = max(curSum+v, v)
+			pre = max(pre, curSum)
+			ans = max(ans, pre+suf[i+1+gap])
+		}
+		return ans
 	}
 
 	maxSubArrayAbsSum := func(a []int) int {
@@ -1040,7 +1068,7 @@ func dpCollections() {
 
 	_ = []interface{}{
 		prefixSumDP, mapDP,
-		maxSubArraySum, maxSubArrayAbsSum,
+		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,

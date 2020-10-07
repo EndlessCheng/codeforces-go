@@ -770,6 +770,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
 // 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
+// todo 子异和 https://www.luogu.com.cn/problem/P5127
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
