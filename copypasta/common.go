@@ -21,6 +21,10 @@ import (
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
 /* 横看成岭侧成峰
+
+有相当多的题目考察思维角度的转换
+一个技巧是，思考：从答案出发，倒推怎样才能得到这个答案
+
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
