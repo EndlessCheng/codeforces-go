@@ -485,13 +485,25 @@ func dpCollections() {
 	// EXTRA: 恰好装满（相当于 waysToSum 的方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
-	// EXTRA: 二维费用+至少装满 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64
+		dp := make([]int, maxW+1) // int64  fill -inf
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= w; j-- {
 				dp[j] = max(dp[j], dp[j-w]+v)
+			}
+		}
+		return dp[maxW]
+	}
+
+	// EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
+	// 二维费用的情况 https://ac.nowcoder.com/acm/contest/6218/C
+	zeroOneKnapsack2 := func(values, weights []int, maxW int) int {
+		dp := make([]int, maxW+1) // int64  fill -inf
+		for i, v := range values {
+			w := weights[i]
+			for j := maxW; j >= 0; j-- {
+				dp[j] = max(dp[j], dp[max(j-w, 0)]+v)
 			}
 		}
 		return dp[maxW]
@@ -1016,7 +1028,7 @@ func dpCollections() {
 		maxSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
-		zeroOneKnapsack, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
+		zeroOneKnapsack, zeroOneKnapsack2, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
 		mergeStones,
 		tsp,
 		digitDP,

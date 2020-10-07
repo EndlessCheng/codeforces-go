@@ -10,6 +10,11 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 NOTE: 二分时注意特判下限（例如 0）
 
+https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
+https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
+https://oeis.org/A003071 Sorting numbers: maximal number of comparisons for sorting n elements by list merging
+https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed to sort n elements
+
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
 3273 https://www.luogu.com.cn/problem/P2884 二分最大值
@@ -174,14 +179,16 @@ func sortCollections() {
 	// 0-1 分数规划
 	// https://oi-wiki.org/misc/frac-programming/
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
-	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
-	// 与生成树结合，即最优比率生成树 https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
-	// 与负环判定结合，即最优比率环 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
-	// 与网络流结合，即最大密度子图 https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
-	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
 	//       https://codeforces.com/gym/101649 K
+	//       https://www.luogu.com.cn/problem/P1570
 	// 连续子段的算数平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A https://codeforces.com/problemset/problem/1003/C
+	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
+	// 与生成树结合，即最优比率生成树 https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
+	// 与负环判定结合，即最优比率环 https://www.luogu.com.cn/problem/P1768 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
+	//     O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
+	// 与网络流结合，即最大密度子图 https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
+	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1

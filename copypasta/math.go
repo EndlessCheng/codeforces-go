@@ -10,6 +10,8 @@ import (
 
 /* 数论 组合数学 博弈论 趣味数学
 
+一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
+
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 
 todo 期望与贡献 https://codeforces.com/blog/entry/62690 https://codeforces.com/blog/entry/62792
@@ -1120,6 +1122,7 @@ func numberTheoryCollection() {
 	// n! ~ √(2πn)*(n/e)^n
 	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
+	// https://oeis.org/A003070 a(n) = ceiling(log_2(n!))
 	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
 
 	calcFactorial := func(n int) int64 {

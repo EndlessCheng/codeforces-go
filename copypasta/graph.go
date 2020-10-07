@@ -978,6 +978,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 
 // 单源最短路 SPFA O(nm)   Bellman-Ford
 // 有负环时返回 nil
+// todo DFS 写法
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
@@ -1023,7 +1024,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 				relaxedCnt[w] = relaxedCnt[v] + 1
 				if relaxedCnt[w] >= n {
 					return nil
-				} // found negative cycle
+				} // 找到一个从 st 出发可达的负环
 				if !inQ[w] {
 					inQ[w] = true
 					q = append(q, w)
@@ -1031,6 +1032,9 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 			}
 		}
 	}
+
+	// EXTRA: 只是找负环的话可以初始所有点入队
+	// https://www.luogu.com.cn/problem/P2868
 
 	// EXTRA: 打印负环
 	// https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html
