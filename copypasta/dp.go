@@ -487,6 +487,7 @@ func dpCollections() {
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
+		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= w; j-- {
@@ -500,6 +501,7 @@ func dpCollections() {
 	// 二维费用的情况 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
+		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= 0; j-- {
@@ -552,6 +554,7 @@ func dpCollections() {
 	// 完全背包
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
+		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := w; j <= maxW; j++ {
