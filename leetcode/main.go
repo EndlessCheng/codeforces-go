@@ -413,6 +413,22 @@ func maxPathSum(root *TreeNode) int {
     return ans
 }
 
+// LC 141 O(1) 判环
+func hasCycle(head *ListNode) bool {
+    if head == nil || head.Next == nil {
+        return false
+    }
+    slow, fast := head, head.Next
+    for fast != slow {
+        if fast == nil || fast.Next == nil {
+            return false
+        }
+        slow = slow.Next
+        fast = fast.Next.Next
+    }
+    return true
+}
+
 // LC 152
 func maxProduct(a []int) int {
     min := func(a, b int) int {
