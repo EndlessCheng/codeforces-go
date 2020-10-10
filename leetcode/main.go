@@ -429,6 +429,27 @@ func hasCycle(head *ListNode) bool {
     return true
 }
 
+// LC 142
+func detectCycle(head *ListNode) *ListNode {
+    slow, fast := head, head
+    for fast != nil {
+        slow = slow.Next
+        if fast.Next == nil {
+            return nil
+        }
+        fast = fast.Next.Next
+        if fast == slow {
+            p := head
+            for p != slow {
+                p = p.Next
+                slow = slow.Next
+            }
+            return p
+        }
+    }
+    return nil
+}
+
 // LC 152
 func maxProduct(a []int) int {
     min := func(a, b int) int {
