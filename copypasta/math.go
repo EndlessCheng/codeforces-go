@@ -459,7 +459,7 @@ func numberTheoryCollection() {
 				factors = append(factors, [2]int{i, e})
 			}
 		}
-		if n > 1 { // n 是质数
+		if n > 1 {
 			factors = append(factors, [2]int{n, 1})
 		}
 		return
@@ -474,7 +474,7 @@ func numberTheoryCollection() {
 				primes = append(primes, i)
 			}
 		}
-		if n > 1 { // n 是质数
+		if n > 1 {
 			primes = append(primes, n)
 		}
 		return
