@@ -298,8 +298,9 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 解析每个 <pre> 块内的文本（以中文为基准解析	）
-		// 还需要判断 <pre> 内部第一个 tag 是不是 <strong> https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
-		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom == atom.Strong {
+		// 需要判断 <pre> 的下一个子元素是否为 tag https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
+		// 注意不一定为 <strong> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
+		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 { // atom.Strong or atom.B
 			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
 				next, input := parseData(o.FirstChild)
 				p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
