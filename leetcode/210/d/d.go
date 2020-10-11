@@ -42,9 +42,7 @@ func countSubgraphsForEachDiameter(n int, edges [][]int) (ans []int) {
 	}
 	ans = make([]int, n)
 	for sub := 0; sub < 1<<len(edges); sub++ {
-		if res := f(sub); res > 0 {
-			ans[res]++
-		}
+		ans[f(sub)]++
 	}
 	return ans[1:]
 }

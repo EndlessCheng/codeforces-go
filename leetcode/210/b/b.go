@@ -15,7 +15,7 @@ func maximalNetworkRank(n int, es [][]int) (ans int) {
 		conn[w][v] = true
 	}
 	for i, v := range d {
-		for j := i + 1; j < len(d); j++ {
+		for j := i + 1; j < n; j++ {
 			s := v + d[j]
 			if conn[i][j] {
 				s--
