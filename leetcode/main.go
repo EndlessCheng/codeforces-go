@@ -19,10 +19,8 @@ func main() {
         }
         return bytes
     }
-
+    _ = toBytes
     _ = MustBuildTreeNode
-
-    _ = []interface{}{toBytes, ListNode{}, TreeNode{}}
 }
 
 // LC 18
