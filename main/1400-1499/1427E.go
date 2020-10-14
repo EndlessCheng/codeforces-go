@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -12,28 +11,28 @@ func CF1427E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	type pair struct {
-		x, y uint64
+		x, y int64
 		op   byte
 	}
 
-	var x uint64
+	var x int64
 	Fscan(in, &x)
 	ans := []pair{{x, x, '^'}} // write 0
 	for i := 0; i < 20; i++ {
 		ans = append(ans, pair{x << i, x << i, '+'}) // write x * 2^k, so we can write any multi of x
 	}
 	const mx = 39
-	basis := [mx + 1]uint64{} // xor basis
+	basis := [mx + 1]int64{} // xor basis
 o:
-	for i := uint64(1); basis[0] == 0; i++ {
-		bs := []uint64{}
+	for i := int64(1); basis[0] == 0; i++ {
+		bs := []int64{}
 		for j, y := mx, x*i; j >= 0; j-- {
 			if y>>j&1 > 0 {
 				if basis[j] == 0 {
 					basis[j] = y
-					y = uint64(0)
+					y = int64(0)
 					for k := i; k > 0; k &= k - 1 {
-						v := x << bits.TrailingZeros64(k)
+						v := k & -k * x
 						ans = append(ans, pair{y, v, '+'}) // write from 0 to x*i by splitting i to some 2^k
 						y += v
 					}
