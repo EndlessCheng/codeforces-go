@@ -688,6 +688,7 @@ func dpCollections() {
 	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
 	安排邮筒 LC1478/双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
+	同色消除 https://codeforces.com/problemset/problem/1132/F
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
 	*/

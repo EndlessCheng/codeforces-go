@@ -8,8 +8,6 @@ import (
 /*
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-NOTE: 二分时注意特判下限（例如 0）
-
 https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
 https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
 https://oeis.org/A003071 Sorting numbers: maximal number of comparisons for sorting n elements by list merging

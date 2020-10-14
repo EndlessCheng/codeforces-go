@@ -332,9 +332,10 @@ func mergeCount(a []int) int64 {
 // LC51 https://leetcode-cn.com/problems/n-queens/
 // LC52 https://leetcode-cn.com/problems/n-queens-ii/
 
-// 格雷码 https://oeis.org/A003188
+// 格雷码 https://oeis.org/A003188 https://oeis.org/A014550
 // https://en.wikipedia.org/wiki/Gray_code
 // LC89 https://leetcode-cn.com/problems/gray-code/
+// 转换 https://codeforces.com/problemset/problem/1419/E
 func grayCode(length int) []int {
 	ans := make([]int, 1<<length)
 	for i := range ans {

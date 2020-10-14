@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -39,4 +38,4 @@ func CF388C(_r io.Reader, out io.Writer) {
 	Fprint(out, x, y)
 }
 
-func main() { CF388C(os.Stdin, os.Stdout) }
+//func main() { CF388C(os.Stdin, os.Stdout) }
