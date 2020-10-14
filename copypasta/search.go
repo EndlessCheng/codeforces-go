@@ -361,6 +361,12 @@ func searchCollection() {
 	// TODO: https://oi-wiki.org/search/dlx/
 	//       https://leverimmy.blog.luogu.org/dlx-xiang-xi-jiang-jie
 	//       https://www.luogu.com.cn/blog/Parabola/qian-tan-shen-xian-suan-fa-dlx
+	//       https://www.cnblogs.com/grenet/p/3145800.html
+	//       https://www.cnblogs.com/grenet/p/3163550.html
+	// 模板题+讲解
+	//       http://hihocoder.com/contest/hiho101/problem/1
+	//       http://hihocoder.com/contest/hiho102/problem/1
+
 
 	// 对抗搜索与 Alpha-Beta 剪枝
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
