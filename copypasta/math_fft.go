@@ -22,6 +22,8 @@ import (
 // http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
 // https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 
+// CDQ FFT 半在线卷积的O(nlog^2/loglogn)算法 https://www.qaq-am.com/cdqFFT/
+
 type fft struct {
 	n               int
 	omega, omegaInv []complex128
