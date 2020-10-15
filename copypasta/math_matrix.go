@@ -64,9 +64,9 @@ func newMatrixI(n int) matrix {
 func (a matrix) mul(b matrix) matrix {
 	const mod int64 = 1e9 + 7 // 998244353
 	c := newMatrix(len(a), len(b[0]))
-	for i := range a {
+	for i, row := range a {
 		for j := range b[0] {
-			for k, aik := range a[i] {
+			for k, aik := range row {
 				// 小心爆 int64，必要时用模乘
 				c[i][j] += aik * b[k][j] % mod
 			}
@@ -93,6 +93,7 @@ func (a matrix) pow(k int64) matrix {
 // a(n) = p*a(n-1) + q*a(n-2)
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
 // m 项递推式，以及包含常数项的情况见《挑战》P201
+// a(n) = a(n-1) + a(n-m) https://codeforces.com/problemset/problem/1117/D
 func calcFibonacci(p, q, a0, a1, n int64) int64 {
 	const mod int64 = 1e9 + 7 // 998244353
 	//n--
@@ -114,8 +115,8 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 
 func (a matrix) add(b matrix) matrix {
 	c := newMatrix(len(a), len(a[0]))
-	for i := range a {
-		for j, aij := range a[i] {
+	for i, row := range a {
+		for j, aij := range row {
 			c[i][j] = aij + b[i][j] // % mod
 		}
 	}
@@ -124,8 +125,8 @@ func (a matrix) add(b matrix) matrix {
 
 func (a matrix) sub(b matrix) matrix {
 	c := newMatrix(len(a), len(a[0]))
-	for i := range a {
-		for j, aij := range a[i] {
+	for i, row := range a {
+		for j, aij := range row {
 			c[i][j] = aij - b[i][j] // % mod) + mod) % mod
 		}
 	}
@@ -149,8 +150,8 @@ func (a matrix) mulRow(i int, k int64) {
 }
 
 func (a matrix) trace() (sum int64) {
-	for i, ai := range a {
-		sum += ai[i]
+	for i, row := range a {
+		sum += row[i]
 	}
 	return
 }
