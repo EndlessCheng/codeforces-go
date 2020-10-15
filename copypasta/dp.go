@@ -510,6 +510,7 @@ func dpCollections() {
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
+	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// EXTRA: 恰好装满（相当于 waysToSum 的方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
