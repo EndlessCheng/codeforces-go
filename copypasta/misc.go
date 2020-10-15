@@ -344,6 +344,26 @@ func grayCode(length int) []int {
 	return ans
 }
 
+// 输入一个仅包含 () 的括号串，返回右括号个数不少于左括号个数的非空子串个数
+func countValidSubstring(s string) (ans int) {
+	cnt := map[int]int{0: 1}
+	leSum := 1 // less equal than v
+	v := 0
+	for _, b := range s {
+		if b == '(' {
+			leSum -= cnt[v]
+			v--
+		} else {
+			v++
+			leSum += cnt[v]
+		}
+		ans += leSum
+		cnt[v]++
+		leSum++
+	}
+	return
+}
+
 // 负二进制数相加
 // LC1073/周赛139C https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
 func addNegabinary(a1, a2 []int) []int {
