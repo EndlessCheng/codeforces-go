@@ -53,6 +53,21 @@ func fourSum(a []int, target int) (ans [][]int) {
     return
 }
 
+// LC 19
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+    dummy := &ListNode{0, head}
+    l, r := dummy, head
+    // r 先走 n 步，这样当 r 到末尾时，l 恰好在目标位置之前
+    for i := 0; i < n; i++ {
+        r = r.Next
+    }
+    for ; r != nil; r = r.Next {
+        l = l.Next
+    }
+    l.Next = l.Next.Next
+    return dummy.Next
+}
+
 // LC 37
 func solveSudoku(board [][]byte) {
     var line, column [9]uint
@@ -230,6 +245,25 @@ func permuteUnique(nums []int) (ans [][]int) {
         }
     }
     f(0)
+    return
+}
+
+// LC 52
+func totalNQueens(n int) (ans int) {
+    var solve func(row, columns, diagonals1, diagonals2 int)
+    solve = func(row, columns, diagonals1, diagonals2 int) {
+        if row == 1 {
+            ans++
+            return
+        }
+        availablePositions := (1<<n - 1) &^ (columns | diagonals1 | diagonals2)
+        for availablePositions > 0 {
+            position := availablePositions & -availablePositions
+            solve(row+1, columns|position, (diagonals1|position)<<1, (diagonals2|position)>>1)
+            availablePositions &^= position // 移除该比特位
+        }
+    }
+    solve(0, 0, 0, 0)
     return
 }
 
