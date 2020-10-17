@@ -303,7 +303,7 @@ func miscCollection() {
 }
 
 // 逆序对
-// LC面试题51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+// LC 面试题 51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 func mergeCount(a []int) int64 {
 	n := len(a)
 	if n <= 1 {
@@ -328,9 +328,26 @@ func mergeCount(a []int) int64 {
 	return cnt
 }
 
-// N 皇后 - 回溯法
+// 状压 N 皇后
 // LC51 https://leetcode-cn.com/problems/n-queens/
 // LC52 https://leetcode-cn.com/problems/n-queens-ii/
+func totalNQueens(n int) (ans int) {
+	var f func(row, columns, diagonals1, diagonals2 int)
+	f = func(row, columns, diagonals1, diagonals2 int) {
+		if row == 1 {
+			ans++
+			return
+		}
+		availablePositions := (1<<n - 1) &^ (columns | diagonals1 | diagonals2)
+		for availablePositions > 0 {
+			position := availablePositions & -availablePositions
+			f(row+1, columns|position, (diagonals1|position)<<1, (diagonals2|position)>>1)
+			availablePositions &^= position // 移除该比特位
+		}
+	}
+	f(0, 0, 0, 0)
+	return
+}
 
 // 格雷码 https://oeis.org/A003188 https://oeis.org/A014550
 // https://en.wikipedia.org/wiki/Gray_code
@@ -340,6 +357,24 @@ func grayCode(length int) []int {
 	ans := make([]int, 1<<length)
 	for i := range ans {
 		ans[i] = i ^ i>>1
+	}
+	return ans
+}
+
+// 输入两个无重复元素的序列，返回通过交换相邻元素，从 a 到 b 所需的最小交换次数
+// 保证 a b 包含相同的元素
+func countSwap(a, b []int) int {
+	// 可能要事先 copy 一份 a
+	// 暴力法
+	ans := 0
+	for _, tar := range b {
+		for i, v := range a {
+			if v == tar {
+				ans += i
+				a = append(a[:i], a[i+1:]...)
+				break
+			}
+		}
 	}
 	return ans
 }
