@@ -31,6 +31,7 @@ import (
    扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
    状态优化 https://codeforces.com/problemset/problem/838/E
+  「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
 
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
 	https://ac.nowcoder.com/acm/contest/6218/B
@@ -515,6 +516,7 @@ func dpCollections() {
 	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
+	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
 		//dp[0] = 0
