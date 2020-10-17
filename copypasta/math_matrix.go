@@ -287,6 +287,7 @@ func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 // 线性基（子集异或和问题）
 // https://oi.men.ci/linear-basis-notes/
 // 模板题 https://www.luogu.com.cn/problem/P3812
+// 构造 https://codeforces.com/problemset/problem/1427/E
 // todo 题单 https://www.luogu.com.cn/training/11251
 // todo https://codeforces.com/problemset/problem/895/C
 //  https://codeforces.com/problemset/problem/845/G
