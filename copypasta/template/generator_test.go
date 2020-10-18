@@ -30,6 +30,9 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 	}
 }
 
+// "../../misc/kickstart/2020//"
+// "../../misc/luogu/contest//"
+// "../../misc/nowcoder//"
 func TestGenTemplates(t *testing.T) {
 	const (
 		problemNum = 3
