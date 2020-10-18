@@ -1257,8 +1257,10 @@ func numberTheoryCollection() {
 
 	// 另类组合数求法
 	{
+		const mod int64 = 1e9 + 7
 		var n, k int64
-		_ = new(big.Int).Binomial(n, k).Int64()
+		_ = new(big.Int).Binomial(n, k).Int64() // small
+		_ = new(big.Int).Mod(new(big.Int).Binomial(n, k), big.NewInt(mod)).Int64()
 		_ = int64(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
 	}
 
