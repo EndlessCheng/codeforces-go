@@ -1434,6 +1434,8 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
+Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
 
