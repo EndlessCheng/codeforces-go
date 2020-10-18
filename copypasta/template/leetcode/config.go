@@ -24,7 +24,7 @@ var (
 )
 
 func init() {
-	if contestID == 0 {
+	if contestID <= 0 {
 		contestID = calcNextContestID()
 	}
 
@@ -44,18 +44,19 @@ func calcNextContestID() int {
 		panic(err)
 	}
 
+	shift := contestID
 	switch contestPrefix {
 	case contestPrefixWeekly:
 		// 以 2020 年第一场周赛的结束时间为基准
 		endTime170 := time.Date(2020, 1, 5, 12, 0, 0, 0, utc8)
 		weeksSince170 := 1 + int(time.Since(endTime170)/(7*24*time.Hour))
-		return 170 + weeksSince170
+		return 170 + weeksSince170 + shift
 	case contestPrefixBiweekly:
 		// 以 2020 年第一场双周赛的结束时间为基准
 		endTime17 := time.Date(2020, 1, 12, 0, 0, 0, 0, utc8)
 		twoWeeksSince17 := 1 + int(time.Since(endTime17)/(14*24*time.Hour))
-		return 17 + twoWeeksSince17
+		return 17 + twoWeeksSince17 + shift
 	default:
-		return -1
+		return 0 // do nothing
 	}
 }
