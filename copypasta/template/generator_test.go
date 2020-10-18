@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// https://codeforces.com/contest//problems
 func TestGenCodeforcesContestTemplates(t *testing.T) {
 	const contestID = ""
 	const overwrite = false
