@@ -15,6 +15,10 @@ TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的�
 NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
 
+https://oeis.org/A031878 Maximal number of edges in Hamiltonian path in complete graph on n nodes
+a(n) = C(n, 2)        n%2==0
+a(n) = C(n, 2)-n/2+1  n%2==1
+
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 
 环与独立集 https://codeforces.com/problemset/problem/1364/D
