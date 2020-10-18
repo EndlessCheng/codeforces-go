@@ -2,41 +2,25 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func findLexSmallestString(s string, A int, shift int) (ans string) {
-	n := len(s)
-	ans = s
 	add := func(b, inc byte) byte { return '0' + (b&15+inc)%10 }
 
-	a := byte(A)
-	if shift&1 > 0 {
-		for k := 0; k < n; k++ {
-			for i := byte(0); i < 10; i++ {
-				for i2 := byte(0); i2 < 10; i2++ {
-					t := []byte(s)
-					for j, b := range t {
-						if j&1 == 0 {
-							t[j] = add(b, i*a)
-						} else {
-							t[j] = add(b, i2*a)
-						}
-					}
-					ans = min(ans, string(t))
-				}
-			}
-			s = s[len(s)-shift:] + s[:len(s)-shift]
-		}
-	} else {
-		for k := 0; k < n; k++ {
-			for i := byte(0); i < 10; i++ {
+	n, a, up := len(s), byte(A), byte(shift&1*9)
+	ans = s
+	for range s {
+		for i := byte(0); i < 10; i++ { // 奇
+			for i2 := byte(0); i2 <= up; i2++ { // 偶
 				t := []byte(s)
-				for j, v := range t {
-					if j&1 == 1 {
-						t[j] = add(v, i*a)
+				for j, b := range t {
+					if j&1 > 0 {
+						t[j] = add(b, i*a)
+					} else {
+						t[j] = add(b, i2*a)
 					}
 				}
 				ans = min(ans, string(t))
 			}
-			s = s[len(s)-shift:] + s[:len(s)-shift]
 		}
+		s = s[n-shift:] + s[:n-shift]
 	}
 	return
 }
