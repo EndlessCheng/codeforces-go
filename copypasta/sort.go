@@ -35,14 +35,11 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
 type _pair struct{ x, y int }
-type pairSlice []_pair
+type pairs []_pair
 
-func (p pairSlice) Len() int { return len(p) }
-func (p pairSlice) Less(i, j int) bool {
-	a, b := p[i], p[j]
-	return a.x < b.x || a.x == b.x && a.y < b.y
-}
-func (p pairSlice) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+func (p pairs) Len() int           { return len(p) }
+func (p pairs) Less(i, j int) bool { a, b := p[i], p[j]; return a.x < b.x || a.x == b.x && a.y < b.y }
+func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func sortCollections() {
 	{
