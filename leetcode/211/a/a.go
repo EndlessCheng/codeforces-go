@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 // github.com/EndlessCheng/codeforces-go
 func maxLengthBetweenEqualCharacters(s string) (ans int) {
 	pos := [26][2]int{}
@@ -15,6 +17,14 @@ func maxLengthBetweenEqualCharacters(s string) (ans int) {
 	ans = -1
 	for _, ps := range pos[:] {
 		ans = max(ans, ps[1]-ps[0]-1)
+	}
+	return
+}
+
+func maxLengthBetweenEqualCharacters2(s string) (ans int) {
+	ans = -1
+	for b := byte('a'); b <= 'z'; b++ {
+		ans = max(ans, strings.LastIndexByte(s, b)-strings.IndexByte(s, b)-1)
 	}
 	return
 }
