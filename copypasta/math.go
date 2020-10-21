@@ -144,8 +144,8 @@ func numberTheoryCollection() {
 
 	// 前 n 个数的 LCM https://oeis.org/A003418
 	// a(n)/a(n-1) = https://oeis.org/A014963
-	// Mangoldt Function
-	// https://mathworld.wolfram.com/MangoldtFunction.html
+	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
+	// Mangoldt Function https://mathworld.wolfram.com/MangoldtFunction.html
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
@@ -386,7 +386,6 @@ func numberTheoryCollection() {
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
-	// 也有线性时间的算法，见 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
 	// 质数个数 π(n) https://oeis.org/A000720
 	//         π(10^n) https://oeis.org/A006880
 	//         4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, /* 1e9 */
@@ -415,11 +414,12 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 线性筛
+	// 线性筛 欧拉筛
 	// 避免多次标记合数
+	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
 	// https://www.luogu.com.cn/problem/solution/P3383
 	// https://www.luogu.com.cn/problem/P3383
-	sieveL := func() {
+	sieveEuler := func() {
 		const mx int = 1e7
 		primes := []int{}
 		pid := [mx + 1]int{-1, -1}
@@ -1376,7 +1376,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
-		isPrime, sieve, sieveL, primeFactorization, primeDivisors, primeExponentsCountAll,
+		isPrime, sieve, sieveEuler, primeFactorization, primeDivisors, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
 		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
@@ -1423,6 +1423,7 @@ todo https://codeforces.com/problemset/problem/451/E
 	https://oeis.org/A001909 错排的比较对象的范围是 [1,n+4]  a(n) = n*a(n-1) + (n-4)*a(n-2), a(2) = 0, a(3) = 1
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
+    Q(n,n) = (n-1)!
 
 斯特林数 https://oi-wiki.org/math/stirling/ https://blog.csdn.net/ACdreamers/article/details/8521134
 Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275

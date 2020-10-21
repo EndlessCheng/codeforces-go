@@ -367,7 +367,6 @@ func searchCollection() {
 	//       http://hihocoder.com/contest/hiho101/problem/1
 	//       http://hihocoder.com/contest/hiho102/problem/1
 
-
 	// 对抗搜索与 Alpha-Beta 剪枝
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
@@ -448,6 +447,25 @@ func loopCollection() {
 				// do(sub)...
 
 			}
+		}
+
+		{
+			// EXTRA: 求多个数的所有非空子集组成的集合
+			// https://ac.nowcoder.com/acm/contest/7607/B
+			has := [1e6 + 1]bool{0: true}
+			var f func(uint)
+			f = func(v uint) {
+				if has[v] {
+					return
+				}
+				has[v] = true
+				for w := v; w > 0; w &= w - 1 {
+					f(v &^ (1 << bits.TrailingZeros(w)))
+				}
+			}
+			//for _, v := range a {
+			//	f(v)
+			//}
 		}
 	}
 
