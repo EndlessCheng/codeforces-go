@@ -41,6 +41,7 @@ NOTE:（区间 DP）正向计算不易时，试着反向计算
 TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，用滑动窗口来维护区间和，从而优化转移
       例题 LC837 https://leetcode-cn.com/problems/new-21-game/
 递归打印路径：https://codeforces.com/problemset/problem/2/B
+需要补充额外的状态 https://codeforces.com/problemset/problem/682/D
 
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
