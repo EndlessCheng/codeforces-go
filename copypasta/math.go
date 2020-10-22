@@ -164,6 +164,7 @@ func numberTheoryCollection() {
 	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)   https://oeis.org/A018804
 	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)   https://oeis.org/A057660
 	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806
+	// ∑∑∑gcd(i,j,k) = ∑phi(i)*(floor(n/i))^3   https://ac.nowcoder.com/acm/contest/7608/B
 
 	// LCM 求和相关
 	// ∑lcm(n,i) = n*(1+∑{d|n}d*phi(d))/2 = n*(1+A057660(n))/2   https://oeis.org/A051193
@@ -881,8 +882,8 @@ func numberTheoryCollection() {
 	// φ补集 https://oeis.org/A007617
 	initPhi := func() {
 		const mx int = 1e6
-		phi := [mx + 1]int{1: 1}
-		for i := 2; i <= mx; i++ {
+		phi := [mx + 1]int{}
+		for i := 1; i <= mx; i++ {
 			phi[i] = i
 		}
 		for i := 2; i <= mx; i++ {
