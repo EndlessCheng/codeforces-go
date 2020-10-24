@@ -224,6 +224,11 @@ func sortCollections() {
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
 	//      https://codeforces.com/blog/entry/45578
 
+	// WQS 二分
+	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
+	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
+	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
+
 	_ = []interface{}{
 		insertionSort,
 		lowerBound, upperBound,
