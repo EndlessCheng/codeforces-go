@@ -4,14 +4,20 @@ import (
 	"io/ioutil"
 	"strings"
 	"testing"
+	"time"
 )
 
 // https://codeforces.com/contest//problems
 func TestGenCodeforcesContestTemplates(t *testing.T) {
 	const contestID = ""
 	const overwrite = false
-	if err := GenCodeforcesContestTemplates(contestID, overwrite); err != nil {
-		t.Fatal(err)
+	for {
+		if err := GenCodeforcesContestTemplates(contestID, overwrite); err != nil {
+			//t.Log(err)
+		} else {
+			break
+		}
+		time.Sleep(5 * time.Second)
 	}
 }
 
