@@ -1190,7 +1190,7 @@ func numberTheoryCollection() {
 	// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 	{
 		const mod int64 = 1e9 + 7
-		const mx int = 1e6
+		const mx int = 2e6
 		F := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			F[i] = F[i-1] * int64(i) % mod
@@ -1231,6 +1231,7 @@ func numberTheoryCollection() {
 		// 相当于把 k 个无区别的球放入 n 个有区别的盒子中，且允许空盒的方案数
 		//		隔板法：把 n 个盒子当做 n-1 个隔板，这样相当于总共有 k+n-1个位置，从中选择 k 个位置放球，剩下的位置放隔板。这样就把 k 个球划分成了 n 份，放入对应的盒子中
 		// 相当于长度为 k，元素范围在 [1,n] 的非降序列的个数
+		// NOTE: mx 要开两倍空间！
 		H := func(n, k int) int64 { return C(n+k-1, k) }
 
 		// 某些组合题可能用到

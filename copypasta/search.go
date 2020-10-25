@@ -591,62 +591,64 @@ func loopCollection() {
 
 // 网格/矩阵上的搜索
 func gridCollection() {
-	type point struct{ x, y int }
-	dir4 := []point{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	type pair struct {
-		point
-		dep int
-	}
+	type pair struct{ x, y int }
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 
-	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGrid
-	// 无法到达时返回 1e9
+	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep
+	// 无法到达时返回 inf
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
-	disST := func(g [][]byte, s point, t point) int {
+	disST := func(g [][]byte, s pair, t pair) int {
+		const inf int = 1e9 // 1e18
+		type pDep struct {
+			pair
+			dep int
+		}
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
 		vis[s.x][s.y] = true
-		q := []pair{{s, 0}}
+		q := []pDep{{s, 0}}
 		for len(q) > 0 {
 			p := q[0]
 			q = q[1:]
 			// g[p.x][p.y] == t
-			if p.point == t {
+			if p.pair == t {
 				return p.dep
 			}
 			for _, d := range dir4 {
 				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
 					vis[xx][yy] = true
-					q = append(q, pair{point{xx, yy}, p.dep + 1})
+					q = append(q, pDep{pair{xx, yy}, p.dep + 1})
 				}
 			}
 		}
-		return 1e9
+		return inf
 	}
 
-	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子
+	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子   bfsGrid
 	// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
-	findAllReachableTargets := func(g [][]byte, s point, t byte) (ps []point) {
+	findAllReachableTargets := func(g [][]byte, s pair, t byte) (ps []pair) {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
 		vis[s.x][s.y] = true
-		q := []point{s}
+		q := []pair{s}
 		for len(q) > 0 {
 			p := q[0]
 			q = q[1:]
-			if g[p.x][p.y] == t {
+			x, y := p.x, p.y
+			if g[x][y] == t { // x == n-1 && y == m-1
 				ps = append(ps, p)
 			}
 			for _, d := range dir4 {
-				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
+				if xx, yy := x+d.x, y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
 					vis[xx][yy] = true
-					q = append(q, point{xx, yy})
+					q = append(q, pair{xx, yy})
 				}
 			}
 		}
@@ -792,27 +794,27 @@ func gridCollection() {
 
 	// other help functions
 
-	isValidPoint := func(g [][]byte, p point) bool {
+	isValidPoint := func(g [][]byte, p pair) bool {
 		n, m := len(g), len(g[0])
 		return 0 <= p.x && p.x < n && 0 <= p.y && p.y < m && g[p.x][p.y] != '#'
 	}
 
-	findOneTargetAnyWhere := func(g [][]byte, tar byte) point {
+	findOneTargetAnyWhere := func(g [][]byte, tar byte) pair {
 		for i, row := range g {
 			for j, b := range row {
 				if b == tar {
-					return point{i, j}
+					return pair{i, j}
 				}
 			}
 		}
-		return point{-1, -1}
+		return pair{-1, -1}
 	}
 
-	findAllTargetsAnyWhere := func(g [][]byte, tar byte) (ps []point) {
+	findAllTargetsAnyWhere := func(g [][]byte, tar byte) (ps []pair) {
 		for i, row := range g {
 			for j, b := range row {
 				if b == tar {
-					ps = append(ps, point{i, j})
+					ps = append(ps, pair{i, j})
 				}
 			}
 		}
