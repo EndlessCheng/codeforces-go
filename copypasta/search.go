@@ -589,6 +589,7 @@ func loopCollection() {
 	}
 }
 
+// 网格/矩阵上的搜索
 func gridCollection() {
 	type point struct{ x, y int }
 	dir4 := []point{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
@@ -723,6 +724,72 @@ func gridCollection() {
 		return
 	}
 
+	// 周赛 212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/
+	findSameValueCC := func(mat [][]int) {
+		type pair struct{ x, y int }
+		type vPos struct {
+			v   int
+			pos []pair
+		}
+		allPos := map[int][]pair{}
+		for i, row := range mat {
+			for j, v := range row {
+				allPos[v] = append(allPos[v], pair{i, j})
+			}
+		}
+		vps := []vPos{}
+		for v, pos := range allPos {
+			np := len(pos)
+			g := make([][]int, np)
+			for i := 1; i < np; i++ {
+				if pos[i].x == pos[i-1].x {
+					g[i] = append(g[i], i-1)
+					g[i-1] = append(g[i-1], i)
+				}
+			}
+			pid := map[pair]int{}
+			col := map[int][]int{} // 按列分组的横坐标
+			for i, p := range pos {
+				pid[p] = i
+				col[p.y] = append(col[p.y], p.x)
+			}
+			for j, is := range col {
+				for k := 1; k < len(is); k++ {
+					i := pid[pair{is[k-1], j}]
+					i2 := pid[pair{is[k], j}]
+					g[i] = append(g[i], i2)
+					g[i2] = append(g[i2], i)
+				}
+			}
+			// 寻找值相同且同行列的所有位置
+			var cc []pair
+			vis := make([]bool, np)
+			var f func(int)
+			f = func(v int) {
+				vis[v] = true
+				cc = append(cc, pos[v])
+				for _, w := range g[v] {
+					if !vis[w] {
+						f(w)
+					}
+				}
+				return
+			}
+			for i, b := range vis {
+				if !b {
+					cc = nil
+					f(i)
+					vps = append(vps, vPos{v, cc})
+				}
+			}
+		}
+		sort.Slice(vps, func(i, j int) bool { return vps[i].v < vps[j].v })
+		//for _, vp := range vps {
+		//	v, pos := vp.v, vp.pos
+		//
+		//}
+	}
+
 	// other help functions
 
 	isValidPoint := func(g [][]byte, p point) bool {
@@ -755,6 +822,7 @@ func gridCollection() {
 	_ = []interface{}{
 		disST, findAllReachableTargets,
 		cntCC, dfsValidGrids,
+		findSameValueCC,
 		isValidPoint, findOneTargetAnyWhere, findAllTargetsAnyWhere,
 	}
 }
