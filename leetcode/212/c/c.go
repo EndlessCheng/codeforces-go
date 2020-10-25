@@ -2,6 +2,12 @@ package main
 
 import "sort"
 
+// 另外两个方法：
+// - 从小到大加入并查集直至起终点在同一个集合
+// - dij，把 + 换成 max
+
+// 从码量上来说最小的还是二分
+
 // github.com/EndlessCheng/codeforces-go
 func minimumEffortPath(a [][]int) (ans int) {
 	abs := func(x int) int {
