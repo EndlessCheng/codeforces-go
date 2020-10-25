@@ -834,6 +834,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
 // 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
+// 基于 max https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
