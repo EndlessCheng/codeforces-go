@@ -118,6 +118,13 @@ func commonCollection() {
 			}
 		}
 	}
+	ceil := func(a, b int) int {
+		// assert a >= 0 && b > 0
+		if a == 0 {
+			return 0
+		}
+		return (a-1)/b + 1
+	}
 
 	isDigit := func(b byte) bool { return '0' <= b && b <= '9' }
 	isLower := func(b byte) bool { return 'a' <= b && b <= 'z' }
@@ -758,7 +765,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
-		min, mins, max, maxs, abs, absAll,
+		min, mins, max, maxs, abs, absAll, ceil,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits, initSum2D, querySum2D, contributionSum, mergeMap,

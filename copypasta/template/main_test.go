@@ -30,7 +30,7 @@ func Test(t *testing.T) {
 	t.Logf("Current problem is [%s]", filepath.Base(dir))
 }
 
-// 无尽对拍
+// 无尽对拍 / 构造 hack 数据
 func TestCompare(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
@@ -60,9 +60,10 @@ func TestCompare(t *testing.T) {
 	}
 
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
+	//testutil.AssertEqualRunResultsInf(t, inputGenerator, run, runBF) // for hacking, write wrong codes in runBF
 }
 
-// 无尽检查输出是否正确
+// 无尽检查输出是否正确 / 构造 hack 数据
 func TestCheck(t *testing.T) {
 	return
 	assert := assert.New(t)
@@ -96,4 +97,11 @@ func TestCheck(t *testing.T) {
 	}
 
 	testutil.CheckRunResultsInf(t, inputGenerator, run)
+	return
+
+	// for hacking, write wrong codes here
+	runHack := func(in io.Reader, out io.Writer) {
+
+	}
+	testutil.CheckRunResultsInf(t, inputGenerator, runHack)
 }

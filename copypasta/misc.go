@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"bytes"
+	"math"
 	"regexp"
 	"sort"
 	"strconv"
@@ -172,6 +173,11 @@ func miscCollection() {
 		return
 	}
 
+	isInt := func(x float64) bool {
+		const eps = 1e-8
+		return math.Abs(x-math.Round(x)) < eps
+	}
+
 	// 括号拼接
 	// 代码来源 https://codeforces.com/gym/101341/problem/A
 	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
@@ -295,6 +301,7 @@ func miscCollection() {
 		smallK,
 		removeLeadingZero,
 		floatToRat,
+		isInt,
 		concatBrackets,
 		sliceToStr,
 		getMapRangeValues,
