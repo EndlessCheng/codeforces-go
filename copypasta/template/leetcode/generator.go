@@ -281,31 +281,51 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 
 	// parse sample inputs and sample outputs
 	// 注：官方描述可能会打错字（比如「输入」写成「输出」），这里只匹配第一个字
-	parseData := func(o *html.Node) (next *html.Node, data string) {
-		for o = o.NextSibling; ; o = o.NextSibling.NextSibling {
-			data += o.Data
-			if o.NextSibling == nil {
-				break
+	parseData := func(nodes []*html.Node) (data string) {
+		for _, o := range nodes {
+			s := o.Data
+			if o.DataAtom != 0 { // 如果有 tag（如 <code>），则取 tag 内的第一个元素
+				s = o.FirstChild.Data
 			}
-			s := strings.TrimSpace(o.NextSibling.FirstChild.Data)
-			if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
-				break
-			}
+			s = strings.TrimSpace(s)
 			data += s
 		}
-		return o.NextSibling, data
+		return
 	}
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 解析每个 <pre> 块内的文本（以中文为基准解析）
-		// 需要判断 <pre> 的下一个子元素是否为 tag https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
-		// 注意不一定为 <strong> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
+		// 需要判断 <pre> 的下一个子元素是否为 tag
+		//     https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
+		//     https://leetcode-cn.com/contest/weekly-contest-212/problems/arithmetic-subarrays/
+		// 有 tag 也不一定为 <strong> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
 		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 { // atom.Strong or atom.B
 			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
-				next, input := parseData(o.FirstChild)
-				p.sampleIns = append(p.sampleIns, p.parseSampleText(input, true))
-				_, output := parseData(next)
-				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(output, true))
+				var inputNodes, outputNodes []*html.Node
+				c := o.FirstChild.NextSibling
+				for ; ; c = c.NextSibling {
+					if c.DataAtom != 0 {
+						s := strings.TrimSpace(c.FirstChild.Data)
+						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
+							break
+						}
+					}
+					inputNodes = append(inputNodes, c)
+				}
+				rawInput := parseData(inputNodes)
+				p.sampleIns = append(p.sampleIns, p.parseSampleText(rawInput, true))
+
+				for c = c.NextSibling; c != nil; c = c.NextSibling { // 有时候没有解释，那么会通过 c != nil 来跳出循环
+					if c.DataAtom != 0 {
+						s := strings.TrimSpace(c.FirstChild.Data)
+						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
+							break
+						}
+					}
+					outputNodes = append(outputNodes, c)
+				}
+				rawOutput := parseData(outputNodes)
+				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(rawOutput, true))
 				return
 			}
 		}
