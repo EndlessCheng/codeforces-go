@@ -445,6 +445,39 @@ func maxPathSum(root *TreeNode) int {
     return ans
 }
 
+// LC 140
+func wordBreak(s string, wordDict []string) (sentences []string) {
+    wordSet := map[string]bool{}
+    for _, w := range wordDict {
+        wordSet[w] = true
+    }
+    n := len(s)
+    dp := make([][][]string, n)
+    var f func(int) [][]string
+    f = func(p int) [][]string {
+        if dp[p] != nil {
+            return dp[p]
+        }
+        res := [][]string{}
+        for r := p + 1; r < n; r++ {
+            if w := s[p:r]; wordSet[w] {
+                for _, words := range f(r) {
+                    res = append(res, append([]string{w}, words...))
+                }
+            }
+        }
+        if w := s[p:]; wordSet[w] {
+            res = append(res, []string{w})
+        }
+        dp[p] = res
+        return res
+    }
+    for _, words := range f(0) {
+        sentences = append(sentences, strings.Join(words, " "))
+    }
+    return
+}
+
 // LC 141 O(1) 判环
 func hasCycle(head *ListNode) bool {
     if head == nil || head.Next == nil {
