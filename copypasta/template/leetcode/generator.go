@@ -509,7 +509,8 @@ func GenLeetCodeTests(username, password, customComment string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("登录成功", host, username)
+	fmt.Println("登录成功")
+	//fmt.Println("登录成功", host, username)
 
 	var problems []*problem
 	for {
