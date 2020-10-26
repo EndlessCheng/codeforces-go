@@ -12,7 +12,7 @@ func run(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	Fprintln(out, 32 << (^uint(0) >> 32 & 1))
+
 	solve := func(Case int) {
 		var n int
 		Fscan(in, &n)
