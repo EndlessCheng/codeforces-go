@@ -436,7 +436,6 @@ import (
 func Test(t *testing.T) {
 	t.Log("Current test is [%s]")
 	examples := %s{%s
-		// TODO 测试参数的下界和上界
 		
 	}
 	targetCaseNum := 0
