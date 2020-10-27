@@ -21,6 +21,7 @@ import (
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
+// 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2
 
 /* 横看成岭侧成峰
 
