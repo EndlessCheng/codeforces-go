@@ -20,6 +20,8 @@ import (
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 
+// 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
+
 /* 横看成岭侧成峰
 
 有相当多的题目考察思维角度的转换
