@@ -1216,6 +1216,12 @@ func numberTheoryCollection() {
 			}
 			return F[n] * invF[k] % mod * invF[n-k] % mod
 		}
+		P := func(n, k int) int64 {
+			if k < 0 || k > n {
+				return 0
+			}
+			return F[n] * invF[n-k] % mod
+		}
 
 		// EXTRA: 卢卡斯定理
 		var lucas func(n, k int64) int64
@@ -1240,7 +1246,7 @@ func numberTheoryCollection() {
 			pow2[i] = pow2[i-1] << 1 % mod
 		}
 
-		_, _ = C, H
+		_, _, _ = C, P, H
 	}
 
 	// 适用于 n 巨大但 k 或 n-k 较小的情况
