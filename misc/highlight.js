@@ -27,8 +27,8 @@
         return this.replaceAll(substr, "<span style='color: " + color + "'>" + substr + "</span>");
     };
 
-    // 关键词高亮，参考 IntelliJ Light
-    const color = "#008dde";
+    // 关键词高亮
+    const color = "#49cc54"; // 49cc54  008dde
     // 高亮的词，一部分类似 Python 的关键字，另一部分是一些术语、修饰词之类
     // 注意前者要包含后者
     const words = [
