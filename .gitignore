@@ -18,4 +18,5 @@
 *.txt
 /main.go
 /main_test.go
+/helper.go
 /leetcode/main_todo.go
