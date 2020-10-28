@@ -2323,12 +2323,18 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 	return exFlow[end]
 }
 
-// 最小费用流
+// 最小费用流 最小费用最大流 MCMF
 // 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
 // 要求图中无负圈
 // https://oi-wiki.org/graph/flow/min-cost/
-// 模板题 https://www.luogu.com.cn/problem/P3381
 // 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s(max 365ms)   Dijkstra 1.91s(max 688ms)
+// 模板题 https://www.luogu.com.cn/problem/P3381
+// 常用的建模思路是
+// - 从源点 (0) 连 len(A) 条容量为 1，费用为 0 的边到集合 A，
+// - 从集合 B 连 len(B) 条容量为 1，费用为 0 的边到汇点 (len(A)+len(B)+1)
+// - 集合 A B 之间连边，容量为 inf，费用为 f(Ai,Bi)，f 根据题意
+// - 这样跑 MCMF 得到的结果是匹配全部 A 或者 B 的最小花费
+// 例如 https://codeforces.com/problemset/problem/1437/C
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
 
@@ -2346,6 +2352,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 		addEdge(v, w, cap, cost)
 	}
 
+	// n = len(A)+len(B)+2  or  end+1
 	const inf int64 = 1e18
 	dist := make([]int64, n)
 	type pair struct{ v, i int }
@@ -2380,7 +2387,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 		return dist[end] < inf
 	}
 	minCost := int64(0)
-	for F > 0 && spfa() { // 若求最小费用最大流 MCMF，把 F>0 去掉
+	for F > 0 && spfa() { // 若求 MCMF，把 F>0 去掉
 		// 沿 st-end 的最短路尽量增广
 		minF := F // inf
 		for v := end; v != st; {

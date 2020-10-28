@@ -500,6 +500,11 @@ func maxCoveredPoints(ps []vec, r int64) int {
 	return ans
 }
 
+// 圆与扫描线
+// todo https://blog.csdn.net/hzj1054689699/article/details/87861808
+//   http://openinx.github.io/2013/01/01/plane-sweep-thinking/
+//   https://ac.nowcoder.com/acm/contest/7613/D
+
 // 反演变换
 // https://en.wikipedia.org/wiki/Inversive_geometry
 // TODO: https://oi-wiki.org/geometry/inverse/

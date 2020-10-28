@@ -39,6 +39,8 @@ https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
 
 https://oeis.org/A061168 Σfloor(log2(i)) = Σ(bits.Len(i)-1)
 
+https://oeis.org/A333885 Number of triples (i,j,k) with 1 <= i < j < k <= n such that i divides j divides k https://ac.nowcoder.com/acm/contest/7613/A
+
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 	Number of permutations of {1,2,...,n} with exactly one descent
 	Number of partitions of an n-set having exactly one block of size > 1

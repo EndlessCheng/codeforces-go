@@ -444,7 +444,7 @@ func toNegabinary(n int) (res string) {
 		return "0"
 	}
 	for ; n != 0; n = -(n >> 1) {
-		res = string('0'+n&1) + res
+		res = string(byte('0'+n&1)) + res
 	}
 	return
 }
