@@ -41,6 +41,10 @@ Right: [red black tree](./copypasta/red_black_tree.go)
 
 My GoLand `Live Templates` and `Postfix Completion` [settings](./misc/my_goland_template)
 
+Account:
+
+[![](https://cfrating.ihcr.top/?user=synapse)](https://codeforces.com/profile/synapse)
+
 ### Useful Tools
 
 [Draw Geometry](https://csacademy.com/app/geometry_widget/)
