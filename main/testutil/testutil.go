@@ -73,7 +73,7 @@ func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, case
 		t.Fatal("missing sample files")
 	}
 	if len(inputFilePaths) == 0 {
-		t.Log("empty test file")
+		t.Log("[WARN] empty test file")
 		return
 	}
 
