@@ -2338,6 +2338,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	// st--; end--
 
+	const inf int64 = 1e18
 	type neighbor struct{ to, rid, cap, cost int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
 	addEdge := func(from, to, cap, cost int) {
@@ -2353,7 +2354,6 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 	}
 
 	// n = len(A)+len(B)+2  or  end+1
-	const inf int64 = 1e18
 	dist := make([]int64, n)
 	type pair struct{ v, i int }
 	fa := make([]pair, n)
