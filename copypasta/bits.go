@@ -12,6 +12,14 @@ import (
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
 
+常用等式
+a|b = a^b + a&b    a^b = a|b - a&b
+a+b = a|b + a&b
+    = a^b + a&b*2
+相关题目
+https://codeforces.com/problemset/problem/1325/D
+https://atcoder.jp/contests/abc050/tasks/arc066_b
+
 运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
     5         *  /  %  <<  >>  &  &^
@@ -24,7 +32,6 @@ Precedence    Operator
 S∪{i}: S|1<<i
 S\{i}:  S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
-a|b = a^b + a&b
 检测是否只有一个 1：x&(x-1) == 0
 
 异或和相关

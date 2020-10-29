@@ -193,14 +193,8 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	}
 
 	if !isContest {
-		languageIDs := []int{4026}
-		if "abc" < contestID && contestID <= "abc161" || "agc" < contestID && contestID <= "agc043" || "arc" < contestID && contestID <= "arc103" {
-			languageIDs = append(languageIDs, 3013)
-		}
-		for _, languageID := range languageIDs {
-			statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.Language=%d&f.Status=AC&f.Task=%s&orderBy=source_length", languageID, problemName)
-			open.Run(statusURL)
-		}
+		statusURL := filepath.Dir(filepath.Dir(problemURL)) + fmt.Sprintf("/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", problemName)
+		open.Run(statusURL)
 	}
 
 	// 创建 x.go

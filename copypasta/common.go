@@ -637,6 +637,7 @@ func commonCollection() {
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
+		// 注：若要求先进后出，或者先后没有关系，则可以只存储 2*start 和 2*end+1，这样排序后，用奇偶性来表示进出关系
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)
 		for i := 0; i < n; i++ {
