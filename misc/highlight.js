@@ -55,6 +55,7 @@
         // "modulo",
         "permutations", "permutation",
         "lowercase", "uppercase",
+        "consecutive",
         "lexicographically", "lexicographical",
         "expected value",
         // "operations", "Operations", "operation", "Operation",
