@@ -42,7 +42,7 @@
         "must", "only", "exactly", "always",
 
         // "Note", "note",
-        "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest",
+        "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
         " small ", " big ", " large ",
         "at least", "at most",
         "zero", "positive", "negative",
