@@ -43,6 +43,24 @@ https://oeis.org/A000532 Number of Hamiltonian paths from NW to SW corners in an
 排列（递归+跳过已经枚举的值）
 */
 func searchCollection() {
+	// 指数型，即 n 层循环
+	// https://codeforces.com/contest/459/problem/C
+	loopAny := func(n, low, up int) { // or lows ups []int
+		vals := make([]int, n)
+		var f func(int)
+		f = func(p int) {
+			if p == n {
+				// do vals...
+
+				return
+			}
+			for vals[p] = low; vals[p] <= up; vals[p]++ {
+				f(p + 1)
+			}
+		}
+		f(0)
+	}
+
 	// 任意子集：从集合 1~n 中不重复地选取任意个元素
 	// 位运算写法见下面的 loopCollection
 	// 模板题 https://ac.nowcoder.com/acm/contest/6913/A
@@ -371,7 +389,7 @@ func searchCollection() {
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
 	_ = []interface{}{
-		chooseAny, chooseAtMost, searchCombinations, searchPermutations,
+		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
 		combinations, combinationsWithRepetition, permutations, permuteAll,
 	}
