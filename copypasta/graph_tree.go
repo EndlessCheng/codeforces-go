@@ -59,6 +59,7 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 // - 与 DFS 序结合，把子树转化成区间（见 tree.subtreeSize）
 // - 重心 点分治（见 tree.findCentroid 等）
 // - 重链剖分（见 tree.heavyLightDecomposition）
+// - 用于计算每条边对所有路径产生的贡献 https://codeforces.com/problemset/problem/1401/D
 //
 // 离线好题 https://codeforces.com/problemset/problem/570/D
 // 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到

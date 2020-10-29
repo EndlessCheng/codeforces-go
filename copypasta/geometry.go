@@ -812,6 +812,7 @@ func (a vec3) less(b vec3) bool {
 /* 三维直线（线段）*/
 type line3 struct{ p1, p2 vec3 }
 
+// todo 计算几何三维入门 https://www.luogu.com.cn/blog/105254/ji-suan-ji-he-san-wei-ru-men
 func vec3Collections() {
 	var ps []vec3
 	sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && (a.y < b.y || a.y == b.y && a.z < b.z) })

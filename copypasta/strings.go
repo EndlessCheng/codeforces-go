@@ -813,6 +813,7 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 
 // 广义 SAM
 // todo https://www.luogu.com.cn/problem/P6139
+// todo https://codeforces.com/problemset/problem/1437/G
 
 // 回文自动机 PAM
 // todo https://baobaobear.github.io/post/20200416-pam/
