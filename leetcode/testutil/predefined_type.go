@@ -207,11 +207,20 @@ func (o *ListNode) toRawString() string {
 	return s
 }
 
-func (o *ListNode) toSlice() (a []int) {
+func (o *ListNode) Values() []int {
+	vals := []int{}
 	for ; o != nil; o = o.Next {
-		a = append(a, o.Val)
+		vals = append(vals, o.Val)
 	}
-	return
+	return vals
+}
+
+func (o *ListNode) Nodes() []*ListNode {
+	nodes := []*ListNode{}
+	for ; o != nil; o = o.Next {
+		nodes = append(nodes, o)
+	}
+	return nodes
 }
 
 //
