@@ -22,11 +22,13 @@ import (
 *  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
 *  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
    推荐 https://codeforces.com/blog/entry/47764
-   戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
-   消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
-   如何定义状态 https://codeforces.com/problemset/problem/553/A
-   如何定义状态 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
-   如何定义状态：涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
+   如何定义状态：
+      https://codeforces.com/problemset/problem/553/A
+      https://codeforces.com/problemset/problem/687/C
+      LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+      涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
+      戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
+      消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
    谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
    扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
@@ -509,7 +511,6 @@ func dpCollections() {
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
-	// todo EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
