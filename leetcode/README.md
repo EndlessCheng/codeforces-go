@@ -48,4 +48,4 @@ First weekly contest started at 2016-08-21.
 |[Biweekly Contest 20](https://leetcode-cn.com/contest/biweekly-contest-20)|1356-1359|
 |[Biweekly Contest 30](https://leetcode-cn.com/contest/biweekly-contest-30)|1507-1510|
 
-Includes with biweekly contests, we now (till 2020-06) have about **900** problems from contests.
+Including with biweekly contests, we now (till 2020-06) have about **900** problems from contests.
