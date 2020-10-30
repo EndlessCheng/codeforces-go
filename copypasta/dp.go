@@ -494,27 +494,22 @@ func dpCollections() {
 
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
-
-	TODO 多重背包+完全背包 https://www.luogu.com.cn/problem/P2851
 	*/
 
 	// 0-1 背包 (n 个物品，背包容量为 maxW)
-	// 基本状态：前 i 个物品  i∈[0,n]
-	// 附加状态：容量(上限)为 j  j∈[0,maxW]
-	// 点权：最大价值
-	//     初始值：(0,j)=0  j∈[0,maxW]
-	// 有向无环图：不选第 i 个物品，对各个容量 j，连一条横边，即 (i-1,j) -> (i,j) $ 0
-	//             选第 i 个物品，对各个容量 j (j≥wi)，连边 (i-1,j-wi) -> (i,j) $ vi
-	//     起点：(0,j)  j∈[0,maxW]
-	//     终点：(n,maxW)
-	// 核心函数：最大价值（最长路），即 max
+	// 状态：从前 i 个物品中选择若干个，当容量限制为 j 时能获得的最大价值和  i∈[0,n-1], j∈[0,maxW]
+	// 初始值：f(0,j)=0  j∈[0,maxW]
+	// 除开初始状态，每个状态有两个来源，决策为 max：
+	// - 不选第 i 个物品：f(i-1,j) -> f(i,j)
+	// - 选第 i 个物品：f(i-1,j-wi)+vi -> f(i,j)   j≥wi
+	// 最优解为 f(n-1,maxW)
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
-	// EXTRA: 恰好装满（相当于 waysToSum 的方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
-	// EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
+	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	// todo EXTRA: 恰好装满+子集和 https://codeforces.com/problemset/problem/687/C
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
@@ -530,7 +525,7 @@ func dpCollections() {
 		return dp[maxW]
 	}
 
-	// EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
+	// 0-1 背包 EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
 	// 二维费用的情况 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
@@ -556,37 +551,30 @@ func dpCollections() {
 		return dp[maxW]
 	}
 
-	// 价值主导的 0-1 背包
-	// todo 挑战 P61
-
-	// 从 a 中选出若干个数，总和为 sum 的方案数
-	// 基本状态：前 i 个数  i∈[0,n]
-	// 附加状态：和为 j  j∈[0,sum]
-	// 点权：方案数
-	//     初始值：(0,0)=1
-	// 有向无环图：不选第 i 个数，对各个和 j，连一条横边，即 (i-1,j) -> (i,j)
-	//             选第 i 个数，对各个和 j (j≥ai)，连边 (i-1,j-ai) -> (i,j)
-	//     起点：(0,j)  j∈[0,sum]
-	//     终点：(n,sum)
-	// 核心函数：方案数（点权汇合），即 +
-	// 例题 LC879 https://leetcode-cn.com/problems/profitable-schemes/
-	// 例题（需要转换）LC494 https://leetcode-cn.com/problems/target-sum/
+	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
+	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
+	// 二维+上限+下限 LC879/周赛95 https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
-	waysToSum := func(a []int, sum int) int {
+	zeroOneWaysToSum := func(a []int, sum int) int {
 		dp := make([]int, sum+1) // int64
 		dp[0] = 1
 		for _, v := range a {
 			for s := sum; s >= v; s-- {
-				dp[s] += dp[s-v] // mod
+				dp[s] += dp[s-v] // % mod
 			}
 		}
 		return dp[sum]
 	}
 
+	// 0-1 背包 EXTRA: 价值主导的 0-1 背包
+	// todo 挑战 P61
+
 	// 完全背包
+	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
+	// EXTRA: 打印方案 LC1449/双周赛26D https://leetcode-cn.com/contest/biweekly-contest-26/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64
+		dp := make([]int, maxW+1) // int64  fill -inf
 		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
@@ -597,41 +585,21 @@ func dpCollections() {
 		return dp[maxW]
 	}
 
-	// 恰好装满背包至少需要多少个物品，物品无限。无法装满时返回 -1
-	// 基本状态：容量 i  i∈[0,amount]
-	// 点权：最少物品数
-	//     初始值：0=0
-	// 有向无环图：i-wj (wj≤i) -> i $ 1
-	//     起点：0
-	//     终点：amount
-	// 核心函数：最少物品数（最短路），即 min
-	// https://www.luogu.com.cn/problem/P6205
-	// LC322 https://leetcode-cn.com/problems/coin-change/
-	minCoinChange := func(coins []int, amount int) int {
-		const inf int = 1e9
-		dp := make([]int, amount+1)
-		for i := range dp {
-			dp[i] = inf
-		}
-		dp[0] = 0
-		// 按容量遍历以满足拓扑序
-		for cur := range dp {
-			for _, c := range coins {
-				if c <= cur {
-					dp[cur] = min(dp[cur], dp[cur-c]+1)
-				}
+	// 完全背包 EXTRA: 方案数
+	// LC518 https://leetcode-cn.com/problems/coin-change-2/
+	// https://www.luogu.com.cn/problem/P6205（需要高精）
+	unboundedWaysToSum := func(a []int, sum int) int {
+		dp := make([]int, sum+1) // int64
+		dp[0] = 1
+		for _, v := range a {
+			for s := v; s <= sum; s++ {
+				dp[s] += dp[s-v] // % mod
 			}
 		}
-		if dp[amount] < inf {
-			return dp[amount]
-		}
-		return -1
+		return dp[sum]
 	}
 
-	// EXTRA: 完全背包 - 求方案数
-	// LC518 https://leetcode-cn.com/problems/coin-change-2/
-
-	// EXTRA: 二维费用完全背包 - 求方案数
+	// 完全背包 EXTRA: 二维费用方案数
 	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
 	// https://codeforces.com/problemset/problem/543/A
 
@@ -654,6 +622,11 @@ func dpCollections() {
 	}
 
 	// 多重背包 - 优化 1 - 二进制优化
+	// 模板题 https://codeforces.com/problemset/problem/106/C
+	// todo 多重背包+完全背包 https://www.luogu.com.cn/problem/P1782 https://www.luogu.com.cn/problem/P2851
+	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
+	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
+	// https://codeforces.com/contest/999/problem/F
 	boundedKnapsackBinary := func(values, stocks, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for i, v := range values {
@@ -671,10 +644,6 @@ func dpCollections() {
 
 	// 多重背包 - 优化 2 - 单调队列优化
 	// todo 挑战 P340
-	// 模板题 https://codeforces.com/problemset/problem/106/C
-	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
-	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
-	// https://codeforces.com/contest/999/problem/F
 
 	/* 区间 DP / 环形 DP
 	一般来说转移是合并区间或者分解区间
@@ -1077,7 +1046,11 @@ func dpCollections() {
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
-		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, waysToSum, unboundedKnapsack, minCoinChange, boundedKnapsack, boundedKnapsackBinary,
+
+		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
+		unboundedKnapsack, unboundedWaysToSum,
+		boundedKnapsack, boundedKnapsackBinary,
+
 		mergeStones,
 		tsp,
 		digitDP,

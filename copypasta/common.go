@@ -1006,11 +1006,9 @@ func moAlgorithm() {
 		return ans
 	}
 
-	// TODO: 带修改的莫队
-	// https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
-
-	// TODO: 树上莫队
-	// https://blog.csdn.net/weixin_43914593/article/details/108485396
+	// todo 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
+	// todo 带修改的莫队 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
+	// todo 树上莫队 https://blog.csdn.net/weixin_43914593/article/details/108485396
 
 	_ = mo
 }

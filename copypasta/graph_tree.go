@@ -242,6 +242,8 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
 //    把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
 //    在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上
+//    树的重心一定在根节点的重链上 https://www.luogu.com.cn/problem/P5666
+//    树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
@@ -763,6 +765,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 //    树上每个结点都属于且仅属于一条重链
 //    如果 v-w 是一条轻边，那么 size[w] < size[v]/2
 //    从根结点到任意结点所经过的重链个数为 O(logn)
+//    与重心的关系（见 findCentroid）
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
