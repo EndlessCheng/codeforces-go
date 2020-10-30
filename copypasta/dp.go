@@ -588,6 +588,7 @@ func dpCollections() {
 	// 完全背包 EXTRA: 方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
+	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
 	unboundedWaysToSum := func(a []int, sum int) int {
 		dp := make([]int, sum+1) // int64
 		dp[0] = 1
