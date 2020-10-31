@@ -59,7 +59,7 @@ func (h *hp64) popPush(v int64) int64 { t := (*h)[0]; (*h)[0] = v; heap.Fix(h, 0
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
 type pvi struct {
 	v int64
-	i int // 该元素在数组中的下标，随着 push pop 等操作自动改变
+	i int // 该元素在 hpi 中的下标，可随着 push pop 等操作自动改变
 }
 type hpi []*pvi // 将指针存于他处，可直接在外部修改 v 后调用 h.fix(p.i)
 
