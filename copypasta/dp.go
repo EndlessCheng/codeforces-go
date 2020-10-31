@@ -554,7 +554,7 @@ func dpCollections() {
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
 	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
-	// 二维+上限+下限 LC879/周赛95 https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
+	// 二维+上限+下限 LC879/周赛95D https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	zeroOneWaysToSum := func(a []int, sum int) int {

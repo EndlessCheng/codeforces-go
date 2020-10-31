@@ -318,7 +318,6 @@ func commonCollection() {
 
 	// 合并有序数组，保留重复元素
 	// a b 必须是有序的（可以为空）
-	// 若不保留重复元素，则相当于求 a 和 b 的对称差（见下面 splitDifferenceAndIntersection 函数）
 	merge := func(a, b []int) []int {
 		i, n := 0, len(a)
 		j, m := 0, len(b)

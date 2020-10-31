@@ -59,16 +59,16 @@ func (h *hp64) popPush(v int64) int64 { t := (*h)[0]; (*h)[0] = v; heap.Fix(h, 0
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
 type pvi struct {
 	v int64
-	i int // 必须从 0 开始且连续
+	i int // 该元素在数组中的下标，随着 push pop 等操作自动改变
 }
-type hpi []*pvi // 由于存储的是指针，可以直接在外面修改后调用 h.fix(p.i)
+type hpi []*pvi // 将指针存于他处，可直接在外部修改 v 后调用 h.fix(p.i)
 
 func (h hpi) Len() int            { return len(h) }
 func (h hpi) Less(i, j int) bool  { return h[i].v < h[j].v } // > 为最大堆
 func (h hpi) Swap(i, j int)       { h[i], h[j] = h[j], h[i]; h[i].i = i; h[j].i = j }
 func (h *hpi) Push(v interface{}) { *h = append(*h, v.(*pvi)) }
 func (h *hpi) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *hpi) push(v *pvi)        { v.i = len(*h); heap.Push(h, v) }
+func (h *hpi) push(v int64) *pvi  { p := &pvi{v, len(*h)}; heap.Push(h, p); return p }
 func (h *hpi) pop() *pvi          { return heap.Pop(h).(*pvi) }
 func (h *hpi) fix(i int)          { heap.Fix(h, i) }
 func (h *hpi) remove(i int) *pvi  { return heap.Remove(h, i).(*pvi) }
