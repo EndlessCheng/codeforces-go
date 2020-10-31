@@ -21,13 +21,12 @@ func TestCompare(t *testing.T) {
 		return
 	}
 
-	// test runAC before run CompareInf
+	// test examples first (or make it global)
 	examples := [][]string{
 
 	}
 	if err := testutil.RunLeetCodeFuncWithExamples(t, runAC, examples, 0); err != nil {
 		t.Fatal(err)
 	}
-	return
 	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
 }

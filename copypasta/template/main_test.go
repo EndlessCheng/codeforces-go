@@ -59,6 +59,11 @@ func TestCompare(t *testing.T) {
 		Fprint(out, ans)
 	}
 
+	// 可以先用 runBF 跑下样例
+	dir, _ := filepath.Abs(".")
+	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
+
+	// 对拍
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
 	//testutil.AssertEqualRunResultsInf(t, inputGenerator, run, runBF) // for hacking, write wrong codes in runBF
 }
