@@ -47,27 +47,12 @@ func _toLower(c byte) byte {
 	return c
 }
 
-func getReceiverName(line string) (receiverName string) {
-	for _, r := range line {
-		if r == ')' {
-			break
-		}
-		if unicode.IsUpper(r) {
-			receiverName += string(_toLower(byte(r)))
-			break // just one
-		}
-	}
-	return
-}
-
 func toGolangReceiverName(funcDefineLine string) string {
 	if !strings.HasPrefix(funcDefineLine, "func (this *") {
 		return funcDefineLine
 	}
 	// 由于采用的是全局变量的写法，receiver 可以去掉
 	return strings.Replace(funcDefineLine, "this *", "", 1)
-	//receiverName := getReceiverName(funcDefineLine)
-	//return "func (" + receiverName + funcDefineLine[10:]
 }
 
 func lowerArgsFirstChar(funcDefineLine string) string {

@@ -154,7 +154,6 @@ type problem struct {
 	funcName      string
 	isFuncProblem bool
 	funcLos       []int
-	receiverName  string
 	sampleIns     [][]string
 	sampleOuts    [][]string
 	customComment string
@@ -472,14 +471,6 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 		fmt.Println(p.id, p.urlZH)
 		if err := p.parseHTML(session); err != nil {
 			fmt.Fprintln(os.Stderr, err)
-		}
-
-		lines := strings.Split(p.defaultCode, "\n")
-		for _, line := range lines {
-			if name := getReceiverName(line); name != "" {
-				p.receiverName = name
-				break
-			}
 		}
 
 		p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
