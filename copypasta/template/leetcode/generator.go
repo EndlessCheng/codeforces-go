@@ -474,12 +474,10 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 			fmt.Fprintln(os.Stderr, err)
 		}
 
-		curReceiverName = ""
 		lines := strings.Split(p.defaultCode, "\n")
 		for _, line := range lines {
 			if name := getReceiverName(line); name != "" {
 				p.receiverName = name
-				curReceiverName = name
 				break
 			}
 		}

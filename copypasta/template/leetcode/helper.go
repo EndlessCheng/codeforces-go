@@ -47,8 +47,6 @@ func _toLower(c byte) byte {
 	return c
 }
 
-var curReceiverName string
-
 func getReceiverName(line string) (receiverName string) {
 	for _, r := range line {
 		if r == ')' {
@@ -102,9 +100,9 @@ func namedReturnFunc(name string) modifyLineFunc {
 		if returnType == "" {
 			return funcDefineLine
 		} // 无返回值
-		returnName := name // save
+		returnName := name
 		if strings.HasPrefix(funcDefineLine, "func Constructor(") {
-			returnName = curReceiverName
+			returnName = "_"
 		}
 		i := strings.LastIndexByte(funcDefineLine, ')') + 2
 		return funcDefineLine[:i] + "(" + returnName + " " + returnType + ") {"
