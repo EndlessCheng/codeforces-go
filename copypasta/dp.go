@@ -217,6 +217,7 @@ func dpCollections() {
 	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
 	力扣题目 1143,1092,72,97,115,727,583,712,1035,1216,1312
 	983/周赛121C https://leetcode-cn.com/problems/minimum-cost-for-tickets/ https://leetcode-cn.com/contest/weekly-contest-121/
+	双周赛38D https://leetcode-cn.com/contest/biweekly-contest-38/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
 	③ 一些题目
 	最大整除子集 LC368 https://leetcode-cn.com/problems/largest-divisible-subset/
 	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/

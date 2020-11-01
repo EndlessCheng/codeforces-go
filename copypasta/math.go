@@ -1238,9 +1238,16 @@ func numberTheoryCollection() {
 		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
 		// 相当于把 k 个无区别的球放入 n 个有区别的盒子中，且允许空盒的方案数
 		//		隔板法：把 n 个盒子当做 n-1 个隔板，这样相当于总共有 k+n-1个位置，从中选择 k 个位置放球，剩下的位置放隔板。这样就把 k 个球划分成了 n 份，放入对应的盒子中
-		// 相当于长度为 k，元素范围在 [1,n] 的非降序列的个数
 		// NOTE: mx 要开两倍空间！
 		H := func(n, k int) int64 { return C(n+k-1, k) }
+		// 也相当于，给出长度和元素范围，求有多少种非降序列
+		// 也可以理解成在长度和取值范围-1的格点上走单调路径
+		H = func(range_, length int) int64 { return C(range_+length-1, length) }
+
+		// 卡特兰数 https://en.wikipedia.org/wiki/Catalan_number
+		// https://oeis.org/A000108
+		// 所有在 n×n 格点中不越过对角线的单调路径的个数
+		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
 
 		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
@@ -1248,7 +1255,7 @@ func numberTheoryCollection() {
 			pow2[i] = pow2[i-1] << 1 % mod
 		}
 
-		_, _, _ = C, P, H
+		_ = []interface{}{C, P, H, Catalan}
 	}
 
 	// 适用于 n 巨大但 k 或 n-k 较小的情况
