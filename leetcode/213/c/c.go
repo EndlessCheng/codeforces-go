@@ -4,9 +4,9 @@ import "sort"
 
 // github.com/EndlessCheng/codeforces-go
 func furthestBuilding(h []int, bricks int, ladders int) (ans int) {
-	return sort.Search(len(h)+1, func(r int) bool {
+	return sort.Search(len(h), func(r int) bool {
 		a := []int{}
-		for i := 1; i < r; i++ {
+		for i := 1; i <= r; i++ {
 			if h[i] > h[i-1] {
 				a = append(a, h[i]-h[i-1])
 			}
@@ -17,5 +17,5 @@ func furthestBuilding(h []int, bricks int, ladders int) (ans int) {
 			s += a[i]
 		}
 		return s > bricks
-	}) - 2
+	}) - 1
 }
