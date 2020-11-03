@@ -7,6 +7,12 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1444A(in io.Reader, out io.Writer) {
+	max := func(a, b int64) int64 {
+		if a > b {
+			return a
+		}
+		return b
+	}
 	var T, p, q int64
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &p, &q)
@@ -29,13 +35,13 @@ func CF1444A(in io.Reader, out io.Writer) {
 				for ; c >= e; c-- {
 					v /= i
 				}
-				if v > ans {
-					ans = v
-				}
+				ans = max(ans, v)
 			}
 		}
 		if q > 1 && p/q > ans {
-			ans = p / q
+			for ; p%q == 0; p /= q {
+			}
+			ans = max(ans, p)
 		}
 		Fprintln(out, ans)
 	}
