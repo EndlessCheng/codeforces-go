@@ -445,6 +445,88 @@ func maxPathSum(root *TreeNode) int {
     return ans
 }
 
+// LC 127 双向 BFS
+func ladderLength(beginWord string, endWord string, wordList []string) int {
+    wid := map[string]int{}
+    g := [][]int{}
+    addWord := func(w string) int {
+        id, has := wid[w]
+        if !has {
+            id = len(wid)
+            wid[w] = id
+            g = append(g, []int{})
+        }
+        return id
+    }
+    addEdge := func(w string) int {
+        id1 := addWord(w)
+        s := []byte(w)
+        for i, b := range s {
+            s[i] = '*'
+            id2 := addWord(string(s))
+            g[id1] = append(g[id1], id2)
+            g[id2] = append(g[id2], id1)
+            s[i] = b
+        }
+        return id1
+    }
+
+    for _, w := range wordList {
+        addEdge(w)
+    }
+    st := addEdge(beginWord)
+    end, has := wid[endWord]
+    if !has {
+        return 0
+    }
+
+    const inf int = 1e9
+    dst := make([]int, len(wid))
+    for i := range dst {
+        dst[i] = inf
+    }
+    dst[st] = 0
+    qst := []int{st}
+
+    dend := make([]int, len(wid))
+    for i := range dend {
+        dend[i] = inf
+    }
+    dend[end] = 0
+    qend := []int{end}
+
+    for len(qst) > 0 && len(qend) > 0 {
+        q := qst
+        qst = nil
+        for _, v := range q {
+            if dend[v] < inf {
+                return (dst[v]+dend[v])/2 + 1
+            }
+            for _, w := range g[v] {
+                if dst[w] == inf {
+                    dst[w] = dst[v] + 1
+                    qst = append(qst, w)
+                }
+            }
+        }
+
+        q = qend
+        qend = nil
+        for _, v := range q {
+            if dst[v] < inf {
+                return (dst[v]+dend[v])/2 + 1
+            }
+            for _, w := range g[v] {
+                if dend[w] == inf {
+                    dend[w] = dend[v] + 1
+                    qend = append(qend, w)
+                }
+            }
+        }
+    }
+    return 0
+}
+
 // LC 140
 func wordBreak(s string, wordDict []string) (sentences []string) {
     wordSet := map[string]bool{}
