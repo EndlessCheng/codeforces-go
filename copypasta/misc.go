@@ -311,26 +311,27 @@ func miscCollection() {
 
 // 逆序对
 // LC 面试题 51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+// EXTRA: https://leetcode-cn.com/problems/count-of-range-sum/
+// 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
 func mergeCount(a []int) int64 {
 	n := len(a)
 	if n <= 1 {
 		return 0
 	}
-	b := append([]int(nil), a[:n/2]...)
-	c := append([]int(nil), a[n/2:]...)
-	cnt := mergeCount(b) + mergeCount(c)
-	ai, bi, ci := 0, 0, 0
-	for ai < n {
+	left := append([]int(nil), a[:n/2]...)
+	right := append([]int(nil), a[n/2:]...)
+	cnt := mergeCount(left) + mergeCount(right)
+	l, r := 0, 0
+	for i := range a {
 		// 归并排序的同时计算逆序对
-		if bi < len(b) && (ci == len(c) || b[bi] <= c[ci]) {
-			a[ai] = b[bi]
-			bi++
+		if l < len(left) && (r == len(right) || left[l] <= right[r]) {
+			a[i] = left[l]
+			l++
 		} else {
-			cnt += int64(n/2 - bi)
-			a[ai] = c[ci]
-			ci++
+			cnt += int64(n/2 - l)
+			a[i] = right[r]
+			r++
 		}
-		ai++
 	}
 	return cnt
 }

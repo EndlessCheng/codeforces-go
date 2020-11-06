@@ -473,12 +473,12 @@ func commonCollection() {
 	// 相当于转换成第几小
 	// 若允许修改原数组，可以先将其排序去重后，再调用 discrete，注意去重后 n 需要重新赋值
 	discrete := func(a []int, startIndex int) (kth []int) {
-		type pair struct{ v, i int }
-		n := len(a)
-		if n == 0 {
+		if len(a) == 0 {
 			return
 		}
-		ps := make([]pair, n)
+
+		type pair struct{ v, i int }
+		ps := make([]pair, len(a))
 		for i, v := range a {
 			ps[i] = pair{v, i}
 		}
@@ -505,25 +505,25 @@ func commonCollection() {
 
 	// 离散化 discreteMap([]int{100,20,50,50}, 1) => map[int]int{100:3, 20:1, 50:2}
 	// 若允许修改原数组，可以先将其排序去重后，再调用 discreteMap，注意去重后 n 需要重新赋值
+	// 例题：https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
 		// assert len(a) > 0
-		n := len(a)
-		b := append([]int(nil), a...)
-		sort.Ints(b)
+		sorted := append([]int(nil), a...)
+		sort.Ints(sorted)
 
 		// 有重复元素
 		k := startIndex
-		kth = map[int]int{b[0]: k}
-		for i := 1; i < n; i++ {
-			if b[i] != b[i-1] {
+		kth = map[int]int{sorted[0]: k}
+		for i := 1; i < len(sorted); i++ {
+			if sorted[i] != sorted[i-1] {
 				k++
-				kth[b[i]] = k
+				kth[sorted[i]] = k
 			}
 		}
 
 		// 无重复元素
-		kth = make(map[int]int, n)
-		for i, v := range b {
+		kth = make(map[int]int, len(sorted))
+		for i, v := range sorted {
 			kth[v] = i + startIndex
 		}
 
