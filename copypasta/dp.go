@@ -943,7 +943,6 @@ func dpCollections() {
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
-	// 注：最大独立集+最小顶点覆盖=n
 	maxIndependentSetInTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
@@ -961,7 +960,7 @@ func dpCollections() {
 		return max(nc, c)
 	}
 
-	// 树上最小支配集
+	// 树上最小支配集/顶点覆盖
 	// 返回最小点权和（最小支配集的情形即所有点权均为一）
 	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
 	// dp[i][0]：i 属于支配集 = a[i]+∑min(dp[w][0],dp[w][1],dp[w][2])

@@ -636,7 +636,6 @@ func commonCollection() {
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
-		// 注：若要求先进后出，或者先后没有关系，则可以只存储 2*start 和 2*end+1，这样排序后，用奇偶性来表示进出关系
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)
 		for i := 0; i < n; i++ {
@@ -651,6 +650,29 @@ func commonCollection() {
 
 		for _, e := range events {
 			if e.delta > 0 {
+
+			} else {
+
+			}
+		}
+	}
+
+	// 扫描线另一种写法，把 delta 压缩进 pos
+	// 这样可以避免写一个复杂的 sort.Slice
+	sweepLine2 := func(in io.Reader, n int) {
+		events := make([]int, 0, 2*n)
+		for i := 0; i < n; i++ {
+			var l, r int
+			Fscan(in, &l, &r)
+			events = append(events, l<<1|1, r<<1) // 先出后进
+			//events = append(events, l<<1, r<<1|1) // 先进后出
+		}
+		sort.Ints(events)
+
+		for _, e := range events {
+			pos, delta := e>>1, e&1
+			_ = pos
+			if delta > 0 { // 根据上面的写法来定义何为出何为进
 
 			} else {
 
@@ -775,7 +797,7 @@ func commonCollection() {
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
-		sweepLine, countCoveredPoints,
+		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
 	}
 }
