@@ -399,6 +399,27 @@ func dpCollections() {
 		return lcs
 	}
 
+	// 最长回文子序列 (LPS)
+	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
+	longestPalindromeSubsequence := func(s string) int {
+		n := len(s)
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, n)
+		}
+		for i := n - 1; i >= 0; i-- {
+			dp[i][i] = 1
+			for j := i + 1; j < n; j++ {
+				if s[i] == s[j] {
+					dp[i][j] = dp[i+1][j-1] + 2
+				} else {
+					dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+				}
+			}
+		}
+		return dp[0][n-1]
+	}
+
 	// 最长上升子序列 (LIS)
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
@@ -1048,7 +1069,8 @@ func dpCollections() {
 		prefixSumDP, mapDP,
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
-		lcs, lcsPath, lisSlow, lis, distinctSubsequence,
+		lcs, lcsPath, longestPalindromeSubsequence,
+		lisSlow, lis, distinctSubsequence,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
 		unboundedKnapsack, unboundedWaysToSum,
