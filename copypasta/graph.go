@@ -1444,7 +1444,7 @@ https://en.wikipedia.org/wiki/Dominating_set
 https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 
 最大匹配+最小边覆盖=n （图中无孤立点）
-最大独立集+最小顶点覆盖=n
+最大独立集+最小顶点覆盖=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/
 对于二分图，最小顶点覆盖=最大匹配，最大独立集=n-最大匹配
 
 激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
