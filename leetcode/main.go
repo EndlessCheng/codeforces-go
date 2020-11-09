@@ -68,6 +68,28 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
     return dummy.Next
 }
 
+// LC 31
+func nextPermutation(nums []int) {
+    n := len(nums)
+    i := n - 2
+    for i >= 0 && nums[i] >= nums[i+1] {
+        i--
+    }
+    if i >= 0 {
+        j := n - 1
+        for j >= 0 && nums[i] >= nums[j] {
+            j--
+        }
+        nums[i], nums[j] = nums[j], nums[i]
+    }
+    reverse := func(a []int) {
+        for i, n := 0, len(a); i < n/2; i++ {
+            a[i], a[n-1-i] = a[n-1-i], a[i]
+        }
+    }
+    reverse(nums[i+1:])
+}
+
 // LC 37
 func solveSudoku(board [][]byte) {
     var line, column [9]uint
