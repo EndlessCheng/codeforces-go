@@ -573,6 +573,7 @@ func commonCollection() {
 	// https://en.wikipedia.org/wiki/Quickselect
 	// https://www.geeksforgeeks.org/quickselect-algorithm/
 	// 模板题 LC215 https://leetcode-cn.com/problems/kth-largest-element-in-an-array/
+	//       LC973 https://leetcode-cn.com/problems/k-closest-points-to-origin/submissions/
 	// 模板题 https://codeforces.com/contest/977/problem/C
 	quickSelect := func(a []int, k int) int {
 		//k = len(a) - 1 - k // 求第 k 大
