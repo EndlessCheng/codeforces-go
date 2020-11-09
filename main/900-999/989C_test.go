@@ -1,0 +1,43 @@
+package main
+
+import (
+	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"testing"
+)
+
+func TestCF989C(t *testing.T) {
+	// just copy from website
+	rawText := `
+inputCopy
+5 3 2 1
+outputCopy
+4 7
+DDDDDDD
+DABACAD
+DBABACD
+DDDDDDD
+inputCopy
+50 50 1 1
+outputCopy
+4 50
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ABABABABABABABABABABABABABABABABABABABABABABABABAB
+BABABABABABABABABABABABABABABABABABABABABABABABABA
+DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+inputCopy
+1 6 4 5
+outputCopy
+7 7
+DDDDDDD
+DDDBDBD
+DDCDCDD
+DBDADBD
+DDCDCDD
+DBDBDDD
+DDDDDDD
+inputCopy
+2 2 2 2
+outputCopy
+`
+	testutil.AssertEqualCase(t, rawText, 0, CF989C)
+}
