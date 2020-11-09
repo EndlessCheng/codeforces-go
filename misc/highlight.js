@@ -89,6 +89,7 @@
 
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
+                .replaceAll("Dr. ", "Dr.")
                 .replaceAll("I.e. ", "I.e.")
                 .replaceAll("i.e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.")
