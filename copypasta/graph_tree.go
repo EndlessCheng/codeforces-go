@@ -482,7 +482,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // todo poj2763 poj1986 poj3728
 // TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
-	const mx = 18 // floor(log2(最大树节点))+1
+	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
 	var dfs func(v, p, d int)
@@ -507,6 +507,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 	}
 	// 从 v 开始向上跳 k 步，不存在返回 -1
+	// O(1) 求法见长链剖分
 	uptoKthPa := func(v, k int) int {
 		for i := 0; i < mx && v != -1; i++ {
 			if k>>i&1 == 1 {
@@ -516,6 +517,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		return v
 	}
 	// 从 v 开始向上跳到指定深度 d，d<=dep[v]
+	// https://en.wikipedia.org/wiki/Level_ancestor_problem
 	uptoDep := func(v, d int) int {
 		for i := 0; i < mx; i++ {
 			if (dep[v]-d)>>i&1 == 1 {
@@ -599,7 +601,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	}
 	dfs(root, -1, 0)
 	type pair struct{ v, i int }
-	const mx = 18 // floor(log2(最大树节点))+1
+	const mx = 17 // bits.Len(最大节点数)
 	var st [][mx]pair
 	stInit := func(a []int) {
 		n := len(a)
@@ -765,9 +767,15 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // 性质：
 //    树上每个结点都属于且仅属于一条重链
 //    如果 v-w 是一条轻边，那么 size[w] < size[v]/2
-//    从根结点到任意结点所经过的重链个数为 O(logn)
+//    从根结点到任意结点所经过的重链数为 O(logn)，轻边数为 O(logn)
 //    与重心的关系（见 findCentroid）
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
+//    把每条重链当成一个节点，每条轻边作为边，我们可以得到一颗路径树。显然路径树的高度为 O(logn)
+//    The paths of the decomposition may themselves be organized into a tree called the "path tree", "heavy path tree", or "compressed tree".
+//    Each node of the path tree corresponds to a path of the heavy path decomposition.
+//    If p is a path of the heavy path decomposition, then the parent of p in the path tree is the path containing the parent of the head of p.
+//    The root of the path tree is the path containing the root of the original tree.
+//    Alternatively, the path tree may be formed from the original tree by edge contraction of all the heavy edges.
 // https://oi-wiki.org/graph/hld/
 // https://cp-algorithms.com/graph/hld.html
 // https://codeforces.com/blog/entry/81317
@@ -780,25 +788,25 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
-	// 重儿子，父节点，深度，子树大小，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
+	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ depth, size, hson, fa, top, dfn int }
 	nodes := make([]node, n)
 	//idv := make([]int, n+1) // idv[nodes[v].dfn] == v
 
-	var build func(v, fa, d int) int
-	build = func(v, fa, d int) int {
-		sz, hson := 1, -1
+	var build func(v, fa, dep int) int
+	build = func(v, fa, dep int) int {
+		size, hsz, hson := 1, 0, -1
 		for _, w := range g[v] {
 			if w != fa {
-				s := build(w, v, d+1)
-				sz += s
-				if hson == -1 || s > nodes[hson].size {
-					hson = w
+				sz := build(w, v, dep+1)
+				size += sz
+				if sz > hsz {
+					hsz, hson = sz, w
 				}
 			}
 		}
-		nodes[v] = node{depth: d, size: sz, hson: hson, fa: fa}
-		return sz
+		nodes[v] = node{depth: dep, size: size, hson: hson, fa: fa}
+		return size
 	}
 	build(root, -1, 0)
 
@@ -817,8 +825,8 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 	}
 
 	dfn := 0
-	var decomposition func(v, fa, top int)
-	decomposition = func(v, fa, top int) {
+	var markTop func(v, top int)
+	markTop = func(v, top int) {
 		o := &nodes[v]
 		o.top = top
 		dfn++
@@ -826,15 +834,15 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 		//idv[dfn] = v
 		if o.hson != -1 {
 			// 优先遍历重儿子，保证在同一条重链上的点的 DFS 序是连续的
-			decomposition(o.hson, v, top)
+			markTop(o.hson, top)
 			for _, w := range g[v] {
-				if w != fa && w != o.hson {
-					decomposition(w, v, w)
+				if w != o.fa && w != o.hson {
+					markTop(w, w)
 				}
 			}
 		}
 	}
-	decomposition(root, -1, root)
+	markTop(root, root)
 
 	// 按照 DFS 序对应的点权初始化线段树
 	dfnVals := make([]int64, n)
@@ -875,26 +883,158 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 长链剖分
 // 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
-// todo https://oi-wiki.org/graph/hld/#_14
-// todo https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
-// 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
-// todo 树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
+// 根据这一定义可推出，从根结点到任意结点所经过的轻边数为 O(√n) (想象一颗长儿子不断递减的二叉树)
+// https://oi-wiki.org/graph/hld/#_14
+// https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
+// 模板题：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
+// todo 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
+func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int, vals []int64) { // vals 为点权
+	// 深度，子树最大深度，重儿子，父节点，所处长链顶点（深度最小）
+	type node struct{ depth, maxDepth, hson, fa, top int }
+	nodes := make([]node, n)
 
-// link-cut tree (LCT)
+	var build func(v, fa, dep int) int
+	build = func(v, fa, dep int) int {
+		maxDep, hson := dep, -1
+		for _, w := range g[v] {
+			if w != fa {
+				if mxD := build(w, v, dep+1); mxD > maxDep {
+					maxDep, hson = mxD, w
+				}
+			}
+		}
+		nodes[v] = node{depth: dep, maxDepth: maxDep, hson: hson, fa: fa}
+		return maxDep
+	}
+	build(root, -1, 0) // 为了方便，fa 指定为 -1
+
+	var markTop func(v, top int)
+	markTop = func(v, top int) {
+		o := &nodes[v]
+		o.top = top
+		if o.hson != -1 {
+			markTop(o.hson, top)
+			for _, w := range g[v] {
+				if w != o.fa && w != o.hson {
+					markTop(w, w)
+				}
+			}
+		}
+	}
+	markTop(root, root)
+
+	{
+		// EXTRA: 对每个长链顶点 o，向上向下各记录长度为该长链长度的节点列表（此代码可以整合进 markTop）
+		up := make([][]int, n)
+		down := make([][]int, n)
+		for v, o := range nodes {
+			if o.top != v {
+				continue
+			}
+			l := o.maxDepth - o.depth + 1
+			up[v] = make([]int, 0, l) // 可能填不满
+			for fa := v; fa != -1 && len(up[v]) < l; fa = nodes[fa].fa {
+				up[v] = append(up[v], fa)
+			}
+			down[v] = make([]int, 0, l)
+			for hson := v; hson != -1; hson = nodes[hson].hson {
+				down[v] = append(down[v], hson)
+			}
+		}
+		// 结合 up down，可以在倍增预处理后，O(1) 求出树上 k 级祖先
+		const mx = 17 // bits.Len(最大节点数)
+		pa := make([][mx]int, n)
+		for i, o := range nodes {
+			pa[i][0] = o.fa
+		}
+		for i := 0; i+1 < mx; i++ {
+			for v := range pa {
+				if p := pa[v][i]; p != -1 {
+					pa[v][i+1] = pa[p][i]
+				} else {
+					pa[v][i+1] = -1
+				}
+			}
+		}
+		uptoKthPa := func(v, k int) int {
+			if k == 0 {
+				return v
+			}
+			lk := bits.Len(uint(k)) - 1
+			v = pa[v][lk]
+			top := nodes[v].top
+			k ^= 1 << lk
+			k -= nodes[v].depth - nodes[top].depth
+			if k >= 0 {
+				return up[top][k]
+			}
+			return down[top][-k]
+		}
+		_ = uptoKthPa
+	}
+}
+
+// 树上启发式合并 DSU on tree / small to large
+// https://oi-wiki.org/graph/dsu-on-tree/
+// 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
+// 讲解+套题 https://codeforces.com/blog/entry/44351 补充 https://codeforces.com/blog/entry/67696
+// 模板题 https://www.luogu.com.cn/problem/U41492
+//       https://codeforces.com/problemset/problem/600/E
+// 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
+//            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
+func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
+	hson := make([]int, n)
+	var build func(v, fa int) int
+	build = func(v, fa int) int {
+		sz, hsz, hs := 1, 0, -1
+		for _, w := range g[v] {
+			if w != fa {
+				s := build(w, v)
+				sz += s
+				if s > hsz {
+					hsz, hs = s, w
+				}
+			}
+		}
+		hson[v] = hs
+		return sz
+	}
+	build(root, -1)
+
+	// 例如：统计子树的点权种类数
+	ans := make([]int, n) // int64
+	var f func(v, fa int) map[int]bool
+	f = func(v, fa int) map[int]bool {
+		if hson[v] < 0 {
+			ans[v] = 1
+			return map[int]bool{vals[v]: true}
+		}
+		has := f(hson[v], v)
+		merge := func(val int) {
+			has[val] = true
+		}
+		for _, w := range g[v] {
+			if w != fa && w != hson[v] {
+				mp := f(w, v)
+				for val := range mp {
+					merge(val)
+				}
+			}
+		}
+		merge(vals[v])
+		ans[v] = len(has)
+		return has
+	}
+	f(root, -1)
+}
+
+// link/cut tree (LCT)
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // todo https://oi-wiki.org/ds/lct/
 // todo https://codeforces.com/blog/entry/80383
 // 模板题 https://www.luogu.com.cn/problem/P3690
 // https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
 // 最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
-
-// 树上启发式合并 DSU on tree
-// todo https://oi-wiki.org/graph/dsu-on-tree/
-// dsu on tree学习笔记 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
-// 讲解+套题 https://codeforces.com/blog/entry/44351
-// todo 讲解 https://codeforces.com/blog/entry/67696
-// todo https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
-// 例：求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
 
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
