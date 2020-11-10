@@ -886,9 +886,16 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 根据这一定义可推出，从根结点到任意结点所经过的轻边数为 O(√n) (想象一颗长儿子不断递减的二叉树)
 // https://oi-wiki.org/graph/hld/#_14
 // https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
-// 模板题：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
-// todo 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
-func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int, vals []int64) { // vals 为点权
+// https://www.cnblogs.com/cj-chd/p/10076199.html
+// https://www.cnblogs.com/zhoushuyu/p/9468669.html
+// 应用：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
+// 长链剖分优化树形 DP：
+//    若树形 DP 的转移只和节点深度有关，我们完全可以把一颗子树拍扁成一条垂直的链
+//    那么在合并子树时，长儿子将会占据主导优势，即其余子树均往长儿子上合并，这会使每个节点至多被合并一次，从而得到 O(n) 的优秀复杂度
+//    具体实现时还有一些技巧，见后面的有关 DP 优化的 EXTRA
+// 子树深度众数 https://codeforces.com/problemset/problem/1009/F
+// 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
+func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 	// 深度，子树最大深度，重儿子，父节点，所处长链顶点（深度最小）
 	type node struct{ depth, maxDepth, hson, fa, top int }
 	nodes := make([]node, n)
@@ -971,6 +978,56 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int, vals []int64
 			return down[top][-k]
 		}
 		_ = uptoKthPa
+	}
+
+	{
+		// EXTRA: 对一些 DP 的优化
+		hson := make([]int, n)
+		var build func(v, fa int) int
+		build = func(v, fa int) int {
+			maxDep, hs := 0, -1
+			for _, w := range g[v] {
+				if w != fa {
+					if mxD := build(w, v); mxD > maxDep {
+						maxDep, hs = mxD, w
+					}
+				}
+			}
+			hson[v] = hs
+			return maxDep + 1
+		}
+		build(root, -1)
+
+		// 不妨定义当前子树最大深度为子子树最大深度+1，也就是越往下深度越小
+		// 这样带来的好处是在合并之后，我们可以将当前节点的信息直接添加在 DP 数组末尾
+		// 下面的代码来自 https://codeforces.com/problemset/problem/1009/F
+		ans := make([]int, n)
+		var f func(v, fa int) ([]int, int)
+		f = func(v, fa int) (cnt []int, maxI int) { // maxI 为 cnt 中最大最右元素的下标
+			if hson[v] == -1 {
+				return []int{1}, 0
+			}
+			cnt, maxI = f(hson[v], v)
+			for _, w := range g[v] {
+				if w != fa && w != hson[v] {
+					subCnt, _ := f(w, v)
+					shift := len(cnt) - len(subCnt)
+					for i, c := range subCnt {
+						i += shift
+						if cnt[i] += c; cnt[i] >= cnt[maxI] {
+							maxI = i
+						}
+					}
+				}
+			}
+			cnt = append(cnt, 1)
+			if cnt[maxI] == 1 {
+				maxI++ // 即 len(cnt)-1
+			}
+			ans[v] = len(cnt) - 1 - maxI // 转化成题目要求的定义
+			return
+		}
+		f(root, -1)
 	}
 }
 
