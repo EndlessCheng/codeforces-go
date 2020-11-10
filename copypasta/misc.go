@@ -38,7 +38,7 @@ func miscCollection() {
 	// 预处理 log 的整数部分
 	logInit := func() {
 		const mx int = 1e6
-		log := [mx + 1]int{}
+		log := [mx + 1]int{} // log[0] 未定义，请勿访问
 		for i := 2; i <= mx; i++ {
 			log[i] = log[i>>1] + 1
 		}
