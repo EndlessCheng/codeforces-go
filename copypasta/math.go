@@ -487,6 +487,15 @@ func numberTheoryCollection() {
 	// 见进阶指南 p.138
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
 	// https://codeforces.com/contest/1114/problem/C
+	powerOfFactorialPrimeDivisor := func(n, p int64) (k int64) {
+		for pp := p; ; pp *= p {
+			k += n / pp
+			if pp > n/p { // 注意判断方式，防止爆 int64
+				break
+			}
+		}
+		return
+	}
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
 	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
@@ -1394,7 +1403,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
-		isPrime, sieve, sieveEuler, primeFactorization, primeDivisors, primeExponentsCountAll,
+		isPrime, sieve, sieveEuler, primeFactorization, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
 		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
