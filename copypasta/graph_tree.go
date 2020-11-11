@@ -1033,6 +1033,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 
 // 树上启发式合并 DSU on tree / small to large
 // https://oi-wiki.org/graph/dsu-on-tree/
+// NOTE: 合并的时候最好先循环计算一遍答案，再循环合并一遍，这样的习惯可避免产生把合并之后的数值算入答案中的 bug
 // 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/44351 补充 https://codeforces.com/blog/entry/67696
 // 模板题 https://www.luogu.com.cn/problem/U41492
