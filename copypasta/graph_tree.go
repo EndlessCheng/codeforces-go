@@ -149,6 +149,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
+		// https://codeforces.com/problemset/problem/208/E
 		// https://codeforces.com/problemset/problem/570/D
 		// https://codeforces.com/problemset/problem/1076/E
 		type info struct{ tin, tout, dep int }
@@ -485,17 +486,17 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
-	var dfs func(v, p, d int)
-	dfs = func(v, p, d int) {
+	var build func(v, p, d int)
+	build = func(v, p, d int) {
 		pa[v][0] = p
 		dep[v] = d
 		for _, w := range g[v] {
 			if w != p {
-				dfs(w, v, d+1)
+				build(w, v, d+1)
 			}
 		}
 	}
-	dfs(root, -1, 0)
+	build(root, -1, 0)
 	// 倍增
 	for i := 0; i+1 < mx; i++ {
 		for v := range pa {
@@ -510,7 +511,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	// O(1) 求法见长链剖分
 	uptoKthPa := func(v, k int) int {
 		for i := 0; i < mx && v != -1; i++ {
-			if k>>i&1 == 1 {
+			if k>>i&1 > 0 {
 				v = pa[v][i]
 			}
 		}
@@ -520,11 +521,9 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	// https://en.wikipedia.org/wiki/Level_ancestor_problem
 	uptoDep := func(v, d int) int {
 		for i := 0; i < mx; i++ {
-			if (dep[v]-d)>>i&1 == 1 {
+			if (dep[v]-d)>>i&1 > 0 {
 				v = pa[v][i]
-				//if v == -1 {
-				//	panic(9)
-				//}
+				//if v == -1 { panic(-9) }
 			}
 		}
 		return v
@@ -585,21 +584,21 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	pos := make([]int, n)        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
 	dep := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
 	disRoot := make([]int, n)    // disRoot[v] 表示 v 到 root 的距离
-	var dfs func(v, p, d int)    // 若有边权需额外传参 dis
-	dfs = func(v, p, d int) {
+	var build func(v, p, d int)  // 若有边权需额外传参 dis
+	build = func(v, p, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
 		dep = append(dep, d)
 		disRoot[v] = d
 		for _, w := range g[v] {
 			if w != p {
-				dfs(w, v, d+1) // d+e.wt
+				build(w, v, d+1) // d+e.wt
 				vs = append(vs, v)
 				dep = append(dep, d)
 			}
 		}
 	}
-	dfs(root, -1, 0)
+	build(root, -1, 0)
 	type pair struct{ v, i int }
 	const mx = 17 // bits.Len(最大节点数)
 	var st [][mx]pair
@@ -888,7 +887,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 // https://www.cnblogs.com/cj-chd/p/10076199.html
 // https://www.cnblogs.com/zhoushuyu/p/9468669.html
-// 应用：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903
+// 应用：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903 https://codeforces.com/problemset/problem/208/E
 // 长链剖分优化树形 DP：
 //    若树形 DP 的转移只和节点深度有关，我们完全可以把一颗子树拍扁成一条垂直的链
 //    那么在合并子树时，长儿子将会占据主导优势，即其余子树均往长儿子上合并，这会使每个节点至多被合并一次，从而得到 O(n) 的优秀复杂度
