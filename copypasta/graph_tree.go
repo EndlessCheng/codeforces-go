@@ -126,7 +126,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 }
 
 // 每个节点的入出时间戳
-// 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点
+// 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 例题 https://codeforces.com/contest/1328/problem/E
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
@@ -149,7 +149,8 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
-		// https://codeforces.com/problemset/problem/208/E
+		// https://codeforces.com/problemset/problem/208/E 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
+		// https://codeforces.com/problemset/problem/246/E
 		// https://codeforces.com/problemset/problem/570/D
 		// https://codeforces.com/problemset/problem/1076/E
 		type info struct{ tin, tout, dep int }
@@ -173,10 +174,10 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 
 		// 深度 d 上的这一排节点与子树 v 求交集，返回对应的深度 d 的节点区间 [l,r)
 		query := func(v, d int) (int, int) {
-			info := is[v]
-			//d += info.dep // 如果 d 是从 v 开始算的话还要加上节点在整棵树的深度
-			l := sort.SearchInts(depT[d], info.tin)
-			r := sort.SearchInts(depT[d], info.tout+1)
+			nf := is[v]
+			//d += nf.dep // 如果 d 是从 v 开始算的话还要加上节点在整棵树的深度
+			l := sort.SearchInts(depT[d], nf.tin)
+			r := sort.SearchInts(depT[d], nf.tout+1)
 			return l, r
 		}
 		_ = query
