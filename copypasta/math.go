@@ -486,6 +486,7 @@ func numberTheoryCollection() {
 	// 阶乘的质因数分解 Finding Power of Factorial Divisor
 	// 见进阶指南 p.138
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
+	// https://codeforces.com/contest/1114/problem/C
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
 	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
