@@ -1256,8 +1256,11 @@ func numberTheoryCollection() {
 
 		// 卡特兰数 https://en.wikipedia.org/wiki/Catalan_number
 		// https://oeis.org/A000108
+		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
+		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
 		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
+		Catalan = func(n int) int64 { return new(big.Int).Mod(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
 
 		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
