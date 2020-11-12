@@ -538,8 +538,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			return v
 		}
 		for i := mx - 1; i >= 0; i-- {
-			if pa[v][i] != pa[w][i] {
-				v, w = pa[v][i], pa[w][i]
+			if pv, pw := pa[v][i], pa[w][i]; pv != pw {
+				v, w = pv, pw
 			}
 		}
 		return pa[v][0]
@@ -570,6 +570,71 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			return v
 		}
 		_ = uptoDep
+	}
+
+	{
+		max := func(a, b int) int {
+			if a > b {
+				return a
+			}
+			return b
+		}
+
+		// EXTRA: 倍增的时候维护其他属性，如边权最值等
+		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E
+		type nb struct{ to, wt int }
+		g := make([][]nb, n)
+		// read g ...
+		const mx = 18
+		type pair struct{ p, maxWt int }
+		pa := make([][mx]pair, n)
+		dep := make([]int, n)
+		var f func(v, p, d int)
+		f = func(v, p, d int) {
+			pa[v][0].p = p
+			dep[v] = d
+			for _, e := range g[v] {
+				if w := e.to; w != p {
+					pa[w][0].maxWt = e.wt
+					f(w, v, d+1)
+				}
+			}
+		}
+		f(0, -1, 0)
+		for i := 0; i+1 < mx; i++ {
+			for v := range pa {
+				if p := pa[v][i]; p.p != -1 {
+					pp := pa[p.p][i]
+					pa[v][i+1] = pair{pp.p, max(p.maxWt, pp.maxWt)}
+				} else {
+					pa[v][i+1] = pair{-1, 0}
+				}
+			}
+		}
+		// 求 LCA 的同时，顺带求出任意路径上的边权最值
+		_lca := func(v, w int) (lca, maxWt int) {
+			if dep[v] > dep[w] {
+				v, w = w, v
+			}
+			for i := 0; i < mx; i++ {
+				if (dep[w]-dep[v])>>i&1 > 0 {
+					p := pa[w][i]
+					maxWt = max(maxWt, p.maxWt)
+					w = p.p
+				}
+			}
+			if v == w {
+				return
+			}
+			for i := mx - 1; i >= 0; i-- {
+				if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
+					maxWt = max(maxWt, max(pv.maxWt, pw.maxWt))
+					v, w = pv.p, pw.p
+				}
+			}
+			return pa[v][0].p, max(maxWt, max(pa[v][0].maxWt, pa[w][0].maxWt))
+		}
+		_ = _lca
 	}
 
 	_ = []interface{}{_d, uptoKthPa, down}
@@ -1011,6 +1076,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 			for _, w := range g[v] {
 				if w != fa && w != hson[v] {
 					subCnt, _ := f(w, v)
+					// do...
 					shift := len(cnt) - len(subCnt)
 					for i, c := range subCnt {
 						i += shift
@@ -1069,6 +1135,7 @@ func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 		}
 		has := f(hson[v], v)
 		merge := func(val int) {
+			// do...
 			has[val] = true
 		}
 		for _, w := range g[v] {
@@ -1086,7 +1153,7 @@ func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	f(root, -1)
 }
 
-// link/cut tree (LCT)
+// 动态树 link/cut tree (LCT)
 // https://en.wikipedia.org/wiki/Link/cut_tree
 // todo https://oi-wiki.org/ds/lct/
 // todo https://codeforces.com/blog/entry/80383
