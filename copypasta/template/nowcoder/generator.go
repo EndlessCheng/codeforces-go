@@ -5,6 +5,7 @@ import (
 	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -104,7 +105,7 @@ func parseCodeAndExamples(session *grequests.Session, problemURL string) (code s
 
 	var f func(o *html.Node)
 	f = func(o *html.Node) {
-		if o.Type == html.ElementNode && o.Data == "textarea" {
+		if o.DataAtom == atom.Textarea {
 			for _, attribute := range o.Attr {
 				if attribute.Val == "input" || attribute.Val == "output" {
 					examples = append(examples, strings.TrimSpace(o.FirstChild.Data))
