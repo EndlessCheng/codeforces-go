@@ -2,7 +2,7 @@ package copypasta
 
 import "math/big"
 
-// CF1244C
+// https://codeforces.com/problemset/problem/1244/C
 
 // 以 s 结尾的方法，s 代表 self
 type Int struct{ *big.Int }
@@ -17,12 +17,12 @@ func (a Int) negs() Int      { a.Neg(a.Int); return a }
 
 func (a Int) set(b Int) Int { a.Set(b.Int); return a }
 func (a Int) cmp(b Int) int { return a.Cmp(b.Int) }
-func (a Int) add(b Int) Int { return Int{(&big.Int{}).Add(a.Int, b.Int)} }
-func (a Int) sub(b Int) Int { return Int{(&big.Int{}).Sub(a.Int, b.Int)} }
-func (a Int) mul(b Int) Int { return Int{(&big.Int{}).Mul(a.Int, b.Int)} }
-func (a Int) div(b Int) Int { return Int{(&big.Int{}).Quo(a.Int, b.Int)} }
-func (a Int) mod(b Int) Int { return Int{(&big.Int{}).Rem(a.Int, b.Int)} }
-func (a Int) neg() Int      { return Int{(&big.Int{}).Neg(a.Int)} }
+func (a Int) add(b Int) Int { return Int{new(big.Int).Add(a.Int, b.Int)} }
+func (a Int) sub(b Int) Int { return Int{new(big.Int).Sub(a.Int, b.Int)} }
+func (a Int) mul(b Int) Int { return Int{new(big.Int).Mul(a.Int, b.Int)} }
+func (a Int) div(b Int) Int { return Int{new(big.Int).Quo(a.Int, b.Int)} }
+func (a Int) mod(b Int) Int { return Int{new(big.Int).Rem(a.Int, b.Int)} }
+func (a Int) neg() Int      { return Int{new(big.Int).Neg(a.Int)} }
 
 //
 
@@ -37,8 +37,8 @@ func (a rat) negs() rat      { a.Neg(a.Rat); return a }
 
 func (a rat) set(b rat) rat { a.Set(b.Rat); return a }
 func (a rat) cmp(b rat) int { return a.Cmp(b.Rat) }
-func (a rat) add(b rat) rat { return rat{(&big.Rat{}).Add(a.Rat, b.Rat)} }
-func (a rat) sub(b rat) rat { return rat{(&big.Rat{}).Sub(a.Rat, b.Rat)} }
-func (a rat) mul(b rat) rat { return rat{(&big.Rat{}).Mul(a.Rat, b.Rat)} }
-func (a rat) div(b rat) rat { return rat{(&big.Rat{}).Quo(a.Rat, b.Rat)} }
-func (a rat) neg() rat      { return rat{(&big.Rat{}).Neg(a.Rat)} }
+func (a rat) add(b rat) rat { return rat{new(big.Rat).Add(a.Rat, b.Rat)} }
+func (a rat) sub(b rat) rat { return rat{new(big.Rat).Sub(a.Rat, b.Rat)} }
+func (a rat) mul(b rat) rat { return rat{new(big.Rat).Mul(a.Rat, b.Rat)} }
+func (a rat) div(b rat) rat { return rat{new(big.Rat).Quo(a.Rat, b.Rat)} }
+func (a rat) neg() rat      { return rat{new(big.Rat).Neg(a.Rat)} }

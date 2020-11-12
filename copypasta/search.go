@@ -773,10 +773,10 @@ func gridCollection() {
 				pid[p] = i
 				col[p.y] = append(col[p.y], p.x)
 			}
-			for j, is := range col {
-				for k := 1; k < len(is); k++ {
-					i := pid[pair{is[k-1], j}]
-					i2 := pid[pair{is[k], j}]
+			for j, xs := range col {
+				for k := 1; k < len(xs); k++ {
+					i := pid[pair{xs[k-1], j}]
+					i2 := pid[pair{xs[k], j}]
 					g[i] = append(g[i], i2)
 					g[i2] = append(g[i2], i)
 				}
