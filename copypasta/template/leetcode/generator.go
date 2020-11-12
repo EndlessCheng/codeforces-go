@@ -237,7 +237,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	htmlNode := rootNode.FirstChild.NextSibling
 	var bodyNode *html.Node
 	for o := htmlNode.FirstChild; o != nil; o = o.NextSibling {
-		if o.Type == html.ElementNode && o.Data == "body" {
+		if o.DataAtom == atom.Body {
 			bodyNode = o
 			break
 		}
@@ -245,7 +245,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 
 	// parse defaultCode
 	for o := bodyNode.FirstChild; o != nil; o = o.NextSibling {
-		if o.Type == html.ElementNode && o.Data == "script" && o.FirstChild != nil {
+		if o.DataAtom == atom.Script && o.FirstChild != nil {
 			jsText := o.FirstChild.Data
 			if start := strings.Index(jsText, "codeDefinition:"); start != -1 {
 				end := strings.Index(jsText, "enableTestMode")
@@ -270,12 +270,12 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 						break
 					}
 				}
-				if p.defaultCode == "" {
-					fmt.Println("未找到 Go 代码")
-				}
 				break
 			}
 		}
+	}
+	if p.defaultCode == "" {
+		fmt.Println("解析失败，未找到 Go 代码模板！")
 	}
 
 	// parse sample inputs and sample outputs
