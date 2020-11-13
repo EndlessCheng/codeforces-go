@@ -21,7 +21,7 @@ type spNode struct {
 }
 
 // 设置如下返回值是为了方便使用 spNode 中的 lr 数组
-func (o *spNode) cmpSz(k int) int8 {
+func (o *spNode) cmpSz(k int) int {
 	switch d := k - o.lr[0].size() - 1; {
 	case d < 0:
 		return 0 // 左儿子
@@ -52,11 +52,11 @@ func (o *spNode) pushDown() {
 // 旋转，并维护子树大小
 // d=0：左旋，返回 o 的右儿子
 // d=1：右旋，返回 o 的左儿子
-func (o *spNode) rotate(d int8) *spNode {
+func (o *spNode) rotate(d int) *spNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
-	// x.sz = o.sz; x.msz = o.msz; o.maintain()
+	// x.sz = o.sz; o.maintain()
 	o.maintain()
 	x.maintain()
 	return x
@@ -64,24 +64,17 @@ func (o *spNode) rotate(d int8) *spNode {
 
 // 将子树 o 的第 k 小节点伸展到 o，返回该节点
 // k 必须为正
-// 注：其中的 if d==1 {...} 可以写成 k -= d * (o.lr[0].size() + 1)
 func (o *spNode) splay(k int) (kth *spNode) {
+	o.pushDown()
 	d := o.cmpSz(k)
 	if d == -1 {
 		return o
 	}
-	o.pushDown()
-	if d > 0 {
-		k -= o.lr[0].size() + 1
-	}
+	k -= d * (o.lr[0].size() + 1)
 	c := o.lr[d]
 	c.pushDown()
-	d2 := c.cmpSz(k)
-	if d2 >= 0 {
-		if d2 > 0 {
-			k -= c.lr[0].size() + 1
-		}
-		c.lr[d2] = c.lr[d2].splay(k)
+	if d2 := c.cmpSz(k); d2 >= 0 {
+		c.lr[d2] = c.lr[d2].splay(k - d2*(c.lr[0].size()+1))
 		if d2 == d {
 			o = o.rotate(d ^ 1)
 		} else {
@@ -91,22 +84,22 @@ func (o *spNode) splay(k int) (kth *spNode) {
 	return o.rotate(d ^ 1)
 }
 
-// 分裂子树 o，把 o 的前 k 小个节点放在 left 子树，其他的放在 right 子树（left 节点为 o 的第 k 小节点）
-// 0 < k <= o.size()，取等号时 right 为 nil
-func (o *spNode) split(k int) (left, right *spNode) {
-	left = o.splay(k)
-	right = left.lr[1]
-	left.lr[1] = nil
-	left.maintain()
+// 分裂子树 o，把 o 的前 k 小个节点放在 lo 子树，其他的放在 ro 子树（lo 节点为 o 的第 k 小节点）
+// 0 < k <= o.size()，取等号时 ro 为 nil
+func (o *spNode) split(k int) (lo, ro *spNode) {
+	lo = o.splay(k)
+	ro = lo.lr[1]
+	lo.lr[1] = nil
+	lo.maintain()
 	return
 }
 
-// 把子树 right 合并进子树 o，返回合并前 o 的最大节点
-// 子树 o 的所有元素比子树 right 中的小
+// 把子树 ro 合并进子树 o，返回合并前 o 的最大节点
+// 子树 o 的所有元素比子树 ro 中的小
 // o != nil
-func (o *spNode) merge(right *spNode) *spNode {
+func (o *spNode) merge(ro *spNode) *spNode {
 	o = o.splay(o.size())
-	o.lr[1] = right
+	o.lr[1] = ro
 	o.maintain()
 	return o
 }
