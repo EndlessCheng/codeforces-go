@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-/* Treap=Tree+Heap
+/* 树堆 treap=tree+heap
 本质上属于笛卡尔树
 	https://oi-wiki.org/ds/cartesian-tree/
 	https://en.wikipedia.org/wiki/Cartesian_tree
@@ -16,11 +16,13 @@ https://en.wikipedia.org/wiki/Treap
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
 耗时大约是红黑树（父节点实现）的 1.2 倍
 
-模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
+普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 
-EXTRA: FHQ Treap https://baobaobear.github.io/post/20191215-fhq-treap/
+EXTRA: FHQ Treap
+https://baobaobear.github.io/post/20191215-fhq-treap/
 FHQ-Treap 学习笔记 + 一堆题目 https://www.luogu.com.cn/blog/85514/fhq-treap-xue-xi-bi-ji
+https://www.luogu.com.cn/blog/specialflag/solution-p3369
 */
 
 // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
@@ -69,8 +71,8 @@ func (o *tpNode) maintain() {
 }
 
 // 旋转，并维护子树大小
-// d=0: left
-// d=1: right
+// d=0：左旋，返回 o 的右儿子
+// d=1：右旋，返回 o 的左儿子
 func (o *tpNode) rotate(d int8) *tpNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
@@ -98,6 +100,7 @@ func (t *treap) fastRand() uint {
 	return t.rd
 }
 
+// 插入一键值对，返回插入后优先级最大的节点
 // 先和二叉搜索树的插入一样，先把要插入的点插入到一个叶子上，并随机分配一个优先级，
 // 然后跟维护堆一样，如果当前节点的优先级比根大就旋转，如果当前节点是根的左儿子就右旋如果当前节点是根的右儿子就左旋
 func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
@@ -121,7 +124,8 @@ func (t *treap) _put(o *tpNode, key tpKeyType, val tpValueType) *tpNode {
 
 func (t *treap) put(key tpKeyType, val tpValueType) { t.root = t._put(t.root, key, val) }
 
-// 因为 Treap 满足堆性质，所以只需要把要删除的节点旋转到叶节点上，然后直接删除就可以了
+// 删除一个键，返回删除后优先级最大的节点，若无节点返回 nil
+// 因为 treap 满足堆性质，所以只需要把要删除的节点旋转到叶节点上，然后直接删除就可以了
 // 具体的方法就是每次找到优先级最大的儿子，向与其相反的方向旋转，这样要删除的节点会不断下降直到叶节点，然后直接删除
 func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 	if o == nil {
@@ -215,7 +219,7 @@ func (o *tpNode) draw(treeSB, prefixSB *strings.Builder, isTail bool) {
 	if isTail {
 		treeSB.WriteString("└── ")
 	} else {
-		treeSB.WriteString( "┌── ")
+		treeSB.WriteString("┌── ")
 	}
 	treeSB.WriteString(o.String())
 	treeSB.WriteByte('\n')

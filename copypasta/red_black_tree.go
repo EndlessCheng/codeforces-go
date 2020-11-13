@@ -39,8 +39,8 @@ func (o *rbNode) pushUp() {
 	o.msz = msz
 }
 
-// d=0: left
-// d=1: right
+// d=0：左旋，返回 o 的右儿子
+// d=1：右旋，返回 o 的左儿子
 func (o *rbNode) rotate(d int) *rbNode {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
