@@ -45,8 +45,34 @@ func (o *bstNode) mSize() int {
 	return 0
 }
 
+func (o *bstNode) maintain() {
+	o.sz = 1 + o.lr[0].size() + o.lr[1].size()
+	o.msz = int(o.value) + o.lr[0].mSize() + o.lr[1].mSize()
+}
+
 type bst struct {
 	root *bstNode
+}
+
+func newBST() *bst {
+	return &bst{}
+}
+
+func buildBST(a []tKeyType) *bstNode {
+	if len(a) == 0 {
+		return nil
+	}
+	m := len(a) / 2
+	o := &bstNode{key: a[m]} // 也可以事先预分配一个 []bstNode，指针指向数组元素
+	o.lr[0] = buildBST(a[:m])
+	o.lr[1] = buildBST(a[m+1:])
+	o.maintain()
+	return o
+}
+
+// a 需要是有序的，这样我们可以把它当成中序遍历来构造 BST
+func newBSTWithArray(a []tKeyType) *bst {
+	return &bst{buildBST(a)}
 }
 
 func (t *bst) size() int   { return t.root.size() }
