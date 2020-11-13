@@ -567,43 +567,38 @@ func loopCollection() {
 		}
 	}
 
-	loopDiagonal := func(mat [][]int) {
-		n, m := len(mat), len(mat[0])
-		for j := 0; j < m; j++ {
-			for i := 0; i < n; i++ {
-				if i > j {
-					break
-				}
-				_ = mat[i][j-i]
-			}
-		}
-		for i := 1; i < n; i++ {
-			for j := m - 1; j >= 0; j-- {
-				if i+m-1-j >= n {
-					break
-				}
-				_ = mat[i+m-1-j][j]
+	// 第一排在右上，最后一排在左下
+	// 每排从左上到右下
+	loopDiagonal := func(n, m int) {
+		for s := 1; s < n+m; s++ {
+			l := max(0, m-s)
+			r := min(m-1, m-s+n-1)
+			for j := l; j <= r; j++ {
+				i := s + j - m
+				_ = i
+
 			}
 		}
 	}
 
-	loopDiagonal2 := func(n int) {
-		for sum := 0; sum < 2*n-1; sum++ {
-			for x := 0; x <= sum; x++ {
-				y := sum - x
-				if x >= n || y >= n {
-					continue
-				}
-				Println(x, y)
+	// 第一排在左上，最后一排在右下
+	// 每排从左下到右上
+	loopAntiDiagonal := func(n, m int) {
+		for s := 0; s < n+m-1; s++ {
+			l := max(0, s-n+1)
+			r := min(m-1, s)
+			for j := l; j <= r; j++ {
+				i := s - j
+				_ = i
+
 			}
-			Println()
 		}
 	}
 
 	_ = []interface{}{
 		loopSet, loopSubset, loopSubsetK,
 		loopAroundManhattan, loopAroundChebyshev,
-		loopDiagonal, loopDiagonal2,
+		loopDiagonal, loopAntiDiagonal,
 	}
 }
 
