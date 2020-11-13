@@ -20,7 +20,7 @@ type bstNode struct {
 }
 
 // 设置如下返回值是为了方便使用 bstNode 中的 lr 数组
-func (o *bstNode) cmp(b tKeyType) int8 {
+func (o *bstNode) cmp(b tKeyType) int {
 	switch {
 	case b < o.key:
 		return 0
@@ -48,6 +48,10 @@ func (o *bstNode) mSize() int {
 func (o *bstNode) maintain() {
 	o.sz = 1 + o.lr[0].size() + o.lr[1].size()
 	o.msz = int(o.value) + o.lr[0].mSize() + o.lr[1].mSize()
+}
+
+func (o *bstNode) pushDown() {
+	// ...
 }
 
 type bst struct {
@@ -244,6 +248,7 @@ func (t *bst) keys() []tKeyType {
 		if o == nil {
 			return
 		}
+		o.pushDown()
 		f(o.lr[0])
 		keys = append(keys, o.key)
 		f(o.lr[1])
