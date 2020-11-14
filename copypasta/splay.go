@@ -180,7 +180,7 @@ func (t *splay) delete(key spKeyType) {
 }
 
 // 其余和 BST 有关的方法见 bst.go
-// 注意每次调用之前都要执行一下 t.root = t.root.splay(t.rank(key))，以确保均摊复杂度为 O(logn)
+// 注意每次调用之前或之后都要执行一下 t.root = t.root.splay(t.rank(key))，以确保均摊复杂度为 O(logn)
 // 注意 min max 哨兵对 rank() kth() 等方法的影响
 
 //
