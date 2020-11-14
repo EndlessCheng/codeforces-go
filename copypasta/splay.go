@@ -122,8 +122,8 @@ const (
 func newSplay() *splay {
 	// 放入两个哨兵节点 min max，以简化 put delete 的逻辑
 	// 注意哨兵对 size() 的影响
-	root := &spNode{key: splayMin}
-	root.lr[1] = &spNode{key: splayMax}
+	root := &spNode{key: splayMin}      // value: 1
+	root.lr[1] = &spNode{key: splayMax} // value: 1
 	t := &splay{root}
 	t.maintain()
 	return t
@@ -155,29 +155,32 @@ func (t *splay) put(key spKeyType, value spValueType) {
 	t.root = t.root.splay(t.rank(key))
 	if t.root.key == key {
 		t.root.val += value
-		return
+	} else {
+		// 把右子树的最小节点伸展上来，这样它就会空出一个左儿子用来插入
+		t.root.lr[1] = t.root.lr[1].splayMin()
+		t.root.lr[1].lr[0] = &spNode{sz: 1, key: key, val: value}
 	}
-	// 把右子树的最小节点伸展上来，这样它就会空出一个左儿子用来插入
-	t.root.lr[1] = t.root.lr[1].splayMin()
-	t.root.lr[1].lr[0] = &spNode{sz: 1, key: key, val: value}
 	t.maintain()
 }
 
 func (t *splay) delete(key spKeyType) {
-	o := t.root.splay(t.rank(key))
-	if o.key != key {
-		t.root = o
+	t.root = t.root.splay(t.rank(key))
+	if t.root.key != key {
 		return
 	}
-	// 把右子树的最小节点伸展上来，这样它就会空出一个左儿子用来插入
-	o.lr[1] = o.lr[1].splayMin()
-	o.lr[1].lr[0] = o.lr[0]
-	t.root = o.lr[1]
+	if t.root.val > 1 {
+		t.root.val--
+	} else {
+		// 把右子树的最小节点伸展上来，这样它就会空出一个左儿子用来插入
+		t.root.lr[1] = t.root.lr[1].splayMin()
+		t.root.lr[1].lr[0] = t.root.lr[0]
+		t.root = t.root.lr[1]
+	}
 	t.root.maintain()
 }
 
 // 其余和 BST 有关的方法见 bst.go
-// 记得每次操作完之后都执行一下 t.root = t.root.splay(t.rank(key))
+// 注意：每次操作完之后都要执行一下 t.root = t.root.splay(t.rank(key))，以确保均摊复杂度为 O(logn)
 
 //
 
