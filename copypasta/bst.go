@@ -260,6 +260,7 @@ func (t *bst) keys() []tKeyType {
 //
 
 func (o *bstNode) String() (s string) {
+	//return strconv.Itoa(int(o.key))
 	if o.value == 1 {
 		s = Sprintf("%v", o.key)
 	} else {

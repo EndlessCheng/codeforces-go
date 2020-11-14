@@ -163,6 +163,7 @@ func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 //
 
 func (o *tpNode) String() (s string) {
+	//return strconv.Itoa(int(o.key))
 	if o.val == 1 {
 		s = Sprintf("%v", o.key)
 	} else {
