@@ -7,20 +7,20 @@ import (
 	"time"
 )
 
-func build(l, r int) *spNode {
+func buildSplay(l, r int) *spNode {
 	if l == r {
 		return nil
 	}
 	m := (l + r) >> 1
 	o := &spNode{key: spKeyType(m)}
-	o.lr[0] = build(l, m)
-	o.lr[1] = build(m+1, r)
+	o.lr[0] = buildSplay(l, m)
+	o.lr[1] = buildSplay(m+1, r)
 	o.maintain()
 	return o
 }
 
 func Test_splay(t *testing.T) {
-	//root := build(1,9)
+	//root := buildSplay(1,9)
 	//root = root.splay(1)
 	rand.Seed(time.Now().UnixNano())
 	n := 30
