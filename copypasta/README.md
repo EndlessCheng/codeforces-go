@@ -34,6 +34,8 @@
 
 ## 其他链接
 
+注：由于白书上选了很多区域赛的题，一部分题目可以在 GYM 上找到，这样可以就可以用 Go 编程提交了。（洛谷上也可能找到）
+
 [算法竞赛入门经典（第二版）](https://github.com/aoapc-book/aoapc-bac2nd)
 
 [算法竞赛入门经典训练指南](https://github.com/klb3713/aoapc-book/tree/master/TrainingGuide/bookcodes)
