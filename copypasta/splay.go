@@ -13,7 +13,7 @@ https://www.cnblogs.com/cjyyb/p/7499020.html
 文艺平衡树 https://www.luogu.com.cn/problem/P3391
 */
 
-// 参考刘汝佳的实现，即不使用父节点的方案
+// 参考刘汝佳的实现，即不使用父节点指针的方案
 
 type spKeyType int
 type spValueType int
