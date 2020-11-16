@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"container/heap"
+	"math/bits"
 	"sort"
 )
 
@@ -336,15 +337,16 @@ func dpCollections() {
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
-	lcs := func(s1, s2 string) int {
-		n, m := len(s1), len(s2)
+	//     https://codeforces.com/contest/1446/problem/B
+	lcs := func(s, t []byte) int {
+		n, m := len(s), len(t)
 		dp := make([][]int, n+1)
 		for i := range dp {
 			dp[i] = make([]int, m+1)
 		}
-		for i, b1 := range s1 {
-			for j, b2 := range s2 {
-				if b1 == b2 {
+		for i, v := range s {
+			for j, w := range t {
+				if v == w {
 					// ignore values from dp[i][j+1] and dp[i+1][j]
 					dp[i+1][j+1] = dp[i][j] + 1
 				} else {
@@ -352,10 +354,21 @@ func dpCollections() {
 				}
 			}
 		}
+
+		{
+			// EXTRA: 某些 dp 非单调性的题目需要计算全局最值
+			allMax := 0
+			for _, row := range dp {
+				for _, v := range row {
+					allMax = max(allMax, v)
+				}
+			}
+		}
+
 		return dp[n][m]
 	}
-	lcsPath := func(s1, s2 string) []byte {
-		n, m := len(s1), len(s2)
+	lcsPath := func(s, t []byte) []byte {
+		n, m := len(s), len(t)
 		dp := make([][]int, n+1)
 		for i := range dp {
 			dp[i] = make([]int, m+1)
@@ -364,9 +377,9 @@ func dpCollections() {
 		for i := range fa {
 			fa[i] = make([]int8, m+1)
 		}
-		for i, b1 := range s1 {
-			for j, b2 := range s2 {
-				if b1 == b2 {
+		for i, v := range s {
+			for j, w := range t {
+				if v == w {
 					dp[i+1][j+1] = dp[i][j] + 1
 					fa[i+1][j+1] = 1
 				} else {
@@ -388,7 +401,7 @@ func dpCollections() {
 			}
 			if fa[i][j] == 1 {
 				makeLCS(i-1, j-1)
-				lcs = append(lcs, s1[i-1])
+				lcs = append(lcs, s[i-1])
 			} else if fa[i][j] == 2 {
 				makeLCS(i-1, j)
 			} else {
@@ -744,9 +757,6 @@ func dpCollections() {
 	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
 	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
 
-	枚举子集，复杂度 O(3^n)
-		dp[s] = min(valid dp[s^sub]) + 1
-		todo LC1494/双周赛29D https://leetcode-cn.com/problems/parallel-courses-ii/
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	*/
 
@@ -816,6 +826,54 @@ func dpCollections() {
 			}
 			return f(0, st)
 		}
+	}
+
+	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
+	// 例如：dp[subset] = min{dp[subset^sub] + cost of sub} for all valid sub
+	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
+	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
+	subsubDP := func(a, cost []int, limit int) int {
+		n, m := len(a), len(cost)
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, 1<<m)
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
+		}
+		const inf int = 1e9 // 1e18
+		var f func(p, set int) int
+		f = func(p, set int) (res int) {
+			if p == n {
+				if set > 0 {
+					return inf
+				}
+				return
+			}
+			dv := &dp[p][set]
+			if *dv != -1 {
+				return *dv
+			}
+			defer func() { *dv = res }()
+			res = inf
+			sub := set
+			// 所有子集
+			for ok := true; ok; ok = sub != set {
+				s := 0
+				for mask := uint(sub); mask > 0; mask &= mask - 1 {
+					s += cost[bits.TrailingZeros(mask)]
+				}
+				r := f(p+1, set^sub)
+				res = min(res, r+s)
+				sub = (sub - 1) & set
+			}
+			// 非空子集
+			for sub := set; sub > 0; sub = (sub - 1) & set {
+
+			}
+			return
+		}
+		return f(0, 1<<m-1)
 	}
 
 	/* 插头 DP / 轮廓线 DP / Broken Profile DP
@@ -1076,8 +1134,12 @@ func dpCollections() {
 		boundedKnapsack, boundedKnapsackBinary,
 
 		mergeStones,
+
 		tsp,
+		subsubDP,
+
 		digitDP,
+
 		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree, rerootDP,
 	}
 }
