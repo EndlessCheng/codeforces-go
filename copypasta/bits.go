@@ -126,20 +126,20 @@ func (b bitset) flip(p int)          { b[p>>5] ^= 1 << (p & 31) }
 func (b bitset) contains(p int) bool { return 1<<(p&31)&b[p>>5] > 0 }
 
 func bitsCollection() {
-	// ^n+1 = (-1-n)+1 = -n
-	lowbit := func(n int64) int64 { return n & -n }
+	// ^v+1 = (-1-v)+1 = -v
+	lowbit := func(v int64) int64 { return v & -v }
 
-	isPow2 := func(x int64) bool { return x > 0 || x&(x-1) == 0 }
+	isPow2 := func(v int64) bool { return v > 0 || v&(v-1) == 0 }
 
-	bits31 := func(n int) []byte {
+	bits31 := func(v int) []byte {
 		bits := make([]byte, 31)
 		for i := range bits {
-			bits[i] = byte(n >> (30 - i) & 1)
+			bits[i] = byte(v >> (30 - i) & 1)
 		}
 		return bits
 	}
-	_bits31 := func(n int) string { return Sprintf("%031b", n) }
-	_bits32 := func(n uint) string { return Sprintf("%032b", n) }
+	_bits31 := func(v int) string { return Sprintf("%031b", v) }
+	_bits32 := func(v uint) string { return Sprintf("%032b", v) }
 
 	digitSum := func(v int) (s int) {
 		for ; v > 0; v /= 10 {

@@ -633,14 +633,15 @@ outer:
 // 模板题：数组中两个数的最大异或值 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 // todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
-func (t *trie) maxXor(val int) (ans int) {
-	bits := [31]byte{}
-	for i := range bits {
-		bits[i] = byte(val >> (30 - i) & 1)
+// EXTRA: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
+func (t *trie) maxXor(v int) (ans int) {
+	s := make([]byte, 31)
+	for i := range s {
+		s[i] = byte(v >> (30 - i) & 1)
 	}
 
 	o := t.root
-	for i, b := range bits {
+	for i, b := range s {
 		if o.son[b^1] != nil {
 			ans |= 1 << (30 - i)
 			b ^= 1
