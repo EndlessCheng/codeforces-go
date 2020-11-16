@@ -30,7 +30,7 @@ func GenCodeforcesContestTemplates(contestID string, overwrite bool) error {
 		}
 		parentName := filepath.Base(path)
 		dirNames = append(dirNames, parentName)
-		for _, srcFileName := range [...]string{"main.go", "main_test.go"} {
+		for _, srcFileName := range []string{"main.go", "main_test.go"} {
 			// 为了便于区分，把 main 替换成所在目录的名字
 			dstFileName := strings.Replace(srcFileName, "main", parentName, 1)
 			dstFilePath := filepath.Join(path, dstFileName)
@@ -157,7 +157,7 @@ func GenTemplates(problemNum int, rootPath string, overwrite bool) error {
 		if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 			return err
 		}
-		for j, fileName := range [...]string{"main.go", "main_test.go"} {
+		for j, fileName := range []string{"main.go", "main_test.go"} {
 			goFilePath := dir + strings.Replace(fileName, "main", string(i), 1)
 			if !overwrite {
 				if _, err := os.Stat(goFilePath); !os.IsNotExist(err) {
