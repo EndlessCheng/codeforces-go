@@ -432,38 +432,33 @@ func loopCollection() {
 		}
 	}
 
-	// 枚举 subset 的全部子集
-	// 作为结束条件，处理完 0 之后，会有 -1&subset == subset
-	loopSubset := func(n, subset int) {
-		sub := subset
-		for ok := true; ok; ok = sub != subset {
+	// 枚举 set 的全部子集
+	// 作为结束条件，处理完 0 之后，会有 -1&set == set
+	loopSubset := func(n, set int) {
+		// 所有子集
+		sub := set
+		for ok := true; ok; ok = sub != set {
 			// do(sub)...
 
-			sub = (sub - 1) & subset
+			sub = (sub - 1) & set
 		}
 
-		{
-			// 非空子集
-			for sub := subset; sub > 0; sub = (sub - 1) & subset {
-				// do(sub)...
+		// 非空子集
+		for sub := set; sub > 0; sub = (sub - 1) & set {
+			// do(sub)...
 
-			}
 		}
 
-		{
-			// 真子集
-			for sub := (subset - 1) & subset; sub != subset; sub = (sub - 1) & subset {
-				// do(sub)...
+		// 真子集
+		for sub := (set - 1) & set; sub != set; sub = (sub - 1) & set {
+			// do(sub)...
 
-			}
 		}
 
-		{
-			// 非空真子集
-			for sub := (subset - 1) & subset; sub > 0; sub = (sub - 1) & subset {
-				// do(sub)...
+		// 非空真子集
+		for sub := (set - 1) & set; sub > 0; sub = (sub - 1) & set {
+			// do(sub)...
 
-			}
 		}
 
 		{
@@ -520,8 +515,9 @@ func loopCollection() {
 		 # #
 		  #
 	*/
+	// https://leetcode-cn.com/problems/matrix-cells-in-distance-order/
 	type pair struct{ x, y int }
-	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 	loopAroundManhattan := func(maxI, maxJ, centerI, centerJ, dis int) {
 		for i, d := range dir4 {
 			d2 := dir4[(i+1)%4]
@@ -529,9 +525,9 @@ func loopCollection() {
 			dy := d2.y - d.y
 			x := centerI + d.x*dis
 			y := centerJ + d.y*dis
-			for _i := 0; _i < dis; _i++ {
-				if x >= 0 && x < maxI && y >= 0 && y < maxJ {
-					// do
+			for k := 0; k < dis; k++ {
+				if 0 <= x && x < maxI && 0 <= y && y < maxJ {
+					// do ...
 				}
 				x += dx
 				y += dy
@@ -549,18 +545,18 @@ func loopCollection() {
 	*/
 	loopAroundChebyshev := func(maxI, maxJ, centerI, centerJ, dis int) {
 		// 上下
-		for _, x := range [...]int{centerI - dis, centerI + dis} {
+		for _, x := range []int{centerI - dis, centerI + dis} {
 			if x >= 0 && x < maxI {
 				for y := max(centerJ-dis, 0); y < min(centerJ+dis, maxJ); y++ {
-					// do
+					// do ...
 				}
 			}
 		}
 		// 左右
-		for _, y := range [...]int{centerJ - dis, centerJ + dis} {
+		for _, y := range []int{centerJ - dis, centerJ + dis} {
 			if y >= 0 && y < maxJ {
 				for x := max(centerI-dis, 0); x < min(centerI+dis, maxI); x++ {
-					// do
+					// do ...
 				}
 			}
 		}

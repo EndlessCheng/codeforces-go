@@ -829,7 +829,7 @@ func dpCollections() {
 	}
 
 	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
-	// 例如：dp[subset] = min{dp[subset^sub] + cost of sub} for all valid sub
+	// 例如：dp[set] = min{dp[set^sub] + cost of sub} for all valid sub
 	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
 	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
 	subsubDP := func(a, cost []int, limit int) int {
