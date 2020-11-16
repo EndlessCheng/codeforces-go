@@ -472,7 +472,7 @@ func loopCollection() {
 				}
 				has[v] = true
 				for w := v; w > 0; w &= w - 1 {
-					f(v &^ (1 << bits.TrailingZeros(w)))
+					f(v &^ (w & -w))
 				}
 			}
 			//for _, v := range a {
