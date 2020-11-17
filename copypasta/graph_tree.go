@@ -12,7 +12,6 @@ import (
 
 从特殊到一般：先思考一条链的情况，然后逐渐增加分支来思考一般的情况
 
-NOTE: 断掉一条树边 v-w，会将这棵树分成两颗树。设 v 为 w 的父节点，则两棵树的顶点数为 size[w] 和 n-size[w]
 NOTE: 对于有根树的题，可以考虑加上 g[0] = append(g[0], -1) 来简化代码
 NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
 NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
@@ -482,7 +481,6 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
-// TODO log 优化
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
