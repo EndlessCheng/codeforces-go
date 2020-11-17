@@ -14,6 +14,11 @@ I have implemented some algorithms in [copypasta](./copypasta).
 >
 > [source](https://codeforces.com/blog/entry/66715?#comment-507869)
 
+My Account:
+
+[![](https://cfrating.ihcr.top/?user=synapse)](https://codeforces.com/profile/synapse)
+
+
 ## Codeforces Solutions
 
 [main](./main)
@@ -21,10 +26,6 @@ I have implemented some algorithms in [copypasta](./copypasta).
 ## Others
 
 My GoLand `Live Templates` and `Postfix Completion` [settings](./misc/my_goland_template)
-
-Account:
-
-[![](https://cfrating.ihcr.top/?user=synapse)](https://codeforces.com/profile/synapse)
 
 ### Useful Tools
 
