@@ -562,7 +562,7 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
-	// 二维费用的情况 https://ac.nowcoder.com/acm/contest/6218/C
+	// 二维费用的情况 https://www.acwing.com/problem/content/8/ https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill -inf
 		//dp[0] = 0
@@ -682,7 +682,49 @@ func dpCollections() {
 	// 多重背包 - 优化 2 - 单调队列优化
 	// todo 挑战 P340
 
-	/* 区间 DP / 环形 DP
+	// 分组背包
+	// https://www.acwing.com/problem/content/9/
+	type item struct{ v, w int }
+	groupKnapsack := func(groups [][]item, maxW int) int {
+		dp := make([]int, maxW+1) // int64
+		for _, g := range groups {
+			for j := maxW; j >= 0; j-- {
+				for _, it := range g {
+					if v, w := it.v, it.w; w <= j {
+						dp[j] = max(dp[j], dp[j-w]+v)
+					}
+				}
+			}
+		}
+		return dp[maxW]
+	}
+
+	// 依赖背包
+	// https://www.acwing.com/problem/content/10/ https://www.acwing.com/problem/content/288/
+	treeKnapsack := func(g [][]int, items []item, root, maxW int) int {
+		var f func(int) []int
+		f = func(v int) []int {
+			it := items[v]
+			dp := make([]int, maxW+1)
+			for i := it.w; i <= maxW; i++ {
+				dp[i] = it.v // 根节点必须选
+			}
+			for _, to := range g[v] {
+				dt := f(to)
+				for j := maxW; j >= it.w; j-- {
+					// 类似分组背包，枚举分给子树 to 的容量 w，对应的子树的最大价值为 dt[w]
+					// w 不可超过 j-it.w，否则无法选择根节点
+					for w := 0; w <= j-it.w; w++ {
+						dp[j] = max(dp[j], dp[j-w]+dt[w])
+					}
+				}
+			}
+			return dp
+		}
+		return f(root)[maxW]
+	}
+
+	/* 区间 DP
 	一般来说转移是合并区间或者分解区间
 	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
 	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
@@ -702,6 +744,12 @@ func dpCollections() {
 	同色消除 https://codeforces.com/problemset/problem/1132/F
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
+
+	环形 DP
+	休息时间 https://www.acwing.com/problem/content/290/
+	环路运输 https://www.acwing.com/problem/content/291/
+	https://www.luogu.com.cn/problem/P6064
+	https://www.luogu.com.cn/problem/P1453
 	*/
 
 	// 石子合并
@@ -977,7 +1025,7 @@ func dpCollections() {
 	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
 	// 题目 https://qiita.com/drken/items/9b311d553aa434bb26e4#%E4%BE%8B%E9%A1%8C-4-4-4k-anonymous-sequence-poj-no3709
 	// todo http://poj.org/problem?id=3709
-	// todo http://poj.org/problem?id=1180
+	// todo https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
 
 	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
@@ -1082,7 +1130,7 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/20935
 	// 例题 https://codeforces.com/problemset/problem/219/D
 	// LC834 树中距离之和 https://leetcode-cn.com/problems/sum-of-distances-in-tree
-	// 下面的代码来自 http://poj.org/problem?id=3585
+	// 下面的代码来自 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
 	rerootDP := func(n int) { // 无根树
 		type edge struct{ to, cap int }
 		g := make([][]edge, n)
@@ -1132,6 +1180,8 @@ func dpCollections() {
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary,
+		groupKnapsack,
+		treeKnapsack,
 
 		mergeStones,
 
