@@ -1,7 +1,6 @@
 package copypasta
 
-// 本质上来说，每个点对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
-
+// 推荐阅读《算法竞赛进阶指南》0x43 和 0x48 节
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
 // https://codeforces.com/blog/entry/18051
@@ -9,6 +8,8 @@ package copypasta
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SegmentTree.java.html
 // https://leetcode.com/articles/a-recursive-approach-to-segment-trees-range-sum-queries-lazy-propagation/
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/
+
+// 本质上来说，每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
 
 // EXTRA: 离散化线段树
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
@@ -24,11 +25,14 @@ package copypasta
 //  https://zhuanlan.zhihu.com/p/64946571
 //  https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 
+// 根号 https://codeforces.com/problemset/problem/920/F
+// 转换的好题 https://codeforces.com/problemset/problem/1187/D
+// 合并 https://codeforces.com/problemset/problem/380/C
+// 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
+//     反向构造题 https://www.luogu.com.cn/problem/P6852
+// GCD https://codeforces.com/problemset/problem/914/D
 // todo 经典题 ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
-// 根号线段树思想 https://codeforces.com/problemset/problem/920/F
-// GCD 好题 https://codeforces.com/problemset/problem/914/D
 // todo 整理 CF961E: 用归并树查询区间内大于等于某个数的元素个数（rank）     其他方法？
-// 转换的好题 https://codeforces.com/contest/1187/problem/D
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的动态 DP 部分
@@ -105,7 +109,7 @@ func (t seg) query(o, l, r int) (res int64) {
 	if r <= m {
 		return t.query(o<<1, l, r)
 	}
-	if l > m {
+	if m < l {
 		return t.query(o<<1|1, l, r)
 	}
 	vl := t.query(o<<1, l, r)
@@ -132,9 +136,11 @@ func newSegmentTree(a []int64) seg {
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
 // = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F
 // https://codeforces.com/problemset/problem/1114/F
+// + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
+// =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
 //
 // 多个更新操作复合：
-// * + Σ https://www.luogu.com.cn/problem/P3373
+// * + Σ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
 // = + Σ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 //
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
@@ -162,10 +168,10 @@ func (t lazyST) build(a []int64, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t lazyST) do(o int, v int64) {
-	to := &t[o]
-	to.todo += v                     // % mod
-	to.sum += int64(to.r-to.l+1) * v // % mod
+func (t lazyST) do(O int, v int64) {
+	o := &t[O]
+	o.todo += v                   // % mod
+	o.sum += int64(o.r-o.l+1) * v // % mod
 }
 
 func (t lazyST) spread(o int) {
@@ -174,6 +180,24 @@ func (t lazyST) spread(o int) {
 		t.do(o<<1|1, add)
 		t[o].todo = 0
 	}
+}
+
+// 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
+// 未找到时返回 n+1
+// o=1  [l,r] 1<=l<=r<=n
+func (t lazyST) lowerBound(o, l, r int, val int64) int {
+	if t[o].l == t[o].r {
+		if val <= t[o].sum {
+			return t[o].l
+		}
+		return t[o].l + 1
+	}
+	t.spread(o)
+	// 注意判断对象是当前节点还是子节点
+	if val <= t[o<<1].sum {
+		return t.lowerBound(o<<1, l, r, val)
+	}
+	return t.lowerBound(o<<1|1, l, r, val)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
@@ -204,7 +228,7 @@ func (t lazyST) query(o, l, r int) (res int64) {
 	if r <= m {
 		return t.query(o<<1, l, r)
 	}
-	if l > m {
+	if m < l {
 		return t.query(o<<1|1, l, r)
 	}
 	vl := t.query(o<<1, l, r)

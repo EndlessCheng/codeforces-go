@@ -60,22 +60,22 @@ func commonCollection() {
 
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	type pair struct{ x, y int }
-	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	dir4C := [...]pair{ // 西东南北
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
+	dir4C := []pair{ // 西东南北
 		'W': {-1, 0},
 		'E': {1, 0},
 		'S': {0, -1},
 		'N': {0, 1},
 	}
-	dir4c := [...]pair{ // 左右下上
+	dir4c := []pair{ // 左右下上
 		'L': {-1, 0},
 		'R': {1, 0},
 		'D': {0, -1},
 		'U': {0, 1},
 	}
-	dir4R := [...]pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
-	dir8 := [...]pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
-	orderP3 := [6][3]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
+	dir4R := []pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
+	dir8 := []pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	orderP3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
 
 	min := func(a, b int) int {
@@ -239,6 +239,8 @@ func commonCollection() {
 	{
 		var n int // read
 		a := make([]int64, n)
+		// read a ...
+
 		sum := make([]int64, n+1)
 		iSum := make([]int64, n+1)
 		for i, v := range a {
@@ -1123,7 +1125,7 @@ func monotoneCollection() {
 			注意：若查询区间不包含右端点 i，或者说查询的区间右端点是 i-1，则上述步骤需要稍作改动，
 				顺序是 1423    [pop]-query-push
 				①的+1去掉（因为右端点是 i-1）
-				④需要先检查队列是否为空再查询
+				④需要先检查队列是否为空再查询（可以在初始时插入一个哨兵来简化逻辑）
 
 	有些题目枚举左端点更为方便，细节见下面的 cf1237d
 
@@ -1169,6 +1171,9 @@ func monotoneCollection() {
 
 		return
 	}
+
+	// 模板题 - 最大子序和    [pop]-query-push
+	// https://www.acwing.com/problem/content/137/
 
 	// 查询区间的右端点为 i-1    [pop]-query-push
 	// 代码来自 LC1499/周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
@@ -1234,7 +1239,7 @@ func monotoneCollection() {
 		return
 	}
 
-	// 有区间上界的最大子数组和     pop-push-query
+	// 有区间上界的最大子数组和    pop-push-query
 	// https://ac.nowcoder.com/acm/contest/1006/D
 	upperSizeMaxSum := func(a []int, upperSize int) (ans int) {
 		max := func(a, b int) int {

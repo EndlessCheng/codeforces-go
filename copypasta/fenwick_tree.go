@@ -1,6 +1,9 @@
 package copypasta
 
 /* 树状数组
+树状数组的基本用途是维护序列的前缀和
+
+推荐阅读《算法竞赛进阶指南》0x42 节
 https://oi-wiki.org/ds/bit/
 todo 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 todo 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
@@ -70,7 +73,8 @@ func fenwickTree(n int) {
 	// 求逆序对的方法之一
 	cntInversions := func(a []int) int64 {
 		n := len(a)
-		tree := [1e5 + 1]int{} // 注：如果 a 范围较大则需要离散化
+		const mx int = 1e5
+		tree := [mx + 1]int{} // 注：如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 		add := func(i int) {
 			for ; i <= n; i += i & -i {
 				tree[i]++

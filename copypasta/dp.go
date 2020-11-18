@@ -705,7 +705,7 @@ func dpCollections() {
 		var f func(int) []int
 		f = func(v int) []int {
 			it := items[v]
-			dp := make([]int, maxW+1)
+			dp := make([]int, maxW+1) // int64
 			for i := it.w; i <= maxW; i++ {
 				dp[i] = it.v // 根节点必须选
 			}
