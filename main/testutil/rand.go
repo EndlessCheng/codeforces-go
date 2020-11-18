@@ -78,6 +78,24 @@ func (r *RG) IntSlice(size int, min, max int) []int {
 	return a
 }
 
+func (r *RG) IntSliceOrdered(size int, min, max int, inc bool) []int {
+	a := make([]int, size)
+	for i := range a {
+		a[i] = min + rand.Intn(max-min+1)
+	}
+	if inc {
+		sort.Ints(a)
+	} else {
+		sort.Sort(sort.Reverse(sort.IntSlice(a)))
+	}
+	for _, v := range a {
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+	}
+	r.NewLine()
+	return a
+}
+
 // FloatSlice generates a random float slice with a fixed size and its values in range [min, max]
 func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	a := make([]float64, 0, size)
