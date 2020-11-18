@@ -2509,7 +2509,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 // https://oi-wiki.org/graph/chord/
 // https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
 
-// 寻找一个子图，要么其是一个 k-团，套么其每个顶点都至少有 k 个邻居（度不小于 k）
+// 寻找一个子图，要么其是一个 k-团，要么其每个顶点都至少有 k 个邻居（度不小于 k）
 // https://codeforces.com/contest/1439/problem/B
 func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 	n := len(g)
