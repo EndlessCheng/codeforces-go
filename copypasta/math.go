@@ -163,8 +163,9 @@ func numberTheoryCollection() {
 	//     = ∑mu(i)*floor(n/i)^4
 
 	// GCD 求和相关
-	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)   https://oeis.org/A018804
-	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)   https://oeis.org/A057660
+	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)          https://oeis.org/A018804 https://www.luogu.com.cn/problem/P2303
+	//     更简化的公式见小粉兔博客 https://www.cnblogs.com/PinkRabbit/p/8278728.html
+	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)          https://oeis.org/A057660
 	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806
 	// ∑∑∑gcd(i,j,k) = ∑phi(i)*(floor(n/i))^3   https://ac.nowcoder.com/acm/contest/7608/B
 
@@ -241,7 +242,7 @@ func numberTheoryCollection() {
 	// p-1 http://oeis.org/A006093
 	// p+1 http://oeis.org/A008864
 	// p^2+p+1 http://oeis.org/A060800 = sigma(p^2)
-	primes := [...]int{
+	primes := []int{
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
 		211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
@@ -279,7 +280,7 @@ func numberTheoryCollection() {
 	}
 
 	// 大于 10^n 的最小素数 http://oeis.org/A090226 http://oeis.org/A003617    a(n)-10^n: http://oeis.org/A033873
-	primes10_ := [...]int64{
+	primes10_ := []int64{
 		2,
 		11,
 		101,
@@ -1021,7 +1022,7 @@ func numberTheoryCollection() {
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// todo https://codeforces.com/blog/entry/61290
-	// 模板题 https://www.luogu.com.cn/problem/P1495
+	// todo 模板题 https://www.luogu.com.cn/problem/P1495
 	crt := func(a, m []int64) (x int64) {
 		M := int64(1)
 		for _, mi := range m {
@@ -1088,6 +1089,8 @@ func numberTheoryCollection() {
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
 	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
+	// https://www.luogu.com.cn/problem/P3846
+	// https://www.luogu.com.cn/problem/P4195
 	babyStepGiantStep := func(a, b, p int64) int64 {
 		hash := map[int64]int64{}
 		b %= p
@@ -1133,7 +1136,7 @@ func numberTheoryCollection() {
 	// https://oeis.org/A000142
 	// https://en.wikipedia.org/wiki/Stirling%27s_approximation
 	// n! ~ √(2πn)*(n/e)^n
-	factorial := [...]int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
+	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
 	// https://oeis.org/A003070 a(n) = ceiling(log_2(n!))
 	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
@@ -1174,7 +1177,7 @@ func numberTheoryCollection() {
 	// a(n) ~ 2^n / sqrt(π * n/2)
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
-	combHalf := [...]int64{
+	combHalf := []int64{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
 		252, 462, 924, 1716, 3432, 6435, 12870, 24310, 48620, 92378, // C(19,9)
 		184756, 352716, 705432, 1352078, 2704156, 5200300, 10400600, 20058300, 40116600, 77558760, // C(29,14)
@@ -1236,6 +1239,7 @@ func numberTheoryCollection() {
 		}
 
 		// EXTRA: 卢卡斯定理
+		// https://www.luogu.com.cn/problem/P3807
 		var lucas func(n, k int64) int64
 		lucas = func(n, k int64) int64 {
 			if k == 0 {
@@ -1379,23 +1383,24 @@ func numberTheoryCollection() {
 	//
 	// 		埃尔德什-施特劳斯猜想（Erdős–Straus conjecture）https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93Straus_conjecture
 
-	/* 斐波那契数列 F(n) http://oeis.org/A000045
+	/* 斐波那契数列 F(n) https://oeis.org/A000045
 	性质 https://oi-wiki.org/math/fibonacci/
-	http://oeis.org/A000071 F(n) 前缀和 = F(n)-1
+	https://oeis.org/A000071 F(n) 前缀和 = F(n+2)-1
 	- 异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
-	http://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
+	https://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
 	                                  a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
-	http://oeis.org/A001690 补集
-	http://oeis.org/A022307 F(n) 的不同的质因子个数
-	http://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
+	https://oeis.org/A001690 补集
+	https://oeis.org/A022307 F(n) 的不同的质因子个数
+	https://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
 	                        N(m) = LCM(N(p1^e1), ..., N(pk^ek))
-	http://oeis.org/A060305 N(p) = F%p 的周期
-	http://oeis.org/A003893 F(n)%10
-	http://oeis.org/A001605 使 F(n) 为质数的 n
+	https://oeis.org/A060305 N(p) = F%p 的周期
+	https://oeis.org/A003893 F(n)%10
+	https://oeis.org/A001605 使 F(n) 为质数的 n
+	https://oeis.org/A191797 C(F(n), 2)
 
 	其他相关序列
-	http://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
-	http://oeis.org/A000931 Padovan sequence (or Padovan numbers): a(n)=a(n-2)+a(n-3) with a(0)=1, a(1)=a(2)=0
+	https://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
+	https://oeis.org/A000931 Padovan sequence (or Padovan numbers): a(n)=a(n-2)+a(n-3) with a(0)=1, a(1)=a(2)=0
 	*/
 
 	// https://oeis.org/A195264 Iterate x -> A080670(x) (replace x with the concatenation of the primes and exponents in its prime factorization)
@@ -1455,7 +1460,10 @@ todo https://codeforces.com/problemset/problem/451/E
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
 
-斯特林数 https://oi-wiki.org/math/stirling/ https://blog.csdn.net/ACdreamers/article/details/8521134
+斯特林数
+https://oi-wiki.org/math/stirling/
+todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
+https://blog.csdn.net/ACdreamers/article/details/8521134
 Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
    将 n 个元素排成 k 个非空循环排列的方法数
    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
