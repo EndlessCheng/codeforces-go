@@ -401,6 +401,7 @@ func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutpu
 	return RunLeetCodeClassWithCase(t, constructor, rawInputs, rawOutputs, 0)
 }
 
+// 无尽对拍模式
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 	const needPrint = runtime.GOOS == "darwin"
 
