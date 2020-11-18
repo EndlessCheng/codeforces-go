@@ -1541,6 +1541,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
 // https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
 // 直观理解 KM 算法 https://www.cnblogs.com/wenruo/p/5264235.html
+// 讲解+题单 https://www.luogu.com.cn/blog/suxxsfe/xiong-ya-li-suan-fa
 // https://resources.mpi-inf.mpg.de/departments/d1/teaching/ss12/AdvancedGraphAlgorithms/Slides06.pdf
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // 模板题 https://www.luogu.com.cn/problem/P6577
@@ -1884,7 +1885,7 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 
 // 基环树（环套树）
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
-// https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
+// todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
@@ -2507,6 +2508,71 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 // 最大势算法 Maximum Cardinality Search (MCS) http://www.ii.uib.no/~pinar/MCS-M.pdf
 // https://oi-wiki.org/graph/chord/
 // https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
+
+// 寻找一个子图，要么其是一个 k-团，套么其每个顶点都至少有 k 个邻居（度不小于 k）
+// https://codeforces.com/contest/1439/problem/B
+func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
+	n := len(g)
+	deg := make([]int, n)
+	for i, vs := range g {
+		deg[i] = len(vs)
+	}
+
+	left := n
+	del := make([]bool, n)
+	q := []int{}
+	for i, d := range deg {
+		if d < k {
+			del[i] = true
+			q = append(q, i)
+		}
+	}
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		left--
+		if deg[v] == k-1 {
+			// 检查 v 和它的小伙伴们(邻居)能否组成 k-团
+			clique := []int{}
+			for w := range g[v] {
+				if deg[w] >= k-1 {
+					clique = append(clique, w)
+				}
+			}
+			if len(clique) == k-1 {
+				for i, v := range clique {
+					for _, w := range clique[:i] {
+						if !g[v][w] {
+							goto deleteV
+						}
+					}
+				}
+				clique = append(clique, v)
+				return clique
+			}
+		}
+	deleteV:
+		deg[v] = 0
+		for w := range g[v] {
+			if deg[w]--; deg[w] < k && !del[w] {
+				del[w] = true
+				q = append(q, w)
+			}
+		}
+	}
+
+	if left == 0 {
+		return nil
+	}
+
+	pseudoClique := make([]int, 0, left)
+	for i, d := range del {
+		if !d {
+			pseudoClique = append(pseudoClique, i)
+		}
+	}
+	return pseudoClique
+}
 
 // todo 最大团
 
