@@ -224,8 +224,6 @@ func dpCollections() {
 	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/
 	最高的广告牌 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
-	todo 最长公共上升子序列 (LCIS) https://codeforces.com/problemset/problem/10/D
-	todo 两个排列的 LCS https://www.luogu.com.cn/problem/P1439
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
@@ -482,6 +480,35 @@ func dpCollections() {
 	// LIS 相关构造题
 	// https://codeforces.com/problemset/problem/1304/D
 	// https://atcoder.jp/contests/arc091/tasks/arc091_c
+
+	// 最长公共上升子序列 (LCIS)
+	// https://www.acwing.com/problem/content/274/
+	// https://codeforces.com/problemset/problem/10/D
+	lcis := func(a, b []int) int {
+		n, m := len(a), len(b)
+		dp := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, m)
+		}
+		for i, v := range a {
+			cur := 0
+			for j, w := range b {
+				if v == w {
+					dp[i+1][j] = cur + 1
+				} else {
+					dp[i+1][j] = dp[i][j]
+				}
+				if w < v {
+					cur = max(cur, dp[i][j])
+				}
+			}
+		}
+		ans := 0
+		for _, v := range dp[n] {
+			ans = max(ans, v)
+		}
+		return ans
+	}
 
 	// 本质不同子序列个数
 	// 定义 dp[i][j] 表示前 i 个字符中长度为 j 的本质不同子序列个数
@@ -957,7 +984,7 @@ func dpCollections() {
 				}
 			}
 			var f func(p, sum int, isUpper bool) int
-			f = func(p, sum int, isUpper bool) (cnt int) {
+			f = func(p, sum int, isUpper bool) (res int) {
 				//if sum... { return 0 }
 				if p >= n {
 					return 1 // 0
@@ -968,7 +995,7 @@ func dpCollections() {
 				}
 				defer func() {
 					if !isUpper {
-						*dv = cnt
+						*dv = res
 					}
 				}()
 				up := upperC
@@ -980,7 +1007,7 @@ func dpCollections() {
 					// do tmp...
 					c := f(p+1, tmp, isUpper && digit == up)
 					// do c...
-					cnt = (cnt + c) % mod
+					res = (res + c) % mod
 				}
 				return
 			}
@@ -1175,7 +1202,7 @@ func dpCollections() {
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
-		lisSlow, lis, distinctSubsequence,
+		lisSlow, lis, lcis, distinctSubsequence,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
 		unboundedKnapsack, unboundedWaysToSum,
