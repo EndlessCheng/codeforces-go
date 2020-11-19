@@ -32,6 +32,7 @@
     // 高亮的词，一部分类似 Python 的关键字，另一部分是一些术语、修饰词之类
     // 注意前者要包含后者
     const words = [
+        "no matter",
         " not ", "don't", "didn't", "doesn't", "can't", " no ", "non-", // "n't",
         "if and only if",
         // "and all", "or all",
