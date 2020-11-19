@@ -34,6 +34,12 @@ S\{i}:  S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 检测是否只有一个 1：x&(x-1) == 0
 
+https://oeis.org/A060142 每一段连续 0 的长度均为偶数的数：如 100110000100
+Ordered set S defined by these rules: 0 is in S and if x is in S then 2x+1 and 4x are in S
+0, 1, 3, 4, 7, 9, 12, 15, 16, 19, 25, 28, 31, 33, 36, 39, 48, 51, 57, 60, 63, 64, 67, 73, 76, 79, 97, 100
+https://oeis.org/A086747 Baum-Sweet sequence
+相关题目：蒙德里安的梦想 https://www.acwing.com/problem/content/293/
+
 异或和相关
 https://oeis.org/A003987 异或矩阵
 https://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4

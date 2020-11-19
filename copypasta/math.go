@@ -1478,6 +1478,11 @@ Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! http
 todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
 
+贝尔数 https://oeis.org/A000110
+基数为 n 的集合的划分方法数
+B(n+1) = Sum_{k=0..n} B(k)*C(n,k)
+B(n) = Sum_{k=0..n} Stirling2(n,k)
+
 康托展开 Cantor Expansion
 https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 https://oi-wiki.org/math/cantor/

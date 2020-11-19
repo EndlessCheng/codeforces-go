@@ -78,10 +78,9 @@ func stringCollection() {
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
-		n := len(s)
-		maxMatchLengths := make([]int, n)
+		maxMatchLengths := make([]int, len(s))
 		c := 0
-		for i := 1; i < n; i++ {
+		for i := 1; i < len(s); i++ {
 			b := s[i]
 			for c > 0 && s[c] != b {
 				c = maxMatchLengths[c-1]
