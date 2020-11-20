@@ -30,37 +30,33 @@
     // 关键词高亮
     const color = "#49cc54"; // 49cc54  008dde
     // 高亮的词，一部分类似 Python 的关键字，另一部分是一些术语、修饰词之类
-    // 注意前者要包含后者
+    // 注意若两个词有包含关系，把长的放前面
     const words = [
-        "no matter",
-        " not ", "don't", "didn't", "doesn't", "can't", " no ", "non-", // "n't",
+        // 描述
+        "Initially", "initially", "guaranteed", "No matter", "no matter",
+        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without",
         "if and only if",
-        // "and all", "or all",
-        // "If ", " if ", "Otherwise", "otherwise", " and ", " or ", "either",
-        " any", " all ", "every", " both ", "empty ", " each ", " other ",
-        "same", "different", "unique", "distinct",
-        // "more",
+        "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
+        "every", " both ", " other ",
+        "equal", "same", "different", "unique", "distinct",
         "must", "only", "exactly", "always",
+        "pairwise", "adjacent", "in a row", "consecutive", "contiguous",
 
-        // "Note", "note",
+        // 求解
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
-        " small ", " big ", " large ",
+        " small ", " big ", " large ", " few ",
         "at least", "at most",
+
+        // 特殊描述
+        "Empty", "empty",
         "zero", "positive", "negative",
-        // "integers", "an integer", "integer",
-        "pairwise",
-
-        "Initially", "initially", "guaranteed",
-
-        "adjacent",
-        // "modulo",
+        "decreasing", "increasing",
         "permutations", "permutation",
         "lowercase", "uppercase",
-        "consecutive", "contiguous",
         "lexicographically", "lexicographical",
-        "expected value",
-        // "operations", "Operations", "operation", "Operation",
         "undirected", "directed",
+        "independently", "independent",
+        "expected value",
 
         "没有", "不是", "不同", "不需要",
         "相同",
@@ -97,7 +93,7 @@
                 .replaceAll("Div. ", "Div.")
                 .replaceAll("div. ", "div.")
                 .replaceAll("Fav. ", "Fav.")
-                .replaceAll("...", "⋯") // 特殊处理一些句点+空格，这些是不需要换行处理的
+                .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
                 // The maximum size of an array is $$$k$$$.
                 .replaceAll(". ", ".</p><p>") // 加个换行（英文）
