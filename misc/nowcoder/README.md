@@ -1,5 +1,9 @@
 # 牛客竞赛
 
+## S1 赛季
+
+2020.07.09 - 2020.08.15
+
 |比赛 ID|比赛名称|
 |---|---|
 |6218|[牛客编程巅峰赛S1赛季第1场 Div.3](https://ac.nowcoder.com/acm/contest/6218)|
@@ -15,6 +19,15 @@
 |6910|[牛客编程巅峰赛S1赛季第10场 Div.1](https://ac.nowcoder.com/acm/contest/6910)|
 |6913|[牛客编程巅峰赛S1赛季第11场 Div.1](https://ac.nowcoder.com/acm/contest/6913)|
 |6916|[牛客编程巅峰赛S1赛季第12场 Div.1](https://ac.nowcoder.com/acm/contest/6916)|
+
+## S2 赛季
+
+2020.11.17 - 2020.12.23
+
+|比赛 ID|比赛名称|
+|---|---|
+|9005|[牛客编程巅峰赛S2赛季第1场 Div.1](https://ac.nowcoder.com/acm/contest/9005)|
+|9224|[牛客编程巅峰赛S2赛季第2场 Div.1](https://ac.nowcoder.com/acm/contest/9224)|
 
 ```go
 
