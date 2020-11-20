@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
@@ -29,4 +30,11 @@ func TestCompare(t *testing.T) {
 		t.Fatal(err)
 	}
 	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
+}
+
+func Test_transJava(t *testing.T) {
+	code := `   
+
+`
+	fmt.Println(transJava(code))
 }
