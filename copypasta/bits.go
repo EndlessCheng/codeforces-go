@@ -12,10 +12,11 @@ import (
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
 
-常用等式
-a|b = a^b + a&b    a^b = a|b - a&b
-a+b = a|b + a&b
-    = a^b + a&b*2
+常用等式（若改变了计算的顺序，注意优先级！）
+a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
+a+b = (a|b) + (a&b)
+    = (a&b)*2 + (a^b)
+    = (a|b)*2 - (a^b)
 相关题目
 https://codeforces.com/problemset/problem/1325/D
 https://atcoder.jp/contests/abc050/tasks/arc066_b
