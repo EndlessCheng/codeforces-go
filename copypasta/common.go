@@ -6,7 +6,9 @@ import (
 	"math"
 	"math/bits"
 	"math/rand"
+	"reflect"
 	"sort"
+	"unsafe"
 )
 
 // General ideas https://codeforces.com/blog/entry/48417
@@ -127,6 +129,11 @@ func commonCollection() {
 			return 0
 		}
 		return (a-1)/b + 1
+	}
+
+	// 超过 cap(a) 的数据是未知的
+	sliceToArray := func(a []int) [10]int {
+		return *(*[10]int)(unsafe.Pointer((*reflect.SliceHeader)(unsafe.Pointer(&a)).Data))
 	}
 
 	isDigit := func(b byte) bool { return '0' <= b && b <= '9' }
@@ -794,6 +801,7 @@ func commonCollection() {
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
 		min, mins, max, maxs, abs, absAll, ceil,
+		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits, initSum2D, querySum2D, contributionSum, mergeMap,
