@@ -255,6 +255,8 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		return RunLeetCodeFuncWithExamples(t, f, rawExamples, 0)
 	}
 
+	t.Log("OK")
+
 	return nil
 }
 
@@ -383,6 +385,8 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		t.Logf("case %d is ok", targetCaseNum)
 		return RunLeetCodeClassWithExamples(t, constructor, rawExamples, 0)
 	}
+
+	t.Log("OK")
 
 	return nil
 }
