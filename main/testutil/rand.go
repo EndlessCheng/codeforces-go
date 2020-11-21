@@ -106,9 +106,12 @@ func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	return a
 }
 
-// Permutation generates a random permutation with a fixed size max-min+1 and its values in range [min, max]
-func (r *RG) Permutation(min, max int) []int {
-	p := rand.Perm(max - min + 1)
+// Permutation generates a random permutation with a fixed size and its values in range [min, max]
+func (r *RG) Permutation(size int, min, max int) []int {
+	if size > max-min+1 {
+		panic("invalid size")
+	}
+	p := rand.Perm(max - min + 1)[:size]
 	for i := range p {
 		p[i] += min
 	}

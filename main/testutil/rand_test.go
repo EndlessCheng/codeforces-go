@@ -10,8 +10,9 @@ func TestRG_Permutation(t *testing.T) {
 	assert := assert.New(t)
 	rg := NewRandGenerator()
 	min, max := 3, 7
-	p := rg.Permutation(min, max)
-	assert.Len(p, max-min+1)
+	n := max - min + 1
+	p := rg.Permutation(n, min, max)
+	assert.Len(p, n)
 	sort.Ints(p)
 	for i, v := range p {
 		assert.Equal(min+i, v)
