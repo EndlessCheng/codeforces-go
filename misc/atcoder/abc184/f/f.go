@@ -33,7 +33,9 @@ func run(_r io.Reader, _w io.Writer) {
 	var f func(int)
 	f = func(p int) {
 		if p == end {
-			b = append(b, s)
+			if s <= t {
+				b = append(b, s)
+			}
 			return
 		}
 		f(p + 1)
@@ -47,25 +49,12 @@ func run(_r io.Reader, _w io.Writer) {
 	b, end = nil, n
 	f(n / 2)
 	for _, v := range b {
-		if l[len(l)-1]+v <= t {
-			ans = max(ans, l[len(l)-1]+v)
-			continue
-		}
-		p := sort.SearchInts(l, t-v)
-		if l[p]+v <= t {
-			ans = max(ans, l[p]+v)
-		} else if p > 0 {
-			ans = max(ans, l[p-1]+v)
+		p := sort.SearchInts(l, t-v+1) - 1
+		if l[p]+v > ans {
+			ans = l[p] + v
 		}
 	}
 	Fprint(out, ans)
 }
 
 func main() { run(os.Stdin, os.Stdout) }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}

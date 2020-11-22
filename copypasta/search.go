@@ -371,13 +371,6 @@ func searchCollection() {
 	// 超大背包问题（折半枚举/双向搜索）
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
 	bigKnapsack := func(a []int, size int) (ans int) {
-		max := func(a, b int) int {
-			if a > b {
-				return a
-			}
-			return b
-		}
-
 		n := len(a)
 		if n == 1 {
 			if a[0] > size {
@@ -386,35 +379,82 @@ func searchCollection() {
 			return a[0]
 		}
 
-		sum, vals, end := 0, []int{}, n/2
+		sumW, ws, end := 0, []int{}, n/2
 		var f func(int)
 		f = func(p int) {
 			if p == end {
-				vals = append(vals, sum)
+				if sumW <= size {
+					ws = append(ws, sumW)
+				}
 				return
 			}
 			f(p + 1)
-			sum += a[p]
+			sumW += a[p]
 			f(p + 1)
-			sum -= a[p]
+			sumW -= a[p]
 		}
 		f(0)
-		l := vals
+		l := ws
 		sort.Ints(l)
 		// l 去重略
 
-		vals, end = nil, n
+		ws, end = nil, n
 		f(n / 2)
-		for _, v := range vals {
-			if l[len(l)-1]+v <= size {
-				ans = max(ans, l[len(l)-1]+v)
-				continue
+		for _, w := range ws {
+			// <= size-w 的第一个数（因为 l[0]==0 所以 p 一定非负）
+			p := sort.SearchInts(l, size-w+1) - 1
+			if l[p]+w > ans {
+				ans = l[p] + w
 			}
-			p := sort.SearchInts(l, size-v)
-			if l[p]+v <= size {
-				ans = max(ans, l[p]+v)
-			} else if p > 0 {
-				ans = max(ans, l[p-1]+v)
+		}
+		return
+	}
+
+	type pair struct{ w, v int }
+	bigKnapsack2 := func(items []pair, size int) (ans int) {
+		n := len(items)
+		if n == 1 {
+			if items[0].w > size {
+				return
+			}
+			return items[0].v
+		}
+
+		sumW, sumV, ps, end := 0, 0, []pair{}, n/2
+		var f func(int)
+		f = func(p int) {
+			if p == end {
+				ps = append(ps, pair{sumW, sumV})
+				return
+			}
+			f(p + 1)
+			it := items[p]
+			sumW += it.w
+			sumV += it.v
+			f(p + 1)
+			sumV -= it.v
+			sumW -= it.w
+		}
+		f(0)
+
+		// 去重，确保重量越大，价值严格越大
+		l := ps
+		nl := 1
+		for i := 1; i < len(l); i++ {
+			if l[nl-1].v < l[i].v {
+				l[nl] = l[i]
+				nl++
+			}
+		}
+		l = l[:nl]
+
+		ps, end = nil, n
+		f(n / 2)
+		for _, p := range ps {
+			// <= size-p.w 的第一个数（因为 l[0].w==0 所以 i 一定非负）
+			i := sort.Search(len(l), func(i int) bool { return l[i].w+p.w > size }) - 1
+			if l[i].v+p.v > ans {
+				ans = l[i].v + p.v
 			}
 		}
 		return
@@ -445,7 +485,7 @@ func searchCollection() {
 		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
 		combinations, combinationsWithRepetition, permutations, permuteAll,
-		bigKnapsack,
+		bigKnapsack, bigKnapsack2,
 	}
 }
 
