@@ -368,6 +368,60 @@ func searchCollection() {
 
 	//
 
+	// 超大背包问题（折半枚举/双向搜索）
+	// https://atcoder.jp/contests/abc184/tasks/abc184_f
+	bigKnapsack := func(a []int, size int) (ans int) {
+		max := func(a, b int) int {
+			if a > b {
+				return a
+			}
+			return b
+		}
+
+		n := len(a)
+		if n == 1 {
+			if a[0] > size {
+				return
+			}
+			return a[0]
+		}
+
+		sum, vals, end := 0, []int{}, n/2
+		var f func(int)
+		f = func(p int) {
+			if p == end {
+				vals = append(vals, sum)
+				return
+			}
+			f(p + 1)
+			sum += a[p]
+			f(p + 1)
+			sum -= a[p]
+		}
+		f(0)
+		l := vals
+		sort.Ints(l)
+		// l 去重略
+
+		vals, end = nil, n
+		f(n / 2)
+		for _, v := range vals {
+			if l[len(l)-1]+v <= size {
+				ans = max(ans, l[len(l)-1]+v)
+				continue
+			}
+			p := sort.SearchInts(l, size-v)
+			if l[p]+v <= size {
+				ans = max(ans, l[p]+v)
+			} else if p > 0 {
+				ans = max(ans, l[p-1]+v)
+			}
+		}
+		return
+	}
+
+	//
+
 	// 剪枝:
 	// todo https://blog.csdn.net/weixin_43914593/article/details/104613920 算法竞赛专题解析（7）：搜索进阶(2)--剪枝
 
@@ -391,6 +445,7 @@ func searchCollection() {
 		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
 		combinations, combinationsWithRepetition, permutations, permuteAll,
+		bigKnapsack,
 	}
 }
 
@@ -602,22 +657,39 @@ func gridCollection() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
 
+	// 获取网格图的 labelS, labelT 的坐标
+	getST := func(g [][]byte, labelS, labelT byte) (pair, pair) {
+		var s, t pair
+		for i, row := range g {
+			for j, b := range row {
+				p := pair{i, j}
+				if b == labelS {
+					s = p
+				} else if b == labelT {
+					t = p
+				}
+			}
+		}
+		return s, t
+	}
+
 	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep
 	// 无法到达时返回 inf
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
+	// https://atcoder.jp/contests/abc184/tasks/abc184_e
 	disST := func(g [][]byte, s pair, t pair) int {
 		const inf int = 1e9 // 1e18
-		type pDep struct {
-			pair
-			dep int
-		}
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
 		vis[s.x][s.y] = true
+		type pDep struct {
+			pair
+			dep int
+		}
 		q := []pDep{{s, 0}}
 		for len(q) > 0 {
 			p := q[0]
@@ -830,6 +902,7 @@ func gridCollection() {
 	}
 
 	_ = []interface{}{
+		getST,
 		disST, findAllReachableTargets,
 		cntCC, dfsValidGrids,
 		findSameValueCC,

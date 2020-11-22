@@ -23,6 +23,10 @@ func main() {
     _ = MustBuildTreeNode
 }
 
+func countNodes(root *TreeNode) int {
+
+}
+
 // LC 18
 func fourSum(a []int, target int) (ans [][]int) {
     sort.Ints(a)
