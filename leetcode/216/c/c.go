@@ -2,24 +2,28 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func waysToMakeFair(a []int) (ans int) {
+	const k = 2
 	n := len(a)
-	sum := make([]int, n+2)
-	for i, v := range a {
-		sum[i+2] = sum[i] + v
+	for len(a)%k > 0 {
+		a = append(a, 0)
 	}
-	for i := range a {
-		if i&1 == 1 {
-			s2 := sum[i] + sum[n+1-(n&1^1)] - sum[i+1]
-			s1 := sum[i+1] + sum[n+1-(n&1)] - sum[i+2]
-			if s1 == s2 {
-				ans++
-			}
-		} else {
-			s1 := sum[i] + sum[n+1-(n&1)] - sum[i+1]
-			s2 := sum[i+1] + sum[n+1-(n&1^1)] - sum[i+2]
-			if s1 == s2 {
-				ans++
-			}
+	sum := make([]int, len(a)+k)
+	for i, v := range a {
+		sum[i+k] = sum[i] + v
+	}
+	pre := func(x, m int) int {
+		if x%k <= m {
+			return sum[x/k*k+m]
+		}
+		return sum[(x+k-1)/k*k+m]
+	}
+	query := func(l, r, m int) int {
+		return pre(r, m) - pre(l, m)
+	}
+	// 由于 a 发生了变化，这里用初始长度
+	for i := 0; i < n; i++ {
+		if query(0, i, 0)+query(i+1, n, 1) == query(0, i, 1)+query(i+1, n, 0) {
+			ans++
 		}
 	}
 	return
