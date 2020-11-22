@@ -5,55 +5,32 @@ import (
 	"sort"
 )
 
+// github.com/EndlessCheng/codeforces-go
 type hp struct{ sort.IntSlice }
 
-func (h hp) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() (v interface{}) {
-	n := len(h.IntSlice)
-	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
-	return
-}
+func (h hp) Less(i, j int) bool    { return h.IntSlice[i] > h.IntSlice[j] }
+func (h *hp) Push(interface{})     {}
+func (h *hp) Pop() (_ interface{}) { return }
 
-func isPossible(a []int) (ans bool) {
-	if len(a) == 1 {
-		return a[0] == 1
-	}
+func isPossible(a []int) bool {
 	sum := 0
-	h := &hp{}
 	for _, v := range a {
 		sum += v
-		heap.Push(h, v)
 	}
-	for h.Len() > 0 && h.IntSlice[0] > 1 {
-		top := heap.Pop(h).(int)
-		d := 2*top - sum // TODO: 虽然过了但是取模更好，这样不会在 [1,1e9] 这样的数据下 TLE
-		if d <= 0 {
-			return
+	h := hp{a}
+	heap.Init(&h)
+	for {
+		max := h.IntSlice[0]
+		sum -= max
+		if max == 1 || sum == 1 {
+			return true
 		}
-		if d > 1 {
-			heap.Push(h, d)
-		}
-		sum = top
-	}
-	return true
-}
-
-// 另一种思路
-func isPossible2(a []int) bool {
-	n := len(a)
-	if n == 1 {
-		return a[0] == 1
-	}
-	sort.Ints(a)
-	sum := 0
-	prev := 1
-	for i, v := range a {
-		if v > 1 && (v == prev || v < sum+n-i) || (v-prev)%(n-1) != 0 {
+		if max < sum || sum == 0 || max%sum == 0 {
 			return false
 		}
-		sum += v
-		prev = v
+		max %= sum
+		sum += max
+		h.IntSlice[0] = max
+		heap.Fix(&h, 0)
 	}
-	return true
 }
