@@ -247,7 +247,7 @@ import (
 	"testing"
 )
 
-// %s
+// 提交地址：%s
 func Test_run(t *testing.T) {
 	t.Log("Current test is [%s]")
 	testCases := [][2]string{%s
