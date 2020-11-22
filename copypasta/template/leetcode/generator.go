@@ -437,7 +437,7 @@ func Test(t *testing.T) {
 	examples := %s{%s
 		
 	}
-	targetCaseNum := 0
+	targetCaseNum := 0 // -1
 	if err := %s(t, %s, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
