@@ -1,0 +1,71 @@
+package main
+
+import (
+	"bufio"
+	. "fmt"
+	"io"
+	"os"
+	"sort"
+)
+
+// github.com/EndlessCheng/codeforces-go
+func run(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
+
+	var n, t, ans, s int
+	Fscan(in, &n, &t)
+	a := make([]int, n)
+	for i := range a {
+		Fscan(in, &a[i])
+	}
+	if n == 1 {
+		if a[0] > t {
+			Fprint(out, 0)
+		} else {
+			Fprint(out, a[0])
+		}
+		return
+	}
+
+	b, end := []int{}, n/2
+	var f func(int)
+	f = func(p int) {
+		if p == end {
+			b = append(b, s)
+			return
+		}
+		f(p + 1)
+		s += a[p]
+		f(p + 1)
+		s -= a[p]
+	}
+	f(0)
+	l := b
+	sort.Ints(l)
+	b, end = nil, n
+	f(n / 2)
+	for _, v := range b {
+		if l[len(l)-1]+v <= t {
+			ans = max(ans, l[len(l)-1]+v)
+			continue
+		}
+		p := sort.SearchInts(l, t-v)
+		if l[p]+v <= t {
+			ans = max(ans, l[p]+v)
+		} else if p > 0 {
+			ans = max(ans, l[p-1]+v)
+		}
+	}
+	Fprint(out, ans)
+}
+
+func main() { run(os.Stdin, os.Stdout) }
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
