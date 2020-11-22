@@ -130,6 +130,10 @@ func commonCollection() {
 		}
 		return (a-1)/b + 1
 	}
+	// 另一种写法，无需考虑 a 为 0 的情况
+	ceil = func(a, b int) int {
+		return (a + b - 1) / b
+	}
 
 	// 超过 cap(a) 的数据是未知的
 	sliceToArray := func(a []int) [10]int {
@@ -240,6 +244,33 @@ func commonCollection() {
 			res = append(res, x%10)
 		}
 		return
+	}
+
+	// 分组前缀和（具体见 query 上的注释）
+	// 周赛 216C https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
+	groupPrefixSum := func(a []int, k int) {
+		// 补 0 简化后续逻辑
+		n := len(a)
+		for len(a)%k > 0 {
+			a = append(a, 0)
+		}
+		sum := make([]int, len(a)+k) // int64
+		for i, v := range a {
+			sum[i+k] = sum[i] + v
+		}
+		pre := func(x, m int) int {
+			if x%k <= m {
+				return sum[x/k*k+m]
+			}
+			return sum[(x+k-1)/k*k+m]
+		}
+		// 求下标在 [l,r) 范围内且下标同余于 m 的元素和 (0<=m<k)
+		query := func(l, r, m int) int {
+			return pre(r, m) - pre(l, m)
+		}
+		a = a[:n] // 如果要枚举等，可能需要复原
+
+		_ = query
 	}
 
 	// 带权(等差数列)前缀和
@@ -804,7 +835,9 @@ func commonCollection() {
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
-		pow, mul, toAnyBase, digits, initSum2D, querySum2D, contributionSum, mergeMap,
+		pow, mul, toAnyBase, digits,
+		groupPrefixSum, initSum2D, querySum2D,
+		contributionSum, mergeMap,
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
