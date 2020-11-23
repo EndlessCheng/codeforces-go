@@ -15,7 +15,7 @@ type (
 
 // github.com/EndlessCheng/codeforces-go
 func run(in input, Q func(req) resp) (gs guess) {
-	//io := func(q []int) int { return Q(req{q}).v }
+	io := func(q []int) int { return Q(req{q}).v }
 	n := in.n
 
 	return
@@ -29,6 +29,7 @@ func ioq() {
 
 	Q := func(req req) (resp resp) {
 		q := req.q
+		//Fprintln(out, "?", req.q)
 		Fprint(out, "? ", len(q))
 		for _, v := range q {
 			Fprint(out, " ", v)
