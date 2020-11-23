@@ -1570,6 +1570,9 @@ https://oeis.org/A001224 The number of inequivalent ways to pack a 2 X n rectang
     If F(n) is the n-th Fibonacci number, then a(2n) = (F(2n+1) + F(n+2))/2 and a(2n+1) = (F(2n+2) + F(n+1))/2
     https://oeis.org/A060312
 
+https://oeis.org/A001187 Number of connected labeled graphs with n nodes
+https://www.acwing.com/problem/content/309/
+
 一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
