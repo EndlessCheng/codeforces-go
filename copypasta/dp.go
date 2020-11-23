@@ -773,12 +773,6 @@ func dpCollections() {
 	同色消除 https://codeforces.com/problemset/problem/1132/F
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
-
-	环形 DP
-	休息时间 https://www.acwing.com/problem/content/290/
-	环路运输 https://www.acwing.com/problem/content/291/
-	https://www.luogu.com.cn/problem/P6064
-	https://www.luogu.com.cn/problem/P1453
 	*/
 
 	// 石子合并
@@ -810,6 +804,15 @@ func dpCollections() {
 		}
 		return dp[0][n-1]
 	}
+
+	/* 环形 DP
+	两种解题策略：
+	一种是假设在 0 处断开，求一遍 DP，然后强制让 0 和 n-1 上是连通的，再求一遍 DP，取二者最值
+	另一种是倍增链
+	休息时间 https://www.luogu.com.cn/problem/P6064 https://www.acwing.com/problem/content/290/
+	环路运输 https://www.acwing.com/problem/content/291/
+	https://www.luogu.com.cn/problem/P1453
+	*/
 
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
@@ -966,7 +969,10 @@ func dpCollections() {
 	      https://codeforces.com/problemset/problem/1036/C
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	LC902 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
-	好题 LC182D https://leetcode-cn.com/problems/find-all-good-strings/
+	digsum(n)|n 的数的个数 https://www.acwing.com/problem/content/313/
+	与 KMP 结合 LC1397/周赛182D https://leetcode-cn.com/problems/find-all-good-strings/
+	一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
+	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
 	digitDP := func(lower, upper string) int {
@@ -1025,6 +1031,61 @@ func dpCollections() {
 		ans = (ans%mod + mod) % mod
 		return ans
 	}
+
+	// 试填法
+	// 第 k 个包含 3 个连续的 6 的数 https://www.acwing.com/problem/content/312/
+	kth666 := func(k int) (ans []byte) {
+		// dp[i][3] 表示由 i 位数字构成的魔鬼数的个数
+		// dp[i][j] (j<3) 表示 i 位数字构成的、开头有连续 j 个 6 的非魔鬼数的个数
+		const mx = 30  // 长度上限
+		const cont = 3 // 连续 3 个数才算符合要求
+		dp := [mx][cont + 1]int{}
+		dp[0][0] = 1
+		for i := 1; i < mx; i++ {
+			for j := 0; j < cont; j++ {
+				dp[i][0] += dp[i-1][j] * 9 // 开头无 6，直接转移（0-9 中除去 6 共 9 个数）
+				dp[i][j+1] = dp[i-1][j]    // 开头有 j+1 个 6，下一个有 j 个 6
+			}
+			dp[i][cont] += dp[i-1][cont] * 10
+		}
+
+		const tarDigit byte = '6'
+		n := 1
+		for ; dp[n][cont] < k; n++ {
+		}
+		has := 0
+		for i := 1; i <= n; i++ {
+			for digit := byte('0'); digit <= '9'; digit++ { // 试填当前位
+				need := cont
+				if has == cont {
+					need = 0
+				} else if digit == tarDigit {
+					need = cont - 1 - has
+				}
+				sum := 0
+				for j := need; j <= cont; j++ {
+					sum += dp[n-i][j]
+				}
+				if sum >= k { // 填入
+					ans = append(ans, digit)
+					if has < cont {
+						if digit == tarDigit {
+							has++
+						} else {
+							has = 0
+						}
+					}
+					break
+				}
+				k -= sum
+			}
+		}
+		return
+	}
+
+	/* 倍增优化 DP
+
+	 */
 
 	/* 数据结构优化 DP
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
@@ -1218,6 +1279,7 @@ func dpCollections() {
 		subsubDP,
 
 		digitDP,
+		kth666,
 
 		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree, rerootDP,
 	}
