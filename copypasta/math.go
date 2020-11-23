@@ -360,7 +360,8 @@ func numberTheoryCollection() {
 
 		a(n) = smallest prime p such that Σ{primes q = 2, ..., p} 1/q exceeds n
 		5, 277, 5_195_977, 1801241230056600523
-		https://oeis.org/A016088
+		https://oeis.org/A016088 pi
+		https://oeis.org/A046024 i
 
 	a(n) = largest m such that the harmonic number H(m)= Σ{i=1..m} 1/i is < n
 	https://oeis.org/A115515
