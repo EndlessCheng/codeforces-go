@@ -997,15 +997,13 @@ func dpCollections() {
 				if p >= n {
 					return 1 // 0
 				}
-				dv := &dp[p][sum]
-				if !isUpper && *dv >= 0 {
-					return *dv
-				}
-				defer func() {
-					if !isUpper {
-						*dv = res
+				if !isUpper {
+					dv := &dp[p][sum]
+					if *dv >= 0 {
+						return *dv
 					}
-				}()
+					defer func() { *dv = res }()
+				}
 				up := upperC
 				if isUpper {
 					up = s[p]
