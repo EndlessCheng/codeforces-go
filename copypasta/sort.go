@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"bytes"
 	"math"
 	"sort"
 )
@@ -64,34 +65,24 @@ func sortCollections() {
 		}
 	}
 
+	// sort.SearchInts 的使用技巧
 	lowerBound := sort.SearchInts
-	upperBound := func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
-	// 也可以通过 sort.SearchInts(a, x+1) 求得 upperBound
+	upperBound := func(a []int, x int) int { return sort.SearchInts(a, x+1) }
+	upperBound = func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
 	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
-	// 若要二分的函数 f(x) 对于较小的 x 返回 true，较大的 x 返回 false
-	// 目标是找到最大的使 f(x) == true 的 x
-	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其减一就得到了最大的使 f(x) == true 的 x
-	// 由于要对结果减一，sort.Search 应传入上界+1
+	// sort.Search 的使用技巧
+	// 由于 sort.Search 处理的 f(x) 是小 false 大 true 的，在遇到小 true 大 false 的 f(x) 时
+	// 若目标是找到最大的使 f(x) == true 的 x
+	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其 -1 就得到了最大的使 f(x) == true 的 x
+	// 由于要对结果 -1，sort.Search 传入的上界需要 +1
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
-	{
-		var upper int
-		v := sort.Search(upper+1, func(x int) bool {
-			if x == 0 {
-				// ...
-				return false
-			}
-			var ok bool
-			// ...
-			return !ok
-		}) - 1
-		_ = v
-	}
 
+	// 指定上下界 [l,r)
 	searchRange := func(l, r int, f func(int) bool) int {
 		for l < r {
-			m := (l + r) >> 1 // 注意 l+r 是否超 int，必要时使用 int64
+			m := (l + r) >> 1 // 注意 l+r 是否超 int，必要时使用 int(uint(i+j) >> 1) 来转换
 			if f(m) {
 				r = m
 			} else {
@@ -100,13 +91,76 @@ func sortCollections() {
 		}
 		return l
 	}
-	// 若 l>0，也可以这样写
-	//sort.Search(r, func(x int) bool {
-	//	if x < l {
-	//		return false
-	//	}
-	//	...
-	//})
+	// 若 l 非负，也可以这样写
+	{
+		var l, r int
+		sort.Search(r, func(x int) bool {
+			if x < l {
+				return false
+			}
+			// do ...
+
+			return true
+		})
+	}
+
+	//
+
+	// 字符串二分 · 其一
+	// 字符串有固定长度 n，二分范围从 "aaa...a" 到 "zzz...z"
+	binarySearchS1 := func(n int) []byte {
+		up := 1 // int64
+		for i := 0; i < n; i++ {
+			up *= 26
+		}
+		kthString := func(k int) []byte {
+			s := bytes.Repeat([]byte{'a'}, n)
+			for i := n - 1; i >= 0 && k > 0; i-- {
+				s[i] += byte(k % 26)
+				k /= 26
+			}
+			return s
+		}
+		kth := sort.Search(up, func(k int) bool {
+			s := kthString(k)
+			_ = s
+			// do s ...
+
+			return true
+		})
+		return kthString(kth)
+	}
+
+	// 字符串二分 · 其二
+	// 字符串长度不固定，最长为 n，二分范围从 "a", "b" 到 "zzz...z"
+	binarySearchS2 := func(n int) []byte {
+		up := 1 // int64
+		for i := 0; i < n; i++ {
+			up *= 26
+		}
+		up = (up - 1) / 25 * 26
+		kthString := func(k int) []byte {
+			s := []byte{}
+			for k++; k > 0; k /= 26 {
+				k--
+				s = append(s, byte('a'+k%26))
+			}
+			for i, n := 0, len(s); i < n/2; i++ {
+				s[i], s[n-1-i] = s[n-1-i], s[i]
+			}
+			return s
+		}
+		kth := sort.Search(up, func(k int) bool {
+			s := kthString(k)
+			_ = s
+			// do s ...
+
+			return true
+		})
+		return kthString(kth)
+	}
+
+	//
 
 	// TIPS: 二分三分中的 step 取多少合适：
 	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 https://codeforces.com/problemset/problem/578/C）
@@ -171,6 +225,8 @@ func sortCollections() {
 		return minI
 	}
 
+	//
+
 	// 0-1 分数规划
 	// https://oi-wiki.org/misc/frac-programming/
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
@@ -232,7 +288,8 @@ func sortCollections() {
 	_ = []interface{}{
 		insertionSort,
 		lowerBound, upperBound,
-		searchRange, binarySearchF, ternarySearchF, ternarySearchInt,
+		searchRange,
+		binarySearchS1, binarySearchS2, binarySearchF, ternarySearchF, ternarySearchInt,
 		search01,
 	}
 }
