@@ -116,13 +116,6 @@ func commonCollection() {
 		}
 		return x
 	}
-	absAll := func(a []int) {
-		for i, v := range a {
-			if v < 0 {
-				a[i] = -v
-			}
-		}
-	}
 	ceil := func(a, b int) int {
 		// assert a >= 0 && b > 0
 		if a == 0 {
@@ -345,17 +338,6 @@ func commonCollection() {
 		return true
 	}
 
-	// 启发式合并：map 版
-	mergeMap := func(a, b map[int]int) map[int]int {
-		if len(a) < len(b) {
-			a, b = b, a
-		}
-		for k, v := range b {
-			a[k] += v
-		}
-		return a
-	}
-
 	// 合并有序数组，保留重复元素
 	// a b 必须是有序的（可以为空）
 	merge := func(a, b []int) []int {
@@ -476,6 +458,7 @@ func commonCollection() {
 		}
 	}
 
+	// 去重
 	// a 必须是有序的
 	unique := func(a []int) (res []int) {
 		n := len(a)
@@ -493,6 +476,7 @@ func commonCollection() {
 		return
 	}
 
+	// 直接在 a 上去重
 	uniqueInPlace := func(a []int) []int {
 		n := len(a)
 		if n == 0 {
@@ -831,13 +815,13 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
-		min, mins, max, maxs, abs, absAll, ceil,
+		min, mins, max, maxs, abs, ceil,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
 		pow, mul, toAnyBase, digits,
 		groupPrefixSum, initSum2D, querySum2D,
-		contributionSum, mergeMap,
+		contributionSum,
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
