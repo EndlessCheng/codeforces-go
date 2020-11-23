@@ -46,6 +46,7 @@ func miscCollection() {
 
 	// 找环
 	// 1<=next[i]<=n
+	// 相关题目 https://atcoder.jp/contests/abc167/tasks/abc167_d
 	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
 		vis := make([]int8, n+1)
 		for v := st; vis[v] < 2; v = next[v] {
@@ -61,7 +62,7 @@ func miscCollection() {
 	}
 
 	// max record pos
-	// 相关题目 https://codeforces.com/problemset/problem/1381/B
+	// 相关题目（这也是一道好题）https://codeforces.com/problemset/problem/1381/B
 	recordPos := func(a []int) []int {
 		pos := []int{0}
 		for i, v := range a {
@@ -73,58 +74,10 @@ func miscCollection() {
 		return pos
 	}
 
-	ceilK := func(n, k int) int {
-		if n%k == 0 {
-			return n
-		}
-		return n + k - n%k
-	}
-
-	shift1Mod := func(v, mod int) int {
-		return (v-1)%mod + 1
-	}
-
-	// 把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
+	// 小结论：把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
 	partition := func(n, m int) (q, cntQ, cntQ1 int) {
 		// m must > 0
 		return n / m, m - n%m, n % m
-	}
-
-	// 从 st 出发，步长为 gap，不超过 upper 的最大值
-	// st <= upper, gap > 0
-	maxValueStepToUpper := func(st, upper, gap int) int {
-		upper -= st
-		return st + upper - upper%gap
-	}
-
-	// 从 st 跳到 [l,r]，每次跳 d 个单位长度，问首次到达的位置（或无法到达）
-	moveToRange := func(st, d, l, r int) (firstPos int, ok bool) {
-		switch {
-		case st < l:
-			if d <= 0 {
-				return
-			}
-			return l + ((st-l)%d+d)%d, true
-		case st <= r:
-			return st, true
-		default:
-			if d >= 0 {
-				return
-			}
-			return r + ((st-r)%d+d)%d, true
-		}
-	}
-
-	hash01Mat := func(mat [][]int) int {
-		hash := 0
-		cnt := 0
-		for _, row := range mat {
-			for _, v := range row {
-				hash |= v << cnt
-				cnt++
-			}
-		}
-		return hash
 	}
 
 	// 用堆求前 k 小
@@ -140,15 +93,6 @@ func miscCollection() {
 			}
 		}
 		return q.IntSlice // 注意返回的不是有序数组
-	}
-
-	removeLeadingZero := func(s string) string {
-		for i, b := range s {
-			if b > '0' {
-				return s[i:]
-			}
-		}
-		return "0"
 	}
 
 	// floatStr must contain a .
@@ -296,10 +240,8 @@ func miscCollection() {
 		logInit,
 		getCycle,
 		recordPos,
-		ceilK, shift1Mod, partition, maxValueStepToUpper, moveToRange,
-		hash01Mat,
+		partition,
 		smallK,
-		removeLeadingZero,
 		floatToRat,
 		isInt,
 		concatBrackets,
