@@ -73,7 +73,8 @@ func sortCollections() {
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
 	// sort.Search 的使用技巧
-	// 由于 sort.Search 处理的 f(x) 是小 false 大 true 的，在遇到小 true 大 false 的 f(x) 时
+	// 由于 sort.Search 需要满足在 x 从小到大时，f(x) 先 false 后 true
+	// 在遇到先 true 后 false 的 f(x) 时
 	// 若目标是找到最大的使 f(x) == true 的 x
 	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其 -1 就得到了最大的使 f(x) == true 的 x
 	// 由于要对结果 -1，sort.Search 传入的上界需要 +1
