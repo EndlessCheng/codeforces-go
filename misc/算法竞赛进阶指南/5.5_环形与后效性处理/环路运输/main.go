@@ -10,8 +10,8 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n, m, ans int
-	Fscan(in, &n, &m)
+	var n, ans int
+	Fscan(in, &n)
 	a := make([]int, 2*n)
 	for i := 0; i < n; i++ {
 		Fscan(in, &a[i])
