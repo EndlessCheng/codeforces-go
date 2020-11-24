@@ -11,7 +11,10 @@ import (
 )
 
 func Test(t *testing.T) {
-	// TODO: 测试参数的下界和上界！
+	dir, _ := filepath.Abs(".")
+	t.Logf("Current problem is [%s]", filepath.Base(dir))
+
+	// TODO: 测试边界情况
 	customTestCases := [][2]string{
 		{
 			``,
@@ -20,17 +23,14 @@ func Test(t *testing.T) {
 	}
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
 		testutil.AssertEqualStringCase(t, customTestCases, 0, run)
-		//testutil.AssertEqualRunResults(t, customTestCases, 0, runAC, run)
 		t.Log("======= custom =======")
 	}
 
-	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, run)
-	//testutil.AssertEqualFileCaseWithName(t, dir, "*.in", "*.out", 0, run)
-	t.Logf("Current problem is [%s]", filepath.Base(dir))
 }
 
 // 无尽对拍 / 构造 hack 数据
+// 如果是 special judge，请用 TestCheck 来对拍
 func TestCompare(t *testing.T) {
 	return
 	//rand.Seed(time.Now().UnixNano())
@@ -62,10 +62,14 @@ func TestCompare(t *testing.T) {
 	// 可以先用 runBF 跑下样例
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
+	//return
 
 	// 对拍
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
-	//testutil.AssertEqualRunResultsInf(t, inputGenerator, run, runBF) // for hacking, write wrong codes in runBF
+	return
+
+	// for hacking, write wrong codes in runBF
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, run, runBF)
 }
 
 // 无尽检查输出是否正确 / 构造 hack 数据
@@ -82,6 +86,8 @@ func TestCheck(t *testing.T) {
 		a := rg.IntSlice(n, 1, n)
 		//Println(rg.String())
 		return rg.String(), func(output string) (_b bool) {
+			// 检查 output 是否符合题目要求
+			// 对于 special judge 的题目，可能还需要额外跑个暴力来检查 output 是否满足最优解等
 			in := strings.NewReader(output)
 			var outN int
 			Fscan(in, &outN)
