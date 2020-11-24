@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"fmt"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -11,7 +12,7 @@ func NewRandGenerator() *RG {
 	return &RG{&strings.Builder{}}
 }
 
-func NewRandGeneratorS(seed int64) *RG {
+func NewRandGeneratorWithSeed(seed int64) *RG {
 	rand.Seed(seed)
 	return NewRandGenerator()
 }
@@ -37,9 +38,13 @@ func (r *RG) Byte(b byte) {
 	r.sb.WriteByte(b)
 }
 
+func (r *RG) _int(min, max int) int {
+	return min + rand.Intn(max-min+1)
+}
+
 // Int generates a random int in range [min, max]
 func (r *RG) Int(min, max int) int {
-	v := min + rand.Intn(max-min+1)
+	v := r._int(min, max)
 	r.sb.WriteString(strconv.Itoa(v))
 	r.Space()
 	return v
@@ -55,12 +60,11 @@ func (r *RG) Float(min, max float64, precision int) float64 {
 
 // Str generates a random string with length in range [minLen, maxLen] and its chars in range [min, max]
 func (r *RG) Str(minLen, maxLen int, min, max byte) string {
-	l := minLen + rand.Intn(maxLen-minLen+1)
+	l := r._int(minLen, maxLen)
 	sb := &strings.Builder{}
 	sb.Grow(l)
 	for i := 0; i < l; i++ {
-		c := min + byte(rand.Intn(int(max-min+1)))
-		sb.WriteByte(c)
+		sb.WriteByte(byte(r._int(int(min), int(max))))
 	}
 	s := sb.String()
 	r.sb.WriteString(s)
@@ -81,7 +85,7 @@ func (r *RG) IntSlice(size int, min, max int) []int {
 func (r *RG) IntSliceOrdered(size int, min, max int, inc bool) []int {
 	a := make([]int, size)
 	for i := range a {
-		a[i] = min + rand.Intn(max-min+1)
+		a[i] = r._int(min, max)
 	}
 	if inc {
 		sort.Ints(a)
@@ -123,59 +127,99 @@ func (r *RG) Permutation(size int, min, max int) []int {
 	return p
 }
 
-// TreeEdges generates a tree with n nodes, st-index
-// TODO: max degree
-func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
-	// random labels
-	//labels := make(sort.IntSlice, n)
-	//for i := range labels {
-	//	labels[i] = i
-	//}
-	//rand.Shuffle(n, labels.Swap)
-
+func (r *RG) treeEdges(n, st int) (edges [][2]int) {
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
-		//v := st + labels[i]
-		//w := st + labels[rand.Intn(i)]
 		v := st + i
 		w := st + rand.Intn(i)
-		r.sb.WriteString(strconv.Itoa(v))
-		r.Space()
-		r.sb.WriteString(strconv.Itoa(w))
-		r.NewLine()
 		edges = append(edges, [2]int{v, w})
+	}
+	return
+}
+
+// TreeEdges generates a tree with n nodes, st-index
+// TODO: support set max degree limit
+func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
+	edges = r.treeEdges(n, st)
+	for _, e := range edges {
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
 	}
 	return
 }
 
 // TreeWeightedEdges generates a tree with n nodes, st-index, edge weights in range [minWeight, maxWeight]
 func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int) {
-	// random labels
-	labels := make(sort.IntSlice, n)
-	for i := range labels {
-		labels[i] = i
-	}
-	rand.Shuffle(n, labels.Swap)
-
-	edges = make([][3]int, 0, n-1)
-	for i := 1; i < n; i++ {
-		v := st + labels[i]
-		w := st + labels[rand.Intn(i)]
-		r.sb.WriteString(strconv.Itoa(v))
-		r.Space()
-		r.sb.WriteString(strconv.Itoa(v))
-		r.Space()
-		weight := r.Int(minWeight, maxWeight)
-		r.NewLine()
-		edges = append(edges, [3]int{v, w, weight})
+	edges = make([][3]int, n-1)
+	for i, e := range r.treeEdges(n, st) {
+		weight := r._int(minWeight, maxWeight)
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
+		edges[i] = [3]int{e[0], e[1], weight}
 	}
 	return
 }
 
-// todo: weighted
-func (r *RG) GraphEdges(n, m int, directed bool) (edges [][2]int) {
-	// TODO
-	// 无自环重边
+func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
+	if m < n-1 {
+		panic("m is too small")
+	}
+	if m > n*(n-1)/2 { // 64-bit, no worry about overflow
+		panic("m is too large")
+	}
+
+	edges = r.treeEdges(n, st)
+
+	has := make([]map[int]bool, n)
+	for i := range has {
+		has[i] = map[int]bool{}
+	}
+	for _, e := range edges {
+		v, w := e[0]-st, e[1]-st
+		has[v][w] = true
+		has[w][v] = true
+	}
+
+	for i := n - 1; i < m; i++ {
+		for {
+			v := r._int(0, n-2)
+			w := r._int(v+1, n-1)
+			if !has[v][w] {
+				has[v][w] = true
+				has[w][v] = true
+				v += st
+				w += st
+				edges = append(edges, [2]int{v, w})
+				break
+			}
+		}
+	}
+
+	if directed {
+		for i := range edges {
+			if rand.Intn(2) == 0 {
+				edges[i][0], edges[i][1] = edges[i][1], edges[i][0]
+			}
+		}
+	}
+	return
+}
+
+// TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges
+func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
+	edges = r.graphEdges(n, m, st, directed)
+	for _, e := range edges {
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1]))
+	}
+	return
+}
+
+// TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
+func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][3]int) {
+	edges = make([][3]int, n-1)
+	for i, e := range r.graphEdges(n, m, st, directed) {
+		weight := r._int(minWeight, maxWeight)
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
+		edges[i] = [3]int{e[0], e[1], weight}
+	}
 	return
 }
 
