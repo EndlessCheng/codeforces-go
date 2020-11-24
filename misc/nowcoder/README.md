@@ -28,6 +28,7 @@
 |---|---|
 |9005|[牛客编程巅峰赛S2赛季第1场 Div.1](https://ac.nowcoder.com/acm/contest/9005)|
 |9224|[牛客编程巅峰赛S2赛季第2场 Div.1](https://ac.nowcoder.com/acm/contest/9224)|
+|9247|[牛客编程巅峰赛S2赛季第2场 Div.1](https://ac.nowcoder.com/acm/contest/9247)|
 
 ```go
 
