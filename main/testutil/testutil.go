@@ -198,7 +198,9 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 			t.Log(s)
 		}
 
-		//break
+		if Once {
+			break
+		}
 	}
 }
 
@@ -234,6 +236,8 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 			t.Log(s)
 		}
 
-		//break
+		if Once {
+			break
+		}
 	}
 }

@@ -38,6 +38,10 @@ func (r *RG) Byte(b byte) {
 	r.sb.WriteByte(b)
 }
 
+func (r *RG) One() {
+	r.sb.WriteString("1\n")
+}
+
 func (r *RG) _int(min, max int) int {
 	return min + rand.Intn(max-min+1)
 }
@@ -110,10 +114,10 @@ func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	return a
 }
 
-// Permutation generates a random permutation with a fixed size and its values in range [min, max]
-func (r *RG) Permutation(size int, min, max int) []int {
+// UniqueSlice generates a int slice with a fixed size and all ints are unique within range [min, max]
+func (r *RG) UniqueSlice(size int, min, max int) []int {
 	if size > max-min+1 {
-		panic("invalid size")
+		panic("size is too large")
 	}
 	p := rand.Perm(max - min + 1)[:size]
 	for i := range p {
@@ -125,6 +129,12 @@ func (r *RG) Permutation(size int, min, max int) []int {
 	}
 	r.NewLine()
 	return p
+}
+
+// Permutation generates a random permutation with a fixed size and its values in range [min, max]
+func (r *RG) Permutation(min, max int) []int {
+	size := max - min + 1
+	return r.UniqueSlice(size, min, max)
 }
 
 func (r *RG) treeEdges(n, st int) (edges [][2]int) {

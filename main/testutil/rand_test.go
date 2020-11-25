@@ -1,7 +1,6 @@
 package testutil
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"sort"
 	"testing"
@@ -11,7 +10,7 @@ func TestRG_Permutation(t *testing.T) {
 	rg := NewRandGenerator()
 	min, max := 3, 7
 	n := max - min + 1
-	p := rg.Permutation(n, min, max)
+	p := rg.UniqueSlice(n, min, max)
 	assert.Len(t, p, n)
 	sort.Ints(p)
 	for i, v := range p {
@@ -22,9 +21,9 @@ func TestRG_Permutation(t *testing.T) {
 func TestRG_TreeEdges(t *testing.T) {
 	rg := NewRandGenerator()
 	n, st := 10, 1
-	es := rg.TreeEdges(n, st)
+	edges := rg.TreeEdges(n, st)
 	g := make([][]int, n)
-	for _, e := range es {
+	for _, e := range edges {
 		v, w := e[0]-st, e[1]-st
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
@@ -47,9 +46,9 @@ func TestRG_TreeWeightedEdges(t *testing.T) {
 	rg := NewRandGenerator()
 	n, st := 10, 1
 	mi, mx := 0, 1
-	es := rg.TreeWeightedEdges(n, st, mi, mx)
+	edges := rg.TreeWeightedEdges(n, st, mi, mx)
 	g := make([][]int, n)
-	for _, e := range es {
+	for _, e := range edges {
 		assert.True(t, mi <= e[2] && e[2] <= mx)
 		v, w := e[0]-st, e[1]-st
 		g[v] = append(g[v], w)
@@ -72,13 +71,10 @@ func TestRG_TreeWeightedEdges(t *testing.T) {
 func TestRG_GraphEdges(t *testing.T) {
 	rg := NewRandGenerator()
 	n := 10
-	m := n * (n - 1) / 2
+	m := n * (n - 1) / 2 // complete graph
 	st := 1
 	edges := rg.GraphEdges(n, m, st, false)
-	for _, e := range edges {
-		fmt.Println(e[0], e[1])
-	}
-
+	// check edges form a complete graph
 	g := make([][]bool, n)
 	for i := range g {
 		g[i] = make([]bool, n)
