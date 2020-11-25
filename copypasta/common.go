@@ -527,6 +527,16 @@ func commonCollection() {
 		return
 	}
 
+	// 简化版，不要求值连续 [10,30,20,20] => [0,3,1,1]
+	discrete2 := func(a []int, startIndex int) []int {
+		b := append([]int(nil), a...)
+		sort.Ints(b)
+		for i, v := range a {
+			a[i] = sort.SearchInts(b, v) + startIndex
+		}
+		return a
+	}
+
 	// 离散化 discreteMap([]int{100,20,50,50}, 1) => map[int]int{100:3, 20:1, 50:2}
 	// 若允许修改原数组，可以先将其排序去重后，再调用 discreteMap，注意去重后 n 需要重新赋值
 	// 例题：https://leetcode-cn.com/problems/count-of-range-sum/
@@ -824,7 +834,7 @@ func commonCollection() {
 		contributionSum,
 		copyMat, sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
-		unique, uniqueInPlace, discrete, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
 	}
