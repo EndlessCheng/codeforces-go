@@ -92,6 +92,7 @@ func (a matrix) pow(k int64) matrix {
 
 // a(n) = p*a(n-1) + q*a(n-2)
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
+// https://ac.nowcoder.com/acm/contest/9247/A
 // m 项递推式，以及包含常数项的情况见《挑战》P201
 // a(n) = a(n-1) + a(n-m) https://codeforces.com/problemset/problem/1117/D
 func calcFibonacci(p, q, a0, a1, n int64) int64 {
@@ -107,8 +108,8 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 		{p, q},
 		{1, 0},
 	}.pow(n - 1)
-	//return m[0][0]
 	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
+	//return m[0][0]
 }
 
 //
