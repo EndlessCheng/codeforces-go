@@ -127,6 +127,13 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 // 每个节点的入出时间戳
 // 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 例题 https://codeforces.com/contest/1328/problem/E
+// 给定一颗 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
+//    先用 BFS 建树，然后 DFS 跑建好的树
+//    也可以不用 BFS，根据完全 k 叉树的性质直接建图：（点的范围从 0 到 n-1）
+//    for w := 1; w < n; w++ {
+//	      v := (w - 1) / k
+//        g[v] = append(g[v], w)
+//    }
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
