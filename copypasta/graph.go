@@ -179,7 +179,7 @@ func (*graph) dfs(n, st int, g [][]int) {
 
 	{
 		// 无向图: DFS 找长度至少为 k 的环
-		// 注：如果只有一个环（基环树），也可以跑拓扑排序
+		// 注：如果只有一个环（基环树），见 treeWithCycle
 		// 模板题 https://codeforces.com/problemset/problem/263/D
 		// https://codeforces.com/problemset/problem/1325/F
 		var k, end, st int
@@ -1687,8 +1687,7 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		for _, w := range g[v] {
 			// do v-w ...
 
-			deg[w]--
-			if deg[w] == 0 {
+			if deg[w]--; deg[w] == 0 {
 				//fa[w] = v
 				//levels[w] = levels[v] + 1
 				q = append(q, w)
@@ -1697,16 +1696,6 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	}
 
 	isDAG = len(orders) == n
-
-	{
-		// EXTRA: 基环树：剩余的 deg > 0 的点即为在环上的点
-		onCycle := make([]bool, n)
-		for i, d := range deg {
-			if d > 0 {
-				onCycle[i] = true
-			}
-		}
-	}
 
 	{
 		fa := make([]int, n)
@@ -1890,12 +1879,10 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 // https://codeforces.com/problemset/problem/1335/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
-func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
-	inDeg := make([]int, n)
-	// 计算入度 ...
+func (*graph) treeWithCycle(n int, g []int, rg [][]int, inDeg []int) {
+	// 输入：g 为内向基环树，rg 为反图（外向基环树），inDeg 为 g 的入度，在读入时计算出
 
-	vis := make([]int8, n)
-	// 拓扑排序，之后 vis[v]==0 的点必定在基环上
+	// 拓扑排序，之后 inDeg 为 1 的点必定在基环上
 	q := []int{}
 	for i, d := range inDeg {
 		if d == 0 {
@@ -1905,37 +1892,106 @@ func (*graph) treeWithCycle(n int, g []int, rg [][]int) {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		vis[v] = 1
 		w := g[v]
-		inDeg[w]--
-		if inDeg[w] == 0 {
+		if inDeg[w]--; inDeg[w] == 0 {
 			q = append(q, w)
 		}
 	}
 
-	for i, b := range vis {
-		if b > 0 {
-			continue
-		}
-		cycle := []int{}
-		for v := i; vis[v] == 0; v = g[v] {
-			vis[v] = 2 // 标记为基环上的点
-			cycle = append(cycle, v)
-		}
-
-		sz := len(cycle)
-		for j, cv := range cycle {
-			for _, root := range rg[cv] {
-				if vis[root] == 2 {
-					continue
-				}
-				// EXTRA: 从非基环的根部出发，遍历反图 rg ...
-
+	// 在反图上遍历树枝
+	var f func(int)
+	f = func(v int) {
+		for _, w := range rg[v] {
+			if inDeg[w] == 0 {
+				f(w)
 			}
+		}
+	}
+	// 遍历基环
+	for root, d := range inDeg {
+		if d > 0 {
+			f(root)
+		}
+	}
 
-			// EXTRA: 从基环上的位置 j 倒着走 k 步到达的点
-			var k int
-			_ = cycle[((j-k)%sz+sz)%sz]
+	// EXTRA: 求基环
+	var cycle []int
+	for i, d := range inDeg {
+		if d > 0 {
+			for v := i; ; v = g[v] {
+				cycle = append(cycle, v)
+				if g[v] == i {
+					break
+				}
+			}
+			break
+		}
+	}
+
+	{
+		// EXTRA: 无向图的情况
+		g := [][]int{}
+		deg := []int{}
+		// read ...
+
+		q := []int{}
+		for i, d := range deg {
+			if d == 1 {
+				q = append(q, i)
+			}
+		}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			for _, w := range g[v] {
+				if deg[w]--; deg[w] == 1 {
+					q = append(q, w)
+				}
+			}
+		}
+
+		// 遍历树枝
+		var f func(v, fa int) int
+		f = func(v, fa int) int {
+			size := 1
+			for _, w := range g[v] {
+				if w != fa && deg[w] < 2 {
+					sz := f(w, v)
+					// do sz ...
+					size += sz
+				}
+			}
+			return size
+		}
+		// 遍历基环
+		size := 0
+		for root, d := range deg {
+			if d > 1 {
+				sz := f(root, -1)
+				// do sz ...
+				size += sz
+			}
+		}
+
+		// EXTRA: 求基环
+		var cycle []int
+		for i, d := range deg {
+			if d > 1 {
+				pre, v := -1, i
+				for {
+					cycle = append(cycle, v)
+					for _, w := range g[v] {
+						if w != pre && deg[w] > 1 {
+							pre, v = v, w
+							break
+						}
+					}
+					if v == i {
+						break
+					}
+				}
+				break
+			}
 		}
 	}
 }
