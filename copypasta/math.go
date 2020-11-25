@@ -454,18 +454,22 @@ func numberTheoryCollection() {
 	// todo 更高效的算法 - Pollard's Rho
 	// n 的质因数分解中 2 的幂次 http://oeis.org/A007814
 	// n 的质因数分解中非 2 的幂次之和 http://oeis.org/A087436
-	primeFactorization := func(x int) (factors [][2]int) {
-		for i := 2; i*i <= x; i++ {
+	type factor struct {
+		p int64
+		e int
+	}
+	primeFactorization := func(x int64) (factors []factor) {
+		for i := int64(2); i*i <= x; i++ {
 			e := 0
 			for ; x%i == 0; x /= i {
 				e++
 			}
 			if e > 0 {
-				factors = append(factors, [2]int{i, e})
+				factors = append(factors, factor{i, e})
 			}
 		}
 		if x > 1 {
-			factors = append(factors, [2]int{x, 1})
+			factors = append(factors, factor{x, 1})
 		}
 		return
 	}
