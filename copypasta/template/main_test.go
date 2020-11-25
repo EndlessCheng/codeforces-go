@@ -31,9 +31,9 @@ func Test(t *testing.T) {
 
 // 无尽对拍 / 构造 hack 数据
 // 如果是 special judge，请用 TestCheck 来对拍
+// rand.Seed(time.Now().UnixNano())
 func TestCompare(t *testing.T) {
 	return
-	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
@@ -59,10 +59,10 @@ func TestCompare(t *testing.T) {
 		Fprint(out, ans)
 	}
 
-	// 可以先用 runBF 跑下样例
+	// 先用 runBF 跑下样例，大致检查下 runBF 的正确性
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
-	//return
+	return
 
 	// 对拍
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
@@ -77,7 +77,6 @@ func TestCheck(t *testing.T) {
 	return
 	assert := assert.New(t)
 
-	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() (string, testutil.OutputChecker) {
 		//return ``
 		rg := testutil.NewRandGenerator()
