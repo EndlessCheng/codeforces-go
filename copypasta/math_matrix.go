@@ -40,7 +40,7 @@ func copyMatrix(a matrix) matrix {
 	return mat
 }
 
-//
+// 矩阵快速幂
 
 type matrix [][]int64
 
