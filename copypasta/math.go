@@ -569,6 +569,7 @@ func numberTheoryCollection() {
 
 		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
+		https://www.luogu.com.cn/problem/P1403
 
 		n+d(n) https://oeis.org/A062249
 		n-d(n) https://oeis.org/A049820   count https://oeis.org/A060990   前缀和 https://oeis.org/A161664
@@ -1363,6 +1364,50 @@ func numberTheoryCollection() {
 	// a(n) = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	//      = 2*( Σ{i=1..floor(sqrt(n))} floor(n/i) ) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
+	// https://oi-wiki.org/math/mobius/#_3
+	// 恒等式 n%i = n-(n/i)*i
+	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
+	// ∑k%i https://www.luogu.com.cn/problem/P2261
+	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
+	// todo https://codeforces.com/contest/1202/problem/F
+	floorLoop := func(n int64) (sum int64) {
+		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
+			h := n / l
+			r = n / h
+			w := r - l + 1
+			sum += h * w
+		}
+		return
+	}
+
+	// ∑k%i (when k=n its ∑n%i)
+	// = ∑k-(k/i)*i
+	// = n*k-∑(k/i)*i
+	// 对于 [l,r] 范围内的 i，k/i 不变，此时 ∑(k/i)*i = (k/i)*∑i = (k/i)*(l+r)*(r-l+1)/2
+	floorLoopK := func(n, k int64) int64 {
+		min := func(a, b int64) int64 {
+			if a < b {
+				return a
+			}
+			return b
+		}
+		sum := n * k
+		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
+			h := k / l
+			if h > 0 {
+				r = min(k/h, n)
+			} else {
+				r = n
+			}
+			w := r - l + 1
+			s := (l + r) * w / 2
+			sum -= h * s
+		}
+		return sum
+	}
+
+	// floor sum: ∑(a*i+b)/c
+	// todo 参见 atcoder library
 
 	// 杜教筛 - 积性函数前缀和
 	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
@@ -1425,6 +1470,7 @@ func numberTheoryCollection() {
 		babyStepGiantStep,
 		factorial, calcFactorial, initFactorial, _factorial, combHalf, initComb, comb,
 		muInit,
+		floorLoop, floorLoopK,
 	}
 }
 
