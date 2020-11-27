@@ -505,6 +505,7 @@ func calculate(s string) (ans int) {
 // 将问题转化成从最后一个士兵开始倒着退出网格
 // 对于一个填满的网格图，每个士兵到边缘的最短路径就是离他最近的边缘的距离
 // 当一个士兵退出网格后，BFS 地更新他周围的士兵到边缘的最短路径（空格点为 0，有人的格点为 1）
+// 复杂度 O((n+m)*min(n,m)^2)
 func minMustPassSum(n, m int, targetCells [][2]int) int {
 	min := func(a, b int) int {
 		if a < b {
