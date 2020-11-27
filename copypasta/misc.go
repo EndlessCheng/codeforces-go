@@ -253,7 +253,8 @@ func miscCollection() {
 
 // 逆序对
 // LC 面试题 51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-// EXTRA: https://leetcode-cn.com/problems/count-of-range-sum/
+// EXTRA: LC 327 https://leetcode-cn.com/problems/count-of-range-sum/
+//        LC 493 https://leetcode-cn.com/problems/reverse-pairs/
 // 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
 func mergeCount(a []int) int64 {
 	n := len(a)
@@ -490,4 +491,66 @@ func calculate(s string) (ans int) {
 		ans += v
 	}
 	return
+}
+
+// 倒序思想
+// 来源自被删除的 C 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45798625
+// 有一个大小为 n*m 的网格图，和一个长为 n*m 的目标位置列表，每个位置表示网格图中的一个格点且互不相同
+// 网格图初始为空
+// 按照此列表的顺序，一个士兵从网格图边缘的任意位置进入并到达目标位置，到达后该士兵停留在此格点，下一个士兵开始进入网格图
+// 每个士兵会尽可能地避免经过有士兵的格点
+// 输出每个士兵必须经过的士兵数之和
+// n, m <= 500
+// 思路：
+// 将问题转化成从最后一个士兵开始倒着退出网格
+// 对于一个填满的网格图，每个士兵到边缘的最短路径就是离他最近的边缘的距离
+// 当一个士兵退出网格后，BFS 地更新他周围的士兵到边缘的最短路径（空格点为 0，有人的格点为 1）
+func minMustPassSum(n, m int, targetCells [][2]int) int {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	dis := make([][]int, n)
+	filled := make([][]int, n) // 格子是否有人
+	inQ := make([][]bool, n)
+	for i := range dis {
+		dis[i] = make([]int, m)
+		filled[i] = make([]int, m)
+		for j := range dis[i] {
+			dis[i][j] = min(min(i, n-1-i), min(j, m-1-j))
+			filled[i][j] = 1
+		}
+		inQ[i] = make([]bool, m)
+	}
+
+	ans := 0
+	type pair struct{ x, y int }
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+	for i := len(targetCells) - 1; i >= 0; i-- {
+		p := targetCells[i]
+		x, y := p[0], p[1]
+		//x--
+		//y--
+		ans += dis[x][y]
+		filled[x][y] = 0
+		q := []pair{{x, y}}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			x, y := p.x, p.y
+			inQ[x][y] = false
+			for _, d := range dir4 {
+				if xx, yy := x+d.x, y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && dis[x][y]+filled[x][y] < dis[xx][yy] {
+					dis[xx][yy] = dis[x][y] + filled[x][y]
+					if !inQ[xx][yy] {
+						inQ[xx][yy] = true
+						q = append(q, pair{xx, yy})
+					}
+				}
+			}
+		}
+	}
+	return ans
 }
