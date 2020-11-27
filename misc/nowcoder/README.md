@@ -28,13 +28,12 @@
 |---|---|
 |9005|[牛客编程巅峰赛S2赛季第1场 Div.1](https://ac.nowcoder.com/acm/contest/9005)|
 |9224|[牛客编程巅峰赛S2赛季第2场 Div.1](https://ac.nowcoder.com/acm/contest/9224)|
-|9247|[牛客编程巅峰赛S2赛季第2场 Div.1](https://ac.nowcoder.com/acm/contest/9247)|
+|9247|[牛客编程巅峰赛S2赛季第3场 Div.1](https://ac.nowcoder.com/acm/contest/9247)|
+|9476|[牛客编程巅峰赛S2赛季第4场 Div.1](https://ac.nowcoder.com/acm/contest/9476)|
 
 ```go
 
-import (
-	//. "nc_tools"
-	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-)
+//import . "nc_tools"
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
 ```
