@@ -130,10 +130,8 @@ func genMainFileContent(code, funcComment string) string {
 	imports := ""
 	if hasPredefinedType := strings.Contains(code, `"nc_tools"`); hasPredefinedType {
 		imports = `
-import (
-	//. "nc_tools"
-	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-)
+//import . "nc_tools"
+import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 `
 	}
 
