@@ -125,7 +125,7 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 			}
 			v = reflect.Append(v, _v)
 		}
-	case reflect.Ptr: // *TreeNode, *ListNode, *Point
+	case reflect.Ptr: // *TreeNode, *ListNode, *Point, *Interval
 		switch tpName := tp.Elem().Name(); tpName {
 		case "TreeNode":
 			root, er := buildTreeNode(rawData)
@@ -141,6 +141,12 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 			v = reflect.ValueOf(head)
 		case "Point": // nowcoder
 			p, er := buildPoint(rawData)
+			if er != nil {
+				return reflect.Value{}, er
+			}
+			v = reflect.ValueOf(p)
+		case "Interval": // nowcoder
+			p, er := buildInterval(rawData)
 			if er != nil {
 				return reflect.Value{}, er
 			}
@@ -169,7 +175,7 @@ func toRawString(v reflect.Value) (s string, err error) {
 			s += _s
 		}
 		s += "]"
-	case reflect.Ptr: // *TreeNode, *ListNode, *Point
+	case reflect.Ptr: // *TreeNode, *ListNode, *Point, *Interval
 		switch tpName := v.Type().Elem().Name(); tpName {
 		case "TreeNode":
 			s = v.Interface().(*TreeNode).toRawString()
@@ -177,6 +183,8 @@ func toRawString(v reflect.Value) (s string, err error) {
 			s = v.Interface().(*ListNode).toRawString()
 		case "Point":
 			s = v.Interface().(*Point).toRawString()
+		case "Interval":
+			s = v.Interface().(*Interval).toRawString()
 		default:
 			return "", fmt.Errorf("unknown type %s", tpName)
 		}
