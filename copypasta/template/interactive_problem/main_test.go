@@ -2,8 +2,8 @@ package main
 
 import (
 	. "fmt"
+	"github.com/EndlessCheng/codeforces-go/main/testutil"
 	"github.com/stretchr/testify/assert"
-	"math/rand"
 	"testing"
 )
 
@@ -12,57 +12,41 @@ func Test_run(t *testing.T) {
 }
 
 func testRun(t *testing.T, debugCaseNum int) {
+	//rand.Seed(time.Now().UnixNano())
 	type testCase struct {
 		input
 		guess
-		innerData []int // optional
+		//innerData []int
 	}
-	// corner cases
 	testCases := []testCase{
-		{
-			input: input{4},
-			guess: guess{[]int{1, 2, 1e9 - 1, 1e9}},
-		},
+
 	}
-	// small cases
-	for i := 1; i <= 1000; i++ {
+	for i := 0; i < 1e5; i++ {
+		rg := testutil.NewRandGenerator()
+		n := rg.Int(2, 9)         // 输入
+		a := rg.IntSlice(n, 1, 9) // 需要猜测的对象
 		testCases = append(testCases, testCase{
-			input: input{1},
-			guess: guess{[]int{i}},
-		})
-	}
-	// random cases
-	//rand.Seed(time.Now().UnixNano())
-	for i := 0; i < 1000; i++ {
-		v := rand.Intn(1e9) + 1 // [1,1e9]
-		testCases = append(testCases, testCase{
-			input: input{1},
-			guess: guess{[]int{v}},
+			input: input{n},
+			guess: guess{a},
 		})
 	}
 
-	// TODO config limits
-	const (
-		queryLimit    = 64
-		minQueryValue = 1
-		maxQueryValue = 1e18
-	)
-	checkQuery := func(caseNum int, tc testCase) func(req) resp {
+	const queryLimit = 1000
+	queryChecker := func(caseNum int, tc testCase) func(req) resp {
 		//n := tc.n
+		//a := append([]int(nil), tc.ans...)
 		_queryCnt := 0
 		return func(req req) (resp resp) {
-			q := req.q
 			if caseNum == debugCaseNum {
-				Println(req)
+				Print(req, " ")
+				defer func() { Println(resp) }()
 			}
 			_queryCnt++
 			if _queryCnt > queryLimit {
 				panic("query limit exceeded")
 			}
-			if len(q) < minQueryValue || len(q) > maxQueryValue {
-				panic("invalid query arguments")
-			}
 			// ...
+
 			resp.v = -1
 			return
 		}
@@ -80,7 +64,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 			continue
 		}
 		expectedAns := tc.guess
-		actualAns := run(tc.input, checkQuery(caseNum, tc))
+		actualAns := run(tc.input, queryChecker(caseNum, tc))
 		if !assert.EqualValues(t, expectedAns, actualAns, "Wrong Answer %d", caseNum) {
 			failedCount++
 			if failedCount > failedCountLimit {

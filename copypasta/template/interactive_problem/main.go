@@ -8,33 +8,28 @@ import (
 
 type (
 	input struct{ n int }
-	req   struct{ q []int }
+	req   struct{ i int }
 	resp  struct{ v int }
 	guess struct{ ans []int }
 )
 
 // github.com/EndlessCheng/codeforces-go
 func run(in input, Q func(req) resp) (gs guess) {
-	io := func(q []int) int { return Q(req{q}).v }
+	q := func(i int) int { return Q(req{i}).v }
 	n := in.n
+	ans := make([]int, n)
+	defer func() { gs.ans = ans }()
 
 	return
 }
 
 // TODO: 提交前运行下，检查输出格式是否正确
 func ioq() {
-	// if the number of input & output times is small, just use Scan & Println without bufio things
 	in := bufio.NewReader(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
 
 	Q := func(req req) (resp resp) {
-		q := req.q
-		//Fprintln(out, "?", req.q)
-		Fprint(out, "? ", len(q))
-		for _, v := range q {
-			Fprint(out, " ", v)
-		}
-		Fprintln(out)
+		Fprintln(out, "?", req.i)
 		out.Flush()
 		Fscan(in, &resp.v)
 		return
