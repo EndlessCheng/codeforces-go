@@ -8,35 +8,33 @@ import (
 	"sort"
 )
 
-func run(_r io.Reader, _w io.Writer) {
+func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-	type tuple struct{ l, r, d int }
+	type item struct{ l, r, d int }
 
-	solve := func(_case int) {
-		var n int
+	var T, n int
+	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
-		a := make([]tuple, n)
+		a := make([]item, n)
 		for i := range a {
 			Fscan(in, &a[i].l, &a[i].r, &a[i].d)
 		}
 		p := sort.Search(1<<31, func(x int) bool {
 			cnt := 0
-			for _, t := range a {
-				if t.l > x {
+			for _, p := range a {
+				if p.l > x {
 					continue
 				}
-				if t.r > x {
-					t.r = x
+				if p.r > x {
+					p.r = x
 				}
-				cnt ^= 1 ^ (t.r-t.l)/t.d
+				cnt ^= (p.r-p.l)/p.d&1 ^ 1
 			}
 			return cnt == 1
 		})
 		if p == 1<<31 {
 			Fprintln(out, "There's no weakness.")
-			return
+			continue
 		}
 		cnt := 0
 		for _, t := range a {
@@ -45,12 +43,6 @@ func run(_r io.Reader, _w io.Writer) {
 			}
 		}
 		Fprintln(out, p, cnt)
-	}
-
-	var t int
-	Fscan(in, &t)
-	for _case := 1; _case <= t; _case++ {
-		solve(_case)
 	}
 }
 
