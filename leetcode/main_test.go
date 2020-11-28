@@ -32,6 +32,19 @@ func TestCompare(t *testing.T) {
 	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
 }
 
+func TestCheckInf(t *testing.T) {
+	//rand.Seed(time.Now().UnixNano())
+	var solve func([]int) []int /*TODO*/
+	for tc := 1; ; tc++ {
+		rg := testutil2.NewRandGenerator()
+		n := rg.Int(1, 9)
+		a := rg.IntSlice(n, 1, 9)
+		myAns := solve(a)
+		// check myAns is valid ...
+		_ = myAns
+	}
+}
+
 func Test_transJava(t *testing.T) {
 	code := `   
 
