@@ -280,6 +280,9 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
 
+// 方便打断点，配合 targetCaseNum 一起使用
+var DebugCallIndex int
+
 func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][3]string, targetCaseNum int) (err error) {
 	cType := reflect.TypeOf(constructor)
 	if cType.Kind() != reflect.Func {
@@ -346,6 +349,9 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		pObj := reflect.New(obj.Type())
 		pObj.Elem().Set(obj)
 
+		if DebugCallIndex < 0 {
+			DebugCallIndex += len(rawArgsList)
+		}
 		rawActualOut := "[null"
 		for callIndex := 1; callIndex < len(rawArgsList); callIndex++ {
 			name := methodNames[callIndex]
@@ -369,6 +375,9 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 				}
 			}
 
+			if callIndex == DebugCallIndex {
+				print()
+			}
 			// call method
 			if actualOuts := method.Call(in); len(actualOuts) > 0 {
 				s, er := toRawString(actualOuts[0])
