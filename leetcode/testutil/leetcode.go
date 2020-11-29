@@ -263,7 +263,9 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		return RunLeetCodeFuncWithExamples(t, f, rawExamples, 0)
 	}
 
-	t.Log("OK")
+	if allCasesOk {
+		t.Log("OK")
+	}
 
 	return nil
 }
@@ -392,6 +394,7 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		rawActualOut += "]"
 
 		// 比较前，去除 rawExpectedOut 中逗号后的空格
+		// todo: 提示错在哪个 callIndex 上
 		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
 		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCase+1) {
 			allCasesOk = false
@@ -403,7 +406,9 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		return RunLeetCodeClassWithExamples(t, constructor, rawExamples, 0)
 	}
 
-	t.Log("OK")
+	if allCasesOk {
+		t.Log("OK")
+	}
 
 	return nil
 }
