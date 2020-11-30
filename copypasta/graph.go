@@ -1695,7 +1695,7 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		}
 	}
 
-	isDAG = len(orders) == n
+	isDAG = len(orders) == n // 或所有 deg 均为 0
 
 	{
 		fa := make([]int, n)
