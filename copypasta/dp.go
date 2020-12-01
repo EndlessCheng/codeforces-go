@@ -459,10 +459,13 @@ func dpCollections() {
 	// 求下降，可以考虑把序列元素去相反数
 	// https://oi-wiki.org/dp/basic/#_12
 	// 最小划分数 Dilworth's theorem https://en.wikipedia.org/wiki/Dilworth%27s_theorem
+	// 例题 导弹拦截 https://www.luogu.com.cn/problem/P1020
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	//       https://www.zhihu.com/question/34905638
+	// 合唱队形 https://www.luogu.com.cn/problem/P1091
+	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
 	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
 	// 两个排列的 LCS 转换成 LIS https://www.luogu.com.cn/problem/P1439
@@ -477,6 +480,22 @@ func dpCollections() {
 			}
 		}
 		return len(dp)
+	}
+	// 每个前缀的 LIS
+	lisAll := func(a []int) []int {
+		n := len(a)
+		lis := make([]int, n)
+		dp := make([]int, 0, n)
+		for i, v := range a {
+			if p := sort.SearchInts(dp, v); p < len(dp) { // 改成 v+1 为非降
+				dp[p] = v
+				lis[i] = p + 1
+			} else {
+				dp = append(dp, v)
+				lis[i] = len(dp)
+			}
+		}
+		return lis
 	}
 
 	// LIS 相关构造题
@@ -1181,6 +1200,52 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/982/C
 	*/
 
+	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
+	// https://leetcode-cn.com/problems/tree-diameter/
+	diameter := func(st int, g [][]int) (diameter int) {
+		var f func(v, fa int) int
+		f = func(v, fa int) (mxDep int) {
+			for _, w := range g[v] {
+				if w != fa {
+					dep := f(w, v) + 1
+					diameter = max(diameter, mxDep+dep)
+					mxDep = max(mxDep, dep)
+				}
+			}
+			return
+		}
+		f(st, -1)
+		return
+	}
+
+	// 树的直径及其个数
+	// http://acm.hdu.edu.cn/showproblem.php?pid=3534
+	countDiameter := func(st int, g [][]int) (diameter, diameterCnt int) {
+		var f func(v, fa int) (int, int)
+		f = func(v, fa int) (int, int) {
+			mxDep, cnt := 0, 1
+			for _, w := range g[v] {
+				if w != fa {
+					dep, c := f(w, v)
+					dep++
+					if l := mxDep + dep; l > diameter {
+						diameter, diameterCnt = l, cnt*c
+					} else if l == diameter {
+						diameterCnt += cnt * c
+					}
+					if dep > mxDep {
+						mxDep, cnt = dep, c
+					} else if dep == mxDep {
+						cnt += c
+					}
+				}
+			}
+			return mxDep, cnt
+		}
+		f(st, -1)
+		return
+	}
+
 	// 树上最大独立集
 	// 返回最大点权和（最大独立集的情形即所有点权均为一）
 	// 每个点有选和不选两种决策，接受子树转移时，选的决策只能加上不选子树，而不选的决策可以加上 max{不选子树, 选子树}
@@ -1313,7 +1378,7 @@ func dpCollections() {
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
-		lisSlow, lis, lcis, countLIS, distinctSubsequence,
+		lisSlow, lis, lisAll, lcis, countLIS, distinctSubsequence,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
 		unboundedKnapsack, unboundedWaysToSum,
@@ -1329,6 +1394,8 @@ func dpCollections() {
 		digitDP,
 		kth666,
 
-		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree, rerootDP,
+		diameter, countDiameter,
+		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree,
+		rerootDP,
 	}
 }
