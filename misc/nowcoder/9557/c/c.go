@@ -1,34 +1,33 @@
 package main
 
-import "sort"
-
 // github.com/EndlessCheng/codeforces-go
 func tree3(e []int) int {
-	g := make([][]int, len(e)+2)
+	n := len(e) + 2
+	g := make([][]int, n)
 	for w, v := range e {
 		w += 2
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-	var maxD, u int
-	ds := []int{}
+	mx, u, c := -1, 0, make([]int, n)
 	var f func(v, fa, d int)
 	f = func(v, fa, d int) {
-		if d > maxD {
-			maxD, u = d, v
+		if d > mx {
+			mx, u = d, v
 		}
-		ds = append(ds, d)
+		c[d]++
 		for _, w := range g[v] {
 			if w != fa {
 				f(w, v, d+1)
 			}
 		}
 	}
-	maxD = -1
 	f(1, 0, 0)
-	maxD, ds = -1, nil
+	mx, c = -1, make([]int, n)
 	f(u, 0, 0)
 	f(u, 0, 0)
-	sort.Ints(ds)
-	return ds[len(ds)-3]
+	if c[mx] == 2 {
+		mx--
+	}
+	return mx
 }
