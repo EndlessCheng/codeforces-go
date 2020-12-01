@@ -192,16 +192,16 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	_ = isFa
 }
 
-// 树的直径/最长链
+// 树的直径/最长链（DP 求法另见 dp.go 中的 diameter）
 // 返回树的某条直径的两端点以及直径长度（最长链长度）
 // 树的中心：树的直径的中点。直径长度为偶数时有一个，为奇数时有两个
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
-// 也可以用树形 DP，计算每个根往下的最长链和次长链从而得到答案（维护最大时记录是从哪个节点取到的，维护次大时跳过该节点）
+// https://leetcode-cn.com/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
-	var maxD, u int
+	maxD, u := -1, 0
 	var f func(v, fa, d int)
 	f = func(v, fa, d int) {
 		if d > maxD {
@@ -213,25 +213,24 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 			}
 		}
 	}
-	maxD = -1
-	f(st, -1, 0) // st=0
+	f(st, -1, 0)
 	dv := u
 	maxD = -1
-	f(dv, -1, 0)
+	f(u, -1, 0)
 	dw := u
 
-	// EXTRA: 获取直径上的所有节点 ds
-	// ds[len(ds)/2] 即为树的中心
-	ds := []int{}
+	// EXTRA: 获取直径上的所有节点 vs
+	// vs[len(vs)/2] 即为树的中心
+	vs := []int{}
 	var f2 func(v, fa int) bool
 	f2 = func(v, fa int) bool {
 		if v == u {
-			ds = append(ds, v)
+			vs = append(vs, v)
 			return true
 		}
 		for _, w := range g[v] {
 			if w != fa && f2(w, v) {
-				ds = append(ds, v)
+				vs = append(vs, v)
 				return true
 			}
 		}
@@ -240,6 +239,37 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	f2(dv, -1)
 
 	return dv, dw, maxD
+}
+
+// 非严格次长直径
+// https://ac.nowcoder.com/acm/contest/9557/C
+func (*tree) secondDiameter(st int, g [][]int) int {
+	n := len(g)
+	maxD, u, cntD := -1, 0, make([]int, n)
+	var f func(v, fa, d int)
+	f = func(v, fa, d int) {
+		if d > maxD {
+			maxD, u = d, v
+		}
+		cntD[d]++
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v, d+1)
+			}
+		}
+	}
+	maxD = -1
+	f(st, -1, 0)
+
+	// 从直径的两端点 p q 出发求深度列表，最大的两个为直径 p-q 和 q-p，倒数第三个为非严格次长直径
+	// 这里用基数排序
+	maxD, cntD = -1, make([]int, n)
+	f(u, -1, 0)
+	f(u, -1, 0)
+	if cntD[maxD] > 2 {
+		return maxD
+	}
+	return maxD - 1
 }
 
 // 树的重心
