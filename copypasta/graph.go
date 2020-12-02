@@ -817,7 +817,7 @@ type vdPair struct {
 type vdHeap []vdPair
 
 func (h vdHeap) Len() int              { return len(h) }
-func (h vdHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis } // > 权值最大
+func (h vdHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis }
 func (h vdHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
 func (h *vdHeap) Push(v interface{})   { *h = append(*h, v.(vdPair)) }
 func (h *vdHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
@@ -858,7 +858,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		dist[i] = inf
 	}
 	dist[st] = 0
-	vis := make([]bool, n) // 虽然可以用 dist 来判断是否需要 relax，但是对于一些变形题，用 vis 是最稳的
+	// 虽然可以用 dist 来判断是否需要 relax，但是对于一些变形题，用 vis 是最稳的
+	vis := make([]bool, n)
 	fa := make([]int, n)
 	for i := range fa {
 		fa[i] = -1
@@ -867,14 +868,13 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for len(q) > 0 {
 		p := q.pop()
 		v := p.v
-		// 注：不要 vis 相关的代码也可以，对运行速度几乎没有影响
 		if vis[v] { // dist[v] < p.dis
 			continue
 		}
 		vis[v] = true
 		for _, e := range g[v] {
 			w := e.to
-			if newD := dist[v] + e.wt; newD < dist[w] { // > 权值最大
+			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
 				q.push(vdPair{w, newD})
@@ -892,9 +892,6 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for x := end; x != -1; x = fa[x] {
 		path = append(path, x)
 	}
-
-	// EXTRA: dist 也可以理解成「时刻」
-	// 这种情况下，dist[v] 表示从 start 出发到 v 的耗时
 
 	// EXTRA: 对于相邻的两点，记边为 e，若有：
 	// abs(dist[v], dist[w]) == e.wt  =>  e 在最短路上（不带绝对值的话就有先后关系）
