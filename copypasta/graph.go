@@ -2389,7 +2389,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 // - 集合 A B 之间连边，容量为 inf，费用为 f(Ai,Bi)，f 根据题意
 // - 这样跑 MCMF 得到的结果是匹配全部 A 或者 B 的最小花费
 // 例如 https://codeforces.com/problemset/problem/1437/C
-func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
+func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, flowLimit int) (int, int64) {
 	// st--; end--
 
 	const inf int64 = 1e18
@@ -2440,10 +2440,10 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 		}
 		return dist[end] < inf
 	}
-	minCost := int64(0)
-	for F > 0 && spfa() { // 若求 MCMF，把 F>0 去掉
+	maxFlow, minCost := 0, int64(0)
+	for maxFlow < flowLimit && spfa() { // 若求 MCMF，把 maxFlow < flowLimit 去掉
 		// 沿 st-end 的最短路尽量增广
-		minF := F // inf
+		minF := flowLimit // inf
 		for v := end; v != st; {
 			p := fa[v]
 			if c := g[p.v][p.i].cap; c < minF {
@@ -2458,18 +2458,18 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, F int) int64 {
 			g[v][e.rid].cap += minF
 			v = p.v
 		}
-		F -= minF // maxFlow += minF
+		maxFlow += minF
 		minCost += dist[end] * int64(minF)
 	}
-	if F > 0 {
-		return -1
+	if maxFlow < flowLimit {
+		return -1, -1
 	}
-	return minCost
+	return maxFlow, minCost
 }
 
 // 基于原始对偶方法 (primal-dual method)
 // https://blog.xehoth.cc/DurationPlan-Primal-Dual/
-func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
+func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) int64 {
 	// st--; end--
 
 	type neighbor struct{ to, rid, cap, cost int }
@@ -2518,11 +2518,11 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 		return dist[end] < inf
 	}
 	minCost := int64(0)
-	for F > 0 && dijkstra() {
+	for flowLimit > 0 && dijkstra() {
 		for i, d := range dist {
 			h[i] += d
 		}
-		minF := F // inf
+		minF := flowLimit // inf
 		for v := end; v != st; {
 			p := fa[v]
 			if c := g[p.v][p.i].cap; c < minF {
@@ -2537,10 +2537,10 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, F int) int64 {
 			g[v][e.rid].cap += minF
 			v = p.v
 		}
-		F -= minF                       // maxFlow += minF
+		flowLimit -= minF               // maxFlow += minF
 		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
 	}
-	if F > 0 {
+	if flowLimit > 0 {
 		return -1
 	}
 	return minCost
