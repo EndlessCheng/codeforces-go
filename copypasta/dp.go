@@ -487,13 +487,13 @@ func dpCollections() {
 		lis := make([]int, n)
 		dp := make([]int, 0, n)
 		for i, v := range a {
-			if p := sort.SearchInts(dp, v); p < len(dp) { // 改成 v+1 为非降
+			p := sort.SearchInts(dp, v)
+			if p < len(dp) { // 改成 v+1 为非降
 				dp[p] = v
-				lis[i] = p + 1
 			} else {
 				dp = append(dp, v)
-				lis[i] = len(dp)
 			}
+			lis[i] = p + 1
 		}
 		return lis
 	}
