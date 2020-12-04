@@ -1,66 +1,91 @@
 package testutil
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
-func AssertEqualStringCase(t *testing.T, testCases [][2]string, caseNum int, runFunc func(io.Reader, io.Writer)) {
+type ioFunc func(io.Reader, io.Writer)
+
+func isTLE(f func()) bool {
+	if DebugTLE == 0 {
+		f()
+		return false
+	}
+
+	done := make(chan struct{})
+	go func() {
+		f()
+		done <- struct{}{}
+	}()
+	select {
+	case <-done:
+		return false
+	case <-time.After(DebugTLE):
+		return true
+	}
+}
+
+func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc) {
 	if len(testCases) == 0 {
 		return
 	}
 
 	// 例如，-1 表示最后一个测试用例
-	if caseNum < 0 {
-		caseNum += len(testCases) + 1
+	if targetCaseNum < 0 {
+		targetCaseNum += len(testCases) + 1
 	}
 
 	allPassed := true
 	for curCaseNum, tc := range testCases {
-		if caseNum > 0 && curCaseNum+1 != caseNum {
+		if targetCaseNum > 0 && curCaseNum+1 != targetCaseNum {
 			continue
 		}
 
 		input := removeExtraSpace(tc[0])
+		const maxInputSize = 150
+		inputInfo := input
+		if len(inputInfo) > maxInputSize { // 截断过长的输入
+			inputInfo = inputInfo[:maxInputSize] + "..."
+		}
 		expectedOutput := removeExtraSpace(tc[1])
 
 		mockReader := strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		runFunc(mockReader, mockWriter)
+		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
+			allPassed = false
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
+			continue
+		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
-		const maxInputSize = 150
-		inputInfo := input
-		if len(inputInfo) > maxInputSize {
-			inputInfo = inputInfo[:maxInputSize] + "..."
-		}
 		if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 			allPassed = false
 			handleOutput(actualOutput)
 		}
 	}
+
+	// 若有测试用例未通过，则前面必然会打印一些信息，这里直接返回
 	if !allPassed {
-		t.Logf("ok? caseNum is [%d]", caseNum)
 		return
 	}
 
-	if caseNum > 0 {
-		t.Logf("case %d is passed.", caseNum)
-		// 单个用例通过，测试所有用例
+	// 若测试的是单个用例，则接着测试所有用例
+	if targetCaseNum > 0 {
+		t.Logf("case %d is passed", targetCaseNum)
 		AssertEqualStringCase(t, testCases, 0, runFunc)
 		return
 	}
 
-	t.Log("OK! SUBMIT!")
+	t.Log("OK")
 }
 
-func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, caseNum int, runFunc func(io.Reader, io.Writer)) {
+func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, targetCaseNum int, runFunc ioFunc) {
 	inputFilePaths, err := filepath.Glob(filepath.Join(dir, inName))
 	if err != nil {
 		t.Fatal(err)
@@ -93,14 +118,14 @@ func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, case
 		testCases[i][1] = string(data)
 	}
 
-	AssertEqualStringCase(t, testCases, caseNum, runFunc)
+	AssertEqualStringCase(t, testCases, targetCaseNum, runFunc)
 }
 
-func AssertEqualFileCase(t *testing.T, dir string, caseNum int, runFunc func(io.Reader, io.Writer)) {
-	AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", caseNum, runFunc)
+func AssertEqualFileCase(t *testing.T, dir string, targetCaseNum int, runFunc ioFunc) {
+	AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", targetCaseNum, runFunc)
 }
 
-func AssertEqualCase(t *testing.T, rawText string, caseNum int, runFunc func(io.Reader, io.Writer)) {
+func AssertEqualCase(t *testing.T, rawText string, targetCaseNum int, runFunc ioFunc) {
 	rawText = strings.TrimSpace(rawText)
 	if rawText == "" {
 		t.Fatal("rawText is empty")
@@ -125,77 +150,74 @@ func AssertEqualCase(t *testing.T, rawText string, caseNum int, runFunc func(io.
 		}
 	}
 
-	AssertEqualStringCase(t, testCases, caseNum, runFunc)
+	AssertEqualStringCase(t, testCases, targetCaseNum, runFunc)
 }
 
-func AssertEqual(t *testing.T, rawText string, runFunc func(io.Reader, io.Writer)) {
+func AssertEqual(t *testing.T, rawText string, runFunc ioFunc) {
 	AssertEqualCase(t, rawText, 0, runFunc)
 }
 
 // 对拍
 // solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
-func AssertEqualRunResults(t *testing.T, inputs []string, caseNum int, runFuncAC, runFunc func(io.Reader, io.Writer)) {
+func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, runFuncAC, runFunc ioFunc) {
 	if len(inputs) == 0 {
 		return
 	}
 
 	for curCaseNum, input := range inputs {
-		if caseNum > 0 && curCaseNum+1 != caseNum {
+		if targetCaseNum > 0 && curCaseNum+1 != targetCaseNum {
 			continue
 		}
 
 		input = removeExtraSpace(input)
+		const maxInputSize = 150
+		inputInfo := input
+		if len(inputInfo) > maxInputSize { // 截断过长的输入
+			inputInfo = inputInfo[:maxInputSize] + "..."
+		}
+
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
+		expectedOutput := removeExtraSpace(mockWriterAC.String())
+
 		mockReader = strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		runFunc(mockReader, mockWriter)
-
-		actualOutputAC := removeExtraSpace(mockWriterAC.String())
+		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
+			continue
+		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
-		const maxInputSize = 150
-		inputInfo := input
-		if len(inputInfo) > maxInputSize {
-			inputInfo = inputInfo[:maxInputSize] + "..."
-		}
-		assert.Equal(t, actualOutputAC, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo)
+		assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo)
 	}
 }
 
 // 无尽对拍模式
-func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc func(io.Reader, io.Writer)) {
-	const needPrint = runtime.GOOS == "darwin"
-
+// inputGenerator 生成随机测试数据，solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
+// TIPS: 失败的用例可以加入到 inputs 中方便后续测试
+func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc ioFunc) {
 	for tc := 1; ; tc++ {
 		input := inputGenerator()
 		input = removeExtraSpace(input)
+
 		mockReader := strings.NewReader(input)
 		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
+		expectedOutput := removeExtraSpace(mockWriterAC.String())
+
 		mockReader = strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		//t0 := time.Now()
-		runFunc(mockReader, mockWriter)
-		//fmt.Println(time.Since(t0))
-
-		actualOutputAC := removeExtraSpace(mockWriterAC.String())
-		actualOutput := removeExtraSpace(mockWriter.String())
-		if !assert.Equal(t, actualOutputAC, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input) && needPrint {
-			fmt.Printf("[CASE %d]\n", tc)
-			fmt.Println("[AC]", actualOutputAC)
-			fmt.Println("[WA]", actualOutput)
-			fmt.Println("[INPUT]", input)
-			fmt.Println()
+		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", tc, input)
+			continue
 		}
+		actualOutput := removeExtraSpace(mockWriter.String())
+
+		assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input)
 
 		if tc%1e5 == 0 {
-			s := fmt.Sprintf("%d cases passed.", tc)
-			if needPrint {
-				fmt.Println(s)
-			}
-			t.Log(s)
+			t.Logf("%d cases passed.", tc)
 		}
 
 		if Once {
@@ -207,33 +229,25 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 type OutputChecker func(string) bool
 
 // 无尽验证模式
-// inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入验证该输出是否正确
-func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc func(io.Reader, io.Writer)) {
-	const needPrint = runtime.GOOS == "darwin"
-
+// inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入数据验证输出结果是否正确
+// TIPS: 失败的用例可以加入到 inputs 中方便后续测试
+func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc ioFunc) {
 	for tc := 1; ; tc++ {
 		input, checker := inputGenerator()
 		input = removeExtraSpace(input)
+
 		mockReader := strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		//t0 := time.Now()
-		runFunc(mockReader, mockWriter)
-		//fmt.Println(time.Since(t0))
-
-		actualOutput := removeExtraSpace(mockWriter.String())
-		if !assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput) && needPrint {
-			fmt.Printf("[CASE %d]\n", tc)
-			fmt.Println("[WA]", actualOutput)
-			fmt.Println(input)
-			fmt.Println()
+		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", tc, input)
+			continue
 		}
+		actualOutput := removeExtraSpace(mockWriter.String())
+
+		assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput)
 
 		if tc%1e5 == 0 {
-			s := fmt.Sprintf("%d cases passed.", tc)
-			if needPrint {
-				fmt.Println(s)
-			}
-			t.Log(s)
+			t.Logf("%d cases passed.", tc)
 		}
 
 		if Once {

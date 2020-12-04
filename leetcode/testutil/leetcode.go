@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"reflect"
-	"runtime"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func parseRawArray(rawArray string) (splits []string, err error) {
@@ -200,7 +200,27 @@ func toRawString(v reflect.Value) (s string, err error) {
 	return
 }
 
+func isTLE(f func()) bool {
+	if DebugTLE == 0 {
+		f()
+		return false
+	}
+
+	done := make(chan struct{})
+	go func() {
+		f()
+		done <- struct{}{}
+	}()
+	select {
+	case <-done:
+		return false
+	case <-time.After(DebugTLE):
+		return true
+	}
+}
+
 // rawExamples[i] = 输入+输出
+// 若反射出来的函数或 rawExamples 数据不合法，则会返回一个非空的 error，否则返回 nil
 func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]string, targetCaseNum int) (err error) {
 	fType := reflect.TypeOf(f)
 	if fType.Kind() != reflect.Func {
@@ -243,10 +263,17 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 
 		const maxInputSize = 150
 		inputInfo := strings.Join(rawIn, "\n")
-		if len(inputInfo) > maxInputSize {
+		if len(inputInfo) > maxInputSize { // 截断过长的输入
 			inputInfo = inputInfo[:maxInputSize] + "..."
 		}
-		outs := fValue.Call(ins)
+
+		var outs []reflect.Value
+		if isTLE(func() { outs = fValue.Call(ins) }) {
+			allCasesOk = false
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
+			continue
+		}
+
 		for i, out := range outs {
 			rawActualOut, er := toRawString(out)
 			if er != nil {
@@ -258,15 +285,18 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		}
 	}
 
-	if targetCaseNum > 0 && allCasesOk {
-		t.Logf("case %d is ok", targetCaseNum)
+	// 若有测试用例未通过，则前面必然会打印一些信息，这里直接返回
+	if !allCasesOk {
+		return nil
+	}
+
+	// 若测试的是单个用例，则接着测试所有用例
+	if targetCaseNum > 0 {
+		t.Logf("case %d is passed", targetCaseNum)
 		return RunLeetCodeFuncWithExamples(t, f, rawExamples, 0)
 	}
 
-	if allCasesOk {
-		t.Log("OK")
-	}
-
+	t.Log("OK")
 	return nil
 }
 
@@ -282,9 +312,7 @@ func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutpu
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
 
-// 方便打断点，配合 targetCaseNum 一起使用
-var DebugCallIndex int
-
+// 若反射出来的函数或 rawExamples 数据不合法，则会返回一个非空的 error，否则返回 nil
 func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][3]string, targetCaseNum int) (err error) {
 	cType := reflect.TypeOf(constructor)
 	if cType.Kind() != reflect.Func {
@@ -301,8 +329,9 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		targetCaseNum += len(rawExamples) + 1
 	}
 
-	for curCase, example := range rawExamples {
-		if targetCaseNum > 0 && curCase+1 != targetCaseNum {
+outer:
+	for curCaseNum, example := range rawExamples {
+		if targetCaseNum > 0 && curCaseNum+1 != targetCaseNum {
 			continue
 		}
 
@@ -381,7 +410,13 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 				print()
 			}
 			// call method
-			if actualOuts := method.Call(in); len(actualOuts) > 0 {
+			var actualOuts []reflect.Value
+			if isTLE(func() { actualOuts = method.Call(in) }) {
+				allCasesOk = false
+				t.Errorf("Time Limit Exceeded %d\nCall Index %d", curCaseNum+1, callIndex)
+				continue outer // 直接跑下一个测试用例
+			}
+			if len(actualOuts) > 0 {
 				s, er := toRawString(actualOuts[0])
 				if er != nil {
 					return er
@@ -396,7 +431,7 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		// 比较前，去除 rawExpectedOut 中逗号后的空格
 		// todo: 提示错在哪个 callIndex 上
 		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
-		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCase+1) {
+		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCaseNum+1) {
 			allCasesOk = false
 		}
 	}
@@ -428,9 +463,8 @@ func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutpu
 }
 
 // 无尽对拍模式
+// todo 构造器+方法的对拍
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
-	const needPrint = runtime.GOOS == "darwin"
-
 	ig := reflect.ValueOf(inputGenerator)
 	if ig.Kind() != reflect.Func {
 		t.Fatal("input generator must be a function")
@@ -447,37 +481,32 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		inArgs := ig.Call(nil)
 
 		// 先生成字符串，以免 inArgs 被修改
-		insStr := []byte{}
+		inputInfo := []byte{}
 		for i, arg := range inArgs {
 			if i > 0 {
-				insStr = append(insStr, '\n')
+				inputInfo = append(inputInfo, '\n')
 			}
 			s, err := toRawString(arg)
 			if err != nil {
 				t.Fatal(err)
 			}
-			insStr = append(insStr, s...)
+			inputInfo = append(inputInfo, s...)
 		}
 
 		// todo deep copy slice
 		expectedOut := runAC.Call(inArgs)
-		actualOut := run.Call(inArgs)
+		var actualOut []reflect.Value
+		if isTLE(func() { actualOut = run.Call(inArgs) }) {
+			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", tc, inputInfo)
+			continue
+		}
 
 		for i, eOut := range expectedOut {
-			if !assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, insStr) && needPrint {
-				fmt.Printf("[CASE %d]\n", tc)
-				fmt.Println("[AC]", eOut.Interface())
-				fmt.Println("[WA]", actualOut[i].Interface())
-				fmt.Printf("[INPUT]\n%s\n\n", insStr)
-			}
+			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, inputInfo)
 		}
 
 		if tc%1e5 == 0 {
-			s := fmt.Sprintf("%d cases passed.", tc)
-			t.Log(s)
-			if needPrint {
-				fmt.Println(s)
-			}
+			t.Logf("%d cases passed.", tc)
 		}
 	}
 }
