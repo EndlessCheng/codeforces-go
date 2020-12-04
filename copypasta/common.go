@@ -59,6 +59,7 @@ import (
 //		参考 https://zhuanlan.zhihu.com/p/77943973 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
 func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
 
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	type pair struct{ x, y int }
@@ -77,8 +78,13 @@ func commonCollection() {
 	}
 	dir4R := []pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 	dir8 := []pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
-	orderP3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
-	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
+	perm3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
+	perm4 := [][]int{
+		{0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2}, {0, 3, 2, 1},
+		{1, 0, 2, 3}, {1, 0, 3, 2}, {1, 2, 0, 3}, {1, 2, 3, 0}, {1, 3, 0, 2}, {1, 3, 2, 0},
+		{2, 0, 1, 3}, {2, 0, 3, 1}, {2, 1, 0, 3}, {2, 1, 3, 0}, {2, 3, 0, 1}, {2, 3, 1, 0},
+		{3, 0, 1, 2}, {3, 0, 2, 1}, {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0},
+	}
 
 	min := func(a, b int) int {
 		if a < b {
@@ -824,7 +830,7 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow10, dir4, dir4C, dir4c, dir4R, dir8, orderP3,
+		pow10, dir4, dir4C, dir4c, dir4R, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
@@ -992,7 +998,7 @@ func rmqCollection() {
 
 // 莫队算法：对询问分块
 // 分块，每一块的大小为 √n，这样可以将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
-// 从而对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√n) （注：这里假设询问次数等同于 n）
+// 从而对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√nf(n)) （注：这里假设询问次数等同于 n，f(n) 为移动一次指针的时间复杂度）
 // 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494

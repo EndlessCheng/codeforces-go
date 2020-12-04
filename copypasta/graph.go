@@ -2389,6 +2389,14 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 // - 集合 A B 之间连边，容量为 inf，费用为 f(Ai,Bi)，f 根据题意
 // - 这样跑 MCMF 得到的结果是匹配全部 A 或者 B 的最小花费
 // 例如 https://codeforces.com/problemset/problem/1437/C
+// 流通问题 circulation problem
+// 最小费用流通问题 minimum-cost-circulation problem
+//     https://en.wikipedia.org/wiki/Circulation_problem
+//     The circulation problem and its variants are a generalisation of network flow problems,
+//     with the added constraint of a lower bound on edge flows,
+//     and with flow conservation also being required for the source and sink (i.e. there are no special nodes).
+//    《算法导论》思考题 29-5
+//     https://codeforces.com/blog/entry/85186?#comment-728533
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, flowLimit int) (int, int64) {
 	// st--; end--
 
