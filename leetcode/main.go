@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
     "math/bits"
     "sort"
@@ -22,9 +21,6 @@ func main() {
     }
     _ = toBytes
     _ = MustBuildTreeNode
-
-    fmt.Println(maxNumber([]int{3, 4, 6, 5}, []int{9, 1, 2, 5, 8, 3}, 5))
-
 }
 
 // LC 18
@@ -944,6 +940,28 @@ func convertBST(root *TreeNode) *TreeNode {
     }
     f(root)
     return root
+}
+
+// LC 621 任务调度器
+func leastInterval(tasks []byte, n int) int {
+    cnt := map[byte]int{}
+    for _, t := range tasks {
+        cnt[t]++
+    }
+
+    maxExec, maxExecCnt := 0, 0
+    for _, c := range cnt {
+        if c > maxExec {
+            maxExec, maxExecCnt = c, 1
+        } else if c == maxExec {
+            maxExecCnt++
+        }
+    }
+
+    if time := (maxExec-1)*(n+1) + maxExecCnt; time > len(tasks) {
+        return time
+    }
+    return len(tasks)
 }
 
 // LC 659 分割数组为长度至少为三且元素连续的子序列
