@@ -21,23 +21,35 @@ todo poj 2345 3532 3526
 // 一些题目：https://oi-wiki.org/math/matrix/
 
 func readMatrix(in io.Reader, n, m int) matrix {
-	mat := make(matrix, n)
-	for i := range mat {
-		mat[i] = make([]int64, m)
-		//mat[i] = make([]int64, m, m+1) // 方便高斯消元
-		for j := range mat[i] {
-			Fscan(in, &mat[i][j])
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int64, m)
+		//a[i] = make([]int64, m, m+1) // 方便高斯消元
+		for j := range a[i] {
+			Fscan(in, &a[i][j])
 		}
 	}
-	return mat
+	return a
 }
 
 func copyMatrix(a matrix) matrix {
-	mat := make(matrix, len(a))
+	b := make(matrix, len(a))
 	for i, row := range a {
-		mat[i] = append([]int64(nil), row...)
+		b[i] = append([]int64(nil), row...)
 	}
-	return mat
+	return b
+}
+
+// 顺时针转 90°
+func rotateMatrix(a matrix) matrix {
+	b := make(matrix, len(a[0]))
+	for j := range b {
+		b[j] = make([]int64, len(a))
+		for i, row := range a {
+			b[j][len(a)-1-i] = row[j]
+		}
+	}
+	return b
 }
 
 // 矩阵快速幂
@@ -45,20 +57,20 @@ func copyMatrix(a matrix) matrix {
 type matrix [][]int64
 
 func newMatrix(n, m int) matrix {
-	mat := make(matrix, n)
-	for i := range mat {
-		mat[i] = make([]int64, m)
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int64, m)
 	}
-	return mat
+	return a
 }
 
 func newMatrixI(n int) matrix {
-	mat := make(matrix, n)
-	for i := range mat {
-		mat[i] = make([]int64, n)
-		mat[i][i] = 1
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int64, n)
+		a[i][i] = 1
 	}
-	return mat
+	return a
 }
 
 func (a matrix) mul(b matrix) matrix {
