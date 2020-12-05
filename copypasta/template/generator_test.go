@@ -41,8 +41,8 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 // "../../misc/nowcoder//"
 func TestGenTemplates(t *testing.T) {
 	const (
-		problemNum = 3
-		rootPath   = "../../misc/nowcoder//"
+		problemNum = 4
+		rootPath   = "../../misc/luogu/contest//"
 		overwrite  = false
 	)
 	if err := GenTemplates(problemNum, rootPath, overwrite); err != nil {
