@@ -41,6 +41,10 @@ Ordered set S defined by these rules: 0 is in S and if x is in S then 2x+1 and 4
 https://oeis.org/A086747 Baum-Sweet sequence
 相关题目：蒙德里安的梦想 https://www.acwing.com/problem/content/293/
 
+https://oeis.org/A047778 Concatenation of first n numbers in binary, converted to base 10
+相关题目：https://leetcode-cn.com/contest/weekly-contest-218/problems/concatenation-of-consecutive-binary-numbers/
+钱珀瑙恩数 Champernowne constant https://en.wikipedia.org/wiki/Champernowne_constant
+
 异或和相关
 https://oeis.org/A003987 异或矩阵
 https://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
