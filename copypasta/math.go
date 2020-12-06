@@ -1302,6 +1302,8 @@ func numberTheoryCollection() {
 	{
 		const mod int64 = 1e9 + 7
 		var n, k int64
+		// 注意当 n 为负数时，可能会算出非 0 的结果，这种情况要特判
+		// 当 0 <= n < k 时结果为 0
 		_ = new(big.Int).Binomial(n, k).Int64() // small
 		_ = new(big.Int).Mod(new(big.Int).Binomial(n, k), big.NewInt(mod)).Int64()
 		_ = int64(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
