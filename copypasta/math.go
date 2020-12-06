@@ -23,11 +23,11 @@ NOTE: a%-b == a%b
 AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
-∑i*q^(i-1) = n*q^(n+1) - (q^(n+1)-1)/(q-1)
+∑i*q^(i-1) = n*q^n - (q^n-1)/(q-1)
 
 https://oeis.org/A001787 n*2^(n-1)   number of ones in binary numbers 1 to 111...1 (n bits)
-https://oeis.org/A000337 ∑i*2^(i-1) = (n-1) * 2^n + 1
-https://oeis.org/A036799 ∑i*2^i = (n-1) * 2^(n+1) + 2 = A000337(n) * 2
+https://oeis.org/A000337 ∑i*2^(i-1) = (n-1)*2^n+1
+https://oeis.org/A036799 ∑i*2^i = (n-1)*2^(n+1)+2 = A000337(n)*2
 
 https://oeis.org/A027992 a(n) = 2^n*(3n-1)+2 = The total sum of squares of parts in all compositions of n （做 https://codeforces.com/problemset/problem/235/B 时找到的序列）
 https://oeis.org/A271638 a(n) = (13*n-36)*2^(n-1)+6*n+18 = 	The total sum of the cubes of all parts of all compositions of n
