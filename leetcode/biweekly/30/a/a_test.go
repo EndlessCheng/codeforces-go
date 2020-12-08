@@ -14,17 +14,16 @@ func Test(t *testing.T) {
 			`"2052-10-20"`,
 		},
 		{
-			`"6th Jun 1933"`,
+			`"6th Jun 1933"`, 
 			`"1933-06-06"`,
 		},
 		{
 			`"26th May 1960"`, 
 			`"1960-05-26"`,
 		},
-		// TODO 测试参数的下界和上界
 		
 	}
-	targetCaseNum := 0
+	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, reformatDate, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
