@@ -140,7 +140,8 @@ func bitsCollection() {
 	// ^v+1 = (-1-v)+1 = -v
 	lowbit := func(v int64) int64 { return v & -v }
 
-	isPow2 := func(v int64) bool { return v > 0 || v&(v-1) == 0 }
+	// 1,2,4,8,...
+	isPow2 := func(v int64) bool { return v > 0 && v&(v-1) == 0 }
 
 	bits31 := func(v int) []byte {
 		bits := make([]byte, 31)
