@@ -9,6 +9,7 @@ import (
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
      bits.Len(x) 相当于 int(Log2(x)+eps)+1
+     或者说 2^(Len(x)-1) <= x < 2^Len(x)
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
 
