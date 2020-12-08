@@ -1179,6 +1179,13 @@ func numberTheoryCollection() {
 		return res
 	}
 
+	// 双阶乘
+	// https://en.wikipedia.org/wiki/Double_factorial
+	// https://oeis.org/A000165 Double factorial of even numbers: (2n)!! = 2^n*n!
+	// https://oeis.org/A001147 奇阶乘 Double factorial of odd numbers: (2*n-1)!! = 1*3*5*...*(2*n-1) = A(2*n,n) / 2^n
+	// Number of ways to choose n disjoint pairs of items from 2*n items
+	// Number of perfect matchings in the complete graph K(2n)
+
 	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
