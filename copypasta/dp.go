@@ -1220,27 +1220,55 @@ func dpCollections() {
 
 	// 树的直径及其个数
 	// http://acm.hdu.edu.cn/showproblem.php?pid=3534
+	// https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45988692
 	countDiameter := func(st int, g [][]int) (diameter, diameterCnt int) {
 		var f func(v, fa int) (int, int)
 		f = func(v, fa int) (int, int) {
 			mxDep, cnt := 0, 1
 			for _, w := range g[v] {
 				if w != fa {
-					dep, c := f(w, v)
-					dep++
-					if l := mxDep + dep; l > diameter {
+					d, c := f(w, v)
+					if l := mxDep + d; l > diameter {
 						diameter, diameterCnt = l, cnt*c
 					} else if l == diameter {
 						diameterCnt += cnt * c
 					}
-					if dep > mxDep {
-						mxDep, cnt = dep, c
-					} else if dep == mxDep {
+					if d > mxDep {
+						mxDep, cnt = d, c
+					} else if d == mxDep {
 						cnt += c
 					}
 				}
 			}
-			return mxDep, cnt
+			return mxDep + 1, cnt
+		}
+		f(st, -1)
+		return
+	}
+
+	// 树的直径及在直径上的节点个数
+	// https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45987468
+	// 注意这里的 cnt 初始化与 countDiameter 的不同之处
+	countVerticesOnDiameter := func(st int, g [][]int) (diameter, verticesCnt int) {
+		var f func(v, fa int) (int, int)
+		f = func(v, fa int) (int, int) {
+			mxDep, cnt := 0, 0
+			for _, w := range g[v] {
+				if w != fa {
+					d, c := f(w, v)
+					if l := mxDep + d; l > diameter {
+						diameter, verticesCnt = l, cnt+c+1 // 最长的链 + 当前链 + 当前节点
+					} else if l == diameter {
+						verticesCnt += c
+					}
+					if d > mxDep {
+						mxDep, cnt = d, c
+					} else if d == mxDep {
+						cnt += c
+					}
+				}
+			}
+			return mxDep + 1, cnt + 1
 		}
 		f(st, -1)
 		return
@@ -1394,7 +1422,7 @@ func dpCollections() {
 		digitDP,
 		kth666,
 
-		diameter, countDiameter,
+		diameter, countDiameter, countVerticesOnDiameter,
 		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree,
 		rerootDP,
 	}
