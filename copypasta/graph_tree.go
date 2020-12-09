@@ -195,6 +195,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 // 树的直径/最长链（DP 求法另见 dp.go 中的 diameter）
 // 返回树的某条直径的两端点以及直径长度（最长链长度）
 // 树的中心：树的直径的中点。直径长度为偶数时有一个，为奇数时有两个
+//    如果给每条边加一个中点，那么可以保证树的中心为一个
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
@@ -219,24 +220,76 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	f(u, -1, 0)
 	dw := u
 
-	// EXTRA: 获取直径上的所有节点 vs
-	// vs[len(vs)/2] 即为树的中心
-	vs := []int{}
-	var f2 func(v, fa int) bool
-	f2 = func(v, fa int) bool {
-		if v == u {
-			vs = append(vs, v)
+	// EXTRA: 获取所有直径端点
+	// 任意直径端点都可以从其中的一条直径的端点之一出发获得
+	// https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
+	isEnd := make([]bool, len(g))
+	var findEnds func(v, fa, d int)
+	findEnds = func(v, fa, d int) {
+		if d == maxD {
+			isEnd[v] = true
+			return
+		}
+		for _, w := range g[v] {
+			if w != fa {
+				findEnds(w, v, d+1)
+			}
+		}
+	}
+	findEnds(dv, -1, 0)
+	findEnds(dw, -1, 0)
+	ends := []int{}
+	for v, e := range isEnd {
+		if e {
+			ends = append(ends, v)
+		}
+	}
+
+	// EXTRA: 获取所有在直径上的点
+	// https://ac.nowcoder.com/acm/contest/9753/C
+	onDiameter := make([]bool, len(g))
+	var findVerticesOnDiameter func(v, fa, d int) bool
+	findVerticesOnDiameter = func(v, fa, d int) bool {
+		if d == maxD {
+			onDiameter[v] = true
 			return true
 		}
 		for _, w := range g[v] {
-			if w != fa && f2(w, v) {
-				vs = append(vs, v)
+			if w != fa {
+				if findVerticesOnDiameter(w, v, d+1) {
+					onDiameter[v] = true
+				}
+			}
+		}
+		return onDiameter[v]
+	}
+	findVerticesOnDiameter(dv, -1, 0)
+	findVerticesOnDiameter(dw, -1, 0)
+	dvs := []int{}
+	for v, on := range onDiameter {
+		if on {
+			dvs = append(dvs, v)
+		}
+	}
+
+	// EXTRA: 获取直径上的所有节点 path
+	// path[len(path)/2] 即为树的中心（之一）
+	path := []int{}
+	var findDiameterPath func(v, fa int) bool
+	findDiameterPath = func(v, fa int) bool {
+		if v == dw {
+			path = append(path, v)
+			return true
+		}
+		for _, w := range g[v] {
+			if w != fa && findDiameterPath(w, v) {
+				path = append(path, v)
 				return true
 			}
 		}
 		return false
 	}
-	f2(dv, -1)
+	findDiameterPath(dv, -1)
 
 	return dv, dw, maxD
 }

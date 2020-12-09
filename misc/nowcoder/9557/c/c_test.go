@@ -40,31 +40,4 @@ func Test(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
 // https://ac.nowcoder.com/acm/contest/9557/c
-
-//func TestCompare(t *testing.T) {
-//	//rand.Seed(time.Now().UnixNano())
-//	inputGenerator := func() (n int,es[][2]int) {
-//		rg := testutil2.NewRandGenerator()
-//		n = rg.Int(1, 9)
-//		es = rg.TreeEdges(n,1)
-//		return
-//	}
-//
-//	runAC := func(n int,es[][2]int) (ans int) {
-//		// 若要修改 a，必须先 copy 一份，在 copied 上修改
-//		cnt := map[int]int{}
-//
-//		return
-//	}
-//
-//	// test examples first (or make it global)
-//	examples := [][]string{
-//
-//	}
-//	if err := testutil.RunLeetCodeFuncWithExamples(t, runAC, examples, 0); err != nil {
-//		t.Fatal(err)
-//	}
-//	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
-//}

@@ -2,20 +2,19 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 func tree3(e []int) int {
-	n := len(e) + 2
-	g := make([][]int, n)
+	g := make([][]int, len(e)+2)
 	for w, v := range e {
 		w += 2
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-	mx, u, c := -1, 0, make([]int, n)
+
+	maxD, u := -1, 0
 	var f func(v, fa, d int)
 	f = func(v, fa, d int) {
-		if d > mx {
-			mx, u = d, v
+		if d > maxD {
+			maxD, u = d, v
 		}
-		c[d]++
 		for _, w := range g[v] {
 			if w != fa {
 				f(w, v, d+1)
@@ -23,11 +22,34 @@ func tree3(e []int) int {
 		}
 	}
 	f(1, 0, 0)
-	mx, c = -1, make([]int, n)
+	dv := u
+	maxD = -1
 	f(u, 0, 0)
-	f(u, 0, 0)
-	if c[mx] == 2 {
-		mx--
+	dw := u
+
+	isEnd := make([]bool, len(g))
+	f = func(v, fa, d int) {
+		if d == maxD {
+			isEnd[v] = true
+			return
+		}
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v, d+1)
+			}
+		}
 	}
-	return mx
+	f(dv, 0, 0)
+	f(dw, 0, 0)
+
+	cntEnds := 0
+	for _, is := range isEnd {
+		if is {
+			cntEnds++
+		}
+	}
+	if cntEnds > 2 {
+		return maxD
+	}
+	return maxD - 1
 }
