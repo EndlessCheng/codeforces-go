@@ -1694,6 +1694,55 @@ func combinatoricsCollection() {
 // todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 func gameTheoryCollection() {
 	{
+		// 基础打表
+		p, q := 3, 4
+
+		const mx int = 100
+		win := [mx + 1][2]int{} // -1 表示败；1 表示胜
+		var f func(int, int) int
+		f = func(n, who int) (res int) { // 0 为先手；1 为后手
+			// 无法操作的情况
+			if n == 0 {
+				return -1
+			}
+			if who == 0 {
+				// 检查边界
+				if n <= p {
+					return 1
+				}
+			} else {
+				// 检查边界
+				if n <= q {
+					return 1
+				}
+			}
+			dv := &win[n][who]
+			if *dv != 0 {
+				return *dv
+			}
+			defer func() { *dv = res }()
+			// 检查是否可以转移到必败态
+			if who == 0 {
+				for i := 1; i <= p; i++ {
+					if f(n-i, who^1) == -1 {
+						return 1
+					}
+				}
+			} else {
+				for i := 1; i <= q; i++ {
+					if f(n-i, who^1) == -1 {
+						return 1
+					}
+				}
+			}
+			return -1
+		}
+		for i := 1; i <= mx; i++ {
+			Println(i, f(i, 0))
+		}
+	}
+
+	{
 		// CF 1194D 打表
 		// 上面三定理的基础题目
 		const mx = 1000
