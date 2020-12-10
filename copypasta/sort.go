@@ -187,8 +187,8 @@ func sortCollections() {
 		return ans
 	}
 
-	// 区间和的第 k 小（数组元素均非负）
-	// 区间和可以视作一个有序上三角矩阵：从左往右和从下往上均为非降序列
+	// 区间和的第 k 小（数组元素均为非负）
+	// 每个区间和可以视作一个有序上三角矩阵中的元素，在数组元素均为非负时，该矩阵从左往右和从下往上均为非降序列
 	// https://leetcode-cn.com/problems/range-sum-of-sorted-subarray-sums/
 	kthSmallestRangeSum := func(a []int, k int) int {
 		// 1 <= k <= n*(n+1)/2
