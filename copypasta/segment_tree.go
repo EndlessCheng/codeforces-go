@@ -41,14 +41,6 @@ package copypasta
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
-// 某个 do
-func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
-	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
-		return b, pb
-	}
-	return a, pa
-}
-
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
 type seg []struct {
@@ -119,11 +111,19 @@ func (t seg) query(o, l, r int) (res int64) {
 
 func (t seg) queryAll() int64 { return t[1].val }
 
-// a starts at 0
+// a 从 0 开始
 func newSegmentTree(a []int64) seg {
 	t := make(seg, 4*len(a))
 	t.build(a, 1, 1, len(a))
 	return t
+}
+
+// EXTRA: 返回最值及其下标
+func (seg) maxPos(a, b int64, pa, pb int) (int64, int) {
+	if b >= a { // >= 为相同元素最右侧位置；若为 > 符号则是相同元素最左侧位置
+		return b, pb
+	}
+	return a, pa
 }
 
 //
@@ -238,7 +238,7 @@ func (t lazyST) query(o, l, r int) (res int64) {
 
 func (t lazyST) queryAll() int64 { return t[1].sum }
 
-// a starts at 0
+// a 从 0 开始
 func newLazySegmentTree(a []int64) lazyST {
 	t := make(lazyST, 4*len(a))
 	t.build(a, 1, 1, len(a))
