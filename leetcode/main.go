@@ -2,6 +2,7 @@ package main
 
 import (
     . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+    "math"
     "math/bits"
     "sort"
     "strconv"
@@ -754,6 +755,45 @@ func invertTree(root *TreeNode) *TreeNode {
     root.Left = right
     root.Right = left
     return root
+}
+
+// LC 233 小于等于 n 的非负整数中数字 1 出现的个数
+func countDigitOne(N int) int {
+    if N < 0 {
+        return 0
+    }
+    s := strconv.Itoa(N)
+    n := len(s)
+    dp := make([]int, n)
+    for i := range dp {
+        dp[i] = -1
+    }
+    var f func(p, cnt int, limitUp bool) int
+    f = func(p, cnt int, limitUp bool) (res int) {
+        if p == n {
+            return cnt
+        }
+        if !limitUp {
+            dv := &dp[p]
+            if *dv >= 0 {
+                return *dv + cnt*int(math.Pow10(n-p))
+            }
+            defer func() { *dv = res }()
+        }
+        up := 9
+        if limitUp {
+            up = int(s[p] & 15)
+        }
+        for d := 0; d <= up; d++ {
+            tmp := cnt
+            if d == 1 {
+                tmp++
+            }
+            res += f(p+1, tmp, limitUp && d == up)
+        }
+        return
+    }
+    return f(0, 0, true)
 }
 
 // LC 235
