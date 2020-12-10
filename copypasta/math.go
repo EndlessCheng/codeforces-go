@@ -1738,7 +1738,10 @@ func gameTheoryCollection() {
 			return -1
 		}
 		for i := 1; i <= mx; i++ {
-			Println(i, f(i, 0))
+			res := f(i, 0)
+			if res == 1 {
+				Println(i, res)
+			}
 		}
 	}
 
