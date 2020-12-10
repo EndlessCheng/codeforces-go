@@ -29,11 +29,6 @@ func Test(t *testing.T) {
 			`5`, `[[0,1],[1,2],[2,3],[3,4]]`, `[[0,4],[4,0],[1,3],[3,0]]`, 
 			`[true,false,true,false]`, 
 		},
-		// TODO 测试参数的下界和上界
-		{
-			`5`, `[[3,4],[2,3],[1,2],[0,1]]`,`[[0,4],[4,0],[1,3],[3,0]]`,
-			`[true,false,true,false]`,
-		},
 	}
 	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, checkIfPrerequisite, examples, targetCaseNum); err != nil {

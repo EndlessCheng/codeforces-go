@@ -29,8 +29,6 @@ func Test(t *testing.T) {
 			`[11,8,6,1,3,9,11,30,20,18,16,12,10,4,2,17]`, 
 			`true`,
 		},
-		// TODO 测试参数的下界和上界
-		
 	}
 	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, isEvenOddTree, examples, targetCaseNum); err != nil {

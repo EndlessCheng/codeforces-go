@@ -2,11 +2,11 @@
 
 ## Testutil
 
-Support most problems:
+Support all type of problems:
 
-- [normal problem](biweekly/27/c/c_test.go)
-- [struct and methods](182/c/c_test.go)
-- [TreeNode](190/c/c_test.go)
+- [write a function](biweekly/27/c/c_test.go)
+- [write type and methods](182/c/c_test.go)
+- [problem with TreeNode](209/b/b_test.go)
 
 ## Contests
 
@@ -48,5 +48,3 @@ First weekly contest started at 2016-08-21.
 |[Biweekly Contest 20](https://leetcode-cn.com/contest/biweekly-contest-20)|1356-1359|
 |[Biweekly Contest 30](https://leetcode-cn.com/contest/biweekly-contest-30)|1507-1510|
 |[Biweekly Contest 40](https://leetcode-cn.com/contest/biweekly-contest-40)|1668-1671|
-
-Including with biweekly contests, we now (till 2020-11) have about **1000** problems from contests.
