@@ -4,6 +4,7 @@ import (
     . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
     "math/bits"
     "sort"
+    "strconv"
     "strings"
 )
 
@@ -940,6 +941,39 @@ func convertBST(root *TreeNode) *TreeNode {
     }
     f(root)
     return root
+}
+
+// LC 600 不含连续1的非负整数
+func findIntegers(N int) int {
+    s := strconv.FormatInt(int64(N), 2)
+    n := len(s)
+    dp := make([][2]int, n)
+    for i := range dp {
+        dp[i] = [2]int{-1, -1}
+    }
+    var f func(p, prevIsOne int, isUpper bool) int
+    f = func(p, prevIsOne int, isUpper bool) (res int) {
+        if p == n {
+            return 1
+        }
+        if !isUpper {
+            dv := &dp[p][prevIsOne]
+            if *dv >= 0 {
+                return *dv
+            }
+            defer func() { *dv = res }()
+        }
+        up := 1
+        if isUpper {
+            up = int(s[p] & 1)
+        }
+        res = f(p+1, 0, isUpper && 0 == up)
+        if prevIsOne == 0 && up == 1 {
+            res += f(p+1, 1, isUpper)
+        }
+        return
+    }
+    return f(0, 0, true)
 }
 
 // LC 621 任务调度器
