@@ -185,29 +185,8 @@ func commonCollection() {
 			ps[i] = pair{a[i], i}
 		}
 	}
-	getCol := func(mat [][]int, j int) (col []int) {
-		for _, row := range mat {
-			col = append(col, row[j])
-		}
-		return
-	}
-	copyMat := func(mat [][]int) [][]int {
-		n := len(mat)
-		dst := make([][]int, n)
-		for i, row := range mat {
-			dst[i] = append([]int(nil), row...)
-		}
-		return dst
-	}
-	toInts := func(s []byte) []int {
-		ints := make([]int, len(s))
-		for i, b := range s {
-			ints[i] = int(b)
-		}
-		return ints
-	}
 
-	// 适用于 a*b 超过 64 位范围的情况
+	// 适用于 a*b 超过 int64 范围的情况
 	mul := func(a, b, mod int64) (res int64) {
 		for ; b > 0; b >>= 1 {
 			if b&1 == 1 {
@@ -291,11 +270,11 @@ func commonCollection() {
 
 	// 二维前缀和
 	var sum2d [][]int
-	initSum2D := func(mat [][]int) {
-		n, m := len(mat), len(mat[0])
+	initSum2D := func(a [][]int) {
+		n, m := len(a), len(a[0])
 		sum2d = make([][]int, n+1)
 		sum2d[0] = make([]int, m+1)
-		for i, row := range mat {
+		for i, row := range a {
 			sum2d[i+1] = make([]int, m+1)
 			for j, v := range row {
 				sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + v
@@ -834,11 +813,11 @@ func commonCollection() {
 		min, mins, max, maxs, abs, ceil,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
-		ternaryI, ternaryS, toInts, zip, zipI, getCol, minString,
+		ternaryI, ternaryS, zip, zipI, minString,
 		pow, mul, toAnyBase, digits,
 		groupPrefixSum, initSum2D, querySum2D,
 		contributionSum,
-		copyMat, sort3, reverse, reverseInPlace, equal,
+		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, sweepLine2, countCoveredPoints,
@@ -1074,6 +1053,7 @@ func moAlgorithm() {
 	// todo 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
 	// todo 带修改的莫队 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 	// todo 树上莫队 https://blog.csdn.net/weixin_43914593/article/details/108485396
+	// todo 二次离线莫队 https://www.luogu.com.cn/problem/P4887
 
 	_ = mo
 }
