@@ -1280,7 +1280,7 @@ func dpCollections() {
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
-	maxIndependentSetInTree := func(n int, g [][]int, a []int) int { // 无根树
+	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
 			chosen = a[v]
@@ -1297,7 +1297,27 @@ func dpCollections() {
 		return max(nc, c)
 	}
 
-	// 树上最小支配集/顶点覆盖
+	// 树上最小边覆盖
+	// 代码和树上最大独立集类似
+	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
+	minEdgeCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
+		var f func(int, int) (notChosen, chosen int)
+		f = func(v, fa int) (notChosen, chosen int) { // int64
+			chosen = a[v]
+			for _, w := range g[v] {
+				if w != fa {
+					nc, c := f(w, v)
+					notChosen += c
+					chosen += min(nc, c)
+				}
+			}
+			return
+		}
+		nc, c := f(0, -1)
+		return min(nc, c)
+	}
+
+	// 树上最小支配集/最小顶点覆盖
 	// 返回最小点权和（最小支配集的情形即所有点权均为一）
 	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
 	// dp[i][0]：i 属于支配集 = a[i]+∑min(dp[w][0],dp[w][1],dp[w][2])
@@ -1306,8 +1326,9 @@ func dpCollections() {
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：保安站岗 https://www.luogu.com.cn/problem/P2458 手机网络 https://www.luogu.com.cn/problem/P2899 https://ac.nowcoder.com/acm/problem/24953
 	// 监控二叉树 https://leetcode-cn.com/problems/binary-tree-cameras/
-	// todo EXTRA: 消防局的设立（支配距离为 2）https://www.luogu.com.cn/problem/P2279
-	minDominatingSetInTree := func(n int, g [][]int, a []int) int { // 无根树
+	// todo EXTRA: 消防局的设立（支配距离为 2） https://www.luogu.com.cn/problem/P2279
+	// todo EXTRA: 将军令（支配距离为 k） https://www.luogu.com.cn/problem/P3942
+	minDominatingSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		const inf int = 1e9 // 1e18
 		var f func(int, int) (chosen, bySon, byFa int)
 		f = func(v, fa int) (chosen, bySon, byFa int) { // int64
@@ -1338,7 +1359,7 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/2059
 	// https://blog.csdn.net/lycheng1215/article/details/78368002
 	// https://vijos.org/p/1892
-	maxMatchingInTree := func(n int, g [][]int) int { // 无根树
+	maxMatchingOfTree := func(n int, g [][]int) int { // 无根树
 		cover, nonCover := make([]int, n), make([]int, n)
 		var f func(int, int)
 		f = func(v, fa int) {
@@ -1423,7 +1444,7 @@ func dpCollections() {
 		kth666,
 
 		diameter, countDiameter, countVerticesOnDiameter,
-		maxIndependentSetInTree, minDominatingSetInTree, maxMatchingInTree,
+		maxIndependentSetOfTree, minEdgeCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		rerootDP,
 	}
 }
