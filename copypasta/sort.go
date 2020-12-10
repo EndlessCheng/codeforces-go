@@ -163,7 +163,58 @@ func sortCollections() {
 
 	//
 
-	// TIPS: 二分三分中的 step 取多少合适：
+	// 有序矩阵中的第 k 小
+	// 有序矩阵：每行和每列元素均为不降序列
+	// https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
+	// https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
+	kthSmallest := func(a [][]int, k int) int {
+		// 注意 k 从 1 开始
+		n, m := len(a), len(a[0])
+		mi, mx := a[0][0], a[n-1][m-1]
+		ans := sort.Search(mx-mi, func(v int) bool {
+			v += mi
+			cnt := 0
+			for i, j := 0, m-1; i < n && j >= 0; {
+				if v < a[i][j] {
+					j--
+				} else {
+					cnt += j + 1
+					i++
+				}
+			}
+			return cnt >= k
+		}) + mi
+		return ans
+	}
+
+	// 区间和的第 k 小（数组元素均非负）
+	// 区间和可以视作一个有序上三角矩阵：从左往右和从下往上均为非降序列
+	// https://leetcode-cn.com/problems/range-sum-of-sorted-subarray-sums/
+	kthSmallestRangeSum := func(a []int, k int) int {
+		// 1 <= k <= n*(n+1)/2
+		n := len(a)
+		sum := make([]int, n+1) // int64
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+		}
+		ans := sort.Search(sum[n], func(v int) bool {
+			cnt := 0
+			for l, r := 0, 1; r <= n; {
+				if v < sum[r]-sum[l] {
+					l++
+				} else {
+					cnt += r - l
+					r++
+				}
+			}
+			return cnt >= k
+		})
+		return ans
+	}
+
+	//
+
+	// TIPS: 实数二分/三分中的 step 取多少合适：
 	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 https://codeforces.com/problemset/problem/578/C）
 	// NOTE: l 和 r 最好稍微往左右取宽点，从而保证触发相关逻辑
 	// 见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
@@ -291,7 +342,9 @@ func sortCollections() {
 		insertionSort,
 		lowerBound, upperBound,
 		searchRange,
-		binarySearchS1, binarySearchS2, binarySearchF, ternarySearchF, ternarySearchInt,
+		binarySearchS1, binarySearchS2,
+		kthSmallest, kthSmallestRangeSum,
+		binarySearchF, ternarySearchF, ternarySearchInt,
 		search01,
 	}
 }
