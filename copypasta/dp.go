@@ -1036,20 +1036,29 @@ func dpCollections() {
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
+	含有某个数字的数字个数
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
-	LC902 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
-	digsum(n)|n 的数的个数 https://www.acwing.com/problem/content/313/
-	与 KMP 结合 LC1397/周赛182D https://leetcode-cn.com/problems/find-all-good-strings/
-	一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
+	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
+	      http://acm.hdu.edu.cn/showproblem.php?pid=3555
+	      http://acm.hdu.edu.cn/showproblem.php?pid=2089
+	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
+	LC902/周赛101C 最大为 N 的数字组合 https://leetcode-cn.com/contest/weekly-contest-101/problems/numbers-at-most-n-given-digit-set/
+	LC1012/周赛128D 有重复数字的数字个数 https://leetcode-cn.com/contest/weekly-contest-128/problems/numbers-with-repeated-digits/
+	LC1397/周赛182D 与 KMP 结合 https://leetcode-cn.com/contest/weekly-contest-182/problems/find-all-good-strings/
+	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
+	http://acm.hdu.edu.cn/showproblem.php?pid=3886
+	http://acm.hdu.edu.cn/showproblem.php?pid=6796
+	注：一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
 	digitDP := func(lower, upper string) int {
 		const mod int = 1e9 + 7
 
-		// <=s 的符合要求的字符串数目
+		// 返回 <=s 的符合要求的字符串数目
+		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
+		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 hasD 表示是否有非零数字（意为「真正填了数字」），最后 p>=n 的时候根据情况返回 1 或者 0
 		calc := func(s string) int {
-			// 有些题 lowerC 要从 1 开始，而 0 的部分单独计算（由于 0 后面可以填所有数字，这部分可以用 ∑_p>0 f(p, false) 来算）
 			const lowerC, upperC byte = '0', '9'
 			n := len(s)
 			sumUpper := n
@@ -1060,28 +1069,26 @@ func dpCollections() {
 					dp[i][j] = -1
 				}
 			}
-			var f func(p, sum int, isUpper bool) int
-			f = func(p, sum int, isUpper bool) (res int) {
-				//if sum... { return 0 }
-				if p >= n {
-					return 1 // 0
-				}
-				if !isUpper {
+			var f func(p, sum int, limitUp bool) int
+			f = func(p, sum int, limitUp bool) (res int) {
+				if p == n {
+					return 1
+				} // sum
+				if !limitUp {
 					dv := &dp[p][sum]
 					if *dv >= 0 {
 						return *dv
-					}
+					} // *dv + sum*int64(math.Pow10(n-p))
 					defer func() { *dv = res }()
 				}
 				up := upperC
-				if isUpper {
+				if limitUp {
 					up = s[p]
 				}
-				for digit := lowerC; digit <= up; digit++ {
+				for d := lowerC; d <= up; d++ {
 					tmp := sum
-					// do tmp...
-					c := f(p+1, tmp, isUpper && digit == up)
-					// do c...
+
+					c := f(p+1, tmp, limitUp && d == up)
 					res = (res + c) % mod
 				}
 				return
