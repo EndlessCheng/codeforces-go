@@ -46,6 +46,10 @@ func (r *RG) _int(min, max int) int {
 	return min + rand.Intn(max-min+1)
 }
 
+func (r *RG) IntOnly(min, max int) int {
+	return r._int(min, max)
+}
+
 // Int generates a random int in range [min, max]
 func (r *RG) Int(min, max int) int {
 	v := r._int(min, max)
