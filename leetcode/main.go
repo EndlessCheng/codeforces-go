@@ -9,22 +9,6 @@ import (
     "strings"
 )
 
-func main() {
-    toBytes := func(g [][]string) [][]byte {
-        n, m := len(g), len(g[0])
-        bytes := make([][]byte, n)
-        for i := range bytes {
-            bytes[i] = make([]byte, m)
-            for j := range bytes[i] {
-                bytes[i][j] = g[i][j][0]
-            }
-        }
-        return bytes
-    }
-    _ = toBytes
-    _ = MustBuildTreeNode
-}
-
 // LC 18
 func fourSum(a []int, target int) (ans [][]int) {
     sort.Ints(a)
