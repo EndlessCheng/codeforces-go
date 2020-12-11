@@ -2,17 +2,19 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"path/filepath"
 	"testing"
 )
 
-func Test_run(t *testing.T) {
-	t.Log("Current test is [D]")
-	testCases := [][2]string{
+func Test(t *testing.T) {
+	dir, _ := filepath.Abs(".")
+	t.Logf("Current problem is [%s]", filepath.Base(dir))
+
+	customTestCases := [][2]string{
 		{
 			``,
 			``,
 		},
 	}
-	testutil.AssertEqualStringCase(t, testCases, 0, run)
-	//testutil.AssertEqualRunResults(t, testCases, 0, runAC, run)
+	testutil.AssertEqualStringCase(t, customTestCases, 0, run)
 }

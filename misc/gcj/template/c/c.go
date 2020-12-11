@@ -4,7 +4,9 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -12,8 +14,15 @@ func run(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+	defer func() {
+		leftData, _ := ioutil.ReadAll(in)
+		s := strings.TrimSpace(string(leftData))
+		if s != "" {
+			panic("有未读入的数据：\n" + s)
+		}
+	}()
 
-	solve := func(_case int) {
+	solve := func(Case int) {
 		var n int
 		Fscan(in, &n)
 
@@ -21,9 +30,9 @@ func run(_r io.Reader, _w io.Writer) {
 
 	var t int
 	Fscan(in, &t)
-	for _case := 1; _case <= t; _case++ {
-		Fprintf(out, "Case #%d: ", _case)
-		solve(_case)
+	for Case := 1; Case <= t; Case++ {
+		Fprintf(out, "Case #%d: ", Case)
+		solve(Case)
 	}
 }
 
