@@ -500,6 +500,18 @@ func maxCoveredPoints(ps []vec, r int64) int {
 	return ans
 }
 
+// 圆和矩形是否重叠
+// x1<x2, y1<y2
+// https://www.zhihu.com/question/24251545/answer/27184960
+// LC1401/双周赛23C https://leetcode-cn.com/contest/biweekly-contest-23/problems/circle-and-rectangle-overlapping/
+func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
+	cx, cy := float64(x1+x2)/2, float64(y1+y2)/2               // 矩形中心
+	hx, hy := float64(x2-x1)/2, float64(y2-y1)/2               // 矩形半长
+	x, y := math.Abs(float64(ox)-cx), math.Abs(float64(oy)-cy) // 转换到第一象限的圆心
+	x, y = math.Max(x-hx, 0), math.Max(y-hy, 0)                // 求圆心至矩形的最短距离矢量
+	return x*x+y*y < float64(r*r)+eps
+}
+
 // 圆与扫描线
 // todo https://blog.csdn.net/hzj1054689699/article/details/87861808
 //   http://openinx.github.io/2013/01/01/plane-sweep-thinking/
