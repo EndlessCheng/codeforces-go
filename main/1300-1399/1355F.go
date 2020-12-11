@@ -1,9 +1,6 @@
 package main
 
-import (
-	. "fmt"
-	. "math/big"
-)
+import . "fmt"
 
 // github.com/EndlessCheng/codeforces-go
 func CF1355F() {
@@ -18,7 +15,7 @@ func CF1355F() {
 			}
 		}
 	}
-	upper := NewInt(1e18)
+	const upper int64 = 1e18
 
 	var t int
 	var g int64
@@ -27,20 +24,20 @@ func CF1355F() {
 		es := [mx]int{}
 		for i := 0; i < 22; i++ {
 			checks := []int64{}
-			q := NewInt(1)
+			q := int64(1)
 		o:
 			for _, p := range ps {
 				if e := es[p]; e >= 0 {
-					for p := NewInt(int64(p)); e >= 0; e-- {
-						if new(Int).Mul(q, p).Cmp(upper) > 0 {
+					for p := int64(p); e >= 0; e-- {
+						if q > upper/p {
 							break o
 						}
-						q.Mul(q, p)
+						q *= p
 					}
 					checks = append(checks, int64(p))
 				}
 			}
-			Println("?", q.Int64())
+			Println("?", q)
 			Scan(&g)
 			for _, p := range checks {
 				e := 0
