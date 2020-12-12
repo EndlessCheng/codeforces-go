@@ -68,7 +68,7 @@ func CF1461F(_r io.Reader, _w io.Writer) {
 		if m := len(pos); m > 0 {
 			addPos := 0
 			// 粗略的比较：若乘积的最小值（将所有大于 1 的数视作 2）比加法的最大值大，就说明没有取加号的机会，否则二进制枚举，看看加号放哪能得到最大值
-			if m < 20 && 1<<m <= 2*(i-st) {
+			if m < 20 && 1<<m <= 9*(i-st) {
 				max := int64(0)
 				for sub := 0; sub < 1<<(m-1); sub++ {
 					sum, mul := int64(0), int64(a[pos[0]])
