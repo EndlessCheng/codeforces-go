@@ -31,8 +31,12 @@ func Test_run(t *testing.T) {
 			`0`,
 		},
 		// TODO 测试参数的下界和上界
-		
+		{
+			`1 1
+1 6`,
+			`2`,
+		},
 	}
-	testutil.AssertEqualStringCase(t, testCases, 0, run)
+	testutil.AssertEqualStringCase(t, testCases, -1, run)
 }
 // https://atcoder.jp/contests/abc184/tasks/abc184_c

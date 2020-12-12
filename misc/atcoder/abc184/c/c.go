@@ -1,15 +1,13 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func run(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
+func run(in io.Reader, out io.Writer) {
 	var x0, y0, x, y int
 	Fscan(in, &x0, &y0, &x, &y)
 	x -= x0
@@ -26,7 +24,8 @@ func run(_r io.Reader, out io.Writer) {
 	if y > x {
 		y, x = x, y
 	}
-	if x-y <= 3 || (x+y)&1 == 0 {
+	// 注意从起始位置上往外扩展一圈的情况
+	if x+y <= 6 || x-y <= 3 || (x+y)&1 == 0 {
 		Fprint(out, 2)
 	} else {
 		Fprint(out, 3)
