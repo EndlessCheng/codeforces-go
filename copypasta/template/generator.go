@@ -17,7 +17,7 @@ func GenCodeforcesContestTemplates(contestID string, overwrite bool) error {
 		return nil
 	}
 
-	rootPath := fmt.Sprintf("../../dash/%s/", contestID)
+	rootPath := fmt.Sprintf("../../%s/", contestID)
 	openedOneFile := false
 
 	dirNames := []string{}
