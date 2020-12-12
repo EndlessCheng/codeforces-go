@@ -2,36 +2,22 @@ package main
 
 import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+// github.com/EndlessCheng/codeforces-go
 func longestZigZag(root *TreeNode) (ans int) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	dp := [2]map[*TreeNode]int{{}, {}}
 	var f func(o *TreeNode, dir int) int
-	f = func(o *TreeNode, dir int) (_ans int) {
+	f = func(o *TreeNode, dir int) (res int) {
 		if v, ok := dp[dir][o]; ok {
 			return v
 		}
-		_ans = 1
+		defer func() { dp[dir][o] = res }()
 		if dir == 0 && o.Right != nil {
-			_ans = max(_ans, f(o.Right, 1)+1)
+			res = max(res, f(o.Right, 1))
 		}
 		if dir == 1 && o.Left != nil {
-			_ans = max(_ans, f(o.Left, 0)+1)
+			res = max(res, f(o.Left, 0))
 		}
-		dp[dir][o] = _ans
-		return
+		return res + 1
 	}
 	var dfs func(o *TreeNode)
 	dfs = func(o *TreeNode) {
@@ -46,4 +32,11 @@ func longestZigZag(root *TreeNode) (ans int) {
 	}
 	dfs(root)
 	return
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }

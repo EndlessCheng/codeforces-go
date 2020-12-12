@@ -2,14 +2,7 @@ package main
 
 import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
-/**
- * Definition for a binary tree node.
- * type TreeNode struct {
- *     Val int
- *     Left *TreeNode
- *     Right *TreeNode
- * }
- */
+// github.com/EndlessCheng/codeforces-go
 func maxSumBST(root *TreeNode) (ans int) {
 	var f func(o *TreeNode) (sum, min, max int, ok bool)
 	f = func(o *TreeNode) (sum, min, max int, ok bool) {
