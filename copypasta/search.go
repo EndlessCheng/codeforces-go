@@ -366,6 +366,31 @@ func searchCollection() {
 	}
 	permuteAll := func(a []int, do func()) { _permute(a, 0, do) }
 
+	reverse := func(a []int) {
+		for i, n := 0, len(a); i < n/2; i++ {
+			a[i], a[n-1-i] = a[n-1-i], a[i]
+		}
+	}
+	nextPermutation := func(a []int) bool {
+		n := len(a)
+		i := n - 2
+		for i >= 0 && a[i] >= a[i+1] {
+			i--
+		}
+		if i < 0 {
+			return false
+		}
+		//if i >= 0 {
+		j := n - 1
+		for j >= 0 && a[i] >= a[j] {
+			j--
+		}
+		a[i], a[j] = a[j], a[i]
+		//}
+		reverse(a[i+1:])
+		return true
+	}
+
 	//
 
 	// 超大背包问题（折半枚举/双向搜索）
@@ -484,7 +509,7 @@ func searchCollection() {
 	_ = []interface{}{
 		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
-		combinations, combinationsWithRepetition, permutations, permuteAll,
+		combinations, combinationsWithRepetition, permutations, permuteAll, nextPermutation,
 		bigKnapsack, bigKnapsack2,
 	}
 }
