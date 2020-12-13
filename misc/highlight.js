@@ -35,17 +35,17 @@
         // 描述
         "Initially", "initially", "guaranteed", "No matter", "no matter",
         "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without",
-        "if and only if",
+        "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
         "equal", "same", "different", "unique", "distinct",
-        "must", "only", "exactly", "always",
+        "must", "only", "just", "exactly", "always",
         "pairwise", "adjacent", "in a row", "consecutive", "contiguous",
 
         // 求解
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
         " small ", " big ", " large ", " few ",
-        "at least", "at most",
+        "At least", "At most", "at least", "at most",
 
         // 特殊描述
         "Empty", "empty",
