@@ -1049,6 +1049,26 @@ func isPossible(nums []int) bool {
     return true
 }
 
+// LC 738 返回 <=N 的最大的非降整数
+func monotoneIncreasingDigits(N int) int {
+    s := []byte(strconv.Itoa(N))
+    i, n := 1, len(s)
+    for i < n && s[i] >= s[i-1] {
+        i++
+    }
+    if i < n {
+        for i > 0 && s[i] < s[i-1] {
+            s[i-1]--
+            i--
+        }
+        for i++; i < n; i++ {
+            s[i] = '9'
+        }
+    }
+    ans, _ := strconv.Atoi(string(s))
+    return ans
+}
+
 // LC 834
 // 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
 func sumOfDistancesInTree(n int, edges [][]int) []int {
