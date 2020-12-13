@@ -35,9 +35,9 @@
 |9753|[牛客编程巅峰赛S2赛季第7场 Div.1](https://ac.nowcoder.com/acm/contest/9753)|
 |9887|[牛客编程巅峰赛S2赛季第8场 Div.1](https://ac.nowcoder.com/acm/contest/9887)|
 
-```go
+## 其他
 
+```go
 //import . "nc_tools"
 import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-
 ```
