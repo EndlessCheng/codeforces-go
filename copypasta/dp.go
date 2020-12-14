@@ -648,7 +648,7 @@ func dpCollections() {
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64  fill -inf
+		dp := make([]int, maxW+1) // int64  fill
 		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
@@ -662,7 +662,7 @@ func dpCollections() {
 	// 0-1 背包 EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
 	// 二维费用的情况 https://www.acwing.com/problem/content/8/ https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64  fill -inf
+		dp := make([]int, maxW+1) // int64  fill
 		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
@@ -701,6 +701,39 @@ func dpCollections() {
 		return dp[sum]
 	}
 
+	// 0-1 背包 EXTRA: 打印字典序最小的方案
+	// 倒序遍历物品，同时用 fa 数组记录转移来源，这样跑完 DP 后，从第一个物品开始即可得到字典序最小的方案
+	// https://www.acwing.com/problem/content/description/12/
+	zeroOneKnapsackLexicographicallySmallestResult := func(values, weights []int, maxW int) (ans []int) {
+		n := len(values)
+		dp := make([]int, maxW+1) // int64  fill
+		//dp[0] = 0
+		fa := make([][]int, n)
+		for i := n - 1; i >= 0; i-- {
+			fa[i] = make([]int, maxW+1)
+			for j := range fa[i] {
+				fa[i][j] = j
+			}
+			v, w := values[i], weights[i]
+			for j := maxW; j >= w; j-- {
+				if dp[j-w]+v >= dp[j] {
+					dp[j] = dp[j-w] + v
+					fa[i][j] = j - w
+				}
+			}
+		}
+		for i, j := 0, maxW; i < n; {
+			if fa[i][j] == j {
+				i++
+			} else {
+				ans = append(ans, i+1) // 下标从 1 开始
+				j = fa[i][j]
+				i++ // 完全背包的情况，这行去掉
+			}
+		}
+		return
+	}
+
 	// 0-1 背包 EXTRA: 价值主导的 0-1 背包
 	// todo 挑战 P61
 
@@ -708,7 +741,7 @@ func dpCollections() {
 	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
 	// EXTRA: 打印方案 LC1449/双周赛26D https://leetcode-cn.com/contest/biweekly-contest-26/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64  fill -inf
+		dp := make([]int, maxW+1) // int64  fill
 		//dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
@@ -1436,7 +1469,7 @@ func dpCollections() {
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, lcis, countLIS, distinctSubsequence,
 
-		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum,
+		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary,
 		groupKnapsack,
