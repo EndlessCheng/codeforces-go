@@ -716,7 +716,7 @@ func dpCollections() {
 			}
 			v, w := values[i], weights[i]
 			for j := maxW; j >= w; j-- {
-				if dp[j-w]+v >= dp[j] {
+				if dp[j-w]+v >= dp[j] { // 注意这里要取等号，从而保证尽可能地从字典序最小的方案转移过来
 					dp[j] = dp[j-w] + v
 					fa[i][j] = j - w
 				}
