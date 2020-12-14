@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
+//rand.Seed(time.Now().UnixNano())
 func TestCompare(t *testing.T) {
-	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() (a []int) {
 		rg := testutil2.NewRandGenerator()
 		n := rg.Int(1, 9)
@@ -33,7 +33,6 @@ func TestCompare(t *testing.T) {
 }
 
 func TestCheckInf(t *testing.T) {
-	//rand.Seed(time.Now().UnixNano())
 	var solve func([]int) []int /*TODO*/
 	for tc := 1; ; tc++ {
 		rg := testutil2.NewRandGenerator()
