@@ -1095,6 +1095,7 @@ func numberTheoryCollection() {
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
 	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
+	// todo https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
 	// https://www.luogu.com.cn/problem/P3846
 	// https://www.luogu.com.cn/problem/P4195
 	babyStepGiantStep := func(a, b, p int64) int64 {
@@ -1271,11 +1272,18 @@ func numberTheoryCollection() {
 		// 也可以理解成在长度和取值范围-1的格点上走单调路径
 		H = func(range_, length int) int64 { return C(range_+length-1, length) }
 
-		// 卡特兰数 https://en.wikipedia.org/wiki/Catalan_number
+		// 卡特兰数 Cn = C(2n,n)/(n+1) = C(2n,n)-C(2n,n-1)
+		// https://en.wikipedia.org/wiki/Catalan_number
 		// https://oeis.org/A000108
 		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
 		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
+		//
+		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1)*(2^n)*(n!)
+		// 故 C(2*n,n)/(n+1) = (2*n)!/(n!)/(n+1)! = 1*3*5*...*(2n-1)*(2^n)/(n+1)!
+		// 又由于 n! 的 2 的因子个数 = n/2 + n/4 + ... + n/2^k <= n-1 当且仅当 n 为 2^k 时取到等号
+		// 对比分子分母的 2 的因子个数，可以得出如下结论：
+		//     当且仅当 n+1 为 2^k 时，卡特兰数为奇数
 		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
 		Catalan = func(n int) int64 { return new(big.Int).Mod(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
 
