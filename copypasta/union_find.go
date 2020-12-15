@@ -202,8 +202,12 @@ func unionFindEdgeWeight(n int) {
 		}
 		return fa[x]
 	}
-	// 调用前需要：1. 调用 find(x); find(y)  2. 保证 same(x, y) 为 true
-	delta := func(x, y int) int { return ((dis[x]-dis[y])%kinds + kinds) % kinds }
+	// 调用前需要保证 same(x, y) 为 true
+	delta := func(x, y int) int {
+		find(x)
+		find(y)
+		return ((dis[x]-dis[y])%kinds + kinds) % kinds
+	}
 	merge := func(from, to int, d int) bool { // 返回是否与已知条件矛盾
 		if fFrom, fTo := find(from), find(to); fFrom != fTo {
 			dis[fFrom] = d + dis[to] - dis[from]
