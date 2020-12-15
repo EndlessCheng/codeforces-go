@@ -15,15 +15,6 @@ func run(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	// 如果是多组数据，请务必加上这段保险 —— 已经无法统计，有多少位竞赛选手在漏读数据上损失大把分数（包括我）
-	defer func() {
-		leftData, _ := ioutil.ReadAll(in)
-		s := strings.TrimSpace(string(leftData))
-		if s != "" {
-			panic("有未读入的数据：\n" + s)
-		}
-	}()
-
 	solve := func(Case int) {
 		var n int
 		Fscan(in, &n)
@@ -34,6 +25,12 @@ func run(_r io.Reader, _w io.Writer) {
 	Fscan(in, &t)
 	for Case := 1; Case <= t; Case++ {
 		solve(Case)
+	}
+
+	// 如果是多组数据，请务必加上这段保险 —— 已经无法统计，有多少位竞赛选手在漏读数据上损失大把分数（包括我）
+	_leftData, _ := ioutil.ReadAll(in)
+	if _s := strings.TrimSpace(string(_leftData)); _s != "" {
+		panic("有未读入的数据：\n" + _s)
 	}
 }
 

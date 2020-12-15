@@ -8,6 +8,7 @@ import (
 )
 
 // 赛前看情况修改下 main.go  main_test.go
+// add space, ...
 
 // https://codeforces.com/contest//problems
 func TestGenCodeforcesContestTemplates(t *testing.T) {
