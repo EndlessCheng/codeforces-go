@@ -481,6 +481,7 @@ func commonCollection() {
 	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 相当于转换成第几小
 	// 若允许修改原数组，可以先将其排序去重后，再调用 discrete，注意去重后 n 需要重新赋值
+	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
 		if len(a) == 0 {
 			return

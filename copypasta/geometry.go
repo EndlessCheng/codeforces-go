@@ -72,8 +72,13 @@ https://cp-algorithms.com/geometry/lattice-points.html
 TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
       顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
       曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
-TIPS: 另一种处理曼哈顿距离的方法是枚举 (x2,y2) 在以 (x1,y1) 为原点的哪个象限，分四种情况讨论
-      例题 LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+TIPS: 另一种处理曼哈顿距离的方法是分四种情况讨论，即
+      |a-b|+|c-d|
+      = max(a-b, b-a) + max(c-d, d-c)
+      = max((a-b)+(c-d), (b-a)+(c-d), (a-b)+(d-c), (b-a)+(d-c))
+      另外一种思路见 https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
+      LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+      LC1131 https://leetcode-cn.com/problems/maximum-of-absolute-value-expression/
 
 https://oeis.org/A053411 Circle numbers
 a(n)= number of points (i,j), i,j integers, contained in a circle of diameter n, centered at the origin
