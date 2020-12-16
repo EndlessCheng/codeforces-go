@@ -1786,7 +1786,7 @@ func gameTheoryCollection() {
 		return sum > 0
 	}
 
-	// Sprague-Grundy theorem
+	// SG 函数 Sprague-Grundy theorem
 	// 有向图游戏的某个局面必胜 <=> 该局面对应节点的 SG 函数值 > 0
 	// 有向图游戏的某个局面必败 <=> 该局面对应节点的 SG 函数值 = 0
 	// 推荐资料 Competitive Programmer’s Handbook Ch.25
@@ -1794,13 +1794,14 @@ func gameTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
 	// 整数分拆博弈 https://codeforces.com/problemset/problem/87/C
-	{
-		// 剪纸博弈
-		// http://poj.org/problem?id=2311
-		var n, m int
-		sg := make([][]int, n+1)
+
+	// 剪纸博弈
+	// https://www.acwing.com/problem/content/description/221/ http://poj.org/problem?id=2311
+	// 要求 n >= 2, m >= 2
+	cutPaperGame := func(n, m int) bool {
+		sg := make([][]int, n+5)
 		for i := range sg {
-			sg[i] = make([]int, m+1)
+			sg[i] = make([]int, m+5)
 			for j := range sg[i] {
 				sg[i][j] = -1
 			}
@@ -1829,11 +1830,10 @@ func gameTheoryCollection() {
 		sg[2][3] = 0
 		sg[3][2] = 0
 		// 计算有向图游戏的 SG 函数值
-		ans := SG(n, m)
-		Println(ans)
+		return SG(n, m) > 0
 	}
 
-	_ = []interface{}{nim}
+	_ = []interface{}{nim, cutPaperGame}
 }
 
 // 数值分析
