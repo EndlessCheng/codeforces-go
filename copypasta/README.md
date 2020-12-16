@@ -44,6 +44,8 @@
 
 [算法竞赛入门到进阶](https://github.com/luoyongjun999/code)
 
+[OI Public Library（含国家队论文）](https://github.com/enkerewpo/OI-Public-Library)
+
 [算法竞赛 (ICPC, OI, etc) 论文，课件，文档，笔记等](https://github.com/LzyRapx/Competitive-Programming-Docs)
 
 [算法竞赛课件分享 by hzwer](https://github.com/hzwer/shareOI)
