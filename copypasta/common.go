@@ -478,9 +478,8 @@ func commonCollection() {
 		return a[:j+1]
 	}
 
-	// 离散化 discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
-	// 相当于转换成第几小
-	// 若允许修改原数组，可以先将其排序去重后，再调用 discrete，注意去重后 n 需要重新赋值
+	// 离散化，不保留原始数据（保留原始数据的版本见下面的 discreteMap）
+	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
 		if len(a) == 0 {
@@ -523,8 +522,9 @@ func commonCollection() {
 		return a
 	}
 
-	// 离散化 discreteMap([]int{100,20,50,50}, 1) => map[int]int{100:3, 20:1, 50:2}
-	// 若允许修改原数组，可以先将其排序去重后，再调用 discreteMap，注意去重后 n 需要重新赋值
+	// 保留原始数据的离散化
+	// 返回一个名次 map
+	// discreteMap([]int{100,20,20,50}, 1) => map[int]int{20:1, 50:2, 100:3}
 	// 例题：https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
 		// assert len(a) > 0
@@ -545,6 +545,16 @@ func commonCollection() {
 		kth = make(map[int]int, len(sorted))
 		for i, v := range sorted {
 			kth[v] = i + startIndex
+		}
+
+		// EXTRA: 第 k 小元素在原数组中的下标 kthPos
+		pos := make(map[int][]int, k-startIndex)
+		for i, v := range a {
+			pos[v] = append(pos[v], i)
+		}
+		kthPos := make([][]int, k+1)
+		for v, k := range kth {
+			kthPos[k] = pos[v]
 		}
 
 		return

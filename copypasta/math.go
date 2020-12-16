@@ -114,6 +114,8 @@ func numberTheoryCollection() {
 	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 	分拆与 LCM  https://ac.nowcoder.com/acm/contest/5961/D https://ac.nowcoder.com/discuss/439005
 
+	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
+
 	*/
 
 	gcd := func(a, b int64) int64 {
