@@ -2018,7 +2018,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.htm
 最大权闭合子图
 */
 
-/* 网络流建模技巧
+/* 网络流建模技巧/转换技巧
 标准建模（指派问题）：
 	http://poj.org/problem?id=2175
 	http://poj.org/problem?id=3686
@@ -2052,6 +2052,27 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.htm
 无重复边的往返最短路：
 	http://poj.org/problem?id=2135
 	转换成流量为 2 的最小费用流
+
+另见下面的 minCostFlowSPFA
+
+最小割模型
+主要参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 在 misc 文件夹下）
+https://blog.csdn.net/qq_35649707/article/details/77482691
+最大权闭合图 Maximum Weight Closure of a Graph
+最大密度子图 Maximum Density Subgraph
+二分图最小点权覆盖集/最大点权独立集 Minimum Weight Vertex Covering Set (MinWVCS) and Maximum Weight Vertex Independent Set (MaxWVIS) in a Bipartite Graph
+   建立一个源 s，向 X 部每个点连边；建立一个汇 t，从 Y 部每个点向汇 t 连边，把二分图中的边看成是有向的，
+   则任意一条从 s 到 t 的路径，一定具有 s-v-w-t 的形式（v∈X, w∈Y）。
+   割的性质是不存在一条从 s 到 t 的路径。故路径上的三条边 s-v, v-w, w-t 中至少有一条边在割中。
+   若人为地令 v-w 不可能在最小割中，即令其容量为正无限，
+   可将条件简化为 s-v, w-t 中至少有一条边在最小割中，这正好与点覆盖集限制条件的形式相符（边的两端点中至少一个在覆盖集内），
+   而目标是最小化点权之和，这恰好也是最小割的优化目标。
+   对于最大点权独立集，其等价于点权之和减去最小点权覆盖集。
+   https://codeforces.com/contest/808/problem/F
+
+点边转换
+   将点拆为入点和出点（v 和 v+n），即可把点的属性变成边的属性，从而方便应用最大流、最小割等算法
+   将边的中间加一个节点，把边的属性体现在中间的点上
 
 todo 线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
 

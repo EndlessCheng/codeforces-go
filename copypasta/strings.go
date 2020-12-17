@@ -291,7 +291,7 @@ func stringCollection() {
 
 	todo http://poj.org/problem?id=3581
 
-	题目总结：（部分参考《后缀数组——处理字符串的有力工具》）
+	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 在 misc 文件夹下）
 	单个字符串
 		模板题 https://www.luogu.com.cn/problem/P3809
 		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
