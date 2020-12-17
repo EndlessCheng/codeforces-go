@@ -13,7 +13,7 @@ func CF245F(_r io.Reader, out io.Writer) {
 	in := bufio.NewScanner(_r)
 	var n, m int
 	in.Scan()
-	Sscan(in.Text(), &n, &m)
+	Sscan(in.Text(), &n, &m) // 也可以在 NewScanner 之前用 Scanln 读入 n 和 m
 	a := []int{}
 	for in.Scan() {
 		s := in.Text()[:19]
