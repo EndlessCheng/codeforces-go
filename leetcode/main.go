@@ -275,6 +275,34 @@ func totalNQueens(n int) (ans int) {
     return
 }
 
+// LC 60 逆康托展开
+func getPermutation(n, k int) (perm string) {
+    F := make([]int, n)
+    F[0] = 1
+    for i := 1; i < n; i++ {
+        F[i] = F[i-1] * i
+    }
+
+    k--
+    valid := make([]int, n+1)
+    for i := 1; i <= n; i++ {
+        valid[i] = 1
+    }
+    for i := 1; i <= n; i++ {
+        order := k/F[n-i] + 1
+        for j := 1; j <= n; j++ {
+            order -= valid[j]
+            if order == 0 {
+                perm += strconv.Itoa(j)
+                valid[j] = 0
+                break
+            }
+        }
+        k %= F[n-i]
+    }
+    return
+}
+
 // LC 75
 // 荷兰国旗问题
 func sortColors(nums []int) {
