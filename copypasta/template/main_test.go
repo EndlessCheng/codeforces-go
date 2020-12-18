@@ -22,11 +22,13 @@ func Test(t *testing.T) {
 		},
 	}
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
-		testutil.AssertEqualStringCase(t, customTestCases, 0, run)
+		tarCase := 0 // -1
+		testutil.AssertEqualStringCase(t, customTestCases, tarCase, run)
 		t.Log("======= custom =======")
 	}
 
-	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, run)
+	tarCase := 0 // -1
+	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", tarCase, run)
 }
 
 // 无尽对拍 / 构造 hack 数据

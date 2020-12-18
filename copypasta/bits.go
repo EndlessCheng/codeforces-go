@@ -57,6 +57,9 @@ https://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1
 https://oeis.org/A178910 异或和 因子
 	https://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
 
+https://oeis.org/A038712 a(n) = n^(n-1) = 1, 3, 1, 7, 1, 3, 1, 15, 1, ...
+https://oeis.org/A080277 A038712 的前缀和  =>  a(n) = n + 2*a(n/2)
+
 二进制长度
 https://oeis.org/A070939 a(0)=1, a(n)=bits.Len(n)
 https://oeis.org/A083652 A070939 的前缀和
