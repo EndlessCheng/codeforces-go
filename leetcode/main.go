@@ -822,6 +822,33 @@ func lowestCommonAncestor(root, p, q *TreeNode) (ancestor *TreeNode) {
     }
 }
 
+// LC 316 / LC 1081 去除重复字母后字典序最小的子序列
+func removeDuplicateLetters(s string) string {
+    cnt := [26]int{}
+    for _, b := range s {
+        cnt[b-'a']++
+    }
+    ans := []byte{}
+    inAns := [26]bool{}
+    for i := range s {
+        b := s[i]
+        if !inAns[b-'a'] {
+            for len(ans) > 0 && b < ans[len(ans)-1] {
+                last := ans[len(ans)-1] - 'a'
+                if cnt[last] == 0 {
+                    break
+                }
+                ans = ans[:len(ans)-1]
+                inAns[last] = false
+            }
+            ans = append(ans, b)
+            inAns[b-'a'] = true
+        }
+        cnt[b-'a']--
+    }
+    return string(ans)
+}
+
 // LC 321
 func maxSubsequence(a []int, k int) (s []int) {
     for i, v := range a {
