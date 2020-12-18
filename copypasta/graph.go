@@ -1648,7 +1648,6 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 // DAG DP https://ac.nowcoder.com/acm/contest/6384/C https://www.luogu.com.cn/problem/P3387
 // 好题 https://codeforces.com/problemset/problem/915/D
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
-// EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
