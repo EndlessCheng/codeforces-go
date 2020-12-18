@@ -1462,6 +1462,141 @@ func dpCollections() {
 		reroot(0, -1, subCap[0])
 	}
 
+	// 树上所有路径的位运算与(&)的和
+	// 单个点也算路径
+	// 解法：对每一位，统计仅含 1 的路径个数
+	// a[i] <= 2^20
+	// https://ac.nowcoder.com/acm/contest/10167/C
+	andPathSum := func(g [][]int, a []int) int64 {
+		const mx = 21
+		ans := int64(0)
+		for i := 0; i < mx; i++ {
+			cntOnePath := int64(0)
+			var f func(v, fa int) int64
+			f = func(v, fa int) int64 {
+				one := a[v] >> i & 1
+				cntOnePath += int64(one)
+				for _, w := range g[v] {
+					if w != fa {
+						o := f(w, v)
+						if one > 0 {
+							cntOnePath += one * o
+							one += o
+						}
+					}
+				}
+				return one
+			}
+			f(0, -1)
+			ans += 1 << i * cntOnePath
+		}
+
+		{
+			// 另一种做法是对每一位，用并查集求出 1 组成的连通分量，每个连通分量对答案的贡献是 sz*(sz+1)/2
+			n := len(a)
+			fa := make([]int, n)
+			var find func(int) int
+			find = func(x int) int {
+				if fa[x] != x {
+					fa[x] = find(fa[x])
+				}
+				return fa[x]
+			}
+			merge := func(from, to int) { fa[find(from)] = find(to) }
+
+			ans := int64(0)
+			for i := 0; i < mx; i++ {
+				for j := range fa {
+					fa[j] = j
+				}
+				sz := make([]int, n)
+				for v, vs := range g {
+					for _, w := range vs {
+						if a[v]>>i&1 > 0 && a[w]>>i&1 > 0 {
+							merge(v, w)
+						}
+					}
+				}
+				for j := 0; j < n; j++ {
+					sz[find(j)]++
+				}
+				for j, f := range fa {
+					if j == f && a[j]>>i&1 > 0 {
+						ans += 1 << i * int64(sz[j]) * int64(sz[j]+1) / 2
+					}
+				}
+			}
+		}
+		return ans
+	}
+
+	// 树上所有路径的位运算或(|)的和
+	// 单个点也算路径
+	// 做法和上面类似，求出仅含 0 的路径的个数，然后用路径总数 n*(n+1) 减去该个数就得到了包含至少一个 1 的路径个数
+	// 也可以用并查集求出 0 组成的连通分量
+
+	// 树上所有路径的位运算异或(^)的和
+	// 原题失效了，只找到几个题解可以参考 https://www.cnblogs.com/kuronekonano/p/11135742.html https://blog.csdn.net/qq_36876305/article/details/80060491
+	// 上面链接是边权，这里改成点权，且路径至少有两个点
+	// 解法：由于任意路径异或和可以用从根节点出发的路径异或和表示
+	// 对每一位，统计从根节点出发的路径异或和在该位上的 0 的个数和 1 的个数，
+	// 只有当 0 与 1 异或时才对答案有贡献，所以贡献即为这两个个数之积
+	xorPathSum := func(g [][]int, a []int) int64 {
+		n := len(a)
+		const mx = 30
+		cnt := [mx]int{}
+		xor := 0
+		var f func(v, fa int)
+		f = func(v, fa int) {
+			xor ^= a[v]
+			for _, w := range g[v] {
+				if w != fa {
+					f(w, v)
+				}
+			}
+			for i := 0; i < mx; i++ {
+				cnt[i] += xor >> i & 1
+			}
+			xor ^= a[v]
+		}
+		f(0, -1)
+		ans := int64(0)
+		for i, c := range cnt {
+			ans += 1 << i * int64(c) * int64(n-c)
+		}
+		return ans
+	}
+
+	// 树上所有路径的位运算异或(^)的异或和
+	// 这里的路径至少有两个点
+	// 方法是考虑每个点出现在多少条路径上，若数目为奇数则对答案有贡献
+	// 路径分两种情况，一种是没有父节点参与的，树形 DP 一下就行了；另一种是父节点参与的，个数就是 子树*(n-子树)
+	// https://ac.nowcoder.com/acm/contest/272/B
+	xorPathXorSum := func(g [][]int, a []int) int {
+		n := len(a)
+		ans := 0
+		var f func(v, fa int) int64
+		f = func(v, fa int) int64 {
+			cnt := int64(0)
+			sz := int64(1)
+			for _, w := range g[v] {
+				if w != fa {
+					s := f(w, v)
+					cnt += sz * s
+					sz += s
+				}
+			}
+			cnt += sz * (int64(n) - sz)
+			// 若一个点也算路径，那就再加一。或者在递归结束后把 ans^=a[0]^...^a[n-1]
+			if cnt&1 > 0 {
+				ans ^= a[v]
+			}
+			return sz
+		}
+		f(0, -1)
+		return ans
+	}
+
 	_ = []interface{}{
 		prefixSumDP, mapDP,
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
@@ -1486,5 +1621,6 @@ func dpCollections() {
 		diameter, countDiameter, countVerticesOnDiameter,
 		maxIndependentSetOfTree, minEdgeCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		rerootDP,
+		andPathSum, xorPathSum, xorPathXorSum,
 	}
 }
