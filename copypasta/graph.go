@@ -831,6 +831,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
+// 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
 // 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
@@ -1649,7 +1650,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // EXTRA: todo 拓扑排序是否唯一：算法第四版 p.387 4.2.25
 // 构造 https://codeforces.com/problemset/problem/269/C
-// LC 套题 https://leetcode-cn.com/tag/topological-sort/
+// 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	g := make([][]int, n)
 	deg := make([]int, n)

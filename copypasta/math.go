@@ -1553,11 +1553,6 @@ todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
 B(n+1) = Sum_{k=0..n} B(k)*C(n,k)
 B(n) = Sum_{k=0..n} Stirling2(n,k)
 
-康托展开 Cantor Expansion
-https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
-https://oi-wiki.org/math/cantor/
-todo https://www.luogu.com.cn/problem/P5367
-
 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
 普吕弗序列 Prüfer sequence: 由树唯一地产生的序列
