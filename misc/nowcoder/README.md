@@ -35,6 +35,7 @@
 |9753|[牛客编程巅峰赛S2赛季第7场 Div.1](https://ac.nowcoder.com/acm/contest/9753)|
 |9887|[牛客编程巅峰赛S2赛季第8场 Div.1](https://ac.nowcoder.com/acm/contest/9887)|
 |9977|[牛客编程巅峰赛S2赛季第9场 Div.1](https://ac.nowcoder.com/acm/contest/9977)|
+|10167|[牛客编程巅峰赛S2赛季第10场 Div.1](https://ac.nowcoder.com/acm/contest/10167)|
 
 ## 其他
 
