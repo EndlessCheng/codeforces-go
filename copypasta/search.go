@@ -391,6 +391,78 @@ func searchCollection() {
 		return true
 	}
 
+	// 康托展开 Cantor Expansion
+	// 返回所给排列 perm（元素在 [1,n]）的字典序名次
+	// 核心思想：对于第 i 个位置，若该位置的数是未出现在其左侧的数中第 k 大的，那么有 (k−1)×(N−i)! 种方案在该位置上比这个排列小
+	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
+	// https://oi-wiki.org/math/cantor/
+	// https://www.luogu.com.cn/problem/P5367
+	rankPermutation := func(perm []int) int64 {
+		const mod int64 = 1e9 + 7
+		n := len(perm)
+		F := make([]int64, n)
+		F[0] = 1
+		for i := 1; i < n; i++ {
+			F[i] = F[i-1] * int64(i) % mod
+		}
+
+		tree := make([]int, n+1)
+		add := func(i, val int) {
+			for ; i <= n; i += i & -i {
+				tree[i] += val
+			}
+		}
+		sum := func(i int) (res int) {
+			for ; i > 0; i &= i - 1 {
+				res += tree[i]
+			}
+			return
+		}
+		for i := 1; i <= n; i++ {
+			add(i, 1)
+		}
+
+		ans := int64(0)
+		for i, v := range perm {
+			ans += int64(sum(v-1)) * F[n-1-i] % mod
+			add(v, -1)
+		}
+		ans++ // 从 1 开始的排名
+		ans %= mod
+		return ans
+	}
+
+	// 逆康托展开 Inverse Cantor Expansion
+	// 返回字典序第 k 小的排列，元素范围为 [1,n]
+	// LC60 https://leetcode-cn.com/problems/permutation-sequence/
+	kthPermutation := func(n, k int) []int {
+		F := make([]int, n)
+		F[0] = 1
+		for i := 1; i < n; i++ {
+			F[i] = F[i-1] * i
+		}
+
+		k--
+		perm := make([]int, n)
+		valid := make([]int, n+1)
+		for i := 1; i <= n; i++ {
+			valid[i] = 1
+		}
+		for i := 1; i <= n; i++ {
+			order := k/F[n-i] + 1
+			for j := 1; j <= n; j++ {
+				order -= valid[j]
+				if order == 0 {
+					perm = append(perm, j)
+					valid[j] = 0
+					break
+				}
+			}
+			k %= F[n-i]
+		}
+		return perm
+	}
+
 	//
 
 	// 超大背包问题（折半枚举/双向搜索）
@@ -509,7 +581,7 @@ func searchCollection() {
 	_ = []interface{}{
 		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
-		combinations, combinationsWithRepetition, permutations, permuteAll, nextPermutation,
+		combinations, combinationsWithRepetition, permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
 		bigKnapsack, bigKnapsack2,
 	}
 }
