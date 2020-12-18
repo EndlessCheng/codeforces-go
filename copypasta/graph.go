@@ -1650,6 +1650,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
+// 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
+// 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	g := make([][]int, n)
 	deg := make([]int, n)
