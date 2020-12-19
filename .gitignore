@@ -13,9 +13,9 @@
 *.out
 
 /.idea
-/dash
+/[0-9]*
 /zdash
-*.txt
 /main.go
 /main_test.go
 /helper.go
+*.txt
