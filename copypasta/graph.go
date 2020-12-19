@@ -831,6 +831,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
+// 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
