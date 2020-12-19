@@ -103,4 +103,71 @@ func CF1463E(_r io.Reader, _w io.Writer) {
 	}
 }
 
+func CF1463ESolution2(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
+
+	var n, k, v, w, rt int
+	Fscan(in, &n, &k)
+	p := make([]int, n)
+	to := make([]int, n)
+	top := make([]int, n)
+	for i := range p {
+		Fscan(in, &p[i])
+		if p[i]--; p[i] < 0 {
+			rt = i
+		}
+		to[i] = -1
+		top[i] = i
+	}
+	inChain := make([]bool, n)
+	for ; k > 0; k-- {
+		Fscan(in, &v, &w)
+		v--
+		w--
+		to[v] = w
+		inChain[w] = true
+	}
+
+	g := make([][]int, n)
+	deg := make([]int, n)
+	for i, c := range inChain {
+		if !c {
+			for v := i; v >= 0; v = to[v] {
+				top[v] = i
+				if p[v] >= 0 && top[p[v]] != i {
+					g[p[v]] = append(g[p[v]], i)
+					deg[i]++
+				}
+			}
+		}
+	}
+
+	ans := []interface{}{}
+	q := []int{}
+	// rt 入度不为零的数据：
+	// 3 1
+	// 0 3 1
+	// 1 2
+	if !inChain[rt] && deg[rt] == 0 {
+		q = []int{rt}
+	}
+	for len(q) > 0 {
+		for v, q = q[0], q[1:]; v >= 0; v = to[v] {
+			ans = append(ans, v+1)
+			for _, w := range g[v] {
+				if deg[w]--; deg[w] == 0 {
+					q = append(q, w)
+				}
+			}
+		}
+	}
+	if len(ans) < n {
+		Fprint(out, 0)
+	} else {
+		Fprint(out, ans...)
+	}
+}
+
 //func main() { CF1463E(os.Stdin, os.Stdout) }
