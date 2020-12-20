@@ -2,6 +2,8 @@ package main
 
 import "sort"
 
+// 在线的话可以用最小生成树+树链剖分
+
 // github.com/EndlessCheng/codeforces-go
 type uf struct {
 	fa []int
