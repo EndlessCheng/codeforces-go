@@ -199,7 +199,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
-// https://leetcode-cn.com/problems/tree-diameter/
+// https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0

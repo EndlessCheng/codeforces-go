@@ -1157,6 +1157,10 @@ func numberTheoryCollection() {
 		}
 		return res
 	}
+	// n 小于 1 时返回 1
+	calcFactorialBig := func(n int) *big.Int {
+		return new(big.Int).MulRange(1, int64(n))
+	}
 
 	initFactorial := func() {
 		const mx int = 1e6
@@ -1184,10 +1188,22 @@ func numberTheoryCollection() {
 
 	// 双阶乘
 	// https://en.wikipedia.org/wiki/Double_factorial
+
+	// 偶阶乘
 	// https://oeis.org/A000165 Double factorial of even numbers: (2n)!! = 2^n*n!
-	// https://oeis.org/A001147 奇阶乘 Double factorial of odd numbers: (2*n-1)!! = 1*3*5*...*(2*n-1) = A(2*n,n) / 2^n
+	calcEvenFactorialBig := func(n int) *big.Int {
+		return new(big.Int).Lsh(new(big.Int).MulRange(1, int64(n)), uint(n))
+	}
+
+	// 奇阶乘
+	// https://oeis.org/A001147 Double factorial of odd numbers: (2*n-1)!! = 1*3*5*...*(2*n-1) = A(2*n,n) / 2^n
+	// 1, 3, 15, 105, 945, 10395, 135135, 2027025, 34459425, 654729075, 13749310575, 316234143225, 7905853580625, ...
 	// Number of ways to choose n disjoint pairs of items from 2*n items
 	// Number of perfect matchings in the complete graph K(2n)
+	// 相关题目 LC1359/双周赛20D 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
+	calcOddFactorialBig := func(n int) *big.Int {
+		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
+	}
 
 	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)
@@ -1486,7 +1502,7 @@ func numberTheoryCollection() {
 		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
-		factorial, calcFactorial, initFactorial, _factorial, combHalf, initComb, comb,
+		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		muInit,
 		floorLoop, floorLoopK,
 	}
