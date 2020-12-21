@@ -985,6 +985,7 @@ func numberTheoryCollection() {
 	// 相关题目 https://www.luogu.com.cn/problem/P5656
 	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	//    最简单的做法就是 min(x1+y1, x2+y2)
+	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
 	solveLinearDiophantineEquations := func(a, b, c int64) (n, x1, y1, x2, y2 int64) {
 		g, x0, y0 := exgcd(a, b)
 
