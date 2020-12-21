@@ -981,7 +981,7 @@ func numberTheoryCollection() {
 	// 注意若输入超过 1e9 可能要用高精
 	// 返回：正整数解的个数（无解时为 -1，无正整数解时为 0）
 	//      x 取最小正整数时的解 x1 y1，此时 y1 是最大正整数解
-	//      y 取最小正整数时的解 x2 y2，此时 x1 是最大正整数解
+	//      y 取最小正整数时的解 x2 y2，此时 x2 是最大正整数解
 	// 相关题目 https://www.luogu.com.cn/problem/P5656
 	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	//    最简单的做法就是 min(x1+y1, x2+y2)
