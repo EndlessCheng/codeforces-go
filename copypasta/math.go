@@ -978,6 +978,7 @@ func numberTheoryCollection() {
 	// x0 和 y0 是 ax+by=g 的一组特解（即 exgcd(a,b) 的返回值）
 	//
 	// 为方便讨论，这里要求输入的 a b c 必须为正整数
+	// 注意若输入超过 1e9 可能要用高精
 	// 返回：正整数解的个数（无解时为 -1，无正整数解时为 0）
 	//      x 取最小正整数时的解 x1 y1，此时 y1 是最大正整数解
 	//      y 取最小正整数时的解 x2 y2，此时 x1 是最大正整数解
@@ -1353,7 +1354,7 @@ func numberTheoryCollection() {
 		// 对比分子分母的 2 的因子个数，可以得出如下结论：
 		//     当且仅当 n+1 为 2^k 时，卡特兰数为奇数
 		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
-		Catalan = func(n int) int64 { return new(big.Int).Mod(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
+		Catalan = func(n int) int64 { return new(big.Int).Rem(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
 
 		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
@@ -1385,7 +1386,7 @@ func numberTheoryCollection() {
 		// 注意当 n 为负数时，可能会算出非 0 的结果，这种情况要特判
 		// 当 0 <= n < k 时结果为 0
 		_ = new(big.Int).Binomial(n, k).Int64() // small
-		_ = new(big.Int).Mod(new(big.Int).Binomial(n, k), big.NewInt(mod)).Int64()
+		_ = new(big.Int).Rem(new(big.Int).Binomial(n, k), big.NewInt(mod)).Int64()
 		_ = int64(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
 	}
 

@@ -435,6 +435,7 @@ import (
 func Test(t *testing.T) {
 	t.Log("Current test is [%s]")
 	examples := %s{%s
+		// TODO 测试入参最小的情况
 		
 	}
 	targetCaseNum := 0 // -1
