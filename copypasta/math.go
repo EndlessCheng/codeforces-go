@@ -957,12 +957,10 @@ func numberTheoryCollection() {
 	http://oeis.org/A091185 a(n) = A090938(n)/n      n^-1 mod prime(n)
 	*/
 
-	// 二元一次不定方程
+	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
 	// exgcd solve equation ax+by=gcd(a,b)
 	// we have |x|<=b and |y|<=a in result (x,y)
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
-	// 模板题 https://www.luogu.com.cn/problem/P5656
-	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	var exgcd func(a, b int64) (gcd, x, y int64)
 	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
@@ -970,6 +968,58 @@ func numberTheoryCollection() {
 		}
 		gcd, y, x = exgcd(b, a%b)
 		y -= a / b * x
+		return
+	}
+
+	// a*x + b*y = c 的通解为
+	// x = (c/g)*x0 + (b/g)*k
+	// y = (c/g)*y0 - (a/g)*k
+	// 其中 g = gcd(a,b)
+	// x0 和 y0 是 ax+by=g 的一组特解（即 exgcd(a,b) 的返回值）
+	//
+	// 为方便讨论，这里要求输入的 a b c 必须为正整数
+	// 返回：正整数解的个数（无解时为 -1，无正整数解时为 0）
+	//      x 取最小正整数时的解 x1 y1，此时 y1 是最大正整数解
+	//      y 取最小正整数时的解 x2 y2，此时 x1 是最大正整数解
+	// 相关题目 https://www.luogu.com.cn/problem/P5656
+	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
+	//    最简单的做法就是 min(x1+y1, x2+y2)
+	solveLinearDiophantineEquations := func(a, b, c int64) (n, x1, y1, x2, y2 int64) {
+		g, x0, y0 := exgcd(a, b)
+
+		// 无解
+		if c%g != 0 {
+			n = -1
+			return
+		}
+
+		a /= g
+		b /= g
+		c /= g
+		x0 *= c
+		y0 *= c
+
+		x1 = x0 % b
+		if x1 <= 0 { // 若要求的是非负整数解，去掉等号
+			x1 += b
+		}
+		k1 := (x1 - x0) / b
+		y1 = y0 - k1*a
+
+		y2 = y0 % a
+		if y2 <= 0 { // 若要求的是非负整数解，去掉等号
+			y2 += a
+		}
+		k2 := (y0 - y2) / a
+		x2 = x0 + k2*b
+
+		// 无正整数解
+		if y1 <= 0 {
+			return
+		}
+
+		// k 越大 x 越大
+		n = k2 - k1 + 1
 		return
 	}
 
@@ -1499,7 +1549,7 @@ func numberTheoryCollection() {
 		isPrime, sieve, sieveEuler, primeFactorization, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
-		exgcd, invM, invP, divM, divP, initAllInv, calcAllInv,
+		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
@@ -1554,11 +1604,15 @@ Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
    将 n 个元素排成 k 个非空循环排列的方法数
    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
+   https://www.luogu.com.cn/problem/P5408
+   https://www.luogu.com.cn/problem/P5409
 Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
    将 n 个元素拆分为 k 个非空集的方法数
    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+   https://www.luogu.com.cn/problem/P5395
+   https://www.luogu.com.cn/problem/P5396
 Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
 Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
