@@ -45,6 +45,7 @@ First weekly contest started at 2016-08-21.
 |[Weekly Contest 190](https://leetcode-cn.com/contest/weekly-contest-190)|1455-1458|
 |[Weekly Contest 200](https://leetcode-cn.com/contest/weekly-contest-200)|1534-1537|
 |[Weekly Contest 210](https://leetcode-cn.com/contest/weekly-contest-210)|1614-1617|
+|[Weekly Contest 220](https://leetcode-cn.com/contest/weekly-contest-220)|1694-1697|
 |[Biweekly Contest 1](https://leetcode-cn.com/contest/biweekly-contest-1)|1064-1067|
 |[Biweekly Contest 10](https://leetcode-cn.com/contest/biweekly-contest-10)|1213-1216|
 |[Biweekly Contest 20](https://leetcode-cn.com/contest/biweekly-contest-20)|1356-1359|
