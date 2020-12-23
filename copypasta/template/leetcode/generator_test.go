@@ -12,6 +12,10 @@ func TestGenLeetCodeTests(t *testing.T) {
 	if host == hostZH {
 		username = os.Getenv("LEETCODE_USERNAME_ZH")
 		password = os.Getenv("LEETCODE_PASSWORD_ZH")
+		if vipZH {
+			username = os.Getenv("LEETCODE_USERNAME_VIP_ZH")
+			password = os.Getenv("LEETCODE_PASSWORD_VIP_ZH")
+		}
 	} else {
 		username = os.Getenv("LEETCODE_USERNAME_EN")
 		password = os.Getenv("LEETCODE_PASSWORD_EN")

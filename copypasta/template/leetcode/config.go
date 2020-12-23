@@ -16,6 +16,8 @@ const (
 
 	openWebPageZH = true
 	openWebPageEN = false
+
+	vipZH = false
 )
 
 var (
