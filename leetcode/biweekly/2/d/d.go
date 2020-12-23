@@ -3,8 +3,7 @@ package main
 import "sort"
 
 // github.com/EndlessCheng/codeforces-go
-var ds = []int{0, 1, 6, 8, 9}
-var mp = [...]int{1: 1, 6: 9, 8: 8, 9: 6}
+var ds = [][2]int{{0, 0}, {1, 1}, {6, 9}, {8, 8}, {9, 6}}
 var a []int
 
 func f(cur, rev, p10 int) {
@@ -15,10 +14,10 @@ func f(cur, rev, p10 int) {
 		a = append(a, cur)
 	}
 	for _, d := range ds {
-		if cur == 0 && d == 0 {
+		if cur == 0 && d[0] == 0 {
 			continue
 		}
-		f(cur*10+d, mp[d]*p10+rev, p10*10)
+		f(cur*10+d[0], d[1]*p10+rev, p10*10)
 	}
 }
 
