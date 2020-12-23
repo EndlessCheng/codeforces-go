@@ -604,6 +604,7 @@ func numberTheoryCollection() {
 			https://en.wikipedia.org/wiki/Abundant_number
 		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
 			https://en.wikipedia.org/wiki/Deficient_number
+			https://ac.nowcoder.com/acm/contest/10322/A O(nlogn) 可以先预处理因子
 
 	n 的因子之积 μ(n) = n^(d(n)/2.0) https://oeis.org/A007955
 	because we can form d(n)/2 pairs from the factors, each with product n
@@ -982,6 +983,7 @@ func numberTheoryCollection() {
 	// 返回：正整数解的个数（无解时为 -1，无正整数解时为 0）
 	//      x 取最小正整数时的解 x1 y1，此时 y1 是最大正整数解
 	//      y 取最小正整数时的解 x2 y2，此时 x2 是最大正整数解
+	// 相关论文 THE NUMBER OF SOLUTIONS TO ax + by = n http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.376.403
 	// 相关题目 https://www.luogu.com.cn/problem/P5656
 	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	//    最简单的做法就是 min(x1+y1, x2+y2)
@@ -1024,6 +1026,17 @@ func numberTheoryCollection() {
 		n = k2 - k1 + 1
 		return
 	}
+
+	// 关于 ax+by+cz=n 的解的个数（或者是三币种找零）
+	// On the number of solutions of the Diophantine equation of Frobenius – General case https://core.ac.uk/download/pdf/14375587.pdf
+	// The Number of Solutions to ax + by + cz = n and its Relation to Quadratic Residues https://cs.uwaterloo.ca/journals/JIS/VOL23/Binner/binner4.pdf
+	// 上面这篇提出了一个 O(log max(a,b,c)) 的算法来求 N(a,b,c;n)
+	// https://oeis.org/A001399 N(1,2,3;n) = round((n+3)^2/12)
+	// https://oeis.org/A000115 N(1,2,5;n) = round((n+4)^2/20)
+	// https://oeis.org/A008672 N(1,3,5;n) = round((n+3)*(n+6)/30)  =  floor((n^3+9n+30)/30)
+	// https://oeis.org/A005044 N(2,3,4;n) = round(n^2/12)-floor(n/4)*floor((n+2)/4)      a(n) = round(n^2/48) if n is even; a(n) = round((n+3)^2/48) if n is odd
+	// https://oeis.org/A025795 N(2,3,5;n)
+	// https://oeis.org/A008680 N(3,4,5;n)
 
 	// 任意非零模数逆元 ax ≡ 1 (mod m)
 	// 返回最小正整数解
@@ -1615,6 +1628,7 @@ Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
    https://www.luogu.com.cn/problem/P5395
    https://www.luogu.com.cn/problem/P5396
+   https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
 Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
 Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
