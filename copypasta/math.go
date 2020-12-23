@@ -1412,6 +1412,49 @@ func numberTheoryCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P4720
 	// 古代猪文 https://www.luogu.com.cn/problem/P2480
 
+	// 斯特林数（斯特林轮换数，斯特林子集数）
+	// https://en.wikipedia.org/wiki/Stirling_number
+	// https://oi-wiki.org/math/stirling/
+	// todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
+	// https://blog.csdn.net/ACdreamers/article/details/8521134
+	// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
+	//    将 n 个元素排成 k 个非空循环排列的方法数
+	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
+	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
+	//    https://www.luogu.com.cn/problem/P5408
+	//    https://www.luogu.com.cn/problem/P5409
+	// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
+	//    将 n 个元素拆分为 k 个非空集的方法数
+	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
+	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
+	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+	//    https://www.luogu.com.cn/problem/P5395
+	//    https://www.luogu.com.cn/problem/P5396
+	//    https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
+	// Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
+	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
+	// todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
+	// todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
+	stirling2 := func(n, k int) int64 {
+		s2 := make([][]int64, n+1)
+		for i := range s2 {
+			s2[i] = make([]int64, n+1)
+		}
+		s2[0][0] = 1
+		for i := 1; i <= n; i++ {
+			for j := 1; j <= i; j++ {
+				s2[i][j] = (s2[i-1][j-1] + int64(j)*s2[i-1][j]) % mod
+			}
+		}
+		return s2[n][k]
+	}
+
+	// 贝尔数：基数为 n 的集合的划分方法数 https://oeis.org/A000110
+	// https://en.wikipedia.org/wiki/Bell_number
+	// 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
+	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
+	// B(n) = Sum_{k=1..n} Stirling2(n,k)
+
 	// 原根
 	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
 	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
@@ -1568,6 +1611,7 @@ func numberTheoryCollection() {
 		crt, excrt,
 		babyStepGiantStep,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
+		stirling2,
 		muInit,
 		floorLoop, floorLoopK,
 	}
@@ -1610,34 +1654,6 @@ todo https://codeforces.com/problemset/problem/451/E
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
-
-斯特林数
-https://oi-wiki.org/math/stirling/
-todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
-https://blog.csdn.net/ACdreamers/article/details/8521134
-Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
-   将 n 个元素排成 k 个非空循环排列的方法数
-   s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
-   边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
-   https://www.luogu.com.cn/problem/P5408
-   https://www.luogu.com.cn/problem/P5409
-Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
-   将 n 个元素拆分为 k 个非空集的方法数
-   S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
-   S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
-   边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
-   https://www.luogu.com.cn/problem/P5395
-   https://www.luogu.com.cn/problem/P5396
-   https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
-Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
-Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
-todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
-todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
-
-贝尔数 https://oeis.org/A000110
-基数为 n 的集合的划分方法数
-B(n+1) = Sum_{k=0..n} B(k)*C(n,k)
-B(n) = Sum_{k=0..n} Stirling2(n,k)
 
 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
