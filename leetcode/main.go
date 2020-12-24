@@ -733,6 +733,11 @@ func maxProduct(a []int) int {
     return ans
 }
 
+// LC 162
+func findPeakElement(a []int) int {
+    return sort.Search(len(a)-1, func(i int) bool { return a[i] > a[i+1] })
+}
+
 // LC 216
 func combinationSum3(k int, n int) (ans [][]int) {
     var temp []int
