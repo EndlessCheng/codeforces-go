@@ -40,6 +40,8 @@
 
 [算法竞赛入门经典训练指南](https://github.com/klb3713/aoapc-book/tree/master/TrainingGuide/bookcodes)
 
+[算法竞赛入门经典训练指南（第二版）](https://gitee.com/sukhoeing/aoapc-training-guide2)
+
 [算法竞赛进阶指南](https://github.com/lydrainbowcat/tedukuri)
 
 [算法竞赛入门到进阶](https://github.com/luoyongjun999/code)
