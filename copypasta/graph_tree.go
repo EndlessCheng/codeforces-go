@@ -561,7 +561,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 
-// 最近公共祖先 - 其一 - 基于树上倍增和二分搜索
+// 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
 // O(nlogn) 预处理，O(logn) 查询
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
@@ -728,7 +728,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	_ = []interface{}{_d, uptoKthPa, down}
 }
 
-// 最近公共祖先 - 其二 - 基于 RMQ
+// 最近公共祖先 · 其二 · 基于 RMQ
 // O(nlogn) 预处理，O(1) 查询
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大的情形
@@ -794,7 +794,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 	_ = _d
 }
 
-// 最近公共祖先 - 其三 - Tarjan 离线算法
+// 最近公共祖先 · 其三 · Tarjan 离线算法
 // 时间和空间复杂度均为 O(n+q)
 // 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
