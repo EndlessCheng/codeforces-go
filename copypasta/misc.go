@@ -555,3 +555,27 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 	}
 	return ans
 }
+
+// LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
+// 马走日到 (x,y) 所需最小步数
+func minKnightMoves(x, y int) int {
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+	x, y = abs(x), abs(y)
+	if x+y == 1 {
+		return 3
+	}
+	ans := max(max((x+1)/2, (y+1)/2), (x+y+2)/3)
+	ans += (ans ^ x ^ y) & 1
+	return ans
+}
