@@ -380,6 +380,28 @@ func commonCollection() {
 		}
 	}
 
+	// 求交集简洁写法
+	intersection := func(a, b []int) []int {
+		mp := map[int]bool{}
+		for _, v := range a {
+			mp[v] = true
+		}
+		mp2 := map[int]bool{}
+		for _, v := range b {
+			if mp[v] {
+				mp2[v] = true
+			}
+		}
+		mp = mp2
+
+		keys := make([]int, 0, len(mp))
+		for k := range mp {
+			keys = append(keys, k)
+		}
+		sort.Ints(keys)
+		return keys
+	}
+
 	// a 是否为 b 的子集（相当于 differenceA 为空）
 	// a b 需要是有序的
 	isSubset := func(a, b []int) bool {
@@ -831,7 +853,7 @@ func commonCollection() {
 		groupPrefixSum, initSum2D, querySum2D,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
-		merge, splitDifferenceAndIntersection, isSubset, isSubSequence, isDisjoint,
+		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
