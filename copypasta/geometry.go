@@ -648,7 +648,7 @@ func vec2Collection() {
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) []vec {
 		n := len(ps)
-		sort.Slice(ps, func(i, j int) bool { a, b := ps[i], ps[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
+		sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
 		ch := make([]vec, 0, 2*n)
 		for _, p := range ps {
 			for {
