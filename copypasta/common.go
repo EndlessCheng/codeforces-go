@@ -29,6 +29,7 @@ import (
 
 有相当多的题目考察思维角度的转换
 一个技巧是，思考：从答案出发，倒推怎样才能得到这个答案
+逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
 
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
@@ -38,6 +39,7 @@ import (
 转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
 不解释，自己感受 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
+等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
 */
 
 // NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
