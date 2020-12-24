@@ -7,6 +7,35 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
+type mqData37 struct {
+	v   int
+	del int
+}
+type mq37 struct {
+	data []mqData37
+	size int
+}
+
+func (q mq37) less(a, b mqData37) bool { return a.v >= b.v }
+func (q *mq37) push(v int) {
+	q.size++
+	d := mqData37{v, 1}
+	for len(q.data) > 0 && q.less(d, q.data[len(q.data)-1]) {
+		d.del += q.data[len(q.data)-1].del
+		q.data = q.data[:len(q.data)-1]
+	}
+	q.data = append(q.data, d)
+}
+func (q *mq37) pop() {
+	q.size--
+	if q.data[0].del > 1 {
+		q.data[0].del--
+	} else {
+		q.data = q.data[1:]
+	}
+}
+func (q mq37) top() (v int) { return q.data[0].v }
+
 func CF1237D(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
@@ -19,23 +48,18 @@ func CF1237D(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 	a = append(append(a, a...), a...)
-
-	q := make([]int, 3*n)
-	l, r, j := 0, 0, 0
-	for i := range a[:n] {
-		for ; j < 3*n && (l == r || 2*a[j] >= a[q[l]]); j++ {
-			for ; l < r && a[q[r-1]] <= a[j]; r-- {
-			}
-			q[r] = j
-			r++
+	q := mq37{}
+	for i, j := 0, 0; i < n; i++ {
+		for ; j < 3*n && (q.size == 0 || 2*a[j] >= q.top()); j++ {
+			q.push(a[j])
 		}
-		ans := j - i
-		if ans > 2*n {
-			ans = -1
+		sz := j - i
+		if sz > 2*n {
+			sz = -1
 		}
-		Fprint(out, ans, " ")
-		if l < r && q[l] == i {
-			l++
+		Fprint(out, sz, " ")
+		if q.size == sz {
+			q.pop()
 		}
 	}
 }
