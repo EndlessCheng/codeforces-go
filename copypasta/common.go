@@ -1093,6 +1093,36 @@ func moAlgorithm() {
 	_ = mo
 }
 
+// 单调队列（相关代码见 monotoneCollection 中的「单调队列」部分）
+type mqData struct {
+	val int
+	del int // 懒删除标记
+}
+type monotoneQueue struct {
+	data []mqData
+	size int // 单调队列对应的区间的长度
+}
+
+func (mq monotoneQueue) less(a, b mqData) bool { return a.val >= b.val } // >= 维护区间最大值；<= 维护区间最小值
+func (mq *monotoneQueue) push(v int) {
+	mq.size++
+	d := mqData{v, 1}
+	for len(mq.data) > 0 && mq.less(d, mq.data[len(mq.data)-1]) {
+		d.del += mq.data[len(mq.data)-1].del
+		mq.data = mq.data[:len(mq.data)-1]
+	}
+	mq.data = append(mq.data, d)
+}
+func (mq *monotoneQueue) pop() {
+	mq.size--
+	if mq.data[0].del > 1 {
+		mq.data[0].del--
+	} else {
+		mq.data = mq.data[1:]
+	}
+}
+func (mq monotoneQueue) top() int { return mq.data[0].val } // 调用前需要判断 size > 0
+
 func monotoneCollection() {
 	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
@@ -1161,203 +1191,149 @@ func monotoneCollection() {
 	}
 
 	/* 单调队列
-	需要不断维护队列的单调性，即保证队列(指向的)数组元素从大到小或从小到大
-		为简单起见，这里用数组+双下标模拟双端队列
-		为保证有足够空间，队列初始大小应和指向的数组长度相同
-		队列存储的是数组元素的下标
-		l == r 表示队列为空
-		l < r 表示队列不为空，队列指向数组元素为 a[idQ[l]], a[idQ[l]+1], ..., a[idQ[r-1]]
-			注意：某些情况下这不等同于考察的区间就是 [idQ[l], idQ[r-1]]，但至少包含这一区间
-
-	一般的写法是：   [pop]-push-query
-		1. 初始化单调队列 idQ（初始大小为指向的数组长度），队首队尾下标 l r 指向 0
-		2. 循环枚举右端点 i
-			1. 循环枚举队头 idQ[l]，若区间长度 = i-idQ[l]+1 > 上界 M 则弹出队头，直至队列为空或不超出上界
-				注：这里只是举了一个区间长度上界作为约束的例子，更复杂的约束见后面的代码
-				注：若无约束这一步可忽略
-			2. 准备插入右端点 i，为保证插入后的队列单调性，需要检查并弹出若干队尾元素
-			3. 插入右端点 i
-			4. 此时当前区间满足约束，可以查询区间最值等信息，此时队头就是右端点为 i 时的最优选择
-			注意：若查询区间不包含右端点 i，或者说查询的区间右端点是 i-1，则上述步骤需要稍作改动，
-				顺序是 1423    [pop]-query-push
-				①的+1去掉（因为右端点是 i-1）
-				④需要先检查队列是否为空再查询（可以在初始时插入一个哨兵来简化逻辑）
-
-	有些题目枚举左端点更为方便，细节见下面的 cf1237d
-
 	https://oi-wiki.org/ds/monotonous-queue/
+	需要不断维护队列的单调性，时刻保证队列元素从大到小或从小到大
+	NOTE: 某些题目需要特殊判断数组长度为 1 的情况
 
 	todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
 	*/
 
-	// 模板题 - 固定区间大小的区间最值（滑动窗口）   pop-push-query
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	// 模板题 - 固定区间大小的区间最值
 	// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
-	// https://codeforces.com/problemset/status/940/problem/E
-	fixedSizeMinMax := func(a []int, fixedSize int) (mins, maxs []int) {
+	// https://codeforces.com/problemset/problem/940/E
+	fixedSizeMax := func(a []int, fixedSize int) []int {
 		n := len(a)
-
-		idQ := make([]int, n)
-		l, r := 0, 0
+		q := monotoneQueue{} // 最大/最小由 less 来控制
+		ans := make([]int, 0, n-fixedSize+1)
 		for i, v := range a {
-			if l < r && i-idQ[l]+1 > fixedSize {
-				l++
+			q.push(v)
+			if q.size > fixedSize {
+				q.pop()
 			}
-			for ; l < r && a[idQ[r-1]] >= v; r-- { // >= 意味着相等的元素取靠右的，若改成 > 表示相等的元素取靠左的
-			}
-			idQ[r] = i
-			r++
+			// 插入新元素并保证单调队列大小后，获取区间最值
 			if i+1 >= fixedSize {
-				mins = append(mins, a[idQ[l]])
+				ans = append(ans, q.top())
 			}
 		}
-
-		l, r = 0, 0
-		for i, v := range a {
-			if l < r && i-idQ[l]+1 > fixedSize {
-				l++
-			}
-			for ; l < r && a[idQ[r-1]] <= v; r-- { // <= 表示首大尾小
-			}
-			idQ[r] = i
-			r++
-			if i+1 >= fixedSize {
-				maxs = append(maxs, a[idQ[l]])
-			}
-		}
-
-		return
+		return ans
 	}
 
-	// 模板题 - 最大子序和    [pop]-query-push
-	// https://www.acwing.com/problem/content/137/
-
-	// 查询区间的右端点为 i-1    [pop]-query-push
-	// 代码来自 LC1499/周赛195D https://leetcode-cn.com/problems/max-value-of-equation/
-	findMaxValueOfEquation := func(points [][]int, k int) (ans int) {
-		max := func(a, b int) int {
-			if a > b {
-				return a
-			}
-			return b
+	// 模板题 - 最大子序和
+	// https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
+	maxSubSumWithLimitSize := func(a []int, sizeLimit int) int {
+		n := len(a)
+		sum := make([]int, n+1) // int64
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
 		}
-		f := func(p []int) int { return p[1] - p[0] }
-
-		ans = -1e18
-		idQ := make([]int, len(points))
-		l, r := 0, 0
-		for i, p := range points {
-			for ; l < r && p[0]-points[idQ[l]][0] > k; l++ {
+		ans := int(-1e9)     // -1e18
+		q := monotoneQueue{} // 维护区间最小值
+		q.push(sum[0])
+		for r := 1; r <= n; r++ {
+			if q.size > sizeLimit {
+				q.pop()
 			}
-			if l < r {
-				ans = max(ans, p[0]+p[1]+f(points[idQ[l]]))
-			}
-			for ; l < r && f(points[idQ[r-1]]) <= f(p); r-- {
-			}
-			idQ[r] = i
-			r++
+			ans = max(ans, sum[r]-q.top())
+			q.push(sum[r])
 		}
-		return
+		return ans
 	}
 
-	// 子数组和至少为 k 的最短子数组长度    push-[query-pop]
-	// 由于求的是子数组和，可以转化为前缀和之差，若枚举区间右端点 i，则查询的是 [x,i] 的最小值
-	// x 为右端点为 i 时的符合和至少为 k 的子数组的左端点
+	// 子数组和至少为 k 的最短非空子数组长度
+	// 这题的关键在于，当右端点向右（枚举）时，左端点是绝对不会向左的（因为向左肯定会比当前求出的最短长度要长）
+	// 想明白这一点就可以愉快地使用单调队列了
 	// LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
-	shortestSubarray := func(a []int, k int) (ans int) {
-		min := func(a, b int) int {
-			if a < b {
-				return a
-			}
-			return b
-		}
+	shortestSubSumAtLeastK := func(a []int, k int) int {
 		n := len(a)
-
-		const inf int = 1e9
-		ans = inf
+		ans := n + 1
 		sum := make([]int, n+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
-		idQ := make([]int, n+1)
-		l, r := 0, 0
-		for i, s := range sum {
-			for ; l < r && sum[idQ[r-1]] >= s; r-- {
+		q := monotoneQueue{} // 维护区间最小值
+		q.push(sum[0])
+		for r := 1; r <= n; r++ {
+			for q.size > 0 && sum[r]-q.top() >= k {
+				ans = min(ans, q.size)
+				q.pop()
 			}
-			idQ[r] = i
-			r++
-			for ; l < r && s-sum[idQ[l]] >= k; l++ { // 不断查询+弹出队首直到队列为空或不满足要求
-				ans = min(ans, i-idQ[l])
-			}
+			q.push(sum[r])
 		}
-		if ans == inf {
-			ans = -1
+		if ans > n {
+			return -1
 		}
-		return
+		return ans
 	}
 
-	// 有区间上界的最大子数组和    pop-push-query
-	// https://ac.nowcoder.com/acm/contest/1006/D
-	upperSizeMaxSum := func(a []int, upperSize int) (ans int) {
-		max := func(a, b int) int {
-			if a > b {
-				return a
-			}
-			return b
-		}
-		n := len(a)
-		ans = -1e18
-
-		sum := make([]int, n+1)
-		for i, v := range a {
-			sum[i+1] = sum[i] + v
-		}
-		idQ := make([]int, n+1)
-		l, r := 0, 0
-		for i, s := range sum {
-			if l < r && i-idQ[l] > upperSize {
-				l++
-			}
-			for ; l < r && sum[idQ[r-1]] >= s; r-- {
-			}
-			idQ[r] = i
-			r++
-			ans = max(ans, s-sum[idQ[l]])
-		}
-		return
-	}
-
-	// 枚举区间左端点更为方便的情况    [query-push]-pop
-	// 下面的代码来自 https://codeforces.com/problemset/problem/1237/D
-	cf1237d := func(a []int, n int) (ans []int) {
-		a = append(append(a, a...), a...)
-		idQ := make([]int, 3*n) // 队首为区间最值
-		l, r := 0, 0
-		for i, j := 0, 0; i < n; i++ { // 枚举区间左端点 i
-			// 不断扩大区间右端点 j 直至不满足题目要求
-			for ; j < 3*n && (l == r || 2*a[j] >= a[idQ[l]]); j++ {
-				for ; l < r && a[idQ[r-1]] <= a[j]; r-- {
-				}
-				idQ[r] = j
-				r++
-			}
-			maxLen := j - i
-			if maxLen > 2*n {
-				maxLen = -1
-			}
-			ans = append(ans, maxLen)
-			// 若 i 不在下一个考察区间内，则弹出队首
-			if l < r && idQ[l] == i {
-				l++
-			}
-		}
-		return
-	}
-
+	// 枚举区间左端点更为方便的情况 · 其一
 	// 统计区间个数：区间最大值 >= 2*区间最小值
-	// todo https://ac.nowcoder.com/acm/contest/6778/C
+	// https://ac.nowcoder.com/acm/contest/6778/C
+	//
+	// 思路：转变成求「区间最大值 < 2*区间最小值」的区间个数
+	// 随着左端点向右，右端点必然不会向左
+	countSubArrayByMinMax := func(a []int) int {
+		n := len(a)
+		ans := n * (n + 1) / 2 // int64
+		mx := monotoneQueue{}  // 维护区间最大值
+		mi := monotoneQueue{}  // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
+		for i, j := 0, 0; i < n; i++ {
+			// 确保符合条件再插入
+			for ; j < n && (mx.size == 0 || mi.size == 0 || max(mx.top(), a[j]) < 2*min(mi.top(), a[j])); j++ {
+				mx.push(a[j])
+				mi.push(a[j])
+			}
+			sz := j - i
+			ans -= sz
+			// 若单调队列指向的区间的左端点为 i，则对应元素在下一次循环时将不再使用。故弹出之
+			if mx.size == sz {
+				mx.pop()
+			}
+			if mi.size == sz {
+				mi.pop()
+			}
+		}
+		return ans
+	}
+
+	// 枚举区间左端点更为方便的情况 · 其二
+	// https://codeforces.com/problemset/problem/1237/D
+	// 注意这题和 countSubArrayByMinMax 的不同之处：不满足要求的最小值一定要在最大值的右侧
+	// 也可以枚举右端点，见 https://www.luogu.com.cn/blog/qianshang/solution-cf1237d
+	balancedPlaylist := func(a []int, n int) (ans []int) {
+		a = append(append(a, a...), a...)
+		q := monotoneQueue{} // 维护区间最大值
+		for i, j := 0, 0; i < n; i++ {
+			// 不断扩大区间右端点 j 直至不满足题目要求
+			for ; j < 3*n && (q.size == 0 || q.top() <= 2*a[j]); j++ {
+				q.push(a[j])
+			}
+			sz := j - i
+			if sz > 2*n {
+				sz = -1
+			}
+			ans = append(ans, sz)
+			if q.size == sz {
+				q.pop()
+			}
+		}
+		return
+	}
 
 	_ = []interface{}{
 		monotoneStack,
-		fixedSizeMinMax, findMaxValueOfEquation, shortestSubarray, upperSizeMaxSum, cf1237d,
+		fixedSizeMax, maxSubSumWithLimitSize, shortestSubSumAtLeastK, countSubArrayByMinMax, balancedPlaylist,
 	}
 }
