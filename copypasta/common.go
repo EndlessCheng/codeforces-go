@@ -1099,8 +1099,8 @@ type mqData struct {
 	del int // 懒删除标记
 }
 type monotoneQueue struct {
-	data []mqData
-	size int // 单调队列对应的区间的长度
+	data []mqData // 初始化时可以 make([]mqData, 0, n) 来减少扩容的开销
+	size int      // 单调队列对应的区间的长度
 }
 
 func (mq monotoneQueue) less(a, b mqData) bool { return a.val >= b.val } // >= 维护区间最大值；<= 维护区间最小值
