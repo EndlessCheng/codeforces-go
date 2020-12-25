@@ -1124,6 +1124,19 @@ func (mq *monotoneQueue) pop() {
 func (mq monotoneQueue) top() int { return mq.data[0].val } // 调用前需要判断 size > 0
 
 func monotoneCollection() {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
 	// 推荐 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 	// 单调栈
@@ -1141,6 +1154,7 @@ func monotoneCollection() {
 	//       https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
 	//       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 	// 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
+	// 最大全 1 矩形 LC85（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/
 	// 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 	// 与 DP 结合
 	//     https://codeforces.com/problemset/problem/1313/C2
@@ -1154,9 +1168,6 @@ func monotoneCollection() {
 		// 求左侧严格大于
 		n := len(a)
 		posL := make([]int, n)
-		for i := range posL {
-			posL[i] = -1
-		}
 		stack := []pair{{border, -1}}
 		for i, v := range a {
 			for {
@@ -1171,9 +1182,6 @@ func monotoneCollection() {
 
 		// 求右侧严格大于
 		posR := make([]int, n)
-		for i := range posR {
-			posR[i] = n
-		}
 		stack = []pair{{border, n}}
 		for i := n - 1; i >= 0; i-- {
 			v := a[i]
@@ -1190,6 +1198,57 @@ func monotoneCollection() {
 		return posL, posR
 	}
 
+	// 最大全 1 矩形 LC85 https://leetcode-cn.com/problems/maximal-rectangle/
+	maximalRectangleArea := func(a [][]int) int {
+		const target = 1
+		n, m, ans := len(a), len(a[0]), 0
+		heights := make([][]int, n) // heights(i,j) 表示从 (i,j) 往上看的高度，a(i,j) = 0 时为 0
+		for i, row := range a {
+			heights[i] = make([]int, m)
+			for j, v := range row {
+				if v == target {
+					if i == 0 {
+						heights[i][j] = 1
+					} else {
+						heights[i][j] = heights[i-1][j] + 1
+					}
+				}
+			}
+		}
+		type pair struct{ h, i int }
+		for _, hs := range heights {
+			posL := make([]int, m)
+			stack := []pair{{-1, -1}}
+			for j, h := range hs {
+				for {
+					if top := stack[len(stack)-1]; top.h < h {
+						posL[j] = top.i
+						break
+					}
+					stack = stack[:len(stack)-1]
+				}
+				stack = append(stack, pair{h, j})
+			}
+			posR := make([]int, m)
+			stack = []pair{{-1, m}}
+			for j := m - 1; j >= 0; j-- {
+				h := hs[j]
+				for {
+					if top := stack[len(stack)-1]; top.h < h {
+						posR[j] = top.i
+						break
+					}
+					stack = stack[:len(stack)-1]
+				}
+				stack = append(stack, pair{h, j})
+			}
+			for j, h := range hs {
+				ans = max(ans, (posR[j]-posL[j]-1)*h)
+			}
+		}
+		return ans
+	}
+
 	/* 单调队列
 	https://oi-wiki.org/ds/monotonous-queue/
 	需要不断维护队列的单调性，时刻保证队列元素从大到小或从小到大
@@ -1197,19 +1256,6 @@ func monotoneCollection() {
 
 	todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
 	*/
-
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 
 	// 模板题 - 固定区间大小的区间最值
 	// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
@@ -1333,7 +1379,7 @@ func monotoneCollection() {
 	}
 
 	_ = []interface{}{
-		monotoneStack,
+		monotoneStack, maximalRectangleArea,
 		fixedSizeMax, maxSubSumWithLimitSize, shortestSubSumAtLeastK, countSubArrayByMinMax, balancedPlaylist,
 	}
 }
