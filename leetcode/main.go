@@ -228,6 +228,55 @@ func firstMissingPositive(a []int) int {
     return n + 1
 }
 
+// LC 42 接雨水
+func trap(a []int) (ans int) {
+    n := len(a)
+    if n == 0 {
+        return
+    }
+
+    const border = 2e9
+    type pair struct{ v, i int }
+    posL := make([]int, n)
+    stack := []pair{{border, -1}}
+    for i, v := range a {
+        for {
+            if top := stack[len(stack)-1]; top.v >= v {
+                posL[i] = top.i
+                break
+            }
+            stack = stack[:len(stack)-1]
+        }
+        stack = append(stack, pair{v, i})
+    }
+    posR := make([]int, n)
+    stack = []pair{{border, n}}
+    for i := n - 1; i >= 0; i-- {
+        v := a[i]
+        for {
+            if top := stack[len(stack)-1]; top.v >= v {
+                posR[i] = top.i
+                break
+            }
+            stack = stack[:len(stack)-1]
+        }
+        stack = append(stack, pair{v, i})
+    }
+
+    sum := make([]int, n+1)
+    for i, v := range a {
+        sum[i+1] = sum[i] + v
+    }
+    i := 0
+    for ; posR[i] < n; i = posR[i] {
+        ans += (posR[i]-i)*a[i] - sum[posR[i]] + sum[i]
+    }
+    for j := n - 1; posL[j] >= i; j = posL[j] {
+        ans += (j-posL[j])*a[j] - sum[j+1] + sum[posL[j]+1]
+    }
+    return
+}
+
 // LC 47
 // 给定一个可包含重复数字的序列，返回所有不重复的全排列
 func permuteUnique(nums []int) (ans [][]int) {
