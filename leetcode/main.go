@@ -211,7 +211,7 @@ func combinationSum2(a []int, target int) (ans [][]int) {
     return
 }
 
-// LC 41
+// LC 41 对未排序数组求 mex，不使用 map 的 O(n) 做法
 func firstMissingPositive(a []int) int {
     n := len(a)
     for i, v := range a {
@@ -277,8 +277,7 @@ func trap(a []int) (ans int) {
     return
 }
 
-// LC 47
-// 给定一个可包含重复数字的序列，返回所有不重复的全排列
+// LC 47 给定一个可包含重复数字的序列，返回所有不重复的全排列
 func permuteUnique(nums []int) (ans [][]int) {
     n := len(nums)
     sort.Ints(nums)
@@ -305,7 +304,7 @@ func permuteUnique(nums []int) (ans [][]int) {
     return
 }
 
-// LC 52
+// LC 52 N 皇后方案数
 func totalNQueens(n int) (ans int) {
     var solve func(row, columns, diagonals1, diagonals2 int)
     solve = func(row, columns, diagonals1, diagonals2 int) {
@@ -352,8 +351,33 @@ func getPermutation(n, k int) (perm string) {
     return
 }
 
-// LC 75
-// 荷兰国旗问题
+// LC 68
+func fullJustify(words []string, maxWidth int) (ans []string) {
+    i, n := 0, len(words)
+    for {
+        st := i
+        sum := 0
+        for ; i < n && sum+len(words[i])+i-st <= maxWidth; i++ {
+            sum += len(words[i])
+        }
+        if i == n {
+            s := strings.Join(words[st:], " ")
+            ans = append(ans, s+strings.Repeat(" ", maxWidth-len(s)))
+            return
+        }
+        space := maxWidth - sum
+        if i-st == 1 {
+            ans = append(ans, words[st]+strings.Repeat(" ", space))
+        } else {
+            avgSpace, extra := strings.Repeat(" ", space/(i-st-1)), space%(i-st-1)
+            s1 := strings.Join(words[st:st+extra+1], avgSpace+" ")
+            s2 := strings.Join(words[st+extra+1:i], avgSpace)
+            ans = append(ans, s1+avgSpace+s2)
+        }
+    }
+}
+
+// LC 75 荷兰国旗问题
 func sortColors(nums []int) {
     p0, p2 := 0, len(nums)-1
     for i := 0; i <= p2; i++ {
@@ -405,8 +429,7 @@ func exist(board [][]byte, word string) bool {
     return false
 }
 
-// LC 94
-// Morris 中序遍历
+// LC 94 Morris 中序遍历
 func inorderTraversal(root *TreeNode) (res []int) {
     for root != nil {
         if root.Left != nil {
@@ -462,8 +485,7 @@ func recoverTree(root *TreeNode) {
     do[0].Val, do[1].Val = do[1].Val, do[0].Val
 }
 
-// LC 106
-// 从中序与后序遍历序列构造二叉树
+// LC 106 从中序与后序遍历序列构造二叉树
 func buildTree(inorder []int, postorder []int) *TreeNode {
     if len(inorder) == 0 {
         return nil
@@ -812,8 +834,7 @@ func combinationSum3(k int, n int) (ans [][]int) {
     return
 }
 
-// LC 222
-// O(logn) 求节点个数
+// LC 222 完全二叉树节点个数 O(logn) 解法
 func countNodes(root *TreeNode) int {
     if root == nil {
         return 0
@@ -826,15 +847,15 @@ func countNodes(root *TreeNode) int {
         if k <= 1<<level {
             return false
         }
-        bits := 1 << (level - 1)
+        mask := 1 << (level - 1)
         node := root
-        for node != nil && bits > 0 {
-            if bits&k == 0 {
+        for node != nil && mask > 0 {
+            if mask&k == 0 {
                 node = node.Left
             } else {
                 node = node.Right
             }
-            bits >>= 1
+            mask >>= 1
         }
         return node == nil
     }) - 1
@@ -1105,7 +1126,7 @@ func convertBST(root *TreeNode) *TreeNode {
     return root
 }
 
-// LC 600 不含连续1的非负整数
+// LC 600 不含连续 1 的非负整数
 func findIntegers(N int) int {
     s := strconv.FormatInt(int64(N), 2)
     n := len(s)
@@ -1207,8 +1228,7 @@ func monotoneIncreasingDigits(N int) int {
     return ans
 }
 
-// LC 834
-// 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
+// LC 834 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
 func sumOfDistancesInTree(n int, edges [][]int) []int {
     g := make([][]int, n)
     for _, e := range edges {
