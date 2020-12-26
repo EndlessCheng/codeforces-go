@@ -1736,8 +1736,18 @@ https://oeis.org/A001224 The number of inequivalent ways to pack a 2 X n rectang
     If F(n) is the n-th Fibonacci number, then a(2n) = (F(2n+1) + F(n+2))/2 and a(2n+1) = (F(2n+2) + F(n+1))/2
     https://oeis.org/A060312
 
-https://oeis.org/A001187 Number of connected labeled graphs with n nodes
-https://www.acwing.com/problem/content/309/
+https://oeis.org/A001187 n 个节点的无向连通图的个数  Number of connected labeled graphs with n nodes
+相关题目：https://www.acwing.com/problem/content/309/
+
+韦德伯恩-埃瑟林顿数
+https://oeis.org/A001190 Wedderburn-Etherington numbers: unlabeled binary rooted trees (every node has out-degree 0 or 2) with n endpoints (and 2n-1 nodes in all)
+https://en.wikipedia.org/wiki/Wedderburn%E2%80%93Etherington_number
+https://mathworld.wolfram.com/WeaklyBinaryTree.html 给出了如下公式：
+    a(2n-1) = a(1)a(2n-2) + a(2)a(2n-3) + ... + a(n-1)a(n)
+    a(2n)   = a(1)a(2n-1) + a(2)a(2n-2) + ... + a(n-1)a(n+1) + a(n)(a(n)+1)/2
+https://oeis.org/A000598 Number of rooted ternary trees with n nodes
+https://oeis.org/A268172 Binary-ternary Wedderburn-Etherington numbers
+相关题目：《程序员的算法趣题》Q30 用插线板制作章鱼脚状线路
 
 一些二进制的计数问题见 bits.go
 
