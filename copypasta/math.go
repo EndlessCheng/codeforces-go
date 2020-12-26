@@ -8,7 +8,7 @@ import (
 	"math/rand"
 )
 
-/* 数论 组合数学 博弈论 趣味数学
+/* 数论 组合数学 博弈论 积分 插值 随机算法
 
 一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
 
@@ -1934,7 +1934,7 @@ func gameTheoryCollection() {
 }
 
 // 数值分析
-// https://zh.wikipedia.org/wiki/%E6%95%B0%E5%80%BC%E5%88%86%E6%9E%90
+// https://en.wikipedia.org/wiki/Numerical_analysis
 func numericalAnalysisCollection() {
 	type mathF func(x float64) float64
 
@@ -1958,11 +1958,59 @@ func numericalAnalysisCollection() {
 
 	// 自适应辛普森积分 Adaptive Simpson's Rule
 	// https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
+	// https://oi-wiki.org/math/integral/
 	// https://cp-algorithms.com/num_methods/simpson-integration.html
 	// 模板题 https://www.luogu.com.cn/problem/P4525 https://www.luogu.com.cn/problem/P4526
 	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
 
-	_ = []interface{}{asr}
+	//
+
+	// 多项式插值
+	// https://en.wikipedia.org/wiki/Polynomial_interpolation
+
+	// 拉格朗日插值
+	// https://en.wikipedia.org/wiki/Lagrange_polynomial
+	// https://oi-wiki.org/math/poly/lagrange/
+	// 浅谈几种插值方法 https://www.luogu.com.cn/blog/zhang-xu-jia/ji-zhong-cha-zhi-fang-fa-yang-xie
+	// https://www.luogu.com.cn/problem/P4781
+	// https://www.luogu.com.cn/problem/P5667
+	// 等幂和 https://codeforces.com/problemset/problem/622/F
+	lagrangePolynomialInterpolation := func(xs, ys []int64, k int64) int64 {
+		const mod = 998244353
+
+		pow := func(x, n int64) int64 {
+			x %= mod
+			res := int64(1)
+			for ; n > 0; n >>= 1 {
+				if n&1 == 1 {
+					res = res * x % mod
+				}
+				x = x * x % mod
+			}
+			return res
+		}
+		inv := func(a int64) int64 { return pow(a, mod-2) }
+		div := func(a, b int64) int64 { return a % mod * inv(b) % mod }
+
+		ans := int64(0)
+		for i, xi := range xs {
+			a, b := ys[i]%mod, int64(1)
+			for j, x := range xs {
+				if j != i {
+					a = a * (k - x) % mod
+					b = b * (xi - x) % mod
+				}
+			}
+			ans += div(a, b)
+		}
+		ans = (ans%mod + mod) % mod
+		return ans
+	}
+
+	_ = []interface{}{
+		asr,
+		lagrangePolynomialInterpolation,
+	}
 }
 
 /* 随机算法 */
