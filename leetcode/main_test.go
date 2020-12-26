@@ -8,7 +8,7 @@ import (
 )
 
 //rand.Seed(time.Now().UnixNano())
-func TestCompare(t *testing.T) {
+func TestCompareInf(t *testing.T) {
 	inputGenerator := func() (a []int) {
 		rg := testutil2.NewRandGenerator()
 		n := rg.Int(1, 9)
