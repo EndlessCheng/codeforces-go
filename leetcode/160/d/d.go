@@ -1,5 +1,7 @@
 package main
 
-func tilingRectangle(n int, m int) int {
-    
+// github.com/EndlessCheng/codeforces-go
+func tilingRectangle(n int, m int) (ans int) {
+
+	return
 }
