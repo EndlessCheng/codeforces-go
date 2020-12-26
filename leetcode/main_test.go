@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -49,4 +53,34 @@ func Test_transJava(t *testing.T) {
 
 `
 	fmt.Println(transJava(code))
+}
+
+func Test_checkTodo(t *testing.T) {
+	dir := "."
+	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() || strings.HasSuffix(path, "_test.go") {
+			return nil
+		}
+		content, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		line := strings.Split(string(content), "\n")
+		for i, l := range line {
+			l = strings.TrimSpace(l)
+			if strings.HasPrefix(l, "func ") && l[len(l)-1] == '{' {
+				nextLine := strings.TrimSpace(line[i+1])
+				if nextLine == "" || nextLine == "return" {
+					fmt.Println("TODO:", path)
+				}
+				break
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
 }
