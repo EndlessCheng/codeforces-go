@@ -539,7 +539,8 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
-// 模板题 https://codeforces.com/problemset/problem/1000/E
+// 模板题 https://leetcode-cn.com/problems/critical-connections-in-a-network/
+//       https://codeforces.com/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
@@ -1873,14 +1874,15 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 	return ans
 }
 
-// 基环树（环套树）
+// 基环树（环套树），英文名叫 pseudotree，基环树森林叫 pseudoforest
+// https://en.wikipedia.org/wiki/Pseudoforest
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
-func (*graph) treeWithCycle(n int, g []int, rg [][]int, inDeg []int) {
+func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 	// 输入：g 为内向基环树，rg 为反图（外向基环树），inDeg 为 g 的入度，在读入时计算出
 
 	// 拓扑排序，之后 inDeg 为 1 的点必定在基环上
