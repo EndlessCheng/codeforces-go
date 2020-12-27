@@ -61,14 +61,19 @@ func Test_checkTodo(t *testing.T) {
 		if err != nil {
 			return err
 		}
-		if info.IsDir() || strings.HasSuffix(path, "_test.go") {
+		if info.IsDir() || !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") {
 			return nil
 		}
-		content, err := ioutil.ReadFile(path)
+		data, err := ioutil.ReadFile(path)
 		if err != nil {
 			return err
 		}
-		line := strings.Split(string(content), "\n")
+		code := string(data)
+		if !strings.Contains(code, "return") {
+			fmt.Println("TODO:", path)
+			return nil
+		}
+		line := strings.Split(code, "\n")
 		for i, l := range line {
 			l = strings.TrimSpace(l)
 			if strings.HasPrefix(l, "func ") && l[len(l)-1] == '{' {
