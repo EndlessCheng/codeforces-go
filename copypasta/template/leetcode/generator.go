@@ -297,8 +297,10 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		// 需要判断 <pre> 的下一个子元素是否为 tag
 		//     https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
 		//     https://leetcode-cn.com/contest/weekly-contest-212/problems/arithmetic-subarrays/
-		// 有 tag 也不一定为 <strong> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
-		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 { // atom.Strong or atom.B
+		// 有 tag 也不一定为 <strong>
+		//     https://leetcode-cn.com/contest/weekly-contest-103/problems/snakes-and-ladders/
+		//     https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
+		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 && o.FirstChild.DataAtom != atom.Img && o.FirstChild.DataAtom != atom.Image { // atom.Strong or atom.B
 			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
 				var inputNodes, outputNodes []*html.Node
 				c := o.FirstChild.NextSibling
