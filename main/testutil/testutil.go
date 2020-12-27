@@ -57,10 +57,13 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 
 		mockReader := strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		if targetCaseNum == 0 && isTLE(func() { runFunc(mockReader, mockWriter) }) {
+		_f := func() { runFunc(mockReader, mockWriter) }
+		if targetCaseNum == 0 && isTLE(_f) {
 			allPassed = false
 			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
 			continue
+		} else if targetCaseNum != 0 {
+			_f()
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
@@ -183,9 +186,12 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 
 		mockReader = strings.NewReader(input)
 		mockWriter := &strings.Builder{}
-		if targetCaseNum == 0 && isTLE(func() { runFunc(mockReader, mockWriter) }) {
+		_f := func() { runFunc(mockReader, mockWriter) }
+		if targetCaseNum == 0 && isTLE(_f) {
 			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
 			continue
+		} else if targetCaseNum != 0 {
+			_f()
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 

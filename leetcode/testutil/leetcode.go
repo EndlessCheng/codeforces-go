@@ -268,10 +268,13 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		}
 
 		var outs []reflect.Value
-		if targetCaseNum == 0 && isTLE(func() { outs = fValue.Call(ins) }) {
+		_f := func() { outs = fValue.Call(ins) }
+		if targetCaseNum == 0 && isTLE(_f) {
 			allCasesOk = false
 			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
 			continue
+		} else if targetCaseNum != 0 {
+			_f()
 		}
 
 		for i, out := range outs {
@@ -409,13 +412,18 @@ outer:
 			if callIndex == DebugCallIndex {
 				print()
 			}
+
 			// call method
 			var actualOuts []reflect.Value
-			if targetCaseNum == 0 && isTLE(func() { actualOuts = method.Call(in) }) {
+			_f := func() { actualOuts = method.Call(in) }
+			if targetCaseNum == 0 && isTLE(_f) {
 				allCasesOk = false
 				t.Errorf("Time Limit Exceeded %d\nCall Index %d", curCaseNum+1, callIndex)
 				continue outer // 直接跑下一个测试用例
+			} else if targetCaseNum != 0 {
+				_f()
 			}
+
 			if len(actualOuts) > 0 {
 				s, er := toRawString(actualOuts[0])
 				if er != nil {
