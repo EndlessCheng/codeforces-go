@@ -12,7 +12,9 @@ import (
      或者说 2^(Len(x)-1) <= x < 2^Len(x)
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
-相关题目 LC1521/周赛198D https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+相关题目
+   LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
+   LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 
 常用等式（若改变了计算的顺序，注意优先级！）
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
