@@ -70,9 +70,10 @@ func lowerArgsFirstChar(funcDefineLine string) string {
 // 替换常见变量名（一般是数组名称）
 func renameInputArgs(funcDefineLine string) string {
 	return strings.NewReplacer(
-		"nums []int", "a []int",
-		"arr []int", "a []int",
-		"mat [][]int", "a [][]int",
+		"arr ", "a ",
+		"nums ", "a ",
+		"mat ", "a ",
+		"grid ", "a ",
 	).Replace(funcDefineLine)
 }
 
