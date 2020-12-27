@@ -135,6 +135,14 @@ func commonCollection() {
 	ceil = func(a, b int) int {
 		return (a + b - 1) / b
 	}
+	bin := func(v int) []byte {
+		const maxLen = 30 // 62 for int64
+		s := make([]byte, maxLen+1)
+		for i := range s {
+			s[i] = byte(v >> (maxLen - i) & 1)
+		}
+		return s
+	}
 
 	// 超过 cap(a) 的数据是未知的
 	sliceToArray := func(a []int) [10]int {
@@ -845,7 +853,7 @@ func commonCollection() {
 
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, perm3, perm4,
-		min, mins, max, maxs, abs, ceil,
+		min, mins, max, maxs, abs, ceil, bin,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, zip, zipI, minString,
