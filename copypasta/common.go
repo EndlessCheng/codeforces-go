@@ -1259,8 +1259,12 @@ func monotoneCollection() {
 	}
 
 	/* 单调队列
-	https://oi-wiki.org/ds/monotonous-queue/
 	需要不断维护队列的单调性，时刻保证队列元素从大到小或从小到大
+	https://oi-wiki.org/ds/monotonous-queue/
+	https://oi-wiki.org/dp/opt/monotonous-queue-stack/
+	https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
+	todo https://www.luogu.com.cn/problem/P2627
+
 	NOTE: 某些题目需要特殊判断数组长度为 1 的情况
 
 	todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070

@@ -145,9 +145,10 @@ func numberTheoryCollection() {
 
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
-	// 前 n 个数的 LCM https://oeis.org/A003418
+	// 前 n 个数的 LCM https://oeis.org/A003418 https://atcoder.jp/contests/arc110/tasks/arc110_a
 	// a(n)/a(n-1) = https://oeis.org/A014963
 	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
+	// LCM(2, 4, 6, ..., 2n) https://oeis.org/A051426
 	// Mangoldt Function https://mathworld.wolfram.com/MangoldtFunction.html
 
 	// GCD 性质统计相关

@@ -414,6 +414,7 @@ func dpCollections() {
 
 	// 最长回文子序列 (LPS)
 	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
+	// LC1216/双周赛10D https://leetcode-cn.com/contest/biweekly-contest-10/problems/valid-palindrome-iii/
 	longestPalindromeSubsequence := func(s string) int {
 		n := len(s)
 		dp := make([][]int, n)
@@ -1077,6 +1078,7 @@ func dpCollections() {
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
 	LC902/周赛101C 最大为 N 的数字组合 https://leetcode-cn.com/contest/weekly-contest-101/problems/numbers-at-most-n-given-digit-set/
 	LC1012/周赛128D 有重复数字的数字个数 https://leetcode-cn.com/contest/weekly-contest-128/problems/numbers-with-repeated-digits/
+	LC1067/双周赛1D 字符 d 出现次数 https://leetcode-cn.com/contest/biweekly-contest-1/problems/digit-count-in-range/
 	LC1397/周赛182D 与 KMP 结合 https://leetcode-cn.com/contest/weekly-contest-182/problems/find-all-good-strings/
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
@@ -1208,9 +1210,7 @@ func dpCollections() {
 	*/
 
 	// 单调队列/单调栈优化
-	// https://oi-wiki.org/dp/opt/monotonous-queue-stack/
-	// https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
-	// todo https://www.luogu.com.cn/problem/P2627
+	// 见 common.go 的单调队列部分
 
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
