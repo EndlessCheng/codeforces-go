@@ -3,11 +3,12 @@ package main
 import "sort"
 
 // github.com/EndlessCheng/codeforces-go
+const bitLen = 30
+
 type node struct{ son [2]*node }
 type trie struct{ root *node }
 
 func bin(v int) []byte {
-	const bitLen = 30
 	s := make([]byte, bitLen+1)
 	for i := range s {
 		s[i] = byte(v >> (bitLen - i) & 1)
@@ -30,7 +31,7 @@ func (t *trie) maxXor(v int) (ans int) { // TEMPLATE
 	o := t.root
 	for i, b := range bin(v) {
 		if o.son[b^1] != nil {
-			ans |= 1 << (30 - i)
+			ans |= 1 << (bitLen - i)
 			b ^= 1
 		}
 		o = o.son[b]
