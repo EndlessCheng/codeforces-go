@@ -3,10 +3,10 @@ package main
 import "sort"
 
 // github.com/EndlessCheng/codeforces-go
-type node struct{ son [26]*node }
+type node struct{ son [2]*node }
 type trie struct{ root *node }
 
-func toString(v int) []byte {
+func bin(v int) []byte {
 	const bitLen = 30
 	s := make([]byte, bitLen+1)
 	for i := range s {
@@ -17,7 +17,7 @@ func toString(v int) []byte {
 
 func (t *trie) put(v int) *node {
 	o := t.root
-	for _, b := range toString(v) {
+	for _, b := range bin(v) {
 		if o.son[b] == nil {
 			o.son[b] = &node{}
 		}
@@ -28,7 +28,7 @@ func (t *trie) put(v int) *node {
 
 func (t *trie) maxXor(v int) (ans int) { // TEMPLATE
 	o := t.root
-	for i, b := range toString(v) {
+	for i, b := range bin(v) {
 		if o.son[b^1] != nil {
 			ans |= 1 << (30 - i)
 			b ^= 1
