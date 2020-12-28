@@ -2,27 +2,27 @@ package main
 
 import "sort"
 
-func smallestRangeII(a []int, k int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
+// github.com/EndlessCheng/codeforces-go
+func smallestRangeII(a []int, k int) (ans int) {
 	n := len(a)
 	sort.Ints(a)
-	ans := a[n-1] - a[0]
-	for i := 1; i < n; i++ {
-		up := max(a[i-1]+k, a[n-1]-k)
-		down := min(a[i]-k, a[0]+k)
-		ans = min(ans, up-down)
+	ans = a[n-1] - a[0]
+	for i := 0; i < n-1; i++ {
+		ans = min(ans, max(a[i]+k, a[n-1]-k)-min(a[0]+k, a[i+1]-k))
 	}
-	return ans
+	return
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
