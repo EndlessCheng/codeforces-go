@@ -73,6 +73,7 @@ func renameInputArgs(funcDefineLine string) string {
 		"arr ", "a ",
 		"nums ", "a ",
 		"mat ", "a ",
+		"matrix ", "a ",
 		"grid ", "a ",
 	).Replace(funcDefineLine)
 }
