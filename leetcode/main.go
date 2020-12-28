@@ -1049,6 +1049,20 @@ func countRangeSum(nums []int, lower, upper int) int {
     return mergeCount(sum)
 }
 
+// LC 330 todo: 需要回顾
+func minPatches(nums []int, n int) (patches int) {
+    for i, x := 0, 1; x <= n; {
+        if i < len(nums) && nums[i] <= x {
+            x += nums[i]
+            i++
+        } else {
+            x *= 2
+            patches++
+        }
+    }
+    return
+}
+
 // LC 332
 func findItinerary(tickets [][]string) []string {
     g := map[string][]string{}
