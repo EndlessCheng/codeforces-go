@@ -809,6 +809,37 @@ func findPeakElement(a []int) int {
     return sort.Search(len(a)-1, func(i int) bool { return a[i] > a[i+1] })
 }
 
+// LC 201
+func rangeBitwiseAnd(m, n int) int {
+    return m &^ (1<<bits.Len(uint(m^n)) - 1)
+}
+
+// LC 209
+func minSubArrayLen(s int, a []int) int {
+    min := func(a, b int) int {
+        if a < b {
+            return a
+        }
+        return b
+    }
+    n := len(a)
+    sum := make([]int, n+1)
+    for i, v := range a {
+        sum[i+1] = sum[i] + v
+    }
+    ans := n + 1
+    for i := 1; i <= n; i++ {
+        l := sort.SearchInts(sum, sum[i]-s+1)
+        if l > 0 {
+            ans = min(ans, i-l+1)
+        }
+    }
+    if ans > n {
+        return 0
+    }
+    return ans
+}
+
 // LC 216
 func combinationSum3(k int, n int) (ans [][]int) {
     var temp []int
