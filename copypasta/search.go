@@ -628,8 +628,7 @@ func loopCollection() {
 	// 作为结束条件，处理完 0 之后，会有 -1&set == set
 	loopSubset := func(n, set int) {
 		// 所有子集
-		sub := set
-		for ok := true; ok; ok = sub != set {
+		for sub, ok := set, true; ok; ok = sub != set {
 			// do(sub)...
 
 			sub = (sub - 1) & set

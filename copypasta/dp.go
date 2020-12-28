@@ -1039,9 +1039,9 @@ func dpCollections() {
 			}
 			defer func() { *dv = res }()
 			res = inf
-			sub := set
+
 			// 所有子集
-			for ok := true; ok; ok = sub != set {
+			for sub, ok := set, true; ok; ok = sub != set {
 				s := 0
 				for mask := uint(sub); mask > 0; mask &= mask - 1 {
 					s += cost[bits.TrailingZeros(mask)]
@@ -1050,10 +1050,12 @@ func dpCollections() {
 				res = min(res, r+s)
 				sub = (sub - 1) & set
 			}
-			// 非空子集
+
+			// 所有非空子集
 			for sub := set; sub > 0; sub = (sub - 1) & set {
 
 			}
+
 			return
 		}
 		return f(0, 1<<m-1)
