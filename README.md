@@ -16,7 +16,7 @@ I have implemented some algorithms in [copypasta](./copypasta).
 
 My Account:
 
-[![](https://cfrating.ihcr.top/?user=synapse)](https://codeforces.com/profile/synapse)
+[![](https://cfrating.ihcr.top/?user=0x3F)](https://codeforces.com/profile/0x3F)
 
 
 ## Codeforces Solutions
