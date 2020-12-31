@@ -626,23 +626,29 @@ outer:
 	}
 }
 
+const trieBitLen = 30 // 62 for int64
+
+func (*trie) bin(v int) []byte {
+	s := make([]byte, trieBitLen+1)
+	for i := range s {
+		s[i] = byte(v >> (trieBitLen - i) & 1)
+	}
+	return s
+}
+
 // 01-trie：val 与树上所有数中的最大异或值
 // 也可以说这是一颗（所有叶节点深度都相同的）二叉树
 // 参考《算法竞赛进阶指南》0x16
 // 模板题：数组中两个数的最大异或值 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
+// LC1707/周赛211D 可以通过记录子树最小值来在线查询 https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/
 // todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
-// EXTRA: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
+// EXTRA: minXor: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
 func (t *trie) maxXor(v int) (ans int) {
-	s := make([]byte, 31)
-	for i := range s {
-		s[i] = byte(v >> (30 - i) & 1)
-	}
-
 	o := t.root
-	for i, b := range s {
+	for i, b := range t.bin(v) {
 		if o.son[b^1] != nil {
-			ans |= 1 << (30 - i)
+			ans |= 1 << (trieBitLen - i)
 			b ^= 1
 		}
 		o = o.son[b]
@@ -700,7 +706,7 @@ func findMaximumXOR(a []int) (ans int) {
 // 8e5 9776570
 // 9e5 10876570
 // 1e6 12023441
-func buildMaxNodes01Trie(n, maxV int) []int {
+func generateMaxNodes01TrieData(n, maxV int) []int {
 	shift := bits.Len(uint(maxV)) - bits.Len(uint(n)) + 1
 	a := make([]int, 0, n)
 	// 构建一颗上半部分为完全二叉树，下半部分为一串 0...0 的 01-trie
