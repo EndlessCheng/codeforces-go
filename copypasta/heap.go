@@ -12,6 +12,9 @@ import (
     https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操作次数 (+1/-1)
         https://codeforces.com/blog/entry/47094?#comment-315068
         https://codeforces.com/blog/entry/77298 Slope trick
+
+基于堆的反悔贪心（反悔堆）
+    https://www.cnblogs.com/nth-element/p/11768155.html
 */
 
 // 下面这些都是最小堆

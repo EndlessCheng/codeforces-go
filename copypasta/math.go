@@ -1698,6 +1698,9 @@ Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)
 Maximum sum of displacements of elements in a permutation of (1..n)
 For example, with n = 9, permutation (5,6,7,8,9,1,2,3,4) has displacements (4,4,4,4,4,5,5,5,5) with maximal sum = 40
 
+https://oeis.org/A176127 The number of permutations of {1,2,...,n,1,2,...,n} with the property that there are k numbers between the two k's in the set for k=1,...,n
+相关题目：《程序员的算法趣题》Q53 同数包夹
+
 n married couples are seated in a row so that every wife is to the left of her husband
 若不考虑顺序，则所有排列的个数为 (2n)!
 考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的
