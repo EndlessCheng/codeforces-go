@@ -2,13 +2,17 @@ package main
 
 import "strings"
 
+// -> => .
 // null => nil
 // while => for
 // remove () after for and if
 // .xxx => .Xxx
 // type a = val  =>  a := val
 // todo type a = val, b = val2  =>  a, b := val, val2
-func transJava(code string) string {
+func transCode(code string) string {
+	code = strings.ReplaceAll(code, "->", ".")
+
+	code = strings.ReplaceAll(code, "nullptr", "nil")
 	code = strings.ReplaceAll(code, "null", "nil")
 	code = strings.ReplaceAll(code, "while", "for")
 

@@ -52,7 +52,7 @@ func Test_transJava(t *testing.T) {
 	code := `   
 
 `
-	fmt.Println(transJava(code))
+	fmt.Println(transCode(code))
 }
 
 func Test_checkTodo(t *testing.T) {
