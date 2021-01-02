@@ -429,6 +429,27 @@ func exist(board [][]byte, word string) bool {
     return false
 }
 
+// LC 86
+func partition(head *ListNode, x int) *ListNode {
+    small := &ListNode{}
+    smallHead := small
+    large := &ListNode{}
+    largeHead := large
+    for head != nil {
+        if head.Val < x {
+            small.Next = head
+            small = small.Next
+        } else {
+            large.Next = head
+            large = large.Next
+        }
+        head = head.Next
+    }
+    large.Next = nil
+    small.Next = largeHead.Next
+    return smallHead.Next
+}
+
 // LC 94 Morris 中序遍历
 func inorderTraversal(root *TreeNode) (res []int) {
     for root != nil {
