@@ -698,7 +698,7 @@ func loopCollection() {
 	}
 
 	/*
-		遍历以 (centerI, centerJ) 为中心的曼哈顿距离为 dis 范围内的格点
+		遍历以 (ox, oy) 为中心的曼哈顿距离为 dis 范围内的格点
 		例如 dis=2 时：
 		  #
 		 # #
@@ -706,47 +706,65 @@ func loopCollection() {
 		 # #
 		  #
 	*/
-	// https://leetcode-cn.com/problems/matrix-cells-in-distance-order/
 	type pair struct{ x, y int }
-	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	loopAroundManhattan := func(maxI, maxJ, centerI, centerJ, dis int) {
-		for i, d := range dir4 {
-			d2 := dir4[(i+1)%4]
-			dx := d2.x - d.x
-			dy := d2.y - d.y
-			x := centerI + d.x*dis
-			y := centerJ + d.y*dis
+	dir4r := []pair{{-1, 1}, {-1, -1}, {1, -1}, {1, 1}} // 逆时针
+	loopAroundManhattan := func(n, m, ox, oy, dis int, f func(x, y int)) {
+		if dis == 0 {
+			f(ox, oy)
+			return
+		}
+		x, y := ox+dis, oy // 从最右顶点出发，逆时针移动
+		for _, d := range dir4r {
 			for k := 0; k < dis; k++ {
-				if 0 <= x && x < maxI && 0 <= y && y < maxJ {
-					// do ...
+				if 0 <= x && x < n && 0 <= y && y < m {
+					f(x, y)
 				}
-				x += dx
-				y += dy
+				x += d.x
+				y += d.y
+			}
+		}
+	}
+
+	// 曼哈顿圈序遍历
+	// LC1030 https://leetcode-cn.com/problems/matrix-cells-in-distance-order/
+	loopAllManhattan := func(n, m, ox, oy int, f func(x, y int)) {
+		f(ox, oy)
+		maxDist := max(ox, n-1-ox) + max(oy, m-1-oy)
+		for dis := 1; dis <= maxDist; dis++ {
+			x, y := ox+dis, oy // 从最右顶点出发，逆时针移动
+			for _, d := range dir4r {
+				for k := 0; k < dis; k++ {
+					if 0 <= x && x < n && 0 <= y && y < m {
+						f(x, y)
+					}
+					x += d.x
+					y += d.y
+				}
 			}
 		}
 	}
 
 	/*
-		遍历以 (centerI, centerJ) 为中心的切比雪夫距离为 dis 范围内的格点
+		遍历以 (ox, oy) 为中心的切比雪夫距离为 dis 范围内的格点
 		#####
 		#   #
 		# @ #
 		#   #
 		#####
 	*/
-	loopAroundChebyshev := func(maxI, maxJ, centerI, centerJ, dis int) {
+	loopAroundChebyshev := func(n, m, ox, oy, dis int) {
 		// 上下
-		for _, x := range []int{centerI - dis, centerI + dis} {
-			if x >= 0 && x < maxI {
-				for y := max(centerJ-dis, 0); y < min(centerJ+dis, maxJ); y++ {
+		for _, x := range []int{ox - dis, ox + dis} {
+			if 0 <= x && x < n {
+				for y := max(oy-dis, 0); y <= min(oy+dis, m-1); y++ {
 					// do ...
 				}
 			}
 		}
-		// 左右
-		for _, y := range []int{centerJ - dis, centerJ + dis} {
-			if y >= 0 && y < maxJ {
-				for x := max(centerI-dis, 0); x < min(centerI+dis, maxI); x++ {
+		// 左右（注意四角已经被上面的循环枚举到了）
+		for _, y := range []int{oy - dis, oy + dis} {
+			if 0 <= y && y < m {
+				for x := max(ox-dis, 0) + 1; x <= min(ox+dis, n-1)-1; x++ {
 					// do ...
 				}
 			}
@@ -783,7 +801,7 @@ func loopCollection() {
 
 	_ = []interface{}{
 		loopSet, loopSubset, loopSubsetK,
-		loopAroundManhattan, loopAroundChebyshev,
+		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev,
 		loopDiagonal, loopAntiDiagonal,
 	}
 }
