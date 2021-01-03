@@ -19,6 +19,11 @@ https://euler.stephan-brumme.com/toolbox/
 todo 期望与贡献 https://codeforces.com/blog/entry/62690 https://codeforces.com/blog/entry/62792
 
 NOTE: a%-b == a%b
+NOTE: 对于整数来说有
+       ax≤by  =>  x≤⌊by/a⌋
+       ax<by  =>  x<⌈by/a⌉
+       ax≥by  =>  x≥⌈by/a⌉
+       ax>by  =>  x>⌊by/a⌋
 
 AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
