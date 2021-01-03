@@ -11,7 +11,7 @@ func waysToSplit(a []int) (ans int) {
 	}
 	for r := 2; r < n && 3*sum[r] <= 2*sum[n]; r++ {
 		l1 := sort.SearchInts(sum[1:r], 2*sum[r]-sum[n]) + 1
-		ans += sort.Search(r-l1, func(l int) bool { return 2*sum[l+l1] > sum[r] })
+		ans += sort.SearchInts(sum[l1:r], sum[r]/2+1)
 	}
 	return ans % (1e9 + 7)
 }
