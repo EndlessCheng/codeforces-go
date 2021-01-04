@@ -827,42 +827,41 @@ func gridCollection() {
 		return s, t
 	}
 
-	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep
+	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep 最短距离
 	// 无法到达时返回 inf
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
 	// https://atcoder.jp/contests/abc184/tasks/abc184_e
 	disST := func(g [][]byte, s pair, t pair) int {
-		const inf int = 1e9 // 1e18
 		n, m := len(g), len(g[0])
+		const inf int = 1e9 // 1e18
+
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
 		vis[s.x][s.y] = true
-		type pDep struct {
-			pair
-			dep int
-		}
-		q := []pDep{{s, 0}}
-		for len(q) > 0 {
-			p := q[0]
-			q = q[1:]
-			// g[p.x][p.y] == t
-			if p.pair == t {
-				return p.dep
-			}
-			for _, d := range dir4 {
-				if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
-					vis[xx][yy] = true
-					q = append(q, pDep{pair{xx, yy}, p.dep + 1})
+		q := []pair{s}
+		for minDis := 0; len(q) > 0; minDis++ {
+			tmp := q
+			q = nil
+			for _, p := range tmp {
+				// g[p.x][p.y] == 'T'
+				if p == t {
+					return minDis
+				}
+				for _, d := range dir4 {
+					if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
+						vis[xx][yy] = true
+						q = append(q, pair{xx, yy})
+					}
 				}
 			}
 		}
 		return inf
 	}
 
-	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子   bfsGrid
+	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子   bfsGrid 可达
 	// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
 	findAllReachableTargets := func(g [][]byte, s pair, t byte) (ps []pair) {
 		n, m := len(g), len(g[0])
