@@ -25,6 +25,7 @@ func TestRG_TreeEdges(t *testing.T) {
 	g := make([][]int, n)
 	for _, e := range edges {
 		v, w := e[0]-st, e[1]-st
+		assert.True(t, v < w)
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
@@ -49,8 +50,9 @@ func TestRG_TreeWeightedEdges(t *testing.T) {
 	edges := rg.TreeWeightedEdges(n, st, mi, mx)
 	g := make([][]int, n)
 	for _, e := range edges {
-		assert.True(t, mi <= e[2] && e[2] <= mx)
-		v, w := e[0]-st, e[1]-st
+		v, w, wt := e[0]-st, e[1]-st, e[2]
+		assert.True(t, v < w)
+		assert.True(t, mi <= wt && wt <= mx)
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
@@ -81,6 +83,7 @@ func TestRG_GraphEdges(t *testing.T) {
 	}
 	for _, e := range edges {
 		v, w := e[0]-st, e[1]-st
+		assert.True(t, v < w)
 		g[v][w] = true
 		g[w][v] = true
 	}

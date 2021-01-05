@@ -144,14 +144,15 @@ func (r *RG) Permutation(min, max int) []int {
 func (r *RG) treeEdges(n, st int) (edges [][2]int) {
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
-		v := st + i
-		w := st + rand.Intn(i)
+		// v < w
+		v := st + rand.Intn(i)
+		w := st + i
 		edges = append(edges, [2]int{v, w})
 	}
 	return
 }
 
-// TreeEdges generates a tree with n nodes, st-index
+// TreeEdges generates a tree with n nodes, st-index, and v<w for each edge v-w.
 // TODO: support set max degree limit
 func (r *RG) TreeEdges(n, st int) (edges [][2]int) {
 	edges = r.treeEdges(n, st)
@@ -187,18 +188,18 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 		has[i] = map[int]bool{}
 	}
 	for _, e := range edges {
+		// v < w
 		v, w := e[0]-st, e[1]-st
 		has[v][w] = true
-		has[w][v] = true
 	}
 
 	for i := n - 1; i < m; i++ {
 		for {
+			// v < w
 			v := r._int(0, n-2)
 			w := r._int(v+1, n-1)
 			if !has[v][w] {
 				has[v][w] = true
-				has[w][v] = true
 				v += st
 				w += st
 				edges = append(edges, [2]int{v, w})
@@ -218,6 +219,7 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 }
 
 // TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges
+// TIPS: pass directed=false to generate a DAG.
 func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
 	edges = r.graphEdges(n, m, st, directed)
 	for _, e := range edges {
@@ -227,6 +229,7 @@ func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
 }
 
 // TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
+// TIPS: pass directed=false to generate a DAG.
 func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][3]int) {
 	edges = make([][3]int, n-1)
 	for i, e := range r.graphEdges(n, m, st, directed) {
@@ -234,10 +237,5 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
 		edges[i] = [3]int{e[0], e[1], weight}
 	}
-	return
-}
-
-func (r *RG) DAGEdges(n, m int) (edges [][2]int) {
-	// TODO
 	return
 }
