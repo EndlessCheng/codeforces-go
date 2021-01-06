@@ -926,6 +926,7 @@ func numberTheoryCollection() {
 	// Number of values of k such that phi(k) = n https://oeis.org/A058277
 	// φ集合 https://oeis.org/A002202
 	// φ补集 https://oeis.org/A007617
+	// 小于 n 且与 n 互质的数的最大间隔 https://oeis.org/A070194
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{}

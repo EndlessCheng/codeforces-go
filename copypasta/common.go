@@ -557,7 +557,7 @@ func commonCollection() {
 	// 保留原始数据的离散化
 	// 返回一个名次 map
 	// discreteMap([]int{100,20,20,50}, 1) => map[int]int{20:1, 50:2, 100:3}
-	// 例题：https://leetcode-cn.com/problems/count-of-range-sum/
+	// 例题：LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
 		// assert len(a) > 0
 		sorted := append([]int(nil), a...)

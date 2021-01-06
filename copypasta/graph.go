@@ -127,6 +127,7 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 	}
 }
 
+// EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
 func (*graph) dfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	var f func(int)
@@ -539,7 +540,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 桥（割边）
 // https://oi-wiki.org/graph/cut/#_4
 // https://algs4.cs.princeton.edu/41graph/Bridge.java.html
-// 模板题 https://leetcode-cn.com/problems/critical-connections-in-a-network/
+// 模板题 LC1192 https://leetcode-cn.com/problems/critical-connections-in-a-network/
 //       https://codeforces.com/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
@@ -837,7 +838,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
 // 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
-// 基于 max https://leetcode-cn.com/problems/path-with-minimum-effort/
+// 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
@@ -1443,6 +1444,8 @@ https://en.wikipedia.org/wiki/Edge_cover
 https://en.wikipedia.org/wiki/Vertex_cover
 https://en.wikipedia.org/wiki/Dominating_set
 https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
+
+独立集+顶点覆盖 https://codeforces.com/problemset/problem/1470/D
 
 最大匹配+最小边覆盖=n （图中无孤立点）
 最大独立集+最小顶点覆盖=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/

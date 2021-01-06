@@ -568,7 +568,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
-// 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+// 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E  LC1697 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
