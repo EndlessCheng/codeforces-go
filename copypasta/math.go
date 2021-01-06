@@ -465,7 +465,7 @@ func numberTheoryCollection() {
 		p int64
 		e int
 	}
-	primeFactorization := func(x int64) (factors []factor) {
+	factorize := func(x int64) (factors []factor) {
 		for i := int64(2); i*i <= x; i++ {
 			e := 0
 			for ; x%i == 0; x /= i {
@@ -646,9 +646,6 @@ func numberTheoryCollection() {
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
 
-	Squarefree part of n (also called core(n)) https://oeis.org/A007913
-	a(n) is the smallest positive number m such that n/m is a square
-
 	Largest squarefree number dividing n https://oeis.org/A007947
 	the squarefree kernel of n, rad(n), radical of n
 
@@ -827,17 +824,38 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: 分解 v
-		// lpf[v]==p 也可以写成 v%p==0
-		var v int
-		for v > 1 {
-			p := lpf[v]
-			e := 1
-			for v /= p; lpf[v] == p; v /= p {
-				e++
+		// EXTRA: 分解 x
+		// lpf[x]==p 也可以写成 x%p==0
+		factorize := func(x int) {
+			for x > 1 {
+				p := lpf[x]
+				e := 1
+				for x /= p; lpf[x] == p; x /= p {
+					e++
+				}
+				// do(p,e) ...
+
 			}
-			// do(p,e)
 		}
+
+		// EXTRA: Squarefree part of n (also called core(n)) https://oeis.org/A007913
+		// a(n) is the smallest positive number m such that n/m is a square
+		core := func(x int) int {
+			c := 1
+			for x > 1 {
+				p := lpf[x]
+				e := 1
+				for x /= p; lpf[x] == p; x /= p {
+					e ^= 1
+				}
+				if e > 0 {
+					c *= p
+				}
+			}
+			return c
+		}
+
+		_, _ = factorize, core
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
@@ -1610,7 +1628,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
-		isPrime, sieve, sieveEuler, primeFactorization, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
+		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
