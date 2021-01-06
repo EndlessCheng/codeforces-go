@@ -8,7 +8,9 @@ import (
 	"testing"
 )
 
-var rawText = `
+func TestCF1470B(t *testing.T) {
+	// just copy from website
+	rawText := `
 inputCopy
 2
 4
@@ -121,8 +123,6 @@ outputCopy
 1
 1`
 
-func TestCF1470B(t *testing.T) {
-	// just copy from website
 	testutil.AssertEqualCase(t, rawText, -1, CF1470B)
 }
 
