@@ -48,7 +48,7 @@ func TestCheckInf(t *testing.T) {
 	}
 }
 
-func Test_transJava(t *testing.T) {
+func Test_transCode(t *testing.T) {
 	code := `   
 
 `
