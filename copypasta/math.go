@@ -840,6 +840,9 @@ func numberTheoryCollection() {
 
 		// EXTRA: Squarefree part of n (also called core(n)) https://oeis.org/A007913
 		// a(n) is the smallest positive number m such that n/m is a square
+		// core(n!) https://oeis.org/A055204
+		//     log a(n) ~ n log 2
+		//     Square root of largest square dividing n! https://oeis.org/A055772
 		core := func(x int) int {
 			c := 1
 			for x > 1 {
@@ -1239,6 +1242,8 @@ func numberTheoryCollection() {
 
 	// https://oeis.org/A003070 a(n) = ceiling(log_2(n!))
 	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
+	// https://oeis.org/A049606 Largest odd divisor of n!
+	// https://oeis.org/A240533 a(n) = numerators of n!/10^n
 
 	calcFactorial := func(n int) int64 {
 		res := int64(1) % mod
