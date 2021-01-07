@@ -77,15 +77,16 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 		return fmt.Errorf("invalid URL: %v", err)
 	}
 
+	var statusURL string
+	if isGYM {
+		statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
+	} else {
+		statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
+	}
+
 	if openWebsite {
 		luoguURL := fmt.Sprintf("https://www.luogu.com.cn/problem/CF%s%s", contestID, problemID)
 		open.Run(luoguURL)
-		var statusURL string
-		if isGYM {
-			statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
-		} else {
-			statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
-		}
 		open.Run(statusURL)
 		open.Run(problemURL)
 	}
@@ -120,12 +121,14 @@ import (
 	"testing"
 )
 
-func TestCF%[1]s(t *testing.T) {
+// %s
+// %s
+func TestCF%[3]s(t *testing.T) {
 	// just copy from website
 	rawText := `+"`\n`"+`
-	testutil.AssertEqualCase(t, rawText, 0, CF%[1]s)
+	testutil.AssertEqualCase(t, rawText, 0, CF%[3]s)
 }
-`, problemID)
+`, problemURL, statusURL, problemID)
 
 	const rootPath = "../../main/"
 	dir := rootPath + genDirName(contestID) + "/"
