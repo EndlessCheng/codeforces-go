@@ -1381,6 +1381,24 @@ func monotoneIncreasingDigits(N int) int {
     return ans
 }
 
+// LC 757
+func intersectionSizeTwo(a [][]int) int {
+    sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a[1] < b[1] || a[1] == b[1] && a[0] > b[0] })
+    ans := 2
+    l, r := a[0][1]-1, a[0][1]
+    for i := 1; i < len(a); i++ {
+        ll, rr := a[i][0], a[i][1]
+        if l < ll && ll <= r {
+            ans++
+            l, r = r, rr
+        } else if r < ll {
+            ans += 2
+            l, r = rr-1, rr
+        }
+    }
+    return ans
+}
+
 // LC 834 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
 func sumOfDistancesInTree(n int, edges [][]int) []int {
     g := make([][]int, n)
