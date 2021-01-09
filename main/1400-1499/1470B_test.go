@@ -126,7 +126,7 @@ outputCopy
 	testutil.AssertEqualCase(t, rawText, -1, CF1470B)
 }
 
-func TestCompare(t *testing.T) {
+func TestCompareCF1470B(t *testing.T) {
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
