@@ -1,8 +1,6 @@
 package main
 
-import (
-	"math/bits"
-)
+import "math/bits"
 
 // github.com/EndlessCheng/codeforces-go
 func minimumTimeRequired(a []int, k int) int {
