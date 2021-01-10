@@ -195,6 +195,20 @@ func commonCollection() {
 			ps[i] = pair{a[i], i}
 		}
 	}
+	// 顺时针旋转矩阵 90°
+	rotate := func(a [][]int) [][]int {
+		n, m := len(a), len(a[0])
+		b := make([][]int, m)
+		for i := range b {
+			b[i] = make([]int, n)
+		}
+		for i, r := range a {
+			for j, v := range r {
+				b[j][n-1-i] = v
+			}
+		}
+		return b
+	}
 
 	// 适用于 a*b 超过 int64 范围的情况
 	mul := func(a, b, mod int64) (res int64) {
@@ -232,6 +246,17 @@ func commonCollection() {
 			res = append(res, x%10)
 		}
 		return
+	}
+
+	// 返回 a 的各个子集的元素和
+	subSum := func(a []int) []int {
+		m := 1 << len(a)
+		sum := make([]int, m) // int64
+		for i := 1; i < m; i++ {
+			p := bits.TrailingZeros(uint(i))
+			sum[i] = sum[i&^(1<<p)] + a[p]
+		}
+		return sum
 	}
 
 	// 分组前缀和（具体见 query 上的注释）
@@ -856,9 +881,9 @@ func commonCollection() {
 		min, mins, max, maxs, abs, ceil, bin,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
-		ternaryI, ternaryS, zip, zipI, minString,
+		ternaryI, ternaryS, zip, zipI, rotate, minString,
 		pow, mul, toAnyBase, digits,
-		groupPrefixSum, initSum2D, querySum2D,
+		subSum, groupPrefixSum, initSum2D, querySum2D,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
