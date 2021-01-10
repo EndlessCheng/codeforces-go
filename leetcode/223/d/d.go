@@ -1,9 +1,46 @@
 package main
 
-import "math/bits"
+import (
+	"math/bits"
+	"sort"
+)
 
-// github.com/EndlessCheng/codeforces-go
+// 0 ms (https://leetcode.com/problems/find-minimum-time-to-finish-all-jobs/discuss/1010057/Python-Binary-search-24ms)
 func minimumTimeRequired(a []int, k int) int {
+	sort.Ints(a)
+	sum := 0
+	for _, v := range a {
+		sum += v
+	}
+	return sort.Search(sum, func(mx int) bool {
+		cap := make([]int, k)
+		for i := range cap {
+			cap[i] = mx
+		}
+		var f func(int) bool
+		f = func(p int) bool {
+			if p < 0 {
+				return true
+			}
+			for i := k - 1; i >= 0; i-- {
+				if cap[i] >= a[p] {
+					cap[i] -= a[p]
+					if f(p - 1) {
+						return true
+					}
+					cap[i] += a[p]
+				}
+				if cap[i] == mx { // 每人至少要分配一个任务
+					break
+				}
+			}
+			return false
+		}
+		return f(len(a) - 1)
+	})
+}
+
+func minimumTimeRequiredDP(a []int, k int) int {
 	m := 1 << len(a)
 	sum := make([]int, m)
 	for i := 1; i < m; i++ {
