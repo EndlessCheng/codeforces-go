@@ -1,65 +1,71 @@
 package main
 
-import "sort"
-
-func sortItems(n int, m int, group []int, beforeItems [][]int) (ans []int) {
-	topSort := func(g [][]int, inDeg []int) (orders []int) {
-		q := []int{}
-		for i, deg := range inDeg {
-			if deg == 0 {
-				q = append(q, i)
-			}
+func topSort(g [][]int, deg, items []int) (orders []int) {
+	q := []int{}
+	for _, i := range items {
+		if deg[i] == 0 {
+			q = append(q, i)
 		}
-		for len(q) > 0 {
-			var v int
-			v, q = q[0], q[1:]
-			orders = append(orders, v)
-			for _, w := range g[v] {
-				inDeg[w]--
-				if inDeg[w] == 0 {
-					q = append(q, w)
-				}
-			}
-		}
-		return
 	}
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		orders = append(orders, v)
+		for _, w := range g[v] {
+			deg[w]--
+			if deg[w] == 0 {
+				q = append(q, w)
+			}
+		}
+	}
+	return
+}
 
-	blocks := make([][]int, m+n)
+func sortItems(n, m int, group []int, beforeItems [][]int) (ans []int) {
+	groupItems := make([][]int, m+n)
 	for i := range group {
 		if group[i] == -1 {
 			group[i] = m + i
 		}
-		blocks[group[i]] = append(blocks[group[i]], i)
+		groupItems[group[i]] = append(groupItems[group[i]], i)
 	}
 
-	g := make([][]int, n)
-	inDeg := make([]int, n)
-	g2 := make([][]int, m+n)
-	inDeg2 := make([]int, m+n)
-	for w, items := range beforeItems {
-		for _, v := range items {
-			g[v] = append(g[v], w)
-			inDeg[w]++
-			if gv, gw := group[v], group[w]; gv != gw {
-				g2[gv] = append(g2[gv], gw)
-				inDeg2[gw]++
+	groupG := make([][]int, m+n)
+	groupDeg := make([]int, m+n)
+	itemG := make([][]int, n)
+	itemDeg := make([]int, n)
+	for cur, items := range beforeItems {
+		curGroupID := group[cur]
+		for _, pre := range items {
+			preGroupID := group[pre]
+			if preGroupID != curGroupID { // 不同组项目，确定组间依赖关系
+				groupG[preGroupID] = append(groupG[preGroupID], curGroupID)
+				groupDeg[curGroupID]++
+			} else { // 同组项目，确定组内依赖关系
+				itemG[pre] = append(itemG[pre], cur)
+				itemDeg[cur]++
 			}
 		}
 	}
 
-	orders, orders2 := topSort(g, inDeg), topSort(g2, inDeg2)
-	if len(orders) < len(g) || len(orders2) < len(g2) {
-		return
+	// 组间拓扑序
+	items := make([]int, m+n)
+	for i := range items {
+		items[i] = i
 	}
-	pos := make([]int, n)
-	for i, v := range orders {
-		pos[v] = i
+	groupOrders := topSort(groupG, groupDeg, items)
+	if len(groupOrders) < len(items) {
+		return nil
 	}
-	for _, b := range blocks {
-		sort.Slice(b, func(i, j int) bool { return pos[b[i]] < pos[b[j]] })
-	}
-	for _, ord := range orders2 {
-		ans = append(ans, blocks[ord]...)
+
+	// 按照组间的拓扑序，依次求得各个组的组内拓扑序，构成答案
+	for _, groupID := range groupOrders {
+		items := groupItems[groupID]
+		orders := topSort(itemG, itemDeg, items)
+		if len(orders) < len(items) {
+			return nil
+		}
+		ans = append(ans, orders...)
 	}
 	return
 }
