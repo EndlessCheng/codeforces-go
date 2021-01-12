@@ -1300,10 +1300,14 @@ func numberTheoryCollection() {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
 	}
 
-	// EXTRA: binomial(n, floor(n/2)) https://oeis.org/A001405
+	// binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
+	// EXTRA: https://oeis.org/A000984 Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
+	// EXTRA: https://oeis.org/A100071 a(n) = n * A001405(n-1) = 1, 2, 6, 12, 30, 60, 140, 280, 630, 1260, ...
+	//                                 a(n) = a(n-1) * n / floor(n/2)
+	// EXTRA: https://oeis.org/A107373 a(n) = (n/2) * A001405(n-1) - 2^(n-2)
 	combHalf := []int64{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
 		252, 462, 924, 1716, 3432, 6435, 12870, 24310, 48620, 92378, // C(19,9)
@@ -1313,8 +1317,6 @@ func numberTheoryCollection() {
 		126410606437752, 247959266474052, 495918532948104, 973469712824056, 1946939425648112, 3824345300380220, 7648690600760440, 15033633249770520, 30067266499541040, 59132290782430712, // C(59,29)
 		118264581564861424, 232714176627630544, 465428353255261088, 916312070471295267, 1832624140942590534, 3609714217008132870, 7219428434016265740, // C(66,33)
 	}
-
-	// EXTRA: Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2 https://oeis.org/A000984
 
 	// 组合数/二项式系数
 	// 不取模，仅适用于小范围的 n 和 k
