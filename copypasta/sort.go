@@ -165,8 +165,8 @@ func sortCollections() {
 
 	// 有序矩阵中的第 k 小
 	// 有序矩阵：每行和每列元素均为不降序列
-	// https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
-	// https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
+	// LC378 https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
+	// LC719 https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
 	kthSmallest := func(a [][]int, k int) int {
 		// 注意 k 从 1 开始
 		n, m := len(a), len(a[0])
@@ -189,7 +189,7 @@ func sortCollections() {
 
 	// 区间和的第 k 小（数组元素均为非负）
 	// 每个区间和可以视作一个有序上三角矩阵中的元素，在数组元素均为非负时，该矩阵从左往右和从下往上均为非降序列
-	// https://leetcode-cn.com/problems/range-sum-of-sorted-subarray-sums/
+	// 1508 https://leetcode-cn.com/problems/range-sum-of-sorted-subarray-sums/
 	kthSmallestRangeSum := func(a []int, k int) int {
 		// 1 <= k <= n*(n+1)/2
 		n := len(a)
@@ -334,9 +334,13 @@ func sortCollections() {
 
 	// WQS 二分
 	// 《浅析一类二分方法》
+	// 把强制选 k 个物品的问题转换成选任意个物品的问题
 	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
 	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
 	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
+	// LC188 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-chong-ji-yu-wqs-er-fen-de-you-xiu-zuo-x36r/
+	// https://www.luogu.com.cn/problem/U72600
+	// https://www.luogu.com.cn/training/3495#problems
 
 	_ = []interface{}{
 		insertionSort,
