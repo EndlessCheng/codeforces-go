@@ -1399,6 +1399,85 @@ func intersectionSizeTwo(a [][]int) int {
     return ans
 }
 
+// LC 803 打砖块
+func hitBricks(g [][]int, hits [][]int) []int {
+    n, m := len(g), len(g[0])
+    fa := make([]int, n*m+1)
+    size := make([]int, n*m+1)
+    for i := range fa {
+        fa[i] = i
+        size[i] = 1
+    }
+    var find func(int) int
+    find = func(x int) int {
+        if fa[x] != x {
+            fa[x] = find(fa[x])
+        }
+        return fa[x]
+    }
+    union := func(from, to int) {
+        from, to = find(from), find(to)
+        if from != to {
+            size[to] += size[from]
+            fa[from] = to
+        }
+    }
+
+    t := make([][]int, n)
+    for i, r := range g {
+        t[i] = append([]int(nil), r...)
+    }
+    for _, p := range hits {
+        t[p[0]][p[1]] = 0
+    }
+
+    root := n * m
+    for i, r := range t {
+        for j, v := range r {
+            if v == 0 {
+                continue
+            }
+            if i == 0 {
+                union(i*m+j, root)
+            }
+            if i > 0 && t[i-1][j] == 1 {
+                union(i*m+j, (i-1)*m+j)
+            }
+            if j > 0 && t[i][j-1] == 1 {
+                union(i*m+j, i*m+j-1)
+            }
+        }
+    }
+
+    type pair struct{ x, y int }
+    dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+
+    ans := make([]int, len(hits))
+    for i := len(hits) - 1; i >= 0; i-- {
+        p := hits[i]
+        x, y := p[0], p[1]
+        if g[x][y] == 0 {
+            continue
+        }
+
+        preSize := size[find(root)]
+        if x == 0 {
+            union(y, root)
+        }
+        for _, d := range dir4 {
+            if xx, yy := x+d.x, y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && t[xx][yy] == 1 {
+                union(x*m+y, xx*m+yy)
+            }
+        }
+        curSize := size[find(root)]
+        if cnt := curSize - preSize - 1; cnt > 0 {
+            ans[i] = cnt
+        }
+        t[x][y] = 1
+    }
+    return ans
+}
+
 // LC 834 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
 func sumOfDistancesInTree(n int, edges [][]int) []int {
     g := make([][]int, n)
