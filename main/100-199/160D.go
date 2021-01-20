@@ -42,33 +42,21 @@ func CF160D(_r io.Reader, _w io.Writer) {
 	type nb struct{ to, eid int }
 	g := make([][]nb, n+1)
 	dfn := make([]int, n+1)
-	id := make([]int, n+1)
-	var f func(v, fa int) int
-	f = func(v, fa int) int {
+	var f func(v, fid int) int
+	f = func(v, fid int) int {
 		c++
 		dfn[v] = c
 		lowV := c
 		for _, e := range g[v] {
 			if w := e.to; dfn[w] == 0 {
-				lowW := f(w, v)
+				lowW := f(w, e.eid)
 				if lowW > dfn[v] {
 					ans[e.eid] = 1
 				}
 				lowV = min(lowV, lowW)
-			} else if w != fa && dfn[w] < dfn[v] {
+			} else if e.eid != fid {
 				lowV = min(lowV, dfn[w])
 			}
-		}
-		for _, e := range g[v] {
-			if id[e.to] == 0 {
-				id[e.to] = e.eid + 1
-			} else {
-				ans[id[e.to]-1] = 0
-				ans[e.eid] = 0
-			}
-		}
-		for _, e := range g[v] {
-			id[e.to] = 0
 		}
 		return lowV
 	}

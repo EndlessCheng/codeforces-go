@@ -496,7 +496,6 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	isCut = make([]bool, n)
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
-	//low := make([]int, n)
 	var f func(v, fa int) int
 	f = func(v, fa int) int {
 		dfsClock++
@@ -511,14 +510,13 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 					isCut[v] = true
 				}
 				lowV = min(lowV, lowW)
-			} else if w != fa && dfn[w] < dfn[v] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
+			} else if w != fa { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
 		}
 		if fa == -1 && childCnt == 1 { // 特判：只有一个儿子的树根，删除后并没有增加连通分量的个数，这种情况下不是割顶
 			isCut[v] = false
 		}
-		//low[v] = lowV
 		return lowV
 	}
 	for v, timestamp := range dfn {
@@ -568,45 +566,23 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	isBridge = make([]bool, m)
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
-	tmpID := make([]int, n) // EXTRA
-	for i := range tmpID {
-		tmpID[i] = -1
-	}
-	//low := make([]int, n)
-	var f func(v, fa int) int
-	f = func(v, fa int) int {
+	var f func(v, fid int) int // 使用 fid 而不是 fa，可以兼容重边的情况
+	f = func(v, fid int) int {
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
 		for _, e := range g[v] {
 			w := e.to
 			if dfn[w] == 0 {
-				lowW := f(w, v)
+				lowW := f(w, e.eid)
 				if lowW > dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 或 v 的祖先，所以 v-w 必定是桥
 					isBridge[e.eid] = true
 				}
 				lowV = min(lowV, lowW)
-			} else if w != fa && dfn[w] < dfn[v] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
+			} else if e.eid != fid { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
 		}
-
-		{
-			// EXTRA: 割边上有重边时，不能算作割边 https://codeforces.com/problemset/problem/160/D
-			for _, e := range g[v] {
-				if tmpID[e.to] == -1 {
-					tmpID[e.to] = e.eid
-				} else {
-					isBridge[tmpID[e.to]] = false
-					isBridge[e.eid] = false
-				}
-			}
-			for _, e := range g[v] {
-				tmpID[e.to] = -1
-			}
-		}
-
-		//low[v] = lowV
 		return lowV
 	}
 	for v, timestamp := range dfn {
