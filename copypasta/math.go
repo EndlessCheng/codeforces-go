@@ -1713,6 +1713,7 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 
 Maximum product of two integers whose sum is n https://oeis.org/A002620
 Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)
+https://oeis.org/A024206 = A002620(n+1)-1 = floor((n-1)(n+3)/4)
 
 	Maximal product of three numbers with sum n: a(n) = max(r*s*t), n = r+s+t https://oeis.org/A006501
 	a(n) = floor(n/3)*floor((n+1)/3)*floor((n+2)/3)
@@ -1784,6 +1785,9 @@ https://oeis.org/A000598 Number of rooted ternary trees with n nodes
 https://oeis.org/A268172 Binary-ternary Wedderburn-Etherington numbers
 相关题目：《程序员的算法趣题》Q30 用插线板制作章鱼脚状线路
 
+https://oeis.org/A003991 Multiplication table read by antidiagonals = (n-k+1)*k
+https://oeis.org/A059036 = A003991(n, k) - 1
+
 一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
@@ -1844,6 +1848,7 @@ func combinatoricsCollection() {
 // todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
 // todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 // todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
+// 对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
 func gameTheoryCollection() {
 	{
 		// 基础打表
