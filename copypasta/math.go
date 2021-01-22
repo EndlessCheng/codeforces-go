@@ -1486,6 +1486,22 @@ func numberTheoryCollection() {
 	// 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} Stirling2(n,k)
+	bell := func(n int) (res int64) {
+		s2 := make([][]int64, n+1)
+		for i := range s2 {
+			s2[i] = make([]int64, n+1)
+		}
+		s2[0][0] = 1
+		for i := 1; i <= n; i++ {
+			for j := 1; j <= i; j++ {
+				s2[i][j] = (s2[i-1][j-1] + int64(j)*s2[i-1][j]) % mod
+			}
+		}
+		for _, v := range s2[n][1:] {
+			res += v
+		}
+		return res % mod
+	}
 
 	// 原根
 	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
@@ -1644,6 +1660,7 @@ func numberTheoryCollection() {
 		babyStepGiantStep,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling2,
+		bell,
 		muInit,
 		floorLoop, floorLoopK,
 	}
