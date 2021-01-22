@@ -730,7 +730,7 @@ func generateMaxNodes01TrieData(n, maxV int) []int {
 // 改进实现 https://oi-wiki.org/string/ac-automaton/
 // 应用 https://cp-algorithms.com/string/aho_corasick.html
 // 模板题
-// https://leetcode-cn.com/problems/stream-of-characters/
+// LC1032 https://leetcode-cn.com/problems/stream-of-characters/
 // https://www.luogu.com.cn/problem/P3808
 // https://www.luogu.com.cn/problem/P3796
 // todo https://www.luogu.com.cn/problem/P5357 二次加强版
@@ -810,6 +810,7 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 //《后缀自动机》，陈立杰
 //《后缀自动机在字典树上的拓展》，刘研绎
 //《后缀自动机及其应用》，张天扬
+// todo https://www.bilibili.com/video/av756051240/
 // todo https://baobaobear.github.io/post/20200220-sam/
 // todo https://codeforces.com/blog/entry/20861
 // TODO https://oi-wiki.org/string/sam/
