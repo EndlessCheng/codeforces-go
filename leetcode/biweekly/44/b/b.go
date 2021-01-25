@@ -24,20 +24,20 @@ func minimumTeachings(n int, languages, friendships [][]int) (ans int) {
 
 	ans = 1e9
 	for l := 1; l <= n; l++ {
-		tech := map[int]bool{}
+		taught := map[int]bool{}
 		for i, e := range friendships {
 			if ok[i] {
 				continue
 			}
 			v, w := e[0], e[1]
-			if !ls[v][l] && !tech[v] {
-				tech[v] = true
+			if !ls[v][l] && !taught[v] {
+				taught[v] = true
 			}
-			if !ls[w][l] && !tech[w] {
-				tech[w] = true
+			if !ls[w][l] && !taught[w] {
+				taught[w] = true
 			}
 		}
-		ans = min(ans, len(tech))
+		ans = min(ans, len(taught))
 	}
 	return
 }
