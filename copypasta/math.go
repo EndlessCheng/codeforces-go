@@ -230,6 +230,7 @@ func numberTheoryCollection() {
 
 	// 返回差分表的最后一个数
 	// return the bottom entry in the difference table
+	// 另一种做法是用公式 ∑(-1)^i * C(n,i) * a_i, i=0..n-1
 	bottomDiff := func(a []int) int {
 		for ; len(a) > 1; a = a[:len(a)-1] {
 			for i := 0; i+1 < len(a); i++ {
@@ -1394,11 +1395,13 @@ func numberTheoryCollection() {
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
 		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
 		//
-		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1)*(2^n)*(n!)
+		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1) * (2^n) * (n!)
 		// 故 C(2*n,n)/(n+1) = (2*n)!/(n!)/(n+1)! = 1*3*5*...*(2n-1)*(2^n)/(n+1)!
 		// 又由于 n! 的 2 的因子个数 = n/2 + n/4 + ... + n/2^k <= n-1 当且仅当 n 为 2^k 时取到等号
 		// 对比分子分母的 2 的因子个数，可以得出如下结论：
 		//     当且仅当 n+1 为 2^k 时，卡特兰数为奇数
+		//
+		// EXTRA: 高维的情况 https://loj.ac/p/6051
 		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
 		Catalan = func(n int) int64 { return new(big.Int).Rem(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
 
