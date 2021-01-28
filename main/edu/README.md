@@ -4,7 +4,7 @@
 
 Note that some lessons were already published but not translated into English. See [this](https://codeforces.com/edu/course/2?locale=ru) for more detail.
 
-|Lesson|Final Publish Time|
+|Lesson|Final Publish Time (UTC+8)|
 |---|---|
 |[Suffix Array](https://codeforces.com/blog/entry/79530)|2020-06-30 06:57|
 |[Z-function](https://codeforces.com/edu/course/2/lesson/3/1/practice)||
@@ -13,3 +13,4 @@ Note that some lessons were already published but not translated into English. S
 |[Binary Search](https://codeforces.com/blog/entry/81729)|2020-08-21 09:16|
 |[Disjoint Sets Union](https://codeforces.com/blog/entry/82413)|2020-09-08 06:36|
 |[Introduction to Graph Theory](https://codeforces.com/edu/course/2/lesson/8/1/practice)||
+|[Two Pointers Method](https://codeforces.com/blog/entry/87248)|2021-01-28 00:32|
