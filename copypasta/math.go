@@ -930,7 +930,11 @@ func numberTheoryCollection() {
 	// Number of values of k such that phi(k) = n https://oeis.org/A058277
 	// φ集合 https://oeis.org/A002202
 	// φ补集 https://oeis.org/A007617
-	// 小于 n 且与 n 互质的数的最大间隔 https://oeis.org/A070194
+	// https://oeis.org/A023900 Dirichlet inverse of Euler totient function
+	// https://oeis.org/A070194 小于 n 且与 n 互质的数的最大间隔
+	// https://oeis.org/A023896 小于 n 且与 n 互质的数之和 a(n) = phi(n^2)/2 = n*phi(n)/2
+	// https://oeis.org/A053818 小于 n 且与 n 互质的数的平方之和 If n = p_1^e_1 * ... *p_r^e_r then a(n) = n^2*phi(n)/3 + (-1)^r*p_1*..._p_r*phi(n)/6 = n^2*A000010(n)/3 + n*A023900(n)/6, n>1
+	// https://oeis.org/A053819 小于 n 且与 n 互质的数的立方之和 a(n) = n^2/4*(n*A000010(n) + A023900(n)), n>1
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{}
@@ -1297,6 +1301,7 @@ func numberTheoryCollection() {
 	// Number of ways to choose n disjoint pairs of items from 2*n items
 	// Number of perfect matchings in the complete graph K(2n)
 	// 相关题目 LC1359/双周赛20D 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
+	// 奇阶乘模 2^64 http://acm.hdu.edu.cn/showproblem.php?pid=6481 https://www.90yang.com/hdu6481-a-math-problem/
 	calcOddFactorialBig := func(n int) *big.Int {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
 	}
@@ -1730,6 +1735,8 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 	https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
 	https://oeis.org/A068307 number of partitions of n into a sum of three primes
 	https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
+	https://oeis.org/A023022 Number of partitions of n into two relatively prime parts
+		a(n) = phi(n)/2 for n >= 3
 
 Maximum product of two integers whose sum is n https://oeis.org/A002620
 Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)

@@ -15,6 +15,8 @@ TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.g
 相关题目
    LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
    LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+GCD 也有这种性质，和上面一样数量是 O(logC) 级别的
+   https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 
 常用等式（若改变了计算的顺序，注意优先级！）
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
