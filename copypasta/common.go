@@ -286,6 +286,23 @@ func commonCollection() {
 		_ = query
 	}
 
+	// 环形区间和 [l,r) 0<=l<r
+	circularRangeSum := func(a []int) {
+		n := len(a)
+		sum := make([]int64, n+1)
+		for i, v := range a {
+			sum[i+1] = sum[i] + int64(v)
+		}
+		pre := func(p int) int64 {
+			return sum[n]*int64(p/n) + sum[p%n]
+		}
+		query := func(l, r int) int64 {
+			return pre(r) - pre(l)
+		}
+
+		_ = query
+	}
+
 	// 带权(等差数列)前缀和
 	{
 		var n int // read
@@ -883,7 +900,7 @@ func commonCollection() {
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, zip, zipI, rotate, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, groupPrefixSum, initSum2D, querySum2D,
+		subSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
