@@ -8,11 +8,12 @@ import (
 	"sort"
 )
 
+// github.com/EndlessCheng/codeforces-go
 func p1494(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	calcGCD := func(a, b int) int {
+	gcd := func(a, b int) int {
 		for a > 0 {
 			a, b = b%a, a
 		}
@@ -27,34 +28,31 @@ func p1494(_r io.Reader, _w io.Writer) {
 		a[i]--
 	}
 
-	type query struct {
-		blockIdx  int
-		l, r, idx int
-	}
+	type query struct{ lb, l, r, qid int }
 	qs := make([]query, q)
-	blockSize := int(math.Round(math.Sqrt(float64(n))))
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
 	for i := range qs {
 		var l, r int
 		Fscan(in, &l, &r)
 		qs[i] = query{l / blockSize, l, r + 1, i}
 	}
 	sort.Slice(qs, func(i, j int) bool {
-		qi, qj := qs[i], qs[j]
-		if qi.blockIdx != qj.blockIdx {
-			return qi.blockIdx < qj.blockIdx
+		a, b := qs[i], qs[j]
+		if a.lb != b.lb {
+			return a.lb < b.lb
 		}
-		if qi.blockIdx&1 == 0 {
-			return qi.r < qj.r
+		if a.lb&1 == 0 {
+			return a.r < b.r
 		}
-		return qi.r > qj.r
+		return a.r > b.r
 	})
 
 	cnts := make([]int, n)
 	pairCnt := 0
 	l, r := 1, 1
-	update := func(idx, delta int) {
-		v := a[idx-1]
-		if delta == 1 {
+	move := func(i, delta int) {
+		v := a[i-1]
+		if delta > 0 {
 			pairCnt += 2 * cnts[v]
 			cnts[v]++
 		} else {
@@ -63,31 +61,29 @@ func p1494(_r io.Reader, _w io.Writer) {
 		}
 	}
 	ans := make([][2]int, q)
-	getAns := func(q query) [2]int {
-		l := q.r - q.l
-		if l == 1 {
-			return [2]int{0, 1}
-		}
-		a, b := pairCnt, l*(l-1)
-		g := calcGCD(a, b)
-		return [2]int{a / g, b / g}
-	}
 	for _, q := range qs {
 		for ; r < q.r; r++ {
-			update(r, 1)
+			move(r, 1)
 		}
 		for ; l < q.l; l++ {
-			update(l, -1)
+			move(l, -1)
 		}
 		for l > q.l {
 			l--
-			update(l, 1)
+			move(l, 1)
 		}
 		for r > q.r {
 			r--
-			update(r, -1)
+			move(r, -1)
 		}
-		ans[q.idx] = getAns(q)
+		sz := q.r - q.l
+		if sz == 1 {
+			ans[q.qid] = [2]int{0, 1}
+		} else {
+			a, b := pairCnt, sz*(sz-1)
+			g := gcd(a, b)
+			ans[q.qid] = [2]int{a / g, b / g}
+		}
 	}
 	for _, v := range ans {
 		Fprintf(out, "%d/%d\n", v[0], v[1])
