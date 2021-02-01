@@ -38,6 +38,10 @@ func (r *RG) Byte(b byte) {
 	r.sb.WriteByte(b)
 }
 
+func (r *RG) Bytes(s string) {
+	r.sb.WriteString(s)
+}
+
 func (r *RG) One() {
 	r.sb.WriteString("1\n")
 }
