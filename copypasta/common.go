@@ -986,6 +986,7 @@ func rmqCollection() {
 	// 分块 Sqrt Decomposition
 	// https://oi-wiki.org/ds/decompose/
 	// https://oi-wiki.org/ds/block-array/
+	// 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 	// TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 	// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 	// 好题 https://codeforces.com/problemset/problem/91/E
@@ -1061,45 +1062,58 @@ func rmqCollection() {
 */
 
 // 莫队算法：对询问分块
-// 分块，每一块的大小为 √n，这样可以将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
-// 从而对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√nf(n)) （注：这里假设询问次数等同于 n，f(n) 为移动一次指针的时间复杂度）
-// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
-// https://oi-wiki.org/misc/mo-algo/
-// 模板题 https://www.luogu.com.cn/problem/P1494
-// https://www.luogu.com.cn/problem/P4462
-// 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
-//     反向构造题 https://www.luogu.com.cn/problem/P6852
-// 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
+// todo 各类莫队综述
+//    https://www.cnblogs.com/WAMonster/p/10118934.html
+//    https://ouuan.github.io/post/%E8%8E%AB%E9%98%9F%E5%B8%A6%E4%BF%AE%E8%8E%AB%E9%98%9F%E6%A0%91%E4%B8%8A%E8%8E%AB%E9%98%9F%E8%AF%A6%E8%A7%A3/
+//    https://blog.csdn.net/weixin_43914593/article/details/108485396
+// todo【推荐】文章及题单 https://www.luogu.com.cn/training/2914
+// https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 func moAlgorithm() {
-	// 若 block 改变会对询问有影响，可以先放入不同的 block 然后再排序
+	// 普通莫队（没有修改操作）
+	// 分块，每一块的大小为 √n，这样可以将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
+	// 从而对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√nf(n)) （注：这里假设询问次数等同于 n，f(n) 为移动一次指针的时间复杂度）
+	// 对于询问次数为 m 的情况，块大小取 n/√m 是最优的，见 https://www.luogu.com.cn/blog/codesonic/mosalgorithm
+	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
+	// https://oi-wiki.org/misc/mo-algo/
+	// 模板题 https://www.luogu.com.cn/problem/P1494
+	// todo https://www.luogu.com.cn/problem/P2709
+	// todo https://www.luogu.com.cn/problem/P4462
+	// 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
+	//     反向构造题 https://www.luogu.com.cn/problem/P6852
+	// todo https://codeforces.com/contest/86/problem/D
+	//      https://codeforces.com/contest/220/problem/B
+	//      https://codeforces.com/contest/617/problem/E
+	//      https://codeforces.com/contest/877/problem/F
+	//      https://www.codechef.com/problems/QCHEF
 	mo := func(in io.Reader, a []int, q int) []int {
 		n := len(a)
-		type query struct{ bid, l, r, qid int }
+		type query struct{ lb, l, r, qid int }
 		qs := make([]query, q)
-		blockSize := int(math.Round(math.Sqrt(float64(n))))
+		blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
 		for i := range qs {
 			var l, r int
-			Fscan(in, &l, &r) // 从 1 开始
+			Fscan(in, &l, &r) // 从 1 开始，[l,r)
 			qs[i] = query{l / blockSize, l, r + 1, i}
 		}
 		sort.Slice(qs, func(i, j int) bool {
-			qi, qj := qs[i], qs[j]
-			if qi.bid != qj.bid {
-				return qi.bid < qj.bid
+			a, b := qs[i], qs[j]
+			if a.lb != b.lb {
+				return a.lb < b.lb
 			}
 			// 奇偶化排序
-			if qi.bid&1 == 0 {
-				return qi.r < qj.r
+			if a.lb&1 == 0 {
+				return a.r < b.r
 			}
-			return qi.r > qj.r
+			return a.r > b.r
 		})
 
 		cnt := 0
 		l, r := 1, 1 // 区间从 1 开始，方便 debug
-		update := func(idx, delta int) {
+		move := func(idx, delta int) {
 			// NOTE: 有些题目在 delta 为 1 和 -1 时逻辑的顺序是严格对称的
 			// v := a[idx-1]
 			// ...
+			// cnt += delta
 			if delta > 0 {
 				cnt++
 			} else {
@@ -1114,33 +1128,147 @@ func moAlgorithm() {
 		}
 		ans := make([]int, q)
 		for _, q := range qs {
-			// prepare
-			// NOTE: 有些题目需要维护差分值，由于 [l,r] 的差分是 s(r)-s(l-1)，此时 update 传入的应为 l-1
 			for ; r < q.r; r++ {
-				update(r, 1)
+				move(r, 1)
 			}
 			for ; l < q.l; l++ {
-				update(l, -1)
+				move(l, -1)
 			}
 			for l > q.l {
 				l--
-				update(l, 1)
+				move(l, 1)
 			}
 			for r > q.r {
 				r--
-				update(r, -1)
+				move(r, -1)
 			}
 			ans[q.qid] = getAns(q)
 		}
 		return ans
 	}
 
+	// 带修莫队（支持单点修改）
+	// https://oi-wiki.org/misc/modifiable-mo-algo/
+	// https://codeforces.com/blog/entry/72690
+	// 模板题 数颜色 https://www.luogu.com.cn/problem/P1903
+	// https://codeforces.com/problemset/problem/940/F
+	// https://codeforces.com/problemset/problem/1476/G
+	// todo https://www.codechef.com/FEB17/problems/DISTNUM3
+	// todo 二逼平衡树（树套树）https://www.luogu.com.cn/problem/P3380
+	moWithUpdate := func(in io.Reader) []int {
+		var n, q int
+		Fscan(in, &n, &q)
+		a := make([]int, n+1) // 从 1 开始，方便 debug
+		for i := 1; i <= n; i++ {
+			Fscan(in, &a[i])
+		}
+		blockSize := int(math.Round(math.Pow(float64(n), 2.0/3)))
+		type query struct{ lb, rb, l, r, t, qid int }
+		type modify struct{ pos, val int }
+		qs := []query{}
+		ms := []modify{}
+		for ; q > 0; q-- {
+			var op string
+			if Fscan(in, &op); op[0] == 'Q' {
+				var l, r int
+				Fscan(in, &l, &r)
+				// 改成左闭右开
+				qs = append(qs, query{l / blockSize, (r + 1) / blockSize, l, r + 1, len(ms), len(qs)})
+			} else {
+				var pos, val int
+				Fscan(in, &pos, &val)
+				ms = append(ms, modify{pos, val})
+			}
+		}
+		sort.Slice(qs, func(i, j int) bool {
+			a, b := qs[i], qs[j]
+			if a.lb != b.lb {
+				return a.lb < b.lb
+			}
+			if a.rb != b.rb {
+				return a.rb < b.rb
+			}
+			// 奇偶化排序
+			if a.rb&1 == 0 {
+				return a.t < b.t
+			}
+			return a.t > b.t
+		})
+
+		const mx int = 1e6 // TODO
+		cnt, cc := [mx + 1]int{}, 0
+		l, r, now := 1, 1, 0
+		add := func(val int) {
+			if cnt[val] == 0 {
+				cc++
+			}
+			cnt[val]++
+		}
+		del := func(val int) {
+			cnt[val]--
+			if cnt[val] == 0 {
+				cc--
+			}
+		}
+		// 注：由于函数套函数不会内联，直接写到主流程的 for now 循环中会快不少
+		timeSlip := func(l, r int) {
+			m := ms[now]
+			p, v := m.pos, m.val
+			if l <= p && p < r {
+				del(a[p])
+				add(v)
+			}
+			a[p], ms[now].val = v, a[p]
+		}
+		getAns := func(q query) int {
+			// 提醒：q.r 是加一后的，计算时需要注意
+			// sz := q.r - q.l
+			// ...
+			return cc
+		}
+		ans := make([]int, len(qs))
+		for _, q := range qs {
+			for ; r < q.r; r++ {
+				add(a[r])
+			}
+			for ; l < q.l; l++ {
+				del(a[l])
+			}
+			for l > q.l {
+				l--
+				add(a[l])
+			}
+			for r > q.r {
+				r--
+				del(a[r])
+			}
+			for ; now < q.t; now++ {
+				timeSlip(q.l, q.r)
+			}
+			for now > q.t {
+				now--
+				timeSlip(q.l, q.r)
+			}
+			ans[q.qid] = getAns(q)
+		}
+		return ans
+	}
+
+	// todo 树上莫队
+	moOnTree := func() {
+
+	}
+
+	// 回滚莫队（只增莫队）
 	// todo 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
-	// todo 带修改的莫队 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
-	// todo 树上莫队 https://blog.csdn.net/weixin_43914593/article/details/108485396
+	//      回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
+	rollbackMo := func() {
+
+	}
+
 	// todo 二次离线莫队 https://www.luogu.com.cn/problem/P4887
 
-	_ = mo
+	_ = []interface{}{mo, moWithUpdate, moOnTree, rollbackMo}
 }
 
 // 单调队列（相关代码见 monotoneCollection 中的「单调队列」部分）
