@@ -237,7 +237,7 @@ func dpCollections() {
 	// 子段长度有下限的最大子段和：转换为前缀和之差，维护 min(sum[j])
 	// 最大两段子段和：求每个位置上的前缀最大字段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	// 最大 m 段子段和 https://acm.hdu.edu.cn/showproblem.php?pid=1024
-	// 环状最大子段和：转换为非环状的 max(最大子段和, 总和减去最小子段和) https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
+	// 环状最大子段和：转换为非环状的 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 变体 https://codeforces.com/problemset/problem/1155/D
 	// 变体 https://codeforces.com/problemset/problem/1373/D
@@ -338,6 +338,7 @@ func dpCollections() {
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
 	//     https://codeforces.com/contest/1446/problem/B
+	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
 		n, m := len(s), len(t)
 		dp := make([][]int, n+1)
@@ -469,10 +470,11 @@ func dpCollections() {
 	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
 	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
-	// 两个排列的 LCS 转换成 LIS https://www.luogu.com.cn/problem/P1439
+	// 若其中一个序列无重复元素，LCS 可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
+	// 二维 LIS：在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
+	//          思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	lis := func(a []int) int {
-		n := len(a)
-		dp := make([]int, 0, n)
+		dp := []int{}
 		for _, v := range a {
 			if p := sort.SearchInts(dp, v); p < len(dp) { // 改成 v+1 为非降
 				dp[p] = v
@@ -628,7 +630,7 @@ func dpCollections() {
 	https://codeforces.com/blog/entry/59606
 	浅谈 ZKP 问题 https://www.luogu.com.cn/blog/xww666/qian-tan-zkp-wen-ti-gai-post
 
-	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 https://leetcode-cn.com/problems/last-stone-weight-ii/
+	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
 	*/
 
@@ -687,6 +689,7 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
+	// NOTE: 1,1,1,...1(32个1),s-32,s-31,...,s 可以让方案数恰好为 2^32
 	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
 	// 二维+上限+下限 LC879/周赛95D https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
@@ -1243,7 +1246,7 @@ func dpCollections() {
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
-	// https://leetcode-cn.com/problems/tree-diameter/
+	// LC1245 https://leetcode-cn.com/problems/tree-diameter/
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
 		f = func(v, fa int) (mxDep int) {
@@ -1367,7 +1370,7 @@ func dpCollections() {
 	// dp[i][2]：i 不属于支配集，且被父亲支配 = ∑min(dp[w][0],dp[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：保安站岗 https://www.luogu.com.cn/problem/P2458 手机网络 https://www.luogu.com.cn/problem/P2899 https://ac.nowcoder.com/acm/problem/24953
-	// 监控二叉树 https://leetcode-cn.com/problems/binary-tree-cameras/
+	// 监控二叉树 LC968 https://leetcode-cn.com/problems/binary-tree-cameras/
 	// todo EXTRA: 消防局的设立（支配距离为 2） https://www.luogu.com.cn/problem/P2279
 	// todo EXTRA: 将军令（支配距离为 k） https://www.luogu.com.cn/problem/P3942
 	minDominatingSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
