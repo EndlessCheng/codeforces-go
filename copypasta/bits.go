@@ -71,7 +71,8 @@ https://oeis.org/A083652 A070939 的前缀和
 
 OnesCount 相当于二进制的 digsum
 https://oeis.org/A000120 wt(n) = OnesCount(n)
-https://oeis.org/A000788 A000120 的前缀和 a(2^n)=n*2^(n-1)+1
+https://oeis.org/A000788 前缀和 a(2^n)=n*2^(n-1)+1
+https://oeis.org/A121853 前缀积 https://www.luogu.com.cn/problem/P4317
 https://oeis.org/A092391 n+OnesCount(n)
 	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
 https://oeis.org/A011371 n-OnesCount(n) Also highest power of 2 dividing n!
