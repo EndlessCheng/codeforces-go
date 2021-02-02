@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"math/bits"
 	"math/rand"
+	"sort"
 )
 
 /* 数论 组合数学 博弈论 积分 插值 随机算法
@@ -518,11 +519,9 @@ func numberTheoryCollection() {
 	}
 	primeDivisors := func(x int) (primes []int) {
 		for i := 2; i*i <= x; i++ {
-			k := 0
-			for ; x%i == 0; x /= i {
-				k++
-			}
-			if k > 0 {
+			if x%i == 0 {
+				for x /= i; x%i == 0; x /= i {
+				}
 				primes = append(primes, i)
 			}
 		}
@@ -935,7 +934,7 @@ func numberTheoryCollection() {
 		for i := 2; i*i <= n; i++ {
 			if n%i == 0 {
 				ans = ans / i * (i - 1)
-				for ; n%i == 0; n /= i {
+				for n /= i; n%i == 0; n /= i {
 				}
 			}
 		}
@@ -1015,6 +1014,79 @@ func numberTheoryCollection() {
 	// a(n) = n + 1 - d(n) - phi(n); where d(n) is the number of divisors of n
 
 	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
+
+	// 原根
+	// https://en.wikipedia.org/wiki/Primitive_root_modulo_n
+	// https://oi-wiki.org/math/primitive-root/
+	// https://cp-algorithms.com/algebra/primitive-root.html
+	// 常用：167772161 和 998244353 的原根是 3
+	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
+	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
+	// https://oeis.org/A046144 Number of primitive roots modulo n
+	//    https://oeis.org/A010554 a(n) = phi(phi(n))
+	// https://oeis.org/A008330 Number of primitive roots of n-th prime = phi(p-1)
+	// https://oeis.org/A046145 Smallest primitive root modulo n, or 0 if no root exists
+	// https://oeis.org/A001918 Smallest primitive root of n-th prime
+	// https://oeis.org/A046146 Largest primitive root (<n) modulo n, or 0 if no root exists
+	// https://oeis.org/A071894 Largest primitive root (<p) of n-th prime p
+	// https://oeis.org/A056619 Smallest prime with primitive root of n or 0 if no such prime exists
+	// https://oeis.org/A023049 Smallest prime > n having primitive root n, or 0 if no such prime exists
+	// 模板题 https://www.luogu.com.cn/problem/U125141
+	//
+	// 返回 n 的最小的原根, n >= 2
+	// 不存在时返回 -1
+	primitiveRoot := func(n int) int {
+		var gcd func(_, _ int) int
+		var pow func(_, _, _ int) int
+
+		if n != 2 && n != 4 {
+			x := n
+			if x&1 == 0 {
+				x /= 2
+			}
+			if x&1 == 0 || len(primeDivisors(x)) > 1 {
+				return -1
+			}
+		}
+
+		pn := calcPhi(n)
+		ps := primeDivisors(pn)
+	o:
+		for g := 1; ; g++ {
+			if gcd(g, n) > 1 {
+				continue
+			}
+			for _, p := range ps {
+				if pow(g, pn/p, n) == 1 {
+					continue o
+				}
+			}
+			return g
+		}
+	}
+
+	// 返回 n 的所有原根
+	// n 没有原根时返回空切片
+	// 模板题 https://www.luogu.com.cn/problem/P6091
+	primitiveRootsAll := func(n int) []int {
+		var gcd func(_, _ int) int
+
+		rt0 := primitiveRoot(n)
+		if rt0 < 0 {
+			return nil
+		}
+		pn := calcPhi(n)
+		ppn := calcPhi(pn)
+		roots := make([]int, 0, ppn)
+		for i, rtPow := 1, 1; len(roots) < ppn; i++ {
+			rtPow = rtPow * rt0 % n
+			if gcd(i, pn) == 1 {
+				roots = append(roots, rtPow)
+			}
+		}
+		sort.Ints(roots)
+		return roots
+	}
 
 	/* 同余 逆元
 	http://oeis.org/A006254 a(n) = 2^-1 mod p         Numbers n such that 2n-1 is prime
@@ -1161,20 +1233,21 @@ func numberTheoryCollection() {
 	}
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
+	// x ≡ bi (mod mi), bi 与 mi 互质且 Πmi <= 1e18
 	// https://blog.csdn.net/synapse7/article/details/9946013
-	// todo https://codeforces.com/blog/entry/61290
-	// todo 模板题 https://www.luogu.com.cn/problem/P1495
-	crt := func(a, m []int64) (x int64) {
-		M := int64(1)
-		for _, mi := range m {
-			M *= mi
+	// https://codeforces.com/blog/entry/61290
+	// 模板题 https://www.luogu.com.cn/problem/P1495
+	crt := func(B, M []int64) (x int64) {
+		m := int64(1)
+		for _, mi := range M {
+			m *= mi
 		}
-		for i, mi := range m {
-			Mi := M / mi
+		for i, mi := range M {
+			Mi := m / mi
 			_, inv, _ := exgcd(Mi, mi)
-			x = (x + a[i]*Mi*inv) % M
+			x = (x + B[i]*Mi*inv) % m
 		}
-		x = (x + M) % M
+		x = (x + m) % m
 		return
 	}
 
@@ -1232,7 +1305,7 @@ func numberTheoryCollection() {
 	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
 	// todo https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
 	// https://www.luogu.com.cn/problem/P3846
-	// https://www.luogu.com.cn/problem/P4195
+	// todo https://www.luogu.com.cn/problem/P4195
 	babyStepGiantStep := func(a, b, p int64) int64 {
 		hash := map[int64]int64{}
 		b %= p
@@ -1257,7 +1330,7 @@ func numberTheoryCollection() {
 		return -1
 	}
 
-	// 原根 / N次剩余 / 高次同余方程 x^a ≡ b (mod p)
+	// 二次剩余 / N次剩余 / 高次同余方程 x^a ≡ b (mod p)
 	// todo
 	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
 
@@ -1409,6 +1482,7 @@ func numberTheoryCollection() {
 		}
 
 		// EXTRA: 卢卡斯定理
+		// 注意初始化 F 和 invF 时 mx 取 mod-1
 		// https://www.luogu.com.cn/problem/P3807
 		var lucas func(n, k int64) int64
 		lucas = func(n, k int64) int64 {
@@ -1545,20 +1619,6 @@ func numberTheoryCollection() {
 		}
 		return res % mod
 	}
-
-	// 原根
-	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
-	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
-	// https://oeis.org/A046145 Smallest primitive root modulo n, or 0 if no root exists
-	// https://oeis.org/A001918 Smallest primitive root of n-th prime
-	// https://oeis.org/A046146 Largest primitive root (<n) modulo n, or 0 if no root exists
-	// https://oeis.org/A071894 Largest primitive root (<p) of n-th prime p
-	// https://oeis.org/A046144 Number of primitive roots modulo n
-	// https://oeis.org/A008330 Number of primitive roots of n-th prime = phi(p-1)
-	// https://oeis.org/A056619 Smallest prime with primitive root of n or 0 if no such prime exists
-	// https://oeis.org/A023049 Smallest prime > n having primitive root n, or 0 if no such prime exists
-	// todo https://cp-algorithms.com/algebra/primitive-root.html
-	// todo 模板题 https://www.luogu.com.cn/problem/P6091
 
 	// 莫比乌斯函数 mu https://oeis.org/A008683
 	// 基于线性筛方法
@@ -1698,6 +1758,7 @@ func numberTheoryCollection() {
 		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
+		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
