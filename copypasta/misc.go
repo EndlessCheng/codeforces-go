@@ -122,6 +122,24 @@ func miscCollection() {
 		return math.Abs(x-math.Round(x)) < eps
 	}
 
+	// 适用于需要频繁读取 a 中元素到一个 map 中的情况
+	// 调用 quickHashMapRead(a) 后
+	// 原来的类似 cnt[a[i]]++ 的操作，可以让 cnt 由 map[int]int 改为 make([]int, len(rk))
+	// 若需要访问 a[i] 原有元素，可以访问 origin[a[i]]
+	// 这样后续操作就与 map 无关了
+	quickHashMapRead := func(a []int) ([]int, int) {
+		origin := make([]int, len(a))
+		rk := map[int]int{}
+		for i, v := range a {
+			if _, has := rk[v]; !has {
+				rk[v] = len(rk)
+				origin[rk[v]] = v
+			}
+			a[i] = rk[v]
+		}
+		return origin, len(rk)
+	}
+
 	// 括号拼接
 	// 代码来源 https://codeforces.com/gym/101341/problem/A
 	// 类似题目 https://atcoder.jp/contests/abc167/tasks/abc167_f
@@ -244,6 +262,7 @@ func miscCollection() {
 		smallK,
 		floatToRat,
 		isInt,
+		quickHashMapRead,
 		concatBrackets,
 		sliceToStr,
 		getMapRangeValues,
