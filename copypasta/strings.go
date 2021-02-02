@@ -217,14 +217,12 @@ func stringCollection() {
 		}
 		n := len(origin)
 		m := 2*n + 2
-		s := make([]byte, m+1)
+		s := make([]byte, 1, m+1)
 		s[0] = '^'
-		for i, c := range origin {
-			s[2*i+1] = '#'
-			s[2*i+2] = c
+		for _, c := range origin {
+			s = append(s, '#', c)
 		}
-		s[2*n+1] = '#'
-		s[2*n+2] = '$'
+		s = append(s, '#', '$')
 		maxLen = make([]int, m+1) // 以处理后的字符 s[i] 为中心的最长回文子串的半长度（包括 s[i]）
 		ans, mid, r := 0, 0, 0
 		for i := 2; i < m; i++ {
@@ -301,7 +299,7 @@ func stringCollection() {
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
+		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
@@ -354,15 +352,15 @@ func stringCollection() {
 		//    https://codeforces.com/problemset/problem/873/F
 		height := make([]int, n)
 		h := 0
-		for i, ri := range rank {
+		for i, rk := range rank {
 			if h > 0 {
 				h--
 			}
-			if ri > 0 {
-				for j := int(sa[ri-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
+			if rk > 0 {
+				for j := int(sa[rk-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
 				}
 			}
-			height[ri] = h
+			height[rk] = h
 		}
 
 		// 任意两后缀的 LCP
