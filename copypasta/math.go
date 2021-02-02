@@ -1019,7 +1019,6 @@ func numberTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Primitive_root_modulo_n
 	// https://oi-wiki.org/math/primitive-root/
 	// https://cp-algorithms.com/algebra/primitive-root.html
-	// 常用：167772161 和 998244353 的原根是 3
 	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
 	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
 	// https://oeis.org/A046144 Number of primitive roots modulo n
@@ -1035,6 +1034,7 @@ func numberTheoryCollection() {
 	//
 	// 返回 n 的最小的原根, n >= 2
 	// 不存在时返回 -1
+	// 由于有 phi(phi(n)) 个原根，密度足够大，最小原根可以很快找到，复杂度约为 O(n^0.25logn)
 	primitiveRoot := func(n int) int {
 		var gcd func(_, _ int) int
 		var pow func(_, _, _ int) int
