@@ -1070,10 +1070,8 @@ func rmqCollection() {
 // https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 func moAlgorithm() {
 	// 普通莫队（没有修改操作）
-	// 分块，每一块的大小为 √n，这样可以将左端点分配在一个较小的范围，并且按照右端点从小到大排序，
-	// 从而对于每一块，指针移动的次数为 O(√n*√n+n) = O(n)，从而整体复杂度为 O(n√nf(n)) （注：这里假设询问次数等同于 n，f(n) 为移动一次指针的时间复杂度）
-	// 对于询问次数为 m 的情况，块大小取 n/√m 是最优的，见 https://www.luogu.com.cn/blog/codesonic/mosalgorithm
-	// 此外，记录的是 [l,r)，这样能简化处理查询结果的代码
+	// 本质是通过巧妙地改变询问的顺序，使区间左右端点移动的次数由 O(nm) 降为了 O(n√m)
+	// 在块大小取 n/√m 时可达到最优复杂度 O(n√m)，见 https://www.luogu.com.cn/blog/codesonic/mosalgorithm
 	// https://oi-wiki.org/misc/mo-algo/
 	// 模板题 https://www.luogu.com.cn/problem/P1494
 	// todo https://www.luogu.com.cn/problem/P2709
@@ -1087,9 +1085,9 @@ func moAlgorithm() {
 	//      https://www.codechef.com/problems/QCHEF
 	mo := func(in io.Reader, a []int, q int) []int {
 		n := len(a)
+		blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
 		type query struct{ lb, l, r, qid int }
 		qs := make([]query, q)
-		blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
 		for i := range qs {
 			var l, r int
 			Fscan(in, &l, &r) // 从 1 开始，[l,r)
@@ -1255,18 +1253,99 @@ func moAlgorithm() {
 	}
 
 	// todo 树上莫队
-	moOnTree := func() {
+	// https://oi-wiki.org/misc/mo-algo-on-tree/
+	moOnTree := func(a []int) {
 
 	}
 
 	// 回滚莫队（只增莫队）
-	// todo 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
-	//      回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
-	rollbackMo := func() {
+	// 复杂度同普通莫队
+	// https://oi-wiki.org/misc/rollback-mo-algo/
+	// 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui
+	// todo 回滚莫队及其简单运用 https://www.cnblogs.com/Parsnip/p/10969989.html
+	// 模板题 历史研究 https://www.luogu.com.cn/problem/AT1219 https://atcoder.jp/contests/joisc2014/tasks/joisc2014_c
+	// todo https://www.luogu.com.cn/problem/P5906
+	// todo https://www.luogu.com.cn/problem/P5386
+	// todo https://www.luogu.com.cn/problem/P6072
+	rollbackMo := func(in io.Reader) []int {
+		var n, q int
+		Fscan(in, &n, &q)
+		a := make([]int, n+1)
+		for i := 1; i <= n; i++ {
+			Fscan(in, &a[i])
+		}
+		ans := make([]int, q)
+		B := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+		type query struct{ lb, l, r, qid int }
+		qs := []query{}
+		cnt := make([]int, n+1)
+		for i := 0; i < q; i++ {
+			var l, r int
+			Fscan(in, &l, &r)
+			r++
+			if r-l > B {
+				qs = append(qs, query{l / B, l, r, i})
+				continue
+			}
+			// 小区间暴力计算
+			res := 0
+			for _, v := range a[l:r] {
+				cnt[v]++
+				// ...
+			}
+			ans[i] = res
+			// 重置数据 ...
+			for _, v := range a[l:r] {
+				cnt[v] = 0
+			}
+		}
+		sort.Slice(qs, func(i, j int) bool {
+			a, b := qs[i], qs[j]
+			if a.lb != b.lb {
+				return a.lb < b.lb
+			}
+			return a.r < b.r
+		})
 
+		var l, r int
+		var res int
+		add := func(i int) {
+			v := a[i]
+			cnt[v]++
+			// ...
+		}
+		getAns := func(q query) int {
+			// ...
+			return res
+		}
+		for i, q := range qs {
+			l0 := (q.lb + 1) * B
+			if i == 0 || q.lb > qs[i-1].lb {
+				l, r = l0, l0
+				// 重置数据 ...
+				res = 0
+				cnt = make([]int, n+1)
+			}
+			for ; r < q.r; r++ {
+				add(r)
+			}
+			tmp := res
+			for l > q.l {
+				l--
+				add(l)
+			}
+			ans[q.qid] = getAns(q)
+			res = tmp
+			for ; l < l0; l++ {
+				// 回滚 ...
+				cnt[a[l]]--
+			}
+		}
+		return ans
 	}
 
-	// todo 二次离线莫队 https://www.luogu.com.cn/problem/P4887
+	// 二次离线莫队
+	// todo https://www.luogu.com.cn/problem/P4887
 
 	_ = []interface{}{mo, moWithUpdate, moOnTree, rollbackMo}
 }
