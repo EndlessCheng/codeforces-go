@@ -1629,6 +1629,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 // https://cp-algorithms.com/graph/topological-sort.html
 // DAG DP https://ac.nowcoder.com/acm/contest/6384/C https://www.luogu.com.cn/problem/P3387
 // 好题 https://codeforces.com/problemset/problem/915/D
+// 关键点 次关键点 https://codeforces.com/contest/1062/problem/F
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
@@ -1697,20 +1698,19 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
-// 模板题 https://www.luogu.com.cn/problem/P2341
-func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, sccIDs []int) {
+// 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
+// https://www.luogu.com.cn/problem/P2341
+func (*graph) sccKosaraju(n int) (comps [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
-	edges := make([]edge, m)
-	g = make([][]int, n)
+	edges := []edge{}
+	g := make([][]int, n)
 	rg := make([][]int, n)
-	for i := 0; i < m; i++ {
-		var v, w int
-		Fscan(in, &v, &w)
-		v--
-		w--
+	addEdge := func(v, w int) {
+		//v--
+		//w--
 		g[v] = append(g[v], w)
 		rg[w] = append(rg[w], v)
-		edges[i] = edge{v, w}
+		edges = append(edges, edge{v, w})
 	}
 
 	vs := make([]int, 0, n)
@@ -1725,9 +1725,9 @@ func (*graph) sccKosaraju(in io.Reader, n, m int, g [][]int) (comps [][]int, scc
 		}
 		vs = append(vs, v) // 后序。保证遍历出来的结果的逆后序生成的 SCC 一定是拓扑序
 	}
-	for v := range g {
-		if !vis[v] {
-			dfs(v)
+	for i, b := range vis {
+		if !b {
+			dfs(i)
 		}
 	}
 
@@ -1796,8 +1796,8 @@ o:
 			numCanBeVisitedFromAll = 0
 		}
 	}
-	_ = numCanBeVisitedFromAll
 
+	_, _ = addEdge, numCanBeVisitedFromAll
 	return
 }
 
@@ -1817,39 +1817,46 @@ o:
 // todo https://www.luogu.com.cn/blog/85514/post-2-sat-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/16205
 // 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
-// NOTE: 一些建边的转换：（¬x 用 x+n 表示）
+// NOTE: 一些建边的转换：
 //       A,B 至少存在一个 (A|B)    ¬A⇒B, ¬B⇒A 意思是一个为假的时候，另一个一定为真 https://www.luogu.com.cn/problem/P4782
-//       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A 就是上面的式子替换了一下
+//       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A 就是上面的式子替换了一下（一个为真，另一个一定为假）
 //       A,B 必须且只一个 (A^B)    A⇒¬B, B⇒¬A, ¬A⇒B, ¬B⇒A
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
 //       A 必须存在       (A)     ¬A⇒A
 //       A 不能存在       (¬A)     A⇒¬A
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
-// 下面的代码基于模板题 https://www.luogu.com.cn/problem/P4782
-// todo 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_h
-func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
+// 模板题 https://www.luogu.com.cn/problem/P4782
+// 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
+func (G *graph) solve2SAT(n int) []bool {
 	g := make([][]int, 2*n)
-	for i := 0; i < m; i++ {
-		var x, a, y, b int
-		Fscan(in, &x, &a, &y, &b)
-		x--
-		y--
-		v, w := x+a&1*n, y+(b^1)*n
+	rg := make([][]int, 2*n)
+	// x=a 和 y=b 两个条件至少满足一个（a b 为 0/1 表示 假/真）
+	// ¬x 用 x+n 表示
+	addEdge := func(x, a, y, b int) {
+		//x--
+		//y--
+		v, w := x+(a^1)*n, y+b*n // ¬A⇒B
 		g[v] = append(g[v], w)
-		v, w = y+b&1*n, x+(a^1)*n
+		rg[w] = append(rg[w], v)
+		v, w = y+(b^1)*n, x+a*n // ¬B⇒A
 		g[v] = append(g[v], w)
+		rg[w] = append(rg[w], v)
 	}
-	_, sccIDs := G.sccKosaraju(in, 2*n, m, g) // *两倍空间*
+	// addEdge ...
+
+	_, sccIDs := G.sccKosaraju(2 * n) // 注意两倍空间
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
-		// x 和 ¬x 处于同一个 SCC 时无解，即 x ⇔ ¬x
+		// x 和 ¬x 处于同一个 SCC 时无解（因为 x ⇔ ¬x）
 		if id == sccIDs[i+n] {
 			return nil
 		}
-		// sccIDs[x] > sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
-		// sccIDs[x] < sccIDs[¬x] ⇔ (x ⇒ ¬x) ⇔ x 为假
-		ans[i] = id > sccIDs[i+n]
+		// sccIDs[x] < sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
+		// sccIDs[x] > sccIDs[¬x] ⇔ (x ⇒ ¬x) ⇔ x 为假
+		ans[i] = id < sccIDs[i+n]
 	}
+
+	_ = addEdge
 	return ans
 }
 
@@ -1857,6 +1864,7 @@ func (G *graph) solve2SAT(in io.Reader, n, m int) []bool {
 // https://en.wikipedia.org/wiki/Pseudoforest
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
+// todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
