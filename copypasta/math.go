@@ -209,6 +209,41 @@ func numberTheoryCollection() {
 		return cntMp
 	}
 
+	// 类欧几里得算法
+	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
+	// https://atcoder.jp/contests/practice2/tasks/practice2_c
+	// https://www.luogu.com.cn/problem/P5170
+	floorSum := func(n, m, a, b int64) (res int64) {
+		if a < 0 {
+			a2 := a%m + m
+			res -= n * (n - 1) / 2 * ((a2 - a) / m)
+			a = a2
+		}
+		if b < 0 {
+			b2 := b%m + m
+			res -= n * ((b2 - b) / m)
+			b = b2
+		}
+		for {
+			if a >= m {
+				res += n * (n - 1) / 2 * (a / m)
+				a %= m
+			}
+			if b >= m {
+				res += n * (b / m)
+				b %= m
+			}
+			yMax := a*n + b
+			if yMax < m {
+				break
+			}
+			n = yMax / m
+			b = yMax % m
+			m, a = a, m
+		}
+		return
+	}
+
 	sqCheck := func(a int64) bool { r := int64(math.Round(math.Sqrt(float64(a)))); return r*r == a }
 	cubeCheck := func(a int64) bool { r := int64(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
 	// 平方数开平方
@@ -1659,7 +1694,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
-		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD,
+		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD, floorSum,
 		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, exPhi,
