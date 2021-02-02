@@ -1699,9 +1699,6 @@ func numberTheoryCollection() {
 		return sum
 	}
 
-	// floor sum: ∑(a*i+b)/c
-	// todo 参见 atcoder library
-
 	// 杜教筛 - 积性函数前缀和
 	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
 	// todo http://baihacker.github.io/main/
