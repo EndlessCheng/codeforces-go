@@ -74,72 +74,22 @@
 
 [2018 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/48491)
 
-## 比赛题解 / 算法讲解
+### 高级竞赛算法
 
-[apiadu](https://space.bilibili.com/4479419/video)
+[算法进阶课](https://www.acwing.com/activity/content/32/)
 
-[bewildRan](https://space.bilibili.com/328104520/video)
+### 待整理
 
-[Algo张伯威](https://space.bilibili.com/1956975/video)
+[偶然在 GitHub 上发现的超长列表](https://github.com/dhs347/Dream/blob/master/%E8%AE%A1%E5%88%92/%E8%AE%A1%E5%88%92%E4%B9%A6/A%E8%AE%A1%E5%88%92_%E9%98%B6%E6%AE%B51.md)
 
-## 算法竞赛训练中较难的部分
+[算法竞赛训练中较难的部分](https://blog.csdn.net/skywalkert/article/details/48924861)
 
-https://blog.csdn.net/skywalkert/article/details/48924861
-
-- k-d树、替罪羊树
-- 左偏树、Splay伸展树、序列维护
-- 可持久化Treap
-- 动态树、换父亲节点（BZOJ 3153）
-- FFT快速傅里叶变换与多项式乘法、除法、求逆、多点求值、牛迭
-- NTT快速数论变换
-- FWT快速沃尔什变换（TopCoder SRM518 Nim）
-- 最大团问题
-- 最小树形图（CodeForces 240E）
-- 支配树Dominator Tree、虚树
-- 带花树一般图匹配、权匹配（UOJ 79、UOJ 81）
-- 网络流消圈算法
-- 单纯形解线性规划
-- 平面图、对偶图、梯形剖分、点定位（UVALive 2327、Aizu 2448、SGU 209、CodeForces 44F、UVALive 5837）
-- 仙人掌图直径、最短路、**计数问题**（A000314）
-- 三角剖分、Voronoi图
-- 平面图判定（CodeVS 2965）
-- 回文自动机、后缀自动机、后缀平衡树、Boder Tree（BZOJ 3936）
-- 圆的反演（BZOJ 2961、HDU 4773）
-- 整体二分
-- 子集反演、计数问题
-- Matrix-Tree定理、无向图（有向图）生成树计数问题
-- dp套dp
-- 随机算法、模拟退火
-- 折纸问题
-- 正确的数位dp（CodeForces 288E、331C3）
-- k短路
-- 斯坦纳树（WC游览计划、APIO机器人）
-- 另类博弈（UVALive 6840、SRM 423 Div1 Hard）
-
-好像已经有很多了，先补起来吧。
-
-有趣的题目
-- CodeForces 338D 
-- BZOJ 2001 （cdq分治做法） 
-- Aizu 1164 （Hardest） 
-- UVA 12434 （Hardest）
-
-近期总结 
-- 组合数求模 
-- 卷积与多项式 
-- 积性函数求和 
-- 图论大杂烩
-
-## 算法竞赛中可能不太会遇到的论文题
-
-https://blog.csdn.net/skywalkert/article/details/48878925
-
-## 其他
-
-https://wcysai.github.io/
+[算法竞赛中可能不太会遇到的论文题](https://blog.csdn.net/skywalkert/article/details/48878925)
 
 https://blog.csdn.net/calabash_boy/article/details/79973483
 
-https://github.com/dhs347/Dream/blob/master/%E8%AE%A1%E5%88%92/%E8%AE%A1%E5%88%92%E4%B9%A6/A%E8%AE%A1%E5%88%92_%E9%98%B6%E6%AE%B51.md
-
 https://github.com/zimpha/algorithmic-library
+
+https://www.luogu.com.cn/blog/command-block/blog-suo-yin-zhi-ding-post
+
+https://wcysai.github.io/

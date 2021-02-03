@@ -1258,7 +1258,7 @@ func moAlgorithm() {
 
 	}
 
-	// 回滚莫队（只增莫队）
+	// 回滚莫队
 	// 复杂度同普通莫队
 	// https://oi-wiki.org/misc/rollback-mo-algo/
 	// 浅谈回滚莫队 https://www.luogu.com.cn/blog/bfqaq/qian-tan-hui-gun-mu-dui

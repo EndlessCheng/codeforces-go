@@ -1241,14 +1241,6 @@ func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	f(root, -1)
 }
 
-// 动态树 link/cut tree (LCT)
-// https://en.wikipedia.org/wiki/Link/cut_tree
-// todo https://oi-wiki.org/ds/lct/
-// todo https://codeforces.com/blog/entry/80383
-// 模板题 https://www.luogu.com.cn/problem/P3690
-// https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
-// 最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
-
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
 // https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66

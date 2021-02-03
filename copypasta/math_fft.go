@@ -5,24 +5,24 @@ import (
 	"math/bits"
 )
 
-// Fast Fourier Transform
-// https://zhuanlan.zhihu.com/p/31584464
-// 从多项式乘法到快速傅里叶变换 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
-// https://codeforces.com/blog/entry/43499 https://codeforces.com/blog/entry/48798
-// https://oi-wiki.org/math/poly/fft/
-// https://cp-algorithms.com/algebra/fft.html
-// https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
-// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
-// TODO: 求逆 求开方 ...
-//        https://cp-algorithms.com/algebra/polynomial.html
-//        http://blog.miskcoo.com/2015/05/polynomial-inverse
-// EXTRA: 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
+/* FFT: fast Fourier transform 快速傅里叶变换
+https://en.wikipedia.org/wiki/Fast_Fourier_transform
 
-// 反演魔术：反演原理及二项式反演
-// http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
-// https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
+【推荐】一小时学会快速傅里叶变换 https://zhuanlan.zhihu.com/p/31584464
+傅里叶变换学习笔记 https://www.luogu.com.cn/blog/command-block/fft-xue-xi-bi-ji
+从多项式乘法到快速傅里叶变换 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
+优化技巧 https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
+https://codeforces.com/blog/entry/43499 https://codeforces.com/blog/entry/48798
+https://oi-wiki.org/math/poly/fft/
+https://cp-algorithms.com/algebra/fft.html
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
 
-// CDQ FFT 半在线卷积的O(nlog^2/loglogn)算法 https://www.qaq-am.com/cdqFFT/
+有关快速数论变换 (NTT) 的内容见 math_ntt.go
+
+模板题 https://www.luogu.com.cn/problem/P3803
+todo 推式子 https://www.luogu.com.cn/problem/P3338
+*/
 
 type fft struct {
 	n               int
@@ -40,38 +40,39 @@ func newFFT(n int) *fft {
 	return &fft{n, omega, omegaInv}
 }
 
-func (f *fft) transform(a, omega []complex128) {
-	for i, j := 0, 0; i < f.n; i++ {
+// 注：下面 swap 的代码，另一种写法是初始化每个 i 对应的 j https://blog.csdn.net/Flag_z/article/details/99163939
+func (t *fft) transform(a, omega []complex128) {
+	for i, j := 0, 0; i < t.n; i++ {
 		if i > j {
 			a[i], a[j] = a[j], a[i]
 		}
-		for l := f.n >> 1; ; l >>= 1 {
+		for l := t.n >> 1; ; l >>= 1 {
 			j ^= l
 			if j >= l {
 				break
 			}
 		}
 	}
-	for l := 2; l <= f.n; l <<= 1 {
+	for l := 2; l <= t.n; l <<= 1 {
 		m := l >> 1
-		for st := 0; st < f.n; st += l {
-			p := a[st:]
+		for st := 0; st < t.n; st += l {
+			b := a[st:]
 			for i := 0; i < m; i++ {
-				t := omega[f.n/l*i] * p[m+i]
-				p[m+i] = p[i] - t
-				p[i] += t
+				d := omega[t.n/l*i] * b[m+i]
+				b[m+i] = b[i] - d
+				b[i] += d
 			}
 		}
 	}
 }
 
-func (f *fft) dft(a []complex128) {
-	f.transform(a, f.omega)
+func (t *fft) dft(a []complex128) {
+	t.transform(a, t.omega)
 }
 
-func (f *fft) idft(a []complex128) {
-	f.transform(a, f.omegaInv)
-	cn := complex(float64(f.n), 0)
+func (t *fft) idft(a []complex128) {
+	t.transform(a, t.omegaInv)
+	cn := complex(float64(t.n), 0)
 	for i := range a {
 		a[i] /= cn
 	}
@@ -80,42 +81,41 @@ func (f *fft) idft(a []complex128) {
 // 计算 A(x) 和 B(x) 的卷积
 // 入参出参都是次项从低到高的系数
 // 建议全程用 int64
-// 模板题 https://www.luogu.com.cn/problem/P3803
-func convolution(a, b []int64) []int64 {
+func convolutionFFT(a, b []int64) []int64 {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
-	f := newFFT(limit)
-	cmplxA := make([]complex128, limit)
+	A := make([]complex128, limit)
 	for i, v := range a {
-		cmplxA[i] = complex(float64(v), 0)
+		A[i] = complex(float64(v), 0)
 	}
-	cmplxB := make([]complex128, limit)
+	B := make([]complex128, limit)
 	for i, v := range b {
-		cmplxB[i] = complex(float64(v), 0)
+		B[i] = complex(float64(v), 0)
 	}
-	f.dft(cmplxA)
-	f.dft(cmplxB)
-	for i := range cmplxA {
-		cmplxA[i] *= cmplxB[i]
+	t := newFFT(limit)
+	t.dft(A)
+	t.dft(B)
+	for i := range A {
+		A[i] *= B[i]
 	}
-	f.idft(cmplxA)
+	t.idft(A)
 	conv := make([]int64, n+m-1)
 	for i := range conv {
-		conv[i] = int64(math.Round(real(cmplxA[i]))) // % mod
+		conv[i] = int64(math.Round(real(A[i]))) // % mod
 	}
 	return conv
 }
 
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
-func convolutionN(coefs [][]int64) []int64 {
+func convolutionsFFT(coefs [][]int64) []int64 {
 	var f func(l, r int) []int64
 	f = func(l, r int) []int64 {
 		if l == r {
 			return coefs[l-1] // coefs start at 0
 		}
 		mid := (l + r) >> 1
-		return convolution(f(l, mid), f(mid+1, r))
+		return convolutionFFT(f(l, mid), f(mid+1, r))
 	}
 	return f(1, len(coefs))
 }

@@ -11,6 +11,8 @@ https://oi-wiki.org/ds/splay/
 https://www.cnblogs.com/cjyyb/p/7499020.html
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 文艺平衡树 https://www.luogu.com.cn/problem/P3391
+
+有关 Link Cut Tree 的部分见后面的代码
 */
 
 // 参考刘汝佳的实现，即不使用父节点指针的方案
@@ -182,6 +184,18 @@ func (t *splay) delete(key spKeyType) {
 // 其余和 BST 有关的方法见 bst.go
 // 注意每次调用之前或之后都要执行一下 t.root = t.root.splay(t.rank(key))，以确保均摊复杂度为 O(logn)
 // 注意 min max 哨兵对 rank() kth() 等方法的影响
+
+//
+
+// 动态树 link/cut tree (LCT)
+// https://en.wikipedia.org/wiki/Link/cut_tree
+// todo LCT 小记 https://www.luogu.com.cn/blog/command-block/lct-xiao-ji
+//   https://oi-wiki.org/ds/lct/
+//   https://codeforces.com/blog/entry/80383
+// 模板题 https://www.luogu.com.cn/problem/P3690
+// https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
+// 最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
+
 
 //
 
