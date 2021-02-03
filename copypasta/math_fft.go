@@ -78,10 +78,10 @@ func (t *fft) idft(a []complex128) {
 	}
 }
 
-// 计算 A(x) 和 B(x) 的卷积
+// 计算 A(x) 和 B(x) 的卷积 (convolution)
 // 入参出参都是次项从低到高的系数
 // 建议全程用 int64
-func convolutionFFT(a, b []int64) []int64 {
+func polyConvFFT(a, b []int64) []int64 {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
 	A := make([]complex128, limit)
@@ -108,14 +108,14 @@ func convolutionFFT(a, b []int64) []int64 {
 
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
-func convolutionsFFT(coefs [][]int64) []int64 {
+func polyConvFFTs(coefs [][]int64) []int64 {
 	var f func(l, r int) []int64
 	f = func(l, r int) []int64 {
 		if l == r {
 			return coefs[l-1] // coefs start at 0
 		}
 		mid := (l + r) >> 1
-		return convolutionFFT(f(l, mid), f(mid+1, r))
+		return polyConvFFT(f(l, mid), f(mid+1, r))
 	}
 	return f(1, len(coefs))
 }

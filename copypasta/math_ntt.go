@@ -9,10 +9,10 @@ NTT 和 FFT 类似，下面的实现在 FFT 代码的基础上稍微修改了下
 https://oi-wiki.org/math/poly/ntt/
 包含应用及习题 https://cp-algorithms.com/algebra/fft.html#toc-tgt-6
 常用素数及原根 http://blog.miskcoo.com/2014/07/fft-prime-table
-2281701377 =  17*2^27+1, g = 3
-1004535809 = 479*2^21+1, g = 3
- 998244353 = 119*2^23+1, g = 3
- 167772161 =   5*2^25+1, g = 3
+2281701377 =  17*2^27+1, g = 3, invG = 760567126
+1004535809 = 479*2^21+1, g = 3, invG = 334845270
+ 998244353 = 119*2^23+1, g = 3, invG = 332748118
+ 167772161 =   5*2^25+1, g = 3, invG = 55924054
 
 模数任意的解决方案 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
 任意模数 NTT https://www.luogu.com.cn/problem/P4245
@@ -125,10 +125,10 @@ func (t *ntt) idft(a []int64) {
 	}
 }
 
-// 计算 A(x) 和 B(x) 的卷积
+// 计算 A(x) 和 B(x) 的卷积 (convolution)
 // 入参出参都是次项从低到高的系数
 // 模板题 https://www.luogu.com.cn/problem/P3803 https://www.luogu.com.cn/problem/P1919 https://atcoder.jp/contests/practice2/tasks/practice2_f
-func convolutionNTT(a, b []int64) []int64 {
+func polyConvNTT(a, b []int64) []int64 {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
 	A := make([]int64, limit)
@@ -147,14 +147,14 @@ func convolutionNTT(a, b []int64) []int64 {
 
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
-func convolutionsNTT(coefs [][]int64) []int64 {
+func polyConvNTTs(coefs [][]int64) []int64 {
 	var f func(l, r int) []int64
 	f = func(l, r int) []int64 {
 		if l == r {
 			return coefs[l-1] // coefs start at 0
 		}
 		mid := (l + r) >> 1
-		return convolutionNTT(f(l, mid), f(mid+1, r))
+		return polyConvNTT(f(l, mid), f(mid+1, r))
 	}
 	return f(1, len(coefs))
 }
