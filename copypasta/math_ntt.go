@@ -23,6 +23,8 @@ NTT vs FFT：对于模板题 https://www.luogu.com.cn/problem/P3803 NTT=1.98s(75
 /* 多项式全家桶
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
 todo 待整理 https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
+           模板 https://blog.orzsiyuan.com/archives/Polynomial-Template/
+todo https://blog.csdn.net/weixin_43973966/article/details/88996932
 https://cp-algorithms.com/algebra/polynomial.html
 http://blog.miskcoo.com/2015/05/polynomial-inverse
 http://blog.miskcoo.com/2015/05/polynomial-division
@@ -127,16 +129,22 @@ func (t *ntt) idft(a []int64) {
 	}
 }
 
+type poly []int64
+
+func (a poly) extend(n int) poly {
+	b := make(poly, n)
+	copy(b, a)
+	return b
+}
+
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
 // 入参出参都是次项从低到高的系数
 // 模板题 https://www.luogu.com.cn/problem/P3803 https://www.luogu.com.cn/problem/P1919 https://atcoder.jp/contests/practice2/tasks/practice2_f
-func polyConvNTT(a, b []int64) []int64 {
+func (a poly) conv(b poly) poly {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
-	A := make([]int64, limit)
-	copy(A, a)
-	B := make([]int64, limit)
-	copy(B, b)
+	A := a.extend(limit)
+	B := b.extend(limit)
 	t := newNTT(limit)
 	t.dft(A)
 	t.dft(B)
@@ -149,35 +157,66 @@ func polyConvNTT(a, b []int64) []int64 {
 
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
-func polyConvNTTs(coefs [][]int64) []int64 {
-	var f func(l, r int) []int64
-	f = func(l, r int) []int64 {
+func polyConvNTTs(coefs []poly) poly {
+	var f func(l, r int) poly
+	f = func(l, r int) poly {
 		if l == r {
 			return coefs[l-1] // coefs start at 0
 		}
 		mid := (l + r) >> 1
-		return polyConvNTT(f(l, mid), f(mid+1, r))
+		return f(l, mid).conv(f(mid+1, r))
 	}
 	return f(1, len(coefs))
+}
+
+func (a poly) neg() poly {
+	b := make(poly, len(a))
+	for i, v := range a {
+		if v > 0 {
+			b[i] = P - v
+		}
+	}
+	return b
+}
+
+func (a poly) add(b poly) poly {
+	c := make(poly, len(a))
+	for i, v := range a {
+		c[i] = (v + b[i]) % P
+	}
+	return c
+}
+
+func (a poly) sub(b poly) poly {
+	c := make(poly, len(a))
+	for i, v := range a {
+		c[i] = (v - b[i] + P) % P
+	}
+	return c
+}
+
+func (a poly) mul(k int64) poly {
+	b := make(poly, len(a))
+	for i, v := range a {
+		b[i] = v * k % P
+	}
+	return b
 }
 
 // 多项式乘法逆 (mod x^n)
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Inversion/
 // https://oi-wiki.org/math/poly/inv/
 // 模板题 https://www.luogu.com.cn/problem/P4238
-func polyInv(a []int64) []int64 {
+func (a poly) inv() poly {
 	n := len(a)
 	m := 1 << bits.Len(uint(n))
-	A := make([]int64, m)
-	copy(A, a)
-	invA := make([]int64, m)
+	A := a.extend(m)
+	invA := make(poly, m)
 	invA[0] = pow(A[0], P-2)
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
-		b := make([]int64, ll)
-		copy(b, A[:l])
-		iv := make([]int64, ll)
-		copy(iv, invA[:l])
+		b := A[:l].extend(ll)
+		iv := invA[:l].extend(ll)
 		t := newNTT(ll)
 		t.dft(b)
 		t.dft(iv)
@@ -194,23 +233,20 @@ func polyInv(a []int64) []int64 {
 // 若 a[0] != 1，需要用二次剩余来求 rt[0]
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Square-Root/
 // https://oi-wiki.org/math/poly/sqrt/
-// 模板 https://www.luogu.com.cn/problem/P5205
-func polySqrt(a []int64) []int64 {
+// 模板题 https://www.luogu.com.cn/problem/P5205
+// todo 模板题（二次剩余）https://www.luogu.com.cn/problem/P5277
+func (a poly) sqrt() poly {
 	const inv2 = (P + 1) / 2
 	n := len(a)
 	m := 1 << bits.Len(uint(n))
-	A := make([]int64, m)
-	copy(A, a)
-	rt := make([]int64, m)
+	A := a.extend(m)
+	rt := make(poly, m)
 	rt[0] = 1 // todo 二次剩余
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
-		b := make([]int64, ll)
-		copy(b, A[:l])
-		r := make([]int64, ll)
-		copy(r, rt[:l])
-		ir := make([]int64, ll)
-		copy(ir, polyInv(rt[:l]))
+		b := A[:l].extend(ll)
+		r := rt[:l].extend(ll)
+		ir := rt[:l].inv().extend(ll)
 		t := newNTT(ll)
 		t.dft(b)
 		t.dft(r)
@@ -223,3 +259,64 @@ func polySqrt(a []int64) []int64 {
 	}
 	return rt[:n]
 }
+
+func (a poly) derivative() poly {
+	n := len(a)
+	d := make(poly, n)
+	for i := 1; i < n; i++ {
+		d[i-1] = a[i] * int64(i) % P
+	}
+	return d
+}
+
+// 优化：逆元可以线性预处理出来，见 initAllInv
+func (a poly) integral() poly {
+	n := len(a)
+	s := make(poly, n)
+	s[0] = 0 // C
+	for i := 1; i < n; i++ {
+		s[i] = a[i-1] * pow(int64(i), P-2) % P
+	}
+	return s
+}
+
+// 多项式对数函数
+// https://blog.orzsiyuan.com/archives/Polynomial-Natural-Logarithm/
+// https://oi-wiki.org/math/poly/ln-exp/
+// 模板题 https://www.luogu.com.cn/problem/P4725
+func (a poly) ln() poly {
+	if a[0] != 1 {
+		panic(a[0])
+	}
+	return a.derivative().conv(a.inv())[:len(a)].integral()
+}
+
+// 多项式指数函数
+// https://blog.orzsiyuan.com/archives/Polynomial-Exponential/
+// https://oi-wiki.org/math/poly/ln-exp/
+// 模板题 https://www.luogu.com.cn/problem/P4726
+func (a poly) exp() poly {
+	if a[0] != 0 {
+		panic(a[0])
+	}
+	n := len(a)
+	m := 1 << bits.Len(uint(n))
+	A := a.extend(m)
+	e := make(poly, m)
+	e[0] = 1
+	for l := 2; l <= m; l <<= 1 {
+		b := e[:l].ln()
+		b[0]--
+		for i, v := range b {
+			b[i] = (A[i] - v + P) % P
+		}
+		copy(e, b.conv(e[:l])[:l])
+	}
+	return e[:n]
+}
+
+// 多项式三角函数
+// https://oi-wiki.org/math/poly/tri-func/
+
+// 多项式反三角函数
+// https://oi-wiki.org/math/poly/inv-tri-func/
