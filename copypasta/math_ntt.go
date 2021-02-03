@@ -158,3 +158,32 @@ func polyConvNTTs(coefs [][]int64) []int64 {
 	}
 	return f(1, len(coefs))
 }
+
+// 多项式乘法逆。倍增法
+// 参考 https://blog.orzsiyuan.com/archives/Polynomial-Inversion/
+// https://oi-wiki.org/math/poly/inv/
+// 模板题 https://www.luogu.com.cn/problem/P4238
+func polyInv(a []int64) []int64 {
+	n := len(a)
+	m := 1 << bits.Len(uint(n))
+	A := make([]int64, m)
+	copy(A, a)
+	invA := make([]int64, m)
+	invA[0] = pow(A[0], P-2)
+	for l := 2; l <= m; l <<= 1 {
+		ll := l << 1
+		b := make([]int64, ll)
+		copy(b, A[:l])
+		iv := make([]int64, ll)
+		copy(iv, invA[:l])
+		t := newNTT(ll)
+		t.dft(b)
+		t.dft(iv)
+		for i, v := range iv {
+			b[i] = v * (2 - v*b[i]%P + P) % P
+		}
+		t.idft(b)
+		copy(invA, b[:l])
+	}
+	return invA[:n]
+}
