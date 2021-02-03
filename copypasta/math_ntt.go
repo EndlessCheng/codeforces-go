@@ -22,6 +22,7 @@ NTT vs FFT：对于模板题 https://www.luogu.com.cn/problem/P3803 NTT=1.98s(75
 
 /* 多项式全家桶
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
+todo 待整理 https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
 https://cp-algorithms.com/algebra/polynomial.html
 http://blog.miskcoo.com/2015/05/polynomial-inverse
 http://blog.miskcoo.com/2015/05/polynomial-division
@@ -54,6 +55,7 @@ https://oi-wiki.org/math/gen-func/intro/
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
 
 https://codeforces.com/problemset/problem/958/F3
+todo 开根+求逆 https://codeforces.com/contest/438/problem/E
 */
 
 type ntt struct {
@@ -159,7 +161,7 @@ func polyConvNTTs(coefs [][]int64) []int64 {
 	return f(1, len(coefs))
 }
 
-// 多项式乘法逆。倍增法
+// 多项式乘法逆 (mod x^n)
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Inversion/
 // https://oi-wiki.org/math/poly/inv/
 // 模板题 https://www.luogu.com.cn/problem/P4238
@@ -186,4 +188,38 @@ func polyInv(a []int64) []int64 {
 		copy(invA, b[:l])
 	}
 	return invA[:n]
+}
+
+// 多项式开根 (mod x^n)
+// 若 a[0] != 1，需要用二次剩余来求 rt[0]
+// 参考 https://blog.orzsiyuan.com/archives/Polynomial-Square-Root/
+// https://oi-wiki.org/math/poly/sqrt/
+// 模板 https://www.luogu.com.cn/problem/P5205
+func polySqrt(a []int64) []int64 {
+	const inv2 = (P + 1) / 2
+	n := len(a)
+	m := 1 << bits.Len(uint(n))
+	A := make([]int64, m)
+	copy(A, a)
+	rt := make([]int64, m)
+	rt[0] = 1 // todo 二次剩余
+	for l := 2; l <= m; l <<= 1 {
+		ll := l << 1
+		b := make([]int64, ll)
+		copy(b, A[:l])
+		r := make([]int64, ll)
+		copy(r, rt[:l])
+		ir := make([]int64, ll)
+		copy(ir, polyInv(rt[:l]))
+		t := newNTT(ll)
+		t.dft(b)
+		t.dft(r)
+		t.dft(ir)
+		for i, v := range r {
+			b[i] = (b[i] + v*v%P) * inv2 % P * ir[i] % P
+		}
+		t.idft(b)
+		copy(rt, b[:l])
+	}
+	return rt[:n]
 }
