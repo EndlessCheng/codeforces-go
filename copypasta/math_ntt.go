@@ -196,6 +196,7 @@ func (a poly) sub(b poly) poly {
 }
 
 func (a poly) mul(k int64) poly {
+	k %= P
 	b := make(poly, len(a))
 	for i, v := range a {
 		b[i] = v * k % P
@@ -203,7 +204,50 @@ func (a poly) mul(k int64) poly {
 	return b
 }
 
-// 多项式乘法逆 (mod x^n)
+func (a poly) lsh(k int) poly {
+	b := make(poly, len(a))
+	if k > len(a) {
+		return b
+	}
+	copy(b[k:], a)
+	return b
+}
+
+func (a poly) rsh(k int) poly {
+	b := make(poly, len(a))
+	if k > len(a) {
+		return b
+	}
+	copy(b, a[k:])
+	return b
+}
+
+func (a poly) derivative() poly {
+	n := len(a)
+	d := make(poly, n)
+	for i := 1; i < n; i++ {
+		d[i-1] = a[i] * int64(i) % P
+	}
+	return d
+}
+
+func (a poly) integral() poly {
+	n := len(a)
+	s := make(poly, n)
+	s[0] = 0 // C
+	// 线性求逆元，详见 math.go 中的 initAllInv
+	inv := make([]int64, n)
+	inv[1] = 1
+	for i := 2; i < n; i++ {
+		inv[i] = int64(P-P/i) * inv[P%i] % P
+	}
+	for i := 1; i < n; i++ {
+		s[i] = a[i-1] * inv[i] % P
+	}
+	return s
+}
+
+// 多项式乘法逆 (mod x^n, 下同)
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Inversion/
 // https://oi-wiki.org/math/poly/inv/
 // 模板题 https://www.luogu.com.cn/problem/P4238
@@ -229,7 +273,7 @@ func (a poly) inv() poly {
 	return invA[:n]
 }
 
-// 多项式开根 (mod x^n)
+// 多项式开根
 // 若 a[0] != 1，需要用二次剩余来求 rt[0]
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Square-Root/
 // https://oi-wiki.org/math/poly/sqrt/
@@ -258,26 +302,6 @@ func (a poly) sqrt() poly {
 		copy(rt, b[:l])
 	}
 	return rt[:n]
-}
-
-func (a poly) derivative() poly {
-	n := len(a)
-	d := make(poly, n)
-	for i := 1; i < n; i++ {
-		d[i-1] = a[i] * int64(i) % P
-	}
-	return d
-}
-
-// 优化：逆元可以线性预处理出来，见 initAllInv
-func (a poly) integral() poly {
-	n := len(a)
-	s := make(poly, n)
-	s[0] = 0 // C
-	for i := 1; i < n; i++ {
-		s[i] = a[i-1] * pow(int64(i), P-2) % P
-	}
-	return s
 }
 
 // 多项式对数函数
@@ -313,6 +337,32 @@ func (a poly) exp() poly {
 		copy(e, b.conv(e[:l])[:l])
 	}
 	return e[:n]
+}
+
+// 多项式幂函数
+// https://blog.orzsiyuan.com/archives/Polynomial-Power/
+// https://oi-wiki.org/math/poly/ln-exp/#_5
+// https://www.luogu.com.cn/problem/P5245
+// https://www.luogu.com.cn/problem/P5273
+func (a poly) pow(k int64) poly {
+	n := len(a)
+	if k >= int64(n) && a[0] == 0 {
+		return make(poly, n)
+	}
+	k1 := k % (P - 1)
+	k %= P
+	if a[0] == 1 {
+		return a.ln().mul(k).exp()
+	}
+	shift := 0
+	for ; shift < n && a[shift] == 0; shift++ {
+	}
+	if int64(shift)*k >= int64(n) {
+		return make(poly, n)
+	}
+	a = a.rsh(shift)      // a[0] != 0
+	a.mul(pow(a[0], P-2)) // a[0] == 1
+	return a.ln().mul(k).exp().mul(pow(a[0], int(k1))).lsh(shift * int(k))
 }
 
 // 多项式三角函数
