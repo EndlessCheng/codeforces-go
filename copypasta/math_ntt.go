@@ -131,7 +131,7 @@ func (t *ntt) idft(a []int64) {
 
 type poly []int64
 
-func (a poly) extend(n int) poly {
+func (a poly) resize(n int) poly {
 	b := make(poly, n)
 	copy(b, a)
 	return b
@@ -143,8 +143,8 @@ func (a poly) extend(n int) poly {
 func (a poly) conv(b poly) poly {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
-	A := a.extend(limit)
-	B := b.extend(limit)
+	A := a.resize(limit)
+	B := b.resize(limit)
 	t := newNTT(limit)
 	t.dft(A)
 	t.dft(B)
@@ -167,6 +167,22 @@ func polyConvNTTs(coefs []poly) poly {
 		return f(l, mid).conv(f(mid+1, r))
 	}
 	return f(1, len(coefs))
+}
+
+func (a poly) reverse() poly {
+	for i, n := 0, len(a); i < n/2; i++ {
+		a[i], a[n-1-i] = a[n-1-i], a[i]
+	}
+	return a
+}
+
+func (a poly) reverseCopy() poly {
+	n := len(a)
+	b := make(poly, n)
+	for i, v := range a {
+		b[n-1-i] = v
+	}
+	return b
 }
 
 func (a poly) neg() poly {
@@ -254,13 +270,13 @@ func (a poly) integral() poly {
 func (a poly) inv() poly {
 	n := len(a)
 	m := 1 << bits.Len(uint(n))
-	A := a.extend(m)
+	A := a.resize(m)
 	invA := make(poly, m)
 	invA[0] = pow(A[0], P-2)
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
-		b := A[:l].extend(ll)
-		iv := invA[:l].extend(ll)
+		b := A[:l].resize(ll)
+		iv := invA[:l].resize(ll)
 		t := newNTT(ll)
 		t.dft(b)
 		t.dft(iv)
@@ -273,8 +289,34 @@ func (a poly) inv() poly {
 	return invA[:n]
 }
 
+// 多项式除法
+// https://blog.orzsiyuan.com/archives/Polynomial-Division-and-Modulo/
+// https://oi-wiki.org/math/poly/div-mod/
+// 模板题 https://www.luogu.com.cn/problem/P4512
+func (a poly) div(b poly) poly {
+	k := len(a) - len(b) + 1
+	if k <= 0 {
+		return make(poly, 1)
+	}
+	A := a.reverseCopy().resize(k)
+	B := b.reverseCopy().resize(k)
+	return A.conv(B.inv())[:k].reverse()
+}
+
+// 多项式取模
+func (a poly) mod(b poly) poly {
+	m := len(b)
+	return a[:m-1].sub(a.div(b).conv(b)[:m-1])
+}
+
+func (a poly) divmod(b poly) (quo, rem poly) {
+	m := len(b)
+	quo = a.div(b)
+	rem = a[:m-1].sub(quo.conv(b)[:m-1])
+	return
+}
+
 // 多项式开根
-// 若 a[0] != 1，需要用二次剩余来求 rt[0]
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Square-Root/
 // https://oi-wiki.org/math/poly/sqrt/
 // 模板题 https://www.luogu.com.cn/problem/P5205
@@ -283,14 +325,18 @@ func (a poly) sqrt() poly {
 	const inv2 = (P + 1) / 2
 	n := len(a)
 	m := 1 << bits.Len(uint(n))
-	A := a.extend(m)
+	A := a.resize(m)
 	rt := make(poly, m)
-	rt[0] = 1 // todo 二次剩余
+	rt[0] = 1
+	if a[0] != 1 {
+		// todo 二次剩余
+
+	}
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
-		b := A[:l].extend(ll)
-		r := rt[:l].extend(ll)
-		ir := rt[:l].inv().extend(ll)
+		b := A[:l].resize(ll)
+		r := rt[:l].resize(ll)
+		ir := rt[:l].inv().resize(ll)
 		t := newNTT(ll)
 		t.dft(b)
 		t.dft(r)
@@ -325,7 +371,7 @@ func (a poly) exp() poly {
 	}
 	n := len(a)
 	m := 1 << bits.Len(uint(n))
-	A := a.extend(m)
+	A := a.resize(m)
 	e := make(poly, m)
 	e[0] = 1
 	for l := 2; l <= m; l <<= 1 {
@@ -342,8 +388,8 @@ func (a poly) exp() poly {
 // 多项式幂函数
 // https://blog.orzsiyuan.com/archives/Polynomial-Power/
 // https://oi-wiki.org/math/poly/ln-exp/#_5
-// https://www.luogu.com.cn/problem/P5245
-// https://www.luogu.com.cn/problem/P5273
+// 模板题 https://www.luogu.com.cn/problem/P5245
+// 模板题（a[0] != 1）https://www.luogu.com.cn/problem/P5273
 func (a poly) pow(k int64) poly {
 	n := len(a)
 	if k >= int64(n) && a[0] == 0 {
@@ -366,7 +412,55 @@ func (a poly) pow(k int64) poly {
 }
 
 // 多项式三角函数
+// 模意义下的单位根 i = w4 = g^((P-1)/4), 其中 g 为 P 的原根
+// https://blog.orzsiyuan.com/archives/Polynomial-Trigonometric-Function/
 // https://oi-wiki.org/math/poly/tri-func/
+// 模板题 https://www.luogu.com.cn/problem/P5264
+func (a poly) sincos() (sin, cos poly) {
+	if a[0] != 0 {
+		panic(a[0])
+	}
+	const i = 911660635    // pow(g, (P-1)/4)
+	const inv2i = 43291859 // pow(2*i, P-2)
+	const inv2 = (P + 1) / 2
+	e := a.mul(i).exp()
+	invE := e.inv()
+	sin = e.sub(invE).mul(inv2i)
+	cos = e.add(invE).mul(inv2)
+	return
+}
+
+func (a poly) tan() poly {
+	sin, cos := a.sincos()
+	return sin.conv(cos.inv())
+}
 
 // 多项式反三角函数
 // https://oi-wiki.org/math/poly/inv-tri-func/
+// 模板题 https://www.luogu.com.cn/problem/P5265
+func (a poly) asin() poly {
+	if a[0] != 0 {
+		panic(a[0])
+	}
+	n := len(a)
+	b := a.conv(a)[:n].neg()
+	b[0] = 1
+	return a.derivative().conv(b.sqrt().inv())[:n].integral()
+}
+
+func (a poly) acos() poly {
+	return a.asin().neg()
+}
+
+func (a poly) atan() poly {
+	if a[0] != 0 {
+		panic(a[0])
+	}
+	n := len(a)
+	b := a.conv(a)[:n]
+	b[0] = 1
+	return a.derivative().conv(b.inv())[:n].integral()
+}
+
+// 多项式复合逆
+// todo 模板题 https://www.luogu.com.cn/problem/P5809
