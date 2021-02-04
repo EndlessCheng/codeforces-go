@@ -1564,21 +1564,22 @@ func numberTheoryCollection() {
 	// 斯特林数（斯特林轮换数，斯特林子集数）
 	// https://en.wikipedia.org/wiki/Stirling_number
 	// https://oi-wiki.org/math/stirling/
+	// todo 斯特林数的四种求法 https://www.luogu.com.cn/blog/command-block/si-te-lin-shuo-zong-jie
 	// todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
 	// https://blog.csdn.net/ACdreamers/article/details/8521134
 	// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
 	//    将 n 个元素排成 k 个非空循环排列的方法数
 	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
-	//    https://www.luogu.com.cn/problem/P5408
-	//    https://www.luogu.com.cn/problem/P5409
+	//    todo https://www.luogu.com.cn/problem/P5408
+	//         https://www.luogu.com.cn/problem/P5409
 	// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 	//    https://www.luogu.com.cn/problem/P5395
-	//    https://www.luogu.com.cn/problem/P5396
+	//    todo https://www.luogu.com.cn/problem/P5396
 	//    https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
 	// Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
 	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
@@ -1598,9 +1599,35 @@ func numberTheoryCollection() {
 		return s2[n][k]
 	}
 
+	// 第二类斯特林数·行
+	// https://www.luogu.com.cn/problem/P5395
+	stirling2RowPoly := func(n int) poly {
+		F := make([]int64, n+1)
+		F[0] = 1
+		for i := 1; i <= n; i++ {
+			F[i] = F[i-1] * int64(i) % P
+		}
+		invF := make(poly, n+1)
+		invF[n] = _pow(F[n], P-2)
+		for i := n; i > 0; i-- {
+			invF[i-1] = invF[i] * int64(i) % P
+		}
+		a := make(poly, n+1)
+		b := make(poly, n+1)
+		for i, v := range invF {
+			if i&1 == 0 {
+				a[i] = v
+			} else {
+				a[i] = P - v
+			}
+			b[i] = _pow(int64(i), n) * v % P
+		}
+		return a.conv(b)[:n+1]
+	}
+
 	// 贝尔数：基数为 n 的集合的划分方法数 https://oeis.org/A000110
 	// https://en.wikipedia.org/wiki/Bell_number
-	// 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
+	// 1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} Stirling2(n,k)
 	bell := func(n int) (res int64) {
@@ -1624,24 +1651,13 @@ func numberTheoryCollection() {
 	// https://blog.csdn.net/a_forever_dream/article/details/106489066
 	// https://www.luogu.com.cn/problem/P5748
 	bellPoly := func(n int) poly {
-		pow := func(x int64, n int) int64 {
-			res := int64(1)
-			for ; n > 0; n >>= 1 {
-				if n&1 == 1 {
-					res = res * x % P
-				}
-				x = x * x % P
-			}
-			return res
-		}
-
 		F := make([]int64, n+1)
 		F[0] = 1
 		for i := 1; i <= n; i++ {
 			F[i] = F[i-1] * int64(i) % P
 		}
 		invF := make(poly, n+1)
-		invF[n] = pow(F[n], P-2)
+		invF[n] = _pow(F[n], P-2)
 		for i := n; i > 1; i-- { // 注意为了计算下面的 exp，invF[0] = 0
 			invF[i-1] = invF[i] * int64(i) % P
 		}
@@ -1793,8 +1809,8 @@ func numberTheoryCollection() {
 		crt, excrt,
 		babyStepGiantStep,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
-		stirling2,
-		bell,
+		stirling2, stirling2RowPoly,
+		bell, bellPoly,
 		muInit,
 		floorLoop, floorLoopK,
 	}
