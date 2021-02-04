@@ -33,6 +33,7 @@ http://blog.miskcoo.com/2015/05/polynomial-multipoint-eval-and-interpolation
 
 从拉插到快速插值求值 https://www.luogu.com.cn/blog/command-block/zong-la-cha-dao-kuai-su-cha-zhi-qiu-zhi
 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
+调和级数求和 https://www.luogu.com.cn/problem/P5702
 
 具体的题目见下面的生成函数部分
 */
