@@ -345,6 +345,7 @@ func numberTheoryCollection() {
 		Exponential of Mangoldt function https://oeis.org/A014963
 
 	质数前缀和 http://oeis.org/A007504
+	a(n) ~ n^2 * log(n) / 2
 	a(n)^2 - a(n-1)^2 = A034960(n)
 	EXTRA: divide odd numbers into groups with prime(n) elements and add together http://oeis.org/A034960
 		仍然是质数的前缀和 http://oeis.org/A013918 对应的前缀和下标 http://oeis.org/A013916
@@ -620,7 +621,6 @@ func numberTheoryCollection() {
 
 		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
-		https://www.luogu.com.cn/problem/P1403
 
 		n+d(n) https://oeis.org/A062249
 		n-d(n) https://oeis.org/A049820   count https://oeis.org/A060990   前缀和 https://oeis.org/A161664
@@ -928,25 +928,10 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 计算单个数 n 的欧拉函数（互质的数的个数）Euler totient function
-	calcPhi := func(n int) int {
-		ans := n
-		for i := 2; i*i <= n; i++ {
-			if n%i == 0 {
-				ans = ans / i * (i - 1)
-				for n /= i; n%i == 0; n /= i {
-				}
-			}
-		}
-		if n > 1 {
-			ans = ans / n * (n - 1)
-		}
-		return ans
-	}
-
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
-	// 预处理 [1,mx] 欧拉函数
+	// https://oi-wiki.org/math/euler/
+	// 前缀和见下面的「phi 求和相关」
 	// NOTE: φ(φ...(n)) 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
 	// GCD(n, φ(n)) https://oeis.org/A009195
 	// n+φ(n) http://oeis.org/A121048
@@ -969,6 +954,38 @@ func numberTheoryCollection() {
 	// https://oeis.org/A023896 小于 n 且与 n 互质的数之和 a(n) = phi(n^2)/2 = n*phi(n)/2
 	// https://oeis.org/A053818 小于 n 且与 n 互质的数的平方之和 If n = p_1^e_1 * ... *p_r^e_r then a(n) = n^2*phi(n)/3 + (-1)^r*p_1*..._p_r*phi(n)/6 = n^2*A000010(n)/3 + n*A023900(n)/6, n>1
 	// https://oeis.org/A053819 小于 n 且与 n 互质的数的立方之和 a(n) = n^2/4*(n*A000010(n) + A023900(n)), n>1
+
+	// phi 求和相关
+	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
+	// a(n) = (3*n^2)/(Pi^2) + O(nlogn)，近似看成 n^2 / 3
+	//     相关题目 https://codeforces.com/problemset/problem/1009/D
+	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
+	// ∑φ(i)-1 http://oeis.org/A015614 #{(x,y): 1<=x<y<=n, gcd(x,y)=1}
+	// 0, 1, 3, 5, 9, 11, 17, 21, 27, 31, 41, 45, 57, 63, 71, 79, 95, 101
+
+	// Number of numbers "unrelated to n" http://oeis.org/A045763
+	// m < n such that m is neither a divisor of n nor relatively prime to n
+	// a(n) = n + 1 - d(n) - phi(n); where d(n) is the number of divisors of n
+
+	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
+
+	// 计算单个数 n 的欧拉函数（互质的数的个数）Euler totient function
+	calcPhi := func(n int) int {
+		ans := n
+		for i := 2; i*i <= n; i++ {
+			if n%i == 0 {
+				ans = ans / i * (i - 1)
+				for n /= i; n%i == 0; n /= i {
+				}
+			}
+		}
+		if n > 1 {
+			ans = ans / n * (n - 1)
+		}
+		return ans
+	}
+
+	// 预处理 [1,mx] 欧拉函数
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{}
@@ -980,6 +997,33 @@ func numberTheoryCollection() {
 				for j := i; j <= mx; j += i {
 					phi[j] = phi[j] / i * (i - 1)
 				}
+			}
+		}
+	}
+
+	// 线性筛 https://oi-wiki.org/math/sieve/#_8
+	// https://www.luogu.com.cn/discuss/show/213297
+	sievePhi := func() {
+		const mx int = 1e6
+		phi := [mx + 1]int{1: 1}
+		primes := []int{}
+		vis := [mx + 1]bool{}
+		for i := 2; i <= mx; i++ {
+			if !vis[i] {
+				phi[i] = i - 1
+				primes = append(primes, i)
+			}
+			for _, p := range primes {
+				v := p * i
+				if v > mx {
+					break
+				}
+				vis[v] = true
+				if i%p == 0 {
+					phi[v] = phi[i] * p
+					break
+				}
+				phi[v] = phi[i] * (p - 1)
 			}
 		}
 	}
@@ -1000,20 +1044,6 @@ func numberTheoryCollection() {
 		}
 		return pow(a, b, int64(m))
 	}
-
-	// phi 求和相关
-	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
-	// 近似为 n^2 / 3   相关题目 https://codeforces.com/problemset/problem/1009/D
-	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
-	// ∑φ(i)-1 http://oeis.org/A015614 #{(x,y): 1<=x<y<=n, gcd(x,y)=1}
-	// 0, 1, 3, 5, 9, 11, 17, 21, 27, 31, 41, 45, 57, 63, 71, 79, 95, 101
-	// todo https://oi-wiki.org/math/min-25/#_7
-
-	// Number of numbers "unrelated to n" http://oeis.org/A045763
-	// m < n such that m is neither a divisor of n nor relatively prime to n
-	// a(n) = n + 1 - d(n) - phi(n); where d(n) is the number of divisors of n
-
-	// Unitary totient (or unitary phi) function uphi(n) http://oeis.org/A047994
 
 	// 原根
 	// https://en.wikipedia.org/wiki/Primitive_root_modulo_n
@@ -1670,10 +1700,13 @@ func numberTheoryCollection() {
 	}
 
 	// 莫比乌斯函数 mu https://oeis.org/A008683
-	// 基于线性筛方法
-	// todo https://oi-wiki.org/math/mobius/#_11
-	// 前缀和 https://oi-wiki.org/math/min-25/#_6
-	muInit := func() {
+	// https://oi-wiki.org/math/mobius/#_11
+	// 线性筛 https://oi-wiki.org/math/sieve/#_9
+	// 前缀和 https://oeis.org/A002321 Mertens's function 梅滕斯函数
+	//    https://en.wikipedia.org/wiki/Mertens_function
+	//    |a(n)| = O(x^(1/2 + eps))
+	//    零点 https://oeis.org/A028442
+	sieveMu := func() {
 		const mx int = 1e6
 		mu := [mx + 1]int{1: 1}
 		primes := []int{}
@@ -1684,15 +1717,16 @@ func numberTheoryCollection() {
 				primes = append(primes, i)
 			}
 			for _, p := range primes {
-				if p*i > mx {
+				v := p * i
+				if v > mx {
 					break
 				}
-				vis[p*i] = true
+				vis[v] = true
 				if i%p == 0 {
-					mu[p*i] = 0
+					mu[v] = 0
 					break
 				}
-				mu[p*i] = -mu[i]
+				mu[v] = -mu[i]
 			}
 		}
 	}
@@ -1702,14 +1736,14 @@ func numberTheoryCollection() {
 
 	//
 
-	// 数论分块/除法分块
+	// 数论分块/除法分块/整除分块
+	// https://oi-wiki.org/math/mobius/#_3
 	// a(n) = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
 	//      = 2*( Σ{i=1..floor(sqrt(n))} floor(n/i) ) - floor(sqrt(n))^2
 	// thus, a(n) % 2 == floor(sqrt(n)) % 2
-	// https://oi-wiki.org/math/mobius/#_3
 	// 恒等式 n%i = n-(n/i)*i
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
-	// ∑k%i https://www.luogu.com.cn/problem/P2261
+	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
 	floorLoop := func(n int64) (sum int64) {
@@ -1722,10 +1756,12 @@ func numberTheoryCollection() {
 		return
 	}
 
+	// 余数求和
 	// ∑k%i (when k=n its ∑n%i)
 	// = ∑k-(k/i)*i
 	// = n*k-∑(k/i)*i
 	// 对于 [l,r] 范围内的 i，k/i 不变，此时 ∑(k/i)*i = (k/i)*∑i = (k/i)*(l+r)*(r-l+1)/2
+	// https://www.luogu.com.cn/problem/P2261
 	floorLoopK := func(n, k int64) int64 {
 		min := func(a, b int64) int64 {
 			if a < b {
@@ -1749,18 +1785,93 @@ func numberTheoryCollection() {
 	}
 
 	// 杜教筛 - 积性函数前缀和
-	// todo 推荐 https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
-	// todo http://baihacker.github.io/main/
+	// 【推荐】https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
+	// https://www.luogu.com.cn/blog/command-block/du-jiao-shai
+	// http://baihacker.github.io/main/
 	// The prefix-sum of multiplicative function: the black algorithm http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_the_black_algorithm.html
 	// The prefix-sum of multiplicative function: Dirichlet convolution http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_dirichlet_convolution.html
 	// The prefix-sum of multiplicative function: powerful number sieve http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_powerful_number_sieve.html
-	// 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
+	// todo 浅谈一类积性函数的前缀和 + 套题 https://blog.csdn.net/skywalkert/article/details/50500009
 	// 模板题 https://www.luogu.com.cn/problem/P4213
+	// todo ∑∑i*j*gcd(i,j) https://www.luogu.com.cn/problem/solution/P3768
+	sieveDu := func() {
+		const mx int = 1e6
+		phi := [mx + 1]int64{1: 1}
+		mu := [mx + 1]int{1: 1}
+		primes := []int{}
+		vis := [mx + 1]bool{}
+		for i := 2; i <= mx; i++ {
+			if !vis[i] {
+				phi[i] = int64(i - 1)
+				mu[i] = -1
+				primes = append(primes, i)
+			}
+			for _, p := range primes {
+				v := p * i
+				if v > mx {
+					break
+				}
+				vis[v] = true
+				if i%p == 0 {
+					phi[v] = phi[i] * int64(p)
+					mu[v] = 0
+					break
+				}
+				phi[v] = phi[i] * int64(p-1)
+				mu[v] = -mu[i]
+			}
+		}
+		for i := 0; i < mx; i++ {
+			phi[i+1] += phi[i]
+			mu[i+1] += mu[i]
+		}
+
+		cachePhi := map[int]int64{}
+		var sumPhi func(int) int64
+		sumPhi = func(n int) int64 {
+			if n <= mx {
+				return phi[n]
+			}
+			if s := cachePhi[n]; s > 0 {
+				return s
+			}
+			m := int64(n)
+			res := m * (m + 1) / 2
+			for l, r := int64(2), int64(0); l <= m; l = r + 1 {
+				h := m / l
+				r = m / h
+				res -= (r - l + 1) * sumPhi(int(h))
+			}
+			cachePhi[n] = res
+			return res
+		}
+
+		cacheMu := map[int]int{}
+		var sumMu func(int) int
+		sumMu = func(n int) int {
+			if n <= mx {
+				return mu[n]
+			}
+			if s, has := cacheMu[n]; has {
+				return s
+			}
+			res := 1
+			for l, r := 2, 0; l <= n; l = r + 1 {
+				h := n / l
+				r = n / h
+				res -= (r - l + 1) * sumMu(h)
+			}
+			cacheMu[n] = res
+			return res
+		}
+	}
 
 	// Min25 筛 - 积性函数前缀和
 	// https://zhuanlan.zhihu.com/p/60378354
 	// https://oi-wiki.org/math/min-25/
 	// todo 模板题 https://www.luogu.com.cn/problem/P5325
+
+	//
 
 	// 埃及分数 - 不同的单位分数的和 (IDA*)
 	// https://www.luogu.com.cn/problem/UVA12558
@@ -1803,7 +1914,7 @@ func numberTheoryCollection() {
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD, floorSum,
 		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
-		calcPhi, initPhi, exPhi,
+		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
@@ -1811,8 +1922,9 @@ func numberTheoryCollection() {
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling2, stirling2RowPoly,
 		bell, bellPoly,
-		muInit,
-		floorLoop, floorLoopK,
+		sieveMu,
+		floorLoop, floorLoopK, floorLoop2,
+		sieveDu,
 	}
 }
 
