@@ -1620,6 +1620,39 @@ func numberTheoryCollection() {
 		return res % mod
 	}
 
+	// 贝尔数的多项式求法
+	// https://blog.csdn.net/a_forever_dream/article/details/106489066
+	// https://www.luogu.com.cn/problem/P5748
+	bellPoly := func(n int) poly {
+		pow := func(x int64, n int) int64 {
+			res := int64(1)
+			for ; n > 0; n >>= 1 {
+				if n&1 == 1 {
+					res = res * x % P
+				}
+				x = x * x % P
+			}
+			return res
+		}
+
+		F := make([]int64, n+1)
+		F[0] = 1
+		for i := 1; i <= n; i++ {
+			F[i] = F[i-1] * int64(i) % P
+		}
+		invF := make(poly, n+1)
+		invF[n] = pow(F[n], P-2)
+		for i := n; i > 1; i-- { // 注意为了计算下面的 exp，invF[0] = 0
+			invF[i-1] = invF[i] * int64(i) % P
+		}
+
+		b := invF.exp()
+		for i, v := range b {
+			b[i] = v * F[i] % P
+		}
+		return b
+	}
+
 	// 莫比乌斯函数 mu https://oeis.org/A008683
 	// 基于线性筛方法
 	// todo https://oi-wiki.org/math/mobius/#_11
