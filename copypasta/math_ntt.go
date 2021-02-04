@@ -21,10 +21,10 @@ NTT vs FFT：对于模板题 https://www.luogu.com.cn/problem/P3803 NTT=1.98s(75
 */
 
 /* 多项式全家桶
-todo 【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
-todo 待整理 https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
-           模板 https://blog.orzsiyuan.com/archives/Polynomial-Template/
-todo https://blog.csdn.net/weixin_43973966/article/details/88996932
+【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
+https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
+模板 https://blog.orzsiyuan.com/archives/Polynomial-Template/
+https://blog.csdn.net/weixin_43973966/article/details/88996932
 https://cp-algorithms.com/algebra/polynomial.html
 http://blog.miskcoo.com/2015/05/polynomial-inverse
 http://blog.miskcoo.com/2015/05/polynomial-division
@@ -33,6 +33,8 @@ http://blog.miskcoo.com/2015/05/polynomial-multipoint-eval-and-interpolation
 
 从拉插到快速插值求值 https://www.luogu.com.cn/blog/command-block/zong-la-cha-dao-kuai-su-cha-zhi-qiu-zhi
 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
+
+具体的题目见下面的生成函数部分
 */
 
 /* 分治 FFT
@@ -49,6 +51,7 @@ https://en.wikipedia.org/wiki/Generating_function
 狄利克雷生成函数 DGFs
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shuo-za-tan
 https://oi-wiki.org/math/gen-func/intro/
+OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/
 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
 狄利克雷相关（含 DGFs）https://www.luogu.com.cn/blog/command-block/gcd-juan-ji-xiao-ji
@@ -56,8 +59,9 @@ https://oi-wiki.org/math/gen-func/intro/
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
 
+todo 多项式题单 https://www.luogu.com.cn/training/1008
 https://codeforces.com/problemset/problem/958/F3
-todo 开根+求逆 https://codeforces.com/contest/438/problem/E
+todo https://codeforces.com/contest/438/problem/E
 */
 
 type ntt struct {
@@ -69,7 +73,7 @@ type ntt struct {
 
 const P = 998244353
 
-func pow(x int64, n int) (res int64) {
+func _pow(x int64, n int) (res int64) {
 	res = 1
 	for ; n > 0; n >>= 1 {
 		if n&1 == 1 {
@@ -85,10 +89,10 @@ func newNTT(n int) *ntt {
 	omega := make([]int64, n+1)
 	omegaInv := make([]int64, n+1)
 	for i := 1; i <= n; i <<= 1 {
-		omega[i] = pow(g, (P-1)/i)
-		omegaInv[i] = pow(invG, (P-1)/i)
+		omega[i] = _pow(g, (P-1)/i)
+		omegaInv[i] = _pow(invG, (P-1)/i)
 	}
-	return &ntt{n, pow(int64(n), P-2), omega, omegaInv}
+	return &ntt{n, _pow(int64(n), P-2), omega, omegaInv}
 }
 
 func (t *ntt) transform(a, omega []int64) {
@@ -272,7 +276,7 @@ func (a poly) inv() poly {
 	m := 1 << bits.Len(uint(n))
 	A := a.resize(m)
 	invA := make(poly, m)
-	invA[0] = pow(A[0], P-2)
+	invA[0] = _pow(A[0], P-2)
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
 		b := A[:l].resize(ll)
@@ -406,9 +410,9 @@ func (a poly) pow(k int64) poly {
 	if int64(shift)*k >= int64(n) {
 		return make(poly, n)
 	}
-	a = a.rsh(shift)      // a[0] != 0
-	a.mul(pow(a[0], P-2)) // a[0] == 1
-	return a.ln().mul(k).exp().mul(pow(a[0], int(k1))).lsh(shift * int(k))
+	a = a.rsh(shift)       // a[0] != 0
+	a.mul(_pow(a[0], P-2)) // a[0] == 1
+	return a.ln().mul(k).exp().mul(_pow(a[0], int(k1))).lsh(shift * int(k))
 }
 
 // 多项式三角函数
@@ -463,4 +467,5 @@ func (a poly) atan() poly {
 }
 
 // 多项式复合逆
+// todo https://blog.csdn.net/weixin_43973966/article/details/88998646
 // todo 模板题 https://www.luogu.com.cn/problem/P5809
