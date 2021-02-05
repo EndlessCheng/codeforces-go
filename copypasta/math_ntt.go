@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math/big"
+	"math/bits"
+)
 
 /* NTT: number-theoretic transform 快速数论变换
 https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-theoretic_transform
@@ -325,7 +328,7 @@ func (a poly) divmod(b poly) (quo, rem poly) {
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Square-Root/
 // https://oi-wiki.org/math/poly/sqrt/
 // 模板题 https://www.luogu.com.cn/problem/P5205
-// todo 模板题（二次剩余）https://www.luogu.com.cn/problem/P5277
+// 模板题（二次剩余）https://www.luogu.com.cn/problem/P5277
 func (a poly) sqrt() poly {
 	const inv2 = (P + 1) / 2
 	n := len(a)
@@ -334,8 +337,10 @@ func (a poly) sqrt() poly {
 	rt := make(poly, m)
 	rt[0] = 1
 	if a[0] != 1 {
-		// todo 二次剩余
-
+		rt[0] = new(big.Int).ModSqrt(big.NewInt(a[0]), big.NewInt(P)).Int64()
+		//if 2*rt[0] > P { // P5277 需要
+		//	rt[0] = P - rt[0]
+		//}
 	}
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1

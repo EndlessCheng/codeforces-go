@@ -174,7 +174,7 @@ func numberTheoryCollection() {
 	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)          https://oeis.org/A018804 https://www.luogu.com.cn/problem/P2303
 	//     更简化的公式见小粉兔博客 https://www.cnblogs.com/PinkRabbit/p/8278728.html
 	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)          https://oeis.org/A057660
-	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806
+	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806   https://www.luogu.com.cn/problem/P2398
 	// ∑∑∑gcd(i,j,k) = ∑phi(i)*(floor(n/i))^3   https://ac.nowcoder.com/acm/contest/7608/B
 
 	// LCM 求和相关
@@ -1049,6 +1049,7 @@ func numberTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Primitive_root_modulo_n
 	// https://oi-wiki.org/math/primitive-root/
 	// https://cp-algorithms.com/algebra/primitive-root.html
+	// todo 原根&离散对数相关 https://www.luogu.com.cn/blog/command-block/yuan-gen-li-san-dui-shuo-xiang-guan
 	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
 	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
 	// https://oeis.org/A046144 Number of primitive roots modulo n
@@ -1332,10 +1333,11 @@ func numberTheoryCollection() {
 	// a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
-	// 扩展大步小步法解决离散对数问题 http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
-	// todo https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
-	// https://www.luogu.com.cn/problem/P3846
-	// todo https://www.luogu.com.cn/problem/P4195
+	// todo https://www.luogu.com.cn/blog/command-block/yuan-gen-li-san-dui-shuo-xiang-guan
+	//      http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
+	//      https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
+	// 模板题 https://www.luogu.com.cn/problem/P3846
+	// todo exBSGS https://www.luogu.com.cn/problem/P4195
 	babyStepGiantStep := func(a, b, p int64) int64 {
 		hash := map[int64]int64{}
 		b %= p
@@ -1361,8 +1363,23 @@ func numberTheoryCollection() {
 	}
 
 	// 二次剩余 / N次剩余 / 高次同余方程 x^a ≡ b (mod p)
-	// todo
+	// https://en.wikipedia.org/wiki/Quadratic_residue
+	// https://en.wikipedia.org/wiki/Cipolla%27s_algorithm
+	// https://oi-wiki.org/math/quad-residue/
+	// https://blog.csdn.net/doyouseeman/article/details/52033204
+	// Tonelli-Shanks https://www.luogu.com.cn/blog/242973/solution-p5491
 	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
+	modSqrt := func(x, p int64) []int64 { // p 必须是奇素数
+		if x == 0 {
+			return []int64{0}
+		}
+		x0 := new(big.Int).ModSqrt(big.NewInt(x), big.NewInt(p))
+		if x0 == nil {
+			return nil
+		}
+		// 如果要求小的在前，注意交换下
+		return []int64{x0.Int64(), p - x0.Int64()}
+	}
 
 	// Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n https://oeis.org/A072994
 	// Least k > 0 such that the number of solutions to x^k == 1 (mod k) 1 <= x <= k is equal to n, or 0 if no such k exists https://oeis.org/A072995
@@ -1738,14 +1755,19 @@ func numberTheoryCollection() {
 
 	// 数论分块/除法分块/整除分块
 	// https://oi-wiki.org/math/mobius/#_3
-	// a(n) = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
-	//      = 2*( Σ{i=1..floor(sqrt(n))} floor(n/i) ) - floor(sqrt(n))^2
-	// thus, a(n) % 2 == floor(sqrt(n)) % 2
+	//     https://oeis.org/A006218
+	//     a(n) = Σ{k=1..n} floor(n/k)
+	//          = n * (log(n) + 2*gamma - 1) + O(sqrt(n))
+	//          也就是说平均每项的贡献约为 log(n)
+	//     a(n) = Σ{k=1..n} floor(n/k)
+	//          = 2*(Σ{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
+	//          因此 a(n) % 2 == floor(sqrt(n)) % 2
 	// 恒等式 n%i = n-(n/i)*i
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
 	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
+	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
 	floorLoop := func(n int64) (sum int64) {
 		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
 			h := n / l
@@ -1782,6 +1804,26 @@ func numberTheoryCollection() {
 			sum -= h * s
 		}
 		return sum
+	}
+
+	// 二维整除分块
+	// Σ{i=1..min(n,m)} floor(n/i)*floor(m/i)
+	// https://www.luogu.com.cn/blog/command-block/zheng-chu-fen-kuai-ru-men-xiao-ji
+	// todo ∑∑(n%i)*(m%j) 模积和 https://www.luogu.com.cn/problem/P2260
+	floorLoop2 := func(n, m int64) (sum int64) {
+		min := func(a, b int64) int64 {
+			if a < b {
+				return a
+			}
+			return b
+		}
+		for l, r := int64(1), int64(0); l <= min(n, m); l = r + 1 {
+			hn, hm := n/l, m/l
+			r = min(n/hn, m/hm)
+			w := r - l + 1
+			sum += hn * hm * w
+		}
+		return
 	}
 
 	// 杜教筛 - 积性函数前缀和
@@ -1919,6 +1961,7 @@ func numberTheoryCollection() {
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
+		modSqrt,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling2, stirling2RowPoly,
 		bell, bellPoly,
