@@ -59,8 +59,6 @@ a(1) = 1; a(2) = 2; for n > 2, a(n) = smallest number not already used which sha
 
 数的韧性 https://en.wikipedia.org/wiki/Persistence_of_a_number 乘法: https://oeis.org/A003001 加法: https://oeis.org/A006050
 
-类欧几里得算法 https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis
-
 Smallest number h such that n*h is a repunit (111...1), or 0 if no such h exists
 https://oeis.org/A190301 111...1
 https://oeis.org/A216485 222...2
@@ -212,6 +210,7 @@ func numberTheoryCollection() {
 
 	// 类欧几里得算法
 	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
+	// todo https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis
 	// https://atcoder.jp/contests/practice2/tasks/practice2_c
 	// https://www.luogu.com.cn/problem/P5170
 	floorSum := func(n, m, a, b int64) (res int64) {
@@ -432,7 +431,66 @@ func numberTheoryCollection() {
 		}
 		return n >= 2
 	}
+	// https://www.luogu.com.cn/problem/U82118
 	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
+
+	// 判断质数+求最大质因子
+	// 先用 Pollard-Rho 算法求出一个因子，然后递归求最大质因子
+	// https://zhuanlan.zhihu.com/p/267884783
+	// https://www.luogu.com.cn/problem/P4718
+	pollardRho := func(n int64) int64 {
+		if n == 4 {
+			return 2
+		}
+		if isPrime(n) {
+			return n
+		}
+		abs := func(x int64) int64 {
+			if x < 0 {
+				return -x
+			}
+			return x
+		}
+		mul := func(a, b int64) (res int64) {
+			for ; b > 0; b >>= 1 {
+				if b&1 == 1 {
+					res = (res + a) % n
+				}
+				a = (a + a) % n
+			}
+			return
+		}
+		for {
+			c := 1 + rand.Int63n(n-1)
+			f := func(x int64) int64 { return (mul(x, x) + c) % n }
+			for t, r := f(0), f(f(0)); t != r; t, r = f(t), f(f(r)) {
+				if d := gcd(abs(t-r), n); d > 1 {
+					return d
+				}
+			}
+		}
+	}
+	{
+		max := func(a, b int64) int64 {
+			if a > b {
+				return a
+			}
+			return b
+		}
+		cacheGPF := map[int64]int64{}
+		var gpf func(int64) int64
+		gpf = func(x int64) (res int64) {
+			if cacheGPF[x] > 0 {
+				return cacheGPF[x]
+			}
+			defer func() { cacheGPF[x] = res }()
+			p := pollardRho(x)
+			if p == x {
+				return p
+			}
+			return max(gpf(p), gpf(x/p))
+		}
+	}
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
@@ -467,7 +525,6 @@ func numberTheoryCollection() {
 	// 线性筛 欧拉筛
 	// 避免多次标记合数
 	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
-	// https://www.luogu.com.cn/problem/solution/P3383
 	// https://www.luogu.com.cn/problem/P3383
 	sieveEuler := func() {
 		const mx int = 1e7
@@ -2347,7 +2404,7 @@ func numericalAnalysisCollection() {
 	// https://oi-wiki.org/math/poly/lagrange/
 	// 浅谈几种插值方法 https://www.luogu.com.cn/blog/zhang-xu-jia/ji-zhong-cha-zhi-fang-fa-yang-xie
 	// https://www.luogu.com.cn/problem/P4781
-	// https://www.luogu.com.cn/problem/P5667
+	// todo https://www.luogu.com.cn/problem/P5667
 	// 等幂和 https://codeforces.com/problemset/problem/622/F
 	lagrangePolynomialInterpolation := func(xs, ys []int64, k int64) int64 {
 		const mod = 998244353
