@@ -42,3 +42,11 @@ func (q deque) topR() int {
 	}
 	return q.l[0]
 }
+
+// 0<=i<q.size()
+func (q deque) get(i int) int {
+	if i < len(q.l) {
+		return q.l[len(q.l)-1-i]
+	}
+	return q.r[i-len(q.l)]
+}
