@@ -273,12 +273,12 @@ func commonCollection() {
 
 	// 返回 a 的各个子集的元素和（不保证返回结果有序）
 	subSum := func(a []int) []int {
-		m := 1 << len(a)
-		sum := make([]int, m) // int64
-		for i := 1; i < m; i++ {
-			p := bits.TrailingZeros(uint(i))
-			sum[i] = sum[i&^(1<<p)] + a[p]
-			// NOTE: 如果要写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
+		sum := make([]int, 1<<len(a)) // int64
+		for i, v := range a {
+			for j := 0; j < 1<<i; j++ {
+				sum[1<<i|j] = sum[j] + v
+				// NOTE: 若要直接在此写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
+			}
 		}
 		return sum
 	}
