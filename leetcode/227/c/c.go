@@ -17,13 +17,13 @@ func largestMerge(S, T string) string {
 		}
 		if i == len(s) || i == len(t) {
 			if len(s) > len(t) {
-				ans = append(append(ans, s...), t...)
+				ans = append(ans, s[0])
+				s = s[1:]
 			} else {
-				ans = append(append(ans, t...), s...)
+				ans = append(ans, t[0])
+				t = t[1:]
 			}
-			break
-		}
-		if s[i] > t[i] {
+		} else if s[i] > t[i] {
 			ans = append(ans, s[0])
 			s = s[1:]
 		} else {
