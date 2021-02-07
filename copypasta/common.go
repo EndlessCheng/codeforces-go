@@ -248,13 +248,53 @@ func commonCollection() {
 		return
 	}
 
-	// 返回 a 的各个子集的元素和
+	// 合并有序数组，保留重复元素
+	// a b 必须是有序的（可以为空）
+	merge := func(a, b []int) []int {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		res := make([]int, 0, n+m)
+		for {
+			if i == n {
+				return append(res, b[j:]...)
+			}
+			if j == m {
+				return append(res, a[i:]...)
+			}
+			if a[i] < b[j] { // 改成 > 为降序
+				res = append(res, a[i])
+				i++
+			} else {
+				res = append(res, b[j])
+				j++
+			}
+		}
+	}
+
+	// 返回 a 的各个子集的元素和（不保证返回结果有序）
 	subSum := func(a []int) []int {
 		m := 1 << len(a)
 		sum := make([]int, m) // int64
 		for i := 1; i < m; i++ {
 			p := bits.TrailingZeros(uint(i))
 			sum[i] = sum[i&^(1<<p)] + a[p]
+			// NOTE: 如果要写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
+		}
+		return sum
+	}
+
+	// 返回 a 的各个子集的元素和，且保证返回结果有序
+	// 若已求出前 i-1 个数的有序子集和 b，那么前 i 个数的有序子集和可以由 b 和 {b 的每个数加上 a[i]} 归并得到
+	// 复杂度为 1+2+4+...+2^n = O(2^n)
+	// 参考 https://leetcode-cn.com/problems/closest-subsequence-sum/solution/o2n2de-zuo-fa-by-heltion-0yn7/
+	subSumSorted := func(a []int) []int {
+		sum := []int{0}
+		for _, v := range a {
+			b := make([]int, len(sum))
+			for i, w := range sum {
+				b[i] = w + v
+			}
+			sum = merge(sum, b)
 		}
 		return sum
 	}
@@ -373,29 +413,6 @@ func commonCollection() {
 			}
 		}
 		return true
-	}
-
-	// 合并有序数组，保留重复元素
-	// a b 必须是有序的（可以为空）
-	merge := func(a, b []int) []int {
-		i, n := 0, len(a)
-		j, m := 0, len(b)
-		res := make([]int, 0, n+m)
-		for {
-			if i == n {
-				return append(res, b[j:]...)
-			}
-			if j == m {
-				return append(res, a[i:]...)
-			}
-			if a[i] < b[j] { // 改成 > 为降序
-				res = append(res, a[i])
-				i++
-			} else {
-				res = append(res, b[j])
-				j++
-			}
-		}
 	}
 
 	// 求差集 A-B, B-A 和交集 A∩B
@@ -900,7 +917,7 @@ func commonCollection() {
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, zip, zipI, rotate, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D,
+		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
