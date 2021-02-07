@@ -1,29 +1,18 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func largestMerge(S, T string) string {
-	ans, s, t := make([]byte, 0, len(S)+len(T)), []byte(S), []byte(T)
+func largestMerge(s, t string) string {
+	ans := make([]byte, 0, len(s)+len(t))
 	for {
-		if len(s) == 0 {
+		if s == "" {
 			ans = append(ans, t...)
 			break
 		}
-		if len(t) == 0 {
+		if t == "" {
 			ans = append(ans, s...)
 			break
 		}
-		i := 0
-		for ; i < len(s) && i < len(t) && s[i] == t[i]; i++ {
-		}
-		if i == len(s) || i == len(t) {
-			if len(s) > len(t) {
-				ans = append(ans, s[0])
-				s = s[1:]
-			} else {
-				ans = append(ans, t[0])
-				t = t[1:]
-			}
-		} else if s[i] > t[i] {
+		if s > t {
 			ans = append(ans, s[0])
 			s = s[1:]
 		} else {
