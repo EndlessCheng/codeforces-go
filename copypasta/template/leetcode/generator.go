@@ -307,7 +307,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				for ; ; c = c.NextSibling {
 					if c.DataAtom != 0 {
 						s := strings.TrimSpace(c.FirstChild.Data)
-						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
+						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") || strings.HasPrefix(s, "提") { // 输入 输出 解释 提示
 							break
 						}
 					}
@@ -319,7 +319,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				for c = c.NextSibling; c != nil; c = c.NextSibling { // 有时候没有解释，那么会通过 c != nil 来跳出循环
 					if c.DataAtom != 0 {
 						s := strings.TrimSpace(c.FirstChild.Data)
-						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") { // 输入 输出 解释
+						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") || strings.HasPrefix(s, "提") { // 输入 输出 解释 提示
 							break
 						}
 					}
