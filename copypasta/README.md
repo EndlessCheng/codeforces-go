@@ -64,7 +64,9 @@
 
 [GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)
 
-[Pepcy's Templates for OI and ICPC](http://pepcy.cf/icpc-templates/)
+[Pepcy 模板](http://pepcy.cf/icpc-templates/)
+
+[F0RE1GNERS 模板](https://github.com/F0RE1GNERS/template)
 
 ### 洛谷日报
 
