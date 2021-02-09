@@ -17,7 +17,7 @@ type (
 func run(in input, Q func(req) resp) (gs guess) {
 	q := func(i int) int { return Q(req{i}).v }
 	n := in.n
-	ans := make([]int, n)
+	ans := make([]int, n) // 0
 	defer func() { gs.ans = ans }()
 
 	return
@@ -42,9 +42,9 @@ func ioq() {
 
 		gs := run(d, Q)
 		ans := gs.ans
-		Fprint(out, "!")
+		Fprint(out, "! ")
 		for _, v := range ans {
-			Fprint(out, " ", v)
+			Fprint(out, v, " ")
 		}
 		Fprintln(out)
 		out.Flush()
