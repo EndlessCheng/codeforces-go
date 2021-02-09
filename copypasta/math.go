@@ -1419,7 +1419,8 @@ func numberTheoryCollection() {
 		return -1
 	}
 
-	// 二次剩余 / N次剩余 / 高次同余方程 x^a ≡ b (mod p)
+	// 二次剩余 x^2 ≡ a (mod p)
+	// 一个数 a，如果不是 p 的倍数且模 p 同余于某个数的平方，则称 a 为模 p 的二次剩余
 	// https://en.wikipedia.org/wiki/Quadratic_residue
 	// https://en.wikipedia.org/wiki/Cipolla%27s_algorithm
 	// https://oi-wiki.org/math/quad-residue/
@@ -1438,7 +1439,15 @@ func numberTheoryCollection() {
 		return []int64{x0.Int64(), p - x0.Int64()}
 	}
 
-	// Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n https://oeis.org/A072994
+	// 判断 a 是否为模 p 的二次剩余，p 必须是奇素数
+	// Jacobi 符号为 -1
+	isQuadraticResidue := func(a, p int64) bool {
+		return big.Jacobi(big.NewInt(a), big.NewInt(p)) < 0
+	}
+
+	// todo N 次剩余 / 高次同余方程 x^a ≡ b (mod p)
+
+	// https://oeis.org/A072994 Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n
 	// Least k > 0 such that the number of solutions to x^k == 1 (mod k) 1 <= x <= k is equal to n, or 0 if no such k exists https://oeis.org/A072995
 
 	// http://oeis.org/A182865 Minimal number of quadratic residues
@@ -2018,7 +2027,7 @@ func numberTheoryCollection() {
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep,
-		modSqrt,
+		modSqrt, isQuadraticResidue,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling2, stirling2RowPoly,
 		bell, bellPoly,
