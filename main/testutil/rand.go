@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+const (
+	Digits = "0123456789"
+	Upper  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	Lower  = "abcdefghijklmnopqrstuvwxyz"
+)
+
 func NewRandGenerator() *RG {
 	return &RG{&strings.Builder{}}
 }
@@ -77,6 +83,20 @@ func (r *RG) Str(minLen, maxLen int, min, max byte) string {
 	sb.Grow(l)
 	for i := 0; i < l; i++ {
 		sb.WriteByte(byte(r._int(int(min), int(max))))
+	}
+	s := sb.String()
+	r.sb.WriteString(s)
+	r.Space()
+	return s
+}
+
+// StrInSet generates a random string with length in range [minLen, maxLen] and its chars in chars
+func (r *RG) StrInSet(minLen, maxLen int, chars string) string {
+	l := r._int(minLen, maxLen)
+	sb := &strings.Builder{}
+	sb.Grow(l)
+	for i := 0; i < l; i++ {
+		sb.WriteByte(chars[rand.Intn(len(chars))])
 	}
 	s := sb.String()
 	r.sb.WriteString(s)
