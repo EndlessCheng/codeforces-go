@@ -210,7 +210,7 @@ func commonCollection() {
 		return b
 	}
 
-	// 适用于 a*b 超过 int64 范围的情况
+	// 适用于 mod 超过 int32 范围的情况
 	mul := func(a, b, mod int64) (res int64) {
 		for ; b > 0; b >>= 1 {
 			if b&1 == 1 {
@@ -220,6 +220,17 @@ func commonCollection() {
 		}
 		return
 	}
+
+	// 另一种写法，随机数据下比上面的龟速乘快 10 倍左右
+	// 这里就假设 a b 均为非负了
+	mul = func(a, b, mod int64) int64 {
+		hi, lo := bits.Mul64(uint64(a), uint64(b))
+		h, l := int64(hi%uint64(mod)), int64(lo%uint64(mod))
+		p32 := int64(1) << 32 % mod
+		return (p32*p32%mod*h + l) % mod
+	}
+
+	// 还有一种用浮点数的写法，此略
 
 	// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
 	pow := func(x, n, mod int64) int64 {
