@@ -1844,6 +1844,27 @@ func numberTheoryCollection() {
 		return
 	}
 
+	// ∑x/i, i in [low,up]
+	// https://codeforces.com/contest/1485/problem/C
+	floorLoopRange := func(low, up, x int64) (sum int64) {
+		min := func(a, b int64) int64 {
+			if a < b {
+				return a
+			}
+			return b
+		}
+		for l, r := low, int64(0); l <= up; l = r + 1 {
+			h := x / l
+			if h == 0 {
+				break
+			}
+			r = min(x/h, up)
+			w := r - l + 1
+			sum += h * w
+		}
+		return
+	}
+
 	// 余数求和
 	// ∑k%i (when k=n its ∑n%i)
 	// = ∑k-(k/i)*i
@@ -2032,7 +2053,7 @@ func numberTheoryCollection() {
 		stirling2, stirling2RowPoly,
 		bell, bellPoly,
 		sieveMu,
-		floorLoop, floorLoopK, floorLoop2,
+		floorLoop, floorLoopRange, floorLoopK, floorLoop2,
 		sieveDu,
 	}
 }
