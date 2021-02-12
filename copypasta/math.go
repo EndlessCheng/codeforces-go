@@ -149,7 +149,10 @@ func numberTheoryCollection() {
 
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
-	// 前 n 个数的 LCM https://oeis.org/A003418 https://atcoder.jp/contests/arc110/tasks/arc110_a
+	// 前 n 个数的 LCM https://oeis.org/A003418
+	// 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, 27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, 232792560, 232792560, 5354228880, 5354228880, 26771144400, 26771144400, 80313433200, 80313433200
+	//     相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
+	//             https://codeforces.com/contest/1485/problem/D
 	// a(n)/a(n-1) = https://oeis.org/A014963
 	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
 	// LCM(2, 4, 6, ..., 2n) https://oeis.org/A051426
