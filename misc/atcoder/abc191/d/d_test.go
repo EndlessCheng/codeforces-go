@@ -23,7 +23,14 @@ func Test_run(t *testing.T) {
 			`31415920098`,
 		},
 		// TODO 测试参数的下界和上界
-		
+		{
+			`0.0001 100000 100000`,
+			`31415925440`,
+		},
+		{
+			`0.0001 93819 93819`,
+			`27652312476`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
