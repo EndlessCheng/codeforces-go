@@ -1241,6 +1241,43 @@ func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	f(root, -1)
 }
 
+// 树分块
+// https://oi-wiki.org/ds/tree-decompose/
+// https://ouuan.github.io/post/%E8%8E%AB%E9%98%9F%E5%B8%A6%E4%BF%AE%E8%8E%AB%E9%98%9F%E6%A0%91%E4%B8%8A%E8%8E%AB%E9%98%9F%E8%AF%A6%E8%A7%A3/#%E5%88%86%E5%9D%97%E6%96%B9%E5%BC%8F
+// https://yfscfs.gitee.io/post/%E5%90%84%E7%A7%8D%E6%A0%91%E4%B8%8A%E5%88%86%E5%9D%97%E5%A7%BF%E5%8A%BF%E7%9A%84%E7%89%B9%E7%82%B9%E5%8F%8A%E5%B0%8F%E7%BB%93/
+// https://www.cnblogs.com/hua-dong/p/8275227.html
+// 模板题 王室联邦 https://www.luogu.com.cn/problem/P2325
+func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
+	// 树分块有多种方式，下面的代码基于《王室联邦》这题
+	rt := []int{}         // 每个块的根节点
+	bid := make([]int, n) // bid[i] 表示节点 i 所属的块的编号 rt[bid[i]] 即为 i 所属块的根节点
+	s := []int{}
+	var f func(v, fa int)
+	f = func(v, fa int) {
+		sz := len(s)
+		for _, w := range g[v] {
+			if w != fa {
+				f(w, v)
+				if len(s)-sz >= blockSize {
+					rt = append(rt, v)
+					for len(s) > sz {
+						bid[s[len(s)-1]] = len(rt) - 1
+						s = s[:len(s)-1]
+					}
+				}
+			}
+		}
+		s = append(s, v)
+	}
+	f(0, -1)
+	if len(rt) == 0 {
+		rt = []int{0}
+	}
+	for _, v := range s {
+		bid[v] = len(rt) - 1
+	}
+}
+
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
 // https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
