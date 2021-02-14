@@ -39,6 +39,10 @@ func TestCompareInf(t *testing.T) {
 func TestCheckInf(t *testing.T) {
 	var solve func([]int) []int /*TODO*/
 	for tc := 1; ; tc++ {
+		if tc%1e5 == 0 {
+			fmt.Println(tc)
+		}
+
 		rg := testutil2.NewRandGenerator()
 		n := rg.Int(1, 9)
 		a := rg.IntSlice(n, 1, 9)
