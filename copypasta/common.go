@@ -1392,7 +1392,7 @@ func moAlgorithm() {
 
 		var _lca func(v, w int) int // 见 tree.lcaBinarySearch
 
-		blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+		blockSize := int(math.Ceil(float64(2*n) / math.Sqrt(float64(q))))
 		type query struct{ lb, l, r, lca, qid int }
 		qs := make([]query, q)
 		for i := range qs {
