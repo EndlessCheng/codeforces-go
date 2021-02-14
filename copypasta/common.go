@@ -1280,12 +1280,6 @@ func moAlgorithm() {
 		return ans
 	}
 
-	// todo 树上莫队
-	// https://oi-wiki.org/misc/mo-algo-on-tree/
-	moOnTree := func(a []int) {
-
-	}
-
 	// 回滚莫队
 	// 复杂度同普通莫队
 	// https://oi-wiki.org/misc/rollback-mo-algo/
@@ -1372,10 +1366,113 @@ func moAlgorithm() {
 		return ans
 	}
 
+	// 树上莫队
+	// 通过 DFS 序转化成序列上的查询
+	// https://oi-wiki.org/misc/mo-algo-on-tree/
+	// 有关树分块的内容见 graph_tree.go 中的 limitSizeDecomposition
+	// 模板题 糖果公园 https://www.luogu.com.cn/problem/P4074
+	//       https://www.acwing.com/problem/content/2536/ https://www.luogu.com.cn/problem/SP10707
+	moOnTree := func(n, root, q int, g [][]int, vals []int) []int {
+		vs := make([]int, 0, 2*n)
+		tin := make([]int, n)
+		tout := make([]int, n)
+		var initTime func(v, fa int)
+		initTime = func(v, fa int) {
+			tin[v] = len(vs)
+			vs = append(vs, v)
+			for _, w := range g[v] {
+				if w != fa {
+					initTime(w, v)
+				}
+			}
+			tout[v] = len(vs)
+			vs = append(vs, v)
+		}
+		initTime(root, -1)
+
+		var _lca func(v, w int) int // 见 tree.lcaBinarySearch
+
+		blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+		type query struct{ lb, l, r, lca, qid int }
+		qs := make([]query, q)
+		for i := range qs {
+			var v, w int
+			//Fscan(in, &v, &w)
+			v--
+			w--
+			if tin[v] > tin[w] {
+				v, w = w, v
+			}
+			if lca := _lca(v, w); lca != v {
+				qs[i] = query{tout[v] / blockSize, tout[v], tin[w] + 1, lca, i}
+			} else {
+				qs[i] = query{tin[v] / blockSize, tin[v], tin[w] + 1, -1, i}
+			}
+		}
+		sort.Slice(qs, func(i, j int) bool {
+			a, b := qs[i], qs[j]
+			if a.lb != b.lb {
+				return a.lb < b.lb
+			}
+			if a.lb&1 == 0 {
+				return a.r < b.r
+			}
+			return a.r > b.r
+		})
+
+		var k int // vals 不同元素个数
+		cnt := make([]int, k+1)
+		cc := 0
+		l, r := 0, 0
+		vis := make([]bool, n)
+		move := func(v int) {
+			x := vals[v]
+			if vis[v] = !vis[v]; vis[v] {
+				if cnt[x] == 0 {
+					cc++
+				}
+				cnt[x]++
+			} else {
+				cnt[x]--
+				if cnt[x] == 0 {
+					cc--
+				}
+			}
+		}
+		getAns := func(q query) int {
+			return cc
+		}
+		ans := make([]int, q)
+		for _, q := range qs {
+			for ; r < q.r; r++ {
+				move(vs[r])
+			}
+			for ; l < q.l; l++ {
+				move(vs[l])
+			}
+			for l > q.l {
+				l--
+				move(vs[l])
+			}
+			for r > q.r {
+				r--
+				move(vs[r])
+			}
+			if q.lca >= 0 {
+				move(q.lca)
+			}
+			ans[q.qid] = getAns(q)
+			if q.lca >= 0 {
+				move(q.lca)
+			}
+		}
+		return ans
+	}
+
 	// 二次离线莫队
 	// todo https://www.luogu.com.cn/problem/P4887
 
-	_ = []interface{}{mo, moWithUpdate, moOnTree, rollbackMo}
+	_ = []interface{}{mo, moWithUpdate, rollbackMo, moOnTree}
 }
 
 // 单调队列（相关代码见 monotoneCollection 中的「单调队列」部分）
