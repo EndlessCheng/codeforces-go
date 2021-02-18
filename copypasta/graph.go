@@ -437,6 +437,7 @@ func (*graph) eulerianPath(n, m int) []int {
 	path := make([]int, 0, m+1)
 	{
 		// 无向图
+		pre := st
 		vis := make([]bool, m)
 		var f func(int)
 		f = func(v int) {
@@ -446,6 +447,12 @@ func (*graph) eulerianPath(n, m int) []int {
 				if i := e.eid; !vis[i] {
 					vis[i] = true
 					f(e.to)
+					// 定向
+					v, w := v, e.to
+					if w == pre {
+						v, w = w, v
+					}
+					pre = w
 					// NOTE: 输出边的话移在这里 append i
 				}
 			}
