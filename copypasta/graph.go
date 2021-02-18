@@ -1831,8 +1831,8 @@ o:
 //       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A 就是上面的式子替换了一下（一个为真，另一个一定为假）
 //       A,B 必须且只一个 (A^B)    A⇒¬B, B⇒¬A, ¬A⇒B, ¬B⇒A
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
-//       A 必须存在       (A)     ¬A⇒A
-//       A 不能存在       (¬A)     A⇒¬A
+//       A 必须存在       (A)     ¬A⇒A     注：A ⇔ A∨A ⇔ ¬A⇒A∧¬A⇒A ⇔ ¬A⇒A
+//       A 不能存在       (¬A)    A⇒¬A
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // 模板题 https://www.luogu.com.cn/problem/P4782
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
