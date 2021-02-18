@@ -402,6 +402,10 @@ func commonCollection() {
 		return
 	}
 
+	// 二维差分
+	// todo https://blog.csdn.net/weixin_43914593/article/details/113782108
+	//      https://www.luogu.com.cn/problem/P3397
+
 	reverse := func(a []byte) []byte {
 		n := len(a)
 		b := make([]byte, n)
