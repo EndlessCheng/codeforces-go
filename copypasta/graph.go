@@ -14,6 +14,7 @@ Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE
 TIPS: 使用一个 fa 数组（初始化为 -1）记录搜索树中的节点的父节点，这样对每个节点都有一条到根的路径（根的 fa 为 -1）
 NOTE: 独立集相关问题，可以从染色的角度考虑
 NOTE: 度数大于 √M 的点不超过 2√M 个
+      相关题目 & 无向图定向 https://leetcode-cn.com/problems/minimum-degree-of-a-connected-trio-in-a-graph/solution/gei-wu-xiang-tu-ding-xiang-by-lucifer100-c72d/
 
 https://oeis.org/A031878 Maximal number of edges in Hamiltonian path in complete graph on n nodes
 a(n) = C(n, 2)        n%2==0
@@ -405,6 +406,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 //		无向图 https://www.luogu.com.cn/problem/P2731
 //      无向图 https://www.luogu.com.cn/problem/P1341
 //      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+// 构造 https://ac.nowcoder.com/acm/contest/4010/H
 func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
