@@ -134,6 +134,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 //	      v := (w - 1) / k
 //        g[v] = append(g[v], w)
 //    }
+// 其他：见 common.go 中的树上莫队部分
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
@@ -571,6 +572,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E  LC1697 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
+// 其他：见 common.go 中的树上莫队部分
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
