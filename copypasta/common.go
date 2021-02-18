@@ -1216,9 +1216,11 @@ func moAlgorithm() {
 				return a.lb < b.lb
 			}
 			if a.rb != b.rb {
-				return a.rb < b.rb
+				if a.lb&1 == 0 {
+					return a.rb < b.rb
+				}
+				return a.rb > b.rb
 			}
-			// 奇偶化排序
 			if a.rb&1 == 0 {
 				return a.t < b.t
 			}
@@ -1372,6 +1374,7 @@ func moAlgorithm() {
 
 	// 树上莫队
 	// 通过 DFS 序转化成序列上的查询
+	// NOTE: 对于带修莫队，去掉 timeSlip 中的参数，且 if l <= p && p < r 替换成 if vis[p] https://www.luogu.com.cn/record/46714923
 	// https://oi-wiki.org/misc/mo-algo-on-tree/
 	// 有关树分块的内容见 graph_tree.go 中的 limitSizeDecomposition
 	// 模板题 糖果公园 https://www.luogu.com.cn/problem/P4074
@@ -1394,9 +1397,10 @@ func moAlgorithm() {
 		}
 		initTime(root, -1)
 
+		// initTime 的逻辑可以并到求 pa dep 的 DFS 中
 		var _lca func(v, w int) int // 见 tree.lcaBinarySearch
 
-		blockSize := int(math.Ceil(float64(2*n) / math.Sqrt(float64(q))))
+		blockSize := int(math.Ceil(float64(2*n) / math.Sqrt(float64(q)))) // int(math.Round(math.Pow(float64(2*n), 2.0/3)))
 		type query struct{ lb, l, r, lca, qid int }
 		qs := make([]query, q)
 		for i := range qs {
