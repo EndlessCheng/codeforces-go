@@ -103,6 +103,7 @@ func divideKDT(a []*kdNode, k, dim int) {
 	}
 }
 
+// 另一种实现是选择的维度要满足其内部点的分布的差异度最大，见 https://oi-wiki.org/ds/kdt/
 func buildKDT(nodes []*kdNode, dim int) *kdNode {
 	if len(nodes) == 0 {
 		return nil
