@@ -128,9 +128,9 @@ func (t *bst) lowerBound(key int) (lb *bstNode) {
 
 // 前驱（小于 key，且最大的数）
 func (t *bst) prev(key int) (prev *bstNode) {
-	// 另一种写法
-	// rank, _ := t.mRank(key)
-	// return t.mSelect(rank - 1)
+	// 另一种写法，适用于含有 lazy delete 的 BST，如替罪羊树等
+	// rk, _ := t.mRank(key)
+	// return t.mSelect(rk - 1)
 	for o := t.root; o != nil; {
 		if o.cmp(key) <= 0 {
 			o = o.lr[0]
@@ -144,12 +144,12 @@ func (t *bst) prev(key int) (prev *bstNode) {
 
 // 后继（大于 key，且最小的数)
 func (t *bst) next(key int) (next *bstNode) {
-	// 另一种写法
-	// rank, o := t.mRank(key)
+	// 另一种写法，适用于含有 lazy delete 的 BST，如替罪羊树等
+	// rk, o := t.mRank(key)
 	// if o != nil {
-	// 	 rank += o.value
+	// 	 rk += o.value
 	// }
-	// return t.mSelect(rank)
+	// return t.mSelect(rk)
 	for o := t.root; o != nil; {
 		if o.cmp(key) != 0 {
 			o = o.lr[1]
@@ -249,23 +249,20 @@ func (t *bst) lowerCount(key int) (cnt int) {
 	return
 }
 
-// 排名为 k 的节点 o（即有 k 个键小于 o.key）
+// kth: 排名为 k 的节点 o（即有 k 个键小于 o.key）
 func (t *bst) mSelect(k int) (o *bstNode) {
 	//if k < 0 {
 	//	return
 	//}
 	for o = t.root; o != nil; {
-		switch ls := o.lr[0].mSize(); {
-		case k < ls:
+		if ls := o.lr[0].mSize(); k < ls {
 			o = o.lr[0]
-		case k > ls:
+		} else {
 			k -= o.value + ls
 			if k < 0 {
 				return
 			}
 			o = o.lr[1]
-		default:
-			return
 		}
 	}
 	return
