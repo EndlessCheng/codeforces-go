@@ -102,7 +102,7 @@ func (t *scapegoatTree) _put(o *sgtNode, key, val int) *sgtNode {
 		o.val += val
 	}
 	o.maintain()
-	if 4*t.max(o.lr[0].size(), o.lr[1].size()) > 3*o.size() { // alpha=3/4
+	if sz := o.size() * 3; o.lr[0].size()*4 > sz || o.lr[1].size()*4 > sz { // alpha=3/4
 		return o.rebuild()
 	}
 	return o
@@ -130,13 +130,6 @@ func (t *scapegoatTree) delete(key int) {
 		t.root = t.root.rebuild()
 		t.delCnt = 0
 	}
-}
-
-func (scapegoatTree) max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
 
 // 其余和 BST 有关的方法见 bst.go
