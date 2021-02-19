@@ -14,6 +14,8 @@
 
 见 [template](./template) 中的 `generator.go` 以及各个文件夹下的 `generator.go`
 
+代码测试（对拍）见 [testutil.go](https://github.com/EndlessCheng/codeforces-go/blob/master/main/testutil/testutil.go)
+
 ## 题库
 
 [Problem Topics](https://codeforces.com/blog/entry/55274)
