@@ -826,6 +826,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
+// 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -857,7 +858,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for len(q) > 0 {
 		p := q.pop()
 		v := p.v
-		if vis[v] { // dist[v] < p.dis
+		if vis[v] { // p.dis > dist[v]
 			continue
 		}
 		vis[v] = true
@@ -1525,7 +1526,8 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 	return
 }
 
-// 带权二分图最大匹配 - 任务分配问题/婚姻匹配问题 - KM(Kuhn–Munkres) 算法 O(n^4)  todo BFS 优化后的 O(n^3)
+// 带权二分图最大完美匹配 - 任务分配问题/婚姻匹配问题 - KM (Kuhn–Munkres) 算法
+// 下面的代码是 O(n^4) 的, O(n^3) 的在后面
 // https://en.wikipedia.org/wiki/Assignment_problem
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
 // https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
@@ -1538,18 +1540,17 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // http://acm.hdu.edu.cn/showproblem.php?pid=2426
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
-// https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
-func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match []int, sum int64) {
-	const inf int = 2e9
-	// NOTE: 若需要判断是否不存在完备匹配，wt 应初始化为 -inf，否则初始化为 0
+// LC1595/周赛207D https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(n int, wt [][]int64) (match []int, sum int64) {
+	const inf int64 = 1e18
+	// NOTE: wt 中不存在的边应初始化为 -inf
 
-	// 右部点匹配了哪一个左部点
-	match = make([]int, n)
+	match = make([]int, n) // 右部点匹配了哪一个左部点
 	for i := range match {
 		match[i] = -1
 	}
-	// 顶标
-	la := make([]int, n)
+	// 初始化顶标
+	la := make([]int64, n)
 	for i, r := range wt {
 		la[i] = r[0]
 		for _, w := range r[1:] {
@@ -1558,11 +1559,11 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 			}
 		}
 	}
-	lb := make([]int, n)
-	slack := make([]int, n)
+	lb := make([]int64, n)
+	slack := make([]int64, n)
 	for i := 0; i < n; i++ {
-		for {
-			va := make([]bool, n)
+		for { // 循环直到 DFS 找到一个匹配
+			va := make([]bool, n) // 访问标记：是否在交错树中
 			vb := make([]bool, n)
 			for j := range slack {
 				slack[j] = inf
@@ -1572,14 +1573,14 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 				va[v] = true
 				for w, b := range vb {
 					if !b {
-						if d := la[v] + lb[w] - wt[v][w]; d == 0 {
+						if delta := la[v] + lb[w] - wt[v][w]; delta == 0 { // 相等子图
 							vb[w] = true
 							if match[w] == -1 || f(match[w]) {
 								match[w] = v
 								return true
 							}
-						} else if d < slack[w] {
-							slack[w] = d
+						} else if delta < slack[w] {
+							slack[w] = delta
 						}
 					}
 				}
@@ -1588,18 +1589,19 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 			if f(i) {
 				break
 			}
-			d := inf
+			// 更新顶标
+			delta := inf
 			for j, b := range vb {
-				if !b && slack[j] < d {
-					d = slack[j]
+				if !b && slack[j] < delta {
+					delta = slack[j]
 				}
 			}
 			for j := 0; j < n; j++ {
 				if va[j] {
-					la[j] -= d
+					la[j] -= delta
 				}
 				if vb[j] {
-					lb[j] += d
+					lb[j] += delta
 				}
 			}
 		}
@@ -1610,7 +1612,83 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int) (match 
 			//continue
 			return nil, 0
 		}
-		sum += int64(wt[v][w])
+		sum += wt[v][w]
+	}
+	return
+}
+
+// O(n^3)
+// 下标需要从 1 开始
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (match []int, sum int64) {
+	const inf int64 = 1e18
+	// NOTE: wt 中不存在的边应初始化为 -inf
+
+	match = make([]int, n+1) // 右部点匹配了哪一个左部点
+	la := make([]int64, n+1)
+	for i, row := range wt {
+		la[i] = -inf
+		for _, v := range row {
+			if v > la[i] {
+				la[i] = v
+			}
+		}
+	}
+	lb := make([]int64, n+1)
+	slack := make([]int64, n+1)
+	for i := 1; i <= n; i++ {
+		vb := make([]bool, n+1)
+		for j := 1; j <= n; j++ {
+			slack[j] = inf
+		}
+		last := make([]int, n+1) // 右部点在交错树中的上一个右部点，用于倒推得到交错路
+		y := 0
+		match[0] = i // 一开始假设有一条 i-0 的匹配
+		for {
+			vb[y] = true
+			x, nextY := match[y], 0
+			delta := inf
+			for j := 1; j <= n; j++ {
+				if !vb[j] {
+					if d := la[x] + lb[j] - wt[x][j]; d < slack[j] {
+						slack[j] = d
+						last[j] = y
+					}
+					if slack[j] < delta {
+						delta = slack[j]
+						nextY = j
+					}
+				}
+			}
+			// 当 delta=0 时，相当于沿着相等子图向下搜索一层
+			// 当 delta>0 时，相当于直接回到最小边（新加入相等子图的边）处开始搜索
+			if delta > 0 {
+				for j := 0; j <= n; j++ {
+					if vb[j] {
+						la[match[j]] -= delta
+						lb[j] += delta
+					} else {
+						slack[j] -= delta
+					}
+				}
+			}
+			y = nextY
+			if match[y] == 0 {
+				break
+			}
+		}
+		// 倒推更新增广路
+		for ; y > 0; y = last[y] {
+			match[y] = match[last[y]]
+		}
+	}
+	for w := 1; w <= n; w++ {
+		v := match[w]
+		// 无解，或者不选
+		if v == 0 {
+			//continue
+			return nil, 0
+		}
+		sum += wt[v][w]
 	}
 	return
 }
@@ -2531,7 +2609,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 		for len(q) > 0 {
 			p := q.pop()
 			v := p.v
-			if dist[v] < p.dis {
+			if p.dis > dist[v] {
 				continue
 			}
 			for i, e := range g[v] {
