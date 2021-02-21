@@ -161,7 +161,7 @@ func AssertEqual(t *testing.T, rawText string, runFunc ioFunc) {
 }
 
 // 对拍
-// solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
+// runFuncAC 为暴力逻辑或已 AC 逻辑，runFunc 为当前测试的逻辑
 func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, runFuncAC, runFunc ioFunc) {
 	if len(inputs) == 0 {
 		return
@@ -200,7 +200,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 }
 
 // 无尽对拍模式
-// inputGenerator 生成随机测试数据，solveFuncAC 为暴力逻辑或已 AC 逻辑，solveFunc 为当前测试的逻辑
+// inputGenerator 生成随机测试数据，runFuncAC 为暴力逻辑或已 AC 逻辑，runFunc 为当前测试的逻辑
 // TIPS: 失败的用例可以加入到 inputs 中方便后续测试
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc ioFunc) {
 	for tc := 1; ; tc++ {
