@@ -67,7 +67,7 @@ func lowerArgsFirstChar(funcDefineLine string) string {
 	return string(code)
 }
 
-// 替换常见变量名（一般是数组名称）
+// 替换常见变量名（数组、字符串等）
 func renameInputArgs(funcDefineLine string) string {
 	return strings.NewReplacer(
 		"arr ", "a ",
@@ -75,6 +75,9 @@ func renameInputArgs(funcDefineLine string) string {
 		"mat ", "a ",
 		"matrix ", "a ",
 		"grid ", "a ",
+		"word ", "s ",
+		"word1 ", "x ",
+		"word2 ", "y ",
 	).Replace(funcDefineLine)
 }
 
