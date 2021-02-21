@@ -3,6 +3,20 @@ package main
 // github.com/EndlessCheng/codeforces-go
 type pair struct{ d, v int }
 
+var co [51][51]bool
+
+func init() {
+	co[1][1] = true
+	for i := 1; i < 51; i++ {
+		for j := i + 1; j < 51; j++ {
+			if gcd(i, j) == 1 {
+				co[i][j] = true
+				co[j][i] = true
+			}
+		}
+	}
+}
+
 func getCoprimes(a []int, edges [][]int) (ans []int) {
 	n := len(a)
 	ans = make([]int, n)
@@ -21,7 +35,7 @@ func getCoprimes(a []int, edges [][]int) (ans []int) {
 		val := a[v]
 		mxD := 0
 		for i, ps := range vs[:] {
-			if len(ps) > 0 && gcd(i, val) == 1 && ps[len(ps)-1].d > mxD {
+			if len(ps) > 0 && co[val][i] && ps[len(ps)-1].d > mxD {
 				mxD = ps[len(ps)-1].d
 				ans[v] = ps[len(ps)-1].v
 			}
