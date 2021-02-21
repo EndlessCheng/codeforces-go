@@ -119,6 +119,24 @@ func buildKDT(nodes []*kdNode, dim int) *kdNode {
 
 func (o *kdNode) rebuild(dim int) *kdNode { return buildKDT(o.nodes(), dim) }
 
+func (o *kdNode) put(p [2]int, val, dim int) *kdNode {
+	if o == nil {
+		o = &kdNode{p: p, val: val}
+		o.maintain()
+		return o
+	}
+	if p[dim] < o.p[dim] {
+		o.lr[0] = o.lr[0].put(p, val, dim^1)
+	} else {
+		o.lr[1] = o.lr[1].put(p, val, dim^1)
+	}
+	o.maintain()
+	if sz := o.size() * 3; o.lr[0].size()*4 > sz || o.lr[1].size()*4 > sz { // alpha=3/4
+		return o.rebuild(dim)
+	}
+	return o
+}
+
 // 矩形 X-Y 在矩形 x-y 内
 func inRect(x1, y1, x2, y2, X1, Y1, X2, Y2 int) bool {
 	return x1 <= X1 && X2 <= x2 && y1 <= Y1 && Y2 <= y2
@@ -147,24 +165,6 @@ type kdTree struct {
 	root *kdNode
 }
 
-func (t *kdTree) _put(o *kdNode, p [2]int, val, dim int) *kdNode {
-	if o == nil {
-		o = &kdNode{p: p, val: val}
-		o.maintain()
-		return o
-	}
-	if p[dim] < o.p[dim] {
-		o.lr[0] = t._put(o.lr[0], p, val, dim^1)
-	} else {
-		o.lr[1] = t._put(o.lr[1], p, val, dim^1)
-	}
-	o.maintain()
-	if sz := o.size() * 3; o.lr[0].size()*4 > sz || o.lr[1].size()*4 > sz { // alpha=3/4
-		return o.rebuild(dim)
-	}
-	return o
-}
-
-func (t *kdTree) put(p [2]int, val int) { t.root = t._put(t.root, p, val, 0) }
+func (t *kdTree) put(p [2]int, val int) { t.root = t.root.put(p, val, 0) }
 
 func (t *kdTree) query(x1, y1, x2, y2 int) int { return t.root.query(x1, y1, x2, y2) }
