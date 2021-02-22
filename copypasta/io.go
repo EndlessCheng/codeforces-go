@@ -110,6 +110,10 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	r := func() (x int) {
 		b := rc()
 		for ; '0' > b || b > '9'; b = rc() {
+			// 若不知道是否还有数据（某些多组数据的题目），则需要额外加上判断是否读到了 EOF 的代码
+			if b == 0 {
+				return
+			}
 		}
 		for ; '0' <= b && b <= '9'; b = rc() {
 			x = x*10 + int(b&15)
@@ -133,10 +137,10 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		}
 		return
 	}
-	// 读一个数字字符
+	// 读一个数字或字母
 	r1 := func() byte {
 		b := rc()
-		for ; '0' > b || b > '9'; b = rc() {
+		for ; '0' > b; b = rc() {
 		}
 		return b
 	}
