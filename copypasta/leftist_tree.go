@@ -56,6 +56,9 @@ func (o *ltNode) _merge(p *ltNode) *ltNode {
 
 // 注：push 一个节点就相当于 merge 这个节点
 func (o *ltNode) merge(p *ltNode) {
+	if o == nil || p == nil {
+		return
+	}
 	o = o.findRoot()
 	p = p.findRoot()
 	if o == p {
@@ -66,15 +69,16 @@ func (o *ltNode) merge(p *ltNode) {
 	p.fa = q
 }
 
-func (o *ltNode) pop() *ltNode {
+// 注：若要复用 top，需要将该节点的 lc 和 rc 置为 nil，fa 置为自身
+func (o *ltNode) pop() (top, newRoot *ltNode) {
 	o = o.findRoot()
 	p := o.lc._merge(o.rc)
-	o.fa = p
+	o.fa = p // 注意这可能会让 fa 指向 nil
 	if o.lc != nil {
 		o.lc.fa = p
 	}
 	if o.rc != nil {
 		o.rc.fa = p
 	}
-	return o
+	return o, p
 }
