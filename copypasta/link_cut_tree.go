@@ -13,16 +13,19 @@ https://www.luogu.com.cn/blog/command-block/lct-xiao-ji
 https://codeforces.com/blog/entry/80383
 
 TIPS: 若要修改一个点，可以将这个点 splay 上来修改后 maintain，这样就不需要考虑修改这个点对父节点的影响了
+TIPS: 对于卡常的题目，用 findRoot 判断连通性的逻辑可以用并查集代替
 
 模板题 https://www.luogu.com.cn/problem/P3690
-魔法森林 https://www.luogu.com.cn/problem/P2387 AC 代码 https://www.luogu.com.cn/record/46975435
+魔法森林（维护最大边权）https://www.luogu.com.cn/problem/P2387 AC 代码 https://www.luogu.com.cn/record/46975435 去掉 link 和 cut 的多余判断后 https://www.luogu.com.cn/record/46977629
+最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
 todo https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
-     最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
 */
 
 type lctNode struct {
 	lr   [2]*lctNode
 	fa   *lctNode
+	mi   *lctNode
+	id   int
 	v, s int
 	flip bool
 }
@@ -36,6 +39,18 @@ func (o *lctNode) sum() int {
 
 func (o *lctNode) maintain() {
 	o.s = o.v ^ o.lr[0].sum() ^ o.lr[1].sum()
+}
+
+// EXTRA: 最小差值生成树（见 graph.minDiffMST）
+func (o *lctNode) maintainMin() {
+	var n int // 节点个数
+
+	o.mi = o
+	for _, ch := range o.lr {
+		if ch != nil && ch.mi.id >= n && (o.mi.id < n || ch.mi.id < o.mi.id) {
+			o.mi = ch.mi
+		}
+	}
 }
 
 func (o *lctNode) doFlip() {
@@ -130,7 +145,7 @@ func (o *lctNode) makeRoot() {
 func (o *lctNode) findRoot() *lctNode {
 	o.access()
 	for o.lr[0] != nil {
-		//o.pushDown() // 可以省略，下面 splay 时会传递标记
+		//o.pushDown() // 可以省略，后续 splay 时会传递标记
 		o = o.lr[0]
 	}
 	o.splay()
@@ -147,7 +162,7 @@ func (o *lctNode) split(p *lctNode) {
 // 将 o 变成树的根节点，若 o 和 p 之间不连通，则在 o 和 p 之间连一条虚边
 func (o *lctNode) link(p *lctNode) {
 	o.makeRoot()
-	if p.findRoot() != o {
+	if p.findRoot() != o { // 保证不连通时可以去掉，或者用并查集代替
 		o.fa = p
 	}
 }
@@ -159,6 +174,14 @@ func (o *lctNode) cut(p *lctNode) {
 	if p.findRoot() == o && p.lr[0] == nil && p.fa == o {
 		p.fa = nil
 		o.lr[1] = nil
-		o.maintain()
+		//o.maintain() // 可以省略，后续 splay 时会维护成正确的值，下同
 	}
+}
+
+// 保证 o 和 p 连通的写法
+func (o *lctNode) mustCut(p *lctNode) {
+	o.split(p)
+	o.fa = nil
+	p.lr[0] = nil
+	//p.maintain()
 }

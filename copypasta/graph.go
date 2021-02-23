@@ -1295,6 +1295,68 @@ func (*graph) secondMST(n, m int) (sum int64) {
 
 // 最小生成树计数 Kirchhoff's theorem
 
+// 最小差值生成树
+// edges 中的节点编号从 0 开始，且无自环
+// https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
+func (*graph) minDiffMST(n int, edges [][3]int) int {
+	m := len(edges)
+	sort.Slice(edges, func(i, j int) bool { return edges[i][2] < edges[j][2] })
+	nodes := make([]*lctNode, n+m)
+	fa := make([]int, n+m)
+	for i := range nodes {
+		nodes[i] = &lctNode{id: i}
+		nodes[i].mi = nodes[i]
+		fa[i] = i
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+	merge := func(from, to int) bool {
+		x, y := find(from), find(to)
+		if x == y {
+			return false
+		}
+		fa[x] = y
+		return true
+	}
+	cc := 0
+
+	ans := int(2e9) + 1
+	del := make([]bool, m)
+	l := 0
+	for i, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
+		x, y, mid := nodes[v], nodes[w], nodes[n+i]
+		if merge(v, w) {
+			mid.link(x)
+			mid.link(y)
+			cc++
+		} else {
+			x.split(y)
+			mi := y.mi
+			del[mi.id-n] = true
+			mi.cut(nodes[edges[mi.id-n][0]])
+			mi.cut(nodes[edges[mi.id-n][1]])
+			mid.link(x)
+			mid.link(y)
+		}
+		for del[l] {
+			l++
+		}
+		if cc == n-1 && wt-edges[l][2] < ans {
+			ans = wt - edges[l][2]
+		}
+	}
+	if ans > 2e9 {
+		ans = -1
+	}
+	return ans
+}
+
 // 最小树形图 - 朱刘算法
 // todo 模板题 https://www.luogu.com.cn/problem/P4716
 
