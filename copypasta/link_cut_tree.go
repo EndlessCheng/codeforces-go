@@ -15,6 +15,7 @@ https://codeforces.com/blog/entry/80383
 TIPS: 若要修改一个点，可以将这个点 splay 上来修改后 maintain，这样就不需要考虑修改这个点对父节点的影响了
 
 模板题 https://www.luogu.com.cn/problem/P3690
+魔法森林 https://www.luogu.com.cn/problem/P2387 AC 代码 https://www.luogu.com.cn/record/46975435
 todo https://ac.nowcoder.com/acm/contest/4643/F 题解 https://ac.nowcoder.com/discuss/387703
      最小差值生成树 https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
 */
@@ -129,7 +130,7 @@ func (o *lctNode) makeRoot() {
 func (o *lctNode) findRoot() *lctNode {
 	o.access()
 	for o.lr[0] != nil {
-		// o.pushDown() 可以省略，下面 splay 时会传递标记
+		//o.pushDown() // 可以省略，下面 splay 时会传递标记
 		o = o.lr[0]
 	}
 	o.splay()
