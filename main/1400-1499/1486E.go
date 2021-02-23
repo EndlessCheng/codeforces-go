@@ -8,16 +8,16 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-type pair struct{ v, d int }
-type hp []pair
+type pair86 struct{ v, d int }
+type hp86 []pair86
 
-func (h hp) Len() int              { return len(h) }
-func (h hp) Less(i, j int) bool    { return h[i].d < h[j].d }
-func (h hp) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{})   { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
-func (h *hp) push(v pair)          { heap.Push(h, v) }
-func (h *hp) pop() pair            { return heap.Pop(h).(pair) }
+func (h hp86) Len() int              { return len(h) }
+func (h hp86) Less(i, j int) bool    { return h[i].d < h[j].d }
+func (h hp86) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *hp86) Push(v interface{})   { *h = append(*h, v.(pair86)) }
+func (h *hp86) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *hp86) push(v pair86)        { heap.Push(h, v) }
+func (h *hp86) pop() pair86          { return heap.Pop(h).(pair86) }
 
 func CF1486E(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
@@ -43,7 +43,7 @@ func CF1486E(_r io.Reader, _w io.Writer) {
 		mi[i] = inf
 	}
 	dist[0] = 0
-	q := hp{{}}
+	q := hp86{{}}
 	for len(q) > 0 {
 		p := q.pop()
 		v := p.v
@@ -64,7 +64,7 @@ func CF1486E(_r io.Reader, _w io.Writer) {
 				u := e2.to
 				if newD := dist[v] + (e.wt+e2.wt)*(e.wt+e2.wt); newD < dist[u] {
 					dist[u] = newD
-					q.push(pair{u, newD})
+					q.push(pair86{u, newD})
 				}
 			}
 		}
