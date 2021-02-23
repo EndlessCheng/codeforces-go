@@ -58,7 +58,7 @@ func unionFind(n int) {
 	}
 
 	// merge，并返回是否有新的 merge
-	sameMerge := func(from, to int) bool {
+	mergeNew := func(from, to int) bool {
 		x, y := find(from), find(to)
 		if x == y {
 			return false
@@ -134,7 +134,7 @@ func unionFind(n int) {
 
 	_ = []interface{}{
 		initFa, merge, same,
-		mergeBig, sameMerge, mergeRangeTo, getRoots, countRoots, getComps,
+		mergeBig, mergeNew, mergeRangeTo, getRoots, countRoots, getComps,
 	}
 }
 
