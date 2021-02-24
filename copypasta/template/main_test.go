@@ -14,8 +14,8 @@ func Test(t *testing.T) {
 	dir, _ := filepath.Abs(".")
 	t.Logf("Current problem is [%s]", filepath.Base(dir))
 
-	// TODO: 测试边界情况
 	customTestCases := [][2]string{
+		// TODO: 优先测试边界
 		{
 			``,
 			``,
@@ -39,16 +39,14 @@ func TestCompare(t *testing.T) {
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
-		n := rg.Int(1, 10)
+		n := rg.Int(1, 5)
 		rg.NewLine()
-		rg.IntSlice(n, 1, n)
-		//Println(rg.String())
+		rg.IntSlice(n, 0, 5)
 		return rg.String()
 	}
 
 	// 暴力算法
 	runBF := func(in io.Reader, out io.Writer) {
-		//return
 		var n int
 		Fscan(in, &n)
 		a := make([]int, n)
@@ -58,15 +56,14 @@ func TestCompare(t *testing.T) {
 
 		ans := 0
 
-		Fprint(out, ans)
+		Fprintln(out, ans)
 	}
 
-	// 先用 runBF 跑下样例，大致检查下 runBF 的正确性
+	// 先用 runBF 跑下样例，检查 runBF 是否正确
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
 	return
 
-	// 对拍
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
 	return
 
@@ -82,25 +79,20 @@ func TestCheck(t *testing.T) {
 	inputGenerator := func() (string, testutil.OutputChecker) {
 		//return ``
 		rg := testutil.NewRandGenerator()
-		n := rg.Int(1, 10)
+		n := rg.Int(1, 5)
 		rg.NewLine()
-		a := rg.IntSlice(n, 1, n)
-		//Println(rg.String())
-		return rg.String(), func(output string) (_b bool) {
-			// 检查 output 是否符合题目要求
-			// 对于 special judge 的题目，可能还需要额外跑个暴力来检查 output 是否满足最优解等
-			in := strings.NewReader(output)
-			var outN int
-			Fscan(in, &outN)
-			if !assert.Equal(n, outN) {
-				return
-			}
+		a := rg.IntSlice(n, 0, 5)
+		return rg.String(), func(myOutput string) (_b bool) {
+			// 检查 myOutput 是否符合题目要求
+			// * 最好重新看一遍题目描述以免漏判 *
+			// 对于 special judge 的题目，可能还需要额外跑个暴力来检查 myOutput 是否满足最优解等
+			in := strings.NewReader(myOutput)
 
-			outA := make([]int, outN)
-			for i := range outA {
-				Fscan(in, &outA[i])
+			myA := make([]int, n)
+			for i := range myA {
+				Fscan(in, &myA[i])
 			}
-			if !assert.EqualValues(a, outA) {
+			if !assert.EqualValues(a, myA) {
 				return
 			}
 

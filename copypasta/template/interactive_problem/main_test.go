@@ -16,7 +16,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 	type testCase struct {
 		input
 		guess
-		//innerData []int
+		innerData []int
 	}
 	testCases := []testCase{
 
@@ -24,10 +24,11 @@ func testRun(t *testing.T, debugCaseNum int) {
 	for i := 0; i < 1e5; i++ {
 		rg := testutil.NewRandGenerator()
 		n := rg.Int(2, 9)         // 输入
-		a := rg.IntSlice(n, 1, 9) // 需要猜测的对象
+		a := rg.IntSlice(n, 1, 9) // 猜测对象、数据
 		testCases = append(testCases, testCase{
-			input: input{n},
-			guess: guess{a},
+			input:     input{n},
+			guess:     guess{a},
+			innerData: a,
 		})
 	}
 
@@ -65,7 +66,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		}
 		expectedAns := tc.guess
 		actualAns := run(tc.input, queryChecker(caseNum, tc))
-		if !assert.EqualValues(t, expectedAns, actualAns, "Wrong Answer %d", caseNum) {
+		if !assert.EqualValues(t, expectedAns, actualAns, "Wrong Answer %d\nInner Data:\n%v", caseNum, tc.innerData) {
 			failedCount++
 			if failedCount > failedCountLimit {
 				t.Fatal("too many wrong cases, terminated")

@@ -48,9 +48,6 @@ func ioq() {
 		}
 		Fprintln(out)
 		out.Flush()
-		// some problems need to read an extra string like "Correct" or "Incorrect" after guessed the answer
-		//var s string
-		//Fscan(in, &s)
 	}
 }
 
