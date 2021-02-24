@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-// 赛前看情况修改下 main.go  main_test.go
-// add space, ...
-
+// 赛前看情况修改下 main.go
 // https://codeforces.com/contest//problems
 func TestGenCodeforcesContestTemplates(t *testing.T) {
 	const contestID = ""
