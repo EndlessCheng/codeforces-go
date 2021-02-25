@@ -70,6 +70,8 @@
 
 [F0RE1GNERS 模板](https://github.com/F0RE1GNERS/template)
 
+[算法学习笔记（目录）](https://zhuanlan.zhihu.com/p/105467597)
+
 ### 洛谷日报
 
 [2020 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/179788)
