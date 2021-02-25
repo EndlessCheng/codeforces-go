@@ -18,6 +18,7 @@ https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 https://euler.stephan-brumme.com/toolbox/
 
 todo 期望与贡献 https://codeforces.com/blog/entry/62690 https://codeforces.com/blog/entry/62792
+     一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 
 NOTE: a%-b == a%b
 NOTE: 对于整数来说有
@@ -149,7 +150,7 @@ func numberTheoryCollection() {
 
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
-	// 前 n 个数的 LCM https://oeis.org/A003418
+	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) ~ exp(n)
 	// 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, 27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, 232792560, 232792560, 5354228880, 5354228880, 26771144400, 26771144400, 80313433200, 80313433200
 	//     相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
 	//             https://codeforces.com/contest/1485/problem/D
@@ -1389,37 +1390,68 @@ func numberTheoryCollection() {
 	//	return
 	//}
 
-	// 离散对数
-	// a^x ≡ b (mod p)，a 和 p 互质 - 小步大步算法 (BSGS)
+	// 离散对数 - 小步大步算法 (BSGS)
+	// a^x ≡ b (mod p)，a 和 p 互质
+	// 有解时返回 x，无解时返回 -99，这样可以让 exBSGS 中的 +1 操作不影响无解的判断
 	// 时间复杂度 O(√p)
 	// 见进阶指南 p.155
 	// todo https://www.luogu.com.cn/blog/command-block/yuan-gen-li-san-dui-shuo-xiang-guan
 	//      http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
 	//      https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
 	// 模板题 https://www.luogu.com.cn/problem/P3846
-	// todo exBSGS https://www.luogu.com.cn/problem/P4195
-	babyStepGiantStep := func(a, b, p int64) int64 {
-		hash := map[int64]int64{}
+	babyStepGiantStep := func(a, b, p, k int64) int64 { // 非 exBSGS 下 k=1
 		b %= p
 		t := int64(math.Sqrt(float64(p))) + 1
-		for j := int64(0); j < t; j++ {
-			v := b * pow(a, j, p) % p
-			hash[v] = j
+		mp := map[int64]int64{}
+		for j, x := int64(0), b; j < t; j++ {
+			mp[b] = j
+			x = x * a % p
 		}
 		a = pow(a, t, p)
 		if a == 0 {
 			if b == 0 {
 				return 1
 			}
-			return -1
+			return -99
 		}
-		for i := int64(0); i < t; i++ {
-			v := pow(a, i, p)
-			if j, ok := hash[v]; ok && i*t >= j {
+		for i, x := int64(0), k; i < t; i++ {
+			if j, ok := mp[x]; ok && i*t >= j {
 				return i*t - j
 			}
+			x = x * a % p
 		}
-		return -1
+		return -99
+	}
+
+	// 拓展大步小步算法
+	// a^x ≡ b (mod m)，a 和 m 不一定互质
+	// https://zhuanlan.zhihu.com/p/132603308
+	// 模板题 https://www.luogu.com.cn/problem/P4195
+	var _exBSGS func(a, b, m, k int64) int64
+	_exBSGS = func(a, b, m, k int64) int64 {
+		if b == 1 {
+			return 0
+		}
+		if a == 0 && b == 0 {
+			return 1
+		}
+		g := gcd(a, m)
+		if b%g > 0 {
+			return -99
+		}
+		if g == 1 {
+			return babyStepGiantStep(a, b, m, k%m)
+		}
+		return 1 + _exBSGS(a, b/g, m/g, k*a/g%m)
+	}
+
+	exBSGS := func(a, b, m int64) int64 {
+		x := _exBSGS(a%m, b%m, m, 1)
+		phiM := int64(calcPhi(int(m)))
+		if x > phiM {
+			x = x%phiM + phiM
+		}
+		return x
 	}
 
 	// 二次剩余 x^2 ≡ a (mod p)
@@ -1429,7 +1461,7 @@ func numberTheoryCollection() {
 	// https://oi-wiki.org/math/quad-residue/
 	// https://blog.csdn.net/doyouseeman/article/details/52033204
 	// Tonelli-Shanks https://www.luogu.com.cn/blog/242973/solution-p5491
-	// 模板题 https://www.luogu.com.cn/problem/P5491 https://www.luogu.com.cn/problem/P5668
+	// 模板题 https://www.luogu.com.cn/problem/P5491
 	modSqrt := func(x, p int64) []int64 { // p 必须是奇素数
 		if x == 0 {
 			return []int64{0}
@@ -1438,7 +1470,7 @@ func numberTheoryCollection() {
 		if x0 == nil {
 			return nil
 		}
-		// 如果要求小的在前，注意交换下
+		// 如果要求小的在前，注意判断
 		return []int64{x0.Int64(), p - x0.Int64()}
 	}
 
@@ -1449,6 +1481,7 @@ func numberTheoryCollection() {
 	}
 
 	// todo N 次剩余 / 高次同余方程 x^a ≡ b (mod p)
+	// todo 模板题 https://www.luogu.com.cn/problem/P5668
 
 	// https://oeis.org/A072994 Number of solutions to x^n ≡ 1 (mod n), 1<=x<=n
 	// Least k > 0 such that the number of solutions to x^k == 1 (mod k) 1 <= x <= k is equal to n, or 0 if no such k exists https://oeis.org/A072995
@@ -1600,6 +1633,7 @@ func numberTheoryCollection() {
 		// EXTRA: 卢卡斯定理
 		// 注意初始化 F 和 invF 时 mx 取 mod-1
 		// https://www.luogu.com.cn/problem/P3807
+		// https://www.luogu.com.cn/problem/P7386
 		var lucas func(n, k int64) int64
 		lucas = func(n, k int64) int64 {
 			if k == 0 {
@@ -1917,6 +1951,7 @@ func numberTheoryCollection() {
 	}
 
 	// 杜教筛 - 积性函数前缀和
+	// 复杂度 O(n^(2/3))
 	// 【推荐】https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
 	// https://www.luogu.com.cn/blog/command-block/du-jiao-shai
 	// http://baihacker.github.io/main/
@@ -2003,6 +2038,10 @@ func numberTheoryCollection() {
 	// https://oi-wiki.org/math/min-25/
 	// todo 模板题 https://www.luogu.com.cn/problem/P5325
 
+	// 一篇新论文，复杂度为 O((nlogn)^(3/5))
+	// Summing μ(n): a faster elementary algorithm
+	// https://arxiv.org/pdf/2101.08773.pdf
+
 	//
 
 	// 埃及分数 - 不同的单位分数的和 (IDA*)
@@ -2024,9 +2063,9 @@ func numberTheoryCollection() {
 	                                  a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
 	https://oeis.org/A001690 补集
 	https://oeis.org/A022307 F(n) 的不同的质因子个数
-	https://oeis.org/A001175 N(m) = F%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
-	                        N(m) = LCM(N(p1^e1), ..., N(pk^ek))
-	https://oeis.org/A060305 N(p) = F%p 的周期
+	https://oeis.org/A001175 N(m) = {F}%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
+	                         N(m) = LCM(N(p1^e1), ..., N(pk^ek))
+	https://oeis.org/A060305 N(p) = {F}%p 的周期 https://blog.csdn.net/acdreamers/article/details/10983813
 	https://oeis.org/A003893 F(n)%10
 	https://oeis.org/A001605 使 F(n) 为质数的 n
 	https://oeis.org/A191797 C(F(n), 2)
@@ -2050,7 +2089,7 @@ func numberTheoryCollection() {
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
 		crt, excrt,
-		babyStepGiantStep,
+		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling2, stirling2RowPoly,
@@ -2068,10 +2107,13 @@ https://en.wikipedia.org/wiki/Enumerative_combinatorics
 
 todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
-       C(n, k-1) + C(n, k) = C(n+1, k)
-       C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
-上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)（例题 https://atcoder.jp/contests/abc154/tasks/abc154_f）
+递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
+上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)   相关题目 https://www.luogu.com.cn/problem/P7386
+上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) 相关题目 https://atcoder.jp/contests/abc154/tasks/abc154_f
 范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
+∑i=[0,k] C(n,i)*C(m,k-i) = C(n+m,k)
+∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)    https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
+组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
@@ -2124,6 +2166,9 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 	https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
 	https://oeis.org/A023022 Number of partitions of n into two relatively prime parts
 		a(n) = phi(n)/2 for n >= 3
+
+https://oeis.org/A000404 Numbers that are the sum of 2 nonzero squares
+https://oeis.org/A003325 Numbers that are the sum of 2 positive cubes
 
 Maximum product of two integers whose sum is n https://oeis.org/A002620
 Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)
