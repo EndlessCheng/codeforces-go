@@ -8,11 +8,11 @@ import (
 	"sort"
 )
 
-type hp struct{ sort.IntSlice }
+type hp13 struct{ sort.IntSlice }
 
-func (h hp) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h hp13) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
+func (h *hp13) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp13) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 
 // github.com/EndlessCheng/codeforces-go
 func CF713C(_r io.Reader, out io.Writer) {
@@ -20,7 +20,7 @@ func CF713C(_r io.Reader, out io.Writer) {
 	var n, v int
 	Fscan(in, &n)
 	ans := int64(0)
-	h := hp{}
+	h := hp13{}
 	for i := 1; i <= n; i++ {
 		Fscan(in, &v)
 		v -= i
