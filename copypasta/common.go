@@ -195,6 +195,7 @@ func commonCollection() {
 			ps[i] = pair{a[i], i}
 		}
 	}
+
 	// 顺时针旋转矩阵 90°
 	rotate := func(a [][]int) [][]int {
 		n, m := len(a), len(a[0])
@@ -205,6 +206,18 @@ func commonCollection() {
 		for i, r := range a {
 			for j, v := range r {
 				b[j][n-1-i] = v
+			}
+		}
+		return b
+	}
+	// 转置
+	transpose := func(a [][]int) [][]int {
+		n, m := len(a), len(a[0])
+		b := make([][]int, m)
+		for i := range b {
+			b[i] = make([]int, n)
+			for j, r := range a {
+				b[i][j] = r[i]
 			}
 		}
 		return b
@@ -573,15 +586,15 @@ func commonCollection() {
 		if n == 0 {
 			return nil
 		}
-		j := 0
-		for i := 1; i < n; i++ {
-			if a[j] != a[i] {
-				j++
-				a[j] = a[i]
+		k := 0
+		for _, v := range a[1:] {
+			if a[k] != v {
+				k++
+				a[k] = v
 			}
 		}
-		//n = j + 1
-		return a[:j+1]
+		//n = k + 1
+		return a[:k+1]
 	}
 
 	// 离散化，不保留原始数据（保留原始数据的版本见下面的 discreteMap）
@@ -930,7 +943,7 @@ func commonCollection() {
 		min, mins, max, maxs, abs, ceil, bin,
 		sliceToArray,
 		isDigit, isLower, isUpper, isAlpha,
-		ternaryI, ternaryS, zip, zipI, rotate, minString,
+		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D,
 		contributionSum,
