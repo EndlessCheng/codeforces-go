@@ -20,16 +20,16 @@ func CF780E(_r io.Reader, _w io.Writer) {
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-	vs := []interface{}{}
+	path := []interface{}{}
 	vis := make([]bool, n+1)
 	var f func(int)
 	f = func(v int) {
-		vs = append(vs, v)
+		path = append(path, v)
 		vis[v] = true
 		for _, w := range g[v] {
 			if !vis[w] {
 				f(w)
-				vs = append(vs, v)
+				path = append(path, v)
 			}
 		}
 	}
@@ -37,13 +37,13 @@ func CF780E(_r io.Reader, _w io.Writer) {
 	q, c := (2*n-1)/k, (2*n-1)%k
 	for i := 0; i < c; i++ {
 		Fprint(out, q+1, " ")
-		Fprintln(out, vs[:q+1]...)
-		vs = vs[q+1:]
+		Fprintln(out, path[:q+1]...)
+		path = path[q+1:]
 	}
 	for i := c; i < k; i++ {
 		Fprint(out, q, " ")
-		Fprintln(out, vs[:q]...)
-		vs = vs[q:]
+		Fprintln(out, path[:q]...)
+		path = path[q:]
 	}
 }
 
