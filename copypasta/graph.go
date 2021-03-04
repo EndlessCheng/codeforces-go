@@ -30,6 +30,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 
 构造 https://codeforces.com/problemset/problem/41/E
 转换 https://codeforces.com/problemset/problem/788/B
+加边 https://codeforces.com/problemset/problem/723/E
 第k小路径 https://codeforces.com/problemset/problem/1196/F
 
 todo《挑战》例题+练习题
@@ -150,6 +151,24 @@ func (*graph) dfs(n, st int, g [][]int) {
 		if !b {
 			f(i)
 		}
+	}
+
+	{
+		// 欧拉序列
+		eulerPath := []int{}
+		vis := make([]bool, n)
+		var f func(int)
+		f = func(v int) {
+			eulerPath = append(eulerPath, v)
+			vis[v] = true
+			for _, w := range g[v] {
+				if !vis[w] {
+					f(w)
+					eulerPath = append(eulerPath, v)
+				}
+			}
+		}
+		f(st)
 	}
 
 	{
@@ -410,6 +429,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 //      无向图 https://www.luogu.com.cn/problem/P1341
 //      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
+// 加边技巧 https://codeforces.com/problemset/problem/723/E
 func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
