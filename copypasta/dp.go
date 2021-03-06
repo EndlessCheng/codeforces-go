@@ -234,7 +234,7 @@ func dpCollections() {
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
-	// 子段长度有下限的最大子段和：转换为前缀和之差，维护 min(sum[j])
+	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值
 	// 最大两段子段和：求每个位置上的前缀最大字段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	// 最大 m 段子段和 https://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为非环状的 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
@@ -340,6 +340,7 @@ func dpCollections() {
 	//     https://codeforces.com/contest/1446/problem/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
+		// dp[i][j] = LCS(s[:i], t[:j])
 		n, m := len(s), len(t)
 		dp := make([][]int, n+1)
 		for i := range dp {
@@ -614,6 +615,38 @@ func dpCollections() {
 			sum += cnt
 		}
 		return sum
+	}
+
+	// 回文串最小分割次数
+	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
+	minPalindromeCut := func(s string) int {
+		n := len(s)
+		g := make([][]bool, n)
+		for i := range g {
+			g[i] = make([]bool, n)
+			for j := range g[i] {
+				g[i][j] = true
+			}
+		}
+		for i := n - 1; i >= 0; i-- {
+			for j := i + 1; j < n; j++ {
+				g[i][j] = s[i] == s[j] && g[i+1][j-1]
+			}
+		}
+
+		f := make([]int, n)
+		for i := range f {
+			if g[0][i] { // f[i] = 0
+				continue
+			}
+			f[i] = int(1e9)
+			for j := 0; j < i; j++ {
+				if g[j+1][i] {
+					f[i] = min(f[i], f[j]+1)
+				}
+			}
+		}
+		return f[n-1]
 	}
 
 	// 划分数
@@ -1479,8 +1512,8 @@ func dpCollections() {
 			cntOnePath := int64(0)
 			var f func(v, fa int) int64
 			f = func(v, fa int) int64 {
-				one := a[v] >> i & 1
-				cntOnePath += int64(one)
+				one := int64(a[v] >> i & 1)
+				cntOnePath += one
 				for _, w := range g[v] {
 					if w != fa {
 						o := f(w, v)
@@ -1607,7 +1640,7 @@ func dpCollections() {
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
-		lisSlow, lis, lisAll, lcis, countLIS, distinctSubsequence,
+		lisSlow, lis, lisAll, lcis, countLIS, distinctSubsequence, minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult,
 		unboundedKnapsack, unboundedWaysToSum,
