@@ -39,7 +39,7 @@
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
         "equal", "same", "different", "unique", "distinct",
-        "must", "only", "just", "exactly", "always",
+        "must", "only", "just", "exactly", "always", "indeed",
         "pairwise", "adjacent", "in a row", "consecutive", "contiguous",
 
         // 求解
