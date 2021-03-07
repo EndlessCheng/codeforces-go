@@ -264,45 +264,47 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 	return
 }
 
-// GraphHackSPFA generates a undirected graph with n nodes, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
-// The graph is a ladder like structure, so the number of edges is equal to floor(n/2)*3-2+n%2.
+// GraphHackSPFA generates a undirected grid graph with n nodes, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
 //
-// For example, a 10 nodes graph with 0 extraEdges looks like this:
+// For example, a 10 nodes 2 row grid graph looks like this:
 // 1-2-3-4-5
 // | | | | |
 // 6-7-8-9-10
 //
-// And an 11 nodes graph with 0 extraEdges looks like this:
+// And an 11 nodes 2 row grid graph looks like this:
 // 1-2-3-4-5
 // | | | | |
 // 6-7-8-9-10-11
 //
 // All weights of vertical edges are 1, the others are random.
 //
+// In practice, set row to 10 will lead SPFA to run in worst case (about n^2/10 relaxations).
+//
 // Reference:
 // https://blog.csdn.net/qq_45721135/article/details/102472101
 // https://www.zhihu.com/question/292283275
 // https://www.zhihu.com/question/268382638
-func (r *RG) GraphHackSPFA(n, st, minWeight, maxWeight int) (edges [][3]int) {
+func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int) (edges [][3]int) {
 	if n <= 1 {
 		return
 	}
 
-	half := n / 2
-	minEdges := half*3 - 2 + n%2
-	m := minEdges
+	rowLen := n / row
+	m := row*(rowLen-1) + (row-1)*rowLen + n%row
 
 	edges = make([][3]int, 0, m)
-	for i := 1; i < n/2; i++ {
-		weight := r._int(minWeight, maxWeight)
-		edges = append(edges, [3]int{i - 1, i, weight})
+	for i := 0; i < row-1; i++ {
+		for j := 1 + i*rowLen; j < (i+1)*rowLen; j++ {
+			weight := r._int(minWeight, maxWeight)
+			edges = append(edges, [3]int{j - 1, j, weight})
+		}
+		for j := i * rowLen; j < (i+1)*rowLen; j++ {
+			edges = append(edges, [3]int{j, j + rowLen, 1})
+		}
 	}
-	for i := n/2 + 1; i < n; i++ {
+	for j := 1 + (row-1)*rowLen; j < n; j++ {
 		weight := r._int(minWeight, maxWeight)
-		edges = append(edges, [3]int{i - 1, i, weight})
-	}
-	for i := 0; i < n/2; i++ {
-		edges = append(edges, [3]int{i, i + half, 1})
+		edges = append(edges, [3]int{j - 1, j, weight})
 	}
 
 	rand.Shuffle(len(edges), func(i, j int) { edges[i], edges[j] = edges[j], edges[i] })
