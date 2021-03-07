@@ -263,3 +263,90 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 	}
 	return
 }
+
+// GraphHackSPFA generates a undirected graph with n nodes, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
+// The graph is a ladder like structure, so the number of edges is equal to floor(n/2)*3-2+n%2.
+//
+// For example, a 10 nodes graph with 0 extraEdges looks like this:
+// 1-2-3-4-5
+// | | | | |
+// 6-7-8-9-10
+//
+// And an 11 nodes graph with 0 extraEdges looks like this:
+// 1-2-3-4-5
+// | | | | |
+// 6-7-8-9-10-11
+//
+// All weights of vertical edges are 1, the others are random.
+//
+// Reference:
+// https://blog.csdn.net/qq_45721135/article/details/102472101
+// https://www.zhihu.com/question/292283275
+// https://www.zhihu.com/question/268382638
+func (r *RG) GraphHackSPFA(n, st, minWeight, maxWeight int) (edges [][3]int) {
+	if n <= 1 {
+		return
+	}
+
+	half := n / 2
+	minEdges := half*3 - 2 + n%2
+	m := minEdges
+
+	//if m < minEdges {
+	//	panic(fmt.Sprintf("m is too small, the limit is %d", minEdges))
+	//}
+	//if maxEdges := n * (n - 1) / 2; m > maxEdges {
+	//	panic(fmt.Sprintf("m is too large, the limit is %d", maxEdges))
+	//}
+
+	edges = make([][3]int, 0, m)
+	for i := 1; i < n/2; i++ {
+		weight := r._int(minWeight, maxWeight)
+		edges = append(edges, [3]int{i - 1, i, weight})
+	}
+	for i := n/2 + 1; i < n; i++ {
+		weight := r._int(minWeight, maxWeight)
+		edges = append(edges, [3]int{i - 1, i, weight})
+	}
+	for i := 0; i < n/2; i++ {
+		edges = append(edges, [3]int{i, i + half, 1})
+	}
+
+	//if extraEdges := m - minEdges; extraEdges > 0 {
+	//	has := make([]map[int]bool, n)
+	//	for i := range has {
+	//		has[i] = map[int]bool{}
+	//	}
+	//	for _, e := range edges {
+	//		// v < w
+	//		v, w := e[0], e[1]
+	//		has[v][w] = true
+	//	}
+	//	for ; extraEdges > 0; extraEdges-- {
+	//		for {
+	//			// v < w
+	//			v := r._int(0, n-2)
+	//			w := r._int(v+1, n-1)
+	//			if !has[v][w] {
+	//				has[v][w] = true
+	//				weight := r._int(minWeight, maxWeight)
+	//				edges = append(edges, [3]int{v, w, weight})
+	//				break
+	//			}
+	//		}
+	//	}
+	//}
+
+	rand.Shuffle(len(edges), func(i, j int) { edges[i], edges[j] = edges[j], edges[i] })
+
+	// add st
+	for i := range edges {
+		edges[i][0] += st
+		edges[i][1] += st
+	}
+
+	for _, e := range edges {
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1], e[1]))
+	}
+	return
+}
