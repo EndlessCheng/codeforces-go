@@ -7,4 +7,6 @@ var (
 	DebugCallIndex int
 
 	DebugTLE = 2 * time.Second
+
+	AssertOutput = true
 )

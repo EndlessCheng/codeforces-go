@@ -282,7 +282,7 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			if er != nil {
 				return er
 			}
-			if !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+			if AssertOutput && !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 				allCasesOk = false
 			}
 		}
@@ -439,7 +439,7 @@ outer:
 		// 比较前，去除 rawExpectedOut 中逗号后的空格
 		// todo: 提示错在哪个 callIndex 上
 		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
-		if !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCaseNum+1) {
+		if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCaseNum+1) {
 			allCasesOk = false
 		}
 	}
@@ -472,6 +472,7 @@ func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutpu
 
 // 无尽对拍模式
 // todo 构造器+方法的对拍
+//      可以外面套一个函数去分配不同的调用
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 	ig := reflect.ValueOf(inputGenerator)
 	if ig.Kind() != reflect.Func {
