@@ -292,13 +292,6 @@ func (r *RG) GraphHackSPFA(n, st, minWeight, maxWeight int) (edges [][3]int) {
 	minEdges := half*3 - 2 + n%2
 	m := minEdges
 
-	//if m < minEdges {
-	//	panic(fmt.Sprintf("m is too small, the limit is %d", minEdges))
-	//}
-	//if maxEdges := n * (n - 1) / 2; m > maxEdges {
-	//	panic(fmt.Sprintf("m is too large, the limit is %d", maxEdges))
-	//}
-
 	edges = make([][3]int, 0, m)
 	for i := 1; i < n/2; i++ {
 		weight := r._int(minWeight, maxWeight)
@@ -311,31 +304,6 @@ func (r *RG) GraphHackSPFA(n, st, minWeight, maxWeight int) (edges [][3]int) {
 	for i := 0; i < n/2; i++ {
 		edges = append(edges, [3]int{i, i + half, 1})
 	}
-
-	//if extraEdges := m - minEdges; extraEdges > 0 {
-	//	has := make([]map[int]bool, n)
-	//	for i := range has {
-	//		has[i] = map[int]bool{}
-	//	}
-	//	for _, e := range edges {
-	//		// v < w
-	//		v, w := e[0], e[1]
-	//		has[v][w] = true
-	//	}
-	//	for ; extraEdges > 0; extraEdges-- {
-	//		for {
-	//			// v < w
-	//			v := r._int(0, n-2)
-	//			w := r._int(v+1, n-1)
-	//			if !has[v][w] {
-	//				has[v][w] = true
-	//				weight := r._int(minWeight, maxWeight)
-	//				edges = append(edges, [3]int{v, w, weight})
-	//				break
-	//			}
-	//		}
-	//	}
-	//}
 
 	rand.Shuffle(len(edges), func(i, j int) { edges[i], edges[j] = edges[j], edges[i] })
 
