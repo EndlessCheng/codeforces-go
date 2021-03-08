@@ -278,17 +278,20 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 //
 // All weights of vertical edges are 1, the others are random.
 //
-// In practice, set row to 10 will lead SPFA to run in worst case (about n^2/10 relaxations).
+// In practice, set row to 6 will make SPFA to run in worst case (about n^2/10 relaxations).
+// (Random weights are in range [1,1e5])
+//      n    avg relax (100 runs)  Dijkstra's algorithm (for comparing)
+//    5e3    2'418'393                            5'493
+//    1e4    9'674'877                           18'323
+//    2e4   38'586'596                           36'658
+//    3e4   87'033'045                           54'992
+//    1e5  966'319'883 (10 runs)                183'320
 //
 // Reference:
 // https://blog.csdn.net/qq_45721135/article/details/102472101
 // https://www.zhihu.com/question/292283275
 // https://www.zhihu.com/question/268382638
 func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int) (edges [][3]int) {
-	if n <= 1 {
-		return
-	}
-
 	rowLen := n / row
 	m := row*(rowLen-1) + (row-1)*rowLen + n%row
 
