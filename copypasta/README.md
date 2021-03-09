@@ -1,5 +1,7 @@
 # 模板仓库
 
+由于算法知识点非常多且杂，将自己学习到的算法**亲手**整理成一个小型 Wiki 是有必要的。
+
 一个算法模板应当涵盖下面几点：
 - 对该算法的基本介绍（核心思想、复杂度等）
 - 参考链接或书籍章节（讲的比较好的资料）
@@ -9,6 +11,116 @@
 - 相关题目（模板题、经典题、建模转换题等）
 
 注：为方便在比赛中使用，一部分函数写成了 lambda 的形式。
+
+## 目录
+
+- 数据结构
+  - [双端队列 deque.go](deque.go)
+  - [堆（优先队列）heap.go](heap.go)
+  - [单调栈、单调队列 common.go 中的 monotoneCollection](common.go)
+  - [并查集 union_find.go](union_find.go)
+  - [ST 表 common.go 中的 stInit](common.go)
+  - [树状数组 fenwick_tree.go](fenwick_tree.go)
+  - [线段树 segment_tree.go](segment_tree.go)
+  - [左偏树（可并堆）leftist_tree.go](leftist_tree.go)
+  - [笛卡尔树 cartesian_tree.go](cartesian_tree.go)
+  - [二叉搜索树公共方法 bst.go](bst.go)
+  - [Treap treap.go](treap.go)
+  - [伸展树 splay.go](splay.go)
+  - [动态树 LCT link_cut_tree.go](link_cut_tree.go)
+  - [红黑树 red_black_tree.go](red_black_tree.go)
+  - [替罪羊树 scapegoat_tree.go](scapegoat_tree.go)
+  - [k-d 树 kd_tree.go](kd_tree.go)
+  - 珂朵莉树（ODT）
+    - [数组版 odt.go](odt.go)
+    - [平衡树版 odt_bst.go](odt_bst.go)
+- [字符串 strings.go](strings.go)
+  - Hash
+  - KMP
+  - 扩展 KMP（Z algorithm）
+  - 最小表示法
+  - Manacher
+  - AC 自动机
+  - 后缀数组（SA）
+  - 字典树（trie）
+- 数学
+  - [数论 math.go](math.go)
+    - 最大公因数（GCD）
+    - 类欧几里得算法 ∑⌊(ai+b)/m⌋
+    - Pollard-Rho
+    - 线性筛
+    - 欧拉函数
+    - 原根
+    - 扩展 GCD
+    - 逆元
+    - 中国剩余定理（CRT）
+    - 扩展中国剩余定理（EXCRT）
+    - 离散对数
+      - 小步大步算法（BSGS）
+      - 扩展小步大步算法（exBSGS）
+      - 二次剩余
+      - Jacobi 符号
+    - 莫比乌斯函数
+    - 数论分块
+    - 杜教筛
+  - [FFT math_fft.go](math_fft.go)
+  - [NTT math_ntt.go](math_ntt.go)
+    - 包含多项式全家桶（求逆、开方等等）
+  - [矩阵、高斯消元、线性基 math_matrix.go](math_matrix.go)
+  - [连分数、佩尔方程 math_continued_fraction.go](math_continued_fraction.go)
+  - [计算几何 geometry.go](geometry.go)
+    - 直线和点
+    - 直线和直线
+    - 直线和圆
+    - 圆和圆
+    - 凸包
+    - 最近点对
+    - 最远点对
+  - [博弈论 math.go](math.go)
+    - SG 函数
+- [动态规划 dp.go](dp.go)
+  - 背包
+  - 线性 DP
+  - 区间 DP
+  - 状压 DP
+  - 数位 DP
+  - 树形 DP
+    - 换根 DP
+- [图论 graph.go](graph.go)
+  - 欧拉回路
+  - 割点
+  - 割边（桥）
+  - 双连通分量
+  - 最短路
+  - 最小生成树
+  - 最小差值生成树
+  - 二分图最大匹配
+  - 带权二分图最大完美匹配
+  - 拓扑排序
+  - 极大强连通分量
+  - 2-SAT
+  - 基环树
+  - 最大流
+  - 最小费用最大流
+  - [树上问题 graph_tree.go](graph_tree.go)
+    - 直径
+    - 重心
+    - 最近公共祖先（LCA）
+      - 树上差分
+    - 树链剖分（重链剖分，HLD）
+    - 树上启发式合并（DSU）
+    - 树分块
+- [位运算 bits.go](bits.go)
+  - bitset
+- 其他
+  - [三分查找 sort.go](sort.go)
+  - [0-1 分数规划 sort.go](sort.go)
+  - [莫队算法 common.go 中的 moAlgorithm](common.go)
+     - 带修莫队
+     - 回滚莫队
+     - 树上莫队
+- [快读模板 io.go](io.go)
+
 
 ## 代码生成与测试
 
