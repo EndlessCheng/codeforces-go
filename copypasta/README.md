@@ -122,39 +122,29 @@
 - [快读模板 io.go](io.go)
 
 
-## 代码生成与测试
+## 代码生成、测试及对拍
 
-见 [template](./template) 中的 `generator.go` 以及各个文件夹下的 `generator.go`
+代码生成见 [template](./template) 中的 `generator.go` 以及各个文件夹下的 `generator.go`
 
-代码测试（对拍）见 [testutil.go](https://github.com/EndlessCheng/codeforces-go/blob/master/main/testutil/testutil.go)
+代码测试及对拍见 [testutil.go](/main/testutil/testutil.go)
 
-## 题库
+编写一个 `run(io.Reader, io.Writer)` 函数来处理输入输出。这样写的理由是：
 
-[Problem Topics](https://codeforces.com/blog/entry/55274)
+- 在 `main()` 中调用 `run(os.Stdin, os.Stdout)` 来执行代码；
+- 测试时，将测试数据转换成 `strings.Reader` 当作输入，并用一个 `strings.Builder` 来接收输出，将这二者传入 `run` 中，然后就能比较输出与答案了。
+- 对拍时需要自己实现一个暴力算法 `runAC`，参数和 `run` 一样。通过[随机数据生成器](/main/testutil/rand.go)来生成数据，分别传入 `runAC` 和 `run`，通过比对各自的输出，来检查 `run` 中的问题。
 
-[Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
+[main](/main) 中的所有非交互题的 CF 代码及其对应测试全部按照上述框架实现。
 
-[洛谷模板题（建议按难度筛选）](https://www.luogu.com.cn/problem/list?keyword=%E6%A8%A1%E6%9D%BF&page=1)
+## 学习资料及题目
 
-### AtCoder 版《挑战程序设计竞赛》
-
-[AtCoder 版！蟻本 (初級編)](https://qiita.com/drken/items/e77685614f3c6bf86f44)
-
-[AtCoder 版！蟻本 (中級編)](https://qiita.com/drken/items/2f56925972c1d34e05d8)
-
-[AtCoder 版！蟻本 (上級編)](https://qiita.com/drken/items/9b311d553aa434bb26e4)
-
-[AtCoder 版！蟻本 (発展的トピック編)](https://qiita.com/drken/items/0de3d205690d92307b7c)
-
-## 其他链接
-
-注：由于白书上选了很多区域赛的题，一部分题目可以在 GYM 上找到，这样可以就可以用 Go 编程提交了。（洛谷上也可能找到）
+注：由于入门经典上选了很多区域赛的题，一部分题目可以在 GYM 上找到，这样可以就可以用 Go 编程提交了。
 
 [算法竞赛入门经典（第二版）](https://github.com/aoapc-book/aoapc-bac2nd)
 
 [算法竞赛入门经典训练指南](https://github.com/klb3713/aoapc-book/tree/master/TrainingGuide/bookcodes)
 
-[算法竞赛入门经典训练指南（第二版）](https://gitee.com/sukhoeing/aoapc-training-guide2)
+[算法竞赛入门经典训练指南（升级版）](https://gitee.com/sukhoeing/aoapc-training-guide2)
 
 [算法竞赛进阶指南](https://github.com/lydrainbowcat/tedukuri)
 
@@ -184,6 +174,12 @@
 
 [算法学习笔记（目录）](https://zhuanlan.zhihu.com/p/105467597)
 
+[洛谷模板题（建议按难度筛选）](https://www.luogu.com.cn/problem/list?keyword=%E6%A8%A1%E6%9D%BF&page=1)
+
+[Codeforces Problem Topics](https://codeforces.com/blog/entry/55274)
+
+[Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
+
 ### 洛谷日报
 
 [2021 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/287888)
@@ -197,6 +193,16 @@
 ### 高级竞赛算法
 
 [算法进阶课](https://www.acwing.com/activity/content/32/)
+
+### AtCoder 版《挑战程序设计竞赛》
+
+[AtCoder 版！蟻本 (初級編)](https://qiita.com/drken/items/e77685614f3c6bf86f44)
+
+[AtCoder 版！蟻本 (中級編)](https://qiita.com/drken/items/2f56925972c1d34e05d8)
+
+[AtCoder 版！蟻本 (上級編)](https://qiita.com/drken/items/9b311d553aa434bb26e4)
+
+[AtCoder 版！蟻本 (発展的トピック編)](https://qiita.com/drken/items/0de3d205690d92307b7c)
 
 ### 待整理
 
