@@ -186,6 +186,8 @@
 
 ### 洛谷日报
 
+[2021 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/287888)
+
 [2020 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/179788)
 
 [2019 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/92685)
