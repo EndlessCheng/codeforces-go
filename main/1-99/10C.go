@@ -14,16 +14,15 @@ func CF10C(_r io.Reader, _w io.Writer) {
 
 	var n int
 	Fscan(in, &n)
-
 	ans := int64(0)
-	cnts := [9]int64{}
+	cnt := [9]int64{}
 	for i := 1; i <= n; i++ {
-		cnts[i%9]++
+		cnt[i%9]++
 		ans -= int64(n / i)
 	}
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
-			ans += cnts[i] * cnts[j] * cnts[i*j%9]
+			ans += cnt[i] * cnt[j] * cnt[i*j%9]
 		}
 	}
 	Fprint(out, ans)

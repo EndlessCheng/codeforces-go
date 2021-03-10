@@ -6,9 +6,9 @@ import (
 )
 
 func TestCF10C(t *testing.T) {
-	// TODO: 测试参数的下界和上界！
 	// just copy from website
 	rawText := `
+inputCopy
 4
 outputCopy
 2
