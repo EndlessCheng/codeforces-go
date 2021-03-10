@@ -877,9 +877,9 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for i := range fa {
 		fa[i] = -1
 	}
-	q := vdHeap{{st, 0}}
-	for len(q) > 0 {
-		p := q.pop()
+	h := vdHeap{{st, 0}}
+	for len(h) > 0 {
+		p := h.pop()
 		v := p.v
 		if vis[v] { // p.dis > dist[v]
 			continue
@@ -890,7 +890,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
-				q.push(vdPair{w, newD})
+				h.push(vdPair{w, newD})
 			}
 		}
 	}
@@ -906,10 +906,34 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		path = append(path, x)
 	}
 
-	// EXTRA: 对于相邻的两点，记边为 e，若有：
-	// abs(dist[v], dist[w]) == e.wt  =>  e 在最短路上（不带绝对值的话就有先后关系）
-	// abs(dist[v], dist[w])  < e.wt  =>  e 不在最短路上（可以想象成一条鼓起的线）
-	// 这里的最短路可以有多条
+	// EXTRA: 在最短路 DAG 上跑拓扑
+	{
+		deg := make([]int, n)
+		for v, es := range g {
+			for _, e := range es {
+				if dist[v]+e.wt == dist[e.to] {
+					deg[e.to]++
+				}
+			}
+		}
+
+		dp := make([]int, n)
+		dp[st] = 0 //
+		q := []int{st}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			for _, e := range g[v] {
+				if w := e.to; dist[v]+e.wt == dist[w] {
+					// do dp[v] -> dp[w] ...
+
+					if deg[w]--; deg[w] == 0 {
+						q = append(q, w)
+					}
+				}
+			}
+		}
+	}
 
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
@@ -924,9 +948,9 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		for i := range dist2 {
 			dist2[i] = inf
 		}
-		q := vdHeap{{st, 0}}
-		for len(q) > 0 {
-			p := q.pop()
+		h := vdHeap{{st, 0}}
+		for len(h) > 0 {
+			p := h.pop()
 			v, d := p.v, p.dis
 			if dist2[v] < d { // 注意是 dist2
 				continue
@@ -935,12 +959,12 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 				w := e.to
 				newD := d + e.wt
 				if newD < dist[w] {
-					q.push(vdPair{w, newD})
+					h.push(vdPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
 				if dist[w] < newD && newD < dist2[w] {
 					dist2[w] = newD
-					q.push(vdPair{w, newD})
+					h.push(vdPair{w, newD})
 				}
 			}
 		}
