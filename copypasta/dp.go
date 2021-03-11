@@ -516,15 +516,15 @@ func dpCollections() {
 			dp[i] = make([]int, m)
 		}
 		for i, v := range a {
-			cur := 0
+			mx := 0
 			for j, w := range b {
 				if v == w {
-					dp[i+1][j] = cur + 1
+					dp[i+1][j] = mx + 1
 				} else {
 					dp[i+1][j] = dp[i][j]
 				}
 				if w < v {
-					cur = max(cur, dp[i][j])
+					mx = max(mx, dp[i][j])
 				}
 			}
 		}
@@ -533,6 +533,51 @@ func dpCollections() {
 			ans = max(ans, v)
 		}
 		return ans
+	}
+
+	// LCIS 打印方案
+	lcisPath := func(a, b []int) (ans int, lcis []int) {
+		n, m := len(a), len(b)
+		dp := make([][]int, n+1)
+		fa := make([][]int, n+1)
+		for i := range dp {
+			dp[i] = make([]int, m)
+			fa[i] = make([]int, m)
+		}
+		for i, v := range a {
+			mx, k := 0, -1
+			for j, w := range b {
+				if v == w {
+					dp[i+1][j] = mx + 1
+					fa[i+1][j] = k // k < j
+				} else {
+					dp[i+1][j] = dp[i][j]
+					fa[i+1][j] = j
+				}
+				if w < v && dp[i][j] > mx {
+					mx, k = dp[i][j], j
+				}
+			}
+		}
+		ansJ := 0
+		for j, dv := range dp[n] {
+			if dv > dp[n][ansJ] {
+				ansJ = j
+			}
+		}
+		ans = dp[n][ansJ]
+		var getLCIS func(i, j int)
+		getLCIS = func(i, j int) {
+			if i == 0 || j < 0 {
+				return
+			}
+			getLCIS(i-1, fa[i][j])
+			if fa[i][j] < j {
+				lcis = append(lcis, b[j])
+			}
+		}
+		getLCIS(n, ansJ)
+		return
 	}
 
 	// 长度为 m 的 LIS 个数
@@ -1640,7 +1685,7 @@ func dpCollections() {
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
-		lisSlow, lis, lisAll, lcis, countLIS, distinctSubsequence, minPalindromeCut,
+		lisSlow, lis, lisAll, lcis, lcisPath, countLIS, distinctSubsequence, minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult,
 		unboundedKnapsack, unboundedWaysToSum,
