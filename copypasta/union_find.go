@@ -18,6 +18,7 @@ https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专�
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
 // https://codeforces.com/problemset/problem/292/D
 // 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
+// 动态加点 https://codeforces.com/contest/1494/problem/D
 func unionFind(n int) {
 	var fa []int
 	initFa := func(n int) {
