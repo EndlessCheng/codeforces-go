@@ -64,7 +64,7 @@ func TestCompareCF1439C(t *testing.T) {
 		n := rg.Int(1,10)
 		q := rg.Int(5,5)
 		rg.NewLine()
-		rg.IntSliceOrdered(n, 1, 5, false)
+		rg.IntSliceOrdered(n, 1, 5, false, false)
 		for i := 1; i <= q; i++ {
 			rg.Int(1,2)
 			rg.Int(1, n)

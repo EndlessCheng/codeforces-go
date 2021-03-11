@@ -104,20 +104,32 @@ func (r *RG) StrInSet(minLen, maxLen int, chars string) string {
 	return s
 }
 
+func (r *RG) intSlice(size int, min, max int) []int {
+	a := make([]int, size)
+	for i := range a {
+		a[i] = r._int(min, max)
+	}
+	return a
+}
+
 // IntSlice generates a random int slice with a fixed size and its values in range [min, max]
 func (r *RG) IntSlice(size int, min, max int) []int {
-	a := make([]int, 0, size)
-	for i := 0; i < size; i++ {
-		a = append(a, r.Int(min, max))
+	a := r.intSlice(size, min, max)
+	for _, v := range a {
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
 	}
 	r.NewLine()
 	return a
 }
 
-func (r *RG) IntSliceOrdered(size int, min, max int, inc bool) []int {
-	a := make([]int, size)
-	for i := range a {
-		a[i] = r._int(min, max)
+// IntSliceOrdered generates a random int slice with a fixed size and its values in range [min, max]
+func (r *RG) IntSliceOrdered(size int, min, max int, inc, unique bool) []int {
+	var a []int
+	if unique {
+		a = r.uniqueSlice(size, min, max)
+	} else {
+		a = r.intSlice(size, min, max)
 	}
 	if inc {
 		sort.Ints(a)
@@ -143,7 +155,7 @@ func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 }
 
 // UniqueSlice generates a int slice with a fixed size and all ints are unique within range [min, max]
-func (r *RG) UniqueSlice(size int, min, max int) []int {
+func (r *RG) uniqueSlice(size int, min, max int) []int {
 	if size > max-min+1 {
 		panic("size is too large")
 	}
@@ -151,6 +163,11 @@ func (r *RG) UniqueSlice(size int, min, max int) []int {
 	for i := range p {
 		p[i] += min
 	}
+	return p
+}
+
+func (r *RG) UniqueSlice(size int, min, max int) []int {
+	p := r.uniqueSlice(size, min, max)
 	for _, v := range p {
 		r.sb.WriteString(strconv.Itoa(v))
 		r.Space()
