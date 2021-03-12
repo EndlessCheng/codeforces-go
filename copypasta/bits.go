@@ -54,6 +54,8 @@ https://oeis.org/A047778 Concatenation of first n numbers in binary, converted t
 异或和相关
 https://oeis.org/A003987 异或矩阵
 https://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
+    相关题目 https://codeforces.com/problemset/problem/1493/E
+            https://codeforces.com/problemset/problem/460/D
 https://oeis.org/A145768 异或和 i*i
 https://oeis.org/A126084 异或和 质数
 https://oeis.org/A018252 异或和 合数?
@@ -140,6 +142,9 @@ https://oeis.org/A090994 Number of meaningful differential operations of the n-t
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 相关题目 LC1215/双周赛10C https://leetcode-cn.com/contest/biweekly-contest-10/problems/stepping-numbers/
 
+套路题
+https://codeforces.com/problemset/problem/1415/D
+
 */
 
 // 参考 strings/strings.go 中的 asciiSet
@@ -193,7 +198,19 @@ func bitsCollection() {
 		return
 	}
 
-	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum}
+	// 找三个不同的在 [l,r] 范围内的数，其异或和为 0
+	// 考虑尽可能地小化最大减最小的值，构造 (x, y, z) = (b*2-1, b*3-1, b*3), b=2^k
+	// 相关题目 https://codeforces.com/problemset/problem/460/D
+	zeroXorSum3 := func(l, r int64) []int64 {
+		for b := int64(1); b*3 <= r; b <<= 1 {
+			if x, y, z := b*2-1, b*3-1, b*3; l <= x && z <= r {
+				return []int64{x, y, z}
+			}
+		}
+		return nil
+	}
+
+	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, zeroXorSum3}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
