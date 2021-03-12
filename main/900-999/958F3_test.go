@@ -8,9 +8,10 @@ import (
 func TestSol958F3(t *testing.T) {
 	// just copy from website
 	rawText := `
+inputCopy
 4 3 2
 1 2 3 2
 outputCopy
 4`
-	testutil.AssertEqualCase(t, rawText, 0, Sol958F3)
+	testutil.AssertEqualCase(t, rawText, 0, CF958F3)
 }

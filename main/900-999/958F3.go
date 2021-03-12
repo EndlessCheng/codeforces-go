@@ -8,12 +8,13 @@ import (
 	"math/bits"
 )
 
-type fft958 struct {
+// github.com/EndlessCheng/codeforces-go
+type fft58 struct {
 	n               int
 	omega, omegaInv []complex128
 }
 
-func newFFT958(n int) *fft958 {
+func newFFT58(n int) *fft58 {
 	omega := make([]complex128, n)
 	omegaInv := make([]complex128, n)
 	for i := range omega {
@@ -21,10 +22,10 @@ func newFFT958(n int) *fft958 {
 		omega[i] = complex(cos, sin)
 		omegaInv[i] = complex(cos, -sin)
 	}
-	return &fft958{n, omega, omegaInv}
+	return &fft58{n, omega, omegaInv}
 }
 
-func (f *fft958) transform(a, omega []complex128) {
+func (f *fft58) transform(a, omega []complex128) {
 	for i, j := 0, 0; i < f.n; i++ {
 		if i > j {
 			a[i], a[j] = a[j], a[i]
@@ -49,21 +50,21 @@ func (f *fft958) transform(a, omega []complex128) {
 	}
 }
 
-func (f *fft958) dft(a []complex128) {
+func (f *fft58) dft(a []complex128) {
 	f.transform(a, f.omega)
 }
 
-func (f *fft958) idft(a []complex128) {
+func (f *fft58) idft(a []complex128) {
 	f.transform(a, f.omegaInv)
 	for i := range a {
 		a[i] /= complex(float64(f.n), 0)
 	}
 }
 
-func convolution958(a, b []int) []int {
+func convolution58(a, b []int) []int {
 	n, m := len(a), len(b)
 	limit := 1 << uint(bits.Len(uint(n+m-1)))
-	f := newFFT958(limit)
+	f := newFFT58(limit)
 	cmplxA := make([]complex128, limit)
 	for i, v := range a {
 		cmplxA[i] = complex(float64(v), 0)
@@ -85,24 +86,16 @@ func convolution958(a, b []int) []int {
 	return conv
 }
 
-func convolutionN958(coefs [][]int) []int {
-	var f func(l, r int) []int
-	f = func(l, r int) []int {
-		if l == r {
-			return coefs[l-1]
-		}
-		mid := (l + r) >> 1
-		return convolution958(f(l, mid), f(mid+1, r))
+func convolutionN58(coefs [][]int) []int {
+	n := len(coefs)
+	if n == 1 {
+		return coefs[0]
 	}
-	return f(1, len(coefs))
+	return convolution58(convolutionN58(coefs[:n/2]), convolutionN58(coefs[n/2:]))
 }
 
-// github.com/EndlessCheng/codeforces-go
-func Sol958F3(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+func CF958F3(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	var n, m, k, x int
 	Fscan(in, &n, &m, &k)
 	coefs := make([][]int, m)
@@ -114,9 +107,7 @@ func Sol958F3(reader io.Reader, writer io.Writer) {
 		x--
 		coefs[x] = append(coefs[x], 1)
 	}
-	Fprint(out, convolutionN958(coefs)[k])
+	Fprint(out, convolutionN58(coefs)[k])
 }
 
-//func main() {
-//	Sol958F3(os.Stdin, os.Stdout)
-//}
+//func main() { CF958F3(os.Stdin, os.Stdout) }
