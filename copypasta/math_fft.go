@@ -108,6 +108,7 @@ func polyConvFFT(a, b []int64) []int64 {
 
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
+// 可重集大小为 k 的不同子集个数 https://codeforces.com/contest/958/problem/F3
 func polyConvFFTs(coefs [][]int64) []int64 {
 	n := len(coefs)
 	if n == 1 {
