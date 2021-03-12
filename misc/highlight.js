@@ -40,7 +40,7 @@
         "every", " both ", " other ",
         "equal", "same", "different", "unique", "distinct", "strictly",
         "must", "only", "just", "exactly", "always", "indeed",
-        "pairwise", "adjacent", "in a row", "consecutive", "contiguous",
+        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous",
 
         // 求解
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
@@ -58,6 +58,7 @@
         "undirected", "directed",
         "independently", "independent",
         "expected value",
+        "circle", " ring",
 
         "没有", "不是", "不同", "不需要",
         "相同",
