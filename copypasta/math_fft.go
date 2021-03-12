@@ -109,13 +109,9 @@ func polyConvFFT(a, b []int64) []int64 {
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
 func polyConvFFTs(coefs [][]int64) []int64 {
-	var f func(l, r int) []int64
-	f = func(l, r int) []int64 {
-		if l == r {
-			return coefs[l-1] // coefs start at 0
-		}
-		mid := (l + r) >> 1
-		return polyConvFFT(f(l, mid), f(mid+1, r))
+	n := len(coefs)
+	if n == 1 {
+		return coefs[0]
 	}
-	return f(1, len(coefs))
+	return polyConvFFT(polyConvFFTs(coefs[:n/2]), polyConvFFTs(coefs[n/2:]))
 }

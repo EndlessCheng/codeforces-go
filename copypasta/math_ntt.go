@@ -63,6 +63,12 @@ OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
 
+拉格朗日反演 扩展拉格朗日反演
+证明 https://www.cnblogs.com/judge/p/10652738.html
+多项式拉格朗日反演与复合逆 https://blog.csdn.net/C20190102/article/details/107279319
+点双连通图计数 https://www.luogu.com.cn/problem/P5827
+边双连通图计数 https://www.luogu.com.cn/problem/P5828
+
 todo 多项式题单 https://www.luogu.com.cn/training/1008
 https://codeforces.com/problemset/problem/958/F3
 todo https://codeforces.com/contest/438/problem/E
@@ -166,15 +172,11 @@ func (a poly) conv(b poly) poly {
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
 func polyConvNTTs(coefs []poly) poly {
-	var f func(l, r int) poly
-	f = func(l, r int) poly {
-		if l == r {
-			return coefs[l-1] // coefs start at 0
-		}
-		mid := (l + r) >> 1
-		return f(l, mid).conv(f(mid+1, r))
+	n := len(coefs)
+	if n == 1 {
+		return coefs[0]
 	}
-	return f(1, len(coefs))
+	return polyConvNTTs(coefs[:n/2]).conv(polyConvNTTs(coefs[n/2:]))
 }
 
 func (a poly) reverse() poly {
