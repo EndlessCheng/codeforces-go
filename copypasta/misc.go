@@ -75,6 +75,7 @@ func miscCollection() {
 	}
 
 	// 小结论：把 n 用 m 等分，得到 m-n%m 个 n/m 和 n%m 个 n/m+1
+	// 相关题目 https://codeforces.com/problemset/problem/663/A
 	partition := func(n, m int) (q, cntQ, cntQ1 int) {
 		// m must > 0
 		return n / m, m - n%m, n % m
