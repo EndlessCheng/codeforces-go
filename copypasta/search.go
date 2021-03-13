@@ -799,10 +799,33 @@ func loopCollection() {
 		}
 	}
 
+	// 保证边界在范围内且 x0 <= x1 且 y0 <= y1
+	loopBorder := func(x0, y0, x1, y1 int) {
+		if y0 == y1 {
+			for i := x0; i <= x1; i++ {
+				// do(i, y0) ...
+
+			}
+			return
+		}
+		for i := x0; i <= x1; i++ {
+			for j := y0; j <= y1; {
+				// do(i, j) ...
+
+				if i == x0 || i == x1 {
+					j++
+				} else {
+					j += y1 - y0
+				}
+			}
+		}
+	}
+
 	_ = []interface{}{
 		loopSet, loopSubset, loopSubsetK,
 		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev,
 		loopDiagonal, loopAntiDiagonal,
+		loopBorder,
 	}
 }
 
