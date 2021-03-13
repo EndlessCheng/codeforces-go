@@ -1,6 +1,6 @@
 package copypasta
 
-/* 左偏树
+/* 左偏树 leftist tree / leftist heap
 https://en.wikipedia.org/wiki/Leftist_tree
 代码参考 https://oi-wiki.org/ds/leftist-tree/
 
