@@ -40,6 +40,8 @@ import (
 不解释，自己感受 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
 等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
+
+奇偶性 https://codeforces.com/problemset/problem/763/B
 */
 
 // NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
