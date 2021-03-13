@@ -6,17 +6,14 @@ import (
 )
 
 /* 树堆 treap=tree+heap
-本质上属于笛卡尔树
-	https://oi-wiki.org/ds/cartesian-tree/
-	https://en.wikipedia.org/wiki/Cartesian_tree
-	https://www.luogu.com.cn/problem/P5854
-	todo https://www.luogu.com.cn/blog/AAAbbb123/di-ka-er-shu-xue-xi-bi-ji
+本质上属于笛卡尔树，见 cartesian_tree.go
+
 https://oi-wiki.org/ds/treap/
 https://en.wikipedia.org/wiki/Treap
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
 耗时大约是红黑树（父节点实现）的 1.2 倍
 
-普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
+模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 
 EXTRA: FHQ Treap
