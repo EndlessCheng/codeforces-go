@@ -89,6 +89,17 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 
 const eps = 1e-8
 
+// 浮点数 GCD
+// https://codeforces.com/problemset/problem/1/C
+func gcdf(a, b float64) float64 {
+	// 注意根据题目约束，分析 eps 取值
+	// 例如 CF1C，由于保证正多边形边数不超过 100，故 gcdf 的结果不会小于 2*math.Pi/100，eps 可以取 1e-2
+	for a > eps { // math.Abs(a) > eps
+		a, b = math.Mod(b, a), a
+	}
+	return b
+}
+
 /* 二维向量（点）*/
 type vec struct{ x, y int64 }
 
@@ -98,7 +109,7 @@ func (a vec) dot(b vec) int64   { return a.x*b.x + a.y*b.y }
 func (a vec) det(b vec) int64   { return a.x*b.y - a.y*b.x }
 func (a vec) len2() int64       { return a.x*a.x + a.y*a.y }
 func (a vec) dis2(b vec) int64  { return a.sub(b).len2() }
-func (a vec) len() float64      { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec) len() float64      { return math.Sqrt(float64(a.x*a.x + a.y*a.y)) }
 func (a vec) dis(b vec) float64 { return a.sub(b).len() }
 func (a vec) vecF() vecF        { return vecF{float64(a.x), float64(a.y)} }
 
@@ -161,6 +172,7 @@ func cosineRuleVec(va, vb vecF, angle float64) float64 {
 }
 
 // 三角形外心（外接圆圆心，三条边的垂直平分线的交点）
+// https://en.wikipedia.org/wiki/Circumscribed_circle
 // https://codeforces.com/problemset/problem/1/C
 func circumcenter(a, b, c vecF) vecF {
 	a1, b1, a2, b2 := b.x-a.x, b.y-a.y, c.x-a.x, c.y-a.y
@@ -169,20 +181,20 @@ func circumcenter(a, b, c vecF) vecF {
 }
 
 // EXTRA: 外接圆半径 R
-// 最好用 det + 正弦定理，误差小
-// https://baike.baidu.com/item/%E5%A4%96%E6%8E%A5%E5%9C%86%E5%8D%8A%E5%BE%84%E5%85%AC%E5%BC%8F
+// 下面交换了一下乘除的顺序，减小精度的丢失
 func circumcenterR(a, b, c vecF) float64 {
 	ab, ac := b.sub(a), c.sub(a)
-	return a.dis(b) * b.dis(c) * c.dis(a) / (2 * math.Abs(ab.det(ac)))
+	return 0.5 * a.dis(b) * a.dis(c) / math.Abs(ab.det(ac)) * b.dis(c)
 }
 func circumcenterR2(a, b, c vecF) float64 {
 	ab, ac := b.sub(a), c.sub(a)
-	return a.dis2(b) * b.dis2(c) * c.dis2(a) / (4 * ab.det(ac) * ab.det(ac))
+	return 0.25 * a.dis2(b) / ab.det(ac) * a.dis2(c) / ab.det(ac) * b.dis2(c)
 }
 
 // 三角形垂心（三条高的交点）
+// https://en.wikipedia.org/wiki/Altitude_(triangle)#Orthocenter
 // 欧拉线上的四点中，九点圆圆心到垂心和外心的距离相等，而且重心到外心的距离是重心到垂心距离的一半。注意内心一般不在欧拉线上，除了等腰三角形外
-// https://zh.wikipedia.org/wiki/%E6%AD%90%E6%8B%89%E7%B7%9A
+// https://en.wikipedia.org/wiki/Euler_line
 // https://baike.baidu.com/item/%E4%B8%89%E8%A7%92%E5%BD%A2%E4%BA%94%E5%BF%83%E5%AE%9A%E5%BE%8B
 func orthocenter(a, b, c vecF) vecF {
 	return a.add(b).add(c).sub(circumcenter(a, b, c).mul(2))
@@ -190,6 +202,7 @@ func orthocenter(a, b, c vecF) vecF {
 
 // 三角形内心（三条角平分线的交点）
 // 三点坐标按对边长度加权平均
+// https://en.wikipedia.org/wiki/Incenter
 func incenter(a, b, c vecF) vecF {
 	bc, ac, ab := b.dis(c), a.dis(c), a.dis(b)
 	sum := bc + ac + ab
@@ -214,6 +227,15 @@ func (a vec) onSeg(l line) bool {
 func (a vec) onRay(o, d vec) bool {
 	a = a.sub(o)
 	return d.det(a) == 0 && d.dot(a) >= 0 // 含端点
+}
+
+// 判断直线交点个数
+// 重合时返回 -1
+// 另一种办法是用高斯消元
+// https://codeforces.com/problemset/problem/21/B
+func (a line) numOfIntersections(b line) int {
+	// todo
+	panic(-1)
 }
 
 // 直线 a b 交点
@@ -607,7 +629,7 @@ func vec2Collection() {
 					break
 				}
 				dx := float64(pi.x - pj.x)
-				d = math.Min(d, math.Hypot(dx, dy))
+				d = math.Min(d, math.Sqrt(dx*dx+dy*dy))
 			}
 			checkPs = append(checkPs, pi)
 		}
