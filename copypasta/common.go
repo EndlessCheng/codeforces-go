@@ -1558,7 +1558,7 @@ func monotoneCollection() {
 	// 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 	// * 已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
 	monotoneStack := func(a []int) ([]int, []int) {
-		const border int = 2e9 // 求两侧小的话用 -1
+		const border int = 2e9 // 求两侧小的话用 -2e9
 		type pair struct{ v, i int }
 
 		// 求左侧严格大于
@@ -1589,6 +1589,13 @@ func monotoneCollection() {
 				stack = stack[:len(stack)-1]
 			}
 			stack = append(stack, pair{v, i})
+		}
+
+		// EXTRA
+		mx := 0
+		for i, v := range a {
+			l, r := posL[i]+1, posR[i] // [l,r)
+			mx = max(mx, v*(r-l))
 		}
 
 		return posL, posR
