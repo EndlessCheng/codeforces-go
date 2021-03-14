@@ -78,6 +78,8 @@ func renameInputArgs(funcDefineLine string) string {
 		"word ", "s ",
 		"word1 ", "x ",
 		"word2 ", "y ",
+		"s1 ", "x ",
+		"s2 ", "y ",
 	).Replace(funcDefineLine)
 }
 
