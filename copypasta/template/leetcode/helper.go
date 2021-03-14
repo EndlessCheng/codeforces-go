@@ -69,18 +69,30 @@ func lowerArgsFirstChar(funcDefineLine string) string {
 
 // 替换常见变量名（数组、字符串等）
 func renameInputArgs(funcDefineLine string) string {
-	return strings.NewReplacer(
-		"arr ", "a ",
-		"nums ", "a ",
-		"mat ", "a ",
-		"matrix ", "a ",
-		"grid ", "a ",
-		"word ", "s ",
-		"word1 ", "x ",
-		"word2 ", "y ",
-		"s1 ", "x ",
-		"s2 ", "y ",
-	).Replace(funcDefineLine)
+	oldNew := []string{
+		// 数组、矩阵
+		"nums", "a",
+		"arr", "a",
+		"array", "a",
+		"mat", "a",
+		"matrix", "a",
+		"grid", "a",
+
+		// 字符串
+		"word", "s",
+		"word1", "x",
+		"word2", "y",
+		"s1", "x",
+		"s2", "y",
+
+		// 其余常见变量名
+		"edges", "es",
+		"points", "ps",
+	}
+	for i := range oldNew {
+		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
+	}
+	return strings.NewReplacer(oldNew...).Replace(funcDefineLine)
 }
 
 func _parseReturnType(line string) string {
