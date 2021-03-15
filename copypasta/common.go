@@ -579,10 +579,10 @@ func commonCollection() {
 			return nil
 		}
 		k := 0
-		for _, v := range a[1:] {
-			if a[k] != v {
+		for _, w := range a[1:] {
+			if a[k] != w {
 				k++
-				a[k] = v
+				a[k] = w
 			}
 		}
 		//n = k + 1
