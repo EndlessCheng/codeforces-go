@@ -12,11 +12,7 @@ import (
      或者说 2^(Len(x)-1) <= x < 2^Len(x)
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
-相关题目
-   LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
-   LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
-GCD 也有这种性质，和上面一样数量是 O(logC) 级别的
-   https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
+** 代码和题目见下面的 logTrick 和 logTrickCnt
 
 常用等式（若改变了计算的顺序，注意优先级！）
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
@@ -198,6 +194,65 @@ func bitsCollection() {
 		return
 	}
 
+	// 利用操作的单调性求解
+	// |: LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
+	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
+	//      https://codeforces.com/problemset/problem/475/D (见下面的 logTrickCnt)
+	logTrick := func(a []int, op func(x, y int) int) map[int]bool {
+		has := map[int]bool{} // 统计 op(一段区间) 的不同结果
+		set := []int{}
+		for _, x := range a {
+			for i, v := range set {
+				set[i] = op(v, x)
+			}
+			set = append(set, x)
+			// 去重
+			k := 0
+			for _, w := range set[1:] {
+				if set[k] != w {
+					k++
+					set[k] = w
+				}
+			}
+			set = set[:k+1]
+			for _, v := range set {
+				// do v...
+				has[v] = true
+			}
+		}
+		return has
+	}
+
+	// https://codeforces.com/problemset/problem/475/D
+	logTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
+		cnt := map[int]int64{} // 统计 op(一段区间) 的各个结果的出现次数
+		type pair struct{ v, l, r int }
+		set := []pair{}
+		for i, x := range a {
+			for j, p := range set {
+				set[j].v = op(p.v, x)
+			}
+			set = append(set, pair{x, i, i + 1})
+			// 去重
+			k := 0
+			for _, q := range set[1:] {
+				if set[k].v != q.v {
+					k++
+					set[k] = q
+				} else {
+					set[k].r = q.r
+				}
+			}
+			set = set[:k+1]
+			for _, p := range set {
+				// do p...     [l,r)
+				cnt[p.v] += int64(p.r - p.l)
+			}
+		}
+		return cnt
+	}
+
 	// 找三个不同的在 [l,r] 范围内的数，其异或和为 0
 	// 考虑尽可能地小化最大减最小的值，构造 (x, y, z) = (b*2-1, b*3-1, b*3), b=2^k
 	// 相关题目 https://codeforces.com/problemset/problem/460/D
@@ -210,7 +265,7 @@ func bitsCollection() {
 		return nil
 	}
 
-	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, zeroXorSum3}
+	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, logTrick, logTrickCnt, zeroXorSum3}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
