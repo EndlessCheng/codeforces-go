@@ -33,6 +33,7 @@ func TestCompareInf(t *testing.T) {
 	if err := testutil.RunLeetCodeFuncWithExamples(t, runAC, examples, 0); err != nil {
 		t.Fatal(err)
 	}
+
 	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
 }
 
