@@ -655,7 +655,7 @@ func vec2Collection() {
 	// https://cp-algorithms.com/geometry/area-of-simple-polygon.html
 	polygonArea := func(ps []vec) float64 {
 		n := len(ps)
-		area := 0.0
+		area := .0
 		for i := 1; i < n-1; i++ {
 			area += float64(ps[i].sub(ps[0]).det(ps[i+1].sub(ps[0])))
 		}

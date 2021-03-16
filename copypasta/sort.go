@@ -303,13 +303,13 @@ func sortCollections() {
 				a[i] = float64(p[0]) - rate*float64(p[1])
 			}
 			sort.Float64s(a) // 由于只需要求最大的 k 个数，也可以用 nthElement
-			s := 0.0
+			s := .0
 			for _, v := range a[n-k:] {
 				s += v
 			}
 			return s < 0
 		}
-		l, r := 0.0, 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
+		l, r := .0, 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
 		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
 			mid := (l + r) / 2
 			if f(mid) {
