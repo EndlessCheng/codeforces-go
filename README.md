@@ -19,9 +19,14 @@
   - [堆（优先队列）heap.go](/copypasta/heap.go)
   - [单调栈、单调队列 common.go 中的 monotoneCollection](/copypasta/common.go)
   - [并查集 union_find.go](/copypasta/union_find.go)
+    - 点权
+    - 边权（种类）
+    - 动态图连通性
   - [ST 表 common.go 中的 stInit](/copypasta/common.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
+    - 懒标记
+    - 持久化（主席树）
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
   - [二叉搜索树公共方法 bst.go](/copypasta/bst.go)
@@ -43,6 +48,7 @@
   - AC 自动机
   - 后缀数组（SA）
   - 字典树（trie）
+    - 0-1 trie 构造最多节点
 - 数学
   - [数论 math.go](/copypasta/math.go)
     - 最大公因数（GCD）
@@ -92,22 +98,38 @@
   - 割边（桥）
   - 双连通分量
   - 最短路
+    - Dijkstra
+    - SPFA
+    - Floyd-Warshall
+    - Johnson
   - 最小生成树
+    - Kruskal
+    - Prim
   - 最小差值生成树
   - 二分图最大匹配
   - 带权二分图最大完美匹配
   - 拓扑排序
   - 极大强连通分量
+    - Kosaraju
   - 2-SAT
   - 基环树
   - 最大流
+    - Dinic
+    - ISAP
+    - HLPP
   - 最小费用最大流
+    - SPFA
+    - Dijkstra
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
     - 最近公共祖先（LCA）
+      - 倍增
+      - ST 表
+      - Tarjan
       - 树上差分
     - 树链剖分（重链剖分，HLD）
+    - 长链剖分
     - 树上启发式合并（DSU）
     - 树分块
 - [位运算 bits.go](/copypasta/bits.go)
