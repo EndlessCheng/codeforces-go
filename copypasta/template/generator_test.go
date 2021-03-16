@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -12,8 +13,10 @@ import (
 func TestGenCodeforcesContestTemplates(t *testing.T) {
 	const contestID = ""
 	const overwrite = false
+	rootPath := fmt.Sprintf("../../%s/", contestID)
 	for {
-		if err := GenCodeforcesContestTemplates(contestID, overwrite); err != nil {
+		// 配合 https://github.com/xalanq/cf-tool 使用
+		if err := GenCodeforcesContestTemplates(rootPath, contestID, overwrite); err != nil {
 			//t.Log(err)
 		} else {
 			break

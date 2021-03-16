@@ -12,13 +12,12 @@ import (
 )
 
 // 生成 CF 比赛模板（需要先 cf race，以确认题目数量）
-func GenCodeforcesContestTemplates(contestID string, overwrite bool) error {
+func GenCodeforcesContestTemplates(rootPath, contestID string, overwrite bool) error {
 	if contestID == "" {
 		fmt.Println("contest ID is empty")
 		return nil
 	}
 
-	rootPath := fmt.Sprintf("../../%s/", contestID)
 	openedOneFile := false
 
 	dirNames := []string{}
