@@ -1,33 +1,29 @@
 package copypasta
 
-// 博弈论
-// 定义必胜状态为先手必胜的状态，必败状态为先手必败的状态
-// 定理 1：没有后继状态的状态是必败状态
-// 定理 2：一个状态是必胜状态当且仅当存在至少一个必败状态为它的后继状态
-// 定理 3：一个状态是必败状态当且仅当它的所有后继状态均为必胜状态
-// 对于定理 1，如果游戏进行不下去了，那么这个玩家就输掉了游戏
-// 对于定理 2，如果该状态至少有一个后继状态为必败状态，那么玩家可以通过操作到该必败状态；
-//           此时对手的状态为必败状态——对手必定是失败的，而相反地，自己就获得了胜利
-// 对于定理 3，如果不存在一个后继状态为必败状态，那么无论如何，玩家只能操作到必胜状态；
-//           此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
-// The Sprague–Grundy theorem generalizes the strategy used in nim to all games that fulfil the following requirements:
-// - There are two players who move alternately.
-// - The game consists of states, and the possible moves in a state do not depend on whose turn it is.
-// - The game ends when a player cannot make a move.
-// - The game surely ends sooner or later.
-// - The players have complete information about the states and allowed moves, and there is no randomness in the game.
-// todo 推荐论文《组合游戏略述——浅谈 SG 游戏的若干拓展及变形》
-// todo Anti-SG
-// 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
-// https://oi-wiki.org/math/game-theory/
-// 个人写的总结 https://github.com/SDU-ACM-ICPC/Qiki/blob/master/%E5%8D%9A%E5%BC%88%E8%AE%BA(Game%20Theory).md
-// 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
-// TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
-// 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
-// todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
-// todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
-// todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
-// 对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
+import . "fmt"
+
+/* 博弈论 Game Theory
+https://en.wikipedia.org/wiki/Game_theory
+定义必胜状态为先手必胜的状态，必败状态为先手必败的状态
+定理 1：没有后继状态的状态是必败状态
+定理 2：一个状态是必胜状态当且仅当存在至少一个必败状态为它的后继状态
+定理 3：一个状态是必败状态当且仅当它的所有后继状态均为必胜状态
+对于定理 1，如果游戏进行不下去了，那么这个玩家就输掉了游戏
+对于定理 2，如果该状态至少有一个后继状态为必败状态，那么玩家可以通过操作到该必败状态；
+          此时对手的状态为必败状态——对手必定是失败的，而相反地，自己就获得了胜利
+对于定理 3，如果不存在一个后继状态为必败状态，那么无论如何，玩家只能操作到必胜状态；
+          此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
+推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
+https://oi-wiki.org/math/game-theory/
+
+三定理的模板题 https://codeforces.com/problemset/problem/1033/C
+TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
+一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
+todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
+todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
+todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
+对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
+*/
 func gameTheoryCollection() {
 	{
 		// 基础打表
@@ -120,6 +116,8 @@ func gameTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem
 	// https://cp-algorithms.com/game_theory/sprague-grundy-nim.html
 	// todo https://zhuanlan.zhihu.com/p/257013159
+	// todo 推荐论文《组合游戏略述——浅谈 SG 游戏的若干拓展及变形》
+	// todo Anti-SG
 	//
 	// 整数分拆博弈 https://codeforces.com/problemset/problem/87/C
 	// todo https://www.luogu.com.cn/problem/P2148
