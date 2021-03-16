@@ -17,12 +17,13 @@
 - 数据结构
   - [双端队列 deque.go](/copypasta/deque.go)
   - [堆（优先队列）heap.go](/copypasta/heap.go)
-  - [单调栈、单调队列 common.go 中的 monotoneCollection](/copypasta/common.go)
+  - [单调栈 monotone_stack.go](/copypasta/monotone_stack.go)
+  - [单调队列 monotone_queue.go](/copypasta/monotone_queue.go)
   - [并查集 union_find.go](/copypasta/union_find.go)
     - 点权
     - 边权（种类）
     - 动态图连通性
-  - [ST 表 common.go 中的 stInit](/copypasta/common.go)
+  - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
     - 懒标记
@@ -39,6 +40,11 @@
   - 珂朵莉树（ODT）
     - [数组版 odt.go](/copypasta/odt.go)
     - [平衡树版 odt_bst.go](/copypasta/odt_bst.go)
+  - [根号算法（分块）sqrt_decomposition.go](/copypasta/sqrt_decomposition.go)
+  - [莫队算法 mo.go](/copypasta/mo.go)
+     - 带修莫队
+     - 回滚莫队
+     - 树上莫队
 - [字符串 strings.go](/copypasta/strings.go)
   - Hash
   - KMP
@@ -69,8 +75,9 @@
     - 莫比乌斯函数
     - 数论分块
     - 杜教筛
-  - [FFT math_fft.go](/copypasta/math_fft.go)
-  - [NTT math_ntt.go](/copypasta/math_ntt.go)
+    - 拉格朗日插值
+  - [快速傅里叶变换 FFT math_fft.go](/copypasta/math_fft.go)
+  - [快速数论变换 NTT math_ntt.go](/copypasta/math_ntt.go)
     - 包含多项式全家桶（求逆、开方等等）
   - [矩阵、高斯消元、线性基 math_matrix.go](/copypasta/math_matrix.go)
   - [连分数、佩尔方程 math_continued_fraction.go](/copypasta/math_continued_fraction.go)
@@ -82,7 +89,7 @@
     - 凸包
     - 最近点对
     - 最远点对
-  - [博弈论 math.go](/copypasta/math.go)
+  - [博弈论 games.go](/copypasta/games.go)
     - SG 函数
 - [动态规划 dp.go](/copypasta/dp.go)
   - 背包
@@ -133,15 +140,13 @@
     - 长链剖分
     - 树上启发式合并（DSU）
     - 树分块
-- [位运算 bits.go](/copypasta/bits.go)
-  - bitset
 - 其他
+  - [位运算笔记 bits.go](/copypasta/bits.go)
+    - bitset
   - [三分查找 sort.go](/copypasta/sort.go)
   - [0-1 分数规划 sort.go](/copypasta/sort.go)
-  - [莫队算法 common.go 中的 moAlgorithm](/copypasta/common.go)
-     - 带修莫队
-     - 回滚莫队
-     - 树上莫队
+  - [随机算法 rand.go](/copypasta/rand.go)
+    - 模拟退火
 - [快读模板 io.go](/copypasta/io.go)
 
 
