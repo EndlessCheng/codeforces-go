@@ -45,6 +45,11 @@ https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
 
 https://oeis.org/A061168 Σfloor(log2(i)) = Σ(bits.Len(i)-1)
 
+∑∑|ai-aj|
+= 2*∑(i*ai-preSum(i-1)), i=[0,n-1], a 需要排序
+https://www.luogu.com.cn/blog/DPair2005/solution-cf340c
+https://codeforces.com/problemset/problem/340/C
+
 https://oeis.org/A333885 Number of triples (i,j,k) with 1 <= i < j < k <= n such that i divides j divides k https://ac.nowcoder.com/acm/contest/7613/A
 
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
