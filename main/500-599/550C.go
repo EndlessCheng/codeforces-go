@@ -10,12 +10,8 @@ import (
 func CF550C(in io.Reader, out io.Writer) {
 	var s string
 	Fscan(in, &s)
-	if strings.Contains(s, "0") {
-		Fprint(out, "YES\n0")
-		return
-	}
-	if strings.Contains(s, "8") {
-		Fprint(out, "YES\n8")
+	if i := strings.IndexAny(s, "08"); i >= 0 {
+		Fprintf(out, "YES\n%c", s[i])
 		return
 	}
 	for i := range s {
