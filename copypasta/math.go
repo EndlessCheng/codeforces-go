@@ -945,9 +945,12 @@ func numberTheoryCollection() {
 
 		// EXTRA: Squarefree part of n (also called core(n)) https://oeis.org/A007913
 		// a(n) is the smallest positive number m such that n/m is a square
+		// https://oeis.org/A013928 Number of (positive) squarefree numbers < n
 		// core(n!) https://oeis.org/A055204
 		//     log a(n) ~ n log 2
 		//     Square root of largest square dividing n! https://oeis.org/A055772
+		// https://codeforces.com/contest/1470/problem/B
+		// https://codeforces.com/contest/1497/problem/E2
 		core := func(x int) int {
 			c := 1
 			for x > 1 {
