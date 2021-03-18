@@ -617,6 +617,7 @@ func numberTheoryCollection() {
 	}
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
+	// https://en.wikipedia.org/wiki/Prime_omega_function
 	// a(n) depends only on prime signature of n (cf. https://oeis.org/A025487)
 	// So a(24) = a(375) since 24 = 2^3 * 3 and 375 = 3 * 5^3 both have prime signature (3, 1)
 	//
@@ -626,24 +627,24 @@ func numberTheoryCollection() {
 	// 性质：Omega(nm)=Omega(n)+Omega(m)
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
-		cnts := [mx + 1]int{}
+		Omega := [mx + 1]int{}
 		primes := []int{}
 		for i := 2; i <= mx; i++ {
-			if cnts[i] == 0 {
-				cnts[i] = 1
+			if Omega[i] == 0 {
+				Omega[i] = 1
 				primes = append(primes, i)
 			}
 			for _, p := range primes {
 				if p*i > mx {
 					break
 				}
-				cnts[p*i] = cnts[i] + 1
+				Omega[p*i] = Omega[i] + 1
 			}
 		}
 
 		// EXTRA: 前缀和，即 Omega(n!) https://oeis.org/A022559
 		for i := 3; i <= mx; i++ {
-			cnts[i] += cnts[i-1]
+			Omega[i] += Omega[i-1]
 		}
 	}
 	//primeExponentsCount := func(n int) (count []int) {
@@ -984,21 +985,34 @@ func numberTheoryCollection() {
 	}
 
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
+	// https://en.wikipedia.org/wiki/Prime_omega_function
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
-		cnts := make([]int, mx+1)
+		omega := make([]int, mx+1)
 		for i := 2; i <= mx; i++ {
-			if cnts[i] == 0 {
+			if omega[i] == 0 {
 				for j := i; j <= mx; j += i {
-					cnts[i]++
+					omega[j]++
 				}
 			}
 		}
 
 		// EXTRA: 前缀和，即 omega(n!) https://oeis.org/A013939
 		for i := 3; i <= mx; i++ {
-			cnts[i] += cnts[i-1]
+			omega[i] += omega[i-1]
 		}
+
+		// EXTRA:
+		// http://oeis.org/A034444 Number of unitary divisors of n (d such that d divides n, gcd(d, n/d) = 1)
+		// a(n) = 1<<omega[n]
+		// 另一种说法是，已知 LCM(x,y) 和 GCD(x,y)，求 (x,y) 的数量
+		// 由于 (x/GCD) * (y/GCD) = LCM/GCD，且 x/GCD 和 y/GCD 互质
+		// 所以相当于是在求 a(LCM/GCD) = 1<<omega[LCM/GCD]
+		// 相关题目 https://codeforces.com/problemset/problem/1499/D
+
+		// EXTRA:
+		// http://oeis.org/A007875 Number of ways of writing n as p*q, with p <= q, gcd(p, q) = 1
+		// a(n) = 1<<(omega[n]-1)
 	}
 
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
@@ -1031,6 +1045,7 @@ func numberTheoryCollection() {
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
 	// a(n) = (3*n^2)/(Pi^2) + O(nlogn)，近似看成 n^2 / 3
+	//      = (1/2)*Sum_{k>=1} mu(k)*floor(n/k)*floor(1+n/k)
 	//     相关题目 https://codeforces.com/problemset/problem/1009/D
 	// 1, 2, 4, 6, 10, 12, 18, 22, 28, 32, 42, 46, 58, 64, 72, 80, 96, 102
 	// ∑φ(i)-1 http://oeis.org/A015614 #{(x,y): 1<=x<y<=n, gcd(x,y)=1}
