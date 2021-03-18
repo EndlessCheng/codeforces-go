@@ -997,6 +997,28 @@ func numberTheoryCollection() {
 			}
 		}
 
+		{
+			// 线性筛
+			omega := make([]int, mx+1)
+			primes := []int{}
+			for i := 2; i <= mx; i++ {
+				if omega[i] == 0 {
+					omega[i] = 1
+					primes = append(primes, i)
+				}
+				for _, p := range primes {
+					if p*i > mx {
+						break
+					}
+					if i%p == 0 {
+						omega[p*i] = omega[i]
+						break
+					}
+					omega[p*i] = omega[i] + 1
+				}
+			}
+		}
+
 		// EXTRA: 前缀和，即 omega(n!) https://oeis.org/A013939
 		for i := 3; i <= mx; i++ {
 			omega[i] += omega[i-1]
