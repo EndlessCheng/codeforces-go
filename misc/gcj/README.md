@@ -1,6 +1,6 @@
 # Google Code Jam
 
-Compiler info: go1.7.4, 64-bit
+Compiler info: go1.11.6, linux, 64-bit
 
 [Competition archive](https://codingcompetitions.withgoogle.com/codejam/archive)
 
