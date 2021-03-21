@@ -34,7 +34,7 @@
     const words = [
         // 描述
         "Initially", "initially", "guaranteed", "No matter", "no matter",
-        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden",
+        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid",
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
@@ -63,7 +63,7 @@
 
         "没有", "不是", "不同", "不需要",
         "相同",
-        "所有", "每个", "任何", "任意", "和", "与", "并且", "且", "或", "之一", "反之", "必须", "仅", "其他", // todo regex 每...
+        "所有", "每个", "任何", "任意", "和", "与", "并且", "且", "同时", "或", "之一", "反之", "必须", "仅", "其他", // todo regex 每...
         "最小", "最大", "最少", "最多", "最短", "最长", "最早", "最晚", "最后", "第一", // todo regex 最...
         "至少", "至多", "恰好",
         "非空", "连续", "子数组", "子区间", "区间", "子序列", "子字符串", "子串",
