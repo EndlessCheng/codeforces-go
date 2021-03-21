@@ -250,6 +250,67 @@ func miscCollection() {
 		return mat
 	}
 
+	// 01 矩阵，每个 1 位置向四个方向延伸连续 1 的最远距离
+	// https://codingcompetitions.withgoogle.com/kickstart/round/0000000000436140/000000000068c509
+	max1dir4 := func(a [][]int) (ls, rs, us, ds [][]int) {
+		n, m := len(a), len(a[0])
+		ls, rs = make([][]int, n), make([][]int, n)
+		for i, row := range a {
+			ls[i] = make([]int, m)
+			for j, v := range row {
+				if v == 0 {
+					continue
+				}
+				if j == 0 || row[j-1] == 0 {
+					ls[i][j] = j
+				} else {
+					ls[i][j] = ls[i][j-1]
+				}
+			}
+			rs[i] = make([]int, m)
+			for j := m - 1; j >= 0; j-- {
+				if row[j] == 0 {
+					continue
+				}
+				if j == m-1 || row[j+1] == 0 {
+					rs[i][j] = j
+				} else {
+					rs[i][j] = rs[i][j+1]
+				}
+			}
+		}
+
+		us, ds = make([][]int, n), make([][]int, n)
+		for i := range us {
+			us[i] = make([]int, m)
+			ds[i] = make([]int, m)
+		}
+		for j := 0; j < m; j++ {
+			for i, row := range a {
+				if row[j] == 0 {
+					continue
+				}
+				if i == 0 || a[i-1][j] == 0 {
+					us[i][j] = i
+				} else {
+					us[i][j] = us[i-1][j]
+				}
+			}
+			for i := n - 1; i >= 0; i-- {
+				if a[i][j] == 0 {
+					continue
+				}
+				if i == n-1 || a[i+1][j] == 0 {
+					ds[i][j] = i
+				} else {
+					ds[i][j] = ds[i+1][j]
+				}
+			}
+		}
+
+		return
+	}
+
 	// 最小栈，支持动态 push pop，查询栈中最小元素
 	// 思路是用另一个栈，同步 push pop，处理 push 时压入 min(当前元素,栈顶元素)，注意栈为空的时候直接压入元素
 	// https://ac.nowcoder.com/acm/contest/1055/A
@@ -268,6 +329,7 @@ func miscCollection() {
 		sliceToStr,
 		getMapRangeValues,
 		genSpiralMatrix,
+		max1dir4,
 	}
 }
 
