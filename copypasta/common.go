@@ -395,6 +395,28 @@ func commonCollection() {
 		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
 	}
 
+	// 矩阵每行每列的前缀和
+	rowColSum := func(a [][]int) (sumR, sumC [][]int) {
+		n, m := len(a), len(a[0])
+		sumR = make([][]int, n) // int64
+		for i, row := range a {
+			sumR[i] = make([]int, m+1)
+			for j, v := range row {
+				sumR[i][j+1] = sumR[i][j] + v
+			}
+		}
+		sumC = make([][]int, n+1) // int64
+		for i := range sumC {
+			sumC[i] = make([]int, m)
+		}
+		for j := 0; j < m; j++ {
+			for i, row := range a {
+				sumC[i+1][j] = sumC[i][j] + row[j]
+			}
+		}
+		return
+	}
+
 	// 利用每个数产生的贡献计算 Σ|ai-aj|, i!=j
 	// 相关题目 https://codeforces.com/contest/1311/problem/F
 	contributionSum := func(a []int) (sum int64) {
@@ -936,7 +958,7 @@ func commonCollection() {
 		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D,
+		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
