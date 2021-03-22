@@ -311,6 +311,41 @@ func miscCollection() {
 		return
 	}
 
+	// a 是环形，合并相邻元素 (v,w) 的时候删除 w，在 a 上不断循环合并直至没有可以合并的相邻元素
+	// 相关题目 https://codeforces.com/problemset/problem/1483/B
+	loopMergeOnRing := func(a []int, canMerge func(v, w int) bool) []int {
+		n := len(a)
+		r := make([]int, n)
+		for i := 0; i < n-1; i++ {
+			r[i] = i + 1
+		}
+
+		ans := []int{}
+		q := []int{}
+		for i, v := range a {
+			if canMerge(v, a[r[i]]) {
+				q = append(q, i)
+			}
+		}
+		del := make([]bool, n)
+		for len(q) > 0 {
+			i := q[0]
+			q = q[1:]
+			if del[i] {
+				continue
+			}
+			if !del[r[i]] {
+				ans = append(ans, r[i]) // +1
+				del[r[i]] = true
+			}
+			r[i] = r[r[i]]
+			if canMerge(a[i], a[r[i]]) {
+				q = append(q, i)
+			}
+		}
+		return ans
+	}
+
 	// 最小栈，支持动态 push pop，查询栈中最小元素
 	// 思路是用另一个栈，同步 push pop，处理 push 时压入 min(当前元素,栈顶元素)，注意栈为空的时候直接压入元素
 	// https://ac.nowcoder.com/acm/contest/1055/A
@@ -330,6 +365,7 @@ func miscCollection() {
 		getMapRangeValues,
 		genSpiralMatrix,
 		max1dir4,
+		loopMergeOnRing,
 	}
 }
 
