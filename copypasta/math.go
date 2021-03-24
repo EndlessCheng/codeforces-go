@@ -159,7 +159,7 @@ func numberTheoryCollection() {
 
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
-	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) ~ exp(n)
+	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) = lcm(1,...,n) ~ exp(n)
 	// 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, 27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, 232792560, 232792560, 5354228880, 5354228880, 26771144400, 26771144400, 80313433200, 80313433200
 	//     相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
 	//             https://codeforces.com/contest/1485/problem/D
@@ -167,6 +167,8 @@ func numberTheoryCollection() {
 	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
 	// LCM(2, 4, 6, ..., 2n) https://oeis.org/A051426
 	// Mangoldt Function https://mathworld.wolfram.com/MangoldtFunction.html
+	// a(n) 的因子个数 d(lcm(1,...,n)) https://oeis.org/A056793
+	//     这同时也是 1~n 的子集的 LCM 的种类数
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
@@ -625,6 +627,9 @@ func numberTheoryCollection() {
 	//
 	// 另一种写法 https://math.stackexchange.com/questions/1955105/corectness-of-prime-factorization-over-a-range
 	// 性质：Omega(nm)=Omega(n)+Omega(m)
+	// 前缀和 https://oeis.org/A022559 = Omega(n!) ~ O(nloglogn)
+	// EXTRA: https://oeis.org/A005361 Product of exponents of prime factorization of n
+	//        https://oeis.org/A135291 Product of exponents of prime factorization of n!
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
 		Omega := [mx + 1]int{}
@@ -647,32 +652,6 @@ func numberTheoryCollection() {
 			Omega[i] += Omega[i-1]
 		}
 	}
-	//primeExponentsCount := func(n int) (count []int) {
-	//	count = make([]int, n+1)
-	//	left := make([]int, n+1)
-	//	for i := range left {
-	//		left[i] = i
-	//	}
-	//	i := 2
-	//	for ; i*i <= n; i++ {
-	//		if count[i] == 0 {
-	//			for j := i; j <= n; j += i {
-	//				count[j]++
-	//				left[j] /= i
-	//			}
-	//		} else if left[i] > 1 { // i is non square-free
-	//			count[i] += count[left[i]]
-	//		}
-	//	}
-	//	for ; i <= n; i++ {
-	//		if count[i] == 0 {
-	//			count[i] = 1
-	//		} else if left[i] > 1 { // i is non square-free
-	//			count[i] += count[left[i]]
-	//		}
-	//	}
-	//	return
-	//}
 
 	/* 因子/因数/约数
 
@@ -751,9 +730,6 @@ func numberTheoryCollection() {
 
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
-
-	Largest squarefree number dividing n https://oeis.org/A007947
-	the squarefree kernel of n, rad(n), radical of n
 
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
@@ -944,12 +920,14 @@ func numberTheoryCollection() {
 			}
 		}
 
-		// EXTRA: Squarefree part of n (also called core(n)) https://oeis.org/A007913
+		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))
 		// a(n) is the smallest positive number m such that n/m is a square
 		// https://oeis.org/A013928 Number of (positive) squarefree numbers < n
-		// core(n!) https://oeis.org/A055204
+		// https://oeis.org/A055204 core(n!)
 		//     log a(n) ~ n log 2
 		//     Square root of largest square dividing n! https://oeis.org/A055772
+		// https://oeis.org/A008833 n/core(n)   Largest square dividing n
+		// https://oeis.org/A055071 n!/core(n!) Largest square dividing n!
 		// https://codeforces.com/contest/1470/problem/B
 		// https://codeforces.com/contest/1497/problem/E2
 		core := func(x int) int {
@@ -967,7 +945,24 @@ func numberTheoryCollection() {
 			return c
 		}
 
-		_, _ = factorize, core
+		// EXTRA: https://oeis.org/A007947 Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
+		// https://oeis.org/A034386 rad(n!) Primorial numbers (second definition): n# = product of primes <= n
+		//                                  = rad(LCM(1,...,n))
+		//                                  = LCM(core(1), core(2), core(3), ..., core(n))
+		// https://oeis.org/A003557 n/rad(n)  n divided by largest squarefree divisor of n
+		// https://oeis.org/A049614 n!/rad(n!)
+		rad := func(x int) int {
+			r := 1
+			for x > 1 {
+				p := lpf[x]
+				r *= p
+				for x /= p; lpf[x] == p; x /= p {
+				}
+			}
+			return r
+		}
+
+		_, _, _ = factorize, core, rad
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
@@ -1613,6 +1608,10 @@ func numberTheoryCollection() {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
 	}
 
+	// https://oeis.org/A010786 Floor-factorial numbers: a(n) = Product_{k=1..n} floor(n/k)
+	// 1, 2, 3, 8, 10, 36, 42, 128, 216, 600, 660, 3456, 3744, 9408, 18900, 61440, 65280, 279936, 295488, 1152000, 2116800, 4878720, 5100480, 31850496, 41472000, 93450240, 163762560, 568995840, 589317120, 3265920000, 3374784000
+	// https://oeis.org/A309912 a(n) = Product_{p prime, p <= n} floor(n/p)
+
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
@@ -1915,12 +1914,18 @@ func numberTheoryCollection() {
 	//     a(n) = Σ{k=1..n} floor(n/k)
 	//          = 2*(Σ{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	//          因此 a(n) % 2 == floor(sqrt(n)) % 2
+	//     a(n) 前缀和 = Sum_{k=1..n-1} Sum_{i=1..n-1} floor(k/i) https://oeis.org/A078567
 	// 恒等式 n%i = n-(n/i)*i
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
 	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
+	//
+	// EXTRA: 一些另类的求和
+	// https://oeis.org/A116477 a(n) = Sum_{1<=k<=n, gcd(k,n)=1} floor(n/k)
+	//                          sum{k|n} a(k) = sum{k=1 to n} d(k) = https://oeis.org/A006218
+	// https://oeis.org/A013939 a(n) = Sum_{k = 1..n} floor(n/prime(k)) = omega(n!)
 	floorLoop := func(n int64) (sum int64) {
 		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
 			h := n / l
