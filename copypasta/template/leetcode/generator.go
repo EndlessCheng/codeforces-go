@@ -146,6 +146,90 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	return
 }
 
+// 获取力扣杯题目信息
+// slug 如 "2020-fall"
+func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool) (problems []*problem, err error) {
+	const graphqlURL = "https://leetcode-cn.com/graphql"
+	resp, err := session.Post(graphqlURL, &grequests.RequestOptions{
+		JSON: map[string]interface{}{
+			"operationName": "contestGroup",
+			"query":         "query contestGroup($slug: String!) {\n  contestGroup(slug: $slug) {\n    title\n    titleCn\n    contestCount\n    contests {\n      title\n      titleCn\n      titleSlug\n      startTime\n      duration\n      registered\n      questions {\n        title\n        titleCn\n        titleSlug\n        credit\n        questionId\n        __typename\n      }\n      teamSettings {\n        maxTeamSize\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n",
+			"variables":     map[string]string{"slug": slug},
+		},
+	})
+	if err != nil {
+		return
+	}
+	if !resp.Ok {
+		return nil, fmt.Errorf("POST %s return code %d", graphqlURL, resp.StatusCode)
+	}
+
+	type contestInfo struct {
+		TitleSlug string `json:"titleSlug"` // 2020-fall-solo
+		StartTime int64  `json:"startTime"`
+		Questions []struct {
+			Credit    int    `json:"credit"`    // 得分/难度
+			Title     string `json:"title"`     // 题目标题
+			TitleSlug string `json:"titleSlug"` // 题目链接
+		} `json:"questions"`
+	}
+
+	d := struct {
+		Data struct {
+			ContestGroup struct {
+				Contests []contestInfo `json:"contests"`
+			} `json:"contestGroup"`
+		} `json:"data"`
+	}{}
+	if err = resp.JSON(&d); err != nil {
+		return
+	}
+
+	var contest contestInfo
+	for _, c := range d.Data.ContestGroup.Contests {
+		if isSolo {
+			if strings.Contains(c.TitleSlug, "solo") {
+				contest = c
+				break
+			}
+		} else {
+			if strings.Contains(c.TitleSlug, "team") {
+				contest = c
+				break
+			}
+		}
+	}
+
+	if contest.StartTime == 0 {
+		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
+	}
+
+	if sleepTime := time.Until(time.Unix(contest.StartTime, 0)); sleepTime > 0 {
+		sleepTime += 2 * time.Second // 消除误差
+		fmt.Printf("%s尚未开始，等待中……\n%v\n", contest.TitleSlug, sleepTime)
+		time.Sleep(sleepTime)
+		return fetchSeasonProblemURLs(session, slug, isSolo)
+	}
+
+	if len(contest.Questions) == 0 {
+		return nil, fmt.Errorf("题目链接为空: %s%d", contestPrefix, contestID)
+	}
+
+	fmt.Println("难度 标题")
+	for _, q := range contest.Questions {
+		fmt.Printf("%3d %s\n", q.Credit, q.Title)
+	}
+
+	problems = make([]*problem, len(contest.Questions))
+	for i, q := range contest.Questions {
+		problems[i] = &problem{
+			id:    string(byte('a' + i)),
+			urlZH: fmt.Sprintf("https://%s/contest/season/%s/problems/%s/", hostZH, slug, q.TitleSlug),
+		}
+	}
+	return
+}
+
 type problem struct {
 	id            string
 	urlZH         string
@@ -507,6 +591,34 @@ func GenLeetCodeTests(username, password, customComment string) error {
 	var problems []*problem
 	for {
 		problems, err = fetchProblemURLs(session)
+		if err == nil {
+			break
+		}
+		fmt.Println(err)
+		time.Sleep(time.Second)
+	}
+
+	if customComment != "" {
+		customComment += "\n"
+	}
+	for _, p := range problems {
+		p.customComment = customComment
+	}
+
+	fmt.Println("题目链接获取成功，开始解析")
+	return handleProblems(session, problems)
+}
+
+func GenLeetCodeSeasonTests(username, password, customComment, slug string, isSolo bool) error {
+	session, err := login(username, password)
+	if err != nil {
+		return err
+	}
+	fmt.Println("登录成功")
+
+	var problems []*problem
+	for {
+		problems, err = fetchSeasonProblemURLs(session, slug, isSolo)
 		if err == nil {
 			break
 		}
