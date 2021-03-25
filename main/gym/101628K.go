@@ -6,63 +6,63 @@ import (
 	"io"
 )
 
-type sNode101628 struct {
-	lr       [2]*sNode101628
+// github.com/EndlessCheng/codeforces-go
+type node struct {
+	lr       [2]*node
 	priority uint
 	key      int
 }
 
-func (o *sNode101628) rotate(d int) *sNode101628 {
-	x := o.lr[d^1]
-	o.lr[d^1] = x.lr[d]
-	x.lr[d] = o
-	return x
-}
-
-type sTreap101628 struct {
-	rd   uint
-	root *sNode101628
-}
-
-func (t *sTreap101628) fastRand() uint {
-	t.rd ^= t.rd << 13
-	t.rd ^= t.rd >> 17
-	t.rd ^= t.rd << 5
-	return t.rd
-}
-
-func (t *sTreap101628) compare(a, b int) int {
+func (o *node) cmp(b int) int {
 	switch {
-	case a < b:
+	case b < o.key:
 		return 0
-	case a > b:
+	case b > o.key:
 		return 1
 	default:
 		return -1
 	}
 }
 
-func (t *sTreap101628) _put(o *sNode101628, key int) *sNode101628 {
+func (o *node) rotate(d int) *node {
+	x := o.lr[d^1]
+	o.lr[d^1] = x.lr[d]
+	x.lr[d] = o
+	return x
+}
+
+type treap struct {
+	rd   uint
+	root *node
+}
+
+func (t *treap) fastRand() uint {
+	t.rd ^= t.rd << 13
+	t.rd ^= t.rd >> 17
+	t.rd ^= t.rd << 5
+	return t.rd
+}
+
+func (t *treap) _put(o *node, key int) *node {
 	if o == nil {
-		return &sNode101628{priority: t.fastRand(), key: key}
+		return &node{priority: t.fastRand(), key: key}
 	}
-	if cmp := t.compare(key, o.key); cmp >= 0 {
-		o.lr[cmp] = t._put(o.lr[cmp], key)
-		if o.lr[cmp].priority > o.priority {
-			o = o.rotate(cmp ^ 1)
-		}
+	d := o.cmp(key)
+	o.lr[d] = t._put(o.lr[d], key)
+	if o.lr[d].priority > o.priority {
+		o = o.rotate(d ^ 1)
 	}
 	return o
 }
 
-func (t *sTreap101628) put(key int) { t.root = t._put(t.root, key) }
+func (t *treap) put(key int) { t.root = t._put(t.root, key) }
 
-func (t *sTreap101628) _delete(o *sNode101628, key int) *sNode101628 {
+func (t *treap) _delete(o *node, key int) *node {
 	if o == nil {
 		return nil
 	}
-	if cmp := t.compare(key, o.key); cmp >= 0 {
-		o.lr[cmp] = t._delete(o.lr[cmp], key)
+	if d := o.cmp(key); d >= 0 {
+		o.lr[d] = t._delete(o.lr[d], key)
 	} else {
 		if o.lr[1] == nil {
 			return o.lr[0]
@@ -70,25 +70,25 @@ func (t *sTreap101628) _delete(o *sNode101628, key int) *sNode101628 {
 		if o.lr[0] == nil {
 			return o.lr[1]
 		}
-		cmp2 := 0
+		d = 0
 		if o.lr[0].priority > o.lr[1].priority {
-			cmp2 = 1
+			d = 1
 		}
-		o = o.rotate(cmp2)
-		o.lr[cmp2] = t._delete(o.lr[cmp2], key)
+		o = o.rotate(d)
+		o.lr[d] = t._delete(o.lr[d], key)
 	}
 	return o
 }
 
-func (t *sTreap101628) delete(key int) { t.root = t._delete(t.root, key) }
+func (t *treap) delete(key int) { t.root = t._delete(t.root, key) }
 
-func (t *sTreap101628) ceiling(key int) (ceiling *sNode101628) {
+func (t *treap) lowerBound(key int) (lb *node) {
 	for o := t.root; o != nil; {
-		switch cmp := t.compare(key, o.key); {
-		case cmp == 0:
-			ceiling = o
+		switch c := o.cmp(key); {
+		case c == 0:
+			lb = o
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			o = o.lr[1]
 		default:
 			return o
@@ -97,105 +97,101 @@ func (t *sTreap101628) ceiling(key int) (ceiling *sNode101628) {
 	return
 }
 
-func (t *sTreap101628) hasValueInRange(l, r int) bool {
-	o := t.ceiling(l)
-	return o != nil && o.key <= r
+type trieNode struct {
+	son          [26]*trieNode
+	allID, curID *treap
 }
 
-type trieNode101628 struct {
-	childIdx       [26]*trieNode101628
-	curIndexes     *sTreap101628
-	subTreeIndexes *sTreap101628
-}
+type trie struct{ root *trieNode }
 
-type trie101628 struct {
-	root *trieNode101628
-}
+func (trie) ord(c byte) byte { return c - 'a' }
 
-func (t *trie101628) put(s string, idx int) {
+func (t *trie) put(s []byte, id int) {
 	o := t.root
-	for i := range s {
-		c := s[i] - 'a'
-		if o.childIdx[c] == nil {
-			o.childIdx[c] = &trieNode101628{
-				curIndexes:     &sTreap101628{rd: 1},
-				subTreeIndexes: &sTreap101628{rd: 1},
-			}
+	for _, b := range s {
+		b = t.ord(b)
+		if o.son[b] == nil {
+			o.son[b] = &trieNode{allID: &treap{rd: 1}, curID: &treap{rd: 1}}
 		}
-		o = o.childIdx[c]
-		o.subTreeIndexes.put(idx)
+		o = o.son[b]
+		o.allID.put(id)
 	}
-	o.curIndexes.put(idx)
+	o.curID.put(id)
 }
 
-func (t *trie101628) del(s string, idx int) {
+func (t *trie) delete(s []byte, id int) {
+	os := []*trieNode{}
 	o := t.root
-	for i := range s {
-		o = o.childIdx[s[i]-'a']
-		o.subTreeIndexes.delete(idx)
+	for _, b := range s {
+		o = o.son[t.ord(b)]
+		if o == nil {
+			return
+		}
+		os = append(os, o)
 	}
-	o.curIndexes.delete(idx)
+	o.curID.delete(id)
+	for _, o := range os {
+		o.allID.delete(id)
+	}
 }
 
-func (t *trie101628) hasPrefixOfText(s string, l, r int) bool {
+func (t *trie) hasPrefixOfString(s []byte, l, r int) bool {
 	o := t.root
-	for i := range s {
-		o = o.childIdx[s[i]-'a']
+	for _, b := range s {
+		o = o.son[t.ord(b)]
 		if o == nil {
 			return false
 		}
-		if o.curIndexes.hasValueInRange(l, r) {
+		if to := o.curID.lowerBound(l); to != nil && to.key <= r {
 			return true
 		}
 	}
 	return false
 }
 
-func (t *trie101628) hasTextOfPrefix(p string, l, r int) bool {
+func (t *trie) hasStringOfPrefix(p []byte, l, r int) bool {
 	o := t.root
-	for i := range p {
-		o = o.childIdx[p[i]-'a']
+	for _, b := range p {
+		o = o.son[t.ord(b)]
 		if o == nil {
 			return false
 		}
 	}
-	return o.subTreeIndexes.hasValueInRange(l, r)
+	to := o.allID.lowerBound(l)
+	return to != nil && to.key <= r
 }
 
-// github.com/EndlessCheng/codeforces-go
-func Sol101628K(_r io.Reader, _w io.Writer) {
+func CF101628K(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, q, op, idx, l, r int
-	var s string
+	t := &trie{&trieNode{}}
+	var n, q, op, i, l, r int
+	var s []byte
 	Fscan(in, &n)
-	t := &trie101628{&trieNode101628{}}
-	a := make([]string, n)
+	a := make([][]byte, n)
 	for i := range a {
 		Fscan(in, &a[i])
 		t.put(a[i], i+1)
 	}
-	Fscan(in, &q)
-	for i := 0; i < q; i++ {
-		Fscan(in, &op)
-		switch op {
+	for Fscan(in, &q); q > 0; q-- {
+		switch Fscan(in, &op); op {
 		case 1:
-			Fscan(in, &idx, &s)
-			t.del(a[idx-1], idx)
-			t.put(s, idx)
-			a[idx-1] = s
+			Fscan(in, &i, &s)
+			t.delete(a[i-1], i)
+			t.put(s, i)
+			a[i-1] = s
 		case 2:
 			Fscan(in, &l, &r, &s)
-			if t.hasPrefixOfText(s, l, r) {
+			if t.hasPrefixOfString(s, l, r) {
 				Fprintln(out, "Y")
 			} else {
 				Fprintln(out, "N")
 			}
 		default:
 			Fscan(in, &l, &r, &s)
-			if t.hasTextOfPrefix(s, l, r) {
+			if t.hasStringOfPrefix(s, l, r) {
 				Fprintln(out, "Y")
 			} else {
 				Fprintln(out, "N")
@@ -204,4 +200,4 @@ func Sol101628K(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { Sol101628K(os.Stdin, os.Stdout) }
+//func main() { CF101628K(os.Stdin, os.Stdout) }
