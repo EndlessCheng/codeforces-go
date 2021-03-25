@@ -24,18 +24,3 @@ func TestGenLeetCodeTests(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-//func TestGenLeetCodeSpecialTests(t *testing.T) {
-//	username := os.Getenv("LEETCODE_USERNAME_ZH")
-//	password := os.Getenv("LEETCODE_PASSWORD_ZH")
-//	urlZHs := []string{
-//		"",
-//		"",
-//		"",
-//		"",
-//		"",
-//	}
-//	if err := GenLeetCodeSpecialTests(username, password, "// github.com/EndlessCheng/codeforces-go", urlZHs); err != nil {
-//		t.Fatal(err)
-//	}
-//}
