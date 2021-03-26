@@ -32,7 +32,7 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
 ∑i*q^(i-1) = n*q^n - (q^n-1)/(q-1)
 
-https://oeis.org/A001787 n*2^(n-1)   number of ones in binary numbers 1 to 111...1 (n bits)
+https://oeis.org/A001787 n*2^(n-1) = ∑i*C(n,i)   number of ones in binary numbers 1 to 111...1 (n bits)
 https://oeis.org/A000337 ∑i*2^(i-1) = (n-1)*2^n+1
 https://oeis.org/A036799 ∑i*2^i = (n-1)*2^(n+1)+2 = A000337(n)*2
 
@@ -226,8 +226,12 @@ func numberTheoryCollection() {
 	// 类欧几里得算法
 	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
 	// todo https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis
-	// https://atcoder.jp/contests/practice2/tasks/practice2_c
-	// https://www.luogu.com.cn/problem/P5170
+	// todo https://www.luogu.com.cn/blog/Shuchong/qian-tan-lei-ou-ji-li-dei-suan-fa
+	//
+	// 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_c
+	//       https://www.luogu.com.cn/problem/P5170
+	// todo https://codeforces.com/problemset/problem/1182/F
+	//  https://codeforces.com/problemset/problem/1098/E
 	floorSum := func(n, m, a, b int64) (res int64) {
 		if a < 0 {
 			a2 := a%m + m
@@ -2124,7 +2128,9 @@ func numberTheoryCollection() {
 	https://oeis.org/A003893 F(n)%10
 	https://oeis.org/A001605 使 F(n) 为质数的 n
 	https://oeis.org/A191797 C(F(n), 2)
+	https://oeis.org/A001177 Fibonacci entry points: a(n) = least k >= 1 such that n divides Fibonacci number
 	异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
+	定义 f(m) 为最小的满足 F(i)+F(j) ≡ 0 (mod m) 的 i (j<=i)，f(m) 大概是 O(√m) 的
 
 	其他相关序列
 	https://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
@@ -2170,6 +2176,7 @@ todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 ∑i=[0,k] C(n,i)*C(m,k-i) = C(n+m,k)
 ∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)    https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
+∑i*C(n,i) = n*2^(n-1)
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
