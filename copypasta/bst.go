@@ -80,7 +80,7 @@ func newBSTWithArray(a []int) *bst {
 func (t *bst) size() int   { return t.root.size() }
 func (t *bst) empty() bool { return t.root == nil }
 
-func (t *bst) get(key int) *bstNode {
+func (t *bst) find(key int) *bstNode {
 	for o := t.root; o != nil; {
 		if c := o.cmp(key); c >= 0 {
 			o = o.lr[c]
