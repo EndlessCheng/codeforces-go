@@ -39,6 +39,7 @@ func TestCompare(t *testing.T) {
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
+		rg.One()
 		n := rg.Int(1, 5)
 		rg.NewLine()
 		rg.IntSlice(n, 0, 5)
