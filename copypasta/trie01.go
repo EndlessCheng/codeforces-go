@@ -1,0 +1,163 @@
+package copypasta
+
+import "math/bits"
+
+// 异或字典树
+// 一颗（所有叶节点深度都相同的）二叉树
+type trie01Node struct {
+	son [2]*trie01Node
+	cnt int // 子树叶子数
+}
+
+type trie01 struct{ root *trie01Node }
+
+func newTrie01() *trie01 { return &trie01{&trie01Node{}} }
+
+const trieBitLen = 30 // 62 for int64, or int(log2(MAX))
+
+func (trie01) bin(v int) []byte {
+	s := make([]byte, trieBitLen+1)
+	for i := range s {
+		s[i] = byte(v >> (trieBitLen - i) & 1)
+	}
+	return s
+}
+
+func (t *trie01) put(v int) *trie01Node {
+	o := t.root
+	for i := trieBitLen; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b] == nil {
+			o.son[b] = &trie01Node{}
+		}
+		o = o.son[b]
+		o.cnt++
+	}
+	//o.val = v
+	return o
+}
+
+// v 与 trie 上所有数的最大异或值
+// 模板题 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
+// 离线 LC1707/周赛211D https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
+// todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
+// todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
+// EXTRA: minXor: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie01 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
+func (t *trie01) maxXor(v int) (ans int) {
+	o := t.root
+	for i := trieBitLen; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b^1] != nil {
+			ans |= 1 << i
+			b ^= 1
+		}
+		o = o.son[b]
+	}
+	return
+}
+
+// 上面也可以用哈希表做
+// https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/discuss/91049/Java-O(n)-solution-using-bit-manipulation-and-HashMap/95535
+func findMaximumXOR(a []int) (ans int) {
+	mask := 0
+	for i := trieBitLen; i >= 0; i-- {
+		mask |= 1 << i
+		try := ans | 1<<i
+		leftPart := map[int]bool{a[0] & mask: true}
+		for _, v := range a[1:] {
+			if leftPart[v&mask^try] { // 对每个 v' = v&mask，判断是否有 w' 满足 v' ^ w' = try
+				ans = try
+				break
+			}
+			leftPart[v&mask] = true
+		}
+	}
+	return
+}
+
+// 求与 v 异或值小于 limit 的元素个数
+// 核心原理是，当 limit 的某一位是 1 的时候，若保持 w 与 v 在该位上的数字不变，后面的位是可以取任意数字的
+// LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
+func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
+	o := t.root
+	for i := trieBitLen; i >= 0; i-- {
+		b := v >> i & 1
+		if limit>>i&1 > 0 {
+			if o.son[b] != nil {
+				cnt += o.son[b].cnt
+			}
+			b ^= 1
+		}
+		if o.son[b] == nil {
+			return
+		}
+		o = o.son[b]
+	}
+	return
+}
+
+// 上面也可以用哈希表做
+func countLimitXOR(a []int, limit int) int {
+	cnt := map[int]int{}
+	for _, v := range a {
+		cnt[v]++
+	}
+	ans := 0
+	for ; limit > 0; limit >>= 1 {
+		tmp := cnt
+		cnt = map[int]int{}
+		for v, c := range tmp {
+			cnt[v>>1] += c
+			if limit&1 > 0 {
+				ans += c * tmp[(limit-1)^v]
+			}
+		}
+	}
+	return ans >> 1
+}
+
+// n 个 [0, 2^30) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
+// n*(30-logn) + 2^(logn+1) - 1, logn = int(log_2(n))
+// 实际使用的时候，可以简单地用 n*(32-logn) 代替
+// 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
+// 传入 n 和数据范围上限 maxV
+// 返回 n 个数，每个数的范围在 [0, maxV] 中
+// 当 maxV = 2^30-1 时，各个 n 下的 0-1 trie 节点数
+//   n   节点数
+// 1e5 1531071
+// 2e5 2862143
+// 3e5 4124287
+// 4e5 5324287
+// 5e5 6524287
+// 6e5 7648575
+// 7e5 8748575
+// 8e5 9848575
+// 9e5 10948575
+// 1e6 12048575
+// 当 maxV = 1e9 时，各个 n 下的 0-1 trie 节点数
+//   n   节点数
+// 1e5 1522076
+// 2e5 2844147
+// 3e5 4088288
+// 4e5 5288288
+// 5e5 6511723
+// 6e5 7576570
+// 7e5 8676570
+// 8e5 9776570
+// 9e5 10876570
+// 1e6 12023441
+func generateMaxNodes01TrieData(n, maxV int) []int {
+	shift := bits.Len(uint(maxV)) - bits.Len(uint(n)) + 1
+	a := make([]int, 0, n)
+	// 构建一颗上半部分为完全二叉树，下半部分为一串 0...0 的 01-trie
+	for i := 0; i<<shift <= maxV; i++ {
+		v := i << shift
+		a = append(a, v)
+	}
+	// 填充上半部分的下一层，由于下半部分的开头是 0，这里要用一个奇数 shift
+	for i := 0; len(a) < n; i++ {
+		v := (i<<1 | 1) << (shift - 1)
+		a = append(a, v)
+	}
+	return a
+}
