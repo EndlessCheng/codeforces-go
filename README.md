@@ -53,8 +53,8 @@
   - Manacher
   - AC 自动机
   - 后缀数组（SA）
-  - 字典树（trie）
-    - 0-1 trie 构造最多节点
+  - [字典树 trie.go](/copypasta/trie.go)
+    - [异或字典树 trie01.go](/copypasta/trie01.go)
 - 数学
   - [数论 math.go](/copypasta/math.go)
     - 最大公因数（GCD）
