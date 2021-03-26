@@ -22,15 +22,13 @@ func CF812E(_r io.Reader, out io.Writer) {
 	}
 	odd := []int{}
 	even := map[int]int{}
-	var f func(v, fa, d int)
-	f = func(v, fa, d int) {
+	var f func(v, d int)
+	f = func(v, d int) {
 		if len(g[v]) == 0 {
 			o = d
 		}
 		for _, w := range g[v] {
-			if w != fa {
-				f(w, v, d^1)
-			}
+			f(w, d^1)
 		}
 		if d == o {
 			odd = append(odd, a[v])
@@ -38,7 +36,7 @@ func CF812E(_r io.Reader, out io.Writer) {
 			even[a[v]]++
 		}
 	}
-	f(0, -1, 0)
+	f(0, 0)
 	xor := 0
 	for _, v := range odd {
 		xor ^= v
