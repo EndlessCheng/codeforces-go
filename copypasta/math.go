@@ -636,7 +636,7 @@ func numberTheoryCollection() {
 	//        https://oeis.org/A135291 Product of exponents of prime factorization of n!
 	primeExponentsCountAll := func() {
 		const mx int = 1e6
-		Omega := [mx + 1]int{}
+		Omega := [mx + 1]int{} // int8
 		primes := []int{}
 		for i := 2; i <= mx; i++ {
 			if Omega[i] == 0 {
@@ -987,7 +987,7 @@ func numberTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Prime_omega_function
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
-		omega := make([]int, mx+1)
+		omega := make([]int, mx+1) // int8
 		for i := 2; i <= mx; i++ {
 			if omega[i] == 0 {
 				for j := i; j <= mx; j += i {
@@ -998,7 +998,7 @@ func numberTheoryCollection() {
 
 		{
 			// 线性筛
-			omega := make([]int, mx+1)
+			omega := make([]int, mx+1) // int8
 			primes := []int{}
 			for i := 2; i <= mx; i++ {
 				if omega[i] == 0 {
