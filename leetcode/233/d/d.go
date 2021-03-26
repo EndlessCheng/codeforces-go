@@ -1,72 +1,54 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-const trieBitLen = 30
-
-func bin(v int) []byte {
-	s := make([]byte, trieBitLen+1)
-	for i := range s {
-		s[i] = byte(v >> (trieBitLen - i) & 1)
-	}
-	return s
+type trieNode struct {
+	son [2]*trieNode
+	cnt int
 }
 
-type node struct {
-	son [2]*node
-	sz  int
-}
+type trie struct{ root *trieNode }
 
-func (o *node) size() int {
-	if o != nil {
-		return o.sz
-	}
-	return 0
-}
+func newTrie() *trie { return &trie{&trieNode{}} }
 
-func (o *node) maintain() {
-	o.sz = o.son[0].size() + o.son[1].size()
-}
+const trieBitLen = 14
 
-func (o *node) put(s []byte) {
-	c := s[0]
-	if o.son[c] == nil {
-		o.son[c] = &node{}
-	}
-	if len(s) == 1 {
-		o.son[c].sz++
-	} else {
-		o.son[c].put(s[1:])
-	}
-	o.maintain()
-}
-
-func (o *node) count(mx, v []byte) (ans int) {
-	if o == nil {
-		return
-	}
-	cur := v[0]
-	if mx[0] == 0 {
-		if len(mx) == 1 {
-			return o.son[cur].size()
+func (t *trie) put(v int) *trieNode {
+	o := t.root
+	for i := trieBitLen; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b] == nil {
+			o.son[b] = &trieNode{}
 		}
-		return o.son[cur].count(mx[1:], v[1:])
+		o = o.son[b]
+		o.cnt++
 	}
-	ans = o.son[cur].size()
-	if len(mx) == 1 {
-		ans += o.son[cur^1].size()
-	} else {
-		ans += o.son[cur^1].count(mx[1:], v[1:])
+	return o
+}
+
+func (t *trie) countLimitXOR(v, limit int) (cnt int) {
+	o := t.root
+	for i := trieBitLen; i >= 0; i-- {
+		b := v >> i & 1
+		if limit>>i&1 > 0 {
+			if o.son[b] != nil {
+				cnt += o.son[b].cnt
+			}
+			b ^= 1
+		}
+		if o.son[b] == nil {
+			return
+		}
+		o = o.son[b]
 	}
 	return
 }
 
 func countPairs(a []int, low, high int) (ans int) {
-	mxH, mxL := bin(high), bin(low-1)
-	t := &node{}
-	for _, v := range a {
-		s := bin(v)
-		ans += t.count(mxH, s) - t.count(mxL, s)
-		t.put(s)
+	t := newTrie()
+	t.put(a[0])
+	for _, v := range a[1:] {
+		ans += t.countLimitXOR(v, high+1) - t.countLimitXOR(v, low)
+		t.put(v)
 	}
 	return
 }
