@@ -229,7 +229,7 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		}
 
 		if tc == checkTC {
-			t.Logf("%d cases passed.", tc)
+			t.Logf("%d cases checked.", tc)
 			checkTC <<= 1
 		}
 
@@ -264,7 +264,7 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 		}
 
 		if tc == checkTC {
-			t.Logf("%d cases passed.", tc)
+			t.Logf("%d cases checked.", tc)
 			checkTC <<= 1
 		}
 

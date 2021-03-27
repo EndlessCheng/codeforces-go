@@ -515,7 +515,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		}
 
 		if tc == checkTC {
-			t.Logf("%d cases passed.", tc)
+			t.Logf("%d cases checked.", tc)
 			checkTC <<= 1
 		}
 
