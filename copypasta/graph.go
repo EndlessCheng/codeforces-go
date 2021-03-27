@@ -1891,12 +1891,12 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 
 // 强连通分量分解 Strongly Connected Component (SCC)
 // sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
-// https://oi-wiki.org/graph/scc/#kosaraju
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
+// https://oi-wiki.org/graph/scc/#kosaraju
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
-func (*graph) sccKosaraju(n int) (comps [][]int, sccIDs []int) {
+func (*graph) sccKosaraju(n int) (scc [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := []edge{}
 	g := make([][]int, n)
@@ -1940,14 +1940,13 @@ func (*graph) sccKosaraju(n int) (comps [][]int, sccIDs []int) {
 		}
 	}
 	// 逆后序遍历，就可以像无向图那样求出 SCC
-	comps = [][]int{}
 o:
 	for i := len(vs) - 1; i >= 0; i-- {
 		if v := vs[i]; !vis[v] {
 			comp = []int{}
 			rdfs(v)
 			// EXTRA: len(comp) >= 3 说明有环，注意环的个数可能不止一个
-			comps = append(comps, comp)
+			scc = append(scc, comp)
 			// EXTRA: 判断缩点后是否出度为 0
 			for _, u := range comp {
 				for _, w := range g[u] {
@@ -1960,9 +1959,9 @@ o:
 		}
 	}
 
-	// comps 的结果就是拓扑序
+	// scc 就是拓扑序
 	sccIDs = make([]int, n)
-	for i, cp := range comps {
+	for i, cp := range scc {
 		for _, v := range cp {
 			sccIDs[v] = i
 		}
@@ -1983,7 +1982,7 @@ o:
 	}
 
 	// EXTRA: 求有多少个点能被其他所有点访问到 https://www.luogu.com.cn/problem/P2341
-	lastComp := comps[len(comps)-1]
+	lastComp := scc[len(scc)-1]
 	numCanBeVisitedFromAll := len(lastComp)
 	vis = make([]bool, n)
 	rdfs(lastComp[0])
@@ -1997,10 +1996,75 @@ o:
 	return
 }
 
-// TODO: SCC Tarjan
-// 常数比 Kosaraju 小
+// SCC Tarjan
+// 常数比 Kosaraju 略小（在 AtCoder 上的测试显示，5e5 的数据下比 Kosaraju 快了约 100ms）
+// https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+// https://oi-wiki.org/graph/scc/#tarjan
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
+func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+
+	dfn := make([]int, n) // 值从 1 开始
+	dfsClock := 0
+	stk := []int{}
+	inStk := make([]bool, n)
+	var f func(int) int
+	f = func(v int) int {
+		dfsClock++
+		dfn[v] = dfsClock
+		lowV := dfsClock
+		stk = append(stk, v)
+		inStk[v] = true
+		for _, w := range g[v] {
+			if dfn[w] == 0 {
+				lowW := f(w)
+				lowV = min(lowV, lowW)
+			} else if inStk[w] { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
+				lowV = min(lowV, dfn[w])
+			}
+		}
+		if dfn[v] == lowV {
+			comp := []int{}
+			for {
+				w := stk[len(stk)-1]
+				stk = stk[:len(stk)-1]
+				inStk[w] = false
+				comp = append(comp, w)
+				if w == v {
+					break
+				}
+			}
+			scc = append(scc, comp)
+		}
+		return lowV
+	}
+	for v, timestamp := range dfn {
+		if timestamp == 0 {
+			f(v)
+		}
+	}
+
+	// 由于每个强连通分量都是在它的所有后继强连通分量被求出之后求得的
+	// 上面得到的 scc 是拓扑序的逆序
+	for i, n := 0, len(scc); i < n/2; i++ {
+		scc[i], scc[n-1-i] = scc[n-1-i], scc[i]
+	}
+
+	sccIDs = make([]int, n)
+	for i, cp := range scc {
+		for _, v := range cp {
+			sccIDs[v] = i
+		}
+	}
+
+	return
+}
 
 // Gabow's algorithm
 // 常数比 Kosaraju 大
