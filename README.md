@@ -79,8 +79,12 @@
   - [快速傅里叶变换 FFT math_fft.go](/copypasta/math_fft.go)
   - [快速数论变换 NTT math_ntt.go](/copypasta/math_ntt.go)
     - 包含多项式全家桶（求逆、开方等等）
-  - [矩阵、高斯消元、线性基 math_matrix.go](/copypasta/math_matrix.go)
   - [连分数、佩尔方程 math_continued_fraction.go](/copypasta/math_continued_fraction.go)
+  - [线性代数 math_matrix.go](/copypasta/math_matrix.go)
+    - 矩阵相关运算
+    - 高斯消元
+    - 行列式
+    - 线性基
   - [计算几何 geometry.go](/copypasta/geometry.go)
     - 直线和点
     - 直线和直线

@@ -232,7 +232,6 @@ func (matrix) inv(A matrix) matrix {
 
 // 高斯消元 Gaussian elimination O(n^3)   列主元消去法
 // 求解 Ax=B，A 为方阵，返回解（无解或有无穷多组解）
-// todo EXTRA: 求行列式
 // https://en.wikipedia.org/wiki/Gaussian_elimination
 // https://en.wikipedia.org/wiki/Pivot_element#Partial_and_complete_pivoting
 // https://oi-wiki.org/math/gauss/
@@ -241,6 +240,7 @@ func (matrix) inv(A matrix) matrix {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3389 https://www.luogu.com.cn/problem/P2455
+//       https://www.luogu.com.cn/problem/CF21B (判断两直线交点个数)
 func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 	const eps = 1e-8
 	n := len(A)
@@ -295,6 +295,30 @@ func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 		res[i] = r[n]
 	}
 	return res, false
+}
+
+// EXTRA: 求行列式（对结果模 mod）
+// https://www.luogu.com.cn/blog/Stormy-Rey/calculate-det
+func (a matrix) determinant(mod int64) int64 {
+	n := len(a)
+	res, sign := int64(1), 1
+	for i := range a {
+		for j := i + 1; j < n; j++ {
+			for a[i][i] != 0 {
+				div := a[j][i] / a[i][i]
+				for k := i; k < n; k++ {
+					a[j][k] = (a[j][k] - a[i][k]*div%mod + mod) % mod
+				}
+				a[i], a[j], sign = a[j], a[i], -sign
+			}
+			a[i], a[j], sign = a[j], a[i], -sign
+		}
+	}
+	for i, r := range a {
+		res = res * r[i] % mod
+	}
+	res = (res*int64(sign) + mod) % mod
+	return res
 }
 
 // 线性基（子集异或和问题）
