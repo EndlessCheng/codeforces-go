@@ -21,9 +21,9 @@ func run(_r io.Reader, _w io.Writer) {
 
 	}
 
-	var t int
-	Fscan(in, &t)
-	for Case := 1; Case <= t; Case++ {
+	var T int
+	Fscan(in, &T)
+	for Case := 1; Case <= T; Case++ {
 		solve(Case)
 	}
 

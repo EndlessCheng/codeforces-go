@@ -5,6 +5,7 @@ import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -31,9 +32,13 @@ func Test(t *testing.T) {
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", tarCase, run)
 }
 
+//func init() { rand.Seed(time.Now().UnixNano()) }
+
 // 无尽对拍 / 构造 hack 数据
-// 如果是 special judge，请用 TestCheck 来对拍
-// rand.Seed(time.Now().UnixNano())
+// 提醒：如果对拍正确但没有 AC，请检查
+// 1. 是否搞错了输入输出（重新阅读题目中有关输入输出格式的说明）
+// 2. 数据是否超过 int 最大值
+// 3. 是否有边界情况没考虑到
 func TestCompare(t *testing.T) {
 	return
 	inputGenerator := func() string {
@@ -48,21 +53,26 @@ func TestCompare(t *testing.T) {
 
 	// 暴力算法
 	runBF := func(in io.Reader, out io.Writer) {
-		var n int
-		Fscan(in, &n)
-		a := make([]int, n)
-		for i := range a {
-			Fscan(in, &a[i])
+		solve := func(Case int) {
+
 		}
 
-		ans := 0
+		var T int
+		Fscan(in, &T)
+		for Case := 1; Case <= T; Case++ {
+			solve(Case)
+		}
 
-		Fprintln(out, ans)
+		_leftData, _ := ioutil.ReadAll(in)
+		if _s := strings.TrimSpace(string(_leftData)); _s != "" {
+			panic("有未读入的数据：\n" + _s)
+		}
 	}
 
 	// 先用 runBF 跑下样例，检查 runBF 是否正确
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
+	//testutil.AssertEqualStringCase(t, customTestCases, 0, runBF)
 	return
 
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
@@ -73,6 +83,7 @@ func TestCompare(t *testing.T) {
 }
 
 // 无尽检查输出是否正确 / 构造 hack 数据
+// 通常用于 special judge 题目
 func TestCheck(t *testing.T) {
 	return
 	assert := assert.New(t)
