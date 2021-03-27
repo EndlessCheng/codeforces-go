@@ -20,6 +20,8 @@ func run(in input, Q func(req) resp) (gs guess) {
 	ans := make([]int, n) // 0
 	defer func() { gs.ans = ans }()
 
+
+
 	return
 }
 
@@ -35,8 +37,8 @@ func ioq() {
 		return
 	}
 
-	var t int
-	for Fscan(in, &t); t > 0; t-- { // TODO: remove if not multi-cases
+	var T int
+	for Fscan(in, &T); T > 0; T-- { // TODO: remove if not multi-cases
 		d := input{}
 		Fscan(in, &d.n)
 

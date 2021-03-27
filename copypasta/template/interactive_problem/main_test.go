@@ -7,12 +7,11 @@ import (
 	"testing"
 )
 
-func Test_run(t *testing.T) {
-	testRun(t, 0)
-}
+//func init() { rand.Seed(time.Now().UnixNano()) }
+
+func Test_run(t *testing.T) { testRun(t, 0) }
 
 func testRun(t *testing.T, debugCaseNum int) {
-	//rand.Seed(time.Now().UnixNano())
 	type testCase struct {
 		input
 		guess
@@ -23,8 +22,8 @@ func testRun(t *testing.T, debugCaseNum int) {
 	}
 	for i := 0; i < 1e5; i++ {
 		rg := testutil.NewRandGenerator()
-		n := rg.Int(2, 9)         // 输入
-		a := rg.IntSlice(n, 1, 9) // 猜测对象、数据
+		n := rg.Int(2, 5)         // 输入
+		a := rg.IntSlice(n, 1, 5) // 猜测对象或内部数据
 		testCases = append(testCases, testCase{
 			input:     input{n},
 			guess:     guess{a},
@@ -32,7 +31,7 @@ func testRun(t *testing.T, debugCaseNum int) {
 		})
 	}
 
-	const queryLimit = 1000
+	const queryLimit = 60
 	queryChecker := func(caseNum int, tc testCase) func(req) resp {
 		//n := tc.n
 		//a := append([]int(nil), tc.ans...)
