@@ -486,7 +486,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		t.Fatal("different input/output")
 	}
 
-	for tc := 1; ; tc++ {
+	for tc, checkTC := 1, 1; ; tc++ {
 		inArgs := ig.Call(nil)
 
 		// 先生成字符串，以免 inArgs 被修改
@@ -514,8 +514,13 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, inputInfo)
 		}
 
-		if tc%1e5 == 0 {
+		if tc == checkTC {
 			t.Logf("%d cases passed.", tc)
+			checkTC <<= 1
+		}
+
+		if Once {
+			break
 		}
 	}
 }
