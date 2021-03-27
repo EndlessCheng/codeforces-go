@@ -135,6 +135,12 @@ func (a vec) up() vec {
 	return a
 }
 
+// 逆时针旋转，传入旋转的弧度
+func (a vecF) rotate(rad float64) vecF {
+	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
+}
+
+// 两向量夹角
 func (a vec) angleTo(b vec) float64 {
 	v := float64(a.dot(b)) / (a.len() * b.len())
 	v = math.Min(math.Max(v, -1), 1)
@@ -153,11 +159,6 @@ func polarAngleSort(ps []vec) {
 		ps[i] = ps[i].up()
 	}
 	sort.Slice(ps, func(i, j int) bool { return ps[i].det(ps[j]) > 0 })
-}
-
-// 向量旋转，传入旋转的弧度
-func (a vecF) rotate(rad float64) vecF {
-	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
 }
 
 // a 的单位法线，a 不能是零向量
