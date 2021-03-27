@@ -53,7 +53,7 @@
         "zero", "positive", "negative",
         "decreasing", "increasing",
         "permutations", "permutation",
-        "lowercase", "uppercase",
+        "lowercase", "lower case", "uppercase", "upper case",
         "lexicographically", "lexicographical",
         "undirected", "directed",
         "independently", "independent",
