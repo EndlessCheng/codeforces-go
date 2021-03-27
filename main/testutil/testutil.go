@@ -203,7 +203,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 // inputGenerator 生成随机测试数据，runFuncAC 为暴力逻辑或已 AC 逻辑，runFunc 为当前测试的逻辑
 // TIPS: 失败的用例可以加入到 inputs 中方便后续测试
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc ioFunc) {
-	for tc := 1; ; tc++ {
+	for tc, checkTC := 1, 1; ; tc++ {
 		input := inputGenerator()
 		input = removeExtraSpace(input)
 
@@ -222,10 +222,15 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		actualOutput := removeExtraSpace(mockWriter.String())
 		_ = actualOutput
 
-		assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input)
+		if DisableLogInput {
+			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d", tc)
+		} else {
+			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input)
+		}
 
-		if tc%1e5 == 0 {
+		if tc == checkTC {
 			t.Logf("%d cases passed.", tc)
+			checkTC <<= 1
 		}
 
 		if Once {
@@ -240,7 +245,7 @@ type OutputChecker func(string) bool
 // inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入数据验证输出结果是否正确
 // TIPS: 失败的用例可以加入到 inputs 中方便后续测试
 func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc ioFunc) {
-	for tc := 1; ; tc++ {
+	for tc, checkTC := 1, 1; ; tc++ {
 		input, checker := inputGenerator()
 		input = removeExtraSpace(input)
 
@@ -252,10 +257,15 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
-		assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput)
+		if DisableLogInput {
+			assert.Truef(t, checker(actualOutput), "Wrong Answer %d", tc)
+		} else {
+			assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput)
+		}
 
-		if tc%1e5 == 0 {
+		if tc == checkTC {
 			t.Logf("%d cases passed.", tc)
+			checkTC <<= 1
 		}
 
 		if Once {
