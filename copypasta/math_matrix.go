@@ -298,7 +298,8 @@ func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 }
 
 // EXTRA: 求行列式（对结果模 mod）
-// https://www.luogu.com.cn/blog/Stormy-Rey/calculate-det
+// https://en.wikipedia.org/wiki/Determinant
+// 参考 https://www.luogu.com.cn/blog/Stormy-Rey/calculate-det
 func (a matrix) determinant(mod int64) int64 {
 	n := len(a)
 	res, sign := int64(1), 1
