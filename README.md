@@ -161,7 +161,7 @@
 
 我的 Codeforces 账号：
 
-[![](https://cfrating.ihcr.top/?user=0x3F)](https://codeforces.com/profile/0x3F)
+[![0x3F](https://img.shields.io/badge/0x3F-MASTER%202107-orange?style=for-the-badge)](https://codeforces.com/profile/0x3F)
 
 
 ## 测试及对拍 Testing
