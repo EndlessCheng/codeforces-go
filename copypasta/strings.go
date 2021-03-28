@@ -128,7 +128,7 @@ func stringCollection() {
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
-	// todo 常数优化 https://www.luogu.com.cn/problem/P5410
+	//       https://www.luogu.com.cn/problem/P5410
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
