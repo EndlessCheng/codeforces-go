@@ -55,6 +55,7 @@
   - [字典树 trie.go](/copypasta/trie.go)
     - AC 自动机
   - [异或字典树 trie01.go](/copypasta/trie01.go)
+    - Hack：构造一组数据，最大化树上的节点数
 - 数学
   - [数论 math.go](/copypasta/math.go)
     - 最大公因数（GCD）
