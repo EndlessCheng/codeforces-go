@@ -2,42 +2,52 @@ package copypasta
 
 import "math/bits"
 
+// 必要时禁止 GC，能加速不少
+//func init() { debug.SetGCPercent(-1) }
+
 // 异或字典树
 // 一颗（所有叶节点深度都相同的）二叉树
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
+	min int // 子树最小值
 }
 
 type trie01 struct{ root *trie01Node }
 
-func newTrie01() *trie01 { return &trie01{&trie01Node{}} }
+func newTrie01() *trie01 { return &trie01{&trie01Node{min: 2e9}} }
 
-const trieBitLen = 30 // 62 for int64, or int(log2(MAX))
+const trieBitLen = 31 // 63 for int64, or ceil(log2(MAX_VAL))
 
 func (trie01) bin(v int) []byte {
-	s := make([]byte, trieBitLen+1)
+	s := make([]byte, trieBitLen)
 	for i := range s {
-		s[i] = byte(v >> (trieBitLen - i) & 1)
+		s[i] = byte(v >> (trieBitLen - 1 - i) & 1)
 	}
 	return s
 }
 
 func (t *trie01) put(v int) *trie01Node {
 	o := t.root
-	for i := trieBitLen; i >= 0; i-- {
+	if v < o.min {
+		o.min = v
+	}
+	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
-			o.son[b] = &trie01Node{}
+			o.son[b] = &trie01Node{min: 2e9}
 		}
 		o = o.son[b]
 		o.cnt++
+		if v < o.min {
+			o.min = v
+		}
 	}
 	//o.val = v
 	return o
 }
 
-// v 与 trie 上所有数的最大异或值
+// v 与 trie 上所有数的最大异或值，trie 不能是空的
 // 模板题 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 离线 LC1707/周赛211D https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
 // todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
@@ -45,7 +55,7 @@ func (t *trie01) put(v int) *trie01Node {
 // EXTRA: minXor: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie01 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
 func (t *trie01) maxXor(v int) (ans int) {
 	o := t.root
-	for i := trieBitLen; i >= 0; i-- {
+	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b^1] != nil {
 			ans |= 1 << i
@@ -60,7 +70,7 @@ func (t *trie01) maxXor(v int) (ans int) {
 // https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/discuss/91049/Java-O(n)-solution-using-bit-manipulation-and-HashMap/95535
 func findMaximumXOR(a []int) (ans int) {
 	mask := 0
-	for i := trieBitLen; i >= 0; i-- {
+	for i := trieBitLen - 1; i >= 0; i-- {
 		mask |= 1 << i
 		try := ans | 1<<i
 		leftPart := map[int]bool{a[0] & mask: true}
@@ -75,12 +85,33 @@ func findMaximumXOR(a []int) (ans int) {
 	return
 }
 
-// 求与 v 异或值小于 limit 的元素个数
+// v 与 trie 上所有不超过 limit 的数的最大异或值
+// 不存在时返回 -1
+// https://codeforces.com/problemset/problem/979/D
+func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
+	o := t.root
+	if o.min > limit {
+		return -1
+	}
+	// 由于上面的判断保证了必然存在一个值，后面是不需要判断 o 是否为空的
+	for i := trieBitLen - 1; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b^1] != nil && o.son[b^1].min <= limit {
+			ans |= 1 << i
+			b ^= 1
+		}
+		o = o.son[b]
+	}
+	return
+}
+
+// 求与 v 异或值不超过 limit 的元素个数
 // 核心原理是，当 limit 的某一位是 1 的时候，若保持 w 与 v 在该位上的数字不变，后面的位是可以取任意数字的
 // LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
+	limit++ // 改成 <
 	o := t.root
-	for i := trieBitLen; i >= 0; i-- {
+	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if limit>>i&1 > 0 {
 			if o.son[b] != nil {
@@ -114,6 +145,47 @@ func countLimitXOR(a []int, limit int) int {
 		}
 	}
 	return ans >> 1
+}
+
+// v 与 trie 上所有数异或不超过 limit 的最大异或值
+// 不存在时返回 -1
+// 原理同 countLimitXOR
+func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
+	limit++ // 改成 <
+	lastO, lastI, lastAns := (*trie01Node)(nil), -2, 0
+	o := t.root
+	for i := trieBitLen - 1; i >= 0; i-- {
+		b := v >> i & 1
+		if limit>>i&1 > 0 {
+			if o.son[b] != nil {
+				lastO, lastI, lastAns = o.son[b], i-1, ans
+			}
+			if o.son[b^1] != nil {
+				ans |= 1 << i
+			}
+			b ^= 1
+		}
+		if o.son[b] == nil {
+			break
+		}
+		o = o.son[b]
+	}
+
+	if lastI < -1 {
+		return -1
+	}
+
+	ans = lastAns
+	o = lastO
+	for i := lastI; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b^1] != nil {
+			ans |= 1 << i
+			b ^= 1
+		}
+		o = o.son[b]
+	}
+	return
 }
 
 // n 个 [0, 2^30) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
