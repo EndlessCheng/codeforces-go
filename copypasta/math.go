@@ -26,6 +26,8 @@ NOTE: 对于整数来说有
        ax<by  =>  x<⌈by/a⌉
        ax≥by  =>  x≥⌈by/a⌉
        ax>by  =>  x>⌊by/a⌋
+NOTE: ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
+NOTE: ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
 AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
@@ -62,6 +64,9 @@ https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
 
 https://oeis.org/A064413 EKG sequence (or ECG sequence)
 a(1) = 1; a(2) = 2; for n > 2, a(n) = smallest number not already used which shares a factor with a(n-1)
+
+https://oeis.org/A002326 least m > 0 such that 2n+1 divides 2^m-1
+https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 
 http://oeis.org/A003136 Loeschian number: numbers of the form x^2 + xy + y^2
 https://en.wikipedia.org/wiki/Loeschian_number
@@ -666,8 +671,9 @@ func numberTheoryCollection() {
 
 		d(10^n) https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
-			4, 12, 32, 64, 128, 240, 448, 768, 1344, /9/
-			2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280 /19/
+			4, 12, 32, 64, 128, /5/
+	        240, 448, 768, 1344, /9/
+			2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280, /19/
 
 			上面这些数对应的最小的 n https://oeis.org/A066151
 			6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
@@ -1930,6 +1936,9 @@ func numberTheoryCollection() {
 	// https://oeis.org/A116477 a(n) = Sum_{1<=k<=n, gcd(k,n)=1} floor(n/k)
 	//                          sum{k|n} a(k) = sum{k=1 to n} d(k) = https://oeis.org/A006218
 	// https://oeis.org/A013939 a(n) = Sum_{k = 1..n} floor(n/prime(k)) = omega(n!)
+	//
+	// EXTRA: n/k (k=1..n) 的不同数字的个数 https://oeis.org/A055086
+	//        = floor(sqrt(4*n+1)) - 1 (注意用 int64)
 	floorLoop := func(n int64) (sum int64) {
 		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
 			h := n / l
@@ -2163,7 +2172,7 @@ func numberTheoryCollection() {
 }
 
 /* 组合数学
-https://en.wikipedia.org/wiki/Combinatorics
+https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
 
@@ -2313,6 +2322,9 @@ https://oeis.org/A059036 = A003991(n, k) - 1
 一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
+
+找出 50% 作弊者 https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
+    讨论 https://codeforces.com/blog/entry/84822
 */
 func combinatoricsCollection() {
 	// 容斥原理 (PIE, the principle of inclusion and exclusion)
