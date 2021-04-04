@@ -11,7 +11,8 @@ import (
 	"testing"
 )
 
-//rand.Seed(time.Now().UnixNano())
+//func init() { rand.Seed(time.Now().UnixNano()) }
+
 func TestCompareInf(t *testing.T) {
 	inputGenerator := func() (a []int) {
 		rg := testutil2.NewRandGenerator()
