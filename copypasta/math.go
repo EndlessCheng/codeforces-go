@@ -200,33 +200,31 @@ func numberTheoryCollection() {
 	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
 	// ∑∑lcm(i,j)   https://oeis.org/A064951
 
+	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
+	// LC1819/周赛235D https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
+	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
+		const mx int = 4e5 //
+		has := [mx + 1]bool{}
+		for _, v := range a {
+			has[v] = true
+		}
+		for i := 1; i <= mx; i++ {
+			g := 0
+			for j := i; j <= mx; j += i {
+				if has[j] {
+					g = gcd(g, j)
+				}
+			}
+			if g == i {
+				ans++
+			}
+		}
+		return
+	}
+
 	// 最简分数
 	type pair struct{ x, y int64 }
 	frac := func(a, b int64) pair { g := gcd(a, b); return pair{a / g, b / g} }
-
-	// todo 待整理
-	// 给定数组，统计所有区间的 GCD 值
-	// 返回 map[GCD值]等于该值的区间个数
-	cntRangeGCD := func(a []int64) map[int64]int64 {
-		n := len(a)
-		cntMp := map[int64]int64{}
-		gcds := append([]int64(nil), a...)
-		posL := make([]int, n)
-		for i, v := range a {
-			posL[i] = i
-			// 从当前位置 i 往左遍历，更新 gcd[j] 的同时维护等于 gcd[j] 的区间最左端位置
-			for j := i; j >= 0; j = posL[j] - 1 {
-				gcds[j] = gcd(gcds[j], v)
-				g := gcds[j]
-				for posL[j] > 0 && gcd(gcds[posL[j]-1], v) == g {
-					posL[j] = posL[posL[j]-1]
-				}
-				// [posL[j], j], [posL[j]+1, j], ..., [j, j] 的区间 GCD 值均等于 gcd[j]
-				cntMp[g] += int64(j - posL[j] + 1)
-			}
-		}
-		return cntMp
-	}
 
 	// 类欧几里得算法
 	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
@@ -2153,7 +2151,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
-		gcd, gcdPrefix, gcdSuffix, lcm, frac, cntRangeGCD, floorSum,
+		gcd, gcdPrefix, gcdSuffix, lcm, frac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
