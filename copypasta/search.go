@@ -257,16 +257,64 @@ func searchCollection() {
 
 	//
 
+	// 每个位置独立，枚举 [0,limits[i]] 范围内的数
+	iterWithLimits := func(limits []int, do func(upp []int) bool) {
+		n := len(limits)
+		upp := make([]int, n)
+		var f func(p int) bool
+		f = func(p int) bool {
+			if p == n {
+				return do(upp)
+			}
+			for upp[p] = 0; upp[p] <= limits[p]; upp[p]++ {
+				if f(p + 1) {
+					return true
+				}
+			}
+			return false
+		}
+		f(0)
+	}
+
+	// 每个位置独立，枚举 [0,limits[i]] 范围内的数，且和为 sum
+	iterWithLimitsAndSum := func(sum int, limits []int, do func(a []int) bool) {
+		n := len(limits)
+		a := make([]int, n)
+		var f func(int, int) bool
+		f = func(p, s int) bool {
+			if s > sum {
+				return false
+			}
+			if p == n {
+				if s < sum {
+					return false
+				}
+				return do(a)
+			}
+			for a[p] = 0; a[p] <= limits[p]; a[p]++ {
+				if f(p+1, s+a[p]) {
+					return true
+				}
+			}
+			return false
+		}
+		f(0, 0)
+	}
+
+	//
+
 	// 从 n 个元素中选择 r 个元素，按字典序生成所有组合，每个组合用下标表示  r <= n
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations
 	// https://stackoverflow.com/questions/41694722/algorithm-for-itertools-combinations-in-python
-	combinations := func(n, r int, do func(ids []int)) {
+	combinations := func(n, r int, do func(ids []int) bool) {
 		ids := make([]int, r)
 		for i := range ids {
 			ids[i] = i
 		}
-		do(ids)
+		if do(ids) {
+			return
+		}
 		for {
 			i := r - 1
 			for ; i >= 0; i-- {
@@ -281,7 +329,9 @@ func searchCollection() {
 			for j := i + 1; j < r; j++ {
 				ids[j] = ids[j-1] + 1
 			}
-			do(ids)
+			if do(ids) {
+				return
+			}
 		}
 	}
 
@@ -291,9 +341,11 @@ func searchCollection() {
 	// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 	// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
 	// 相当于长度为 k，元素范围在 [0,n-1] 的非降序列的个数
-	combinationsWithRepetition := func(n, k int, do func(ids []int)) {
+	combinationsWithRepetition := func(n, k int, do func(ids []int) bool) {
 		ids := make([]int, k)
-		do(ids)
+		if do(ids) {
+			return
+		}
 		for {
 			i := k - 1
 			for ; i >= 0; i-- {
@@ -308,19 +360,23 @@ func searchCollection() {
 			for j := i + 1; j < k; j++ {
 				ids[j] = ids[i]
 			}
-			do(ids)
+			if do(ids) {
+				return
+			}
 		}
 	}
 
 	// 从一个长度为 n 的数组中选择 r 个元素，按字典序生成所有排列，每个排列用下标表示  r <= n
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
-	permutations := func(n, r int, do func(ids []int)) {
+	permutations := func(n, r int, do func(ids []int) bool) {
 		ids := make([]int, n)
 		for i := range ids {
 			ids[i] = i
 		}
-		do(ids[:r])
+		if do(ids[:r]) {
+			return
+		}
 		cycles := make([]int, r)
 		for i := range cycles {
 			cycles[i] = n - i
@@ -337,7 +393,9 @@ func searchCollection() {
 				} else {
 					j := cycles[i]
 					ids[i], ids[n-j] = ids[n-j], ids[i]
-					do(ids[:r])
+					if do(ids[:r]) {
+						return
+					}
 					break
 				}
 			}
@@ -581,7 +639,9 @@ func searchCollection() {
 	_ = []interface{}{
 		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
 		genSubStrings,
-		combinations, combinationsWithRepetition, permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
+		iterWithLimits, iterWithLimitsAndSum,
+		combinations, combinationsWithRepetition,
+		permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
 		bigKnapsack, bigKnapsack2,
 	}
 }
@@ -830,7 +890,10 @@ func loopCollection() {
 	}
 }
 
+//
+
 // 网格/矩阵上的搜索
+// 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
 func gridCollection() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
