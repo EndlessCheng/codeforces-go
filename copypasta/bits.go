@@ -195,13 +195,14 @@ func bitsCollection() {
 		return
 	}
 
+	// 对于数组的所有区间，返回 op(区间元素) 的各个结果
 	// 利用操作的单调性求解
 	// |: LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
 	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 logTrickCnt)
 	logTrick := func(a []int, op func(x, y int) int) map[int]bool {
-		has := map[int]bool{} // 统计 op(一段区间) 的不同结果
+		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
 		for _, x := range a {
 			for i, v := range set {
@@ -219,15 +220,16 @@ func bitsCollection() {
 			set = set[:k+1]
 			for _, v := range set {
 				// do v...
-				has[v] = true
+				ans[v] = true
 			}
 		}
-		return has
+		return ans
 	}
 
+	// 进阶：对于数组的所有区间，返回 op(区间元素) 的各个结果，及其出现次数
 	// https://codeforces.com/problemset/problem/475/D
 	logTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
-		cnt := map[int]int64{} // 统计 op(一段区间) 的各个结果的出现次数
+		cnt := map[int]int64{}
 		type pair struct{ v, l, r int }
 		set := []pair{}
 		for i, x := range a {
