@@ -33,8 +33,19 @@ https://oeis.org/A211667 Number of iterations sqrt(sqrt(sqrt(...(n)...))) such t
 https://oeis.org/A002024 n appears n times; a(n) = floor(sqrt(2n) + 1/2) https://www.zhihu.com/question/25045244
 
 找规律 https://codeforces.com/problemset/problem/1034/B
+
+麻将
+2021·昆明 https://ac.nowcoder.com/acm/contest/12548/K
 */
 func miscCollection() {
+	// debug 用
+	toArray := func(a []int) (res [100]int) {
+		for i, v := range a {
+			res[i] = v
+		}
+		return
+	}
+
 	// 预处理 log 的整数部分
 	logInit := func() {
 		const mx int = 1e6
@@ -352,6 +363,7 @@ func miscCollection() {
 	// https://blog.nowcoder.net/n/ceb3214b89594af481ef9b794c75a929
 
 	_ = []interface{}{
+		toArray,
 		logInit,
 		getCycle,
 		recordPos,
@@ -674,8 +686,8 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 	return ans
 }
 
+// 马走日从 (0,0) 到 (x,y) 所需最小步数
 // LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
-// 马走日到 (x,y) 所需最小步数
 func minKnightMoves(x, y int) int {
 	abs := func(x int) int {
 		if x < 0 {
