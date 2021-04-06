@@ -146,8 +146,6 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	return
 }
 
-// 获取力扣杯题目信息
-// slug 如 "2020-fall"
 func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool) (problems []*problem, err error) {
 	const graphqlURL = "https://leetcode-cn.com/graphql"
 	resp, err := session.Post(graphqlURL, &grequests.RequestOptions{
@@ -200,8 +198,8 @@ func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool
 		}
 	}
 
-	if contest.StartTime == 0 {
-		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
+	if contest.TitleSlug == "" {
+		return nil, fmt.Errorf("未找到比赛 %s！", slug)
 	}
 
 	if sleepTime := time.Until(time.Unix(contest.StartTime, 0)); sleepTime > 0 {
@@ -212,7 +210,7 @@ func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool
 	}
 
 	if len(contest.Questions) == 0 {
-		return nil, fmt.Errorf("题目链接为空: %s%d", contestPrefix, contestID)
+		return nil, fmt.Errorf("题目链接为空: %s%d", contest.TitleSlug, contestID)
 	}
 
 	fmt.Println("难度 标题")
@@ -609,6 +607,8 @@ func GenLeetCodeTests(username, password, customComment string) error {
 	return handleProblems(session, problems)
 }
 
+// 获取力扣杯题目信息
+// slug 如 "2020-fall", "2021-spring"
 func GenLeetCodeSeasonTests(username, password, customComment, slug string, isSolo bool) error {
 	session, err := login(username, password)
 	if err != nil {
