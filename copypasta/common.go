@@ -25,22 +25,22 @@ import (
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
 
 /* 横看成岭侧成峰
-
-有相当多的题目考察思维角度的转换
-一个技巧是，思考：从答案出发，倒推怎样才能得到这个答案
-逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
-
+转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
+转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
-转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
-转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
-不解释，自己感受 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
-等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
-
 奇偶性 https://codeforces.com/problemset/problem/763/B
+等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
+逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
+https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
+*/
+
+/* 见微知著：考察单个点的规律，从而推出全局规律
+https://codeforces.com/problemset/problem/1510/K
+https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 */
 
 // NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
