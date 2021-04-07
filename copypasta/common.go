@@ -150,11 +150,6 @@ func commonCollection() {
 		return *(*[10]int)(unsafe.Pointer((*reflect.SliceHeader)(unsafe.Pointer(&a)).Data))
 	}
 
-	isDigit := func(b byte) bool { return '0' <= b && b <= '9' }
-	isLower := func(b byte) bool { return 'a' <= b && b <= 'z' }
-	isUpper := func(b byte) bool { return 'A' <= b && b <= 'Z' }
-	isAlpha := func(b byte) bool { return 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z' }
-
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
 	minString := func(a, b string) string {
 		if len(a) != len(b) {
@@ -955,7 +950,6 @@ func commonCollection() {
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin,
 		sliceToArray,
-		isDigit, isLower, isUpper, isAlpha,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum,
