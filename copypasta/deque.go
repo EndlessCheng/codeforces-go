@@ -3,9 +3,9 @@ package copypasta
 // 双端队列
 // 用两个 slice 拼在一起实现
 // 另一种实现是 make 个两倍大小的 slice，然后用两个下标 s t 模拟
+// 应用见 graph.go 中的 01 最短路
 
 // l-1,...1,0,0,1...,r-1
-// int 可以替换成自己想要的类型
 type deque struct{ l, r []int }
 
 func (q deque) empty() bool  { return len(q.l) == 0 && len(q.r) == 0 }
