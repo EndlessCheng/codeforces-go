@@ -1022,19 +1022,24 @@ func dpCollections() {
 	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
+	https://en.wikipedia.org/wiki/Hamiltonian_path
+	https://en.wikipedia.org/wiki/Hamiltonian_path_problem
 	*/
 
 	// 旅行商问题 (TSP)
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
+	// 做法：定义 dp[s][v] 表示已访问的集合为 s，最后一个访问的位置是 v 时的最小花费
+	//      则有 dp[s|1<<w][w] = min(dp[s|1<<w][w], ds[v]+dist[v][w])
+	//      枚举 v 和 w 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
-	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433
+	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
+	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
 	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
 	tsp := func(dist [][]int, st int) []int {
-		// 记忆化：已经访问的集合 s，当前位置 v
 		n := len(dist)
 		const inf int = 1e9 // 1e18
 		dp := make([][]int, 1<<n)
@@ -1044,52 +1049,18 @@ func dpCollections() {
 				dp[i][j] = inf
 			}
 		}
-		dp[1<<n-1][st] = 0 // 访问了所有节点并回到了 st（多个起点的话就设置多个 dp[1<<n-1][st[i]] = 0）
-		for s := 1<<n - 2; s >= 0; s-- {
-			for v := 0; v < n; v++ {
-				for w := 0; w < n; w++ {
-					if s>>w&1 == 0 {
-						dp[s][v] = min(dp[s][v], dp[s|1<<w][w]+dist[v][w])
-					}
+		dp[1<<st][st] = 0 // 多个起点的话就设置多个 dp[1<<st[i]][st[i]] = 0
+		for s, ds := range dp {
+			// 利用位运算快速求出 s 中 1 的位置 v，以及 s 中 0 的位置 w（通过 s 的补集中的 1 的位置求出）
+			for S := uint(s); S > 0; S &= S - 1 {
+				v := bits.TrailingZeros(S)
+				for C := (1<<n - 1) &^ uint(s); C > 0; C &= C - 1 {
+					w := bits.TrailingZeros(C)
+					dp[s|1<<w][w] = min(dp[s|1<<w][w], ds[v]+dist[v][w])
 				}
 			}
 		}
-		return dp[0]
-	}
-
-	{
-		// 由于 s 的特性，在单起点的情况下，有很多状态是没有访问到的
-		_ = func(dist [][]int, st int) int {
-			n := len(dist)
-			dp := make([][]int, 1<<n)
-			for i := range dp {
-				dp[i] = make([]int, n)
-				for j := range dp[i] {
-					dp[i][j] = -1
-				}
-			}
-			const inf int = 1e9 // 1e18
-			// 记忆化：已经访问的集合 s，当前位置 v
-			var f func(s, v int) int
-			f = func(s, v int) (res int) {
-				dv := &dp[s][v]
-				if *dv >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-				if s == 1<<n-1 && v == st {
-					return
-				} // 访问了所有节点并回到了 st
-				res = inf
-				for w := 0; w < n; w++ {
-					if s>>w&1 == 0 {
-						res = min(res, f(s|1<<w, w)+dist[v][w])
-					}
-				}
-				return
-			}
-			return f(0, st)
-		}
+		return dp[1<<n-1]
 	}
 
 	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
@@ -1292,8 +1263,8 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/750/E
 	*/
 
-	// 单调队列/单调栈优化
-	// 见 common.go 的单调队列部分
+	// 单调队列优化
+	// 见 monotone_queue.go
 
 	// 斜率优化 / 凸包优化 (CHT)  李超树
 	// https://oi-wiki.org/dp/opt/slope/
@@ -1317,10 +1288,12 @@ func dpCollections() {
 	https://blog.csdn.net/weixin_43914593/article/details/107145592
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
+
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/982/C
+	好题 https://codeforces.com/problemset/problem/1453/E
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
