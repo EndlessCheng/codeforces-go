@@ -2397,10 +2397,12 @@ func numericalAnalysisCollection() {
 	// https://en.wikipedia.org/wiki/Polynomial_interpolation
 
 	// 拉格朗日插值
+	// 给定多项式上的 n 个点 (xi,yi)，求 f(k)
 	// https://en.wikipedia.org/wiki/Lagrange_polynomial
 	// https://oi-wiki.org/math/poly/lagrange/
 	// 浅谈几种插值方法 https://www.luogu.com.cn/blog/zhang-xu-jia/ji-zhong-cha-zhi-fang-fa-yang-xie
-	// https://www.luogu.com.cn/problem/P4781
+	//
+	// 模板题 https://www.luogu.com.cn/problem/P4781
 	// todo https://www.luogu.com.cn/problem/P5667
 	// 等幂和 https://codeforces.com/problemset/problem/622/F
 	lagrangePolynomialInterpolation := func(xs, ys []int64, k int64) int64 {
