@@ -714,9 +714,14 @@ func minKnightMoves(x, y int) int {
 // 判断 6 个矩形是否为长方体的 6 个面
 // NEERC04 https://www.luogu.com.cn/problem/UVA1587
 func isCuboid(rect [][2]int) bool {
+	for i, r := range rect {
+		if r[0] > r[1] {
+			rect[i] = [2]int{r[1], r[0]}
+		}
+	}
 	sort.Slice(rect, func(i, j int) bool { a, b := rect[i], rect[j]; return a[0] < b[0] || a[0] == b[0] && a[1] < b[1] })
 	for i := 0; i < 6; i += 2 {
-		if rect[i] != rect[i+1] {
+		if rect[i] != rect[i+1] { // NOTE: [2]
 			return false
 		}
 	}
