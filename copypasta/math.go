@@ -1555,6 +1555,8 @@ func numberTheoryCollection() {
 	// n! ~ √(2πn)*(n/e)^n
 	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
+	// 等差数列的乘积转换成阶乘 https://atcoder.jp/contests/m-solutions2019/tasks/m_solutions2019_e
+
 	// https://oeis.org/A003070 a(n) = ceiling(log_2(n!))
 	// https://oeis.org/A067850 Highest power of 2 not exceeding n!
 	// https://oeis.org/A049606 Largest odd divisor of n!
@@ -1875,6 +1877,12 @@ func numberTheoryCollection() {
 		}
 		return b
 	}
+
+	// 欧拉数 https://oeis.org/A008292
+	// https://en.wikipedia.org/wiki/Eulerian_number
+	// T(n, k) = k * T(n-1, k) + (n-k+1) * T(n-1, k-1), T(1, 1) = 1
+	// T(n, k) = Sum_{j=0..k} (-1)^j * (k-j)^n * C(n+1, j)
+	// todo 浅谈欧拉数 https://www.luogu.com.cn/blog/Karry5307/eulerian-numbers
 
 	// 莫比乌斯函数 mu https://oeis.org/A008683
 	// https://oi-wiki.org/math/mobius/#_11
