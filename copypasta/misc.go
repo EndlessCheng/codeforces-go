@@ -530,6 +530,7 @@ func toNegabinary(n int) (res string) {
 // 例如 (2, -3) => ("-0.", "6")
 // b must not be zero
 // LC166 https://leetcode-cn.com/problems/fraction-to-recurring-decimal/
+// WF1990 https://www.luogu.com.cn/problem/UVA202
 func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
 	if a == 0 {
 		return []byte{'0'}, nil
@@ -708,4 +709,17 @@ func minKnightMoves(x, y int) int {
 	ans := max(max((x+1)/2, (y+1)/2), (x+y+2)/3)
 	ans += (ans ^ x ^ y) & 1
 	return ans
+}
+
+// 判断 6 个矩形是否为长方体的 6 个面
+// NEERC04 https://www.luogu.com.cn/problem/UVA1587
+func isCuboid(rect [][2]int) bool {
+	sort.Slice(rect, func(i, j int) bool { a, b := rect[i], rect[j]; return a[0] < b[0] || a[0] == b[0] && a[1] < b[1] })
+	for i := 0; i < 6; i += 2 {
+		if rect[i] != rect[i+1] {
+			return false
+		}
+	}
+	y0, y2 := rect[0][1], rect[2][1]
+	return rect[2][0] == rect[0][0] && (rect[4] == [2]int{y0, y2} || rect[4] == [2]int{y2, y0})
 }
