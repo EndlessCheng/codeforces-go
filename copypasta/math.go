@@ -545,7 +545,7 @@ func numberTheoryCollection() {
 	}
 
 	// 线性筛 欧拉筛
-	// 避免多次标记合数
+	// 每个合数都从其 LPF 访问到
 	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
 	// https://www.luogu.com.cn/problem/P3383
 	sieveEuler := func() {
@@ -567,6 +567,42 @@ func numberTheoryCollection() {
 				}
 			}
 		}
+	}
+
+	// 一般线性筛的模板
+	// 记 f(n) 为积性函数
+	// 其满足 1. f(p) = p ...
+	//       2. f(p^(k+1)) = f(p^k) ... p
+	//       3. f(x*p) = f(x) ... p (p 不是 x 的因子)
+	// 一个典型的例子见下面 σ(n) 的线性筛求法
+	sieveEulerTemplate := func() []int {
+		const mx int = 1e7
+		f := make([]int, mx+1)
+		f[1] = 1 //
+		vis := make([]bool, mx+1)
+		primes := []int{}
+		for i := 2; i <= mx; i++ {
+			if !vis[i] {
+				// 1: p
+				f[i] = i
+				primes = append(primes, i)
+			}
+			for _, p := range primes {
+				v := p * i
+				if v > mx {
+					break
+				}
+				vis[v] = true
+				if i%p == 0 {
+					// 2: p^(k+1) <- p^k
+					f[v] = f[i] * p
+					break
+				}
+				// 3: x*p <- x 且 x 的质因子是没有 p 的
+				f[v] = f[i] * p
+			}
+		}
+		return f
 	}
 
 	// 区间筛法
@@ -667,7 +703,7 @@ func numberTheoryCollection() {
 		Values of records https://oeis.org/A002183
 		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221
 
-		d(10^n) https://oeis.org/A066150
+		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
 			4, 12, 32, 64, 128, /5/
 	        240, 448, 768, 1344, /9/
@@ -689,12 +725,18 @@ func numberTheoryCollection() {
 			n/d(n) https://oeis.org/A036762
 		n%d(n) https://oeis.org/A054008
 		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
-		Smallest number with d(x) = n https://oeis.org/A005179
+		Smallest k such that d(k) = n https://oeis.org/A005179
 			a(p) = 2^(p-1) for primes p
 			相关题目 https://codeforces.com/problemset/problem/27/E https://www.luogu.com.cn/problem/P1128
 			质数的情况 https://oeis.org/A061286
+	    Number of divisors of n^2 less than n https://oeis.org/A063647 Also number of ways to write 1/n as a difference of exactly 2 unit fractions
+	        a(n) = (d(n^2)-1)/2
 
 	n 的因子之和 σ(n) = Π(pi^(ei+1)-1)/(pi-1) https://oeis.org/A000203 todo 相关题目 https://www.luogu.com.cn/problem/P1593
+	    线性筛求法见后面
+	    max(σ(i)), i=1..10^n https://oeis.org/A066410
+	         对应的 n https://oeis.org/A066424
+	    Smallest k such that sigma(k) = n http://oeis.org/A051444
 		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
 		真因子之和 https://oeis.org/A001065 σ(n)-n
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
@@ -869,6 +911,35 @@ func numberTheoryCollection() {
 			}
 		}
 
+		{
+			// 线性筛求 n 的因子之和 σ(n)
+			// https://codeforces.com/contest/1512/problem/G
+			const mx int = 1e7
+			d := make([]int, mx+1)
+			d[1] = 1
+			s := make([]int, mx+1)
+			primes := []int{}
+			for i := 2; i <= mx; i++ {
+				if d[i] == 0 {
+					s[i] = 1 + i
+					d[i] = s[i]
+					primes = append(primes, i)
+				}
+				for _, p := range primes {
+					if p*i > mx {
+						break
+					}
+					if i%p == 0 {
+						s[p*i] = s[i]*p + 1
+						d[p*i] = d[i] / s[i] * s[p*i]
+						break
+					}
+					s[p*i] = 1 + p
+					d[p*i] = d[i] * s[p*i]
+				}
+			}
+		}
+
 		isSquareNumber := func(x int) bool { return len(divisors[x])&1 == 1 }
 		halfDivisors := func(x int) []int { d := divisors[x]; return d[:(len(d)-1)/2+1] }
 
@@ -989,6 +1060,7 @@ func numberTheoryCollection() {
 
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
 	// https://en.wikipedia.org/wiki/Prime_omega_function
+	// 莫比乌斯反演 https://oeis.org/A062799 = Sum_{d|n} omega(d)
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
 		omega := make([]int, mx+1) // int8
@@ -2160,7 +2232,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, countDifferentSubsequenceGCDs, floorSum,
-		isPrime, sieve, sieveEuler, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
+		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
