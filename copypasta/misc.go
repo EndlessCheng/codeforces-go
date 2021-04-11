@@ -728,3 +728,17 @@ func isCuboid(rect [][2]int) bool {
 	y0, y2 := rect[0][1], rect[2][1]
 	return rect[2][0] == rect[0][0] && (rect[4] == [2]int{y0, y2} || rect[4] == [2]int{y2, y0})
 }
+
+// 约瑟夫问题
+// 思路：用递推公式，自底向上计算
+// https://zh.wikipedia.org/wiki/%E7%BA%A6%E7%91%9F%E5%A4%AB%E6%96%AF%E9%97%AE%E9%A2%98
+// https://oi-wiki.org/misc/josephus/ 注意当 k 较小时，存在 O(klogn) 的做法
+// 相关题目 https://leetcode-cn.com/problems/find-the-winner-of-the-circular-game/
+// https://codeforces.com/gym/101955/problem/K
+func josephusProblem(n, k int) int {
+	cur := 0
+	for i := 2; i <= n; i++ {
+		cur = (cur + k) % i
+	}
+	return cur + 1 // 1-index
+}
