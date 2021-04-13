@@ -633,7 +633,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	return
 }
 
-// 无向图的双连通分量 Biconnected Components (BCC)
+// 无向图的双连通分量 Biconnected Components (BCC)          也叫重连通图
 // v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
@@ -839,6 +839,8 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 根据《算法(第4版)》，这里实现的是 lazy 版本的 Dijkstra，复杂度为 O(mlogm)；若在插入堆时元素已在堆中，改成更新元素而不是插入元素可使复杂度降为 O(mlogn)
 // st 也可以是一个点集，这相当于同时对多个点跑最短路
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
+// 最短路问题笔记 https://www.luogu.com.cn/blog/SCN/zui-duan-lu-wen-ti-bi-ji
+//
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
@@ -906,7 +908,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		path = append(path, x)
 	}
 
-	// EXTRA: 在最短路 DAG 上跑拓扑
+	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
 	{
 		deg := make([]int, n)
 		for v, es := range g {
@@ -1021,12 +1023,15 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
+//
+// 模板题 https://www.luogu.com.cn/problem/P3385
+//
 // EXTRA: 差分约束，若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
 //        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
 //        这样，在无负环时会得到一组非正数解
-//        模板题 https://www.luogu.com.cn/problem/P3385
 //        模板题 https://www.luogu.com.cn/problem/P4878 todo 需要复习
-//        https://www.luogu.com.cn/problem/SP116
+//        每个区间至少选 ci 个 https://www.luogu.com.cn/problem/P1250 https://www.luogu.com.cn/problem/SP116 http://poj.org/problem?id=1201
+//        todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
 func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -1369,7 +1374,8 @@ func (*graph) minDiffMST(n int, edges [][3]int) int {
 	}
 	cc := 0
 
-	ans := int(2e9) + 1
+	const inf int = 2e9 + 1
+	ans := inf
 	del := make([]bool, m)
 	l := 0
 	for i, e := range edges {
@@ -1395,14 +1401,83 @@ func (*graph) minDiffMST(n int, edges [][3]int) int {
 			ans = wt - edges[l][2]
 		}
 	}
-	if ans > 2e9 {
+	if ans == inf {
 		ans = -1
 	}
 	return ans
 }
 
-// 最小树形图 - 朱刘算法
-// todo 模板题 https://www.luogu.com.cn/problem/P4716
+// 最小树形图 (MSA, Minimum weight Spanning Arborescence)
+// O(nm) 朱刘算法（Edmonds 算法）
+// todo 另外还有 Tarjan 的 O(m+nlogn) 算法
+// https://en.wikipedia.org/wiki/Edmonds%27_algorithm
+// https://oi-wiki.org/graph/dmst/
+// 模板题 https://www.luogu.com.cn/problem/P4716
+func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
+	const inf int = 2e9
+	minW := make([]int, n)
+	fa := make([]int, n)
+	id := make([]int, n)
+	rt := make([]int, n)
+	for {
+		for i := range minW {
+			minW[i] = inf
+		}
+		for _, e := range edges {
+			if v, w, wt := e[0], e[1], e[2]; wt < minW[w] {
+				minW[w] = wt
+				fa[w] = v
+			}
+		}
+		for i, wt := range minW {
+			if i != root && wt == inf {
+				return -1
+			}
+		}
+		cid := 0
+		for i := range id {
+			id[i] = -1
+			rt[i] = -1
+		}
+		for i, wt := range minW {
+			if i == root {
+				continue
+			}
+			ans += int64(wt)
+			v := i
+			for ; v != root && id[v] < 0 && rt[v] != i; v = fa[v] {
+				rt[v] = i
+			}
+			if v != root && id[v] < 0 { // rt[v] == i，有环
+				id[v] = cid
+				for x := fa[v]; x != v; x = fa[x] {
+					id[x] = cid
+				}
+				cid++
+			}
+		}
+		if cid == 0 {
+			return
+		}
+		for i, v := range id {
+			if v < 0 {
+				id[i] = cid
+				cid++
+			}
+		}
+		// 缩点
+		tmp := edges
+		edges = nil
+		for _, e := range tmp {
+			if v, w := id[e[0]], id[e[1]]; v != w {
+				edges = append(edges, [3]int{v, w, e[2] - minW[e[1]]})
+			}
+		}
+		root = id[root]
+		minW = minW[:cid]
+		id = id[:cid]
+	}
+}
 
 // 反图的连通分量 O(n+m)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
@@ -1473,7 +1548,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	return
 }
 
-// 二分图判定
+// 二分图判定     二分图也叫偶图
 // https://en.wikipedia.org/wiki/Bipartite_graph
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
@@ -2259,7 +2334,8 @@ Disjoint paths
 Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph, assuming that the capacity of each edge is one.
 Node-disjoint paths: 拆点法
 
-路径覆盖 Path cover + 打印
+路径覆盖问题 Path cover + 打印
+todo https://zhuanlan.zhihu.com/p/125759333
 todo Competitive Programmer’s Handbook Ch.20
 todo 线性规划与网络流 24 题 - 最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
 
@@ -2322,6 +2398,9 @@ https://blog.csdn.net/qq_35649707/article/details/77482691
    而目标是最小化点权之和，这恰好也是最小割的优化目标。
    对于最大点权独立集，其等价于点权之和减去最小点权覆盖集。
    https://codeforces.com/contest/808/problem/F
+
+最小割建模
+LCP38/21春队F https://leetcode-cn.com/problems/7rLGCR/
 
 点边转换
    将点拆为入点和出点（v 和 v+n），即可把点的属性变成边的属性，从而方便应用最大流、最小割等算法
@@ -2834,9 +2913,6 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 // https://artofproblemsolving.com/community/c1368h1020435
 
 //
-
-// 支配树
-// todo 模板题 https://www.luogu.com.cn/problem/P5180
 
 // 弦图：任意长度大于 3 的环都有一个弦（连接环中不相邻两点的边）的图称为弦图
 // 单纯点 完美消除序列
