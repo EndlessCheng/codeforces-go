@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+// https://www.luogu.com.cn/problem/P2114
+
 // github.com/EndlessCheng/codeforces-go
 func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
