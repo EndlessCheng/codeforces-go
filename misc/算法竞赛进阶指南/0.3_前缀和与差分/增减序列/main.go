@@ -14,7 +14,7 @@ func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n, x, y int
 	Fscan(in, &n)
-	d := make([]int, n) // 32 位下建议用 int64
+	d := make([]int, n) // 32 位下用 int64
 	for i := range d {
 		Fscan(in, &d[i])
 	}
