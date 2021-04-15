@@ -239,7 +239,7 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 			// v < w
 			v := r._int(0, n-2)
 			w := r._int(v+1, n-1)
-			if !has[v][w] {
+			if !has[v][w] { // todo 对于稠密图，这样做可能会导致运行时间较长，此时可以考虑生成补图，然后转化到原图
 				has[v][w] = true
 				v += st
 				w += st
