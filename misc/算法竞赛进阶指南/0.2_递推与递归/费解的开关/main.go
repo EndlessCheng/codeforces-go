@@ -22,7 +22,6 @@ func run(_r io.Reader, _w io.Writer) {
 			Fscanf(in, "%b\n", &a[i])
 		}
 		ans := 7
-	o:
 		for a[0] = 0; a[0] < 1<<sz; a[0]++ {
 			a, c := a, 0
 			for i := 1; i <= sz; i++ {
@@ -36,10 +35,9 @@ func run(_r io.Reader, _w io.Writer) {
 					c++
 				}
 			}
-			if a[sz]&mask != mask {
-				continue o
+			if a[sz]&mask == mask {
+				ans = min(ans, c)
 			}
-			ans = min(ans, c)
 		}
 		if ans == 7 {
 			ans = -1
