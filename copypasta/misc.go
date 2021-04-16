@@ -34,6 +34,13 @@ https://oeis.org/A002024 n appears n times; a(n) = floor(sqrt(2n) + 1/2) https:/
 
 找规律 https://codeforces.com/problemset/problem/1034/B
 
+长度为 n 的所有二进制串，最多能划分出的 11 的个数之和 https://oeis.org/A045883
+相关题目 https://codeforces.com/contest/1511/problem/E
+
+4 汉诺塔 http://oeis.org/A007664
+Reve's puzzle: number of moves needed to solve the Towers of Hanoi puzzle with 4 pegs and n disks, according to the Frame-Stewart algorithm
+https://www.acwing.com/problem/content/description/98/
+
 麻将
 2021·昆明 https://ac.nowcoder.com/acm/contest/12548/K
 */
@@ -741,4 +748,37 @@ func josephusProblem(n, k int) int {
 		cur = (cur + k) % i
 	}
 	return cur + 1 // 1-index
+}
+
+// 均分纸牌 https://www.luogu.com.cn/problem/P1031
+// 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P4016
+// 二维环形 https://www.acwing.com/problem/content/107/
+func minMoveToAllSameInCircle(a []int) (ans int) { // int64
+	abs := func(x int) int {
+		if x < 0 {
+			return -x
+		}
+		return x
+	}
+
+	n := len(a)
+	avg := 0
+	for _, v := range a {
+		avg += v
+	}
+	if avg%n != 0 {
+		return -1
+	}
+	avg /= n
+	sum := make([]int, n)
+	sum[0] = a[0] - avg
+	for i := 1; i < n; i++ {
+		sum[i] = sum[i-1] + a[i] - avg
+	}
+	sort.Ints(sum) // 或者快速选择
+	mid := sum[n/2]
+	for _, v := range sum {
+		ans += abs(v - mid)
+	}
+	return
 }
