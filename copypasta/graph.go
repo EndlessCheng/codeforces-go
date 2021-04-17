@@ -1312,7 +1312,7 @@ func (*graph) mstPrim(dist [][]int) (mst int) {
 			}
 		}
 		if v < 0 {
-			break
+			return
 		}
 		used[v] = true
 		mst += minWt[v] // int64
@@ -1322,7 +1322,6 @@ func (*graph) mstPrim(dist [][]int) (mst int) {
 			}
 		}
 	}
-	return
 }
 
 // Boruvka's algorithm
