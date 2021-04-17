@@ -429,6 +429,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 //      无向图 https://www.luogu.com.cn/problem/P1341
 //      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
+// 构造 https://codeforces.com/problemset/problem/1511/D
 // 加边技巧 https://codeforces.com/problemset/problem/723/E
 func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
@@ -574,6 +575,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 //       https://codeforces.com/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
+// https://codeforces.com/problemset/problem/118/E
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -1292,39 +1294,35 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // https://oi-wiki.org/graph/mst/#prim
 // 模板题 https://www.luogu.com.cn/problem/P1546
 // 建模+打印方案 https://codeforces.com/contest/1245/problem/D
-func (*graph) mstPrim(dist [][]int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	const inf int = 1.1e9
+// https://codeforces.com/contest/1508/problem/C
+func (*graph) mstPrim(dist [][]int) (mst int) {
+	const inf int = 2e9
 	n := len(dist)
-	minWeights := make([]int, n)
-	for i := range minWeights {
-		minWeights[i] = inf
+	minWt := make([]int, n)
+	for i := range minWt {
+		minWt[i] = inf
 	}
-	minWeights[0] = 0 // 任选一点为起点
+	minWt[0] = 0 // 任选一点为起点
 	used := make([]bool, n)
-	ans := 0 // int64
 	for {
 		v := -1
 		for i, u := range used {
-			if !u && (v == -1 || minWeights[i] < minWeights[v]) {
+			if !u && (v < 0 || minWt[i] < minWt[v]) {
 				v = i
 			}
 		}
-		if v == -1 {
+		if v < 0 {
 			break
 		}
 		used[v] = true
-		ans += minWeights[v]
-		for w := range minWeights {
-			minWeights[w] = min(minWeights[w], dist[v][w])
+		mst += minWt[v] // int64
+		for w, wt := range dist[v] {
+			if wt < minWt[w] {
+				minWt[w] = wt
+			}
 		}
 	}
-	return ans
+	return
 }
 
 // Boruvka's algorithm
@@ -1483,8 +1481,9 @@ func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
 // https://codeforces.com/contest/190/problem/E
 // https://codeforces.com/contest/920/problem/E
-// https://codeforces.com/contest/1243/problem/D
-func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
+// https://codeforces.com/contest/1242/problem/B
+// MST https://codeforces.com/contest/1508/problem/C
+func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 	var fa []int
 	initFa := func(n int) {
 		fa = make([]int, n)
@@ -1502,50 +1501,51 @@ func (*graph) inverseGraphComponents(n int, g [][]int) (components [][]int) {
 	merge := func(from, to int) { fa[find(from)] = find(to) }
 	same := func(x, y int) bool { return find(x) == find(y) }
 
-	maxDegInv, maxDegInvV := 0, 0
-	for v, edges := range g {
-		if degInv := n - 1 - len(edges); degInv > maxDegInv {
-			maxDegInv = degInv
-			maxDegInvV = v
+	// 原图度数最小的点即为反图度数最大的点
+	maxV := 0
+	for v, ws := range g {
+		if len(ws) < len(g[maxV]) {
+			maxV = v
 		}
 	}
-	if maxDegInv == 0 {
-		components = make([][]int, n)
+	if len(g[maxV]) == n-1 { // 特殊情况：反图无边
+		components := make([][]int, n)
 		for i := range components {
 			components[i] = []int{i} // i+1
 		}
-		return
+		return components
 	}
 
-	mergeInv := func(v int, edges []int) {
-		vs := map[int]bool{v: true}
-		for _, w := range edges {
-			vs[w] = true
+	initFa(n)
+	mergeInv := func(v int) {
+		has := map[int]bool{v: true}
+		for _, w := range g[v] {
+			has[w] = true
 		}
-		for i := 0; i < n; i++ {
-			if !vs[i] {
+		for i := range g {
+			if !has[i] {
 				merge(i, v)
 			}
 		}
 	}
-	initFa(n)
-	mergeInv(maxDegInvV, g[maxDegInvV])
-	for v, edges := range g {
-		if !same(v, maxDegInvV) {
-			mergeInv(v, edges)
+	mergeInv(maxV)
+	// 暴力合并其余不在 maxV 所处连通分量的点
+	for v := range g {
+		if !same(v, maxV) {
+			mergeInv(v)
 		}
 	}
 
-	componentsMap := map[int][]int{}
+	componentsMap := map[int][]int{} // make([][]int, n)
 	for i := range fa {
 		rootV := find(i)
 		componentsMap[rootV] = append(componentsMap[rootV], i) // i+1
 	}
-	components = make([][]int, 0, len(componentsMap))
+	components := make([][]int, 0, len(componentsMap))
 	for _, vs := range componentsMap {
 		components = append(components, vs)
 	}
-	return
+	return components
 }
 
 // 二分图判定     二分图也叫偶图
