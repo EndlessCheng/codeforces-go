@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"sort"
 )
 
@@ -126,4 +125,4 @@ func CF1508C(_r io.Reader, out io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() { CF1508C(os.Stdin, os.Stdout) }
+//func main() { CF1508C(os.Stdin, os.Stdout) }
