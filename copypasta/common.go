@@ -27,6 +27,7 @@ import (
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
 转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
+转换为差 http://www.51nod.com/Challenge/Problem.html#problemId=1217
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
@@ -46,11 +47,7 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 // NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
 // NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.com/problemset/problem/1333/C
 
-// 尺取法套题 https://blog.csdn.net/weixin_43914593/article/details/104090474 算法竞赛专题解析（2）：尺取法（双指针）
-
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
-
-// NOTE: 若不止两个数相加，要特别注意 inf 的选择
 
 // Golang 注意事项：
 // 		和 slice 不同，for range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 或 forr a[:] 获取（因为 for range array 会整个拷贝一份）

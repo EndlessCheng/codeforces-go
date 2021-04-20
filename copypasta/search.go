@@ -5,6 +5,8 @@ import (
 	"sort"
 )
 
+// 重谈主定理（master定理）及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
+
 /* 状态空间
 一个实际问题的各种可能情况构成的集合
 由小及大：当状态空间位于边界上或某个小范围内等特殊情形，该状态空间的解往往是已知的。
@@ -893,6 +895,7 @@ func loopCollection() {
 //
 
 // 网格/矩阵上的搜索
+// 易错题 https://codeforces.com/problemset/problem/540/C
 // 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
 func gridCollection() {
 	type pair struct{ x, y int }

@@ -32,6 +32,8 @@ TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/pp
 好题 https://codeforces.com/problemset/problem/91/E
 todo 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
+todo https://www.luogu.com.cn/problem/P3396
+todo https://codeforces.com/problemset/problem/1207/F
 */
 func sqrtDecompositionCollections() {
 	min := func(a, b int) int {

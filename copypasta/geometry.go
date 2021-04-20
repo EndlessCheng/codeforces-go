@@ -610,6 +610,7 @@ func vec2Collection() {
 	// 保证没有重复的点
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/ClosestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1429
+	// 有两种类型的点，只需要额外判断类型是否不同即可 https://www.acwing.com/problem/content/121/ http://poj.org/problem?id=3714
 	var closestPair func([]vec) float64
 	closestPair = func(ps []vec) float64 {
 		n := len(ps)
