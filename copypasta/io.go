@@ -91,6 +91,7 @@ func fastIO(_r io.Reader, _w io.Writer) {
 // fasterIO  202 ms (use syscall.Read(syscall.Stdin, buf))
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
 // NOTE: 如果只有数字的话，只需要判断字符与 '0' 的关系就行了；有小写字母的话，与 'z' 的大小判断可以省去（对运行耗时无影响）
+// NOTE: 额外的好处是，这种避开 Fscan 的写法可以节省一部分内存（1e6 下有 10M 左右）
 func fasterIO(_r io.Reader, _w io.Writer) {
 	const eof = 0
 	out := bufio.NewWriter(_w)
