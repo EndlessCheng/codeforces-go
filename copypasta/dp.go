@@ -234,10 +234,11 @@ func dpCollections() {
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
-	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值
+	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值（题目见 sort.go 中的 0-1 分数规划）
+	// 子段和有上限的最大字段和：转换为前缀和之差 sum[i]-sum[j]<=K，在平衡树上二分 sum[j] LC363 https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/
 	// 最大两段子段和：求每个位置上的前缀最大字段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	// 最大 m 段子段和 https://acm.hdu.edu.cn/showproblem.php?pid=1024
-	// 环状最大子段和：转换为非环状的 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
+	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 变体 https://codeforces.com/problemset/problem/1155/D
 	// 变体 https://codeforces.com/problemset/problem/1373/D
@@ -710,6 +711,7 @@ func dpCollections() {
 
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
+	混合背包 https://www.luogu.com.cn/problem/P1833
 	*/
 
 	// 0-1 背包 (n 个物品，背包容量为 maxW)
@@ -727,6 +729,7 @@ func dpCollections() {
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
 	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
+	// EXTRA: 把一个维度转换成 DP 的定义 https://codeforces.com/problemset/problem/837/D
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill
@@ -772,6 +775,7 @@ func dpCollections() {
 	// 二维+上限+下限 LC879/周赛95D https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
 	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
+	// 由于顺序不同也算方案，所以这题需要正序递推 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
 	zeroOneWaysToSum := func(a []int, sum int) int {
 		dp := make([]int, sum+1) // int64
 		dp[0] = 1
@@ -873,7 +877,7 @@ func dpCollections() {
 
 	// 多重背包 - 优化 1 - 二进制优化
 	// 模板题 https://codeforces.com/problemset/problem/106/C
-	// todo 多重背包+完全背包 https://www.luogu.com.cn/problem/P1782 https://www.luogu.com.cn/problem/P2851
+	// todo 多重背包+完全背包 https://www.luogu.com.cn/problem/P1782 https://www.luogu.com.cn/problem/P1833 https://www.luogu.com.cn/problem/P2851
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
@@ -947,14 +951,14 @@ func dpCollections() {
 	一般定义 dp[i][j] 表示 a[i:j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
 	力扣题目 516,312,375,1246
-	移除盒子 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
+	戳气球（好题） LC312 https://leetcode-cn.com/problems/burst-balloons/
+	移除盒子（状态定义和转移的好题） LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
+	打印机（好题） LC664 https://leetcode-cn.com/problems/strange-printer/
+	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
+	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
+	同色消除 https://codeforces.com/problemset/problem/1132/F
 	③ 一些题目
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
-	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
-	戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
-	打印机 LC664 https://leetcode-cn.com/problems/strange-printer/
-	安排邮筒 LC1478/双周赛28D https://leetcode-cn.com/problems/allocate-mailboxes/
-	同色消除 https://codeforces.com/problemset/problem/1132/F
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
 	*/
@@ -1118,6 +1122,8 @@ func dpCollections() {
 	todo https://oi-wiki.org/dp/plug/
 	https://cp-algorithms.com/dynamic_programming/profile-dynamics.html
 	https://www.luogu.com.cn/blog/efforts-will-pay-off/du-liu-dong-gui-cha-tou-dp
+
+	入门题 https://www.luogu.com.cn/problem/P3272
 	*/
 
 	/* 数位 DP
@@ -1424,6 +1430,7 @@ func dpCollections() {
 	// 监控二叉树 LC968 https://leetcode-cn.com/problems/binary-tree-cameras/
 	// todo EXTRA: 消防局的设立（支配距离为 2） https://www.luogu.com.cn/problem/P2279
 	// todo EXTRA: 将军令（支配距离为 k） https://www.luogu.com.cn/problem/P3942
+	//                                https://atcoder.jp/contests/arc116/tasks/arc116_e
 	minDominatingSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		const inf int = 1e9 // 1e18
 		var f func(int, int) (chosen, bySon, byFa int)
@@ -1473,10 +1480,17 @@ func dpCollections() {
 		return max(cover[0], nonCover[0])
 	}
 
+	// todo 给一棵树和树上的一些关键节点，选 m 个点，使得关键节点到这些点中距离的最小值的最大值最小，求这个值
+	//      https://www.luogu.com.cn/problem/P3523
+
 	// 换根 DP
 	// 进阶指南 p.292-295
 	// https://codeforces.com/blog/entry/20935
-	// 例题 https://codeforces.com/problemset/problem/219/D
+	//
+	// https://www.luogu.com.cn/problem/P3478
+	// https://codeforces.com/problemset/problem/1092/F
+	// https://www.luogu.com.cn/problem/P2986
+	// https://codeforces.com/problemset/problem/219/D
 	// LC834 树中距离之和 https://leetcode-cn.com/problems/sum-of-distances-in-tree
 	// 下面的代码来自 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
 	rerootDP := func(n int) { // 无根树
