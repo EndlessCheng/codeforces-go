@@ -96,6 +96,7 @@
                 .replaceAll("Div. ", "Div.")
                 .replaceAll("div. ", "div.")
                 .replaceAll("Fav. ", "Fav.")
+                .replaceAll(". \\", ".\\") // 防止数学公式异常
                 .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
                 // The maximum size of an array is $$$k$$$.
