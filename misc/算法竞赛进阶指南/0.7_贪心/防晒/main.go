@@ -8,6 +8,8 @@ import (
 	"sort"
 )
 
+// https://www.luogu.com.cn/problem/P2887
+
 // github.com/EndlessCheng/codeforces-go
 type node struct {
 	lr       [2]*node
