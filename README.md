@@ -152,8 +152,8 @@
 - 其他
   - [位运算笔记 bits.go](/copypasta/bits.go)
     - bitset
-  - [三分查找 sort.go](/copypasta/sort.go)
-  - [0-1 分数规划 sort.go](/copypasta/sort.go)
+  - [二分 三分 sort.go](/copypasta/sort.go)
+    - 0-1 分数规划
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
 - [快读模板 io.go](/copypasta/io.go)
