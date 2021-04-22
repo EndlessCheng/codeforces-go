@@ -30,6 +30,7 @@ import (
 转换为差 http://www.51nod.com/Challenge/Problem.html#problemId=1217
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
+考虑符合范围要求的贡献 https://codeforces.com/problemset/problem/1151/E
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
@@ -48,6 +49,8 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 // NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.com/problemset/problem/1333/C
 
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
+// 栈的应用 https://codeforces.com/problemset/problem/1092/D1
+//         https://codeforces.com/problemset/problem/1092/D2
 
 // Golang 注意事项：
 // 		和 slice 不同，for range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 或 forr a[:] 获取（因为 for range array 会整个拷贝一份）
