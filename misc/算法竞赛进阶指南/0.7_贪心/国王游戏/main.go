@@ -9,6 +9,8 @@ import (
 	"sort"
 )
 
+// https://www.luogu.com.cn/problem/P1080
+
 // github.com/EndlessCheng/codeforces-go
 func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
