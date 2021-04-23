@@ -91,6 +91,10 @@ https://oeis.org/A216485 222...2
 
 椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
 
+Gaussian integer https://en.wikipedia.org/wiki/Gaussian_integer
+Eisenstein integer https://en.wikipedia.org/wiki/Eisenstein_integer
+Eisenstein prime https://en.wikipedia.org/wiki/Eisenstein_prime
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -228,8 +232,10 @@ func numberTheoryCollection() {
 
 	// 类欧几里得算法
 	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
+	// https://oi-wiki.org/math/euclidean/
 	// todo https://www.luogu.com.cn/blog/AlanWalkerWilson/Akin-Euclidean-algorithm-Basis
-	// todo https://www.luogu.com.cn/blog/Shuchong/qian-tan-lei-ou-ji-li-dei-suan-fa
+	//      https://www.luogu.com.cn/blog/Shuchong/qian-tan-lei-ou-ji-li-dei-suan-fa
+	//      万能欧几里得算法 https://www.luogu.com.cn/blog/ILikeDuck/mo-neng-ou-ji-li-dei-suan-fa
 	//
 	// 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_c
 	//       https://www.luogu.com.cn/problem/P5170
@@ -376,8 +382,8 @@ func numberTheoryCollection() {
 	2, 6, 30, 210, 2310, 30030, 510510, 9699690, 223092870, /9/
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
-	质数差分 Gap https://oeis.org/A001223
-		Positions of records https://oeis.org/A005669
+	质数间隙 https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
+		Positions of records https://oeis.org/A002386 https://oeis.org/A005669
 		Values of records https://oeis.org/A005250
 		Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
@@ -607,6 +613,8 @@ func numberTheoryCollection() {
 
 	// 区间筛法
 	// 预处理 [2,√R] 的所有质数，去筛 [L,R] 之间的质数
+
+	// todo 多组数据下的记忆化质因数分解 https://codeforces.com/contest/1512/submission/112590495
 
 	// 质因数分解 prime factorization
 	// 返回分解出的质数及其指数
@@ -1246,6 +1254,12 @@ func numberTheoryCollection() {
 	// https://oeis.org/A071894 Largest primitive root (<p) of n-th prime p
 	// https://oeis.org/A056619 Smallest prime with primitive root of n or 0 if no such prime exists
 	// https://oeis.org/A023049 Smallest prime > n having primitive root n, or 0 if no such prime exists
+	//
+	// 从威尔逊定理到 Gauss's generalization: 与 n 互质的数的乘积模 n 的值
+	// https://en.wikipedia.org/wiki/Wilson%27s_theorem#Gauss's_generalization
+	// https://math.stackexchange.com/questions/441667/the-product-of-integers-relatively-prime-to-n-congruent-to-pm-1-pmod-n
+	// 相关题目 https://codeforces.com/contest/1514/problem/C
+	//
 	// 模板题 https://www.luogu.com.cn/problem/U125141
 	//
 	// 返回 n 的最小的原根, n >= 2
@@ -1579,7 +1593,7 @@ func numberTheoryCollection() {
 		return x
 	}
 
-	// 二次剩余 x^2 ≡ a (mod p)
+	// 二次剩余 x^2 ≡ a (mod p)       平方剩余
 	// 一个数 a，如果不是 p 的倍数且模 p 同余于某个数的平方，则称 a 为模 p 的二次剩余
 	// https://en.wikipedia.org/wiki/Quadratic_residue
 	// https://en.wikipedia.org/wiki/Cipolla%27s_algorithm
@@ -1849,11 +1863,13 @@ func numberTheoryCollection() {
 	// todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
 	// https://blog.csdn.net/ACdreamers/article/details/8521134
 	// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
+	//    定义为对应递降阶乘展开式的各项系数
 	//    将 n 个元素排成 k 个非空循环排列的方法数
 	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
 	//    todo https://www.luogu.com.cn/problem/P5408
 	//         https://www.luogu.com.cn/problem/P5409
+	//         https://codeforces.com/problemset/problem/1516/E
 	// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
@@ -2301,7 +2317,14 @@ Stern-Brocot 树与 Farey 序列 https://oi-wiki.org/misc/stern-brocot/ https://
 https://en.wikipedia.org/wiki/Generating_function
 https://oi-wiki.org/math/gen-func/intro/
 todo 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
+
 整数分拆 https://oeis.org/A000041 https://en.wikipedia.org/wiki/Partition_(number_theory)
+五边形数与整数拆分问题
+    https://en.wikipedia.org/wiki/Pentagonal_number_theorem
+    https://en.wikipedia.org/wiki/Fermat_polygonal_number_theorem
+    https://studyingfather.com/archives/3000
+    https://blog.csdn.net/visit_world/article/details/52734860
+    相关题目 https://www.luogu.com.cn/problem/P6189
 https://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
 						a(n)=0 iff n=2^k
 https://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n 的奇因子数 - 1
@@ -2319,6 +2342,8 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 
 https://oeis.org/A000404 Numbers that are the sum of 2 nonzero squares
 https://oeis.org/A003325 Numbers that are the sum of 2 positive cubes
+
+https://oeis.org/A000081 Number of unlabeled rooted trees with n nodes (or connected functions with a fixed point)
 
 Maximum product of two integers whose sum is n https://oeis.org/A002620
 Quarter-squares: floor(n/2)*ceiling(n/2). Equivalently, floor(n^2/4)
@@ -2400,6 +2425,12 @@ https://oeis.org/A059036 = A003991(n, k) - 1
 一些二进制的计数问题见 bits.go
 
 CF 上的一些组合计数问题 http://blog.miskcoo.com/2015/06/codeforces-combinatorics-and-probabilities-problem
+
+置换群、Burnside 引理与 Pólya 定理          Polya 计数
+https://en.wikipedia.org/wiki/P%C3%B3lya_enumeration_theorem
+https://oi-wiki.org/math/permutation-group/
+todo https://atcoder.jp/contests/abc198/tasks/abc198_f
+     https://oeis.org/A054473 Number of ways of numbering the faces of a cube with nonnegative integers so that the sum of the 6 numbers is n
 
 找出 50% 作弊者 https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
     讨论 https://codeforces.com/blog/entry/84822
