@@ -40,14 +40,14 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 	}
 }
 
-// "../../misc/gcj/2020//"  需要改模板
-// "../../misc/kickstart/2020//"  需要改模板
-// "../../misc/luogu/contest//"
-// "../../misc/nowcoder//"
+// "../../misc/gcj/<year>/<id>/"  需要改模板
+// "../../misc/kickstart/<year>/<id>/"  需要改模板
+// "../../misc/luogu/contest/<id>/"
+// "../../misc/nowcoder/<id>/"
 func TestGenTemplates(t *testing.T) {
 	const (
 		problemNum = 4
-		rootPath   = "../../misc/luogu/contest//"
+		rootPath   = "../../misc/luogu/contest/<id>/"
 		overwrite  = false
 	)
 	if err := GenTemplates(problemNum, rootPath, overwrite); err != nil {
