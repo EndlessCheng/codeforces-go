@@ -65,6 +65,7 @@ func miscCollection() {
 	// 找环
 	// 1<=next[i]<=n
 	// 相关题目 https://atcoder.jp/contests/abc167/tasks/abc167_d
+	// EXTRA: 周期追逐 https://codeforces.com/problemset/problem/547/A
 	getCycle := func(next []int, n, st int) (beforeCycle, cycle []int) {
 		vis := make([]int8, n+1)
 		for v := st; vis[v] < 2; v = next[v] {
