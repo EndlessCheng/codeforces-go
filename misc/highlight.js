@@ -58,7 +58,7 @@
         "undirected", "directed", "bidirectional",
         "independently", "independent",
         "expected value",
-        "circle", " ring",
+        " circle", " ring",
         "counterclockwise", "clockwise",
 
         "没有", "不是", "不同", "不需要",
