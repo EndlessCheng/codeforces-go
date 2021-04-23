@@ -33,6 +33,10 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 加边 https://codeforces.com/problemset/problem/723/E
 第k小路径 https://codeforces.com/problemset/problem/1196/F
 
+竞赛图
+竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
+https://codeforces.com/problemset/problem/1514/E
+
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
 3255 https://www.luogu.com.cn/problem/P2865 次短路
@@ -849,11 +853,16 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
-// 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-// todo 与线段树结合跑单源最短路 https://codeforces.com/problemset/problem/786/B
+// 线段树建图优化 https://codeforces.com/problemset/problem/786/B
 // 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
+//
+// 最短路径树
+// todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
+// 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
+// todo https://codeforces.com/problemset/problem/1005/F
+// todo https://codeforces.com/problemset/problem/545/E
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -976,6 +985,37 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	}
 
 	return
+}
+
+// 另一种 Dijkstra 写法
+// 适用于稠密图 O(n^2)
+func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
+	n := len(g)
+
+	const inf int64 = 1e18 // 1e9+1
+	dist = make([]int64, n)
+	for i := range dist {
+		dist[i] = inf
+	}
+	dist[st] = 0
+	used := make([]bool, n)
+	for {
+		v := -1
+		for w, u := range used {
+			if !u && (v < 0 || dist[w] < dist[v]) {
+				v = w
+			}
+		}
+		if v < 0 {
+			return
+		}
+		used[v] = true
+		for w, wt := range g[v] {
+			if newD := dist[v] + wt; newD < dist[w] {
+				dist[w] = newD
+			}
+		}
+	}
 }
 
 // 01 最短路
