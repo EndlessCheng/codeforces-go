@@ -5,9 +5,7 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"reflect"
 	"sort"
-	"unsafe"
 )
 
 // General ideas https://codeforces.com/blog/entry/48417
@@ -143,11 +141,6 @@ func commonCollection() {
 			s[i] = byte(v >> (maxLen - i) & 1)
 		}
 		return s
-	}
-
-	// 超过 cap(a) 的数据是未知的
-	sliceToArray := func(a []int) [10]int {
-		return *(*[10]int)(unsafe.Pointer((*reflect.SliceHeader)(unsafe.Pointer(&a)).Data))
 	}
 
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
@@ -949,7 +942,6 @@ func commonCollection() {
 	_ = []interface{}{
 		pow10, dir4, dir4C, dir4c, dir4R, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin,
-		sliceToArray,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum,
