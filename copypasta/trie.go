@@ -1,8 +1,5 @@
 package copypasta
 
-// 必要时禁止 GC，能加速不少
-// func init() { debug.SetGCPercent(-1) }
-
 /* 前缀树/字典树/单词查找树
 另类解读：如果将字符串长度视作定值的话，trie 树是一种 O(n) 排序，O(1) 查询的数据结构
 https://oi-wiki.org/string/trie/
@@ -10,6 +7,9 @@ https://www.quora.com/q/threadsiiithyderabad/Tutorial-on-Trie-and-example-proble
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieST.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieSET.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
+
+// 注：由于用的是指针写法，必要时禁止 GC，能加速不少
+// func init() { debug.SetGCPercent(-1) }
 
 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/

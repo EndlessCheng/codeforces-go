@@ -2,7 +2,7 @@ package copypasta
 
 import "math/bits"
 
-// 必要时禁止 GC，能加速不少
+// 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
 // 异或字典树
