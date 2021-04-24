@@ -625,7 +625,8 @@ func searchCollection() {
 	// A*:
 	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
 
-	// 舞蹈链
+	// 舞蹈链 Dancing Links
+	// https://en.wikipedia.org/wiki/Dancing_Links
 	// TODO: https://oi-wiki.org/search/dlx/
 	//       https://leverimmy.blog.luogu.org/dlx-xiang-xi-jiang-jie
 	//       https://www.luogu.com.cn/blog/Parabola/qian-tan-shen-xian-suan-fa-dlx
@@ -737,15 +738,17 @@ func loopCollection() {
 	// Gosper’s Hack：枚举大小为 n 的集合的大小为 k 的子集（按字典序）
 	// https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
 	// 参考《挑战程序设计竞赛》p.156-158 的实现
+	// 把除法改成右移 bits.TrailingZeros 可以快好几倍
 	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
 	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
 	loopSubsetK := func(a []int, k int) {
 		n := len(a)
 		for sub := 1<<k - 1; sub < 1<<n; {
 			// do(a, sub) ...
-			x := sub & -sub
-			y := sub + x
-			sub = sub&^y/x>>1 | y
+			lb := sub & -sub
+			x := sub + lb
+			//sub = sub&^x/lb>>1 | x
+			sub = sub&^x>>bits.TrailingZeros(uint(lb))>>1 | x
 		}
 	}
 
