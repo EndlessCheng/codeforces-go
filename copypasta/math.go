@@ -2004,8 +2004,12 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// 狄利克雷卷积
+	// https://zhuanlan.zhihu.com/p/137619492
+
 	// 莫比乌斯反演（岛娘推荐！https://zhuanlan.zhihu.com/p/133761303）
 	// todo https://oi-wiki.org/math/mobius/
+	//      https://zhuanlan.zhihu.com/p/138038817
 
 	//
 
@@ -2114,7 +2118,8 @@ func numberTheoryCollection() {
 
 	// 杜教筛 - 积性函数前缀和
 	// 复杂度 O(n^(2/3))
-	// 【推荐】https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
+	// https://zhuanlan.zhihu.com/p/258336043
+	// https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
 	// https://www.luogu.com.cn/blog/command-block/du-jiao-shai
 	// http://baihacker.github.io/main/
 	// The prefix-sum of multiplicative function: the black algorithm http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_the_black_algorithm.html
