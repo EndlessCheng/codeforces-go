@@ -566,22 +566,17 @@ func commonCollection() {
 	// 去重
 	// a 必须是有序的
 	unique := func(a []int) (res []int) {
-		n := len(a)
-		if n == 0 {
-			return
-		}
-		res = make([]int, 1, n)
-		res[0] = a[0]
-		for i := 1; i < n; i++ {
-			if a[i] != a[i-1] {
-				res = append(res, a[i])
+		for i, v := range a {
+			if i == 0 || v != a[i-1] {
+				res = append(res, v)
 			}
 		}
 		//n = len(res)
 		return
 	}
 
-	// 直接在 a 上去重
+	// 原地去重
+	// a 必须是有序的
 	uniqueInPlace := func(a []int) []int {
 		n := len(a)
 		if n == 0 {
@@ -602,10 +597,6 @@ func commonCollection() {
 	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
-		if len(a) == 0 {
-			return
-		}
-
 		type pair struct{ v, i int }
 		ps := make([]pair, len(a))
 		for i, v := range a {
@@ -616,12 +607,11 @@ func commonCollection() {
 
 		// a 有重复元素
 		k := startIndex
-		kth[ps[0].i] = k
-		for i := 1; i < len(ps); i++ {
-			if ps[i].v != ps[i-1].v {
+		for i, p := range ps {
+			if i > 0 && p.v != ps[i-1].v {
 				k++
 			}
-			kth[ps[i].i] = k
+			kth[p.i] = k
 		}
 
 		// a 无重复元素
@@ -647,17 +637,16 @@ func commonCollection() {
 	// discreteMap([]int{100,20,20,50}, 1) => map[int]int{20:1, 50:2, 100:3}
 	// 例题：LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
-		// assert len(a) > 0
 		sorted := append([]int(nil), a...)
 		sort.Ints(sorted)
 
 		// 有重复元素
+		kth = map[int]int{}
 		k := startIndex
-		kth = map[int]int{sorted[0]: k}
-		for i := 1; i < len(sorted); i++ {
-			if sorted[i] != sorted[i-1] {
+		for i, v := range sorted {
+			if i == 0 || v != sorted[i-1] {
+				kth[v] = k
 				k++
-				kth[sorted[i]] = k
 			}
 		}
 
