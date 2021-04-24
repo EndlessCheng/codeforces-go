@@ -3,7 +3,7 @@ package copypasta
 import "math/bits"
 
 // 必要时禁止 GC，能加速不少
-//func init() { debug.SetGCPercent(-1) }
+// func init() { debug.SetGCPercent(-1) }
 
 // 异或字典树
 // 一颗（所有叶节点深度都相同的）二叉树

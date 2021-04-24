@@ -1,7 +1,7 @@
 package copypasta
 
 // 必要时禁止 GC，能加速不少
-//func init() { debug.SetGCPercent(-1) }
+// func init() { debug.SetGCPercent(-1) }
 
 /* 前缀树/字典树/单词查找树
 另类解读：如果将字符串长度视作定值的话，trie 树是一种 O(n) 排序，O(1) 查询的数据结构
