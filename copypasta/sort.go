@@ -235,6 +235,7 @@ func sortCollections() {
 	}
 
 	// 实数三分
+	// 另一种写法是用黄金比率，效率更高
 	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理 ABC130F
 	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
@@ -254,8 +255,13 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
-	// 整数三分
-	// NOTE: 若有大量相同的离散点，该方法在某些数据下会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
+	// 整数三分·写法一
+	// 比较两个三分点值的大小，每次去掉 1/3 的区间
+	// https://codeforces.com/blog/entry/11497
+	// https://codeforces.com/blog/entry/43440
+	// https://codeforces.com/blog/entry/60702
+	// NOTE: 若有大量相同的离散点则可能会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
+	// https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=ternary+search
 	// https://codeforces.com/problemset/problem/1301/B (只是举例，不用三分也可做)
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for r-l > 4 { // 最小区间长度根据题目可以扩大点
@@ -277,6 +283,17 @@ func sortCollections() {
 		return minI
 	}
 
+	// 整数三分·写法二
+	// 二分导数零点（准确说是一阶差分），即比较 f(m) 和 f(m+1), m=(l+r)/2, 这种写法的优点是两次运算可以将枚举范围减半，而三分点的写法两次运算仅去掉了 1/3 的范围（效率比 log(2)/log(1.5) ≈ 1.71）
+	// 但是，如果存在相邻 f 值相同，且只有两个的情况：f(i-1)<f(i)=f(i+1)<f(i+2)，这种写法将会失效，而三分点的写法保证了两个三分点的间隔，可以正常运行
+	ternarySearchInt2 := func(l, r int, f func(x int) int) int {
+		return sort.Search(r-l, func(m int) bool { return f(l+m) < f(l+m+1) }) // < 求最小值   > 求最大值
+		//return sort.Search(r, func(m int) bool { return m >= l && f(m) < f(m+1) })
+	}
+
+	// 整数三分·写法三
+	// 黄金比率实现，效率更高
+
 	//
 
 	// 0-1 分数规划
@@ -285,6 +302,7 @@ func sortCollections() {
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
 	//       https://codeforces.com/gym/101649 K
 	//       https://www.luogu.com.cn/problem/P1570
+	//       https://loj.ac/p/149
 	// 连续子段的算数平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A https://codeforces.com/problemset/problem/1003/C https://www.luogu.com.cn/problem/P1404 https://www.acwing.com/problem/content/104/
 	//     O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》
 	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
@@ -368,7 +386,7 @@ func sortCollections() {
 		searchRange,
 		binarySearchS1, binarySearchS2,
 		kthSmallest, kthSmallestRangeSum,
-		binarySearchF, ternarySearchF, ternarySearchInt,
+		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
 		search01,
 		binaryLifting,
 	}
