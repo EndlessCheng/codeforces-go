@@ -5,14 +5,15 @@ package copypasta
 
 推荐阅读《算法竞赛进阶指南》0x42 节
 https://oi-wiki.org/ds/bit/
-todo 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
-todo 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-shuo-zu-zong-ru-men-dao-ru-fen
+ 浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
+ 浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
 模板题 https://www.luogu.com.cn/problem/P3374
 逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 经典技巧: 元素值和下标双变量的题目，转换成元素排序后对下标的操作（元素大小相等时下标大的在前）
-			https://codeforces.com/problemset/problem/629/D
+    https://codeforces.com/problemset/problem/629/D
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
@@ -20,9 +21,10 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.com/problemset/problem/629/D
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
-https://codeforces.com/gym/101649 I
-todo http://poj.org/problem?id=2155
-http://poj.org/problem?id=2886
+todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
+ https://codeforces.com/gym/101649 I 题
+ http://poj.org/problem?id=2155
+ http://poj.org/problem?id=2886
 */
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
@@ -100,46 +102,34 @@ func fenwickTree(n int) {
 	}
 }
 
-// 也可以写成后面的 struct 形式
-func multiFenwickTree(m, n int) {
-	trees := make([][]int, m)
-	for i := range trees {
-		trees[i] = make([]int, n+1)
-	}
-	add := func(tree []int, i int, val int) {
-		for ; i <= n; i += i & -i {
-			tree[i] += val
-		}
-	}
-	sum := func(tree []int, i int) (res int) {
-		for ; i > 0; i &= i - 1 {
-			res += tree[i]
-		}
-		return
-	}
-	query := func(tree []int, l, r int) int { return sum(tree, r) - sum(tree, l-1) }
-
-	_ = []interface{}{add, sum, query}
-}
-
+// 结构体写法
 type fenwick struct {
-	tree []int // int64
+	tree []int64
 }
 
 func newFenwickTree(n int) fenwick {
-	return fenwick{make([]int, n+1)}
+	return fenwick{make([]int64, n+1)}
 }
-func (f fenwick) add(i int, val int) {
+
+// 位置 i 增加 val
+// 1<=i<=n
+func (f fenwick) add(i int, val int64) {
 	for ; i < len(f.tree); i += i & -i {
 		f.tree[i] += val
 	}
 }
-func (f fenwick) sum(i int) (res int) {
+
+// 求前缀和 [0,i]
+// 0<=i<=n
+func (f fenwick) sum(i int) (res int64) {
 	for ; i > 0; i &= i - 1 {
 		res += f.tree[i]
 	}
 	return
 }
-func (f fenwick) query(l, r int) (res int) { // [l,r]
+
+// 求区间和 [l,r]
+// 1<=l<=r<=n
+func (f fenwick) query(l, r int) int64 {
 	return f.sum(r) - f.sum(l-1)
 }
