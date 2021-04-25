@@ -457,6 +457,7 @@ func searchCollection() {
 	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 	// https://oi-wiki.org/math/cantor/
 	// https://www.luogu.com.cn/problem/P5367
+	// 有重复元素 LC1830/双周赛50D https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
 	rankPermutation := func(perm []int) int64 {
 		const mod int64 = 1e9 + 7
 		n := len(perm)
