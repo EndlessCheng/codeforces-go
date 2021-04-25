@@ -26,7 +26,9 @@
   - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
-    - 懒标记
+    - 延迟标记（懒标记）
+    - 动态开点
+    - 线段树合并
     - 持久化（主席树）
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
