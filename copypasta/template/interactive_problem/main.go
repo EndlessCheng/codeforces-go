@@ -30,6 +30,7 @@ func ioq() {
 	in := bufio.NewReader(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
 
+	// Interaction
 	Q := func(req req) (resp resp) {
 		Fprintln(out, "?", req.i)
 		out.Flush()
@@ -39,9 +40,11 @@ func ioq() {
 
 	var T int
 	for Fscan(in, &T); T > 0; T-- { // TODO: remove if not multi-cases
+		// Input
 		d := input{}
 		Fscan(in, &d.n)
 
+		// Output
 		gs := run(d, Q)
 		ans := gs.ans
 		Fprint(out, "! ")
@@ -50,6 +53,12 @@ func ioq() {
 		}
 		Fprintln(out)
 		out.Flush()
+
+		// Optional
+		var res int
+		if Fscan(in, &res); res < 0 {
+			panic(-1)
+		}
 	}
 }
 
