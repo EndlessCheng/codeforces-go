@@ -171,11 +171,13 @@
 
 ## 如何选择题目 How to Choose Problems
 
-我的方法很简单，选择难度在自己 rating 到 rating+200 范围内的构造题 (tag: constructive algorithms) 或数学题 (tag: math)，按照过题人数降序，比如 [2100,2300] 区间的就是下面这个链接：
+由于 Codeforces 更侧重于考察思维的灵活程度，提高对问题的观察能力是重中之重。
 
-[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cconstructive+algorithms%2Cmath%2C2100-2300](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cconstructive+algorithms%2Cmath%2C2100-2300)
+因此我的方法很简单，选择难度在自己 rating 到 rating+200 范围内的构造题 (tag: constructive algorithms)，按照过题人数降序做题，比如 [2100,2300] 区间的就是下面这个链接：
 
-为什么要选构造和数学？做构造能提高观察能力，快速找到切题入口；做数学能提高挖掘题目本质的能力。做这两类题目对提高问题的分析能力大有裨益。
+[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300)
+
+通过大量的构造题训练，提高观察能力，快速找到切题入口。
 
 我的 Codeforces 账号：
 
