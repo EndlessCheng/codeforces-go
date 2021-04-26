@@ -2010,11 +2010,11 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
-func (*graph) sccKosaraju(n int) (scc [][]int, sccIDs []int) {
+func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := []edge{}
-	g := make([][]int, n)
-	rg := make([][]int, n)
+	g := make([][]int, m)
+	rg := make([][]int, m)
 	addEdge := func(v, w int) {
 		//v--
 		//w--
@@ -2023,8 +2023,8 @@ func (*graph) sccKosaraju(n int) (scc [][]int, sccIDs []int) {
 		edges = append(edges, edge{v, w})
 	}
 
-	vs := make([]int, 0, n)
-	vis := make([]bool, n)
+	vs := make([]int, 0, m)
+	vis := make([]bool, m)
 	var dfs func(int)
 	dfs = func(v int) {
 		vis[v] = true
@@ -2041,7 +2041,7 @@ func (*graph) sccKosaraju(n int) (scc [][]int, sccIDs []int) {
 		}
 	}
 
-	vis = make([]bool, n)
+	vis = make([]bool, m)
 	var comp []int
 	var rdfs func(int)
 	rdfs = func(v int) {
@@ -2074,7 +2074,7 @@ o:
 	}
 
 	// scc 就是拓扑序
-	sccIDs = make([]int, n)
+	sccIDs = make([]int, m)
 	for i, cp := range scc {
 		for _, v := range cp {
 			sccIDs[v] = i
@@ -2098,7 +2098,7 @@ o:
 	// EXTRA: 求有多少个点能被其他所有点访问到 https://www.luogu.com.cn/problem/P2341
 	lastComp := scc[len(scc)-1]
 	numCanBeVisitedFromAll := len(lastComp)
-	vis = make([]bool, n)
+	vis = make([]bool, m)
 	rdfs(lastComp[0])
 	for _, use := range vis {
 		if !use {
@@ -2192,20 +2192,27 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
 // 讲解+套题 https://codeforces.com/blog/entry/16205
 // 2-SAT 总结 by kuangbin https://www.cnblogs.com/kuangbin/archive/2012/10/05/2712429.html
 // NOTE: 一些建边的转换：
+//       A 为真          (A)     ¬A⇒A     注：A ⇔ A∨A ⇔ ¬A⇒A∧¬A⇒A ⇔ ¬A⇒A
+//       A 为假          (¬A)    A⇒¬A
+//       A 为真 B 就为真          A⇒B, ¬B⇒¬A
+//       A 为假 B 就为假          ¬A⇒¬B, B⇒A
 //       A,B 至少存在一个 (A|B)    ¬A⇒B, ¬B⇒A 意思是一个为假的时候，另一个一定为真 https://www.luogu.com.cn/problem/P4782
 //       A,B 不能同时存在 (¬A|¬B)  A⇒¬B, B⇒¬A 就是上面的式子替换了一下（一个为真，另一个一定为假）
 //       A,B 必须且只一个 (A^B)    A⇒¬B, B⇒¬A, ¬A⇒B, ¬B⇒A
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
-//       A 必须存在       (A)     ¬A⇒A     注：A ⇔ A∨A ⇔ ¬A⇒A∧¬A⇒A ⇔ ¬A⇒A
-//       A 不能存在       (¬A)    A⇒¬A
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // 模板题 https://www.luogu.com.cn/problem/P4782
+// 建边练习 https://codeforces.com/contest/468/problem/B
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
 func (G *graph) solve2SAT(n int) []bool {
-	g := make([][]int, 2*n)
-	rg := make([][]int, 2*n)
+	// 分为左右两部，左边 [0,n) 范围的点表示 x 为真，右边 [n,2*n) 范围的点表示 x 为假（¬x 用 x+n 表示）
+	// 例如，当 x y 均为真时，就连一条 a
+	m := n * 2
+	g := make([][]int, m)
+	rg := make([][]int, m)
+
 	// x=a 和 y=b 两个条件至少满足一个（a b 为 0/1 表示 假/真）
-	// ¬x 用 x+n 表示
+	// 见 https://www.luogu.com.cn/problem/P4782
 	addEdge := func(x, a, y, b int) {
 		//x--
 		//y--
@@ -2218,7 +2225,7 @@ func (G *graph) solve2SAT(n int) []bool {
 	}
 	// addEdge ...
 
-	_, sccIDs := G.sccKosaraju(2 * n) // 注意两倍空间
+	_, sccIDs := G.sccKosaraju(m) // 注意两倍空间
 	ans := make([]bool, n)
 	for i, id := range sccIDs[:n] {
 		// x 和 ¬x 处于同一个 SCC 时无解（因为 x ⇔ ¬x）
