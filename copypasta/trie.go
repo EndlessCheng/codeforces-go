@@ -8,8 +8,8 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieST.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieSET.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
 
-// 注：由于用的是指针写法，必要时禁止 GC，能加速不少
-// func init() { debug.SetGCPercent(-1) }
+注：由于用的是指针写法，必要时禁止 GC，能加速不少
+func init() { debug.SetGCPercent(-1) }
 
 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
@@ -254,9 +254,25 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 
 //
 
-// 可持久化 trie
-// TODO https://oi-wiki.org/ds/persistent-trie/
-// 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
+// 持久化
+// 注意为了拷贝一份 trieNode，这里的接收器不是指针
+// https://oi-wiki.org/ds/persistent-trie/
+// roots := make([]*trieNode, n+1)
+// roots[0] = &trieNode{}
+// roots[i+1] = roots[i].put(s)
+func (o trieNode) put(s []byte) *trieNode {
+	if len(s) == 0 {
+		o.cnt++
+		return &o
+	}
+	b := s[0] - 'a' //
+	if o.son[b] == nil {
+		o.son[b] = &trieNode{}
+	}
+	o.son[b] = o.son[b].put(s[1:])
+	//o.maintain()
+	return &o
+}
 
 //
 

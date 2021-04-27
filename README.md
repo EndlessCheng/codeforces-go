@@ -55,8 +55,10 @@
   - Manacher
   - 后缀数组（SA）
   - [字典树 trie.go](/copypasta/trie.go)
+    - 持久化
     - AC 自动机
   - [异或字典树 trie01.go](/copypasta/trie01.go)
+    - 持久化
     - Hack：构造一组数据，最大化树上的节点数
 - 数学
   - [数论 math.go](/copypasta/math.go)

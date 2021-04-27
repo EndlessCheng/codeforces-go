@@ -17,7 +17,7 @@ type trie01 struct{ root *trie01Node }
 
 func newTrie01() *trie01 { return &trie01{&trie01Node{min: 2e9}} }
 
-const trieBitLen = 31 // 63 for int64, or ceil(log2(MAX_VAL))
+const trieBitLen = 31 // 30 for 1e9, 63 for int64, or bits.Len(MAX_VAL)
 
 func (trie01) bin(v int) []byte {
 	s := make([]byte, trieBitLen)
@@ -187,6 +187,25 @@ func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
 		o = o.son[b]
 	}
 	return
+}
+
+// 持久化
+// 注意为了拷贝一份 trie01Node，这里的接收器不是指针
+// roots := make([]*trie01Node, n+1)
+// roots[0] = trie01Node{}.put(0, trieBitLen-1)
+// roots[i+1] = roots[i].put(v, trieBitLen-1)
+// 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735 https://www.acwing.com/problem/content/258/
+func (o trie01Node) put(v, k int) *trie01Node {
+	if k < 0 {
+		return &o
+	}
+	b := v >> k & 1
+	if o.son[b] == nil {
+		o.son[b] = &trie01Node{}
+	}
+	o.son[b] = o.son[b].put(v, k-1)
+	//o.maintain()
+	return &o
 }
 
 // n 个 [0, 2^30) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
