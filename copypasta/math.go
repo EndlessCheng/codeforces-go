@@ -1862,6 +1862,7 @@ func numberTheoryCollection() {
 	// todo 斯特林数的四种求法 https://www.luogu.com.cn/blog/command-block/si-te-lin-shuo-zong-jie
 	// todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
 	// https://blog.csdn.net/ACdreamers/article/details/8521134
+	// 一个对称的斯特林数恒等式及其扩展 https://blog.csdn.net/EI_Captain/article/details/108806153
 	// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
 	//    定义为对应递降阶乘展开式的各项系数
 	//    将 n 个元素排成 k 个非空循环排列的方法数
