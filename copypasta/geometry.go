@@ -18,12 +18,12 @@ always add `eps` when do printf rounding:
 Sprintf("%.1f", 0.25) == "0.2"
 Sprintf("%.1f", 0.25+eps) == "0.3"
 
-比较浮点数：
+比较小浮点数，采用绝对误差：
 a < b    a+eps < b
 a <= b   a-eps < b
 a == b   math.Abs(a-b) < eps
 
-比较大浮点数（因为是即使 a 和 b 相近，a-b 的误差也可能大于 eps，见 CF1059D）：
+比较大浮点数，采用相对误差（因为是即使 a 和 b 相近，a-b 的误差也可能大于 eps，见 CF1059D）：
 a < b    a*(1+eps) < b
 a <= b   a*(1-eps) < b
 a == b   a*(1-eps) < b && b < a*(1+eps)

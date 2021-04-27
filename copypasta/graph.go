@@ -2055,7 +2055,7 @@ func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 	}
 	// 逆后序遍历，就可以像无向图那样求出 SCC
 o:
-	for i := len(vs) - 1; i >= 0; i-- {
+	for i := m - 1; i >= 0; i-- {
 		if v := vs[i]; !vis[v] {
 			comp = []int{}
 			rdfs(v)
@@ -2202,7 +2202,7 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
 //       A,B 同时或都不在 (¬(A^B)) A⇒B, B⇒A, ¬A⇒¬B, ¬B⇒¬A
 // NOTE: 单独的条件 x为a 可以用 (x为a)∨(x为a) 来表示
 // 模板题 https://www.luogu.com.cn/problem/P4782
-// 建边练习 https://codeforces.com/contest/468/problem/B
+// 建边练习【模板代码】 https://codeforces.com/contest/468/problem/B
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
 func (G *graph) solve2SAT(n int) []bool {
 	// 分为左右两部，左边 [0,n) 范围的点表示 x 为真，右边 [n,2*n) 范围的点表示 x 为假（¬x 用 x+n 表示）
