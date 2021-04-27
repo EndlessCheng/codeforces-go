@@ -6,11 +6,11 @@ import (
 	"testing"
 )
 
-func Test_run(t *testing.T) {
-	testRun(t, 0)
+func Test_run65(t *testing.T) {
+	testRun65(t, 0)
 }
 
-func testRun(t *testing.T, debugCaseNum int) {
+func testRun65(t *testing.T, debugCaseNum int) {
 	type testCase struct {
 		input1365
 		guess1365
@@ -75,6 +75,6 @@ func testRun(t *testing.T, debugCaseNum int) {
 	}
 
 	if debugCaseNum != 0 && failedCount == 0 {
-		testRun(t, 0)
+		testRun65(t, 0)
 	}
 }
