@@ -77,45 +77,44 @@ func stringCollection() {
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
-		maxMatchLengths := make([]int, len(s))
-		c := 0
-		for i := 1; i < len(s); i++ {
+		match := make([]int, len(s))
+		for i, c := 1, 0; i < len(s); i++ {
 			b := s[i]
 			for c > 0 && s[c] != b {
-				c = maxMatchLengths[c-1]
+				c = match[c-1]
 			}
 			if s[c] == b {
 				c++
 			}
-			maxMatchLengths[i] = c
+			match[i] = c
 		}
-		return maxMatchLengths
+		return match
 	}
 	// search pattern from text, return all start positions
 	kmpSearch := func(text, pattern []byte) (pos []int) {
-		maxMatchLengths := calcMaxMatchLengths(pattern)
+		match := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
 		c := 0
 		for i, b := range text {
 			for c > 0 && pattern[c] != b {
-				c = maxMatchLengths[c-1]
+				c = match[c-1]
 			}
 			if pattern[c] == b {
 				c++
 			}
 			if c == lenP {
 				pos = append(pos, i-lenP+1)
-				c = maxMatchLengths[c-1] // 不允许重叠时 c = 0
+				c = match[c-1] // 不允许重叠时 c = 0
 			}
 		}
 		return
 	}
 	// EXTRA: 最小循环节
-	// http://poj.org/problem?id=2406
+	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
 	calcMinPeriod := func(s []byte) int {
 		n := len(s)
-		maxMatchLengths := calcMaxMatchLengths(s)
-		if val := maxMatchLengths[n-1]; val > 0 && n%(n-val) == 0 {
+		match := calcMaxMatchLengths(s)
+		if val := match[n-1]; val > 0 && n%(n-val) == 0 {
 			return n / (n - val)
 		}
 		return 1 // 无小于 n 的循环节
@@ -172,6 +171,7 @@ func stringCollection() {
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
+	// 其他方法 https://codeforces.com/blog/entry/90035
 	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509
 	smallestRepresentation := func(s []byte) []byte {
 		n := len(s)
@@ -391,10 +391,36 @@ func stringCollection() {
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
 		compareSub := func(l1, r1, l2, r2 int) bool {
 			len1, len2 := r1-l2, r2-l2
-			if l := lcp(l1, l2); l >= len1 || l >= len2 {
+			if l := lcp(l1, l2); l >= len1 || l >= len2 { // 一个是另一个的前缀
 				return len1 < len2
 			}
 			return rank[l1] < rank[l2] // 或者 s[l1+l] < s[l2+l]
+		}
+
+		// 返回值含义同 strings.Compare
+		compareSub2 := func(l1, r1, l2, r2 int) int {
+			len1, len2 := r1-l2, r2-l2
+			l := lcp(l1, l2)
+			if len1 == len2 && l == len1 {
+				return 0
+			}
+			if l >= len1 || l >= len2 { // 一个是另一个的前缀
+				if len1 < len2 {
+					return -1
+				}
+				return 1
+			}
+			// 或者 s[l1+l] < s[l2+l]
+			if rank[l1] < rank[l2] {
+				return -1
+			}
+			return 1
+		}
+
+		// https://www.acwing.com/problem/content/140/
+		equalSub := func(l1, r1, l2, r2 int) bool {
+			len1, len2 := r1-l2, r2-l2
+			return len1 == len2 && len1 == lcp(l1, l2)
 		}
 
 		// EXTRA: 可重叠最长重复子串
@@ -452,7 +478,7 @@ func stringCollection() {
 			}
 		}
 
-		_ = []interface{}{compareSub, longestDupSubstring, findAllSubstring}
+		_ = []interface{}{compareSub, compareSub2, equalSub, longestDupSubstring, findAllSubstring}
 	}
 
 	_ = []interface{}{
