@@ -420,7 +420,7 @@ func (o *stNode) merge(b *stNode) *stNode {
 //  https://codeforces.com/problemset/problem/840/D
 //  https://codeforces.com/problemset/problem/893/F
 //  https://codeforces.com/problemset/problem/961/E（不止一种做法）
-//  https://codeforces.com/problemset/problem/1262/D2
+// 在线做法 https://codeforces.com/problemset/problem/1262/D2
 type pstNode struct {
 	lo, ro *pstNode
 	l, r   int
@@ -451,7 +451,8 @@ func buildPST(a []int64, l, r int) *pstNode {
 	return o
 }
 
-// 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即 t = append(t, t[len(t)-1].update(i, add))
+// 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
+// t = append(t, t[len(t)-1].update(i, add))
 // 注意为了拷贝一份 pstNode，这里的接收器不是指针
 func (o pstNode) update(i int, add int64) *pstNode {
 	if o.l == o.r {
