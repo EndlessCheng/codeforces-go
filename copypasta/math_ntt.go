@@ -59,6 +59,9 @@ OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/
 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
 狄利克雷相关（含 DGFs）https://www.luogu.com.cn/blog/command-block/gcd-juan-ji-xiao-ji
+生成函数在背包问题中的应用 https://zykykyk.github.io/post/%E7%94%9F%E6%88%90%E5%87%BD%E6%95%B0%E5%9C%A8%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/
+生成函数的背包计数问题 https://www.cnblogs.com/ErkkiErkko/p/10838697.html
+A problem collection of ODE and differential technique https://codeforces.com/blog/entry/76447
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
