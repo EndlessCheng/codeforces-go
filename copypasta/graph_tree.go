@@ -62,9 +62,10 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 //
 // 离线好题 https://codeforces.com/problemset/problem/570/D
 // 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
-func (*tree) depthSize(n, root int, g [][]int) {
+func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 	dep := make([]int, n)
 	size := make([]int, n)
+	maxDep := make([]int, n) // EXTRA: 子树最大深度
 	var f func(v, fa, d int) int
 	f = func(v, fa, d int) int {
 		dep[v] = d
@@ -72,12 +73,17 @@ func (*tree) depthSize(n, root int, g [][]int) {
 		for _, w := range g[v] {
 			if w != fa {
 				sz += f(w, v, d+1)
+				maxDep[v] = max(maxDep[v], maxDep[w]+1)
 			}
 		}
 		size[v] = sz
 		return sz
 	}
 	f(root, -1, 0)
+
+	// EXTRA: 一种贪心策略是，将 g[v] 按照 maxDep 从大到小排序
+	// https://codeforces.com/contest/1510/submission/111986751
+	sort.Slice(g[v], func(i, j int) bool { return maxDep[g[v][i]] > maxDep[g[v][j]] })
 }
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
@@ -636,7 +642,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
-	// EXTRA: 输入 u v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
+	// EXTRA: 输入 u 和 v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
 	down := func(u, v int) int {
 		// assert dep[u] < dep[v]
 		v = uptoDep(v, dep[u]+1)
