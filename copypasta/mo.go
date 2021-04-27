@@ -7,7 +7,7 @@ import (
 	"sort"
 )
 
-// 有关根号分解的说明见 sqrt_decomposition.go
+// 有关根号分解的说明另见 sqrt_decomposition.go
 
 // 莫队算法：对询问分块
 // todo 各类莫队综述
