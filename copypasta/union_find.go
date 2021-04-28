@@ -5,20 +5,24 @@ import (
 	"io"
 )
 
-/* 套题
-https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
+/* 并查集
+只有路径压缩的并查集复杂度是 O(nlogn) 的，这也是大多数情况下的实现方案
+只有启发式合并（按深度合并）的并查集的复杂度也是 O(nlogn) 的，适用于可持久化的场景
 */
 
 // 普通并查集
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
+//
 // 模板题 https://www.luogu.com.cn/problem/P3367
-// 思维转换题! https://nanti.jisuanke.com/t/43488
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
 // https://codeforces.com/problemset/problem/292/D
 // 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
 // 动态加点 https://codeforces.com/contest/1494/problem/D
+// 思维转换 https://nanti.jisuanke.com/t/43488
+//         https://codeforces.com/problemset/problem/1466/F
+// 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 func unionFind(n int) {
 	var fa []int
 	initFa := func(n int) {
@@ -116,18 +120,16 @@ func unionFind(n int) {
 	{
 		rank := make([]int, n)
 		merge := func(x, y int) {
-			x = find(x)
-			y = find(y)
+			x, y = find(x), find(y)
 			if x == y {
 				return
 			}
-			if rank[x] < rank[y] {
-				fa[x] = y
-			} else {
-				fa[y] = x
-				if rank[x] == rank[y] {
-					rank[x]++
-				}
+			if rank[x] > rank[y] {
+				x, y = y, x
+			}
+			fa[x] = y
+			if rank[x] == rank[y] {
+				rank[y]++
 			}
 		}
 		_ = merge
@@ -235,68 +237,41 @@ func unionFindEdgeWeight(n int) {
 	_ = []interface{}{initFa, merge, same, delta}
 }
 
-// 并查集组（一般用于涉及到位运算的题目）
-// 也可以写成后面的 struct 形式
-func multiUnionFind(n, m int) {
-	fas := make([][]int, m)
-	for i := range fas {
-		fas[i] = make([]int, n) // n+1
-		for j := range fas[i] {
-			fas[i][j] = j
-		}
-	}
-	var find func([]int, int) int
-	find = func(fa []int, x int) int {
-		if fa[x] != x {
-			fa[x] = find(fa, fa[x])
-		}
-		return fa[x]
-	}
-	merge := func(fa []int, from, to int) { fa[find(fa, from)] = find(fa, to) }
-	same := func(fa []int, x, y int) bool { return find(fa, x) == find(fa, y) }
-	mergeRange := func(fa []int, l, r int) { // 左闭右开
-		for i := find(fa, l); i < r; i = find(fa, i+1) {
-			fa[i] = r // merge 到 r 上
-		}
-	}
-
-	_ = []interface{}{merge, same, mergeRange}
-}
-
+// 结构体写法
 type uf struct {
-	fa []int
+	fa    []int
+	roots int // 连通分量个数
 }
 
 func newUnionFind(n int) uf {
-	fa := make([]int, n)
+	fa := make([]int, n) // n+1
 	for i := range fa {
 		fa[i] = i
 	}
-	return uf{fa}
+	return uf{fa, n}
 }
-func newUnionFinds(m, n int) []uf {
-	us := make([]uf, m)
-	for i := range us {
-		us[i] = newUnionFind(n)
-	}
-	return us
-}
+
 func (u uf) find(x int) int {
 	if u.fa[x] != x {
 		u.fa[x] = u.find(u.fa[x])
 	}
 	return u.fa[x]
 }
+
 func (u uf) merge(from, to int) (isNewMerge bool) {
 	x, y := u.find(from), u.find(to)
 	if x == y {
 		return false
 	}
 	u.fa[x] = y
+	u.roots--
 	return true
 }
+
 func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }
-func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
+
+// st 所处连通分量的大小
+func (u uf) countRoots(st int) (cnt int) {
 	for i := st; i < len(u.fa); i++ {
 		if u.find(i) == i {
 			cnt++
@@ -306,7 +281,87 @@ func (u uf) countRoots(st int) (cnt int) { // st = 0 or 1 ...
 }
 
 // 可持久化并查集
-// todo 模板题 https://www.luogu.com.cn/problem/P3402
+// 需要关 GC：func init() { debug.SetGCPercent(-1) }
+// 模板题 https://www.luogu.com.cn/problem/P3402
+type pufNode struct {
+	lo, ro  *pufNode
+	l, r    int
+	fa, dep int
+}
+
+// t := make([]*pufNode, 1, maxVersion+1)
+// t[0] = buildPUF(1, n)
+func buildPUF(l, r int) *pufNode {
+	o := &pufNode{l: l, r: r}
+	if l == r {
+		o.fa = l
+		return o
+	}
+	m := (l + r) >> 1
+	o.lo = buildPUF(l, m)
+	o.ro = buildPUF(m+1, r)
+	return o
+}
+
+func (o *pufNode) _find(x int) *pufNode {
+	if o.l == o.r {
+		return o
+	}
+	if m := o.lo.r; x <= m {
+		return o.lo._find(x)
+	}
+	return o.ro._find(x)
+}
+
+func (o *pufNode) find(x int) *pufNode {
+	f := o._find(x)
+	if f.fa == x {
+		return f
+	}
+	return o.find(f.fa)
+}
+
+// 注意为了拷贝一份 pufNode，这里的接收器不是指针
+func (o pufNode) setFa(from, to int) *pufNode {
+	if o.l == o.r {
+		o.fa = to
+		return &o
+	}
+	if m := o.lo.r; from <= m {
+		o.lo = o.lo.setFa(from, to)
+	} else {
+		o.ro = o.ro.setFa(from, to)
+	}
+	return &o
+}
+
+func (o *pufNode) addDep(x int) {
+	if o.l == o.r {
+		o.dep++
+		return
+	}
+	if m := o.lo.r; x <= m {
+		o.lo.addDep(x)
+	} else {
+		o.ro.addDep(x)
+	}
+}
+
+// 启发式合并：把深度小的合并到深度大的。若二者深度一样，则合并后的深度加一
+func (o *pufNode) merge(x, y int) *pufNode {
+	from, to := o.find(x), o.find(y)
+	if from.fa == to.fa {
+		return o
+	}
+	if from.dep > to.dep {
+		from, to = to, from
+	}
+	p := o.setFa(from.fa, to.fa)
+	if from.dep == to.dep {
+		p.addDep(to.fa)
+	}
+	return p
+}
 
 // 动态图连通性（求 CC 个数或判断 v 和 w 是否连通）
 // https://en.wikipedia.org/wiki/Dynamic_connectivity
