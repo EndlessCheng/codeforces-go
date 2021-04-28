@@ -36,6 +36,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 竞赛图
 竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
 https://codeforces.com/problemset/problem/1514/E
+竞赛图与三元环 https://codeforces.com/problemset/problem/117/C
 
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
@@ -640,7 +641,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 }
 
 // 无向图的双连通分量 Biconnected Components (BCC)          也叫重连通图
-// v-BCC：任意割点都是至少两个不同 v-BCC 的公共点
+// v-BCC：任意割点都是至少两个不同 v-BCC 的公共点              广义圆方树
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 // 好题 https://codeforces.com/problemset/problem/962/F
@@ -3042,8 +3043,6 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // AHU 算法
 // https://oi-wiki.org/graph/tree-ahu/
 
-//
-
 // 支配树
 // todo 模板题 https://www.luogu.com.cn/problem/P5180
 
@@ -3053,12 +3052,43 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // https://oi-wiki.org/graph/chord/
 // https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
 
-// todo 最大团
+// 三元环计数 O(m√m)
+// 一种思路是给边定向（度数小的指向度数大的），然后暴力统计即可
+// 讲解+题目 https://blog.nowcoder.net/n/9bfaeb850d6f4df6b257ffcf8e5889dd
+// https://www.luogu.com.cn/blog/KingSann/fou-chang-yong-di-hei-ke-ji-san-yuan-huan-post
+// https://www.luogu.com.cn/blog/i207M/san-yuan-huan-ji-shuo-xue-xi-bi-ji
+// https://www.cnblogs.com/Khada-Jhin/p/10143074.html
+// http://acm.hdu.edu.cn/showproblem.php?pid=6184
+func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
+	deg := make([]int, n)
+	for _, e := range edges {
+		deg[e[0]]++
+		deg[e[1]]++
+	}
+	g := make([][]int, n)
+	for _, e := range edges {
+		v, w := e[0], e[1]
+		if deg[v] > deg[w] || deg[v] == deg[w] && v > w {
+			v, w = w, v
+		}
+		g[v] = append(g[v], w)
+	}
 
-// todo 极大团计数
-
-// todo 图的同构
-
-// todo 树的同构
-// AHU 算法
-// https://oi-wiki.org/graph/tree-ahu/
+	vis := make([]int, n)
+	for i := range vis {
+		vis[i] = -1
+	}
+	for v, ws := range g {
+		for _, w := range ws {
+			vis[w] = v // 这样写可以不用 reset vis
+		}
+		for _, w := range ws {
+			for _, u := range g[w] {
+				if vis[u] == v {
+					ans++
+				}
+			}
+		}
+	}
+	return
+}

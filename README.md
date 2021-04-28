@@ -163,6 +163,7 @@
   - 最小费用最大流
     - SPFA
     - Dijkstra
+  - 三元环计数
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
