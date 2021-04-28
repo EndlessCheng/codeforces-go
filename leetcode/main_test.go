@@ -54,13 +54,6 @@ func TestCheckInf(t *testing.T) {
 	}
 }
 
-func Test_transCode(t *testing.T) {
-	code := `   
-
-`
-	fmt.Println(transCode(code))
-}
-
 func Test_checkTodo(t *testing.T) {
 	dir := "."
 	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
