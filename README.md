@@ -45,6 +45,7 @@
     - [平衡树版 odt_bst.go](/copypasta/odt_bst.go)
   - [根号算法（分块）sqrt_decomposition.go](/copypasta/sqrt_decomposition.go)
   - [莫队算法 mo.go](/copypasta/mo.go)
+     - 普通莫队
      - 带修莫队
      - 回滚莫队
      - 树上莫队
@@ -53,7 +54,8 @@
   - KMP
   - 扩展 KMP（Z algorithm）
   - 最小表示法
-  - Manacher
+  - 最长回文子串 
+    - Manacher 算法
   - 后缀数组（SA）
   - [字典树 trie.go](/copypasta/trie.go)
     - 持久化
@@ -83,12 +85,15 @@
       - Jacobi 符号
     - 组合数学
       - 卢卡斯定理
+      - 卡特兰数
       - 斯特林数
+        - 第一类斯特林数（轮换）
+        - 第二类斯特林数（子集）
       - 贝尔数
     - 莫比乌斯函数
     - 数论分块
     - 杜教筛
-    - 拉格朗日插值
+    - 容斥原理
   - [快速傅里叶变换 FFT math_fft.go](/copypasta/math_fft.go)
   - [快速数论变换 NTT math_ntt.go](/copypasta/math_ntt.go)
     - 包含多项式全家桶（求逆、开方等等）
@@ -98,14 +103,18 @@
     - 高斯消元
     - 行列式
     - 线性基
+  - [数值分析 math_numerical_analysis.go](copypasta/math_numerical_analysis.go)
+    - 自适应辛普森积分
+    - 拉格朗日插值
   - [计算几何 geometry.go](/copypasta/geometry.go)
-    - 直线和点
-    - 直线和直线
-    - 直线和圆
-    - 圆和圆
-    - 凸包
+    - 线与点
+    - 线与线
+    - 圆与线
+    - 圆与圆
     - 最近点对
+    - 凸包
     - 最远点对
+      - 旋转卡壳
   - [博弈论 games.go](/copypasta/games.go)
     - SG 函数
 - [动态规划 dp.go](/copypasta/dp.go)
@@ -120,24 +129,29 @@
   - 欧拉回路
   - 割点
   - 割边（桥）
-  - 双连通分量
+  - 双连通分量（BCC）
+    - v-BCC
+    - e-BCC
   - 最短路
     - Dijkstra
-    - SPFA
+    - SPFA（队列优化的 Bellman-Ford）
+      - 差分约束系统
     - Floyd-Warshall
     - Johnson
     - 0-1 BFS
   - 最小环
-  - 最小生成树
+  - 最小生成树（MST）
     - Kruskal
     - Prim
   - 最小差值生成树
   - 最小树形图
     - 朱刘算法
   - 二分图最大匹配
+    - 匈牙利算法
   - 带权二分图最大完美匹配
+    - Kuhn–Munkres 算法
   - 拓扑排序
-  - 强连通分量
+  - 强连通分量（SCC）
     - Kosaraju
     - Tarjan
   - 2-SAT
@@ -165,8 +179,19 @@
 - 其他
   - [位运算笔记 bits.go](/copypasta/bits.go)
     - bitset
+    - 区间位运算 trick
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 0-1 分数规划
+  - [搜索 search.go](/copypasta/search.go)
+    - 枚举排列
+    - 枚举组合
+    - 生成下一个排列
+    - 康托展开
+    - 逆康托展开
+    - 折半枚举
+      - 超大背包问题
+    - 枚举子集
+      - Gosper’s Hack
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
 - [快读模板 io.go](/copypasta/io.go)
