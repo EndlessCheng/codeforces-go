@@ -204,7 +204,7 @@ func bitsCollection() {
 	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 logTrickCnt)
-	logTrick := func(a []int, op func(x, y int) int) map[int]bool {
+	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
 		for _, x := range a {
@@ -231,7 +231,7 @@ func bitsCollection() {
 
 	// 进阶：对于数组的所有区间，返回 op(区间元素) 的各个结果，及其出现次数
 	// https://codeforces.com/problemset/problem/475/D
-	logTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
+	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
 		cnt := map[int]int64{}
 		type pair struct{ v, l, r int }
 		set := []pair{}
@@ -271,7 +271,7 @@ func bitsCollection() {
 		return nil
 	}
 
-	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, logTrick, logTrickCnt, zeroXorSum3}
+	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, zeroXorSum3}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
