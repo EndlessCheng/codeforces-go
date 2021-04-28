@@ -144,6 +144,22 @@ func (r *RG) IntSliceOrdered(size int, min, max int, inc, unique bool) []int {
 	return a
 }
 
+// IntMatrix generates a random int matrix with fixed row and col and its values in range [min, max]
+func (r *RG) IntMatrix(row, col int, min, max int) [][]int {
+	a := make([][]int, row)
+	for i := range a {
+		a[i] = r.intSlice(col, min, max)
+	}
+	for _, row := range a {
+		for _, v := range row {
+			r.sb.WriteString(strconv.Itoa(v))
+			r.Space()
+		}
+		r.NewLine()
+	}
+	return a
+}
+
 // FloatSlice generates a random float slice with a fixed size and its values in range [min, max]
 func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	a := make([]float64, 0, size)
