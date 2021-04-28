@@ -411,6 +411,8 @@ func (o *stNode) merge(b *stNode) *stNode {
 // https://zhuanlan.zhihu.com/p/250565583
 // https://blog.csdn.net/weixin_43914593/article/details/108861279
 //
+// 另见 union_find.go 中的「可持久化并查集」
+//
 // 模板题 https://www.luogu.com.cn/problem/P3919
 //       https://www.luogu.com.cn/problem/P3834 https://www.acwing.com/problem/content/257/ https://ac.nowcoder.com/acm/contest/7613/C
 // todo 种类数 https://codeforces.com/problemset/problem/620/E
