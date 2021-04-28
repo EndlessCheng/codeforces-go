@@ -82,7 +82,7 @@ func sortCollections() {
 	// 在遇到先 true 后 false 的 f(x) 时
 	// 若目标是找到最大的使 f(x) == true 的 x
 	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其 -1 就得到了最大的使 f(x) == true 的 x
-	// 由于要对结果 -1，sort.Search 传入的上界需要 +1
+	// 由于要对结果 -1，sort.Search 传入的上界需要 +1（也可以改为在 f 内部对传入的 x++）
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
 
 	// 指定上下界 [l,r)
