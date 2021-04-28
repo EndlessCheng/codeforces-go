@@ -23,7 +23,7 @@
     - 点权
     - 边权（种类）
     - 持久化
-    - 动态图连通性
+    - 回滚操作（动态图连通性）
   - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
