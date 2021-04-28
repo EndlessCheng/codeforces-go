@@ -180,7 +180,7 @@
 - 其他
   - [位运算笔记 bits.go](/copypasta/bits.go)
     - bitset
-    - 区间位运算 trick
+    - 区间位运算 trick（含 GCD）
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 0-1 分数规划
   - [搜索 search.go](/copypasta/search.go)
