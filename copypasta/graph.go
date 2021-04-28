@@ -1059,7 +1059,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	return dist
 }
 
-// 单源最短路 SPFA O(nm)   Bellman-Ford
+// 单源最短路 SPFA O(nm)   队列优化的 Bellman-Ford
 // 有负环时返回 nil
 // todo DFS 写法
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
@@ -1068,12 +1068,13 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3385
 //
-// EXTRA: 差分约束，若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
-//        然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
-//        这样，在无负环时会得到一组非正数解
-//        模板题 https://www.luogu.com.cn/problem/P4878 todo 需要复习
-//        每个区间至少选 ci 个 https://www.luogu.com.cn/problem/P1250 https://www.luogu.com.cn/problem/SP116 http://poj.org/problem?id=1201
-//        todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
+// EXTRA: 差分约束系统
+// 若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
+// 然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
+// 这样，在无负环时会得到一组非正数解
+// 模板题 https://www.luogu.com.cn/problem/P4878 todo 需要复习
+// 每个区间至少选 ci 个 https://www.luogu.com.cn/problem/P1250 https://www.luogu.com.cn/problem/SP116 http://poj.org/problem?id=1201
+// todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
 func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
