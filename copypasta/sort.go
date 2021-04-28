@@ -45,10 +45,15 @@ func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 func sortCollections() {
 	{
 		var a []int
+
 		// 判断是否为非降序列
 		sort.IntsAreSorted(a)
+
 		// 判断是否为严格递增序列
 		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] <= a[j] })
+
+		// 判断是否为非增序列
+		sort.IsSorted(sort.Reverse(sort.IntSlice(a)))
 	}
 
 	// 插入排序
@@ -81,9 +86,18 @@ func sortCollections() {
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
 
 	// 指定上下界 [l,r)
-	searchRange := func(l, r int, f func(int) bool) int {
+	searchRange := func(l, r int) int {
+		return l + sort.Search(r-l, func(x int) bool {
+			x += l
+			// ...
+
+			return false
+		})
+	}
+
+	searchRange64 := func(l, r int64, f func(int64) bool) int64 {
 		for l < r {
-			m := (l + r) >> 1 // 注意 l+r 是否超 int，必要时使用 int(uint(i+j) >> 1) 来转换
+			m := (l + r) >> 1 // 注意 l+r 是否超 int64，必要时使用 int64(uint64(i+j)>>1) 来转换
 			if f(m) {
 				r = m
 			} else {
@@ -91,18 +105,6 @@ func sortCollections() {
 			}
 		}
 		return l
-	}
-	// 若 l 非负，也可以这样写
-	{
-		var l, r int
-		sort.Search(r, func(x int) bool {
-			if x < l {
-				return false
-			}
-			// do ...
-
-			return true
-		})
 	}
 
 	//
@@ -384,7 +386,7 @@ func sortCollections() {
 	_ = []interface{}{
 		insertionSort,
 		lowerBound, upperBound,
-		searchRange,
+		searchRange, searchRange64,
 		binarySearchS1, binarySearchS2,
 		kthSmallest, kthSmallestRangeSum,
 		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
