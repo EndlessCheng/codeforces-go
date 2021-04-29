@@ -254,6 +254,8 @@
 
 [All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
 
+[Codeforces Problem Topics](https://codeforces.com/blog/entry/55274)
+
 [GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)
 
 [Pepcy 模板](http://pepcy.cf/icpc-templates/)
@@ -264,7 +266,7 @@
 
 [洛谷模板题（建议按难度筛选）](https://www.luogu.com.cn/problem/list?keyword=%E6%A8%A1%E6%9D%BF&page=1)
 
-[Codeforces Problem Topics](https://codeforces.com/blog/entry/55274)
+[能力全面提升综合题单](https://www.luogu.com.cn/training/9391)
 
 [Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
 
