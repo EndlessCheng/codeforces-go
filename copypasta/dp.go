@@ -695,12 +695,6 @@ func dpCollections() {
 		return f[n-1]
 	}
 
-	// 划分数
-	// todo 挑战 P67
-
-	// 多重集组合数
-	// todo 挑战 P68
-
 	/* 背包问题
 	这类问题可以从物品选择次序的无后效性入手
 	子区间 -> 前缀和
@@ -821,7 +815,7 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 价值主导的 0-1 背包
-	// todo 挑战 P61
+	// 把重量看成价值，价值看成重量，求同等价值下能得到的最小重量
 
 	// 完全背包
 	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
