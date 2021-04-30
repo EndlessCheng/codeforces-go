@@ -22,7 +22,6 @@ import (
 3.1 若复杂度过高，如何优化决策？
 *  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
 *  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
-   推荐 https://codeforces.com/blog/entry/47764
    如何定义状态：
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
@@ -228,6 +227,7 @@ func dpCollections() {
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
+	期望 DP https://codeforces.com/contest/1097/problem/D
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -463,6 +463,8 @@ func dpCollections() {
 	// 求下降，可以考虑把序列元素去相反数
 	// https://oi-wiki.org/dp/basic/#_12
 	// 最小划分数 Dilworth's theorem https://en.wikipedia.org/wiki/Dilworth%27s_theorem
+	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
+	//
 	// 例题 导弹拦截 https://www.luogu.com.cn/problem/P1020
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
@@ -702,6 +704,7 @@ func dpCollections() {
 	https://en.wikipedia.org/wiki/Knapsack_problem
 	https://codeforces.com/blog/entry/59606
 	浅谈 ZKP 问题 https://www.luogu.com.cn/blog/xww666/qian-tan-zkp-wen-ti-gai-post
+	另见 math_ntt.go 中的生成函数
 
 	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
@@ -950,7 +953,7 @@ func dpCollections() {
 	打印机（好题） LC664 https://leetcode-cn.com/problems/strange-printer/
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
-	同色消除 https://codeforces.com/problemset/problem/1132/F
+	同色消除【套路】 https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	③ 一些题目
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
@@ -1006,6 +1009,7 @@ func dpCollections() {
 	*/
 
 	/* 状压 DP
+	常用于处理包含排列的问题等
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
@@ -1121,6 +1125,8 @@ func dpCollections() {
 	*/
 
 	/* 数位 DP
+	https://zhuanlan.zhihu.com/p/348851463
+
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
@@ -1266,17 +1272,48 @@ func dpCollections() {
 	// 单调队列优化
 	// 见 monotone_queue.go
 
-	// 斜率优化 / 凸包优化 (CHT)  李超树
+	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
+	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
+	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
+	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
-	// todo https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
-	// todo https://luckyglass.github.io/2019/19Dec21stArt1/
-	//      浅谈斜率优化 https://www.luogu.com.cn/blog/duyi/xie-lv-you-hua
-	// 一类单调问题的求解(宋新波) http://www.doc88.com/p-2953873379975.html
-	// 题目 https://qiita.com/drken/items/9b311d553aa434bb26e4#%E4%BE%8B%E9%A1%8C-4-4-4k-anonymous-sequence-poj-no3709
-	// todo http://poj.org/problem?id=3709
-	// todo https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
+	//
+	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
+	// todo https://www.luogu.com.cn/problem/P2900
+	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
+	//  http://poj.org/problem?id=3709
+	cht := func(n int, s int64, sumT, sumC []int64) int64 {
+		// 以 https://www.luogu.com.cn/problem/P5785 为例
+		dp := make([]int64, n+1)
+		Y := func(i int) int64 { return dp[i] }
+		X := func(i int) int64 { return sumC[i] }
+		// 下凸包：i0-i1 的斜率 < i1-i2 的斜率
+		// 上凸包：i0-i1 的斜率 > i1-i2 的斜率
+		less := func(i0, i1, i2 int) bool {
+			y0, y1, y2 := Y(i0), Y(i1), Y(i2)
+			x0, x1, x2 := X(i0), X(i1), X(i2)
+			return (y1-y0)*(x2-x1) < (y2-y1)*(x1-x0) // 注意 < 还是 > 以及是否会爆 int64
+		}
+		q := []int{0} //
+		push := func(i int) {
+			for len(q) > 1 && !less(q[len(q)-2], q[len(q)-1], i) {
+				q = q[:len(q)-1]
+			}
+			q = append(q, i)
+		}
+		for i := 1; i <= n; i++ {
+			k := s + sumT[i]
+			// 在队列中二分第一个斜率大于（小于）k 的位置
+			// 下凸包：>
+			// 上凸包：<
+			j := sort.Search(len(q)-1, func(j int) bool { return Y(q[j+1])-Y(q[j]) > k*(X(q[j+1])-X(q[j])) })
+			dp[i] = Y(q[j]) - k*X(q[j]) + sumT[i]*sumC[i] + s*sumC[n]
+			push(i)
+		}
+		return dp[n]
+	}
 
 	// 四边形不等式优化
 	// https://oi-wiki.org/dp/opt/quadrangle/
@@ -1681,6 +1718,8 @@ func dpCollections() {
 
 		digitDP,
 		kth666,
+
+		cht,
 
 		diameter, countDiameter, countVerticesOnDiameter,
 		maxIndependentSetOfTree, minEdgeCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,

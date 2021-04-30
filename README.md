@@ -125,6 +125,7 @@
   - 数位 DP
   - 树形 DP
     - 换根 DP
+  - 斜率优化 DP（CHT）
 - [图论 graph.go](/copypasta/graph.go)
   - 欧拉回路
   - 割点
