@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"math/rand"
 	"sort"
 )
 
@@ -39,7 +40,7 @@ det (determinant，行列式，叉积的模，有向面积):
 
 1° = (π/180)rad
 1rad = (180/π)°
-常见的是，弧度为 2*math.Pi*(角度占整个360°的多少)
+常见的是，弧度为 2*math.Pi*(角度占整个360°的多少，设为 a) = math.Pi/180*a
 
 一些反三角函数的范围
 反正弦 -1 ~ 1 => -π/2 ~ π/2
@@ -175,11 +176,16 @@ func cosineRuleVec(va, vb vecF, angle float64) float64 {
 }
 
 // 三角形外心（外接圆圆心，三条边的垂直平分线的交点）
+// 另一种写法是求两中垂线交点
 // https://en.wikipedia.org/wiki/Circumscribed_circle
 // https://codeforces.com/problemset/problem/1/C
 func circumcenter(a, b, c vecF) vecF {
 	a1, b1, a2, b2 := b.x-a.x, b.y-a.y, c.x-a.x, c.y-a.y
 	c1, c2, d := a1*a1+b1*b1, a2*a2+b2*b2, 2*(a1*b2-a2*b1)
+	if math.Abs(d) < eps {
+		// 根据题目特判三点共线的情况
+	}
+	// 注：可以打开括号，先 /d 再做乘法，提高精度
 	return vecF{a.x + (c1*b2-c2*b1)/d, a.y + (a1*c2-a2*c1)/d}
 }
 
@@ -441,10 +447,10 @@ func (o circle) tangents(p vec) (ls []vecF) {
 		return
 	}
 	if d2 == o.r*o.r {
-		return []vecF{po.rotate(math.Pi / 2)}
+		return []vecF{po.rotateCCW(math.Pi / 2)}
 	} // 圆上一点的切线
 	ang := math.Asin(float64(o.r) / po.len())
-	return []vecF{po.rotate(-ang), po.rotate(ang)}
+	return []vecF{po.rotateCCW(-ang), po.rotateCCW(ang)}
 }
 
 // 两圆公切线
@@ -483,10 +489,37 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 	return
 }
 
-// 最小圆覆盖
-func minCircleCoverAllPoints(ps []vec) circle {
-	// todo
-	panic("todo")
+// 最小圆覆盖 Welzl's algorithm
+// 随机增量法，期望复杂度 O(n)
+// 详见《计算几何：算法与应用（第 3 版）》第 4.7 节
+// https://en.wikipedia.org/wiki/Smallest-circle_problem
+// https://oi-wiki.org/geometry/random-incremental/
+// 模板题 https://www.luogu.com.cn/problem/P1742 https://www.acwing.com/problem/content/3031/ https://www.luogu.com.cn/problem/P2533
+// 椭圆（坐标系旋转缩一下） https://www.luogu.com.cn/problem/P4288 https://www.acwing.com/problem/content/2787/
+func smallestEnclosingDisc(ps []vecF) circleF {
+	rand.Shuffle(len(ps), func(i, j int) { ps[i], ps[j] = ps[j], ps[i] })
+	o := ps[0]
+	r2 := 0.
+	for i, p := range ps {
+		if p.dis2(o) < r2+eps { // p 在最小圆内部或边上
+			continue
+		}
+		o, r2 = p, 0
+		for j, q := range ps[:i] {
+			if q.dis2(o) < r2+eps { // q 在最小圆内部或边上
+				continue
+			}
+			o = vecF{(p.x + q.x) / 2, (p.y + q.y) / 2}
+			r2 = p.dis2(o)
+			for _, x := range ps[:j] {
+				if x.dis2(o) > r2+eps { // 保证三点不会共线（证明略）
+					o = circumcenter(p, q, x)
+					r2 = p.dis2(o)
+				}
+			}
+		}
+	}
+	return circleF{o, math.Sqrt(r2)}
 }
 
 // 求一固定半径的圆最多能覆盖多少个点（圆边上也算覆盖） len(ps)>0 && r>0
@@ -909,15 +942,15 @@ type circleF struct {
 	r float64
 }
 
-func (vecF) add(vecF) (_ vecF)       { return }
-func (vecF) sub(vecF) (_ vecF)       { return }
-func (vecF) mul(float64) (_ vecF)    { return }
-func (vecF) dot(vecF) (_ float64)    { return }
-func (vecF) det(vecF) (_ float64)    { return }
-func (vecF) len() (_ float64)        { return }
-func (vecF) len2() (_ float64)       { return }
-func (vecF) dis(vecF) (_ float64)    { return }
-func (vecF) dis2(vecF) (_ float64)   { return }
-func (vecF) polarAngle() (_ float64) { return }
-func (vec) rotate(float64) (_ vecF)  { return }
-func (lineF) vec() (_ vecF)          { return }
+func (vecF) add(vecF) (_ vecF)         { return }
+func (vecF) sub(vecF) (_ vecF)         { return }
+func (vecF) mul(float64) (_ vecF)      { return }
+func (vecF) dot(vecF) (_ float64)      { return }
+func (vecF) det(vecF) (_ float64)      { return }
+func (vecF) len() (_ float64)          { return }
+func (vecF) len2() (_ float64)         { return }
+func (vecF) dis(vecF) (_ float64)      { return }
+func (vecF) dis2(vecF) (_ float64)     { return }
+func (vecF) polarAngle() (_ float64)   { return }
+func (vec) rotateCCW(float64) (_ vecF) { return }
+func (lineF) vec() (_ vecF)            { return }
