@@ -383,13 +383,6 @@ func xorBasis() {
 	_ = []interface{}{insert, decompose, minEle, maxEle, kthEle}
 }
 
-// 线性规划（单纯形算法）  linear programming (simplex)
-// https://zh.wikipedia.org/zh-hans/%E5%8D%95%E7%BA%AF%E5%BD%A2%E6%B3%95
-// https://oi-wiki.org/math/simplex/
-// todo 算法第四版 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
-// https://zhuanlan.zhihu.com/p/31644892
-// EXTRA: https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/TwoPersonZeroSumGame.html
-
 // 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem
 // https://oi-wiki.org/graph/matrix-tree/
 // https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
