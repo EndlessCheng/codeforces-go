@@ -44,7 +44,7 @@ func TestCompare(t *testing.T) {
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
-		rg.One()
+		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 5)
 		rg.NewLine()
 		rg.IntSlice(n, 0, 5)
@@ -57,8 +57,8 @@ func TestCompare(t *testing.T) {
 
 		}
 
-		var T int
-		Fscan(in, &T)
+		T := 1
+		Fscan(in, &T) //
 		for Case := 1; Case <= T; Case++ {
 			solve(Case)
 		}
