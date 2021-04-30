@@ -386,3 +386,16 @@ func xorBasis() {
 // 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem
 // https://oi-wiki.org/graph/matrix-tree/
 // https://en.wikipedia.org/wiki/Kirchhoff%27s_theorem
+
+// 线性规划（单纯形法）  LP, linear programming (simplex method)
+// https://en.wikipedia.org/wiki/Mathematical_optimization
+// https://en.wikipedia.org/wiki/Linear_programming
+// https://en.wikipedia.org/wiki/Integer_programming
+// https://en.wikipedia.org/wiki/Simplex_algorithm
+// todo https://oi-wiki.org/math/simplex/
+//      https://zhuanlan.zhihu.com/p/31644892
+//  https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearProgramming.java.html
+//
+// todo https://uoj.ac/problem/179
+//  https://codeforces.com/problemset/problem/1430/G https://codeforces.com/blog/entry/83614?#comment-709868
+//  https://codeforces.com/problemset/problem/375/E
