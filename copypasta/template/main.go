@@ -21,8 +21,8 @@ func run(_r io.Reader, _w io.Writer) {
 
 	}
 
-	var T int
-	Fscan(in, &T)
+	T := 1
+	Fscan(in, &T) //
 	for Case := 1; Case <= T; Case++ {
 		solve(Case)
 	}

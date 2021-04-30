@@ -17,7 +17,7 @@ type (
 func run(in input, Q func(req) resp) (gs guess) {
 	q := func(i int) int { return Q(req{i}).v }
 	n := in.n
-	ans := make([]int, n) // 0
+	ans := make([]int, n) //
 	defer func() { gs.ans = ans }()
 
 
@@ -25,7 +25,7 @@ func run(in input, Q func(req) resp) (gs guess) {
 	return
 }
 
-// TODO: 提交前运行下，检查输出格式是否正确
+// TODO: check output format before submit
 func ioq() {
 	in := bufio.NewReader(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
@@ -38,8 +38,9 @@ func ioq() {
 		return
 	}
 
-	var T int
-	for Fscan(in, &T); T > 0; T-- { // TODO: remove if not multi-cases
+	T := 1
+	Fscan(in, &T) //
+	for ; T > 0; T-- {
 		// Input
 		d := input{}
 		Fscan(in, &d.n)
