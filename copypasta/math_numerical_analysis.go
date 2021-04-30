@@ -29,7 +29,7 @@ func numericalAnalysisCollection() {
 	// https://en.wikipedia.org/wiki/Adaptive_Simpson%27s_method
 	// https://oi-wiki.org/math/integral/
 	// https://cp-algorithms.com/num_methods/simpson-integration.html
-	// 模板题 https://www.luogu.com.cn/problem/P4525 https://www.luogu.com.cn/problem/P4526
+	// 模板题 https://www.luogu.com.cn/problem/P4525 https://www.luogu.com.cn/problem/P4526 https://www.acwing.com/problem/content/3077/
 	asr := func(a, b, eps float64, f mathF) float64 { return _asr(a, b, eps, simpson(a, b, f), f) }
 
 	//
