@@ -109,12 +109,16 @@
   - [计算几何 geometry.go](/copypasta/geometry.go)
     - 线与点
     - 线与线
+    - 圆与点
+      - 最小圆覆盖
     - 圆与线
     - 圆与圆
     - 最近点对
+    - 多边形与点
     - 凸包
     - 最远点对
       - 旋转卡壳
+    - 半平面交
   - [博弈论 games.go](/copypasta/games.go)
     - SG 函数
 - [动态规划 dp.go](/copypasta/dp.go)

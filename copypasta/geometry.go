@@ -117,33 +117,38 @@ func (a *vec) adds(b vec) { a.x += b.x; a.y += b.y }
 func (a *vec) subs(b vec) { a.x -= b.x; a.y -= b.y }
 
 // 不常用
-func (a vec) less(b vec) bool       { return a.x < b.x || a.x == b.x && a.y < b.y }
-func (a vecF) less(b vecF) bool     { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
-func (a vecF) equals(b vecF) bool   { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
-func (a vec) onSameLine(b vec) bool { return a.det(b) == 0 }
-func (a vec) mul(k int64) vec       { return vec{a.x * k, a.y * k} }
-func (a *vec) muls(k int64)         { a.x *= k; a.y *= k }
-func (a vecF) div(k float64) vecF   { return vecF{a.x / k, a.y / k} }
-func (a *vecF) divs(k float64)      { a.x /= k; a.y /= k }
-func (a vec) mulVec(b vec) vec      { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
-func (a vec) polarAngle() float64   { return math.Atan2(float64(a.y), float64(a.x)) }
-func (a vec) reverse() vec          { return vec{-a.x, -a.y} }
+func (a vec) less(b vec) bool     { return a.x < b.x || a.x == b.x && a.y < b.y }
+func (a vecF) less(b vecF) bool   { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
+func (a vecF) equals(b vecF) bool { return math.Abs(a.x-b.x) < eps && math.Abs(a.y-b.y) < eps }
+func (a vec) parallel(b vec) bool { return a.det(b) == 0 }
+func (a vec) mul(k int64) vec     { return vec{a.x * k, a.y * k} }
+func (a *vec) muls(k int64)       { a.x *= k; a.y *= k }
+func (a vecF) div(k float64) vecF { return vecF{a.x / k, a.y / k} }
+func (a *vecF) divs(k float64)    { a.x /= k; a.y /= k }
+func (a vec) mulVec(b vec) vec    { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
+func (a vec) polarAngle() float64 { return math.Atan2(float64(a.y), float64(a.x)) }
+func (a vec) reverse() vec        { return vec{-a.x, -a.y} }
 func (a vec) up() vec {
 	if a.y < 0 || a.y == 0 && a.x < 0 {
 		return a.reverse()
 	}
 	return a
 }
+func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} }
+func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} }
 
 // 逆时针旋转，传入旋转的弧度
-func (a vecF) rotate(rad float64) vecF {
+func (a vecF) rotateCCW(rad float64) vecF {
 	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
 }
+
+// a 的单位法线（a 不能是零向量）
+func (a vecF) normal() vecF { return vecF{-a.y, a.x}.div(a.len()) }
 
 // 两向量夹角
 func (a vec) angleTo(b vec) float64 {
 	v := float64(a.dot(b)) / (a.len() * b.len())
-	v = math.Min(math.Max(v, -1), 1)
+	v = math.Min(math.Max(v, -1), 1) // 确保 v 在 [-1,1] 内
 	return math.Acos(v)
 }
 
@@ -151,20 +156,17 @@ func (a vec) angleTo(b vec) float64 {
 func polarAngleSort(ps []vec) {
 	// (-π, π]
 	// (-1e9,-1) -> (-1e9, 0)
-	// 可以先把每个向量的极角算出来再排序
+	// 也可以先把每个向量的极角算出来再排序
 	sort.Slice(ps, func(i, j int) bool { return ps[i].polarAngle() < ps[j].polarAngle() })
 
-	// EXTRA: 若将所有向量 up() 后极角排序，由于 up() 后向量的范围是 [0°, 180°)，极角排序后共线的向量一定会相邻
+	// EXTRA: 若允许将所有向量 up()，由于 up() 后向量的范围是 [0°, 180°)，可以用叉积排序，且排序后共线的向量一定会相邻
 	for i := range ps {
 		ps[i] = ps[i].up()
 	}
 	sort.Slice(ps, func(i, j int) bool { return ps[i].det(ps[j]) > 0 })
 }
 
-// a 的单位法线，a 不能是零向量
-func (a vecF) normal() vecF { l := a.len(); return vecF{-a.y / l, a.x / l} }
-
-// 余弦定理，以及两边及夹角，计算对边长度
+// 余弦定理，输入两边及夹角，计算对边长度
 func cosineRule(a, b, angle float64) float64 {
 	return math.Sqrt(a*a*b*b - 2*a*b*math.Cos(angle))
 }
@@ -217,6 +219,9 @@ type line struct{ p1, p2 vec }
 func (a line) vec() vec              { return a.p2.sub(a.p1) }
 func (a lineF) point(t float64) vecF { return a.p1.add(a.vec().mul(t)) }
 
+// 点 a 是否在 l 左侧
+func (a vecF) onLeft(l lineF) bool { return l.vec().det(a.sub(l.p1)) > eps }
+
 // 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
 func (a vec) onSeg(l line) bool {
 	p1, p2 := l.p1.sub(a), l.p2.sub(a)
@@ -228,6 +233,47 @@ func (a vec) onSeg(l line) bool {
 func (a vec) onRay(o, d vec) bool {
 	a = a.sub(o)
 	return d.det(a) == 0 && d.dot(a) >= 0 // 含端点
+}
+
+// 点 a 到直线 l 的距离
+// 若不取绝对值得到的是有向距离
+func (a vecF) disToLine(l lineF) float64 {
+	v, p1a := l.vec(), a.sub(l.p1)
+	return math.Abs(v.det(p1a)) / v.len()
+}
+
+// 点 a 到线段 l 的距离
+func (a vecF) disToSeg(l lineF) float64 {
+	if l.p1 == l.p2 {
+		return a.sub(l.p1).len()
+	}
+	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
+	if v.dot(p1a) < eps {
+		return p1a.len()
+	}
+	if v.dot(p2a) > -eps {
+		return p2a.len()
+	}
+	return math.Abs(v.det(p1a)) / v.len()
+}
+
+// 判断点 a 到线段 l 的距离 <= r，避免浮点运算
+func (a vec) withinRange(l line, r int64) bool {
+	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
+	if v.dot(p1a) <= 0 {
+		return p1a.len2() <= r*r
+	}
+	if v.dot(p2a) >= 0 {
+		return p2a.len2() <= r*r
+	}
+	return v.det(p1a)*v.det(p1a) <= v.len2()*r*r
+}
+
+// 点 a 在直线 l 上的投影
+func (a vecF) projection(l lineF) vecF {
+	v, p1a := l.vec(), a.sub(l.p1)
+	t := v.dot(p1a) / v.len2()
+	return l.p1.add(v.mul(t))
 }
 
 // 判断直线交点个数
@@ -275,47 +321,6 @@ func (a lineF) rayIntersection(b lineF) (ta, tb float64) {
 		}
 		return -1, -1
 	}
-}
-
-// 点 a 到直线 l 的距离
-// 若不取绝对值得到的是有向距离
-func (a vecF) disToLine(l lineF) float64 {
-	v, p1a := l.vec(), a.sub(l.p1)
-	return math.Abs(v.det(p1a)) / v.len()
-}
-
-// 点 a 到线段 l 的距离
-func (a vecF) disToSeg(l lineF) float64 {
-	if l.p1 == l.p2 {
-		return a.sub(l.p1).len()
-	}
-	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
-	if v.dot(p1a) < eps {
-		return p1a.len()
-	}
-	if v.dot(p2a) > -eps {
-		return p2a.len()
-	}
-	return math.Abs(v.det(p1a)) / v.len()
-}
-
-// 点 a 到线段 l 的距离 <= r
-func (a vec) withinRange(l line, r int64) bool {
-	v, p1a, p2a := l.vec(), a.sub(l.p1), a.sub(l.p2)
-	if v.dot(p1a) <= 0 {
-		return p1a.len2() <= r*r
-	}
-	if v.dot(p2a) >= 0 {
-		return p2a.len2() <= r*r
-	}
-	return v.det(p1a)*v.det(p1a) <= v.len2()*r*r
-}
-
-// 点 a 在直线 l 上的投影
-func (a vecF) projection(l lineF) vecF {
-	v, p1a := l.vec(), a.sub(l.p1)
-	t := v.dot(p1a) / v.len2()
-	return l.p1.add(v.mul(t))
 }
 
 // 线段规范相交
@@ -553,6 +558,7 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 // todo https://oi-wiki.org/geometry/triangulation/
 //      https://cp-algorithms.com/geometry/delaunay.html
 
+// 多边形相关
 func vec2Collection() {
 	readVec := func(in io.Reader) vec {
 		var x, y int64
@@ -656,12 +662,12 @@ func vec2Collection() {
 	// 多边形面积
 	// https://cp-algorithms.com/geometry/area-of-simple-polygon.html
 	polygonArea := func(ps []vec) float64 {
-		n := len(ps)
-		area := .0
-		for i := 1; i < n-1; i++ {
-			area += float64(ps[i].sub(ps[0]).det(ps[i+1].sub(ps[0])))
+		area := int64(0)
+		p0 := ps[0]
+		for i := 2; i < len(ps); i++ {
+			area += ps[i-1].sub(p0).det(ps[i].sub(p0))
 		}
-		return area / 2
+		return float64(area) / 2
 	}
 
 	// 求凸包 葛立恒扫描法 Graham's scan
@@ -670,33 +676,24 @@ func vec2Collection() {
 	// 模板题 https://www.luogu.com.cn/problem/P2742
 	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
-	convexHull := func(ps []vec) []vec {
-		n := len(ps)
+	convexHull := func(ps []vec) (q []vec) {
 		sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
-		ch := make([]vec, 0, 2*n)
 		for _, p := range ps {
-			for {
-				sz := len(ch)
-				if sz <= 1 || ch[sz-1].sub(ch[sz-2]).det(p.sub(ch[sz-1])) > 0 {
-					break
-				}
-				ch = ch[:sz-1]
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+				q = q[:len(q)-1]
 			}
-			ch = append(ch, p)
+			q = append(q, p)
 		}
-		downSize := len(ch)
-		for i := n - 2; i >= 0; i-- {
+		sz := len(q)
+		for i := len(ps) - 1; i >= 0; i-- {
 			p := ps[i]
-			for {
-				sz := len(ch)
-				if sz <= downSize || ch[sz-1].sub(ch[sz-2]).det(p.sub(ch[sz-1])) > 0 {
-					break
-				}
-				ch = ch[:sz-1]
+			for len(q) > sz && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+				q = q[:len(q)-1]
 			}
-			ch = append(ch, p)
+			q = append(q, p)
 		}
-		return ch[:len(ch)-1]
+		q = q[:len(q)-1] // 如果需要首尾相同则去掉这行
+		return
 	}
 
 	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
@@ -704,29 +701,28 @@ func vec2Collection() {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FarthestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1452
 	rotatingCalipers := func(ps []vec) (p1, p2 vec) {
-		qs := convexHull(ps)
-		n := len(qs)
+		ch := convexHull(ps)
+		n := len(ch)
 		if n == 2 {
-			return qs[0], qs[1]
+			// maxD2 := ch[0].dis2(ch[1])
+			return ch[0], ch[1]
 		}
-		i, j := 0, 0 // 对踵点对（左下和右上）
-		for k, p := range qs {
-			if !qs[i].less(p) {
+		i, j := 0, 0
+		for k, p := range ch {
+			if !ch[i].less(p) {
 				i = k
 			}
-			if qs[j].less(p) {
+			if ch[j].less(p) {
 				j = k
 			}
 		}
-		maxDis2 := int64(0)
-		i0, j0 := i, j
-		for i != j0 || j != i0 {
-			if d2 := qs[i].sub(qs[j]).len2(); d2 > maxDis2 {
-				maxDis2 = d2
-				p1, p2 = qs[i], qs[j]
+		maxD2 := int64(0)
+		for i0, j0 := i, j; i != j0 || j != i0; {
+			if d2 := ch[i].dis2(ch[j]); d2 > maxD2 {
+				maxD2 = d2
+				p1, p2 = ch[i], ch[j]
 			}
-			// 判断先转到边 i-(i+1) 的法线方向还是边 j-(j+1) 的法线方向
-			if qs[(i+1)%n].sub(qs[i]).det(qs[(j+1)%n].sub(qs[j])) < 0 {
+			if ch[(i+1)%n].sub(ch[i]).det(ch[(j+1)%n].sub(ch[j])) < 0 {
 				i = (i + 1) % n
 			} else {
 				j = (j + 1) % n
@@ -740,23 +736,68 @@ func vec2Collection() {
 	// https://codeforces.com/contest/340/problem/B
 
 	// 凸包周长
-	convexHullLength := func(ps []vec) (res float64) {
-		qs := convexHull(ps)
-		for i := 1; i < len(qs); i++ {
-			res += qs[i].sub(qs[i-1]).len()
+	convexHullPerimeter := func(ps []vec) (l float64) {
+		ch := convexHull(ps) // 注意 convexHull 需要去掉 q = q[:len(q)-1] 这行
+		for i := 1; i < len(ch); i++ {
+			l += ch[i].dis(ch[i-1])
 		}
 		return
 	}
 
-	abs := func(x int64) int64 {
-		if x < 0 {
-			return -x
+	// 半平面交
+	// O(nlogn)，时间开销主要在排序上
+	// 大致思路：首先极角排序，然后用一个队列维护半平面交的顶点，每添加一个半平面，就不断检查队首队尾是否在半平面外，是就剔除
+	// 注意要先剔除队尾再剔除队首
+	// 注：凸包的对偶问题很接近半平面交，所以二者算法很接近
+	// https://oi-wiki.org/geometry/half-plane/
+	// https://www.luogu.com.cn/blog/105254/dui-ban-ping-mian-jiao-suan-fa-zheng-que-xing-xie-shi-di-tan-suo
+	// 模板题 https://www.luogu.com.cn/problem/P4196 https://www.acwing.com/problem/content/2805/
+	// todo https://www.luogu.com.cn/problem/P3256 https://www.acwing.com/problem/content/2960/
+	type lp struct {
+		l lineF
+		p vecF // l 与下一条直线的交点
+	}
+	halfPlanesIntersection := func(ls []lineF) []lp { // 规定左侧为半平面
+		sort.Slice(ls, func(i, j int) bool { return ls[i].vec().polarAngle() < ls[j].vec().polarAngle() })
+		q := []lp{{l: ls[0]}}
+		for i := 1; i < len(ls); i++ {
+			l := ls[i]
+			for len(q) > 1 && !q[len(q)-2].p.onLeft(l) {
+				q = q[:len(q)-1]
+			}
+			for len(q) > 1 && !q[0].p.onLeft(l) {
+				q = q[1:]
+			}
+			if math.Abs(l.vec().det(q[len(q)-1].l.vec())) < eps {
+				// 由于极角排序过，此时两有向直线平行且同向，取更靠内侧的直线
+				if l.p1.onLeft(q[len(q)-1].l) {
+					q[len(q)-1].l = l
+				}
+			} else {
+				q = append(q, lp{l: l})
+			}
+			if len(q) > 1 {
+				q[len(q)-2].p = q[len(q)-2].l.intersection(q[len(q)-1].l)
+			}
 		}
-		return x
+		// 最后用队首检查下队尾，删除无用半平面
+		for len(q) > 1 && !q[len(q)-2].p.onLeft(q[0].l) {
+			q = q[:len(q)-1]
+		}
+
+		if len(q) < 3 {
+			// 半平面交不足三个点的特殊情况，根据题意来返回
+			// 如果需要避免这种情况，可以先加入一个无穷大矩形对应的四个半平面，再求半平面交
+			return nil
+		}
+
+		// 补上首尾半平面的交点
+		q[len(q)-1].p = q[len(q)-1].l.intersection(q[0].l)
+		return q
 	}
 
 	// 点 p 是否在三角形 △abc 内
-	inTriangle := func(a, b, c, p vec) bool {
+	inTriangle := func(a, b, c, p vec, abs func(int64) int64) bool {
 		pa, pb, pc := a.sub(p), b.sub(p), c.sub(p)
 		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
 	}
@@ -779,7 +820,7 @@ func vec2Collection() {
 		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0
 	}
 
-	// todo 判断点 p 是否在多边形 ps 内部
+	// todo 判断点 p 是否在多边形 ps 内部（不保证凸性）
 	// 光线投射算法 Ray casting algorithm
 
 	// 判断 ∠abc 是否为直角
@@ -830,15 +871,11 @@ func vec2Collection() {
 	// 扫描线算法
 	// 模板题 https://www.luogu.com.cn/problem/P5490
 
-	// TODO 半平面交
-	// 推荐 训练指南 的相关章节
-	// https://oi-wiki.org/geometry/half-plane/
-	// https://zhuanlan.zhihu.com/p/83499723
-	// todo https://www.luogu.com.cn/blog/105254/dui-ban-ping-mian-jiao-suan-fa-zheng-que-xing-xie-shi-di-tan-suo
-	// 模板题 https://www.luogu.com.cn/problem/P4196
-
 	_ = []interface{}{
-		readVec, leftMostVec, rightMostVec, readPolygon, polygonArea, rotatingCalipers, convexHullLength, inTriangle, inPolygon,
+		readVec, leftMostVec, rightMostVec,
+		readPolygon, polygonArea, rotatingCalipers, convexHullPerimeter,
+		halfPlanesIntersection,
+		inTriangle, inPolygon,
 		isRectangleAnyOrder, minAreaRect,
 	}
 }
@@ -872,14 +909,15 @@ type circleF struct {
 	r float64
 }
 
-func (vecF) add(vecF) (_ vecF)      { return }
-func (vecF) sub(vecF) (_ vecF)      { return }
-func (vecF) mul(float64) (_ vecF)   { return }
-func (vecF) dot(vecF) (_ float64)   { return }
-func (vecF) det(vecF) (_ float64)   { return }
-func (vecF) len() (_ float64)       { return }
-func (vecF) len2() (_ float64)      { return }
-func (vecF) dis(vecF) (_ float64)   { return }
-func (vecF) dis2(vecF) (_ float64)  { return }
-func (vec) rotate(float64) (_ vecF) { return }
-func (lineF) vec() (_ vecF)         { return }
+func (vecF) add(vecF) (_ vecF)       { return }
+func (vecF) sub(vecF) (_ vecF)       { return }
+func (vecF) mul(float64) (_ vecF)    { return }
+func (vecF) dot(vecF) (_ float64)    { return }
+func (vecF) det(vecF) (_ float64)    { return }
+func (vecF) len() (_ float64)        { return }
+func (vecF) len2() (_ float64)       { return }
+func (vecF) dis(vecF) (_ float64)    { return }
+func (vecF) dis2(vecF) (_ float64)   { return }
+func (vecF) polarAngle() (_ float64) { return }
+func (vec) rotate(float64) (_ vecF)  { return }
+func (lineF) vec() (_ vecF)          { return }
