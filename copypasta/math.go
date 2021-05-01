@@ -1049,7 +1049,28 @@ func numberTheoryCollection() {
 			return r
 		}
 
-		_, _, _ = factorize, core, rad
+		// EXTRA: https://oeis.org/A001414 Integer log of n: sum of primes dividing n (with repetition)
+		sopfr := func(x int) (s int) {
+			for x > 1 {
+				for p := lpf[x]; lpf[x] == p; x /= p {
+					s += p
+				}
+			}
+			return
+		}
+
+		// EXTRA: https://oeis.org/A008472 Sum of the distinct primes dividing n
+		sopf := func(x int) (s int) {
+			for x > 1 {
+				p := lpf[x]
+				s += p
+				for x /= p; lpf[x] == p; x /= p {
+				}
+			}
+			return
+		}
+
+		_ = []interface{}{factorize, core, rad, sopfr, sopf}
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
