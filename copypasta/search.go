@@ -431,23 +431,24 @@ func searchCollection() {
 			a[i], a[n-1-i] = a[n-1-i], a[i]
 		}
 	}
+	// 调用完之后
+	// 返回 true：a 修改为其下一个排列（即比 a 大且字典序最小的排列）
+	// 返回 false：a 修改为其字典序最小的排列（即 a 排序后的结果）
 	nextPermutation := func(a []int) bool {
 		n := len(a)
 		i := n - 2
 		for i >= 0 && a[i] >= a[i+1] {
 			i--
 		}
+		defer reverse(a[i+1:])
 		if i < 0 {
 			return false
 		}
-		//if i >= 0 {
 		j := n - 1
 		for j >= 0 && a[i] >= a[j] {
 			j--
 		}
 		a[i], a[j] = a[j], a[i]
-		//}
-		reverse(a[i+1:])
 		return true
 	}
 
