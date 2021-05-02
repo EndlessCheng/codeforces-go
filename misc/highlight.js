@@ -59,7 +59,7 @@
         "independently", "independent",
         "expected value",
         " circle", " ring",
-        "counterclockwise", "clockwise",
+        "counterclockwise", "counter-clockwise", "clockwise",
 
         "没有", "不是", "不同", "不需要",
         "相同",
