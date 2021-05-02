@@ -175,7 +175,7 @@ func (b bitset) hasSubset(c bitset) bool {
 
 // 注：有关子集枚举的位运算技巧，见 search.go
 func bitsCollection() {
-	// ^v+1 = (-1-v)+1 = -v
+	// 利用 -v = ^v+1
 	lowbit := func(v int64) int64 { return v & -v }
 
 	// 1,2,4,8,...

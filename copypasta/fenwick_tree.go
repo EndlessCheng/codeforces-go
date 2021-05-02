@@ -1,7 +1,10 @@
 package copypasta
 
-/* 树状数组
+/* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
+https://en.wikipedia.org/wiki/Fenwick_tree
 树状数组的基本用途是维护序列的前缀和
+tree[i] = a[i-lowbit(i)+1] + ... + a[i]
+可以看做是一个删去了右儿子的线段树
 
 推荐阅读《算法竞赛进阶指南》0x42 节
 https://oi-wiki.org/ds/bit/
