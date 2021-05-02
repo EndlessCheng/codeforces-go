@@ -3,6 +3,7 @@ package copypasta
 import (
 	. "fmt"
 	"strings"
+	"time"
 )
 
 /* 树堆 treap=tree+heap
@@ -85,7 +86,7 @@ type treap struct {
 	root *tpNode
 }
 
-func newTreap() *treap { return &treap{rd: 1} }
+func newTreap() *treap { return &treap{rd: uint(time.Now().UnixNano())} }
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
