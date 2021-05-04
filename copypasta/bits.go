@@ -141,9 +141,8 @@ https://oeis.org/A090994 Number of meaningful differential operations of the n-t
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 相关题目 LC1215/双周赛10C https://leetcode-cn.com/contest/biweekly-contest-10/problems/stepping-numbers/
 
-套路题
-https://codeforces.com/problemset/problem/1415/D
-
+套路题 https://codeforces.com/problemset/problem/1415/D
+按位归纳 https://codeforces.com/problemset/problem/925/C
 */
 
 // 参考 strings/strings.go 中的 asciiSet
