@@ -123,7 +123,7 @@ func (r *RG) IntSlice(size int, min, max int) []int {
 	return a
 }
 
-// IntSliceOrdered generates a random int slice with a fixed size and its values in range [min, max]
+// IntSliceOrdered generates a random ordered int slice with a fixed size and its values in range [min, max]
 func (r *RG) IntSliceOrdered(size int, min, max int, inc, unique bool) []int {
 	var a []int
 	if unique {
