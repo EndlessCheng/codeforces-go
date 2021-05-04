@@ -39,7 +39,7 @@
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
         "equal", "same", "different", "unique", "distinct", "strictly",
-        "must", "only", "just", "exactly", "always", "indeed",
+        "must", "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous",
 
         // 求解
@@ -51,7 +51,7 @@
         // 特殊描述
         "Empty", "empty",
         "zero", "positive", "negative",
-        "decreasing", "increasing",
+        "decreasing", "descending", "increasing", "ascending",
         "permutations", "permutation",
         "lowercase", "lower case", "uppercase", "upper case",
         "lexicographically", "lexicographical", "palindrome",
