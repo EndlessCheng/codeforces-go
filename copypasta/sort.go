@@ -29,7 +29,7 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 	算法二：排序后用两个堆来维护前缀最小 k 个元素和，以及后缀最小 k 个元素和，然后枚举中位数
 3662 https://www.luogu.com.cn/problem/P1948 二分答案，判断条件是 0-1 最短路 <=k
 1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
-3484 http://poj.org/problem?id=3484 见「防线」
+3484 https://www.acwing.com/problem/content/122/ 二分位置
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 
