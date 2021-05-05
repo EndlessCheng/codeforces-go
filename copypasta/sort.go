@@ -8,6 +8,7 @@ import (
 
 /*
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
+BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 
 https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
 https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
@@ -41,6 +42,24 @@ type pairs []_pair
 func (p pairs) Len() int           { return len(p) }
 func (p pairs) Less(i, j int) bool { a, b := p[i], p[j]; return a.x < b.x || a.x == b.x && a.y < b.y }
 func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+// 记录排序过程中交换元素的下标
+// r := swapRecorder{a, &[][2]int{}}
+// sort.Sort(r)
+// https://codeforces.com/problemset/problem/266/C
+type swapRecorder struct {
+	sort.IntSlice
+	swaps *[][2]int
+}
+
+func (r swapRecorder) Swap(i, j int) {
+	// 快排时可能会有 i==j 的情况
+	if i == j {
+		return
+	}
+	*r.swaps = append(*r.swaps, [2]int{i, j})
+	r.IntSlice[i], r.IntSlice[j] = r.IntSlice[j], r.IntSlice[i]
+}
 
 func sortCollections() {
 	{
