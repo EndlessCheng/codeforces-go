@@ -170,7 +170,6 @@ func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	return a
 }
 
-// UniqueSlice generates a int slice with a fixed size and all ints are unique within range [min, max]
 func (r *RG) uniqueSlice(size int, min, max int) []int {
 	if size > max-min+1 {
 		panic("size is too large")
@@ -182,6 +181,7 @@ func (r *RG) uniqueSlice(size int, min, max int) []int {
 	return p
 }
 
+// UniqueSlice generates a int slice with a fixed size and all ints are unique within range [min, max]
 func (r *RG) UniqueSlice(size int, min, max int) []int {
 	p := r.uniqueSlice(size, min, max)
 	for _, v := range p {
