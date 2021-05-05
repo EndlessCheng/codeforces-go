@@ -5,6 +5,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"strconv"
 )
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
@@ -27,16 +28,21 @@ func fastIO(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	// 读一个非负整数
-	r := func() (x int) {
+	// 读一个整数
+	r := func() int {
+		in.Scan()
+		x, _ := strconv.Atoi(string(in.Bytes()))
+		return x
+	}
+	// 更快的写法（非负数）
+	r = func() (x int) {
 		in.Scan()
 		for _, b := range in.Bytes() {
 			x = x*10 + int(b&15)
 		}
 		return
 	}
-
-	// 读一个整数，支持负数
+	// 支持负数的写法
 	r = func() (x int) {
 		in.Scan()
 		data := in.Bytes()
@@ -54,6 +60,12 @@ func fastIO(_r io.Reader, _w io.Writer) {
 
 	// 读一个浮点数
 	rf := func() float64 {
+		in.Scan()
+		f, _ := strconv.ParseFloat(string(in.Bytes()), 64)
+		return f
+	}
+	// 更快的写法
+	rf = func() float64 {
 		in.Scan()
 		s := in.Bytes()
 		neg := false
