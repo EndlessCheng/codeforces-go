@@ -198,6 +198,25 @@ func (r *RG) Permutation(min, max int) []int {
 	return r.UniqueSlice(size, min, max)
 }
 
+// UniquePoints generates n unique int points, x in range [minX, maxX], y in range [minY, maxY]
+func (r *RG) UniquePoints(n, minX, maxX, minY, maxY int) (points [][2]int) {
+	points = make([][2]int, n)
+	has := map[[2]int]bool{}
+	for i := 0; i < n; i++ {
+		for {
+			if p := [2]int{r._int(minX, maxX), r._int(minY, maxY)}; !has[p] {
+				has[p] = true
+				points[i] = p
+				break
+			}
+		}
+	}
+	for _, p := range points {
+		r.sb.WriteString(fmt.Sprintln(p[0], p[1]))
+	}
+	return
+}
+
 func (r *RG) treeEdges(n, st int) (edges [][2]int) {
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
