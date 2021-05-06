@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math"
+	"math/bits"
+)
 
 // 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -15,7 +18,7 @@ type trie01Node struct {
 
 type trie01 struct{ root *trie01Node }
 
-func newTrie01() *trie01 { return &trie01{&trie01Node{min: 2e9}} }
+func newTrie01() *trie01 { return &trie01{&trie01Node{min: math.MaxInt32}} }
 
 const trieBitLen = 31 // 30 for 1e9, 63 for int64, or bits.Len(MAX_VAL)
 
@@ -35,7 +38,7 @@ func (t *trie01) put(v int) *trie01Node {
 	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
-			o.son[b] = &trie01Node{min: 2e9}
+			o.son[b] = &trie01Node{min: math.MaxInt32}
 		}
 		o = o.son[b]
 		o.cnt++
