@@ -231,6 +231,7 @@
 
 具体可以见 Codeforces 代码仓库 [main](/main)，所有非交互题的代码及其对应测试全部按照上述框架实现。
 
+交互题的写法见 [interactive_problem](/copypasta/template/interactive_problem)。
 
 ## 学习资料及题目 Resources
 
