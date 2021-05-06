@@ -278,15 +278,10 @@ func stringCollection() {
 	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	NOTE: Go1.13 开始使用 SA-IS 算法
 
-	https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArray.java.html
-	https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/SuffixArrayX.java.html
-
 	讲解+例题+套题 https://oi-wiki.org/string/sa/
+	todo 题目推荐 https://www.luogu.com.cn/blog/luckyblock/post-bi-ji-hou-zhui-shuo-zu
 	CF 上的课程 https://codeforces.com/edu/course/2
-	题目推荐 https://cp-algorithms.com/string/suffix-array.html#toc-tgt-11
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
-
-	todo http://poj.org/problem?id=3581
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 在 misc 文件夹下）
 	单个字符串
@@ -310,6 +305,8 @@ func stringCollection() {
 			https://codeforces.com/problemset/problem/123/D (注：这是挑战上推荐的题目)
 			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D 本质上就是 CF123D
 			https://codeforces.com/problemset/problem/802/I 稍作改动
+			todo https://www.luogu.com.cn/problem/P2178
+			 https://www.luogu.com.cn/problem/P3804
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
 	两个字符串
@@ -329,6 +326,7 @@ func stringCollection() {
 			拼接，二分答案，对 height 分组，判定组内元素在每个字符串中至少出现两次且 sa 的最大最小之差不小于二分值（用于判定是否重叠）
 		出现或反转后出现在每个字符串中的最长子串 http://poj.org/problem?id=1226
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
+	todo http://poj.org/problem?id=3581
 	*/
 	suffixArray := func(s []byte) {
 		n := len(s)
