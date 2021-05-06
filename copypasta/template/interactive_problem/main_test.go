@@ -58,7 +58,7 @@ func (io *mockIO) printAnswer(actualAns answer) {
 	expectedAns := io.answer
 	if !assert.EqualValues(io._t, expectedAns, actualAns, "Wrong Answer %d\nInner Data:\n%v", io.caseNum, io) {
 		if failedCount++; failedCount > failedCountLimit {
-			io._t.Fatal("too many wrong cases, terminated")
+			io._t.Fatal("too many wrong answers, terminated")
 		}
 	}
 
@@ -69,7 +69,7 @@ func (io *mockIO) printAnswer(actualAns answer) {
 	}
 	if !assert.Truef(io._t, ansChecker(), "Wrong Answer %d\nMy Answer:\n%v\nInner Data:\n%v", io.caseNum, actualAns, io) {
 		if failedCount++; failedCount > failedCountLimit {
-			io._t.Fatal("too many wrong cases, terminated")
+			io._t.Fatal("too many wrong answers, terminated")
 		}
 	}
 }
