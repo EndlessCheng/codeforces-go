@@ -6,61 +6,75 @@ import (
 	"os"
 )
 
+// github.com/EndlessCheng/codeforces-go
 type (
-	input struct{ n int }
-	req   struct{ i int }
-	resp  struct{ v int }
-	guess struct{ ans []int }
+	initData struct{ n int }
+	request  struct{ i int }
+	response struct{ v int }
+	answer   struct{ ans []int }
 )
 
-// github.com/EndlessCheng/codeforces-go
-func run(in input, Q func(req) resp) (gs guess) {
-	q := func(i int) int { return Q(req{i}).v }
-	n := in.n
-	ans := make([]int, n) //
-	defer func() { gs.ans = ans }()
+type interaction interface {
+	readInitData() initData
+	query(request) response
+	printAnswer(answer)
+}
 
+type io struct {
+	in  *bufio.Reader
+	out *bufio.Writer
+}
 
-
+func (io io) readInitData() (d initData) {
+	Fscan(io.in, &d.n)
 	return
 }
 
+func (io io) query(req request) (resp response) {
+	Fprintln(io.out, "?", req.i)
+	io.out.Flush()
+	Fscan(io.in, &resp.v)
+	if resp.v < 0 {
+		panic(-1)
+	}
+	return
+}
+
+func (io io) printAnswer(a answer) {
+	Fprint(io.out, "! ")
+	for _, v := range a.ans {
+		Fprint(io.out, v, " ")
+	}
+	Fprintln(io.out)
+	io.out.Flush()
+
+	// Optional
+	var res int
+	if Fscan(io.in, &res); res < 0 {
+		panic(res)
+	}
+}
+
+func doInteraction(it interaction) {
+	q := func(i int) int { return it.query(request{i}).v }
+	dt := it.readInitData()
+	n := dt.n
+	ans := make([]int, n) //
+	defer func() { it.printAnswer(answer{ans}) }()
+
+
+}
+
 // TODO: check output format before submit
-func ioq() {
+func run() {
 	in := bufio.NewReader(os.Stdin)
 	out := bufio.NewWriter(os.Stdout)
-
-	// Interaction
-	Q := func(req req) (resp resp) {
-		Fprintln(out, "?", req.i)
-		out.Flush()
-		Fscan(in, &resp.v)
-		return
-	}
 
 	T := 1
 	Fscan(in, &T) //
 	for ; T > 0; T-- {
-		// Input
-		d := input{}
-		Fscan(in, &d.n)
-
-		// Output
-		gs := run(d, Q)
-		ans := gs.ans
-		Fprint(out, "! ")
-		for _, v := range ans {
-			Fprint(out, v, " ")
-		}
-		Fprintln(out)
-		out.Flush()
-
-		// Optional
-		var res int
-		if Fscan(in, &res); res < 0 {
-			panic(-1)
-		}
+		doInteraction(io{in, out})
 	}
 }
 
-func main() { ioq() }
+func main() { run() }

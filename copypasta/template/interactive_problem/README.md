@@ -1,3 +1,13 @@
 # Interactive Problem Template
 
-See [example](example) for how to use this template.
+The idea is design an interface below, then implement it both in `main.go` and `main_test.go`.
+
+```go
+type interaction interface {
+	readInitData() initData
+	query(request) response
+	printAnswer(answer)
+}
+``` 
+
+In this way we can mock the IO part in `main_test.go`.

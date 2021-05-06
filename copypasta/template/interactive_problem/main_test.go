@@ -9,92 +9,95 @@ import (
 
 //func init() { rand.Seed(time.Now().UnixNano()) }
 
-func Test_run(t *testing.T) { testRun(t, 0) }
+const debugCaseNum = 0
+const failedCountLimit = 10
 
-func testRun(t *testing.T, debugCaseNum int) {
-	assert := assert.New(t)
+var rg *testutil.RG
+var failedCount int
 
-	type testCase struct {
-		input
-		guess
-		innerData []int
+type mockIO struct {
+	initData
+	answer
+	innerData []int
+
+	_t         *testing.T
+	caseNum    int
+	queryLimit int
+	queryCnt   int
+}
+
+func (io *mockIO) String() (s string) {
+	s = Sprintf("%v", io.innerData)
+	//s = strings.Join(io.innerData, "\n")
+	return
+}
+
+// Mock initData
+func (io *mockIO) readInitData() (d initData) {
+	return io.initData
+}
+
+// Mock query
+func (io *mockIO) query(req request) (resp response) {
+	if io.caseNum == debugCaseNum {
+		Print("Query ", req, " ")
+		defer func() { Println(resp) }()
 	}
-	format := func(tc testCase) (s string) {
-		s = Sprintf("%v", tc.innerData)
-		//s = strings.Join(tc.innerData, "\n")
-		return
+
+	if io.queryCnt++; io.queryCnt > io.queryLimit {
+		io._t.Fatalf("Query Limit Exceeded %d\nInner Data:\n%v", io.caseNum, io)
 	}
 
-	testCases := []testCase{}
-	for tc := 0; tc < 3e5; tc++ {
-		rg := testutil.NewRandGenerator()
-		n := rg.Int(2, 4)         // 输入
-		a := rg.IntSlice(n, 1, 4) // 猜测对象或内部数据
-		testCases = append(testCases, testCase{
-			input:     input{n},
-			guess:     guess{a},
-			innerData: a,
-		})
-	}
 
-	queryChecker := func(caseNum int, tc testCase) func(req) resp {
-		n := tc.n
-		//a := append([]int(nil), tc.ans...)
 
-		queryCnt, queryLimit := 0, 4*n
+	return
+}
 
-		return func(req req) (resp resp) {
-			if caseNum == debugCaseNum {
-				Print(req, " ")
-				defer func() { Println(resp) }()
-			}
-
-			queryCnt++
-			if queryCnt > queryLimit {
-				panic("query limit exceeded")
-			}
-
-			// ...
-
-			resp.v = -1
-			return
+// Check answer
+func (io *mockIO) printAnswer(actualAns answer) {
+	expectedAns := io.answer
+	if !assert.EqualValues(io._t, expectedAns, actualAns, "Wrong Answer %d\nInner Data:\n%v", io.caseNum, io) {
+		if failedCount++; failedCount > failedCountLimit {
+			io._t.Fatal("too many wrong cases, terminated")
 		}
 	}
 
-	// 有些题目我们仅需要检查答案的合法性就行了
-	ansChecker := func(caseNum int, tc testCase, actualAns guess) bool {
+	// for special judge
+	ansChecker := func() bool {
 
 		return true
 	}
-
-	// do test
-	if debugCaseNum < 0 {
-		debugCaseNum += len(testCases)
-	}
-	const failedCountLimit = 10
-	failedCount := 0
-	for i, tc := range testCases {
-		caseNum := i + 1
-		if debugCaseNum != 0 && caseNum != debugCaseNum {
-			continue
-		}
-		expectedAns := tc.guess
-		actualAns := run(tc.input, queryChecker(caseNum, tc))
-		if !assert.EqualValues(expectedAns, actualAns, "Wrong Answer %d\nInner Data:\n%s", caseNum, format(tc)) {
-			failedCount++
-			if failedCount > failedCountLimit {
-				t.Fatal("too many wrong cases, terminated")
-			}
-		}
-		if !assert.Truef(ansChecker(caseNum, tc, actualAns), "Wrong Answer %d\nMy Answer:\n%s\nInner Data:\n%s", caseNum, actualAns, format(tc)) {
-			failedCount++
-			if failedCount > failedCountLimit {
-				t.Fatal("too many wrong cases, terminated")
-			}
+	if !assert.Truef(io._t, ansChecker(), "Wrong Answer %d\nMy Answer:\n%v\nInner Data:\n%v", io.caseNum, actualAns, io) {
+		if failedCount++; failedCount > failedCountLimit {
+			io._t.Fatal("too many wrong cases, terminated")
 		}
 	}
+}
 
-	if debugCaseNum != 0 && failedCount == 0 {
-		testRun(t, 0)
+func Test_doInteraction(_t *testing.T) {
+	for tc, checkTC := 1, 1; ; tc++ {
+		if tc == debugCaseNum {
+			print()
+			//debug = true
+		}
+
+		io := &mockIO{_t: _t, caseNum: tc}
+
+		rg = testutil.NewRandGenerator()
+		n := rg.Int(2, 4)
+		a := rg.IntSlice(n, 1, 4)
+
+		io.n = n
+		io.ans = a
+		io.innerData = a
+
+		io.queryLimit = n * 4
+
+		doInteraction(io)
+
+		if tc == checkTC {
+			_t.Logf("%d cases checked.", tc)
+			checkTC <<= 1
+		}
 	}
 }
