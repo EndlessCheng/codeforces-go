@@ -922,6 +922,34 @@ func gridCollection() {
 		return s, t
 	}
 
+	// 矩形网格图，返回从起点 (s.x,s.y) 到其余所有可达点的最短距离。'#' 表示无法通过的格子   bfsGridAll 单源最短距离
+	// https://codeforces.com/contest/1520/problem/G
+	disAll := func(g [][]byte, s pair) [][]int {
+		n, m := len(g), len(g[0])
+		dis := make([][]int, n)
+		for i := range dis {
+			dis[i] = make([]int, m)
+			for j := range dis[i] {
+				dis[i][j] = -1
+			}
+		}
+		dis[s.x][s.y] = 0
+		q := []pair{s}
+		for curD := 1; len(q) > 0; curD++ {
+			tmp := q
+			q = nil
+			for _, p := range tmp {
+				for _, d := range dir4 {
+					if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < n && 0 <= y && y < m && g[x][y] != '#' && dis[x][y] < 0 { //
+						dis[x][y] = curD
+						q = append(q, pair{x, y})
+					}
+				}
+			}
+		}
+		return dis
+	}
+
 	// 矩形网格图，返回从起点 (s.x,s.y) 到目标 (t.x,t.y) 的最短距离。'#' 表示无法通过的格子   bfsGridDep 最短距离
 	// 无法到达时返回 inf
 	// t 也可是别的东西，比如某个特殊符号等
@@ -1151,7 +1179,7 @@ func gridCollection() {
 
 	_ = []interface{}{
 		getST,
-		disST, findAllReachableTargets,
+		disAll, disST, findAllReachableTargets,
 		cntCC, dfsValidGrids,
 		findSameValueCC,
 		isValidPoint, findOneTargetAnyWhere, findAllTargetsAnyWhere,
