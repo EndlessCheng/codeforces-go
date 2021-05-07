@@ -37,22 +37,6 @@ func (io *mockIO) readInitData() (d initData) {
 	return io.initData
 }
 
-// Mock query
-func (io *mockIO) query(req request) (resp response) {
-	if io.caseNum == debugCaseNum {
-		Print("Query ", req, " ")
-		defer func() { Println(resp) }()
-	}
-
-	if io.queryCnt++; io.queryCnt > io.queryLimit {
-		io._t.Fatalf("Query Limit Exceeded %d\nInner Data:\n%v", io.caseNum, io)
-	}
-
-
-
-	return
-}
-
 // Check answer
 func (io *mockIO) printAnswer(actualAns answer) {
 	expectedAns := io.answer
@@ -74,27 +58,40 @@ func (io *mockIO) printAnswer(actualAns answer) {
 	}
 }
 
+// Mock query
+func (io *mockIO) query(req request) (resp response) {
+	if io.caseNum == debugCaseNum {
+		Print("Query ", req, " ")
+		defer func() { Println(resp) }()
+	}
+	if io.queryCnt++; io.queryCnt > io.queryLimit {
+		io._t.Fatalf("Query Limit Exceeded %d\nInner Data:\n%v", io.caseNum, io)
+	}
+
+
+
+	return
+}
+
 func Test_doInteraction(_t *testing.T) {
 	for tc, checkTC := 1, 1; ; tc++ {
 		if tc == debugCaseNum {
 			print()
 			//debug = true
 		}
-
 		io := &mockIO{_t: _t, caseNum: tc}
 
 		rg = testutil.NewRandGenerator()
 		n := rg.Int(2, 4)
-		a := rg.IntSlice(n, 1, 4)
+		a := rg.IntSlice(n, 1, n)
 
 		io.n = n
 		io.ans = a
 		io.innerData = a
 
-		io.queryLimit = n * 4
+		io.queryLimit = n + 30
 
 		doInteraction(io)
-
 		if tc == checkTC {
 			_t.Logf("%d cases checked.", tc)
 			checkTC <<= 1

@@ -48,7 +48,7 @@ func (io io) printAnswer(a answer) {
 	Fprintln(io.out)
 	io.out.Flush()
 
-	// Optional
+	// TODO: Optional
 	var res int
 	if Fscan(io.in, &res); res < 0 {
 		panic(res)
