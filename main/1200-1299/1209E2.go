@@ -59,10 +59,9 @@ func CF1209E2(_r io.Reader, out io.Writer) {
 		}
 		dp[0] = mx[0]
 		for i := 1; i < m; i++ {
-			mx := mx[i]
-			for s := 1; s < 1<<n; s++ {
-				for sub := (s - 1) & s; sub != s; sub = (sub - 1) & s {
-					dp[i][s] = max(dp[i][s], dp[i-1][s^sub]+mx[sub])
+			for s, v := range mx[i] {
+				for ss := s; ss < 1<<n; ss = (ss + 1) | s {
+					dp[i][ss] = max(dp[i][ss], dp[i-1][ss^s]+v)
 				}
 			}
 		}
