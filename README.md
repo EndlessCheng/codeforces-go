@@ -337,19 +337,17 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [UpSolve.me](https://upsolve.me/)
 
-[Contests Filter](https://codeforceshelper.herokuapp.com/contests)
-
-[Practice Problems Recommender](https://recommender.codedrills.io/)
-
 [Codeforces Upsolving Helper](https://codeforces-upsolving-helper.herokuapp.com/)
+
+[Contests Filter](https://codeforceshelper.herokuapp.com/contests)
 
 [Codeforced](http://codeforced.github.io/handle/)
 
-### Rating
+[Codeforces Visualizer](https://cfviz.netlify.app/)
+
+### Rating and Difficulties
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
-
-[Codeforces Visualizer](https://cfviz.netlify.app/)
 
 [Codeforces: Problem Difficulties](https://codeforces.com/blog/entry/62865)
 
