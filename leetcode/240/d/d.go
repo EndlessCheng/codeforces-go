@@ -13,7 +13,7 @@ func largestPathValue(s string, es [][]int) (ans int) {
 		g[v] = append(g[v], w)
 		deg[w]++
 	}
-	orders := []int{}
+	cnt := 0
 	dp := make([][26]int, n)
 	q := []int{}
 	for i, d := range deg {
@@ -24,7 +24,7 @@ func largestPathValue(s string, es [][]int) (ans int) {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		orders = append(orders, v)
+		cnt++
 		dp[v][s[v]-'a']++
 		ans = max(ans, dp[v][s[v]-'a'])
 		for _, w := range g[v] {
@@ -36,7 +36,7 @@ func largestPathValue(s string, es [][]int) (ans int) {
 			}
 		}
 	}
-	if len(orders) < n {
+	if cnt < n {
 		return -1
 	}
 	return
