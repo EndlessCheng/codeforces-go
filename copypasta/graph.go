@@ -28,6 +28,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
 环与独立集 https://codeforces.com/problemset/problem/1364/D
 匹配与独立集 https://codeforces.com/problemset/problem/1198/C
 
+归纳 https://codeforces.com/problemset/problem/412/D
 构造 https://codeforces.com/problemset/problem/41/E
 转换 https://codeforces.com/problemset/problem/788/B
 加边 https://codeforces.com/problemset/problem/723/E
@@ -138,6 +139,7 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 }
 
 // EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
+// 无向图后向边定向 https://codeforces.com/problemset/problem/1519/E
 func (*graph) dfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	var f func(int)
@@ -1679,6 +1681,7 @@ todo 树上最小路径覆盖 http://codeforces.com/problemset/problem/618/D
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://oi-wiki.org/topic/graph-matching/bigraph-match/
 // https://zhuanlan.zhihu.com/p/62981901
+// https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3386
@@ -1945,9 +1948,10 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
+// 与堆结合 https://codeforces.com/problemset/problem/1283/F
 // 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
-func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
+func (*graph) topSort(in io.Reader, n, m int) []int {
 	g := make([][]int, n)
 	deg := make([]int, n)
 	for i := 0; i < m; i++ {
@@ -1965,21 +1969,23 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 	//}
 	//levels := make([]int, n)
 
-	orders = make([]int, 0, n)
+	orders := []int{}
 	q := []int{}
 	for i, d := range deg {
 		if d == 0 {
 			q = append(q, i)
 			//levels[i] = 1
-			// NOTE: 对于点权型 DAG DP，这里记得对起点初始化
+			// NOTE: 若起点有特殊性，可以在这里初始化 dp
 		}
 	}
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
 		orders = append(orders, v)
+		// update dp[v]...
+
 		for _, w := range g[v] {
-			// do v-w ...
+			// dp[w] = max(dp[w], dp[v])
 
 			if deg[w]--; deg[w] == 0 {
 				//fa[w] = v
@@ -1989,7 +1995,11 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		}
 	}
 
-	isDAG = len(orders) == n // 或所有 deg 均为 0
+	if len(orders) < n {
+		return orders // -1
+	}
+
+	// NOTE: 若要重复求拓扑排序记得拷贝一份 deg
 
 	{
 		fa := make([]int, n)
@@ -2002,7 +2012,7 @@ func (*graph) topSort(in io.Reader, n, m int) (orders []int, isDAG bool) {
 		}
 	}
 
-	return
+	return orders
 }
 
 // 强连通分量分解 Strongly Connected Component (SCC)
@@ -3092,3 +3102,7 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	}
 	return
 }
+
+// 拟阵 Matroid
+// https://en.wikipedia.org/wiki/Matroid
+// todo 拟阵与最优化问题 https://www.luogu.com.cn/blog/cpp/ni-zhen-yu-zui-you-hua-wen-ti

@@ -35,16 +35,16 @@ func monotoneStackCollections() {
 	}
 
 	monotoneStack := func(a []int) ([]int, []int) {
-		const border int = 2e9 // 求两侧小的话用 -2e9
+		const border int = -2e9 // 求两侧大的话用 2e9
 		type pair struct{ v, i int }
 
-		// 求左侧严格大于
+		// 求左侧严格小于
 		n := len(a)
 		posL := make([]int, n)
 		stack := []pair{{border, -1}}
 		for i, v := range a {
 			for {
-				if top := stack[len(stack)-1]; top.v > v { //
+				if top := stack[len(stack)-1]; top.v < v { //
 					posL[i] = top.i
 					break
 				}
@@ -53,13 +53,13 @@ func monotoneStackCollections() {
 			stack = append(stack, pair{v, i})
 		}
 
-		// 求右侧严格大于
+		// 求右侧严格小于
 		posR := make([]int, n)
 		stack = []pair{{border, n}}
 		for i := n - 1; i >= 0; i-- {
 			v := a[i]
 			for {
-				if top := stack[len(stack)-1]; top.v > v { //
+				if top := stack[len(stack)-1]; top.v < v { //
 					posR[i] = top.i
 					break
 				}
@@ -73,6 +73,7 @@ func monotoneStackCollections() {
 		for i, v := range a {
 			l, r := posL[i]+1, posR[i] // [l,r)
 			mx = max(mx, v*(r-l))
+			//mx = max(mx, v*(sum[r]-sum[l]))
 		}
 
 		return posL, posR
