@@ -1959,7 +1959,7 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 		Fscan(in, &v, &w)
 		v--
 		w--
-		g[v] = append(g[v], w) // 注意不能有自环
+		g[v] = append(g[v], w) // 注意特判自环的情况
 		deg[w]++
 	}
 
