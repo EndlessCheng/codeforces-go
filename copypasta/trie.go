@@ -175,6 +175,25 @@ func (t *trie) countStringHasPrefix(p []byte) int {
 	return o.cnt
 }
 
+// s 的本质不同子串数量 O(n^2)
+// 做法是插入每个后缀，统计节点数。但题目往往会带上额外的条件
+// https://codeforces.com/problemset/problem/271/D
+//     注：这题还可以用后缀数组+前缀和二分来做到 O(nlogn)
+func (t *trie) countDistinctSubstring(s []byte) (cnt int) {
+	for i := range s {
+		o := t.root
+		for _, b := range s[i:] {
+			b = t.ord(b)
+			if o.son[b] == nil {
+				o.son[b] = &trieNode{}
+				cnt++
+			}
+			o = o.son[b]
+		}
+	}
+	return
+}
+
 // EXTRA: AC 自动机 Aho–Corasick algorithm / Deterministic Finite Automaton (DFA)
 // https://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_algorithm
 // https://en.wikipedia.org/wiki/Deterministic_finite_automaton
