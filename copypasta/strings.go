@@ -74,16 +74,17 @@ func stringCollection() {
 	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
 	// 模板题 https://www.luogu.com.cn/problem/P3375
 	// https://codeforces.com/problemset/problem/432/D
+	// https://codeforces.com/problemset/problem/471/D
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {
-			b := s[i]
-			for c > 0 && s[c] != b {
+			v := s[i]
+			for c > 0 && s[c] != v {
 				c = match[c-1]
 			}
-			if s[c] == b {
+			if s[c] == v {
 				c++
 			}
 			match[i] = c
@@ -95,11 +96,11 @@ func stringCollection() {
 		match := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
 		c := 0
-		for i, b := range text {
-			for c > 0 && pattern[c] != b {
+		for i, v := range text {
+			for c > 0 && pattern[c] != v {
 				c = match[c-1]
 			}
-			if pattern[c] == b {
+			if pattern[c] == v {
 				c++
 			}
 			if c == lenP {
@@ -298,6 +299,9 @@ func stringCollection() {
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
 			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
+		带限制的不同子串个数
+			https://codeforces.com/problemset/problem/271/D
+			这题可以枚举每个后缀，跳过 height[i] 个字符，然后在前缀和上二分
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
 		子串统计类题目
@@ -342,6 +346,7 @@ func stringCollection() {
 			rank[sa[i]] = i
 		}
 
+		// height[0] = 0
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
