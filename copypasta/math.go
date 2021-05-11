@@ -2033,6 +2033,8 @@ func numberTheoryCollection() {
 	// todo https://oi-wiki.org/math/mobius/
 	//      https://zhuanlan.zhihu.com/p/138038817
 
+	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
+
 	//
 
 	// 数论分块/除法分块/整除分块
@@ -2047,7 +2049,7 @@ func numberTheoryCollection() {
 	//     a(n) 前缀和 = Sum_{k=1..n-1} Sum_{i=1..n-1} floor(k/i) https://oeis.org/A078567
 	// 恒等式 n%i = n-(n/i)*i
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
-	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261
+	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261 https://codeforces.com/problemset/problem/616/E
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
@@ -2070,7 +2072,7 @@ func numberTheoryCollection() {
 	}
 
 	// ∑x/i, i in [low,up]
-	// https://codeforces.com/contest/1485/problem/C
+	// 转换 https://codeforces.com/problemset/problem/1485/C
 	floorLoopRange := func(low, up, x int64) (sum int64) {
 		min := func(a, b int64) int64 {
 			if a < b {
@@ -2091,11 +2093,12 @@ func numberTheoryCollection() {
 	}
 
 	// 余数求和
-	// ∑k%i (when k=n its ∑n%i)
+	//   ∑k%i (i in [1,n])
 	// = ∑k-(k/i)*i
 	// = n*k-∑(k/i)*i
 	// 对于 [l,r] 范围内的 i，k/i 不变，此时 ∑(k/i)*i = (k/i)*∑i = (k/i)*(l+r)*(r-l+1)/2
 	// https://www.luogu.com.cn/problem/P2261
+	// https://codeforces.com/problemset/problem/616/E
 	floorLoopK := func(n, k int64) int64 {
 		min := func(a, b int64) int64 {
 			if a < b {
