@@ -2268,6 +2268,9 @@ func numberTheoryCollection() {
 	其他相关序列
 	https://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
 	https://oeis.org/A000931 Padovan sequence (or Padovan numbers): a(n)=a(n-2)+a(n-3) with a(0)=1, a(1)=a(2)=0
+	https://oeis.org/A001045 Jacobsthal sequence (or Jacobsthal numbers): a(n)=a(n-1)+2*a(n-2) = (2^n - (-1)^n)/3, with a(0) = 0, a(1) = 1
+	https://oeis.org/A112387 This sequence originated from the Fibonacci sequence, but instead of adding the last two terms, you get the average.
+	    https://codeforces.com/problemset/problem/696/C
 	*/
 
 	// https://oeis.org/A195264 Iterate x -> A080670(x) (replace x with the concatenation of the primes and exponents in its prime factorization)
