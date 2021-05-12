@@ -297,7 +297,7 @@ func commonCollection() {
 
 	// 返回 a 的各个子集的元素和的排序后的结果
 	// 若已求出前 i-1 个数的有序子集和 b，那么前 i 个数的有序子集和可以由 b 和 {b 的每个数加上 a[i]} 归并得到
-	// 复杂度为 1+2+4+...+2^(n-1) = O(2^n)
+	// 复杂度为 O(1+2+4+...+2^(n-1)) = O(2^n)
 	// 参考 https://leetcode-cn.com/problems/closest-subsequence-sum/solution/o2n2de-zuo-fa-by-heltion-0yn7/
 	subSumSorted := func(a []int) []int {
 		sum := []int{0}
