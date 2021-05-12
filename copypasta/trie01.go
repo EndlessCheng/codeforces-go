@@ -91,6 +91,7 @@ func findMaximumXOR(a []int) (ans int) {
 // v 与 trie 上所有不超过 limit 的数的最大异或值
 // 不存在时返回 -1
 // https://codeforces.com/problemset/problem/979/D
+// LC1707/周赛211D https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/
 func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 	o := t.root
 	if o.min > limit {

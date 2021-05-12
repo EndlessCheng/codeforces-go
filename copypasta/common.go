@@ -38,6 +38,12 @@ import (
 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 */
 
+/* 归纳：solve(n)->solve(n-1) 或者 solve(n-1)->solve(n)
+https://codeforces.com/problemset/problem/1517/C
+https://codeforces.com/problemset/problem/412/D
+https://codeforces.com/problemset/problem/266/C
+*/
+
 /* 见微知著：考察单个点的规律，从而推出全局规律
 https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
@@ -49,6 +55,8 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
 // 栈的应用 https://codeforces.com/problemset/problem/1092/D1
 //         https://codeforces.com/problemset/problem/1092/D2
+
+// 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
 
 // Golang 注意事项：
 // 		和 slice 不同，for range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 或 forr a[:] 获取（因为 for range array 会整个拷贝一份）
@@ -274,21 +282,22 @@ func commonCollection() {
 		}
 	}
 
-	// 返回 a 的各个子集的元素和（不保证返回结果有序）
+	// 返回 a 的各个子集的元素和
+	// https://codeforces.com/contest/1209/problem/E2
 	subSum := func(a []int) []int {
 		sum := make([]int, 1<<len(a)) // int64
-		for i, v := range a {
-			for j := 0; j < 1<<i; j++ {
-				sum[1<<i|j] = sum[j] + v
+		for p, v := range a {
+			for s := 0; s < 1<<p; s++ {
+				sum[1<<p|s] = sum[s] + v
 				// NOTE: 若要直接在此写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
 			}
 		}
 		return sum
 	}
 
-	// 返回 a 的各个子集的元素和，且保证返回结果有序
+	// 返回 a 的各个子集的元素和的排序后的结果
 	// 若已求出前 i-1 个数的有序子集和 b，那么前 i 个数的有序子集和可以由 b 和 {b 的每个数加上 a[i]} 归并得到
-	// 复杂度为 1+2+4+...+2^n = O(2^n)
+	// 复杂度为 1+2+4+...+2^(n-1) = O(2^n)
 	// 参考 https://leetcode-cn.com/problems/closest-subsequence-sum/solution/o2n2de-zuo-fa-by-heltion-0yn7/
 	subSumSorted := func(a []int) []int {
 		sum := []int{0}
