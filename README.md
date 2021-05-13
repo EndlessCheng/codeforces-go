@@ -345,6 +345,8 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [Codeforces Visualizer](https://cfviz.netlify.app/)
 
+[Codeforces Solve Tracker](https://cftracker.netlify.app/contests)
+
 ### Rating and Difficulties
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
