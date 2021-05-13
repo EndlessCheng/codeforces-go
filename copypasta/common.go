@@ -40,7 +40,7 @@ https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-i
 /* 奇偶性
 https://codeforces.com/problemset/problem/763/B
 https://codeforces.com/problemset/problem/1270/E
-https://codeforces.com/problemset/problem/1332/E
+https://codeforces.com/problemset/problem/1332/E 配对法：将合法局面与非法局面配对
 */
 
 /* 归纳：solve(n)->solve(n-1) 或者 solve(n-1)->solve(n)
