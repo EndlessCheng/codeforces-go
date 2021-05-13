@@ -49,8 +49,10 @@ https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 */
 
-// NOTE: 正难则反。 all => any, any => all https://codeforces.com/problemset/problem/621/C
-// NOTE: 子区间和为 0 => 出现了两个同样的前缀和。这种题目建议下标从 1 开始，见 https://codeforces.com/problemset/problem/1333/C
+/* 小学奥数告诉我们，不可行方案永远比可行方案好求（正难则反）
+https://codeforces.com/problemset/problem/621/C
+https://codeforces.com/problemset/problem/571/A
+*/
 
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
 // 栈的应用 https://codeforces.com/problemset/problem/1092/D1
@@ -58,14 +60,16 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 
 // 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
 
-// Golang 注意事项：
-// 		和 slice 不同，for range array 时，遍历 i 时修改 i 后面的元素的值是不影响 ai 的，只能用 for+a[i] 或 forr a[:] 获取（因为 for range array 会整个拷贝一份）
-// 		for-switch 内的 break 跳出的是该 switch，不是其外部的 for 循环
-// 		对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，不去扫描大量对象，能明显减少耗时；
-//		对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险；
-//		其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
-//		对于多组数据的情况，禁用 GC 若 MLE，可在每组数据的开头或者末尾调用 debug.FreeOSMemory() 手动 GC
-//		参考 https://zhuanlan.zhihu.com/p/77943973 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
+/* Golang 注意事项
+for range array 会拷贝一份 array，这种情况可以用 for range array[:]
+for-switch 内的 break 跳出的是该 switch，而不是其外部的 for 循环
+对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，不去扫描大量对象，能明显减少耗时
+对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
+其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
+对于多组数据的情况，禁用 GC 若 MLE，可在每组数据的开头或者末尾调用 debug.FreeOSMemory() 手动 GC
+参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
+    https://zhuanlan.zhihu.com/p/77943973
+*/
 func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
@@ -312,7 +316,7 @@ func commonCollection() {
 	}
 
 	// 分组前缀和（具体见 query 上的注释）
-	// 周赛 216C https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
+	// LC1664/周赛216C https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
 	groupPrefixSum := func(a []int, k int) {
 		// 补 0 简化后续逻辑
 		n := len(a)
@@ -780,6 +784,7 @@ func commonCollection() {
 	// 某些题目需要配合线段树
 	// https://cses.fi/book/book.pdf 30.1
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
+	// TODO 矩形周长 https://www.luogu.com.cn/problem/P1856
 	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.com/problemset/problem/1000/C

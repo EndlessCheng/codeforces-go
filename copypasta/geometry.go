@@ -29,6 +29,11 @@ a < b    a*(1+eps) < b
 a <= b   a*(1-eps) < b
 a == b   a*(1-eps) < b && b < a*(1+eps)
 
+避免不同数量级的浮点数的加减可以减小误差
+见下面这两份代码的区别
+https://codeforces.com/problemset/submission/621/116068024
+https://codeforces.com/problemset/submission/621/116068186
+
 dot (dot product，点积):
 A·B 可以理解为向量 A 在向量 B 上的投影再乘以 B 的长度
 
