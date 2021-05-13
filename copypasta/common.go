@@ -49,14 +49,14 @@ https://codeforces.com/problemset/problem/412/D
 https://codeforces.com/problemset/problem/266/C
 */
 
+/* 正难则反：小学奥数告诉我们，不可行方案永远比可行方案好求
+https://codeforces.com/problemset/problem/621/C
+https://codeforces.com/problemset/problem/571/A
+*/
+
 /* 见微知著：考察单个点的规律，从而推出全局规律
 https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
-*/
-
-/* 小学奥数告诉我们，不可行方案永远比可行方案好求（正难则反）
-https://codeforces.com/problemset/problem/621/C
-https://codeforces.com/problemset/problem/571/A
 */
 
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
