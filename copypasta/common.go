@@ -32,10 +32,15 @@ import (
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
-奇偶性 https://codeforces.com/problemset/problem/763/B
 等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
 逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
+*/
+
+/* 奇偶性
+https://codeforces.com/problemset/problem/763/B
+https://codeforces.com/problemset/problem/1270/E
+https://codeforces.com/problemset/problem/1332/E
 */
 
 /* 归纳：solve(n)->solve(n-1) 或者 solve(n-1)->solve(n)

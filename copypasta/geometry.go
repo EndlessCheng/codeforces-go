@@ -71,9 +71,12 @@ Acos(-1) = π
 todo 二维偏序 https://ac.nowcoder.com/acm/contest/4853/F 题解 https://ac.nowcoder.com/discuss/394080
 
 Pick 定理
+https://en.wikipedia.org/wiki/Pick%27s_theorem
 https://oi-wiki.org/geometry/pick/
 https://cp-algorithms.com/geometry/picks-theorem.html
 https://cp-algorithms.com/geometry/lattice-points.html
+A=i+b/2-1, A为多边形面积，i为内部格点数，b为边上格点数
+利用该定理可以证明：不存在坐标均为整数的正三角形、正六边形等
 
 TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
       顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
