@@ -170,6 +170,7 @@ func (r *RG) FloatSlice(size int, min, max float64, precision int) []float64 {
 	return a
 }
 
+// TODO: O(size) 做法 https://mivik.blog.luogu.org/the-art-of-randomness
 func (r *RG) uniqueSlice(size int, min, max int) []int {
 	if size > max-min+1 {
 		panic("size is too large")
@@ -217,6 +218,9 @@ func (r *RG) UniquePoints(n, minX, maxX, minY, maxY int) (points [][2]int) {
 	return
 }
 
+// 随机父节点
+// 期望树高 https://blog.csdn.net/EI_Captain/article/details/109910307
+// 更严格的随机树见 https://mivik.blog.luogu.org/the-art-of-randomness
 func (r *RG) treeEdges(n, st int) (edges [][2]int) {
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
@@ -375,3 +379,5 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int) (edges [][3]int
 	}
 	return
 }
+
+// TODO: 随机括号序列 https://mivik.blog.luogu.org/the-art-of-randomness
