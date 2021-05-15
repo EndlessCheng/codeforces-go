@@ -1664,3 +1664,40 @@ func reverseParentheses(s string) string {
         }
     }
 }
+
+// LC 1858
+func longestWord(words []string) (ans string) {
+    type trie struct {
+        son [26]*trie
+        end bool
+    }
+    t := &trie{}
+    for _, w := range words {
+        o := t
+        for _, b := range w {
+            b -= 'a'
+            if o.son[b] == nil {
+                o.son[b] = &trie{}
+            }
+            o = o.son[b]
+        }
+        o.end = true
+    }
+
+    cur := []byte{}
+    var f func(*trie, int)
+    f = func(o *trie, dep int) {
+        if dep > len(ans) {
+            ans = string(cur)
+        }
+        for i, s := range o.son {
+            if s != nil && s.end {
+                cur = append(cur, 'a'+byte(i))
+                f(s, dep+1)
+                cur = cur[:len(cur)-1]
+            }
+        }
+    }
+    f(t, 0)
+    return
+}
