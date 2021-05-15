@@ -233,6 +233,33 @@ func sortCollections() {
 		return ans
 	}
 
+	// 子集和的第 k 小（数组元素均为非负）
+	// k 从 1 开始
+	// 除了二分，另一种求法是使用最小堆
+	// 初始时插入 (a[0],0)，然后执行 k-1 次操作：取出堆顶，插入 (top.v+a[top.i+1],top.i+1) 以及 (top.v+a[top.i+1]-a[top.i],top.i+1)
+	// 代码见 https://codeforces.com/gym/101234/submission/116219928
+	// https://codeforces.com/gym/101234/problem/G
+	kthSubsetSum := func(a []int, k int) int {
+		sort.Ints(a)
+		// 上界不会超过 a 的前 log(k) 个元素之和
+		// 必要时用 int64
+		ans := sort.Search(2e9, func(sum int) bool {
+			c := 0
+			var f func(p, s int)
+			f = func(p, s int) {
+				if c >= k || p == len(a) || s+a[p] > sum {
+					return
+				}
+				c++
+				f(p+1, s+a[p])
+				f(p+1, s)
+			}
+			f(0, 0)
+			return c >= k
+		})
+		return ans
+	}
+
 	//
 
 	// TIPS: 实数二分/三分中的 step 取多少合适：
@@ -407,7 +434,7 @@ func sortCollections() {
 		lowerBound, upperBound,
 		searchRange, searchRange64,
 		binarySearchS1, binarySearchS2,
-		kthSmallest, kthSmallestRangeSum,
+		kthSmallest, kthSmallestRangeSum, kthSubsetSum,
 		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
 		search01,
 		binaryLifting,
