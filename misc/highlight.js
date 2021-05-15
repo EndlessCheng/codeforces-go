@@ -40,7 +40,7 @@
         "every", " both ", " other ",
         "equal", "same", "different", "unique", "distinct", "strictly",
         "must", "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
-        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous",
+        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another",
 
         // 求解
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
