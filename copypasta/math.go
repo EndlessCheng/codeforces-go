@@ -1893,6 +1893,8 @@ func numberTheoryCollection() {
 	//    todo https://www.luogu.com.cn/problem/P5408
 	//         https://www.luogu.com.cn/problem/P5409
 	//         https://codeforces.com/problemset/problem/1516/E
+	// 绝对值版本 https://oeis.org/A130534 coefficients of the polynomial (x+1)(x+2)...(x+n), expanded in increasing powers of x
+	//    LC241D https://leetcode-cn.com/contest/weekly-contest-241/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
 	// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
@@ -1905,6 +1907,20 @@ func numberTheoryCollection() {
 	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 	// todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 	// todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
+	stirling1 := func(n, k int) int64 {
+		s := make([][]int64, n+1)
+		for i := range s {
+			s[i] = make([]int64, n+1)
+		}
+		s[0][0] = 1
+		for i := 1; i <= n; i++ {
+			for j := 1; j <= i; j++ {
+				s[i][j] = (s[i-1][j-1] + int64(i-1)*s[i-1][j]) % mod
+			}
+		}
+		return s[n][k]
+	}
+
 	stirling2 := func(n, k int) int64 {
 		s2 := make([][]int64, n+1)
 		for i := range s2 {
@@ -2291,7 +2307,7 @@ func numberTheoryCollection() {
 		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
-		stirling2, stirling2RowPoly,
+		stirling1, stirling2, stirling2RowPoly,
 		bell, bellPoly,
 		sieveMu,
 		floorLoop, floorLoopRange, floorLoopK, floorLoop2,
