@@ -1885,17 +1885,18 @@ func numberTheoryCollection() {
 	// todo https://www.luogu.com.cn/blog/xzc/zu-ge-shuo-xue-hu-si-te-lin-shuo
 	// https://blog.csdn.net/ACdreamers/article/details/8521134
 	// 一个对称的斯特林数恒等式及其扩展 https://blog.csdn.net/EI_Captain/article/details/108806153
-	// Stirling numbers of the first kind, s(n,k) https://oeis.org/A008275
+	// 【第一类斯特林数】s(n,k) https://oeis.org/A008275
+	// 绝对值版本 https://oeis.org/A130534 coefficients of the polynomial (x+1)(x+2)...(x+n), expanded in increasing powers of x
 	//    定义为对应递降阶乘展开式的各项系数
 	//    将 n 个元素排成 k 个非空循环排列的方法数
 	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
+	//    LC241D https://leetcode-cn.com/contest/weekly-contest-241/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
+	//    建筑师 https://www.luogu.com.cn/problem/P4609
 	//    todo https://www.luogu.com.cn/problem/P5408
 	//         https://www.luogu.com.cn/problem/P5409
 	//         https://codeforces.com/problemset/problem/1516/E
-	// 绝对值版本 https://oeis.org/A130534 coefficients of the polynomial (x+1)(x+2)...(x+n), expanded in increasing powers of x
-	//    LC241D https://leetcode-cn.com/contest/weekly-contest-241/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
-	// Stirling numbers of the second kind, S2(n,k) https://oeis.org/A008277
+	// 【第二类斯特林数】S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
 	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
@@ -1910,11 +1911,11 @@ func numberTheoryCollection() {
 	stirling1 := func(n, k int) int64 {
 		s := make([][]int64, n+1)
 		for i := range s {
-			s[i] = make([]int64, n+1)
+			s[i] = make([]int64, n+1) // K+1
 		}
 		s[0][0] = 1
 		for i := 1; i <= n; i++ {
-			for j := 1; j <= i; j++ {
+			for j := 1; j <= i; j++ { // j <= K
 				s[i][j] = (s[i-1][j-1] + int64(i-1)*s[i-1][j]) % mod
 			}
 		}
