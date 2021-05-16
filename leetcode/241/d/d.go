@@ -1,21 +1,19 @@
 package main
 
-// github.com/EndlessCheng/codeforces-go
-const mod int = 1e9 + 7
+// 我的题解：https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/solution/zhuan-huan-cheng-di-yi-lei-si-te-lin-shu-2y1k/
 
-var f = make([][]int, 1000)
+// github.com/EndlessCheng/codeforces-go
+var f [1001][1001]int
 
 func init() {
-	f[0] = []int{1, 0}
-	for i := 1; i < 1000; i++ {
-		f[i] = make([]int, i+2)
-		f[i][0] = f[i-1][0] * i % mod
+	f[0][0] = 1
+	for i := 1; i <= 1000; i++ {
 		for j := 1; j <= i; j++ {
-			f[i][j] = (f[i-1][j-1] + i*f[i-1][j]) % mod
+			f[i][j] = (f[i-1][j-1] + (i-1)*f[i-1][j]) % (1e9 + 7)
 		}
 	}
 }
 
 func rearrangeSticks(n, k int) int {
-	return f[n-1][k-1]
+	return f[n][k]
 }
