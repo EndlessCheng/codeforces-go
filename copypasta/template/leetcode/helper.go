@@ -93,6 +93,9 @@ func renameInputArgs(funcDefineLine string) string {
 		"queries", "qs",
 		"target", "tar",
 		"limit", "lim",
+		"index", "id",
+		"index1", "id1",
+		"index2", "id2",
 	}
 	for i := range oldNew {
 		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
