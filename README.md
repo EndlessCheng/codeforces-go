@@ -15,10 +15,10 @@
 ## 算法目录
 
 - 数据结构
-  - [双端队列 deque.go](/copypasta/deque.go)
-  - [堆（优先队列）heap.go](/copypasta/heap.go)
   - [单调栈 monotone_stack.go](/copypasta/monotone_stack.go)
   - [单调队列 monotone_queue.go](/copypasta/monotone_queue.go)
+  - [双端队列 deque.go](/copypasta/deque.go)
+  - [堆（优先队列）heap.go](/copypasta/heap.go)
   - [并查集 union_find.go](/copypasta/union_find.go)
     - 点权
     - 边权（种类）
