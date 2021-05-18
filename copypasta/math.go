@@ -1836,13 +1836,41 @@ func numberTheoryCollection() {
 		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
 		Catalan = func(n int) int64 { return new(big.Int).Rem(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
 
+		// 默慈金数 Motzkin number https://oeis.org/A001006
+		// 从 (0,0) 移动到 (n,0) 的网格路径数，每步只能向右移动一格（可以向右上、右下、横向向右），并禁止移动到 y=0 以下的地方
+		// M(n) = Sum_{i=0..n/2} C(n,2*i)*Catalan(i)
+		// https://en.wikipedia.org/wiki/Motzkin_number
+		// 包含生成函数 https://mathworld.wolfram.com/MotzkinNumber.html
+		// 生成函数推导 https://zhuanlan.zhihu.com/p/187502941
+		// https://blog.csdn.net/acdreamers/article/details/41213667
+		// http://acm.hdu.edu.cn/showproblem.php?pid=3723
+		Motzkin := func(n int) (res int64) {
+			for i := 0; i <= n/2; i++ {
+				res = (res + C(n, 2*i)*Catalan(i)) % mod
+			}
+			return
+		}
+
+		// EXTRA: 若仅限定起点为 (0,0)，终点可以是任意 (n,i) https://oeis.org/A005773
+		// a(0)=1, a(n) = Sum_{k=0..n-1} M(k)*a(n-k-1)
+
+		// EXTRA: 起点为 (0,i)，终点为 (n,j) https://oeis.org/A081113 Number of paths of length n-1 a king can take from one side of an n X n chessboard to the opposite side
+		// a(n) = number of sequences (a_1,a_2,...,a_n) with 1<=a_i<=n for all i and |a_(i+1)-a_(i)|<=1 for 1<=i<=n-1
+		// a(n) = Sum_{k=1..n} k*(n-k+1)*M(n-1, k-1) where M() is the Motzkin triangle https://oeis.org/A026300
+		// 1, 4, 17, 68, 259, 950, 3387, 11814, 40503, 136946, 457795, 1515926, 4979777, 16246924, 52694573, 170028792, 546148863, 1747255194, 5569898331, 17698806798, 56076828573, 177208108824, 558658899825, 1757365514652
+
+		// 那罗延数 Narayana number (Narayana triangle) https://oeis.org/A001263
+		// 从 (0,0) 移动到 (2n,0) 且恰好有 k 个山峰的网格路径数，每步只能向右上或右下移动一格（不能横向），并禁止移动到 x 轴以下的地方
+		// N(n,k) = C(n,k)*C(n,k-1)/n
+		// https://en.wikipedia.org/wiki/Narayana_number
+
 		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
 		for i := 1; i <= mx; i++ {
 			pow2[i] = pow2[i-1] << 1 % mod
 		}
 
-		_ = []interface{}{C, P, H, Catalan}
+		_ = []interface{}{C, P, H, Catalan, Motzkin}
 	}
 
 	// 适用于 n 巨大但 k 或 n-k 较小的情况
