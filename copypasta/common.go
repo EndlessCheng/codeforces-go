@@ -793,6 +793,7 @@ func commonCollection() {
 	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
+	// https://codeforces.com/problemset/problem/1379/D
 	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
