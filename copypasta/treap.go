@@ -2,7 +2,6 @@ package copypasta
 
 import (
 	. "fmt"
-	"math/rand"
 	"strings"
 	"time"
 )
@@ -89,8 +88,7 @@ type treap struct {
 
 // 也可以直接设 rd 为 1
 func newTreap() *treap {
-	rand.Seed(time.Now().UnixNano())
-	return &treap{rd: uint(rand.Int())/2 + 1}
+	return &treap{rd: uint(time.Now().UnixNano())/2 + 1}
 }
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
