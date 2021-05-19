@@ -303,7 +303,7 @@ func (t *bst) keys() []int {
 	return keys
 }
 
-// 中序遍历
+// 中序遍历（如果是多重集请用下面的 foreachM）
 func (t *bst) foreach(do func(o *bstNode) (Break bool)) {
 	var f func(*bstNode) bool
 	f = func(o *bstNode) bool {
