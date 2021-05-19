@@ -15,11 +15,15 @@ https://en.wikipedia.org/wiki/Game_theory
           此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 https://oi-wiki.org/math/game-theory/
+todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-fa-bo-yi-lun-zong-ling-kai-shi-di-bo-yi-lun-post
+todo 阶梯博弈 https://codeforces.com/blog/entry/44651
 
 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
 TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
 todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
+阶梯博弈 https://codeforces.com/problemset/problem/812/E
+todo 阶梯博弈 移动金币 https://www.luogu.com.cn/problem/P5363
 todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
