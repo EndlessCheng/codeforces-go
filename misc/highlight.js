@@ -34,7 +34,7 @@
     const words = [
         // 描述
         "Initially", "initially", "guaranteed", "No matter", "no matter",
-        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid",
+        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", "nothing",
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
