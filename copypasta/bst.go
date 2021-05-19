@@ -282,7 +282,7 @@ func (t *bst) max() (max *bstNode) {
 	return
 }
 
-// 中序遍历以返回有序数组
+// 中序遍历，返回所有键值
 func (t *bst) keys() []int {
 	keys := make([]int, 0, t.size())
 	var f func(*bstNode)
@@ -297,6 +297,19 @@ func (t *bst) keys() []int {
 	}
 	f(t.root)
 	return keys
+}
+
+// 中序遍历
+func (t *bst) foreach(do func(o *bstNode) (Break bool)) {
+	var f func(*bstNode) bool
+	f = func(o *bstNode) bool {
+		if o == nil {
+			return false
+		}
+		o.pushDown()
+		return f(o.lr[0]) || do(o) || f(o.lr[1])
+	}
+	f(t.root)
 }
 
 //
