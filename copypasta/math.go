@@ -1926,7 +1926,8 @@ func numberTheoryCollection() {
 	//         https://codeforces.com/problemset/problem/1516/E
 	// 【第二类斯特林数】S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
-	//    S2(n, k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*binomial(k, i)*i^n.
+	//    用容斥计算单个项 S2(n,k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*C(k, i)*i^n
+	//         https://codeforces.com/problemset/problem/1342/E
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
 	//    https://www.luogu.com.cn/problem/P5395
@@ -2519,6 +2520,7 @@ func combinatoricsCollection() {
 	// 参考《挑战程序设计竞赛》P296
 	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
+	// https://codeforces.com/problemset/problem/1342/E
 	solveInclusionExclusion := func(a []int) (ans int64) {
 		n := len(a)
 		const mod int64 = 1e9 + 7 // 998244353
