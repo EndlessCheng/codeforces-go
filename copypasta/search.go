@@ -309,7 +309,7 @@ func searchCollection() {
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.combinations
 	// https://stackoverflow.com/questions/41694722/algorithm-for-itertools-combinations-in-python
-	combinations := func(n, r int, do func(ids []int) bool) {
+	combinations := func(n, r int, do func(ids []int) (Break bool)) {
 		ids := make([]int, r)
 		for i := range ids {
 			ids[i] = i
@@ -343,7 +343,7 @@ func searchCollection() {
 	// https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 	// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
 	// 相当于长度为 k，元素范围在 [0,n-1] 的非降序列的个数
-	combinationsWithRepetition := func(n, k int, do func(ids []int) bool) {
+	combinationsWithRepetition := func(n, k int, do func(ids []int) (Break bool)) {
 		ids := make([]int, k)
 		if do(ids) {
 			return
@@ -371,7 +371,7 @@ func searchCollection() {
 	// 从一个长度为 n 的数组中选择 r 个元素，按字典序生成所有排列，每个排列用下标表示  r <= n
 	// 由于实现上直接传入了 indexes，所以在 do 中不能修改 ids。若要修改则代码在传入前需要 copy 一份
 	// 参考 https://docs.python.org/3/library/itertools.html#itertools.permutations
-	permutations := func(n, r int, do func(ids []int) bool) {
+	permutations := func(n, r int, do func(ids []int) (Break bool)) {
 		ids := make([]int, n)
 		for i := range ids {
 			ids[i] = i
