@@ -795,6 +795,7 @@ func commonCollection() {
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// https://codeforces.com/problemset/problem/1379/D
 	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
+	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
@@ -826,6 +827,7 @@ func commonCollection() {
 		for i := 0; i < n; i++ {
 			var l, r int
 			Fscan(in, &l, &r)
+			// 注意移位后是否溢出
 			events = append(events, l<<1|1, r<<1) // 先出后进
 			//events = append(events, l<<1, r<<1|1) // 先进后出
 		}
