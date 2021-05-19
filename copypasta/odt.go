@@ -5,6 +5,8 @@ import "sort"
 // "Old Driver Tree"
 // 一种可以动态合并与分裂的分块结构，在随机数据下有高效性能
 // https://oi-wiki.org/ds/odt/
+// todo 随机数据下的复杂度证明 https://zhuanlan.zhihu.com/p/102786071
+// 我写的题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf896c
 
 // 这里用 slice 实现
 type odtBlock struct {
@@ -78,7 +80,7 @@ func (t odt) kth(begin, end, k int) int64 {
 	panic(k)
 }
 
-func (odt) exp(x int64, n int, mod int64) int64 {
+func (odt) pow(x int64, n int, mod int64) int64 {
 	x %= mod
 	res := int64(1) % mod
 	for ; n > 0; n >>= 1 {
@@ -93,7 +95,7 @@ func (odt) exp(x int64, n int, mod int64) int64 {
 func (t odt) powSum(begin, end int, n int, mod int64) (res int64) {
 	for _, b := range t[begin:end] {
 		// 总和能溢出的话这里要额外取模
-		res += int64(b.r-b.l+1) * t.exp(b.val, n, mod)
+		res += int64(b.r-b.l+1) * t.pow(b.val, n, mod)
 	}
 	return res % mod
 }

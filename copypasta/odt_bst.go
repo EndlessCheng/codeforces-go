@@ -2,6 +2,8 @@ package copypasta
 
 // See 915E for example
 // https://codeforces.com/contest/915/problem/E
+// todo https://www.luogu.com.cn/problem/P5350
+//      https://www.luogu.com.cn/problem/P5586
 
 type odtNode struct {
 	tpNode
