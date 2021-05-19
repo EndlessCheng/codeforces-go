@@ -178,7 +178,7 @@ func (o *lctNode) cut(p *lctNode) {
 	}
 }
 
-// 保证 o 和 p 连通的写法
+// 题目保证 o 和 p 连通时的写法
 func (o *lctNode) mustCut(p *lctNode) {
 	o.split(p)
 	o.fa = nil
