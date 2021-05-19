@@ -23,16 +23,15 @@ func run(_r io.Reader, out io.Writer) {
 	dp[0] = 1
 	for s := uint(0); s < N-1; s++ {
 		o := bits.OnesCount(s)
-		for t := (N - 1) &^ s; t > 0; {
-			lb := t & -t
+	o:
+		for t, lb := s^(N-1), uint(0); t > 0; t ^= lb {
+			lb = t & -t
 			for _, p := range a {
 				if o < p.x && bits.OnesCount((s|lb)&(1<<p.y-1)) > p.z {
-					goto next
+					continue o
 				}
 			}
 			dp[s|lb] += dp[s]
-		next:
-			t ^= lb
 		}
 	}
 	Fprint(out, dp[N-1])
