@@ -17,11 +17,16 @@ https://en.wikipedia.org/wiki/Metropolis%E2%80%93Hastings_algorithm
 https://oi-wiki.org/misc/simulated-annealing/
 https://www.luogu.com.cn/blog/Darth-Che/mu-ni-tui-huo-xue-xi-bi-ji
 https://zhuanlan.zhihu.com/p/47234502
+https://www.cnblogs.com/ECJTUACM-873284962/p/8468831.html
 技巧：可以在时限内重复跑 SA 取最优值，防止脸黑
 
+Heuristic algorithm for Hamiltonian path in undirected graphs https://codeforces.com/blog/entry/90743
+
 模板题 https://www.luogu.com.cn/problem/P1337
-LC/周赛197D https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
-AHC001 https://atcoder.jp/contests/ahc001/tasks/ahc001_a
+LC1515/周赛197D https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
+todo 教学题 https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a
+ https://atcoder.jp/contests/ahc001/tasks/ahc001_a
+ https://atcoder.jp/contests/ahc002/tasks/ahc002_a
 */
 func simulatedAnnealing(f func(x float64) float64) float64 {
 	// 例：最小值
