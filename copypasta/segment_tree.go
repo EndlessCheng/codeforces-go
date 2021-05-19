@@ -13,7 +13,7 @@ package copypasta
 // func init() { debug.SetGCPercent(-1) }
 
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
-// 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/
+// 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
 // 根号 https://codeforces.com/problemset/problem/920/F
 // 取模 https://codeforces.com/problemset/problem/438/D
