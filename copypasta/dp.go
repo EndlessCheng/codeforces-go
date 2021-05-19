@@ -1056,7 +1056,7 @@ func dpCollections() {
 			// 利用位运算快速求出 s 中 1 的位置 v，以及 s 中 0 的位置 w（通过 s 的补集中的 1 的位置求出）
 			for S := uint(s); S > 0; S &= S - 1 {
 				v := bits.TrailingZeros(S)
-				for C := (1<<n - 1) &^ uint(s); C > 0; C &= C - 1 {
+				for C := uint(s) ^ (1<<n - 1); C > 0; C &= C - 1 {
 					w := bits.TrailingZeros(C)
 					dp[s|1<<w][w] = min(dp[s|1<<w][w], ds[v]+dist[v][w])
 				}
