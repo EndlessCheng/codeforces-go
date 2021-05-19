@@ -140,9 +140,10 @@ func newSegmentTree(a []int) seg {
 // = + Σ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 //
 // 吉老师线段树 Segment Tree Beats
-// todo https://codeforces.com/blog/entry/57319
-//     区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
-//     https://www.luogu.com.cn/problem/P6242
+// todo https://oi-wiki.org/ds/seg-beats/
+//  https://codeforces.com/blog/entry/57319
+//  区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
+//  模板题 https://www.luogu.com.cn/problem/P6242
 //
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 // 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
@@ -402,6 +403,9 @@ func (o *stNode) merge(b *stNode) *stNode {
 	o.maintain()
 	return o
 }
+
+// EXTRA: 线段树分裂
+// todo https://www.luogu.com.cn/problem/P5494
 
 //
 
