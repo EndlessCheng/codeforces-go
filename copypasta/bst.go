@@ -293,6 +293,10 @@ func (t *bst) keys() []int {
 		o.pushDown()
 		f(o.lr[0])
 		keys = append(keys, o.key)
+		// 如果是多重集则需要多次插入
+		//for i := 0; i < o.value; i++ {
+		//	keys = append(keys, o.key)
+		//}
 		f(o.lr[1])
 	}
 	f(t.root)
@@ -308,6 +312,27 @@ func (t *bst) foreach(do func(o *bstNode) (Break bool)) {
 		}
 		o.pushDown()
 		return f(o.lr[0]) || do(o) || f(o.lr[1])
+	}
+	f(t.root)
+}
+
+// 中序遍历，适用于多重集
+func (t *bst) foreachM(do func(o *bstNode) (Break bool)) {
+	var f func(*bstNode) bool
+	f = func(o *bstNode) bool {
+		if o == nil {
+			return false
+		}
+		o.pushDown()
+		if f(o.lr[0]) {
+			return true
+		}
+		for i := 0; i < o.value; i++ {
+			if do(o) {
+				return true
+			}
+		}
+		return f(o.lr[1])
 	}
 	f(t.root)
 }
