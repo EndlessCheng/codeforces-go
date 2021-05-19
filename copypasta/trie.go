@@ -53,7 +53,7 @@ func (t *trie) put(s []byte, val int) *trieNode {
 			o.son[b] = &trieNode{}
 		}
 		o = o.son[b]
-		//o.cnt++ // 统计子树字符串个数的写法
+		//o.cnt++ // 统计子树字符串（前缀）个数的写法
 		//o.val = val // 更新 s 的所有前缀的值
 	}
 	o.cnt++
@@ -79,6 +79,7 @@ func (t *trie) find(s []byte) *trieNode {
 }
 
 // 删除字符串 s，返回字符串末尾对应的节点
+// LC1804 https://leetcode-cn.com/problems/implement-trie-ii-prefix-tree/
 func (t *trie) delete(s []byte) *trieNode {
 	fa := make([]*trieNode, len(s))
 	o := t.root
@@ -164,6 +165,7 @@ func (t *trie) countPrefixOfString(s []byte) (cnt int) {
 // 返回 trie 中前缀为 p 的字符串个数
 // 此时 o.cnt 保存子树字符串个数
 // https://codeforces.com/gym/101628/problem/K
+// LC1804 https://leetcode-cn.com/problems/implement-trie-ii-prefix-tree/
 func (t *trie) countStringHasPrefix(p []byte) int {
 	o := t.root
 	for _, b := range p {
