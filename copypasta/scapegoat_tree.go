@@ -16,6 +16,7 @@ https://zhuanlan.zhihu.com/p/180545164
 https://taodaling.github.io/blog/2019/04/19/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/
 
 模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
+https://codeforces.com/contest/455/problem/D
 */
 
 type sgtNode struct {

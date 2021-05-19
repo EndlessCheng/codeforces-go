@@ -54,6 +54,7 @@ https://en.wikipedia.org/wiki/Generating_function
 指数生成函数 EGF
 狄利克雷生成函数 DGFs
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shuo-za-tan
+ 【推荐】数数入门 https://www.luogu.com.cn/blog/CJL/conut-ru-men
 https://oi-wiki.org/math/gen-func/intro/
 OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/
