@@ -17,10 +17,8 @@ NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的�
 NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
 NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.com/problemset/problem/700/B
 
-树上统计（从下往上）的典型题目：https://codeforces.com/problemset/problem/766/E
-
-CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=trees
-CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=constructive+algorithms%2Ctrees
+树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
+不错的构造 https://codeforces.com/problemset/problem/260/D
 */
 
 // namespace
@@ -378,12 +376,14 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 
 // 点分治 - 重心分解 (CD, Centroid Decomposition)
 // https://oi-wiki.org/graph/tree-divide/
+// todo https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
 // todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
 // todo 模板题 https://www.luogu.com.cn/problem/P3806
 // 模板题 https://codeforces.com/problemset/problem/321/C
 // todo poj1741 poj2114 uva12161 spoj QTREE5
 // 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
+// todo ∑∑min(av,aw)*dis(v,w) https://ac.nowcoder.com/acm/contest/11171/D
 func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	type node struct{ dep, fa int }
 	nodes := make([]node, n)
@@ -879,6 +879,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // 点权时 diff[lca] -= val
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
+// todo https://loj.ac/d/1698
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 	_lca := func(v, w int) (_ int) { return }
@@ -1202,6 +1203,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 //       https://codeforces.com/problemset/problem/600/E
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
+// todo https://ac.nowcoder.com/acm/contest/4010/E
 func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	hson := make([]int, n)
 	var build func(v, fa int) int
