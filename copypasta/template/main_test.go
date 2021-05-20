@@ -11,17 +11,17 @@ import (
 	"testing"
 )
 
+var customTestCases = [][2]string{
+	{
+		``,
+		``,
+	},
+}
+
 func Test(t *testing.T) {
 	dir, _ := filepath.Abs(".")
 	t.Logf("Current problem is [%s]", filepath.Base(dir))
 
-	customTestCases := [][2]string{
-		// TODO: 优先测试边界
-		{
-			``,
-			``,
-		},
-	}
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
 		tarCase := 0 // -1
 		testutil.AssertEqualStringCase(t, customTestCases, tarCase, run)
