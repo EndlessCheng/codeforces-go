@@ -46,7 +46,7 @@
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
         " small ", " big ", " large ", " few ",
         "At least", "At most", "at least", "at most",
-        "more",
+        "more", "much",
 
         // 特殊描述
         "Empty", "empty",
