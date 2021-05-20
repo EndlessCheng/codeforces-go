@@ -2440,6 +2440,16 @@ https://oeis.org/A024206 = A002620(n+1)-1 = floor((n-1)(n+3)/4)
 
 	相关题目 https://codeforces.com/problemset/problem/1368/B
 
+没有相邻元素差值为 1 的排列个数
+https://oeis.org/A002464 Hertzsprung's problem: ways to arrange n non-attacking kings on an n X n board, with 1 in each row and column
+Also number of permutations of length n without rising or falling successions
+if n = 0 or 1 then a(n) = 1
+if n = 2 or 3 then a(n) = 0
+otherwise a(n) = (n+1)*a(n-1) - (n-2)*a(n-2) - (n-5)*a(n-3) + (n-3)*a(n-4)
+https://oeis.org/A129535 补集
+https://oeis.org/A086852 恰有一个相邻元素差值为 1 的排列个数
+https://oeis.org/A086853 恰有两个相邻元素差值为 1 的排列个数
+
 记 A = [1,2,...,n]，A 的全排列中与 A 的最大差值为 n^2/2 https://oeis.org/A007590
 Maximum sum of displacements of elements in a permutation of (1..n)
 For example, with n = 9, permutation (5,6,7,8,9,1,2,3,4) has displacements (4,4,4,4,4,5,5,5,5) with maximal sum = 40
