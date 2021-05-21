@@ -108,6 +108,8 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	}
 	build(root, -1)
 
+	isFa := func(fa, v int) bool { return nodes[fa].dfn < nodes[v].dfn && nodes[v].dfn < nodes[fa].dfn+nodes[fa].size }
+
 	{
 		dfnToNodeID := make([]int, n+1)
 		for i, o := range nodes {
@@ -126,6 +128,8 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 		query(o.dfn, o.dfn+o.size-1)  // 查询子树
 		queryOne(nodes[v].dfn)        // 查询单个节点
 	}
+
+	_ = isFa
 }
 
 // 每个节点的入出时间戳
@@ -156,7 +160,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		timeOut[v] = clock
 	}
 	f(root, -1)
-	isFa := func(fa, v int) bool { return timeIn[fa] <= timeIn[v] && timeOut[v] <= timeOut[fa] }
+	isFa := func(fa, v int) bool { return timeIn[fa] < timeIn[v] && timeOut[v] < timeOut[fa] } // timeOut[v] 也可以写成 timeIn[v]
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
@@ -335,6 +339,7 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 //    以重心为根时，最大子树结点数最少，且所有子树的大小都不超过 节点数/2
 //        反之，若存在一颗子树其大小超过 节点数/2，则重心在该子树中
 //    一棵树最多有两个重心，且相邻
+//    拥有奇数个节点的树只有一个重心
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
 //    把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
 //    在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上（换句话说，重心个数可能一个变两个，两个变一个，或者说至多移动半条边）
