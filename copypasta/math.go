@@ -1796,8 +1796,10 @@ func numberTheoryCollection() {
 			return F[n] * invF[n-k] % mod
 		}
 
-		// EXTRA: 卢卡斯定理
+		// EXTRA: 卢卡斯定理 https://en.wikipedia.org/wiki/Lucas%27s_theorem
+		// C(n,m)%p = C(n%p,m%p) * C(n/p,m/p) % p
 		// 注意初始化 F 和 invF 时 mx 取 mod-1
+		// 推论：n&m==m 时 C(n,m) 为奇数，否则为偶数
 		// https://www.luogu.com.cn/problem/P3807
 		// https://www.luogu.com.cn/problem/P7386
 		var lucas func(n, k int64) int64
@@ -2360,6 +2362,7 @@ todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 ∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)    https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
 ∑i*C(n,i) = n*2^(n-1)
+组合数奇偶性：n&m==m 时 C(n,m) 为奇数，否则为偶数
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
