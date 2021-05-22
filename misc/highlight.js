@@ -4,11 +4,14 @@
 // @version      0.1
 // @description  highlight some important words
 // @author       EndlessCheng
-// @match        https://atcoder.jp/*
-// @match        https://codeforces.com/*
-// @match        https://codeforces.ml/*
+// @match        https://atcoder.jp/contests/*
+// @match        https://codeforces.com/contest/*
+// @match        https://codeforces.com/group/*
+// @match        https://codeforces.com/gym/*
+// @match        https://codeforces.com/problemset/problem/*
 // @match        https://codingcompetitions.withgoogle.com/*
-// @match        https://leetcode-cn.com/*
+// @match        https://leetcode-cn.com/contest/*
+// @match        https://www.acwing.com/problem/content/*
 // ==/UserScript==
 
 (function () {
