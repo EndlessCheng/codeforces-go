@@ -109,7 +109,7 @@ func login(username, password string) (session *grequests.Session, err error) {
 		return
 	}
 	if !resp.Ok {
-		return nil, fmt.Errorf("GET %s return code %d", loginURL, resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", loginURL, resp.StatusCode)
 	} // resp.StatusCode != http.StatusFound
 	return
 }
