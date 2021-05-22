@@ -37,7 +37,7 @@
         "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", "nothing",
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
-        "every", " both ", " other ",
+        "every", " both ", " other ", " all ", "All ",
         "equal", "same", "different", "unique", "distinct", "strictly",
         "must", "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another",
