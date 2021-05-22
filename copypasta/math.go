@@ -2352,6 +2352,12 @@ https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
 
+放球问题
+https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
+https://www.cnblogs.com/Xing-Ling/p/11176939.html
+https://blog.csdn.net/weixin_33759269/article/details/86017932
+扩展例题 https://codeforces.com/problemset/problem/893/E
+
 todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
 递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
@@ -2375,8 +2381,7 @@ a(n) = sum of all the possible products p*q where (p,q) are ordered pairs and p 
 a(n) = 长度为 n 的字符串的所有子串长度之和
 
 隔板法 https://zh.wikipedia.org/wiki/%E9%9A%94%E6%9D%BF%E6%B3%95
-放球问题（总结得不错）https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
-	扩展例题 https://codeforces.com/problemset/problem/893/E
+
 todo 可重集排列组合 https://oi-wiki.org/math/combination/
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10

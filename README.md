@@ -273,6 +273,8 @@
 
 [F0RE1GNERS 模板](https://github.com/F0RE1GNERS/template)
 
+[【模板整合计划】目录](https://www.cnblogs.com/Xing-Ling/p/10930556.html)
+
 [算法学习笔记（目录）](https://zhuanlan.zhihu.com/p/105467597)
 
 [洛谷模板题（建议按难度筛选）](https://www.luogu.com.cn/problem/list?keyword=%E6%A8%A1%E6%9D%BF&page=1)
@@ -280,6 +282,8 @@
 [能力全面提升综合题单](https://www.luogu.com.cn/training/9391)
 
 [Luogu Problem List](https://github.com/SFOI-Team/luogu-problem-list/blob/master/list.md)
+
+[洛谷原试炼场](https://www.luogu.com.cn/paste/0id3h6on)
 
 [Links of ICPC/CCPC Contests from China](https://codeforces.com/blog/entry/84429)
 
@@ -323,7 +327,7 @@ https://www.luogu.com.cn/blog/command-block/blog-suo-yin-zhi-ding-post
 
 https://wcysai.github.io/
 
-
+【杂文】记一些有用的神奇网站 https://www.cnblogs.com/Xing-Ling/p/10897760.html
 
 ## 其他 Others
 
