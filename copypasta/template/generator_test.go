@@ -44,7 +44,6 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 // "../../misc/kickstart/<year>/<id>/"  需要改模板
 // "../../misc/luogu/contest/<id>/"
 // "../../misc/nowcoder/<id>/"
-// "../../misc/acwing/weekly/<id>/"
 func TestGenTemplates(t *testing.T) {
 	const (
 		problemNum = 4
