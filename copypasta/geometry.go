@@ -290,6 +290,12 @@ func (a vecF) projection(l lineF) vecF {
 	return l.p1.add(v.mul(t))
 }
 
+// 点 a 关于直线 l 的对称点
+// 求投影 p，然后将 ap 延长一倍
+func (a vecF) symmetry(l lineF) vecF {
+	return a.add(a.projection(l).sub(a).mul(2))
+}
+
 // 判断直线交点个数
 // 重合时返回 -1
 // 另一种办法是用高斯消元
@@ -772,6 +778,10 @@ func vec2Collection() {
 		return
 	}
 
+	// todo 动态凸包
+	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
+	// 模板题 https://codeforces.com/problemset/problem/70/D
+
 	// todo 点集的最大四边形
 	// https://www.luogu.com.cn/problem/P4166
 	// https://codeforces.com/contest/340/problem/B
@@ -911,6 +921,10 @@ func vec2Collection() {
 	// TODO 矩形面积并
 	// 扫描线算法
 	// 模板题 https://www.luogu.com.cn/problem/P5490
+
+	// todo 三角形面积并
+	// https://www.luogu.com.cn/problem/P1222
+	// https://www.luogu.com.cn/problem/P3219
 
 	_ = []interface{}{
 		readVec, leftMostVec, rightMostVec,
