@@ -3106,3 +3106,56 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 // 拟阵 Matroid
 // https://en.wikipedia.org/wiki/Matroid
 // todo 拟阵与最优化问题 https://www.luogu.com.cn/blog/cpp/ni-zhen-yu-zui-you-hua-wen-ti
+
+// 仙人掌图 Cactus graph
+// https://en.wikipedia.org/wiki/Cactus_graph
+// A connected graph in which any two simple cycles have at most one vertex in common
+// Equivalently, it is a connected graph in which every edge belongs to at most one simple cycle
+// 如果图没有偶环，则不可能有两个奇环共用一条边（因为这样会构成一个偶环），因此没有两个环共用一条边，图一定为仙人掌（注意：反过来，一个仙人掌图是可能有偶环的）
+// 圆方树 https://oi-wiki.org/graph/block-forest/
+// 模板题 https://www.luogu.com.cn/problem/P5236
+
+// 仙人掌所有顶点所处环的最小顶点和最大顶点
+// -1 表示不在环上
+func (*graph) cactusDFS(g [][]int, n int) [][2]int {
+	minMax := make([][2]int, n)
+	for i := range minMax {
+		minMax[i] = [2]int{-1, -1}
+	}
+	id := 0
+	dfn := make([]int, n)
+	fa := make([]int, n)
+	var f func(int)
+	f = func(v int) {
+		id++
+		dfn[v] = id
+		for _, w := range g[v] {
+			if dfn[w] == 0 {
+				fa[w] = v
+				f(w)
+			} else if w != fa[v] && dfn[w] < dfn[v] {
+				mi, mx := v, v
+				for x := v; x != w; {
+					x = fa[x]
+					if x < mi {
+						mi = x
+					} else if x > mx {
+						mx = x
+					}
+				}
+				minMax[v] = [2]int{mi, mx}
+				for x := v; x != w; {
+					x = fa[x]
+					minMax[x] = [2]int{mi, mx}
+				}
+			}
+		}
+	}
+	// 连通图的话直接写 f(0)
+	for i, d := range dfn {
+		if d == 0 {
+			f(i)
+		}
+	}
+	return minMax
+}

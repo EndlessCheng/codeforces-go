@@ -176,6 +176,7 @@
     - SPFA
     - Dijkstra
   - 三元环计数
+  - 仙人掌
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
