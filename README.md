@@ -219,7 +219,7 @@
 
 选择难度在自己 rating 到 rating+200 范围内的构造题 (tag: constructive algorithms)，按照过题人数降序做题，比如 [1700,1900] 区间的就是下面这个链接：
 
-[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900)
+[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900)
 
 通过大量的构造题训练，提高观察能力，快速找到切题入口。
 
