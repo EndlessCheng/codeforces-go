@@ -213,13 +213,19 @@
 
 ## 如何选择题目 How to Choose Problems
 
-由于 Codeforces 更侧重于考察思维的灵活程度，提高对问题的观察能力是重中之重。
+### Rating < 2100
 
-因此我的方法很简单，选择难度在自己 rating 到 rating+200 范围内的构造题 (tag: constructive algorithms)，按照过题人数降序做题，比如 [2100,2300] 区间的就是下面这个链接：
+这一阶段主要目标是提高对问题的观察能力。做构造题可以针对性地训练这一点。
 
-[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300)
+选择难度在自己 rating 到 rating+200 范围内的构造题 (tag: constructive algorithms)，按照过题人数降序做题，比如 [1700,1900] 区间的就是下面这个链接：
+
+[https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2100-2300](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900)
 
 通过大量的构造题训练，提高观察能力，快速找到切题入口。
+
+### Rating >= 2100
+
+这一阶段要想上分，图论、DP、数据结构这三大项哪个弱就练哪个。难度范围选择同上，可以根据自己在该项的能力上下调整。
 
 我的 Codeforces 账号：
 
