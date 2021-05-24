@@ -8,6 +8,9 @@ import (
 
 /* 随机化技巧
 https://oi-wiki.org/misc/rand-technique/
+
+https://codeforces.com/problemset/problem/995/C
+https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290
 */
 
 /* 模拟退火 (Simulated Annealing, SA)
