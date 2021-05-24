@@ -4,57 +4,55 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"time"
 )
 
-var x915E = uint(1)
-
-func fastRand915E() uint {
-	x915E ^= x915E << 13
-	x915E ^= x915E >> 17
-	x915E ^= x915E << 5
-	return x915E
-}
-
-type node915E struct {
-	lr       [2]*node915E
+type node15 struct {
+	lr       [2]*node15
 	priority uint
 	l, r     int
 	work     bool
 }
 
-func (o *node915E) rotate(d int) *node915E {
+func (o *node15) cmp(b int) int {
+	switch {
+	case b < o.l:
+		return 0
+	case b > o.l:
+		return 1
+	default:
+		return -1
+	}
+}
+
+func (o *node15) rotate(d int) *node15 {
 	x := o.lr[d^1]
 	o.lr[d^1] = x.lr[d]
 	x.lr[d] = o
 	return x
 }
 
-type treap915E struct {
-	root       *node915E
+type treap15 struct {
+	rd         uint
+	root       *node15
 	workDayCnt int
-	comparator func(a, b int) int
 }
 
-func newTreap915E() *treap915E {
-	return &treap915E{comparator: func(a, b int) int {
-		if a < b {
-			return 0
-		}
-		if a > b {
-			return 1
-		}
-		return -1
-	}}
+func (t *treap15) fastRand() uint {
+	t.rd ^= t.rd << 13
+	t.rd ^= t.rd >> 17
+	t.rd ^= t.rd << 5
+	return t.rd
 }
 
-func (t *treap915E) _put(o *node915E, l, r int, work bool) *node915E {
+func (t *treap15) _put(o *node15, l, r int, work bool) *node15 {
 	if o == nil {
-		return &node915E{priority: fastRand915E(), l: l, r: r, work: work}
+		return &node15{priority: t.fastRand(), l: l, r: r, work: work}
 	}
-	if cmp := t.comparator(l, o.l); cmp >= 0 {
-		o.lr[cmp] = t._put(o.lr[cmp], l, r, work)
-		if o.lr[cmp].priority > o.priority {
-			o = o.rotate(cmp ^ 1)
+	if d := o.cmp(l); d >= 0 {
+		o.lr[d] = t._put(o.lr[d], l, r, work)
+		if o.lr[d].priority > o.priority {
+			o = o.rotate(d ^ 1)
 		}
 	} else {
 		o.work = work
@@ -62,14 +60,14 @@ func (t *treap915E) _put(o *node915E, l, r int, work bool) *node915E {
 	return o
 }
 
-func (t *treap915E) put(l, r int, work bool) { t.root = t._put(t.root, l, r, work) }
+func (t *treap15) put(l, r int, work bool) { t.root = t._put(t.root, l, r, work) }
 
-func (t *treap915E) _delete(o *node915E, l int) *node915E {
+func (t *treap15) _delete(o *node15, l int) *node15 {
 	if o == nil {
 		return nil
 	}
-	if cmp := t.comparator(l, o.l); cmp >= 0 {
-		o.lr[cmp] = t._delete(o.lr[cmp], l)
+	if d := o.cmp(l); d >= 0 {
+		o.lr[d] = t._delete(o.lr[d], l)
 	} else {
 		if o.lr[1] == nil {
 			return o.lr[0]
@@ -77,24 +75,24 @@ func (t *treap915E) _delete(o *node915E, l int) *node915E {
 		if o.lr[0] == nil {
 			return o.lr[1]
 		}
-		cmp2 := 0
+		d = 0
 		if o.lr[0].priority > o.lr[1].priority {
-			cmp2 = 1
+			d = 1
 		}
-		o = o.rotate(cmp2)
-		o.lr[cmp2] = t._delete(o.lr[cmp2], l)
+		o = o.rotate(d)
+		o.lr[d] = t._delete(o.lr[d], l)
 	}
 	return o
 }
 
-func (t *treap915E) delete(l int) { t.root = t._delete(t.root, l) }
+func (t *treap15) delete(l int) { t.root = t._delete(t.root, l) }
 
-func (t *treap915E) floor(l int) (floor *node915E) {
+func (t *treap15) floor(key int) (floor *node15) {
 	for o := t.root; o != nil; {
-		switch cmp := t.comparator(l, o.l); {
-		case cmp == 0:
+		switch c := o.cmp(key); {
+		case c == 0:
 			o = o.lr[0]
-		case cmp > 0:
+		case c > 0:
 			floor = o
 			o = o.lr[1]
 		default:
@@ -104,19 +102,19 @@ func (t *treap915E) floor(l int) (floor *node915E) {
 	return
 }
 
-func (t *treap915E) next(l int) (next *node915E) {
+func (t *treap15) next(l int) (next *node15) {
 	for o := t.root; o != nil; {
-		if cmp := t.comparator(l, o.l); cmp != 0 {
-			o = o.lr[1]
-		} else {
+		if o.cmp(l) == 0 {
 			next = o
 			o = o.lr[0]
+		} else {
+			o = o.lr[1]
 		}
 	}
 	return
 }
 
-func (t *treap915E) split(mid int) {
+func (t *treap15) split(mid int) {
 	if o := t.floor(mid); o.l < mid && mid <= o.r {
 		r, work := o.r, o.work
 		o.r = mid - 1
@@ -124,12 +122,12 @@ func (t *treap915E) split(mid int) {
 	}
 }
 
-func (t *treap915E) prepare(l, r int) {
+func (t *treap15) prepare(l, r int) {
 	t.split(l)
 	t.split(r + 1)
 }
 
-func (t *treap915E) updateCnt(o *node915E, work bool) {
+func (t *treap15) updateCnt(o *node15, work bool) {
 	if !o.work && work {
 		t.workDayCnt += o.r - o.l + 1
 	} else if o.work && !work {
@@ -137,7 +135,8 @@ func (t *treap915E) updateCnt(o *node915E, work bool) {
 	}
 }
 
-func (t *treap915E) merge(l, r int, work bool) {
+func (t *treap15) merge(l, r int, work bool) {
+	t.prepare(l, r)
 	for o := t.next(l); o != nil && o.l <= r; o = t.next(o.l) {
 		t.updateCnt(o, work)
 		t.delete(o.l)
@@ -149,31 +148,21 @@ func (t *treap915E) merge(l, r int, work bool) {
 }
 
 // github.com/EndlessCheng/codeforces-go
-func Sol915E(reader io.Reader, writer io.Writer) {
-	in := bufio.NewScanner(reader)
-	in.Split(bufio.ScanWords)
-	out := bufio.NewWriter(writer)
+func CF915E(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	read := func() (x int) {
-		in.Scan()
-		for _, b := range in.Bytes() {
-			x = x*10 + int(b-'0')
-		}
-		return
-	}
 
-	n := read()
-	t := newTreap915E()
+	var n, q, l, r, k int
+	Fscan(in, &n, &q)
+	t := &treap15{rd: uint(time.Now().UnixNano())/2 + 1}
 	t.put(1, n, true)
 	t.workDayCnt = n
-	for q := read(); q > 0; q-- {
-		l, r, k := read(), read(), read()
-		t.prepare(l, r)
+	for ; q > 0; q-- {
+		Fscan(in, &l, &r, &k)
 		t.merge(l, r, k == 2)
 		Fprintln(out, t.workDayCnt)
 	}
 }
 
-//func main() {
-//	Sol915E(os.Stdin, os.Stdout)
-//}
+//func main() { CF915E(os.Stdin, os.Stdout) }

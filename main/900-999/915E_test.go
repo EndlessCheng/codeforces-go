@@ -5,9 +5,12 @@ import (
 	"testing"
 )
 
-func TestSol915E(t *testing.T) {
+// https://codeforces.com/contest/915/problem/E
+// https://codeforces.com/problemset/status/915/problem/E
+func TestCF915E(t *testing.T) {
 	// just copy from website
 	rawText := `
+inputCopy
 4
 6
 1 2 1
@@ -23,5 +26,5 @@ outputCopy
 3
 1
 4`
-	testutil.AssertEqualCase(t, rawText, 0, Sol915E)
+	testutil.AssertEqualCase(t, rawText, 0, CF915E)
 }
