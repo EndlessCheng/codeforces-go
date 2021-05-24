@@ -218,6 +218,47 @@ func (r *RG) UniquePoints(n, minX, maxX, minY, maxY int) (points [][2]int) {
 	return
 }
 
+// 随机二叉树
+// 可用于生成随机表达式等
+// https://en.wikipedia.org/wiki/Random_binary_tree
+// 参考：https://stackoverflow.com/questions/56873764/how-to-randomly-generate-a-binary-tree-given-the-node-number
+// http://www.cs.otago.ac.nz/staffpriv/mike/Papers/RandomGeneration/RandomBinaryTrees.pdf
+// https://mivik.blog.luogu.org/the-art-of-randomness
+// 这里只是简单地实现，不保证均匀分布
+// 若某个儿子不存在，对应的值为 -1
+func (r *RG) binaryTree(n int) (children [][2]int) {
+	children = make([][2]int, n)
+	idx := 0
+	var f func(int) int
+	f = func(size int) int {
+		if size == 0 {
+			return -1
+		}
+		root := idx
+		idx++
+		leftSize := rand.Intn(size) // [0, size-1]
+		rightSize := size - 1 - leftSize
+		children[root] = [2]int{f(leftSize), f(rightSize)}
+		return root
+	}
+	f(n)
+	return
+}
+
+// 随机二叉树
+// st 仅用于调整输出为 st-index
+func (r *RG) BinaryTree(n, st int) (children [][2]int) {
+	children = r.binaryTree(n)
+	for v, ch := range children {
+		for _, w := range ch {
+			if w != -1 {
+				r.sb.WriteString(fmt.Sprintln(v+st, w+st))
+			}
+		}
+	}
+	return
+}
+
 // 随机父节点
 // 期望树高 https://blog.csdn.net/EI_Captain/article/details/109910307
 // 更严格的随机树见 https://mivik.blog.luogu.org/the-art-of-randomness
