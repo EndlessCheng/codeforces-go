@@ -860,6 +860,8 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // 线段树建图优化 https://codeforces.com/problemset/problem/786/B
 // 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
+// todo 与扩欧结合 https://www.acwing.com/problem/content/3418/
+// 跑两遍最短路，第二次修正边权来改变最短路 https://codeforces.com/problemset/problem/715/B
 //
 // 最短路径树
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
@@ -1024,6 +1026,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // 01 最短路
 // https://oi-wiki.org/graph/bfs/#bfs_3
 // https://codeforces.com/blog/entry/22276
+// EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
 // 例题: https://codeforces.com/problemset/problem/173/B
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
@@ -3117,6 +3120,7 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 
 // 仙人掌所有顶点所处环的最小顶点和最大顶点
 // -1 表示不在环上
+// https://codeforces.com/problemset/problem/901/C
 func (*graph) cactusDFS(g [][]int, n int) [][2]int {
 	minMax := make([][2]int, n)
 	for i := range minMax {
