@@ -322,6 +322,8 @@
 
 ### 待整理
 
+[【杂文】记一些有用的神奇网站](https://www.cnblogs.com/Xing-Ling/p/10897760.html)
+
 [偶然在 GitHub 上发现的超长列表](https://github.com/dhs347/Dream/blob/master/%E8%AE%A1%E5%88%92/%E8%AE%A1%E5%88%92%E4%B9%A6/A%E8%AE%A1%E5%88%92_%E9%98%B6%E6%AE%B51.md)
 
 [算法竞赛训练中较难的部分](https://blog.csdn.net/skywalkert/article/details/48924861)
@@ -335,8 +337,6 @@ https://github.com/zimpha/algorithmic-library
 https://www.luogu.com.cn/blog/command-block/blog-suo-yin-zhi-ding-post
 
 https://wcysai.github.io/
-
-【杂文】记一些有用的神奇网站 https://www.cnblogs.com/Xing-Ling/p/10897760.html
 
 ## 其他 Others
 
