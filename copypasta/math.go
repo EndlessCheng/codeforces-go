@@ -178,6 +178,7 @@ func numberTheoryCollection() {
 	// Mangoldt Function https://mathworld.wolfram.com/MangoldtFunction.html
 	// a(n) 的因子个数 d(lcm(1,...,n)) https://oeis.org/A056793
 	//     这同时也是 1~n 的子集的 LCM 的种类数
+	// 另一种通分：「排水系统」的另一种解法 https://zxshetzy.blog.luogu.org/ling-yi-zhong-tong-fen
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
@@ -713,9 +714,9 @@ func numberTheoryCollection() {
 
 		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
-			4, 12, 32, 64, 128, /5/
-	        240, 448, 768, 1344, /9/
-			2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280, /19/
+			4, 12, 32, 64, 128, /5位数/
+	        240, 448, 768, 1344, /9位数/
+			2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280, /19位数/
 
 			上面这些数对应的最小的 n https://oeis.org/A066151
 			6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
@@ -856,6 +857,7 @@ func numberTheoryCollection() {
 	// 亦为整数 n 分拆成若干连续整数的方法数
 	// Number of partitions of n into consecutive positive integers including the trivial partition of length 1
 	// e.g. 9 = 2+3+4 or 4+5 or 9 so a(9)=3
+	// 相关题目 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec1cb
 	oddDivisorsNum := func(n int) (ans int) {
 		for i := 1; i*i <= n; i++ {
 			if n%i == 0 {
@@ -2043,8 +2045,12 @@ func numberTheoryCollection() {
 	// T(n, k) = Sum_{j=0..k} (-1)^j * (k-j)^n * C(n+1, j)
 	// todo 浅谈欧拉数 https://www.luogu.com.cn/blog/Karry5307/eulerian-numbers
 
-	// 莫比乌斯函数 mu https://oeis.org/A008683
+	//
+
+	// 莫比乌斯函数 Möbius function μ(n) https://oeis.org/A008683
+	// https://en.wikipedia.org/wiki/M%C3%B6bius_function
 	// https://oi-wiki.org/math/mobius/#_11
+	// φ(n) = Sum_{d|n} d*μ(n/d)
 	// 线性筛 https://oi-wiki.org/math/sieve/#_9
 	// 前缀和 https://oeis.org/A002321 Mertens's function 梅滕斯函数
 	//    https://en.wikipedia.org/wiki/Mertens_function
@@ -2075,12 +2081,19 @@ func numberTheoryCollection() {
 		}
 	}
 
-	// 狄利克雷卷积
+	// 狄利克雷卷积 Dirichlet convolution
+	// https://en.wikipedia.org/wiki/Dirichlet_convolution
 	// https://zhuanlan.zhihu.com/p/137619492
 
-	// 莫比乌斯反演（岛娘推荐！https://zhuanlan.zhihu.com/p/133761303）
-	// todo https://oi-wiki.org/math/mobius/
-	//      https://zhuanlan.zhihu.com/p/138038817
+	// 莫比乌斯反演 Möbius inversion formula
+	// https://en.wikipedia.org/wiki/M%C3%B6bius_inversion_formula
+	// todo 题目 https://oi-wiki.org/math/mobius/
+	// https://zhuanlan.zhihu.com/p/138038817
+	// 莫比乌斯反演-让我们从基础开始 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
+	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
+	//
+	// todo https://www.luogu.com.cn/problem/P2257
+	//  https://www.luogu.com.cn/problem/P2522
 
 	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
 
