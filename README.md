@@ -209,7 +209,7 @@
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
   - [杂项A common.go](/copypasta/common.go)
-    - 常用算法思路
+    - 算法思路整理
   - [杂项B misc.go](/copypasta/misc.go)
 - [快读模板 io.go](/copypasta/io.go)
 
