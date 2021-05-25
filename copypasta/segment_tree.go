@@ -121,6 +121,43 @@ func newSegmentTree(a []int) seg {
 	return t
 }
 
+// EXTRA: 查询整个区间小于 v 的最靠左的位置
+// 这里线段树维护的是区间最小值
+// 需要先判断 t[1].min < v
+func (t seg) queryFirstLessPos(o, v int) int {
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	if t[o<<1].val < v {
+		return t.queryFirstLessPos(o<<1, v)
+	}
+	return t.queryFirstLessPos(o<<1|1, v)
+}
+
+// EXTRA: 查询 [l,r] 上小于 v 的最靠左的位置
+// 这里线段树维护的是区间最小值
+// 不存在时返回 0
+func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
+	if t[o].val >= v {
+		return 0
+	}
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	m := (t[o].l + t[o].r) >> 1
+	if l <= m {
+		if pos := t.queryFirstLessPosInRange(o<<1, l, r, v); pos > 0 {
+			return pos
+		}
+	}
+	if m < r {
+		if pos := t.queryFirstLessPosInRange(o<<1|1, l, r, v); pos > 0 {
+			return pos
+		}
+	}
+	return 0
+}
+
 //
 
 // 延迟标记（区间修改）
@@ -130,7 +167,7 @@ func newSegmentTree(a []int) seg {
 // + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
-// = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F
+// = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
 // https://codeforces.com/problemset/problem/1114/F
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
@@ -176,8 +213,9 @@ func (t lazyST) build(a []int64, o, l, r int) {
 
 // 把要 todo 的事情 do 了
 func (t lazyST) do(o int, add int64) {
-	t[o].todo += add                         // % mod
-	t[o].sum += int64(t[o].r-t[o].l+1) * add // % mod
+	to := &t[o]
+	to.todo += add                     // % mod
+	to.sum += int64(to.r-to.l+1) * add // % mod
 }
 
 func (t lazyST) spread(o int) {
@@ -248,6 +286,16 @@ func newLazySegmentTree(a []int64) lazyST {
 	t := make(lazyST, 4*len(a))
 	t.build(a, 1, 1, len(a))
 	return t
+}
+
+// EXTRA: 适用于需要提取所有元素值的场景
+func (t lazyST) spreadAll(o int) {
+	if t[o].l == t[o].r {
+		return
+	}
+	t.spread(o)
+	t.spreadAll(o << 1)
+	t.spreadAll(o<<1 | 1)
 }
 
 //
