@@ -277,8 +277,8 @@ func bitsCollection() {
 		return b
 	}
 
-	// 在 [low,high] 区间内找两个不同数字 A B，使其异或值最大且不超过 limit
-	// 返回值保证 A < B
+	// 在 [low,high] 区间内找两个数字 A B，使其异或值最大且不超过 limit
+	// 返回值保证 A <= B
 	// 复杂度 O(log(high))
 	maxXorWithLimit := func(low, high, limit int) (int, int) {
 		n := bits.Len(uint(high ^ low))
@@ -321,6 +321,10 @@ func bitsCollection() {
 		f := func(high int) (int, int) {
 			n := bits.Len(uint(high ^ mid))
 			maxXor := min(1<<n-1, limit)
+			// 只有当 maxXor 为 0 时，返回值才必须相等
+			if maxXor == 0 {
+				return mid, mid
+			}
 			// maxXor 的最高位置于 B，其余置于 A
 			mb := 1 << (bits.Len(uint(maxXor)) - 1)
 			return mid | maxXor&^mb, mid | mb
