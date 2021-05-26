@@ -7,6 +7,8 @@ import (
 	"os"
 )
 
+// O(n) DP 做法 https://tracyqwerty.blog.luogu.org/solution-p1203
+
 // github.com/EndlessCheng/codeforces-go
 func SolP1203(reader io.Reader, writer io.Writer) {
 	maxs := func(vals ...int) int {

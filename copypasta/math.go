@@ -2438,6 +2438,8 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 	相关题目 https://www.luogu.com.cn/problem/P6065 http://poj.org/problem?id=2229
 
 	质数分拆
+	https://oeis.org/A000607 Number of partitions of n into prime parts
+		https://www.luogu.com.cn/problem/P1832
 	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
 	https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
 	https://oeis.org/A068307 number of partitions of n into a sum of three primes
