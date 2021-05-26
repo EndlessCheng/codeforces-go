@@ -49,6 +49,7 @@ TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，�
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
 视频讲解：
+https://www.bilibili.com/video/BV1gf4y1i78H 动态规划的套路 by wisdompeak
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
 https://www.bilibili.com/video/av77393700 LCS LIS
 https://www.bilibili.com/video/av83939419 区间 DP
@@ -227,7 +228,8 @@ func dpCollections() {
 	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
-	期望 DP https://codeforces.com/contest/1097/problem/D
+	期望 DP https://codeforces.com/problemset/problem/235/B
+	期望 DP https://codeforces.com/problemset/problem/1097/D
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -338,7 +340,8 @@ func dpCollections() {
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
-	//     https://codeforces.com/contest/1446/problem/B
+	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
+	//     https://codeforces.com/problemset/problem/1446/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
 		// dp[i][j] = LCS(s[:i], t[:j])
@@ -725,7 +728,8 @@ func dpCollections() {
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
-	// EXTRA: 二维费用 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
+	// EXTRA: 二维费用 https://www.acwing.com/problem/content/8/
+	//                LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 把一个维度转换成 DP 的定义 https://codeforces.com/problemset/problem/837/D
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
@@ -741,14 +745,17 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
-	// 二维费用的情况 https://www.acwing.com/problem/content/8/ https://ac.nowcoder.com/acm/contest/6218/C
+	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64  fill
-		//dp[0] = 0
+		dp := make([]int, maxW+1) // int64
+		for i := range dp {
+			dp[i] = -1e18 // 价值最小改成 1e18
+		}
+		dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= 0; j-- {
-				dp[j] = max(dp[j], dp[max(j-w, 0)]+v)
+				dp[j] = max(dp[j], dp[max(j-w, 0)]+v) // max(j-w, 0) 蕴含了「至少」
 			}
 		}
 
@@ -898,6 +905,7 @@ func dpCollections() {
 
 	// 分组背包
 	// https://www.acwing.com/problem/content/9/
+	// https://www.luogu.com.cn/problem/P1757
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -913,8 +921,18 @@ func dpCollections() {
 		return dp[maxW]
 	}
 
-	// 依赖背包
-	// https://www.acwing.com/problem/content/10/ https://www.acwing.com/problem/content/288/
+	// 树上背包/树形背包/依赖背包
+	// todo 树上背包的上下界优化 https://ouuan.gitee.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
+	//   子树合并背包的复杂度证明 https://blog.csdn.net/lyd_7_29/article/details/79854245
+	//   复杂度优化 https://loj.ac/d/3144
+	//   https://zhuanlan.zhihu.com/p/103813542
+	//
+	// todo https://loj.ac/p/160
+	//   https://www.luogu.com.cn/problem/P2014 https://www.acwing.com/problem/content/10/ https://www.acwing.com/problem/content/288/
+	//   加强版 https://www.luogu.com.cn/problem/U53204
+	//   https://www.luogu.com.cn/problem/P1272
+	//   加强版 https://www.luogu.com.cn/problem/U53878
+	//   https://www.luogu.com.cn/problem/P3177
 	treeKnapsack := func(g [][]int, items []item, root, maxW int) int {
 		var f func(int) []int
 		f = func(v int) []int {
@@ -940,6 +958,7 @@ func dpCollections() {
 
 	/* 区间 DP
 	一般来说转移是合并区间或者分解区间
+	套路 https://www.luogu.com.cn/blog/BreakPlus/ou-jian-dp-zong-jie-ti-xie
 	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
 	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
 	此时可以枚举最后一个区间的左端点 j，从 dp[j-1][k-1] 转移到 dp[i][k]，转移时考虑 a[j:i] 对最优解的影响
@@ -1052,13 +1071,13 @@ func dpCollections() {
 			}
 		}
 		dp[1<<st][st] = 0 // 多个起点的话就设置多个 dp[1<<st[i]][st[i]] = 0
-		for s, ds := range dp {
+		for s, dv := range dp {
 			// 利用位运算快速求出 s 中 1 的位置 v，以及 s 中 0 的位置 w（通过 s 的补集中的 1 的位置求出）
 			for S := uint(s); S > 0; S &= S - 1 {
 				v := bits.TrailingZeros(S)
 				for C := uint(s) ^ (1<<n - 1); C > 0; C &= C - 1 {
 					w := bits.TrailingZeros(C)
-					dp[s|1<<w][w] = min(dp[s|1<<w][w], ds[v]+dist[v][w])
+					dp[s|1<<w][w] = min(dp[s|1<<w][w], dv[v]+dist[v][w])
 				}
 			}
 		}
@@ -1522,6 +1541,7 @@ func dpCollections() {
 	// https://codeforces.com/problemset/problem/1092/F
 	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/219/D
+	// https://codeforces.com/problemset/problem/337/D
 	// LC834 树中距离之和 https://leetcode-cn.com/problems/sum-of-distances-in-tree
 	// 下面的代码来自 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
 	rerootDP := func(n int) { // 无根树
