@@ -862,6 +862,9 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
 // todo 与扩欧结合 https://www.acwing.com/problem/content/3418/
 // 跑两遍最短路，第二次修正边权来改变最短路 https://codeforces.com/problemset/problem/715/B
+// 分层图最短路
+//    空间压缩 https://codeforces.com/problemset/problem/1442/C
+//    转换 https://codeforces.com/problemset/problem/1473/E
 //
 // 最短路径树
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
@@ -1280,10 +1283,14 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(mlogm)，或者边已经按权值排序的情况
+// 性质：
+// - 对于不同的 MST，同一边权的边的个数都是相同的（应用见后面的最小生成树计数）
+// - 对于任意正确加边方案，加完小于某权值的边后，图的连通性是一样的
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
+// 判断给定的边是否均在同一颗 MST 中 https://codeforces.com/problemset/problem/891/C
 // 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
 // EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值 https://leetcode-cn.com/contest/weekly-contest-220/problems/checking-existence-of-edge-length-limited-paths/
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
