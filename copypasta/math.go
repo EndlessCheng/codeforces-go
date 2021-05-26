@@ -2052,8 +2052,11 @@ func numberTheoryCollection() {
 	//
 
 	// 莫比乌斯函数 Möbius function μ(n) https://oeis.org/A008683
+	// μ(1)=1
+	// μ(n)=0 if n 含有平方因子
+	// μ(n)=(-1)^k, k=omega(n)
 	// https://en.wikipedia.org/wiki/M%C3%B6bius_function
-	// https://oi-wiki.org/math/mobius/#_11
+	// https://oi-wiki.org/math/mobius/#_13
 	// φ(n) = Sum_{d|n} d*μ(n/d)
 	// 线性筛 https://oi-wiki.org/math/sieve/#_9
 	// 前缀和 https://oeis.org/A002321 Mertens's function 梅滕斯函数
@@ -2062,7 +2065,7 @@ func numberTheoryCollection() {
 	//    零点 https://oeis.org/A028442
 	sieveMu := func() {
 		const mx int = 1e6
-		mu := [mx + 1]int{1: 1}
+		mu := [mx + 1]int{1: 1} // int8
 		primes := []int{}
 		vis := [mx + 1]bool{}
 		for i := 2; i <= mx; i++ {
@@ -2085,6 +2088,17 @@ func numberTheoryCollection() {
 		}
 	}
 
+	// 埃氏筛写法
+	sieveMu = func() {
+		const mx int = 1e6
+		mu := [mx + 1]int{1: 1} // int8
+		for i := 1; i <= mx; i++ {
+			for j := i * 2; j <= mx; j += i {
+				mu[j] -= mu[i]
+			}
+		}
+	}
+
 	// 狄利克雷卷积 Dirichlet convolution
 	// https://en.wikipedia.org/wiki/Dirichlet_convolution
 	// https://zhuanlan.zhihu.com/p/137619492
@@ -2096,6 +2110,7 @@ func numberTheoryCollection() {
 	// 莫比乌斯反演-让我们从基础开始 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
 	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
 	//
+	// https://codeforces.com/problemset/problem/547/C
 	// todo https://www.luogu.com.cn/problem/P2257
 	//  https://www.luogu.com.cn/problem/P2522
 
