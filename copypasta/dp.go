@@ -728,13 +728,11 @@ func dpCollections() {
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
-	// EXTRA: 二维费用 https://www.acwing.com/problem/content/8/
-	//                LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
+	// EXTRA: 二维费用 https://www.acwing.com/problem/content/8/ https://www.luogu.com.cn/problem/P1507 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 把一个维度转换成 DP 的定义 https://codeforces.com/problemset/problem/837/D
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // int64  fill
-		//dp[0] = 0
+		dp := make([]int, maxW+1) // int64
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= w; j-- {
@@ -844,6 +842,7 @@ func dpCollections() {
 
 	// 完全背包 EXTRA: 方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
+	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
 	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
 	unboundedWaysToSum := func(a []int, sum int) int {
