@@ -875,6 +875,32 @@ func loopCollection() {
 		}
 	}
 
+	// 以主对角线为第一列（行），然后向右（下）平移遍历
+	// 例如
+	// 0 3 6 9
+	// 10 1 4 7
+	// 8 11 2 5
+	// https://codeforces.com/problemset/problem/1276/C
+	circleLoopDiagonal := func(n, m int) {
+		if n <= m {
+			// 向右平移
+			for rc := 0; rc < n*m; rc++ {
+				_c, _r := rc/n, rc%n
+				i, j := _r, (_c+_r)%m
+				_, _ = i, j
+
+			}
+		} else {
+			// 向下平移
+			for rc := 0; rc < n*m; rc++ {
+				_r, _c := rc/m, rc%m
+				i, j := (_r+_c)%n, _c
+				_, _ = i, j
+
+			}
+		}
+	}
+
 	// 保证边界在范围内且 x0 <= x1 且 y0 <= y1
 	loopBorder := func(x0, y0, x1, y1 int) {
 		if y0 == y1 {
@@ -900,7 +926,7 @@ func loopCollection() {
 	_ = []interface{}{
 		loopSet, loopSubset, loopSuperset, loopSubsetK,
 		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev,
-		loopDiagonal, loopAntiDiagonal,
+		loopDiagonal, loopAntiDiagonal, circleLoopDiagonal,
 		loopBorder,
 	}
 }
