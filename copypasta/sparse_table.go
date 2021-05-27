@@ -3,7 +3,7 @@ package copypasta
 import "math/bits"
 
 /* 稀疏表 Sparse Table
-st[i][j] 对应的区间是 [i, i+1<<j)
+st[i][j] 对应的区间是 [i, i+2^j)
 https://oi-wiki.org/ds/sparse-table/
 https://codeforces.com/blog/entry/66643
 一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
