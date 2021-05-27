@@ -336,16 +336,16 @@ func miscCollection() {
 		return
 	}
 
-	// a 是环形，合并相邻元素 (v,w) 的时候删除 w，在 a 上不断循环合并直至没有可以合并的相邻元素
+	// a 是环形，若相邻元素 (v,w) 符合某种条件，则合并，删除 w
+	// 在 a 上不断循环合并直至没有可以合并的相邻元素，返回删除的元素
 	// 相关题目 https://codeforces.com/problemset/problem/1483/B
-	loopMergeOnRing := func(a []int, canMerge func(v, w int) bool) []int {
+	loopMergeOnRing := func(a []int, canMerge func(v, w int) bool) (deletedElements []int) {
 		n := len(a)
 		r := make([]int, n)
 		for i := 0; i < n-1; i++ {
 			r[i] = i + 1
 		}
 
-		ans := []int{}
 		q := []int{}
 		for i, v := range a {
 			if canMerge(v, a[r[i]]) {
@@ -360,7 +360,7 @@ func miscCollection() {
 				continue
 			}
 			if !del[r[i]] {
-				ans = append(ans, r[i]) // +1
+				deletedElements = append(deletedElements, r[i]) // +1
 				del[r[i]] = true
 			}
 			r[i] = r[r[i]]
@@ -368,7 +368,7 @@ func miscCollection() {
 				q = append(q, i)
 			}
 		}
-		return ans
+		return
 	}
 
 	// 最小栈，支持动态 push pop，查询栈中最小元素
