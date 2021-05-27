@@ -18,7 +18,7 @@ import (
 // https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 func moAlgorithm() {
 	// 普通莫队（没有修改操作）
-	// 本质是通过巧妙地改变询问的顺序，使区间左右端点移动的次数由 O(nm) 降为了 O(n√m)
+	// 本质是通过巧妙地改变询问的顺序，使区间左右端点移动的次数由 O(nm) 降至 O(n√m)
 	// 在块大小取 n/√m 时可达到最优复杂度 O(n√m)，见 https://www.luogu.com.cn/blog/codesonic/mosalgorithm
 	// https://oi-wiki.org/misc/mo-algo/
 	// 模板题 https://www.luogu.com.cn/problem/P1494
