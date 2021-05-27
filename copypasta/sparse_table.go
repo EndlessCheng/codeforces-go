@@ -6,6 +6,7 @@ import "math/bits"
 st[i][j] 对应的区间是 [i, i+1<<j)
 https://oi-wiki.org/ds/sparse-table/
 https://codeforces.com/blog/entry/66643
+一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
 
 模板题 https://www.luogu.com.cn/problem/P3865
 变长/种类 https://www.jisuanke.com/contest/11346/challenges
