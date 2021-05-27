@@ -354,7 +354,7 @@ func (o *stNode) query(l, r int) int64 {
 }
 
 // 动态开点线段树·其二·延迟标记（区间修改）
-// http://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
+// https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
 type lazyNode struct { // rt := &lazyNode{l: 1, r: 1e9}
 	lo, ro *lazyNode
