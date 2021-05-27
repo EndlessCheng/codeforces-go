@@ -42,6 +42,8 @@ https://oeis.org/A000532 Number of Hamiltonian paths from NW to SW corners in an
 任意子集（不需要剪枝的话可以直接位运算枚举）
 部分子集
 排列（递归+跳过已经枚举的值）
+
+https://codeforces.com/problemset/problem/429/C
 */
 func searchCollection() {
 	// 指数型，即 n 层循环

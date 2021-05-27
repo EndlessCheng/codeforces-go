@@ -80,6 +80,12 @@ func miscCollection() {
 		return
 	}
 
+	// Floyd 判圈算法
+	// https://zh.wikipedia.org/wiki/Floyd%E5%88%A4%E5%9C%88%E7%AE%97%E6%B3%95
+	// https://en.wikipedia.org/wiki/Cycle_detection
+	// https://codeforces.com/problemset/problem/1137/D
+	// 设环长为 c，链长为 t，则快慢指针相遇时，慢指针在环上走过的距离为 c-t%c（具体证明见 CF1137D 这题的题解）
+
 	// max record pos
 	// 相关题目（这也是一道好题）https://codeforces.com/problemset/problem/1381/B
 	recordPos := func(a []int) []int {

@@ -2573,6 +2573,7 @@ func combinatoricsCollection() {
 	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
 	// https://codeforces.com/problemset/problem/1342/E
+	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
 	solveInclusionExclusion := func(a []int) (ans int64) {
 		n := len(a)
 		const mod int64 = 1e9 + 7 // 998244353
