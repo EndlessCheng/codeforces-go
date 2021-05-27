@@ -116,7 +116,7 @@ func sortCollections() {
 
 	searchRange64 := func(l, r int64, f func(int64) bool) int64 {
 		for l < r {
-			m := (l + r) >> 1 // 注意 l+r 是否超 int64，必要时使用 int64(uint64(i+j)>>1) 来转换
+			m := (l + r) >> 1 // 注意 l+r 是否超 int64，必要时使用 l+(r-l)>>1
 			if f(m) {
 				r = m
 			} else {
