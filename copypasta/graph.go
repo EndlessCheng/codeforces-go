@@ -3072,18 +3072,26 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // https://oi-wiki.org/graph/chord/
 // https://www.luogu.com.cn/blog/hsfzLZH1/chord-graph
 
-// 三元环计数 O(m√m)
-// 一种思路是给边定向（度数小的指向度数大的），然后暴力统计即可
+// 三元环计数/判定 O(m√m)
+// 三元环一定由 v-w、w-u 和 v-u 组成，暴力枚举 v-w-u，然后判断 u 是否为 v 的出点
+// 因此枚举的复杂度为 ∑in[w]*out[w]
+// 直接枚举肯定不行，不妨给边定向：度数大的指向度数小的，或者度数相同时编号小的指向编号大的（全序，从而得到一个 DAG）
+// 考察枚举中的 w：若 deg[w]>√m，由于度数超过 √m 的点的个数至多为 O(√m)，根据定向规则，w 的入度也至多为 O(√m)；
+//               若 deg[w]<=√m，由于 w 的邻边数量就是 deg[w]，所以入度也至多为 O(√m)
+// 因此，这种定向方式保证了枚举中的 w 的入度至多为 O(√m)，从而总体复杂度为 ∑in[w]*out[w] < √m*∑out[w] < √m*m
+// 注：若定向时从度数小的指向度数大的，同样地，w 的出度至多为 O(√m)，从而复杂度亦为 O(m√m)
 // 讲解+题目 https://blog.nowcoder.net/n/9bfaeb850d6f4df6b257ffcf8e5889dd
 // https://www.luogu.com.cn/blog/KingSann/fou-chang-yong-di-hei-ke-ji-san-yuan-huan-post
 // https://www.luogu.com.cn/blog/i207M/san-yuan-huan-ji-shuo-xue-xi-bi-ji
 // https://www.cnblogs.com/Khada-Jhin/p/10143074.html
+// https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
 // http://acm.hdu.edu.cn/showproblem.php?pid=6184
-func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
+func (*graph) countCycle3(n int, edges [][2]int) (ans int64) {
 	deg := make([]int, n)
 	for _, e := range edges {
-		deg[e[0]]++
-		deg[e[1]]++
+		v, w := e[0], e[1] // -1
+		deg[v]++
+		deg[w]++
 	}
 	g := make([][]int, n)
 	for _, e := range edges {
@@ -3112,6 +3120,59 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	}
 	return
 }
+
+// 四元环计数/判定 O(m√m)
+// 同三元环那样定向，将四元环拆成左右各两条边，这两条边为一条无向边和一条有向边，然后统计无向+有向的对数
+// 具体参见 https://blog.csdn.net/weixin_43466755/article/details/112985722
+// https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
+// https://www.luogu.com.cn/blog/i207M/san-yuan-huan-ji-shuo-xue-xi-bi-ji
+// 转换成判定 https://codeforces.com/problemset/problem/1468/M
+func (*graph) countCycle4(n int, edges [][2]int) (ans int64) {
+	g := make([][]int, n)
+	deg := make([]int, n)
+	for _, e := range edges {
+		v, w := e[0], e[1] // -1
+		g[v] = append(g[v], w)
+		g[w] = append(g[w], v)
+		deg[v]++
+		deg[w]++
+	}
+
+	less := func(v, w int) bool { return deg[v] < deg[w] || deg[v] == deg[w] && v < w }
+
+	g2 := make([][]int, n)
+	for v, ws := range g {
+		for _, w := range ws {
+			if less(v, w) {
+				g2[v] = append(g2[v], w)
+			}
+		}
+	}
+
+	cnt := make([]int, n)
+	for v, ws := range g {
+		for _, w := range ws {
+			for _, u := range g2[w] {
+				if less(v, u) {
+					ans += int64(cnt[u])
+					cnt[u]++
+				}
+			}
+		}
+		for _, w := range ws {
+			for _, u := range g2[w] {
+				if less(v, u) {
+					cnt[u] = 0
+				}
+			}
+		}
+	}
+	return
+}
+
+// 五元环
+// https://blog.csdn.net/weixin_30563319/article/details/96009073
+// https://nanti.jisuanke.com/t/A1644
 
 // 拟阵 Matroid
 // https://en.wikipedia.org/wiki/Matroid
