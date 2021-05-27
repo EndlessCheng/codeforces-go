@@ -13,6 +13,80 @@ func CF1468M(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+
+	var T, n, m, v int
+o:
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &n)
+		nn := n
+		a := make([][]int, n)
+		vid := map[int]int{}
+		for i := range a {
+			Fscan(in, &m)
+			a[i] = make([]int, m)
+			for j := range a[i] {
+				Fscan(in, &v)
+				if vid[v] == 0 {
+					vid[v] = n
+					n++
+				}
+				a[i][j] = vid[v]
+			}
+		}
+		g := make([][]int, n)
+		deg := make([]int, n)
+		for v, r := range a {
+			for _, w := range r {
+				g[v] = append(g[v], w)
+				g[w] = append(g[w], v)
+				deg[v]++
+				deg[w]++
+			}
+		}
+		less := func(v, w int) bool { return deg[v] < deg[w] || deg[v] == deg[w] && v < w }
+
+		g2 := make([][]int, n)
+		for v, ws := range g {
+			for _, w := range ws {
+				if less(v, w) {
+					g2[v] = append(g2[v], w)
+				}
+			}
+		}
+		id := make([]int, n)
+		for v, ws := range g {
+			for _, w := range ws {
+				for _, u := range g2[w] {
+					if less(v, u) {
+						if id[u] > 0 {
+							if v < nn {
+								Fprintln(out, v+1, u+1)
+							} else {
+								Fprintln(out, w+1, id[u])
+							}
+							continue o
+						}
+						id[u] = w + 1
+					}
+				}
+			}
+			for _, w := range ws {
+				for _, u := range g2[w] {
+					if less(v, u) {
+						id[u] = 0
+					}
+				}
+			}
+		}
+		Fprintln(out, -1)
+	}
+}
+
+// 分块解法
+func CF1468M2(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
 	type pair struct{ v, i int }
 
 	var T, n, m, v int
