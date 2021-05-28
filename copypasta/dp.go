@@ -860,6 +860,9 @@ func dpCollections() {
 	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
 	// https://codeforces.com/problemset/problem/543/A
 
+	// 多重背包计数（可以用前缀和优化）
+	// https://www.luogu.com.cn/problem/P1077
+
 	// 多重背包 - 未优化
 	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
 		n := len(values)
