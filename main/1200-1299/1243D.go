@@ -8,7 +8,7 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 // 题解 https://www.luogu.org/blog/endlesscheng/solution-cf1242b
-func Sol1243D(reader io.Reader, writer io.Writer) {
+func CF1243D(reader io.Reader, writer io.Writer) {
 	in := bufio.NewScanner(reader)
 	in.Split(bufio.ScanWords)
 	out := bufio.NewWriter(writer)
@@ -85,6 +85,4 @@ func Sol1243D(reader io.Reader, writer io.Writer) {
 	Fprint(out, ans)
 }
 
-//func main() {
-//	Sol1243D(os.Stdin, os.Stdout)
-//}
+//func main() { CF1243D(os.Stdin, os.Stdout) }
