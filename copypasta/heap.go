@@ -57,24 +57,24 @@ func (h *hp64) popPush(v int64) int64 { t := (*h)[0]; (*h)[0] = v; heap.Fix(h, 0
 
 //
 
-// 支持修改、删除指定元素的堆
+// 支持修改、删除指定元素的堆 (mh 指 modifiable heap)
 // 参考 heap 包下面的 example_pq_test.go
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
-type pvi struct {
-	v int64
-	i int // 该元素在 hpi 中的下标，可随着 push pop 等操作自动改变
+type viPair struct {
+	v     int64
+	index int // 该元素在 mh 中的下标，可随着 push pop 等操作自动改变
 }
-type hpi []*pvi // 将指针存于他处，可直接在外部修改 v 后调用 h.fix(p.i)
+type mh []*viPair // 将 *viPair 指针 p 存于他处，可直接在外部修改 v 后调用 h.fix(p.index)，或要删除 v 时调用 h.remove(p.index)
 
-func (h hpi) Len() int            { return len(h) }
-func (h hpi) Less(i, j int) bool  { return h[i].v < h[j].v } // > 为最大堆
-func (h hpi) Swap(i, j int)       { h[i], h[j] = h[j], h[i]; h[i].i = i; h[j].i = j }
-func (h *hpi) Push(v interface{}) { *h = append(*h, v.(*pvi)) }
-func (h *hpi) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *hpi) push(v int64) *pvi  { p := &pvi{v, len(*h)}; heap.Push(h, p); return p }
-func (h *hpi) pop() *pvi          { return heap.Pop(h).(*pvi) }
-func (h *hpi) fix(i int)          { heap.Fix(h, i) }
-func (h *hpi) remove(i int) *pvi  { return heap.Remove(h, i).(*pvi) }
+func (h mh) Len() int              { return len(h) }
+func (h mh) Less(i, j int) bool    { return h[i].v < h[j].v } // > 为最大堆
+func (h mh) Swap(i, j int)         { h[i], h[j] = h[j], h[i]; h[i].index = i; h[j].index = j }
+func (h *mh) Push(v interface{})   { *h = append(*h, v.(*viPair)) }
+func (h *mh) Pop() interface{}     { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *mh) push(v int64) *viPair { p := &viPair{v, len(*h)}; heap.Push(h, p); return p }
+func (h *mh) pop() *viPair         { return heap.Pop(h).(*viPair) }
+func (h *mh) fix(i int)            { heap.Fix(h, i) }
+func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 
 func heapCollections() {
 	// 求前缀/后缀的最小的 k 个元素和（k 固定）
