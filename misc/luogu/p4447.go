@@ -8,10 +8,10 @@ import (
 	"sort"
 )
 
-type intHeap struct{ sort.IntSlice }
+type hp4447 struct{ sort.IntSlice }
 
-func (h *intHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *intHeap) Pop() (v interface{}) {
+func (h *hp4447) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp4447) Pop() (v interface{}) {
 	n := len(h.IntSlice)
 	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
 	return
@@ -30,7 +30,7 @@ func p4447(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 	sort.Ints(a)
-	endsWith := map[int]*intHeap{}
+	endsWith := map[int]*hp4447{}
 	for _, v := range a {
 		minLen := 0
 		if h, ok := endsWith[v-1]; ok {
@@ -40,7 +40,7 @@ func p4447(_r io.Reader, _w io.Writer) {
 			}
 		}
 		if _, ok := endsWith[v]; !ok {
-			endsWith[v] = &intHeap{}
+			endsWith[v] = &hp4447{}
 		}
 		Push(endsWith[v], minLen+1)
 	}
