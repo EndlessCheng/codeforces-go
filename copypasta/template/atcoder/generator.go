@@ -28,12 +28,12 @@ func fetchStartTime(contestID string) (t time.Time, err error) {
 
 	htmlStr := resp.String()
 	const token = `fixtime-full'>`
-	i := strings.Index(htmlStr, token) // 2020-08-02 21:00:00+0900
+	i := strings.Index(htmlStr, token)
 	if i == -1 {
 		return time.Time{}, fmt.Errorf("invalid html content %s", htmlStr)
 	}
 
-	datetimeStr := htmlStr[i+len(token) : i+len(token)+24]
+	datetimeStr := htmlStr[i+len(token) : i+len(token)+24] // 2020-08-02 21:00:00+0900
 	return time.Parse("2006-01-02 15:04:05-0700", datetimeStr)
 }
 
