@@ -143,6 +143,13 @@ func numberTheoryCollection() {
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
+	Coin problem / Chicken McNugget Theorem
+	两种硬币面额为 a 和 b，互质，数量无限，所不能凑出的数值的最大值为 a*b-a-b
+	https://artofproblemsolving.com/wiki/index.php/Chicken_McNugget_Theorem
+	https://en.wikipedia.org/wiki/Coin_problem
+	https://www.luogu.com.cn/problem/P3951
+	https://codeforces.com/contest/1526/problem/B
+
 	*/
 
 	gcd := func(a, b int64) int64 {
