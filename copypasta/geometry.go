@@ -6,12 +6,14 @@ import (
 	"math"
 	"math/rand"
 	"sort"
+	"time"
 )
 
 /*
 https://oi-wiki.org/geometry/2d/
 https://oi-wiki.org/geometry/3d/
 推荐 https://vlecomte.github.io/cp-geo.pdf
+https://www.cnblogs.com/Xing-Ling/p/12102489.html
 
 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.16f", ans)，这样还可以方便测试
 
@@ -378,6 +380,9 @@ func (o circleF) point(rad float64) vecF {
 	return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)}
 }
 
+// 三点确定一圆
+// 用三角形外心求解，见 circumcenter
+
 // 给定半径和一条有向的弦，求该弦右侧的圆心（即 ao 在 ab 右侧）
 func getCircleCenter(a, b vec, r int64) vecF {
 	disAB2 := b.sub(a).len2()
@@ -511,6 +516,7 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 // 模板题 https://www.luogu.com.cn/problem/P1742 https://www.acwing.com/problem/content/3031/ https://www.luogu.com.cn/problem/P2533
 // 椭圆（坐标系旋转缩一下） https://www.luogu.com.cn/problem/P4288 https://www.acwing.com/problem/content/2787/
 func smallestEnclosingDisc(ps []vecF) circleF {
+	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(ps), func(i, j int) { ps[i], ps[j] = ps[j], ps[i] })
 	o := ps[0]
 	r2 := 0.
@@ -604,6 +610,7 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 // 三角剖分
 // todo https://oi-wiki.org/geometry/triangulation/
 //      https://cp-algorithms.com/geometry/delaunay.html
+//  http://poj.org/problem?id=2986
 
 // 多边形相关
 func vec2Collection() {
@@ -782,6 +789,11 @@ func vec2Collection() {
 	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
 	// 模板题 https://codeforces.com/problemset/problem/70/D
 
+	// todo 闵可夫斯基和
+	// https://www.cnblogs.com/xzyxzy/p/10229921.html
+	// https://www.luogu.com.cn/problem/P4557
+	// https://codeforces.com/problemset/problem/87/E
+
 	// todo 点集的最大四边形
 	// https://www.luogu.com.cn/problem/P4166
 	// https://codeforces.com/contest/340/problem/B
@@ -853,11 +865,12 @@ func vec2Collection() {
 		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
 	}
 
-	// 判断点 p 是否在凸多边形 ps 内部 O(logN)
+	// 判断点 p 是否在凸多边形 ps 内部 O(logn)
 	// ps 逆时针顺序
 	// https://www.cnblogs.com/yym2013/p/3673616.html
 	// https://cp-algorithms.com/geometry/point-in-convex-polygon.html
 	// 其他 O(n) 方法 https://blog.csdn.net/WilliamSun0122/article/details/77994526
+	// EXTRA: 判断线段是否在凸多边形内：判断两端点是否均在凸多边形内即可
 	inPolygon := func(ps []vec, p vec) bool {
 		n := len(ps)
 		p0 := p.sub(ps[0])
@@ -873,6 +886,12 @@ func vec2Collection() {
 
 	// todo 判断点 p 是否在多边形 ps 内部（不保证凸性）
 	// 光线投射算法 Ray casting algorithm
+	// 穿过奇数次
+	// http://acm.hdu.edu.cn/showproblem.php?pid=1756
+
+	// 判断任意两个多边形是否相离 O(n^2)
+	// 属于不同多边形的任意两边都不相交，且一个多边形上的任意顶点都不被另一个多边形所包含
+	// https://www.luogu.com.cn/problem/UVA10256
 
 	// 判断 ∠abc 是否为直角
 	// 如果是线段的话，还需要判断恰好有四个点，并且没有严格交叉（含重合）
