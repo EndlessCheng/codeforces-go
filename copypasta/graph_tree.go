@@ -64,20 +64,20 @@ func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 	dep := make([]int, n)
 	size := make([]int, n)
 	maxDep := make([]int, n) // EXTRA: 子树最大深度
-	var f func(v, fa, d int) int
-	f = func(v, fa, d int) int {
+	var build func(v, fa, d int) int
+	build = func(v, fa, d int) int {
 		dep[v] = d
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
-				sz += f(w, v, d+1)
+				sz += build(w, v, d+1)
 				maxDep[v] = max(maxDep[v], maxDep[w]+1)
 			}
 		}
 		size[v] = sz
 		return sz
 	}
-	f(root, -1, 0)
+	build(root, -1, 0)
 
 	// EXTRA: 一种贪心策略是，将 g[v] 按照 maxDep 从大到小排序
 	// https://codeforces.com/contest/1510/submission/111986751
@@ -208,6 +208,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
+// 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
@@ -347,6 +348,8 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 //    树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
+// 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
+// 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
 func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
@@ -357,13 +360,13 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 		return b
 	}
 	minMaxSubSize := int(1e9)
-	var f func(v, fa int) int
-	f = func(v, fa int) int {
+	var findCt func(v, fa int) int
+	findCt = func(v, fa int) int {
 		size := 1
 		maxSubSize := 0
 		for _, w := range g[v] {
 			if w != fa {
-				sz := f(w, v)
+				sz := findCt(w, v)
 				size += sz
 				maxSubSize = max(maxSubSize, sz)
 			}
@@ -375,7 +378,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 		}
 		return size
 	}
-	f(st, -1)
+	findCt(st, -1)
 	return
 }
 
@@ -1296,9 +1299,3 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
 // https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
-
-// 仙人掌图 Cactus graph
-// A connected graph in which any two simple cycles have at most one vertex in common
-// https://en.wikipedia.org/wiki/Cactus_graph
-// TODO 圆方树
-// 模板题 https://www.luogu.com.cn/problem/P5236
