@@ -430,8 +430,8 @@ func commonCollection() {
 	diagonalSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
 
-		ds := make([][]int, n+1) // 主对角线前缀和
-		as := make([][]int, n+1) // 反对角线前缀和
+		ds := make([][]int, n+1) // 主对角线方向前缀和
+		as := make([][]int, n+1) // 反对角线方向前缀和
 		for i := range ds {
 			ds[i] = make([]int, m+1)
 			as[i] = make([]int, m+1)
@@ -442,9 +442,9 @@ func commonCollection() {
 				as[i+1][j] = as[i][j+1] + v // ↙
 			}
 		}
-		// 从 x,y 开始，向 ↘，连续的 k 个数的和（需要保证至少有 k 个数）
+		// 从 (x,y) 开始，向 ↘，连续的 k 个数的和（需要保证至少有 k 个数）
 		queryDiagonal := func(x, y, k int) int { return ds[x+k][y+k] - ds[x][y] }
-		// 从 x,y 开始，向 ↙，连续的 k 个数的和（需要保证至少有 k 个数）
+		// 从 (x,y) 开始，向 ↙，连续的 k 个数的和（需要保证至少有 k 个数）
 		queryAntiDiagonal := func(x, y, k int) int { return as[x+k][y+1-k] - as[x][y+1] }
 
 		_, _ = queryDiagonal, queryAntiDiagonal
