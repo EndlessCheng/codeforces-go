@@ -339,7 +339,7 @@ func dpCollections() {
 	//     LC583  https://leetcode-cn.com/problems/delete-operation-for-two-strings/
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
-	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
+	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
@@ -463,12 +463,13 @@ func dpCollections() {
 
 	// 最长上升子序列 (LIS)
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
-	// 求下降，可以考虑把序列元素去相反数
+	// 求下降，可以考虑取相反数
 	// https://oi-wiki.org/dp/basic/#_12
-	// 最小划分数 Dilworth's theorem https://en.wikipedia.org/wiki/Dilworth%27s_theorem
+	// 狄尔沃斯定理（Dilworth's theorem）https://en.wikipedia.org/wiki/Dilworth%27s_theorem
+	//    偏序集的最少反链划分数等于最长链的长度
 	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
 	//
-	// 例题 导弹拦截 https://www.luogu.com.cn/problem/P1020
+	// 例题 导弹拦截（含最小划分数）https://www.luogu.com.cn/problem/P1020
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
@@ -968,6 +969,7 @@ func dpCollections() {
 	② 求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
 	一般定义 dp[i][j] 表示 a[i:j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
+	插入形成回文 https://www.luogu.com.cn/problem/P1435 LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
 	力扣题目 516,312,375,1246
 	戳气球（好题） LC312 https://leetcode-cn.com/problems/burst-balloons/
 	移除盒子（状态定义和转移的好题） LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
@@ -1048,6 +1050,29 @@ func dpCollections() {
 	https://en.wikipedia.org/wiki/Hamiltonian_path
 	https://en.wikipedia.org/wiki/Hamiltonian_path_problem
 	*/
+
+	// 任意排列 DP
+	// https://atcoder.jp/contests/abc199/tasks/abc199_e
+	// https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
+	permDP := func(a []int) int {
+		n := len(a)
+		m := 1 << n
+		dp := make([]int, m) // int64
+		dp[0] = 1
+		for s, dv := range dp[:m-1] {
+			i := bits.OnesCount(uint(s))
+			v := a[i]
+			for t, lb := s^(m-1), 0; t > 0; t ^= lb {
+				lb = t & -t
+				j := bits.TrailingZeros(uint(lb))
+				w := a[j]
+				_ = v + w
+				// dp[s|lb] <- dv
+				dp[s|lb] += dv // mod
+			}
+		}
+		return dp[m-1]
+	}
 
 	// 旅行商问题 (TSP)
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
@@ -1540,6 +1565,7 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/20935
 	//
 	// https://www.luogu.com.cn/problem/P3478
+	// https://codeforces.com/problemset/problem/763/A（有更巧妙的做法）
 	// https://codeforces.com/problemset/problem/1092/F
 	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/219/D
@@ -1735,11 +1761,9 @@ func dpCollections() {
 
 		mergeStones,
 
-		tsp,
-		subsubDP,
+		permDP, tsp, subsubDP,
 
-		digitDP,
-		kth666,
+		digitDP, kth666,
 
 		cht,
 
