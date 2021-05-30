@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 /* k-d tree: k-dimensional tree; k 维树
 https://en.wikipedia.org/wiki/K-d_tree
@@ -13,6 +16,8 @@ todo 题单 https://www.luogu.com.cn/training/4295
 模板题 https://www.luogu.com.cn/problem/P4148
 todo https://codeforces.com/problemset/problem/44/G
 */
+
+func init() { rand.Seed(time.Now().UnixNano()) }
 
 type kdNode struct {
 	lr          [2]*kdNode
