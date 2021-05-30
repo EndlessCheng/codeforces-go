@@ -6,6 +6,7 @@ import (
 	"math"
 	"math/rand"
 	"sort"
+	"time"
 )
 
 // General ideas https://codeforces.com/blog/entry/48417
@@ -18,6 +19,7 @@ import (
 // 套路：预处理数据（按照某种顺序排序/优先队列/BST/...），或者边遍历边维护，
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
+// 进阶：https://codeforces.com/contest/1483/problem/D
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
@@ -423,6 +425,31 @@ func commonCollection() {
 		return
 	}
 
+	// 矩阵每条主对角线、反对角线的前缀和
+	// https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
+	diagonalSum := func(a [][]int) {
+		n, m := len(a), len(a[0])
+
+		ds := make([][]int, n+1) // 主对角线前缀和
+		as := make([][]int, n+1) // 反对角线前缀和
+		for i := range ds {
+			ds[i] = make([]int, m+1)
+			as[i] = make([]int, m+1)
+		}
+		for i, r := range a {
+			for j, v := range r {
+				ds[i+1][j+1] = ds[i][j] + v // ↘
+				as[i+1][j] = as[i][j+1] + v // ↙
+			}
+		}
+		// 从 x,y 开始，向 ↘，连续的 k 个数的和（需要保证至少有 k 个数）
+		queryDiagonal := func(x, y, k int) int { return ds[x+k][y+k] - ds[x][y] }
+		// 从 x,y 开始，向 ↙，连续的 k 个数的和（需要保证至少有 k 个数）
+		queryAntiDiagonal := func(x, y, k int) int { return as[x+k][y+1-k] - as[x][y+1] }
+
+		_, _ = queryDiagonal, queryAntiDiagonal
+	}
+
 	// 利用每个数产生的贡献计算 Σ|ai-aj|, i!=j
 	// 相关题目 https://codeforces.com/contest/1311/problem/F
 	contributionSum := func(a []int) (sum int64) {
@@ -736,6 +763,7 @@ func commonCollection() {
 	// 模板题 https://codeforces.com/contest/977/problem/C
 	quickSelect := func(a []int, k int) int {
 		//k = len(a) - 1 - k // 求第 k 大
+		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
 		for l, r := 0, len(a)-1; l < r; {
 			v := a[l] // 切分元素
@@ -957,7 +985,7 @@ func commonCollection() {
 		min, mins, max, maxs, abs, ceil, bin,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum,
+		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
