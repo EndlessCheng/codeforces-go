@@ -23,7 +23,8 @@ func CF1523D(_r io.Reader, out io.Writer) {
 		Fscanf(in, "%b\n", &a[i])
 	}
 	for time.Since(t0) < 2*time.Second {
-		// 由于答案是某个元素的子集，且该子集至少出现在一半的元素中，则可以任取一元素 mask，取不到某个 a[i] 的概率是 0.5^loop，非常小
+		// 由于答案是某个元素的子集，且该子集至少出现在一半的元素中，则可以任取一元素作为 mask
+		// 循环 k 次后，答案不在 mask 中的概率是 0.5^k，非常小
 		// 然后统计 mask 的所有子集在 a 中的出现次数
 		// 这里的技巧是，统计 a[i]&mask 的出现次数，然后再据此统计 a[i]&mask 的子集的出现次数
 		mask := a[rand.Intn(n)]
