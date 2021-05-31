@@ -373,6 +373,8 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
 
+[How to Interpret Contest Ratings](https://codeforces.com/blog/entry/68288)
+
 [Codeforces: Problem Difficulties](https://codeforces.com/blog/entry/62865)
 
 ### Keep Healthy
