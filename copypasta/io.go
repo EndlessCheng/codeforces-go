@@ -220,6 +220,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 }
 
 // 如果题目按照行来读入更方便的话……
+// 例如 https://codeforces.com/problemset/problem/375/B
 func lineIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Buffer(nil, 1e9) // default maxTokenSize is 65536

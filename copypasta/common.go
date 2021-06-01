@@ -67,15 +67,27 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 
 // 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
 
-/* Golang 注意事项
-for range array 会拷贝一份 array，这种情况可以用 for range array[:]
-for-switch 内的 break 跳出的是该 switch，而不是其外部的 for 循环
-对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，不去扫描大量对象，能明显减少耗时
+/* todo 反悔贪心
+https://djy-juruo.blog.luogu.org/qian-tan-fan-hui-tan-xin
+https://www.cnblogs.com/nth-element/p/11768155.html
+https://codeforces.com/problemset/problem/1526/C2
+*/
+
+/* 集合哈希
+https://codeforces.com/problemset/problem/1394/B
+https://www.luogu.com.cn/problem/P6688
+*/
+
+/* Golang 卡常技巧（IO 之外的部分）
+对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，能明显减少耗时
 对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
 其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
-对于多组数据的情况，禁用 GC 若 MLE，可在每组数据的开头或者末尾调用 debug.FreeOSMemory() 手动 GC
+对于多组数据的情况，禁用 GC 若 MLE，可在每组数据的开头或末尾调用 debug.FreeOSMemory() 手动 GC
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
+对于二维矩阵，以 make([][mx]int, n) 的方式使用，比 make([][]int, n) 嵌套 make([]int, m) 更高效（100MB 以上时可以快 ~150ms）
+对比 https://codeforces.com/problemset/submission/375/118043978
+    https://codeforces.com/problemset/submission/375/118044262
 */
 func commonCollection() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
