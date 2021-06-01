@@ -834,6 +834,7 @@ func commonCollection() {
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// https://codeforces.com/problemset/problem/1379/D
+	// 转换求解目标 https://codeforces.com/problemset/problem/1285/E
 	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
 	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
