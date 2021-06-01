@@ -18,11 +18,13 @@ import (
 
 另一种题型是注意到 n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
-好题 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
+https://codeforces.com/problemset/problem/425/D
+https://codeforces.com/problemset/problem/1468/M 或四元环
+LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 */
 
 /*
-根号算法（分块）Sqrt Decomposition
+分块思想 Sqrt Decomposition
 https://oi-wiki.org/ds/decompose/
 https://oi-wiki.org/ds/block-array/
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
