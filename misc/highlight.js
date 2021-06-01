@@ -54,7 +54,7 @@
         // 特殊描述
         "Empty", "empty",
         "zero", "positive", "negative",
-        "decreasing", "descending", "increasing", "ascending",
+        "decreasing", "descending", "increasing", "ascending", "sorted",
         "permutations", "permutation",
         "lowercase", "lower case", "uppercase", "upper case",
         "lexicographically", "lexicographical", "palindrome",
