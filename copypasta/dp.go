@@ -230,6 +230,7 @@ func dpCollections() {
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	期望 DP https://codeforces.com/problemset/problem/235/B
 	期望 DP https://codeforces.com/problemset/problem/1097/D
+	https://codeforces.com/problemset/problem/446/A
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -242,8 +243,9 @@ func dpCollections() {
 	// 最大 m 段子段和 https://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
-	// 变体 https://codeforces.com/problemset/problem/1155/D
-	// 变体 https://codeforces.com/problemset/problem/1373/D
+	// 变形题 https://codeforces.com/problemset/problem/788/A
+	//       https://codeforces.com/problemset/problem/1155/D
+	//       https://codeforces.com/problemset/problem/1373/D
 	maxSubArraySum := func(a []int) int {
 		if len(a) == 0 {
 			return 0
