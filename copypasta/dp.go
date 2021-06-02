@@ -45,6 +45,8 @@ TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，�
 递归打印路径：https://codeforces.com/problemset/problem/2/B
 需要补充额外的状态 https://codeforces.com/problemset/problem/682/D
 
+todo Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
+
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
@@ -90,10 +92,7 @@ todo 3.4 节
 3420
 3735
 3171 https://www.luogu.com.cn/problem/P4644 见 graph.shortestPathDijkstra
-Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
-SOS Dynamic Programming https://codeforces.com/blog/entry/45223
 CSES DP section editorial https://codeforces.com/blog/entry/70018
-CF 全部 DP 题  https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp
 力扣上的 DP 问题
     分类汇总 https://zhuanlan.zhihu.com/p/126546914
     https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
@@ -231,6 +230,7 @@ func dpCollections() {
 	期望 DP https://codeforces.com/problemset/problem/235/B
 	期望 DP https://codeforces.com/problemset/problem/1097/D
 	https://codeforces.com/problemset/problem/446/A
+	https://codeforces.com/problemset/problem/603/A
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -1039,14 +1039,14 @@ func dpCollections() {
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
 
-	https://www.luogu.com.cn/problem/P1879
-	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cbitmasks
-
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/808
 	     题单 https://ac.nowcoder.com/acm/problem/collection/810
-	todo LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
-	     LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
-	     LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
+	 LC691  https://leetcode-cn.com/problems/stickers-to-spell-word/
+	 LC1125 https://leetcode-cn.com/problems/smallest-sufficient-team/
+	 LC943  https://leetcode-cn.com/problems/find-the-shortest-superstring/
+	https://www.luogu.com.cn/problem/P1879
+	循环移位 https://codeforces.com/contest/1209/problem/E2
+	https://codeforces.com/problemset/problem/401/D
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -1064,7 +1064,7 @@ func dpCollections() {
 		for s, dv := range dp[:m-1] {
 			i := bits.OnesCount(uint(s))
 			v := a[i]
-			for t, lb := s^(m-1), 0; t > 0; t ^= lb {
+			for t, lb := m-1^s, 0; t > 0; t ^= lb {
 				lb = t & -t
 				j := bits.TrailingZeros(uint(lb))
 				w := a[j]
@@ -1104,7 +1104,7 @@ func dpCollections() {
 			// 利用位运算快速求出 s 中 1 的位置 v，以及 s 中 0 的位置 w（通过 s 的补集中的 1 的位置求出）
 			for S := uint(s); S > 0; S &= S - 1 {
 				v := bits.TrailingZeros(S)
-				for C := uint(s) ^ (1<<n - 1); C > 0; C &= C - 1 {
+				for C := 1<<n - 1 ^ uint(s); C > 0; C &= C - 1 {
 					w := bits.TrailingZeros(C)
 					dp[s|1<<w][w] = min(dp[s|1<<w][w], dv[v]+dist[v][w])
 				}
@@ -1163,7 +1163,42 @@ func dpCollections() {
 		return f(0, 1<<m-1)
 	}
 
-	/* 插头 DP / 轮廓线 DP / Broken Profile DP
+	// 高维前缀和 SOS DP (Sum over Subsets)
+	// https://codeforces.com/blog/entry/45223
+	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
+	//
+	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
+	// 转换成求集合中最大次大 https://atcoder.jp/contests/arc100/tasks/arc100_c
+	// https://codeforces.com/problemset/problem/165/E
+	// todo https://codeforces.com/problemset/problem/449/D
+	//  https://codeforces.com/problemset/problem/1208/F
+	//  https://codeforces.com/problemset/problem/800/D
+	//  https://codeforces.com/problemset/problem/383/E
+	// https://codeforces.com/problemset/problem/1523/D
+	sos := func(a []int) int64 {
+		// 求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
+		// 思路是转换成求每个 ai 的补集的 SOS
+		// 注：另一种解法是求 FWT(cnt)[0]
+		const mx = 20 // bits.Len(uint(max(a))
+		cnt := make([]int, 1<<mx)
+		for _, v := range a {
+			cnt[v]++
+		}
+		dp := append([]int(nil), cnt...)
+		for i := 0; i < mx; i++ {
+			for s := 0; s < 1<<mx; s++ {
+				s |= 1 << i
+				dp[s] += dp[s^1<<i]
+			}
+		}
+		ans := int64(0)
+		for s, c := range cnt {
+			ans += int64(c) * int64(dp[1<<mx-1^s])
+		}
+		return ans
+	}
+
+	/* 插头 DP / 轮廓线 DP / Plug DP / Broken Profile DP
 	《训练指南》6.1
 	todo https://oi-wiki.org/dp/plug/
 	https://cp-algorithms.com/dynamic_programming/profile-dynamics.html
@@ -1764,7 +1799,7 @@ func dpCollections() {
 
 		mergeStones,
 
-		permDP, tsp, subsubDP,
+		permDP, tsp, subsubDP, sos,
 
 		digitDP, kth666,
 
