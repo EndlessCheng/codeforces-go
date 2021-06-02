@@ -110,11 +110,11 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 }
 
 // 求与 v 异或值不超过 limit 的元素个数
-// 为方便计算，代码中改成了小于 limit
-// 核心原理是，当 limit 的某一位是 1 的时候，若保持 w 与 v 在该位上的数字不变，后面的位是可以取任意数字的
+// 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
+// 如果在 limit 上而不是 limit+1 上讨论，就要处理当前异或为 1 的情况了，比较麻烦
 // LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
-	limit++ // 改成 <
+	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
