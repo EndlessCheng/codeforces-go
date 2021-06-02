@@ -53,6 +53,7 @@
 - [字符串 strings.go](/copypasta/strings.go)
   - Hash
   - KMP
+    - 最小循环节
   - 扩展 KMP（Z algorithm）
   - 最小表示法
   - 最长回文子串 
