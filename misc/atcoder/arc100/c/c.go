@@ -22,9 +22,7 @@ func run(_r io.Reader, _w io.Writer) {
 	}
 	for i := 0; i < mx; i++ {
 		for s := 0; s < 1<<mx; s++ {
-			if s>>i&1 == 0 {
-				s |= 1 << i
-			}
+			s |= 1 << i
 			p, q := dp[s], dp[s^1<<i]
 			if q.se > p.fi {
 				dp[s] = q
