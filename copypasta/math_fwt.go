@@ -1,13 +1,12 @@
 package copypasta
 
 /* 快速沃尔什变换 fast Walsh–Hadamard transform, FWT, FWHT
-https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
-
 在算法竞赛中，FWT 是用于解决对下标进行【位运算卷积】问题的方法
+https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
 https://oi-wiki.org/math/poly/fwt/
-https://www.luogu.com.cn/problem/solution/P4717
 https://www.luogu.com.cn/blog/CJL/fwt-xue-xi-bi-ji
 https://www.luogu.com.cn/blog/command-block/wei-yun-suan-juan-ji-yu-ji-kuo-zhan
+一些习题 https://blog.csdn.net/weixin_38686780/article/details/81912853
 
 模板题 https://www.luogu.com.cn/problem/P4717
 LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
