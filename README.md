@@ -160,6 +160,7 @@
     - 换根 DP
   - 斜率优化 DP（CHT）
 - [图论 graph.go](/copypasta/graph.go)
+  - 链式前向星
   - 欧拉回路
   - 割点
   - 割边（桥）
