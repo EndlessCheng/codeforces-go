@@ -1168,34 +1168,38 @@ func dpCollections() {
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
 	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
+	//    求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
+	//    思路是转换成求每个 ai 的补集的 SOS
+	//    注：另一种解法是求 FWT(cnt)[0]
 	// 转换成求集合中最大次大 https://atcoder.jp/contests/arc100/tasks/arc100_c
 	// https://codeforces.com/problemset/problem/165/E
-	// todo https://codeforces.com/problemset/problem/449/D
-	//  https://codeforces.com/problemset/problem/1208/F
+	// 容斥 https://codeforces.com/problemset/problem/449/D
+	// todo https://codeforces.com/problemset/problem/1208/F
 	//  https://codeforces.com/problemset/problem/800/D
 	//  https://codeforces.com/problemset/problem/383/E
 	// https://codeforces.com/problemset/problem/1523/D
-	sos := func(a []int) int64 {
-		// 求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
-		// 思路是转换成求每个 ai 的补集的 SOS
-		// 注：另一种解法是求 FWT(cnt)[0]
+	sos := func(a []int) {
+		// 从子集转移
 		const mx = 20 // bits.Len(uint(max(a))
-		cnt := make([]int, 1<<mx)
+		dp := make([]int, 1<<mx)
 		for _, v := range a {
-			cnt[v]++
+			dp[v]++
 		}
-		dp := append([]int(nil), cnt...)
 		for i := 0; i < mx; i++ {
 			for s := 0; s < 1<<mx; s++ {
 				s |= 1 << i
 				dp[s] += dp[s^1<<i]
 			}
 		}
-		ans := int64(0)
-		for s, c := range cnt {
-			ans += int64(c) * int64(dp[1<<mx-1^s])
+
+		// 从超集转移
+		for i := 0; i < mx; i++ {
+			for s := 1<<mx - 1; s >= 0; s-- {
+				if s>>i&1 == 0 {
+					dp[s] += dp[s|1<<i]
+				}
+			}
 		}
-		return ans
 	}
 
 	/* 插头 DP / 轮廓线 DP / Plug DP / Broken Profile DP
