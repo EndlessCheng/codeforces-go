@@ -19,20 +19,21 @@ func CF449D(_r io.Reader, out io.Writer) {
 	for i := 0; i < n; i++ {
 		p2[i+1] = p2[i] << 1 % mod
 		Fscan(in, &v)
-		dp[1<<mx-1^v]++
+		dp[v]++
 	}
 	for i := 0; i < mx; i++ {
-		for s := 0; s < 1<<mx; s++ {
-			s |= 1 << i
-			dp[s] += dp[s^1<<i]
+		for s := 1<<mx - 1; s >= 0; s-- {
+			if s>>i&1 == 0 {
+				dp[s] += dp[s|1<<i]
+			}
 		}
 	}
-	ans := int64(p2[n])
-	for i, v := range dp[:1<<mx-1] {
+	ans := int64(0)
+	for i, v := range dp {
 		if bits.OnesCount(uint(i))&1 > 0 {
-			ans -= int64(p2[v])
+			ans -= int64(p2[v] - 1)
 		} else {
-			ans += int64(p2[v])
+			ans += int64(p2[v] - 1)
 		}
 	}
 	Fprint(out, (ans%mod+mod)%mod)
