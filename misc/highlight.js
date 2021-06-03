@@ -5,6 +5,7 @@
 // @description  highlight some important words
 // @author       EndlessCheng
 // @match        https://atcoder.jp/contests/*
+// @exclude      https://atcoder.jp/contests/*/submissions/*
 // @match        https://codeforces.com/contest/*
 // @match        https://codeforces.com/group/*
 // @match        https://codeforces.com/gym/*
