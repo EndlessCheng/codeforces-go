@@ -2,13 +2,11 @@ package copypasta
 
 import "sort"
 
-// "Old Driver Tree"
-// 一种可以动态合并与分裂的分块结构，在随机数据下有高效性能
-// https://oi-wiki.org/ds/odt/
-// todo 随机数据下的复杂度证明 https://zhuanlan.zhihu.com/p/102786071
-// 我写的题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf896c
+// 说明见 odt_bst.go
 
-// 这里用 slice 实现
+// 这里用 slice 实现 O(nlogn)
+// 对应题目 https://codeforces.com/problemset/problem/896/C
+// 我的题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf896c
 type odtBlock struct {
 	l, r int
 	val  int64
