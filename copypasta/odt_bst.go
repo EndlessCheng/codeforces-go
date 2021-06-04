@@ -9,9 +9,12 @@ package copypasta
 // 代码 https://codeforces.com/problemset/submission/558/117163317
 // https://codeforces.com/problemset/problem/915/E
 // 代码 https://codeforces.com/problemset/submission/915/117158161
+// https://codeforces.com/problemset/problem/817/F 数据水
+// 代码 https://codeforces.com/contest/817/submission/118365591
 // todo https://www.luogu.com.cn/problem/P5350
 //      https://www.luogu.com.cn/problem/P5586
 
+// 使用时，为简化判断，可在初始时插入一段 [1,n] 区间（或 [0,2e9] 等）
 type odtNode struct {
 	tpNode
 	l, r int
@@ -36,6 +39,7 @@ func (t *treap) prepare(l, r int) {
 
 func (t *treap) merge(l, r int, value tpValueType) {
 	t.prepare(l, r)
+	// 保留 l，后面直接修改，从而代替删除+插入操作
 	for o := t.next(l); o != nil && o.l <= r; o = t.next(o.l) {
 		t.delete(tpKeyType(o.l))
 	}
