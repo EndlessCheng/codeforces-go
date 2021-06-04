@@ -98,9 +98,7 @@
                 .replaceAll("I.e. ", "I.e.")
                 .replaceAll("i.e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.")
-                .replaceAll("Div. ", "Div.")
-                .replaceAll("div. ", "div.")
-                .replaceAll("Fav. ", "Fav.")
+                .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
                 .replaceAll(". \\", ".\\") // 防止数学公式异常
                 .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
