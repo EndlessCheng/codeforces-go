@@ -1,7 +1,6 @@
 package copypasta
 
 import (
-	. "fmt"
 	"math"
 	"math/big"
 	"math/bits"
