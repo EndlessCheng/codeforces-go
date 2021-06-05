@@ -23,8 +23,6 @@ https://oeis.org/A031878 Maximal number of edges in Hamiltonian path in complete
 a(n) = C(n, 2)        n%2==0
 a(n) = C(n, 2)-n/2+1  n%2==1
 
-CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=graphs
-
 环与独立集 https://codeforces.com/problemset/problem/1364/D
 匹配与独立集 https://codeforces.com/problemset/problem/1198/C
 
@@ -927,6 +925,25 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		path = append(path, x)
 	}
 
+	// EXTRA: 构建有向最短路树（除根节点外的点的入度均为 1）
+	// https://www.acwing.com/problem/content/3631/
+	{
+		g2 := make([][]neighbor, n)
+		vis := make([]bool, n)
+		for v, es := range g {
+			for _, e := range es {
+				w := e.to
+				if vis[w] { // 已经有一条指向 w 的边了。若去掉该判断则构建的是 DAG
+					continue
+				}
+				if dist[v]+e.wt == dist[w] {
+					g2[v] = append(g2[v], e)
+					vis[w] = true
+				}
+			}
+		}
+	}
+
 	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
 	{
 		deg := make([]int, n)
@@ -1291,6 +1308,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
 // 判断给定的边是否均在同一颗 MST 中 https://codeforces.com/problemset/problem/891/C
+// 二分图无环 https://codeforces.com/problemset/problem/1408/E
 // 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
 // EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值 https://leetcode-cn.com/contest/weekly-contest-220/problems/checking-existence-of-edge-length-limited-paths/
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
@@ -1958,7 +1976,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 // 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
-// 与堆结合 https://codeforces.com/problemset/problem/1283/F
+// 与堆结合 https://codeforces.com/problemset/problem/825/E
+//         https://codeforces.com/problemset/problem/1283/F
 // 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topSort(in io.Reader, n, m int) []int {
