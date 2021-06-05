@@ -624,6 +624,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 	// 从 v 开始向上跳到指定深度 d，d<=dep[v]
 	// https://en.wikipedia.org/wiki/Level_ancestor_problem
+	// https://codeforces.com/problemset/problem/1535/E
 	uptoDep := func(v, d int) int {
 		for i := 0; i < mx; i++ {
 			if (dep[v]-d)>>i&1 > 0 {
