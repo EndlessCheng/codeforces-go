@@ -174,6 +174,7 @@
     - Floyd-Warshall
     - Johnson
     - 0-1 BFS
+    - 字典序最小最短路
   - 最小环
   - 最小生成树（MST）
     - Kruskal

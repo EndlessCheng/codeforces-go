@@ -379,6 +379,58 @@ func (*graph) bfs(n, st int, g [][]int) {
 	}
 }
 
+// 字典序最小最短路
+// 理想路径（NEERC10）https://codeforces.com/gym/101309 I 题
+// 入门经典第二版 p.173
+// 从终点倒着 BFS 求最短路，然后从起点开始一层一层向终点走，每一步都选颜色最小的，并记录最小颜色对应的所有节点，供下一层遍历
+func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int }, st, end int) []int {
+	n := len(g)
+	const inf int = 1e9
+	dis := make([]int, n)
+	for i := range dis {
+		dis[i] = inf
+	}
+	dis[end] = 0
+	q := []int{end}
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		for _, e := range g[v] {
+			if w := e.to; dis[v]+1 < dis[w] {
+				dis[w] = dis[v] + 1
+				q = append(q, w)
+			}
+		}
+	}
+
+	colorPath := []int{}
+	next := []int{st}
+	inN := make([]bool, n)
+	inN[st] = true
+	for loop := dis[st]; loop > 0; loop-- {
+		minC := inf
+		tmp := next
+		next = nil
+		for _, v := range tmp {
+			for _, e := range g[v] {
+				if w, c := e.to, e.color; dis[w] == dis[v]-1 {
+					if c < minC {
+						for _, w := range next {
+							inN[w] = false
+						}
+						minC, next, inN[w] = c, []int{w}, true
+					} else if c == minC && !inN[w] {
+						next = append(next, w)
+						inN[w] = true
+					}
+				}
+			}
+		}
+		colorPath = append(colorPath, minC)
+	}
+	return colorPath
+}
+
 // BFS 应用：求无向无权图最小环长度
 // 好题 https://codeforces.com/problemset/problem/1325/E
 func (*graph) shortestCycleBFS(n int, g [][]int) int {
@@ -2051,6 +2103,7 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
+// 建图转换 https://codeforces.com/problemset/problem/1239/D
 func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 	type edge struct{ v, w int }
 	edges := []edge{}
