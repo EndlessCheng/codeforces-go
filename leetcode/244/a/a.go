@@ -1,18 +1,12 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-func findRotation(a, tar [][]int) bool {
-o:
+func findRotation(a, b [][]int) bool {
 	for k := 0; k < 4; k++ {
 		a = rotate(a)
-		for i, r := range a {
-			for j, v := range r {
-				if v != tar[i][j] {
-					continue o
-				}
-			}
+		if equalMatrix(a, b) {
+			return true
 		}
-		return true
 	}
 	return false
 }
@@ -29,4 +23,15 @@ func rotate(a [][]int) [][]int {
 		}
 	}
 	return b
+}
+
+func equalMatrix(a, b [][]int) bool {
+	for i, r := range a {
+		for j, v := range r {
+			if v != b[i][j] {
+				return false
+			}
+		}
+	}
+	return true
 }

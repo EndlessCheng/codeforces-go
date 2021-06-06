@@ -8,29 +8,27 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func minWastedSpace(a []int, boxes [][]int) int {
 	sort.Ints(a)
-	n := len(a)
-	sum := make([]int, n+1)
-	for i, v := range a {
-		sum[i+1] = sum[i] + v
-	}
 	ans := math.MaxInt64
-	for _, box := range boxes {
-		sort.Ints(box)
-		if box[len(box)-1] < a[len(a)-1] { // 最大的箱子不够装最大的包裹
+	for _, b := range boxes {
+		sort.Ints(b)
+		if b[len(b)-1] < a[len(a)-1] {
 			continue
 		}
-		res, l := 0, 0
-		for _, v := range box {
+		s, l := 0, 0
+		for _, v := range b {
 			r := sort.SearchInts(a, v+1)
-			res += (r-l)*v - (sum[r] - sum[l])
+			s += (r - l) * v
 			l = r
 		}
-		ans = min(ans, res)
+		ans = min(ans, s)
 	}
-	if ans < math.MaxInt64 {
-		return ans % (1e9 + 7)
+	if ans == math.MaxInt64 {
+		return -1
 	}
-	return -1
+	for _, v := range a {
+		ans -= v
+	}
+	return ans % (1e9 + 7)
 }
 
 func min(a, b int) int {
