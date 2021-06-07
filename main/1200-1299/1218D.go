@@ -7,6 +7,7 @@ import (
 )
 
 // 本题需要用 int 存储计算，否则会 TLE
+// 更进一步的优化见 https://codeforces.com/contest/1218/submission/118704484
 
 // github.com/EndlessCheng/codeforces-go
 func CF1218D(_r io.Reader, out io.Writer) {
