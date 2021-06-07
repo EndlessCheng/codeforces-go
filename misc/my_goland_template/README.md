@@ -1,7 +1,7 @@
 # How to Use
 
-1. Zip `my_goland_template` folder.
-2. GoLand - File - Manage IDE Settings - Import Settings - Choose the zipped file.
+1. Download `goland_settings.zip`.
+2. GoLand - File - Manage IDE Settings - Import Settings - Choose `goland_settings.zip`.
 
 # About
 
