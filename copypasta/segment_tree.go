@@ -467,6 +467,7 @@ func (o *stNode) merge(b *stNode) *stNode {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
 //       https://www.luogu.com.cn/problem/P3834 https://www.acwing.com/problem/content/257/ https://ac.nowcoder.com/acm/contest/7613/C
+// 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 https://codeforces.com/problemset/problem/484/E
 // todo 种类数 https://codeforces.com/problemset/problem/620/E
 //  https://codeforces.com/problemset/problem/786/C
 //  差分 https://codeforces.com/problemset/problem/813/E
