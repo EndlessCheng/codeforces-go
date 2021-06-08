@@ -18,7 +18,7 @@ func isTLE(f func()) bool {
 		return false
 	}
 
-	done := make(chan struct{})
+	done := make(chan struct{}, 1)
 	go func() {
 		f()
 		done <- struct{}{}
