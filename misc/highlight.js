@@ -65,6 +65,7 @@
         " circle", " ring",
         "counterclockwise", "counter-clockwise", "clockwise",
         "origin",
+        "infinite",
 
         "没有", "不是", "不同", "不需要", "不会",
         "相同",
