@@ -993,6 +993,7 @@ func numberTheoryCollection() {
 	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
 	//
 	lpfAll := func() {
+		// 例题 https://codeforces.com/problemset/problem/385/C
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
@@ -1006,7 +1007,6 @@ func numberTheoryCollection() {
 		}
 
 		// EXTRA: 分解 x
-		// lpf[x]==p 也可以写成 x%p==0
 		factorize := func(x int) {
 			for x > 1 {
 				p := lpf[x]
