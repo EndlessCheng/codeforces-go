@@ -284,7 +284,7 @@ func bitsCollection() {
 		n := bits.Len(uint(high ^ low))
 		maxXor := 1<<n - 1
 		mid := high&^maxXor | 1<<(n-1)
-		if limit >= maxXor { // 无约束
+		if limit >= maxXor { // 无约束，相关题目 https://codeforces.com/problemset/problem/276/D
 			return mid - 1, mid
 		}
 		if limit >= 1<<(n-1) { // A 和 B 能否在第 n-1 位不同的情况下，构造出一个满足要求的解？
