@@ -208,7 +208,7 @@ func (*graph) dfs(n, st int, g [][]int) {
 
 	{
 		// 无向图: DFS 找长度至少为 k 的环
-		// 注：如果只有一个环（基环树），见 treeWithCycle
+		// 注：如果只有一个环（基环树），见 pseudotree
 		// 模板题 https://codeforces.com/problemset/problem/263/D
 		// https://codeforces.com/problemset/problem/1325/F
 		var k, end, st int
@@ -383,6 +383,7 @@ func (*graph) bfs(n, st int, g [][]int) {
 // 理想路径（NEERC10）https://codeforces.com/gym/101309 I 题
 // 入门经典第二版 p.173
 // 从终点倒着 BFS 求最短路，然后从起点开始一层一层向终点走，每一步都选颜色最小的，并记录最小颜色对应的所有节点，供下一层遍历
+// 如果求的是字典序最小的顶点，每一步需选择符合 dis[w] == dis[v]-1 的下标最小的顶点
 func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int }, st, end int) []int {
 	n := len(g)
 	const inf int = 1e9
@@ -2342,6 +2343,7 @@ func (G *graph) solve2SAT(n int) []bool {
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
+// 拆点 https://codeforces.com/problemset/problem/1200/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
 func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
@@ -2364,18 +2366,18 @@ func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 	}
 
 	// 在反图上遍历树枝
-	var f func(int)
-	f = func(v int) {
+	var dfs func(int)
+	dfs = func(v int) {
 		for _, w := range rg[v] {
 			if inDeg[w] == 0 {
-				f(w)
+				dfs(w)
 			}
 		}
 	}
 	// 遍历基环
 	for root, d := range inDeg {
 		if d > 0 {
-			f(root)
+			dfs(root)
 		}
 	}
 
@@ -3261,23 +3263,22 @@ func (*graph) countCycle4(n int, edges [][2]int) (ans int64) {
 // 仙人掌所有顶点所处环的最小顶点和最大顶点
 // -1 表示不在环上
 // https://codeforces.com/problemset/problem/901/C
+// 与 FWT 结合 https://codeforces.com/problemset/problem/1218/D
 func (*graph) cactusDFS(g [][]int, n int) [][2]int {
 	minMax := make([][2]int, n)
 	for i := range minMax {
 		minMax[i] = [2]int{-1, -1}
 	}
-	id := 0
-	dfn := make([]int, n)
+	vis := make([]int8, n)
 	fa := make([]int, n)
 	var f func(int)
 	f = func(v int) {
-		id++
-		dfn[v] = id
+		vis[v] = 1
 		for _, w := range g[v] {
-			if dfn[w] == 0 {
+			if vis[w] == 0 {
 				fa[w] = v
 				f(w)
-			} else if w != fa[v] && dfn[w] < dfn[v] {
+			} else if w != fa[v] && vis[w] == 1 {
 				mi, mx := v, v
 				for x := v; x != w; {
 					x = fa[x]
@@ -3294,11 +3295,56 @@ func (*graph) cactusDFS(g [][]int, n int) [][2]int {
 				}
 			}
 		}
+		vis[v] = 2
 	}
 	// 连通图的话直接写 f(0)
-	for i, d := range dfn {
-		if d == 0 {
+	for i, b := range vis {
+		if b == 0 {
 			f(i)
+		}
+	}
+	return minMax
+}
+
+// 另一种写法，基于栈
+func (*graph) cactusDFS2(g [][]int, n int) [][2]int {
+	minMax := make([][2]int, n)
+	for i := range minMax {
+		minMax[i] = [2]int{-1, -1}
+	}
+	vis := make([]int8, n)
+	s := []int{}
+	var f func(v, fa int)
+	f = func(v, fa int) {
+		vis[v] = 1
+		s = append(s, v)
+		for _, w := range g[v] {
+			if vis[w] == 0 {
+				f(w, v)
+			} else if w != fa && vis[w] == 1 {
+				mi, mx := w, w
+				for i := len(s) - 1; s[i] != w; i-- {
+					x := s[i]
+					if x < mi {
+						mi = x
+					} else if x > mx {
+						mx = x
+					}
+				}
+				minMax[w] = [2]int{mi, mx}
+				for i := len(s) - 1; s[i] != w; i-- {
+					x := s[i]
+					minMax[x] = [2]int{mi, mx}
+				}
+			}
+		}
+		s = s[:len(s)-1]
+		vis[v] = 2
+	}
+	// 连通图的话直接写 f(0, -1)
+	for i, b := range vis {
+		if b == 0 {
+			f(i, -1)
 		}
 	}
 	return minMax
