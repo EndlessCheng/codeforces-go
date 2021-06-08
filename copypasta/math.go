@@ -667,15 +667,14 @@ func numberTheoryCollection() {
 	}
 
 	// 阶乘的质因数分解中 p 的幂次
-	// 这里使用的公式为 (n-digsum_p(n))/(p-1)，其中 digsum_p(n) 表示 n 的 p 进制的数位和
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
 	// https://codeforces.com/contest/1114/problem/C
-	powerOfFactorialPrimeDivisor := func(n, p int64) int64 {
-		k := n
-		for ; n > 0; n /= p {
-			k -= n % p
+	powerOfFactorialPrimeDivisor := func(n, p int64) (k int64) {
+		for n > 0 {
+			n /= p
+			k += n
 		}
-		return k / (p - 1)
+		return
 	}
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222
