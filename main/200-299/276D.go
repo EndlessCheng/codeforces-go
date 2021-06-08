@@ -1,31 +1,16 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol276D(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
-	var l, r int64
+func CF276D(in io.Reader, out io.Writer) {
+	var l, r uint64
 	Fscan(in, &l, &r)
-	if l == r {
-		Fprint(out, 0)
-		return
-	}
-	for m := l ^ r; ; m &= m - 1 {
-		if m&(m-1) == 0 {
-			Fprint(out, m<<1-1)
-			return
-		}
-	}
+	Fprint(out, int64(1)<<bits.Len64(r^l)-1)
 }
 
-//func main() {
-//	Sol276D(os.Stdin, os.Stdout)
-//}
+//func main() { CF276D(os.Stdin, os.Stdout) }

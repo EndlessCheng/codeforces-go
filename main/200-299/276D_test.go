@@ -6,12 +6,11 @@ import (
 	"testing"
 )
 
-func TestSol276D(t *testing.T) {
+// https://codeforces.com/problemset/problem/276/D
+// https://codeforces.com/problemset/status/276/problem/D
+func TestCF276D(t *testing.T) {
 	// just copy from website
 	rawText := `
-1 3
-outputCopy
-3
 inputCopy
 1 2
 outputCopy
@@ -24,5 +23,5 @@ inputCopy
 1 1
 outputCopy
 0`
-	testutil.AssertEqualCase(t, rawText, -1, Sol276D)
+	testutil.AssertEqualCase(t, rawText, 0, CF276D)
 }
