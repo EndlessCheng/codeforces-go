@@ -666,18 +666,16 @@ func numberTheoryCollection() {
 		return
 	}
 
-	// 阶乘的质因数分解 Finding Power of Factorial Divisor
-	// 见进阶指南 p.138
+	// 阶乘的质因数分解中 p 的幂次
+	// 这里使用的公式为 (n-digsum_p(n))/(p-1)，其中 digsum_p(n) 表示 n 的 p 进制的数位和
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
 	// https://codeforces.com/contest/1114/problem/C
-	powerOfFactorialPrimeDivisor := func(n, p int64) (k int64) {
-		for pp := p; ; pp *= p {
-			k += n / pp
-			if pp > n/p { // 注意判断方式，防止爆 int64
-				break
-			}
+	powerOfFactorialPrimeDivisor := func(n, p int64) int64 {
+		k := n
+		for ; n > 0; n /= p {
+			k -= n % p
 		}
-		return
+		return k / (p - 1)
 	}
 
 	// 预处理: [2,mx] 的质因数分解的系数和 bigomega(n) or Omega(n) https://oeis.org/A001222

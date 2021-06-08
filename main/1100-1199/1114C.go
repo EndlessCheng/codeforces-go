@@ -11,15 +11,13 @@ func CF1114C(in io.Reader, out io.Writer) {
 	Fscan(in, &n, &x)
 	ans := int64(1e18)
 	f := func(p, e int64) {
-		c := int64(0)
-		for pp := p; ; pp *= p {
-			c += n / pp
-			if pp > n/p { // 注意判断方式，防止爆 int64
-				break
-			}
+		k := n
+		for n := n; n > 0; n /= p {
+			k -= n % p
 		}
-		if c/e < ans {
-			ans = c / e
+		k /= p - 1
+		if k/e < ans {
+			ans = k / e
 		}
 	}
 	for i := int64(2); i*i <= x; i++ {

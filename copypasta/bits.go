@@ -78,6 +78,10 @@ https://oeis.org/A092391 n+OnesCount(n)
 	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
 https://oeis.org/A011371 n-OnesCount(n) Also highest power of 2 dividing n!
 							a(n) = floor(n/2) + a(floor(n/2))
+                         这同时是前 n 个数的质因子分解的 2 的幂次之和
+https://oeis.org/A027868 Number of trailing zeros in n!; highest power of 5 dividing n!
+                            a(n) = (n-A053824(n))/4, 其中 A053824(n) = Sum of digits of (n written in base 5)
+推广至任意数：n! 的质因子分解中，p 的幂次为 (n-digsum_p(n))/(p-1)，其中 digsum_p(n) 表示 n 的 p 进制的数位和
 https://oeis.org/A245788 n*OnesCount(n)
 https://oeis.org/A049445 OnesCount(n)|n
 	-  n/OnesCount(n)
