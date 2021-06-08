@@ -23,22 +23,19 @@ func CF901C(_r io.Reader, _w io.Writer) {
 	}
 
 	left := make([]int, n+1)
-	id := 0
-	dfn := make([]int, n+1)
-	fa := make([]int, n+1)
-	var f func(int)
-	f = func(v int) {
-		id++
-		dfn[v] = id
+	vis := make([]int8, n+1)
+	s := []int{}
+	var f func(int, int)
+	f = func(v, fa int) {
+		vis[v] = 1
+		s = append(s, v)
 		for _, w := range g[v] {
-			if dfn[w] == 0 {
-				fa[w] = v
-				f(w)
-			} else if w != fa[v] && dfn[w] < dfn[v] {
-				mi, mx := v, v
-				for x := v; x != w; {
-					x = fa[x]
-					if x < mi {
+			if vis[w] == 0 {
+				f(w, v)
+			} else if w != fa && vis[w] == 1 {
+				mi, mx := w, w
+				for i := len(s) - 1; s[i] != w; i-- {
+					if x := s[i]; x < mi {
 						mi = x
 					} else if x > mx {
 						mx = x
@@ -47,10 +44,12 @@ func CF901C(_r io.Reader, _w io.Writer) {
 				left[mx] = mi
 			}
 		}
+		s = s[:len(s)-1]
+		vis[v] = 2
 	}
-	for i, d := range dfn {
-		if d == 0 {
-			f(i)
+	for i, b := range vis {
+		if b == 0 {
+			f(i, -1)
 		}
 	}
 	for i := 2; i <= n; i++ {
