@@ -402,6 +402,7 @@ func sortCollections() {
 	// 整体二分
 	// todo https://oi-wiki.org/misc/parallel-binsearch/
 	//      https://codeforces.com/blog/entry/45578
+	// 整体二分解决静态区间第 k 小的优化 https://www.luogu.com.cn/blog/2-6-5-3-5/zheng-ti-er-fen-xie-jue-jing-tai-ou-jian-di-k-xiao-di-you-hua
 
 	// WQS 二分
 	// 《浅析一类二分方法》

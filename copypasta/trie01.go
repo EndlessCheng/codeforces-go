@@ -10,6 +10,7 @@ import (
 
 // 异或字典树
 // 一颗（所有叶节点深度都相同的）二叉树
+// 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
@@ -47,6 +48,15 @@ func (t *trie01) put(v int) *trie01Node {
 		}
 	}
 	//o.val = v
+	return o
+}
+
+func (t *trie01) del(v int) *trie01Node {
+	o := t.root
+	for i := trieBitLen - 1; i >= 0; i-- {
+		o = o.son[v>>i&1]
+		o.cnt--
+	}
 	return o
 }
 
