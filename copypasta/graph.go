@@ -34,6 +34,9 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 
 竞赛图
 竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
+- SCC 的拓扑序是唯一的
+- 拓扑序上，不同 SCC 的点的入度，越靠前的严格越小
+https://codeforces.com/problemset/problem/1498/E
 https://codeforces.com/problemset/problem/1514/E
 竞赛图与三元环 https://codeforces.com/problemset/problem/117/C
 
@@ -489,6 +492,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
 // 加边技巧 https://codeforces.com/problemset/problem/723/E
+// https://codeforces.com/problemset/problem/1186/F
 func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
