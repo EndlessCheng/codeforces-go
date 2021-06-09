@@ -16,7 +16,7 @@ func ioq14() {
 			a[i] = i
 		}
 		sort.Slice(a, func(i, j int) (d bool) { Println(1, a[j], a[i]); Scan(&d); return })
-		// 竞赛图的 SCC 是一条链
+		// 竞赛图的 SCC，缩点后呈链状，前面的所有点向后面的所有点连边
 		// 排序后，a[0] 到 a[n-1] 即为从链尾到链首的顺序
 		// 从链尾向链首遍历，给各个 SCC 标上 sccID
 		// 每个 SCC 内部双指针扫描，只要左指针能访问到一个右指针及其前面的点就说明右指针在 SCC 内
