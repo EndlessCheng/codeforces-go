@@ -10,6 +10,7 @@ import (
 
 // 异或字典树
 // 一颗（所有叶节点深度都相同的）二叉树
+// 模板题 https://codeforces.com/problemset/problem/706/D
 // 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
 type trie01Node struct {
 	son [2]*trie01Node
