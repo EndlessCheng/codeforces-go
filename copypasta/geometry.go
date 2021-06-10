@@ -298,15 +298,6 @@ func (a vecF) symmetry(l lineF) vecF {
 	return a.add(a.projection(l).sub(a).mul(2))
 }
 
-// 判断直线交点个数
-// 重合时返回 -1
-// 另一种办法是用高斯消元
-// https://codeforces.com/problemset/problem/21/B
-func (a line) numOfIntersections(b line) int {
-	// todo
-	panic(-1)
-}
-
 // 判断点 a 是否在以线段 l 为对角线的矩形内（矩形与坐标轴平行）
 func (a vec) inRect(l line) bool {
 	return (a.x >= l.p1.x || a.x >= l.p2.x) &&
