@@ -307,12 +307,30 @@ func (a line) numOfIntersections(b line) int {
 	panic(-1)
 }
 
-// 直线 a b 交点
-// NOTE: 若输入均为有理数，则输出也为有理数
+// 判断点 a 是否在以线段 l 为对角线的矩形内（矩形与坐标轴平行）
+func (a vec) inRect(l line) bool {
+	return (a.x >= l.p1.x || a.x >= l.p2.x) &&
+		(a.x <= l.p1.x || a.x <= l.p2.x) &&
+		(a.y >= l.p1.y || a.y >= l.p2.y) &&
+		(a.y <= l.p1.y || a.y <= l.p2.y)
+}
+
+// 直线 a b 交点 - 参数式
+// 若求线段交点，可以在求出后判断其是否均在两条线段上：由于交点已在基线上，只需要判断交点是否在以线段为对角线的矩形内即可
+// NOTE: 若输入均为有理数，则输出也为有理数，对精度要求较高时可使用分数类
 func (a lineF) intersection(b lineF) vecF {
 	va, vb, u := a.vec(), b.vec(), a.p1.sub(b.p1)
-	t := vb.det(u) / va.det(vb) // a b 不能平行，即 va.det(vb) != 0
+	t := vb.det(u) / va.det(vb) // 需保证 a b 不能平行，即 va.det(vb) != 0
 	return a.point(t)
+}
+
+// 直线 a b 交点 - 两点式
+// 线段求整数交点 https://codeforces.com/problemset/problem/1036/E
+func (a lineF) intersection2(b lineF) vecF {
+	va := a.vec()
+	d1 := va.det(b.p1.sub(a.p1))
+	d2 := va.det(b.p2.sub(a.p1))
+	return vecF{b.p1.x*d2 - b.p2.x*d1, b.p1.y*d2 - b.p2.y*d1}.div(d2 - d1) // 需保证 a b 不能平行，即 d1 != d2
 }
 
 // 求射线 a b 交点，返回各自到首个交点所需的时间（射线速度由 .vec().len() 决定）
