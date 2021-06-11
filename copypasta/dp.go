@@ -479,6 +479,7 @@ func dpCollections() {
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
 	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
 	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
+	// 将所有元素分成三类：不在任何 LIS / 在至少一个 LIS / 在所有 LIS https://codeforces.com/problemset/problem/486/E
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
 	// 若其中一个序列无重复元素，LCS 可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	// 二维 LIS：在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
@@ -1113,6 +1114,39 @@ func dpCollections() {
 		return dp[1<<n-1]
 	}
 
+	// 无向图简单环数量
+	// https://blog.csdn.net/fangzhenpeng/article/details/49078233
+	// https://codeforces.com/problemset/problem/11/D
+	countCycle := func(g [][]int, n, m int) int64 {
+		ans := int64(0)
+		// 取集合 s 的最小值作为起点
+		dp := make([][]int64, 1<<n)
+		for i := range dp {
+			dp[i] = make([]int64, n)
+		}
+		for i := 0; i < n; i++ {
+			dp[1<<i][i] = 1
+		}
+		for s := range dp {
+			for v, dv := range dp[s] {
+				if dv == 0 {
+					continue
+				}
+				for _, w := range g[v] {
+					if 1<<w < s&-s {
+						continue
+					}
+					if 1<<w&s == 0 {
+						dp[s|1<<w][w] += dv
+					} else if 1<<w == s&-s {
+						ans += dv
+					}
+				}
+			}
+		}
+		return ans - int64(m)/2
+	}
+
 	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
 	// 例如：dp[set] = min{dp[set^sub] + cost of sub} for all valid sub
 	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
@@ -1419,6 +1453,7 @@ func dpCollections() {
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/982/C
 	好题 https://codeforces.com/problemset/problem/1453/E
+	可以重复走 https://codeforces.com/problemset/problem/1220/E
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
@@ -1803,7 +1838,7 @@ func dpCollections() {
 
 		mergeStones,
 
-		permDP, tsp, subsubDP, sos,
+		permDP, tsp, countCycle, subsubDP, sos,
 
 		digitDP, kth666,
 
