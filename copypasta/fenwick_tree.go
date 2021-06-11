@@ -24,6 +24,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新查询等操作 https://codeforces.com/problemset/problem/629/D
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
+多变量统计 https://codeforces.com/problemset/problem/1194/E
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155

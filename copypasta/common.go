@@ -19,7 +19,8 @@ import (
 // 套路：预处理数据（按照某种顺序排序/优先队列/BST/...），或者边遍历边维护，
 //      然后固定变量 i，用均摊 O(1)~O(logn) 的复杂度统计范围内的另一变量 j
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
-// 进阶：https://codeforces.com/contest/1483/problem/D
+// https://codeforces.com/problemset/problem/1194/E
+// 进阶：https://codeforces.com/problemset/problem/1483/D
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
