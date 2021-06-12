@@ -32,7 +32,7 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 3484 https://www.acwing.com/problem/content/122/ 二分位置
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
-
+转换的好题 https://codeforces.com/problemset/problem/1181/D
 */
 
 // 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
@@ -93,6 +93,7 @@ func sortCollections() {
 	lowerBound := sort.SearchInts
 	upperBound := func(a []int, x int) int { return sort.SearchInts(a, x+1) }
 	upperBound = func(a []int, x int) int { return sort.Search(len(a), func(i int) bool { return a[i] > x }) }
+	// 等于 x 的下标范围：[lowerBound(x), upperBound(x))
 	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
