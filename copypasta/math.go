@@ -378,6 +378,8 @@ func numberTheoryCollection() {
 
 	/* 质数性质统计相关
 
+	Counting primes in O(n^(2/3)log^(1/3)(n)) https://codeforces.com/blog/entry/91632
+
 	质数的幂次组成的集合 {p^k} https://oeis.org/A000961
 		补集 https://oeis.org/A024619
 		Exponential of Mangoldt function https://oeis.org/A014963
@@ -629,6 +631,7 @@ func numberTheoryCollection() {
 
 	// 质因数分解 prime factorization
 	// 返回分解出的质数及其指数
+	// 预处理 [2,√MX] 的素数可以加速这一过程
 	// https://mathworld.wolfram.com/PrimeFactorization.html
 	// todo 更高效的算法 - Pollard's Rho
 	// n 的质因数分解中 2 的幂次 http://oeis.org/A007814
@@ -710,6 +713,20 @@ func numberTheoryCollection() {
 		for i := 3; i <= mx; i++ {
 			Omega[i] += Omega[i-1]
 		}
+	}
+
+	// 单个数的 Omega
+	// https://codeforces.com/contest/1538/problem/D
+	primeExponentsCount := func(x int) (c int) {
+		for i := 2; i*i <= x; i++ {
+			for ; x%i == 0; x /= i {
+				c++
+			}
+		}
+		if x > 1 {
+			c++
+		}
+		return
 	}
 
 	/* 因子/因数/约数
@@ -2365,7 +2382,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, frac, countDifferentSubsequenceGCDs, floorSum,
-		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll,
+		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
