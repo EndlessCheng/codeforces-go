@@ -516,6 +516,11 @@ func dpCollections() {
 	// https://codeforces.com/problemset/problem/1304/D
 	// https://atcoder.jp/contests/arc091/tasks/arc091_c
 
+	// 最大上升子序列和
+	// 按值从小到大排序，值相同的下标从大到小排序
+	// 然后用树状数组或线段树：单点更新，维护前缀最大值
+	// https://www.acwing.com/problem/content/3665/
+
 	// 最长公共上升子序列 (LCIS)
 	// https://www.acwing.com/problem/content/274/
 	// https://codeforces.com/problemset/problem/10/D
