@@ -2612,7 +2612,7 @@ func combinatoricsCollection() {
 			}
 			ans += res // mod
 		}
-		ans = (ans%mod + mod) % mod // 注意最后变为非负
+		ans = (ans%mod + mod) % mod
 		return
 	}
 
