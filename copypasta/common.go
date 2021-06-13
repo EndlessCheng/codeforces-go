@@ -79,6 +79,8 @@ https://codeforces.com/problemset/problem/1394/B
 https://www.luogu.com.cn/problem/P6688
 */
 
+// 操作树 https://codeforces.com/problemset/problem/707/D
+
 /* Golang 卡常技巧（IO 之外的部分）
 对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，能明显减少耗时
 对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
@@ -435,6 +437,9 @@ func commonCollection() {
 				sumC[i+1][j] = sumC[i][j] + row[j]
 			}
 		}
+		// 用法：
+		// (i,j) 向右连续 k 个数：sumR[i][j+k] - sumR[i][j]
+		// (i,j) 向下连续 k 个数：sumC[i+k][j] - sumC[i][j]
 		return
 	}
 
@@ -443,6 +448,7 @@ func commonCollection() {
 	diagonalSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
 
+		// int64
 		ds := make([][]int, n+1) // 主对角线方向前缀和
 		as := make([][]int, n+1) // 反对角线方向前缀和
 		for i := range ds {
