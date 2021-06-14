@@ -308,6 +308,40 @@ func commonCollection() {
 		}
 	}
 
+	// 合并有序数组，保留前 k 个元素
+	// https://codeforces.com/problemset/problem/587/C
+	mergeWithLimit := func(a, b []int, k int) []int {
+		i, n := 0, len(a)
+		j, m := 0, len(b)
+		res := make([]int, 0, min(n+m, k))
+		for len(res) < k {
+			if i == n {
+				if len(res)+m-j > k {
+					res = append(res, b[j:j+k-len(res)]...)
+				} else {
+					res = append(res, b[j:]...)
+				}
+				break
+			}
+			if j == m {
+				if len(res)+n-i > k {
+					res = append(res, a[i:i+k-len(res)]...)
+				} else {
+					res = append(res, a[i:]...)
+				}
+				break
+			}
+			if a[i] < b[j] {
+				res = append(res, a[i])
+				i++
+			} else {
+				res = append(res, b[j])
+				j++
+			}
+		}
+		return res
+	}
+
 	// 返回 a 的各个子集的元素和
 	// https://codeforces.com/contest/1209/problem/E2
 	subSum := func(a []int) []int {
@@ -1008,7 +1042,7 @@ func commonCollection() {
 		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
-		merge, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
+		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
