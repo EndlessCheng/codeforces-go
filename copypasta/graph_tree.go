@@ -642,7 +642,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			v, w = w, v
 		}
 		w = uptoDep(w, dep[v])
-		if v == w {
+		if w == v {
 			return v
 		}
 		for i := mx - 1; i >= 0; i-- {
@@ -719,7 +719,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 				}
 			}
 		}
-		// 求 LCA 的同时，顺带求出任意路径上的边权最值
+		// 求 LCA(v,w) 的同时，顺带求出 v-w 上的边权最值
 		_lca := func(v, w int) (lca, maxWt int) {
 			if dep[v] > dep[w] {
 				v, w = w, v
@@ -731,16 +731,18 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 					w = p.p
 				}
 			}
-			if v == w {
-				return v, maxWt
-			}
-			for i := mx - 1; i >= 0; i-- {
-				if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
-					maxWt = max(maxWt, max(pv.maxWt, pw.maxWt))
-					v, w = pv.p, pw.p
+			if w != v {
+				for i := mx - 1; i >= 0; i-- {
+					if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
+						maxWt = max(maxWt, max(pv.maxWt, pw.maxWt))
+						v, w = pv.p, pw.p
+					}
 				}
+				maxWt = max(maxWt, max(pa[v][0].maxWt, pa[w][0].maxWt))
+				v = pa[v][0].p
 			}
-			return pa[v][0].p, max(maxWt, max(pa[v][0].maxWt, pa[w][0].maxWt))
+			// 如果是点权的话这里加上 maxWt = max(maxWt, pa[v][0].maxWt)
+			return v, maxWt
 		}
 		_ = _lca
 	}
