@@ -308,7 +308,7 @@ func commonCollection() {
 		}
 	}
 
-	// 合并有序数组，保留前 k 个元素
+	// 合并有序数组，保留至多 k 个元素
 	// https://codeforces.com/problemset/problem/587/C
 	mergeWithLimit := func(a, b []int, k int) []int {
 		i, n := 0, len(a)
