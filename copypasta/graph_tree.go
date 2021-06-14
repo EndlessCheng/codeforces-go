@@ -732,8 +732,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 				}
 			}
 			if v == w {
-				lca = v
-				return
+				return v, maxWt
 			}
 			for i := mx - 1; i >= 0; i-- {
 				if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
