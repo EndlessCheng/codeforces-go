@@ -586,7 +586,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
 //    最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
 //    最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
-//    前十大 https://codeforces.com/problemset/problem/587/C
+//    前十大（点权）https://codeforces.com/problemset/problem/587/C
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
 // 其他：见 common.go 中的树上莫队部分
