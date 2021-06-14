@@ -583,7 +583,10 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
-// 树上倍增应用（静态路径最值）https://codeforces.com/problemset/problem/609/E  LC1697 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+// 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
+//    最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
+//    最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+//    前十大 https://codeforces.com/problemset/problem/587/C
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
 // 其他：见 common.go 中的树上莫队部分
@@ -649,7 +652,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 		return pa[v][0]
 	}
-	_d := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
+	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
 
 	// EXTRA: 输入 u 和 v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
 	down := func(u, v int) int {
@@ -729,6 +732,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 				}
 			}
 			if v == w {
+				lca = v
 				return
 			}
 			for i := mx - 1; i >= 0; i-- {
@@ -742,7 +746,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		_ = _lca
 	}
 
-	_ = []interface{}{_d, uptoKthPa, down}
+	_ = []interface{}{disVW, uptoKthPa, down}
 }
 
 // 最近公共祖先 · 其二 · 基于 RMQ
@@ -952,9 +956,13 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // https://codeforces.com/blog/entry/81317
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
+//
+// 注：若没有修改操作，见 lcaBinarySearch（路径查询）以及 subtreeSize（子树查询）
+//
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
 // 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
+// 归并树 https://codeforces.com/problemset/problem/587/C
 // todo 子异和 https://www.luogu.com.cn/problem/P5127
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
