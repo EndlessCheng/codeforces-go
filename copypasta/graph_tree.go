@@ -232,7 +232,9 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 
 	// EXTRA: 获取所有直径端点
 	// 任意直径端点都可以从其中的一条直径的端点之一出发获得
-	// https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
+	// 找出直径 dv-dw 后，对两个端点各自跑一次 DFS，即可找出全部直径端点
+	// 下标最小的直径端点 https://codeforces.com/problemset/problem/592/D
+	// 树上非严格次长距离 https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
 	isEnd := make([]bool, len(g))
 	var findEnds func(v, fa, d int)
 	findEnds = func(v, fa, d int) {
