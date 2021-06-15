@@ -79,6 +79,28 @@ func monotoneStackCollections() {
 		return posL, posR
 	}
 
+	// 注：若输入的是一个 1~n 的排列，有更简单的写法（求两侧大于位置）
+	// 为简单起见，求出的下标从 1 开始（不存在时表示为 0 或 n+1）
+	// https://codeforces.com/contest/1156/problem/E
+	permPosLR := func(a []int) ([]int, []int) {
+		n := len(a)
+		posV := make([]int, n+1)
+		posL := make([]int, n+2)
+		posR := make([]int, n+1)
+		for i := 1; i <= n; i++ {
+			posV[a[i-1]] = i
+			posL[i], posR[i] = i-1, i+1
+		}
+		// 正序遍历求出的是两侧大于位置
+		// 倒序遍历求出的是两侧小于位置
+		for v := 1; v <= n; v++ {
+			p := posV[v]
+			posR[posL[p]] = posR[p]
+			posL[posR[p]] = posL[p]
+		}
+		return posL, posR
+	}
+
 	// 最大全 1 矩形 LC85 https://leetcode-cn.com/problems/maximal-rectangle/
 	maximalRectangleArea := func(a [][]int) int {
 		const target = 1
@@ -130,5 +152,5 @@ func monotoneStackCollections() {
 		return ans
 	}
 
-	_ = []interface{}{monotoneStack, maximalRectangleArea}
+	_ = []interface{}{monotoneStack, permPosLR, maximalRectangleArea}
 }
