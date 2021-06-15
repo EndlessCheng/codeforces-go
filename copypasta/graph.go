@@ -2031,11 +2031,13 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 // DAG DP https://ac.nowcoder.com/acm/contest/6384/C https://www.luogu.com.cn/problem/P3387
 // 好题 https://codeforces.com/problemset/problem/915/D
 // 关键点 次关键点 https://codeforces.com/contest/1062/problem/F
-// 混合图拓扑排序 https://codeforces.com/contest/1385/problem/E
+// 混合图拓扑排序+定向 https://codeforces.com/problemset/problem/1385/E
+//                  https://codeforces.com/problemset/problem/1100/E
 // 构造 https://codeforces.com/problemset/problem/269/C
 // 缩点后的拓扑序 https://codeforces.com/contest/1463/problem/E
 // 与堆结合 https://codeforces.com/problemset/problem/825/E
 //         https://codeforces.com/problemset/problem/1283/F
+// 利用拓扑思想 https://codeforces.com/problemset/problem/1037/E
 // 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topSort(in io.Reader, n, m int) []int {

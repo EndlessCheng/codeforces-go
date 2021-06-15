@@ -97,13 +97,20 @@ func sortCollections() {
 	// lowerBound-1 为 <x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 	// upperBound-1 为 <=x 的最大值的下标（-1 表示不存在），存在多个最大值时下标取最大的
 
-	// sort.Search 的使用技巧
+	// sort.Search 的使用技巧·其一
 	// 由于 sort.Search 需要满足在 x 从小到大时，f(x) 先 false 后 true
 	// 在遇到先 true 后 false 的 f(x) 时
 	// 若目标是找到最大的使 f(x) == true 的 x
 	// 可以考虑二分 !f(x)，则二分结果是最小的使 f(x) == false 的 x，将其 -1 就得到了最大的使 f(x) == true 的 x
 	// 由于要对结果 -1，sort.Search 传入的上界需要 +1（也可以改为在 f 内部对传入的 x++）
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
+
+	// sort.Search 的使用技巧·其二
+	// 若要求出一个和二分结果相关的东西
+	// 可以在返回值为 true 时记录下相关数据（若有多个地方返回 true，可以用 defer 来简化）
+	// 这样可以避免在二分结束后再计算一次
+	// 为了保证能至少触发一次 true，某些情况下需要将二分上界 +1
+	// https://codeforces.com/problemset/problem/1100/E
 
 	// 指定上下界 [l,r)
 	searchRange := func(l, r int) int {
