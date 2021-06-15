@@ -96,11 +96,11 @@ func permPosLR(a []int) ([]int, []int) {
 
 // 最大全 1 矩形
 // LC85 https://leetcode-cn.com/problems/maximal-rectangle/
-func maximalRectangleArea(a [][]int) int {
+func maximalRectangleArea(mat [][]int) (ans int) {
 	const target = 1
-	n, m, ans := len(a), len(a[0]), 0
+	n, m := len(mat), len(mat[0])
 	heights := make([][]int, n) // heights(i,j) 表示从 (i,j) 往上看的高度，a(i,j) = 0 时为 0
-	for i, row := range a {
+	for i, row := range mat {
 		heights[i] = make([]int, m)
 		for j, v := range row {
 			if v == target {
@@ -146,5 +146,5 @@ func maximalRectangleArea(a [][]int) int {
 			}
 		}
 	}
-	return ans
+	return
 }
