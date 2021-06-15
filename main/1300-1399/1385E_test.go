@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// https://codeforces.com/problemset/problem/1385/E
+// https://codeforces.com/problemset/status/1385/problem/E
 func TestCF1385E(t *testing.T) {
 	// just copy from website
 	rawText := `

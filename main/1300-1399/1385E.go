@@ -11,62 +11,49 @@ func CF1385E(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	type pair struct{ to, tp int }
 
-	var t, n, m, tp, v, w int
-	for Fscan(in, &t); t > 0; t-- {
+	var T, n, m int
+	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
-		g := make([][]pair, n)
-		deg := make([]int, n)
-		for ; m > 0; m-- {
-			Fscan(in, &tp, &v, &w)
-			v--
-			w--
-			g[v] = append(g[v], pair{w, tp})
-			if tp == 0 {
-				g[w] = append(g[w], pair{v, tp})
-			} else {
-				deg[w]++
+		es := make([]struct{ v, w, tp int }, m)
+		g := make([][]int, n)
+		d := make([]int, n)
+		for i := range es {
+			Fscan(in, &es[i].tp, &es[i].v, &es[i].w)
+			es[i].v--
+			es[i].w--
+			if es[i].tp == 1 {
+				g[es[i].v] = append(g[es[i].v], es[i].w)
+				d[es[i].w]++
 			}
 		}
-		vis := make([]int8, n)
-		q := []int{}
-		for i, d := range deg {
+		q, p := []int{}, 0
+		for i, d := range d {
 			if d == 0 {
-				vis[i] = 1
 				q = append(q, i)
 			}
 		}
-		c := 0
-		for len(q) > 0 {
-			v, q = q[0], q[1:]
-			c++
-			for i, e := range g[v] {
-				w := e.to
-				if e.tp == 0 {
-					if vis[w] < 2 {
-						g[v][i].tp = 1
-					}
-				} else {
-					deg[w]--
-				}
-				if deg[w] == 0 && vis[w] == 0 {
-					vis[w] = 1
+		for ; p < len(q); p++ {
+			for _, w := range g[q[p]] {
+				if d[w]--; d[w] == 0 {
 					q = append(q, w)
 				}
 			}
-			vis[v] = 2
 		}
-		if c < n {
+		if p < n {
 			Fprintln(out, "NO")
-			continue
-		}
-		Fprintln(out, "YES")
-		for v, es := range g {
+		} else {
+			Fprintln(out, "YES")
+			t := make([]int, n)
+			for i, v := range q {
+				t[v] = i
+			}
 			for _, e := range es {
-				if e.tp == 1 {
-					Fprintln(out, v+1, e.to+1)
+				v, w := e.v, e.w
+				if e.tp == 0 && t[v] > t[w] {
+					v, w = w, v
 				}
+				Fprintln(out, v+1, w+1)
 			}
 		}
 	}
