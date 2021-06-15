@@ -99,7 +99,7 @@ func permPosLR(a []int) ([]int, []int) {
 func maximalRectangleArea(mat [][]int) (ans int) {
 	const target = 1
 	n, m := len(mat), len(mat[0])
-	heights := make([][]int, n) // heights(i,j) 表示从 (i,j) 往上看的高度，a(i,j) = 0 时为 0
+	heights := make([][]int, n) // heights[i][j] 表示从 (i,j) 往上看的高度，a[i][j] = 0 时为 0
 	for i, row := range mat {
 		heights[i] = make([]int, m)
 		for j, v := range row {
