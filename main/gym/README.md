@@ -6,3 +6,4 @@
 |---|---|
 |101234|2016-2017 National Taiwan University World Final Team Selection Contest|
 |101309|2010-2011 ACM-ICPC Northeastern European Regional Contest (NEERC 10)|
+|101487|2010-2011 ACM-ICPC, Central Europe Regional Contest (CERC 10)|
