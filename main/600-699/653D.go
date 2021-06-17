@@ -21,7 +21,7 @@ func CF653D(_r io.Reader, out io.Writer) {
 		}
 		return (l + r) / 2
 	}
-	min := func(a, b int64) int64 {
+	min := func(a, b int) int {
 		if a < b {
 			return a
 		}
@@ -31,10 +31,7 @@ func CF653D(_r io.Reader, out io.Writer) {
 	var n, m, b, v, w, cap, st int
 	Fscan(in, &n, &m, &b)
 	end := n - 1
-	type nb struct {
-		to, rid, cap int
-		c            int64
-	}
+	type nb struct{ to, rid, cap, c int }
 	g := make([][]nb, n)
 	addEdge := func(from, to, cap int) {
 		g[from] = append(g[from], nb{to, len(g[to]), cap, 0})
@@ -67,8 +64,8 @@ func CF653D(_r io.Reader, out io.Writer) {
 		return d[end] >= 0
 	}
 	var iter []int
-	var dfs func(int, int64) int64
-	dfs = func(v int, minF int64) int64 {
+	var dfs func(int, int) int
+	dfs = func(v int, minF int) int {
 		if v == end {
 			return minF
 		}
@@ -88,10 +85,14 @@ func CF653D(_r io.Reader, out io.Writer) {
 	ans := binarySearchF(0, 1e6, func(x float64) bool {
 		for _, es := range g {
 			for j := range es {
-				es[j].c = int64(float64(es[j].cap) / x) // 注意要用 int64！
+				c := int64(float64(es[j].cap) / x) // 可能爆 int32
+				if c > int64(b) {
+					c = int64(b)
+				}
+				es[j].c = int(c)
 			}
 		}
-		maxFlow := int64(0)
+		maxFlow := 0
 		for bfs() {
 			iter = make([]int, n)
 			for {
@@ -102,7 +103,7 @@ func CF653D(_r io.Reader, out io.Writer) {
 				}
 			}
 		}
-		return maxFlow < int64(b)
+		return maxFlow < b
 	})
 	Fprintf(out, "%.10f", ans*float64(b))
 }
