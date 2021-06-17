@@ -35,25 +35,17 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 转换的好题 https://codeforces.com/problemset/problem/1181/D
 */
 
-// 有些 OJ 的 Go 版本过低，不支持 sort.Slice，只能用 sort.Sort
-type _pair struct{ x, y int }
-type pairs []_pair
-
-func (p pairs) Len() int           { return len(p) }
-func (p pairs) Less(i, j int) bool { a, b := p[i], p[j]; return a.x < b.x || a.x == b.x && a.y < b.y }
-func (p pairs) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-
 // 记录排序过程中交换元素的下标
 // r := swapRecorder{a, &[][2]int{}}
 // sort.Sort(r)
-// https://codeforces.com/problemset/problem/266/C
+// 相关题目 https://codeforces.com/problemset/problem/266/C
 type swapRecorder struct {
 	sort.IntSlice
 	swaps *[][2]int
 }
 
 func (r swapRecorder) Swap(i, j int) {
-	// 快排时可能会有 i==j 的情况
+	// 快排时可能会有 i 和 j 相等的情况
 	if i == j {
 		return
 	}
