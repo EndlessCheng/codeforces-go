@@ -91,7 +91,9 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 		open.Run(problemURL)
 	}
 
-	problemID = contestID + problemID
+	if !isGYM {
+		problemID = contestID + problemID
+	}
 	mainStr := fmt.Sprintf(`package main
 
 import (
@@ -130,8 +132,12 @@ func TestCF%[3]s(t *testing.T) {
 }
 `, problemURL, statusURL, problemID)
 
-	const rootPath = "../../main/"
-	dir := rootPath + genDirName(contestID) + "/"
+	var dir string
+	if isGYM {
+		dir = "../../main/gym/" + contestID + "/"
+	} else {
+		dir = "../../main/" + genDirName(contestID) + "/"
+	}
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		return err
 	}
