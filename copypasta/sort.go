@@ -262,8 +262,11 @@ func sortCollections() {
 
 	//
 
-	// TIPS: 实数二分/三分中的 step 取多少合适：
-	// 如果返回结果不是答案的话，注意误差对答案的影响（由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 https://codeforces.com/problemset/problem/578/C）
+	// NOTE: 实数二分/三分中的 step 取多少合适：
+	// 如果返回结果不是答案的话，注意误差对答案的影响
+	// 由于误差累加的缘故，某些题目误差对答案的影响可以达到 n=2e5 倍，见 https://codeforces.com/problemset/problem/578/C
+	// 乘法带来的误差见 https://codeforces.com/problemset/problem/653/D
+
 	// NOTE: l 和 r 最好稍微往左右取宽点，从而保证触发相关逻辑
 	// 见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
 
