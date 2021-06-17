@@ -14,6 +14,8 @@ https://en.wikipedia.org/wiki/Treap
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
 耗时大约是红黑树（父节点实现）的 1.2 倍
 
+额外维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
+
 模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 

@@ -250,6 +250,7 @@ func (t *bst) lowerCount(key int) (cnt int) {
 }
 
 // kth: 排名为 k 的节点 o（即有 k 个键小于 o.key）
+// 维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
 func (t *bst) mSelect(k int) (o *bstNode) {
 	//if k < 0 {
 	//	return
@@ -258,7 +259,7 @@ func (t *bst) mSelect(k int) (o *bstNode) {
 		if ls := o.lr[0].mSize(); k < ls {
 			o = o.lr[0]
 		} else {
-			k -= o.value + ls
+			k -= ls + o.value
 			if k < 0 {
 				return
 			}
