@@ -23,6 +23,7 @@ import (
 // 思维转换 https://nanti.jisuanke.com/t/43488
 //         https://codeforces.com/problemset/problem/1466/F
 // 维护树或基环树 https://codeforces.com/problemset/problem/859/E
+// 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632/周赛212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 func unionFind(n int) {
 	var fa []int
