@@ -43,6 +43,10 @@ https://www.acwing.com/problem/content/description/98/
 
 麻将
 2021·昆明 https://ac.nowcoder.com/acm/contest/12548/K
+
+调度场算法 shunting-yard algorithm
+中缀转后缀
+https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 */
 func miscCollection() {
 	// debug 用

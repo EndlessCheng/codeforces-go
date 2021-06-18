@@ -21,6 +21,7 @@ import (
 // 这样可以将复杂度从 O(n^2) 降低到 O(n) 或 O(nlogn)
 // https://codeforces.com/problemset/problem/1194/E
 // 进阶：https://codeforces.com/problemset/problem/1483/D
+// 删除一段的最长连续递增 CERC10D https://codeforces.com/gym/101487
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
