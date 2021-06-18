@@ -38,7 +38,8 @@ todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 todo 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
 todo https://www.luogu.com.cn/problem/P3396
-todo https://codeforces.com/problemset/problem/1207/F
+ https://codeforces.com/problemset/problem/1207/F
+ https://codeforces.com/contest/455/problem/D
 */
 func sqrtDecompositionCollections() {
 	min := func(a, b int) int {
