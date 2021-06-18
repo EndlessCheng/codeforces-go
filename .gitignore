@@ -19,4 +19,6 @@
 /main_test.go
 /helper.go
 /zip.go
+/main/main.go
+/main/main_test.go
 *.txt
