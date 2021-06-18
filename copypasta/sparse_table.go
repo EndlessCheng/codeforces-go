@@ -7,6 +7,8 @@ st[i][j] 对应的区间是 [i, i+2^j)
 https://oi-wiki.org/ds/sparse-table/
 https://codeforces.com/blog/entry/66643
 一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
+一个 RMQ 问题的快速算法，以及区间众数 https://zhuanlan.zhihu.com/p/79423299
+将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
 
 模板题 https://www.luogu.com.cn/problem/P3865
 变长/种类 https://www.jisuanke.com/contest/11346/challenges
