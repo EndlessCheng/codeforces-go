@@ -1751,6 +1751,8 @@ func numberTheoryCollection() {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
 	}
 
+	// https://oeis.org/A002109 Hyperfactorials: Product_{k=1..n} k^k
+
 	// https://oeis.org/A010786 Floor-factorial numbers: a(n) = Product_{k=1..n} floor(n/k)
 	// 1, 2, 3, 8, 10, 36, 42, 128, 216, 600, 660, 3456, 3744, 9408, 18900, 61440, 65280, 279936, 295488, 1152000, 2116800, 4878720, 5100480, 31850496, 41472000, 93450240, 163762560, 568995840, 589317120, 3265920000, 3374784000
 	// https://oeis.org/A309912 a(n) = Product_{p prime, p <= n} floor(n/p)
@@ -1853,6 +1855,7 @@ func numberTheoryCollection() {
 		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
 		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
+		// Dyck Path https://mathworld.wolfram.com/DyckPath.html
 		//
 		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1) * (2^n) * (n!)
 		// 故 C(2*n,n)/(n+1) = (2*n)!/(n!)/(n+1)! = 1*3*5*...*(2n-1)*(2^n)/(n+1)!
@@ -1891,6 +1894,8 @@ func numberTheoryCollection() {
 		// 从 (0,0) 移动到 (2n,0) 且恰好有 k 个山峰的网格路径数，每步只能向右上或右下移动一格（不能横向），并禁止移动到 x 轴以下的地方
 		// N(n,k) = C(n,k)*C(n,k-1)/n
 		// https://en.wikipedia.org/wiki/Narayana_number
+
+		// Fuss-Catalan 数、(m-1)-Dyck 路与 m 叉树 https://www.luogu.com.cn/blog/your-alpha1022/solution-p2767
 
 		// 某些组合题可能用到
 		pow2 := [mx + 1]int64{1}
@@ -2350,6 +2355,7 @@ func numberTheoryCollection() {
 
 	/* 斐波那契数列 F(n) https://oeis.org/A000045
 	性质 https://oi-wiki.org/math/fibonacci/
+	快速计算 F(1e18) https://codeforces.com/blog/entry/14516
 	https://oeis.org/A000071 F(n) 前缀和 = F(n+2)-1
 	∑k=[0,n]C(n,k)F(k) = F(2n)
 	https://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
@@ -2409,9 +2415,11 @@ https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 https://www.cnblogs.com/Xing-Ling/p/11176939.html
 https://blog.csdn.net/weixin_33759269/article/details/86017932
 扩展例题 https://codeforces.com/problemset/problem/893/E
+todo 十二重计数法 https://www.luogu.com.cn/problem/P5824
 
 todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
-一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736
+todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-iv-zu-ge-ji-shuo
+一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736 https://zhuanlan.zhihu.com/p/82241906
 递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
 上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)   相关题目 https://www.luogu.com.cn/problem/P7386
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) 相关题目 https://atcoder.jp/contests/abc154/tasks/abc154_f
@@ -2423,6 +2431,11 @@ todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 组合数奇偶性：n&m==m 时 C(n,m) 为奇数，否则为偶数
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
+
+杨辉三角每行之积 https://oeis.org/A001142 a(n) = Product_{k=1..n} k^(2k-1-n)
+A001142(n) 为奇数时的 n 是 2^k - 1 形式的
+
+https://oeis.org/A002109 Hyperfactorials: Product_{k=1..n} k^k
 
 隔三组合数 https://oeis.org/A024493 https://oeis.org/A024494 https://oeis.org/A024495 C(n,0) + C(n,3) + ... + C(n,3[n/3])
 隔四组合数 https://oeis.org/A038503 https://oeis.org/A038504 https://oeis.org/A038505 https://oeis.org/A000749
@@ -2446,6 +2459,11 @@ todo https://codeforces.com/problemset/problem/451/E
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
+
+https://oeis.org/A000522 Total number of arrangements of a set with n elements: a(n) = Sum_{k=0..n} n!/k!
+                          a(n) = n*a(n-1) + 1, a(0) = 1
+                               = floor(e * n!)
+https://oeis.org/A007526 A000522(n)-1 去掉空集
 
 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
