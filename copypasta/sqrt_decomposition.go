@@ -5,7 +5,8 @@ import (
 	"sort"
 )
 
-/* 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
+/* 分块思想 Sqrt Decomposition
+一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 参考 Competitive Programmer’s Handbook Ch.27
 
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
@@ -19,16 +20,18 @@ import (
 另一种题型是注意到 n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
 https://codeforces.com/problemset/problem/425/D
+https://codeforces.com/problemset/problem/677/D
 https://codeforces.com/problemset/problem/1468/M 或四元环
 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 */
 
 /*
-分块思想 Sqrt Decomposition
+分块数据结构
 https://oi-wiki.org/ds/decompose/
 https://oi-wiki.org/ds/block-array/
+【推荐】https://www.luogu.com.cn/blog/220037/Sqrt1
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
-TODO: 台湾的《根號算法》https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
+todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 
 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 好题 https://codeforces.com/problemset/problem/91/E
