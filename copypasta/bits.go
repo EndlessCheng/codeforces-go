@@ -98,6 +98,7 @@ https://oeis.org/A023416 Number of 0's in binary expansion of n
 https://oeis.org/A059015 A023416 的前缀和
 
 十进制 digsum
+一点点数学 https://codeforces.com/problemset/problem/817/C
 https://oeis.org/A007953 digsum(n)
 https://oeis.org/A062028 n+digsum(n)    质数 https://oeis.org/A047791    合数 https://oeis.org/A107743
 	https://oeis.org/A003052 自我数/哥伦比亚数 Self number / Colombian number
