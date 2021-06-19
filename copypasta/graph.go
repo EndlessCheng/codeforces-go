@@ -475,7 +475,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 }
 
 // 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
-// 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要这起点的出度比入度大一，终点的入度比出度大一
+// 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要起点的出度比入度大一，终点的入度比出度大一
 // 半欧拉图：具有欧拉路径而无欧拉回路的图
 // 逐步插入回路法（Hierholzer 算法） https://oi-wiki.org/graph/euler/
 // todo 混合图欧拉回路
@@ -1677,10 +1677,14 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 	return components
 }
 
-// 二分图判定     二分图也叫偶图
+// 二分图判定+染色
+// 注：二分图也叫偶图
 // https://en.wikipedia.org/wiki/Bipartite_graph
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
+//
+// https://www.luogu.com.cn/problem/P6185
+// https://codeforces.com/problemset/problem/1537/F
 func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n) // 0 表示未访问该节点
 	var f func(int, int8) bool
@@ -2404,6 +2408,7 @@ func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 
 	{
 		// EXTRA: 无向图的情况
+		// 去掉树枝后，剩余点的度数均超过 1
 		g := [][]int{}
 		deg := []int{}
 		// read ...
@@ -2575,6 +2580,7 @@ CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 // 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
 //       https://codeforces.com/problemset/problem/1360/G (满流时有解)
 //       https://codeforces.com/problemset/problem/546/E (满流时有解)
+// 思维转换 https://codeforces.com/problemset/problem/653/D
 func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 	min := func(a, b int) int {
 		if a < b {

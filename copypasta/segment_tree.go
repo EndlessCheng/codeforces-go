@@ -540,10 +540,10 @@ func (o *pstNode) query(l, r int) int64 {
 }
 
 // 主席树相当于对数组的每个前缀建立一颗线段树
+// 离散化时，求 kth 需要将相同元素也视作不同的
 
 // EXTRA: 查询区间 [l,r] 中第 k 小在整个数组上的名次（从 1 开始）
 // 注意返回的是（排序去重后的数组的）下标，不是元素值
-// 另见 common.go 中 discrete 的代码注释（采用 kth[p.i] = i+1 的离散化方案）
 // 初始 t[0] = buildPST(1, len(a))
 //     t[i+1] = t[i].update(kth[i], 1)   kth[i] 为 a[i] 离散化后的值（从 1 开始）
 // 查询 t[r].kth(t[l-1], k)               类似前缀和 [l,r] 1<=l<=r<=n
@@ -561,8 +561,12 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 // EXTRA: 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
 // low 和 high 为离散化后的值（从 1 开始）
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417
+// https://codeforces.com/problemset/problem/538/F
 // 调用方式同上 t[r].countRange(t[l-1], low, high)
 func (o *pstNode) countRange(old *pstNode, low, high int) int {
+	if high < o.l || o.r < low {
+		return 0
+	}
 	if low <= o.l && o.r <= high {
 		return int(o.sum - old.sum)
 	}

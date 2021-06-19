@@ -723,7 +723,8 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 }
 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
-// LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
+// 无边界 LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
+// 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 func minKnightMoves(x, y int) int {
 	abs := func(x int) int {
 		if x < 0 {

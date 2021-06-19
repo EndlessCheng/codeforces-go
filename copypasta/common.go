@@ -715,7 +715,7 @@ func commonCollection() {
 
 		// 若有需要，求出 kth 后还可以对 ps 进行去重，这样可以用 kth 值访问原始值
 
-		// a 无重复元素，或者给相同元素也加上顺序（例如主席树的离散化写法）
+		// a 无重复元素，或者给相同元素也加上顺序（例如某些求 kth 的题目）
 		for i, p := range ps {
 			kth[p.i] = i + startIndex
 		}
