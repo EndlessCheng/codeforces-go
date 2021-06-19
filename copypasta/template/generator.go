@@ -20,16 +20,15 @@ func GenCodeforcesContestTemplates(rootPath, contestID string, overwrite bool) e
 
 	openedOneFile := false
 
-	dirNames := []string{}
-	if err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if path == rootPath || !info.IsDir() {
 			return nil
 		}
+
 		parentName := filepath.Base(path)
-		dirNames = append(dirNames, parentName)
 		for _, srcFileName := range []string{"main.go", "main_test.go"} {
 			// 为了便于区分，把 main 替换成所在目录的名字
 			dstFileName := strings.Replace(srcFileName, "main", parentName, 1)
@@ -47,22 +46,12 @@ func GenCodeforcesContestTemplates(rootPath, contestID string, overwrite bool) e
 				open.Run(absPath(dstFilePath))
 			}
 		}
-		return nil
-	}); err != nil {
-		return err
-	}
-
-	_, err := strconv.Atoi(contestID)
-	if isCF := err == nil; isCF {
-		tips := fmt.Sprintf("cd %s\n", contestID)
-		for _, name := range dirNames {
-			tips += fmt.Sprintf("cf submit %s %[2]s %[2]s/%[2]s.go\n", contestID, name)
-		}
-		if err := ioutil.WriteFile(rootPath+"CF_SUBMIT.txt", []byte(tips), 0644); err != nil {
+		cmd := fmt.Sprintf("cf submit contest %s %s -f %s.go", contestID, parentName, parentName)
+		if err := ioutil.WriteFile(filepath.Join(path, parentName+".bat"), []byte(cmd), 0644); err != nil {
 			return err
 		}
-	}
-	return nil
+		return nil
+	})
 }
 
 // 生成单道题目的模板（Codeforces）
