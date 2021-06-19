@@ -9,6 +9,7 @@ import (
 	"golang.org/x/net/html/atom"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -89,7 +90,12 @@ func login(username, password string) (session *grequests.Session, err error) {
 }
 
 func fetchProblemURLs(session *grequests.Session) (problems []*problem, err error) {
-	contestInfoURL := fmt.Sprintf("https://%s/contest/api/info/%s%d/", host, contestPrefix, contestID)
+	contestTag := contestPrefix
+	if contestID > 0 {
+		contestTag += strconv.Itoa(contestID)
+	}
+
+	contestInfoURL := fmt.Sprintf("https://%s/contest/api/info/%s/", host, contestTag)
 	resp, err := session.Get(contestInfoURL, nil)
 	if err != nil {
 		return
@@ -116,7 +122,7 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 		return
 	}
 	if d.Contest.StartTime == 0 {
-		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s%d", contestPrefix, contestID)
+		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s", contestTag)
 	}
 
 	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
@@ -127,7 +133,7 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	}
 
 	if len(d.Questions) == 0 {
-		return nil, fmt.Errorf("题目链接为空: %s%d", contestPrefix, contestID)
+		return nil, fmt.Errorf("题目链接为空: %s", contestTag)
 	}
 
 	fmt.Println("难度 标题")
@@ -139,8 +145,8 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	for i, q := range d.Questions {
 		problems[i] = &problem{
 			id:    string(byte('a' + i)),
-			urlZH: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostZH, contestPrefix, contestID, q.TitleSlug),
-			urlEN: fmt.Sprintf("https://%s/contest/%s%d/problems/%s/", hostEN, contestPrefix, contestID, q.TitleSlug),
+			urlZH: fmt.Sprintf("https://%s/contest/%s/problems/%s/", hostZH, contestTag, q.TitleSlug),
+			urlEN: fmt.Sprintf("https://%s/contest/%s/problems/%s/", hostEN, contestTag, q.TitleSlug),
 		}
 	}
 	return
