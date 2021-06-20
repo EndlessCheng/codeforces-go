@@ -11,9 +11,5 @@ func numberOfRounds(startTime, finishTime string) int {
 		h2 += 24
 	}
 	s, t := h1*60+m1, h2*60+m2
-	t -= t % 15
-	if s < t {
-		return (t - s) / 15
-	}
-	return 0
+	return (t - t%15 - s) / 15 // 只将结束时间取到最近的刻钟，而开始时间不作处理
 }
