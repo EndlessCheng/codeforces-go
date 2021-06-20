@@ -16,7 +16,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
       https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
       https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
       https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
-      NEERC05 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
+      NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 最大全 1 矩形 LC85（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/
 接雨水 LC42 https://leetcode-cn.com/problems/trapping-rain-water/
