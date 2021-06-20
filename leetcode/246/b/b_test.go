@@ -21,7 +21,10 @@ func Test(t *testing.T) {
 			`"00:00"`, `"23:59"`, 
 			`95`,
 		},
-		
+		{
+			`"12:01"`, `"12:02"`,
+			`0`,
+		},
 	}
 	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, numberOfRounds, examples, targetCaseNum); err != nil {
