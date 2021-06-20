@@ -48,7 +48,7 @@
 
         // 求解
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
-        " small ", " big ", " large ", " few ",
+        " small", " big", " large", " few",
         "At least", "At most", "at least", "at most",
         "more", "much",
 
