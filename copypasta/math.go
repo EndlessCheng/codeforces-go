@@ -215,6 +215,9 @@ func numberTheoryCollection() {
 	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
 	// ∑∑lcm(i,j)   https://oeis.org/A064951
 
+	// 统计数组的所有子区间的 GCD 的不同个数
+	// 代码和题目见 bits.go 中的 bitOpTrick
+
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
 	// LC1819/周赛235D https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
 	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
