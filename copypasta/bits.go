@@ -12,7 +12,7 @@ import (
      或者说 2^(Len(x)-1) <= x < 2^Len(x)
 
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
-** 代码和题目见下面的 logTrick 和 logTrickCnt
+** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
 
 常用等式（若改变了计算的顺序，注意优先级！）
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
@@ -202,20 +202,21 @@ func bitsCollection() {
 		return
 	}
 
-	// 对于数组的所有区间，返回 op(区间元素) 的各个结果
+	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
 	// 利用操作的单调性求解
+	// 复杂度 O(f * n * logU)，f 为 op(x,y) 的时间复杂度，n 为 a 的长度，U 为 a 中元素最大值
 	// |: LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
 	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
-	//      https://codeforces.com/problemset/problem/475/D (见下面的 logTrickCnt)
+	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
-		for _, x := range a {
-			for i, v := range set {
-				set[i] = op(v, x)
+		for _, v := range a {
+			for i, w := range set {
+				set[i] = op(w, v)
 			}
-			set = append(set, x)
+			set = append(set, v)
 			// 去重
 			k := 0
 			for _, w := range set[1:] {
@@ -225,25 +226,27 @@ func bitsCollection() {
 				}
 			}
 			set = set[:k+1]
-			for _, v := range set {
-				// do v...
-				ans[v] = true
+			for _, w := range set {
+				// do w...
+				ans[w] = true
 			}
 		}
 		return ans
 	}
 
-	// 进阶：对于数组的所有区间，返回 op(区间元素) 的各个结果，及其出现次数
+	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
 	// https://codeforces.com/problemset/problem/475/D
+	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
+	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
 	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
 		cnt := map[int]int64{}
-		type pair struct{ v, l, r int }
-		set := []pair{}
-		for i, x := range a {
+		type result struct{ v, l, r int } // [l,r)
+		set := []result{}
+		for i, v := range a {
 			for j, p := range set {
-				set[j].v = op(p.v, x)
+				set[j].v = op(p.v, v)
 			}
-			set = append(set, pair{x, i, i + 1})
+			set = append(set, result{v, i, i + 1})
 			// 去重
 			k := 0
 			for _, q := range set[1:] {
@@ -255,6 +258,7 @@ func bitsCollection() {
 				}
 			}
 			set = set[:k+1]
+			// 此时我们将区间 [0,i] 划分成了 len(set) 个（左闭右开）区间，对 ∀j∈[set[k].l,set[k].r)，op(区间[j,i]) 的计算结果均为 set[k].v
 			for _, p := range set {
 				// do p...     [l,r)
 				cnt[p.v] += int64(p.r - p.l)
