@@ -38,6 +38,7 @@ func CF875D(_r io.Reader, out io.Writer) {
 		}
 		set = set[:k+1]
 		for _, p := range set {
+			// 用 map 存位置也可以，见 https://codeforces.com/contest/875/submission/120223414
 			j := sort.Search(len(stk), func(i int) bool { return stk[i].v < p.v }) - 1
 			j = stk[j].i + 1
 			if j < p.l {
