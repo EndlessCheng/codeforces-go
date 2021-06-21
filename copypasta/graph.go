@@ -38,7 +38,7 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 - 拓扑序上，不同 SCC 的点的入度，越靠前的严格越小
 https://codeforces.com/problemset/problem/1498/E
 https://codeforces.com/problemset/problem/1514/E
-竞赛图与三元环 https://codeforces.com/problemset/problem/117/C
+todo 竞赛图与三元环 https://codeforces.com/problemset/problem/117/C
 
 todo《挑战》例题+练习题
 2.5 节 - 最短路 & 最小生成树
@@ -1458,6 +1458,7 @@ func (*graph) mstPrim(dist [][]int) (mst int) {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
 
 // 次小生成树 Second best Minimum Spanning Tree
+// todo 非严格/严格
 // Using Kruskal and Lowest Common Ancestor
 // https://oi-wiki.org/graph/mst/#_9
 // https://cp-algorithms.com/graph/second_best_mst.html
@@ -1470,6 +1471,8 @@ func (*graph) secondMST(n, m int) (sum int64) {
 // https://oi-wiki.org/graph/mst/#kruskal_1
 
 // 最小生成树计数 Kirchhoff's theorem
+// https://www.luogu.com.cn/problem/P4208
+// todo
 
 // 最小差值生成树
 // edges 中的节点编号从 0 开始，且无自环
@@ -1685,18 +1688,22 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 //
 // https://www.luogu.com.cn/problem/P6185
 // https://codeforces.com/problemset/problem/1537/F
+// 染色的技巧 https://codeforces.com/problemset/problem/553/C
+// 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n) // 0 表示未访问该节点
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {
 		colors[v] = c
 		for _, w := range g[v] {
+			// 如果要分组，用 3-c，便于填入下标；如果要根据染色来 +/-，用 -c
 			if colors[w] == c || colors[w] == 0 && !f(w, 3-c) {
 				return false
 			}
 		}
 		return true
 	}
+	//f(0, 1) // 只有一个 CC
 	for i, c := range colors {
 		if c == 0 && !f(i, 1) {
 			return false
