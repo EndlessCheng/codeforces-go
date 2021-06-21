@@ -491,7 +491,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 //      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
-// 加边技巧 https://codeforces.com/problemset/problem/723/E
+// 虚点 https://codeforces.com/problemset/problem/723/E
 // https://codeforces.com/problemset/problem/1186/F
 func (*graph) eulerianPath(n, m int) []int {
 	type neighbor struct{ to, eid int }
@@ -520,27 +520,30 @@ func (*graph) eulerianPath(n, m int) []int {
 	}
 
 	// NOTE: 若没有奇度数，则返回的是欧拉回路
+	// NOTE: 若不是连通图，则需要用一个额外的 visV 来遍历所有 CC，具体见 https://codeforces.com/contest/723/submission/120212770
 	path := make([]int, 0, m+1)
 	{
 		// 无向图
-		pre := st
+		pre := -1
 		vis := make([]bool, m)
 		var f func(int)
 		f = func(v int) {
 			for len(g[v]) > 0 {
 				e := g[v][0]
 				g[v] = g[v][1:]
-				if i := e.eid; !vis[i] {
-					vis[i] = true
-					f(e.to)
-					// 定向
-					v, w := v, e.to
-					if w == pre {
-						v, w = w, v
-					}
-					pre = w
-					// NOTE: 输出边的话移在这里 append i
+				i := e.eid
+				if vis[i] {
+					continue
 				}
+				vis[i] = true
+				f(e.to)
+				// 定向
+				v, w := v, e.to
+				if w == pre {
+					v, w = w, v
+				}
+				pre = w
+				// NOTE: 输出边的话移在这里 append i
 			}
 			path = append(path, v)
 		}
