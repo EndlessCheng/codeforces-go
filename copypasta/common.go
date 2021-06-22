@@ -70,9 +70,9 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 // 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
 
 /* todo 反悔贪心
+另见 heap.go 中的「反悔堆」
 https://djy-juruo.blog.luogu.org/qian-tan-fan-hui-tan-xin
 https://www.cnblogs.com/nth-element/p/11768155.html
-https://codeforces.com/problemset/problem/1526/C2
 */
 
 /* 集合哈希
