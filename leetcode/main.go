@@ -1340,8 +1340,7 @@ func convertBST(root *TreeNode) *TreeNode {
 // LC 540 有序数组中的单一元素
 func singleNonDuplicate(a []int) int {
     i := sort.Search(len(a)-1, func(i int) bool {
-        i &^= 1 // 如果 i 是奇数则减一
-        return a[i] != a[i+1]
+        return a[i] != a[i^1]
     })
     return a[i]
 }
