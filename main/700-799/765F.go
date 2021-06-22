@@ -43,7 +43,7 @@ func (t seg65) update(o, i, v int) {
 	}
 	m := (t[o].l + t[o].r) >> 1
 	if i > m {
-		t.update(o<<1|1, i, v)
+		t.update(o<<1|1, i, v) // 先右后左，这样可以从右往左更新
 	}
 	t.update(o<<1, i, v)
 	t[o].min = min65(t[o<<1].min, t[o<<1|1].min)
