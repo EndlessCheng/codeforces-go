@@ -27,6 +27,7 @@ package copypasta
 //     https://www.luogu.com.cn/problem/P3765
 //     https://codeforces.com/contest/1514/problem/D
 // GCD https://codeforces.com/problemset/problem/914/D
+// 最小差值 https://codeforces.com/problemset/problem/765/F
 // todo ai>aj>ak 三元组的数量 https://codeforces.com/problemset/problem/61/E
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
