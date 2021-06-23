@@ -80,7 +80,10 @@ https://codeforces.com/problemset/problem/1394/B
 https://www.luogu.com.cn/problem/P6688
 */
 
-// 操作树 https://codeforces.com/problemset/problem/707/D
+/* 操作树
+和莫队类似，通过改变查询的顺序来优化复杂度
+https://codeforces.com/problemset/problem/707/D
+*/
 
 /* Golang 卡常技巧（IO 之外的部分）
 对于存在海量小对象的情况（如 trie, treap 等），使用 debug.SetGCPercent(-1) 来禁用 GC，能明显减少耗时
