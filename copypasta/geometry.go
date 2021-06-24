@@ -623,6 +623,13 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 
 // 多边形相关
 func vec2Collection() {
+	min := func(a, b int64) int64 {
+		if a < b {
+			return a
+		}
+		return b
+	}
+
 	readVec := func(in io.Reader) vec {
 		var x, y int64
 		Fscan(in, &x, &y)
@@ -674,37 +681,40 @@ func vec2Collection() {
 	}
 
 	// 平面最近点对
-	// 调用前 ps 必须按照 x 坐标排序：
-	// sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
-	// 保证没有重复的点
+	// 返回最近点对距离的平方
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/ClosestPair.java.html
-	// 模板题 https://www.luogu.com.cn/problem/P1429
+	// 模板题 https://www.luogu.com.cn/problem/P1429 https://codeforces.com/problemset/problem/429/D
 	// 有两种类型的点，只需要额外判断类型是否不同即可 https://www.acwing.com/problem/content/121/ http://poj.org/problem?id=3714
-	var closestPair func([]vec) float64
-	closestPair = func(ps []vec) float64 {
+	var closestPair func([]vec) int64
+	closestPair = func(ps []vec) int64 {
+		// 调用 closestPair 前需保证没有重复的点，并特判 n == 1 的情况
+		// ps 必须按照 x 坐标升序：
+		// sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
 		n := len(ps)
-		// assert n >= 2
+		if n <= 1 {
+			return math.MaxInt64
+		}
 		m := n >> 1
 		x := ps[m].x
-		d := math.Min(closestPair(ps[:m]), closestPair(ps[m:]))
+		d2 := min(closestPair(ps[:m]), closestPair(ps[m:]))
 		copy(ps, merge(ps[:m], ps[m:])) // copy 是因为要修改 slice 的内容
 		checkPs := []vec{}
 		for _, pi := range ps {
-			if math.Abs(float64(pi.x-x)) > d+eps {
+			if (pi.x-x)*(pi.x-x) > d2 {
 				continue
 			}
 			for j := len(checkPs) - 1; j >= 0; j-- {
 				pj := checkPs[j]
-				dy := float64(pi.y - pj.y)
-				if dy >= d {
+				dy := pi.y - pj.y
+				if dy*dy >= d2 {
 					break
 				}
-				dx := float64(pi.x - pj.x)
-				d = math.Min(d, math.Sqrt(dx*dx+dy*dy))
+				dx := pi.x - pj.x
+				d2 = min(d2, dx*dx+dy*dy)
 			}
 			checkPs = append(checkPs, pi)
 		}
-		return d
+		return d2
 	}
 
 	// 读入多边形
@@ -793,6 +803,10 @@ func vec2Collection() {
 		}
 		return
 	}
+
+	// todo 最小矩形覆盖/最小外接矩形
+	// https://www.luogu.com.cn/problem/P3187
+	// UVa 10173 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=13&page=show_problem&problem=1114
 
 	// todo 动态凸包
 	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
