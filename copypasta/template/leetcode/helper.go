@@ -79,7 +79,9 @@ func renameInputArgs(funcDefineLine string) string {
 		"stones", "a",
 		"mat", "a",
 		"matrix", "a",
-		"grid", "a",
+		"grid", "g",
+		"grid1", "g1",
+		"grid2", "g2",
 
 		// 字符串
 		"word", "s",
