@@ -8,4 +8,5 @@ Compiler info: go1.13.6, linux, 64-bit
 |[第 2 场周赛](https://www.acwing.com/activity/content/competition/problem_list/47/)|3/3|2|
 |[第 3 场周赛](https://www.acwing.com/activity/content/competition/problem_list/49/)|3/3|24|
 |[第 4 场周赛](https://www.acwing.com/activity/content/competition/problem_list/50/)|3/3|4|
+|[第 5 场周赛](https://www.acwing.com/activity/content/competition/problem_list/51/)|3/3|3|
 
