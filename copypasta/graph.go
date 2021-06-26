@@ -640,6 +640,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 //       https://codeforces.com/problemset/problem/1000/E
 // 题目推荐 https://cp-algorithms.com/graph/bridge-searching.html#toc-tgt-2
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
+// 与最短路结合 https://codeforces.com/problemset/problem/567/E
 // https://codeforces.com/problemset/problem/118/E
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
@@ -665,8 +666,8 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	isBridge = make([]bool, m)
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
-	var f func(v, fid int) int // 使用 fid 而不是 fa，可以兼容重边的情况
-	f = func(v, fid int) int {
+	var f func(int, int) int
+	f = func(v, fid int) int { // 使用 fid 而不是 fa，可以兼容重边的情况
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
@@ -914,6 +915,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
+// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // 线段树建图优化 https://codeforces.com/problemset/problem/786/B
@@ -1692,6 +1694,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // https://www.luogu.com.cn/problem/P6185
 // https://codeforces.com/problemset/problem/1537/F
 // 染色的技巧 https://codeforces.com/problemset/problem/553/C
+//          https://codeforces.com/problemset/problem/662/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n) // 0 表示未访问该节点
@@ -1699,8 +1702,8 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 	f = func(v int, c int8) bool {
 		colors[v] = c
 		for _, w := range g[v] {
-			// 如果要分组，用 3-c，便于填入下标；如果要根据染色来 +/-，用 -c
-			if colors[w] == c || colors[w] == 0 && !f(w, 3-c) {
+			// 如果要分组，用 3^c，便于填入下标；如果要根据染色来 +/-，用 -c
+			if colors[w] == c || colors[w] == 0 && !f(w, 3^c) {
 				return false
 			}
 		}
