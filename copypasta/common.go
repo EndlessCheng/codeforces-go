@@ -22,6 +22,7 @@ import (
 // https://codeforces.com/problemset/problem/1194/E
 // 进阶：https://codeforces.com/problemset/problem/1483/D
 // 删除一段的最长连续递增 CERC10D https://codeforces.com/gym/101487
+// 统计量是二元组的情形 https://codeforces.com/problemset/problem/301/D
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
