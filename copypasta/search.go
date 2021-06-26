@@ -201,7 +201,7 @@ func searchCollection() {
 	// LC1307/周赛169D https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
 	searchPermutations := func(a []int) bool {
 		n := len(a)
-		used := make([]bool, n)
+		used := 0
 		var f func(p, sum int) bool
 		f = func(p, sum int) bool {
 			//if sum > ... { } // 剪枝
@@ -212,10 +212,10 @@ func searchCollection() {
 			}
 			// 对每个位置，枚举可能出现的值，跳过已经枚举的值
 			for i, v := range a {
-				if used[i] {
+				if used>>i&1 > 0 {
 					continue
 				}
-				used[i] = true
+				used |= 1 << i
 				// copy sum and do v...
 				s := sum
 				s += v
@@ -223,7 +223,7 @@ func searchCollection() {
 					//used[i] = false
 					return true
 				}
-				used[i] = false
+				used ^= 1 << i
 			}
 			return false
 		}
