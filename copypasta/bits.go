@@ -72,7 +72,7 @@ https://oeis.org/A083652 A070939 的前缀和
 
 OnesCount 相当于二进制的 digsum
 https://oeis.org/A000120 wt(n) = OnesCount(n)
-https://oeis.org/A000788 前缀和 a(2^n)=n*2^(n-1)+1
+https://oeis.org/A000788 前缀和 a(0) = 0, a(2n) = a(n)+a(n-1)+n, a(2n+1) = 2a(n)+n+1
 https://oeis.org/A121853 前缀积 https://www.luogu.com.cn/problem/P4317
 https://oeis.org/A092391 n+OnesCount(n)
 	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
