@@ -100,6 +100,12 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 			return reflect.Value{}, invalidErr
 		}
 		v = reflect.ValueOf(int64(i))
+	case reflect.Uint64:
+		i, er := strconv.Atoi(rawData)
+		if er != nil {
+			return reflect.Value{}, invalidErr
+		}
+		v = reflect.ValueOf(uint64(i))
 	case reflect.Float64:
 		f, er := strconv.ParseFloat(rawData, 64)
 		if er != nil {
