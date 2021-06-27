@@ -200,7 +200,7 @@ func toRawString(v reflect.Value) (s string, err error) {
 		s = fmt.Sprintf(`"%c"`, v.Interface())
 	case reflect.Float64:
 		s = fmt.Sprintf(`%.5f`, v.Interface())
-	default: // int uint int64 bool
+	default: // int uint int64 uint64 bool
 		s = fmt.Sprintf(`%v`, v.Interface())
 	}
 	return
