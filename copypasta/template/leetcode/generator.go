@@ -113,13 +113,18 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 			Title     string `json:"title"`      // 题目标题
 			TitleSlug string `json:"title_slug"` // 题目链接
 		} `json:"questions"`
-		UserNum int `json:"user_num"` // 参赛人数
+		Registered bool `json:"registered"` // 是否报名
+		UserNum    int  `json:"user_num"`   // 参赛人数
 	}{}
 	if err = resp.JSON(&d); err != nil {
 		return
 	}
 	if d.Contest.StartTime == 0 {
 		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s", contestTag)
+	}
+	if !d.Registered {
+		fmt.Printf("该账号尚未报名%s\n", d.Contest.Title)
+		return
 	}
 
 	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
@@ -596,6 +601,10 @@ func GenLeetCodeTests(username, password, customComment string) error {
 		}
 		fmt.Println(err)
 		time.Sleep(time.Second)
+	}
+
+	if len(problems) == 0 {
+		return nil
 	}
 
 	if customComment != "" {
