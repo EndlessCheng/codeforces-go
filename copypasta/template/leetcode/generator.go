@@ -14,9 +14,6 @@ import (
 	"time"
 )
 
-// TODO: 根据构造器传入的参数来预定义 var()
-// https://leetcode-cn.com/contest/biweekly-contest-20/problems/apply-discount-every-n-orders/
-
 func login(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
