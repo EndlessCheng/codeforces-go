@@ -108,8 +108,8 @@ func renameInputArgs(funcDefineLine string) string {
 }
 
 func _parseReturnType(line string) string {
-	i := strings.LastIndexByte(line, ')') + 2
-	return line[i : len(line)-2]
+	i := strings.LastIndexByte(line, ')')
+	return strings.TrimSpace(line[i+1 : len(line)-2])
 }
 
 func namedReturnFunc(name string) modifyLineFunc {
@@ -118,6 +118,9 @@ func namedReturnFunc(name string) modifyLineFunc {
 		if returnType == "" {
 			return funcDefineLine
 		} // 无返回值
+		if returnType == "int64" {
+			return funcDefineLine
+		}
 		returnName := name
 		if strings.HasPrefix(funcDefineLine, "func Constructor(") {
 			returnName = "_"
@@ -127,17 +130,20 @@ func namedReturnFunc(name string) modifyLineFunc {
 	}
 }
 
-func modifyDefaultCode(code string, funcLos []int, fs []modifyLineFunc, customFuncContent string) string {
+func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, customFuncContent string) string {
 	sep := "\n"
 	if strings.ContainsRune(code, '\r') {
 		sep = "\r\n"
 	}
 	lines := strings.Split(code, sep)
 	for _, lo := range funcLos {
-		for _, f := range fs {
-			if _parseReturnType(lines[lo]) != "" {
-				lines[lo+1] = customFuncContent
+		if tp := _parseReturnType(lines[lo]); tp != "" {
+			if tp == "int64" {
+				customFuncContent = "\tans := 0\n" + customFuncContent + " int64(ans)"
 			}
+			lines[lo+1] = customFuncContent
+		}
+		for _, f := range funcList {
 			lines[lo] = f(lines[lo])
 		}
 	}
