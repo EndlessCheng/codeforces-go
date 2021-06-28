@@ -849,6 +849,26 @@ func loopCollection() {
 		}
 	}
 
+	// 顺时针遍历矩阵从外向内的第 d 圈（保证不自交）
+	// LC247B https://leetcode-cn.com/contest/weekly-contest-247/problems/cyclically-rotating-a-grid/
+	loopAroundD := func(a [][]int, d int) []int {
+		n, m := len(a), len(a[0])
+		b := make([]int, 0, (n+m-d*4-2)*2)
+		for j := d; j < m-d; j++ { // →
+			b = append(b, a[d][j])
+		}
+		for i := d + 1; i < n-d; i++ { // ↓
+			b = append(b, a[i][m-1-d])
+		}
+		for j := m - d - 2; j >= d; j-- { // ←
+			b = append(b, a[n-1-d][j])
+		}
+		for i := n - d - 2; i > d; i-- { // ↑
+			b = append(b, a[i][d])
+		}
+		return b
+	}
+
 	// 第一排在右上，最后一排在左下
 	// 每排从左上到右下
 	loopDiagonal := func(n, m int) {
@@ -927,7 +947,7 @@ func loopCollection() {
 
 	_ = []interface{}{
 		loopSet, loopSubset, loopSuperset, loopSubsetK,
-		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev,
+		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev, loopAroundD,
 		loopDiagonal, loopAntiDiagonal, circleLoopDiagonal,
 		loopBorder,
 	}
