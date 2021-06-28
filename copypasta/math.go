@@ -640,21 +640,24 @@ func numberTheoryCollection() {
 	// n 的质因数分解中 2 的幂次 http://oeis.org/A007814
 	// n 的质因数分解中非 2 的幂次之和 http://oeis.org/A087436
 	type factor struct {
-		p int64
-		e int
+		p  int64
+		e  int
+		pe int64 // p^e
 	}
 	factorize := func(x int64) (factors []factor) {
 		for i := int64(2); i*i <= x; i++ {
 			e := 0
+			pe := int64(1)
 			for ; x%i == 0; x /= i {
 				e++
+				pe *= i
 			}
 			if e > 0 {
-				factors = append(factors, factor{i, e})
+				factors = append(factors, factor{i, e, pe})
 			}
 		}
 		if x > 1 {
-			factors = append(factors, factor{x, 1})
+			factors = append(factors, factor{x, 1, x})
 		}
 		return
 	}
@@ -1077,6 +1080,8 @@ func numberTheoryCollection() {
 			}
 			return r
 		}
+
+		// EXTRA: https://oeis.org/A008475 质因数分解中，各个 p^e 项之和
 
 		// EXTRA: https://oeis.org/A001414 Integer log of n: sum of primes dividing n (with repetition)
 		sopfr := func(x int) (s int) {
