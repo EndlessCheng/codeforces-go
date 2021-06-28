@@ -304,6 +304,31 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	}
 	findDiameterPath(dv, -1)
 
+	// EXTRA: 求出无根树上每个点的最远点及距离（紫书 p.282 思考题）
+	// 从任意直径的两个端点出发跑 DFS，取最大值
+	// 相关题目 https://codeforces.com/problemset/problem/337/D
+	farthest := make([]struct{ v, d int }, len(g))
+	for i := range farthest {
+		farthest[i].d = -1
+	}
+	var cur int
+	var findFarthest func(v, fa, d int)
+	findFarthest = func(v, fa, d int) {
+		if d > farthest[v].d {
+			farthest[v].d = d
+			farthest[v].v = cur
+		}
+		for _, w := range g[v] {
+			if w != fa {
+				findFarthest(w, v, d+1)
+			}
+		}
+	}
+	cur = dv
+	findFarthest(dv, -1, 0)
+	cur = dw
+	findFarthest(dw, -1, 0)
+
 	return dv, dw, maxD
 }
 
