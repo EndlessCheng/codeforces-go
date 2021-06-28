@@ -1111,6 +1111,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
 // 例题: https://codeforces.com/problemset/problem/173/B
 // 网格图 https://codeforces.com/problemset/problem/590/C
+// 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -1124,7 +1125,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	}
 
 	const inf int = 1e9
-	dist := make([]int, n)
+	dist := make([]int, len(g))
 	for i := range dist {
 		dist[i] = inf
 	}
@@ -1428,7 +1429,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // dist[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/mst/#prim
 // 模板题 https://www.luogu.com.cn/problem/P1546
-// 建模+打印方案 https://codeforces.com/contest/1245/problem/D
+// 建模+打印方案 https://codeforces.com/problemset/problem/1245/D
 // https://codeforces.com/contest/1508/problem/C
 func (*graph) mstPrim(dist [][]int) (mst int) {
 	const inf int = 2e9
