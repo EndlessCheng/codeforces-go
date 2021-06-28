@@ -25,6 +25,8 @@ import (
    如何定义状态：
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
+      SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
+      Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
       LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
       涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
       戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
@@ -35,6 +37,7 @@ import (
    状态优化 https://codeforces.com/problemset/problem/838/E
   「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
 
+NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
 	https://ac.nowcoder.com/acm/contest/6218/B
 	https://codeforces.com/problemset/problem/283/B 活用 012 染色
@@ -678,6 +681,7 @@ func dpCollections() {
 	}
 
 	// 回文串最小分割次数
+	// 紫书例题 9-7，UVa 11584 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=27&page=show_problem&problem=2631
 	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
 	minPalindromeCut := func(s string) int {
 		n := len(s)
@@ -736,6 +740,7 @@ func dpCollections() {
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
+	//        必须定义成恰好装满（紫书例题 9-5，UVa 12563）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=441&page=show_problem&problem=4008
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
 	// EXTRA: 二维费用 https://www.acwing.com/problem/content/8/ https://www.luogu.com.cn/problem/P1507 LC474 https://leetcode-cn.com/problems/ones-and-zeroes/
 	// EXTRA: 把一个维度转换成 DP 的定义 https://codeforces.com/problemset/problem/837/D
@@ -832,11 +837,12 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 价值主导的 0-1 背包
-	// 把重量看成价值，价值看成重量，求同等价值下能得到的最小重量
+	// 把重量看成价值，价值看成重量，求同等价值下能得到的最小重量，若该最小重量不超过背包容量，则该价值合法。所有合法价值的最大值即为答案
+	// https://atcoder.jp/contests/dp/tasks/dp_e
 
 	// 完全背包
 	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
-	// EXTRA: 打印方案 LC1449/双周赛26D https://leetcode-cn.com/contest/biweekly-contest-26/problems/form-largest-integer-with-digits-that-add-up-to-target/
+	// EXTRA: 恰好装满+打印方案 LC1449/双周赛26D https://leetcode-cn.com/contest/biweekly-contest-26/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill
 		//dp[0] = 0
@@ -1541,10 +1547,11 @@ func dpCollections() {
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
+	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661
 	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
-			chosen = a[v]
+			chosen = a[v] // 1
 			for _, w := range g[v] {
 				if w != fa {
 					nc, c := f(w, v)
@@ -1558,13 +1565,14 @@ func dpCollections() {
 		return max(nc, c)
 	}
 
-	// 树上最小边覆盖
+	// 树上最小顶点覆盖
 	// 代码和树上最大独立集类似
+	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
-	minEdgeCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
+	minVertexCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
-			chosen = a[v]
+			chosen = a[v] // 1
 			for _, w := range g[v] {
 				if w != fa {
 					nc, c := f(w, v)
@@ -1578,14 +1586,17 @@ func dpCollections() {
 		return min(nc, c)
 	}
 
-	// 树上最小支配集/最小顶点覆盖
+	// 树上最小支配集
 	// 返回最小点权和（最小支配集的情形即所有点权均为一）
 	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
 	// dp[i][0]：i 属于支配集 = a[i]+∑min(dp[w][0],dp[w][1],dp[w][2])
 	// dp[i][1]：i 不属于支配集，且被儿子支配 = ∑min(dp[w][0],dp[w][1]) + 如果全选 dp[w][1] 则补上 min{dp[w][0]-dp[w][1]}
 	// dp[i][2]：i 不属于支配集，且被父亲支配 = ∑min(dp[w][0],dp[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
-	// 经典题：保安站岗 https://www.luogu.com.cn/problem/P2458 手机网络 https://www.luogu.com.cn/problem/P2899 https://ac.nowcoder.com/acm/problem/24953
+	//
+	// 保安站岗 https://www.luogu.com.cn/problem/P2458
+	// 手机网络 https://www.luogu.com.cn/problem/P2899
+	// https://ac.nowcoder.com/acm/problem/24953
 	// 监控二叉树 LC968 https://leetcode-cn.com/problems/binary-tree-cameras/
 	// todo EXTRA: 消防局的设立（支配距离为 2） https://www.luogu.com.cn/problem/P2279
 	// todo EXTRA: 将军令（支配距离为 k） https://www.luogu.com.cn/problem/P3942
@@ -1594,7 +1605,7 @@ func dpCollections() {
 		const inf int = 1e9 // 1e18
 		var f func(int, int) (chosen, bySon, byFa int)
 		f = func(v, fa int) (chosen, bySon, byFa int) { // int64
-			chosen = a[v]
+			chosen = a[v] // 1
 			extra := inf
 			for _, w := range g[v] {
 				if w != fa {
@@ -1614,6 +1625,9 @@ func dpCollections() {
 		chosen, bySon, _ := f(0, -1)
 		return min(chosen, bySon)
 	}
+
+	// EXTRA: 每个被支配的点，仅被一个点支配
+	// Kaoshiung06，紫书例题 9-14，UVa 1218 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3659
 
 	// 树上最大匹配
 	// g[v] = ∑{max(f[son],g[son])}
@@ -1850,7 +1864,7 @@ func dpCollections() {
 		cht,
 
 		diameter, countDiameter, countVerticesOnDiameter,
-		maxIndependentSetOfTree, minEdgeCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
+		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		rerootDP,
 		andPathSum, xorPathSum, xorPathXorSum,
 	}
