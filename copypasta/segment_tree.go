@@ -36,6 +36,11 @@ package copypasta
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
+// EXTRA: 权值线段树
+// todo 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
+//  浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
+//  谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
 // 这个性质可以用于优化建图
@@ -231,7 +236,8 @@ func (t lazyST) spread(o int) {
 // 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
 // 未找到时返回 n+1
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazyST) lowerBound(o, l, r int, val int64) int {
+// https://codeforces.com/problemset/problem/1179/C
+func (t lazyST) binarySearch(o, l, r int, val int64) int {
 	if t[o].l == t[o].r {
 		if val <= t[o].sum {
 			return t[o].l
@@ -241,9 +247,9 @@ func (t lazyST) lowerBound(o, l, r int, val int64) int {
 	t.spread(o)
 	// 注意判断对象是当前节点还是子节点
 	if val <= t[o<<1].sum {
-		return t.lowerBound(o<<1, l, r, val)
+		return t.binarySearch(o<<1, l, r, val)
 	}
-	return t.lowerBound(o<<1|1, l, r, val)
+	return t.binarySearch(o<<1|1, l, r, val)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
@@ -425,11 +431,6 @@ func (o *lazyNode) query(l, r int) int64 {
 	o.spread()
 	return o.op(o.lo.query(l, r), o.ro.query(l, r))
 }
-
-// EXTRA: 权值线段树
-// todo 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
-//  浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
-//  谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 
 // EXTRA: 线段树合并
 // todo 一些题目 https://www.luogu.com.cn/blog/styx-ferryman/xian-duan-shu-ge-bing-zong-ru-men-dao-fang-qi
