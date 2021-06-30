@@ -1210,7 +1210,8 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 		}
 	}
 
-	// EXTRA: 只是找负环的话可以初始所有点入队
+	// EXTRA: 只是找负环的话，初始时将所有点入队即可
+	// 注意不能只从一个点出发找负环，因为可能这个点无法到达负环
 	// https://www.luogu.com.cn/problem/P2868
 
 	// EXTRA: 打印负环
@@ -1229,6 +1230,9 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 // https://codeforces.com/problemset/problem/1204/C
 // 好题 https://codeforces.com/problemset/problem/295/B
+// 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
+// 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
+// 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
 func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	min := func(a, b int) int { // int64
 		if a < b {
@@ -1373,6 +1377,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
 // 判断给定的边是否均在同一颗 MST 中 https://codeforces.com/problemset/problem/891/C
 // 二分图无环 https://codeforces.com/problemset/problem/1408/E
+// 与 LCA 结合 https://codeforces.com/problemset/problem/733/F
 // 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
 // EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值 https://leetcode-cn.com/contest/weekly-contest-220/problems/checking-existence-of-edge-length-limited-paths/
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
@@ -1482,7 +1487,9 @@ func (*graph) secondMST(n, m int) (sum int64) {
 
 // 最小差值生成树
 // edges 中的节点编号从 0 开始，且无自环
-// https://www.luogu.com.cn/problem/P4234 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
+// https://www.luogu.com.cn/problem/P4234
+// https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/F
+// Japan07，紫书例题 11-2，UVa1395 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4141
 func (*graph) minDiffMST(n int, edges [][3]int) int {
 	m := len(edges)
 	sort.Slice(edges, func(i, j int) bool { return edges[i][2] < edges[j][2] })

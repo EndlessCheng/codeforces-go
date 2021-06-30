@@ -613,6 +613,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
 //    最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
+//       变体 https://codeforces.com/problemset/problem/733/F
 //    最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
 //    前十大（点权）https://codeforces.com/problemset/problem/587/C
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
@@ -719,6 +720,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 
 		// EXTRA: 倍增的时候维护其他属性，如边权最值等
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E
+		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685
 		type nb struct{ to, wt int }
 		g := make([][]nb, n)
 		// read g ...
@@ -744,7 +746,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 					pp := pa[p.p][i]
 					pa[v][i+1] = pair{pp.p, max(p.maxWt, pp.maxWt)}
 				} else {
-					pa[v][i+1] = pair{-1, 0}
+					pa[v][i+1].p = -1
 				}
 			}
 		}
