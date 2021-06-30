@@ -210,6 +210,7 @@ func (t *trie) countDistinctSubstring(s []byte) (cnt int) {
 // https://www.luogu.com.cn/problem/P3796
 // todo https://www.luogu.com.cn/problem/P5357 二次加强版
 //
+// todo https://codeforces.com/problemset/problem/1437/G
 // todo https://codeforces.com/problemset/problem/963/D
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
@@ -308,7 +309,16 @@ func (o trieNode) put(s []byte) *trieNode {
 // TODO https://oi-wiki.org/string/sam/
 // TODO https://cp-algorithms.com/string/suffix-automaton.html
 //      后缀树简介 https://eternalalexander.github.io/2019/10/31/%E5%90%8E%E7%BC%80%E6%A0%91%E7%AE%80%E4%BB%8B/
+// 工具：SAM Drawer https://yutong.site/sam/
 // 模板题 https://www.luogu.com.cn/problem/P3804
+// todo 后缀自动机一·基本概念 http://hihocoder.com/problemset/problem/1441
+//  后缀自动机二·重复旋律5 http://hihocoder.com/problemset/problem/1445
+//  后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449
+//  后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
+//  后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
+//  后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
+//  第 k 小子串 https://www.luogu.com.cn/problem/P3975
+//  后缀平衡树 https://www.luogu.com.cn/blog/CHiCO/CHiCO-Suffix-Balance-Tree
 
 // 广义 SAM
 // todo https://www.luogu.com.cn/problem/P6139
@@ -316,4 +326,6 @@ func (o trieNode) put(s []byte) *trieNode {
 
 // 回文自动机 PAM
 // todo https://baobaobear.github.io/post/20200416-pam/
-//  https://www.luogu.com.cn/problem/P5496
+// 《字符串算法选讲》-金策
+// https://zhuanlan.zhihu.com/p/92874690
+// todo https://www.luogu.com.cn/problem/P5496
