@@ -12,6 +12,7 @@ import (
 // 解决问题的一般方法 https://codeforces.com/blog/entry/92248?#comment-809401
 // General ideas https://codeforces.com/blog/entry/48417
 // 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
+// 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
 //     EXTRA: 值域上的双变量，见 https://codeforces.com/contest/486/problem/D
@@ -58,6 +59,7 @@ https://codeforces.com/problemset/problem/266/C
 /* 正难则反：小学奥数告诉我们，不可行方案永远比可行方案好求
 https://codeforces.com/problemset/problem/621/C
 https://codeforces.com/problemset/problem/571/A
+https://codeforces.com/problemset/problem/369/E
 */
 
 /* 见微知著：考察单个点的规律，从而推出全局规律
