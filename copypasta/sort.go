@@ -402,12 +402,12 @@ func sortCollections() {
 	//      动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 	//      CDQ 优化 DP https://www.luogu.com.cn/problem/P2487
 
-	// 整体二分
+	// 整体二分 Parallel Binary Search
 	// https://oi-wiki.org/misc/parallel-binsearch/
 	// https://codeforces.com/blog/entry/45578
 	// todo 整体二分解决静态区间第 k 小的优化 https://www.luogu.com.cn/blog/2-6-5-3-5/zheng-ti-er-fen-xie-jue-jing-tai-ou-jian-di-k-xiao-di-you-hua
 	// 模板题 https://www.luogu.com.cn/problem/P3527
-	globalBinarySearch := func(n int, qs []struct{ l, r, v int }) []int {
+	parallelBinarySearch := func(n int, qs []struct{ l, r, v int }) []int {
 		// 读入询问时可以处理成左闭右开的形式
 
 		ans := make([]int, n)
@@ -489,7 +489,7 @@ func sortCollections() {
 		kthSmallest, kthSmallestRangeSum, kthSubsetSum,
 		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
 		search01,
-		globalBinarySearch,
+		parallelBinarySearch,
 		binaryLifting,
 	}
 }
