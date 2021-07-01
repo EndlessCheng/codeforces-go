@@ -787,10 +787,11 @@ func dpCollections() {
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
 	// NOTE: 1,1,1,...1(32个1),s-32,s-31,...,s 可以让方案数恰好为 2^32
-	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
 	// 二维+上限+下限 LC879/周赛95D https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
-	// 隐藏的 0-1 背包 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
-	// 建模转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
+	// 转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
+	// 转换 https://codeforces.com/problemset/problem/478/D
+	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
+	// 转换 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 由于顺序不同也算方案，所以这题需要正序递推 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
 	zeroOneWaysToSum := func(a []int, sum int) int {
 		dp := make([]int, sum+1) // int64
@@ -1059,6 +1060,7 @@ func dpCollections() {
 	https://www.luogu.com.cn/problem/P1879
 	循环移位 https://codeforces.com/contest/1209/problem/E2
 	https://codeforces.com/problemset/problem/401/D
+	与质因子分解结合 https://codeforces.com/problemset/problem/453/B
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
