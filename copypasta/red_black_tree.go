@@ -18,10 +18,7 @@ type rbNode struct {
 }
 
 func (o *rbNode) isRed() bool {
-	if o == nil {
-		return false
-	}
-	return o.c == red
+	return o != nil && o.c == red
 }
 
 func (o *rbNode) pushUp() {
@@ -226,6 +223,8 @@ func (t *rbTree) delete(key rbKeyType) {
 		t.root.c = black
 	}
 }
+
+// 其余通用方法见 bst.go
 
 //
 

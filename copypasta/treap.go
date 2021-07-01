@@ -12,8 +12,6 @@ import (
 https://oi-wiki.org/ds/treap/
 https://en.wikipedia.org/wiki/Treap
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
-耗时大约是红黑树（父节点实现）的 1.2 倍
-
 额外维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
 
 模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
@@ -161,7 +159,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 
 func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 
-// 其余和 BST 有关的方法见 bst.go
+// 其余通用方法见 bst.go
 
 //
 
