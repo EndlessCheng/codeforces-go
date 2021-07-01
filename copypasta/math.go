@@ -2036,7 +2036,7 @@ func numberTheoryCollection() {
 	// https://en.wikipedia.org/wiki/Bell_number
 	// 1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
-	// B(n) = Sum_{k=1..n} Stirling2(n,k)
+	// B(n) = Sum_{k=1..n} S2(n,k)
 	bell := func(n int) (res int64) {
 		s2 := make([][]int64, n+1)
 		for i := range s2 {
@@ -2075,6 +2075,14 @@ func numberTheoryCollection() {
 		}
 		return b
 	}
+
+	// 富比尼数（有序贝尔数）
+	// Count the number of weak orderings on a set of n elements
+	// 即允许平局下，n 人比赛的结果数
+	// https://en.wikipedia.org/wiki/Ordered_Bell_number https://oeis.org/A000670
+	// a(n) = Sum_{k=0..n} k! * S2(n,k)
+	// a(n) = Sum_{k=1..n} C(n,k) * a(n-k), a(0) = 1
+	// 相关题目：UVa12034 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=242&page=show_problem&problem=3185
 
 	// 欧拉数 https://oeis.org/A008292
 	// https://en.wikipedia.org/wiki/Eulerian_number
