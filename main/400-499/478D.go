@@ -27,9 +27,9 @@ func CF478D(in io.Reader, out io.Writer) {
 			dp[j] = (dp[j] + dp[j-i]) % mod
 		}
 	}
-	// 此时 dp[i] 表示堆了 h 层且用了 i 个红色方块的方案数
+	// 此时 dp[i] 表示堆完 h 层且用了 i 个红色方块的方案数
 	// 为保证用的绿色方块数不超过 g，i 不能小于 max(0, h*(h+1)/2-g)
-	for _, v := range dp[max(0, h*(h+1)/2-g) : r+1] {
+	for _, v := range dp[max(0, h*(h+1)/2-g):] {
 		ans = (ans + v) % mod
 	}
 	Fprint(out, ans)
