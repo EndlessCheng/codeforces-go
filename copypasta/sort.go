@@ -407,6 +407,9 @@ func sortCollections() {
 	// https://codeforces.com/blog/entry/45578
 	// todo 整体二分解决静态区间第 k 小的优化 https://www.luogu.com.cn/blog/2-6-5-3-5/zheng-ti-er-fen-xie-jue-jing-tai-ou-jian-di-k-xiao-di-you-hua
 	// 模板题 https://www.luogu.com.cn/problem/P3527
+	// todo https://atcoder.jp/contests/agc002/tasks/agc002_d
+	//  https://www.hackerrank.com/contests/hourrank-23/challenges/selective-additions/problem
+	//  https://www.codechef.com/problems/MCO16504
 	parallelBinarySearch := func(n int, qs []struct{ l, r, v int }) []int {
 		// 读入询问时可以处理成左闭右开的形式
 
@@ -435,8 +438,8 @@ func sortCollections() {
 
 			// 根据此刻查询的结果将 tar 分成左右两部分
 			var left, right []int
-			for _, c := range tar {
-				_ = c
+			for _, who := range tar {
+				_ = who
 
 			}
 
