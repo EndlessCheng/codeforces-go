@@ -433,7 +433,7 @@ func sortCollections() {
 
 			}
 
-			// 根据此刻查询的结果将 c 分成左右两部分
+			// 根据此刻查询的结果将 tar 分成左右两部分
 			var left, right []int
 			for _, c := range tar {
 				_ = c
