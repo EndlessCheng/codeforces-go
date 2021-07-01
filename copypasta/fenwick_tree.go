@@ -36,7 +36,7 @@ todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
 func fenwickTree(n int) {
 	tree := make([]int, n+1)
 	add := func(i int, val int) {
-		for ; i <= n; i += i & -i {
+		for ; i < len(tree); i += i & -i {
 			tree[i] += val
 		}
 	}
@@ -54,11 +54,10 @@ func fenwickTree(n int) {
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
 	// 常数优化：O(n) 建树 https://oi-wiki.org/ds/fenwick/#tricks
-	init := func(a []int) {
-		n := len(a)
-		for i := 1; i <= n; i++ {
+	init := func(a []int) { // len(tree) = len(a) + 1
+		for i := 1; i < len(tree); i++ {
 			tree[i] += a[i-1]
-			if j := i + i&-i; j <= n {
+			if j := i + i&-i; j < len(tree) {
 				tree[j] += tree[i]
 			}
 		}

@@ -1113,7 +1113,7 @@ func numberTheoryCollection() {
 		const mx int = 1e6
 		factors := [mx + 1][]int{}
 		for i := 2; i <= mx; i++ {
-			if len(factors[i]) == 0 {
+			if factors[i] == nil {
 				for j := i; j <= mx; j += i {
 					factors[j] = append(factors[j], i)
 				}
@@ -1180,6 +1180,10 @@ func numberTheoryCollection() {
 	// https://oi-wiki.org/math/euler/
 	// 前缀和见下面的「phi 求和相关」
 	// NOTE: φ(φ...(n)) 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
+	// φ(n!) https://oeis.org/A048855
+	//      If n is prime, then a(n) = a(n-1)*(n-1)
+	//      If n is composite, then a(n) = a(n-1)*n
+	//      紫书例题 10-26，UVa11440 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=26&page=show_problem&problem=2435
 	// GCD(n, φ(n)) https://oeis.org/A009195
 	// n+φ(n) http://oeis.org/A121048
 	// n-φ(n) https://oeis.org/A051953 called Cototient
@@ -1962,6 +1966,7 @@ func numberTheoryCollection() {
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
 	//    LC241D https://leetcode-cn.com/contest/weekly-contest-241/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
 	//    建筑师 https://www.luogu.com.cn/problem/P4609
+	//    UVa1638 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4513
 	//    todo https://www.luogu.com.cn/problem/P5408
 	//         https://www.luogu.com.cn/problem/P5409
 	//         https://codeforces.com/problemset/problem/1516/E
@@ -2171,7 +2176,7 @@ func numberTheoryCollection() {
 	//     a(n) 前缀和 = Sum_{k=1..n-1} Sum_{i=1..n-1} floor(k/i) https://oeis.org/A078567
 	// 恒等式 n%i = n-(n/i)*i
 	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
-	// ∑k%i 代码见下面的 floorLoopK https://www.luogu.com.cn/problem/P2261 https://codeforces.com/problemset/problem/616/E
+	// ∑k%i 见下面的 floorLoopK
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
@@ -2221,6 +2226,7 @@ func numberTheoryCollection() {
 	// 对于 [l,r] 范围内的 i，k/i 不变，此时 ∑(k/i)*i = (k/i)*∑i = (k/i)*(l+r)*(r-l+1)/2
 	// https://www.luogu.com.cn/problem/P2261
 	// https://codeforces.com/problemset/problem/616/E
+	// NEERC05，紫书例题 10-25，UVa1363 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4109 https://codeforces.com/gym/101334 J
 	floorLoopK := func(n, k int64) int64 {
 		min := func(a, b int64) int64 {
 			if a < b {
