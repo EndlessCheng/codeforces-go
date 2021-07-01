@@ -403,9 +403,54 @@ func sortCollections() {
 	//      CDQ 优化 DP https://www.luogu.com.cn/problem/P2487
 
 	// 整体二分
-	// todo https://oi-wiki.org/misc/parallel-binsearch/
-	//      https://codeforces.com/blog/entry/45578
-	// 整体二分解决静态区间第 k 小的优化 https://www.luogu.com.cn/blog/2-6-5-3-5/zheng-ti-er-fen-xie-jue-jing-tai-ou-jian-di-k-xiao-di-you-hua
+	// https://oi-wiki.org/misc/parallel-binsearch/
+	// https://codeforces.com/blog/entry/45578
+	// todo 整体二分解决静态区间第 k 小的优化 https://www.luogu.com.cn/blog/2-6-5-3-5/zheng-ti-er-fen-xie-jue-jing-tai-ou-jian-di-k-xiao-di-you-hua
+	// 模板题 https://www.luogu.com.cn/problem/P3527
+	globalBinarySearch := func(n int, qs []struct{ l, r, v int }) []int {
+		// 读入询问时可以处理成左闭右开的形式
+
+		ans := make([]int, n)
+		tar := make([]int, n)
+		for i := range tar {
+			tar[i] = i
+		}
+		var f func([]int, int, int)
+		f = func(tar []int, ql, qr int) {
+			if len(tar) == 0 {
+				return
+			}
+			if ql+1 == qr {
+				for _, c := range tar {
+					ans[c] = ql // qr
+				}
+				return
+			}
+			qm := (ql + qr) / 2
+			for _, q := range qs[ql:qm] {
+				_ = q
+				// apply(q)
+
+			}
+
+			// 根据此刻查询的结果将 c 分成左右两部分
+			var left, right []int
+			for _, c := range tar {
+				_ = c
+
+			}
+
+			for _, q := range qs[ql:qm] {
+				_ = q
+				// rollback(q)
+
+			}
+			f(left, ql, qm)
+			f(right, qm, qr)
+		}
+		f(tar, 0, len(qs)+1) // 这样可以将无法满足要求的 ans[i] 赋值为 len(qs)
+		return ans
+	}
 
 	// WQS 二分
 	// 《浅析一类二分方法》
@@ -444,6 +489,7 @@ func sortCollections() {
 		kthSmallest, kthSmallestRangeSum, kthSubsetSum,
 		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
 		search01,
+		globalBinarySearch,
 		binaryLifting,
 	}
 }

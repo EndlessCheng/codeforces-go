@@ -224,6 +224,7 @@
     - 区间位运算 trick（含 GCD）
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 0-1 分数规划
+    - 整体二分
   - [搜索 search.go](/copypasta/search.go)
     - 枚举排列
     - 枚举组合
