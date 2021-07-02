@@ -218,7 +218,6 @@ func (t lazyST) build(a []int64, o, l, r int) {
 	t.maintain(o)
 }
 
-// 把要 todo 的事情 do 了
 func (t lazyST) do(o int, add int64) {
 	to := &t[o]
 	to.todo += add                     // % mod
