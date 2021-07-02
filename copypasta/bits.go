@@ -267,6 +267,54 @@ func bitsCollection() {
 		return cnt
 	}
 
+	//（接上）考虑乘法
+	// 给一数组 a，元素均为正整数，求区间和等于区间积的区间个数
+	// 核心思路是对于每个区间右端点，其对应的区间积不会超过 sum(a)，且由于乘积至少要乘 2 才会变化，所以区间右端点对应的区间积至多有 O(log(sum(a))) 个不同的值
+	// 而每个前缀和都是不同的，所以区间右端点对应的答案个数也至多有 O(log(sum(a))) 个
+	// 因此总的答案个数至多为 O(nlog(sum(a)))
+	countSumEqMul := func(a []int) (ans int) {
+		tot := 0
+		for _, v := range a {
+			tot += v
+		}
+		// 每个前缀和互不相同
+		posS := map[int]int{0: 0} // int64
+		sum := 0
+		type result struct{ v, l, r int }
+		muls := []result{}
+		for i, v := range a {
+			sum += v
+			for j := range muls {
+				muls[j].v *= v
+			}
+			muls = append(muls, result{v, i, i + 1})
+			// 去重
+			k := 0
+			for _, q := range muls[1:] {
+				if muls[k].v != q.v {
+					k++
+					muls[k] = q
+				} else {
+					muls[k].r = q.r
+				}
+			}
+			muls = muls[:k+1]
+			// 去掉超过 tot 的，从而保证 muls 中至多有 O(log(tot)) 个元素
+			for muls[0].v > tot {
+				muls = muls[1:]
+			}
+			// 此时我们将区间 [0,i] 划分成了 len(muls) 个（左闭右开）区间，对 ∀j∈[muls[k].l,muls[k].r)，[j,i] 的区间积均为 muls[k].v
+			for _, p := range muls {
+				// 判断左端点前缀和对应下标是否在范围内
+				if pos, has := posS[sum-p.v]; has && p.l <= pos && pos < p.r {
+					ans++
+				}
+			}
+			posS[sum] = i + 1
+		}
+		return
+	}
+
 	// 找三个不同的在 [l,r] 范围内的数，其异或和为 0
 	// 考虑尽可能地小化最大减最小的值，构造 (x, y, z) = (b*2-1, b*3-1, b*3), b=2^k
 	// 相关题目 https://codeforces.com/problemset/problem/460/D
@@ -345,7 +393,7 @@ func bitsCollection() {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
