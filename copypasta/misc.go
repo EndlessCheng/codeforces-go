@@ -811,3 +811,53 @@ func minMoveToAllSameInCircle(a []int) (ans int) { // int64
 	}
 	return
 }
+
+// 表达式转表达式树
+// https://leetcode-cn.com/submissions/detail/186220993/
+func parseExpression(s string) {
+	s = strings.TrimSpace(s)
+	type node struct {
+		lo, ro *node
+		res    int
+		op     byte
+	}
+
+	n := len(s)
+	left := make([]int, n)
+	stk := []int{}
+	for i := n - 1; i >= 0; i-- {
+		if s[i] == ')' {
+			stk = append(stk, i)
+		} else if s[i] == '(' {
+			left[stk[len(stk)-1]] = i
+			stk = stk[:len(stk)-1]
+		}
+	}
+	var parse func(l, r int) *node
+	parse = func(l, r int) *node {
+		o := &node{}
+		// 因为表达式是左结合的，我们需要从右向左构造这颗表达式树
+		if s[r] == ')' {
+			ll := left[r]
+			ro := parse(ll+1, r-1)
+			if ll == l {
+				return ro
+			}
+			o.ro = ro
+			o.op = s[ll-1]
+			o.lo = parse(l, ll-2)
+		} else {
+			ro := &node{res: int(s[r] & 15)} // 单个数字
+			if l == r {
+				return ro
+			}
+			o.ro = ro
+			o.op = s[r-1]
+			o.lo = parse(l, r-2)
+		}
+		//calc(o) // 计算表达式
+		return o
+	}
+	root := parse(0, n-1)
+	_ = root
+}
