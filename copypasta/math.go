@@ -198,6 +198,7 @@ func numberTheoryCollection() {
 	// #{(a,b) | 1<=a,b<=n, gcd(a,b)=1}   https://oeis.org/A018805
 	//     = 2*(∑phi(i))-1
 	//     = 2*A002088(n)-1
+	// #{(a,b) | 1<=a,b<=n, gcd(a,b) is prime}  todo https://www.luogu.com.cn/problem/P2568
 	// #{(a,b,c) | 1<=a,b,c<=n, gcd(a,b,c)=1}   https://oeis.org/A071778
 	//     = ∑mu(i)*floor(n/i)^3
 	// #{(a,b,c,d) | 1<=a,b,c,d<=n, gcd(a,b,c,d)=1}   https://oeis.org/A082540
@@ -208,7 +209,25 @@ func numberTheoryCollection() {
 	//     更简化的公式见小粉兔博客 https://www.cnblogs.com/PinkRabbit/p/8278728.html
 	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)          https://oeis.org/A057660
 	// ∑∑gcd(i,j) = ∑phi(i)*(floor(n/i))^2   https://oeis.org/A018806   https://www.luogu.com.cn/problem/P2398
+	// ∑∑gcd(i,j) j<=i   = (1/2)∑phi(i)*floor(n/i)*(floor(n/i)+1)    https://oeis.org/A272718
+	// ∑∑gcd(i,j) j<i    = (A018806(n) - n*(n+1)/2) / 2    https://oeis.org/A178881
+	//     https://www.luogu.com.cn/problem/P1390
+	//     训练指南例题 2-9，UVa11426 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=26&page=show_problem&problem=2421
 	// ∑∑∑gcd(i,j,k) = ∑phi(i)*(floor(n/i))^3   https://ac.nowcoder.com/acm/contest/7608/B
+
+	// LCM 性质统计相关
+	// https://oeis.org/A048691 #{(a,b) | lcm(a,b)=n}，等价于 #{(x,y) | x|n, y|n, gcd(x,y)=1}
+	//     = d(n^2)
+	//     = (2*e1+1)(2*e2+1)...(2*ek+1), 其中 ei 是 n 的质因子分解中第 i 个质数的幂次
+	// https://oeis.org/A018892 #{(a,b) | a<=b, lcm(a,b)=n}，等价于 #{(x,y) | x|n, y|n, x<=y, gcd(x,y)=1}
+	//     = (d(n^2)+1)/2
+	//     = ((2*e1+1)(2*e2+1)...(2*ek+1) + 1) / 2, 其中 ei 是 n 的质因子分解中第 i 个质数的幂次
+	//     Number of ways to write 1/n as a sum of exactly 2 unit fractions
+	//     Number of divisors of n^2 less than or equal to n
+	//     训练指南 2.10 习题，UVa10892 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1833
+	// https://oeis.org/A182082 A018892 的前缀和
+	//     https://projecteuler.net/problem=379
+	//     https://zhenweiliu.gitee.io/blog/2019/08/05/Project-Euler-Problem-379-Least-common-multiple-count/
 
 	// LCM 求和相关
 	// ∑lcm(n,i) = n*(1+∑{d|n}d*phi(d))/2 = n*(1+A057660(n))/2   https://oeis.org/A051193
@@ -737,7 +756,7 @@ func numberTheoryCollection() {
 
 	/* 因子/因数/约数
 
-	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n)
+	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n) tau(n)
 		Positions of records (高合成数，反素数) https://oeis.org/A002182
 		Values of records https://oeis.org/A002183
 		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221
