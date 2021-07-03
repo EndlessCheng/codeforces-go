@@ -25,6 +25,7 @@ import (
    如何定义状态：
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
+      https://codeforces.com/problemset/problem/461/B
       SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
       Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
       LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
@@ -1478,6 +1479,7 @@ func dpCollections() {
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/982/C
 	好题 https://codeforces.com/problemset/problem/1453/E
+	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
 	*/
 
