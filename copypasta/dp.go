@@ -105,7 +105,8 @@ CSES DP section editorial https://codeforces.com/blog/entry/70018
     https://leetcode-cn.com/tag/dynamic-programming/
 AT 经典 DP 场 https://atcoder.jp/contests/dp
     题解 https://www.cnblogs.com/shanxieng/p/10232228.html
-    题解（日语）https://www.hamayanhamayan.com/entry/2019/01/12/163853
+        https://codeforces.com/blog/entry/92170
+        https://www.hamayanhamayan.com/entry/2019/01/12/163853
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 算法竞赛专题解析（11）：DP概述和常见DP面试题 https://blog.csdn.net/weixin_43914593/article/details/105444090
 todo 题目推荐 https://www.luogu.com.cn/blog/wyy2020/dp-qian-tan
@@ -1046,6 +1047,15 @@ func dpCollections() {
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
 	*/
 
+	/* 概率 DP / 期望 DP
+	https://oi-wiki.org/dp/probability/
+	https://en.wikipedia.org/wiki/Optional_stopping_theorem
+	todo https://codeforces.com/blog/entry/62690
+	     https://codeforces.com/blog/entry/62792
+	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
+	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
+	*/
+
 	/* 状压 DP
 	常用于处理包含排列的问题等
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
@@ -1100,6 +1110,7 @@ func dpCollections() {
 	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
 	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
+	// 变体+打印路径 https://codeforces.com/problemset/problem/8/C
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
@@ -1394,8 +1405,9 @@ func dpCollections() {
 	/* 数据结构优化 DP
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
-	动态 DP - 线段树维护转移矩阵
-	todo https://www.cnblogs.com/Miracevin/p/9124511.html
+	动态 DP
+	https://oi-wiki.org/dp/dynamic/
+	线段树维护转移矩阵 https://www.cnblogs.com/Miracevin/p/9124511.html
 	1. 先不考虑修改，不考虑区间，直接列出整个区间的 DP 转移。
 	2. 列出转移矩阵。由于有很多修改操作，我们将数据集中在一起处理，还可以利用矩阵结合律，并且区间比较好提取（找一段矩阵就好了），修改也方便。
 	3. 线段树维护矩阵。对于修改，我们就是在矩阵上进行修改。对于不同的题目，我们要用不同的修改方式和记录手段，但都是用线段树维护对应区间内的矩阵信息。如矩阵乘积，矩阵和等等。线段树的区间操作可以应对区间修改问题。

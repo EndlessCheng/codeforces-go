@@ -8,16 +8,12 @@ import (
 	"sort"
 )
 
-/* 数论 组合数学 博弈论 积分 插值 随机算法
+/* 数论 组合数学
 
 一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
 
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
-
 https://euler.stephan-brumme.com/toolbox/
-
-todo 期望与贡献 https://codeforces.com/blog/entry/62690 https://codeforces.com/blog/entry/62792
-     一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 
 NOTE: a%-b == a%b
 NOTE: 对于整数来说有
@@ -2400,12 +2396,12 @@ func numberTheoryCollection() {
 	https://oeis.org/A000071 F(n) 前缀和 = F(n+2)-1
 	∑k=[0,n]C(n,k)F(k) = F(2n)
 	https://oeis.org/A007598 F^2(n)    a(n) = 2*a(n-1) + 2*a(n-2) - a(n-3), n > 2. a(0)=0, a(1)=1, a(2)=1
-	                                  a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
+	                                   a(n) = (F(n)*F(n+4)-3*F(n)*F(n+1))/2
 	https://oeis.org/A001690 补集
 	https://oeis.org/A022307 F(n) 的不同的质因子个数
-	https://oeis.org/A001175 N(m) = {F}%m 的周期    Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
-	                         N(m) = LCM(N(p1^e1), ..., N(pk^ek))
-	https://oeis.org/A060305 N(p) = {F}%p 的周期 https://blog.csdn.net/acdreamers/article/details/10983813
+	https://oeis.org/A001175 π(n) = {F}%n 的周期（皮萨诺周期）  Pisano periods / Pisano numbers https://en.wikipedia.org/wiki/Pisano_period
+	                         π(n) ≤ 6n, with equality if and only if n = 2 · 5r, for r ≥ 1
+	https://oeis.org/A060305 π(p) = {F}%p 的周期 https://blog.csdn.net/acdreamers/article/details/10983813
 	https://oeis.org/A003893 F(n)%10
 	https://oeis.org/A001605 使 F(n) 为质数的 n
 	https://oeis.org/A191797 C(F(n), 2)
