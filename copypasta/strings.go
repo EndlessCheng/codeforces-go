@@ -67,6 +67,9 @@ func stringCollection() {
 		return
 	}
 
+	// KMP
+	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
+	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
@@ -313,6 +316,8 @@ func stringCollection() {
 			 https://www.luogu.com.cn/problem/P3804
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
+		第 k 小子串 https://www.luogu.com.cn/problem/P3975
+			todo
 	两个字符串
 		最长公共子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
 			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
@@ -324,6 +329,8 @@ func stringCollection() {
 			todo
 		todo http://poj.org/problem?id=3729
 	多个字符串
+	    多串最长公共子串 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
 		在每个字符串中至少出现两次且不重叠的最长子串 https://www.luogu.com.cn/problem/SP220
@@ -484,6 +491,65 @@ func stringCollection() {
 		_ = []interface{}{compareSub, compareSub2, equalSub, longestDupSubstring, findAllSubstring}
 	}
 
+	// 若输入为 []int，通过将每个元素拆成 4 个 byte，来满足调库条件
+	suffixArrayInt := func(a []int) []int32 {
+		n := len(a)
+		_s := make([]byte, 0, n*4)
+		for _, v := range a {
+			_s = append(_s, byte(v>>24), byte(v>>16&0xff), byte(v>>8&0xff), byte(v&0xff))
+		}
+		_sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(_s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+		sa := make([]int32, 0, n)
+		for _, p := range _sa {
+			if p&3 == 0 { // 是 4 的倍数的 _sa[i] 就对应着数组 a 的 sa[i]
+				sa = append(sa, p>>2)
+			}
+		}
+		return sa
+	}
+
+	// 注：这是《挑战》上的实现方案，复杂度 O(nlog^2(n))
+	suffixArrayInt2 := func(a []int) []int {
+		n := len(a)
+		sa := make([]int, n+1)
+		rank := make([]int, n+1)
+		k := 0
+		compareSA := func(i, j int) bool {
+			if rank[i] != rank[j] {
+				return rank[i] < rank[j]
+			}
+			ri, rj := -1, -1
+			if i+k <= n {
+				ri = rank[i+k]
+			}
+			if j+k <= n {
+				rj = rank[j+k]
+			}
+			return ri < rj
+		}
+		tmp := make([]int, n+1)
+		for i := 0; i <= n; i++ {
+			sa[i] = i
+			rank[i] = -1
+			if i < n {
+				rank[i] = a[i]
+			}
+		}
+		for k = 1; k <= n; k *= 2 {
+			sort.Slice(sa, func(i, j int) bool { return compareSA(sa[i], sa[j]) })
+			tmp[sa[0]] = 0
+			for i := 1; i <= n; i++ {
+				tmp[sa[i]] = tmp[sa[i-1]]
+				if compareSA(sa[i-1], sa[i]) {
+					tmp[sa[i]]++
+				}
+			}
+			copy(rank, tmp)
+		}
+		sa = sa[1:]
+		return sa
+	}
+
 	_ = []interface{}{
 		unsafeGetBytes, unsafeToString,
 		indexAll,
@@ -492,6 +558,6 @@ func stringCollection() {
 		zSearch,
 		smallestRepresentation,
 		manacher, isP, midP, leftP,
-		suffixArray,
+		suffixArray, suffixArrayInt, suffixArrayInt2,
 	}
 }
