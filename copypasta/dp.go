@@ -472,11 +472,12 @@ func dpCollections() {
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// 求下降，可以考虑取相反数
 	// https://oi-wiki.org/dp/basic/#_12
-	// 狄尔沃斯定理（Dilworth's theorem）https://en.wikipedia.org/wiki/Dilworth%27s_theorem
+	// 最小划分数 / 狄尔沃斯定理（Dilworth's theorem）https://en.wikipedia.org/wiki/Dilworth%27s_theorem
 	//    偏序集的最少反链划分数等于最长链的长度
 	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
 	//
-	// 例题 导弹拦截（含最小划分数）https://www.luogu.com.cn/problem/P1020
+	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
+	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
