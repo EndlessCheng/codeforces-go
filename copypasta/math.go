@@ -175,9 +175,9 @@ func numberTheoryCollection() {
 	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
 
 	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) = lcm(1,...,n) ~ exp(n)
-	// 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, 27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, 232792560, 232792560, 5354228880, 5354228880, 26771144400, 26771144400, 80313433200, 80313433200
-	//     相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
-	//             https://codeforces.com/contest/1485/problem/D
+	// 相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
+	//         https://codeforces.com/problemset/problem/1485/D
+	//         https://codeforces.com/problemset/problem/1542/C
 	// a(n)/a(n-1) = https://oeis.org/A014963
 	//     前缀和 https://oeis.org/A072107 https://ac.nowcoder.com/acm/contest/7607/A
 	// LCM(2, 4, 6, ..., 2n) https://oeis.org/A051426
@@ -185,6 +185,13 @@ func numberTheoryCollection() {
 	// a(n) 的因子个数 d(lcm(1,...,n)) https://oeis.org/A056793
 	//     这同时也是 1~n 的子集的 LCM 的种类数
 	// 另一种通分：「排水系统」的另一种解法 https://zxshetzy.blog.luogu.org/ling-yi-zhong-tong-fen
+	lcms := []int64{
+		0, 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, // 10
+		27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, // 20
+		232792560, 232792560, 5354228880, 5354228880, 26771144400, 26771144400, 80313433200, 80313433200, 2329089562800, 2329089562800, // 30
+		72201776446800, 144403552893600, 144403552893600, 144403552893600, 144403552893600, 144403552893600, 5342931457063200, 5342931457063200, 5342931457063200, 5342931457063200, // 40
+		219060189739591200, 219060189739591200, // 9419588158802421600,
+	}
 
 	// GCD 性质统计相关
 	// NOTE: 对于一任意非负序列，前 i 个数的 GCD 是非增序列，且至多有 O(logMax) 个不同值
@@ -1786,7 +1793,7 @@ func numberTheoryCollection() {
 
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)
-	// 从一个大小为 n 的集合的子集中随机选一个，选到 n/2 大小的子集的概率是 1 / sqrt(π * n/2)
+	// 从一个大小为 n 的集合的子集中随机选一个，选到 floor(n/2) 大小的子集的概率约为 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
 	// EXTRA: https://oeis.org/A000984 Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
 	// EXTRA: https://oeis.org/A100071 a(n) = n * A001405(n-1) = 1, 2, 6, 12, 30, 60, 140, 280, 630, 1260, ...
@@ -2424,7 +2431,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
-		gcd, gcdPrefix, gcdSuffix, lcm, frac, countDifferentSubsequenceGCDs, floorSum,
+		gcd, gcdPrefix, gcdSuffix, lcm, lcms, frac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
