@@ -496,7 +496,8 @@ func stringCollection() {
 		n := len(a)
 		_s := make([]byte, 0, n*4)
 		for _, v := range a {
-			_s = append(_s, byte(v>>24), byte(v>>16&0xff), byte(v>>8&0xff), byte(v&0xff))
+			_s = append(_s, byte(v>>24), byte(v>>16), byte(v>>8), byte(v))
+			//_s = append(_s, byte(v>>24), byte(v>>16&0xff), byte(v>>8&0xff), byte(v&0xff))
 		}
 		_sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(_s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 		sa := make([]int32, 0, n)
