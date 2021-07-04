@@ -491,8 +491,9 @@ func stringCollection() {
 		_ = []interface{}{compareSub, compareSub2, equalSub, longestDupSubstring, findAllSubstring}
 	}
 
-	// 若输入为 []int，通过将每个元素拆成 4 个 byte，来满足调库条件
-	suffixArrayInt := func(a []int) []int32 {
+	// 若输入为 []int32，通过将每个元素拆成 4 个 byte，来满足调库条件
+	// 若有负数，且需要满足有序性，可以整体减去 math.MinInt32 转成 uint32
+	suffixArrayInt := func(a []int32) []int32 {
 		n := len(a)
 		_s := make([]byte, 0, n*4)
 		for _, v := range a {
@@ -500,6 +501,23 @@ func stringCollection() {
 		}
 		_sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(_s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 		sa := make([]int32, 0, n)
+		for _, p := range _sa {
+			if p&3 == 0 { // 是 4 的倍数的 _sa[i] 就对应着数组 a 的 sa[i]
+				sa = append(sa, p>>2)
+			}
+		}
+		return sa
+	}
+
+	// 另一种写法，O(1) 得到 _s
+	// 注意由于小端序的缘故，这里得到的 _s 和上面是不一样的，所以只有当题目与顺序无关时才可以使用
+	suffixArrayInt = func(a []int32) []int32 {
+		_sh := (*reflect.SliceHeader)(unsafe.Pointer(&a))
+		_sh.Len *= 4
+		_sh.Cap *= 4
+		_s := *(*[]byte)(unsafe.Pointer(_sh))
+		_sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(_s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+		sa := make([]int32, 0, len(a))
 		for _, p := range _sa {
 			if p&3 == 0 { // 是 4 的倍数的 _sa[i] 就对应着数组 a 的 sa[i]
 				sa = append(sa, p>>2)
