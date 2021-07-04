@@ -33,7 +33,7 @@ func longestCommonSubpath(_ int, paths [][]int) (ans int) {
 	// 构建 a 的后缀数组和高度数组
 	s := make([]byte, 0, n*4)
 	for _, v := range a {
-		s = append(s, byte(v>>24), byte(v>>16&0xff), byte(v>>8&0xff), byte(v&0xff))
+		s = append(s, byte(v>>24), byte(v>>16), byte(v>>8), byte(v))
 	}
 	_sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 	sa := make([]int32, 0, n)
