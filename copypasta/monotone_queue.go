@@ -17,8 +17,8 @@ type mqData struct {
 }
 
 type monotoneQueue struct {
-	data []mqData // 初始化时可以 make([]mqData, 0, n) 来减少扩容的开销
-	size int      // 单调队列对应的区间的长度
+	data []mqData
+	size int // 单调队列对应的区间的长度
 }
 
 func (mq monotoneQueue) less(a, b mqData) bool {
@@ -44,7 +44,8 @@ func (mq *monotoneQueue) pop() {
 	}
 }
 
-// 调用前需要判断 size > 0
+// 返回区间最值
+// 调用前需保证 mq.size > 0
 func (mq monotoneQueue) top() int {
 	return mq.data[0].val
 }
@@ -63,7 +64,7 @@ func monotoneQueueCollections() {
 		return b
 	}
 
-	// 模板题 - 固定区间大小的区间最值
+	// 固定区间大小的区间最值
 	// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 	// https://codeforces.com/problemset/problem/940/E
 	fixedSizeMax := func(a []int, fixedSize int) []int {
@@ -83,7 +84,8 @@ func monotoneQueueCollections() {
 		return ans
 	}
 
-	// 模板题 - 最大子序和
+	// 子区间长度不超过 sizeLimit 的最大子区间和
+	// 用单调队列维护前缀和的最小值，循环时保证单调队列对应的区间长度不超过 sizeLimit
 	// https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
 	maxSubSumWithLimitSize := func(a []int, sizeLimit int) int {
 		n := len(a)
@@ -105,6 +107,7 @@ func monotoneQueueCollections() {
 	}
 
 	// 子数组和至少为 k 的最短非空子数组长度
+	// 转换成两个前缀和的差至少为 k
 	// 这题的关键在于，当右端点向右（枚举）时，左端点是绝对不会向左的（因为向左肯定会比当前求出的最短长度要长）
 	// 想明白这一点就可以愉快地使用单调队列了
 	// LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
@@ -128,6 +131,25 @@ func monotoneQueueCollections() {
 			return -1
 		}
 		return ans
+	}
+
+	// 对每个右端点，求最远的左端点，满足这一区间内的最大值减最小值不超过 limit
+	// 求这个的同时，用单调队列维护 DP https://codeforces.com/problemset/problem/487/B
+	// 完整代码（传入 less 的写法）https://codeforces.com/contest/487/submission/121388184
+	leftPosInDiffLimit := func(a []int, limit int) []int {
+		posL := make([]int, len(a))
+		small := monotoneQueue{} // 最小值
+		big := monotoneQueue{}   // 最大值
+		for i, v := range a {
+			small.push(v)
+			big.push(v)
+			for big.top()-small.top() > limit {
+				small.pop()
+				big.pop()
+			}
+			posL[i] = i + 1 - small.size // 通过 size 求出左端点位置
+		}
+		return posL
 	}
 
 	// 枚举区间左端点更为方便的情况 · 其一
@@ -185,7 +207,7 @@ func monotoneQueueCollections() {
 	}
 
 	_ = []interface{}{
-		fixedSizeMax, maxSubSumWithLimitSize, shortestSubSumAtLeastK,
+		fixedSizeMax, maxSubSumWithLimitSize, shortestSubSumAtLeastK, leftPosInDiffLimit,
 		countSubArrayByMinMax, balancedPlaylist,
 	}
 }
