@@ -2131,6 +2131,30 @@ func numberTheoryCollection() {
 	//    https://en.wikipedia.org/wiki/Mertens_function
 	//    |a(n)| = O(x^(1/2 + eps))
 	//    零点 https://oeis.org/A028442
+	calcMu := func(n int) int {
+		if n == 1 {
+			return 1
+		}
+		mu := 1
+		for i := 2; i*i <= n; i++ {
+			e := 0
+			for ; n%i == 0; n /= i {
+				e++
+			}
+			if e > 1 {
+				return 0
+			}
+			if e > 0 {
+				mu = -mu
+			}
+		}
+		if n > 1 {
+			mu = -mu
+		}
+		return mu
+	}
+
+	// 线性筛写法
 	sieveMu := func() {
 		const mx int = 1e6
 		mu := [mx + 1]int{1: 1} // int8
@@ -2179,6 +2203,7 @@ func numberTheoryCollection() {
 	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
 	//
 	// https://codeforces.com/problemset/problem/547/C
+	// https://codeforces.com/problemset/problem/900/D
 	// todo https://www.luogu.com.cn/problem/P2257
 	//  https://www.luogu.com.cn/problem/P2522
 
@@ -2443,7 +2468,7 @@ func numberTheoryCollection() {
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling1, stirling2, stirling2RowPoly,
 		bell, bellPoly,
-		sieveMu,
+		calcMu, sieveMu,
 		floorLoop, floorLoopRange, floorLoopK, floorLoop2,
 		sieveDu,
 	}
@@ -2533,6 +2558,7 @@ https://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n
 						见上面的 oddDivisorsNum 函数
 https://oeis.org/A018819 Binary partition function: number of partitions of n into powers of 2
 	相关题目 https://www.luogu.com.cn/problem/P6065 http://poj.org/problem?id=2229
+https://oeis.org/A000740 将 n 分拆成若干互质整数的方法数 a(n) = sum_{d|n} mu(n/d)*2^(d-1)
 
 	质数分拆
 	https://oeis.org/A000607 Number of partitions of n into prime parts
@@ -2657,6 +2683,7 @@ func combinatoricsCollection() {
 	// https://codeforces.com/problemset/problem/1342/E
 	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
 	// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
+	// 用因子容斥 https://codeforces.com/problemset/problem/900/D
 	solveInclusionExclusion := func(a []int) (ans int64) {
 		n := len(a)
 		const mod int64 = 1e9 + 7 // 998244353
