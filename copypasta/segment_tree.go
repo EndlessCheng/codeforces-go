@@ -37,9 +37,9 @@ package copypasta
 // todo http://poj.org/problem?id=1201
 
 // EXTRA: 权值线段树
-// todo 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
-//  浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
-//  谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+// 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
+// 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
+// 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
@@ -312,12 +312,12 @@ func (t lazyST) spreadAll(o int) {
 type stNode struct { // rt := &stNode{l: 1, r: 1e9}
 	lo, ro *stNode
 	l, r   int
-	val    int64
+	sum    int64
 }
 
 func (o *stNode) get() int64 {
 	if o != nil {
-		return o.val
+		return o.sum
 	}
 	return 0
 }
@@ -327,12 +327,26 @@ func (stNode) op(a, b int64) int64 {
 }
 
 func (o *stNode) maintain() {
-	o.val = o.op(o.lo.get(), o.ro.get())
+	o.sum = o.op(o.lo.get(), o.ro.get())
+}
+
+func (o *stNode) build(a []int64, l, r int) {
+	o.l, o.r = l, r
+	if l == r {
+		o.sum = a[l-1]
+		return
+	}
+	m := (l + r) >> 1
+	o.lo = &stNode{}
+	o.lo.build(a, l, m)
+	o.ro = &stNode{}
+	o.ro.build(a, m+1, r)
+	o.maintain()
 }
 
 func (o *stNode) update(i int, add int64) {
 	if o.l == o.r {
-		o.val += add //
+		o.sum += add //
 		return
 	}
 	m := (o.l + o.r) >> 1
@@ -347,7 +361,7 @@ func (o *stNode) update(i int, add int64) {
 		}
 		o.ro.update(i, add)
 	}
-	o.val = o.op(o.lo.get(), o.ro.get())
+	o.maintain()
 }
 
 func (o *stNode) query(l, r int) int64 {
@@ -355,7 +369,7 @@ func (o *stNode) query(l, r int) int64 {
 		return 0
 	}
 	if l <= o.l && o.r <= r {
-		return o.val
+		return o.sum
 	}
 	return o.op(o.lo.query(l, r), o.ro.query(l, r))
 }
@@ -383,6 +397,20 @@ func (lazyNode) op(a, b int64) int64 {
 
 func (o *lazyNode) maintain() {
 	o.sum = o.op(o.lo.get(), o.ro.get())
+}
+
+func (o *lazyNode) build(a []int64, l, r int) {
+	o.l, o.r = l, r
+	if l == r {
+		o.sum = a[l-1]
+		return
+	}
+	m := (l + r) >> 1
+	o.lo = &lazyNode{}
+	o.lo.build(a, l, m)
+	o.ro = &lazyNode{}
+	o.ro.build(a, m+1, r)
+	o.maintain()
 }
 
 func (o *lazyNode) do(add int64) {
@@ -432,10 +460,13 @@ func (o *lazyNode) query(l, r int) int64 {
 }
 
 // EXTRA: 线段树合并
+// https://www.luogu.com.cn/problem/P5494
 // todo 一些题目 https://www.luogu.com.cn/blog/styx-ferryman/xian-duan-shu-ge-bing-zong-ru-men-dao-fang-qi
 //   https://codeforces.com/blog/entry/83969
 //   https://www.luogu.com.cn/problem/P4556
+//   https://www.luogu.com.cn/problem/P5298
 //   https://codeforces.com/problemset/problem/600/E
+// rt = rt.merge(rt2)
 func (o *stNode) merge(b *stNode) *stNode {
 	if o == nil {
 		return b
@@ -445,7 +476,7 @@ func (o *stNode) merge(b *stNode) *stNode {
 	}
 	if o.l == o.r {
 		// 按照所需合并，如加法
-		o.val += b.val
+		o.sum += b.sum
 		return o
 	}
 	o.lo = o.lo.merge(b.lo)
@@ -455,7 +486,38 @@ func (o *stNode) merge(b *stNode) *stNode {
 }
 
 // EXTRA: 线段树分裂
-// todo https://www.luogu.com.cn/problem/P5494
+// 将区间 [l,r] 从 o 中分离到 b 上
+// https://www.luogu.com.cn/problem/P5494
+// rt, rt2 := rt.split(nil, l, r)
+func (o *stNode) split(b *stNode, l, r int) (*stNode, *stNode) {
+	if o == nil || l > o.r || r < o.l {
+		return o, nil
+	}
+	if l <= o.l && o.r <= r {
+		return nil, o
+	}
+	if b == nil {
+		b = &stNode{l: o.l, r: o.r}
+	}
+	o.lo, b.lo = o.lo.split(b.lo, l, r)
+	o.ro, b.ro = o.ro.split(b.ro, l, r)
+	o.maintain()
+	b.maintain()
+	return o, b
+}
+
+// 权值线段树求第 k 小
+// 调用前需保证 1 <= k <= rt.get()
+func (o *stNode) kth(k int64) int {
+	if o.l == o.r {
+		return o.l
+	}
+	if cntL := o.lo.get(); k <= cntL {
+		return o.lo.kth(k)
+	} else {
+		return o.ro.kth(k - cntL)
+	}
+}
 
 //
 

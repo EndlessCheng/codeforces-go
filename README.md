@@ -31,6 +31,7 @@
     - 延迟标记（懒标记）
     - 动态开点
     - 线段树合并
+    - 线段树分裂
     - 持久化（主席树）
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
