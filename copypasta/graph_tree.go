@@ -1341,3 +1341,54 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 // TODO: 虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/
 // https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
+
+// 普吕弗序列（Prufer 序列，Prüfer sequence）
+// https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence
+// https://oeis.org/A000272 Cayley's formula https://en.wikipedia.org/wiki/Cayley%27s_formula
+// https://www.luogu.com.cn/problem/P6086
+func (tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为根时的每个节点的父节点
+	deg := make([]int, n+1)
+	for i := 1; i < n; i++ {
+		deg[pa[i]]++
+	}
+	prufer := make([]int, n-2)
+	for i, j := 0, 1; i < n-2; j++ {
+		for deg[j] > 0 {
+			j++
+		}
+		prufer[i] = pa[j]
+		for i++; i < n-2; i++ {
+			p := prufer[i-1]
+			if deg[p]--; deg[p] > 0 || p > j {
+				break
+			}
+			prufer[i] = pa[p]
+		}
+	}
+	return prufer
+}
+
+func (tree) pruferToTree(n int, prufer []int) []int {
+	deg := make([]int, n+1)
+	for _, p := range prufer {
+		deg[p]++
+	}
+	prufer = append(prufer, n) // 设置 prufer[n-2] = n 方便后续使用
+	pa := make([]int, n+1)
+	for i, j := 0, 1; i < n-1; j++ {
+		for deg[j] > 0 {
+			j++
+		}
+		pa[j] = prufer[i]
+		for ; i < n-2; i++ {
+			p := prufer[i]
+			if deg[p]--; deg[p] > 0 || p > j {
+				break
+			}
+			pa[p] = prufer[i+1]
+		}
+		i++
+	}
+	pa[n] = -1
+	return pa
+}

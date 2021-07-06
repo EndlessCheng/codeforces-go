@@ -219,6 +219,7 @@
     - 长链剖分
     - 树上启发式合并（DSU）
     - 树分块
+    - Prufer 序列
 - 其他
   - [位运算笔记 bits.go](/copypasta/bits.go)
     - bitset
