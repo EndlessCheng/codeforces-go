@@ -22,10 +22,12 @@ import (
 3.1 若复杂度过高，如何优化决策？
 *  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
 *  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
-   如何定义状态：
+   如何设计状态：
+      https://codeforces.com/problemset/problem/360/B
+      https://codeforces.com/problemset/problem/461/B
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
-      https://codeforces.com/problemset/problem/461/B
+      https://codeforces.com/problemset/problem/1408/D
       SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
       Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
       LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
