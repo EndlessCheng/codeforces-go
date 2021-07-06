@@ -92,6 +92,7 @@ https://oeis.org/A010062 a(0)=1, a(n+1)=a(n)+OnesCount(a(n))
 		https://oeis.org/A229743 Positions of records
 		https://oeis.org/A229744 Values of records
 	相关题目 https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
+https://oeis.org/A180094 Number of steps to reach 0 or 1, starting with n and applying the map k -> (number of 1's in binary expansion of k) repeatedly
 
 https://oeis.org/A023416 Number of 0's in binary expansion of n
 							a(n) = a(n/2) + 1 - n&1
@@ -124,6 +125,8 @@ https://oeis.org/A055013 Sum of 4th powers of digits of n
 https://oeis.org/A055014 Sum of 5th powers of digits of n
 https://oeis.org/A055015 Sum of 6th powers of digits of n
 	相关题目 https://www.luogu.com.cn/problem/P1660
+https://oeis.org/A031286 Additive persistence: number of summations of digits needed to obtain a single digit (the additive digital root)
+https://oeis.org/A031346 Multiplicative persistence: number of iterations of "multiply digits" needed to reach a number < 10
 
 回文数
 https://oeis.org/A002113 十进制回文数
