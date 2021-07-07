@@ -1730,3 +1730,16 @@ func longestWord(words []string) (ans string) {
     f(t, 0)
     return
 }
+
+// 剑指 Offer 03. 数组中重复的数字
+// O(1) 空间复杂度做法
+func findRepeatNumber(a []int) int {
+    for i := 0; ; i++ {
+        for a[i] != i {
+            if a[a[i]] == a[i] {
+                return a[i]
+            }
+            a[a[i]], a[i] = a[i], a[a[i]]
+        }
+    }
+}
