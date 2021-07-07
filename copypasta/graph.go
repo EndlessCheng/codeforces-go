@@ -2577,6 +2577,9 @@ https://blog.csdn.net/qq_35649707/article/details/77482691
 最小割建模
 LCP38/21春队F https://leetcode-cn.com/problems/7rLGCR/
 
+最小割的可行边和必须边
+AHOI09 https://www.luogu.com.cn/problem/P4126
+
 点边转换
    将点拆为入点和出点（v 和 v+n），即可把点的属性变成边的属性，从而方便应用最大流、最小割等算法
    将边的中间加一个节点，把边的属性体现在中间的点上
@@ -2688,8 +2691,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 // ISAP, Improved Shortest Augmenting Path O(n^2 * m)
 // https://oi-wiki.org/graph/flow/max-flow/#isap
 // https://www.renfei.org/blog/isap.html
-// todo 目前来看性能比 Dinic 好一点点，需要找数据量更大的做对比
-// todo 非二分图上 Dinic 据说更快？
+// 测试了一下性能和 Dinic 差不多
 func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 	// st--; end--
 
