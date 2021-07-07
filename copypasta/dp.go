@@ -1264,14 +1264,109 @@ func dpCollections() {
 		}
 	}
 
-	/* 插头 DP / 轮廓线 DP / Plug DP / Broken Profile DP
-	《训练指南》6.1
-	todo https://oi-wiki.org/dp/plug/
+	/* 插头 DP（Plug DP）/ 轮廓线 DP（Broken Profile DP）
+	轮廓线：已决策格子和未决策格子的分界线
+	陈丹琦《基于连通性状态压缩的动态规划问题》
+	训练指南 6.1
+	https://oi-wiki.org/dp/plug/（花絮 https://zhuanlan.zhihu.com/p/133761303）
 	https://cp-algorithms.com/dynamic_programming/profile-dynamics.html
-	https://www.luogu.com.cn/blog/efforts-will-pay-off/du-liu-dong-gui-cha-tou-dp
-
-	入门题 https://www.luogu.com.cn/problem/P3272
+	图解 https://www.luogu.com.cn/blog/GNAQ/solution-p5056
+	An Introduction to Plug DP https://codeforces.com/blog/entry/90841
+	todo 大量题目 https://www.luogu.com.cn/blog/efforts-will-pay-off/du-liu-dong-gui-cha-tou-dp
+	模板题 https://www.luogu.com.cn/problem/P5056
+	https://www.luogu.com.cn/problem/P3272
+	https://www.luogu.com.cn/problem/P5074
+	https://www.luogu.com.cn/problem/P1933
 	*/
+	plugDP := func(grids [][]byte) int {
+		n, m := len(grids), len(grids[0])
+		var endX, endY int
+		g := make([][]bool, n)
+		for i, row := range grids {
+			g[i] = make([]bool, m)
+			for j, b := range row {
+				if b == '.' {
+					g[i][j] = true
+					endX, endY = i, j
+				}
+			}
+		}
+
+		// 四进制状态
+		get := func(s, k int) int { return s >> (k << 1) & 3 }
+		set := func(k, v int) int { return 1 << (k << 1) * v }
+
+		ans := 0 // int64
+		dp := map[int]int{0: 1}
+		for i, row := range g {
+			tmp := dp
+			dp = make(map[int]int, len(tmp))
+			for s, dv := range tmp {
+				dp[s<<2] = dv // 轮廓线移动到当前行
+			}
+			for j, empty := range row {
+				tmp := dp
+				dp = make(map[int]int, len(tmp))
+				for s, dv := range tmp {
+					switch x, y := get(s, j), get(s, j+1); {
+					case !empty: // 障碍格
+						if x == 0 && y == 0 { // 空
+							dp[s] += dv
+						}
+					case x == 0 && y == 0: // ┌ 单独形成一对括号
+						if j+1 < m && row[j+1] && i+1 < n && g[i+1][j] {
+							dp[s|set(j, 1)|set(j+1, 2)] += dv
+						}
+					case x == 0 && y > 0:
+						if j+1 < m && row[j+1] { // └
+							dp[s] += dv
+						}
+						if i+1 < n && g[i+1][j] { // │
+							dp[s|set(j, y)^set(j+1, y)] += dv
+						}
+					case x > 0 && y == 0:
+						if j+1 < m && row[j+1] { // ─
+							dp[s^set(j, x)|set(j+1, x)] += dv
+						}
+						if i+1 < n && g[i+1][j] { // ┐
+							dp[s] += dv
+						}
+					case x == 1 && y == 1: // ┘ 消去 x 和 y，并找到和 y 匹配的右括号，将其改成左括号
+						for k, c := j+2, 1; ; k++ {
+							if t := get(s, k); t == 1 {
+								c++
+							} else if t == 2 {
+								if c--; c == 0 {
+									dp[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 2 改成 1 要异或 3
+									break
+								}
+							}
+						}
+					case x == 2 && y == 2: // ┘ 消去 x 和 y，并找到和 x 匹配的左括号，将其改成右括号
+						for k, c := j-1, 1; ; k-- {
+							if t := get(s, k); t == 2 {
+								c++
+							} else if t == 1 {
+								if c--; c == 0 {
+									dp[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 1 改成 2 要异或 3
+									break
+								}
+							}
+						}
+					case x == 2 && y == 1: // ┘ 消去右括号和左括号，连接两个插头
+						dp[s^set(j, x)^set(j+1, y)] += dv
+					default: // ┘ x == 1 && y == 2
+						// 此时封闭整个路径，这只应当发生在最后一个合法格子上
+						if i == endX && j == endY {
+							ans += dv
+						}
+					}
+				}
+			}
+		}
+		// 若需要取模则中间记得取模（若结果不大可以仅在循环结束时取模）
+		return ans
+	}
 
 	/* 数位 DP
 	https://zhuanlan.zhihu.com/p/348851463
@@ -1876,7 +1971,7 @@ func dpCollections() {
 
 		mergeStones,
 
-		permDP, tsp, countCycle, subsubDP, sos,
+		permDP, tsp, countCycle, subsubDP, sos, plugDP,
 
 		digitDP, kth666,
 
