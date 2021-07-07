@@ -36,7 +36,7 @@ func stringCollection() {
 		return *(*string)(unsafe.Pointer(&b))
 	}
 
-	// 返回 s 中 t 的所有位置
+	// 返回 t 在 s 中的所有位置（允许重叠）
 	indexAll := func(s, t []byte) []int {
 		pos := suffixarray.New(s).Lookup(t, -1)
 		sort.Ints(pos)
@@ -47,10 +47,9 @@ func stringCollection() {
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
 	// 模板题 https://www.luogu.com.cn/problem/P3370
-	// 最长重复子串（二分哈希）LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
-	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
-	// TODO 二维 hash
-	// TODO anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898 https://codeforces.com/blog/entry/60442
+	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
+	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
+	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
 	var powP []uint64
 	initPowP := func(maxLen int) {
 		const prime uint64 = 1e8 + 7
@@ -70,12 +69,13 @@ func stringCollection() {
 	// KMP
 	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
 	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
+	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
-	// 下面的代码来自我在知乎上的回答 https://www.zhihu.com/question/21923021/answer/37475572
 	// 模板题 https://www.luogu.com.cn/problem/P3375
+	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/submissions/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
 	// https://codeforces.com/problemset/problem/1003/F
@@ -290,14 +290,14 @@ func stringCollection() {
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 在 misc 文件夹下）
 	单个字符串
 		模板题 https://www.luogu.com.cn/problem/P3809
-		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
+		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
 		不可重叠最长重复子串 http://poj.org/problem?id=1743
 			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
+		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
@@ -319,7 +319,7 @@ func stringCollection() {
 		第 k 小子串 https://www.luogu.com.cn/problem/P3975
 			todo
 	两个字符串
-		最长公共子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
+		最长公共子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774 LC718 https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
 			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
 		长度不小于 k 的公共子串的个数 http://poj.org/problem?id=3415
 			单调栈
@@ -434,6 +434,7 @@ func stringCollection() {
 		}
 
 		// EXTRA: 可重叠最长重复子串
+		// https://leetcode-cn.com/problems/longest-duplicate-substring/ https://leetcode-cn.com/problems/longest-repeating-substring/
 		longestDupSubstring := func() []byte {
 			maxP, maxH := 0, 0
 			for i, h := range height {

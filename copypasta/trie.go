@@ -14,6 +14,7 @@ func init() { debug.SetGCPercent(-1) }
 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
+与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
 todo https://codeforces.com/contest/455/problem/B
 */
 type trieNode struct {

@@ -1346,6 +1346,7 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 // https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence
 // https://oeis.org/A000272 Cayley's formula https://en.wikipedia.org/wiki/Cayley%27s_formula
 // https://www.luogu.com.cn/problem/P6086
+// todo 光之大陆 https://www.acwing.com/problem/content/2420/
 func (tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为根时的每个节点的父节点
 	deg := make([]int, n+1)
 	for i := 1; i < n; i++ {
