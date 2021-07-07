@@ -154,10 +154,10 @@ func sortCollections() {
 	}
 
 	// 字符串二分 · 其二
-	// 字符串长度不固定，最长为 n，二分范围从 "a", "b" 到 "zzz...z"
-	binarySearchS2 := func(n int) []byte {
+	// 字符串长度不固定，最长为 L，二分范围从 "a", "b" 到 "zzz...z"
+	binarySearchS2 := func(L int) []byte {
 		up := 1 // int64
-		for i := 0; i < n; i++ {
+		for i := 0; i < L; i++ {
 			up *= 26
 		}
 		up = (up - 1) / 25 * 26
