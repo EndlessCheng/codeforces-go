@@ -4,7 +4,7 @@
 
 ## Testutil
 
-Support all type of problems:
+Support all types of problems:
 
 - [write a function](biweekly/27/c/c_test.go)
 - [write type and methods](182/c/c_test.go)
