@@ -11,6 +11,8 @@ https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%8
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
 
+浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
+
 模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
@@ -240,7 +242,7 @@ func (matrix) inv(A matrix) matrix {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussianElimination.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3389 https://www.luogu.com.cn/problem/P2455
-//       https://www.luogu.com.cn/problem/CF21B (判断两直线交点个数)
+//       https://codeforces.com/problemset/problem/21/B
 func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 	const eps = 1e-8
 	n := len(A)
@@ -321,6 +323,9 @@ func (a matrix) determinant(mod int64) int64 {
 	res = (res*int64(sign) + mod) % mod
 	return res
 }
+
+// 求矩阵的特征多项式
+// todo https://www.cnblogs.com/ywwyww/p/8522541.html
 
 // 线性基（子集异或和问题）
 // https://oi.men.ci/linear-basis-notes/
