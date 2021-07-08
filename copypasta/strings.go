@@ -399,7 +399,7 @@ func stringCollection() {
 
 		// EXTRA: 比较两个子串 s[l1,r1) 和 s[l2,r2)
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
-		compareSub := func(l1, r1, l2, r2 int) bool {
+		lessSub := func(l1, r1, l2, r2 int) bool {
 			len1, len2 := r1-l2, r2-l2
 			if l := lcp(l1, l2); l >= len1 || l >= len2 { // 一个是另一个的前缀
 				return len1 < len2
@@ -408,7 +408,7 @@ func stringCollection() {
 		}
 
 		// 返回值含义同 strings.Compare
-		compareSub2 := func(l1, r1, l2, r2 int) int {
+		compareSub := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
 			if len1 == len2 && l >= len1 {
@@ -420,8 +420,7 @@ func stringCollection() {
 				}
 				return 1
 			}
-			// 或者 s[l1+l] < s[l2+l]
-			if rank[l1] < rank[l2] {
+			if rank[l1] < rank[l2] { // 或者 s[l1+l] < s[l2+l]
 				return -1
 			}
 			return 1
@@ -489,7 +488,7 @@ func stringCollection() {
 			}
 		}
 
-		_ = []interface{}{compareSub, compareSub2, equalSub, longestDupSubstring, findAllSubstring}
+		_ = []interface{}{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring}
 	}
 
 	// 若输入为 []int32，通过将每个元素拆成 4 个 byte，来满足调库条件
