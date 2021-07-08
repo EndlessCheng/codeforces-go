@@ -74,7 +74,7 @@ func stringCollection() {
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
-	// 模板题 https://www.luogu.com.cn/problem/P3375
+	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/submissions/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
@@ -329,7 +329,7 @@ func stringCollection() {
 			todo
 		todo http://poj.org/problem?id=3729
 	多个字符串
-	    多串最长公共子串 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+	    多串最长公共子串 https://loj.ac/p/171 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
@@ -397,7 +397,7 @@ func stringCollection() {
 			return _q(ri+1, rj+1)
 		}
 
-		// EXTRA: 比较两个子串 s[l1:r1] s[l2:r2]
+		// EXTRA: 比较两个子串 s[l1,r1) 和 s[l2,r2)
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
 		compareSub := func(l1, r1, l2, r2 int) bool {
 			len1, len2 := r1-l2, r2-l2
@@ -411,7 +411,7 @@ func stringCollection() {
 		compareSub2 := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
-			if len1 == len2 && l == len1 {
+			if len1 == len2 && l >= len1 {
 				return 0
 			}
 			if l >= len1 || l >= len2 { // 一个是另一个的前缀
