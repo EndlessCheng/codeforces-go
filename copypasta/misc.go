@@ -780,7 +780,8 @@ func josephusProblem(n, k int) int {
 }
 
 // 均分纸牌 https://www.luogu.com.cn/problem/P1031
-// 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P4016
+// 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P3051 https://www.luogu.com.cn/problem/P4016 UVa11300 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2275
+// 环形+打印方案 https://www.luogu.com.cn/problem/P2125
 // 二维环形 https://www.acwing.com/problem/content/107/
 func minMoveToAllSameInCircle(a []int) (ans int) { // int64
 	abs := func(x int) int {
@@ -804,7 +805,7 @@ func minMoveToAllSameInCircle(a []int) (ans int) { // int64
 	for i := 1; i < n; i++ {
 		sum[i] = sum[i-1] + a[i] - avg
 	}
-	sort.Ints(sum) // 或者快速选择
+	sort.Ints(sum) // 也可以用快速选择求中位数
 	mid := sum[n/2]
 	for _, v := range sum {
 		ans += abs(v - mid)
