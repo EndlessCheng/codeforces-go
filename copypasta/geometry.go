@@ -610,7 +610,9 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 // 圆与扫描线
 // todo https://blog.csdn.net/hzj1054689699/article/details/87861808
 //   http://openinx.github.io/2013/01/01/plane-sweep-thinking/
+//   http://poj.org/problem?id=2932
 //   https://ac.nowcoder.com/acm/contest/7613/D
+//   https://codeforces.com/problemset/problem/814/D
 
 // 反演变换
 // https://en.wikipedia.org/wiki/Inversive_geometry

@@ -888,6 +888,7 @@ func commonCollection() {
 	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
 	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
+	// http://poj.org/problem?id=2932
 	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
