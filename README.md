@@ -52,7 +52,7 @@
      - 回滚莫队
      - 树上莫队
 - [字符串 strings.go](/copypasta/strings.go)
-  - Hash
+  - 字符串哈希
   - KMP
     - 最小循环节
   - 扩展 KMP（Z algorithm）
@@ -136,7 +136,7 @@
     - 完全背包
     - 多重背包
     - 分组背包
-    - 树上背包
+    - 树上背包（依赖背包）
     - 字典序最小方案
   - 线性 DP
     - 最大子段和
@@ -242,6 +242,8 @@
     - 模拟退火
   - [杂项A common.go](/copypasta/common.go)
     - 算法思路整理
+    - 前缀和
+    - 离散化
   - [杂项B misc.go](/copypasta/misc.go)
 - [快读模板 io.go](/copypasta/io.go)
 
