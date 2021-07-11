@@ -38,7 +38,7 @@ func canMerge(trees []*TreeNode) *TreeNode {
 	}
 
 	cnt := 0
-	// 一边构建，一遍判断是否合法
+	// 一边构建，一边判断是否合法
 	var build func(*TreeNode, int, int) *TreeNode
 	build = func(node *TreeNode, l, r int) *TreeNode {
 		cnt++
