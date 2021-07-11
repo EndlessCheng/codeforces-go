@@ -1151,7 +1151,6 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 
 // 单源最短路 SPFA O(nm)   队列优化的 Bellman-Ford
 // 有负环时返回 nil
-// todo DFS 写法
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
@@ -2130,18 +2129,17 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 }
 
 // 强连通分量分解 Strongly Connected Component (SCC)
-// sccIDs[v] 表示点 v 所属的 SCC 的拓扑序
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
 // 建图转换 https://codeforces.com/problemset/problem/1239/D
-func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
+func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
 	type edge struct{ v, w int }
-	edges := []edge{}
-	g := make([][]int, m)
-	rg := make([][]int, m)
+	edges := make([]edge, 0, m) // 缩点用
+	g := make([][]int, n)
+	rg := make([][]int, len(g))
 	addEdge := func(v, w int) {
 		//v--
 		//w--
@@ -2150,8 +2148,9 @@ func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 		edges = append(edges, edge{v, w})
 	}
 
-	vs := make([]int, 0, m)
-	vis := make([]bool, m)
+	// 生成 DFS 后序（用于跑逆后序遍历，这样生成的 SCC 一定是拓扑序）
+	vs := make([]int, 0, len(g))
+	vis := make([]bool, len(g))
 	var dfs func(int)
 	dfs = func(v int) {
 		vis[v] = true
@@ -2160,7 +2159,7 @@ func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 				dfs(w)
 			}
 		}
-		vs = append(vs, v) // 后序。保证遍历出来的结果的逆后序生成的 SCC 一定是拓扑序
+		vs = append(vs, v)
 	}
 	for i, b := range vis {
 		if !b {
@@ -2168,7 +2167,7 @@ func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 		}
 	}
 
-	vis = make([]bool, m)
+	vis = make([]bool, len(g))
 	var comp []int
 	var rdfs func(int)
 	rdfs = func(v int) {
@@ -2180,61 +2179,71 @@ func (*graph) sccKosaraju(m int) (scc [][]int, sccIDs []int) {
 			}
 		}
 	}
-	// 逆后序遍历，就可以像无向图那样求出 SCC
-o:
-	for i := m - 1; i >= 0; i-- {
+	scc := [][]int{}
+outer:
+	for i := len(g) - 1; i >= 0; i-- { // 逆后序遍历，就可以像无向图那样求出 SCC
 		if v := vs[i]; !vis[v] {
 			comp = []int{}
 			rdfs(v)
-			// EXTRA: len(comp) >= 3 说明有环，注意环的个数可能不止一个
 			scc = append(scc, comp)
-			// EXTRA: 判断缩点后是否出度为 0
-			for _, u := range comp {
-				for _, w := range g[u] {
-					if !vis[w] {
-						continue o
+
+			// EXTRA: 无需实际缩点，判断缩点后是否出度为 0
+			{
+				for _, u := range comp {
+					for _, w := range g[u] {
+						if !vis[w] { // 出度不为 0
+							continue outer
+						}
 					}
 				}
+				// 出度为 0
 			}
-			// 出度为 0
 		}
 	}
 
-	// scc 就是拓扑序
-	sccIDs = make([]int, m)
-	for i, cp := range scc {
-		for _, v := range cp {
-			sccIDs[v] = i
+	// 记录每个点所属 SCC 的下标，用于缩点和查询
+	sid := make([]int, len(g))
+	for i, cc := range scc {
+		for _, v := range cc {
+			sid[v] = i
 		}
 	}
 
-	// EXTRA: 缩点: 将边 v-w 转换成 sccIDs[v]-sccIDs[w]
-	// 缩点后得到了一张 DAG，点的编号范围为 [0,len(comps)-1]
+	// EXTRA: 缩点: 将边 v-w 转换成 sid[v]-sid[w]
+	// 缩点后得到了一张 DAG，点的编号范围为 [0,len(scc)-1]
 	// 注意这样可能会产生重边，不能有重边时可以用 map 或对每个点排序去重
 	// 模板题 点权 https://www.luogu.com.cn/problem/P3387
 	// 		 边权 https://codeforces.com/contest/894/problem/E
+	// 检测路径是否可达/唯一/无穷 https://codeforces.com/problemset/problem/1547/G
+	ns := len(scc)
+	g2 := make([][]int, ns)
+	deg := make([]int, ns)
 	for _, e := range edges {
-		if v, w := sccIDs[e.v], sccIDs[e.w]; v != w {
-
+		if v, w := sid[e.v], sid[e.w]; v != w {
+			g2[v] = append(g2[v], w)
+			deg[w]++
 		} else {
-			// EXTRA: 汇合同一个 SCC 的权值 ...
+			// 这里可以记录自环（指 len(scc) == 1 但是有自环）、汇合同一个 SCC 的权值等 ...
 
 		}
 	}
 
-	// EXTRA: 求有多少个点能被其他所有点访问到 https://www.luogu.com.cn/problem/P2341
-	lastComp := scc[len(scc)-1]
-	numCanBeVisitedFromAll := len(lastComp)
-	vis = make([]bool, m)
-	rdfs(lastComp[0])
-	for _, use := range vis {
-		if !use {
-			numCanBeVisitedFromAll = 0
+	// EXTRA: 求有多少个点能被其他所有点访问到
+	// https://www.luogu.com.cn/problem/P2341
+	numCanBeVisitedFromAll := func() int {
+		lastComp := scc[len(scc)-1]
+		vis = make([]bool, len(g))
+		rdfs(lastComp[0]) // 在反图上遍历
+		for _, b := range vis {
+			// 原图不是连通的
+			if !b {
+				return 0
+			}
 		}
+		return len(lastComp)
 	}
-
 	_, _ = addEdge, numCanBeVisitedFromAll
-	return
+	return scc, sid
 }
 
 // SCC Tarjan
@@ -2243,7 +2252,7 @@ o:
 // https://oi-wiki.org/graph/scc/#tarjan
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
-func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
+func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sid []int) {
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -2297,10 +2306,10 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
 		scc[i], scc[n-1-i] = scc[n-1-i], scc[i]
 	}
 
-	sccIDs = make([]int, n)
+	sid = make([]int, n)
 	for i, cp := range scc {
 		for _, v := range cp {
-			sccIDs[v] = i
+			sid[v] = i
 		}
 	}
 
@@ -2331,12 +2340,11 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sccIDs []int) {
 // 模板题 https://www.luogu.com.cn/problem/P4782
 // 建边练习【模板代码】 https://codeforces.com/contest/468/problem/B
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
-func (G *graph) solve2SAT(n int) []bool {
+func (G *graph) solve2SAT(n, m int) []bool {
 	// 分为左右两部，左边 [0,n) 范围的点表示 x 为真，右边 [n,2*n) 范围的点表示 x 为假（¬x 用 x+n 表示）
 	// 例如，当 x y 均为真时，就连一条 a
-	m := n * 2
-	g := make([][]int, m)
-	rg := make([][]int, m)
+	g := make([][]int, n*2)
+	rg := make([][]int, len(g))
 
 	// x=a 和 y=b 两个条件至少满足一个（a b 为 0/1 表示 假/真）
 	// 见 https://www.luogu.com.cn/problem/P4782
@@ -2350,18 +2358,17 @@ func (G *graph) solve2SAT(n int) []bool {
 		g[v] = append(g[v], w)
 		rg[w] = append(rg[w], v)
 	}
-	// addEdge ...
-
-	_, sccIDs := G.sccKosaraju(m) // 注意两倍空间
+	// 读图，求 sid ...
+	_, sid := G.sccKosaraju(n*2, m)
 	ans := make([]bool, n)
-	for i, id := range sccIDs[:n] {
+	for i, id := range sid[:n] {
 		// x 和 ¬x 处于同一个 SCC 时无解（因为 x ⇔ ¬x）
-		if id == sccIDs[i+n] {
+		if id == sid[i+n] {
 			return nil
 		}
-		// sccIDs[x] < sccIDs[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
-		// sccIDs[x] > sccIDs[¬x] ⇔ (x ⇒ ¬x) ⇔ x 为假
-		ans[i] = id < sccIDs[i+n]
+		// sid[x] < sid[¬x] ⇔ (¬x ⇒ x) ⇔ x 为真
+		// sid[x] > sid[¬x] ⇔ (x ⇒ ¬x) ⇔ x 为假
+		ans[i] = id < sid[i+n]
 	}
 
 	_ = addEdge
