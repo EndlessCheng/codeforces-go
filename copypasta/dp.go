@@ -241,6 +241,9 @@ func dpCollections() {
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
+	// 有两种思路
+	// - 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]
+	// - 遍历 a 的同时维护前缀和的最小值，则遍历到 a[i] 时，当前最大子段和为 sum[i]-min(sum[j]), j<i
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
@@ -253,16 +256,18 @@ func dpCollections() {
 	// 变形题 https://codeforces.com/problemset/problem/788/A
 	//       https://codeforces.com/problemset/problem/1155/D
 	//       https://codeforces.com/problemset/problem/1373/D
+	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
+	//    这题做法需要用到上面说到的第二种思路
 	maxSubArraySum := func(a []int) int {
 		if len(a) == 0 {
 			return 0
 		}
-		curSum, maxSum := a[0], a[0] // int64
+		dp, maxSubSum := a[0], a[0] // int64
 		for _, v := range a[1:] {
-			curSum = max(curSum+v, v)
-			maxSum = max(maxSum, curSum)
+			dp = max(dp, 0) + v
+			maxSubSum = max(maxSubSum, dp)
 		}
-		return max(maxSum, 0) // 若不允许非空，返回 maxSum
+		return max(maxSubSum, 0) // 若不允许非空，返回 maxSum
 	}
 
 	// 最大两段子段和（两段必须间隔至少 gap 个数）
@@ -351,6 +356,7 @@ func dpCollections() {
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
+	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
 		// dp[i][j] = LCS(s[:i], t[:j])
@@ -455,6 +461,7 @@ func dpCollections() {
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
 	// 转换 http://acm.hdu.edu.cn/showproblem.php?pid=1950
 	// 变体 https://codeforces.com/problemset/problem/1350/B
+	//【网络流 24 题】能取出多少个长为 len(LIS) 的不相交子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
 	lisSlow := func(a []int) (ans int) {
 		n := len(a)
 		dp := make([]int, n)
@@ -744,6 +751,7 @@ func dpCollections() {
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
+	// NOIP06·提高 金明的预算方案（也可以用树上背包做）https://www.luogu.com.cn/problem/P1064
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	//        必须定义成恰好装满（紫书例题 9-5，UVa 12563）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=441&page=show_problem&problem=4008
 	// EXTRA: 背包容量为 0 https://codeforces.com/problemset/problem/366/C
@@ -956,6 +964,7 @@ func dpCollections() {
 	//   https://www.luogu.com.cn/problem/P1272
 	//   加强版 https://www.luogu.com.cn/problem/U53878
 	//   https://www.luogu.com.cn/problem/P3177
+	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
 	treeKnapsack := func(g [][]int, items []item, root, maxW int) int {
 		var f func(int) []int
 		f = func(v int) []int {
@@ -1332,6 +1341,7 @@ func dpCollections() {
 							dp[s] += dv
 						}
 					case x == 1 && y == 1: // ┘ 消去 x 和 y，并找到和 y 匹配的右括号，将其改成左括号
+						// 注：这里和下边的 k 的位置可以事先预处理出来
 						for k, c := j+2, 1; ; k++ {
 							if t := get(s, k); t == 1 {
 								c++
@@ -1576,6 +1586,7 @@ func dpCollections() {
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/982/C
+	https://codeforces.com/problemset/problem/1083/A
 	好题 https://codeforces.com/problemset/problem/1453/E
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
