@@ -309,7 +309,8 @@ func (t lazyST) spreadAll(o int) {
 
 // 动态开点线段树·其一·单点修改
 // LC327 https://leetcode-cn.com/problems/count-of-range-sum/
-type stNode struct { // rt := &stNode{l: 1, r: 1e9}
+// rt := &stNode{l: 1, r: 1e9}
+type stNode struct {
 	lo, ro *stNode
 	l, r   int
 	sum    int64
@@ -319,7 +320,7 @@ func (o *stNode) get() int64 {
 	if o != nil {
 		return o.sum
 	}
-	return 0
+	return 0 // inf
 }
 
 func (stNode) op(a, b int64) int64 {
@@ -366,7 +367,7 @@ func (o *stNode) update(i int, add int64) {
 
 func (o *stNode) query(l, r int) int64 {
 	if o == nil || l > o.r || r < o.l {
-		return 0
+		return 0 // inf
 	}
 	if l <= o.l && o.r <= r {
 		return o.sum
@@ -377,7 +378,8 @@ func (o *stNode) query(l, r int) int64 {
 // 动态开点线段树·其二·延迟标记（区间修改）
 // https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
-type lazyNode struct { // rt := &lazyNode{l: 1, r: 1e9}
+// rt := &lazyNode{l: 1, r: 1e9}
+type lazyNode struct {
 	lo, ro *lazyNode
 	l, r   int
 	sum    int64
