@@ -527,7 +527,8 @@ func searchCollection() {
 
 	//
 
-	// 超大背包问题（折半枚举/双向搜索）
+	// 折半枚举/双向搜索 Meet in the middle
+	// 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
 	bigKnapsack := func(a []int, size int) (ans int) {
 		n := len(a)
