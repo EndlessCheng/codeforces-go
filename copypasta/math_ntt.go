@@ -65,6 +65,7 @@ OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 生成函数的背包计数问题 https://www.cnblogs.com/ErkkiErkko/p/10838697.html
 A problem collection of ODE and differential technique https://codeforces.com/blog/entry/76447
 Optimal Algorithm on Polynomial Composite Set Power Series https://codeforces.com/blog/entry/92183
+载谭 Binomial Sum：多项式复合、插值与泰勒展开 https://www.luogu.com.cn/blog/EntropyIncreaser/zai-tan-binomial-sum-duo-xiang-shi-fu-ge-cha-zhi-yu-tai-lei-zhan-kai
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
