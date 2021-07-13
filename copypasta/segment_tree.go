@@ -390,7 +390,7 @@ func (o *lazyNode) get() int64 {
 	if o != nil {
 		return o.sum
 	}
-	return 0
+	return 0 // inf
 }
 
 func (lazyNode) op(a, b int64) int64 {
