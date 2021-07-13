@@ -18,6 +18,7 @@ https://oi-wiki.org/math/game-theory/
 todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-fa-bo-yi-lun-zong-ling-kai-shi-di-bo-yi-lun-post
 todo 阶梯博弈 https://codeforces.com/blog/entry/44651
 
+入门分类讨论 https://codeforces.com/problemset/problem/78/C
 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
 TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
