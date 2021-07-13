@@ -275,6 +275,7 @@ func numberTheoryCollection() {
 	//
 	// 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_c
 	//       https://www.luogu.com.cn/problem/P5170
+	//       https://loj.ac/p/138
 	// todo https://codeforces.com/problemset/problem/1182/F
 	//  https://codeforces.com/problemset/problem/1098/E
 	floorSum := func(n, m, a, b int64) (res int64) {
