@@ -93,7 +93,6 @@ func (t *bst) find(key int) *bstNode {
 
 // max <= key
 // return nil if not found
-// same like --upper_bound in C++ STL
 func (t *bst) floor(key int) (floor *bstNode) {
 	for o := t.root; o != nil; {
 		switch c := o.cmp(key); {
@@ -127,6 +126,7 @@ func (t *bst) lowerBound(key int) (lb *bstNode) {
 }
 
 // 前驱（小于 key，且最大的数）
+// 等价于 floor(key-1)
 func (t *bst) prev(key int) (prev *bstNode) {
 	// 另一种写法，适用于含有 lazy delete 的 BST，如替罪羊树等
 	// rk, _ := t.mRank(key)
@@ -143,6 +143,7 @@ func (t *bst) prev(key int) (prev *bstNode) {
 }
 
 // 后继（大于 key，且最小的数)
+// 等价于 lowerBound(key+1)
 func (t *bst) next(key int) (next *bstNode) {
 	// 另一种写法，适用于含有 lazy delete 的 BST，如替罪羊树等
 	// rk, o := t.mRank(key)
