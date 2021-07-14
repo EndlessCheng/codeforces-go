@@ -1,22 +1,23 @@
-# LeetCode Contests
+# 力扣竞赛
 
-[My Account](https://leetcode-cn.com/u/endlesscheng/)
+欢迎关注我的账号：[灵茶山艾府](https://leetcode-cn.com/u/endlesscheng/)，赛后会在题解区发布题解。
 
-## Testutil
+## 测试工具
 
-Support all types of problems:
+支持以下题目类型（点击可查看使用示例）：
 
-- [write a function](biweekly/27/c/c_test.go)
-- [write type and methods](182/c/c_test.go)
-- [problem with TreeNode](209/b/b_test.go)
+- [传统题（实现函数）](biweekly/27/c/c_test.go)
+- [设计题（实现方法）](182/c/c_test.go)
+- [二叉树](209/b/b_test.go)
+- [链表](95/a/a_test.go)
 
-## Contests
+## 周赛
 
-First weekly contest started at 2016-08-21.
+力扣上的大多数题目来源于周赛，这里将部分周赛的题号整理出来，方便查找对应周赛，从周赛排行榜上可以学习其他选手的解题思路。
 
-国服的周赛始于第 83 场 (2018-05-06 09:30)。
+国服的周赛始于第 83 场（2018-05-06 09:30），在此之前的周赛只有美服力扣上有（第 1 场周赛始于 2016-08-21）。
 
-|Contest Name|Problem ID|
+|名称|题号|
 |---|---|
 |[Weekly Contest 1](https://leetcode.com/contest/warm-up-contest)|386-388|
 |[Weekly Contest 2](https://leetcode.com/contest/leetcode-weekly-contest-2)|389-391|
