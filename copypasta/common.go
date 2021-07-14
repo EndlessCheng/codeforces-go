@@ -351,12 +351,14 @@ func commonCollection() {
 	}
 
 	// 返回 a 的各个子集的元素和
+	// 复杂度为 O(1+2+4+...+2^(n-1)) = O(2^n)
 	// https://codeforces.com/contest/1209/problem/E2
 	subSum := func(a []int) []int {
 		sum := make([]int, 1<<len(a)) // int64
 		for p, v := range a {
-			for s := 0; s < 1<<p; s++ {
-				sum[1<<p|s] = sum[s] + v
+			bit := 1 << p
+			for mask := 0; mask < bit; mask++ {
+				sum[bit|mask] = sum[mask] + v
 				// NOTE: 若要直接在此写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
 			}
 		}
@@ -700,14 +702,14 @@ func commonCollection() {
 		return a[:k+1]
 	}
 
-	// 离散化，不保留原始数据（保留原始数据的版本见下面的 discreteMap）
+	// 离散化，返回离散化后的序列（名次）
 	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
-		type pair struct{ v, i int }
-		ps := make([]pair, len(a))
+		type vi struct{ v, i int }
+		ps := make([]vi, len(a))
 		for i, v := range a {
-			ps[i] = pair{v, i}
+			ps[i] = vi{v, i}
 		}
 		sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v }) // or SliceStable
 		kth = make([]int, len(a))
@@ -721,7 +723,7 @@ func commonCollection() {
 			kth[p.i] = k
 		}
 
-		// 若有需要，求出 kth 后还可以对 ps 进行去重，这样可以用 kth 值访问原始值
+		// 若需要用 kth 值访问原始值，可以将 ps 去重后求 kth
 
 		// a 无重复元素，或者给相同元素也加上顺序（例如某些求 kth 的题目）
 		for i, p := range ps {
@@ -731,7 +733,7 @@ func commonCollection() {
 		return
 	}
 
-	// 简化版，不要求值连续 [10,30,20,20] => [0,3,1,1]
+	// 另一种写法，不要求值连续 [10,30,20,20] => [0,3,1,1]
 	discrete2 := func(a []int, startIndex int) []int {
 		b := append([]int(nil), a...)
 		sort.Ints(b)
@@ -741,8 +743,7 @@ func commonCollection() {
 		return a
 	}
 
-	// 保留原始数据的离散化
-	// 返回一个名次 map
+	// 离散化，返回一个名次 map
 	// discreteMap([]int{100,20,20,50}, 1) => map[int]int{20:1, 50:2, 100:3}
 	// 例题：LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
@@ -876,7 +877,7 @@ func commonCollection() {
 	}
 
 	// 扫描线
-	// 某些题目需要配合线段树
+	// 常与树状数组、线段树、平衡树等数据结构结合
 	// https://cses.fi/book/book.pdf 30.1
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
 	// TODO 矩形周长 https://www.luogu.com.cn/problem/P1856
@@ -885,11 +886,10 @@ func commonCollection() {
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// https://codeforces.com/problemset/problem/1379/D
 	// 转换求解目标 https://codeforces.com/problemset/problem/1285/E
-	// 线段相交统计（栈） https://codeforces.com/contest/1278/problem/D
+	// 线段相交统计（栈）https://codeforces.com/problemset/problem/1278/D
 	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// http://poj.org/problem?id=2932
-	// todo CF652D
 	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)

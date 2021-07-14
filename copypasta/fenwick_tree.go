@@ -28,6 +28,7 @@ EXTRA: 树状数组的性质能使其支持动态 [1,r] 范围上的最值更新
 三元逆序对 https://codeforces.com/problemset/problem/61/E
 整除对统计 https://codeforces.com/problemset/problem/301/D
 区间统计技巧 https://codeforces.com/problemset/problem/369/E
+区间包含计数 https://codeforces.com/problemset/problem/652/D
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155
