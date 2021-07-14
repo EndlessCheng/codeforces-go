@@ -130,6 +130,9 @@ func numberTheoryCollection() {
 
 	/* GCD LCM 相关
 
+	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
+	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
+
 	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
 
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
