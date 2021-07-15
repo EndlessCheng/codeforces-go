@@ -163,9 +163,9 @@ type bitset []uint
 func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
 func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
 func (b bitset) flip(p int)          { b[p>>wLog] ^= 1 << (p & wMask) }
-func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) > 0 }
+func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) != 0 }
 
-// 需要保证长度相同
+// 下面几个方法均需保证长度相同
 func (b bitset) equals(c bitset) bool {
 	for i, s := range b {
 		if s != c[i] {
@@ -182,6 +182,13 @@ func (b bitset) hasSubset(c bitset) bool {
 		}
 	}
 	return true
+}
+
+// 将 c 的元素合并进 b
+func (b bitset) merge(c bitset) {
+	for i, s := range c {
+		b[i] |= s
+	}
 }
 
 // 注：有关子集枚举的位运算技巧，见 search.go
