@@ -154,26 +154,30 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 */
 
 // 参考 strings/strings.go 中的 asciiSet
-// 64 位系统下可以用 uint，把 5 改成 6，31 改成 63
-type bitset []uint32 // b := make(bitset, n>>5+1)
+const wLog = 5 // 32 位系统为 5，64 位系统为 6
+const wMask = bits.UintSize - 1
 
-func (b bitset) set(p int)           { b[p>>5] |= 1 << (p & 31) }
-func (b bitset) reset(p int)         { b[p>>5] &^= 1 << (p & 31) }
-func (b bitset) flip(p int)          { b[p>>5] ^= 1 << (p & 31) }
-func (b bitset) contains(p int) bool { return 1<<(p&31)&b[p>>5] > 0 }
+// b := make(bitset, n>>wLog+1)
+type bitset []uint
+
+func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
+func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
+func (b bitset) flip(p int)          { b[p>>wLog] ^= 1 << (p & wMask) }
+func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) > 0 }
 
 // 需要保证长度相同
 func (b bitset) equals(c bitset) bool {
-	for i, v := range b {
-		if v != c[i] {
+	for i, s := range b {
+		if s != c[i] {
 			return false
 		}
 	}
 	return true
 }
+
 func (b bitset) hasSubset(c bitset) bool {
-	for i, v := range b {
-		if v|c[i] != v {
+	for i, s := range b {
+		if s|c[i] != s {
 			return false
 		}
 	}
