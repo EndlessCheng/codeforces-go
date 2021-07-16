@@ -27,6 +27,7 @@ import (
       https://codeforces.com/problemset/problem/461/B
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
+      https://codeforces.com/problemset/problem/1027/E
       https://codeforces.com/problemset/problem/1408/D
       SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
       Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
@@ -307,6 +308,29 @@ func dpCollections() {
 			minSum = min(minSum, curMinSum)
 		}
 		return max(abs(maxSum), abs(minSum))
+	}
+
+	// 最大子序列交替和（买卖股票）
+	// 有两种思路：
+	// - 动态规划，具体见我的题解 https://leetcode-cn.com/problems/maximum-alternating-subsequence-sum/solution/dong-tai-gui-hua-by-endlesscheng-d92a/
+	// - 贪心，由于第一个值需要取正，将开头补上 0，就变成买卖股票问题了，只需关心波峰和波谷的值，即 ∑max(0,a[i+1]-a[i])
+	// LC1911/双周赛55C https://leetcode-cn.com/problems/maximum-alternating-subsequence-sum/
+	// LC122 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
+	// 扩展：O(1) 回答交换其中两个元素后的最大子序列交替和 https://codeforces.com/problemset/problem/1420/C2
+	maxAlternatingSumDP := func(a []int) int {
+		dp := [2]int{0, -1e9} // int64
+		for _, v := range a {
+			dp = [2]int{max(dp[0], dp[1]-v), max(dp[1], dp[0]+v)}
+		}
+		return dp[1]
+	}
+
+	maxAlternatingSumGreedy := func(a []int) (ans int) {
+		a = append([]int{0}, a...)
+		for i := 1; i < len(a); i++ {
+			ans += max(0, a[i]-a[i-1]) // int64
+		}
+		return
 	}
 
 	// 修改序列为非降或非增的最小修改次数
@@ -1115,15 +1139,16 @@ func dpCollections() {
 
 	// 旅行商问题 (TSP)
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
-	// 做法：定义 dp[s][v] 表示已访问的集合为 s，最后一个访问的位置是 v 时的最小花费
-	//      则有 dp[s|1<<w][w] = min(dp[s|1<<w][w], ds[v]+dist[v][w])
-	//      枚举 v 和 w 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
+	// 做法：定义 dp[s][i] 表示已访问的集合为 s，最后一个访问的位置是 i 时的最小花费
+	//      则有 dp[s|1<<j][j] = min(dp[s|1<<j][j], dp[s][i]+dist[i][j])
+	//      枚举 i 和 j 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
 	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
 	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
 	// 变体+打印路径 https://codeforces.com/problemset/problem/8/C
+	// 矩阵交换行问题 https://codeforces.com/problemset/problem/1102/F
 	// EXTRA: 固定起点终点的问题，视问题情况有两种方法：
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
@@ -1138,17 +1163,18 @@ func dpCollections() {
 			}
 		}
 		dp[1<<st][st] = 0 // 多个起点的话就设置多个 dp[1<<st[i]][st[i]] = 0
-		for s, dv := range dp {
-			// 利用位运算快速求出 s 中 1 的位置 v，以及 s 中 0 的位置 w（通过 s 的补集中的 1 的位置求出）
-			for S := uint(s); S > 0; S &= S - 1 {
-				v := bits.TrailingZeros(S)
-				for C := 1<<n - 1 ^ uint(s); C > 0; C &= C - 1 {
-					w := bits.TrailingZeros(C)
-					dp[s|1<<w][w] = min(dp[s|1<<w][w], dv[v]+dist[v][w])
+		for s, dr := range dp {
+			// 利用位运算快速求出 s 中 1 的位置 i，以及 s 中 0 的位置 j（通过 s 的补集中的 1 的位置求出）
+			for ss := uint(s); ss > 0; ss &= ss - 1 {
+				i := bits.TrailingZeros(ss)
+				for t, lb := len(dp)-1^s, 0; t > 0; t ^= lb {
+					lb = t & -t
+					j := bits.TrailingZeros(uint(lb))
+					dp[s|lb][j] = min(dp[s|lb][j], dr[i]+dist[i][j])
 				}
 			}
 		}
-		return dp[1<<n-1]
+		return dp[len(dp)-1]
 	}
 
 	// 无向图简单环数量
@@ -1380,6 +1406,8 @@ func dpCollections() {
 
 	/* 数位 DP
 	https://zhuanlan.zhihu.com/p/348851463
+	https://www.bilibili.com/video/BV1MT4y1376C
+	https://www.bilibili.com/video/BV1yT4y1u7jW
 
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
@@ -1529,6 +1557,18 @@ func dpCollections() {
 	// 见 monotone_queue.go
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
+	//
+	// 若状态转移方程具有类似于 dp[i] = min{dp[j]-a[i]*b[j]}, j<i 的形式，方程中包含一个 i 和 j 的乘积项，且序列 a 和 b 均单调递增
+	// 若将 (b[j],dp[j]) 看作二维平面上的点，则 dp[i] 就是所有斜率为 a[i] 且过其中一点的直线中，与 y 轴的最小截距
+	// 我们可以用一个单调队列来维护 (b[j],dp[j]) 的相邻点所构成的下凸包
+	// 对于斜率 a[i]，我们需要在队列中寻找一个位置 k，其左侧斜率小于 a[i]，右侧斜率大于 a[i]，此时经过点 (b[k],dp[k]) 能取到最小截距
+	//
+	// 具体到实现，设两转移来源的下标为 j 和 k，若 k < j 且 dp[k]-a[i]*b[k] < dp[j]-a[i]*b[j]
+	// 则有 (dp[j]-dp[k])/(b[j]-b[k]) > a[i]
+	// 据此式，用单调队列来维护斜率（下凸包）
+	// 转移前，在单调队列中找到斜率 a[i] 的对应位置，然后代入转移方程，求出 dp[i]
+	// 转移后，将点 (b[i],dp[i]) 加入单调队列中
+	//
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
@@ -1536,39 +1576,46 @@ func dpCollections() {
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
 	//
+	// https://codeforces.com/problemset/problem/319/C
 	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
 	// todo https://www.luogu.com.cn/problem/P2900
 	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	//  http://poj.org/problem?id=3709
-	cht := func(n int, s int64, sumT, sumC []int64) int64 {
-		// 以 https://www.luogu.com.cn/problem/P5785 为例
-		dp := make([]int64, n+1)
-		Y := func(i int) int64 { return dp[i] }
-		X := func(i int) int64 { return sumC[i] }
-		// 下凸包：i0-i1 的斜率 < i1-i2 的斜率
-		// 上凸包：i0-i1 的斜率 > i1-i2 的斜率
-		less := func(i0, i1, i2 int) bool {
-			y0, y1, y2 := Y(i0), Y(i1), Y(i2)
-			x0, x1, x2 := X(i0), X(i1), X(i2)
-			return (y1-y0)*(x2-x1) < (y2-y1)*(x1-x0) // 注意 < 还是 > 以及是否会爆 int64
+	cht := func(a, b []int64) int64 {
+		n := len(a)
+		dp := make([]int64, n)
+		// 计算两点间的斜率，若分子分母均在 32 位整数范围内，可以去掉浮点，改用乘法
+		slope := func(i, j int) float64 {
+			if b[i] == b[j] { // 若保证不相等则去掉
+				if dp[j] > dp[i] {
+					return 1e99
+				}
+				return -1e99
+			}
+			return float64(dp[j]-dp[i]) / float64(b[j]-b[i])
 		}
-		q := []int{0} //
-		push := func(i int) {
-			for len(q) > 1 && !less(q[len(q)-2], q[len(q)-1], i) {
+		q := []int{0}
+		for i := 1; i < n; i++ {
+			k := a[i]
+			// 若斜率 k 随 i 单调递增，则可以直接将单调队列中小于 k 的斜率弹出
+			for len(q) > 1 && slope(q[0], q[1]) < float64(k) {
+				q = q[1:]
+			}
+			// ……之后，队首 q[0] 就是最优决策的下标
+			j := q[0]
+			// ……否则，需要在单调队列中二分得到最优决策的位置
+			j = sort.Search(len(q)-1, func(j int) bool { return slope(j, j+1) > float64(k) })
+
+			// 转移
+			dp[i] = dp[j] - a[i]*b[j]
+
+			// 然后，将点 (b[i],dp[i]) 加入单调队列中
+			for len(q) > 1 && slope(q[len(q)-1], i) < slope(q[len(q)-2], q[len(q)-1]) {
 				q = q[:len(q)-1]
 			}
 			q = append(q, i)
 		}
-		for i := 1; i <= n; i++ {
-			k := s + sumT[i]
-			// 在队列中二分第一个斜率大于（小于）k 的位置
-			// 下凸包：>
-			// 上凸包：<
-			j := sort.Search(len(q)-1, func(j int) bool { return Y(q[j+1])-Y(q[j]) > k*(X(q[j+1])-X(q[j])) })
-			dp[i] = Y(q[j]) - k*X(q[j]) + sumT[i]*sumC[i] + s*sumC[n]
-			push(i)
-		}
-		return dp[n]
+		return dp[n-1]
 	}
 
 	// 四边形不等式优化
@@ -1970,6 +2017,7 @@ func dpCollections() {
 	_ = []interface{}{
 		prefixSumDP, mapDP,
 		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
+		maxAlternatingSumDP, maxAlternatingSumGreedy,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, lcis, lcisPath, countLIS, distinctSubsequence, minPalindromeCut,
