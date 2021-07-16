@@ -56,7 +56,7 @@ func CF1027E(_r io.Reader, out io.Writer) {
 		dp[0] = 1
 		for i := 1; i <= n; i++ {
 			for j := i - 1; j >= 0 && (i-j)*mx <= lim; j-- {
-				dp[i] += dp[j]
+				dp[i] += dp[j] // 这里可以用前缀和优化
 			}
 			dp[i] %= mod
 		}
