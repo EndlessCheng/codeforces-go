@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"bufio"
+	"bytes"
 	. "fmt"
 	"io"
 	"math"
@@ -219,17 +220,21 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	_ = []interface{}{r, r1, rs, rsn, readStringUntilEOF}
 }
 
-// 如果题目按照行来读入更方便的话……
-// 例如 https://codeforces.com/problemset/problem/375/B
+// 如果输入按照行来读入更方便的话……
+// 数据个数未知 https://www.luogu.com.cn/problem/P2762
+// 仅加速用 https://codeforces.com/problemset/problem/375/B
+// 注意由于 buffer 的缘故，bufio.Scanner 不要和 bufio.Reader 混用
 func lineIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
-	in.Buffer(nil, 1e9) // default maxTokenSize is 65536
+	in.Buffer(nil, 1e9) // 若单个 token 大小超过 65536 则加上这行
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	for in.Scan() {
 		line := in.Bytes()
+		sp := bytes.Split(line, []byte{' '})
 		// ...
-		_ = line
+
+		_ = sp
 	}
 }
