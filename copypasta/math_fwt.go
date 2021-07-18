@@ -96,3 +96,14 @@ func div2(a int) int {
 	}
 	return a >> 1
 }
+
+// 将 (-mod,mod) 范围内的 a 变成 [0,mod) 范围内
+// 原理是负数右移会不断补 1，所以最后二进制都是 1，因此返回值等价于 a+_mod
+// 而对于非负数，右移后二进制全为 0，所以返回结果仍然是 a
+func norm32(a int32) int32 {
+	return a + a>>31&_mod
+}
+
+func norm64(a int64) int64 {
+	return a + a>>63&_mod
+}
