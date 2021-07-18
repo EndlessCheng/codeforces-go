@@ -1,6 +1,6 @@
 # 力扣竞赛
 
-欢迎关注我的账号：[灵茶山艾府](https://leetcode-cn.com/u/endlesscheng/)，赛后会在题解区发布题解。
+欢迎关注我的账号：[灵茶山艾府](https://leetcode-cn.com/u/endlesscheng/)，赛后会在每道题的题解区发布题解。
 
 ## 测试工具
 
