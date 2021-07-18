@@ -52,6 +52,7 @@ func (t *trie01) put(v int) *trie01Node {
 	return o
 }
 
+// LC周赛250D https://leetcode-cn.com/problems/maximum-genetic-difference-query/
 func (t *trie01) del(v int) *trie01Node {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
@@ -223,9 +224,9 @@ func (o trie01Node) put(v, k int) *trie01Node {
 	return &o
 }
 
-// n 个 [0, 2^30) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
-// n*(30-logn) + 2^(logn+1) - 1, logn = int(log_2(n))
-// 实际使用的时候，可以简单地用 n*(32-logn) 代替
+// n 个 [0, 2^k) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
+// n*(k-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n))
+// 实际使用的时候，可以简单地用 n*(k+2-logn) 代替
 // 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
 // 传入 n 和数据范围上限 maxV
 // 返回 n 个数，每个数的范围在 [0, maxV] 中
