@@ -11,11 +11,16 @@ https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%8
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
 
+哈密尔顿–凯莱定理 Cayley–Hamilton theorem
+特征多项式是零化多项式
+https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
+
 浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
 
 模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
+3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
 
 todo poj 2345 3532 3526
 */
@@ -66,7 +71,7 @@ func newMatrix(n, m int) matrix {
 	return a
 }
 
-func newMatrixI(n int) matrix {
+func newIdentityMatrix(n int) matrix {
 	a := make(matrix, n)
 	for i := range a {
 		a[i] = make([]int64, n)
@@ -80,11 +85,9 @@ func (a matrix) mul(b matrix) matrix {
 	c := newMatrix(len(a), len(b[0]))
 	for i, row := range a {
 		for j := range b[0] {
-			for k, aik := range row {
-				// 小心爆 int64，必要时用模乘
-				c[i][j] += aik * b[k][j] % mod
+			for k, v := range row {
+				c[i][j] = (c[i][j] + v*b[k][j]) % mod
 			}
-			c[i][j] %= mod
 			if c[i][j] < 0 {
 				c[i][j] += mod
 			}
@@ -93,10 +96,10 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-func (a matrix) pow(k int64) matrix {
-	res := newMatrixI(len(a))
-	for ; k > 0; k >>= 1 {
-		if k&1 == 1 {
+func (a matrix) pow(n int64) matrix {
+	res := newIdentityMatrix(len(a))
+	for ; n > 0; n >>= 1 {
+		if n&1 > 0 {
 			res = res.mul(a)
 		}
 		a = a.mul(a)
@@ -243,6 +246,7 @@ func (matrix) inv(A matrix) matrix {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GaussJordanElimination.java.html
 // 模板题 https://www.luogu.com.cn/problem/P3389 https://www.luogu.com.cn/problem/P2455
 //       https://codeforces.com/problemset/problem/21/B
+// 与 SCC 结合 https://www.luogu.com.cn/problem/P6030
 func gaussJordanElimination(A matrix, B []int64) (sol []float64, infSol bool) {
 	const eps = 1e-8
 	n := len(A)
