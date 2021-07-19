@@ -162,6 +162,23 @@ func (*graph) dfs(n, st int, g [][]int) {
 	}
 
 	{
+		// 奇偶标记法
+		// https://codeforces.com/problemset/problem/936/B
+		vis := make([][2]bool, n)
+		var f func(int, int8)
+		f = func(v int, step int8) {
+			vis[v][step] = true
+			// ...
+			for _, w := range g[v] {
+				if !vis[w][step^1] {
+					f(w, step^1)
+				}
+			}
+		}
+		f(st, 0)
+	}
+
+	{
 		// 欧拉序列
 		eulerPath := []int{}
 		vis := make([]bool, n)
@@ -187,16 +204,18 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
 		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
 		// https://codeforces.com/problemset/problem/698/B
+		// https://codeforces.com/problemset/problem/1547/G
+		// https://codeforces.com/problemset/problem/936/B
 		vis := make([]int8, n)
 		var f func(int)
 		f = func(v int) {
 			vis[v] = 1
 			for _, w := range g[v] {
-				if t := vis[w]; t == 0 { // 树边
+				if tp := vis[w]; tp == 0 { // 树边
 					f(w)
-				} else if t == 1 { // 后向边，说明有环
+				} else if tp == 1 { // 后向边，说明有环
 
-				} else { // 前向边或横向边
+				} else { // 前向边或横向边，说明有多条路径可以到 w
 
 				}
 			}
@@ -1772,6 +1791,7 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 
 最大匹配+最小边覆盖=n （图中无孤立点）
 最大独立集+最小顶点覆盖=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/
+    最大独立集与最小顶点覆盖互为对方关于 V 的补集（V 是图的顶点集合）
 对于二分图，最小顶点覆盖=最大匹配，最大独立集=n-最大匹配
 
 激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
@@ -2135,6 +2155,7 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 // 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
 // 建图转换 https://codeforces.com/problemset/problem/1239/D
+// 与高斯消元结合 https://www.luogu.com.cn/problem/P6030
 func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
 	type edge struct{ v, w int }
 	edges := make([]edge, 0, m) // 缩点用
