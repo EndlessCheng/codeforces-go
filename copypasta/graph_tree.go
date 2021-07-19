@@ -211,6 +211,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
+// 转换的好题 https://codeforces.com/problemset/problem/734/E
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)

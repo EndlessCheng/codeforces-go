@@ -27,6 +27,7 @@ import (
       https://codeforces.com/problemset/problem/461/B
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
+      https://codeforces.com/problemset/problem/1025/D
       https://codeforces.com/problemset/problem/1027/E
       https://codeforces.com/problemset/problem/1408/D
       SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
@@ -1031,6 +1032,7 @@ func dpCollections() {
 	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
 	同色消除【套路】 https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	③ 一些题目
+	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
@@ -1637,6 +1639,7 @@ func dpCollections() {
 	好题 https://codeforces.com/problemset/problem/1453/E
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
+	巧妙的转换 https://codeforces.com/problemset/problem/734/E
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
