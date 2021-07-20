@@ -1146,6 +1146,7 @@ func dpCollections() {
 	//      枚举 i 和 j 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
+	// https://codeforces.com/problemset/problem/1185/G1
 	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
 	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
@@ -1414,6 +1415,7 @@ func dpCollections() {
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
+	二进制 1 的个数恰为 k 的数字个数 https://codeforces.com/problemset/problem/431/D
 	含有某个数字的数字个数
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
