@@ -1843,9 +1843,45 @@ func dpCollections() {
 	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/219/D
 	// https://codeforces.com/problemset/problem/337/D
-	// LC834 树中距离之和 https://leetcode-cn.com/problems/sum-of-distances-in-tree
-	// 下面的代码来自 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
-	rerootDP := func(n int) { // 无根树
+
+	// 给一颗无根树
+	// 返回每个点到其余点的距离之和
+	// LC834 https://leetcode-cn.com/problems/sum-of-distances-in-tree
+	// 任意两点距离除以 k 的上取整之和 https://codeforces.com/problemset/problem/791/D
+	sumOfDistancesInTree := func(g [][]int) []int {
+		n := len(g)
+		size := make([]int, n)
+		var f func(int, int) int // int64
+		f = func(v, fa int) (sum int) { // sum 表示以 0 为根时的子树 v 中的节点到 v 的距离之和
+			size[v] = 1
+			for _, w := range g[v] {
+				if w != fa {
+					sum += f(w, v) + size[w] // 子树 w 的每个节点都要经过 w-v，因此这条边对 sum 产生的贡献为 size[w]
+					size[v] += size[w]
+				}
+			}
+			return
+		}
+		sum0 := f(0, -1)
+
+		ans := make([]int, n)
+		var reroot func(v, fa, sum int)
+		reroot = func(v, fa, sum int) {
+			ans[v] = sum
+			for _, w := range g[v] {
+				if w != fa {
+					// 换根后，离子树 w 中的所有节点近了 1，又离不在子树 w 中的节点远了 1
+					// 所以要减去 sz[w]，并加上 n-size[w]
+					reroot(w, v, sum+n-size[w]*2)
+				}
+			}
+		}
+		reroot(0, -1, sum0)
+		return ans
+	}
+
+	// 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
+	rerootDP := func(n int) {
 		type edge struct{ to, cap int }
 		g := make([][]edge, n)
 		// read...
@@ -2043,7 +2079,7 @@ func dpCollections() {
 
 		diameter, countDiameter, countVerticesOnDiameter,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
-		rerootDP,
+		sumOfDistancesInTree, rerootDP,
 		andPathSum, xorPathSum, xorPathXorSum,
 	}
 }
