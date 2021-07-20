@@ -43,7 +43,7 @@ func CF791D(_r io.Reader, out io.Writer) {
 	f2 = func(v, fa int) {
 		ans += sum[v][0] / int64(k)
 		for i := 1; i < k; i++ {
-			ans += int64(sz[v][i]-1) + (sum[v][i]-int64(sz[v][i]-1)*int64(i)+int64(k-1))/int64(k)
+			ans += int64(sz[v][i]) + (sum[v][i]-int64(sz[v][i])*int64(i))/int64(k)
 		}
 		for _, w := range g[v] {
 			if w != fa {
