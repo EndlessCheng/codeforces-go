@@ -934,6 +934,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模题 https://www.luogu.com.cn/problem/P4644
+// 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
@@ -990,7 +991,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
-				h.push(vdPair{w, newD})
+				h.push(vdPair{w, dist[w]})
 			}
 		}
 	}
@@ -1000,8 +1001,9 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	//}
 
 	// EXTRA: path from end to start
-	var end = n - 1
+	// 记录边的编号 https://codeforces.com/problemset/problem/507/E
 	path := []int{}
+	end := n - 1 //
 	for x := end; x != -1; x = fa[x] {
 		path = append(path, x)
 	}
