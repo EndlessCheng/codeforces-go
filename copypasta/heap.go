@@ -68,6 +68,7 @@ func (h *hp64) pushPop(v int64) int64 {
 // 将 p 存于他处（如 slice 或 map），可直接在外部修改 p.v 后调用 fix(p.index)，从而做到修改堆中指定元素
 // 调用 remove(p.index) 可以从堆中删除 p.v
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
+// 模拟 multiset https://codeforces.com/problemset/problem/1106/E
 type viPair struct {
 	v     int64
 	index int // 该元素在 mh 中的下标，可随着 push pop 等操作自动改变
