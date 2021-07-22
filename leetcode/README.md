@@ -1,4 +1,4 @@
-# 力扣竞赛
+# 力扣
 
 欢迎关注我的账号：[灵茶山艾府](https://leetcode-cn.com/u/endlesscheng/)，赛后会在每道题的题解区发布题解。
 
