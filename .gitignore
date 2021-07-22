@@ -14,6 +14,7 @@
 
 /.idea
 /[0-9]*
+/todo
 /zdash
 /main.go
 /main_test.go
