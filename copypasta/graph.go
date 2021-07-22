@@ -1794,7 +1794,9 @@ https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%
 最大匹配+最小边覆盖=n （图中无孤立点）
 最大独立集+最小顶点覆盖=n https://www.geeksforgeeks.org/vertex-cover-problem-set-1-introduction-approximate-algorithm-2/
     最大独立集与最小顶点覆盖互为对方关于 V 的补集（V 是图的顶点集合）
-对于二分图，最小顶点覆盖=最大匹配，最大独立集=n-最大匹配
+Kőnig's theorem https://en.wikipedia.org/wiki/K%C5%91nig%27s_theorem_(graph_theory)
+    对于二分图，最小顶点覆盖=最大匹配
+    因此有：最大独立集=n-最大匹配
 
 激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
 不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
@@ -1816,9 +1818,11 @@ todo 树上最小路径覆盖 https://codeforces.com/problemset/problem/618/D
 // https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
+//
 // 模板题 https://www.luogu.com.cn/problem/P3386
-func (*graph) maxBipartiteMatchingHungarian(n int, g [][]int) (match []int, cnt int) {
-	match = make([]int, n)
+//【网络流 24 题】骑士共存（这题 Dinic 更快）https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
+func (*graph) maxBipartiteMatchingHungarian(g [][]int) (match []int, cnt int) {
+	match = make([]int, len(g))
 	for i := range match {
 		match[i] = -1
 	}
@@ -1837,7 +1841,7 @@ func (*graph) maxBipartiteMatchingHungarian(n int, g [][]int) (match []int, cnt 
 	}
 	for v := range g {
 		if match[v] == -1 {
-			used = make([]bool, n)
+			used = make([]bool, len(g))
 			if f(v) {
 				cnt++ // +=2
 			}
@@ -1857,7 +1861,7 @@ func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []i
 		matchR[i] = -1
 	}
 	var used []bool
-	var f func(v int) bool
+	var f func(int) bool
 	f = func(v int) bool {
 		used[v] = true
 		for _, w := range g[v] {
@@ -1887,7 +1891,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 }
 
 // 带权二分图最大完美匹配 - 任务分配问题/婚姻匹配问题 - KM (Kuhn–Munkres) 算法
-// 下面的代码是 O(n^4) 的, O(n^3) 的在后面
+// 注意：下面的代码是 O(n^4) 的, O(n^3) 的在后面
 // https://en.wikipedia.org/wiki/Assignment_problem
 // https://en.wikipedia.org/wiki/Hungarian_algorithm
 // https://oi-wiki.org/topic/graph-matching/bigraph-weight-match/
@@ -1897,6 +1901,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/AssignmentProblem.java.html
 // 模板题 https://www.luogu.com.cn/problem/P6577
 // https://www.luogu.com.cn/problem/P3967
+// 【网络流 24 题】分配问题 https://loj.ac/p/6012 https://www.luogu.com.cn/problem/P4014
 // http://acm.hdu.edu.cn/showproblem.php?pid=2426
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
@@ -1979,12 +1984,12 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(n int, wt [][]int64) (
 
 // O(n^3)
 // 下标需要从 1 开始
-func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (match []int, sum int64) {
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int, sum int64) {
 	const inf int64 = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
 
-	match = make([]int, n+1) // 右部点匹配了哪一个左部点
-	la := make([]int64, n+1)
+	match = make([]int, len(wt)) // 右部点匹配了哪一个左部点
+	la := make([]int64, len(wt))
 	for i, row := range wt {
 		la[i] = -inf
 		for _, v := range row {
@@ -1993,21 +1998,21 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 			}
 		}
 	}
-	lb := make([]int64, n+1)
-	slack := make([]int64, n+1)
-	for i := 1; i <= n; i++ {
-		vb := make([]bool, n+1)
-		for j := 1; j <= n; j++ {
+	lb := make([]int64, len(wt))
+	slack := make([]int64, len(wt))
+	for i := 1; i < len(wt); i++ {
+		vb := make([]bool, len(wt))
+		for j := 1; j < len(wt); j++ {
 			slack[j] = inf
 		}
-		last := make([]int, n+1) // 右部点在交错树中的上一个右部点，用于倒推得到交错路
+		last := make([]int, len(wt)) // 右部点在交错树中的上一个右部点，用于倒推得到交错路
 		y := 0
 		match[0] = i // 一开始假设有一条 i-0 的匹配
 		for {
 			vb[y] = true
 			x, nextY := match[y], 0
 			delta := inf
-			for j := 1; j <= n; j++ {
+			for j := 1; j < len(wt); j++ {
 				if !vb[j] {
 					if d := la[x] + lb[j] - wt[x][j]; d < slack[j] {
 						slack[j] = d
@@ -2022,7 +2027,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 			// 当 delta=0 时，相当于沿着相等子图向下搜索一层
 			// 当 delta>0 时，相当于直接回到最小边（新加入相等子图的边）处开始搜索
 			if delta > 0 {
-				for j := 0; j <= n; j++ {
+				for j := 0; j < len(wt); j++ {
 					if vb[j] {
 						la[match[j]] -= delta
 						lb[j] += delta
@@ -2041,7 +2046,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(n int, wt [][]int64) (matc
 			match[y] = match[last[y]]
 		}
 	}
-	for w := 1; w <= n; w++ {
+	for w := 1; w < len(wt); w++ {
 		v := match[w]
 		// 无解，或者不选
 		if v == 0 {
@@ -2154,7 +2159,8 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
-// 模板题 https://atcoder.jp/contests/practice2/tasks/practice2_g
+// 模板题 https://www.luogu.com.cn/problem/P1726
+//       https://atcoder.jp/contests/practice2/tasks/practice2_g
 // https://www.luogu.com.cn/problem/P2341
 // 建图转换 https://codeforces.com/problemset/problem/1239/D
 // 与高斯消元结合 https://www.luogu.com.cn/problem/P6030
@@ -2275,7 +2281,8 @@ outer:
 // https://oi-wiki.org/graph/scc/#tarjan
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
-func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sid []int) {
+// 与最小割结合 https://www.luogu.com.cn/problem/P4126
+func (*graph) sccTarjan(g [][]int) (scc [][]int, sid []int) {
 	min := func(a, b int) int {
 		if a < b {
 			return a
@@ -2283,10 +2290,10 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sid []int) {
 		return b
 	}
 
-	dfn := make([]int, n) // 值从 1 开始
+	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	stk := []int{}
-	inStk := make([]bool, n)
+	inStk := make([]bool, len(g))
 	var f func(int) int
 	f = func(v int) int {
 		dfsClock++
@@ -2329,7 +2336,7 @@ func (*graph) sccTarjan(n int, g [][]int) (scc [][]int, sid []int) {
 		scc[i], scc[n-1-i] = scc[n-1-i], scc[i]
 	}
 
-	sid = make([]int, n)
+	sid = make([]int, len(g))
 	for i, cp := range scc {
 		for _, v := range cp {
 			sid[v] = i
@@ -2529,154 +2536,236 @@ func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 // 圆方树
 // todo https://www.luogu.com.cn/blog/PinkRabbit/Introduction-to-Round-Square-Tree
 
-/* 网络流
-上下界网络流 https://oi-wiki.org/graph/flow/bound/
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FordFulkerson.java.html
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowNetwork.java.html
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FlowEdge.java.html
+/* 网络流·总结·题单 ################################################################################
 
-Disjoint paths
-Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph, assuming that the capacity of each edge is one.
-Node-disjoint paths: 拆点法
+todo 网络流建模方式总结
+ https://www.cnblogs.com/victorique/p/8560656.html
+ https://blog.bill.moe/network-flow-models/
+ NOI 一轮复习 I：二分图网络流 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-i-er-fen-tu-wang-lao-liu
 
-路径覆盖问题 Path cover + 打印
-todo https://zhuanlan.zhihu.com/p/125759333
-todo Competitive Programmer’s Handbook Ch.20
-todo 线性规划与网络流 24 题 - 最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
+todo 网络流 24 题 https://loj.ac/p?tagIds=30 https://www.luogu.com.cn/problem/list?tag=332
+ 线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
 
-全局最小割 Stoer-Wagner 算法 O(nm+n^2logn)
-https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
-模板题 https://www.luogu.com.cn/problem/P5632
-
-最大权闭合子图
-*/
-
-/* 网络流建模技巧/转换技巧
-标准建模（指派问题）：
-	http://poj.org/problem?id=2175
-	http://poj.org/problem?id=3686
-顶点上有容量限制：
-	可以将其拆成两个，边容量为顶点容量
-有最小容量限制-最大流（挑战 p.214）：
-	增加源点 S 和汇点 T，修改每条边 v-w 的 cap-=minCap，并 S->v 连边 cap=minCap，w->T 连边 cap=minCap
-	检查最大流是否为 ΣminCap（不是满流无解）
-	S->st 连边 cap=inf，end->T 连边 cap=inf
-	最大流为 maxFlow-ΣminCap
-有最小容量限制-最小费用最大流（挑战 p.227）：
-	对每条边新增一条边 e'
-	e.cap-=minCap
-	e'.cap=minCap
-	e'.cost=e.cost-M // 一个足够大的常数
-	跑完 MCMF 后加上 M*ΣminCap
-边容量增加：
-	重新跑增广路
-边容量减少：
-	若 flow<=cap' 则最大流不变；若 flow>cap' 需要将多出的流退回去 todo
-流量任意：
-	todo
-容量为负数：
-	todo
-费用为负数：
-	todo 挑战 p.228
-一对多的最大匹配：
-	Dining https://www.luogu.com.cn/problem/P2891 http://poj.org/problem?id=3281
-求最小割划分成两个集合：
-	Dual Core CPU http://poj.org/problem?id=3469
-无重复边的往返最短路：
-	http://poj.org/problem?id=2135
-	转换成流量为 2 的最小费用流
-
-另见下面的 minCostFlowSPFA
-
-最小割模型
-主要参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 在 misc 文件夹下）
-https://blog.csdn.net/qq_35649707/article/details/77482691
-最大权闭合图 Maximum Weight Closure of a Graph
-最大密度子图 Maximum Density Subgraph
-二分图最小点权覆盖集/最大点权独立集 Minimum Weight Vertex Covering Set (MinWVCS) and Maximum Weight Vertex Independent Set (MaxWVIS) in a Bipartite Graph
-   建立一个源 s，向 X 部每个点连边；建立一个汇 t，从 Y 部每个点向汇 t 连边，把二分图中的边看成是有向的，
-   则任意一条从 s 到 t 的路径，一定具有 s-v-w-t 的形式（v∈X, w∈Y）。
-   割的性质是不存在一条从 s 到 t 的路径。故路径上的三条边 s-v, v-w, w-t 中至少有一条边在割中。
-   若人为地令 v-w 不可能在最小割中，即令其容量为正无限，
-   可将条件简化为 s-v, w-t 中至少有一条边在最小割中，这正好与点覆盖集限制条件的形式相符（边的两端点中至少一个在覆盖集内），
-   而目标是最小化点权之和，这恰好也是最小割的优化目标。
-   对于最大点权独立集，其等价于点权之和减去最小点权覆盖集。
-   https://codeforces.com/contest/808/problem/F
-
-最小割建模
-LCP38/21春队F https://leetcode-cn.com/problems/7rLGCR/
-
-最小割的可行边和必须边
-AHOI09 https://www.luogu.com.cn/problem/P4126
-
-点边转换
-   将点拆为入点和出点（v 和 v+n），即可把点的属性变成边的属性，从而方便应用最大流、最小割等算法
-   将边的中间加一个节点，把边的属性体现在中间的点上
-
-todo 线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
-
-todo 题单！https://www.zybuluo.com/xzyxzy/note/992041
-  网络流从入门到入土 #1 https://www.luogu.com.cn/training/12097#problems
-  网络流从入门到入土 #2 https://www.luogu.com.cn/training/12098#problems
-  网络流从入门到入土 #3 https://www.luogu.com.cn/training/12099#problems
-  网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
-  网络流经典题目 https://www.luogu.com.cn/training/3144#problems
+todo 题单 https://www.zybuluo.com/xzyxzy/note/992041
+ 网络流从入门到入土 #1 https://www.luogu.com.cn/training/12097#problems
+ 网络流从入门到入土 #2 https://www.luogu.com.cn/training/12098#problems
+ 网络流从入门到入土 #3 https://www.luogu.com.cn/training/12099#problems
+ 网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
+ 网络流经典题目 https://www.luogu.com.cn/training/3144#problems
 
 CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 */
 
+/* 最大流·建模·转换 ################################################################################
+
+https://en.wikipedia.org/wiki/Maximum_flow
+
+建模·转换
+将点拆为入点和出点（v 和 v+n），即可把点上的约束变成边上的约束
+https://www.luogu.com.cn/problem/P2891 http://poj.org/problem?id=3281
+【网络流 24 题】最长不降子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
+    注意这题用到了操纵超级源点的技巧：容量限制与解除容量限制
+NWERC07 B https://codeforces.com/gym/100723 http://poj.org/problem?id=3498 UVa12125 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=243&page=show_problem&problem=3277
+网格模型 https://codeforces.com/problemset/problem/1360/G
+https://codeforces.com/problemset/problem/546/E
+转换 https://www.acwing.com/problem/content/2239/ http://poj.org/problem?id=1149
+转换 https://codeforces.com/problemset/problem/653/D
+todo 转换 https://atcoder.jp/contests/arc085/tasks/arc085_c
+
+顶点上有容量
+将顶点拆成两个（入顶点 x 和出顶点 y），入点向 x 连边，y 向出点连边，x 向 y 连边，容量为顶点的容量
+
+无向图
+视作两条容量均为 cap 的有向边（具体实现见下面代码中 addEdge 的注释）
+
+多源汇最大流
+建立超级源点 S 和超级汇点 T，S 向所有源点连边，所有汇点向 T 连边，每条边的容量为 inf 或对应源汇的容量限制
+https://www.acwing.com/problem/content/2236/
+
+只能经过这条边一次 ⇔ 容量为 1
+http://poj.org/problem?id=2455 https://www.acwing.com/problem/content/2279/
+
+上下界可行流·总结
+https://oi-wiki.org/graph/flow/bound/
+https://www.acwing.com/solution/content/17067/
+https://zhuanlan.zhihu.com/p/324507636
+todo 题单 https://www.luogu.com.cn/training/8462
+
+无源汇上下界可行流（循环流）
+假设存在一个流量守恒的解 f，通过将每条边的流量减去 low，得到一个新图的流，但其不一定满足流量守恒
+对于每个顶点 v，记 d(v) = ΣlowIn(v) - ΣlowOut(v)
+- 若 d(v) > 0，说明流入减去的更多，则需将 v 的流入量增加 d(v)，这可以通过新建超级源点 S，并增加 S->v，容量为 d(v) 的边做到
+- 若 d(v) < 0，说明流出减去的更多，则需将 v 的流出量增加 d(v)，这可以通过新建超级汇点 T，并增加 v->T，容量为 -d(v) 的边做到
+跑从 S 到 T 的最大流，若满流（即最大流等于从 S 出发的容量之和），则说明可以让新图的流量守恒，从而说明原图存在可行流 f，其每条边的流量为 low 加上新图中每条边的流量；若不满流则无解
+模板题 https://loj.ac/p/115 https://www.acwing.com/problem/content/2190/
+
+有源汇上下界可行流
+从汇点向源点连一条容量为 inf 的边，即转换成了无源汇上下界可行流
+
+有源汇上下界最大流
+1. 跑一遍有源汇上下界可行流，若有解，记此时源点到汇点的流量为 f1（通过汇点向源点的反向边的流量得到）
+2. 删去汇点到源点的边（或将其容量置为 0，具体实现时可以将汇点->源点边最后加入，或者使用指针记录该边及其反向边）
+3. 在残余网络上继续增广，记额外的最大流为 f2，那么答案即为 f1+f2
+模板题 https://loj.ac/p/116 https://www.luogu.com.cn/problem/P5192
+
+有源汇上下界最小流
+将上面第 3 步改成退流，即减去残余网络上从汇点到源点的最大流
+模板题 https://loj.ac/p/117 https://www.luogu.com.cn/problem/P4843
+
+分层图
+注意：可以在原图的基础上添加边/增加容量，然后继续寻找增广路增广
+【网络流 24 题】星际转移 https://loj.ac/p/6015 https://www.luogu.com.cn/problem/P2754
+
+关键边
+关键边 v-w 需满足，在跑完最大流后：
+1. 这条边的流量等于其容量
+2. 在残余网络上，从源点可以到达 v，从 w 可以到达汇点（即从汇点顺着反向边可以到达 w）
+http://poj.org/problem?id=3204 https://www.acwing.com/problem/content/2238/
+具体实现见下面代码中的 EXTRA
+*/
+
+/* 最小割·建模·转换 ################################################################################
+
+https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
+最小割模型汇总 https://blog.csdn.net/qq_35649707/article/details/77482691
+下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 在 misc 文件夹下）
+
+求出最大流后，从源点出发在残余网络上 DFS，标记所有能够到达的点。遍历原边集 edges，若其中一端有标记，另一端没有标记，则这条边为最小割上的边
+
+常用技巧：用容量为 inf 的边来防止割断
+
+建模·转换
+https://www.acwing.com/problem/content/2282/
+平均边权最小 https://www.acwing.com/problem/content/2281/
+点连通度 SEERC04 F https://codeforces.com/gym/101461 http://poj.org/problem?id=1966 UVa1660 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4535
+   https://en.wikipedia.org/wiki/Connectivity_(graph_theory)
+   https://en.wikipedia.org/wiki/Menger%27s_theorem
+LCP38/21春·战队赛F https://leetcode-cn.com/problems/7rLGCR/
+
+最大权闭合图 Maximum Weight Closure of a Graph
+https://en.wikipedia.org/wiki/Closure_problem
+源点向所有正权点连边，容量为相应点权
+所有负权点向汇点连边，容量为相应点权的相反数
+原图边的容量为 inf（从而保证不会在最小割中）
+最后用正权点总和减去源点到汇点的最小割即为答案
+以「最大获利」这题来解释，割掉源点到正权点的边，意味着放弃对应用户的收益；割掉负权点到汇点的边，意味着建立对应基站
+NOI06 最大获利 https://www.luogu.com.cn/problem/P4174
+【网络流 24 题】太空飞行计划 https://loj.ac/p/6001 https://www.luogu.com.cn/problem/P2762
+
+最大密度子图 Maximum Density Subgraph
+https://en.wikipedia.org/wiki/Dense_subgraph
+参考 https://www.luogu.com.cn/problem/solution/UVA1389
+二分上下界：最小密度为 1/n，最大密度为 m
+二分精度：任意两个密度不同的子图，其密度差 >= 1/n^2
+todo NEERC06 H https://codeforces.com/gym/100287 https://codeforces.com/gym/100532 http://poj.org/problem?id=3155 UVa1389 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4135
+
+二分图最小点权覆盖集 Minimum Weight Vertex Covering Set (MinWVCS) in a Bipartite Graph
+二分图最大点权独立集 Maximum Weight Vertex Independent Set (MaxWVIS) in a Bipartite Graph
+建立一个源 s，向 X 部每个点连边；建立一个汇 t，从 Y 部每个点向汇 t 连边，把二分图中的边看成是有向的，
+则任意一条从 s 到 t 的路径，一定具有 s->v->w->t 的形式（v∈X, w∈Y）。
+割的性质是不存在一条从 s 到 t 的路径。故路径上的三条边 s-v, v-w, w-t 中至少有一条边在割中。
+若人为地令 v-w 不可能在最小割中，即令其容量为正无限，
+可将条件简化为 s-v, w-t 中至少有一条边在最小割中，这正好与点覆盖集限制条件的形式相符（边的两端点中至少一个在覆盖集内），
+而目标是最小化点权之和，这恰好也是最小割的优化目标。
+对于最大点权独立集，其等价于点权之和减去最小点权覆盖集。
+【网络流 24 题】骑士共存 https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
+todo https://codeforces.com/contest/808/problem/F
+NEERC03 D https://codeforces.com/gym/100725 https://codeforces.com/gym/101651 http://poj.org/problem?id=2125
+黑白染色转化成二分图 https://www.acwing.com/problem/content/2328/
+
+最小割的可行边和必须边（所有最小割集的并集和交集）
+跑最大流，然后求整个残余网络的 SCC，则有：
+- 可行边：两端不在一个 SCC 内，即不存在另一条从 v 到 w 的路径
+- 必须边：一端在 S 的 SCC 内,另一端在 T 的 SCC 内
+AHOI09 https://www.luogu.com.cn/problem/P4126
+*/
+
+/* 费用流·建模·转换 ################################################################################
+
+https://en.wikipedia.org/wiki/Minimum-cost_flow_problem MCFP
+https://en.wikipedia.org/wiki/Assignment_problem
+https://en.wikipedia.org/wiki/Network_simplex_algorithm
+
+NOTE: 对于修改容量的情况，由于 EK 是基于最短路的贪心算法，不能像最大流那样直接在残余网络上继续跑，必须重新建图重新跑 EK
+
+建模·转换
+从源点连容量为 1 费用为 0 的边到集合 A 中各点
+从集合 B 中各点连容量为 1 费用为 0 的边到汇点
+集合 A 和 B 之间连边，容量为 inf，费用为 F(Ai,Bj)，F 根据题意
+这样跑 MCMF 得到的结果是匹配全部 A（或 B）的最小花费
+https://codeforces.com/problemset/problem/1437/C
+【网络流 24 题】运输问题 https://loj.ac/p/6011 https://www.luogu.com.cn/problem/P4015
+【网络流 24 题】数字梯形 https://loj.ac/p/6010 https://www.luogu.com.cn/problem/P4013
+【网络流 24 题】深海机器人 https://loj.ac/p/6224 https://www.luogu.com.cn/problem/P4012
+k 取方格数 https://www.luogu.com.cn/problem/P2045 http://poj.org/problem?id=3422
+    关键技巧：拆点时，从入点向出点连两条边，第一条边容量为 1，费用为点权，第二条边容量为 k-1，费用为 0
+    这表示第一次经过该点时，可以把数取走，之后再经过时就不再计算
+【网络流 24 题】餐巾计划 https://loj.ac/p/6008 https://www.luogu.com.cn/problem/P1251
+
+最大费用
+将每条边的费用反向，答案即为 -MCMF
+
+上下界可行流
+todo NOI08 志愿者招募 https://www.luogu.com.cn/problem/P3980（也可以用线性规划做）
+
+流通问题 circulation problem
+最小费用流通问题 minimum-cost-circulation problem
+https://en.wikipedia.org/wiki/Circulation_problem
+The circulation problem and its variants are a generalisation of network flow problems,
+with the added constraint of a lower bound on edge flows,
+and with flow conservation also being required for the source and sink (i.e. there are no special nodes).
+《算法导论》思考题 29-5
+todo https://codeforces.com/contest/1455/problem/E
+ https://codeforces.com/blog/entry/85186?#comment-728533
+*/
+
 // 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)
-// Ford–Fulkerson algorithm (FFA) 的改进版本
+// 如果容量是浮点数，下面代码中 > 0 的判断要改成 > eps
+// https://en.wikipedia.org/wiki/Dinic%27s_algorithm
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
-// 模板题 https://www.luogu.com.cn/problem/P3376
-// 建模题 https://atcoder.jp/contests/arc085/tasks/arc085_c
-//       https://codeforces.com/problemset/problem/1360/G (满流时有解)
-//       https://codeforces.com/problemset/problem/546/E (满流时有解)
-// 思维转换 https://codeforces.com/problemset/problem/653/D
+// 模板题 https://www.luogu.com.cn/problem/P3376 https://www.luogu.com.cn/problem/P2740
 func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
+	const inf int = 1e9 // 1e18
 	min := func(a, b int) int {
 		if a < b {
 			return a
 		}
 		return b
 	}
-	// st--; end--
+	st--
+	end--
 
-	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
+	type neighbor struct{ to, rid, cap, eid int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
-	addEdge := func(from, to, cap int) {
-		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0}) // 无向图上 0 改 cap
+	addEdge := func(from, to, cap, eid int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, eid})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -1}) // 无向图上 0 换成 cap
 	}
 	for i := 0; i < m; i++ {
-		var v, w, cap int
-		Fscan(in, &v, &w, &cap)
+		var v, w, cp int
+		Fscan(in, &v, &w, &cp)
 		v--
 		w--
-		addEdge(v, w, cap)
+		addEdge(v, w, cp, i)
 	}
 
-	// 计算从源点 st 出发的距离
-	d := make([]int, n)
+	var d []int // 从源点 st 出发的距离
 	bfs := func() bool {
-		for i := range d {
-			d[i] = -1
-		}
-		d[st] = 0
+		d = make([]int, len(g))
+		d[st] = 1
 		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
 			for _, e := range g[v] {
-				if w := e.to; e.cap > 0 && d[w] < 0 {
+				if w := e.to; e.cap > 0 && d[w] == 0 {
 					d[w] = d[v] + 1
 					q = append(q, w)
 				}
 			}
 		}
-		return d[end] >= 0
+		return d[end] > 0
 	}
 	// 寻找增广路
 	var iter []int // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
@@ -2697,23 +2786,87 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 		}
 		return 0
 	}
+	dinic := func() (maxFlow int) { // int64
+		for bfs() {
+			iter = make([]int, len(g))
+			for {
+				if f := dfs(st, inf); f > 0 {
+					maxFlow += f
+				} else {
+					break
+				}
+			}
+		}
+		return
+	}
+	maxFlow := dinic()
 
-	const inf int = 1e9 // 1e18
-	maxFlow := 0        // int64
-	for bfs() {
-		iter = make([]int, n)
-		for {
-			if f := dfs(st, inf); f > 0 {
-				maxFlow += f
-			} else {
-				break
+	// EXTRA: 容量复原（不存原始容量的写法）
+	for _, es := range g {
+		for i, e := range es {
+			if e.eid >= 0 { // 正向边
+				es[i].cap += g[e.to][e.rid].cap
+				g[e.to][e.rid].cap = 0
 			}
 		}
 	}
 
-	// EXTRA: 打印流的分配方案，输出反向边上的 cap
-	//w := e.to
-	//ans[v][w] = g[w][e.rid].cap
+	// EXTRA: 求流的分配方案（即反向边上的 cap）
+	// https://loj.ac/p/115 https://www.acwing.com/problem/content/2190/
+	ans := make([]int, m)
+	for _, es := range g { // v
+		for _, e := range es {
+			w, i := e.to, e.eid
+			if i >= 0 { // 正向边
+				ans[i] = g[w][e.rid].cap
+			}
+		}
+	}
+
+	// EXTRA: 求关键边（扩容后可以增加最大流的边）的数量
+	// 关键边 v-w 需满足，在跑完最大流后：
+	// 1. 这条边的流量等于其容量
+	// 2. 在残余网络上，从源点可以到达 v，从 w 可以到达汇点（即从汇点顺着反向边可以到达 w）
+	// http://poj.org/problem?id=3204 https://www.acwing.com/problem/content/2238/
+	{
+		// 在残余网络上跑 DFS，看看哪些点能从源点和汇点访问到（从汇点出发的要判断反向边的流量）
+		vis1 := make([]bool, len(g))
+		var dfs1 func(int)
+		dfs1 = func(v int) {
+			vis1[v] = true
+			for _, e := range g[v] {
+				if w := e.to; e.cap > 0 && !vis1[w] {
+					dfs1(w)
+				}
+			}
+		}
+		dfs1(st)
+
+		vis2 := make([]bool, len(g))
+		var dfs2 func(int)
+		dfs2 = func(v int) {
+			vis2[v] = true
+			for _, e := range g[v] {
+				if w := e.to; !vis2[w] && g[w][e.rid].cap > 0 {
+					dfs2(w)
+				}
+			}
+		}
+		dfs2(end)
+
+		ans := 0
+		for v, es := range g {
+			if !vis1[v] {
+				continue
+			}
+			for _, e := range es {
+				// 原图的边，流量为 0（说明该边满流），且边的两端点能分别从源汇访问到
+				if e.eid >= 0 && e.cap == 0 && vis2[e.to] {
+					ans++
+				}
+			}
+		}
+	}
 
 	return maxFlow
 }
@@ -2723,7 +2876,8 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 // https://www.renfei.org/blog/isap.html
 // 测试了一下性能和 Dinic 差不多
 func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
-	// st--; end--
+	st--
+	end--
 
 	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
@@ -2732,11 +2886,11 @@ func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
 	for i := 0; i < m; i++ {
-		var v, w, cap int
-		Fscan(in, &v, &w, &cap)
+		var v, w, cp int
+		Fscan(in, &v, &w, &cp)
 		v--
 		w--
-		addEdge(v, w, cap)
+		addEdge(v, w, cp)
 	}
 
 	// 计算从汇点 end 出发的距离
@@ -2818,11 +2972,13 @@ o:
 	return maxFlow
 }
 
-// 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)   复杂度上界相比 Dinic/ISAP 比较紧
+// 最高标号预流推进 (HLPP, High Level Preflow Push)   O(n^2 * √m)
+// 注：虽然在复杂度上比增广路方法进步很多，但是预流推进算法复杂度的上界是比较紧的，因此有时差距并不会很大
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
 // https://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm#Highest_label_selection_rule
 // https://oi-wiki.org/graph/flow/max-flow/#hlpp
-// 模板题 https://www.luogu.com.cn/problem/P4722
+// https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
+// 模板题 https://loj.ac/p/127 https://www.luogu.com.cn/problem/P4722
 // todo deque 优化 + 全局重贴标签等 https://www.luogu.com.cn/problem/solution/P4722
 type dh struct {
 	sort.IntSlice
@@ -2842,7 +2998,8 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 		}
 		return b
 	}
-	// st--; end--
+	st--
+	end--
 
 	type neighbor struct{ to, rid, cap int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
@@ -2851,11 +3008,11 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
 	for i := 0; i < m; i++ {
-		var v, w, cap int
-		Fscan(in, &v, &w, &cap)
+		var v, w, cp int
+		Fscan(in, &v, &w, &cp)
 		v--
 		w--
-		addEdge(v, w, cap)
+		addEdge(v, w, cp)
 	}
 
 	// 计算从汇点 end 出发的距离
@@ -2938,54 +3095,53 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 	return exFlow[end]
 }
 
-// 最小费用流 最小费用最大流 MCMF
-// 有两种实现：SPFA O(fnm) 和 Dijkstra O(fmlogn)
-// 要求图中无负圈
-// https://oi-wiki.org/graph/flow/min-cost/
-// 性能对比（由于数据不强所以 SPFA 很快）：SPFA 1.05s(max 365ms)   Dijkstra 1.91s(max 688ms)
-// 模板题 https://www.luogu.com.cn/problem/P3381
-// 常用的建模思路是
-// - 从源点 (0) 连 len(A) 条容量为 1，费用为 0 的边到集合 A，
-// - 从集合 B 连 len(B) 条容量为 1，费用为 0 的边到汇点 (len(A)+len(B)+1)
-// - 集合 A B 之间连边，容量为 inf，费用为 f(Ai,Bi)，f 根据题意
-// - 这样跑 MCMF 得到的结果是匹配全部 A 或者 B 的最小花费
-// 例如 https://codeforces.com/problemset/problem/1437/C
-// 流通问题 circulation problem
-// 最小费用流通问题 minimum-cost-circulation problem
-//     https://en.wikipedia.org/wiki/Circulation_problem
-//     The circulation problem and its variants are a generalisation of network flow problems,
-//     with the added constraint of a lower bound on edge flows,
-//     and with flow conservation also being required for the source and sink (i.e. there are no special nodes).
-//    《算法导论》思考题 29-5
-//     https://codeforces.com/blog/entry/85186?#comment-728533
-func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, flowLimit int) (int, int64) {
-	// st--; end--
+// 无向图全局最小割
+// Stoer-Wagner 算法 O(nm+n^2logn)
+// https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
+// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
+// 模板题 https://www.luogu.com.cn/problem/P5632 http://poj.org/problem?id=2914
+func (*graph) minimumCutStoerWagner(dist [][]int) int {
+	panic("todo")
+}
 
-	const inf int64 = 1e18
-	type neighbor struct{ to, rid, cap, cost int } // rid 为反向边在邻接表中的下标
+// 最小费用流 MCFP
+// 最小费用最大流 MCMF（即满流时的费用）
+// 将 Edmonds-Karp 中的 BFS 改成 SPFA O(fnm) 或 Dijkstra O(fmlogn)
+// 要求初始网络中无负权圈
+// 性能对比（洛谷 P3381，由于数据不强所以 SPFA 很快）：SPFA 1.05s(max 365ms)   Dijkstra 1.91s(max 688ms)
+// https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
+// https://oi-wiki.org/graph/flow/min-cost/
+// https://cp-algorithms.com/graph/min_cost_flow.html
+// 模板题 https://www.luogu.com.cn/problem/P3381
+func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
+	const inf int = 1e9 // 1e18
+	st--
+	end--
+
+	type neighbor struct{ to, rid, cap, cost, eid int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
-	addEdge := func(from, to, cap, cost int) {
-		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost}) // 无向图上 0 改 cap
+	addEdge := func(from, to, cap, cost, eid int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost, eid})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost, -1}) // 无向图上 0 换成 cap
 	}
 	for i := 0; i < m; i++ {
-		var v, w, cap, cost int
-		Fscan(in, &v, &w, &cap, &cost)
+		var v, w, cp, cost int
+		Fscan(in, &v, &w, &cp, &cost)
 		v--
 		w--
-		addEdge(v, w, cap, cost)
+		addEdge(v, w, cp, cost, i)
 	}
 
-	// n = len(A)+len(B)+2  or  end+1
-	dist := make([]int64, n)
-	type pair struct{ v, i int }
-	fa := make([]pair, n)
+	dist := make([]int64, len(g))
+	type vi struct{ v, i int }
+	fa := make([]vi, len(g))
 	spfa := func() bool {
+		const _inf int64 = 1e18
 		for i := range dist {
-			dist[i] = inf
+			dist[i] = _inf
 		}
 		dist[st] = 0
-		inQ := make([]bool, n)
+		inQ := make([]bool, len(g))
 		inQ[st] = true
 		q := []int{st}
 		for len(q) > 0 {
@@ -2999,7 +3155,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, flowLimit int) (int, 
 				w := e.to
 				if newD := dist[v] + int64(e.cost); newD < dist[w] {
 					dist[w] = newD
-					fa[w] = pair{v, i}
+					fa[w] = vi{v, i}
 					if !inQ[w] {
 						q = append(q, w)
 						inQ[w] = true
@@ -3007,39 +3163,39 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end, flowLimit int) (int, 
 				}
 			}
 		}
-		return dist[end] < inf
+		return dist[end] < _inf
 	}
-	maxFlow, minCost := 0, int64(0)
-	for maxFlow < flowLimit && spfa() { // 若求 MCMF，把 maxFlow < flowLimit 去掉
-		// 沿 st-end 的最短路尽量增广
-		minF := flowLimit // inf
-		for v := end; v != st; {
-			p := fa[v]
-			if c := g[p.v][p.i].cap; c < minF {
-				minF = c
+	ek := func() (maxFlow int, minCost int64) {
+		for spfa() {
+			// 沿 st-end 的最短路尽量增广
+			minF := inf
+			for v := end; v != st; {
+				p := fa[v]
+				if c := g[p.v][p.i].cap; c < minF {
+					minF = c
+				}
+				v = p.v
 			}
-			v = p.v
+			for v := end; v != st; {
+				p := fa[v]
+				e := &g[p.v][p.i]
+				e.cap -= minF
+				g[v][e.rid].cap += minF
+				v = p.v
+			}
+			maxFlow += minF
+			minCost += dist[end] * int64(minF)
 		}
-		for v := end; v != st; {
-			p := fa[v]
-			e := &g[p.v][p.i]
-			e.cap -= minF
-			g[v][e.rid].cap += minF
-			v = p.v
-		}
-		maxFlow += minF
-		minCost += dist[end] * int64(minF)
+		return
 	}
-	if maxFlow < flowLimit {
-		return -1, -1
-	}
-	return maxFlow, minCost
+	return ek()
 }
 
 // 基于原始对偶方法 (primal-dual method)
 // https://blog.xehoth.cc/DurationPlan-Primal-Dual/
 func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) int64 {
-	// st--; end--
+	st--
+	end--
 
 	type neighbor struct{ to, rid, cap, cost int }
 	g := make([][]neighbor, n)
@@ -3048,21 +3204,21 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
 	}
 	for i := 0; i < m; i++ {
-		var v, w, cap, cost int
-		Fscan(in, &v, &w, &cap, &cost)
+		var v, w, cp, cost int
+		Fscan(in, &v, &w, &cp, &cost)
 		v--
 		w--
-		addEdge(v, w, cap, cost)
+		addEdge(v, w, cp, cost)
 	}
 
-	const inf int64 = 1e18
-	h := make([]int64, n) // 顶点的势
-	dist := make([]int64, n)
+	h := make([]int64, len(g)) // 顶点的势
+	dist := make([]int64, len(g))
 	type pair struct{ v, i int }
-	fa := make([]pair, n)
+	fa := make([]pair, len(g))
 	dijkstra := func() bool {
+		const _inf int64 = 1e18
 		for i := range dist {
-			dist[i] = inf
+			dist[i] = _inf
 		}
 		dist[st] = 0
 		q := vdHeap{{st, 0}}
@@ -3084,7 +3240,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 				}
 			}
 		}
-		return dist[end] < inf
+		return dist[end] < _inf
 	}
 	minCost := int64(0)
 	for flowLimit > 0 && dijkstra() {
