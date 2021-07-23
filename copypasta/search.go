@@ -34,6 +34,16 @@ https://oeis.org/A145157 Number of Greek-key tours on an n X n board; i.e., self
 
 https://oeis.org/A000532 Number of Hamiltonian paths from NW to SW corners in an n X n grid
 1, 1, 2, 8, 86, 1770, 88418, 8934966, 2087813834, 1013346943033, 1111598871478668, 2568944901392936854, 13251059359839620127088, 145194816279817259193401518, 3524171261632305641165676374930
+
+https://oeis.org/A000129 Pell numbers: a(0) = 0, a(1) = 1; for n > 1, a(n) = 2*a(n-1) + a(n-2)
+https://en.wikipedia.org/wiki/Pell_number
+Number of lattice paths from (0,0) to the line x=n-1 consisting of U=(1,1), D=(1,-1) and H=(2,0) steps (i.e., left factors of Grand Schroeder paths)
+for example, a(3)=5, counting the paths H, UD, UU, DU and DD
+https://oeis.org/A048739 A000129 的前缀和
+
+https://oeis.org/A001333 Number of n-step non-selfintersecting paths starting at (0,0) with steps of types (1,0), (-1,0) or (0,1)
+https://codeforces.com/problemset/problem/954/F
+
 */
 
 /* 搜索+剪枝
