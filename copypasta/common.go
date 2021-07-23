@@ -355,8 +355,8 @@ func commonCollection() {
 	// https://codeforces.com/contest/1209/problem/E2
 	subSum := func(a []int) []int {
 		sum := make([]int, 1<<len(a)) // int64
-		for p, v := range a {
-			bit := 1 << p
+		for i, v := range a {
+			bit := 1 << i
 			for mask := 0; mask < bit; mask++ {
 				sum[bit|mask] = sum[mask] + v
 				// NOTE: 若要直接在此写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
@@ -876,8 +876,9 @@ func commonCollection() {
 		return false
 	}
 
-	// 扫描线
+	// 扫描线 Events Sorting + Sweep Line
 	// 常与树状数组、线段树、平衡树等数据结构结合
+	// https://en.wikipedia.org/wiki/Sweep_line_algorithm
 	// https://cses.fi/book/book.pdf 30.1
 	// TODO 窗口的星星 https://www.luogu.com.cn/problem/P1502
 	// TODO 矩形周长 https://www.luogu.com.cn/problem/P1856

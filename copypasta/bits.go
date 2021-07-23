@@ -46,6 +46,9 @@ Ordered set S defined by these rules: 0 is in S and if x is in S then 2x+1 and 4
 https://oeis.org/A086747 Baum-Sweet sequence
 相关题目：蒙德里安的梦想 https://www.acwing.com/problem/content/293/
 
+https://oeis.org/A048004 最长连续 1 为 k 的长为 n 的二进制串的个数
+相关题目：https://codeforces.com/problemset/problem/1027/E
+
 https://oeis.org/A047778 Concatenation of first n numbers in binary, converted to base 10
 相关题目：https://leetcode-cn.com/contest/weekly-contest-218/problems/concatenation-of-consecutive-binary-numbers/
 钱珀瑙恩数 Champernowne constant https://en.wikipedia.org/wiki/Champernowne_constant
@@ -163,7 +166,7 @@ type bitset []uint
 func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
 func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
 func (b bitset) flip(p int)          { b[p>>wLog] ^= 1 << (p & wMask) }
-func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) != 0 }
+func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) != 0 } // get
 
 // 下面几个方法均需保证长度相同
 func (b bitset) equals(c bitset) bool {
