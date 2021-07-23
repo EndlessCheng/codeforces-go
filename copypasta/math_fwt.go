@@ -2,6 +2,10 @@ package copypasta
 
 /* 快速沃尔什变换 fast Walsh–Hadamard transform, FWT, FWHT
 在算法竞赛中，FWT 是用于解决对下标进行【位运算卷积】问题的方法
+一个常见的应用场景是对频率数组求 FWT
+例如，求一个数组的三个元素的最大异或和，在值域不大的情况下，
+可以先求出该数组的频率数组与频率数组的 FWT，即得到两个元素的所有异或和（及组成该异或和的元素对数），
+然后枚举两元素异或和，在原数组的异或字典树上查询最大异或和
 https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
 https://oi-wiki.org/math/poly/fwt/
 https://www.luogu.com.cn/blog/CJL/fwt-xue-xi-bi-ji

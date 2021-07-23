@@ -240,6 +240,7 @@ func dpCollections() {
 	期望 DP https://codeforces.com/problemset/problem/1097/D
 	https://codeforces.com/problemset/problem/446/A
 	https://codeforces.com/problemset/problem/603/A
+	https://codeforces.com/problemset/problem/1120/C
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -1264,6 +1265,7 @@ func dpCollections() {
 	}
 
 	// 高维前缀和 SOS DP (Sum over Subsets)
+	// 给一个集合，对该集合的所有子集，计算该子集的所有子集之和（这个「和」不一定是加法，可以是其它的满足合并性质的统计量）
 	// https://codeforces.com/blog/entry/45223
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
@@ -1278,8 +1280,8 @@ func dpCollections() {
 	//  https://codeforces.com/problemset/problem/800/D
 	//  https://codeforces.com/problemset/problem/383/E
 	// https://codeforces.com/problemset/problem/1523/D
-	sos := func(a []int) {
-		// 从子集转移
+	sos := func(a []int) []int {
+		// 从子集转移的写法
 		const mx = 20 // bits.Len(uint(max(a))
 		dp := make([]int, 1<<mx)
 		for _, v := range a {
@@ -1288,18 +1290,23 @@ func dpCollections() {
 		for i := 0; i < mx; i++ {
 			for s := 0; s < 1<<mx; s++ {
 				s |= 1 << i
+				// 将 s 的子集 s^1<<i 的统计量合并到 s 中
 				dp[s] += dp[s^1<<i]
 			}
 		}
 
-		// 从超集转移
-		for i := 0; i < mx; i++ {
-			for s := 1<<mx - 1; s >= 0; s-- {
-				if s>>i&1 == 0 {
-					dp[s] += dp[s|1<<i]
+		{
+			// 从超集转移的写法
+			for i := 0; i < mx; i++ {
+				for s := 1<<mx - 1; s >= 0; s-- {
+					if s>>i&1 == 0 {
+						dp[s] += dp[s|1<<i]
+					}
 				}
 			}
 		}
+
+		return dp
 	}
 
 	/* 插头 DP（Plug DP）/ 轮廓线 DP（Broken Profile DP）
