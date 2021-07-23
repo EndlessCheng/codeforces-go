@@ -241,6 +241,7 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/446/A
 	https://codeforces.com/problemset/problem/603/A
 	https://codeforces.com/problemset/problem/1120/C
+	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115

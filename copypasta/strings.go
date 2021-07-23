@@ -9,9 +9,17 @@ import (
 	"unsafe"
 )
 
-// TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.com/contest/873/problem/F
+/*
+todo NOI 一轮复习 II：字符串 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-ii-zi-fu-chuan
+金策 字符串算法选讲 https://www.bilibili.com/video/BV11K4y1p7a5 https://www.bilibili.com/video/BV19541177KU
+    PDF 见 misc
 
-// 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
+TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.com/contest/873/problem/F
+
+斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
+
+https://en.wikipedia.org/wiki/Bitap_algorithm shift-or / shift-and / Baeza-Yates–Gonnet algorithm
+*/
 
 func stringCollection() {
 	min := func(a, b int) int {
@@ -78,6 +86,9 @@ func stringCollection() {
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/submissions/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
+	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B
+	// 与 DP 结合 https://codeforces.com/problemset/problem/1163/D
+	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	calcMaxMatchLengths := func(s []byte) []int {
@@ -306,7 +317,7 @@ func stringCollection() {
 			https://codeforces.com/problemset/problem/271/D
 			这题可以枚举每个后缀，跳过 height[i] 个字符，然后在前缀和上二分
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
-			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体细节见 main/edu/...
+			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体代码见 main/edu/2/suffixarray/step5/f/main.go
 		子串统计类题目
 			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
 			https://codeforces.com/problemset/problem/123/D (注：这是挑战上推荐的题目)
