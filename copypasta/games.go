@@ -28,6 +28,7 @@ todo 阶梯博弈 移动金币 https://www.luogu.com.cn/problem/P5363
 todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
+通过必败态去筛必胜态 https://ac.nowcoder.com/acm/contest/11166/A
 */
 func gameTheoryCollection() {
 	{
