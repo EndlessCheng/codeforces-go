@@ -841,7 +841,8 @@ func numberTheoryCollection() {
 
 	Squarefree numbers https://oeis.org/A005117 (介绍了一种筛法)
 	Numbers that are not divisible by a square greater than 1
-	Lim_{n->infinity} a(n)/n = Pi^2/6
+	https://en.wikipedia.org/wiki/Square-free_integer
+	Lim_{n->infinity} a(n)/n = Pi^2/6，即密度为 6/(Pi^2) ≈ 0.608
 
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
