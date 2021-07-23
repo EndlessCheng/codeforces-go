@@ -91,6 +91,7 @@ func TestCheck(t *testing.T) {
 	inputGenerator := func() (string, testutil.OutputChecker) {
 		//return ``
 		rg := testutil.NewRandGenerator()
+		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 5)
 		rg.NewLine()
 		a := rg.IntSlice(n, 0, 5)
