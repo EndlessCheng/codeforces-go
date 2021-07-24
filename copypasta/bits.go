@@ -34,7 +34,7 @@ Precedence    Operator
     2         &&
     1         ||
 
-一些子集的枚举算法见 loopCollection
+一些子集的枚举算法见 search.go
 S∪{i}: S|1<<i
 S\{i}:  S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
