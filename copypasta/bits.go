@@ -157,7 +157,7 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 */
 
 // 参考 strings/strings.go 中的 asciiSet
-const wLog = 5 // 32 位系统为 5，64 位系统为 6
+const wLog = 5 + bits.UintSize>>6
 const wMask = bits.UintSize - 1
 
 // b := make(bitset, n>>wLog+1)
