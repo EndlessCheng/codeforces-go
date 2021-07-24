@@ -38,29 +38,32 @@
     const words = [
         // 描述
         "Initially", "initially", "guaranteed", "No matter", "no matter",
-        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", "nothing",
+        "Not ", "not ", "don't", "didn't", "doesn't", "can't", "isn't", "aren't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", "nothing",
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
-        "every", " both ", " other ", " all ", "All ",
-        "equal", "same", "different", "unique", "distinct", "strictly",
-        "must", "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
-        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another", "as possible",
+        "every", " both ", " other ",
+        // " all ", "All ",
+        "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly",
+        "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
+        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another", "disjoint", "as possible",
+        "more than", "less than",
+        // "must",
 
         // 求解
+        "choose",
         "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
-        " small", " big", " large", " few",
-        "At least", "At most", "at least", "at most",
-        "more", "much",
+        // " small", " big", " large", " few",
+        "At least", "at least", "At most", "at most",
 
         // 特殊描述
         "Empty", "empty",
         "zero", "positive", "negative",
         "decreasing", "descending", "increasing", "ascending", "sorted",
-        "permutations", "permutation",
+        "permutation",
         "lowercase", "lower case", "uppercase", "upper case",
-        "lexicographically", "lexicographical", "palindrome",
+        "lexicographical", "palindrome",
         "undirected", "directed", "bidirectional",
-        "independently", "independent",
+        "independent",
         "expected value",
         " circle", " ring",
         "counterclockwise", "counter-clockwise", "clockwise",
@@ -101,6 +104,7 @@
                 .replaceAll("i.e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
+                .replaceAll("E. g. ", "E.g.") // see https://codeforces.com/contest/1551/problem/E
                 .replaceAll(". \\", ".\\") // 防止数学公式异常
                 .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
