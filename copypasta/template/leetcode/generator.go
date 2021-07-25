@@ -373,10 +373,10 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	// 注：官方描述可能会打错字（比如「输入」写成「输出」），这里只匹配第一个字
 	parseData := func(nodes []*html.Node) (data string) {
 		for _, o := range nodes {
-			s := o.Data
-			if o.DataAtom != 0 { // 如果有 tag（如 <code>），则取 tag 内的第一个元素
-				s = o.FirstChild.Data
+			for o.DataAtom != 0 { // https://leetcode-cn.com/contest/weekly-contest-251/problems/largest-number-after-mutating-substring/
+				o = o.FirstChild
 			}
+			s := o.Data
 			s = strings.TrimSpace(s)
 			data += s
 		}
