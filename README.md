@@ -375,6 +375,8 @@ https://www.luogu.com.cn/blog/command-block/blog-suo-yin-zhi-ding-post
 
 https://wcysai.github.io/
 
+https://www.luogu.com.cn/blog/Troverld/index
+
 ## 其他 Others
 
 My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_template)
@@ -410,6 +412,8 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 [How to Interpret Contest Ratings](https://codeforces.com/blog/entry/68288)
 
 [Codeforces: Problem Difficulties](https://codeforces.com/blog/entry/62865)
+
+[Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system#Theory)
 
 ### Keep Healthy
 
