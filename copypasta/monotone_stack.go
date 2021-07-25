@@ -12,18 +12,22 @@ package copypasta
 https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
-模板题 https://www.luogu.com.cn/problem/P5788
-      https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
-      https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
-      https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
-      NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
+模板题
+https://www.luogu.com.cn/problem/P5788
+https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
+https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
+https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
+NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
+
+与 DP 结合
+https://codeforces.com/problemset/problem/1313/C2
+https://codeforces.com/problemset/problem/1407/D
+结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
+
 柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 最大全 1 矩形 LC85（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/
 接雨水 LC42 https://leetcode-cn.com/problems/trapping-rain-water/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
-与 DP 结合
-    https://codeforces.com/problemset/problem/1313/C2
-    https://codeforces.com/problemset/problem/1407/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
 全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
