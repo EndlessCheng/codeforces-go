@@ -1,6 +1,6 @@
 # AcWing 竞赛
 
-Compiler info: go1.13.6, linux, 64-bit
+Compiler info: go1.13.6, linux, amd64
 
 |比赛名称|过题|排名|
 |---|---|---|

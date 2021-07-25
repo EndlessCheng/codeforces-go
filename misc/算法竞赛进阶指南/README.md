@@ -4,4 +4,4 @@
 
 [提交地址](https://www.acwing.com/activity/content/punch_the_clock/6/)
 
-AcWing compiler info: go1.13.6, 64-bit
+AcWing compiler info: go1.13.6, linux, amd64

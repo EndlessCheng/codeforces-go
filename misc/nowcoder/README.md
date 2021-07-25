@@ -1,6 +1,6 @@
 # 牛客竞赛
 
-Compiler info: go1.14.4, linux, 64-bit
+Compiler info: go1.14.4, linux, amd64
 
 ## S1 赛季
 
