@@ -43,30 +43,27 @@ func deleteDuplicateFolder(paths [][]string) (ans [][]string) {
 		}
 	}
 
-	folders := map[string][]*folder{} // 存储括号表达式及其对应的文件夹节点列表
+	fMap := map[string]*folder{} // 存储括号表达式及其对应的文件夹节点
 	var dfs func(*folder) string
 	dfs = func(f *folder) string {
 		if f.son == nil {
 			return "(" + f.val + ")"
 		}
-		expr := []string{}
+		expr := make([]string, 0, len(f.son))
 		for _, son := range f.son {
 			expr = append(expr, dfs(son))
 		}
 		sort.Strings(expr)
 		subTreeExpr := strings.Join(expr, "") // 按字典序拼接所有子树
-		folders[subTreeExpr] = append(folders[subTreeExpr], f)
+		if o := fMap[subTreeExpr]; o != nil {
+			o.del = true
+			f.del = true
+		} else {
+			fMap[subTreeExpr] = f
+		}
 		return "(" + f.val + subTreeExpr + ")"
 	}
 	dfs(root)
-
-	for _, fs := range folders {
-		if len(fs) > 1 { // 将括号表达式对应的节点个数大于 1 的节点全部删除
-			for _, f := range fs {
-				f.del = true
-			}
-		}
-	}
 
 	// 再次 DFS 这颗字典树，仅访问未被删除的节点，并将路径记录到答案中
 	path := []string{}
