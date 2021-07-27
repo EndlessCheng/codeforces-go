@@ -1121,6 +1121,7 @@ func dpCollections() {
 	*/
 
 	// 任意排列 DP
+	// https://codeforces.com/problemset/problem/1215/E
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
 	permDP := func(a []int) int {
