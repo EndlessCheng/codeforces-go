@@ -43,7 +43,7 @@
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
         // " all ", "All ",
-        "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly",
+        "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly", "overlapping", "overlap",
         "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another", "disjoint", "as possible",
         "more than", "less than",
@@ -56,6 +56,7 @@
         "At least", "at least", "At most", "at most",
 
         // 特殊描述
+        "substring", "subarray", // "subsequence",
         "Empty", "empty",
         "zero", "positive", "negative",
         "decreasing", "descending", "increasing", "ascending", "sorted",
