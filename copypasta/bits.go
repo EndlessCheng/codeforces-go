@@ -202,6 +202,9 @@ func bitsCollection() {
 	// 1,2,4,8,...
 	isPow2 := func(v int64) bool { return v > 0 && v&(v-1) == 0 }
 
+	// 是否有两个相邻的 1
+	hasAdjacentOnes := func(v int) bool { return v>>1&v > 0 }
+
 	bits31 := func(v int) []byte {
 		bits := make([]byte, 31)
 		for i := range bits {
@@ -410,7 +413,7 @@ func bitsCollection() {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isPow2, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
