@@ -29,6 +29,16 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
 ∑i*q^(i-1) = n*q^n - (q^n-1)/(q-1)
 
+https://oeis.org/A000079 2^n
+虽然是个很普通的序列，但也能出现在一些意想不到的地方
+例如，在该页面搜索 permutation 可以找到一些有趣的计数问题
+a(n) is the number of permutations on [n+1] such that every initial segment is an interval of integers.（每个前缀都对应一段连续的整数）
+Example: a(3) counts 1234, 2134, 2314, 2341, 3214, 3241, 3421, 4321.
+The map "p -> ascents of p" is a bijection from these permutations to subsets of [n].
+An ascent of a permutation p is a position i such that p(i) < p(i+1).
+The permutations shown map to 123, 23, 13, 12, 3, 2, 1 and the empty set respectively.
+相关题目 https://codeforces.com/problemset/problem/1515/E
+
 https://oeis.org/A001787 n*2^(n-1) = ∑i*C(n,i)   number of ones in binary numbers 1 to 111...1 (n bits)
 https://oeis.org/A000337 ∑i*2^(i-1) = (n-1)*2^n+1
 https://oeis.org/A036799 ∑i*2^i = (n-1)*2^(n+1)+2 = A000337(n)*2
@@ -1510,7 +1520,7 @@ func numberTheoryCollection() {
 	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
 
 	// 线性求逆元·其一
-	// 求 1, 2, ..., p−1 mod p 的逆元
+	// 求 1^-1, 2^-1, ..., (p−1)^-1 mod p
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
 	// 模板题 https://www.luogu.com.cn/problem/P3811
