@@ -24,12 +24,12 @@ https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
 
-柱状图中最大的矩形 LC84 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
-最大全 1 矩形 LC85（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/
-接雨水 LC42 https://leetcode-cn.com/problems/trapping-rain-water/
+LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
+LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
+LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
+LC1504/周赛196C 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
-全 1 子矩阵个数 O(n^2) LC周赛196C https://leetcode-cn.com/contest/weekly-contest-196/problems/count-submatrices-with-all-ones/ 原题为 http://poj.org/problem?id=3494
 已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
 */
 func monotoneStack(a []int) ([]int, []int) {
@@ -105,7 +105,7 @@ func permPosLR(a []int) ([]int, []int) {
 func maximalRectangleArea(mat [][]int) (ans int) {
 	const target = 1
 	n, m := len(mat), len(mat[0])
-	heights := make([][]int, n) // heights[i][j] 表示从 (i,j) 往上看的高度，a[i][j] = 0 时为 0
+	heights := make([][]int, n) // heights[i][j] 表示从 (i,j) 往上看的高度（连续 1 的长度），mat[i][j] = 0 时为 0
 	for i, row := range mat {
 		heights[i] = make([]int, m)
 		for j, v := range row {
@@ -119,6 +119,7 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 		}
 	}
 
+	// 然后枚举每一行，就变成 LC84 这题了
 	type pair struct{ h, i int }
 	for _, hs := range heights {
 		posL := make([]int, m)
@@ -147,9 +148,44 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 			stack = append(stack, pair{h, j})
 		}
 		for j, h := range hs {
-			if s := (posR[j] - posL[j] - 1) * h; s > ans {
-				ans = s
+			if area := (posR[j] - posL[j] - 1) * h; area > ans {
+				ans = area
 			}
+		}
+	}
+	return
+}
+
+// 全 1 矩形个数
+// LC1504/周赛196C https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+// 参考 https://leetcode.com/problems/count-submatrices-with-all-ones/discuss/720265/Java-Detailed-Explanation-From-O(MNM)-to-O(MN)-by-using-Stack
+func numSubmat(mat [][]int) (ans int) {
+	m := len(mat[0])
+	heights := make([]int, m)
+	for _, row := range mat {
+		sum := make([]int, m)
+		type pair struct{ h, j int }
+		stack := []pair{{-1, -1}}
+		for j, v := range row {
+			if v == 0 {
+				heights[j] = 0
+			} else {
+				heights[j]++
+			}
+			h := heights[j]
+			for {
+				if top := stack[len(stack)-1]; top.h < h {
+					if pre := top.j; pre < 0 {
+						sum[j] = (j + 1) * h
+					} else {
+						sum[j] = sum[pre] + (j-pre)*h
+					}
+					ans += sum[j]
+					break
+				}
+				stack = stack[:len(stack)-1]
+			}
+			stack = append(stack, pair{h, j})
 		}
 	}
 	return
