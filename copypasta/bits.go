@@ -156,17 +156,36 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 按位归纳 https://codeforces.com/problemset/problem/925/C
 */
 
-// 参考 strings/strings.go 中的 asciiSet
 const wLog = 5 + bits.UintSize>>6
 const wMask = bits.UintSize - 1
 
 // b := make(bitset, n>>wLog+1)
 type bitset []uint
 
-func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
-func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
 func (b bitset) flip(p int)          { b[p>>wLog] ^= 1 << (p & wMask) }
 func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) != 0 } // get
+func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
+func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
+
+// 不存在时会返回一个不小于 n 的位置
+func (b bitset) index1() int {
+	for i, mask := range b {
+		if mask != 0 {
+			return i<<wLog | bits.TrailingZeros(mask)
+		}
+	}
+	return len(b) << wLog
+}
+
+// 不存在时会返回一个不小于 n 的位置
+func (b bitset) index0() int {
+	for i, mask := range b {
+		if ^mask != 0 {
+			return i<<wLog | bits.TrailingZeros(^mask)
+		}
+	}
+	return len(b) << wLog
+}
 
 // 下面几个方法均需保证长度相同
 func (b bitset) equals(c bitset) bool {
