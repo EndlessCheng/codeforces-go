@@ -38,10 +38,9 @@ func CF1515E(in io.Reader, out io.Writer) {
 			}
 			cur[j][0] %= mod
 			cur[j][1] = pre[j-1][0] * int64(j) % mod
-			for k := 2; k < j; k++ {
+			for k := 2; k <= j; k++ {
 				cur[j][k] = pre[j-1][k-1] * int64(j) * 2 % mod * inv[k] % mod
 			}
-			cur[j][j] = pre[j-1][j-1] * 2 % mod
 		}
 	}
 	for _, r := range dp[n&1] {
