@@ -9,6 +9,7 @@ import (
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 参考 Competitive Programmer’s Handbook Ch.27
 
+题目花样很多，下面举个例子
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
 为方便起见，假设 ∑ci 的数量级和 n 一样，下面用 n 表示 ∑ci
 当 ci > √n 时，这样的对象不超过 √n 个，暴力枚举这些对象之间的关系（或者，该对象与其他所有对象的关系），时间复杂度为 O(n) 或 O(n√n)。此乃算法一
@@ -17,13 +18,15 @@ import (
 这两种算法是看待同一个问题的两种不同方式，通过恰当地组合这两个算法，复杂度由 O(n^2) 降至 O(n√n)
 注意：**枚举时要做到不重不漏**
 
-另一种题型是注意到 n 的整数分拆中，不同数字的个数至多有 O(√n) 种
+可以从这题上手 https://codeforces.com/problemset/problem/797/E
 
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
 https://codeforces.com/problemset/problem/1468/M 或四元环
 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 */
+
+// TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
 /*
 分块数据结构
