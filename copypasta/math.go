@@ -2575,15 +2575,34 @@ https://oeis.org/A018819 Binary partition function: number of partitions of n in
 	相关题目 https://www.luogu.com.cn/problem/P6065 http://poj.org/problem?id=2229
 https://oeis.org/A000740 将 n 分拆成若干互质整数的方法数 a(n) = sum_{d|n} mu(n/d)*2^(d-1)
 
-	质数分拆
-	https://oeis.org/A000607 Number of partitions of n into prime parts
-		https://www.luogu.com.cn/problem/P1832
-	https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
-	https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
-	https://oeis.org/A068307 number of partitions of n into a sum of three primes
-	https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
-	https://oeis.org/A023022 Number of partitions of n into two relatively prime parts
-		a(n) = phi(n)/2 for n >= 3
+华林问题 Waring's problem
+https://en.wikipedia.org/wiki/Waring%27s_problem
+https://oeis.org/A002804 (Presumed) solution to Waring's problem: g(k) = 2^k + floor((3/2)^k) - 2
+g(k) is the smallest number s such that every natural number is the sum of at most s k-th powers of natural numbers
+k=2 https://oeis.org/A002828 Least number of squares that add up to n
+	https://oeis.org/A000415 Numbers that are the sum of 2 but no fewer nonzero squares
+	https://oeis.org/A000419 Numbers that are the sum of 3 but no fewer nonzero squares
+	https://oeis.org/A004215 Numbers that are the sum of 4 but no fewer nonzero squares
+	四平方和定理 Lagrange's four-square theorem https://en.wikipedia.org/wiki/Lagrange%27s_four-square_theorem
+	https://oeis.org/A006431 Numbers that have a unique partition into a sum of four non-negative squares
+k=3 https://oeis.org/A002376 Least number of positive cubes needed to represent n
+k=4 https://oeis.org/A002377 Least number of 4th powers needed to represent n
+
+	贪心分拆
+	Number of positive k-th powers needed to sum to n using the greedy algorithm
+	k=2 https://oeis.org/A053610 Records https://oeis.org/A006892
+	k=3 https://oeis.org/A055401 Records https://oeis.org/A055402
+		相关题目 https://codeforces.com/problemset/problem/679/B
+
+质数分拆
+https://oeis.org/A000607 Number of partitions of n into prime parts
+	https://www.luogu.com.cn/problem/P1832
+https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
+https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
+https://oeis.org/A068307 number of partitions of n into a sum of three primes
+https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes
+https://oeis.org/A023022 Number of partitions of n into two relatively prime parts
+	a(n) = phi(n)/2 for n >= 3
 
 https://oeis.org/A000404 Numbers that are the sum of 2 nonzero squares
 https://oeis.org/A003325 Numbers that are the sum of 2 positive cubes
