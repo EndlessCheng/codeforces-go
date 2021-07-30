@@ -716,6 +716,23 @@ func dpCollections() {
 		return (dp[len(s)] + mod - 1) % mod // 去掉空序列
 	}
 
+	// 滚动数组写法
+	distinctSubsequence = func(s string) int {
+		const mod int = 1e9 + 7
+		last := make([]int, 26)
+		dp := 1
+		for _, v := range s {
+			v -= 'a'
+			res := dp - last[v]
+			if res < 0 {
+				res += mod
+			}
+			dp = (dp + res) % mod
+			last[v] = (last[v] + res) % mod
+		}
+		return (dp + mod - 1) % mod // 去掉空序列
+	}
+
 	// 回文串最小分割次数
 	// 紫书例题 9-7，UVa 11584 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=27&page=show_problem&problem=2631
 	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
