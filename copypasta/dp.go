@@ -690,35 +690,30 @@ func dpCollections() {
 	}
 
 	// 本质不同子序列个数
-	// 定义 dp[i][j] 表示前 i 个字符中长度为 j 的本质不同子序列个数
-	// 转移 dp[i][j] = dp[i-1][j]（不选第 i 个字符）+ dp[i-1][j-1] - dp[prev[i]-1][j-1]（选第 i 个字符）
-	// 其中 prev[i] 为 s[i] 的上一个相同字符位置
+	// https://stackoverflow.com/questions/5151483/how-to-find-the-number-of-distinct-subsequences-of-a-string
+	// 定义 dp[i] 表示前 i 个元素中的本质不同子序列个数
+	// 模板题 LC940 https://leetcode-cn.com/problems/distinct-subsequences-ii/
 	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
 	// https://codeforces.com/problemset/problem/1183/H
-	distinctSubsequence := func(s string) int64 {
-		n := len(s)
-		prev := [26]int{}
-		dp := make([][]int64, n+1)
-		for i := range dp {
-			dp[i] = make([]int64, n+1)
+	// 需要一点构造能力 https://codeforces.com/problemset/problem/645/E
+	distinctSubsequence := func(s string) int {
+		const mod int = 1e9 + 7
+		last := make([]int, 26)
+		for i := range last {
+			last[i] = -1
 		}
-		dp[0][0] = 1
-		for i := 1; i <= n; i++ {
-			c := s[i-1] - 'a'
-			dp[i][0] = 1
-			for j := 1; j <= i; j++ {
-				dp[i][j] = dp[i-1][j] + dp[i-1][j-1]
-				if p := prev[c]; p > 0 {
-					dp[i][j] -= dp[p-1][j-1]
-				}
+		dp := make([]int, len(s)+1)
+		dp[0] = 1
+		for i, v := range s {
+			v -= 'a'
+			dp[i+1] = dp[i] * 2
+			if p := last[v]; p >= 0 {
+				dp[i+1] -= dp[p]
 			}
-			prev[c] = i
+			dp[i+1] = (dp[i+1]%mod + mod) % mod
+			last[v] = i
 		}
-		sum := int64(0)
-		for _, cnt := range dp[n][1:] { // 不计入空字符串
-			sum += cnt
-		}
-		return sum
+		return (dp[len(s)] + mod - 1) % mod // 去掉空序列
 	}
 
 	// 回文串最小分割次数
@@ -1098,6 +1093,7 @@ func dpCollections() {
 	https://en.wikipedia.org/wiki/Optional_stopping_theorem
 	todo https://codeforces.com/blog/entry/62690
 	     https://codeforces.com/blog/entry/62792
+	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
 	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
 	*/
