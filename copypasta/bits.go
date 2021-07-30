@@ -247,6 +247,22 @@ func bitsCollection() {
 		return
 	}
 
+	// 返回最小的非负 x，其满足 n^x >= m
+	// https://codeforces.com/problemset/problem/1554/C
+	leastXor := func(n, m int) (res int) {
+		for i := 29; i >= 0; i-- { // 29 for 1e9
+			bn, bm := n>>i&1, m>>i&1
+			if bn == 1 && bm == 0 { // 后面都填 0
+				break
+			}
+			if bn == 0 && bm == 1 { // 必须填 1
+				res |= 1 << i
+			}
+			// bn = bm 的情况填 0
+		}
+		return
+	}
+
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
 	// 利用操作的单调性求解
 	// 复杂度 O(f * n * logU)，f 为 op(x,y) 的时间复杂度，n 为 a 的长度，U 为 a 中元素最大值
@@ -438,7 +454,7 @@ func bitsCollection() {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, digitSum, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, digitSum, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
