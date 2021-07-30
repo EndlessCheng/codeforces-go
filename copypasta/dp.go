@@ -895,8 +895,34 @@ func dpCollections() {
 	}
 
 	// 0-1 背包 EXTRA: 价值主导的 0-1 背包
+	// 适用于背包容量很大，但是物品价值不高的情况
 	// 把重量看成价值，价值看成重量，求同等价值下能得到的最小重量，若该最小重量不超过背包容量，则该价值合法。所有合法价值的最大值即为答案
+	// 时间复杂度 O(n * sum(values)) 或 O(n^2 * maxV)
 	// https://atcoder.jp/contests/dp/tasks/dp_e
+	zeroOneKnapsackByValue := func(values, weights []int, maxW int) int {
+		totValue := 0
+		for _, v := range values {
+			totValue += v
+		}
+		dp := make([]int, totValue+1) // int64
+		for i := range dp {
+			dp[i] = 1e18
+		}
+		dp[0] = 0
+		totValue = 0
+		for i, v := range values {
+			w := weights[i]
+			totValue += v
+			for j := totValue; j >= v; j-- {
+				dp[j] = min(dp[j], dp[j-v]+w)
+			}
+		}
+		for i := totValue; ; i-- {
+			if dp[i] <= maxW {
+				return i
+			}
+		}
+	}
 
 	// 完全背包
 	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
@@ -2149,7 +2175,7 @@ func dpCollections() {
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, lcis, lcisPath, countLIS, distinctSubsequence, minPalindromeCut,
 
-		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult,
+		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary,
 		groupKnapsack,
