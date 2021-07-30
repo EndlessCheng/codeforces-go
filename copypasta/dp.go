@@ -779,6 +779,9 @@ func dpCollections() {
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
+	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
+	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值
+	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// NOIP06·提高 金明的预算方案（也可以用树上背包做）https://www.luogu.com.cn/problem/P1064
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
