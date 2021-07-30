@@ -1278,6 +1278,7 @@ func dpCollections() {
 	//    思路是转换成求每个 ai 的补集的 SOS
 	//    注：另一种解法是求 FWT(cnt)[0]
 	// 转换成求集合中最大次大 https://atcoder.jp/contests/arc100/tasks/arc100_c
+	// 求下标最大次大，且不需要在乎 k 的上限的写法 https://codeforces.com/problemset/problem/1554/B
 	// https://codeforces.com/problemset/problem/165/E
 	// 容斥 https://codeforces.com/problemset/problem/449/D
 	// todo https://codeforces.com/problemset/problem/1208/F
@@ -1305,6 +1306,25 @@ func dpCollections() {
 				for s := 1<<mx - 1; s >= 0; s-- {
 					if s>>i&1 == 0 {
 						dp[s] += dp[s|1<<i]
+					}
+				}
+			}
+		}
+
+		{
+			// 维护集合最大和次大的写法
+			type pair struct{ fi, se int }
+			dp := make([]pair, 1<<mx)
+			for i := 0; i < mx; i++ {
+				for s := 0; s < 1<<mx; s++ {
+					s |= 1 << i
+					p, q := dp[s], dp[s^1<<i]
+					if q.se > p.fi {
+						dp[s] = q
+					} else if q.fi > p.fi {
+						dp[s] = pair{q.fi, p.fi}
+					} else if q.fi > p.se {
+						dp[s].se = q.fi
 					}
 				}
 			}
@@ -1550,9 +1570,47 @@ func dpCollections() {
 	}
 
 	/* 倍增优化 DP
+	模板题 https://codeforces.com/problemset/problem/1175/E
 	开车旅行 https://www.luogu.com.cn/problem/P1081
 	计算重复 https://www.acwing.com/problem/content/296/
 	*/
+	binaryLifting := func(segs, qs []struct{ l, r int }) []int {
+		// 以 CF1175E 为例
+		const mx = 19
+		f := make([][mx]int, 5e5+1)
+		for _, s := range segs {
+			l, r := s.l, s.r
+			f[l][0] = max(f[l][0], r)
+		}
+		// 前缀最大值（最右）
+		for i := 1; i < len(f); i++ {
+			f[i][0] = max(f[i][0], f[i-1][0])
+		}
+		// 倍增
+		for i := 0; i+1 < mx; i++ {
+			for p := range f {
+				f[p][i+1] = f[f[p][i]][i]
+			}
+		}
+
+		ans := make([]int, len(qs))
+		for qi, q := range qs {
+			l, r := q.l, q.r
+			res := 0
+			for i := mx - 1; i >= 0; i-- {
+				if f[l][i] < r {
+					l = f[l][i]
+					res |= 1 << i
+				}
+			}
+			if f[l][0] >= r {
+				ans[qi] = res + 1
+			} else {
+				ans[qi] = -1
+			}
+		}
+		return ans
+	}
 
 	/* 数据结构优化 DP
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
@@ -2086,6 +2144,8 @@ func dpCollections() {
 		permDP, tsp, countCycle, subsubDP, sos, plugDP,
 
 		digitDP, kth666,
+
+		binaryLifting,
 
 		cht,
 
