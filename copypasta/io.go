@@ -10,6 +10,10 @@ import (
 )
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
+// 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
+// 对比：（3e4 个 int）
+// 623ms https://codeforces.com/problemset/submission/981/124239306
+// 233ms https://codeforces.com/problemset/submission/981/124237530
 func bufferIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
@@ -22,7 +26,7 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 }
 
 // 快读，适用于输入量巨大的题目
-// 相比 Fscan，每读入 1e6 个 int 可以加速约 400~450ms（Codeforces/AtCoder）
+// 相比 fmt.Fscan，每读入 1e6 个 int 可以加速约 400~450ms（Codeforces/AtCoder）
 func fastIO(_r io.Reader, _w io.Writer) {
 	in := bufio.NewScanner(_r)
 	in.Split(bufio.ScanWords)
