@@ -240,13 +240,6 @@ func bitsCollection() {
 	_bits31 := func(v int) string { return Sprintf("%031b", v) }
 	_bits32 := func(v uint) string { return Sprintf("%032b", v) }
 
-	digitSum := func(v int) (s int) {
-		for ; v > 0; v /= 10 {
-			s += v % 10
-		}
-		return
-	}
-
 	// 返回最小的非负 x，其满足 n^x >= m
 	// https://codeforces.com/problemset/problem/1554/C
 	leastXor := func(n, m int) (res int) {
@@ -454,7 +447,7 @@ func bitsCollection() {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, digitSum, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
