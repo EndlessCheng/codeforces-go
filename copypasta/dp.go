@@ -41,6 +41,7 @@ import (
    LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
    状态优化 https://codeforces.com/problemset/problem/838/E
   「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
+   https://codeforces.com/problemset/problem/1542/D
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -243,6 +244,8 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/603/A
 	https://codeforces.com/problemset/problem/1120/C
 	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
+	https://codeforces.com/problemset/problem/1168/C
+	https://codeforces.com/problemset/problem/1542/D
 	*/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
@@ -385,6 +388,7 @@ func dpCollections() {
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
+	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
