@@ -228,13 +228,14 @@ func dpCollections() {
 	983/周赛121C https://leetcode-cn.com/problems/minimum-cost-for-tickets/ https://leetcode-cn.com/contest/weekly-contest-121/
 	双周赛38D https://leetcode-cn.com/contest/biweekly-contest-38/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
 	③ 一些题目
-	最大整除子集 LC368 https://leetcode-cn.com/problems/largest-divisible-subset/
-	编辑距离 LC72 https://leetcode-cn.com/problems/edit-distance/
-	最高的广告牌 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+	LC72 编辑距离 https://leetcode-cn.com/problems/edit-distance/
+	LC368 最大整除子集 https://leetcode-cn.com/problems/largest-divisible-subset/
+	LC920 播放列表的数量 https://leetcode-cn.com/problems/number-of-music-playlists/
+	LC956/周赛114D 最高的广告牌 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	LC1531/周赛199D 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
-	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
-	看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	期望 DP https://codeforces.com/problemset/problem/235/B
 	期望 DP https://codeforces.com/problemset/problem/1097/D
@@ -1734,8 +1735,9 @@ func dpCollections() {
 		return dp[n-1]
 	}
 
-	// 四边形不等式优化
+	// 四边形不等式优化 Knuth's Optimization
 	// https://oi-wiki.org/dp/opt/quadrangle/
+	// https://jeffreyxiao.me/blog/knuths-optimization
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
