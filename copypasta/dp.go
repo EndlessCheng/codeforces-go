@@ -1320,9 +1320,12 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/45223
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
+	// https://codeforces.com/problemset/problem/1234/F
+	//    求满足 ai&aj=0 的 ai|aj 的二进制 1 的个数的最大值
+	//    思路是转换成求每个 ai 的补集的 SOS，维护子集二进制长度的最大值
 	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
 	//    求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
-	//    思路是转换成求每个 ai 的补集的 SOS
+	//    思路和上面类似，转换成求每个 ai 的补集的 SOS
 	//    注：另一种解法是求 FWT(cnt)[0]
 	// 转换成求集合中最大次大 https://atcoder.jp/contests/arc100/tasks/arc100_c
 	// 求下标最大次大，且不需要在乎 k 的上限的写法 https://codeforces.com/problemset/problem/1554/B
