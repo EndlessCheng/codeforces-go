@@ -1322,7 +1322,7 @@ func dpCollections() {
 	//
 	// https://codeforces.com/problemset/problem/1234/F
 	//    求满足 ai&aj=0 的 ai|aj 的二进制 1 的个数的最大值
-	//    思路是转换成求每个 ai 的补集的 SOS，维护子集二进制长度的最大值
+	//    思路是转换成求每个 ai 的补集的 SOS，维护子集二进制 1 的个数的最大值
 	// https://www.hackerearth.com/zh/problem/algorithm/special-pairs-5-3ee6b3fe-3d8a1606/
 	//    求 ai&aj=0 的 (i,j) 对数，0<=ai<=1e6
 	//    思路和上面类似，转换成求每个 ai 的补集的 SOS
