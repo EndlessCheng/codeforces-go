@@ -14,7 +14,7 @@ import "sort"
 
 利用平方和公式，可以得到半边长为 $n$ 的正方形内的苹果个数为 $2n(n+1)(2n+1)$。
 
-然后二分判断即可，对于本题的数据范围，二分的上界为 $503968$。
+然后二分判断即可，对于本题的数据范围，二分的上界为 62996。
 
 求出半边长后，乘上 $8$ 即得到了正方形的周长。
 
@@ -22,5 +22,5 @@ import "sort"
 
 // github.com/EndlessCheng/codeforces-go
 func minimumPerimeter(neededApples int64) int64 {
-	return int64(8 * sort.Search(503968, func(n int) bool { return 2*n*(n+1)*(2*n+1) >= int(neededApples) }))
+	return int64(8 * sort.Search(62996, func(n int) bool { return 2*n*(n+1)*(2*n+1) >= int(neededApples) }))
 }
