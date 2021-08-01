@@ -42,6 +42,7 @@
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
+        "Also", "also",
         // " all ", "All ",
         "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly", "overlapping", "overlap",
         "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
