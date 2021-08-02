@@ -238,8 +238,6 @@ func dpCollections() {
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
-	期望 DP https://codeforces.com/problemset/problem/235/B
-	期望 DP https://codeforces.com/problemset/problem/1097/D
 	https://codeforces.com/problemset/problem/446/A
 	https://codeforces.com/problemset/problem/603/A
 	https://codeforces.com/problemset/problem/1120/C
@@ -1144,6 +1142,14 @@ func dpCollections() {
 	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
 	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
+
+	概率
+	https://codeforces.com/problemset/problem/678/E
+
+	期望
+	https://codeforces.com/problemset/problem/235/B
+	https://codeforces.com/problemset/problem/908/D
+	https://codeforces.com/problemset/problem/1097/D
 	*/
 
 	/* 状压 DP
