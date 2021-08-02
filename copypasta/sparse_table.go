@@ -12,6 +12,7 @@ https://codeforces.com/blog/entry/66643
 
 模板题 https://www.luogu.com.cn/problem/P3865
 变长/种类 https://www.jisuanke.com/contest/11346/challenges
+GCD https://codeforces.com/contest/1548/problem/B
 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 */
 func sparseTableCollections() {
