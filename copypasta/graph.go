@@ -402,14 +402,13 @@ func (*graph) bfs(n, st int, g [][]int) {
 }
 
 // 字典序最小最短路
-// 理想路径（NEERC10）https://codeforces.com/gym/101309 I 题
 // 入门经典第二版 p.173
+// 理想路径（NEERC10）https://codeforces.com/gym/101309 I 题
 // 从终点倒着 BFS 求最短路，然后从起点开始一层一层向终点走，每一步都选颜色最小的，并记录最小颜色对应的所有节点，供下一层遍历
 // 如果求的是字典序最小的顶点，每一步需选择符合 dis[w] == dis[v]-1 的下标最小的顶点
 func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int }, st, end int) []int {
-	n := len(g)
 	const inf int = 1e9
-	dis := make([]int, n)
+	dis := make([]int, len(g))
 	for i := range dis {
 		dis[i] = inf
 	}
@@ -426,25 +425,29 @@ func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int 
 		}
 	}
 
+	if dis[st] == inf {
+		return nil
+	}
+
 	colorPath := []int{}
-	next := []int{st}
-	inN := make([]bool, n)
-	inN[st] = true
+	check := []int{st}
+	inC := make([]bool, len(g))
+	inC[st] = true
 	for loop := dis[st]; loop > 0; loop-- {
 		minC := inf
-		tmp := next
-		next = nil
+		tmp := check
+		check = nil
 		for _, v := range tmp {
 			for _, e := range g[v] {
 				if w, c := e.to, e.color; dis[w] == dis[v]-1 {
 					if c < minC {
-						for _, w := range next {
-							inN[w] = false
+						for _, w := range check {
+							inC[w] = false
 						}
-						minC, next, inN[w] = c, []int{w}, true
-					} else if c == minC && !inN[w] {
-						next = append(next, w)
-						inN[w] = true
+						minC, check, inC[w] = c, []int{w}, true
+					} else if c == minC && !inC[w] {
+						check = append(check, w)
+						inC[w] = true
 					}
 				}
 			}
