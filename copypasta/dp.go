@@ -237,6 +237,7 @@ func dpCollections() {
 	LC1531/周赛199D 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
 	数字三角形 https://www.luogu.com.cn/problem/P1216
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
+	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	https://codeforces.com/problemset/problem/446/A
 	https://codeforces.com/problemset/problem/603/A
@@ -1205,6 +1206,7 @@ func dpCollections() {
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
 	// https://codeforces.com/problemset/problem/1185/G1
+	// LC847 https://leetcode-cn.com/problems/shortest-path-visiting-all-nodes/
 	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
 	// 建模转换题 LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	//          LCP13 https://leetcode-cn.com/problems/xun-bao/
@@ -1214,11 +1216,10 @@ func dpCollections() {
 	//        添加一个节点 https://stackoverflow.com/questions/14527815/how-to-fix-the-start-and-end-points-in-travelling-salesmen-problem
 	//        设置距离 https://stackoverflow.com/questions/36086406/traveling-salesman-tsp-with-set-start-and-end-point
 	tsp := func(dist [][]int, st int) []int {
-		n := len(dist)
 		const inf int = 1e9 // 1e18
-		dp := make([][]int, 1<<n)
+		dp := make([][]int, 1<<len(dist))
 		for i := range dp {
-			dp[i] = make([]int, n)
+			dp[i] = make([]int, len(dist))
 			for j := range dp[i] {
 				dp[i][j] = inf
 			}
