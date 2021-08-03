@@ -48,6 +48,7 @@
         "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another", "disjoint", "as possible",
         "more than", "less than",
+        "except",
         // "must",
 
         // 求解
