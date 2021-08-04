@@ -23,7 +23,7 @@ func CF678E(_r io.Reader, out io.Writer) {
 
 	f := make([]float64, 1<<n)
 	f[1] = 1
-	for i := range f {
+	for i := 3; i < 1<<n; i += 2 {
 		for s, lb := i, 0; s > 0; s ^= lb {
 			lb = s & -s
 			x := bits.TrailingZeros(uint(lb))
