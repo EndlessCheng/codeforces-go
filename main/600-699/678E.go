@@ -23,7 +23,7 @@ func CF678E(_r io.Reader, out io.Writer) {
 
 	f := make([]float64, 1<<n)
 	f[1] = 1
-	for i := 3; i < 1<<n; i += 2 {
+	for i := 3; i < 1<<n; i += 2 { // 只计算集合中有 1 的（即奇数），因为 f[集合不含 1] 一定是 0
 		for s, lb := i, 0; s > 0; s ^= lb {
 			lb = s & -s
 			x := bits.TrailingZeros(uint(lb))
