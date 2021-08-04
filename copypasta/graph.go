@@ -3372,6 +3372,7 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // https://codeforces.com/problemset/problem/1105/E
 func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图
+	// 传入的 g 为状压后的邻接矩阵
 	// 定义 f(s) 为 s 的所有子集中最大团的大小
 	// 则转移时要么不取 lb（low bit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
 	// 将这一过程记忆化可大幅减少运行时间，理由如下：
