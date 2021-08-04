@@ -46,7 +46,7 @@
         // " all ", "All ",
         "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly", "overlapping", "overlap",
         "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
-        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "contiguous", "one after another", "disjoint", "as possible",
+        "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "continuous", "contiguous", "one after another", "disjoint", "as possible",
         "more than", "less than",
         "except",
         // "must",
