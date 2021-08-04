@@ -1172,6 +1172,8 @@ func dpCollections() {
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
 	https://en.wikipedia.org/wiki/Hamiltonian_path_problem
+
+	求最大团/最大独立集的记忆化写法见 graph.go
 	*/
 
 	// 任意排列 DP

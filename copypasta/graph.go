@@ -4,6 +4,7 @@ import (
 	"container/heap"
 	. "fmt"
 	"io"
+	"math/bits"
 	"sort"
 )
 
@@ -933,6 +934,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 //
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
+//       LC743 https://leetcode-cn.com/problems/network-delay-time/
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
@@ -1787,10 +1789,13 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
 https://en.wikipedia.org/wiki/Maximum_weight_matching
 https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
+https://en.wikipedia.org/wiki/Maximal_independent_set
 https://en.wikipedia.org/wiki/Edge_cover
 https://en.wikipedia.org/wiki/Vertex_cover
 https://en.wikipedia.org/wiki/Dominating_set
 https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
+
+最大独立集见后面的「最大团」
 
 独立集+顶点覆盖 https://codeforces.com/problemset/problem/1470/D
 
@@ -1823,6 +1828,7 @@ todo 树上最小路径覆盖 https://codeforces.com/problemset/problem/618/D
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3386
+//【网络流 24 题】飞行员配对方案 https://loj.ac/p/6000 https://www.luogu.com.cn/problem/P2756
 //【网络流 24 题】骑士共存（这题 Dinic 更快）https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
 func (*graph) maxBipartiteMatchingHungarian(g [][]int) (match []int, cnt int) {
 	match = make([]int, len(g))
@@ -1909,16 +1915,18 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
 // LC1595/周赛207D https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
-func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(n int, wt [][]int64) (match []int, sum int64) {
+// LC周赛251C https://leetcode-cn.com/problems/maximum-compatibility-score-sum/
+// todo GCJ21 Round2D https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc2de
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match []int, sum int64) {
 	const inf int64 = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
 
-	match = make([]int, n) // 右部点匹配了哪一个左部点
+	match = make([]int, len(wt)) // 右部点匹配了哪一个左部点
 	for i := range match {
 		match[i] = -1
 	}
 	// 初始化顶标
-	la := make([]int64, n)
+	la := make([]int64, len(wt))
 	for i, r := range wt {
 		la[i] = r[0]
 		for _, w := range r[1:] {
@@ -1927,12 +1935,12 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(n int, wt [][]int64) (
 			}
 		}
 	}
-	lb := make([]int64, n)
-	slack := make([]int64, n)
-	for i := 0; i < n; i++ {
+	lb := make([]int64, len(wt))
+	slack := make([]int64, len(wt))
+	for i := 0; i < len(wt); i++ {
 		for { // 循环直到 DFS 找到一个匹配
-			va := make([]bool, n) // 访问标记：是否在交错树中
-			vb := make([]bool, n)
+			va := make([]bool, len(wt)) // 访问标记：是否在交错树中
+			vb := make([]bool, len(wt))
 			for j := range slack {
 				slack[j] = inf
 			}
@@ -1964,7 +1972,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(n int, wt [][]int64) (
 					delta = slack[j]
 				}
 			}
-			for j := 0; j < n; j++ {
+			for j := 0; j < len(wt); j++ {
 				if va[j] {
 					la[j] -= delta
 				}
@@ -3352,17 +3360,53 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 	return pseudoClique
 }
 
-// todo 最大团
+// 团 clique
+// 图 G 中的团和图 G 的补图中的独立集是一一对应的
+// 图 G 中的独立集和图 G 的补图中的团是一一对应的（等价说法）
+// https://en.wikipedia.org/wiki/Clique_(graph_theory)
+
+// 最大独立集 maximal independent set (MIS)
+// 等价于在补图上找最大团 maximal cliques (MC)
+// https://en.wikipedia.org/wiki/Clique_problem
+// 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+// https://codeforces.com/problemset/problem/1105/E
+func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
+	// 一种求最大团的做法，适用于点数不超过 50 的图
+	// 定义 f(s) 为 s 的所有子集中最大团的大小
+	// 则转移时要么不取 lb（low bit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
+	// 将这一过程记忆化可大幅减少运行时间，理由如下：
+	// 由于每次都会去掉 lb，所以至多 k=len(g)/2 次递归后会进入右半部分没有 1 的状态
+	// 将这 k 次递归过程视作一颗二叉树，则其耗时为 O(2^k)
+	// 之后记忆化占主导，耗时也为 O(2^k)
+	// 主要注意的是，k 次递归的结果是否记忆化并不重要，因为这部分最多也只有 O(2^k) 个状态
+	// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
+	dp := map[int64]int{0: 0}
+	var f func(int64) int
+	f = func(s int64) int {
+		if v, has := dp[s]; has {
+			return v
+		}
+		dp[s] = max(f(s&(s-1)), 1+f(s&g[bits.TrailingZeros64(uint64(s))]))
+		return dp[s]
+	}
+	ans := f(1<<len(g) - 1)
+	return ans
+}
 
 // todo 极大团计数
+
+// 分团覆盖问题 Clique cover
+// https://en.wikipedia.org/wiki/Clique_cover
 
 // todo 图的同构
 
 // todo 树的同构
 // AHU 算法
 // https://oi-wiki.org/graph/tree-ahu/
+// todo hashing 的一些正确姿势 https://zhuanlan.zhihu.com/p/104346215
 
 // 支配树
+// https://en.wikipedia.org/wiki/Dominator_(graph_theory)
 // todo 模板题 https://www.luogu.com.cn/problem/P5180
 
 // 弦图：任意长度大于 3 的环都有一个弦（连接环中不相邻两点的边）的图称为弦图
