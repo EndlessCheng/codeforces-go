@@ -1178,6 +1178,7 @@ func dpCollections() {
 
 	// 任意排列 DP
 	// https://codeforces.com/problemset/problem/1215/E
+	// 状态设计 https://codeforces.com/problemset/problem/743/E
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
 	permDP := func(a []int) int {
@@ -1185,16 +1186,17 @@ func dpCollections() {
 		m := 1 << n
 		dp := make([]int, m) // int64
 		dp[0] = 1
-		for s, dv := range dp[:m-1] {
+		for s, dv := range dp {
 			i := bits.OnesCount(uint(s))
 			v := a[i]
 			for t, lb := m-1^s, 0; t > 0; t ^= lb {
 				lb = t & -t
+				ss := s | lb
 				j := bits.TrailingZeros(uint(lb))
 				w := a[j]
 				_ = v + w
-				// dp[s|lb] <- dv
-				dp[s|lb] += dv // mod
+				// dp[ss] <- dv
+				dp[ss] += dv // mod
 			}
 		}
 		return dp[m-1]
