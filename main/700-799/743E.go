@@ -32,6 +32,7 @@ func CF743E(_r io.Reader, out io.Writer) {
 	for _, ps := range pos {
 		minC = min(minC, len(ps))
 	}
+	// 注：更快的做法是二分 c
 	for c := minC + 1; ; c-- { // 当前枚举的每个数的个数必须是 c 或 c-1
 		// 状态定义为连续元素为 mask 下，最后一个元素的下标的最小值
 		// 第二维度表示 c-1 的出现次数
