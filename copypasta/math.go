@@ -28,6 +28,7 @@ AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
 ∑i*q^(i-1) = n*q^n - (q^n-1)/(q-1)
+若干无穷级数之和的公式 https://mathwords.net/mugenwa
 
 https://oeis.org/A000079 2^n
 虽然是个很普通的序列，但也能出现在一些意想不到的地方
@@ -103,6 +104,8 @@ https://oeis.org/A216485 222...2
 Gaussian integer https://en.wikipedia.org/wiki/Gaussian_integer
 Eisenstein integer https://en.wikipedia.org/wiki/Eisenstein_integer
 Eisenstein prime https://en.wikipedia.org/wiki/Eisenstein_prime
+
+https://oeis.org/A054710 Number of powers of 10 mod n https://codeforces.com/problemset/problem/1070/A
 
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
@@ -276,8 +279,46 @@ func numberTheoryCollection() {
 	}
 
 	// 最简分数
-	type pair struct{ x, y int64 }
-	frac := func(a, b int64) pair { g := gcd(a, b); return pair{a / g, b / g} }
+	type frac struct{ num, den int64 }
+
+	// 如果有负数需要对 g 取绝对值
+	makeFrac := func(a, b int64) frac { g := gcd(a, b); return frac{a / g, b / g} }
+
+	// 比较两个（最简化后的）frac
+	// 不使用高精度、浮点数等
+	// 核心思路是将 a b 写成连分数形式，逐个比较
+	// 复杂度 O(log)
+	lessFrac := func(a, b frac) bool {
+		// 如果保证 a b 均为正数，for 前面的这些 if 可以去掉
+		if a == b {
+			return false
+		}
+		if a.num == 0 {
+			return b.num > 0
+		}
+		if b.num == 0 {
+			return a.num < 0
+		}
+		if a.num > 0 != (b.num > 0) {
+			return a.num < b.num
+		}
+		if a.num < 0 { // b.num < 0
+			a, b = frac{-b.num, b.den}, frac{-a.num, a.den}
+		}
+		for {
+			if a.den == 0 {
+				return false
+			}
+			if b.den == 0 {
+				return true
+			}
+			da, db := a.num/a.den, b.num/b.den
+			if da != db {
+				return da < db
+			}
+			a, b = frac{b.den, b.num - db*b.den}, frac{a.den, a.num - da*a.den}
+		}
+	}
 
 	// 类欧几里得算法
 	// ∑⌊(ai+b)/m⌋, i in [0,n-1]
@@ -417,7 +458,11 @@ func numberTheoryCollection() {
 
 	/* 质数性质统计相关
 
-	Counting primes in O(n^(2/3)log^(1/3)(n)) https://codeforces.com/blog/entry/91632
+	Counting primes
+	https://en.wikipedia.org/wiki/Meissel%E2%80%93Lehmer_algorithm
+	https://oi-wiki.org/math/meissel-lehmer/
+	https://www.zhihu.com/question/29580448
+	O(n^(2/3)log^(1/3)(n)) https://codeforces.com/blog/entry/91632
 
 	质数的幂次组成的集合 {p^k} https://oeis.org/A000961
 		补集 https://oeis.org/A024619
@@ -2471,7 +2516,7 @@ func numberTheoryCollection() {
 	_ = []interface{}{
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
-		gcd, gcdPrefix, gcdSuffix, lcm, lcms, frac, countDifferentSubsequenceGCDs, floorSum,
+		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
