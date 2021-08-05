@@ -42,6 +42,7 @@ import (
    状态优化 https://codeforces.com/problemset/problem/838/E
   「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
    https://codeforces.com/problemset/problem/1542/D
+   https://codeforces.com/problemset/problem/520/E
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -525,12 +526,13 @@ func dpCollections() {
 	//       https://www.zhihu.com/question/34905638
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
 	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
-	// LC354 俄罗斯套娃信封问题 https://leetcode-cn.com/problems/russian-doll-envelopes/
+	// 二维 LIS LC354 https://leetcode-cn.com/problems/russian-doll-envelopes/
+	// 二维 LIS + 打印方案 http://codeforces.com/problemset/problem/4/D
 	// 将所有元素分成三类：不在任何 LIS / 在至少一个 LIS / 在所有 LIS https://codeforces.com/problemset/problem/486/E
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
 	// 若其中一个序列无重复元素，LCS 可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
-	// 二维 LIS：在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
-	//          思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
+	// 在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
+	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
 	lis := func(a []int) int {
 		dp := []int{}
@@ -817,18 +819,19 @@ func dpCollections() {
 		return dp[maxW]
 	}
 
-	// 0-1 背包 EXTRA: 至少装满 https://www.luogu.com.cn/problem/P4377
+	// 0-1 背包 EXTRA: 至少装入重量和为 maxW 的物品，求价值和的最小值 https://www.luogu.com.cn/problem/P4377
+	// 需要一点转换 https://codeforces.com/problemset/problem/19/B
 	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for i := range dp {
-			dp[i] = -1e18 // 价值最小改成 1e18
+			dp[i] = 1e9 // int18
 		}
 		dp[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= 0; j-- {
-				dp[j] = max(dp[j], dp[max(j-w, 0)]+v) // max(j-w, 0) 蕴含了「至少」
+				dp[j] = min(dp[j], dp[max(j-w, 0)]+v) // max(j-w, 0) 蕴含了「至少」
 			}
 		}
 
@@ -838,7 +841,7 @@ func dpCollections() {
 				w := weights[i]
 				for j := maxW; j >= 0; j-- {
 					k := min(j+w, maxW)
-					dp[k] = max(dp[k], dp[j]+v)
+					dp[k] = min(dp[k], dp[j]+v)
 				}
 			}
 		}
