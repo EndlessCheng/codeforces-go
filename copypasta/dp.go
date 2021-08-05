@@ -114,6 +114,7 @@ AT 经典 DP 场 https://atcoder.jp/contests/dp
     题解 https://www.cnblogs.com/shanxieng/p/10232228.html
         https://codeforces.com/blog/entry/92170
         https://www.hamayanhamayan.com/entry/2019/01/12/163853
+    讨论 https://codeforces.com/blog/entry/64250
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 算法竞赛专题解析（11）：DP概述和常见DP面试题 https://blog.csdn.net/weixin_43914593/article/details/105444090
 todo 题目推荐 https://www.luogu.com.cn/blog/wyy2020/dp-qian-tan
@@ -1118,6 +1119,34 @@ func dpCollections() {
 			}
 		}
 		return dp[0][n-1]
+	}
+
+	// 统计区间内回文串个数
+	// https://codeforces.com/problemset/problem/245/H
+	countPalindromes := func(s string) [][]int {
+		n := len(s)
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, n)
+			dp[i][i] = 1
+			if i+1 < n && s[i] == s[i+1] {
+				dp[i][i+1] = 1
+			}
+		}
+		for i := n - 3; i >= 0; i-- {
+			for j := i + 2; j < n; j++ {
+				if s[i] == s[j] {
+					dp[i][j] = dp[i+1][j-1]
+				}
+			}
+		}
+		// 到这里为止，dp[i][j] = 1 表示 s[i:j+1] 是回文串
+		for i := n - 2; i >= 0; i-- {
+			for j := i + 1; j < n; j++ {
+				dp[i][j] += dp[i][j-1] + dp[i+1][j] - dp[i+1][j-1] // 容斥
+			}
+		}
+		return dp
 	}
 
 	/* 环形 DP
@@ -2204,7 +2233,7 @@ func dpCollections() {
 		groupKnapsack,
 		treeKnapsack,
 
-		mergeStones,
+		mergeStones, countPalindromes,
 
 		permDP, tsp, countCycle, subsubDP, sos, plugDP,
 
