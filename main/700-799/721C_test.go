@@ -36,5 +36,5 @@ inputCopy
 outputCopy
 3
 1 3 5`
-	testutil.AssertEqualCase(t, rawText, -1, Sol721C)
+	testutil.AssertEqualCase(t, rawText, -1, CF721C)
 }
