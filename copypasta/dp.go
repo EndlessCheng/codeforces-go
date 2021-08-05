@@ -1122,6 +1122,7 @@ func dpCollections() {
 	}
 
 	// 统计区间内回文串个数
+	// 返回一个二维数组 dp, dp[i][j] 表示 [i,j] 内的回文串的个数
 	// https://codeforces.com/problemset/problem/245/H
 	countPalindromes := func(s string) [][]int {
 		n := len(s)
