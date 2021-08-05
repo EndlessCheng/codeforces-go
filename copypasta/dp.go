@@ -825,7 +825,7 @@ func dpCollections() {
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for i := range dp {
-			dp[i] = 1e9 // int18
+			dp[i] = 1e9 // 1e18
 		}
 		dp[0] = 0
 		for i, v := range values {
