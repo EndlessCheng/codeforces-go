@@ -264,7 +264,7 @@
 
 ### Rating >= 2100
 
-这一阶段要想上分，图论、DP、数据结构这三大项哪个弱就练哪个。难度范围选择同上，可以根据自己在该项的能力上下调整。
+这一阶段要想上分，应以 DP 为主，图论和数据结构为辅。难度范围选择同上，可以根据自己在该项的能力上下调整。
 
 我的 Codeforces 账号：
 
@@ -368,6 +368,8 @@
 [算法竞赛训练中较难的部分](https://blog.csdn.net/skywalkert/article/details/48924861)
 
 [算法竞赛中可能不太会遇到的论文题](https://blog.csdn.net/skywalkert/article/details/48878925)
+
+[[杂谈]OI/ACM中冷门算法](https://zhuanlan.zhihu.com/p/21924647)
 
 https://blog.csdn.net/calabash_boy/article/details/79973483
 
