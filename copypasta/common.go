@@ -891,6 +891,7 @@ func commonCollection() {
 	// 统计水平方向的线段与垂直方向的线段的交点个数 https://codeforces.com/problemset/problem/610/D
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// http://poj.org/problem?id=2932
+	// 转换 https://atcoder.jp/contests/arc068/tasks/arc068_c
 	sweepLine := func(in io.Reader, n int) {
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)
