@@ -201,6 +201,36 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	_ = isFa
 }
 
+// 树上最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）
+// 贪心做法是对每个点及其子树，尽量让这个点能够拼接两个子树的路径，从而形成一条路径（把这个点当作「拐点」）
+// DP 做法是定义 dp[i][0/1] 表示以 i 为根的子树的最小路径覆盖数，0 即 i 不与父节点构成路径（当作拐点），1 即 i 与父节点构成路径（不当作拐点）
+// - DP 写法见 https://blog.csdn.net/clove_unique/article/details/52724434
+// https://en.wikipedia.org/wiki/Path_cover
+// https://codeforces.com/problemset/problem/618/D
+func (*tree) minPathCover(g [][]int) int {
+	// 考虑最小路径覆盖中，在树上的边数
+	// 显然每多一条路径覆盖，在树上的边数就少一条
+	// 因此有：最小路径覆盖数=n-在树上的最大边数
+	edgeNum := 0
+	var f func(int, int) bool
+	f = func(v, fa int) bool {
+		c := 0
+		for _, w := range g[v] {
+			if w != fa && f(w, v) {
+				c++
+			}
+		}
+		if c < 2 {
+			edgeNum += c
+			return true // 可以与父节点合并
+		}
+		edgeNum += 2
+		return false // 不与父节点合并
+	}
+	f(0, -1)
+	return len(g) - edgeNum
+}
+
 // 树的直径/最长链（DP 求法另见 dp.go 中的 diameter）
 // 返回树的某条直径的两端点以及直径长度（最长链长度）
 // 树的中心：树的直径的中点。直径长度为偶数时有一个，为奇数时有两个
