@@ -28,6 +28,12 @@ LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
+/* 分散层叠算法 Fractional Cascading
+https://en.wikipedia.org/wiki/Fractional_cascading
+https://www.luogu.com.cn/blog/DPair2005/fen-san-ceng-die-suan-fa-xue-xi-bi-ji
+https://www.luogu.com.cn/problem/P6466
+*/
+
 /*
 分块数据结构
 https://oi-wiki.org/ds/decompose/
