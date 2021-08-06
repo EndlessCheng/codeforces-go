@@ -81,6 +81,7 @@ func fenwickTree(n int) {
 
 	// 求逆序对的方法之一
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
+	// 扩展 https://codeforces.com/problemset/problem/362/C
 	cntInversions := func(a []int) int64 {
 		n := len(a)
 		tree := make([]int, n+1)

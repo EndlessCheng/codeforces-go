@@ -55,6 +55,7 @@ https://en.wikipedia.org/wiki/Generating_function
 狄利克雷生成函数 DGFs
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shuo-za-tan
  【推荐】数数入门 https://www.luogu.com.cn/blog/CJL/conut-ru-men
+ https://www.bilibili.com/video/BV1Zg411T7Eq
 https://oi-wiki.org/math/gen-func/intro/
 OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/
@@ -69,6 +70,11 @@ Optimal Algorithm on Polynomial Composite Set Power Series https://codeforces.co
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
+
+Min-Max容斥
+https://www.luogu.com.cn/blog/Troverld/Min-Max-Inclusion-and-Exclusion
+https://www.luogu.com.cn/blog/command-block/min-max-rong-chi-xiao-ji
+https://lnrbhaw.github.io/2019/01/05/Min-Max%E5%AE%B9%E6%96%A5%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/
 
 拉格朗日反演 扩展拉格朗日反演
 证明 https://www.cnblogs.com/judge/p/10652738.html

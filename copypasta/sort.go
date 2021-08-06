@@ -458,6 +458,7 @@ func sortCollections() {
 	// WQS 二分
 	// 《浅析一类二分方法》
 	// 把强制选 k 个物品的问题转换成选任意个物品的问题
+	// todo https://www.luogu.com.cn/blog/daniu/wqs-er-fen
 	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
 	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
 	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/

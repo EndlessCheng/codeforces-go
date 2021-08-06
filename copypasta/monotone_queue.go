@@ -64,9 +64,10 @@ func monotoneQueueCollections() {
 		return b
 	}
 
-	// 固定区间大小的区间最值
+	// 滑动窗口最值（固定区间大小的区间最值）
 	// https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 	// https://codeforces.com/problemset/problem/940/E
+	// https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）
 	fixedSizeMax := func(a []int, fixedSize int) []int {
 		n := len(a)
 		q := monotoneQueue{} // 最大/最小由 less 来控制

@@ -20,6 +20,7 @@ todo 阶梯博弈 https://codeforces.com/blog/entry/44651
 
 入门分类讨论 https://codeforces.com/problemset/problem/78/C
 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
+             https://atcoder.jp/contests/dp/tasks/dp_k
 TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
 todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
@@ -29,6 +30,7 @@ todo poj 2484 2348 1704 2311 | 1082 2068 3688 1740 2975 3537 2315
 todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推荐的题目)
 对于有环图的博弈，可以从终点（确定的状态）来倒推 https://leetcode-cn.com/problems/cat-and-mouse-ii/solution/mao-he-lao-shu-ii-bu-xu-yao-xian-zhi-bu-d2yxn/
 通过必败态去筛必胜态 https://ac.nowcoder.com/acm/contest/11166/A
+两端取数问题 https://atcoder.jp/contests/dp/tasks/dp_l LC486 https://leetcode-cn.com/problems/predict-the-winner/ LC877 https://leetcode-cn.com/problems/stone-game/
 */
 func gameTheoryCollection() {
 	{
@@ -126,32 +128,33 @@ func gameTheoryCollection() {
 	// todo Anti-SG
 	//
 	// 整数分拆博弈 https://codeforces.com/problemset/problem/87/C
+	// 类似取石子 https://codeforces.com/problemset/problem/850/C
 	// todo https://www.luogu.com.cn/problem/P2148
 
 	// 剪纸博弈
 	// https://www.acwing.com/problem/content/description/221/ http://poj.org/problem?id=2311
 	// 要求 n >= 2, m >= 2
 	cutPaperGame := func(n, m int) bool {
-		sg := make([][]int, n+5)
-		for i := range sg {
-			sg[i] = make([]int, m+5)
-			for j := range sg[i] {
-				sg[i][j] = -1
+		_sg := make([][]int, n+5) // 简单地 +5，保证下面设置初始局面时不会越界
+		for i := range _sg {
+			_sg[i] = make([]int, m+5)
+			for j := range _sg[i] {
+				_sg[i][j] = -1
 			}
 		}
-		var SG func(int, int) int
-		SG = func(x, y int) (mex int) {
-			ptr := &sg[x][y]
+		var sg func(int, int) int
+		sg = func(x, y int) (mex int) {
+			ptr := &_sg[x][y]
 			if *ptr != -1 {
 				return *ptr
 			}
 			defer func() { *ptr = mex }()
 			has := map[int]bool{} // 若能确定 mex 上限可以用 bool 数组
 			for i := 2; i <= x-i; i++ {
-				has[SG(i, y)^SG(x-i, y)] = true
+				has[sg(i, y)^sg(x-i, y)] = true
 			}
 			for i := 2; i <= y-i; i++ {
-				has[SG(x, i)^SG(x, y-i)] = true
+				has[sg(x, i)^sg(x, y-i)] = true
 			}
 			for ; has[mex]; mex++ {
 			}
@@ -159,11 +162,11 @@ func gameTheoryCollection() {
 		}
 
 		// 设定一些初始必败局面
-		sg[2][2] = 0
-		sg[2][3] = 0
-		sg[3][2] = 0
+		_sg[2][2] = 0
+		_sg[2][3] = 0
+		_sg[3][2] = 0
 		// 计算有向图游戏的 SG 函数值
-		return SG(n, m) > 0
+		return sg(n, m) > 0
 	}
 
 	_ = []interface{}{nim, cutPaperGame}

@@ -670,6 +670,9 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 	return -1, 0
 }
 
+// EXTRA: 子序列自动机 Sequence Automation
+// https://www.luogu.com.cn/problem/P5826
+
 // EXTRA: 标记永久化
 // todo 一本通 p239
 

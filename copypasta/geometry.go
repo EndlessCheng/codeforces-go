@@ -79,6 +79,8 @@ https://cp-algorithms.com/geometry/picks-theorem.html
 https://cp-algorithms.com/geometry/lattice-points.html
 A=i+b/2-1, A为多边形面积，i为内部格点数，b为边上格点数
 利用该定理可以证明：不存在坐标均为整数的正三角形、正六边形等
+https://codeforces.com/problemset/problem/1548/D1
+https://codeforces.com/problemset/problem/1548/D2
 
 TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
       顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
@@ -89,12 +91,15 @@ TIPS: 另一种处理曼哈顿距离的方法是分四种情况讨论，即
       = max((a-b)+(c-d), (b-a)+(c-d), (a-b)+(d-c), (b-a)+(d-c))
       另外一种思路见 https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
       LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+      todo 上面这题求最小 https://atcoder.jp/contests/arc119/tasks/arc119_e
       LC1131 https://leetcode-cn.com/problems/maximum-of-absolute-value-expression/
 
 https://oeis.org/A053411 Circle numbers
 a(n)= number of points (i,j), i,j integers, contained in a circle of diameter n, centered at the origin
 
 https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin centered circle of diameter n
+
+湖边野猫追捕水中老鼠，为什么速度比低于 4.6033 就逮不到老鼠？ https://zhuanlan.zhihu.com/p/113905393
 
 */
 
@@ -201,6 +206,7 @@ func circumcenter(a, b, c vecF) vecF {
 
 // EXTRA: 外接圆半径 R
 // 下面交换了一下乘除的顺序，减小精度的丢失
+// todo https://codeforces.com/problemset/problem/274/C
 func circumcenterR(a, b, c vecF) float64 {
 	ab, ac := b.sub(a), c.sub(a)
 	return 0.5 * a.dis(b) * a.dis(c) / math.Abs(ab.det(ac)) * b.dis(c)
@@ -656,6 +662,7 @@ func vec2Collection() {
 	}
 
 	// TODO: 扫描线：线段求交 O(nlogn)
+	// https://en.wikipedia.org/wiki/Sweep_line_algorithm
 	// N 条线段求交的扫描线算法 http://johnhany.net/2013/11/sweep-algorithm-for-segments-intersection/
 	// https://codeforces.com/problemset/problem/1359/F
 	// 平面扫描思想在 ACM 竞赛中的应用 http://openinx.github.io/2013/01/01/plane-sweep-thinking/
@@ -746,6 +753,9 @@ func vec2Collection() {
 	}
 
 	// 求凸包 葛立恒扫描法 Graham's scan
+	// 使用单调栈，保存的向量是有极角序的
+	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是每一步都向左走，如果某个点会导致绳子向右走，那么就需要出栈
+	// 求上凸包就从最右边的点开始
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742
@@ -964,9 +974,13 @@ func vec2Collection() {
 
 	// TODO 矩形面积并
 	// 扫描线算法
+	// https://www.acwing.com/video/2220/
 	// 模板题 https://www.luogu.com.cn/problem/P5490
 
 	// todo 三角形面积并
+	// 扫描线算法
+	// https://www.acwing.com/video/2218/
+	// 模板题 https://www.luogu.com.cn/problem/P4406
 	// https://www.luogu.com.cn/problem/P1222
 	// https://www.luogu.com.cn/problem/P3219
 
