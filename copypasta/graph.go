@@ -1785,13 +1785,14 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-/* 匹配 带权匹配 独立集 边覆盖 顶点覆盖 支配集
+/* 匹配 带权匹配 独立集 边覆盖 顶点覆盖 路径覆盖 支配集
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
 https://en.wikipedia.org/wiki/Maximum_weight_matching
 https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
 https://en.wikipedia.org/wiki/Maximal_independent_set
 https://en.wikipedia.org/wiki/Edge_cover
 https://en.wikipedia.org/wiki/Vertex_cover
+https://en.wikipedia.org/wiki/Path_cover
 https://en.wikipedia.org/wiki/Dominating_set
 https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 
@@ -1809,13 +1810,18 @@ Kőnig's theorem https://en.wikipedia.org/wiki/K%C5%91nig%27s_theorem_(graph_the
 激光覆盖转换成最小顶点覆盖 http://poj.org/problem?id=3041
 不是 n-匹配就是 n-独立集 https://codeforces.com/problemset/problem/1198/C
 
-DAG 上的最小路径覆盖（挑战 p.272 / 进阶指南 p.436）：
-    起初把每个点都视作一条路径，这样共有 n 条不相交路径
-    拆点图：每个点拆成出点和入点，原图的 v->w 相当于拆点图的 出点v->入点w，这说明拆点图一定是二分图
-    在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
-    所以找到了多少匹配边，路径数就减少了多少
-    所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
-todo 树上最小路径覆盖 https://codeforces.com/problemset/problem/618/D
+DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）
+具体定义见进阶指南 p.436
+另见挑战 p.272
+起初把每个点都视作一条路径，这样共有 n 条不相交路径
+拆点图：每个点拆成出点和入点，原图的 v->w 相当于拆点图的 出点v->入点w，这说明拆点图一定是二分图
+在拆点图里找到一条匹配边就相当于把两条路径合成了一条路径，也就相当于路径数减少了 1
+所以找到了多少匹配边，路径数就减少了多少
+所以有最小路径覆盖=原图的结点数-拆点图的最大匹配数
+
+允许路径相交的做法见进阶指南 p.437
+
+树上的最小路径覆盖见 graph_tree.go
 */
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
@@ -2090,7 +2096,9 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-// DAG DP https://ac.nowcoder.com/acm/contest/6384/C https://www.luogu.com.cn/problem/P3387
+// DAG DP https://ac.nowcoder.com/acm/contest/6384/C
+//        https://www.luogu.com.cn/problem/P3387
+//        https://codeforces.com/problemset/problem/721/C
 // 好题 https://codeforces.com/problemset/problem/915/D
 // 关键点 次关键点 https://codeforces.com/contest/1062/problem/F
 // 混合图拓扑排序+定向 https://codeforces.com/problemset/problem/1385/E
