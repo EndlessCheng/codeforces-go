@@ -15,6 +15,10 @@ func CF757D(in io.Reader, out io.Writer) {
 	for i := range s {
 		s[i] &= 1
 	}
+	// 注意，不要写 make([][1<<mx]int, n)，由于 Go 内存管理的原因，会将申请的内存塞到一个不小于所需空间的 2 的幂次的内存块中
+	// 在 n=75 时，所需空间为 300MB，因此会塞到 512MB 大小的内存中，但是申请这部分内存又会导致 MLE
+	// 下面的写法，每次只申请 4MB 的内存，最后实际使用内存约为 334MB https://codeforces.com/contest/757/submission/124971542
+	// 另一种写法是声明一个全局变量 var dp [75][1<<mx]int，最后实际使用内存约为 311MB https://codeforces.com/contest/757/submission/124969909
 	dp := make([][]int, n)
 	for i := range dp {
 		dp[i] = make([]int, 1<<mx)
