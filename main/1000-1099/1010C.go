@@ -21,7 +21,7 @@ func CF1010C(_r io.Reader, _w io.Writer) {
 	var n, k, v int
 	Fscan(in, &n, &k)
 	g := k
-	for ; n > 0; n-- {
+	for ; n > 0 && g > 1; n-- {
 		Fscan(in, &v)
 		g = gcd(g, v)
 	}
