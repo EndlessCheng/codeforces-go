@@ -74,6 +74,11 @@ https://www.bilibili.com/video/av86983419 动态规划 · 一 - 序列型
 https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序列、划分 & 状态压缩
 
 套题/总结：
+推荐 AtCoder 上的经典 DP 场 https://atcoder.jp/contests/dp
+    题解 https://www.cnblogs.com/shanxieng/p/10232228.html
+        https://codeforces.com/blog/entry/92170
+        https://www.hamayanhamayan.com/entry/2019/01/12/163853
+    讨论 https://codeforces.com/blog/entry/64250
 《挑战程序设计竞赛》上的练习题（均为 POJ）
 2.3 节
 3176 https://www.luogu.com.cn/problem/P1216 数字三角形
@@ -111,11 +116,6 @@ CSES DP section editorial https://codeforces.com/blog/entry/70018
     https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems
     https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-ge-tong-yong-fang-fa-tuan-mie-6-dao-gu-piao-w-5/
     https://leetcode-cn.com/tag/dynamic-programming/
-AT 经典 DP 场 https://atcoder.jp/contests/dp
-    题解 https://www.cnblogs.com/shanxieng/p/10232228.html
-        https://codeforces.com/blog/entry/92170
-        https://www.hamayanhamayan.com/entry/2019/01/12/163853
-    讨论 https://codeforces.com/blog/entry/64250
 信息学奥赛一本通 第二部分 基础算法 --> 第九章 动态规划 http://ybt.ssoier.cn:8088/index.php
 算法竞赛专题解析（11）：DP概述和常见DP面试题 https://blog.csdn.net/weixin_43914593/article/details/105444090
 todo 题目推荐 https://www.luogu.com.cn/blog/wyy2020/dp-qian-tan
@@ -799,6 +799,7 @@ func dpCollections() {
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
+	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
 	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
 	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值
 	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E
@@ -1742,6 +1743,7 @@ func dpCollections() {
 	}
 
 	/* 数据结构优化 DP
+	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
 	动态 DP
@@ -1781,6 +1783,7 @@ func dpCollections() {
 	//
 	// https://codeforces.com/problemset/problem/319/C
 	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
+	// todo https://atcoder.jp/contests/dp/tasks/dp_z
 	// todo https://www.luogu.com.cn/problem/P2900
 	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	//  http://poj.org/problem?id=3709
