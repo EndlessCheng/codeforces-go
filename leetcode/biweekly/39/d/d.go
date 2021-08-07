@@ -1,52 +1,45 @@
 package main
 
-import "math/bits"
+// todo O(m*2^m) https://leetcode-cn.com/problems/distribute-repeating-integers/solution/om2m-c-56ms-100-by-hqztrue-qmfl/
 
 // github.com/EndlessCheng/codeforces-go
-func canDistribute(a []int, quantity []int) (ans bool) {
+func canDistribute(a []int, quantity []int) bool {
+	m := 1 << len(quantity)
+	sum := make([]int, m)
+	for i, v := range quantity {
+		bit := 1 << i
+		for mask := 0; mask < bit; mask++ {
+			sum[bit|mask] = sum[mask] + v
+		}
+	}
+
 	cnt := map[int]int{}
 	for _, v := range a {
 		cnt[v]++
 	}
 	n := len(cnt)
-	a = make([]int, 0, n)
-	for _, v := range cnt {
-		a = append(a, v)
-	}
-	m := len(quantity)
 
-	dp := make([][]int8, n)
+	dp := make([][]bool, n+1)
 	for i := range dp {
-		dp[i] = make([]int8, 1<<m)
-		for j := range dp[i] {
-			dp[i][j] = -1
-		}
+		dp[i] = make([]bool, m)
+		dp[i][0] = true
 	}
-	var f func(int, int) int8
-	f = func(p, subset int) (res int8) {
-		if subset == 0 {
-			return 1
-		}
-		if p == n {
-			return
-		}
-		dv := &dp[p][subset]
-		if *dv != -1 {
-			return *dv
-		}
-		defer func() { *dv = res }()
-		sub := subset
-		for ok := true; ok; ok = sub != subset {
-			s := 0
-			for mask := uint(sub); mask > 0; mask &= mask - 1 {
-				s += quantity[bits.TrailingZeros(mask)]
+	i := 0
+	for _, c := range cnt {
+		row := dp[i]
+		for s, b := range row {
+			if b {
+				dp[i+1][s] = true
+				continue
 			}
-			if s <= a[p] && f(p+1, subset^sub) > 0 {
-				return 1
+			for sub := s; sub > 0; sub = (sub - 1) & s {
+				if row[s^sub] && sum[sub] <= c {
+					dp[i+1][s] = true
+					break
+				}
 			}
-			sub = (sub - 1) & subset
 		}
-		return
+		i++
 	}
-	return f(0, 1<<m-1) > 0
+	return dp[n][m-1]
 }
