@@ -506,12 +506,14 @@ func numberTheoryCollection() {
 		https://en.wikipedia.org/wiki/Permutable_prime
 
 	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
-	由质数分布可知选到一对质数的概率是 O(1/ln^2(n))
+	Conjecture: a(n) ~ O(√n)
 	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
 		Positions of records https://oeis.org/A025018
 		Values of records https://oeis.org/A025019
 		1e9 内最大的为 a(721013438) = 1789
 		2e9 内最大的为 a(1847133842) = 1861
+	将 1~n 这 n 个数分成若干组，使每组数之和为质数 https://codeforces.com/problemset/problem/45/G
+		这题需要用到 a(n) ~ O(√n)
 
 	勒让德猜想 - 在两个相邻平方数之间，至少有一个质数 Legendre’s conjecture
 	https://en.wikipedia.org/wiki/Legendre%27s_conjecture
