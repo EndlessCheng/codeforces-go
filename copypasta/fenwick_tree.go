@@ -97,12 +97,13 @@ func fenwickTree(n int) {
 			}
 			return
 		}
-		cnt := int64(0)
+		invCnt := int64(0)
 		for i, v := range a {
-			cnt += int64(i - sum(v))
+			// 由于 i 从 0 开始算，这里先 sum 后 add
+			invCnt += int64(i - sum(v))
 			add(v)
 		}
-		return cnt
+		return invCnt
 	}
 
 	_ = []interface{}{
