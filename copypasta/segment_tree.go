@@ -171,6 +171,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //           https://codeforces.com/problemset/problem/1321/E
 //           https://codeforces.com/problemset/problem/52/C
 // + min/max 转换 https://codeforces.com/gym/294041/problem/E
+// + max DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
