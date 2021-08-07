@@ -43,6 +43,7 @@ import (
   「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
    https://codeforces.com/problemset/problem/1542/D
    https://codeforces.com/problemset/problem/520/E
+   https://codeforces.com/problemset/problem/883/I
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -1092,6 +1093,7 @@ func dpCollections() {
 	*/
 
 	// 石子合并
+	// https://atcoder.jp/contests/dp/tasks/dp_n
 	// https://ac.nowcoder.com/acm/contest/1043/A https://ac.nowcoder.com/acm/problem/51170
 	// 环形的情况 https://www.luogu.com.cn/problem/P1880
 	// 相邻 k 堆的情况（综合①②）LC1000 https://leetcode-cn.com/problems/minimum-cost-to-merge-stones/
@@ -1210,10 +1212,11 @@ func dpCollections() {
 	*/
 
 	// 任意排列 DP
+	// https://atcoder.jp/contests/dp/tasks/dp_o
+	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://codeforces.com/problemset/problem/1215/E
 	// 状态设计 https://codeforces.com/problemset/problem/743/E
-	// https://atcoder.jp/contests/abc199/tasks/abc199_e
-	// https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
+	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
 	permDP := func(a []int) int {
 		n := len(a)
 		m := 1 << n
@@ -1236,11 +1239,13 @@ func dpCollections() {
 	}
 
 	// 旅行商问题 (TSP)
+	// 图论中的一个等价形式是：给定一个加权完全图（顶点表示城市，边表示道路，权重是道路的距离），求一权值和最小的哈密尔顿回路。
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
 	// 做法：定义 dp[s][i] 表示已访问的集合为 s，最后一个访问的位置是 i 时的最小花费
 	//      则有 dp[s|1<<j][j] = min(dp[s|1<<j][j], dp[s][i]+dist[i][j])
 	//      枚举 i 和 j 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
+	// https://en.wikipedia.org/wiki/Hamiltonian_path HCP
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
 	// https://codeforces.com/problemset/problem/1185/G1
 	// LC847 https://leetcode-cn.com/problems/shortest-path-visiting-all-nodes/
@@ -1310,11 +1315,43 @@ func dpCollections() {
 	}
 
 	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
-	// 例如：dp[set] = min{dp[set^sub] + cost of sub} for all valid sub
+	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
+	// https://atcoder.jp/contests/dp/tasks/dp_u
 	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
 	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
-	subsubDP := func(a, cost []int, limit int) int {
-		n, m := len(a), len(cost)
+	subsubDP := func(a []int) int {
+		n := len(a)
+		m := 1 << n
+		// 预处理每个子集的子集和
+		sum := make([]int, m)
+		for i := range sum {
+			for s := uint(i); s > 0; s &= s - 1 {
+				sum[i] += a[bits.TrailingZeros(s)]
+			}
+		}
+		dp := make([]int, m)
+		for s, dv := range dp {
+			t := m - 1 ^ s
+			// 枚举补集的非空子集
+			for sub := t; sub > 0; sub = (sub - 1) & t {
+				ss := s | sub
+				dp[ss] = max(dp[ss], dv+sum[sub])
+			}
+		}
+		return dp[m-1]
+	}
+
+	// 上面的记忆化写法
+	subsubDPMemo := func(a []int) int {
+		n := len(a)
+		m := 1 << n
+		// 预处理每个子集的子集和
+		sum := make([]int, m)
+		for i := range sum {
+			for s := uint(i); s > 0; s &= s - 1 {
+				sum[i] += a[bits.TrailingZeros(s)]
+			}
+		}
 		dp := make([][]int, n)
 		for i := range dp {
 			dp[i] = make([]int, 1<<m)
@@ -1340,12 +1377,8 @@ func dpCollections() {
 
 			// 所有子集
 			for sub, ok := set, true; ok; ok = sub != set {
-				s := 0
-				for mask := uint(sub); mask > 0; mask &= mask - 1 {
-					s += cost[bits.TrailingZeros(mask)]
-				}
 				r := f(p+1, set^sub)
-				res = min(res, r+s)
+				res = min(res, r+sum[sub])
 				sub = (sub - 1) & set
 			}
 
@@ -1665,6 +1698,8 @@ func dpCollections() {
 
 	/* 倍增优化 DP
 	模板题 https://codeforces.com/problemset/problem/1175/E
+	      https://codeforces.com/problemset/problem/1516/D
+	      https://atcoder.jp/contests/arc060/tasks/arc060_c
 	开车旅行 https://www.luogu.com.cn/problem/P1081
 	计算重复 https://www.acwing.com/problem/content/296/
 	*/
@@ -2236,7 +2271,7 @@ func dpCollections() {
 
 		mergeStones, countPalindromes,
 
-		permDP, tsp, countCycle, subsubDP, sos, plugDP,
+		permDP, tsp, countCycle, subsubDP, subsubDPMemo, sos, plugDP,
 
 		digitDP, kth666,
 
