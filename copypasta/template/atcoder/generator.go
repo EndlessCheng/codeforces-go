@@ -5,6 +5,7 @@ import (
 	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -35,6 +36,45 @@ func fetchStartTime(contestID string) (t time.Time, err error) {
 
 	datetimeStr := htmlStr[i+len(token) : i+len(token)+24] // 2020-08-02 21:00:00+0900
 	return time.Parse("2006-01-02 15:04:05-0700", datetimeStr)
+}
+
+func fetchTaskNum(contestID string) (taskNum int, err error) {
+	contestHome := "https://atcoder.jp/contests/" + contestID
+	resp, err := grequests.Get(contestHome, &grequests.RequestOptions{UserAgent: ua})
+	if err != nil {
+		return
+	}
+	if !resp.Ok {
+		return -1, fmt.Errorf("%d", resp.StatusCode)
+	}
+
+	root, err := html.Parse(resp)
+	if err != nil {
+		return
+	}
+	var f func(*html.Node) bool
+	f = func(o *html.Node) bool {
+		if o.DataAtom == atom.Tbody {
+			for c := o.FirstChild; c != nil; c = c.NextSibling {
+				if c.FirstChild != nil {
+					taskNum++
+				}
+			}
+			return true
+		}
+		for c := o.FirstChild; c != nil; c = c.NextSibling {
+			if f(c) {
+				return true
+			}
+		}
+		return false
+	}
+
+	if !f(root) || taskNum == 0 {
+		return -1, fmt.Errorf("题目数获取失败")
+	}
+
+	return
 }
 
 func login(username, password string) (session *grequests.Session, err error) {
@@ -265,7 +305,7 @@ func Test_run(t *testing.T) {
 	return nil
 }
 
-func genAtCoderContestTemplates(contestID string, retryTimes int) error {
+func genAtCoderContestTemplates(contestID string, taskNum, retryTimes int) error {
 	if retryTimes == 0 {
 		//submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit", contestID)
 		//open.Run(submitURL)
@@ -294,7 +334,7 @@ func genAtCoderContestTemplates(contestID string, retryTimes int) error {
 	})
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		return genAtCoderContestTemplates(contestID, retryTimes+1)
+		return genAtCoderContestTemplates(contestID, taskNum, retryTimes+1)
 	}
 	if !resp.Ok {
 		return fmt.Errorf("未找到比赛或比赛尚未开始")
@@ -303,7 +343,7 @@ func genAtCoderContestTemplates(contestID string, retryTimes int) error {
 	fmt.Println("开始解析样例输入输出")
 	wg := &sync.WaitGroup{}
 	defer wg.Wait()
-	for taskID := byte('a'); taskID <= 'f'; taskID++ { // 默认六道题目
+	for i := 0; i < taskNum; i++ {
 		wg.Add(1)
 		// we don't want spent too much time on waiting responses one by one, so we use goroutine!
 		go func(id byte) {
@@ -314,7 +354,7 @@ func genAtCoderContestTemplates(contestID string, retryTimes int) error {
 				return
 			}
 			fmt.Println("[ok]", string(id), problemURL)
-		}(taskID)
+		}('a' + byte(i))
 	}
 
 	return nil
@@ -326,13 +366,19 @@ func GenAtCoderContestTemplates(contestID string) error {
 		return err
 	}
 
+	taskNum, err := fetchTaskNum(contestID)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("共 %d 道题目\n", taskNum)
+
 	if t := time.Until(startTime); t > 0 {
 		t += time.Second
 		fmt.Println("sleep", t)
 		time.Sleep(t)
 	}
 
-	return genAtCoderContestTemplates(contestID, 0)
+	return genAtCoderContestTemplates(contestID, taskNum, 0)
 }
 
 func GenAtCoderProblemTemplate(problemURL string) error {
