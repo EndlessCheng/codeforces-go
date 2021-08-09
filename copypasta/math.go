@@ -1261,6 +1261,8 @@ func numberTheoryCollection() {
 
 	// 欧拉函数（互质的数的个数）Euler totient function https://oeis.org/A000010
 	// https://en.wikipedia.org/wiki/Euler%27s_totient_function
+	// 下界 https://en.wikipedia.org/wiki/Euler%27s_totient_function#Growth_rate
+	// 比较松的下界 φ(n) >= √(n/2)
 	// https://oi-wiki.org/math/euler/
 	// 前缀和见下面的「phi 求和相关」
 	// NOTE: φ(φ...(n)) 收敛到 1 的迭代次数是 log 级别的：奇数减一，偶数减半 https://oeis.org/A003434
@@ -1289,6 +1291,7 @@ func numberTheoryCollection() {
 	// https://oeis.org/A023896 小于 n 且与 n 互质的数之和 a(n) = phi(n^2)/2 = n*phi(n)/2
 	// https://oeis.org/A053818 小于 n 且与 n 互质的数的平方之和 If n = p_1^e_1 * ... *p_r^e_r then a(n) = n^2*phi(n)/3 + (-1)^r*p_1*..._p_r*phi(n)/6 = n^2*A000010(n)/3 + n*A023900(n)/6, n>1
 	// https://oeis.org/A053819 小于 n 且与 n 互质的数的立方之和 a(n) = n^2/4*(n*A000010(n) + A023900(n)), n>1
+	// https://oeis.org/A069213 第 n 个与 n 互质的数
 
 	// phi 求和相关
 	// ∑φ(i) https://oeis.org/A002088 #{(x,y): 1<=x<=y<=n, gcd(x,y)=1}
@@ -2188,6 +2191,9 @@ func numberTheoryCollection() {
 	// https://en.wikipedia.org/wiki/M%C3%B6bius_function
 	// https://oi-wiki.org/math/mobius/#_13
 	// φ(n) = Sum_{d|n} d*μ(n/d)
+	// 部分φ(n) = 不超过 m 的数中与 n 互质的数的个数（m 可以大于 n）
+	//          = Sum_{d|n} d*μ(m/d)    用 n 的因子来容斥
+	//          https://codeforces.com/problemset/problem/920/G
 	// 线性筛 https://oi-wiki.org/math/sieve/#_9
 	// 前缀和 https://oeis.org/A002321 Mertens's function 梅滕斯函数
 	//    https://en.wikipedia.org/wiki/Mertens_function
