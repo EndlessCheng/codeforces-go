@@ -10,6 +10,9 @@ import (
 )
 
 /*
+字符串问题的特殊性：
+不同子串之间会共享一些局部信息，巧妙地利用这些局部信息可以设计出更加高效的算法。
+
 todo NOI 一轮复习 II：字符串 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-ii-zi-fu-chuan
 金策 字符串算法选讲 https://www.bilibili.com/video/BV11K4y1p7a5 https://www.bilibili.com/video/BV19541177KU
     PDF 见 misc
@@ -36,13 +39,8 @@ func stringCollection() {
 	}
 
 	// 注：如果 s 是常量的话，由于其在编译期分配到只读段，对应的地址是无法写入的
-	unsafeGetBytes := func(s string) []byte {
-		return *(*[]byte)(unsafe.Pointer(&s))
-	}
-
-	unsafeToString := func(b []byte) string {
-		return *(*string)(unsafe.Pointer(&b))
-	}
+	unsafeToBytes := func(s string) []byte { return *(*[]byte)(unsafe.Pointer(&s)) }
+	unsafeToString := func(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
 
 	// 返回 t 在 s 中的所有位置（允许重叠）
 	indexAll := func(s, t []byte) []int {
@@ -51,9 +49,17 @@ func stringCollection() {
 		return pos
 	}
 
-	// 字符串哈希
+	// 字符串哈希 rolling hash, Rabin–Karp algorithm
+	// https://en.wikipedia.org/wiki/Hash_function
+	// https://en.wikipedia.org/wiki/Rolling_hash
+	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
+	// todo 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
+	//      anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
+	//      On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
+	//      hash killer https://loj.ac/p/6758
+	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
@@ -74,10 +80,11 @@ func stringCollection() {
 		return
 	}
 
-	// KMP
+	// KMP (Knuth–Morris–Pratt algorithm)
 	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
 	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
+	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
@@ -211,87 +218,131 @@ func stringCollection() {
 	}
 
 	// 最长回文子串 Manacher
-	// https://blog.csdn.net/synapse7/article/details/18908413
+	// 思路和扩展 KMP 类似
+	// 推荐 https://www.bilibili.com/video/BV1AX4y1F79W
 	// https://www.bilibili.com/video/BV1ft4y117a4
-	// https://codeforces.com/blog/entry/12143
-	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
-	// https://oi-wiki.org/string/manacher/#manacher
+	// https://oi-wiki.org/string/manacher/
 	// https://cp-algorithms.com/string/manacher.html
+	// https://codeforces.com/blog/entry/12143
+	// https://leetcode-cn.com/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode-solution/
+	// https://www.zhihu.com/question/37289584
+	// https://blog.csdn.net/synapse7/article/details/18908413
+	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
+	//
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
+	// LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
 	// https://codeforces.com/contest/1326/problem/D2
-	// todo 类似思想 https://codeforces.com/contest/359/problem/D
-	var maxLen, left []int
-	manacher := func(origin []byte) int {
-		min := func(a, b int) int {
-			if a < b {
-				return a
-			}
-			return b
+	// todo https://codeforces.com/problemset/problem/7/D
+	//  https://codeforces.com/problemset/problem/17/E
+	//  类似思想 https://codeforces.com/contest/359/problem/D
+	//  https://codeforces.com/problemset/problem/1081/H
+	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
+	manacher := func(s []byte) {
+		// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新串 t 的每个回文子串都是奇回文串（都有回文中心）
+		// s 和 t 的下标转换关系：
+		// (si+1)*2 = ti
+		// ti/2-1 = si
+		t := append(make([]byte, 0, len(s)*2+3), '^')
+		for _, c := range s {
+			t = append(t, '#', c)
 		}
-		n := len(origin)
-		m := 2*n + 2
-		s := make([]byte, 1, m+1)
-		s[0] = '^'
-		for _, c := range origin {
-			s = append(s, '#', c)
-		}
-		s = append(s, '#', '$')
-		maxLen = make([]int, m+1) // 以处理后的字符 s[i] 为中心的最长回文子串的半长度（包括 s[i]）
-		ans, mid, r := 0, 0, 0
-		for i := 2; i < m; i++ {
-			mx := 1
+		t = append(t, '#', '$')
+
+		// 定义一个奇回文串的半长度=(长度+1)/2，即保留回文中心，去掉一侧后的剩余字符串的长度
+		// halfLen[i] 表示在 t 上的以 t[i] 为回文中心的最长回文子串的半长度
+		// 即 [i-halfLen[i]+1,i+halfLen[i]-1] 是 t 上的一个回文子串
+		halfLen := make([]int, len(t)-2)
+		halfLen[1] = 1
+		// r 表示当前右边界下标最大的回文子串的右边界下标+1
+		// mid 为该回文子串的中心位置，二者的关系为 r=mid+halfLen[mid]
+		for i, mid, r := 2, 1, 0; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
+			hl := 1
 			if i < r {
-				// 取 min 的原因：记点 i 关于 mid 的对称点为 i'=2*mid-i，
-				// 若以 i' 为中心的回文串范围超过了以 mid 为中心的回文串的范围
-				//（此时有 i + len[2*mid-i] >= r，这里 len 是包括中心的半长度）
-				// 则 len[i] 应取 r - i (总不能超过边界吧)
-				mx = min(maxLen[2*mid-i], r-i)
+				// 记 i 关于 mid 的对称位置 i'=mid*2-i
+				// 若以 i' 为中心的最长回文子串范围超出了以 mid 为中心的回文串的范围（即 i+halfLen[i'] >= r）
+				// 则 halfLen[i] 应先初始化为已知的半长度 r-i，然后再继续暴力匹配
+				// 否则 halfLen[i] 与 halfLen[i'] 相等
+				hl = min(halfLen[mid*2-i], r-i)
 			}
-			for ; s[i-mx] == s[i+mx]; mx++ {
+			// 暴力扩展
+			// 算法的复杂度取决于这部分执行的次数
+			// 由于扩展之后 r 必然会更新（右移），且扩展的的次数就是 r 右移的次数
+			// 因此算法的复杂度和 t 的长度成正比
+			for ; t[i-hl] == t[i+hl]; hl++ {
 			}
-			if i+mx > r {
-				mid, r = i, i+mx
+			if i+hl > r {
+				mid, r = i, i+hl
 			}
-			if mx > ans {
-				ans = mx
-			}
-			maxLen[i] = mx
+			halfLen[i] = hl
 		}
 
-		// EXTRA: 计算以每个位置为起点的最长回文子串位置
-		left = make([]int, m+1)
-		for i := 2; i < m; i++ {
-			if left[i-maxLen[i]+1] < i+1 {
-				left[i-maxLen[i]+1] = i + 1
-			}
-		}
-		for i := 1; i <= m; i++ {
-			if left[i] < left[i-1] {
-				left[i] = left[i-1]
+		// t 中回文子串的长度为 hl*2-1
+		// 由于其中 # 的数量总是比字符的数量多 1
+		// 因此其在 s 中对应的回文子串的长度为 hl-1
+		// 这一结论可用在下面的各个代码中
+
+		// 判断 s[l..r] 是否为回文串  0<=l<=r<len(s)
+		// 根据下标转换关系得到其在 t 中对应的回文中心下标为 l+r+2
+		isP := func(l, r int) bool { return halfLen[l+r+2]-1 >= r-l+1 }
+
+		// 计算最长回文子串的长度，以及所有最长回文子串的首字母在 s 中的下标
+		maxPL, starts := 0, []int{}
+		for i := 2; i < len(halfLen); i++ {
+			if hl := halfLen[i]; hl-1 > maxPL {
+				// 由于 t 中回文子串的首尾字母一定是 #，再根据下标转换关系，可以得到其在 s 中对应的回文子串的区间为：
+				// [(i-hl)/2, (i+hl)/2-2]
+				maxPL, starts = hl-1, []int{(i - hl) / 2}
+			} else if hl-1 == maxPL {
+				starts = append(starts, (i-hl)/2)
 			}
 		}
 
-		// todo 以每个位置为终点的...
+		// odd=true:  以 s[x] 为回文中心的最长奇回文子串长度
+		// odd=false: 以 s[x] 和 s[x+1] 为回文中心的最长偶回文子串长度
+		// 根据下标转换关系得到其在 t 中对应的回文中心下标
+		midPL := func(x int, odd bool) int {
+			if odd {
+				return halfLen[x*2+2] - 1
+			}
+			return halfLen[x*2+3] - 1
+		}
 
-		return ans - 1
+		// EXTRA: 计算两个数组，其中
+		// startPL[i] 表示以 s[i] 为首字母的最长回文子串的长度
+		// endPL[i]   表示以 s[i] 为尾字母的最长回文子串的长度
+		// [国家集训队]最长双回文串 https://www.luogu.com.cn/problem/P4555
+		// LC1960/双周赛58D 两个回文子字符串长度的最大乘积 https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
+		// LC214 https://leetcode-cn.com/problems/shortest-palindrome/
+		startPL := make([]int, len(s))
+		endPL := make([]int, len(s))
+		for i := 2; i < len(halfLen); i += 2 {
+			hl := halfLen[i]
+			left, right := (i-hl)/2, (i+hl)/2-2 // 见上面计算 maxPL 的注释
+			startPL[left] = max(startPL[left], hl-1)
+			endPL[right] = max(endPL[right], hl-1)
+		}
+		for i := 1; i < len(startPL); i++ {
+			startPL[i] = max(startPL[i], startPL[i-1]-2) // startPL[i] 还可能是一个更长的回文串缩短后的结果，两者取最大值，同时也方便传递
+		}
+		for i := len(endPL) - 2; i >= 0; i-- {
+			endPL[i] = max(endPL[i], endPL[i+1]-2) // 同上
+		}
+
+		// EXTRA: 计算回文子串个数
+		// 易证其为 ∑(halfLen[i]/2)
+		// LC647 https://leetcode-cn.com/problems/palindromic-substrings/
+		totP := int64(0)
+		for _, hl := range halfLen {
+			totP += int64(hl / 2)
+		}
+
+		_ = []interface{}{isP, midPL}
 	}
-	// 判断 [l,r] 是否为回文串  0<=l<=r<n
-	isP := func(l, r int) bool { return maxLen[l+r+2]-1 >= r-l+1 }
-	// odd=true: 以下标 x 为中心的最长奇回文子串长度
-	// odd=false: 以下标 x,x+1 中间为中心的最长偶回文子串长度
-	midP := func(x int, odd bool) int {
-		if odd {
-			return maxLen[2*x+2] - 1
-		}
-		return maxLen[2*x+3] - 1
-	}
-	// EXTRA: 从下标 x 开始的最长回文子串长度
-	leftP := func(x int) int { return left[2*x+2] - 2*x - 2 }
 
 	/* 后缀数组
 	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
-	NOTE: Go1.13 开始使用 SA-IS 算法
+	注：Go1.13 开始使用 SA-IS 算法
 
 	讲解+例题+套题 https://oi-wiki.org/string/sa/
 	todo 题目推荐 https://www.luogu.com.cn/blog/luckyblock/post-bi-ji-hou-zhui-shuo-zu
@@ -327,7 +378,7 @@ func stringCollection() {
 			 https://www.luogu.com.cn/problem/P3804
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
-		第 k 小子串 https://www.luogu.com.cn/problem/P3975
+		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
 			todo
 	两个字符串
 		最长公共子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774 LC718 https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
@@ -340,7 +391,7 @@ func stringCollection() {
 			todo
 		todo http://poj.org/problem?id=3729
 	多个字符串
-	    多串最长公共子串 https://loj.ac/p/171 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+		多串最长公共子串 https://loj.ac/p/171 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
@@ -348,7 +399,15 @@ func stringCollection() {
 			拼接，二分答案，对 height 分组，判定组内元素在每个字符串中至少出现两次且 sa 的最大最小之差不小于二分值（用于判定是否重叠）
 		出现或反转后出现在每个字符串中的最长子串 http://poj.org/problem?id=1226
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
-	todo http://poj.org/problem?id=3581
+		acSearch（https://www.luogu.com.cn/problem/P3796）的后缀数组做法
+			拼接所有串（模式+文本，# 隔开），对每个模式 p 找其左右范围，满足该范围内 height[i] >= len(p)，这可以用 ST+二分或线段树二分求出，然后统计区间内的属于文本串的后缀
+	todo 待整理 http://poj.org/problem?id=3581
+	 https://www.luogu.com.cn/problem/P5546
+	 https://www.luogu.com.cn/problem/P2048
+	 https://www.luogu.com.cn/problem/P4248
+	 https://www.luogu.com.cn/problem/P4341
+	 https://www.luogu.com.cn/problem/P6095
+	 https://www.luogu.com.cn/problem/P4070
 	*/
 	suffixArray := func(s []byte) {
 		n := len(s)
@@ -580,13 +639,13 @@ func stringCollection() {
 	}
 
 	_ = []interface{}{
-		unsafeGetBytes, unsafeToString,
+		unsafeToBytes, unsafeToString,
 		indexAll,
 		initPowP, calcHash,
 		kmpSearch, calcMinPeriod,
 		zSearch,
 		smallestRepresentation,
-		manacher, isP, midP, leftP,
+		manacher,
 		suffixArray, suffixArrayInt, suffixArrayInt2,
 	}
 }
