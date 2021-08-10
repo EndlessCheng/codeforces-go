@@ -1138,6 +1138,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // 例题: https://codeforces.com/problemset/problem/173/B
 // 网格图 https://codeforces.com/problemset/problem/590/C
 // 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
+// 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -1176,7 +1177,7 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 }
 
 // 单源最短路 SPFA O(nm)   队列优化的 Bellman-Ford
-// 有负环时返回 nil
+// 对于构建一个让 SPFA 跑到最坏情况的（网格）图，见 main/testutil/rand.go 中的 GraphHackSPFA
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
@@ -1187,10 +1188,10 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 // 若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
 // 然后再添加一个 0 号节点，向其他节点连一条边权为 0 的有向边，表示 Xi-X0<=0
 // 这样，在无负环时会得到一组非正数解
-// 模板题 https://www.luogu.com.cn/problem/P4878 todo 需要复习
+// 模板题 https://www.luogu.com.cn/problem/P4878
 // 每个区间至少选 ci 个 https://www.luogu.com.cn/problem/P1250 https://www.luogu.com.cn/problem/SP116 http://poj.org/problem?id=1201
 // todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
-func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
+func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // 有负环时返回 nil
 	type neighbor struct {
 		to int
 		wt int64
@@ -1224,9 +1225,10 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				relaxedCnt[w] = relaxedCnt[v] + 1
+				// 找到一个从 st 出发可达的负环
 				if relaxedCnt[w] >= n {
 					return nil
-				} // 找到一个从 st 出发可达的负环
+				}
 				if !inQ[w] {
 					inQ[w] = true
 					q = append(q, w)
