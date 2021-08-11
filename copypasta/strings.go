@@ -244,7 +244,7 @@ func stringCollection() {
 		// (si+1)*2 = ti
 		// ti/2-1 = si
 		// ti 为偶数对应奇回文串（从 2 开始）
-		// ti 为奇数对应偶回文串（从 3 开始
+		// ti 为奇数对应偶回文串（从 3 开始）
 		t := append(make([]byte, 0, len(s)*2+3), '^')
 		for _, c := range s {
 			t = append(t, '#', c)
