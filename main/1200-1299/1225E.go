@@ -24,7 +24,7 @@ func CF1225E(_r io.Reader, out io.Writer) {
 
 	r := make([][]int, n+1)
 	c := make([][]int, n+1)
-	dpr := make([][]int64, n+1)
+	dpr := make([][]int64, n+1) // dp 前缀和
 	dpc := make([][]int64, n+1)
 	for i := range r {
 		r[i] = make([]int, m+1)
