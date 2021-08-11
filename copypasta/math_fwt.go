@@ -6,6 +6,7 @@ package copypasta
 例如，求一个数组的三个元素的最大异或和，在值域不大的情况下，
 可以先求出该数组的频率数组与频率数组的 FWT，即得到两个元素的所有异或和（及组成该异或和的元素对数），
 然后枚举两元素异或和，在原数组的异或字典树上查询最大异或和
+具体到名称，OR 上的 FWT 也叫 fast zeta transform，AND 上的 FWT 也叫 fast mobius transform
 https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
 https://oi-wiki.org/math/poly/fwt/
 https://www.luogu.com.cn/blog/CJL/fwt-xue-xi-bi-ji
@@ -16,6 +17,7 @@ https://www.luogu.com.cn/blog/command-block/wei-yun-suan-juan-ji-yu-ji-kuo-zhan
 LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
 与仙人掌结合 https://codeforces.com/problemset/problem/1218/D
 todo https://codeforces.com/problemset/problem/662/C
+todo https://atcoder.jp/contests/abc212/tasks/abc212_h
 
 EXTRA: 子集卷积
 todo https://www.cnblogs.com/yijan/p/12387352.html

@@ -16,11 +16,13 @@ import (
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
 //
 // 模板题 https://www.luogu.com.cn/problem/P3367
+// 接水问题 https://codeforces.com/problemset/problem/371/D
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
-// https://codeforces.com/problemset/problem/292/D
+// todo https://codeforces.com/problemset/problem/292/D
 // 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
 // 动态加点 https://codeforces.com/contest/1494/problem/D
 // 思维转换 https://nanti.jisuanke.com/t/43488
+//         https://codeforces.com/problemset/problem/1012/B
 //         https://codeforces.com/problemset/problem/1466/F
 // 维护树或基环树 https://codeforces.com/problemset/problem/859/E
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632/周赛212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
@@ -365,9 +367,11 @@ func (o *pufNode) merge(x, y int) *pufNode {
 	return p
 }
 
-// 动态图连通性（求 CC 个数或判断 v 和 w 是否连通）
+// 动态图连通性·离线（求 CC 个数或判断 v 和 w 是否连通）
 // https://en.wikipedia.org/wiki/Dynamic_connectivity
-// https://codeforces.com/gym/100551/problem/A https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
+// https://codeforces.com/gym/100551/problem/A
+// https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
+// https://loj.ac/p/121
 // todo Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	if q == 0 {
@@ -449,7 +453,7 @@ func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	f = func(l, r int) {
 		if l+1 == r {
 			if qs[l].t < 0 {
-				ans = append(ans, cc) // Fprintln(out, cc)
+				ans = append(ans, cc)
 				//ans = append(ans, find(qs[l].e.v) == find(qs[l].e.w))
 			}
 			return

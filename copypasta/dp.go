@@ -44,6 +44,7 @@ import (
    https://codeforces.com/problemset/problem/1542/D
    https://codeforces.com/problemset/problem/520/E
    https://codeforces.com/problemset/problem/883/I
+   路径计数+推箱子 https://codeforces.com/problemset/problem/1225/E
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -548,13 +549,14 @@ func dpCollections() {
 		return len(dp)
 	}
 	// 每个前缀的 LIS
+	// https://leetcode-cn.com/contest/weekly-contest-253/problems/find-the-longest-valid-obstacle-course-at-each-position/
 	lisAll := func(a []int) []int {
 		n := len(a)
 		lis := make([]int, n)
-		dp := make([]int, 0, n)
+		dp := []int{}
 		for i, v := range a {
-			p := sort.SearchInts(dp, v)
-			if p < len(dp) { // 改成 v+1 为非降
+			p := sort.SearchInts(dp, v) // 改成 v+1 为非降
+			if p < len(dp) {
 				dp[p] = v
 			} else {
 				dp = append(dp, v)
@@ -973,6 +975,7 @@ func dpCollections() {
 	// https://www.luogu.com.cn/problem/P1077
 
 	// 多重背包 - 未优化
+	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
 	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
 		n := len(values)
 		dp := make([][]int, n+1) // int64
@@ -1217,6 +1220,7 @@ func dpCollections() {
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://codeforces.com/problemset/problem/1215/E
 	// 状态设计 https://codeforces.com/problemset/problem/743/E
+	// 枚举来源 https://codeforces.com/problemset/problem/377/C
 	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
 	permDP := func(a []int) int {
 		n := len(a)
