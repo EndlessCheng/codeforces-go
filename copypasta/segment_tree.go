@@ -176,6 +176,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
 // = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
+// max max 离散化 https://codeforces.com/contest/1557/problem/D
 // https://codeforces.com/problemset/problem/1114/F
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
@@ -379,6 +380,7 @@ func (o *stNode) query(l, r int) int64 {
 // 动态开点线段树·其二·延迟标记（区间修改）
 // https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
+//（内存受限）https://codeforces.com/problemset/problem/1557/D
 // rt := &lazyNode{l: 1, r: 1e9}
 type lazyNode struct {
 	lo, ro *lazyNode
@@ -422,10 +424,17 @@ func (o *lazyNode) do(add int64) {
 }
 
 func (o *lazyNode) spread() {
+	m := (o.l + o.r) >> 1
+	if o.lo == nil {
+		o.lo = &lazyNode{l: o.l, r: m}
+	}
+	if o.ro == nil {
+		o.ro = &lazyNode{l: m + 1, r: o.r}
+	}
 	if add := o.todo; add != 0 {
 		o.lo.do(add)
 		o.ro.do(add)
-		o.todo = 0
+		o.todo = 0 // -1
 	}
 }
 
@@ -437,23 +446,18 @@ func (o *lazyNode) update(l, r int, add int64) {
 	o.spread()
 	m := (o.l + o.r) >> 1
 	if l <= m {
-		if o.lo == nil {
-			o.lo = &lazyNode{l: o.l, r: m}
-		}
 		o.lo.update(l, r, add)
 	}
 	if m < r {
-		if o.ro == nil {
-			o.ro = &lazyNode{l: m + 1, r: o.r}
-		}
 		o.ro.update(l, r, add)
 	}
 	o.maintain()
 }
 
 func (o *lazyNode) query(l, r int) int64 {
+	// 对于不在线段树中的点，应按照题意来返回
 	if o == nil || l > o.r || r < o.l {
-		return 0
+		return 0 // inf
 	}
 	if l <= o.l && o.r <= r {
 		return o.sum

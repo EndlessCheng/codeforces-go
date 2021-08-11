@@ -294,6 +294,7 @@ func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int)
 	return
 }
 
+// todo https://codeforces.com/blog/entry/77970
 func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 	if m < n-1 {
 		panic("m is too small")
