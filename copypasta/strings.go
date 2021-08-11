@@ -231,18 +231,20 @@ func stringCollection() {
 	//
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
-	// LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
-	// https://codeforces.com/contest/1326/problem/D2
+	// https://codeforces.com/problemset/problem/1326/D2
 	// todo https://codeforces.com/problemset/problem/7/D
 	//  https://codeforces.com/problemset/problem/17/E
 	//  类似思想 https://codeforces.com/contest/359/problem/D
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
+	//  LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
 	manacher := func(s []byte) {
 		// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新串 t 的每个回文子串都是奇回文串（都有回文中心）
 		// s 和 t 的下标转换关系：
 		// (si+1)*2 = ti
 		// ti/2-1 = si
+		// ti 为偶数对应奇回文串（从 2 开始）
+		// ti 为奇数对应偶回文串（从 3 开始
 		t := append(make([]byte, 0, len(s)*2+3), '^')
 		for _, c := range s {
 			t = append(t, '#', c)
@@ -316,7 +318,7 @@ func stringCollection() {
 		// LC214 https://leetcode-cn.com/problems/shortest-palindrome/
 		startPL := make([]int, len(s))
 		endPL := make([]int, len(s))
-		for i := 2; i < len(halfLen); i += 2 {
+		for i := 2; i < len(halfLen); i++ {
 			hl := halfLen[i]
 			left, right := (i-hl)/2, (i+hl)/2-2 // 见上面计算 maxPL 的注释
 			startPL[left] = max(startPL[left], hl-1)
