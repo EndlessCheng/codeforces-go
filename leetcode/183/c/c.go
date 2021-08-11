@@ -5,13 +5,40 @@ import (
 	"sort"
 )
 
+func longestDiverseString(a, b, c int) string {
+	left := []int{'a': min(a, (b+c+1)*2), 'b': min(b, (a+c+1)*2), 'c': min(c, (b+a+1)*2)}
+	ans := make([]byte, left['a']+left['b']+left['c'])
+	for i := range ans {
+		use := map[byte]struct{}{'a': {}, 'b': {}, 'c': {}}
+		if i > 1 && ans[i-1] == ans[i-2] { // 不能插入连续三个相同字符
+			delete(use, ans[i-1])
+		}
+		mxC := byte(0)
+		for ch := range use {
+			if mxC == 0 || left[ch] > left[mxC] {
+				mxC = ch
+			}
+		}
+		ans[i] = mxC
+		left[mxC]--
+	}
+	return string(ans)
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 type pair struct {
 	cnt    int
 	b      byte
 	others []byte
 }
 
-func longestDiverseString(a int, b int, c int) string {
+func longestDiverseString2(a int, b int, c int) string {
 	ans := []byte{}
 	ps := []pair{{a, 'a', nil}, {b, 'b', nil}, {c, 'c', nil}}
 	sort.Slice(ps, func(i, j int) bool { return ps[i].cnt > ps[j].cnt })
