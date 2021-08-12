@@ -537,6 +537,7 @@ func dpCollections() {
 	// 在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
 	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
+	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
 	lis := func(a []int) int {
 		dp := []int{}
 		for _, v := range a {
@@ -1580,6 +1581,7 @@ func dpCollections() {
 	      https://codeforces.com/problemset/problem/1036/C
 	二进制 1 的个数恰为 k 的数字个数 https://codeforces.com/problemset/problem/431/D
 	是 m 的倍数且偶数位为 d 且奇数位不为 d 的数字个数 https://codeforces.com/problemset/problem/628/D
+	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
 	含有某个数字的数字个数
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
@@ -1603,9 +1605,10 @@ func dpCollections() {
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 hasD 表示是否有非零数字（意为「真正填了数字」），最后 p>=n 的时候根据情况返回 1 或者 0
+		//       具体代码见 https://codeforces.com/contest/855/submission/125651587
 		calc := func(s string) int {
 			const lowerC, upperC byte = '0', '9'
-			dp := make([][]int, len(s))
+			dp := make([][]int, len(s)) // int64
 			for i := range dp {
 				dp[i] = make([]int, sumUpper+1)
 				for j := range dp[i] {
@@ -1847,6 +1850,7 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/1083/A
 	好题 https://codeforces.com/problemset/problem/1453/E
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
+	**如何转移 https://codeforces.com/problemset/problem/538/E
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
 	巧妙的转换 https://codeforces.com/problemset/problem/734/E
 	*/
