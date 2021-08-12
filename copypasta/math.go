@@ -486,6 +486,9 @@ func numberTheoryCollection() {
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
 		Numbers whose distance to the closest prime number is a prime number http://oeis.org/A160666
 
+	https://oeis.org/A007918 Least prime >= n (version 1 of the "next prime" function)
+	https://oeis.org/A007920 Smallest number k such that n + k is prime
+
 	任意质数之差 https://oeis.org/A030173
 	非任意质数之差 https://oeis.org/A007921
 
@@ -524,6 +527,7 @@ func numberTheoryCollection() {
 	https://en.wikipedia.org/wiki/Bertrand%27s_postulate
 	Number of primes between n and 2n (inclusive) https://oeis.org/A035250
 	Number of primes between n and 2n exclusive https://oeis.org/A060715
+	n ~ 1.5n https://codeforces.com/contest/1178/problem/D
 
 	Least k such that H(k) > n, where H(k) is the harmonic number Σ{i=1..k} 1/i
 	https://oeis.org/A002387
@@ -1569,6 +1573,9 @@ func numberTheoryCollection() {
 	divM := func(a, b, m int64) int64 { return a * invM(b, m) % m }
 	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
 
+	// 一种递归求单个逆元的方法
+	// https://codeforces.com/blog/entry/84150?#comment-716585
+
 	// 线性求逆元·其一
 	// 求 1^-1, 2^-1, ..., (p−1)^-1 mod p
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
@@ -2508,6 +2515,7 @@ func numberTheoryCollection() {
 	https://oeis.org/A001177 Fibonacci entry points: a(n) = least k >= 1 such that n divides Fibonacci number
 	异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
 	定义 f(m) 为最小的满足 F(i)+F(j) ≡ 0 (mod m) 的 i (j<=i)，f(m) 大概是 O(√m) 的
+	todo https://codeforces.com/problemset/problem/226/C
 
 	其他相关序列
 	https://oeis.org/A000213 Tribonacci numbers: a(n)=a(n-1)+a(n-2)+a(n-3) with a(0)=a(1)=a(2)=1
