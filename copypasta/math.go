@@ -2545,7 +2545,17 @@ func numberTheoryCollection() {
 /* 组合数学
 https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
-二项式定理 https://en.wikipedia.org/wiki/Binomial_theorem
+https://en.wikipedia.org/wiki/Binomial_theorem
+
+一些组合问题
+https://codeforces.com/problemset/problem/300/C
+https://codeforces.com/problemset/problem/520/E
+https://codeforces.com/problemset/problem/559/C
+https://codeforces.com/problemset/problem/869/C
+https://codeforces.com/problemset/problem/1261/D2 推荐
+https://codeforces.com/problemset/problem/1288/C
+https://codeforces.com/problemset/problem/1342/E
+https://codeforces.com/problemset/problem/1359/E
 
 放球问题
 https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
