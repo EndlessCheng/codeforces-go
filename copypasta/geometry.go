@@ -103,6 +103,51 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 
 */
 
+// 返回 floor(sqrt(x))
+// 由于 float64 无法表示过大的 int64 数（比如 1e18 大小的），需要上下调整一番
+// 具体见 https://atcoder.jp/contests/abc191/tasks/abc191_d 和 https://codeforces.com/problemset/problem/1036/F
+func floorSqrt(x int64) int64 {
+	if x == 0 {
+		return 0
+	}
+	res := int64(math.Sqrt(float64(x)))
+	if res*res > x {
+		res--
+	} else if (res+1)*(res+1) <= x { //（这种情况似乎不需要判断）
+		res++
+	}
+	return res
+}
+
+// 返回 floor(pow(x, 1/n))
+// x>=0, n>1
+func floorRootN(x int64, n int) int64 {
+	if x == 0 {
+		return 0
+	}
+	if n > 62 {
+		return 1
+	}
+	res := int64(math.Pow(float64(x), 1/float64(n)))
+	pow := func(x int64, n int) (res int64) {
+		res = 1
+		for ; n > 0; n >>= 1 {
+			if n&1 == 1 {
+				res = res * x
+			}
+			x = x * x
+		}
+		return
+	}
+	// 误差修正
+	if pow(res, n) > x {
+		res--
+	} else if pow(res+1, n) <= x {
+		res++
+	}
+	return res
+}
+
 const eps = 1e-8
 
 // 浮点数 GCD
