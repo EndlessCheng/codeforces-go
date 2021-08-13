@@ -2206,6 +2206,10 @@ func numberTheoryCollection() {
 	//    https://en.wikipedia.org/wiki/Mertens_function
 	//    |a(n)| = O(x^(1/2 + eps))
 	//    零点 https://oeis.org/A028442
+	// https://oeis.org/A030229 μ(x)=1 的数
+	// https://oeis.org/A013929 μ(x)=0 的数
+	// https://oeis.org/A030059 μ(x)=-1 的数
+	// https://oeis.org/A005117 μ(x)!=0 的数（即 squarefree numbers）
 	calcMu := func(n int) int {
 		if n == 1 {
 			return 1
