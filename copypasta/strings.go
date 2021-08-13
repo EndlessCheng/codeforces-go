@@ -53,6 +53,7 @@ func stringCollection() {
 	// https://en.wikipedia.org/wiki/Hash_function
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
+	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
 	// todo 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
@@ -142,7 +143,7 @@ func stringCollection() {
 		return 1 // 无小于 n 的循环节
 	}
 
-	// Z-function（扩展 KMP）      exkmp
+	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
 	// 参考 Competitive Programmer’s Handbook Ch.26
 	// https://oi-wiki.org/string/z-func/
@@ -218,7 +219,6 @@ func stringCollection() {
 	}
 
 	// 最长回文子串 Manacher
-	// 思路和扩展 KMP 类似
 	// 推荐 https://www.bilibili.com/video/BV1AX4y1F79W
 	// https://www.bilibili.com/video/BV1ft4y117a4
 	// https://oi-wiki.org/string/manacher/
@@ -233,8 +233,7 @@ func stringCollection() {
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.com/problemset/problem/1326/D2
 	// todo https://codeforces.com/problemset/problem/7/D
-	//  https://codeforces.com/problemset/problem/17/E
-	//  类似思想 https://codeforces.com/contest/359/problem/D
+	//  相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
 	//  LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
