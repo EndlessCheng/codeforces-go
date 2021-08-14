@@ -1090,6 +1090,7 @@ func dpCollections() {
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
 	同色消除【套路】 https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
+	回文消除 https://codeforces.com/problemset/problem/607/B
 	③ 一些题目
 	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
@@ -1208,6 +1209,7 @@ func dpCollections() {
 	循环移位 https://codeforces.com/contest/1209/problem/E2
 	https://codeforces.com/problemset/problem/401/D
 	与质因子分解结合 https://codeforces.com/problemset/problem/453/B
+	与排序贪心结合 https://codeforces.com/problemset/problem/1316/E
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -1320,11 +1322,15 @@ func dpCollections() {
 		return ans - int64(m)/2
 	}
 
-	// 枚举子集的子集，复杂度 O(3^m) (元素个数为 k 的集合有 C(m,k) 个，其子集有 2^k 个，∑C(m,k)*2^k = (2+1)^m = 3^m)
+	// 枚举子集的子集
+	// 复杂度 O(3^n)，证明：元素个数为 k 的集合有 C(n,k) 个，其子集有 2^k 个，故有 ∑C(n,k)*2^k = (2+1)^n = 3^n
 	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
 	// https://atcoder.jp/contests/dp/tasks/dp_u
 	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
 	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
+	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
+	// - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
+	// 训练指南第一章例题 32，WF10，UVa1099
 	subsubDP := func(a []int) int {
 		n := len(a)
 		m := 1 << n
@@ -1957,6 +1963,8 @@ func dpCollections() {
 	// 代码和树上最大独立集类似
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
+	// 训练指南第一章例题 30，UVa10859 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1800
+	// - 求最小顶点覆盖，以及所有最小顶点覆盖中，两端点都被覆盖的边的最大个数
 	minVertexCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
