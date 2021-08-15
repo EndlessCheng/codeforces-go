@@ -19,6 +19,7 @@ https://codeforces.com/problemset/problem/884/D 从结果倒推（类似霍夫�
 
 基于堆的反悔贪心（反悔堆）
 https://www.cnblogs.com/nth-element/p/11768155.html
+题单 https://www.luogu.com.cn/training/8793
 https://codeforces.com/problemset/problem/1526/C2
 JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode-cn.com/problems/course-schedule-iii/
 */

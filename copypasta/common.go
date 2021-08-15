@@ -77,6 +77,7 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 另见 heap.go 中的「反悔堆」
 https://djy-juruo.blog.luogu.org/qian-tan-fan-hui-tan-xin
 https://www.cnblogs.com/nth-element/p/11768155.html
+题单 https://www.luogu.com.cn/training/8793
 */
 
 /* 集合哈希

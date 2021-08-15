@@ -62,6 +62,9 @@ https://oeis.org/A061168 Σfloor(log2(i)) = Σ(bits.Len(i)-1)
 https://www.luogu.com.cn/blog/DPair2005/solution-cf340c
 https://codeforces.com/problemset/problem/340/C
 
+https://oeis.org/A005326 Number of permutations p of (1,2,3,...,n) such that k and p(k) are relatively prime for all k in (1,2,3,...,n)
+https://oeis.org/A009679 Number of partitions of {1, ..., 2n} into coprime pairs
+
 https://oeis.org/A333885 Number of triples (i,j,k) with 1 <= i < j < k <= n such that i divides j divides k https://ac.nowcoder.com/acm/contest/7613/A
 
 https://oeis.org/A000295 Eulerian numbers: Sum_{k=0..n} (n-k)*2^k = 2^n - n - 1
@@ -2281,6 +2284,7 @@ func numberTheoryCollection() {
 	// 莫比乌斯反演-让我们从基础开始 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
 	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
 	//
+	// todo 专题练习[一些好玩的数学题] https://www.luogu.com.cn/training/1432
 	// https://codeforces.com/problemset/problem/547/C
 	// https://codeforces.com/problemset/problem/900/D
 	// todo https://www.luogu.com.cn/problem/P2257
@@ -2789,6 +2793,7 @@ func combinatoricsCollection() {
 	// 参考《挑战程序设计竞赛》P296
 	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
+	// 多重集组合数 https://codeforces.com/problemset/problem/451/E
 	// https://codeforces.com/problemset/problem/1342/E
 	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
 	// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
