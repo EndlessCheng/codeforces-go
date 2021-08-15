@@ -17,6 +17,7 @@ import (
 //
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // 接水问题 https://codeforces.com/problemset/problem/371/D
+// 三维接雨水 https://www.luogu.com.cn/problem/P5930 LC407 https://leetcode-cn.com/problems/trapping-rain-water-ii/
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
 // todo https://codeforces.com/problemset/problem/292/D
 // 任意合并+区间合并 https://codeforces.com/problemset/problem/566/D
