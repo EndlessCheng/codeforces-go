@@ -1288,7 +1288,9 @@ func numberTheoryCollection() {
 	//			n/φ(n) = 2 iff n = 2^w, w >= 1
 	//			n/φ(n) = 3 iff n = 2^w * 3^u, w >= 1, u >= 1
 	// n%φ(n) https://oeis.org/A068494
-	// a(1)=1, a(n+1)=a(n)+φ(a(n)) https://oeis.org/A074693
+	// https://oeis.org/A074693 a(1)=1; a(n+1)=a(n)+φ(a(n))
+	// https://oeis.org/A345965 a(1)=1; a(n)=φ(n)+a(n/lpf(n))
+	// - 相关题目 https://codeforces.com/problemset/problem/772/C
 	// Least number k such that phi(k) = n https://oeis.org/A002181    Inverse of Euler totient function
 	// Number of values of k such that phi(k) = n https://oeis.org/A058277
 	// φ集合 https://oeis.org/A002202
@@ -1564,6 +1566,7 @@ func numberTheoryCollection() {
 	// 任意非零模数逆元 ax ≡ 1 (mod m)
 	// 返回最小正整数解
 	// 模板题 https://www.luogu.com.cn/problem/P1082
+	// https://codeforces.com/problemset/problem/772/C
 	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理求质数逆元
@@ -2209,6 +2212,9 @@ func numberTheoryCollection() {
 	//    https://en.wikipedia.org/wiki/Mertens_function
 	//    |a(n)| = O(x^(1/2 + eps))
 	//    零点 https://oeis.org/A028442
+	// https://oeis.org/A013928 ∑μ^2(x) = Sum_{d = 1..floor(sqrt(n-1)} mu(d)*floor((n-1)/d^2)
+	//                                  = 6*n/Pi^2 + O(sqrt(n))
+	//                                  也就是说，随机一个正整数，squarefree 的概率 = 6/Pi^2 ≈ 0.6079
 	// https://oeis.org/A030229 μ(x)=1 的数
 	// https://oeis.org/A013929 μ(x)=0 的数
 	// https://oeis.org/A030059 μ(x)=-1 的数
@@ -2287,6 +2293,7 @@ func numberTheoryCollection() {
 	// todo 专题练习[一些好玩的数学题] https://www.luogu.com.cn/training/1432
 	// https://codeforces.com/problemset/problem/547/C
 	// https://codeforces.com/problemset/problem/900/D
+	// https://codeforces.com/problemset/problem/1559/E
 	// todo https://www.luogu.com.cn/problem/P2257
 	//  https://www.luogu.com.cn/problem/P2522
 
@@ -2486,6 +2493,7 @@ func numberTheoryCollection() {
 	// Min25 筛 - 积性函数前缀和
 	// https://zhuanlan.zhihu.com/p/60378354
 	// https://oi-wiki.org/math/min-25/
+	// https://codeforces.com/blog/entry/92703
 	// todo 模板题 https://www.luogu.com.cn/problem/P5325
 
 	// 一篇新论文，复杂度为 O((nlogn)^(3/5))
@@ -2586,9 +2594,10 @@ todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-
 递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
 上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)   相关题目 https://www.luogu.com.cn/problem/P7386
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) 相关题目 https://atcoder.jp/contests/abc154/tasks/abc154_f
-范德蒙德恒等式 https://zh.wikipedia.org/wiki/%E8%8C%83%E5%BE%B7%E8%92%99%E6%81%92%E7%AD%89%E5%BC%8F
-∑i=[0,k] C(n,i)*C(m,k-i) = C(n+m,k)
-∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)    https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
+范德蒙德恒等式 Vandermonde's identity https://en.wikipedia.org/wiki/Vandermonde%27s_identity
+∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)
+特别地：∑i=[0..m] C(n,i)*C(m,i) = ∑i=[0..m] C(n,i)*C(m,m-i) = C(n+m,m)   https://codeforces.com/problemset/problem/785/D
+∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)   https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
 ∑i*C(n,i) = n*2^(n-1)
 组合数奇偶性：n&m==m 时 C(n,m) 为奇数，否则为偶数

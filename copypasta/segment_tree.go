@@ -180,6 +180,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // https://codeforces.com/problemset/problem/1114/F
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
+// 矩阵乘法 Σ https://codeforces.com/problemset/problem/718/C
 //
 // 多个更新操作复合：
 // * + Σ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
