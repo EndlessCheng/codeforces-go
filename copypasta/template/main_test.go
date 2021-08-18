@@ -87,6 +87,7 @@ func TestCompare(t *testing.T) {
 func TestCheck(t *testing.T) {
 	return
 	assert := assert.New(t)
+	_ = assert
 
 	inputGenerator := func() (string, testutil.OutputChecker) {
 		//return ``
