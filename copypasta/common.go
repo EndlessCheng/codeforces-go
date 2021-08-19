@@ -98,6 +98,7 @@ https://codeforces.com/problemset/problem/707/D
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
 对于二维矩阵，以 make([][mx]int, n) 的方式使用，比 make([][]int, n) 嵌套 make([]int, m) 更高效（100MB 以上时可以快 ~150ms）
+但需要注意这种方式可能会向 OS 额外申请一倍的内存
 对比 https://codeforces.com/problemset/submission/375/118043978
     https://codeforces.com/problemset/submission/375/118044262
 */
