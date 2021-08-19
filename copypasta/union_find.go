@@ -151,13 +151,13 @@ func unionFind(n int) {
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 // LC 周赛 203D https://leetcode-cn.com/contest/weekly-contest-203/problems/find-latest-group-of-size-m/
 func unionFindVertexWeight(n int) {
-	var fa, size []int
+	var fa, sz []int
 	initFa := func(n int) {
 		fa = make([]int, n)
-		size = make([]int, n)
+		sz = make([]int, n)
 		for i := range fa {
 			fa[i] = i
-			size[i] = 1
+			sz[i] = 1
 		}
 	}
 	initFa(n + 1) //
@@ -171,13 +171,14 @@ func unionFindVertexWeight(n int) {
 	merge := func(from, to int) {
 		from, to = find(from), find(to)
 		if from != to {
-			size[to] += size[from]
+			sz[to] += sz[from]
 			fa[from] = to
 		}
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
+	size := func(x int) int { return sz[find(x)] }
 
-	_ = []interface{}{initFa, merge, same}
+	_ = []interface{}{initFa, merge, same, size}
 }
 
 // 并查集 - 维护边权（种类）
