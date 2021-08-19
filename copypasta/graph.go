@@ -30,8 +30,10 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 归纳 https://codeforces.com/problemset/problem/412/D
 构造 https://codeforces.com/problemset/problem/41/E
 转换 https://codeforces.com/problemset/problem/788/B
+转换 https://codeforces.com/problemset/problem/788/C
 加边 https://codeforces.com/problemset/problem/723/E
 第k小路径 https://codeforces.com/problemset/problem/1196/F
+给一无向图，从中删除恰好一条边，求可以让图变成二分图的所有边的下标 https://codeforces.com/problemset/problem/19/E
 
 竞赛图
 竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
@@ -1139,6 +1141,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // 网格图 https://codeforces.com/problemset/problem/590/C
 // 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
+//         https://atcoder.jp/contests/abc176/tasks/abc176_d
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -2726,8 +2729,17 @@ k 取方格数 https://www.luogu.com.cn/problem/P2045 http://poj.org/problem?id=
 最大费用
 将每条边的费用反向，答案即为 -MCMF
 
-上下界可行流
-todo NOI08 志愿者招募 https://www.luogu.com.cn/problem/P3980（也可以用线性规划做）
+无源汇上下界最小费用可行流
+建图和上面的「无源汇上下界可行流」一样
+NOI08 志愿者招募 https://www.luogu.com.cn/problem/P3980（也可以用线性规划做）
+- 由于没有上界，建图的时候可以不用减去下界
+- 把每天的人数要求看成是边的流量下界（从 i 天向 i+1 天连边）
+- 由于要满足流量守恒，对于每个人 i，需要从结束日期向开始日期连边，容量为 inf，费用为 ci。这相当于每个人在流网络的一单位的流量流过了一个环
+- 代码实现 https://www.luogu.com.cn/record/56398769
+AHOI14/JSOI14 支线剧情 https://www.luogu.com.cn/problem/P4043
+-「看完所有剧情」可以转换成每条边的流量下界为 1，容量为 inf，费用为过剧情花费的时间
+-「开始新的游戏」可以转换成每个点向点 1 连边，容量为 inf，费用为 0
+- 代码实现 https://www.luogu.com.cn/record/56402617
 
 流通问题 circulation problem
 最小费用流通问题 minimum-cost-circulation problem
