@@ -35,7 +35,7 @@ todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  http://poj.org/problem?id=2886
 */
 func fenwickTree(n int) {
-	tree := make([]int, n+1)
+	tree := make([]int, n+1) // int64
 	add := func(i int, val int) {
 		for ; i < len(tree); i += i & -i {
 			tree[i] += val
@@ -54,7 +54,27 @@ func fenwickTree(n int) {
 	// 模板题 https://www.luogu.com.cn/problem/P3368
 	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
-	// 常数优化：O(n) 建树 https://oi-wiki.org/ds/fenwick/#tricks
+	// 求权值树状数组第 k 小的数（k > 0）
+	// 这里 tree[i] 表示 i 的个数
+	// 返回最小的 x 满足 ∑i=[1..x] tree[i] >= k
+	// 思路类似倍增的查询，不断寻找 ∑<k 的数，最后+1就是答案
+	// https://oi-wiki.org/ds/fenwick/#tricks
+	// https://codeforces.com/blog/entry/61364
+	// https://codeforces.com/problemset/problem/1404/C
+	// todo https://codeforces.com/contest/992/problem/E
+	kth := func(k int) (res int) {
+		const mx = 17
+		for b := 1 << (mx - 1); b > 0; b >>= 1 {
+			if next := res | b; next < len(tree) && k > tree[next] {
+				k -= tree[next]
+				res = next
+			}
+		}
+		return res + 1
+	}
+
+	// 常数优化：O(n) 建树
+	// https://oi-wiki.org/ds/fenwick/#tricks
 	init := func(a []int) { // len(tree) = len(a) + 1
 		for i := 1; i < len(tree); i++ {
 			tree[i] += a[i-1]
@@ -64,7 +84,8 @@ func fenwickTree(n int) {
 		}
 	}
 
-	// 常数优化（不推荐。实测只快了几毫秒）https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
+	// 常数优化（不推荐。实测只快了几毫秒）
+	// https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
 		if l > r {
 			panic(9)
@@ -106,10 +127,7 @@ func fenwickTree(n int) {
 		return invCnt
 	}
 
-	_ = []interface{}{
-		add, sum, query, addRange, init,
-		cntInversions,
-	}
+	_ = []interface{}{add, sum, query, addRange, kth, init, cntInversions}
 }
 
 // 结构体写法
