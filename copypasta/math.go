@@ -204,6 +204,8 @@ func numberTheoryCollection() {
 	// a(n) 的因子个数 d(lcm(1,...,n)) https://oeis.org/A056793
 	//     这同时也是 1~n 的子集的 LCM 的种类数
 	// 另一种通分：「排水系统」的另一种解法 https://zxshetzy.blog.luogu.org/ling-yi-zhong-tong-fen
+	// https://oeis.org/A000793	Landau's function g(n): largest order of permutation of n elements
+	//                          Equivalently, largest LCM of partitions of n
 	lcms := []int64{
 		0, 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, // 10
 		27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, // 20
@@ -1830,6 +1832,7 @@ func numberTheoryCollection() {
 	// 阶乘模质数（质数较小）
 	// 时间复杂度 O(plogn)
 	// todo 待整理 https://cp-algorithms.com/algebra/factorial-modulo.html
+	// todo O(√n logn) 见 https://www.luogu.com.cn/problem/P5282
 	_factorial := func(n, p int) int {
 		res := 1
 		for ; n > 1; n /= p {
