@@ -63,7 +63,7 @@ func fenwickTree(n int) {
 	// https://codeforces.com/problemset/problem/1404/C
 	// todo https://codeforces.com/contest/992/problem/E
 	kth := func(k int) (res int) {
-		const mx = 17
+		const mx = 17 // bits.Len(uint(n))
 		for b := 1 << (mx - 1); b > 0; b >>= 1 {
 			if next := res | b; next < len(tree) && k > tree[next] {
 				k -= tree[next]
