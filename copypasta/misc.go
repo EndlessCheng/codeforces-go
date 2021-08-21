@@ -862,3 +862,18 @@ func parseExpression(s string) {
 	root := parse(0, n-1)
 	_ = root
 }
+
+// 钱珀瑙恩数 Champernowne constant
+// https://en.wikipedia.org/wiki/Champernowne_constant
+// https://oeis.org/A033307
+// 返回第 k 位数字
+// https://leetcode-cn.com/contest/espressif-2021/problems/fSghVj/
+func champernowneConstant(k int) int {
+	for i, p10 := 1, 10; ; i++ { // int64
+		if i*p10 > k {
+			return int(strconv.Itoa(k / i)[k%i] & 15)
+		}
+		k += p10
+		p10 *= 10
+	}
+}
