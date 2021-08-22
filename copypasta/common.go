@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"math/bits"
 	"math/rand"
 	"sort"
 	"time"
@@ -358,13 +359,44 @@ func commonCollection() {
 	subSum := func(a []int) []int {
 		sum := make([]int, 1<<len(a)) // int64
 		for i, v := range a {
-			bit := 1 << i
-			for mask := 0; mask < bit; mask++ {
-				sum[bit|mask] = sum[mask] + v
-				// NOTE: 若要直接在此写循环遍历 sum，注意别漏了 sum[0] = 0 的情况
+			for mask, bit := 0, 1<<i; mask < bit; mask++ {
+				sv := sum[mask] + v
+				sum[bit|mask] = sv
+				// NOTE: 若要直接在此考察 sv（相当于遍历 sum），注意别漏了 sum[0] = 0 的情况
 			}
 		}
 		return sum
+	}
+
+	// 应用：给出由非负整数组成的数组 a 的子集和 sum，返回 a
+	// 保证输入有解且 len(sum) = 2^len(a)
+	// 变形：sum 包含负数 https://leetcode-cn.com/problems/find-array-given-subset-sums/
+	// 做法是给所有 sum[i] 加上 -min(sum)，这会导致：
+	// - 若 sum[i] 包含负数 a[i]，则新的 sum'[i] 就不包含 a[i]
+	// - 若 sum[i] 不包含负数 a[i]，则新的 sum'[i] 会包含 -a[i]
+	// 所以新的 sum' 也一样有解
+	// 对 sum' 求出 a'
+	// 由于 -min(sum) 是 a 的所有负数之和，所以找到一个 a' 的子集和，若其等于 -min(sum)，则将该子集在 a' 中的元素取相反数，就得到了 a
+	recoverArrayFromSubsetSum := func(sum []int) []int {
+		sort.Ints(sum)
+		n := bits.TrailingZeros(uint(len(sum)))
+		skip := map[int]int{}
+		ans := make([]int, 0, n)
+		for j := 0; n > 0; n-- {
+			for j++; skip[sum[j]] > 0; j++ {
+				skip[sum[j]]--
+			}
+			s := sum[j]
+			_s := make([]int, 1<<len(ans))
+			for i, v := range ans {
+				for m, b := 0, 1<<i; m < b; m++ {
+					_s[b|m] = _s[m] + v
+					skip[_s[b|m]+s]++
+				}
+			}
+			ans = append(ans, s)
+		}
+		return ans
 	}
 
 	// 返回 a 的各个子集的元素和的排序后的结果
@@ -1053,7 +1085,7 @@ func commonCollection() {
 		min, mins, max, maxs, abs, ceil, bin,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
+		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
 		sort3, reverse, reverseInPlace, equal,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
