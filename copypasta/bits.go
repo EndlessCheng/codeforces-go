@@ -158,41 +158,124 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 按位归纳 https://codeforces.com/problemset/problem/925/C
 */
 
-const wLog = 5 + bits.UintSize>>6
-const wMask = bits.UintSize - 1
+// bitset
+// 参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
+// 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(bitset(nil), b...) 并返回 b
+const _w = bits.UintSize
 
-// b := make(bitset, n>>wLog+1)
+func newBitset(n int) bitset { return make(bitset, (n+_w-1)/_w) }
+
 type bitset []uint
 
-func (b bitset) flip(p int)          { b[p>>wLog] ^= 1 << (p & wMask) }
-func (b bitset) contains(p int) bool { return b[p>>wLog]&(1<<(p&wMask)) != 0 } // get
-func (b bitset) set(p int)           { b[p>>wLog] |= 1 << (p & wMask) }
-func (b bitset) reset(p int)         { b[p>>wLog] &^= 1 << (p & wMask) }
+func (b bitset) has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get
+func (b bitset) flip(p int)     { b[p/_w] ^= 1 << (p % _w) }
+func (b bitset) set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
+func (b bitset) reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
 
-// 不存在时会返回一个不小于 n 的位置
-func (b bitset) index1() int {
-	for i, mask := range b {
-		if mask != 0 {
-			return i<<wLog | bits.TrailingZeros(mask)
-		}
+// 左移 k 位
+// 应用 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/submissions/
+func (b bitset) lsh(k int) {
+	if k == 0 {
+		return
 	}
-	return len(b) << wLog
+	shift, offset := k/_w, k%_w
+	if shift >= len(b) {
+		for i := range b {
+			b[i] = 0
+		}
+		return
+	}
+	if offset == 0 {
+		// Fast path
+		copy(b[shift:], b)
+	} else {
+		for i := len(b) - 1; i > shift; i-- {
+			b[i] = b[i-shift]<<offset | b[i-shift-1]>>(_w-offset)
+		}
+		b[shift] = b[0] << offset
+	}
+	for i := 0; i < shift; i++ {
+		b[i] = 0
+	}
 }
 
-// 不存在时会返回一个不小于 n 的位置
+// 右移 k 位
+func (b bitset) rsh(k int) {
+	if k == 0 {
+		return
+	}
+	shift, offset := k/_w, k%_w
+	if shift >= len(b) {
+		for i := range b {
+			b[i] = 0
+		}
+		return
+	}
+	lim := len(b) - 1 - shift
+	if offset == 0 {
+		// Fast path
+		copy(b, b[shift:])
+	} else {
+		for i := 0; i < lim; i++ {
+			b[i] = b[i+shift]>>offset | b[i+shift+1]<<(_w-offset)
+		}
+		// 注意：若前后调用 lsh 和 rsh，需要注意超出 n 的范围的 1 对结果的影响
+		b[lim] = b[len(b)-1] >> offset
+	}
+	for i := lim + 1; i < len(b); i++ {
+		b[i] = 0
+	}
+}
+
+// 返回 1 的个数
+func (b bitset) onesCount() (c int) {
+	for _, v := range b {
+		c += bits.OnesCount(v)
+	}
+	return
+}
+
+// 返回第一个 0 的下标，不存在时会返回一个不小于 n 的位置
 func (b bitset) index0() int {
-	for i, mask := range b {
-		if ^mask != 0 {
-			return i<<wLog | bits.TrailingZeros(^mask)
+	for i, v := range b {
+		if ^v != 0 {
+			return i*_w | bits.TrailingZeros(^v)
 		}
 	}
-	return len(b) << wLog
+	return len(b) * _w
+}
+
+// 返回第一个 1 的下标，不存在时会返回一个不小于 n 的位置（同 C++ 中的 _Find_first）
+func (b bitset) index1() int {
+	for i, v := range b {
+		if v != 0 {
+			return i*_w | bits.TrailingZeros(v)
+		}
+	}
+	return len(b) * _w
+}
+
+// 返回下标严格大于 p 的第一个 1 的下标，不存在时会返回一个不小于 n 的位置（同 C++ 中的 _Find_next）
+func (b bitset) next1(p int) int {
+	p++ // make bound inclusive
+	if i := p / _w; i < len(b) {
+		v := b[i] & (^uint(0) << (p % _w)) // mask off bits below bound
+		if v != 0 {
+			return i*_w | bits.TrailingZeros(v)
+		}
+		for i++; i < len(b); i++ {
+			if b[i] != 0 {
+				return i*_w | bits.TrailingZeros(b[i])
+			}
+		}
+	}
+	return len(b) * _w
 }
 
 // 下面几个方法均需保证长度相同
 func (b bitset) equals(c bitset) bool {
-	for i, s := range b {
-		if s != c[i] {
+	for i, v := range b {
+		if v != c[i] {
 			return false
 		}
 	}
@@ -200,8 +283,8 @@ func (b bitset) equals(c bitset) bool {
 }
 
 func (b bitset) hasSubset(c bitset) bool {
-	for i, s := range b {
-		if s|c[i] != s {
+	for i, v := range b {
+		if v|c[i] != v {
 			return false
 		}
 	}
@@ -210,8 +293,8 @@ func (b bitset) hasSubset(c bitset) bool {
 
 // 将 c 的元素合并进 b
 func (b bitset) merge(c bitset) {
-	for i, s := range c {
-		b[i] |= s
+	for i, v := range c {
+		b[i] |= v
 	}
 }
 
