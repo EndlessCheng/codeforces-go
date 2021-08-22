@@ -803,6 +803,7 @@ func dpCollections() {
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
+	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2
 	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
 	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值
 	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E
@@ -1021,10 +1022,12 @@ func dpCollections() {
 	// 分组背包
 	// https://www.acwing.com/problem/content/9/
 	// https://www.luogu.com.cn/problem/P1757
+	// LC周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for _, g := range groups {
+			// 这里 j 的初始值可以优化成前 i 个组的每组最大重量之和（但不能超过 maxW）
 			for j := maxW; j >= 0; j-- {
 				for _, it := range g {
 					if v, w := it.v, it.w; w <= j {
@@ -1091,6 +1094,7 @@ func dpCollections() {
 	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
 	同色消除【套路】 https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	回文消除 https://codeforces.com/problemset/problem/607/B
+	二维区间 DP https://codeforces.com/problemset/problem/1198/D
 	③ 一些题目
 	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
@@ -1423,6 +1427,7 @@ func dpCollections() {
 	// todo https://codeforces.com/problemset/problem/1208/F
 	//  https://codeforces.com/problemset/problem/800/D
 	//  https://codeforces.com/problemset/problem/383/E
+	//  https://www.luogu.com.cn/problem/P6442
 	// https://codeforces.com/problemset/problem/1523/D
 	sos := func(a []int) []int {
 		// 从子集转移的写法
@@ -1757,6 +1762,7 @@ func dpCollections() {
 
 	/* 数据结构优化 DP
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
+	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
 	动态 DP
@@ -2052,7 +2058,7 @@ func dpCollections() {
 	// todo 给一棵树和树上的一些关键节点，选 m 个点，使得关键节点到这些点中距离的最小值的最大值最小，求这个值
 	//      https://www.luogu.com.cn/problem/P3523
 
-	// 换根 DP
+	// 换根 DP / 二次扫描法
 	// 进阶指南 p.292-295
 	// https://codeforces.com/blog/entry/20935
 	//

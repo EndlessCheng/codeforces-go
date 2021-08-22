@@ -479,6 +479,8 @@ func stringCollection() {
 		}
 
 		// 返回值含义同 strings.Compare
+		// https://codeforces.com/problemset/problem/611/D
+		// https://leetcode-cn.com/contest/biweekly-contest-59/problems/number-of-ways-to-separate-numbers/
 		compareSub := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)

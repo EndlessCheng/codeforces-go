@@ -1035,6 +1035,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	}
 
 	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
+	// https://www.luogu.com.cn/problem/P1144 https://leetcode-cn.com/problems/number-of-ways-to-arrive-at-destination/
+	// 也可以把转移写在求最短路的代码中，见 https://www.luogu.com.cn/record/56683589
 	{
 		deg := make([]int, n)
 		for v, es := range g {
