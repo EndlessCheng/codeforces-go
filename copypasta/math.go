@@ -1217,6 +1217,9 @@ func numberTheoryCollection() {
 	// 预处理: [2,mx] 的不同的质因子个数 omega(n) https://oeis.org/A001221
 	// https://en.wikipedia.org/wiki/Prime_omega_function
 	// 莫比乌斯反演 https://oeis.org/A062799 = Sum_{d|n} omega(d)
+	// https://oeis.org/A007875 Number of ways of writing n as p*q, with p <= q, gcd(p, q) = 1
+	//                          a(n) = 2^(omega(n)-1)
+	//                          相关题目 https://www.luogu.com.cn/problem/T192681?contestId=38351 https://www.luogu.com.cn/blog/LonecharmRiver/Elevator
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
 		omega := make([]int, mx+1) // int8
@@ -1940,6 +1943,7 @@ func numberTheoryCollection() {
 		}
 
 		// EXTRA: 卢卡斯定理 https://en.wikipedia.org/wiki/Lucas%27s_theorem
+		// https://yangty.blog.luogu.org/lucas-theorem-note
 		// C(n,m)%p = C(n%p,m%p) * C(n/p,m/p) % p
 		// 注意初始化 F 和 invF 时 mx 取 mod-1
 		// 推论：n&m==m 时 C(n,m) 为奇数，否则为偶数
@@ -2805,8 +2809,10 @@ func combinatoricsCollection() {
 	// 参考《挑战程序设计竞赛》P296
 	// https://codeforces.com/blog/entry/64625
 	// https://ac.nowcoder.com/acm/contest/6219/C
+	//
 	// 多重集组合数 https://codeforces.com/problemset/problem/451/E
 	// https://codeforces.com/problemset/problem/1342/E
+	// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
 	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
 	// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
 	// 用因子容斥 https://codeforces.com/problemset/problem/900/D
