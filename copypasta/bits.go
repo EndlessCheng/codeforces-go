@@ -163,7 +163,7 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 // 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(bitset(nil), b...) 并返回 b
 const _w = bits.UintSize
 
-func newBitset(n int) bitset { return make(bitset, (n+_w-1)/_w) }
+func newBitset(n int) bitset { return make(bitset, n/_w+1) } // (n+_w-1)/_w
 
 type bitset []uint
 
@@ -233,6 +233,18 @@ func (b bitset) onesCount() (c int) {
 		c += bits.OnesCount(v)
 	}
 	return
+}
+
+// 遍历所有 1 的位置
+func (b bitset) foreach(f func(p int) (Break bool)) {
+	for i, v := range b {
+		for ; v > 0; v &= v - 1 {
+			j := i*_w | bits.TrailingZeros(v)
+			if f(j) {
+				return
+			}
+		}
+	}
 }
 
 // 返回第一个 0 的下标，不存在时会返回一个不小于 n 的位置
