@@ -19,24 +19,27 @@ func CF549B(_r io.Reader, _w io.Writer) {
 	for i := range g {
 		Fscan(in, &g[i])
 	}
+	q := []int{}
 	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
+		if a[i] == 0 {
+			q = append(q, i)
+		}
 	}
 
 	ans := []int{}
-o:
-	for {
-		for i, v := range a {
-			if v == 0 {
-				ans = append(ans, i+1)
-				for j, b := range g[i] {
-					a[j] -= int(b & 1)
+	for len(q) > 0 {
+		v := q[0]
+		q = q[1:]
+		ans = append(ans, v+1)
+		for j, b := range g[v] {
+			if b == '1' {
+				if a[j]--; a[j] == 0 {
+					q = append(q, j)
 				}
-				continue o
 			}
 		}
-		break
 	}
 	sort.Ints(ans)
 	Fprintln(out, len(ans))
