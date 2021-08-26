@@ -37,11 +37,11 @@ a == b   a*(1-eps) < b && b < a*(1+eps)
 https://codeforces.com/problemset/submission/621/116068024
 https://codeforces.com/problemset/submission/621/116068186
 
-dot (dot product，点积)
+dot (dot product，数量积，点积，内积)
 https://en.wikipedia.org/wiki/Dot_product
-A·B 可以理解为向量 A 在向量 B 上的投影再乘以 B 的长度
-即 |A||B|cosθ
-该式子与 x1x2+y1y2 的关系见 https://www.zhihu.com/question/29039728
+https://en.wikipedia.org/wiki/Inner_product_space
+中学课本是用力的做功引入数量积的（物体在力 F 的作用下产生位移 s，力 F 所做的功等于 |F||s|cosθ）
+据此课本上定义 A·B = |A||B|cosθ，然后证明了其等于 x1x2+y1y2
 
 det (determinant，行列式，叉积的模，有向面积)
 https://en.wikipedia.org/wiki/Determinant#Geometric_meaning
