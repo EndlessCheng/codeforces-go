@@ -6,6 +6,7 @@ import "math/bits"
 st[i][j] 对应的区间是 [i, i+2^j)
 https://oi-wiki.org/ds/sparse-table/
 https://codeforces.com/blog/entry/66643
+Tarjan RMQ https://codeforces.com/blog/entry/48994
 一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
 一个 RMQ 问题的快速算法，以及区间众数 https://zhuanlan.zhihu.com/p/79423299
 将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
@@ -40,6 +41,8 @@ func sparseTableCollections() {
 	_, _ = stInit, stQuery
 
 	// 下标版本，查询返回的是区间最值的下标
+	// https://codeforces.com/problemset/problem/675/E
+	// - 此题另一种做法是单调栈二分，见 https://www.luogu.com.cn/problem/solution/CF675E
 	{
 		type pair struct{ v, i int }
 		const mx = 17
