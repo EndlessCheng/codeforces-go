@@ -130,13 +130,13 @@ func CF610D(_r io.Reader, out io.Writer) {
 	}
 
 	ans := int64(0)
-	f := func(a []pair) (b []pair) {
+	unique := func(a []pair) (b []pair) {
 		sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.p < b.p || a.p == b.p && a.l < b.l })
 		for _, p := range a {
 			if b == nil || p.p > b[len(b)-1].p || p.l > b[len(b)-1].r {
 				b = append(b, p)
 			} else if p.r > b[len(b)-1].r {
-				b[len(b)-1].r = p.r
+				b[len(b)-1].r = p.r // 合并线段
 			}
 		}
 		for _, p := range b {
@@ -144,8 +144,8 @@ func CF610D(_r io.Reader, out io.Writer) {
 		}
 		return b
 	}
-	a = f(a)
-	b = f(b)
+	a = unique(a)
+	b = unique(b)
 	if len(a) > len(b) {
 		a, b = b, a
 	}
@@ -156,7 +156,7 @@ func CF610D(_r io.Reader, out io.Writer) {
 		es = append(es, event{p.l<<1 | 1, p.p}, event{(p.r + 1) << 1, p.p})
 	}
 	sort.Slice(es, func(i, j int) bool { return es[i].e < es[j].e })
-	t := &treap10{rd: 1}
+	t := &treap10{rd: 1} //
 	i := 0
 	for _, p := range b {
 		for ; i < len(es) && es[i].e>>1 <= p.p; i++ {
@@ -166,7 +166,7 @@ func CF610D(_r io.Reader, out io.Writer) {
 				t.delete(es[i].p)
 			}
 		}
-		ans -= int64(t.rank(p.r+1) - t.rank(p.l))
+		ans -= int64(t.rank(p.r+1) - t.rank(p.l)) // 减去交点个数
 	}
 	Fprint(out, ans)
 }
