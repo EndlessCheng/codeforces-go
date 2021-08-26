@@ -688,8 +688,8 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 		g[w] = append(g[w], neighbor{v, i})
 		edges[i] = edge{v, w}
 	}
-	isBridge = make([]bool, m)
-	dfn := make([]int, n) // 值从 1 开始
+	isBridge = make([]bool, len(edges))
+	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	var f func(int, int) int
 	f = func(v, fid int) int { // 使用 fid 而不是 fa，可以兼容重边的情况
@@ -697,8 +697,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 		dfn[v] = dfsClock
 		lowV := dfsClock
 		for _, e := range g[v] {
-			w := e.to
-			if dfn[w] == 0 {
+			if w := e.to; dfn[w] == 0 {
 				lowW := f(w, e.eid)
 				if lowW > dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 或 v 的祖先，所以 v-w 必定是桥
 					isBridge[e.eid] = true
@@ -716,9 +715,10 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 		}
 	}
 
+	// EXTRA: 所有桥边的下标
 	bridgeEIDs := []int{}
-	for eid, is := range isBridge {
-		if is {
+	for eid, b := range isBridge {
+		if b {
 			bridgeEIDs = append(bridgeEIDs, eid)
 		}
 	}
@@ -857,18 +857,18 @@ func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
 // e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
 // 缩点后形成一颗 bridge tree
 // 模板题 https://codeforces.com/problemset/problem/1000/E
+// 较为综合的一道题 http://codeforces.com/problemset/problem/732/F
 func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
 	type neighbor struct{ to, eid int }
 	type edge struct{ v, w int }
-
 	g := make([][]neighbor, n)
 	edges := make([]edge, m)
-	// read g ...
 
+	// *copy* 包含读图
 	isBridge := G.findBridges(in, n, m)
 
 	// 求原图中每个点的 bccID
-	bccIDs = make([]int, n)
+	bccIDs = make([]int, len(g))
 	idCnt := 0
 	var comp []int
 	var f2 func(int)
@@ -876,7 +876,7 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 		bccIDs[v] = idCnt
 		comp = append(comp, v)
 		for _, e := range g[v] {
-			if w := e.to; bccIDs[w] == 0 && !isBridge[e.eid] {
+			if w := e.to; !isBridge[e.eid] && bccIDs[w] == 0 {
 				f2(w)
 			}
 		}
@@ -901,8 +901,8 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	}
 
 	// 也可以遍历 isBridge，割边两端点 bccIDs 一定不同
-	for eid, is := range isBridge {
-		if is {
+	for eid, b := range isBridge {
+		if b {
 			e := edges[eid]
 			v, w := bccIDs[e.v]-1, bccIDs[e.w]-1
 			g2[v] = append(g2[v], w)
