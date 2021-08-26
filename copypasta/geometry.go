@@ -14,6 +14,7 @@ https://oi-wiki.org/geometry/2d/
 https://oi-wiki.org/geometry/3d/
 推荐 https://vlecomte.github.io/cp-geo.pdf
 https://www.cnblogs.com/Xing-Ling/p/12102489.html
+todo kuangbin 的计算几何模板 https://kuangbin.github.io/2019/04/28/20190428/
 
 由于浮点默认是 %g，输出时应使用 Fprintf(out, "%.16f", ans)，这样还可以方便测试
 
@@ -36,10 +37,15 @@ a == b   a*(1-eps) < b && b < a*(1+eps)
 https://codeforces.com/problemset/submission/621/116068024
 https://codeforces.com/problemset/submission/621/116068186
 
-dot (dot product，点积):
+dot (dot product，点积)
+https://en.wikipedia.org/wiki/Dot_product
 A·B 可以理解为向量 A 在向量 B 上的投影再乘以 B 的长度
+即 |A||B|cosθ
+该式子与 x1x2+y1y2 的关系见 https://www.zhihu.com/question/29039728
 
-det (determinant，行列式，叉积的模，有向面积):
+det (determinant，行列式，叉积的模，有向面积)
+https://en.wikipedia.org/wiki/Determinant#Geometric_meaning
+|A||B|sinθ
 + b在a左侧
 - b在a右侧
 0 ab平行或重合（共基线）
@@ -195,25 +201,38 @@ func (a vec) up() vec {
 	}
 	return a
 }
-func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} }
-func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} }
+func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} } // 逆时针旋转 90°
+func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} } // 顺时针旋转 90°
 
 // 逆时针旋转，传入旋转的弧度
 func (a vecF) rotateCCW(rad float64) vecF {
 	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
 }
 
+// 单位向量
+// https://en.wikipedia.org/wiki/Unit_vector
+func (a vecF) unit() vecF { return a.div(a.len()) }
+
 // a 的单位法线（a 不能是零向量）
-func (a vecF) normal() vecF { return vecF{-a.y, a.x}.div(a.len()) }
+// https://en.wikipedia.org/wiki/Normal_(geometry)
+func (a vecF) normal() vecF { return vecF{-a.y, a.x}.unit() }
+
+// 转化为长度为 x 的向量
+func (a vecF) trunc(x float64) vecF { return a.unit().mul(x) }
 
 // 两向量夹角
-func (a vec) angleTo(b vec) float64 {
-	v := float64(a.dot(b)) / (a.len() * b.len())
-	v = math.Min(math.Max(v, -1), 1) // 确保 v 在 [-1,1] 内
-	return math.Acos(v)
-}
+//    det = |A||B|sinθ
+//    dot = |A||B|cosθ
+// => tanθ = det / dot
+// b 在 a 左侧时返回正值
+// b 在 a 右侧时返回负值
+func (a vec) angleTo(b vec) float64 { return math.Atan2(float64(a.det(b)), float64(a.dot(b))) }
 
 // 极角排序
+// todo 给 1e5 个点，求包含原点的三角形个数 https://www.luogu.com.cn/problem/P2992
+// - 考虑补集
+// - 点和原点连直线，在直线一侧选两个点组成的三角形必然不会包含原点
+// - 双指针维护
 func polarAngleSort(ps []vec) {
 	// (-π, π]
 	// (-1e9,-1) -> (-1e9, 0)
@@ -289,14 +308,23 @@ func (a lineF) point(t float64) vecF { return a.p1.add(a.vec().mul(t)) }
 // 点 a 是否在 l 左侧
 func (a vecF) onLeft(l lineF) bool { return l.vec().det(a.sub(l.p1)) > eps }
 
-// 点 a 是否在线段 l 上（a-p1 与 a-p2 共线且方向相反）
+// 点 a 是否在直线 l 上
+// 判断方法：a-p1 与 a-p2 共线
+func (a vec) onLine(l line) bool {
+	p1, p2 := l.p1.sub(a), l.p2.sub(a)
+	return p1.det(p2) == 0
+}
+
+// 点 a 是否在线段 l 上
+// 判断方法：a-p1 与 a-p2 共线且方向相反
 func (a vec) onSeg(l line) bool {
 	p1, p2 := l.p1.sub(a), l.p2.sub(a)
 	return p1.det(p2) == 0 && p1.dot(p2) <= 0 // 含端点
 	//return math.Abs(p1.det(p2)) < eps && p1.dot(p2) < eps
 }
 
-// 点 a 是否在射线 o-d 上
+// 点 a 是否在射线 o-d 上（d 是向量）
+// 判断方法：o-a 与 d 共线且方向相同
 func (a vec) onRay(o, d vec) bool {
 	a = a.sub(o)
 	return d.det(a) == 0 && d.dot(a) >= 0 // 含端点
@@ -964,10 +992,12 @@ func vec2Collection() {
 		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0
 	}
 
-	// todo 判断点 p 是否在多边形 ps 内部（不保证凸性）
-	// 光线投射算法 Ray casting algorithm
+	// 判断点 p 是否在多边形 ps 内部（不保证凸性）
+	// todo 法一：射线法（光线投射算法 Ray casting algorithm）
 	// 穿过奇数次
 	// http://acm.hdu.edu.cn/showproblem.php?pid=1756
+
+	// todo 法二：转角法
 
 	// 判断任意两个多边形是否相离 O(n^2)
 	// 属于不同多边形的任意两边都不相交，且一个多边形上的任意顶点都不被另一个多边形所包含
