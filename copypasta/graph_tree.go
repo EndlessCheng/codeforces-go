@@ -19,6 +19,7 @@ NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」�
 
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
 不错的构造 https://codeforces.com/problemset/problem/260/D
+分类讨论的好题 https://codeforces.com/problemset/problem/765/E
 */
 
 // namespace
@@ -133,7 +134,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 }
 
 // 每个节点的入出时间戳
-// 预处理后可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
+// 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 例题 https://codeforces.com/contest/1328/problem/E
 // 给定一颗 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
@@ -142,7 +143,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 //	      v := (w - 1) / k
 //        g[v] = append(g[v], w)
 //    }
-// 其他：见 common.go 中的树上莫队部分
+// 其他：见 mo.go 中的树上莫队部分
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
@@ -238,6 +239,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
+// 随机树的直径 https://zhuanlan.zhihu.com/p/398621082
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
@@ -441,7 +443,7 @@ func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 	return
 }
 
-// 点分治 - 重心分解 (CD, Centroid Decomposition)
+// 点分治 - 重心分解（CD, Centroid Decomposition）
 // https://oi-wiki.org/graph/tree-divide/
 // todo https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
@@ -630,8 +632,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 	return f(root, -1)
 }
 
-// 动态树分治 动态点分治
-// 点分树
+// 点分树（动态点分治）
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 
@@ -641,6 +642,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
+// https://atcoder.jp/contests/arc060/tasks/arc060_c
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
 //    最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
@@ -650,7 +652,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
-// 其他：见 common.go 中的树上莫队部分
+// 其他：见 mo.go 中的树上莫队部分
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
@@ -728,15 +730,18 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	{
 		// 加权树上二分
 		var dep []int64 // 加权深度，dfs 预处理略
-		// 从 v 开始向根移动至多 d 距离，返回能移动到的离根最近的点
-		uptoDep := func(v int, d int64) int {
+		// 从 v 开始向根移动至多 d 距离，返回最大移动次数，以及能移动到的离根最近的点
+		// 变形 https://codeforces.com/problemset/problem/932/D
+		uptoDep := func(v int, d int64) (int, int) {
+			step := 0
 			dv := dep[v]
 			for i := mx - 1; i >= 0; i-- {
 				if p := pa[v][i]; p != -1 && dv-dep[p] <= d {
+					step |= 1 << i
 					v = p
 				}
 			}
-			return v
+			return step, v
 		}
 		_ = uptoDep
 	}
@@ -883,6 +888,7 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 // 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
+// 扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
 func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
@@ -1029,6 +1035,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // todo 子异和 https://www.luogu.com.cn/problem/P5127
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
+// todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
 func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
 	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ depth, size, hson, fa, top, dfn int }
