@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"container/heap"
+	"math"
 	"math/bits"
 	"sort"
 )
@@ -27,6 +28,7 @@ import (
       https://codeforces.com/problemset/problem/461/B
       https://codeforces.com/problemset/problem/553/A
       https://codeforces.com/problemset/problem/687/C
+      https://codeforces.com/problemset/problem/1012/C
       https://codeforces.com/problemset/problem/1025/D
       https://codeforces.com/problemset/problem/1027/E
       https://codeforces.com/problemset/problem/1408/D
@@ -266,6 +268,7 @@ func dpCollections() {
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 变形题 https://codeforces.com/problemset/problem/788/A
 	//       https://codeforces.com/problemset/problem/1155/D
+	//       https://codeforces.com/problemset/problem/1197/D
 	//       https://codeforces.com/problemset/problem/1373/D
 	//       需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
@@ -391,6 +394,7 @@ func dpCollections() {
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
+	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D
 	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
 	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713/周赛222D https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
@@ -492,10 +496,12 @@ func dpCollections() {
 	}
 
 	// 最长上升子序列 (LIS)
+	// 这种写法适用于一些定义比较复杂的变形题
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
 	// 转换 http://acm.hdu.edu.cn/showproblem.php?pid=1950
+	// 转换 https://codeforces.com/problemset/problem/1562/E
 	// 变体 https://codeforces.com/problemset/problem/1350/B
 	//【网络流 24 题】能取出多少个长为 len(LIS) 的不相交子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
 	lisSlow := func(a []int) (ans int) {
@@ -1092,7 +1098,8 @@ func dpCollections() {
 	打印机（好题） LC664 https://leetcode-cn.com/problems/strange-printer/
 	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
 	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
-	同色消除【套路】 https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
+	染色【套路】https://codeforces.com/problemset/problem/1114/D
+	同色消除【套路】https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	回文消除 https://codeforces.com/problemset/problem/607/B
 	二维区间 DP https://codeforces.com/problemset/problem/1198/D
 	③ 一些题目
@@ -1610,24 +1617,24 @@ func dpCollections() {
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
-	digitDP := func(lower, upper string, sumUpper int) int {
-		const mod int = 1e9 + 7
+	digitDP := func(lower, upper string, sumUpper int) int64 {
+		const mod int64 = 1e9 + 7
 
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 hasD 表示是否有非零数字（意为「真正填了数字」），最后 p>=n 的时候根据情况返回 1 或者 0
 		//       具体代码见 https://codeforces.com/contest/855/submission/125651587
-		calc := func(s string) int {
+		calc := func(s string) int64 {
 			const lowerC, upperC byte = '0', '9'
-			dp := make([][]int, len(s)) // int64
+			dp := make([][]int64, len(s))
 			for i := range dp {
-				dp[i] = make([]int, sumUpper+1)
+				dp[i] = make([]int64, sumUpper+1)
 				for j := range dp[i] {
 					dp[i][j] = -1
 				}
 			}
-			var f func(p, sum int, limitUp bool) int
-			f = func(p, sum int, limitUp bool) (res int) {
+			var f func(p, sum int, limitUp bool) int64
+			f = func(p, sum int, limitUp bool) (res int64) {
 				if p == len(s) {
 					return 1
 				} // sum
@@ -1661,6 +1668,54 @@ func dpCollections() {
 		//	ans++
 		//}
 		ans = (ans%mod + mod) % mod
+
+		// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
+		// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
+		calcSum := func(s string, k int) int64 {
+			n := len(s)
+			type pair struct{ cnt, sum int64 }
+			dp := make([][1 << 10]pair, n)
+			for i := range dp {
+				for j := range dp[i] {
+					dp[i][j] = pair{-1, -1}
+				}
+			}
+			var f func(int, uint16, bool, bool) pair
+			f = func(p int, mask uint16, limitUp, hasD bool) (res pair) {
+				if p == n {
+					if !hasD {
+						return
+					}
+					return pair{1, 0}
+				}
+				if !limitUp && hasD {
+					dv := &dp[p][mask]
+					if dv.cnt >= 0 {
+						return *dv
+					}
+					defer func() { *dv = res }()
+				}
+				up := 9
+				if limitUp {
+					up = int(s[p] & 15)
+				}
+				for d := 0; d <= up; d++ {
+					tmp := mask
+					if hasD || d > 0 {
+						tmp |= 1 << d
+					}
+					if bits.OnesCount16(tmp) <= k {
+						pr := f(p+1, tmp, limitUp && d == up, hasD || d > 0)
+						res.cnt = (res.cnt + pr.cnt) % mod
+						res.sum = (res.sum + int64(math.Pow10(n-1-p))%mod*pr.cnt%mod*int64(d) + pr.sum) % mod
+					}
+				}
+				return
+			}
+			return f(0, 0, true, false).sum
+		}
+		_ = calcSum
+
 		return ans
 	}
 
@@ -1865,6 +1920,7 @@ func dpCollections() {
 	**如何转移 https://codeforces.com/problemset/problem/538/E
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
 	巧妙的转换 https://codeforces.com/problemset/problem/734/E
+	https://codeforces.com/problemset/problem/1292/C
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
@@ -2063,11 +2119,12 @@ func dpCollections() {
 	// https://codeforces.com/blog/entry/20935
 	//
 	// https://www.luogu.com.cn/problem/P3478
+	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/763/A（有更巧妙的做法）
 	// https://codeforces.com/problemset/problem/1092/F
-	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/219/D
 	// https://codeforces.com/problemset/problem/337/D
+	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D
 
 	// 给一颗无根树
 	// 返回每个点到其余点的距离之和
