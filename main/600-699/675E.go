@@ -12,12 +12,12 @@ func CF675E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n int
 	Fscan(in, &n)
-	a := make([]int, n)
+	a := make([]int, n-1, n)
 	for i := range a {
 		Fscan(in, &a[i])
 		a[i]--
 	}
-	a[n-1] = n - 1
+	a = append(a, n-1)
 
 	type pair struct{ v, i int }
 	st := make([][17]pair, n)
@@ -42,26 +42,12 @@ func CF675E(_r io.Reader, out io.Writer) {
 		return b.i
 	}
 
-	dp := make([]int64, n-1)
-	for i := range dp {
-		dp[i] = -1
-	}
-	var f func(int) int64
-	f = func(i int) (res int64) {
-		if i == n-1 {
-			return
-		}
-		dv := &dp[i]
-		if *dv != -1 {
-			return *dv
-		}
-		defer func() { *dv = res }()
-		j := query(i, a[i]+1) // 查询最值所处下标
-		return f(j) + int64(n-1-i-(a[i]-j))
-	}
+	dp := make([]int64, n)
 	ans := int64(0)
-	for i := range a {
-		ans += f(i)
+	for i := n - 2; i >= 0; i-- {
+		mxI := query(i, a[i]+1) // 查询最值所处下标
+		dp[i] = dp[mxI] + int64(n-1-i-(a[i]-mxI))
+		ans += dp[i]
 	}
 	Fprint(out, ans)
 }
