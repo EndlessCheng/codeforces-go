@@ -412,18 +412,22 @@ func stringCollection() {
 	*/
 	suffixArray := func(s []byte) {
 		n := len(s)
+
+		// 后缀数组 sa
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
-		//      后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
+		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
 		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
 		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
+		// 后缀名次数组 rank
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
-		//     rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
+		// 特别地，rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
 		rank := make([]int, n)
 		for i := range rank {
 			rank[sa[i]] = i
 		}
 
+		// 高度数组 height
 		// height[0] = 0
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
@@ -468,7 +472,7 @@ func stringCollection() {
 			return _q(ri+1, rj+1)
 		}
 
-		// EXTRA: 比较两个子串 s[l1,r1) 和 s[l2,r2)
+		// EXTRA: 比较两个子串，返回 s[l1:r1] < s[l2:r2]，注意这里是左闭右开区间
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
 		lessSub := func(l1, r1, l2, r2 int) bool {
 			len1, len2 := r1-l2, r2-l2
@@ -478,7 +482,7 @@ func stringCollection() {
 			return rank[l1] < rank[l2] // 或者 s[l1+l] < s[l2+l]
 		}
 
-		// 返回值含义同 strings.Compare
+		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意这里是左闭右开区间
 		// https://codeforces.com/problemset/problem/611/D
 		// https://leetcode-cn.com/contest/biweekly-contest-59/problems/number-of-ways-to-separate-numbers/
 		compareSub := func(l1, r1, l2, r2 int) int {
