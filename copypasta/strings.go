@@ -65,20 +65,20 @@ func stringCollection() {
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
-	var powP []uint64
-	initPowP := func(maxLen int) {
+	hash := func(s []byte) {
+		// 注意：由于哈希很容易被卡，能用其它方法实现尽量用其它方法
 		const prime uint64 = 1e8 + 7
-		powP = make([]uint64, maxLen)
+		powP := make([]uint64, len(s)+1) // powP[i] = prime^i
 		powP[0] = 1
-		for i := 1; i < maxLen; i++ {
-			powP[i] = powP[i-1] * prime
+		preHash := make([]uint64, len(s)+1) // preHash[i] = hash(s[:i])
+		for i, b := range s {
+			powP[i+1] = powP[i] * prime
+			preHash[i+1] = preHash[i]*prime + uint64(b)
 		}
-	}
-	calcHash := func(s []byte) (val uint64) {
-		for i, c := range s {
-			val += uint64(c) * powP[i]
-		}
-		return
+
+		// 计算子串 s[l:r] 的哈希
+		subHash := func(l, r int) uint64 { return preHash[r] - preHash[l]*powP[r-l] }
+		_ = subHash
 	}
 
 	// KMP (Knuth–Morris–Pratt algorithm)
@@ -360,7 +360,7 @@ func stringCollection() {
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
+		本质不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
@@ -644,7 +644,7 @@ func stringCollection() {
 	_ = []interface{}{
 		unsafeToBytes, unsafeToString,
 		indexAll,
-		initPowP, calcHash,
+		hash,
 		kmpSearch, calcMinPeriod,
 		zSearch,
 		smallestRepresentation,
