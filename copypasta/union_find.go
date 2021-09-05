@@ -27,6 +27,7 @@ import (
 //         https://codeforces.com/problemset/problem/1466/F
 // 维护树或基环树 https://codeforces.com/problemset/problem/859/E
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632/周赛212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
+// 分组排序套路 LC周赛257D https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 func unionFind(n int) {
 	var fa []int
