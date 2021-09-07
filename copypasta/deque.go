@@ -12,6 +12,10 @@ func (q Deque) Empty() bool {
 	return len(q.l) == 0 && len(q.r) == 0
 }
 
+func (q Deque) Size() int {
+	return len(q.l) + len(q.r)
+}
+
 func (q *Deque) PushFront(v interface{}) {
 	q.l = append(q.l, v)
 }
@@ -36,10 +40,6 @@ func (q *Deque) PopBack() (v interface{}) {
 		v, q.l = q.l[0], q.l[1:]
 	}
 	return
-}
-
-func (q Deque) Size() int {
-	return len(q.l) + len(q.r)
 }
 
 func (q Deque) Front() interface{} {
