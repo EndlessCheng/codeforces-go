@@ -1162,18 +1162,18 @@ func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 		dist[i] = inf
 	}
 	dist[st] = 0
-	q := &deque{}
-	q.pushL(st)
-	for !q.empty() {
-		v := q.popL()
+	q := &Deque{}
+	q.PushFront(st)
+	for !q.Empty() {
+		v := q.PopFront().(int)
 		for _, e := range g[v] {
 			w, d := e.to, e.wt
 			if newD := dist[v] + d; newD < dist[w] {
 				dist[w] = newD
 				if d == 0 {
-					q.pushL(w)
+					q.PushFront(w)
 				} else {
-					q.pushR(w)
+					q.PushBack(w)
 				}
 			}
 		}

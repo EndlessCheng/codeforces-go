@@ -6,12 +6,21 @@ package copypasta
 // 应用见 graph.go 中的 01 最短路
 
 // l-1,...1,0,0,1...,r-1
-type deque struct{ l, r []int }
+type Deque struct{ l, r []interface{} }
 
-func (q deque) empty() bool  { return len(q.l) == 0 && len(q.r) == 0 }
-func (q *deque) pushL(v int) { q.l = append(q.l, v) }
-func (q *deque) pushR(v int) { q.r = append(q.r, v) }
-func (q *deque) popL() (v int) {
+func (q Deque) Empty() bool {
+	return len(q.l) == 0 && len(q.r) == 0
+}
+
+func (q *Deque) PushFront(v interface{}) {
+	q.l = append(q.l, v)
+}
+
+func (q *Deque) PushBack(v interface{}) {
+	q.r = append(q.r, v)
+}
+
+func (q *Deque) PopFront() (v interface{}) {
 	if len(q.l) > 0 {
 		q.l, v = q.l[:len(q.l)-1], q.l[len(q.l)-1]
 	} else {
@@ -19,7 +28,8 @@ func (q *deque) popL() (v int) {
 	}
 	return
 }
-func (q *deque) popR() (v int) {
+
+func (q *Deque) PopBack() (v interface{}) {
 	if len(q.r) > 0 {
 		q.r, v = q.r[:len(q.r)-1], q.r[len(q.r)-1]
 	} else {
@@ -28,23 +38,26 @@ func (q *deque) popR() (v int) {
 	return
 }
 
-// 不常用的
-func (q deque) size() int { return len(q.l) + len(q.r) }
-func (q deque) topL() int {
+func (q Deque) Size() int {
+	return len(q.l) + len(q.r)
+}
+
+func (q Deque) Front() interface{} {
 	if len(q.l) > 0 {
 		return q.l[len(q.l)-1]
 	}
 	return q.r[0]
 }
-func (q deque) topR() int {
+
+func (q Deque) Back() interface{} {
 	if len(q.r) > 0 {
 		return q.r[len(q.r)-1]
 	}
 	return q.l[0]
 }
 
-// 0<=i<q.size()
-func (q deque) get(i int) int {
+// 0 <= i < q.Size()
+func (q Deque) Get(i int) interface{} {
 	if i < len(q.l) {
 		return q.l[len(q.l)-1-i]
 	}
