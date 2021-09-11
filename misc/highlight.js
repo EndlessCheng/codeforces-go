@@ -106,11 +106,12 @@
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
                 .replaceAll("Dr. ", "Dr.")
-                .replaceAll("I.e. ", "I.e.")
-                .replaceAll("i.e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
+                .replaceAll("i.e. ", "i.e.")
+                .replaceAll("I.e. ", "I.e.")
                 .replaceAll("E. g. ", "E.g.") // see https://codeforces.com/contest/1551/problem/E
+                .replaceAll("E.g. ", "E.g.")
                 .replaceAll(". \\", ".\\") // 防止数学公式异常
                 .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
                 // So you decided to hold a contest on Codeforces.
