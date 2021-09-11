@@ -94,6 +94,7 @@ func renameInputArgs(funcDefineLine string) string {
 		"edges", "es",
 		"points", "ps",
 		"queries", "qs",
+		"source", "src",
 		"target", "tar",
 		"limit", "lim",
 		"index", "id",
