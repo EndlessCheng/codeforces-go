@@ -10,7 +10,7 @@ func Test(t *testing.T) {
 	t.Log("Current test is [c]")
 	examples := [][]string{
 		{
-			`["⋯.X.","⋯.X.","XOOO..","⋯⋯","⋯⋯"]`,
+			`["....X.","....X.","XOOO..","......","......"]`,
 			`3`,
 		},
 		{
@@ -18,9 +18,10 @@ func Test(t *testing.T) {
 			`2`,
 		},
 		{
-			`["⋯⋯.","⋯⋯.","⋯⋯.","X⋯⋯",".O⋯..","..O⋯.","⋯.OOX"]`,
+			`[".......",".......",".......","X......",".O.....","..O....","....OOX"]`,
 			`4`,
 		},
+
 	}
 	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, flipChess, examples, targetCaseNum); err != nil {

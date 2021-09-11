@@ -10,14 +10,14 @@ func Test(t *testing.T) {
 	t.Log("Current test is [b]")
 	examples := [][]string{
 		{
-			`[1,2,8,9]`, `3`, 
+			`[1,2,8,9]`, `3`,
 			`18`,
 		},
 		{
-			`[3,3,1]`, `1`, 
+			`[3,3,1]`, `1`,
 			`0`,
 		},
-		
+
 	}
 	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, maxmiumScore, examples, targetCaseNum); err != nil {

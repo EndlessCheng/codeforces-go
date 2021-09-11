@@ -10,15 +10,14 @@ func Test(t *testing.T) {
 	t.Log("Current test is [a]")
 	examples := [][]string{
 		{
-			`[[1,3],[5,4]]`,
-			`[[3,1],[6,5]]`,
+			`[[1,3],[5,4]]`, `[[3,1],[6,5]]`,
 			`1`,
 		},
 		{
-			`[[1,2,3],[3,4,5]]`,
-			`[[1,3,5],[2,3,4]]`,
+			`[[1,2,3],[3,4,5]]`, `[[1,3,5],[2,3,4]]`,
 			`0`,
 		},
+
 	}
 	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, minimumSwitchingTimes, examples, targetCaseNum); err != nil {

@@ -10,16 +10,16 @@ func Test(t *testing.T) {
 	t.Log("Current test is [e]")
 	examples := [][]string{
 		{
-			`["W","N","ES","W"]`, 
+			`["W","N","ES","W"]`,
 			`2`,
 		},
 		{
-			`["NS","WE","SE","EW"]`, 
+			`["NS","WE","SE","EW"]`,
 			`3`,
 		},
-		
+
 	}
-	targetCaseNum :=  -1
+	targetCaseNum := 0 // -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, trafficCommand, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
