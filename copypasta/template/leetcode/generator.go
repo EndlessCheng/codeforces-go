@@ -433,14 +433,14 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				raw := o.FirstChild.Data
 				sp := strings.Split(raw, "`")
 				for i, s := range sp {
-					if strings.Contains(s, ">输入") {
+					if strings.Contains(s, ">输入") || strings.Contains(s, "> 输入") {
 						text := sp[i+1]
 						if !p.isFuncProblem {
 							// https://leetcode-cn.com/contest/season/2020-fall/problems/IQvJ9i/
 							text += "\n" + sp[i+3] // 跳过 sp[i+2]
 						}
 						p.sampleIns = append(p.sampleIns, p.parseSampleText(text, true))
-					} else if strings.Contains(s, ">输出") {
+					} else if strings.Contains(s, ">输出") || strings.Contains(s, "> 输出") {
 						p.sampleOuts = append(p.sampleOuts, p.parseSampleText(sp[i+1], true))
 					}
 				}
