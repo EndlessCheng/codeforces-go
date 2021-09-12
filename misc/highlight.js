@@ -65,7 +65,7 @@
         "permutation",
         "lowercase", "lower case", "uppercase", "upper case",
         "lexicographical", "palindrome",
-        "undirected", "directed", "bidirectional",
+        "undirected", "directed", "bidirectional", "direct",
         "independent",
         "expected value",
         " circle", " ring",
