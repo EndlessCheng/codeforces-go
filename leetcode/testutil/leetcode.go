@@ -169,18 +169,20 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 func toRawString(v reflect.Value) (s string, err error) {
 	switch v.Kind() {
 	case reflect.Slice:
-		s = "["
+		sb := &strings.Builder{}
+		sb.WriteByte('[')
 		for i := 0; i < v.Len(); i++ {
 			if i > 0 {
-				s += ","
+				sb.WriteByte(',')
 			}
 			_s, er := toRawString(v.Index(i))
 			if er != nil {
 				return "", er
 			}
-			s += _s
+			sb.WriteString(_s)
 		}
-		s += "]"
+		sb.WriteByte(']')
+		s = sb.String()
 	case reflect.Ptr: // *TreeNode, *ListNode, *Point, *Interval
 		switch tpName := v.Type().Elem().Name(); tpName {
 		case "TreeNode":
