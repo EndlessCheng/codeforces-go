@@ -19,6 +19,7 @@ package copypasta
 // 取模 https://codeforces.com/problemset/problem/438/D
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
 // 合并 https://codeforces.com/problemset/problem/380/C
+// k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G
 // 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
 //     反向构造题 https://www.luogu.com.cn/problem/P6852
 // 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
@@ -495,6 +496,7 @@ func (o *stNode) merge(b *stNode) *stNode {
 
 // EXTRA: 线段树分裂
 // 将区间 [l,r] 从 o 中分离到 b 上
+// https://www.luogu.com.cn/blog/cyffff/talk-about-segument-trees-split
 // https://www.luogu.com.cn/problem/P5494
 // rt, rt2 := rt.split(nil, l, r)
 func (o *stNode) split(b *stNode, l, r int) (*stNode, *stNode) {
@@ -540,6 +542,7 @@ func (o *stNode) kth(k int64) int {
 // 模板题 https://www.luogu.com.cn/problem/P3919
 //       https://www.luogu.com.cn/problem/P3834 https://www.acwing.com/problem/content/257/ https://ac.nowcoder.com/acm/contest/7613/C
 // 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 https://codeforces.com/problemset/problem/484/E
+// 与 DFS序+深度 结合 https://codeforces.com/problemset/problem/893/F
 // todo 种类数 https://codeforces.com/problemset/problem/620/E
 //  https://codeforces.com/problemset/problem/786/C
 //  差分 https://codeforces.com/problemset/problem/813/E

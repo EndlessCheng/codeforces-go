@@ -135,7 +135,8 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 
 // 每个节点的入出时间戳
 // 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
-// 例题 https://codeforces.com/contest/1328/problem/E
+// 例题 https://codeforces.com/problemset/problem/1328/E
+// 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
 // 给定一颗 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
 //    也可以不用 BFS，根据完全 k 叉树的性质直接建图：（点的范围从 0 到 n-1）
@@ -147,21 +148,22 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	timeIn := make([]int, n)
 	timeOut := make([]int, n)
+	at := make([]int, n+1)
 	clock := 0
 	var f func(v, fa int)
 	f = func(v, fa int) {
 		clock++
 		timeIn[v] = clock
+		at[clock] = v
 		for _, w := range g[v] {
 			if w != fa {
 				f(w, v)
 			}
 		}
-		clock++
 		timeOut[v] = clock
 	}
 	f(root, -1)
-	isFa := func(fa, v int) bool { return timeIn[fa] < timeIn[v] && timeOut[v] < timeOut[fa] } // timeOut[v] 也可以写成 timeIn[v]
+	isPa := func(pa, v int) bool { return timeIn[pa] < timeIn[v] && timeIn[v] <= timeOut[pa] }
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
@@ -199,7 +201,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		_ = query
 	}
 
-	_ = isFa
+	_ = isPa
 }
 
 // 树上最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）

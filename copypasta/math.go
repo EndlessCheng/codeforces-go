@@ -753,7 +753,7 @@ func numberTheoryCollection() {
 		}
 		return
 	}
-	primeDivisors := func(x int) (primes []int) {
+	primeDivisors := func(x int) (primes []int) { // primeFactorization 质因数分解
 		for i := 2; i*i <= x; i++ {
 			if x%i == 0 {
 				for x /= i; x%i == 0; x /= i {
@@ -1077,6 +1077,31 @@ func numberTheoryCollection() {
 		halfDivisors := func(x int) []int { d := divisors[x]; return d[:(len(d)-1)/2+1] }
 
 		_, _ = isSquareNumber, halfDivisors
+	}
+
+	// 初始化 Squarefree numbers
+	// https://oeis.org/A005117
+	// https://oeis.org/wiki/Squarefree_numbers
+	// 密度（见后面 calcMu 的注释）为 6/Pi^2 ≈ 0.6079
+	initSquarefreeNumbers := func() []int {
+		const mx int = 1e6
+		free := make([]bool, mx+1)
+		for i := 1; i <= mx; i++ {
+			free[i] = true
+		}
+		for i := 2; i*i <= mx; i++ {
+			for j := 1; i*i*j <= mx; j++ {
+				free[i*i*j] = false
+			}
+		}
+		// 注意特判 1
+		sf := []int{}
+		for i, f := range free {
+			if f {
+				sf = append(sf, i)
+			}
+		}
+		return sf
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
@@ -1975,6 +2000,7 @@ func numberTheoryCollection() {
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
 		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
 		// Dyck Path https://mathworld.wolfram.com/DyckPath.html
+		// https://www.luogu.com.cn/problem/P1641
 		//
 		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1) * (2^n) * (n!)
 		// 故 C(2*n,n)/(n+1) = (2*n)!/(n!)/(n+1)! = 1*3*5*...*(2n-1)*(2^n)/(n+1)!
@@ -2557,7 +2583,7 @@ func numberTheoryCollection() {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, distinctPrimesCountAll,
+		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
@@ -2583,6 +2609,7 @@ https://codeforces.com/problemset/problem/300/C
 https://codeforces.com/problemset/problem/520/E
 https://codeforces.com/problemset/problem/559/C
 https://codeforces.com/problemset/problem/869/C
+https://codeforces.com/problemset/problem/1204/E 推荐
 https://codeforces.com/problemset/problem/1261/D2 推荐
 https://codeforces.com/problemset/problem/1288/C
 https://codeforces.com/problemset/problem/1342/E

@@ -35,6 +35,7 @@ http://blog.miskcoo.com/2015/05/polynomial-multipoint-eval-and-interpolation
 关于优化形式幂级数计算的 Newton 法的常数 http://negiizhao.blog.uoj.ac/blog/4671
 
 从拉插到快速插值求值 https://www.luogu.com.cn/blog/command-block/zong-la-cha-dao-kuai-su-cha-zhi-qiu-zhi
+浅谈多项式复合和拉格朗日反演 https://www.luogu.com.cn/blog/your-alpha1022/qian-tan-duo-xiang-shi-fu-ge-hu-la-ge-lang-ri-fan-yan
 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
 调和级数求和 https://www.luogu.com.cn/problem/P5702
 

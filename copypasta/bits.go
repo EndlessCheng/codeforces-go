@@ -236,6 +236,7 @@ func (b bitset) onesCount() (c int) {
 }
 
 // 遍历所有 1 的位置
+// 如果对范围有要求，可在 f 中 return p < n
 func (b bitset) foreach(f func(p int) (Break bool)) {
 	for i, v := range b {
 		for ; v > 0; v &= v - 1 {
