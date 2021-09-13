@@ -1,5 +1,7 @@
 package copypasta
 
+import "sort"
+
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
 https://en.wikipedia.org/wiki/Fenwick_tree
 树状数组的基本用途是维护序列的前缀和
@@ -57,14 +59,16 @@ func fenwickTree(n int) {
 	// 求权值树状数组第 k 小的数（k > 0）
 	// 这里 tree[i] 表示 i 的个数
 	// 返回最小的 x 满足 ∑i=[1..x] tree[i] >= k
-	// 思路类似倍增的查询，不断寻找 ∑<k 的数，最后+1就是答案
+	// 思路类似倍增的查询，不断寻找 ∑<k 的数，最后 +1 就是答案
 	// https://oi-wiki.org/ds/fenwick/#tricks
 	// https://codeforces.com/blog/entry/61364
 	// https://codeforces.com/problemset/problem/1404/C
 	// todo https://codeforces.com/contest/992/problem/E
+	// 二分 https://www.luogu.com.cn/problem/P4137
+	// - 代码见下面的 rangeMex
 	kth := func(k int) (res int) {
-		const mx = 17 // bits.Len(uint(n))
-		for b := 1 << (mx - 1); b > 0; b >>= 1 {
+		const log = 17 // bits.Len(uint(n))
+		for b := 1 << (log - 1); b > 0; b >>= 1 {
 			if next := res | b; next < len(tree) && k > tree[next] {
 				k -= tree[next]
 				res = next
@@ -104,6 +108,7 @@ func fenwickTree(n int) {
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 	// 扩展 https://codeforces.com/problemset/problem/362/C
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
+	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
 	cntInversions := func(a []int) int64 {
 		n := len(a)
 		tree := make([]int, n+1)
@@ -128,6 +133,59 @@ func fenwickTree(n int) {
 	}
 
 	_ = []interface{}{add, sum, query, addRange, kth, init, cntInversions}
+}
+
+// 给一个数组 a 和一些询问 qs，对每个询问计算 mex(a[l..r])
+// a[i]>=0, 1<=l<=r<=n
+// 遍历数组 a，记录 a[i] 最后一次出现的位置 lastPos 以及上一个 a[i] 的位置 prevPos
+// 建立一个权值树状数组，维护 lastPos[v] 的前缀最小值
+// 树状数组维护前缀最小值的条件是每次修改只能往小改，那么从后往前做就好了
+// 将询问 qs 离线：按照右端点排序（或分组）
+// 对于一个固定的 r，我们需要查询大的数 t，使得 min{t[}
+// https://www.luogu.com.cn/problem/P4137
+// LC周赛258D https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// - 需要将 a 转换成 DFS 序且从 0 开始，同时最终答案需要 +1
+func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int {
+	const mx int = 1e5 + 2
+	tree := [mx]int{}
+	for i := range tree {
+		tree[i] = 1e9
+	}
+	update := func(i, v int) {
+		for ; i < mx; i += i & -i {
+			tree[i] = min(tree[i], v)
+		}
+	}
+	query := func(l int) (res int) {
+		const log = 17 // bits.Len(uint(mx))
+		for b := 1 << (log - 1); b > 0; b >>= 1 {
+			if next := res | b; next < mx && tree[next] >= l {
+				res = next
+			}
+		}
+		return
+	}
+
+	n, m := len(a), len(qs)
+	prevPos := make([]int, n)
+	lastPos := make([]int, mx)
+	for i, v := range a {
+		prevPos[i] = lastPos[v]
+		lastPos[v] = i + 1
+	}
+	for i, p := range lastPos {
+		update(i+1, p)
+	}
+
+	ans := make([]int, m)
+	sort.Slice(qs, func(i, j int) bool { return qs[i].r > qs[j].r })
+	for i, qi := n-1, 0; i >= 0; i-- {
+		for ; qi < m && qs[qi].r == i+1; qi++ {
+			ans[qs[qi].i] = query(qs[qi].l)
+		}
+		update(a[i]+1, prevPos[i])
+	}
+	return ans
 }
 
 // 结构体写法
