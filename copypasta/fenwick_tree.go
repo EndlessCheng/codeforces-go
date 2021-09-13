@@ -140,22 +140,26 @@ func fenwickTree(n int) {
 // 遍历数组 a，记录 a[i] 最后一次出现的位置 lastPos 以及上一个 a[i] 的位置 prevPos
 // 建立一个权值树状数组，维护 lastPos[v] 的前缀最小值
 // 树状数组维护前缀最小值的条件是每次修改只能往小改，那么从后往前做就好了
-// 将询问 qs 离线：按照右端点排序（或分组）
-// 对于一个固定的 r，我们需要查询大的数 t，使得 min{t[}
+// 将询问离线：按照右端点排序（或分组），计算 mex。原理见代码中 query 的注释
 // https://www.luogu.com.cn/problem/P4137
 // LC周赛258D https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // - 需要将 a 转换成 DFS 序且从 0 开始，同时最终答案需要 +1
 func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int {
 	const mx int = 1e5 + 2
+	// 权值树状数组
+	// 这里 tree[v] = min{pos[v-lowbit(v)+1], ..., pos[v]}
 	tree := [mx]int{}
 	for i := range tree {
 		tree[i] = 1e9
 	}
-	update := func(i, v int) {
-		for ; i < mx; i += i & -i {
-			tree[i] = min(tree[i], v)
+	// 由于树状数组的下标需要为正，将所有 v 偏移 +1
+	update := func(v, pos int) {
+		for v++; v < mx; v += v & -v {
+			tree[v] = min(tree[v], pos)
 		}
 	}
+	// 根据上面的定义，对于第一个满足 if 条件的 next，有 min{pos[1], ..., pos[next]} >= l，即 mex >= next（这里的 1~next 是偏移 +1 后的）
+	// 后面满足 if 的以此类推
 	query := func(l int) (res int) {
 		const log = 17 // bits.Len(uint(mx))
 		for b := 1 << (log - 1); b > 0; b >>= 1 {
@@ -173,8 +177,8 @@ func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int
 		prevPos[i] = lastPos[v]
 		lastPos[v] = i + 1
 	}
-	for i, p := range lastPos {
-		update(i+1, p)
+	for v, pos := range lastPos {
+		update(v, pos)
 	}
 
 	ans := make([]int, m)
@@ -183,7 +187,7 @@ func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int
 		for ; qi < m && qs[qi].r == i+1; qi++ {
 			ans[qs[qi].i] = query(qs[qi].l)
 		}
-		update(a[i]+1, prevPos[i])
+		update(a[i], prevPos[i])
 	}
 	return ans
 }
