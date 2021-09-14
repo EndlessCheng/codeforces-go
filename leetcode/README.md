@@ -56,3 +56,4 @@
 |[Biweekly Contest 30](https://leetcode-cn.com/contest/biweekly-contest-30)|1507-1510|
 |[Biweekly Contest 40](https://leetcode-cn.com/contest/biweekly-contest-40)|1668-1671|
 |[Biweekly Contest 50](https://leetcode-cn.com/contest/biweekly-contest-50)|1827-1830|
+|[Biweekly Contest 60](https://leetcode-cn.com/contest/biweekly-contest-60)|1991-1994|
