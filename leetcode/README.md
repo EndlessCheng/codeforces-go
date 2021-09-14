@@ -7,9 +7,9 @@
 支持以下题目类型（点击可查看使用示例）：
 
 - [传统题（实现函数）](biweekly/27/c/c_test.go)
-- [设计题（实现方法）](182/c/c_test.go)
-- [二叉树](209/b/b_test.go)
-- [链表](95/a/a_test.go)
+- [设计题（实现方法）](weekly/182/c/c_test.go)
+- [二叉树](weekly/209/b/b_test.go)
+- [链表](weekly/95/a/a_test.go)
 
 ## 周赛
 
