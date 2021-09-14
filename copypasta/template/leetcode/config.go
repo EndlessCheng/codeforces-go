@@ -32,7 +32,7 @@ func init() {
 
 	switch contestPrefix {
 	case contestPrefixWeekly:
-		contestDir = fmt.Sprintf("../../../leetcode/%d/", contestID)
+		contestDir = fmt.Sprintf("../../../leetcode/weekly/%d/", contestID)
 	case contestPrefixBiweekly:
 		contestDir = fmt.Sprintf("../../../leetcode/biweekly/%d/", contestID)
 	default:
