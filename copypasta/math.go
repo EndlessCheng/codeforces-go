@@ -1107,7 +1107,8 @@ func numberTheoryCollection() {
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
 	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
-	// 		LPF 前缀和 https://oeis.org/A046669 前缀积 https://oeis.org/A072486
+	// 		LPF 前缀和 https://oeis.org/A046669 https://oeis.org/A088821 前缀积 https://oeis.org/A072486
+	//      - a(n) ~ n^2/(2 log n)
 	//		n+LPF(n) https://oeis.org/A061228 the smallest number greater than n which is not coprime to n
 	// 		n-LPF(n) https://oeis.org/A046666
 	// 			迭代至 0 的次数 https://oeis.org/A175126 相关题目 https://codeforces.com/contest/1076/problem/B
