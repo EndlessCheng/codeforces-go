@@ -19,3 +19,5 @@ Compiler info: go1.13.6, linux, amd64
 |[第 13 场周赛](https://www.acwing.com/activity/content/competition/problem_list/65/)|3/3|2|
 |[第 14 场周赛](https://www.acwing.com/activity/content/competition/problem_list/68/)|3/3|1|
 |[第 15 场周赛](https://www.acwing.com/activity/content/competition/problem_list/69/)|3/3|1|
+|[第 16 场周赛](https://www.acwing.com/activity/content/competition/problem_list/70/)|3/3|2|
+|[第 17 场周赛](https://www.acwing.com/activity/content/competition/problem_list/71/)|-|-|
