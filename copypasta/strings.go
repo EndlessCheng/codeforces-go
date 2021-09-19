@@ -218,6 +218,37 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
+	// LC周赛259D https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
+	subsequenceAutomaton := func(s string) {
+		// build nxt
+		// nxt[i][j] 表示在 i 右侧的字符 j 的最近位置
+		pos := [26]int{}
+		for i := range pos {
+			pos[i] = len(s)
+		}
+		nxt := make([][26]int, len(s))
+		for i := len(s) - 1; i >= 0; i-- {
+			nxt[i] = pos
+			pos[s[i]-'a'] = i
+		}
+
+		// 返回是 s 的子序列的最长的 t 的前缀的长度
+		match := func(t string) int {
+			i, j := 0, 0
+			if t[0] == s[0] {
+				j = 1
+			}
+			for ; j < len(t); j++ {
+				i = nxt[i][t[j]-'a']
+				if i == len(s) {
+					break
+				}
+			}
+			return j
+		}
+		_ = match
+	}
+
 	// 最长回文子串 Manacher
 	// 推荐 https://www.bilibili.com/video/BV1AX4y1F79W
 	// https://www.bilibili.com/video/BV1ft4y117a4
@@ -652,6 +683,7 @@ func stringCollection() {
 		kmpSearch, calcMinPeriod,
 		zSearch,
 		smallestRepresentation,
+		subsequenceAutomaton,
 		manacher,
 		suffixArray, suffixArrayInt, suffixArrayInt2,
 	}
