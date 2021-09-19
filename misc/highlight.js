@@ -93,7 +93,12 @@
     for (let ti = 0; ti < tags.length; ti++) {
         let pNodes = document.getElementsByTagName(tags[ti]);
         for (let i = 0; i < pNodes.length; i++) {
-            let text = pNodes[i].innerHTML;
+            let text = pNodes[i].innerText.trim();
+            if (text === "") {
+                continue;
+            }
+
+            text = pNodes[i].innerHTML;
 
             for (let j = 0; j < words.length; j++) {
                 text = text.highlight(words[j], color);
