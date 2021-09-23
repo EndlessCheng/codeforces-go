@@ -20,8 +20,10 @@ package copypasta
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
 // 合并 https://codeforces.com/problemset/problem/380/C
 // k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G
-// 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
-//     反向构造题 https://www.luogu.com.cn/problem/P6852
+// 区间 mex https://www.luogu.com.cn/problem/P4137
+// - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
+// - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
+// - 反向构造题 https://www.luogu.com.cn/problem/P6852
 // 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
 //     LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
 //     https://www.luogu.com.cn/problem/P3567
