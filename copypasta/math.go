@@ -766,6 +766,23 @@ func numberTheoryCollection() {
 		}
 		return
 	}
+	primeDivisors2 := func(x int) (primes []int) { // primeFactorization 质因数分解（加速）
+		if x&1 == 0 {
+			primes = append(primes, 2)
+			x >>= bits.TrailingZeros(uint(x))
+		}
+		for i := 3; i*i <= x; i += 2 {
+			if x%i == 0 {
+				for x /= i; x%i == 0; x /= i {
+				}
+				primes = append(primes, i)
+			}
+		}
+		if x > 1 {
+			primes = append(primes, x)
+		}
+		return
+	}
 
 	// 阶乘的质因数分解中 p 的幂次
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
@@ -2583,7 +2600,7 @@ func numberTheoryCollection() {
 		primes, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
-		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
+		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
