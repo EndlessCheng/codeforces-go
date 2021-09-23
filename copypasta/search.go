@@ -538,7 +538,9 @@ func searchCollection() {
 	//
 
 	// 折半枚举/双向搜索 Meet in the middle
-	// 超大背包问题
+	// https://codeforces.com/problemset/problem/327/E
+
+	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
 	bigKnapsack := func(a []int, size int) (ans int) {
 		n := len(a)
@@ -965,6 +967,7 @@ func loopCollection() {
 //
 
 // 网格/矩阵上的搜索
+// NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
 // 易错题 https://codeforces.com/problemset/problem/540/C
 // 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
 func gridCollection() {
