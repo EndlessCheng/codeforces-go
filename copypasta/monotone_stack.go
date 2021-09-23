@@ -77,6 +77,27 @@ func monotoneStack(a []int) ([]int, []int) {
 		}
 	}
 
+	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
+	// LC1950 https://leetcode-cn.com/problems/maximum-of-minimum-values-in-all-subarrays/
+	{
+		ans := make([]int, n+1)
+		for i := range ans {
+			ans[i] = -2e9
+		}
+		for i, v := range a {
+			sz := posR[i] - posL[i] - 1
+			if v > ans[sz] {
+				ans[sz] = v
+			}
+		}
+		for i := n - 1; i > 0; i-- {
+			if ans[i+1] > ans[i] {
+				ans[i] = ans[i+1]
+			}
+		}
+		// ans[1:]
+	}
+
 	return posL, posR
 }
 
