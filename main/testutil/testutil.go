@@ -203,7 +203,6 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 
 // 无尽对拍模式
 // inputGenerator 生成随机测试数据，runFuncAC 为暴力逻辑或已 AC 逻辑，runFunc 为当前测试的逻辑
-// TIPS: 失败的用例可以加入到 inputs 中方便后续测试
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc ioFunc) {
 	for tc, checkTC := 1, 1; ; tc++ {
 		input := inputGenerator()
@@ -245,12 +244,14 @@ type OutputChecker func(string) bool
 
 // 无尽验证模式
 // inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入数据验证输出结果是否正确
-// TIPS: 失败的用例可以加入到 inputs 中方便后续测试
-func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc ioFunc) {
+func CheckRunResultsInfWithTarget(t *testing.T, inputGenerator func() (string, OutputChecker), targetCaseNum int, runFunc ioFunc) {
 	for tc, checkTC := 1, 1; ; tc++ {
 		input, checker := inputGenerator()
-		input = removeExtraSpace(input)
+		if targetCaseNum > 0 && tc != targetCaseNum {
+			continue
+		}
 
+		input = removeExtraSpace(input)
 		mockReader := strings.NewReader(input)
 		mockWriter := &strings.Builder{}
 		if isTLE(func() { runFunc(mockReader, mockWriter) }) {
@@ -259,10 +260,19 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
+		ok := checker(actualOutput)
+
 		if DisableLogInput {
-			assert.Truef(t, checker(actualOutput), "Wrong Answer %d", tc)
+			assert.Truef(t, ok, "Wrong Answer %d", tc)
 		} else {
-			assert.Truef(t, checker(actualOutput), "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput)
+			assert.Truef(t, ok, "Wrong Answer %d\nInput:\n%s\nOutput:\n%s", tc, input, actualOutput)
+		}
+
+		if targetCaseNum > 0 {
+			if ok {
+				CheckRunResultsInfWithTarget(t, inputGenerator, 0, runFunc)
+			}
+			return
 		}
 
 		if tc == checkTC {
@@ -274,4 +284,8 @@ func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputCheck
 			break
 		}
 	}
+}
+
+func CheckRunResultsInf(t *testing.T, inputGenerator func() (string, OutputChecker), runFunc ioFunc) {
+	CheckRunResultsInfWithTarget(t, inputGenerator, 0, runFunc)
 }
