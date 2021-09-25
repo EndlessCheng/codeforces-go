@@ -212,7 +212,6 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 		mockWriterAC := &strings.Builder{}
 		runFuncAC(mockReader, mockWriterAC)
 		expectedOutput := removeExtraSpace(mockWriterAC.String())
-		_ = expectedOutput
 
 		mockReader = strings.NewReader(input)
 		mockWriter := &strings.Builder{}
@@ -221,7 +220,6 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 			continue
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
-		_ = actualOutput
 
 		if DisableLogInput {
 			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d", tc)
