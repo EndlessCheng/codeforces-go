@@ -41,6 +41,8 @@ func Test(t *testing.T) {
 // 3. 是否有边界情况没考虑到
 func TestCompare(t *testing.T) {
 	return
+	testutil.DebugTLE = 0
+
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
@@ -89,8 +91,9 @@ func TestCheck(t *testing.T) {
 	assert := assert.New(t)
 	_ = assert
 
+	testutil.DebugTLE = 0
+
 	inputGenerator := func() (string, testutil.OutputChecker) {
-		//return ``
 		rg := testutil.NewRandGenerator()
 		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 5)
@@ -114,7 +117,8 @@ func TestCheck(t *testing.T) {
 		}
 	}
 
-	testutil.CheckRunResultsInf(t, inputGenerator, run)
+	target := 0
+	testutil.CheckRunResultsInfWithTarget(t, inputGenerator, target, run)
 	return
 
 	// for hacking, write wrong codes here
