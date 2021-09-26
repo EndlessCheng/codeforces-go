@@ -158,23 +158,23 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 按位归纳 https://codeforces.com/problemset/problem/925/C
 */
 
-// bitset
+// Bitset
 // 参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
-// 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(bitset(nil), b...) 并返回 b
+// 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
 const _w = bits.UintSize
 
-func newBitset(n int) bitset { return make(bitset, n/_w+1) } // (n+_w-1)/_w
+func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w
 
-type bitset []uint
+type Bitset []uint
 
-func (b bitset) has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get
-func (b bitset) flip(p int)     { b[p/_w] ^= 1 << (p % _w) }
-func (b bitset) set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
-func (b bitset) reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
+func (b Bitset) Has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get
+func (b Bitset) Flip(p int)     { b[p/_w] ^= 1 << (p % _w) }
+func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
+func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
 
 // 左移 k 位
 // 应用 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/submissions/
-func (b bitset) lsh(k int) {
+func (b Bitset) Lsh(k int) {
 	if k == 0 {
 		return
 	}
@@ -200,7 +200,7 @@ func (b bitset) lsh(k int) {
 }
 
 // 右移 k 位
-func (b bitset) rsh(k int) {
+func (b Bitset) Rsh(k int) {
 	if k == 0 {
 		return
 	}
@@ -228,7 +228,7 @@ func (b bitset) rsh(k int) {
 }
 
 // 返回 1 的个数
-func (b bitset) onesCount() (c int) {
+func (b Bitset) OnesCount() (c int) {
 	for _, v := range b {
 		c += bits.OnesCount(v)
 	}
@@ -237,7 +237,7 @@ func (b bitset) onesCount() (c int) {
 
 // 遍历所有 1 的位置
 // 如果对范围有要求，可在 f 中 return p < n
-func (b bitset) foreach(f func(p int) (Break bool)) {
+func (b Bitset) Foreach(f func(p int) (Break bool)) {
 	for i, v := range b {
 		for ; v > 0; v &= v - 1 {
 			j := i*_w | bits.TrailingZeros(v)
@@ -249,7 +249,7 @@ func (b bitset) foreach(f func(p int) (Break bool)) {
 }
 
 // 返回第一个 0 的下标，不存在时会返回一个不小于 n 的位置
-func (b bitset) index0() int {
+func (b Bitset) Index0() int {
 	for i, v := range b {
 		if ^v != 0 {
 			return i*_w | bits.TrailingZeros(^v)
@@ -259,7 +259,7 @@ func (b bitset) index0() int {
 }
 
 // 返回第一个 1 的下标，不存在时会返回一个不小于 n 的位置（同 C++ 中的 _Find_first）
-func (b bitset) index1() int {
+func (b Bitset) Index1() int {
 	for i, v := range b {
 		if v != 0 {
 			return i*_w | bits.TrailingZeros(v)
@@ -269,7 +269,7 @@ func (b bitset) index1() int {
 }
 
 // 返回下标严格大于 p 的第一个 1 的下标，不存在时会返回一个不小于 n 的位置（同 C++ 中的 _Find_next）
-func (b bitset) next1(p int) int {
+func (b Bitset) Next1(p int) int {
 	p++ // make bound inclusive
 	if i := p / _w; i < len(b) {
 		v := b[i] & (^uint(0) << (p % _w)) // mask off bits below bound
@@ -286,7 +286,7 @@ func (b bitset) next1(p int) int {
 }
 
 // 下面几个方法均需保证长度相同
-func (b bitset) equals(c bitset) bool {
+func (b Bitset) Equals(c Bitset) bool {
 	for i, v := range b {
 		if v != c[i] {
 			return false
@@ -295,7 +295,7 @@ func (b bitset) equals(c bitset) bool {
 	return true
 }
 
-func (b bitset) hasSubset(c bitset) bool {
+func (b Bitset) HasSubset(c Bitset) bool {
 	for i, v := range b {
 		if v|c[i] != v {
 			return false
@@ -305,7 +305,7 @@ func (b bitset) hasSubset(c bitset) bool {
 }
 
 // 将 c 的元素合并进 b
-func (b bitset) merge(c bitset) {
+func (b Bitset) Merge(c Bitset) {
 	for i, v := range c {
 		b[i] |= v
 	}
