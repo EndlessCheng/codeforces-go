@@ -50,6 +50,7 @@
 |[Weekly Contest 230](https://leetcode-cn.com/contest/weekly-contest-230)|1773-1776|
 |[Weekly Contest 240](https://leetcode-cn.com/contest/weekly-contest-240)|1854-1857|
 |[Weekly Contest 250](https://leetcode-cn.com/contest/weekly-contest-250)|1935-1938|
+|[Weekly Contest 260](https://leetcode-cn.com/contest/weekly-contest-260)|2016-2019|
 |[Biweekly Contest 1](https://leetcode-cn.com/contest/biweekly-contest-1)|1064-1067|
 |[Biweekly Contest 10](https://leetcode-cn.com/contest/biweekly-contest-10)|1213-1216|
 |[Biweekly Contest 20](https://leetcode-cn.com/contest/biweekly-contest-20)|1356-1359|
