@@ -16,16 +16,17 @@ func CF1186D(_r io.Reader, _w io.Writer) {
 	var n int
 	Fscan(in, &n)
 	a := make([]float64, n)
-	s := .0
+	s := 0.
 	for i := range a {
 		Fscan(in, &a[i])
-		s += a[i] - math.Floor(a[i])
+		s += math.Floor(a[i])
 	}
+
 	si := int(math.Round(s))
 	for _, v := range a {
 		f := math.Floor(v)
-		if si > 0 && v != f {
-			si--
+		if si < 0 && v != f {
+			si++
 			Fprintln(out, int(f)+1)
 		} else {
 			Fprintln(out, int(f))
