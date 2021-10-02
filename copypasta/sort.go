@@ -349,8 +349,8 @@ func sortCollections() {
 	//
 
 	// 0-1 分数规划
-	// 求 min{∑ai/∑bi}：check(k) 中判断是否有 ∑(ai-k*bi) <= 0 成立，若成立说明 k 取大了，否则 k 取小了（标准化：return ∑<=0）
-	// 求 max{∑ai/∑bi}：check(k) 中判断是否有 ∑(ai-k*bi) >= 0 成立，若成立说明 k 取小了，否则 k 取大了（标准化：return ∑<0）
+	// 求 min{∑ai/∑bi}：check(k) 中判断是否有 max∑(ai-k*bi) <= 0 成立，若成立说明 k 取大了，否则 k 取小了（标准化：return max∑<=0）
+	// 求 max{∑ai/∑bi}：check(k) 中判断是否有 min∑(ai-k*bi) >= 0 成立，若成立说明 k 取小了，否则 k 取大了（标准化：return min∑<0）
 	// https://oi-wiki.org/misc/frac-programming/
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
