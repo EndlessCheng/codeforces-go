@@ -349,6 +349,8 @@ func sortCollections() {
 	//
 
 	// 0-1 分数规划
+	// 求 min{∑ai/∑bi}：check(k) 中判断是否有 ∑(ai-k*bi) <= 0 成立，若成立说明 k 取大了，否则 k 取小了（标准化：return ∑<=0）
+	// 求 max{∑ai/∑bi}：check(k) 中判断是否有 ∑(ai-k*bi) >= 0 成立，若成立说明 k 取小了，否则 k 取大了（标准化：return ∑<0）
 	// https://oi-wiki.org/misc/frac-programming/
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
@@ -363,10 +365,14 @@ func sortCollections() {
 	//     O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
 	// 与网络流结合，即最大密度子图 https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
 	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
+	// 其他的一些题：
+	//      与 DP 结合 https://codeforces.com/problemset/problem/489/E
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1
 		n := len(ps)
+		// 稳妥起见，eps 可以设的比要求的精度高两个，如果题目没有给出精度要求（例如求方案），可以将 eps 设为 1/(100∑bi)
+		// 注意：若时限比较紧，可以适当调低精度
 		const eps = 1e-8
 		f := func(rate float64) bool {
 			a := make([]float64, n)
@@ -380,7 +386,7 @@ func sortCollections() {
 			}
 			return s < 0
 		}
-		l, r := .0, 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
+		l, r := 0., 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
 		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
 			mid := (l + r) / 2
 			if f(mid) {
