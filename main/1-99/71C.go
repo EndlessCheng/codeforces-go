@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -52,4 +51,4 @@ func CF71C(_r io.Reader, out io.Writer) {
 	Fprint(out, "NO")
 }
 
-func main() { CF71C(os.Stdin, os.Stdout) }
+//func main() { CF71C(os.Stdin, os.Stdout) }
