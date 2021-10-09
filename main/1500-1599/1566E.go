@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	. "fmt"
+	."fmt"
 	"io"
 )
 
