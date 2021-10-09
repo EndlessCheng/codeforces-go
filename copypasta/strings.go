@@ -263,8 +263,8 @@ func stringCollection() {
 	// 模板题 https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.com/problemset/problem/1326/D2
-	// todo https://codeforces.com/problemset/problem/7/D
-	//  相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
+	// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
+	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
 	//  LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
@@ -316,7 +316,8 @@ func stringCollection() {
 
 		// 判断 s[l..r] 是否为回文串  0<=l<=r<len(s)
 		// 根据下标转换关系得到其在 t 中对应的回文中心下标为 l+r+2
-		isP := func(l, r int) bool { return halfLen[l+r+2]-1 >= r-l+1 }
+		// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
+		isP := func(l, r int) bool { return halfLen[l+r+2]-1 >= r-l+1 } // 或者 halfLen[l+r+2] > r-l+1
 
 		// 计算最长回文子串的长度，以及所有最长回文子串的首字母在 s 中的下标
 		maxPL, starts := 0, []int{}
@@ -408,6 +409,9 @@ func stringCollection() {
 			https://codeforces.com/problemset/problem/802/I 稍作改动
 			todo https://www.luogu.com.cn/problem/P2178
 			 https://www.luogu.com.cn/problem/P3804
+			 AHOI13 差异 https://www.luogu.com.cn/problem/P4248
+			 - 任意两后缀的 LCP 之和
+			 对所有 i，求出 ∑j=1..n LCP(i,j) https://atcoder.jp/contests/abc213/tasks/abc213_f
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
 		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
