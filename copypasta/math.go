@@ -2131,6 +2131,7 @@ func numberTheoryCollection() {
 	//    todo https://www.luogu.com.cn/problem/P5396
 	//    https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
 	// Generalized Stirling numbers: a(n) = n! * Sum_{k=0..n-1} (k+1)/(n-k) https://oeis.org/A001705
+	// - 对 1~n 的每个排列，计算其后缀最小值数组去重后的元素之和
 	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 	// todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 	// todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
