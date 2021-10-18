@@ -378,6 +378,12 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 			}
 			s := o.Data
 			s = strings.TrimSpace(s)
+			if strings.HasPrefix(s, ":") {
+				s = s[1:]
+			} else if strings.HasPrefix(s, "：") { // https://leetcode-cn.com/contest/weekly-contest-263/problems/simple-bank-system/
+				s = s[3:]
+			}
+			s = strings.TrimSpace(s)
 			data += s
 		}
 		return
