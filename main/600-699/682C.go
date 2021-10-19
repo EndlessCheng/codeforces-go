@@ -9,7 +9,7 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF682C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n, v, wt, ans int
+	var n, v, wt int
 	Fscan(in, &n)
 	a := make([]int, n)
 	for i := range a {
@@ -22,24 +22,21 @@ func CF682C(_r io.Reader, out io.Writer) {
 		g[v-1] = append(g[v-1], nb{w, wt})
 	}
 
-	var f func(int, int64, bool)
-	f = func(v int, mx int64, del bool) {
-		if mx > int64(a[v]) {
-			del = true
-		}
-		if del {
-			ans++
-		}
+	var f func(int, int64)
+	f = func(v int, mx int64) {
+		n--
 		for _, e := range g[v] {
 			m := mx + int64(e.wt)
 			if m < 0 {
 				m = 0
 			}
-			f(e.to, m, del)
+			if m <= int64(a[e.to]) {
+				f(e.to, m)
+			}
 		}
 	}
-	f(0, 0, false)
-	Fprint(out, ans)
+	f(0, 0)
+	Fprint(out, n)
 }
 
 //func main() { CF682C(os.Stdin, os.Stdout) }
