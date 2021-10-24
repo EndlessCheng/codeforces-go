@@ -2366,7 +2366,9 @@ func dpCollections() {
 		maxAlternatingSumDP, maxAlternatingSumGreedy,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
-		lisSlow, lis, lisAll, lcis, lcisPath, countLIS, distinctSubsequence, minPalindromeCut,
+		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
+
+		distinctSubsequence, minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
