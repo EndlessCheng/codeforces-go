@@ -218,7 +218,7 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
-	// LC周赛259D https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
+	// LC2014/周赛259D https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
 	subsequenceAutomaton := func(s string) {
 		// build nxt
 		// nxt[i][j] 表示在 i 右侧的字符 j 的最近位置
@@ -427,7 +427,7 @@ func stringCollection() {
 			todo
 		todo http://poj.org/problem?id=3729
 	多个字符串
-		多串最长公共子串 https://loj.ac/p/171 LC周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+		多串最长公共子串 https://loj.ac/p/171 LC1923/周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
