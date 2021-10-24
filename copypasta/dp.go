@@ -21,32 +21,36 @@ import (
 2.4 状态转移时要计算哪些内容？
 2.5 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
 3.1 若复杂度过高，如何优化决策？
-*  状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
-*  对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
-   如何设计状态：
-      https://codeforces.com/problemset/problem/360/B
-      https://codeforces.com/problemset/problem/461/B
-      https://codeforces.com/problemset/problem/553/A
-      https://codeforces.com/problemset/problem/687/C
-      https://codeforces.com/problemset/problem/1012/C
-      https://codeforces.com/problemset/problem/1025/D
-      https://codeforces.com/problemset/problem/1027/E
-      https://codeforces.com/problemset/problem/1408/D
-      SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
-      Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
-      LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
-      涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
-      戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
-      消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
-   谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
-   扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
-   LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
-   状态优化 https://codeforces.com/problemset/problem/838/E
-  「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
-   https://codeforces.com/problemset/problem/1542/D
-   https://codeforces.com/problemset/problem/520/E
-   https://codeforces.com/problemset/problem/883/I
-   路径计数+推箱子 https://codeforces.com/problemset/problem/1225/E
+* 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
+* 对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
+
+如何设计状态
+https://codeforces.com/problemset/problem/360/B
+https://codeforces.com/problemset/problem/461/B
+https://codeforces.com/problemset/problem/553/A
+https://codeforces.com/problemset/problem/687/C
+https://codeforces.com/problemset/problem/1012/C
+https://codeforces.com/problemset/problem/1025/D
+https://codeforces.com/problemset/problem/1027/E
+https://codeforces.com/problemset/problem/1408/D
+SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
+Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
+LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
+戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
+消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
+
+思维转换
+谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
+扔蛋问题 LC887/周赛97D https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
+LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
+状态优化 https://codeforces.com/problemset/problem/838/E
+「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
+https://codeforces.com/problemset/problem/1542/D
+https://codeforces.com/problemset/problem/520/E
+https://codeforces.com/problemset/problem/883/I
+路径计数+推箱子 https://codeforces.com/problemset/problem/1225/E
+找关键元素+状态机DP https://codeforces.com/problemset/problem/623/B
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -531,8 +535,6 @@ func dpCollections() {
 	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
-	// 方案数 LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
-	//       https://www.zhihu.com/question/34905638
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
 	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
 	// 二维 LIS LC354 https://leetcode-cn.com/problems/russian-doll-envelopes/
@@ -571,6 +573,32 @@ func dpCollections() {
 			lis[i] = p + 1
 		}
 		return lis
+	}
+
+	// LIS 方案数 O(nlogn)
+	// 原理见下面这题官方题解的方法二
+	// LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
+	cntLis := func(a []int) int {
+		dp := [][]int{}  // 保留所有历史信息
+		cnt := [][]int{} // 个数前缀和
+		for _, v := range a {
+			p := sort.Search(len(dp), func(i int) bool { return dp[i][len(dp[i])-1] >= v })
+			c := 1
+			if p > 0 {
+				// 根据 dp[p-1] 来计算 cnt
+				i := sort.Search(len(dp[p-1]), func(i int) bool { return dp[p-1][i] < v })
+				c = cnt[p-1][len(cnt[p-1])-1] - cnt[p-1][i]
+			}
+			if p == len(dp) {
+				dp = append(dp, []int{v})
+				cnt = append(cnt, []int{0, c})
+			} else {
+				dp[p] = append(dp[p], v)
+				cnt[p] = append(cnt[p], cnt[p][len(cnt[p])-1]+c)
+			}
+		}
+		c := cnt[len(cnt)-1]
+		return c[len(c)-1]
 	}
 
 	// LIS 相关构造题
@@ -706,31 +734,24 @@ func dpCollections() {
 		return ans
 	}
 
-	// 本质不同子序列个数
-	// https://stackoverflow.com/questions/5151483/how-to-find-the-number-of-distinct-subsequences-of-a-string
-	// 定义 dp[i] 表示前 i 个元素中的本质不同子序列个数
+	// 本质不同非空子序列个数
+	// 详细讲解见 https://leetcode-cn.com/problems/distinct-subsequences-ii/solution/o1-kong-jian-you-hua-by-endlesscheng-0ipu/
 	// 模板题 LC940 https://leetcode-cn.com/problems/distinct-subsequences-ii/
-	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
-	// https://codeforces.com/problemset/problem/1183/H
+	// 倒序遍历即可 LC1987/周赛256D https://leetcode-cn.com/problems/number-of-unique-good-subsequences/
 	// 需要一点构造能力 https://codeforces.com/problemset/problem/645/E
 	distinctSubsequence := func(s string) int {
 		const mod int = 1e9 + 7
-		last := make([]int, 26)
-		for i := range last {
-			last[i] = -1
+		f := [26]int{}
+		sumF := 0
+		for _, b := range s {
+			b -= 'a'
+			tmp := (sumF + mod - f[b]) % mod
+			f[b] = (sumF + 1) % mod
+			sumF = (tmp + f[b]) % mod
 		}
-		dp := make([]int, len(s)+1)
-		dp[0] = 1
-		for i, v := range s {
-			v -= 'a'
-			dp[i+1] = dp[i] * 2
-			if p := last[v]; p >= 0 {
-				dp[i+1] -= dp[p]
-			}
-			dp[i+1] = (dp[i+1]%mod + mod) % mod
-			last[v] = i
-		}
-		return (dp[len(s)] + mod - 1) % mod // 去掉空序列
+		// 把空的也算上
+		//sumF = (sumF + 1) % mod
+		return sumF
 	}
 
 	// 滚动数组写法
@@ -1028,7 +1049,7 @@ func dpCollections() {
 	// 分组背包
 	// https://www.acwing.com/problem/content/9/
 	// https://www.luogu.com.cn/problem/P1757
-	// LC周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
+	// LC1981/周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -1235,6 +1256,7 @@ func dpCollections() {
 	// https://codeforces.com/problemset/problem/1215/E
 	// 状态设计 https://codeforces.com/problemset/problem/743/E
 	// 枚举来源 https://codeforces.com/problemset/problem/377/C
+	// 卡常优化 https://codeforces.com/problemset/problem/327/E 另一种做法是折半枚举
 	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
 	permDP := func(a []int) int {
 		n := len(a)
@@ -1336,7 +1358,8 @@ func dpCollections() {
 	// 枚举子集的子集
 	// 复杂度 O(3^n)，证明：元素个数为 k 的集合有 C(n,k) 个，其子集有 2^k 个，故有 ∑C(n,k)*2^k = (2+1)^n = 3^n
 	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
-	// https://atcoder.jp/contests/dp/tasks/dp_u
+	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
+	// 模板题 LC1986/周赛256C https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
 	// LC1494/双周赛29D https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
 	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
 	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
