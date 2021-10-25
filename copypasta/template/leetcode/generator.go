@@ -496,9 +496,11 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 }
 
 func (p *problem) writeTestFile() error {
+	logInfo := fmt.Sprintf(`t.Log("Current test is [%s]")`, p.id)
 	exampleType := "[][]string"
 	testUtilFunc := "testutil.RunLeetCodeFuncWithExamples"
 	if !p.isFuncProblem {
+		logInfo += "\n\t" + `t.Log("记得初始化所有全局变量")`
 		exampleType = "[][3]string"
 		testUtilFunc = "testutil.RunLeetCodeClassWithExamples"
 	}
@@ -532,7 +534,7 @@ import (
 )
 
 func Test(t *testing.T) {
-	t.Log("Current test is [%s]")
+	%s
 	examples := %s{%s
 		
 	}
@@ -542,7 +544,7 @@ func Test(t *testing.T) {
 	}
 }
 // %s
-`, p.id, exampleType, examples, testUtilFunc, p.funcName, p.urlZH)
+`, logInfo, exampleType, examples, testUtilFunc, p.funcName, p.urlZH)
 	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", p.id)
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }

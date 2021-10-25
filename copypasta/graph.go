@@ -34,6 +34,8 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 加边 https://codeforces.com/problemset/problem/723/E
 第k小路径 https://codeforces.com/problemset/problem/1196/F
 给一无向图，从中删除恰好一条边，求可以让图变成二分图的所有边的下标 https://codeforces.com/problemset/problem/19/E
+倒水问题 https://www.luogu.com.cn/problem/P1432
+顶点有限制的生成树 https://codeforces.com/problemset/problem/723/F
 
 竞赛图
 竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
@@ -1067,6 +1069,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
+	// LC2045/周赛263D https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
 	{
 		const inf int64 = 1e18 // 1e9+1
 		dist := make([]int64, n)
@@ -1093,8 +1096,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 					dist[w], newD = newD, dist[w]
 				}
 				if dist[w] < newD && newD < dist2[w] {
-					dist2[w] = newD
 					h.push(vdPair{w, newD})
+					dist2[w] = newD
 				}
 			}
 		}
@@ -1272,6 +1275,7 @@ func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 		}
 		return b
 	}
+	// dist[k][i][j] 表示「经过若干个编号不超过 k 的节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
 	const inf int = 1e9
 	dist := make([][]int, n)
 	for i := range dist {
@@ -1928,7 +1932,7 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
 // LC1595/周赛207D https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
-// LC周赛251C https://leetcode-cn.com/problems/maximum-compatibility-score-sum/
+// LC1947/周赛251C https://leetcode-cn.com/problems/maximum-compatibility-score-sum/
 // todo GCJ21 Round2D https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc2de
 func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match []int, sum int64) {
 	const inf int64 = 1e18
@@ -2103,7 +2107,9 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-// DAG DP https://ac.nowcoder.com/acm/contest/6384/C
+// DAG DP LC2050/周赛264D https://leetcode-cn.com/problems/parallel-courses-iii/
+//        LC1857/周赛240D https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/
+//        https://ac.nowcoder.com/acm/contest/6384/C
 //        https://www.luogu.com.cn/problem/P3387
 //        https://codeforces.com/problemset/problem/721/C
 // 好题 https://codeforces.com/problemset/problem/915/D
@@ -3147,6 +3153,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // https://en.wikipedia.org/wiki/Edmonds%E2%80%93Karp_algorithm
 // https://oi-wiki.org/graph/flow/min-cost/
 // https://cp-algorithms.com/graph/min_cost_flow.html
+// 最小费用流的不完全算法博物馆 https://www.luogu.com.cn/blog/Atalod/zui-xiao-fei-yong-liu-di-fou-wan-quan-suan-fa-bo-wu-guan
 // 模板题 https://www.luogu.com.cn/problem/P3381
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 	const inf int = 1e9 // 1e18

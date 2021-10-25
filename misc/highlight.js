@@ -72,6 +72,7 @@
         "counterclockwise", "counter-clockwise", "clockwise",
         "origin", "initial",
         "infinite",
+        "leaf",
 
         "没有", "不是", "不同", "不会", "互不",
         "相同",
@@ -110,6 +111,7 @@
 
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
+                .replaceAll("Mrs. ", "Mrs.")
                 .replaceAll("Dr. ", "Dr.")
                 .replaceAll("i. e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A

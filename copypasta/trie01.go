@@ -12,6 +12,9 @@ import (
 // 一颗（所有叶节点深度都相同的）二叉树
 // 模板题 https://codeforces.com/problemset/problem/706/D
 // 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
+// https://codeforces.com/contest/1446/problem/C
+// todo https://codeforces.com/problemset/problem/1055/F
+// 区间异或和不小于 k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
@@ -52,7 +55,7 @@ func (t *trie01) put(v int) *trie01Node {
 	return o
 }
 
-// LC周赛250D https://leetcode-cn.com/problems/maximum-genetic-difference-query/
+// LC1938/周赛250D https://leetcode-cn.com/problems/maximum-genetic-difference-query/
 func (t *trie01) del(v int) *trie01Node {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
