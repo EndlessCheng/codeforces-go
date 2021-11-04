@@ -215,14 +215,16 @@ func isTLE(f func()) bool {
 	}
 
 	done := make(chan struct{})
+	timer := time.NewTimer(DebugTLE)
+	defer timer.Stop()
 	go func() {
+		defer close(done)
 		f()
-		done <- struct{}{}
 	}()
 	select {
 	case <-done:
 		return false
-	case <-time.After(DebugTLE):
+	case <-timer.C:
 		return true
 	}
 }

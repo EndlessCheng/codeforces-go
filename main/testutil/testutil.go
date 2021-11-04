@@ -18,12 +18,12 @@ func isTLE(f func()) bool {
 		return false
 	}
 
-	done := make(chan struct{}, 1)
+	done := make(chan struct{})
 	timer := time.NewTimer(DebugTLE)
 	defer timer.Stop()
 	go func() {
+		defer close(done)
 		f()
-		done <- struct{}{}
 	}()
 	select {
 	case <-done:
