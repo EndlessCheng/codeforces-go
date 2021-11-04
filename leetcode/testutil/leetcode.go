@@ -215,14 +215,16 @@ func isTLE(f func()) bool {
 	}
 
 	done := make(chan struct{})
+	timer := time.NewTimer(DebugTLE)
+	defer timer.Stop()
 	go func() {
+		defer close(done)
 		f()
-		done <- struct{}{}
 	}()
 	select {
 	case <-done:
 		return false
-	case <-time.After(DebugTLE):
+	case <-timer.C:
 		return true
 	}
 }
@@ -394,7 +396,8 @@ outer:
 		if DebugCallIndex < 0 {
 			DebugCallIndex += len(rawArgsList)
 		}
-		rawActualOut := "[null"
+		rawActualOut := &strings.Builder{}
+		rawActualOut.WriteString("[null")
 		for callIndex := 1; callIndex < len(rawArgsList); callIndex++ {
 			name := methodNames[callIndex]
 			method := pObj.MethodByName(name)
@@ -437,17 +440,18 @@ outer:
 				if er != nil {
 					return er
 				}
-				rawActualOut += "," + s
+				rawActualOut.WriteByte(',')
+				rawActualOut.WriteString(s)
 			} else {
-				rawActualOut += ",null"
+				rawActualOut.WriteString(",null")
 			}
 		}
-		rawActualOut += "]"
+		rawActualOut.WriteByte(']')
 
 		// 比较前，去除 rawExpectedOut 中逗号后的空格
 		// todo: 提示错在哪个 callIndex 上
 		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
-		if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut, "Wrong Answer %d", curCaseNum+1) {
+		if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut.String(), "Wrong Answer %d", curCaseNum+1) {
 			allCasesOk = false
 		}
 	}

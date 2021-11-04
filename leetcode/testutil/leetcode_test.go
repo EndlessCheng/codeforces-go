@@ -2,8 +2,19 @@ package testutil
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
+
+func Test_isTLE(t *testing.T) {
+	DebugTLE = 0
+	assert.False(t, isTLE(func() { return }))
+
+	DebugTLE = time.Second
+	assert.False(t, isTLE(func() { return }))
+	assert.True(t, isTLE(func() { select {} }))
+}
 
 func TestRunLeetCodeFunc(t *testing.T) {
 	specialF := func(a []string) []string {
