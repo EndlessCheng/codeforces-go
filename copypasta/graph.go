@@ -1039,6 +1039,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
 	// https://www.luogu.com.cn/problem/P1144 https://leetcode-cn.com/problems/number-of-ways-to-arrive-at-destination/
 	// 也可以把转移写在求最短路的代码中，见 https://www.luogu.com.cn/record/56683589
+	// 紧急情况 https://www.acwing.com/problem/content/1477/
+	// 条条大路通罗马 https://www.acwing.com/problem/content/1579/
 	{
 		deg := make([]int, n)
 		for v, es := range g {
@@ -2125,7 +2127,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
 func (*graph) topSort(in io.Reader, n, m int) []int {
 	g := make([][]int, n)
-	deg := make([]int, n)
+	deg := make([]int, len(g))
 	for i := 0; i < m; i++ {
 		v, w := 0, 0
 		Fscan(in, &v, &w)
@@ -2135,14 +2137,14 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 		deg[w]++
 	}
 
-	//fa := make([]int, n)
+	//fa := make([]int, len(g))
 	//for i := range fa {
 	//	fa[i] = -1
 	//}
-	//levels := make([]int, n)
+	//levels := make([]int, len(g))
 
-	orders := []int{}
-	q := []int{}
+	q := make([]int, 0, len(g))
+	orders := q
 	for i, d := range deg {
 		if d == 0 {
 			q = append(q, i)
@@ -2153,7 +2155,6 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		orders = append(orders, v)
 		// update dp[v]...
 
 		for _, w := range g[v] {
@@ -2167,18 +2168,17 @@ func (*graph) topSort(in io.Reader, n, m int) []int {
 		}
 	}
 
-	if len(orders) < n {
-		return orders // -1
-	}
+	// NOTE: 若 cap(q) 大于 0 则说明图中有环
+	orders = orders[:len(g)-cap(q)]
 
 	// NOTE: 若要重复求拓扑排序记得拷贝一份 deg
 
 	{
-		fa := make([]int, n)
+		fa := make([]int, len(g))
 
 		// EXTRA: path from end to start
-		var end = n - 1
-		path := make([]int, 0, n)
+		var end = len(g) - 1
+		path := make([]int, 0, len(g))
 		for v := end; v != -1; v = fa[v] {
 			path = append(path, v)
 		}
