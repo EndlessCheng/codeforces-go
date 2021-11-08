@@ -1620,9 +1620,10 @@ func dpCollections() {
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
 	      https://codeforces.com/problemset/problem/1036/C
-	二进制 1 的个数恰为 k 的数字个数 https://codeforces.com/problemset/problem/431/D
+	二进制 1 的个数恰为 k 的数字个数 https://codeforces.com/problemset/problem/431/D https://www.acwing.com/problem/content/1083/
 	是 m 的倍数且偶数位为 d 且奇数位不为 d 的数字个数 https://codeforces.com/problemset/problem/628/D
 	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
+	相邻数字约束 SC09 https://www.luogu.com.cn/problem/P2657
 	含有某个数字的数字个数
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
@@ -1645,8 +1646,6 @@ func dpCollections() {
 
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
-		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 hasD 表示是否有非零数字（意为「真正填了数字」），最后 p>=n 的时候根据情况返回 1 或者 0
-		//       具体代码见 https://codeforces.com/contest/855/submission/125651587
 		calc := func(s string) int64 {
 			const lowerC, upperC byte = '0', '9'
 			dp := make([][]int64, len(s))
@@ -1692,6 +1691,42 @@ func dpCollections() {
 		//}
 		ans = (ans%mod + mod) % mod
 
+		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 valid，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
+		// 例如 https://codeforces.com/contest/855/submission/125651587
+		// 以下代码以 https://www.luogu.com.cn/problem/P2657 为例
+		calc = func(s string) int64 {
+			dp := make([][10]int64, len(s))
+			for i := range dp {
+				for j := range dp[i] {
+					dp[i][j] = -1
+				}
+			}
+			var f func(p, pre int, limitUp, valid bool) int64
+			f = func(p, pre int, limitUp, valid bool) (res int64) {
+				if p == len(s) {
+					return 1
+				}
+				if !limitUp && valid { // 注意这里的判断
+					dv := &dp[p][pre]
+					if *dv >= 0 {
+						return *dv
+					}
+					defer func() { *dv = res }()
+				}
+				up := 9
+				if limitUp {
+					up = int(s[p] & 15)
+				}
+				for d := 0; d <= up; d++ {
+					if !valid || abs(d-pre) > 1 {
+						res += f(p+1, d, limitUp && d == up, valid || d > 0)
+					}
+				}
+				return
+			}
+			return f(0, 0, true, false)
+		}
+
 		// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
 		// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
 		calcSum := func(s string, k int) int64 {
@@ -1704,14 +1739,14 @@ func dpCollections() {
 				}
 			}
 			var f func(int, uint16, bool, bool) pair
-			f = func(p int, mask uint16, limitUp, hasD bool) (res pair) {
+			f = func(p int, mask uint16, limitUp, valid bool) (res pair) {
 				if p == n {
-					if !hasD {
+					if !valid {
 						return
 					}
 					return pair{1, 0}
 				}
-				if !limitUp && hasD {
+				if !limitUp && valid {
 					dv := &dp[p][mask]
 					if dv.cnt >= 0 {
 						return *dv
@@ -1724,11 +1759,11 @@ func dpCollections() {
 				}
 				for d := 0; d <= up; d++ {
 					tmp := mask
-					if hasD || d > 0 {
+					if valid || d > 0 {
 						tmp |= 1 << d
 					}
 					if bits.OnesCount16(tmp) <= k {
-						pr := f(p+1, tmp, limitUp && d == up, hasD || d > 0)
+						pr := f(p+1, tmp, limitUp && d == up, valid || d > 0)
 						res.cnt = (res.cnt + pr.cnt) % mod
 						res.sum = (res.sum + int64(math.Pow10(n-1-p))%mod*pr.cnt%mod*int64(d) + pr.sum) % mod
 					}
