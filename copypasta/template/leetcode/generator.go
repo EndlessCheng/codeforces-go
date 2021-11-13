@@ -9,11 +9,13 @@ import (
 	"golang.org/x/net/html/atom"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
 
+const host = "leetcode-cn.com"
+
+// 使用用户名和密码登录
 func login(username, password string) (session *grequests.Session, err error) {
 	const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 	session = grequests.NewSession(&grequests.RequestOptions{
@@ -23,19 +25,10 @@ func login(username, password string) (session *grequests.Session, err error) {
 
 	// "touch" csrfToken
 	csrfTokenURL := fmt.Sprintf("https://%s/graphql/", host)
-	var csrfJson interface{}
-	if host == hostZH {
-		csrfJson = map[string]interface{}{
-			"operationName": "globalData",
-			"query":         "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n",
-		}
-	} else {
-		csrfJson = map[string]interface{}{
-			"operationName": "fetchAllLeetcodeTemplates",
-			"query":         "query fetchAllLeetcodeTemplates {\n  allLeetcodePlaygroundTemplates {\n    templateId\n    name\n    nameSlug\n    __typename\n  }\n}\n",
-		}
-	}
-	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{JSON: csrfJson})
+	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{JSON: map[string]interface{}{
+		"operationName": "globalData",
+		"query":         "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n",
+	}})
 	if err != nil {
 		// maybe timeout
 		fmt.Println("访问失败，重试", err)
@@ -45,6 +38,7 @@ func login(username, password string) (session *grequests.Session, err error) {
 	if !resp.Ok {
 		return nil, fmt.Errorf("POST %s return code %d", csrfTokenURL, resp.StatusCode)
 	}
+
 	var csrfToken string
 	for _, c := range resp.RawResponse.Cookies() {
 		if c.Name == "csrftoken" {
@@ -58,18 +52,13 @@ func login(username, password string) (session *grequests.Session, err error) {
 
 	// log in
 	loginURL := fmt.Sprintf("https://%s/accounts/login/", host)
-	loginData := map[string]string{
-		"csrfmiddlewaretoken": csrfToken,
-		"login":               username,
-		"password":            password,
-		"next":                "/",
-	}
-	if host == hostEN {
-		// todo
-		loginData["recaptcha_token"] = ""
-	}
 	resp, err = session.Post(loginURL, &grequests.RequestOptions{
-		Data: loginData,
+		Data: map[string]string{
+			"csrfmiddlewaretoken": csrfToken,
+			"login":               username,
+			"password":            password,
+			"next":                "/",
+		},
 		Headers: map[string]string{
 			"origin":  "https://" + host,
 			"referer": "https://" + host + "/",
@@ -86,12 +75,9 @@ func login(username, password string) (session *grequests.Session, err error) {
 	return
 }
 
-func fetchProblemURLs(session *grequests.Session) (problems []*problem, err error) {
-	contestTag := contestPrefix
-	if contestID > 0 {
-		contestTag += strconv.Itoa(contestID)
-	}
-
+// 获取题目信息（含题目链接）
+// contestTag 如 "weekly-contest-200"，可以从比赛链接中获取
+func fetchProblemURLs(session *grequests.Session, contestTag string) (problems []*problem, err error) {
 	contestInfoURL := fmt.Sprintf("https://%s/contest/api/info/%s/", host, contestTag)
 	resp, err := session.Get(contestInfoURL, nil)
 	if err != nil {
@@ -123,6 +109,8 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 		return nil, fmt.Errorf("未找到比赛或比赛尚未开始: %s", contestTag)
 	}
 
+	//fmt.Println("当前报名人数", d.UserNum)
+
 	if sleepTime := time.Until(time.Unix(d.Contest.StartTime, 0)); sleepTime > 0 {
 		if !d.Registered {
 			fmt.Printf("该账号尚未报名%s\n", d.Contest.Title)
@@ -132,7 +120,7 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 		sleepTime += 2 * time.Second // 消除误差
 		fmt.Printf("%s尚未开始，等待中……\n%v\n", d.Contest.Title, sleepTime)
 		time.Sleep(sleepTime)
-		return fetchProblemURLs(session)
+		return fetchProblemURLs(session, contestTag)
 	}
 
 	if len(d.Questions) == 0 {
@@ -147,21 +135,24 @@ func fetchProblemURLs(session *grequests.Session) (problems []*problem, err erro
 	problems = make([]*problem, len(d.Questions))
 	for i, q := range d.Questions {
 		problems[i] = &problem{
-			id:    string(byte('a' + i)),
-			urlZH: fmt.Sprintf("https://%s/contest/%s/problems/%s/", hostZH, contestTag, q.TitleSlug),
-			urlEN: fmt.Sprintf("https://%s/contest/%s/problems/%s/", hostEN, contestTag, q.TitleSlug),
+			id:  string(byte('a' + i)),
+			url: fmt.Sprintf("https://%s/contest/%s/problems/%s/", host, contestTag, q.TitleSlug),
 		}
 	}
 	return
 }
 
+// 获取力扣杯的题目链接
+// slug 如 "2020-fall", "2021-spring"
 func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool) (problems []*problem, err error) {
 	const graphqlURL = "https://leetcode-cn.com/graphql"
 	resp, err := session.Post(graphqlURL, &grequests.RequestOptions{
 		JSON: map[string]interface{}{
 			"operationName": "contestGroup",
 			"query":         "query contestGroup($slug: String!) {\n  contestGroup(slug: $slug) {\n    title\n    titleCn\n    contestCount\n    contests {\n      title\n      titleCn\n      titleSlug\n      startTime\n      duration\n      registered\n      questions {\n        title\n        titleCn\n        titleSlug\n        credit\n        questionId\n        __typename\n      }\n      teamSettings {\n        maxTeamSize\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n",
-			"variables":     map[string]string{"slug": slug},
+			"variables": map[string]string{
+				"slug": slug,
+			},
 		},
 	})
 	if err != nil {
@@ -219,7 +210,7 @@ func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool
 	}
 
 	if len(contest.Questions) == 0 {
-		return nil, fmt.Errorf("题目链接为空: %s%d", contest.TitleSlug, contestID)
+		return nil, fmt.Errorf("题目链接为空: %s", contest.TitleSlug)
 	}
 
 	fmt.Println("难度 标题")
@@ -230,24 +221,30 @@ func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool
 	problems = make([]*problem, len(contest.Questions))
 	for i, q := range contest.Questions {
 		problems[i] = &problem{
-			id:    string(byte('a' + i)),
-			urlZH: fmt.Sprintf("https://%s/contest/season/%s/problems/%s/", hostZH, slug, q.TitleSlug),
+			id:  string(byte('a' + i)),
+			url: fmt.Sprintf("https://%s/contest/season/%s/problems/%s/", host, slug, q.TitleSlug),
 		}
 	}
 	return
 }
 
+//
+
 type problem struct {
-	id            string
-	urlZH         string
-	urlEN         string
+	id      string
+	url     string
+	openURL bool
+
 	defaultCode   string
 	funcName      string
 	isFuncProblem bool
 	funcLos       []int
-	sampleIns     [][]string
-	sampleOuts    [][]string
 	customComment string
+
+	sampleIns  [][]string
+	sampleOuts [][]string
+
+	contestDir string
 }
 
 // 解析一个样例输入或输出
@@ -304,6 +301,7 @@ func (p *problem) parsePossibleSampleTexts(texts []string, parseArgs bool) []str
 	return nil
 }
 
+// 获取题目样例和代码
 func (p *problem) parseHTML(session *grequests.Session) (err error) {
 	defer func() {
 		// visit htmlNode may cause panic
@@ -312,12 +310,12 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		}
 	}()
 
-	resp, err := session.Get(p.urlZH, nil)
+	resp, err := session.Get(p.url, nil)
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
-		return fmt.Errorf("GET %s return code %d", p.urlZH, resp.StatusCode)
+		return fmt.Errorf("GET %s return code %d", p.url, resp.StatusCode)
 	}
 
 	rootNode, err := html.Parse(resp)
@@ -388,6 +386,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		}
 		return
 	}
+
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		// 解析每个 <pre> 块内的文本（以中文为基准解析）
@@ -432,6 +431,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		}
 	}
 	f(bodyNode)
+
 	if len(p.sampleIns) == 0 {
 		// 没找到 <pre>，国服特殊比赛（春秋赛等）
 		f = func(o *html.Node) {
@@ -468,7 +468,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 }
 
 func (p *problem) createDir() error {
-	return os.MkdirAll(contestDir+p.id, os.ModePerm)
+	return os.MkdirAll(p.contestDir+p.id, os.ModePerm)
 }
 
 var _firstMainFileOpened bool
@@ -487,10 +487,10 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 %s%s
 `, imports, p.customComment, p.defaultCode)
 
-	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
+	filePath := p.contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
 	if !_firstMainFileOpened {
 		_firstMainFileOpened = true
-		defer open.Run(absPath(filePath))
+		defer open.Run(absPath(filePath)) // 打开第一道题的文件
 	}
 	return ioutil.WriteFile(filePath, []byte(fileContent), 0644)
 }
@@ -544,23 +544,16 @@ func Test(t *testing.T) {
 	}
 }
 // %s
-`, logInfo, exampleType, examples, testUtilFunc, p.funcName, p.urlZH)
-	filePath := contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", p.id)
+`, logInfo, exampleType, examples, testUtilFunc, p.funcName, p.url)
+	filePath := p.contestDir + fmt.Sprintf("%[1]s/%[1]s_test.go", p.id)
 	return ioutil.WriteFile(filePath, []byte(testStr), 0644)
 }
 
 func handleProblems(session *grequests.Session, problems []*problem) error {
-	if openWebPageZH {
-		for _, p := range problems {
-			if err := open.Run(p.urlZH); err != nil {
-				fmt.Println("open err:", p.urlZH, err)
-			}
-		}
-	}
-	if openWebPageEN {
-		for _, p := range problems {
-			if err := open.Run(p.urlEN); err != nil {
-				fmt.Println("open err:", p.urlEN, err)
+	for _, p := range problems {
+		if p.openURL {
+			if err := open.Run(p.url); err != nil {
+				fmt.Println("open err:", p.url, err)
 			}
 		}
 	}
@@ -569,7 +562,7 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 		//if p.id != "a" {
 		//	continue
 		//}
-		fmt.Println(p.id, p.urlZH)
+		fmt.Println(p.id, p.url)
 		if err := p.parseHTML(session); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
@@ -594,7 +587,18 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 	return nil
 }
 
-func GenLeetCodeTests(username, password, customComment string) error {
+func updateComment(cmt string) string {
+	if cmt != "" {
+		if !strings.HasPrefix(cmt, "//") {
+			cmt = "// " + cmt
+		}
+		cmt += "\n"
+	}
+	return cmt
+}
+
+// 抓取题目，生成链接
+func GenLeetCodeTests(username, password, contestTag string, openWebPage bool, contestDir, customComment string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
@@ -604,7 +608,7 @@ func GenLeetCodeTests(username, password, customComment string) error {
 
 	var problems []*problem
 	for {
-		problems, err = fetchProblemURLs(session)
+		problems, err = fetchProblemURLs(session, contestTag)
 		if err == nil {
 			break
 		}
@@ -616,11 +620,12 @@ func GenLeetCodeTests(username, password, customComment string) error {
 		return nil
 	}
 
-	if customComment != "" {
-		customComment += "\n"
-	}
+	customComment = updateComment(customComment)
+
 	for _, p := range problems {
+		p.openURL = openWebPage
 		p.customComment = customComment
+		p.contestDir = contestDir
 	}
 
 	fmt.Println("题目链接获取成功，开始解析")
@@ -629,7 +634,7 @@ func GenLeetCodeTests(username, password, customComment string) error {
 
 // 获取力扣杯题目信息
 // slug 如 "2020-fall", "2021-spring"
-func GenLeetCodeSeasonTests(username, password, customComment, slug string, isSolo bool) error {
+func GenLeetCodeSeasonTests(username, password, slug string, isSolo, openWebPage bool, contestDir, customComment string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
@@ -646,33 +651,35 @@ func GenLeetCodeSeasonTests(username, password, customComment, slug string, isSo
 		time.Sleep(time.Second)
 	}
 
-	if customComment != "" {
-		customComment += "\n"
-	}
+	customComment = updateComment(customComment)
+
 	for _, p := range problems {
+		p.openURL = openWebPage
 		p.customComment = customComment
+		p.contestDir = contestDir
 	}
 
 	fmt.Println("题目链接获取成功，开始解析")
 	return handleProblems(session, problems)
 }
 
-func GenLeetCodeSpecialTests(username, password, customComment string, urlsZHs []string) error {
+func GenLeetCodeSpecialTests(username, password string, urlsZHs []string, openWebPage bool, contestDir, customComment string) error {
 	session, err := login(username, password)
 	if err != nil {
 		return err
 	}
 	fmt.Println(host, "登录成功")
 
-	if customComment != "" {
-		customComment += "\n"
-	}
+	customComment = updateComment(customComment)
+
 	problems := make([]*problem, len(urlsZHs))
 	for i, url := range urlsZHs {
 		problems[i] = &problem{
 			id:            string(byte('a' + i)),
-			urlZH:         url,
+			url:           url,
+			openURL:       openWebPage,
 			customComment: customComment,
+			contestDir:    contestDir,
 		}
 	}
 
