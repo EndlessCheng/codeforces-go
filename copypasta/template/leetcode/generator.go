@@ -597,7 +597,8 @@ func updateComment(cmt string) string {
 	return cmt
 }
 
-// 抓取题目，生成链接
+// 获取题目信息（含题目链接）
+// contestTag 如 "weekly-contest-200"，可以从比赛链接中获取
 func GenLeetCodeTests(username, password, contestTag string, openWebPage bool, contestDir, customComment string) error {
 	session, err := login(username, password)
 	if err != nil {
