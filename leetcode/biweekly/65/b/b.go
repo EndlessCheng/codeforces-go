@@ -2,27 +2,21 @@ package main
 
 // github.com/EndlessCheng/codeforces-go
 type Robot struct{}
-
 var w, h, step int
 
 func Constructor(width, height int) (_ Robot) {
-	w, h, step = width, height, -1
+	w, h, step = width, height, 0
 	return
 }
 
 func (Robot) Move(num int) {
-	if step < 0 {
-		step = 0
-	}
-	step = (step + num) % ((w + h - 2) * 2)
+	// 由于机器人只能走外圈，那么走 (w+h-2)*2 步后会回到起点
+	// 同时，将 step 取模固定在 [1,(w+h-2)*2] 范围内，这样不需要特判处于原点时的方向
+	step = (step+num-1)%((w+h-2)*2) + 1
 }
 
 func get() (x, y int, dir string) {
 	switch {
-	case step < 0:
-		return 0, 0, "East"
-	case step == 0:
-		return 0, 0, "South"
 	case step < w:
 		return step, 0, "East"
 	case step < w+h-1:
