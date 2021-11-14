@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+// bufio.NewWriter
+// 相比 fmt.Println，每减少 1e5 次 Flush 可以加速约 200ms（Codeforces/AtCoder）
+// 对比：
+// 405ms https://codeforces.com/contest/1603/submission/135520593
+// 187ms https://codeforces.com/contest/1603/submission/134450945
+
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
 // 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
 // 对比：（3e4 个 int）
