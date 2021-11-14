@@ -50,11 +50,7 @@ func CF891A(_r io.Reader, out io.Writer) {
 
 	st := newST91(a)
 	ans := int(1e9)
-	for l, v := range a {
-		if v == 1 {
-			Fprint(out, n-1)
-			return
-		}
+	for l := range a {
 		sz := sort.Search(n-l, func(sz int) bool { return st.query(l, l+sz+1) == 1 })
 		// 注意这里的 sz 实际上要 +1，但是由于只需要取一个相对最小值，+1 可以不写
 		if sz < n-l && sz < ans {
