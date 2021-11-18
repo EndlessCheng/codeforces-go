@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// 注意确认 Val 的类型是否和题目一致（一般都是 int）
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -69,20 +68,20 @@ func (o *TreeNode) toRawString() string {
 		nodes = nodes[:len(nodes)-1]
 	}
 
-	s := "["
+	sb := &strings.Builder{}
+	sb.WriteByte('[')
 	for _, node := range nodes {
-		if len(s) > 1 {
-			s += ","
+		if sb.Len() > 1 {
+			sb.WriteByte(',')
 		}
 		if node != nil {
-			s += strconv.Itoa(node.Val)
-			//s += `"` + node.Val + `"`
+			sb.WriteString(strconv.Itoa(node.Val))
 		} else {
-			s += "null"
+			sb.WriteString("null")
 		}
 	}
-	s += "]"
-	return s
+	sb.WriteByte(']')
+	return sb.String()
 }
 
 func (o *TreeNode) CountNodes() int {
@@ -158,7 +157,6 @@ func (o *TreeNode) ToWeightedGraph() {
 
 //
 
-// 注意确认 Val 的类型是否和题目一致（一般都是 int）
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -195,16 +193,16 @@ func buildListNode(rawArray string) (head *ListNode, err error) {
 }
 
 func (o *ListNode) toRawString() string {
-	s := "["
+	sb := &strings.Builder{}
+	sb.WriteByte('[')
 	for ; o != nil; o = o.Next {
-		if len(s) > 1 {
-			s += ","
+		if sb.Len() > 1 {
+			sb.WriteByte(',')
 		}
-		s += strconv.Itoa(o.Val)
-		//s += `"` + o.Val + `"`
+		sb.WriteString(strconv.Itoa(o.Val))
 	}
-	s += "]"
-	return s
+	sb.WriteByte(']')
+	return sb.String()
 }
 
 func (o *ListNode) Values() []int {
