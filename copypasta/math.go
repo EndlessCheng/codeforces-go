@@ -661,7 +661,7 @@ func numberTheoryCollection() {
 	}
 
 	// 线性筛 欧拉筛
-	// 每个合数都从其 LPF 访问到
+	// 每个合数都从其 LPF 标记到（在遍历到 i = 合数/LPF 的时候，标记这些合数）
 	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
 	// https://www.luogu.com.cn/problem/P3383
 	sieveEuler := func() {
@@ -678,7 +678,7 @@ func numberTheoryCollection() {
 					break
 				}
 				pid[p*i] = -1
-				if i%p == 0 {
+				if i%p == 0 { // 后面的「质数*i」标记出的合数，其 LPF 不是该质数，应及时退出，从而避免重复标记
 					break
 				}
 			}
