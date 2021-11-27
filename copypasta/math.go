@@ -676,8 +676,8 @@ func numberTheoryCollection() {
 		pid := [mx + 1]int{-1, -1}
 		for i := 2; i <= mx; i++ {
 			if pid[i] == 0 {
+				pid[i] = len(primes) + 1
 				primes = append(primes, i)
-				pid[i] = len(primes)
 			}
 			for _, p := range primes {
 				if p*i > mx {
@@ -1170,6 +1170,27 @@ func numberTheoryCollection() {
 			}
 		}
 
+		{
+			// 也可以用欧拉筛求，实际测试下来耗时和上面差不多
+			lpf := [mx + 1]int{1: 1}
+			primes := []int{} // 可以提前确定空间
+			for i := 2; i <= mx; i++ {
+				if lpf[i] == 0 {
+					lpf[i] = i
+					primes = append(primes, i)
+				}
+				for _, p := range primes {
+					if p*i > mx {
+						break
+					}
+					lpf[p*i] = p
+					if i%p == 0 {
+						break
+					}
+				}
+			}
+		}
+
 		// EXTRA: 分解 x
 		factorize := func(x int) {
 			for x > 1 {
@@ -1181,6 +1202,28 @@ func numberTheoryCollection() {
 				// do(p,e) ...
 
 			}
+		}
+
+		// 求 x 的所有因子
+		// https://codeforces.com/problemset/problem/1614/D2
+		_ds := [1024]int{1} // 复用，避免反复扩容和 GC
+		divisors := func(x int) []int {
+			ds := _ds[:1]
+			for x > 1 {
+				p := lpf[x]
+				e := 1
+				for x /= p; lpf[x] == p; x /= p {
+					e++
+				}
+				d := ds
+				for pp := p; e > 0; e-- {
+					for _, d := range d {
+						ds = append(ds, d*pp)
+					}
+					pp *= p
+				}
+			}
+			return ds
 		}
 
 		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))
@@ -1248,7 +1291,7 @@ func numberTheoryCollection() {
 			return
 		}
 
-		_ = []interface{}{factorize, core, rad, sopfr, sopf}
+		_ = []interface{}{factorize, divisors, core, rad, sopfr, sopf}
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
