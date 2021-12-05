@@ -647,10 +647,11 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
-//    最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
+//    维护最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
 //       变体 https://codeforces.com/problemset/problem/733/F
-//    最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
-//    前十大（点权）https://codeforces.com/problemset/problem/587/C
+//    维护最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+//    维护最大值和严格次大值（严格次小 MST）：见 graph.go 中的 strictlySecondMST
+//    维护前十大（点权）https://codeforces.com/problemset/problem/587/C
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
@@ -766,18 +767,19 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		type pair struct{ p, maxWt int }
 		pa := make([][mx]pair, n)
 		dep := make([]int, n)
-		var f func(v, p, d int)
-		f = func(v, p, d int) {
+		var build func(v, p, d int)
+		build = func(v, p, d int) {
 			pa[v][0].p = p
 			dep[v] = d
 			for _, e := range g[v] {
 				if w := e.to; w != p {
 					pa[w][0].maxWt = e.wt
-					f(w, v, d+1)
+					build(w, v, d+1)
 				}
 			}
 		}
-		f(0, -1, 0)
+		build(0, -1, 0)
+
 		for i := 0; i+1 < mx; i++ {
 			for v := range pa {
 				if p := pa[v][i]; p.p != -1 {
@@ -788,6 +790,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 				}
 			}
 		}
+
 		// 求 LCA(v,w) 的同时，顺带求出 v-w 上的边权最值
 		_lca := func(v, w int) (lca, maxWt int) {
 			if dep[v] > dep[w] {
@@ -811,8 +814,10 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 				v = pa[v][0].p
 			}
 			// 如果是点权的话这里加上 maxWt = max(maxWt, pa[v][0].maxWt)
-			return v, maxWt
+			lca = v
+			return
 		}
+
 		_ = _lca
 	}
 

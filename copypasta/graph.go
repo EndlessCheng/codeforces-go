@@ -1497,8 +1497,8 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 	cntE := 0
 	for _, e := range edges {
 		if fv, fw := find(e.v), find(e.w); fv != fw {
-			sum += int64(e.wt)
 			fa[fv] = fw
+			sum += int64(e.wt)
 			cntE++
 		}
 	}
@@ -1701,14 +1701,128 @@ func (*graph) limitDegreeMST(dis [][]int, root, lim int) int {
 	return mstSum
 }
 
-// 次小生成树 Second best Minimum Spanning Tree
-// todo 非严格/严格
-// Using Kruskal and Lowest Common Ancestor
-// https://oi-wiki.org/graph/mst/#_9
+// 严格次小生成树 Second best Minimum Spanning Tree
+// https://oi-wiki.org/graph/mst/#_13
 // https://cp-algorithms.com/graph/second_best_mst.html
-// todo 模板题 https://www.luogu.com.cn/problem/P4180
-func (*graph) secondMST(n, m int) (sum int64) {
-	return
+// 模板题（严格）https://www.luogu.com.cn/problem/P4180 https://www.acwing.com/problem/content/358/
+// 注：非严格次小生成树
+//     做法更加简单，维护路径最大值即可，见 https://oi-wiki.org/graph/mst/#_10
+func (*graph) strictlySecondMST(n int, edges []struct{ v, w, wt int }, min, max func(int, int) int) int {
+	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
+
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if fa[x] != x {
+			fa[x] = find(fa[x])
+		}
+		return fa[x]
+	}
+
+	mstSum := 0 // int64
+	inMST := make([]bool, len(edges))
+	type nb struct{ to, wt int }
+	g := make([][]nb, n)
+	for i, e := range edges {
+		v, w, wt := e.v, e.w, e.wt
+		if fv, fw := find(v), find(w); fv != fw {
+			fa[fv] = fw
+			mstSum += wt
+			inMST[i] = true
+			g[v] = append(g[v], nb{w, wt}) // MST
+			g[w] = append(g[w], nb{v, wt})
+		}
+	}
+
+	const mx = 17
+	type pair struct{ p, fi, se int }
+	pa := make([][mx]pair, n)
+	dep := make([]int, n)
+	var build func(v, p, d int)
+	build = func(v, p, d int) {
+		pa[v][0].p = p
+		dep[v] = d
+		for _, e := range g[v] {
+			if w := e.to; w != p {
+				pa[w][0].fi = e.wt
+				build(w, v, d+1)
+			}
+		}
+	}
+	build(0, -1, 0)
+
+	merge := func(xFi, xSe, yFi, ySe int) (int, int) {
+		fi, se := max(xFi, yFi), 0
+		if xFi == yFi {
+			se = max(xSe, ySe)
+		} else if xFi > yFi {
+			se = max(xSe, yFi)
+		} else {
+			se = max(xFi, ySe)
+		}
+		return fi, se
+	}
+	for i := 0; i+1 < mx; i++ {
+		for v := range pa {
+			if p := pa[v][i]; p.p != -1 {
+				pp := pa[p.p][i]
+				fi, se := merge(p.fi, p.se, pp.fi, pp.se)
+				pa[v][i+1] = pair{pp.p, fi, se}
+			} else {
+				pa[v][i+1].p = -1
+			}
+		}
+	}
+
+	// 返回路径最大边权和严格次大边权
+	queryPath := func(v, w int) (fi, se int) {
+		if dep[v] > dep[w] {
+			v, w = w, v
+		}
+		for i := 0; i < mx; i++ {
+			if (dep[w]-dep[v])>>i&1 > 0 {
+				p := pa[w][i]
+				fi, se = merge(fi, se, p.fi, p.se)
+				w = p.p
+			}
+		}
+		if w != v {
+			for i := mx - 1; i >= 0; i-- {
+				if pv, pw := pa[v][i], pa[w][i]; pv.p != pw.p {
+					fi, se = merge(fi, se, pv.fi, pv.se)
+					fi, se = merge(fi, se, pw.fi, pw.se)
+					v, w = pv.p, pw.p
+				}
+			}
+			fi, se = merge(fi, se, pa[v][0].fi, pa[v][0].se)
+			fi, se = merge(fi, se, pa[w][0].fi, pa[w][0].se)
+		}
+		return
+	}
+
+	const inf int = 1e9 // 1e18
+	delta := inf
+	for i, e := range edges {
+		v, w, wt := e.v, e.w, e.wt
+		if inMST[i] || v == w { // 注意跳过自环
+			continue
+		}
+		fi, se := queryPath(v, w)
+		if wt > fi {
+			delta = min(delta, wt-fi) // 替换从而得到更大的 MST，取最小的替换差值
+		} else if se > 0 { // 此时必然有 wt == fi
+			delta = min(delta, wt-se) // wt = fi > se，同样可以替换
+		}
+	}
+	if delta == inf {
+		return -1
+	}
+	mstSum += delta
+
+	return mstSum
 }
 
 // Kruskal 重构树
