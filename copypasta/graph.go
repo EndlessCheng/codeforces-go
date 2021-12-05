@@ -501,10 +501,15 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	return ans
 }
 
-// 欧拉回路（欧拉图）：连通且每个点的度数为偶数；对于有向图需要入度和出度相同
-// 欧拉路径：连通且恰好有两个点的度数为奇数；对于有向图需要起点的出度比入度大一，终点的入度比出度大一
+// 欧拉图（欧拉回路）   半欧拉图（欧拉路径）
 // 半欧拉图：具有欧拉路径而无欧拉回路的图
-// 逐步插入回路法（Hierholzer 算法） https://oi-wiki.org/graph/euler/
+// 判别法如下 https://oi-wiki.org/graph/euler/#_3
+// 无向图-欧拉回路：连通且没有奇度数点
+// 无向图-欧拉路径：连通且恰有 0 或 2 个奇度数点（若有则选择其中一奇度数点为起点）
+// 有向图-欧拉回路：SCC 只有一个且每个点的入度和出度相同
+// 有向图-欧拉路径：1. 对应的无向图是连通的；2. 若每个点的入度和出度相同则起点任意；否则起点的出度比入度多一，终点的入度比出度多一，且其余点的入度和出度相同
+//
+// 逐步插入回路法（Hierholzer 算法）https://oi-wiki.org/graph/euler/
 // todo 混合图欧拉回路
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianCycle.java.html
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/EulerianPath.java.html
@@ -513,21 +518,24 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // NOTE: 递归前对边排序可保证输出的是字典序最小的路径
 // 模板题（输出顶点）
-//		无向图 https://www.luogu.com.cn/problem/P2731
-//      无向图 https://www.luogu.com.cn/problem/P1341
-//      有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+//   无向图 https://www.luogu.com.cn/problem/P2731
+//   无向图 https://www.luogu.com.cn/problem/P1341
+//   有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+// 模板题（输出边）
+//   有向图 LC周赛270D https://leetcode-cn.com/problems/valid-arrangement-of-pairs/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
 // 虚点 https://codeforces.com/problemset/problem/723/E
 // https://codeforces.com/problemset/problem/1186/F
-func (*graph) eulerianPath(n, m int) []int {
+func (*graph) eulerianPathOnUndirectedGraph(n, m int) []int {
+	// 无向图
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
 	// read g ...
 
 	// 排序，保证字典序最小
-	for _, vs := range g {
-		sort.Slice(vs, func(i, j int) bool { return vs[i].to < vs[j].to })
+	for _, es := range g {
+		sort.Slice(es, func(i, j int) bool { return es[i].to < es[j].to })
 	}
 
 	var st int
@@ -549,52 +557,87 @@ func (*graph) eulerianPath(n, m int) []int {
 	// NOTE: 若没有奇度数，则返回的是欧拉回路
 	// NOTE: 若不是连通图，则需要用一个额外的 visV 来遍历所有 CC，具体见 https://codeforces.com/contest/723/submission/120212770
 	path := make([]int, 0, m+1)
-	{
-		// 无向图
-		pre := -1
-		vis := make([]bool, m)
-		var f func(int)
-		f = func(v int) {
-			for len(g[v]) > 0 {
-				e := g[v][0]
-				g[v] = g[v][1:]
-				i := e.eid
-				if vis[i] {
-					continue
-				}
-				vis[i] = true
-				f(e.to)
-				// 定向
-				v, w := v, e.to
-				if w == pre {
-					v, w = w, v
-				}
-				pre = w
-				// NOTE: 输出边的话移在这里 append i
+	vis := make([]bool, m)
+	pre := -1
+	var f func(int)
+	f = func(v int) {
+		for len(g[v]) > 0 {
+			e := g[v][0]
+			g[v] = g[v][1:]
+			i := e.eid
+			if vis[i] {
+				continue
 			}
-			path = append(path, v)
+			vis[i] = true
+			f(e.to)
+			// 定向
+			v, w := v, e.to
+			if w == pre {
+				v, w = w, v
+			}
+			pre = w
+			// NOTE: 输出边的话移在这里 append i
 		}
-		f(st)
+		path = append(path, v)
 	}
-	{
-		// 有向图
-		var f func(int)
-		f = func(v int) {
-			for len(g[v]) > 0 {
-				e := g[v][0]
-				g[v] = g[v][1:]
-				f(e.to)
-				// NOTE: 输出边的话移在这里 append e.eid
-			}
-			path = append(path, v)
-		}
-		f(st)
+	f(st)
+
+	for i, n := 0, len(path); i < n/2; i++ {
+		path[i], path[n-1-i] = path[n-1-i], path[i]
 	}
 
-	// 倒序变正序
-	for i, j := 0, len(path)-1; i < j; i++ {
-		path[i], path[j] = path[j], path[i]
-		j--
+	return path
+}
+
+func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
+	// 有向图
+	type neighbor struct{ to, eid int }
+	g := make([][]neighbor, n)
+	inDeg := make([]int, n) // 统计入度
+	// read g ...
+
+	// 排序，保证字典序最小
+	for _, es := range g {
+		sort.Slice(es, func(i, j int) bool { return es[i].to < es[j].to })
+	}
+
+	st := -1
+	end := -1
+	for i, es := range g {
+		if len(es) == inDeg[i]+1 { // 出度比入度大一，为起点
+			if st >= 0 {
+				return nil // 无欧拉路径
+			}
+			st = i
+			//break // 如果保证有欧拉路径就直接 break
+		}
+		if len(es)+1 == inDeg[i] { // 入度比出度大一，为终点
+			if end >= 0 {
+				return nil // 无欧拉路径
+			}
+			end = i
+			//break
+		}
+	}
+	if st < 0 {
+		st = 0 // 任选一起点（比如字典序最小），此时返回的是欧拉回路
+	}
+
+	path := make([]int, 0, m+1)
+	var f func(int)
+	f = func(v int) {
+		for len(g[v]) > 0 {
+			e := g[v][0]
+			g[v] = g[v][1:]
+			f(e.to)
+			// NOTE: 输出边的话移在这里 append e.eid
+		}
+		path = append(path, v)
+	}
+	f(st)
+
+	for i, n := 0, len(path); i < n/2; i++ {
+		path[i], path[n-1-i] = path[n-1-i], path[i]
 	}
 
 	return path
@@ -1468,43 +1511,195 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 }
 
 // 最小生成树 Prim
-// 适用于稠密图 O(n^2)，传入邻接矩阵 dist
-// dist[v][w] == inf 表示没有 v-w 边
+// 适用于稠密图 O(n^2)，传入邻接矩阵 dis
+// dis[v][w] == inf 表示没有 v-w 边
+// 有些题目需要在连通分量上求 MST，这时就需要用到 root
 // https://oi-wiki.org/graph/mst/#prim
 // 模板题 https://www.luogu.com.cn/problem/P1546
 // 建模+打印方案 https://codeforces.com/problemset/problem/1245/D
 // https://codeforces.com/contest/1508/problem/C
-func (*graph) mstPrim(dist [][]int) (mst int) {
+func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
+	edges = make([][2]int, 0, len(dis)-1)
+
+	// 注意：dis 需要保证 dis[i][i] = inf，从而避免自环的影响
+
 	const inf int = 2e9
-	n := len(dist)
-	minWt := make([]int, n)
-	for i := range minWt {
-		minWt[i] = inf
+	minD := make([]struct{ v, d int }, len(dis)) // minD[i].d 表示当前 MST 到点 i 的最小距离，对应的边为 minD[i].v-i
+	for i := range minD {
+		minD[i].d = inf
 	}
-	minWt[0] = 0 // 任选一点为起点
-	used := make([]bool, n)
+	minD[root].d = 0
+	inMST := make([]bool, len(dis)) // 初始时所有点都不在 MST 中
 	for {
+		// 根据切分定理，求不在当前 MST 的点到当前 MST 的最小距离，即 minD[v].d
 		v := -1
-		for i, u := range used {
-			if !u && (v < 0 || minWt[i] < minWt[v]) {
-				v = i
+		for w, in := range inMST {
+			if !in && (v < 0 || minD[w].d < minD[v].d) {
+				v = w
 			}
 		}
-		if v < 0 {
+		if v < 0 { // 已求出 MST
 			return
 		}
-		used[v] = true
-		mst += minWt[v] // int64
-		for w, wt := range dist[v] {
-			if wt < minWt[w] {
-				minWt[w] = wt
+
+		// 加入 MST
+		inMST[v] = true
+		mst += minD[v].d // int64
+		if v != root {
+			edges = append(edges, [2]int{minD[v].v, v})
+		}
+
+		// 更新 minD
+		for w, d := range dis[v] {
+			if !inMST[w] && d < minD[w].d { // 注：若 mstPrim 结束后 minD 无其他用途，!inMST[w] 的判断可以去掉
+				minD[w].d = d
+				minD[w].v = v
 			}
 		}
 	}
 }
 
 // Boruvka's algorithm
+// 用于求解边权互不相同的无向图的最小生成森林
+// https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
+// https://oi-wiki.org/graph/mst/#boruvka
+// https://www.geeksforgeeks.org/boruvkas-algorithm-greedy-algo-9/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
+// todo http://codeforces.com/problemset/problem/888/G
+//  https://codeforces.com/problemset/problem/1550/F https://www.luogu.com.cn/blog/ETHANK/boruvka-xiao-ji
+func (*graph) boruvkaMST(n, m int) (sum int64) {
+	return
+}
+
+// 单点度数（单度）限制最小生成树   O(n^2)
+// 点 root 的度数不超过 lim
+// 不超过 http://poj.org/problem?id=1639 https://codeforces.com/gym/100227 A https://www.acwing.com/problem/content/349/
+// EXTRA: 恰好的情况（需要用 WQS 二分）https://codeforces.com/problemset/problem/125/E
+func (*graph) limitDegreeMST(dis [][]int, root, lim int) int {
+	const inf int = 2e9
+
+	n := len(dis)
+	mstSum := 0 // int64
+	rootDeg := 0
+	mst := make([][]int, n)
+	for i := range mst {
+		mst[i] = make([]int, n)
+		for j := range mst[i] {
+			mst[i][j] = inf
+		}
+	}
+
+	inComp := make([]bool, n)
+	inComp[root] = true // 下面求出去掉 root 后的所有连通块
+	minD := make([]struct{ v, d int }, n)
+	for i := range minD {
+		minD[i].d = inf
+	}
+	inMST := make([]bool, n)
+	for st, inC := range inComp {
+		if !inC {
+			comp := []int{}
+			var dfs func(int)
+			dfs = func(v int) {
+				comp = append(comp, v)
+				inComp[v] = true
+				for w, d := range dis[v] {
+					if d < inf && !inComp[w] {
+						dfs(w)
+					}
+				}
+			}
+			dfs(st)
+
+			// 求该连通块的 MST
+			minD[st].d = 0
+			for {
+				v := -1
+				for _, w := range comp {
+					if !inMST[w] && (v < 0 || minD[w].d < minD[v].d) {
+						v = w
+					}
+				}
+				if v < 0 {
+					break
+				}
+				mstSum += minD[v].d
+				inMST[v] = true
+				for _, w := range comp {
+					if !inMST[w] && dis[v][w] < minD[w].d {
+						minD[w].d = dis[v][w]
+						minD[w].v = v
+					}
+				}
+			}
+
+			// 连通块内部的最小生成树，连边
+			closest := st
+			for _, w := range comp {
+				if w == st {
+					continue
+				}
+				mst[minD[w].v][w] = minD[w].d
+				mst[w][minD[w].v] = minD[w].d
+				if dis[root][w] < dis[root][closest] {
+					closest = w // 顺带求出该连通块到 root 最近的点
+				}
+			}
+
+			// 每个连通块通过 closest 跟 root 连边
+			d := dis[root][closest]
+			mstSum += d
+			mst[root][closest] = d
+			mst[closest][root] = d
+			rootDeg++
+		}
+	}
+
+	type maxEdge struct{ v, w, wt int }
+	dp := make([]maxEdge, n) // dp[i] 表示从 root 到 i 这条路径上的边权最大的边
+	var f func(int, int)
+	f = func(v, fa int) {
+		for w, wt := range mst[v] {
+			if wt < inf && w != fa {
+				if wt < dp[v].wt {
+					dp[w] = dp[v]
+				} else {
+					dp[w] = maxEdge{v, w, wt}
+				}
+				f(w, v)
+			}
+		}
+	}
+	f(root, -1)
+
+	for rootDeg < lim {
+		maxDec, maxV := 0, 0
+		for v, d := range dis[root] {
+			// 枚举从 root 出发的非树边，看看能否做到减小 mstSum
+			if d < inf && mst[root][v] == inf {
+				if dec := mst[dp[v].v][dp[v].w] - d; dec > maxDec {
+					maxDec, maxV = dec, v
+				}
+			}
+		}
+		if maxDec == 0 { // 无法再减小 mstSum
+			break
+		}
+
+		// 减小 mstSum：删去树边 dp[maxV].v-dp[maxV].w，加入非树边 root-maxV
+		mstSum -= maxDec
+		mst[dp[maxV].v][dp[maxV].w] = inf
+		mst[dp[maxV].w][dp[maxV].v] = inf
+		mst[root][maxV] = dis[root][maxV]
+		mst[maxV][root] = dis[root][maxV]
+		rootDeg++
+
+		// 重新计算以 maxV 为根的一条路径的 dp 状态
+		dp[maxV] = maxEdge{root, maxV, dis[root][maxV]}
+		f(maxV, root) // 注意这里 fa 填的 root，所以只会更新受到上面删边和加边影响的子树
+	}
+	return mstSum
+}
 
 // 次小生成树 Second best Minimum Spanning Tree
 // todo 非严格/严格
