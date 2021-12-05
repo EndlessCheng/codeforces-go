@@ -84,75 +84,130 @@ func (o *TreeNode) toRawString() string {
 	return sb.String()
 }
 
-func (o *TreeNode) CountNodes() int {
-	cnto := 0
-	var _f func(o *TreeNode)
-	_f = func(o *TreeNode) {
+func GetParents(root *TreeNode) map[*TreeNode]*TreeNode {
+	parents := map[*TreeNode]*TreeNode{}
+	var dfs func(o, pa *TreeNode)
+	dfs = func(o, pa *TreeNode) {
 		if o == nil {
 			return
 		}
-		cnto++
-		_f(o.Left)
-		_f(o.Right)
+		parents[o] = pa
+		dfs(o.Left, o)
+		dfs(o.Right, o)
 	}
-	_f(o)
-	return cnto
+	dfs(root, nil)
+	return parents
+}
+
+func CountNodes(root *TreeNode) (cnt int) {
+	var dfs func(*TreeNode)
+	dfs = func(o *TreeNode) {
+		if o == nil {
+			return
+		}
+		cnt++
+		dfs(o.Left)
+		dfs(o.Right)
+	}
+	dfs(root)
+	return
 }
 
 // 加权图见下面的 ToWeightedGraph
-func (o *TreeNode) ToGraph() {
-	n := o.CountNodes()
+func ToGraph(root *TreeNode) [][]int {
+	n := CountNodes(root)
 	g := make([][]int, n)
-	cnt := 0
-	var build func(o *TreeNode)
+	id := 0
+	var build func(*TreeNode)
 	build = func(o *TreeNode) {
-		v := cnt
+		v := id
 		if o.Left == nil && o.Right == nil {
 			// do leaf ...
 
 		}
 		if o.Left != nil {
-			cnt++
-			g[v] = append(g[v], cnt)
-			g[cnt] = append(g[cnt], v)
+			id++
+			g[v] = append(g[v], id)
+			g[id] = append(g[id], v)
 			build(o.Left)
 		}
 		if o.Right != nil {
-			cnt++
-			g[v] = append(g[v], cnt)
-			g[cnt] = append(g[cnt], v)
+			id++
+			g[v] = append(g[v], id)
+			g[id] = append(g[id], v)
 			build(o.Right)
 		}
 	}
-	build(o)
+	build(root)
+	return g
 }
 
-func (o *TreeNode) ToWeightedGraph() {
-	type edge struct{ to, weight int }
-	n := o.CountNodes()
-	g := make([][]edge, n)
-	cnt := 0
+type DirEdge struct {
+	to  int
+	dir byte
+}
+
+func ToGraphWithDir(root *TreeNode) [][]DirEdge {
+	const (
+		left  = 'L'
+		right = 'R'
+		up    = 'U'
+	)
+	n := CountNodes(root)
+	g := make([][]DirEdge, n)
+	id := 0
 	var build func(o *TreeNode)
 	build = func(o *TreeNode) {
-		v := cnt
+		v := id
 		if o.Left == nil && o.Right == nil {
 			// do leaf ...
 
 		}
 		if o.Left != nil {
-			cnt++
-			g[v] = append(g[v], edge{cnt, o.Left.Val})
-			g[cnt] = append(g[cnt], edge{v, o.Left.Val})
+			id++
+			g[v] = append(g[v], DirEdge{id, left})
+			g[id] = append(g[id], DirEdge{v, up})
 			build(o.Left)
 		}
 		if o.Right != nil {
-			cnt++
-			g[v] = append(g[v], edge{cnt, o.Right.Val})
-			g[cnt] = append(g[cnt], edge{v, o.Right.Val})
+			id++
+			g[v] = append(g[v], DirEdge{id, right})
+			g[id] = append(g[id], DirEdge{v, up})
 			build(o.Right)
 		}
 	}
-	build(o)
+	build(root)
+	return g
+}
+
+type Edge struct{ to, wt int }
+
+func ToWeightedGraph(root *TreeNode) [][]Edge {
+	n := CountNodes(root)
+	g := make([][]Edge, n)
+	id := 0
+	var build func(o *TreeNode)
+	build = func(o *TreeNode) {
+		v := id
+		if o.Left == nil && o.Right == nil {
+			// do leaf ...
+
+		}
+		if o.Left != nil {
+			id++
+			g[v] = append(g[v], Edge{id, o.Left.Val})
+			g[id] = append(g[id], Edge{v, o.Left.Val})
+			build(o.Left)
+		}
+		if o.Right != nil {
+			id++
+			g[v] = append(g[v], Edge{id, o.Right.Val})
+			g[id] = append(g[id], Edge{v, o.Right.Val})
+			build(o.Right)
+		}
+	}
+	build(root)
+	return g
 }
 
 //
@@ -205,20 +260,38 @@ func (o *ListNode) toRawString() string {
 	return sb.String()
 }
 
-func (o *ListNode) Values() []int {
-	vals := []int{}
-	for ; o != nil; o = o.Next {
-		vals = append(vals, o.Val)
-	}
-	return vals
-}
-
-func (o *ListNode) Nodes() []*ListNode {
+func Nodes(head *ListNode) []*ListNode {
 	nodes := []*ListNode{}
-	for ; o != nil; o = o.Next {
+	for o := head; o != nil; o = o.Next {
 		nodes = append(nodes, o)
 	}
 	return nodes
+}
+
+func Values(head *ListNode) (values []int) {
+	for o := head; o != nil; o = o.Next {
+		values = append(values, o.Val)
+	}
+	return values
+}
+
+func BuildListNodeFromInts(a []int) *ListNode {
+	if len(a) == 0 {
+		return nil
+	}
+	head := &ListNode{Val: a[0]}
+	cur := head
+	for _, v := range a[1:] {
+		cur.Next = &ListNode{Val: v}
+		cur = cur.Next
+	}
+	return head
+}
+
+func ModifyNodes(head *ListNode, f func([]int) []int) *ListNode {
+	a := Values(head)
+	res := f(a)
+	return BuildListNodeFromInts(res)
 }
 
 //
