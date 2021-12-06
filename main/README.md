@@ -12,4 +12,4 @@ Compiler info: go1.15.6, windows, 386
 
 例如：[1439C_test.go](./1400-1499/1439C_test.go)
 
-交互题的写法要复杂一些，需要把涉及输入输出的地方抽象成接口，详见 [interactive_problem](/copypasta/template/interactive_problem)。
+交互题的写法要复杂一些，为方便测试，需要把涉及输入输出的地方抽象成接口，详见 [interactive_problem](/copypasta/template/interactive_problem)。
