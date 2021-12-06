@@ -149,6 +149,7 @@ https://oeis.org/A003459 绝对素数/可交换素数 Absolute primes (or permut
 	https://en.wikipedia.org/wiki/Permutable_prime
 https://oeis.org/A007500 Primes whose reversal in base 10 is also prime
 https://oeis.org/A006995 二进制回文数
+https://oeis.org/A007632 既是二进制回文数又是十进制回文数
 
 https://oeis.org/A090994 Number of meaningful differential operations of the n-th order on the space R^9
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)

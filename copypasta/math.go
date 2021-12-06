@@ -151,6 +151,7 @@ func numberTheoryCollection() {
 
 	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
 
+	GCD(x,x+y) = GCD(x,y) https://codeforces.com/problemset/problem/1110/C
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
 	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 	分拆与 LCM  https://ac.nowcoder.com/acm/contest/5961/D https://ac.nowcoder.com/discuss/439005
@@ -794,7 +795,16 @@ func numberTheoryCollection() {
 
 	// 阶乘的质因数分解中 p 的幂次
 	// https://cp-algorithms.com/algebra/factorial-divisors.html
-	// https://codeforces.com/contest/1114/problem/C
+	// https://codeforces.com/problemset/problem/633/B
+	// https://codeforces.com/problemset/problem/1114/C
+	// https://oeis.org/A027868 p=5 时为 n! 尾零的个数
+	// https://oeis.org/A191610 Possible number of trailing zeros in n!
+	// https://oeis.org/A000966 n! never ends in this many 0's
+	//    The simplest way to obtain this sequence is by constructing a power series
+	//       A(x) = Sum_{k >= 1} x^a(k) whose exponents give the terms of the sequence.
+	//    Define e(n) = (5^n-1)/4, f(n) = (1-x^(e(n)-1))/(1-x^e(n-1)), t(n) = x^(e(n)-6).
+	//    相关题目 LC793 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/
+	//       数学解法 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/shu-xue-tui-dao-by-jriver/
 	powerOfFactorialPrimeDivisor := func(n, p int64) (k int64) {
 		for n > 0 {
 			n /= p

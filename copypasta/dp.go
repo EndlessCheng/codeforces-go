@@ -398,6 +398,7 @@ func dpCollections() {
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
+	// 多个排列的 LCS（转化成 DAG 最长路）https://codeforces.com/problemset/problem/463/D
 	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D
 	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
@@ -478,6 +479,7 @@ func dpCollections() {
 	}
 
 	// 最长回文子序列 (LPS)
+	// 即 LCS(s, reverse(s))
 	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
 	// LC1216/双周赛10D https://leetcode-cn.com/contest/biweekly-contest-10/problems/valid-palindrome-iii/
 	longestPalindromeSubsequence := func(s string) int {
@@ -1691,7 +1693,7 @@ func dpCollections() {
 		//}
 		ans = (ans%mod + mod) % mod
 
-		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 valid，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
+		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 fill，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
 		// 例如 https://codeforces.com/contest/855/submission/125651587
 		// 以下代码以 https://www.luogu.com.cn/problem/P2657 为例
 		calc = func(s string) int64 {
@@ -1701,12 +1703,12 @@ func dpCollections() {
 					dp[i][j] = -1
 				}
 			}
-			var f func(p, pre int, limitUp, valid bool) int64
-			f = func(p, pre int, limitUp, valid bool) (res int64) {
+			var f func(p, pre int, limitUp, fill bool) int64
+			f = func(p, pre int, limitUp, fill bool) (res int64) {
 				if p == len(s) {
 					return 1
 				}
-				if !limitUp && valid { // 注意这里的判断
+				if !limitUp && fill { // 注意这里的判断
 					dv := &dp[p][pre]
 					if *dv >= 0 {
 						return *dv
@@ -1718,8 +1720,8 @@ func dpCollections() {
 					up = int(s[p] & 15)
 				}
 				for d := 0; d <= up; d++ {
-					if !valid || abs(d-pre) > 1 {
-						res += f(p+1, d, limitUp && d == up, valid || d > 0)
+					if !fill || abs(d-pre) > 1 {
+						res += f(p+1, d, limitUp && d == up, fill || d > 0)
 					}
 				}
 				return
@@ -1739,14 +1741,14 @@ func dpCollections() {
 				}
 			}
 			var f func(int, uint16, bool, bool) pair
-			f = func(p int, mask uint16, limitUp, valid bool) (res pair) {
+			f = func(p int, mask uint16, limitUp, fill bool) (res pair) {
 				if p == n {
-					if !valid {
+					if !fill {
 						return
 					}
 					return pair{1, 0}
 				}
-				if !limitUp && valid {
+				if !limitUp && fill {
 					dv := &dp[p][mask]
 					if dv.cnt >= 0 {
 						return *dv
@@ -1759,11 +1761,11 @@ func dpCollections() {
 				}
 				for d := 0; d <= up; d++ {
 					tmp := mask
-					if valid || d > 0 {
+					if fill || d > 0 {
 						tmp |= 1 << d
 					}
 					if bits.OnesCount16(tmp) <= k {
-						pr := f(p+1, tmp, limitUp && d == up, valid || d > 0)
+						pr := f(p+1, tmp, limitUp && d == up, fill || d > 0)
 						res.cnt = (res.cnt + pr.cnt) % mod
 						res.sum = (res.sum + int64(math.Pow10(n-1-p))%mod*pr.cnt%mod*int64(d) + pr.sum) % mod
 					}
@@ -1972,6 +1974,7 @@ func dpCollections() {
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/982/C
+	https://codeforces.com/problemset/problem/743/D
 	https://codeforces.com/problemset/problem/1083/A
 	好题 https://codeforces.com/problemset/problem/1453/E
 	如何定义状态 https://codeforces.com/problemset/problem/461/B

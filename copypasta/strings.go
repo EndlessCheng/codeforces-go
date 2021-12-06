@@ -196,6 +196,7 @@ func stringCollection() {
 	// https://oi-wiki.org/string/minimal-string/
 	// 其他方法 https://codeforces.com/blog/entry/90035
 	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509
+	// https://codeforces.com/problemset/problem/496/B
 	smallestRepresentation := func(s []byte) []byte {
 		n := len(s)
 		s = append(s, s...)
@@ -218,6 +219,9 @@ func stringCollection() {
 		return s[i : i+n]
 	}
 
+	// 子序列自动机
+	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
+	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
 	// LC2014/周赛259D https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
 	subsequenceAutomaton := func(s string) {
 		// build nxt
