@@ -416,10 +416,11 @@ func mapPos(a, b []int) []int {
 	return ids
 }
 
-// 逆序对
+// 归并排序与逆序对
 // LC 面试题 51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-// EXTRA: LC 327 https://leetcode-cn.com/problems/count-of-range-sum/
-//        LC 493 https://leetcode-cn.com/problems/reverse-pairs/
+// EXTRA: LC315 https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/
+//        LC327 https://leetcode-cn.com/problems/count-of-range-sum/
+//        LC493 https://leetcode-cn.com/problems/reverse-pairs/
 // 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
 func mergeCount(a []int) int64 {
 	n := len(a)
