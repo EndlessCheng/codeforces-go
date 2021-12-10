@@ -106,6 +106,7 @@ func fenwickTree(n int) {
 
 	// 求逆序对的方法之一
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
+	// 归并做法见 misc.go 中的 mergeCount
 	// 扩展 https://codeforces.com/problemset/problem/362/C
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
 	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F

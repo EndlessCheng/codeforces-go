@@ -23,6 +23,7 @@ NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Item
 https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
+单调队列优化 LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
 
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
      评注：接雨水有三种不同的解法（DP、单调栈和双指针），其中双指针是 DP 的空间优化写法
@@ -78,7 +79,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
-	// LC1950 https://leetcode-cn.com/problems/maximum-of-minimum-values-in-all-subarrays/
+	// https://codeforces.com/problemset/problem/547/B LC1950 https://leetcode-cn.com/problems/maximum-of-minimum-values-in-all-subarrays/
 	{
 		ans := make([]int, n+1)
 		for i := range ans {

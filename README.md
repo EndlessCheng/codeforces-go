@@ -425,6 +425,6 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system#Theory)
 
-### Keep Healthy
+### Stay Healthy
 
 [Exercises!](https://musclewiki.org/)

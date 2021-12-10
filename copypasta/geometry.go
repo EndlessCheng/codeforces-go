@@ -601,7 +601,7 @@ func (o circle) tangents2(b circle) (ls []lineF, hasInf bool) {
 // 详见《计算几何：算法与应用（第 3 版）》第 4.7 节
 // https://en.wikipedia.org/wiki/Smallest-circle_problem
 // https://oi-wiki.org/geometry/random-incremental/
-// 模板题 https://www.luogu.com.cn/problem/P1742 https://www.acwing.com/problem/content/3031/ https://www.luogu.com.cn/problem/P2533
+// 模板题 https://www.luogu.com.cn/problem/P1742 https://www.acwing.com/problem/content/3031/ https://www.luogu.com.cn/problem/P2533 LC1924 https://leetcode-cn.com/problems/erect-the-fence-ii/
 // 椭圆（坐标系旋转缩一下） https://www.luogu.com.cn/problem/P4288 https://www.acwing.com/problem/content/2787/
 func smallestEnclosingDisc(ps []vecF) circleF {
 	rand.Seed(time.Now().UnixNano())
@@ -831,7 +831,8 @@ func vec2Collection() {
 	// 求上凸包就从最右边的点开始
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
-	// 模板题 https://www.luogu.com.cn/problem/P2742
+	// 模板题 https://www.luogu.com.cn/problem/P2742 LC587 https://leetcode-cn.com/problems/erect-the-fence/
+	// 构造 LCP15 https://leetcode-cn.com/problems/you-le-yuan-de-mi-gong/
 	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) (q []vec) {
