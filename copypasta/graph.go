@@ -1346,6 +1346,33 @@ func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
 	return dist
 }
 
+// 位压缩版 O(n^3/w)
+// LC双周赛67C https://leetcode-cn.com/problems/detonate-the-maximum-bombs/
+func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
+	vs := make([]Bitset, n) // vs[i] 表示从 i 出发可以到达的节点
+	for i := range vs {
+		vs[i] = NewBitset(n)
+		vs[i].Set(i)
+	}
+	for i := 0; i < m; i++ {
+		var v, w int
+		Fscan(in, &v, &m)
+		vs[v].Set(w) // 有向边
+	}
+	for k := range vs { // 阶段
+		for i := range vs { // 状态
+			if vs[i].Has(k) {
+				vs[i].Merge(vs[k]) // 决策
+			}
+		}
+	}
+	reach := make([]int, n) // reach[i] 表示从 i 出发可以到达的节点数
+	for i, bs := range vs {
+		reach[i] = bs.OnesCount()
+	}
+	return reach
+}
+
 // 最小环
 // 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
