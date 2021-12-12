@@ -1115,6 +1115,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
 	// LC2045/周赛263D https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
+	// 次短路径计数 https://www.acwing.com/problem/content/385/
 	{
 		const inf int64 = 1e18 // 1e9+1
 		dist := make([]int64, n)
@@ -1850,6 +1851,103 @@ func (*graph) strictlySecondMST(n int, edges []struct{ v, w, wt int }, min, max 
 	mstSum += delta
 
 	return mstSum
+}
+
+// 曼哈顿距离最小生成树 O(nlogn)
+// LC1584 https://leetcode-cn.com/problems/min-cost-to-connect-all-points/
+// 做法见官方题解 https://leetcode-cn.com/problems/min-cost-to-connect-all-points/solution/lian-jie-suo-you-dian-de-zui-xiao-fei-yo-kcx7/
+func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (mst int) {
+	n := len(points)
+	// 读入时把 points 加上下标
+
+	type edge struct{ v, w, dis int }
+	edges := []edge{}
+
+	build := func() {
+		sort.Slice(points, func(i, j int) bool { a, b := points[i], points[j]; return a.x < b.x || a.x == b.x && a.y < b.y })
+
+		// 离散化 y-x
+		type pair struct{ v, i int }
+		ps := make([]pair, n)
+		for i, p := range points {
+			ps[i] = pair{p.y - p.x, i}
+		}
+		sort.Slice(ps, func(i, j int) bool { return ps[i].v < ps[j].v })
+		kth := make([]int, n)
+		k := 1
+		kth[ps[0].i] = k
+		for i := 1; i < n; i++ {
+			if ps[i].v != ps[i-1].v {
+				k++
+			}
+			kth[ps[i].i] = k
+		}
+
+		const inf int = 2e9
+		tree := make([]int, k+1)
+		idRec := make([]int, k+1)
+		for i := range tree {
+			tree[i] = inf
+			idRec[i] = -1
+		}
+		update := func(pos, val, id int) {
+			for ; pos > 0; pos &= pos - 1 {
+				if val < tree[pos] {
+					tree[pos] = id
+					idRec[pos] = id
+				}
+			}
+		}
+		query := func(pos int) int {
+			minVal, minID := inf, -1
+			for ; pos < len(tree); pos += pos & -pos {
+				if tree[pos] < minVal {
+					minVal = tree[pos]
+					minID = idRec[pos]
+				}
+			}
+			return minID
+		}
+
+		for i := n - 1; i >= 0; i-- {
+			p := points[i]
+			pos := kth[i]
+			if j := query(pos); j != -1 {
+				q := points[j]
+				dis := abs(p.x-q.x) + abs(p.y-q.y)
+				edges = append(edges, edge{p.i, q.i, dis})
+			}
+			update(pos, p.x+p.y, i)
+		}
+	}
+	build()
+	for i := range points {
+		points[i].x, points[i].y = points[i].y, points[i].x
+	}
+	build()
+	for i := range points {
+		points[i].x = - points[i].x
+	}
+	build()
+	for i := range points {
+		points[i].x, points[i].y = points[i].y, points[i].x
+	}
+	build()
+
+	sort.Slice(edges, func(i, j int) bool { return edges[i].dis < edges[j].dis })
+
+	uf := newUnionFind(n)
+	left := n - 1
+	for _, e := range edges {
+		if uf.merge(e.v, e.w) {
+			mst += e.dis // int64
+			left--
+			if left == 0 {
+				break
+			}
+		}
+	}
+	return
 }
 
 // Kruskal 重构树
