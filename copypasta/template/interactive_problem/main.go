@@ -30,8 +30,8 @@ func (io io) readInitData() (d initData) {
 	return
 }
 
-func (io io) query(req request) (resp response) {
-	Fprintln(io.out, "?", req.i)
+func (io io) query(q request) (resp response) {
+	Fprintln(io.out, "?", q.i)
 	io.out.Flush()
 	Fscan(io.in, &resp.v)
 	if resp.v < 0 {
@@ -41,9 +41,10 @@ func (io io) query(req request) (resp response) {
 }
 
 func (io io) printAnswer(a answer) {
-	Fprint(io.out, "! ")
+	Fprint(io.out, "!")
+	//Fprint(io.out, " ", len(a.ans))
 	for _, v := range a.ans {
-		Fprint(io.out, v, " ")
+		Fprint(io.out, " ", v)
 	}
 	Fprintln(io.out)
 	io.out.Flush()
