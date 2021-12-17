@@ -1,6 +1,6 @@
 # Interactive Problem Template
 
-The idea is design an interface below, then implement it both in `main.go` and `main_test.go`.
+Use below interface and implement it both in `main.go` and `main_test.go`.
 
 ```go
 type interaction interface {
@@ -10,4 +10,4 @@ type interaction interface {
 }
 ``` 
 
-In this way we can mock the IO part in `main_test.go`.
+In this way we can mock the IO part.
