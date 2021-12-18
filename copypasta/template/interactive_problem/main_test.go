@@ -61,7 +61,7 @@ func (io *mockIO) printAnswer(actualAns answer) {
 // Mock query
 func (io *mockIO) query(q request) (resp response) {
 	if io.caseNum == debugCaseNum {
-		Print("Query ", q, " ")
+		Print("Query ", q, " => ")
 		defer func() { Println(resp) }()
 	}
 
