@@ -60,7 +60,7 @@
         // 特殊描述
         "substring", "subarray", // "subsequence",
         "Empty", "empty",
-        "zero", "positive", "negative",
+        "leading zero", "zero", "positive", "negative",
         "decreasing", "descending", "increasing", "ascending", "sorted",
         "permutation",
         "lowercase", "lower case", "uppercase", "upper case",
