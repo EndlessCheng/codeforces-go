@@ -18,7 +18,7 @@ var failedCount int
 type mockIO struct {
 	initData
 	answer
-	innerData []int
+	hiddenData []int //
 
 	_t         *testing.T
 	caseNum    int
@@ -26,10 +26,10 @@ type mockIO struct {
 	queryCnt   int
 }
 
-func (io *mockIO) String() (s string) {
-	s = Sprintf("%v", io.innerData)
-	//s = strings.Join(io.innerData, "\n")
-	return
+func (io *mockIO) String() string {
+	hStr := Sprintf("%v", io.hiddenData)
+	//hStr := strings.Join(io.hiddenData, "\n")
+	return Sprintf("%+v\n%s", io.initData, hStr)
 }
 
 // Mock initData
@@ -40,9 +40,9 @@ func (io *mockIO) readInitData() (d initData) {
 // Check answer
 func (io *mockIO) printAnswer(actualAns answer) {
 	expectedAns := io.answer
-	if !assert.EqualValues(io._t, expectedAns, actualAns, "Wrong Answer %d\nInner Data:\n%v", io.caseNum, io) {
+	if !assert.EqualValues(io._t, expectedAns, actualAns, "Wrong Answer %d\nCase Data:\n%v", io.caseNum, io) {
 		if failedCount++; failedCount > failedCountLimit {
-			io._t.Fatal("too many wrong answers, terminated")
+			io._t.Fatal("too many failed cases, terminated")
 		}
 	}
 
@@ -51,24 +51,24 @@ func (io *mockIO) printAnswer(actualAns answer) {
 
 		return true
 	}
-	if !assert.Truef(io._t, ansChecker(), "Wrong Answer %d\nMy Answer:\n%v\nInner Data:\n%v", io.caseNum, actualAns, io) {
+	if !assert.Truef(io._t, ansChecker(), "Wrong Answer %d\nMy Answer:\n%v\nCase Data:\n%v", io.caseNum, actualAns, io) {
 		if failedCount++; failedCount > failedCountLimit {
-			io._t.Fatal("too many wrong answers, terminated")
+			io._t.Fatal("too many failed cases, terminated")
 		}
 	}
 }
 
 // Mock query
-func (io *mockIO) query(req request) (resp response) {
+func (io *mockIO) query(q request) (resp response) {
 	if io.caseNum == debugCaseNum {
-		Print("Query ", req, " ")
+		Print("Query ", q, " => ")
 		defer func() { Println(resp) }()
 	}
-	if io.queryCnt++; io.queryCnt > io.queryLimit {
-		io._t.Fatalf("Query Limit Exceeded %d\nInner Data:\n%v", io.caseNum, io)
-	}
 
+	io.queryCnt++
+	//if io.queryCnt > io.queryLimit { io._t.Fatalf("Query Limit Exceeded %d\nCase Data:\n%v", io.caseNum, io) }
 
+	// calc q ...
 
 	return
 }
@@ -81,17 +81,27 @@ func Test_doInteraction(_t *testing.T) {
 		}
 		io := &mockIO{_t: _t, caseNum: tc}
 
+		// gen random data ...
 		rg = testutil.NewRandGenerator()
 		n := rg.Int(2, 4)
 		a := rg.IntSlice(n, 1, n)
 
 		io.n = n
 		io.ans = a
-		io.innerData = a
+		io.hiddenData = a
 
+		// set limit ...
 		io.queryLimit = n + 30
 
 		doInteraction(io)
+
+		if io.queryCnt > io.queryLimit {
+			io._t.Errorf("Query Limit Exceeded %d\n%d > %d\nCase Data:\n%v", io.caseNum, io.queryCnt, io.queryLimit, io)
+			if failedCount++; failedCount > failedCountLimit {
+				io._t.Fatal("too many failed cases, terminated")
+			}
+		}
+
 		if tc == checkTC {
 			_t.Logf("%d cases checked.", tc)
 			checkTC <<= 1
