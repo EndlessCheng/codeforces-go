@@ -1,7 +1,7 @@
 package copypasta
 
 // 双端队列
-// 用两个 slice 拼在一起实现
+// 用两个 slice 头对头拼在一起实现
 // 另一种实现是 make 个两倍大小的 slice，然后用两个下标 s t 模拟
 // 应用见 graph.go 中的 01 最短路
 
