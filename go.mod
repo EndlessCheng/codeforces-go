@@ -1,4 +1,4 @@
-module codeforces-go
+module github.com/EndlessCheng/codeforces-go
 
 go 1.17
 
@@ -13,13 +13,12 @@ require (
 )
 
 require (
+	github.com/blend/go-sdk v1.20211025.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect
+	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
-
-replace github.com/EndlessCheng/codeforces-go => ./
