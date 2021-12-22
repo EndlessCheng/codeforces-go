@@ -3,7 +3,6 @@ module github.com/EndlessCheng/codeforces-go
 go 1.17
 
 require (
-	github.com/EndlessCheng/codeforces-go v0.0.0-00010101000000-000000000000
 	github.com/emirpasic/gods v1.12.0
 	github.com/levigross/grequests v0.0.0-20190908174114-253788527a1a
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
