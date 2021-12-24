@@ -25,7 +25,8 @@ func CF1225D(_r io.Reader, out io.Writer) {
 	ans := int64(0)
 	cnt := map[string]int{} // 或者用 [6]int 来代替 string，下面改成 p<<8|e 和 p<<8|(k-e)
 	for Fscan(in, &n, &k); n > 0; n-- {
-		var s, t []byte
+		s := []byte{}
+		t := []byte{}
 		Fscan(in, &v)
 		for v > 1 {
 			p, e := lpf[v], 1
