@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -46,4 +45,4 @@ func CF1466E(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { CF1466E(os.Stdin, os.Stdout) }
+//func main() { CF1466E(os.Stdin, os.Stdout) }
