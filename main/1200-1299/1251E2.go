@@ -9,10 +9,10 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-type hp struct{ sort.IntSlice }
+type hp51 struct{ sort.IntSlice }
 
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *hp51) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp51) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 
 func CF1251E2(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
@@ -31,7 +31,7 @@ func CF1251E2(_r io.Reader, _w io.Writer) {
 		// 维护最小 pi 可以用最小堆
 		sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.m < b.m || a.m == b.m && a.p < b.p })
 		ans := int64(0)
-		for i, buy, h := n-1, 0, new(hp); i >= 0; i-- {
+		for i, buy, h := n-1, 0, new(hp51); i >= 0; i-- {
 			heap.Push(h, a[i].p)
 			if a[i].m > i+buy {
 				buy++
