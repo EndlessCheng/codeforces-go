@@ -15,6 +15,7 @@ https://en.wikipedia.org/wiki/Game_theory
           此时对手的状态为必胜状态——对手必定是胜利的，自己就输掉了游戏
 推荐 https://blog.csdn.net/acm_cxlove/article/details/7854530
 https://oi-wiki.org/math/game-theory/
+博弈论学习笔记 https://www.luogu.com.cn/blog/368107/notes-of-Game-Theory
 todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-fa-bo-yi-lun-zong-ling-kai-shi-di-bo-yi-lun-post
 todo 阶梯博弈 https://codeforces.com/blog/entry/44651
 
