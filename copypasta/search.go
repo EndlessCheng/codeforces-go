@@ -539,6 +539,7 @@ func searchCollection() {
 
 	// 折半枚举/双向搜索 Meet in the middle
 	// https://codeforces.com/problemset/problem/327/E
+	// LC805 https://leetcode-cn.com/problems/split-array-with-same-average/
 
 	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
