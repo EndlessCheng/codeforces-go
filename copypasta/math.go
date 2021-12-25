@@ -907,6 +907,8 @@ func numberTheoryCollection() {
 		真因子之和 https://oeis.org/A001065 σ(n)-n
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
 			https://en.wikipedia.org/wiki/Perfect_number
+			https://en.wikipedia.org/wiki/Euclid%E2%80%93Euler_theorem
+			LC507 https://leetcode-cn.com/problems/perfect-number/
 		过剩数/丰数/盈数 https://oeis.org/A005101 Abundant numbers (σ(n) > 2n)
 			https://en.wikipedia.org/wiki/Abundant_number
 		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
