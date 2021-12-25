@@ -318,6 +318,8 @@
 
 [CP-Algorithms](https://cp-algorithms.com/)
 
+[洛谷日报](https://www.craft.do/s/N0l80k2gv46Psq)
+
 [All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
 
 [Codeforces Problem Topics](https://codeforces.com/blog/entry/55274)
@@ -341,16 +343,6 @@
 [洛谷原试炼场](https://www.luogu.com.cn/paste/0id3h6on)
 
 [Links of ICPC/CCPC Contests from China](https://codeforces.com/blog/entry/84429)
-
-### 洛谷日报
-
-[2021 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/287888)
-
-[2020 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/179788)
-
-[2019 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/92685)
-
-[2018 年洛谷日报索引](https://www.luogu.com.cn/discuss/show/48491)
 
 ### 高级竞赛算法
 
