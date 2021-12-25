@@ -150,6 +150,7 @@ func unionFind(n int) {
 // 并查集 - 维护点权
 // 维护的可以是集合的大小、最值、XOR、GCD 等
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
+// https://codeforces.com/problemset/problem/1609/D
 // LC 周赛 203D https://leetcode-cn.com/contest/weekly-contest-203/problems/find-latest-group-of-size-m/
 func unionFindVertexWeight(n int) {
 	var fa, sz []int
@@ -173,6 +174,7 @@ func unionFindVertexWeight(n int) {
 		from, to = find(from), find(to)
 		if from != to {
 			sz[to] += sz[from]
+			//sz[from] = 0 // 有些题目需要保证总 sz 和不变（如 CF1609D）
 			fa[from] = to
 		}
 	}
