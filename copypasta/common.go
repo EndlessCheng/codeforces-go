@@ -109,19 +109,11 @@ func commonCollection() {
 
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	type pair struct{ x, y int }
-	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
-	dir4C := []pair{ // 西东南北
-		'W': {-1, 0},
-		'E': {1, 0},
-		'S': {0, -1},
-		'N': {0, 1},
-	}
-	dir4c := []pair{ // 左右下上
-		'L': {-1, 0},
-		'R': {1, 0},
-		'D': {0, -1},
-		'U': {0, 1},
-	}
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}                       // 上下左右
+	dir4g := []pair{'W': {-1, 0}, 'E': {1, 0}, 'S': {0, -1}, 'N': {0, 1}}  // 西东南北（坐标系）
+	dir4g2 := []pair{'W': {0, -1}, 'E': {0, 1}, 'S': {1, 0}, 'N': {-1, 0}} // 西东南北（矩阵）
+	dir4c := []pair{'L': {-1, 0}, 'R': {1, 0}, 'D': {0, -1}, 'U': {0, 1}}  // 左右下上（坐标系）
+	dir4c2 := []pair{'L': {0, -1}, 'R': {0, 1}, 'U': {-1, 0}, 'D': {1, 0}} // 左右下上（矩阵）
 	dir4R := []pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 	dir8 := []pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
 	perm3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
@@ -1081,7 +1073,7 @@ func commonCollection() {
 	}
 
 	_ = []interface{}{
-		pow10, dir4, dir4C, dir4c, dir4R, dir8, perm3, perm4,
+		pow10, dir4, dir4g, dir4g2, dir4c, dir4c2, dir4R, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin,
 		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
