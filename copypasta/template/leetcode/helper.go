@@ -78,11 +78,13 @@ func renameInputArgs(funcDefineLine string) string {
 		"arr", "a",
 		"array", "a",
 		"stones", "a",
+		"prices", "a",
 		"mat", "a",
 		"matrix", "a",
 		"grid", "g",
 		"grid1", "g1",
 		"grid2", "g2",
+		"words", "a",
 
 		// 字符串
 		"word", "s",
@@ -92,10 +94,14 @@ func renameInputArgs(funcDefineLine string) string {
 		"s2", "y",
 
 		// 其余常见变量名
+		"num", "n",
 		"edges", "es",
 		"points", "ps",
+		"pairs", "ps",
 		"queries", "qs",
-		"source", "src",
+		"startPos", "st",
+		"start", "st",
+		"source", "st",
 		"target", "tar",
 		"limit", "lim",
 		"index", "id",
