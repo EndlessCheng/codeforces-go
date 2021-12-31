@@ -28,7 +28,10 @@ AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
 ∑i*q^(i-1) = n*q^n - (q^n-1)/(q-1)
+
 若干无穷级数之和的公式 https://mathwords.net/mugenwa
+∑^∞ r^i = 1/(1-r)
+∑^∞ i*r^i = r/(1-r)^2
 
 https://oeis.org/A000079 2^n
 虽然是个很普通的序列，但也能出现在一些意想不到的地方
@@ -1235,7 +1238,7 @@ func numberTheoryCollection() {
 					pp *= p
 				}
 			}
-			return ds
+			return ds // append([]int(nil), ds...)
 		}
 
 		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))

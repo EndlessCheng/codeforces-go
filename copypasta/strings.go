@@ -99,6 +99,7 @@ func stringCollection() {
 	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
+	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
 	calcMaxMatchLengths := func(s []byte) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {

@@ -653,6 +653,7 @@ func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
 // https://oi-wiki.org/graph/cut/#_1
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
+// LC928 https://leetcode-cn.com/problems/minimize-malware-spread-ii/
 func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -712,6 +713,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
 // 与最短路结合 https://codeforces.com/problemset/problem/567/E
 // https://codeforces.com/problemset/problem/118/E
+// todo 构造 https://codeforces.com/problemset/problem/550/D
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -985,7 +987,8 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
-// 建模题 https://www.luogu.com.cn/problem/P4644
+// 建模 https://www.luogu.com.cn/problem/P4644
+// 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
@@ -1193,6 +1196,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
+// https://codeforces.com/problemset/problem/877/D（也可以 BFS）
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -2176,6 +2180,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // 染色的技巧 https://codeforces.com/problemset/problem/553/C
 //          https://codeforces.com/problemset/problem/662/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
+// 与分组背包结合 https://codeforces.com/problemset/problem/1354/E
 func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n) // 0 表示未访问该节点
 	var f func(int, int8) bool
@@ -2281,8 +2286,10 @@ DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰�
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3386
+// LCP04 https://leetcode-cn.com/problems/broken-board-dominoes/
 //【网络流 24 题】飞行员配对方案 https://loj.ac/p/6000 https://www.luogu.com.cn/problem/P2756
 //【网络流 24 题】骑士共存（这题 Dinic 更快）https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
+// todo https://codeforces.com/contest/1404/problem/E
 func (*graph) maxBipartiteMatchingHungarian(g [][]int) (match []int, cnt int) {
 	match = make([]int, len(g))
 	for i := range match {
@@ -2336,7 +2343,7 @@ func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []i
 		return false
 	}
 	for v := range g {
-		used = make([]bool, nl)
+		used = make([]bool, nl) // 每次 DFS 之前都要重置 used
 		if f(v) {
 			cnt++ // +=2
 		}
@@ -3153,6 +3160,7 @@ https://en.wikipedia.org/wiki/Assignment_problem
 https://en.wikipedia.org/wiki/Network_simplex_algorithm
 
 NOTE: 对于修改容量的情况，由于 EK 是基于最短路的贪心算法，不能像最大流那样直接在残余网络上继续跑，必须重新建图重新跑 EK
+todo https://codeforces.com/problemset/problem/362/E
 
 建模·转换
 从源点连容量为 1 费用为 0 的边到集合 A 中各点
