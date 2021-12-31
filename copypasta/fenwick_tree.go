@@ -110,6 +110,7 @@ func fenwickTree(n int) {
 	// 扩展 https://codeforces.com/problemset/problem/362/C
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
 	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
+	// https://codeforces.com/problemset/problem/1585/D
 	cntInversions := func(a []int) int64 {
 		n := len(a)
 		tree := make([]int, n+1)
