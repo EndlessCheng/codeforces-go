@@ -2948,6 +2948,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 			}
 		}
 		// do ring ...
+		// 特别注意基环大小小于 3 的特殊情况
 
 	}
 
