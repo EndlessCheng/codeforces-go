@@ -2,15 +2,13 @@
 
 从 $i$ 向 $\textit{favorite}[i]$ 连边，我们可以得到一张有向图。由于每个大小为 $k$ 的连通块都有 $k$ 个点和 $k$ 条边，所以每个连通块必定有且仅有一个环，且由于每个点的出度均为 $1$，这样的有向图又叫做内向**基环树 (pseudotree)**，由基环树组成的森林叫**基环树森林 (pseudoforest)**。
 
-每一个内向基环树（连通块）都由一个**基环**和其余指向基环的**树枝**组成，例如示例 $3$ 可以得到如下内向基环树，其基环由节点 $0$、$1$、$3$ 和 $4$ 组成，节点 $2$ 为其树枝：
+每一个内向基环树（连通块）都由一个**基环**和其余指向基环的**树枝**组成。例如示例 $3$ 可以得到如下内向基环树，其基环由节点 $0$、$1$、$3$ 和 $4$ 组成，节点 $2$ 为其树枝：
 
 ![1.png](https://pic.leetcode-cn.com/1641096462-IsWZUX-1.png)
 
-
-特别地，我们得到的基环可能只包含两个节点，例如示例 $1$ 可以得到如下内向基环树，其基环只包含节点 $1$ 和 $2$，而节点 $0$ 和 $3$ 组成其树枝：
+特别地，我们得到的基环可能只包含两个节点。例如示例 $1$ 可以得到如下内向基环树，其基环只包含节点 $1$ 和 $2$，而节点 $0$ 和 $3$ 组成其树枝：
 
 ![2.png](https://pic.leetcode-cn.com/1641096467-KCwxMo-2.png)
-
 
 对于本题来说，这两类基环树在组成圆桌时会有明显区别，下文会说明这一点。
 
@@ -24,7 +22,6 @@
 
 ![3.png](https://pic.leetcode-cn.com/1641096473-JtGBgY-3.png)
 
-
 我们可以先让 $0$ 和 $1$ 坐在圆桌旁（假设 $0$ 坐在 $1$ 左侧），那么 $0$ 这一侧的树枝只能坐在 $0$ 的左侧，而 $1$ 这一侧的树枝只能坐在 $1$ 的右侧。
 
 $2$ 可以紧靠着坐在 $0$ 的左侧，而 $3$ 和 $4$ 只能选一个坐在 $2$ 的左侧（如果 $4$ 紧靠着坐在 $2$ 的左侧，那么 $3$ 是无法紧靠着坐在 $4$ 的左侧的，反之亦然）。
@@ -33,9 +30,9 @@ $2$ 可以紧靠着坐在 $0$ 的左侧，而 $3$ 和 $4$ 只能选一个坐在 
 
 对于 $1$ 这一侧也同理，将这两条最长链拼起来即为该基环树能组成的圆桌的最大员工数。
 
-对于多个基环大小等于 $2$ 的基环树，每个基环树所对应的链，都可以拼在其余链的末尾，因此我们可以将这些链全部拼成一个圆桌，其大小记作 $\textit{sumListSize}$。
+对于多个基环大小等于 $2$ 的基环树，每个基环树所对应的链，都可以拼在其余链的末尾，因此我们可以将这些链全部拼成一个圆桌，其大小记作 $\textit{sumChainSize}$。
 
-答案即为 $\max(\textit{maxRingSize},\textit{sumListSize})$。
+答案即为 $\max(\textit{maxRingSize},\textit{sumChainSize})$。
 
 ---
 
@@ -50,7 +47,9 @@ $2$ 可以紧靠着坐在 $0$ 的左侧，而 $3$ 和 $4$ 只能选一个坐在 
 
 - 对于大小大于 $2$ 的基环，我们取基环大小的最大值；
 - 对于大小等于 $2$ 的基环，我们可以从基环上的点出发，在反图上找到最大的树枝节点深度。
- 
+
+时间复杂度和空间复杂度均为 $O(n)$。
+
 ```go [sol1-Go]
 func maximumInvitations(favorite []int) int {
 	n := len(favorite)
@@ -106,7 +105,7 @@ func maximumInvitations(favorite []int) int {
 		}
 	}
 
-	maxRingSize, sumListSize := 0, 0
+	maxRingSize, sumChainSize := 0, 0
 	for i, b := range vis {
 		if !b && deg[i] > 0 { // 遍历基环上的点（拓扑排序后入度不为 0）
 			ring = []int{}
@@ -115,16 +114,16 @@ func maximumInvitations(favorite []int) int {
 				v, w := ring[0], ring[1]
 				maxDepth = 0
 				rdfs(v, w, 1)
-				sumListSize += maxDepth // 累加 v 这一侧的最长链的长度
+				sumChainSize += maxDepth // 累加 v 这一侧的最长链的长度
 				maxDepth = 0
 				rdfs(w, v, 1)
-				sumListSize += maxDepth // 累加 w 这一侧的最长链的长度
+				sumChainSize += maxDepth // 累加 w 这一侧的最长链的长度
 			} else {
 				maxRingSize = max(maxRingSize, len(ring)) // 取所有基环的最大值
 			}
 		}
 	}
-	return max(maxRingSize, sumListSize)
+	return max(maxRingSize, sumChainSize)
 }
 
 func max(a, b int) int { if b > a { return b }; return a }
@@ -185,7 +184,7 @@ public:
             }
         };
 
-        int max_ring_size = 0, sum_list_size = 0;
+        int max_ring_size = 0, sum_chian_size = 0;
         for (int i = 0; i < n; ++i) {
             if (!vis[i] && deg[i]) { // 遍历基环上的点（拓扑排序后入度不为 0）
                 ring.resize(0);
@@ -195,16 +194,16 @@ public:
                     int v = ring[0], w = ring[1];
                     max_depth = 0;
                     rdfs(v, w, 1);
-                    sum_list_size += max_depth; // 累加 v 这一侧的最长链的长度
+                    sum_chian_size += max_depth; // 累加 v 这一侧的最长链的长度
                     max_depth = 0;
                     rdfs(w, v, 1);
-                    sum_list_size += max_depth; // 累加 w 这一侧的最长链的长度
+                    sum_chian_size += max_depth; // 累加 w 这一侧的最长链的长度
                 } else {
                     max_ring_size = max(max_ring_size, sz); // 取所有基环的最大值
                 }
             }
         }
-        return max(max_ring_size, sum_list_size);
+        return max(max_ring_size, sum_chian_size);
     }
 };
 ```
@@ -249,7 +248,7 @@ class Solution:
                 if w != fa:
                     rdfs(w, v, depth + 1)
 
-        max_ring_size, sum_list_size = 0, 0
+        max_ring_size, sum_chian_size = 0, 0
         for i, b in enumerate(vis):
             if not b and deg[i]:  # 遍历基环上的点（拓扑排序后入度不为 0）
                 ring = []
@@ -258,12 +257,12 @@ class Solution:
                     v, w = ring
                     max_depth = 0
                     rdfs(v, w, 1)
-                    sum_list_size += max_depth  # 累加 v 这一侧的最长链的长度
+                    sum_chian_size += max_depth  # 累加 v 这一侧的最长链的长度
                     max_depth = 0
                     rdfs(w, v, 1)
-                    sum_list_size += max_depth  # 累加 w 这一侧的最长链的长度
+                    sum_chian_size += max_depth  # 累加 w 这一侧的最长链的长度
                 else:
                     max_ring_size = max(max_ring_size, len(ring))  # 取所有基环的最大值
                     
-        return max(max_ring_size, sum_list_size)
+        return max(max_ring_size, sum_chian_size)
 ```
