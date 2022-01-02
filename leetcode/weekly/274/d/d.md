@@ -40,8 +40,8 @@ $2$ 可以紧靠着坐在 $0$ 的左侧，而 $3$ 和 $4$ 只能选一个坐在 
 
 我们可以通过一次拓扑排序「剪掉」所有树枝，这样就可以将基环和树枝分开，从而简化后续处理流程：
 
-- 如果要遍历基环，可以从入度不为 $0$ 的节点出发，在图上搜索；
-- 如果要遍历树枝，可以以基环与树枝的连接处为起点，顺着反图来搜索树枝，从而将问题转化成一个树形问题。
+- 如果要遍历基环，可以从拓扑排序后入度大于 $0$ 的节点出发，在图上搜索；
+- 如果要遍历树枝，可以以基环与树枝的连接处为起点，顺着反图来搜索树枝（树枝上的节点在拓扑排序后的入度均为 $0$），从而将问题转化成一个树形问题。
 
 对于本题，我们可以遍历所有基环，并按基环大小分类计算：
 
@@ -51,18 +51,16 @@ $2$ 可以紧靠着坐在 $0$ 的左侧，而 $3$ 和 $4$ 只能选一个坐在 
 时间复杂度和空间复杂度均为 $O(n)$。
 
 ```go [sol1-Go]
-func maximumInvitations(favorite []int) int {
-	n := len(favorite)
-	g := make([][]int, n)
-	rg := make([][]int, n) // 图 g 的反图
-	deg := make([]int, n)  // 图 g 上每个节点的入度
-	for v, w := range favorite {
-		g[v] = append(g[v], w)
+func maximumInvitations(g []int) int { // favorite 就是内向基环森林 g
+	n := len(g)
+	rg := make([][]int, n) // g 的反图
+	deg := make([]int, n)  // g 上每个节点的入度
+	for v, w := range g {
 		rg[w] = append(rg[w], v)
 		deg[w]++
 	}
 
-	// 拓扑排序，剪掉图 g 上的所有树枝
+	// 拓扑排序，剪掉 g 上的所有树枝
 	q := []int{}
 	for i, d := range deg {
 		if d == 0 {
@@ -72,55 +70,40 @@ func maximumInvitations(favorite []int) int {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		for _, w := range g[v] {
-			if deg[w]--; deg[w] == 0 {
-				q = append(q, w)
-			}
-		}
-	}
-
-	// 寻找图 g 上的基环
-	ring := []int{}
-	vis := make([]bool, n)
-	var dfs func(int)
-	dfs = func(v int) {
-		vis[v] = true
-		ring = append(ring, v)
-		for _, w := range g[v] {
-			if !vis[w] {
-				dfs(w)
-			}
+		w := g[v] // v 只有一条出边
+		if deg[w]--; deg[w] == 0 {
+			q = append(q, w)
 		}
 	}
 
 	// 通过反图 rg 寻找树枝上最深的链
-	maxDepth := 0
-	var rdfs func(int, int, int)
-	rdfs = func(v, fa, depth int) {
-		maxDepth = max(maxDepth, depth)
+	var rdfs func(int) int
+	rdfs = func(v int) int {
+		maxDepth := 1
 		for _, w := range rg[v] {
-			if w != fa {
-				rdfs(w, v, depth+1)
+			if deg[w] == 0 { // 树枝上的点在拓扑排序后，入度均为 0
+				maxDepth = max(maxDepth, rdfs(w)+1)
 			}
 		}
+		return maxDepth
 	}
 
 	maxRingSize, sumChainSize := 0, 0
-	for i, b := range vis {
-		if !b && deg[i] > 0 { // 遍历基环上的点（拓扑排序后入度不为 0）
-			ring = []int{}
-			dfs(i)
-			if len(ring) == 2 { // 基环大小为 2
-				v, w := ring[0], ring[1]
-				maxDepth = 0
-				rdfs(v, w, 1)
-				sumChainSize += maxDepth // 累加 v 这一侧的最长链的长度
-				maxDepth = 0
-				rdfs(w, v, 1)
-				sumChainSize += maxDepth // 累加 w 这一侧的最长链的长度
-			} else {
-				maxRingSize = max(maxRingSize, len(ring)) // 取所有基环的最大值
-			}
+	for i, d := range deg {
+		if d <= 0 {
+			continue
+		}
+		// 遍历基环上的点（拓扑排序后入度大于 0）
+		deg[i] = -1
+		ringSize := 1
+		for v := g[i]; v != i; v = g[v] {
+			deg[v] = -1 // 将基环上的点的入度标记为 -1，避免重复访问
+			ringSize++
+		}
+		if ringSize == 2 { // 基环大小为 2
+			sumChainSize += rdfs(i) + rdfs(g[i]) // 累加两条最长链的长度
+		} else {
+			maxRingSize = max(maxRingSize, ringSize) // 取所有基环的最大值
 		}
 	}
 	return max(maxRingSize, sumChainSize)
@@ -132,18 +115,17 @@ func max(a, b int) int { if b > a { return b }; return a }
 ```C++ [sol1-C++]
 class Solution {
 public:
-    int maximumInvitations(vector<int> &favorite) {
-        int n = favorite.size();
-        vector<vector<int>> g(n), rg(n); // rg 为图 g 的反图
-        vector<int> deg(n); // 图 g 上每个节点的入度
+    int maximumInvitations(vector<int> &g) { // favorite 就是内向基环森林 g
+        int n = g.size();
+        vector<vector<int>> rg(n); // g 的反图
+        vector<int> deg(n); // g 上每个节点的入度
         for (int v = 0; v < n; ++v) {
-            int w = favorite[v];
-            g[v].emplace_back(w);
+            int w = g[v];
             rg[w].emplace_back(v);
             ++deg[w];
         }
 
-        // 拓扑排序，剪掉图 g 上的所有树枝
+        // 拓扑排序，剪掉 g 上的所有树枝
         queue<int> q;
         for (int i = 0; i < n; ++i) {
             if (deg[i] == 0) {
@@ -153,116 +135,229 @@ public:
         while (!q.empty()) {
             int v = q.front();
             q.pop();
-            for (int w : g[v]) {
-                if (--deg[w] == 0) {
-                    q.emplace(w);
-                }
+            int w = g[v]; // v 只有一条出边
+            if (--deg[w] == 0) {
+                q.emplace(w);
             }
         }
-
-        // 寻找图 g 上的基环
-        vector<int> ring;
-        vector<int> vis(n);
-        function<void(int)> dfs = [&](int v) {
-            vis[v] = true;
-            ring.emplace_back(v);
-            for (int w: g[v]) {
-                if (!vis[w]) {
-                    dfs(w);
-                }
-            }
-        };
 
         // 通过反图 rg 寻找树枝上最深的链
-        int max_depth = 0;
-        function<void(int, int, int)> rdfs = [&](int v, int fa, int depth) {
-            max_depth = max(max_depth, depth);
+        function<int(int)> rdfs = [&](int v) -> int {
+            int max_depth = 1;
             for (int w: rg[v]) {
-                if (w != fa) {
-                    rdfs(w, v, depth + 1);
+                if (deg[w] == 0) { // 树枝上的点在拓扑排序后，入度均为 0
+                    max_depth = max(max_depth, rdfs(w) + 1);
                 }
             }
+            return max_depth;
         };
 
-        int max_ring_size = 0, sum_chian_size = 0;
+        int max_ring_size = 0, sum_chain_size = 0;
         for (int i = 0; i < n; ++i) {
-            if (!vis[i] && deg[i]) { // 遍历基环上的点（拓扑排序后入度不为 0）
-                ring.resize(0);
-                dfs(i);
-                int sz = ring.size();
-                if (sz == 2) { // 基环大小为 2
-                    int v = ring[0], w = ring[1];
-                    max_depth = 0;
-                    rdfs(v, w, 1);
-                    sum_chian_size += max_depth; // 累加 v 这一侧的最长链的长度
-                    max_depth = 0;
-                    rdfs(w, v, 1);
-                    sum_chian_size += max_depth; // 累加 w 这一侧的最长链的长度
-                } else {
-                    max_ring_size = max(max_ring_size, sz); // 取所有基环的最大值
-                }
+            if (deg[i] <= 0) {
+                continue;
+            }
+            // 遍历基环上的点（拓扑排序后入度大于 0）
+            deg[i] = -1;
+            int ring_size = 1;
+            for (int v = g[i]; v != i; v = g[v]) {
+                deg[v] = -1; // 将基环上的点的入度标记为 -1，避免重复访问
+                ++ring_size;
+            }
+            if (ring_size == 2) { // 基环大小为 2
+                sum_chain_size += rdfs(i) + rdfs(g[i]); // 累加两条最长链的长度
+            } else {
+                max_ring_size = max(max_ring_size, ring_size); // 取所有基环的最大值
             }
         }
-        return max(max_ring_size, sum_chian_size);
+        return max(max_ring_size, sum_chain_size);
     }
 };
 ```
 
-```python [sol1-Python]
+```python [sol1-Python3]
 class Solution:
-    def maximumInvitations(self, favorite: List[int]) -> int:
-        n = len(favorite)
-        g = [[] for _ in range(n)]
-        rg = [[] for _ in range(n)]  # 图 g 的反图
-        deg = [0] * n  # 图 g 上每个节点的入度
-        for v, w in enumerate(favorite):
-            g[v].append(w)
+    def maximumInvitations(self, g: List[int]) -> int:  # favorite 就是内向基环森林 g
+        n = len(g)
+        rg = [[] for _ in range(n)]  # g 的反图
+        deg = [0] * n  # g 上每个节点的入度
+        for v, w in enumerate(g):
             rg[w].append(v)
             deg[w] += 1
 
-        # 拓扑排序，剪掉图 g 上的所有树枝
+        # 拓扑排序，剪掉 g 上的所有树枝
         q = deque(i for i, d in enumerate(deg) if d == 0)
         while q:
             v = q.popleft()
-            for w in g[v]:
-                deg[w] -= 1
-                if deg[w] == 0:
-                    q.append(w)
-
-        # 寻找图 g 上的基环
-        ring = []
-        vis = [False] * n
-        def dfs(v: int):
-            vis[v] = True
-            ring.append(v)
-            for w in g[v]:
-                if not vis[w]:
-                    dfs(w)
+            w = g[v]  # v 只有一条出边
+            deg[w] -= 1
+            if deg[w] == 0:
+                q.append(w)
 
         # 通过反图 rg 寻找树枝上最深的链
-        max_depth = 0
-        def rdfs(v: int, fa: int, depth: int):
-            nonlocal max_depth
-            max_depth = max(max_depth, depth)
+        def rdfs(v: int) -> int:
+            max_depth = 1
             for w in rg[v]:
-                if w != fa:
-                    rdfs(w, v, depth + 1)
+                if deg[w] == 0:  # 树枝上的点在拓扑排序后，入度均为 0
+                    max_depth = max(max_depth, rdfs(w) + 1)
+            return max_depth
 
-        max_ring_size, sum_chian_size = 0, 0
-        for i, b in enumerate(vis):
-            if not b and deg[i]:  # 遍历基环上的点（拓扑排序后入度不为 0）
-                ring = []
-                dfs(i)
-                if len(ring) == 2:  # 基环大小为 2
-                    v, w = ring
-                    max_depth = 0
-                    rdfs(v, w, 1)
-                    sum_chian_size += max_depth  # 累加 v 这一侧的最长链的长度
-                    max_depth = 0
-                    rdfs(w, v, 1)
-                    sum_chian_size += max_depth  # 累加 w 这一侧的最长链的长度
-                else:
-                    max_ring_size = max(max_ring_size, len(ring))  # 取所有基环的最大值
-                    
-        return max(max_ring_size, sum_chian_size)
+        max_ring_size, sum_chain_size = 0, 0
+        for i, d in enumerate(deg):
+            if d <= 0:
+                continue
+            # 遍历基环上的点（拓扑排序后入度大于 0）
+            deg[i] = -1
+            ring_size = 1
+            v = g[i]
+            while v != i:
+                deg[v] = -1  # 将基环上的点的入度标记为 -1，避免重复访问
+                ring_size += 1
+                v = g[v]
+            if ring_size == 2:  # 基环大小为 2
+                sum_chain_size += rdfs(i) + rdfs(g[i])  # 累加两条最长链的长度
+            else:
+                max_ring_size = max(max_ring_size, ring_size)  # 取所有基环的最大值
+        return max(max_ring_size, sum_chain_size)
+```
+
+[@Class_](/u/class_/) 指出可以在拓扑排序的同时计算出最长链的长度，这样就不需要建反图和在反图上找最长链了，从而节省不少时间、空间和代码量：
+
+```go [sol2-Go]
+func maximumInvitations(g []int) int { // favorite 就是内向基环森林 g
+	n := len(g)
+	deg := make([]int, n) // g 上每个节点的入度
+	for _, w := range g {
+		deg[w]++
+	}
+
+	maxDepth := make([]int, n)
+	q := []int{}
+	for i, d := range deg {
+		if d == 0 {
+			q = append(q, i)
+		}
+	}
+	for len(q) > 0 { // 拓扑排序，剪掉 g 上的所有树枝
+		v := q[0]
+		q = q[1:]
+		maxDepth[v]++
+		w := g[v] // v 只有一条出边
+		maxDepth[w] = max(maxDepth[w], maxDepth[v])
+		if deg[w]--; deg[w] == 0 {
+			q = append(q, w)
+		}
+	}
+
+	maxRingSize, sumChainSize := 0, 0
+	for i, d := range deg {
+		if d == 0 {
+			continue
+		}
+		// 遍历基环上的点（拓扑排序后入度大于 0）
+		deg[i] = 0
+		ringSize := 1
+		for v := g[i]; v != i; v = g[v] {
+			deg[v] = 0 // 将基环上的点的入度标记为 0，避免重复访问
+			ringSize++
+		}
+		if ringSize == 2 { // 基环大小为 2
+			sumChainSize += maxDepth[i] + maxDepth[g[i]] + 2 // 累加两条最长链的长度
+		} else {
+			maxRingSize = max(maxRingSize, ringSize) // 取所有基环的最大值
+		}
+	}
+	return max(maxRingSize, sumChainSize)
+}
+
+func max(a, b int) int { if b > a { return b }; return a }
+```
+
+```C++ [sol2-C++]
+class Solution {
+public:
+    int maximumInvitations(vector<int> &g) { // favorite 就是内向基环森林 g
+        int n = g.size();
+        vector<int> deg(n); // g 上每个节点的入度
+        for (int w: g) {
+            ++deg[w];
+        }
+
+        vector<int> max_depth(n);
+        queue<int> q;
+        for (int i = 0; i < n; ++i) {
+            if (deg[i] == 0) {
+                q.emplace(i);
+            }
+        }
+        while (!q.empty()) {  // 拓扑排序，剪掉 g 上的所有树枝
+            int v = q.front();
+            q.pop();
+            ++max_depth[v];
+            int w = g[v]; // v 只有一条出边
+            max_depth[w] = max(max_depth[w], max_depth[v]);
+            if (--deg[w] == 0) {
+                q.emplace(w);
+            }
+        }
+
+        int max_ring_size = 0, sum_chain_size = 0;
+        for (int i = 0; i < n; ++i) {
+            if (deg[i] == 0) {
+                continue;
+            }
+            // 遍历基环上的点（拓扑排序后入度大于 0）
+            deg[i] = 0;
+            int ring_size = 1;
+            for (int v = g[i]; v != i; v = g[v]) {
+                deg[v] = 0; // 将基环上的点的入度标记为 0，避免重复访问
+                ++ring_size;
+            }
+            if (ring_size == 2) { // 基环大小为 2
+                sum_chain_size += max_depth[i] + max_depth[g[i]] + 2; // 累加两条最长链的长度
+            } else {
+                max_ring_size = max(max_ring_size, ring_size); // 取所有基环的最大值
+            }
+        }
+        return max(max_ring_size, sum_chain_size);
+    }
+};
+```
+
+```Python [sol2-Python3]
+class Solution:
+    def maximumInvitations(self, g: List[int]) -> int:  # favorite 就是内向基环森林 g
+        n = len(g)
+        deg = [0] * n  # g 上每个节点的入度
+        for w in g:
+            deg[w] += 1
+
+        max_depth = [0] * n
+        q = deque(i for i, d in enumerate(deg) if d == 0)
+        while q:  # 拓扑排序，剪掉 g 上的所有树枝
+            v = q.popleft()
+            max_depth[v] += 1
+            w = g[v]  # v 只有一条出边
+            max_depth[w] = max(max_depth[w], max_depth[v])
+            deg[w] -= 1
+            if deg[w] == 0:
+                q.append(w)
+
+        max_ring_size, sum_chain_size = 0, 0
+        for i, d in enumerate(deg):
+            if d == 0:
+                continue
+            # 遍历基环上的点（拓扑排序后入度大于 0）
+            deg[i] = 0
+            ring_size = 1
+            v = g[i]
+            while v != i:
+                deg[v] = 0  # 将基环上的点的入度标记为 0，避免重复访问
+                ring_size += 1
+                v = g[v]
+            if ring_size == 2:  # 基环大小为 2
+                sum_chain_size += max_depth[i] + max_depth[g[i]] + 2  # 累加两条最长链的长度
+            else:
+                max_ring_size = max(max_ring_size, ring_size)  # 取所有基环的最大值
+        return max(max_ring_size, sum_chain_size)
 ```
