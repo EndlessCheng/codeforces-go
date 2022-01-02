@@ -211,23 +211,23 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// https://codeforces.com/problemset/problem/698/B
 		// https://codeforces.com/problemset/problem/1547/G
 		// https://codeforces.com/problemset/problem/936/B
-		vis := make([]int8, n)
+		color := make([]int8, n)
 		var f func(int)
 		f = func(v int) {
-			vis[v] = 1
+			color[v] = 1
 			for _, w := range g[v] {
-				if tp := vis[w]; tp == 0 { // 树边
+				if c := color[w]; c == 0 { // 未访问过，即 DFS 树上的树边
 					f(w)
-				} else if tp == 1 { // 后向边，说明有环
+				} else if c == 1 { // 后向边，说明有环
 
 				} else { // 前向边或横向边，说明有多条路径可以到 w
 
 				}
 			}
-			vis[v] = 2
+			color[v] = 2
 		}
-		for i, t := range vis {
-			if t == 0 {
+		for i, c := range color {
+			if c == 0 {
 				f(i)
 			}
 		}
@@ -2882,19 +2882,29 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // 基环树（环套树），英文名叫 pseudotree，基环树森林叫 pseudoforest
 // https://en.wikipedia.org/wiki/Pseudoforest
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
+// 基环树的讲解可以看一下我的这篇题解 https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
+//
+// LC2127/周赛274D https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // 拆点 https://codeforces.com/problemset/problem/1200/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
-func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
-	// 输入：g 为内向基环树，rg 为反图（外向基环树），inDeg 为 g 的入度，在读入时计算出
+func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
+	rg := make([][]int, len(g)) // g 的反图（外向基环树）
+	deg := make([]int, len(g))  // g 上每个节点的入度
+	for v, w := range g {
+		rg[w] = append(rg[w], v)
+		deg[w]++
+	}
 
-	// 拓扑排序，之后 inDeg 为 1 的点必定在基环上
+	// 拓扑排序，剪掉 g 上的所有树枝
+	// 拓扑排序后 deg 值为 1 的点必定在基环上，为 0 的点必定在树枝上
+	// 注：拓扑排序时还可以做 DP，比如给树枝上的每个点标记反向深度
 	q := []int{}
-	for i, d := range inDeg {
+	for i, d := range deg {
 		if d == 0 {
 			q = append(q, i)
 		}
@@ -2902,40 +2912,43 @@ func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		w := g[v]
-		if inDeg[w]--; inDeg[w] == 0 {
+		//dp[v]++
+		w := g[v] // v 只有一条出边
+		//dp[w] = max(dp[w], dp[v])
+		if deg[w]--; deg[w] == 0 {
 			q = append(q, w)
 		}
 	}
 
 	// 在反图上遍历树枝
-	var dfs func(int)
-	dfs = func(v int) {
+	var rdfs func(int)
+	rdfs = func(v int) {
+		// ...
+
 		for _, w := range rg[v] {
-			if inDeg[w] == 0 {
-				dfs(w)
+			if deg[w] == 0 { // 树枝上的点在拓扑排序后，入度均为 0
+
+				rdfs(w)
+
 			}
-		}
-	}
-	// 遍历基环
-	for root, d := range inDeg {
-		if d > 0 {
-			dfs(root)
 		}
 	}
 
-	// EXTRA: 求基环
-	var cycle []int
-	for i, d := range inDeg {
-		if d > 0 {
-			for v := i; ; v = g[v] {
-				cycle = append(cycle, v)
-				if g[v] == i {
-					break
-				}
-			}
-			break
+	for i, d := range deg {
+		if d <= 0 {
+			continue
 		}
+		// 遍历基环上的点（拓扑排序后入度大于 0）
+		ring := []int{}
+		for v := i; ; v = g[v] {
+			deg[v] = -1 // 将基环上的点的入度标记为 -1，避免重复访问
+			ring = append(ring, v)
+			if g[v] == i {
+				break
+			}
+		}
+		// do ring ...
+
 	}
 
 	{
@@ -3843,6 +3856,7 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // 等价于在补图上找最大团 maximal cliques (MC)
 // https://en.wikipedia.org/wiki/Clique_problem
 // 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+// todo 剪枝写法
 // https://codeforces.com/problemset/problem/1105/E
 func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图
