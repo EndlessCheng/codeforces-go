@@ -15,7 +15,7 @@ import (
 
 todo NOI 一轮复习 II：字符串 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-ii-zi-fu-chuan
 金策 字符串算法选讲 https://www.bilibili.com/video/BV11K4y1p7a5 https://www.bilibili.com/video/BV19541177KU
-    PDF 见 misc
+    PDF 见 https://github.com/EndlessCheng/cp-pdf
 
 TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.com/contest/873/problem/F
 
@@ -387,7 +387,7 @@ func stringCollection() {
 	CF 上的课程 https://codeforces.com/edu/course/2
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=string+suffix+structures
 
-	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 在 misc 文件夹下）
+	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 见 https://github.com/EndlessCheng/cp-pdf）
 	单个字符串
 		模板题 https://www.luogu.com.cn/problem/P3809
 		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/

@@ -3116,7 +3116,7 @@ http://poj.org/problem?id=3204 https://www.acwing.com/problem/content/2238/
 
 https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
 最小割模型汇总 https://blog.csdn.net/qq_35649707/article/details/77482691
-下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 在 misc 文件夹下）
+下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 见 https://github.com/EndlessCheng/cp-pdf）
 
 求出最大流后，从源点出发在残余网络上 DFS，标记所有能够到达的点。遍历原边集 edges，若其中一端有标记，另一端没有标记，则这条边为最小割上的边
 
