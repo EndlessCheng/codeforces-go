@@ -211,23 +211,23 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// https://codeforces.com/problemset/problem/698/B
 		// https://codeforces.com/problemset/problem/1547/G
 		// https://codeforces.com/problemset/problem/936/B
-		vis := make([]int8, n)
+		color := make([]int8, n)
 		var f func(int)
 		f = func(v int) {
-			vis[v] = 1
+			color[v] = 1
 			for _, w := range g[v] {
-				if tp := vis[w]; tp == 0 { // 树边
+				if c := color[w]; c == 0 { // 未访问过，即 DFS 树上的树边
 					f(w)
-				} else if tp == 1 { // 后向边，说明有环
+				} else if c == 1 { // 后向边，说明有环
 
 				} else { // 前向边或横向边，说明有多条路径可以到 w
 
 				}
 			}
-			vis[v] = 2
+			color[v] = 2
 		}
-		for i, t := range vis {
-			if t == 0 {
+		for i, c := range color {
+			if c == 0 {
 				f(i)
 			}
 		}
@@ -653,6 +653,7 @@ func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
 // https://oi-wiki.org/graph/cut/#_1
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
+// LC928 https://leetcode-cn.com/problems/minimize-malware-spread-ii/
 func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -712,6 +713,7 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 与 MST 结合 https://codeforces.com/problemset/problem/160/D
 // 与最短路结合 https://codeforces.com/problemset/problem/567/E
 // https://codeforces.com/problemset/problem/118/E
+// todo 构造 https://codeforces.com/problemset/problem/550/D
 func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	min := func(a, b int) int {
 		if a < b {
@@ -985,7 +987,8 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
-// 建模题 https://www.luogu.com.cn/problem/P4644
+// 建模 https://www.luogu.com.cn/problem/P4644
+// 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
@@ -1193,6 +1196,8 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
+// https://codeforces.com/problemset/problem/877/D（也可以 BFS）
+// https://codeforces.com/problemset/problem/1063/B
 func (*graph) bfs01(in io.Reader, n, m, st int) []int {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
@@ -2176,6 +2181,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // 染色的技巧 https://codeforces.com/problemset/problem/553/C
 //          https://codeforces.com/problemset/problem/662/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
+// 与分组背包结合 https://codeforces.com/problemset/problem/1354/E
 func (*graph) isBipartite(n int, g [][]int) bool {
 	colors := make([]int8, n) // 0 表示未访问该节点
 	var f func(int, int8) bool
@@ -2281,8 +2287,10 @@ DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰�
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3386
+// LCP04 https://leetcode-cn.com/problems/broken-board-dominoes/
 //【网络流 24 题】飞行员配对方案 https://loj.ac/p/6000 https://www.luogu.com.cn/problem/P2756
 //【网络流 24 题】骑士共存（这题 Dinic 更快）https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
+// todo https://codeforces.com/contest/1404/problem/E
 func (*graph) maxBipartiteMatchingHungarian(g [][]int) (match []int, cnt int) {
 	match = make([]int, len(g))
 	for i := range match {
@@ -2336,7 +2344,7 @@ func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []i
 		return false
 	}
 	for v := range g {
-		used = make([]bool, nl)
+		used = make([]bool, nl) // 每次 DFS 之前都要重置 used
 		if f(v) {
 			cnt++ // +=2
 		}
@@ -2874,19 +2882,29 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // 基环树（环套树），英文名叫 pseudotree，基环树森林叫 pseudoforest
 // https://en.wikipedia.org/wiki/Pseudoforest
 // 对于内向基环树，由于每个点的出度均为一，可以用 []int 来表示图
+// 基环树的讲解可以看一下我的这篇题解 https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
+//
+// LC2127/周赛274D https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // 拆点 https://codeforces.com/problemset/problem/1200/F
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
-func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
-	// 输入：g 为内向基环树，rg 为反图（外向基环树），inDeg 为 g 的入度，在读入时计算出
+func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
+	rg := make([][]int, len(g)) // g 的反图（外向基环树）
+	deg := make([]int, len(g))  // g 上每个节点的入度
+	for v, w := range g {
+		rg[w] = append(rg[w], v)
+		deg[w]++
+	}
 
-	// 拓扑排序，之后 inDeg 为 1 的点必定在基环上
+	// 拓扑排序，剪掉 g 上的所有树枝
+	// 拓扑排序后 deg 值为 1 的点必定在基环上，为 0 的点必定在树枝上
+	// 注：拓扑排序时还可以做 DP，比如给树枝上的每个点标记反向深度
 	q := []int{}
-	for i, d := range inDeg {
+	for i, d := range deg {
 		if d == 0 {
 			q = append(q, i)
 		}
@@ -2894,40 +2912,44 @@ func (*graph) pseudotree(n int, g []int, rg [][]int, inDeg []int) {
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		w := g[v]
-		if inDeg[w]--; inDeg[w] == 0 {
+		//dp[v]++
+		w := g[v] // v 只有一条出边
+		//dp[w] = max(dp[w], dp[v])
+		if deg[w]--; deg[w] == 0 {
 			q = append(q, w)
 		}
 	}
 
 	// 在反图上遍历树枝
-	var dfs func(int)
-	dfs = func(v int) {
+	var rdfs func(int)
+	rdfs = func(v int) {
+		// ...
+
 		for _, w := range rg[v] {
-			if inDeg[w] == 0 {
-				dfs(w)
+			if deg[w] == 0 { // 树枝上的点在拓扑排序后，入度均为 0
+
+				rdfs(w)
+
 			}
-		}
-	}
-	// 遍历基环
-	for root, d := range inDeg {
-		if d > 0 {
-			dfs(root)
 		}
 	}
 
-	// EXTRA: 求基环
-	var cycle []int
-	for i, d := range inDeg {
-		if d > 0 {
-			for v := i; ; v = g[v] {
-				cycle = append(cycle, v)
-				if g[v] == i {
-					break
-				}
-			}
-			break
+	for i, d := range deg {
+		if d <= 0 {
+			continue
 		}
+		// 遍历基环上的点（拓扑排序后入度大于 0）
+		ring := []int{}
+		for v := i; ; v = g[v] {
+			deg[v] = -1 // 将基环上的点的入度标记为 -1，避免重复访问
+			ring = append(ring, v)
+			if g[v] == i {
+				break
+			}
+		}
+		// do ring ...
+		// 特别注意基环大小小于 3 的特殊情况
+
 	}
 
 	{
@@ -3094,7 +3116,7 @@ http://poj.org/problem?id=3204 https://www.acwing.com/problem/content/2238/
 
 https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
 最小割模型汇总 https://blog.csdn.net/qq_35649707/article/details/77482691
-下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 在 misc 文件夹下）
+下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 见 https://github.com/EndlessCheng/cp-pdf）
 
 求出最大流后，从源点出发在残余网络上 DFS，标记所有能够到达的点。遍历原边集 edges，若其中一端有标记，另一端没有标记，则这条边为最小割上的边
 
@@ -3153,6 +3175,7 @@ https://en.wikipedia.org/wiki/Assignment_problem
 https://en.wikipedia.org/wiki/Network_simplex_algorithm
 
 NOTE: 对于修改容量的情况，由于 EK 是基于最短路的贪心算法，不能像最大流那样直接在残余网络上继续跑，必须重新建图重新跑 EK
+todo https://codeforces.com/problemset/problem/362/E
 
 建模·转换
 从源点连容量为 1 费用为 0 的边到集合 A 中各点
@@ -3834,6 +3857,7 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // 等价于在补图上找最大团 maximal cliques (MC)
 // https://en.wikipedia.org/wiki/Clique_problem
 // 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+// todo 剪枝写法
 // https://codeforces.com/problemset/problem/1105/E
 func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图

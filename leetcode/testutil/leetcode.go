@@ -95,17 +95,17 @@ func parseRawArg(tp reflect.Type, rawData string) (v reflect.Value, err error) {
 		}
 		v = reflect.ValueOf(uint(i))
 	case reflect.Int64:
-		i, er := strconv.Atoi(rawData)
+		i, er := strconv.ParseInt(rawData, 10, 64)
 		if er != nil {
 			return reflect.Value{}, invalidErr
 		}
-		v = reflect.ValueOf(int64(i))
+		v = reflect.ValueOf(i)
 	case reflect.Uint64:
-		i, er := strconv.Atoi(rawData)
+		i, er := strconv.ParseUint(rawData, 10, 64)
 		if er != nil {
 			return reflect.Value{}, invalidErr
 		}
-		v = reflect.ValueOf(uint64(i))
+		v = reflect.ValueOf(i)
 	case reflect.Float64:
 		f, er := strconv.ParseFloat(rawData, 64)
 		if er != nil {

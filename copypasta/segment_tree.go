@@ -159,7 +159,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 		}
 	}
 	if m < r {
-		if pos := t.queryFirstLessPosInRange(o<<1|1, l, r, v); pos > 0 {
+		if pos := t.queryFirstLessPosInRange(o<<1|1, l, r, v); pos > 0 { // 注：这里 pos > 0 的判断可以省略，因为 pos == 0 时最后仍然会返回 0
 			return pos
 		}
 	}

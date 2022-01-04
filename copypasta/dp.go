@@ -1060,9 +1060,30 @@ func dpCollections() {
 			for j := maxW; j >= 0; j-- {
 				for _, it := range g {
 					if v, w := it.v, it.w; w <= j {
-						dp[j] = max(dp[j], dp[j-w]+v)
+						dp[j] = max(dp[j], dp[j-w]+v) // 如果 it.w 可能为 0 则需要用 dp[2][] 来滚动（或者保证每组至多一个 0 且 0 在该组最前面）
 					}
 				}
+			}
+		}
+		return dp[maxW]
+	}
+
+	// 分组背包·每组恰好选一个且恰好装满背包
+	// 允许物品重量为 0
+	// 与二分图染色结合 https://codeforces.com/problemset/problem/1354/E
+	groupKnapsackFill := func(groups [][]int, maxW int) bool {
+		dp := make([]bool, maxW+1) // dp[i][j] 表示能否从前 i 组物品中选出重量恰好为 j 的，且每组都恰好选一个物品
+		dp[0] = true
+		for _, g := range groups {
+		next:
+			for j := maxW; j >= 0; j-- {
+				for _, w := range g {
+					if w <= j && dp[j-w] {
+						dp[j] = true
+						continue next
+					}
+				}
+				dp[j] = false // 由于我们是滚动数组的写法，dp[i][j] 无法满足时要标记成 false
 			}
 		}
 		return dp[maxW]
@@ -1212,12 +1233,17 @@ func dpCollections() {
 
 	/* 概率 DP / 期望 DP
 	https://oi-wiki.org/dp/probability/
+	https://en.wikipedia.org/wiki/Probability
+	https://en.wikipedia.org/wiki/Expected_value
 	https://en.wikipedia.org/wiki/Optional_stopping_theorem
 	todo https://codeforces.com/blog/entry/62690
 	     https://codeforces.com/blog/entry/62792
 	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
 	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
+
+	一个比较有用的公式（应用：CF1623D）
+	E(x) = ∑i*P(x=i) = ∑P(x>=i)
 
 	概率
 	https://codeforces.com/problemset/problem/678/E
@@ -1226,6 +1252,7 @@ func dpCollections() {
 	https://codeforces.com/problemset/problem/235/B
 	https://codeforces.com/problemset/problem/908/D
 	https://codeforces.com/problemset/problem/1097/D
+	https://codeforces.com/problemset/problem/1623/D
 	*/
 
 	/* 状压 DP
@@ -2411,7 +2438,7 @@ func dpCollections() {
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary,
-		groupKnapsack,
+		groupKnapsack, groupKnapsackFill,
 		treeKnapsack,
 
 		mergeStones, countPalindromes,

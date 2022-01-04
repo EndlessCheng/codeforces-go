@@ -36,7 +36,7 @@ Precedence    Operator
 
 一些子集的枚举算法见 search.go
 S∪{i}: S|1<<i
-S\{i}:  S&^(1<<i)
+S\{i}: S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 检测是否只有一个 1：x&(x-1) == 0
 
@@ -52,6 +52,11 @@ https://oeis.org/A048004 最长连续 1 为 k 的长为 n 的二进制串的个�
 https://oeis.org/A047778 Concatenation of first n numbers in binary, converted to base 10
 相关题目：https://leetcode-cn.com/contest/weekly-contest-218/problems/concatenation-of-consecutive-binary-numbers/
 钱珀瑙恩数 Champernowne constant https://en.wikipedia.org/wiki/Champernowne_constant
+
+https://oeis.org/A072339
+Any number n can be written (in two ways, one with m even and one with m odd) in the form n = 2^k_1 - 2^k_2 + 2^k_3 - ... + 2^k_m
+where the signs alternate and k_1 > k_2 > k_3 > ... >k_m >= 0; sequence gives minimal value of m
+https://codeforces.com/problemset/problem/1617/E
 
 异或和相关
 https://oeis.org/A003987 异或矩阵
@@ -162,6 +167,7 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 // Bitset
 // 参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
 // 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
+// 应用：https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w

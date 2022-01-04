@@ -246,6 +246,8 @@ func (*tree) minPathCover(g [][]int) int {
 // https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 // 转换的好题 https://codeforces.com/problemset/problem/734/E
+// 转换成求部分直径 https://codeforces.com/problemset/problem/1617/E https://oeis.org/A072339
+// 必须边 https://www.luogu.com.cn/problem/P3304 https://www.acwing.com/problem/content/description/391/
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)
@@ -645,11 +647,13 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
+// https://codeforces.com/problemset/problem/33/D
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 // 树上倍增应用（静态路径查询）：代码见下面的 EXTRA 部分
 //    维护最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
 //       变体 https://codeforces.com/problemset/problem/733/F
-//    维护最大值（与 MST 结合）LC1697 的在线做法 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+//    维护最大值（与 MST 结合）LC1697 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
+//    维护最大值（与 MST 结合）LC1724（上面这题的在线版）https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths-ii/
 //    维护最大值和严格次大值（严格次小 MST）：见 graph.go 中的 strictlySecondMST
 //    维护前十大（点权）https://codeforces.com/problemset/problem/587/C
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E

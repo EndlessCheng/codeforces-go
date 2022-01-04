@@ -22,6 +22,7 @@ import (
 
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
+https://codeforces.com/problemset/problem/1207/F
 https://codeforces.com/problemset/problem/1468/M 或四元环
 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 */
