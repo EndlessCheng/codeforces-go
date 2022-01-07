@@ -9,11 +9,11 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-type hp struct{ sort.IntSlice }
+type hp65 struct{ sort.IntSlice }
 
-func (h hp) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (hp) Pop() (_ interface{})  { return }
+func (h hp65) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] }
+func (h *hp65) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (hp65) Pop() (_ interface{})  { return }
 
 func CF965E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
@@ -23,7 +23,7 @@ func CF965E(_r io.Reader, out io.Writer) {
 	}
 
 	root := &node{end: true}
-	hs := map[*node]*hp{root: {}}
+	hs := map[*node]*hp65{root: {}}
 	var n, ans int
 	var s []byte
 	for Fscan(in, &n); n > 0; n-- {
@@ -34,7 +34,7 @@ func CF965E(_r io.Reader, out io.Writer) {
 			b -= 'a'
 			if o.son[b] == nil {
 				o.son[b] = &node{}
-				hs[o.son[b]] = &hp{}
+				hs[o.son[b]] = &hp65{}
 			}
 			o = o.son[b]
 		}
