@@ -17,6 +17,10 @@ func NewOrderedSetWithSpace(space int) OrderedSet {
 	return OrderedSet{make(map[interface{}]*list.Element, space), list.New()}
 }
 
+func (s *OrderedSet) Len() int {
+	return len(s.set)
+}
+
 // 添加元素 v
 func (s *OrderedSet) Store(v interface{}) {
 	s.set[v] = s.lst.PushBack(v)
