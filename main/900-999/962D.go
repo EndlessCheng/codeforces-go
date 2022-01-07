@@ -2,9 +2,9 @@ package main
 
 import (
 	"bufio"
+	"container/list"
 	. "fmt"
 	"io"
-	"sort"
 )
 
 // 堆的写法见 https://codeforces.com/problemset/submission/962/141866417
@@ -18,23 +18,20 @@ func CF962D(_r io.Reader, _w io.Writer) {
 	var n int
 	var v int64
 	Fscan(in, &n)
-	pos := map[int64]int{}
+	pos := make(map[int64]*list.Element, n)
+	lst := list.New()
 	for i := 1; i <= n; i++ {
 		Fscan(in, &v)
-		for pos[v] > 0 {
+		for pos[v] != nil {
+			lst.Remove(pos[v])
 			delete(pos, v)
 			v *= 2
 		}
-		pos[v] = i
+		pos[v] = lst.PushBack(v) // 这样我们可以按照插入的顺序输出
 	}
-	a := make([]int64, 0, len(pos))
-	for v := range pos {
-		a = append(a, v)
-	}
-	sort.Slice(a, func(i, j int) bool { return pos[a[i]] < pos[a[j]] })
-	Fprintln(out, len(a))
-	for _, v := range a {
-		Fprint(out, v, " ")
+	Fprintln(out, len(pos))
+	for o := lst.Front(); o != nil; o = o.Next() {
+		Fprint(out, o.Value, " ")
 	}
 }
 
