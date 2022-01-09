@@ -250,6 +250,8 @@
   - [杂项A common.go](/copypasta/common.go)
     - 算法思路整理
     - 前缀和
+    - 二维前缀和
+    - 二维差分
     - 离散化
   - [杂项B misc.go](/copypasta/misc.go)
 - [快读模板 io.go](/copypasta/io.go)

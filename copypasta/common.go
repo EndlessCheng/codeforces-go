@@ -552,8 +552,43 @@ func commonCollection() {
 	}
 
 	// 二维差分
-	// todo https://blog.csdn.net/weixin_43914593/article/details/113782108
-	//      https://www.luogu.com.cn/problem/P3397
+	// https://blog.csdn.net/weixin_43914593/article/details/113782108
+	// https://www.luogu.com.cn/problem/P3397
+	// https://leetcode-cn.com/problems/stamping-the-grid/（也可以不同差分）
+	diff2D := func(n, m int) {
+		diff := make([][]int, n+1)
+		for i := range diff {
+			diff[i] = make([]int, m+1)
+		}
+		// 将区域 r1<=r<=r2 && c1<=c<=c2 上的数都加上 x
+		update := func(r1, c1, r2, c2, x int) {
+			r2++
+			c2++
+			diff[r1][c1] += x
+			diff[r1][c2] -= x
+			diff[r2][c1] -= x
+			diff[r2][c2] += x
+		}
+		// 还原二维差分矩阵对应的计数矩阵
+		restore := func() [][]int {
+			ori := make([][]int, n+1)
+			ori[0] = make([]int, m+1)
+			for i, row := range diff[:n] {
+				ori[i+1] = make([]int, m+1)
+				for j, v := range row[:m] {
+					ori[i+1][j+1] = ori[i+1][j] + ori[i][j+1] - ori[i][j] + v
+				}
+			}
+			// 保留 n*m 的计数矩阵
+			ori = ori[1:]
+			for i, row := range ori {
+				ori[i] = row[1:]
+			}
+			return ori
+		}
+
+		_, _ = update, restore
+	}
 
 	reverse := func(a []byte) []byte {
 		n := len(a)
@@ -1079,6 +1114,7 @@ func commonCollection() {
 		pow, mul, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
+		diff2D,
 		sort3, reverse, reverseInPlace, equal,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
