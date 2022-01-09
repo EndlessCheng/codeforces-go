@@ -586,8 +586,25 @@ func commonCollection() {
 			}
 			return ori
 		}
+		// 直接在 diff 上还原
+		restoreInPlace := func() {
+			for j := 1; j < m; j++ {
+				diff[0][j] += diff[0][j-1]
+			}
+			for i := 1; i < n; i++ {
+				diff[i][0] += diff[i-1][0]
+				for j := 1; j < m; j++ {
+					diff[i][j] += diff[i][j-1] + diff[i-1][j] - diff[i-1][j-1]
+				}
+			}
+			// 保留 n*m 的计数矩阵
+			diff = diff[:n]
+			for i, row := range diff {
+				diff[i] = row[:m]
+			}
+		}
 
-		_, _ = update, restore
+		_, _, _ = update, restore, restoreInPlace
 	}
 
 	reverse := func(a []byte) []byte {
