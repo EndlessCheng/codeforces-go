@@ -19,10 +19,7 @@ GCD https://codeforces.com/contest/1548/problem/B
 
 type ST [][]int
 
-// min, max, gcd, ...
-func stFunc(int, int) (_ int) { return }
-
-func newST(a []int) ST {
+func NewST(a []int) ST {
 	n := len(a)
 	sz := bits.Len(uint(n))
 	st := make(ST, n)
@@ -32,17 +29,20 @@ func newST(a []int) ST {
 	}
 	for j := 1; 1<<j <= n; j++ {
 		for i := 0; i+1<<j <= n; i++ {
-			st[i][j] = stFunc(st[i][j-1], st[i+1<<(j-1)][j-1])
+			st[i][j] = st.Op(st[i][j-1], st[i+1<<(j-1)][j-1])
 		}
 	}
 	return st
 }
 
 // 查询区间 [l,r)，注意 l 和 r 是从 0 开始算的
-func (st ST) query(l, r int) int {
+func (st ST) Query(l, r int) int {
 	k := bits.Len(uint(r-l)) - 1
-	return stFunc(st[l][k], st[r-1<<k][k])
+	return st.Op(st[l][k], st[r-1<<k][k])
 }
+
+// min, max, gcd, ...
+func (ST) Op(int, int) (_ int) { return }
 
 //
 
@@ -52,7 +52,7 @@ func (st ST) query(l, r int) int {
 type stPair struct{ v, i int }
 type ST2 [][]stPair
 
-func newST2(a []int) ST2 {
+func NewST2(a []int) ST2 {
 	n := len(a)
 	sz := bits.Len(uint(n))
 	st := make(ST2, n)
@@ -73,7 +73,7 @@ func newST2(a []int) ST2 {
 }
 
 // 查询区间 [l,r)，注意 l 和 r 是从 0 开始算的
-func (st ST2) query(l, r int) int {
+func (st ST2) Query(l, r int) int {
 	k := bits.Len(uint(r-l)) - 1
 	a, b := st[l][k], st[r-1<<k][k]
 	if a.v <= b.v { // 最小值，相等时下标取左侧
