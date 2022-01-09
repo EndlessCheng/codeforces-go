@@ -554,7 +554,7 @@ func commonCollection() {
 	// 二维差分
 	// https://blog.csdn.net/weixin_43914593/article/details/113782108
 	// https://www.luogu.com.cn/problem/P3397
-	// https://leetcode-cn.com/problems/stamping-the-grid/（也可以不同差分）
+	// https://leetcode-cn.com/problems/stamping-the-grid/（也可以不用差分）
 	diff2D := func(n, m int) {
 		diff := make([][]int, n+1)
 		for i := range diff {
