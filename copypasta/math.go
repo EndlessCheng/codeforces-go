@@ -24,6 +24,10 @@ NOTE: 对于整数来说有
 NOTE: ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
 NOTE: ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
+https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
+https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
+另见数论分块
+
 AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
@@ -2436,6 +2440,12 @@ func numberTheoryCollection() {
 	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
 	//
+	// 其余相关题目
+	// https://codeforces.com/contest/938/problem/C
+	//
+	// https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
+	// https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
+	//
 	// EXTRA: 一些另类的求和
 	// https://oeis.org/A116477 a(n) = Sum_{1<=k<=n, gcd(k,n)=1} floor(n/k)
 	//                          sum{k|n} a(k) = sum{k=1 to n} d(k) = https://oeis.org/A006218
@@ -2448,7 +2458,7 @@ func numberTheoryCollection() {
 			h := n / l
 			r = n / h
 			w := r - l + 1
-			sum += h * w
+			sum += h * w // for all i in [l,r], floor(n/i) = floor(n/l)
 		}
 		return
 	}
@@ -2482,7 +2492,7 @@ func numberTheoryCollection() {
 	// https://www.luogu.com.cn/problem/P2261
 	// https://codeforces.com/problemset/problem/616/E
 	// NEERC05，紫书例题 10-25，UVa1363 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4109 https://codeforces.com/gym/101334 J
-	floorLoopK := func(n, k int64) int64 {
+	floorLoopRem := func(n, k int64) int64 {
 		min := func(a, b int64) int64 {
 			if a < b {
 				return a
@@ -2508,7 +2518,7 @@ func numberTheoryCollection() {
 	// Σ{i=1..min(n,m)} floor(n/i)*floor(m/i)
 	// https://www.luogu.com.cn/blog/command-block/zheng-chu-fen-kuai-ru-men-xiao-ji
 	// todo ∑∑(n%i)*(m%j) 模积和 https://www.luogu.com.cn/problem/P2260
-	floorLoop2 := func(n, m int64) (sum int64) {
+	floorLoop2D := func(n, m int64) (sum int64) {
 		min := func(a, b int64) int64 {
 			if a < b {
 				return a
@@ -2679,7 +2689,7 @@ func numberTheoryCollection() {
 		stirling1, stirling2, stirling2RowPoly,
 		bell, bellPoly,
 		calcMu, sieveMu,
-		floorLoop, floorLoopRange, floorLoopK, floorLoop2,
+		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 		sieveDu,
 	}
 }
