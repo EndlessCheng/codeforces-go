@@ -292,6 +292,43 @@ func (b Bitset) Next1(p int) int {
 	return len(b) * _w
 }
 
+// 判断 [l,r] 范围内的数是否全为 0
+// https://codeforces.com/contest/1107/problem/D（标准做法是二维前缀和）
+func (b Bitset) All0(l, r int) bool {
+	i := l / _w
+	if i == r/_w {
+		return b[i]>>(l%_w)&(1<<(r-l+1)-1) == 0
+	}
+	if b[i]>>(l%_w) != 0 {
+		return false
+	}
+	for i++; i < r/_w; i++ {
+		if b[i] != 0 {
+			return false
+		}
+	}
+	return b[r/_w]&(1<<(r%_w+1)-1) == 0
+}
+
+// 判断 [l,r] 范围内的数是否全为 1
+func (b Bitset) All1(l, r int) bool {
+	i := l / _w
+	if i == r/_w {
+		mask := 1<<(r-l+1) - 1
+		return b[i]>>(l%_w)&mask == mask
+	}
+	if ^(b[i] | (1<<(l%_w) - 1)) != 0 {
+		return false
+	}
+	for i++; i < r/_w; i++ {
+		if ^b[i] != 0 {
+			return false
+		}
+	}
+	mask := 1<<(r%_w+1) - 1
+	return b[r/_w]&mask == mask
+}
+
 // 下面几个方法均需保证长度相同
 func (b Bitset) Equals(c Bitset) bool {
 	for i, v := range b {
