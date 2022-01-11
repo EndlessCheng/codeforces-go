@@ -18,7 +18,7 @@ https://cp-algorithms.com/algebra/fft.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
 
-有关快速数论变换 (NTT) 以及多项式运算的内容见 math_ntt.go
+有关快速数论变换（NTT）以及多项式运算的内容见 math_ntt.go
 
 模板题 https://www.luogu.com.cn/problem/P3803
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
@@ -116,3 +116,5 @@ func polyConvFFTs(coefs [][]int64) []int64 {
 	}
 	return polyConvFFT(polyConvFFTs(coefs[:n/2]), polyConvFFTs(coefs[n/2:]))
 }
+
+// 有关快速数论变换（NTT）以及更多多项式运算的内容见 math_ntt.go
