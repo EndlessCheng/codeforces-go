@@ -346,10 +346,6 @@
 
 [Links of ICPC/CCPC Contests from China](https://codeforces.com/blog/entry/84429)
 
-### 高级竞赛算法
-
-[算法进阶课](https://www.acwing.com/activity/content/32/)
-
 ### AtCoder 版《挑战程序设计竞赛》
 
 [AtCoder 版！蟻本 (初級編)](https://qiita.com/drken/items/e77685614f3c6bf86f44)
