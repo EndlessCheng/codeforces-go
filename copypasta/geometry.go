@@ -541,6 +541,7 @@ func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
 // 因此，问题变成了求两个圆的交点
 
 // 圆的面积并 - 两圆的特殊情形
+// 两圆面积交 = 面积和 - 面积并
 // todo https://codeforces.com/contest/600/problem/D
 
 // 圆的面积并
