@@ -14,8 +14,8 @@ import (
 // 对比：
 // 405ms https://codeforces.com/contest/1603/submission/135520593
 // 187ms https://codeforces.com/contest/1603/submission/134450945
-// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 154ms
-// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 312ms
+// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 154ms https://codeforces.com/contest/4/submission/142795220
+// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 312ms https://codeforces.com/contest/4/submission/142795673
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
 // 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
