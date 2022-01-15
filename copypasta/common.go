@@ -540,7 +540,7 @@ func commonCollection() {
 		_, _ = queryDiagonal, queryAntiDiagonal
 	}
 
-	// 利用每个数产生的贡献计算 Σ|ai-aj|, i!=j
+	// 利用每个数产生的贡献计算 ∑|ai-aj|, i!=j
 	// 相关题目 https://codeforces.com/contest/1311/problem/F
 	contributionSum := func(a []int) (sum int64) {
 		n := len(a)

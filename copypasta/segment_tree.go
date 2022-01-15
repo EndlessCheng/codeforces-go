@@ -175,19 +175,19 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //           https://codeforces.com/problemset/problem/52/C
 // + min/max 转换 https://codeforces.com/gym/294041/problem/E
 // + max DP https://atcoder.jp/contests/dp/tasks/dp_w
-// + Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
+// + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
-// = Σ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
+// = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
 // max max 离散化 https://codeforces.com/contest/1557/problem/D
 // https://codeforces.com/problemset/problem/1114/F
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
-// 矩阵乘法 Σ https://codeforces.com/problemset/problem/718/C
+// 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C
 //
 // 多个更新操作复合：
-// * + Σ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
-// = + Σ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
+// * + ∑ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
+// = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 //
 // 吉老师线段树 Segment Tree Beats
 // todo https://oi-wiki.org/ds/seg-beats/

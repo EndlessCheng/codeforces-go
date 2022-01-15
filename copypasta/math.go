@@ -62,7 +62,7 @@ https://en.wikipedia.org/wiki/Faulhaber%27s_formula
 https://oeis.org/A000330 平方和 = n*(n+1)*(2*n+1)/6
 https://oeis.org/A000537 立方和 = (n*(n+1)/2)^2
 
-https://oeis.org/A061168 Σfloor(log2(i)) = Σ(bits.Len(i)-1)
+https://oeis.org/A061168 ∑floor(log2(i)) = ∑(bits.Len(i)-1)
 
 ∑∑|ai-aj|
 = 2*∑(i*ai-preSum(i-1)), i=[0,n-1], a 需要排序
@@ -550,19 +550,19 @@ func numberTheoryCollection() {
 	Number of primes between n and 2n exclusive https://oeis.org/A060715
 	n ~ 1.5n https://codeforces.com/contest/1178/problem/D
 
-	Least k such that H(k) > n, where H(k) is the harmonic number Σ{i=1..k} 1/i
+	Least k such that H(k) > n, where H(k) is the harmonic number ∑{i=1..k} 1/i
 	https://oeis.org/A002387
 	https://oeis.org/A004080
 
-		a(n) = smallest prime p such that Σ{primes q = 2, ..., p} 1/q exceeds n
+		a(n) = smallest prime p such that ∑{primes q = 2, ..., p} 1/q exceeds n
 		5, 277, 5_195_977, 1801241230056600523
 		https://oeis.org/A016088 pi
 		https://oeis.org/A046024 i
 
-	a(n) = largest m such that the harmonic number H(m)= Σ{i=1..m} 1/i is < n
+	a(n) = largest m such that the harmonic number H(m)= ∑{i=1..m} 1/i is < n
 	https://oeis.org/A115515
 
-		a(n) = largest prime p such that Σ{primes q = 2, ..., p} 1/q does not exceed n
+		a(n) = largest prime p such that ∑{primes q = 2, ..., p} 1/q does not exceed n
 		3, 271, 5_195_969, 1801241230056600467
 		https://oeis.org/A223037
 
@@ -886,7 +886,7 @@ func numberTheoryCollection() {
 			6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
 			6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
 
-		d(n) 前缀和 = Σ{k=1..n} floor(n/k) https://oeis.org/A006218
+		d(n) 前缀和 = ∑{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
 
 		n+d(n) https://oeis.org/A062249
@@ -910,7 +910,7 @@ func numberTheoryCollection() {
 	    max(σ(i)), i=1..10^n https://oeis.org/A066410
 	         对应的 n https://oeis.org/A066424
 	    Smallest k such that sigma(k) = n http://oeis.org/A051444
-		σ(n) 前缀和 = Σ{k=1..n} k*floor(n/k) https://oeis.org/A024916
+		σ(n) 前缀和 = ∑{k=1..n} k*floor(n/k) https://oeis.org/A024916
 		真因子之和 https://oeis.org/A001065 σ(n)-n
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
 			https://en.wikipedia.org/wiki/Perfect_number
@@ -2193,7 +2193,7 @@ func numberTheoryCollection() {
 	//         https://codeforces.com/problemset/problem/1516/E
 	// 【第二类斯特林数】S2(n,k) https://oeis.org/A008277
 	//    将 n 个元素拆分为 k 个非空集的方法数
-	//    用容斥计算单个项 S2(n,k) = (1/k!) * Σ{i=0..k} (-1)^(k-i)*C(k, i)*i^n
+	//    用容斥计算单个项 S2(n,k) = (1/k!) * ∑{i=0..k} (-1)^(k-i)*C(k, i)*i^n
 	//         https://codeforces.com/problemset/problem/1342/E
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
@@ -2426,11 +2426,11 @@ func numberTheoryCollection() {
 	// 数论分块/除法分块/整除分块
 	// https://oi-wiki.org/math/mobius/#_3
 	//     https://oeis.org/A006218
-	//     a(n) = Σ{k=1..n} floor(n/k)
+	//     a(n) = ∑{k=1..n} floor(n/k)
 	//          = n * (log(n) + 2*gamma - 1) + O(sqrt(n))
 	//          也就是说平均每项的贡献约为 log(n)
-	//     a(n) = Σ{k=1..n} floor(n/k)
-	//          = 2*(Σ{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
+	//     a(n) = ∑{k=1..n} floor(n/k)
+	//          = 2*(∑{i=1..floor(sqrt(n))} floor(n/i)) - floor(sqrt(n))^2
 	//          因此 a(n) % 2 == floor(sqrt(n)) % 2
 	//     a(n) 前缀和 = Sum_{k=1..n-1} Sum_{i=1..n-1} floor(k/i) https://oeis.org/A078567
 	// 恒等式 n%i = n-(n/i)*i
@@ -2515,7 +2515,7 @@ func numberTheoryCollection() {
 	}
 
 	// 二维整除分块
-	// Σ{i=1..min(n,m)} floor(n/i)*floor(m/i)
+	// ∑{i=1..min(n,m)} floor(n/i)*floor(m/i)
 	// https://www.luogu.com.cn/blog/command-block/zheng-chu-fen-kuai-ru-men-xiao-ji
 	// todo ∑∑(n%i)*(m%j) 模积和 https://www.luogu.com.cn/problem/P2260
 	floorLoop2D := func(n, m int64) (sum int64) {
