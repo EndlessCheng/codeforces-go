@@ -470,6 +470,7 @@ func commonCollection() {
 
 	// 二维前缀和
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
+	// https://codeforces.com/contest/1107/problem/D
 	var sum2d [][]int
 	initSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])

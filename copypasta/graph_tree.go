@@ -910,17 +910,6 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
-	pa := make([]int, n)
-	for i := range pa {
-		pa[i] = i
-	}
-	var find func(int) int
-	find = func(x int) int {
-		if pa[x] != x {
-			pa[x] = find(pa[x])
-		}
-		return pa[x]
-	}
 
 	lca := make([]int, q)
 	dis := make([]int, q) // dis(q.v,q.w)
@@ -941,27 +930,39 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		}
 	}
 
+	pa := make([]int, n)
+	for i := range pa {
+		pa[i] = i
+	}
+	var find func(int) int
+	find = func(x int) int {
+		if pa[x] != x {
+			pa[x] = find(pa[x])
+		}
+		return pa[x]
+	}
+
 	dep := make([]int, n)
-	vis := make([]int8, n)
+	color := make([]int8, n)
 	var _f func(v, d int)
 	_f = func(v, d int) {
 		dep[v] = d
-		vis[v] = 1
+		color[v] = 1
 		for _, w := range g[v] {
-			if vis[w] == 0 {
+			if color[w] == 0 {
 				_f(w, d+1)
 				pa[w] = v
 			}
 		}
 		for _, q := range qs[v] {
-			if w := q.w; vis[w] == 2 {
+			if w := q.w; color[w] == 2 {
 				// do(v, w, lcaVW)...
 				lcaVW := find(w)
 				lca[q.i] = lcaVW
 				dis[q.i] = dep[v] + dep[w] - dep[lcaVW]<<1
 			}
 		}
-		vis[v] = 2
+		color[v] = 2
 	}
 	_f(root, 0)
 	return lca
@@ -1297,11 +1298,22 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // NOTE: 合并的时候最好先循环计算一遍答案，再循环合并一遍，这样的习惯可避免产生把合并之后的数值算入答案中的 bug
 // 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
 // 讲解+套题 https://codeforces.com/blog/entry/44351 补充 https://codeforces.com/blog/entry/67696
+// todo 套题 https://blog.csdn.net/m0_49959202/article/details/114925708
 // 模板题 https://www.luogu.com.cn/problem/U41492
-//       https://codeforces.com/problemset/problem/600/E
+//       https://codeforces.com/problemset/problem/600/E https://www.acwing.com/problem/content/3191/
+// todo HNOI09 梦幻布丁 https://www.luogu.com.cn/problem/P3201 https://www.acwing.com/problem/content/2156/
+// 所有子树 mex LC2003/周赛258D https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // todo https://ac.nowcoder.com/acm/contest/4010/E
+//  https://atcoder.jp/contests/abc183/tasks/abc183_f
+//  https://codeforces.com/contest/1455/problem/G
+//  https://codeforces.com/contest/570/problem/D
+//  https://codeforces.com/contest/246/problem/E
+//  https://codeforces.com/contest/208/problem/E
+//  https://codeforces.com/contest/1009/problem/F
+//  https://codeforces.com/contest/375/problem/D
+//  https://codeforces.com/contest/741/problem/D
 func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	hson := make([]int, n)
 	var build func(v, fa int) int

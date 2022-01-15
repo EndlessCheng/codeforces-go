@@ -55,6 +55,7 @@ func (t *trie01) put(v int) *trie01Node {
 	return o
 }
 
+// https://codeforces.com/problemset/problem/282/E
 // LC1938/周赛250D https://leetcode-cn.com/problems/maximum-genetic-difference-query/
 func (t *trie01) del(v int) *trie01Node {
 	o := t.root
