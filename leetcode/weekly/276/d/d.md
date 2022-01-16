@@ -38,19 +38,19 @@ class Solution {
 public:
     long long maxRunTime(int n, vector<int> &batteries) {
         long tot = accumulate(batteries.begin(), batteries.end(), 0L);
-        long l = 1, r = tot / n + 1;
+        long l = 0, r = tot / n;
         while (l < r) {
-            long x = (l + r) / 2, sum = 0;
+            long x = (l + r + 1) / 2, sum = 0;
             for (long b : batteries) {
                 sum += min(b, x);
             }
             if (n * x <= sum) {
-                l = x + 1;
+                l = x;
             } else {
-                r = x;
+                r = x - 1;
             }
         }
-        return l - 1;
+        return l;
     }
 };
 ```
@@ -58,15 +58,14 @@ public:
 ```Python [sol1-Python3]
 class Solution:
     def maxRunTime(self, n: int, batteries: List[int]) -> int:
-        tot = sum(batteries)
-        l, r = 1, tot // n + 1
+        l, r = 0, sum(batteries) // n
         while l < r:
-            x = (l + r) // 2
+            x = (l + r + 1) // 2
             if n * x <= sum(min(b, x) for b in batteries):
-                l = x + 1
+                l = x
             else:
-                r = x
-        return l - 1
+                r = x - 1
+        return l
 ```
 
 ```java [sol1-Java]
@@ -76,21 +75,21 @@ class Solution {
         for (var b : batteries) {
             tot += b;
         }
-        var l = 1L;
-        var r = tot / n + 1;
+        var l = 0L;
+        var r = tot / n;
         while (l < r) {
-            var x = (l + r) / 2;
+            var x = (l + r + 1) / 2;
             var sum = 0L;
             for (var b : batteries) {
                 sum += Math.min(b, x);
             }
             if (n * x <= sum) {
-                l = x + 1;
+                l = x;
             } else {
-                r = x;
+                r = x - 1;
             }
         }
-        return l - 1;
+        return l;
     }
 }
 ```
