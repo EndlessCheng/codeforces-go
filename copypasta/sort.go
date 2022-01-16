@@ -18,7 +18,7 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
 3273 https://www.luogu.com.cn/problem/P2884 二分最大值
-3104 https://codeforces.com/gym/101649 D http://poj.org/problem?id=3104 二分答案，判断条件是 Σmax(0,(ai-t)/k)<=t
+3104 https://codeforces.com/gym/101649 D http://poj.org/problem?id=3104 二分答案，判断条件是 ∑max(0,(ai-t)/k)<=t
 3045 https://www.luogu.com.cn/problem/P1842 贪心，按 s+w 排序
 2976 http://poj.org/problem?id=2976 0-1 分数规划
 3111 https://codeforces.com/gym/101649 K http://poj.org/problem?id=3111 0-1 分数规划
@@ -106,6 +106,24 @@ func sortCollections() {
 		x++
 		return x*x > 90
 	})
+
+	// 当然，这种求最大值的二分也可以用下面这种左开右闭的写法
+	search2 := func(n int, f func(int) bool) int {
+		// Define f(0) == true and f(n+1) == false.
+		// Invariant: f(l) == true, f(r+1) == false.
+		l, r := 0, n
+		for l < r {
+			mid := int(uint(l+r+1) >> 1)
+			// l < mid ≤ r
+			if f(mid) {
+				l = mid // preserves f(l) == true
+			} else {
+				r = mid - 1 // preserves f(r+1) == false
+			}
+		}
+		// l == r, f(r+1) == false, and f(l) (= f(r)) == true  =>  answer is l.
+		return l
+	}
 
 	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
 
@@ -510,7 +528,7 @@ func sortCollections() {
 
 	_ = []interface{}{
 		insertionSort,
-		lowerBound, upperBound,
+		lowerBound, upperBound, search2,
 		searchRange, searchRange64,
 		binarySearchS1, binarySearchS2,
 		kthSmallest, kthSmallestRangeSum, kthSubsetSum,
