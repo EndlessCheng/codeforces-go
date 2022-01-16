@@ -14,7 +14,7 @@ func maxRunTime(n int, batteries []int) int64 {
 		for _, b := range batteries {
 			sum += min(b, x)
 		}
-		return sum/n < x
+		return n*x > sum
 	}))
 }
 

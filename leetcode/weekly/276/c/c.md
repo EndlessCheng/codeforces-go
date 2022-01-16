@@ -139,7 +139,7 @@ class Solution:
             f[i + 1] = max(f[i + 1], f[i])
             j = min(i + q[1] + 1, n)
             f[j] = max(f[j], f[i] + q[0])
-        return max(f)
+        return f[n]
 ```
 
 ```java [sol2-Java]
@@ -147,7 +147,7 @@ class Solution {
     public long mostPoints(int[][] questions) {
         var n = questions.length;
         var f = new long[n + 1];
-        for (int i = 0; i < n; i++) {
+        for (var i = 0; i < n; i++) {
             f[i + 1] = Math.max(f[i + 1], f[i]);
             var q = questions[i];
             var j = Math.min(i + q[1] + 1, n);

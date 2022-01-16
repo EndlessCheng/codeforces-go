@@ -1,4 +1,4 @@
-两种解法：二分答案 / 排序+贪心（附证明）
+两种做法：二分答案 / 排序+贪心（附详细证明）
 
 #### 解法一：二分答案
 
@@ -26,7 +26,7 @@ func maxRunTime(n int, batteries []int) int64 {
 		for _, b := range batteries {
 			sum += min(b, x)
 		}
-		return sum/n < x
+		return n*x > sum
 	}))
 }
 
@@ -44,13 +44,13 @@ public:
             for (long b : batteries) {
                 sum += min(b, x);
             }
-            if (sum / n >= x) {
+            if (n * x <= sum) {
                 l = x + 1;
             } else {
                 r = x;
             }
         }
-        return r - 1;
+        return l - 1;
     }
 };
 ```
@@ -66,7 +66,33 @@ class Solution:
                 l = x + 1
             else:
                 r = x
-        return r - 1
+        return l - 1
+```
+
+```java [sol1-Java]
+class Solution {
+    public long maxRunTime(int n, int[] batteries) {
+        var tot = 0L;
+        for (var b : batteries) {
+            tot += b;
+        }
+        var l = 1L;
+        var r = tot / n + 1;
+        while (l < r) {
+            var x = (l + r) / 2;
+            var sum = 0L;
+            for (var b : batteries) {
+                sum += Math.min(b, x);
+            }
+            if (n * x <= sum) {
+                l = x + 1;
+            } else {
+                r = x;
+            }
+        }
+        return l - 1;
+    }
+}
 ```
 
 #### 解法二：排序 + 贪心
@@ -77,15 +103,15 @@ class Solution:
 
 - 若该电池电量超过 $x$，则将其供给一台电脑，问题缩减为 $n-1$ 台电脑的子问题。
 - 若该电池电量不超过 $x$，则其余电池的电量均不超过 $x$，此时有
-
+   
    $$
    n\cdot x=n\cdot\lfloor\dfrac{\textit{sum}}{n}\rfloor \le \textit{sum}
    $$
    
-   根据解法一的结论，这些电池可以供电 $x$ 分钟。
+   根据解法一的结论，这些电池能至多供电 $x$ 分钟。
 
 由于随着问题规模减小，$x$ 不会增加，因此若遍历到一个电量不超过 $x$ 的电池时，可以直接返回 $x$ 作为答案。
-   
+
 ```go [sol2-Go]
 func maxRunTime(n int, batteries []int) int64 {
 	sort.Ints(batteries)
@@ -114,7 +140,7 @@ public:
                 return sum / n;
             }
             sum -= batteries[i];
-            n--;
+            --n;
         }
     }
 };
@@ -124,10 +150,29 @@ public:
 class Solution:
     def maxRunTime(self, n: int, batteries: List[int]) -> int:
         batteries.sort(reverse=True)
-        tot = sum(batteries)
-        for i in range(len(batteries)):
-            if batteries[i] <= tot // n:
-                return tot // n
-            tot -= batteries[i]
+        s = sum(batteries)
+        for i, b in enumerate(batteries):
+            if b <= s // n:
+                return s // n
+            s -= b
             n -= 1
+```
+
+```java [sol2-Java]
+class Solution {
+    public long maxRunTime(int n, int[] batteries) {
+        Arrays.sort(batteries);
+        var sum = 0L;
+        for (var b : batteries) {
+            sum += b;
+        }
+        for (var i = batteries.length - 1; ; --i) {
+            if (batteries[i] <= sum / n) {
+                return sum / n;
+            }
+            sum -= batteries[i];
+            --n;
+        }
+    }
+}
 ```
