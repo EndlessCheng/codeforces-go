@@ -515,8 +515,8 @@ func commonCollection() {
 		return
 	}
 
-	// 矩阵每条主对角线、反对角线的前缀和
-	// https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
+	// 矩阵斜向前缀和
+	// LC1878/双周赛53C https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
 	diagonalSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
 
