@@ -74,7 +74,7 @@ func (io *mockIO) query(q request) (resp response) {
 }
 
 func Test_doInteraction(_t *testing.T) {
-	for tc, checkTC := 1, 1; ; tc++ {
+	for tc := 1; ; tc++ {
 		if tc == debugCaseNum {
 			print()
 			//debug = true
@@ -102,9 +102,9 @@ func Test_doInteraction(_t *testing.T) {
 			}
 		}
 
-		if tc == checkTC {
+		// 每到 2 的幂次就打印检测了多少个测试数据
+		if tc&(tc-1) == 0 {
 			_t.Logf("%d cases checked.", tc)
-			checkTC <<= 1
 		}
 	}
 }

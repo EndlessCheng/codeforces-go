@@ -204,7 +204,7 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 // 无尽对拍模式
 // inputGenerator 生成随机测试数据，runFuncAC 为暴力逻辑或已 AC 逻辑，runFunc 为当前测试的逻辑
 func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFuncAC, runFunc ioFunc) {
-	for tc, checkTC := 1, 1; ; tc++ {
+	for tc := 1; ; tc++ {
 		input := inputGenerator()
 		input = removeExtraSpace(input)
 
@@ -227,9 +227,9 @@ func AssertEqualRunResultsInf(t *testing.T, inputGenerator func() string, runFun
 			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", tc, input)
 		}
 
-		if tc == checkTC {
+		// 每到 2 的幂次就打印检测了多少个测试数据
+		if tc&(tc-1) == 0 {
 			t.Logf("%d cases checked.", tc)
-			checkTC <<= 1
 		}
 
 		if Once {
@@ -243,7 +243,7 @@ type OutputChecker func(string) bool
 // 无尽验证模式
 // inputGenerator 除了返回随机输入数据外，还需要返回一个闭包，这个闭包接收 runFunc 的输出结果，根据输入数据验证输出结果是否正确
 func CheckRunResultsInfWithTarget(t *testing.T, inputGenerator func() (string, OutputChecker), targetCaseNum int, runFunc ioFunc) {
-	for tc, checkTC := 1, 1; ; tc++ {
+	for tc := 1; ; tc++ {
 		input, checker := inputGenerator()
 		if targetCaseNum > 0 && tc != targetCaseNum {
 			continue
@@ -273,9 +273,9 @@ func CheckRunResultsInfWithTarget(t *testing.T, inputGenerator func() (string, O
 			return
 		}
 
-		if tc == checkTC {
+		// 每到 2 的幂次就打印检测了多少个测试数据
+		if tc&(tc-1) == 0 {
 			t.Logf("%d cases checked.", tc)
-			checkTC <<= 1
 		}
 
 		if Once {
