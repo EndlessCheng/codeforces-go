@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -39,19 +40,67 @@ func TestCompareInf(t *testing.T) {
 	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
 }
 
+type Foo struct{}
+
+func Constructor(int) (_ Foo) { return }
+func (Foo) F(int) (_ int)     { return }
+func (Foo) G(int) (_ int)     { return }
+
+func TestCompareClassInf(t *testing.T) {
+	assert := assert.New(t)
+	for tc := 1; ; tc++ {
+		inputInfo := &strings.Builder{}
+		rg := testutil2.NewRandGenerator()
+		n := rg.Int(1, 5)
+		m := rg.Int(1, 5)
+		inputInfo.WriteString(fmt.Sprintln("Constructor", n)) //
+		obj := Constructor(n)
+
+		// 暴力数据-初始化
+
+		for _i := 1; _i <= m; _i++ {
+			switch rg.Int(0, 1) { //
+			case 0:
+				v := rg.Int(1, 5)
+				inputInfo.WriteString(fmt.Sprintln("F", v)) //
+
+				// 暴力数据-计算（如有必要则复制随机数据）
+				var expectedAns int
+
+				myAns := obj.F(v)
+				assert.EqualValues(expectedAns, myAns, "Wrong Answer %d\nInput:\n%v", tc, inputInfo)
+			case 1:
+				v := rg.Int(1, 5)
+				inputInfo.WriteString(fmt.Sprintln("G", v)) //
+
+				var expectedAns int
+
+				myAns := obj.G(v)
+				assert.EqualValues(expectedAns, myAns, "Wrong Answer %d\nInput:\n%v", tc, inputInfo)
+			default:
+				panic("invalid op")
+			}
+		}
+
+		if tc&(tc-1) == 0 {
+			t.Logf("%d cases checked.", tc)
+		}
+	}
+}
+
 func TestCheckInf(t *testing.T) {
 	var solve func([]int) []int /*TODO*/
 	for tc := 1; ; tc++ {
-		if tc%1e5 == 0 {
-			fmt.Println(tc)
-		}
-
 		rg := testutil2.NewRandGenerator()
 		n := rg.Int(1, 9)
 		a := rg.IntSlice(n, 1, 9)
 		myAns := solve(a)
 		// check myAns is valid ...
 		_ = myAns
+
+		if tc&(tc-1) == 0 {
+			t.Logf("%d cases checked.", tc)
+		}
 	}
 }
 
