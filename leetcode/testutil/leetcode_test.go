@@ -9,10 +9,10 @@ import (
 
 func Test_isTLE(t *testing.T) {
 	DebugTLE = 0
-	assert.False(t, isTLE(func() { return }))
+	assert.False(t, isTLE(func() {}))
 
 	DebugTLE = time.Second
-	assert.False(t, isTLE(func() { return }))
+	assert.False(t, isTLE(func() {}))
 	assert.True(t, isTLE(func() { select {} }))
 }
 
