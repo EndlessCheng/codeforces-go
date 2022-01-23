@@ -191,21 +191,19 @@ func unionFindVertexWeight(n int) {
 // https://oi-wiki.org/ds/dsu/#_9
 // 模板题 https://codeforces.com/problemset/problem/1074/D https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
 // 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D
+// 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 // 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode-cn.com/problems/evaluate-division/
 func unionFindEdgeWeight(n int) {
+	// 注：kinds 为 2 时可以用异或来代替加法
 	const kinds = 2
-	var fa, dis []int // dis 表示点到其所在集合根节点（代表元）的距离
-	initFa := func(n int) {
-		fa = make([]int, n)
-		for i := range fa {
-			fa[i] = i
-		}
-		dis = make([]int, n)
+	fa := make([]int, n) // n+1
+	for i := range fa {
+		fa[i] = i
 	}
-	initFa(n + 1) //
+	dis := make([]int, len(fa)) // dis[i] 表示 i 到其所在集合根节点（代表元）的距离
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -231,6 +229,12 @@ func unionFindEdgeWeight(n int) {
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
 
+	// 统计每个集合中各个类型的个数
+	cnt := make([][kinds]int, len(fa))
+	for i := range fa {
+		cnt[find(i)][dis[i]%kinds]++
+	}
+
 	// 离散化版本
 	faMap, disMap := map[int]int{}, map[int]int{}
 	find = func(x int) int {
@@ -243,7 +247,7 @@ func unionFindEdgeWeight(n int) {
 		return x
 	}
 
-	_ = []interface{}{initFa, merge, same, delta}
+	_ = []interface{}{merge, same, delta}
 }
 
 // 结构体写法
