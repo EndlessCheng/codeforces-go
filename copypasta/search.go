@@ -993,7 +993,8 @@ func gridCollection() {
 
 	// 矩形网格图，返回从起点 (s.x,s.y) 到其余所有可达点的最短距离。'#' 表示无法通过的格子   bfsGridAll 单源最短距离
 	// https://codeforces.com/contest/1520/problem/G
-	disAll := func(g [][]byte, s pair) [][]int {
+	// https://leetcode-cn.com/problems/k-highest-ranked-items-within-a-price-range/
+	disAll := func(g [][]byte, sx, sy int) [][]int {
 		n, m := len(g), len(g[0])
 		dis := make([][]int, n)
 		for i := range dis {
@@ -1002,15 +1003,15 @@ func gridCollection() {
 				dis[i][j] = -1
 			}
 		}
-		dis[s.x][s.y] = 0
-		q := []pair{s}
-		for curD := 1; len(q) > 0; curD++ {
+		dis[sx][sy] = 0
+		q := []pair{{sx, sy}}
+		for step := 1; len(q) > 0; step++ {
 			tmp := q
 			q = nil
 			for _, p := range tmp {
 				for _, d := range dir4 {
 					if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < n && 0 <= y && y < m && g[x][y] != '#' && dis[x][y] < 0 { //
-						dis[x][y] = curD
+						dis[x][y] = step
 						q = append(q, pair{x, y})
 					}
 				}
@@ -1034,13 +1035,13 @@ func gridCollection() {
 		}
 		vis[s.x][s.y] = true
 		q := []pair{s}
-		for minDis := 0; len(q) > 0; minDis++ {
+		for step := 0; len(q) > 0; step++ {
 			tmp := q
 			q = nil
 			for _, p := range tmp {
 				// g[p.x][p.y] == 'T'
 				if p == t {
-					return minDis
+					return step
 				}
 				for _, d := range dir4 {
 					if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
@@ -1110,28 +1111,29 @@ func gridCollection() {
 	}
 
 	// 下列代码来自 LC1254/周赛162C https://leetcode-cn.com/problems/number-of-closed-islands/
-	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点
-	dfsValidGrids := func(g [][]byte) (comps int) {
+	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点  dfsGrid
+	dfsValidGrids := func(g [][]byte) (comps [][]pair) {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
-		const target byte = '.'
-		//var targetsPos []point
-		var f func(i, j int) bool
+		const validCell byte = '.'
+		var comp []pair
+		var f func(int, int) bool
 		f = func(i, j int) bool {
 			if i < 0 || i >= n || j < 0 || j >= m {
 				return false
-			} // 出边界的不算
-			if vis[i][j] || g[i][j] != target {
+			}
+			if vis[i][j] || g[i][j] != validCell {
 				return true
-			} // 已访问或到达合法边界
+			}
 			vis[i][j] = true
-			//targetsPos = append(targetsPos, point{i, j})
+			comp = append(comp, pair{i, j})
 			validCC := true
 			for _, d := range dir4 {
-				if !f(i+d.x, j+d.y) {
+				x, y := i+d.x, j+d.y
+				if !f(x, y) {
 					validCC = false // 遍历完该连通分量再 return，保证不重不漏
 				}
 			}
@@ -1139,11 +1141,11 @@ func gridCollection() {
 		}
 		for i, row := range g {
 			for j, v := range row {
-				if v == target && !vis[i][j] {
-					//targetsPos = []point{}
+				if v == validCell && !vis[i][j] {
+					comp = []pair{}
 					if f(i, j) {
-						comps++
-						// do targetsPos...
+						comps = append(comps, comp)
+						// do comp ...
 					}
 				}
 			}
