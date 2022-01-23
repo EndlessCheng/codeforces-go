@@ -46,7 +46,7 @@ class Solution:
             if ch == 'S':
                 # 对第 3,5,7,... 个座位，可以在其到其左侧最近座位之间的任意一个位置放置屏风
                 cnt_s += 1
-                if cnt_s >= 3 and cnt_s % 2 == 1:
+                if cnt_s >= 3 and cnt_s % 2:
                     ans = ans * (i - pre) % 1000000007
                 pre = i  # 记录上一个座位的位置
         return ans if cnt_s and cnt_s % 2 == 0 else 0  # 座位个数必须为正偶数
