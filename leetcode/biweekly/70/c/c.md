@@ -74,8 +74,8 @@ public:
             }
             vector<vector<int>> qq;
             for (auto &p : q) {
-                for (int i = 0; i < 4; ++i) {
-                    int x = p[0] + dirs[i][0], y = p[1] + dirs[i][1];
+                for (auto &d : dirs) {
+                    int x = p[0] + d[0], y = p[1] + d[1];
                     if (0 <= x && x < m && 0 <= y && y < n && !vis[x][y] && grid[x][y]) {
                         vis[x][y] = true;
                         vector<int> p = {x, y};
