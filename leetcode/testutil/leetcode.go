@@ -483,8 +483,6 @@ func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutpu
 }
 
 // 无尽对拍模式
-// todo 构造器+方法的对拍
-//      可以外面套一个函数去分配不同的调用
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 	ig := reflect.ValueOf(inputGenerator)
 	if ig.Kind() != reflect.Func {
@@ -498,7 +496,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		t.Fatal("different input/output")
 	}
 
-	for tc, checkTC := 1, 1; ; tc++ {
+	for tc := 1; ; tc++ {
 		inArgs := ig.Call(nil)
 
 		// 先生成字符串，以免 inArgs 被修改
@@ -526,9 +524,9 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, inputInfo)
 		}
 
-		if tc == checkTC {
+		// 每到 2 的幂次就打印检测了多少个测试数据
+		if tc&(tc-1) == 0 {
 			t.Logf("%d cases checked.", tc)
-			checkTC <<= 1
 		}
 
 		if Once {

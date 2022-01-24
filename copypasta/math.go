@@ -1502,6 +1502,7 @@ func numberTheoryCollection() {
 	// a^b ≡ a^(b mod φ(m) + φ(m)) (mod m), gcd(a,m)!=1 且 b>φ(m)
 	// 模板题 https://www.luogu.com.cn/problem/P5091
 	// 例题 https://codeforces.com/problemset/problem/615/D
+	// https://atcoder.jp/contests/abc228/tasks/abc228_e
 	// https://cses.fi/problemset/task/1712
 	exPhi := func(a, b int64, m int) int64 {
 		phi := int64(calcPhi(m))
