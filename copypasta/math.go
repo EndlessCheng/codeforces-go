@@ -769,8 +769,10 @@ func numberTheoryCollection() {
 		}
 		return
 	}
-	primeDivisors := func(x int) (primes []int) { // primeFactorization 质因数分解
-		for i := 2; i*i <= x; i++ {
+
+	// primeFactorization 质因数分解
+	primeDivisors := func(x int64) (primes []int64) {
+		for i := int64(2); i*i <= x; i++ {
 			if x%i == 0 {
 				for x /= i; x%i == 0; x /= i {
 				}
@@ -782,12 +784,17 @@ func numberTheoryCollection() {
 		}
 		return
 	}
-	primeDivisors2 := func(x int) (primes []int) { // primeFactorization 质因数分解（加速）
+
+	// primeFactorization 质因数分解（加速：跳过偶数）
+	// 在 1e15 下比上面快大概 150ms
+	// https://codeforces.com/contest/1334/submission/143919621
+	// https://codeforces.com/contest/1334/submission/143919683
+	primeDivisors2 := func(x int64) (primes []int64) {
 		if x&1 == 0 {
 			primes = append(primes, 2)
-			x >>= bits.TrailingZeros(uint(x))
+			x >>= bits.TrailingZeros64(uint64(x))
 		}
-		for i := 3; i*i <= x; i += 2 {
+		for i := int64(3); i*i <= x; i += 2 {
 			if x%i == 0 {
 				for x /= i; x%i == 0; x /= i {
 				}
@@ -883,7 +890,8 @@ func numberTheoryCollection() {
 			2304, 4032, 6720, 10752, 17280, 26880, 41472, 64512, 103680, 161280, /19位数/
 
 			上面这些数对应的最小的 n https://oeis.org/A066151
-			6, 60, 840, 7560, 83160, 720720, 8648640, 73513440, 735134400,
+			6, 60, 840, 7560, 83160,
+			720720, 8648640, 73513440, 735134400,
 			6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
 
 		d(n) 前缀和 = ∑{k=1..n} floor(n/k) https://oeis.org/A006218
@@ -1539,10 +1547,7 @@ func numberTheoryCollection() {
 	// 返回 n 的最小的原根, n >= 2
 	// 不存在时返回 -1
 	// 由于有 phi(phi(n)) 个原根，密度足够大，最小原根可以很快找到，复杂度约为 O(n^0.25logn)
-	primitiveRoot := func(n int) int {
-		var gcd func(_, _ int) int
-		var pow func(_, _, _ int) int
-
+	primitiveRoot := func(n int64, calcPhi func(int64) int64) int64 {
 		if n != 2 && n != 4 {
 			x := n
 			if x&1 == 0 {
@@ -1556,7 +1561,7 @@ func numberTheoryCollection() {
 		pn := calcPhi(n)
 		ps := primeDivisors(pn)
 	o:
-		for g := 1; ; g++ {
+		for g := int64(1); ; g++ {
 			if gcd(g, n) > 1 {
 				continue
 			}
@@ -1572,9 +1577,7 @@ func numberTheoryCollection() {
 	// 返回 n 的所有原根
 	// n 没有原根时返回空切片
 	// 模板题 https://www.luogu.com.cn/problem/P6091
-	primitiveRootsAll := func(n int) []int {
-		var gcd func(_, _ int) int
-
+	primitiveRootsAll := func(n int, primitiveRoot func(int) int, gcd func(int, int) int) []int {
 		rt0 := primitiveRoot(n)
 		if rt0 < 0 {
 			return nil
