@@ -17,6 +17,7 @@
 - 数据结构
   - [单调栈 monotone_stack.go](/copypasta/monotone_stack.go)
   - [单调队列 monotone_queue.go](/copypasta/monotone_queue.go)
+    - 二维单调队列
   - [双端队列 deque.go](/copypasta/deque.go)
   - [堆（优先队列）heap.go](/copypasta/heap.go)
     - 支持修改、删除指定元素
