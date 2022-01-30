@@ -29,6 +29,7 @@ https://codeforces.com/problemset/problem/360/B
 https://codeforces.com/problemset/problem/461/B
 https://codeforces.com/problemset/problem/553/A
 https://codeforces.com/problemset/problem/687/C
+https://codeforces.com/problemset/problem/744/C
 https://codeforces.com/problemset/problem/1012/C
 https://codeforces.com/problemset/problem/1025/D
 https://codeforces.com/problemset/problem/1027/E
@@ -134,26 +135,7 @@ https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
 */
-func dpCollections() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-
+func _(min, max func(int, int) int, abs func(int) int) {
 	// 涉及到前缀和/子数组和的问题
 	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
 	// 下面的代码来自 LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
@@ -1284,6 +1266,7 @@ func dpCollections() {
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://codeforces.com/problemset/problem/1215/E
 	// 状态设计 https://codeforces.com/problemset/problem/743/E
+	// 状态设计 https://codeforces.com/problemset/problem/744/C
 	// 枚举来源 https://codeforces.com/problemset/problem/377/C
 	// 卡常优化 https://codeforces.com/problemset/problem/327/E 另一种做法是折半枚举
 	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
@@ -2119,6 +2102,7 @@ func dpCollections() {
 	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
 	// 训练指南第一章例题 30，UVa10859 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1800
 	// - 求最小顶点覆盖，以及所有最小顶点覆盖中，两端点都被覆盖的边的最大个数
+	// 构造 https://codeforces.com/problemset/problem/959/C
 	minVertexCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64

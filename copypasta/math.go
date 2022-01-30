@@ -137,7 +137,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 */
 
-func numberTheoryCollection() {
+func _() {
 	const mod int64 = 1e9 + 7 // 998244353
 	pow := func(x, n, p int64) (res int64) {
 		x %= p
@@ -2934,38 +2934,35 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 找出 50% 作弊者 https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
     讨论 https://codeforces.com/blog/entry/84822
 */
-func combinatoricsCollection() {
-	// 容斥原理 (PIE, the principle of inclusion and exclusion)
-	// 参考《挑战程序设计竞赛》P296
-	// https://codeforces.com/blog/entry/64625
-	// https://ac.nowcoder.com/acm/contest/6219/C
-	//
-	// 多重集组合数 https://codeforces.com/problemset/problem/451/E
-	// https://codeforces.com/problemset/problem/1342/E
-	// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
-	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
-	// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
-	// 用因子容斥 https://codeforces.com/problemset/problem/900/D
-	solveInclusionExclusion := func(a []int) (ans int64) {
-		n := len(a)
-		const mod int64 = 1e9 + 7 // 998244353
-		for sub := uint(0); sub < 1<<n; sub++ {
-			res := int64(0)
-			for i, v := range a {
-				if sub>>i&1 > 0 {
-					// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
-					_ = v // do v...
 
-				}
+// 容斥原理 (PIE, the principle of inclusion and exclusion)
+// 参考《挑战程序设计竞赛》P296
+// https://codeforces.com/blog/entry/64625
+// https://ac.nowcoder.com/acm/contest/6219/C
+//
+// 多重集组合数 https://codeforces.com/problemset/problem/451/E
+// https://codeforces.com/problemset/problem/1342/E
+// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
+// 不重不漏 https://codeforces.com/problemset/problem/1007/B
+// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
+// 用因子容斥 https://codeforces.com/problemset/problem/900/D
+func solveInclusionExclusion(a []int) (ans int64) {
+	n := len(a)
+	const mod int64 = 1e9 + 7 // 998244353
+	for sub := uint(0); sub < 1<<n; sub++ {
+		res := int64(0)
+		for i, v := range a {
+			if sub>>i&1 > 0 {
+				// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
+				_ = v // do v...
+
 			}
-			if bits.OnesCount(sub)&1 > 0 { // 某些题目是 == 0
-				res = -res
-			}
-			ans += res // mod
 		}
-		ans = (ans%mod + mod) % mod
-		return
+		if bits.OnesCount(sub)&1 > 0 { // 某些题目是 == 0
+			res = -res
+		}
+		ans += res // mod
 	}
-
-	_ = []interface{}{solveInclusionExclusion}
+	ans = (ans%mod + mod) % mod
+	return
 }
