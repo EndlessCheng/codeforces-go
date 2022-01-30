@@ -153,6 +153,10 @@ func numberTheoryCollection() {
 
 	/* GCD LCM 相关
 
+	https://oeis.org/A051010 Triangle T(m,n) giving of number of steps in the Euclidean algorithm for gcd(m,n) with 0<=m<n
+	https://oeis.org/A034883 Maximum length of Euclidean algorithm starting with n and any nonnegative i<n
+	https://oeis.org/A049826 GCD(n,i) 的迭代次数之和，O(nlogn)
+
 	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
 	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
 
