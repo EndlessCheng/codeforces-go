@@ -29,15 +29,47 @@ import (
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632/周赛212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
 // 分组排序套路 LC1998/周赛257D https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
-func unionFind(n int) {
-	var fa []int
-	initFa := func(n int) {
-		fa = make([]int, n)
-		for i := range fa {
-			fa[i] = i
-		}
+type UnionFind struct {
+	Fa     []int
+	Groups int // 连通分量个数
+}
+
+func NewUnionFind(n int) UnionFind {
+	fa := make([]int, n) // n+1
+	for i := range fa {
+		fa[i] = i
 	}
-	initFa(n + 1) //
+	return UnionFind{fa, n}
+}
+
+func (u UnionFind) Find(x int) int {
+	if u.Fa[x] != x {
+		u.Fa[x] = u.Find(u.Fa[x])
+	}
+	return u.Fa[x]
+}
+
+func (u UnionFind) Merge(from, to int) (isNewMerge bool) {
+	x, y := u.Find(from), u.Find(to)
+	if x == y {
+		return false
+	}
+	u.Fa[x] = y
+	u.Groups--
+	return true
+}
+
+func (u UnionFind) Same(x, y int) bool {
+	return u.Find(x) == u.Find(y)
+}
+
+// 以下代码可用于比赛时复制
+
+func _(n int) {
+	fa := make([]int, n) // n+1
+	for i := range fa {
+		fa[i] = i
+	}
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -59,6 +91,7 @@ func unionFind(n int) {
 	}
 
 	// 离散化版本
+	// 注意 merge 时需要保证双方都在 faMap 中
 	faMap := map[int]int{}
 	find = func(x int) int {
 		if fx, ok := faMap[x]; ok && fx != x {
@@ -124,6 +157,7 @@ func unionFind(n int) {
 	}
 
 	{
+		// 按秩合并
 		rank := make([]int, n)
 		merge := func(x, y int) {
 			x, y = find(x), find(y)
@@ -141,10 +175,7 @@ func unionFind(n int) {
 		_ = merge
 	}
 
-	_ = []interface{}{
-		initFa, merge, same,
-		mergeBig, mergeNew, mergeRangeTo, getRoots, countRoots, getComps,
-	}
+	_ = []interface{}{merge, same, mergeBig, mergeNew, mergeRangeTo, getRoots, countRoots, getComps}
 }
 
 // 并查集 - 维护点权
@@ -152,17 +183,16 @@ func unionFind(n int) {
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 // https://codeforces.com/problemset/problem/1609/D
 // LC 周赛 203D https://leetcode-cn.com/contest/weekly-contest-203/problems/find-latest-group-of-size-m/
-func unionFindVertexWeight(n int) {
-	var fa, sz []int
-	initFa := func(n int) {
-		fa = make([]int, n)
-		sz = make([]int, n)
-		for i := range fa {
-			fa[i] = i
-			sz[i] = 1
-		}
+// 哈希表写法 https://leetcode-cn.com/problems/groups-of-strings/
+func _(n int) {
+	groups := n
+	maxSize := 1
+	fa := make([]int, n) // n+1
+	sz := make([]int, len(fa))
+	for i := range fa {
+		fa[i] = i
+		sz[i] = 1
 	}
-	initFa(n + 1) //
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -170,18 +200,24 @@ func unionFindVertexWeight(n int) {
 		}
 		return fa[x]
 	}
-	merge := func(from, to int) {
+	merge := func(from, to int) bool {
 		from, to = find(from), find(to)
 		if from != to {
+			fa[from] = to
 			sz[to] += sz[from]
 			//sz[from] = 0 // 有些题目需要保证总 sz 和不变（如 CF1609D）
-			fa[from] = to
+			if sz[to] > maxSize {
+				maxSize = sz[to]
+			}
+			groups--
+			return true
 		}
+		return false
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
 	size := func(x int) int { return sz[find(x)] }
 
-	_ = []interface{}{initFa, merge, same, size}
+	_ = []interface{}{merge, same, size}
 }
 
 // 并查集 - 维护边权（种类）
@@ -196,7 +232,7 @@ func unionFindVertexWeight(n int) {
 // 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode-cn.com/problems/evaluate-division/
-func unionFindEdgeWeight(n int) {
+func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加法
 	const kinds = 2
 	fa := make([]int, n) // n+1
@@ -248,49 +284,6 @@ func unionFindEdgeWeight(n int) {
 	}
 
 	_ = []interface{}{merge, same, delta}
-}
-
-// 结构体写法
-type uf struct {
-	fa    []int
-	roots int // 连通分量个数
-}
-
-func newUnionFind(n int) uf {
-	fa := make([]int, n) // n+1
-	for i := range fa {
-		fa[i] = i
-	}
-	return uf{fa, n}
-}
-
-func (u uf) find(x int) int {
-	if u.fa[x] != x {
-		u.fa[x] = u.find(u.fa[x])
-	}
-	return u.fa[x]
-}
-
-func (u uf) merge(from, to int) (isNewMerge bool) {
-	x, y := u.find(from), u.find(to)
-	if x == y {
-		return false
-	}
-	u.fa[x] = y
-	u.roots--
-	return true
-}
-
-func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }
-
-// st 所处连通分量的大小
-func (u uf) countRoots(st int) (cnt int) {
-	for i := st; i < len(u.fa); i++ {
-		if u.find(i) == i {
-			cnt++
-		}
-	}
-	return
 }
 
 // 可持久化并查集

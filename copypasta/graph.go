@@ -1941,10 +1941,10 @@ func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (m
 
 	sort.Slice(edges, func(i, j int) bool { return edges[i].dis < edges[j].dis })
 
-	uf := newUnionFind(n)
+	uf := NewUnionFind(n)
 	left := n - 1
 	for _, e := range edges {
-		if uf.merge(e.v, e.w) {
+		if uf.Merge(e.v, e.w) {
 			mst += e.dis // int64
 			left--
 			if left == 0 {
