@@ -160,7 +160,7 @@ class Solution:
 class Solution {
     // 并查集模板（哈希表写法）
     HashMap<Integer, Integer> fa = new HashMap<>(), size = new HashMap<>();
-    int groups, maxSize = 0;
+    int groups, maxSize;
 
     int find(int x) {
         if (fa.get(x) != x) {
