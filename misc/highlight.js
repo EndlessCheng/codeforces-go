@@ -70,7 +70,8 @@
         "expected value",
         " circle", " ring",
         "counterclockwise", "counter-clockwise", "clockwise",
-        "origin", "initial",
+        // "origin",
+        "initial",
         "infinite",
         "leaf",
 
