@@ -49,7 +49,7 @@ func (u UnionFind) Find(x int) int {
 	return u.Fa[x]
 }
 
-func (u UnionFind) Merge(from, to int) (isNewMerge bool) {
+func (u *UnionFind) Merge(from, to int) (isNewMerge bool) {
 	x, y := u.Find(from), u.Find(to)
 	if x == y {
 		return false
