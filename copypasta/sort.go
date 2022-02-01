@@ -369,8 +369,7 @@ func sortCollections() {
 	// 这种写法的优点是两次运算可以将枚举范围减半，而三分点的写法两次运算仅去掉了 1/3 的范围（效率比 log(2)/log(1.5) ≈ 1.71）
 	// 但是，如果存在相邻 f 值相同，且只有两个的情况：f(i-1)<f(i)=f(i+1)<f(i+2)，这种写法将会失效，而三分点的写法保证了两个三分点的间隔，可以正常运行
 	ternarySearchInt2 := func(l, r int, f func(x int) int) int {
-		return sort.Search(r-l, func(m int) bool { return f(l+m) < f(l+m+1) }) // < 求最小值   > 求最大值
-		//return sort.Search(r, func(m int) bool { return m >= l && f(m) < f(m+1) })
+		return l + sort.Search(r-l, func(m int) bool { return f(l+m) < f(l+m+1) }) // < 求最小值   > 求最大值
 	}
 
 	// 整数三分·写法三
