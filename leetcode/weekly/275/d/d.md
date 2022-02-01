@@ -1,5 +1,3 @@
-贪心及其证明
-
 对于两枚种子，设其播种所需天数为 $p_1$ 和 $p_2$，生长所需天数为 $g_1$ 和 $g_2$。
 
 不妨设 $g_1\ge g_2$。我们来比较哪种播种顺序更优：
@@ -22,7 +20,11 @@ $$
 
 上式表明，按照先 $1$ 后 $2$ 的顺序播种，最晚开花时间不会晚于按照先 $2$ 后 $1$ 播种时的最晚开花时间。
 
-因此，我们可以按照生长天数从大到小的顺序播种。对于两枚生长天数相同的种子，由于无论按照何种顺序播种，这两枚种子的最晚开花时间都是相同的，因此无需考虑生长天数相同的种子的播种顺序，所以在排序时，仅需对生长天数从大到小排序。
+这意味着按照生长天数从大到小排序后，交换任意两枚种子的播种顺序，不会让最晚开花时间提前。
+
+假设存在其他更优的种子排列，那么我们可以交换生长天数小且排在前面的种子，与生长天数大且排在后面的种子，这样可以得到更早的最晚开花时间，因此假设不成立，按照生长天数从大到小的顺序播种是最优的。
+
+对于两枚生长天数相同的种子，由于无论按照何种顺序播种，这两枚种子的最晚开花时间都是相同的，因此无需考虑生长天数相同的种子的播种顺序，所以在排序时，仅需对生长天数从大到小排序。
 
 ```go [sol1-Go]
 func earliestFullBloom(plantTime, growTime []int) (ans int) {
@@ -72,4 +74,18 @@ class Solution:
         return ans
 ```
 
-
+```java [sol1-Java]
+class Solution {
+    public int earliestFullBloom(int[] plantTime, int[] growTime) {
+        var id = IntStream.range(0, plantTime.length).boxed().toArray(Integer[]::new);
+        Arrays.sort(id, (i, j) -> growTime[j] - growTime[i]);
+        var ans = 0;
+        var day = 0;
+        for (var i : id) {
+            day += plantTime[i];
+            ans = Math.max(ans, day + growTime[i]);
+        }
+        return ans;
+    }
+}
+```
