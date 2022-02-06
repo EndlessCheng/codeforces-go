@@ -9,7 +9,7 @@ import (
 
 //func init() { rand.Seed(time.Now().UnixNano()) }
 
-const debugCaseNum = 0
+const debugCaseNum = 0 //
 const failedCountLimit = 10
 
 var rg *testutil.RG
@@ -68,7 +68,13 @@ func (io *mockIO) query(q request) (resp response) {
 	io.queryCnt++
 	//if io.queryCnt > io.queryLimit { io._t.Fatalf("Query Limit Exceeded %d\nCase Data:\n%v", io.caseNum, io) }
 
-	// calc q ...
+	// TODO: calc resp.v ...
+	a := io.hiddenData
+	qs := q.q
+	//for i := range qs {
+	//	qs[i]--
+	//}
+
 
 	return
 }
@@ -81,7 +87,7 @@ func Test_doInteraction(_t *testing.T) {
 		}
 		io := &mockIO{_t: _t, caseNum: tc}
 
-		// gen random data ...
+		// TODO: gen random data ...
 		rg = testutil.NewRandGenerator()
 		n := rg.Int(2, 4)
 		a := rg.IntSlice(n, 1, n)
@@ -90,7 +96,7 @@ func Test_doInteraction(_t *testing.T) {
 		io.ans = a
 		io.hiddenData = a
 
-		// set limit ...
+		// TODO: set query limit ...
 		io.queryLimit = n + 30
 
 		doInteraction(io)

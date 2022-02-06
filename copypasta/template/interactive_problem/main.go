@@ -54,7 +54,7 @@ func (io io) printAnswer(a answer) {
 	Fprintln(io.out)
 	io.out.Flush()
 
-	// TODO: Optional
+	// TODO: optional, panic if we got -1
 	var res int
 	if Fscan(io.in, &res); res < 0 {
 		panic(res)
@@ -62,10 +62,18 @@ func (io io) printAnswer(a answer) {
 }
 
 func doInteraction(it interaction) {
-	q := func(q ...int) int { return it.query(request{q}).v }
 	dt := it.readInitData()
 	n := dt.n
-	ans := make([]int, n) //
+
+	q := func(q ...int) int {
+		//for i := range q {
+		//	q[i]++
+		//}
+		return it.query(request{q}).v
+	}
+
+	var ans []int
+	ans = make([]int, n) //
 	defer func() { it.printAnswer(answer{ans}) }()
 
 
