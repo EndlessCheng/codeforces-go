@@ -17,10 +17,11 @@ func CF1634D() {
 		d := q(1, 2, 3)
 		for i := 4; i <= n; i++ {
 			x, y := q(a, b, i), q(a, c, i)
+			if x <= d && y <= d {
+				continue
+			}
 			if y > x {
-				if y > d {
-					b, d = i, y
-				}
+				b, d = i, y
 			} else if x > d {
 				c, d = i, x
 			}
