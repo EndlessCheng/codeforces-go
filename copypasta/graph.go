@@ -989,6 +989,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模 https://www.luogu.com.cn/problem/P4644
 // 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
+// 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode-cn.com/problems/path-with-minimum-effort/
@@ -1193,7 +1194,8 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 // EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
 // 例题: https://codeforces.com/problemset/problem/173/B
 // 网格图 https://codeforces.com/problemset/problem/590/C
-// 建图技巧【推荐】https://codeforces.com/problemset/problem/821/D
+// 建图技巧 https://codeforces.com/problemset/problem/821/D
+// 建图技巧 https://codeforces.com/problemset/problem/1340/C
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
 // https://codeforces.com/problemset/problem/877/D（也可以 BFS）
@@ -1468,6 +1470,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // EXTRA: 同余最短路
 // todo https://oi-wiki.org/graph/mod-shortest-path/
 // todo 跳楼机 https://www.luogu.com.cn/problem/P3403
+//  https://codeforces.com/problemset/problem/986/F
 
 // k 短路
 // A* 算法
@@ -1479,6 +1482,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 最小斯坦纳树
 // https://oi-wiki.org/graph/steiner-tree/
 // todo 模板题 https://www.luogu.com.cn/problem/P6192
+//  WC08 游览计划 https://www.luogu.com.cn/problem/P4294
 
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(mlogm)，或者边已经按权值排序的情况
@@ -2027,12 +2031,15 @@ func (*graph) minDiffMST(n int, edges [][3]int) int {
 	return ans
 }
 
-// 最小树形图 (MSA, Minimum weight Spanning Arborescence)
+// 最小树形图 (MSA, Minimum weight Spanning Arborescence)   有向图上的最小生成树 (DMST)
 // O(nm) 朱刘算法（Edmonds 算法）
-// todo 另外还有 Tarjan 的 O(m+nlogn) 算法
 // https://en.wikipedia.org/wiki/Edmonds%27_algorithm
 // https://oi-wiki.org/graph/dmst/
+// todo 另外还有 Tarjan 的 O(m+nlogn) 算法
+//  https://oi-wiki.org/graph/dmst/#tarjan-dmst
+//
 // 模板题 https://www.luogu.com.cn/problem/P4716
+// todo https://codeforces.com/problemset/problem/240/E
 func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
 	const inf int = 2e9
 	minW := make([]int, n)
@@ -2176,14 +2183,15 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
 //
+// 模板题 https://codeforces.com/problemset/problem/1093/D
 // https://www.luogu.com.cn/problem/P6185
 // https://codeforces.com/problemset/problem/1537/F
 // 染色的技巧 https://codeforces.com/problemset/problem/553/C
 //          https://codeforces.com/problemset/problem/662/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 // 与分组背包结合 https://codeforces.com/problemset/problem/1354/E
-func (*graph) isBipartite(n int, g [][]int) bool {
-	colors := make([]int8, n) // 0 表示未访问该节点
+func (*graph) isBipartite(g [][]int) bool {
+	colors := make([]int8, len(g)) // 0 表示未访问该节点
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {
 		colors[v] = c
@@ -2197,7 +2205,10 @@ func (*graph) isBipartite(n int, g [][]int) bool {
 	}
 	//f(0, 1) // 只有一个 CC
 	for i, c := range colors {
-		if c == 0 && !f(i, 1) {
+		if c != 0 {
+			continue
+		}
+		if !f(i, 1) {
 			return false
 		}
 	}
@@ -2238,8 +2249,9 @@ func (*graph) bipartiteFindOddLengthCycle(n int, g [][]int) (cycle []int) {
 	return
 }
 
-/* 匹配 带权匹配 独立集 边覆盖 顶点覆盖 路径覆盖 支配集
+/* 匹配 完美匹配 带权匹配 独立集 边覆盖 顶点覆盖 路径覆盖 支配集
 https://en.wikipedia.org/wiki/Matching_(graph_theory)
+https://en.wikipedia.org/wiki/Perfect_matching 完美匹配 iff 唯一匹配
 https://en.wikipedia.org/wiki/Maximum_weight_matching
 https://en.wikipedia.org/wiki/Independent_set_(graph_theory)
 https://en.wikipedia.org/wiki/Maximal_independent_set
@@ -3857,6 +3869,7 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // 等价于在补图上找最大团 maximal cliques (MC)
 // https://en.wikipedia.org/wiki/Clique_problem
 // 另见 Bron–Kerbosch 算法 https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+// Measure and Conquer: A Simple O(2^0.288n) Independent Set Algorithm http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.321.6920&rep=rep1&type=pdf
 // todo 剪枝写法
 // https://codeforces.com/problemset/problem/1105/E
 func (*graph) maximalCliques(g []int64, max func(int, int) int) int {

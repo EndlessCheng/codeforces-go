@@ -530,6 +530,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
 	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
+	// 状态设计 https://atcoder.jp/contests/abc237/tasks/abc237_f
 	lis := func(a []int) int {
 		dp := []int{}
 		for _, v := range a {
@@ -541,6 +542,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		}
 		return len(dp)
 	}
+
 	// 每个前缀的 LIS
 	// https://leetcode-cn.com/contest/weekly-contest-253/problems/find-the-longest-valid-obstacle-course-at-each-position/
 	lisAll := func(a []int) []int {
@@ -2000,6 +2002,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
 	// LC1245 https://leetcode-cn.com/problems/tree-diameter/
+	// 变形 https://codeforces.com/problemset/problem/1238/F
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
 		f = func(v, fa int) (mxDep int) {
@@ -2201,6 +2204,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://codeforces.com/problemset/problem/219/D
 	// https://codeforces.com/problemset/problem/337/D
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D
+	// https://codeforces.com/problemset/problem/1626/E
 
 	// 给一颗无根树
 	// 返回每个点到其余点的距离之和

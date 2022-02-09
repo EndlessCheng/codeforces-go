@@ -15,6 +15,7 @@ func init() { debug.SetGCPercent(-1) }
 前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
+与贪心堆结合 https://codeforces.com/problemset/problem/965/E
 todo https://codeforces.com/contest/455/problem/B
 */
 type trieNode struct {

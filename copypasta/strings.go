@@ -89,6 +89,7 @@ func _(min, max func(int, int) int) {
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
+	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
 	calcMaxMatchLengths := func(s []byte) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {
@@ -132,6 +133,9 @@ func _(min, max func(int, int) int) {
 		}
 		return 1 // 无小于 n 的循环节
 	}
+
+	// todo 失配树（border 树）
+	//  https://www.luogu.com.cn/problem/P5829
 
 	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀

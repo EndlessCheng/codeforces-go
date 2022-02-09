@@ -11,6 +11,9 @@ https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%8
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
 
+三对角矩阵算法（托马斯算法）https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+https://codeforces.com/contest/24/problem/D
+
 哈密尔顿–凯莱定理 Cayley–Hamilton theorem
 特征多项式是零化多项式
 https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
@@ -18,9 +21,13 @@ https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem
 浅谈范德蒙德(Vandermonde)方阵的逆矩阵与拉格朗日(Lagrange)插值的关系以及快速傅里叶变换(FFT)中IDFT的原理 https://www.cnblogs.com/gzy-cjoier/p/9741950.html
 
 模板题 https://www.luogu.com.cn/problem/P1939 https://ac.nowcoder.com/acm/contest/6357/A
+https://codeforces.com/problemset/problem/1182/E
+https://atcoder.jp/contests/abc232/tasks/abc232_e
+有向图中长度为 k 的路径数 https://atcoder.jp/contests/dp/tasks/dp_r
 TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 挑战 P202 一维方块染色 http://poj.org/problem?id=3734
 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
+https://codeforces.com/problemset/problem/166/E
 
 todo poj 2345 3532 3526
 */
@@ -86,7 +93,7 @@ func (a matrix) mul(b matrix) matrix {
 	for i, row := range a {
 		for j := range b[0] {
 			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod
+				c[i][j] = (c[i][j] + v*b[k][j]) % mod // 注：此处不能化简
 			}
 			if c[i][j] < 0 {
 				c[i][j] += mod

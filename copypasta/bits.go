@@ -138,6 +138,9 @@ https://oeis.org/A055015 Sum of 6th powers of digits of n
 https://oeis.org/A031286 Additive persistence: number of summations of digits needed to obtain a single digit (the additive digital root)
 https://oeis.org/A031346 Multiplicative persistence: number of iterations of "multiply digits" needed to reach a number < 10
 
+https://oeis.org/A014837 Sum of all the digits of n in every base from 2 to n-1
+https://oeis.org/A043306 Sum of all the digits of n in every base from 2 to n
+
 回文数
 https://oeis.org/A002113 十进制回文数
 	https://oeis.org/A043269 digsum(A002113(n))
@@ -356,7 +359,7 @@ func (b Bitset) Merge(c Bitset) {
 }
 
 // 注：有关子集枚举的位运算技巧，见 search.go
-func bitsCollection() {
+func _() {
 	// 利用 -v = ^v+1
 	lowbit := func(v int64) int64 { return v & -v }
 
@@ -405,6 +408,7 @@ func bitsCollection() {
 	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
+	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
@@ -432,6 +436,7 @@ func bitsCollection() {
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
 	// https://codeforces.com/problemset/problem/475/D
+	// https://codeforces.com/problemset/problem/1632/D
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
 	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
 	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
@@ -454,7 +459,8 @@ func bitsCollection() {
 				}
 			}
 			set = set[:k+1]
-			// 此时我们将区间 [0,i] 划分成了 len(set) 个（左闭右开）区间，对 ∀j∈[set[k].l,set[k].r)，op(区间[j,i]) 的计算结果均为 set[k].v
+			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
+			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range set {
 				// do p...     [l,r)
 				cnt[p.v] += int64(p.r - p.l)
