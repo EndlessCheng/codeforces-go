@@ -2270,23 +2270,22 @@ func _() {
 	// 贝尔数：基数为 n 的集合的划分方法数 https://oeis.org/A000110
 	// https://en.wikipedia.org/wiki/Bell_number
 	// 1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
+	// https://en.wikipedia.org/wiki/Bell_triangle https://oeis.org/A011971 Aitken's array
+	// a(0,0)=1, a(n,0) = a(n-1,n-1), a(n,k) = a(n,k-1) + a(n-1,k-1)
+	// 其他公式
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} S2(n,k)
-	bell := func(n int) (res int64) {
-		s2 := make([][]int64, n+1)
-		for i := range s2 {
-			s2[i] = make([]int64, n+1)
-		}
-		s2[0][0] = 1
+	bellTriangle := func(n int) [][]int64 {
+		b := make([][]int64, n+1) // 第一列为贝尔数
+		b[0] = []int64{1}
 		for i := 1; i <= n; i++ {
+			b[i] = make([]int64, i+1)
+			b[i][0] = b[i-1][i-1]
 			for j := 1; j <= i; j++ {
-				s2[i][j] = (s2[i-1][j-1] + int64(j)*s2[i-1][j]) % mod
+				b[i][j] = (b[i][j-1] + b[i-1][j-1]) % mod
 			}
 		}
-		for _, v := range s2[n][1:] {
-			res += v
-		}
-		return res % mod
+		return b
 	}
 
 	// 贝尔数的多项式求法
@@ -2309,6 +2308,29 @@ func _() {
 			b[i] = v * F[i] % P
 		}
 		return b
+	}
+
+	// 贝尔数 EXTRA：如何搜索所有集合划分
+	// 相关题目：https://codeforces.com/contest/954/problem/I
+	setPartition := func(n int) {
+		groups := [][]int{} // 或者用一个 roots 数组表示集合的根节点（代表元）
+		var f func(int)
+		f = func(p int) {
+			if p == n {
+				// do groups ...
+
+				return
+			}
+			groups = append(groups, []int{p})
+			f(p + 1)
+			groups = groups[:len(groups)-1]
+			for i := range groups {
+				groups[i] = append(groups[i], p)
+				f(p + 1)
+				groups[i] = groups[i][:len(groups[i])-1]
+			}
+		}
+		f(0)
 	}
 
 	// 富比尼数（有序贝尔数）
@@ -2695,7 +2717,7 @@ func _() {
 		modSqrt, isQuadraticResidue,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling1, stirling2, stirling2RowPoly,
-		bell, bellPoly,
+		bellTriangle, bellPoly, setPartition,
 		calcMu, sieveMu,
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 		sieveDu,
