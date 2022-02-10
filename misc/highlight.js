@@ -38,7 +38,7 @@
     const words = [
         // 描述
         "Initially", "initially", "guaranteed", "No matter", "no matter",
-        "Not ", " not ", "don't", "didn't", "doesn't", "can't", "isn't", "aren't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", "nothing",
+        "Not ", " not ", "don't", "didn't", "doesn't", "can't", "isn't", "aren't", "No ", " no ", "Non-", "non-", "without", "forbidden", "invalid", " nothing",
         "if and only if", "as long as",
         "Each ", " each ", // each 是个挺有趣的词，高亮它能帮助快速定位后面所描述的对象
         "every", " both ", " other ",
@@ -74,6 +74,7 @@
         "initial",
         "infinite",
         "leaf",
+        "even integer",
 
         "没有", "不是", "不同", "不会", "互不",
         "相同",
@@ -85,7 +86,7 @@
         "严格", /*"递增",*/ "递减", "升序", "降序", "字典序",
         "重复", "重新", "相邻",
         "小写", "大写", "回文",
-        "排列",
+        // "排列",
         "叶子", "叶节点",
         "单向", "双向",
         // "返回", "计算",
