@@ -526,6 +526,7 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
 // 虚点 https://codeforces.com/problemset/problem/723/E
+// 转换 https://codeforces.com/problemset/problem/1361/C
 // https://codeforces.com/problemset/problem/1186/F
 func (*graph) eulerianPathOnUndirectedGraph(n, m int) []int {
 	// 无向图
@@ -555,10 +556,8 @@ func (*graph) eulerianPathOnUndirectedGraph(n, m int) []int {
 	}
 
 	// NOTE: 若没有奇度数，则返回的是欧拉回路
-	// NOTE: 若不是连通图，则需要用一个额外的 visV 来遍历所有 CC，具体见 https://codeforces.com/contest/723/submission/120212770
-	path := make([]int, 0, m+1)
+	path := make([]int, 0, len(g)) // m
 	vis := make([]bool, m)
-	pre := -1
 	var f func(int)
 	f = func(v int) {
 		for len(g[v]) > 0 {
@@ -569,18 +568,15 @@ func (*graph) eulerianPathOnUndirectedGraph(n, m int) []int {
 				continue
 			}
 			vis[i] = true
-			f(e.to)
-			// 定向
-			v, w := v, e.to
-			if w == pre {
-				v, w = w, v
-			}
-			pre = w
-			// NOTE: 输出边的话移在这里 append i
+			w := e.to
+			f(w)
+			// 输出边的写法，注意是倒序
+			// path = append(path, i)
 		}
+		// 输出点的写法，最后需要反转 path
 		path = append(path, v)
 	}
-	f(st)
+	f(st) // for i := range g { f(i) }
 
 	for i, n := 0, len(path); i < n/2; i++ {
 		path[i], path[n-1-i] = path[n-1-i], path[i]
