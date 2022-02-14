@@ -12,29 +12,15 @@ func CF1638C(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var T, n int
+	var T, n, v int64
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
-		a := make([]int, n)
-		p := make([]int, n)
-		for i := range a {
-			Fscan(in, &a[i])
-			a[i]--
-			p[a[i]] = i
-		}
-		ans := 0
-		for i, min := n-1, n; i >= 0; i-- {
-			if a[p[i]] < 0 {
-				continue
-			}
-			if a[p[i]] < min {
+		ans := int64(0)
+		for i, s := int64(1), int64(0); i <= n; i++ {
+			Fscan(in, &v)
+			s += v
+			if s == i*(i+1)/2 {
 				ans++
-			}
-			for j := p[i]; j < n && a[j] >= 0; j++ {
-				if a[j] < min {
-					min = a[j]
-				}
-				a[j] = -1
 			}
 		}
 		Fprintln(out, ans)
