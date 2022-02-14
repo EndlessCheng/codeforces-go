@@ -1032,10 +1032,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 多重背包 - 优化 2 - 单调队列优化
 	// todo 挑战 P340
 
-	// 分组背包
+	// 分组背包·每组至多选一个（恰好选一个见后面）
 	// https://www.acwing.com/problem/content/9/
 	// https://www.luogu.com.cn/problem/P1757
-	// LC1981/周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -1052,15 +1051,17 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return dp[maxW]
 	}
 
-	// 分组背包·每组恰好选一个且恰好装满背包
+	// 分组背包·每组恰好选一个
 	// 允许物品重量为 0
+	// LC1981/周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 	// 与二分图染色结合 https://codeforces.com/problemset/problem/1354/E
-	groupKnapsackFill := func(groups [][]int, maxW int) bool {
+	// 转换 https://codeforces.com/problemset/problem/1637/D
+	groupKnapsackFill := func(groups [][]int, maxW int) []bool {
 		dp := make([]bool, maxW+1) // dp[i][j] 表示能否从前 i 组物品中选出重量恰好为 j 的，且每组都恰好选一个物品
 		dp[0] = true
 		for _, g := range groups {
 		next:
-			for j := maxW; j >= 0; j-- {
+			for j := maxW; j >= 0; j-- { // 这里 j 的初始值可以优化至前 i 组的最大元素值之和
 				for _, w := range g {
 					if w <= j && dp[j-w] {
 						dp[j] = true
@@ -1070,7 +1071,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 				dp[j] = false // 由于我们是滚动数组的写法，dp[i][j] 无法满足时要标记成 false
 			}
 		}
-		return dp[maxW]
+		return dp // dp[j] 表示从每组恰好选一个，能否凑成重量 j
 	}
 
 	// 树上背包/树形背包/依赖背包
@@ -1271,7 +1272,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 状态设计 https://codeforces.com/problemset/problem/744/C
 	// 枚举来源 https://codeforces.com/problemset/problem/377/C
 	// 卡常优化 https://codeforces.com/problemset/problem/327/E 另一种做法是折半枚举
-	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
+	// LC1879/双周赛53D https://leetcode-cn.com/problems/minimum-xor-sum-of-two-arrays/
+	// LC2172/周赛280D https://leetcode-cn.com/problems/maximum-and-sum-of-array/
 	permDP := func(a []int) int {
 		n := len(a)
 		m := 1 << n
