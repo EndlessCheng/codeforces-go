@@ -8,6 +8,7 @@ package copypasta
 // https://codeforces.com/blog/entry/89313
 // https://codeforces.com/blog/entry/15890
 // todo 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399
+//  像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }

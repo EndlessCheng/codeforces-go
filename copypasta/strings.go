@@ -24,20 +24,7 @@ TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codef
 https://en.wikipedia.org/wiki/Bitap_algorithm shift-or / shift-and / Baeza-Yates–Gonnet algorithm
 */
 
-func stringCollection() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a >= b {
-			return a
-		}
-		return b
-	}
-
+func _(min, max func(int, int) int) {
 	// 注：如果 s 是常量的话，由于其在编译期分配到只读段，对应的地址是无法写入的
 	unsafeToBytes := func(s string) []byte { return *(*[]byte)(unsafe.Pointer(&s)) }
 	unsafeToString := func(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
@@ -65,18 +52,20 @@ func stringCollection() {
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
-	hash := func(s []byte) {
+	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
+	hash := func(s string) {
 		// 注意：由于哈希很容易被卡，能用其它方法实现尽量用其它方法
 		const prime uint64 = 1e8 + 7
 		powP := make([]uint64, len(s)+1) // powP[i] = prime^i
 		powP[0] = 1
-		preHash := make([]uint64, len(s)+1) // preHash[i] = hash(s[:i])
+		preHash := make([]uint64, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
 		for i, b := range s {
 			powP[i+1] = powP[i] * prime
-			preHash[i+1] = preHash[i]*prime + uint64(b)
+			preHash[i+1] = preHash[i]*prime + uint64(b) // 本质是秦九韶算法
 		}
 
-		// 计算子串 s[l:r] 的哈希
+		// 计算子串 s[l:r] 的哈希   0<=l<=r<=len(s)
+		// 空串的哈希值为 0
 		subHash := func(l, r int) uint64 { return preHash[r] - preHash[l]*powP[r-l] }
 		_ = subHash
 	}
@@ -100,6 +89,7 @@ func stringCollection() {
 	// https://codeforces.com/problemset/problem/1003/F
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
+	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
 	calcMaxMatchLengths := func(s []byte) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {
@@ -143,6 +133,9 @@ func stringCollection() {
 		}
 		return 1 // 无小于 n 的循环节
 	}
+
+	// todo 失配树（border 树）
+	//  https://www.luogu.com.cn/problem/P5829
 
 	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀

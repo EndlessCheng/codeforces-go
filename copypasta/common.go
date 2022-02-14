@@ -103,7 +103,7 @@ https://codeforces.com/problemset/problem/707/D
 对比 https://codeforces.com/problemset/submission/375/118043978
     https://codeforces.com/problemset/submission/375/118044262
 */
-func commonCollection() {
+func _() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
 

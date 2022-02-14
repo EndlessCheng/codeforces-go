@@ -65,6 +65,7 @@ OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 狄利克雷生成函数浅谈 https://www.luogu.com.cn/blog/gxy001/di-li-ke-lei-sheng-cheng-han-shuo-qian-tan
 生成函数在背包问题中的应用 https://zykykyk.github.io/post/%E7%94%9F%E6%88%90%E5%87%BD%E6%95%B0%E5%9C%A8%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/
 生成函数的背包计数问题 https://www.cnblogs.com/ErkkiErkko/p/10838697.html
+OGFs, EGFs, differentiation and Taylor shifts https://codeforces.com/blog/entry/99646
 A problem collection of ODE and differential technique https://codeforces.com/blog/entry/76447
 Optimal Algorithm on Polynomial Composite Set Power Series https://codeforces.com/blog/entry/92183
 载谭 Binomial Sum：多项式复合、插值与泰勒展开 https://www.luogu.com.cn/blog/EntropyIncreaser/zai-tan-binomial-sum-duo-xiang-shi-fu-ge-cha-zhi-yu-tai-lei-zhan-kai

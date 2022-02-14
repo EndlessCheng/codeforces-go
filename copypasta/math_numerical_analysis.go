@@ -42,7 +42,8 @@ func Asr(a, b, eps float64, f mathF) float64 {
 // https://en.wikipedia.org/wiki/Polynomial_interpolation
 
 // 拉格朗日插值
-// 给定多项式上的 n 个点 (xi,yi)，求 f(k)
+// 给定（同余）多项式上的 n 个点 (xi,yi)，我们可以得到一个 n-1 次多项式，
+// 利用拉格朗日插值可以在不用高斯消元的情况下，求出 f(k) 的值
 // https://en.wikipedia.org/wiki/Lagrange_polynomial
 // https://oi-wiki.org/math/poly/lagrange/
 // 浅谈几种插值方法 https://www.luogu.com.cn/blog/zhang-xu-jia/ji-zhong-cha-zhi-fang-fa-yang-xie
@@ -50,34 +51,35 @@ func Asr(a, b, eps float64, f mathF) float64 {
 // 模板题 https://www.luogu.com.cn/problem/P4781
 // todo https://www.luogu.com.cn/problem/P5667
 // 等幂和 https://codeforces.com/problemset/problem/622/F
+// 交互 找零点 https://codeforces.com/problemset/problem/1155/E
 func lagrangePolynomialInterpolation(xs, ys []int64, k int64) int64 {
 	const mod = 998244353
 
-	pow := func(x, n int64) int64 {
+	pow := func(x, n int64) (res int64) {
 		x %= mod
-		res := int64(1)
+		res = 1
 		for ; n > 0; n >>= 1 {
 			if n&1 == 1 {
 				res = res * x % mod
 			}
 			x = x * x % mod
 		}
-		return res
+		return
 	}
 	inv := func(a int64) int64 { return pow(a, mod-2) }
 	div := func(a, b int64) int64 { return a % mod * inv(b) % mod }
 
-	ans := int64(0)
+	fk := int64(0)
 	for i, xi := range xs {
 		a, b := ys[i]%mod, int64(1)
-		for j, x := range xs {
+		for j, xj := range xs {
 			if j != i {
-				a = a * (k - x) % mod
-				b = b * (xi - x) % mod
+				a = a * (k - xj) % mod
+				b = b * (xi - xj) % mod
 			}
 		}
-		ans += div(a, b)
+		fk += div(a, b)
 	}
-	ans = (ans%mod + mod) % mod
-	return ans
+	fk = (fk%mod + mod) % mod
+	return fk
 }

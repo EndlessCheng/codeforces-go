@@ -137,7 +137,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 */
 
-func numberTheoryCollection() {
+func _() {
 	const mod int64 = 1e9 + 7 // 998244353
 	pow := func(x, n, p int64) (res int64) {
 		x %= p
@@ -152,6 +152,10 @@ func numberTheoryCollection() {
 	}
 
 	/* GCD LCM 相关
+
+	https://oeis.org/A051010 Triangle T(m,n) giving of number of steps in the Euclidean algorithm for gcd(m,n) with 0<=m<n
+	https://oeis.org/A034883 Maximum length of Euclidean algorithm starting with n and any nonnegative i<n
+	https://oeis.org/A049826 GCD(n,i) 的迭代次数之和，O(nlogn)
 
 	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
 	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
@@ -2266,23 +2270,22 @@ func numberTheoryCollection() {
 	// 贝尔数：基数为 n 的集合的划分方法数 https://oeis.org/A000110
 	// https://en.wikipedia.org/wiki/Bell_number
 	// 1, 1, 2, 5, 15, 52, 203, 877, 4140, 21147, 115975, 678570, 4213597, 27644437, 190899322, 1382958545, ...
+	// https://en.wikipedia.org/wiki/Bell_triangle https://oeis.org/A011971 Aitken's array
+	// a(0,0)=1, a(n,0) = a(n-1,n-1), a(n,k) = a(n,k-1) + a(n-1,k-1)
+	// 其他公式
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} S2(n,k)
-	bell := func(n int) (res int64) {
-		s2 := make([][]int64, n+1)
-		for i := range s2 {
-			s2[i] = make([]int64, n+1)
-		}
-		s2[0][0] = 1
+	bellTriangle := func(n int) [][]int64 {
+		b := make([][]int64, n+1) // 第一列为贝尔数
+		b[0] = []int64{1}
 		for i := 1; i <= n; i++ {
+			b[i] = make([]int64, i+1)
+			b[i][0] = b[i-1][i-1]
 			for j := 1; j <= i; j++ {
-				s2[i][j] = (s2[i-1][j-1] + int64(j)*s2[i-1][j]) % mod
+				b[i][j] = (b[i][j-1] + b[i-1][j-1]) % mod
 			}
 		}
-		for _, v := range s2[n][1:] {
-			res += v
-		}
-		return res % mod
+		return b
 	}
 
 	// 贝尔数的多项式求法
@@ -2305,6 +2308,29 @@ func numberTheoryCollection() {
 			b[i] = v * F[i] % P
 		}
 		return b
+	}
+
+	// 贝尔数 EXTRA：如何搜索所有集合划分
+	// 相关题目：https://codeforces.com/contest/954/problem/I
+	setPartition := func(n int) {
+		groups := [][]int{} // 或者用一个 roots 数组表示集合的根节点（代表元）
+		var f func(int)
+		f = func(p int) {
+			if p == n {
+				// do groups ...
+
+				return
+			}
+			groups = append(groups, []int{p})
+			f(p + 1)
+			groups = groups[:len(groups)-1]
+			for i := range groups {
+				groups[i] = append(groups[i], p)
+				f(p + 1)
+				groups[i] = groups[i][:len(groups[i])-1]
+			}
+		}
+		f(0)
 	}
 
 	// 富比尼数（有序贝尔数）
@@ -2691,7 +2717,7 @@ func numberTheoryCollection() {
 		modSqrt, isQuadraticResidue,
 		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
 		stirling1, stirling2, stirling2RowPoly,
-		bell, bellPoly,
+		bellTriangle, bellPoly, setPartition,
 		calcMu, sieveMu,
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 		sieveDu,
@@ -2930,38 +2956,35 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 找出 50% 作弊者 https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
     讨论 https://codeforces.com/blog/entry/84822
 */
-func combinatoricsCollection() {
-	// 容斥原理 (PIE, the principle of inclusion and exclusion)
-	// 参考《挑战程序设计竞赛》P296
-	// https://codeforces.com/blog/entry/64625
-	// https://ac.nowcoder.com/acm/contest/6219/C
-	//
-	// 多重集组合数 https://codeforces.com/problemset/problem/451/E
-	// https://codeforces.com/problemset/problem/1342/E
-	// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
-	// 不重不漏 https://codeforces.com/problemset/problem/1007/B
-	// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
-	// 用因子容斥 https://codeforces.com/problemset/problem/900/D
-	solveInclusionExclusion := func(a []int) (ans int64) {
-		n := len(a)
-		const mod int64 = 1e9 + 7 // 998244353
-		for sub := uint(0); sub < 1<<n; sub++ {
-			res := int64(0)
-			for i, v := range a {
-				if sub>>i&1 > 0 {
-					// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
-					_ = v // do v...
 
-				}
+// 容斥原理 (PIE, the principle of inclusion and exclusion)
+// 参考《挑战程序设计竞赛》P296
+// https://codeforces.com/blog/entry/64625
+// https://ac.nowcoder.com/acm/contest/6219/C
+//
+// 多重集组合数 https://codeforces.com/problemset/problem/451/E
+// https://codeforces.com/problemset/problem/1342/E
+// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
+// 不重不漏 https://codeforces.com/problemset/problem/1007/B
+// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
+// 用因子容斥 https://codeforces.com/problemset/problem/900/D
+func solveInclusionExclusion(a []int) (ans int64) {
+	n := len(a)
+	const mod int64 = 1e9 + 7 // 998244353
+	for sub := uint(0); sub < 1<<n; sub++ {
+		res := int64(0)
+		for i, v := range a {
+			if sub>>i&1 > 0 {
+				// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
+				_ = v // do v...
+
 			}
-			if bits.OnesCount(sub)&1 > 0 { // 某些题目是 == 0
-				res = -res
-			}
-			ans += res // mod
 		}
-		ans = (ans%mod + mod) % mod
-		return
+		if bits.OnesCount(sub)&1 > 0 { // 某些题目是 == 0
+			res = -res
+		}
+		ans += res // mod
 	}
-
-	_ = []interface{}{solveInclusionExclusion}
+	ans = (ans%mod + mod) % mod
+	return
 }

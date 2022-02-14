@@ -29,6 +29,7 @@ https://codeforces.com/problemset/problem/360/B
 https://codeforces.com/problemset/problem/461/B
 https://codeforces.com/problemset/problem/553/A
 https://codeforces.com/problemset/problem/687/C
+https://codeforces.com/problemset/problem/744/C
 https://codeforces.com/problemset/problem/1012/C
 https://codeforces.com/problemset/problem/1025/D
 https://codeforces.com/problemset/problem/1027/E
@@ -134,26 +135,7 @@ https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
 */
-func dpCollections() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-
+func _(min, max func(int, int) int, abs func(int) int) {
 	// 涉及到前缀和/子数组和的问题
 	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
 	// 下面的代码来自 LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
@@ -548,6 +530,7 @@ func dpCollections() {
 	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
 	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
+	// 状态设计 https://atcoder.jp/contests/abc237/tasks/abc237_f
 	lis := func(a []int) int {
 		dp := []int{}
 		for _, v := range a {
@@ -559,6 +542,7 @@ func dpCollections() {
 		}
 		return len(dp)
 	}
+
 	// 每个前缀的 LIS
 	// https://leetcode-cn.com/contest/weekly-contest-253/problems/find-the-longest-valid-obstacle-course-at-each-position/
 	lisAll := func(a []int) []int {
@@ -1284,6 +1268,7 @@ func dpCollections() {
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://codeforces.com/problemset/problem/1215/E
 	// 状态设计 https://codeforces.com/problemset/problem/743/E
+	// 状态设计 https://codeforces.com/problemset/problem/744/C
 	// 枚举来源 https://codeforces.com/problemset/problem/377/C
 	// 卡常优化 https://codeforces.com/problemset/problem/327/E 另一种做法是折半枚举
 	// LC1879 https://leetcode-cn.com/contest/biweekly-contest-53/problems/minimum-xor-sum-of-two-arrays/
@@ -2017,6 +2002,7 @@ func dpCollections() {
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
 	// LC1245 https://leetcode-cn.com/problems/tree-diameter/
+	// 变形 https://codeforces.com/problemset/problem/1238/F
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
 		f = func(v, fa int) (mxDep int) {
@@ -2119,6 +2105,7 @@ func dpCollections() {
 	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
 	// 训练指南第一章例题 30，UVa10859 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1800
 	// - 求最小顶点覆盖，以及所有最小顶点覆盖中，两端点都被覆盖的边的最大个数
+	// 构造 https://codeforces.com/problemset/problem/959/C
 	minVertexCoverOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
 		f = func(v, fa int) (notChosen, chosen int) { // int64
@@ -2217,6 +2204,7 @@ func dpCollections() {
 	// https://codeforces.com/problemset/problem/219/D
 	// https://codeforces.com/problemset/problem/337/D
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D
+	// https://codeforces.com/problemset/problem/1626/E
 
 	// 给一颗无根树
 	// 返回每个点到其余点的距离之和

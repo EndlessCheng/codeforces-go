@@ -11,6 +11,7 @@ import (
 
 https://oi-wiki.org/ds/treap/
 https://en.wikipedia.org/wiki/Treap
+复杂度证明 http://www.cs.cmu.edu/afs/cs/academic/class/15210-s12/www/lectures/lecture16.pdf
 部分代码参考刘汝佳实现，见 https://github.com/klb3713/aoapc-book/blob/master/TrainingGuide/bookcodes/ch3/la5031.cpp
 额外维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
 
