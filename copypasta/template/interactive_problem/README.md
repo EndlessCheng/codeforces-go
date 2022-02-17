@@ -1,6 +1,6 @@
 # Interactive Problem Template
 
-Use below interface and implement it both in `main.go` and `main_test.go`.
+You should implement this interface and use it both in `main.go` and `main_test.go`.
 
 ```go
 type interaction interface {
