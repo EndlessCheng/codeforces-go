@@ -4,14 +4,16 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 
 // github.com/EndlessCheng/codeforces-go
 func mergeNodes(head *ListNode) *ListNode {
-	for node, ans, sum := head.Next, head, 0; node != nil; node = node.Next {
+	ans := head
+	for node, sum := head.Next, 0; node != nil; node = node.Next {
 		if node.Val > 0 {
 			sum += node.Val
 		} else {
-			ans.Next = &ListNode{sum, nil}
+			ans.Next.Val = sum // 原地修改
 			ans = ans.Next
 			sum = 0
 		}
 	}
+	ans.Next = nil
 	return head.Next
 }
