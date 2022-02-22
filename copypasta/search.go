@@ -744,7 +744,7 @@ func loopCollection() {
 				}
 				has[v] = true
 				for w := v; w > 0; w &= w - 1 {
-					f(v &^ (w & -w))
+					f(v ^ w&-w)
 				}
 			}
 			//for _, v := range a {
