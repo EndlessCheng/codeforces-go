@@ -22,3 +22,5 @@
 国服的周赛始于第 83 场（2018-05-06 09:30），在此之前的周赛只有美服力扣上有（第 1 场周赛始于 2016-08-21）。
 
 [周赛对应题号整理](https://leetcode-cn.com/circle/discuss/KAQoqc/)
+
+[周赛积分算法（ELO）](https://leetcode-cn.com/circle/article/neTUV4/)
