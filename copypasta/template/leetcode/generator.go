@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -137,6 +138,8 @@ func fetchProblemURLs(session *grequests.Session, contestTag string) (problems [
 		problems[i] = &problem{
 			id:  string(byte('a' + i)),
 			url: fmt.Sprintf("https://%s/contest/%s/problems/%s/", host, contestTag, q.TitleSlug),
+
+			isFuncProblem: true,
 		}
 	}
 	return
@@ -471,8 +474,6 @@ func (p *problem) createDir() error {
 	return os.MkdirAll(p.contestDir+p.id, os.ModePerm)
 }
 
-var _firstMainFileOpened bool
-
 func (p *problem) writeMainFile() error {
 	imports := ""
 	if strings.Contains(p.defaultCode, "Definition for") {
@@ -488,8 +489,7 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 `, imports, p.customComment, p.defaultCode)
 
 	filePath := p.contestDir + fmt.Sprintf("%[1]s/%[1]s.go", p.id)
-	if !_firstMainFileOpened {
-		_firstMainFileOpened = true
+	if p.id == "a" {
 		defer open.Run(absPath(filePath)) // 打开第一道题的文件
 	}
 	return ioutil.WriteFile(filePath, []byte(fileContent), 0644)
@@ -549,40 +549,51 @@ func Test_%s(t *testing.T) {%s
 }
 
 func handleProblems(session *grequests.Session, problems []*problem) error {
-	for _, p := range problems {
-		if p.openURL {
-			if err := open.Run(p.url); err != nil {
-				fmt.Println("open err:", p.url, err)
+	wg := &sync.WaitGroup{}
+	wg.Add(1 + len(problems))
+
+	go func() {
+		defer wg.Done()
+		for _, p := range problems {
+			if p.openURL {
+				if err := open.Run(p.url); err != nil {
+					fmt.Println("open err:", p.url, err)
+				}
 			}
 		}
-	}
+	}()
 
 	for _, p := range problems {
-		//if p.id != "a" {
-		//	continue
-		//}
 		fmt.Println(p.id, p.url)
-		if err := p.parseHTML(session); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-		}
 
-		p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
-			toGolangReceiverName,
-			lowerArgsFirstChar,
-			renameInputArgs,
-			namedReturnFunc("ans"),
-		}, "\t\n\treturn")
+		go func(p *problem) {
+			defer wg.Done()
 
-		if err := p.createDir(); err != nil {
-			return err // IO
-		}
-		if err := p.writeMainFile(); err != nil {
-			return err // IO
-		}
-		if err := p.writeTestFile(); err != nil {
-			return err // IO
-		}
+			if err := p.parseHTML(session); err != nil {
+				fmt.Fprintln(os.Stderr, err)
+			}
+
+			p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
+				toGolangReceiverName,
+				lowerArgsFirstChar,
+				renameInputArgs,
+				namedReturnFunc("ans"),
+			}, "\t\n\treturn")
+
+			if err := p.createDir(); err != nil {
+				fmt.Println("createDir err:", p.url, err)
+				return
+			}
+			if err := p.writeMainFile(); err != nil {
+				fmt.Println("writeMainFile err:", p.url, err)
+			}
+			if err := p.writeTestFile(); err != nil {
+				fmt.Println("writeTestFile err:", p.url, err)
+			}
+		}(p)
 	}
+
+	wg.Wait()
 	return nil
 }
 
