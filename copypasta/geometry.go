@@ -635,13 +635,7 @@ func smallestEnclosingDisc(ps []vecF) circleF {
 // Angular Sweep 算法 O(n^2logn)
 // https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/
 // LC1453/周赛189D https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
-func maxCoveredPoints(ps []vec, r int64) int {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
+func maxCoveredPoints(ps []vec, r int64, max func(int, int) int) int {
 	const eps = 1e-8
 	type event struct {
 		angle float64
@@ -704,14 +698,7 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 //  http://poj.org/problem?id=2986
 
 // 多边形相关
-func vec2Collection() {
-	min := func(a, b int64) int64 {
-		if a < b {
-			return a
-		}
-		return b
-	}
-
+func _(min func(int64, int64) int64) {
 	readVec := func(in io.Reader) vec {
 		var x, y int64
 		Fscan(in, &x, &y)
@@ -828,7 +815,7 @@ func vec2Collection() {
 
 	// 求凸包 葛立恒扫描法 Graham's scan
 	// 使用单调栈，保存的向量是有极角序的
-	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是每一步都向左走，如果某个点会导致绳子向右走，那么就需要出栈
+	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
 	// 求上凸包就从最右边的点开始
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个

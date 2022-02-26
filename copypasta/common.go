@@ -68,11 +68,18 @@ https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 */
 
+/* 倒序思维
+https://codeforces.com/problemset/problem/1644/D
+https://codeforces.com/problemset/problem/1638/D
+*/
+
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
 // 栈的应用 https://codeforces.com/problemset/problem/1092/D1
 //         https://codeforces.com/problemset/problem/1092/D2
 
 // 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
+
+// 「恰好」转换成「至少/至多」https://codeforces.com/problemset/problem/1188/C
 
 /* todo 反悔贪心
 另见 heap.go 中的「反悔堆」

@@ -417,13 +417,7 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
-func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
+func (*tree) findCentroid(n, st int, g [][]int, max func(int, int) int) (ct int) {
 	minMaxSubSize := int(1e9)
 	var findCt func(v, fa int) int
 	findCt = func(v, fa int) int {
@@ -517,31 +511,11 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 // 点分治：求树上距离不超过 upperDis 的点对数
 // todo 待整理 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
 // todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
-func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64) int64 {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	type neighbor struct {
-		to int
-		wt int64
-	}
-	g := make([][]neighbor, n)
-	for i := 0; i < n-1; i++ {
-		var v, w int
-		var wt int64
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
-		g[v] = append(g[v], neighbor{w, wt})
-		g[w] = append(g[w], neighbor{v, wt})
-	}
-	usedCentroid := make([]bool, n)
+func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root int, upperDis int64, max func(int, int) int) int64 {
+	usedCentroid := make([]bool, len(g))
 
-	size := make([]int, n)
-	var calcSize func(v, fa int) int
+	size := make([]int, len(g))
+	var calcSize func(int, int) int
 	calcSize = func(v, fa int) int {
 		sz := 1
 		for _, e := range g[v] {
@@ -554,7 +528,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 	}
 
 	var compSize int
-	var findCentroid func(v, fa int) (int, int)
+	var findCentroid func(int, int) (int, int)
 	findCentroid = func(v, fa int) (minSize, ct int) {
 		minSize = int(1e9)
 		maxSubSize := 0
@@ -583,7 +557,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 		disToCentroid = append(disToCentroid, d)
 		for _, e := range g[v] {
 			if w := e.to; w != fa && !usedCentroid[w] {
-				calcDisToCentroid(w, v, d+e.wt)
+				calcDisToCentroid(w, v, d+int64(e.wt))
 			}
 		}
 	}
@@ -625,7 +599,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 		for _, e := range g[ct] {
 			if w := e.to; !usedCentroid[w] {
 				disToCentroid = []int64{}
-				calcDisToCentroid(w, ct, e.wt)
+				calcDisToCentroid(w, ct, int64(e.wt))
 				ans -= countPairs(disToCentroid)
 				ds = append(ds, disToCentroid...)
 			}
@@ -660,7 +634,7 @@ func (*tree) numPairsWithDistanceLimit(in io.Reader, n, root int, upperDis int64
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
 // 其他：见 mo.go 中的树上莫队部分
-func (*tree) lcaBinarySearch(n, root int, g [][]int) {
+func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
@@ -754,13 +728,6 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	}
 
 	{
-		max := func(a, b int) int {
-			if a > b {
-				return a
-			}
-			return b
-		}
-
 		// EXTRA: 倍增的时候维护其他属性，如边权最值等
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E
 		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685

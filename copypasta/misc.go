@@ -673,13 +673,7 @@ func calculate(s string) (ans int) {
 // 对于一个填满的网格图，每个士兵到边缘的最短路径就是离他最近的边缘的距离
 // 当一个士兵退出网格后，BFS 地更新他周围的士兵到边缘的最短路径（空格点为 0，有人的格点为 1）
 // 复杂度 O((n+m)*min(n,m)^2)
-func minMustPassSum(n, m int, targetCells [][2]int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
+func minMustPassSum(n, m int, targetCells [][2]int, min func(int, int) int) int {
 	dis := make([][]int, n)
 	filled := make([][]int, n) // 格子是否有人
 	inQ := make([][]bool, n)
@@ -726,19 +720,7 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
 // 无边界 LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
-func minKnightMoves(x, y int) int {
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
+func minKnightMoves(x, y int, abs func(int) int, max func(int, int) int) int {
 	x, y = abs(x), abs(y)
 	if x+y == 1 {
 		return 3
@@ -784,14 +766,7 @@ func josephusProblem(n, k int) int {
 // 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P3051 https://www.luogu.com.cn/problem/P4016 UVa11300 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2275
 // 环形+打印方案 https://www.luogu.com.cn/problem/P2125
 // 二维环形 https://www.acwing.com/problem/content/107/
-func minMoveToAllSameInCircle(a []int) (ans int) { // int64
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-
+func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) { // int64
 	n := len(a)
 	avg := 0
 	for _, v := range a {

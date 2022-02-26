@@ -230,10 +230,11 @@ func _(n int) {
 // 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 // 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
+// 种类并查集 + 维护集合大小 https://codeforces.com/problemset/problem/1290/C
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode-cn.com/problems/evaluate-division/
 func _(n int) {
-	// 注：kinds 为 2 时可以用异或来代替加法
+	// 注：kinds 为 2 时可以用异或来代替加减法
 	const kinds = 2
 	fa := make([]int, n) // n+1
 	for i := range fa {

@@ -51,20 +51,7 @@ todo https://www.luogu.com.cn/problem/P3396
  https://codeforces.com/problemset/problem/1207/F
  https://codeforces.com/contest/455/problem/D
 */
-func sqrtDecompositionCollections() {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
+func _(min, max func(int, int) int) {
 	type block struct {
 		l, r           int // [l,r]
 		origin, sorted []int

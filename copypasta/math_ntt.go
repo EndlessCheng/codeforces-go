@@ -68,6 +68,7 @@ OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 OGFs, EGFs, differentiation and Taylor shifts https://codeforces.com/blog/entry/99646
 A problem collection of ODE and differential technique https://codeforces.com/blog/entry/76447
 Optimal Algorithm on Polynomial Composite Set Power Series https://codeforces.com/blog/entry/92183
+On linear recurrences and the math behind them https://codeforces.com/blog/entry/100158
 载谭 Binomial Sum：多项式复合、插值与泰勒展开 https://www.luogu.com.cn/blog/EntropyIncreaser/zai-tan-binomial-sum-duo-xiang-shi-fu-ge-cha-zhi-yu-tai-lei-zhan-kai
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu

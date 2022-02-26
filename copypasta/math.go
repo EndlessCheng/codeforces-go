@@ -137,7 +137,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 */
 
-func _() {
+func _(abs func(int64) int64, max func(int64, int64) int64) {
 	const mod int64 = 1e9 + 7 // 998244353
 	pow := func(x, n, p int64) (res int64) {
 		x %= p
@@ -601,12 +601,6 @@ func _() {
 		if isPrime(n) {
 			return n
 		}
-		abs := func(x int64) int64 {
-			if x < 0 {
-				return -x
-			}
-			return x
-		}
 		mul := func(a, b int64) (res int64) {
 			for ; b > 0; b >>= 1 {
 				if b&1 == 1 {
@@ -627,12 +621,6 @@ func _() {
 		}
 	}
 	{
-		max := func(a, b int64) int64 {
-			if a > b {
-				return a
-			}
-			return b
-		}
 		cacheGPF := map[int64]int64{}
 		var gpf func(int64) int64
 		gpf = func(x int64) (res int64) {
@@ -1984,7 +1972,8 @@ func _() {
 	// 1, 3, 15, 105, 945, 10395, 135135, 2027025, 34459425, 654729075, 13749310575, 316234143225, 7905853580625, ...
 	// Number of ways to choose n disjoint pairs of items from 2*n items
 	// Number of perfect matchings in the complete graph K(2n)
-	// 相关题目 LC1359/双周赛20D 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
+	// https://atcoder.jp/contests/abc236/tasks/abc236_d
+	// LC1359/双周赛20D 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
 	// 奇阶乘模 2^64 http://acm.hdu.edu.cn/showproblem.php?pid=6481 https://www.90yang.com/hdu6481-a-math-problem/
 	calcOddFactorialBig := func(n int) *big.Int {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
@@ -2441,6 +2430,7 @@ func _() {
 	// https://zhuanlan.zhihu.com/p/138038817
 	// 莫比乌斯反演-让我们从基础开始 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
 	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
+	// [Tutorial] Generalized Möbius Inversion on Posets https://codeforces.com/blog/entry/98413
 	//
 	// todo 专题练习[一些好玩的数学题] https://www.luogu.com.cn/training/1432
 	// https://codeforces.com/problemset/problem/547/C
@@ -2495,13 +2485,7 @@ func _() {
 
 	// ∑x/i, i in [low,up]
 	// 转换 https://codeforces.com/problemset/problem/1485/C
-	floorLoopRange := func(low, up, x int64) (sum int64) {
-		min := func(a, b int64) int64 {
-			if a < b {
-				return a
-			}
-			return b
-		}
+	floorLoopRange := func(low, up, x int64, min func(int64, int64) int64) (sum int64) {
 		for l, r := low, int64(0); l <= up; l = r + 1 {
 			h := x / l
 			if h == 0 {
@@ -2522,13 +2506,7 @@ func _() {
 	// https://www.luogu.com.cn/problem/P2261
 	// https://codeforces.com/problemset/problem/616/E
 	// NEERC05，紫书例题 10-25，UVa1363 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4109 https://codeforces.com/gym/101334 J
-	floorLoopRem := func(n, k int64) int64 {
-		min := func(a, b int64) int64 {
-			if a < b {
-				return a
-			}
-			return b
-		}
+	floorLoopRem := func(n, k int64, min func(int64, int64) int64) int64 {
 		sum := n * k
 		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
 			h := k / l
@@ -2548,13 +2526,7 @@ func _() {
 	// ∑{i=1..min(n,m)} floor(n/i)*floor(m/i)
 	// https://www.luogu.com.cn/blog/command-block/zheng-chu-fen-kuai-ru-men-xiao-ji
 	// todo ∑∑(n%i)*(m%j) 模积和 https://www.luogu.com.cn/problem/P2260
-	floorLoop2D := func(n, m int64) (sum int64) {
-		min := func(a, b int64) int64 {
-			if a < b {
-				return a
-			}
-			return b
-		}
+	floorLoop2D := func(n, m int64, min func(int64, int64) int64) (sum int64) {
 		for l, r := int64(1), int64(0); l <= min(n, m); l = r + 1 {
 			hn, hm := n/l, m/l
 			r = min(n/hn, m/hm)
@@ -2750,7 +2722,7 @@ todo 十二重计数法 https://www.luogu.com.cn/problem/P5824
 todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-iv-zu-ge-ji-shuo
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736 https://zhuanlan.zhihu.com/p/82241906
-递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
+递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
 上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)   相关题目 https://www.luogu.com.cn/problem/P7386
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) 相关题目 https://atcoder.jp/contests/abc154/tasks/abc154_f
 范德蒙德恒等式 Vandermonde's identity https://en.wikipedia.org/wiki/Vandermonde%27s_identity

@@ -47,6 +47,7 @@ func _(min, max func(int, int) int) {
 	//      anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
 	//      On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
 	//      hash killer https://loj.ac/p/6758
+	//  Kapun's algorithm https://codeforces.com/blog/entry/99973
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
