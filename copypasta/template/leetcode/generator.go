@@ -370,74 +370,70 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		fmt.Println("解析失败，未找到 Go 代码模板！")
 	}
 
-	// parse sample inputs and sample outputs
-	// 注：官方描述可能会打错字（比如「输入」写成「输出」），这里只匹配第一个字
-	parseData := func(nodes []*html.Node) (data string) {
-		for _, o := range nodes {
-			for o.DataAtom != 0 { // https://leetcode-cn.com/contest/weekly-contest-251/problems/largest-number-after-mutating-substring/
-				o = o.FirstChild
-			}
-			s := o.Data
-			s = strings.TrimSpace(s)
-			if strings.HasPrefix(s, ":") {
-				s = s[1:]
-			} else if strings.HasPrefix(s, "：") { // https://leetcode-cn.com/contest/weekly-contest-263/problems/simple-bank-system/
-				s = s[3:]
-			}
-			s = strings.TrimSpace(s)
-			data += s
-		}
-		return
-	}
-
-	var f func(*html.Node)
-	f = func(o *html.Node) {
-		// 解析每个 <pre> 块内的文本（以中文为基准解析）
+	var parseNode func(*html.Node)
+	parseNode = func(o *html.Node) {
+		// 提取并解析每个 <pre> 块内的文本（以中文为基准解析）
 		// 需要判断 <pre> 的下一个子元素是否为 tag
 		//     https://leetcode-cn.com/contest/weekly-contest-190/problems/max-dot-product-of-two-subsequences/
 		//     https://leetcode-cn.com/contest/weekly-contest-212/problems/arithmetic-subarrays/
 		// 有 tag 也不一定为 <strong>
-		//     https://leetcode-cn.com/contest/weekly-contest-103/problems/snakes-and-ladders/
-		//     https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
-		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 && o.FirstChild.DataAtom != atom.Img && o.FirstChild.DataAtom != atom.Image { // atom.Strong or atom.B
-			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入 输出
-				var inputNodes, outputNodes []*html.Node
-				c := o.FirstChild.NextSibling
-				for ; ; c = c.NextSibling {
-					if c.DataAtom != 0 {
-						s := strings.TrimSpace(c.FirstChild.Data)
-						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") || strings.HasPrefix(s, "提") { // 输入 输出 解释 提示
-							break
-						}
+		//     <img> https://leetcode-cn.com/contest/weekly-contest-103/problems/snakes-and-ladders/
+		//     <b> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
+		// 提取出文本后，去掉「解释」和「提示」后面的文字，然后分「输入」和「输出」来解析后面的数据
+		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 && o.FirstChild.DataAtom != atom.Img && o.FirstChild.DataAtom != atom.Image { // 一般是 atom.Strong，特殊情况是 atom.B
+			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入（极少情况下会被错误地写成输出）
+				rawData := &strings.Builder{}
+				var parsePreNode func(*html.Node)
+				parsePreNode = func(o *html.Node) {
+					if o.DataAtom == 0 {
+						rawData.WriteString(o.Data)
 					}
-					inputNodes = append(inputNodes, c)
+					for c := o.FirstChild; c != nil; c = c.NextSibling {
+						parsePreNode(c)
+					}
 				}
-				rawInput := parseData(inputNodes)
-				p.sampleIns = append(p.sampleIns, p.parseSampleText(rawInput, true))
+				parsePreNode(o)
 
-				for c = c.NextSibling; c != nil; c = c.NextSibling { // 有时候没有解释，那么会通过 c != nil 来跳出循环
-					if c.DataAtom != 0 {
-						s := strings.TrimSpace(c.FirstChild.Data)
-						if strings.HasPrefix(s, "输") || strings.HasPrefix(s, "解") || strings.HasPrefix(s, "提") { // 输入 输出 解释 提示
-							break
-						}
-					}
-					outputNodes = append(outputNodes, c)
+				data := rawData.String()
+				if i := strings.Index(data, "解"); i >= 0 { // 解释
+					data = data[:i]
 				}
-				rawOutput := parseData(outputNodes)
-				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(rawOutput, true))
+				if i := strings.Index(data, "提"); i >= 0 { // 提示
+					data = data[:i]
+				}
+
+				// 去掉前两个字和冒号
+				data = strings.TrimSpace(data)
+				data = data[6:]
+				if strings.HasPrefix(data, ":") {
+					data = data[1:]
+				} else if strings.HasPrefix(data, "：") {
+					data = data[3:]
+				}
+
+				i := strings.Index(data, "输") // 输出
+				p.sampleIns = append(p.sampleIns, p.parseSampleText(data[:i], true))
+
+				// 去掉前两个字和冒号
+				data = data[i+6:]
+				if strings.HasPrefix(data, ":") {
+					data = data[1:]
+				} else if strings.HasPrefix(data, "：") {
+					data = data[3:]
+				}
+				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(data, true))
 				return
 			}
 		}
 		for c := o.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
+			parseNode(c)
 		}
 	}
-	f(bodyNode)
+	parseNode(bodyNode)
 
 	if len(p.sampleIns) == 0 {
 		// 没找到 <pre>，国服特殊比赛（春秋赛等）
-		f = func(o *html.Node) {
+		parseNode = func(o *html.Node) {
 			if o.DataAtom == atom.Div && o.FirstChild != nil && strings.Contains(o.FirstChild.Data, "示例") {
 				raw := o.FirstChild.Data
 				sp := strings.Split(raw, "`")
@@ -455,10 +451,10 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				}
 			}
 			for c := o.FirstChild; c != nil; c = c.NextSibling {
-				f(c)
+				parseNode(c)
 			}
 		}
-		f(bodyNode)
+		parseNode(bodyNode)
 	}
 
 	if len(p.sampleIns) != len(p.sampleOuts) {
