@@ -54,7 +54,7 @@ $$
 func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
 	minSec := [18]int{}
 	for i := range minSec {
-		minSec[i] = math.MaxInt32 / 2
+		minSec[i] = math.MaxInt32 / 2 // 除二是防止下面计算状态转移时溢出
 	}
 	for _, tire := range tires {
 		f, r := tire[0], tire[1]
@@ -84,7 +84,7 @@ func min(a, b int) int { if a > b { return b }; return a }
 class Solution {
 public:
     int minimumFinishTime(vector<vector<int>> &tires, int changeTime, int numLaps) {
-        vector<int> minSec(18, INT_MAX / 2);
+        vector<int> minSec(18, INT_MAX / 2); // 除二是防止下面计算状态转移时溢出
         for (auto &tire : tires) {
             long time = tire[0];
             for (int x = 1, sum = 0; time <= changeTime + tire[0]; ++x) {
@@ -129,7 +129,7 @@ class Solution:
 class Solution {
     public int minimumFinishTime(int[][] tires, int changeTime, int numLaps) {
         var minSec = new int[18];
-        Arrays.fill(minSec, Integer.MAX_VALUE / 2);
+        Arrays.fill(minSec, Integer.MAX_VALUE / 2); // 除二是防止下面计算状态转移时溢出
         for (var tire : tires) {
             long time = tire[0];
             for (int x = 1, sum = 0; time <= changeTime + tire[0]; ++x) {
