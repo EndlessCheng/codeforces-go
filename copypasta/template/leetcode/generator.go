@@ -8,6 +8,7 @@ import (
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -73,7 +74,15 @@ func login(username, password string) (session *grequests.Session, err error) {
 	if !resp.Ok {
 		return nil, fmt.Errorf("POST %s return code %d", loginURL, resp.StatusCode)
 	}
-	return
+
+	u, _ := url.Parse(loginURL)
+	for _, cookie := range session.HTTPClient.Jar.Cookies(u) {
+		if cookie.Name == "LEETCODE_SESSION" {
+			return
+		}
+	}
+
+	return nil, fmt.Errorf("登录失败：账号或密码错误")
 }
 
 // 获取题目信息（含题目链接）
