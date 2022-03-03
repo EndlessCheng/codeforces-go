@@ -11,6 +11,9 @@ import (
 func TestGenLeetCodeTests(t *testing.T) {
 	const weekly = true
 
+	username := os.Getenv("LEETCODE_USERNAME_ZH")
+	password := os.Getenv("LEETCODE_PASSWORD_ZH")
+
 	var tag, dir string
 	if weekly {
 		contestID := GetWeeklyContestID(0) // 自动生成下一场周赛 ID
@@ -21,11 +24,6 @@ func TestGenLeetCodeTests(t *testing.T) {
 		tag = GetBiweeklyContestTag(contestID)
 		dir = fmt.Sprintf("../../../leetcode/biweekly/%d/", contestID) // 自定义生成目录
 	}
-
-	username := os.Getenv("LEETCODE_USERNAME_ZH")
-	password := os.Getenv("LEETCODE_PASSWORD_ZH")
-	//username = os.Getenv("LEETCODE_USERNAME_VIP_ZH")
-	//password = os.Getenv("LEETCODE_PASSWORD_VIP_ZH")
 
 	if err := GenLeetCodeTests(username, password, tag, true, dir, ""); err != nil {
 		t.Fatal(err)
