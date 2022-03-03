@@ -68,56 +68,60 @@ func lowerArgsFirstChar(funcDefineLine string) string {
 }
 
 // 替换常见变量名（数组、字符串等）
-func renameInputArgs(funcDefineLine string) string {
-	oldNew := []string{
-		// 数组、矩阵
-		"nums", "a",
-		"nums1", "x",
-		"nums2", "y",
-		"nums3", "z",
-		"arr", "a",
-		"array", "a",
-		"stones", "a",
-		"prices", "a",
-		"beans", "a",
-		"mat", "a",
-		"matrix", "a",
-		"grid", "g",
-		"grid1", "g1",
-		"grid2", "g2",
-		"words", "a",
+var oldNew = []string{
+	// 数组、矩阵
+	"nums", "a",
+	"nums1", "x",
+	"nums2", "y",
+	"nums3", "z",
+	"arr", "a",
+	"array", "a",
+	"stones", "a",
+	"prices", "a",
+	"beans", "a",
+	"mat", "a",
+	"matrix", "a",
+	"grid", "g",
+	"grid1", "g1",
+	"grid2", "g2",
+	"words", "a",
 
-		// 字符串
-		"word", "s",
-		"word1", "x",
-		"word2", "y",
-		"s1", "x",
-		"s2", "y",
+	// 字符串
+	"word", "s",
+	"word1", "x",
+	"word2", "y",
+	"s1", "x",
+	"s2", "y",
 
-		// 其余常见变量名
-		"num", "n",
-		"num1", "x",
-		"num2", "y",
-		"num3", "z",
-		"size", "n",
-		"edges", "es",
-		"points", "ps",
-		"pairs", "ps",
-		"queries", "qs",
-		"startPos", "st",
-		"start", "st",
-		"source", "st",
-		"target", "tar",
-		"limit", "lim",
-		"index", "id",
-		"index1", "id1",
-		"index2", "id2",
-		"dist", "dis",
-		"timestamp", "ts",
-	}
+	// 其余常见变量名
+	"num", "n",
+	"num1", "x",
+	"num2", "y",
+	"num3", "z",
+	"size", "n",
+	"edges", "es",
+	"points", "ps",
+	"pairs", "ps",
+	"queries", "qs",
+	"startPos", "st",
+	"start", "st",
+	"source", "st",
+	"target", "tar",
+	"limit", "lim",
+	"index", "id",
+	"index1", "id1",
+	"index2", "id2",
+	"dist", "dis",
+	"timestamp", "ts",
+}
+
+func init() {
 	for i := range oldNew {
 		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
 	}
+}
+
+func renameInputArgs(funcDefineLine string) string {
 	return strings.NewReplacer(oldNew...).Replace(funcDefineLine)
 }
 
