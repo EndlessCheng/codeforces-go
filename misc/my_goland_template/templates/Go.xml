@@ -79,7 +79,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="case" value="solve := func(Case int) {&#10;&#9;var n int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;$END$&#10;}&#10;&#10;var T int&#10;Fscan(in, &amp;T)&#10;for Case := 1; Case &lt;= T; Case++ {&#10;&#9;solve(Case)&#10;}&#10;&#10;_leftData, _ := ioutil.ReadAll(in)&#10;if _s := strings.TrimSpace(string(_leftData)); _s != &quot;&quot; {&#10;&#9;panic(&quot;有未读入的数据：\n&quot; + _s)&#10;}" description="多组数据" toReformat="true" toShortenFQNames="true">
+  <template name="case" value="solve := func(Case int) {&#10;&#9;var n$END$ int&#10;&#9;Fscan(in, &amp;n)&#10;&#9;&#10;}&#10;&#10;var T int&#10;Fscan(in, &amp;T)&#10;for Case := 1; Case &lt;= T; Case++ {&#10;&#9;solve(Case)&#10;}&#10;&#10;_leftData, _ := ioutil.ReadAll(in)&#10;if _s := strings.TrimSpace(string(_leftData)); _s != &quot;&quot; {&#10;&#9;panic(&quot;有未读入的数据：\n&quot; + _s)&#10;}" description="多组数据" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -177,7 +177,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="dir4" value="dir4 := []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右" description="dir4 := [...][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右" toReformat="true" toShortenFQNames="true">
+  <template name="dir4" value="dir4 := []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}" description="" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -309,13 +309,13 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="hp" value="type $NAME$ struct{ sort.IntSlice }&#10;&#10;//func (h $NAME$) Less(i, j int) bool  { return h.IntSlice[i] &gt; h.IntSlice[j] } // 最大堆&#10;func (h *$NAME$) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }&#10;func (h *$NAME$) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }&#10;func (h *$NAME$) push(v int)         { heap.Push(h, v) }&#10;func (h *$NAME$) pop() int           { return heap.Pop(h).(int) }&#10;func (h $NAME$) empty() bool         { return len(h.IntSlice) == 0 }&#10;func (h $NAME$) top() int            { return h.IntSlice[0] }" description="type hp struct{ sort.IntSlice }" toReformat="true" toShortenFQNames="true">
+  <template name="hp" value="type $NAME$ struct{ sort.IntSlice }&#10;&#10;//func (h $NAME$) Less(i, j int) bool  { return h.IntSlice[i] &gt; h.IntSlice[j] } // 最大堆&#10;func (h *$NAME$) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }&#10;func (h *$NAME$) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }&#10;func (h *$NAME$) push(v int)         { heap.Push(h, v) }&#10;func (h *$NAME$) pop() int           { return heap.Pop(h).(int) }&#10;func (h $NAME$) empty() bool         { return len(h.IntSlice) == 0 }&#10;func (h $NAME$) top() int            { return h.IntSlice[0] }&#10;func (h *$NAME$) init()              { heap.Init(h) }" description="type hp struct{ sort.IntSlice }" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;hp&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_FILE" value="true" />
     </context>
   </template>
-  <template name="hp2" value="type $NAME$ []$TYPE$&#10;&#10;func (h $NAME$) Len() int            { return len(h) }&#10;func (h $NAME$) Less(i, j int) bool  { return h[i] &lt; h[j] } // &gt; 为最大堆&#10;func (h $NAME$) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }&#10;func (h *$NAME$) Push(v interface{}) { *h = append(*h, v.($TYPE$)) }&#10;func (h *$NAME$) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }&#10;func (h *$NAME$) push(v $TYPE$)      { heap.Push(h, v) }&#10;func (h *$NAME$) pop() $TYPE$        { return heap.Pop(h).($TYPE$) }&#10;func (h $NAME$) empty() bool         { return len(h) == 0 }&#10;func (h $NAME$) top() $TYPE$         { return h[0] }" description="type hp []$TYPE$" toReformat="true" toShortenFQNames="true">
+  <template name="hp2" value="type $NAME$ []$TYPE$&#10;&#10;func (h $NAME$) Len() int            { return len(h) }&#10;func (h $NAME$) Less(i, j int) bool  { return h[i] &lt; h[j] } // &gt; 为最大堆&#10;func (h $NAME$) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }&#10;func (h *$NAME$) Push(v interface{}) { *h = append(*h, v.($TYPE$)) }&#10;func (h *$NAME$) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }&#10;func (h *$NAME$) push(v $TYPE$)      { heap.Push(h, v) }&#10;func (h *$NAME$) pop() $TYPE$        { return heap.Pop(h).($TYPE$) }&#10;func (h $NAME$) empty() bool         { return len(h) == 0 }&#10;func (h $NAME$) top() $TYPE$         { return h[0] }&#10;func (h *$NAME$) init()              { heap.Init(h) }" description="type hp []$TYPE$" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;hp&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="complete()" defaultValue="&quot;int64&quot;" alwaysStopAt="true" />
     <context>
@@ -365,12 +365,11 @@
       <option name="GO_TYPE" value="false" />
     </context>
   </template>
-  <template name="make2" value="$NAME$ := make([][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {&#10;&#9;&#9;$NAME$[i][j] = $INIT$&#10;&#9;}&#10;}" description="make 2D slice" toReformat="true" toShortenFQNames="true">
+  <template name="make2" value="$NAME$ := make([][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {$END$&#10;&#9;&#9;$NAME$[i][j] = 1e9 + 1&#10;&#9;}&#10;}" description="make 2D slice" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;dp&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <variable name="SIZE0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
     <variable name="SIZE1" expression="complete()" defaultValue="&quot;m&quot;" alwaysStopAt="true" />
-    <variable name="INIT" expression="" defaultValue="&quot;-1&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -414,7 +413,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="lesscond2" value="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; $AY$ &lt; $BY$" description="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; $AY$ &lt; $BY$" toReformat="true" toShortenFQNames="true">
+  <template name="lesscond2" value="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; $AY$ &lt; $BY$" description="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; $AY$ &lt; $BY$" toReformat="true" toShortenFQNames="true" deactivated="true">
     <variable name="AX" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
     <variable name="BX" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
     <variable name="AY" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -467,8 +466,9 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="mki" value="make([]int, $VAR0$)" description="make([]int, n)" toReformat="true" toShortenFQNames="true">
-    <variable name="VAR0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+  <template name="mki" value="$NAME$ := make([]int, $SIZE$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = i&#10;}&#10;sort.Slice($NAME$, func(i, j int) bool { return a[$NAME$[i]] &lt; a[$NAME$[j]] })" description="make([]int, n)" toReformat="true" toShortenFQNames="true">
+    <variable name="NAME" expression="" defaultValue="&quot;id&quot;" alwaysStopAt="true" />
+    <variable name="SIZE" expression="" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_EXPRESSION" value="true" />
       <option name="GO_STATEMENT" value="true" />
@@ -481,14 +481,14 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="lesspair" value="less := func(a, b pair) bool { return a.$X$ &lt; b.$X$ || a.$X$ == b.$X$ &amp;&amp; a.$Y$ &lt; b.$Y$ }" description="less := func(a, b pair) bool { return a.x &lt; b.x || a.x == b.x &amp;&amp; a.y &lt; b.y }" toReformat="true" toShortenFQNames="true">
+  <template name="lessfuncpair" value="less := func(a, b pair) bool { return a.$X$ &lt; b.$X$ || a.$X$ == b.$X$ &amp;&amp; a.$Y$ &lt; b.$Y$ }" description="less := func(a, b pair) bool { return a.x &lt; b.x || a.x == b.x &amp;&amp; a.y &lt; b.y }" toReformat="true" toShortenFQNames="true">
     <variable name="X" expression="complete()" defaultValue="&quot;x&quot;" alwaysStopAt="true" />
     <variable name="Y" expression="complete()" defaultValue="&quot;y&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="lessfunc" value="less := func(a []$TYPE$, b []$TYPE$) bool {&#10;&#9;n, m := len(a), len(b)&#10;&#9;for i := 0; i &lt; n &amp;&amp; i &lt; m; i++ {&#10;&#9;&#9;if a[i] != b[i] {&#10;&#9;&#9;&#9;return a[i] &lt; b[i]&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return n &lt; m&#10;}" description="比较字典序" toReformat="true" toShortenFQNames="true">
+  <template name="lessfuncslice" value="less := func(a []$TYPE$, b []$TYPE$) bool {&#10;&#9;n, m := len(a), len(b)&#10;&#9;for i := 0; i &lt; n &amp;&amp; i &lt; m; i++ {&#10;&#9;&#9;if a[i] != b[i] {&#10;&#9;&#9;&#9;return a[i] &lt; b[i]&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return n &lt; m&#10;}" description="比较字典序" toReformat="true" toShortenFQNames="true">
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
@@ -537,7 +537,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="pow" value="pow := func(x int$TYPE$, n int) (res int$TYPE$) {&#10;    x %= mod&#10;&#9;res = 1&#10;&#9;for ; n &gt; 0; n &gt;&gt;= 1 {&#10;&#9;&#9;if n&amp;1 &gt; 0 {&#10;&#9;&#9;&#9;res = res * x % mod&#10;&#9;&#9;}&#10;&#9;&#9;x = x * x % mod&#10;&#9;}&#10;&#9;return&#10;}" description="pow := func(x int64, n int) (res int64) {" toReformat="true" toShortenFQNames="true">
+  <template name="pow" value="pow := func(x int$TYPE$, n int) (res int$TYPE$) {&#10;    x %= mod&#10;&#9;res = 1&#10;&#9;for ; n &gt; 0; n &gt;&gt;= 1 {&#10;&#9;&#9;if n&amp;1 &gt; 0 {&#10;&#9;&#9;&#9;res = res * x % mod&#10;&#9;&#9;}&#10;&#9;&#9;x = x * x % mod&#10;&#9;}&#10;&#9;return&#10;}" description="快速幂" toReformat="true" toShortenFQNames="true">
     <variable name="TYPE" expression="" defaultValue="&quot;64&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
@@ -585,7 +585,7 @@
       <option name="GO_EXPRESSION" value="true" />
     </context>
   </template>
-  <template name="lesscond3" value="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; ($AY$ &lt; $BY$ || $AY$ == $BY$ &amp;&amp; $AZ$ &lt; $BZ$)" description="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; ($AY$ &lt; $BY$ || $AY$ == $BY$ &amp;&amp; $AZ$ &lt; $BZ$)" toReformat="true" toShortenFQNames="true">
+  <template name="lesscond3" value="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; ($AY$ &lt; $BY$ || $AY$ == $BY$ &amp;&amp; $AZ$ &lt; $BZ$)" description="$AX$ &lt; $BX$ || $AX$ == $BX$ &amp;&amp; ($AY$ &lt; $BY$ || $AY$ == $BY$ &amp;&amp; $AZ$ &lt; $BZ$)" toReformat="true" toShortenFQNames="true" deactivated="true">
     <variable name="AX" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
     <variable name="BX" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
     <variable name="AY" expression="complete()" defaultValue="&quot;&quot;" alwaysStopAt="true" />
@@ -609,13 +609,12 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="make3" value="$NAME$ := make([][][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([][]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {&#10;&#9;&#9;$NAME$[i][j] = make([]$TYPE$, $SIZE2$)&#10;&#9;&#9;for k := range $NAME$[i][j] {&#10;&#9;&#9;&#9;$NAME$[i][j][k] = $INIT$&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="make 3D slice" toReformat="true" toShortenFQNames="true">
+  <template name="make3" value="$NAME$ := make([][][]$TYPE$, $SIZE0$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = make([][]$TYPE$, $SIZE1$)&#10;&#9;for j := range $NAME$[i] {&#10;&#9;&#9;$NAME$[i][j] = make([]$TYPE$, $SIZE2$)&#10;&#9;&#9;for k := range $NAME$[i][j] {$END$&#10;&#9;&#9;&#9;$NAME$[i][j][k] = 1e9 + 1&#10;&#9;&#9;}&#10;&#9;}&#10;}" description="make 3D slice" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;dp&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <variable name="SIZE0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
     <variable name="SIZE1" expression="complete()" defaultValue="&quot;m&quot;" alwaysStopAt="true" />
     <variable name="SIZE2" expression="complete()" defaultValue="" alwaysStopAt="true" />
-    <variable name="INIT" expression="" defaultValue="&quot;-1&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -739,7 +738,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="fai" value="type pair struct{ v, i int }&#10;$VAR0$ := make([]pair, $VAR1$)&#10;for i := range $VAR0$ {&#10;&#9;Fscan(in, &amp;$VAR0$[i].v)&#10;&#9;$VAR0$[i].i = i&#10;}&#10;sort.Slice($VAR0$, func(i, j int) bool { return $VAR0$[i].v &lt; $VAR0$[j].v })" description="Fscan slice starts at 1" toReformat="true" toShortenFQNames="true">
+  <template name="fai" value="type pair struct{ v, i int }&#10;$VAR0$ := make([]pair, $VAR1$)&#10;for i := range $VAR0$ {&#10;&#9;Fscan(in, &amp;$VAR0$[i].v)&#10;&#9;$VAR0$[i].i = i&#10;}&#10;sort.Slice($VAR0$, func(i, j int) bool { return $VAR0$[i].v &lt; $VAR0$[j].v })" description="Fscan slice with index" toReformat="true" toShortenFQNames="true">
     <variable name="VAR0" expression="" defaultValue="&quot;a&quot;" alwaysStopAt="true" />
     <variable name="VAR1" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
     <context>
@@ -769,7 +768,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="case2" value="var T, n int&#10;for Fscan(in, &amp;T); T &gt; 0; T-- {&#10;&#9;Fscan(in, &amp;n)&#10;    $END$&#10;}" description="多组数据 - 短码" toReformat="true" toShortenFQNames="true">
+  <template name="case2" value="var T, n$END$ int&#10;for Fscan(in, &amp;T); T &gt; 0; T-- {&#10;&#9;Fscan(in, &amp;n)&#10;    &#10;}" description="多组数据 - 短码" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -948,7 +947,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="uf" value="type uf struct {&#10;&#9;fa []int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;}&#10;&#9;return uf{fa}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }&#10;&#10;func (u uf) countRoots(l, r int) (cnt int) {&#10;&#9;for i := l; i &lt;= r; i++ {&#10;&#9;&#9;if u.find(i) == i {&#10;&#9;&#9;&#9;cnt++&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return&#10;}" description="并查集" toReformat="false" toShortenFQNames="true">
+  <template name="uf" value="type uf struct {&#10;&#9;fa     []int&#10;&#9;groups int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;}&#10;&#9;return uf{fa, n}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }" description="并查集" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="GO_FILE" value="true" />
     </context>
@@ -996,16 +995,15 @@
       <option name="GO_EXPRESSION" value="true" />
     </context>
   </template>
-  <template name="lessfunc01" value="less := func(a, b []int) bool { return a[0] &lt; b[0] || a[0] == b[0] &amp;&amp; a[1] &lt; b[1] }" description="less := func(a, b []int) bool { return a[0] &lt; b[0] || a[0] == b[0] &amp;&amp; a[1] &lt; b[1] }" toReformat="true" toShortenFQNames="true" deactivated="true">
+  <template name="lessfunc01" value="less := func(a, b []int) bool { return a[0] &lt; b[0] || a[0] == b[0] &amp;&amp; a[1] &lt; b[1] }" description="less := func(a, b []int) bool { return a[0] &lt; b[0] || a[0] == b[0] &amp;&amp; a[1] &lt; b[1] }" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="make1" value="$NAME$ := make([]$TYPE$, $SIZE$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = $INIT$&#10;}" description="make 1D slice" toReformat="true" toShortenFQNames="true">
+  <template name="make1" value="$NAME$ := make([]$TYPE$, $SIZE$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = 1e9 + 1$END$&#10;}" description="make 1D slice" toReformat="true" toShortenFQNames="true">
     <variable name="NAME" expression="" defaultValue="&quot;dp&quot;" alwaysStopAt="true" />
     <variable name="TYPE" expression="" defaultValue="&quot;int&quot;" alwaysStopAt="true" />
     <variable name="SIZE" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
-    <variable name="INIT" expression="" defaultValue="&quot;-1&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -1022,7 +1020,7 @@
       <option name="GO_EXPRESSION" value="true" />
     </context>
   </template>
-  <template name="fio2" value="out := bufio.NewWriter(_w)&#10;defer out.Flush()&#10;_i, buf := 1&lt;&lt;12, make([]byte, 1&lt;&lt;12)&#10;rc := func() byte {&#10;&#9;if _i == 1&lt;&lt;12 {&#10;&#9;&#9;_r.Read(buf)&#10;&#9;&#9;_i = 0&#10;&#9;}&#10;&#9;b := buf[_i]&#10;&#9;_i++&#10;&#9;return b&#10;}&#10;r := func() (x int) {&#10;&#9;b := rc()&#10;&#9;for ; '0' &gt; b; b = rc() {&#10;&#9;}&#10;&#9;for ; '0' &lt;= b; b = rc() {&#10;&#9;&#9;x = x*10 + int(b&amp;15)&#10;&#9;}&#10;&#9;return&#10;}" description="fast IO 2" toReformat="true" toShortenFQNames="true">
+  <template name="fio2" value="out := bufio.NewWriter(_w)&#10;defer out.Flush()&#10;buf := make([]byte, 1&lt;&lt;12)&#10;_i := len(buf)&#10;rc := func() byte {&#10;&#9;if _i &gt;= len(buf) {&#10;&#9;&#9;_r.Read(buf)&#10;&#9;&#9;_i = 0&#10;&#9;}&#10;&#9;b := buf[_i]&#10;&#9;_i++&#10;&#9;return b&#10;}&#10;r := func() (x int) {&#10;&#9;b := rc()&#10;&#9;for ; '0' &gt; b; b = rc() {&#10;&#9;}&#10;&#9;for ; '0' &lt;= b; b = rc() {&#10;&#9;&#9;x = x*10 + int(b&amp;15)&#10;&#9;}&#10;&#9;return&#10;}" description="fast IO 2" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -1070,7 +1068,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="uf2" value="type uf struct {&#10;&#9;fa []int&#10;&#9;sz []int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;}&#10;&#9;sz := make([]int, n)&#10;&#9;for i := range sz {&#10;&#9;&#9;sz[i] = 1&#10;&#9;}&#10;&#9;return uf{fa, sz}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (mergedSize int) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return u.sz[x]&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.sz[y] += u.sz[x]&#10;&#9;return u.sz[y]&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }&#10;&#10;func (u uf) countRoots(l, r int) (cnt int) {&#10;&#9;for i := l; i &lt;= r; i++ {&#10;&#9;&#9;if u.find(i) == i {&#10;&#9;&#9;&#9;cnt++&#10;&#9;&#9;}&#10;&#9;}&#10;&#9;return&#10;}" description="带集合大小的并查集" toReformat="false" toShortenFQNames="true">
+  <template name="uf_size" value="type uf struct {&#10;&#9;fa, sz  []int&#10;&#9;groups  int&#10;&#9;maxSize int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;sz := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;&#9;sz[i] = 1&#10;&#9;}&#10;&#9;return uf{fa, sz, n, 1}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.sz[y] += u.sz[x]&#10;&#9;if u.sz[y] &gt; u.maxSize {&#10;&#9;&#9;u.maxSize = u.sz[y]&#10;&#9;}&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }&#10;func (u uf) size(x int) int     { return u.sz[u.find(x)] }" description="带集合大小的并查集" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="GO_FILE" value="true" />
     </context>
@@ -1141,7 +1139,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="case3" value="var n int&#10;for {&#10;&#9;if _n, _ := Fscan(in, &amp;n); _n == 0 {&#10;&#9;&#9;break&#10;&#9;}&#10;&#9;$END$&#10;}" description="多组数据 - 未知组数" toReformat="true" toShortenFQNames="true">
+  <template name="case3" value="var n$END$ int&#10;for {&#10;&#9;if _n, _ := Fscan(in, &amp;n); _n == 0 {&#10;&#9;&#9;break&#10;&#9;}&#10;&#9;&#10;}" description="多组数据 - 未知组数" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_STATEMENT" value="true" />
     </context>
@@ -1206,6 +1204,65 @@
     <variable name="TYPE" expression="complete()" defaultValue="&quot;int64&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_FILE" value="true" />
+    </context>
+  </template>
+  <template name="ft2" value="g := make([][]int, $VAR0$)&#10;for w := 1; w &lt; $VAR0$; w++ {&#10;    var v int&#10;&#9;Fscan(in, &amp;v)&#10;&#9;g[v-1] = append(g[v-1], w)&#10;}" description="Fscan tree with parents" toReformat="true" toShortenFQNames="true">
+    <variable name="VAR0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="modifynodes" value="func modifyNodes(head *ListNode, f func(a []int) (res []int)) *ListNode {&#10;&#9;a := []int{}&#10;&#9;for o := head; o != nil; o = o.Next {&#10;&#9;&#9;a = append(a, o.Val)&#10;&#9;}&#10;&#10;&#9;res := f(a)&#10;&#10;&#9;if len(res) == 0 {&#10;&#9;&#9;return nil&#10;&#9;}&#10;&#10;&#9;head = &amp;ListNode{Val: res[0]}&#10;&#9;cur := head&#10;&#9;for _, v := range res[1:] {&#10;&#9;&#9;cur.Next = &amp;ListNode{Val: v}&#10;&#9;&#9;cur = cur.Next&#10;&#9;}&#10;&#9;return head&#10;}" description="修改链表结点" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO_FILE" value="true" />
+    </context>
+  </template>
+  <template name="dir4f" value="var dir4 = []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}" description="" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO_FILE" value="true" />
+    </context>
+  </template>
+  <template name="makei" value="$NAME$ := make([]int, $SIZE$)&#10;for i := range $NAME$ {&#10;&#9;$NAME$[i] = i&#10;}&#10;sort.Slice($NAME$, func(i, j int) bool { return a[$NAME$[i]] &lt; a[$NAME$[j]] })" description="make 1D slice" toReformat="true" toShortenFQNames="true">
+    <variable name="NAME" expression="" defaultValue="&quot;id&quot;" alwaysStopAt="true" />
+    <variable name="SIZE" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="fgt" value="g := make([][]int, $VAR0$)&#10;for i := 1; i &lt; $VAR0$; i++ {&#10;&#9;v, w := 0, 0&#10;&#9;Fscan(in, &amp;v, &amp;w)&#10;&#9;v--&#10;&#9;w--&#10;&#9;g[v] = append(g[v], w)&#10;&#9;g[w] = append(g[w], v)&#10;}" description="Fscan tree" toReformat="true" toShortenFQNames="true">
+    <variable name="VAR0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="fgt2" value="g := make([][]int, $VAR0$)&#10;for w := 1; w &lt; $VAR0$; w++ {&#10;    var v int&#10;&#9;Fscan(in, &amp;v)&#10;&#9;g[v-1] = append(g[v-1], w)&#10;}" description="Fscan tree with parents" toReformat="true" toShortenFQNames="true">
+    <variable name="VAR0" expression="complete()" defaultValue="&quot;n&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="i64" value="int64(0)" description="int64(0)" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO_EXPRESSION" value="true" />
+      <option name="GO_STATEMENT" value="true" />
+    </context>
+  </template>
+  <template name="powf" value="func pow(x int$TYPE$, n int) (res int$TYPE$) {&#10;    x %= mod&#10;&#9;res = 1&#10;&#9;for ; n &gt; 0; n &gt;&gt;= 1 {&#10;&#9;&#9;if n&amp;1 &gt; 0 {&#10;&#9;&#9;&#9;res = res * x % mod&#10;&#9;&#9;}&#10;&#9;&#9;x = x * x % mod&#10;&#9;}&#10;&#9;return&#10;}" description="快速幂" toReformat="true" toShortenFQNames="true">
+    <variable name="TYPE" expression="" defaultValue="&quot;64&quot;" alwaysStopAt="true" />
+    <context>
+      <option name="GO_FILE" value="true" />
+    </context>
+  </template>
+  <template name="str" value="string" description="string" toReformat="true" toShortenFQNames="true">
+    <context>
+      <option name="GO" value="true" />
+      <option name="GO_BLOCK" value="false" />
+      <option name="GO_EXPRESSION" value="false" />
+      <option name="GO_FILE" value="false" />
+      <option name="GO_STATEMENT" value="false" />
+      <option name="GO_TAG" value="false" />
+      <option name="GO_TAG_LITERAL" value="false" />
+      <option name="GO_TYPE" value="false" />
     </context>
   </template>
 </templateSet>
