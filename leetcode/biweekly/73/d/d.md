@@ -76,13 +76,13 @@ class Solution {
         var s = new ArrayList<>(S.chars().boxed().toList());
         while (s.size() > 0) {
             var i = s.indexOf(s.get(s.size() - 1));
-            if (i == s.size() - 1) {
-                ans += i / 2;
+            if (i == s.size() - 1) { // 只出现一次的字符
+                ans += i / 2; // 交换到回文中心上
             } else {
-                ans += i;
-                s.remove(i);
+                ans += i; // 交换到字符串开头
+                s.remove(i); // 移除 s[i]
             }
-            s.remove(s.size() - 1);
+            s.remove(s.size() - 1); // 移除最后一个字符
         }
         return ans;
     }
