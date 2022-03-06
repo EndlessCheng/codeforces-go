@@ -45,7 +45,7 @@
         "Also", "also",
         // " all ", "All ",
         "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly", "overlapping", "overlap",
-        "Only", "only", "just", "Exactly", "exactly", "always", "indeed",
+        "Only", "only", "just", "Exactly", "exactly", "always", "indeed", "precisely",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "continuous", "contiguous", "one after another", "disjoint", "as possible",
         "more than", "less than",
         "except",
@@ -89,6 +89,7 @@
         // "排列",
         "叶子", "叶节点",
         "单向", "双向",
+        "本身",
         // "返回", "计算",
     ];
 
@@ -114,6 +115,7 @@
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")
                 .replaceAll("Mrs. ", "Mrs.")
+                .replaceAll("Ms. ", "Ms.")
                 .replaceAll("Dr. ", "Dr.")
                 .replaceAll("i. e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
