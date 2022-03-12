@@ -27,6 +27,7 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 环与独立集 https://codeforces.com/problemset/problem/1364/D
 匹配与独立集 https://codeforces.com/problemset/problem/1198/C
 
+建图 https://codeforces.com/problemset/problem/1635/E
 归纳 https://codeforces.com/problemset/problem/412/D
 构造 https://codeforces.com/problemset/problem/41/E
 转换 https://codeforces.com/problemset/problem/788/B
@@ -650,14 +651,7 @@ func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
 // LC928 https://leetcode-cn.com/problems/minimize-malware-spread-ii/
-func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-
+func (*graph) findCutVertices(n int, g [][]int, min func(int, int) int) (isCut []bool) {
 	isCut = make([]bool, n)
 	dfn := make([]int, n) // 值从 1 开始
 	dfsClock := 0
@@ -796,14 +790,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 5 6
 6 4
 */
-func (G *graph) findVertexBCC(n int, g [][]int) (comps [][]int, bccIDs []int) {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-
+func (G *graph) findVertexBCC(n int, g [][]int, min func(int, int) int) (comps [][]int, bccIDs []int) {
 	bccIDs = make([]int, n) // ID 从 1 开始编号
 	idCnt := 0
 	isCut := make([]bool, n)
@@ -985,6 +972,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模 https://www.luogu.com.cn/problem/P4644
 // 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
+// 建模【好题】https://codeforces.com/contest/1528/problem/D
 // 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
@@ -1080,7 +1068,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	}
 
 	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
-	// https://www.luogu.com.cn/problem/P1144 https://leetcode-cn.com/problems/number-of-ways-to-arrive-at-destination/
+	// https://www.luogu.com.cn/problem/P1144 https://www.luogu.com.cn/problem/P1608 LC1976 https://leetcode-cn.com/problems/number-of-ways-to-arrive-at-destination/
 	// 也可以把转移写在求最短路的代码中，见 https://www.luogu.com.cn/record/56683589
 	// 紧急情况 https://www.acwing.com/problem/content/1477/
 	// 条条大路通罗马 https://www.acwing.com/problem/content/1579/
@@ -1115,7 +1103,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
 	// LC2045/周赛263D https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
-	// 次短路径计数 https://www.acwing.com/problem/content/385/
+	// 次短路计数 https://www.acwing.com/problem/content/385/ https://codeforces.com/contest/1650/problem/G
+	// 长度不超过最短路长度+K 的路径个数 [NOIP2017 提高组] 逛公园 https://www.luogu.com.cn/problem/P3953
 	{
 		const inf int64 = 1e18 // 1e9+1
 		dist := make([]int64, n)
@@ -1155,30 +1144,31 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 
 // 另一种 Dijkstra 写法
 // 适用于稠密图 O(n^2)
-func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
+// 建模 https://codeforces.com/contest/1528/problem/D
+func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dis []int64) {
 	n := len(g)
 
 	const inf int64 = 1e18 // 1e9+1
-	dist = make([]int64, n)
-	for i := range dist {
-		dist[i] = inf
+	dis = make([]int64, n)
+	for i := range dis {
+		dis[i] = inf
 	}
-	dist[st] = 0
-	used := make([]bool, n)
+	dis[st] = 0
+	vis := make([]bool, n)
 	for {
 		v := -1
-		for w, u := range used {
-			if !u && (v < 0 || dist[w] < dist[v]) {
+		for w, b := range vis {
+			if !b && (v < 0 || dis[w] < dis[v]) {
 				v = w
 			}
 		}
 		if v < 0 {
 			return
 		}
-		used[v] = true
+		vis[v] = true
 		for w, wt := range g[v] {
-			if newD := dist[v] + wt; newD < dist[w] {
-				dist[w] = newD
+			if newD := dis[v] + wt; newD < dis[w] {
+				dis[w] = newD
 			}
 		}
 	}
@@ -1196,41 +1186,34 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dist []int64) {
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
 // https://codeforces.com/problemset/problem/877/D（也可以 BFS）
 // https://codeforces.com/problemset/problem/1063/B
-func (*graph) bfs01(in io.Reader, n, m, st int) []int {
-	type neighbor struct{ to, wt int }
-	g := make([][]neighbor, n)
-	for i := 0; i < m; i++ {
-		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
-		g[v] = append(g[v], neighbor{w, wt})
-		g[w] = append(g[w], neighbor{v, wt})
-	}
-
+func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 	const inf int = 1e9
-	dist := make([]int, len(g))
-	for i := range dist {
-		dist[i] = inf
+	dis := make([]int, len(g))
+	for i := range dis {
+		dis[i] = inf
 	}
-	dist[st] = 0
-	q := &Deque{}
-	q.PushFront(st)
-	for !q.Empty() {
-		v := q.PopFront().(int)
+	dis[st] = 0
+	ql, qr := []int{st}, []int{}
+	for len(ql) > 0 || len(qr) > 0 {
+		var v int
+		if len(ql) > 0 {
+			ql, v = ql[:len(ql)-1], ql[len(ql)-1]
+		} else {
+			v, qr = qr[0], qr[1:]
+		}
 		for _, e := range g[v] {
 			w, d := e.to, e.wt
-			if newD := dist[v] + d; newD < dist[w] {
-				dist[w] = newD
+			if newD := dis[v] + d; newD < dis[w] {
+				dis[w] = newD
 				if d == 0 {
-					q.PushFront(w)
+					ql = append(ql, w)
 				} else {
-					q.PushBack(w)
+					qr = append(qr, w)
 				}
 			}
 		}
 	}
-	return dist
+	return dis
 }
 
 // 单源最短路 SPFA O(nm)   队列优化的 Bellman-Ford
@@ -1305,9 +1288,9 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 	return
 }
 
-// 任意两点最短路 Floyd-Warshall O(n^3)    本质是求 Min-plus matrix multiplication
-// 传入邻接矩阵 dist
-// dist[v][w] == inf 表示没有 v-w 边
+// 任意两点最短路 Floyd-Warshall  O(n^3)  本质是求 Min-plus matrix multiplication
+// 传入邻接矩阵 dis
+// dis[v][w] == inf 表示没有 v-w 边
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
 // https://oi-wiki.org/graph/shortest-path/#floyd
@@ -1317,37 +1300,16 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
-func (*graph) shortestPathFloydWarshall(in io.Reader, n, m int) [][]int {
-	min := func(a, b int) int { // int64
-		if a < b {
-			return a
-		}
-		return b
-	}
-	// dist[k][i][j] 表示「经过若干个编号不超过 k 的节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
-	const inf int = 1e9
-	dist := make([][]int, n)
-	for i := range dist {
-		dist[i] = make([]int, n)
-		for j := range dist[i] {
-			dist[i][j] = inf
-		}
-		dist[i][i] = 0
-	}
-	for i := 0; i < m; i++ {
-		var v, w, wt int
-		Fscan(in, &v, &m, &wt)
-		dist[v][w] = wt
-		dist[w][v] = wt
-	}
-	for k := range dist { // 阶段
-		for i := range dist { // 状态
-			for j := range dist { // 决策
-				dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
+func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][]int {
+	// dis[k][i][j] 表示「经过若干个编号不超过 k 的节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
+	for k := range dis { // 阶段
+		for i := range dis { // 状态
+			for j := range dis { // 决策
+				dis[i][j] = min(dis[i][j], dis[i][k]+dis[k][j])
 			}
 		}
 	}
-	return dist
+	return dis
 }
 
 // 位压缩版 O(n^3/w)
@@ -1382,13 +1344,7 @@ func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
 // NOTE: 无权图的情况见 shortestCycleBFS
-func (*graph) shortestCycleFloydWarshall(weights [][]int64) int64 {
-	min := func(a, b int64) int64 {
-		if a <= b {
-			return a
-		}
-		return b
-	}
+func (*graph) shortestCycleFloydWarshall(weights [][]int64, min func(int64, int64) int64) int64 {
 	const inf int64 = 1e18
 	//const inf int = 1e8 // *NOTE*
 	n := len(weights)
@@ -2764,14 +2720,7 @@ outer:
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
 // 与最小割结合 https://www.luogu.com.cn/problem/P4126
-func (*graph) sccTarjan(g [][]int) (scc [][]int, sid []int) {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-
+func (*graph) sccTarjan(g [][]int, min func(int, int) int) (scc [][]int, sid []int) {
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	stk := []int{}
@@ -3049,6 +2998,8 @@ todo 题单 https://www.zybuluo.com/xzyxzy/note/992041
  网络流建模经典题 https://www.luogu.com.cn/training/1230#problems
  网络流经典题目 https://www.luogu.com.cn/training/3144#problems
 
+Max-Flow in almost linear time https://codeforces.com/blog/entry/100510
+
 CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 */
 
@@ -3190,6 +3141,7 @@ todo https://codeforces.com/problemset/problem/362/E
 从集合 B 中各点连容量为 1 费用为 0 的边到汇点
 集合 A 和 B 之间连边，容量为 inf，费用为 F(Ai,Bj)，F 根据题意
 这样跑 MCMF 得到的结果是匹配全部 A（或 B）的最小花费
+LC2172/周赛280D https://leetcode-cn.com/problems/maximum-and-sum-of-array/
 https://codeforces.com/problemset/problem/1437/C
 【网络流 24 题】运输问题 https://loj.ac/p/6011 https://www.luogu.com.cn/problem/P4015
 【网络流 24 题】数字梯形 https://loj.ac/p/6010 https://www.luogu.com.cn/problem/P4013
@@ -3231,14 +3183,8 @@ todo https://codeforces.com/contest/1455/problem/E
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
 // 模板题 https://www.luogu.com.cn/problem/P3376 https://www.luogu.com.cn/problem/P2740
-func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
+func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) int) int {
 	const inf int = 1e9 // 1e18
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
 	st--
 	end--
 
@@ -3497,13 +3443,7 @@ func (h *dh) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice
 func (h *dh) push(v int)         { heap.Push(h, v) }
 func (h *dh) pop() int           { return heap.Pop(h).(int) }
 
-func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
+func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int, min func(int, int) int) int {
 	st--
 	end--
 
