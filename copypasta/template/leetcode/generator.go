@@ -388,9 +388,18 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		// 有 tag 也不一定为 <strong>
 		//     <img> https://leetcode-cn.com/contest/weekly-contest-103/problems/snakes-and-ladders/
 		//     <b> https://leetcode-cn.com/contest/weekly-contest-210/problems/split-two-strings-to-make-palindrome/
+		//     <code> https://leetcode-cn.com/contest/weekly-contest-163/problems/shift-2d-grid/
 		// 提取出文本后，去掉「解释」和「提示」后面的文字，然后分「输入」和「输出」来解析后面的数据
 		if o.DataAtom == atom.Pre && o.FirstChild.DataAtom != 0 && o.FirstChild.DataAtom != atom.Img && o.FirstChild.DataAtom != atom.Image { // 一般是 atom.Strong，特殊情况是 atom.B
-			if strings.HasPrefix(strings.TrimSpace(o.FirstChild.FirstChild.Data), "输") { // 输入（极少情况下会被错误地写成输出）
+			// 找到第一个文本，这样写是因为可能有额外的嵌套 tag https://leetcode-cn.com/contest/weekly-contest-163/problems/shift-2d-grid/
+			var data string
+			for o := o.FirstChild.FirstChild; o != nil; o = o.FirstChild {
+				if o.DataAtom == 0 {
+					data = o.Data
+					break
+				}
+			}
+			if strings.HasPrefix(strings.TrimSpace(data), "输") { // 输入（极少情况下会被错误地写成输出）
 				rawData := &strings.Builder{}
 				var parsePreNode func(*html.Node)
 				parsePreNode = func(o *html.Node) {
