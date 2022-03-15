@@ -156,7 +156,7 @@ public:
 
 ```java [sol1-Java]
 class Solution {
-    long[] dijkstra(ArrayList<Pair<Integer, Integer>>[] g, int start) {
+    long[] dijkstra(List<Pair<Integer, Integer>>[] g, int start) {
         var dis = new long[g.length];
         Arrays.fill(dis, Long.MAX_VALUE / 3);
         dis[start] = 0;
@@ -181,7 +181,7 @@ class Solution {
     }
 
     public long minimumWeight(int n, int[][] edges, int src1, int src2, int dest) {
-        ArrayList<Pair<Integer, Integer>>[] g = new ArrayList[n], rg = new ArrayList[n];
+        List<Pair<Integer, Integer>>[] g = new ArrayList[n], rg = new ArrayList[n];
         Arrays.setAll(g, e -> new ArrayList<>());
         Arrays.setAll(rg, e -> new ArrayList<>());
         for (var e : edges) {
