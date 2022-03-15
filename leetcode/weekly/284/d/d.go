@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"math"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -9,14 +10,14 @@ type edge struct{ to, wt int }
 func dijkstra(g [][]edge, start int) []int {
 	dis := make([]int, len(g))
 	for i := range dis {
-		dis[i] = 1e18
+		dis[i] = math.MaxInt64 / 3
 	}
 	dis[start] = 0
 	h := hp{{start, 0}}
 	for len(h) > 0 {
 		p := heap.Pop(&h).(pair)
 		v := p.v
-		if dis[v] < p.dis {
+		if p.dis > dis[v] {
 			continue
 		}
 		for _, e := range g[v] {
@@ -43,11 +44,11 @@ func minimumWeight(n int, edges [][]int, src1, src2, dest int) int64 {
 	d2 := dijkstra(g, src2)
 	d3 := dijkstra(rg, dest)
 
-	ans := int(1e18)
+	ans := math.MaxInt64 / 3
 	for x := 0; x < n; x++ {
 		ans = min(ans, d1[x]+d2[x]+d3[x])
 	}
-	if ans < 1e18 {
+	if ans < math.MaxInt64 / 3 {
 		return int64(ans)
 	}
 	return -1
