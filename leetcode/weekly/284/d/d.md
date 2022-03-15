@@ -180,8 +180,7 @@ class Solution {
     }
 
     public long minimumWeight(int n, int[][] edges, int src1, int src2, int dest) {
-        var g = (ArrayList<Pair<Integer, Integer>>[]) new ArrayList[n];
-        var rg = (ArrayList<Pair<Integer, Integer>>[]) new ArrayList[n];
+        ArrayList<Pair<Integer, Integer>>[] g = new ArrayList[n], rg = new ArrayList[n];
         Arrays.setAll(g, e -> new ArrayList<>());
         Arrays.setAll(rg, e -> new ArrayList<>());
         for (var e : edges) {
