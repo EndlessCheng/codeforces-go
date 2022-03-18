@@ -107,13 +107,14 @@ func sortCollections() {
 		return x*x > 90
 	})
 
-	// 当然，这种求最大值的二分也可以用下面这种左开右闭的写法
+	// 当然，这种求最大值的二分也可以用下面这种左开右闭的写法（参考 sort.Search 源码）
 	search2 := func(n int, f func(int) bool) int {
 		// Define f(0) == true and f(n+1) == false.
 		// Invariant: f(l) == true, f(r+1) == false.
+		// 这样定义的好处见下面 return 前的注释
 		l, r := 0, n
 		for l < r {
-			mid := int(uint(l+r+1) >> 1)
+			mid := int(uint(l+r+1) >> 1) // mid=⌈(l+r)/2⌉，从而保证 mid 落在区间 (l,r] 内
 			// l < mid ≤ r
 			if f(mid) {
 				l = mid // preserves f(l) == true
