@@ -28,11 +28,8 @@ func TestCompareInf(t *testing.T) {
 		return
 	}
 
-	// test examples first (or make it global)
-	examples := [][]string{
-
-	}
-	if err := testutil.RunLeetCodeFuncWithExamples(t, runAC, examples, 0); err != nil {
+	// test examples first
+	if err := testutil.RunLeetCodeFuncWithFile(t, runAC, "d.txt", 0); err != nil {
 		t.Fatal(err)
 	}
 	return
