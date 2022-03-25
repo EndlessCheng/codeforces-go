@@ -20,7 +20,7 @@ $$
 f_i\cdot r_i^{x-1} \le \textit{changeTime} + f_i
 $$
 
-考虑 $x$ 至多能是多少。取 $f_i=1,r_i=2$，则有
+考虑 $x$ 至多能是多少。由于 $f_i$ 越小 $x$ 的上界越大，以及 $r_i$ 越小 $x$ 的上界越大，那么取 $f_i=1,r_i=2$，则有
 
 $$
 2^{x-1}\le \textit{changeTime} + 1
@@ -34,7 +34,7 @@ $$
 
 由于 $x$ 是个整数，因此 $x$ 的上界为 $\lfloor \log_2(\textit{changeTime}+1)+1 \rfloor$。
 
-代码实现时可取 $x=17$。
+根据题目的数据范围，代码实现时可将上界视为 $17$。
 
 #### 算法
 
@@ -42,7 +42,7 @@ $$
 
 然后定义 $f[i]$ 表示跑 $i$ 圈的最小耗时。为方便计算，初始值 $f[0]=-\textit{changeTime}$。
 
-考虑最后一个轮胎连续使用的次数 $j$，我们可以从 $f[i-j]$ 转移过来，因此有转移方程
+考虑最后一个轮胎连续跑了 $j$ 圈，我们可以从 $f[i-j]$ 转移过来，因此有转移方程
 
 $$
 f[i] = \textit{changeTime} + \min\limits_{j=1}^{\min(17,i)} f[i-j] + \textit{minSec}[j]
@@ -54,7 +54,7 @@ $$
 func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
 	minSec := [18]int{}
 	for i := range minSec {
-		minSec[i] = math.MaxInt32 / 2 // 除二是防止下面计算状态转移时溢出
+		minSec[i] = math.MaxInt32
 	}
 	for _, tire := range tires {
 		f, r := tire[0], tire[1]
@@ -109,7 +109,7 @@ public:
 ```Python [sol1-Python3]
 class Solution:
     def minimumFinishTime(self, tires: List[List[int]], changeTime: int, numLaps: int) -> int:
-        min_sec = [float('inf')] * 18
+        min_sec = [inf] * 18
         for f, r in tires:
             x, time, sum = 1, f, 0
             while time <= changeTime + f:

@@ -160,8 +160,7 @@ class Solution {
         var dis = new long[g.length];
         Arrays.fill(dis, Long.MAX_VALUE / 3);
         dis[start] = 0;
-        // 比较器也可以用 Comparator.comparingLong(Pair::getValue)，但是性能不够好
-        var pq = new PriorityQueue<Pair<Integer, Long>>((a, b) -> (int) (a.getValue() - b.getValue()));
+        var pq = new PriorityQueue<Pair<Integer, Long>>(Comparator.comparingLong(Pair::getValue));
         pq.offer(new Pair<>(start, 0L));
         while (!pq.isEmpty()) {
             var p = pq.poll();
