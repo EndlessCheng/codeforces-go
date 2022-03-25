@@ -3,6 +3,7 @@ package testutil
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -237,6 +238,9 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		return fmt.Errorf("f must be a function")
 	}
 
+	fNumIn := fType.NumIn()
+	fNumOut := fType.NumOut()
+
 	// 例如，-1 表示最后一个测试用例
 	if targetCaseNum < 0 {
 		targetCaseNum += len(rawExamples) + 1
@@ -249,23 +253,23 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			continue
 		}
 
-		if len(example) != fType.NumIn()+fType.NumOut() {
-			return fmt.Errorf("len(example) = %d, but we need %d+%d", len(example), fType.NumIn(), fType.NumOut())
+		if len(example) != fNumIn+fNumOut {
+			return fmt.Errorf("len(example) = %d, but we need %d+%d", len(example), fNumIn, fNumOut)
 		}
 
-		rawIn := example[:fType.NumIn()]
+		rawIn := example[:fNumIn]
 		ins := make([]reflect.Value, len(rawIn))
 		for i, rawArg := range rawIn {
-			rawArg = trimSpaceAndNewLine(rawArg)
+			rawArg = trimSpace(rawArg)
 			ins[i], err = parseRawArg(fType.In(i), rawArg)
 			if err != nil {
 				return
 			}
 		}
 		// just check rawExpectedOuts is valid or not
-		rawExpectedOuts := example[fType.NumIn():]
+		rawExpectedOuts := example[fNumIn:]
 		for i := range rawExpectedOuts {
-			rawExpectedOuts[i] = trimSpaceAndNewLine(rawExpectedOuts[i])
+			rawExpectedOuts[i] = trimSpace(rawExpectedOuts[i])
 			if _, err = parseRawArg(fType.Out(i), rawExpectedOuts[i]); err != nil {
 				return
 			}
@@ -324,6 +328,40 @@ func RunLeetCodeFuncWithCase(t *testing.T, f interface{}, rawInputs [][]string, 
 func RunLeetCodeFunc(t *testing.T, f interface{}, rawInputs [][]string, rawOutputs [][]string) error {
 	return RunLeetCodeFuncWithCase(t, f, rawInputs, rawOutputs, 0)
 }
+
+func RunLeetCodeFuncWithFile(t *testing.T, f interface{}, filePath string, targetCaseNum int) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	lines := trimSpaceAndEmptyLine(string(data))
+	n := len(lines)
+	if n == 0 {
+		return fmt.Errorf("输入数据为空，请检查文件路径和文件内容是否正确")
+	}
+
+	fType := reflect.TypeOf(f)
+	if fType.Kind() != reflect.Func {
+		return fmt.Errorf("f 必须是函数")
+	}
+
+	// 每 fNumIn+fNumOut 行一组数据
+	fNumIn := fType.NumIn()
+	fNumOut := fType.NumOut()
+	tcSize := fNumIn + fNumOut
+	if n%tcSize != 0 {
+		return fmt.Errorf("有效行数 %d，应该是 %d 的倍数", n, tcSize)
+	}
+
+	examples := make([][]string, 0, n/tcSize)
+	for i := 0; i < n; i += tcSize {
+		examples = append(examples, lines[i:i+tcSize])
+	}
+	return RunLeetCodeFuncWithExamples(t, f, examples, targetCaseNum)
+}
+
+//
 
 // 若反射出来的函数或 rawExamples 数据不合法，则会返回一个非空的 error，否则返回 nil
 func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][3]string, targetCaseNum int) (err error) {
@@ -480,6 +518,30 @@ func RunLeetCodeClassWithCase(t *testing.T, constructor interface{}, rawInputs, 
 
 func RunLeetCodeClass(t *testing.T, constructor interface{}, rawInputs, rawOutputs []string) error {
 	return RunLeetCodeClassWithCase(t, constructor, rawInputs, rawOutputs, 0)
+}
+
+func RunLeetCodeClassWithFile(t *testing.T, constructor interface{}, filePath string, targetCaseNum int) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	lines := trimSpaceAndEmptyLine(string(data))
+	n := len(lines)
+	if n == 0 {
+		return fmt.Errorf("输入数据为空，请检查文件路径和文件内容是否正确")
+	}
+
+	// 每三行一组数据
+	if n%3 != 0 {
+		return fmt.Errorf("有效行数 %d，应该是 3 的倍数", n)
+	}
+
+	examples := make([][3]string, 0, n/3)
+	for i := 0; i < n; i += 3 {
+		examples = append(examples, [3]string{lines[i], lines[i+1], lines[i+2]})
+	}
+	return RunLeetCodeClassWithExamples(t, constructor, examples, targetCaseNum)
 }
 
 // 无尽对拍模式
