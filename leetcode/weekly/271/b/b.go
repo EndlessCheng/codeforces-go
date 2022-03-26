@@ -88,13 +88,15 @@ func subArrayRanges2(nums []int) (ans int64) {
 }
 
 // github.com/EndlessCheng/codeforces-go
-func subArrayRanges(nums []int) int64 {
+func solve(nums []int) int64 {
 	n := len(nums)
 	left := make([]int, n) // left[i] 为左侧严格大于 num[i] 的最近元素位置（不存在时为 -1）
 	type pair struct{ v, i int }
 	s := []pair{{2e9, -1}} // 哨兵
 	for i, v := range nums {
-		for s[len(s)-1].v <= v { s = s[:len(s)-1] }
+		for s[len(s)-1].v <= v {
+			s = s[:len(s)-1]
+		}
 		left[i] = s[len(s)-1].i
 		s = append(s, pair{v, i})
 	}
@@ -103,7 +105,9 @@ func subArrayRanges(nums []int) int64 {
 	s = []pair{{2e9, n}}
 	for i := n - 1; i >= 0; i-- {
 		v := nums[i]
-		for s[len(s)-1].v < v { s = s[:len(s)-1] }
+		for s[len(s)-1].v < v {
+			s = s[:len(s)-1]
+		}
 		right[i] = s[len(s)-1].i
 		s = append(s, pair{v, i})
 	}
@@ -112,28 +116,13 @@ func subArrayRanges(nums []int) int64 {
 	for i, v := range nums {
 		ans += (i - left[i]) * (right[i] - i) * v
 	}
-
-	// 求左侧严格小于
-	left = make([]int, n) // left[i] 为左侧严格小于 num[i] 的最近元素位置（不存在时为 -1）
-	s = []pair{{-2e9, -1}}
-	for i, v := range nums {
-		for s[len(s)-1].v >= v { s = s[:len(s)-1] }
-		left[i] = s[len(s)-1].i
-		s = append(s, pair{v, i})
-	}
-
-	right = make([]int, n) // right[i] 为右侧小于等于 num[i] 的最近元素位置（不存在时为 n）
-	s = []pair{{-2e9, n}}
-	for i := n - 1; i >= 0; i-- {
-		v := nums[i]
-		for s[len(s)-1].v > v { s = s[:len(s)-1] }
-		right[i] = s[len(s)-1].i
-		s = append(s, pair{v, i})
-	}
-
-	for i, v := range nums {
-		ans -= (i - left[i]) * (right[i] - i) * v
-	}
-
 	return int64(ans)
+}
+
+func subArrayRanges(nums []int) int64 {
+	ans := solve(nums)
+	for i, v := range nums {
+		nums[i] = -v
+	}
+	return ans + solve(nums)
 }
