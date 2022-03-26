@@ -35,7 +35,7 @@ func Test(t *testing.T) {
 			`[0,1]`,
 		},
 	}
-	targetCaseNum :=-1
+	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, busiestServers, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
