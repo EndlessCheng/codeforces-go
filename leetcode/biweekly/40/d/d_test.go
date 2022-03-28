@@ -29,6 +29,10 @@ func Test(t *testing.T) {
 			`[9,8,1,7,6,5,4,3,2,1]`,
 			`2`,
 		},
+		{
+			`[100,92,89,77,74,66,64,66,64]`,
+			`6`,
+		},
 	}
 	targetCaseNum :=  -1
 	if err := testutil.RunLeetCodeFuncWithExamples(t, minimumMountainRemovals, examples, targetCaseNum); err != nil {

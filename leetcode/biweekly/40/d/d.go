@@ -27,7 +27,9 @@ func minimumMountainRemovals(a []int) (ans int) {
 	}
 	suf := lisAll(a)
 	for i := 1; i < n-1; i++ {
-		ans = max(ans, pre[i]+suf[n-1-i]-1)
+		if pre[i] > 1 && suf[n-1-i] > 1 {
+			ans = max(ans, pre[i]+suf[n-1-i]-1)
+		}
 	}
 	return n - ans
 }
