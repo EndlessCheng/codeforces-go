@@ -25,7 +25,11 @@
 - 不覆盖：$f[i][j] = f[i][j-1] + [\textit{floor}[j]=\text{`1'}]$；
 - 覆盖：$f[i][j] = f[i-1][j-\textit{carpetLen}]$。
 
-取二者最小值。
+取二者最小值，即
+
+$$
+f[i][j] = \min(f[i][j-1] + [\textit{floor}[j]=\text{`1'}],f[i-1][j-\textit{carpetLen}])
+$$
 
 注意 $i=0$ 的时候只能不覆盖，需要单独计算。
 
