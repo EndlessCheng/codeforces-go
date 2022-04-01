@@ -33,32 +33,27 @@ func CF1660E(_r io.Reader, _w io.Writer) {
 			a[i] += a[i]
 		}
 		a = append(a, a...)
-		n *= 2
-		sum := make([][]int, n+1)
-		sum[0] = make([]int, n+1)
+		m := n * 2
+		s := make([][]int, m+1)
+		s[0] = make([]int, m+1)
 		for i, r := range a {
-			sum[i+1] = make([]int, n+1)
+			s[i+1] = make([]int, m+1)
 			for j, v := range r {
-				sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + int(v&1)
+				s[i+1][j+1] = s[i+1][j] + s[i][j+1] - s[i][j] + int(v&1)
 			}
 		}
 
 		ans := int(1e9)
-		for s := n/2 + 1; s < n/2*3; s++ {
-			l := max(0, n-s)
-			r := min(n-1, n*2-s-1)
-			c1 := 0
-			for i, j := s+l-n, l; j <= r; j++ {
+		for k := n + 1; k < n*3; k++ {
+			l, r := max(0, m-k), min(m-1, m*2-k-1)
+			for i, j, c1 := k+l-m, l, 0; j <= r; j++ {
 				c1 += int(a[i][j] & 1)
-				if j >= l+n/2-1 {
-					x, y := i-n/2, j-n/2
-					if j >= l+n/2 {
+				if j >= l+n-1 {
+					x, y := i-n, j-n
+					if j >= l+n {
 						c1 -= int(a[x][y] & 1)
 					}
-					x++
-					y++
-					s1 := sum[i+1][j+1] - sum[i+1][y] - sum[x][j+1] + sum[x][y]
-					ans = min(ans, s1-2*c1+n/2)
+					ans = min(ans, s[i+1][j+1]-s[i+1][y+1]-s[x+1][j+1]+s[x+1][y+1]-2*c1+n)
 				}
 				i++
 			}
