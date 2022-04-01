@@ -121,6 +121,8 @@ type ntt struct {
 
 func newNTT(n int) ntt { return ntt{n, _pow(int64(n), P-2)} }
 
+// 注：下面 swap 的代码，另一种写法是初始化每个 i 对应的 j https://blog.csdn.net/Flag_z/article/details/99163939
+// 由于不是性能瓶颈，实测对性能影响不大
 func (t ntt) transform(a, omega []int64) {
 	for i, j := 0, 0; i < t.n; i++ {
 		if i > j {
