@@ -162,7 +162,7 @@ func _(min, max func(int, int) int) {
 	//		构造 t+s
 	// 最短的包含 s 和 t 的字符串 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/F
 	// 		构造 s+t 和 t+s
-	calcZ := func(s []byte) []int {
+	calcZ := func(s string) []int {
 		n := len(s)
 		z := make([]int, n)
 		for i, l, r := 1, 0, 0; i < n; i++ {
@@ -175,8 +175,8 @@ func _(min, max func(int, int) int) {
 		z[0] = n
 		return z
 	}
-	zSearch := func(text, pattern []byte) (pos []int) {
-		s := append(append(pattern, '#'), text...)
+	zSearch := func(text, pattern string) (pos []int) {
+		s := pattern + "#" + text
 		z := calcZ(s)
 		for i, l := range z[len(pattern)+1:] {
 			if l == len(pattern) {
@@ -190,11 +190,12 @@ func _(min, max func(int, int) int) {
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
 	// 其他方法 https://codeforces.com/blog/entry/90035
-	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509
+	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509 https://codeforces.com/gym/103585/problem/K
 	// https://codeforces.com/problemset/problem/496/B
-	smallestRepresentation := func(s []byte) []byte {
+	smallestRepresentation := func(s string) string {
 		n := len(s)
-		s = append(s, s...)
+		s += s
+		// 如果要返回一个和原串不同的字符串，初始化 i=1, j=2
 		i := 0
 		for j := 1; j < n; {
 			k := 0
@@ -203,7 +204,7 @@ func _(min, max func(int, int) int) {
 			if k >= n {
 				break
 			}
-			if s[i+k] < s[j+k] {
+			if s[i+k] < s[j+k] { // > 为字典序最大
 				// j 到 j+k 都不会是最小串的开头位置
 				j += k + 1
 			} else {
