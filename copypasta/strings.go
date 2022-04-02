@@ -166,7 +166,9 @@ func _(min, max func(int, int) int) {
 		n := len(s)
 		z := make([]int, n)
 		for i, l, r := 1, 0, 0; i < n; i++ {
-			z[i] = max(0, min(z[i-l], r-i+1))
+			if v := r - i + 1; v > 0 {
+				z[i] = min(z[i-l], v)
+			}
 			for i+z[i] < n && s[z[i]] == s[i+z[i]] {
 				l, r = i, i+z[i]
 				z[i]++
