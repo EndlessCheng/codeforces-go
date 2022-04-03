@@ -249,6 +249,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值（题目见 sort.go 中的 0-1 分数规划）
 	// 子段和有上限的最大子段和：转换为前缀和之差 sum[i]-sum[j]<=K，在平衡树上二分 sum[j] LC363 https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/
 	// 最大两段子段和：求每个位置上的前缀最大子段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
+	//     等价题目：允许翻转一段子区间的最大子段和
 	// 最大 m 段子段和 http://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
@@ -926,6 +927,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 把重量看成价值，价值看成重量，求同等价值下能得到的最小重量，若该最小重量不超过背包容量，则该价值合法。所有合法价值的最大值即为答案
 	// 时间复杂度 O(n * sum(values)) 或 O(n^2 * maxV)
 	// https://atcoder.jp/contests/dp/tasks/dp_e
+	// https://codeforces.com/contest/1650/problem/F
 	zeroOneKnapsackByValue := func(values, weights []int, maxW int) int {
 		totValue := 0
 		for _, v := range values {
@@ -1035,6 +1037,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 分组背包·每组至多选一个（恰好选一个见后面）
 	// https://www.acwing.com/problem/content/9/
 	// https://www.luogu.com.cn/problem/P1757
+	// https://leetcode-cn.com/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/
+	// https://codeforces.com/problemset/problem/148/E
+	// 进一步优化 https://codeforces.com/problemset/problem/1442/D
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -1053,6 +1058,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 分组背包·每组恰好选一个
 	// 允许物品重量为 0
+	// https://atcoder.jp/contests/abc240/tasks/abc240_c
 	// LC1981/周赛255 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 	// 与二分图染色结合 https://codeforces.com/problemset/problem/1354/E
 	// 转换 https://codeforces.com/problemset/problem/1637/D
@@ -2191,6 +2197,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		f(0, -1)
 		return max(cover[0], nonCover[0])
 	}
+
+	// 树上完美匹配子集个数
+	// https://codeforces.com/problemset/problem/1032/F
 
 	// todo 给一棵树和树上的一些关键节点，选 m 个点，使得关键节点到这些点中距离的最小值的最大值最小，求这个值
 	//      https://www.luogu.com.cn/problem/P3523
