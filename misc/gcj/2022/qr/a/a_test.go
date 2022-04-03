@@ -12,8 +12,32 @@ func Test(t *testing.T) {
 
 	customTestCases := [][2]string{
 		{
-			``,
-			``,
+			`3
+3 4
+2 2
+2 3
+`,
+			`Case #1:
+..+-+-+-+
+..|.|.|.|
++-+-+-+-+
+|.|.|.|.|
++-+-+-+-+
+|.|.|.|.|
++-+-+-+-+
+Case #2:
+..+-+
+..|.|
++-+-+
+|.|.|
++-+-+
+Case #3:
+..+-+-+
+..|.|.|
++-+-+-+
+|.|.|.|
++-+-+-+
+`,
 		},
 	}
 	testutil.AssertEqualStringCase(t, customTestCases, 0, run)
