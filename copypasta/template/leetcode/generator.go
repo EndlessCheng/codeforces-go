@@ -126,7 +126,7 @@ func fetchProblemURLs(session *grequests.Session, contestTag string) (problems [
 			return
 		}
 
-		sleepTime += 2 * time.Second // 消除误差
+		sleepTime += 500 * time.Millisecond // 消除误差
 		fmt.Printf("%s尚未开始，等待中……\n%v\n", d.Contest.Title, sleepTime)
 		time.Sleep(sleepTime)
 		return fetchProblemURLs(session, contestTag)
@@ -630,7 +630,7 @@ func GenLeetCodeTests(username, password, contestTag string, openWebPage bool, c
 			break
 		}
 		fmt.Println(err)
-		time.Sleep(time.Second)
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	if len(problems) == 0 {
