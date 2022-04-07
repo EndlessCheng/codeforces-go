@@ -8,7 +8,7 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func f(v, w uint) (c int) {
+func f17(v, w uint) (c int) {
 	for v != w {
 		if v < w {
 			v, w = w, v
@@ -30,7 +30,7 @@ func CF1617E(_r io.Reader, out io.Writer) {
 
 	mx := -1
 	for i := 1; i < n; i++ {
-		c := f(a[i], a[0])
+		c := f17(a[i], a[0])
 		if c > mx {
 			mx, p = c, i
 		}
@@ -39,7 +39,7 @@ func CF1617E(_r io.Reader, out io.Writer) {
 	mx = -1
 	for i, v := range a {
 		if i != p {
-			c := f(v, a[p])
+			c := f17(v, a[p])
 			if c > mx {
 				mx, q = c, i
 			}
