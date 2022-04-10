@@ -1,0 +1,14 @@
+"Singing dancing in the rain"
+10
+"Singing in the rain"
+
+"Hello World"
+2
+"World"
+
+"Hello World"
+5
+"Hello World"
+
+
+
