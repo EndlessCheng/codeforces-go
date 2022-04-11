@@ -11,6 +11,8 @@
 - [二叉树](weekly/209/b/b_test.go)
 - [链表](weekly/95/a/a_test.go)
 
+如果觉得麻烦，还可以用[读文件](weekly/287/c/c_test.go)的方式测试，对应的文件在同一目录下。
+
 ## 代码生成工具
 
 [见此](../copypasta/template/leetcode)
