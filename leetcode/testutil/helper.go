@@ -1,6 +1,11 @@
 package testutil
 
-import "strings"
+import (
+	"os"
+	"strings"
+
+	"github.com/mitchellh/go-ps"
+)
 
 // 移除每行的左右空格
 func trimSpace(s string) string {
@@ -21,4 +26,26 @@ func trimSpaceAndEmptyLine(s string) (res []string) {
 		}
 	}
 	return
+}
+
+// IsDebugging will return true if the process was launched from Delve or the
+// gopls language server debugger.
+//
+// It does not detect situations where a debugger attached after process start.
+// https://stackoverflow.com/a/70969754/4419904
+func IsDebugging() bool {
+	pid := os.Getppid()
+
+	// We loop in case there were intermediary processes like the gopls language server.
+	for pid != 0 {
+		switch p, err := ps.FindProcess(pid); {
+		case err != nil:
+			return false
+		case p.Executable() == "dlv":
+			return true
+		default:
+			pid = p.PPid()
+		}
+	}
+	return false
 }
