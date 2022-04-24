@@ -143,7 +143,7 @@ func countRectangles2(rectangles [][]int, points [][]int) (ans []int) {
 }
 
 // github.com/EndlessCheng/codeforces-go
-func countRectangles(rectangles [][]int, points [][]int) []int {
+func countRectangles3(rectangles [][]int, points [][]int) []int {
 	sort.Slice(rectangles, func(i, j int) bool { return rectangles[i][1] > rectangles[j][1] })
 	for i := range points {
 		points[i] = append(points[i], i)
@@ -161,6 +161,27 @@ func countRectangles(rectangles [][]int, points [][]int) []int {
 			sort.Ints(xs)
 		}
 		ans[p[2]] = i - sort.SearchInts(xs, p[0])
+	}
+	return ans
+}
+
+// github.com/EndlessCheng/codeforces-go
+func countRectangles(rectangles [][]int, points [][]int) []int {
+	sort.Slice(rectangles, func(i, j int) bool { return rectangles[i][0] > rectangles[j][0] })
+	for i := range points {
+		points[i] = append(points[i], i)
+	}
+	sort.Slice(points, func(i, j int) bool { return points[i][0] > points[j][0] })
+
+	ans := make([]int, len(points))
+	i, cnt := 0, [101]int{}
+	for _, p := range points {
+		for ; i < len(rectangles) && rectangles[i][0] >= p[0]; i++ {
+			cnt[rectangles[i][1]]++
+		}
+		for _, c := range cnt[p[1]:] {
+			ans[p[2]] += c
+		}
 	}
 	return ans
 }
