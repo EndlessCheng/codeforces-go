@@ -5,9 +5,8 @@ import "sort"
 // github.com/EndlessCheng/codeforces-go
 func intersection(nums [][]int) (ans []int) {
 	cnt := map[int]int{}
-	for i, r := range nums {
-		for j, v := range r {
-			_, _ = i, j
+	for _, a := range nums {
+		for _, v := range a {
 			cnt[v]++
 		}
 	}
