@@ -54,10 +54,8 @@ class Solution {
         int left = 0, right = xs.size();
         while (left < right) {
             var mid = (left + right) / 2;
-            if (xs.get(mid) >= x)
-                right = mid;
-            else
-                left = mid + 1;
+            if (xs.get(mid) >= x) right = mid;
+            else left = mid + 1;
         }
         return left;
     }
@@ -138,7 +136,7 @@ class Solution:
 
 我们也可以按横坐标从大到小排序，对于点 $(x_i,y_i)$，统计横坐标不小于 $x_i$ 的矩形个数，由于高度不超过 $100$，可以用一个数组来存储每个高度有多少个矩形。
 
-那么只要累加高度不小于 $x_i$ 的矩形个数即可。
+那么只要累加高度不小于 $y_i$ 的矩形个数即可。
 
 实现时可以暴力累加，也可以用树状数组，由于这里高度很小，代码直接用的暴力累加的写法。
 
@@ -148,7 +146,7 @@ class Solution:
         rectangles.sort(key=lambda r: -r[0])
         n = len(points)
         ans = [0] * n
-        cnt = [0] * (max(r[1] for r in rectangles) + 1)
+        cnt = [0] * (max(y for _, y in rectangles) + 1)
         i = 0
         for (x, y), id in sorted(zip(points, range(n)), key=lambda x: -x[0][0]):
             while i < len(rectangles) and rectangles[i][0] >= x:
@@ -220,6 +218,92 @@ func countRectangles(rectangles [][]int, points [][]int) []int {
 		}
 		for _, c := range cnt[p[1]:] {
 			ans[p[2]] += c
+		}
+	}
+	return ans
+}
+```
+
+### 方法三：按行统计 + 二分查找
+
+由于至多有 $100$ 行数据，我们可以统计这 $100$ 行的矩阵的横坐标坐标，这样对于每个点 $(x_i,y_i)$，从第 $y_i$ 行遍历到第 $100$ 行，对于每一行，二分求出有多少个矩阵的横坐标不小于 $x_i$。累加即为答案。
+
+```Python [sol3-Python3]
+class Solution:
+    def countRectangles(self, rectangles: List[List[int]], points: List[List[int]]) -> List[int]:
+        max_y = max(y for _, y in rectangles)
+        xs = [[] for i in range(max_y + 1)]
+        for x, y in rectangles:
+            xs[y].append(x)
+        for x in xs:
+            x.sort()
+        return [sum(len(x) - bisect_left(x, px) for x in xs[py:]) for px, py in points]
+```
+
+```java [sol3-Java]
+class Solution {
+    public int[] countRectangles(int[][] rectangles, int[][] points) {
+        List<Integer>[] xs = new List[101];
+        Arrays.setAll(xs, e -> new ArrayList<>());
+        for (var r : rectangles) xs[r[1]].add(r[0]);
+        for (var x : xs) Collections.sort(x);
+
+        var n = points.length;
+        var ans = new int[n];
+        for (var i = 0; i < n; ++i)
+            for (var j = points[i][1]; j <= 100; j++)
+                ans[i] += xs[j].size() - lowerBound(xs[j], points[i][0]);
+        return ans;
+    }
+
+    int lowerBound(List<Integer> xs, int x) {
+        int left = 0, right = xs.size();
+        while (left < right) {
+            var mid = (left + right) / 2;
+            if (xs.get(mid) >= x) right = mid;
+            else left = mid + 1;
+        }
+        return left;
+    }
+}
+```
+
+```C++ [sol3-C++]
+class Solution {
+public:
+    vector<int> countRectangles(vector<vector<int>> &rectangles, vector<vector<int>> &points) {
+        vector<int> xs[101];
+        for (auto &r: rectangles)
+            xs[r[1]].push_back(r[0]);
+        for (auto &x: xs)
+            sort(x.begin(), x.end());
+
+        int n = points.size();
+        vector<int> ans(n);
+        for (int i = 0; i < n; ++i)
+            for (int y = points[i][1]; y <= 100; ++y) {
+                auto &x = xs[y];
+                ans[i] += x.size() - (lower_bound(x.begin(), x.end(), points[i][0]) - x.begin());
+            }
+        return ans;
+    }
+};
+```
+
+```go [sol3-Go]
+func countRectangles(rectangles [][]int, points [][]int) []int {
+	xs := [101][]int{}
+	for _, r := range rectangles {
+		xs[r[1]] = append(xs[r[1]], r[0])
+	}
+	for _, x := range xs {
+		sort.Ints(x)
+	}
+
+	ans := make([]int, len(points))
+	for i, p := range points {
+		for _, x := range xs[p[1]:] {
+			ans[i] += len(x) - sort.SearchInts(x, p[0])
 		}
 	}
 	return ans
