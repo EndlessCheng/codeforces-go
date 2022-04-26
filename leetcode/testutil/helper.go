@@ -32,7 +32,7 @@ func trimSpaceAndEmptyLine(s string) (res []string) {
 // gopls language server debugger.
 //
 // It does not detect situations where a debugger attached after process start.
-// Adatapted from https://stackoverflow.com/a/70969754/4419904
+// Adapted from https://stackoverflow.com/a/70969754/4419904
 func IsDebugging() bool {
 	pid := int32(os.Getppid())
 
