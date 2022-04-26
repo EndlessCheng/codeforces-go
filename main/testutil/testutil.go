@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"io/ioutil"
@@ -69,10 +70,12 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
-		if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
-			allPassed = false
-			handleOutput(actualOutput)
-		}
+		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+				allPassed = false
+				handleOutput(actualOutput)
+			}
+		})
 	}
 
 	// 若有测试用例未通过，则前面必然会打印一些信息，这里直接返回
@@ -197,7 +200,9 @@ func AssertEqualRunResults(t *testing.T, inputs []string, targetCaseNum int, run
 		}
 		actualOutput := removeExtraSpace(mockWriter.String())
 
-		assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo)
+		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo)
+		})
 	}
 }
 

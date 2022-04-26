@@ -291,15 +291,17 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			_f()
 		}
 
-		for i, out := range outs {
-			rawActualOut, er := toRawString(out)
-			if er != nil {
-				return er
+		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			for i, out := range outs {
+				rawActualOut, er := toRawString(out)
+				if er != nil {
+					t.Fatal(er)
+				}
+				if AssertOutput && !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+					allCasesOk = false
+				}
 			}
-			if AssertOutput && !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
-				allCasesOk = false
-			}
-		}
+		})
 	}
 
 	// 若有测试用例未通过，则前面必然会打印一些信息，这里直接返回
@@ -487,11 +489,14 @@ outer:
 		rawActualOut.WriteByte(']')
 
 		// 比较前，去除 rawExpectedOut 中逗号后的空格
-		// todo: 提示错在哪个 callIndex 上
 		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
-		if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut.String(), "Wrong Answer %d", curCaseNum+1) {
-			allCasesOk = false
-		}
+
+		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			// todo: 提示错在哪个 callIndex 上
+			if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut.String(), "Wrong Answer %d", curCaseNum+1) {
+				allCasesOk = false
+			}
+		})
 	}
 
 	if targetCaseNum > 0 && allCasesOk {
