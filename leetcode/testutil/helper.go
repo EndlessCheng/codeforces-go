@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-ps"
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 // 移除每行的左右空格
@@ -32,20 +32,24 @@ func trimSpaceAndEmptyLine(s string) (res []string) {
 // gopls language server debugger.
 //
 // It does not detect situations where a debugger attached after process start.
-// https://stackoverflow.com/a/70969754/4419904
+// Adatapted from https://stackoverflow.com/a/70969754/4419904
 func IsDebugging() bool {
-	pid := os.Getppid()
+	pid := int32(os.Getppid())
 
 	// We loop in case there were intermediary processes like the gopls language server.
 	for pid != 0 {
-		switch p, err := ps.FindProcess(pid); {
-		case err != nil:
+		p, err := process.NewProcess(pid)
+		if err != nil {
 			return false
-		case p.Executable() == "dlv":
-			return true
-		default:
-			pid = p.PPid()
 		}
+		name, err := p.Name()
+		if err != nil {
+			return false
+		}
+		if strings.HasPrefix(name, "dlv") {
+			return true
+		}
+		pid, _ = p.Ppid()
 	}
 	return false
 }
