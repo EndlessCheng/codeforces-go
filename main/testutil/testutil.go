@@ -14,7 +14,7 @@ import (
 type ioFunc func(io.Reader, io.Writer)
 
 func isTLE(f func()) bool {
-	if DebugTLE == 0 {
+	if DebugTLE == 0 || IsDebugging() {
 		f()
 		return false
 	}
