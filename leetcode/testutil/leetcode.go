@@ -2,13 +2,14 @@ package testutil
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func parseRawArray(rawArray string) (splits []string, err error) {
@@ -210,7 +211,7 @@ func toRawString(v reflect.Value) (s string, err error) {
 }
 
 func isTLE(f func()) bool {
-	if DebugTLE == 0 {
+	if DebugTLE == 0 || IsDebugging() {
 		f()
 		return false
 	}
