@@ -15,6 +15,8 @@ import (
 //func init() { rand.Seed(time.Now().UnixNano()) }
 
 func TestCompareInf(t *testing.T) {
+	testutil.DebugTLE = 0
+
 	inputGenerator := func() (a []int) {
 		rg := testutil2.NewRandGenerator()
 		n := rg.Int(1, 5)
@@ -44,6 +46,8 @@ func (Foo) F(int) (_ int)     { return }
 func (Foo) G(int) (_ int)     { return }
 
 func TestCompareClassInf(t *testing.T) {
+	testutil.DebugTLE = 0
+
 	assert := assert.New(t)
 	for tc := 1; ; tc++ {
 		inputInfo := &strings.Builder{}
