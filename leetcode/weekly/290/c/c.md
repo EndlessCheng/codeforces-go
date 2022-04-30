@@ -10,6 +10,9 @@
 
 然后在 $\textit{xs}$ 中二分即可算出横坐标不小于 $x_i$ 的矩形个数，由于我们是按纵坐标从大到小遍历的，因此这些矩形的纵坐标均不小于 $y_i$，因此这些矩形均包含点 $(x_i,y_i)$。
 
+- 时间复杂度：$O(Hn\log n + m\log m + m\log n)$，其中 $H=\max(h_i)$，$n$ 为 $\textit{rectangles}$ 的长度，$m$ 为 $\textit{points}$ 的长度。
+- 空间复杂度：$O(n+m)$。
+
 ```Python [sol1-Python3]
 class Solution:
     def countRectangles(self, rectangles: List[List[int]], points: List[List[int]]) -> List[int]:
@@ -80,7 +83,7 @@ public:
             while (i < rectangles.size() && rectangles[i][1] >= points[id][1])
                 xs.push_back(rectangles[i++][0]);
             if (start < i) sort(xs.begin(), xs.end()); // 只有在 xs 插入了新元素时才排序
-            ans[id] = i - (lower_bound(xs.begin(), xs.end(), points[id][0]) - xs.begin());
+            ans[id] = xs.end() - lower_bound(xs.begin(), xs.end(), points[id][0]);
         }
         return ans;
     }
@@ -113,7 +116,8 @@ func countRectangles(rectangles [][]int, points [][]int) []int {
 
 注：如果这题纵坐标的范围也是 $10^9$，我们还可以用名次树来做出此题（如 Python 的 `SortedList`）。
 
-这种做法就与值域无关了，时间复杂度为 $O(n\log n + m\log m+m\log n)$，其中 $n$ 是 $\textit{rectangles}$ 的长度，$m$ 是 $\textit{points}$ 的长度。
+- 时间复杂度：$O(n\log n + m\log m+m\log n)$。这种做法就与 $H$ 无关了。
+- 空间复杂度：$O(n+m)$。
 
 ```python
 from sortedcontainers import SortedList
@@ -139,6 +143,9 @@ class Solution:
 那么只要累加高度不小于 $y_i$ 的矩形个数即可。
 
 实现时可以暴力累加，也可以用树状数组，由于这里高度很小，代码直接用的暴力累加的写法。
+
+- 时间复杂度：$O(Hm + n\log n + m\log m)$。
+- 空间复杂度：$O(H+m)$。
 
 ```Python [sol1-Python3]
 class Solution:
@@ -228,6 +235,9 @@ func countRectangles(rectangles [][]int, points [][]int) []int {
 
 由于至多有 $100$ 行数据，我们可以统计这 $100$ 行的矩阵的横坐标坐标，这样对于每个点 $(x_i,y_i)$，从第 $y_i$ 行遍历到第 $100$ 行，对于每一行，二分求出有多少个矩阵的横坐标不小于 $x_i$。累加即为答案。
 
+- 时间复杂度：$O((n+Hm)\log n)$。
+- 空间复杂度：$O(n+H)$。不计返回值的空间。
+
 ```Python [sol3-Python3]
 class Solution:
     def countRectangles(self, rectangles: List[List[int]], points: List[List[int]]) -> List[int]:
@@ -283,7 +293,7 @@ public:
         for (int i = 0; i < n; ++i)
             for (int y = points[i][1]; y <= 100; ++y) {
                 auto &x = xs[y];
-                ans[i] += x.size() - (lower_bound(x.begin(), x.end(), points[i][0]) - x.begin());
+                ans[i] += x.end() - lower_bound(x.begin(), x.end(), points[i][0]);
             }
         return ans;
     }

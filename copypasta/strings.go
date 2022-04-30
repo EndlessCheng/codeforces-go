@@ -236,6 +236,9 @@ func _(min, max func(int, int) int) {
 
 		// 返回是 s 的子序列的最长的 t 的前缀的长度
 		match := func(t string) int {
+			if t == "" || s == "" {
+				return 0
+			}
 			i, j := 0, 0
 			if t[0] == s[0] {
 				j = 1
