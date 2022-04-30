@@ -13,6 +13,7 @@
 *.out
 
 /.idea
+/vendor
 /[0-9]*
 /todo
 /zdash
