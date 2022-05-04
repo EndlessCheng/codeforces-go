@@ -268,7 +268,7 @@
 
 [https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C1700-1900)
 
-通过大量的构造题训练，提高观察能力，快速找到切题入口。
+通过大量的构造题训练，提高观察能力，快速找到切题入口。具体见我在知乎上的这篇 [回答](https://www.zhihu.com/question/353734418/answer/2353160035)。
 
 ### Rating >= 2100
 
@@ -285,7 +285,7 @@
 
 - 在 `main` 中调用 `run(os.Stdin, os.Stdout)` 来执行代码；
 - 测试时，将测试数据转换成 `strings.Reader` 当作输入，并用一个 `strings.Builder` 来接收输出，将这二者传入 `run` 中，然后就能比较输出与答案了；
-- 对拍时需要实现一个暴力算法 `runAC`，参数和 `run` 一样。通过[随机数据生成器](/main/testutil/rand.go)来生成数据，分别传入 `runAC` 和 `run`，通过比对各自的输出，来检查 `run` 中的问题。
+- 对拍时需要实现一个暴力算法 `runAC`，参数和 `run` 一样。通过 [随机数据生成器](/main/testutil/rand.go) 来生成数据，分别传入 `runAC` 和 `run`，通过比对各自的输出，来检查 `run` 中的问题。
 
 具体可以见 Codeforces 代码仓库 [main](/main)，所有非交互题的代码及其对应测试全部按照上述框架实现。
 
