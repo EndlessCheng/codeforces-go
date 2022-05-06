@@ -9,35 +9,29 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF924C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	max := func(a ...int) int {
-		res := a[0]
-		for _, v := range a[1:] {
-			if v > res {
-				res = v
-			}
+	max := func(a, b int) int {
+		if b > a {
+			return b
 		}
-		return res
+		return a
 	}
 
-	var n, mx int
+	var n int
 	Fscan(in, &n)
 	m := make([]int, n)
 	for i := range m {
 		Fscan(in, &m[i])
 	}
-	maxs := make([]int, n)
-	for i := n - 1; i >= 0; i-- {
-		mx = max(mx-1, m[i]+1)
-		maxs[i] = mx
+
+	sufMax := make([]int, n+1)
+	for i := n - 1; i > 0; i-- {
+		sufMax[i] = max(sufMax[i+1]-1, m[i]+1)
 	}
-	cnt := make([]int, n)
-	cnt[0] = 1
-	for i := 1; i < n; i++ {
-		cnt[i] = max(cnt[i-1], m[i]+1, maxs[i])
-	}
+
 	ans := int64(0)
-	for i, v := range cnt {
-		ans += int64(v - 1 - m[i])
+	for i, mx := 1, 1; i < n; i++ {
+		mx = max(mx, sufMax[i])
+		ans += int64(mx - m[i] - 1)
 	}
 	Fprint(out, ans)
 }
