@@ -12,6 +12,7 @@
 // @match        https://codeforces.com/problemset/problem/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/contest/*
+// @match        https://leetcode.cn/contest/*
 // @match        https://www.acwing.com/problem/content/*
 // ==/UserScript==
 
