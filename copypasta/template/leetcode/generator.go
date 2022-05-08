@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const host = "leetcode-cn.com"
+const host = "leetcode.cn"
 
 // 使用用户名和密码登录
 func login(username, password string) (session *grequests.Session, err error) {
