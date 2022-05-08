@@ -816,11 +816,12 @@ func _(min func(int64, int64) int64) {
 	// 求凸包 葛立恒扫描法 Graham's scan
 	// 使用单调栈，保存的向量是有极角序的
 	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
-	// 求上凸包就从最右边的点开始
+	// 求上凸包就从倒数第二个点开始继续求
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742 LC587 https://leetcode-cn.com/problems/erect-the-fence/
 	// 构造 LCP15 https://leetcode-cn.com/problems/you-le-yuan-de-mi-gong/
+	// 转换 https://codeforces.com/problemset/problem/1142/C
 	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) (q []vec) {
@@ -832,7 +833,7 @@ func _(min func(int64, int64) int64) {
 			q = append(q, p)
 		}
 		sz := len(q)
-		for i := len(ps) - 1; i >= 0; i-- {
+		for i := len(ps) - 2; i >= 0; i-- {
 			p := ps[i]
 			for len(q) > sz && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
