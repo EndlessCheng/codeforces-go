@@ -15,6 +15,7 @@ import (
 )
 
 const host = "leetcode.cn"
+const graphqlURL = "https://" + host + "/graphql"
 
 // 使用用户名和密码登录
 func login(username, password string) (session *grequests.Session, err error) {
@@ -25,11 +26,12 @@ func login(username, password string) (session *grequests.Session, err error) {
 	})
 
 	// "touch" csrfToken
-	csrfTokenURL := fmt.Sprintf("https://%s/graphql/", host)
-	resp, err := session.Post(csrfTokenURL, &grequests.RequestOptions{JSON: map[string]interface{}{
-		"operationName": "globalData",
-		"query":         "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n",
-	}})
+	resp, err := session.Post(graphqlURL, &grequests.RequestOptions{
+		JSON: map[string]interface{}{
+			"operationName": "globalData",
+			"query":         "query globalData {\n  feature {\n    questionTranslation\n    subscription\n    signUp\n    discuss\n    mockInterview\n    contest\n    store\n    book\n    chinaProblemDiscuss\n    socialProviders\n    studentFooter\n    cnJobs\n    __typename\n  }\n  userStatus {\n    isSignedIn\n    isAdmin\n    isStaff\n    isSuperuser\n    isTranslator\n    isPremium\n    isVerified\n    isPhoneVerified\n    isWechatVerified\n    checkedInToday\n    username\n    realName\n    userSlug\n    groups\n    jobsCompany {\n      nameSlug\n      logo\n      description\n      name\n      legalName\n      isVerified\n      permissions {\n        canInviteUsers\n        canInviteAllSite\n        leftInviteTimes\n        maxVisibleExploredUser\n        __typename\n      }\n      __typename\n    }\n    avatar\n    optedIn\n    requestRegion\n    region\n    activeSessionId\n    permissions\n    notificationStatus {\n      lastModified\n      numUnread\n      __typename\n    }\n    completedFeatureGuides\n    useTranslation\n    __typename\n  }\n  siteRegion\n  chinaHost\n  websocketUrl\n}\n",
+		},
+	})
 	if err != nil {
 		// maybe timeout
 		fmt.Println("访问失败，重试", err)
@@ -37,7 +39,7 @@ func login(username, password string) (session *grequests.Session, err error) {
 		return login(username, password)
 	}
 	if !resp.Ok {
-		return nil, fmt.Errorf("POST %s return code %d", csrfTokenURL, resp.StatusCode)
+		return nil, fmt.Errorf("POST %s return code %d", graphqlURL, resp.StatusCode)
 	}
 
 	var csrfToken string
@@ -156,7 +158,6 @@ func fetchProblemURLs(session *grequests.Session, contestTag string) (problems [
 // 获取力扣杯的题目链接
 // slug 如 "2020-fall", "2021-spring"
 func fetchSeasonProblemURLs(session *grequests.Session, slug string, isSolo bool) (problems []*problem, err error) {
-	const graphqlURL = "https://leetcode-cn.com/graphql"
 	resp, err := session.Post(graphqlURL, &grequests.RequestOptions{
 		JSON: map[string]interface{}{
 			"operationName": "contestGroup",
