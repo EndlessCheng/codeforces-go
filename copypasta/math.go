@@ -911,6 +911,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	         对应的 n https://oeis.org/A066424
 	    Smallest k such that sigma(k) = n http://oeis.org/A051444
 		σ(n) 前缀和 = ∑{k=1..n} k*floor(n/k) https://oeis.org/A024916
+		https://oeis.org/A001157 sigma_2(n): sum of squares of divisors of n
+		https://oeis.org/A064602 sigma_2 前缀和 = Sum_{i=1..n} i^2 * floor(n/i)
 		真因子之和 https://oeis.org/A001065 σ(n)-n
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
 			https://en.wikipedia.org/wiki/Perfect_number
@@ -1984,6 +1986,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A010786 Floor-factorial numbers: a(n) = Product_{k=1..n} floor(n/k)
 	// 1, 2, 3, 8, 10, 36, 42, 128, 216, 600, 660, 3456, 3744, 9408, 18900, 61440, 65280, 279936, 295488, 1152000, 2116800, 4878720, 5100480, 31850496, 41472000, 93450240, 163762560, 568995840, 589317120, 3265920000, 3374784000
 	// https://oeis.org/A309912 a(n) = Product_{p prime, p <= n} floor(n/p)
+
+	// GCD(C(n,1),C(n,2),...,C(n,n-1))
+	// = p, n = p^k (p is a prime)
+	// = 1, otherwise
 
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
 	// a(n) ~ 2^n / sqrt(π * n/2)

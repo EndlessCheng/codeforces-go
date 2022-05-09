@@ -11,6 +11,8 @@ import (
 若能将此解的应用场景扩大到原问题的状态空间，并且扩展过程的每个步骤具有相似性，就可以考虑使用递推或递归求解。
 换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」进行求解。
 
+Self-Avoiding Walk https://mathworld.wolfram.com/Self-AvoidingWalk.html
+
 COUNTING SELF-AVOIDING WALKS https://arxiv.org/pdf/1304.7216.pdf
 
 https://oeis.org/A096969 Number of directed Hamiltonian paths in (n X n)-grid graph
@@ -21,6 +23,12 @@ https://oeis.org/A236753 Number of simple (non-intersecting) directed paths in (
 
 https://oeis.org/A001411 Number of n-step self-avoiding walks on square lattice
 1, 4, 12, 36, 100, 284, 780, 2172, 5916, 16268, 44100, 120292, 324932, 881500, 2374444, 6416596, 17245332, 46466676, 124658732, 335116620, 897697164, 2408806028, 6444560484, 17266613812, 46146397316, 123481354908, 329712786220, 881317491628
+
+https://oeis.org/A046170 Number of self-avoiding walks on a 2-D lattice of length n which start at the origin, take first step in the {+1,0} direction and whose vertices are always nonnegative in x and y
+1, 2, 5, 12, 30, 73, 183, 456, 1151, 2900, 7361, 18684, 47652, 121584, 311259, 797311, 2047384, 5260692, 13542718, 34884239, 89991344, 232282110, 600281932, 1552096361, 4017128206, 10401997092, 26957667445, 69892976538
+
+https://oeis.org/A007764 Number of non-intersecting (or self-avoiding) rook paths joining opposite corners of an n X n grid
+1, 2, 12, 184, 8512, 1262816, 575780564, 789360053252, 3266598486981642, 41044208702632496804, 1568758030464750013214100, 182413291514248049241470885236, 64528039343270018963357185158482118, 69450664761521361664274701548907358996488
 
 Number of simple (non-intersecting) directed paths [of length n] in (n X n)-grid graph
 1, 8, 44, 232, 972, 4008, 14932, 55104, 191068, 657848 [10], 2176716, 7157296, 22902052, 72898328, 227471396, 706797600, 2162946116
@@ -702,6 +710,15 @@ func _(min, max func(int, int) int) {
 			sub = (sub - 1) & set
 		}
 
+		// 所有子集（写法二）
+		for sub := set; ; sub = (sub - 1) & set {
+			// do(sub)...
+
+			if sub == 0 {
+				break
+			}
+		}
+
 		// 非空子集
 		for sub := set; sub > 0; sub = (sub - 1) & set {
 			// do(sub)...
@@ -1014,7 +1031,7 @@ func gridCollection() {
 	// t 也可是别的东西，比如某个特殊符号等
 	// https://ac.nowcoder.com/acm/contest/6781/B
 	// https://atcoder.jp/contests/abc184/tasks/abc184_e
-	disST := func(g [][]byte, s pair, t pair) int {
+	disST := func(g [][]byte, sx, sy, tx, ty int) int {
 		n, m := len(g), len(g[0])
 		const inf int = 1e9 // 1e18
 
@@ -1022,18 +1039,21 @@ func gridCollection() {
 		for i := range vis {
 			vis[i] = make([]bool, m)
 		}
-		vis[s.x][s.y] = true
-		q := []pair{s}
+		vis[sx][sy] = true
+		q := []pair{{sx, sy}}
 		for step := 0; len(q) > 0; step++ {
 			tmp := q
 			q = nil
 			for _, p := range tmp {
 				// g[p.x][p.y] == 'T'
-				if p == t {
+				if p.x == tx && p.y == ty {
 					return step
 				}
 				for _, d := range dir4 {
 					if xx, yy := p.x+d.x, p.y+d.y; 0 <= xx && xx < n && 0 <= yy && yy < m && !vis[xx][yy] && g[xx][yy] != '#' { //
+						//if p.x == tx && p.y == ty {
+						//	return step
+						//}
 						vis[xx][yy] = true
 						q = append(q, pair{xx, yy})
 					}

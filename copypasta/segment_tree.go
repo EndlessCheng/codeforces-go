@@ -16,6 +16,7 @@ package copypasta
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
+// 最长连续相同子串 LC2213/周赛285D https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/
 // 开方 https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
 // 取模 https://codeforces.com/problemset/problem/438/D
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
@@ -696,6 +697,7 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 //   https://zhuanlan.zhihu.com/p/29876526
 //   https://zhuanlan.zhihu.com/p/29937723
 //   https://codeforces.com/blog/entry/18051 Efficient and easy segment trees
+//   https://codeforces.com/blog/entry/100454 Even more efficient but not so easy segment trees
 
 //
 

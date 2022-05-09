@@ -208,6 +208,7 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// vis[v] == 0：该顶点未被访问
 		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
 		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
+		// LC802 https://leetcode-cn.com/problems/find-eventual-safe-states/
 		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
 		// https://codeforces.com/problemset/problem/698/B
 		// https://codeforces.com/problemset/problem/1547/G
@@ -768,6 +769,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 // 好题 https://codeforces.com/problemset/problem/962/F
+// https://leetcode-cn.com/problems/s5kipK/
 /*
 使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
 基础样例 - 一个割点两个简单环
@@ -790,12 +792,12 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 5 6
 6 4
 */
-func (G *graph) findVertexBCC(n int, g [][]int, min func(int, int) int) (comps [][]int, bccIDs []int) {
-	bccIDs = make([]int, n) // ID 从 1 开始编号
+func (G *graph) findVertexBCC(g [][]int, min func(int, int) int) (comps [][]int, bccIDs []int) {
+	bccIDs = make([]int, len(g)) // ID 从 1 开始编号
 	idCnt := 0
-	isCut := make([]bool, n)
+	isCut := make([]bool, len(g))
 
-	dfn := make([]int, n) // 值从 1 开始
+	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	type edge struct{ v, w int } // eid
 	stack := []edge{}
@@ -864,12 +866,11 @@ func (G *graph) findVertexBCC(n int, g [][]int, min func(int, int) int) (comps [
 
 	// EXTRA: 缩点
 	// BCC 和割点作为新图中的节点，并在每个割点与包含它的所有 BCC 之间连边
-	vid := idCnt
-	cutIDs := make([]int, n) // 接在 BCC 之后给割点编号
+	cutIDs := make([]int, len(g))
 	for i, is := range isCut {
 		if is {
-			vid++
-			cutIDs[i] = vid
+			idCnt++ // 接在 BCC 之后给割点编号
+			cutIDs[i] = idCnt
 		}
 	}
 	for v, cp := range comps {

@@ -12,6 +12,7 @@
 // @match        https://codeforces.com/problemset/problem/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/contest/*
+// @match        https://leetcode.cn/contest/*
 // @match        https://www.acwing.com/problem/content/*
 // ==/UserScript==
 
@@ -81,7 +82,7 @@
         "独一无二", "唯一", "两个",
         "所有", "每", "任何", "任意", "或", "之一", "反之", "必须", "仅", "其他",
         "最小", "最大", "最少", "最多", "最短", "最长", "最早", "最晚", "最后", "第一", // todo regex 最...
-        "至少", "至多", "恰好",
+        "至少", "至多", "恰好", "刚好",
         "非空", "连续", "子数组", "子区间", "区间", "子序列", "子字符串", "子串",
         "严格", /*"递增",*/ "递减", "升序", "降序", "字典序",
         "重复", "重新", "相邻",
@@ -109,8 +110,8 @@
             }
 
             // 额外高亮
-            const colorGreen = "#ff0000";
-            text = text.highlight("取模", colorGreen).highlight("取余", colorGreen);
+            const colorRed = "#ff0000";
+            text = text.highlight("取模", colorRed).highlight("取余", colorRed).highlight("重复边", colorRed).highlight("重边", colorRed);
 
             text = text.replaceAll("Mr. ", "Mr.")
                 .replaceAll("mr. ", "mr.")

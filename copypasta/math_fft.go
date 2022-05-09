@@ -9,6 +9,7 @@ import (
 https://en.wikipedia.org/wiki/Fast_Fourier_transform
 
 【推荐】一小时学会快速傅里叶变换 https://zhuanlan.zhihu.com/p/31584464
+为什么 FFT 可以加速卷积运算 https://www.zhihu.com/question/394657296/answer/2329522108
 傅里叶变换学习笔记 https://www.luogu.com.cn/blog/command-block/fft-xue-xi-bi-ji
 从多项式乘法到快速傅里叶变换 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
 优化技巧 https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
@@ -79,6 +80,7 @@ func (t *fft) idft(a []complex128) {
 }
 
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
+// c[i] = ∑a[k]*b[i-k], k=0..i
 // 入参出参都是次项从低到高的系数
 // 建议全程用 int64
 func polyConvFFT(a, b []int64) []int64 {

@@ -34,6 +34,7 @@ http://blog.miskcoo.com/2015/05/polynomial-inverse
 http://blog.miskcoo.com/2015/05/polynomial-division
 http://blog.miskcoo.com/2015/05/polynomial-multipoint-eval-and-interpolation
 关于优化形式幂级数计算的 Newton 法的常数 http://negiizhao.blog.uoj.ac/blog/4671
+todo 卡常板子 https://judge.yosupo.jp/submission/65290
 
 从拉插到快速插值求值 https://www.luogu.com.cn/blog/command-block/zong-la-cha-dao-kuai-su-cha-zhi-qiu-zhi
 浅谈多项式复合和拉格朗日反演 https://www.luogu.com.cn/blog/your-alpha1022/qian-tan-duo-xiang-shi-fu-ge-hu-la-ge-lang-ri-fan-yan
@@ -171,6 +172,7 @@ func (a poly) resize(n int) poly {
 }
 
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
+// c[i] = ∑a[k]*b[i-k], k=0..i
 // 入参出参都是次项从低到高的系数
 // 模板题 https://www.luogu.com.cn/problem/P3803 https://www.luogu.com.cn/problem/P1919 https://atcoder.jp/contests/practice2/tasks/practice2_f
 func (a poly) conv(b poly) poly {

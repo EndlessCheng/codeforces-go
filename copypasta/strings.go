@@ -142,8 +142,10 @@ func _(min, max func(int, int) int) {
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
 	// 参考 Competitive Programmer’s Handbook Ch.26
 	// https://oi-wiki.org/string/z-func/
+	// 可视化 https://personal.utdallas.edu/~besp/demo/John2010/z-algorithm.htm
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
+	//
 	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	//       https://www.luogu.com.cn/problem/P5410
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
@@ -400,6 +402,7 @@ func _(min, max func(int, int) int) {
 		本质不同子串个数 https://www.luogu.com.cn/problem/P2408 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
+			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode-cn.com/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
 			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
 		带限制的不同子串个数
