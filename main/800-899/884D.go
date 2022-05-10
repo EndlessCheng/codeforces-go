@@ -8,21 +8,21 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-type hp []int64
+type hp84 []int64
 
-func (h hp) Len() int            { return len(h) }
-func (h hp) Less(i, j int) bool  { return h[i] < h[j] }
-func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{}) { *h = append(*h, v.(int64)) }
-func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *hp) pop() int64         { return heap.Pop(h).(int64) }
+func (h hp84) Len() int            { return len(h) }
+func (h hp84) Less(i, j int) bool  { return h[i] < h[j] }
+func (h hp84) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *hp84) Push(v interface{}) { *h = append(*h, v.(int64)) }
+func (h *hp84) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hp84) pop() int64         { return heap.Pop(h).(int64) }
 
 func CF884D(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n int
 	var ans int64
 	Fscan(in, &n)
-	h := make(hp, n, n+1)
+	h := make(hp84, n, n+1)
 	for i := range h {
 		Fscan(in, &h[i])
 	}
