@@ -765,7 +765,7 @@ func _(min, max func(int, int) int) {
 		}
 	}
 
-	// Gosper’s Hack：枚举大小为 n 的集合的大小为 k 的子集（按字典序）
+	// Gosper's Hack：枚举大小为 n 的集合的大小为 k 的子集（按字典序）
 	// https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
 	// 参考《挑战程序设计竞赛》p.156-158 的实现
 	// 把除法改成右移 bits.TrailingZeros 可以快好几倍
