@@ -1,0 +1,17 @@
+"aababbb"
+3
+
+"abcde"
+0
+
+"icexiahccknibwuwgi"
+3
+
+"aaaaa"
+0
+
+"abababababab"
+1
+
+"bbc"
+1
