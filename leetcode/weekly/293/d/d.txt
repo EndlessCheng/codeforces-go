@@ -1,0 +1,3 @@
+["CountIntervals", "add", "add", "count", "add", "count"]
+[[], [2, 3], [7, 10], [], [5, 8], []]
+[null, null, null, 6, null, 8]
