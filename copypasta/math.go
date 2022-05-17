@@ -37,6 +37,10 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1
 ∑^∞ r^i = 1/(1-r)
 ∑^∞ i*r^i = r/(1-r)^2
 
+勾股数 https://oeis.org/A008846
+斜边 https://oeis.org/A004613 Numbers that are divisible only by primes congruent to 1 mod 4
+https://en.wikipedia.org/wiki/Pythagorean_triple https://zh.wikipedia.org/wiki/%E5%8B%BE%E8%82%A1%E6%95%B0
+
 https://oeis.org/A000079 2^n
 虽然是个很普通的序列，但也能出现在一些意想不到的地方
 例如，在该页面搜索 permutation 可以找到一些有趣的计数问题
@@ -959,6 +963,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
 
+	https://oeis.org/A000188 square root of largest square dividing n
+	https://oeis.org/A120486 Partial sums of A000188  a(n) = Sum_{k=1..n} phi(k)*floor(n/k^2)
+		相关题目 https://codeforces.com/gym/103107/problem/F
+
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
 	*/
@@ -1616,7 +1624,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// a*x + b*y = c 的通解为
 	// x = (c/g)*x0 + (b/g)*k
 	// y = (c/g)*y0 - (a/g)*k
-	// 其中 g = gcd(a,b)
+	// 其中 g = gcd(a,b) 且需要满足 g|c
 	// x0 和 y0 是 ax+by=g 的一组特解（即 exgcd(a,b) 的返回值）
 	//
 	// 为方便讨论，这里要求输入的 a b c 必须为正整数
