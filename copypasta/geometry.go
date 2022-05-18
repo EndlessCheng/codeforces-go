@@ -818,7 +818,7 @@ func _(min func(int64, int64) int64) {
 	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
 	// 求上凸包就从倒数第二个点开始继续求
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
-	// NOTE: 坐标值范围不超过 M 的凸多边形的顶点数为 O(√M) 个
+	// NOTE: 坐标值范围不超过 M 的整点凸多边形的顶点数为 O(M^(2/3)) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742 LC587 https://leetcode-cn.com/problems/erect-the-fence/
 	// 构造 LCP15 https://leetcode-cn.com/problems/you-le-yuan-de-mi-gong/
 	// 转换 https://codeforces.com/problemset/problem/1142/C
