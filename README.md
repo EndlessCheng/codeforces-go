@@ -61,6 +61,7 @@
   - 最长回文子串 
     - Manacher 算法
   - 后缀数组（SA）
+  - [后缀自动机（SAM）sam.go](/copypasta/sam.go)
   - [字典树 trie.go](/copypasta/trie.go)
     - 持久化
     - AC 自动机
