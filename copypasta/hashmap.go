@@ -2,13 +2,13 @@ package copypasta
 
 import "container/list"
 
+// 哈希表：支持插入和删除，并能够按照插入顺序遍历哈希表中的元素
 // 做 https://codeforces.com/contest/962/problem/D 时有感而发
 type OrderedSet struct {
 	set map[interface{}]*list.Element
 	lst *list.List
 }
 
-// 创建一个哈希表，支持插入和删除，并能够按照插入顺序遍历哈希表中的元素
 func NewOrderedSet() OrderedSet {
 	return NewOrderedSetWithSpace(0)
 }
