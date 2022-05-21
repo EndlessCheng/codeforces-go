@@ -23,8 +23,8 @@ https://codeforces.com/blog/entry/20861
 
 【推荐】后缀自动机一·基本概念 http://hihocoder.com/problemset/problem/1441
 后缀自动机二·重复旋律5 http://hihocoder.com/problemset/problem/1445
-后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449
-    如果对每个 i，求长为 i 的且出现次数最多的子串的出现次数，可以在 dfs 求出 maxCnt[o.len].max(o.cnt) 后，再倒序求出后缀最大值，即为答案
+后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449 SPOJ NSUBSTR https://www.luogu.com.cn/problem/SP8222
+    对每个 i，求长为 i 的且出现次数最多的子串的出现次数，可以在 dfs rev 的同时求出 maxCnt[o.len].max(o.cnt)
 后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
 后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
 后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
@@ -34,6 +34,7 @@ https://codeforces.com/blog/entry/20861
 第 k 小子串（也可以用后缀数组做，见题解区）SPOJ SUBLEX https://www.luogu.com.cn/problem/SP7258 TJOI15 弦论 https://www.luogu.com.cn/problem/P3975
 动态本质不同子串个数（也可以用后缀数组做，见题解区）https://www.luogu.com.cn/problem/P4070
 区间本质不同子串个数（与 LCT 结合）https://www.luogu.com.cn/problem/P6292
+动态子串出现次数（与 LCT 结合）SPOJ NSUBSTR2 https://www.luogu.com.cn/problem/SP8747
 todo https://codeforces.com/problemset/problem/235/C
 */
 
@@ -187,7 +188,7 @@ func (m *sam) longestPrefix(s string) int {
 }
 
 // debug 用
-func (m *sam) unzipSAM() {
+func (m *sam) printSAM() {
 	root := m.nodes[0]
 	// 如果 append 了新的元素导致 rev 树的结构变化，可以直接重建
 	for _, o := range m.nodes {
