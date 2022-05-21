@@ -116,9 +116,12 @@ func (m *sam) append(c int) {
 	m.last = last
 }
 
+func (sam) ord(c byte) byte { return c - 'a' } // 'A'
+func (sam) chr(v byte) byte { return v + 'a' }
+
 func (m *sam) buildSam(s string) {
 	for _, b := range s {
-		m.append(int(b - 'a')) // todo 'A'
+		m.append(int(m.ord(byte(b))))
 	}
 }
 
@@ -146,7 +149,7 @@ func (m *sam) lcs(s string) (ans int) {
 	o, common := root, 0
 	for _, b := range s {
 		// 下面的结构形式十分类似 KMP
-		b -= 'a'
+		b := m.ord(byte(b))
 		for o != root && o.ch[b] == nil {
 			o = o.fa
 			common = o.len
@@ -173,7 +176,7 @@ func (m *sam) lcs(s string) (ans int) {
 func (m *sam) longestPrefix(s string) int {
 	o := m.nodes[0]
 	for i, b := range s {
-		b -= 'a'
+		b := m.ord(byte(b))
 		if o.ch[b] == nil {
 			return i
 		}
@@ -197,7 +200,7 @@ func (m *sam) unzipSAM() {
 		v.debugSuffixes = append(v.debugSuffixes, s)
 		for i, w := range v.ch {
 			if w != nil {
-				makeSuf(w, s+string(byte('a'+i))) // 'A'
+				makeSuf(w, s+string(m.chr(byte(i))))
 			}
 		}
 	}
