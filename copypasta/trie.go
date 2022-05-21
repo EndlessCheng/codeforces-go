@@ -276,9 +276,7 @@ func (t *trie) acSearch(text []byte, patterns [][]byte) [][]int {
 	return pos
 }
 
-//
-
-// 持久化
+// EXTRA: 可持久化字典树
 // 注意为了拷贝一份 trieNode，这里的接收器不是指针
 // https://oi-wiki.org/ds/persistent-trie/
 // roots := make([]*trieNode, n+1)
@@ -298,36 +296,16 @@ func (o trieNode) put(s []byte) *trieNode {
 	return &o
 }
 
+// EXTRA: 回文自动机（回文树） PAM  Eertree
+// todo https://oi-wiki.org/string/pam/
+//  https://baobaobear.github.io/post/20200416-pam/
+//  《字符串算法选讲》-金策
+//  https://zhuanlan.zhihu.com/p/92874690
+//  https://arxiv.org/pdf/1506.04862v2.pdf
 //
-
-// Suffix automaton (SAM)
-// https://en.wikipedia.org/wiki/Suffix_automaton
-//《后缀自动机》，陈立杰
-//《后缀自动机在字典树上的拓展》，刘研绎
-//《后缀自动机及其应用》，张天扬
-// todo https://www.bilibili.com/video/av756051240/
-// todo https://baobaobear.github.io/post/20200220-sam/
-// todo https://codeforces.com/blog/entry/20861
-// TODO https://oi-wiki.org/string/sam/
-// TODO https://cp-algorithms.com/string/suffix-automaton.html
-//      后缀树简介 https://eternalalexander.github.io/2019/10/31/%E5%90%8E%E7%BC%80%E6%A0%91%E7%AE%80%E4%BB%8B/
-// 工具：SAM Drawer https://yutong.site/sam/
-// 模板题 https://www.luogu.com.cn/problem/P3804
-// todo 后缀自动机一·基本概念 http://hihocoder.com/problemset/problem/1441
-//  后缀自动机二·重复旋律5 http://hihocoder.com/problemset/problem/1445
-//  后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449
-//  后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
-//  后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
-//  后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
-//  第 k 小子串 https://www.luogu.com.cn/problem/P3975
-//  后缀平衡树 https://www.luogu.com.cn/blog/CHiCO/CHiCO-Suffix-Balance-Tree
-
-// 广义 SAM
-// todo https://www.luogu.com.cn/problem/P6139
-// todo https://codeforces.com/problemset/problem/1437/G
-
-// 回文自动机 PAM
-// todo https://baobaobear.github.io/post/20200416-pam/
-// 《字符串算法选讲》-金策
-// https://zhuanlan.zhihu.com/p/92874690
-// todo https://www.luogu.com.cn/problem/P5496
+// 模板题 https://www.luogu.com.cn/problem/P5496
+// todo 本质不同回文子串个数 https://hihocoder.com/problemset/problem/1602
+//  回文子串出现次数 https://www.luogu.com.cn/problem/P3649
+//  最小回文划分 https://codeforces.com/problemset/problem/932/G
+//  能否划分成三段回文 LC1745 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
+//  最长双回文串（另一种做法是 Manacher）https://www.luogu.com.cn/problem/P4555

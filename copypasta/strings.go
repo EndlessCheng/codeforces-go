@@ -256,8 +256,8 @@ func _(min, max func(int, int) int) {
 		_ = match
 	}
 
-	// 最长回文子串 Manacher
-	// 推荐 https://www.bilibili.com/video/BV1AX4y1F79W
+	// 最长回文子串 Manacher（马拉车算法）
+	// 【推荐】https://www.bilibili.com/video/BV1AX4y1F79W
 	// https://www.bilibili.com/video/BV1ft4y117a4
 	// https://oi-wiki.org/string/manacher/
 	// https://cp-algorithms.com/string/manacher.html
