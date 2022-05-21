@@ -24,7 +24,7 @@ https://codeforces.com/blog/entry/20861
 【推荐】后缀自动机一·基本概念 http://hihocoder.com/problemset/problem/1441
 后缀自动机二·重复旋律5 http://hihocoder.com/problemset/problem/1445
 后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449 SPOJ NSUBSTR https://www.luogu.com.cn/problem/SP8222
-    对每个 i，求长为 i 的且出现次数最多的子串的出现次数，可以在 dfs rev 的同时求出 maxCnt[o.len].max(o.cnt)
+    对每个 i，求长为 i 的且出现次数最多的子串的出现次数，可以在 dfs rev 的同时求出 maxCnt[o.len].max(o.cnt)，最后倒序更新一下 maxCnt
 后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
 后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
 后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
