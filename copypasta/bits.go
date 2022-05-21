@@ -317,7 +317,7 @@ func (b Bitset) All0(l, r int) bool {
 func (b Bitset) All1(l, r int) bool {
 	i := l / _w
 	if i == r/_w {
-		mask := 1<<(r-l+1) - 1
+		mask := uint(1)<<(r-l+1) - 1
 		return b[i]>>(l%_w)&mask == mask
 	}
 	if ^(b[i] | (1<<(l%_w) - 1)) != 0 {
@@ -328,7 +328,7 @@ func (b Bitset) All1(l, r int) bool {
 			return false
 		}
 	}
-	mask := 1<<(r%_w+1) - 1
+	mask := uint(1)<<(r%_w+1) - 1
 	return b[r/_w]&mask == mask
 }
 
