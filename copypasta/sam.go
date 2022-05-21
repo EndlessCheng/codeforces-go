@@ -137,6 +137,7 @@ func (m *sam) dfs(v *node) {
 }
 
 // 多串 LCS 则去掉代码中的注释
+// 最后答案为 max(m.nodes[i].ans)
 func (m *sam) lcs(s string) (ans int) {
 	//for _, o := range m.nodes {
 	//	o.maxCommon = 0
