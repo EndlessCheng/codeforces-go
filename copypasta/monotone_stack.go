@@ -19,12 +19,19 @@ https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
 https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 
+计算贡献
+LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
+LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
+LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
+LC2281 https://leetcode.com/problems/sum-of-total-strength-of-wizards/
+
 与 DP 结合
 https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
 单调队列优化 LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
 
+其他
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
      评注：接雨水有三种不同的解法（DP、单调栈和双指针），其中双指针是 DP 的空间优化写法
           本质上是两种计算策略：计算每个下标处的接水量（纵向累加），计算一段高度对应的接水宽度（横向累加）
@@ -36,12 +43,17 @@ LC1504/周赛196C 全 1 矩形个数（实现见下面的 numSubmat）https://le
 已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
 */
 func monotoneStack(a []int) ([]int, []int) {
-	const border int = -2e9 // 求两侧大的话用 2e9
-	type pair struct{ v, i int }
+	const mod int = 1e9 + 7
 
-	// 求左侧严格小于
+	// 考察局部最小
+	// 如果有相同元素，需要把某一侧循环内的符号改成小于等于
+
+	// 求左侧严格小于 a[i] 的最近位置 posL[i]，这样 a[i] 就是区间 [posL[i]+1,i] 内最小的元素（之一）
+	// 如果改成小于等于，那么 a[i] 就是区间 [posL[i]+1,i] 内独一无二的最小元素
 	n := len(a)
 	posL := make([]int, n)
+	const border int = -2e9 // 求两侧大的话用 2e9
+	type pair struct{ v, i int }
 	stack := []pair{{border, -1}}
 	for i, v := range a {
 		for {
@@ -54,7 +66,8 @@ func monotoneStack(a []int) ([]int, []int) {
 		stack = append(stack, pair{v, i})
 	}
 
-	// 求右侧严格小于
+	// 求右侧严格小于 a[i] 的最近位置 posR[i]，这样 a[i] 就是区间 [i,posR[i]-1] 内最小的元素（之一）
+	// 如果改成小于等于，那么 a[i] 就是区间 [i,posR[i]-1] 内独一无二的最小元素
 	posR := make([]int, n)
 	stack = []pair{{border, n}}
 	for i := n - 1; i >= 0; i-- {
@@ -69,13 +82,19 @@ func monotoneStack(a []int) ([]int, []int) {
 		stack = append(stack, pair{v, i})
 	}
 
-	// EXTRA
-	mx := 0
+	sum := make([]int, n+1) // int64
 	for i, v := range a {
-		l, r := posL[i]+1, posR[i] // [l,r)
-		if v *= r - l; v > mx {
-			mx = v
-		}
+		sum[i+1] = (sum[i] + v) % mod
+	}
+
+	// EXTRA：计算贡献（注意取模时避免出现负数）
+	ans := 0
+	for i, v := range a {
+		l, r := posL[i]+1, posR[i] // [l,r) 左闭右开
+		// ...
+
+		tot := (sum[r] + mod - sum[l]) % mod
+		ans = (ans + v*tot) % mod
 	}
 
 	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
