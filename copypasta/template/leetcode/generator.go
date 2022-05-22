@@ -1,12 +1,14 @@
 package leetcode
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/levigross/grequests"
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
+	"io"
 	"net/url"
 	"os"
 	"strings"
@@ -250,6 +252,7 @@ type problem struct {
 	defaultCode   string
 	funcName      string
 	isFuncProblem bool
+	needMod       bool
 	funcLos       []int
 	customComment string
 
@@ -330,7 +333,10 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 		return fmt.Errorf("GET %s return code %d", p.url, resp.StatusCode)
 	}
 
-	rootNode, err := html.Parse(resp)
+	htmlText, _ := io.ReadAll(resp)
+	p.needMod = bytes.Contains(htmlText, []byte("取余")) || bytes.Contains(htmlText, []byte("取模")) || bytes.Contains(htmlText, []byte("答案可能很大"))
+
+	rootNode, err := html.Parse(bytes.NewReader(htmlText))
 	if err != nil {
 		return err
 	}
@@ -577,12 +583,21 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 				fmt.Fprintln(os.Stderr, err)
 			}
 
+			customFuncContent := "\t\n\treturn"
+			if p.needMod {
+				customFuncContent = "\t\n\t\n\t\n\tans = (ans%mod + mod) % mod\n\treturn"
+			}
+
 			p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
 				toGolangReceiverName,
 				lowerArgsFirstChar,
 				renameInputArgs,
 				namedReturnFunc("ans"),
-			}, "\t\n\treturn")
+			}, customFuncContent)
+
+			if p.needMod {
+				p.defaultCode = "const mod int = 1e9 + 7\n\n" + p.defaultCode
+			}
 
 			if err := p.createDir(); err != nil {
 				fmt.Println("createDir err:", p.url, err)

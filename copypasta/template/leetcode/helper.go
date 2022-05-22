@@ -163,7 +163,7 @@ func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, cu
 	for _, lo := range funcLos {
 		if tp := _parseReturnType(lines[lo]); tp != "" {
 			if tp == "int64" {
-				customFuncContent = "\tans := 0\n" + customFuncContent + " int64(ans)"
+				customFuncContent = "\tans := 0\n" + customFuncContent /* return */ + " int64(ans)"
 			}
 			lines[lo+1] = customFuncContent
 		}
