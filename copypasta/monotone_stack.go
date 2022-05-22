@@ -6,8 +6,8 @@ package copypasta
          这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 一些转换：
-    若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > posL[r]
-    若区间 [l,r] 的最大值等于 a[l]，则 r 必须 < posR[l]
+    若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > left[r]
+    若区间 [l,r] 的最大值等于 a[l]，则 r 必须 < right[l]
     这一结论可以用于思考一些双变量的题目
 https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
@@ -40,7 +40,7 @@ LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leet
 LC1504/周赛196C 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
-已知部分 posR 还原全部 posR；已知 posR 还原 a https://codeforces.com/problemset/problem/1158/C
+已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C
 */
 func monotoneStack(a []int) ([]int, []int) {
 	const mod int = 1e9 + 7
@@ -48,17 +48,17 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 考察局部最小
 	// 如果有相同元素，需要把某一侧循环内的符号改成小于等于
 
-	// 求左侧严格小于 a[i] 的最近位置 posL[i]，这样 a[i] 就是区间 [posL[i]+1,i] 内最小的元素（之一）
-	// 如果改成小于等于，那么 a[i] 就是区间 [posL[i]+1,i] 内独一无二的最小元素
+	// 求左侧严格小于 a[i] 的最近位置 left[i]，这样 a[i] 就是区间 [left[i]+1,i] 内最小的元素（之一）
+	// 如果改成小于等于，那么 a[i] 就是区间 [left[i]+1,i] 内独一无二的最小元素
 	n := len(a)
-	posL := make([]int, n)
+	left := make([]int, n)
 	const border int = -2e9 // 求两侧大的话用 2e9
 	type pair struct{ v, i int }
 	stack := []pair{{border, -1}}
 	for i, v := range a {
 		for {
 			if top := stack[len(stack)-1]; top.v < v { //
-				posL[i] = top.i
+				left[i] = top.i
 				break
 			}
 			stack = stack[:len(stack)-1]
@@ -66,15 +66,15 @@ func monotoneStack(a []int) ([]int, []int) {
 		stack = append(stack, pair{v, i})
 	}
 
-	// 求右侧严格小于 a[i] 的最近位置 posR[i]，这样 a[i] 就是区间 [i,posR[i]-1] 内最小的元素（之一）
-	// 如果改成小于等于，那么 a[i] 就是区间 [i,posR[i]-1] 内独一无二的最小元素
-	posR := make([]int, n)
+	// 求右侧严格小于 a[i] 的最近位置 right[i]，这样 a[i] 就是区间 [i,right[i]-1] 内最小的元素（之一）
+	// 如果改成小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
+	right := make([]int, n)
 	stack = []pair{{border, n}}
 	for i := n - 1; i >= 0; i-- {
 		v := a[i]
 		for {
 			if top := stack[len(stack)-1]; top.v < v { //
-				posR[i] = top.i
+				right[i] = top.i
 				break
 			}
 			stack = stack[:len(stack)-1]
@@ -90,11 +90,33 @@ func monotoneStack(a []int) ([]int, []int) {
 	// EXTRA：计算贡献（注意取模时避免出现负数）
 	ans := 0
 	for i, v := range a {
-		l, r := posL[i]+1, posR[i] // [l,r) 左闭右开
+		l, r := left[i]+1, right[i] // [l,r) 左闭右开
 		// ...
 
 		tot := (sum[r] + mod - sum[l]) % mod
 		ans = (ans + v*tot) % mod
+	}
+
+	{
+		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
+		left := make([]int, n)
+		right := make([]int, n)
+		for i := range right {
+			right[i] = n
+		}
+		st := []int{}
+		for i, v := range a {
+			for len(st) > 0 && a[st[len(st)-1]] >= v { // 这里是右侧小于等于
+				right[st[len(st)-1]] = i
+				st = st[:len(st)-1]
+			}
+			if len(st) > 0 {
+				left[i] = st[len(st)-1]
+			} else {
+				left[i] = -1
+			}
+			st = append(st, i)
+		}
 	}
 
 	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
@@ -105,7 +127,7 @@ func monotoneStack(a []int) ([]int, []int) {
 			ans[i] = -2e9
 		}
 		for i, v := range a {
-			sz := posR[i] - posL[i] - 1
+			sz := right[i] - left[i] - 1
 			if v > ans[sz] {
 				ans[sz] = v
 			}
@@ -118,29 +140,29 @@ func monotoneStack(a []int) ([]int, []int) {
 		// ans[1:]
 	}
 
-	return posL, posR
+	return left, right
 }
 
 // 注：若输入的是一个 1~n 的排列，有更简单的写法（求两侧大于位置）
 // 为简单起见，求出的下标从 1 开始（不存在时表示为 0 或 n+1）
 // https://codeforces.com/contest/1156/problem/E
-func permPosLR(a []int) ([]int, []int) {
+func permLR(a []int) ([]int, []int) {
 	n := len(a)
-	posV := make([]int, n+1)
-	posL := make([]int, n+2)
-	posR := make([]int, n+1)
+	idx := make([]int, n+1)
+	left := make([]int, n+2)
+	right := make([]int, n+1)
 	for i := 1; i <= n; i++ {
-		posV[a[i-1]] = i
-		posL[i], posR[i] = i-1, i+1
+		idx[a[i-1]] = i
+		left[i], right[i] = i-1, i+1
 	}
 	// 正序遍历求出的是两侧大于位置
 	// 倒序遍历求出的是两侧小于位置
 	for v := 1; v <= n; v++ {
-		p := posV[v]
-		posR[posL[p]] = posR[p]
-		posL[posR[p]] = posL[p]
+		i := idx[v]
+		right[left[i]] = right[i]
+		left[right[i]] = left[i]
 	}
-	return posL, posR
+	return left, right
 }
 
 // 最大全 1 矩形
@@ -165,25 +187,25 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 	// 然后枚举每一行，就变成 LC84 这题了
 	type pair struct{ h, i int }
 	for _, hs := range heights {
-		posL := make([]int, m)
+		left := make([]int, m)
 		stack := []pair{{-1, -1}}
 		for j, h := range hs {
 			for {
 				if top := stack[len(stack)-1]; top.h < h {
-					posL[j] = top.i
+					left[j] = top.i
 					break
 				}
 				stack = stack[:len(stack)-1]
 			}
 			stack = append(stack, pair{h, j})
 		}
-		posR := make([]int, m)
+		right := make([]int, m)
 		stack = []pair{{-1, m}}
 		for j := m - 1; j >= 0; j-- {
 			h := hs[j]
 			for {
 				if top := stack[len(stack)-1]; top.h < h {
-					posR[j] = top.i
+					right[j] = top.i
 					break
 				}
 				stack = stack[:len(stack)-1]
@@ -191,7 +213,7 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 			stack = append(stack, pair{h, j})
 		}
 		for j, h := range hs {
-			if area := (posR[j] - posL[j] - 1) * h; area > ans {
+			if area := (right[j] - left[j] - 1) * h; area > ans {
 				ans = area
 			}
 		}
