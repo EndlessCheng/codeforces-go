@@ -6,7 +6,8 @@ import (
 )
 
 /*
-伸展树 splay
+伸展树 splay tree
+https://en.wikipedia.org/wiki/Splay_tree
 https://oi-wiki.org/ds/splay/
 https://www.cnblogs.com/cjyyb/p/7499020.html
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
