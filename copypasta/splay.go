@@ -88,8 +88,8 @@ func (o *spNode) rotate(d int) *spNode {
 	return x
 }
 
-// 将子树 o 的第 k 小节点伸展到 o，返回该节点
-// k 必须为正
+// 将子树 o（中序遍历）的第 k 个节点伸展到 o，并返回该节点
+// 1 <= k <= o.size()
 func (o *spNode) splay(k int) (kth *spNode) {
 	o.pushDown()
 	d := o.cmpKth(k)
@@ -112,8 +112,10 @@ func (o *spNode) splay(k int) (kth *spNode) {
 func (o *spNode) splayMin() *spNode { return o.splay(1) }
 func (o *spNode) splayMax() *spNode { return o.splay(o.size()) }
 
-// 分裂子树 o，把 o 的前 k 小个节点放在 lo 子树，其他的放在 ro 子树（lo 节点为 o 的第 k 小节点）
-// 0 < k <= o.size()，取等号时 ro 为 nil
+// 分裂子树 o，把 o（中序遍历）的前 k 个节点放在 lo 子树，其余放在 ro 子树
+// 返回的 lo 节点为 o（中序遍历）的第 k 个节点
+// 1 <= k <= o.size()
+// 特别地，k = o.size() 时 ro 为 nil
 func (o *spNode) split(k int) (lo, ro *spNode) {
 	lo = o.splay(k)
 	ro = lo.lr[1]
@@ -122,9 +124,9 @@ func (o *spNode) split(k int) (lo, ro *spNode) {
 	return
 }
 
-// 把子树 ro 合并进子树 o，返回合并前 o 的最大节点
-// 子树 o 的所有元素比子树 ro 中的小
-// o != nil
+// 把子树 ro 合并进子树 o，返回合并前 o（中序遍历）的最后一个节点
+// 相当于把 ro 的中序遍历 append 到 o 的中序遍历之后
+// ro 可以为 nil，但 o 不能为 nil
 func (o *spNode) merge(ro *spNode) *spNode {
 	// 把最大节点伸展上来，这样会空出一个右儿子用来合并 ro
 	o = o.splayMax()
