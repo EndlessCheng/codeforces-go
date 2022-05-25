@@ -229,6 +229,32 @@ func _() {
 		}
 	}
 
+	mergeMap := func(x, y map[int]int) map[int]int {
+		res := make(map[int]int, len(x)+len(y))
+		for v, c := range x {
+			res[v] = c
+		}
+		for v, c := range y {
+			res[v] += c //
+		}
+		return res
+	}
+
+	xorSet := func(x, y map[int]bool) map[int]bool { // xorMap
+		res := make(map[int]bool, len(x)+len(y))
+		for v := range x {
+			res[v] = true
+		}
+		for v := range y {
+			if res[v] {
+				delete(res, v)
+			} else {
+				res[v] = true
+			}
+		}
+		return res
+	}
+
 	// 顺时针旋转矩阵 90°
 	rotate := func(a [][]int) [][]int {
 		n, m := len(a), len(a[0])
@@ -241,7 +267,7 @@ func _() {
 				b[j][n-1-i] = v
 			}
 		}
-		return b
+		return b // 注意这不是原地修改
 	}
 	// 转置
 	transpose := func(a [][]int) [][]int {
@@ -1135,7 +1161,7 @@ func _() {
 	_ = []interface{}{
 		pow10, dir4, dir4g, dir4g2, dir4c, dir4c2, dir4R, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin,
-		ternaryI, ternaryS, zip, zipI, rotate, transpose, minString,
+		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotate, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
