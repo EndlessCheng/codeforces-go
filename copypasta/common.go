@@ -41,8 +41,18 @@ import (
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
 等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
-逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
+*/
+
+/* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
+https://codeforces.com/problemset/problem/712/C
+https://codeforces.com/problemset/problem/621/C
+https://codeforces.com/problemset/problem/571/A
+https://codeforces.com/problemset/problem/369/E
+https://codeforces.com/problemset/problem/1644/D
+https://codeforces.com/problemset/problem/1638/D
+https://codeforces.com/problemset/problem/1672/D
+逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
 */
 
 /* 奇偶性
@@ -57,20 +67,9 @@ https://codeforces.com/problemset/problem/412/D
 https://codeforces.com/problemset/problem/266/C
 */
 
-/* 正难则反：小学奥数告诉我们，不可行方案永远比可行方案好求
-https://codeforces.com/problemset/problem/621/C
-https://codeforces.com/problemset/problem/571/A
-https://codeforces.com/problemset/problem/369/E
-*/
-
 /* 见微知著：考察单个点的规律，从而推出全局规律
 https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
-*/
-
-/* 倒序思维
-https://codeforces.com/problemset/problem/1644/D
-https://codeforces.com/problemset/problem/1638/D
 */
 
 // 栈+懒删除 https://codeforces.com/problemset/problem/1000/F
