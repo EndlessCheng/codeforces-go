@@ -6,7 +6,8 @@ import (
 )
 
 /*
-伸展树 splay
+伸展树 splay tree
+https://en.wikipedia.org/wiki/Splay_tree
 https://oi-wiki.org/ds/splay/
 https://www.cnblogs.com/cjyyb/p/7499020.html
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
@@ -57,6 +58,24 @@ func (o *spNode) pushDown() {
 
 }
 
+// 构建一颗中序遍历为 [l,r] 的 splay 树
+// 比如，给你一个序列和一些修改操作，每次取出一段子区间，cut 掉然后 append 到末尾，输出完成所有操作后的最终序列：
+//     我们可以 buildSplay(1,n)，每次操作调用两次 split 来 cut 区间，得到三颗子树 a b c
+//     append 之后应该是 a c b，那么我们可以 a.merge(c.merge(b)) 来完成这一操作
+//     注意 merge 后可能就不满足搜索树的性质了，但是没有关系，中序遍历的结果仍然是正确的，我们只要保证这一点成立，就能正确得到完成所有操作后的最终序列
+// 相关题目 HDU3487
+func buildSplay(l, r int) *spNode {
+	if l > r {
+		return nil
+	}
+	m := (l + r) >> 1
+	o := &spNode{key: spKeyType(m)}
+	o.lr[0] = buildSplay(l, m-1)
+	o.lr[1] = buildSplay(m+1, r)
+	o.maintain()
+	return o
+}
+
 // 旋转，并维护子树大小
 // d=0：左旋，返回 o 的右儿子
 // d=1：右旋，返回 o 的左儿子
@@ -70,8 +89,8 @@ func (o *spNode) rotate(d int) *spNode {
 	return x
 }
 
-// 将子树 o 的第 k 小节点伸展到 o，返回该节点
-// k 必须为正
+// 将子树 o（中序遍历）的第 k 个节点伸展到 o，并返回该节点
+// 1 <= k <= o.size()
 func (o *spNode) splay(k int) (kth *spNode) {
 	o.pushDown()
 	d := o.cmpKth(k)
@@ -94,8 +113,10 @@ func (o *spNode) splay(k int) (kth *spNode) {
 func (o *spNode) splayMin() *spNode { return o.splay(1) }
 func (o *spNode) splayMax() *spNode { return o.splay(o.size()) }
 
-// 分裂子树 o，把 o 的前 k 小个节点放在 lo 子树，其他的放在 ro 子树（lo 节点为 o 的第 k 小节点）
-// 0 < k <= o.size()，取等号时 ro 为 nil
+// 分裂子树 o，把 o（中序遍历）的前 k 个节点放在 lo 子树，其余放在 ro 子树
+// 返回的 lo 节点为 o（中序遍历）的第 k 个节点
+// 1 <= k <= o.size()
+// 特别地，k = o.size() 时 ro 为 nil
 func (o *spNode) split(k int) (lo, ro *spNode) {
 	lo = o.splay(k)
 	ro = lo.lr[1]
@@ -104,9 +125,9 @@ func (o *spNode) split(k int) (lo, ro *spNode) {
 	return
 }
 
-// 把子树 ro 合并进子树 o，返回合并前 o 的最大节点
-// 子树 o 的所有元素比子树 ro 中的小
-// o != nil
+// 把子树 ro 合并进子树 o，返回合并前 o（中序遍历）的最后一个节点
+// 相当于把 ro 的中序遍历 append 到 o 的中序遍历之后
+// ro 可以为 nil，但 o 不能为 nil
 func (o *spNode) merge(ro *spNode) *spNode {
 	// 把最大节点伸展上来，这样会空出一个右儿子用来合并 ro
 	o = o.splayMax()
