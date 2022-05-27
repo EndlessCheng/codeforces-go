@@ -145,11 +145,11 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 //        g[v] = append(g[v], w)
 //    }
 // 其他：见 mo.go 中的树上莫队部分
-func (*tree) inOutTimestamp(n, root int, g [][]int) {
-	timeIn := make([]int, n)
-	timeOut := make([]int, n)
-	at := make([]int, n+1)
-	clock := 0
+func (*tree) inOutTimestamp(g [][]int, root int) {
+	timeIn := make([]int, len(g))
+	timeOut := make([]int, len(g))
+	at := make([]int, len(g)+1)
+	clock := 0 // -1（0 适用于多个连通块的情况）
 	var f func(v, fa int)
 	f = func(v, fa int) {
 		clock++
@@ -164,6 +164,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 	}
 	f(root, -1)
 	isPa := func(pa, v int) bool { return timeIn[pa] < timeIn[v] && timeIn[v] <= timeOut[pa] }
+	sameSubtree := func(v, w int) bool { return isPa(v, w) || isPa(w, v) }
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
@@ -172,8 +173,8 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		// https://codeforces.com/problemset/problem/570/D
 		// https://codeforces.com/problemset/problem/1076/E
 		type info struct{ tin, tout, dep int }
-		is := make([]info, n)
-		depT := make([][]int, n)
+		is := make([]info, len(g))
+		depT := make([][]int, len(g))
 		t := 0
 		var f func(v, fa, d int)
 		f = func(v, fa, d int) {
@@ -201,7 +202,7 @@ func (*tree) inOutTimestamp(n, root int, g [][]int) {
 		_ = query
 	}
 
-	_ = isPa
+	_, _ = isPa, sameSubtree
 }
 
 // 树上最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）
@@ -443,14 +444,17 @@ func (*tree) findCentroid(n, st int, g [][]int, max func(int, int) int) (ct int)
 
 // 点分治 - 重心分解（CD, Centroid Decomposition）
 // https://oi-wiki.org/graph/tree-divide/
-// todo https://zhuanlan.zhihu.com/p/359209926
+// https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
-// todo 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
-// todo 模板题 https://www.luogu.com.cn/problem/P3806
+// 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+//
 // 模板题 https://codeforces.com/problemset/problem/321/C
-// todo poj1741 poj2114 uva12161 spoj QTREE5
+// todo 长至多为 k 的路径个数 http://poj.org/problem?id=1741 https://www.acwing.com/problem/content/254/
+// todo 长为 k 的路径是否存在（多次询问）http://poj.org/problem?id=2114 https://www.luogu.com.cn/problem/P3806
 // 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
-// todo ∑∑min(av,aw)*dis(v,w) https://ac.nowcoder.com/acm/contest/11171/D
+// todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
+//  https://www.luogu.com.cn/problem/SP2939
+//  ∑∑min(av,aw)*dis(v,w) https://ac.nowcoder.com/acm/contest/11171/D
 func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	type node struct{ dep, fa int }
 	nodes := make([]node, n)
