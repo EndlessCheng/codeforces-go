@@ -5,6 +5,7 @@ import (
 	"math/big"
 )
 
+// https://cp-algorithms.com/algebra/continued-fractions.html
 func continuedFractionCollections() {
 	// a/b = [exp[0]; exp[1],...]
 	calcContinuedFraction := func(a, b int64) (exp []int64) {

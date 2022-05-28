@@ -386,6 +386,8 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 ### Useful Tools
 
+[GeoGebra 经典](https://www.geogebra.org/classic)
+
 [Draw Geometry](https://csacademy.com/app/geometry_widget/)
 
 [Draw Graph](https://csacademy.com/app/graph_editor/)
@@ -404,7 +406,7 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [Codeforces Visualizer](https://cfviz.netlify.app/)
 
-[Codeforces Solve Tracker](https://tom0727.gitee.io/cf-problems/)
+[Codeforces Solve Tracker](https://tom0727.github.io/cf-problems/)
 
 [Another Codeforces Solve Tracker](https://cftracker.netlify.app/contests)
 

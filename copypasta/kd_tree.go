@@ -17,8 +17,6 @@ todo 题单 https://www.luogu.com.cn/training/4295
 todo https://codeforces.com/problemset/problem/44/G
 */
 
-func init() { rand.Seed(time.Now().UnixNano()) }
-
 type kdNode struct {
 	lr          [2]*kdNode
 	p, mi, mx   [2]int // 0 为 x，1 为 y
@@ -168,6 +166,11 @@ func (o *kdNode) query(x1, y1, x2, y2 int) (res int) {
 
 type kdTree struct {
 	root *kdNode
+}
+
+func newKdTree() *kdTree {
+	rand.Seed(time.Now().UnixNano())
+	return &kdTree{}
 }
 
 func (t *kdTree) put(p [2]int, val int) { t.root = t.root.put(p, val, 0) }

@@ -186,9 +186,9 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	// 读一个仅包含小写字母的字符串
 	rs := func() (s []byte) {
 		b := rc()
-		for ; 'a' > b || b > 'z'; b = rc() {
+		for ; 'a' > b || b > 'z'; b = rc() { // 'A' 'Z'
 		}
-		for ; 'a' <= b && b <= 'z'; b = rc() {
+		for ; 'a' <= b && b <= 'z'; b = rc() { // 'A' 'Z'
 			s = append(s, b)
 		}
 		return
@@ -197,7 +197,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	// 读一个长度为 n 的仅包含小写字母的字符串
 	rsn := func(n int) []byte {
 		b := rc()
-		for ; 'a' > b || b > 'z'; b = rc() {
+		for ; 'a' > b || b > 'z'; b = rc() { // 'A' 'Z'
 		}
 		s := make([]byte, 0, n)
 		s = append(s, b)
@@ -210,7 +210,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	// 如果只有/还剩下一个长度未知的字符串（仅包含小写字母）
 	readStringUntilEOF := func() (s []byte) {
 		// 若之前 Read 过……
-		for _i < len(buf) && buf[_i] < 'a' {
+		for _i < len(buf) && buf[_i] < 'a' { // 'A'
 			_i++
 		}
 		s = append(s, buf[_i:]...)
@@ -225,7 +225,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		}
 
 		// 注意末尾有 \r \n 的情况
-		for ; s[len(s)-1] < 'a'; s = s[:len(s)-1] {
+		for ; s[len(s)-1] < 'a'; s = s[:len(s)-1] { // 'A'
 		}
 		return
 	}

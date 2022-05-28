@@ -27,6 +27,7 @@ https://www.cnblogs.com/nth-element/p/11768155.html
 https://codeforces.com/problemset/problem/1526/C2
 JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode-cn.com/problems/course-schedule-iii/
 用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
+股票买卖 https://codeforces.com/problemset/problem/865/D
 
 最小不相交区间划分数
 https://www.acwing.com/problem/content/113/

@@ -420,6 +420,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	/* 质数 质因子分解 */
 
 	// n/2^k http://oeis.org/A000265
+	// A000265 的前缀和 https://oeis.org/A135013
+	// a(n) = Sum_{k>=1} (round(n/2^k))^2
 
 	// 质数表 https://oeis.org/A000040
 	// primes[i]%10 http://oeis.org/A007652
@@ -427,6 +429,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// p-1 http://oeis.org/A006093
 	// p+1 http://oeis.org/A008864
 	// p^2+p+1 http://oeis.org/A060800 = sigma(p^2)
+	// prime index prime https://oeis.org/A006450
 	primes := []int{
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
@@ -701,6 +704,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//       2. f(p^(k+1)) = f(p^k) ... p
 	//       3. f(x*p) = f(x) ... p (p 不是 x 的因子)
 	// 一个典型的例子见下面 σ(n) 的线性筛求法
+	// https://codeforces.com/contest/1512/problem/G
+	// https://codeforces.com/gym/103107/problem/F
 	sieveEulerTemplate := func() []int {
 		const mx int = 1e7
 		f := make([]int, mx+1)
@@ -965,7 +970,6 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	https://oeis.org/A000188 square root of largest square dividing n
 	https://oeis.org/A120486 Partial sums of A000188  a(n) = Sum_{k=1..n} phi(k)*floor(n/k^2)
-		相关题目 https://codeforces.com/gym/103107/problem/F
 
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
@@ -1034,7 +1038,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 亦为整数 n 分拆成若干连续整数的方法数
 	// Number of partitions of n into consecutive positive integers including the trivial partition of length 1
 	// e.g. 9 = 2+3+4 or 4+5 or 9 so a(9)=3
-	// 相关题目 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec1cb
+	// 相关题目 LC829 https://leetcode.cn/problems/consecutive-numbers-sum/
+	// https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec1cb
 	oddDivisorsNum := func(n int) (ans int) {
 		for i := 1; i*i <= n; i++ {
 			if n%i == 0 {
@@ -1187,6 +1192,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//
 	lpfAll := func() {
 		// 例题 https://codeforces.com/problemset/problem/385/C
+		// https://codeforces.com/gym/103107/problem/F (另一种做法是欧拉筛）
+
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
@@ -1280,6 +1287,53 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			return c
 		}
 
+		coreAll := func() {
+			symDiff := func(a, b []int) []int { // 对称差
+				i, n := 0, len(a)
+				j, m := 0, len(b)
+				res := make([]int, 0, n+m)
+				for {
+					if i == n {
+						return append(res, b[j:]...)
+					}
+					if j == m {
+						return append(res, a[i:]...)
+					}
+					if a[i] < b[j] {
+						res = append(res, a[i])
+						i++
+					} else if a[i] > b[j] {
+						res = append(res, b[j])
+						j++
+					} else {
+						i++
+						j++
+					}
+				}
+			}
+
+			const mx int = 1e6
+			core := [mx + 1][]int{}
+			np := [mx + 1]bool{}
+			primes := []int{}
+			for i := 2; i <= mx; i++ {
+				if !np[i] {
+					core[i] = []int{i} // len(primes)
+					primes = append(primes, i)
+				}
+				for _, p := range primes {
+					if p*i > mx {
+						break
+					}
+					np[p*i] = true
+					core[p*i] = symDiff(core[i], core[p])
+					if i%p == 0 {
+						break
+					}
+				}
+			}
+		}
+
 		// EXTRA: https://oeis.org/A007947 Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
 		// https://oeis.org/A034386 rad(n!) Primorial numbers (second definition): n# = product of primes <= n
 		//                                  = rad(LCM(1,...,n))
@@ -1320,7 +1374,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			return
 		}
 
-		_ = []interface{}{factorize, divisors, core, rad, sopfr, sopf}
+		_ = []interface{}{factorize, divisors, core, coreAll, rad, sopfr, sopf}
 	}
 
 	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
@@ -2468,7 +2522,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//          因此 a(n) % 2 == floor(sqrt(n)) % 2
 	//     a(n) 前缀和 = Sum_{k=1..n-1} Sum_{i=1..n-1} floor(k/i) https://oeis.org/A078567
 	// 恒等式 n%i = n-(n/i)*i
-	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法见 https://www.luogu.com.cn/problem/SP26073
+	// ∑n/i https://www.luogu.com.cn/problem/P1403 n=1e18 的做法（整点计数问题）见 https://www.luogu.com.cn/problem/SP26073 https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/solution/by-hqztrue-lv4e/
 	// ∑k%i 见下面的 floorLoopK
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F

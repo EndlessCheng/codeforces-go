@@ -520,11 +520,10 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // NOTE: 递归前对边排序可保证输出的是字典序最小的路径
 // 模板题（输出顶点）
-//   无向图 https://www.luogu.com.cn/problem/P2731
-//   无向图 https://www.luogu.com.cn/problem/P1341
-//   有向图 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+//   无向图 https://www.luogu.com.cn/problem/P2731 https://www.luogu.com.cn/problem/P1341
+//   有向图 https://www.luogu.com.cn/problem/P7771 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
 // 模板题（输出边）
-//   有向图 LC周赛270D https://leetcode-cn.com/problems/valid-arrangement-of-pairs/
+//   有向图 LC2097/周赛270D https://leetcode-cn.com/problems/valid-arrangement-of-pairs/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
 // 虚点 https://codeforces.com/problemset/problem/723/E
