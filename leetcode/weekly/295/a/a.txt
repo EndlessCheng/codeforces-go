@@ -1,0 +1,14 @@
+"ilovecodingonleetcode"
+"code"
+2
+
+"abcba"
+"abc"
+1
+
+"abbaccaddaeea"
+"aaaaa"
+1
+
+
+
