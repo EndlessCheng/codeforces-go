@@ -12,7 +12,7 @@ func CF723C(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, m, need int
+	var n, m, i int
 	Fscan(in, &n, &m)
 	avg := n / m
 	a := make([]int, n)
@@ -26,19 +26,14 @@ func CF723C(_r io.Reader, _w io.Writer) {
 			ex = append(ex, i)
 		}
 	}
-	for _, c := range cnt[1:] {
-		if c < avg {
-			need += avg - c
-		}
-	}
-	Fprintln(out, avg, need)
 
-	for v, i := 1, 0; v <= m; v++ {
+	for v := 1; v <= m; v++ {
 		for c := avg - cnt[v]; c > 0; c-- {
 			a[ex[i]] = v
 			i++
 		}
 	}
+	Fprintln(out, avg, i)
 	for _, v := range a {
 		Fprint(out, v, " ")
 	}
