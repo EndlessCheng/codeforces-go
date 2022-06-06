@@ -1,0 +1,8 @@
+["TextEditor", "addText", "deleteText", "addText", "cursorRight", "cursorLeft", "deleteText", "cursorLeft", "cursorRight"]
+[[], ["leetcode"], [4], ["practice"], [3], [8], [10], [2], [6]]
+[null, null, 4, null, "etpractice", "leet", 4, "", "practi"]
+
+["TextEditor","addText","deleteText","addText","deleteText"]
+[[],["dsqdmtbhxxltl"],[13],["iykwsfld"],[17]]
+[]
+
