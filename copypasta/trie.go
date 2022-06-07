@@ -210,10 +210,16 @@ func (t *trie) countDistinctSubstring(s []byte) (cnt int) {
 // LC1032 https://leetcode-cn.com/problems/stream-of-characters/
 // https://www.luogu.com.cn/problem/P3808
 // https://www.luogu.com.cn/problem/P3796
+// todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
 // todo https://www.luogu.com.cn/problem/P5357 二次加强版
+//  NOI11 阿狸的打字机 https://www.luogu.com.cn/problem/P2414
+//  https://www.acwing.com/solution/content/25473/
+//  https://www.acwing.com/solution/content/54646/
 //
 // todo https://codeforces.com/problemset/problem/1437/G
 // todo https://codeforces.com/problemset/problem/963/D
+// todo LC30 串联所有单词的子串 https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/
+// todo ? LC616 给字符串添加加粗标签 https://leetcode-cn.com/problems/add-bold-tag-in-string/
 func (t *trie) buildDFA() {
 	q := []*trieNode{}
 	for _, son := range t.root.son[:] {

@@ -413,6 +413,7 @@ func (*graph) bfs(n, st int, g [][]int) {
 // 理想路径（NEERC10）https://codeforces.com/gym/101309 I 题
 // 从终点倒着 BFS 求最短路，然后从起点开始一层一层向终点走，每一步都选颜色最小的，并记录最小颜色对应的所有节点，供下一层遍历
 // 如果求的是字典序最小的顶点，每一步需选择符合 dis[w] == dis[v]-1 的下标最小的顶点
+// LC499 https://leetcode.cn/problems/the-maze-iii/
 func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int }, st, end int) []int {
 	const inf int = 1e9
 	dis := make([]int, len(g))
@@ -985,6 +986,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 分层图最短路
 //    空间压缩 https://codeforces.com/problemset/problem/1442/C
 //    转换 https://codeforces.com/problemset/problem/1473/E
+// todo 动态最短路 https://codeforces.com/problemset/problem/1163/F
 //
 // 最短路径树
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
@@ -1230,7 +1232,8 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 // 这样，在无负环时会得到一组非正数解
 // 模板题 https://www.luogu.com.cn/problem/P4878
 // 每个区间至少选 ci 个 https://www.luogu.com.cn/problem/P1250 https://www.luogu.com.cn/problem/SP116 http://poj.org/problem?id=1201
-// todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
+// - todo 加强版 https://leetcode-cn.com/problems/t3fKg1/
+// - todo 打印方案 https://atcoder.jp/contests/abc216/tasks/abc216_g
 func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // 有负环时返回 nil
 	type neighbor struct {
 		to int
@@ -2320,8 +2323,9 @@ func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []i
 // https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/HopcroftKarp.java.html
 // todo http://pepcy.cf/icpc-templates/003Graph/hk.html
+// todo https://codeforces.com/problemset/problem/1630/F
 func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, cnt int) {
-	return
+	panic("todo")
 }
 
 // 带权二分图最大完美匹配 - 任务分配问题/婚姻匹配问题 - KM (Kuhn–Munkres) 算法
@@ -3545,7 +3549,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int, min func(int, int) in
 // Stoer-Wagner 算法 O(nm+n^2logn)
 // https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GlobalMincut.java.html
-// 模板题 https://www.luogu.com.cn/problem/P5632 http://poj.org/problem?id=2914
+// todo 模板题 https://www.luogu.com.cn/problem/P5632 http://poj.org/problem?id=2914
 func (*graph) minimumCutStoerWagner(dist [][]int) int {
 	panic("todo")
 }
@@ -3846,6 +3850,7 @@ func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 
 // 支配树
 // https://en.wikipedia.org/wiki/Dominator_(graph_theory)
+// todo https://www.luogu.com.cn/blog/Zenislt/qian-tan-zhi-pei-shu-lengauer-tarjan-algorithm
 // todo 模板题 https://www.luogu.com.cn/problem/P5180
 
 // 弦图：任意长度大于 3 的环都有一个弦（连接环中不相邻两点的边）的图称为弦图
@@ -3966,7 +3971,7 @@ func (*graph) countCycle4(n int, edges [][2]int) (ans int64) {
 // Equivalently, it is a connected graph in which every edge belongs to at most one simple cycle
 // 如果图没有偶环，则不可能有两个奇环共用一条边（因为这样会构成一个偶环），因此没有两个环共用一条边，图一定为仙人掌（注意：反过来，一个仙人掌图是可能有偶环的）
 // 圆方树 https://oi-wiki.org/graph/block-forest/
-// 模板题 https://www.luogu.com.cn/problem/P5236
+// todo 模板题 静态仙人掌 https://www.luogu.com.cn/problem/P5236
 
 // 仙人掌所有顶点所处环的最小顶点和最大顶点
 // -1 表示不在环上

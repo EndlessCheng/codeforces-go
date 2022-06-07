@@ -6,6 +6,8 @@ import (
 	"math"
 )
 
+// 3B1B 线性代数的本质 https://www.bilibili.com/video/BV1ys411472E
+
 /* 矩阵加速
 https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
 https://zhuanlan.zhihu.com/p/56444434
@@ -112,6 +114,18 @@ func (a matrix) pow(n int64) matrix {
 		a = a.mul(a)
 	}
 	return res
+}
+
+// 比如 n*n 的国际象棋的马，从 (sx,sy) 走 k 步到 (tx,ty)，需要多少步
+// 这里可以先 O(n^2) 预处理走一步的转移，构建矩阵 a
+// 然后用一个 [1 * (n^2)] 的矩阵初始矩阵乘 a^k
+// 得到一个 [1 * (n^2)] 的结果矩阵 res
+// res[0][tx*n+ty] 就是答案
+func (a matrix) solve(n, sx, sy, tx, ty int, k int64) int64 {
+	b := matrix{make([]int64, n*n)}
+	b[0][sx*n+sy] = 1
+	res := b.mul(a.pow(k))
+	return res[0][tx*n+ty]
 }
 
 // a(n) = p*a(n-1) + q*a(n-2)
@@ -339,12 +353,23 @@ func (a matrix) determinant(mod int64) int64 {
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 
 // 线性基（子集异或和问题）
-// https://oi.men.ci/linear-basis-notes/
-// 模板题 https://www.luogu.com.cn/problem/P3812
+// https://oi-wiki.org/math/basis/
+// 线性基学习笔记 https://oi.men.ci/linear-basis-notes/
+// todo XOR basis without linear algebra https://codeforces.com/blog/entry/100066
+// todo https://www.luogu.com.cn/blog/i207M/xian-xing-ji-xue-xi-bi-ji-xie-ti-bao-gao
+// todo 讲解+题单 https://www.cnblogs.com/UntitledCpp/p/13912602.html
+// todo https://www.luogu.com.cn/blog/Troverld/xian-xing-ji-xue-xi-bi-ji
+// https://zhuanlan.zhihu.com/p/139074556
+// todo 讲到了线性基的删除操作 https://blog.csdn.net/a_forever_dream/article/details/83654397
+// todo 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
+//
+// 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
 // 构造 https://codeforces.com/problemset/problem/1427/E
 // todo 题单 https://www.luogu.com.cn/training/11251
 // todo https://codeforces.com/problemset/problem/895/C
-//  https://codeforces.com/problemset/problem/845/G
+//  https://codeforces.com/problemset/problem/1101/G
+//  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
+//  https://www.luogu.com.cn/problem/P3857
 func xorBasis() {
 	const mx = 62
 	b := [mx + 1]int64{}
@@ -415,3 +440,5 @@ func xorBasis() {
 // todo https://uoj.ac/problem/179
 //  https://codeforces.com/problemset/problem/1430/G https://codeforces.com/blog/entry/83614?#comment-709868
 //  https://codeforces.com/problemset/problem/375/E
+//  NOI08 志愿者招募 https://www.luogu.com.cn/problem/P3980
+//       整数线性规划与全幺模矩阵 https://www.acwing.com/file_system/file/content/whole/index/content/2197334/

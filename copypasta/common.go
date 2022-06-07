@@ -121,7 +121,8 @@ func _() {
 	dir4c := []pair{'L': {-1, 0}, 'R': {1, 0}, 'D': {0, -1}, 'U': {0, 1}}  // 左右下上（坐标系）
 	dir4c2 := []pair{'L': {0, -1}, 'R': {0, 1}, 'U': {-1, 0}, 'D': {1, 0}} // 左右下上（矩阵）
 	dir4R := []pair{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
-	dir8 := []pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}
+	dir8 := []pair{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}  // 逆时针（坐标系）
+	dir8m := []pair{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}} // 顺时针（矩阵）
 	perm3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 	perm4 := [][]int{
 		{0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2}, {0, 3, 2, 1},
@@ -255,7 +256,8 @@ func _() {
 	}
 
 	// 顺时针旋转矩阵 90°
-	rotate := func(a [][]int) [][]int {
+	// 返回一个拷贝
+	rotateCopy := func(a [][]int) [][]int {
 		n, m := len(a), len(a[0])
 		b := make([][]int, m)
 		for i := range b {
@@ -266,7 +268,7 @@ func _() {
 				b[j][n-1-i] = v
 			}
 		}
-		return b // 注意这不是原地修改
+		return b
 	}
 	// 转置
 	transpose := func(a [][]int) [][]int {
@@ -995,6 +997,7 @@ func _() {
 	// TODO 矩形周长 https://www.luogu.com.cn/problem/P1856
 	// 天际线问题 LC218 https://leetcode-cn.com/problems/the-skyline-problem/
 	// TODO 矩形面积并 LC850 https://leetcode-cn.com/problems/rectangle-area-ii/ 《算法与实现》5.4.3
+	//  矩形周长并 http://poj.org/problem?id=1177
 	// 经典题 https://codeforces.com/problemset/problem/1000/C
 	// https://codeforces.com/problemset/problem/1379/D
 	// 转换求解目标 https://codeforces.com/problemset/problem/1285/E
@@ -1158,9 +1161,9 @@ func _() {
 	}
 
 	_ = []interface{}{
-		pow10, dir4, dir4g, dir4g2, dir4c, dir4c2, dir4R, dir8, perm3, perm4,
+		pow10, dir4, dir4g, dir4g2, dir4c, dir4c2, dir4R, dir8, dir8m, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin,
-		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotate, transpose, minString,
+		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,

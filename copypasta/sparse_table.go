@@ -12,6 +12,7 @@ Tarjan RMQ https://codeforces.com/blog/entry/48994
 将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
 
 模板题 https://www.luogu.com.cn/problem/P3865
+二分/三指针 https://codeforces.com/problemset/problem/689/D
 变长/种类 https://www.jisuanke.com/contest/11346/challenges
 GCD https://codeforces.com/contest/1548/problem/B
 题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5

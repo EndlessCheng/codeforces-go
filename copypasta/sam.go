@@ -9,7 +9,7 @@ import (
 /* 后缀自动机 Suffix automaton (SAM)
 将字符串的所有子串压缩后的结果
 【推荐】https://oi-wiki.org/string/sam/ 证明了 SAM 的状态数不会超过 2n-1 (n>=2)，最坏情况下为 abbb...bbb
-【推荐】可视化工具：SAM Drawer https://yutong.site/sam/
+【推荐】可视化工具：SAM Drawer https://yutong.site/sam/ https://mivik.gitee.io/sam-visualizer/
 https://en.wikipedia.org/wiki/Suffix_automaton
 https://www.bilibili.com/video/av756051240/
 https://baobaobear.github.io/post/20200220-sam/
@@ -38,11 +38,10 @@ https://codeforces.com/blog/entry/20861
 todo https://codeforces.com/problemset/problem/235/C
 */
 
-// 如果超时/超内存，改用预分配内存池 + func init() { debug.SetGCPercent(-1) } 的写法
+// 如果超时/超内存，改用预分配内存池 + func init() { debug.SetGCPercent(-1) } 的写法（如下）
 // 如果仍然超内存且环境为 64 位，则需要把指针改成 int32 下标的写法 https://www.luogu.com.cn/record/76046834 https://www.luogu.com.cn/record/76047438
-const mx int = 1e7
-
-var samNodes [2 * mx]*node
+//const mx int = 1e7
+//var samNodes [2 * mx]*node
 
 type next [26]*node // map[int]*node
 
@@ -243,3 +242,4 @@ func (m *sam) printSAM() {
 //
 // todo https://www.luogu.com.cn/problem/P6139
 //  https://codeforces.com/problemset/problem/1437/G
+//  有一组互不相同的字符串list，求在给定字符串s中，有几个子串出现在list中。 s比较小，但list可能很大。

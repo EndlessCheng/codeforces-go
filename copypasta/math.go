@@ -645,6 +645,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
+	// https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 	// 质数个数 π(n) https://oeis.org/A000720
 	//         π(10^n) https://oeis.org/A006880
 	//         4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, /* 1e9 */
