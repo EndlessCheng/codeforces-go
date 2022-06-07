@@ -70,11 +70,11 @@
     - Hack：构造一组数据，最大化树上的节点数
 - 数学
   - [数论 math.go](/copypasta/math.go)
-    - 最大公因数（GCD）
+    - 辗转相除法（最大公因数 GCD）
     - 类欧几里得算法 ∑⌊(ai+b)/m⌋
     - Pollard-Rho 质因数分解算法
-    - 埃氏筛
-    - 线性筛
+    - 埃氏筛（埃拉托斯特尼筛法）
+    - 欧拉筛（线性筛）
     - 欧拉函数
     - 原根
     - 扩展 GCD
@@ -243,10 +243,10 @@
     - 生成下一个排列
     - 康托展开
     - 逆康托展开
-    - 折半枚举
-      - 超大背包问题
     - 枚举子集
-      - Gosper’s Hack
+      - Gosper's Hack
+    - 折半枚举（Meet in the middle）
+      - 超大背包问题
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
   - [杂项A common.go](/copypasta/common.go)
