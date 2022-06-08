@@ -752,6 +752,8 @@ func isCuboid(rect [][2]int) bool {
 // 思路：用递推公式，自底向上计算
 // https://zh.wikipedia.org/wiki/%E7%BA%A6%E7%91%9F%E5%A4%AB%E6%96%AF%E9%97%AE%E9%A2%98
 // https://oi-wiki.org/misc/josephus/ 注意当 k 较小时，存在 O(klogn) 的做法
+// https://www.scirp.org/pdf/OJDM_2019101516120841.pdf Generalizations of the Feline and Texas Chainsaw Josephus Problems
+//
 // 相关题目 https://leetcode-cn.com/problems/find-the-winner-of-the-circular-game/
 // https://codeforces.com/gym/101955/problem/K
 func josephusProblem(n, k int) int {

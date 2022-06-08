@@ -12,6 +12,7 @@ import (
 首先请透彻理解何为问题的「状态空间」，见 search.go 开头的注释
 
 思考过程：
+可以参考我的这篇题解：https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/solution/by-endlesscheng-pa3v/
 1.1 如何把问题形式化为状态空间？（可以从边界、子集的角度思考）
 1.2 子问题是如何重叠的？
 1.3 子问题是怎么逐层递进的？（题目描述、隐含的顺序）
@@ -253,7 +254,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最大 m 段子段和 http://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
-	// 变形题 https://codeforces.com/problemset/problem/788/A
+	// 变形题 https://codeforces.com/problemset/problem/33/C
+	//       https://codeforces.com/problemset/problem/788/A
 	//       https://codeforces.com/problemset/problem/1155/D
 	//       https://codeforces.com/problemset/problem/1197/D
 	//       https://codeforces.com/problemset/problem/1373/D
@@ -371,6 +373,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
 	//           s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
 	//                          (i,j-1) -> (i,j) $ 0
+	// 更快的做法（位运算）见 SPOJ LCS0 https://www.luogu.com.cn/problem/SP12076
+	//
 	// 例题 LC1143 https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) LC1092 https://leetcode-cn.com/problems/shortest-common-supersequence/
 	// 变种 LC97   https://leetcode-cn.com/problems/interleaving-string/
@@ -758,6 +762,15 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return (dp + mod - 1) % mod // 去掉空序列
 	}
 
+	// 多重组合
+	// todo 挑战
+
+	// 多重排列
+	// dp[i][j] 表示前 i 类数字组成长为 j 的排列个数
+	// dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
+	// 边界 dp[0][0] = 1
+	// todo https://atcoder.jp/contests/abc234/tasks/abc234_f
+
 	// 回文串最小分割次数
 	// 紫书例题 9-7，UVa 11584 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=27&page=show_problem&problem=2631
 	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
@@ -833,6 +846,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		dp := make([]int, maxW+1) // int64
 		for i, v := range values {
 			w := weights[i]
+			// 这里 j 的初始值可以优化成前 i 个物品的重量之和（但不能超过 maxW）
 			for j := maxW; j >= w; j-- {
 				dp[j] = max(dp[j], dp[j-w]+v)
 			}
@@ -1016,6 +1030,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
+	// todo 打印方案
 	boundedKnapsackBinary := func(values, stocks, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for i, v := range values {
@@ -1037,9 +1052,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 分组背包·每组至多选一个（恰好选一个见后面）
 	// https://www.acwing.com/problem/content/9/
 	// https://www.luogu.com.cn/problem/P1757
-	// https://leetcode-cn.com/contest/weekly-contest-286/problems/maximum-value-of-k-coins-from-piles/
+	// LC2218/周赛286D https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/
 	// https://codeforces.com/problemset/problem/148/E
-	// 进一步优化 https://codeforces.com/problemset/problem/1442/D
+	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -1081,7 +1096,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 树上背包/树形背包/依赖背包
-	// todo 树上背包的上下界优化 https://ouuan.gitee.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
+	// todo 树上背包的上下界优化 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
 	//   子树合并背包的复杂度证明 https://blog.csdn.net/lyd_7_29/article/details/79854245
 	//   复杂度优化 https://loj.ac/d/3144
 	//   https://zhuanlan.zhihu.com/p/103813542
@@ -1945,6 +1960,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// todo https://www.luogu.com.cn/problem/P2900
 	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	//  http://poj.org/problem?id=3709
+	//  https://codeforces.com/problemset/problem/311/B
 	cht := func(a, b []int64) int64 {
 		n := len(a)
 		dp := make([]int64, n)
@@ -2078,6 +2094,25 @@ func _(min, max func(int, int) int, abs func(int) int) {
 				}
 			}
 			return mxDep + 1, cnt + 1
+		}
+		f(st, -1)
+		return
+	}
+
+	// 最大路径点权和
+	maxPathSum := func(st int, g [][]int, a []int) (maxPathSum int) {
+		var f func(v, fa int) int
+		f = func(v, fa int) (maxSum int) {
+			rootVal := a[v]
+			maxPathSum = max(maxPathSum, rootVal)
+			for _, w := range g[v] {
+				if w != fa {
+					sum := f(w, v)
+					maxPathSum = max(maxPathSum, maxSum+sum+rootVal)
+					maxSum = max(maxSum, sum)
+				}
+			}
+			return maxSum + rootVal
 		}
 		f(st, -1)
 		return
@@ -2435,8 +2470,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
-
-		distinctSubsequence, minPalindromeCut,
+		distinctSubsequence, distinctSubsequenceWithFixedLength,
+		minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,

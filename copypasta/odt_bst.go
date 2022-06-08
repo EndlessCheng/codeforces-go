@@ -5,12 +5,11 @@ package copypasta
 // https://oi-wiki.org/ds/odt/
 // todo 随机数据下的复杂度证明 https://zhuanlan.zhihu.com/p/102786071
 
-// https://codeforces.com/problemset/problem/558/E
-// 代码 https://codeforces.com/problemset/submission/558/117163317
-// https://codeforces.com/problemset/problem/915/E
-// 代码 https://codeforces.com/problemset/submission/915/117158161
-// https://codeforces.com/problemset/problem/817/F 数据水
-// 代码 https://codeforces.com/contest/817/submission/118365591
+// 模板题 LC715 https://leetcode-cn.com/problems/range-module/
+// LC699 https://leetcode.cn/problems/falling-squares/
+// https://codeforces.com/problemset/problem/558/E 代码 https://codeforces.com/problemset/submission/558/117163317
+// https://codeforces.com/problemset/problem/915/E 代码 https://codeforces.com/problemset/submission/915/117158161
+// https://codeforces.com/problemset/problem/817/F（数据水）代码 https://codeforces.com/contest/817/submission/118365591
 // todo https://www.luogu.com.cn/problem/P5350
 //      https://www.luogu.com.cn/problem/P5586
 
@@ -37,7 +36,7 @@ func (t *treap) prepare(l, r int) {
 	t.split(r + 1)
 }
 
-func (t *treap) merge(l, r int, value tpValueType) {
+func (t *treap) setRange(l, r int, value tpValueType) {
 	t.prepare(l, r)
 	// 保留 l，后面直接修改，从而代替删除+插入操作
 	for o := t.next(l); o != nil && o.l <= r; o = t.next(o.l) {

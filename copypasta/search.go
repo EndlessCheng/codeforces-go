@@ -650,6 +650,7 @@ func searchCollection() {
 
 	// A*:
 	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
+	//  https://www.redblobgames.com/pathfinding/a-star/introduction.html
 
 	// 舞蹈链 Dancing Links
 	// https://en.wikipedia.org/wiki/Dancing_Links
@@ -659,8 +660,9 @@ func searchCollection() {
 	//       https://www.cnblogs.com/grenet/p/3145800.html
 	//       https://www.cnblogs.com/grenet/p/3163550.html
 	// 模板题+讲解
-	//       http://hihocoder.com/contest/hiho101/problem/1
+	//       todo http://hihocoder.com/contest/hiho101/problem/1
 	//       http://hihocoder.com/contest/hiho102/problem/1
+	//       https://www.luogu.com.cn/problem/P4929
 
 	// 对抗搜索与 Alpha-Beta 剪枝
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
