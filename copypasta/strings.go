@@ -91,7 +91,7 @@ func _(min, max func(int, int) int) {
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
 	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
-	calcMaxMatchLengths := func(s []byte) []int {
+	calcMaxMatchLengths := func(s string) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {
 			v := s[i]
@@ -106,15 +106,15 @@ func _(min, max func(int, int) int) {
 		return match
 	}
 	// search pattern from text, return all start positions
-	kmpSearch := func(text, pattern []byte) (pos []int) {
+	kmpSearch := func(text, pattern string) (pos []int) {
 		match := calcMaxMatchLengths(pattern)
 		lenP := len(pattern)
 		c := 0
 		for i, v := range text {
-			for c > 0 && pattern[c] != v {
+			for c > 0 && pattern[c] != byte(v) {
 				c = match[c-1]
 			}
-			if pattern[c] == v {
+			if pattern[c] == byte(v) {
 				c++
 			}
 			if c == lenP {
@@ -125,14 +125,15 @@ func _(min, max func(int, int) int) {
 		return
 	}
 	// EXTRA: 最小循环节
+	// 返回循环节以及循环次数
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
-	calcMinPeriod := func(s []byte) int {
+	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
 		match := calcMaxMatchLengths(s)
-		if val := match[n-1]; val > 0 && n%(n-val) == 0 {
-			return n / (n - val)
+		if m := match[n-1]; m > 0 && n%(n-m) == 0 {
+			return s[:n-m], n / (n - m)
 		}
-		return 1 // 无小于 n 的循环节
+		return s, 1 // 无小于 n 的循环节
 	}
 
 	// todo 失配树（border 树）
@@ -275,7 +276,7 @@ func _(min, max func(int, int) int) {
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
 	//  LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
-	manacher := func(s []byte) {
+	manacher := func(s string) {
 		// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新串 t 的每个回文子串都是奇回文串（都有回文中心）
 		// s 和 t 的下标转换关系：
 		// (si+1)*2 = ti
@@ -284,7 +285,7 @@ func _(min, max func(int, int) int) {
 		// ti 为奇数对应偶回文串（从 3 开始）
 		t := append(make([]byte, 0, len(s)*2+3), '^')
 		for _, c := range s {
-			t = append(t, '#', c)
+			t = append(t, '#', byte(c))
 		}
 		t = append(t, '#', '$')
 
@@ -453,14 +454,14 @@ func _(min, max func(int, int) int) {
 	 https://www.luogu.com.cn/problem/P6095
 	 https://www.luogu.com.cn/problem/P4070
 	*/
-	suffixArray := func(s []byte) {
+	suffixArray := func(s string) {
 		n := len(s)
 
 		// 后缀数组 sa
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
-		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").UnsafeAddr()))
-		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New(s)).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").UnsafeAddr()))
+		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
 		// 后缀名次数组 rank
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
@@ -554,7 +555,7 @@ func _(min, max func(int, int) int) {
 
 		// EXTRA: 可重叠最长重复子串
 		// https://leetcode-cn.com/problems/longest-duplicate-substring/ https://leetcode-cn.com/problems/longest-repeating-substring/
-		longestDupSubstring := func() []byte {
+		longestDupSubstring := func() string {
 			maxP, maxH := 0, 0
 			for i, h := range height {
 				if h > maxH {
