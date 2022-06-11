@@ -14,6 +14,8 @@
 
 ## 算法目录
 
+[不了解 Go？快速入门教程](https://gobyexample-cn.github.io/)
+
 - 数据结构
   - [单调栈 monotone_stack.go](/copypasta/monotone_stack.go)
   - [单调队列 monotone_queue.go](/copypasta/monotone_queue.go)
