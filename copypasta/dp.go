@@ -262,20 +262,70 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//       需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
 	//    这题做法需要用到上面说到的第二种思路
-	maxSubArraySum := func(a []int) int {
-		if len(a) == 0 {
+	maxSubarraySum := func(a []int) int {
+		if len(a) == 0 { // 根据题意返回
 			return 0
 		}
-		dp, maxSubSum := a[0], a[0] // int64
+		maxS, sum := a[0], a[0] // int64
 		for _, v := range a[1:] {
-			dp = max(dp, 0) + v
-			maxSubSum = max(maxSubSum, dp)
+			sum = max(sum, 0) + v
+			maxS = max(maxS, sum)
 		}
-		return max(maxSubSum, 0) // 若不允许非空，返回 maxSum
+		if maxS < 0 { // 根据题意返回
+			//return 0
+		}
+		return maxS
+	}
+
+	// 除了返回最大子段和外，还返回最大子段和对应的子段 [l,r]
+	// https://codeforces.com/contest/1692/problem/H
+	maxSubarraySumWithRange := func(a []int) (maxS, l, r int) {
+		if len(a) == 0 { // 根据题意返回
+			return 0, -1, -1
+		}
+		// int64
+		maxS = a[0] // 注意 l 和 r 默认为 0，即 a[:1]
+		for i, sum, st := 1, a[0], 0; i < len(a); i++ {
+			if sum < 0 {
+				sum, st = 0, i // 重新开始
+			}
+			sum += a[i]
+			if sum > maxS {
+				maxS, l, r = sum, st, i
+			}
+		}
+		if maxS < 0 { // 根据题意返回
+			//return 0, -1, -1
+		}
+		return
+	}
+
+	// 维护前缀和的最小值的写法
+	// https://codeforces.com/contest/1692/problem/H
+	maxSubarraySumWithRange = func(a []int) (maxS, l, r int) {
+		if len(a) == 0 { // 根据题意返回
+			return 0, -1, -1
+		}
+		// int64
+		maxS = a[0] // 注意 l 和 r 默认为 0，即 a[:1]
+		sum, minS, minI := 0, 0, -1
+		for i, v := range a {
+			sum += v
+			if sum-minS > maxS {
+				maxS, l, r = sum-minS, minI+1, i
+			}
+			if sum < minS {
+				minS, minI = sum, i
+			}
+		}
+		if maxS < 0 { // 根据题意返回
+			//return 0, -1, -1
+		}
+		return
 	}
 
 	// 最大两段子段和（两段必须间隔至少 gap 个数）
-	maxTwoSubArraySum := func(a []int, gap int) int {
+	maxTwoSubarraySum := func(a []int, gap int) int {
 		// 注意下界
 		n := len(a)
 		suf := make([]int, n) // int64
@@ -297,7 +347,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return ans
 	}
 
-	maxSubArrayAbsSum := func(a []int) int {
+	maxSubarrayAbsSum := func(a []int) int {
 		if len(a) == 0 {
 			return 0
 		}
@@ -2465,12 +2515,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	_ = []interface{}{
 		prefixSumDP, mapDP,
-		maxSubArraySum, maxTwoSubArraySum, maxSubArrayAbsSum,
+		maxSubarraySum, maxSubarraySumWithRange, maxTwoSubarraySum, maxSubarrayAbsSum,
 		maxAlternatingSumDP, maxAlternatingSumGreedy,
 		minCostSorted,
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
-		distinctSubsequence, distinctSubsequenceWithFixedLength,
+		distinctSubsequence,
 		minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
@@ -2489,7 +2539,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		cht,
 
-		diameter, countDiameter, countVerticesOnDiameter,
+		diameter, countDiameter, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		sumOfDistancesInTree, rerootDP,
 		andPathSum, xorPathSum, xorPathXorSum,
