@@ -150,7 +150,7 @@ func LeftPosInDiffLimit(a []int, limit int) []int {
 //
 // 思路：转变成求「区间最大值 < 2*区间最小值」的区间个数
 // 随着左端点向右，右端点必然不会向左
-func CountSubArrayByMinMax(a []int) int {
+func CountSubarrayByMinMax(a []int) int {
 	n := len(a)
 	ans := n * (n + 1) / 2 // int64
 	mx := MonotoneQueue{}  // 维护区间最大值
@@ -176,7 +176,7 @@ func CountSubArrayByMinMax(a []int) int {
 
 // 枚举区间左端点更为方便的情况 · 其二
 // https://codeforces.com/problemset/problem/1237/D
-// 注意这题和 countSubArrayByMinMax 的不同之处：不满足要求的最小值一定要在最大值的右侧
+// 注意这题和 countSubarrayByMinMax 的不同之处：不满足要求的最小值一定要在最大值的右侧
 // 也可以枚举右端点，见 https://www.luogu.com.cn/blog/qianshang/solution-cf1237d
 func BalancedPlaylist(a []int, n int) (ans []int) {
 	a = append(append(a, a...), a...)
