@@ -8,6 +8,29 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1082B(in io.Reader, out io.Writer) {
+	var n, g, cur, pre, ans int
+	var s string
+	Fscan(bufio.NewReader(in), &n, &s)
+	for _, c := range s {
+		if c == 'G' {
+			g++
+			cur++
+		} else {
+			pre = cur
+			cur = 0
+		}
+		if pre+cur+1 > ans {
+			ans = pre + cur + 1
+		}
+	}
+	if g < ans {
+		ans = g
+	}
+	Fprint(out, ans)
+}
+
+// 我的憨憨做法
+func CF1082B2(in io.Reader, out io.Writer) {
 	max := func(a, b int) int {
 		if b > a {
 			return b
