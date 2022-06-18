@@ -59,6 +59,7 @@ https://codeforces.com/problemset/problem/1672/D
 https://codeforces.com/problemset/problem/763/B
 https://codeforces.com/problemset/problem/1270/E
 https://codeforces.com/problemset/problem/1332/E 配对法：将合法局面与非法局面配对
+LC932/周赛108D https://leetcode.cn/problems/beautiful-array/ 分治
 */
 
 /* 归纳：solve(n)->solve(n-1) 或者 solve(n-1)->solve(n)

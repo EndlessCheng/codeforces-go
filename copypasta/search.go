@@ -905,6 +905,7 @@ func _(min, max func(int, int) int) {
 
 	// 第一排在左上，最后一排在右下
 	// 每排从左下到右上
+	// LC498 https://leetcode.cn/problems/diagonal-traverse/
 	loopAntiDiagonal := func(n, m int) {
 		for s := 0; s < n+m-1; s++ {
 			l := max(0, s-n+1)
