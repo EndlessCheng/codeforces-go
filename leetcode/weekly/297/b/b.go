@@ -6,8 +6,8 @@ import "math"
 func minPathCost(grid [][]int, moveCost [][]int) int {
 	m, n := len(grid), len(grid[0])
 	pre := grid[0]
+	f := make([]int, n)
 	for i := 1; i < m; i++ {
-		f := make([]int, n)
 		for j, g := range grid[i] {
 			f[j] = math.MaxInt32
 			for k, v := range grid[i-1] {
@@ -15,7 +15,7 @@ func minPathCost(grid [][]int, moveCost [][]int) int {
 			}
 			f[j] += g
 		}
-		pre = f
+		pre, f = f, pre
 	}
 	ans := math.MaxInt32
 	for _, v := range pre {
