@@ -894,14 +894,35 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
-		for i, v := range values {
-			w := weights[i]
+		for i, w := range weights {
+			v := values[i]
 			// 这里 j 的初始值可以优化成前 i 个物品的重量之和（但不能超过 maxW）
 			for j := maxW; j >= w; j-- {
 				dp[j] = max(dp[j], dp[j-w]+v)
 			}
 		}
 		return dp[maxW]
+	}
+
+	// 0-1 背包 EXTRA: 恰好装满
+	// https://leetcode.cn/contest/sf-tech/problems/cINqyA/
+	zeroOneKnapsackExactlyFull := func(values, weights []int, maxW int) {
+		dp := make([]int, maxW+1) // int64
+		for i := range dp {
+			dp[i] = -1e9 // -1e18
+		}
+		dp[0] = 0
+		for i, w := range weights {
+			v := values[i]
+			for j := maxW; j >= w; j-- {
+				dp[j] = max(dp[j], dp[j-w]+v)
+			}
+		}
+		for i := maxW; i >= 0; i-- {
+			if dp[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 dp[i]
+				// ...
+			}
+		}
 	}
 
 	// 0-1 背包 EXTRA: 至少装入重量和为 maxW 的物品，求价值和的最小值 https://www.luogu.com.cn/problem/P4377
@@ -2523,7 +2544,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		distinctSubsequence,
 		minPalindromeCut,
 
-		zeroOneKnapsack, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
+		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
 		boundedKnapsack, boundedKnapsackBinary,
 		groupKnapsack, groupKnapsackFill,
