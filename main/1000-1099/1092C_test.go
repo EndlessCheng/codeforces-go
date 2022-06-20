@@ -33,5 +33,5 @@ a
 c
 outputCopy
 PS`
-	testutil.AssertEqual(t, rawText, Sol1092C)
+	testutil.AssertEqual(t, rawText, CF1092C)
 }
