@@ -396,6 +396,7 @@ func (a lineF) intersection(b lineF) vecF {
 
 // 直线 a b 交点 - 两点式
 // 线段求整数交点 https://codeforces.com/problemset/problem/1036/E
+// https://leetcode-cn.com/problems/intersection-lcci/
 func (a lineF) intersection2(b lineF) vecF {
 	va := a.vec()
 	d1 := va.det(b.p1.sub(a.p1))
@@ -964,30 +965,71 @@ func _(min func(int64, int64) int64) {
 	}
 
 	// 判断点 p 是否在凸多边形 ps 内部 O(logn)
-	// ps 逆时针顺序
-	// https://www.cnblogs.com/yym2013/p/3673616.html
+	// ps 需为逆时针顺序，ps[n-1] 无需等于 ps[0]
+	// 【推荐】https://www.cnblogs.com/yym2013/p/3673616.html
 	// https://cp-algorithms.com/geometry/point-in-convex-polygon.html
 	// 其他 O(n) 方法 https://blog.csdn.net/WilliamSun0122/article/details/77994526
+	//     判断点是否在所有边的左边（假设 ps 逆时针顺序）
 	// EXTRA: 判断线段是否在凸多边形内：判断两端点是否均在凸多边形内即可
-	inPolygon := func(ps []vec, p vec) bool {
-		n := len(ps)
-		p0 := p.sub(ps[0])
-		// 外：最右射线的右侧或最左射线的左侧
-		if ps[1].sub(ps[0]).det(p0) < 0 || ps[n-1].sub(ps[0]).det(p0) > 0 {
+	inConvexPolygon := func(ps []vec, p vec) bool {
+		o := ps[0]
+		op := p.sub(o)
+		// p 在凸多边形外：o-p 在最右射线 o-ps[1] 的右侧 or 在最左射线 o-ps[n-1] 的左侧
+		// det: 正左负右
+		if ps[1].sub(o).det(op) < 0 || ps[len(ps)-1].sub(o).det(op) > 0 { // 不允许点在边上则加上 =
 			return false
 		}
-		// p0 是否在右侧或重合
-		i := sort.Search(n, func(mid int) bool { return ps[mid].sub(ps[0]).det(p0) <= 0 })
-		// 是否在边左侧或与边重合
-		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0
+		// 二分找到一个点 ps[i]，使得 o-p 在 o-ps[i] 右侧或重合
+		i := sort.Search(len(ps), func(mid int) bool { return ps[mid].sub(o).det(op) <= 0 })
+		// p 是否在边 ps[i-1]-ps[i] 左侧或与这条边重合
+		return ps[i].sub(ps[i-1]).det(p.sub(ps[i-1])) >= 0 // 不允许点在边上则改为 >
 	}
 
 	// 判断点 p 是否在多边形 ps 内部（不保证凸性）
-	// todo 法一：射线法（光线投射算法 Ray casting algorithm）
-	// 穿过奇数次
+	// https://oi-wiki.org/geometry/2d/#ray-casting-algorithm
+	// https://leetcode.cn/contest/sf-tech/problems/uWWzsv/
 	// http://acm.hdu.edu.cn/showproblem.php?pid=1756
-
-	// todo 法二：转角法
+	// 法一：射线法（光线投射算法 Ray casting algorithm）  奇内偶外
+	// 由于转角法更方便，这里省略射线法的代码
+	// 法二：转角法（绕数法、回转数法）
+	// 【配图】https://blog.csdn.net/Form_/article/details/77855163
+	// 代码参考《训练指南》
+	// 这里统计绕数 Winding Number
+	// 从 p 出发向右作射线，统计多边形穿过这条射线正反多少次
+	// 【输入 ps 不要求是逆时针还是顺时针】
+	// 返回 1 表示在内部，0 表示在外部，-1 表示在边界上
+	inAnyPolygon := func(ps []vec, p vec) int {
+		sign := func(x float64) int {
+			if x < -eps {
+				return -1
+			}
+			if x < eps {
+				return 0
+			}
+			return 1
+		}
+		ps = append(ps, ps[0]) // 额外补一个点，方便枚举所有边
+		wn := 0
+		for i := 1; i < len(ps); i++ {
+			p1, p2 := ps[i-1], ps[i]
+			if p.onSeg(line{p1, p2}) {
+				return -1
+			}
+			// det: 正左负右
+			k := sign(float64(p2.sub(p1).det(p.sub(p1)))) // 适配 int64 和 float64
+			d1 := sign(float64(p1.y - p.y))
+			d2 := sign(float64(p2.y - p.y))
+			if k > 0 && d1 <= 0 && d2 > 0 { // 逆时针穿过射线
+				wn++
+			} else if k < 0 && d2 <= 0 && d1 > 0 { // 顺时针穿过射线
+				wn--
+			}
+		}
+		if wn != 0 {
+			return 1
+		}
+		return 0
+	}
 
 	// 判断任意两个多边形是否相离 O(n^2)
 	// 属于不同多边形的任意两边都不相交，且一个多边形上的任意顶点都不被另一个多边形所包含
@@ -1053,7 +1095,7 @@ func _(min func(int64, int64) int64) {
 		readVec, leftMostVec, rightMostVec,
 		readPolygon, polygonArea, rotatingCalipers, convexHullPerimeter,
 		halfPlanesIntersection,
-		inTriangle, inPolygon,
+		inTriangle, inConvexPolygon, inAnyPolygon,
 		isRectangleAnyOrder, minAreaRect,
 	}
 }
