@@ -94,12 +94,9 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="yn" value="map[bool]string{true: &quot;$YES$&quot;, false: &quot;$NO$&quot;} [$VAR0$]" description="map[bool]string{true: &quot;YES&quot;, false: &quot;NO&quot;} [$VAR0$]" toReformat="true" toShortenFQNames="true">
-    <variable name="YES" expression="" defaultValue="&quot;YES&quot;" alwaysStopAt="true" />
-    <variable name="NO" expression="" defaultValue="&quot;NO&quot;" alwaysStopAt="true" />
-    <variable name="VAR0" expression="complete()" defaultValue="" alwaysStopAt="true" />
+  <template name="yn" value="if $END$ {&#10;&#9;Fprintln(out, &quot;YES&quot;)&#10;} else {&#10;&#9;Fprintln(out, &quot;NO&quot;)&#10;}" description="YES : NO" toReformat="true" toShortenFQNames="true">
     <context>
-      <option name="GO_EXPRESSION" value="true" />
+      <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
   <template name="printf" value="fmt.Printf(&quot;$END$&quot;,$VAR$)" description="printf" toReformat="true" toShortenFQNames="true" deactivated="true">
@@ -796,7 +793,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="fpt" value="Fprint(out, $VAR0$)" description="Fprintln(out, $VAR0$)" toReformat="true" toShortenFQNames="true">
+  <template name="fpt" value="Fprint(out, $VAR0$)" description="Fprint(out, $VAR0$)" toReformat="true" toShortenFQNames="true">
     <variable name="VAR0" expression="complete()" defaultValue="&quot;ans&quot;" alwaysStopAt="true" />
     <context>
       <option name="GO_STATEMENT" value="true" />
@@ -907,7 +904,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="gc" value="// github.com/EndlessCheng/codeforces-go&#10;func init() { debug.SetGCPercent(-1) }" description="func init() { debug.SetGCPercent(-1) }" toReformat="true" toShortenFQNames="true">
+  <template name="gc" value="// https://space.bilibili.com/206214/dynamic&#10;func init() { debug.SetGCPercent(-1) }" description="func init() { debug.SetGCPercent(-1) }" toReformat="true" toShortenFQNames="true">
     <context>
       <option name="GO_FILE" value="true" />
     </context>
@@ -947,7 +944,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="uf" value="type uf struct {&#10;&#9;fa     []int&#10;&#9;groups int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;}&#10;&#9;return uf{fa, n}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }" description="并查集" toReformat="false" toShortenFQNames="true">
+  <template name="uf" value="type uf struct {&#10;&#9;fa     []int&#10;&#9;groups int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;}&#10;&#9;return uf{fa, n}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u *uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }" description="并查集" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="GO_FILE" value="true" />
     </context>
@@ -1068,7 +1065,7 @@
       <option name="GO_STATEMENT" value="true" />
     </context>
   </template>
-  <template name="uf_size" value="type uf struct {&#10;&#9;fa, sz  []int&#10;&#9;groups  int&#10;&#9;maxSize int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;sz := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;&#9;sz[i] = 1&#10;&#9;}&#10;&#9;return uf{fa, sz, n, 1}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.sz[y] += u.sz[x]&#10;&#9;if u.sz[y] &gt; u.maxSize {&#10;&#9;&#9;u.maxSize = u.sz[y]&#10;&#9;}&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }&#10;func (u uf) size(x int) int     { return u.sz[u.find(x)] }" description="带集合大小的并查集" toReformat="false" toShortenFQNames="true">
+  <template name="uf_size" value="type uf struct {&#10;&#9;fa, sz  []int&#10;&#9;groups  int&#10;&#9;maxSize int&#10;}&#10;&#10;func newUnionFind(n int) uf {&#10;&#9;fa := make([]int, n)&#10;&#9;sz := make([]int, n)&#10;&#9;for i := range fa {&#10;&#9;&#9;fa[i] = i&#10;&#9;&#9;sz[i] = 1&#10;&#9;}&#10;&#9;return uf{fa, sz, n, 1}&#10;}&#10;&#10;func (u uf) find(x int) int {&#10;&#9;if u.fa[x] != x {&#10;&#9;&#9;u.fa[x] = u.find(u.fa[x])&#10;&#9;}&#10;&#9;return u.fa[x]&#10;}&#10;&#10;func (u *uf) merge(from, to int) (isNewMerge bool) {&#10;&#9;x, y := u.find(from), u.find(to)&#10;&#9;if x == y {&#10;&#9;&#9;return false&#10;&#9;}&#10;&#9;u.fa[x] = y&#10;&#9;u.sz[y] += u.sz[x]&#10;&#9;if u.sz[y] &gt; u.maxSize {&#10;&#9;&#9;u.maxSize = u.sz[y]&#10;&#9;}&#10;&#9;u.groups--&#10;&#9;return true&#10;}&#10;&#10;func (u uf) same(x, y int) bool { return u.find(x) == u.find(y) }&#10;func (u uf) size(x int) int     { return u.sz[u.find(x)] }" description="带集合大小的并查集" toReformat="false" toShortenFQNames="true">
     <context>
       <option name="GO_FILE" value="true" />
     </context>
@@ -1253,7 +1250,7 @@
       <option name="GO_FILE" value="true" />
     </context>
   </template>
-  <template name="str" value="string" description="string" toReformat="true" toShortenFQNames="true">
+  <template name="str" value="string" description="string" toReformat="true" toShortenFQNames="true" deactivated="true">
     <context>
       <option name="GO" value="true" />
       <option name="GO_BLOCK" value="false" />
