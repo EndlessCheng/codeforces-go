@@ -997,7 +997,6 @@ func _(min func(int64, int64) int64) {
 	// 这里统计绕数 Winding Number
 	// 从 p 出发向右作射线，统计多边形穿过这条射线正反多少次
 	// 【输入 ps 不要求是逆时针还是顺时针】
-	// 返回 1 表示在内部，0 表示在外部，-1 表示在边界上
 	inAnyPolygon := func(ps []vec, p vec) int {
 		sign := func(x float64) int {
 			if x < -eps {
@@ -1013,22 +1012,22 @@ func _(min func(int64, int64) int64) {
 		for i := 1; i < len(ps); i++ {
 			p1, p2 := ps[i-1], ps[i]
 			if p.onSeg(line{p1, p2}) {
-				return -1
+				return -1 // 在边界上
 			}
 			// det: 正左负右
 			k := sign(float64(p2.sub(p1).det(p.sub(p1)))) // 适配 int64 和 float64
 			d1 := sign(float64(p1.y - p.y))
 			d2 := sign(float64(p2.y - p.y))
-			if k > 0 && d1 <= 0 && d2 > 0 { // 逆时针穿过射线
+			if k > 0 && d1 <= 0 && d2 > 0 { // 逆时针穿过射线（p 需要在 p1-p2 左侧）
 				wn++
-			} else if k < 0 && d2 <= 0 && d1 > 0 { // 顺时针穿过射线
+			} else if k < 0 && d2 <= 0 && d1 > 0 { // 顺时针穿过射线（p 需要在 p1-p2 右侧）
 				wn--
 			}
 		}
 		if wn != 0 {
-			return 1
+			return 1 // 在内部
 		}
-		return 0
+		return 0 // 在外部
 	}
 
 	// 判断任意两个多边形是否相离 O(n^2)
