@@ -4,43 +4,32 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
 	"strings"
 )
 
-func Sol1092C(reader io.Reader, writer io.Writer) {
-	type pair struct {
-		s   string
-		idx int
-	}
-
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+func CF1092C(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	var n int
+	var s string
 	Fscan(in, &n)
-	n = 2*n - 2
-	arr := make([]pair, n)
-	for i := range arr {
-		var s string
+	type pair struct { s string; i int }
+	a := make([][]pair, n-1)
+	for i := 0; i < n*2-2; i++ {
 		Fscan(in, &s)
-		arr[i] = pair{s, i}
+		a[len(s)-1] = append(a[len(s)-1], pair{s, i})
 	}
-	sort.Slice(arr, func(i, j int) bool { return len(arr[i].s) < len(arr[j].s) })
 
-	p, s := arr[n-2].s, arr[n-1].s
-outer:
+	ans := make([]byte, n*2-2)
+	p, s := a[n-2][0].s, a[n-2][1].s
+next:
 	for _, comb := range []string{p + s[len(s)-1:], s + p[len(p)-1:]} {
-		ans := make([]byte, n)
-		for i := 0; i < n; i += 2 {
-			p0, p1 := arr[i], arr[i+1]
-			if strings.HasPrefix(comb, p0.s) && strings.HasSuffix(comb, p1.s) {
-				ans[p0.idx], ans[p1.idx] = 'P', 'S'
-			} else if strings.HasSuffix(comb, p0.s) && strings.HasPrefix(comb, p1.s) {
-				ans[p0.idx], ans[p1.idx] = 'S', 'P'
+		for _, p := range a {
+			if strings.HasPrefix(comb, p[0].s) && strings.HasSuffix(comb, p[1].s) {
+				ans[p[0].i], ans[p[1].i] = 'P', 'S'
+			} else if strings.HasSuffix(comb, p[0].s) && strings.HasPrefix(comb, p[1].s) {
+				ans[p[0].i], ans[p[1].i] = 'S', 'P'
 			} else {
-				continue outer
+				continue next
 			}
 		}
 		Fprint(out, string(ans))
@@ -48,6 +37,4 @@ outer:
 	}
 }
 
-//func main() {
-//	Sol1092C(os.Stdin, os.Stdout)
-//}
+//func main() { CF1092C(os.Stdin, os.Stdout) }
