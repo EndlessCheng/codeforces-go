@@ -183,7 +183,7 @@ func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
 func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
 
 // 左移 k 位
-// 应用 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/submissions/
+// 应用 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 func (b Bitset) Lsh(k int) {
 	if k == 0 {
 		return
