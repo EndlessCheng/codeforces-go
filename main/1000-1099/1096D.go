@@ -4,51 +4,32 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"strings"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol1096D(reader io.Reader, writer io.Writer) {
-	mins := func(vals ...int64) int64 {
-		ans := vals[0]
-		for _, val := range vals[1:] {
-			if val < ans {
-				ans = val
-			}
+func CF1096D(_r io.Reader, out io.Writer) {
+	min := func(a, b int64) int64 {
+		if a > b {
+			return b
 		}
-		return ans
+		return a
 	}
 
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
-	var n int
+	in := bufio.NewReader(_r)
+	var v int64
 	var s string
-	Fscan(in, &n, &s)
-	costs := make([]int, n)
-	for i := range costs {
-		Fscan(in, &costs[i])
-	}
-
-	dp := [2][4]int64{}
-	for i := 1; i <= n; i++ {
-		i1, i0 := i&1, (i-1)&1
-		for j := range dp[i1] {
-			dp[i1][j] = dp[i0][j]
-		}
-		j := strings.Index("hard", string(s[i-1]))
-		if j == -1 {
-			continue
-		}
-		dp[i1][j] += int64(costs[i-1])
-		if j < 3 && dp[i0][j] < dp[i1][j+1] {
-			dp[i1][j+1] = dp[i0][j]
+	Fscan(in, &v, &s)
+	dp := [4]int64{}
+	for _, c := range s {
+		Fscan(in, &v)
+		switch c {
+		case 'h': dp[0] += v
+		case 'a': dp[1] = min(dp[0], dp[1]+v)
+		case 'r': dp[2] = min(dp[1], dp[2]+v)
+		case 'd': dp[3] = min(dp[2], dp[3]+v)
 		}
 	}
-	Fprint(out, mins(dp[n&1][:]...))
+	Fprint(out, dp[3])
 }
 
-//func main() {
-//	Sol1096D(os.Stdin, os.Stdout)
-//}
+//func main() { CF1096D(os.Stdin, os.Stdout) }
