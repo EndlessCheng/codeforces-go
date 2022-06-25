@@ -156,6 +156,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	/* GCD LCM 相关
+	https://mathworld.wolfram.com/EuclideanAlgorithm.html
+	https://en.wikipedia.org/wiki/Euclidean_algorithm
+	https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm
 
 	https://oeis.org/A051010 Triangle T(m,n) giving of number of steps in the Euclidean algorithm for gcd(m,n) with 0<=m<n
 	https://oeis.org/A034883 Maximum length of Euclidean algorithm starting with n and any nonnegative i<n
