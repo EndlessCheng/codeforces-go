@@ -12,11 +12,18 @@ func totalSteps(nums []int) (ans int) {
 		}
 		if len(st) > 0 {
 			maxT++
+			ans = max(ans, maxT)
+		} else {
+			maxT = 0
 		}
-		ans = max(ans, maxT)
 		st = append(st, pair{num, maxT})
 	}
 	return
 }
 
-func max(a, b int) int { if b > a { return b }; return a }
+func max(a, b int) int {
+	if b > a {
+		return b
+	}
+	return a
+}
