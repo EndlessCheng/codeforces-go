@@ -30,6 +30,11 @@
 
 代码实现时，可以将这些值在外部预计算出来，避免每次都重复计算一遍。
 
+#### 复杂度分析
+
+- 时间复杂度：$O(nm^3)$，这里 $m=6$。求 $\text{GCD}$ 的时间忽略不计（也可以打表预处理出互质的数字）。
+- 空间复杂度：$O(nm^2)$。
+
 ```Python [sol1-Python3]
 MOD, MX = 10 ** 9 + 7, 10 ** 4
 f = [[[0] * 6 for _ in range(6)] for _ in range(MX + 1)]
@@ -154,4 +159,21 @@ func gcd(a, b int) int {
 	}
 	return b
 }
+```
+
+附：Python 记忆化写法
+
+```py
+@cache
+def f(n: int, last: int, last2: int) -> int:
+    if n == 0: return 1
+    res = 0
+    for j in range(1, 7):
+        if j != last and j != last2 and gcd(j, last) == 1:
+            res += f(n - 1, j, last)
+    return res % (10 ** 9 + 7)
+
+class Solution:
+    def distinctSequences(self, n: int) -> int:
+        return f(n, 7, 7)  # 7 与 [1,6] 内的数字都不同且互质
 ```
