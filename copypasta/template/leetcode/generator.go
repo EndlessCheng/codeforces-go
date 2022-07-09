@@ -264,6 +264,8 @@ type problem struct {
 
 // 解析一个样例输入或输出
 func (p *problem) parseSampleText(text string, parseArgs bool) []string {
+	text = strings.ReplaceAll(text, " ", " ") // 替换 NBSP 为正常空格
+
 	text = strings.TrimSpace(text)
 	if text == "" {
 		return nil
