@@ -1,0 +1,6 @@
+["SmallestInfiniteSet", "addBack", "popSmallest", "popSmallest", "popSmallest", "addBack", "popSmallest", "popSmallest", "popSmallest"]
+[[], [2], [], [], [], [1], [], [], []]
+[null, null, 1, 2, 3, null, 1, 4, 5]
+
+
+
