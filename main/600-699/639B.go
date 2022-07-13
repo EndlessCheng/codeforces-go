@@ -13,7 +13,7 @@ func CF639B(in io.Reader, _w io.Writer) {
 
 	var n, d, h int
 	Fscan(in, &n, &d, &h)
-	if d > h*2 || d == 1 && h == 1 && n > 2 {
+	if d > h*2 || d == 1 && n > 2 {
 		Fprint(out, -1)
 		return
 	}
@@ -32,9 +32,9 @@ func CF639B(in io.Reader, _w io.Writer) {
 	}
 	if h < d {
 		Fprintln(out, 1, h+2)
-	}
-	for i := h + 2; i <= d; i++ {
-		Fprintln(out, i, i+1)
+		for i := h + 2; i <= d; i++ {
+			Fprintln(out, i, i+1)
+		}
 	}
 	for i := d + 2; i <= n; i++ {
 		Fprintln(out, 2, i)
