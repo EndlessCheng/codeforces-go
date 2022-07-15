@@ -13,8 +13,8 @@ func CF1081E(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 	const mx int = 2e5
 	ds := [mx + 1][]int{}
-	for i := 1; i*i <= mx; i++ {
-		for j := i * (i + 1); j <= mx; j += i {
+	for i := 1; i*(i+2) <= mx; i++ {
+		for j := i * (i + 2); j <= mx; j += i * 2 {
 			ds[j] = append(ds[j], i)
 		}
 	}
