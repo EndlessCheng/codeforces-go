@@ -29,14 +29,11 @@ o:
 		ds := ds[a[i]]
 		for j := len(ds) - 1; j >= 0; j-- {
 			d := int64(ds[j])
-			d = a[i]/d - d
-			if d&1 == 0 {
-				d /= 2
-				a[i-1] = d*d - s
-				if a[i-1] > 0 {
-					s = d*d + a[i]
-					continue o
-				}
+			d = (a[i]/d - d) / 2
+			a[i-1] = d*d - s
+			if a[i-1] > 0 {
+				s = d*d + a[i]
+				continue o
 			}
 		}
 		Fprint(out, "No")
