@@ -9,8 +9,8 @@ type seg01 []struct {
 	// -1: [l,r] 内全为 0
 	//  1: [l,r] 内全为 1
 	//  0: [l,r] 内有 0 有 1
+	ones  int // EXTRA: 1 的个数
 	state int8
-	ones  int  // EXTRA: 1 的个数
 	flip  bool // lazy tag
 }
 
