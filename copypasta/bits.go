@@ -171,7 +171,7 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 // 部分参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
 // 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
 // 应用：https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
-// todo compare 32 & 64 on CF
+// uint32 is faster than uint64 on Codeforces
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w
