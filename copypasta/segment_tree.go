@@ -173,6 +173,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 
 // 延迟标记（区间修改）
+// 【有关区间 flip 的 0-1 线段树，见 segment_tree01.go】
 // 单个更新操作：
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A
 //           https://codeforces.com/problemset/problem/1321/E
@@ -201,22 +202,22 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 // 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
-type lazyST []struct {
+type lazySeg []struct {
 	l, r int
 	todo int64
 	sum  int64
 }
 
-func (lazyST) op(a, b int64) int64 {
+func (lazySeg) op(a, b int64) int64 {
 	return a + b // % mod
 }
 
-func (t lazyST) maintain(o int) {
+func (t lazySeg) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].sum = t.op(lo.sum, ro.sum)
 }
 
-func (t lazyST) build(a []int64, o, l, r int) {
+func (t lazySeg) build(a []int64, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = a[l-1]
@@ -228,13 +229,13 @@ func (t lazyST) build(a []int64, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t lazyST) do(o int, add int64) {
+func (t lazySeg) do(o int, add int64) {
 	to := &t[o]
 	to.todo += add                     // % mod
 	to.sum += int64(to.r-to.l+1) * add // % mod
 }
 
-func (t lazyST) spread(o int) {
+func (t lazySeg) spread(o int) {
 	if add := t[o].todo; add != 0 {
 		t.do(o<<1, add)
 		t.do(o<<1|1, add)
@@ -243,26 +244,26 @@ func (t lazyST) spread(o int) {
 }
 
 // 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
-// 未找到时返回 n+1
+// 下面代码返回 [l,r] 内第一个值不低于 val 的下标（未找到时返回 n+1）
 // o=1  [l,r] 1<=l<=r<=n
 // https://codeforces.com/problemset/problem/1179/C
-func (t lazyST) binarySearch(o, l, r int, val int64) int {
+func (t lazySeg) lowerBound(o, l, r int, val int64) int {
 	if t[o].l == t[o].r {
-		if val <= t[o].sum {
+		if t[o].sum >= val {
 			return t[o].l
 		}
 		return t[o].l + 1
 	}
 	t.spread(o)
-	// 注意判断对象是当前节点还是子节点
-	if val <= t[o<<1].sum {
-		return t.binarySearch(o<<1, l, r, val)
+	// 注意判断比较的对象是当前节点还是子节点，是先递归左子树还是右子树
+	if t[o<<1].sum >= val {
+		return t.lowerBound(o<<1, l, r, val)
 	}
-	return t.binarySearch(o<<1|1, l, r, val)
+	return t.lowerBound(o<<1|1, l, r, val)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazyST) update(o, l, r int, add int64) {
+func (t lazySeg) update(o, l, r int, add int64) {
 	if l <= t[o].l && t[o].r <= r {
 		t.do(o, add)
 		return
@@ -279,7 +280,7 @@ func (t lazyST) update(o, l, r int, add int64) {
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazyST) query(o, l, r int) int64 {
+func (t lazySeg) query(o, l, r int) int64 {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -296,17 +297,17 @@ func (t lazyST) query(o, l, r int) int64 {
 	return t.op(vl, vr)
 }
 
-func (t lazyST) queryAll() int64 { return t[1].sum }
+func (t lazySeg) queryAll() int64 { return t[1].sum }
 
 // a 从 0 开始
-func newLazySegmentTree(a []int64) lazyST {
-	t := make(lazyST, 4*len(a))
+func newLazySegmentTree(a []int64) lazySeg {
+	t := make(lazySeg, 4*len(a))
 	t.build(a, 1, 1, len(a))
 	return t
 }
 
 // EXTRA: 适用于需要提取所有元素值的场景
-func (t lazyST) spreadAll(o int) {
+func (t lazySeg) spreadAll(o int) {
 	if t[o].l == t[o].r {
 		return
 	}

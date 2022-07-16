@@ -172,6 +172,7 @@ a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 // 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
 // 应用：https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
 // uint32 is faster than uint64 on Codeforces
+// 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w
