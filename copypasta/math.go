@@ -649,6 +649,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 预处理: [2,mx] 范围内的质数
 	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
 	// https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+	// https://oeis.org/A055399 Number of stages of sieve of Eratosthenes needed to identify n as prime or composite
+	// https://oeis.org/A230773 Minimum number of steps in an alternate definition of the Sieve of Eratosthenes needed to identify n as prime or composite
 	// 质数个数 π(n) https://oeis.org/A000720
 	//         π(10^n) https://oeis.org/A006880
 	//         4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, /* 1e9 */
@@ -2835,7 +2837,7 @@ todo https://codeforces.com/problemset/problem/451/E
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
 
-https://oeis.org/A000522 Total number of arrangements of a set with n elements: a(n) = Sum_{k=0..n} n!/k!
+https://oeis.org/A000522 Total number of arrangements of a set with n elements: a(n) = Sum_{k=0..n} n!/k!    Total number of permutations of all subsets of an n-set
                           a(n) = n*a(n-1) + 1, a(0) = 1
                                = floor(e * n!)
 https://oeis.org/A007526 A000522(n)-1 去掉空集
