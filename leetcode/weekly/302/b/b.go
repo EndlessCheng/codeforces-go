@@ -1,28 +1,20 @@
 package main
 
 // https://space.bilibili.com/206214/dynamic
-func maximumSum(nums []int) (ans int) {
-	mx := map[int][2]int{}
+func maximumSum(nums []int) int {
+	ans := -1
+	mx := map[int]int{}
 	for _, v := range nums {
 		s := 0
 		for x := v; x > 0; x /= 10 {
 			s += x % 10
 		}
-		p := mx[s]
-		if v > p[0] {
-			p[0], p[1] = v, p[0]
-		} else if v > p[1] {
-			p[1] = v
+		if mx[s] > 0 {
+			ans = max(ans, mx[s] + v)
 		}
-		mx[s] = p
+		mx[s] = max(mx[s], v)
 	}
-	ans = -1
-	for _, p := range mx {
-		if p[1] > 0 {
-			ans = max(ans, p[0]+p[1])
-		}
-	}
-	return
+	return ans
 }
 
 func max(a, b int) int { if b > a { return b }; return a }
