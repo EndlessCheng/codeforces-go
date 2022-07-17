@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -178,14 +179,17 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 		tokenOutputEN = "Sample Output "
 	)
 
+	inputRegex := regexp.MustCompile(tokenInputEN + `\d+`)
+	outputRegex := regexp.MustCompile(tokenOutputEN + `\d+`)
+
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		if o.Type == html.TextNode {
-			if strings.Contains(o.Data, tokenInputEN) {
+			if inputRegex.MatchString(o.Data) {
 				raw := o.Parent.NextSibling.FirstChild.Data
 				raw = strings.TrimSpace(raw)
 				sampleIns = append(sampleIns, raw)
-			} else if strings.Contains(o.Data, tokenOutputEN) {
+			} else if outputRegex.MatchString(o.Data) {
 				if o.Parent.NextSibling.FirstChild == nil {
 					// 样例输出为空，例如 https://atcoder.jp/contests/abc150/tasks/abc150_f
 					sampleOuts = append(sampleOuts, "")
@@ -348,9 +352,14 @@ func genAtCoderContestTemplates(contestID string, taskNum, retryTimes int) error
 		// we don't want spent too much time on waiting responses one by one, so we use goroutine!
 		go func(id byte) {
 			defer wg.Done()
+			defer func() {
+				if err := recover(); err != nil {
+					fmt.Println("[error]", string(id), err)
+				}
+			}()
 			problemURL := fmt.Sprintf("https://atcoder.jp/contests/%[1]s/tasks/%[1]s_%[2]c", contestID, id)
 			if err := genTemplates(session, problemURL, true); err != nil {
-				fmt.Fprintln(os.Stderr, string(id), err)
+				fmt.Println("[error]", string(id), err)
 				return
 			}
 			fmt.Println("[ok]", string(id), problemURL)
