@@ -36,6 +36,7 @@
     - 线段树合并
     - 线段树分裂
     - 持久化（主席树）
+  - [0-1 线段树 segment_tree01.go](/copypasta/segment_tree01.go)
   - [左偏树（可并堆）leftist_tree.go](/copypasta/leftist_tree.go)
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
   - [二叉搜索树公共方法 bst.go](/copypasta/bst.go)

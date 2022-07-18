@@ -1331,7 +1331,7 @@ func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 	for k := range vs { // 阶段
 		for i := range vs { // 状态
 			if vs[i].Has(k) {
-				vs[i].Merge(vs[k]) // 决策
+				vs[i].MergeFrom(vs[k]) // 决策
 			}
 		}
 	}

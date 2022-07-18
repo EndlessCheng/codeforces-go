@@ -191,7 +191,7 @@ func sortCollections() {
 		for i := 0; i < L; i++ {
 			up *= 26
 		}
-		up = (up - 1) / 25 * 26
+		up = (up - 1) / 25 * 26 // 求字符串的个数（等比数列之和 26 + 26*26 + ... + 26^L）
 		kthString := func(k int) []byte {
 			s := []byte{}
 			for k++; k > 0; k /= 26 {
