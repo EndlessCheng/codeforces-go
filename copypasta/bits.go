@@ -20,6 +20,7 @@ a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
     = (a|b)*2 - (a^b)
 相关题目
+https://codeforces.com/problemset/problem/76/D
 https://codeforces.com/problemset/problem/1325/D
 https://atcoder.jp/contests/abc050/tasks/arc066_b
 

@@ -240,6 +240,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/1542/D
 	*/
 
+	// 网格走路模型
+	// https://leetcode.cn/problems/unique-paths/
+	// https://leetcode.cn/problems/unique-paths-ii/
+	// https://leetcode.cn/problems/minimum-path-sum/
+	// - 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
+	// https://leetcode.cn/problems/triangle/
+
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
 	// - 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]
@@ -251,6 +258,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 子段和有上限的最大子段和：转换为前缀和之差 sum[i]-sum[j]<=K，在平衡树上二分 sum[j] LC363 https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/
 	// 最大两段子段和：求每个位置上的前缀最大子段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	//     等价题目：允许翻转一段子区间的最大子段和
+	// 删除至多一个元素后的最大子段和 LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
 	// 最大 m 段子段和 http://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B

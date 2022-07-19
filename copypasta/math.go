@@ -761,13 +761,13 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 	factorize := func(x int64) (factors []factor) {
 		for i := int64(2); i*i <= x; i++ {
-			e := 0
-			pe := int64(1)
-			for ; x%i == 0; x /= i {
-				e++
-				pe *= i
-			}
-			if e > 0 {
+			if x%i == 0 {
+				e := 1
+				pe := i
+				for x /= i; x%i == 0; x /= i {
+					e++
+					pe *= i
+				}
 				factors = append(factors, factor{i, e, pe})
 			}
 		}
@@ -1082,6 +1082,18 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		for i := 1; i <= mx; i++ {
 			for j := i; j <= mx; j += i {
 				divisors[j] = append(divisors[j], i)
+			}
+		}
+
+		{
+			// https://oeis.org/A038548 Number of divisors of n that are at most sqrt(n)
+			// https://oeis.org/A094820 Partial sums of A038548
+			// 更细致的优化：d 与 x/d 奇偶性相同 https://codeforces.com/contest/1081/problem/E
+			divisors := [mx + 1][]int{}
+			for i := 1; i*i <= mx; i++ {
+				for j := i * i; j <= mx; j += i {
+					divisors[j] = append(divisors[j], i)
+				}
 			}
 		}
 
@@ -2797,10 +2809,12 @@ todo 组合数性质 | 二项式推论 https://oi-wiki.org/math/combination/#_13
 todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-iv-zu-ge-ji-shuo
 一些常用组合恒等式的解释 https://www.zhihu.com/question/26094736 https://zhuanlan.zhihu.com/p/82241906
 递推式 C(n-1, k-1) + C(n-1, k) = C(n, k)
-上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)   相关题目 https://www.luogu.com.cn/problem/P7386
-上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m) 相关题目 https://atcoder.jp/contests/abc154/tasks/abc154_f
+上项求和 C(r, r) + C(r+1, r) + ... + C(n, r) = C(n+1, r+1)
+上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)
+   https://atcoder.jp/contests/abc154/tasks/abc154_f
+   https://codeforces.com/contest/1696/problem/E
 范德蒙德恒等式 Vandermonde's identity https://en.wikipedia.org/wiki/Vandermonde%27s_identity
-∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)
+∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)   https://www.luogu.com.cn/problem/P7386
 特别地：∑i=[0..m] C(n,i)*C(m,i) = ∑i=[0..m] C(n,i)*C(m,m-i) = C(n+m,m)   https://codeforces.com/problemset/problem/785/D
 ∑i>=n and k-i>=m C(i,n)*C(k-i,m) = C(k+1,n+m+1)   https://www.luogu.com.cn/blog/hanzhongtlx/ti-xie-0-1-trie
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
@@ -2834,6 +2848,7 @@ todo https://codeforces.com/problemset/problem/451/E
 	https://oeis.org/A000261 错排的比较对象的范围是 [1,n+3]  a(n) = n*a(n-1) + (n-3)*a(n-2), a(1) = 0, a(2) = 1
 	https://oeis.org/A001909 错排的比较对象的范围是 [1,n+4]  a(n) = n*a(n-1) + (n-4)*a(n-2), a(2) = 0, a(3) = 1
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
+    https://oeis.org/A127548 和两个排列都不同的错排数（这两个排列也互为错排）
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
 
