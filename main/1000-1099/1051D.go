@@ -6,31 +6,31 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF1051D(_r io.Reader, _w io.Writer) {
-	const m = 998244353
+func CF1051D(in io.Reader, out io.Writer) {
+	const mod = 998244353
+	min := func(a, b int) int {
+		if a > b {
+			return b
+		}
+		return a
+	}
+
 	var n, k int
-	Fscan(_r, &n, &k)
+	Fscan(in, &n, &k)
 	if k == 1 {
-		Fprint(_w, 2)
+		Fprint(out, 2)
 		return
 	}
-	dp := make([][][4]uint, n)
-	for i := range dp {
-		dp[i] = make([][4]uint, k+1)
-	}
-	dp[0][1] = [4]uint{1, 0, 0, 1}
-	dp[0][2] = [4]uint{0, 1, 1, 0}
-	for i := 1; i < n; i++ {
-		dp[i][1][0] = dp[i-1][1][0]
-		dp[i][1][3] = dp[i-1][1][3]
-		for j := 2; j <= k; j++ {
-			dp[i][j][0] = (dp[i-1][j][0] + dp[i-1][j][1] + dp[i-1][j][2] + dp[i-1][j-1][3]) % m
-			dp[i][j][1] = (dp[i-1][j-1][0] + dp[i-1][j][1] + dp[i-1][j-2][2] + dp[i-1][j-1][3]) % m
-			dp[i][j][2] = (dp[i-1][j-1][0] + dp[i-1][j-2][1] + dp[i-1][j][2] + dp[i-1][j-1][3]) % m
-			dp[i][j][3] = (dp[i-1][j-1][0] + dp[i-1][j][1] + dp[i-1][j][2] + dp[i-1][j][3]) % m
+	f := make([][2]uint, k+1)
+	f[1] = [2]uint{2, 0}
+	f[2] = [2]uint{0, 2}
+	for i := 2; i <= n; i++ {
+		for j := min(k, i*2); j > 1; j-- {
+			f[j][0] = (f[j][0] + f[j][1]*2 + f[j-1][0]) % mod
+			f[j][1] = (f[j][1] + f[j-1][0]*2 + f[j-2][1]) % mod
 		}
 	}
-	Fprint(_w, (dp[n-1][k][0]+dp[n-1][k][1]+dp[n-1][k][2]+dp[n-1][k][3])%m)
+	Fprint(out, (f[k][0]+f[k][1])%mod)
 }
 
 //func main() { CF1051D(os.Stdin, os.Stdout) }
