@@ -268,11 +268,11 @@ func miscCollection() {
 		for i := 0; i < n*m; i++ { // 从 0 到 n*m-1
 			mat[x][y] = i
 			//pos[i] = pair{x, y}
-			d := dir4[di&3]
+			d := dir4[di]
 			if xx, yy := x+d.x, y+d.y; xx < 0 || xx >= n || yy < 0 || yy >= m || mat[xx][yy] != -1 {
-				di++
+				di = (di + 1) & 3
+				d = dir4[di]
 			}
-			d = dir4[di&3]
 			x += d.x
 			y += d.y
 		}
