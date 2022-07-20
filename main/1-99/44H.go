@@ -5,7 +5,9 @@ import (
 	"io"
 )
 
-// todo 答案的上界是多少？如何构造一个让答案最大的输入？
+// 答案的上界是多少？如何构造一个让答案最大的输入？
+// 目前算出来的上界是 138015464837
+// 对应的输入为 "001001" + "01"*22
 
 // github.com/EndlessCheng/codeforces-go
 func CF44H(in io.Reader, out io.Writer) {
