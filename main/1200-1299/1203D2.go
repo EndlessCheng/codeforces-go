@@ -8,26 +8,29 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1203D2(in io.Reader, out io.Writer) {
+	max := func(a, b int) int {
+		if b > a {
+			return b
+		}
+		return a
+	}
+
 	var s, t string
 	Fscan(bufio.NewReader(in), &s, &t)
 	n, m := len(s), len(t)
-	suf := make([]int, n+1)
-	for i, j := n-1, m-1; i > 0; i-- {
-		if j >= 0 && s[i] == t[j] {
+	suf := make([]int, m+1)
+	suf[m] = n
+	for i, j := n-1, m-1; j >= 0; i-- {
+		if s[i] == t[j] {
+			suf[j] = i
 			j--
 		}
-		suf[i] = m - 1 - j
 	}
-	ans := 0
-	for l, r, j := 0, 1, 0; r <= n; r++ {
-		for j+suf[r] < m {
-			if s[l] == t[j] {
-				j++
-			}
-			l++
-		}
-		if r-l > ans {
-			ans = r - l
+	ans := suf[0]
+	for i, j := 0, 0; j < m; i++ {
+		if s[i] == t[j] {
+			j++
+			ans = max(ans, suf[j]-i-1)
 		}
 	}
 	Fprint(out, ans)
