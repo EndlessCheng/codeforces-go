@@ -485,11 +485,18 @@ func getCircleCenter(a, b vec, r int64) vecF {
 }
 
 // 直线与圆的交点
+// t1 <= t2
+// 射线的情况见 https://www.acwing.com/problem/content/4502/
 func (o circleF) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
 	v := l.vec()
+	// 需要保证 v 不会退化成一个点
+	if v.x == 0 && v.y == 0 {
+		// 根据题意特判
+	}
 	a, b, c, d := v.x, l.p1.x-o.x, v.y, l.p1.y-o.y
 	e, f, g := a*a+c*c, 2*(a*b+c*d), b*b+d*d-o.r*o.r
-	switch delta := f*f - 4*e*g; {
+	delta := f*f - 4*e*g // 注意这会达到值域的 4 次方
+	switch {
 	case delta < -eps: // 相离
 		return
 	case delta < eps: // 相切
