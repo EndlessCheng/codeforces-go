@@ -1,0 +1,8 @@
+["FoodRatings", "highestRated", "highestRated", "changeRating", "highestRated", "changeRating", "highestRated"]
+[[["kimchi", "miso", "sushi", "moussaka", "ramen", "bulgogi"], ["korean", "japanese", "japanese", "greek", "japanese", "korean"], [9, 12, 8, 15, 14, 7]], ["korean"], ["japanese"], ["sushi", 16], ["japanese"], ["ramen", 16], ["japanese"]]
+[null, "kimchi", "ramen", null, "sushi", null, "ramen"]
+
+["FoodRatings","changeRating","highestRated","changeRating","highestRated","highestRated","changeRating","highestRated","highestRated","changeRating","highestRated","changeRating","highestRated"]
+[[["tjokfmxg","xmiuwozpmj","uqklk","mnij","iwntdyqxi","cduc","cm","mzwfjk"],["waxlau","ldpiabqb","ldpiabqb","waxlau","ldpiabqb","waxlau","waxlau","waxlau"],[9,13,7,16,10,17,16,17]],["tjokfmxg",19],["waxlau"],["uqklk",7],["waxlau"],["waxlau"],["tjokfmxg",14],["waxlau"],["waxlau"],["tjokfmxg",4],["waxlau"],["mnij",18],["waxlau"]]
+[null,null,"tjokfmxg",null,"tjokfmxg","tjokfmxg",null,"cduc","cduc",null,"cduc",null,"mnij"]
+
