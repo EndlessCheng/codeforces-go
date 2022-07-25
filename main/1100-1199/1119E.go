@@ -12,6 +12,7 @@ func CF1119E(_r io.Reader, out io.Writer) {
 	var n, v, left int
 	ans := int64(0)
 	for Fscan(in, &n); n > 0; n-- {
+		Fscan(in, &v)
 		if left > 0 {
 			if v > 2*left {
 				ans += int64(left)
