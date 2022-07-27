@@ -7,36 +7,33 @@ import (
 	"strings"
 )
 
-func Sol494A(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+// github.com/EndlessCheng/codeforces-go
+func CF494A(in io.Reader, out io.Writer) {
 	var s string
-	Fscan(in, &s)
-	cnt := strings.Count(s, "#")
-	s = strings.Replace(s, "#", ")", cnt-1)
-	need := strings.Count(s, "(") - strings.Count(s, ")")
-	if need < 1 {
-		need = 1
-	}
-	s = strings.Replace(s, "#", strings.Repeat(")", need), 1)
-	beauty := 0
-	for _, c := range s {
-		if c == '(' {
-			beauty++
-		} else {
-			beauty--
-			if beauty < 0 {
-				Fprintln(out, -1)
-				return
-			}
+	Fscan(bufio.NewReader(in), &s)
+	cnt, d, minD := 0, 0, len(s)
+	for _, b := range s {
+		if b == '(' {
+			d++
+			continue
+		}
+		d--
+		if d < 0 {
+			Fprint(out, -1)
+			return
+		}
+		if b == '#' {
+			cnt++
+			minD = d
+		} else if d < minD {
+			minD = d
 		}
 	}
-	Fprint(out, strings.Repeat("1\n", cnt-1))
-	Fprintln(out, need)
+	if minD < d {
+		Fprint(out, -1)
+	} else {
+		Fprint(out, strings.Repeat("1\n", cnt-1), d+1)
+	}
 }
 
-//func main() {
-//	Sol494A(os.Stdin, os.Stdout)
-//}
+//func main() { CF494A(os.Stdin, os.Stdout) }
