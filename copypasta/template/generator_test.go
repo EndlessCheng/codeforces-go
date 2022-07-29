@@ -8,13 +8,17 @@ import (
 	"time"
 )
 
+// 如果有交互题，赛前先熟悉下交互模板
+// 确认下 main.go 和 main_test.go 是否恢复
+// https://atcoder.jp/contests/abc262/tasks_print
 func TestGenCodeforcesContestTemplates(t *testing.T) {
-	const contestID = ""
+	const cmdName = CmdAtcoder //
+	const contestID = "" //
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../%s/", contestID)
 	for {
-		// 配合 https://github.com/xalanq/cf-tool 使用
-		if err := GenCodeforcesContestTemplates(rootPath, contestID, overwrite); err != nil {
+		// 配合 https://github.com/xalanq/cf-tool / https://github.com/sempr/cf-tool 使用
+		if err := GenCodeforcesContestTemplates(cmdName, rootPath, contestID, overwrite); err != nil {
 			//t.Log(err)
 		} else {
 			break

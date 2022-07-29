@@ -11,8 +11,13 @@ import (
 	"strings"
 )
 
+const (
+	CmdCodeforces = "cf"  // https://github.com/xalanq/cf-tool
+	CmdAtcoder    = "atc" // https://github.com/sempr/cf-tool rename
+)
+
 // 生成 CF 比赛模板（需要先 cf race，以确认题目数量）
-func GenCodeforcesContestTemplates(rootPath, contestID string, overwrite bool) error {
+func GenCodeforcesContestTemplates(cmdName, rootPath, contestID string, overwrite bool) error {
 	if contestID == "" {
 		fmt.Println("contest ID is empty")
 		return nil
@@ -46,7 +51,7 @@ func GenCodeforcesContestTemplates(rootPath, contestID string, overwrite bool) e
 				open.Run(absPath(dstFilePath))
 			}
 		}
-		cmd := fmt.Sprintf("cf submit contest %s %s -f %s.go", contestID, parentName, parentName)
+		cmd := fmt.Sprintf("%s submit contest %s %s -f %s.go", cmdName, contestID, parentName, parentName)
 		if err := ioutil.WriteFile(filepath.Join(path, parentName+".bat"), []byte(cmd), 0644); err != nil {
 			return err
 		}
