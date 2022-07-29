@@ -76,15 +76,15 @@ class Solution:
                     xor[x] ^= xor[y]
             out[x] = clock
         dfs(0, -1)
-        def is_parent(x: int, y: int) -> bool:
+        def is_ancestor(x: int, y: int) -> bool:
             return in_[x] < in_[y] <= out[x]
 
         ans = inf
         for i in range(2, n):
             for j in range(1, i):
-                if is_parent(i, j):  # i 是 j 的祖先节点
+                if is_ancestor(i, j):  # i 是 j 的祖先节点
                     x, y, z = xor[j], xor[i] ^ xor[j], xor[0] ^ xor[i]
-                elif is_parent(j, i):  # j 是 i 的祖先节点
+                elif is_ancestor(j, i):  # j 是 i 的祖先节点
                     x, y, z = xor[i], xor[i] ^ xor[j], xor[0] ^ xor[j]
                 else:  # 删除的两条边分别属于两颗不相交的子树
                     x, y, z = xor[i], xor[j], xor[0] ^ xor[i] ^ xor[j]
@@ -118,11 +118,11 @@ class Solution {
         for (var i = 2; i < n; ++i)
             for (int j = 1; j < i; ++j) {
                 int x, y, z;
-                if (isParent(i, j)) { // i 是 j 的祖先节点
+                if (isAncestor(i, j)) { // i 是 j 的祖先节点
                     x = xor[j];
                     y = xor[i] ^ x;
                     z = xor[0] ^ xor[i];
-                } else if (isParent(j, i)) { // j 是 i 的祖先节点
+                } else if (isAncestor(j, i)) { // j 是 i 的祖先节点
                     x = xor[i];
                     y = xor[j] ^ x;
                     z = xor[0] ^ xor[j];
@@ -148,7 +148,7 @@ class Solution {
         out[x] = clock;
     }
 
-    boolean isParent(int x, int y) {
+    boolean isAncestor(int x, int y) {
         return in[x] < in[y] && in[y] <= out[x];
     }
 }
@@ -178,13 +178,13 @@ public:
             out[x] = clock;
         };
         dfs(0, -1);
-        auto is_parent = [&](int x, int y) -> bool { return in[x] < in[y] && in[y] <= out[x]; };
+        auto is_ancestor = [&](int x, int y) -> bool { return in[x] < in[y] && in[y] <= out[x]; };
 
         int ans = INT_MAX;
         for (int i = 2, x, y, z; i < n; ++i)
             for (int j = 1; j < i; ++j) {
-                if (is_parent(i, j)) x = xr[j], y = xr[i] ^ x, z = xr[0] ^ xr[i]; // i 是 j 的祖先节点
-                else if (is_parent(j, i)) x = xr[i], y = xr[j] ^ x, z = xr[0] ^ xr[j]; // j 是 i 的祖先节点
+                if (is_ancestor(i, j)) x = xr[j], y = xr[i] ^ x, z = xr[0] ^ xr[i]; // i 是 j 的祖先节点
+                else if (is_ancestor(j, i)) x = xr[i], y = xr[j] ^ x, z = xr[0] ^ xr[j]; // j 是 i 的祖先节点
                 else x = xr[i], y = xr[j], z = xr[0] ^ x ^ y; // 删除的两条边分别属于两颗不相交的子树
                 ans = min(ans, max({x, y, z}) - min({x, y, z}));
                 if (ans == 0) return 0; // 提前退出
@@ -222,15 +222,15 @@ func minimumScore(nums []int, edges [][]int) int {
 		out[x] = clock
 	}
 	dfs(0, -1)
-	isParent := func(x, y int) bool { return in[x] < in[y] && in[y] <= out[x] }
+	isAncestor := func(x, y int) bool { return in[x] < in[y] && in[y] <= out[x] }
 
 	ans := math.MaxInt32
 	for i := 2; i < n; i++ {
 		for j := 1; j < i; j++ {
 			var x, y, z int
-			if isParent(i, j) { // i 是 j 的祖先节点
+			if isAncestor(i, j) { // i 是 j 的祖先节点
 				x, y, z = xor[j], xor[i]^xor[j], xor[0]^xor[i]
-			} else if isParent(j, i) { // j 是 i 的祖先节点
+			} else if isAncestor(j, i) { // j 是 i 的祖先节点
 				x, y, z = xor[i], xor[i]^xor[j], xor[0]^xor[j]
 			} else { // 删除的两条边分别属于两颗不相交的子树
 				x, y, z = xor[i], xor[j], xor[0]^xor[i]^xor[j]

@@ -30,22 +30,21 @@ func minimumScore(nums []int, edges [][]int) int {
 		out[x] = clock
 	}
 	dfs(0, -1)
-	isParent := func(x, y int) bool { return in[x] < in[y] && in[y] <= out[x] }
 
 	ans := math.MaxInt32
 	for i := 2; i < n; i++ {
 		for j := 1; j < i; j++ {
 			var x, y, z int
-			if isParent(i, j) { // i 是 j 的祖先节点
+			if in[i] < in[j] && in[j] <= out[i] { // i 是 j 的祖先节点
 				x, y, z = xor[j], xor[i]^xor[j], xor[0]^xor[i]
-			} else if isParent(j, i) { // j 是 i 的祖先节点
+			} else if in[j] < in[i] && in[i] <= out[j] { // j 是 i 的祖先节点
 				x, y, z = xor[i], xor[i]^xor[j], xor[0]^xor[j]
 			} else { // 删除的两条边分别属于两颗不相交的子树
 				x, y, z = xor[i], xor[j], xor[0]^xor[i]^xor[j]
 			}
 			ans = min(ans, max(max(x, y), z)-min(min(x, y), z))
 			if ans == 0 {
-				return 0
+				return 0 // 提前退出
 			}
 		}
 	}
