@@ -26,6 +26,7 @@ LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
 LC2281 https://leetcode.com/problems/sum-of-total-strength-of-wizards/
 
 与 DP 结合
+https://codeforces.com/problemset/problem/5/E
 https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
