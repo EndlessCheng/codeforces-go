@@ -13,8 +13,12 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
 todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
+https://leetcode.cn/tag/monotonic-queue/problemset/
 todo https://www.luogu.com.cn/problem/P2627
 todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
+
+LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
+      https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 */
 type MqData struct {
 	Val int
@@ -56,6 +60,7 @@ func (mq MonotoneQueue) Top() int {
 }
 
 // 滑动窗口最值（固定区间大小的区间最值）
+// LC239 https://leetcode.cn/problems/sliding-window-maximum/
 // https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 // https://codeforces.com/problemset/problem/940/E
 // https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）

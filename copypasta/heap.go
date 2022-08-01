@@ -29,10 +29,13 @@ JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcod
 用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
 股票买卖 https://codeforces.com/problemset/problem/865/D
 
+区间贪心相关
 最小不相交区间划分数
-https://www.acwing.com/problem/content/113/
-https://www.acwing.com/problem/content/908/
-https://codeforces.com/problemset/problem/845/C
+- https://www.acwing.com/problem/content/113/
+- https://www.acwing.com/problem/content/908/
+- https://codeforces.com/problemset/problem/845/C
+https://codeforces.com/problemset/problem/555/B
+https://codeforces.com/problemset/problem/1701/D
 */
 
 // 下面这些都是最小堆
@@ -87,14 +90,14 @@ func (h *hp64) pop() int64         { return heap.Pop(h).(int64) } // 稍微封�
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
 // 模拟 multiset https://codeforces.com/problemset/problem/1106/E
 type viPair struct {
-	v     int64
-	index int // 该元素在 mh 中的下标，可随着 push pop 等操作自动改变
+	v  int64
+	hi int // *viPair 在 mh 中的下标，可随着 Push Pop 等操作自动改变
 }
 type mh []*viPair // mh 指 modifiable heap
 
 func (h mh) Len() int              { return len(h) }
 func (h mh) Less(i, j int) bool    { return h[i].v < h[j].v } // > 为最大堆
-func (h mh) Swap(i, j int)         { h[i], h[j] = h[j], h[i]; h[i].index = i; h[j].index = j }
+func (h mh) Swap(i, j int)         { h[i], h[j] = h[j], h[i]; h[i].hi = i; h[j].hi = j }
 func (h *mh) Push(v interface{})   { *h = append(*h, v.(*viPair)) }
 func (h *mh) Pop() interface{}     { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 func (h *mh) push(v int64) *viPair { p := &viPair{v, len(*h)}; heap.Push(h, p); return p }

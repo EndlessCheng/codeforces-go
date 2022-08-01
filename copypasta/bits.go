@@ -27,6 +27,10 @@ https://atcoder.jp/contests/abc050/tasks/arc066_b
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
 相关题目 https://leetcode-cn.com/contest/weekly-contest-237/problems/find-xor-sum-of-all-pairs-bitwise-and/
 
+集合论公式的二进制等价形式：
+popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
+相关题目 https://leetcode.cn/problems/number-of-excellent-pairs/
+
 运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
     5         *  /  %  <<  >>  &  &^

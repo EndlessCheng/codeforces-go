@@ -27,6 +27,10 @@ import (
 // 删除一段的最长连续递增 CERC10D https://codeforces.com/gym/101487
 // 统计量是二元组的情形 https://codeforces.com/problemset/problem/301/D
 
+// 双变量+下取整：枚举分母，然后枚举分子的范围，使得在该范围内的分子/分母是一个定值
+// LC1862 https://leetcode.cn/problems/sum-of-floored-pairs/
+// https://codeforces.com/problemset/problem/1706/D2
+
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
 
@@ -60,6 +64,10 @@ https://codeforces.com/problemset/problem/763/B
 https://codeforces.com/problemset/problem/1270/E
 https://codeforces.com/problemset/problem/1332/E 配对法：将合法局面与非法局面配对
 LC932/周赛108D https://leetcode.cn/problems/beautiful-array/ 分治
+*/
+
+/* 相邻 传递性
+https://codeforces.com/problemset/problem/1582/E
 */
 
 /* 归纳：solve(n)->solve(n-1) 或者 solve(n-1)->solve(n)

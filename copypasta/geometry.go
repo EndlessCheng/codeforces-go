@@ -762,7 +762,7 @@ func _(min func(int64, int64) int64) {
 	// 返回最近点对距离的平方
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/ClosestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1429 https://codeforces.com/problemset/problem/429/D
-	// 有两种类型的点，只需要额外判断类型是否不同即可 https://www.acwing.com/problem/content/121/ http://poj.org/problem?id=3714
+	// bichromatic closest pair 有两种类型的点，只需要额外判断类型是否不同即可 https://www.acwing.com/problem/content/121/ http://poj.org/problem?id=3714
 	var closestPair func([]vec) int64
 	closestPair = func(ps []vec) int64 {
 		// 调用 closestPair 前需保证没有重复的点，并特判 n == 1 的情况

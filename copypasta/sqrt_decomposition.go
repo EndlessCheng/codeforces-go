@@ -42,6 +42,7 @@ https://oi-wiki.org/ds/block-array/
 【推荐】https://www.luogu.com.cn/blog/220037/Sqrt1
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
+【都是我对数据结构的爱啊】区间 rank 的 N 种解法，你都会了吗 https://www.luogu.com.cn/blog/Peterprpr/HunterNoHorse
 
 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 好题 https://codeforces.com/problemset/problem/91/E

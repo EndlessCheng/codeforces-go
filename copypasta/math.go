@@ -17,10 +17,10 @@ https://euler.stephan-brumme.com/toolbox/
 
 NOTE: a%-b == a%b
 NOTE: 对于整数来说有
-       ax≤by  =>  x≤⌊by/a⌋
-       ax<by  =>  x<⌈by/a⌉
-       ax≥by  =>  x≥⌈by/a⌉
-       ax>by  =>  x>⌊by/a⌋
+       ax≤b  =>  x≤⌊b/a⌋
+       ax<b  =>  x<⌈b/a⌉
+       ax≥b  =>  x≥⌈b/a⌉
+       ax>b  =>  x>⌊b/a⌋
 NOTE: ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
 NOTE: ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
@@ -1260,6 +1260,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 		// 求 x 的所有因子
 		// https://codeforces.com/problemset/problem/1614/D2
+		// 简单的质因子分解 https://codeforces.com/problemset/problem/762/A
+		//     在因子个数比较多时，效率比试除法高
 		_ds := [1024]int{1} // 复用，避免反复扩容和 GC
 		divisors := func(x int) []int {
 			ds := _ds[:1]

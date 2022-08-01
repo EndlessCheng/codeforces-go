@@ -26,10 +26,11 @@ LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
 LC2281 https://leetcode.com/problems/sum-of-total-strength-of-wizards/
 
 与 DP 结合
+https://codeforces.com/problemset/problem/5/E
 https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
-单调队列优化 LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
+LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
 
 其他
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
@@ -50,36 +51,30 @@ func monotoneStack(a []int) ([]int, []int) {
 
 	// 求左侧严格小于 a[i] 的最近位置 left[i]，这样 a[i] 就是区间 [left[i]+1,i] 内最小的元素（之一）
 	// 如果改成小于等于，那么 a[i] 就是区间 [left[i]+1,i] 内独一无二的最小元素
+	// 不存在时 left[i] = -1
 	n := len(a)
 	left := make([]int, n)
-	const border int = -2e9 // 求两侧大的话用 2e9
-	type pair struct{ v, i int }
-	stack := []pair{{border, -1}}
+	st := []int{-1} // 栈底哨兵
 	for i, v := range a {
-		for {
-			if top := stack[len(stack)-1]; top.v < v { //
-				left[i] = top.i
-				break
-			}
-			stack = stack[:len(stack)-1]
+		for len(st) > 1 && a[st[len(st)-1]] >= v { // 不断弹出 >= v 的，循环结束后栈顶就是 < v 的
+			st = st[:len(st)-1]
 		}
-		stack = append(stack, pair{v, i})
+		left[i] = st[len(st)-1]
+		st = append(st, i)
 	}
 
 	// 求右侧严格小于 a[i] 的最近位置 right[i]，这样 a[i] 就是区间 [i,right[i]-1] 内最小的元素（之一）
 	// 如果改成小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
+	// 不存在时 right[i] = n
 	right := make([]int, n)
-	stack = []pair{{border, n}}
+	st = []int{n}
 	for i := n - 1; i >= 0; i-- {
 		v := a[i]
-		for {
-			if top := stack[len(stack)-1]; top.v < v { //
-				right[i] = top.i
-				break
-			}
-			stack = stack[:len(stack)-1]
+		for len(st) > 1 && a[st[len(st)-1]] >= v {
+			st = st[:len(st)-1]
 		}
-		stack = append(stack, pair{v, i})
+		right[i] = st[len(st)-1]
+		st = append(st, i)
 	}
 
 	sum := make([]int, n+1) // int64
@@ -104,17 +99,13 @@ func monotoneStack(a []int) ([]int, []int) {
 		for i := range right {
 			right[i] = n
 		}
-		st := []int{}
+		st := []int{-1}
 		for i, v := range a {
-			for len(st) > 0 && a[st[len(st)-1]] >= v { // 这里是右侧小于等于
+			for len(st) > 1 && a[st[len(st)-1]] >= v { // 这里是 right 小于等于
 				right[st[len(st)-1]] = i
 				st = st[:len(st)-1]
 			}
-			if len(st) > 0 {
-				left[i] = st[len(st)-1]
-			} else {
-				left[i] = -1
-			}
+			left[i] = st[len(st)-1]
 			st = append(st, i)
 		}
 	}
