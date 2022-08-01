@@ -1,8 +1,8 @@
 # Codeforces EDU
 
-## ITMO Academy: pilot course
-
 Note that some lessons were already published but not translated into English. See [this](https://codeforces.com/edu/course/2?locale=ru) for more detail.
+
+## [ITMO Academy: pilot course](https://codeforces.com/edu/course/2)
 
 |Lesson|Final Publish Time (UTC+8)|
 |---|---|
@@ -14,3 +14,9 @@ Note that some lessons were already published but not translated into English. S
 |[Disjoint Sets Union](https://codeforces.com/blog/entry/82413)|2020-09-08 06:36|
 |[Introduction to Graph Theory](https://codeforces.com/edu/course/2/lesson/8/1/practice)||
 |[Two Pointers Method](https://codeforces.com/blog/entry/87248)|2021-01-28 00:32|
+
+## [Community Course](https://codeforces.com/edu/course/3)
+
+|Lesson|Final Publish Time (UTC+8)|
+|---|---|
+|[Prefix Sums and Difference Arrays](https://codeforces.com/edu/course/3/lesson/10/1/practice)||
