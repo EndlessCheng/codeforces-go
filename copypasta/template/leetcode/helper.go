@@ -120,6 +120,7 @@ func init() {
 		"index2", "id2",
 		"dist", "dis",
 		"timestamp", "ts",
+		"diff", "d",
 	}
 	for i := range oldNew {
 		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
