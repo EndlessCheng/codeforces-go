@@ -7,46 +7,31 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol467C(reader io.Reader, writer io.Writer) {
+func CF467C(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	max := func(a, b int64) int64 {
-		if a > b {
-			return a
+		if b > a {
+			return b
 		}
-		return b
-	}
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
-	var n, sz, k int
-	Fscan(in, &n, &sz, &k)
-	p := make([]int64, n)
-	for i := range p {
-		Fscan(in, &p[i])
+		return a
 	}
 
-	sum := make([]int64, n-sz+1)
-	for _, v := range p[:sz] {
-		sum[0] += v
+	var n, m, k int
+	Fscan(in, &n, &m, &k)
+	s := make([]int64, n+1)
+	for i := 1; i <= n; i++ {
+		Fscan(in, &s[i])
+		s[i] += s[i-1]
 	}
-	for i, v := range p[sz:] {
-		sum[i+1] = sum[i] + v - p[i]
-	}
-
-	dp := make([]int64, n+1)
-	for i := 1; i <= k; i++ {
-		for end := n; end >= sz; end-- {
-			dp[end] = max(dp[end], dp[end-sz]+sum[end-sz])
+	pre := make([]int64, n+1)
+	f := make([]int64, n+1)
+	for ; k > 0; k-- {
+		for j := m; j <= n; j++ {
+			f[j] = max(f[j-1], pre[j-m]+s[j]-s[j-m])
 		}
-		maxVal := int64(0)
-		for i, dpi := range dp {
-			maxVal = max(maxVal, dpi)
-			dp[i] = maxVal
-		}
+		pre, f = f, pre
 	}
-	Fprint(out, dp[n])
+	Fprint(out, pre[n])
 }
 
-//func main() {
-//	Sol467C(os.Stdin, os.Stdout)
-//}
+//func main() { CF467C(os.Stdin, os.Stdout) }
