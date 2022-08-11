@@ -430,22 +430,20 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 
 				// 去掉前两个字和冒号
 				data = strings.TrimSpace(data)
-				data = data[6:]
-				if strings.HasPrefix(data, ":") {
-					data = data[1:]
-				} else if strings.HasPrefix(data, "：") {
-					data = data[3:]
+				if i := strings.IndexRune(data, ':'); i >= 0 {
+					data = data[i+1:]
+				} else if i := strings.IndexRune(data, '：'); i >= 0 {
+					data = data[i+3:]
 				}
 
 				i := strings.Index(data, "输") // 输出
 				p.sampleIns = append(p.sampleIns, p.parseSampleText(data[:i], true))
 
 				// 去掉前两个字和冒号
-				data = data[i+6:]
-				if strings.HasPrefix(data, ":") {
-					data = data[1:]
-				} else if strings.HasPrefix(data, "：") {
-					data = data[3:]
+				if i := strings.IndexRune(data, ':'); i >= 0 {
+					data = data[i+1:]
+				} else if i := strings.IndexRune(data, '：'); i >= 0 {
+					data = data[i+3:]
 				}
 				p.sampleOuts = append(p.sampleOuts, p.parseSampleText(data, true))
 				return
