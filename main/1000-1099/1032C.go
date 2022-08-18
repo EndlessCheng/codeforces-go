@@ -14,40 +14,45 @@ func CF1032C(_r io.Reader, _w io.Writer) {
 
 	var n int
 	Fscan(in, &n)
-	if n == 1 {
-		Fprint(out, 1)
-		return
-	}
-	a := make([]int, n)
+	a := make([]int, n, n+1)
 	for i := range a {
 		Fscan(in, &a[i])
 	}
+	a = append(a, a[n-1]) // 末尾加个哨兵，方便处理只有一个元素 or 最后两个元素相等的情况
 	b := make([]int, n)
-	if a[0] < a[1] {
-		b[0] = 1
-	} else {
-		b[0] = 5
-	}
-	for i := 1; i < n; i++ {
-		if a[i] > a[i-1] {
-			if i > 1 && a[i-1] <= a[i-2] {
-				b[i-1] = 1
-				if b[i-2] == 1 {
-					b[i-1] = 2
+	for i := 0; i < n; {
+		if a[i] == a[i+1] {
+			if b[i] == 0 {
+				b[i] = 2
+				if i > 0 && b[i-1] == 2 {
+					b[i] = 3
 				}
 			}
-			b[i] = b[i-1] + 1
-		} else if a[i] < a[i-1] {
-			if i > 1 && a[i-1] >= a[i-2] {
-				b[i-1] = 5
-				if b[i-2] == 5 {
-					b[i-1] = 4
-				}
-			}
-			b[i] = b[i-1] - 1
-		} else {
-			b[i] = (b[i-1]-1)%3 + 2
+			i++
+			continue
 		}
+		st := i
+		// 处理连续下降段或连续上升段
+		for i += 2; i < n && a[i] != a[i-1] && a[i] < a[i-1] == (a[i-1] < a[i-2]); i++ {
+		}
+		if a[st] > a[st+1] {
+			b[st] = 5
+			if st > 0 && b[st-1] == 5 {
+				b[st] = 4
+			}
+			for st++; st < i; st++ {
+				b[st] = b[st-1] - 1
+			}
+		} else {
+			b[st] = 1
+			if st > 0 && b[st-1] == 1 {
+				b[st] = 2
+			}
+			for st++; st < i; st++ {
+				b[st] = b[st-1] + 1
+			}
+		}
+		i--
 		if b[i] < 1 || b[i] > 5 {
 			Fprint(out, -1)
 			return

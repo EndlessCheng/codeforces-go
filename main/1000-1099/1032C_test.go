@@ -32,6 +32,11 @@ inputCopy
 9
 1 2 3 4 5 5 4 3 2
 outputCopy
-1 2 3 4 5 4 3 2 1`
+1 2 3 4 5 4 3 2 1
+inputCopy
+6
+5 5 4 3 2 1
+outputCopy
+1 5 4 3 2 1`
 	testutil.AssertEqualCase(t, rawText, 0, CF1032C)
 }
