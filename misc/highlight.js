@@ -55,7 +55,7 @@
 
         // 求解
         "choose",
-        "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest",
+        "minimize", "maximize", "minimum", "maximum", "minimal", "maximal", "smallest", "largest", "shortest", "longest", "cheapest", "fastest",
         // " small", " big", " large", " few",
         "At least", "at least", "At most", "at most",
 
