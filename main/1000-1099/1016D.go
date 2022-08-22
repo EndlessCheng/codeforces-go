@@ -13,34 +13,32 @@ func CF1016D(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, m, s, s0 int
+	var n, m, xorA, xorB int
 	Fscan(in, &n, &m)
 	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
-		s ^= a[i]
-		if i > 0 {
-			s0 ^= a[i]
-		}
+		xorA ^= a[i]
 	}
 	b := make([]int, m)
 	for i := range b {
 		Fscan(in, &b[i])
-		s ^= b[i]
+		xorB ^= b[i]
 	}
 
-	if s > 0 {
+	if xorA != xorB {
 		Fprint(out, "NO")
 		return
 	}
 	Fprintln(out, "YES")
-	Fprint(out, s0^b[0])
-	for j := 1; j < m; j++ {
-		Fprint(out, " ", b[j])
+	Fprint(out, xorA^a[0]^b[0]) // 左上角
+	for _, x := range b[1:] {
+		Fprint(out, " ", x)
 	}
 	Fprintln(out)
-	for i := 1; i < n; i++ {
-		Fprintln(out, a[i], strings.Repeat("0 ", m-1))
+	zeros := strings.Repeat("0 ", m-1)
+	for _, x := range a[1:] {
+		Fprintln(out, x, zeros)
 	}
 }
 
