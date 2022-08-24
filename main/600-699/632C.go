@@ -8,7 +8,7 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol623C(reader io.Reader, writer io.Writer) {
+func Sol632C(reader io.Reader, writer io.Writer) {
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
 	defer out.Flush()
@@ -25,6 +25,4 @@ func Sol623C(reader io.Reader, writer io.Writer) {
 	}
 }
 
-//func main() {
-//	Sol623C(os.Stdin, os.Stdout)
-//}
+//func main() { Sol632C(os.Stdin, os.Stdout) }

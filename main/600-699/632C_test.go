@@ -67,5 +67,5 @@ cb
 cba
 outputCopy
 cbacbc`
-	testutil.AssertEqualCase(t, rawText, 0, Sol623C)
+	testutil.AssertEqualCase(t, rawText, 0, Sol632C)
 }
