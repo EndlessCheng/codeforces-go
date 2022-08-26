@@ -22,7 +22,7 @@ func CF1611F(_r io.Reader, _w io.Writer) {
 			a[i] += a[i-1]
 		}
 		ll, rr := -1, -1
-		for l, r := 0, 0; l < n; l++ {
+		for l, r := 0, 0; r < n; l++ {
 			for r < n && a[r+1]-a[l] >= -s {
 				r++
 			}
