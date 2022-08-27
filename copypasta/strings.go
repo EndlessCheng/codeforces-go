@@ -392,7 +392,7 @@ func _(min, max func(int, int) int) {
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 见 https://github.com/EndlessCheng/cp-pdf）
 	单个字符串
-		模板题 https://www.luogu.com.cn/problem/P3809
+		模板题 https://www.luogu.com.cn/problem/P3809 https://loj.ac/p/111
 		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
 		不可重叠最长重复子串 http://poj.org/problem?id=1743
@@ -462,6 +462,15 @@ func _(min, max func(int, int) int) {
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
 		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").UnsafeAddr()))
 		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+
+		{
+			// 别的求法
+			type _tp struct {
+				_  []byte
+				sa []int32
+			}
+			sa = (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa
+		}
 
 		// 后缀名次数组 rank
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
