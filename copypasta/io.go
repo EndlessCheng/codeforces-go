@@ -14,8 +14,8 @@ import (
 // 对比：
 // 405ms https://codeforces.com/contest/1603/submission/135520593
 // 187ms https://codeforces.com/contest/1603/submission/134450945
-// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 154ms https://codeforces.com/contest/4/submission/142795220
-// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 312ms https://codeforces.com/contest/4/submission/142795673
+// NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 77ms https://codeforces.com/contest/1603/submission/169796327
+// NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 155ms https://codeforces.com/contest/1603/submission/169796385
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
 // 相比 fmt.Scan，每读入 1e6 个 int 可以加速约 13000ms（Codeforces/AtCoder）
@@ -230,7 +230,38 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		return
 	}
 
-	_ = []interface{}{r, r1, rs, rsn, readStringUntilEOF}
+	// 手写输出，适用于有大量（~1e6）输出的场景
+	outS := []byte{}   // 如果知道输出量，可以 make with cap
+	tmpS := [20]byte{} // 可根据单次输出上限调整
+
+	// 输出一个非负整数
+	wInt := func(x int) {
+		p := len(tmpS)
+		for ; x > 0; x /= 10 {
+			p--
+			tmpS[p] = '0' + byte(x%10)
+		}
+		outS = append(outS, tmpS[p:]...)
+	}
+
+	// 输出一个整数
+	wInt = func(x int) {
+		if x < 0 {
+			x = -x
+			outS = append(outS, '-')
+		}
+		p := len(tmpS)
+		for ; x > 0; x /= 10 {
+			p--
+			tmpS[p] = '0' + byte(x%10)
+		}
+		outS = append(outS, tmpS[p:]...)
+	}
+
+	// 最后，直接调用 Printf 即可
+	Printf("%s", outS)
+
+	_ = []interface{}{r, r1, rs, rsn, readStringUntilEOF, wInt}
 }
 
 // 如果输入按照行来读入更方便的话……
