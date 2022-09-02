@@ -8,34 +8,27 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol1168A(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+func CF1168A(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	var n, m int
 	Fscan(in, &n, &m)
-	arr := make([]int, n)
-	for i := range arr {
-		Fscan(in, &arr[i])
+	a := make([]int, n)
+	for i := range a {
+		Fscan(in, &a[i])
 	}
-	ans := sort.Search(m, func(op int) bool {
-		min := 0
-		for _, a := range arr {
-			if a+op < m+min {
-				if a+op < min {
+	Fprint(out, sort.Search(m, func(lim int) bool {
+		pre := 0
+		for _, v := range a {
+			// (pre-v+m)%m 表示把 v 改成 pre，需要的操作次数
+			if (pre-v+m)%m > lim { // 无法修改成 pre
+				if v < pre { // 无法保证单调非降
 					return false
 				}
-				if a > min {
-					min = a
-				}
+				pre = v // 只能 v 不变了
 			}
 		}
 		return true
-	})
-	Fprintln(out, ans)
+	}))
 }
 
-//func main() {
-//	Sol1168A(os.Stdin, os.Stdout)
-//}
+//func main() { CF1168A(os.Stdin, os.Stdout) }
