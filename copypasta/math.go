@@ -10,6 +10,8 @@ import (
 
 /* 数论 组合数学
 
+アルゴリズムと数学 演習問題集 https://atcoder.jp/contests/math-and-algorithm
+
 一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
 
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
@@ -167,12 +169,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
 	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
 
-	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
-
+	GCD 套路：枚举倍数（调和级数复杂度）
 	GCD(x,x+y) = GCD(x,y) https://codeforces.com/problemset/problem/1110/C
 	GCD 与质因子 https://codeforces.com/problemset/problem/264/B
 	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 	分拆与 LCM  https://ac.nowcoder.com/acm/contest/5961/D https://ac.nowcoder.com/discuss/439005
+	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
@@ -1679,6 +1681,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	http://oeis.org/A090938 Least multiple of n == 1 (mod prime(n))
 	http://oeis.org/A090939 Least multiple of n == -1 (mod prime(n))
 	http://oeis.org/A091185 a(n) = A090938(n)/n      n^-1 mod prime(n)
+
+	涉及到 0 与逆元的题目
+	https://codeforces.com/problemset/problem/543/D
+	https://ac.nowcoder.com/acm/contest/39759/D
 	*/
 
 	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
@@ -2784,7 +2790,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 }
 
-/* 组合数学
+/* 组合数学（概率与期望见 dp.go 中的概率 DP）
 https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
