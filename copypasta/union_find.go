@@ -29,6 +29,7 @@ import (
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632/周赛212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
 // 分组排序套路 LC1998/周赛257D https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
+// [1700] 转换 https://codeforces.com/problemset/problem/1253/D
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
@@ -49,14 +50,15 @@ func (u UnionFind) Find(x int) int {
 	return u.Fa[x]
 }
 
-func (u *UnionFind) Merge(from, to int) (isNewMerge bool) {
+// newRoot = -1 表示未发生合并
+func (u *UnionFind) Merge(from, to int) (newRoot int) {
 	x, y := u.Find(from), u.Find(to)
 	if x == y {
-		return false
+		return -1
 	}
 	u.Fa[x] = y
 	u.Groups--
-	return true
+	return y
 }
 
 func (u UnionFind) Same(x, y int) bool {
@@ -200,19 +202,20 @@ func _(n int) {
 		}
 		return fa[x]
 	}
-	merge := func(from, to int) bool {
+	// newRoot = -1 表示未发生合并
+	merge := func(from, to int) (newRoot int) {
 		from, to = find(from), find(to)
-		if from != to {
-			fa[from] = to
-			sz[to] += sz[from]
-			//sz[from] = 0 // 有些题目需要保证总 sz 和不变（如 CF1609D）
-			if sz[to] > maxSize {
-				maxSize = sz[to]
-			}
-			groups--
-			return true
+		if from == to {
+			return -1
 		}
-		return false
+		fa[from] = to
+		sz[to] += sz[from]
+		//sz[from] = 0 // 有些题目需要保证总 sz 和不变（如 CF1609D）
+		if sz[to] > maxSize {
+			maxSize = sz[to]
+		}
+		groups--
+		return to
 	}
 	same := func(x, y int) bool { return find(x) == find(y) }
 	size := func(x int) int { return sz[find(x)] }
