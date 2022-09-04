@@ -61,6 +61,7 @@ https://codeforces.com/problemset/problem/954/F
 部分子集
 排列（递归+跳过已经枚举的值）
 
+https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
 */
 func searchCollection() {
@@ -768,9 +769,8 @@ func _(min, max func(int, int) int) {
 	}
 
 	// Gosper's Hack：枚举大小为 n 的集合的大小为 k 的子集（按字典序）
+	// 我的视频讲解 https://www.bilibili.com/video/BV1na41137jv?t=15m43s
 	// https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
-	// 参考《挑战程序设计竞赛》p.156-158 的实现
-	// 把除法改成右移 bits.TrailingZeros 可以快好几倍
 	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
 	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
 	loopSubsetK := func(a []int, k int) {
@@ -779,8 +779,9 @@ func _(min, max func(int, int) int) {
 			// do(a, sub) ...
 			lb := sub & -sub
 			x := sub + lb
-			//sub = sub&^x/lb>>1 | x
-			sub = sub&^x>>bits.TrailingZeros(uint(lb))>>1 | x
+			// 下式等价于 sub = (sub^x)/lb>>2 | x
+			// 把除法改成右移 bits.TrailingZeros 可以快好几倍
+			sub = (sub^x)>>bits.TrailingZeros(uint(lb))>>2 | x
 		}
 	}
 
