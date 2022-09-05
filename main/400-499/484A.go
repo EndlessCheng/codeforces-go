@@ -6,43 +6,20 @@ import (
 	"io"
 )
 
-func pow484A(n int64) int64 {
-	msb := uint(0)
-	for n >>= 1; n != 0; n >>= 1 {
-		msb++
-	}
-	return int64(1) << msb
-}
-
-func f484A(l, r int64, i int) int64 {
-	if l == r || (r+1)&r == 0 {
-		return r
-	}
-	if common := l & r; common < r&^common {
-		return pow484A(r) - 1
-	}
-	for ; i >= 0; i-- {
-		pow2 := int64(1) << uint(i)
-		if l&pow2 > 0 && r&pow2 > 0 {
-			return pow2 | f484A(l-pow2, r-pow2, i-1)
-		}
-	}
-	panic("err")
-}
-
-func Sol484A(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
+// github.com/EndlessCheng/codeforces-go
+func CF484A(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n int
-	for Fscan(in, &n); n > 0; n-- {
-		var l, r int64
+	var T, l, r int64
+	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &l, &r)
-		Fprintln(out, f484A(l, r, 60))
+		for l|(l+1) <= r {
+			l |= l + 1 // 把最低的 0 改成 1
+		}
+		Fprintln(out, l)
 	}
 }
 
-//func main() {
-//	Sol484A(os.Stdin, os.Stdout)
-//}
+//func main() { CF484A(os.Stdin, os.Stdout) }
