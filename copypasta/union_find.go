@@ -30,6 +30,7 @@ import (
 // 分组排序套路 LC1998/周赛257D https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 // [1700] 转换 https://codeforces.com/problemset/problem/1253/D
+// 离散 + 四方向 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
@@ -93,7 +94,6 @@ func _(n int) {
 	}
 
 	// 离散化版本
-	// 注意 merge 时需要保证双方都在 faMap 中
 	faMap := map[int]int{}
 	find = func(x int) int {
 		if fx, ok := faMap[x]; ok && fx != x {
@@ -103,14 +103,14 @@ func _(n int) {
 		return x
 	}
 
-	// merge，并返回是否有新的 merge
-	mergeNew := func(from, to int) bool {
+	// merge，并返回新的 root
+	mergeNew := func(from, to int) int {
 		x, y := find(from), find(to)
 		if x == y {
-			return false
+			return -2e9
 		}
 		fa[x] = y
-		return true
+		return y
 	}
 
 	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
@@ -178,6 +178,39 @@ func _(n int) {
 	}
 
 	_ = []interface{}{merge, same, mergeBig, mergeNew, mergeRangeTo, getRoots, countRoots, getComps}
+}
+
+// 二维并查集
+type ufPoint struct{ x, y int } // int32
+type uf2d map[ufPoint]ufPoint
+
+func (u uf2d) find(x ufPoint) ufPoint {
+	if f, ok := u[x]; ok && f != x {
+		u[x] = u.find(f)
+		return u[x]
+	}
+	return x
+}
+func (u uf2d) merge(from, to ufPoint) { u[u.find(from)] = u.find(to) }
+
+// Kick Start 2019C - Wiggle Walk https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac
+func moveRobot(start ufPoint, command string) ufPoint {
+	p := start
+	w, n, e, s := uf2d{}, uf2d{}, uf2d{}, uf2d{}
+	for _, c := range command {
+		// 注意这里是矩阵
+		w.merge(p, ufPoint{p.x, p.y - 1})
+		n.merge(p, ufPoint{p.x - 1, p.y})
+		e.merge(p, ufPoint{p.x, p.y + 1})
+		s.merge(p, ufPoint{p.x + 1, p.y})
+		switch c {
+		case 'W': p = w.find(p)
+		case 'N': p = n.find(p)
+		case 'E': p = e.find(p)
+		default:  p = s.find(p)
+		}
+	}
+	return p
 }
 
 // 并查集 - 维护点权
