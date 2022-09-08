@@ -97,7 +97,7 @@ import (
 	"os"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF%[1]s(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
