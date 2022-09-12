@@ -22,7 +22,7 @@ package copypasta
 // 开方 https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
 // 取模 https://codeforces.com/problemset/problem/438/D
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
-// 合并 https://codeforces.com/problemset/problem/380/C
+// 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C
 // k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G
 // 区间 mex https://www.luogu.com.cn/problem/P4137
 // - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
@@ -54,6 +54,63 @@ package copypasta
 // https://www.luogu.com.cn/blog/forever-captain/DS-optimize-graph
 // https://codeforces.com/problemset/problem/786/B
 // todo https://www.luogu.com.cn/problem/P6348
+
+/* 一些细节
+了解下列内容将有助于 Hack 代码
+
+区间 [1,1] 对应的节点编号为 1<<bits.Len(uint(n-1))   1e5 => 2^17       这也说明 [1,1] 对应节点编号x2 的节点是不会下标越界的
+区间 [n,n] 对应的节点编号为 1<<bits.Len(uint(n))-1   1e5 => 2^17-1
+当 n≠2^k 时，在内存中区间 [n,n] 的下一个就是区间 [1,1]
+
+什么时候空间最浪费？（指一般线段树的实现方式）
+当 n=2^k-1 时，此时只需要 2n 的空间
+
+什么时候空间最不浪费？（指一般线段树的实现方式）
+当 n=2^k+d (d<<2^k) 时
+record table
+i/n n i range
+1.0000 1 1 [1,1]
+1.5000 2 3 [2,2]
+1.6667 3 5 [2,2]
+1.7500 4 7 [4,4]
+1.8000 5 9 [2,2]
+2.1667 6 13 [5,5]
+2.5000 10 25 [7,7] **《算法竞赛进阶指南》用的例子
+2.7222 18 49 [11,11]
+2.8500 20 57 [17,17]
+2.8529 34 97 [19,19]
+3.1389 36 113 [29,29] ** 首个超过 3n 的例子
+3.3088 68 225 [53,53]
+3.3472 72 241 [65,65]
+3.4015 132 449 [101,101]
+3.5368 136 481 [121,121]
+3.6402 264 961 [233,233]
+3.6507 272 993 [257,257]
+3.6942 520 1921 [457,457]
+3.7595 528 1985 [497,497]
+3.8163 1040 3969 [977,977]
+3.8191 1056 4033 [1025,1025]
+3.8454 2064 7937 [1937,1937]
+3.8774 2080 8065 [2017,2017]
+3.9072 4128 16129 [4001,4001]
+3.9079 4160 16257 [4097,4097]
+3.9223 8224 32257 [7969,7969]
+3.9381 8256 32513 [8129,8129]
+3.9534 16448 65025 [16193,16193]
+3.9535 16512 65281 [16385,16385]
+3.9610 32832 130049 [32321,32321]
+3.9689 32896 130561 [32641,32641]
+3.9766 65664 261121 [65153,65153]
+3.9767 65792 261633 [65537,65537] ** 1e5 以内的最大值
+3.9805 131200 522241 [130177,130177]
+3.9844 131328 523265 [130817,130817]
+3.9883 262400 1046529 [261377,261377]
+3.9883 262656 1047553 [262145,262145]
+3.9902 524544 2093057 [522497,522497]
+3.9922 524800 2095105 [523777,523777]
+3.9941 1049088 4190209 [1047041,1047041]
+3.9941 1049600 4192257 [1048577,1048577]
+*/
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
@@ -127,6 +184,7 @@ func (t seg) query(o, l, r int) int {
 
 func (t seg) queryAll() int { return t[1].val }
 
+// a 不能为空
 func newSegmentTree(a []int) seg {
 	t := make(seg, 4*len(a))
 	t.build(a, 1, 1, len(a))
@@ -179,6 +237,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //           https://codeforces.com/problemset/problem/1321/E
 //           https://codeforces.com/problemset/problem/52/C
 // + min/max 转换 https://codeforces.com/gym/294041/problem/E
+//           【推荐】https://codeforces.com/problemset/problem/1208/D
 // + max DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
