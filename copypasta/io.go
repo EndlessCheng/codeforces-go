@@ -239,7 +239,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		p := len(tmpS)
 		for ; x > 0; x /= 10 {
 			p--
-			tmpS[p] = '0' + byte(x%10)
+			tmpS[p] = '0' | byte(x%10)
 		}
 		outS = append(outS, tmpS[p:]...)
 	}
@@ -253,7 +253,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		p := len(tmpS)
 		for ; x > 0; x /= 10 {
 			p--
-			tmpS[p] = '0' + byte(x%10)
+			tmpS[p] = '0' | byte(x%10)
 		}
 		outS = append(outS, tmpS[p:]...)
 	}
