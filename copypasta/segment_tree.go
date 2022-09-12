@@ -68,7 +68,7 @@ package copypasta
 什么时候空间最不浪费？（指一般线段树的实现方式）
 当 n=2^k+d (d<<2^k) 时
 record table
-i/n n i range
+i/n    n i range
 1.0000 1 1 [1,1]
 1.5000 2 3 [2,2]
 1.6667 3 5 [2,2]
