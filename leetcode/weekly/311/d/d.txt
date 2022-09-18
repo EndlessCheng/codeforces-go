@@ -1,0 +1,8 @@
+["abc","ab","bc","b"]
+[5,4,3,2]
+
+["abcd"]
+[4]
+
+["qtcqcmwcin","vkjotbrbzn","eoorlyfche","eoorlyhn","eoorlyfcxk","qfnmjilcom","eoorlyfche","qtcqcmwcnl","qtcqcrpjr"]
+[24,10,34,26,32,13,34,24,20]
