@@ -20,8 +20,8 @@ todo https://codeforces.com/contest/455/problem/B
 */
 type trieNode struct {
 	son [26]*trieNode
-	val int // 可以是个 []int，此时 cnt == len(val)
-	cnt int
+	cnt int //（子树中）完整字符串的个数
+	val int // []int
 
 	// AC 自动机：当 o.son[i] 不能匹配文本串 text 中的某个字符时，o.fail 即为下一个应该查找的结点
 	fail *trieNode
@@ -55,12 +55,29 @@ func (t *trie) put(s []byte, val int) *trieNode {
 			o.son[b] = &trieNode{}
 		}
 		o = o.son[b]
-		//o.cnt++ // 统计子树字符串（前缀）个数的写法
-		//o.val = val // 更新 s 的所有前缀的值
+		//o.cnt++ // 写法一：统计 o 对应的字符串是多少个完整字符串的前缀
 	}
-	o.cnt++
+	o.cnt++ // 写法二：统计 o 上有多少个完整字符串
 	o.val = val
 	return o
+}
+
+// 字典树 DFS（模板）
+// https://leetcode.cn/problems/sum-of-prefix-scores-of-strings/
+func (t *trie) dfs() {
+	var f func(*trieNode, int)
+	f = func(o *trieNode, sum int) {
+		if o == nil {
+			return
+		}
+		// 统计从根到 o 的路径
+		sum += o.cnt //
+
+		for _, child := range o.son {
+			f(child, sum)
+		}
+	}
+	f(t.root, 0)
 }
 
 // 查找字符串 s
@@ -74,7 +91,7 @@ func (t *trie) find(s []byte) *trieNode {
 		}
 	}
 	// 未找到 s，但是 s 是某个字符串的前缀
-	if o.cnt == 0 {
+	if o.cnt == 0 { // 已删除
 		return nil
 	}
 	return o
@@ -107,7 +124,7 @@ func (t *trie) delete(s []byte) *trieNode {
 }
 
 // 求小于 s 的字符串个数
-// 此时 o.cnt 保存子树字符串个数
+// 此时 o.cnt 保存子树完整字符串个数
 func (t *trie) rank(s []byte) (k int) {
 	o := t.root
 	for _, b := range s {
@@ -127,7 +144,7 @@ func (t *trie) rank(s []byte) (k int) {
 }
 
 // 求第 k 小（k 从 0 开始，相当于有 k 个字符串小于返回的字符串 s）
-// 此时 o.cnt 保存子树字符串个数
+// 此时 o.cnt 保存子树完整字符串个数
 func (t *trie) kth(k int) (s []byte) {
 	o := t.root
 outer:
