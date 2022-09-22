@@ -33,6 +33,9 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 转换的好题 https://codeforces.com/problemset/problem/1181/D
+
+第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
+- 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 */
 
 // 记录排序过程中交换元素的下标

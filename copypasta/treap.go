@@ -38,15 +38,15 @@ type tpNode struct {
 }
 
 // 设置如下返回值是为了方便使用 tpNode 中的 lr 数组
-func (o *tpNode) cmp(b tpKeyType) int {
-	switch {
-	case b < o.key:
-		return 0 // 左儿子
-	case b > o.key:
-		return 1 // 右儿子
-	default:
+func (o *tpNode) cmp(a tpKeyType) int {
+	b := o.key
+	if a == b {
 		return -1
 	}
+	if a < b {
+		return 0 // 左儿子
+	}
+	return 1 // 右儿子
 }
 
 func (o *tpNode) size() int {

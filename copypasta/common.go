@@ -15,6 +15,11 @@ import (
 // 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
+/* 贪心
+邻项交换
+LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
+*/
+
 // 异类双变量：固定某变量统计另一变量的 [0,n)
 //     EXTRA: 值域上的双变量，见 https://codeforces.com/contest/486/problem/D
 // 同类双变量①：固定 i 统计 [0,n)
@@ -33,6 +38,8 @@ import (
 
 // 利用前缀和实现巧妙的构造 https://www.luogu.com.cn/blog/duyi/qian-zhui-he
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
+
+// 双指针：如果 left == right 时 while 一定为 false，则可以省略 while 中 left < right 的判断
 
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C

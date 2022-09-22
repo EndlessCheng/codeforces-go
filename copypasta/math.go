@@ -115,6 +115,10 @@ https://oeis.org/A216485 222...2
 	a(n) is the smallest positive number such that the decimal digits of n*a(n) are all 0, 1 or 2
 	https://oeis.org/A181061
 
+Berlekamp–Massey algorithm
+https://en.wikipedia.org/wiki/Berlekamp%E2%80%93Massey_algorithm
+https://oi-wiki.org/math/berlekamp-massey/
+
 椭圆曲线加密算法 https://ac.nowcoder.com/acm/contest/6916/C
 
 Gaussian integer https://en.wikipedia.org/wiki/Gaussian_integer
@@ -122,6 +126,9 @@ Eisenstein integer https://en.wikipedia.org/wiki/Eisenstein_integer
 Eisenstein prime https://en.wikipedia.org/wiki/Eisenstein_prime
 
 https://oeis.org/A054710 Number of powers of 10 mod n https://codeforces.com/problemset/problem/1070/A
+
+https://oeis.org/A050295 Number of strongly triple-free subsets of {1, 2, ..., n}
+    https://leetcode.cn/circle/discuss/QH0XWr/
 
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小

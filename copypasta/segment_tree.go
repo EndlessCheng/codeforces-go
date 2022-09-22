@@ -2,6 +2,8 @@ package copypasta
 
 // 重新发明线段树 by 灵茶山艾府（8:36 开始）https://www.bilibili.com/video/BV18t4y1p736
 
+// 可视化 https://visualgo.net/zh/segmenttree
+
 // 推荐阅读《算法竞赛进阶指南》0x43 和 0x48 节
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html

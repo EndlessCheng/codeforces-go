@@ -6,6 +6,8 @@ import (
 )
 
 /*
+可视化 https://visualgo.net/zh/heap
+
 思维·转换
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数
@@ -20,6 +22,9 @@ https://codeforces.com/problemset/problem/1251/E2
 
 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
 滑动窗口中位数 LC480 https://leetcode-cn.com/problems/sliding-window-median/
+
+第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
+- 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 
 基于堆的反悔贪心（反悔堆）
 https://www.cnblogs.com/nth-element/p/11768155.html

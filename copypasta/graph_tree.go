@@ -109,7 +109,8 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	}
 	build(root, -1)
 
-	isFa := func(fa, v int) bool { return nodes[fa].dfn < nodes[v].dfn && nodes[v].dfn < nodes[fa].dfn+nodes[fa].size }
+	// f == v 的情况请单独处理
+	isAncestor := func(f, v int) bool { return nodes[f].dfn < nodes[v].dfn && nodes[v].dfn < nodes[f].dfn+nodes[f].size }
 
 	{
 		dfnToNodeID := make([]int, n+1)
@@ -130,12 +131,13 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 		queryOne(nodes[v].dfn)        // 查询单个节点
 	}
 
-	_ = isFa
+	_ = isAncestor
 }
 
 // 每个节点的入出时间戳
 // 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 例题 https://codeforces.com/problemset/problem/1328/E
+// https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
 // 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
 // 给定一颗 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
@@ -163,8 +165,10 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 		timeOut[v] = clock
 	}
 	f(root, -1)
-	isPa := func(pa, v int) bool { return timeIn[pa] < timeIn[v] && timeIn[v] <= timeOut[pa] }
-	sameSubtree := func(v, w int) bool { return isPa(v, w) || isPa(w, v) }
+
+	// f == v 的情况请单独处理
+	isAncestor := func(f, v int) bool { return timeIn[f] < timeIn[v] && timeIn[v] <= timeOut[f] }
+	sameSubtree := func(v, w int) bool { return isAncestor(v, w) || isAncestor(w, v) }
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
@@ -202,7 +206,7 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 		_ = query
 	}
 
-	_, _ = isPa, sameSubtree
+	_, _ = isAncestor, sameSubtree
 }
 
 // 树上最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）

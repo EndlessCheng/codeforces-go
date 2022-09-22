@@ -15,9 +15,10 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 模板题
 https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
-https://leetcode-cn.com/problems/next-greater-element-i/ LC496/周赛18BA
-https://leetcode-cn.com/problems/next-greater-element-ii/ LC503/周赛18BB
+LC496/周赛18BA https://leetcode-cn.com/problems/next-greater-element-i/
+LC503/周赛18BB https://leetcode-cn.com/problems/next-greater-element-ii/
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
+转换 https://codeforces.com/problemset/problem/280/B
 
 计算贡献
 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/

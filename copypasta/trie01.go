@@ -14,7 +14,8 @@ import (
 // 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
 // https://codeforces.com/contest/1446/problem/C
 // todo https://codeforces.com/problemset/problem/1055/F
-// 区间异或和不小于 k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
+//  转换 https://codeforces.com/contest/1720/problem/D2
+//  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
@@ -129,6 +130,7 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
 // 如果在 limit 上而不是 limit+1 上讨论，就要处理当前异或为 1 的情况了，比较麻烦
 // LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
+// https://codeforces.com/problemset/problem/665/E
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
 	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
 	o := t.root

@@ -962,6 +962,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 适用于稀疏图 O(mlogm)
 // 根据《算法(第4版)》，这里实现的是 lazy 版本的 Dijkstra，复杂度为 O(mlogm)；若在插入堆时元素已在堆中，改成更新元素而不是插入元素可使复杂度降为 O(mlogn)
 // st 也可以是一个点集，这相当于同时对多个点跑最短路
+// 可视化 https://visualgo.net/zh/sssp
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 最短路问题笔记 https://www.luogu.com.cn/blog/SCN/zui-duan-lu-wen-ti-bi-ji
 //
@@ -1220,6 +1221,7 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 
 // 单源最短路 SPFA O(nm)   队列优化的 Bellman-Ford
 // 对于构建一个让 SPFA 跑到最坏情况的（网格）图，见 main/testutil/rand.go 中的 GraphHackSPFA
+// 可视化 https://visualgo.net/zh/sssp
 // https://oi-wiki.org/graph/shortest-path/#bellman-ford
 // https://cp-algorithms.com/graph/bellman_ford.html
 // https://en.wikipedia.org/wiki/Bellman%E2%80%93Ford_algorithm
@@ -1300,7 +1302,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 // https://oi-wiki.org/graph/shortest-path/#floyd
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 // https://codeforces.com/problemset/problem/1204/C
-// 好题 https://codeforces.com/problemset/problem/295/B
+// 理解原理 https://codeforces.com/problemset/problem/295/B
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
@@ -1507,6 +1509,7 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 // 适用于稠密图 O(n^2)，传入邻接矩阵 dis
 // dis[v][w] == inf 表示没有 v-w 边
 // 有些题目需要在连通分量上求 MST，这时就需要用到 root
+// 可视化 https://visualgo.net/zh/mst
 // https://oi-wiki.org/graph/mst/#prim
 // 模板题 https://www.luogu.com.cn/problem/P1546
 // 建模+打印方案 https://codeforces.com/problemset/problem/1245/D
@@ -1904,7 +1907,7 @@ func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (m
 	uf := NewUnionFind(n)
 	left := n - 1
 	for _, e := range edges {
-		if uf.Merge(e.v, e.w) {
+		if uf.Merge(e.v, e.w) >= 0 {
 			mst += e.dis // int64
 			left--
 			if left == 0 {
@@ -2142,8 +2145,10 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // 模板题 https://codeforces.com/problemset/problem/1093/D
 // https://www.luogu.com.cn/problem/P6185
 // https://codeforces.com/problemset/problem/1537/F
+// 转换 https://codeforces.com/problemset/problem/85/E
 // 染色的技巧 https://codeforces.com/problemset/problem/553/C
 //          https://codeforces.com/problemset/problem/662/B
+// 树至多加多少条边仍然是二分图 https://codeforces.com/problemset/problem/862/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 // 与分组背包结合 https://codeforces.com/problemset/problem/1354/E
 func (*graph) isBipartite(g [][]int) bool {
@@ -2247,12 +2252,15 @@ DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰�
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
 // 注：使用 Dinic 可以达到 O(m√n) 的复杂度
+// 【推荐】可视化 https://visualgo.net/zh/matching
+//        选择「图示 - CP4 3.11a*」，然后选择「增广路 - 标准」
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://oi-wiki.org/topic/graph-matching/bigraph-match/
 // https://zhuanlan.zhihu.com/p/62981901
 // https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem
 // https://www.geeksforgeeks.org/maximum-bipartite-matching/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BipartiteMatching.java.html
+// 有关随机贪心(匹配)预处理的 hack https://bzoj.blog.uoj.ac/blog/2427
 //
 // 模板题 https://www.luogu.com.cn/problem/P3386
 // LCP04 https://leetcode-cn.com/problems/broken-board-dominoes/
@@ -2850,6 +2858,9 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 //
 // LC2127/周赛274D https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
+// 周赛304C 单源最短路 https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/
+// 周赛304D 最长环 https://leetcode.cn/problems/longest-cycle-in-a-graph/
+// 计数 https://codeforces.com/problemset/problem/711/D
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // 拆点 https://codeforces.com/problemset/problem/1200/F
@@ -3010,6 +3021,8 @@ CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 */
 
 /* 最大流·建模·转换 ################################################################################
+
+可视化 https://visualgo.net/zh/maxflow
 
 https://en.wikipedia.org/wiki/Maximum_flow
 

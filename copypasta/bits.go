@@ -22,7 +22,10 @@ a+b = (a|b) + (a&b)
 相关题目
 https://codeforces.com/problemset/problem/76/D
 https://codeforces.com/problemset/problem/1325/D
+https://codeforces.com/problemset/problem/1368/D
 https://atcoder.jp/contests/abc050/tasks/arc066_b
+
+max(a,b) = (a + b + abs(a-b)) / 2
 
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
 相关题目 https://leetcode-cn.com/contest/weekly-contest-237/problems/find-xor-sum-of-all-pairs-bitwise-and/
@@ -501,6 +504,7 @@ func _() {
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
+	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}

@@ -13,6 +13,8 @@ tree[i] = a[i-lowbit(i)+1] + ... + a[i]
 所以计算前缀是从大往小算
 这里从小往大和从大往小说的是 i 的变化
 
+可视化 https://visualgo.net/zh/fenwicktree
+
 推荐阅读《算法竞赛进阶指南》0x42 节
 https://oi-wiki.org/ds/bit/
 todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-shuo-zu-zong-ru-men-dao-ru-fen
@@ -32,6 +34,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
     https://codeforces.com/problemset/problem/1635/F
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
 多变量统计 https://codeforces.com/problemset/problem/1194/E
+         T4 https://www.nowcoder.com/discuss/1022136
 三元逆序对 https://codeforces.com/problemset/problem/61/E
 整除对统计 https://codeforces.com/problemset/problem/301/D
 区间统计技巧 https://codeforces.com/problemset/problem/369/E

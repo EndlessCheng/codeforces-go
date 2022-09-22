@@ -653,13 +653,14 @@ func searchCollection() {
 	// todo https://blog.csdn.net/weixin_43914593/article/details/104935011 算法竞赛专题解析（9）：搜索进阶(4)--A*搜索
 	//  https://www.redblobgames.com/pathfinding/a-star/introduction.html
 
-	// 舞蹈链 Dancing Links
+	// 舞蹈链 Dancing Links 精确覆盖问题
 	// https://en.wikipedia.org/wiki/Dancing_Links
 	// TODO: https://oi-wiki.org/search/dlx/
 	//       https://leverimmy.blog.luogu.org/dlx-xiang-xi-jiang-jie
 	//       https://www.luogu.com.cn/blog/Parabola/qian-tan-shen-xian-suan-fa-dlx
 	//       https://www.cnblogs.com/grenet/p/3145800.html
 	//       https://www.cnblogs.com/grenet/p/3163550.html
+	//   https://lsr2002.blog.luogu.org/wu-dao-lian
 	// 模板题+讲解
 	//       todo http://hihocoder.com/contest/hiho101/problem/1
 	//       http://hihocoder.com/contest/hiho102/problem/1

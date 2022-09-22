@@ -11,6 +11,7 @@ import (
 */
 
 // 普通并查集
+// 可视化 https://visualgo.net/zh/ufds
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/

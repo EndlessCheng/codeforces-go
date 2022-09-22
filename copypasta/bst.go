@@ -18,15 +18,15 @@ type bstNode struct {
 }
 
 // 设置如下返回值是为了方便使用 bstNode 中的 lr 数组
-func (o *bstNode) cmp(b int) int {
-	switch {
-	case b < o.key:
-		return 0
-	case b > o.key:
-		return 1
-	default:
+func (o *bstNode) cmp(a int) int {
+	b := o.key
+	if a == b {
 		return -1
 	}
+	if a < b {
+		return 0 // 左儿子
+	}
+	return 1 // 右儿子
 }
 
 func (o *bstNode) size() int {

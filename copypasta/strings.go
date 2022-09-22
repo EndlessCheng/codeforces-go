@@ -385,6 +385,8 @@ func _(min, max func(int, int) int) {
 	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	注：Go1.13 开始使用 SA-IS 算法
 
+	可视化 https://visualgo.net/zh/suffixarray
+
 	讲解+例题+套题 https://oi-wiki.org/string/sa/
 	todo 题目推荐 https://www.luogu.com.cn/blog/luckyblock/post-bi-ji-hou-zhui-shuo-zu
 	CF 上的课程 https://codeforces.com/edu/course/2
