@@ -13,6 +13,7 @@ func init() { debug.SetGCPercent(-1) }
 
 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 前缀和后缀搜索 周赛62D/LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+https://codeforces.com/contest/514/problem/C
 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
 与贪心堆结合 https://codeforces.com/problemset/problem/965/E
@@ -89,6 +90,7 @@ func (t *trie) find(s []byte) *trieNode {
 		if o == nil {
 			return nil
 		}
+		//sum += o.cnt
 	}
 	// 未找到 s，但是 s 是某个字符串的前缀
 	if o.cnt == 0 { // 已删除

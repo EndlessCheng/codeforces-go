@@ -528,6 +528,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		Values of records https://oeis.org/A005250
 		Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
 		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
+		https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435a5b/000000000077a8e6
 		Numbers whose distance to the closest prime number is a prime number http://oeis.org/A160666
 
 	https://oeis.org/A007918 Least prime >= n (version 1 of the "next prime" function)
@@ -1610,6 +1611,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oi-wiki.org/math/primitive-root/
 	// https://cp-algorithms.com/algebra/primitive-root.html
 	// todo 原根&离散对数相关 https://www.luogu.com.cn/blog/command-block/yuan-gen-li-san-dui-shuo-xiang-guan
+	//      浅谈离散对数问题 https://www.luogu.com.cn/blog/328405/qian-tan-li-san-dui-shuo-wen-ti
 	// https://oeis.org/A033948 Numbers that have a primitive root (the multiplicative group modulo n is cyclic)
 	//     The sequence consists of 1, 2, 4 and numbers of the form p^i and 2p^i, where p is an odd prime and i > 0
 	// https://oeis.org/A046144 Number of primitive roots modulo n
