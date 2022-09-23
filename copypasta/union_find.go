@@ -94,24 +94,38 @@ func _(n int) {
 		return ft
 	}
 
-	// 离散化版本
-	faMap := map[int]int{}
-	find = func(x int) int {
-		if fx, ok := faMap[x]; ok && fx != x {
-			faMap[x] = find(fx)
-			return faMap[x]
+	{
+		// 离散化版本
+		// https://leetcode.cn/problems/most-stones-removed-with-same-row-or-column/
+		fa := map[int]int{}
+		groups := 0
+		var find func(int) int
+		find = func(x int) int {
+			fx, ok := fa[x]
+			if !ok {
+				fa[x] = x
+				fx = x
+				groups++
+			}
+			if fx != x {
+				fa[x] = find(fx)
+				return fa[x]
+			}
+			return x
 		}
-		return x
-	}
 
-	// merge，并返回新的 root
-	mergeNew := func(from, to int) int {
-		x, y := find(from), find(to)
-		if x == y {
-			return -2e9
+		// merge，并返回新的 root
+		merge := func(from, to int) int {
+			x, y := find(from), find(to)
+			if x == y {
+				return -2e9
+			}
+			fa[x] = y
+			groups--
+			return y
 		}
-		fa[x] = y
-		return y
+
+		_ = merge
 	}
 
 	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
@@ -178,7 +192,7 @@ func _(n int) {
 		_ = merge
 	}
 
-	_ = []interface{}{merge, same, mergeBig, mergeNew, mergeRangeTo, getRoots, countRoots, getComps}
+	_ = []interface{}{merge, same, mergeBig, mergeRangeTo, getRoots, countRoots, getComps}
 }
 
 // 二维并查集
