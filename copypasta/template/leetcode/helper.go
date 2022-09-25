@@ -80,6 +80,8 @@ func init() {
 		"arr", "a",
 		"array", "a",
 		"scores", "a",
+		"values", "a",
+		"vals", "a",
 		"stones", "a",
 		"cards", "a",
 		"prices", "a",
