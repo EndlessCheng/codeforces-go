@@ -85,6 +85,7 @@ func init() {
 		"stones", "a",
 		"cards", "a",
 		"prices", "a",
+		"sales", "a",
 		"grades", "a",
 		"beans", "a",
 		"mat", "a",
