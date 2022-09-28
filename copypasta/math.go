@@ -1910,6 +1910,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//      http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
 	//      https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
 	// 模板题 https://www.luogu.com.cn/problem/P3846
+	// todo https://atcoder.jp/contests/abc270/tasks/abc270_g
 	babyStepGiantStep := func(a, b, p, k int64) int64 { // 非 exBSGS 下 k=1
 		b %= p
 		t := int64(math.Sqrt(float64(p))) + 1

@@ -19,6 +19,7 @@ LC496/周赛18BA https://leetcode-cn.com/problems/next-greater-element-i/
 LC503/周赛18BB https://leetcode-cn.com/problems/next-greater-element-ii/
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 转换 https://codeforces.com/problemset/problem/280/B
+LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
 
 计算贡献
 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/

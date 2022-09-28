@@ -407,8 +407,8 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 
 // 树的重心
 // 性质：
-//    以重心为根时，最大子树结点数最少，且所有子树的大小都不超过 节点数/2
-//        反之，若存在一颗子树其大小超过 节点数/2，则重心在该子树中
+//    以重心为根时，最大子树结点数最少，且所有子树的大小都 < 节点数/2，或者说最大子树结点数 < 节点数/2
+//        反之，若存在一颗子树其大小 ≥ 节点数/2，则重心在该子树中
 //    一棵树最多有两个重心，且相邻
 //    拥有奇数个节点的树只有一个重心
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
@@ -418,9 +418,16 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 //    树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
 // 常用作点分治中的一个划分步骤
 // https://oi-wiki.org/graph/tree-centroid/
+// https://en.wikipedia.org/wiki/Tree_(graph_theory)#Properties
+//    Every tree has a center consisting of one vertex or two adjacent vertices.
+//    The center is the middle vertex or middle two vertices in every longest path.
+//    Similarly, every n-vertex tree has a centroid consisting of one vertex or two adjacent vertices.
+//    In the first case removal of the vertex splits the tree into subtrees of fewer than n/2 vertices.
+//    In the second case, removal of the edge between the two centroidal vertices splits the tree into two subtrees of exactly n/2 vertices.
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
+// 求每棵子树的重心 http://codeforces.com/problemset/problem/685/B
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
 func (*tree) findCentroid(n, st int, g [][]int, max func(int, int) int) (ct int) {
 	minMaxSubSize := int(1e9)

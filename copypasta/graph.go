@@ -209,10 +209,11 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// vis[v] == 1：该顶点已经被访问，其子树未遍历完
 		// vis[v] == 2：该顶点已经被访问，其子树已遍历完
 		// LC802 https://leetcode-cn.com/problems/find-eventual-safe-states/
-		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
+		// http://codeforces.com/problemset/problem/25/D
 		// https://codeforces.com/problemset/problem/698/B
-		// https://codeforces.com/problemset/problem/1547/G
 		// https://codeforces.com/problemset/problem/936/B
+		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
+		// https://codeforces.com/problemset/problem/1547/G
 		color := make([]int8, n)
 		var f func(int)
 		f = func(v int) {
@@ -770,6 +771,7 @@ func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
 // 好题 https://codeforces.com/problemset/problem/962/F
 // https://leetcode-cn.com/problems/s5kipK/
+// 结合树链剖分 https://codeforces.com/problemset/problem/487/E
 /*
 使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
 基础样例 - 一个割点两个简单环

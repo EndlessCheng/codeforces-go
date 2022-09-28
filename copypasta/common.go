@@ -212,6 +212,15 @@ func _() {
 		}
 		return s
 	}
+	cmp := func(a, b int) int {
+		if a == b {
+			return 0
+		}
+		if a < b {
+			return -1
+		}
+		return 1
+	}
 
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
 	minString := func(a, b string) string {
@@ -1188,7 +1197,7 @@ func _() {
 
 	_ = []interface{}{
 		pow10, dir4, dir8, perm3, perm4,
-		min, mins, max, maxs, abs, ceil, bin,
+		min, mins, max, maxs, abs, ceil, bin, cmp,
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
 		pow, mul, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,

@@ -41,6 +41,8 @@ LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://lee
 涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
 戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
+混合逆序对 https://atcoder.jp/contests/arc097/tasks/arc097_c
+https://codeforces.com/contest/1579/problem/G
 
 思维转换
 谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
@@ -66,6 +68,9 @@ TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，�
 需要补充额外的状态 https://codeforces.com/problemset/problem/682/D
 
 todo Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
+
+贪心优化 DP
+https://codeforces.com/problemset/problem/864/E
 
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
@@ -174,6 +179,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 由于数据范围的原因，采用 map 记忆化         dpMap
 	mapDP := func(n int) {
 		{
+			// 一维（多维见下）
 			dp := map[int]int{}
 			var f func(int) int
 			f = func(x int) (res int) {
@@ -191,6 +197,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		}
 
 		{
+			// 多维
 			type pair struct{ x, y int }
 			dp := map[pair]int{}
 			var f func(int, int) int
@@ -265,7 +272,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 变形题 https://codeforces.com/problemset/problem/33/C
 	//       https://codeforces.com/problemset/problem/788/A
 	//       https://codeforces.com/problemset/problem/1155/D
-	//       https://codeforces.com/problemset/problem/1197/D
+	//       https://codeforces.com/problemset/problem/1197/D 思路 https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz 里面搜本题链接
 	//       https://codeforces.com/problemset/problem/1373/D
 	//       需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
@@ -395,8 +402,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 修改序列为非降或非增的最小修改次数
-	// 单次修改可以把某个数 +1 或 -1
-	// https://www.luogu.com.cn/problem/solution/P4597
+	// - 单次修改可以把某个数 +1 或 -1
 	// 通过一个例子来解释这个基于堆的算法：1 5 10 4 2 2 2 2
 	// 假设当前维护的是非降序列，前三个数直接插入，不需要任何修改
 	// 插入 4 的时候，可以修改为 1 5 5 5，或 1 5 6 6，或... 1 5 10 10，修改次数均为 6
@@ -407,12 +413,15 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 但是实际上有更优的修改 1 4 4 4 4 4，总的修改次数为 11
 	// 同上，把这个序列视作 1 2 2 4 2 2，总的修改次数仍然为 11
 	// ...
-	// https://www.luogu.com.cn/problem/P2893 http://poj.org/problem?id=3666
+	// 其他解释见 https://leetcode.cn/problems/make-array-non-decreasing-or-non-increasing/solution/by-gittauros-6x9v/
 	// https://codeforces.com/problemset/problem/13/C
+	// https://www.luogu.com.cn/problem/P4597
+	// LC2263 https://leetcode.cn/problems/make-array-non-decreasing-or-non-increasing/
+	// https://www.luogu.com.cn/problem/P2893
+	// http://poj.org/problem?id=3666
 	// https://codeforces.com/problemset/problem/713/C 严格单调递增 https://codeforces.com/blog/entry/47094?#comment-315161
 	//     这道题做了一个 a[i]-=i 的操作（i 从 1 开始），把严格单调递增变成了非降的情况，从而可以应用该算法
 	//     这一技巧的原理是，对于整数来说，单调递增的最小情况是 y=x+C，减去这一函数，就得到了非降序列的最小情况 y=C
-	// https://www.luogu.com.cn/problem/P4597 (加强版)
 	minCostSorted := func(a []int) int64 {
 		h := hp{} // 大根堆
 		ans := int64(0)
@@ -571,6 +580,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 最长上升子序列 (LIS)
+	// 方法一：二分
 	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
 	// 求下降，可以考虑取相反数
 	// https://oi-wiki.org/dp/basic/#_12
@@ -605,6 +615,16 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		}
 		return len(dp)
 	}
+
+	// 方法二：线段树优化 DP
+	// https://www.acwing.com/problem/content/description/3665/
+	// https://leetcode.cn/problems/longest-increasing-subsequence-ii/
+
+	// 方法三：平衡树
+	// todo 参考 https://leetcode.cn/problems/longest-increasing-subsequence-ii/solution/jianjie-by-xing-chen-26-ydqp/
+
+	// 方法四：分治 + 单调队列
+	// todo 参考 https://leetcode.cn/problems/longest-increasing-subsequence-ii/solution/fen-zhi-by-heltion-h31y/
 
 	// 每个前缀的 LIS
 	// https://leetcode-cn.com/contest/weekly-contest-253/problems/find-the-longest-valid-obstacle-course-at-each-position/
@@ -1320,6 +1340,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://oi-wiki.org/dp/probability/
 	https://en.wikipedia.org/wiki/Probability
 	https://en.wikipedia.org/wiki/Expected_value
+	https://en.wikipedia.org/wiki/Variance
 	https://en.wikipedia.org/wiki/Optional_stopping_theorem
 	todo https://codeforces.com/blog/entry/62690
 	     https://codeforces.com/blog/entry/62792
@@ -1327,8 +1348,18 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
 
+	期望的可加性
+	https://zhidao.baidu.com/question/259203053.html
+
+	马尔可夫链 Markov chain https://en.wikipedia.org/wiki/Markov_chain
+	吸收马尔可夫链 Absorbing Markov chain https://en.wikipedia.org/wiki/Absorbing_Markov_chain
+	https://www.bilibili.com/video/BV14y4y1S7ve
+
 	一个比较有用的公式（应用：CF1623D）
 	E(x) = ∑i*P(x=i) = ∑P(x>=i)
+
+	方差
+	σ²(x) = sum(x²)/n - (sum(x)/n)²
 
 	概率
 	https://codeforces.com/problemset/problem/678/E
@@ -1338,6 +1369,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/908/D
 	https://codeforces.com/problemset/problem/1097/D
 	https://codeforces.com/problemset/problem/1623/D
+	https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea
+	https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/
 	*/
 
 	/* 状压 DP
@@ -1752,6 +1785,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
 	LC902/周赛101C 最大为 N 的数字组合 https://leetcode-cn.com/contest/weekly-contest-101/problems/numbers-at-most-n-given-digit-set/
 	LC1012/周赛128D 有重复数字的数字个数 https://leetcode-cn.com/contest/weekly-contest-128/problems/numbers-with-repeated-digits/
+	LC/周赛306D 互补问题 无重复数字的数字个数 https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
 	LC1067/双周赛1D 字符 d 出现次数 https://leetcode-cn.com/contest/biweekly-contest-1/problems/digit-count-in-range/
 	LC1397/周赛182D 与 KMP 结合 https://leetcode-cn.com/contest/weekly-contest-182/problems/find-all-good-strings/
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
@@ -1994,6 +2028,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	/* 数据结构优化 DP
+	长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
 	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
@@ -2029,6 +2064,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
+	// https://www.luogu.com.cn/blog/ningago-lsh/xie-lv-you-hua-dp
 	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823

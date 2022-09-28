@@ -4,7 +4,7 @@ import "sort"
 
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
 https://en.wikipedia.org/wiki/Fenwick_tree
-树状数组的基本用途是维护序列的前缀和
+树状数组 tree 的基本用途是维护序列 a 的前缀和（tree 和 a 的下标都从 1 开始）
 tree[i] = a[i-lowbit(i)+1] + ... + a[i]
 看图 https://oi-wiki.org/ds/fenwick/
 更新 a[i] 的时候，会首先更新最下面的包含 a[i] 的 tree[i]，然后逐渐往上，更新包含这个元素的 tree[i]
@@ -39,7 +39,9 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 整除对统计 https://codeforces.com/problemset/problem/301/D
 区间统计技巧 https://codeforces.com/problemset/problem/369/E
 区间包含计数 https://codeforces.com/problemset/problem/652/D
+区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D
 建模 https://codeforces.com/problemset/problem/1660/F2
+长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155

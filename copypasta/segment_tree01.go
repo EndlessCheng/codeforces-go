@@ -4,6 +4,7 @@ package copypasta
 // 支持区间翻转比特、单比特加减等
 // 某些情况下可作为 Bitset 的代替品
 // https://codeforces.com/contest/1705/problem/E
+// https://codeforces.com/problemset/problem/877/E
 type seg01 []struct {
 	l, r int
 	ones int // EXTRA: 1 的个数
