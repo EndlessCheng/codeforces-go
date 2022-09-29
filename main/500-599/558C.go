@@ -10,8 +10,7 @@ import (
 func CF558C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	const mx int = 1e5
-	cnt := [mx*2 + 1]int{}
-	sum := [mx + 1]int{}
+	var cnt, sum [mx + 1]int
 	var n, v int
 	Fscan(in, &n)
 	for i := 0; i < n; i++ {
@@ -28,7 +27,7 @@ func CF558C(_r io.Reader, out io.Writer) {
 		v--
 	}
 	ans := sum[v]
-	for v *= 2; cnt[v]*2 > n; v *= 2 {
+	for v *= 2; v <= mx && cnt[v]*2 > n; v *= 2 {
 		ans -= cnt[v]*2 - n
 	}
 	Fprint(out, ans)
