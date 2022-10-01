@@ -23,6 +23,9 @@ LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/mini
 https://www.luogu.com.cn/problem/P2887
 https://codeforces.com/problemset/problem/555/B
 
+需要一些观察
+1900 https://codeforces.com/problemset/problem/558/C
+
 难题
 2800 https://codeforces.com/problemset/problem/521/D
 */
@@ -123,10 +126,17 @@ https://codeforces.com/problemset/problem/707/D
 对于多组数据的情况，若禁用 GC 会 MLE，可在每组数据的开头或末尾调用 runtime.GC() 或 debug.FreeOSMemory() 手动 GC
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
+
 对于二维矩阵，以 make([][mx]int, n) 的方式使用，比 make([][]int, n) 嵌套 make([]int, m) 更高效（100MB 以上时可以快 ~150ms）
 但需要注意这种方式可能会向 OS 额外申请一倍的内存
 对比 https://codeforces.com/problemset/submission/375/118043978
     https://codeforces.com/problemset/submission/375/118044262
+
+函数内的递归 lambda 会额外消耗非常多的内存（~100MB / 1e6 递归深度）
+写在 main 里面 + slice MLE      https://codeforces.com/contest/767/submission/174193385
+写在 main 里面 + array 257424KB https://codeforces.com/contest/767/submission/174194515
+写在 main 外面 + slice 188364KB https://codeforces.com/contest/767/submission/174194380
+写在 main 外面 + array 154500KB https://codeforces.com/contest/767/submission/174193693
 */
 func _() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
