@@ -479,8 +479,8 @@ func _(min, max func(int, int) int) {
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
 		// 特别地，rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
 		rank := make([]int, n)
-		for i := range rank {
-			rank[sa[i]] = i
+		for i, p := range sa {
+			rank[p] = i
 		}
 
 		// 高度数组 height
