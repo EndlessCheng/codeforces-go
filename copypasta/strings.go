@@ -149,6 +149,7 @@ func _(min, max func(int, int) int) {
 	//
 	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	//       https://www.luogu.com.cn/problem/P5410
+	// 结论 https://codeforces.com/problemset/problem/535/D
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
@@ -415,7 +416,7 @@ func _(min, max func(int, int) int) {
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体代码见 main/edu/2/suffixarray/step5/f/main.go
 		子串统计类题目
 			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
-			https://codeforces.com/problemset/problem/123/D (注：这是挑战上推荐的题目)
+			https://codeforces.com/problemset/problem/123/D (注：这是《挑战》上推荐的题目)
 			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D 本质上就是 CF123D
 			https://codeforces.com/problemset/problem/802/I 稍作改动
 			todo https://www.luogu.com.cn/problem/P2178
@@ -527,10 +528,17 @@ func _(min, max func(int, int) int) {
 			return _q(ri+1, rj+1)
 		}
 
+		// EXTRA: 比较两个子串，返回 s[l1:r1] == s[l2:r2]，注意这里是左闭右开区间
+		// https://www.acwing.com/problem/content/140/
+		equalSub := func(l1, r1, l2, r2 int) bool {
+			len1, len2 := r1-l1, r2-l2
+			return len1 == len2 && lcp(l1, l2) >= len1
+		}
+
 		// EXTRA: 比较两个子串，返回 s[l1:r1] < s[l2:r2]，注意这里是左闭右开区间
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
 		lessSub := func(l1, r1, l2, r2 int) bool {
-			len1, len2 := r1-l2, r2-l2
+			len1, len2 := r1-l1, r2-l2
 			if l := lcp(l1, l2); l >= len1 || l >= len2 { // 一个是另一个的前缀
 				return len1 < len2
 			}
@@ -556,12 +564,6 @@ func _(min, max func(int, int) int) {
 				return -1
 			}
 			return 1
-		}
-
-		// https://www.acwing.com/problem/content/140/
-		equalSub := func(l1, r1, l2, r2 int) bool {
-			len1, len2 := r1-l2, r2-l2
-			return len1 == len2 && len1 == lcp(l1, l2)
 		}
 
 		// EXTRA: 可重叠最长重复子串
