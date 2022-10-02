@@ -74,9 +74,9 @@ func init() {
 	oldNew := []string{
 		// 数组、矩阵
 		"nums", "a",
-		"nums1", "x",
-		"nums2", "y",
-		"nums3", "z",
+		"nums1", "a",
+		"nums2", "b",
+		"nums3", "c",
 		"arr", "a",
 		"array", "a",
 		"scores", "a",
