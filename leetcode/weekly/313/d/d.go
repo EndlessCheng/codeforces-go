@@ -3,6 +3,9 @@ package main
 // https://space.bilibili.com/206214
 func deleteString(s string) int {
 	n := len(s)
+	if allEqual(s) {
+		return n
+	}
 	lcp := make([][]int, n+1) // lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
 	lcp[n] = make([]int, n+1)
 	for i := n - 1; i >= 0; i-- {
@@ -23,6 +26,15 @@ func deleteString(s string) int {
 		f[i]++
 	}
 	return f[0]
+}
+
+func allEqual(s string) bool {
+	for i := 1; i < len(s); i++ {
+		if s[i] != s[0] {
+			return false
+		}
+	}
+	return true
 }
 
 func max(a, b int) int { if b > a { return b }; return a }

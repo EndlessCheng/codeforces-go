@@ -1,4 +1,4 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，[欢迎关注](https://space.bilibili.com/206214/dynamic)~
+[视频讲解](https://www.bilibili.com/video/BV1kd4y1q7fC) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
 
 ---
 
@@ -8,15 +8,16 @@
 
 倒着计算 $f[i]$，答案为 $f[0]$。
 
-最后，我们需要快速判断两个子串是否相同。则可以用 $O(n^2)$ 的 DP 预处理出来，具体见代码。
+最后，我们需要快速判断两个子串是否相同。这可以用 $O(n^2)$ 的 DP 预处理出来，具体见代码。
 
 ```py [sol1-Python3]
 class Solution:
     def deleteString(self, s: str) -> int:
         n = len(s)
+        if len(set(s)) == 1: return n  # 特判全部相同的情况
         lcp = [[0] * (n + 1) for _ in range(n + 1)]  # lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
         for i in range(n - 1, -1, -1):
-            for j in range(n - 1, -1, -1):
+            for j in range(n - 1, i, -1):
                 if s[i] == s[j]:
                     lcp[i][j] = lcp[i + 1][j + 1] + 1
         f = [0] * n
@@ -33,9 +34,10 @@ class Solution {
     public int deleteString(String S) {
         var s = S.toCharArray();
         var n = s.length;
+        if (allEqual(s)) return n; // 特判全部相同的情况
         var lcp = new int[n + 1][n + 1]; // lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
         for (var i = n - 1; i >= 0; --i)
-            for (var j = n - 1; j >= 0; --j)
+            for (var j = n - 1; j > i; --j)
                 if (s[i] == s[j])
                     lcp[i][j] = lcp[i + 1][j + 1] + 1;
         var f = new int[n];
@@ -47,6 +49,13 @@ class Solution {
         }
         return f[0];
     }
+
+    private boolean allEqual(char[] s) {
+        for (var i = 1; i < s.length; i++)
+            if (s[i] != s[0])
+                return false;
+        return true;
+    }
 }
 ```
 
@@ -54,10 +63,13 @@ class Solution {
 class Solution {
 public:
     int deleteString(string s) {
-        int n = s.length(), lcp[n + 1][n + 1]; // lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
+        int n = s.length();
+        if (equal(s.begin() + 1, s.end(), s.begin())) // 特判全部相同的情况
+            return n;
+        int lcp[n + 1][n + 1]; // lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
         memset(lcp, 0, sizeof(lcp));
         for (int i = n - 1; i >= 0; --i)
-            for (int j = n - 1; j >= 0; --j)
+            for (int j = n - 1; j > i; --j)
                 if (s[i] == s[j])
                     lcp[i][j] = lcp[i + 1][j + 1] + 1;
         int f[n];
@@ -76,11 +88,14 @@ public:
 ```go [sol1-Go]
 func deleteString(s string) int {
 	n := len(s)
+	if allEqual(s) { // 特判全部相同的情况
+		return n
+	}
 	lcp := make([][]int, n+1) // lcp[i][j] 表示 s[i:] 和 s[j:] 的最长公共前缀
 	lcp[n] = make([]int, n+1)
 	for i := n - 1; i >= 0; i-- {
 		lcp[i] = make([]int, n+1)
-		for j := n - 1; j >= 0; j-- {
+		for j := n - 1; j > i; j-- {
 			if s[i] == s[j] {
 				lcp[i][j] = lcp[i+1][j+1] + 1
 			}
@@ -96,6 +111,15 @@ func deleteString(s string) int {
 		f[i]++
 	}
 	return f[0]
+}
+
+func allEqual(s string) bool {
+	for i := 1; i < len(s); i++ {
+		if s[i] != s[0] {
+			return false
+		}
+	}
+	return true
 }
 
 func max(a, b int) int { if b > a { return b }; return a }
