@@ -8,6 +8,21 @@ import (
 	"time"
 )
 
+// https://codeforces.com/problemset/problem/1293/C
+// https://codeforces.com/problemset/status/1291/problem/D
+// https://codeforces.com/gym/102253/problem/C
+// https://codeforces.com/gym/102253/status/C
+func TestGenCodeforcesProblemTemplates(t *testing.T) {
+	raw, err := ioutil.ReadFile("data.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	problemURL := strings.TrimSpace(string(raw))
+	if err := GenCodeforcesProblemTemplates(problemURL, true); err != nil {
+		t.Fatal(err)
+	}
+}
+
 // 如果有交互题，赛前先熟悉下交互模板
 // 确认下 main.go 和 main_test.go 是否恢复
 // https://atcoder.jp/contests/abc262/tasks_print
@@ -24,21 +39,6 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 			break
 		}
 		time.Sleep(5 * time.Second)
-	}
-}
-
-// https://codeforces.com/problemset/problem/1293/C
-// https://codeforces.com/problemset/status/1291/problem/D
-// https://codeforces.com/gym/102253/problem/C
-// https://codeforces.com/gym/102253/status/C
-func TestGenCodeforcesProblemTemplates(t *testing.T) {
-	raw, err := ioutil.ReadFile("data.txt")
-	if err != nil {
-		t.Fatal(err)
-	}
-	problemURL := strings.TrimSpace(string(raw))
-	if err := GenCodeforcesProblemTemplates(problemURL, true); err != nil {
-		t.Fatal(err)
 	}
 }
 
