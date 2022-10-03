@@ -19,11 +19,12 @@ func CF863E(_r io.Reader, out io.Writer) {
 	}
 	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.l < b.l || a.l == b.l && a.r > b.r })
 	for i := 1; i < n; i++ {
-		if a[i-1].r >= a[i].r {
+		if a[i-1].r >= a[i].r { // a[i] 被 a[i-1] 包含
 			Fprint(out, a[i].i+1)
 			return
 		}
 	}
+	// 能走到这里，说明右端点也单调递增，那么只需要判断左右两个区间能否覆盖当前区间即可
 	for i := 1; i < n-1; i++ {
 		if a[i-1].r+1 >= a[i+1].l {
 			Fprint(out, a[i].i+1)

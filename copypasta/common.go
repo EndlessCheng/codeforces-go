@@ -22,6 +22,7 @@ LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/mini
 区间与点的最大匹配/覆盖问题
 https://www.luogu.com.cn/problem/P2887
 https://codeforces.com/problemset/problem/555/B
+https://codeforces.com/problemset/problem/863/E
 
 需要一些观察
 1900 https://codeforces.com/problemset/problem/558/C
