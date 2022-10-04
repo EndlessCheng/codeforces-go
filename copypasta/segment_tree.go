@@ -38,7 +38,7 @@ package copypasta
 // GCD https://codeforces.com/problemset/problem/914/D
 // 最小差值 https://codeforces.com/problemset/problem/765/F
 // 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
-// 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D
+// 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的动态 DP 部分
@@ -613,6 +613,7 @@ func (o *stNode) kth(k int64) int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
 //       https://www.luogu.com.cn/problem/P3834 https://www.acwing.com/problem/content/257/ https://ac.nowcoder.com/acm/contest/7613/C
+// 区间更新单点查询 https://atcoder.jp/contests/abc253/tasks/abc253_f
 // 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 https://codeforces.com/problemset/problem/484/E
 // 与 DFS序+深度 结合 https://codeforces.com/problemset/problem/893/F
 // todo 种类数 https://codeforces.com/problemset/problem/620/E
@@ -625,7 +626,7 @@ func (o *stNode) kth(k int64) int {
 // 在线做法 https://codeforces.com/problemset/problem/1262/D2
 type pstNode struct {
 	lo, ro *pstNode
-	l, r   int
+	l, r   int // 注：如果 MLE 请换成传参的写法
 	sum    int64
 }
 
@@ -656,15 +657,15 @@ func buildPST(a []int64, l, r int) *pstNode {
 // 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
 // t = append(t, t[len(t)-1].update(i, add))
 // 注意为了拷贝一份 pstNode，这里的接收器不是指针
-func (o pstNode) update(i int, add int64) *pstNode {
+func (o pstNode) modify(i int, add int64) *pstNode {
 	if o.l == o.r {
 		o.sum += add
 		return &o
 	}
 	if m := o.lo.r; i <= m {
-		o.lo = o.lo.update(i, add)
+		o.lo = o.lo.modify(i, add)
 	} else {
-		o.ro = o.ro.update(i, add)
+		o.ro = o.ro.modify(i, add)
 	}
 	o.maintain()
 	return &o
@@ -684,6 +685,45 @@ func (o *pstNode) query(l, r int) int64 {
 	vl := o.lo.query(l, r)
 	vr := o.ro.query(l, r)
 	return o.op(vl, vr)
+}
+
+// 区间更新（只能配合单点查询）
+// 调用前需要拷贝一份 root 节点
+// 需要保证 add 非负
+// https://atcoder.jp/contests/abc253/tasks/abc253_f
+func (o *pstNode) update(l, r int, add int64) {
+	if l <= o.l && o.r <= r {
+		o.sum += add
+		return
+	}
+	lo := *o.lo
+	o.lo = &lo
+	ro := *o.ro
+	o.ro = &ro
+	if add := o.sum; add > 0 {
+		o.lo.sum += add
+		o.ro.sum += add
+		o.sum = 0
+	}
+	m := o.lo.r
+	if l <= m {
+		o.lo.update(l, r, add)
+	}
+	if r > m {
+		o.ro.update(l, r, add)
+	}
+}
+
+// 单点查询，配合上面的区间更新使用
+func (o *pstNode) querySingle(i int) int64 {
+	if o.l == o.r {
+		return o.sum
+	}
+	m := o.lo.r
+	if i <= m {
+		return o.sum + o.lo.querySingle(i)
+	}
+	return o.sum + o.ro.querySingle(i)
 }
 
 // 主席树相当于对数组的每个前缀建立一颗线段树
