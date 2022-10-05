@@ -454,9 +454,15 @@ func (b Bitset) MergeFrom(c Bitset) {
 }
 
 // 注：有关子集枚举的位运算技巧，见 search.go
-func _() {
+func _(x int) {
 	// 利用 -v = ^v+1
 	lowbit := func(v int64) int64 { return v & -v }
+
+	// 最低位的 1 变 0
+	x &= x - 1
+
+	// 最低位的 0 变 1
+	x |= x + 1
 
 	// 1,2,4,8,...
 	isPow2 := func(v int64) bool { return v > 0 && v&(v-1) == 0 }
@@ -499,7 +505,9 @@ func _() {
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
 	// 利用操作的单调性求解
 	// 复杂度 O(f * n * logU)，f 为 op(x,y) 的时间复杂度，n 为 a 的长度，U 为 a 中元素最大值
+	// 改进 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
 	// |: LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
+	//    https://www.luogu.com.cn/problem/T236955?contestId=65460
 	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
