@@ -8,6 +8,7 @@ import (
 /* 根号分治 Sqrt Decomposition
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 参考 Competitive Programmer’s Handbook Ch.27
+王悦同《根号算法——不只是分块》
 
 题目花样很多，下面举个例子
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
@@ -18,8 +19,8 @@ import (
 这两种算法是看待同一个问题的两种不同方式，通过恰当地组合（平衡）这两个算法，复杂度由 O(n^2) 降至 O(n√n)
 注意：**枚举时要做到不重不漏**
 
-可以从这题上手 https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
-https://www.luogu.com.cn/problem/P3396
+可以从这题上手 https://www.luogu.com.cn/problem/P3396 同 https://codeforces.com/contest/103/problem/D
+https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
 https://codeforces.com/problemset/problem/797/E
