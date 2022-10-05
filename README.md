@@ -49,7 +49,7 @@
   - 珂朵莉树（ODT）
     - [数组版 odt.go](/copypasta/odt.go)
     - [平衡树版 odt_bst.go](/copypasta/odt_bst.go)
-  - [根号算法（分块）sqrt_decomposition.go](/copypasta/sqrt_decomposition.go)
+  - [根号分治、分块 sqrt_decomposition.go](/copypasta/sqrt_decomposition.go)
   - [莫队算法 mo.go](/copypasta/mo.go)
      - 普通莫队
      - 带修莫队
