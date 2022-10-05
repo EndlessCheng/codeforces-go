@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-/* 分块思想 Sqrt Decomposition
+/* 根号分治 Sqrt Decomposition
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 参考 Competitive Programmer’s Handbook Ch.27
 
@@ -18,13 +18,17 @@ import (
 这两种算法是看待同一个问题的两种不同方式，通过恰当地组合这两个算法，复杂度由 O(n^2) 降至 O(n√n)
 注意：**枚举时要做到不重不漏**
 
-可以从这题上手 https://codeforces.com/problemset/problem/797/E
+https://www.cnblogs.com/cj-chd/p/10121939.html
 
+可以从这题上手 https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
+https://codeforces.com/problemset/problem/797/E
 https://codeforces.com/problemset/problem/1207/F
 https://codeforces.com/problemset/problem/1468/M 或四元环
 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
+https://codeforces.com/problemset/problem/1039/D
+https://codeforces.com/problemset/problem/1039/E
 */
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
