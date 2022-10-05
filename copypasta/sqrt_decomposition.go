@@ -15,12 +15,11 @@ import (
 当 ci > √n 时，这样的对象不超过 √n 个，暴力枚举这些对象之间的关系（或者，该对象与其他所有对象的关系），时间复杂度为 O(n) 或 O(n√n)。此乃算法一
 当 ci ≤ √n 时，这样的对象有 O(n) 个，由于统计量 ci 很小，暴力枚举当前对象的统计量，时间复杂度为 O(n√n)。此乃算法二
 这样，以 √n 为界，我们将所有对象划分成了两组，并用两个不同的算法处理
-这两种算法是看待同一个问题的两种不同方式，通过恰当地组合这两个算法，复杂度由 O(n^2) 降至 O(n√n)
+这两种算法是看待同一个问题的两种不同方式，通过恰当地组合（平衡）这两个算法，复杂度由 O(n^2) 降至 O(n√n)
 注意：**枚举时要做到不重不漏**
 
-https://www.cnblogs.com/cj-chd/p/10121939.html
-
 可以从这题上手 https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
+https://www.luogu.com.cn/problem/P3396
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
 https://codeforces.com/problemset/problem/797/E
