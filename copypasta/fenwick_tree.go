@@ -39,7 +39,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 整除对统计 https://codeforces.com/problemset/problem/301/D
 区间统计技巧 https://codeforces.com/problemset/problem/369/E
 区间包含计数 https://codeforces.com/problemset/problem/652/D
-区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D
+区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 建模 https://codeforces.com/problemset/problem/1660/F2
 长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
