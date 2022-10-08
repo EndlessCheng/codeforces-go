@@ -1,0 +1,17 @@
+["....rl","l.lr.r",".l..r.","..lr.."]
+18
+
+[".rlrlrlrl","ll..rl..r",".llrrllrr","..lr..lr."]
+18
+
+["rlrr","llrl","llr."]
+6
+
+["...rl...","..r..l..",".r.rl.l.","r.r..l.l","l.l..rl.",".l.lr.r.","..l..r..","...lr..."]
+30
+
+["l..rlrlrll","lr.lr.rrlr","lrlrrlrrl.","lrrrllllrl","ll.lrllr..",".l.r.lrlrl","r.rrllr.l.",".ll.rllrrr","..rrrlrll."]
+32
+
+["l.llr","rlrll","rllrr","rrlll","lrlrl"]
+18
