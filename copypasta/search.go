@@ -551,12 +551,13 @@ func searchCollection() {
 	// http://poj.org/problem?id=2248
 
 	// 折半枚举/双向搜索 Meet in the middle
-	// https://codeforces.com/problemset/problem/327/E
-	// LC805 https://leetcode-cn.com/problems/split-array-with-same-average/
+	// https://codeforces.com/problemset/problem/1006/F https://atcoder.jp/contests/abc271/tasks/abc271_f https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
+	// LC805 https://leetcode.cn/problems/split-array-with-same-average/
+	// LC2035 https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/
 	// O(3^(n/2)) 放A组/放B组/不选 https://www.luogu.com.cn/problem/P3067 https://www.luogu.com.cn/record/88785388
-	// https://codeforces.com/problemset/problem/1006/F https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
 	// https://www.luogu.com.cn/problem/P5194
 	// https://www.luogu.com.cn/problem/P4799
+	// https://codeforces.com/problemset/problem/327/E
 
 	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
