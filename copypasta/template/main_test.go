@@ -45,9 +45,9 @@ func TestCompare(t *testing.T) {
 		//return ``
 		rg := testutil.NewRandGenerator()
 		rg.One() // 若不是多测则 remove
-		n := rg.Int(1, 5)
+		n := rg.Int(1, 3)
 		rg.NewLine()
-		rg.IntSlice(n, 0, 5)
+		rg.IntSlice(n, 1, 5)
 		return rg.String()
 	}
 
