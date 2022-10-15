@@ -632,6 +632,50 @@ func _() {
 		return
 	}
 
+	// 离散差分，传入闭区间列表 ps，不要求有序
+	// https://codeforces.com/problemset/problem/1420/D
+	diffMap := func(ps []struct{ l, r int }) {
+		diff := map[int]int{} // or make with cap
+		for _, p := range ps {
+			diff[p.l]++
+			diff[p.r+1]--
+		}
+		xs := make([]int, 0, len(diff)) // 坐标
+		for x := range diff {
+			xs = append(xs, x)
+		}
+		sort.Ints(xs)
+
+		// 左闭右开区间 [cnt[i].x, cnt[i+1].x) 中的值都是 cnt[i].c
+		type pair struct{ x, c int }
+		cnt := make([]pair, len(xs))
+		c := 0
+		for _, x := range xs {
+			c += diff[x]
+			cnt = append(cnt, pair{x, c})
+		}
+		// 返回 x 被多少个 ps 中的区间包含（由于 ps 是闭区间，端点也算包含）
+		query := func(x int) int {
+			i := sort.Search(len(cnt), func(i int) bool { return cnt[i].x > x }) - 1
+			if i < 0 {
+				return 0
+			}
+			return cnt[i].c
+		}
+
+		{
+			// 如果只对左端点感兴趣，可以改为如下写法
+			cnt := make(map[int]int, len(xs)) // 前缀和
+			c := 0
+			for _, x := range xs {
+				c += diff[x]
+				cnt[x] = c
+			}
+		}
+
+		_ = query
+	}
+
 	// 二维差分
 	// https://blog.csdn.net/weixin_43914593/article/details/113782108
 	// https://www.luogu.com.cn/problem/P3397
@@ -1213,7 +1257,7 @@ func _() {
 		pow, mul, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
-		diff2D,
+		diffMap, diff2D,
 		sort3, reverse, reverseInPlace, equal,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
