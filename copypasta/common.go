@@ -646,30 +646,30 @@ func _() {
 		}
 		sort.Ints(xs)
 
-		// 左闭右开区间 [cnt[i].x, cnt[i+1].x) 中的值都是 cnt[i].c
-		type pair struct{ x, c int }
-		cnt := make([]pair, len(xs))
-		c := 0
+		// 左闭右开区间 [_cnt[i].x, _cnt[i+1].x) 中的值都是 _cnt[i].c
+		type _pair struct{ x, c int }
+		_cnt := make([]_pair, len(xs))
+		_c := 0
 		for _, x := range xs {
-			c += diff[x]
-			cnt = append(cnt, pair{x, c})
+			_c += diff[x]
+			_cnt = append(_cnt, _pair{x, _c})
 		}
 		// 返回 x 被多少个 ps 中的区间包含（由于 ps 是闭区间，端点也算包含）
 		query := func(x int) int {
-			i := sort.Search(len(cnt), func(i int) bool { return cnt[i].x > x }) - 1
+			i := sort.Search(len(_cnt), func(i int) bool { return _cnt[i].x > x }) - 1
 			if i < 0 {
 				return 0
 			}
-			return cnt[i].c
+			return _cnt[i].c
 		}
 
 		{
 			// 如果只对左端点感兴趣，可以改为如下写法
-			cnt := make(map[int]int, len(xs)) // 前缀和
-			c := 0
+			_cnt := make(map[int]int, len(xs)) // 前缀和
+			_c := 0
 			for _, x := range xs {
-				c += diff[x]
-				cnt[x] = c
+				_c += diff[x]
+				_cnt[x] = _c
 			}
 		}
 
