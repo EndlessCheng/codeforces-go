@@ -16,6 +16,7 @@ https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操�
     https://codeforces.com/blog/entry/47094?#comment-315068
     https://codeforces.com/blog/entry/77298 Slope trick
 https://codeforces.com/problemset/problem/884/D 从结果倒推（类似霍夫曼编码）
+http://codeforces.com/problemset/problem/912/D 贡献
 https://codeforces.com/problemset/problem/1251/E2
 - 按 (mi,pi) 排序，然后把 (i,mi) 画在平面直角坐标系上
 - 初始时，在 y=x 直线下方的点都可以视作是「免费」的，如果有不能免费的点，应考虑从最后一个不能免费的到末尾这段中的最小 pi，然后将 y=x 抬高成 y=x+1 继续比较
