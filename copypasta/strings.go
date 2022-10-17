@@ -388,6 +388,8 @@ func _(min, max func(int, int) int) {
 
 	可视化 https://visualgo.net/zh/suffixarray
 
+	常用分隔符 #(35) $(36) _(95) |(124)
+
 	讲解+例题+套题 https://oi-wiki.org/string/sa/
 	todo 题目推荐 https://www.luogu.com.cn/blog/luckyblock/post-bi-ji-hou-zhui-shuo-zu
 	CF 上的课程 https://codeforces.com/edu/course/2
@@ -437,6 +439,8 @@ func _(min, max func(int, int) int) {
 			唯一性可以用 height[i] 与前后相邻值的大小来判定
 		公共回文子串 http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2292
 			todo
+		所有循环串的比较计数 https://atcoder.jp/contests/abc272/tasks/abc272_f https://atcoder.jp/contests/abc272/submissions/35520643
+			构造 s+s+"#"+t+t+"|"
 		todo http://poj.org/problem?id=3729
 	多个字符串
 		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923/周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450

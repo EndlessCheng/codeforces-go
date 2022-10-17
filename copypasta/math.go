@@ -10,6 +10,10 @@ import (
 
 /* 数论 组合数学
 
+鸽巢原理 抽屉原理
+https://en.wikipedia.org/wiki/Pigeonhole_principle
+http://codeforces.com/problemset/problem/1178/E
+
 アルゴリズムと数学 演習問題集 https://atcoder.jp/contests/math-and-algorithm
 
 一些不等式及其证明 https://www.luogu.com.cn/blog/chinesepikaync/oi-zhong-kuai-yong-dao-di-yi-suo-fou-deng-shi-ji-ji-zheng-ming
@@ -129,6 +133,9 @@ https://oeis.org/A054710 Number of powers of 10 mod n https://codeforces.com/pro
 
 https://oeis.org/A050295 Number of strongly triple-free subsets of {1, 2, ..., n}
     https://leetcode.cn/circle/discuss/QH0XWr/
+
+https://oeis.org/A005245 The (Mahler-Popken) complexity of n: minimal number of 1's required to build n using + and *
+	3 log_3 n <= a(n) <= 3 log_2 n
 
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
@@ -553,13 +560,15 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	绝对素数 https://oeis.org/A003459 各位数字可以任意交换位置，其结果仍为素数
 		https://en.wikipedia.org/wiki/Permutable_prime
 
-	哥德巴赫猜想 - 偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
+	哥德巴赫猜想：大于 2 的偶数，都可表示成两个素数之和。
+	偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
 	Conjecture: a(n) ~ O(√n)
 	https://en.wikipedia.org/wiki/Goldbach%27s_conjecture
 		Positions of records https://oeis.org/A025018
 		Values of records https://oeis.org/A025019
 		1e9 内最大的为 a(721013438) = 1789
 		2e9 内最大的为 a(1847133842) = 1861
+	https://codeforces.com/problemset/problem/735/D
 	将 1~n 这 n 个数分成若干组，使每组数之和为质数 https://codeforces.com/problemset/problem/45/G
 		这题需要用到 a(n) ~ O(√n)
 
@@ -2014,6 +2023,18 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// n! ~ √(2πn)*(n/e)^n
 	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
+	// https://oeis.org/A008904  n! 的最后一个非 0 数字  a(n) is the final nonzero digit of n!
+	// https://math.stackexchange.com/questions/130352/last-non-zero-digit-of-a-factorial
+	// https://blog.csdn.net/LuckilyYu/article/details/2078993
+	// 1, 1, 2, 6, 4, 2, 2, 4, 2, 8, 8, 8, 6, 8, 2, 8, 8, 6, 8, 2, 4, 4, 8, 4, 6, 4, 4, 8, 4, 6, 8, 8, 6, 8, 2, 2, 2
+	// 趣题 https://math.stackexchange.com/questions/3334779/what-is-the-last-non-zero-digit-of-dots2018-underset-text-occurs-1009
+	/*
+		def a(n: int) -> int:
+		    if n <= 1:
+		        return 1
+		    return 6 * [1, 1, 2, 6, 4, 4, 4, 8, 4, 6][n % 10] * (3 ** (n // 5 % 4)) * a(n // 5) % 10
+	*/
+
 	// 等差数列的乘积转换成阶乘 https://atcoder.jp/contests/m-solutions2019/tasks/m_solutions2019_e
 
 	// https://oeis.org/A003070 a(n) = ceiling(log_2(n!))
@@ -2170,6 +2191,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			}
 			return C(int(n%mod), int(k%mod)) * lucas(n/mod, k/mod) % mod
 		}
+
+		// 库默尔定理 https://en.wikipedia.org/wiki/Kummer%27s_theorem
 
 		// 可重组合 https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481
@@ -2542,6 +2565,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://codeforces.com/problemset/problem/1559/E
 	// todo https://www.luogu.com.cn/problem/P2257
 	//  https://www.luogu.com.cn/problem/P2522
+	//  https://www.luogu.com.cn/blog/203623/sol-jrksjr6D https://www.luogu.com.cn/blog/Silver187/qian-lian-di-shi-jie-ti-xie
 
 	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
 

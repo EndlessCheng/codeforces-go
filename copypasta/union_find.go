@@ -8,6 +8,11 @@ import (
 /* 并查集
 只有路径压缩的并查集复杂度是 O(nlogn) 的，这也是大多数情况下的实现方案
 只有启发式合并（按深度合并）的并查集的复杂度也是 O(nlogn) 的，适用于可持久化的场景
+
+具体的时间复杂度证明见《算法导论》
+https://zhuanlan.zhihu.com/p/553192435
+
+随机合并下的时间复杂度 https://www.cis.upenn.edu/~sanjeev/papers/soda14_disjoint_set_union.pdf
 */
 
 // 普通并查集
@@ -283,6 +288,8 @@ func _(n int) {
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 // 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
 // 种类并查集 + 维护集合大小 https://codeforces.com/problemset/problem/1290/C
+// todo https://codeforces.com/contest/1615/problem/D
+//      https://codeforces.com/contest/1713/problem/E
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode-cn.com/problems/evaluate-division/
 func _(n int) {
@@ -422,11 +429,14 @@ func (o *pufNode) merge(x, y int) *pufNode {
 	return p
 }
 
-// 动态图连通性·离线（求 CC 个数或判断 v 和 w 是否连通）
+// 可撤销并查集 回滚并查集
+// 应用：动态图连通性·离线（求 CC 个数或判断 v 和 w 是否连通）
 // https://en.wikipedia.org/wiki/Dynamic_connectivity
 // https://codeforces.com/gym/100551/problem/A
 // https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
 // https://loj.ac/p/121
+// todo https://codeforces.com/contest/891/problem/C
+//  https://codeforces.com/contest/1681/problem/F
 // todo Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	if q == 0 {

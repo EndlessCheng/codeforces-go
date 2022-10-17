@@ -855,3 +855,11 @@ func champernowneConstant(k int) int {
 		p10 *= 10
 	}
 }
+
+// 力扣见过多次了
+func parseTime(s string) (hour, minute, total int) {
+	hour = int(s[0]&15)*10 + int(s[1]&15)
+	minute = int(s[3]&15)*10 + int(s[4]&15)
+	total = hour*60 + minute
+	return
+}

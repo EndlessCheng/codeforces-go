@@ -347,6 +347,7 @@ func sortCollections() {
 	// https://codeforces.com/blog/entry/60702
 	// NOTE: 若有大量相同的离散点则可能会失效（例如三分的时候把存在最小值的「洼地」 skip 了）
 	// https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=ternary+search
+	// https://codeforces.com/problemset/problem/1355/E
 	// https://codeforces.com/problemset/problem/1301/B (只是举例，不用三分也可做)
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for r-l > 4 { // 最小区间长度根据题目可以扩大点

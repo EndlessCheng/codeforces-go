@@ -464,6 +464,10 @@ func _(x int) {
 	// 最低位的 0 变 1
 	x |= x + 1
 
+	// x 是 y 的子集
+	isSubset := func(x, y int) bool { return x|y == y } // x 和 y 的并集是 y
+	isSubset = func(x, y int) bool { return x&y == x }  // x 和 y 的交集是 x
+
 	// 1,2,4,8,...
 	isPow2 := func(v int64) bool { return v > 0 && v&(v-1) == 0 }
 
@@ -696,7 +700,7 @@ func _(x int) {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/

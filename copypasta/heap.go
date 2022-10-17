@@ -11,6 +11,7 @@ import (
 思维·转换
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数
+LC857 https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/
 https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操作次数 (+1/-1)
     https://codeforces.com/blog/entry/47094?#comment-315068
     https://codeforces.com/blog/entry/77298 Slope trick
@@ -40,6 +41,7 @@ JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcod
 - https://www.acwing.com/problem/content/908/
 - https://codeforces.com/problemset/problem/845/C
 https://codeforces.com/problemset/problem/555/B
+区间最大交集 https://codeforces.com/problemset/problem/754/D
 https://codeforces.com/problemset/problem/1701/D
 */
 

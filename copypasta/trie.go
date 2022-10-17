@@ -24,6 +24,8 @@ type trieNode struct {
 	cnt int //（子树中）完整字符串的个数
 	val int // []int
 
+	isEnd bool
+
 	// AC 自动机：当 o.son[i] 不能匹配文本串 text 中的某个字符时，o.fail 即为下一个应该查找的结点
 	fail *trieNode
 }
@@ -79,6 +81,30 @@ func (t *trie) dfs() {
 		}
 	}
 	f(t.root, 0)
+}
+
+// 最长连续单词链
+// https://leetcode.com/discuss/interview-question/2255835/Google-or-Onsite-or-Longest-Chain-Words
+func (t *trie) longestChainWords() (ans int) {
+	var f func(*trieNode, int)
+	f = func(o *trieNode, cnt int) {
+		if o == nil {
+			return
+		}
+		if o.isEnd {
+			cnt++
+			if cnt > ans {
+				ans = cnt
+			}
+		} else {
+			cnt = 0
+		}
+		for _, child := range o.son {
+			f(child, cnt)
+		}
+	}
+	f(t.root, 0)
+	return
 }
 
 // 查找字符串 s

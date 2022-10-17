@@ -28,6 +28,7 @@ https://codeforces.com/blog/entry/20861
 后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
 后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
 后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
+https://ac.nowcoder.com/acm/contest/37092#question
 
 模板题：子串出现次数 https://www.luogu.com.cn/problem/P3804
 多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923/周赛248D https://leetcode-cn.com/problems/longest-common-subpath/
@@ -140,7 +141,7 @@ func (m *sam) dfs(v *node) {
 	}
 }
 
-// 多串 LCS 则去掉代码中的注释
+// 多串 LCS 则去掉代码中的 //
 // 最后答案为 max(m.nodes[i].ans)
 func (m *sam) lcs(s string) (ans int) {
 	//for _, o := range m.nodes {
