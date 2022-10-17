@@ -130,7 +130,8 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
 // 如果在 limit 上而不是 limit+1 上讨论，就要处理当前异或为 1 的情况了，比较麻烦
 // LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
-// https://codeforces.com/problemset/problem/665/E
+// 补集 https://codeforces.com/problemset/problem/665/E
+// https://codeforces.com/problemset/problem/817/E
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
 	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
 	o := t.root
