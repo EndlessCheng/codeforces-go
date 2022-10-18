@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
+
+---
+
 #### 提示 1
 
 枚举连通块的个数 $i$，则删除的边数为 $i-1$。
@@ -20,13 +24,12 @@ DFS 这棵树，统计子树的价值：
 
 #### 优化
 
-代码实现时，由于价值至少为 $\max(\textit{nums}[i])$，连通块的个数至多为 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor$。因此若 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor<n$，则可以从 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor$ 开始枚举连通块的个数。
+代码实现时，由于价值至少为 $\max(\textit{nums}[i])$，连通块的个数至多为 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor$。由于 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor\le n$，因此可以从 $\left\lfloor\dfrac{\textit{total}}{\max(\textit{nums}[i])}\right\rfloor$ 开始枚举连通块的个数。
 
 ```py [sol1-Python3]
 class Solution:
     def componentValue(self, nums: List[int], edges: List[List[int]]) -> int:
-        n = len(nums)
-        g = [[] for _ in range(n)]
+        g = [[] for _ in nums]
         for x, y in edges:
             g[x].append(y)
             g[y].append(x)
@@ -42,7 +45,7 @@ class Solution:
             return s if s < target else 0
 
         total = sum(nums)
-        for i in range(min(n, total // max(nums)), 1, -1):
+        for i in range(total // max(nums), 1, -1):
             if total % i == 0:
                 target = total // i
                 if dfs(0, -1) == 0: return i - 1
@@ -56,8 +59,7 @@ class Solution {
     private int target;
 
     public int componentValue(int[] nums, int[][] edges) {
-        var n = nums.length;
-        g = new ArrayList[n];
+        g = new ArrayList[nums.length];
         Arrays.setAll(g, e -> new ArrayList<>());
         for (var e : edges) {
             int x = e[0], y = e[1];
@@ -68,7 +70,7 @@ class Solution {
 
         var total = Arrays.stream(nums).sum();
         var max = Arrays.stream(nums).max().orElseThrow();
-        for (var i = Math.min(n, total / max); ; --i)
+        for (var i = total / max; ; --i)
             if (total % i == 0) {
                 target = total / i;
                 if (dfs(0, -1) == 0) return i - 1;
@@ -93,14 +95,14 @@ class Solution {
 class Solution {
 public:
     int componentValue(vector<int> &nums, vector<vector<int>> &edges) {
-        int n = nums.size(), target;
-        vector<vector<int>> g(n);
+        vector<vector<int>> g(nums.size());
         for (auto &e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x);
         }
 
+        int target;
         function<int(int, int)> dfs = [&](int x, int fa) {
             int sum = nums[x]; // 价值
             for (int y : g[x])
@@ -115,7 +117,7 @@ public:
 
         int total = accumulate(nums.begin(), nums.end(), 0);
         int mx = *max_element(nums.begin(), nums.end());
-        for (int i = min(n, total / mx);; --i)
+        for (int i = total / mx;; --i)
             if (total % i == 0) {
                 target = total / i;
                 if (dfs(0, -1) == 0) return i - 1;
@@ -126,8 +128,7 @@ public:
 
 ```go [sol1-Go]
 func componentValue(nums []int, edges [][]int) int {
-	n := len(nums)
-	g := make([][]int, n)
+	g := make([][]int, len(nums))
 	for _, e := range edges {
 		x, y := e[0], e[1]
 		g[x] = append(g[x], y)
@@ -161,7 +162,7 @@ func componentValue(nums []int, edges [][]int) int {
 		total += x
 		mx = max(mx, x)
 	}
-	for i := min(n, total/mx); ; i-- {
+	for i := total / mx; ; i-- {
 		if total%i == 0 {
 			target = total / i
 			if dfs(0, -1) == 0 {

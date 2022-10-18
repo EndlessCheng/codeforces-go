@@ -37,7 +37,7 @@ func componentValue(nums []int, edges [][]int) int {
 		total += x
 		mx = max(mx, x)
 	}
-	for i := min(n, total/mx); ; i-- {
+	for i := total / mx; ; i-- {
 		if total%i == 0 {
 			target = total / i
 			if dfs(0, -1) == 0 {
@@ -53,6 +53,7 @@ func min(a, b int) int {
 	}
 	return a
 }
+
 func max(a, b int) int {
 	if b > a {
 		return b
