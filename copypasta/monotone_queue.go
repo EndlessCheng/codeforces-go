@@ -13,6 +13,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
 todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
+模板题 https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/
 https://leetcode.cn/tag/monotonic-queue/problemset/
 todo https://www.luogu.com.cn/problem/P2627
 todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
