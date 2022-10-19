@@ -231,9 +231,11 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 		return
 	}
 
-	// 手写输出，适用于有大量（~1e6）输出的场景
-	outS := []byte{}   // 如果知道输出量，可以 make with cap，或者创建一个全局 array _o，然后 outS := _o[:0]（效率几乎一样）
-	tmpS := [20]byte{} // 可根据整数绝对值的上限调整
+	// 手写输出，适用于有大量（~1e6）输出的场景，CF 上可以再快 60~90ms
+	// 使用前 https://codeforces.com/contest/1208/submission/176961129
+	// 使用后 https://codeforces.com/contest/1208/submission/176963572
+	outS := make([]byte, 0, 1e6*22) // 或者创建一个全局 array _o，然后 outS := _o[:0]（效率几乎一样）
+	tmpS := [20]byte{}              // 可根据整数绝对值的上限调整
 	wInt := func(x int) {
 		if x == 0 { // 如果保证不为零则去掉
 			outS = append(outS, '0')

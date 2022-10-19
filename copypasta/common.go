@@ -939,6 +939,9 @@ func _() {
 	}
 
 	// 另一种写法，不要求值连续 [10,30,20,20] => [0,3,1,1]
+	// 对比，相差不大（~10%，Go 1.14.1）
+	// discrete  296ms/14952KB https://atcoder.jp/contests/abc221/submissions/35791381
+	// discrete2 333ms/11748KB https://atcoder.jp/contests/abc221/submissions/35791225
 	discrete2 := func(a []int, startIndex int) []int {
 		b := append([]int(nil), a...)
 		sort.Ints(b)
