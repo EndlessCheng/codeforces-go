@@ -232,11 +232,15 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 	}
 
 	// 手写输出，适用于有大量（~1e6）输出的场景
-	outS := []byte{}   // 如果知道输出量，可以 make with cap
+	outS := []byte{}   // 如果知道输出量，可以 make with cap，或者创建一个全局 array _o，然后 outS := _o[:0]（效率几乎一样）
 	tmpS := [20]byte{} // 可根据单次输出上限调整
 
 	// 输出一个非负整数
 	wInt := func(x int) {
+		if x == 0 { // 如果保证是正数则去掉
+			outS = append(outS, '0')
+			return
+		}
 		p := len(tmpS)
 		for ; x > 0; x /= 10 {
 			p--
@@ -247,6 +251,10 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 
 	// 输出一个整数
 	wInt = func(x int) {
+		if x == 0 {
+			outS = append(outS, '0')
+			return
+		}
 		if x < 0 {
 			x = -x
 			outS = append(outS, '-')
