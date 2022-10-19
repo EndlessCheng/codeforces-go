@@ -65,6 +65,7 @@ https://codeforces.com/problemset/problem/863/E
 等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 贡献 http://codeforces.com/problemset/problem/912/D
+贡献 https://codeforces.com/problemset/problem/1208/E
 */
 
 /* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求

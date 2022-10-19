@@ -65,6 +65,7 @@ func (mq MonotoneQueue) Top() int {
 // https://www.luogu.com.cn/problem/P1886 http://poj.org/problem?id=2823
 // https://codeforces.com/problemset/problem/940/E
 // https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）
+// 贡献+差分数组 https://codeforces.com/problemset/problem/1208/E
 func FixedSizeMax(a []int, fixedSize int) []int {
 	n := len(a)
 	q := MonotoneQueue{} // 最大/最小由 less 来控制
