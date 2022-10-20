@@ -71,5 +71,8 @@ func simulatedAnnealingWithinTimeLimit(f func(x float64) float64) float64 {
 /* 爬山算法 (Hill Climbing, HC)
 https://en.wikipedia.org/wiki/Hill_climbing
 https://oi-wiki.org/misc/hill-climbing/
-https://leetcode-cn.com/problems/best-position-for-a-service-centre/solution/fu-wu-zhong-xin-de-zui-jia-wei-zhi-by-leetcode-sol/
+
+https://en.wikipedia.org/wiki/Geometric_median
+LC1515 https://leetcode.cn/problems/best-position-for-a-service-centre/
+https://leetcode.cn/problems/best-position-for-a-service-centre/solution/fu-wu-zhong-xin-de-zui-jia-wei-zhi-by-leetcode-sol/
 */
