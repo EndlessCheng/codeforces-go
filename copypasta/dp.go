@@ -34,6 +34,7 @@ https://codeforces.com/problemset/problem/744/C
 https://codeforces.com/problemset/problem/1012/C
 https://codeforces.com/problemset/problem/1025/D
 https://codeforces.com/problemset/problem/1027/E
+https://codeforces.com/problemset/problem/1286/A
 https://codeforces.com/problemset/problem/1408/D
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
 Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
