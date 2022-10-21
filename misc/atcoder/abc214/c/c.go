@@ -23,7 +23,7 @@ func run(_r io.Reader, _w io.Writer) {
 	for i := range t {
 		Fscan(in, &t[i])
 		if t[i] < t[mi] {
-			mi = i
+			mi = i // 寻找 mi，使 dp 满足无后效性
 		}
 	}
 
