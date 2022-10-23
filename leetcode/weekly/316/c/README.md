@@ -1,0 +1,112 @@
+# 方法一：枚举 + 考察变化量
+
+将 $\textit{nums}$ 和 $\textit{cost}$ 绑在一起排序。
+
+首先计算使所有元素都等于 $\textit{nums}[0]$ 的总开销 $\textit{total}$，以及所有 $\textit{cost}$ 的和 $\textit{sumCost}$。
+
+然后考虑要使所有元素都等于 $\textit{nums}[1]$，$\textit{total}$ 的**变化量**是多少：
+
+- 有 $\textit{cost}[0]$ 这么多的开销要增加 $\textit{nums}[1]-\textit{nums}[0]$；
+- 有 $\textit{sumCost}-\textit{cost}[0]$ 这么多的开销要减少 $\textit{nums}[1]-\textit{nums}[0]$。
+
+因此 $\textit{total}$ 减少了
+
+$$
+(\textit{sumCost} - 2 \cdot \textit{cost}[0]) \cdot (\textit{nums}[1]-\textit{nums}[0])
+$$
+
+按照这个公式模拟后续 $\textit{nums}[i]$，取所有 $\textit{total}$ 最小值为答案。
+
+```py [sol1-Python3]
+class Solution:
+    def minCost(self, nums: List[int], cost: List[int]) -> int:
+        a = sorted(zip(nums, cost))
+        ans = total = sum((x - a[0][0]) * c for x, c in a)
+        sum_cost = sum(cost)
+        for (x0, c), (x1, _) in pairwise(a):
+            sum_cost -= c * 2
+            total -= sum_cost * (x1 - x0)
+            ans = min(ans, total)
+        return ans
+```
+
+```go [sol1-Go]
+func minCost(nums, cost []int) int64 {
+	type pair struct{ x, c int }
+	a := make([]pair, len(nums))
+	for i, x := range nums {
+		a[i] = pair{x, cost[i]}
+	}
+	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
+
+	total, sumCost := 0, 0
+	for _, p := range a {
+		total += (p.x - a[0].x) * p.c
+		sumCost += p.c
+	}
+	ans := total
+	for i := 1; i < len(a); i++ {
+		sumCost -= a[i-1].c * 2
+		total -= sumCost * (a[i].x - a[i-1].x)
+		ans = min(ans, total)
+	}
+	return int64(ans)
+}
+
+func min(a, b int) int { if a > b { return b }; return a }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$O(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$O(n)$。
+
+# 方法二：中位数贪心
+
+把 $\textit{cost}[i]$ 理解成 $\textit{nums}[i]$ 的出现次数。
+
+根据中位数贪心，把所有数变成中位数是最优的。
+
+```py [sol2-Python3]
+class Solution:
+    def minCost(self, nums: List[int], cost: List[int]) -> int:
+        a = sorted(zip(nums, cost))
+        s, mid = 0, sum(cost) // 2
+        for x, c in a:
+            s += c
+            if s >= mid:  # 把所有数变成 x
+                return sum(abs(y - x) * c for y, c in a)
+```
+
+```go [sol2-Go]
+func minCost(nums, cost []int) int64 {
+	type pair struct{ x, c int }
+	a := make([]pair, len(nums))
+	sumCost := 0
+	for i, c := range cost {
+		a[i] = pair{nums[i], c}
+		sumCost += c
+	}
+	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
+
+	ans, s := 0, 0
+	for _, p := range a {
+		s += p.c
+		if s >= sumCost/2 {
+			// 把所有数变成 p.x
+			for _, q := range a {
+				ans += abs(q.x-p.x) * q.c
+			}
+			break
+		}
+	}
+	return int64(ans)
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$O(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$O(n)$。
