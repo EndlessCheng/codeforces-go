@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1ne4y1e7nu) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
+
+---
+
 直接比较字符串即可。
 
 ```py [sol1-Python3]
