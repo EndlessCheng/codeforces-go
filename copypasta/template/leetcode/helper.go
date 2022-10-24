@@ -94,6 +94,7 @@ func init() {
 		"grid1", "g1",
 		"grid2", "g2",
 		"words", "a",
+		"events", "a",
 
 		// 字符串
 		"word", "s",
@@ -110,6 +111,9 @@ func init() {
 		"size", "n",
 		"edges", "es",
 		"points", "ps",
+		"point1", "p1",
+		"point2", "p2",
+		"point3", "p3",
 		"pairs", "ps",
 		"queries", "qs",
 		"startPos", "st",
@@ -124,6 +128,8 @@ func init() {
 		"dist", "dis",
 		"timestamp", "ts",
 		"diff", "d",
+		"event1", "e1",
+		"event2", "e2",
 	}
 	for i := range oldNew {
 		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
