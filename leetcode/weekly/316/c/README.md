@@ -43,21 +43,21 @@ func minCost(nums, cost []int) int64 {
 	}
 	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
 
-	total, sumCost := 0, 0
+	var total, sumCost int64
 	for _, p := range a {
-		total += (p.x - a[0].x) * p.c
-		sumCost += p.c
+		total += int64(p.c) * int64(p.x-a[0].x)
+		sumCost += int64(p.c)
 	}
 	ans := total
 	for i := 1; i < len(a); i++ {
-		sumCost -= a[i-1].c * 2
-		total -= sumCost * (a[i].x - a[i-1].x)
+		sumCost -= int64(a[i-1].c * 2)
+		total -= sumCost * int64(a[i].x-a[i-1].x)
 		ans = min(ans, total)
 	}
-	return int64(ans)
+	return ans
 }
 
-func min(a, b int) int { if a > b { return b }; return a }
+func min(a, b int64) int64 { if a > b { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -71,40 +71,46 @@ func min(a, b int) int { if a > b { return b }; return a }
 
 根据中位数贪心，把所有数变成中位数是最优的。
 
+详细证明参考 [462. 最小操作次数使数组元素相等 II](https://leetcode.cn/problems/minimum-moves-to-equal-array-elements-ii/)。
+
+代码实现时，仍然按照方法一那样排序，然后不断累加 $\textit{cost}[i]$，首次累加到 $\ge\dfrac{\textit{sumCost}}{2}$ 时就找到了中位数。
+
+由于 $\textit{sumCost}$ 可能是奇数，所以要上取整，即首次累加到 $\ge\left\lceil\dfrac{\textit{sumCost}}{2}\right\rceil$ 时就找到了中位数。
+
 ```py [sol2-Python3]
 class Solution:
     def minCost(self, nums: List[int], cost: List[int]) -> int:
         a = sorted(zip(nums, cost))
-        s, mid = 0, sum(cost) // 2
+        s, mid = 0, (sum(cost) + 1) // 2
         for x, c in a:
             s += c
-            if s >= mid:  # 把所有数变成 x
-                return sum(abs(y - x) * c for y, c in a)
+            if s >= mid:
+                return sum(abs(y - x) * c for y, c in a)  # 把所有数变成 x
 ```
 
 ```go [sol2-Go]
-func minCost(nums, cost []int) int64 {
+func minCost(nums, cost []int) (ans int64) {
 	type pair struct{ x, c int }
 	a := make([]pair, len(nums))
-	sumCost := 0
+	sumCost := int64(0)
 	for i, c := range cost {
 		a[i] = pair{nums[i], c}
-		sumCost += c
+		sumCost += int64(c)
 	}
 	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
 
-	ans, s := 0, 0
+	s, mid := int64(0), (sumCost+1)/2
 	for _, p := range a {
-		s += p.c
-		if s >= sumCost/2 {
+		s += int64(p.c)
+		if s >= mid {
 			// 把所有数变成 p.x
 			for _, q := range a {
-				ans += abs(q.x-p.x) * q.c
+				ans += int64(abs(q.x-p.x)) * int64(q.c)
 			}
 			break
 		}
 	}
-	return int64(ans)
+	return
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }

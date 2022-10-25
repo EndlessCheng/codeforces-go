@@ -3,28 +3,51 @@ package main
 import "sort"
 
 // https://space.bilibili.com/206214
-func minCost(nums, cost []int) int64 {
+func minCost(nums, cost []int) (ans int64) {
 	type pair struct{ x, c int }
 	a := make([]pair, len(nums))
-	sumCost := 0
+	sumCost := int64(0)
 	for i, c := range cost {
 		a[i] = pair{nums[i], c}
-		sumCost += c
+		sumCost += int64(c)
 	}
 	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
 
-	ans, s := 0, 0
+	s, mid := int64(0), sumCost/2
 	for _, p := range a {
-		s += p.c
-		if s >= sumCost/2 {
-			// 把所有数变成 p.x
+		s += int64(p.c)
+		if s >= mid {
 			for _, q := range a {
-				ans += abs(q.x-p.x) * q.c
+				ans += int64(abs(q.x-p.x)) * int64(q.c)
 			}
 			break
 		}
 	}
-	return int64(ans)
+	return
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
+
+func minCost2(nums, cost []int) int64 {
+	type pair struct{ x, c int }
+	a := make([]pair, len(nums))
+	for i, x := range nums {
+		a[i] = pair{x, cost[i]}
+	}
+	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
+
+	var total, sumCost int64
+	for _, p := range a {
+		total += int64(p.c) * int64(p.x-a[0].x)
+		sumCost += int64(p.c)
+	}
+	ans := total
+	for i := 1; i < len(a); i++ {
+		sumCost -= int64(a[i-1].c * 2)
+		total -= sumCost * int64(a[i].x-a[i-1].x)
+		ans = min(ans, total)
+	}
+	return ans
+}
+
+func min(a, b int64) int64 { if a > b { return b }; return a }
