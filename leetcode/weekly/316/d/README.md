@@ -18,72 +18,78 @@
 
 #### 提示 3
 
-代码实现时有两种做法，可以按照先偶数再奇数，然后奇数偶数内部再排序；也可以直接排序，然后用两个指针在 $\textit{target}$ 上遍历，分别表示偶数元素的下标和奇数元素的下标。
+代码实现时可以先奇数再偶数，然后奇数偶数内部再排序。
 
-由于排序是瓶颈，尽量减少排序的时间开销比较好，所以下面用的是直接排序的做法。
+由于数组元素都是正数，可以先**把所有奇数变成相反数**，然后排序，奇偶就自动分开了。
 
 ```py [sol1-Python3]
+def f(a: List[int]) -> None:
+    for i, x in enumerate(a):
+        if x % 2: a[i] = -x  # 由于元素都是正数，把奇数变成相反数，这样排序后奇偶就自动分开了
+    a.sort()
+
 class Solution:
     def makeSimilar(self, nums: List[int], target: List[int]) -> int:
-        nums.sort()
-        target.sort()
-        ans, j = 0, [0, 0]  # 用数组表示两个下标，这样不用讨论奇偶性
-        for x in nums:
-            p = x % 2
-            while target[j[p]] % 2 != p:  # 找 target 中奇偶性相同的元素
-                j[p] += 1
-            ans += abs(x - target[j[p]])
-            j[p] += 1
-        return ans // 4
+        f(nums)
+        f(target)
+        return sum(abs(x - y) for x, y in zip(nums, target)) // 4
 ```
 
 ```java [sol1-Java]
 class Solution {
     public long makeSimilar(int[] nums, int[] target) {
-        Arrays.sort(nums);
-        Arrays.sort(target);
+        f(nums);
+        f(target);
         var ans = 0L;
-        var j = new int[2]; // 用数组表示两个下标，这样不用讨论奇偶性
-        for (var x : nums) {
-            var p = x % 2;
-            while (target[j[p]] % 2 != p) ++j[p]; // 找 target 中奇偶性相同的元素
-            ans += Math.abs(x - target[j[p]++]);
-        }
+        for (var i = 0; i < nums.length; ++i)
+            ans += Math.abs(nums[i] - target[i]);
         return ans / 4;
+    }
+
+    private void f(int[] a) {
+        // 由于元素都是正数，把奇数变成相反数，这样排序后奇偶就自动分开了
+        for (var i = 0; i < a.length; ++i)
+            if (a[i] % 2 != 0) a[i] = -a[i];
+        Arrays.sort(a);
     }
 }
 ```
 
 ```cpp [sol1-C++]
 class Solution {
+    void f(vector<int> &a) {
+        for (int &x : a)
+            if (x % 2) x = -x; // 由于元素都是正数，把奇数变成相反数，这样排序后奇偶就自动分开了
+        sort(a.begin(), a.end());
+    }
+
 public:
     long long makeSimilar(vector<int> &nums, vector<int> &target) {
-        sort(nums.begin(), nums.end());
-        sort(target.begin(), target.end());
+        f(nums);
+        f(target);
         long long ans = 0L;
-        int js[2]{}; // 用数组表示两个下标，这样不用讨论奇偶性
-        for (int x : nums) {
-            int p = x % 2, &j = js[p];
-            while (target[j] % 2 != p) ++j; // 找 target 中奇偶性相同的元素
-            ans += abs(x - target[j++]);
-        }
+        for (int i = 0; i < nums.size(); ++i)
+            ans += abs(nums[i] - target[i]);
         return ans / 4;
     }
 };
 ```
 
 ```go [sol1-Go]
-func makeSimilar(nums, target []int) (ans int64) {
-	sort.Ints(nums)
-	sort.Ints(target)
-	j := [2]int{} // 用数组表示两个下标，这样不用讨论奇偶性
-	for _, x := range nums {
-		p := x % 2
-		for target[j[p]]%2 != p { // 找 target 中奇偶性相同的元素
-			j[p]++
+func f(a []int) {
+	for i, x := range a {
+		if x%2 > 0 {
+			a[i] = -x // 由于元素都是正数，把奇数变成相反数，这样排序后奇偶就自动分开了
 		}
-		ans += int64(abs(x - target[j[p]]))
-		j[p]++
+	}
+	sort.Ints(a)
+}
+
+func makeSimilar(nums, target []int) (ans int64) {
+	f(nums)
+	f(target)
+	for i, x := range nums {
+		ans += int64(abs(x - target[i]))
 	}
 	return ans / 4
 }
