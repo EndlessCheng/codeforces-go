@@ -21,11 +21,17 @@ NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Item
 转换 https://codeforces.com/problemset/problem/280/B
 LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
 
+字典序最小
+LC316 https://leetcode.cn/problems/remove-duplicate-letters/
+- 扩展：重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
+LC402 https://leetcode.cn/problems/remove-k-digits/
+LC321 https://leetcode.cn/problems/create-maximum-number/
+
 计算贡献
 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
 LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
 LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
-LC2281 https://leetcode.com/problems/sum-of-total-strength-of-wizards/
+LC2281 https://leetcode.cn/problems/sum-of-total-strength-of-wizards/
 
 与 DP 结合
 https://codeforces.com/problemset/problem/5/E
@@ -41,6 +47,7 @@ LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
 LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
 LC1504/周赛196C 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+LC768 https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
 已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C
