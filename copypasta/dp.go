@@ -1544,7 +1544,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC1654/双周赛39D https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
 	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
 	// - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
-	// 训练指南第一章例题 32，WF10，UVa1099
+	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
 	subsubDP := func(a []int) int {
 		n := len(a)
 		m := 1 << n
