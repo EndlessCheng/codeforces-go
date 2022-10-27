@@ -66,6 +66,7 @@ https://codeforces.com/problemset/problem/863/E
 https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 贡献 http://codeforces.com/problemset/problem/912/D
 贡献 https://codeforces.com/problemset/problem/1208/E
+置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
 */
 
 /* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
@@ -83,7 +84,7 @@ https://codeforces.com/problemset/problem/1672/D
 https://codeforces.com/problemset/problem/763/B
 https://codeforces.com/problemset/problem/1270/E
 https://codeforces.com/problemset/problem/1332/E 配对法：将合法局面与非法局面配对
-LC932/周赛108D https://leetcode.cn/problems/beautiful-array/ 分治
+LC932 https://leetcode.cn/problems/beautiful-array/ 分治
 */
 
 /* 相邻 传递性
@@ -490,7 +491,7 @@ func _() {
 	}
 
 	// 分组前缀和（具体见 query 上的注释）
-	// LC1664/周赛216C https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
+	// LC1664 https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
 	groupPrefixSum := func(a []int, k int) {
 		// 补 0 简化后续逻辑
 		n := len(a)
@@ -598,7 +599,7 @@ func _() {
 	}
 
 	// 矩阵斜向前缀和
-	// LC1878/双周赛53C https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
+	// LC1878 https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
 	diagonalSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
 
@@ -633,6 +634,9 @@ func _() {
 		}
 		return
 	}
+
+	// 差分
+	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
 
 	// 离散差分，传入闭区间列表 ps，不要求有序
 	// https://codeforces.com/problemset/problem/1420/D
