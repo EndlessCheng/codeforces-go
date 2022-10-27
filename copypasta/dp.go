@@ -36,6 +36,7 @@ https://codeforces.com/problemset/problem/1025/D
 https://codeforces.com/problemset/problem/1027/E
 https://codeforces.com/problemset/problem/1286/A
 https://codeforces.com/problemset/problem/1408/D
+https://atcoder.jp/contests/abc237/tasks/abc237_f
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
 Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
 LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
@@ -44,6 +45,11 @@ LC956/周赛114D https://leetcode-cn.com/problems/tallest-billboard/ https://lee
 消消乐 LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
 混合逆序对 https://atcoder.jp/contests/arc097/tasks/arc097_c
 https://codeforces.com/contest/1579/problem/G
+todo https://atcoder.jp/contests/abc200/tasks/abc200_e
+DI 序列的有效排列 LC903 https://leetcode.cn/problems/valid-permutations-for-di-sequence/
+
+决策单调性
+https://codeforces.com/problemset/problem/229/D
 
 思维转换
 谁来当 DP 对象 LC1434/双周赛25D https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
@@ -218,41 +224,52 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	/* 线性 DP
-	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i] (j<i)，这里 dp[i] 可以表示一个状态或一组状态等
-	力扣上有大量这类题目，例如：
-	198,213,123,309,376,276,931 (从dp[i-1] 转移到 dp[i])
-	487,1186 (从 dp[i-1] 转移到 dp[i]，带一个额外的决策维度，长度一般是 2-4)
-	300,368,1105* (从 dp[j] 转移到 dp[i])
-	903/周赛101D https://leetcode-cn.com/problems/valid-permutations-for-di-sequence/ https://leetcode-cn.com/contest/weekly-contest-101/
+	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
+	LC198 https://leetcode.cn/problems/house-robber/
+	LC213 https://leetcode.cn/problems/house-robber-ii/
+	- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
+	LC276 https://leetcode.cn/problems/paint-fence/
+	LC368 https://leetcode.cn/problems/largest-divisible-subset/
+	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
+	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
+	另见 LIS
+
 	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
-	力扣题目 1143,1092,72,97,115,727,583,712,1035,1216,1312
-	983/周赛121C https://leetcode-cn.com/problems/minimum-cost-for-tickets/ https://leetcode-cn.com/contest/weekly-contest-121/
-	双周赛38D https://leetcode-cn.com/contest/biweekly-contest-38/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
-	③ 一些题目
-	LC72 编辑距离 https://leetcode-cn.com/problems/edit-distance/
-	LC368 最大整除子集 https://leetcode-cn.com/problems/largest-divisible-subset/
-	LC920 播放列表的数量 https://leetcode-cn.com/problems/number-of-music-playlists/
-	LC956/周赛114D 最高的广告牌 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
-	LC1477/双周赛28C https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
-	LC1531/周赛199D 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
-	数字三角形 https://www.luogu.com.cn/problem/P1216
+	LC727 https://leetcode.cn/problems/minimum-window-subsequence/
+	LC983 https://leetcode.cn/problems/minimum-cost-for-tickets/
+	LC1639 https://leetcode.cn/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
+	另见 LCS LPS
+
+	③ 多维 / 额外状态
+	LC123 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/
+	LC309 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+	LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
+	LC956 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+	LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
+	LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
+
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
+	https://codeforces.com/problemset/problem/38/E
 	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
 	https://codeforces.com/problemset/problem/446/A
 	https://codeforces.com/problemset/problem/603/A
+	处理区间元素不能在区间外面的技巧 https://codeforces.com/problemset/problem/811/C https://codeforces.com/contest/811/submission/174568255
 	https://codeforces.com/problemset/problem/1120/C
 	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
 	https://codeforces.com/problemset/problem/1168/C
 	https://codeforces.com/problemset/problem/1542/D
 	*/
 
-	// 网格走路模型
-	// https://leetcode.cn/problems/unique-paths/
-	// https://leetcode.cn/problems/unique-paths-ii/
-	// https://leetcode.cn/problems/minimum-path-sum/
+	// 网格路径问题
+	// LC62 https://leetcode.cn/problems/unique-paths/
+	// LC63 https://leetcode.cn/problems/unique-paths-ii/
+	// LC64 https://leetcode.cn/problems/minimum-path-sum/
 	// - 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
-	// https://leetcode.cn/problems/triangle/
+	// LC120 https://leetcode.cn/problems/triangle/ https://www.luogu.com.cn/problem/P1216
+	// LC931 https://leetcode.cn/problems/minimum-falling-path-sum/
+	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
@@ -442,9 +459,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//                          (i,j-1) -> (i,j) $ 0
 	// 更快的做法（位运算）见 SPOJ LCS0 https://www.luogu.com.cn/problem/SP12076
 	//
-	// 例题 LC1143 https://leetcode-cn.com/problems/longest-common-subsequence/
+	// 模板题 LC1143 https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) LC1092 https://leetcode-cn.com/problems/shortest-common-supersequence/
-	// 变种 LC97   https://leetcode-cn.com/problems/interleaving-string/
+	// 变种 LC72   https://leetcode-cn.com/problems/edit-distance/
+	//     LC97   https://leetcode-cn.com/problems/interleaving-string/
 	//     LC115  https://leetcode-cn.com/problems/distinct-subsequences/
 	//     LC583  https://leetcode-cn.com/problems/delete-operation-for-two-strings/
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
@@ -535,7 +553,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最长回文子序列 (LPS)
 	// 即 LCS(s, reverse(s))
 	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
-	// LC1216/双周赛10D https://leetcode-cn.com/contest/biweekly-contest-10/problems/valid-palindrome-iii/
+	// LC1216 https://leetcode-cn.com/problems/valid-palindrome-iii/
+	// LC1246 https://leetcode.cn/problems/palindrome-removal/
 	longestPalindromeSubsequence := func(s string) int {
 		n := len(s)
 		dp := make([][]int, n)
@@ -588,10 +607,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//    偏序集的最少反链划分数等于最长链的长度
 	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
 	//
-	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
-	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
+	// 经典转换（最多相交问题） https://codeforces.com/problemset/problem/67/D
+	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
+	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
 	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
 	// 二维 LIS LC354 https://leetcode-cn.com/problems/russian-doll-envelopes/
@@ -603,7 +623,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
 	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
-	// 状态设计 https://atcoder.jp/contests/abc237/tasks/abc237_f
+	// 状态设计 LIS 计数 https://atcoder.jp/contests/abc237/tasks/abc237_f
 	lis := func(a []int) int {
 		dp := []int{}
 		for _, v := range a {
@@ -804,7 +824,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 本质不同非空子序列个数
-	// 详细讲解见 https://leetcode-cn.com/problems/distinct-subsequences-ii/solution/o1-kong-jian-you-hua-by-endlesscheng-0ipu/
+	// 详细讲解见 https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/
 	// 模板题 LC940 https://leetcode-cn.com/problems/distinct-subsequences-ii/
 	// 倒序遍历即可 LC1987/周赛256D https://leetcode-cn.com/problems/number-of-unique-good-subsequences/
 	// 需要一点构造能力 https://codeforces.com/problemset/problem/645/E
@@ -905,6 +925,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最优解为 f(n-1,maxW)
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
+	// 转换 LC494 https://leetcode.cn/problems/target-sum/
+	//            https://atcoder.jp/contests/abc274/tasks/abc274_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
@@ -1233,25 +1255,30 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 区间 DP
 	一般来说转移是合并区间或者分解区间
 	套路 https://www.luogu.com.cn/blog/BreakPlus/ou-jian-dp-zong-jie-ti-xie
+
 	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
 	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
 	此时可以枚举最后一个区间的左端点 j，从 dp[j-1][k-1] 转移到 dp[i][k]，转移时考虑 a[j:i] 对最优解的影响
-	力扣题目 1278,813,410,1335
+	LC410 https://leetcode.cn/problems/split-array-largest-sum/
+	LC813 https://leetcode.cn/problems/largest-sum-of-averages/
+	LC1278 https://leetcode.cn/problems/palindrome-partitioning-iii/
+	LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
+
 	② 求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
 	一般定义 dp[i][j] 表示 a[i:j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
-	插入形成回文 https://www.luogu.com.cn/problem/P1435 LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/
-	力扣题目 516,312,375,1246
-	戳气球（好题） LC312 https://leetcode-cn.com/problems/burst-balloons/
-	移除盒子（状态定义和转移的好题） LC546/周赛25D https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
-	打印机（好题） LC664 https://leetcode-cn.com/problems/strange-printer/
-	最优三角剖分 LC1039 https://leetcode-cn.com/problems/minimum-score-triangulation-of-polygon/
-	删除回文子数组 LC1246/双周赛12D https://leetcode-cn.com/contest/biweekly-contest-12/problems/palindrome-removal/
+	LC375 https://leetcode.cn/problems/guess-number-higher-or-lower-ii/
+	戳气球（好题）LC312 https://leetcode.cn/problems/burst-balloons/
+	移除盒子（状态定义和转移的好题）LC546 https://leetcode.cn/problems/remove-boxes/
+	打印机（好题）LC664 https://leetcode.cn/problems/strange-printer/
+	最优三角剖分 LC1039 https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/
+	插入形成回文 LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
+	另见 LPS
+
 	染色【套路】https://codeforces.com/problemset/problem/1114/D
 	同色消除【套路】https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	回文消除 https://codeforces.com/problemset/problem/607/B
 	二维区间 DP https://codeforces.com/problemset/problem/1198/D
-	③ 一些题目
 	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
@@ -1362,6 +1389,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	σ²(x) = sum(x²)/n - (sum(x)/n)²
 
 	概率
+	http://codeforces.com/problemset/problem/16/E
+	https://codeforces.com/problemset/problem/540/D
 	https://codeforces.com/problemset/problem/678/E
 
 	期望
@@ -1389,6 +1418,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/401/D
 	与质因子分解结合 https://codeforces.com/problemset/problem/453/B
 	与排序贪心结合 https://codeforces.com/problemset/problem/1316/E
+	与概率 DP 结合 https://codeforces.com/problemset/problem/16/E
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -1437,6 +1467,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// https://en.wikipedia.org/wiki/Hamiltonian_path HCP
 	// 模板题 https://www.luogu.com.cn/problem/P1171 https://www.luogu.com.cn/problem/P1433 https://www.acwing.com/problem/content/93/
+	// 略微变形 吃加速药水 https://atcoder.jp/contests/abc274/tasks/abc274_e
 	// https://codeforces.com/problemset/problem/1185/G1
 	// LC847 https://leetcode-cn.com/problems/shortest-path-visiting-all-nodes/
 	// 恰好访问 m 个点 https://codeforces.com/contest/580/problem/D
@@ -1778,20 +1809,24 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	是 m 的倍数且偶数位为 d 且奇数位不为 d 的数字个数 https://codeforces.com/problemset/problem/628/D
 	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
 	相邻数字约束 SC09 https://www.luogu.com.cn/problem/P2657
-	含有某个数字的数字个数
+	数位统计
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
 	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
 	      http://acm.hdu.edu.cn/showproblem.php?pid=3555
 	      http://acm.hdu.edu.cn/showproblem.php?pid=2089
+	      LC1067 https://leetcode.cn/problems/digit-count-in-range/
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
+	LC788 含有某些特殊数字 https://leetcode.cn/problems/rotated-digits/
 	LC902/周赛101C 最大为 N 的数字组合 https://leetcode-cn.com/contest/weekly-contest-101/problems/numbers-at-most-n-given-digit-set/
 	LC1012/周赛128D 有重复数字的数字个数 https://leetcode-cn.com/contest/weekly-contest-128/problems/numbers-with-repeated-digits/
-	LC/周赛306D 互补问题 无重复数字的数字个数 https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
-	LC1067/双周赛1D 字符 d 出现次数 https://leetcode-cn.com/contest/biweekly-contest-1/problems/digit-count-in-range/
+	      LC2376/周赛306D 互补问题 无重复数字的数字个数 https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
 	LC1397/周赛182D 与 KMP 结合 https://leetcode-cn.com/contest/weekly-contest-182/problems/find-all-good-strings/
+	                          https://www.luogu.com.cn/problem/P3193
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
 	http://acm.hdu.edu.cn/showproblem.php?pid=6796
+	todo LC248 中心对称数个数 https://leetcode.cn/problems/strobogrammatic-number-iii/
+	     LC1088 互补 https://leetcode.cn/problems/confusing-number-ii/
 	注：一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
@@ -2032,6 +2067,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
 	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
+	https://codeforces.com/problemset/problem/66/E
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
 	动态 DP
@@ -2067,6 +2103,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
 	// https://www.luogu.com.cn/blog/ningago-lsh/xie-lv-you-hua-dp
 	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
+	// https://zhuanlan.zhihu.com/p/558522044
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
 	//
@@ -2077,6 +2114,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	//  http://poj.org/problem?id=3709
 	//  https://codeforces.com/problemset/problem/311/B
+	//  https://codeforces.com/problemset/problem/1715/E
 	cht := func(a, b []int64) int64 {
 		n := len(a)
 		dp := make([]int64, n)
@@ -2114,6 +2152,24 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return dp[n-1]
 	}
 
+	// 凸优化 DP / 带权二分 / WQS 二分
+	// 《浅析一类二分方法》
+	// 把强制选 k 个物品的问题转换成选任意个物品的问题
+	// todo https://www.luogu.com.cn/blog/daniu/wqs-er-fen
+	//      https://www.luogu.com.cn/blog/Flying2018/wqs-er-fen-min-ke-fu-si-ji-hu-xue-xi-bi-ji
+	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
+	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
+	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
+	//
+	// todo https://leetcode-cn.com/problems/minimum-white-tiles-after-covering-with-carpets/solution/wqs-er-fen-on-log-n-by-zerotrac2-cp7j/
+	//
+	// http://codeforces.com/problemset/problem/739/E（这题还可以费用流）
+	// IOI00 邮局 https://www.luogu.com.cn/problem/P4767
+	// LC188 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-chong-ji-yu-wqs-er-fen-de-you-xiu-zuo-x36r/
+	// https://www.luogu.com.cn/problem/U72600
+	// https://www.luogu.com.cn/training/3495#problems
+	// 单度限制最小生成树（恰好）https://codeforces.com/problemset/problem/125/E
+
 	// 四边形不等式优化 Knuth's Optimization
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// https://jeffreyxiao.me/blog/knuths-optimization
@@ -2129,9 +2185,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
-	https://codeforces.com/problemset/problem/982/C
 	https://codeforces.com/problemset/problem/743/D
+	https://codeforces.com/problemset/problem/855/C
+	https://codeforces.com/problemset/problem/982/C
 	https://codeforces.com/problemset/problem/1083/A
+	好题 http://codeforces.com/problemset/problem/1249/F
 	好题 https://codeforces.com/problemset/problem/1453/E
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	**如何转移 https://codeforces.com/problemset/problem/538/E
