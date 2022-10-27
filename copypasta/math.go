@@ -299,7 +299,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 代码和题目见 bits.go 中的 bitOpTrick
 
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
-	// LC1819/周赛235D https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
+	// LC1819 https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
 	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
 		const mx int = 4e5 //
 		has := [mx + 1]bool{}
@@ -2095,7 +2095,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// Number of ways to choose n disjoint pairs of items from 2*n items
 	// Number of perfect matchings in the complete graph K(2n)
 	// https://atcoder.jp/contests/abc236/tasks/abc236_d
-	// LC1359/双周赛20D 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
+	// LC1359 有效的快递序列数目 https://leetcode-cn.com/contest/biweekly-contest-20/problems/count-all-valid-pickup-and-delivery-options/
 	// 奇阶乘模 2^64 http://acm.hdu.edu.cn/showproblem.php?pid=6481 https://www.90yang.com/hdu6481-a-math-problem/
 	calcOddFactorialBig := func(n int) *big.Int {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
@@ -2211,7 +2211,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// https://oeis.org/A000108
 		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
-		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259/双周赛13D https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
+		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259 https://leetcode-cn.com/contest/biweekly-contest-13/problems/handshakes-that-dont-cross/
 		// Dyck Path https://mathworld.wolfram.com/DyckPath.html
 		// https://www.luogu.com.cn/problem/P1641
 		//
@@ -3014,7 +3014,7 @@ The number of 3 X n matrices of integers for which the upper-left hand corner is
 the rows and columns are weakly increasing, and two adjacent entries differ by at most 1
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
-相关题目 LC1411/周赛184D https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
+相关题目 LC1411 https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
 
 男厕问题 / 电话问题 https://oeis.org/A185456
 Assume that the first person to use a bank of payphones selects one at the end,

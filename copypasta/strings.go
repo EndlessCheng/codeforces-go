@@ -224,7 +224,7 @@ func _(min, max func(int, int) int) {
 	// 子序列自动机
 	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
 	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
-	// LC2014/周赛259D https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
+	// LC2014 https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
 	subsequenceAutomaton := func(s string) {
 		// build nxt
 		// nxt[i][j] 表示在 i 右侧的字符 j 的最近位置
@@ -276,7 +276,7 @@ func _(min, max func(int, int) int) {
 	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
-	//  LC1745/周赛226D 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
+	//  LC1745 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
 	manacher := func(s string) {
 		// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新串 t 的每个回文子串都是奇回文串（都有回文中心）
 		// s 和 t 的下标转换关系：
@@ -354,7 +354,7 @@ func _(min, max func(int, int) int) {
 		// startPL[i] 表示以 s[i] 为首字母的最长回文子串的长度
 		// endPL[i]   表示以 s[i] 为尾字母的最长回文子串的长度
 		// [国家集训队]最长双回文串 https://www.luogu.com.cn/problem/P4555
-		// LC1960/双周赛58D 两个回文子字符串长度的最大乘积 https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
+		// LC1960 两个回文子字符串长度的最大乘积 https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
 		// LC214 https://leetcode-cn.com/problems/shortest-palindrome/
 		startPL := make([]int, len(s))
 		endPL := make([]int, len(s))
@@ -443,7 +443,7 @@ func _(min, max func(int, int) int) {
 			构造 s+s+"#"+t+t+"|"
 		todo http://poj.org/problem?id=3729
 	多个字符串
-		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923/周赛248D https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
@@ -593,7 +593,7 @@ func _(min, max func(int, int) int) {
 		// EXTRA: 找出数组中的所有字符串，其是某个字符串的子串
 		// 先拼接字符串，然后根据 height 判断前后是否有能匹配的
 		// NOTE: 下面的代码展示了一种「标记 s[i] 属于原数组的哪个元素」的技巧: 在 i>0&&s[i]=='#' 时将 cnt++，其余的 s[i] 指向的 cnt 就是原数组的下标
-		// LC1408/周赛184A https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
+		// LC1408 https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
 		findAllSubstring := func(a []string) (ans []string) {
 			s := "#" + strings.Join(a, "#")
 			n := len(s)

@@ -14,7 +14,7 @@ https://www.luogu.com.cn/blog/command-block/wei-yun-suan-juan-ji-yu-ji-kuo-zhan
 一些习题 https://blog.csdn.net/weixin_38686780/article/details/81912853
 
 模板题 https://www.luogu.com.cn/problem/P4717
-LC1803/周赛233D https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
+LC1803 https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
 与仙人掌结合 https://codeforces.com/problemset/problem/1218/D
 todo https://codeforces.com/problemset/problem/662/C
 todo https://atcoder.jp/contests/abc212/tasks/abc212_h

@@ -164,7 +164,7 @@ func searchCollection() {
 	}
 
 	// 可重复组合
-	// 以 LC1467/周赛191D 为例 https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
+	// 以 LC1467 为例 https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	// 每个数至多可选 upper[i] 个，从中随机选择 m 个（m<=∑upper），求满足题设条件的概率
 	// 枚举每个数选了多少个，根据乘法原理计算某个组合的个数（例如 upper=[4,3,1]，m=4，其中选2个0，2个1就有C(4,2)*C(3,2)种）
 	// 总数有 C(∑upper,m) 种
@@ -217,7 +217,7 @@ func searchCollection() {
 	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 a 中且不能重复）
 	// 对比上面的子集搜索，那是对每个位置枚举是否选择（两个分支），而这里每个位置有 n 个分支
 	// https://www.luogu.com.cn/problem/P1118
-	// LC1307/周赛169D https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
+	// LC1307 https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
 	searchPermutations := func(a []int) bool {
 		n := len(a)
 		used := 0
@@ -479,7 +479,7 @@ func searchCollection() {
 	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 	// https://oi-wiki.org/math/cantor/
 	// https://www.luogu.com.cn/problem/P5367
-	// 有重复元素 LC1830/双周赛50D https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
+	// 有重复元素 LC1830 https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
 	rankPermutation := func(perm []int) int64 {
 		const mod int64 = 1e9 + 7
 		n := len(perm)
@@ -1129,7 +1129,7 @@ func gridCollection() {
 		return
 	}
 
-	// 下列代码来自 LC1254/周赛162C https://leetcode-cn.com/problems/number-of-closed-islands/
+	// 下列代码来自 LC1254 https://leetcode-cn.com/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点  dfsGrid
 	dfsValidGrids := func(g [][]byte) (comps [][]pair) {
 		n, m := len(g), len(g[0])

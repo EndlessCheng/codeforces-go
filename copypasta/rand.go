@@ -28,7 +28,7 @@ https://www.cnblogs.com/ECJTUACM-873284962/p/8468831.html
 Heuristic algorithm for Hamiltonian path in undirected graphs https://codeforces.com/blog/entry/90743
 
 模板题 https://www.luogu.com.cn/problem/P1337
-LC1515/周赛197D https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 UVa 10228 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
+LC1515 https://leetcode-cn.com/contest/weekly-contest-197/problems/best-position-for-a-service-centre/ http://poj.org/problem?id=2420 UVa 10228 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=14&page=show_problem&problem=1169
 todo 教学题 https://atcoder.jp/contests/intro-heuristics/tasks/intro_heuristics_a
  https://atcoder.jp/contests/ahc001/tasks/ahc001_a
  https://atcoder.jp/contests/ahc002/tasks/ahc002_a

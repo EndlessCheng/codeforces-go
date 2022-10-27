@@ -15,8 +15,8 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 模板题
 https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
-LC496/周赛18BA https://leetcode-cn.com/problems/next-greater-element-i/
-LC503/周赛18BB https://leetcode-cn.com/problems/next-greater-element-ii/
+LC496 https://leetcode-cn.com/problems/next-greater-element-i/
+LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 转换 https://codeforces.com/problemset/problem/280/B
 LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
@@ -46,7 +46,7 @@ LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
           本质上是两种计算策略：计算每个下标处的接水量（纵向累加），计算一段高度对应的接水宽度（横向累加）
 LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
-LC1504/周赛196C 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
 LC768 https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
@@ -222,7 +222,7 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 }
 
 // 全 1 矩形个数
-// LC1504/周赛196C https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+// LC1504 https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
 // 参考 https://leetcode.com/problems/count-submatrices-with-all-ones/discuss/720265/Java-Detailed-Explanation-From-O(MNM)-to-O(MN)-by-using-Stack
 func numSubmat(mat [][]int) (ans int) {
 	m := len(mat[0])

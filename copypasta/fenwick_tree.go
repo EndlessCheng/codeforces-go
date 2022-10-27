@@ -156,7 +156,7 @@ func fenwickTree(n int) {
 // 树状数组维护前缀最小值的条件是每次修改只能往小改，那么从后往前做就好了
 // 将询问离线：按照右端点排序（或分组），计算 mex。原理见代码中 query 的注释
 // https://www.luogu.com.cn/problem/P4137
-// LC2003/周赛258D https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // - 需要将 a 转换成 DFS 序且从 0 开始，同时最终答案需要 +1
 func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int {
 	const mx int = 1e5 + 2

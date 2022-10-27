@@ -31,7 +31,7 @@ https://codeforces.com/blog/entry/20861
 https://ac.nowcoder.com/acm/contest/37092#question
 
 模板题：子串出现次数 https://www.luogu.com.cn/problem/P3804
-多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923/周赛248D https://leetcode-cn.com/problems/longest-common-subpath/
+多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode-cn.com/problems/longest-common-subpath/
 第 k 小子串（也可以用后缀数组做，见题解区）SPOJ SUBLEX https://www.luogu.com.cn/problem/SP7258 TJOI15 弦论 https://www.luogu.com.cn/problem/P3975
 动态本质不同子串个数（也可以用后缀数组做，见题解区）https://www.luogu.com.cn/problem/P4070
 区间本质不同子串个数（与 LCT 结合）https://www.luogu.com.cn/problem/P6292

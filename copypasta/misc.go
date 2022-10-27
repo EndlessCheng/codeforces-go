@@ -402,7 +402,7 @@ func miscCollection() {
 // b 是 a 的一个排列（允许有重复元素）
 // 返回 b 中各个元素在 a 中的下标（重复的元素顺序保持一致）
 // 可用于求从 a 变到 b 需要的相邻位元素交换的最小次数，即返回结果的逆序对个数
-// LC1850/周赛239C https://leetcode-cn.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
+// LC1850 https://leetcode-cn.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
 func mapPos(a, b []int) []int {
 	pos := map[int][]int{}
 	for i, v := range a {
@@ -517,7 +517,7 @@ func countValidSubstring(s string) (ans int) {
 }
 
 // 负二进制数相加
-// LC1073/周赛139C https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
+// LC1073 https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
 		a1, a2 = a2, a1
@@ -548,7 +548,7 @@ func addNegabinary(a1, a2 []int) []int {
 }
 
 // 负二进制转换
-// LC1017/周赛130B https://leetcode-cn.com/problems/convert-to-base-2/ https://leetcode-cn.com/contest/weekly-contest-130/
+// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/ https://leetcode-cn.com/contest/weekly-contest-130/
 func toNegabinary(n int) (res string) {
 	if n == 0 {
 		return "0"
@@ -718,7 +718,7 @@ func minMustPassSum(n, m int, targetCells [][2]int, min func(int, int) int) int 
 }
 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
-// 无边界 LC1197/双周赛9B https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
+// 无边界 LC1197 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 func minKnightMoves(x, y int, abs func(int) int, max func(int, int) int) int {
 	x, y = abs(x), abs(y)
