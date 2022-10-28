@@ -1,4 +1,4 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，[欢迎关注](https://space.bilibili.com/206214/dynamic)~
+[视频讲解](https://www.bilibili.com/video/BV1MT411u7fW) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
 
 ---
 
@@ -22,7 +22,7 @@ class Solution:
 ```
 
 ```go [sol1-Go]
-func matchPlayersAndTrainers(players []int, trainers []int) int {
+func matchPlayersAndTrainers(players, trainers []int) int {
 	sort.Ints(players)
 	sort.Ints(trainers)
 	j, m := 0, len(trainers)
@@ -38,3 +38,36 @@ func matchPlayersAndTrainers(players []int, trainers []int) int {
 	return len(players) // 所有运动员都能匹配
 }
 ```
+
+也可以遍历 $\textit{trainers}$ 去找对应的 $\textit{players}$。
+
+```py [sol1-Python3]
+class Solution:
+    def matchPlayersAndTrainers(self, players: List[int], trainers: List[int]) -> int:
+        players.sort()
+        trainers.sort()
+        j, m = 0, len(players)
+        for t in trainers:
+            if j < m and players[j] <= t:
+                j += 1
+        return j
+```
+
+```go [sol1-Go]
+func matchPlayersAndTrainers(players, trainers []int) int {
+	sort.Ints(players)
+	sort.Ints(trainers)
+	j, m := 0, len(players)
+	for _, t := range trainers {
+		if j < m && players[j] <= t {
+			j++
+		}
+	}
+	return j
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$O(n\log n + m\log m)$，其中 $n$ 为 $\textit{players}$ 的长度，$m$ 为 $\textit{trainers}$ 的长度。
+- 空间复杂度：$O(1)$，忽略排序时的栈开销，仅用到若干变量。
