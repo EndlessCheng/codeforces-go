@@ -87,6 +87,7 @@ func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用树状数组/线段树维护
+// 【时间戳的写法见后面】
 // 模板题 https://ac.nowcoder.com/acm/contest/6383/B
 // 例题 https://codeforces.com/problemset/problem/383/C
 //     https://codeforces.com/problemset/problem/877/E
@@ -109,6 +110,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	}
 	build(root, -1)
 
+	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
 	isAncestor := func(f, v int) bool { return nodes[f].dfn < nodes[v].dfn && nodes[v].dfn < nodes[f].dfn+nodes[f].size }
 
@@ -136,6 +138,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 
 // 每个节点的入出时间戳
 // 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
+// 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
 // 例题 https://codeforces.com/problemset/problem/1328/E
 // https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
 // 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
@@ -166,6 +169,7 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 	}
 	f(root, -1)
 
+	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
 	isAncestor := func(f, v int) bool { return timeIn[f] < timeIn[v] && timeIn[v] <= timeOut[f] }
 	sameSubtree := func(v, w int) bool { return isAncestor(v, w) || isAncestor(w, v) }
