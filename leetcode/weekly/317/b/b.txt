@@ -1,0 +1,12 @@
+["alice","bob","alice","chris"]
+["one","two","three","four"]
+[5,10,5,4]
+[["alice","one"],["bob","two"]]
+
+["alice","alice","alice"]
+["a","b","c"]
+[1,2,2]
+[["alice","b"]]
+
+
+
