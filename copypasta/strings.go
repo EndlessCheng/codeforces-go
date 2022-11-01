@@ -81,7 +81,9 @@ func _(min, max func(int, int) int) {
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
-	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/submissions/
+	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
+	// LC214 https://leetcode.cn/problems/shortest-palindrome/
+	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
 	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B
@@ -400,8 +402,8 @@ func _(min, max func(int, int) int) {
 		模板题 https://www.luogu.com.cn/problem/P3809 https://loj.ac/p/111
 		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
-		不可重叠最长重复子串 http://poj.org/problem?id=1743
-			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#_14
+		不可重叠最长重复子串 https://atcoder.jp/contests/abc141/tasks/abc141_e http://poj.org/problem?id=1743
+			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#是否有某字符串在文本串中至少不重叠地出现了两次
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
