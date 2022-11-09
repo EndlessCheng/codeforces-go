@@ -1,6 +1,18 @@
-# 力扣
+# 基础算法精讲
 
-欢迎关注我的力扣账号：[灵茶山艾府](https://leetcode-cn.com/u/endlesscheng/)，周赛后会在每道题的题解区发布题解。
+大家好，我是 [灵茶山艾府](https://space.bilibili.com/206214)。
+
+最近开始了个新系列：[基础算法精讲](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是视频中的题目整理，并配有对应的代码，包含 Python/Java/C++/Go 等多种语言。
+
+|视频|题目|代码|
+|---|---|---|
+|[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)|[209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)|[代码](https://leetcode.cn/problems/minimum-size-subarray-sum/solution/biao-ti-xia-biao-zong-suan-cuo-qing-kan-k81nh/)|
+||[713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)|[代码](https://leetcode.cn/problems/subarray-product-less-than-k/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-jebq/)|
+||[3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)|[代码](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)|
+
+---
+
+以下是周赛相关内容。
 
 ## 测试工具
 
