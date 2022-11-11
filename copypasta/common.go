@@ -67,6 +67,7 @@ https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-i
 贡献 http://codeforces.com/problemset/problem/912/D
 贡献 https://codeforces.com/problemset/problem/1208/E
 置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
+排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
 */
 
 /* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
@@ -488,6 +489,27 @@ func _() {
 			sum = merge(sum, b)
 		}
 		return sum
+	}
+
+	// 前缀和
+	prefixSum := func(a []int) {
+		//sort.Ints(a)
+
+		sum := make([]int, len(a)+1) // int64
+		for i, v := range a {
+			sum[i+1] = sum[i] + v
+		}
+
+		// 返回 sum(abs(a[i]-target))
+		// 为方便二分，需要保证 a 是有序的
+		distanceSum := func(target int) int {
+			i := sort.SearchInts(a, target)
+			left := target*i - sum[i]
+			right := sum[len(a)] - sum[i] - target*(len(a)-i)
+			return left + right
+		}
+
+		_ = distanceSum
 	}
 
 	// 分组前缀和（具体见 query 上的注释）
@@ -913,6 +935,7 @@ func _() {
 
 	// 离散化，返回离散化后的序列（名次）
 	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
+	// 有些题目需要把 0 加进去离散化，请特别注意 https://atcoder.jp/contests/jsc2021/tasks/jsc2021_f
 	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
 		type vi struct{ v, i int }
@@ -1264,7 +1287,8 @@ func _() {
 		min, mins, max, maxs, abs, ceil, bin, cmp,
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
 		pow, mul, toAnyBase, digits,
-		subSum, recoverArrayFromSubsetSum, subSumSorted, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
+		subSum, recoverArrayFromSubsetSum, subSumSorted,
+		prefixSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
 		diffMap, diff2D,
 		sort3, reverse, reverseInPlace, equal,
