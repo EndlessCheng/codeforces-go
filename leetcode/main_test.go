@@ -18,9 +18,10 @@ func TestCompareInf(t *testing.T) {
 	testutil.DebugTLE = 0
 
 	inputGenerator := func() (a []int) {
+		//return
 		rg := testutil2.NewRandGenerator()
-		n := rg.Int(1, 5)
-		a = rg.IntSlice(n, 1, 5)
+		n := rg.Int(1, 3)
+		a = rg.IntSlice(n, 1, 3)
 		return
 	}
 
