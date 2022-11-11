@@ -226,6 +226,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 线性 DP
 	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
 	LC198 https://leetcode.cn/problems/house-robber/
+	- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 	LC213 https://leetcode.cn/problems/house-robber-ii/
 	- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
 	LC276 https://leetcode.cn/problems/paint-fence/
@@ -273,7 +274,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
-	// 1. 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]
+	// 1. 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]，答案为 max(dp)
 	// 2. 遍历 a 的同时维护前缀和的最小值，则遍历到 a[i] 时，当前最大子段和为 sum[i]-min(sum[j]), j<i
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
@@ -468,6 +469,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
+	//     https://atcoder.jp/contests/abc185/tasks/abc185_e
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
 	// 多个排列的 LCS（转化成 DAG 最长路）https://codeforces.com/problemset/problem/463/D
@@ -1035,7 +1037,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		for i := n - 1; i >= 0; i-- {
 			fa[i] = make([]int, maxW+1)
 			for j := range fa[i] {
-				fa[i][j] = j
+				fa[i][j] = j // 注意：<w 的转移来源也要标上！
 			}
 			v, w := values[i], weights[i]
 			for j := maxW; j >= w; j-- {
@@ -1046,7 +1048,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			}
 		}
 		for i, j := 0, maxW; i < n; {
-			if fa[i][j] == j {
+			if fa[i][j] == j { // &&  weights[i] > 0      考虑重量为 0 的情况，必须都选上
 				i++
 			} else {
 				ans = append(ans, i+1) // 下标从 1 开始
@@ -2178,6 +2180,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
 
 	/* 树形 DP
+	一般是从自底向上计算的，也就是根据子树返回值来计算父节点的值
+	也有自顶向下的写法，见后面
+
 	https://blog.csdn.net/weixin_43914593/article/details/107145592
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
@@ -2196,10 +2201,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
 	巧妙的转换 https://codeforces.com/problemset/problem/734/E
 	https://codeforces.com/problemset/problem/1292/C
+
+	自顶向下
+	https://leetcode.cn/problems/U7WvvU/ 题解 https://leetcode.cn/problems/U7WvvU/solution/shu-xing-dp-by-endlesscheng-isuo/
 	*/
 
 	// 树的直径（两遍 DFS 求法另见 graph_tree.go 中的 diameter）
 	// LC1245 https://leetcode-cn.com/problems/tree-diameter/
+	// 变形 LC2246 https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/
 	// 变形 https://codeforces.com/problemset/problem/1238/F
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
