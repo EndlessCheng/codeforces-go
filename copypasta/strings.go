@@ -82,7 +82,7 @@ func _(min, max func(int, int) int) {
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
-	// LC214 https://leetcode.cn/problems/shortest-palindrome/
+	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
 	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
@@ -129,6 +129,7 @@ func _(min, max func(int, int) int) {
 	// EXTRA: 最小循环节
 	// 返回循环节以及循环次数
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
+	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
 		match := calcMaxMatchLengths(s)
@@ -418,6 +419,8 @@ func _(min, max func(int, int) int) {
 			这题可以枚举每个后缀，跳过 height[i] 个字符，然后在前缀和上二分
 		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体代码见 main/edu/2/suffixarray/step5/f/main.go
+		重复两次的最长连续重复子串 LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
+			题解 https://leetcode.cn/problems/distinct-echo-substrings/solution/geng-kuai-de-onlog2n-jie-fa-hou-zhui-shu-8wby/
 		子串统计类题目
 			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
 			https://codeforces.com/problemset/problem/123/D (注：这是《挑战》上推荐的题目)

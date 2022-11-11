@@ -192,7 +192,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
-	Coin problem / Chicken McNugget Theorem
+	Frobenius problem / Coin problem / Chicken McNugget Theorem
 	两种硬币面额为 a 和 b，互质，数量无限，所不能凑出的数值的最大值为 a*b-a-b
 	https://artofproblemsolving.com/wiki/index.php/Chicken_McNugget_Theorem
 	https://en.wikipedia.org/wiki/Coin_problem
@@ -908,7 +908,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n) tau(n)
 		Positions of records (高合成数，反素数) https://oeis.org/A002182
 		Values of records https://oeis.org/A002183
-		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221
+		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221 加强版 https://ac.nowcoder.com/acm/contest/82/A
 
 		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
@@ -1372,6 +1372,27 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 					}
 				}
 			}
+
+			// EXTRA: 配合 bitset 可以求最长乘积为平方数的子数组
+			// 也可以用 xor hashing（附题单）https://codeforces.com/blog/entry/85900
+			maxLenSquare := func(a []int) (ans int) {
+				const w = bits.UintSize
+				mul := [9592/w + 1]uint{} // 9592 是 mx=1e5 下的质数个数
+				pos := map[[9592/w + 1]uint]int{mul: -1}
+				for i, v := range a {
+					for _, pi := range core[v] {
+						mul[pi/w] ^= 1 << (pi % w)
+					}
+					if j, ok := pos[mul]; !ok {
+						pos[mul] = i
+					} else if i-j > ans {
+						ans = i - j
+					}
+				}
+				return ans
+			}
+
+			_ = maxLenSquare
 		}
 
 		// EXTRA: https://oeis.org/A007947 Largest squarefree number dividing n: the squarefree kernel of n, rad(n), radical of n
@@ -2202,9 +2223,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// NOTE: 若改成「至多放 k 个球」，则等价于多了一个盒子，用来放「不放入盒子的球」
 		// NOTE: mx 要开两倍空间！
 		H := func(n, k int) int64 { return C(n+k-1, k) }
-		// 也相当于，给出长度和元素范围，求有多少种非降序列
-		// 也可以理解成在长度和取值范围-1的格点上走单调路径
-		H = func(range_, length int) int64 { return C(range_+length-1, length) }
+		// 也相当于，给出元素取值种类数 kinds 和序列长度 length，求有多少种非降序列
+		// 也可以理解成在 length * (kinds-1) 的网格上走单调路径
+		H = func(kinds, length int) int64 { return C(kinds+length-1, length) }
 
 		// 卡特兰数 Cn = C(2n,n)/(n+1) = C(2n,n)-C(2n,n-1)
 		// https://en.wikipedia.org/wiki/Catalan_number
@@ -2840,6 +2861,7 @@ https://codeforces.com/problemset/problem/1261/D2 推荐
 https://codeforces.com/problemset/problem/1288/C
 https://codeforces.com/problemset/problem/1342/E
 https://codeforces.com/problemset/problem/1359/E
+https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 
 放球问题
 https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
