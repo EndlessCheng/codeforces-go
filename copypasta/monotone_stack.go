@@ -17,9 +17,14 @@ https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
 LC496 https://leetcode-cn.com/problems/next-greater-element-i/
 LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
+
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 转换 https://codeforces.com/problemset/problem/280/B
 LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
+你从单调栈学到了什么思想？LC1944 https://leetcode.cn/problems/number-of-visible-people-in-a-queue/
+下下个最大元素 LC2454 https://leetcode.cn/problems/next-greater-element-iv/
+- 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
+max(最小值*子数组和) LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
 
 字典序最小
 LC316 https://leetcode.cn/problems/remove-duplicate-letters/
@@ -27,11 +32,11 @@ LC316 https://leetcode.cn/problems/remove-duplicate-letters/
 LC402 https://leetcode.cn/problems/remove-k-digits/
 LC321 https://leetcode.cn/problems/create-maximum-number/
 
-计算贡献
-LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
-LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
-LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
-LC2281 https://leetcode.cn/problems/sum-of-total-strength-of-wizards/
+计算贡献（所有子数组的……的和）
+最小值 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
+最大值-最小值 LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
+最小值*和 LC2281 https://leetcode.cn/problems/sum-of-total-strength-of-wizards/
+第二大 https://atcoder.jp/contests/abc140/tasks/abc140_e
 
 与 DP 结合
 https://codeforces.com/problemset/problem/5/E
@@ -144,23 +149,30 @@ func monotoneStack(a []int) ([]int, []int) {
 }
 
 // 注：若输入的是一个 1~n 的排列，有更简单的写法（求两侧大于位置）
+// 用双向链表思考（实现时用的数组）：
+// - 把 p 转换成双向链表，按元素值**从小到大**遍历 p[i]，那么 p[i] 左右两侧的就是大于 p[i] 的元素
+// - 算完 p[i] 后把 p[i] 从链表中删掉
 // 为简单起见，求出的下标从 1 开始（不存在时表示为 0 或 n+1）
 // https://codeforces.com/contest/1156/problem/E
-func permLR(a []int) ([]int, []int) {
-	n := len(a)
+// https://atcoder.jp/contests/abc140/tasks/abc140_e
+func permLR(p []int) ([]int, []int) {
+	n := len(p)
 	idx := make([]int, n+1)
 	left := make([]int, n+2)
 	right := make([]int, n+1)
 	for i := 1; i <= n; i++ {
-		idx[a[i-1]] = i
+		idx[p[i-1]] = i
 		left[i], right[i] = i-1, i+1
 	}
 	// 正序遍历求出的是两侧大于位置
 	// 倒序遍历求出的是两侧小于位置
 	for v := 1; v <= n; v++ {
 		i := idx[v]
-		right[left[i]] = right[i]
-		left[right[i]] = left[i]
+		l, r := left[i], right[i]
+		// do ...
+
+		right[l] = r
+		left[r] = l // 删除 v
 	}
 	return left, right
 }
