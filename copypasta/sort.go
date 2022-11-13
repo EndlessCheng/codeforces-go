@@ -70,6 +70,31 @@ func sortCollections() {
 		sort.IsSorted(sort.Reverse(sort.IntSlice(a)))
 	}
 
+	// 把数组排序（元素互不相同），需要的最小交换次数
+	// 做法：离散化后求置换环
+	// LC2471 https://leetcode.cn/problems/minimum-number-of-operations-to-sort-a-binary-tree-by-level/
+	minSwaps := func(a []int) int {
+		b := append([]int{}, a...)
+		sort.Ints(b)
+		mp := make(map[int]int, len(b))
+		for i, v := range b {
+			mp[v] = i // 简单离散化
+		}
+
+		ans := len(a)
+		vis := make([]bool, len(b))
+		for _, v := range a {
+			v = mp[v]
+			if !vis[v] {
+				for ; !vis[v]; v = mp[a[v]] {
+					vis[v] = true
+				}
+				ans--
+			}
+		}
+		return ans
+	}
+
 	// 插入排序
 	// 相关题目 LC1536 https://leetcode-cn.com/contest/weekly-contest-200/problems/minimum-swaps-to-arrange-a-binary-grid/
 	insertionSort := func(a []int) {
@@ -531,6 +556,7 @@ func sortCollections() {
 	}
 
 	_ = []interface{}{
+		minSwaps,
 		insertionSort,
 		lowerBound, upperBound, search2,
 		searchRange, searchRange64,
