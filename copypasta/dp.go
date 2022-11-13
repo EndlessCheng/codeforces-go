@@ -554,6 +554,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 最长回文子序列 (LPS)
 	// 即 LCS(s, reverse(s))
+	// 回文串见后面
 	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
 	// LC1216 https://leetcode-cn.com/problems/valid-palindrome-iii/
 	// LC1246 https://leetcode.cn/problems/palindrome-removal/
@@ -871,32 +872,68 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 边界 dp[0][0] = 1
 	// todo https://atcoder.jp/contests/abc234/tasks/abc234_f
 
+	// 回文串：中心扩展法
+	// 原理见 https://leetcode.cn/problems/palindromic-substrings/solutions/379987/hui-wen-zi-chuan-by-leetcode-solution/
+	// LC647 https://leetcode.cn/problems/palindromic-substrings/
+	// LC2472 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
+	palindromeO1Space := func(s string) {
+		n := len(s)
+		for i := 0; i < 2*n-1; i++ { // i 为偶数表示奇回文串，i 为奇数表示偶回文串
+			l, r := i/2, i/2+i%2
+			// 从 s[i/2..i/2(+1)] 开始扩展
+			// do init ...
+
+			for l >= 0 && r < n && s[l] == s[r] {
+				// do s[l..r] ...
+
+				l--
+				r++
+			}
+		}
+	}
+
+	// O(n^2) 求每个子串是否是回文的
+	// 一般用于 DP 预处理
+	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
+	// LC2472 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
+	// https://codeforces.com/problemset/problem/835/D
+	isPalindrome := func(s string) [][]bool {
+		n := len(s)
+		isP := make([][]bool, n)
+		for i := range isP {
+			isP[i] = make([]bool, n)
+		}
+		for l := n - 1; l >= 0; l-- {
+			for r := l; r < n; r++ {
+				isP[l][r] = s[l] == s[r] && (r-l < 3 || isP[l+1][r-1])
+			}
+		}
+		return isP
+	}
+
 	// 回文串最小分割次数
 	// 紫书例题 9-7，UVa 11584 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=27&page=show_problem&problem=2631
 	// LC132 https://leetcode-cn.com/problems/palindrome-partitioning-ii/
 	minPalindromeCut := func(s string) int {
 		n := len(s)
-		g := make([][]bool, n)
-		for i := range g {
-			g[i] = make([]bool, n)
-			for j := range g[i] {
-				g[i][j] = true
-			}
+		isP := make([][]bool, n)
+		for i := range isP {
+			isP[i] = make([]bool, n)
 		}
-		for i := n - 1; i >= 0; i-- {
-			for j := i + 1; j < n; j++ {
-				g[i][j] = s[i] == s[j] && g[i+1][j-1]
+		for l := n - 1; l >= 0; l-- {
+			for r := l; r < n; r++ {
+				isP[l][r] = s[l] == s[r] && (r-l < 3 || isP[l+1][r-1])
 			}
 		}
 
 		f := make([]int, n)
-		for i := range f {
-			if g[0][i] { // f[i] = 0
+		for i, prefixP := range isP[0] {
+			if prefixP { // f[i] = 0
 				continue
 			}
 			f[i] = int(1e9)
 			for j := 0; j < i; j++ {
-				if g[j+1][i] {
+				if isP[j+1][i] {
 					f[i] = min(f[i], f[j]+1)
 				}
 			}
@@ -2654,7 +2691,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
 		distinctSubsequence,
-		minPalindromeCut,
+		palindromeO1Space, isPalindrome, minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
