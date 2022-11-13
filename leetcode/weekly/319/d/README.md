@@ -14,6 +14,8 @@ $$
 
 最后答案为 $f[n]$，这里 $n$ 为 $s$ 的长度。
 
+代码实现时，由于长度为 $x$ 的回文子串一定包含长为 $x-2$ 的回文子串，所以回文子串的长度达到 $k$ 就可以退出循环了。
+
 ```py [sol1-Python3]
 class Solution:
     def maxPalindromes(self, s: str, k: int) -> int:
@@ -25,6 +27,7 @@ class Solution:
             while l >= 0 and r < n and s[l] == s[r]:
                 if r - l + 1 >= k:
                     f[r + 1] = max(f[r + 1], f[l] + 1)
+                    break
                 l -= 1
                 r += 1
         return f[n]
@@ -40,8 +43,10 @@ class Solution {
             int l = i / 2, r = l + i % 2; // 中心扩展法
             f[l + 1] = Math.max(f[l + 1], f[l]);
             for (; l >= 0 && r < n && s[l] == s[r]; --l, ++r)
-                if (r - l + 1 >= k)
+                if (r - l + 1 >= k) {
                     f[r + 1] = Math.max(f[r + 1], f[l] + 1);
+                    break;
+                }
         }
         return f[n];
     }
@@ -58,8 +63,10 @@ public:
             int l = i / 2, r = l + i % 2; // 中心扩展法
             f[l + 1] = max(f[l + 1], f[l]);
             for (; l >= 0 && r < n && s[l] == s[r]; --l, ++r)
-                if (r - l + 1 >= k)
+                if (r - l + 1 >= k) {
                     f[r + 1] = max(f[r + 1], f[l] + 1);
+                    break;
+                }
         }
         return f[n];
     }
@@ -76,6 +83,7 @@ func maxPalindromes(s string, k int) int {
 		for l >= 0 && r < n && s[l] == s[r] {
 			if r-l+1 >= k {
 				f[r+1] = max(f[r+1], f[l]+1)
+				break
 			}
 			l--
 			r++
@@ -89,5 +97,5 @@ func max(a, b int) int { if b > a { return b }; return a }
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n^2)$，其中 $n$ 为 $s$ 的长度。
+- 时间复杂度：$O(nk)$，其中 $n$ 为 $s$ 的长度。
 - 空间复杂度：$O(n)$。
