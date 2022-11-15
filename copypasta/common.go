@@ -933,6 +933,16 @@ func _() {
 		return a[:k+1]
 	}
 
+	// 简单离散化，适合没有重复元素的场景
+	discreteSimple := func(a []int) []int {
+		id := make([]int, len(a))
+		for i := range id {
+			id[i] = i
+		}
+		sort.Slice(id, func(i, j int) bool { return a[id[i]] < a[id[j]] })
+		return id
+	}
+
 	// 离散化，返回离散化后的序列（名次）
 	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 有些题目需要把 0 加进去离散化，请特别注意 https://atcoder.jp/contests/jsc2021/tasks/jsc2021_f
@@ -1293,7 +1303,8 @@ func _() {
 		diffMap, diff2D,
 		sort3, reverse, reverseInPlace, equal,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
-		unique, uniqueInPlace, discrete, discrete2, discreteMap, indexMap, allSame, complement, quickSelect, contains, containsAll,
+		unique, uniqueInPlace, discreteSimple, discrete, discrete2, discreteMap,
+		indexMap, allSame, complement, quickSelect, contains, containsAll,
 		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
 	}

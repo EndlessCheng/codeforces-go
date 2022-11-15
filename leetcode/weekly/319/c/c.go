@@ -23,19 +23,17 @@ func minimumOperations(root *TreeNode) (ans int) {
 			}
 		}
 
-		b := append([]int{}, a...)
-		sort.Ints(b)
-		mp := make(map[int]int, n)
-		for i, v := range b {
-			mp[v] = i
+		id := make([]int, n)
+		for i := range id {
+			id[i] = i
 		}
+		sort.Slice(id, func(i, j int) bool { return a[id[i]] < a[id[j]] })
 
 		ans += n
 		vis := make([]bool, n)
-		for _, v := range a {
-			v = mp[v]
+		for _, v := range id {
 			if !vis[v] {
-				for ; !vis[v]; v = mp[a[v]] {
+				for ; !vis[v]; v = id[v] {
 					vis[v] = true
 				}
 				ans--

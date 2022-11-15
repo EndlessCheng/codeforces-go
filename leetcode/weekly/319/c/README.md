@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV13841187gz/) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
+
+---
+
 这是一个经典问题，做法是置换环。
 
 例如在数组 $[2,0,1,4,3]$ 中，$[2,0,1]$ 和 $[4,3]$ 分别是两个置换环，环与环之间是数字是不需要发生交换的，只会在环内发生交换。
@@ -21,11 +25,11 @@ class Solution:
                 if node.left: q.append(node.left)
                 if node.right: q.append(node.right)
 
-            b = sorted(a)
-            a = [bisect_left(b, v) for v in a]  # 离散化
+            n = len(a)
+            a = sorted(range(n), key=lambda i: a[i])  # 离散化
 
-            ans += len(a)
-            vis = [False] * len(a)
+            ans += n
+            vis = [False] * n
             for v in a:
                 if vis[v]: continue
                 while not vis[v]:
@@ -53,17 +57,17 @@ func minimumOperations(root *TreeNode) (ans int) {
 			}
 		}
 
-		b := append([]int{}, a...)
-		sort.Ints(b)
-		for i, v := range a {
-			a[i] = sort.SearchInts(b, v) // 离散化
+		id := make([]int, n) // a 离散化后的数组
+		for i := range id {
+			id[i] = i
 		}
+		sort.Slice(id, func(i, j int) bool { return a[id[i]] < a[id[j]] })
 
 		ans += n
 		vis := make([]bool, n)
-		for _, v := range a {
+		for _, v := range id {
 			if !vis[v] {
-				for ; !vis[v]; v = a[v] {
+				for ; !vis[v]; v = id[v] {
 					vis[v] = true
 				}
 				ans--
@@ -76,5 +80,9 @@ func minimumOperations(root *TreeNode) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log n)$，其中 $n$ 为二叉树的节点个数。对于完全二叉树而言，最后一层的节点个数可以达到 $O(n)$。
+- 时间复杂度：$O(n\log n)$，其中 $n$ 为二叉树的节点个数。瓶颈在排序上，对于完全二叉树而言，最后一层的节点个数可以达到 $O(n)$。
 - 空间复杂度：$O(n)$。
+
+#### 相似题目
+
+- [765. 情侣牵手](https://leetcode.cn/problems/couples-holding-hands/)
