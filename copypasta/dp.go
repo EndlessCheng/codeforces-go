@@ -9,21 +9,23 @@ import (
 
 /* 动态规划
 
-首先请透彻理解何为问题的「状态空间」，见 search.go 开头的注释
-
 思考过程：
-可以参考我的这篇题解：https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/solution/by-endlesscheng-pa3v/
-1.1 如何把问题形式化为状态空间？（可以从边界、子集的角度思考）
-1.2 子问题是如何重叠的？
-1.3 子问题是怎么逐层递进的？（题目描述、隐含的顺序）
-2.1 如何定义状态？需要用几个维度表示？
-2.2 状态的范围是多少？起点状态和终点状态是什么？
-2.3 哪些状态是相邻的？（即通过一次转移就能得到）
-2.4 状态转移时要计算哪些内容？
-2.5 对于转移来的相邻状态（入边），怎么决策？（简单的有取最值取和，复杂的有组合决策）
-3.1 若复杂度过高，如何优化决策？
-* 状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等
-* 对于计数问题或概率问题来说，状态定义和状态转移要做到不重不漏
+1. 把原问题重新复述一遍，例如「从前 n 个数中选择若干个数，这些数的和为 m 的方案数」。
+2. 根据题意，尝试「缩小」问题的规模，我们可以怎样缩小？
+   - 这里有两个变量 n 和 m，有什么方法可以把它们缩小？
+3. 尝试「原子」操作（考虑其中「一个」数选或者不选，例如第 n 个数）：
+   - 不选第 n 个数，问题变为「从前 n-1 个数中选择若干个数，这些数的和为 m 的方案数」。
+   - 选第 n 个数，问题变为「从前 n-1 个数中选择若干个数，这些数的和为 m-a[n] 的方案数」。
+   - 原问题可以不重不漏地分解成这两种情况。
+   - 根据加法原理，原问题为这两种方案的和。
+4. 这可以用记忆化搜索写。终点是什么？
+   - n=0。（这里数组下标是从 1 开始的）
+5. 如果用递推来思考，要怎么写？空间能否压缩？
+   - 自底向上思考记忆化搜索的过程。
+6.（进阶）如果复杂度过高，如何根据状态转移方程来优化？
+7.（进阶）状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等。（试试下面的题目）
+
+题目已经分类整理好：试试搜索「线性」「最大子段和」等。
 
 如何设计状态
 https://codeforces.com/problemset/problem/360/B
@@ -225,11 +227,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	/* 线性 DP
 	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
+	LC70 https://leetcode.cn/problems/climbing-stairs/
+	LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
 	LC198 https://leetcode.cn/problems/house-robber/
 	- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 	LC213 https://leetcode.cn/problems/house-robber-ii/
 	- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
 	LC276 https://leetcode.cn/problems/paint-fence/
+	LC343 https://leetcode.cn/problems/integer-break/
 	LC368 https://leetcode.cn/problems/largest-divisible-subset/
 	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
 	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
@@ -469,9 +474,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
-	//     https://atcoder.jp/contests/abc185/tasks/abc185_e
+	//     权值 https://atcoder.jp/contests/abc185/tasks/abc185_e
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
+	//【相同子序列个数】https://atcoder.jp/contests/abc130/tasks/abc130_e
 	// 多个排列的 LCS（转化成 DAG 最长路）https://codeforces.com/problemset/problem/463/D
 	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D
 	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
