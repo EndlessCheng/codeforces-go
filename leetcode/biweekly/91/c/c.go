@@ -23,16 +23,13 @@ func mostProfitablePath(edges [][]int, bob int, amount []int) int {
 			bobTime[x] = t
 			return true
 		}
-		found0 := false
 		for _, y := range g[x] {
 			if y != fa && dfsBob(y, x, t+1) {
-				found0 = true
+				bobTime[x] = t // 只有可以到达 0 才标记访问时间
+				return true
 			}
 		}
-		if found0 {
-			bobTime[x] = t // 只有可以到达 0 才标记访问时间
-		}
-		return found0
+		return false
 	}
 	dfsBob(bob, -1, 0)
 
