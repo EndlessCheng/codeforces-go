@@ -22,12 +22,9 @@ func run(_r io.Reader, out io.Writer) {
 	ans := inf
 	a := make([]int, m)
 	for i := 0; i < n; i++ {
-		minRow := inf
 		for j := range a {
 			Fscan(in, &a[j])
-			ans = min(ans, a[j]+c*j+minRow)
-			minRow = min(minRow, a[j]-c*j)
-			ans = min(ans, a[j]+c*(i+j)+pre[j+1])
+			ans = min(ans, a[j]+c*(i+j)+min(pre[j+1], pre[j]))
 			pre[j+1] = min(min(pre[j+1], pre[j]), a[j]-c*(i+j))
 		}
 		for j := m - 1; j >= 0; j-- {
