@@ -31,6 +31,7 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
 3484 https://www.acwing.com/problem/content/122/ 二分位置
 
+隐藏的二分 https://atcoder.jp/contests/abc203/tasks/abc203_d
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 转换的好题 https://codeforces.com/problemset/problem/1181/D
 
@@ -74,23 +75,23 @@ func sortCollections() {
 	// 做法：离散化后求置换环
 	// LC2471 https://leetcode.cn/problems/minimum-number-of-operations-to-sort-a-binary-tree-by-level/
 	minSwaps := func(a []int) int {
-		b := append([]int{}, a...)
-		sort.Ints(b)
-		mp := make(map[int]int, len(b))
-		for i, v := range b {
-			mp[v] = i // 简单离散化
+		id := make([]int, len(a))
+		for i := range id {
+			id[i] = i
 		}
+		sort.Slice(id, func(i, j int) bool { return a[id[i]] < a[id[j]] }) // 简单离散化
 
 		ans := len(a)
-		vis := make([]bool, len(b))
-		for _, v := range a {
-			v = mp[v]
-			if !vis[v] {
-				for ; !vis[v]; v = mp[a[v]] {
-					vis[v] = true
-				}
-				ans--
+		for i, v := range id {
+			if v < 0 {
+				continue
 			}
+			for id[i] >= 0 {
+				nxt := id[i]
+				id[i] = -1
+				i = nxt
+			}
+			ans--
 		}
 		return ans
 	}
@@ -525,16 +526,7 @@ func sortCollections() {
 		return ans
 	}
 
-	// WQS 二分
-	// 《浅析一类二分方法》
-	// 把强制选 k 个物品的问题转换成选任意个物品的问题
-	// todo https://www.luogu.com.cn/blog/daniu/wqs-er-fen
-	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
-	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
-	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
-	// LC188 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-chong-ji-yu-wqs-er-fen-de-you-xiu-zuo-x36r/
-	// https://www.luogu.com.cn/problem/U72600
-	// https://www.luogu.com.cn/training/3495#problems
+	// WQS 二分见 dp.go
 
 	// 倍增
 	// https://www.acwing.com/problem/content/description/111/
