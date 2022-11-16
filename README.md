@@ -339,6 +339,8 @@
 
 [Codeforces Problem Topics](https://codeforces.com/blog/entry/55274)
 
+[The Ultimate Topic List(with Tutorials, Problems, and Templates)](https://blog.shahjalalshohag.com/topic-list/)
+
 [GeeksforGeeks 上的算法合集](https://www.geeksforgeeks.org/how-to-prepare-for-acm-icpc/)
 
 [Pepcy 模板](http://pepcy.cf/icpc-templates/)
