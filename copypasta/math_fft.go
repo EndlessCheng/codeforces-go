@@ -18,6 +18,7 @@ https://oi-wiki.org/math/poly/fft/
 https://cp-algorithms.com/algebra/fft.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
+用 FFT 做字符串匹配 https://zhuanlan.zhihu.com/p/267765026
 
 有关快速数论变换（NTT）以及多项式运算的内容见 math_ntt.go
 
