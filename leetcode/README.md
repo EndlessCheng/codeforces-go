@@ -4,7 +4,7 @@
 
 最近开始了个新系列：[基础算法精讲](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是视频中的题目整理，并配有对应的代码，包含 Python/Java/C++/Go 等多种语言。
 
-|视频|题目|代码|备注|
+|视频精讲|题目|代码|备注|
 |---|---|---|---|
 |[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)|[209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)|[代码](https://leetcode.cn/problems/minimum-size-subarray-sum/solution/biao-ti-xia-biao-zong-suan-cuo-qing-kan-k81nh/)||
 ||[713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)|[代码](https://leetcode.cn/problems/subarray-product-less-than-k/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-jebq/)||
