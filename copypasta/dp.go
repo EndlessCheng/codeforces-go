@@ -276,6 +276,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC120 https://leetcode.cn/problems/triangle/ https://www.luogu.com.cn/problem/P1216
 	// LC931 https://leetcode.cn/problems/minimum-falling-path-sum/
 	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
+	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
 	// 最大子段和 https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
@@ -877,6 +878,29 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
 	// 边界 dp[0][0] = 1
 	// todo https://atcoder.jp/contests/abc234/tasks/abc234_f
+
+	// O(n^2) 计算 LCP —— 如果你不想用后缀数组的话
+	// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/description/
+	lcp := func(s string) {
+		n := len(s)
+		lcp := make([][]int, n+1)
+		for i := range lcp {
+			lcp[i] = make([]int, n+1)
+		}
+		for i := n - 1; i >= 0; i-- {
+			for j := n - 1; j >= 0; j-- {
+				if s[i] == s[j] {
+					lcp[i][j] = lcp[i+1][j+1] + 1
+				}
+			}
+		}
+		// 返回 s[l1:l2] <= s[l2:r2]
+		lessEq := func(l1, l2, r2 int) bool {
+			l := lcp[l1][l2]
+			return l >= r2-l2 || s[l1+l] < s[l2+l]
+		}
+		_ = lessEq
+	}
 
 	// 回文串：中心扩展法
 	// 原理见 https://leetcode.cn/problems/palindromic-substrings/solutions/379987/hui-wen-zi-chuan-by-leetcode-solution/
@@ -2115,6 +2139,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/66/E
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
+	前缀和优化 DP
+	LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
+	LC2327 https://leetcode.cn/problems/number-of-people-aware-of-a-secret/
+	LC2463 https://leetcode.cn/problems/minimum-total-distance-traveled/
+	LC2478 https://leetcode.cn/problems/number-of-beautiful-partitions/
+
 	动态 DP
 	https://oi-wiki.org/dp/dynamic/
 	线段树维护转移矩阵 https://www.cnblogs.com/Miracevin/p/9124511.html
@@ -2697,6 +2727,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		lcs, lcsPath, longestPalindromeSubsequence,
 		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
 		distinctSubsequence,
+		lcp,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
 		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
