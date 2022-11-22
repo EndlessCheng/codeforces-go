@@ -89,6 +89,19 @@ func fenwickTree(n int) {
 		return res + 1
 	}
 
+	// 输出权值树状数组的 mex（这里的定义是第一个没出现的正数）
+	// 注意不能有重复元素
+	mex := func() (res int) {
+		const log = 17 // bits.Len(uint(n))
+		for b := 1 << (log - 1); b > 0; b >>= 1 {
+			if next := res | b; tree[next] == next {
+				res = next
+			}
+		}
+		res++ // mex
+		return
+	}
+
 	// 常数优化：O(n) 建树
 	// https://oi-wiki.org/ds/fenwick/#tricks
 	init := func(a []int) { // len(tree) = len(a) + 1
@@ -146,7 +159,41 @@ func fenwickTree(n int) {
 		return invCnt
 	}
 
-	_ = []interface{}{add, sum, query, addRange, kth, init, cntInversions}
+	// 通过邻项交换，把数组 a 变成数组 b，需要的最小操作次数
+	// 如果无法做到，返回 -1
+	// https://atcoder.jp/contests/arc120/tasks/arc120_c
+	minSwap := func(a, b []int) (res int64) {
+		tree := make([]int, len(a)+1)
+		add := func(i int) {
+			for i++; i < len(tree); i += i & -i {
+				tree[i]++
+			}
+		}
+		sum := func(i int) (res int) {
+			for ; i > 0; i &= i - 1 {
+				res += tree[i]
+			}
+			return
+		}
+
+		pos := map[int][]int{}
+		for i, v := range a {
+			pos[v] = append(pos[v], i)
+		}
+		for i, v := range b {
+			p := pos[v]
+			if len(p) == 0 {
+				return -1
+			}
+			j := p[0]
+			pos[v] = p[1:]
+			res += int64(i - sum(j))
+			add(j)
+		}
+		return
+	}
+
+	_ = []interface{}{add, sum, query, addRange, kth, mex, init, cntInversions, minSwap}
 }
 
 // 给一个数组 a 和一些询问 qs，对每个询问计算 mex(a[l..r])
