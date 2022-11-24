@@ -57,3 +57,11 @@ func IsDebugging() bool {
 	}
 	return false
 }
+
+func TransEdges(edges [][2]int) [][]int {
+	es := make([][]int, len(edges))
+	for i, e := range edges {
+		es[i] = []int{e[0], e[1]}
+	}
+	return es
+}
