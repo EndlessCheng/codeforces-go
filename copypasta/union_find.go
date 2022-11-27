@@ -238,8 +238,9 @@ func moveRobot(start ufPoint, command string) ufPoint {
 // 维护的可以是集合的大小、最值、XOR、GCD 等
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 // https://codeforces.com/problemset/problem/1609/D
-// LC 周赛 203D https://leetcode-cn.com/contest/weekly-contest-203/problems/find-latest-group-of-size-m/
+// LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 哈希表写法 https://leetcode-cn.com/problems/groups-of-strings/
+// https://atcoder.jp/contests/arc107/tasks/arc107_c
 func _(n int) {
 	groups := n
 	maxSize := 1
