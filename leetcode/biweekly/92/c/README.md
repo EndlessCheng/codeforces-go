@@ -1,4 +1,4 @@
-下午两点在B站讲这场双周赛的题目，[欢迎关注](https://space.bilibili.com/206214)~
+[视频讲解](https://www.bilibili.com/video/BV1uG4y157Rc) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
 
 ---
 
@@ -12,28 +12,28 @@
 class Solution:
     def bestClosingTime(self, customers: str) -> int:
         ans = 0
-        max_cost = cost = customers.count('Y')
-        for i, c in enumerate(customers):
+        min_cost = cost = customers.count('Y')
+        for i, c in enumerate(customers, 1):
             if c == 'N': cost += 1
             else:
                 cost -= 1
-                if cost < max_cost:
-                    cost = max_cost
-                    ans = i + 1
+                if cost < min_cost:
+                    cost = min_cost
+                    ans = i
         return ans
 ```
 
 ```go [sol1-Go]
 func bestClosingTime(customers string) (ans int) {
 	cost := strings.Count(customers, "Y")
-	maxCost := cost
+	minCost := cost
 	for i, c := range customers {
 		if c == 'N' {
 			cost++
 		} else {
 			cost--
-			if cost < maxCost {
-				cost = maxCost
+			if cost < minCost {
+				cost = minCost
 				ans = i + 1
 			}
 		}
