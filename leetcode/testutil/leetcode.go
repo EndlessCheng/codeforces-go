@@ -234,6 +234,10 @@ func isTLE(f func()) bool {
 // rawExamples[i] = 输入+输出
 // 若反射出来的函数或 rawExamples 数据不合法，则会返回一个非空的 error，否则返回 nil
 func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]string, targetCaseNum int) (err error) {
+	if len(rawExamples) == 0 {
+		return fmt.Errorf("test cases is empty")
+	}
+
 	fType := reflect.TypeOf(f)
 	if fType.Kind() != reflect.Func {
 		return fmt.Errorf("f must be a function")
@@ -368,6 +372,10 @@ func RunLeetCodeFuncWithFile(t *testing.T, f interface{}, filePath string, targe
 
 // 若反射出来的函数或 rawExamples 数据不合法，则会返回一个非空的 error，否则返回 nil
 func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExamples [][3]string, targetCaseNum int) (err error) {
+	if len(rawExamples) == 0 {
+		return fmt.Errorf("test cases is empty")
+	}
+
 	cType := reflect.TypeOf(constructor)
 	if cType.Kind() != reflect.Func {
 		return fmt.Errorf("constructor must be a function")
