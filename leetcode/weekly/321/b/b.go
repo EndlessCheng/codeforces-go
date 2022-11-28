@@ -2,15 +2,14 @@ package main
 
 // https://space.bilibili.com/206214
 func appendCharacters(s, t string) int {
-	i, n := 0, len(s)
-	for j := range t {
-		for i < n && s[i] != t[j] {
-			i++
+	j, m := 0, len(t)
+	for _, c := range s {
+		if byte(c) == t[j] { // s 的字符肯定匹配的是 t 的前缀
+			j++
+			if j == m {
+				return 0
+			}
 		}
-		if i == n {
-			return len(t) - j
-		}
-		i++
 	}
-	return 0
+	return m - j
 }

@@ -1,4 +1,10 @@
+[视频讲解](https://www.bilibili.com/video/BV1sD4y1e7pr/) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
+
+---
+
 贪心，双指针遍历 $s$ 和 $t$，$t[j]$ 应匹配 $i$ 尽量小（但大于上一个的匹配的位置）的 $s[i]$。
+
+第一种写法：
 
 ```py [sol1-Python3]
 class Solution:
@@ -24,6 +30,34 @@ func appendCharacters(s, t string) int {
 		i++
 	}
 	return 0
+}
+```
+
+第二种写法：
+
+```py [sol2-Python3]
+class Solution:
+    def appendCharacters(self, s: str, t: str) -> int:
+        j, m = 0, len(t)
+        for c in s:
+            if c == t[j]:
+                j += 1
+                if j == m: return 0
+        return m - j
+```
+
+```go [sol2-Go]
+func appendCharacters(s, t string) int {
+	j, m := 0, len(t)
+	for _, c := range s {
+		if byte(c) == t[j] { // s 的字符肯定匹配的是 t 的前缀
+			j++
+			if j == m {
+				return 0
+			}
+		}
+	}
+	return m - j
 }
 ```
 

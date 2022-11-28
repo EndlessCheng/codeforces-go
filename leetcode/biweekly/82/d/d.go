@@ -52,11 +52,10 @@ func validSubarraySize2(nums []int, threshold int) int {
 	sort.Slice(a, func(i, j int) bool { return a[i].v > a[j].v })
 
 	fa := make([]int, n+1)
-	sz := make([]int, n+1)
 	for i := range fa {
 		fa[i] = i
-		sz[i] = 1
 	}
+	sz := make([]int, n+1)
 	var find func(int) int
 	find = func(x int) int {
 		if fa[x] != x {
@@ -68,9 +67,9 @@ func validSubarraySize2(nums []int, threshold int) int {
 		i := p.i
 		j := find(i + 1)
 		fa[i] = j // 合并 i 和 i+1
-		sz[j] += sz[i]
-		if p.v > threshold/(sz[j]-1) {
-			return sz[j] - 1
+		sz[j] += sz[i] + 1
+		if p.v > threshold/sz[j] {
+			return sz[j]
 		}
 	}
 	return -1
