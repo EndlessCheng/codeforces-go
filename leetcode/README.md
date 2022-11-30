@@ -20,6 +20,10 @@
 |[链表 - 反转系列](https://www.bilibili.com/video/BV1sd4y1x7KN/)|[206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)|[代码](https://leetcode.cn/problems/reverse-linked-list/solutions/1992225/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-o5zy/)||
 ||[92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)|[代码](https://leetcode.cn/problems/reverse-linked-list-ii/solutions/1992226/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-teqq/)||
 ||[25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)|[代码](https://leetcode.cn/problems/reverse-nodes-in-k-group/solutions/1992228/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-plfs/)||
+|[链表 - 快慢指针](https://www.bilibili.com/video/BV1KG4y1G7cu/)|[876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/)|[代码](https://leetcode.cn/problems/middle-of-the-linked-list/solutions/1999265/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-wzwm/)||
+||[141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)|[代码](https://leetcode.cn/problems/linked-list-cycle/solutions/1999269/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-c4sw/)||
+||[142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)|[代码](https://leetcode.cn/problems/linked-list-cycle-ii/solutions/1999271/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-nvsq/)||
+||[143. 重排链表](https://leetcode.cn/problems/reorder-list/)|[代码](https://leetcode.cn/problems/reorder-list/solutions/1999276/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-u66q/)||
 
 ---
 
