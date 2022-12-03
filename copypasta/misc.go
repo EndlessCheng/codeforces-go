@@ -730,6 +730,39 @@ func minKnightMoves(x, y int, abs func(int) int, max func(int, int) int) int {
 	return ans
 }
 
+// 网格图
+// 从 (sx,sy) 出发，向右下走，遇到边界反弹，返回到达 (tx,ty) 的最小步数
+// 若无法到达，返回 -1
+func minDiagonalMove(n, m, sx, sy, tx, ty int) (step int) {
+	vis := make([][][2][2]bool, n)
+	for i := range vis {
+		vis[i] = make([][2][2]bool, m)
+	}
+	dx, dy := 1, 1
+	vis[sx][sy][dx][dy] = true
+	x, y := sx, sy
+	for x != tx || y != ty {
+		step++
+		xx, yy := x+dx, y+dy
+		if xx < 0 || xx >= n || yy < 0 || yy >= m {
+			if xx < 0 || xx >= n {
+				dx = -dx
+			}
+			if yy < 0 || yy >= m {
+				dy = -dy
+			}
+			//xx, yy = x+dx, y+dy // 有的题目直接反弹
+			xx, yy = x, y // 有的题目停一步
+		}
+		x, y = xx, yy
+		if vis[x][y][(dx+1)/2][(dy+1)/2] {
+			return -1
+		}
+		vis[x][y][(dx+1)/2][(dy+1)/2] = true
+	}
+	return
+}
+
 // 判断 6 个矩形是否为长方体的 6 个面
 // NEERC04 https://www.luogu.com.cn/problem/UVA1587
 func isCuboid(rect [][2]int) bool {
