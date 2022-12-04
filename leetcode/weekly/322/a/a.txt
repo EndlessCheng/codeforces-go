@@ -1,0 +1,11 @@
+"leetcode exercises sound delightful"
+true
+
+"eetcode"
+true
+
+"Leetcode is cool"
+false
+
+
+
