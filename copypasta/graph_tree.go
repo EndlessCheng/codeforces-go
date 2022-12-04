@@ -250,6 +250,16 @@ func (*tree) minPathCover(g [][]int) int {
 // 性质：
 //    直径的中点到所有叶子的距离和最小
 //    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
+//
+// 为什么不能用类似找直径的做法求**图**的直径呢？比如做两次 BFS
+// 你可以用这个例子试一下：
+// 1 2
+// 1 3
+// 2 4
+// 3 5
+// 2 5
+// 从 1 出发跑 BFS，是可能会把 5 当成最远点的，然后从 5 出发跑 BFS 就算错了，正确的应该是从 4 出发跑 BFS
+//
 // 随机树的直径 https://zhuanlan.zhihu.com/p/398621082
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
@@ -257,6 +267,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 转换的好题 https://codeforces.com/problemset/problem/734/E
 // 转换成求部分直径 https://codeforces.com/problemset/problem/1617/E https://oeis.org/A072339
 // 必须边 https://www.luogu.com.cn/problem/P3304 https://www.acwing.com/problem/content/description/391/
+// 求树中任意一个与 x 距离为 k 的点 https://www.luogu.com.cn/problem/T238762?contestId=65460
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)
@@ -639,6 +650,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root int, upp
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
 // 模板题 https://www.luogu.com.cn/problem/P3379
+// https://codeforces.com/problemset/problem/519/E
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
 // https://codeforces.com/problemset/problem/33/D
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
@@ -1034,6 +1046,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 // todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
+// 结合广义圆方树 https://codeforces.com/problemset/problem/487/E
 func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
 	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
 	type node struct{ depth, size, hson, fa, top, dfn int }
@@ -1288,7 +1301,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // 模板题 https://www.luogu.com.cn/problem/U41492
 //       https://codeforces.com/problemset/problem/600/E https://www.acwing.com/problem/content/3191/
 // todo HNOI09 梦幻布丁 https://www.luogu.com.cn/problem/P3201 https://www.acwing.com/problem/content/2156/
-// 所有子树 mex LC2003/周赛258D https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// 所有子树 mex LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // todo https://ac.nowcoder.com/acm/contest/4010/E
