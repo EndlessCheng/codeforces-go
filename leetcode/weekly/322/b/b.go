@@ -1,18 +1,23 @@
 package main
 
-import "sort"
-
 // https://space.bilibili.com/206214
 func dividePlayers(skill []int) (ans int64) {
-	sort.Ints(skill)
-	n := len(skill)
-	sum := skill[0] + skill[n-1]
-	for i := 0; i < n/2; i++ {
-		x, y := skill[i], skill[n-1-i]
-		if x+y != sum {
+	total := 0
+	cnt := map[int]int{}
+	for _, x := range skill {
+		total += x
+		cnt[x]++
+	}
+	m := len(skill) / 2
+	if total%m > 0 {
+		return -1
+	}
+	s := total / m
+	for x, c := range cnt {
+		if c != cnt[s-x] {
 			return -1
 		}
-		ans += int64(x * y)
+		ans += int64(c * x * (s - x))
 	}
-	return
+	return ans / 2
 }
