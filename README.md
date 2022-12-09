@@ -1,6 +1,6 @@
 # codeforces-go 💭💡🎈
 
-[【基础算法精讲】](https://www.bilibili.com/video/BV1AP41137w7/)B站连载中~欢迎一键三连！
+[【基础算法精讲】](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)B站连载中~欢迎一键三连！
 
 ## 算法 Algorithm
 
