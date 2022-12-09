@@ -13,7 +13,6 @@
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/contest/*
 // @match        https://leetcode.cn/contest/*
-// @match        https://www.acwing.com/problem/content/*
 // ==/UserScript==
 
 (function () {
@@ -120,6 +119,8 @@
                 .replaceAll("Mrs. ", "Mrs.")
                 .replaceAll("Ms. ", "Ms.")
                 .replaceAll("Dr. ", "Dr.")
+                .replaceAll("Co. ", "Co.")
+                .replaceAll("Ltd. ", "Ltd.")
                 .replaceAll("i. e. ", "i.e.")
                 .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
                 .replaceAll("i.e. ", "i.e.")
