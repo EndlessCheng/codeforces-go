@@ -6,12 +6,20 @@ func longestSquareStreak(nums []int) (ans int) {
 	for _, x := range nums {
 		set[x] = true
 	}
-	for x := range set {
-		cnt := 1
-		for x *= x; set[x]; x *= x {
-			cnt++
+	dp := map[int]int{}
+	var f func(int) int
+	f = func(x int) int {
+		if !set[x] {
+			return 0
 		}
-		ans = max(ans, cnt)
+		if v, ok := dp[x]; ok {
+			return v
+		}
+		dp[x] = 1 + f(x*x)
+		return dp[x]
+	}
+	for x := range set {
+		ans = max(ans, f(x))
 	}
 	if ans == 1 {
 		return -1
@@ -19,9 +27,4 @@ func longestSquareStreak(nums []int) (ans int) {
 	return
 }
 
-func max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
-}
+func max(a, b int) int { if b > a { return b }; return a }
