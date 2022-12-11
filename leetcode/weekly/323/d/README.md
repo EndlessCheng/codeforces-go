@@ -244,7 +244,7 @@ func maxPoints(grid [][]int, queries []int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$O(mn\log mn + k\log k)$，其中 $m$ 和 $n$ 分别为矩阵 $\textit{grid}$ 的行数和列数，$k$ 为 $\textit{queries}$ 的长度。
-- 空间复杂度：$O(mn)$。
+- 空间复杂度：$O(mn+k)$。
 
 # 方法二：离线询问 + 最小堆
 
@@ -252,7 +252,7 @@ func maxPoints(grid [][]int, queries []int) []int {
 
 循环结束时，出堆的元素个数就是答案。
 
-代码实现时，可以用 $\textit{grid}$ 作为 $\textit{vis}$ 数组，从而优化空间复杂度。
+代码实现时，可以用 $\textit{grid}$ 作为 $\textit{vis}$ 数组。
 
 ```py [sol2-Python3]
 class Solution:
@@ -392,5 +392,5 @@ func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1];
 
 #### 复杂度分析
 
-- 时间复杂度：$O(mn\log(m+n) + k\log k)$，其中 $m$ 和 $n$ 分别为矩阵 $\textit{grid}$ 的行数和列数，$k$ 为 $\textit{queries}$ 的长度。类似网格图上的 BFS，堆里面至多有 $O(m+n)$ 个元素。
-- 空间复杂度：$O(m+n+k)$。
+- 时间复杂度：$O(mn\log mn + k\log k)$，其中 $m$ 和 $n$ 分别为矩阵 $\textit{grid}$ 的行数和列数，$k$ 为 $\textit{queries}$ 的长度。堆里面至多有 $O(mn)$ 个元素（想象一个蛇形的路径，上面都是 $1$，周围都是比 $1$ 大的）。
+- 空间复杂度：$O(mn+k)$。
