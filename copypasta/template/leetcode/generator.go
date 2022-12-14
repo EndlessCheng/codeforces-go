@@ -420,6 +420,7 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				}
 				parsePreNode(o)
 
+				// 只关心「解释」之前的内容
 				data := rawData.String()
 				if i := strings.Index(data, "解"); i >= 0 { // 解释
 					data = data[:i]
@@ -427,9 +428,11 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 				if i := strings.Index(data, "提"); i >= 0 { // 提示
 					data = data[:i]
 				}
-
-				// 去掉前两个字和冒号
 				data = strings.TrimSpace(data)
+
+				// 去掉前两个汉字
+				data = data[6:]
+				// 去掉冒号
 				if i := strings.IndexRune(data, '：'); i >= 0 {
 					data = data[i+3:]
 				} else if i := strings.IndexRune(data, ':'); i >= 0 {
@@ -438,8 +441,11 @@ func (p *problem) parseHTML(session *grequests.Session) (err error) {
 
 				i := strings.Index(data, "输") // 输出
 				p.sampleIns = append(p.sampleIns, p.parseSampleText(data[:i], true))
+				data = data[i:]
 
-				// 去掉前两个字和冒号
+				// 去掉前两个汉字
+				data = data[6:]
+				// 去掉冒号
 				if i := strings.IndexRune(data, '：'); i >= 0 {
 					data = data[i+3:]
 				} else if i := strings.IndexRune(data, ':'); i >= 0 {
