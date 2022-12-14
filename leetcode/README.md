@@ -33,7 +33,7 @@
 ||[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)|[代码](https://leetcode.cn/problems/symmetric-tree/solutions/2015063/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-6dq5/)||
 ||[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)|[代码](https://leetcode.cn/problems/balanced-binary-tree/solutions/2015068/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-c3wj/)||
 ||[199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)|[代码](https://leetcode.cn/problems/binary-tree-right-side-view/solutions/2015061/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-r1nc/)||
-|[二叉树与递归 - 前序/中序/后序](https://www.bilibili.com/video/BV14G411P7C1/)|[98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)|[代码](https://leetcode.cn/problems/validate-binary-search-tree/solutions/2020306/qian-xu-zhong-xu-hou-xu-san-chong-fang-f-yxvh/)||
+|[二叉树与递归 - 前序/中序/后序](https://www.bilibili.com/video/BV14G411P7C1/)|[98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)|[代码](https://leetcode.cn/problems/validate-binary-search-tree/solutions/2020306/qian-xu-zhong-xu-hou-xu-san-chong-fang-f-yxvh/)|三种方法|
 
 ---
 
