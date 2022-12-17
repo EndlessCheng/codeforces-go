@@ -34,6 +34,8 @@
 ||[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)|[代码](https://leetcode.cn/problems/balanced-binary-tree/solutions/2015068/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-c3wj/)||
 ||[199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)|[代码](https://leetcode.cn/problems/binary-tree-right-side-view/solutions/2015061/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-r1nc/)||
 |[二叉树与递归 - 前序/中序/后序](https://www.bilibili.com/video/BV14G411P7C1/)|[98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)|[代码](https://leetcode.cn/problems/validate-binary-search-tree/solutions/2020306/qian-xu-zhong-xu-hou-xu-san-chong-fang-f-yxvh/)|三种方法|
+|[二叉树与递归 - 最近公共祖先](https://www.bilibili.com/video/BV1W44y1Z7AR/)|[236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)|[代码](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/solutions/2023872/fen-lei-tao-lun-luan-ru-ma-yi-ge-shi-pin-2r95/)||
+|[]()|[235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)|[代码](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/solutions/2023873/zui-jin-gong-gong-zu-xian-yi-ge-shi-pin-8h2zc/)||
 
 ---
 
