@@ -17,13 +17,11 @@
 ```py [sol1-Python3]
 class Solution:
     def isPossible(self, n: int, edges: List[List[int]]) -> bool:
-        g, deg = defaultdict(set), Counter()
+        g = defaultdict(set)
         for x, y in edges:
             g[x].add(y)
             g[y].add(x)
-            deg[x] += 1
-            deg[y] += 1
-        odd = [i for i, d in deg.items() if d % 2]
+        odd = [i for i, nb in g.items() if len(nb) % 2]
         m = len(odd)
         if m == 0: return True
         if m == 2:
@@ -39,21 +37,91 @@ class Solution:
         return False
 ```
 
+```java [sol1-Java]
+class Solution {
+    public boolean isPossible(int n, List<List<Integer>> edges) {
+        var g = new Set[n + 1];
+        Arrays.setAll(g, e -> new HashSet<Integer>());
+        for (var e : edges) {
+            int x = e.get(0), y = e.get(1);
+            g[x].add(y);
+            g[y].add(x);
+        }
+        var odd = new ArrayList<Integer>();
+        for (var i = 1; i <= n; ++i)
+            if (g[i].size() % 2 > 0) odd.add(i);
+        var m = odd.size();
+        if (m == 0) return true;
+        if (m == 2) {
+            int x = odd.get(0), y = odd.get(1);
+            if (!g[x].contains(y)) return true;
+            for (var i = 1; i <= n; ++i)
+                if (i != x && i != y && !g[i].contains(x) && !g[i].contains(y))
+                    return true;
+            return false;
+        }
+        if (m == 4) {
+            int a = odd.get(0), b = odd.get(1), c = odd.get(2), d = odd.get(3);
+            return !g[a].contains(b) && !g[c].contains(d) ||
+                    !g[a].contains(c) && !g[b].contains(d) ||
+                    !g[a].contains(d) && !g[b].contains(c);
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    bool isPossible(int n, vector<vector<int>> &edges) {
+        unordered_set<int> g[n + 1];
+        for (auto &e : edges) {
+            int x = e[0], y = e[1];
+            g[x].insert(y);
+            g[y].insert(x);
+        }
+        vector<int> odd;
+        for (int i = 1; i <= n; ++i)
+            if (g[i].size() % 2) odd.push_back(i);
+        int m = odd.size();
+        if (m == 0) return true;
+        if (m == 2) {
+            int x = odd[0], y = odd[1];
+            if (!g[x].count(y)) return true;
+            for (int i = 1; i <= n; ++i)
+                if (i != x && i != y && !g[i].count(x) && !g[i].count(y))
+                    return true;
+            return false;
+        }
+        if (m == 4) {
+            int a = odd[0], b = odd[1], c = odd[2], d = odd[3];
+            return !g[a].count(b) && !g[c].count(d) ||
+                   !g[a].count(c) && !g[b].count(d) ||
+                   !g[a].count(d) && !g[b].count(c);
+        }
+        return false;
+    }
+};
+```
+
 ```go [sol1-Go]
 func isPossible(n int, edges [][]int) bool {
-	type pair struct{ x, y int }
-	has := map[pair]bool{}
-	deg := make([]int, n+1)
+	g := map[int]map[int]bool{}
 	for _, e := range edges {
 		x, y := e[0], e[1]
-		has[pair{x, y}] = true
-		has[pair{y, x}] = true
-		deg[x]++
-		deg[y]++
+		if g[x] == nil {
+			g[x] = map[int]bool{}
+		}
+		g[x][y] = true
+		if g[y] == nil {
+			g[y] = map[int]bool{}
+		}
+		g[y][x] = true
 	}
 	odd := []int{}
-	for i, d := range deg {
-		if d%2 > 0 {
+	for i, nb := range g {
+		if len(nb)%2 > 0 {
 			odd = append(odd, i)
 		}
 	}
@@ -63,11 +131,11 @@ func isPossible(n int, edges [][]int) bool {
 	}
 	if m == 2 {
 		x, y := odd[0], odd[1]
-		if !has[pair{x, y}] {
+		if !g[x][y] {
 			return true
 		}
 		for i := 1; i <= n; i++ {
-			if i != x && i != y && !has[pair{i, x}] && !has[pair{i, y}] {
+			if i != x && i != y && !g[i][x] && !g[i][y] {
 				return true
 			}
 		}
@@ -75,7 +143,7 @@ func isPossible(n int, edges [][]int) bool {
 	}
 	if m == 4 {
 		a, b, c, d := odd[0], odd[1], odd[2], odd[3]
-		return !has[pair{a, b}] && !has[pair{c, d}] || !has[pair{a, c}] && !has[pair{b, d}] || !has[pair{a, d}] && !has[pair{b, c}]
+		return !g[a][b] && !g[c][d] || !g[a][c] && !g[b][d] || !g[a][d] && !g[b][c]
 	}
 	return false
 }

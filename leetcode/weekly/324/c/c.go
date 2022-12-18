@@ -2,19 +2,21 @@ package main
 
 // https://space.bilibili.com/206214
 func isPossible(n int, edges [][]int) bool {
-	type pair struct{ x, y int }
-	has := map[pair]bool{}
-	deg := make([]int, n+1)
+	g := map[int]map[int]bool{}
 	for _, e := range edges {
 		x, y := e[0], e[1]
-		has[pair{x, y}] = true
-		has[pair{y, x}] = true
-		deg[x]++
-		deg[y]++
+		if g[x] == nil {
+			g[x] = map[int]bool{}
+		}
+		g[x][y] = true
+		if g[y] == nil {
+			g[y] = map[int]bool{}
+		}
+		g[y][x] = true
 	}
 	odd := []int{}
-	for i, d := range deg {
-		if d%2 > 0 {
+	for i, nb := range g {
+		if len(nb)%2 > 0 {
 			odd = append(odd, i)
 		}
 	}
@@ -24,11 +26,11 @@ func isPossible(n int, edges [][]int) bool {
 	}
 	if m == 2 {
 		x, y := odd[0], odd[1]
-		if !has[pair{x, y}] {
+		if !g[x][y] {
 			return true
 		}
 		for i := 1; i <= n; i++ {
-			if i != x && i != y && !has[pair{i, x}] && !has[pair{i, y}] {
+			if i != x && i != y && !g[i][x] && !g[i][y] {
 				return true
 			}
 		}
@@ -36,7 +38,7 @@ func isPossible(n int, edges [][]int) bool {
 	}
 	if m == 4 {
 		a, b, c, d := odd[0], odd[1], odd[2], odd[3]
-		return !has[pair{a, b}] && !has[pair{c, d}] || !has[pair{a, c}] && !has[pair{b, d}] || !has[pair{a, d}] && !has[pair{b, c}]
+		return !g[a][b] && !g[c][d] || !g[a][c] && !g[b][d] || !g[a][d] && !g[b][c]
 	}
 	return false
 }
