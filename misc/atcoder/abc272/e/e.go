@@ -22,7 +22,7 @@ func run(_r io.Reader, _w io.Writer) {
 		if v < 0 {
 			l = (-v + i - 1) / i
 		}
-		r := min(m, (n-v)/i)
+		r := min(m, (n-1-v)/i)
 		for j := l; j <= r; j++ {
 			b[j] = append(b[j], v+j*i)
 		}
