@@ -19,6 +19,7 @@
 /zdash
 /main.go
 /main_test.go
+/drop.go
 /helper.go
 /zip.go
 /main/main.go
