@@ -1,0 +1,11 @@
+["aba","aabb","abcd","bac","aabc"]
+2
+
+["aabb","ab","ba"]
+3
+
+["nba","cba","dba"]
+0
+
+
+
