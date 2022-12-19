@@ -137,6 +137,10 @@ https://oeis.org/A050295 Number of strongly triple-free subsets of {1, 2, ..., n
 https://oeis.org/A005245 The (Mahler-Popken) complexity of n: minimal number of 1's required to build n using + and *
 	3 log_3 n <= a(n) <= 3 log_2 n
 
+https://oeis.org/A001108 a(n)-th triangular number is a square: a(n+1) = 6*a(n) - a(n-1) + 2, with a(0) = 0, a(1) = 1
+https://oeis.org/A001109 a(n)^2 is a triangular number: a(n) = 6*a(n-1) - a(n-2) with a(0)=0, a(1)=1
+https://oeis.org/A001110 Square triangular numbers: numbers that are both triangular and square
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -189,6 +193,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	数组中最小的 LCM(ai,aj) https://codeforces.com/problemset/problem/1154/G
 	分拆与 LCM  https://ac.nowcoder.com/acm/contest/5961/D https://ac.nowcoder.com/discuss/439005
 	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
+	todo https://atcoder.jp/contests/abc162/tasks/abc162_e
+	     https://atcoder.jp/contests/abc206/tasks/abc206_e
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
@@ -1415,6 +1421,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// EXTRA: https://oeis.org/A008475 质因数分解中，各个 p^e 项之和
 
 		// EXTRA: https://oeis.org/A001414 Integer log of n: sum of primes dividing n (with repetition)
+		// 质因子分解，因子之和
+		// https://oeis.org/A029908 不动点
 		sopfr := func(x int) (s int) {
 			for x > 1 {
 				for p := lpf[x]; lpf[x] == p; x /= p {
@@ -1458,6 +1466,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A007875 Number of ways of writing n as p*q, with p <= q, gcd(p, q) = 1
 	//                          a(n) = 2^(omega(n)-1)
 	//                          相关题目 https://www.luogu.com.cn/problem/T192681?contestId=38351 https://www.luogu.com.cn/blog/LonecharmRiver/Elevator
+	// max omega(<10^n)
+	// 2,3,4,5,6,7,8,8,9             1~9
+	// 10,10,11,12,12,13,13,14,15    10~18
 	distinctPrimesCountAll := func() {
 		const mx int = 1e6
 		omega := make([]int, mx+1) // int8
