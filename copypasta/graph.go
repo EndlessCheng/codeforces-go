@@ -38,6 +38,8 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 倒水问题 https://www.luogu.com.cn/problem/P1432
 顶点有限制的生成树 https://codeforces.com/problemset/problem/723/F
 
+奇妙 BFS https://codeforces.com/problemset/problem/1651/D
+
 竞赛图
 竞赛图的一些性质 https://www.cnblogs.com/acha/p/9042984.html
 - SCC 的拓扑序是唯一的
@@ -522,10 +524,10 @@ func (*graph) shortestCycleBFS(n int, g [][]int) int {
 // https://algs4.cs.princeton.edu/42digraph/DirectedEulerianCycle.java.html
 // NOTE: 递归前对边排序可保证输出的是字典序最小的路径
 // 模板题（输出顶点）
-//   无向图 https://www.luogu.com.cn/problem/P2731 https://www.luogu.com.cn/problem/P1341
-//   有向图 https://www.luogu.com.cn/problem/P7771 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
+// - 无向图 https://www.luogu.com.cn/problem/P2731 https://www.luogu.com.cn/problem/P1341
+// - 有向图 https://www.luogu.com.cn/problem/P7771 LC332 https://leetcode-cn.com/problems/reconstruct-itinerary/solution/javadfsjie-fa-by-pwrliang/
 // 模板题（输出边）
-//   有向图 LC2097/周赛270D https://leetcode-cn.com/problems/valid-arrangement-of-pairs/
+// - 有向图 LC2097 https://leetcode-cn.com/problems/valid-arrangement-of-pairs/
 // 构造 https://ac.nowcoder.com/acm/contest/4010/H
 // 构造 https://codeforces.com/problemset/problem/1511/D
 // 虚点 https://codeforces.com/problemset/problem/723/E
@@ -976,6 +978,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 建模 https://www.luogu.com.cn/problem/P4644
 // 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
+// 还能再走多远？LC882 https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/
 // 建模【好题】https://codeforces.com/contest/1528/problem/D
 // 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
@@ -995,7 +998,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
 // 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
 // todo https://codeforces.com/problemset/problem/1005/F
-// todo https://codeforces.com/problemset/problem/545/E
+// todo MST https://codeforces.com/problemset/problem/545/E
 func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	type neighbor struct {
 		to int
@@ -1107,7 +1110,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
-	// LC2045/周赛263D https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
+	// LC2045 https://leetcode-cn.com/problems/second-minimum-time-to-reach-destination/
 	// 次短路计数 https://www.acwing.com/problem/content/385/ https://codeforces.com/contest/1650/problem/G
 	// 长度不超过最短路长度+K 的路径个数 [NOIP2017 提高组] 逛公园 https://www.luogu.com.cn/problem/P3953
 	{
@@ -1230,6 +1233,7 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3385
 // 用到 Bellman-Ford 的思想 LC1928 https://leetcode.cn/problems/minimum-cost-to-reach-destination-in-time/
+// 边权递增最短路 http://acm.hdu.edu.cn/showproblem.php?pid=4479
 //
 // EXTRA: 差分约束系统
 // 若有 Xi-Xj<=Ck，则连一条有向边 j->i，边权为 Ck
@@ -1305,6 +1309,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 // https://codeforces.com/problemset/problem/1204/C
 // 理解原理 https://codeforces.com/problemset/problem/295/B
+// todo https://atcoder.jp/contests/abc243/tasks/abc243_e
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
@@ -1321,7 +1326,7 @@ func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][
 }
 
 // 位压缩版 O(n^3/w)
-// LC双周赛67C https://leetcode-cn.com/problems/detonate-the-maximum-bombs/
+// LC2101 https://leetcode-cn.com/problems/detonate-the-maximum-bombs/
 func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 	vs := make([]Bitset, n) // vs[i] 表示从 i 出发可以到达的节点
 	for i := range vs {
@@ -1452,6 +1457,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // https://oi-wiki.org/graph/mst/#kruskal
 // 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
+// 需要一些数论知识 https://atcoder.jp/contests/abc210/tasks/abc210_e
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
 // 判断给定的边是否均在同一颗 MST 中 https://codeforces.com/problemset/problem/891/C
 // 二分图无环 https://codeforces.com/problemset/problem/1408/E
@@ -1896,7 +1902,7 @@ func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (m
 	}
 	build()
 	for i := range points {
-		points[i].x = - points[i].x
+		points[i].x = -points[i].x
 	}
 	build()
 	for i := range points {
@@ -2144,7 +2150,8 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // https://oi-wiki.org/graph/bi-graph/#_3
 // https://cp-algorithms.com/graph/bipartite-check.html
 //
-// 模板题 https://codeforces.com/problemset/problem/1093/D
+// 模板题 LC886 https://leetcode.cn/problems/possible-bipartition/
+// https://codeforces.com/problemset/problem/1093/D
 // https://www.luogu.com.cn/problem/P6185
 // https://codeforces.com/problemset/problem/1537/F
 // 转换 https://codeforces.com/problemset/problem/85/E
@@ -2266,6 +2273,7 @@ DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰�
 //
 // 模板题 https://www.luogu.com.cn/problem/P3386
 // LCP04 https://leetcode-cn.com/problems/broken-board-dominoes/
+// LC2123 https://leetcode.cn/problems/minimum-operations-to-remove-adjacent-ones-in-matrix/
 //【网络流 24 题】飞行员配对方案 https://loj.ac/p/6000 https://www.luogu.com.cn/problem/P2756
 //【网络流 24 题】骑士共存（这题 Dinic 更快）https://loj.ac/p/6226 https://www.luogu.com.cn/problem/P3355
 // todo https://codeforces.com/contest/1404/problem/E
@@ -2354,8 +2362,12 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // http://acm.hdu.edu.cn/showproblem.php?pid=2426
 // EXTRA: 带权二分图最小边覆盖
 // 转换成带权二分图最大匹配 https://cstheory.stackexchange.com/questions/14690/reducing-a-minimum-cost-edge-cover-problem-to-minimum-cost-weighted-bipartie-per
-// LC1595/周赛207D https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
-// LC1947/周赛251C https://leetcode-cn.com/problems/maximum-compatibility-score-sum/
+// LC1066 https://leetcode.cn/problems/campus-bikes-ii/
+// LC1595 https://leetcode-cn.com/problems/minimum-cost-to-connect-two-groups-of-points/solution/kai-kai-yan-jie-zhuan-huan-cheng-zui-da-dai-quan-p/
+// LC1879 https://leetcode.cn/problems/minimum-xor-sum-of-two-arrays/
+// LC1947 https://leetcode-cn.com/problems/maximum-compatibility-score-sum/
+// LC2172 https://leetcode.cn/problems/maximum-and-sum-of-array/
+// LC2403 https://leetcode.cn/problems/minimum-time-to-kill-all-monsters/
 // todo GCJ21 Round2D https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc2de
 func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match []int, sum int64) {
 	const inf int64 = 1e18
@@ -2530,8 +2542,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
-// DAG DP LC2050/周赛264D https://leetcode-cn.com/problems/parallel-courses-iii/
-//        LC1857/周赛240D https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/
+// DAG DP LC2050 https://leetcode-cn.com/problems/parallel-courses-iii/
+//        LC1857 https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/
 //        https://ac.nowcoder.com/acm/contest/6384/C
 //        https://www.luogu.com.cn/problem/P3387
 //        https://codeforces.com/problemset/problem/721/C
@@ -2859,13 +2871,14 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 //
-// LC2127/周赛274D https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
-// 周赛304C 单源最短路 https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/
-// 周赛304D 最长环 https://leetcode.cn/problems/longest-cycle-in-a-graph/
+// LC2127 https://leetcode-cn.com/problems/maximum-employees-to-be-invited-to-a-meeting/
+// LC2359 单源最短路 https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/
+// LC2360 最长环 https://leetcode.cn/problems/longest-cycle-in-a-graph/
 // 计数 https://codeforces.com/problemset/problem/711/D
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // 拆点 https://codeforces.com/problemset/problem/1200/F
+// https://atcoder.jp/contests/abc266/tasks/abc266_f
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
 func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
@@ -2931,9 +2944,19 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	{
 		// EXTRA: 无向图的情况
 		// 去掉树枝后，剩余点的度数均超过 1
-		g := [][]int{}
-		deg := []int{}
-		// read ...
+		var n int
+		g := make([][]int, n)
+		deg := make([]int, len(g))
+		//for i := 0; i < len(g); i++ {
+		//  var v, w int
+		//	Fscan(in, &v, &w)
+		//	v--
+		//	w--
+		//	g[v] = append(g[v], w)
+		//	g[w] = append(g[w], v)
+		//	deg[v]++
+		//	deg[w]++
+		//}
 
 		q := []int{}
 		for i, d := range deg {
@@ -2974,6 +2997,27 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 			}
 		}
 
+		{
+			// EXTRA：给每个树枝编号
+			ids := make([]int, n)
+			id := 0
+			var f func(int, int)
+			f = func(v, fa int) {
+				ids[v] = id
+				for _, w := range g[v] {
+					if w != fa && deg[w] < 2 {
+						f(w, v)
+					}
+				}
+			}
+			for i, d := range deg {
+				if d > 1 {
+					id++
+					f(i, -1)
+				}
+			}
+		}
+
 		// EXTRA: 求基环
 		var cycle []int
 		for i, d := range deg {
@@ -3002,10 +3046,13 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 
 /* 网络流·总结·题单 ################################################################################
 
+最大流等于最小割的证明 https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E8%AF%A6%E8%A7%A3.html
+
 todo 网络流建模方式总结
  https://www.cnblogs.com/victorique/p/8560656.html
  https://blog.bill.moe/network-flow-models/
  NOI 一轮复习 I：二分图网络流 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-i-er-fen-tu-wang-lao-liu
+ 2016 国家集训队论文《网络流的一些建模方法》姜志豪 https://github.com/enkerewpo/OI-Public-Library/blob/master/IOI%E4%B8%AD%E5%9B%BD%E5%9B%BD%E5%AE%B6%E5%80%99%E9%80%89%E9%98%9F%E8%AE%BA%E6%96%87/%E5%9B%BD%E5%AE%B6%E9%9B%86%E8%AE%AD%E9%98%9F2016%E8%AE%BA%E6%96%87%E9%9B%86.pdf
 
 todo 网络流 24 题 https://loj.ac/p?tagIds=30 https://www.luogu.com.cn/problem/list?tag=332
  线性规划与网络流 24 题 解题报告 https://byvoid.com/zhs/blog/lpf24-solution/
@@ -3162,7 +3209,7 @@ todo https://codeforces.com/problemset/problem/362/E
 从集合 B 中各点连容量为 1 费用为 0 的边到汇点
 集合 A 和 B 之间连边，容量为 inf，费用为 F(Ai,Bj)，F 根据题意
 这样跑 MCMF 得到的结果是匹配全部 A（或 B）的最小花费
-LC2172/周赛280D https://leetcode-cn.com/problems/maximum-and-sum-of-array/
+LC2172 https://leetcode-cn.com/problems/maximum-and-sum-of-array/
 https://codeforces.com/problemset/problem/1437/C
 【网络流 24 题】运输问题 https://loj.ac/p/6011 https://www.luogu.com.cn/problem/P4015
 【网络流 24 题】数字梯形 https://loj.ac/p/6010 https://www.luogu.com.cn/problem/P4013
