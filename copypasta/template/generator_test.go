@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -13,7 +13,7 @@ import (
 // https://codeforces.com/gym/102253/problem/C
 // https://codeforces.com/gym/102253/status/C
 func TestGenCodeforcesProblemTemplates(t *testing.T) {
-	raw, err := ioutil.ReadFile("data.txt")
+	raw, err := os.ReadFile("data.txt")
 	if err != nil {
 		t.Fatal(err)
 	}
