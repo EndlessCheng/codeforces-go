@@ -264,7 +264,7 @@
     - 二维差分
     - 离散化
   - [杂项B misc.go](/copypasta/misc.go)
-- [快读模板 io.go](/copypasta/io.go)
+- [快速输入输出模板 io.go](/copypasta/io.go)
 
 ****欢迎关注我的 B 站频道：[灵茶山艾府](https://space.bilibili.com/206214)，定期更新算法讲解视频哦~****
     
