@@ -773,7 +773,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// todo 多组数据下的记忆化质因数分解 https://codeforces.com/contest/1512/submission/112590495
 
-	// 质因数分解 prime factorization
+	// 质因数分解（完整版）prime factorization
 	// 返回分解出的质数及其指数
 	// 预处理 [2,√MX] 的素数可以加速这一过程
 	// https://mathworld.wolfram.com/PrimeFactorization.html
@@ -803,7 +803,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	// primeFactorization 质因数分解
+	// 质因数分解（只有质数）prime factorization
 	primeDivisors := func(x int64) (primes []int64) {
 		for i := int64(2); i*i <= x; i++ {
 			if x%i == 0 {
@@ -818,7 +818,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	// primeFactorization 质因数分解（加速：跳过偶数）
+	// 质因数分解（加速：跳过偶数）prime factorization
 	// 在 1e15 下比上面快大概 150ms
 	// https://codeforces.com/contest/1334/submission/143919621
 	// https://codeforces.com/contest/1334/submission/143919683
