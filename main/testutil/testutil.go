@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"io"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -112,14 +112,14 @@ func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, targ
 
 	testCases := make([][2]string, len(inputFilePaths))
 	for i, path := range inputFilePaths {
-		data, err := ioutil.ReadFile(path)
+		data, err := os.ReadFile(path)
 		if err != nil {
 			t.Fatal(err)
 		}
 		testCases[i][0] = string(data)
 	}
 	for i, path := range answerFilePaths {
-		data, err := ioutil.ReadFile(path)
+		data, err := os.ReadFile(path)
 		if err != nil {
 			t.Fatal(err)
 		}

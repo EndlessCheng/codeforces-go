@@ -6,7 +6,6 @@ import (
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -269,7 +268,7 @@ func main() { run(os.Stdin, os.Stdout) }
 		// 比赛时，在 IDE 中打开 A 题
 		defer open.Run(absPath(mainFilePath))
 	}
-	if err := ioutil.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
+	if err := os.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
 	}
 
@@ -302,7 +301,7 @@ func Test_run(t *testing.T) {
 // %s
 `, submitURL, taskID, examples, problemURL)
 	testFilePath := dirPath + taskID + "_test.go"
-	if err := ioutil.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
+	if err := os.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
 	}
 
@@ -324,7 +323,7 @@ func genAtCoderContestTemplates(contestID string, taskNum, retryTimes int) error
 	})
 
 	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
-	revelSession, err := ioutil.ReadFile("revel_session.txt")
+	revelSession, err := os.ReadFile("revel_session.txt")
 	if err != nil {
 		return err
 	}
