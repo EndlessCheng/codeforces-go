@@ -1,0 +1,16 @@
+["smart","brilliant","studious"]
+["not"]
+["this student is studious","the student is smart"]
+[1,2]
+2
+[1,2]
+
+["smart","brilliant","studious"]
+["not"]
+["this student is not studious","the student is smart"]
+[1,2]
+2
+[2,1]
+
+
+
