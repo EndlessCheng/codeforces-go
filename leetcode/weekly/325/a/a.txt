@@ -1,0 +1,17 @@
+["hello","i","am","leetcode","hello"]
+"hello"
+1
+1
+
+["a","b","leetcode"]
+"leetcode"
+0
+1
+
+["i","eat","leetcode"]
+"ate"
+0
+-1
+
+
+
