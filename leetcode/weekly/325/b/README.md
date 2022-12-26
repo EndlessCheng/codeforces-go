@@ -1,4 +1,4 @@
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)，下午两点在B站讲这场周赛的题目。
+[视频讲解](https://www.bilibili.com/video/BV1FV4y1F7v7/) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
 
 ---
 
@@ -14,7 +14,7 @@ class Solution:
         j = n = len(s)
         c = Counter()
         while c['a'] < k or c['b'] < k or c['c'] < k:
-            if j == 0: return -1
+            if j == 0: return -1  # 所有字母都取也无法满足要求
             j -= 1
             c[s[j]] += 1
         ans = n - j  # 左侧没有取字符
@@ -34,7 +34,7 @@ func takeCharacters(s string, k int) int {
 	c, j := [3]int{}, n
 	for c[0] < k || c[1] < k || c[2] < k {
 		if j == 0 {
-			return -1
+			return -1 // 所有字母都取也无法满足要求
 		}
 		j--
 		c[s[j]-'a']++

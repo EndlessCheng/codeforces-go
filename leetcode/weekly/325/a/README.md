@@ -1,4 +1,4 @@
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)，下午两点在B站讲这场周赛的题目。
+[视频讲解](https://www.bilibili.com/video/BV1FV4y1F7v7/) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
 
 ---
 

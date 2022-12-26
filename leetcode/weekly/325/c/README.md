@@ -1,4 +1,4 @@
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)，下午两点在B站讲这场周赛的题目。
+[视频讲解](https://www.bilibili.com/video/BV1FV4y1F7v7/) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
 
 ---
 
@@ -8,7 +8,7 @@
 
 如果可以选的数 $< k$，说明 $d$ 取大了，否则说明 $d$ 取小了，根据这一点来二分。
 
-二分上界可以取 $\max(\textit{price})$。
+二分上界可以取 $\left\lfloor\dfrac{\max(\textit{price})-\min(\textit{price})}{k-1}\right\rfloor$。
 
 有关二分的写法，可以看我的 [【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/) 这期视频。
 
@@ -24,7 +24,7 @@ class Solution:
                     x0 = x
             return cnt >= k
 
-        left, right = 0, price[-1]
+        left, right = 0, (price[-1] - price[0]) // (k - 1) + 1  # 开区间
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid): left = mid
@@ -35,7 +35,7 @@ class Solution:
 ```go [sol1-Go]
 func maximumTastiness(price []int, k int) int {
 	sort.Ints(price)
-	return sort.Search(price[len(price)-1], func(d int) bool {
+	return sort.Search((price[len(price)-1]-price[0])/(k-1), func(d int) bool {
 		d++
 		cnt, x0 := 1, price[0]
 		for _, x := range price[1:] {
@@ -53,3 +53,7 @@ func maximumTastiness(price []int, k int) int {
 
 - 时间复杂度：$O(n\log n + n\log U)$，其中 $n$ 为 $\textit{price}$ 的长度，$U=\max(\textit{price})$。
 - 空间复杂度：$O(1)$，忽略排序的空间，仅用到若干额外变量。
+
+#### 相同题目
+
+- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
