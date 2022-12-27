@@ -11,6 +11,7 @@ lazy delete: just mark the node for deletion; when n/2 nodes are marked,
 
 推荐：常见平衡树的α值+复杂度分析 https://riteme.site/blog/2016-4-6/scapegoat.html
 https://oi-wiki.org/ds/sgt/
+【可视化】https://www.bilibili.com/video/BV1sP4y1i7WB/
 https://zhuanlan.zhihu.com/p/21263304
 https://zhuanlan.zhihu.com/p/180545164
 https://taodaling.github.io/blog/2019/04/19/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E6%A0%91/
