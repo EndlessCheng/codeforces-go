@@ -28,7 +28,7 @@ func bufferIO() {
 	defer out.Flush()
 
 	var n int
-	Fscan(in, &n)
+	Fscan(in, &n) // 如果行数未知，可以根据 Fscan 的第一个返回值是否为正来决定
 
 	Fprintln(out, n)
 }
