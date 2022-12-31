@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	. "fmt"
-	"io"
 	"math"
 	"os"
 	"strconv"
@@ -23,9 +22,9 @@ import (
 // 对比：（3e4 个 int）
 // 623ms https://codeforces.com/problemset/submission/981/124239306
 // 233ms https://codeforces.com/problemset/submission/981/124237530
-func bufferIO(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
+func bufferIO() {
+	in := bufio.NewReader(os.Stdin)
+	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
 	var n int
@@ -36,10 +35,10 @@ func bufferIO(_r io.Reader, _w io.Writer) {
 
 // 快读，适用于输入量巨大的题目
 // 相比上面的 bufferIO，每读入 1e6 个 int 可以加速约 400~450ms（Codeforces/AtCoder）
-func fastIO(_r io.Reader, _w io.Writer) {
-	in := bufio.NewScanner(_r)
+func fastIO() {
+	in := bufio.NewScanner(os.Stdin)
 	in.Split(bufio.ScanWords)
-	out := bufio.NewWriter(_w)
+	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
 	// 读一个整数
@@ -119,16 +118,16 @@ func fastIO(_r io.Reader, _w io.Writer) {
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
 // NOTE: 如果只有数字的话，只需要判断字符与 '0' 的关系就行了；有小写字母的话，与 'z' 的大小判断可以省去（对运行耗时无影响）
 // NOTE: 额外的好处是，这种避开 Fscan 的写法可以节省一部分内存（1e6 下有 10M 左右）
-func fasterIO(_r io.Reader, _w io.Writer) {
+func fasterIO() {
 	const eof = 0
-	out := bufio.NewWriter(_w)
+	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 	_i, _n, buf := 0, 0, make([]byte, 1<<12) // 4KB
 
 	// 读一个字符
 	rc := func() byte {
 		if _i == _n {
-			_n, _ = _r.Read(buf)
+			_n, _ = os.Stdin.Read(buf)
 			if _n == 0 { // EOF
 				return eof
 			}
@@ -218,7 +217,7 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 
 		// 核心是这一段
 		for {
-			n, _ := _r.Read(buf)
+			n, _ := os.Stdin.Read(buf)
 			if n == 0 {
 				break
 			}
@@ -263,10 +262,10 @@ func fasterIO(_r io.Reader, _w io.Writer) {
 // 数据个数未知 https://www.luogu.com.cn/problem/P2762
 // 仅加速用 https://codeforces.com/problemset/problem/375/B
 // 注意由于 buffer 的缘故，bufio.Scanner 不要和 bufio.Reader 混用
-func lineIO(_r io.Reader, _w io.Writer) {
-	in := bufio.NewScanner(_r)
+func lineIO() {
+	in := bufio.NewScanner(os.Stdin)
 	in.Buffer(nil, 1e9) // 若单个 token 大小超过 65536 则加上这行
-	out := bufio.NewWriter(_w)
+	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
 	for in.Scan() {
