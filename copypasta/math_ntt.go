@@ -8,6 +8,7 @@ import (
 /* NTT: number-theoretic transform 快速数论变换
 https://en.wikipedia.org/wiki/Discrete_Fourier_transform_(general)#Number-theoretic_transform
 从傅里叶变换到 998244353 https://www.bilibili.com/read/cv2289955/
+硬核理解快速数论变换 https://www.bilibili.com/video/BV1eT411M7Fp/
 
 NTT 和 FFT 类似，下面的实现在 FFT 代码的基础上稍微修改了下
 https://oi-wiki.org/math/poly/ntt/

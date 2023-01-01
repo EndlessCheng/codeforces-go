@@ -13,6 +13,7 @@ package copypasta
 // https://codeforces.com/blog/entry/15890
 // todo 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399
 //  像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
+// 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -20,7 +21,7 @@ package copypasta
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
-// 最长连续相同子串 LC2213/周赛285D https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/
+// 最长连续相同子串 LC2213 https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/
 // 开方 https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
 // 取模 https://codeforces.com/problemset/problem/438/D
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
@@ -31,6 +32,7 @@ package copypasta
 // - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
 // - 反向构造题 https://www.luogu.com.cn/problem/P6852
 // 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
+//     LC169 https://leetcode.cn/problems/majority-element/
 //     LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
 //     https://www.luogu.com.cn/problem/P3567
 //     https://www.luogu.com.cn/problem/P3765
@@ -258,6 +260,8 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 多个更新操作复合：
 // * + ∑ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
+// * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
+// 注：区间赋值（=x）可以看成是先 *0 再 +x
 //
 // 吉老师线段树 Segment Tree Beats
 // todo https://oi-wiki.org/ds/seg-beats/
