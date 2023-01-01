@@ -35,6 +35,7 @@ https://codeforces.com/problemset/problem/1526/C2
 JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode-cn.com/problems/course-schedule-iii/
 用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
 股票买卖 https://codeforces.com/problemset/problem/865/D
+https://atcoder.jp/contests/abc249/tasks/abc249_f
 
 区间贪心相关
 最小不相交区间划分数

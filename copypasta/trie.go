@@ -18,6 +18,8 @@ https://codeforces.com/contest/514/problem/C
 与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
 与贪心堆结合 https://codeforces.com/problemset/problem/965/E
 todo https://codeforces.com/contest/455/problem/B
+
+深刻理解 https://atcoder.jp/contests/abc273/tasks/abc273_e
 */
 type trieNode struct {
 	son [26]*trieNode

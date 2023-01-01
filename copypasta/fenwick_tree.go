@@ -162,6 +162,7 @@ func fenwickTree(n int) {
 	// 通过邻项交换，把数组 a 变成数组 b，需要的最小操作次数
 	// 如果无法做到，返回 -1
 	// https://atcoder.jp/contests/arc120/tasks/arc120_c
+	// LC1850 https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
 	minSwap := func(a, b []int) (res int64) {
 		tree := make([]int, len(a)+1)
 		add := func(i int) {

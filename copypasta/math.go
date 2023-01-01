@@ -96,7 +96,7 @@ https://oeis.org/A064413 EKG sequence (or ECG sequence)
 a(1) = 1; a(2) = 2; for n > 2, a(n) = smallest number not already used which shares a factor with a(n-1)
 
 https://oeis.org/A002326 least m > 0 such that 2n+1 divides 2^m-1
-https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
+LC1806 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 
 http://oeis.org/A003136 Loeschian number: numbers of the form x^2 + xy + y^2
 https://en.wikipedia.org/wiki/Loeschian_number
@@ -195,6 +195,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
 	todo https://atcoder.jp/contests/abc162/tasks/abc162_e
 	     https://atcoder.jp/contests/abc206/tasks/abc206_e
+
+	a 中任意两数互质 <=> 每个质数至多整除一个 a[i]
+	https://codeforces.com/contest/1770/problem/C
 
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
@@ -2342,7 +2345,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//    将 n 个元素排成 k 个非空循环排列的方法数
 	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
-	//    LC241D https://leetcode-cn.com/contest/weekly-contest-241/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
+	//    LC1866 https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
 	//    建筑师 https://www.luogu.com.cn/problem/P4609
 	//    UVa1638 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4513
 	//    todo https://www.luogu.com.cn/problem/P5408

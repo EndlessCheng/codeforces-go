@@ -18,6 +18,8 @@ import (
 /* 贪心
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
+https://atcoder.jp/contests/arc147/tasks/arc147_b
+https://atcoder.jp/contests/abc268/tasks/abc268_f
 
 区间与点的最大匹配/覆盖问题
 https://www.luogu.com.cn/problem/P2887
@@ -29,6 +31,9 @@ https://codeforces.com/problemset/problem/863/E
 
 难题
 2800 https://codeforces.com/problemset/problem/521/D
+
+不好想到的构造
+https://atcoder.jp/contests/abc178/tasks/abc178_f
 */
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
@@ -51,6 +56,8 @@ https://codeforces.com/problemset/problem/863/E
 // 邻项修改->前缀和->单项修改 https://codeforces.com/problemset/problem/1254/B2 https://ac.nowcoder.com/acm/contest/7612/C
 
 // 双指针：如果 left == right 时 while 一定为 false，则可以省略 while 中 left < right 的判断
+// 双序列双指针
+// 背向双指针 LC360 https://leetcode.cn/problems/sort-transformed-array/
 
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C

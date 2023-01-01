@@ -19,9 +19,11 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
 模板题 https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/
 https://leetcode.cn/tag/monotonic-queue/problemset/
-todo https://www.luogu.com.cn/problem/P2627
-todo http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
 
+单调队列优化 DP
+todo https://www.luogu.com.cn/problem/P2627
+ http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
+ 老鼠进洞 http://codeforces.com/problemset/problem/797/F
 LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 */
