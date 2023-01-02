@@ -8,7 +8,7 @@
 
 如果可以选的数 $< k$，说明 $d$ 取大了，否则说明 $d$ 取小了，根据这一点来二分。
 
-二分上界可以取 $\left\lfloor\dfrac{\max(\textit{price})-\min(\textit{price})}{k-1}\right\rfloor$。
+二分上界可以取 $\left\lfloor\dfrac{\max(\textit{price})-\min(\textit{price})}{k-1}\right\rfloor$。这是因为**最小值不会超过平均值**。
 
 有关二分的写法，可以看我的 [【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/) 这期视频。
 
