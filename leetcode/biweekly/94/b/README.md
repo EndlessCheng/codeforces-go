@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1Dd4y1h72z/) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
+
+---
+
 把 $\textit{feedback}$ 及其分数存到哈希表 $\textit{score}$ 中，对每个 $\textit{report}_i$，按照空格分割，然后用 $\textit{score}$ 计算分数之和。
 
 最后按照题目规则排序，取前 $k$ 个 $\textit{studentId}$ 为答案。

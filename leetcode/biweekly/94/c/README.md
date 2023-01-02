@@ -1,4 +1,4 @@
-推荐先看我写的这篇题解：[878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/solutions/1984641/er-fen-da-an-rong-chi-yuan-li-by-endless-9j34/)。
+[视频讲解](https://www.bilibili.com/video/BV1Dd4y1h72z/) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
 
 ---
 
