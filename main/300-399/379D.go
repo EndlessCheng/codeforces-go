@@ -17,7 +17,7 @@ func CF379D(in io.Reader, out io.Writer) {
 					for ac1 := 0; ac1 <= (n-c1-a1)/2; ac1++ {
 						for ac2 := 0; ac2 <= (m-c2-a2)/2; ac2++ {
 							C1, C2, A1, AC1, AC2 := c1, c2, a1, ac1, ac2 // A2 在末尾，用不上
-							for i := 2; i < k; i++ {
+							for i := 2; i < k && AC2 <= x; i++ { // 防止溢出
 								C1, C2, A1, AC1, AC2 = C2, C1, a2, AC2, AC1+A1&C2+AC2
 							}
 							if AC2 == x {
