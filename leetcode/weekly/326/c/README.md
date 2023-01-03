@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1H8411E7hn) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
+
+---
+
 ```py [sol1-Python3]
 class Solution:
     def minimumPartition(self, s: str, k: int) -> int:

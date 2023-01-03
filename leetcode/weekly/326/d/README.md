@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1H8411E7hn) 已出炉，包含**线性筛**的理论讲解，欢迎点赞三连~
+
+---
+
 分两步：
 
 1. 筛质数，做法见 [204. 计数质数](https://leetcode.cn/problems/count-primes/)。
@@ -136,7 +140,7 @@ func closestPrimes(left, right int) []int {
 }
 ```
 
-也可以用线性筛（欧拉筛）做，具体原理见B站视频。
+也可以用线性筛（欧拉筛）做，具体原理见视频讲解。
 
 ```py [sol2-Python3]
 MX = 10 ** 6 + 1
@@ -282,5 +286,5 @@ func closestPrimes(left, right int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$O(\textit{right})$，忽略预处理的时间复杂度。严谨地说，由于范围内有 $O\left(\dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$ 个质数，所以遍历的时间复杂度为 $O\left(\dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$，再算上二分质数的时间 $O(\log\pi(U))$（$\pi(U)$ 表示 $U=10^6$ 内的质数个数，这有 $78498$ 个），总的时间复杂度为 $O\left(\log\pi(U) + \dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$。
+- 时间复杂度：$O(\textit{right})$，忽略预处理的时间复杂度。严谨地说，由于范围内有 $O\left(\dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$ 个质数（根据质数密度），所以遍历的时间复杂度为 $O\left(\dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$，再算上二分质数的时间 $O(\log\pi(U))$（$\pi(U)$ 表示 $U=10^6$ 内的质数个数，这有 $78498$ 个），总的时间复杂度为 $O\left(\log\pi(U) + \dfrac{\textit{right}}{\log\textit{right}}-\dfrac{\textit{left}}{\log\textit{left}}\right)$。
 - 空间复杂度：$O(1)$，忽略预处理的空间复杂度。仅用到若干变量。

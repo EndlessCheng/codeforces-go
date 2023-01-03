@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1H8411E7hn) 已出炉，欢迎点赞三连~
+
+---
+
 遍历每个数位，判断能否整除 $\textit{num}$。
 
 ```py [sol1-Python3]
