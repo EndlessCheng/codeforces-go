@@ -525,8 +525,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	O(n^(2/3)log^(1/3)(n)) https://codeforces.com/blog/entry/91632
 
 	质数的幂次组成的集合 {p^k} https://oeis.org/A000961
-		补集 https://oeis.org/A024619
-		Exponential of Mangoldt function https://oeis.org/A014963
+	补集 https://oeis.org/A024619
+	Exponential of Mangoldt function https://oeis.org/A014963
 
 	质数前缀和 http://oeis.org/A007504
 	a(n) ~ n^2 * log(n) / 2
@@ -540,12 +540,27 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
 	质数间隙 https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
-		Positions of records https://oeis.org/A002386 https://oeis.org/A005669
-		Values of records https://oeis.org/A005250
-		Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
-		相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
-		https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435a5b/000000000077a8e6
-		Numbers whose distance to the closest prime number is a prime number http://oeis.org/A160666
+	Positions of records https://oeis.org/A002386 https://oeis.org/A005669
+	Values of records https://oeis.org/A005250
+	Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
+	相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
+	https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435a5b/000000000077a8e6
+	Numbers whose distance to the closest prime number is a prime number http://oeis.org/A160666
+
+	孪生素数 https://en.wikipedia.org/wiki/Twin_prime https://oeis.org/A001359 https://oeis.org/A006512 https://oeis.org/A077800
+	https://oeis.org/A113274 Record gaps between twin primes
+		Upper bound: gaps between twin primes are smaller than 0.76*(log p)^3, where p is the prime at the end of the gap.
+	https://oeis.org/A113275 Lesser of twin primes for which the gap before the following twin primes is a record
+
+	Prime k-tuple https://en.wikipedia.org/wiki/Prime_k-tuple
+	Prime constellations / diameter https://en.wikipedia.org/wiki/Prime_k-tuple#Prime_constellations https://oeis.org/A008407
+	Cousin prime https://en.wikipedia.org/wiki/Cousin_prime https://oeis.org/A023200
+	Sexy prime https://en.wikipedia.org/wiki/Sexy_prime https://oeis.org/A023201
+	Prime triplet https://en.wikipedia.org/wiki/Prime_triplet https://oeis.org/A098420
+	Primes in arithmetic progression https://en.wikipedia.org/wiki/Primes_in_arithmetic_progression
+
+	First Hardy–Littlewood conjecture https://en.wikipedia.org/wiki/First_Hardy%E2%80%93Littlewood_conjecture
+	Second Hardy–Littlewood conjecture https://en.wikipedia.org/wiki/Second_Hardy%E2%80%93Littlewood_conjecture 哈代-李特尔伍德第二猜想
 
 	https://oeis.org/A007918 Least prime >= n (version 1 of the "next prime" function)
 	https://oeis.org/A007920 Smallest number k such that n + k is prime
@@ -562,12 +577,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	不与质数相邻的合数 http://oeis.org/A079364
 
 	半素数 https://oeis.org/A001358 也叫双素数/二次殆素数 Semiprimes (or biprimes): products of two primes
-		https://en.wikipedia.org/wiki/Semiprime
-		https://en.wikipedia.org/wiki/Almost_prime
-		非平方半素数 https://oeis.org/A006881 Squarefree semiprimes: Numbers that are the product of two distinct primes.
+	https://en.wikipedia.org/wiki/Semiprime
+	https://en.wikipedia.org/wiki/Almost_prime
+	非平方半素数 https://oeis.org/A006881 Squarefree semiprimes: Numbers that are the product of two distinct primes.
 
 	绝对素数 https://oeis.org/A003459 各位数字可以任意交换位置，其结果仍为素数
-		https://en.wikipedia.org/wiki/Permutable_prime
+	https://en.wikipedia.org/wiki/Permutable_prime
 
 	哥德巴赫猜想：大于 2 的偶数，都可表示成两个素数之和。
 	偶数分拆的最小质数 Goldbach’s conjecture https://oeis.org/A020481
@@ -692,7 +707,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			if pid[i] == 0 {
 				primes = append(primes, i)
 				pid[i] = len(primes)
-				for j := 2 * i; j <= mx; j += i {
+				for j := i * i; j <= mx; j += i {
 					pid[j] = -1
 				}
 			}
