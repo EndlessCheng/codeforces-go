@@ -169,6 +169,8 @@ func _(min, max func(int, int) int) {
 	//		构造 t+s
 	// 最短的包含 s 和 t 的字符串 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/F
 	// 		构造 s+t 和 t+s
+	// 判断一个字符串 t 是否为 prefix+reverse(s)+suffix，其中 prefix+suffix=s https://atcoder.jp/contests/abc284/tasks/abc284_f
+	//      构造 t+reverse(t) 和 reverse(t)+t
 	calcZ := func(s string) []int {
 		n := len(s)
 		z := make([]int, n)
