@@ -13,38 +13,37 @@ func findCrossingTime(n, k int, time [][]int) (cur int) {
 	})
 	waitL, waitR := make(hp, k), hp{}
 	for i := range waitL {
-		waitL[i].i = k - 1 - i
+		waitL[i].i = k - 1 - i // 下标越大效率越低
 	}
 	workL, workR := hp2{}, hp2{}
 	for n > 0 {
-		for workL.Len() > 0 && workL[0].t <= cur {
+		for len(workL) > 0 && workL[0].t <= cur {
 			heap.Push(&waitL, heap.Pop(&workL)) // 左边完成放箱
 		}
-		for workR.Len() > 0 && workR[0].t <= cur {
+		for len(workR) > 0 && workR[0].t <= cur {
 			heap.Push(&waitR, heap.Pop(&workR)) // 右边完成搬箱
 		}
-		if waitR.Len() > 0 && waitR[0].t <= cur { // 右边过桥
+		if len(waitR) > 0 { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
 			p := heap.Pop(&waitR).(pair)
 			cur += time[p.i][2]
-			p.t = cur + time[p.i][3] // 放箱，记录完成时间
-			heap.Push(&workL, p)
-		} else if waitL.Len() > 0 && waitL[0].t <= cur { // 左边过桥
+			heap.Push(&workL, pair{p.i, cur + time[p.i][3]}) // 放箱，记录完成时间
+		} else if len(waitL) > 0 { // 左边过桥
 			p := heap.Pop(&waitL).(pair)
 			cur += time[p.i][0]
-			p.t = cur + time[p.i][1] // 搬箱，记录完成时间
-			heap.Push(&workR, p)
+			heap.Push(&workR, pair{p.i, cur + time[p.i][1]}) // 搬箱，记录完成时间
 			n--
-		} else if workL.Len() == 0 { // cur 过小，找个最小的放箱/搬箱完成时间来更新 cur
+		} else if len(workL) == 0 { // cur 过小，找个最小的放箱/搬箱完成时间来更新 cur
 			cur = workR[0].t
-		} else if workR.Len() == 0 {
+		} else if len(workR) == 0 {
 			cur = workL[0].t
 		} else {
 			cur = min(workL[0].t, workR[0].t)
 		}
 	}
-	for workR.Len() > 0 {
-		p := heap.Pop(&workR).(pair)       // 右边完成搬箱
-		cur = max(p.t, cur) + time[p.i][2] // 过桥
+	for len(workR) > 0 {
+		p := heap.Pop(&workR).(pair) // 右边完成搬箱
+		// 没有排队就直接过桥，否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+		cur = max(p.t, cur) + time[p.i][2]
 	}
 	return cur // 最后一个过桥的时间
 }

@@ -1,3 +1,7 @@
+[视频讲解](https://www.bilibili.com/video/BV1KG4y1j73o/)，欢迎点赞~
+
+---
+
 用一个最大堆模拟，每次循环累加堆顶，同时修改堆顶。
 
 原地修改可以做到 $O(1)$ 空间复杂度。
@@ -10,7 +14,7 @@ class Solution:
         heapify(nums)
         ans = 0
         for _ in range(k):
-            ans += -heapreplace(nums, nums[0] // 3)
+            ans -= heapreplace(nums, nums[0] // 3)
         return ans
 ```
 

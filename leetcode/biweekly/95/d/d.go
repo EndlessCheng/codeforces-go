@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func maxPower(stations []int, r int, k int) int64 {
@@ -9,11 +12,13 @@ func maxPower(stations []int, r int, k int) int64 {
 	for i, x := range stations {
 		sum[i+1] = sum[i] + x
 	}
+	mn := math.MaxInt
 	for i := range stations {
 		stations[i] = sum[min(i+r+1, n)] - sum[max(i-r, 0)] // 电量
+		mn = min(mn, stations[i])
 	}
-	return int64(sort.Search(sum[n]+k, func(minPower int) bool {
-		minPower++ // 改为二分最小的不满足要求的值，这样 sort.Search 返回的就是最大的满足要求的值
+	return int64(mn + sort.Search(k, func(minPower int) bool {
+		minPower += mn + 1 // 改为二分最小的不满足要求的值，这样 sort.Search 返回的就是最大的满足要求的值
 		diff := make([]int, n) // 差分数组
 		sumD, need := 0, 0
 		for i, power := range stations {
@@ -34,5 +39,15 @@ func maxPower(stations []int, r int, k int) int64 {
 	}))
 }
 
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
+func min(a, b int) int {
+	if b < a {
+		return b
+	}
+	return a
+}
+func max(a, b int) int {
+	if b > a {
+		return b
+	}
+	return a
+}

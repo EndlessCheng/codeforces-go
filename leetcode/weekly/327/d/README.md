@@ -17,16 +17,16 @@
 4. 否则如果 $\textit{waitL}$ 不为空，出堆，过桥，更新 $\textit{cur}$ 为过完桥的时间，然后把这个工人放入 $\textit{workR}$ 中（记录完成时间），同时把 $n$ 减一；
 5. 否则说明 $\textit{cur}$ 过小，找个最小的放箱/搬箱完成时间来更新 $\textit{cur}$。
 
-循环结束后，不断弹出 $\textit{workR}$，最后一个弹出的工人的过完桥的时间即为答案。
+循环结束后，不断弹出 $\textit{workR}$，过桥，最后一个工人过完桥的时间即为答案。
 
-代码实现时，也可以预先把 $\textit{time}$ 排序，这样只看下标就知道效率了。
+代码实现时，也可以预先把 $\textit{time}$ 从小到大稳定排序，这样下标越大效率越低，只看下标就知道效率了。
 
 ```py [sol1-Python3]
 class Solution:
     def findCrossingTime(self, n: int, k: int, time: List[List[int]]) -> int:
         time.sort(key=lambda t: t[0] + t[2])  # 稳定排序
         cur = 0
-        workL, waitL, waitR, workR = [], [[-i, 0] for i in range(k - 1, -1, -1)], [], []
+        workL, waitL, waitR, workR = [], [[-i, 0] for i in range(k - 1, -1, -1)], [], []  # 下标越大效率越低
         while n:
             while workL and workL[0][0] <= cur:
                 p = heappop(workL)
@@ -36,13 +36,13 @@ class Solution:
                 p = heappop(workR)
                 p[0], p[1] = p[1], p[0]
                 heappush(waitR, p)  # 右边完成搬箱
-            if waitR and waitR[0][1] <= cur:  # 右边过桥
+            if waitR:  # 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
                 p = heappop(waitR)
                 cur += time[-p[0]][2]
                 p[1] = p[0]
                 p[0] = cur + time[-p[0]][3]
                 heappush(workL, p)  # 放箱
-            elif waitL and waitL[0][1] <= cur:  # 左边过桥
+            elif waitL:  # 左边过桥
                 p = heappop(waitL)
                 cur += time[-p[0]][0]
                 p[1] = p[0]
@@ -54,28 +54,30 @@ class Solution:
             else: cur = min(workL[0][0], workR[0][0])
         while workR:
             t, i = heappop(workR)  # 右边完成搬箱
-            cur = max(t, cur) + time[-i][2]  # 过桥
+            # 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+            cur = max(t, cur) + time[-i][2]
         return cur  # 最后一个过桥的时间
 ```
 
 ```java [sol1-Java]
 class Solution {
     public int findCrossingTime(int n, int k, int[][] time) {
+        Arrays.sort(time, (a, b) -> a[0] + a[2] - b[0] - b[2]); // 稳定排序
         var workL = new PriorityQueue<int[]>((a, b) -> a[1] - b[1]);
         var workR = new PriorityQueue<int[]>(workL.comparator());
-        var waitL = new PriorityQueue<int[]>((a, b) -> time[a[0]][0] + time[a[0]][2] != time[b[0]][0] + time[b[0]][2] ? time[b[0]][0] + time[b[0]][2] - time[a[0]][0] - time[a[0]][2] : b[0] - a[0]);
+        var waitL = new PriorityQueue<int[]>((a, b) -> b[0] - a[0]); // 下标越大效率越低
         var waitR = new PriorityQueue<int[]>(waitL.comparator());
-        for (int i = 0; i < k; i++) waitL.add(new int[]{i, 0});
+        for (int i = k - 1; i >= 0; --i) waitL.add(new int[]{i, 0});
         int cur = 0;
         while (n > 0) {
             while (!workL.isEmpty() && workL.peek()[1] <= cur) waitL.add(workL.poll()); // 左边完成放箱
             while (!workR.isEmpty() && workR.peek()[1] <= cur) waitR.add(workR.poll()); // 右边完成搬箱
-            if (!waitR.isEmpty() && waitR.peek()[1] <= cur) { // 右边过桥
+            if (!waitR.isEmpty()) { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
                 var p = waitR.poll();
                 cur += time[p[0]][2];
                 p[1] = cur + time[p[0]][3];
                 workL.add(p); // 放箱
-            } else if (!waitL.isEmpty() && waitL.peek()[1] <= cur) { // 左边过桥
+            } else if (!waitL.isEmpty()) { // 左边过桥
                 var p = waitL.poll();
                 cur += time[p[0]][0];
                 p[1] = cur + time[p[0]][1];
@@ -87,7 +89,8 @@ class Solution {
         }
         while (!workR.isEmpty()) {
             var p = workR.poll(); // 右边完成搬箱
-            cur = Math.max(p[1], cur) + time[p[0]][2]; // 过桥
+            // 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+            cur = Math.max(p[1], cur) + time[p[0]][2];
         }
         return cur; // 最后一个过桥的时间
     }
@@ -103,7 +106,7 @@ public:
         });
         priority_queue<pair<int, int>> waitL, waitR;
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> workL, workR;
-        for (int i = 0; i < k; ++i) waitL.emplace(i, 0);
+        for (int i = k - 1; i >= 0; --i) waitL.emplace(i, 0); // 下标越大效率越低
         int cur = 0;
         while (n) {
             while (!workL.empty() && workL.top().first <= cur) {
@@ -116,12 +119,12 @@ public:
                 workR.pop();
                 waitR.emplace(i, t); // 右边完成搬箱
             }
-            if (!waitR.empty() && waitR.top().second <= cur) { // 右边过桥
+            if (!waitR.empty()) { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
                 auto[i, t] = waitR.top();
                 waitR.pop();
                 cur += time[i][2];
                 workL.emplace(cur + time[i][3], i); // 放箱
-            } else if (!waitL.empty() && waitL.top().second <= cur) { // 左边过桥
+            } else if (!waitL.empty()) { // 左边过桥
                 auto[i, t] = waitL.top();
                 waitL.pop();
                 cur += time[i][0];
@@ -134,7 +137,8 @@ public:
         while (!workR.empty()) {
             auto[t, i] = workR.top(); // 右边完成搬箱
             workR.pop();
-            cur = max(t, cur) + time[i][2]; // 过桥
+            // 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+            cur = max(t, cur) + time[i][2];
         }
         return cur; // 最后一个过桥的时间
     }
@@ -149,36 +153,37 @@ func findCrossingTime(n, k int, time [][]int) (cur int) {
 	})
 	waitL, waitR := make(hp, k), hp{}
 	for i := range waitL {
-		waitL[i].i = k - 1 - i
+		waitL[i].i = k - 1 - i // 下标越大效率越低
 	}
 	workL, workR := hp2{}, hp2{}
 	for n > 0 {
-		for workL.Len() > 0 && workL[0].t <= cur {
+		for len(workL) > 0 && workL[0].t <= cur {
 			heap.Push(&waitL, heap.Pop(&workL)) // 左边完成放箱
 		}
-		for workR.Len() > 0 && workR[0].t <= cur {
+		for len(workR) > 0 && workR[0].t <= cur {
 			heap.Push(&waitR, heap.Pop(&workR)) // 右边完成搬箱
 		}
-		if waitR.Len() > 0 && waitR[0].t <= cur { // 右边过桥
+		if len(waitR) > 0 { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
 			p := heap.Pop(&waitR).(pair)
 			cur += time[p.i][2]
 			heap.Push(&workL, pair{p.i, cur + time[p.i][3]}) // 放箱，记录完成时间
-		} else if waitL.Len() > 0 && waitL[0].t <= cur { // 左边过桥
+		} else if len(waitL) > 0 { // 左边过桥
 			p := heap.Pop(&waitL).(pair)
 			cur += time[p.i][0]
 			heap.Push(&workR, pair{p.i, cur + time[p.i][1]}) // 搬箱，记录完成时间
 			n--
-		} else if workL.Len() == 0 { // cur 过小，找个最小的放箱/搬箱完成时间来更新 cur
+		} else if len(workL) == 0 { // cur 过小，找个最小的放箱/搬箱完成时间来更新 cur
 			cur = workR[0].t
-		} else if workR.Len() == 0 {
+		} else if len(workR) == 0 {
 			cur = workL[0].t
 		} else {
 			cur = min(workL[0].t, workR[0].t)
 		}
 	}
-	for workR.Len() > 0 {
+	for len(workR) > 0 {
 		p := heap.Pop(&workR).(pair) // 右边完成搬箱
-		cur = max(p.t, cur) + time[p.i][2] // 过桥
+		// 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+		cur = max(p.t, cur) + time[p.i][2]
 	}
 	return cur // 最后一个过桥的时间
 }

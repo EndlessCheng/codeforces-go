@@ -1,4 +1,4 @@
-下午两点在B站讲这场双周赛的题目，[欢迎关注](https://space.bilibili.com/206214)~
+[视频讲解](https://www.bilibili.com/video/BV1i24y1e7E7/) 已出炉，欢迎点赞三连~
 
 ---
 
@@ -6,25 +6,9 @@
 
 见 [【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-#### 前置知识 2：前缀和
+#### 前置知识 2&3：前缀和、差分数组
 
-定义前缀和 $\textit{s}[0]=0$，$\textit{s}[i+1] = \sum\limits_{j=0}^{i}\textit{stations}[j]$。
-
-例如 $\textit{nums}=[1,2,-1,2]$，对应的前缀和数组为 $s=[0,1,3,2,4]$。
-
-通过前缀和，我们可以把**子数组的和转换成两个前缀和的差**，即
-
-$$
-\sum_{j=\textit{left}}^{\textit{right}}\textit{nums}[j] = \sum\limits_{j=0}^{\textit{right}}\textit{nums}[j] - \sum\limits_{j=0}^{\textit{left}-1}\textit{nums}[j] = \textit{s}[\textit{right}+1] - \textit{s}[\textit{left}]
-$$
-
-例如 $\textit{nums}$ 的子数组 $[2,-1,2]$ 的和就可以用 $s[4]-s[1]=4-1=3$ 算出来。
-
-> 注：为方便计算，常用左闭右开区间 $[\textit{left},\textit{right})$ 来表示子数组，此时子数组的和为 $\textit{s}[\textit{right}] - \textit{s}[\textit{left}]$，子数组的长度为 $\textit{right}-\textit{left}$。
-
-#### 前置知识 3：差分数组
-
-见 [视频讲解](https://www.bilibili.com/video/BV1Kd4y1Z7Fv/?t=10m41s) 的第三题。
+见 [视频讲解](https://www.bilibili.com/video/BV1i24y1e7E7/) 的第四题。
 
 #### 提示 1
 
@@ -56,8 +40,6 @@ $$
 
 最后判断修建的供电站是否超过 $k$，如果超过说明 $\textit{minPower}$ 偏大，否则说明偏小。
 
-关于二分的上界：考虑 $r=n-1$ 的情况，此时答案最大可能是 $s+k$，这里 $s$ 为 $\textit{stations}$ 所有元素之和。
-
 > 注：其实前缀和也不需要，可以改为长为 $2r+1$ 的滑动窗口，但这样写有点麻烦，感兴趣的读者可以实现下。
 
 ```py [sol1-Python3]
@@ -81,7 +63,8 @@ class Solution:
                     if i + r * 2 + 1 < n: diff[i + r * 2 + 1] -= m  # 差分更新
             return True
 
-        left, right = -1, sum[-1] + k + 1  # 开区间写法
+        left = min(stations)
+        right = left + k + 1  # 开区间写法
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid): left = mid
@@ -96,11 +79,14 @@ class Solution {
         long[] sum = new long[n + 1]; // 前缀和
         for (int i = 0; i < n; ++i)
             sum[i + 1] = sum[i] + stations[i];
+        long mn = Long.MAX_VALUE;
         long[] power = new long[n]; // 电量
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < n; ++i) {
             power[i] = sum[Math.min(i + r + 1, n)] - sum[Math.max(i - r, 0)];
+            mn = Math.min(mn, power[i]);
+        }
 
-        long left = -1, right = sum[n] + k + 1; // 开区间写法
+        long left = mn, right = mn + k + 1; // 开区间写法
         while (left + 1 < right) {
             long mid = left + (right - left) / 2;
             if (check(mid, power, n, r, k)) left = mid;
@@ -155,7 +141,7 @@ public:
             return true;
         };
 
-        long left = -1, right = sum[n] + k + 1; // 开区间写法
+        long left = *min_element(power, power + n), right = left + k + 1; // 开区间写法
         while (left + 1 < right) {
             long mid = left + (right - left) / 2;
             check(mid) ? left = mid : right = mid;
@@ -172,11 +158,13 @@ func maxPower(stations []int, r int, k int) int64 {
 	for i, x := range stations {
 		sum[i+1] = sum[i] + x
 	}
+	mn := math.MaxInt
 	for i := range stations {
 		stations[i] = sum[min(i+r+1, n)] - sum[max(i-r, 0)] // 电量
+		mn = min(mn, stations[i])
 	}
-	return int64(sort.Search(sum[n]+k, func(minPower int) bool {
-		minPower++ // 改为二分最小的不满足要求的值，这样 sort.Search 返回的就是最大的满足要求的值
+	return int64(mn + sort.Search(k, func(minPower int) bool {
+		minPower += mn + 1 // 改为二分最小的不满足要求的值，这样 sort.Search 返回的就是最大的满足要求的值
 		diff := make([]int, n) // 差分数组
 		sumD, need := 0, 0
 		for i, power := range stations {
@@ -203,5 +191,5 @@ func max(a, b int) int { if b > a { return b }; return a }
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log(s+k))$，其中 $n$ 为 $\textit{stations}$ 的长度，$s$ 为 $\textit{stations}$ 所有元素之和。
+- 时间复杂度：$O(n\log k)$，其中 $n$ 为 $\textit{stations}$ 的长度。二分需要循环 $O(\log k)$ 次。
 - 空间复杂度：$O(n)$。
