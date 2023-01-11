@@ -37,7 +37,7 @@ func Test(t *testing.T) {
 // 1. 是否搞错了输入输出（重新阅读题目中有关输入输出格式的说明）
 // 2. 数据是否超过 int 最大值
 // 3. 是否有边界情况没考虑到
-func TestCompare(t *testing.T) {
+func TestCompare(_t *testing.T) {
 	return
 	testutil.DebugTLE = 0
 
@@ -71,22 +71,22 @@ func TestCompare(t *testing.T) {
 
 	// 先用 runBF 跑下样例，检查 runBF 是否正确
 	dir, _ := filepath.Abs(".")
-	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, runBF)
+	testutil.AssertEqualFileCaseWithName(_t, dir, "in*.txt", "ans*.txt", 0, runBF)
 	//testutil.AssertEqualStringCase(t, customTestCases, 0, runBF)
 	return
 
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, run)
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, run)
 	return
 
 	// for hacking, write wrong codes in runBF
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, run, runBF)
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, run, runBF)
 }
 
 // 无尽检查输出是否正确 / 构造 hack 数据
 // 通常用于 special judge 题目
-func TestCheck(t *testing.T) {
+func TestCheck(_t *testing.T) {
 	return
-	assert := assert.New(t)
+	assert := assert.New(_t)
 	_ = assert
 
 	testutil.DebugTLE = 0
@@ -116,12 +116,12 @@ func TestCheck(t *testing.T) {
 	}
 
 	target := 0
-	testutil.CheckRunResultsInfWithTarget(t, inputGenerator, target, run)
+	testutil.CheckRunResultsInfWithTarget(_t, inputGenerator, target, run)
 	return
 
 	// for hacking, write wrong codes here
 	runHack := func(in io.Reader, out io.Writer) {
 
 	}
-	testutil.CheckRunResultsInf(t, inputGenerator, runHack)
+	testutil.CheckRunResultsInf(_t, inputGenerator, runHack)
 }
