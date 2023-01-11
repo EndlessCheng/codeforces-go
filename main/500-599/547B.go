@@ -6,54 +6,49 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF547B(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+	max := func(a, b int) int {
+		if b > a {
+			return b
+		}
+		return a
+	}
 
 	var n int
 	Fscan(in, &n)
 	a := make([]int, n)
-	type pair struct{ v, i int }
-	posL := make([]int, n)
-	s := []pair{{0, -1}}
+	left := make([]int, n)
+	st := []int{-1}
 	for i := range a {
 		Fscan(in, &a[i])
-		for {
-			if top := s[len(s)-1]; top.v < a[i] {
-				posL[i] = top.i
-				break
-			}
-			s = s[:len(s)-1]
+		for len(st) > 1 && a[st[len(st)-1]] >= a[i] {
+			st = st[:len(st)-1]
 		}
-		s = append(s, pair{a[i], i})
+		left[i] = st[len(st)-1]
+		st = append(st, i)
 	}
-	posR := make([]int, n)
-	s = []pair{{0, n}}
+
+	right := make([]int, n)
+	st = []int{n}
 	for i := n - 1; i >= 0; i-- {
-		v := a[i]
-		for {
-			if top := s[len(s)-1]; top.v < v {
-				posR[i] = top.i
-				break
-			}
-			s = s[:len(s)-1]
+		for len(st) > 1 && a[st[len(st)-1]] >= a[i] {
+			st = st[:len(st)-1]
 		}
-		s = append(s, pair{v, i})
+		right[i] = st[len(st)-1]
+		st = append(st, i)
 	}
 
 	ans := make([]int, n+1)
 	for i, v := range a {
-		sz := posR[i] - posL[i] - 1
-		if v > ans[sz] {
-			ans[sz] = v
-		}
+		size := right[i] - left[i] - 1
+		ans[size] = max(ans[size], v)
 	}
 	for i := n - 1; i > 0; i-- {
-		if ans[i+1] > ans[i] {
-			ans[i] = ans[i+1]
-		}
+		ans[i] = max(ans[i], ans[i+1])
 	}
 	for _, v := range ans[1:] {
 		Fprint(out, v, " ")
