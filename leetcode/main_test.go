@@ -14,7 +14,7 @@ import (
 
 //func init() { rand.Seed(time.Now().UnixNano()) }
 
-func TestCompareInf(t *testing.T) {
+func TestCompareInf(_t *testing.T) {
 	testutil.DebugTLE = 0
 
 	inputGenerator := func() (a []int) {
@@ -32,12 +32,12 @@ func TestCompareInf(t *testing.T) {
 	}
 
 	// test examples first
-	if err := testutil.RunLeetCodeFuncWithFile(t, runAC, "d.txt", 0); err != nil {
-		t.Fatal(err)
+	if err := testutil.RunLeetCodeFuncWithFile(_t, runAC, "d.txt", 0); err != nil {
+		_t.Fatal(err)
 	}
 	return
 
-	testutil.CompareInf(t, inputGenerator, runAC, nil /*TODO*/)
+	testutil.CompareInf(_t, inputGenerator, runAC, nil /*TODO*/)
 }
 
 type Foo struct{}
@@ -46,10 +46,10 @@ func Constructor(int) (_ Foo) { return }
 func (Foo) F(int) (_ int)     { return }
 func (Foo) G(int) (_ int)     { return }
 
-func TestCompareClassInf(t *testing.T) {
+func TestCompareClassInf(_t *testing.T) {
 	testutil.DebugTLE = 0
 
-	assert := assert.New(t)
+	assert := assert.New(_t)
 	for tc := 1; ; tc++ {
 		inputInfo := &strings.Builder{}
 		rg := testutil2.NewRandGenerator()
@@ -85,12 +85,12 @@ func TestCompareClassInf(t *testing.T) {
 		}
 
 		if tc&(tc-1) == 0 {
-			t.Logf("%d cases checked.", tc)
+			_t.Logf("%d cases checked.", tc)
 		}
 	}
 }
 
-func TestCheckInf(t *testing.T) {
+func TestCheckInf(_t *testing.T) {
 	var solve func([]int) []int /*TODO*/
 	for tc := 1; ; tc++ {
 		rg := testutil2.NewRandGenerator()
@@ -101,7 +101,7 @@ func TestCheckInf(t *testing.T) {
 		_ = myAns
 
 		if tc&(tc-1) == 0 {
-			t.Logf("%d cases checked.", tc)
+			_t.Logf("%d cases checked.", tc)
 		}
 	}
 }
