@@ -36,6 +36,10 @@ https://codeforces.com/problemset/problem/863/E
 https://atcoder.jp/contests/abc178/tasks/abc178_f
 */
 
+/* 不变量
+https://codeforces.com/contest/1775/problem/E
+*/
+
 // 异类双变量：固定某变量统计另一变量的 [0,n)
 //     EXTRA: 值域上的双变量，见 https://codeforces.com/contest/486/problem/D
 // 同类双变量①：固定 i 统计 [0,n)
@@ -136,6 +140,7 @@ https://codeforces.com/problemset/problem/707/D
 对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
 其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
 对于多组数据的情况，若禁用 GC 会 MLE，可在每组数据的开头或末尾调用 runtime.GC() 或 debug.FreeOSMemory() 手动 GC
+还可以尝试 1.19 新增的 debug.SetMemoryLimit
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
 
