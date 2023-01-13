@@ -39,6 +39,9 @@
 |[二叉树 - BFS](https://www.bilibili.com/video/BV1hG4y1277i/)|[102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)|[代码](https://leetcode.cn/problems/binary-tree-level-order-traversal/solutions/2049807/bfs-wei-shi-yao-yao-yong-dui-lie-yi-ge-s-xlpz/)|两种写法|
 ||[103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)|[代码](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/solutions/2049827/bfs-wei-shi-yao-yao-yong-dui-lie-yi-ge-s-xlv3/)|两种写法|
 ||[513. 找树左下角的值](https://leetcode.cn/problems/find-bottom-left-tree-value/)|[代码](https://leetcode.cn/problems/find-bottom-left-tree-value/solutions/2049776/bfs-wei-shi-yao-yao-yong-dui-lie-yi-ge-s-f34y/)||
+|[回溯 - 子集型](https://www.bilibili.com/video/BV1mG4y1A7Gu/)|[17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)|[代码](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/solutions/2059416/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-3orv/)||
+||[78. 子集](https://leetcode.cn/problems/subsets/)|[代码](https://leetcode.cn/problems/subsets/solutions/2059409/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-8tkl/)|两种方法|
+||[131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)|[代码](https://leetcode.cn/problems/palindrome-partitioning/solutions/2059414/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-fues/)|两种方法|
 
 ---
 
