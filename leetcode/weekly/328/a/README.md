@@ -1,4 +1,4 @@
-下午两点【B站@灵茶山艾府】直播讲题，关注UP不迷路~
+[视频讲解](https://www.bilibili.com/video/BV1QT41127kJ/) 已出炉，欢迎点赞三连~
 
 ---
 

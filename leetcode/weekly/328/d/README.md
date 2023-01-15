@@ -12,9 +12,9 @@
 
 #### 提示 3
 
-由于价值都是正数，路径之和越大越好。
+由于价值都是正数，一条路径能延长就尽量延长，这样路径和就越大，那么最优是延长到叶子。
 
-根据提示 2，答案应该是**去掉一个叶子**后的**最大路径和**（这里的叶子严格来说是度为 $1$ 的点）。
+根据提示 2，问题转换成**去掉一个叶子**后的**最大路径和**（这里的叶子严格来说是度为 $1$ 的点，因为根的度数也可能是 $1$）。
 
 #### 提示 4
 
@@ -53,7 +53,7 @@ class Solution:
                 # 前面最大不带叶子的路径和 + 当前带叶子的路径和
                 ans = max(ans, max_s1 + s2, max_s2 + s1)
                 max_s1 = max(max_s1, s1 + p)
-                max_s2 = max(max_s2, s2 + p)
+                max_s2 = max(max_s2, s2 + p)  # 这里加上 p 是因为 x 必然不是叶子
             return max_s1, max_s2
         dfs(0, -1)
         return ans
@@ -89,7 +89,7 @@ class Solution {
                 // 前面最大不带叶子的路径和 + 当前带叶子的路径和
                 ans = Math.max(ans, Math.max(maxS1 + s2, maxS2 + s1));
                 maxS1 = Math.max(maxS1, s1 + p);
-                maxS2 = Math.max(maxS2, s2 + p);
+                maxS2 = Math.max(maxS2, s2 + p); // 这里加上 p 是因为 x 必然不是叶子
             }
         return new long[]{maxS1, maxS2};
     }
@@ -118,7 +118,7 @@ public:
                     // 前面最大不带叶子的路径和 + 当前带叶子的路径和
                     ans = max(ans, max(max_s1 + s2, max_s2 + s1));
                     max_s1 = max(max_s1, s1 + p);
-                    max_s2 = max(max_s2, s2 + p);
+                    max_s2 = max(max_s2, s2 + p); // 这里加上 p 是因为 x 必然不是叶子
                 }
             return {max_s1, max_s2};
         };
@@ -149,7 +149,7 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 				// 前面最大不带叶子的路径和 + 当前带叶子的路径和
 				ans = max(ans, max(maxS1+s2, maxS2+s1))
 				maxS1 = max(maxS1, s1+p)
-				maxS2 = max(maxS2, s2+p)
+				maxS2 = max(maxS2, s2+p) // 这里加上 p 是因为 x 必然不是叶子
 			}
 		}
 		return maxS1, maxS2
@@ -168,5 +168,6 @@ func max(a, b int) int { if b > a { return b }; return a }
 
 #### 相似题目
 
+- [124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)
 - [1245. 树的直径](https://leetcode-cn.com/problems/tree-diameter/)
 - [2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)

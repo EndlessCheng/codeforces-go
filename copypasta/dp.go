@@ -46,6 +46,7 @@ LC956 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.co
 戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
 混合逆序对 https://atcoder.jp/contests/arc097/tasks/arc097_c
+寻找子问题 https://atcoder.jp/contests/arc116/tasks/arc116_d
 https://codeforces.com/contest/1579/problem/G
 todo https://atcoder.jp/contests/abc200/tasks/abc200_e
 DI 序列的有效排列 LC903 https://leetcode.cn/problems/valid-permutations-for-di-sequence/
@@ -634,6 +635,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
 	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
 	// 状态设计 LIS 计数 https://atcoder.jp/contests/abc237/tasks/abc237_f
+	// 逆向题：输入 LIS 返回字典序最小的排列 a https://atcoder.jp/contests/arc125/tasks/arc125_c
 	lis := func(a []int) int {
 		dp := []int{}
 		for _, v := range a {
@@ -999,11 +1001,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
+	// 转换 https://leetcode.com/discuss/interview-question/2677093/Snowflake-oror-Tough-OA-question-oror-How-to-solve
 	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2
 	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
 	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值
 	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
+	// 变形，需要多加一个维度 https://atcoder.jp/contests/abc275/tasks/abc275_f
 	// NOIP06·提高 金明的预算方案（也可以用树上背包做）https://www.luogu.com.cn/problem/P1064
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	//        必须定义成恰好装满（紫书例题 9-5，UVa 12563）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=441&page=show_problem&problem=4008
@@ -1076,7 +1080,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
 	// NOTE: 1,1,1,...1(32个1),s-32,s-31,...,s 可以让方案数恰好为 2^32
-	// 二维+上限+下限 LC879 https://leetcode-cn.com/contest/weekly-contest-95/problems/profitable-schemes/
+	// 二维+上限+下限 LC879 https://leetcode-cn.com/problems/profitable-schemes/
+	// https://atcoder.jp/contests/arc060/tasks/arc060_a
 	// 转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	// 转换 https://codeforces.com/problemset/problem/478/D
 	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
@@ -1344,6 +1349,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	插入形成回文 LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	另见 LPS
 
+	容斥 https://atcoder.jp/contests/abc106/tasks/abc106_d
 	染色【套路】https://codeforces.com/problemset/problem/1114/D
 	同色消除【套路】https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
 	回文消除 https://codeforces.com/problemset/problem/607/B
@@ -1450,6 +1456,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	马尔可夫链 Markov chain https://en.wikipedia.org/wiki/Markov_chain
 	吸收马尔可夫链 Absorbing Markov chain https://en.wikipedia.org/wiki/Absorbing_Markov_chain
 	https://www.bilibili.com/video/BV14y4y1S7ve
+	切尔诺夫界 Chernoff bound https://en.wikipedia.org/wiki/Chernoff_bound
+	https://leetcode.cn/problems/soup-servings/solutions/1982989/shou-lian-su-du-by-hqztrue-afba/
 
 	一个比较有用的公式（应用：CF1623D）
 	E(x) = ∑i*P(x=i) = ∑P(x>=i)
@@ -1609,8 +1617,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
 	// 模板题 LC1986 https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
-	// LC1494 https://leetcode-cn.com/contest/biweekly-contest-29/problems/parallel-courses-ii/
-	// LC1654 https://leetcode-cn.com/contest/biweekly-contest-39/problems/distribute-repeating-integers/
+	// LC1494 https://leetcode-cn.com/problems/parallel-courses-ii/
+	// LC1654 https://leetcode-cn.com/problems/distribute-repeating-integers/
 	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
 	// - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
 	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
@@ -2253,12 +2261,19 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
 
 	/* 树形 DP
+	思考方向：
+	每个节点需要计算的信息，是否只取决于邻居？
+	如果不能，如何把子树的信息归纳到邻居上？
+
 	一般是从自底向上计算的，也就是根据子树返回值来计算父节点的值
 	也有自顶向下的写法，见后面
 
 	https://blog.csdn.net/weixin_43914593/article/details/107145592
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
+
+	基本 LC337 https://leetcode.cn/problems/house-robber-iii/
+	https://atcoder.jp/contests/abc259/tasks/abc259_f
 
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Ctrees
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
@@ -2269,6 +2284,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/1083/A
 	好题 http://codeforces.com/problemset/problem/1249/F
 	好题 https://codeforces.com/problemset/problem/1453/E
+	二分答案 https://codeforces.com/problemset/problem/1739/D
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	**如何转移 https://codeforces.com/problemset/problem/538/E
 	可以重复走 https://codeforces.com/problemset/problem/1220/E
@@ -2355,20 +2371,22 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return
 	}
 
-	// 最大路径点权和
-	maxPathSum := func(st int, g [][]int, a []int) (maxPathSum int) {
+	// 最大路径和 最大路径点权和
+	// 变形 LC2538 https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/
+	maxPathSum := func(st int, g [][]int, a []int) (ans int) {
 		var f func(v, fa int) int
-		f = func(v, fa int) (maxSum int) {
-			rootVal := a[v]
-			maxPathSum = max(maxPathSum, rootVal)
+		f = func(v, fa int) int {
+			val := a[v]
+			ans = max(ans, val)
+			maxS := val
 			for _, w := range g[v] {
 				if w != fa {
-					sum := f(w, v)
-					maxPathSum = max(maxPathSum, maxSum+sum+rootVal)
-					maxSum = max(maxSum, sum)
+					s := f(w, v)
+					ans = max(ans, maxS+s)
+					maxS = max(maxS, s+val)
 				}
 			}
-			return maxSum + rootVal
+			return maxS
 		}
 		f(st, -1)
 		return

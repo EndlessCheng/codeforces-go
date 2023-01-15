@@ -21,7 +21,7 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 				// 前面最大不带叶子的路径 + 当前带叶子的路径
 				ans = max(ans, max(maxS1+s2, maxS2+s1))
 				maxS1 = max(maxS1, s1+p)
-				maxS2 = max(maxS2, s2+p)
+				maxS2 = max(maxS2, s2+p) // 这里加上 p 是因为 x 必然不是叶子
 			}
 		}
 		return maxS1, maxS2
