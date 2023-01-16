@@ -13,49 +13,32 @@ func CF1409E(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	max := func(a, b int) int {
-		if a > b {
-			return a
+		if b > a {
+			return b
 		}
-		return b
+		return a
 	}
 
-	var T, n, l, v int
+	var T, n, k, v int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &l)
-		cnt := map[int]int{}
-		for i := 0; i < n; i++ {
-			Fscan(in, &v)
-			cnt[v]++
+		Fscan(in, &n, &k)
+		a := make([]int, n)
+		for i := range a {
+			Fscan(in, &a[i])
 		}
 		for i := 0; i < n; i++ {
 			Fscan(in, &v)
 		}
 
-		n = len(cnt)
-		a := make([]int, 0, n)
-		for v := range cnt {
-			a = append(a, v)
-		}
 		sort.Ints(a)
-		sum := make([]int, n+1)
-		for i, v := range a {
-			sum[i+1] = sum[i] + cnt[v]
-		}
-		cs := make([]int, n)
-		for i, v := range a {
-			cs[i] = sum[i+1] - sum[sort.SearchInts(a[:i], v-l)]
-		}
-		mxC := make([]int, n)
-		mxC[0] = cs[0]
-		for i := 1; i < n; i++ {
-			mxC[i] = max(mxC[i-1], cs[i])
-		}
-		ans := 0
-		for i, c := range cs {
-			if j := sort.SearchInts(a[:i], a[i]-l); j > 0 {
-				c += mxC[j-1]
+		pre := make([]int, n+1)
+		ans, left := 0, 0
+		for right, v := range a {
+			for v-a[left] > k {
+				left++
 			}
-			ans = max(ans, c)
+			ans = max(ans, right-left+1+pre[left])
+			pre[right+1] = max(pre[right], right-left+1)
 		}
 		Fprintln(out, ans)
 	}
