@@ -2374,6 +2374,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最大路径和 最大路径点权和
 	// 变形 LC2538 https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/
 	maxPathSum := func(st int, g [][]int, a []int) (ans int) {
+		// 点权
 		var f func(v, fa int) int
 		f = func(v, fa int) int {
 			val := a[v]
@@ -2389,6 +2390,49 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			return maxS
 		}
 		f(st, -1)
+
+		{
+			// 边权
+			type nb struct{ to, wt int }
+			var g [][]nb
+			var f func(v, fa int) int
+			f = func(v, fa int) int {
+				maxS := 0
+				for _, e := range g[v] {
+					w := e.to
+					if w != fa {
+						s := f(w, v) + e.wt
+						ans = max(ans, maxS+s)
+						maxS = max(maxS, s)
+					}
+				}
+				return maxS
+			}
+			f(st, -1)
+		}
+
+		{
+			// 点权+边权
+			type nb struct{ to, wt int }
+			var g [][]nb
+			var f func(v, fa int) int
+			f = func(v, fa int) int {
+				val := a[v]
+				ans = max(ans, val)
+				maxS := val
+				for _, e := range g[v] {
+					w := e.to
+					if w != fa {
+						s := f(w, v) + e.wt
+						ans = max(ans, maxS+s)
+						maxS = max(maxS, s+val)
+					}
+				}
+				return maxS
+			}
+			f(st, -1)
+		}
+
 		return
 	}
 
@@ -2517,6 +2561,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 进阶指南 p.292-295
 	// https://codeforces.com/blog/entry/20935
 	//
+	// LC310 也可以用拓扑排序的思想 https://leetcode.cn/problems/minimum-height-trees/
 	// https://www.luogu.com.cn/problem/P3478
 	// https://www.luogu.com.cn/problem/P2986
 	// https://codeforces.com/problemset/problem/763/A（有更巧妙的做法）
@@ -2525,6 +2570,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://codeforces.com/problemset/problem/337/D
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D
 	// https://codeforces.com/problemset/problem/1626/E
+	// 还可以用直径做 https://atcoder.jp/contests/abc222/tasks/abc222_f
 
 	// 给一颗无根树
 	// 返回每个点到其余点的距离之和
