@@ -250,35 +250,6 @@ func miscCollection() {
 		return
 	}
 
-	// 螺旋矩阵 Spiral Matrix
-	// https://ac.nowcoder.com/acm/contest/6489/C
-	// 另：只考虑枚举顺序 LC54 https://leetcode-cn.com/problems/spiral-matrix/
-	genSpiralMatrix := func(n, m int) [][]int {
-		mat := make([][]int, n)
-		for i := range mat {
-			mat[i] = make([]int, m)
-			for j := range mat[i] { // 如果从 1 开始这里可以不要，下面的 != -1 改成 > 0
-				mat[i][j] = -1
-			}
-		}
-		type pair struct{ x, y int }
-		dir4 := [4]pair{{0, 1}, {1, 0}, {0, -1}, {-1, 0}} // 右下左上
-		x, y, di := 0, 0, 0
-		//pos := make([]pair, n*m+1)
-		for i := 0; i < n*m; i++ { // 从 0 到 n*m-1
-			mat[x][y] = i
-			//pos[i] = pair{x, y}
-			d := dir4[di]
-			if xx, yy := x+d.x, y+d.y; xx < 0 || xx >= n || yy < 0 || yy >= m || mat[xx][yy] != -1 {
-				di = (di + 1) & 3
-				d = dir4[di]
-			}
-			x += d.x
-			y += d.y
-		}
-		return mat
-	}
-
 	// 01 矩阵，每个 1 位置向四个方向延伸连续 1 的最远距离
 	// https://codingcompetitions.withgoogle.com/kickstart/round/0000000000436140/000000000068c509
 	max1dir4 := func(a [][]int) (ls, rs, us, ds [][]int) {
@@ -393,7 +364,6 @@ func miscCollection() {
 		concatBrackets,
 		sliceToStr,
 		getMapRangeValues,
-		genSpiralMatrix,
 		max1dir4,
 		loopMergeOnRing,
 	}
@@ -517,7 +487,7 @@ func countValidSubstring(s string) (ans int) {
 }
 
 // 负二进制数相加
-// LC1073 https://leetcode-cn.com/problems/adding-two-negabinary-numbers/ https://leetcode-cn.com/contest/weekly-contest-139/
+// LC1073 https://leetcode-cn.com/problems/adding-two-negabinary-numbers/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
 		a1, a2 = a2, a1
@@ -548,7 +518,7 @@ func addNegabinary(a1, a2 []int) []int {
 }
 
 // 负二进制转换
-// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/ https://leetcode-cn.com/contest/weekly-contest-130/
+// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
 func toNegabinary(n int) (res string) {
 	if n == 0 {
 		return "0"

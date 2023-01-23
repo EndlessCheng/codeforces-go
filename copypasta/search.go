@@ -803,6 +803,78 @@ func _(min, max func(int, int) int) {
 		}
 	}
 
+	//
+
+	// 获取螺旋遍历的所有坐标         螺旋矩阵 Spiral Matrix
+	// LC54 https://leetcode.cn/problems/spiral-matrix/
+	// LC59 https://leetcode.cn/problems/spiral-matrix-ii/
+	// LC885 https://leetcode.cn/problems/spiral-matrix-iii/
+	// LC2326 https://leetcode.cn/problems/spiral-matrix-iv/
+	// https://ac.nowcoder.com/acm/contest/6489/C
+	type pair struct{ x, y int }
+	loopSpiralMatrix := func(n, m int) []pair { // n 行 m 列
+		dir4 := []struct{ x, y int }{{0, 1}, {1, 0}, {0, -1}, {-1, 0}} // 右下左上
+		mat := make([][]int, n)
+		for i := range mat {
+			mat[i] = make([]int, m)
+			for j := range mat[i] {
+				mat[i][j] = -1
+			}
+		}
+		pos := make([]pair, n*m)
+		i, j, di := 0, 0, 0
+		for id := 0; id < n*m; id++ {
+			pos[id] = pair{i, j}
+			mat[i][j] = id
+			d := dir4[di]
+			if x, y := i+d.x, j+d.y; x < 0 || x >= n || y < 0 || y >= m || mat[x][y] != -1 {
+				di = (di + 1) % 4
+				d = dir4[di]
+			}
+			i += d.x
+			j += d.y
+		}
+		return pos
+	}
+
+	// 顺时针遍历矩阵从外向内的第 d 圈（保证不自交）
+	// LC1914 https://leetcode-cn.com/problems/cyclically-rotating-a-grid/
+	loopAround := func(a [][]int, d int) []int {
+		n, m := len(a), len(a[0])
+		b := make([]int, 0, (n+m-d*4-2)*2)
+		for j := d; j < m-d; j++ { // →
+			b = append(b, a[d][j])
+		}
+		for i := d + 1; i < n-d; i++ { // ↓
+			b = append(b, a[i][m-1-d])
+		}
+		for j := m - d - 2; j >= d; j-- { // ←
+			b = append(b, a[n-1-d][j])
+		}
+		for i := n - d - 2; i > d; i-- { // ↑
+			b = append(b, a[i][d])
+		}
+		return b
+	}
+
+	// 获取之字遍历的所有坐标
+	loopZigZag := func(n, m int) []pair { // n 行 m 列
+		pos := make([]pair, 0, n*m)
+		for i := 0; i < n; i++ {
+			for j := 0; j < m; j++ {
+				pos = append(pos, pair{i, j})
+			}
+			i++
+			if i == n {
+				break
+			}
+			for j := m - 1; j >= 0; j-- {
+				pos = append(pos, pair{i, j})
+			}
+		}
+		return pos
+	}
+
 	/*
 		遍历以 (ox, oy) 为中心的曼哈顿距离为 dis 范围内的格点
 		例如 dis=2 时：
@@ -812,8 +884,7 @@ func _(min, max func(int, int) int) {
 		 # #
 		  #
 	*/
-	type pair struct{ x, y int }
-	dir4r := []pair{{-1, 1}, {-1, -1}, {1, -1}, {1, 1}} // 逆时针
+	dir4r := []struct{ x, y int }{{-1, 1}, {-1, -1}, {1, -1}, {1, 1}} // 逆时针
 	loopAroundManhattan := func(n, m, ox, oy, dis int, f func(x, y int)) {
 		if dis == 0 {
 			f(ox, oy)
@@ -875,26 +946,6 @@ func _(min, max func(int, int) int) {
 				}
 			}
 		}
-	}
-
-	// 顺时针遍历矩阵从外向内的第 d 圈（保证不自交）
-	// LC247B https://leetcode-cn.com/contest/weekly-contest-247/problems/cyclically-rotating-a-grid/
-	loopAroundD := func(a [][]int, d int) []int {
-		n, m := len(a), len(a[0])
-		b := make([]int, 0, (n+m-d*4-2)*2)
-		for j := d; j < m-d; j++ { // →
-			b = append(b, a[d][j])
-		}
-		for i := d + 1; i < n-d; i++ { // ↓
-			b = append(b, a[i][m-1-d])
-		}
-		for j := m - d - 2; j >= d; j-- { // ←
-			b = append(b, a[n-1-d][j])
-		}
-		for i := n - d - 2; i > d; i-- { // ↑
-			b = append(b, a[i][d])
-		}
-		return b
 	}
 
 	// 第一排在右上，最后一排在左下
@@ -976,7 +1027,8 @@ func _(min, max func(int, int) int) {
 
 	_ = []interface{}{
 		loopSet, loopSubset, loopSuperset, loopSubsetK,
-		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev, loopAroundD,
+		loopSpiralMatrix, loopAround, loopZigZag,
+		loopAroundManhattan, loopAllManhattan, loopAroundChebyshev,
 		loopDiagonal, loopAntiDiagonal, circleLoopDiagonal,
 		loopBorder,
 	}
