@@ -671,6 +671,7 @@ func _() {
 
 	// 差分
 	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
+	// 二阶差分 https://codeforces.com/problemset/problem/1661/D
 
 	// 离散差分，传入闭区间列表 ps，不要求有序
 	// https://codeforces.com/problemset/problem/1420/D
@@ -718,24 +719,36 @@ func _() {
 
 	// 二维差分
 	// https://blog.csdn.net/weixin_43914593/article/details/113782108
+	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/
 	// https://www.luogu.com.cn/problem/P3397
 	// https://leetcode-cn.com/problems/stamping-the-grid/（也可以不用差分）
 	diff2D := func(n, m int) {
-		diff := make([][]int, n+1)
+		diff := make([][]int, n+2)
 		for i := range diff {
-			diff[i] = make([]int, m+1)
+			diff[i] = make([]int, m+2)
 		}
 		// 将区域 r1<=r<=r2 && c1<=c<=c2 上的数都加上 x
+		// 多 +1 是为了方便求前缀和
 		update := func(r1, c1, r2, c2, x int) {
-			r2++
-			c2++
-			diff[r1][c1] += x
-			diff[r1][c2] -= x
-			diff[r2][c1] -= x
-			diff[r2][c2] += x
+			diff[r1+1][c1+1] += x
+			diff[r1+1][c2+2] -= x
+			diff[r2+2][c1+1] -= x
+			diff[r2+2][c2+2] += x
 		}
-		// 还原二维差分矩阵对应的计数矩阵
-		restore := func() [][]int {
+		// 直接在 diff 上还原原始矩阵
+		for i := 1; i <= n; i++ {
+			for j := 1; j <= m; j++ {
+				diff[i][j] += diff[i][j-1] + diff[i-1][j] - diff[i-1][j-1]
+			}
+		}
+		// 保留 n*m 的计数矩阵
+		diff = diff[1 : n+1]
+		for i, row := range diff {
+			diff[i] = row[1 : m+1]
+		}
+
+		// EXTRA: 还原二维差分矩阵对应的计数矩阵，保留原始 diff
+		{
 			ori := make([][]int, n+1)
 			ori[0] = make([]int, m+1)
 			for i, row := range diff[:n] {
@@ -749,27 +762,9 @@ func _() {
 			for i, row := range ori {
 				ori[i] = row[1:]
 			}
-			return ori
-		}
-		// 直接在 diff 上还原
-		restoreInPlace := func() {
-			for j := 1; j < m; j++ {
-				diff[0][j] += diff[0][j-1]
-			}
-			for i := 1; i < n; i++ {
-				diff[i][0] += diff[i-1][0]
-				for j := 1; j < m; j++ {
-					diff[i][j] += diff[i][j-1] + diff[i-1][j] - diff[i-1][j-1]
-				}
-			}
-			// 保留 n*m 的计数矩阵
-			diff = diff[:n]
-			for i, row := range diff {
-				diff[i] = row[:m]
-			}
 		}
 
-		_, _, _ = update, restore, restoreInPlace
+		_ = update
 	}
 
 	reverse := func(a []byte) []byte {
