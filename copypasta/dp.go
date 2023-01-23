@@ -41,7 +41,7 @@ https://codeforces.com/problemset/problem/1408/D
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
 Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
-LC956 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+LC956 https://leetcode-cn.com/problems/tallest-billboard/
 涉及到相邻状态先后关系的 DP（喂兔子）https://codeforces.com/problemset/problem/358/D
 戳气球 LC312 https://leetcode-cn.com/problems/burst-balloons/
 消消乐 LC546 https://leetcode-cn.com/problems/remove-boxes/ https://leetcode.com/contest/leetcode-weekly-contest-25
@@ -56,7 +56,7 @@ https://codeforces.com/problemset/problem/229/D
 
 思维转换
 谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
-扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK https://leetcode-cn.com/contest/weekly-contest-97/
+扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK
 LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
 状态优化 https://codeforces.com/problemset/problem/838/E
 「排序」题的转换 https://codeforces.com/problemset/problem/1223/D
@@ -239,6 +239,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC368 https://leetcode.cn/problems/largest-divisible-subset/
 	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
 	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
+	LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
 	另见 LIS
 
 	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
@@ -251,10 +252,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC123 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/
 	LC309 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 	LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
-	LC956 https://leetcode-cn.com/problems/tallest-billboard/ https://leetcode-cn.com/contest/weekly-contest-114/
+	LC956 https://leetcode-cn.com/problems/tallest-billboard/
 	LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
 	LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
-	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/contest/weekly-contest-199/problems/string-compression-ii/
+	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
 
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
@@ -484,7 +485,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D
 	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
-	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713 https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
+	// 若其中一个序列无重复元素，可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713 https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/
 	lcs := func(s, t []byte) int {
 		// dp[i][j] = LCS(s[:i], t[:j])
 		n, m := len(s), len(t)
@@ -629,7 +630,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 二维 LIS + 打印方案 http://codeforces.com/problemset/problem/4/D
 	// 将所有元素分成三类：不在任何 LIS / 在至少一个 LIS / 在所有 LIS https://codeforces.com/problemset/problem/486/E
 	// 重复 T 次的 LIS 问题 https://codeforces.com/problemset/problem/582/B
-	// 若其中一个序列无重复元素，LCS 可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713 https://leetcode-cn.com/contest/weekly-contest-222/problems/minimum-operations-to-make-a-subsequence/
+	// 若其中一个序列无重复元素，LCS 可以转换成 LIS https://www.luogu.com.cn/problem/P1439 LC1713 https://leetcode-cn.com/problems/minimum-operations-to-make-a-subsequence/
 	// 在一维 LIS 的基础上，a[i] 可以从多个数中选一个，问 LIS 最长可以多长
 	// - 思路：将各个 a[i] 的可选项从大到小排序，然后拼接成一个序列，求 LIS 即可（关键：从大到小排序避免了在同一个可选项中选择多个元素）
 	// 图上的路径的 LIS https://codeforces.com/problemset/problem/960/F
@@ -659,7 +660,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// todo 参考 https://leetcode.cn/problems/longest-increasing-subsequence-ii/solution/fen-zhi-by-heltion-h31y/
 
 	// 每个前缀的 LIS
-	// https://leetcode-cn.com/contest/weekly-contest-253/problems/find-the-longest-valid-obstacle-course-at-each-position/
+	// LC1964 https://leetcode-cn.com/problems/find-the-longest-valid-obstacle-course-at-each-position/
 	lisAll := func(a []int) []int {
 		n := len(a)
 		lis := make([]int, n)
@@ -1894,10 +1895,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	      LC1067 https://leetcode.cn/problems/digit-count-in-range/
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
 	LC788 含有某些特殊数字 https://leetcode.cn/problems/rotated-digits/
-	LC902 最大为 N 的数字组合 https://leetcode-cn.com/contest/weekly-contest-101/problems/numbers-at-most-n-given-digit-set/
-	LC1012 有重复数字的数字个数 https://leetcode-cn.com/contest/weekly-contest-128/problems/numbers-with-repeated-digits/
-	- LC2376 互补问题 无重复数字的数字个数 https://leetcode.cn/contest/weekly-contest-306/problems/count-special-integers/
-	LC1397 与 KMP 结合 https://leetcode-cn.com/contest/weekly-contest-182/problems/find-all-good-strings/
+	LC902 最大为 N 的数字组合 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
+	LC1012 有重复数字的数字个数 https://leetcode-cn.com/problems/numbers-with-repeated-digits/
+	- LC2376 互补问题 无重复数字的数字个数 https://leetcode.cn/problems/count-special-integers/
+	LC1397 与 KMP 结合 https://leetcode-cn.com/problems/find-all-good-strings/
 	                          https://www.luogu.com.cn/problem/P3193
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
@@ -2572,7 +2573,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1626/E
 	// 还可以用直径做 https://atcoder.jp/contests/abc222/tasks/abc222_f
 
-	// 给一颗无根树
+	// 给一棵无根树
 	// 返回每个点到其余点的距离之和
 	// LC834 https://leetcode-cn.com/problems/sum-of-distances-in-tree
 	// 任意两点距离除以 k 的上取整之和 https://codeforces.com/problemset/problem/791/D
