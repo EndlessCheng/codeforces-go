@@ -145,7 +145,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 			if o.lr[0] == nil {
 				return o.lr[1]
 			}
-			// o 有两颗子树，把优先级高的子树旋转到根，然后递归在另一颗子树中删除 o
+			// o 有两颗子树，把优先级高的子树旋转到根，然后递归在另一棵子树中删除 o
 			d = 0
 			if o.lr[0].priority > o.lr[1].priority {
 				d = 1

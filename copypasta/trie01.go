@@ -9,7 +9,7 @@ import (
 // func init() { debug.SetGCPercent(-1) }
 
 // 异或字典树
-// 一颗（所有叶节点深度都相同的）二叉树
+// 一棵（所有叶节点深度都相同的）二叉树
 // 模板题 https://codeforces.com/problemset/problem/706/D
 // 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
 // https://codeforces.com/contest/1446/problem/C
@@ -264,7 +264,7 @@ func (o trie01Node) put(v, k int) *trie01Node {
 func generateMaxNodes01TrieData(n, maxV int) []int {
 	shift := bits.Len(uint(maxV)) - bits.Len(uint(n)) + 1
 	a := make([]int, 0, n)
-	// 构建一颗上半部分为完全二叉树，下半部分为一串 0...0 的 01-trie
+	// 构建一棵上半部分为完全二叉树，下半部分为一串 0...0 的 01-trie
 	for i := 0; i<<shift <= maxV; i++ {
 		v := i << shift
 		a = append(a, v)
