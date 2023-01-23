@@ -9,6 +9,7 @@ import (
 /*
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
+https://en.algorithmica.org/hpc/data-structures/binary-search/
 
 https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
 https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
@@ -97,7 +98,7 @@ func sortCollections() {
 	}
 
 	// 插入排序
-	// 相关题目 LC1536 https://leetcode-cn.com/contest/weekly-contest-200/problems/minimum-swaps-to-arrange-a-binary-grid/
+	// 相关题目 LC1536 https://leetcode-cn.com/problems/minimum-swaps-to-arrange-a-binary-grid/
 	insertionSort := func(a []int) {
 		n := len(a)
 		for i := 1; i < n; i++ {

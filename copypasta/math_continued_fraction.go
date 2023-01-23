@@ -28,6 +28,9 @@ func continuedFractionCollections() {
 		return
 	}
 
+	// https://codeforces.com/contest/281/problem/B
+	// todo 见 Python fractions.Fraction.limit_denominator 源码
+
 	// sqrt(d) = [exp[0]; exp[1],..., 2*exp[0], exp[1], ..., 2*exp[0], exp[1], ...]
 	// https://en.wikipedia.org/wiki/Pell%27s_equation 解 https://oeis.org/A002350 https://oeis.org/A002349
 	// https://www.weiwen.io/post/about-the-pell-equations-2/
