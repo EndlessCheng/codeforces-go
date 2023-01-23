@@ -28,7 +28,7 @@ https://atcoder.jp/contests/abc050/tasks/arc066_b
 max(a,b) = (a + b + abs(a-b)) / 2
 
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
-相关题目 https://leetcode-cn.com/contest/weekly-contest-237/problems/find-xor-sum-of-all-pairs-bitwise-and/
+相关题目 LC1835 https://leetcode-cn.com/problems/find-xor-sum-of-all-pairs-bitwise-and/
 
 集合论公式的二进制等价形式：
 popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
@@ -58,7 +58,7 @@ https://oeis.org/A048004 最长连续 1 为 k 的长为 n 的二进制串的个�
 相关题目：https://codeforces.com/problemset/problem/1027/E
 
 https://oeis.org/A047778 Concatenation of first n numbers in binary, converted to base 10
-相关题目：https://leetcode-cn.com/contest/weekly-contest-218/problems/concatenation-of-consecutive-binary-numbers/
+相关题目 LC1680 https://leetcode-cn.com/problems/concatenation-of-consecutive-binary-numbers/
 钱珀瑙恩数 Champernowne constant https://en.wikipedia.org/wiki/Champernowne_constant
 
 https://oeis.org/A072339
@@ -169,7 +169,7 @@ https://oeis.org/A007632 既是二进制回文数又是十进制回文数
 
 https://oeis.org/A090994 Number of meaningful differential operations of the n-th order on the space R^9
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
-相关题目 LC1215/双周赛10C https://leetcode-cn.com/contest/biweekly-contest-10/problems/stepping-numbers/
+相关题目 LC1215 https://leetcode-cn.com/contest/biweekly-contest-10/problems/stepping-numbers/
 
 套路题 https://codeforces.com/problemset/problem/1415/D
 按位归纳 https://codeforces.com/problemset/problem/925/C
@@ -363,7 +363,7 @@ func (b Bitset) ResetRange(l, r int) {
 }
 
 // 左移 k 位
-// LC1981/周赛255C https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
+// LC1981 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
 func (b Bitset) Lsh(k int) {
 	if k == 0 {
 		return
@@ -510,30 +510,32 @@ func _(x int) {
 	// 利用操作的单调性求解
 	// 复杂度 O(f * n * logU)，f 为 op(x,y) 的时间复杂度，n 为 a 的长度，U 为 a 中元素最大值
 	// 改进 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
-	// |: LC898/周赛100C https://leetcode-cn.com/contest/weekly-contest-100/problems/bitwise-ors-of-subarrays/
+	// |: LC898 https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/
 	//    https://www.luogu.com.cn/problem/T236955?contestId=65460
-	// &: LC1521/周赛198D https://leetcode-cn.com/contest/weekly-contest-198/problems/find-a-value-of-a-mysterious-function-closest-to-target/
-	// GCD: https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
+	// &: LC1521 https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+	// GCD: LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
+	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
 	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
+	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
 		for _, v := range a {
-			for i, w := range set {
-				set[i] = op(w, v)
+			for j, w := range set {
+				set[j] = op(w, v)
 			}
 			set = append(set, v)
 			// 去重
-			k := 0
+			j := 0
 			for _, w := range set[1:] {
-				if set[k] != w {
-					k++
-					set[k] = w
+				if set[j] != w {
+					j++
+					set[j] = w
 				}
 			}
-			set = set[:k+1]
+			set = set[:j+1]
 			for _, w := range set {
 				// do w...
 				ans[w] = true
@@ -543,6 +545,7 @@ func _(x int) {
 	}
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
+	// 甚至还可以做到把每个运算结果对应的每个区间长度的出现次数求出来（需要差分 map）
 	// https://codeforces.com/problemset/problem/475/D
 	// https://codeforces.com/problemset/problem/1632/D
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
@@ -557,16 +560,16 @@ func _(x int) {
 			}
 			set = append(set, result{v, i, i + 1})
 			// 去重
-			k := 0
+			j := 0
 			for _, q := range set[1:] {
-				if set[k].v != q.v {
-					k++
-					set[k] = q
+				if set[j].v != q.v {
+					j++
+					set[j] = q
 				} else {
-					set[k].r = q.r
+					set[j].r = q.r
 				}
 			}
-			set = set[:k+1]
+			set = set[:j+1]
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
 			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range set {
@@ -603,16 +606,16 @@ func _(x int) {
 			}
 			muls = append(muls, result{v, i, i + 1})
 			// 去重
-			k := 0
+			j := 0
 			for _, q := range muls[1:] {
-				if muls[k].v != q.v {
-					k++
-					muls[k] = q
+				if muls[j].v != q.v {
+					j++
+					muls[j] = q
 				} else {
-					muls[k].r = q.r
+					muls[j].r = q.r
 				}
 			}
-			muls = muls[:k+1]
+			muls = muls[:j+1]
 			// 去掉超过 tot 的，从而保证 muls 中至多有 O(log(tot)) 个元素
 			for muls[0].v > tot {
 				muls = muls[1:]
@@ -700,7 +703,13 @@ func _(x int) {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
-	_ = []interface{}{lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, leastXor, bitOpTrick, bitOpTrickCnt, countSumEqMul, zeroXorSum3, maxXorWithLimit}
+	_ = []interface{}{
+		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32,
+		leastXor,
+		bitOpTrick, bitOpTrickCnt, countSumEqMul,
+		zeroXorSum3,
+		maxXorWithLimit,
+	}
 }
 
 // https://halfrost.com/go_s2_de_bruijn/
