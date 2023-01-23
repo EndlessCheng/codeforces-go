@@ -38,6 +38,10 @@ a(n) = C(n, 2)-n/2+1  n%2==1
 倒水问题 https://www.luogu.com.cn/problem/P1432
 顶点有限制的生成树 https://codeforces.com/problemset/problem/723/F
 
+Trémaux tree https://en.wikipedia.org/wiki/Tr%C3%A9maux_tree
+DFS 树与 BFS 树 https://atcoder.jp/contests/abc251/tasks/abc251_f
+证明 https://atcoder.jp/contests/abc251/editorial/3987
+
 奇妙 BFS https://codeforces.com/problemset/problem/1651/D
 
 竞赛图
@@ -239,6 +243,31 @@ func (*graph) dfs(n, st int, g [][]int) {
 	}
 
 	{
+		// 无向图分类：无环/自环/一般环
+		// https://codeforces.com/contest/1770/problem/D
+		c := 0 // 默认：无环
+		var f func(int, int)
+		f = func(v, fa int) {
+			vis[v] = true
+			for _, w := range g[v] {
+				if w != fa {
+					if w == v {
+						// 自环
+						c = 1
+					} else if vis[w] {
+						// 一般环
+						c = 2
+					} else {
+						f(w, v)
+					}
+				}
+			}
+		}
+		_ = c
+		f(0, -1)
+	}
+
+	{
 		// 无向图: DFS 找长度至少为 k 的环
 		// 注：如果只有一个环（基环树），见 pseudotree
 		// 模板题 https://codeforces.com/problemset/problem/263/D
@@ -298,6 +327,8 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 	return
 }
 
+// BFS
+// 带撤销的 BFS https://codeforces.com/problemset/problem/1721/D
 func (*graph) bfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	vis[st] = true
@@ -890,7 +921,7 @@ func (G *graph) findVertexBCC(g [][]int, min func(int, int) int) (comps [][]int,
 }
 
 // e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
-// 缩点后形成一颗 bridge tree
+// 缩点后形成一棵 bridge tree
 // 模板题 https://codeforces.com/problemset/problem/1000/E
 // 较为综合的一道题 http://codeforces.com/problemset/problem/732/F
 func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
@@ -976,6 +1007,7 @@ func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
+// 【理解本质】https://atcoder.jp/contests/abc271/tasks/abc271_e
 // 建模 https://www.luogu.com.cn/problem/P4644
 // 建模 LC864 https://leetcode-cn.com/problems/shortest-path-to-get-all-keys/
 // 还能再走多远？LC882 https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/
@@ -1458,12 +1490,13 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 模板题 https://www.luogu.com.cn/problem/P3366 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 // 题目推荐 https://cp-algorithms.com/graph/mst_kruskal.html#toc-tgt-5
 // 需要一些数论知识 https://atcoder.jp/contests/abc210/tasks/abc210_e
+// 枚举 https://atcoder.jp/contests/abc270/tasks/abc270_f
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D
-// 判断给定的边是否均在同一颗 MST 中 https://codeforces.com/problemset/problem/891/C
+// 判断给定的边是否均在同一棵 MST 中 https://codeforces.com/problemset/problem/891/C
 // 二分图无环 https://codeforces.com/problemset/problem/1408/E
 // 与 LCA 结合 https://codeforces.com/problemset/problem/733/F
 // 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 https://www.luogu.com.cn/problem/P1547
-// EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值 https://leetcode-cn.com/contest/weekly-contest-220/problems/checking-existence-of-edge-length-limited-paths/
+// EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
 func (*graph) mstKruskal(in io.Reader, n, m int) int64 {
 	type edge struct {
 		v, w int
@@ -2878,6 +2911,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // https://codeforces.com/problemset/problem/1027/D
 // https://codeforces.com/problemset/problem/1335/F
 // 拆点 https://codeforces.com/problemset/problem/1200/F
+// https://codeforces.com/contest/1770/problem/D
 // https://atcoder.jp/contests/abc266/tasks/abc266_f
 // todo [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
@@ -3883,7 +3917,7 @@ func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 	// 则转移时要么不取 lb（low bit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
 	// 将这一过程记忆化可大幅减少运行时间，理由如下：
 	// 由于每次都会去掉 lb，所以至多 k=len(g)/2 次递归后会进入右半部分没有 1 的状态
-	// 将这 k 次递归过程视作一颗二叉树，则其耗时为 O(2^k)
+	// 将这 k 次递归过程视作一棵二叉树，则其耗时为 O(2^k)
 	// 之后记忆化占主导，耗时也为 O(2^k)
 	// 主要注意的是，k 次递归的结果是否记忆化并不重要，因为这部分最多也只有 O(2^k) 个状态
 	// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」

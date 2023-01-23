@@ -309,6 +309,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
 	// LC1819 https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
+	// todo 补充题解
 	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
 		const mx int = 4e5 //
 		has := [mx + 1]bool{}
@@ -2162,7 +2163,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// = 1, otherwise
 
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
-	// a(n) ~ 2^n / sqrt(π * n/2)
+	// a(n) ~ 2^n / sqrt(π * n/2)     O(2^n/sqrt(n))
+	// a(2n) ~ 4^n / sqrt(πn)         O(4^n/sqrt(n))
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 floor(n/2) 大小的子集的概率约为 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
 	// EXTRA: https://oeis.org/A000984 Central binomial coefficients: binomial(2*n,n) = (2*n)!/(n!)^2
@@ -3065,7 +3067,7 @@ The number of 3 X n matrices of integers for which the upper-left hand corner is
 the rows and columns are weakly increasing, and two adjacent entries differ by at most 1
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
-相关题目 LC1411 https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/ https://leetcode-cn.com/contest/weekly-contest-184/
+相关题目 LC1411 https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/
 
 男厕问题 / 电话问题 https://oeis.org/A185456
 Assume that the first person to use a bank of payphones selects one at the end,
