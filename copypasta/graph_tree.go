@@ -20,6 +20,9 @@ NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」�
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
 不错的构造 https://codeforces.com/problemset/problem/260/D
 分类讨论的好题 https://codeforces.com/problemset/problem/765/E
+
+https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR
+前序中序构造二叉树 + 判定是否合法 https://atcoder.jp/contests/abc255/tasks/abc255_f
 */
 
 // namespace
@@ -60,7 +63,7 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 // - 用于计算每条边对所有路径产生的贡献 https://codeforces.com/problemset/problem/1401/D
 //
 // 离线好题 https://codeforces.com/problemset/problem/570/D
-// 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一颗子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
+// 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一棵子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
 func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 	dep := make([]int, n)
 	size := make([]int, n)
@@ -86,7 +89,7 @@ func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 }
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
-// 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一颗子树，方便用树状数组/线段树维护
+// 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一棵子树，方便用树状数组/线段树维护
 // 【时间戳的写法见后面】
 // 模板题 https://ac.nowcoder.com/acm/contest/6383/B
 // 例题 https://codeforces.com/problemset/problem/383/C
@@ -142,7 +145,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 // 例题 https://codeforces.com/problemset/problem/1328/E
 // https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
 // 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
-// 给定一颗 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
+// 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
 //    也可以不用 BFS，根据完全 k 叉树的性质直接建图：（点的范围从 0 到 n-1）
 //    for w := 1; w < n; w++ {
@@ -364,6 +367,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// EXTRA: 求出无根树上每个点的最远点及距离（紫书 p.282 思考题）
 	// 从任意直径的两个端点出发跑 DFS，取最大值
 	// 相关题目 https://codeforces.com/problemset/problem/337/D
+	// 每个点相距为 k 的点 https://atcoder.jp/contests/abc267/tasks/abc267_f
 	farthest := make([]struct{ v, d int }, len(g))
 	for i := range farthest {
 		farthest[i].d = -1
@@ -423,7 +427,7 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 树的重心
 // 性质：
 //    以重心为根时，最大子树结点数最少，且所有子树的大小都 < 节点数/2，或者说最大子树结点数 < 节点数/2
-//        反之，若存在一颗子树其大小 ≥ 节点数/2，则重心在该子树中
+//        反之，若存在一棵子树其大小 ≥ 节点数/2，则重心在该子树中
 //    一棵树最多有两个重心，且相邻
 //    拥有奇数个节点的树只有一个重心
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
@@ -1024,7 +1028,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 //    从根结点到任意结点所经过的重链数为 O(logn)，轻边数为 O(logn)
 //    与重心的关系（见 findCentroid）
 // https://en.wikipedia.org/wiki/Heavy_path_decomposition
-//    把每条重链当成一个节点，每条轻边作为边，我们可以得到一颗路径树。显然路径树的高度为 O(logn)
+//    把每条重链当成一个节点，每条轻边作为边，我们可以得到一棵路径树。显然路径树的高度为 O(logn)
 //    The paths of the decomposition may themselves be organized into a tree called the "path tree", "heavy path tree", or "compressed tree".
 //    Each node of the path tree corresponds to a path of the heavy path decomposition.
 //    If p is a path of the heavy path decomposition, then the parent of p in the path tree is the path containing the parent of the head of p.
@@ -1143,14 +1147,14 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // 
 // 长链剖分
 // 长链剖分和重链剖分一样，是把一棵树分成若干条不相交的链
 // 但是，这里的重儿子不再是子树大小最大的，而是深度最大的子节点（长儿子）
-// 根据这一定义可推出，从根结点到任意结点所经过的轻边数为 O(√n) (想象一颗长儿子不断递减的二叉树)
+// 根据这一定义可推出，从根结点到任意结点所经过的轻边数为 O(√n) (想象一棵长儿子不断递减的二叉树)
 // https://oi-wiki.org/graph/hld/#_14
 // https://www.luogu.com.cn/blog/Ynoi/zhang-lian-pou-fen-xue-xi-bi-ji
 // https://www.cnblogs.com/cj-chd/p/10076199.html
 // https://www.cnblogs.com/zhoushuyu/p/9468669.html
 // 应用：树上 k 级祖先 https://www.luogu.com.cn/problem/P5903 https://codeforces.com/problemset/problem/208/E
 // 长链剖分优化树形 DP：
-//    若树形 DP 的转移只和节点深度有关，我们完全可以把一颗子树拍扁成一条垂直的链
+//    若树形 DP 的转移只和节点深度有关，我们完全可以把一棵子树拍扁成一条垂直的链
 //    那么在合并子树时，长儿子将会占据主导优势，即其余子树均往长儿子上合并，这会使每个节点至多被合并一次，从而得到 O(n) 的优秀复杂度
 //    具体实现时还有一些技巧，见后面的有关 DP 优化的 EXTRA
 // 子树深度众数 https://codeforces.com/problemset/problem/1009/F
