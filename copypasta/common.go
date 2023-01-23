@@ -525,7 +525,7 @@ func _() {
 	}
 
 	// 分组前缀和（具体见 query 上的注释）
-	// LC1664 https://leetcode-cn.com/contest/weekly-contest-216/problems/ways-to-make-a-fair-array/
+	// LC1664 https://leetcode-cn.com/problems/ways-to-make-a-fair-array/
 	groupPrefixSum := func(a []int, k int) {
 		// 补 0 简化后续逻辑
 		n := len(a)
