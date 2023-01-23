@@ -80,6 +80,7 @@ func _(min, max func(int, int) int) {
 	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
+	//
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/

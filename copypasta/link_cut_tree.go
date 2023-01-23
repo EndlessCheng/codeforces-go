@@ -5,7 +5,7 @@ https://en.wikipedia.org/wiki/Link/cut_tree
 https://oi-wiki.org/ds/lct/
 
 将一棵树剖分成由若干实边组成的实链，实链与实链之间用虚边相连
-一颗 splay 对应一条实链，其中序遍历就是该实链从顶部往下的路径
+一棵 splay 对应一条实链，其中序遍历就是该实链从顶部往下的路径
 这样一条实链上某个节点的父/子节点就对应着该节点在 splay 上的前驱/后继
 
 https://www.cnblogs.com/flashhu/p/8324551.html

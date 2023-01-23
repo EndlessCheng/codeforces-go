@@ -12,6 +12,7 @@ package copypasta
 // https://codeforces.com/blog/entry/89313
 // https://codeforces.com/blog/entry/15890
 // todo 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399
+//  https://en.algorithmica.org/hpc/data-structures/segment-trees/
 //  像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
 // 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
 
@@ -53,6 +54,7 @@ package copypasta
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
 // 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
 // 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+// https://codeforces.com/problemset/problem/1042/D
 
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
@@ -730,7 +732,7 @@ func (o *pstNode) querySingle(i int) int64 {
 	return o.sum + o.ro.querySingle(i)
 }
 
-// 主席树相当于对数组的每个前缀建立一颗线段树
+// 主席树相当于对数组的每个前缀建立一棵线段树
 // 离散化时，求 kth 需要将相同元素也视作不同的
 
 // EXTRA: 查询区间 [l,r] 中第 k 小在整个数组上的名次（从 1 开始）
