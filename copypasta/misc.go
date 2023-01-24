@@ -416,6 +416,10 @@ func mergeCount(a []int) int64 {
 }
 
 // 状压 N 皇后
+// https://oeis.org/A000170 Number of ways of placing n non-attacking queens on an n X n board
+// Strong conjecture: there is a constant c around 2.54 such that a(n) is asymptotic to n!/c^n
+// Weak conjecture: lim_{n -> infinity} (1/n) * log(n!/a(n)) = constant = 0.90....
+// https://arxiv.org/pdf/2107.13460.pdf
 // LC51 https://leetcode-cn.com/problems/n-queens/
 // LC52 https://leetcode-cn.com/problems/n-queens-ii/
 func totalNQueens(n int) (ans int) {
@@ -688,7 +692,7 @@ func minMustPassSum(n, m int, targetCells [][2]int, min func(int, int) int) int 
 }
 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
-// 无边界 LC1197 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-knight-moves/
+// 无边界 LC1197 https://leetcode-cn.com/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 func minKnightMoves(x, y int, abs func(int) int, max func(int, int) int) int {
 	x, y = abs(x), abs(y)

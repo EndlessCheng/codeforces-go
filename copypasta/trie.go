@@ -68,7 +68,7 @@ func (t *trie) put(s []byte, val int) *trieNode {
 }
 
 // 字典树 DFS（模板）
-// https://leetcode.cn/problems/sum-of-prefix-scores-of-strings/
+// LC2416 https://leetcode.cn/problems/sum-of-prefix-scores-of-strings/
 func (t *trie) dfs() {
 	var f func(*trieNode, int)
 	f = func(o *trieNode, sum int) {

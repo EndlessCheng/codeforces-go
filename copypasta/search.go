@@ -1062,7 +1062,7 @@ func gridCollection() {
 
 	// 矩形网格图，返回从起点 (s.x,s.y) 到其余所有可达点的最短距离。'#' 表示无法通过的格子   bfsGridAll 单源最短距离
 	// https://codeforces.com/contest/1520/problem/G
-	// https://leetcode-cn.com/problems/k-highest-ranked-items-within-a-price-range/
+	// LC2146 https://leetcode-cn.com/problems/k-highest-ranked-items-within-a-price-range/
 	disAll := func(g [][]byte, sx, sy int) [][]int {
 		n, m := len(g), len(g[0])
 		dis := make([][]int, n)

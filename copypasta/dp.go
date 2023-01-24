@@ -55,7 +55,7 @@ DI 序列的有效排列 LC903 https://leetcode.cn/problems/valid-permutations-f
 https://codeforces.com/problemset/problem/229/D
 
 思维转换
-谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/ https://leetcode-cn.com/contest/biweekly-contest-25/
+谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/ https://www.bilibili.com/video/BV1KE41137PK
 LC920* https://leetcode-cn.com/problems/number-of-music-playlists/ 注：官方题解给出了一种生成函数的做法
 状态优化 https://codeforces.com/problemset/problem/838/E
@@ -625,7 +625,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
 	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
-	// 合唱队形（至少有升有降）https://leetcode-cn.com/contest/biweekly-contest-40/problems/minimum-number-of-removals-to-make-mountain-array/
+	// 合唱队形（至少有升有降）LC1671 https://leetcode-cn.com/problems/minimum-number-of-removals-to-make-mountain-array/
 	// 二维 LIS LC354 https://leetcode-cn.com/problems/russian-doll-envelopes/
 	// 二维 LIS + 打印方案 http://codeforces.com/problemset/problem/4/D
 	// 将所有元素分成三类：不在任何 LIS / 在至少一个 LIS / 在所有 LIS https://codeforces.com/problemset/problem/486/E
@@ -651,7 +651,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 方法二：线段树优化 DP
 	// https://www.acwing.com/problem/content/description/3665/
-	// https://leetcode.cn/problems/longest-increasing-subsequence-ii/
+	// LC2407 https://leetcode.cn/problems/longest-increasing-subsequence-ii/
 
 	// 方法三：平衡树
 	// todo 参考 https://leetcode.cn/problems/longest-increasing-subsequence-ii/solution/jianjie-by-xing-chen-26-ydqp/
@@ -1165,7 +1165,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 完全背包
 	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
-	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode-cn.com/contest/biweekly-contest-26/problems/form-largest-integer-with-digits-that-add-up-to-target/
+	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill
 		//dp[0] = 0

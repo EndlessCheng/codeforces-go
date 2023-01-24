@@ -561,7 +561,7 @@ func _(min, max func(int, int) int) {
 
 		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意这里是左闭右开区间
 		// https://codeforces.com/problemset/problem/611/D
-		// https://leetcode-cn.com/contest/biweekly-contest-59/problems/number-of-ways-to-separate-numbers/
+		// LC1977 https://leetcode-cn.com/problems/number-of-ways-to-separate-numbers/
 		compareSub := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
@@ -581,7 +581,7 @@ func _(min, max func(int, int) int) {
 		}
 
 		// EXTRA: 可重叠最长重复子串
-		// https://leetcode-cn.com/problems/longest-duplicate-substring/ https://leetcode-cn.com/problems/longest-repeating-substring/
+		// LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
 		longestDupSubstring := func() string {
 			maxP, maxH := 0, 0
 			for i, h := range height {

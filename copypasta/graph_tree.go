@@ -143,7 +143,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 // 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
 // 例题 https://codeforces.com/problemset/problem/1328/E
-// https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
+// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
 // 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
 // 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
@@ -265,7 +265,7 @@ func (*tree) minPathCover(g [][]int) int {
 //
 // 随机树的直径 https://zhuanlan.zhihu.com/p/398621082
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
-// https://leetcode-cn.com/contest/biweekly-contest-12/problems/tree-diameter/
+// LC1245 https://leetcode-cn.com/problems/tree-diameter/
 // EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
 // 转换的好题 https://codeforces.com/problemset/problem/734/E
 // 转换成求部分直径 https://codeforces.com/problemset/problem/1617/E https://oeis.org/A072339

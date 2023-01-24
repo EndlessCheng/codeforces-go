@@ -103,7 +103,7 @@ func _(n int) {
 
 	{
 		// 离散化版本
-		// https://leetcode.cn/problems/most-stones-removed-with-same-row-or-column/
+		// LC947 https://leetcode.cn/problems/most-stones-removed-with-same-row-or-column/
 		fa := map[int]int{}
 		groups := 0
 		var find func(int) int

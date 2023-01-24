@@ -96,7 +96,7 @@ TIPS: 另一种处理曼哈顿距离的方法是分四种情况讨论，即
       = max(a-b, b-a) + max(c-d, d-c)
       = max((a-b)+(c-d), (b-a)+(c-d), (a-b)+(d-c), (b-a)+(d-c))
       另外一种思路见 https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
-      LC1330/双周赛18D https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
+      LC1330 https://leetcode-cn.com/problems/reverse-subarray-to-maximize-array-value/
       todo 上面这题求最小 https://atcoder.jp/contests/arc119/tasks/arc119_e
       LC1131 https://leetcode-cn.com/problems/maximum-of-absolute-value-expression/
 
@@ -642,7 +642,7 @@ func smallestEnclosingDisc(ps []vecF) circleF {
 // 求一固定半径的圆最多能覆盖多少个点（圆边上也算覆盖） len(ps)>0 && r>0
 // Angular Sweep 算法 O(n^2logn)
 // https://www.geeksforgeeks.org/angular-sweep-maximum-points-can-enclosed-circle-given-radius/
-// LC1453/周赛189D https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
+// LC1453 https://leetcode-cn.com/problems/maximum-number-of-darts-inside-of-a-circular-dartboard/solution/python3-angular-sweepsuan-fa-by-lih/
 func maxCoveredPoints(ps []vec, r int64, max func(int, int) int) int {
 	const eps = 1e-8
 	type event struct {
@@ -680,7 +680,7 @@ func maxCoveredPoints(ps []vec, r int64, max func(int, int) int) int {
 // 圆和矩形是否重叠
 // x1<x2, y1<y2
 // https://www.zhihu.com/question/24251545/answer/27184960
-// LC1401/双周赛23C https://leetcode-cn.com/contest/biweekly-contest-23/problems/circle-and-rectangle-overlapping/
+// LC1401 https://leetcode-cn.com/problems/circle-and-rectangle-overlapping/
 func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 	cx, cy := float64(x1+x2)/2, float64(y1+y2)/2               // 矩形中心
 	hx, hy := float64(x2-x1)/2, float64(y2-y1)/2               // 矩形半长

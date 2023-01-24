@@ -73,8 +73,8 @@ https://codeforces.com/contest/1775/problem/E
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
 对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
-等效性 https://leetcode-cn.com/contest/biweekly-contest-8/problems/maximum-number-of-ones/
-https://leetcode-cn.com/contest/biweekly-contest-31/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
+等效性 LC1183 https://leetcode-cn.com/problems/maximum-number-of-ones/
+LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 贡献 http://codeforces.com/problemset/problem/912/D
 贡献 https://codeforces.com/problemset/problem/1208/E
 置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
@@ -89,7 +89,7 @@ https://codeforces.com/problemset/problem/369/E
 https://codeforces.com/problemset/problem/1644/D
 https://codeforces.com/problemset/problem/1638/D
 https://codeforces.com/problemset/problem/1672/D
-逆向思维 https://leetcode-cn.com/contest/biweekly-contest-9/problems/minimum-time-to-build-blocks/
+逆向思维 LC1199 https://leetcode-cn.com/problems/minimum-time-to-build-blocks/
 */
 
 /* 奇偶性
@@ -720,8 +720,8 @@ func _() {
 	// 二维差分
 	// https://blog.csdn.net/weixin_43914593/article/details/113782108
 	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/
+	// LC2132 https://leetcode-cn.com/problems/stamping-the-grid/（也可以不用差分）
 	// https://www.luogu.com.cn/problem/P3397
-	// https://leetcode-cn.com/problems/stamping-the-grid/（也可以不用差分）
 	diff2D := func(n, m int) {
 		diff := make([][]int, n+2)
 		for i := range diff {
@@ -953,7 +953,7 @@ func _() {
 	// 离散化，返回离散化后的序列（名次）
 	// discrete([]int{100,20,50,50}, 1) => []int{3,1,2,2}
 	// 有些题目需要把 0 加进去离散化，请特别注意 https://atcoder.jp/contests/jsc2021/tasks/jsc2021_f
-	// https://leetcode-cn.com/contest/biweekly-contest-18/problems/rank-transform-of-an-array/
+	// LC1331 https://leetcode-cn.com/problems/rank-transform-of-an-array/
 	discrete := func(a []int, startIndex int) (kth []int) {
 		type vi struct{ v, i int }
 		ps := make([]vi, len(a))
