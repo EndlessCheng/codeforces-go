@@ -268,3 +268,29 @@ func numSubmat(mat [][]int) (ans int) {
 	}
 	return
 }
+
+// 字典序最小的无重复字符的子序列
+// LC316 https://leetcode.cn/problems/remove-duplicate-letters/
+// EXTRA: 重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
+func removeDuplicateLetters(s string) string {
+	left := ['z' + 1]int{}
+	for _, c := range s {
+		left[c]++
+	}
+	inSt := ['z' + 1]bool{}
+	st := []rune{}
+	for _, c := range s {
+		left[c]--
+		if inSt[c] {
+			continue
+		}
+		for len(st) > 0 && c < st[len(st)-1] && left[st[len(st)-1]] > 0 {
+			top := st[len(st)-1]
+			st = st[:len(st)-1]
+			inSt[top] = false // top > c，且 top 后面还有，那么可以重新加进来
+		}
+		st = append(st, c)
+		inSt[c] = true
+	}
+	return string(st)
+}
