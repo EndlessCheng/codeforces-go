@@ -34,6 +34,9 @@ https://codeforces.com/problemset/problem/863/E
 难题
 2800 https://codeforces.com/problemset/problem/521/D
 
+构造
+https://atcoder.jp/contests/arc145/tasks/arc145_a
+
 不好想到的构造
 https://atcoder.jp/contests/abc178/tasks/abc178_f
 */
