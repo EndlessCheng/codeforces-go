@@ -141,6 +141,10 @@ https://oeis.org/A001108 a(n)-th triangular number is a square: a(n+1) = 6*a(n) 
 https://oeis.org/A001109 a(n)^2 is a triangular number: a(n) = 6*a(n-1) - a(n-2) with a(0)=0, a(1)=1
 https://oeis.org/A001110 Square triangular numbers: numbers that are both triangular and square
 
+https://oeis.org/A034836 Number of ways to write n as n = x*y*z with 1 <= x <= y <= z
+https://oeis.org/A331072 A034836 前缀和 O(n^(2/3))
+	https://atcoder.jp/contests/abc227/tasks/abc227_c
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
