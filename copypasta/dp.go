@@ -184,8 +184,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return ans
 	}
 
-	// https://codeforces.com/problemset/problem/510/D
 	// 由于数据范围的原因，采用 map 记忆化         dpMap
+	// https://codeforces.com/problemset/problem/510/D
+	// 如何估计时间复杂度 https://atcoder.jp/contests/abc275/tasks/abc275_d
 	mapDP := func(n int) {
 		{
 			// 一维（多维见下）
@@ -618,6 +619,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最小划分数 / 狄尔沃斯定理（Dilworth's theorem）https://en.wikipedia.org/wiki/Dilworth%27s_theorem
 	//    偏序集的最少反链划分数等于最长链的长度
 	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
+	// On Range LIS Queries https://codeforces.com/blog/entry/111625 https://codeforces.com/blog/entry/111807 https://arxiv.org/pdf/0707.3619
 	//
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
@@ -1898,6 +1900,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC902 最大为 N 的数字组合 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	LC1012 有重复数字的数字个数 https://leetcode-cn.com/problems/numbers-with-repeated-digits/
 	- LC2376 互补问题 无重复数字的数字个数 https://leetcode.cn/problems/count-special-integers/
+	LC1215 https://leetcode.cn/problems/stepping-numbers/
 	LC1397 与 KMP 结合 https://leetcode-cn.com/problems/find-all-good-strings/
 	                          https://www.luogu.com.cn/problem/P3193
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
