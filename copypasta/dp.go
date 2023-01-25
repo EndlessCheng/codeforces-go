@@ -296,6 +296,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最大 m 段子段和 http://acm.hdu.edu.cn/showproblem.php?pid=1024
 	// 环状最大子段和：转换为 max(最大子段和, 总和减去最小子段和) LC918 https://leetcode-cn.com/problems/maximum-sum-circular-subarray/
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
+	// 去掉一个最大值的最大子段和（值域比较小）https://codeforces.com/contest/1359/problem/D
 	// 变形题 https://codeforces.com/problemset/problem/33/C
 	//       https://codeforces.com/problemset/problem/788/A
 	//       https://codeforces.com/problemset/problem/1155/D
