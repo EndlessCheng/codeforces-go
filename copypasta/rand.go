@@ -8,7 +8,7 @@ import (
 
 /* 随机化技巧
 https://oi-wiki.org/misc/rand-technique/
-
+随机梯度下降 SGD, Stochastic Gradient Descent https://en.wikipedia.org/wiki/Stochastic_gradient_descent
 https://codeforces.com/problemset/problem/995/C
 https://codeforces.com/problemset/problem/1314/D 推荐
 https://codeforces.com/problemset/problem/1523/D

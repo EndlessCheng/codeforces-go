@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// Competitive Programming Roadmap (target: [gray, blue]) https://codeforces.com/blog/entry/111099
+
 // 解决问题的一般方法 https://codeforces.com/blog/entry/92248?#comment-809401
 // General ideas https://codeforces.com/blog/entry/48417
 // 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法

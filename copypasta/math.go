@@ -1298,7 +1298,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 				for x /= p; lpf[x] == p; x /= p {
 					e++
 				}
-				// do(p,e) ...
+				// do(p, e) ...
 
 			}
 		}
