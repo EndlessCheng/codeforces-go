@@ -44,6 +44,12 @@ func TestCompareCF797C(t *testing.T) {
 
 	// 暴力算法
 	runBF := func(in io.Reader, out io.Writer) {
+		min := func(a, b byte) byte {
+			if a > b {
+				return b
+			}
+			return a
+		}
 		totalLen, counterResult, counterTotal, counterCompare := 0,0,0,0
 		inputString := ""
 		compareString := [100001]byte{}
@@ -73,11 +79,4 @@ func TestCompareCF797C(t *testing.T) {
 	}
 
 	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, CF797C)
-}
-
-func min(a, b byte) byte {
-	if a > b {
-		return b
-	}
-	return a
 }
