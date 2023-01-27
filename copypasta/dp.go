@@ -82,6 +82,9 @@ todo Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/4776
 贪心优化 DP
 https://codeforces.com/problemset/problem/864/E
 
+双指针优化 DP
+https://training.olinfo.it/#/task/preoii_yutaka/statement
+
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
@@ -258,6 +261,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
 
+	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
+	https://atcoder.jp/contests/abc267/tasks/abc267_d
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
 	https://codeforces.com/problemset/problem/38/E
@@ -281,7 +286,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
 	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
-	// 最大子段和 https://www.luogu.com.cn/problem/P1115
+	// 最大子段和 LC53 https://leetcode.cn/problems/maximum-subarray/ https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
 	// 1. 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]，答案为 max(dp)
 	// 2. 遍历 a 的同时维护前缀和的最小值，则遍历到 a[i] 时，当前最大子段和为 sum[i]-min(sum[j]), j<i
@@ -1183,6 +1188,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 完全背包 EXTRA: 方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-2/
+	// https://codeforces.com/problemset/problem/1673/C
 	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
 	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
