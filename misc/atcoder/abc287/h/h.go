@@ -31,7 +31,6 @@ func run(_r io.Reader, _w io.Writer) {
 	vs := make([]Bitset, n)
 	for i := range vs {
 		vs[i] = make(Bitset, n/U+1)
-		vs[i].Set(i)
 	}
 	for ; m > 0; m-- {
 		Fscan(in, &v, &w)
