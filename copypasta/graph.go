@@ -328,6 +328,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 }
 
 // BFS
+// 锻炼分类讨论能力 https://codeforces.com/contest/1790/problem/G
 // 带撤销的 BFS https://codeforces.com/problemset/problem/1721/D
 func (*graph) bfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
@@ -1346,10 +1347,12 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
 func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][]int {
-	// dis[k][i][j] 表示「经过若干个编号不超过 k 的节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
-	for k := range dis { // 阶段
+	// dis[k][i][j] 表示「经过若干个编号不超过 k 的中间节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
+	// 为什么可以把第一维度去掉？dis[i][k] 和 dis[k][j] 不会被覆盖掉吗？
+	// 见算法导论第三版练习 25.2-4（网络上有习题解答）
+	for k := range dis { // 阶段（中间节点的最大编号）
 		for i := range dis { // 状态
-			for j := range dis { // 决策
+			for j := range dis { // 决策（k 不是中间节点，k 是中间节点）
 				dis[i][j] = min(dis[i][j], dis[i][k]+dis[k][j])
 			}
 		}
@@ -1359,25 +1362,28 @@ func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][
 
 // 位压缩版 O(n^3/w)
 // LC2101 https://leetcode-cn.com/problems/detonate-the-maximum-bombs/
+// https://atcoder.jp/contests/abc287/tasks/abc287_h
 func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 	vs := make([]Bitset, n) // vs[i] 表示从 i 出发可以到达的节点
 	for i := range vs {
 		vs[i] = NewBitset(n)
-		vs[i].Set(i)
+		vs[i].Set(i) // i 可以到达 i
 	}
 	for i := 0; i < m; i++ {
 		var v, w int
 		Fscan(in, &v, &m)
-		vs[v].Set(w) // 有向边
+		//v--
+		//w--
+		vs[v].Set(w) // 有向边 v->w
 	}
-	for k := range vs { // 阶段
+	for k := range vs { // 阶段（中间节点的最大编号）
 		for i := range vs { // 状态
 			if vs[i].Has(k) {
-				vs[i].MergeFrom(vs[k]) // 决策
+				vs[i].MergeFrom(vs[k]) // 决策   i->j 现在可以 i->k->j
 			}
 		}
 	}
-	reach := make([]int, n) // reach[i] 表示从 i 出发可以到达的节点数
+	reach := make([]int, n) // reach[i] 表示从 i 出发可以到达的节点数（注意读题，一般都要包括自己）
 	for i, bs := range vs {
 		reach[i] = bs.OnesCount()
 	}
