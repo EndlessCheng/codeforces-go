@@ -1,20 +1,18 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 ### 提示 1
 
 问题相当于把 $\textit{weights}$ 划分成 $k$ 个连续子数组，分数等于每个子数组的两端的值之和。
 
 ### 提示 2
 
-$\textit{weights}[0]$ 和 $\textit{weights}[n-1]$ 一定在分数中。
+$\textit{weights}[0]$ 和 $\textit{weights}[n-1]$ 一定在分数中，最大分数和最小分数相减，抵消了。
 
 上一个子数组的末尾和下一个子数组的开头一定**同时**在分数中。
 
 ### 提示 3
 
 把所有 $n-1$ 个 $\textit{weights}[i]+\textit{weights}[i+1]$ 算出来，排序，那么最大的 $k-1$ 个数和最小的 $k-1$ 个数相减，即为答案。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1mD4y1E7QK/)
 
 ```py [sol1-Python3]
 class Solution:
@@ -24,6 +22,37 @@ class Solution:
         wt.pop()
         wt.sort()
         return sum(wt[len(wt) - k + 1:]) - sum(wt[:k - 1])
+```
+
+```java [sol1-Java]
+class Solution {
+    public long putMarbles(int[] wt, int k) {
+        int n = wt.length;
+        for (int i = 0; i < n - 1; ++i)
+            wt[i] += wt[i + 1];
+        Arrays.sort(wt, 0, n - 1); // 相当于去掉最后一个数
+        long ans = 0;
+        for (int i = 0; i < k - 1; ++i)
+            ans += wt[n - 2 - i] - wt[i];
+        return ans;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    long long putMarbles(vector<int> &wt, int k) {
+        int n = wt.size();
+        for (int i = 0; i < n - 1; ++i)
+            wt[i] += wt[i + 1];
+        sort(wt.begin(), wt.end() - 1); // 相当于去掉最后一个数
+        long ans = 0;
+        for (int i = 0; i < k - 1; ++i)
+            ans += wt[n - 2 - i] - wt[i];
+        return ans;
+    }
+};
 ```
 
 ```go [sol1-Go]
