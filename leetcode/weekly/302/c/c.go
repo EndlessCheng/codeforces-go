@@ -8,9 +8,9 @@ import (
 // https://space.bilibili.com/206214
 func smallestTrimmedNumbers(nums []string, queries [][]int) (ans []int) {
 	for i, q := range queries {
-		q[0] |= i << 32
+		q[0] |= i << 32 // 把询问的下标整合到 k 里面，相比 append 这样可以避免扩容
 	}
-	sort.Slice(queries, func(i, j int) bool { return queries[i][1] < queries[j][1] })
+	sort.Slice(queries, func(i, j int) bool { return queries[i][1] < queries[j][1] }) // 按 trim 排序
 
 	m := len(nums[0])
 	type pair struct { s string; i int }
@@ -18,13 +18,12 @@ func smallestTrimmedNumbers(nums []string, queries [][]int) (ans []int) {
 	for i, s := range nums {
 		ps[i] = pair{s, i}
 	}
-	sort.SliceStable(ps, func(i, j int) bool { return ps[i].s[m-1] < ps[j].s[m-1] })
 
 	ans = make([]int, len(queries))
-	p := 2
+	p := 1
 	for _, q := range queries {
 		for ; p <= q[1]; p++ {
-			sort.SliceStable(ps, func(i, j int) bool { return ps[i].s[m-p] < ps[j].s[m-p] })
+			sort.SliceStable(ps, func(i, j int) bool { return ps[i].s[m-p] < ps[j].s[m-p] }) // 只比较第 m-p 个字符的大小
 		}
 		ans[q[0]>>32] = ps[q[0]&math.MaxUint32-1].i
 	}
