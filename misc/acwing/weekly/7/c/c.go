@@ -33,7 +33,7 @@ func run(_r io.Reader, out io.Writer) {
 		for _, e := range g[v] {
 			if w := e.to; w != fa {
 				if m := dfs(w, v) - e.wt; m >= 0 {
-					ans = max(ans, mx+m) // 拼接来自两颗不同子树的路径
+					ans = max(ans, mx+m) // 拼接来自两棵不同子树的路径
 					mx = max(mx, m+a[v]) // 更新子树路径的最大值
 				}
 			}
