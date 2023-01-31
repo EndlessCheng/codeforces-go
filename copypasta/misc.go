@@ -822,7 +822,7 @@ func parseExpression(s string) {
 	var parse func(l, r int) *node
 	parse = func(l, r int) *node {
 		o := &node{}
-		// 因为表达式是左结合的，我们需要从右向左构造这颗表达式树
+		// 因为表达式是左结合的，我们需要从右向左构造这棵表达式树
 		if s[r] == ')' {
 			ll := left[r]
 			ro := parse(ll+1, r-1)
