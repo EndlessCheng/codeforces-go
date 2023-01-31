@@ -1,7 +1,3 @@
-下午两点【B站@灵茶山艾府】直播讲题，关注UP不迷路~
-
----
-
 令 $a[i] = \textit{nums}_1[i] - \textit{nums}_2[i]$，则问题变成把每个 $a[i]$ 变成 $0$ 的最小操作次数。
 
 那么在 $k=0$ 的时候，无法操作，那么所有 $a[i]$ 必须为 $0$。
@@ -11,6 +7,8 @@
 此外，由于「一个数 $+k$，另一个数 $-k$」这个操作不会影响整个 $a[i]$ 的和，所以如果 $a[i]$ 的和不为 $0$，也无法满足要求。
 
 最后，统计所有正数 $\dfrac{a[i]}{k}$，即为答案（因为负数都同时改成 $0$ 了）。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1jG4y197qD/)
 
 ```py [sol1-Python3]
 class Solution:
@@ -23,7 +21,7 @@ class Solution:
                 sum += x // k
                 if x > 0: ans += x // k
             elif x: return -1
-        return -1 if k and sum else ans
+        return -1 if sum else ans
 ```
 
 ```go [sol1-Go]
@@ -43,7 +41,7 @@ func minOperations(nums1, nums2 []int, k int) (ans int64) {
 			return -1
 		}
 	}
-	if k > 0 && sum != 0 {
+	if sum != 0 {
 		return -1
 	}
 	return

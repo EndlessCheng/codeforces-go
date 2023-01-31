@@ -7,7 +7,7 @@ import (
 )
 
 func Test_d(t *testing.T) {
-	targetCaseNum := 0 // -1
+	targetCaseNum := 1
 	if err := testutil.RunLeetCodeFuncWithFile(t, minCost, "d.txt", targetCaseNum); err != nil {
 		t.Fatal(err)
 	}

@@ -6,7 +6,7 @@ import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
 const mx int = 5e4 + 1
 
 func canMerge(trees []*TreeNode) *TreeNode {
-	isSub := [mx]bool{}      // 对于根节点，需要知道其是否为另一颗二叉搜索树的子节点
+	isSub := [mx]bool{}      // 对于根节点，需要知道其是否为另一棵二叉搜索树的子节点
 	roots := [mx]*TreeNode{} // 对于子节点，我们需要知道其数值所对应的二叉搜索树的根节点是哪个
 	for _, rt := range trees {
 		if rt.Left != nil {
@@ -26,7 +26,7 @@ func canMerge(trees []*TreeNode) *TreeNode {
 
 	var root *TreeNode
 	for _, rt := range trees {
-		if !isSub[rt.Val] { // 根节点不应是另一颗二叉搜索树的子节点，否则二叉搜索树上会出现两个值相同的节点
+		if !isSub[rt.Val] { // 根节点不应是另一棵二叉搜索树的子节点，否则二叉搜索树上会出现两个值相同的节点
 			if root != nil { // 根节点应只有一个，否则会构成森林
 				return nil
 			}

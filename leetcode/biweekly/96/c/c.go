@@ -23,8 +23,10 @@ func maxScore(nums1, nums2 []int, k int) int64 {
 	ans := sum * a[k-1].y
 	heap.Init(&h)
 	for _, p := range a[k:] {
-		sum += p.x - h.replace(p.x)
-		ans = max(ans, sum*p.y)
+		if p.x > h.IntSlice[0] {
+			sum += p.x - h.replace(p.x)
+			ans = max(ans, sum*p.y)
+		}
 	}
 	return int64(ans)
 }

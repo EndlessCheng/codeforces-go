@@ -1,7 +1,3 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 如果字符串中有 $1$，那么：
 
 - 选 $1$ 和 $0$ 可以把 $0$ 变成 $1$；
@@ -11,10 +7,29 @@
 
 因此，只要两个字符串中都有 $1$ 或者都没有 $1$，就可以互相转换。
 
+附：[视频讲解](https://www.bilibili.com/video/BV1Gv4y1y753/)
+
 ```py [sol1-Python3]
 class Solution:
     def makeStringsEqual(self, s: str, target: str) -> bool:
         return ('1' in s) == ('1' in target)
+```
+
+```java [sol1-Java]
+class Solution {
+    public boolean makeStringsEqual(String s, String target) {
+        return s.contains("1") == target.contains("1");
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    bool makeStringsEqual(string s, string target) {
+        return (s.find('1') == string::npos) == (target.find('1') == string::npos);
+    }
+};
 ```
 
 ```go [sol1-Go]

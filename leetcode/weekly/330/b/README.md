@@ -4,6 +4,8 @@
 
 答案所有移动方法减去不会碰撞的移动方法，即 $2^n-2$。用快速幂计算。
 
+> 不了解快速幂的同学可以看看 [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)。
+
 注意为了避免负数，需要在 $-2$ 后再转换到非负数上。
 
 附：[视频讲解](https://www.bilibili.com/video/BV1mD4y1E7QK/)

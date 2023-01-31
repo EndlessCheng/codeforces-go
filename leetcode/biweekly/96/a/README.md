@@ -1,7 +1,3 @@
-下午两点【B站@灵茶山艾府】直播讲题，关注UP不迷路~
-
----
-
 先来个一行写法：把并集求出来，然后求最小值。
 
 ```py [sol1-Python3]
@@ -38,6 +34,8 @@ func getCommon(nums1, nums2 []int) int {
 	return -1
 }
 ```
+
+附：[视频讲解](https://www.bilibili.com/video/BV1jG4y197qD/)
 
 #### 复杂度分析
 
