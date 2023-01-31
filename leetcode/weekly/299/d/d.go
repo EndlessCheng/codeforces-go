@@ -39,7 +39,7 @@ func minimumScore(nums []int, edges [][]int) int {
 				x, y, z = xor[j], xor[i]^xor[j], xor[0]^xor[i]
 			} else if in[j] < in[i] && in[i] <= out[j] { // j 是 i 的祖先节点
 				x, y, z = xor[i], xor[i]^xor[j], xor[0]^xor[j]
-			} else { // 删除的两条边分别属于两颗不相交的子树
+			} else { // 删除的两条边分别属于两棵不相交的子树
 				x, y, z = xor[i], xor[j], xor[0]^xor[i]^xor[j]
 			}
 			ans = min(ans, max(max(x, y), z)-min(min(x, y), z))

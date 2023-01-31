@@ -30,17 +30,17 @@ $$
 
 由于 $n$ 比较小，我们可以用 $O(n^2)$ 的时间枚举要删除的两条边，这会产生以下三种情况：
 
-1. 删除的两条边在同一颗子树内，且 $y_1$ 是 $x_2$ 的祖先节点（或重合）。
+1. 删除的两条边在同一棵子树内，且 $y_1$ 是 $x_2$ 的祖先节点（或重合）。
     
    如下图所示，这三个连通块的异或和分别为 $\textit{xor}[y_2]$、$\textit{xor}[y_1]\oplus\textit{xor}[y_2]$ 和 $\textit{xor}[0]\oplus\textit{xor}[y_1]$（$\oplus$ 表示异或运算）。
 
   ![same.png](https://pic.leetcode-cn.com/1656215504-THYbIW-same.png)
 
-2. 删除的两条边在同一颗子树内，且 $y_2$ 是 $x_1$ 的祖先节点（或重合）。
+2. 删除的两条边在同一棵子树内，且 $y_2$ 是 $x_1$ 的祖先节点（或重合）。
     
    同上，这三个连通块的异或和分别为 $\textit{xor}[y_1]$、$\textit{xor}[y_2]\oplus\textit{xor}[y_1]$ 和 $\textit{xor}[0]\oplus\textit{xor}[y_2]$。
    
-3. 删除的两条边分别属于两颗不相交的子树。
+3. 删除的两条边分别属于两棵不相交的子树。
 
    如下图所示，这三个连通块的异或和分别为 $\textit{xor}[y_1]$、$\textit{xor}[y_2]$ 和 $\textit{xor}[0]\oplus\textit{xor}[y_1]\oplus\textit{xor}[y_2]$。
 
@@ -86,7 +86,7 @@ class Solution:
                     x, y, z = xor[j], xor[i] ^ xor[j], xor[0] ^ xor[i]
                 elif is_ancestor(j, i):  # j 是 i 的祖先节点
                     x, y, z = xor[i], xor[i] ^ xor[j], xor[0] ^ xor[j]
-                else:  # 删除的两条边分别属于两颗不相交的子树
+                else:  # 删除的两条边分别属于两棵不相交的子树
                     x, y, z = xor[i], xor[j], xor[0] ^ xor[i] ^ xor[j]
                 ans = min(ans, max(x, y, z) - min(x, y, z))
                 if ans == 0: return 0  # 提前退出
@@ -126,7 +126,7 @@ class Solution {
                     x = xor[i];
                     y = xor[j] ^ x;
                     z = xor[0] ^ xor[j];
-                } else { // 删除的两条边分别属于两颗不相交的子树
+                } else { // 删除的两条边分别属于两棵不相交的子树
                     x = xor[i];
                     y = xor[j];
                     z = xor[0] ^ x ^ y;
@@ -185,7 +185,7 @@ public:
             for (int j = 1; j < i; ++j) {
                 if (is_ancestor(i, j)) x = xr[j], y = xr[i] ^ x, z = xr[0] ^ xr[i]; // i 是 j 的祖先节点
                 else if (is_ancestor(j, i)) x = xr[i], y = xr[j] ^ x, z = xr[0] ^ xr[j]; // j 是 i 的祖先节点
-                else x = xr[i], y = xr[j], z = xr[0] ^ x ^ y; // 删除的两条边分别属于两颗不相交的子树
+                else x = xr[i], y = xr[j], z = xr[0] ^ x ^ y; // 删除的两条边分别属于两棵不相交的子树
                 ans = min(ans, max({x, y, z}) - min({x, y, z}));
                 if (ans == 0) return 0; // 提前退出
             }
@@ -232,7 +232,7 @@ func minimumScore(nums []int, edges [][]int) int {
 				x, y, z = xor[j], xor[i]^xor[j], xor[0]^xor[i]
 			} else if isAncestor(j, i) { // j 是 i 的祖先节点
 				x, y, z = xor[i], xor[i]^xor[j], xor[0]^xor[j]
-			} else { // 删除的两条边分别属于两颗不相交的子树
+			} else { // 删除的两条边分别属于两棵不相交的子树
 				x, y, z = xor[i], xor[j], xor[0]^xor[i]^xor[j]
 			}
 			ans = min(ans, max(max(x, y), z)-min(min(x, y), z))

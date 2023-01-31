@@ -1,10 +1,8 @@
-[视频讲解](https://www.bilibili.com/video/BV1QT41127kJ/) 已出炉，欢迎点赞三连~
-
----
-
 由于元素值一定不小于其数位和，所以答案就是元素和减去数位和。
 
 代码实现时可以用同一个变量。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1QT41127kJ/)。
 
 ```py [sol1-Python3]
 class Solution:
