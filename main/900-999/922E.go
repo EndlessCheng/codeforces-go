@@ -43,7 +43,7 @@ func CF922E(_r io.Reader, out io.Writer) {
 				}
 			}
 		}
-		// 移至下一颗树，回复魔力，但不能超过魔力上限
+		// 移至下一棵树，回复魔力，但不能超过魔力上限
 		for j := 0; j <= ans; j++ {
 			f[j] = min(f[j]+incMana, base+int64(j)*incCap)
 		}
