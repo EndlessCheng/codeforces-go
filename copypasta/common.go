@@ -17,7 +17,7 @@ import (
 // 从特殊到一般：尝试修改条件或缩小题目的数据范围，先研究某个特殊情况下的思路，然后再逐渐扩大数据范围来思考怎么改进算法
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
-/* 贪心
+/*
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 https://atcoder.jp/contests/arc147/tasks/arc147_b
@@ -39,10 +39,13 @@ https://atcoder.jp/contests/arc145/tasks/arc145_a
 
 不好想到的构造
 https://atcoder.jp/contests/abc178/tasks/abc178_f
-*/
 
-/* 不变量
+不变量
 https://codeforces.com/contest/1775/problem/E
+
+大量分类讨论
+https://codeforces.com/problemset/problem/356/C
++构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 */
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
@@ -118,8 +121,6 @@ https://codeforces.com/problemset/problem/266/C
 https://codeforces.com/problemset/problem/1510/K
 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 */
-
-// 锻炼分类讨论能力 https://codeforces.com/problemset/problem/356/C
 
 // 「恰好」转换成「至少/至多」https://codeforces.com/problemset/problem/1188/C
 
