@@ -258,8 +258,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
 	LC956 https://leetcode-cn.com/problems/tallest-billboard/
 	LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
+	LC1223【推荐】https://leetcode.cn/problems/dice-roll-simulation/
 	LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
+	LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 
 	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
 	https://atcoder.jp/contests/abc267/tasks/abc267_d
@@ -1303,6 +1305,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 树上背包/树形背包/依赖背包
 	// todo 树上背包的上下界优化 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
 	//   子树合并背包的复杂度证明 https://blog.csdn.net/lyd_7_29/article/details/79854245
+	//   https://www.cnblogs.com/shaojia/p/15520224.html
+	//   https://snuke.hatenablog.com/entry/2019/01/15/211812
 	//   复杂度优化 https://loj.ac/d/3144
 	//   https://zhuanlan.zhihu.com/p/103813542
 	//
@@ -1902,6 +1906,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	      http://acm.hdu.edu.cn/showproblem.php?pid=3555
 	      http://acm.hdu.edu.cn/showproblem.php?pid=2089
 	      LC1067 https://leetcode.cn/problems/digit-count-in-range/
+	LC248 https://leetcode.cn/problems/strobogrammatic-number-iii/
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
 	LC788 含有某些特殊数字 https://leetcode.cn/problems/rotated-digits/
 	LC902 最大为 N 的数字组合 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
