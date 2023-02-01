@@ -73,9 +73,11 @@ func fenwickTree(n int) {
 	// 返回最小的 x 满足 ∑i=[1..x] tree[i] >= k
 	// 思路类似倍增的查询，不断寻找 ∑<k 的数，最后 +1 就是答案
 	// https://oi-wiki.org/ds/fenwick/#tricks
+	//
 	// https://codeforces.com/blog/entry/61364
 	// https://codeforces.com/problemset/problem/1404/C
 	// todo https://codeforces.com/contest/992/problem/E
+	// https://atcoder.jp/contests/abc287/tasks/abc287_g
 	// 二分 https://www.luogu.com.cn/problem/P4137
 	// - 代码见下面的 rangeMex
 	kth := func(k int) (res int) {

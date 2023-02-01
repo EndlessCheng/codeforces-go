@@ -2956,6 +2956,8 @@ https://oeis.org/A000522 Total number of arrangements of a set with n elements: 
                           a(n) = n*a(n-1) + 1, a(0) = 1
                                = floor(e * n!)
 https://oeis.org/A007526 A000522(n)-1 去掉空集
+https://oeis.org/A030297 a(n) = sum_{k=0...n} (n! / k!) * k^2     For n>=2, a(n) = floor(2*e*n! - n - 2)
+https://oeis.org/A019461 Add 1, multiply by 1, add 2, multiply by 2, etc.; start with 0
 
 二阶递推数列通项 https://zhuanlan.zhihu.com/p/75096951
 凯莱公式 Cayley’s formula: the number of trees on n labeled vertices is n^(n-2).
