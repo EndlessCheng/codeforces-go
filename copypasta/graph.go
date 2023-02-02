@@ -151,25 +151,33 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 	}
 }
 
+// https://atcoder.jp/contests/arc111/tasks/arc111_b
 // EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
 // 无向图后向边定向 https://codeforces.com/problemset/problem/1519/E
 func (*graph) dfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
+	var cntV, cntE int
 	var f func(int)
 	f = func(v int) {
 		vis[v] = true
-		// ...
+		cntV++
+		cntE += len(g[v])
 		for _, w := range g[v] {
 			if !vis[w] {
 				f(w)
 			}
 		}
 	}
-	f(st)
-	// 有向图/森林
 	for i, b := range vis {
-		if !b {
-			f(i)
+		if !b { // && len(g[i]) > 0
+			cntV, cntE = 0, 0
+			f(i)      // 注意自环和重边
+			cntE /= 2 // 无向图
+			if cntV-1 == cntE {
+				// 树
+			} else {
+				// 有环
+			}
 		}
 	}
 
@@ -328,6 +336,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 }
 
 // BFS
+// 基础题 https://leetcode.cn/problems/keys-and-rooms/
 // 锻炼分类讨论能力 https://codeforces.com/contest/1790/problem/G
 // 带撤销的 BFS https://codeforces.com/problemset/problem/1721/D
 func (*graph) bfs(n, st int, g [][]int) {
@@ -2113,7 +2122,10 @@ func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
 }
 
 // 反图的连通分量 O(n+m)
+// 这个算法是我独自想出来的 :)
 // https://www.luogu.com.cn/blog/endlesscheng/solution-cf1242b
+// https://codeforces.com/blog/entry/93652
+//
 // https://codeforces.com/contest/190/problem/E
 // https://codeforces.com/contest/920/problem/E
 // https://codeforces.com/contest/1242/problem/B
