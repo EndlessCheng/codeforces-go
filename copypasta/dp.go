@@ -1446,9 +1446,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
 	图上博弈 https://codeforces.com/problemset/problem/917/B
-	LC877 https://leetcode-cn.com/problems/stone-game/ https://nanti.jisuanke.com/t/48
-	LC1140 https://leetcode-cn.com/problems/stone-game-ii/
-	LC1406 https://leetcode-cn.com/problems/stone-game-iii/
+	LC375 https://leetcode.cn/problems/guess-number-higher-or-lower-ii/
+	LC464 https://leetcode.cn/problems/can-i-win/
+	LC486 https://leetcode.cn/problems/predict-the-winner/
+	LC877 https://leetcode.cn/problems/stone-game/ https://nanti.jisuanke.com/t/48
+	LC913 https://leetcode.cn/problems/cat-and-mouse/
+	LC1025 https://leetcode.cn/problems/divisor-game/
+	LC1140 https://leetcode.cn/problems/stone-game-ii/
+	LC1406 https://leetcode.cn/problems/stone-game-iii/
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
 	*/
 
@@ -1483,6 +1488,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	http://codeforces.com/problemset/problem/16/E
 	https://codeforces.com/problemset/problem/540/D
 	https://codeforces.com/problemset/problem/678/E
+	LC688 https://leetcode.cn/problems/knight-probability-in-chessboard/
+	LC808 https://leetcode.cn/problems/soup-servings/
+	LC837 https://leetcode.cn/problems/new-21-game/
+	LC1227 数学题 https://leetcode.cn/problems/airplane-seat-assignment-probability/
+	LC1230 https://leetcode.cn/problems/toss-strange-coins/
+	LC1467 https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
+	剑指 Offer 60 https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
 
 	期望
 	https://codeforces.com/problemset/problem/235/B
@@ -1902,16 +1914,19 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	相邻数字约束 SC09 https://www.luogu.com.cn/problem/P2657
 	数位统计
 	LC233 https://leetcode-cn.com/problems/number-of-digit-one/
+	      https://leetcode.cn/problems/1nzheng-shu-zhong-1chu-xian-de-ci-shu-lcof/
 	      https://leetcode-cn.com/problems/number-of-2s-in-range-lcci/
 	      http://acm.hdu.edu.cn/showproblem.php?pid=3555
 	      http://acm.hdu.edu.cn/showproblem.php?pid=2089
 	      LC1067 https://leetcode.cn/problems/digit-count-in-range/
 	LC248 https://leetcode.cn/problems/strobogrammatic-number-iii/
+	LC357 https://leetcode.cn/problems/count-numbers-with-unique-digits/
 	LC600 二进制不含连续 1 的数字个数 https://leetcode-cn.com/problems/non-negative-integers-without-consecutive-ones/
 	LC788 含有某些特殊数字 https://leetcode.cn/problems/rotated-digits/
 	LC902 最大为 N 的数字组合 https://leetcode-cn.com/problems/numbers-at-most-n-given-digit-set/
 	LC1012 有重复数字的数字个数 https://leetcode-cn.com/problems/numbers-with-repeated-digits/
 	- LC2376 互补问题 无重复数字的数字个数 https://leetcode.cn/problems/count-special-integers/
+	LC1088 https://leetcode.cn/problems/confusing-number-ii/
 	LC1215 https://leetcode.cn/problems/stepping-numbers/
 	LC1397 与 KMP 结合 https://leetcode-cn.com/problems/find-all-good-strings/
 	                          https://www.luogu.com.cn/problem/P3193
