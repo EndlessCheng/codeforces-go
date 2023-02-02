@@ -2378,6 +2378,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//         https://codeforces.com/problemset/problem/1342/E
 	//    S2(n,k) 的递推公式：S2(n,k)=k*S2(n-1,k)+S2(n-1,k-1), 1<=k<=n-1
 	//    边界条件：S(n,0)=0, n>=1    S(n,n)=1, n>=0
+	//    LC1692 https://leetcode.cn/problems/count-ways-to-distribute-candies/
 	//    https://www.luogu.com.cn/problem/P5395
 	//    todo https://www.luogu.com.cn/problem/P5396
 	//    https://oeis.org/A019538 n 个位置，每个位置填 [1,k] 之间的数，要求每个数字至少出现一次 => k!*S2(n,k)
