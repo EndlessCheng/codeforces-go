@@ -2250,6 +2250,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		}
 
 		// 库默尔定理 https://en.wikipedia.org/wiki/Kummer%27s_theorem
+		// todo https://atcoder.jp/contests/arc137/tasks/arc137_d
 
 		// 可重组合 https://en.wikipedia.org/wiki/Combination#Number_of_combinations_with_repetition
 		// 方案数 H(n,k)=C(n+k-1,k) https://oeis.org/A059481

@@ -40,8 +40,9 @@ https://atcoder.jp/contests/arc145/tasks/arc145_a
 不好想到的构造
 https://atcoder.jp/contests/abc178/tasks/abc178_f
 
-不变量
-https://codeforces.com/contest/1775/problem/E
+不变量（想一想，操作不会改变什么）
+https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
+https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
