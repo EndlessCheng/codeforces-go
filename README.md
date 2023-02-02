@@ -335,6 +335,8 @@
 
 [CP-Algorithms](https://cp-algorithms.com/)
 
+[The Ultimate Topic List (with Resources, Problems and Templates)](https://codeforces.com/blog/entry/95106)
+
 [洛谷日报](https://www.craft.do/s/N0l80k2gv46Psq)
 
 [All the good tutorials found for Competitive Programming](https://codeforces.com/blog/entry/57282)
