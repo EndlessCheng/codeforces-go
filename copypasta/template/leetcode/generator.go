@@ -671,6 +671,11 @@ func GenLeetCodeTests(username, password, contestTag string, openWebPage bool, c
 	return handleProblems(session, problems)
 }
 
+const (
+	SeasonSpring = "spring"
+	SeasonFall   = "fall"
+)
+
 // 获取力扣杯题目信息
 // slug 如 "2020-fall", "2021-spring"
 func GenLeetCodeSeasonTests(username, password, slug string, isSolo, openWebPage bool, contestDir, customComment string) error {
