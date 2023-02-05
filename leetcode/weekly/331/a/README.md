@@ -1,8 +1,6 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 用最大堆模拟。原地堆化可以做到 $O(1)$ 额外空间。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1sG4y1T7oc/)
 
 ```py [sol1-Python3]
 class Solution:

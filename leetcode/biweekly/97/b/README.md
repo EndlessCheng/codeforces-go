@@ -1,8 +1,8 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 贪心，优先选小的。
+
+为了快速判断一个数是否在数组 $\textit{banned}$ 中，可以将其转换成哈希表。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1rM4y1X7z9/)
 
 ```py [sol1-Python3]
 class Solution:
@@ -31,6 +31,12 @@ func maxCount(banned []int, n, maxSum int) (ans int) {
 	return
 }
 ```
+
+### 思考题
+
+如果 $\textit{n}$ 和 $\textit{maxSum}$ 都很大呢（比如达到 $10^{18}$）？
+
+欢迎在评论区发表你的做法。
 
 ### 复杂度分析
 

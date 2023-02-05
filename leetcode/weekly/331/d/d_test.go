@@ -13,3 +13,19 @@ func Test_d(t *testing.T) {
 	}
 }
 // https://leetcode.cn/contest/weekly-contest-331/problems/rearranging-fruits/
+
+//func TestCompareInf(_t *testing.T) {
+//	testutil.DebugTLE = 0
+//
+//	inputGenerator := func() (a,b []int) {
+//		//return
+//		return
+//		rg := testutil2.NewRandGenerator()
+//		n := rg.Int(1, 99)
+//		a = rg.IntSlice(n, 1, 99)
+//		b = rg.IntSlice(n, 1, 99)
+//		return
+//	}
+//
+//	testutil.CompareInf(_t, inputGenerator, minCostAC, minCost)
+//}

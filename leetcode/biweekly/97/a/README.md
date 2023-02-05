@@ -1,8 +1,18 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
+模拟，枚举每个数的数位。
 
----
+附：[视频讲解](https://www.bilibili.com/video/BV1rM4y1X7z9/)
 
-模拟。翻转新插入的数字，可以做到 $O(1)$ 额外空间。
+### 一行写法
+
+```Python [sol1-Python3]
+class Solution:
+    def separateDigits(self, nums: List[int]) -> List[int]:
+        return [d for x in nums for d in map(int, str(x))]
+```
+
+### O(1) 额外空间写法
+
+从低到高枚举数位，翻转新插入的数字。
 
 ```Python [sol1-Python3]
 class Solution:

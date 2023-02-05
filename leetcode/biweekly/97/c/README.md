@@ -30,6 +30,8 @@ $$
 
 代码实现时，可以用一次遍历完成上述过程。
 
+附：[视频讲解](https://www.bilibili.com/video/BV1rM4y1X7z9/)
+
 ```py [sol1-Python3]
 class Solution:
     def maximizeWin(self, prizePositions: List[int], k: int) -> int:

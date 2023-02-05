@@ -1,7 +1,3 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 ### 前置知识：二分
 
 见 [【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)，详细介绍了二分的原理及实现。
@@ -36,6 +32,8 @@ $$
 
 代码实现时，可以用两个变量滚动计算。
 
+附：[视频讲解](https://www.bilibili.com/video/BV1sG4y1T7oc/)
+
 ```py [sol1-Python3]
 class Solution:
     def minCapability(self, nums: List[int], k: int) -> int:
@@ -46,6 +44,50 @@ class Solution:
                 else: f0, f1 = f1, max(f1, f0 + 1)
             return f1
         return bisect_left(range(max(nums)), k, key=check)
+```
+
+```java [sol1-Java]
+class Solution {
+    public int minCapability(int[] nums, int k) {
+        int left = 0, right = (int) 1e9;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            int f0 = 0, f1 = 0;
+            for (int x : nums)
+                if (x > mid) f0 = f1;
+                else {
+                    int tmp = f1;
+                    f1 = Math.max(f1, f0 + 1);
+                    f0 = tmp;
+                }
+            if (f1 >= k) right = mid;
+            else left = mid;
+        }
+        return right;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    int minCapability(vector<int> &nums, int k) {
+        int left = 0, right = *max_element(nums.begin(), nums.end());
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            int f0 = 0, f1 = 0;
+            for (int x : nums)
+                if (x > mid) f0 = f1;
+                else {
+                    int tmp = f1;
+                    f1 = max(f1, f0 + 1);
+                    f0 = tmp;
+                }
+            (f1 >= k ? right : left) = mid;
+        }
+        return right;
+    }
+};
 ```
 
 ```go [sol1-Go]

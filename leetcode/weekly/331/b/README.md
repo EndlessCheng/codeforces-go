@@ -1,7 +1,3 @@
-下午两点【bilibili@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 ### 算法小课堂：前缀和
 
 定义前缀和 $s[0]=0$，$s[i+1] = \sum\limits_{j=0}^{i}p[j]$。
@@ -17,6 +13,8 @@ $$
 例如 $p$ 的子数组 $[3,3,5]$ 的和就可以用 $s[4]-s[1]=13-2=11$ 算出来。
 
 > 注：为方便计算，常用左闭右开区间 $[\textit{left},\textit{right})$ 来表示子数组，此时子数组的和为 $s[\textit{right}]-s[\textit{left}]$。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1sG4y1T7oc/)
 
 ### 思路
 
