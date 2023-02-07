@@ -112,9 +112,27 @@ func (r *RG) intSlice(size int, min, max int) []int {
 	return a
 }
 
+func (r *RG) intSliceInSet(size int, set []int) []int {
+	a := make([]int, size)
+	for i := range a {
+		a[i] = set[rand.Intn(len(set))]
+	}
+	return a
+}
+
 // IntSlice generates a random int slice with a fixed size and its values in range [min, max]
 func (r *RG) IntSlice(size int, min, max int) []int {
 	a := r.intSlice(size, min, max)
+	for _, v := range a {
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+	}
+	r.NewLine()
+	return a
+}
+
+func (r *RG) IntSliceInSet(size int, set []int) []int {
+	a := r.intSliceInSet(size, set)
 	for _, v := range a {
 		r.sb.WriteString(strconv.Itoa(v))
 		r.Space()
@@ -149,6 +167,21 @@ func (r *RG) IntMatrix(row, col int, min, max int) [][]int {
 	a := make([][]int, row)
 	for i := range a {
 		a[i] = r.intSlice(col, min, max)
+	}
+	for _, row := range a {
+		for _, v := range row {
+			r.sb.WriteString(strconv.Itoa(v))
+			r.Space()
+		}
+		r.NewLine()
+	}
+	return a
+}
+
+func (r *RG) IntMatrixInSet(row, col int, set []int) [][]int {
+	a := make([][]int, row)
+	for i := range a {
+		a[i] = r.intSliceInSet(col, set)
 	}
 	for _, row := range a {
 		for _, v := range row {
