@@ -29,10 +29,8 @@ https://codeforces.com/problemset/problem/555/B
 https://codeforces.com/problemset/problem/863/E
 
 需要一些观察
-1900 https://codeforces.com/problemset/problem/558/C
-
-难题
-2800 https://codeforces.com/problemset/problem/521/D
+https://codeforces.com/problemset/problem/1442/A
+https://codeforces.com/problemset/problem/558/C
 
 构造
 https://atcoder.jp/contests/arc145/tasks/arc145_a
@@ -47,6 +45,10 @@ https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
+
+其他
+删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
+https://codeforces.com/problemset/problem/521/D
 */
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
@@ -531,8 +533,10 @@ func _() {
 		_ = distanceSum
 	}
 
-	// 分组前缀和（具体见 query 上的注释）
+	// 同余前缀和，a 的下标从 0 开始，k 为模数
+	// 具体用法见 query 上的注释
 	// LC1664 https://leetcode-cn.com/problems/ways-to-make-a-fair-array/
+	// https://atcoder.jp/contests/abc288/tasks/abc288_d
 	groupPrefixSum := func(a []int, k int) {
 		// 补 0 简化后续逻辑
 		n := len(a)
@@ -543,15 +547,16 @@ func _() {
 		for i, v := range a {
 			sum[i+k] = sum[i] + v
 		}
-		pre := func(x, m int) int {
-			if x%k <= m {
-				return sum[x/k*k+m]
+		pre := func(x, t int) int {
+			if x%k <= t {
+				return sum[x/k*k+t]
 			}
-			return sum[(x+k-1)/k*k+m]
+			return sum[(x+k-1)/k*k+t]
 		}
-		// 求下标在 [l,r) 范围内且下标同余于 m 的元素和 (0<=m<k)
-		query := func(l, r, m int) int {
-			return pre(r, m) - pre(l, m)
+		// 求下标在 [l,r) 范围内且下标模 k 同余于 t 的所有元素之和
+		query := func(l, r, t int) int {
+			t %= k
+			return pre(r, t) - pre(l, t)
 		}
 		a = a[:n] // 如果要枚举等，可能需要复原
 
