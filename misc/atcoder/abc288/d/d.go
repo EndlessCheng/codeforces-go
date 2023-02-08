@@ -16,21 +16,12 @@ func run(_r io.Reader, _w io.Writer) {
 	var n, k, q, l, r int
 	Fscan(in, &n, &k)
 	a := make([]int, n)
-	d := make([]int, n)
+	sum := make([]int, n+k)
 	for i := range a {
 		Fscan(in, &a[i])
 		if i > 0 {
-			d[i] = a[i] - a[i-1]
+			sum[i+k] = sum[i] + a[i] - a[i-1]
 		}
-	}
-
-	// 同余前缀和模板
-	for len(d)%k > 0 {
-		d = append(d, 0)
-	}
-	sum := make([]int, len(d)+k)
-	for i, v := range d {
-		sum[i+k] = sum[i] + v
 	}
 	pre := func(x, t int) int {
 		if x%k <= t {
