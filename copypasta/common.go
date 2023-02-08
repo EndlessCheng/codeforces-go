@@ -538,11 +538,6 @@ func _() {
 	// LC1664 https://leetcode-cn.com/problems/ways-to-make-a-fair-array/
 	// https://atcoder.jp/contests/abc288/tasks/abc288_d
 	groupPrefixSum := func(a []int, k int) {
-		// 补 0 简化后续逻辑
-		n := len(a)
-		for len(a)%k > 0 {
-			a = append(a, 0)
-		}
 		sum := make([]int, len(a)+k) // int64
 		for i, v := range a {
 			sum[i+k] = sum[i] + v
@@ -558,8 +553,6 @@ func _() {
 			t %= k
 			return pre(r, t) - pre(l, t)
 		}
-		a = a[:n] // 如果要枚举等，可能需要复原
-
 		_ = query
 	}
 
