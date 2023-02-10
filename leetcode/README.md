@@ -2,7 +2,9 @@
 
 大家好，我是 [灵茶山艾府](https://space.bilibili.com/206214)。
 
-最近开了个新系列：[基础算法精讲](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是视频中的题目整理，并配有对应的代码，包含 Python/Java/C++/Go 等多种语言，制作不易，欢迎点赞！
+我在B站发布了一系列算法教学视频，整理成合集[【基础算法精讲】](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是合集中的视频链接、题目和代码，代码包含 Python/Java/C++/Go 等多种语言。
+
+制作不易，求点赞硬币收藏！
 
 |视频精讲|题目|代码|备注|
 |---|---|---|---|
