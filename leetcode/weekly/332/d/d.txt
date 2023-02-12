@@ -1,0 +1,15 @@
+"abacaba"
+"bzaa"
+1
+
+"cde"
+"xyz"
+3
+
+"abecdebe"
+"eaebceae"
+6
+
+"acdedcdbabecdbebda"
+"bbecddb"
+1
