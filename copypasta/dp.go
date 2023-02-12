@@ -9,6 +9,8 @@ import (
 
 /* 动态规划
 
+入门视频：https://www.bilibili.com/video/BV1Xj411K7oF/
+
 思考过程：
 1. 把原问题重新复述一遍，例如「从前 n 个数中选择若干个数，这些数的和为 m 的方案数」。
 2. 根据题意，尝试「缩小」问题的规模，我们可以怎样缩小？
@@ -263,7 +265,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
 	LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 
+	入门 DP：跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
 	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
+	https://codeforces.com/contest/1324/problem/E
 	https://atcoder.jp/contests/abc267/tasks/abc267_d
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
@@ -287,6 +291,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC931 https://leetcode.cn/problems/minimum-falling-path-sum/
 	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
 	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
+	// 转换 https://codeforces.com/problemset/problem/1695/C
 
 	// 最大子段和 LC53 https://leetcode.cn/problems/maximum-subarray/ https://www.luogu.com.cn/problem/P1115
 	// 有两种思路
@@ -631,7 +636,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//
 	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
 	// 建模 https://codeforces.com/problemset/problem/269/B
-	// 经典转换（最多相交问题） https://codeforces.com/problemset/problem/67/D
+	// 经典转换（最多相交问题） https://codeforces.com/problemset/problem/67/D https://atcoder.jp/contests/arc126/tasks/arc126_b
 	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
 	// 转化成最小划分数+打印划分方案 https://codeforces.com/problemset/problem/1296/E2
 	// 合唱队形 https://www.luogu.com.cn/problem/P1091
@@ -1931,6 +1936,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC1397 与 KMP 结合 https://leetcode-cn.com/problems/find-all-good-strings/
 	                          https://www.luogu.com.cn/problem/P3193
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
+	https://lightoj.com/problem/investigation
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
 	http://acm.hdu.edu.cn/showproblem.php?pid=6796
 	todo LC248 中心对称数个数 https://leetcode.cn/problems/strobogrammatic-number-iii/
@@ -2591,6 +2597,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 换根 DP / 二次扫描法
 	// 进阶指南 p.292-295
 	// https://codeforces.com/blog/entry/20935
+	// todo 另一种模板（用的前后缀+扣掉中间访问的子树 w 的思路） https://ei1333.hateblo.jp/entry/2017/04/10/224413
+	//          https://atcoder.jp/contests/abc222/editorial/2763
+	//          https://qiita.com/keymoon/items/2a52f1b0fb7ef67fb89e
 	//
 	// LC310 也可以用拓扑排序的思想 https://leetcode.cn/problems/minimum-height-trees/
 	// https://www.luogu.com.cn/problem/P3478
