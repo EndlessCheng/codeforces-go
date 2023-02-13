@@ -15,7 +15,7 @@ func substringXorQueries(s string, queries [][]int) [][]int {
 		}
 		for r, x := l, 0; r < l+30 && r < len(s); r++ {
 			x = x<<1 | int(s[r]&1)
-			if p, ok := m[x]; !ok || r-l < p.r-p.l {
+			if _, ok := m[x]; !ok {
 				m[x] = pair{l, r}
 			}
 		}

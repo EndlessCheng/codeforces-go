@@ -29,9 +29,8 @@ class Solution:
             x = 0
             for r in range(l, min(l + 30, n)):
                 x = (x << 1) | (ord(s[r]) & 1)
-                if x not in m or r - l < m[x][1] - m[x][0]:
+                if x not in m:
                     m[x] = (l, r)
-
         NOT_FOUND = (-1, -1)
         return [m.get(x ^ y, NOT_FOUND) for x, y in queries]
 ```
@@ -49,8 +48,7 @@ class Solution {
             if (s[l] == '0') continue;
             for (int r = l, x = 0; r < Math.min(l + 30, n); ++r) {
                 x = x << 1 | (s[r] & 1);
-                if (!m.containsKey(x) || r - l < m.get(x)[1] - m.get(x)[0])
-                    m.put(x, new int[]{l, r});
+                m.putIfAbsent(x, new int[]{l, r});
             }
         }
 
@@ -73,9 +71,7 @@ public:
             if (s[l] == '0') continue;
             for (int r = l, x = 0; r < min(l + 30, n); ++r) {
                 x = x << 1 | (s[r] & 1);
-                auto it = m.find(x);
-                if (it == m.end() || r - l < it->second.second - it->second.first)
-                    m[x] = {l, r};
+                if (!m.count(x)) m[x] = {l, r};
             }
         }
 
@@ -103,7 +99,7 @@ func substringXorQueries(s string, queries [][]int) [][]int {
 		}
 		for r, x := l, 0; r < l+30 && r < len(s); r++ {
 			x = x<<1 | int(s[r]&1)
-			if p, ok := m[x]; !ok || r-l < p.r-p.l {
+			if _, ok := m[x]; !ok {
 				m[x] = pair{l, r}
 			}
 		}
