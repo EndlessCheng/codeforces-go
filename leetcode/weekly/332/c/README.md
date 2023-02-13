@@ -22,7 +22,10 @@ $$
 class Solution:
     def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
         n, m = len(s), {}
-        for l in range(n):
+        if (i := s.find('0')) >= 0:
+            m[0] = (i, i)  # 这样下面就可以直接跳过 '0' 了，效率更高
+        for l, c in enumerate(s):
+            if c == '0': continue
             x = 0
             for r in range(l, min(l + 30, n)):
                 x = (x << 1) | (ord(s[r]) & 1)
@@ -38,17 +41,21 @@ class Solution {
     private static final int[] NOT_FOUND = new int[]{-1, -1};
 
     public int[][] substringXorQueries(String S, int[][] queries) {
-        var s = S.toCharArray();
         var m = new HashMap<Integer, int[]>();
-        for (int l = 0, n = s.length; l < n; ++l)
+        int i = S.indexOf('0');
+        if (i >= 0) m.put(0, new int[]{i, i}); // 这样下面就可以直接跳过 '0' 了，效率更高
+        var s = S.toCharArray();
+        for (int l = 0, n = s.length; l < n; ++l) {
+            if (s[l] == '0') continue;
             for (int r = l, x = 0; r < Math.min(l + 30, n); ++r) {
                 x = x << 1 | (s[r] & 1);
                 if (!m.containsKey(x) || r - l < m.get(x)[1] - m.get(x)[0])
                     m.put(x, new int[]{l, r});
             }
+        }
 
         var ans = new int[queries.length][];
-        for (int i = 0; i < queries.length; i++)
+        for (i = 0; i < queries.length; i++)
             ans[i] = m.getOrDefault(queries[i][0] ^ queries[i][1], NOT_FOUND);
         return ans;
     }
@@ -60,13 +67,17 @@ class Solution {
 public:
     vector<vector<int>> substringXorQueries(string s, vector<vector<int>> &queries) {
         unordered_map<int, pair<int, int>> m;
-        for (int l = 0, n = s.length(); l < n; ++l)
+        if (auto i = s.find('0'); i != string::npos)
+            m[0] = {i, i}; // 这样下面就可以直接跳过 '0' 了，效率更高
+        for (int l = 0, n = s.length(); l < n; ++l) {
+            if (s[l] == '0') continue;
             for (int r = l, x = 0; r < min(l + 30, n); ++r) {
                 x = x << 1 | (s[r] & 1);
                 auto it = m.find(x);
                 if (it == m.end() || r - l < it->second.second - it->second.first)
                     m[x] = {l, r};
             }
+        }
 
         vector<vector<int>> ans;
         for (auto &q : queries) {
@@ -83,7 +94,13 @@ public:
 func substringXorQueries(s string, queries [][]int) [][]int {
 	type pair struct{ l, r int }
 	m := map[int]pair{}
-	for l := range s {
+	if i := strings.IndexByte(s, '0'); i >= 0 {
+		m[0] = pair{i, i} // 这样下面就可以直接跳过 '0' 了，效率更高
+	}
+	for l, c := range s {
+		if c == '0' {
+			continue
+		}
 		for r, x := l, 0; r < l+30 && r < len(s); r++ {
 			x = x<<1 | int(s[r]&1)
 			if p, ok := m[x]; !ok || r-l < p.r-p.l {
