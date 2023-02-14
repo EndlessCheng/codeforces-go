@@ -301,6 +301,7 @@ func removeDuplicateLetters(s string) string {
 // 讲解：https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/
 // LC962 https://leetcode.cn/problems/maximum-width-ramp/
 // LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
+// 有点相关 http://codeforces.com/problemset/problem/1788/E
 func longestSubarrayWithLowerSum(a []int, lowerSum int) (int, int) {
 	n := len(a)
 	sum := make([]int, n+1)

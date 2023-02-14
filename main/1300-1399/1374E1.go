@@ -17,46 +17,49 @@ func CF1374E1(_r io.Reader, out io.Writer) {
 		return a
 	}
 
-	var n, k, t, b0, b1, s int
+	var n, k, t, p, q, s int
 	g := [4][]int{}
 	for Fscan(in, &n, &k); n > 0; n-- {
-		Fscan(in, &t, &b0, &b1)
-		m := b0<<1 | b1
-		g[m] = append(g[m], t)
+		Fscan(in, &t, &p, &q)
+		x := p<<1 | q
+		g[x] = append(g[x], t)
 	}
 	a, b, both := g[1], g[2], g[3]
 	if len(a) > len(b) {
 		a, b = b, a
 	}
-	n, m := len(a), len(both)
-	if n+m < k {
+	na, nb := len(a), len(both)
+	if na+nb < k {
 		Fprint(out, -1)
 		return
 	}
 
 	sort.Ints(a)
 	sort.Ints(b)
-	for i, v := range b[:n] {
+	if na > k {
+		a = a[:k]
+		na = k
+	}
+	for i, v := range b[:na] {
 		a[i] += v
 	}
+
 	sort.Ints(both)
-	if m > k {
+	if nb > k {
 		both = both[:k]
-		m = k
+		nb = k
 	}
 
 	for _, v := range both {
 		s += v
 	}
-	for _, v := range a[:k-m] {
+	for _, v := range a[:k-nb] {
 		s += v
 	}
 	ans := s
-	for i := k - m; i < n; i++ {
-		s += a[i]
-		if k-1-i >= 0 {
-			s -= both[k-1-i]
-		}
+
+	for i, v := range a[k-nb:] {
+		s += v - both[nb-1-i]
 		ans = min(ans, s)
 	}
 	Fprint(out, ans)
