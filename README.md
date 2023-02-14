@@ -2,7 +2,7 @@
 
 [【基础算法精讲】](https://www.bilibili.com/video/BV1AP41137w7/)B站连载中~欢迎关注！
 
-[题单](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+[题单](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md) [高质量题解精选](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
 ## 算法 Algorithm
 
