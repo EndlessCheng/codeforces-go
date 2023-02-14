@@ -40,6 +40,9 @@ https://zhuanlan.zhihu.com/p/553192435
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 // [1700] 转换 https://codeforces.com/problemset/problem/1253/D
 // 离散 + 四方向 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
+// 技巧：去掉无用数据
+// - https://codeforces.com/problemset/problem/1157/E
+// - https://codeforces.com/problemset/problem/1791/F
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
@@ -281,7 +284,15 @@ func _(n int) {
 }
 
 // 并查集 - 维护边权（种类）
-// 简单易懂的讲解：https://www.bilibili.com/video/av68342657?p=2
+// 核心在于：
+//    2 ------ 4
+//   /        /
+//  1 ------ 3
+// 如果知道 1->2 的距离和 3->4 的距离，现在告诉你 1->3 的距离
+// 由于 1->3->4 和 1->2->4 的距离相等（相当于从 1 到 4 有两条路径）
+// 那么就可以推出 2->4 的距离为 (1->3) + (3->4) - (1->2)
+//
+// https://www.bilibili.com/video/av68342657?p=2
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-11
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-12
 // https://oi-wiki.org/ds/dsu/#_9
