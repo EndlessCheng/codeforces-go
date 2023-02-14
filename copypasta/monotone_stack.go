@@ -294,3 +294,36 @@ func removeDuplicateLetters(s string) string {
 	}
 	return string(st)
 }
+
+// 求 a 的最长的子数组，其元素和大于 lowerSum
+// 返回任意一个符合要求的子数组的左右端点（闭区间）
+// 如果不存在，返回 [-1,-1]
+// 讲解：https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/
+// LC962 https://leetcode.cn/problems/maximum-width-ramp/
+// LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
+func longestSubarrayWithLowerSum(a []int, lowerSum int) (int, int) {
+	n := len(a)
+	sum := make([]int, n+1)
+	st := []int{0}
+	for j, v := range a {
+		j++
+		sum[j] = sum[j-1] + v
+		if sum[j] < sum[st[len(st)-1]] {
+			st = append(st, j)
+		}
+	}
+
+	l, r := -1, 0
+	for i := n; i > 0; i-- {
+		for len(st) > 0 && sum[i]-sum[st[len(st)-1]] > lowerSum {
+			j := st[len(st)-1]
+			st = st[:len(st)-1]
+			if l < 0 || i-j < r-l {
+				l, r = j, i
+			}
+		}
+	}
+	r-- // 闭区间
+
+	return l, r
+}
