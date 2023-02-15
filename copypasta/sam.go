@@ -99,6 +99,7 @@ func (m *sam) newNode(fa *node, _ch next, length, i int) *node {
 	return o
 }
 
+// 注：这里可以不用传入 i，下面的 i 改为 m.last.i+1 即可
 func (m *sam) append(i, c int) {
 	last := m.newNode(m.nodes[0], next{}, m.last.len+1, i)
 	last.cnt = 1 // 或者标记这是个前缀节点
