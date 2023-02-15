@@ -989,19 +989,19 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	return
 }
 
-type vdPair struct {
+type dijkstraPair struct {
 	v   int
 	dis int64
 }
-type vdHeap []vdPair
+type dijkstraHeap []dijkstraPair
 
-func (h vdHeap) Len() int              { return len(h) }
-func (h vdHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis }
-func (h vdHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
-func (h *vdHeap) Push(v interface{})   { *h = append(*h, v.(vdPair)) }
-func (h *vdHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
-func (h *vdHeap) push(v vdPair)        { heap.Push(h, v) }
-func (h *vdHeap) pop() vdPair          { return heap.Pop(h).(vdPair) }
+func (h dijkstraHeap) Len() int              { return len(h) }
+func (h dijkstraHeap) Less(i, j int) bool    { return h[i].dis < h[j].dis }
+func (h dijkstraHeap) Swap(i, j int)         { h[i], h[j] = h[j], h[i] }
+func (h *dijkstraHeap) Push(v interface{})   { *h = append(*h, v.(dijkstraPair)) }
+func (h *dijkstraHeap) Pop() (v interface{}) { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h *dijkstraHeap) push(v dijkstraPair)  { heap.Push(h, v) }
+func (h *dijkstraHeap) pop() dijkstraPair    { return heap.Pop(h).(dijkstraPair) }
 
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O(mlogm)
@@ -1068,7 +1068,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	for i := range fa {
 		fa[i] = -1
 	}
-	h := vdHeap{{st, 0}}
+	h := dijkstraHeap{{st, 0}}
 	for len(h) > 0 {
 		p := h.pop()
 		v := p.v
@@ -1081,7 +1081,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 			if newD := dist[v] + e.wt; newD < dist[w] {
 				dist[w] = newD
 				fa[w] = v
-				h.push(vdPair{w, dist[w]})
+				h.push(dijkstraPair{w, dist[w]})
 			}
 		}
 	}
@@ -1166,7 +1166,7 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		for i := range dist2 {
 			dist2[i] = inf
 		}
-		h := vdHeap{{st, 0}}
+		h := dijkstraHeap{{st, 0}}
 		for len(h) > 0 {
 			p := h.pop()
 			v, d := p.v, p.dis
@@ -1177,11 +1177,11 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 				w := e.to
 				newD := d + e.wt
 				if newD < dist[w] {
-					h.push(vdPair{w, newD})
+					h.push(dijkstraPair{w, newD})
 					dist[w], newD = newD, dist[w]
 				}
 				if dist[w] < newD && newD < dist2[w] {
-					h.push(vdPair{w, newD})
+					h.push(dijkstraPair{w, newD})
 					dist2[w] = newD
 				}
 			}
@@ -3552,16 +3552,16 @@ o:
 // https://www.luogu.com.cn/blog/ONE-PIECE/jiu-ji-di-zui-tai-liu-suan-fa-isap-yu-hlpp
 // 模板题 https://loj.ac/p/127 https://www.luogu.com.cn/problem/P4722
 // todo deque 优化 + 全局重贴标签等 https://www.luogu.com.cn/problem/solution/P4722
-type dh struct {
+type hlppHeap struct {
 	sort.IntSlice
 	d []int
 }
 
-func (h dh) Less(i, j int) bool  { return h.d[h.IntSlice[i]] > h.d[h.IntSlice[j]] } // 处于堆中的节点的 d 值不会改变，所以可以直接比较
-func (h *dh) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *dh) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
-func (h *dh) push(v int)         { heap.Push(h, v) }
-func (h *dh) pop() int           { return heap.Pop(h).(int) }
+func (h hlppHeap) Less(i, j int) bool  { return h.d[h.IntSlice[i]] > h.d[h.IntSlice[j]] } // 处于堆中的节点的 d 值不会改变，所以可以直接比较
+func (h *hlppHeap) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hlppHeap) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *hlppHeap) push(v int)         { heap.Push(h, v) }
+func (h *hlppHeap) pop() int           { return heap.Pop(h).(int) }
 
 func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int, min func(int, int) int) int {
 	st--
@@ -3606,7 +3606,7 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int, min func(int, int) in
 	d[st] = n
 
 	exFlow := make([]int, n)
-	q := dh{d: d}
+	q := hlppHeap{d: d}
 	inQ := make([]bool, n)
 	push := func(v, f int, e *neighbor) {
 		w := e.to
@@ -3788,7 +3788,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 			dist[i] = _inf
 		}
 		dist[st] = 0
-		q := vdHeap{{st, 0}}
+		q := dijkstraHeap{{st, 0}}
 		for len(q) > 0 {
 			p := q.pop()
 			v := p.v
@@ -3803,7 +3803,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 				if newD := dist[v] + int64(e.cost) + h[v] - h[w]; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = pair{v, i}
-					q.push(vdPair{w, newD})
+					q.push(dijkstraPair{w, newD})
 				}
 			}
 		}
