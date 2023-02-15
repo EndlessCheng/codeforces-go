@@ -55,6 +55,7 @@ type node struct { // 也叫 state
 	fa  *node
 	ch  next
 	len int
+	i   int // 字符在原串的下标
 
 	// EXTRA: 所有 node->node.fa 的反向边 rev 构成一棵以 sam.nodes[0] 为根的树（sam.nodes[0] 表示空串）
 	// 性质：（结合 AABABA 的 rev 理解 https://public.noi.top/image/1583315246012.png）
@@ -67,6 +68,7 @@ type node struct { // 也叫 state
 	//    这可以通过在 rev 上统计子树信息来预处理得到
 	rev []*node
 
+	// debug 用
 	cnt           int
 	debugSuffixes []string
 }
@@ -76,26 +78,29 @@ type sam struct {
 	last  *node
 }
 
-func newSam() *sam {
+// 构建字符串 s 的后缀自动机
+// 基础用法见下面的 index
+func newSam(s string) *sam {
 	m := &sam{}
-	m.last = m.newNode(nil, next{}, 0)
+	m.last = m.newNode(nil, next{}, 0, -1)
+	m.buildSam(s)
 	return m
 }
 
-func (m *sam) newNode(fa *node, _ch next, length int) *node {
+func (m *sam) newNode(fa *node, _ch next, length, i int) *node {
 	// 如果 next 是 map 则需要 clone
 	//ch := make(next, len(_ch))
 	//for c, o := range _ch {
 	//	ch[c] = o
 	//}
 	//_ch = ch
-	o := &node{fa: fa, ch: _ch, len: length}
+	o := &node{fa: fa, ch: _ch, len: length, i: i}
 	m.nodes = append(m.nodes, o)
 	return o
 }
 
-func (m *sam) append(c int) {
-	last := m.newNode(m.nodes[0], next{}, m.last.len+1)
+func (m *sam) append(i, c int) {
+	last := m.newNode(m.nodes[0], next{}, m.last.len+1, i)
 	last.cnt = 1 // 或者标记这是个前缀节点
 	for o := m.last; o != nil; o = o.fa {
 		p := o.ch[c]
@@ -106,7 +111,7 @@ func (m *sam) append(c int) {
 		if o.len+1 == p.len {
 			last.fa = p
 		} else {
-			np := m.newNode(p.fa, p.ch, o.len+1)
+			np := m.newNode(p.fa, p.ch, o.len+1, p.i)
 			p.fa = np
 			for ; o != nil && o.ch[c] == p; o = o.fa {
 				o.ch[c] = np
@@ -122,8 +127,8 @@ func (sam) ord(c byte) byte { return c - 'a' } // 'A'
 func (sam) chr(v byte) byte { return v + 'a' }
 
 func (m *sam) buildSam(s string) {
-	for _, b := range s {
-		m.append(int(m.ord(byte(b))))
+	for i, b := range s {
+		m.append(i, int(m.ord(byte(b))))
 	}
 }
 
@@ -139,6 +144,36 @@ func (m *sam) dfs(v *node) {
 		// ...
 
 	}
+}
+
+// 等价于 strings.Index(s, substr)
+// 时间复杂度为 O(len(substr))
+// LC2564 https://leetcode.cn/problems/substring-xor-queries/
+func (m *sam) index(substr string) int {
+	o := m.nodes[0]
+	for _, b := range substr {
+		b := m.ord(byte(b))
+		if o.ch[b] == nil {
+			return -1
+		}
+		o = o.ch[b]
+	}
+	return o.i - len(substr) + 1
+}
+
+// 返回 s 在 sam 中的最长前缀
+// 特别地，若 s 在 sam 中，则返回 s 的长度
+// JSOI12 https://www.luogu.com.cn/problem/P5231
+func (m *sam) longestPrefix(s string) int {
+	o := m.nodes[0]
+	for i, b := range s {
+		b := m.ord(byte(b))
+		if o.ch[b] == nil {
+			return i
+		}
+		o = o.ch[b]
+	}
+	return len(s)
 }
 
 // 多串 LCS 则去掉代码中的 //
@@ -172,22 +207,8 @@ func (m *sam) lcs(s string) (ans int) {
 	return
 }
 
-// 返回 s 在 sam 中的最长前缀
-// 特别地，若 s 在 sam 中，则返回 s 的长度
-// JSOI12 https://www.luogu.com.cn/problem/P5231
-func (m *sam) longestPrefix(s string) int {
-	o := m.nodes[0]
-	for i, b := range s {
-		b := m.ord(byte(b))
-		if o.ch[b] == nil {
-			return i
-		}
-		o = o.ch[b]
-	}
-	return len(s)
-}
-
 // debug 用
+// 可以用 sam_test.go 跑跑看
 func (m *sam) printSAM() {
 	root := m.nodes[0]
 	// 如果 append 了新的元素导致 rev 树的结构变化，可以直接重建
