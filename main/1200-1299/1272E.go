@@ -22,14 +22,13 @@ func CF1272E(_r io.Reader, _w io.Writer) {
 	ans := make([]int, n)
 	g := make([][]int, n)
 	q := [2][]int{}
-	vis := make([]bool, n)
 	for i, v := range a {
-		ans[i] = -1
-		p := v & 1
-		w1, w2 := i-v, i+v
+		p, w1, w2 := v&1, i-v, i+v
 		if w1 >= 0 && a[w1]&1 != p || w2 < n && a[w2]&1 != p {
 			q[p] = append(q[p], i)
-			vis[i] = true
+			ans[i] = 1
+		} else {
+			ans[i] = -1
 		}
 		if w1 >= 0 && a[w1]&1 == p {
 			g[w1] = append(g[w1], i)
@@ -40,16 +39,13 @@ func CF1272E(_r io.Reader, _w io.Writer) {
 	}
 
 	for _, q := range q {
-		for d := 1; len(q) > 0; d++ {
-			tmp := q
-			q = nil
-			for _, v := range tmp {
-				ans[v] = d
-				for _, w := range g[v] {
-					if !vis[w] {
-						vis[w] = true
-						q = append(q, w)
-					}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			for _, w := range g[v] {
+				if ans[w] < 0 {
+					ans[w] = ans[v] + 1
+					q = append(q, w)
 				}
 			}
 		}
