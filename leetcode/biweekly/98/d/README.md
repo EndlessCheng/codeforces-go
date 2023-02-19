@@ -1,10 +1,8 @@
-下午两点【biIibiIi@灵茶山艾府】直播讲 **Lazy 线段树**，记得关注哦~
-
----
-
 由于操作 2 和操作 3 更新和统计的是所有 $\textit{nums}_2[i]$ 的值，那么我们其实只需要维护 $\textit{nums}_1$ 中 $1$ 的个数。
 
 用线段树维护区间内 $1$ 的个数 $\textit{cnt}_1$，以及区间反转标记 $\textit{rev}$。
+
+附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)。
 
 ```py [sol1-Python3]
 class Solution:

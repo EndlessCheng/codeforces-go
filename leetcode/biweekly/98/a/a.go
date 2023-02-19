@@ -7,18 +7,19 @@ import (
 
 // https://space.bilibili.com/206214
 func minMaxDifference(num int) int {
-	mx, mn := 0, num
+	mx, mn := num, num
 	s := strconv.Itoa(num)
 	for _, c := range s {
-		t := strings.ReplaceAll(s, string(c), "9")
-		x, _ := strconv.Atoi(t)
-		mx = max(mx, x)
-		t = strings.ReplaceAll(s, string(c), "0")
-		x, _ = strconv.Atoi(t)
-		mn = min(mn, x)
+		if c != '9' {
+			mx, _ = strconv.Atoi(strings.ReplaceAll(s, string(c), "9"))
+			break
+		}
+	}
+	for _, c := range s {
+		if c != '0' {
+			mn, _ = strconv.Atoi(strings.ReplaceAll(s, string(c), "0"))
+			break
+		}
 	}
 	return mx - mn
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
-func max(a, b int) int { if a < b { return b }; return a }

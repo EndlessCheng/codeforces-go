@@ -1,8 +1,3 @@
-
-记得改标题！！！！！  +lowbit 优化
-
----
-
 ### 提示 1
 
 暴力做法是从小到大枚举答案，但这显然会超时。
@@ -26,6 +21,8 @@
 因此，我们只需要从小到大挨个判断 $2^i$ 是否在 $\textit{nums}$ 中，第一个不在 $\textit{nums}$ 中的就是答案。
 
 代码实现时，可以用哈希表可以加速这个判断过程。
+
+附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)。
 
 ```py [sol1-Python3]
 class Solution:
@@ -81,7 +78,7 @@ func minImpossibleOR(a []int) (ans int) {
 
 由于只需要看 $2$ 的幂次，我们可以用一个 $\textit{mask}$ 记录 $\textit{nums}$ 中是 $2$ 的幂次的数。
 
-那么答案就是 $\textit{mask}$ 中的最低比特 $0$。这可以取反后，用 lowbit 得到。
+那么答案就是 $\textit{mask}$ 中的最低比特 $0$。这可以取反后，用 $\textit{lowbit}$ 得到，具体见 [视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)。
 
 ```py [sol2-Python3]
 class Solution:

@@ -12,6 +12,8 @@
 
 这样修改的理由是，修改成再更大/更小的数，不会影响最大得分了。
 
+附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)
+
 ```py [sol1-Python3]
 class Solution:
     def minimizeSum(self, a: List[int]) -> int:

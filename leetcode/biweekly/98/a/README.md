@@ -1,40 +1,44 @@
-下午两点【biIibiIi@灵茶山艾府】直播讲题，记得关注哦~
+把 $\textit{num}$ 转成字符串，从左到右找第一个不是 $9$ 的字符，替换成 $9$ 得到最大数；同理找第一个不是 $0$ 的字符，替换成 $0$ 得到最小数。
 
----
-
-把 $\textit{num}$ 转成字符串，枚举每个字符，替换成 $9$ 得到最大数，替换成 $0$ 得到最小数。
+附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)
 
 ```py [sol1-Python3]
 class Solution:
     def minMaxDifference(self, num: int) -> int:
-        mx, mn = 0, num
+        mx = mn = num
         s = str(num)
         for c in s:
-            mx = max(mx, int(s.replace(c, '9')))
-            mn = min(mn, int(s.replace(c, '0')))
+            if c != '9':
+                mx = int(s.replace(c, '9'))
+                break
+        for c in s:
+            if c != '0':
+                mn = int(s.replace(c, '0'))
+                break
         return mx - mn
 ```
 
 ```go [sol1-Go]
 func minMaxDifference(num int) int {
-	mx, mn := 0, num
+	mx, mn := num, num
 	s := strconv.Itoa(num)
 	for _, c := range s {
-		t := strings.ReplaceAll(s, string(c), "9")
-		x, _ := strconv.Atoi(t)
-		mx = max(mx, x)
-		t = strings.ReplaceAll(s, string(c), "0")
-		x, _ = strconv.Atoi(t)
-		mn = min(mn, x)
+		if c != '9' {
+			mx, _ = strconv.Atoi(strings.ReplaceAll(s, string(c), "9"))
+			break
+		}
+	}
+	for _, c := range s {
+		if c != '0' {
+			mn, _ = strconv.Atoi(strings.ReplaceAll(s, string(c), "0"))
+			break
+		}
 	}
 	return mx - mn
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
-func max(a, b int) int { if a < b { return b }; return a }
 ```
 
 ### 复杂度分析
 
-- 时间复杂度：$O(\log^2 \textit{num})$。
+- 时间复杂度：$O(\log \textit{num})$。
 - 空间复杂度：$O(\log \textit{num})$。
