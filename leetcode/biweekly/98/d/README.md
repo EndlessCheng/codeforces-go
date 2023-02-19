@@ -1,22 +1,22 @@
 由于操作 2 和操作 3 更新和统计的是所有 $\textit{nums}_2[i]$ 的值，那么我们其实只需要维护 $\textit{nums}_1$ 中 $1$ 的个数。
 
-用线段树维护区间内 $1$ 的个数 $\textit{cnt}_1$，以及区间反转标记 $\textit{rev}$。
+用线段树维护区间内 $1$ 的个数 $\textit{cnt}_1$，以及区间反转标记 $\textit{flip}$。
 
-附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)。
+附：[视频讲解](https://www.bilibili.com/video/BV15D4y1G7ms/)，从头开始讲线段树。
 
 ```py [sol1-Python3]
 class Solution:
     def handleQuery(self, nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
         n = len(nums1)
         cnt1 = [0] * (4 * n)
-        rev = [False] * (4 * n)
+        flip = [False] * (4 * n)
 
         def maintain(o: int) -> None:
             cnt1[o] = cnt1[o * 2] + cnt1[o * 2 + 1]
 
         def do(o: int, l: int, r: int) -> None:
             cnt1[o] = r - l + 1 - cnt1[o]
-            rev[o] = not rev[o]
+            flip[o] = not flip[o]
 
         # 初始化线段树   o,l,r=1,1,n
         def build(o: int, l: int, r: int) -> None:
@@ -34,10 +34,10 @@ class Solution:
                 do(o, l, r)
                 return
             m = (l + r) // 2
-            if rev[o]:
+            if flip[o]:
                 do(o * 2, l, m)
                 do(o * 2 + 1, m + 1, r)
-                rev[o] = False
+                flip[o] = False
             if m >= L: update(o * 2, l, m, L, R)
             if m < R: update(o * 2 + 1, m + 1, r, L, R)
             maintain(o)
@@ -56,7 +56,7 @@ class Solution {
     public long[] handleQuery(int[] nums1, int[] nums2, int[][] queries) {
         int n = nums1.length, m = 0, i = 0;
         cnt1 = new int[n * 4];
-        rev = new boolean[n * 4];
+        flip = new boolean[n * 4];
         build(nums1, 1, 1, n);
 
         var sum = 0L;
@@ -75,7 +75,7 @@ class Solution {
     }
 
     private int[] cnt1;
-    private boolean[] rev;
+    private boolean[] flip;
 
     private void maintain(int o) {
         cnt1[o] = cnt1[o * 2] + cnt1[o * 2 + 1];
@@ -83,7 +83,7 @@ class Solution {
 
     private void do_(int o, int l, int r) {
         cnt1[o] = r - l + 1 - cnt1[o];
-        rev[o] = !rev[o];
+        flip[o] = !flip[o];
     }
 
     // 初始化线段树   o,l,r=1,1,n
@@ -105,10 +105,10 @@ class Solution {
             return;
         }
         int m = (l + r) / 2;
-        if (rev[o]) {
+        if (flip[o]) {
             do_(o * 2, l, m);
             do_(o * 2 + 1, m + 1, r);
-            rev[o] = false;
+            flip[o] = false;
         }
         if (m >= L) update(o * 2, l, m, L, R);
         if (m < R) update(o * 2 + 1, m + 1, r, L, R);
@@ -122,7 +122,7 @@ class Solution {
     static constexpr int MX = 4e5 + 1;
 
     int cnt1[MX];
-    bool rev[MX];
+    bool flip[MX];
 
     void maintain(int o) {
         cnt1[o] = cnt1[o * 2] + cnt1[o * 2 + 1];
@@ -130,7 +130,7 @@ class Solution {
 
     void do_(int o, int l, int r) {
         cnt1[o] = r - l + 1 - cnt1[o];
-        rev[o] = !rev[o];
+        flip[o] = !flip[o];
     }
 
     // 初始化线段树   o,l,r=1,1,n
@@ -152,10 +152,10 @@ class Solution {
             return;
         }
         int m = (l + r) / 2;
-        if (rev[o]) {
+        if (flip[o]) {
             do_(o * 2, l, m);
             do_(o * 2 + 1, m + 1, r);
-            rev[o] = false;
+            flip[o] = false;
         }
         if (m >= L) update(o * 2, l, m, L, R);
         if (m < R) update(o * 2 + 1, m + 1, r, L, R);
@@ -181,7 +181,7 @@ public:
 ```go [sol1-Go]
 type seg []struct {
 	l, r, cnt1 int
-	rev        bool
+	flip        bool
 }
 
 func (t seg) maintain(o int) { t[o].cnt1 = t[o<<1].cnt1 + t[o<<1|1].cnt1 }
@@ -201,14 +201,14 @@ func (t seg) build(a []int, o, l, r int) {
 func (t seg) do(O int) {
 	o := &t[O]
 	o.cnt1 = o.r - o.l + 1 - o.cnt1
-	o.rev = !o.rev
+	o.flip = !o.flip
 }
 
 func (t seg) spread(o int) {
-	if t[o].rev {
+	if t[o].flip {
 		t.do(o << 1)
 		t.do(o<<1 | 1)
-		t[o].rev = false
+		t[o].flip = false
 	}
 }
 
