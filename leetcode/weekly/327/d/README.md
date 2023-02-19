@@ -1,4 +1,4 @@
-[视频讲解](https://www.bilibili.com/video/BV1KG4y1j73o/?t=16m25s) 详细介绍了本题的思考过程，强烈推荐观看！制作不易，欢迎点赞三连~
+复杂模拟题，推荐观看 [视频讲解](https://www.bilibili.com/video/BV1KG4y1j73o/?t=16m25s)，详细介绍了本题的思考过程。
 
 ---
 

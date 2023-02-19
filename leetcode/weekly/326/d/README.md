@@ -1,11 +1,9 @@
-[视频讲解](https://www.bilibili.com/video/BV1H8411E7hn) 已出炉，包含**线性筛**的理论讲解，欢迎点赞三连~
-
----
-
 分两步：
 
 1. 筛质数，做法见 [204. 计数质数](https://leetcode.cn/problems/count-primes/)。
 2. 找 $[\textit{left},\textit{right}]$ 范围内的最小质数间隙（prime gap），暴力枚举范围内的所有相邻质数即可。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1H8411E7hn)
 
 #### 优化
 
@@ -140,7 +138,7 @@ func closestPrimes(left, right int) []int {
 }
 ```
 
-也可以用线性筛（欧拉筛）做，具体原理见视频讲解。
+也可以用线性筛（欧拉筛）做，具体原理见 [视频讲解](https://www.bilibili.com/video/BV1H8411E7hn)。
 
 ```py [sol2-Python3]
 MX = 10 ** 6 + 1
