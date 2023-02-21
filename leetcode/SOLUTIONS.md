@@ -18,6 +18,7 @@
 ||[940. 不同的子序列 II](https://leetcode.cn/problems/distinct-subsequences-ii/)|[细分问题+复杂度优化](https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/)|1985|
 ||[1223. 掷骰子模拟](https://leetcode.cn/problems/dice-roll-simulation/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/dice-roll-simulation/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-sje6/)|2008|
 ||[1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)|[动态规划+二分查找优化](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/solution/dong-tai-gui-hua-er-fen-cha-zhao-you-hua-zkcg/)|2023|
+||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
 ||[801. 使序列递增的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/)|[考虑相邻元素的大小关系](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/solution/dong-tai-gui-hua-kao-lu-xiang-lin-yuan-s-ni0p/)|2066|
 ||[1691. 堆叠长方体的最大高度](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/)|[【图解】算法优化+详细证明](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/solution/tu-jie-suan-fa-you-hua-xiang-xi-zheng-mi-b6fq/)|2172|
 ||[1815. 得到新鲜甜甜圈的最多组数](https://leetcode.cn/problems/maximum-number-of-groups-getting-fresh-donuts/)|[【图解】位运算的魔法](https://leetcode.cn/problems/maximum-number-of-groups-getting-fresh-donuts/solution/by-endlesscheng-r5ve/)|2559|
