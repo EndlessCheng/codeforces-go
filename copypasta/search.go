@@ -712,6 +712,10 @@ func _(min, max func(int, int) int) {
 
 	// 枚举 set 的全部子集
 	// 作为结束条件，处理完 0 之后，会有 -1&set == set
+	//
+	// 你可能会好奇，为什么 sub = (sub - 1) & set 这样写一定可以「跳到」下一个子集呢？会不会漏呢？
+	// 因为二进制的减法的特点是，每次会把 lowbit 那个 1 改成 0，lowbit 右边的 0 全部改成 1
+	// 由于下一个子集必然比 sub 小，减法的这种特点可以保证 sub-1 之后的二进制数必然包含下一个子集
 	loopSubset := func(n, set int) {
 		// 所有子集
 		for sub, ok := set, true; ok; ok = sub != set {
