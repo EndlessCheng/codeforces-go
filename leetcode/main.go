@@ -476,7 +476,7 @@ func inorderTraversal(root *TreeNode) (res []int) {
         } else { // 没有左子树
             res = append(res, root.Val)
             // 若有右子树，则遍历右子树
-            // 若没有右子树，则整颗左子树已遍历完，root 会通过之前设置的指向回到这颗子树的父节点
+            // 若没有右子树，则整棵左子树已遍历完，root 会通过之前设置的指向回到这棵子树的父节点
             root = root.Right
         }
     }
