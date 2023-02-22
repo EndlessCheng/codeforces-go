@@ -33,7 +33,10 @@ https://codeforces.com/problemset/problem/1442/A
 https://codeforces.com/problemset/problem/558/C
 
 构造
+LC767 https://leetcode.cn/problems/reorganize-string/
+LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 https://atcoder.jp/contests/arc145/tasks/arc145_a
++分类讨论 https://codeforces.com/problemset/problem/584/C
 
 不好想到的构造
 https://atcoder.jp/contests/abc178/tasks/abc178_f
@@ -42,8 +45,12 @@ https://atcoder.jp/contests/abc178/tasks/abc178_f
 https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
 
+分类讨论
+https://codeforces.com/problemset/problem/1095/E
+
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
+https://codeforces.com/contest/1374/problem/E2
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 
 其他
@@ -529,6 +536,10 @@ func _() {
 			right := sum[len(a)] - sum[i] - target*(len(a)-i)
 			return left + right
 		}
+
+		// EXTRA: 青蛙跳井
+		// 一次询问（下标从 1 开始）https://codeforces.com/problemset/problem/1141/E
+		// 多次询问（下标从 0 开始）https://codeforces.com/problemset/problem/1490/G
 
 		_ = distanceSum
 	}

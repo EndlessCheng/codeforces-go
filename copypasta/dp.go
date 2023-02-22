@@ -1179,7 +1179,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 完全背包
-	// 转换 LC322 https://leetcode-cn.com/problems/coin-change/
+	// https://www.luogu.com.cn/problem/P1616
+	// 至少 https://www.luogu.com.cn/problem/P2918
+	// 恰好装满 LC322 https://leetcode-cn.com/problems/coin-change/
 	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64  fill
@@ -1451,7 +1453,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
 	图上博弈 https://codeforces.com/problemset/problem/917/B
-	LC375 https://leetcode.cn/problems/guess-number-higher-or-lower-ii/
 	LC464 https://leetcode.cn/problems/can-i-win/
 	LC486 https://leetcode.cn/problems/predict-the-winner/
 	LC877 https://leetcode.cn/problems/stone-game/ https://nanti.jisuanke.com/t/48
@@ -1650,6 +1651,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 模板题 LC1986 https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
 	// LC1494 https://leetcode-cn.com/problems/parallel-courses-ii/
 	// LC1654 https://leetcode-cn.com/problems/distribute-repeating-integers/
+	// LC1994 https://leetcode.cn/problems/the-number-of-good-subsets/
+	// LC2572 也可以用 01 背包 / 枚举 square-free https://leetcode.cn/problems/count-the-number-of-square-free-subsets/
+	//        更快的做法 https://leetcode.cn/problems/count-the-number-of-square-free-subsets/solution/shu-zhi-fan-wei-zai-da-yi-dian-de-hua-ze-56w3/
+	//           把相同的大质数归类，避免重复选择（分组背包）
 	// 训练指南第一章例题 29，UVa11825 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=226&page=show_problem&problem=2925
 	// - 将 n 个集合分成尽量多组，使得对于每组，组内所有集合的并集等于全集
 	// 训练指南第一章例题 32，WF10，UVa1099 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=245&page=show_problem&problem=3540
