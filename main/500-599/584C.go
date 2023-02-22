@@ -6,65 +6,37 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF584C(_r io.Reader, out io.Writer) {
-	var n, needSame int
-	var s, t []byte
-	Fscan(bufio.NewReader(_r), &n, &needSame, &s, &t)
-	needSame = n - needSame
-	same := 0
-	for i, b := range s {
-		if b == t[i] {
-			same++
+// https://space.bilibili.com/206214
+func CF584C(in io.Reader, out io.Writer) {
+	var n, t, d int
+	s := [2]string{}
+	Fscan(bufio.NewReader(in), &n, &t, &s[0], &s[1])
+	ans := []byte(s[0])
+	add := func(i int) { ans[i] = (ans[i]-'a'+1)%26 + 'a' }
+	for i, v := range ans {
+		if v != s[1][i] {
+			d++
+			add(i)
+			if ans[i] == s[1][i] {
+				add(i)
+			}
 		}
 	}
-	ans := make([]byte, n)
-	if needSame <= same {
-		for i, b := range s {
-			c := t[i]
-			if needSame > 0 && b == c {
-				ans[i] = b
-				needSame--
-				continue
-			}
-			ans[i] = 'a'
-			if ans[i] == b || ans[i] == c {
-				ans[i]++
-			}
-			if ans[i] == b || ans[i] == c {
-				ans[i]++
-			}
+	d = (d - t) * 2 // d<0 说明缺了，d>0 说明多了
+	for i := range ans {
+		if d < 0 && s[0][i] == s[1][i] {
+			add(i) // 不一样
+			d += 2
+		} else if d > 0 && s[0][i] != s[1][i] {
+			d--
+			ans[i] = s[d&1][i] // 和其中一个一样
 		}
-	} else if (needSame-same)*2 > n-same {
-		Fprint(out, -1)
-		return
+	}
+	if d == 0 {
+		Fprint(out, string(ans))
 	} else {
-		needSame = (needSame - same) * 2
-		cnt := 0
-		for i, b := range s {
-			c := t[i]
-			if b == c {
-				ans[i] = b
-				continue
-			}
-			if cnt*2 < needSame {
-				cnt++
-				ans[i] = b
-			} else if cnt < needSame {
-				cnt++
-				ans[i] = c
-			} else {
-				ans[i] = 'a'
-				if ans[i] == b || ans[i] == c {
-					ans[i]++
-				}
-				if ans[i] == b || ans[i] == c {
-					ans[i]++
-				}
-			}
-		}
+		Fprint(out, -1)
 	}
-	Fprint(out, string(ans))
 }
 
 //func main() { CF584C(os.Stdin, os.Stdout) }
