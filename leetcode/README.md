@@ -11,6 +11,9 @@
 |[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)|[209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)|[代码](https://leetcode.cn/problems/minimum-size-subarray-sum/solution/biao-ti-xia-biao-zong-suan-cuo-qing-kan-k81nh/)||
 ||[713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)|[代码](https://leetcode.cn/problems/subarray-product-less-than-k/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-jebq/)||
 ||[3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)|[代码](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)||
+||[1004. 最大连续 1 的个数 III](https://leetcode.cn/problems/max-consecutive-ones-iii/)|[代码](https://leetcode.cn/problems/max-consecutive-ones-iii/solution/hua-dong-chuang-kou-yi-ge-shi-pin-jiang-yowmi/)|*课后作业|
+||[1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/)|[代码](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/solution/tong-xiang-shuang-zhi-zhen-hua-dong-chua-z7tu/)|*课后作业|
+||[1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)|[代码](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/solution/ni-xiang-si-wei-pythonjavacgo-by-endless-b4jt/)|*课后作业|
 |[相向双指针 1](https://www.bilibili.com/video/BV1bP411c7oJ/)|[167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)|[代码](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/solution/san-shu-zhi-he-bu-hui-xie-xiang-xiang-sh-6wbq/)||
 ||[15. 三数之和](https://leetcode.cn/problems/3sum/)|[代码](https://leetcode.cn/problems/3sum/solution/shuang-zhi-zhen-xiang-bu-ming-bai-yi-ge-pno55/)|包含两个优化|
 |[相向双指针 2](https://www.bilibili.com/video/BV1Qg411q7ia/)|[11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)|[代码](https://leetcode.cn/problems/container-with-most-water/solutions/1974355/by-endlesscheng-f0xz/)||
@@ -50,6 +53,7 @@
 |[回溯 - 排列型](https://www.bilibili.com/video/BV1mY411D7f6/)|[46. 全排列](https://leetcode.cn/problems/permutations/)|[代码](https://leetcode.cn/problems/permutations/solutions/2079585/hui-su-bu-hui-xie-tao-lu-zai-ci-jing-que-6hrh/)|精确计算搜索树的节点个数|
 ||[51. N 皇后](https://leetcode.cn/problems/n-queens/)|[代码](https://leetcode.cn/problems/n-queens/solutions/2079586/hui-su-tao-lu-miao-sha-nhuang-hou-shi-pi-mljv/)||
 |[动态规划 - 从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)|[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)|[代码](https://leetcode.cn/problems/house-robber/solutions/2102725/ru-he-xiang-chu-zhuang-tai-ding-yi-he-zh-1wt1/)|包含空间优化|
+||[213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)|[代码](https://leetcode.cn/problems/house-robber-ii/solution/jian-ji-xie-fa-zhi-jie-diao-yong-198-ti-8ff81/)|*课后作业|
 |[0-1 背包 完全背包 变形](https://www.bilibili.com/video/BV16Y411v7Y6/)|[494. 目标和](https://leetcode.cn/problems/target-sum/)|[代码](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)|包含空间优化|
 ||[322. 零钱兑换](https://leetcode.cn/problems/coin-change/)|[代码](https://leetcode.cn/problems/coin-change/solutions/2119065/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-21m5/)|包含空间优化|
 
