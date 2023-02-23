@@ -37,6 +37,7 @@ LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 +分类讨论 https://codeforces.com/problemset/problem/584/C
++分类讨论 https://codeforces.com/problemset/problem/708/B
 
 不好想到的构造
 https://atcoder.jp/contests/abc178/tasks/abc178_f
