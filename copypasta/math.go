@@ -145,6 +145,10 @@ https://oeis.org/A034836 Number of ways to write n as n = x*y*z with 1 <= x <= y
 https://oeis.org/A331072 A034836 前缀和 O(n^(2/3))
 	https://atcoder.jp/contests/abc227/tasks/abc227_c
 
+https://oeis.org/A244478 a(0)=2, a(1)=0, a(2)=2; thereafter a(n) = a(n-1-a(n-1))+a(n-2-a(n-2)) unless a(n-1) <= n-1 or a(n-2) <= n-2 in which case the sequence terminates
+https://oeis.org/A244479
+LC1140 https://leetcode.cn/problems/stone-game-ii/ 需要记忆化的 M 的上界
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -463,7 +467,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// p+1 http://oeis.org/A008864
 	// p^2+p+1 http://oeis.org/A060800 = sigma(p^2)
 	// prime index prime https://oeis.org/A006450
-	primes := []int{
+	primes := []int{ // 预处理 mask 的见下
 		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
 		211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
@@ -484,6 +488,24 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		1709, 1721, 1723, 1733, 1741, 1747, 1753, 1759, 1777, 1783, 1787, 1789,
 		1801, 1811, 1823, 1831, 1847, 1861, 1867, 1871, 1873, 1877, 1879, 1889,
 		1901, 1907, 1913, 1931, 1933, 1949, 1951, 1973, 1979, 1987, 1993, 1997, 1999, /* #=303 */
+	}
+
+	{
+		// 小范围质数状压
+		// Squarefree numbers https://oeis.org/A005117
+		const mx = 30
+		primeMask := [mx + 1]int{}
+		for i := 2; i <= mx; i++ {
+			for j, p := range primes {
+				if i%p == 0 {
+					//if i%(p*p) == 0 { // 有平方因子
+					//	primeMask[i] = -1
+					//	break
+					//}
+					primeMask[i] |= 1 << j // 把 j 加到集合中
+				}
+			}
+		}
 	}
 
 	// 第 10^k 个素数
