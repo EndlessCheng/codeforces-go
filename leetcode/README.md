@@ -22,6 +22,7 @@
 |[二分查找 - 习题课](https://www.bilibili.com/video/BV1QK411d76w/)|[162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)|[代码](https://leetcode.cn/problems/find-peak-element/solutions/1987497/by-endlesscheng-9ass/)||
 ||[153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/solutions/1987499/by-endlesscheng-owgd/)||
 ||[33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/search-in-rotated-sorted-array/solutions/1987503/by-endlesscheng-auuh/)|两种方法|
+||[154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/solution/zhi-yao-ni-hui-153-jiu-neng-kan-dong-pyt-qqc6/)|*课后作业|
 |[链表 - 反转系列](https://www.bilibili.com/video/BV1sd4y1x7KN/)|[206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)|[代码](https://leetcode.cn/problems/reverse-linked-list/solutions/1992225/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-o5zy/)||
 ||[92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)|[代码](https://leetcode.cn/problems/reverse-linked-list-ii/solutions/1992226/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-teqq/)||
 ||[25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)|[代码](https://leetcode.cn/problems/reverse-nodes-in-k-group/solutions/1992228/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-plfs/)||
