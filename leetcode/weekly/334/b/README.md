@@ -2,7 +2,7 @@
 
 设 $a=k_1m+r_1,b=k_2m+r_2$。
 
-那么 $(a+b)\bmod m = r_1+ r_2 = a\bmod m + b\bmod m$。
+那么 $(a+b)\bmod m = (r_1+r_2)\bmod m = (a\bmod m + b\bmod m)\bmod m$。
 
 ### 思路
 
