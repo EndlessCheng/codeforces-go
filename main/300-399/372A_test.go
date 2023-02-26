@@ -8,6 +8,7 @@ import (
 func TestSol372A(t *testing.T) {
 	// just copy from website
 	rawText := `
+inputCopy
 8
 2
 5
@@ -31,5 +32,5 @@ inputCopy
 3
 outputCopy
 5`
-	testutil.AssertEqualCase(t, rawText, -1, Sol372A)
+	testutil.AssertEqualCase(t, rawText, 0, Sol372A)
 }

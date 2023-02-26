@@ -8,34 +8,22 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-func Sol372A(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
+func Sol372A(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
 	var n int
 	Fscan(in, &n)
-	arr := make([]int, n)
-	for i := range arr {
-		Fscan(in, &arr[i])
+	a := make([]int, n)
+	for i := range a {
+		Fscan(in, &a[i])
 	}
-	sort.Ints(arr)
-
-	ans := n
-	n2 := n / 2
-	j := n2
-	for i := 0; i < n2; i++ {
-		for ; j < n; j++ {
-			if 2*arr[i] <= arr[j] {
-				ans--
-				j++
-				break
-			}
+	sort.Ints(a)
+	i := 0
+	for _, x := range a[(n+1)/2:] {
+		if a[i]*2 <= x {
+			i++
 		}
 	}
-	Fprint(out, ans)
+	Fprint(out, n-i)
 }
 
-//func main() {
-//	Sol372A(os.Stdin, os.Stdout)
-//}
+//func main() { Sol372A(os.Stdin, os.Stdout) }
