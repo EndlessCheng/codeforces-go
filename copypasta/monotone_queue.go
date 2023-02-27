@@ -216,7 +216,7 @@ func BalancedPlaylist(a []int, n int) (ans []int) {
 // 输入：高 h 宽 w 的窗口大小
 // 返回：一个 n-h+1 行 m-w+1 列的矩阵 areaMax，其中 areaMax[i][j] 表示窗口左上角位于矩阵 (i,j) 时的窗口中元素的最大值
 // 例题：HA07 理想的正方形 https://www.luogu.com.cn/problem/P2216
-// 解释见这篇题解，看图就懂了 https://www.acwing.com/solution/content/54792/
+// 解释：https://cdn.acwing.com/media/article/image/2021/06/29/52559_7d7b27ced8-1.png
 func FixedSizeAreaMax(mat [][]int, h, w int) [][]int {
 	n, m := len(mat), len(mat[0])
 
