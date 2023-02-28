@@ -28,6 +28,8 @@ https://zhuanlan.zhihu.com/p/553192435
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 用在数组上 LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
 //          LC2334 https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/
+// LC2421 https://leetcode.cn/problems/number-of-good-paths/
+// LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
 // 三维接雨水 https://www.luogu.com.cn/problem/P5930 LC407 https://leetcode-cn.com/problems/trapping-rain-water-ii/
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
