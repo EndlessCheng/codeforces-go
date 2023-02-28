@@ -95,8 +95,8 @@ func (h *hp64) pop() int64         { return heap.Pop(h).(int64) } // 稍微封�
 
 // 支持修改、删除指定元素的堆
 // 用法：调用 push 会返回一个 *viPair 指针，记作 p
-// 将 p 存于他处（如 slice 或 map），可直接在外部修改 p.v 后调用 fix(p.index)，从而做到修改堆中指定元素
-// 调用 remove(p.index) 可以从堆中删除 p.v
+// 将 p 存于他处（如 slice 或 map），可直接在外部修改 p.v 后调用 fix(p.hi)，从而做到修改堆中指定元素
+// 调用 remove(p.hi) 可以从堆中删除 p
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
 // 模拟 multiset https://codeforces.com/problemset/problem/1106/E
 type viPair struct {
