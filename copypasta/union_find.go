@@ -24,6 +24,10 @@ https://zhuanlan.zhihu.com/p/553192435
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 基础题 https://codeforces.com/problemset/problem/1411/C
+// LC305 https://leetcode.cn/problems/number-of-islands-ii/
+// LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
+// 用在数组上 LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
+//          LC2334 https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
 // 三维接雨水 https://www.luogu.com.cn/problem/P5930 LC407 https://leetcode-cn.com/problems/trapping-rain-water-ii/
 // 使某些点不在环上需要删除的最少边数 https://ac.nowcoder.com/acm/contest/7780/C
@@ -38,7 +42,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632 https://leetcode-cn.com/problems/rank-transform-of-a-matrix/submissions/
 // 分组排序套路 LC1998 https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
-// [1700] 转换 https://codeforces.com/problemset/problem/1253/D
+// 转换 https://codeforces.com/problemset/problem/1253/D
 // 离散 + 四方向 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
 // 技巧：去掉无用数据
 // - https://codeforces.com/problemset/problem/1157/E
@@ -305,7 +309,7 @@ func _(n int) {
 // todo https://codeforces.com/contest/1615/problem/D
 //      https://codeforces.com/contest/1713/problem/E
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
-// 边权：LC399 除法求值 https://leetcode-cn.com/problems/evaluate-division/
+// 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
 func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加减法
 	const kinds = 2

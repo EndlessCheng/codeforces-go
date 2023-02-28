@@ -10,7 +10,11 @@ import (
 
 // 异或字典树
 // 一棵（所有叶节点深度都相同的）二叉树
-// 模板题 https://codeforces.com/problemset/problem/706/D
+// 模板题 LC421 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/
+// LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/
+// LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
+// LC2479 利用先序遍历的特点 https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/
+// https://codeforces.com/problemset/problem/706/D
 // 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
 // https://codeforces.com/contest/1446/problem/C
 // todo https://codeforces.com/problemset/problem/1055/F

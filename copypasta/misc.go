@@ -37,6 +37,11 @@ https://oeis.org/A002024 n appears n times; a(n) = floor(sqrt(2n) + 1/2) https:/
 长度为 n 的所有二进制串，最多能划分出的 11 的个数之和 https://oeis.org/A045883
 相关题目 https://codeforces.com/contest/1511/problem/E
 
+https://oeis.org/A007302 Optimal cost function between two processors at distance n
+bits.OnesCount(3*n ^ n)
+LC2571 https://leetcode.cn/problems/minimum-operations-to-reduce-an-integer-to-0/
+解释 https://leetcode.cn/problems/minimum-operations-to-reduce-an-integer-to-0/solution/ji-yi-hua-sou-suo-by-endlesscheng-cm6l/
+
 4 汉诺塔 http://oeis.org/A007664
 Reve's puzzle: number of moves needed to solve the Towers of Hanoi puzzle with 4 pegs and n disks, according to the Frame-Stewart algorithm
 https://www.acwing.com/problem/content/description/98/
