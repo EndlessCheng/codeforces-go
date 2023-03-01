@@ -1044,6 +1044,12 @@ func _(min, max func(int, int) int) {
 // NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
 // 易错题 https://codeforces.com/problemset/problem/540/C
 // 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
+// BFS:
+// LC778 https://leetcode.cn/problems/swim-in-rising-water/
+// LC1631 https://leetcode.cn/problems/path-with-minimum-effort/
+// LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
+// LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
+// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
 func gridCollection() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
