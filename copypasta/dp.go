@@ -267,7 +267,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	入门 DP：跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
 	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
+	选或不选 [1800·hot10] https://codeforces.com/contest/1525/problem/D
 	https://codeforces.com/contest/1324/problem/E
+	https://codeforces.com/problemset/problem/505/C
 	https://atcoder.jp/contests/abc267/tasks/abc267_d
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
 	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
@@ -300,7 +302,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
-	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值（题目见 sort.go 中的 0-1 分数规划）
+	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mi=min(sum[j])，同时更新 sum[i]-mi 的最大值（题目见 sort.go 中的 0-1 分数规划）https://www.luogu.com.cn/problem/P1404
 	// 子段和有上限的最大子段和：转换为前缀和之差 sum[i]-sum[j]<=K，在平衡树上二分 sum[j] LC363 https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/
 	// 最大两段子段和：求每个位置上的前缀最大子段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	// - 等价题目：允许翻转一段子区间的最大子段和
@@ -491,6 +493,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//     LC712  https://leetcode-cn.com/problems/minimum-ascii-delete-sum-for-two-strings/
 	//     LC1035 https://leetcode-cn.com/problems/uncrossed-lines/
 	//     LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
+	//     LC1458 https://leetcode.cn/problems/max-dot-product-of-two-subsequences/
 	//     权值 https://atcoder.jp/contests/abc185/tasks/abc185_e
 	//     其中一个改为子串 https://codeforces.com/problemset/problem/163/A
 	//     https://codeforces.com/problemset/problem/1446/B
@@ -634,7 +637,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 随机排列 LIS 的长度期望 https://www.zhihu.com/question/266958886
 	// On Range LIS Queries https://codeforces.com/blog/entry/111625 https://codeforces.com/blog/entry/111807 https://arxiv.org/pdf/0707.3619
 	//
-	// 例题 LC300 https://leetcode-cn.com/problems/longest-increasing-subsequence/
+	// LC300 https://leetcode.cn/problems/longest-increasing-subsequence/
+	// LC1964 https://leetcode.cn/problems/find-the-longest-valid-obstacle-course-at-each-position/
 	// 建模 https://codeforces.com/problemset/problem/269/B
 	// 经典转换（最多相交问题） https://codeforces.com/problemset/problem/67/D https://atcoder.jp/contests/arc126/tasks/arc126_b
 	// 最小划分数（导弹拦截）https://www.luogu.com.cn/problem/P1020
@@ -1370,6 +1374,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	插入形成回文 LC1312 https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/ https://www.luogu.com.cn/problem/P1435
 	另见 LPS
 
+	[1800·hot10] https://codeforces.com/problemset/problem/1509/C
 	容斥 https://atcoder.jp/contests/abc106/tasks/abc106_d
 	染色【套路】https://codeforces.com/problemset/problem/1114/D
 	同色消除【套路】https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
