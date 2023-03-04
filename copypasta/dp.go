@@ -604,6 +604,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 最长上升子序列 (LIS)
+	// 视频讲解：https://www.bilibili.com/video/BV1ub411Q7sB/
 	// 这种写法适用于一些定义比较复杂的变形题
 	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
@@ -628,8 +629,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 最长上升子序列 (LIS)
+	// 视频讲解：https://www.bilibili.com/video/BV1ub411Q7sB/
 	// 方法一：二分
-	// O(nlogn) - 定义 dp[i] 为长度为 i+1 的 LIS 末尾元素的最小值
+	// O(nlogn) - 定义 g[i] 为长度为 i+1 的上升子序列的末尾元素的最小值（技巧：交换 O(n^2) 定义中的状态与状态值）
 	// 求下降，可以考虑取相反数
 	// https://oi-wiki.org/dp/basic/#_12
 	// 最小划分数 / 狄尔沃斯定理（Dilworth's theorem）https://en.wikipedia.org/wiki/Dilworth%27s_theorem
@@ -657,18 +659,22 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 状态设计 LIS 计数 https://atcoder.jp/contests/abc237/tasks/abc237_f
 	// 逆向题：输入 LIS 返回字典序最小的排列 a https://atcoder.jp/contests/arc125/tasks/arc125_c
 	lis := func(a []int) int {
-		dp := []int{}
+		g := []int{}
 		for _, v := range a {
-			if p := sort.SearchInts(dp, v); p < len(dp) { // 改成 v+1 为非降
-				dp[p] = v
+			p := sort.SearchInts(g, v) // 改成 v+1 为非严格递增（即 upper_bound）
+			if p < len(g) {
+				g[p] = v
 			} else {
-				dp = append(dp, v)
+				g = append(g, v)
 			}
 		}
-		return len(dp)
+		return len(g)
 	}
 
 	// 方法二：线段树优化 DP
+	// 在值域上建一棵线段树，单点维护的是 a[i] 对应的 dp 值，区间维护的就是一段值域的 dp 的最大值
+	// 转移时，查询 < a[i] 的最大值，单点更新到线段树的 a[i] 上
+	// 这种做法也可以做到 O(nlogn)，且更加灵活
 	// https://www.acwing.com/problem/content/description/3665/
 	// LC2407 https://leetcode.cn/problems/longest-increasing-subsequence-ii/
 
@@ -683,13 +689,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	lisAll := func(a []int) []int {
 		n := len(a)
 		lis := make([]int, n)
-		dp := []int{}
+		g := []int{}
 		for i, v := range a {
-			p := sort.SearchInts(dp, v) // 改成 v+1 为非降
-			if p < len(dp) {
-				dp[p] = v
+			p := sort.SearchInts(g, v) // 改成 v+1 为非严格递增（即 upper_bound）
+			if p < len(g) {
+				g[p] = v
 			} else {
-				dp = append(dp, v)
+				g = append(g, v)
 			}
 			lis[i] = p + 1
 		}
@@ -700,21 +706,21 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 原理见下面这题官方题解的方法二
 	// LC673 https://leetcode-cn.com/problems/number-of-longest-increasing-subsequence/
 	cntLis := func(a []int) int {
-		dp := [][]int{}  // 保留所有历史信息
+		g := [][]int{}   // 保留所有历史信息
 		cnt := [][]int{} // 个数前缀和
 		for _, v := range a {
-			p := sort.Search(len(dp), func(i int) bool { return dp[i][len(dp[i])-1] >= v })
+			p := sort.Search(len(g), func(i int) bool { return g[i][len(g[i])-1] >= v })
 			c := 1
 			if p > 0 {
-				// 根据 dp[p-1] 来计算 cnt
-				i := sort.Search(len(dp[p-1]), func(i int) bool { return dp[p-1][i] < v })
+				// 根据 g[p-1] 来计算 cnt
+				i := sort.Search(len(g[p-1]), func(i int) bool { return g[p-1][i] < v })
 				c = cnt[p-1][len(cnt[p-1])-1] - cnt[p-1][i]
 			}
-			if p == len(dp) {
-				dp = append(dp, []int{v})
+			if p == len(g) {
+				g = append(g, []int{v})
 				cnt = append(cnt, []int{0, c})
 			} else {
-				dp[p] = append(dp[p], v)
+				g[p] = append(g[p], v)
 				cnt[p] = append(cnt[p], cnt[p][len(cnt[p])-1]+c)
 			}
 		}
