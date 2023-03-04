@@ -59,6 +59,7 @@
 ||[322. 零钱兑换](https://leetcode.cn/problems/coin-change/)|[代码](https://leetcode.cn/problems/coin-change/solutions/2119065/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-21m5/)|包含空间优化|
 |[最长公共子序列 LCS](https://www.bilibili.com/video/BV1TM4y1o7ug/)|[1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/)|[代码](https://leetcode.cn/problems/longest-common-subsequence/solutions/2133188/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-lbz5/)|包含空间优化|
 ||[72. 编辑距离](https://leetcode.cn/problems/edit-distance/)|[代码](https://leetcode.cn/problems/edit-distance/solutions/2133222/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-uo5q/)|包含空间优化|
+|[最长递增子序列 LIS](https://www.bilibili.com/video/BV1ub411Q7sB/)|[300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)|[代码](https://leetcode.cn/problems/longest-increasing-subsequence/solution/jiao-ni-yi-bu-bu-si-kao-dpfu-o1-kong-jia-4zma/)|两种写法 + O(1) 空间|
 
 ---
 
