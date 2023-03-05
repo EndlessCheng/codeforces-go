@@ -10,9 +10,9 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 	}
 
 	type pair struct{ x, y int }
-	has := make(map[pair]bool, len(guesses))
+	s := make(map[pair]int, len(guesses))
 	for _, p := range guesses { // guesses 转成哈希表
-		has[pair{p[0], p[1]}] = true
+		s[pair{p[0], p[1]}] = 1
 	}
 
 	cnt0 := 0
@@ -20,7 +20,7 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 	dfs = func(x, fa int) {
 		for _, y := range g[x] {
 			if y != fa {
-				if has[pair{x, y}] { // 以 0 为根时，猜对了
+				if s[pair{x, y}] == 1 { // 以 0 为根时，猜对了
 					cnt0++
 				}
 				dfs(y, x)
@@ -36,14 +36,7 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 		}
 		for _, y := range g[x] {
 			if y != fa {
-				c := cnt
-				if has[pair{x, y}] { // 原来是对的，现在错了
-					c--
-				}
-				if has[pair{y, x}] { // 原来是错的，现在对了
-					c++
-				}
-				reroot(y, x, c)
+				reroot(y, x, cnt-s[pair{x, y}]+s[pair{y, x}])
 			}
 		}
 	}

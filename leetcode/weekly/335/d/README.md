@@ -1,7 +1,3 @@
-下午两点【biIibiIi@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 分组背包模板题。
 
 定义 $f[i][j]$ 表示用前 $i$ 种题目恰好组成 $j$ 分的方案数。
@@ -17,6 +13,8 @@ $$
 代码实现时可以像 0-1 背包那样，压缩成一维，具体可以看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 > 注：滚动优化后，$k=0$ 就是 $f[j]$，无需计算。
+
+附：[本题视频讲解](https://www.bilibili.com/video/BV1SN411c7eD/)
 
 ```py [sol1-Python3]
 class Solution:

@@ -1,32 +1,56 @@
-下午两点【biIibiIi@灵茶山艾府】直播讲题，记得关注哦~
+思考：$4325$ 怎么分？
 
----
+如果分成 $432$ 和 $5$，那么 $4$ 显然放在 $5$ 这边更优，所以要**均匀分**。
 
-两个要点：
+如果分成 $32$ 和 $45$，那么 $23$ 比 $32$ 更好；进一步地，分成 $24$ 和 $35$ 更好，所以**把小的排在高位更优，大的排在低位更优**。
 
-1. 数字要均匀分；
-2. 把小的数字放高位，大的数字放低位。
+设 $s$ 是 $\textit{num}$ 的字符串形式，这等价于把 $s$ 排序后，按照奇偶下标分组。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1dY4y1C77x/)
 
 ```py [sol1-Python3]
 class Solution:
     def splitNum(self, num: int) -> int:
-        a = [[], []]
-        for i, c in enumerate(sorted(list(str(num)))):
-            a[i % 2].append(c)
-        return int(''.join(a[0])) + int(''.join(a[1]))
+        s = sorted(str(num))
+        return int(''.join(s[::2])) + int(''.join(s[1::2]))
+```
+
+```java [sol1-Java]
+class Solution {
+    public int splitNum(int num) {
+        var s = Integer.toString(num).toCharArray();
+        Arrays.sort(s);
+        var a = new int[2];
+        for (int i = 0; i < s.length; i++)
+            a[i % 2] = a[i % 2] * 10 + s[i] - '0'; // 按照奇偶下标分组
+        return a[0] + a[1];
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    int splitNum(int num) {
+        string s = to_string(num);
+        sort(s.begin(), s.end());
+        int a[2]{};
+        for (int i = 0; i < s.length(); ++i)
+            a[i % 2] = a[i % 2] * 10 + s[i] - '0'; // 按照奇偶下标分组
+        return a[0] + a[1];
+    }
+};
 ```
 
 ```go [sol1-Go]
 func splitNum(num int) int {
 	s := []byte(strconv.Itoa(num))
 	sort.Slice(s, func(i, j int) bool { return s[i] < s[j] })
-	a := [2][]byte{}
+	a := [2]int{}
 	for i, c := range s {
-		a[i&1] = append(a[i&1], c)
+		a[i%2] = a[i%2]*10 + int(c-'0') // 按照奇偶下标分组
 	}
-	x, _ := strconv.Atoi(string(a[0]))
-	y, _ := strconv.Atoi(string(a[1]))
-	return x + y
+	return a[0] + a[1]
 }
 ```
 

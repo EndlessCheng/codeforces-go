@@ -9,11 +9,9 @@ import (
 func splitNum(num int) int {
 	s := []byte(strconv.Itoa(num))
 	sort.Slice(s, func(i, j int) bool { return s[i] < s[j] })
-	a := [2][]byte{}
+	a := [2]int{}
 	for i, c := range s {
-		a[i&1] = append(a[i&1], c)
+		a[i%2] = a[i%2]*10 + int(c-'0')
 	}
-	x, _ := strconv.Atoi(string(a[0]))
-	y, _ := strconv.Atoi(string(a[1]))
-	return x + y
+	return a[0] + a[1]
 }

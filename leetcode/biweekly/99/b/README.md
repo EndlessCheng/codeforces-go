@@ -22,7 +22,6 @@ $$
 f(n) = 1 + 4(1+2+\cdots n-1) = 1 + 2n(n-1)
 $$
 
-
 ```py [sol1-Python3]
 class Solution:
     def coloredCells(self, n: int) -> int:

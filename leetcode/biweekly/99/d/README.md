@@ -1,7 +1,3 @@
-下午两点【biIibiIi@灵茶山艾府】直播讲题，记得关注哦~
-
----
-
 如果只求以 $0$ 为根时的猜对次数 $\textit{cnt}_0$，那么把 $\textit{guesses}$ 转成哈希表，DFS 一次这棵树就可以算出来。
 
 如果要枚举以每个点为根时的猜对次数，暴力做法就太慢了，怎么优化呢？
@@ -16,6 +12,8 @@
 DFS 的同时，统计猜对次数 $\ge k$ 的节点个数，即为答案。
 
 这个套路叫做「换根 DP」。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1dY4y1C77x/)
 
 ```py [sol1-Python3]
 class Solution:
@@ -142,9 +140,9 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 	}
 
 	type pair struct{ x, y int }
-	has := make(map[pair]bool, len(guesses))
+	s := make(map[pair]int, len(guesses))
 	for _, p := range guesses { // guesses 转成哈希表
-		has[pair{p[0], p[1]}] = true
+		s[pair{p[0], p[1]}] = 1
 	}
 
 	cnt0 := 0
@@ -152,7 +150,7 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 	dfs = func(x, fa int) {
 		for _, y := range g[x] {
 			if y != fa {
-				if has[pair{x, y}] { // 以 0 为根时，猜对了
+				if s[pair{x, y}] == 1 { // 以 0 为根时，猜对了
 					cnt0++
 				}
 				dfs(y, x)
@@ -168,14 +166,7 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 		}
 		for _, y := range g[x] {
 			if y != fa {
-				c := cnt
-				if has[pair{x, y}] { // 原来是对的，现在错了
-					c--
-				}
-				if has[pair{y, x}] { // 原来是错的，现在对了
-					c++
-				}
-				reroot(y, x, c)
+				reroot(y, x, cnt-s[pair{x, y}]+s[pair{y, x}])
 			}
 		}
 	}
@@ -198,4 +189,6 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 
 ### 思考题
 
-如果把「$u$ 是 $v$ 的父节点」改成「$u$ 是 $v$ 的祖先节点节点」，要怎么做呢？
+如果把「$u$ 是 $v$ 的父节点」改成「$u$ 是 $v$ 的**祖先节点**」，要怎么做呢？
+
+如果改成「$\textit{guesses}[i]$ 猜对会得到 $\textit{score}[i]$ 分，计算的是以每个点为根时的得分之和」，要怎么做呢？（本题相当于 $\textit{score}[i]$ 均为 $1$）
