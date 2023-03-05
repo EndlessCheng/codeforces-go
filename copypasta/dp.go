@@ -1206,7 +1206,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 完全背包 EXTRA: 方案数
-	// LC518 https://leetcode-cn.com/problems/coin-change-2/
+	// LC518 https://leetcode-cn.com/problems/coin-change-ii/
 	// https://codeforces.com/problemset/problem/1673/C
 	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
@@ -1225,9 +1225,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 完全背包 EXTRA: 二维费用方案数
 	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
 	// https://codeforces.com/problemset/problem/543/A
-
-	// 多重背包计数（可以用前缀和优化）
-	// https://www.luogu.com.cn/problem/P1077
 
 	// 多重背包 - 未优化
 	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
@@ -1279,6 +1276,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC2218 https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/
 	// https://codeforces.com/problemset/problem/148/E
 	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D
+	// 方案数（可以用前缀和优化）https://www.luogu.com.cn/problem/P1077
+	// 方案数 LC2585 https://leetcode.cn/problems/number-of-ways-to-earn-points/
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1) // int64
