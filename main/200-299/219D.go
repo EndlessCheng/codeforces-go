@@ -4,58 +4,59 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF219D(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, v, w int
+	var n, v, w, rev1 int
 	Fscan(in, &n)
-	type edge struct{ to, ord int }
-	g := make([][]edge, n)
+	type edge struct{ to, dir int }
+	g := make([][]edge, n+1)
 	for i := 1; i < n; i++ {
 		Fscan(in, &v, &w)
-		v--
-		w--
 		g[v] = append(g[v], edge{w, 1})
 		g[w] = append(g[w], edge{v, -1})
 	}
-	inv := make([]int, n)
-	var f func(v, fa int)
+
+	var f func(int, int)
 	f = func(v, fa int) {
 		for _, e := range g[v] {
-			if w := e.to; w != fa {
-				if e.ord == -1 {
-					inv[0]++
+			if e.to != fa {
+				if e.dir < 0 {
+					rev1++
 				}
-				f(w, v)
+				f(e.to, v)
 			}
 		}
 	}
-	f(0, -1)
-	f = func(v, fa int) {
+	f(1, 0)
+
+	mn, ans := rev1, []int{}
+	var reroot func(int, int, int)
+	reroot = func(v, fa, rev int) {
+		if rev < mn {
+			mn = rev
+			ans = []int{v}
+		} else if rev == mn {
+			ans = append(ans, v)
+		}
 		for _, e := range g[v] {
-			if w := e.to; w != fa {
-				inv[w] = inv[v] + e.ord
-				f(w, v)
+			if e.to != fa {
+				reroot(e.to, v, rev+e.dir)
 			}
 		}
 	}
-	f(0, -1)
-	min := n
-	for _, v := range inv {
-		if v < min {
-			min = v
-		}
-	}
-	Fprintln(out, min)
-	for i, v := range inv {
-		if v == min {
-			Fprint(out, i+1, " ")
-		}
+	reroot(1, 0, rev1)
+
+	Fprintln(out, mn)
+	sort.Ints(ans)
+	for _, v := range ans {
+		Fprint(out, v, " ")
 	}
 }
 
