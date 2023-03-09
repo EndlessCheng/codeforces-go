@@ -38,6 +38,7 @@ LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 +分类讨论 https://codeforces.com/problemset/problem/584/C
 +分类讨论 https://codeforces.com/problemset/problem/708/B
+[1800·hot10] https://codeforces.com/problemset/problem/1554/D
 棋盘放最多的马 https://codeforces.com/problemset/problem/142/B
 两点间恰好 k 条最短路径 http://codeforces.com/problemset/problem/388/B
 https://codeforces.com/problemset/problem/327/D

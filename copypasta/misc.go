@@ -11,6 +11,9 @@ import (
 
 /* 其他无法分类的算法
 
+小奥
+https://codeforces.com/problemset/problem/700/A
+
 三维 n 皇后 https://oeis.org/A068940
 Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
 

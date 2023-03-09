@@ -849,6 +849,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 质因数分解（只有质数）prime factorization
+	// LC2507 https://leetcode.cn/problems/smallest-value-after-replacing-with-sum-of-prime-factors/
+	// LC2584 https://leetcode.cn/problems/split-the-array-to-make-coprime-products/
 	primeDivisors := func(x int64) (primes []int64) {
 		for i := int64(2); i*i <= x; i++ {
 			if x%i == 0 {
@@ -1227,7 +1229,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		_, _ = isSquareNumber, halfDivisors
 	}
 
-	// 初始化 Squarefree numbers
+	// 预处理 Squarefree numbers
 	// https://oeis.org/A005117
 	// https://oeis.org/wiki/Squarefree_numbers
 	// 密度（见后面 calcMu 的注释）为 6/Pi^2 ≈ 0.6079
@@ -1491,15 +1493,16 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		_ = []interface{}{factorize, divisors, core, coreAll, rad, sopfr, sopf}
 	}
 
-	// 预处理: [2,mx] 范围内数的不同质因子，例如 factors[12] = [2,3]
-	// for i>=2, factors[i][0] == i means i is prime
+	// 预处理质因子
+	// 例如 pf[12] = [2,3]
+	// for i>=2, pf[i][0] == i means i is prime
 	primeFactorsAll := func() {
 		const mx int = 1e6
-		factors := [mx + 1][]int{}
+		pf := [mx + 1][]int{}
 		for i := 2; i <= mx; i++ {
-			if factors[i] == nil {
+			if pf[i] == nil {
 				for j := i; j <= mx; j += i {
-					factors[j] = append(factors[j], i)
+					pf[j] = append(pf[j], i)
 				}
 			}
 		}

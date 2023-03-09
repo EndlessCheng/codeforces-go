@@ -20,6 +20,7 @@ LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
 
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 转换 https://codeforces.com/problemset/problem/280/B
+转换 LC2289 https://leetcode.cn/problems/steps-to-make-array-non-decreasing/
 max >= sum https://codeforces.com/problemset/problem/1691/D
 LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
 你从单调栈学到了什么思想？LC1944 https://leetcode.cn/problems/number-of-visible-people-in-a-queue/
