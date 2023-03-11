@@ -4,6 +4,8 @@
 
 相同知识点的题目，按照 [难度分](https://zerotrac.github.io/leetcode_problem_rating/) 排序。
 
+附：[视频合集·基础算法精讲·高频面试题](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)
+
 |知识点|题目|题解|难度分|
 |---|---|---|---|
 |双指针|[795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/)|[【图解】一次遍历+简洁写法](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/solution/tu-jie-yi-ci-bian-li-jian-ji-xie-fa-pyth-n75l/)|1817|
