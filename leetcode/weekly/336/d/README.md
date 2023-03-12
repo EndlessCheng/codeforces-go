@@ -102,7 +102,7 @@ func findMinimumTime(tasks [][]int) (ans int) {
 
 ### 复杂度分析
 
-- 时间复杂度：$O(nU)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{end}_i)$。
+- 时间复杂度：$O(nU)$，其中 $n$ 为 $\textit{tasks}$ 的长度，$U=\max(\textit{end}_i)$。
 - 空间复杂度：$O(U)$。
 
 # 方法二：贪心+线段树优化
@@ -375,7 +375,141 @@ func findMinimumTime(tasks [][]int) (ans int) {
 
 ### 复杂度分析
 
-- 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{end}_i)$。
+- 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{tasks}$ 的长度，$U=\max(\textit{end}_i)$。
 - 空间复杂度：$O(U)$。
 
 **注**：如果改用动态开点线段树，可以做到 $O(n\log n)$ 时间和 $O(n\log n)$ 空间。
+
+# 方法三：贪心+栈优化+二分查找
+
+### 前置知识：二分查找
+
+见[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+### 思路
+
+由于每次都是从右到左新增时间点，相当于把若干右侧的区间合并成一个大区间，因此可以用栈来优化。
+
+栈中保存闭区间的左右端点，以及从栈底到栈顶的区间长度之和（类似前缀和）。
+
+合并前先在栈中二分查找包含左端点 $\textit{start}$ 的区间，由于我们保存了区间长度之和，所以可以算出 $[\textit{start},\textit{end}]$ 范围内的运行中的时间点个数。
+
+如果还需要新增时间点，那么就从右到左合并，具体细节见代码。
+
+```py [sol3-Python3]
+class Solution:
+    def findMinimumTime(self, tasks: List[List[int]]) -> int:
+        tasks.sort(key=lambda t: t[1])
+        st = [(-2, -2, 0)]  # 闭区间左右端点，栈底到栈顶的区间长度的和
+        for start, end, d in tasks:
+            _, r, s = st[bisect_left(st, (start,)) - 1]
+            d -= st[-1][2] - s  # 去掉运行中的时间点
+            if start <= r:  # start 在区间 st[i] 内
+                d -= r - start + 1  # 去掉运行中的时间点
+            if d <= 0: continue
+            while end - st[-1][1] <= d:  # 剩余的 d 填充区间后缀
+                l, r, _ = st.pop()
+                d += r - l + 1  # 合并区间
+            st.append((end - d + 1, end, st[-1][2] + d))
+        return st[-1][2]
+```
+
+```java [sol3-Java]
+class Solution {
+    public int findMinimumTime(int[][] tasks) {
+        Arrays.sort(tasks, (a, b) -> a[1] - b[1]);
+        var st = new ArrayList<int[]>();
+        st.add(new int[]{-2, -2, 0}); // 闭区间左右端点，栈底到栈顶的区间长度的和
+        for (var t : tasks) {
+            int start = t[0], end = t[1], d = t[2];
+            var e = st.get(lowerBound(st, start) - 1);
+            d -= st.get(st.size() - 1)[2] - e[2]; // 去掉运行中的时间点
+            if (start <= e[1]) // start 在区间 st[i] 内
+                d -= e[1] - start + 1; // 去掉运行中的时间点
+            if (d <= 0) continue;
+            while (end - st.get(st.size() - 1)[1] <= d) { // 剩余的 d 填充区间后缀
+                e = st.remove(st.size() - 1);
+                d += e[1] - e[0] + 1; // 合并区间
+            }
+            st.add(new int[]{end - d + 1, end, st.get(st.size() - 1)[2] + d});
+        }
+        return st.get(st.size() - 1)[2];
+    }
+
+    // 开区间写法
+    private int lowerBound(List<int[]> st, int target) {
+        int left = -1, right = st.size(); // 开区间 (left, right)
+        while (left + 1 < right) { // 区间不为空
+            // 循环不变量：
+            // st[left] < target
+            // st[right] >= target
+            int mid = (left + right) >>> 1;
+            if (st.get(mid)[0] < target)
+                left = mid; // 范围缩小到 (mid, right)
+            else
+                right = mid; // 范围缩小到 (left, mid)
+        }
+        return right; // 或者 left+1
+    }
+}
+```
+
+```cpp [sol3-C++]
+class Solution {
+public:
+    int findMinimumTime(vector<vector<int>> &tasks) {
+        sort(tasks.begin(), tasks.end(), [](auto &a, auto &b) {
+            return a[1] < b[1];
+        });
+        vector<tuple<int, int, int>> st{{-2, -2, 0}}; // 闭区间左右端点，栈底到栈顶的区间长度的和
+        for (auto &t : tasks) {
+            int start = t[0], end = t[1], d = t[2];
+            auto[_, r, s] = *--lower_bound(st.begin(), st.end(), start, [](const auto &a, int b) {
+                return get<0>(a) < b;
+            });
+            d -= get<2>(st.back()) - s; // 去掉运行中的时间点
+            if (start <= r) // start 在区间 st[i] 内
+                d -= r - start + 1; // 去掉运行中的时间点
+            if (d <= 0) continue;
+            while (end - get<1>(st.back()) <= d) { // 剩余的 d 填充区间后缀
+                auto[l, r, _] = st.back();
+                d += r - l + 1; // 合并区间
+                st.pop_back();
+            }
+            st.emplace_back(end - d + 1, end, get<2>(st.back()) + d);
+        }
+        return get<2>(st.back());
+    }
+};
+```
+
+```go [sol3-Go]
+func findMinimumTime(tasks [][]int) int {
+	sort.Slice(tasks, func(i, j int) bool { return tasks[i][1] < tasks[j][1] })
+	type tuple struct{ l, r, s int }
+	st := []tuple{{-2, -2, 0}} // 闭区间左右端点，栈底到栈顶的区间长度的和
+	for _, p := range tasks {
+		start, end, d := p[0], p[1], p[2]
+		i := sort.Search(len(st), func(i int) bool { return st[i].l >= start }) - 1
+		d -= st[len(st)-1].s - st[i].s // 去掉运行中的时间点
+		if start <= st[i].r { // start 在区间 st[i] 内
+			d -= st[i].r - start + 1 // 去掉运行中的时间点
+		}
+		if d <= 0 {
+			continue
+		}
+		for end-st[len(st)-1].r <= d { // 剩余的 d 填充区间后缀
+			top := st[len(st)-1]
+			st = st[:len(st)-1]
+			d += top.r - top.l + 1 // 合并区间
+		}
+		st = append(st, tuple{end - d + 1, end, st[len(st)-1].s + d})
+	}
+	return st[len(st)-1].s
+}
+```
+
+### 复杂度分析
+
+- 时间复杂度：$O(n\log n)$，其中 $n$ 为 $\textit{tasks}$ 的长度。
+- 空间复杂度：$O(n)$。
