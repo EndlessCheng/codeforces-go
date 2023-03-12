@@ -27,6 +27,7 @@ import (
 // 模板题 https://www.luogu.com.cn/problem/P1494
 // todo https://www.luogu.com.cn/problem/P2709
 // todo https://www.luogu.com.cn/problem/P4462
+// https://atcoder.jp/contests/abc293/tasks/abc293_g
 // 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
 //     反向构造题 https://www.luogu.com.cn/problem/P6852
 // todo https://codeforces.com/contest/86/problem/D
