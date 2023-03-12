@@ -1075,6 +1075,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 0-1 背包 EXTRA: 至少装入重量和为 maxW 的物品，求价值和的最小值 https://www.luogu.com.cn/problem/P4377
+	// f[0] 表示至少为 0 的情况，也表示没有任何约束的情况
+	// 比如选第 i 个物品后容量 <=0 了，那就表示前面的 i-1 个物品可以不受约束地随意选或不选了
 	// 需要一点转换 https://codeforces.com/problemset/problem/19/B
 	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
@@ -1294,6 +1296,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return dp[maxW]
 	}
 
+	// todo 撤销计数
+	//  https://leetcode.cn/circle/article/YnZBve/
+
 	// 分组背包·每组恰好选一个
 	// 允许物品重量为 0
 	// https://atcoder.jp/contests/abc240/tasks/abc240_c
@@ -1321,6 +1326,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 树上背包/树形背包/依赖背包
 	// todo 树上背包的上下界优化 https://ouuan.github.io/post/%E6%A0%91%E4%B8%8A%E8%83%8C%E5%8C%85%E7%9A%84%E4%B8%8A%E4%B8%8B%E7%95%8C%E4%BC%98%E5%8C%96/
 	//   子树合并背包的复杂度证明 https://blog.csdn.net/lyd_7_29/article/details/79854245
+	//   复杂度 https://leetcode.cn/circle/discuss/t7l62c/
 	//   https://www.cnblogs.com/shaojia/p/15520224.html
 	//   https://snuke.hatenablog.com/entry/2019/01/15/211812
 	//   复杂度优化 https://loj.ac/d/3144
@@ -2395,6 +2401,57 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return
 	}
 
+	// 统计树上所有简单路径长度及其个数 O(n^3)
+	// 返回一个长为 n 的数组 ans，ans[i] 表示长为 i 的简单路径个数
+	// O(n^2) 见 https://github.com/hqztrue/LeetCodeSolutions/blob/master/1601-1700/1617.%20Count%20Subtrees%20With%20Max%20Distance%20Between%20Cities.pdf
+	// LC1617 https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/
+	countPath := func(g [][]int) []int {
+		n := len(g)
+		// 计算树上任意两点的距离
+		dis := make([][]int, n)
+		for i := range dis {
+			// 计算 i 到其余点的距离
+			dis[i] = make([]int, n)
+			var dfs func(int, int)
+			dfs = func(x, fa int) {
+				for _, y := range g[x] {
+					if y != fa {
+						dis[i][y] = dis[i][x] + 1 // 自顶向下
+						dfs(y, x)
+					}
+				}
+			}
+			dfs(i, -1)
+		}
+
+		ans := make([]int, n)
+		ans[0] = n
+		for i, di := range dis {
+			for j := i + 1; j < n; j++ {
+				dj := dis[j]
+				dij := di[j]
+				var dfs func(int, int) int
+				dfs = func(x, fa int) int {
+					// 能递归到这，说明 x 可以选
+					cnt := 1 // 选 x
+					for _, y := range g[x] {
+						if y != fa &&
+							(di[y] < dij || di[y] == dij && y > j) &&
+							(dj[y] < dij || dj[y] == dij && y > i) { // 满足这些条件就可以选
+							cnt *= dfs(y, x) // 每棵子树互相独立，采用乘法原理
+						}
+					}
+					if di[x]+dj[x] > dij { // x 是可选点
+						cnt++ // 不选 x
+					}
+					return cnt
+				}
+				ans[dij] += dfs(i, -1)
+			}
+		}
+		return ans
+	}
+
 	// 树的直径及在直径上的节点个数
 	// https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45987468
 	// 注意这里的 cnt 初始化与 countDiameter 的不同之处
@@ -2865,7 +2922,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		cht,
 
-		diameter, countDiameter, countVerticesOnDiameter, maxPathSum,
+		diameter, countDiameter, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
 		sumOfDistancesInTree, rerootDP,
 		andPathSum, xorPathSum, xorPathXorSum,
