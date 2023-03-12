@@ -18,6 +18,22 @@ import (
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
 /*
+最基本的双变量思想
+LC1 https://leetcode.cn/problems/two-sum/
+
+哈希表与前缀和（双变量思想）
+推荐按照顺序完成
+LC560 https://leetcode.cn/problems/subarray-sum-equals-k/
+LC974 https://leetcode.cn/problems/subarray-sums-divisible-by-k/
+LC1590 https://leetcode.cn/problems/make-sum-divisible-by-p/
+LC523 https://leetcode.cn/problems/continuous-subarray-sum/
+LC525 https://leetcode.cn/problems/contiguous-array/
+LC1915 https://leetcode.cn/problems/number-of-wonderful-substrings/
+LC930 https://leetcode-cn.com/problems/binary-subarrays-with-sum/
+LC1371 https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/
+LC1542 https://leetcode-cn.com/problems/find-longest-awesome-substring/
+https://leetcode.cn/problems/find-longest-subarray-lcci/
+
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 https://atcoder.jp/contests/arc147/tasks/arc147_b
@@ -392,6 +408,24 @@ func _() {
 			x = x * x % mod
 		}
 		return res
+	}
+
+	// 等比数列求和取模
+	// 返回 (x^0 + x^1 + ... + x^n) % mod
+	// https://atcoder.jp/contests/abc293/tasks/abc293_e
+	gp := func(x, n, mod int64) int64 {
+		var f func(p, c int64) int64
+		f = func(p, c int64) int64 {
+			if c == 0 {
+				return 1 % mod
+			}
+			res := (1 + pow(p, (c+1)/2, mod)) * f(p, (c-1)/2)
+			if c%2 == 0 {
+				res += pow(p, c, mod)
+			}
+			return res % mod
+		}
+		return f(x, n)
 	}
 
 	// 从低位到高位
@@ -1327,7 +1361,7 @@ func _() {
 		pow10, dir4, dir8, perm3, perm4,
 		min, mins, max, maxs, abs, ceil, bin, cmp,
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
-		pow, mul, toAnyBase, digits,
+		pow, mul, gp, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
