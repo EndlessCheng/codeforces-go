@@ -48,7 +48,7 @@
         "equally", "equal", "same", "duplicate", "different", "unique", "distinct", "strictly", "overlapping", "overlap",
         "Only", "only", "just", "Exactly", "exactly", "always", "indeed", "precisely",
         "pairwise", "adjacent", "neighbour", "in a row", "consecutive", "continuous", "contiguous", "one after another", "disjoint", "as possible",
-        "more than", "less than",
+        "more than", "less than", "greater than",
         "except",
         // "must",
 
