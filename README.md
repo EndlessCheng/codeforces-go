@@ -264,10 +264,6 @@
   - [杂项B misc.go](/copypasta/misc.go)
 - [快速输入输出模板 io.go](/copypasta/io.go)
 
-****欢迎关注我的 B 站频道：[灵茶山艾府](https://space.bilibili.com/206214)，定期更新算法讲解视频哦~****
-    
-****喜欢刷题和打比赛的同学也欢迎加入我的算法竞赛群，联系微信 AC_0x3F，备注 `git`。****
-
 ## 如何选择题目 How to Choose Problems
 
 ### Rating < 2100
