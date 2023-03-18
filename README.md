@@ -1,9 +1,5 @@
 # codeforces-go 💭💡🎈
 
-[【基础算法精讲】](https://www.bilibili.com/video/BV1AP41137w7/)B站连载中~欢迎关注！
-
-[基础算法题单](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md) [高质量题解精选](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
-
 ## 算法 Algorithm
 
 由于算法知识点繁杂，将自己学习到的算法、做过的题目分类整理好是有必要的。
