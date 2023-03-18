@@ -1173,7 +1173,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		{
 			// 统计因子个数 d(n)
 			// NOTE: 复杂度可以做到线性 https://codeforces.com/contest/920/submission/76859782
-			// 相关 OEIS 见上面的注释块
+			// https://oeis.org/A055507 卷积 Sum_{k=1..n} d(k)*d(n+1-k)
+			// https://atcoder.jp/contests/abc292/tasks/abc292_c
 			const mx int = 1e6
 			d := [mx + 1]int{}
 			for i := 1; i <= mx; i++ {
@@ -2914,6 +2915,7 @@ https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
 一些组合问题
+https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
 https://codeforces.com/problemset/problem/520/E
 https://codeforces.com/problemset/problem/559/C

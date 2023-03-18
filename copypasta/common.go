@@ -52,14 +52,17 @@ https://codeforces.com/problemset/problem/558/C
 LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 https://atcoder.jp/contests/arc145/tasks/arc145_a
++贪心 https://codeforces.com/problemset/problem/118/C
 +分类讨论 https://codeforces.com/problemset/problem/584/C
 +分类讨论 https://codeforces.com/problemset/problem/708/B
 [1800·hot10] https://codeforces.com/problemset/problem/1554/D
+相邻字母在字母表中不相邻 https://codeforces.com/contest/1156/problem/B
 棋盘放最多的马 https://codeforces.com/problemset/problem/142/B
 两点间恰好 k 条最短路径 http://codeforces.com/problemset/problem/388/B
 https://codeforces.com/problemset/problem/327/D
 https://codeforces.com/problemset/problem/515/D
 度数均为 k 且至少（恰好）有一条割边 https://codeforces.com/problemset/problem/550/D
+最短/最长 LIS https://codeforces.com/problemset/problem/1304/D
 
 不好想到的构造
 https://codeforces.com/contest/1659/problem/D
@@ -71,6 +74,7 @@ https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
 
 分类讨论
 https://codeforces.com/problemset/problem/1095/E
+https://codeforces.com/problemset/problem/796/C
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
