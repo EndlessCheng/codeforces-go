@@ -1,10 +1,10 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
-
----
-
 ### 前置知识：二分
 
 见[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+### 本题视频讲解
+
+见[【双周赛 100】](https://www.bilibili.com/video/BV1WM411H7UE/)。
 
 ### 思路
 
@@ -53,7 +53,7 @@ $$
 ```py [sol1-Python3]
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
-        s = lambda t: sum(floor((t // r) ** 0.5) for r in ranks)
+        s = lambda t: sum(floor(sqrt(t // r)) for r in ranks)
         return bisect_left(range(min(ranks) * cars * cars), cars, key=s)
 ```
 
@@ -123,7 +123,7 @@ func repairCars(ranks []int, cars int) int64 {
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
         cnt = Counter(ranks)
-        s = lambda t: sum(floor((t // r) ** 0.5) * c for r, c in cnt.items())
+        s = lambda t: sum(floor(sqrt(t // r)) * c for r, c in cnt.items())
         return bisect_left(range(min(cnt) * cars * cars), cars, key=s)
 ```
 
@@ -197,8 +197,15 @@ func repairCars(ranks []int, cars int) int64 {
 
 ### 相似题目
 
+- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
+- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
+- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
+
+### 思考题
+
+如果 $\textit{ranks}[i]=i+1$，是否存在某种数学做法？

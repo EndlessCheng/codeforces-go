@@ -1,6 +1,8 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【双周赛 100】](https://www.bilibili.com/video/BV1WM411H7UE/)。
+
+### 思路
 
 首先，每人至少分配 $1$ 美元，把 $\textit{money}$ 减少 $\textit{children}$。
 
@@ -17,7 +19,7 @@ $$
 最后，分类讨论：
 
 - 如果剩余 $0$ 人，且 $\textit{money}>0$，那么必须分给一个已经分到 $8$ 美元的人，$\textit{ans}$ 减一。
-- 如果剩余 $1$ 人，且 $\textit{money}=3$，为避免分配 $4$ 美元，那么必须分给一个已经分到 $8$ 美元的人，$\textit{ans}$ 减一。
+- 如果剩余 $1$ 人，且 $\textit{money}=3$，为避免分配 $4$ 美元，那么必须分给一个已经分到 $8$ 美元的人，$\textit{ans}$ 减一。（注意输入的 $\textit{children}\ge 2$）
 - 其它情况全部给一个人，如果这个人分配到 $4$ 美元，他再给另一个人 $1$ 美元，这样 $\textit{ans}$ 不变。
 
 ```py [sol1-Python3]
