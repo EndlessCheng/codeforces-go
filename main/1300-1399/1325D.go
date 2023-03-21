@@ -17,10 +17,10 @@ func CF1325D(in io.Reader, out io.Writer) {
 		} else {
 			Fprint(out, "1\n", xor)
 		}
-	} else if and := (sum - xor) / 2; and&xor > 0 {
+	} else if and := (sum - xor) / 2; and&xor > 0 { // p&q=1 和 p^q=1 不能同时成立
 		Fprint(out, "3\n", xor, and, and)
 	} else {
-		Fprint(out, "2\n", xor|and, and)
+		Fprint(out, "2\n", xor|and, and) // and 可以直接加到 xor 里面
 	}
 }
 
