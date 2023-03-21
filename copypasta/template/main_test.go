@@ -77,10 +77,9 @@ func TestCompare(_t *testing.T) {
 	return
 
 	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, run)
-	return
 
-	// for hacking, write wrong codes in runBF
-	testutil.AssertEqualRunResultsInf(_t, inputGenerator, run, runBF)
+	// for hacking, write the hacked codes in runBF
+	//testutil.AssertEqualRunResultsInf(_t, inputGenerator, run, runBF)
 }
 
 // 无尽检查输出是否正确 / 构造 hack 数据
