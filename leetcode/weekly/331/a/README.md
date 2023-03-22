@@ -9,7 +9,7 @@ class Solution:
             gifts[i] *= -1  # 最大堆
         heapify(gifts)
         while k and -gifts[0] > 1:
-            heapreplace(gifts, -int((-gifts[0]) ** 0.5))
+            heapreplace(gifts, -isqrt(-gifts[0]))
             k -= 1
         return -sum(gifts)
 ```

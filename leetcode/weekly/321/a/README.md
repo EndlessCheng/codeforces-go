@@ -16,7 +16,7 @@ $$
 class Solution:
     def pivotInteger(self, n: int) -> int:
         m = n * (n + 1) // 2
-        x = int(m ** 0.5)
+        x = isqrt(m)
         return x if x * x == m else -1
 ```
 

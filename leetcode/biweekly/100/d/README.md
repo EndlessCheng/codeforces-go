@@ -53,7 +53,7 @@ $$
 ```py [sol1-Python3]
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
-        s = lambda t: sum(floor(sqrt(t // r)) for r in ranks)
+        s = lambda t: sum(isqrt(t // r) for r in ranks)
         return bisect_left(range(min(ranks) * cars * cars), cars, key=s)
 ```
 
@@ -123,7 +123,7 @@ func repairCars(ranks []int, cars int) int64 {
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
         cnt = Counter(ranks)
-        s = lambda t: sum(floor(sqrt(t // r)) * c for r, c in cnt.items())
+        s = lambda t: sum(isqrt(t // r) * c for r, c in cnt.items())
         return bisect_left(range(min(cnt) * cars * cars), cars, key=s)
 ```
 
