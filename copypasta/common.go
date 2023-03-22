@@ -34,6 +34,9 @@ LC1371 https://leetcode-cn.com/problems/find-the-longest-substring-containing-vo
 LC1542 https://leetcode-cn.com/problems/find-longest-awesome-substring/
 https://leetcode.cn/problems/find-longest-subarray-lcci/
 
+巧妙枚举
+https://codeforces.com/problemset/problem/1181/C
+
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 https://atcoder.jp/contests/arc147/tasks/arc147_b
