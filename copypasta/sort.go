@@ -7,14 +7,33 @@ import (
 )
 
 /*
-sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
-BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 https://en.algorithmica.org/hpc/data-structures/binary-search/
+BFPRT https://en.wikipedia.org/wiki/Median_of_medians
+sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
-https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
-https://oeis.org/A003071 Sorting numbers: maximal number of comparisons for sorting n elements by list merging
-https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed to sort n elements
+二分查找
+- [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
+- [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
+- [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+- [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
+
+二分答案
+- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
+- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
+- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
+- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/)
+- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
+- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
+- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+
+最小化最大值
+- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
+- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
+
+最大化最小值
+- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
+- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
+- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
 
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
@@ -38,6 +57,11 @@ https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed t
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
+
+https://oeis.org/A001768 Sorting numbers: number of comparisons for merge insertion sort of n elements
+https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sorting n elements by binary insertion
+https://oeis.org/A003071 Sorting numbers: maximal number of comparisons for sorting n elements by list merging
+https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed to sort n elements
 */
 
 // 记录排序过程中交换元素的下标
