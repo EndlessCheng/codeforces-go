@@ -26,8 +26,13 @@ https://zhuanlan.zhihu.com/p/553192435
 // 基础题 https://codeforces.com/problemset/problem/1411/C
 // LC305 https://leetcode.cn/problems/number-of-islands-ii/
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
-// 用在数组上 LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
-//          LC2334 https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/
+// 数组标记/区间合并相关
+// - LC1851 https://leetcode.cn/problems/minimum-interval-to-include-each-query/
+// - LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
+// - LC2334 https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/
+// - https://codeforces.com/problemset/problem/724/D
+// - https://codeforces.com/problemset/problem/827/A
+// - https://codeforces.com/problemset/problem/1157/E
 // LC2421 https://leetcode.cn/problems/number-of-good-paths/
 // LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
