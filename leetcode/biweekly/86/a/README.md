@@ -1,4 +1,4 @@
-统计相邻数字的和，加入哈希表中，如果这些和不足 $n-1$ 个，则子数组存在。
+统计相邻数字的和，加入哈希表中。一共有 $n-1$ 个相邻数字的和。如果去重后，个数不足 $n-1$ 个，则说明和相等的子数组存在。
 
 ```py [sol1-Python3]
 class Solution:
@@ -6,7 +6,7 @@ class Solution:
         return len(set(map(sum, pairwise(nums)))) < len(nums) - 1
 ```
 
-也可以在遍历 $\textit{nums}$ 的过程中去判断。
+也可以在遍历 $\textit{nums}$ 的过程中去判断是否有相同的和。
 
 ```java [sol1-Java]
 class Solution {
