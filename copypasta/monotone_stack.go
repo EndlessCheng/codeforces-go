@@ -49,7 +49,7 @@ LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
 
 其他
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
-     评注：接雨水有三种不同的解法（DP、单调栈和双指针），其中双指针是 DP 的空间优化写法
+     评注：接雨水有三种不同的解法（DP、单调栈和双指针），其中双指针是 DP 的空间优化写法，讲解见 https://www.bilibili.com/video/BV1Qg411q7ia/
           本质上是两种计算策略：计算每个下标处的接水量（纵向累加），计算一段高度对应的接水宽度（横向累加）
 LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
