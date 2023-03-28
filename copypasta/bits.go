@@ -81,6 +81,9 @@ https://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1
 https://oeis.org/A178910 异或和 因子
 	https://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
 
+异或与 mex
+[1800·hot10] https://codeforces.com/problemset/problem/1554/C
+
 https://oeis.org/A038712 a(n) = n^(n-1) = 1, 3, 1, 7, 1, 3, 1, 15, 1, ...
 https://oeis.org/A080277 A038712 的前缀和  =>  a(n) = n + 2*a(n/2)
 
@@ -492,6 +495,24 @@ func _(x int) {
 	_bits31 := func(v int) string { return Sprintf("%031b", v) }
 	_bits32 := func(v uint) string { return Sprintf("%032b", v) }
 
+	// https://www.acwing.com/problem/content/293/
+	initEvenZeros := func(n int) {
+		mask := 1 << n
+		// 在 i 的长为 n 二进制表示中，如果所有连续 0 的个数都是偶数（包括前导零），则 evenZeros[i] 为 true，否则为 false
+		evenZeros := make([]bool, mask)
+	next:
+		for i := range evenZeros {
+			for s, pre := uint(mask|i), -1; s > 0; s &= s - 1 {
+				p := bits.TrailingZeros(s)
+				if (p-pre)%2 == 0 { // 开区间 (pre,p) 中有奇数个连续 0
+					continue next
+				}
+				pre = p
+			}
+			evenZeros[i] = true
+		}
+	}
+
 	// 返回最小的非负 x，其满足 n^x >= m
 	// https://codeforces.com/problemset/problem/1554/C
 	leastXor := func(n, m int) (res int) {
@@ -515,11 +536,13 @@ func _(x int) {
 	// |: LC898 https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/
 	//    https://www.luogu.com.cn/problem/T236955?contestId=65460
 	// &: LC1521 https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
-	// GCD: LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
+	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
+	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
 	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
+	//      (子数组长度 * 子数组 GCD) 的最大值 https://www.luogu.com.cn/problem/P5502
 	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
 		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
@@ -591,6 +614,7 @@ func _(x int) {
 	// 据此我们只需要在加入一个新的数后，去重并去掉区间积超过 sum(a) 的区间，就可以暴力做出此题
 	// 注：根据以上推导过程，我们还可以得出总的答案个数至多为 O(nlog(sum(a)))
 	// https://www.dotcpp.com/oj/problem2622.html
+	// 变形·面试题：把「区间和」改成「区间异或和」
 	countSumEqMul := func(a []int) (ans int) {
 		tot := 0
 		for _, v := range a {
@@ -706,7 +730,7 @@ func _(x int) {
 	}
 
 	_ = []interface{}{
-		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32,
+		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
 		bitOpTrick, bitOpTrickCnt, countSumEqMul,
 		zeroXorSum3,
