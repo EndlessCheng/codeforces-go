@@ -44,7 +44,7 @@ func CF382C(_r io.Reader, out io.Writer) {
 			}
 		}
 	} else {
-		if (a[0]+a[0])%2 == 0 && isAP(append([]int{a[0], (a[0] + a[1]) / 2}, a[1:]...)) {
+		if (a[0]+a[1])%2 == 0 && isAP(append([]int{a[0], (a[0] + a[1]) / 2}, a[1:]...)) {
 			ans = append(ans, (a[0]+a[1])/2) // 中间加一个
 		}
 		d0 := a[1] - a[0]
