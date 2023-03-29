@@ -17,6 +17,8 @@
 #editor > .text-label-r,
 /* 返回旧版 */
 #editor > div.absolute.right-\\[25px\\].bottom-\\[84px\\].z-overlay,
+/* 反馈 */
+#editor > div.absolute.right-\\[25px\\].bottom-\\[20px\\].z-overlay,
 #qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto > div > div > div.px-5.pt-3,
 #qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto > div > div > div.px-5.py-3.pt-\\[38px\\],
 #qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto > div > div > div.px-5.py-3:nth-of-type(5),
