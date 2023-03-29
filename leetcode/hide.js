@@ -4,6 +4,7 @@
 // @version      0.1
 // @author       endlesscheng
 // @match        https://leetcode.cn/problems/*
+// @exclude      https://leetcode.cn/problems/*/solutions/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leetcode.cn
 // @grant        GM_addStyle
 // @run-at       document-start
