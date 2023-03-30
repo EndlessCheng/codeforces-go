@@ -215,6 +215,19 @@ func runAC_CF1374E2(in io.Reader, out io.Writer) {
 	sum := MAX
 	indexs := make([]int, 4)
 
+	min := func(a, b int) int {
+		if a > b {
+			return b
+		}
+		return a
+	}
+	max := func(a, b int) int {
+		if b > a {
+			return b
+		}
+		return a
+	}
+
 	f := func(cci int) int64 {
 		returnSum := MAX
 
