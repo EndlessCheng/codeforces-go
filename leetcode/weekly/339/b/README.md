@@ -20,6 +20,49 @@ class Solution:
         return ans
 ```
 
+```java [sol1-Java]
+class Solution {
+    public List<List<Integer>> findMatrix(int[] nums) {
+        var cnt = new HashMap<Integer, Integer>();
+        for (int x : nums) cnt.merge(x, 1, Integer::sum);
+        var ans = new ArrayList<List<Integer>>();
+        while (!cnt.isEmpty()) {
+            var row = new ArrayList<Integer>();
+            for (var it = cnt.entrySet().iterator(); it.hasNext(); ) {
+                var e = it.next();
+                row.add(e.getKey());
+                e.setValue(e.getValue() - 1);
+                if (e.getValue() == 0)
+                    it.remove();
+            }
+            ans.add(row);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    vector<vector<int>> findMatrix(vector<int> &nums) {
+        unordered_map<int, int> cnt;
+        for (int x: nums) ++cnt[x];
+        vector<vector<int>> ans;
+        while (!cnt.empty()) {
+            vector<int> row;
+            for (auto it = cnt.begin(); it != cnt.end();) {
+                row.push_back(it->first);
+                if (--it->second == 0) it = cnt.erase(it);
+                else ++it;
+            }
+            ans.push_back(row);
+        }
+        return ans;
+    }
+};
+```
+
 ```go [sol1-Go]
 func findMatrix(nums []int) (ans [][]int) {
 	cnt := map[int]int{}
