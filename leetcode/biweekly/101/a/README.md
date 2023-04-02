@@ -1,6 +1,10 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【双周赛 101】](https://www.bilibili.com/video/BV1Ga4y1M72A/)。
+
+包括位运算的原理介绍。
+
+### 思路
 
 如果 $\textit{nums}_1$ 与 $\textit{nums}_2$ 有交集，那么答案就是交集的最小值。
 

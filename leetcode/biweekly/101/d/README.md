@@ -1,8 +1,16 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【双周赛 101】](https://www.bilibili.com/video/BV1Ga4y1M72A/)。
+
+### 思路
 
 ![b101_t4_cut.png](https://pic.leetcode.cn/1680363054-UnoCDM-b101_t4_cut.png)
+
+### 答疑
+
+**问**：为什么说发现一个已经入队的点，就说明有环？
+
+**答**：这说明到同一个点有两条不同的路径，这两条路径组成了一个环。
 
 ```py [sol1-Python3]
 class Solution:
@@ -158,3 +166,9 @@ func min(a, b int) int { if b < a { return b }; return a }
 
 - 时间复杂度：$O(nm)$，其中 $m$ 为 $\textit{edges}$ 的长度。每次 BFS 需要 $O(m)$ 的时间。
 - 空间复杂度：$O(n+m)$。
+
+### 思考题
+
+如果改成求最大环要怎么做？
+
+极端情况下，这会算出一个哈密顿回路，而它是 NP 完全问题，只能通过爆搜得到。

@@ -28,10 +28,10 @@ $$
 ```py [sol1-Python3]
 class Solution:
     def maximumCostSubstring(self, s: str, chars: str, vals: List[int]) -> int:
-        mapping = dict(zip(chars, vals))
+        mapping = dict(zip(ascii_lowercase, range(1, 27))) | dict(zip(chars, vals))
         ans = f = 0
         for c in s:
-            f = max(f, 0) + mapping.get(c, ord(c) - ord('a') + 1)
+            f = max(f, 0) + mapping[c]
             ans = max(ans, f)
         return ans
 ```
@@ -92,6 +92,19 @@ func maximumCostSubstring(s, chars string, vals []int) (ans int) {
 }
 
 func max(a, b int) int { if a < b { return b }; return a }
+```
+
+Python 也可以写成：
+
+```py
+class Solution:
+    def maximumCostSubstring(self, s: str, chars: str, vals: List[int]) -> int:
+        mapping = dict(zip(chars, vals))
+        ans = f = 0
+        for c in s:
+            f = max(f, 0) + mapping.get(c, ord(c) - ord('a') + 1)
+            ans = max(ans, f)
+        return ans
 ```
 
 ### 复杂度分析
