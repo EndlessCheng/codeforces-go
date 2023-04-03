@@ -27,9 +27,10 @@ https://zhuanlan.zhihu.com/p/553192435
 // LC305 https://leetcode.cn/problems/number-of-islands-ii/
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 数组标记/区间合并相关
-// - LC1851 https://leetcode.cn/problems/minimum-interval-to-include-each-query/
-// - LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
-// - LC2334 https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/
+// - [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/)
+// - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
+// - [2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)
+// - [2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)
 // - https://codeforces.com/problemset/problem/724/D
 // - https://codeforces.com/problemset/problem/827/A
 // - https://codeforces.com/problemset/problem/1157/E
