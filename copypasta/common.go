@@ -34,8 +34,20 @@ LC1371 https://leetcode-cn.com/problems/find-the-longest-substring-containing-vo
 LC1542 https://leetcode-cn.com/problems/find-longest-awesome-substring/
 https://leetcode.cn/problems/find-longest-subarray-lcci/
 
+前后缀分解
+- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
+- [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)
+- [2256. 最小平均差](https://leetcode.cn/problems/minimum-average-difference/)
+- [2483. 商店的最少代价](https://leetcode.cn/problems/minimum-penalty-for-a-shop/)
+- [2420. 找到所有好下标](https://leetcode.cn/problems/find-all-good-indices/)
+- [2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode.cn/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/)
+- [2484. 统计回文子序列数目](https://leetcode.cn/problems/count-palindromic-subsequences/)
+- [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/)
+- [2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/)
+
 巧妙枚举
 https://codeforces.com/problemset/problem/1181/C
+https://codeforces.com/problemset/problem/1626/D
 
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
@@ -74,8 +86,14 @@ https://atcoder.jp/contests/abc178/tasks/abc178_f
 不变量（想一想，操作不会改变什么）
 https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
+https://codeforces.com/problemset/problem/1365/F 仍然对称
+
+不变量 2（总和）
+把一个环形数组切两刀，分成两段，要求相等，求方案数 => 和为 sum(a)/2 的子数组个数
+LC494 https://leetcode.cn/problems/target-sum/
 
 分类讨论
+https://codeforces.com/problemset/problem/382/C
 https://codeforces.com/problemset/problem/1095/E
 https://codeforces.com/problemset/problem/796/C
 
@@ -87,6 +105,10 @@ https://codeforces.com/contest/1374/problem/E2
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
 https://codeforces.com/problemset/problem/521/D
+
+= 变成 <= 或者 >=
+求前缀和/后缀和
+https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
 */
 
 // 异类双变量：固定某变量统计另一变量的 [0,n)
@@ -570,15 +592,16 @@ func _() {
 
 	// 前缀和
 	prefixSum := func(a []int) {
-		//sort.Ints(a)
+		//sort.Ints(a) // todo
 
 		sum := make([]int, len(a)+1) // int64
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
 
-		// 返回 sum(abs(a[i]-target))
-		// 为方便二分，需要保证 a 是有序的
+		// 返回所有数到 target 的距离之和，即 sum(abs(a[i]-target))
+		// 需要保证 a 是有序的
+		// LC2602 https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/
 		distanceSum := func(target int) int {
 			i := sort.SearchInts(a, target)
 			left := target*i - sum[i]
