@@ -66,6 +66,7 @@
 ||[188. 买卖股票的最佳时机 IV](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/)|[代码](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/solution/shi-pin-jiao-ni-yi-bu-bu-si-kao-dong-tai-kksg/)|变形：恰好/至少|
 |[区间 DP](https://www.bilibili.com/video/BV1ho4y1W7QK/)|[516. 最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/)|[代码](https://leetcode.cn/problems/longest-palindromic-subsequence/solution/shi-pin-jiao-ni-yi-bu-bu-si-kao-dong-tai-kgkg/)|包含空间优化|
 ||[1039. 多边形三角剖分的最低得分](https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/)|[代码](https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/solution/shi-pin-jiao-ni-yi-bu-bu-si-kao-dong-tai-aty6/)||
+||[1000. 合并石头的最低成本](https://leetcode.cn/problems/minimum-cost-to-merge-stones/)|[代码](https://leetcode.cn/problems/minimum-cost-to-merge-stones/solution/tu-jie-qu-jian-dpzhuang-tai-she-ji-yu-yo-ppv0/)|*课后作业|
 
 ---
 
