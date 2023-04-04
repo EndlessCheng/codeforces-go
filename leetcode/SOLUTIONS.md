@@ -4,8 +4,6 @@
 
 相同知识点的题目，按照 [难度分](https://zerotrac.github.io/leetcode_problem_rating/) 排序。
 
-附：[视频合集·基础算法精讲·高频面试题](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)
-
 |知识点|题目|题解|难度分|
 |---|---|---|---|
 |双指针|[795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/)|[【图解】一次遍历+简洁写法](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/solution/tu-jie-yi-ci-bian-li-jian-ji-xie-fa-pyth-n75l/)|1817|
@@ -52,3 +50,5 @@
 ||[1210. 穿过迷宫的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/)|[【诗】还在 if-else？一个循环处理六种移动！](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/solution/huan-zai-if-elseyi-ge-xun-huan-chu-li-li-tw8b/)|2022|
 ||[882. 细分图中的可到达节点](https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/)|[【图解】转换成单源最短路问题](https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/solution/tu-jie-zhuan-huan-cheng-dan-yuan-zui-dua-6l8o/)|2328|
 |基环树|[2127. 参加会议的最多员工数](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/)|[【图解】内向基环树：拓扑排序 + 分类讨论](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)|2449|
+
+附：[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
