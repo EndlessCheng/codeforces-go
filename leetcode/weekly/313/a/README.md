@@ -1,6 +1,8 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，[欢迎关注](https://space.bilibili.com/206214/dynamic)~
+### 视频讲解
 
----
+为什么只需要枚举到 $\sqrt{g}$？见[【周赛 313】](https://www.bilibili.com/video/BV1kd4y1q7fC)。
+
+### 思路
 
 枚举因子，挨个判断能否整除 $a$ 和 $b$。
 
@@ -13,11 +15,51 @@ class Solution:
         ans, i = 0, 1
         while i * i <= g:
             if g % i == 0:
-                ans += 1
+                ans += 1  # i 是公因子
                 if i * i < g:
-                    ans += 1
+                    ans += 1  # g/i 是公因子
             i += 1
         return ans
+```
+
+```java [sol1-Java]
+class Solution {
+    public int commonFactors(int a, int b) {
+        int ans = 0, g = gcd(a, b);
+        for (int i = 1; i * i <= g; ++i)
+            if (g % i == 0) {
+                ++ans; // i 是公因子
+                if (i * i < g)
+                    ++ans; // g/i 是公因子
+            }
+        return ans;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    int commonFactors(int a, int b) {
+        int ans = 0, g = gcd(a, b);
+        for (int i = 1; i * i <= g; ++i)
+            if (g % i == 0) {
+                ++ans; // i 是公因子
+                if (i * i < g)
+                    ++ans; // g/i 是公因子
+            }
+        return ans;
+    }
+};
 ```
 
 ```go [sol1-Go]
@@ -25,9 +67,9 @@ func commonFactors(a, b int) (ans int) {
 	g := gcd(a, b)
 	for i := 1; i*i <= g; i++ {
 		if g%i == 0 {
-			ans++
+			ans++ // i 是公因子
 			if i*i < g {
-				ans++
+				ans++ // g/i 是公因子
 			}
 		}
 	}
