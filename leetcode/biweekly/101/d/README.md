@@ -21,6 +21,7 @@ class Solution:
             g[y].append(x)  # 建图
 
         def bfs(start: int) -> int:
+            ans = inf
             dis = [-1] * n  # dis[i] 表示从 start 到 i 的最短路长度
             dis[start] = 0
             q = deque([(start, -1)])
@@ -31,9 +32,8 @@ class Solution:
                         dis[y] = dis[x] + 1
                         q.append((y, x))
                     elif y != fa:  # 第二次遇到
-                        # 由于是 BFS，后面不会遇到更短的环，直接返回
-                        return dis[x] + dis[y] + 1
-            return inf  # 该连通块无环
+                        ans = min(ans, dis[x] + dis[y] + 1)
+            return ans
 
         ans = min(bfs(i) for i in range(n))
         return ans if ans < inf else -1
@@ -61,6 +61,7 @@ class Solution {
     }
 
     private int bfs(int start) {
+        int ans = Integer.MAX_VALUE;
         Arrays.fill(dis, -1);
         dis[start] = 0;
         var q = new ArrayDeque<int[]>();
@@ -73,10 +74,9 @@ class Solution {
                     dis[y] = dis[x] + 1;
                     q.add(new int[]{y, x});
                 } else if (y != fa) // 第二次遇到
-                    // 由于是 BFS，后面不会遇到更短的环了
-                    return dis[x] + dis[y] + 1;
+                    ans = Math.min(ans, dis[x] + dis[y] + 1);
         }
-        return Integer.MAX_VALUE; // 该连通块无环
+        return ans;
     }
 }
 ```
@@ -94,6 +94,7 @@ public:
 
         int dis[n]; // dis[i] 表示从 start 到 i 的最短路长度
         auto bfs = [&](int start) -> int {
+            int ans = INT_MAX;
             memset(dis, -1, sizeof(dis));
             dis[start] = 0;
             queue<pair<int, int>> q;
@@ -106,10 +107,9 @@ public:
                         dis[y] = dis[x] + 1;
                         q.emplace(y, x);
                     } else if (y != fa) // 第二次遇到
-                        // 由于是 BFS，后面不会遇到更短的环了
-                        return dis[x] + dis[y] + 1;
+                        ans = min(ans, dis[x] + dis[y] + 1);
             }
-            return INT_MAX; // 该连通块无环
+            return ans;
         };
         int ans = INT_MAX;
         for (int i = 0; i < n; ++i) // 枚举每个起点跑 BFS
@@ -130,7 +130,6 @@ func findShortestCycle(n int, edges [][]int) int {
 
 	ans := math.MaxInt
 	dis := make([]int, n) // dis[i] 表示从 start 到 i 的最短路长度
-next:
 	for start := 0; start < n; start++ { // 枚举每个起点跑 BFS
 		for j := range dis {
 			dis[j] = -1
@@ -148,7 +147,6 @@ next:
 					q = append(q, pair{y, x})
 				} else if y != fa { // 第二次遇到
 					ans = min(ans, dis[x]+dis[y]+1)
-					continue next // 由于是 BFS，后面不会遇到更短的环了，直接枚举下一个 start
 				}
 			}
 		}

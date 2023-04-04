@@ -13,7 +13,6 @@ func findShortestCycle(n int, edges [][]int) int {
 
 	ans := math.MaxInt
 	dis := make([]int, n) // dis[i] 表示从 start 到 i 的最短路长度
-next:
 	for start := 0; start < n; start++ { // 枚举每个起点跑 BFS
 		for j := range dis {
 			dis[j] = -1
@@ -31,7 +30,6 @@ next:
 					q = append(q, pair{y, x})
 				} else if y != fa { // 第二次遇到
 					ans = min(ans, dis[x]+dis[y]+1)
-					continue next // 由于是 BFS，后面不会遇到更短的环了，直接枚举下一个 start
 				}
 			}
 		}
