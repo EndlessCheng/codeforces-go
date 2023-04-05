@@ -514,6 +514,23 @@ func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int 
 // BFS 应用：求无向无权图最小环长度
 // 好题 https://codeforces.com/problemset/problem/1325/E
 // LC2608 https://leetcode.cn/problems/shortest-cycle-in-a-graph/
+/* 注意不能提前推出（哪怕是遍历完一个找到环的点的所有邻居）
+0 3
+0 5
+3 4
+4 5
+1 9
+1 11
+9 10
+11 10
+2 6
+2 8
+6 7
+8 7
+0 1
+0 2
+1 2
+*/
 func (*graph) shortestCycleBFS(n int, g [][]int, min func(int, int) int) int {
 	const inf int = 1e9
 	ans := inf
