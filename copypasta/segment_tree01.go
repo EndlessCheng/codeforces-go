@@ -3,6 +3,7 @@ package copypasta
 // 0-1 线段树
 // 支持区间翻转比特、单比特加减等
 // 某些情况下可作为 Bitset 的代替品
+// LC2569 https://leetcode.cn/problems/handling-sum-queries-after-update/
 // https://codeforces.com/contest/1705/problem/E
 // https://codeforces.com/problemset/problem/877/E
 type seg01 []struct {
@@ -132,6 +133,20 @@ func (t seg01) next1(o, l int) int {
 		}
 	}
 	return t.next1(o<<1|1, l)
+}
+
+// 返回第 k 个 1 的位置
+// 必须满足 k <= t[1].ones
+// o=1, k>=1
+func (t seg01) kth1(o, k int) int {
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	t.spread(o)
+	if k <= t[o<<1].ones {
+		return t.kth1(o<<1, k)
+	}
+	return t.kth1(o<<1|1, k-t[o<<1].ones)
 }
 
 // 返回最后一个 1 的位置（类似 bits.Len）
