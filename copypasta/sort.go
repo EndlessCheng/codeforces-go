@@ -11,26 +11,35 @@ https://en.algorithmica.org/hpc/data-structures/binary-search/
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-二分查找
+已按照难度分排序
+
+### 二分查找
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 
-二分答案
+### 二分答案
 - [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
+- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/)
 - [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
 - [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
+- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/)
+- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/)
+- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/)
+- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/)
+- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/)
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/)
 - [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
 
-最小化最大值
+### 最小化最大值
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
+- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
 
-最大化最小值
+### 最大化最小值
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
