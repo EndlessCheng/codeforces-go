@@ -17,7 +17,11 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
 todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
-模板题 https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/
+- [面试题 59-II. 队列的最大值](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)（单调队列模板题）
+- [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
+- [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)
+- [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+
 https://leetcode.cn/tag/monotonic-queue/problemset/
 
 单调队列优化 DP

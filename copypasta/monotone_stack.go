@@ -1,6 +1,10 @@
 package copypasta
 
 /* 单调栈 Monotone Stack
+
+【图解单调栈】两种方法，两张图秒懂
+https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/
+
 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
 如何理解：把数组想象成一列山峰，站在 a[i] 的山顶仰望两侧的山峰，是看不到高山背后的矮山的，只能看到一座座更高的山峰
          这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
@@ -12,11 +16,41 @@ package copypasta
 https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
+#### 单调栈
+
+- [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)（单调栈模板题）
+- [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
+- [456. 132 模式](https://leetcode.cn/problems/132-pattern/)
+- [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
+- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)
+- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)
+- [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)
+- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/)
+- [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)
+
+#### 矩形系列
+
+- [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
+- [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
+- [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/)
+
+#### 字典序最小
+
+- [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
+- [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
+- [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/)
+- [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
+
+#### 贡献法
+
+- [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
+- [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
+- [2104. 子数组范围和](https://leetcode.cn/problems/sum-of-subarray-ranges/)
+- [2281. 巫师的总力量和](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
+
 模板题
 https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
-LC496 https://leetcode-cn.com/problems/next-greater-element-i/
-LC503 https://leetcode-cn.com/problems/next-greater-element-ii/
 
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 转换 https://codeforces.com/problemset/problem/280/B

@@ -37,6 +37,7 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 ### 最小化最大值
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
+- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
 
 ### 最大化最小值

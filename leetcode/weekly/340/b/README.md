@@ -6,7 +6,7 @@
 
 按照相同元素分组后再计算。
 
-这里的思路和 [2602. 使数组元素全部相等的最少操作次数（题解）](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/) 是一样的。由于目标位置就是数组中的下标，无需二分。
+这里的思路和 [2602. 使数组元素全部相等的最少操作次数（题解）](https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/solution/yi-tu-miao-dong-pai-xu-qian-zhui-he-er-f-nf55/)是一样的。由于目标位置就是数组中的下标，无需二分。
 
 ```py [sol1-Python3]
 class Solution:
