@@ -13,13 +13,15 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 已按照难度分排序
 
-### 二分查找
+### 二分查找·题单
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 
-### 二分答案
+### 二分答案·题单
+
+#### 二分答案（按照难度分排序）
 - [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
 - [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/)
 - [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
@@ -34,13 +36,13 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
 
-### 最小化最大值
+#### 最小化最大值
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
 - [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
 
-### 最大化最小值
+#### 最大化最小值
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
