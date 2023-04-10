@@ -5,10 +5,11 @@ import "sort"
 // https://space.bilibili.com/206214
 func minimizeMax(nums []int, p int) int {
 	sort.Ints(nums)
-	return sort.Search(1e9, func(mx int) bool {
+	n := len(nums)
+	return sort.Search(nums[n-1]-nums[0], func(mx int) bool {
 		cnt := 0
-		for i := 0; i < len(nums)-1; i++ {
-			if nums[i+1]-nums[i] <= mx {
+		for i := 0; i < n-1; i++ {
+			if nums[i+1]-nums[i] <= mx { // 都选
 				cnt++
 				i++
 			}
