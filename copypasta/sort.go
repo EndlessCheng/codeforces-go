@@ -45,6 +45,9 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
 
+#### 最大化中位数
+https://codeforces.com/problemset/problem/1201/C  也可以贪心做
+
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
 3273 https://www.luogu.com.cn/problem/P2884 二分最大值
