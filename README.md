@@ -1,4 +1,4 @@
-# codeforces-go 💭💡🎈
+# 算法竞赛模板库 💭💡🎈
 
 ## 算法 Algorithm
 
