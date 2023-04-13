@@ -30,9 +30,11 @@ import (
 题目已经分类整理好：试试搜索「线性」「最大子段和」等。
 
 如何设计状态
+http://codeforces.com/problemset/problem/14/E
 https://codeforces.com/problemset/problem/360/B
 https://codeforces.com/problemset/problem/461/B
 https://codeforces.com/problemset/problem/553/A
+https://codeforces.com/problemset/problem/571/B
 https://codeforces.com/problemset/problem/687/C
 https://codeforces.com/problemset/problem/744/C
 https://codeforces.com/problemset/problem/1012/C
@@ -67,6 +69,7 @@ https://codeforces.com/problemset/problem/520/E
 https://codeforces.com/problemset/problem/883/I
 路径计数+推箱子 https://codeforces.com/problemset/problem/1225/E
 找关键元素+状态机DP https://codeforces.com/problemset/problem/623/B
+https://codeforces.com/problemset/problem/1624/E
 
 NOTE: 无后效性是指当前的决策只与过去的结果有关，而与过去的决策无关
 NOTE: 若状态转移不构成 DAG，请尝试建图+BFS，见：
@@ -80,6 +83,9 @@ TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，�
 需要补充额外的状态 https://codeforces.com/problemset/problem/682/D
 
 todo Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
+
+计数 DP
+见 math.go 中的「一些组合问题」
 
 贪心优化 DP
 https://codeforces.com/problemset/problem/864/E
@@ -245,6 +251,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC368 https://leetcode.cn/problems/largest-divisible-subset/
 	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
 	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
+	- 相似题目 https://codeforces.com/problemset/problem/1624/E
 	LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
 	另见 LIS
 
@@ -282,6 +289,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
 	https://codeforces.com/problemset/problem/1168/C
 	https://codeforces.com/problemset/problem/1542/D
+
+	排列型/插入型
+	LC629 https://leetcode.cn/problems/k-inverse-pairs-array/ https://www.luogu.com.cn/problem/P2513
+	https://www.lanqiao.cn/problems/240/learning/
+	https://atcoder.jp/contests/abc282/tasks/abc282_g
 	*/
 
 	// 网格路径问题
@@ -1029,6 +1041,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
 	// 转换 https://leetcode.com/discuss/interview-question/2677093/Snowflake-oror-Tough-OA-question-oror-How-to-solve
 	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2
+	// 状压 LC1125 https://leetcode.cn/problems/smallest-sufficient-team/
+	// 恰好组成 k 的数中能恰好组成哪些数 https://codeforces.com/problemset/problem/687/C
 	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
 	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值
 	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E
@@ -1230,17 +1244,17 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 多重背包 - 未优化
 	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
-	boundedKnapsack := func(values, stocks, weights []int, maxW int) int {
-		n := len(values)
+	boundedKnapsack := func(stocks, values, weights []int, maxW int) int {
+		n := len(stocks)
 		dp := make([][]int, n+1) // int64
 		for i := range dp {
 			dp[i] = make([]int, maxW+1)
 		}
-		for i, vi := range values {
-			si, wi := stocks[i], weights[i]
+		for i, num := range stocks {
+			v, w := values[i], weights[i]
 			for j := range dp[i] {
-				for k := 0; k <= si && k*wi <= j; k++ {
-					dp[i+1][j] = max(dp[i+1][j], dp[i][j-k*wi]+k*vi)
+				for k := 0; k <= num && k*w <= j; k++ {
+					dp[i+1][j] = max(dp[i+1][j], dp[i][j-k*w]+k*v)
 				}
 			}
 		}
@@ -1254,23 +1268,45 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
 	// todo 打印方案
-	boundedKnapsackBinary := func(values, stocks, weights []int, maxW int) int {
+	boundedKnapsackBinary := func(stocks, values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
-		for i, v := range values {
-			num, w := stocks[i], weights[i]
-			for k := 1; num > 0; k <<= 1 {
-				K := min(k, num)
-				for j := maxW; j >= K*w; j-- {
-					dp[j] = max(dp[j], dp[j-K*w]+K*v)
+		for i, num := range stocks {
+			v, w := values[i], weights[i]
+			for k1 := 1; num > 0; k1 <<= 1 {
+				k := min(k1, num)
+				for j := maxW; j >= k*w; j-- {
+					dp[j] = max(dp[j], dp[j-k*w]+k*v)
 				}
-				num -= K
+				num -= k
 			}
 		}
 		return dp[maxW]
 	}
 
 	// 多重背包 - 优化 2 - 单调队列优化
-	// todo 挑战 P340
+	// 参考挑战 p.340
+	boundedKnapsackMonotoneQueue := func(stocks, values, weights []int, maxW int) int {
+		dp := make([]int, maxW+1) // int64
+		for i, num := range stocks {
+			v, w := values[i], weights[i]
+			for a := 0; a < w; a++ {
+				type pair struct{ i, v int }
+				q := []pair{}
+				for j := 0; j*w+a <= maxW; j++ {
+					val := dp[j*w+a] - j*v
+					for len(q) > 0 && q[len(q)-1].v <= val {
+						q = q[:len(q)-1]
+					}
+					q = append(q, pair{j, val})
+					dp[j*w+a] = q[0].v + j*v
+					if q[0].i == j-num {
+						q = q[1:]
+					}
+				}
+			}
+		}
+		return dp[maxW]
+	}
 
 	// 分组背包·每组至多选一个（恰好选一个见后面）
 	// https://www.acwing.com/problem/content/9/
@@ -1372,6 +1408,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC410 https://leetcode.cn/problems/split-array-largest-sum/
 	LC813 https://leetcode.cn/problems/largest-sum-of-averages/
 	LC1278 https://leetcode.cn/problems/palindrome-partitioning-iii/
+	       至多 k 个回文串 https://codeforces.com/problemset/problem/137/D
 	LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
 
 	② 求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
@@ -1392,6 +1429,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	回文消除 https://codeforces.com/problemset/problem/607/B
 	二维区间 DP https://codeforces.com/problemset/problem/1198/D
 	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
+	https://codeforces.com/problemset/problem/149/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
 	     https://codeforces.com/problemset/problem/245/H
@@ -2211,6 +2249,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC2463 https://leetcode.cn/problems/minimum-total-distance-traveled/
 	LC2478 https://leetcode.cn/problems/number-of-beautiful-partitions/
 
+	数论分块优化 DP
+	https://codeforces.com/problemset/problem/1603/C
+
 	动态 DP
 	https://oi-wiki.org/dp/dynamic/
 	线段树维护转移矩阵 https://www.cnblogs.com/Miracevin/p/9124511.html
@@ -2908,7 +2949,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		zeroOneKnapsack, zeroOneKnapsackExactlyFull, zeroOneKnapsackAtLeastFillUp, zeroOneWaysToSum, zeroOneKnapsackLexicographicallySmallestResult, zeroOneKnapsackByValue,
 		unboundedKnapsack, unboundedWaysToSum,
-		boundedKnapsack, boundedKnapsackBinary,
+		boundedKnapsack, boundedKnapsackBinary, boundedKnapsackMonotoneQueue,
 		groupKnapsack, groupKnapsackFill,
 		treeKnapsack,
 
