@@ -1285,21 +1285,25 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 多重背包 - 优化 2 - 单调队列优化
 	// 参考挑战 p.340
+	// 时间复杂度 O(n*maxW)
 	boundedKnapsackMonotoneQueue := func(stocks, values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
 		for i, num := range stocks {
 			v, w := values[i], weights[i]
-			for a := 0; a < w; a++ {
-				type pair struct{ i, v int }
+			for r := 0; r < w; r++ { // 按照 j%w 的结果，分组转移，r 表示 remainder
+				type pair struct{ x, j int }
 				q := []pair{}
-				for j := 0; j*w+a <= maxW; j++ {
-					val := dp[j*w+a] - j*v
-					for len(q) > 0 && q[len(q)-1].v <= val {
+				// 为什么压缩维度了还可以正着枚举？因为转移来源都存到单调队列里面了，正序倒序都可以
+				// 并且这样相比倒着枚举，不需要先往队列里面塞 num 个数据，更加简洁
+				for j := 0; j*w+r <= maxW; j++ {
+					x := dp[j*w+r] - j*v
+					for len(q) > 0 && q[len(q)-1].x <= x {
 						q = q[:len(q)-1]
 					}
-					q = append(q, pair{j, val})
-					dp[j*w+a] = q[0].v + j*v
-					if q[0].i == j-num {
+					q = append(q, pair{x, j})
+					// 本质是查表法，q[0].val 就表示 dp[(j-1)*w+r]-(j-1)*v, dp[(j-2)*w+r]-(j-2)*v, …… 这些转移来源的最大值
+					dp[j*w+r] = q[0].x + j*v // 把物品个数视作两个 j 的差（前缀和思想）
+					if j-q[0].j == num {     // 至多选 num 个物品
 						q = q[1:]
 					}
 				}
