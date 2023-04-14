@@ -70,6 +70,7 @@
 |[树形 DP - 直径系列](https://www.bilibili.com/video/BV17o4y187h1/)|[543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/)|[代码](https://leetcode.cn/problems/diameter-of-binary-tree/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-taqma/)||
 ||[124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)|[代码](https://leetcode.cn/problems/binary-tree-maximum-path-sum/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-n9s91/)||
 ||[2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)|[代码](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/solution/by-endlesscheng-92fw/)||
+||[687. 最长同值路径](https://leetcode.cn/problems/longest-univalue-path/)|[代码](https://leetcode.cn/problems/longest-univalue-path/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-524j4/)|*课后作业|
 ||[1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/)|[代码](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/solution/tu-jie-on3-mei-ju-zhi-jing-duan-dian-che-am2n/)|*课后作业|
 ||[2539. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)|[代码](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/solution/by-endlesscheng-5l70/)|*课后作业|
 
