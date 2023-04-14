@@ -46,13 +46,17 @@ o:
 			Fprintln(out, "NO")
 		} else {
 			has := make([]bool, 1<<k2)
+			mask := 1<<(k2-1) - 1
 			c1 := strings.Count(s[:left-1], "1")
+			v, _ := strconv.ParseUint(s[left:left+k2-1], 2, 64)
+			x := int(v)
 			for i := left - 1; i+k2 < n; i++ {
 				c1 += int(s[i] & 1)
+				x = x<<1 | int(s[i+k2]&1)
 				if c1 == left {
-					v, _ := strconv.ParseUint(s[i+1:i+k2+1], 2, 64)
-					has[v] = true
+					has[x] = true
 				}
+				x &= mask
 				c1 -= int(s[i-left+1] & 1)
 			}
 			for i := 1<<k2 - 1; ; i-- {
