@@ -53,7 +53,7 @@ func TestGenLeetCodeSeasonTests(t *testing.T) {
 	const season = SeasonSpring
 	const solo = true
 
-	dir := "../../../leetcode2/season/" + year + season + "/"
+	dir := "../../../leetcode/season/" + year + season + "/"
 	if !solo {
 		dir += "2"
 	}
