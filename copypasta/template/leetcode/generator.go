@@ -596,10 +596,11 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 				fmt.Fprintln(os.Stderr, err)
 			}
 
-			customFuncContent := "\t\n\treturn"
+			customFuncContent := "\t\n" // 空换行
 			if p.needMod {
-				customFuncContent = "\t\n\t\n\t\n\tans = (ans%mod + mod) % mod\n\treturn"
+				customFuncContent += "\t\n\t\n\tans = (ans%mod + mod) % mod\n"
 			}
+			customFuncContent += "\treturn" // 补上 return
 
 			p.defaultCode = modifyDefaultCode(p.defaultCode, p.funcLos, []modifyLineFunc{
 				toGolangReceiverName,
