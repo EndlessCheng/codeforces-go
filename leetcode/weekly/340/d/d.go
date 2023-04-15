@@ -29,20 +29,20 @@ func minimumVisitedCells(grid [][]int) (mn int) {
 				if k < len(st2) {
 					mn = min(mn, st2[k].x)
 				}
-			} else {
-				continue
 			}
 
-			mn++ // 加上 (i,j) 这个格子
-			// 插入单调栈
-			for len(st) > 0 && mn <= st[len(st)-1].x {
-				st = st[:len(st)-1]
+			if mn < math.MaxInt {
+				mn++ // 加上 (i,j) 这个格子
+				// 插入单调栈
+				for len(st) > 0 && mn <= st[len(st)-1].x {
+					st = st[:len(st)-1]
+				}
+				st = append(st, pair{mn, j})
+				for len(st2) > 0 && mn <= st2[len(st2)-1].x {
+					st2 = st2[:len(st2)-1]
+				}
+				colSt[j] = append(st2, pair{mn, i})
 			}
-			st = append(st, pair{mn, j})
-			for len(st2) > 0 && mn <= st2[len(st2)-1].x {
-				st2 = st2[:len(st2)-1]
-			}
-			colSt[j] = append(st2, pair{mn, i})
 		}
 	}
 	// 最后一个算出的 mn 就是 f[0][0]
