@@ -28,6 +28,36 @@ https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR
 // namespace
 type tree struct{}
 
+// https://codeforces.com/contest/342/problem/E
+func (*tree) bfsMultiSources(g [][]int, starts []int) {
+	dis := make([]int, len(g))
+	for i := range dis {
+		dis[i] = 1e9
+	}
+	type pair struct{ v, fa int }
+	q := []pair{}
+	for _, v := range starts {
+		q = append(q, pair{v, -1})
+	}
+	bfs := func(q []pair) {
+		for _, p := range q {
+			dis[p.v] = 0
+		}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			v := p.v
+			for _, w := range g[v] {
+				if w != p.fa && dis[v]+1 < dis[w] {
+					dis[w] = dis[v] + 1
+					q = append(q, pair{w, v})
+				}
+			}
+		}
+	}
+	bfs(q)
+}
+
 // DFS: 树上两点路径
 func (*tree) path(st, end int, g [][]int) (path []int) {
 	var f func(v, fa int) bool
@@ -653,8 +683,9 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root int, upp
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
+//
 // 模板题 https://www.luogu.com.cn/problem/P3379
-// https://codeforces.com/problemset/problem/519/E
+// 到两点距离相同的点的数量 https://codeforces.com/problemset/problem/519/E
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
 // https://codeforces.com/problemset/problem/33/D
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
@@ -731,7 +762,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 		}
 		return pa[v][0]
 	}
-	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]<<1 }
+	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]*2 }
 
 	// EXTRA: 输入 u 和 v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
 	down := func(u, v int) int {
@@ -835,12 +866,13 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大的情形
 // https://oi-wiki.org/graph/lca/#rmq
-func (*tree) lcaRMQ(n, root int, g [][]int) {
-	vs := make([]int, 0, 2*n-1)  // 欧拉序列
-	pos := make([]int, n)        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
-	dep := make([]int, 0, 2*n-1) // 深度序列，和欧拉序列一一对应
-	disRoot := make([]int, n)    // disRoot[v] 表示 v 到 root 的距离
-	var build func(v, p, d int)  // 若有边权需额外传参 dis
+// https://codeforces.com/problemset/problem/342/E
+func (*tree) lcaRMQ(root int, g [][]int) {
+	vs := make([]int, 0, 2*len(g)-1)  // 欧拉序列
+	pos := make([]int, len(g))        // pos[v] 表示 v 在 vs 中第一次出现的位置编号
+	dep := make([]int, 0, 2*len(g)-1) // 深度序列，和欧拉序列一一对应
+	disRoot := make([]int, len(g))    // disRoot[v] 表示 v 到 root 的距离
+	var build func(v, p, d int)       // 若有边权需额外传参 dis
 	build = func(v, p, d int) {
 		pos[v] = len(vs)
 		vs = append(vs, v)
@@ -855,14 +887,14 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 		}
 	}
 	build(root, -1, 0)
-	type pair struct{ v, i int }
-	const mx = 17 // bits.Len(最大节点数)
-	var st [][mx]pair
+	type stPair struct{ v, i int }
+	const mx = 17 + 1 // bits.Len(len(dep))
+	var st [][mx]stPair
 	stInit := func(a []int) {
 		n := len(a)
-		st = make([][mx]pair, n)
+		st = make([][mx]stPair, n)
 		for i, v := range a {
-			st[i][0] = pair{v, i}
+			st[i][0] = stPair{v, i}
 		}
 		for j := 1; 1<<j <= n; j++ {
 			for i := 0; i+1<<j <= n; i++ {
@@ -897,8 +929,9 @@ func (*tree) lcaRMQ(n, root int, g [][]int) {
 }
 
 // 最近公共祖先 · 其三 · Tarjan 离线算法
-// 时间和空间复杂度均为 O(n+q)
-// 虽然用了并查集但是由于数据的特殊性，操作的均摊结果是 O(1) 的，见 https://core.ac.uk/download/pdf/82125836.pdf
+// 时间复杂度 O(n+qα)
+// 原论文 https://dl.acm.org/doi/pdf/10.1145/800061.808753
+// https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
 // 扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
@@ -972,12 +1005,17 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 
 // LCA 应用：树上差分
 // 操作为更新 v-w 路径上的点权或边权（初始为 0）
-// 点权时 diff[lca] -= val
+// 点权时 diff[lca] -= val   diff[fa[lca]] -= val
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
+// https://zhuanlan.zhihu.com/p/61299306
 // todo https://loj.ac/d/1698
+// 模板题（点权） https://www.luogu.com.cn/problem/P3128
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
+// todo https://www.luogu.com.cn/problem/P2680
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
+	var fas []int // fas[v] 表示 v 的父节点
+
 	_lca := func(v, w int) (_ int) { return }
 
 	diff := make([]int, n)
@@ -986,6 +1024,9 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 		diff[v] += val
 		diff[w] += val
 		diff[lca] -= val // 点权
+		if f := fas[lca]; f >= 0 {
+			diff[f] -= val // 点权
+		}
 		//diff[lca] -= 2 * val // 边权
 	}
 	var q int
@@ -1411,7 +1452,7 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 // https://oeis.org/A000272 Cayley's formula https://en.wikipedia.org/wiki/Cayley%27s_formula
 // https://www.luogu.com.cn/problem/P6086
 // todo 光之大陆 https://www.acwing.com/problem/content/2420/
-func (tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为根时的每个节点的父节点
+func (*tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为根时的每个节点的父节点
 	deg := make([]int, n+1)
 	for i := 1; i < n; i++ {
 		deg[pa[i]]++
@@ -1433,7 +1474,7 @@ func (tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为�
 	return prufer
 }
 
-func (tree) pruferToTree(n int, prufer []int) []int {
+func (*tree) pruferToTree(n int, prufer []int) []int {
 	deg := make([]int, n+1)
 	for _, p := range prufer {
 		deg[p]++
