@@ -1209,11 +1209,11 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 // 另一种 Dijkstra 写法
 // 适用于稠密图 O(n^2)
 // 建模 https://codeforces.com/contest/1528/problem/D
-func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dis []int64) {
+func (*graph) shortestPathDijkstra2(g [][]int64, st int) []int64 {
 	n := len(g)
 
 	const inf int64 = 1e18 // 1e9+1
-	dis = make([]int64, n)
+	dis := make([]int64, n)
 	for i := range dis {
 		dis[i] = inf
 	}
@@ -1227,7 +1227,7 @@ func (*graph) shortestPathDijkstra2(g [][]int64, st int) (dis []int64) {
 			}
 		}
 		if v < 0 {
-			return
+			return dis
 		}
 		vis[v] = true
 		for w, wt := range g[v] {
@@ -1380,6 +1380,27 @@ func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][
 			}
 		}
 	}
+
+	// 动态加边
+	// LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+	for i := range dis {
+		// 注意 from=i 或者 to=j 时，下面的 dis[i][from] 和 dis[to][j] 都需要 dis[i][i] 这样的值
+		// 所以初始化成 0 方便计算
+		dis[i][i] = 0
+	}
+	addEdge := func(from, to int, wt int) { // wt int64
+		// 无法让任何最短路变短
+		if wt >= dis[from][to] {
+			return
+		}
+		for i := range dis {
+			for j := range dis {
+				dis[i][j] = min(dis[i][j], dis[i][from]+wt+dis[to][j])
+			}
+		}
+	}
+	_ = addEdge
+
 	return dis
 }
 
@@ -2613,6 +2634,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 //        https://ac.nowcoder.com/acm/contest/6384/C
 //        https://www.luogu.com.cn/problem/P3387
 //        https://codeforces.com/problemset/problem/721/C
+// 删点 LC310 https://leetcode.cn/problems/minimum-height-trees/
 // 好题 https://codeforces.com/problemset/problem/915/D
 // 关键点 次关键点 https://codeforces.com/contest/1062/problem/F
 // 混合图拓扑排序+定向 https://codeforces.com/problemset/problem/1385/E
