@@ -923,7 +923,7 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 		}
 		return vs[stQuery(pv, pw+1)]
 	}
-	_d := func(v, w int) int { return disRoot[v] + disRoot[w] - disRoot[_lca(v, w)]<<1 }
+	_d := func(v, w int) int { return disRoot[v] + disRoot[w] - disRoot[_lca(v, w)]*2 }
 
 	_ = _d
 }
@@ -935,6 +935,7 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
 // 扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
+// LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
@@ -955,76 +956,90 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		Fscan(in, &v, &w)
 		v--
 		w--
+
+		// 第一种写法：保证在 v=w 时恰好只更新一个（结合下面的 if w := q.w; w == v || ... 理解）
+		qs[v] = append(qs[v], query{w, i})
 		if v != w {
-			qs[v] = append(qs[v], query{w, i})
 			qs[w] = append(qs[w], query{v, i})
-		} else {
-			// do v==w...
-			lca[i] = v
-			dis[i] = 0
 		}
+
+		// 第二种写法：单独处理 v==w 的情况
+		//if v != w {
+		//	qs[v] = append(qs[v], query{w, i})
+		//	qs[w] = append(qs[w], query{v, i})
+		//} else {
+		//	// do v==w...
+		//	lca[i] = v
+		//	dis[i] = 0
+		//}
 	}
 
-	pa := make([]int, n)
-	for i := range pa {
-		pa[i] = i
+	_fa := make([]int, n)
+	for i := range _fa {
+		_fa[i] = i
 	}
 	var find func(int) int
 	find = func(x int) int {
-		if pa[x] != x {
-			pa[x] = find(pa[x])
+		if _fa[x] != x {
+			_fa[x] = find(_fa[x])
 		}
-		return pa[x]
+		return _fa[x]
 	}
 
 	dep := make([]int, n)
 	color := make([]int8, n)
-	var _f func(v, d int)
-	_f = func(v, d int) {
+	var tarjan func(v, d int)
+	tarjan = func(v, d int) {
 		dep[v] = d
 		color[v] = 1
 		for _, w := range g[v] {
 			if color[w] == 0 {
-				_f(w, d+1)
-				pa[w] = v
+				tarjan(w, d+1)
+				_fa[w] = v // 相当于把 w 的子树节点全部 merge 到 v
 			}
 		}
 		for _, q := range qs[v] {
-			if w := q.w; color[w] == 2 {
+			w := q.w
+			// color[w] == 2 意味着 y 所在子树已经遍历完
+			// 也就意味着 w 已经 merge 到它和 v 的 LCA 上了
+			if w == v || color[w] == 2 {
 				// do(v, w, lcaVW)...
 				lcaVW := find(w)
 				lca[q.i] = lcaVW
-				dis[q.i] = dep[v] + dep[w] - dep[lcaVW]<<1
+				dis[q.i] = dep[v] + dep[w] - dep[lcaVW]*2
 			}
 		}
 		color[v] = 2
 	}
-	_f(root, 0)
+	tarjan(root, 0)
 	return lca
 }
 
 // LCA 应用：树上差分
 // 操作为更新 v-w 路径上的点权或边权（初始为 0）
-// 点权时 diff[lca] -= val   diff[fa[lca]] -= val
+// 点权时 diff[lca] -= val 且 diff[father[lca]] -= val
+//    把 x-lca-y 看成 x-lca'-lca-y，这里 lca' 是 lca 的儿子，
+//    那么 x-lca' 就对应着 diff[x] += val 且 diff[lca] -= val
+//    lca-y 就对应着 diff[y] += val 且 diff[father[lca]] -= val
 // 边权时 diff[lca] -= 2 * val（定义 diff 为点到父亲的差分值）
 // https://www.luogu.com.cn/blog/RPdreamer/ci-fen-and-shu-shang-ci-fen
 // https://zhuanlan.zhihu.com/p/61299306
 // todo https://loj.ac/d/1698
-// 模板题（点权） https://www.luogu.com.cn/problem/P3128
+// 模板题（点权）https://www.luogu.com.cn/problem/P3128 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 // todo https://www.luogu.com.cn/problem/P2680
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
-	var fas []int // fas[v] 表示 v 的父节点
+	var father []int // father[v] 表示 v 的父节点
 
 	_lca := func(v, w int) (_ int) { return }
 
 	diff := make([]int, n)
 	update := func(v, w int, val int) {
-		lca := _lca(v, w)
 		diff[v] += val
 		diff[w] += val
+		lca := _lca(v, w)
 		diff[lca] -= val // 点权
-		if f := fas[lca]; f >= 0 {
+		if f := father[lca]; f >= 0 {
 			diff[f] -= val // 点权
 		}
 		//diff[lca] -= 2 * val // 边权
