@@ -29,18 +29,13 @@ class Graph:
     def addEdge(self, e: List[int]) -> None:
         self.g[e[0]][e[1]] = e[2]  # 添加一条边（输入保证这条边之前不存在）
 
-    def shortestPath(self, node1: int, node2: int) -> int:
-        ans = self._dijkstra(node1)[node2]
-        return ans if ans < inf else -1
-
-    # Dijkstra 算法的邻接矩阵版本
-    # 返回从 start 出发，到各个点的最短路，如果不存在则为无穷大
-    def _dijkstra(self, start: int) -> List[int]:
+    # 朴素 Dijkstra 算法
+    def shortestPath(self, start: int, end: int) -> int:
         n = len(self.g)
-        dis = [inf] * n
+        dis = [inf] * n  # 从 start 出发，到各个点的最短路，如果不存在则为无穷大
         dis[start] = 0
         vis = [False] * n
-        while True:
+        while True:  # 至多循环 n 次
             # 找到当前最短路，去更新它的邻居的最短路
             # 根据数学归纳法，dis[x] 一定是最短路长度
             x = -1
@@ -48,7 +43,9 @@ class Graph:
                 if not b and (x < 0 or d < dis[x]):
                     x = i
             if x < 0 or dis[x] == inf:  # 所有从 start 能到达的点都被更新了
-                return dis
+                return -1
+            if x == end:  # 找到终点，提前退出
+                return dis[x]
             vis[x] = True  # 标记，在后续的循环中无需反复更新 x 到其余点的最短路长度
             for y, w in enumerate(self.g[x]):
                 if dis[x] + w < dis[y]:
@@ -57,12 +54,14 @@ class Graph:
 
 ```java [sol1-Java]
 class Graph {
+    private static final int INF = Integer.MAX_VALUE / 2; // 防止更新最短路时加法溢出
+
     private int[][] g;
 
     public Graph(int n, int[][] edges) {
         g = new int[n][n]; // 邻接矩阵（初始化为无穷大，表示 i 到 j 没有边）
         for (int i = 0; i < n; ++i)
-            Arrays.fill(g[i], Integer.MAX_VALUE);
+            Arrays.fill(g[i], INF);
         for (var e : edges)
             g[e[0]][e[1]] = e[2]; // 添加一条边（输入保证没有重边）
     }
@@ -71,11 +70,11 @@ class Graph {
         g[e[0]][e[1]] = e[2]; // 添加一条边（输入保证这条边之前不存在）
     }
 
-    // Dijkstra 算法的邻接矩阵版本
+    // 朴素 Dijkstra 算法
     public int shortestPath(int start, int end) {
         int n = g.length;
-        var dis = new int[n];
-        Arrays.fill(dis, Integer.MAX_VALUE);
+        var dis = new int[n]; // 从 start 出发，到各个点的最短路，如果不存在则为无穷大
+        Arrays.fill(dis, INF);
         dis[start] = 0;
         var vis = new boolean[n];
         for (;;) {
@@ -85,12 +84,13 @@ class Graph {
             for (int i = 0; i < n; ++i)
                 if (!vis[i] && (x < 0 || dis[i] < dis[x]))
                     x = i;
-            if (x < 0 || dis[x] == Integer.MAX_VALUE) // 所有从 start 能到达的点都被更新了
-                return dis[end] < Integer.MAX_VALUE ? dis[end] : -1;
+            if (x < 0 || dis[x] == INF) // 所有从 start 能到达的点都被更新了
+                return -1;
+            if (x == end) // 找到终点，提前退出
+                return dis[x];
             vis[x] = true; // 标记，在后续的循环中无需反复更新 x 到其余点的最短路长度
             for (int y = 0; y < n; ++y)
-                if (g[x][y] < Integer.MAX_VALUE && dis[x] + g[x][y] < dis[y])
-                    dis[y] = dis[x] + g[x][y]; // 更新最短路长度
+                dis[y] = Math.min(dis[y], dis[x] + g[x][y]); // 更新最短路长度
         }
     }
 }
@@ -102,7 +102,7 @@ class Graph {
 public:
     Graph(int n, vector<vector<int>> &edges) {
         // 邻接矩阵（初始化为无穷大，表示 i 到 j 没有边）
-        g = vector<vector<int>>(n, vector<int>(n, INT_MAX));
+        g = vector<vector<int>>(n, vector<int>(n, INT_MAX / 2));
         for (auto &e: edges)
             g[e[0]][e[1]] = e[2]; // 添加一条边（输入保证没有重边）
     }
@@ -111,10 +111,10 @@ public:
         g[e[0]][e[1]] = e[2]; // 添加一条边（输入保证这条边之前不存在）
     }
 
-    // Dijkstra 算法的邻接矩阵版本
+    // 朴素 Dijkstra 算法
     int shortestPath(int start, int end) {
         int n = g.size();
-        vector<int> dis(n, INT_MAX), vis(n);
+        vector<int> dis(n, INT_MAX / 2), vis(n);
         dis[start] = 0;
         for (;;) {
             // 找到当前最短路，去更新它的邻居的最短路
@@ -123,18 +123,21 @@ public:
             for (int i = 0; i < n; ++i)
                 if (!vis[i] && (x < 0 || dis[i] < dis[x]))
                     x = i;
-            if (x < 0 || dis[x] == INT_MAX) // 所有从 start 能到达的点都被更新了
-                return dis[end] < INT_MAX ? dis[end] : -1;
+            if (x < 0 || dis[x] == INT_MAX / 2) // 所有从 start 能到达的点都被更新了
+                return -1;
+            if (x == end) // 找到终点，提前退出
+                return dis[x];
             vis[x] = true; // 标记，在后续的循环中无需反复更新 x 到其余点的最短路长度
             for (int y = 0; y < n; ++y)
-                if (g[x][y] < INT_MAX && dis[x] + g[x][y] < dis[y])
-                    dis[y] = dis[x] + g[x][y]; // 更新最短路长度
+                dis[y] = min(dis[y], dis[x] + g[x][y]); // 更新最短路长度
         }
     }
 };
 ```
 
 ```go [sol1-Go]
+const inf = math.MaxInt / 2 // 防止更新最短路时加法溢出
+
 type Graph [][]int
 
 func Constructor(n int, edges [][]int) Graph {
@@ -142,7 +145,7 @@ func Constructor(n int, edges [][]int) Graph {
 	for i := range g {
 		g[i] = make([]int, n)
 		for j := range g[i] {
-			g[i][j] = math.MaxInt // 初始化为无穷大，表示 i 到 j 没有边
+			g[i][j] = inf // 初始化为无穷大，表示 i 到 j 没有边
 		}
 	}
 	for _, e := range edges {
@@ -155,26 +158,17 @@ func (g Graph) AddEdge(e []int) {
 	g[e[0]][e[1]] = e[2] // 添加一条边（输入保证这条边之前不存在）
 }
 
-func (g Graph) ShortestPath(node1, node2 int) int {
-	ans := g.dijkstra(node1)[node2]
-	if ans < math.MaxInt {
-		return ans
-	}
-	return -1
-}
-
-// Dijkstra 算法的邻接矩阵版本
-// 返回从 start 出发，到各个点的最短路，如果不存在则为无穷大
-func (g Graph) dijkstra(start int) []int {
+// 朴素 Dijkstra 算法
+func (g Graph) ShortestPath(start, end int) int {
 	n := len(g)
-	dis := make([]int, n)
+	dis := make([]int, n) // 从 start 出发，到各个点的最短路，如果不存在则为无穷大
 	for i := range dis {
-		dis[i] = math.MaxInt
+		dis[i] = inf
 	}
 	dis[start] = 0
 	vis := make([]bool, n)
 	for {
-		// 找到当前最短路，去更新它的邻居的最短路
+		// 找到当前最短路，去更新它的邻居的最短路，
 		// 根据数学归纳法，dis[x] 一定是最短路长度
 		x := -1
 		for i, b := range vis {
@@ -182,17 +176,20 @@ func (g Graph) dijkstra(start int) []int {
 				x = i
 			}
 		}
-		if x < 0 || dis[x] == math.MaxInt { // 所有从 start 能到达的点都被更新了
-			return dis
+		if x < 0 || dis[x] == inf { // 所有从 start 能到达的点都被更新了
+			return -1
+		}
+		if x == end { // 找到终点，提前退出
+			return dis[x]
 		}
 		vis[x] = true // 标记，在后续的循环中无需反复更新 x 到其余点的最短路长度
 		for y, w := range g[x] {
-			if w < math.MaxInt && dis[x]+w < dis[y] {
-				dis[y] = dis[x] + w // 更新最短路长度
-			}
+			dis[y] = min(dis[y], dis[x]+w) // 更新最短路长度
 		}
 	}
 }
+
+func min(a, b int) int { if b < a { return b }; return a }
 ```
 
 ### 复杂度分析
