@@ -5,13 +5,13 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF1444A(in io.Reader, out io.Writer) {
 	max := func(a, b int64) int64 {
-		if a > b {
-			return a
+		if b > a {
+			return b
 		}
-		return b
+		return a
 	}
 	var T, p, q int64
 	for Fscan(in, &T); T > 0; T-- {
@@ -22,24 +22,22 @@ func CF1444A(in io.Reader, out io.Writer) {
 		}
 		ans := int64(0)
 		for i := int64(2); i*i <= q; i++ {
-			e := 0
-			for ; q%i == 0; q /= i {
-				e++
+			if q%i > 0 {
+				continue
 			}
-			if e > 0 {
-				c := 0
-				for v := p; v%i == 0; v /= i {
-					c++
-				}
-				v := p
-				for ; c >= e; c-- {
-					v /= i
-				}
-				ans = max(ans, v)
+			pp := p
+			for q /= i; q%i == 0; q /= i {
+				pp /= i
 			}
+			x := p
+			for ; pp%i == 0; pp /= i {
+				x /= i
+			}
+			ans = max(ans, x)
 		}
-		if q > 1 && p/q > ans {
-			for ; p%q == 0; p /= q {
+		if q > 1 {
+			for p%q == 0 {
+				p /= q
 			}
 			ans = max(ans, p)
 		}
