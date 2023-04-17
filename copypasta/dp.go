@@ -2404,12 +2404,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 变形 https://codeforces.com/problemset/problem/1238/F
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
-		f = func(v, fa int) (mxDep int) {
+		f = func(v, fa int) (maxL int) {
 			for _, w := range g[v] {
 				if w != fa {
-					dep := f(w, v) + 1
-					diameter = max(diameter, mxDep+dep)
-					mxDep = max(mxDep, dep)
+					subL := f(w, v) + 1
+					diameter = max(diameter, maxL+subL)
+					maxL = max(maxL, subL)
 				}
 			}
 			return
@@ -2595,7 +2595,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 每个点有选和不选两种决策，接受子树转移时，选的决策只能加上不选子树，而不选的决策可以加上 max{不选子树, 选子树}
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
-	// 经典题：没有上司的舞会 https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
+	// 经典题：没有上司的舞会 LC337 https://leetcode.cn/problems/house-robber-iii/ https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
+	// 变形 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661
 	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
