@@ -22,6 +22,7 @@
 |单调队列|[862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)|[【图解】两张图秒懂单调队列](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/)|2307|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
 ||[790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)|[【图解】找不到规律？请看图！](https://leetcode.cn/problems/domino-and-tromino-tiling/solution/by-endlesscheng-umpp/)|1830|
+||[1043. 分隔数组以得到最大和](https://leetcode.cn/problems/partition-array-for-maximum-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/partition-array-for-maximum-sum/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-rq5i/)|1916|
 ||[1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)|[【输出具体方案】从递归到递推，教你一步步思考动态规划！](https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/)|1977|
 ||[940. 不同的子序列 II](https://leetcode.cn/problems/distinct-subsequences-ii/)|[细分问题+复杂度优化](https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/)|1985|
 ||[1223. 掷骰子模拟](https://leetcode.cn/problems/dice-roll-simulation/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/dice-roll-simulation/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-sje6/)|2008|
