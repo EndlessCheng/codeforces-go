@@ -21,23 +21,19 @@ func CF1444A(in io.Reader, out io.Writer) {
 			continue
 		}
 		ans := int64(0)
-		for i := int64(2); i*i <= q; i++ {
+		for i, q0 := int64(2), q; i*i <= q; i++ {
 			if q%i > 0 {
 				continue
 			}
-			pp := p
-			for q /= i; q%i == 0; q /= i {
-				pp /= i
-			}
 			x := p
-			for ; pp%i == 0; pp /= i {
-				x /= i
+			for ; x%q0 == 0; x /= i {
 			}
 			ans = max(ans, x)
+			for q /= i; q%i == 0; q /= i {
+			}
 		}
 		if q > 1 {
-			for p%q == 0 {
-				p /= q
+			for ; p%q == 0; p /= q {
 			}
 			ans = max(ans, p)
 		}
