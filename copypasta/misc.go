@@ -886,7 +886,6 @@ func parseTime(s string) (hour, minute, total int) {
 // - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/)
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/)
-// https://codeforces.com/contest/1630/problem/C
 func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 	sort.Slice(a, func(i, j int) bool { return a[i][0] < a[j][0] }) // 按区间左端点排序
 	l0, maxR := a[0][0], a[0][1]
@@ -908,6 +907,7 @@ func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 // - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
 // - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
 // 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
+// 变形 https://codeforces.com/contest/1630/problem/C
 func minJumpNumbers(a []int, max func(int, int) int) (ans int) {
 	curR := 0 // 已建造的桥的右端点
 	nxtR := 0 // 下一座桥的右端点的最大值
