@@ -883,7 +883,6 @@ func parseTime(s string) (hour, minute, total int) {
 // 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
 // - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 // - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
-// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/)
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/)
 func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
@@ -905,6 +904,7 @@ func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 // 返回从 0 跳到 n-1 的最小跳跃次数
 // 如果无法到达 n-1，返回 -1
 // - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
+// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/)
 // - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
 // 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
 // 变形 https://codeforces.com/contest/1630/problem/C
