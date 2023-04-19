@@ -301,6 +301,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 转换成求部分直径 https://codeforces.com/problemset/problem/1617/E https://oeis.org/A072339
 // 必须边 https://www.luogu.com.cn/problem/P3304 https://www.acwing.com/problem/content/description/391/
 // 求树中任意一个与 x 距离为 k 的点 https://www.luogu.com.cn/problem/T238762?contestId=65460
+// https://codeforces.com/problemset/problem/1404/B
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)
@@ -987,6 +988,11 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 	}
 
 	dep := make([]int, n)
+	// 为什么不用 bool 数组？
+	// 对于下面代码中的 do(v, w, lcaVW)
+	// 如果 v 是 w 的祖先节点，那么 w 递归结束后会触发一次，v 递归结束后又会触发一次
+	// 如果 do 中有增量更新，这样就错了
+	// 而三色标记法可以保证只会触发一次
 	color := make([]int8, n)
 	var tarjan func(v, d int)
 	tarjan = func(v, d int) {
