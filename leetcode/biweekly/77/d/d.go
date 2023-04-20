@@ -15,13 +15,16 @@ func maximumMinutes(grid [][]int) int {
 				time[i][j] = -1
 			}
 		}
-		for t := 0; len(q) > 0; t++ {
+		for _, p := range q {
+			time[p.x][p.y] = 0
+		}
+		for t := 1; len(q) > 0; t++ {
 			tmp := q
 			q = nil
 			for _, p := range tmp {
-				time[p.x][p.y] = t
 				for _, d := range dirs {
 					if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0 {
+						time[x][y] = t
 						q = append(q, pair{x, y})
 					}
 				}

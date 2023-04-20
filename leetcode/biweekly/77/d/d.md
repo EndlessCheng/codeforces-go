@@ -1,4 +1,4 @@
-# 方法一：二分答案 + BFS
+## 方法一：二分答案 + BFS
 
 #### 提示 1
 
@@ -15,11 +15,6 @@
 #### 提示 3
 
 每过一分钟，将人能到达的位置向外扩充一圈，火势也向外蔓延一圈。
-
-#### 复杂度分析
-
-- 时间复杂度：$O(mn\log mn)$。
-- 空间复杂度：$O(mn)$。
 
 ```Python [sol1-Python3]
 class Solution:
@@ -268,7 +263,12 @@ func maximumMinutes(grid [][]int) int {
 }
 ```
 
-# 方法二：两次 BFS
+#### 复杂度分析
+
+- 时间复杂度：$O(mn\log mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$O(mn)$。
+
+## 方法二：两次 BFS
 
 首先通过 BFS 处理出人到每个格子的最短时间 $\textit{manTime}$，以及火到每个格子的最短时间 $\textit{fireTime}$。
 
@@ -284,13 +284,8 @@ func maximumMinutes(grid [][]int) int {
 
 最后还需要细致分析一下：
 
-- 如果火和人是从不同方向到达终点的，那么答案可以是 $\textit{ans}$，即人可以等待 $\textit{ans}$ 时间，最终与火同时到达终点。
+- 如果火和人是从不同方向到达终点的（左侧和上侧），那么答案可以是 $\textit{ans}$，即人可以等待 $\textit{ans}$ 时间，最终与火同时到达终点。
 - 如果火和人是从同一方向到达终点的，也就意味着火一直跟在人的后面，那么在中途不能出现人火重合的情况，所以答案应该是 $\textit{ans}-1$。
-
-#### 复杂度分析
-
-- 时间复杂度：$O(mn)$。
-- 空间复杂度：$O(mn)$。
 
 ```Python [sol2-Python3]
 class Solution:
@@ -298,14 +293,16 @@ class Solution:
         m, n = len(grid), len(grid[0])
         def bfs(q: List[Tuple[int, int]]) -> (int, int, int):
             time = [[-1] * n for _ in range(m)]
-            t = 0
+            for i, j in q:
+                time[i][j] = 0
+            t = 1
             while q:
                 tmp = q
                 q = []
                 for i, j in tmp:
-                    time[i][j] = t
                     for x, y in (i, j - 1), (i, j + 1), (i - 1, j), (i + 1, j):
                         if 0 <= x < m and 0 <= y < n and grid[x][y] == 0 and time[x][y] < 0:
+                            time[x][y] = t
                             q.append((x, y))
                 t += 1
             return time[-1][-1], time[-1][-2], time[-2][-1]
@@ -323,7 +320,7 @@ class Solution:
 
 ```java [sol2-Java]
 class Solution {
-    static int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    private static final int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     public int maximumMinutes(int[][] grid) {
         var res = bfs(grid, List.of(new int[]{0, 0}));
@@ -338,28 +335,31 @@ class Solution {
         int fireToHouseTime = res[0], f1 = res[1], f2 = res[2];
         if (fireToHouseTime < 0) return (int) 1e9; // 火无法到终点
 
-        var ans = fireToHouseTime - manToHouseTime;
+        int ans = fireToHouseTime - manToHouseTime;
         if (ans < 0) return -1; // 火比人先到终点
         if (m1 < 0 || m2 < 0 || f1 - m1 == ans && f2 - m2 == ans)
             return ans - 1; // 火只会跟在人的后面，在到达终点前，人和火不能重合
         return ans;// 人和火可以同时到终点
     }
 
-    int[] bfs(int[][] grid, List<int[]> q) {
+    private int[] bfs(int[][] grid, List<int[]> q) {
         int m = grid.length, n = grid[0].length;
         var time = new int[m][n];
-        for (var i = 0; i < m; i++) Arrays.fill(time[i], -1);
-        for (var t = 0; q.size() > 0; t++) {
+        for (int i = 0; i < m; i++)
+            Arrays.fill(time[i], -1);
+        for (var p : q)
+            time[p[0]][p[1]] = 0;
+        for (int t = 1; !q.isEmpty(); ++t) {
             var tmp = q;
             q = new ArrayList<>();
-            for (var p : tmp) {
-                time[p[0]][p[1]] = t;
-                for (var d : dirs) {
+            for (var p : tmp)
+                for (var d : DIRS) {
                     int x = p[0] + d[0], y = p[1] + d[1];
-                    if (0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0)
+                    if (0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0) {
+                        time[x][y] = t;
                         q.add(new int[]{x, y});
+                    }
                 }
-            }
         }
         return new int[]{time[m - 1][n - 1], time[m - 1][n - 2], time[m - 2][n - 1]};
     }
@@ -376,14 +376,17 @@ public:
         auto bfs = [&](vector<pair<int, int>> &q) -> tuple<int, int, int> {
             int time[m][n];
             memset(time, -1, sizeof(time));
-            for (int t = 0; !q.empty(); ++t) {
+            for (auto &[i, j] : q)
+                time[i][j] = 0;
+            for (int t = 1; !q.empty(); ++t) {
                 vector<pair<int, int>> nq;
                 for (auto &[i, j] : q) {
-                    time[i][j] = t;
                     for (auto[dx, dy] : dirs) {
                         int x = i + dx, y = j + dy;
-                        if (0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0)
+                        if (0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0) {
+                            time[x][y] = t;
                             nq.emplace_back(x, y);
+                        }
                     }
                 }
                 q = move(nq);
@@ -425,13 +428,16 @@ func maximumMinutes(grid [][]int) int {
 				time[i][j] = -1
 			}
 		}
-		for t := 0; len(q) > 0; t++ {
+		for _, p := range q {
+			time[p.x][p.y] = 0
+		}
+		for t := 1; len(q) > 0; t++ {
 			tmp := q
 			q = nil
 			for _, p := range tmp {
-				time[p.x][p.y] = t
 				for _, d := range dirs {
 					if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 0 && time[x][y] < 0 {
+						time[x][y] = t
 						q = append(q, pair{x, y})
 					}
 				}
@@ -468,3 +474,12 @@ func maximumMinutes(grid [][]int) int {
 	return ans // 人和火可以同时到终点
 }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：$O(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$O(mn)$。
+
+---
+
+欢迎关注[ biIibiIi@灵茶山艾府](https://space.bilibili.com/206214)，高质量算法教学，持续输出中~
