@@ -33,6 +33,7 @@ LC930 https://leetcode-cn.com/problems/binary-subarrays-with-sum/
 LC1371 https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/
 LC1542 https://leetcode-cn.com/problems/find-longest-awesome-substring/
 https://leetcode.cn/problems/find-longest-subarray-lcci/
+https://codeforces.com/problemset/problem/1296/C
 
 前后缀分解
 - [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
@@ -49,6 +50,23 @@ https://leetcode.cn/problems/find-longest-subarray-lcci/
 https://codeforces.com/problemset/problem/1181/C
 https://codeforces.com/problemset/problem/1626/D
 
+贪心及其证明
+- [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/)
+- [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/)
+https://codeforces.com/problemset/problem/1369/C
+	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
+	如果某个前 k 大的数 x 没有作为最大值（其中一个组的最大值是不在前 k 大中的 y），那么把 x 和 y 交换，
+	如果 x 是某个组的最小值，那么交换后 y 必然也是最小值，此时答案不变。
+	如果 x 不是某个组的最小值（这个组的最小值是 z）：
+		   如果 y 交换后变成了最小值，那么答案变大了 x-z。
+		   如果 y 交换后也不是最小值，那么答案变大了 x-y。
+	无论如何，这样交换都不会使答案变小，因此前 k 大的数一定可以作为最大值。
+	提示 2：然后来说最小值。a 的最小值必然要分到某个组中，为了「跳过」尽量多的较小的数，优先把 a 中较小的数分到 w 较大的组中。所以 a 从小到大遍历，w 从大到小遍历。
+
+每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
+https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
+https://codeforces.com/problemset/problem/448/C
+
 邻项交换
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 https://atcoder.jp/contests/arc147/tasks/arc147_b
@@ -59,9 +77,10 @@ https://www.luogu.com.cn/problem/P2887
 https://codeforces.com/problemset/problem/555/B
 https://codeforces.com/problemset/problem/863/E
 
-需要一些观察
+观察、结论
 https://codeforces.com/problemset/problem/1442/A
 https://codeforces.com/problemset/problem/558/C
+https://codeforces.com/problemset/problem/1610/E
 
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/
@@ -93,6 +112,7 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 LC494 https://leetcode.cn/problems/target-sum/
 
 分类讨论
+https://codeforces.com/problemset/problem/1605/C
 https://codeforces.com/problemset/problem/382/C
 https://codeforces.com/problemset/problem/1095/E
 https://codeforces.com/problemset/problem/796/C
@@ -133,6 +153,9 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 // 双指针：如果 left == right 时 while 一定为 false，则可以省略 while 中 left < right 的判断
 // 双序列双指针
 // 背向双指针 LC360 https://leetcode.cn/problems/sort-transformed-array/
+
+// 滑动窗口
+// https://codeforces.com/problemset/problem/165/C
 
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
@@ -810,6 +833,7 @@ func _() {
 	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/
 	// LC2132 https://leetcode-cn.com/problems/stamping-the-grid/（也可以不用差分）
 	// https://www.luogu.com.cn/problem/P3397
+	// LCP74 离散化 https://leetcode.cn/problems/xepqZ5/
 	diff2D := func(n, m int) {
 		diff := make([][]int, n+2)
 		for i := range diff {
@@ -829,27 +853,10 @@ func _() {
 				diff[i][j] += diff[i][j-1] + diff[i-1][j] - diff[i-1][j-1]
 			}
 		}
-		// 保留 n*m 的计数矩阵
+		// 切出中间的 n*m 的原始矩阵
 		diff = diff[1 : n+1]
 		for i, row := range diff {
 			diff[i] = row[1 : m+1]
-		}
-
-		// EXTRA: 还原二维差分矩阵对应的计数矩阵，保留原始 diff
-		{
-			ori := make([][]int, n+1)
-			ori[0] = make([]int, m+1)
-			for i, row := range diff[:n] {
-				ori[i+1] = make([]int, m+1)
-				for j, v := range row[:m] {
-					ori[i+1][j+1] = ori[i+1][j] + ori[i][j+1] - ori[i][j] + v
-				}
-			}
-			// 保留 n*m 的计数矩阵
-			ori = ori[1:]
-			for i, row := range ori {
-				ori[i] = row[1:]
-			}
 		}
 
 		_ = update
