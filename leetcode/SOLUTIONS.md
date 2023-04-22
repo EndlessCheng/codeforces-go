@@ -26,6 +26,7 @@
 ||[1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)|[【输出具体方案】从递归到递推，教你一步步思考动态规划！](https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/)|1977|
 ||[940. 不同的子序列 II](https://leetcode.cn/problems/distinct-subsequences-ii/)|[细分问题+复杂度优化](https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/)|1985|
 ||[1223. 掷骰子模拟](https://leetcode.cn/problems/dice-roll-simulation/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/dice-roll-simulation/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-sje6/)|2008|
+||[1105. 填充书架](https://leetcode.cn/problems/filling-bookcase-shelves/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/filling-bookcase-shelves/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-0vg6/)|2014|
 ||[1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)|[动态规划+二分查找优化](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/solution/dong-tai-gui-hua-er-fen-cha-zhao-you-hua-zkcg/)|2023|
 ||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
 ||[801. 使序列递增的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/)|[考虑相邻元素的大小关系](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/solution/dong-tai-gui-hua-kao-lu-xiang-lin-yuan-s-ni0p/)|2066|
