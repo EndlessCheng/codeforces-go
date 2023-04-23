@@ -9,19 +9,6 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF106C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-
 	var maxW, n, a, b int
 	Fscan(in, &maxW, &n)
 	n++
@@ -36,14 +23,22 @@ func CF106C(_r io.Reader, out io.Writer) {
 	}
 
 	dp := make([]int, maxW+1)
-	for i, v := range values {
-		num, w := stocks[i], weights[i]
-		for k := 1; num > 0; k <<= 1 {
-			K := min(k, num)
-			for j := maxW; j >= K*w; j-- {
-				dp[j] = max(dp[j], dp[j-K*w]+K*v)
+	for i, num := range stocks {
+		v, w := values[i], weights[i]
+		for a := 0; a < w; a++ {
+			type pair struct{ i, v int }
+			q := []pair{}
+			for j := 0; j*w+a <= maxW; j++ {
+				val := dp[j*w+a] - j*v
+				for len(q) > 0 && q[len(q)-1].v <= val {
+					q = q[:len(q)-1]
+				}
+				q = append(q, pair{j, val})
+				dp[j*w+a] = q[0].v + j*v
+				if q[0].i == j-num {
+					q = q[1:]
+				}
 			}
-			num -= K
 		}
 	}
 	Fprint(out, dp[maxW])
