@@ -1270,10 +1270,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 		n/LPF(n)*GPF(n) https://oeis.org/A130064
 	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
 	//
+	// https://codeforces.com/problemset/problem/385/C
+	// https://codeforces.com/gym/103107/problem/F (另一种做法是欧拉筛）
 	lpfAll := func() {
-		// 例题 https://codeforces.com/problemset/problem/385/C
-		// https://codeforces.com/gym/103107/problem/F (另一种做法是欧拉筛）
-
 		const mx int = 1e6
 		lpf := [mx + 1]int{1: 1}
 		for i := 2; i <= mx; i++ {
