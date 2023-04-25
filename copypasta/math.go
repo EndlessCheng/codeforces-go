@@ -149,6 +149,11 @@ https://oeis.org/A244478 a(0)=2, a(1)=0, a(2)=2; thereafter a(n) = a(n-1-a(n-1))
 https://oeis.org/A244479
 LC1140 https://leetcode.cn/problems/stone-game-ii/ 需要记忆化的 M 的上界
 
+Collatz conjecture (3n+1) https://en.wikipedia.org/wiki/Collatz_conjecture
+https://oeis.org/A006577 Number of halving and tripling steps to reach 1 in '3x+1' problem, or -1 if 1 is never reached
+https://oeis.org/A008884 3x+1 sequence starting at 27
+LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -203,6 +208,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	TIPS: 一般 LCM 的题目都需要用 LCM=x*y/GCD 转换成研究 GCD 的性质
 	todo https://atcoder.jp/contests/abc162/tasks/abc162_e
 	     https://atcoder.jp/contests/abc206/tasks/abc206_e
+
+	GCD = 1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
+	见后面的 mu
 
 	a 中任意两数互质 <=> 每个质数至多整除一个 a[i]
 	https://codeforces.com/contest/1770/problem/C
@@ -325,7 +333,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			has[v] = true
 		}
 		for i := 1; i <= mx; i++ {
-			g := 0 // 0 和任何数 x 的最大公约数都是 x
+			g := 0
 			for j := i; j <= mx && g != i; j += i { // 枚举 i 的倍数 j
 				if has[j] { // 如果 j 在 nums 中
 					g = gcd(g, j) // 更新最大公约数
@@ -339,6 +347,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 最简分数
+	// https://codeforces.com/problemset/problem/1468/F
 	type frac struct{ num, den int64 }
 
 	// 如果有负数需要对 g 取绝对值
@@ -832,15 +841,16 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 	factorize := func(x int64) (factors []factor) {
 		for i := int64(2); i*i <= x; i++ {
-			if x%i == 0 {
-				e := 1
-				pe := i
-				for x /= i; x%i == 0; x /= i {
-					e++
-					pe *= i
-				}
-				factors = append(factors, factor{i, e, pe})
+			if x%i > 0 {
+				continue
 			}
+			e := 1
+			pe := i
+			for x /= i; x%i == 0; x /= i {
+				e++
+				pe *= i
+			}
+			factors = append(factors, factor{i, e, pe})
 		}
 		if x > 1 {
 			factors = append(factors, factor{x, 1, x})
@@ -848,18 +858,22 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	// 质因数分解（只有质数）prime factorization
+	// 质因数分解（质数及其幂次）prime factorization
 	// LC2507 https://leetcode.cn/problems/smallest-value-after-replacing-with-sum-of-prime-factors/
 	// LC2584 https://leetcode.cn/problems/split-the-array-to-make-coprime-products/
 	primeDivisors := func(x int64) (primes []int64) {
 		for i := int64(2); i*i <= x; i++ {
-			if x%i == 0 {
-				for x /= i; x%i == 0; x /= i {
-				}
-				primes = append(primes, i)
+			if x%i > 0 {
+				continue
 			}
+			//e := 1
+			for x /= i; x%i == 0; x /= i {
+				//e++
+			}
+			primes = append(primes, i)
 		}
 		if x > 1 {
+			//e := 1
 			primes = append(primes, x)
 		}
 		return
@@ -875,11 +889,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			x >>= bits.TrailingZeros64(uint64(x))
 		}
 		for i := int64(3); i*i <= x; i += 2 {
-			if x%i == 0 {
-				for x /= i; x%i == 0; x /= i {
-				}
-				primes = append(primes, i)
+			if x%i > 0 {
+				continue
 			}
+			for x /= i; x%i == 0; x /= i {
+			}
+			primes = append(primes, i)
 		}
 		if x > 1 {
 			primes = append(primes, x)
@@ -1083,33 +1098,6 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			ds = append(ds, ds2[i])
 		}
 		return
-	}
-
-	divisorPairs := func(n int64) (ds [][2]int64) {
-		for d := int64(1); d*d <= n; d++ {
-			if n%d == 0 {
-				ds = append(ds, [2]int64{d, n / d})
-			}
-		}
-		return
-	}
-
-	doDivisors := func(n int, do func(d int)) {
-		for d := 1; d*d <= n; d++ {
-			if n%d == 0 {
-				do(d)
-				if d*d < n {
-					do(n / d)
-				}
-			}
-		}
-	}
-	doDivisors2 := func(n int, do func(d1, d2 int)) {
-		for d := 1; d*d <= n; d++ {
-			if n%d == 0 {
-				do(d, n/d)
-			}
-		}
 	}
 
 	// Number of odd divisors of n https://oeis.org/A001227
@@ -1346,14 +1334,55 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 					e++
 				}
 				d := ds
-				for pp := p; e > 0; e-- {
+				for powP := p; e > 0; e-- {
 					for _, d := range d {
-						ds = append(ds, d*pp)
+						ds = append(ds, d*powP)
 					}
-					pp *= p
+					powP *= p
 				}
 			}
 			return ds // append([]int(nil), ds...)
+		}
+
+		// https://oeis.org/A046951 the number of squares dividing n
+		// https://codeforces.com/contest/1822/problem/G2
+		squareDivisors := func(x int) []int { //
+			ds := _ds[:1]
+			for _, p := range primes { // 预处理 U^(1/3) 内的质数
+				p2 := p * p
+				if p2 > x {
+					break
+				}
+				if x%p2 == 0 {
+					e := 1
+					for x /= p2; x%p2 == 0; x /= p2 {
+						e++
+					}
+					d := ds
+					for pp := p; e > 0; e-- {
+						for _, d := range d {
+							ds = append(ds, d*pp)
+						}
+						pp *= p
+					}
+				}
+				if x%p == 0 {
+					x /= p
+				}
+			}
+			if x > 1 {
+				rt := int(math.Sqrt(float64(x)))
+				if rt*rt == x {
+					for _, d := range ds {
+						ds = append(ds, d*rt)
+					}
+				}
+			}
+			// 上面结束后，得到的是 x 的所有平方因子的【平方根】
+			for i := range ds {
+				ds[i] *= ds[i]
+			}
+			return ds
 		}
 
 		// EXTRA: https://oeis.org/A007913 Squarefree part of n (also called core(n))
@@ -1491,7 +1520,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			return
 		}
 
-		_ = []interface{}{factorize, divisors, core, coreAll, rad, sopfr, sopf}
+		_ = []interface{}{factorize, divisors, squareDivisors, core, coreAll, rad, sopfr, sopf}
 	}
 
 	// 预处理质因子
@@ -2651,6 +2680,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// todo https://www.luogu.com.cn/problem/P2257
 	//  https://www.luogu.com.cn/problem/P2522
 	//  https://www.luogu.com.cn/blog/203623/sol-jrksjr6D https://www.luogu.com.cn/blog/Silver187/qian-lian-di-shi-jie-ti-xie
+	//  GCD=1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
 
 	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
 
@@ -2672,9 +2702,11 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// ∑(n/i)*(n%i) https://ac.nowcoder.com/acm/contest/9005/C
 	// todo https://codeforces.com/contest/1202/problem/F
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
+	// [L,R] 内任意 k 个不同数字的 GCD 有多少种 https://ac.nowcoder.com/acm/contest/35232/C
 	//
 	// 其余相关题目
 	// https://codeforces.com/contest/938/problem/C
+	// 数论分块优化 DP https://codeforces.com/problemset/problem/1603/C
 	//
 	// https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
 	// https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
@@ -2893,7 +2925,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		divisors, divisorPairs, doDivisors, doDivisors2, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
+		divisors, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
