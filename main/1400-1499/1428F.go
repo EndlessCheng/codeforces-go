@@ -20,7 +20,7 @@ func CF1428F(in io.Reader, out io.Writer) {
 		if c == '1' {
 			// 1111011
 			// 11110111
-			//  | 从这里到 i 的一个左开右闭区间的子串都多了 1
+			//  | 从这里到 i 的左开右闭区间的（以 i 为右端点的）子串都多了 1
 			ones++
 			sum += int64(i - last[ones])
 		} else {
