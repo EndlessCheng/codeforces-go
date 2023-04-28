@@ -45,7 +45,7 @@ bits.OnesCount(3*n ^ n)
 LC2571 https://leetcode.cn/problems/minimum-operations-to-reduce-an-integer-to-0/
 解释 https://leetcode.cn/problems/minimum-operations-to-reduce-an-integer-to-0/solution/ji-yi-hua-sou-suo-by-endlesscheng-cm6l/
 
-4 汉诺塔 http://oeis.org/A007664
+4 汉诺塔 https://oeis.org/A007664
 Reve's puzzle: number of moves needed to solve the Towers of Hanoi puzzle with 4 pegs and n disks, according to the Frame-Stewart algorithm
 https://www.acwing.com/problem/content/description/98/
 
@@ -903,6 +903,7 @@ func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 // 从 i 可以跳到 [i,i+a[i]] 中的任意整点
 // 返回从 0 跳到 n-1 的最小跳跃次数
 // 如果无法到达 n-1，返回 -1
+// 注：对于复杂变形题，采用分组循环不易写错
 // - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
 // - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/)
 // - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
