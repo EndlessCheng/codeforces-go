@@ -130,6 +130,12 @@ https://codeforces.com/problemset/problem/356/C
 https://codeforces.com/contest/1374/problem/E2
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 
+贡献法
+https://codeforces.com/problemset/problem/912/D
+https://codeforces.com/problemset/problem/915/F
+https://codeforces.com/problemset/problem/1208/E
+https://codeforces.com/problemset/problem/1808/D
+
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
 https://codeforces.com/problemset/problem/521/D
@@ -178,9 +184,6 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
 等效性 LC1183 https://leetcode-cn.com/problems/maximum-number-of-ones/
 LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
-贡献 https://codeforces.com/problemset/problem/912/D
-贡献 https://codeforces.com/problemset/problem/915/F
-贡献 https://codeforces.com/problemset/problem/1208/E
 置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
 排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
 */
@@ -246,9 +249,17 @@ https://codeforces.com/problemset/problem/707/D
 对于可以回收的情况（如 append 在超过 cap 时），使用 debug.SetGCPercent(-1) 虽然会减少些许耗时，但若有大量内存没被回收，会有 MLE 的风险
 其他情况下使用 debug.SetGCPercent(-1) 对耗时和内存使用无明显影响
 对于多组数据的情况，若禁用 GC 会 MLE，可在每组数据的开头或末尾调用 runtime.GC() 或 debug.FreeOSMemory() 手动 GC
-还可以尝试 1.19 新增的 debug.SetMemoryLimit
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
+
+如果没有禁用 GC 但 MLE，可以尝试 1.19 新增的 debug.SetMemoryLimit
+例如 debug.SetMemoryLimit(200<<20)，其中 200 可以根据题目的约束来修改
+具体见如下测试：
+180<<20 1996ms 255100KB https://codeforces.com/problemset/submission/1800/203769679
+195<<20  779ms 257800KB https://codeforces.com/contest/1800/submission/203768086
+200<<20  654ms 259300KB https://codeforces.com/contest/1800/submission/203768768
+210<<20        MLE
+参考 https://go.dev/doc/gc-guide#Memory_limit
 
 对于二维矩阵，以 make([][mx]int, n) 的方式使用，比 make([][]int, n) 嵌套 make([]int, m) 更高效（100MB 以上时可以快 ~150ms）
 但需要注意这种方式可能会向 OS 额外申请一倍的内存
