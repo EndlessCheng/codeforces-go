@@ -4,7 +4,9 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
+	"reflect"
 	"sort"
+	"unsafe"
 )
 
 /*
@@ -27,6 +29,42 @@ https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR
 
 // namespace
 type tree struct{}
+
+// 树哈希 Hashing root trees
+// O(nlogn)
+// https://codeforces.com/blog/entry/113465?#comment-1010870
+// 判断是否为对称树（可以调整儿子顺序）https://codeforces.com/problemset/problem/1800/G
+// https://codeforces.com/contest/763/problem/D
+// https://open.kattis.com/problems/twochartsbecomeone
+func (*tree) hash(g [][]int, root int) {
+	tid := map[string]int{}
+	var dfs func(int, int) int
+	dfs = func(v, fa int) int {
+		ids := make([]int, 0, len(g[v]))
+		for _, w := range g[v] {
+			if w != fa {
+				ids = append(ids, dfs(w, v))
+			}
+		}
+		sort.Slice(ids, func(i, j int) bool { return ids[i] < ids[j] })
+		// do ids...
+
+		_ids := append(ids[:0:0], ids...) // 如果后面用不到 ids 可以去掉
+		sh := (*reflect.SliceHeader)(unsafe.Pointer(&_ids))
+		sh.Len *= bits.UintSize / 8
+		s := *(*string)(unsafe.Pointer(sh))
+		id, ok := tid[s]
+		if !ok {
+			id = len(tid) // 从 0 开始
+			tid[s] = id
+		}
+		return id
+	}
+	dfs(root, -1)
+}
+
+// 树同构
+// https://www.luogu.com.cn/problem/P5043
 
 // https://codeforces.com/contest/342/problem/E
 func (*tree) bfsMultiSources(g [][]int, starts []int) {
@@ -302,6 +340,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 必须边 https://www.luogu.com.cn/problem/P3304 https://www.acwing.com/problem/content/description/391/
 // 求树中任意一个与 x 距离为 k 的点 https://www.luogu.com.cn/problem/T238762?contestId=65460
 // https://codeforces.com/problemset/problem/1404/B
+// https://codeforces.com/problemset/problem/1819/C
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)
@@ -378,6 +417,7 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 
 	// EXTRA: 获取直径上的所有节点 path
 	// path[len(path)/2] 即为树的中心（之一）
+	// https://codeforces.com/problemset/problem/1819/C
 	path := []int{}
 	var findDiameterPath func(v, fa int) bool
 	findDiameterPath = func(v, fa int) bool {
@@ -1370,15 +1410,16 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // 所有子树 mex LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
-// todo https://ac.nowcoder.com/acm/contest/4010/E
-//  https://atcoder.jp/contests/abc183/tasks/abc183_f
-//  https://codeforces.com/contest/1455/problem/G
-//  https://codeforces.com/contest/570/problem/D
-//  https://codeforces.com/contest/246/problem/E
-//  https://codeforces.com/contest/208/problem/E
-//  https://codeforces.com/contest/1009/problem/F
-//  https://codeforces.com/contest/375/problem/D
-//  https://codeforces.com/contest/741/problem/D
+// https://ac.nowcoder.com/acm/contest/4010/E
+// https://atcoder.jp/contests/abc183/tasks/abc183_f
+// https://codeforces.com/contest/1455/problem/G
+// https://codeforces.com/contest/570/problem/D
+// https://codeforces.com/contest/246/problem/E
+// https://codeforces.com/contest/208/problem/E
+// https://codeforces.com/contest/1009/problem/F
+// https://codeforces.com/contest/375/problem/D
+// https://codeforces.com/contest/741/problem/D
+// https://codeforces.com/problemset/problem/1805/E
 func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	hson := make([]int, n)
 	var build func(v, fa int) int

@@ -6,8 +6,10 @@ import (
 	"math"
 	"math/bits"
 	"math/rand"
+	"reflect"
 	"sort"
 	"time"
+	"unsafe"
 )
 
 // Competitive Programming Roadmap (target: [gray, blue]) https://codeforces.com/blog/entry/111099
@@ -81,6 +83,8 @@ https://codeforces.com/problemset/problem/863/E
 https://codeforces.com/problemset/problem/1442/A
 https://codeforces.com/problemset/problem/558/C
 https://codeforces.com/problemset/problem/1610/E
+https://codeforces.com/problemset/problem/1811/C
+https://codeforces.com/problemset/problem/1822/D
 
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/
@@ -111,11 +115,15 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 把一个环形数组切两刀，分成两段，要求相等，求方案数 => 和为 sum(a)/2 的子数组个数
 LC494 https://leetcode.cn/problems/target-sum/
 
-分类讨论
+分类讨论（易错题）
+https://codeforces.com/problemset/problem/489/C
 https://codeforces.com/problemset/problem/1605/C
 https://codeforces.com/problemset/problem/382/C
 https://codeforces.com/problemset/problem/1095/E
 https://codeforces.com/problemset/problem/796/C
+https://codeforces.com/problemset/problem/1594/F
+https://codeforces.com/problemset/problem/1798/E
+https://codeforces.com/problemset/problem/1811/F
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
@@ -153,6 +161,7 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 // 双指针：如果 left == right 时 while 一定为 false，则可以省略 while 中 left < right 的判断
 // 双序列双指针
 // 背向双指针 LC360 https://leetcode.cn/problems/sort-transformed-array/
+// 双指针+DP
 
 // 滑动窗口
 // https://codeforces.com/problemset/problem/165/C
@@ -169,7 +178,8 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
 等效性 LC1183 https://leetcode-cn.com/problems/maximum-number-of-ones/
 LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
-贡献 http://codeforces.com/problemset/problem/912/D
+贡献 https://codeforces.com/problemset/problem/912/D
+贡献 https://codeforces.com/problemset/problem/915/F
 贡献 https://codeforces.com/problemset/problem/1208/E
 置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
 排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
@@ -184,6 +194,10 @@ https://codeforces.com/problemset/problem/1644/D
 https://codeforces.com/problemset/problem/1638/D
 https://codeforces.com/problemset/problem/1672/D
 逆向思维 LC1199 https://leetcode-cn.com/problems/minimum-time-to-build-blocks/
+
+删除变添加
+https://codeforces.com/problemset/problem/295/B
+https://leetcode.cn/problems/maximum-segment-sum-after-removals/
 */
 
 /* 奇偶性
@@ -247,6 +261,19 @@ https://codeforces.com/problemset/problem/707/D
 写在 main 外面 + slice 188364KB https://codeforces.com/contest/767/submission/174194380
 写在 main 外面 + array 154500KB https://codeforces.com/contest/767/submission/174193693
 */
+
+// slice 作为 map 的 key
+// 长度为 0 的 slice 对应空字符串
+func intSliceAsMapKeyExample(a []int) {
+	// 如果后面还会修改 a，可以先 copy 一份
+	//a = append(a[:0:0], a...)
+	cnt := map[string]int{}
+	sh := (*reflect.SliceHeader)(unsafe.Pointer(&a))
+	// 装作 byte slice
+	sh.Len *= bits.UintSize / 8
+	cnt[*(*string)(unsafe.Pointer(sh))]++
+}
+
 func _() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
