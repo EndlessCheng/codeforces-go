@@ -255,9 +255,10 @@ https://codeforces.com/problemset/problem/707/D
 如果没有禁用 GC 但 MLE，可以尝试 1.19 新增的 debug.SetMemoryLimit
 例如 debug.SetMemoryLimit(200<<20)，其中 200 可以根据题目的约束来修改
 具体见如下测试：
-180<<20 1996ms 255100KB https://codeforces.com/problemset/submission/1800/203769679
+180<<20 1996ms 255100KB https://codeforces.com/contest/1800/submission/203769679
 195<<20  779ms 257800KB https://codeforces.com/contest/1800/submission/203768086
 200<<20  654ms 259300KB https://codeforces.com/contest/1800/submission/203768768
+205<<20  764ms 220100KB https://codeforces.com/contest/1800/submission/203771041
 210<<20        MLE
 参考 https://go.dev/doc/gc-guide#Memory_limit
 
