@@ -1,22 +1,29 @@
 package main
 
+import "sort"
+
 // https://space.bilibili.com/206214
 func equalFrequency(word string) bool {
-next:
-	for i := range word {
-		cnt := map[rune]int{}
-		for _, c := range word[:i] + word[i+1:] {
-			cnt[c]++
-		}
-		same := 0
-		for _, c := range cnt {
-			if same == 0 {
-				same = c
-			} else if c != same {
-				continue next
-			}
-		}
-		return true
+	mCnt := map[rune]int{}
+	for _, c := range word {
+		mCnt[c]++
 	}
-	return false
+	cnt := make([]int, 0, len(mCnt))
+	for _, c := range mCnt {
+		cnt = append(cnt, c)
+	}
+	sort.Ints(cnt)
+	m := len(cnt)
+	return m == 1 ||
+		cnt[0] == 1 && isSame(cnt[1:]) ||
+		cnt[m-1] == cnt[m-2]+1 && isSame(cnt[:m-1])
+}
+
+func isSame(a []int) bool {
+	for _, x := range a[1:] {
+		if x != a[0] {
+			return false
+		}
+	}
+	return true
 }
