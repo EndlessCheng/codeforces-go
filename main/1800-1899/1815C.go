@@ -13,31 +13,22 @@ func CF1815C(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 
 	var T, n, m, v, w int
-o:
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
 		g := make([][]int, n)
-		hasIn := make([]bool, n)
 		for ; m > 0; m-- {
 			Fscan(in, &v, &w)
 			v--
 			w--
 			if v > 0 {
 				g[w] = append(g[w], v)
-				hasIn[v] = true
 			}
 		}
-		for _, b := range hasIn[1:] {
-			if !b {
-				Fprintln(out, "INFINITE")
-				continue o
-			}
-		}
-		Fprintln(out, "FINITE")
 		vis := make([]bool, n)
 		vis[0] = true
 		level := [][]int{}
 		q := []int{0}
+		left := n - 1
 		for i := 0; len(q) > 0; i++ {
 			level = append(level, append([]int{}, q...))
 			tmp := q
@@ -47,10 +38,16 @@ o:
 					if !vis[w] {
 						vis[w] = true
 						q = append(q, w)
+						left--
 					}
 				}
 			}
 		}
+		if left > 0 {
+			Fprintln(out, "INFINITE")
+			continue
+		}
+		Fprintln(out, "FINITE")
 		ans := []int{}
 		k := len(level)
 		for sz := k; sz > 0; sz-- {
