@@ -34,8 +34,6 @@ type tree struct{}
 // O(nlogn)
 // https://codeforces.com/blog/entry/113465?#comment-1010870
 // 判断是否为对称树（可以调整儿子顺序）https://codeforces.com/problemset/problem/1800/G
-// https://codeforces.com/contest/763/problem/D
-// https://open.kattis.com/problems/twochartsbecomeone
 func (*tree) hash(g [][]int, root int) {
 	tid := map[string]int{}
 	var dfs func(int, int) int
@@ -65,6 +63,8 @@ func (*tree) hash(g [][]int, root int) {
 
 // 树同构
 // https://www.luogu.com.cn/problem/P5043
+// https://codeforces.com/contest/763/problem/D
+// https://open.kattis.com/problems/twochartsbecomeone
 
 // https://codeforces.com/contest/342/problem/E
 func (*tree) bfsMultiSources(g [][]int, starts []int) {
