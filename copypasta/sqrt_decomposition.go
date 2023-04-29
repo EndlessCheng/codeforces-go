@@ -21,14 +21,18 @@ import (
 
 可以从这题上手 https://www.luogu.com.cn/problem/P3396 同 https://codeforces.com/contest/103/problem/D
 https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
+https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
+https://codeforces.com/problemset/problem/786/C 2400
 https://codeforces.com/problemset/problem/797/E
 https://codeforces.com/problemset/problem/1207/F
 https://codeforces.com/problemset/problem/1468/M 或四元环
 LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
 https://codeforces.com/problemset/problem/1039/D
 https://codeforces.com/problemset/problem/1039/E
+大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H
+见下面的 floorDivide https://codeforces.com/problemset/problem/1806/E
 */
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
@@ -106,4 +110,32 @@ func _(min, max func(int, int) int) {
 	}
 
 	_ = []interface{}{sqrtInit, sqrtOp}
+}
+
+// 如果 f(i) 的计算结果近似 n/i
+// 可以对 [1,n] 值域分治，如果区间内的结果都相同，则不再分治
+// 时间复杂度类似整除分块 O(f(n)√n)
+// https://codeforces.com/problemset/problem/786/C
+func floorDivide(n int, f func(int) int) []int {
+	ans := make([]int, n+1)
+	var solve func(int, int)
+	solve = func(l, r int) {
+		if l > r {
+			return
+		}
+		resL, resR := f(l), f(r)
+		if resL == resR {
+			for i := l; i <= r; i++ {
+				ans[i] = resL
+			}
+			return
+		}
+		ans[l] = resL
+		ans[r] = resR
+		mid := (l + r) / 2
+		solve(l+1, mid)
+		solve(mid+1, r-1)
+	}
+	solve(1, n)
+	return ans[1:]
 }
