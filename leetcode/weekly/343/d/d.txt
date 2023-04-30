@@ -1,0 +1,11 @@
+"abcz"
+26
+"abda"
+
+"dc"
+4
+""
+
+"dacd"
+4
+"dbac"
