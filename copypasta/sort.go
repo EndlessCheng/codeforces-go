@@ -111,6 +111,27 @@ func sortCollections() {
 		sort.IsSorted(sort.Reverse(sort.IntSlice(a)))
 	}
 
+	// 在多个左闭右开区间中，查找与 [l,r) 有交集的所有区间
+	// https://codeforces.com/problemset/problem/1817/A
+	type interval struct{ l, r int }
+	searchIntervals := func(a []interval, l, r int, min, max func(int, int) int) {
+		li := sort.Search(len(a), func(i int) bool { return a[i].r > l })
+		if li < len(a) && a[li].l < r { // 至少有一个区间
+			ri := sort.Search(len(a), func(i int) bool { return a[i].l >= r }) - 1
+			leftL := max(l, a[li].l)
+			rightR := min(r, a[ri].r)
+			if li == ri { // 只有一个区间 [leftL, rightR)
+				_ = rightR - leftL
+
+			} else { // 多个区间
+				// [leftL, a[li].r) + ... + [a[ri].l, rightR)
+				midFull := ri - li - 1
+				_ = midFull
+
+			}
+		}
+	}
+
 	// 把数组排序（元素互不相同），需要的最小交换次数
 	// 做法：离散化后求置换环
 	// LC2471 https://leetcode.cn/problems/minimum-number-of-operations-to-sort-a-binary-tree-by-level/
@@ -588,6 +609,7 @@ func sortCollections() {
 	}
 
 	_ = []interface{}{
+		searchIntervals,
 		minSwaps,
 		insertionSort,
 		lowerBound, upperBound, search2,
