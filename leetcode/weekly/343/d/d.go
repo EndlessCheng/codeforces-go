@@ -7,7 +7,7 @@ func smallestBeautifulString(S string, k int) string {
 	n := len(s)
 	i := n - 1
 	s[i]++
-	for 0 <= i && i < n {
+	for i < n {
 		if s[i] == limit { // 超过范围
 			if i == 0 {
 				return ""

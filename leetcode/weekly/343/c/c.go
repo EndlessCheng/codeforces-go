@@ -9,24 +9,22 @@ func minimumCost(start, target []int, specialRoads [][]int) int {
 	dis := make(map[pair]int, len(specialRoads)+2)
 	dis[t] = math.MaxInt
 	dis[pair{start[0], start[1]}] = 0
-	vis := make(map[pair]bool, len(specialRoads)+2)
+	vis := make(map[pair]bool, len(specialRoads)+1) // 终点不用记
 	for {
-		v := pair{}
+		v, dv := pair{}, -1
 		for p, d := range dis {
-			if !vis[p] && (v.x == 0 || d < dis[v]) {
-				v = p
+			if !vis[p] && (dv < 0 || d < dv) {
+				v, dv = p, d
 			}
 		}
 		if v == t { // 到终点的最短路已确定
-			return dis[t]
+			return dv
 		}
 		vis[v] = true
-		dis[t] = min(dis[t], dis[v]+t.x-v.x+t.y-v.y) // 更新到终点的最短路
+		dis[t] = min(dis[t], dv+t.x-v.x+t.y-v.y) // 更新到终点的最短路
 		for _, r := range specialRoads {
-			x, y := r[2], r[3]
-			w := pair{x, y}
-			// 要么直接到 (x,y)，要么走特殊路径到 (x,y)
-			d := dis[v] + min(abs(r[0]-v.x)+abs(r[1]-v.y)+r[4], abs(x-v.x)+abs(y-v.y))
+			w := pair{r[2], r[3]}
+			d := dv + abs(r[0]-v.x) + abs(r[1]-v.y) + r[4]
 			if dw, ok := dis[w]; !ok || d < dw {
 				dis[w] = d
 			}

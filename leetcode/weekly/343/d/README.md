@@ -1,6 +1,6 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【力扣周赛 343】](https://www.bilibili.com/video/BV1QX4y1m71X/)第四题。
 
 ### 提示 1
 
@@ -9,6 +9,10 @@
 所以只需要保证答案不包含长度为 $2$ 或者长度为 $3$ 的回文串。
 
 换句话说，不能出现 $s[i]=s[i-1]$ 以及 $s[i]=s[i-2]$。
+
+这个性质十分重要，它意味着我们只需要判断 $s[i]$ 左侧的两个字母。
+
+> $s[i]$ 与其右边的两个字母 $s[i+1]$ 和 $s[i+2]$ 呢？交给 $i+1$ 和 $i+2$ 来判断。
 
 ### 提示 2
 
@@ -20,7 +24,7 @@
 
 如果计算过程中出现把 $s[0]$ 加一后不在前 $k$ 个字母中的情况，说明答案不存在，返回空字符串。
 
-> 注：上面的描述中并没有用到 $k\ge 4$ 这个条件。
+> 注：上面的描述中并没有用到 $k\ge 4$ 这个条件。更多相关讨论见视频讲解。
 
 ```py [sol1-Python3]
 class Solution:
@@ -31,7 +35,7 @@ class Solution:
         n = len(s)
         i = n - 1
         s[i] += 1  # 从最后一个字母开始
-        while 0 <= i < n:
+        while i < n:
             if s[i] == k:  # 超过范围
                 if i == 0: return ""  # 无法进位
                 # 进位
@@ -52,7 +56,7 @@ class Solution {
         var s = S.toCharArray();
         int n = s.length, i = n - 1;
         ++s[i]; // 从最后一个字母开始
-        while (0 <= i && i < n) {
+        while (i < n) {
             if (s[i] == k) { // 超过范围
                 if (i == 0) return ""; // 无法进位
                 // 进位
@@ -76,7 +80,7 @@ public:
         k += 'a';
         int n = s.length(), i = n - 1;
         ++s[i]; // 从最后一个字母开始
-        while (0 <= i && i < n) {
+        while (i < n) {
             if (s[i] == k) { // 超过范围
                 if (i == 0) return ""; // 无法进位
                 // 进位
@@ -100,7 +104,7 @@ func smallestBeautifulString(S string, k int) string {
 	n := len(s)
 	i := n - 1
 	s[i]++ // 从最后一个字母开始
-	for 0 <= i && i < n {
+	for i < n {
 		if s[i] == limit { // 超过范围
 			if i == 0 { // 无法进位
 				return ""
@@ -121,8 +125,8 @@ func smallestBeautifulString(S string, k int) string {
 
 ### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。注意不是 $\mathcal{O}(nk)$，如果能用的字母很多，由于只考虑相邻或者相隔一个字母的情况，$s[i]$ 不会增加很多次。
-- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果可以直接修改字符串（例如 C++），则该方法只需要 $\mathcal{O}(1)$ 的额外空间。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。注意不是 $\mathcal{O}(nk)$，因为只考虑相邻或者相隔一个字母的情况，$s[i]$ 不会增加很多次。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果可以直接修改字符串（例如 C++）就只需要 $\mathcal{O}(1)$ 的额外空间。
 
 ### 思考题
 
