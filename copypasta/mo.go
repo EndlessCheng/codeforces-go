@@ -355,7 +355,8 @@ func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 	vis := make([]bool, n)
 	move := func(v int) {
 		x := vals[v]
-		if vis[v] = !vis[v]; vis[v] {
+		vis[v] = !vis[v]
+		if vis[v] {
 			if cnt[x] == 0 {
 				cc++
 			}

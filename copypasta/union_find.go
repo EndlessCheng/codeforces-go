@@ -20,6 +20,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://oi-wiki.org/ds/dsu/
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
+// RMQ 标准算法和线性树上并查集 https://ljt12138.blog.uoj.ac/blog/4874
 //
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
@@ -34,7 +35,9 @@ https://zhuanlan.zhihu.com/p/553192435
 // - https://codeforces.com/problemset/problem/724/D
 // - https://codeforces.com/problemset/problem/827/A
 // - https://codeforces.com/problemset/problem/1157/E
-// LC2421 https://leetcode.cn/problems/number-of-good-paths/
+// 树+点权顺序
+// - LC2421 https://leetcode.cn/problems/number-of-good-paths/
+// - 贡献法 https://codeforces.com/problemset/problem/915/F
 // LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
 // 三维接雨水 https://www.luogu.com.cn/problem/P5930 LC407 https://leetcode-cn.com/problems/trapping-rain-water-ii/

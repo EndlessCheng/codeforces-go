@@ -209,6 +209,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	todo https://atcoder.jp/contests/abc162/tasks/abc162_e
 	     https://atcoder.jp/contests/abc206/tasks/abc206_e
 
+	todo 基于值域预处理的快速 GCD https://www.luogu.com.cn/problem/P5435
+
 	GCD = 1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
 	见后面的 mu
 
@@ -2946,6 +2948,7 @@ https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
 一些组合问题
+https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
 https://codeforces.com/problemset/problem/520/E

@@ -27,6 +27,8 @@ https://codeforces.com/problemset/problem/1325/D
 https://codeforces.com/problemset/problem/1368/D
 https://atcoder.jp/contests/abc050/tasks/arc066_b
 
++ 与 ^ https://codeforces.com/problemset/problem/1732/C2
+
 max(a,b) = (a + b + abs(a-b)) / 2
 
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
@@ -83,6 +85,12 @@ https://oeis.org/A178910 异或和 因子
 
 异或与 mex
 [1800·hot10] https://codeforces.com/problemset/problem/1554/C
+
+异或与 <
+a < b，无法通过两边异或同一个数来做式子变形
+此时可以枚举高 k 个比特位是相等的，而第 k+1 个比特位 a 中是 0，b 中是 1
+人为地创造出「相等」这个条件
+https://codeforces.com/problemset/problem/1720/D2
 
 https://oeis.org/A038712 a(n) = n^(n-1) = 1, 3, 1, 7, 1, 3, 1, 15, 1, ...
 https://oeis.org/A080277 A038712 的前缀和  =>  a(n) = n + 2*a(n/2)
@@ -175,6 +183,12 @@ https://oeis.org/A007632 既是二进制回文数又是十进制回文数
 https://oeis.org/A090994 Number of meaningful differential operations of the n-th order on the space R^9
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
 相关题目 LC1215 https://leetcode-cn.com/problems/stepping-numbers/
+
+二进制字符串
+https://oeis.org/A052944 a(n) = 2^n + n - 1  Shortest length of bit-string containing all bit-strings of given length n
+https://math.stackexchange.com/questions/4509158/length-of-the-shortest-binary-string-that-contains-as-substrings-all-unique-n-le
+https://en.wikipedia.org/wiki/De_Bruijn_sequence
+应用 https://codeforces.com/problemset/problem/1469/E
 
 套路题 https://codeforces.com/problemset/problem/1415/D
 按位归纳 https://codeforces.com/problemset/problem/925/C
@@ -479,7 +493,7 @@ func _(x int) {
 	// 是否有两个相邻的 1    有 https://oeis.org/A004780 没有 https://oeis.org/A003714
 	hasAdjacentOnes := func(v uint) bool { return v>>1&v > 0 }
 
-	// 是否有两个相邻的 0（不考虑前导零）    有 https://oeis.org/A004753 没有 http://oeis.org/A003754
+	// 是否有两个相邻的 0（不考虑前导零）    有 https://oeis.org/A004753 没有 https://oeis.org/A003754
 	hasAdjacentZeros := func(v uint) bool {
 		v |= v >> 1 // 若没有相邻的 0，则 v 会变成全 1 的数
 		return v&(v+1) > 0
@@ -538,7 +552,9 @@ func _(x int) {
 	// &: LC1521 https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
 	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
+	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ https://www.dotcpp.com/oj/problem2709.html
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
+	//      https://codeforces.com/problemset/problem/891/A
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
 	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C

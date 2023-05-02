@@ -20,6 +20,7 @@ https://cp-algorithms.com/algebra/fft.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
 用 FFT 做字符串匹配 https://zhuanlan.zhihu.com/p/267765026
+Arrow product: How to enumerate directed graphs https://codeforces.com/blog/entry/115617
 
 todo https://github.com/OI-wiki/gitment/discussions/670#discussioncomment-4496021
  若多项式系数没有复数的话，可以构造多项式 H(x)=F(x)+G(x)i，把 F(x) 放实部，把 G(x) 放虚部，然后对 H(x) 跑一遍 DFT，之后把 H(x) 平方一下，可以得到
@@ -31,6 +32,7 @@ todo https://github.com/OI-wiki/gitment/discussions/670#discussioncomment-449602
 
 模板题 https://www.luogu.com.cn/problem/P3803
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
+todo https://codeforces.com/problemset/problem/993/E
 */
 
 type fft struct {

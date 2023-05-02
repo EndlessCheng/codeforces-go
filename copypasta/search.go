@@ -474,12 +474,14 @@ func searchCollection() {
 	}
 
 	// 康托展开 Cantor Expansion
-	// 返回所给排列 perm（元素在 [1,n]）的字典序名次
+	// 返回所给排列 perm（元素在 [1,n]）的字典序名次（可以从 0 或从 1 开始，具体看代码末尾）
 	// 核心思想：对于第 i 个位置，若该位置的数是未出现在其左侧的数中第 k 大的，那么有 (k−1)×(N−i)! 种方案在该位置上比这个排列小
+	// 结合康托展开和逆康托展开，可以求出一个排列的下 k 个排列
 	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 	// https://oi-wiki.org/math/cantor/
 	// https://www.luogu.com.cn/problem/P5367
 	// 有重复元素 LC1830 https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
+	// https://codeforces.com/problemset/problem/1443/E
 	rankPermutation := func(perm []int) int64 {
 		const mod int64 = 1e9 + 7
 		n := len(perm)
@@ -518,6 +520,7 @@ func searchCollection() {
 	// 逆康托展开 Inverse Cantor Expansion
 	// 返回字典序第 k 小的排列，元素范围为 [1,n]
 	// LC60 https://leetcode-cn.com/problems/permutation-sequence/
+	// https://codeforces.com/problemset/problem/1443/E
 	kthPermutation := func(n, k int) []int {
 		F := make([]int, n)
 		F[0] = 1
@@ -525,7 +528,7 @@ func searchCollection() {
 			F[i] = F[i-1] * i
 		}
 
-		k--
+		k-- // 如果输入是从 1 开始的，改成从 0 开始
 		perm := make([]int, n)
 		valid := make([]int, n+1)
 		for i := 1; i <= n; i++ {
@@ -533,7 +536,7 @@ func searchCollection() {
 		}
 		for i := 1; i <= n; i++ {
 			order := k/F[n-i] + 1
-			for j := 1; j <= n; j++ {
+			for j := 1; j <= n; j++ { // 从 1 开始的排列    TODO 用线段树优化
 				order -= valid[j]
 				if order == 0 {
 					perm = append(perm, j)
@@ -1049,7 +1052,8 @@ func _(min, max func(int, int) int) {
 // LC1631 https://leetcode.cn/problems/path-with-minimum-effort/
 // LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
 // LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
-// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
+// LCP13 https://leetcode.cn/problems/xun-bao/
+// LCP75 https://leetcode.cn/problems/rdmXM7/
 func gridCollection() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右

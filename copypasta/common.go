@@ -13,6 +13,8 @@ import (
 )
 
 // Competitive Programming Roadmap (target: [gray, blue]) https://codeforces.com/blog/entry/111099
+// A way to Practice Competitive Programming : From Rating 1000 to 2400+ https://codeforces.com/blog/entry/66909
+// https://cin.ufpe.br/~fbma/Crack/%5BTutorial%5D%20A%20Way%20to%20Practice%20Competitive%20Programming.pdf
 
 // 解决问题的一般方法 https://codeforces.com/blog/entry/92248?#comment-809401
 // General ideas https://codeforces.com/blog/entry/48417
@@ -64,6 +66,9 @@ https://codeforces.com/problemset/problem/1369/C
 		   如果 y 交换后也不是最小值，那么答案变大了 x-y。
 	无论如何，这样交换都不会使答案变小，因此前 k 大的数一定可以作为最大值。
 	提示 2：然后来说最小值。a 的最小值必然要分到某个组中，为了「跳过」尽量多的较小的数，优先把 a 中较小的数分到 w 较大的组中。所以 a 从小到大遍历，w 从大到小遍历。
+https://codeforces.com/problemset/problem/1479/B1 https://codeforces.com/problemset/problem/1479/B2
+    https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
+1505. 最多 K 次交换相邻数位后得到的最小整数 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
@@ -85,6 +90,7 @@ https://codeforces.com/problemset/problem/558/C
 https://codeforces.com/problemset/problem/1610/E
 https://codeforces.com/problemset/problem/1811/C
 https://codeforces.com/problemset/problem/1822/D
+https://codeforces.com/problemset/problem/1608/C 对拍找反例
 
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/

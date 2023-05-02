@@ -20,6 +20,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 - [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)（单调栈模板题）
 - [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
+- [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/)
 - [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
 - [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)
@@ -187,29 +188,37 @@ func monotoneStack(a []int) ([]int, []int) {
 
 // 注：若输入的是一个 1~n 的排列，求两侧大于/小于位置有更简单的写法
 // 用双向链表思考（代码实现时用的数组）：
-// - 把 p 转换成双向链表，按元素值**从小到大**遍历 p[i]，那么 p[i] 左右两侧的就是大于 p[i] 的元素
-// - 算完 p[i] 后把 p[i] 从链表中删掉
-// 为简单起见，求出的下标从 1 开始（不存在时表示为 0 或 n+1）
+// - 把 perm 转换成双向链表，按元素值**从小到大**遍历 perm[i]，那么 perm[i] 左右两侧的就是大于 perm[i] 的元素
+// - 算完 perm[i] 后把 perm[i] 从链表中删掉
+// 为避免判断下标越界，传入的 perm 虽然下标是从 0 开始的，但视作从 1 开始（不存在时表示为 0 或 n+1）
 // https://codeforces.com/contest/1156/problem/E
 // https://atcoder.jp/contests/abc140/tasks/abc140_e
-func permLR(p []int) ([]int, []int) {
-	n := len(p)
-	idx := make([]int, n+1)
+func permLR(perm []int) ([]int, []int) {
+	n := len(perm)
+	pos := make([]int, n+1)
 	left := make([]int, n+2)
 	right := make([]int, n+1)
 	for i := 1; i <= n; i++ {
-		idx[p[i-1]] = i
+		pos[perm[i-1]] = i
 		left[i], right[i] = i-1, i+1
 	}
+	right[0] = 1
+	left[n+1] = n // 哨兵（本题不需要这两行，但是某些题目需要，比如 https://codeforces.com/problemset/problem/1154/E）
+	del := func(i int) {
+		l, r := left[i], right[i]
+		right[l] = r
+		left[r] = l
+	}
+
 	// 正序遍历求出的是两侧大于位置
 	// 倒序遍历求出的是两侧小于位置
 	for v := 1; v <= n; v++ {
-		i := idx[v]
+		i := pos[v]
 		l, r := left[i], right[i]
 		// do ...
+		_, _ = l, r
 
-		right[l] = r
-		left[r] = l // 删除 v
+		del(i) // 从链表中删除 v
 	}
 	return left, right
 }

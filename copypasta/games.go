@@ -22,6 +22,7 @@ todo 阶梯博弈 https://codeforces.com/blog/entry/44651
 入门分类讨论 https://codeforces.com/problemset/problem/78/C
 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
              https://atcoder.jp/contests/dp/tasks/dp_k
+1-2-K Game https://codeforces.com/problemset/problem/1194/D 我的题解 https://www.acwing.com/file_system/file/content/whole/index/content/3179098/
 TODO: 题目推荐 https://blog.csdn.net/ACM_cxlove/article/details/7854526
 一道不错的有向图博弈 https://codeforces.com/problemset/problem/936/B
 todo 威佐夫博弈 https://www.luogu.com.cn/problem/P2252
@@ -33,7 +34,7 @@ todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推�
 通过必败态去筛必胜态 https://ac.nowcoder.com/acm/contest/11166/A
 两端取数问题 https://atcoder.jp/contests/dp/tasks/dp_l LC486 https://leetcode-cn.com/problems/predict-the-winner/ LC877 https://leetcode-cn.com/problems/stone-game/
 */
-func gameTheoryCollection() {
+func _() {
 	{
 		// 基础打表
 		p, q := 3, 4
@@ -128,8 +129,17 @@ func gameTheoryCollection() {
 	// todo 推荐论文《组合游戏略述——浅谈 SG 游戏的若干拓展及变形》
 	// todo Anti-SG
 	//
+	// 参考《福州大学 ACMICPC 集训队资料》9.4
+	// 常见限制条件下的 SG 值：
+	// 最多取 m 个：SG(n) = n%(m+1)
+	// 只能取奇数个：SG(n) = n%2
+	// 只能取 2^i 个：SG(n) = n%3
+	// 只能取 p^i 个（p 为奇素数）：SG(n) = n%2
+	//
 	// 整数分拆博弈 https://codeforces.com/problemset/problem/87/C
-	// 类似取石子 https://codeforces.com/problemset/problem/850/C
+	// 取石子变形
+	// - https://codeforces.com/problemset/problem/850/C
+	// - https://codeforces.com/problemset/problem/1823/E
 	// todo https://www.luogu.com.cn/problem/P2148
 
 	// 剪纸博弈

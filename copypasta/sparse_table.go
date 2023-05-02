@@ -10,6 +10,8 @@ Tarjan RMQ https://codeforces.com/blog/entry/48994
 一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
 一个 RMQ 问题的快速算法，以及区间众数 https://zhuanlan.zhihu.com/p/79423299
 将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
+RMQ 标准算法和线性树上并查集 https://ljt12138.blog.uoj.ac/blog/4874
+随机 RMQ https://www.luogu.com.cn/problem/P3793
 
 模板题 https://www.luogu.com.cn/problem/P3865
 https://codeforces.com/contest/1709/problem/D

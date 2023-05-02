@@ -4,6 +4,7 @@ import "sort"
 
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
 https://en.wikipedia.org/wiki/Fenwick_tree
+原论文 https://doi.org/10.1002/spe.4380240306
 树状数组 tree 的基本用途是维护序列 a 的前缀和（tree 和 a 的下标都从 1 开始）
 tree[i] = a[i-lowbit(i)+1] + ... + a[i]
 看图 https://oi-wiki.org/ds/fenwick/
@@ -37,6 +38,8 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 多变量统计 https://codeforces.com/problemset/problem/1194/E
          T4 https://www.nowcoder.com/discuss/1022136
 三元逆序对 https://codeforces.com/problemset/problem/61/E
+最多交换 k 次相邻字母后，得到的最小字典序
+- LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 整除对统计 https://codeforces.com/problemset/problem/301/D
 区间统计技巧 https://codeforces.com/problemset/problem/369/E
 区间包含计数 https://codeforces.com/problemset/problem/652/D

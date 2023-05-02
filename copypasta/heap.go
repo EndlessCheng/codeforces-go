@@ -52,11 +52,11 @@ https://codeforces.com/problemset/problem/1701/D
 
 type hp struct{ sort.IntSlice }
 
-//func (h hp) Less(i, j int) bool  { return h.IntSlice[i] > h.IntSlice[j] } // 加上这行变成最大堆
-func (h *hp) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() interface{}   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
-func (h *hp) push(v int)         { heap.Push(h, v) }
-func (h *hp) pop() int           { return heap.Pop(h).(int) } // 稍微封装一下，方便使用
+//func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 加上这行变成最大堆
+func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *hp) push(v int) { heap.Push(h, v) }
+func (h *hp) pop() int   { return heap.Pop(h).(int) } // 稍微封装一下，方便使用
 
 // EXTRA: 参考 Python，引入下面两个效率更高的方法（相比调用 push + pop）
 // replace 弹出并返回堆顶，同时将 v 入堆
@@ -83,13 +83,13 @@ func (h *hp) pushPop(v int) int {
 // 自定义类型（int64 可以替换成其余类型）
 type hp64 []int64
 
-func (h hp64) Len() int            { return len(h) }
-func (h hp64) Less(i, j int) bool  { return h[i] < h[j] } // > 为最大堆
-func (h hp64) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp64) Push(v interface{}) { *h = append(*h, v.(int64)) }
-func (h *hp64) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *hp64) push(v int64)       { heap.Push(h, v) }
-func (h *hp64) pop() int64         { return heap.Pop(h).(int64) } // 稍微封装一下，方便使用
+func (h hp64) Len() int           { return len(h) }
+func (h hp64) Less(i, j int) bool { return h[i] < h[j] } // > 为最大堆
+func (h hp64) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp64) Push(v any)        { *h = append(*h, v.(int64)) }
+func (h *hp64) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hp64) push(v int64)      { heap.Push(h, v) }
+func (h *hp64) pop() int64        { return heap.Pop(h).(int64) } // 稍微封装一下，方便使用
 
 //
 
@@ -108,8 +108,8 @@ type mh []*viPair // mh 指 modifiable heap
 func (h mh) Len() int              { return len(h) }
 func (h mh) Less(i, j int) bool    { return h[i].v < h[j].v } // > 为最大堆
 func (h mh) Swap(i, j int)         { h[i], h[j] = h[j], h[i]; h[i].hi = i; h[j].hi = j }
-func (h *mh) Push(v interface{})   { *h = append(*h, v.(*viPair)) }
-func (h *mh) Pop() interface{}     { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *mh) Push(v any)           { *h = append(*h, v.(*viPair)) }
+func (h *mh) Pop() any             { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 func (h *mh) push(v int64) *viPair { p := &viPair{v, len(*h)}; heap.Push(h, p); return p }
 func (h *mh) pop() *viPair         { return heap.Pop(h).(*viPair) }
 func (h *mh) fix(i int)            { heap.Fix(h, i) }
@@ -175,12 +175,12 @@ type minHp struct {
 	s int // 维护堆中元素之和
 }
 
-func (h minHp) Len() int            { return len(h.a) }
-func (h minHp) Less(i, j int) bool  { return h.a[i].t < h.a[j].t }
-func (h minHp) Swap(i, j int)       { h.a[i], h.a[j] = h.a[j], h.a[i] }
-func (h *minHp) Push(v interface{}) { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
-func (h *minHp) Pop() interface{}   { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
-func (h *minHp) push(v pair)        { heap.Push(h, v) }
+func (h minHp) Len() int           { return len(h.a) }
+func (h minHp) Less(i, j int) bool { return h.a[i].t < h.a[j].t }
+func (h minHp) Swap(i, j int)      { h.a[i], h.a[j] = h.a[j], h.a[i] }
+func (h *minHp) Push(v any)        { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
+func (h *minHp) Pop() any          { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
+func (h *minHp) push(v pair)       { heap.Push(h, v) }
 func (h *minHp) pushPop(v pair) pair {
 	if h.Len() > 0 && v.t > h.a[0].t {
 		h.s += v.t - h.a[0].t
@@ -195,12 +195,12 @@ type maxHp struct {
 	s int
 }
 
-func (h maxHp) Len() int            { return len(h.a) }
-func (h maxHp) Less(i, j int) bool  { return h.a[i].t > h.a[j].t }
-func (h maxHp) Swap(i, j int)       { h.a[i], h.a[j] = h.a[j], h.a[i] }
-func (h *maxHp) Push(v interface{}) { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
-func (h *maxHp) Pop() interface{}   { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
-func (h *maxHp) push(v pair)        { heap.Push(h, v) }
+func (h maxHp) Len() int           { return len(h.a) }
+func (h maxHp) Less(i, j int) bool { return h.a[i].t > h.a[j].t }
+func (h maxHp) Swap(i, j int)      { h.a[i], h.a[j] = h.a[j], h.a[i] }
+func (h *maxHp) Push(v any)        { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
+func (h *maxHp) Pop() any          { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
+func (h *maxHp) push(v pair)       { heap.Push(h, v) }
 func (h *maxHp) pushPop(v pair) pair {
 	if h.Len() > 0 && v.t < h.a[0].t {
 		h.s += v.t - h.a[0].t
