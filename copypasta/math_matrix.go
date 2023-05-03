@@ -352,76 +352,145 @@ func (a matrix) determinant(mod int64) int64 {
 // 求矩阵的特征多项式
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
 
-// 线性基（子集异或和问题）
+// 线性基（异或空间的极大线性无关子集）
 // https://oi-wiki.org/math/basis/
+// https://en.wikipedia.org/wiki/Basis_(linear_algebra)
+// 【推荐】https://www.luogu.com.cn/blog/Marser/solution-p3812
 // 线性基学习笔记 https://oi.men.ci/linear-basis-notes/
-// todo XOR basis without linear algebra https://codeforces.com/blog/entry/100066
-// todo https://www.luogu.com.cn/blog/i207M/xian-xing-ji-xue-xi-bi-ji-xie-ti-bao-gao
-// todo 讲解+题单 https://www.cnblogs.com/UntitledCpp/p/13912602.html
-// todo https://www.luogu.com.cn/blog/Troverld/xian-xing-ji-xue-xi-bi-ji
+// XOR basis without linear algebra https://codeforces.com/blog/entry/100066
+// https://www.luogu.com.cn/blog/i207M/xian-xing-ji-xue-xi-bi-ji-xie-ti-bao-gao
+// 讲解+题单 https://www.cnblogs.com/UntitledCpp/p/13912602.html
+// https://www.luogu.com.cn/blog/Troverld/xian-xing-ji-xue-xi-bi-ji
+// 讲到了线性基的删除操作 https://blog.csdn.net/a_forever_dream/article/details/83654397
+// 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 // https://zhuanlan.zhihu.com/p/139074556
-// todo 讲到了线性基的删除操作 https://blog.csdn.net/a_forever_dream/article/details/83654397
-// todo 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 //
 // 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
-// 构造 https://codeforces.com/problemset/problem/1427/E
-// todo 题单 https://www.luogu.com.cn/training/11251
-// todo https://codeforces.com/problemset/problem/895/C
+// 题单 https://www.luogu.com.cn/training/11251
+// todo 构造 https://codeforces.com/problemset/problem/1427/E
 //  https://codeforces.com/problemset/problem/1101/G
+//  https://codeforces.com/problemset/problem/895/C
 //  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
 //  https://www.luogu.com.cn/problem/P3857
-func xorBasis() {
-	const mx = 62
-	b := [mx + 1]int64{}
-	canZero := false
-	insert := func(x int64) {
-		for i := mx; i >= 0; i-- {
-			if x>>i&1 > 0 {
-				if b[i] == 0 {
-					b[i] = x
-					return
-				}
-				x ^= b[i]
-			}
-		}
-		canZero = true
+//  https://codeforces.com/problemset/problem/1778/E
+type xorBasis struct {
+	b   []int64
+	num uint8
+
+	canBeZero bool
+	basis     []int64
+}
+
+func newXorBasis(a []int64) *xorBasis {
+	b := &xorBasis{b: make([]int64, 64)} // 32
+	for _, v := range a {
+		b.insert(v)
 	}
-	decompose := func(x int64) bool {
-		for i := mx; i >= 0; i-- {
-			if x>>i&1 > 0 {
-				if b[i] == 0 {
-					return false
-				}
-				x ^= b[i]
+	return b
+}
+
+// 尝试插入 v，看能否找到一个新的线性无关基
+func (b *xorBasis) insert(v int64) {
+	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if v>>i&1 > 0 {
+			if b.b[i] == 0 { // 线性无关
+				b.b[i] = v
+				b.num++
+				return
 			}
-		}
-		return true
-	}
-	maxEle := func() (max int64) {
-		for i := mx; i >= 0; i-- {
-			if max^b[i] > max {
-				max ^= b[i]
-			}
-		}
-		return
-	}
-	minEle := func() int64 {
-		if canZero {
-			return 0
-		}
-		for i := 0; ; i++ {
-			if b[i] > 0 {
-				return b[i]
-			}
+			v ^= b.b[i]
 		}
 	}
-	// http://acm.hdu.edu.cn/showproblem.php?pid=3949
-	kthEle := func(k int64) int64 {
-		// todo
+	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+}
+
+// v 能否被线性基表出
+func (b *xorBasis) decompose(v int64) bool {
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if v>>i&1 > 0 {
+			if b.b[i] == 0 {
+				return false
+			}
+			v ^= b.b[i]
+		}
+	}
+	return true
+}
+
+// https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
+func (b *xorBasis) maxXor() (max int64) {
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if max^b.b[i] > max {
+			max ^= b.b[i]
+		}
+	}
+	return
+}
+
+// 考虑插入的过程，因为每一次跳转操作，x 的二进制最高位必定单调降低，所以不可能插入两个二进制最高位相同的数。
+// 而此时，线性基中最小值异或上其他数，必定会增大。
+// 所以，直接输出线性基中的最小值即可。
+func (b *xorBasis) minXor() int64 {
+	if b.canBeZero {
 		return 0
 	}
+	for i := 0; ; i++ {
+		if b.b[i] > 0 {
+			return b.b[i]
+		}
+	}
+}
 
-	_ = []interface{}{insert, decompose, minEle, maxEle, kthEle}
+func (b *xorBasis) initOnce() {
+	if b.basis != nil {
+		return
+	}
+	tmp := append([]int64{}, b.b...)
+	for i := range tmp {
+		if tmp[i] == 0 {
+			continue
+		}
+		for j := i - 1; j >= 0; j-- {
+			if tmp[i]>>j&1 > 0 {
+				tmp[i] ^= tmp[j]
+			}
+		}
+		b.basis = append(b.basis, tmp[i])
+	}
+}
+
+// 线性基能表出的所有不同元素中的第 k 小值（不允许空）
+// k 从 1 开始
+// https://loj.ac/p/114 http://acm.hdu.edu.cn/showproblem.php?pid=3949
+func (b *xorBasis) kthXor(k int64) (xor int64) {
+	b.initOnce()
+	if b.canBeZero { // 0 是最小的
+		k-- // 占用了一个数
+	}
+	if k >= int64(1)<<len(b.basis) { // 非空子集有 2^len(b.basis) - 1 个
+		return -1
+	}
+	for i, v := range b.basis {
+		if k>>i&1 > 0 {
+			xor ^= v
+		}
+	}
+	return
+}
+
+// todo https://www.luogu.com.cn/problem/P4869
+func (b *xorBasis) rank(xor int64) (k int64) {
+	panic("todo")
+}
+
+func (b *xorBasis) merge(other *xorBasis) {
+	for i := len(other.b) - 1; i >= 0; i-- {
+		x := other.b[i]
+		if x > 0 {
+			b.insert(x)
+		}
+	}
 }
 
 // 矩阵树定理 基尔霍夫定理 Kirchhoff‘s theorem
