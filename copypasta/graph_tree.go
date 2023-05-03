@@ -129,6 +129,29 @@ func (*tree) path(st, end int, g [][]int) (path []int) {
 	return
 }
 
+// 预处理从 v 到 w 走一步的节点 move1[v][w]
+// 定义 v 到 v 走一步的节点为 v
+// https://codeforces.com/problemset/problem/1771/D
+func (*tree) move1(g [][]int) [][]int {
+	move1 := make([][]int, len(g))
+	for i := range move1 {
+		move1[i] = make([]int, len(g))
+	}
+	for rt := range move1 {
+		var build func(int, int)
+		build = func(v, fa int) {
+			move1[v][rt] = fa
+			for _, w := range g[v] {
+				if w != fa {
+					build(w, v)
+				}
+			}
+		}
+		build(rt, rt)
+	}
+	return move1
+}
+
 // 两个基本信息：节点深度和子树大小
 // 节点深度：
 // - 深度与祖先：v 是 w 的祖先，当且仅当 dep[v]+dist(v,w)=dep[w]
