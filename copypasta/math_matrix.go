@@ -361,7 +361,7 @@ func (a matrix) determinant(mod int64) int64 {
 // https://www.luogu.com.cn/blog/i207M/xian-xing-ji-xue-xi-bi-ji-xie-ti-bao-gao
 // 讲解+题单 https://www.cnblogs.com/UntitledCpp/p/13912602.html
 // https://www.luogu.com.cn/blog/Troverld/xian-xing-ji-xue-xi-bi-ji
-// 讲到了线性基的删除操作 https://blog.csdn.net/a_forever_dream/article/details/83654397
+// todo 讲到了线性基的删除操作 https://blog.csdn.net/a_forever_dream/article/details/83654397
 // 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 // https://zhuanlan.zhihu.com/p/139074556
 //
@@ -372,17 +372,20 @@ func (a matrix) determinant(mod int64) int64 {
 //  https://codeforces.com/problemset/problem/895/C
 //  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
 //  https://www.luogu.com.cn/problem/P3857
-//  https://codeforces.com/problemset/problem/1778/E
+//  最右线性基 https://codeforces.com/problemset/problem/1778/E
 type xorBasis struct {
 	b   []int64
 	num uint8
 
 	canBeZero bool
 	basis     []int64
+
+	rightMost []int
 }
 
 func newXorBasis(a []int64) *xorBasis {
 	b := &xorBasis{b: make([]int64, 64)} // 32
+	b.rightMost = make([]int, len(b.b))
 	for _, v := range a {
 		b.insert(v)
 	}
@@ -393,14 +396,38 @@ func newXorBasis(a []int64) *xorBasis {
 func (b *xorBasis) insert(v int64) {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 > 0 {
-			if b.b[i] == 0 { // 线性无关
-				b.b[i] = v
-				b.num++
-				return
-			}
-			v ^= b.b[i]
+		if v>>i&1 == 0 {
+			continue
 		}
+		if b.b[i] == 0 { // 线性无关
+			b.b[i] = v
+			b.num++
+			return
+		}
+		v ^= b.b[i]
+	}
+	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+}
+
+// EXTRA: 如果遇到线性相关的基，保留位置最靠右的
+// https://codeforces.com/problemset/problem/1778/E
+func (b *xorBasis) insertRightMost(idx int, v int64) {
+	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if v>>i&1 == 0 {
+			continue
+		}
+		if b.b[i] == 0 { // 线性无关
+			b.b[i] = v
+			b.rightMost[i] = idx
+			b.num++
+			return
+		}
+		if idx >= b.rightMost[i] { // 注意 b.rightMost[i] 的初始值为 0
+			idx, b.rightMost[i] = b.rightMost[i], idx
+			v, b.b[i] = b.b[i], v // 继续插入之前的基
+		}
+		v ^= b.b[i]
 	}
 	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
 }
@@ -419,10 +446,13 @@ func (b *xorBasis) decompose(v int64) bool {
 }
 
 // https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
-func (b *xorBasis) maxXor() (max int64) {
+func (b *xorBasis) maxXor() (xor int64) {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if max^b.b[i] > max {
-			max ^= b.b[i]
+		//if xor>>i&1 > 0 {
+		//	continue
+		//}
+		if xor^b.b[i] > xor {
+			xor ^= b.b[i]
 		}
 	}
 	return
