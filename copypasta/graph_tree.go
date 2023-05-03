@@ -16,8 +16,10 @@ import (
 
 NOTE: 对于有根树的题，可以考虑加上 g[0] = append(g[0], -1) 来简化代码
 NOTE: 由于树上任意两点间的路径等价于两条点到根的路径的对称差，处理一些树上异或的问题可以往这个方向思考
-NOTE: 注意特判只有一条边的情况，此时两个叶结点对应同一条边
+NOTE: 注意特判整棵树只有一条边的情况，此时两个叶结点对应同一条边
 NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.com/problemset/problem/700/B
+NOTE: 节点数小于 √n 的同层节点对不超过 n√n，节点数大于 √n 的层的数量小于 √n 个 https://codeforces.com/problemset/problem/1806/E
+NOTE: 树上两点的关系：v 和 w 相等【特判】、v 是 w 的祖先、w 是 v 的祖先、其它（v 和 w 在两棵不同子树中）https://codeforces.com/problemset/problem/1778/E
 
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
 不错的构造 https://codeforces.com/problemset/problem/260/D
@@ -62,8 +64,16 @@ func (*tree) hash(g [][]int, root int) {
 }
 
 // 树同构
+// AHU 算法
+// https://oi-wiki.org/graph/tree-ahu/
+// https://wwwmayr.in.tum.de/konferenzen/Jass08/courses/1/smal/Smal_Paper.pdf
+// https://logic.pdmi.ras.ru/~smal/files/smal_jass08_slides.pdf
+// todo hashing 的一些正确姿势 https://zhuanlan.zhihu.com/p/104346215
+//
 // https://www.luogu.com.cn/problem/P5043
-// https://codeforces.com/contest/763/problem/D
+// 与换根 DP 结合：
+// - https://codeforces.com/contest/763/problem/D
+// - https://codeforces.com/problemset/problem/1794/E 参考代码 https://codeforces.com/contest/1794/submission/196015876
 // https://open.kattis.com/problems/twochartsbecomeone
 
 // https://codeforces.com/contest/342/problem/E
@@ -163,23 +173,23 @@ func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
 // 例题 https://codeforces.com/problemset/problem/383/C
 //     https://codeforces.com/problemset/problem/877/E
 func (*tree) subtreeSize(n, root int, g [][]int) {
-	type node struct{ dfn, size int }
+	type node struct{ dfn, size int } // 注意 dfn 从 1 开始
 	nodes := make([]node, n)
 	dfn := 0
-	var build func(v, fa int) int
-	build = func(v, fa int) int {
+	var buildDFN func(v, fa int) int
+	buildDFN = func(v, fa int) int {
 		dfn++
 		nodes[v].dfn = dfn
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
-				sz += build(w, v)
+				sz += buildDFN(w, v)
 			}
 		}
 		nodes[v].size = sz
 		return sz
 	}
-	build(root, -1)
+	buildDFN(root, -1)
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
@@ -187,8 +197,8 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 
 	{
 		dfnToNodeID := make([]int, n+1)
-		for i, o := range nodes {
-			dfnToNodeID[o.dfn] = i
+		for v, o := range nodes {
+			dfnToNodeID[o.dfn] = v
 		}
 	}
 
@@ -201,7 +211,7 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 		o := nodes[v]
 		update(o.dfn, o.dfn+o.size-1) // 更新子树
 		query(o.dfn, o.dfn+o.size-1)  // 查询子树
-		queryOne(nodes[v].dfn)        // 查询单个节点
+		queryOne(o.dfn)               // 查询单个节点
 	}
 
 	_ = isAncestor
@@ -745,17 +755,17 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
-	var build func(v, p, d int)
-	build = func(v, p, d int) {
+	var buildPa func(v, p, d int)
+	buildPa = func(v, p, d int) {
 		pa[v][0] = p
 		dep[v] = d
 		for _, w := range g[v] {
 			if w != p {
-				build(w, v, d+1)
+				buildPa(w, v, d+1)
 			}
 		}
 	}
-	build(root, -1, 0)
+	buildPa(root, -1, 0) // d 从 0 开始
 	// 倍增
 	for i := 0; i+1 < mx; i++ {
 		for v := range pa {
@@ -766,24 +776,16 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 			}
 		}
 	}
-	// 从 v 开始向上跳 k 步，不存在返回 -1
-	// O(1) 求法见长链剖分
-	uptoKthPa := func(v, k int) int {
-		for i := 0; i < mx && v != -1; i++ {
-			if k>>i&1 > 0 {
-				v = pa[v][i]
-			}
-		}
-		return v
-	}
-	// 从 v 开始向上跳到指定深度 d，d<=dep[v]
+	// 从 v 开始，向上跳到指定深度 d
 	// https://en.wikipedia.org/wiki/Level_ancestor_problem
 	// https://codeforces.com/problemset/problem/1535/E
 	uptoDep := func(v, d int) int {
+		if d > dep[v] {
+			panic(-1)
+		}
 		for i := 0; i < mx; i++ {
 			if (dep[v]-d)>>i&1 > 0 {
 				v = pa[v][i]
-				//if v == -1 { panic(-9) }
 			}
 		}
 		return v
@@ -805,14 +807,67 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 	}
 	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]*2 }
 
-	// EXTRA: 输入 u 和 v，u 是 v 的祖先，返回 u 到 v 路径上的第二个节点
-	down := func(u, v int) int {
-		// assert dep[u] < dep[v]
-		v = uptoDep(v, dep[u]+1)
-		if pa[v][0] == u {
-			return v
+	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
+	// 如果 v 不是 to 的子孙，返回 -1
+	down1 := func(v, to int) int {
+		if dep[v] >= dep[to] {
+			return -1
+		}
+		to = uptoDep(to, dep[v]+1)
+		if pa[to][0] == v {
+			return to
 		}
 		return -1
+	}
+
+	// EXTRA: 从 v 出发，向 to 方向走一步
+	// 输入需要保证 v != to
+	move1 := func(v, to int) int {
+		if v == to {
+			panic(-1)
+		}
+		if _lca(v, to) == v { // to 在 v 下面
+			return uptoDep(to, dep[v]+1)
+		}
+		// lca 在 v 上面
+		return pa[v][0]
+	}
+
+	// EXTRA: 从 v 开始，向上跳 k 步
+	// 不存在则返回 -1
+	// O(1) 求法见长链剖分
+	uptoKthPa := func(v, k int) int {
+		for i := 0; i < mx && v != -1; i++ {
+			if k>>i&1 > 0 {
+				v = pa[v][i]
+			}
+		}
+		return v
+	}
+
+	// EXTRA: 输入 v 和 w，返回 v 到 w 路径上的中点
+	// 返回值是一个数组，因为可能有两个中点
+	// 在有两个中点的情况下，保证返回值的第一个中点离 v 更近
+	midPath := func(v, w int) []int {
+		lca := _lca(v, w)
+		dv := dep[v] - dep[lca]
+		dw := dep[w] - dep[lca]
+		if dv == dw {
+			return []int{lca}
+		}
+		if dv > dw {
+			mid := uptoKthPa(v, (dv+dw)/2)
+			if (dv+dw)%2 == 0 {
+				return []int{mid}
+			}
+			return []int{mid, pa[mid][0]}
+		} else {
+			mid := uptoKthPa(w, (dv+dw)/2)
+			if (dv+dw)%2 == 0 {
+				return []int{mid}
+			}
+			return []int{pa[mid][0], mid} // pa[mid][0] 离 v 更近
+		}
 	}
 
 	{
@@ -899,7 +954,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 		_ = _lca
 	}
 
-	_ = []interface{}{disVW, uptoKthPa, down}
+	_ = []interface{}{disVW, uptoKthPa, down1, move1, midPath}
 }
 
 // 最近公共祖先 · 其二 · 基于 RMQ
@@ -1074,6 +1129,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // 模板题（点权）https://www.luogu.com.cn/problem/P3128 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 // todo https://www.luogu.com.cn/problem/P2680
+// https://codeforces.com/problemset/problem/1707/C
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 	var father []int // father[v] 表示 v 的父节点
 
@@ -1399,6 +1455,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 }
 
 // 树上启发式合并 DSU on tree / small to large
+// O(nlogn)   根节点到树上任意节点的轻边数不超过 O(logn) 条
 // https://oi-wiki.org/graph/dsu-on-tree/
 // NOTE: 合并的时候最好先循环计算一遍答案，再循环合并一遍，这样的习惯可避免产生把合并之后的数值算入答案中的 bug
 // 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
@@ -1420,8 +1477,36 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://codeforces.com/contest/375/problem/D
 // https://codeforces.com/contest/741/problem/D
 // https://codeforces.com/problemset/problem/1805/E
-func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
-	hson := make([]int, n)
+
+// 写法一：按大小合并
+// 路径点权异或 https://codeforces.com/problemset/problem/1709/E
+func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
+	var f func(v, fa, xor int) map[int]bool
+	f = func(v, fa, xor int) map[int]bool {
+		xor ^= vals[v]
+		m := map[int]bool{xor: true}
+		for _, w := range g[v] {
+			if w == fa {
+				continue
+			}
+			subM := f(w, v, xor)
+			if len(subM) > len(m) {
+				m, subM = subM, m
+			}
+			// check subM ...
+
+			for x := range subM {
+				m[x] = true
+			}
+		}
+		return m
+	}
+	f(root, -1, 0)
+}
+
+// 写法二：轻重儿子合并
+func (*tree) dsu(root int, g [][]int, vals []int) { // vals 为点权
+	hson := make([]int, len(g))
 	var build func(v, fa int) int
 	build = func(v, fa int) int {
 		sz, hsz, hs := 1, 0, -1
@@ -1440,22 +1525,22 @@ func (*tree) dsu(n, root int, g [][]int, vals []int) { // vals 为点权
 	build(root, -1)
 
 	// 例如：统计子树的点权种类数
-	ans := make([]int, n) // int64
+	ans := make([]int, len(g)) // int64
 	var f func(v, fa int) map[int]bool
 	f = func(v, fa int) map[int]bool {
-		if hson[v] < 0 {
+		if hson[v] < 0 { // 叶结点
 			ans[v] = 1
 			return map[int]bool{vals[v]: true}
 		}
-		has := f(hson[v], v)
+		has := f(hson[v], v) // 先算重儿子
 		merge := func(val int) {
 			// do...
 			has[val] = true
 		}
 		for _, w := range g[v] {
-			if w != fa && w != hson[v] {
-				mp := f(w, v)
-				for val := range mp {
+			if w != fa && w != hson[v] { // 其余儿子合并到重儿子的结果中
+				subM := f(w, v)
+				for val := range subM {
 					merge(val)
 				}
 			}
