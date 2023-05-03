@@ -64,7 +64,7 @@ func CF1788F(_r io.Reader, _w io.Writer) {
 	}
 
 	for rt, c := range ccOddDegCnt {
-		if c != 0 { // 连通块里有奇数个奇度数点，fixXor 会影响答案奇数次，才能真正地影响答案
+		if c != 0 { // 连通块里有奇数个奇度数点，xorA 会影响答案奇数次，才能真正地影响答案
 			for i, f := range fa {
 				if f == rt {
 					dis[i] ^= xorA
