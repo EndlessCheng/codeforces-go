@@ -12,7 +12,7 @@ https://oi-wiki.org/misc/rand-technique/
 https://codeforces.com/problemset/problem/995/C
 https://codeforces.com/problemset/problem/1314/D 推荐
 https://codeforces.com/problemset/problem/1523/D
-https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290
+Kick Start 2021 Round C Binary Operator https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290
 */
 
 /* 模拟退火 (Simulated Annealing, SA)
