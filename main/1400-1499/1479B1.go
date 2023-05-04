@@ -9,7 +9,7 @@ import (
 // https://space.bilibili.com/206214
 func CF1479B1(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n ,ans int
+	var n, ans int
 	Fscan(in, &n)
 	a := make([]int, n)
 	pos := make([][]int, n+1)
@@ -22,11 +22,7 @@ func CF1479B1(_r io.Reader, out io.Writer) {
 	}
 	s, t := []int{0}, []int{0}
 	for _, v := range a {
-		if v == s[len(s)-1] {
-			t = append(t, v)
-		} else if v == t[len(t)-1] {
-			s = append(s, v)
-		} else if pos[s[len(s)-1]][0] < pos[t[len(t)-1]][0] {
+		if v == t[len(t)-1] || v != s[len(s)-1] && pos[s[len(s)-1]][0] < pos[t[len(t)-1]][0] {
 			s = append(s, v)
 		} else {
 			t = append(t, v)
