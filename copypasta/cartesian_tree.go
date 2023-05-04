@@ -4,9 +4,11 @@ package copypasta
 https://en.wikipedia.org/wiki/Cartesian_tree
 https://oi-wiki.org/ds/cartesian-tree/
 todo 一些题目 https://www.luogu.com.cn/blog/AAAbbb123/di-ka-er-shu-xue-xi-bi-ji
+另见单调栈 monotone_stack.go
 
 模板题 https://www.luogu.com.cn/problem/P5854 https://judge.yosupo.jp/problem/cartesian_tree
       https://www.luogu.com.cn/problem/P1377
+https://codeforces.com/problemset/problem/1777/D
 */
 
 type ctNode struct {
