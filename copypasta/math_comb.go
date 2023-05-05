@@ -19,6 +19,7 @@ https://codeforces.com/problemset/problem/1261/D2 推荐
 https://codeforces.com/problemset/problem/1288/C
 https://codeforces.com/problemset/problem/1342/E
 https://codeforces.com/problemset/problem/1359/E
+https://codeforces.com/problemset/problem/1763/D 推荐 分类讨论
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 
 放球问题
@@ -44,6 +45,7 @@ todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-
 组合恒等式之万金油方法 https://zhuanlan.zhihu.com/p/25195967
 ∑i*C(n,i) = n*2^(n-1)
 组合数奇偶性：n&m==m 时 C(n,m) 为奇数，否则为偶数
+联立 (1+1)^n 和 (1+(-1))^n 的二项式展开，可得 ∑C(n,2k+1) = ∑C(n,2k) = 2^(n-1)
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
@@ -240,8 +242,8 @@ https://oi-wiki.org/math/permutation-group/
 todo https://atcoder.jp/contests/abc198/tasks/abc198_f
      https://oeis.org/A054473 Number of ways of numbering the faces of a cube with nonnegative integers so that the sum of the 6 numbers is n
 
-找出 50% 作弊者 https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
-    讨论 https://codeforces.com/blog/entry/84822
+找出 50% 作弊者 GCJ2021 QR https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
+讨论 https://codeforces.com/blog/entry/84822
 */
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
