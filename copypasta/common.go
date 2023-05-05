@@ -22,8 +22,11 @@ import (
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
 /*
-最基本的双变量思想
-LC1 https://leetcode.cn/problems/two-sum/
+双变量思想
+- [1. 两数之和](https://leetcode.cn/problems/two-sum/)
+- [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
+- [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/)
+- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)
 
 哈希表与前缀和（双变量思想）
 推荐按照顺序完成
@@ -107,10 +110,12 @@ https://codeforces.com/problemset/problem/327/D
 https://codeforces.com/problemset/problem/515/D
 度数均为 k 且至少（恰好）有一条割边 https://codeforces.com/problemset/problem/550/D
 最短/最长 LIS https://codeforces.com/problemset/problem/1304/D
+https://codeforces.com/problemset/problem/1789/D
 
 不好想到的构造
 https://codeforces.com/contest/1659/problem/D
 https://atcoder.jp/contests/abc178/tasks/abc178_f
+https://codeforces.com/problemset/problem/1689/E 脑筋急转弯
 
 不变量（想一想，操作不会改变什么）
 https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
@@ -140,6 +145,7 @@ https://codeforces.com/contest/1374/problem/E2
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
+https://codeforces.com/problemset/problem/1777/D 树
 https://codeforces.com/problemset/problem/1808/D
 
 其他
