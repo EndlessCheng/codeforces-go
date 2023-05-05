@@ -68,7 +68,7 @@ func (io *mockIO) query(q request) (resp response) {
 	io.queryCnt++
 	if io.queryCnt > io.queryLimit { io._t.Fatalf("Query Limit Exceeded %d\nCase Data:\n%v", io.caseNum, io) }
 
-	// TODO: 计算 resp.res ...
+	// TODO: 计算 resp.v ...
 	//a := io.hiddenData
 	//qs := q.q
 	//for i := range qs {

@@ -20,8 +20,8 @@ type stdIO struct {
 
 type (
 	initData struct{ n int }
-	request  struct{ q int } //
-	response struct{ res int }
+	request  struct{ q int }
+	response struct{ v int }
 	answer   struct{ ans int }
 )
 
@@ -41,19 +41,12 @@ func (io stdIO) query(q request) (resp response) {
 	Fprintln(out, "?", q.q)
 	//Fprint(out, "?")
 	//Fprint(out, " ", len(q.q)) // TODO 输出 query 长度？
-	//for _, v := range q.q {
-	//	Fprint(out, " ", v)
-	//}
+	//for _, v := range q.q { Fprint(out, " ", v) }
 	//Fprintln(out)
 
 	out.Flush()
-
-	Fscan(in, &resp.res)
-
-	// TODO: 题目定义了 incorrect request？
-	if resp.res < 0 {
-		panic(-1)
-	}
+	Fscan(in, &resp.v)
+	//if resp.v < 0 { panic(-1) }
 	return
 }
 
@@ -63,18 +56,15 @@ func (io stdIO) printAnswer(a answer) {
 	Fprintln(out, "!", a.ans)
 	//Fprint(out, "!")
 	//Fprint(out, " ", len(a.ans)) // TODO 输出答案长度？
-	//for _, v := range a.ans {
-	//	Fprint(out, " ", v)
-	//}
+	//for _, v := range a.ans { Fprint(out, " ", v) }
 	//Fprintln(out)
 
 	out.Flush()
 
 	// TODO judge 是否返回答案非法？（通常是 move on to the next test case）
-	//var res int
-	//if Fscan(io.in, &res); res < 0 {
-	//	panic(res)
-	//}
+	//var state int
+	//Fscan(io.in, &state)
+	//if state < 0 { panic(state) }
 }
 
 func doInteraction(it interaction) {
@@ -84,13 +74,11 @@ func doInteraction(it interaction) {
 	_ = n
 
 	// TODO query 格式？
-	q := func(q int) int {
-		//for i := range q {
-		//	q[i]++
-		//}
-		return it.query(request{q}).res
+	get := func(q int) int {
+		//for i := range q { q[i]++ }
+		return it.query(request{q}).v
 	}
-	_ = q
+	_ = get
 
 	// TODO 答案类型？
 	var ans int
@@ -100,6 +88,9 @@ func doInteraction(it interaction) {
 	// TODO: 在这里实现
 
 }
+
+// TODO: 运行 & 测试！检查格式是否正确
+func main() { run() }
 
 func run() {
 	in := bufio.NewReader(os.Stdin)
@@ -112,6 +103,3 @@ func run() {
 		doInteraction(stdIO{in, out})
 	}
 }
-
-// TODO: 运行 & 测试！检查格式是否正确
-func main() { run() }
