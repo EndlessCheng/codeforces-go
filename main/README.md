@@ -13,19 +13,3 @@ Compiler info: go1.15.6, windows, 386
 例如：[1439C_test.go](./1400-1499/1439C_test.go)
 
 交互题的写法要复杂一些，为方便测试，需要把涉及输入输出的地方抽象成接口，详见 [interactive_problem](/copypasta/template/interactive_problem)。
-
-## 个人训练用（按出现频率从高到低）
-
-#### 大开脑洞
-
-- [构造](https://codeforces.com/problemset?tags=constructive%20algorithms,2000-2500)
-
-#### 数学抽象
-
-- [DP](https://codeforces.com/problemset?tags=dp,2000-2500)
-- [数论](https://codeforces.com/problemset?tags=number%20theory,2000-2500)
-- [组合计数](https://codeforces.com/problemset?tags=combinatorics,2000-2500)
-
-#### 建模
-
-- [图&树](https://codeforces.com/problemset?tags=combine-tags-by-or,graphs,trees,flows,dsu,2-sat,graph%20matchings,shortest%20paths,2000-2500)
