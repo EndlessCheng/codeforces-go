@@ -66,11 +66,11 @@ func (io *mockIO) query(q request) (resp response) {
 	}
 
 	io.queryCnt++
-	//if io.queryCnt > io.queryLimit { io._t.Fatalf("Query Limit Exceeded %d\nCase Data:\n%v", io.caseNum, io) }
+	if io.queryCnt > io.queryLimit { io._t.Fatalf("Query Limit Exceeded %d\nCase Data:\n%v", io.caseNum, io) }
 
-	// TODO: calc resp.v ...
-	a := io.hiddenData
-	qs := q.q
+	// TODO: 计算 resp.res ...
+	//a := io.hiddenData
+	//qs := q.q
 	//for i := range qs {
 	//	qs[i]--
 	//}
@@ -93,7 +93,7 @@ func Test_doInteraction(_t *testing.T) {
 		a := rg.IntSlice(n, 1, n)
 
 		io.n = n
-		io.ans = a
+		io.ans = 0 //
 		io.hiddenData = a
 
 		// TODO: set query limit ...
