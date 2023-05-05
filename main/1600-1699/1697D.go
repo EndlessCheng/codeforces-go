@@ -83,15 +83,15 @@ func doInteraction97(it interaction97) {
 		b byte
 	}
 	pos := []pair{}
-	for i := n - 1; i >= 0; i-- {
-		j := sort.Search(len(pos), func(j int) bool { return getDiff(i, pos[j].i) == j+1 })
-		if j < len(pos) {
+	for i := range ans {
+		j := sort.Search(len(pos), func(j int) bool { return getDiff(pos[j].i, i) > len(pos)-j }) - 1
+		if j < 0 {
+			ans[i] = getChar(i)
+		} else {
 			ans[i] = pos[j].b
 			pos = append(pos[:j], pos[j+1:]...)
-		} else {
-			ans[i] = getChar(i)
 		}
-		pos = append([]pair{{i, ans[i]}}, pos...)
+		pos = append(pos, pair{i, ans[i]})
 	}
 }
 
