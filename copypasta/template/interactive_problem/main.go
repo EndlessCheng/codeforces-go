@@ -21,7 +21,7 @@ type stdIO struct {
 type (
 	initData struct{ n int }
 	request  struct{ q int }
-	response struct{ v int }
+	response struct{ v int } // 如果有多种不同类型的返回值，改成 string 或者 []any
 	answer   struct{ ans int }
 )
 
