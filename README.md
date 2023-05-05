@@ -290,16 +290,20 @@
 #### 大开脑洞
 
 - [构造](https://codeforces.com/problemset?tags=constructive%20algorithms,2000-2500)
+- [交互](https://codeforces.com/problemset?tags=interactive,2000-2500)
 
 #### 数学抽象
 
 - [DP](https://codeforces.com/problemset?tags=dp,2000-2500)
 - [数论](https://codeforces.com/problemset?tags=number%20theory,2000-2500)
 - [组合计数](https://codeforces.com/problemset?tags=combinatorics,2000-2500)
+- [概率期望](https://codeforces.com/problemset?tags=probabilities,2000-2500)
+- [博弈](https://codeforces.com/problemset?tags=games,2000-2500)
 
 #### 建模转换
 
 - [图&树](https://codeforces.com/problemset?tags=combine-tags-by-or,graphs,trees,flows,dsu,2-sat,graph%20matchings,shortest%20paths,2000-2500)
+- [字符串](https://codeforces.com/problemset?tags=string%20suffix%20structures,combine-tags-by-or,strings,2000-2500)
 
 **我的 Codeforces 账号**
 
@@ -399,6 +403,10 @@
 [算法竞赛中可能不太会遇到的论文题](https://blog.csdn.net/skywalkert/article/details/48878925)
 
 [[杂谈]OI/ACM中冷门算法](https://zhuanlan.zhihu.com/p/21924647)
+
+[Things I don't know](https://codeforces.com/blog/entry/92248)
+
+> [meme] If you know at least 3 of these things and you are not red — you are doing it wrong. Stop learning useless algorithms, go and solve some problems, learn how to use binary search.
 
 https://blog.csdn.net/calabash_boy/article/details/79973483
 
