@@ -285,11 +285,23 @@
 
 通过大量的构造题训练，提高观察能力，快速找到切题入口。具体见我在知乎上的这篇 [回答](https://www.zhihu.com/question/353734418/answer/2353160035)。
 
-### Rating >= 2100
+### Rating >= 2100（个人训练用，仅供参考）
 
-这一阶段要想上分，应以 DP 为主，图论和数据结构为辅。难度范围选择同上，可以根据自己在该项的能力上下调整。
+#### 大开脑洞
 
-我的 Codeforces 账号：
+- [构造](https://codeforces.com/problemset?tags=constructive%20algorithms,2000-2500)
+
+#### 数学抽象
+
+- [DP](https://codeforces.com/problemset?tags=dp,2000-2500)
+- [数论](https://codeforces.com/problemset?tags=number%20theory,2000-2500)
+- [组合计数](https://codeforces.com/problemset?tags=combinatorics,2000-2500)
+
+#### 建模转换
+
+- [图&树](https://codeforces.com/problemset?tags=combine-tags-by-or,graphs,trees,flows,dsu,2-sat,graph%20matchings,shortest%20paths,2000-2500)
+
+**我的 Codeforces 账号**
 
 [![0x3F](https://img.shields.io/badge/0x3F-MASTER%202189-orange?style=for-the-badge)](https://codeforces.com/profile/0x3F)
 
