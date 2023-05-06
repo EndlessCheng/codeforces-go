@@ -98,7 +98,7 @@ func fastIO() {
 		if neg {
 			f = -f
 		}
-		return float64(f) / math.Pow10(len(s)-1-dotPos)
+		return float64(f) / math.Pow10(len(s)-1-dotPos) // 放心，math.Pow10 会直接查表，非常快
 	}
 
 	// NOTE: bufio.Scanner 在读长字符串的情况下可能会有奇怪的 bug，所以还是用下面的 fasterIO 吧！（CF827A WA5）
@@ -118,6 +118,7 @@ func fastIO() {
 // 选择 4KB 作为缓存块大小的原因 https://stackoverflow.com/questions/6578394/whats-so-special-about-4kb-for-a-buffer-length
 // NOTE: 如果只有数字的话，只需要判断字符与 '0' 的关系就行了；有小写字母的话，与 'z' 的大小判断可以省去（对运行耗时无影响）
 // NOTE: 额外的好处是，这种避开 Fscan 的写法可以节省一部分内存（1e6 下有 10M 左右）
+// C++ 选手可以参考 https://codeforces.com/contest/1826/submission/204581714
 func fasterIO() {
 	const eof = 0
 	out := bufio.NewWriter(os.Stdout)
