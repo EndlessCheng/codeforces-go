@@ -77,10 +77,10 @@ func CF1826E(_r io.Reader, out io.Writer) {
 
 	sort.Slice(a, func(i, j int) bool { return a[i].r[0] < a[j].r[0] })
 
-	lower := make([]Bitset26, n)
-	for i := range lower {
-		lower[i] = NewBitset26(n)
-		lower[i].SetAll1()
+	from := make([]Bitset26, n)
+	for i := range from {
+		from[i] = NewBitset26(n)
+		from[i].SetAll1()
 	}
 
 	ids := make([]int, n)
@@ -96,7 +96,7 @@ func CF1826E(_r io.Reader, out io.Writer) {
 				cur.Set(ids[j])
 				j++
 			}
-			lower[i].IntersectionFrom(cur)
+			from[i].IntersectionFrom(cur)
 		}
 	}
 
@@ -105,7 +105,7 @@ func CF1826E(_r io.Reader, out io.Writer) {
 	for i, p := range a {
 		f[i] = 0
 		for j := i - 1; j >= 0; j-- {
-			if f[j] > f[i] && lower[i].Has(j) {
+			if f[j] > f[i] && from[i].Has(j) {
 				f[i] = f[j]
 			}
 		}
