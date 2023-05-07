@@ -1,6 +1,6 @@
 package copypasta
 
-// 重新发明线段树 by 灵茶山艾府（8:36 开始）https://www.bilibili.com/video/BV18t4y1p736
+// 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 
 // 可视化 https://visualgo.net/zh/segmenttree
 
@@ -8,6 +8,7 @@ package copypasta
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/
+// 线段树进阶 Part 1 https://www.luogu.com.cn/blog/AlexWei/Segment-Tree-Part-1
 // https://codeforces.com/blog/entry/18051
 // https://codeforces.com/blog/entry/89313
 // https://codeforces.com/blog/entry/15890
@@ -22,9 +23,9 @@ package copypasta
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
-// 最长连续相同子串 LC2213 https://leetcode-cn.com/problems/longest-substring-of-one-repeating-character/
-// 开方 https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
-// 取模 https://codeforces.com/problemset/problem/438/D
+// 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
+// 开方（也可以并查集）https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
+// 取模（也可以并查集） https://codeforces.com/problemset/problem/438/D
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D
 // 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C
 // k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G
@@ -40,21 +41,28 @@ package copypasta
 //     https://codeforces.com/contest/1514/problem/D
 // GCD https://codeforces.com/problemset/problem/914/D
 // 最小差值 https://codeforces.com/problemset/problem/765/F
+// 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E
 // 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
+// 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
-// 另见 dp.go 的动态 DP 部分
+// 另见 dp.go 的数据结构优化 DP
+// 另见 dp.go 的动态 DP
 // todo http://poj.org/problem?id=2991
 // 变换成值域 https://www.luogu.com.cn/problem/SP1684 https://www.luogu.com.cn/problem/UVA11235 http://poj.org/problem?id=3368
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
+
+// 线段树二分
+// LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 
 // EXTRA: 权值线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
 // 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
 // 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 // https://codeforces.com/problemset/problem/1042/D
+// todo 区间只出现一次的数的最大值 https://codeforces.com/problemset/problem/69/E
 
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
@@ -258,12 +266,17 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
 // 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E https://codeforces.com/contest/292/submission/173659179
+// todo https://codeforces.com/problemset/problem/1209/G2
+// 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ https://leetcode.cn/problems/t3fKg1/
 //
 // 多个更新操作复合：
 // * + ∑ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
+// 线段树维护区间加、乘、赋值、平方和、立方和 http://acm.hdu.edu.cn/showproblem.php?pid=4578
+// - https://www.cnblogs.com/dyhaohaoxuexi/p/14046275.html
 // 注：区间赋值（=x）可以看成是先 *0 再 +x
+// 三维向量 * + 交换 ∑^2 http://118.190.20.162/view.page?gpid=T119
 //
 // 吉老师线段树 Segment Tree Beats
 // todo https://oi-wiki.org/ds/seg-beats/
