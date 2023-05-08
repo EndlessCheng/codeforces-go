@@ -273,39 +273,39 @@ func pow(x int64, n int) (res int64) {
 
 // 一种避免不小心把数组开小的写法
 // https://codeforces.com/problemset/submission/1794/205053722
-type comb struct{ f, invF []int64 }
+type comb struct{ _f, _invF []int64 }
 
 func newComb(mx int) *comb {
 	c := &comb{[]int64{1}, []int64{1}}
-	c.init(mx)
+	c._init(mx)
 	return c
 }
 
-func (c *comb) init(mx int) {
-	n := len(c.f)
-	c.f = append(make([]int64, 0, mx+1), c.f...)[:mx+1]
+func (c *comb) _init(mx int) {
+	n := len(c._f)
+	c._f = append(make([]int64, 0, mx+1), c._f...)[:mx+1]
 	for i := n; i <= mx; i++ {
-		c.f[i] = c.f[i-1] * int64(i) % _mod
+		c._f[i] = c._f[i-1] * int64(i) % _mod
 	}
-	c.invF = append(make([]int64, 0, mx+1), c.invF...)[:mx+1]
-	c.invF[mx] = pow(c.f[mx], _mod-2)
+	c._invF = append(make([]int64, 0, mx+1), c._invF...)[:mx+1]
+	c._invF[mx] = pow(c._f[mx], _mod-2)
 	for i := mx; i > n; i-- {
-		c.invF[i-1] = c.invF[i] * int64(i) % _mod
+		c._invF[i-1] = c._invF[i] * int64(i) % _mod
 	}
 }
 
-func (c *comb) factorial(n int) int64 {
-	if n >= len(c.f) {
-		c.init(n * 2)
+func (c *comb) f(n int) int64 {
+	if n >= len(c._f) {
+		c._init(n * 2)
 	}
-	return c.f[n]
+	return c._f[n]
 }
 
-func (c *comb) invFactorial(n int) int64 {
-	if n >= len(c.f) {
-		c.init(n * 2)
+func (c *comb) invF(n int) int64 {
+	if n >= len(c._f) {
+		c._init(n * 2)
 	}
-	return c.invF[n]
+	return c._invF[n]
 }
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
