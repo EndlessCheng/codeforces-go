@@ -308,6 +308,13 @@ func (c *comb) invF(n int) int64 {
 	return c._invF[n]
 }
 
+func (c *comb) c(n, k int) int64 {
+	if k < 0 || k > n {
+		return 0
+	}
+	return c.f(n) * c.invF(k) % _mod * c.invF(n-k) % _mod
+}
+
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
 // 参考《挑战程序设计竞赛》P296
 // https://codeforces.com/blog/entry/64625
