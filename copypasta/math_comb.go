@@ -2,12 +2,19 @@ package copypasta
 
 import "math/bits"
 
-/* 组合数学（概率与期望见 dp.go 中的概率 DP）
+/* 组合数学
+
+概率与期望见 dp.go 中的「概率 DP」
+部分计数问题见 dp.go 中的「计数 DP」
+
 https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
 一些组合问题
+没有思路的话可以尝试：
+- 打表 + OEIS
+- 用 DP 推导，然后尝试优化
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
@@ -19,10 +26,15 @@ https://codeforces.com/problemset/problem/1261/D2 推荐
 https://codeforces.com/problemset/problem/1288/C
 https://codeforces.com/problemset/problem/1342/E
 https://codeforces.com/problemset/problem/1359/E
+https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
 https://codeforces.com/problemset/problem/1763/D 推荐 分类讨论
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 
 放球问题
+最基础的问题，把 n 个无区别的球放入 m 个有区别的盒子中，不允许空盒（n>=m）：
+- 解答：考虑用 m-1 个隔板隔开这些球，这些球之间有 n-1 个位置可以放置隔板，所以方案数为 C(n-1,m-1)
+变形：允许空盒
+- 解答：假设多了 m 个球，往每个盒子中都放一个球，就可以转换成上面的情况 C(n+m-1,m-1)
 https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 https://www.luogu.com.cn/blog/over-knee-socks/post-ball-box
 https://www.cnblogs.com/Xing-Ling/p/11176939.html
@@ -46,6 +58,7 @@ todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-
 ∑i*C(n,i) = n*2^(n-1)
 组合数奇偶性：n&m==m 时 C(n,m) 为奇数，否则为偶数
 联立 (1+1)^n 和 (1+(-1))^n 的二项式展开，可得 ∑C(n,2k+1) = ∑C(n,2k) = 2^(n-1)
+https://oeis.org/A000244 3^n 子集的子集个数
 
 NOTE: 涉及到相邻的组合问题：可以考虑当前位置和左侧位置所满足的性质（例题 https://atcoder.jp/contests/abc167/tasks/abc167_e）
 
@@ -245,6 +258,55 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 找出 50% 作弊者 GCJ2021 QR https://codingcompetitions.withgoogle.com/codejam/round/000000000043580a/00000000006d1155
 讨论 https://codeforces.com/blog/entry/84822
 */
+
+func pow(x int64, n int) (res int64) {
+	x %= _mod
+	res = 1
+	for ; n > 0; n >>= 1 {
+		if n&1 > 0 {
+			res = res * x % _mod
+		}
+		x = x * x % _mod
+	}
+	return
+}
+
+// 一种避免不小心把数组开小的写法
+// https://codeforces.com/problemset/submission/1794/205053722
+type comb struct{ f, invF []int64 }
+
+func newComb(mx int) *comb {
+	c := &comb{[]int64{1}, []int64{1}}
+	c.init(mx)
+	return c
+}
+
+func (c *comb) init(mx int) {
+	n := len(c.f)
+	c.f = append(make([]int64, 0, mx+1), c.f...)[:mx+1]
+	for i := n; i <= mx; i++ {
+		c.f[i] = c.f[i-1] * int64(i) % _mod
+	}
+	c.invF = append(make([]int64, 0, mx+1), c.invF...)[:mx+1]
+	c.invF[mx] = pow(c.f[mx], _mod-2)
+	for i := mx; i > n; i-- {
+		c.invF[i-1] = c.invF[i] * int64(i) % _mod
+	}
+}
+
+func (c *comb) factorial(n int) int64 {
+	if n >= len(c.f) {
+		c.init(n * 2)
+	}
+	return c.f[n]
+}
+
+func (c *comb) invFactorial(n int) int64 {
+	if n >= len(c.f) {
+		c.init(n * 2)
+	}
+	return c.invF[n]
+}
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
 // 参考《挑战程序设计竞赛》P296
