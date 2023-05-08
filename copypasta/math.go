@@ -582,7 +582,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	Values of records https://oeis.org/A005250
 	Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
 	相关题目 https://www.luogu.com.cn/problem/P6104 https://class.luogu.com.cn/classroom/lgr69
-	https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435a5b/000000000077a8e6
+	Kick Start 2021 Round B Consecutive Primes https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435a5b/000000000077a8e6
 	Numbers whose distance to the closest prime number is a prime number https://oeis.org/A160666
 
 	孪生素数 https://en.wikipedia.org/wiki/Twin_prime https://oeis.org/A001359 https://oeis.org/A006512 https://oeis.org/A077800
@@ -1108,7 +1108,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// Number of partitions of n into consecutive positive integers including the trivial partition of length 1
 	// e.g. 9 = 2+3+4 or 4+5 or 9 so a(9)=3
 	// 相关题目 LC829 https://leetcode.cn/problems/consecutive-numbers-sum/
-	// https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec1cb
+	// Kick Start 2021 Round C Alien Generator https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec1cb
 	oddDivisorsNum := func(n int) (ans int) {
 		for i := 1; i*i <= n; i++ {
 			if n%i == 0 {
@@ -1907,7 +1907,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 费马小定理求质数逆元
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
-	invP := func(a, p int64) int64 { return pow(a, p-2, p) }
+	invP := func(a, p int64) int64 {
+		if a <= 0 {
+			panic(-1)
+		}
+		return pow(a, p-2, p)
+	}
 
 	// 有理数取模
 	// 模板题 https://www.luogu.com.cn/problem/P2613
@@ -1922,13 +1927,14 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
 	// 模板题 https://www.luogu.com.cn/problem/P3811
-	initAllInv := func(p int) []int64 {
-		inv := make([]int64, p)
+	{
+		const mod = 998244353
+		const mx int = 1e6
+		inv := [mx + 1]int64{}
 		inv[1] = 1
-		for i := 2; i < p; i++ {
-			inv[i] = int64(p-p/i) * inv[p%i] % int64(p)
+		for i := 2; i <= mx; i++ {
+			inv[i] = int64(mod-mod/i) * inv[mod%i] % mod
 		}
-		return inv
 	}
 
 	// 线性求逆元·其二（离线逆元）
@@ -2683,6 +2689,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//  https://www.luogu.com.cn/problem/P2522
 	//  https://www.luogu.com.cn/blog/203623/sol-jrksjr6D https://www.luogu.com.cn/blog/Silver187/qian-lian-di-shi-jie-ti-xie
 	//  GCD=1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
+	//  GCD=1 的数对个数 * (i-j) https://codeforces.com/problemset/problem/1780/F
 
 	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
 
@@ -2929,7 +2936,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		divisors, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
-		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, initAllInv, calcAllInv,
+		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
