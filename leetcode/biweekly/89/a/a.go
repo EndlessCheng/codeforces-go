@@ -1,17 +1,12 @@
 package main
 
-import "fmt"
-
 // https://space.bilibili.com/206214
-func count(time string, limit int) (ans int) {
-next:
-	for i := 0; i < limit; i++ {
-		for j, c := range fmt.Sprintf("%02d", i) {
-			if time[j] != '?' && byte(c) != time[j] {
-				continue next
-			}
+func count(t string, period int) (ans int) {
+	for i := 0; i < period; i++ {
+		if (t[0] == '?' || i/10 == int(t[0]-'0')) &&
+			(t[1] == '?' || i%10 == int(t[1]-'0')) {
+			ans++
 		}
-		ans++
 	}
 	return
 }
