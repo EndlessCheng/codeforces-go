@@ -38,7 +38,8 @@
 ||[1187. 使数组严格递增](https://leetcode.cn/problems/make-array-strictly-increasing/)|[最长递增子序列的变形：选或不选/枚举选哪个](https://leetcode.cn/problems/make-array-strictly-increasing/solution/zui-chang-di-zeng-zi-xu-lie-de-bian-xing-jhgg/)|2316|
 ||[1000. 合并石头的最低成本](https://leetcode.cn/problems/minimum-cost-to-merge-stones/)|[【图解】区间 DP：状态设计与优化](https://leetcode.cn/problems/minimum-cost-to-merge-stones/solution/tu-jie-qu-jian-dpzhuang-tai-she-ji-yu-yo-ppv0/)|2423|
 ||[1815. 得到新鲜甜甜圈的最多组数](https://leetcode.cn/problems/maximum-number-of-groups-getting-fresh-donuts/)|[【图解】位运算的魔法](https://leetcode.cn/problems/maximum-number-of-groups-getting-fresh-donuts/solution/by-endlesscheng-r5ve/)|2559|
-|数学|[754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)|[【图解】分类讨论+详细证明+简洁写法+优化](https://leetcode.cn/problems/reach-a-number/solution/fen-lei-tao-lun-xiang-xi-zheng-ming-jian-sqj2/)|1880|
+|数学|[1015. 可被 K 整除的最小整数](https://leetcode.cn/problems/smallest-integer-divisible-by-k/)|[【图解】三种算法+优化](https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/)|1875|
+||[754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)|[【图解】分类讨论+详细证明+简洁写法+优化](https://leetcode.cn/problems/reach-a-number/solution/fen-lei-tao-lun-xiang-xi-zheng-ming-jian-sqj2/)|1880|
 ||[1739. 放置盒子](https://leetcode.cn/problems/building-boxes/)|[【动画】没想明白？一个动画秒懂！附 O(1) 做法](https://leetcode.cn/problems/building-boxes/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-8vbe/)|2198|
 ||[1819. 序列中不同最大公约数的数目](https://leetcode.cn/problems/number-of-different-subsequences-gcds/)|[击败100%！枚举GCD+循环优化](https://leetcode.cn/problems/number-of-different-subsequences-gcds/solution/ji-bai-100mei-ju-gcdxun-huan-you-hua-pyt-get7/)|2540|
 |贪心|[1144. 递减元素使数组呈锯齿状](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/)|[没有思路？一步步提示你思考！](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/solution/mei-you-si-lu-yi-bu-bu-ti-shi-ni-si-kao-cm0h2/)|1559|
