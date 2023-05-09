@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -27,8 +28,7 @@ func CF1824A(_r io.Reader, _w io.Writer) {
 	var T, n, m, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
-		pos := make([]int, m)
-		a := []int{}
+		has := map[int]bool{}
 		l, r := 0, 0
 		for ; n > 0; n-- {
 			Fscan(in, &v)
@@ -37,23 +37,22 @@ func CF1824A(_r io.Reader, _w io.Writer) {
 			} else if v == -2 {
 				r++
 			} else {
-				a = append(a, v-1)
-				pos[v-1] = 1
+				has[v-1] = true
 			}
 		}
-		sum := make([]int, m+1)
-		for i, v := range pos {
-			sum[i+1] = sum[i] + v
+
+		a := make([]int, 0, len(has))
+		for k := range has {
+			a = append(a, k)
 		}
-		ans := 0
-		ans = max(ans, min(r, m-sum[m]))
-		ans = max(ans, min(l, m-sum[m]))
-		for _, p := range a {
-			ll := min(l, p-sum[p])
-			rr := min(r, (m-p)-sum[m]+sum[p])
-			ans = max(ans, ll+rr)
+		sort.Ints(a)
+
+		fixed := len(a)
+		maxFree := min(max(l, r), m-fixed)
+		for i, p := range a {
+			maxFree = max(maxFree, min(l, p-i)+min(r, (m-1-p)-(fixed-i-1)))
 		}
-		Fprintln(out, ans+sum[m])
+		Fprintln(out, maxFree+fixed)
 	}
 }
 
