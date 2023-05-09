@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -58,4 +57,4 @@ func CF1824A(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { CF1824A(os.Stdin, os.Stdout) }
+//func main() { CF1824A(os.Stdin, os.Stdout) }
