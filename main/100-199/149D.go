@@ -43,23 +43,23 @@ func CF149D(in io.Reader, out io.Writer) {
 			res += f(l+1, mid-1, 0, 1) * f(mid+1, r, 1, rc)
 			res += f(l+1, mid-1, 0, 2) * f(mid+1, r, 2, rc)
 			if lc != 1 {
-				res += f(l+1, mid-1, 2, 0) * f(mid+1, r, 0, rc)
-			}
-			if lc != 2 {
 				res += f(l+1, mid-1, 1, 0) * f(mid+1, r, 0, rc)
 			}
+			if lc != 2 {
+				res += f(l+1, mid-1, 2, 0) * f(mid+1, r, 0, rc)
+			}
 		} else {
-			if rc != 1 {
-				res += f(l+1, r-1, 0, 2)
-			}
-			if rc != 2 {
-				res += f(l+1, r-1, 0, 1)
-			}
 			if lc != 1 {
-				res += f(l+1, r-1, 2, 0)
+				res += f(l+1, r-1, 1, 0)
 			}
 			if lc != 2 {
-				res += f(l+1, r-1, 1, 0)
+				res += f(l+1, r-1, 2, 0)
+			}
+			if rc != 1 {
+				res += f(l+1, r-1, 0, 1)
+			}
+			if rc != 2 {
+				res += f(l+1, r-1, 0, 2)
 			}
 		}
 		*ptr = res % mod
