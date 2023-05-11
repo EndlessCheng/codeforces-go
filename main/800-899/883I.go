@@ -7,25 +7,32 @@ import (
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF883I(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n, k int
 	Fscan(in, &n, &k)
-	a := make([]int, n+1)
-	for i := 1; i <= n; i++ {
+	a := make([]int, n)
+	for i := range a {
 		Fscan(in, &a[i])
 	}
 	sort.Ints(a)
-	Fprint(out, sort.Search(a[n]-a[1], func(lim int) bool {
-		dp := make([]int, n+1) // dp[i] 表示前 i 个数中能满足 lim 的最后一个数的位置
-		for i, p := k, 0; i <= n; i++ {
-			if a[i]-a[dp[i-k]+1] <= lim {
-				p = i
+	Fprint(out, sort.Search(a[n-1]-a[0], func(mx int) bool {
+		f := make([]bool, n+1)
+		f[0] = true
+		j0 := 0
+		for i := k - 1; i < n; i++ {
+			for a[i]-a[j0] > mx {
+				j0++
 			}
-			dp[i] = p
+			for ; j0 <= i-k+1; j0++ {
+				if f[j0] {
+					f[i+1] = true
+					break
+				}
+			}
 		}
-		return dp[n] == n
+		return f[n]
 	}))
 }
 
