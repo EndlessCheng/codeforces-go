@@ -17,7 +17,7 @@ func CF1714E(_r io.Reader, _w io.Writer) {
 		z, m := -1, 0
 		for Fscan(in, &n); n > 0; n-- {
 			Fscan(in, &v)
-			if v%10 == 0 || v%10 == 5 {
+			if v%5 == 0 {
 				v += v % 10
 				if z == -1 {
 					z = v
