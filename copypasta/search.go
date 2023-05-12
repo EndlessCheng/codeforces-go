@@ -786,7 +786,7 @@ func _(min, max func(int, int) int) {
 	// 我的视频讲解 https://www.bilibili.com/video/BV1na41137jv?t=15m43s
 	// https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
 	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
-	// 例题（TS1）https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
+	// 例题（TS1）GCJ 2018 R2 Costume Change https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
 	loopSubsetK := func(a []int, k int) {
 		n := len(a)
 		for sub := 1<<k - 1; sub < 1<<n; {

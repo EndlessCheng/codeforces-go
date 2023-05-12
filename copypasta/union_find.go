@@ -27,6 +27,8 @@ https://zhuanlan.zhihu.com/p/553192435
 // 基础题 https://codeforces.com/problemset/problem/1411/C
 // LC305 https://leetcode.cn/problems/number-of-islands-ii/
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
+// 处理图上的环
+// - https://codeforces.com/contest/1726/problem/D
 // 数组标记/区间合并相关
 // - [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/)
 // - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
@@ -54,7 +56,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 分组排序套路 LC1998 https://leetcode-cn.com/problems/gcd-sort-of-an-array/
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 // 转换 https://codeforces.com/problemset/problem/1253/D
-// 离散 + 四方向 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
+// 离散 + 四方向 Kick Start 2019 Round C Wiggle Walk https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
 // 技巧：去掉无用数据
 // - https://codeforces.com/problemset/problem/1157/E
 // - https://codeforces.com/problemset/problem/1791/F
@@ -254,7 +256,7 @@ func moveRobot(start ufPoint, command string) ufPoint {
 	return p
 }
 
-// 并查集 - 维护点权
+// 点权并查集
 // 维护的可以是集合的大小、最值、XOR、GCD 等
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 // https://codeforces.com/problemset/problem/1609/D
@@ -298,7 +300,7 @@ func _(n int) {
 	_ = []interface{}{merge, same, size}
 }
 
-// 并查集 - 维护边权（种类）
+// 边权并查集（种类并查集）
 // 核心在于：
 //    2 ------ 4
 //   /        /
@@ -321,6 +323,7 @@ func _(n int) {
 //      https://codeforces.com/contest/1713/problem/E
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
+// https://codeforces.com/problemset/problem/1788/F
 func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加减法
 	const kinds = 2
@@ -333,7 +336,7 @@ func _(n int) {
 	find = func(x int) int {
 		if fa[x] != x {
 			ffx := find(fa[x])
-			dis[x] += dis[fa[x]]
+			dis[x] += dis[fa[x]] //
 			fa[x] = ffx
 		}
 		return fa[x]

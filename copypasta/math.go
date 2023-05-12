@@ -43,6 +43,15 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1
 ∑^∞ r^i = 1/(1-r)
 ∑^∞ i*r^i = r/(1-r)^2
 
+处理绝对值·曼哈顿距离转切比雪夫距离
+每个点 (x,y) 改成 (x+y,x-y)
+|x1-x2|+|y1-y2| 就可以用 max(|x1'-x2'|,|y1'-y2'|) 来计算了
+https://codeforces.com/problemset/problem/1689/D
+LC1131 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
+
+处理绝对值·分类讨论
+https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/bu-hui-hua-jian-qing-kan-zhe-pythonjavac-c2s6/
+
 勾股数 https://oeis.org/A008846
 斜边 https://oeis.org/A004613 Numbers that are divisible only by primes congruent to 1 mod 4
 https://en.wikipedia.org/wiki/Pythagorean_triple https://zh.wikipedia.org/wiki/%E5%8B%BE%E8%82%A1%E6%95%B0
@@ -1102,6 +1111,28 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
+	// 无需额外空间的写法
+	// https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/
+	divisorsO1Space := func(n int64) {
+		// 从小到大枚举不超过 sqrt(n) 的因子
+		i := int64(1)
+		for ; i*i <= n; i++ {
+			if n%i == 0 {
+				// do i ...
+			}
+		}
+		// 从小到大枚举大于 sqrt(n) 的因子
+		i--
+		if i*i == n {
+			i-- // 避免重复统计
+		}
+		for ; i > 0; i-- {
+			if n%i == 0 {
+				// do m/i ...
+			}
+		}
+	}
+
 	// Number of odd divisors of n https://oeis.org/A001227
 	// a(n) = d(2*n) - d(n)
 	// 亦为整数 n 分拆成若干连续整数的方法数
@@ -1710,6 +1741,13 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		}
 	}
 
+	// 欧拉定理
+	// 如果 gcd(a,n) = 1，则 a^φ(n) ≡ 1(mod n)
+	// 推论：如果 gcd(a,n) = 1，则 a^x ≡ 1(mod n) 的最小正整数解是 φ(n) 的因子（证明见《算法竞赛进阶指南》）
+	// LC1015 https://leetcode.cn/problems/smallest-integer-divisible-by-k/ http://poj.org/problem?id=3696
+	// https://atcoder.jp/contests/abc222/tasks/abc222_g
+	// https://oj.socoding.cn/p/1981
+
 	// 扩展欧拉定理（降幂公式）
 	// https://oi-wiki.org/math/fermat/#_5
 	// https://zhuanlan.zhihu.com/p/42632291
@@ -2037,7 +2075,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// todo https://www.luogu.com.cn/blog/command-block/yuan-gen-li-san-dui-shuo-xiang-guan
 	//      http://blog.miskcoo.com/2015/05/discrete-logarithm-problem
 	//      https://www.luogu.com.cn/blog/hzoiliuchang/shuo-lun-zhi-bsgs-suan-fa
+	//
 	// 模板题 https://www.luogu.com.cn/problem/P3846
+	// https://atcoder.jp/contests/abc222/tasks/abc222_g
 	// todo https://atcoder.jp/contests/abc270/tasks/abc270_g
 	babyStepGiantStep := func(a, b, p, k int64) int64 { // 非 exBSGS 下 k=1
 		b %= p
@@ -2933,7 +2973,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		divisors, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
+		divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, calcAllInv,

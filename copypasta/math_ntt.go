@@ -24,6 +24,9 @@ P-1 包含大量因子 2，便于分治
 任意模数 NTT https://www.luogu.com.cn/problem/P4245
 
 NTT vs FFT：对于模板题 https://www.luogu.com.cn/problem/P3803 NTT=1.98s(750ms) FFT=3.63s(1.36s) 括号内是最后一个 case 的运行时间
+
+卡常技巧
+A modulo multiplication method that is 2x faster than compiler implementation https://codeforces.com/blog/entry/111566
 */
 
 /* 多项式全家桶

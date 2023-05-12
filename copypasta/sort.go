@@ -35,6 +35,8 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 - [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+https://codeforces.com/problemset/problem/1118/D2
+DP https://codeforces.com/contest/883/problem/I
 
 #### 最小化最大值
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
@@ -66,6 +68,7 @@ https://codeforces.com/problemset/problem/1201/C  也可以贪心做
 1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
 3484 https://www.acwing.com/problem/content/122/ 二分位置
 
+https://codeforces.com/problemset/problem/1697/D
 隐藏的二分 https://atcoder.jp/contests/abc203/tasks/abc203_d
 隐藏的二分 https://codeforces.com/problemset/problem/1354/D
 转换的好题 https://codeforces.com/problemset/problem/1181/D

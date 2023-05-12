@@ -81,7 +81,7 @@ func fwt(a, b []int, fwtFunc func([]int, int) []int, invOp int) []int {
 // 注：若代码性能瓶颈在 FWT 上，可以通过以下方式消除比较慢的乘法和取模（CF 上需要将 int64 改成 int）
 // 优化前 1575ms https://codeforces.com/contest/1218/submission/118700754
 // 优化后  748ms https://codeforces.com/contest/1218/submission/118704484
-const _mod = 1e9 + 7
+const _mod = 1_000_000_007
 
 func add(a, b int) int {
 	a += b

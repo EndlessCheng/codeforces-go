@@ -98,6 +98,7 @@ https://codeforces.com/problemset/problem/1608/C 对拍找反例
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
+1500 https://codeforces.com/problemset/problem/1809/C
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 +贪心 https://codeforces.com/problemset/problem/118/C
 +分类讨论 https://codeforces.com/problemset/problem/584/C
@@ -135,6 +136,7 @@ https://codeforces.com/problemset/problem/796/C
 https://codeforces.com/problemset/problem/1594/F
 https://codeforces.com/problemset/problem/1798/E
 https://codeforces.com/problemset/problem/1811/F
+https://codeforces.com/problemset/problem/1714/F 锻炼代码实现技巧的好题
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
@@ -146,6 +148,7 @@ https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
 https://codeforces.com/problemset/problem/1777/D 树
+https://codeforces.com/problemset/problem/1788/D 好题！
 https://codeforces.com/problemset/problem/1808/D
 
 其他

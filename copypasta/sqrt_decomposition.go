@@ -35,6 +35,9 @@ https://codeforces.com/problemset/problem/1039/E
 大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H
 https://codeforces.com/problemset/problem/1806/E
 见下面的 floorDivide https://codeforces.com/problemset/problem/786/C
+
+自动 O(n√n)
+https://codeforces.com/problemset/problem/1790/F
 */
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
@@ -49,6 +52,7 @@ https://www.luogu.com.cn/problem/P6466
 分块数据结构
 https://oi-wiki.org/ds/decompose/
 https://oi-wiki.org/ds/block-array/
+Unrolled linked list https://en.wikipedia.org/wiki/Unrolled_linked_list
 【推荐】https://www.luogu.com.cn/blog/220037/Sqrt1
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf

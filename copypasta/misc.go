@@ -259,7 +259,7 @@ func miscCollection() {
 	}
 
 	// 01 矩阵，每个 1 位置向四个方向延伸连续 1 的最远距离
-	// https://codingcompetitions.withgoogle.com/kickstart/round/0000000000436140/000000000068c509
+	// Kick Start 2021 Round A L Shaped Plots https://codingcompetitions.withgoogle.com/kickstart/round/0000000000436140/000000000068c509
 	max1dir4 := func(a [][]int) (ls, rs, us, ds [][]int) {
 		n, m := len(a), len(a[0])
 		ls, rs = make([][]int, n), make([][]int, n)
