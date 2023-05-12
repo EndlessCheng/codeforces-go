@@ -386,7 +386,7 @@ func (r *RG) GraphEdges(n, m, st int, directed bool) (edges [][2]int) {
 // TreeEdges generates a graph with n nodes, m edges, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
 // TIPS: pass directed=false to generate a DAG.
 func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed bool) (edges [][3]int) {
-	edges = make([][3]int, n-1)
+	edges = make([][3]int, m)
 	for i, e := range r.graphEdges(n, m, st, directed) {
 		weight := r._int(minWeight, maxWeight)
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
