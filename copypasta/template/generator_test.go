@@ -23,11 +23,11 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 	}
 }
 
-// 如果有交互题，赛前先熟悉下交互模板
-// 确认下 main.go 和 main_test.go 是否恢复
-// https://atcoder.jp/contests/abc262/tasks_print
+// atc race xxx
+// 是否有交互题？熟悉下交互模板
+// https://atcoder.jp/contests/abc287/tasks_print
 func TestGenCodeforcesContestTemplates(t *testing.T) {
-	const cmdName = CmdAtcoder //
+	const cmdName = CmdCodeforces //
 	const contestID = "" //
 	const overwrite = false
 	rootPath := fmt.Sprintf("../../%s/", contestID)
@@ -42,8 +42,6 @@ func TestGenCodeforcesContestTemplates(t *testing.T) {
 	}
 }
 
-// "../../misc/gcj/<year>/<id>/"  需要改模板
-// "../../misc/kickstart/<year>/<id>/"  需要改模板
 // "../../misc/luogu/contest/<id>/"
 // "../../misc/nowcoder/<id>/"
 func TestGenTemplates(t *testing.T) {
