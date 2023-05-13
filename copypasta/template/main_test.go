@@ -117,11 +117,22 @@ func TestCheck(_t *testing.T) {
 
 	target := 0
 	testutil.CheckRunResultsInfWithTarget(_t, inputGenerator, target, run)
+
+	//runHack := func(in io.Reader, out io.Writer) { }
+	//testutil.CheckRunResultsInf(_t, inputGenerator, runHack)
+}
+
+func TestRE(_t *testing.T) {
 	return
+	testutil.DebugTLE = 0
 
-	// for hacking, write wrong codes here
-	runHack := func(in io.Reader, out io.Writer) {
-
+	inputGenerator := func() (string, testutil.OutputChecker) {
+		rg := testutil.NewRandGenerator()
+		rg.One() // 若不是多测则 remove
+		n := rg.Int(1, 5)
+		rg.NewLine()
+		rg.IntSlice(n, 0, 5)
+		return rg.String(), func(myOutput string) bool { return true }
 	}
-	testutil.CheckRunResultsInf(_t, inputGenerator, runHack)
+	testutil.CheckRunResultsInfWithTarget(_t, inputGenerator, 0, run)
 }
