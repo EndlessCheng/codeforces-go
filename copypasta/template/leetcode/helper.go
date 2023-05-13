@@ -104,6 +104,7 @@ func init() {
 		"s2", "y",
 
 		// 其余常见变量名
+		"number", "n",
 		"num", "n",
 		"num1", "x",
 		"num2", "y",
