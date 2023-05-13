@@ -22,7 +22,7 @@ func CF1832D2(_r io.Reader, _w io.Writer) {
 	var n, q, k, ans int
 	Fscan(in, &n, &q)
 	a := make([]int, n)
-	s := int64(0)
+	s := -int64(n-1) * int64(n-2) / 2
 	for i := range a {
 		Fscan(in, &a[i])
 		s += int64(a[i])
@@ -43,8 +43,7 @@ func CF1832D2(_r io.Reader, _w io.Writer) {
 				ans += k
 			}
 		} else {
-			s := s - int64(n-1)*int64(n-2)/2
-			s += int64(k) * int64(n-1)
+			s := s + int64(k)*int64(n-1)
 			ans = pre[n-2] + k
 			k -= n - 1
 			if k%2 > 0 {
