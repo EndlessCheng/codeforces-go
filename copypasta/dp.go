@@ -42,6 +42,7 @@ https://codeforces.com/problemset/problem/1025/D
 https://codeforces.com/problemset/problem/1027/E
 https://codeforces.com/problemset/problem/1286/A
 https://codeforces.com/problemset/problem/1408/D
+https://codeforces.com/problemset/problem/1783/D 推公式
 https://atcoder.jp/contests/abc237/tasks/abc237_f
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
 Daejeon11，紫书例题 9-8，UVa 1625 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4500
@@ -57,6 +58,11 @@ DI 序列的有效排列 LC903 https://leetcode.cn/problems/valid-permutations-f
 
 决策单调性
 https://codeforces.com/problemset/problem/229/D
+
+增量法
+LC2262 https://leetcode.cn/problems/total-appeal-of-a-string/
+LC828 https://leetcode.cn/problems/count-unique-characters-of-all-substrings-of-a-given-string/
+https://codeforces.com/problemset/problem/1428/F
 
 思维转换
 谁来当 DP 对象 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
@@ -84,13 +90,28 @@ TIPS: 若转移是若干相邻项之和，可以考虑 f(p) - f(p-1) 的值，�
 
 todo Non-trivial DP Tricks and Techniques https://codeforces.com/blog/entry/47764
 
+交替 DP
+https://codeforces.com/problemset/problem/1479/B2
+思路二 https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b2-painting-the-array-ii
+
 计数 DP
-见 math.go 中的「一些组合问题」
+另见 math.go 中的「一些组合问题」
+入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
+多重组合
+- 见挑战
+多重排列
+- dp[i][j] 表示前 i 类数字组成长为 j 的排列个数
+- dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
+- 边界 dp[0][0] = 1
+todo https://atcoder.jp/contests/abc234/tasks/abc234_f
+带约束的计数 DP https://codeforces.com/problemset/problem/1767/C
+https://codeforces.com/problemset/problem/1794/D
 
 贪心优化 DP
 https://codeforces.com/problemset/problem/864/E
 
 双指针优化 DP
+https://codeforces.com/problemset/problem/883/I
 https://training.olinfo.it/#/task/preoii_yutaka/statement
 
 参考书籍推荐：
@@ -197,6 +218,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 由于数据范围的原因，采用 map 记忆化         dpMap
 	// https://codeforces.com/problemset/problem/510/D
+	// https://codeforces.com/problemset/problem/1746/D
 	// 如何估计时间复杂度 https://atcoder.jp/contests/abc275/tasks/abc275_d
 	mapDP := func(n int) {
 		{
@@ -250,6 +272,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC343 https://leetcode.cn/problems/integer-break/
 	LC368 https://leetcode.cn/problems/largest-divisible-subset/
 	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
+	LC1416 https://leetcode.cn/problems/restore-the-array/
 	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
 	- 相似题目 https://codeforces.com/problemset/problem/1624/E
 	LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
@@ -263,6 +286,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	③ 多维 / 额外状态
 	LC123 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/
+	LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
 	LC309 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
 	LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
 	LC956 https://leetcode-cn.com/problems/tallest-billboard/
@@ -290,6 +314,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/1168/C
 	https://codeforces.com/problemset/problem/1542/D
 
+	不相交区间 DP
+	LC2008 https://leetcode.cn/problems/maximum-earnings-from-taxi/
+	LC1235 https://leetcode.cn/problems/maximum-profit-in-job-scheduling/
+	https://codeforces.com/problemset/problem/1801/C
+
 	排列型/插入型
 	LC629 https://leetcode.cn/problems/k-inverse-pairs-array/ https://www.luogu.com.cn/problem/P2513
 	https://www.lanqiao.cn/problems/240/learning/
@@ -304,6 +333,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LC120 https://leetcode.cn/problems/triangle/ https://www.luogu.com.cn/problem/P1216
 	// LC931 https://leetcode.cn/problems/minimum-falling-path-sum/
 	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
+	// LC2684 https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/
 	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 	// 转换 https://codeforces.com/problemset/problem/1695/C
 
@@ -315,6 +345,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
 	// 子段长度有下限的最大子段和：转换为前缀和之差 sum[i]-sum[j]，i-j>=K，维护 mn=min(mn,sum[j])，同时更新 sum[i]-mn 的最大值（题目见 sort.go 中的 0-1 分数规划）https://www.luogu.com.cn/problem/P1404
+	// - 等价题目：把 k 个数增加 x，n-k 个数减少 x https://codeforces.com/problemset/problem/1796/D
 	// 子段和有上限的最大子段和：转换为前缀和之差 sum[i]-sum[j]<=K，在平衡树上二分 sum[j] LC363 https://leetcode-cn.com/problems/max-sum-of-rectangle-no-larger-than-k/
 	// 最大两段子段和：求每个位置上的前缀最大子段和和后缀最大子段和 https://www.luogu.com.cn/problem/P2642
 	// - 等价题目：允许翻转一段子区间的最大子段和
@@ -331,6 +362,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//       需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
 	//    这题做法需要用到上面说到的第二种思路
+	// 二维的情况（最大子阵和）可以枚举上下边界，转换成一维   O(n^3)
 	maxSubarraySum := func(a []int) int {
 		if len(a) == 0 { // 根据题意返回
 			return 0
@@ -592,10 +624,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 最长回文子序列 (LPS)
 	// 即 LCS(s, reverse(s))
-	// 回文串见后面
+	// 视频讲解 https://www.bilibili.com/video/BV1Gs4y1E7EU/
+	// 回文子串见下面的 isPalindrome 或者 strings.go 的 manacher
 	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
 	// LC1216 https://leetcode-cn.com/problems/valid-palindrome-iii/
 	// LC1246 https://leetcode.cn/problems/palindrome-removal/
+	// 树上路径 LPS https://codeforces.com/problemset/problem/1771/D
 	longestPalindromeSubsequence := func(s string) int {
 		n := len(s)
 		dp := make([][]int, n)
@@ -670,6 +704,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// LaIS 与单调栈结合 https://codeforces.com/problemset/problem/1468/A
 	// 状态设计 LIS 计数 https://atcoder.jp/contests/abc237/tasks/abc237_f
 	// 逆向题：输入 LIS 返回字典序最小的排列 a https://atcoder.jp/contests/arc125/tasks/arc125_c
+	// bitset 优化 https://codeforces.com/contest/1826/problem/E
 	lis := func(a []int) int {
 		g := []int{}
 		for _, v := range a {
@@ -893,6 +928,19 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return sumF
 	}
 
+	// 扩展：长度为 k 的本质不同子序列个数
+	// 返回一个数组 f，f[k] 表示长度为 k 的本质不同子序列个数
+	// https://codeforces.com/problemset/problem/1183/H
+	// https://ac.nowcoder.com/acm/contest/4853/C 题解 https://ac.nowcoder.com/discuss/394080
+	//distinctSubsequenceWithFixedLength := func(s string) []int {
+	//	const mod int = 1e9 + 7
+	//
+	//	panic("impl me")
+	//	//f := [26]int{}
+	//	//
+	//	//return sumF
+	//}
+
 	// 滚动数组写法
 	distinctSubsequence = func(s string) int {
 		const mod int = 1e9 + 7
@@ -909,15 +957,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		}
 		return (dp + mod - 1) % mod // 去掉空序列
 	}
-
-	// 多重组合
-	// todo 挑战
-
-	// 多重排列
-	// dp[i][j] 表示前 i 类数字组成长为 j 的排列个数
-	// dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
-	// 边界 dp[0][0] = 1
-	// todo https://atcoder.jp/contests/abc234/tasks/abc234_f
 
 	// O(n^2) 计算 LCP —— 如果你不想用后缀数组的话
 	// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/description/
@@ -1204,7 +1243,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		}
 	}
 
+	// todo 回退背包
+
 	// 完全背包
+	// 更快的做法 https://www.zhihu.com/question/26547156/answer/1181239468
+	// https://github.com/hqztrue/shared_materials/blob/master/codeforces/101064%20L.%20The%20Knapsack%20problem%20156ms_short.cpp
 	// https://www.luogu.com.cn/problem/P1616
 	// 至少 https://www.luogu.com.cn/problem/P2918
 	// 恰好装满 LC322 https://leetcode-cn.com/problems/coin-change/
@@ -1508,6 +1551,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://www.luogu.com.cn/problem/P1453
 	*/
 
+	/* 状态机 DP
+	https://codeforces.com/problemset/problem/623/B
+	式子变形 https://codeforces.com/contest/1826/problem/D
+	*/
+
 	/* 博弈类 DP
 	转移：让「自己与对手的分差」最大
 	图上博弈 https://codeforces.com/problemset/problem/917/B
@@ -1519,6 +1567,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC1140 https://leetcode.cn/problems/stone-game-ii/
 	LC1406 https://leetcode.cn/problems/stone-game-iii/
 	CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=dp%2Cgames
+	【记忆化搜索模板】https://codeforces.com/problemset/problem/1738/C
 	*/
 
 	/* 概率 DP / 期望 DP
@@ -1565,8 +1614,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/908/D
 	https://codeforces.com/problemset/problem/1097/D
 	https://codeforces.com/problemset/problem/1623/D
-	https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea
-	https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/
+	https://codeforces.com/problemset/problem/1753/C
+	https://codeforces.com/contest/1824/problem/B2
+	Kick Start 2020 Round F Yeetzhee https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea
+	todo https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/
 	*/
 
 	/* 状压 DP
@@ -1792,6 +1843,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 高维前缀和 SOS DP (Sum over Subsets)
 	// 给一个集合，对该集合的所有子集，计算该子集的所有子集之和（这个「和」不一定是加法，可以是其它的满足合并性质的统计量）
 	// https://codeforces.com/blog/entry/45223
+	// Some SOS DP Insights https://codeforces.com/blog/entry/105247
 	// 大量习题 https://blog.csdn.net/weixin_38686780/article/details/100109753
 	//
 	// https://codeforces.com/problemset/problem/1234/F
@@ -1810,7 +1862,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//  https://codeforces.com/problemset/problem/383/E
 	//  https://www.luogu.com.cn/problem/P6442
 	// https://codeforces.com/problemset/problem/1523/D
-	sos := func(a []int) []int {
+	sosDP := func(a []int) []int {
 		// 从子集转移的写法
 		const mx = 20 // bits.Len(uint(max(a))
 		dp := make([]int, 1<<mx)
@@ -2243,6 +2295,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 数据结构优化 DP
 	长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
+	https://codeforces.com/problemset/problem/1667/B
 	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
 	https://codeforces.com/problemset/problem/66/E
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
@@ -2286,6 +2339,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
+	// todo https://www.bilibili.com/video/BV178411W7Aj/
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
 	// https://www.luogu.com.cn/blog/ningago-lsh/xie-lv-you-hua-dp
 	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
@@ -2670,9 +2724,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 					extra = min(extra, c-bs)
 				}
 			}
-			if extra > 0 {
-				bySon += extra
-			}
+			bySon += max(extra, 0)
 			return
 		}
 		chosen, bySon, _ := f(0, -1)
@@ -2729,10 +2781,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D
 	// https://codeforces.com/problemset/problem/1626/E
 	// 还可以用直径做 https://atcoder.jp/contests/abc222/tasks/abc222_f
+	// 计数 https://codeforces.com/problemset/problem/1691/F
+	// https://codeforces.com/problemset/problem/1794/E
 
 	// 给一棵无根树
 	// 返回每个点到其余点的距离之和
 	// LC834 https://leetcode-cn.com/problems/sum-of-distances-in-tree
+	// - 变形：把距离之和改成每个距离的平方之和？
+	// - 记录子树大小 size[v] 和子树每个节点的深度之和 sum(dep[sub])
 	// 任意两点距离除以 k 的上取整之和 https://codeforces.com/problemset/problem/791/D
 	sumOfDistancesInTree := func(g [][]int) []int {
 		n := len(g)
@@ -2960,7 +3016,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		mergeStones, countPalindromes,
 
-		permDP, tsp, countCycle, subsubDP, subsubDPMemo, sos, plugDP,
+		permDP, tsp, countCycle, subsubDP, subsubDPMemo, sosDP, plugDP,
 
 		digitDP, kth666,
 
