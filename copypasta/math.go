@@ -1858,8 +1858,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
 	// exgcd solve equation ax+by=gcd(a,b)
-	// we have |x|<=b and |y|<=a in result (x,y)
+	// 特解满足 |x|<=|b|, |y|<=|a|
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
+	// https://codeforces.com/problemset/problem/1748/D
 	var exgcd func(a, b int64) (gcd, x, y int64)
 	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
@@ -1886,6 +1887,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	//    最简单的做法就是 min(x1+y1, x2+y2)
 	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
+	// https://codeforces.com/problemset/problem/1748/D
 	solveLinearDiophantineEquations := func(a, b, c int64) (n, x1, y1, x2, y2 int64) {
 		g, x0, y0 := exgcd(a, b)
 
