@@ -72,6 +72,7 @@ https://codeforces.com/problemset/problem/1369/C
 https://codeforces.com/problemset/problem/1479/B1 https://codeforces.com/problemset/problem/1479/B2
     https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
 1505. 最多 K 次交换相邻数位后得到的最小整数 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
+https://codeforces.com/problemset/problem/1804/D
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
@@ -117,6 +118,7 @@ https://codeforces.com/problemset/problem/1789/D
 https://codeforces.com/contest/1659/problem/D
 https://atcoder.jp/contests/abc178/tasks/abc178_f
 https://codeforces.com/problemset/problem/1689/E 脑筋急转弯
+https://codeforces.com/problemset/problem/1787/E
 
 不变量（想一想，操作不会改变什么）
 https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
@@ -137,6 +139,7 @@ https://codeforces.com/problemset/problem/1594/F
 https://codeforces.com/problemset/problem/1798/E
 https://codeforces.com/problemset/problem/1811/F
 https://codeforces.com/problemset/problem/1714/F 锻炼代码实现技巧的好题
+https://codeforces.com/problemset/problem/1832/D2
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
@@ -144,6 +147,9 @@ https://codeforces.com/contest/1374/problem/E2
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 
 贡献法
+LC891 https://leetcode.cn/problems/sum-of-subsequence-widths/
+LC2681 https://leetcode.cn/problems/power-of-heroes/
+另见 monotone_stack.go
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
