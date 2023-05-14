@@ -1,8 +1,10 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【周赛 345】](https://www.bilibili.com/video/BV1ka4y137ua/)，欢迎点赞投币！
 
-按题意模拟。
+### 思路
+
+按题意模拟，用 $\textit{vis}$ 数组标记接到过球的人。
 
 为方便计算，循环中的下标可以从 $0$ 开始，在返回时再加一。
 
@@ -72,5 +74,5 @@ func circularGameLosers(n int, k int) (ans []int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$。每个朋友至多遍历一次。
+- 时间复杂度：$\mathcal{O}(n)$。每个人至多用 $\textit{vis}$ 标记一次。
 - 空间复杂度：$\mathcal{O}(n)$。

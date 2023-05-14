@@ -2,7 +2,9 @@
 
 ---
 
-### 前置知识：动态规划
+# 方法一：动态规划
+
+### 前置知识：动态规划、记忆化搜索
 
 见 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)。
 
@@ -55,8 +57,8 @@ func maxMoves(grid [][]int) (ans int) {
 		if *p != -1 {
 			return *p
 		}
-		for k := i - 1; k <= i+1; k++ {
-			if 0 <= k && k < m && grid[k][j+1] > grid[i][j] {
+		for k := max(i-1, 0); k < min(i+2, m); k++ {
+			if grid[k][j+1] > grid[i][j] {
 				res = max(res, dfs(k, j+1)+1)
 			}
 		}
@@ -69,7 +71,8 @@ func maxMoves(grid [][]int) (ans int) {
 	return
 }
 
-func max(a, b int) int { if a < b { return b }; return a }
+func min(a, b int) int { if b < a { return b }; return a }
+func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -107,8 +110,8 @@ class Solution {
         var f = new int[m][n];
         for (int j = n - 2; j >= 0; j--)
             for (int i = 0; i < m; i++)
-                for (int k = i - 1; k <= i + 1; k++)
-                    if (0 <= k && k < m && grid[k][j + 1] > grid[i][j])
+                for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++)
+                    if (grid[k][j + 1] > grid[i][j])
                         f[i][j] = Math.max(f[i][j], f[k][j + 1] + 1);
         int ans = 0;
         for (int i = 0; i < m; i++)
@@ -126,8 +129,8 @@ public:
         memset(f, 0, sizeof(f));
         for (int j = n - 2; j >= 0; j--)
             for (int i = 0; i < m; i++)
-                for (int k = i - 1; k <= i + 1; k++)
-                    if (0 <= k && k < m && grid[k][j + 1] > grid[i][j])
+                for (int k = max(i - 1, 0); k < min(i + 2, m); k++)
+                    if (grid[k][j + 1] > grid[i][j])
                         f[i][j] = max(f[i][j], f[k][j + 1] + 1);
         int ans = 0;
         for (int i = 0; i < m; i++)
@@ -146,8 +149,8 @@ func maxMoves(grid [][]int) (ans int) {
 	}
 	for j := n - 2; j >= 0; j-- {
 		for i, row := range grid {
-			for k := i - 1; k <= i+1; k++ {
-				if 0 <= k && k < m && grid[k][j+1] > row[j] {
+			for k := max(i-1, 0); k < min(i+2, m); k++ {
+				if grid[k][j+1] > row[j] {
 					f[i][j] = max(f[i][j], f[k][j+1]+1)
 				}
 			}
@@ -159,7 +162,8 @@ func maxMoves(grid [][]int) (ans int) {
 	return
 }
 
-func max(a, b int) int { if a < b { return b }; return a }
+func min(a, b int) int { if b < a { return b }; return a }
+func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -177,3 +181,61 @@ func max(a, b int) int { if a < b { return b }; return a }
 - [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
 - [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)
 - [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
+
+# 方法二：BFS
+
+也可以用 BFS 做，每一轮向右搜索一列。
+
+```py [sol3-Python3]
+class Solution:
+    def maxMoves(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        q = range(m)
+        vis = [-1] * m
+        for j in range(n - 1):
+            tmp = q
+            q = []
+            for i in tmp:
+                for k in i - 1, i, i + 1:
+                    if 0 <= k < m and vis[k] != j and grid[k][j + 1] > grid[i][j]:
+                        vis[k] = j  # 时间戳标记，避免重复创建 vis 数组
+                        q.append(k)
+            if len(q) == 0:
+                return j
+        return n - 1
+```
+
+```go [sol3-Go]
+func maxMoves(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	vis := make([]int, m)
+	q := make([]int, m)
+	for i := range q {
+		q[i] = i
+	}
+	for j := 0; j < n-1; j++ {
+		tmp := q
+		q = nil
+		for _, i := range tmp {
+			for k := max(i-1, 0); k < min(i+2, m); k++ {
+				if vis[k] != j+1 && grid[k][j+1] > grid[i][j] {
+					vis[k] = j + 1 // 时间戳标记，避免重复创建 vis 数组
+					q = append(q, k)
+				}
+			}
+		}
+		if q == nil {
+			return j
+		}
+	}
+	return n - 1
+}
+
+func min(a, b int) int { if b < a { return b }; return a }
+func max(a, b int) int { if b > a { return b }; return a }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(m)$。
