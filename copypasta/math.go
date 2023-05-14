@@ -1860,7 +1860,6 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// exgcd solve equation ax+by=gcd(a,b)
 	// 特解满足 |x|<=|b|, |y|<=|a|
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
-	// https://codeforces.com/problemset/problem/1748/D
 	var exgcd func(a, b int64) (gcd, x, y int64)
 	exgcd = func(a, b int64) (gcd, x, y int64) {
 		if b == 0 {
@@ -1869,6 +1868,32 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		gcd, y, x = exgcd(b, a%b)
 		y -= a / b * x
 		return
+	}
+
+	// 任意非零模数逆元 ax ≡ 1 (mod m)，要求 |gcd(a,m)| = 1
+	// 返回最小正整数解
+	// 模板题 https://www.luogu.com.cn/problem/P1082
+	// https://codeforces.com/problemset/problem/772/C
+	invM := func(a, m int64) int64 {
+		g, x, _ := exgcd(a, m)
+		if g != 1 && g != -1 {
+			return -1
+		}
+		return (x%m + m) % m
+	}
+
+	// ax ≡ b (mod m)，要求 gcd(a,m) | b
+	// 或者，ax-b 是 m 的倍数，求 x
+	// 或者，求 ax-km = b 的一个特解
+	// https://codeforces.com/problemset/problem/1748/D
+	invM2 := func(a, b, m int64) int64 {
+		g, x, _ := exgcd(a, m)
+		if b%g != 0 {
+			return -1
+		}
+		x *= b / g
+		m /= g
+		return (x%m + m) % m
 	}
 
 	// a*x + b*y = c 的通解为
@@ -1927,7 +1952,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	// 关于 ax+by+cz=n 的解的个数（或者是三币种找零）
+	// 关于 ax+by+cz=n 的解的个数（三币种找零问题）
 	// On the number of solutions of the Diophantine equation of Frobenius – General case https://core.ac.uk/download/pdf/14375587.pdf
 	// The Number of Solutions to ax + by + cz = n and its Relation to Quadratic Residues https://cs.uwaterloo.ca/journals/JIS/VOL23/Binner/binner4.pdf
 	// 上面这篇提出了一个 O(log max(a,b,c)) 的算法来求 N(a,b,c;n)
@@ -1937,12 +1962,6 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A005044 N(2,3,4;n) = round(n^2/12)-floor(n/4)*floor((n+2)/4)      a(n) = round(n^2/48) if n is even; a(n) = round((n+3)^2/48) if n is odd
 	// https://oeis.org/A025795 N(2,3,5;n)
 	// https://oeis.org/A008680 N(3,4,5;n)
-
-	// 任意非零模数逆元 ax ≡ 1 (mod m)
-	// 返回最小正整数解
-	// 模板题 https://www.luogu.com.cn/problem/P1082
-	// https://codeforces.com/problemset/problem/772/C
-	invM := func(a, m int64) int64 { _, x, _ := exgcd(a, m); return (x%m + m) % m }
 
 	// 费马小定理求质数逆元
 	// ax ≡ 1 (mod p)
@@ -2978,7 +2997,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
-		exgcd, solveLinearDiophantineEquations, invM, invP, divM, divP, calcAllInv,
+		exgcd, solveLinearDiophantineEquations, invM, invM2, invP, divM, divP, calcAllInv,
 		crt, excrt,
 		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
