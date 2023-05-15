@@ -290,6 +290,7 @@
 #### 大开脑洞
 
 - [构造](https://codeforces.com/problemset?tags=constructive%20algorithms,2000-2500)
+- [贪心](https://codeforces.com/problemset?tags=greedy,2000-2500)
 - [交互](https://codeforces.com/problemset?tags=interactive,2000-2500)
 
 #### 数学抽象
@@ -424,7 +425,7 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 ### Useful Tools
 
-[GeoGebra 经典](https://www.geogebra.org/classic)
+[GeoGebra](https://www.geogebra.org/classic)
 
 [Draw Geometry](https://csacademy.com/app/geometry_widget/)
 
