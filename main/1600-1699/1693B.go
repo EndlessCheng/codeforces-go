@@ -24,22 +24,21 @@ func CF1693B(_r io.Reader, _w io.Writer) {
 		for i := range lim {
 			Fscan(in, &lim[i].l, &lim[i].r)
 		}
-		var f func(int) (int, int64)
-		f = func(v int) (cnt int, sum int64) {
+		ans := 0
+		var f func(int) int64
+		f = func(v int) (sum int64) {
 			for _, w := range g[v] {
-				c, s := f(w)
-				cnt += c
-				sum += s
+				sum += f(w)
 			}
 			if sum < lim[v].l {
-				cnt++
+				ans++
 				sum = lim[v].r
 			} else if sum > lim[v].r {
 				sum = lim[v].r
 			}
 			return
 		}
-		ans, _ := f(0)
+		f(0)
 		Fprintln(out, ans)
 	}
 }
