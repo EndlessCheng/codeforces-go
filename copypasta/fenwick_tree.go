@@ -122,10 +122,9 @@ func (t fenwickDiff) add(l, r int, val int64) {
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (t fenwickDiff) pre(i int) int64 {
-	i0 := i
+func (t fenwickDiff) pre(i0 int) int64 {
 	var s0, s1 int64
-	for ; i > 0; i &= i - 1 {
+	for i := i0; i > 0; i &= i - 1 {
 		s0 += t[i][0]
 		s1 += t[i][1]
 	}
