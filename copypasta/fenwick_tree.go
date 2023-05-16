@@ -96,48 +96,46 @@ func (f fenwick) query(l, r int) int64 {
 //   = (m+1)∑diff[i] - ∑i*diff[i]
 // https://ac.nowcoder.com/acm/problem/50454
 // https://codeforces.com/contest/1824/problem/D
-type fenwickDiff struct {
-	// t[0] 维护 ∑diff[i]
-	// t[1] 维护 ∑i*diff[i]
-	t [2][]int64
-}
+
+// [0] 维护 ∑diff[i]
+// [1] 维护 ∑i*diff[i]
+// 为了更好地利用缓存，写成 [][2] 而不是 [2][]
+type fenwickDiff [][2]int64
 
 func newFenwickTreeDiff(n int) fenwickDiff {
-	return fenwickDiff{[2][]int64{make([]int64, n+1), make([]int64, n+1)}}
+	return make([][2]int64, n+1)
 }
 
-func (f fenwickDiff) _add(p, i int, val int64) {
-	for t := f.t[p]; i < len(t); i += i & -i {
-		t[i] += val
+func (t fenwickDiff) _add(i int, val int64) {
+	for iv := int64(i) * val; i < len(t); i += i & -i {
+		t[i][0] += val
+		t[i][1] += iv
 	}
 }
 
 // a[l] 到 a[r] 增加 val
 // 1<=l<=r<=n
-func (f fenwickDiff) add(l, r int, val int64) {
-	f._add(0, l, val)
-	f._add(0, r+1, -val)
-	f._add(1, l, int64(l)*val)
-	f._add(1, r+1, int64(-(r+1))*val)
-}
-
-func (f fenwickDiff) _pre(p, i int) (res int64) {
-	for t := f.t[p]; i > 0; i &= i - 1 {
-		res += t[i]
-	}
-	return
+func (t fenwickDiff) add(l, r int, val int64) {
+	t._add(l, val)
+	t._add(r+1, -val)
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (f fenwickDiff) pre(i int) int64 {
-	return int64(i+1)*f._pre(0, i) - f._pre(1, i)
+func (t fenwickDiff) pre(i int) int64 {
+	i0 := i
+	var s0, s1 int64
+	for ; i > 0; i &= i - 1 {
+		s0 += t[i][0]
+		s1 += t[i][1]
+	}
+	return int64(i0+1)*s0 - s1
 }
 
 // 求区间和 a[l] + ... + a[r]
 // 1<=l<=r<=n
-func (f fenwickDiff) query(l, r int) int64 {
-	return f.pre(r) - f.pre(l-1)
+func (t fenwickDiff) query(l, r int) int64 {
+	return t.pre(r) - t.pre(l-1)
 }
 
 //
