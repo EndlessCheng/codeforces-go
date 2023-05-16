@@ -51,7 +51,98 @@ todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  http://poj.org/problem?id=2155
  http://poj.org/problem?id=2886
 */
-func fenwickTree(n int) {
+
+type fenwick struct {
+	tree []int64
+}
+
+func newFenwickTree(n int) fenwick {
+	return fenwick{make([]int64, n+1)}
+}
+
+// a[i] 增加 val
+// 1<=i<=n
+func (f fenwick) add(i int, val int64) {
+	for ; i < len(f.tree); i += i & -i {
+		f.tree[i] += val
+	}
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1<=i<=n
+func (f fenwick) pre(i int) (res int64) {
+	for ; i > 0; i &= i - 1 {
+		res += f.tree[i]
+	}
+	return
+}
+
+// 求区间和 a[l] + ... + a[r]
+// 1<=l<=r<=n
+func (f fenwick) query(l, r int) int64 {
+	return f.pre(r) - f.pre(l-1)
+}
+
+//
+
+// 差分版本
+// 参考《算法竞赛进阶指南》《挑战程序设计竞赛》
+// 利用差分数组，实现 O(log n) 的区间加、区间查询
+// a[1] = diff[1]
+// a[2] = diff[1] + diff[2]
+// a[m] = diff[1] + ... + diff[m]
+// 所以 a[1] + ... + a[m]
+//   = ∑(m-i+1)*diff[i]
+//   = (m+1)∑diff[i] - ∑i*diff[i]
+// https://ac.nowcoder.com/acm/problem/50454
+// https://codeforces.com/contest/1824/problem/D
+type fenwickDiff struct {
+	// t[0] 维护 ∑diff[i]
+	// t[1] 维护 ∑i*diff[i]
+	t [2][]int64
+}
+
+func newFenwickTreeDiff(n int) fenwickDiff {
+	return fenwickDiff{[2][]int64{make([]int64, n+1), make([]int64, n+1)}}
+}
+
+func (f fenwickDiff) _add(p, i int, val int64) {
+	for t := f.t[p]; i < len(t); i += i & -i {
+		t[i] += val
+	}
+}
+
+// a[l] 到 a[r] 增加 val
+// 1<=l<=r<=n
+func (f fenwickDiff) add(l, r int, val int64) {
+	f._add(0, l, val)
+	f._add(0, r+1, -val)
+	f._add(1, l, int64(l)*val)
+	f._add(1, r+1, int64(-(r+1))*val)
+}
+
+func (f fenwickDiff) _pre(p, i int) (res int64) {
+	for t := f.t[p]; i > 0; i &= i - 1 {
+		res += t[i]
+	}
+	return
+}
+
+// 求前缀和 a[1] + ... + a[i]
+// 1<=i<=n
+func (f fenwickDiff) pre(i int) int64 {
+	return int64(i+1)*f._pre(0, i) - f._pre(1, i)
+}
+
+// 求区间和 a[l] + ... + a[r]
+// 1<=l<=r<=n
+func (f fenwickDiff) query(l, r int) int64 {
+	return f.pre(r) - f.pre(l-1)
+}
+
+//
+
+func _(n int) {
 	tree := make([]int, n+1) // int64
 	add := func(i int, val int) {
 		for ; i < len(tree); i += i & -i {
@@ -132,6 +223,33 @@ func fenwickTree(n int) {
 			s -= tree[l]
 		}
 		return
+	}
+
+	{
+		// 时间戳优化（通常用于多组数据+值域树状数组）https://oi-wiki.org/ds/fenwick/#%E6%97%B6%E9%97%B4%E6%88%B3%E4%BC%98%E5%8C%96
+		// https://codeforces.com/problemset/submission/1801/205042964
+		const mx int = 1e6
+		tree := [mx + 1]int{} // 默认都是 0
+		time := [mx + 1]int{}
+		curCase := 1 // 从 1 开始
+		upd := func(i int, v int) {
+			for ; i <= mx; i += i & -i {
+				if time[i] != curCase {
+					time[i] = curCase
+					tree[i] = 0 // reset
+				}
+				tree[i] += v
+			}
+		}
+		pre := func(i int) (res int) {
+			for ; i > 0; i &= i - 1 {
+				if time[i] == curCase {
+					res += tree[i]
+				} // 否则，相当于 res += 0
+			}
+			return
+		}
+		_, _ = upd, pre
 	}
 
 	// 求逆序对的方法之一
@@ -257,36 +375,4 @@ func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int
 		update(a[i], prevPos[i])
 	}
 	return ans
-}
-
-// 结构体写法
-type fenwick struct {
-	tree []int64
-}
-
-func newFenwickTree(n int) fenwick {
-	return fenwick{make([]int64, n+1)}
-}
-
-// 位置 i 增加 val
-// 1<=i<=n
-func (f fenwick) add(i int, val int64) {
-	for ; i < len(f.tree); i += i & -i {
-		f.tree[i] += val
-	}
-}
-
-// 求前缀和 [0,i]
-// 0<=i<=n
-func (f fenwick) sum(i int) (res int64) {
-	for ; i > 0; i &= i - 1 {
-		res += f.tree[i]
-	}
-	return
-}
-
-// 求区间和 [l,r]
-// 1<=l<=r<=n
-func (f fenwick) query(l, r int) int64 {
-	return f.sum(r) - f.sum(l-1)
 }
