@@ -80,6 +80,7 @@ https://codeforces.com/problemset/problem/5/E
 https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
+按照最大值分类讨论 LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
 LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
 
 其他
@@ -101,14 +102,14 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 如果有相同元素，需要把某一侧循环内的符号改成小于等于
 
 	// 求左侧严格小于 a[i] 的最近位置 left[i]，这样 a[i] 就是区间 [left[i]+1,i] 内最小的元素（之一）
-	// 如果改成小于等于，那么 a[i] 就是区间 [left[i]+1,i] 内独一无二的最小元素
+	// 如果改成求左侧小于等于，那么 a[i] 就是区间 [left[i]+1,i] 内独一无二的最小元素
 	// 不存在时 left[i] = -1
 	// 虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此整个二重循环的时间复杂度为 O(n)
 	n := len(a)
 	left := make([]int, n)
 	st := []int{-1} // 栈底哨兵
 	for i, v := range a {
-		for len(st) > 1 && a[st[len(st)-1]] >= v { // 不断弹出 >= v 的，循环结束后栈顶就是 < v 的
+		for len(st) > 1 && a[st[len(st)-1]] >= v { // 不断弹出 >= v 的，循环结束后栈顶就是 < v 的（下面 left[i] = st[len(st)-1]）
 			st = st[:len(st)-1]
 		}
 		left[i] = st[len(st)-1]
@@ -116,7 +117,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	// 求右侧严格小于 a[i] 的最近位置 right[i]，这样 a[i] 就是区间 [i,right[i]-1] 内最小的元素（之一）
-	// 如果改成小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
+	// 如果改成求右侧小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
 	// 不存在时 right[i] = n
 	right := make([]int, n)
 	st = []int{n}
