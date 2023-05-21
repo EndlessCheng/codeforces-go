@@ -120,6 +120,7 @@ func init() {
 		"startPos", "st",
 		"start", "st",
 		"source", "st",
+		"destination", "end",
 		"target", "tar",
 		"total", "tot",
 		"limit", "lim",
