@@ -43,6 +43,11 @@ GP: Sn = a1*(q^n-1)/(q-1), q!=1
 ∑^∞ r^i = 1/(1-r)
 ∑^∞ i*r^i = r/(1-r)^2
 
+等幂和 Faulhaber's formula
+https://zh.wikipedia.org/wiki/%E7%AD%89%E5%B9%82%E6%B1%82%E5%92%8C#%E4%B8%80%E8%88%AC%E6%95%B0%E5%88%97%E7%9A%84%E7%AD%89%E5%B9%82%E5%92%8C
+1^2 + ... + n^2 = n*(n+1)*(2*n+1)/6
+1^3 + ... + n^3 = [n(n+1)/2]^2
+
 处理绝对值·曼哈顿距离转切比雪夫距离
 每个点 (x,y) 改成 (x+y,x-y)
 |x1-x2|+|y1-y2| 就可以用 max(|x1'-x2'|,|y1'-y2'|) 来计算了
@@ -737,7 +742,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 预处理: [2,mx] 范围内的质数
-	// 埃拉托斯特尼筛法 Sieve of Eratosthenes
+	// 埃筛 埃氏筛 埃拉托斯特尼筛法 Sieve of Eratosthenes
 	// https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 	// https://oeis.org/A055399 Number of stages of sieve of Eratosthenes needed to identify n as prime or composite
 	// https://oeis.org/A230773 Minimum number of steps in an alternate definition of the Sieve of Eratosthenes needed to identify n as prime or composite
@@ -770,9 +775,11 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		}
 	}
 
-	// 线性筛 欧拉筛
+	// 线筛 线性筛 欧拉筛
 	// 每个合数都从其 LPF 标记到（在遍历到 i = 合数/LPF 的时候，标记这些合数）
 	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
+	// mx = 3e7 时比埃氏筛大约快 100ms https://codeforces.com/problemset/submission/986/206447142
+	//                              https://codeforces.com/problemset/submission/986/206445786
 	// https://www.luogu.com.cn/problem/P3383
 	sieveEuler := func() {
 		const mx int = 1e7
@@ -1870,7 +1877,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	// 任意非零模数逆元 ax ≡ 1 (mod m)，要求 |gcd(a,m)| = 1
+	// 任意非零模数逆元 ax ≡ 1 (mod m)，要求 |gcd(a,m)| = 1     注：不要求 m 为质数
 	// 返回最小正整数解
 	// 模板题 https://www.luogu.com.cn/problem/P1082
 	// https://codeforces.com/problemset/problem/772/C
@@ -1882,10 +1889,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return (x%m + m) % m
 	}
 
-	// ax ≡ b (mod m)，要求 gcd(a,m) | b
-	// 或者，ax-b 是 m 的倍数，求 x
-	// 或者，求 ax-km = b 的一个特解
-	// https://codeforces.com/problemset/problem/1748/D
+	// ax ≡ b (mod m)，要求 gcd(a,m) | b       注：不要求 m 为质数
+	// 或者，ax-b 是 m 的倍数，求最小非负整数 x
+	// 或者，求 ax-km = b 的一个最小非负整数解
+	// 示例代码 https://codeforces.com/contest/1748/submission/205834351
 	invM2 := func(a, b, m int64) int64 {
 		g, x, _ := exgcd(a, m)
 		if b%g != 0 {
@@ -1966,6 +1973,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 费马小定理求质数逆元
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
+	// 滑窗 https://codeforces.com/contest/1833/problem/F
 	invP := func(a, p int64) int64 {
 		if a <= 0 {
 			panic(-1)
@@ -3009,3 +3017,29 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		sieveDu,
 	}
 }
+
+/* hack overflow
+1<<32 + 95168 = 2^6 * 3 * 7^5 * 11^3
+1<<32 + 66304 = 2^8 * 5^2 * 11 * 13^2 * 19^2 
+1<<32 + 48704 = 2^6 * 3^2 * 5^3 * 11^2 * 17 * 29
+1<<32 - 49216 = 2^6 * 3^7 * 5 * 17 * 19^2
+
+1<<32 - 49216 => https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/13613 hack Java
+a := []int{2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 5, 17, 19, 19}
+for i, n := 0, len(a); i < n/2; i++ {
+	a[i], a[n-1-i] = a[n-1-i], a[i]
+}
+
+Print("[")
+for i := range a {
+	Print("[", i+1, ",", i+2, "],")
+}
+cur := len(a) + 2
+for i, c := range a {
+	for j := 1; j < c; j++ {
+		Print("[", i+1, ",", cur, "],")
+		cur++
+	}
+}
+Print("]")
+*/
