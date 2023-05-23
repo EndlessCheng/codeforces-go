@@ -226,6 +226,10 @@ func (r *RG) UniqueSlice(size int, min, max int) []int {
 	return p
 }
 
+func (r *RG) IntSliceUnique(size int, min, max int) []int {
+	return r.UniqueSlice(size, min, max)
+}
+
 // Permutation generates a random permutation with a fixed size and its values in range [min, max]
 func (r *RG) Permutation(min, max int) []int {
 	size := max - min + 1
@@ -329,36 +333,40 @@ func (r *RG) TreeWeightedEdges(n, st, minWeight, maxWeight int) (edges [][3]int)
 
 // todo https://codeforces.com/blog/entry/77970
 func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
-	if m < n-1 {
-		panic("m is too small")
-	}
+	//if m < n-1 {
+	//	panic("m is too small")
+	//}
 	if m > n*(n-1)/2 { // 64-bit, no worry about overflow
 		panic("m is too large")
 	}
 
 	edges = r.treeEdges(n, st)
-
-	has := make([]map[int]bool, n)
-	for i := range has {
-		has[i] = map[int]bool{}
-	}
-	for _, e := range edges {
-		// v < w
-		v, w := e[0]-st, e[1]-st
-		has[v][w] = true
+	if m < n-1 {
+		edges = edges[:m]
 	}
 
-	for i := n - 1; i < m; i++ {
-		for {
+	if m >= n {
+		has := make([]map[int]bool, n)
+		for i := range has {
+			has[i] = map[int]bool{}
+		}
+		for _, e := range edges {
 			// v < w
-			v := r._int(0, n-2)
-			w := r._int(v+1, n-1)
-			if !has[v][w] { // todo 对于稠密图，这样做可能会导致运行时间较长，此时可以考虑生成补图，然后转化到原图
-				has[v][w] = true
-				v += st
-				w += st
-				edges = append(edges, [2]int{v, w})
-				break
+			v, w := e[0]-st, e[1]-st
+			has[v][w] = true
+		}
+		for i := n - 1; i < m; i++ {
+			for {
+				// v < w
+				v := r._int(0, n-2)
+				w := r._int(v+1, n-1)
+				if !has[v][w] { // todo 对于稠密图，这样做可能会导致运行时间较长，此时可以考虑生成补图，然后转化到原图
+					has[v][w] = true
+					v += st
+					w += st
+					edges = append(edges, [2]int{v, w})
+					break
+				}
 			}
 		}
 	}
@@ -370,6 +378,7 @@ func (r *RG) graphEdges(n, m, st int, directed bool) (edges [][2]int) {
 			}
 		}
 	}
+
 	return
 }
 
