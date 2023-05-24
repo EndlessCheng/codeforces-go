@@ -74,6 +74,9 @@
 ||[687. 最长同值路径](https://leetcode.cn/problems/longest-univalue-path/)|[代码](https://leetcode.cn/problems/longest-univalue-path/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-524j4/)|*课后作业|
 ||[1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/)|[代码](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/solution/tu-jie-on3-mei-ju-zhi-jing-duan-dian-che-am2n/)|*课后作业|
 ||[2538. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)|[代码](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/solution/by-endlesscheng-5l70/)|*课后作业|
+|[树形 DP - 最大独立集](https://www.bilibili.com/video/BV1vu4y1f7dn/)|[337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/)|[代码](https://leetcode.cn/problems/house-robber-iii/solution/shi-pin-ru-he-si-kao-shu-xing-dppythonja-a7t1/)||
+||[1377. T 秒后青蛙的位置](https://leetcode.cn/problems/frog-position-after-t-seconds/)|[代码](https://leetcode.cn/problems/frog-position-after-t-seconds/solution/dfs-ji-yi-ci-you-qu-de-hack-by-endlessch-jtsr/)|*课后作业|
+||[2646. 最小化旅行的价格总和](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/)|[代码](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/solution/lei-si-da-jia-jie-she-iii-pythonjavacgo-4k3wq/)|*课后作业|
 
 ---
 
