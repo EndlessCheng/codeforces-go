@@ -18,19 +18,13 @@ func CF190D(_r io.Reader, out io.Writer) {
 
 	ans := int64(0)
 	cnt := map[int]int{}
-	reachK := false
 	for _, v := range a {
 		cnt[v]++
-		for cnt[v] > k || cnt[v] == k && a[left] != v {
+		for cnt[v] >= k {
 			cnt[a[left]]--
 			left++
 		}
-		if cnt[v] == k {
-			reachK = true
-		}
-		if reachK {
-			ans += int64(left + 1)
-		}
+		ans += int64(left)
 	}
 	Fprint(out, ans)
 }
