@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"time"
 )
 
@@ -164,4 +163,4 @@ func CF359C(_r io.Reader, out io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() { CF359C(os.Stdin, os.Stdout) }
+//func main() { CF359C(os.Stdin, os.Stdout) }
