@@ -12,7 +12,7 @@ func CF464A(in io.Reader, out io.Writer) {
 	u += 'a'
 	i := n - 1
 	s[i]++
-	for 0 <= i && i < n {
+	for i < n {
 		if s[i] == u {
 			if i == 0 {
 				Fprint(out, "NO")
