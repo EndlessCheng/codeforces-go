@@ -17,7 +17,10 @@ func CF460B(in io.Reader, out io.Writer) {
 			x *= ds
 		}
 		x += c
-		if 0 < x && x < 1e9 {
+		if x >= 1e9 {
+			break
+		}
+		if x > 0 {
 			s := ds
 			for x := x; x > 0; x /= 10 {
 				s -= x % 10
