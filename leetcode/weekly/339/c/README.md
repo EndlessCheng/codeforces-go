@@ -1,33 +1,24 @@
-### 本题视频讲解
+## 思考
 
-见[【周赛 339】](https://www.bilibili.com/video/BV1va4y1M7Fr/)。
+如果 $k=1$，应该如何选择呢？（思考问题可以先从一些简单的情况开始）
 
-### 思路
+不妨先把奶酪全部给第二只老鼠，然后「撤销」其中的一块奶酪，给第一只老鼠。如何选择可以使得分最大？
+
+你可以把这个结论推广到 $k>1$ 的情况吗？
+
+## 解惑
 
 为方便描述，将 $\textit{reward}$ 简记为 $r$。
 
-比较两个物品 $i$ 和 $j$ 被吃后的得分：
-
-- 如果 $i$ 给第一只老鼠，$j$ 给第二只老鼠，那么得分为 $r_1[i] + r_2[j]$；
-- 如果 $i$ 给第二只老鼠，$j$ 给第一只老鼠，那么得分为 $r_2[i] + r_1[j]$；
-
-如果第一种策略更优，则有 
+先把奶酪全部给第二只老鼠，然后撤销其中的第 $i$ 块奶酪，给第一只老鼠，那么得分增加了 
 
 $$
-r_1[i] + r_2[j] > r_2[i] + r_1[j]
-$$
+r_1[i] - r_2[i]
+$$ 
 
-变形得
+在 $k=1$ 时，选上式最大的奶酪，给第一只老鼠，这样可以使得分最大。（注意第一只老鼠一定要吃**恰好** $k$ 块奶酪）
 
-$$
-r_1[i] - r_2[i] > r_1[j] - r_2[j]
-$$
-
-这说明 $r_1[i] - r_2[i]$ 更大的奶酪，应该给第一只老鼠。
-
-那么按照 $r_1[i] - r_2[i]$ 从大到小排序，前 $k$ 个给第一只老鼠，剩余的给第二只老鼠。
-
-代码实现时，也可以先全部给第二只老鼠，然后再加上 $r_1[i] - r_2[i]$ 的前 $k$ 大之和。这可以用快速选择优化到 $O(n)$，具体见 C++ 代码。
+对于 $k>1$ 的情况，可以按照 $r_1[i] - r_2[i]$ 从大到小排序，把得分加上 $r_1[i] - r_2[i]$ 的前 $k$ 大之和。这可以用快速选择优化到 $\mathcal{O}(n)$，具体见 C++ 代码。
 
 ```py [sol1-Python3]
 class Solution:
@@ -36,7 +27,7 @@ class Solution:
         return sum(x for x, _ in a[:k]) + sum(y for _, y in a[k:])
 ```
 
-```py [sol1-Python3 O(1) 空间]
+```py [sol1-Python3 原地修改]
 class Solution:
     def miceAndCheese(self, r1: List[int], r2: List[int], k: int) -> int:
         for i, x in enumerate(r2):
@@ -50,7 +41,7 @@ class Solution {
     public int miceAndCheese(int[] r1, int[] r2, int k) {
         int ans = 0, n = r1.length;
         for (int i = 0; i < n; ++i) {
-            ans += r2[i]; // 全部给第二只老鼠
+            ans += r2[i]; // 先全部给第二只老鼠
             r1[i] -= r2[i];
         }
         Arrays.sort(r1);
@@ -68,8 +59,8 @@ public:
         for (int i = 0; i < r1.size(); ++i)
             r1[i] -= r2[i];
         nth_element(r1.begin(), r1.end() - k, r1.end());
-        return accumulate(r2.begin(), r2.end(), 0) +
-               accumulate(r1.end() - k, r1.end(), 0);
+        return accumulate(r2.begin(), r2.end(), 0) + // 先全部给第二只老鼠
+               accumulate(r1.end() - k, r1.end(), 0); // 再加上增量
     }
 };
 ```
@@ -77,7 +68,7 @@ public:
 ```go [sol1-Go]
 func miceAndCheese(reward1, reward2 []int, k int) (ans int) {
 	for i, x := range reward2 {
-		ans += x // 全部给第二只老鼠
+		ans += x // 先全部给第二只老鼠
 		reward1[i] -= x
 	}
 	sort.Sort(sort.Reverse(sort.IntSlice(reward1)))
@@ -88,11 +79,17 @@ func miceAndCheese(reward1, reward2 []int, k int) (ans int) {
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
-- 时间复杂度：$O(n\log n)$ 或 $O(n)$，其中 $n$ 为 $\textit{reward}_1$ 的长度。快速选择可以做到 $O(n)$，具体见 C++ 代码。
-- 空间复杂度：$O(1)$。仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$，其中 $n$ 为 $\textit{reward}_1$ 的长度。快速选择可以做到 $\mathcal{O}(n)$，具体见 C++ 代码。
+- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
 
-### 相似题目
+#### 相似题目
 
 - [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/)
+
+[往期每日一题题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+---
+
+欢迎关注[ biIibiIi@灵茶山艾府](https://space.bilibili.com/206214)，高质量算法教学，持续输出中~
