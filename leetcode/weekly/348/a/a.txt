@@ -1,0 +1,11 @@
+"aaabc"
+3
+
+"cbbd"
+3
+
+"dddaaa"
+2
+
+
+
