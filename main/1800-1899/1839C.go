@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"strings"
 )
 
@@ -37,4 +36,4 @@ func CF1839C(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { CF1839C(os.Stdin, os.Stdout) }
+//func main() { CF1839C(os.Stdin, os.Stdout) }
