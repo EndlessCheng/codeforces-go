@@ -13,14 +13,13 @@ func CF1838B(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var T, n int
+	var T, n, v int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
-		a := make([]int, n)
 		p := make([]int, n+1)
-		for i := range a {
-			Fscan(in, &a[i])
-			p[a[i]] = i + 1
+		for i := 1; i <= n; i++ {
+			Fscan(in, &v)
+			p[v] = i
 		}
 		b := []int{p[1], p[2], p[n]}
 		sort.Ints(b)
