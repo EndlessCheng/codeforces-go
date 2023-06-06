@@ -1,18 +1,15 @@
 // ==UserScript==
-// @name         Codeforces Highlight
-// @namespace    EndlessCheng
+// @name         高亮关键字 - 其它
+// @namespace    https://github.com/EndlessCheng
 // @version      0.1
 // @description  highlight some important words
-// @author       EndlessCheng
+// @author       灵茶山艾府
 // @match        https://atcoder.jp/contests/*
 // @exclude      https://atcoder.jp/contests/*/submissions/*
-// @match        https://codeforces.com/contest/*
-// @match        https://codeforces.com/group/*
-// @match        https://codeforces.com/gym/*
-// @match        https://codeforces.com/problemset/problem/*
 // @match        https://codingcompetitions.withgoogle.com/*
 // @match        https://leetcode-cn.com/contest/*
 // @match        https://leetcode.cn/contest/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=leetcode.cn
 // ==/UserScript==
 
 (function () {
