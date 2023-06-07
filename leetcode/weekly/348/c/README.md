@@ -1,6 +1,6 @@
-下午两点直播讲题，记得关注哦~（见个人主页）
+## 视频讲解
 
----
+见[【周赛 348】](https://www.bilibili.com/video/BV1do4y1K7Wq/)第三题，欢迎点赞投币！
 
 ## 提示 1
 
@@ -8,7 +8,7 @@
 
 ## 提示 2
 
-倒序操作 $\textit{queries}$。
+正难则反，倒序操作 $\textit{queries}$。
 
 ## 提示 3
 
@@ -93,3 +93,7 @@ func matrixSumQueries(n int, queries [][]int) (ans int64) {
 
 - 时间复杂度：$\mathcal{O}(q)$，其中 $q$ 为 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(\min\{q,n\})$。哈希表中至多有 $\mathcal{O}(n)$ 个数。
+
+#### 相似题目
+
+- [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
