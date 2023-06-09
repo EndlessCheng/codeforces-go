@@ -42,7 +42,7 @@ func CF570E(_r io.Reader, out io.Writer) {
 	for i := 1; i < (n+m)/2; i++ {
 		for r1 := min(n, i+1); r1 > 0 && r1 >= i+2-m; r1-- {
 			c1 := i + 2 - r1
-			for r2 := max(1, n-i); r2 <= n && r2 < n+m-i; r2++ {
+			for r2 := max(1, max(n-i, r1-2)); r2 <= n && r2 < n+m-i; r2++ {
 				c2 := n + m - i - r2
 				if a[r1-1][c1-1] == a[r2-1][c2-1] {
 					f[r1][r2] = (((f[r1][r2]+f[r1][r2+1])%mod+f[r1-1][r2+1])%mod + f[r1-1][r2]) % mod
