@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -27,20 +28,20 @@ func CF519E(_r io.Reader, _w io.Writer) {
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
 	size := make([]int, n)
-	var f func(v, p, d int) int
-	f = func(v, p, d int) int {
+	var f func(int, int) int
+	f = func(v, p int) int {
 		pa[v][0] = p
-		dep[v] = d
 		sz := 1
 		for _, w := range g[v] {
 			if w != p {
-				sz += f(w, v, d+1)
+				dep[w] = dep[v] + 1
+				sz += f(w, v)
 			}
 		}
 		size[v] = sz
 		return sz
 	}
-	f(0, -1, 0)
+	f(0, -1)
 	for k := 0; k+1 < mx; k++ {
 		for v := range pa {
 			if p := pa[v][k]; p != -1 {
@@ -51,10 +52,8 @@ func CF519E(_r io.Reader, _w io.Writer) {
 		}
 	}
 	uptoDep := func(v, d int) int {
-		for k := 0; k < mx; k++ {
-			if (dep[v]-d)>>k&1 == 1 {
-				v = pa[v][k]
-			}
+		for k := dep[v] - d; k > 0; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros(uint(k))]
 		}
 		return v
 	}
