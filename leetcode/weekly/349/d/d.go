@@ -197,16 +197,23 @@ func maximumSumQueries2(nums1, nums2 []int, queries [][]int) (ans []int) {
 	sort.Slice(queries, func(i, j int) bool { return queries[i][0] > queries[j][0] })
 
 	ans = make([]int, len(queries))
-	rt := &stNode{l: 0, r: 2e9}
+	rt := &stNode{l: 1, r: 1e9, mx: -1}
 	i := len(a) - 1
 	for _, q := range queries {
 		for i >= 0 && a[i].x >= q[0] {
 			rt.update(a[i].y, a[i].x+a[i].y)
 			i--
 		}
-		ans[q[2]] = rt.query(q[1], 2e9)
+		ans[q[2]] = rt.query(q[1], 1e9)
 	}
 	return
+}
+
+func max(a, b int) int {
+	if b > a {
+		return b
+	}
+	return a
 }
 
 // https://space.bilibili.com/206214
@@ -243,11 +250,4 @@ func maximumSumQueries(nums1, nums2 []int, queries [][]int) (ans []int) {
 		}
 	}
 	return ans
-}
-
-func max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
 }
