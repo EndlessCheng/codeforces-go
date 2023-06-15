@@ -16,6 +16,7 @@
 |技巧性枚举|[1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/)|[【图解】非暴力 O(nm) 算法](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/solution/tu-jie-fei-bao-li-onm-suan-fa-pythonjava-k5og/)|1745|
 |前后缀分解|[1653. 使字符串平衡的最少删除次数](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/)|[【图解】前后缀分解，消除分支的技巧！（附动态规划）](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/solution/qian-hou-zhui-fen-jie-yi-zhang-tu-miao-d-dor2/)|1794|
 |前缀和|[1031. 两个非重叠子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-two-non-overlapping-subarrays/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-of-two-non-overlapping-subarrays/solution/tu-jie-mei-you-si-lu-yi-zhang-tu-miao-do-3lli/)|1680|
+||[1177. 构建回文串检测](https://leetcode.cn/problems/can-make-palindrome-from-substring/)|[一步步优化！从前缀和到前缀异或和（附题单！](https://leetcode.cn/problems/can-make-palindrome-from-substring/solution/yi-bu-bu-you-hua-cong-qian-zhui-he-dao-q-yh5p/)|1848|
 |前缀和与哈希表|[面试题 17.05. 字母与数字](https://leetcode.cn/problems/find-longest-subarray-lcci/)|[【套路】前缀和+哈希表，消除分支的技巧](https://leetcode.cn/problems/find-longest-subarray-lcci/solution/tao-lu-qian-zhui-he-ha-xi-biao-xiao-chu-3mb11/)|中等|
 ||[1590. 使数组和能被 P 整除](https://leetcode.cn/problems/make-sum-divisible-by-p/)|[【套路】前缀和+哈希表+模运算技巧](https://leetcode.cn/problems/make-sum-divisible-by-p/solution/tao-lu-qian-zhui-he-ha-xi-biao-pythonjav-rzl0/)|2039|
 |单调栈|[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[【图解单调栈】两种方法，两张图秒懂！](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|1571|
@@ -72,4 +73,8 @@
 |基环树|[2127. 参加会议的最多员工数](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/)|[【图解】内向基环树：拓扑排序 + 分类讨论](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)|2449|
 |LCA|[1483. 树节点的第 K 个祖先](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/)|[【模板讲解】树上倍增算法（以及最近公共祖先）](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)|2115|
 
-附：[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+附：
+
+- [【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+- [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
+- [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
