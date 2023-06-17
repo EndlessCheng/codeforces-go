@@ -60,7 +60,7 @@ https://codeforces.com/problemset/problem/954/F
 任意子集（不需要剪枝的话可以直接位运算枚举）
 部分子集
 排列（递归+跳过已经枚举的值）
-
+https://leetcode.cn/tag/backtracking/problemset/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
 */
@@ -957,11 +957,12 @@ func _(min, max func(int, int) int) {
 
 	// 第一排在右上，最后一排在左下
 	// 每排从左上到右下
+	// LC2711 https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/
 	loopDiagonal := func(n, m int) {
 		for s := 1; s < n+m; s++ {
-			l := max(0, m-s)
-			r := min(m-1, m-s+n-1)
-			for j := l; j <= r; j++ {
+			minJ := max(0, m-s)
+			maxJ := min(m-1, n+m-1-s)
+			for j := minJ; j <= maxJ; j++ {
 				i := s + j - m
 				_ = i
 
@@ -974,9 +975,9 @@ func _(min, max func(int, int) int) {
 	// LC498 https://leetcode.cn/problems/diagonal-traverse/
 	loopAntiDiagonal := func(n, m int) {
 		for s := 0; s < n+m-1; s++ {
-			l := max(0, s-n+1)
-			r := min(m-1, s)
-			for j := l; j <= r; j++ {
+			minJ := max(0, s-n+1)
+			maxJ := min(m-1, s)
+			for j := minJ; j <= maxJ; j++ {
 				i := s - j
 				_ = i
 
@@ -1041,16 +1042,51 @@ func _(min, max func(int, int) int) {
 	}
 }
 
-//
+/*
+## 题单
+
+#### 网格图 DFS
+
+- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/)
+- [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+- [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/)
+- [463. 岛屿的周长](https://leetcode.cn/problems/island-perimeter/)
+- [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
+- [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
+- [529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)
+- [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/)
+- [1034. 边界着色](https://leetcode.cn/problems/coloring-a-border/)
+
+#### 网格图 BFS
+
+- [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/)
+- [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/)
+- [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/)
+- [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/)
+- [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/)
+- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+- [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
+
+#### 综合应用
+
+- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
+- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/)
+- [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/)
+- [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
+*/
 
 // 网格/矩阵上的搜索
 // NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
 // 易错题 https://codeforces.com/problemset/problem/540/C
 // 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
-// BFS:
 // LC778 https://leetcode.cn/problems/swim-in-rising-water/
 // LC1631 https://leetcode.cn/problems/path-with-minimum-effort/
+// BFS:
+// LC542 https://leetcode.cn/problems/01-matrix/
+// LC994 https://leetcode.cn/problems/rotting-oranges/
+// LC1162 https://leetcode.cn/problems/as-far-from-land-as-possible/
 // LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
+// LC2258 https://leetcode.cn/problems/escape-the-spreading-fire/
 // LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
 // LCP13 https://leetcode.cn/problems/xun-bao/
 // LCP75 https://leetcode.cn/problems/rdmXM7/
