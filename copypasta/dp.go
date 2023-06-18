@@ -1662,7 +1662,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 任意排列 DP
 	// 适用于不需要知道上一个数的场景
-	// 时间复杂度通常是 O(n*2^n)
+	// 时间复杂度通常是 O(n*2^n) 下面的写法常数是 1/2
 	// https://atcoder.jp/contests/dp/tasks/dp_o
 	// https://atcoder.jp/contests/abc199/tasks/abc199_e
 	// https://codeforces.com/problemset/problem/1215/E
@@ -1678,6 +1678,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		f := make([]int, 1<<n) // int64
 		f[0] = 1
 		for s, dv := range f { // 前面选的下标集合是 s
+			if dv == 0 { // 剪枝：用在计数题目上
+				continue
+			}
 			// 考虑第 i 个位置怎么填
 			i := bits.OnesCount(uint(s))
 			for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
@@ -1695,7 +1698,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 任意排列 DP
 	// 适用于需要知道上一个数的场景
-	// 时间复杂度通常是 O(n^2*2^n)
+	// 时间复杂度通常是 O(n^2*2^n) 下面的写法常数约为 1/4 https://oeis.org/A001815
 	// LC2741 https://leetcode.cn/problems/special-permutations/
 	// LC996 最后答案需要除相同元素个数的阶乘 https://leetcode.cn/problems/number-of-squareful-arrays/
 	permDP2 := func(a []int, check func(int, int) bool) int {
@@ -1711,6 +1714,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		for s, dr := range f {
 			for _s := uint(s); _s > 0; _s &= _s - 1 {
 				i := bits.TrailingZeros(_s)
+				if dr[i] == 0 { // 剪枝：用在计数题目上
+					continue
+				}
 				pre := a[i] // 枚举上一个选的数
 				for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 					lb = cus & -cus
