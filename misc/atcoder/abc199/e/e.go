@@ -11,30 +11,32 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n, m int
-	Fscan(in, &n, &m)
-	a := make([]struct{ x, y, z int }, m)
-	for i := range a {
-		Fscan(in, &a[i].x, &a[i].y, &a[i].z)
+	var n, M int
+	Fscan(in, &n, &M)
+	rules := make([]struct{ x, y, z int }, M)
+	for i := range rules {
+		Fscan(in, &rules[i].x, &rules[i].y, &rules[i].z)
 	}
 
-	N := uint(1 << n)
-	dp := make([]int, N)
-	dp[0] = 1
-	for s := uint(0); s < N-1; s++ {
-		o := bits.OnesCount(s)
+	m := 1 << n
+	u := m - 1
+	f := make([]int, m)
+	f[0] = 1
+	for s, dv := range f {
+		i := bits.OnesCount(uint(s))
 	o:
-		for t, lb := s^(N-1), uint(0); t > 0; t ^= lb {
-			lb = t & -t
-			for _, p := range a {
-				if o < p.x && bits.OnesCount((s|lb)&(1<<p.y-1)) > p.z {
+		for cus, lb := u^s, 0; cus > 0; cus ^= lb {
+			lb = cus & -cus
+			ns := s | lb
+			for _, p := range rules { // 检查每个要求
+				if i < p.x && bits.OnesCount(uint(ns&(1<<p.y-1))) > p.z {
 					continue o
 				}
 			}
-			dp[s|lb] += dp[s]
+			f[ns] += dv
 		}
 	}
-	Fprint(out, dp[N-1])
+	Fprint(out, f[m-1])
 }
 
 func main() { run(os.Stdin, os.Stdout) }
