@@ -1047,9 +1047,11 @@ func _(min, max func(int, int) int) {
 
 #### 网格图 DFS
 
-- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/)
 - [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
+- [1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)
+- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/)
 - [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/)
+- [面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)
 - [463. 岛屿的周长](https://leetcode.cn/problems/island-perimeter/)
 - [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
 - [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
