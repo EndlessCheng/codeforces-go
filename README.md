@@ -16,6 +16,7 @@
 
 [不了解 Go？快速入门教程](https://gobyexample-cn.github.io/)
 
+- [集合论与位运算](https://leetcode.cn/circle/discuss/CaOJ45/)
 - 数据结构
   - [单调栈 monotone_stack.go](/copypasta/monotone_stack.go)
   - [单调队列 monotone_queue.go](/copypasta/monotone_queue.go)
