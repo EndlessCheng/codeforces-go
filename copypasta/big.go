@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/big"
+import (
+	"math/big"
+	"math/bits"
+)
 
 // https://codeforces.com/problemset/problem/1244/C
 
@@ -23,6 +26,13 @@ func (a Int) mul(b Int) Int { return Int{new(big.Int).Mul(a.Int, b.Int)} }
 func (a Int) div(b Int) Int { return Int{new(big.Int).Quo(a.Int, b.Int)} }
 func (a Int) mod(b Int) Int { return Int{new(big.Int).Rem(a.Int, b.Int)} }
 func (a Int) neg() Int      { return Int{new(big.Int).Neg(a.Int)} }
+
+func bigIntOnesCount(v *big.Int) (ones int) {
+	for _, x := range v.Bits() {
+		ones += bits.OnesCount(uint(x))
+	}
+	return ones
+}
 
 //
 
