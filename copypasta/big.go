@@ -27,9 +27,9 @@ func (a Int) div(b Int) Int { return Int{new(big.Int).Quo(a.Int, b.Int)} }
 func (a Int) mod(b Int) Int { return Int{new(big.Int).Rem(a.Int, b.Int)} }
 func (a Int) neg() Int      { return Int{new(big.Int).Neg(a.Int)} }
 
-func bigIntOnesCount(v *big.Int) (ones int) {
-	for _, x := range v.Bits() {
-		ones += bits.OnesCount(uint(x))
+func (a *Int) onesCount() (ones int) {
+	for _, w := range a.Bits() {
+		ones += bits.OnesCount(uint(w))
 	}
 	return ones
 }
