@@ -20,13 +20,21 @@ NOTE: 注意特判整棵树只有一条边的情况，此时两个叶结点对�
 NOTE: 一些树上点对问题，可以从「每条边所能产生的贡献」来思考 https://codeforces.com/problemset/problem/700/B
 NOTE: 节点数小于 √n 的同层节点对不超过 n√n，节点数大于 √n 的层的数量小于 √n 个 https://codeforces.com/problemset/problem/1806/E
 NOTE: 树上两点的关系：v 和 w 相等【特判】、v 是 w 的祖先、w 是 v 的祖先、其它（v 和 w 在两棵不同子树中）https://codeforces.com/problemset/problem/1778/E
+NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y 走到根的路径上，找到到 x 的距离，从而求出 y 到 x 的距离 https://codeforces.com/problemset/problem/1790/F
 
+利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
 不错的构造 https://codeforces.com/problemset/problem/260/D
 分类讨论的好题 https://codeforces.com/problemset/problem/765/E
 
+树上移动 move on tree
+https://codeforces.com/problemset/problem/1774/E
+
 https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR
 前序中序构造二叉树 + 判定是否合法 https://atcoder.jp/contests/abc255/tasks/abc255_f
+
+树的最小表示：复杂度分析
+https://leetcode.cn/problems/special-binary-string/solutions/1731760/on-log-n-by-hqztrue-nrmw/
 */
 
 // namespace
@@ -68,6 +76,7 @@ func (*tree) hash(g [][]int, root int) {
 // https://oi-wiki.org/graph/tree-ahu/
 // https://wwwmayr.in.tum.de/konferenzen/Jass08/courses/1/smal/Smal_Paper.pdf
 // https://logic.pdmi.ras.ru/~smal/files/smal_jass08_slides.pdf
+// todo https://www.zhihu.com/question/55484468/answer/991551284
 // todo hashing 的一些正确姿势 https://zhuanlan.zhihu.com/p/104346215
 //
 // https://www.luogu.com.cn/problem/P5043
@@ -753,6 +762,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root int, upp
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 
 // 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
+// 【模板讲解】树上倍增算法（以及最近公共祖先） https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/
 // O(nlogn) 预处理，O(logn) 查询
 // 适用于查询量和节点数等同的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
@@ -770,6 +780,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root int, upp
 //    维护最大值（与 MST 结合）LC1724（上面这题的在线版）https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths-ii/
 //    维护最大值和严格次大值（严格次小 MST）：见 graph.go 中的 strictlySecondMST
 //    维护前十大（点权）https://codeforces.com/problemset/problem/587/C
+//    维护最大子段和 https://codeforces.com/contest/1843/problem/F2
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
@@ -778,17 +789,17 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
-	var buildPa func(v, p, d int)
-	buildPa = func(v, p, d int) {
+	var buildPa func(int, int)
+	buildPa = func(v, p int) {
 		pa[v][0] = p
-		dep[v] = d
 		for _, w := range g[v] {
 			if w != p {
-				buildPa(w, v, d+1)
+				dep[w] = dep[v] + 1
+				buildPa(w, v)
 			}
 		}
 	}
-	buildPa(root, -1, 0) // d 从 0 开始
+	buildPa(root, -1) // d 从 0 开始
 	// 倍增
 	for i := 0; i+1 < mx; i++ {
 		for v := range pa {
@@ -806,10 +817,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 		if d > dep[v] {
 			panic(-1)
 		}
-		for i := 0; i < mx; i++ {
-			if (dep[v]-d)>>i&1 > 0 {
-				v = pa[v][i]
-			}
+		for k := dep[v] - d; k > 0; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros(uint(k))]
 		}
 		return v
 	}
@@ -860,10 +869,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 	// 不存在则返回 -1
 	// O(1) 求法见长链剖分
 	uptoKthPa := func(v, k int) int {
-		for i := 0; i < mx && v != -1; i++ {
-			if k>>i&1 > 0 {
-				v = pa[v][i]
-			}
+		for ; k > 0 && v != -1; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros(uint(k))]
 		}
 		return v
 	}
@@ -897,6 +904,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
 		// 加权树上二分
 		var dep []int64 // 加权深度，dfs 预处理略
 		// 从 v 开始向根移动至多 d 距离，返回最大移动次数，以及能移动到的离根最近的点
+		// NOIP2012·提高 疫情控制 https://www.luogu.com.cn/problem/P1084
 		// 变形 https://codeforces.com/problemset/problem/932/D
 		uptoDep := func(v int, d int64) (int, int) {
 			step := 0
@@ -1231,6 +1239,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // todo 完成题单 https://www.luogu.com.cn/training/1654
 // TODO: 处理边权的情况
 // todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
+//  https://www.luogu.com.cn/problem/P4211
 // 结合广义圆方树 https://codeforces.com/problemset/problem/487/E
 func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int64) { // vals 为点权
 	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
@@ -1478,7 +1487,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 }
 
 // 树上启发式合并 DSU on tree / small to large
-// O(nlogn)   根节点到树上任意节点的轻边数不超过 O(logn) 条
+// 每个节点合并到另外一个集合中的次数不超过 O(nlogn)，因为一旦合并到另一个集合，这个节点所在的集合大小至少倍增
 // https://oi-wiki.org/graph/dsu-on-tree/
 // NOTE: 合并的时候最好先循环计算一遍答案，再循环合并一遍，这样的习惯可避免产生把合并之后的数值算入答案中的 bug
 // 讲解+套题 https://pzy.blog.luogu.org/dsu-on-tree-xue-xi-bi-ji
@@ -1500,6 +1509,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://codeforces.com/contest/375/problem/D
 // https://codeforces.com/contest/741/problem/D
 // https://codeforces.com/problemset/problem/1805/E
+// https://codeforces.com/contest/1824/problem/C
 
 // 写法一：按大小合并
 // 路径点权异或 https://codeforces.com/problemset/problem/1709/E
@@ -1528,6 +1538,7 @@ func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
 }
 
 // 写法二：轻重儿子合并
+// 根节点到树上任意节点的轻边数不超过 O(logn) 条
 func (*tree) dsu(root int, g [][]int, vals []int) { // vals 为点权
 	hson := make([]int, len(g))
 	var build func(v, fa int) int
