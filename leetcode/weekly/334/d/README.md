@@ -18,6 +18,8 @@
 
 根据题意，$\textit{dis}[i][j]$ 需要至少为 $\textit{grid}[i][j]$；且根据网格图的性质，在可以反复横跳的情况下，到达一个格子的时间的奇偶性是不变的，那么 $\textit{dis}[i][j]$ 应当与 $i+j$ 的奇偶性相同。
 
+> 证明：想象成国际象棋的棋盘（两种颜色），每走一步，颜色一定会改变，所以走了偶数步之后一定会落在相同颜色的格子上，奇数步会落在另一个颜色的格子上。这些颜色相同的格子的奇偶性是相同的，可以用坐标之和的奇偶性表示。
+
 算上这两个约束，才能计算出正确的结果。
 
 ```py [sol2-Python3]
@@ -32,7 +34,8 @@ class Solution:
         h = [(0, 0, 0)]
         while True:  # 可以等待，就一定可以到达终点
             d, i, j = heappop(h)
-            if i == m - 1 and j == n - 1:
+            if d > dis[i][j]: continue
+            if i == m - 1 and j == n - 1:  # 找到终点，此时 d 一定是最短路
                 return d
             for x, y in (i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1):  # 枚举周围四个格子
                 if 0 <= x < m and 0 <= y < n:
@@ -45,7 +48,7 @@ class Solution:
 
 ```java [sol2-Java]
 class Solution {
-    private final static int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    private final static int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     public int minimumTime(int[][] grid) {
         int m = grid.length, n = grid[0].length;
@@ -61,9 +64,10 @@ class Solution {
         for (;;) { // 可以等待，就一定可以到达终点
             var p = pq.poll();
             int d = p[0], i = p[1], j = p[2];
-            if (i == m - 1 && j == n - 1)
+            if (d > dis[i][j]) continue;
+            if (i == m - 1 && j == n - 1) // 找到终点，此时 d 一定是最短路
                 return d;
-            for (var q : dirs) { // 枚举周围四个格子
+            for (var q : DIRS) { // 枚举周围四个格子
                 int x = i + q[0], y = j + q[1];
                 if (0 <= x && x < m && 0 <= y && y < n) {
                     int nd = Math.max(d + 1, grid[x][y]);
@@ -96,7 +100,8 @@ public:
         for (;;) { // 可以等待，就一定可以到达终点
             auto[d, i, j] = pq.top();
             pq.pop();
-            if (i == m - 1 && j == n - 1)
+            if (d > dis[i][j]) continue;
+            if (i == m - 1 && j == n - 1) // 找到终点，此时 d 一定是最短路
                 return d;
             for (auto &q : dirs) { // 枚举周围四个格子
                 int x = i + q[0], y = j + q[1];
@@ -135,7 +140,10 @@ func minimumTime(grid [][]int) int {
 	for { // 可以等待，就一定可以到达终点
 		p := heap.Pop(h).(tuple)
 		d, i, j := p.d, p.i, p.j
-		if i == m-1 && j == n-1 {
+		if d > dis[i][j] {
+			continue
+		}
+		if i == m-1 && j == n-1 { // 找到终点，此时 d 一定是最短路
 			return d
 		}
 		for _, q := range dirs { // 枚举周围四个格子
@@ -220,7 +228,7 @@ class Solution:
 
 ```java [sol1-Java]
 class Solution {
-    private final static int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    private final static int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     private int[][] grid, vis;
 
     public int minimumTime(int[][] grid) {
@@ -250,7 +258,7 @@ class Solution {
             q = new ArrayList<>();
             for (var p : tmp) {
                 int i = p[0], j = p[1];
-                for (var d : dirs) { // 枚举周围四个格子
+                for (var d : DIRS) { // 枚举周围四个格子
                     int x = i + d[0], y = j + d[1];
                     if (0 <= x && x < m && 0 <= y && y < n && vis[x][y] != endTime && grid[x][y] <= t) {
                         if (x == 0 && y == 0) return true;
