@@ -28,6 +28,7 @@
 ||[1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)|[三种算法：暴力/二分答案/堆](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/)|2133|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
+||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
 ||[790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)|[【图解】找不到规律？请看图！](https://leetcode.cn/problems/domino-and-tromino-tiling/solution/by-endlesscheng-umpp/)|1830|
 ||[1043. 分隔数组以得到最大和](https://leetcode.cn/problems/partition-array-for-maximum-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/partition-array-for-maximum-sum/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-rq5i/)|1916|
 ||[1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)|[【输出具体方案】从递归到递推，教你一步步思考动态规划！](https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/)|1977|
@@ -82,5 +83,6 @@
 附：
 
 - [【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+- [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 - [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
 - [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
