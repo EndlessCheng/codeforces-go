@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -12,8 +11,8 @@ func CF1626C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	max := func(a, b int) int {
-		if b > a {
+	min := func(a, b int) int {
+		if a > b {
 			return b
 		}
 		return a
@@ -31,19 +30,18 @@ func CF1626C(_r io.Reader, _w io.Writer) {
 			a[i].l = a[i].r - a[i].l + 1
 		}
 
-		sort.Slice(a, func(i, j int) bool { return a[i].l < a[j].l })
 		ans := int64(0)
-		l0, maxR := a[0].l, a[0].r
-		for _, p := range a[1:] {
-			l, r := p.l, p.r
-			if l > maxR {
-				sz := int64(maxR - l0 + 1)
+		r0, minL := a[n-1].r, a[n-1].l
+		for i := n-2; i >= 0; i-- {
+			l, r := a[i].l, a[i].r
+			if r < minL {
+				sz := int64(r0 - minL + 1)
 				ans += (sz + 1) * sz / 2
-				l0 = l
+				r0 = r
 			}
-			maxR = max(maxR, r)
+			minL = min(minL, l)
 		}
-		sz := int64(maxR - l0 + 1)
+		sz := int64(r0 - minL + 1)
 		ans += (sz + 1) * sz / 2
 		Fprintln(out, ans)
 	}
