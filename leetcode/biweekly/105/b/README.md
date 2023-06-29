@@ -137,6 +137,46 @@ class Solution:
         return f[n]
 ```
 
+```java [sol-Java]
+class Solution {
+    public int minExtraChar(String s, String[] dictionary) {
+        var set = new HashSet<String>(dictionary.length);
+        for (var str : dictionary) set.add(str);
+        int n = s.length();
+        var f = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            f[i + 1] = f[i] + 1; // 不选
+            for (int j = 0; j <= i; j++) { // 枚举选哪个
+                if (set.contains(s.substring(j, i + 1))) {
+                    f[i + 1] = Math.min(f[i + 1], f[j]);
+                }
+            }
+        }
+        return f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minExtraChar(string s, vector<string> &dictionary) {
+        unordered_set<string> set(dictionary.begin(), dictionary.end());
+        int n = s.size();
+        vector<int> f(n + 1);
+        for (int i = 0; i < n; i++) {
+            f[i + 1] = f[i] + 1; // 不选
+            for (int j = 0; j <= i; j++) { // 枚举选哪个
+                if (set.count(s.substr(j, i - j + 1))) {
+                    f[i + 1] = min(f[i + 1], f[j]);
+                }
+            }
+        }
+        return f[n];
+    }
+};
+```
+
 ```go [sol-Go]
 func minExtraChar(s string, dictionary []string) int {
 	has := map[string]bool{}
