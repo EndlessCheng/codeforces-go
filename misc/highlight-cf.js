@@ -131,7 +131,15 @@
             .highlight("取模", colorRed)
             .highlight("取余", colorRed)
             .highlight("重复边", colorRed)
-            .highlight("重边", colorRed);
+            .highlight("重边", colorRed)
+            .highlight("3 seconds", colorRed)
+            .highlight("4 seconds", colorRed)
+            .highlight("5 seconds", colorRed)
+            .highlight("6 seconds", colorRed)
+            .highlight("7 seconds", colorRed)
+            .highlight("8 seconds", colorRed)
+            .highlight("9 seconds", colorRed)
+            .highlight("10 seconds", colorRed);
 
         $(target).html(target.highlightContent);
     });
