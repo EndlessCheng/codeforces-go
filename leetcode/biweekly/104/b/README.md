@@ -1,10 +1,8 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
-
----
-
 既然每次选最大的数，那么干脆对每行排序，这样每次就选的是一列的最大值。
 
 累加这些最大值，即为答案。
+
+视频讲解见[【双周赛 104】](https://www.bilibili.com/video/BV1fV4y1r7e6/)第二题。
 
 ```py [sol1-Python3]
 class Solution:
@@ -64,6 +62,21 @@ func matrixSum(nums [][]int) (ans int) {
 }
 
 func max(a, b int) int { if a < b { return b }; return a }
+```
+
+```js [sol-JavaScript]
+var matrixSum = function (nums) {
+    for (let row of nums)
+        row.sort((a, b) => a - b);
+    let ans = 0, n = nums[0].length;
+    for (let j = 0; j < n; j++) {
+        let mx = 0;
+        for (var row of nums)
+            mx = Math.max(mx, row[j]);
+        ans += mx;
+    }
+    return ans;
+};
 ```
 
 #### 复杂度分析
