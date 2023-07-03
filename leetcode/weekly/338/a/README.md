@@ -1,18 +1,43 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+贪心，按照 $1,0,-1$ 的顺序选：
 
----
+- 先选 $1$，如果 $k\le \textit{numOnes}$ 那么答案就是 $k$。
+- 再选 $0$，如果 $k\le \textit{numOnes}+\textit{numZeros}$ 那么答案为 $\textit{numOnes}$。
+- 最后选 $-1$（题目要求恰好选 $k$ 个），那么剩余必须选 $k-\textit{numOnes}-\textit{numZeros}$ 个 $-1$，答案为
 
-贪心，按照标记为 $1,0,-1$ 的顺序选。
+$$
+\textit{numOnes} + (k-\textit{numOnes}-\textit{numZeros})  \cdot  (-1)= \textit{numOnes} \cdot 2 + \textit{numZeros} - k
+$$
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
-    def kItemsWithMaximumSum(self, numOnes: int, numZeros: int, numNegOnes: int, k: int) -> int:
+    def kItemsWithMaximumSum(self, numOnes: int, numZeros: int, _: int, k: int) -> int:
         if k <= numOnes + numZeros:
             return min(k, numOnes)
         return numOnes * 2 + numZeros - k
 ```
 
-```go [sol1-Go]
+```java [sol-Java]
+class Solution {
+    public int kItemsWithMaximumSum(int numOnes, int numZeros, int numNegOnes, int k) {
+        if (k <= numOnes + numZeros)
+            return Math.min(k, numOnes);
+        return numOnes * 2 + numZeros - k;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int kItemsWithMaximumSum(int numOnes, int numZeros, int _, int k) {
+        if (k <= numOnes + numZeros)
+            return min(k, numOnes);
+        return numOnes * 2 + numZeros - k;
+    }
+};
+```
+
+```go [sol-Go]
 func kItemsWithMaximumSum(numOnes, numZeros, _, k int) int {
 	if k <= numOnes {
 		return k
@@ -24,7 +49,15 @@ func kItemsWithMaximumSum(numOnes, numZeros, _, k int) int {
 }
 ```
 
+```js [sol-JavaScript]
+var kItemsWithMaximumSum = function(numOnes, numZeros, _, k) {
+    if (k <= numOnes + numZeros)
+        return Math.min(k, numOnes);
+    return numOnes * 2 + numZeros - k;
+};
+```
+
 ### 复杂度分析
 
-- 时间复杂度：$O(1)$。
-- 空间复杂度：$O(1)$。仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(1)$。
