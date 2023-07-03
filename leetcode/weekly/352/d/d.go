@@ -10,7 +10,7 @@ func sumImbalanceNumbers(nums []int) (ans int) {
 		for j := i + 1; j < n; j++ {
 			if x := nums[j]; vis[x] == 0 {
 				cnt--
-				cnt += 1 ^ vis[x-1] // 很巧
+				cnt += 1 ^ vis[x-1] // 巧妙的是，如果 x 左边没有任何数字，这也算也是对的
 				cnt += 1 ^ vis[x+1]
 				vis[x] = 1
 			}
