@@ -80,5 +80,5 @@ var maximumEvenSplit = function (finalSum) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\sqrt{\textit{finalSum}})$。
+- 时间复杂度：$\mathcal{O}(\sqrt{\textit{finalSum}})$。设数组长度为 $x$，根据等差数列之和，$2+4+6+8+\cdots+2x = x(x+1) \le \textit{finalSum}$，可知 $x$ 约为 $\sqrt{\textit{finalSum}}$，所以循环次数为 $\mathcal{O}(\sqrt{\textit{finalSum}})$。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
