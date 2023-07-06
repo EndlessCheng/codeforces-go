@@ -2,7 +2,7 @@
 
 ---
 
-建立 $4$ 个堆，每个堆都记录工人下标和完成时间（到达桥的时间），这 $4$ 个堆**从左到右**分别表示:
+建立 $4$ 个堆，每个堆都记录工人下标 $i$ 和完成时间 $t$（到达桥的时间），这 $4$ 个堆**从左到右**分别表示:
 
 1. $\textit{workL}$：新仓库正在放箱的工人；
 2. $\textit{waitL}$：左边等待过桥的工人；
@@ -19,7 +19,7 @@
 
 循环结束后，不断弹出 $\textit{workR}$，过桥，最后一个工人过完桥的时间即为答案。
 
-代码实现时，也可以预先把 $\textit{time}$ 从小到大稳定排序，这样下标越大效率越低，只看下标就知道效率了。
+代码实现时，可以先把 $\textit{time}$ 从小到大**稳定排序**，这样下标越大的工人效率越低，只看下标就能比较工人的效率。
 
 ```py [sol1-Python3]
 class Solution:
@@ -63,11 +63,14 @@ class Solution:
 class Solution {
     public int findCrossingTime(int n, int k, int[][] time) {
         Arrays.sort(time, (a, b) -> a[0] + a[2] - b[0] - b[2]); // 稳定排序
+        
         var workL = new PriorityQueue<int[]>((a, b) -> a[1] - b[1]);
         var workR = new PriorityQueue<int[]>(workL.comparator());
         var waitL = new PriorityQueue<int[]>((a, b) -> b[0] - a[0]); // 下标越大效率越低
         var waitR = new PriorityQueue<int[]>(waitL.comparator());
-        for (int i = k - 1; i >= 0; --i) waitL.add(new int[]{i, 0});
+        for (int i = k - 1; i >= 0; --i) 
+            waitL.add(new int[]{i, 0});
+        
         int cur = 0;
         while (n > 0) {
             while (!workL.isEmpty() && workL.peek()[1] <= cur) waitL.add(workL.poll()); // 左边完成放箱
@@ -104,9 +107,12 @@ public:
         stable_sort(time.begin(), time.end(), [](auto &a, auto &b) {
             return a[0] + a[2] < b[0] + b[2];
         });
+        
         priority_queue<pair<int, int>> waitL, waitR;
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> workL, workR;
-        for (int i = k - 1; i >= 0; --i) waitL.emplace(i, 0); // 下标越大效率越低
+        for (int i = k - 1; i >= 0; --i) 
+            waitL.emplace(i, 0); // 下标越大效率越低
+        
         int cur = 0;
         while (n) {
             while (!workL.empty() && workL.top().first <= cur) {
@@ -151,11 +157,13 @@ func findCrossingTime(n, k int, time [][]int) (cur int) {
 		a, b := time[i], time[j]
 		return a[0]+a[2] < b[0]+b[2]
 	})
+
 	waitL, waitR := make(hp, k), hp{}
 	for i := range waitL {
 		waitL[i].i = k - 1 - i // 下标越大效率越低
 	}
 	workL, workR := hp2{}, hp2{}
+
 	for n > 0 {
 		for len(workL) > 0 && workL[0].t <= cur {
 			heap.Push(&waitL, heap.Pop(&workL)) // 左边完成放箱
@@ -207,7 +215,57 @@ func min(a, b int) int { if b < a { return b }; return a }
 func max(a, b int) int { if b > a { return b }; return a }
 ```
 
+```js [sol1-JavaScript]
+var findCrossingTime = function (n, k, time) {
+    time.sort((a, b) => (a[0] + a[2]) - (b[0] + b[2])); // 稳定排序
+
+    let workL = new MinPriorityQueue({priority: (e) => e[1]});
+    let workR = new MinPriorityQueue({priority: (e) => e[1]});
+    let waitL = new MaxPriorityQueue({priority: (e) => e[0]});
+    let waitR = new MaxPriorityQueue({priority: (e) => e[0]});
+    for (let i = k - 1; i >= 0; i--)
+        waitL.enqueue([i, 0]); // 下标越大效率越低
+
+    let cur = 0;
+    while (n) {
+        while (!workL.isEmpty() && workL.front().element[1] <= cur)
+            waitL.enqueue(workL.dequeue().element); // 左边完成放箱
+        while (!workR.isEmpty() && workR.front().element[1] <= cur)
+            waitR.enqueue(workR.dequeue().element); // 右边完成搬箱
+        if (!waitR.isEmpty()) { // 右边过桥，注意加到 waitR 中的都是 <= cur 的（下同）
+            let p = waitR.dequeue().element;
+            cur += time[p[0]][2];
+            p[1] = cur + time[p[0]][3];
+            workL.enqueue(p); // 放箱
+        } else if (!waitL.isEmpty()) { // 左边过桥
+            let p = waitL.dequeue().element;
+            cur += time[p[0]][0];
+            p[1] = cur + time[p[0]][1];
+            workR.enqueue(p); // 搬箱
+            n--;
+        } else if (workL.isEmpty()) { // cur 过小，下面找个最小的放箱/搬箱完成时间来更新 cur
+            cur = workR.front().element[1];
+        } else if (workR.isEmpty()) {
+            cur = workL.front().element[1];
+        } else {
+            cur = Math.min(workL.front().element[1], workR.front().element[1]);
+        }
+    }
+
+    while (!workR.isEmpty()) {
+        const [i, t] = workR.dequeue().element; // 右边完成搬箱
+        // 如果没有排队，直接过桥；否则由于无论谁先过桥，最终完成时间都一样，所以也可以直接计算
+        cur = Math.max(t, cur) + time[i][2];
+    }
+    return cur; // 最后一个过桥的时间
+};
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log k)$。
-- 空间复杂度：$O(k)$。
+- 时间复杂度：$\mathcal{O}(n\log k)$。
+- 空间复杂度：$\mathcal{O}(k)$。
+
+---
+
+[往期每日一题题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
