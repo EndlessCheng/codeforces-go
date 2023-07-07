@@ -9,6 +9,12 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF282E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
+	max := func(a, b int64) int64 {
+		if b > a {
+			return b
+		}
+		return a
+	}
 	type node struct {
 		ch [2]*node
 		c  int
@@ -31,10 +37,9 @@ func CF282E(_r io.Reader, out io.Writer) {
 			o.c++
 		}
 		pre ^= a[i]
-		if pre > ans {
-			ans = pre // 前缀最大值
-		}
+		ans = max(ans, pre) // 前缀最大值
 	}
+	
 	suf := int64(0)
 	for i := n - 1; i >= 0; i-- {
 		suf ^= a[i]
@@ -47,9 +52,7 @@ func CF282E(_r io.Reader, out io.Writer) {
 			}
 			o = o.ch[b]
 		}
-		if res > ans {
-			ans = res // 后缀^前缀最大值
-		}
+		ans = max(ans, res) // 后缀 异或 前缀最大值
 		// 删除前缀
 		pre ^= a[i]
 		for i, o := 39, root; i >= 0; i-- {
