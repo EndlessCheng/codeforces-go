@@ -16,8 +16,8 @@ func CF282E(_r io.Reader, out io.Writer) {
 		return a
 	}
 	type node struct {
-		ch [2]*node
-		c  int
+		ch  [2]*node
+		cnt int
 	}
 
 	var n int
@@ -34,7 +34,7 @@ func CF282E(_r io.Reader, out io.Writer) {
 				o.ch[b] = &node{}
 			}
 			o = o.ch[b]
-			o.c++
+			o.cnt++
 		}
 		pre ^= a[i]
 		ans = max(ans, pre) // 前缀最大值
@@ -46,7 +46,7 @@ func CF282E(_r io.Reader, out io.Writer) {
 		res := int64(0)
 		for j, o := 39, root; j >= 0; j-- {
 			b := suf >> j & 1
-			if o.ch[b^1] != nil && o.ch[b^1].c > 0 {
+			if o.ch[b^1] != nil && o.ch[b^1].cnt > 0 {
 				res |= 1 << j
 				b ^= 1
 			}
@@ -55,9 +55,9 @@ func CF282E(_r io.Reader, out io.Writer) {
 		ans = max(ans, res) // 后缀 异或 前缀最大值
 		// 删除前缀
 		pre ^= a[i]
-		for i, o := 39, root; i >= 0; i-- {
-			o = o.ch[pre>>i&1]
-			o.c--
+		for j, o := 39, root; j >= 0; j-- {
+			o = o.ch[pre>>j&1]
+			o.cnt--
 		}
 	}
 	Fprint(out, ans)
