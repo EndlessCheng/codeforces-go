@@ -6,31 +6,31 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF383D(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	const mod int = 1e9 + 7
-	var n, offset, s, ans int
+	var n, bias, s, ans int
 	Fscan(in, &n)
 	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
-		offset += a[i]
+		bias += a[i]
 	}
-	dp := make([]int, offset*2+1)
-	dp[offset] = 1
+	f := make([]int, bias*2+1)
+	f[bias] = 1
 	for _, v := range a {
-		ans = (ans + (dp[offset+v]+dp[offset-v])%mod) % mod
-		ndp := make([]int, len(dp))
-		for i := offset - s; i <= offset+s; i++ {
-			ndp[i-v] = (ndp[i-v] + dp[i]) % mod
-			ndp[i+v] = (ndp[i+v] + dp[i]) % mod
+		ans = (ans + (f[bias+v]+f[bias-v])%mod) % mod
+		nf := make([]int, len(f))
+		for i := bias - s; i <= bias+s; i++ {
+			nf[i-v] = (nf[i-v] + f[i]) % mod
+			nf[i+v] = (nf[i+v] + f[i]) % mod
 		}
-		ndp[offset] = (ndp[offset] + 1) % mod
-		dp = ndp
+		nf[bias] = (nf[bias] + 1) % mod
+		f = nf
 		s += v
 	}
-	Fprint(out, ans%mod)
+	Fprint(out, ans)
 }
 
 //func main() { CF383D(os.Stdin, os.Stdout) }
