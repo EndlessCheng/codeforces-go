@@ -39,10 +39,11 @@ func CF282E(_r io.Reader, out io.Writer) {
 		pre ^= a[i]
 		ans = max(ans, pre) // 前缀最大值
 	}
-	
+
 	suf := int64(0)
 	for i := n - 1; i >= 0; i-- {
 		suf ^= a[i]
+		// 「后缀异或前缀」的最大值
 		res := int64(0)
 		for j, o := 39, root; j >= 0; j-- {
 			b := suf >> j & 1
@@ -52,13 +53,7 @@ func CF282E(_r io.Reader, out io.Writer) {
 			}
 			o = o.ch[b]
 		}
-		ans = max(ans, res) // 后缀 异或 前缀最大值
-		// 删除前缀
-		pre ^= a[i]
-		for j, o := 39, root; j >= 0; j-- {
-			o = o.ch[pre>>j&1]
-			o.cnt--
-		}
+		ans = max(ans, res)
 	}
 	Fprint(out, ans)
 }
