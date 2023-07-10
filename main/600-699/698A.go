@@ -16,8 +16,7 @@ func CF698A(_r io.Reader, out io.Writer) {
 		return a
 	}
 	const inf int = 1e9
-	var n, v int
-	f0, f1, f2 := 0, inf, inf
+	var n, v, f0, f1, f2 int
 	for Fscan(in, &n); n > 0; n-- {
 		Fscan(in, &v)
 		g1, g2 := inf, inf
