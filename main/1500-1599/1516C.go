@@ -24,18 +24,22 @@ func CF1516C(_r io.Reader, out io.Writer) {
 		}
 	}
 
+	total /= minLowbit
+	if total%2 > 0 {
+		Fprint(out, 0)
+		return
+	}
+
 	f := make([]bool, total+1)
 	f[0] = true
-	s := 0
 	for _, x := range a {
 		x /= minLowbit
-		s += x
-		for j := s; j >= x; j-- {
+		for j := total; j >= x; j-- {
 			f[j] = f[j] || f[j-x]
 		}
 	}
 
-	if s%2 == 0 && f[s/2] {
+	if f[total/2] {
 		Fprintln(out, 1)
 		Fprint(out, idx+1)
 	} else {
