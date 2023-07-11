@@ -16,5 +16,5 @@ inputCopy
 3 14 15 92 65 35 89
 outputCopy
 64`
-	testutil.AssertEqual(t, rawText, Sol981D)
+	testutil.AssertEqual(t, rawText, CF981D)
 }
