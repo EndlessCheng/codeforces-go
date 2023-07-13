@@ -81,7 +81,7 @@
 ||[1377. T 秒后青蛙的位置](https://leetcode.cn/problems/frog-position-after-t-seconds/)|[代码](https://leetcode.cn/problems/frog-position-after-t-seconds/solution/dfs-ji-yi-ci-you-qu-de-hack-by-endlessch-jtsr/)|*课后作业|
 ||[2646. 最小化旅行的价格总和](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/)|[代码](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/solution/lei-si-da-jia-jie-she-iii-pythonjavacgo-4k3wq/)|*课后作业|
 
-附：[每题一题题解精选（已按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+附：[每日一题题解精选（已按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
 
 ---
 
