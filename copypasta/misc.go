@@ -879,12 +879,14 @@ func parseTime(s string) (hour, minute, total int) {
 	return
 }
 
-// 合并 a 中所有重叠的区间（哪怕只有一个端点重叠，也算重叠）
+// 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
 // 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
 // - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 // - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/)
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/)
+// https://codeforces.com/problemset/problem/1626/C
+// 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
 func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 	sort.Slice(a, func(i, j int) bool { return a[i][0] < a[j][0] }) // 按区间左端点排序
 	l0, maxR := a[0][0], a[0][1]
