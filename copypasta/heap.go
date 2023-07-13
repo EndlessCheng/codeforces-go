@@ -36,6 +36,7 @@ JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcod
 用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
 股票买卖 https://codeforces.com/problemset/problem/865/D
 https://atcoder.jp/contests/abc249/tasks/abc249_f
+前缀和 https://codeforces.com/problemset/problem/1779/C 推荐
 
 区间贪心相关
 最小不相交区间划分数
