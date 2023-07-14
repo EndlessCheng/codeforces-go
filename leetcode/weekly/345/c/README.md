@@ -1,6 +1,4 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
-
----
+[视频讲解](https://www.bilibili.com/video/BV1ka4y137ua/)（周赛 345 第三题）
 
 # 方法一：动态规划
 
