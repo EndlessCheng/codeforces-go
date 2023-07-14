@@ -22,6 +22,8 @@ import (
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
 /*
+力扣题目分类汇总 https://leetcode.cn/circle/article/04PVPY/
+
 双变量思想
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
@@ -35,10 +37,15 @@ LC974 https://leetcode.cn/problems/subarray-sums-divisible-by-k/
 LC1590 https://leetcode.cn/problems/make-sum-divisible-by-p/
 LC523 https://leetcode.cn/problems/continuous-subarray-sum/
 LC525 https://leetcode.cn/problems/contiguous-array/
-LC1915 https://leetcode.cn/problems/number-of-wonderful-substrings/
 LC930 https://leetcode-cn.com/problems/binary-subarrays-with-sum/
-LC1371 https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/
-LC1542 https://leetcode-cn.com/problems/find-longest-awesome-substring/
+
+#### 前缀和+异或
+
+- [1177. 构建回文串检测](https://leetcode.cn/problems/can-make-palindrome-from-substring/)
+- [1371. 每个元音包含偶数次的最长子字符串](https://leetcode.cn/problems/find-the-longest-substring-containing-vowels-in-even-counts/)
+- [1542. 找出最长的超赞子字符串](https://leetcode.cn/problems/find-longest-awesome-substring/)
+- [1915. 最美子字符串的数目](https://leetcode.cn/problems/number-of-wonderful-substrings/)，[题解](https://leetcode.cn/problems/number-of-wonderful-substrings/solution/qian-zhui-he-chang-jian-ji-qiao-by-endle-t57t/)
+
 https://leetcode.cn/problems/find-longest-subarray-lcci/
 https://codeforces.com/problemset/problem/1296/C
 
@@ -53,9 +60,25 @@ https://codeforces.com/problemset/problem/1296/C
 - [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/)
 - [2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/)
 
+滑动窗口 双指针
+入门题 https://codeforces.com/problemset/problem/602/B
+LC424 https://leetcode.cn/problems/longest-repeating-character-replacement/
+LC795 https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/
+LC2444 https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/
+LC1712 多指针 https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/
+多指针 https://codeforces.com/problemset/problem/895/B
+https://codeforces.com/contest/1833/problem/F
+计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
+
+分组循环 O(n)
+LC2110 https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/
+LC2760 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/
+LC2765 https://leetcode.cn/problems/longest-alternating-subarray/
+
 巧妙枚举
 https://codeforces.com/problemset/problem/1181/C
 https://codeforces.com/problemset/problem/1626/D
+https://codeforces.com/problemset/problem/846/C
 
 贪心及其证明
 - [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/)
@@ -73,12 +96,17 @@ https://codeforces.com/problemset/problem/1479/B1 https://codeforces.com/problem
     https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
 1505. 最多 K 次交换相邻数位后得到的最小整数 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 https://codeforces.com/problemset/problem/1804/D
+https://codeforces.com/problemset/problem/442/C
+    如果 x>=y<=z，那么删除 y 最优
+    结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
+https://codeforces.com/problemset/problem/1157/C2
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
 https://codeforces.com/problemset/problem/448/C
 
 邻项交换
+https://codeforces.com/problemset/problem/435/B
 LC1665 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/
 https://atcoder.jp/contests/arc147/tasks/arc147_b
 https://atcoder.jp/contests/abc268/tasks/abc268_f
@@ -113,6 +141,7 @@ https://codeforces.com/problemset/problem/515/D
 度数均为 k 且至少（恰好）有一条割边 https://codeforces.com/problemset/problem/550/D
 最短/最长 LIS https://codeforces.com/problemset/problem/1304/D
 https://codeforces.com/problemset/problem/1789/D
+交互 二分 https://codeforces.com/problemset/problem/1838/F
 
 不好想到的构造
 https://codeforces.com/contest/1659/problem/D
@@ -129,10 +158,11 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 把一个环形数组切两刀，分成两段，要求相等，求方案数 => 和为 sum(a)/2 的子数组个数
 LC494 https://leetcode.cn/problems/target-sum/
 
-分类讨论（易错题）
+分类讨论（部分题是易错题）
 https://codeforces.com/problemset/problem/489/C
 https://codeforces.com/problemset/problem/1605/C
 https://codeforces.com/problemset/problem/382/C
+https://codeforces.com/problemset/problem/1051/C
 https://codeforces.com/problemset/problem/1095/E
 https://codeforces.com/problemset/problem/796/C
 https://codeforces.com/problemset/problem/1594/F
@@ -140,26 +170,37 @@ https://codeforces.com/problemset/problem/1798/E
 https://codeforces.com/problemset/problem/1811/F
 https://codeforces.com/problemset/problem/1714/F 锻炼代码实现技巧的好题
 https://codeforces.com/problemset/problem/1832/D2
+https://codeforces.com/contest/1833/problem/G 样例给的挺良心的
+https://codeforces.com/problemset/problem/411/C
+https://codeforces.com/contest/1516/problem/C
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
-https://codeforces.com/contest/1374/problem/E2
+https://codeforces.com/problemset/problem/460/D
+https://codeforces.com/problemset/problem/1374/E2
+https://codeforces.com/problemset/problem/1647/D
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 
 贡献法
 LC891 https://leetcode.cn/problems/sum-of-subsequence-widths/
 LC2681 https://leetcode.cn/problems/power-of-heroes/
-另见 monotone_stack.go
+LC2763 https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/
+更多贡献法题目，见 monotone_stack.go
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
 https://codeforces.com/problemset/problem/1777/D 树
 https://codeforces.com/problemset/problem/1788/D 好题！
+https://codeforces.com/problemset/problem/1789/C 好题！
 https://codeforces.com/problemset/problem/1808/D
 
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
 https://codeforces.com/problemset/problem/521/D
+
+合法括号字符串 Regular Bracket Sequence, RBS
+https://codeforces.com/problemset/problem/1821/E
+https://codeforces.com/problemset/problem/1830/C
 
 = 变成 <= 或者 >=
 求前缀和/后缀和
@@ -177,6 +218,7 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 // 进阶：https://codeforces.com/problemset/problem/1483/D
 // 删除一段的最长连续递增 CERC10D https://codeforces.com/gym/101487
 // 统计量是二元组的情形 https://codeforces.com/problemset/problem/301/D
+// 好题 空间优化 https://codeforces.com/contest/1830/problem/B
 
 // 双变量+下取整：枚举分母，然后枚举分子的范围，使得在该范围内的分子/分母是一个定值
 // LC1862 https://leetcode.cn/problems/sum-of-floored-pairs/
@@ -195,7 +237,11 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
-转换为差分数组的变化 https://codeforces.com/problemset/problem/1110/E
+转换为差分数组 https://codeforces.com/problemset/problem/1110/E
+             https://codeforces.com/problemset/problem/1442/A
+             https://codeforces.com/problemset/problem/1700/C
+             https://codeforces.com/problemset/problem/1779/D 改成修改长为 x 的数组？
+             https://www.luogu.com.cn/problem/P4552
 转换为差 http://www.51nod.com/Challenge/Problem.html#problemId=1217
 考虑每个点产生的贡献 https://codeforces.com/problemset/problem/1009/E
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
@@ -207,9 +253,31 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 置换 https://atcoder.jp/contests/abc250/tasks/abc250_e
 排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
+https://codeforces.com/contest/1830/problem/A
+从绝对值最大的开始思考 https://codeforces.com/contest/351/problem/E
 */
 
+/* 
+## 练习：离线（按难度分排序）
+
+> 由于所有的询问数据都给出了，我们可以通过修改询问的顺序，达到降低时间复杂度的效果。相应的，在线算法就是按照输入的顺序处理，来一个处理一个。
+
+- [2343. 裁剪数字后查询第 K 小的数字](https://leetcode.cn/problems/query-kth-smallest-trimmed-number/) 1652
+- [2070. 每一个查询的最大美丽值](https://leetcode.cn/problems/most-beautiful-item-for-each-query/) 1724
+- [2503. 矩阵查询可获得的最大分数](https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/) 2196
+- [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/) 2286
+- [1697. 检查边长度限制的路径是否存在](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/) 2300
+- [2747. 统计没有收到请求的服务器数目](https://leetcode.cn/problems/count-zero-request-servers/)
+- [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
+- [2736. 最大和查询](https://leetcode.cn/problems/maximum-sum-queries/) 2533
+ */
+
 /* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
+LC803 https://leetcode.cn/problems/bricks-falling-when-hit/
+LC936 https://leetcode.cn/problems/stamping-the-sequence/
+LC1199 https://leetcode.cn/problems/minimum-time-to-build-blocks/
+LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
+LCP52 https://leetcode.cn/problems/QO5KpG/
 https://codeforces.com/problemset/problem/712/C
 https://codeforces.com/problemset/problem/621/C
 https://codeforces.com/problemset/problem/571/A
@@ -217,7 +285,7 @@ https://codeforces.com/problemset/problem/369/E
 https://codeforces.com/problemset/problem/1644/D
 https://codeforces.com/problemset/problem/1638/D
 https://codeforces.com/problemset/problem/1672/D
-逆向思维 LC1199 https://leetcode-cn.com/problems/minimum-time-to-build-blocks/
+https://codeforces.com/problemset/problem/1759/G 求字典序最小，通常可以从大往小思考
 
 删除变添加
 https://codeforces.com/problemset/problem/295/B
@@ -293,6 +361,10 @@ https://codeforces.com/problemset/problem/707/D
 写在 main 里面 + array 257424KB https://codeforces.com/contest/767/submission/174194515
 写在 main 外面 + slice 188364KB https://codeforces.com/contest/767/submission/174194380
 写在 main 外面 + array 154500KB https://codeforces.com/contest/767/submission/174193693
+
+测试：哈希表用时是数组的 13 倍（本题瓶颈）
+slice    249ms https://codeforces.com/problemset/submission/570/209063267
+hashmap 3259ms https://codeforces.com/problemset/submission/570/209063603
 */
 
 // slice 作为 map 的 key
@@ -759,6 +831,8 @@ func _() {
 	// 二维前缀和
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
 	// https://codeforces.com/contest/1107/problem/D
+	// https://codeforces.com/problemset/problem/1731/D
+	// https://codeforces.com/problemset/problem/611/C
 	var sum2d [][]int
 	initSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])
@@ -841,6 +915,7 @@ func _() {
 	}
 
 	// 差分
+	// https://codeforces.com/problemset/problem/1700/C
 	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
 	// 二阶差分 https://codeforces.com/problemset/problem/1661/D
 
