@@ -10,7 +10,7 @@ func Sol727C() {
 	Println("? 2 3")
 	Scan(&a[0])
 	for i := 1; i < n; i++ {
-		Println(Sprintf("? 1 %d", i+1))
+		Printf("? 1 %d\n", i+1)
 		Scan(&a[i])
 	}
 	a[0] = (a[1] + a[2] - a[0]) / 2
