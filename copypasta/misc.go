@@ -928,3 +928,24 @@ func minJumpNumbers(a []int, max func(int, int) int) (ans int) {
 	}
 	return
 }
+
+// 摩尔投票法求绝对众数（absolute mode, majority）
+// Boyer–Moore majority vote algorithm
+// https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
+// LC169 https://leetcode.cn/problems/majority-element/
+// LC229 变形 https://leetcode.cn/problems/majority-element-ii/
+// LC2780 https://leetcode.cn/problems/minimum-index-of-a-valid-split/
+func majorityVote(a []int) (mode int) {
+	cnt := 0
+	for _, v := range a {
+		if cnt == 0 {
+			mode = v
+		}
+		if v == mode {
+			cnt++
+		} else {
+			cnt--
+		}
+	}
+	return
+}
