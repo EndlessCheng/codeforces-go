@@ -23,10 +23,8 @@ https://euler.stephan-brumme.com/toolbox/
 
 NOTE: a%-b == a%b
 NOTE: 对于整数来说有
-       ax≤b  =>  x≤⌊b/a⌋
-       ax<b  =>  x<⌈b/a⌉
-       ax≥b  =>  x≥⌈b/a⌉
-       ax>b  =>  x>⌊b/a⌋
+       ax≤b  =>  x≤⌊b/a⌋       ax<b  =>  x<⌈b/a⌉
+       ax>b  =>  x>⌊b/a⌋       ax≥b  =>  x≥⌈b/a⌉
 NOTE: ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
 NOTE: ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
@@ -904,7 +902,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	primeDivisors2 := func(x int64) (primes []int64) {
 		if x&1 == 0 {
 			primes = append(primes, 2)
-			x >>= bits.TrailingZeros64(uint64(x))
+			x /= x & -x // 去掉所有的因子 2
 		}
 		for i := int64(3); i*i <= x; i += 2 {
 			if x%i > 0 {
