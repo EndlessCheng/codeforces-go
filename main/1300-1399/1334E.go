@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math/bits"
 )
 
 // github.com/EndlessCheng/codeforces-go
@@ -26,7 +25,7 @@ func CF1334E(_r io.Reader, _w io.Writer) {
 	x := n
 	if x&1 == 0 {
 		ps = append(ps, 2)
-		x >>= bits.TrailingZeros64(uint64(x))
+		x /= x & -x
 	}
 	for i := int64(3); i*i <= x; i += 2 {
 		if x%i == 0 {
