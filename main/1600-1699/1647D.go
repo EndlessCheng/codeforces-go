@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -45,4 +44,4 @@ func CF1647D(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { CF1647D(os.Stdin, os.Stdout) }
+//func main() { CF1647D(os.Stdin, os.Stdout) }
