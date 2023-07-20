@@ -172,7 +172,7 @@ LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 3126 https://www.luogu.com.cn/problem/UVA12101 https://www.luogu.com.cn/problem/SP1841 BFS
 3421 质因数幂次和 可重排列
 3292 https://www.luogu.com.cn/problem/UVA11105 在 Z={4k+1} 上筛素数
-3641 https://www.luogu.com.cn/problem/UVA11287 Carmichael Numbers https://oeis.org/A002997
+3641 https://www.luogu.com.cn/problem/UVA11287 Carmichael Numbers https://oeis.org/A002997 https://en.wikipedia.org/wiki/Carmichael_number
 4.1 节练习题（模运算的世界）
 1150 https://www.luogu.com.cn/problem/UVA10212
 1284
@@ -187,7 +187,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 */
 
 func _(abs func(int64) int64, max func(int64, int64) int64) {
-	const mod int64 = 1e9 + 7 // 998244353
+	const mod = 1_000_000_007 // 998244353
 	pow := func(x, n, p int64) (res int64) {
 		x %= p
 		res = 1
@@ -1855,11 +1855,39 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	https://oeis.org/A090938 Least multiple of n == 1 (mod prime(n))
 	https://oeis.org/A090939 Least multiple of n == -1 (mod prime(n))
 	https://oeis.org/A091185 a(n) = A090938(n)/n      n^-1 mod prime(n)
-
-	涉及到 0 与逆元的题目
-	https://codeforces.com/problemset/problem/543/D
-	https://ac.nowcoder.com/acm/contest/39759/D
 	*/
+	{
+		/* 涉及到 0 与逆元的题目（mod 为质数）
+		例如 res = mod^k * x % mod，后面要除掉 mod^k，得到 x（如果前面直接取模会得到 0，没法保留 x 的信息）
+		这个时候可以用二元组 (k, x) 来表示 res%mod（这里 k>=0）
+		如果 k>0 那么 res=0
+		乘法运算 (k1, x1) * (k2, x2) = (k1+k2, x1*x2)
+		除法运算 (k1, x1) / (k2, x2) = (k1-k2, x1*inv(x2))  这里 k1>=k2
+		加法运算（见下面的 add1）
+		https://codeforces.com/contest/1848/problem/E
+		https://codeforces.com/problemset/problem/543/D
+		https://ac.nowcoder.com/acm/contest/39759/D
+		*/
+		type pair struct {
+			k int
+			x int64
+		}
+		// 计算 (k,x) + (0,1)
+		// https://codeforces.com/problemset/problem/543/D
+		add1 := func(p pair) pair {
+			if p.k > 0 {
+				return pair{0, 1}
+			}
+			if p.x == mod-1 {
+				return pair{1, 1}
+			}
+			return pair{0, p.x + 1}
+		}
+		mul := func(p, q pair) pair { return pair{p.k + q.k, p.x * q.x % mod} }
+		div := func(p, q pair) pair { return pair{p.k - q.k, p.x * pow(q.x, mod-2, mod) % mod} }
+
+		_ = []any{add1, mul, div}
+	}
 
 	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
 	// exgcd solve equation ax+by=gcd(a,b)
@@ -2394,6 +2422,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		H = func(kinds, length int) int64 { return C(kinds+length-1, length) }
 
 		// 卡特兰数 Cn = C(2n,n)/(n+1) = C(2n,n)-C(2n,n-1)
+		// C(n) = 2*(2*n-1)*C(n-1)/(n+1) with C(0) = 1
+		// 证明见这个视频末尾 https://www.bilibili.com/video/BV1E8411f7Mu/?t=33m16s
 		// https://en.wikipedia.org/wiki/Catalan_number
 		// https://oeis.org/A000108
 		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
@@ -2401,6 +2431,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259 https://leetcode-cn.com/problems/handshakes-that-dont-cross/
 		// Dyck Path https://mathworld.wolfram.com/DyckPath.html
 		// https://www.luogu.com.cn/problem/P1641
+		// 
+		// https://codeforces.com/problemset/problem/1830/C
 		//
 		// 将全部偶数提取一个 2，可得 (2n)! = 1*3*5*...*(2n-1) * (2^n) * (n!)
 		// 故 C(2*n,n)/(n+1) = (2*n)!/(n!)/(n+1)! = 1*3*5*...*(2n-1)*(2^n)/(n+1)!
@@ -2780,7 +2812,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// ∑∑(n%i)*(m%j) 代码见下面的 floorLoop2 https://www.luogu.com.cn/problem/P2260
 	// [L,R] 内任意 k 个不同数字的 GCD 有多少种 https://ac.nowcoder.com/acm/contest/35232/C
 	// https://codeforces.com/problemset/problem/1789/E
-	// https://codeforces.com/contest/938/problem/C
+	// https://codeforces.com/problemset/problem/938/C
+	// https://codeforces.com/problemset/problem/449/A
 	// 数论分块优化 DP https://codeforces.com/problemset/problem/1603/C
 	//
 	// https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
@@ -3018,7 +3051,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 /* hack overflow
 1<<32 + 95168 = 2^6 * 3 * 7^5 * 11^3
-1<<32 + 66304 = 2^8 * 5^2 * 11 * 13^2 * 19^2 
+1<<32 + 66304 = 2^8 * 5^2 * 11 * 13^2 * 19^2
 1<<32 + 48704 = 2^6 * 3^2 * 5^3 * 11^2 * 17 * 29
 1<<32 - 49216 = 2^6 * 3^7 * 5 * 17 * 19^2
 
