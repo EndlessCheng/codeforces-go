@@ -6,21 +6,21 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF543D(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	const mod int64 = 1e9 + 7
-	pow := func(x, n int64) int64 {
-		res := int64(1)
-		for ; n > 0; n >>= 1 {
-			if n&1 > 0 {
+	const mod = 1_000_000_007
+	pow := func(x int64, n int) (res int64) {
+		res = 1
+		for ; n > 0; n /= 2 {
+			if n%2 > 0 {
 				res = res * x % mod
 			}
 			x = x * x % mod
 		}
-		return res
+		return
 	}
 
 	var n, v int
@@ -28,52 +28,54 @@ func CF543D(_r io.Reader, _w io.Writer) {
 	g := make([][]int, n)
 	for w := 1; w < n; w++ {
 		Fscan(in, &v)
-		v--
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+		g[v-1] = append(g[v-1], w)
 	}
 
-	dp := make([]int64, n)
-	ex := make([]int64, n)
-	var f func(v, fa int)
-	f = func(v, fa int) {
-		z := false
-		dp[v] = 1
-		ex[v] = 1
-		for _, w := range g[v] {
-			if w != fa {
-				f(w, v)
-				dw := dp[w] + 1
-				dp[v] = dp[v] * dw % mod
-				if z || dw != mod {
-					ex[v] = ex[v] * dw % mod
-				} else {
-					z = true
-				}
-			}
-		}
+	type pair struct {
+		k int
+		x int64
 	}
-	f(0, -1)
+	add1 := func(p pair) pair {
+		if p.k > 0 {
+			return pair{0, 1}
+		}
+		if p.x == mod-1 {
+			return pair{1, 1}
+		}
+		return pair{0, p.x + 1}
+	}
+	mul := func(p, q pair) pair { return pair{p.k + q.k, p.x * q.x % mod} }
+	div := func(p, q pair) pair { return pair{p.k - q.k, p.x * pow(q.x, mod-2) % mod} }
 
-	ans := make([]int64, n)
-	var reroot func(v, fa int, dpFa int64)
-	reroot = func(v, fa int, dpFa int64) {
-		ans[v] = dp[v] * (dpFa + 1) % mod
+	f := make([]pair, n)
+	var dfs func(int)
+	dfs = func(v int) {
+		f[v].x = 1
 		for _, w := range g[v] {
-			if w != fa {
-				df := int64(0)
-				if dp[w]+1 == mod {
-					df = ex[v] * (dpFa + 1) % mod
-				} else {
-					df = ans[v] * pow(dp[w]+1, mod-2) % mod
-				}
-				reroot(w, v, df)
-			}
+			dfs(w)
+			f[v] = mul(f[v], add1(f[w]))
 		}
 	}
-	reroot(0, -1, 0)
-	for _, v := range ans {
-		Fprint(out, v, " ")
+	dfs(0)
+
+	ans := make([]pair, n)
+	ans[0] = f[0]
+	var reroot func(int)
+	reroot = func(v int) {
+		for _, w := range g[v] {
+			fp := div(ans[v], add1(f[w]))
+			ans[w] = mul(f[w], add1(fp))
+			reroot(w)
+		}
+	}
+	reroot(0)
+
+	for _, p := range ans {
+		if p.k > 0 {
+			Fprint(out, "0 ")
+		} else {
+			Fprint(out, p.x, " ")
+		}
 	}
 }
 
