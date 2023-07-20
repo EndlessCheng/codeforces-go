@@ -1885,8 +1885,15 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		}
 		mul := func(p, q pair) pair { return pair{p.k + q.k, p.x * q.x % mod} }
 		div := func(p, q pair) pair { return pair{p.k - q.k, p.x * pow(q.x, mod-2, mod) % mod} }
+		// p%mod 的实际值
+		val := func(p pair) int64 {
+			if p.k > 0 {
+				return 0
+			}
+			return p.x
+		}
 
-		_ = []any{add1, mul, div}
+		_ = []any{add1, mul, div, val}
 	}
 
 	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
