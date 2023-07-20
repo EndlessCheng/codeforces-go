@@ -126,20 +126,6 @@ func (segmentTree *SegmentTree[V, T]) Query(start, end int) T {
 	return res
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 func sol79c(in io.Reader, out io.Writer) {
 	var tc int
 	fmt.Fscan(in, &tc)
