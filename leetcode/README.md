@@ -55,6 +55,7 @@
 |[回溯 - 组合型与剪枝](https://www.bilibili.com/video//)|[77. 组合](https://leetcode.cn/problems/combinations/)|[代码](https://leetcode.cn/problems/combinations/solutions/2071017/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-65lh/)|两种写法|
 ||[216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)|[代码](https://leetcode.cn/problems/combination-sum-iii/solutions/2071013/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-feme/)|两种写法|
 ||[22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)|[代码](https://leetcode.cn/problems/generate-parentheses/solutions/2071015/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-wcdw/)|两种写法|
+||[301. 删除无效的括号](https://leetcode.cn/problems/remove-invalid-parentheses/)|[代码](https://leetcode.cn/problems/remove-invalid-parentheses/solutions/2162245/xuan-huo-bu-xuan-by-lucky-boy-c9-fukn/)(學員)|*课后作业|
 |[回溯 - 排列型](https://www.bilibili.com/video/BV1mY411D7f6/)|[46. 全排列](https://leetcode.cn/problems/permutations/)|[代码](https://leetcode.cn/problems/permutations/solutions/2079585/hui-su-bu-hui-xie-tao-lu-zai-ci-jing-que-6hrh/)|精确计算搜索树的节点个数|
 ||[51. N 皇后](https://leetcode.cn/problems/n-queens/)|[代码](https://leetcode.cn/problems/n-queens/solutions/2079586/hui-su-tao-lu-miao-sha-nhuang-hou-shi-pi-mljv/)||
 |[动态规划 - 从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)|[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)|[代码](https://leetcode.cn/problems/house-robber/solutions/2102725/ru-he-xiang-chu-zhuang-tai-ding-yi-he-zh-1wt1/)|包含空间优化|
