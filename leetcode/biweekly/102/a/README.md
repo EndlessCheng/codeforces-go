@@ -1,6 +1,8 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【双周赛 102】](https://www.bilibili.com/video/BV1Es4y1N7v1/)。
+
+### 思路
 
 遍历每一列，求出数字的字符串形式的长度的最大值。
 
@@ -25,7 +27,6 @@ func max(a, b int) int { if a < b { return b }; return a }
 ```
 
 也可以手动计算长度。
-
 
 ```py [sol2-Python3]
 class Solution:
@@ -66,4 +67,4 @@ func max(a, b int) int { if a < b { return b }; return a }
 ### 复杂度分析
 
 - 时间复杂度：$O(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
-- 空间复杂度：$O(1)$。手动算长度则为 $O(1)$。Python 忽略 zip* 的空间。
+- 空间复杂度：$O(1)$。返回值不计入。Python 忽略 `zip(*grid)` 导致的空间。
