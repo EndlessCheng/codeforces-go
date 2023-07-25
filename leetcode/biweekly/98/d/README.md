@@ -8,7 +8,7 @@
 
 假设 $\textit{nums}_1$ 中总共有 $c$ 个 $1$，那么操作 2 相当于把 $\textit{nums}_2$ 的元素和增加了 $c\cdot p$。所以只需要维护 $\textit{nums}_1$ 中 $1$ 的个数。
 
-这可以用 Lazy 线段树维护实现，维护区间内 $1$ 的个数 $\textit{cnt}_1$，以及整个区间是否需要反转的 Lazy 标记 $\textit{flip}$。
+如何实现操作 1？用 Lazy 线段树维护区间内 $1$ 的个数 $\textit{cnt}_1$，以及整个区间是否需要反转的 Lazy 标记 $\textit{flip}$。具体见上面的视频链接。
 
 ```py [sol-Python3]
 class Solution:
