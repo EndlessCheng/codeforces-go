@@ -116,6 +116,34 @@ func (h *mh) pop() *viPair         { return heap.Pop(h).(*viPair) }
 func (h *mh) fix(i int)            { heap.Fix(h, i) }
 func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 
+// 另一种实现：懒删除
+// https://codeforces.com/problemset/problem/796/C
+type lazyHeap struct {
+	sort.IntSlice
+	todo map[int]int
+}
+
+//func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+func (h *lazyHeap) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *lazyHeap) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *lazyHeap) del(v int)  { h.todo[v]++ }
+func (h *lazyHeap) do() {
+	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
+		h.todo[h.IntSlice[0]]--
+		heap.Pop(h)
+	}
+}
+func (h *lazyHeap) push(v int) {
+	if h.todo[v] > 0 {
+		h.todo[v]--
+	} else {
+		heap.Push(h, v)
+	}
+}
+func (h *lazyHeap) pop() int    { h.do(); return heap.Pop(h).(int) }
+func (h *lazyHeap) top() int    { h.do(); return h.IntSlice[0] }
+func (h *lazyHeap) empty() bool { h.do(); return len(h.IntSlice) == 0 }
+
 // 对顶堆求动态中位数：medians[i] = a[:i+1] 的中位数
 // https://www.luogu.com.cn/problem/P1168
 // LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/
