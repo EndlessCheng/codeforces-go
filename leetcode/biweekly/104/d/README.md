@@ -35,13 +35,7 @@ $$
 \end{aligned}
 $$
 
-将上式作为新的 $s$，就得到了如下递推式
-
-$$
-s_{\textit{new}} = 2\cdot s + \textit{nums}[i]
-$$
-
-利用这一递推式，就不用去枚举最小值了，只需要枚举最大值 $\textit{nums}[i]$。
+这意味着，我们不需要枚举最小值，只需要枚举最大值，就可以把 $s$ 递推计算出来。
 
 > 有关取模的知识点，见文末的讲解。
 
@@ -53,7 +47,7 @@ class Solution:
         ans = s = 0
         for x in nums:  # x 作为最大值
             ans = (ans + x * x * (x + s)) % MOD
-            s = (s * 2 + x) % MOD
+            s = (s * 2 + x) % MOD  # 递推计算下一个 s
         return ans
 ```
 
@@ -65,7 +59,7 @@ class Solution {
         long ans = 0, s = 0;
         for (long x : nums) { // x 作为最大值
             ans = (ans + x * x % MOD * (x + s)) % MOD; // 中间模一次防止溢出
-            s = (s * 2 + x) % MOD;
+            s = (s * 2 + x) % MOD; // 递推计算下一个 s
         }
         return (int) ans;
     }
@@ -81,7 +75,7 @@ public:
         int ans = 0, s = 0;
         for (long long x: nums) { // x 作为最大值
             ans = (ans + x * x % MOD * (x + s)) % MOD; // 中间模一次防止溢出
-            s = (s * 2 + x) % MOD;
+            s = (s * 2 + x) % MOD; // 递推计算下一个 s
         }
         return ans;
     }
@@ -95,7 +89,7 @@ func sumOfPower(nums []int) (ans int) {
 	s := 0
 	for _, x := range nums { // x 作为最大值
 		ans = (ans + x*x%mod*(x+s)) % mod // 中间模一次防止溢出
-		s = (s*2 + x) % mod
+		s = (s*2 + x) % mod // 递推计算下一个 s
 	}
 	return
 }
@@ -109,7 +103,7 @@ var sumOfPower = function (nums) {
     for (const x of nums) { // x 作为最大值
         const bx = BigInt(x);
         ans += Number(bx * bx * (bx + BigInt(s)) % BigInt(mod));
-        s = (s * 2 + x) % mod
+        s = (s * 2 + x) % mod // 递推计算下一个 s
     }
     return ans % mod;
 };
