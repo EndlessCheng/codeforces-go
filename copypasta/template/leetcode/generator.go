@@ -609,7 +609,7 @@ func handleProblems(session *grequests.Session, problems []*problem) error {
 			}, customFuncContent)
 
 			if p.needMod {
-				p.defaultCode = "const mod int = 1e9 + 7\n\n" + p.defaultCode
+				p.defaultCode = "const mod = 1_000_000_007\n\n" + p.defaultCode
 			}
 
 			if err := p.createDir(); err != nil {
