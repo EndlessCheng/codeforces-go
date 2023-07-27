@@ -50,27 +50,28 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 			continue
 		}
 
-		input := removeExtraSpace(tc[0])
-		const maxInputSize = 150
-		inputInfo := input
-		if len(inputInfo) > maxInputSize { // 截断过长的输入
-			inputInfo = inputInfo[:maxInputSize] + "..."
-		}
-		expectedOutput := removeExtraSpace(tc[1])
-
-		mockReader := strings.NewReader(input)
-		mockWriter := &strings.Builder{}
-		_f := func() { runFunc(mockReader, mockWriter) }
-		if targetCaseNum == 0 && isTLE(_f) {
-			allPassed = false
-			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
-			continue
-		} else if targetCaseNum != 0 {
-			_f()
-		}
-		actualOutput := removeExtraSpace(mockWriter.String())
-
 		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			input := removeExtraSpace(tc[0])
+			const maxInputSize = 150
+			inputInfo := input
+			if len(inputInfo) > maxInputSize { // 截断过长的输入
+				inputInfo = inputInfo[:maxInputSize] + "..."
+			}
+			expectedOutput := removeExtraSpace(tc[1])
+
+			mockReader := strings.NewReader(input)
+			mockWriter := &strings.Builder{}
+			_f := func() { runFunc(mockReader, mockWriter) }
+			if targetCaseNum == 0 && isTLE(_f) {
+				allPassed = false
+				t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
+				return
+			} 
+			if targetCaseNum != 0 {
+				_f()
+			}
+			actualOutput := removeExtraSpace(mockWriter.String())
+
 			if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 				allPassed = false
 				handleOutput(actualOutput)
