@@ -13,16 +13,14 @@ func CF1336C(in io.Reader, out io.Writer) {
 	Fscan(bufio.NewReader(in), &s, &t)
 	n, m := len(s), len(t)
 	f := make([][]int, n)
-	for i := range f {
+	for i := n - 1; i >= 0; i-- {
 		f[i] = make([]int, n)
 		if i >= m || s[0] == t[i] {
 			f[i][i] = 2
 		}
-	}
-	for i := n - 2; i >= 0; i-- {
 		for j := i + 1; j < n; j++ {
 			if i >= m || s[j-i] == t[i] {
-				f[i][j] = (f[i][j] + f[i+1][j]) % mod
+				f[i][j] = f[i+1][j]
 			}
 			if j >= m || s[j-i] == t[j] {
 				f[i][j] = (f[i][j] + f[i][j-1]) % mod
