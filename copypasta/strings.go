@@ -19,6 +19,9 @@ todo NOI 一轮复习 II：字符串 https://www.luogu.com.cn/blog/ix-35/noi-yi-
 
 TIPS: 若处理原串比较困难，不妨考虑下反转后的串 https://codeforces.com/contest/873/problem/F
 
+本质不同回文串
+https://codeforces.com/problemset/problem/1823/D https://codeforces.com/blog/entry/115465
+
 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
 
 https://en.wikipedia.org/wiki/Bitap_algorithm shift-or / shift-and / Baeza-Yates–Gonnet algorithm
@@ -55,14 +58,16 @@ func _(min, max func(int, int) int) {
 	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
 	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
 	hash := func(s string) {
-		// 注意：由于哈希很容易被卡，能用其它方法实现尽量用其它方法
-		const prime uint64 = 1e8 + 7
+		// 注意：由于自然溢出哈希很容易被卡，能用其它方法实现尽量用其它方法
+		// 更保险的做法是采用随机 base := 9e8 - rand.Intn(1e8)
+		// 模数从 2^64 改为 1e9+7，或者使用多个模数 999727999, 1070777777, 1000000007
+		const base uint64 = 1e8 + 7
 		powP := make([]uint64, len(s)+1) // powP[i] = prime^i
 		powP[0] = 1
 		preHash := make([]uint64, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
 		for i, b := range s {
-			powP[i+1] = powP[i] * prime
-			preHash[i+1] = preHash[i]*prime + uint64(b) // 本质是秦九韶算法
+			powP[i+1] = powP[i] * base
+			preHash[i+1] = preHash[i]*base + uint64(b) // 本质是秦九韶算法
 		}
 
 		// 计算子串 s[l:r] 的哈希   0<=l<=r<=len(s)
@@ -81,7 +86,6 @@ func _(min, max func(int, int) int) {
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
-	// TODO https://oi-wiki.org/string/z-func/
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	//
@@ -90,6 +94,8 @@ func _(min, max func(int, int) int) {
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
 	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
+	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E
+	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
 	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B
@@ -99,6 +105,8 @@ func _(min, max func(int, int) int) {
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
 	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
 	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
+	// https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
+	// - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 	calcMaxMatchLengths := func(s string) []int {
 		match := make([]int, len(s))
 		for i, c := 1, 0; i < len(s); i++ {
@@ -134,6 +142,8 @@ func _(min, max func(int, int) int) {
 	}
 	// EXTRA: 最小循环节
 	// 返回循环节以及循环次数
+	// 如果没有循环节，那么返回原串和 1
+	// https://codeforces.com/problemset/problem/182/D
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
@@ -156,7 +166,8 @@ func _(min, max func(int, int) int) {
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	//
-	// 模板题 https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
+	// 模板题 LC2223 https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/
+	//       https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	//       https://www.luogu.com.cn/problem/P5410
 	// 结论 https://codeforces.com/problemset/problem/535/D
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
@@ -209,6 +220,7 @@ func _(min, max func(int, int) int) {
 	// 其他方法 https://codeforces.com/blog/entry/90035
 	// 模板题 https://www.luogu.com.cn/problem/P1368 http://poj.org/problem?id=1509 https://codeforces.com/gym/103585/problem/K
 	// https://codeforces.com/problemset/problem/496/B
+	// LC1163 非循环的情况 https://leetcode.cn/problems/last-substring-in-lexicographical-order/
 	smallestRepresentation := func(s string) string {
 		n := len(s)
 		s += s
@@ -237,6 +249,9 @@ func _(min, max func(int, int) int) {
 	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
 	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
 	// LC2014 https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
+	// http://codeforces.com/problemset/problem/91/A
+	// https://codeforces.com/contest/1845/problem/C
+	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 	subsequenceAutomaton := func(s string) {
 		// build nxt
 		// nxt[i][j] 表示在 i 右侧的字符 j 的最近位置
@@ -248,6 +263,7 @@ func _(min, max func(int, int) int) {
 		for i := len(s) - 1; i >= 0; i-- {
 			nxt[i] = pos
 			pos[s[i]-'a'] = i
+			// 注意这行在下面。我个人更喜欢这种写法，不喜欢写 nxt... +1，让一个指针指向当前位置右侧太奇怪了，不如这种写法清晰
 		}
 
 		// 返回是 s 的子序列的最长的 t 的前缀的长度
@@ -257,7 +273,7 @@ func _(min, max func(int, int) int) {
 			}
 			i, j := 0, 0
 			if t[0] == s[0] {
-				j = 1
+				j = 1 // t[0] 匹配 ok
 			}
 			for ; j < len(t); j++ {
 				i = nxt[i][t[j]-'a']
@@ -386,6 +402,11 @@ func _(min, max func(int, int) int) {
 			endPL[i] = max(endPL[i], endPL[i+1]-2) // 同上
 		}
 
+		// todo EXTRA: 以 s[i] 为尾字母的最短回文子串的长度
+		// 结合单调栈
+		// 回文中心越来越大
+		// https://codeforces.com/contest/1827/problem/C
+
 		// EXTRA: 计算回文子串个数
 		// 易证其为 ∑(halfLen[i]/2)
 		// LC647 https://leetcode-cn.com/problems/palindromic-substrings/
@@ -398,6 +419,7 @@ func _(min, max func(int, int) int) {
 	}
 
 	/* 后缀数组
+	https://zhuanlan.zhihu.com/p/338547483
 	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	注：Go1.13 开始使用 SA-IS 算法
 
@@ -420,7 +442,7 @@ func _(min, max func(int, int) int) {
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		本质不同子串个数 https://www.luogu.com.cn/problem/P2408 https://www.luogu.com.cn/problem/SP694 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
+		本质不同子串个数 LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/ https://www.luogu.com.cn/problem/P2408 https://www.luogu.com.cn/problem/SP694 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode-cn.com/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
@@ -448,7 +470,7 @@ func _(min, max func(int, int) int) {
 		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
 			todo
 	两个字符串
-		最长公共子串 SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774 LC718 https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
+		最长公共子串 LC718 https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
 			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
 		长度不小于 k 的公共子串的个数 http://poj.org/problem?id=3415
 			单调栈
@@ -470,6 +492,8 @@ func _(min, max func(int, int) int) {
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
 		acSearch（https://www.luogu.com.cn/problem/P3796）的后缀数组做法
 			拼接所有串（模式+文本，# 隔开），对每个模式 p 找其左右范围，满足该范围内 height[i] >= len(p)，这可以用 ST+二分或线段树二分求出，然后统计区间内的属于文本串的后缀
+	逆向
+		todo 根据 sa 反推有多少个能生成 sa 的字符串 https://codeforces.com/problemset/problem/1526/E
 	todo 待整理 http://poj.org/problem?id=3581
 	 https://www.luogu.com.cn/problem/P5546
 	 https://www.luogu.com.cn/problem/P2048
@@ -479,8 +503,6 @@ func _(min, max func(int, int) int) {
 	 https://www.luogu.com.cn/problem/P4070
 	*/
 	suffixArray := func(s string) {
-		n := len(s)
-
 		// 后缀数组 sa
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
@@ -488,7 +510,7 @@ func _(min, max func(int, int) int) {
 		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
 		{
-			// 别的求法
+			// 不用反射
 			type _tp struct {
 				_  []byte
 				sa []int32
@@ -496,10 +518,10 @@ func _(min, max func(int, int) int) {
 			sa = (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa
 		}
 
-		// 后缀名次数组 rank
+		// 后缀名次数组 rank（相当于 sa 的反函数）
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
 		// 特别地，rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
-		rank := make([]int, n)
+		rank := make([]int, len(sa))
 		for i, p := range sa {
 			rank[p] = i
 		}
@@ -511,14 +533,14 @@ func _(min, max func(int, int) int) {
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
 		//    https://codeforces.com/problemset/problem/873/F
-		height := make([]int, n)
+		height := make([]int, len(sa))
 		h := 0
 		for i, rk := range rank {
 			if h > 0 {
 				h--
 			}
 			if rk > 0 {
-				for j := int(sa[rk-1]); i+h < n && j+h < n && s[i+h] == s[j+h]; h++ {
+				for j := int(sa[rk-1]); i+h < len(s) && j+h < len(s) && s[i+h] == s[j+h]; h++ {
 				}
 			}
 			height[rk] = h
@@ -526,20 +548,22 @@ func _(min, max func(int, int) int) {
 
 		// 任意两后缀的 LCP
 		// 注：若允许离线可以用 Trie+Tarjan 做到线性
-		const mx = 17 // 131072, 262144, 524288, 1048576
-		st := make([][mx]int, n)
+		//st := make([][17]int, n) // 131072, 262144, 524288, 1048576
+		logN := bits.Len(uint(len(sa)))
+		st := make([][]int, len(sa))
 		for i, v := range height {
+			st[i] = make([]int, logN)
 			st[i][0] = v
 		}
-		for j := 1; 1<<j <= n; j++ {
-			for i := 0; i+1<<j <= n; i++ {
+		for j := 1; 1<<j <= len(sa); j++ {
+			for i := 0; i+1<<j <= len(sa); i++ {
 				st[i][j] = min(st[i][j-1], st[i+1<<(j-1)][j-1])
 			}
 		}
 		_q := func(l, r int) int { k := bits.Len(uint(r-l)) - 1; return min(st[l][k], st[r-1<<k][k]) }
 		lcp := func(i, j int) int {
 			if i == j {
-				return n - i
+				return len(sa) - i
 			}
 			// 将 s[i:] 和 s[j:] 通过 rank 数组映射为 height 的下标
 			ri, rj := rank[i], rank[j]
@@ -603,8 +627,8 @@ func _(min, max func(int, int) int) {
 
 		// EXTRA: 按后缀字典序求前缀和
 		// vals[i] 表示 s[i] 的某个属性
-		vals := make([]int, n)
-		prefixSum := make([]int, n+1)
+		vals := make([]int, len(sa))
+		prefixSum := make([]int, len(sa)+1)
 		for i, p := range sa {
 			prefixSum[i+1] = prefixSum[i] + vals[p]
 		}
@@ -636,7 +660,7 @@ func _(min, max func(int, int) int) {
 		}
 
 		// debug
-		for i, h := range height[:n] {
+		for i, h := range height {
 			suffix := string(s[sa[i]:])
 			if h == 0 {
 				println(" ", suffix)
