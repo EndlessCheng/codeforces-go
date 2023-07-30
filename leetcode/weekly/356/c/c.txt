@@ -1,0 +1,12 @@
+"abc"
+"bca"
+"aaa"
+"aaabca"
+
+"ab"
+"ba"
+"aba"
+"aba"
+
+
+
