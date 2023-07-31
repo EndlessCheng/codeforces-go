@@ -6,10 +6,10 @@ import (
 	"github.com/skratchdot/open-golang/open"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -45,11 +45,13 @@ func login(emailOrPhone, cipherPwd string) (session *grequests.Session, err erro
 		UserAgent:    ua,
 		UseCookieJar: true,
 	})
-
 	resp, err := session.Post("https://www.nowcoder.com/nccommon/login/do", &grequests.RequestOptions{
 		Data: map[string]string{
 			"email":     emailOrPhone,
 			"cipherPwd": cipherPwd,
+		},
+		Headers: map[string]string{
+			"Origin": "https://www.nowcoder.com",
 		},
 	})
 	if err != nil {
@@ -58,13 +60,75 @@ func login(emailOrPhone, cipherPwd string) (session *grequests.Session, err erro
 	if !resp.Ok {
 		return nil, fmt.Errorf("%d", resp.StatusCode)
 	}
+	d := struct {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+	}{}
+	if err = resp.JSON(&d); err != nil {
+		return
+	}
+	if d.Code != 0 {
+		return nil, fmt.Errorf("login: %s", d.Msg)
+	}
+	fmt.Println("【登录成功】", emailOrPhone)
 	return
 }
 
-// 若 problemNum 为 0 则比赛尚未开始
-func fetchProblems(session *grequests.Session, contestID int) (problemNum int, err error) {
+//func fetchRegisterState(session *grequests.Session, contestID int) (registered bool, err error) {
+//	contestUrl := "https://ac.nowcoder.com/acm/contest/" + strconv.Itoa(contestID)
+//	resp, err := session.Get(contestUrl, &grequests.RequestOptions{
+//		Headers: map[string]string{
+//			//"Origin":  "https://ac.nowcoder.com",
+//			"Referer": "https://ac.nowcoder.com/acm/contest/" + strconv.Itoa(contestID),
+//		},
+//	})
+//	if err != nil {
+//		return
+//	}
+//	if !resp.Ok {
+//		return false, fmt.Errorf("%d", resp.StatusCode)
+//	}
+//}
+
+func register(session *grequests.Session, contestID int) (err error) {
+	const api = "https://ac.nowcoder.com/acm/contest/sign-up-team"
+	resp, err := session.Post(api, &grequests.RequestOptions{
+		Data: map[string]string{
+			"contestId": strconv.Itoa(contestID),
+		},
+		Headers: map[string]string{
+			"Origin":  "https://ac.nowcoder.com",
+			"Referer": "https://ac.nowcoder.com/acm/contest/" + strconv.Itoa(contestID),
+		},
+	})
+	if err != nil {
+		return
+	}
+	if !resp.Ok {
+		return fmt.Errorf("%d", resp.StatusCode)
+	}
+	d := struct {
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+	}{}
+	if err = resp.JSON(&d); err != nil {
+		return
+	}
+	if d.Code != 0 && d.Code != 1 {
+		return fmt.Errorf("register: %s", d.Msg)
+	}
+	fmt.Println("register", d.Msg)
+	return
+}
+
+func fetchProblemNumber(session *grequests.Session, contestID int) (problemNum int, err error) {
 	api := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/problem-list?id=%d", contestID)
-	resp, err := session.Get(api, nil)
+	resp, err := session.Get(api, &grequests.RequestOptions{
+		Headers: map[string]string{
+			//"Origin": "https://ac.nowcoder.com",
+			"Referer": "https://ac.nowcoder.com/acm/contest/" + strconv.Itoa(contestID),
+		},
+	})
 	if err != nil {
 		return
 	}
@@ -73,29 +137,40 @@ func fetchProblems(session *grequests.Session, contestID int) (problemNum int, e
 	}
 
 	d := struct {
-		Code int `json:"code"`
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
 		Data struct {
 			BasicInfo struct {
 				ProblemCount int `json:"problemCount"`
 			} `json:"basicInfo"`
 		} `json:"data"`
 	}{}
-	if err = resp.JSON(&d); err != nil || d.Code != 0 {
+	if err = resp.JSON(&d); err != nil {
 		return
 	}
+	// {"msg":"contest not ready! ","code":1}
+	if d.Code != 0 {
+		return 0, fmt.Errorf("fetchProblems: %s", d.Msg)
+	}
 
+	// 为 0 则比赛尚未开始
 	problemNum = d.Data.BasicInfo.ProblemCount
 	return
 }
 
 // examples 为输入输出交替
-func parseCodeAndExamples(session *grequests.Session, problemURL string) (code string, examples []string, err error) {
-	resp, err := session.Get(problemURL, nil)
+func parseCodeAndExamples(session *grequests.Session, problemURL string) (examples []string, err error) {
+	resp, err := session.Get(problemURL, &grequests.RequestOptions{
+		Headers: map[string]string{
+			//"Origin": "https://ac.nowcoder.com",
+			"Referer": problemURL,
+		},
+	})
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
-		return "", nil, fmt.Errorf("%d", resp.StatusCode)
+		return nil, fmt.Errorf("%d", resp.StatusCode)
 	}
 
 	root, err := html.Parse(resp)
@@ -107,12 +182,8 @@ func parseCodeAndExamples(session *grequests.Session, problemURL string) (code s
 	f = func(o *html.Node) {
 		if o.DataAtom == atom.Textarea {
 			for _, attribute := range o.Attr {
-				if attribute.Val == "input" || attribute.Val == "output" {
+				if attribute.Key == "data-clipboard-text-id" {
 					examples = append(examples, strings.TrimSpace(o.FirstChild.Data))
-					break
-				}
-				if attribute.Val == "goTpl" {
-					code = o.FirstChild.Data
 					break
 				}
 			}
@@ -125,145 +196,106 @@ func parseCodeAndExamples(session *grequests.Session, problemURL string) (code s
 	return
 }
 
-func genMainFileContent(code, funcComment string) string {
-	code = strings.TrimSpace(code)
-	imports := ""
-	if hasPredefinedType := strings.Contains(code, `"nc_tools"`); hasPredefinedType {
-		imports = `
-//import . "nc_tools"
-import . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-`
-	}
-
-	if funcComment != "" {
-		funcComment += "\n"
-	}
-
-	i := strings.Index(code, "func ")
-	if i == -1 {
-		return ""
-	}
-	code = code[i:]
-	code = strings.Replace(code, "// write code here", "\n\treturn", -1)
-
-	content := fmt.Sprintf(`package main
-%s
-%s%s
-`, imports, funcComment, code)
-	return content
-}
-
-func genTestFileContent(id byte, rawExamples []string, funcName, problemURL string) string {
-	exampleType := "[][]string"
-	testUtilFunc := "testutil.RunLeetCodeFuncWithExamples"
-	examples := ""
-	for i := 0; i < len(rawExamples); i += 2 {
-		examples += "\n\t\t{\n\t\t\t"
-		sp := splitRawInput(rawExamples[i])
-		for _, s := range sp {
-			examples += "`" + s + "`,"
-		}
-		examples += "\n\t\t\t"
-		examples += "`" + rawExamples[i+1] + "`,"
-		examples += "\n\t\t},"
-	}
-	content := fmt.Sprintf(`// Code generated by copypasta/template/nowcoder/generator_test.go
-package main
-
-import (
-	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"testing"
-)
-
-func Test(t *testing.T) {
-	t.Log("Current test is [%c]")
-	examples := %s{%s
-		// TODO 测试参数的下界和上界
-		
-	}
-	targetCaseNum := 0
-	if err := %s(t, %s, examples, targetCaseNum); err != nil {
-		t.Fatal(err)
-	}
-}
-// %s
-`, id, exampleType, examples, testUtilFunc, funcName, problemURL)
-	return content
-}
-
-func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID int, funcComment string) error {
+func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID int, openWebPage bool) (err error) {
 	startTime, err := fetchStartTime(contestID)
 	if err != nil {
-		return err
+		return
+	}
+
+	session, err := login(emailOrPhone, cipherPwd)
+	if err != nil {
+		return
+	}
+
+	if err = register(session, contestID); err != nil {
+		return
 	}
 
 	if t := time.Until(startTime); t > 0 {
-		t += 5 * time.Second
-		fmt.Println("sleep", t)
+		t += 1 * time.Second
+		fmt.Println("等待开赛", t)
 		time.Sleep(t)
 	}
 
-	// 必须要在开赛后登录才能进行后续操作
-	var session *grequests.Session
 	var problemNum int
 	for {
-		session, err = login(emailOrPhone, cipherPwd)
-		if err != nil {
-			return err
-		}
-		fmt.Println("登录成功")
-		problemNum, _ = fetchProblems(session, contestID)
+		problemNum, err = fetchProblemNumber(session, contestID)
 		if problemNum > 0 {
 			break
 		}
-		// 正常不会走到这里
-		const sec = 5
-		fmt.Println("sleep", sec)
-		time.Sleep(time.Duration(sec) * time.Second)
+		fmt.Println("fetchProblems", err)
+		time.Sleep(time.Second)
 	}
 	fmt.Println("本次比赛有", problemNum, "题")
 
-o:
+	wg := &sync.WaitGroup{}
+	wg.Add(1 + problemNum)
+
+	go func() {
+		defer wg.Done()
+		if !openWebPage {
+			return
+		}
+		for id := byte('a'); id < 'a'+byte(problemNum); id++ {
+			problemURL := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/%d/%c", contestID, id)
+			if er := open.Run(problemURL); er != nil {
+				fmt.Println("open err:", problemURL, er)
+			}
+		}
+	}()
+
 	for id := byte('a'); id < 'a'+byte(problemNum); id++ {
-		problemURL := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/%d/%c", contestID, id)
-		var code string
-		var examples []string
-		for {
-			code, examples, err = parseCodeAndExamples(session, problemURL)
-			if err != nil {
-				fmt.Println("[error] parseCodeAndExamples", problemURL, err)
-				continue o
+		go func(id byte) {
+			defer wg.Done()
+
+			problemURL := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/%d/%c", contestID, id)
+			var examples []string
+			for {
+				examples, err = parseCodeAndExamples(session, problemURL)
+				if err != nil {
+					fmt.Println("[error] parseCodeAndExamples", problemURL, err)
+					return
+				}
+				if len(examples) > 0 {
+					break
+				}
+				fmt.Println("样例为空，重试...")
+				time.Sleep(time.Second)
 			}
-			if len(examples) > 0 {
-				break
+
+			problemDir := contestDir + string(id) + "/"
+			if err = os.MkdirAll(problemDir, os.ModePerm); err != nil {
+				fmt.Println(err)
+				return
 			}
-			fmt.Println("样例为空，重试...")
-			time.Sleep(time.Second)
-		}
 
-		mainStr := genMainFileContent(code, funcComment)
-		i := strings.Index(code, "func ") + 5
-		j := strings.IndexByte(code[i:], '(') + i
-		funcName := code[i:j]
-		testStr := genTestFileContent(id, examples, funcName, problemURL)
+			for j, fileName := range []string{"main.go", "main_test.go"} {
+				goFilePath := problemDir + strings.Replace(fileName, "main", string(id), 1)
+				if err = copyFile(goFilePath, "../"+fileName); err != nil {
+					fmt.Println(err)
+					return
+				}
+				if id == 'a' && j == 0 {
+					open.Run(absPath(goFilePath))
+				}
+			}
 
-		problemDir := contestDir + string(id) + "/"
-		if err = os.MkdirAll(problemDir, os.ModePerm); err != nil {
-			return err
-		}
-		mainFilePath := problemDir + fmt.Sprintf("%c.go", id)
-		if err = ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
-			return err
-		}
-		if err = ioutil.WriteFile(problemDir+fmt.Sprintf("%c_test.go", id), []byte(testStr), 0644); err != nil {
-			return err
-		}
-
-		if id == 'a' {
-			open.Run(absPath(mainFilePath))
-		}
+			for i := 0; i < len(examples); i += 2 {
+				filePath := problemDir + fmt.Sprintf("in%d.txt", i/2+1)
+				if err = os.WriteFile(filePath, []byte(examples[i]), 0644); err != nil {
+					fmt.Println(err)
+					return
+				}
+				filePath = problemDir + fmt.Sprintf("ans%d.txt", i/2+1)
+				if err = os.WriteFile(filePath, []byte(examples[i+1]), 0644); err != nil {
+					fmt.Println(err)
+					return
+				}
+			}
+		}(id)
 	}
 
+	wg.Wait()
 	fmt.Println("Done.")
-	return nil
+	return
 }

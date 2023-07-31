@@ -6,12 +6,14 @@ import (
 	"testing"
 )
 
+const contestID = 62033
+const openPage = true
+
 func TestGenNowCoderTemplates(t *testing.T) {
 	emailOrPhone := os.Getenv("NOWCODER_USERNAME")
 	cipherPwd := os.Getenv("NOWCODER_CIPHER_PWD")
-	const contestID = 6778
-	contestDir := fmt.Sprintf("../../../misc/nowcoder/%d/", contestID)
-	if err := GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir, contestID, `// https://space.bilibili.com/206214`); err != nil {
+	contestDir := fmt.Sprintf("../../../%d/", contestID)
+	if err := GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir, contestID, openPage); err != nil {
 		t.Fatal(err)
 	}
 }
