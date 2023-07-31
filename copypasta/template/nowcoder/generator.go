@@ -159,7 +159,7 @@ func fetchProblemNumber(session *grequests.Session, contestID int) (problemNum i
 }
 
 // examples 为输入输出交替
-func parseCodeAndExamples(session *grequests.Session, problemURL string) (examples []string, err error) {
+func parseExamples(session *grequests.Session, problemURL string) (examples []string, err error) {
 	resp, err := session.Get(problemURL, &grequests.RequestOptions{
 		Headers: map[string]string{
 			//"Origin": "https://ac.nowcoder.com",
@@ -251,7 +251,7 @@ func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID 
 			problemURL := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/%d/%c", contestID, id)
 			var examples []string
 			for {
-				examples, err = parseCodeAndExamples(session, problemURL)
+				examples, err = parseExamples(session, problemURL)
 				if err != nil {
 					fmt.Println("[error] parseCodeAndExamples", problemURL, err)
 					return
