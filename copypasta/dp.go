@@ -32,6 +32,7 @@ import (
 如何设计状态
 http://codeforces.com/problemset/problem/14/E
 https://codeforces.com/problemset/problem/360/B
+https://codeforces.com/problemset/problem/452/D 题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf452d
 https://codeforces.com/problemset/problem/461/B
 https://codeforces.com/problemset/problem/553/A
 https://codeforces.com/problemset/problem/571/B
@@ -105,6 +106,8 @@ https://codeforces.com/problemset/problem/1479/B2
 另见 math_comb.go 中的「一些组合问题」
 入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
 入门计数 DP LC1079 https://leetcode.cn/problems/letter-tile-possibilities/
+转换 https://codeforces.com/contest/626/problem/F
+- 相似技巧 LC1681 https://leetcode.cn/problems/minimum-incompatibility/discussion/comments/2051770
 https://codeforces.com/contest/414/problem/B
 多重组合
 - 见挑战
@@ -273,8 +276,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
 	LC70 https://leetcode.cn/problems/climbing-stairs/
 	LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
-	LC198 https://leetcode.cn/problems/house-robber/
+	LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 	- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
+	- 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
 	LC213 https://leetcode.cn/problems/house-robber-ii/
 	- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
 	LC276 https://leetcode.cn/problems/paint-fence/
@@ -308,7 +312,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	入门 DP：跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
 	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
 	选或不选 [1800·hot10] https://codeforces.com/contest/1525/problem/D
-	https://codeforces.com/contest/1324/problem/E
+	https://codeforces.com/problemset/problem/176/B
+	https://codeforces.com/problemset/problem/1324/E
 	https://codeforces.com/problemset/problem/505/C
 	https://atcoder.jp/contests/abc267/tasks/abc267_d
 	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
@@ -322,6 +327,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
 	https://codeforces.com/problemset/problem/1168/C
 	https://codeforces.com/problemset/problem/1542/D
+	https://codeforces.com/problemset/problem/1845/E
 
 	不相交区间 DP
 	LC2008 https://leetcode.cn/problems/maximum-earnings-from-taxi/
@@ -335,25 +341,35 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	*/
 
 	// 网格路径问题 网格图 DP
-	// LC62 https://leetcode.cn/problems/unique-paths/
-	// LC63 https://leetcode.cn/problems/unique-paths-ii/
-	// LC64 https://leetcode.cn/problems/minimum-path-sum/
-	// - 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
-	// LC120 https://leetcode.cn/problems/triangle/ https://www.luogu.com.cn/problem/P1216
-	// LC931 https://leetcode.cn/problems/minimum-falling-path-sum/
-	// LC2435 https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/
-	// LC2684 https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/
+	/*
+			## 练习 1
+			- [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
+			- [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
+			- [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
+			    - 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
+			- [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
+		        - https://www.luogu.com.cn/problem/P1216
+			- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
+			- [1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/)
+			## 练习 2
+			- [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
+			- [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)
+			## 练习 3
+			- [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/)
+			- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
+			- [741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)
+			- [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/)
+			    - 回文串 https://codeforces.com/problemset/problem/570/E
+	*/
 	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
-	// 摘樱桃
-	// - LC741 https://leetcode.cn/problems/cherry-pickup/
-	// - LC1643 https://leetcode.cn/problems/cherry-pickup-ii/
-	// - 回文串 https://codeforces.com/problemset/problem/570/E
 
 	// 最大子段和 LC53 https://leetcode.cn/problems/maximum-subarray/ https://www.luogu.com.cn/problem/P1115
 	//          LC2606 https://leetcode.cn/problems/find-the-substring-with-maximum-cost/
-	// 有两种思路
+	// 有三种思路
 	// 1. 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]，答案为 max(dp)
 	// 2. 遍历 a 的同时维护前缀和的最小值，则遍历到 a[i] 时，当前最大子段和为 sum[i]-min(sum[j]), j<i
+	// 3. 合并：线段树/倍增 https://www.luogu.com.cn/problem/P4513
+	//                   https://codeforces.com/contest/1843/problem/F2
 	// 算法导论 练习4.1-5
 	// [题型总结] 关于最大子段和及其变式 https://www.luogu.com.cn/blog/wey-yzyl/zui-tai-zi-duan-hu-ji-ji-bian-shi-di-qi-shi
 	// 子段长度有上限的最大子段和：见单调队列，题目为 https://ac.nowcoder.com/acm/contest/1006/D
@@ -374,9 +390,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//       https://codeforces.com/problemset/problem/1197/D 思路 https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz 里面搜本题链接
 	//       https://codeforces.com/problemset/problem/1373/D
 	//       需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
+	//       本质是去掉一个最小的子段 https://codeforces.com/contest/1845/problem/D
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
 	//    这题做法需要用到上面说到的第二种思路
 	// 二维的情况（最大子阵和）可以枚举上下边界，转换成一维   O(n^3)
+	// 树上的情况 https://codeforces.com/contest/1843/problem/F2
 	maxSubarraySum := func(a []int) int {
 		if len(a) == 0 { // 根据题意返回
 			return 0
@@ -483,6 +501,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 1. 动态规划，具体见我的题解 https://leetcode-cn.com/problems/maximum-alternating-subsequence-sum/solution/dong-tai-gui-hua-by-endlesscheng-d92a/
 	// 2. 贪心，由于第一个值需要取正，将开头补上 0，就变成买卖股票问题了，只需关心波峰和波谷的值，即 ∑max(0,a[i+1]-a[i])
 	// LC1911 https://leetcode-cn.com/problems/maximum-alternating-subsequence-sum/
+	// 变形 LC1526 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
 	// LC122 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii/
 	// 扩展：O(1) 回答交换其中两个元素后的最大子序列交替和 https://codeforces.com/problemset/problem/1420/C2
 	maxAlternatingSumDP := func(a []int) int {
@@ -640,8 +659,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 即 LCS(s, reverse(s))
 	// 视频讲解 https://www.bilibili.com/video/BV1Gs4y1E7EU/
 	// 回文子串见下面的 isPalindrome 或者 strings.go 的 manacher
-	// LC516 https://leetcode-cn.com/problems/longest-palindromic-subsequence/
-	// LC1216 https://leetcode-cn.com/problems/valid-palindrome-iii/
+	// LC516  https://leetcode.cn/problems/longest-palindromic-subsequence/
+	// LC1682 https://leetcode.cn/problems/longest-palindromic-subsequence-ii/
+	// LC1216 https://leetcode.cn/problems/valid-palindrome-iii/
 	// LC1246 https://leetcode.cn/problems/palindrome-removal/
 	// 树上路径 LPS https://codeforces.com/problemset/problem/1771/D
 	longestPalindromeSubsequence := func(s string) int {
@@ -1092,6 +1112,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//            https://atcoder.jp/contests/abc274/tasks/abc274_d
 	// 转换 LC1049 https://leetcode-cn.com/problems/last-stone-weight-ii/
 	// 转换 https://codeforces.com/problemset/problem/1381/B
+	// 转换 https://codeforces.com/problemset/problem/1516/C
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
 	// 转换 https://leetcode.com/discuss/interview-question/2677093/Snowflake-oror-Tough-OA-question-oror-How-to-solve
 	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2
@@ -1123,6 +1144,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 0-1 背包 EXTRA: 恰好装满
 	// https://leetcode.cn/contest/sf-tech/problems/cINqyA/
+	// 转换 二维费用 https://codeforces.com/problemset/problem/730/J
 	zeroOneKnapsackExactlyFull := func(values, weights []int, maxW int) {
 		dp := make([]int, maxW+1) // int64
 		for i := range dp {
@@ -1145,7 +1167,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 0-1 背包 EXTRA: 至少装入重量和为 maxW 的物品，求价值和的最小值 https://www.luogu.com.cn/problem/P4377
 	// f[0] 表示至少为 0 的情况，也表示没有任何约束的情况
 	// 比如选第 i 个物品后容量 <=0 了，那就表示前面的 i-1 个物品可以不受约束地随意选或不选了
-	// 需要一点转换 https://codeforces.com/problemset/problem/19/B
+	// 转换 https://codeforces.com/problemset/problem/19/B LC2742 https://leetcode.cn/problems/painting-the-walls/
 	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
 		dp := make([]int, maxW+1) // int64
@@ -1175,9 +1197,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
+	// 常见题目是算严格分拆（必须用不同数字）  https://leetcode.cn/problems/ways-to-express-an-integer-as-sum-of-powers/
+	// - https://oeis.org/A000009
 	// NOTE: 1,1,1,...1(32个1),s-32,s-31,...,s 可以让方案数恰好为 2^32
 	// 二维+上限+下限 LC879 https://leetcode-cn.com/problems/profitable-schemes/
 	// https://atcoder.jp/contests/arc060/tasks/arc060_a
+	// https://codeforces.com/problemset/problem/1673/C
 	// 转换 https://atcoder.jp/contests/abc169/tasks/abc169_f
 	// 转换 https://codeforces.com/problemset/problem/478/D
 	// 转换 LC494 https://leetcode-cn.com/problems/target-sum/
@@ -1488,9 +1513,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	容斥 https://atcoder.jp/contests/abc106/tasks/abc106_d
 	染色【套路】https://codeforces.com/problemset/problem/1114/D
 	同色消除【套路】https://www.luogu.com.cn/problem/P4170 https://codeforces.com/problemset/problem/1132/F
+	同色消除 https://codeforces.com/problemset/problem/1107/E
 	回文消除 https://codeforces.com/problemset/problem/607/B
 	二维区间 DP https://codeforces.com/problemset/problem/1198/D
-	状态设计的好题 https://codeforces.com/problemset/problem/1025/D
+	状态设计 https://codeforces.com/problemset/problem/1025/D
+	状态设计 https://codeforces.com/contest/1336/problem/C
+	- https://www.luogu.com.cn/problem/P3205
 	https://codeforces.com/problemset/problem/149/D
 	https://blog.csdn.net/weixin_43914593/article/details/106163859 算法竞赛专题解析（14）：DP应用--区间DP
 	todo https://atcoder.jp/contests/abc159/tasks/abc159_f
@@ -1567,6 +1595,9 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	*/
 
 	/* 状态机 DP
+	入门 https://codeforces.com/problemset/problem/698/A
+	爽 https://codeforces.com/problemset/problem/1613/D
+	https://codeforces.com/problemset/problem/855/B
 	https://codeforces.com/problemset/problem/623/B
 	式子变形 https://codeforces.com/contest/1826/problem/D
 	*/
@@ -1625,6 +1656,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	剑指 Offer 60 https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
 
 	期望
+	todo https://codeforces.com/contest/1842/problem/G https://codeforces.com/blog/entry/117640
 	https://codeforces.com/problemset/problem/235/B
 	https://codeforces.com/problemset/problem/908/D
 	https://codeforces.com/problemset/problem/1097/D
@@ -1643,9 +1675,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/808
 	     题单 https://ac.nowcoder.com/acm/problem/collection/810
+	迷你状压 https://codeforces.com/problemset/problem/991/D
 	LC691 https://leetcode-cn.com/problems/stickers-to-spell-word/
 	LC943 https://leetcode-cn.com/problems/find-the-shortest-superstring/
 	LC1125 状压 0-1 背包 https://leetcode-cn.com/problems/smallest-sufficient-team/
+	LCP53 https://leetcode.cn/problems/EJvmW4/
+	LCP69 https://leetcode.cn/problems/rMeRt2/
+	LCP76 https://leetcode.cn/problems/1ybDKD/
 	https://www.luogu.com.cn/problem/P1879
 	循环移位 https://codeforces.com/contest/1209/problem/E2
 	https://codeforces.com/problemset/problem/401/D
@@ -1670,12 +1706,18 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 状态设计 https://codeforces.com/problemset/problem/744/C
 	// 枚举来源 https://codeforces.com/problemset/problem/377/C
 	// 卡常优化 https://codeforces.com/problemset/problem/327/E 另一种做法是折半枚举
+	// 式子变形 https://codeforces.com/problemset/problem/1238/E
 	// LC1879 https://leetcode-cn.com/problems/minimum-xor-sum-of-two-arrays/
 	// LC2172 https://leetcode-cn.com/problems/maximum-and-sum-of-array/
 	permDP := func(a []int, check func(int, int) bool) int {
 		const mod = 1_000_000_007
 		n := len(a)
 		f := make([]int, 1<<n) // int64
+		// 求最小值的题目
+		//for i := 1; i < len(f); i++ {
+		//	f[i] = 1e9 // 1e18
+		//}
+		// 计数题目
 		f[0] = 1
 		for s, dv := range f { // 前面选的下标集合是 s
 			if dv == 0 { // 剪枝：用在计数题目上
@@ -1701,6 +1743,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 时间复杂度通常是 O(n^2*2^n) 下面的写法常数约为 1/4 https://oeis.org/A001815
 	// LC2741 https://leetcode.cn/problems/special-permutations/
 	// LC996 最后答案需要除相同元素个数的阶乘 https://leetcode.cn/problems/number-of-squareful-arrays/
+	// LC1681 https://leetcode.cn/problems/minimum-incompatibility/
 	permDP2 := func(a []int, check func(int, int) bool) int {
 		const mod = 1_000_000_007
 		n := len(a)
@@ -1819,12 +1862,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
 	//
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
-	// LC1986 https://leetcode-cn.com/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
-	// LC1494 https://leetcode-cn.com/problems/parallel-courses-ii/
-	// LC1654 https://leetcode-cn.com/problems/distribute-repeating-integers/
+	// LC1494 https://leetcode.cn/problems/parallel-courses-ii/
+	// LC1654 https://leetcode.cn/problems/distribute-repeating-integers/
+	// LC1681 有 O(n^2*2^n) 做法 https://leetcode.cn/problems/minimum-incompatibility/
+	//        - 相关（不是状压） https://codeforces.com/contest/626/problem/F
+	// LC1723 https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/
+	// LC1986 https://leetcode.cn/problems/minimum-number-of-work-sessions-to-finish-the-tasks/
 	// LC1994 https://leetcode.cn/problems/the-number-of-good-subsets/
 	// LC2305 https://leetcode.cn/problems/fair-distribution-of-cookies/
-	// LC1723 https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/
 	// LC2572 也可以用 01 背包 / 枚举 square-free https://leetcode.cn/problems/count-the-number-of-square-free-subsets/
 	//        更快的做法 https://leetcode.cn/problems/count-the-number-of-square-free-subsets/solution/shu-zhi-fan-wei-zai-da-yi-dian-de-hua-ze-56w3/
 	//           把相同的大质数归类，避免重复选择（分组背包）
@@ -1988,6 +2033,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://www.luogu.com.cn/problem/P3272
 	https://www.luogu.com.cn/problem/P5074
 	https://www.luogu.com.cn/problem/P1933
+	LCP4 https://leetcode.cn/problems/broken-board-dominoes/
 	*/
 	plugDP := func(grids [][]byte) int {
 		n, m := len(grids), len(grids[0])
@@ -2116,9 +2162,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC1397 与 KMP 结合 https://leetcode-cn.com/problems/find-all-good-strings/
 	                          https://www.luogu.com.cn/problem/P3193
 	LC1742 https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/
-	LC2719 数位和 https://leetcode.com/problems/count-of-integers/
+	LC2719 数位和 https://leetcode.cn/problems/count-of-integers/
+	LC2801 https://leetcode.cn/problems/count-stepping-numbers-in-range/
+	- [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
 	digsum(n)|n 的数的个数 https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
+	todo 区间数位 DP https://codeforces.com/problemset/problem/1245/F
 	https://lightoj.com/problem/investigation
+	http://acm.hdu.edu.cn/showproblem.php?pid=4507
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
 	http://acm.hdu.edu.cn/showproblem.php?pid=6796
 	todo LC248 中心对称数个数 https://leetcode.cn/problems/strobogrammatic-number-iii/
@@ -2133,85 +2183,100 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		calc := func(s string) int64 {
-			const lowerC, upperC byte = '0', '9'
 			dp := make([][]int64, len(s))
 			for i := range dp {
-				dp[i] = make([]int64, sumUpper+1)
+				dp[i] = make([]int64, sumUpper+1) // 10
 				for j := range dp[i] {
 					dp[i][j] = -1
 				}
 			}
-			var f func(p, sum int, limitUp bool) int64
-			f = func(p, sum int, limitUp bool) (res int64) {
+
+			// 第一种写法（前导零不影响答案）
+			var f func(int, int, bool) int64
+			f = func(p, sum int, isLimit bool) (res int64) {
 				if p == len(s) {
 					return 1
 				} // sum
-				if !limitUp {
+				if !isLimit {
 					dv := &dp[p][sum]
 					if *dv >= 0 {
 						return *dv
 					} // *dv + sum*int64(math.Pow10(n-p))
 					defer func() { *dv = res }()
 				}
-				up := upperC
-				if limitUp {
-					up = s[p]
+				up := 9 // 25
+				if isLimit {
+					up = int(s[p] - '0') // 'a'
 				}
-				for ch := lowerC; ch <= up; ch++ {
+				for d := 0; d <= up; d++ {
 					tmp := sum
 
-					cnt := f(p+1, tmp, limitUp && ch == up)
+					cnt := f(p+1, tmp, isLimit && d == up)
 					res = (res + cnt) % mod
 				}
 				return
 			}
-			res := f(0, 0, true)
-			return res
-		}
-		ansUpper := calc(upper) // 上界
-		ansLower := calc(lower) // 下界（注意下面单独特判 lower）
-		ans := ansUpper - ansLower
-		// lower 是否算上
-		//if lowerIsValid {
-		//	ans++
-		//}
-		ans = (ans%mod + mod) % mod
+			//res := f(0, 0, true)
 
-		// TIPS: 对于需要判断/禁止前导零的情况，可以加一个额外的维度 fill，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
-		// 例如 https://codeforces.com/contest/855/submission/125651587
-		// 以下代码以 https://www.luogu.com.cn/problem/P2657 为例
-		calc = func(s string) int64 {
-			dp := make([][10]int64, len(s))
-			for i := range dp {
-				for j := range dp[i] {
-					dp[i][j] = -1
-				}
-			}
-			var f func(p, pre int, limitUp, fill bool) int64
-			f = func(p, pre int, limitUp, fill bool) (res int64) {
+			// 第二种写法（前导零影响答案）
+			// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
+			// 例如 https://codeforces.com/contest/855/submission/125651587
+			// 以下代码以 https://www.luogu.com.cn/problem/P2657 为例
+			var dfs func(int, int, bool, bool) int64
+			dfs = func(p, pre int, isLimit, isNum bool) (res int64) {
 				if p == len(s) {
-					return 1
+					if isNum {
+						return 1
+					}
+					return 0
 				}
-				if !limitUp && fill { // 注意这里的判断
+				if !isLimit && isNum {
 					dv := &dp[p][pre]
 					if *dv >= 0 {
 						return *dv
 					}
 					defer func() { *dv = res }()
 				}
-				up := 9
-				if limitUp {
-					up = int(s[p] & 15)
+				if !isNum {
+					res += dfs(p+1, pre, false, false)
 				}
-				for d := 0; d <= up; d++ {
-					if !fill || abs(d-pre) > 1 {
-						res += f(p+1, d, limitUp && d == up, fill || d > 0)
+				up := 9 // 25
+				if isLimit {
+					up = int(s[p] - '0') // - 'a'
+				}
+				d := 0
+				if !isNum {
+					d = 1
+				}
+				for ; d <= up; d++ {
+					if !isNum || abs(d-pre) > 1 {
+						res += dfs(p+1, d, isLimit && d == up, true)
+						res %= mod
 					}
 				}
 				return
 			}
-			return f(0, 0, true, false)
+			res := dfs(0, 0, true, false)
+			return res
 		}
+		ansUpper := calc(upper) // 上界
+		ansLower := calc(lower) // 下界（注意下面单独特判 lower）
+		ans := ansUpper - ansLower
+		ans = (ans%mod + mod) % mod
+
+		// lower 是否算上
+		lowerIsValid := true
+		for i := 1; i < len(lower); i++ {
+			pre, cur := int(lower[i-1]), int(lower[i])
+			if abs(pre-cur) != 1 { // 不合法
+				lowerIsValid = false
+				break
+			}
+		}
+		if lowerIsValid {
+			ans++
+		}
+		ans = (ans%mod + mod) % mod
 
 		// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
 		// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
@@ -2360,11 +2425,16 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	/* 数据结构优化 DP
+	入门：数组优化 https://codeforces.com/contest/1842/problem/C
+	             LC2713 https://leetcode.cn/problems/maximum-strictly-increasing-cells-in-a-matrix/
+	变量优化 O(n) LC2746 https://leetcode.cn/problems/decremental-string-concatenation/description/
 	长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
 	https://codeforces.com/problemset/problem/1667/B
 	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
 	https://codeforces.com/problemset/problem/66/E
+	https://codeforces.com/problemset/problem/1788/E
+	https://codeforces.com/contest/1842/problem/E
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 
 	前缀和优化 DP
@@ -2389,7 +2459,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/problemset/problem/1149/B
 	*/
 
-	// 单调队列优化
+	// 单调队列优化 DP
 	// 见 monotone_queue.go
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
@@ -2721,6 +2791,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 LC337 https://leetcode.cn/problems/house-robber-iii/ https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
 	// 变形 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+	// 边权独立集 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/description/
 	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661
 	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
@@ -2739,7 +2810,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		return max(nc, c)
 	}
 
-	// 树上最小顶点覆盖
+	// 树上最小顶点覆盖（每条边至少有一个端点被覆盖，也就是在已选的点集中）
 	// 代码和树上最大独立集类似
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// 经典题：战略游戏 https://www.luogu.com.cn/problem/P2016
@@ -2842,8 +2913,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//          https://qiita.com/keymoon/items/2a52f1b0fb7ef67fb89e
 	//
 	// LC310 也可以用拓扑排序的思想 https://leetcode.cn/problems/minimum-height-trees/
+	// LC2581 https://leetcode.cn/problems/count-number-of-possible-root-nodes/
 	// https://www.luogu.com.cn/problem/P3478
 	// https://www.luogu.com.cn/problem/P2986
+	// https://ac.nowcoder.com/acm/contest/59717/F
 	// https://codeforces.com/problemset/problem/763/A（有更巧妙的做法）
 	// https://codeforces.com/problemset/problem/1092/F
 	// https://codeforces.com/problemset/problem/219/D
@@ -2857,38 +2930,36 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 给一棵无根树
 	// 返回每个点到其余点的距离之和
 	// LC834 https://leetcode-cn.com/problems/sum-of-distances-in-tree
+	// - 【图解】一张图秒懂换根 DP！（Python/Java/C++/Go/JS）https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/
 	// - 变形：把距离之和改成每个距离的平方之和？
 	// - 记录子树大小 size[v] 和子树每个节点的深度之和 sum(dep[sub])
 	// 任意两点距离除以 k 的上取整之和 https://codeforces.com/problemset/problem/791/D
 	sumOfDistancesInTree := func(g [][]int) []int {
-		n := len(g)
-		size := make([]int, n)
-		var f func(int, int) int // int64
-		f = func(v, fa int) (sum int) { // sum 表示以 0 为根时的子树 v 中的节点到 v 的距离之和
-			size[v] = 1
-			for _, w := range g[v] {
-				if w != fa {
-					sum += f(w, v) + size[w] // 子树 w 的每个节点都要经过 w-v，因此这条边对 sum 产生的贡献为 size[w]
-					size[v] += size[w]
+		ans := make([]int, len(g))
+		size := make([]int, len(g))
+		var dfs func(int, int, int)
+		dfs = func(x, fa, depth int) {
+			ans[0] += depth
+			size[x] = 1
+			for _, y := range g[x] {
+				if y != fa {
+					dfs(y, x, depth+1)
+					size[x] += size[y]
 				}
 			}
-			return
 		}
-		sum0 := f(0, -1)
+		dfs(0, -1, 0)
 
-		ans := make([]int, n)
-		var reroot func(v, fa, sum int)
-		reroot = func(v, fa, sum int) {
-			ans[v] = sum
-			for _, w := range g[v] {
-				if w != fa {
-					// 换根后，离子树 w 中的所有节点近了 1，又离不在子树 w 中的节点远了 1
-					// 所以要减去 sz[w]，并加上 n-size[w]
-					reroot(w, v, sum+n-size[w]*2)
+		var reroot func(int, int)
+		reroot = func(x, fa int) {
+			for _, y := range g[x] {
+				if y != fa {
+					ans[y] = ans[x] + len(g) - 2*size[y]
+					reroot(y, x)
 				}
 			}
 		}
-		reroot(0, -1, sum0)
+		reroot(0, -1)
 		return ans
 	}
 
