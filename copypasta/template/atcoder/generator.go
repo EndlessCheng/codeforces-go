@@ -290,6 +290,7 @@ import (
 	"testing"
 )
 
+// 题目：%s
 // 提交：%s
 // 对拍：%s
 func Test_run(t *testing.T) {
@@ -299,8 +300,7 @@ func Test_run(t *testing.T) {
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
-// %s
-`, submitURL, statusURL, taskID, examples, problemURL)
+`, problemURL, submitURL, statusURL, taskID, examples)
 	testFilePath := dirPath + taskID + "_test.go"
 	if err := os.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
