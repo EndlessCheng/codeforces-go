@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Yr4y1o7aP/) 第二题。
 
 先特判 $n\le 2$ 的情况，这是满足要求的。
 
@@ -16,6 +14,33 @@
 class Solution:
     def canSplitArray(self, nums: List[int], m: int) -> bool:
         return len(nums) <= 2 or any(x + y >= m for x, y in pairwise(nums))
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean canSplitArray(List<Integer> nums, int m) {
+        int n = nums.size();
+        if (n <= 2) return true;
+        for (int i = 1; i < n; i++)
+            if (nums.get(i - 1) + nums.get(i) >= m)
+                return true;
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool canSplitArray(vector<int> &nums, int m) {
+        int n = nums.size();
+        if (n <= 2) return true;
+        for (int i = 1; i < n; i++)
+            if (nums[i - 1] + nums[i] >= m)
+                return true;
+        return false;
+    }
+};
 ```
 
 ```go [sol-Go]
