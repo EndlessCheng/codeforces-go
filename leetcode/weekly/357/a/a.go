@@ -1,17 +1,19 @@
 package main
 
 // https://space.bilibili.com/206214
-func finalString(s string) (ans string) {
-	a := []rune{}
-	for _, v := range s {
-		if v == 'i' {
-			for i, n := 0, len(a); i < n/2; i++ {
-				a[i], a[n-1-i] = a[n-1-i], a[i]
-			}
+func finalString(s string) string {
+	qs := [2][]rune{}
+	dir := 1
+	for _, c := range s {
+		if c == 'i' {
+			dir ^= 1
 		} else {
-			a = append(a, v)
+			qs[dir] = append(qs[dir], c)
 		}
 	}
-	ans = string(a)
-	return
+	q := qs[dir^1]
+	for i, n := 0, len(q); i < n/2; i++ {
+		q[i], q[n-1-i] = q[n-1-i], q[i]
+	}
+	return string(append(q, qs[dir]...))
 }
