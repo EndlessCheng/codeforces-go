@@ -8,18 +8,18 @@
 
 |视频精讲|题目|代码|备注|
 |---|---|---|---|
-|[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)|[209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)|[代码](https://leetcode.cn/problems/minimum-size-subarray-sum/solution/biao-ti-xia-biao-zong-suan-cuo-qing-kan-k81nh/)||
-||[713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)|[代码](https://leetcode.cn/problems/subarray-product-less-than-k/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-jebq/)||
-||[3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)|[代码](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)||
-||[1004. 最大连续 1 的个数 III](https://leetcode.cn/problems/max-consecutive-ones-iii/)|[代码](https://leetcode.cn/problems/max-consecutive-ones-iii/solution/hua-dong-chuang-kou-yi-ge-shi-pin-jiang-yowmi/)|*课后作业|
-||[1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/)|[代码](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/solution/tong-xiang-shuang-zhi-zhen-hua-dong-chua-z7tu/)|*课后作业|
-||[1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)|[代码](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/solution/ni-xiang-si-wei-pythonjavacgo-by-endless-b4jt/)|*课后作业|
 |[相向双指针 1](https://www.bilibili.com/video/BV1bP411c7oJ/)|[167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)|[代码](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/solution/san-shu-zhi-he-bu-hui-xie-xiang-xiang-sh-6wbq/)||
 ||[15. 三数之和](https://leetcode.cn/problems/3sum/)|[代码](https://leetcode.cn/problems/3sum/solution/shuang-zhi-zhen-xiang-bu-ming-bai-yi-ge-pno55/)|包含两个优化|
 ||[16. 最接近的三数之和](https://leetcode.cn/problems/3sum-closest/)|[代码](https://leetcode.cn/problems/3sum-closest/solution/zui-jie-jin-de-san-shu-zhi-he-by-leetcode-solution/)|*课后作业|
 ||[18. 四数之和](https://leetcode.cn/problems/4sum/)|[代码](https://leetcode.cn/problems/4sum/solution/ji-zhi-you-hua-ji-yu-san-shu-zhi-he-de-z-1f0b/)|*课后作业|
 |[相向双指针 2](https://www.bilibili.com/video/BV1Qg411q7ia/)|[11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)|[代码](https://leetcode.cn/problems/container-with-most-water/solutions/1974355/by-endlesscheng-f0xz/)||
 ||[42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)|[代码](https://leetcode.cn/problems/trapping-rain-water/solutions/1974340/zuo-liao-nbian-huan-bu-hui-yi-ge-shi-pin-ukwm/)|额外讲了**前后缀分解**|
+|[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)|[209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)|[代码](https://leetcode.cn/problems/minimum-size-subarray-sum/solution/biao-ti-xia-biao-zong-suan-cuo-qing-kan-k81nh/)||
+||[713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)|[代码](https://leetcode.cn/problems/subarray-product-less-than-k/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-jebq/)||
+||[3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)|[代码](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solution/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)||
+||[1004. 最大连续 1 的个数 III](https://leetcode.cn/problems/max-consecutive-ones-iii/)|[代码](https://leetcode.cn/problems/max-consecutive-ones-iii/solution/hua-dong-chuang-kou-yi-ge-shi-pin-jiang-yowmi/)|*课后作业|
+||[1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/)|[代码](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/solution/tong-xiang-shuang-zhi-zhen-hua-dong-chua-z7tu/)|*课后作业|
+||[1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)|[代码](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/solution/ni-xiang-si-wei-pythonjavacgo-by-endless-b4jt/)|*课后作业|
 |[二分查找 - 深入理解](https://www.bilibili.com/video/BV1AP41137w7/)|[34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)|[代码](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/solutions/1980196/er-fen-cha-zhao-zong-shi-xie-bu-dui-yi-g-t9l9/)|三种写法|
 |[二分查找 - 习题课](https://www.bilibili.com/video/BV1QK411d76w/)|[162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)|[代码](https://leetcode.cn/problems/find-peak-element/solutions/1987497/by-endlesscheng-9ass/)||
 ||[153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/solutions/1987499/by-endlesscheng-owgd/)||
