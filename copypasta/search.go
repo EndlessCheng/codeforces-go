@@ -1068,6 +1068,7 @@ func _(min, max func(int, int) int) {
 - [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/)
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
+- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
 
 #### 综合应用
 
@@ -1075,6 +1076,7 @@ func _(min, max func(int, int) int) {
 - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/)
 - [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/)
 - [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
+- [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
 */
 
 // 网格/矩阵上的搜索
@@ -1225,10 +1227,11 @@ func gridCollection() {
 		}
 		for i, row := range g {
 			for j, v := range row {
-				if v == valid && !vis[i][j] {
-					cnt++
-					f(i, j)
+				if v != valid && !vis[i][j] {
+					continue
 				}
+				cnt++
+				f(i, j)
 			}
 		}
 		return
@@ -1265,12 +1268,13 @@ func gridCollection() {
 		}
 		for i, row := range g {
 			for j, v := range row {
-				if v == validCell && !vis[i][j] {
-					comp = []pair{}
-					if f(i, j) {
-						comps = append(comps, comp)
-						// do comp ...
-					}
+				if v != validCell && !vis[i][j] {
+					continue
+				}
+				comp = []pair{}
+				if f(i, j) {
+					comps = append(comps, comp)
+					// do comp ...
 				}
 			}
 		}
