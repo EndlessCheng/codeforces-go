@@ -17,7 +17,6 @@ func run(_r io.Reader, out io.Writer) {
 	for i := range es {
 		Fscan(in, &es[i].x, &es[i].y, &es[i].wt)
 	}
-	sort.Slice(es, func(i, j int) bool { return es[i].wt < es[j].wt })
 
 	fa := make([]int, n+1)
 	size := make([]int, n+1)
@@ -33,6 +32,7 @@ func run(_r io.Reader, out io.Writer) {
 		return fa[x]
 	}
 
+	sort.Slice(es, func(i, j int) bool { return es[i].wt < es[j].wt })
 	for _, e := range es {
 		x, y := find(e.x), find(e.y)
 		ans += size[x] * size[y] * e.wt
