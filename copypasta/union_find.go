@@ -24,12 +24,18 @@ https://zhuanlan.zhihu.com/p/553192435
 //
 // 模板题 https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
-// 基础题 https://codeforces.com/problemset/problem/1411/C
+// 基础题 https://codeforces.com/problemset/problem/1167/C
+//       https://codeforces.com/problemset/problem/1411/C
 // LC305 https://leetcode.cn/problems/number-of-islands-ii/
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
+// 转换 https://atcoder.jp/contests/abc304/tasks/abc304_e
+//
 // 处理图上的环
 // - https://codeforces.com/contest/1726/problem/D
+//
 // 数组标记/区间合并相关
+// - 经典模型是一维区间覆盖染色，通过倒序+并查集解决
+// - 顺带补充下二维的情况（非并查集）：LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 // - [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/)
 // - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
 // - [2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)
@@ -37,9 +43,12 @@ https://zhuanlan.zhihu.com/p/553192435
 // - https://codeforces.com/problemset/problem/724/D
 // - https://codeforces.com/problemset/problem/827/A
 // - https://codeforces.com/problemset/problem/1157/E
-// 树+点权顺序
+//
+// 树+点权/边权的顺序
 // - LC2421 https://leetcode.cn/problems/number-of-good-paths/
 // - 贡献法 https://codeforces.com/problemset/problem/915/F
+// - 贡献法 https://atcoder.jp/contests/abc214/tasks/abc214_d
+//
 // LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
 // 三维接雨水 https://www.luogu.com.cn/problem/P5930 LC407 https://leetcode-cn.com/problems/trapping-rain-water-ii/
@@ -57,9 +66,11 @@ https://zhuanlan.zhihu.com/p/553192435
 // 套题 https://blog.csdn.net/weixin_43914593/article/details/104108049 算法竞赛专题解析（3）：并查集
 // 转换 https://codeforces.com/problemset/problem/1253/D
 // 离散 + 四方向 Kick Start 2019 Round C Wiggle Walk https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050ff2/0000000000150aac#analysis
+// 能力守恒+离线 https://codeforces.com/contest/1851/problem/G
 // 技巧：去掉无用数据
 // - https://codeforces.com/problemset/problem/1157/E
 // - https://codeforces.com/problemset/problem/1791/F
+// todo https://codeforces.com/contest/884/problem/E
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
@@ -313,7 +324,9 @@ func _(n int) {
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-11
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-12
 // https://oi-wiki.org/ds/dsu/#_9
-// 模板题 https://codeforces.com/problemset/problem/1074/D https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
+// 模板题 https://codeforces.com/contest/1850/problem/H
+//       https://codeforces.com/problemset/problem/1074/D 
+//       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
 // 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D
 // 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
@@ -467,6 +480,7 @@ func (o *pufNode) merge(x, y int) *pufNode {
 // https://codeforces.com/gym/100551/problem/A
 // https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
 // https://loj.ac/p/121
+// https://atcoder.jp/contests/abc302/tasks/abc302_h （基于 https://atcoder.jp/contests/arc111/tasks/arc111_b）
 // todo https://codeforces.com/contest/891/problem/C
 //  https://codeforces.com/contest/1681/problem/F
 // todo Dynamic connectivity contest https://codeforces.com/gym/100551
