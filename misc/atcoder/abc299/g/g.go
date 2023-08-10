@@ -21,22 +21,22 @@ func run(_r io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 		left[a[i]]++
 	}
-	st := []int{}
-	inSt := make([]bool, m+1)
+	ans := []int{}
+	inAns := make([]bool, m+1)
 	for _, c := range a {
 		left[c]--
-		if inSt[c] {
+		if inAns[c] {
 			continue
 		}
-		for len(st) > 0 && c < st[len(st)-1] && left[st[len(st)-1]] > 0 {
-			top := st[len(st)-1]
-			st = st[:len(st)-1]
-			inSt[top] = false
+		for len(ans) > 0 && c < ans[len(ans)-1] && left[ans[len(ans)-1]] > 0 {
+			top := ans[len(ans)-1]
+			ans = ans[:len(ans)-1]
+			inAns[top] = false
 		}
-		st = append(st, c)
-		inSt[c] = true
+		ans = append(ans, c)
+		inAns[c] = true
 	}
-	for _, v := range st {
+	for _, v := range ans {
 		Fprint(out, v, " ")
 	}
 }
