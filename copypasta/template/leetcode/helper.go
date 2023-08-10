@@ -90,9 +90,9 @@ func init() {
 		"beans", "a",
 		"mat", "a",
 		"matrix", "a",
-		"grid", "g",
-		"grid1", "g1",
-		"grid2", "g2",
+		"grid", "a",
+		"grid1", "a1",
+		"grid2", "a2",
 		"words", "a",
 		"events", "a",
 
