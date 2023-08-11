@@ -29,6 +29,7 @@ import (
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
 - [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/)
 - [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)
+https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 
 哈希表与前缀和（双变量思想）
 推荐按照顺序完成
@@ -62,10 +63,15 @@ https://codeforces.com/problemset/problem/1296/C
 
 滑动窗口 双指针
 入门题 https://codeforces.com/problemset/problem/602/B
+入门题 https://codeforces.com/problemset/problem/279/B
 LC424 https://leetcode.cn/problems/longest-repeating-character-replacement/
 LC795 https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/
 LC2444 https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/
 LC1712 多指针 https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/
+较为复杂 https://atcoder.jp/contests/abc294/tasks/abc294_e
+      - https://ac.nowcoder.com/acm/contest/62033/D
+https://codeforces.com/problemset/problem/1208/B
+https://codeforces.com/problemset/problem/1765/D
 多指针 https://codeforces.com/problemset/problem/895/B
 https://codeforces.com/contest/1833/problem/F
 计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
@@ -159,6 +165,7 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 LC494 https://leetcode.cn/problems/target-sum/
 
 分类讨论（部分题是易错题）
+https://codeforces.com/problemset/problem/193/A
 https://codeforces.com/problemset/problem/489/C
 https://codeforces.com/problemset/problem/1605/C
 https://codeforces.com/problemset/problem/382/C
@@ -177,6 +184,7 @@ https://codeforces.com/contest/1516/problem/C
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
 https://codeforces.com/problemset/problem/460/D
+https://codeforces.com/problemset/problem/796/C
 https://codeforces.com/problemset/problem/1374/E2
 https://codeforces.com/problemset/problem/1647/D
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
@@ -189,10 +197,12 @@ LC2763 https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
+https://codeforces.com/problemset/problem/1691/C
 https://codeforces.com/problemset/problem/1777/D 树
 https://codeforces.com/problemset/problem/1788/D 好题！
 https://codeforces.com/problemset/problem/1789/C 好题！
 https://codeforces.com/problemset/problem/1808/D
+https://atcoder.jp/contests/abc290/tasks/abc290_e 好题！
 
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
@@ -255,9 +265,12 @@ LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarray
 排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
 https://codeforces.com/contest/1830/problem/A
 从绝对值最大的开始思考 https://codeforces.com/contest/351/problem/E
+
+棋盘染色 LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
+        https://codeforces.com/contest/1848/problem/A
 */
 
-/* 
+/*
 ## 练习：离线（按难度分排序）
 
 > 由于所有的询问数据都给出了，我们可以通过修改询问的顺序，达到降低时间复杂度的效果。相应的，在线算法就是按照输入的顺序处理，来一个处理一个。
@@ -270,7 +283,7 @@ https://codeforces.com/contest/1830/problem/A
 - [2747. 统计没有收到请求的服务器数目](https://leetcode.cn/problems/count-zero-request-servers/)
 - [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
 - [2736. 最大和查询](https://leetcode.cn/problems/maximum-sum-queries/) 2533
- */
+*/
 
 /* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
 LC803 https://leetcode.cn/problems/bricks-falling-when-hit/
@@ -397,8 +410,9 @@ func _() {
 	dir4 = []struct{ x, y int }{'L': {-1, 0}, 'R': {1, 0}, 'D': {0, -1}, 'U': {0, 1}} // 左右下上（坐标系）
 	dir4 = []struct{ x, y int }{'L': {0, -1}, 'R': {0, 1}, 'U': {-1, 0}, 'D': {1, 0}} // 左右下上（网格）
 
-	dir8 := []struct{ x, y int }{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}} // 逆时针（坐标系）
-	dir8 = []struct{ x, y int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}  // 顺时针（矩阵）
+	dir8 := []struct{ x, y int }{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}  // 逆时针（坐标系）
+	dir8 = []struct{ x, y int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}   // 顺时针（矩阵）
+	dir8 = []struct{ x, y int }{{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}} // 马走日
 
 	perm3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 	perm4 := [][]int{
