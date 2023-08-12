@@ -8,6 +8,7 @@
 |---|---|---|---|
 |哈希表|[1. 两数之和](https://leetcode.cn/problems/two-sum/)|[【动画】从两数之和中，我们可以学到什么？](https://leetcode.cn/problems/two-sum/solution/dong-hua-cong-liang-shu-zhi-he-zhong-wo-0yvmj/)|简单|
 |链表|[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
+||[23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)|[两种方法：最小堆/分治](https://leetcode.cn/problems/merge-k-sorted-lists/solution/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)|困难|
 |双指针|[795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/)|[【图解】一次遍历+简洁写法](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/solution/tu-jie-yi-ci-bian-li-jian-ji-xie-fa-pyth-n75l/)|1817|
 ||[1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)|[两种写法：逆向思维/直接双指针](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/solution/ni-xiang-si-wei-pythonjavacgo-by-endless-b4jt/)|1817|
 ||[1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/)|[同向双指针（滑动窗口）](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/solution/tong-xiang-shuang-zhi-zhen-hua-dong-chua-z7tu/)|1878|
