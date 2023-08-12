@@ -931,7 +931,51 @@ func _() {
 	// 差分
 	// https://codeforces.com/problemset/problem/1700/C
 	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
-	// 二阶差分 https://codeforces.com/problemset/problem/1661/D
+
+	// 二阶差分
+	// https://ac.nowcoder.com/acm/contest/56446/C
+	// https://www.luogu.com.cn/problem/U318099?contestId=123900
+	// 简化 https://codeforces.com/problemset/problem/1661/D
+	diffOfDiff := func(n int) {
+		diff := make([]int, n+1)
+		diff2 := make([]int, n+1)
+
+		// 下标从 0 开始
+		// a[l]+=base
+		// a[l+1]+=base+step
+		// a[l+2]+=base+step*2
+		// ...
+		// a[r] += base+step*(r-l)
+		// 一般题目中的 step 会取 1 或者 -1
+		update := func(l, r, base, step int) {
+			diff[l] += base
+			diff[r+1] -= base+step*(r-l) // 修正
+
+			// 差分数组从 l+1 到 r 都加上了 step
+			diff2[l+1] += step
+			diff2[r+1] -= step
+		}
+
+		// 下标从 0 开始
+		// a[j] += max(base-abs(i-j), 0)
+		update2 := func(i, base int) {
+			update(max(i-base+1, 0), i, max(base - i, 1), 1)
+			if base > 1 && i < n-1 {
+				update(i+1, min(i+base-1, n-1), base-1, -1)
+			}
+		}
+
+		// 更新完后，恢复原数组
+		sd2, sd := 0, 0
+		ori := make([]int, n)
+		for i := range ori {
+			sd2 += diff2[i]
+			sd += diff[i] + sd2
+			ori[i] = sd
+		}
+
+		_ = update2
+	}
 
 	// 离散差分，传入闭区间列表 ps，不要求有序
 	// https://codeforces.com/problemset/problem/1420/D
@@ -1551,7 +1595,7 @@ func _() {
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
 		contributionSum,
-		diffMap, diff2D,
+		diffOfDiff, diffMap, diff2D,
 		sort3, reverse, reverseInPlace, equal,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
 		unique, uniqueInPlace, discreteSimple, discrete, discrete2, discreteMap,
