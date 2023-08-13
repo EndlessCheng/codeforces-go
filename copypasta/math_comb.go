@@ -11,6 +11,10 @@ https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
+鸽巢原理 pigeonhole principle
+https://en.wikipedia.org/wiki/Pigeonhole_principle
+https://codeforces.com/problemset/problem/618/F
+
 一些组合问题
 没有思路的话可以尝试：
 - 打表 + OEIS
@@ -29,6 +33,13 @@ https://codeforces.com/problemset/problem/1359/E
 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
 https://codeforces.com/problemset/problem/1763/D 推荐 分类讨论
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
+加强版 https://codeforces.com/contest/1838/problem/E
+- 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
+- https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
+https://atcoder.jp/contests/abc290/tasks/abc290_f
+
+差分、前缀和与组合数
+https://codeforces.com/contest/1832/problem/E
 
 放球问题
 最基础的问题，把 n 个无区别的球放入 m 个有区别的盒子中，不允许空盒（n>=m）：
@@ -146,7 +157,11 @@ k=4 https://oeis.org/A002377 Least number of 4th powers needed to represent n
 质数分拆
 https://oeis.org/A000607 Number of partitions of n into prime parts
 	https://www.luogu.com.cn/problem/P1832
-https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q
+https://oeis.org/A061358 Number of ways of writing n=p+q with p, q primes and p>=q   线性关系，但是系数很小 (0.01 ?)
+- https://oeis.org/A109679 record n
+- https://oeis.org/A082918 record a(n)
+- https://leetcode.cn/problems/prime-pairs-with-target-sum/
+https://oeis.org/A065577 Number of Goldbach partitions of 10^n
 https://oeis.org/A067187 Numbers that can be expressed as the sum of two primes in exactly one way
 https://oeis.org/A068307 number of partitions of n into a sum of three primes
 https://oeis.org/A071335 Number of partitions of n into a sum of at most three primes

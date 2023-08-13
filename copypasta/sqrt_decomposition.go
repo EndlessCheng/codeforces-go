@@ -7,6 +7,7 @@ import (
 
 /* 根号分治 Sqrt Decomposition
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
+常用于图论或者某些数组统计类题目
 参考 Competitive Programmer’s Handbook Ch.27
 王悦同《根号算法——不只是分块》
 
@@ -35,15 +36,24 @@ https://codeforces.com/problemset/problem/1039/E
 大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H
 https://codeforces.com/problemset/problem/1806/E
 见下面的 floorDivide https://codeforces.com/problemset/problem/786/C
+四次方根 https://atcoder.jp/contests/abc293/tasks/abc293_f
+https://leetcode.com/discuss/interview-question/3517350/
+- Given a list of pairs {L,R} & an array. 
+  Find out the total number of pairs (i, j) where 
+  (arr[i], arr[j]) should be equal to exactly one of the given Q pairs. And i < j.
 
 自动 O(n√n)
 https://codeforces.com/problemset/problem/1790/F
+
+随机+分块
+https://codeforces.com/contest/1840/problem/G2
 */
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
 
 /* 分散层叠算法 Fractional Cascading
 https://en.wikipedia.org/wiki/Fractional_cascading
+https://www.zhihu.com/question/33776070/answer/59405602
 https://www.luogu.com.cn/blog/DPair2005/fen-san-ceng-die-suan-fa-xue-xi-bi-ji
 https://www.luogu.com.cn/problem/P6466
 */

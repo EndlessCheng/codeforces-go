@@ -14,6 +14,10 @@ type seg01 []struct {
 	//  0: [l,r] 内有 0 有 1
 	state int8
 	flip  bool // lazy tag
+
+	// 还可以维护：
+	// 连续 0 的最长长度（前缀、后缀、区间）
+	// 连续 1 的最长长度（前缀、后缀、区间）
 }
 
 // 见 buildWithBinary

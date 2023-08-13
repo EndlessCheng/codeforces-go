@@ -11,13 +11,17 @@ https://en.algorithmica.org/hpc/data-structures/binary-search/
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-已按照难度分排序
-
 ### 二分查找·题单
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
+
+### 二分答案·原理
+
+为什么二分的结果一定就是我们要求的，可不可能无法由数组中的元素组合得到？
+我在 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/ 中说到：
+设答案为 s，那么必然有 f(s−1)<k 且 f(s)≥k。注意这和「第 k 小」是等价的。
 
 ### 二分答案·题单
 
@@ -37,6 +41,7 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
 https://codeforces.com/problemset/problem/1118/D2
 DP https://codeforces.com/contest/883/problem/I
+https://codeforces.com/contest/1843/problem/E
 
 #### 第 k 小/大（部分题目还可以用堆解决）
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
@@ -47,16 +52,17 @@ DP https://codeforces.com/contest/883/problem/I
 - [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/)
 - [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)
 
-#### 最小化最大值
+#### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
 - [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
 
-#### 最大化最小值
+#### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
+http://codeforces.com/problemset/problem/460/C
 
 #### 最大化中位数
 https://codeforces.com/problemset/problem/1201/C  也可以贪心做

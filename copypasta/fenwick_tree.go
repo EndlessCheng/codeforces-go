@@ -46,6 +46,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 建模 https://codeforces.com/problemset/problem/1660/F2
 长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
+多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155
@@ -95,7 +96,8 @@ func (f fenwick) query(l, r int) int64 {
 //   = ∑(m-i+1)*diff[i]
 //   = (m+1)∑diff[i] - ∑i*diff[i]
 // https://ac.nowcoder.com/acm/problem/50454
-// https://codeforces.com/contest/1824/problem/D
+// todo 二维差分 上帝造题的七分钟 https://www.luogu.com.cn/problem/P4514
+// todo 离线询问（按 x y 分组）https://codeforces.com/contest/1824/problem/D
 
 // [0] 维护 ∑diff[i]
 // [1] 维护 ∑i*diff[i]

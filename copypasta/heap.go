@@ -8,6 +8,12 @@ import (
 /*
 可视化 https://visualgo.net/zh/heap
 
+[373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
+- 题解 https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/solution/jiang-qing-chu-wei-shi-yao-yi-kai-shi-ya-i0dj/
+[1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)
+- 题解 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/
+https://atcoder.jp/contests/abc297/tasks/abc297_e
+
 思维·转换
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数

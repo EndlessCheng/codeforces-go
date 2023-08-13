@@ -543,12 +543,19 @@ func toNegabinary(n int) (res string) {
 
 // 分数转小数
 // https://en.wikipedia.org/wiki/Repeating_decimal
+// Number of digits in decimal expansion of 1/n before the periodic part begins https://oeis.org/A051628
+// - 设 n=2^c2*5^c5*...，那么 A051628(n) = max(c2,c5)
 // Period of decimal representation of 1/n, or 0 if 1/n terminates https://oeis.org/A051626
+// - 如果 n 的质因子只有 2 和 5，那么不存在循环节
+// - 否则，先把 n 移除所有质因子 2 和 5，得到 m，那么 A051626(n) = n_order(10, m) 请看 math.go 中的「阶」
+// - 参考 https://zhuanlan.zhihu.com/p/346536813 https://www.zhihu.com/question/462266812
 // The periodic part of the decimal expansion of 1/n https://oeis.org/A036275
 // 例如 (2, -3) => ("-0.", "6")
 // b must not be zero
 // LC166 https://leetcode-cn.com/problems/fraction-to-recurring-decimal/
 // WF1990 https://www.luogu.com.cn/problem/UVA202
+// 1e12 加强版 https://ac.nowcoder.com/acm/contest/62622/E
+// Python 代码 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=63288994
 func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
 	if a == 0 {
 		return []byte{'0'}, nil
