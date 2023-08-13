@@ -1,12 +1,8 @@
-### 本题视频讲解
-
-见[【周赛 345】](https://www.bilibili.com/video/BV1ka4y137ua/)，欢迎点赞投币！
-
-### 思路
+视频讲解：[【周赛 345】](https://www.bilibili.com/video/BV1ka4y137ua/)
 
 按题意模拟，用 $\textit{vis}$ 数组标记接到过球的人。
 
-为方便计算，循环中的下标可以从 $0$ 开始，在返回时再加一。
+为方便取模运算，循环中的下标可以从 $0$ 开始，在返回时再加一。
 
 ```py [sol1-Python3]
 class Solution:
@@ -24,7 +20,7 @@ class Solution:
 class Solution {
     public int[] circularGameLosers(int n, int k) {
         var vis = new boolean[n];
-        int m = n;
+        int m = n; // 答案长度
         for (int i = 0, d = k; !vis[i]; d += k, m--) {
             vis[i] = true;
             i = (i + d) % n;
@@ -70,6 +66,21 @@ func circularGameLosers(n int, k int) (ans []int) {
 	}
 	return
 }
+```
+
+```js [sol1-JavaScript]
+var circularGameLosers = function (n, k) {
+    let vis = Array(n).fill(false);
+    for (let i = 0, d = k; !vis[i]; d += k) {
+        vis[i] = true;
+        i = (i + d) % n;
+    }
+    let ans = [];
+    for (let i = 0; i < n; i++)
+        if (!vis[i])
+            ans.push(i + 1);
+    return ans;
+};
 ```
 
 #### 复杂度分析
