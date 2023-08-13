@@ -21,6 +21,7 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
 - [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)
 - [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
+- [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/)
 
 https://leetcode.cn/tag/monotonic-queue/problemset/
 
@@ -30,6 +31,8 @@ todo https://www.luogu.com.cn/problem/P2627
  老鼠进洞 http://codeforces.com/problemset/problem/797/F
 LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
+LC1425 https://leetcode.cn/problems/constrained-subsequence-sum/
+LC1687 https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/
 */
 type MqData struct {
 	Val int

@@ -48,6 +48,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
 - [2104. 子数组范围和](https://leetcode.cn/problems/sum-of-subarray-ranges/)
 - [2281. 巫师的总力量和](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
+- [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/)
 
 模板题
 https://www.luogu.com.cn/problem/P5788
@@ -91,6 +92,8 @@ LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectan
 LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
 LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
 LC768 https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
+LC2735 https://leetcode.cn/problems/collecting-chocolates/solutions/2305119/xian-xing-zuo-fa-by-heltion-ypdx/
+LC2736 https://leetcode.cn/problems/maximum-sum-queries/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
 已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C
@@ -107,11 +110,16 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此整个二重循环的时间复杂度为 O(n)
 	n := len(a)
 	left := make([]int, n)
-	st := []int{-1} // 栈底哨兵
+	st := []int{-1} // 栈底哨兵，在栈为空时可以直接把 left[i] 赋值为 -1
 	for i, v := range a {
-		for len(st) > 1 && a[st[len(st)-1]] >= v { // 不断弹出 >= v 的，循环结束后栈顶就是 < v 的（下面 left[i] = st[len(st)-1]）
+		// 求左侧 <  v : >=
+		// 求左侧 <= v : >
+		// 求左侧 >  v : <=
+		// 求左侧 >= v : <
+		for len(st) > 1 && a[st[len(st)-1]] >= v { // 这里的符号和要求的是反过来的
 			st = st[:len(st)-1]
 		}
+		// 不断弹出 >= v 的，那么循环结束后栈顶就是 < v 的
 		left[i] = st[len(st)-1]
 		st = append(st, i)
 	}
@@ -123,7 +131,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	st = []int{n}
 	for i := n - 1; i >= 0; i-- {
 		v := a[i]
-		for len(st) > 1 && a[st[len(st)-1]] >= v {
+		for len(st) > 1 && a[st[len(st)-1]] >= v { // 同上
 			st = st[:len(st)-1]
 		}
 		right[i] = st[len(st)-1]
@@ -136,13 +144,12 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	// EXTRA：计算贡献（注意取模时避免出现负数）
-	ans := 0
 	for i, v := range a {
-		l, r := left[i]+1, right[i] // [l,r) 左闭右开
-		// ...
-
-		tot := (sum[r] + mod - sum[l]) % mod
-		ans = (ans + v*tot) % mod
+		_ = v
+		//l, r := left[i]+1, right[i] // [l,r) 左闭右开
+		tot := (i - left[i]) * (right[i] - i)
+		_ = tot
+		//tot := (sum[r] + mod - sum[l]) % mod
 	}
 
 	{
@@ -315,16 +322,17 @@ func numSubmat(mat [][]int) (ans int) {
 	return
 }
 
-// 字典序最小的无重复字符的子序列
+// 字典序最小的无重复字符的子序列，包含原串所有字符
 // LC316 https://leetcode.cn/problems/remove-duplicate-letters/
+//       https://atcoder.jp/contests/abc299/tasks/abc299_g
 // EXTRA: 重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
 func removeDuplicateLetters(s string) string {
 	left := ['z' + 1]int{}
 	for _, c := range s {
 		left[c]++
 	}
-	inSt := ['z' + 1]bool{}
 	st := []rune{}
+	inSt := ['z' + 1]bool{}
 	for _, c := range s {
 		left[c]--
 		if inSt[c] {
