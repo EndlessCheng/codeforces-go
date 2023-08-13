@@ -36,7 +36,7 @@ $$
 \textit{nums}_1[2] + \textit{nums}_2[2] \cdot z
 $$
 
-根据 [排序不等式](https://baike.baidu.com/item/%E6%8E%92%E5%BA%8F%E4%B8%8D%E7%AD%89%E5%BC%8F/7775728)，上式中的 $x,y,z$ 应分别取 $1,2,3$，分别对应在第 $1,2,3$ 秒操作，能让第 $3$ 秒的 $s_1 + s_2\cdot t$ 减少多少。
+根据 [排序不等式](https://baike.baidu.com/item/%E6%8E%92%E5%BA%8F%E4%B8%8D%E7%AD%89%E5%BC%8F/7775728)，上式中的 $x,y,z$ 应分别取 $1,2,3$，分别对应在第 $1,2,3$ 秒操作，能让第 $3$ 秒的 $s_1 + s_2\cdot t$ 减少多少。比如 $i=1$ 操作前是 $\textit{nums}_1[1] + \textit{nums}_2[1] \cdot 3$，操作后是 $\textit{nums}_2[1]$（因为在第 $2$ 秒操作的，现在是第 $3$ 秒），所以减少了 $\textit{nums}_1[1] + \textit{nums}_2[1] \cdot 2$。
 
 ### 提示 4
 
@@ -175,6 +175,23 @@ func minimumTime(nums1, nums2 []int, x int) int {
 }
 
 func max(a, b int) int { if b > a { return b }; return a }
+```
+
+```js [sol-JavaScript]
+var minimumTime = function(nums1, nums2, x) {
+    const n = nums1.length;
+    let f = Array(n + 1).fill(0);
+    for (const [a, b] of _.zip(nums1, nums2).sort((a, b) => a[1] - b[1]))
+        for (let j = n; j; j--)
+            f[j] = Math.max(f[j], f[j - 1] + a + b * j);
+
+    const s1 = _.sum(nums1);
+    const s2 = _.sum(nums2);
+    for (let t = 0; t <= n; t++)
+        if (s1 + s2 * t - f[t] <= x)
+            return t;
+    return -1;
+};
 ```
 
 #### 复杂度分析
