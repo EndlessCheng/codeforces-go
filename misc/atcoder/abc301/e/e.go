@@ -86,20 +86,14 @@ func run(_r io.Reader, out io.Writer) {
 	for s, dr := range f {
 		for _s := uint(s); _s > 0; _s &= _s - 1 {
 			i := bits.TrailingZeros(_s)
+			if dr[i]+dis[k+1][i] <= t {
+				ans = max(ans, bits.OnesCount(uint(s)))
+			}
 			for cus, lb := len(f)-1^s, 0; cus > 0; cus ^= lb {
 				lb = cus & -cus
 				ns := s | lb
 				j := bits.TrailingZeros(uint(lb))
 				f[ns][j] = min(f[ns][j], dr[i]+dis[i][j])
-			}
-		}
-	}
-
-	for s, dr := range f {
-		for i, v := range dr {
-			if v+dis[k+1][i] <= t {
-				ans = max(ans, bits.OnesCount(uint(s)))
-				break
 			}
 		}
 	}
