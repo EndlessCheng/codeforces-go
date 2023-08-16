@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"os"
-	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -15,17 +14,22 @@ func run(_r io.Reader, out io.Writer) {
 	Fscan(in, &n)
 	m := n / 2
 	ans := m * (m + 1) * (m*4 + n%2*6 - 1) / 6
-	pos := make([][]int, n+1)
-	sumP := make([][]int, n+1)
-	for i := range sumP {
-		sumP[i] = []int{0}
-	}
+	pos := make([][]int, n)
 	for i := 0; i < n; i++ {
 		Fscan(in, &v)
-		p := sort.SearchInts(pos[v], n-1-i)
-		ans -= sumP[v][p] + (len(pos[v])-p)*(n-i)
-		pos[v] = append(pos[v], i)
-		sumP[v] = append(sumP[v], sumP[v][len(sumP[v])-1]+i+1)
+		pos[v-1] = append(pos[v-1], i)
+	}
+	for _, ps := range pos {
+		l, r := 0, len(ps)-1
+		for l < r {
+			if ps[l]+ps[r] < n {
+				ans -= (ps[l] + 1) * (r - l)
+				l++
+			} else {
+				ans -= (n - ps[r]) * (r - l)
+				r--
+			}
+		}
 	}
 	Fprint(out, ans)
 }
