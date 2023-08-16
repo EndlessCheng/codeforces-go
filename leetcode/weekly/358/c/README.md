@@ -4,11 +4,11 @@
 from sortedcontainers import SortedList
 
 class Solution:
-    def minAbsoluteDifference(self, nums: List[int], k: int) -> int:
+    def minAbsoluteDifference(self, nums: List[int], x: int) -> int:
         ans = inf
-        sl = SortedList([-inf, inf])  # 哨兵
-        for x, y in zip(nums, nums[k:]):
-            sl.add(x)
+        sl = SortedList((-inf, inf))  # 哨兵
+        for v, y in zip(nums, nums[x:]):
+            sl.add(v)
             j = sl.bisect_left(y)
             ans = min(ans, sl[j] - y, y - sl[j - 1])
         return ans
@@ -42,7 +42,7 @@ public:
             s.insert(nums[i - x]);
             int y = nums[i];
             auto it = s.lower_bound(y); // 注意用 set 自带的 lower_bound，具体见视频中的解析
-            ans = min(ans, min(*it - y, y - *--it));
+            ans = min(ans, min(*it - y, y - *prev(it))); // 注意不能写 *--it，这是未定义行为：万一先执行了 --it，前面的 *it-y 就错了
         }
         return ans;
     }
