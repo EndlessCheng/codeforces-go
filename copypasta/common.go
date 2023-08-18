@@ -203,6 +203,7 @@ https://codeforces.com/problemset/problem/1788/D 好题！
 https://codeforces.com/problemset/problem/1789/C 好题！
 https://codeforces.com/problemset/problem/1808/D
 https://atcoder.jp/contests/abc290/tasks/abc290_e 好题！
+https://atcoder.jp/contests/abc159/tasks/abc159_f 与 0-1 背包结合
 
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
@@ -329,11 +330,13 @@ https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-
 
 // 「恰好」转换成「至少/至多」https://codeforces.com/problemset/problem/1188/C
 
-/* todo 反悔贪心
+/* 反悔贪心
 另见 heap.go 中的「反悔堆」
 https://djy-juruo.blog.luogu.org/qian-tan-fan-hui-tan-xin
+https://www.jvruo.com/archives/1844/
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
+LC1388 双向链表反悔贪心 https://leetcode.cn/problems/pizza-with-3n-slices/
 */
 
 /* 集合哈希
@@ -842,28 +845,31 @@ func _() {
 		_ = query
 	}
 
-	// 二维前缀和
+	// 二维前缀和     sum2d
+	// LC221 https://leetcode.cn/problems/maximal-square/
+	// LC1277 https://leetcode.cn/problems/count-square-submatrices-with-all-ones/
+	// LC1504 https://leetcode.cn/problems/count-submatrices-with-all-ones/
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
 	// https://codeforces.com/contest/1107/problem/D
 	// https://codeforces.com/problemset/problem/1731/D
 	// https://codeforces.com/problemset/problem/611/C
-	var sum2d [][]int
-	initSum2D := func(a [][]int) {
+	matrixSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
-		sum2d = make([][]int, n+1)
-		sum2d[0] = make([]int, m+1)
+		sum := make([][]int, n+1)
+		sum[0] = make([]int, m+1)
 		for i, row := range a {
-			sum2d[i+1] = make([]int, m+1)
+			sum[i+1] = make([]int, m+1)
 			for j, v := range row {
-				sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + v
+				sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + v
 			}
 		}
-	}
-	// r1<=r<=r2 && c1<=c<=c2
-	querySum2D := func(r1, c1, r2, c2 int) int {
-		r2++
-		c2++
-		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
+		// 类似前缀和的左闭右开
+		// r1<=r<r2 && c1<=c<c2
+		query := func(r1, c1, r2, c2 int) int {
+			return sum[r2][c2] - sum[r2][c1] - sum[r1][c2] + sum[r1][c1]
+		}
+
+		_ = query
 	}
 
 	// 矩阵每行每列的前缀和
@@ -949,7 +955,7 @@ func _() {
 		// 一般题目中的 step 会取 1 或者 -1
 		update := func(l, r, base, step int) {
 			diff[l] += base
-			diff[r+1] -= base+step*(r-l) // 修正
+			diff[r+1] -= base + step*(r-l) // 修正
 
 			// 差分数组从 l+1 到 r 都加上了 step
 			diff2[l+1] += step
@@ -959,7 +965,7 @@ func _() {
 		// 下标从 0 开始
 		// a[j] += max(base-abs(i-j), 0)
 		update2 := func(i, base int) {
-			update(max(i-base+1, 0), i, max(base - i, 1), 1)
+			update(max(i-base+1, 0), i, max(base-i, 1), 1)
 			if base > 1 && i < n-1 {
 				update(i+1, min(i+base-1, n-1), base-1, -1)
 			}
@@ -1593,7 +1599,7 @@ func _() {
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
 		pow, mul, gp, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
-		prefixSum, groupPrefixSum, circularRangeSum, initSum2D, querySum2D, rowColSum, diagonalSum,
+		prefixSum, groupPrefixSum, circularRangeSum, matrixSum, rowColSum, diagonalSum,
 		contributionSum,
 		diffOfDiff, diffMap, diff2D,
 		sort3, reverse, reverseInPlace, equal,
