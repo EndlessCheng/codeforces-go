@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/skratchdot/open-golang/open"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -52,7 +51,7 @@ func GenCodeforcesContestTemplates(cmdName, rootPath, contestID string, overwrit
 			}
 		}
 		cmd := fmt.Sprintf("%s submit contest %s %s -f %s.go", cmdName, contestID, parentName, parentName)
-		if err := ioutil.WriteFile(filepath.Join(path, parentName+".bat"), []byte(cmd), 0644); err != nil {
+		if err := os.WriteFile(filepath.Join(path, parentName+".bat"), []byte(cmd), 0644); err != nil {
 			return err
 		}
 		return nil
@@ -141,12 +140,12 @@ func TestCF%[3]s(t *testing.T) {
 		open.Run(absPath(mainFilePath))
 		return fmt.Errorf("文件已存在！")
 	}
-	if err := ioutil.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
+	if err := os.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		return err
 	}
 	open.Run(absPath(mainFilePath))
 	testFilePath := dir + problemID + "_test.go"
-	if err := ioutil.WriteFile(testFilePath, []byte(mainTestStr), 0644); err != nil {
+	if err := os.WriteFile(testFilePath, []byte(mainTestStr), 0644); err != nil {
 		return err
 	}
 	open.Run(absPath(testFilePath))
