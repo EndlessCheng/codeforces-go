@@ -235,7 +235,7 @@ func fasterIO() {
 	// 使用前 https://codeforces.com/contest/1208/submission/176961129
 	// 使用后 https://codeforces.com/contest/1208/submission/176963572
 	outS := make([]byte, 0, 1e6*22) // 或者创建一个全局 array _o，然后 outS := _o[:0]（效率几乎一样）
-	tmpS := [20]byte{}              // 可根据整数绝对值的上限调整
+	tmpS := [20]byte{}              // 可根据绝对值的十进制长度的上限调整
 	wInt := func(x int) {
 		if x == 0 { // 如果保证不为零则去掉
 			outS = append(outS, '0')
