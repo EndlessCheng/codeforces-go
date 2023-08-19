@@ -48,6 +48,7 @@
 ||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
 ||[801. 使序列递增的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/)|[考虑相邻元素的大小关系](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/solution/dong-tai-gui-hua-kao-lu-xiang-lin-yuan-s-ni0p/)|2066|
 ||[1079. 活字印刷](https://leetcode.cn/problems/letter-tile-possibilities/)|[O(n^2) 计数 DP](https://leetcode.cn/problems/letter-tile-possibilities/solution/on2-ji-shu-dppythonjavacgo-by-endlessche-hmez/)|*非暴力|
+||[1444. 切披萨的方案数](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/)|[击败 100%！从递归到递推到优化，教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/solution/ji-bai-100cong-di-gui-dao-di-tui-dao-you-dxz5/)|2127|
 ||[1691. 堆叠长方体的最大高度](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/)|[【图解】算法优化+详细证明](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/solution/tu-jie-suan-fa-you-hua-xiang-xi-zheng-mi-b6fq/)|2172|
 ||[834. 树中距离之和](https://leetcode.cn/problems/sum-of-distances-in-tree/)|[【图解】一张图秒懂换根 DP！](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)|2197|
 ||[1125. 最小的必要团队](https://leetcode.cn/problems/smallest-sufficient-team/)|[状压 0-1 背包，查表法 vs 刷表法](https://leetcode.cn/problems/smallest-sufficient-team/solution/zhuang-ya-0-1-bei-bao-cha-biao-fa-vs-shu-qode/)|2251|
