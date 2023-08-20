@@ -46,6 +46,7 @@ class Solution:
             pos[x].append(i - len(pos[x]))
         ans = 0
         for ps in pos:
+            if len(ps) <= ans: continue
             left = 0
             for right, p in enumerate(ps):
                 while p - ps[left] > k:  # 要删除的数太多了
@@ -65,6 +66,7 @@ class Solution {
             pos[x].add(i - pos[x].size());
         }
         for (var ps : pos) {
+            if (ps.size() <= ans) continue;
             int left = 0;
             for (int right = 0; right < ps.size(); right++) {
                 while (ps.get(right) - ps.get(left) > k) // 要删除的数太多了
@@ -86,6 +88,7 @@ public:
         for (int i = 0; i < n; i++)
             pos[nums[i]].push_back(i - pos[nums[i]].size());
         for (auto &ps: pos) {
+            if (ps.size() <= ans) continue;
             int left = 0;
             for (int right = 0; right < ps.size(); right++) {
                 while (ps[right] - ps[left] > k) // 要删除的数太多了
@@ -105,6 +108,9 @@ func longestEqualSubarray(nums []int, k int) (ans int) {
 		pos[x] = append(pos[x], i-len(pos[x]))
 	}
 	for _, ps := range pos {
+		if len(ps) <= ans {
+			continue
+		}
 		left := 0
 		for right, p := range ps {
 			for p-ps[left] > k { // 要删除的数太多了
