@@ -15,29 +15,77 @@ import (
 
 const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 
-func fetchStartTime(contestID int) (t time.Time, err error) {
+func fetchWeeklyContestId() (id int, err error) {
+	const home = "https://ac.nowcoder.com/acm/contest/vip-index?rankTypeFilter=-1&onlyCreateFilter=false&topCategoryFilter=13&categoryFilter=19&signUpFilter=&orderType=NO"
+	resp, err := grequests.Get(home, &grequests.RequestOptions{UserAgent: ua})
+	if err != nil {
+		return
+	}
+	if !resp.Ok {
+		return 0, fmt.Errorf("%d", resp.StatusCode)
+	}
+
+	root, err := html.Parse(resp)
+	if err != nil {
+		return
+	}
+	var f func(*html.Node) bool
+	f = func(o *html.Node) bool {
+		if strings.HasPrefix(o.Data, fmt.Sprintf("牛客周赛 Round ")) {
+			for _, a := range o.Parent.Attr {
+				if a.Key == "href" {
+					i := strings.LastIndex(a.Val, "/")
+					id, err = strconv.Atoi(a.Val[i+1:])
+					return true
+				}
+			}
+			panic(-1)
+		}
+		for c := o.FirstChild; c != nil; c = c.NextSibling {
+			if f(c) {
+				return true
+			}
+		}
+		return false
+	}
+	if !f(root) {
+		return 0, fmt.Errorf("无法找到 id")
+	}
+	return
+}
+
+func fetchStartTime(contestID int) (t time.Time, contestName string, err error) {
 	home := fmt.Sprintf("https://ac.nowcoder.com/acm/contest/%d", contestID)
 	resp, err := grequests.Get(home, &grequests.RequestOptions{UserAgent: ua})
 	if err != nil {
 		return
 	}
 	if !resp.Ok {
-		return time.Time{}, fmt.Errorf("%d", resp.StatusCode)
+		return time.Time{}, "", fmt.Errorf("%d", resp.StatusCode)
 	}
 
 	htmlStr := resp.String()
-	const token = `"startTime":`
-	i := strings.Index(htmlStr, token)
+
+	const tokenName = `"competitionName_var":"`
+	i := strings.Index(htmlStr, tokenName)
 	if i == -1 {
-		return time.Time{}, fmt.Errorf("invalid html content %s", htmlStr)
+		return time.Time{}, "", fmt.Errorf("invalid html content %s", htmlStr)
+	}
+	j := strings.Index(htmlStr[i+len(tokenName):], "\"")
+	contestName = htmlStr[i+len(tokenName) : i+len(tokenName)+j]
+
+	const tokenTime = `"startTime":`
+	i = strings.Index(htmlStr, tokenTime)
+	if i == -1 {
+		return time.Time{}, "", fmt.Errorf("invalid html content %s", htmlStr)
 	}
 
-	tsStr := htmlStr[i+len(token) : i+len(token)+10]
+	tsStr := htmlStr[i+len(tokenTime) : i+len(tokenTime)+10]
 	ts, err := strconv.Atoi(tsStr)
 	if err != nil {
 		return
 	}
-	return time.Unix(int64(ts), 0), nil
+	return time.Unix(int64(ts), 0), contestName, nil
 }
 
 func login(emailOrPhone, cipherPwd string) (session *grequests.Session, err error) {
@@ -197,7 +245,7 @@ func parseExamples(session *grequests.Session, problemURL string) (examples []st
 }
 
 func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID int, openWebPage bool) (err error) {
-	startTime, err := fetchStartTime(contestID)
+	startTime, contestName, err := fetchStartTime(contestID)
 	if err != nil {
 		return
 	}
@@ -213,7 +261,7 @@ func GenNowCoderTemplates(emailOrPhone, cipherPwd, contestDir string, contestID 
 
 	if t := time.Until(startTime); t > 0 {
 		t += 1 * time.Second
-		fmt.Println("等待开赛", t)
+		fmt.Println(contestName, t)
 		time.Sleep(t)
 	}
 
