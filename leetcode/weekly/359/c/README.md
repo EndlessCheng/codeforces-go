@@ -94,8 +94,8 @@ func max(a, b int) int { if b > a { return b }; return a }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $m$ 为 $\textit{offers}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n+m)$。
 
 ## 相似题目
 
