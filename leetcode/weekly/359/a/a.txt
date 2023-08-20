@@ -1,0 +1,14 @@
+["alice","bob","charlie"]
+"abc"
+true
+
+["an","apple"]
+"a"
+false
+
+["never","gonna","give","up","on","you"]
+"ngguoy"
+true
+
+
+
