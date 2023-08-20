@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Rx4y1f75Y/) 第四题。
 
 ## 前置知识：同向双指针
 
@@ -129,3 +127,5 @@ func max(a, b int) int { if b > a { return b }; return a }
 ## 思考题
 
 把「删除 $k$ 个数」改成「修改 $k$ 个数」要怎么做？
+
+- [2271. 毯子覆盖的最多白色砖块数](https://leetcode.cn/problems/maximum-white-tiles-covered-by-a-carpet/)

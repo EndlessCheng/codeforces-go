@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Rx4y1f75Y/)。
 
 如果 $\textit{words}$ 长度和 $s$ 长度不同，直接返回 `false`。
 

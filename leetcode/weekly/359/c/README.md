@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Rx4y1f75Y/) 第三题。
 
 ## 前置知识：动态规划入门
 
@@ -102,6 +100,6 @@ func max(a, b int) int { if b > a { return b }; return a }
 ## 相似题目
 
 - [2008. 出租车的最大盈利](https://leetcode.cn/problems/maximum-earnings-from-taxi/)（和本题几乎一样）
-- [1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)
-- [1751. 最多可以参加的会议数目 II](https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended-ii/)
+- [1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)（数据范围更大的情况，[我的题解](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/solution/dong-tai-gui-hua-er-fen-cha-zhao-you-hua-zkcg/)）
+- [1751. 最多可以参加的会议数目 II](https://leetcode.cn/problems/maximum-number-of-events-that-can-be-attended-ii/)（区间个数限制）
 - [2054. 两个最好的不重叠活动](https://leetcode.cn/problems/two-best-non-overlapping-events/)
