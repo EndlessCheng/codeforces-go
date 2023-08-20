@@ -132,6 +132,7 @@ func init() {
 		"diff", "d",
 		"event1", "e1",
 		"event2", "e2",
+		"lower", "low",
 	}
 	for i := range oldNew {
 		oldNew[i] += " " // 由于要匹配变量名+空格+类型，为了防止修改到意外的位置，通过加一个空格来简单地实现匹配
