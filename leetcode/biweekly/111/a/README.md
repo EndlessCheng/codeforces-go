@@ -1,0 +1,54 @@
+下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+
+---
+
+#### 前置知识：相向双指针
+
+请看[【基础算法精讲】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
+
+#### 思路
+
+为什么可以排序呢？题目相当于从数组中选两个数，**我们只关心这两个数的和是否小于** $\textit{target}$，由于 $a+b=b+a$，无论如何排列数组元素，都不会影响加法的结果，所以排序不影响答案。
+
+排序后：
+
+- 初始化左右指针 $\textit{left}=0,\textit{right}=n-1$。
+- 如果 $\textit{nums}[\textit{left}]+\textit{nums}[\textit{right}] < \textit{target}$，由于数组是有序的，$\textit{nums}[\textit{left}]$ 与下标 $i$ 在 $[\textit{left}+1,\textit{right}]$ 中的任何 $\textit{nums}[i]$ 相加，都是 $<\textit{target}$ 的，因此直接找到了 $\textit{right}-\textit{left}$ 个合法数对，加到答案中，然后将 $\textit{left}$ 加一。
+- 如果 $\textit{nums}[\textit{left}]+\textit{nums}[\textit{right}] \ge \textit{target}$，由于数组是有序的，$\textit{nums}[\textit{right}]$ 与下标 $i$ 在 $[\textit{left},\textit{right}-1]$ 中的任何 $\textit{nums}[i]$ 相加，都是 $\ge\textit{target}$ 的，因此后面无需考虑 $\textit{nums}[\textit{right}]$，将 $\textit{right}$ 减一。
+- 重复上述过程直到 $\textit{left}\ge \textit{right}$ 为止。
+
+```py [sol-Python3]
+class Solution:
+    def countPairs(self, nums: List[int], target: int) -> int:
+        nums.sort()
+        ans = left = 0
+        right = len(nums) - 1
+        while left < right:
+            if nums[left] + nums[right] < target:
+                ans += right - left
+                left += 1
+            else:
+                right -= 1
+        return ans
+```
+
+```go [sol-Go]
+func countPairs(nums []int, target int) (ans int) {
+	sort.Ints(nums)
+	left, right := 0, len(nums)-1
+	for left < right {
+		if nums[left]+nums[right] < target {
+			ans += right - left
+			left++
+		} else {
+			right--
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
+- 空间复杂度：$\mathcal{O}(1)$。不计入排序的栈开销，仅用到若干额外变量。

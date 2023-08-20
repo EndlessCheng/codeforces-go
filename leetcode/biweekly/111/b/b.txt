@@ -1,0 +1,14 @@
+"abc"
+"ad"
+true
+
+"zc"
+"ad"
+true
+
+"ab"
+"d"
+false
+
+
+
