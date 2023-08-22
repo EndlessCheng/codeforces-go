@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Yu4y1v7H6/) 第三题。
 
 ## 方法一：最长非递减子序列
 
@@ -17,6 +15,51 @@ class Solution:
             else:
                 g[j] = x
         return len(nums) - len(g)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumOperations(List<Integer> nums) {
+        List<Integer> g = new ArrayList<>();
+        for (int x : nums) {
+            int j = upperBound(g, x);
+            if (j == g.size()) g.add(x);
+            else g.set(j, x);
+        }
+        return nums.size() - g.size();
+    }
+
+    // 开区间写法
+    private int upperBound(List<Integer> g, int target) {
+        int left = -1, right = g.size(); // 开区间 (left, right)
+        while (left + 1 < right) { // 区间不为空
+            // 循环不变量：
+            // nums[left] <= target
+            // nums[right] > target
+            int mid = (left + right) >>> 1;
+            if (g.get(mid) <= target)
+                left = mid; // 范围缩小到 (mid, right)
+            else
+                right = mid; // 范围缩小到 (left, mid)
+        }
+        return right; // 或者 left+1
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumOperations(vector<int> &nums) {
+        vector<int> g;
+        for (int x : nums) {
+            auto it = upper_bound(g.begin(), g.end(), x);
+            if (it == g.end()) g.push_back(x);
+            else *it = x;
+        }
+        return nums.size() - g.size();
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -120,6 +163,66 @@ func minimumOperations(nums []int) int {
 }
 
 func min(a, b int) int { if b < a { return b }; return a }
+```
+
+也可以计算至多保留多少个元素：
+
+$$
+f[j] = \max(f[j], f[j-1]) + [j = \textit{nums}[i]]
+$$
+
+```py [sol-Python3]
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        f = [0] * 4
+        for x in nums:
+            f[x] += 1
+            f[2] = max(f[2], f[1])
+            f[3] = max(f[3], f[2])
+        return len(nums) - max(f)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumOperations(List<Integer> nums) {
+        var f = new int[4];
+        for (int x : nums) {
+            f[x]++;
+            f[2] = Math.max(f[2], f[1]);
+            f[3] = Math.max(f[3], f[2]);
+        }
+        return nums.size() - Math.max(Math.max(f[1], f[2]), f[3]);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumOperations(vector<int> &nums) {
+        int f[4]{};
+        for (int x: nums) {
+            f[x]++;
+            f[2] = max(f[2], f[1]);
+            f[3] = max(f[3], f[2]);
+        }
+        return nums.size() - *max_element(f + 1, f + 4);
+    }
+};
+```
+
+```go [sol-Go]
+func minimumOperations(nums []int) int {
+	f := [4]int{}
+	for _, x := range nums {
+		f[x]++
+		f[2] = max(f[2], f[1])
+		f[3] = max(f[3], f[2])
+	}
+	return len(nums) - max(max(f[1], f[2]), f[3])
+}
+
+func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析

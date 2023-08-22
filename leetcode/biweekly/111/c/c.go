@@ -6,23 +6,14 @@ import "sort"
 func minimumOperations(nums []int) int {
 	f := [4]int{}
 	for _, x := range nums {
-		for j := 3; j > 0; j-- {
-			for k := 1; k <= j; k++ {
-				f[j] = min(f[j], f[k])
-			}
-			if j != x {
-				f[j]++
-			}
-		}
+		f[x]++
+		f[2] = max(f[2], f[1])
+		f[3] = max(f[3], f[2])
 	}
-	ans := len(nums)
-	for _, v := range f[1:] {
-		ans = min(ans, v)
-	}
-	return ans
+	return len(nums) - max(max(f[1], f[2]), f[3])
 }
 
-func min(a, b int) int { if b < a { return b }; return a }
+func max(a, b int) int { if b > a { return b }; return a }
 
 func minimumOperationsLIS(nums []int) int {
 	g := []int{}
