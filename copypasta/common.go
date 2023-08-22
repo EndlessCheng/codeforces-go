@@ -67,6 +67,8 @@ https://codeforces.com/problemset/problem/1296/C
 LC424 https://leetcode.cn/problems/longest-repeating-character-replacement/
 LC795 https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/
 LC2444 https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/
+LC2271 https://leetcode.cn/problems/maximum-white-tiles-covered-by-a-carpet/
+LC2831 https://leetcode.cn/problems/find-the-longest-equal-subarray/
 LC1712 多指针 https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/
 较为复杂 https://atcoder.jp/contests/abc294/tasks/abc294_e
       - https://ac.nowcoder.com/acm/contest/62033/D
@@ -76,10 +78,23 @@ https://codeforces.com/problemset/problem/1765/D
 https://codeforces.com/contest/1833/problem/F
 计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
 
+相向双指针
+LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+
 分组循环 O(n)
+https://leetcode.cn/problems/summary-ranges/
+LC1446 https://leetcode.cn/problems/consecutive-characters/
+LC1578 https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/
+LC1759 https://leetcode.cn/problems/count-number-of-homogenous-substrings/
+LC1839 https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/
+LC1869 https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/
+LC1887 https://leetcode.cn/problems/reduction-operations-to-make-the-array-elements-equal/
+LC1957 https://leetcode.cn/problems/delete-characters-to-make-fancy-string/
+LC2038 https://leetcode.cn/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/
 LC2110 https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/
 LC2760 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/
 LC2765 https://leetcode.cn/problems/longest-alternating-subarray/
+LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-distinct-letter/
 
 巧妙枚举
 https://codeforces.com/problemset/problem/1181/C
@@ -87,8 +102,12 @@ https://codeforces.com/problemset/problem/1626/D
 https://codeforces.com/problemset/problem/846/C
 
 贪心及其证明
-- [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/)
+- [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
+- [2410. 运动员和训练师的最大匹配数](https://leetcode.cn/problems/maximum-matching-of-players-with-trainers/)
 - [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/)
+- [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/)
+- [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/)
+         证明 https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/solution/tan-xin-ji-qi-zheng-ming-by-endlesscheng-hfwe/
 https://codeforces.com/problemset/problem/1369/C
 	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
 	如果某个前 k 大的数 x 没有作为最大值（其中一个组的最大值是不在前 k 大中的 y），那么把 x 和 y 交换，
@@ -106,6 +125,7 @@ https://codeforces.com/problemset/problem/442/C
     如果 x>=y<=z，那么删除 y 最优
     结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
 https://codeforces.com/problemset/problem/1157/C2
+https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
@@ -129,6 +149,11 @@ https://codeforces.com/problemset/problem/1610/E
 https://codeforces.com/problemset/problem/1811/C
 https://codeforces.com/problemset/problem/1822/D
 https://codeforces.com/problemset/problem/1608/C 对拍找反例
+
+脑筋急转弯
+LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/
+LC2731 https://leetcode.cn/problems/movement-of-robots/
+https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1822
 
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/
@@ -245,6 +270,10 @@ https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-su
 
 // 滑动窗口
 // https://codeforces.com/problemset/problem/165/C
+
+/* 二进制枚举
+https://www.luogu.com.cn/problem/UVA11464 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=26&page=show_problem&problem=2459
+*/
 
 /* 横看成岭侧成峰
 转换为距离的众数 https://codeforces.com/problemset/problem/1365/C
@@ -934,7 +963,14 @@ func _() {
 		return
 	}
 
-	// 差分
+	// 差分数组
+	// 请看 https://leetcode.cn/circle/discuss/FfMCgb/
+	// - [1094. 拼车](https://leetcode.cn/problems/car-pooling/)
+	// - [1109. 航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/)
+	// - [2381. 字母移位 II](https://leetcode.cn/problems/shifting-letters-ii/)
+	// - [2406. 将区间分为最少组数](https://leetcode.cn/problems/divide-intervals-into-minimum-number-of-groups/)
+	// - [2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/)
+	// - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
 	// https://codeforces.com/problemset/problem/1700/C
 	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
 
