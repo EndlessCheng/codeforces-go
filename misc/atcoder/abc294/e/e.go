@@ -10,8 +10,8 @@ import (
 // https://space.bilibili.com/206214
 func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var l, n, m, ans int
-	Fscan(in, &l, &n, &m)
+	var n, m, ans int
+	Fscan(in, &n, &n, &m)
 	type pair struct{ v, l int }
 	a := make([]pair, n)
 	for i := range a {
