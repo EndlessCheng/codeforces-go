@@ -23,7 +23,7 @@ func run(_r io.Reader, out io.Writer) {
 	}
 
 	i, j := 0, 0
-	for k := 1; k < n+m; k++ {
+	for i < n && j < m {
 		if a[i].v == b[j].v {
 			ans += min(a[i].l, b[j].l)
 		}
