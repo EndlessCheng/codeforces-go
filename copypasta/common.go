@@ -33,7 +33,7 @@ https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum
 
 哈希表与前缀和（双变量思想）
 推荐按照顺序完成
-LC560 https://leetcode.cn/problems/subarray-sum-equals-k/
+LC560 https://leetcode.cn/problems/subarray-sum-equals-k/ https://atcoder.jp/contests/abc233/tasks/abc233_d
 LC974 https://leetcode.cn/problems/subarray-sums-divisible-by-k/
 LC1590 https://leetcode.cn/problems/make-sum-divisible-by-p/
 LC523 https://leetcode.cn/problems/continuous-subarray-sum/
@@ -46,6 +46,7 @@ LC930 https://leetcode-cn.com/problems/binary-subarrays-with-sum/
 - [1371. 每个元音包含偶数次的最长子字符串](https://leetcode.cn/problems/find-the-longest-substring-containing-vowels-in-even-counts/)
 - [1542. 找出最长的超赞子字符串](https://leetcode.cn/problems/find-longest-awesome-substring/)
 - [1915. 最美子字符串的数目](https://leetcode.cn/problems/number-of-wonderful-substrings/)，[题解](https://leetcode.cn/problems/number-of-wonderful-substrings/solution/qian-zhui-he-chang-jian-ji-qiao-by-endle-t57t/)
+https://atcoder.jp/contests/abc295/tasks/abc295_d
 
 https://leetcode.cn/problems/find-longest-subarray-lcci/
 https://codeforces.com/problemset/problem/1296/C
@@ -64,6 +65,7 @@ https://codeforces.com/problemset/problem/1296/C
 滑动窗口 双指针
 入门题 https://codeforces.com/problemset/problem/602/B
 入门题 https://codeforces.com/problemset/problem/279/B
+https://atcoder.jp/contests/abc229/tasks/abc229_d
 LC424 https://leetcode.cn/problems/longest-repeating-character-replacement/
 LC795 https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/
 LC2444 https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/
@@ -80,21 +82,24 @@ https://codeforces.com/contest/1833/problem/F
 
 相向双指针
 LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+LC923 https://leetcode.cn/problems/3sum-with-multiplicity/
 
-分组循环 O(n)
-https://leetcode.cn/problems/summary-ranges/
-LC1446 https://leetcode.cn/problems/consecutive-characters/
-LC1578 https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/
-LC1759 https://leetcode.cn/problems/count-number-of-homogenous-substrings/
-LC1839 https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/
-LC1869 https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/
+分组循环 O(n)   228-c.md
+- [1446. 连续字符](https://leetcode.cn/problems/consecutive-characters/)
+- [1869. 哪种连续子字符串更长](https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/)
+- [1957. 删除字符使字符串变好](https://leetcode.cn/problems/delete-characters-to-make-fancy-string/)
+- [228. 汇总区间](https://leetcode.cn/problems/summary-ranges/)
+- [2038. 如果相邻两个颜色均相同则删除当前颜色](https://leetcode.cn/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/)
+- [1759. 统计同质子字符串的数目](https://leetcode.cn/problems/count-number-of-homogenous-substrings/)
+- [2110. 股票平滑下跌阶段的数目](https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/)
+- [1578. 使绳子变成彩色的最短时间](https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/)
+- [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/)
+- [2760. 最长奇偶子数组](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/)
+- [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/)
 LC1887 https://leetcode.cn/problems/reduction-operations-to-make-the-array-elements-equal/
-LC1957 https://leetcode.cn/problems/delete-characters-to-make-fancy-string/
-LC2038 https://leetcode.cn/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/
-LC2110 https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/
-LC2760 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/
-LC2765 https://leetcode.cn/problems/longest-alternating-subarray/
 LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-distinct-letter/
+LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
+- https://atcoder.jp/contests/abc317/tasks/abc317_e
 
 巧妙枚举
 https://codeforces.com/problemset/problem/1181/C
