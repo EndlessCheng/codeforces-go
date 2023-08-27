@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1Yu4y1v7H6/) 第二题。
 
 下文将 $\textit{str}_1$ 简记为 $s$，将 $\textit{str}_2$ 简记为 $t$。
 
