@@ -11,6 +11,8 @@ import (
 
 入门视频：https://www.bilibili.com/video/BV1Xj411K7oF/
 
+入门题目：在此页面搜索【线性 DP】
+
 思考过程：
 1. 把原问题重新复述一遍，例如「从前 n 个数中选择若干个数，这些数的和为 m 的方案数」。
 2. 根据题意，尝试「缩小」问题的规模，我们可以怎样缩小？
@@ -282,7 +284,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	/* 线性 DP
 	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
 	LC70 https://leetcode.cn/problems/climbing-stairs/
-	LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
+	- 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
+	- 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
 	LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 	- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 	- 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
