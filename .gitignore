@@ -21,7 +21,6 @@
 /main_test.go
 /drop.go
 /helper.go
-/zip.go
 /main/main.go
 /main/main_test.go
 /leetcode/main_todo.go
