@@ -127,3 +127,7 @@ func floorSum(n, m, a, b int) (res int) {
 
 - 时间复杂度：$\mathcal{O}\left(\log\left\lfloor\dfrac{\textit{total}}{\textit{cost}_1}\right\rfloor\right)$。
 - 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+
+[我的其它题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
