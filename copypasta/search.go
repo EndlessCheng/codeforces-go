@@ -63,6 +63,7 @@ https://codeforces.com/problemset/problem/954/F
 https://leetcode.cn/tag/backtracking/problemset/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
+爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
 */
 func searchCollection() {
 	// 指数型，即 n 层循环
@@ -562,6 +563,7 @@ func searchCollection() {
 	// https://www.luogu.com.cn/problem/P4799
 	// https://codeforces.com/problemset/problem/327/E
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
+	// NEERC 2003 https://codeforces.com/gym/101388 J
 
 	// 折半枚举 - 超大背包问题
 	// https://atcoder.jp/contests/abc184/tasks/abc184_f
@@ -1069,6 +1071,7 @@ func _(min, max func(int, int) int) {
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
 - [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
+https://atcoder.jp/contests/abc317/tasks/abc317_e
 
 #### 综合应用
 
