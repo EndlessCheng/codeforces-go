@@ -26,14 +26,14 @@ func run(_r io.Reader, out io.Writer) {
 		}
 	}
 
-	mex := [...]int{0, 1, 0, 2, 0, 1, 0, 3}
+	mex := []int{0, 1, 0, 2, 0, 1, 0, 3}
 	for i, v := range a {
 		if s[i] == 'M' {
 			pre[v]++
 		} else if s[i] == 'E' {
-			for j, p := range pre {
-				for k, q := range suf {
-					ans += mex[1<<v|1<<j|1<<k] * p * q
+			for j, cj := range pre {
+				for k, ck := range suf {
+					ans += mex[1<<v|1<<j|1<<k] * cj * ck
 				}
 			}
 		} else {
