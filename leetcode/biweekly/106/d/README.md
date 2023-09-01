@@ -1,8 +1,8 @@
-### 视频讲解
+## 视频讲解
 
-见个人主页。
+请看 [视频讲解](https://www.bilibili.com/video/BV18u411Y7Gt/) 第四题。
 
-### 思路
+## 思路
 
 分类讨论：
 
@@ -119,5 +119,5 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(2^{2n})$，其中 $n$ 为 $\textit{grid}$ 的列数。
+- 时间复杂度：$\mathcal{O}(mn+2^{2n})$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(2^n)$。
