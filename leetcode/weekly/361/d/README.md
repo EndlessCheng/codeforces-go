@@ -14,6 +14,10 @@ $$
 
 其中 $\textit{lca}$ 是 $a$ 和 $b$ 的最近公共祖先，上式对应着一条在 $\textit{lca}$ 拐弯的路径。
 
+> 注：另一种做法是维护从根到节点 $x$ 的路径上的每种边权的出现次数，按照计算路径长度的思路，也可以通过加加减减算出路径上的每种边权的个数。
+>
+> 但是，如果把问题改成维护路径上的边权最大值，这种做法就不行了，而本题解的思路仍然是可以的。
+
 ```py [sol-Python3]
 class Solution:
     def minOperationsQueries(self, n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
@@ -357,5 +361,5 @@ func max(a, b int) int { if b > a { return b }; return a }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+q)\log n)$，其中 $q$ 为 $\textit{queries}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n\log n)$。返回值的长度不计入。
+- 时间复杂度：$\mathcal{O}((n+q)U\log n)$，其中 $q$ 为 $\textit{queries}$ 的长度，$U$ 为边权种类数。
+- 空间复杂度：$\mathcal{O}(nU\log n)$。返回值的长度不计入。
