@@ -1,0 +1,10 @@
+"abcdba"
+"cabdab"
+true
+
+"abe"
+"bea"
+false
+
+
+
