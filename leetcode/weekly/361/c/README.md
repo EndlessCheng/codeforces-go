@@ -20,7 +20,7 @@ $$
 s[l]\bmod \textit{modulo} = (s[r+1]-k)\bmod \textit{modulo}
 $$
 
-根据上式，我们可以一边枚举 $r$，一边用一个哈希表统计有多少个 $s[r+1]\bmod k$。这样可以快速知道有多少个 $(s[r+1]-k)\bmod \textit{modulo}$，也就是 $s[l]\bmod \textit{modulo}$ 的个数，把个数加到答案中。
+根据上式，我们可以一边枚举 $r$，一边用一个哈希表统计有多少个 $s[r+1]\bmod \textit{modulo}$。这样可以快速知道有多少个 $(s[r+1]-k)\bmod \textit{modulo}$，也就是 $s[l]\bmod \textit{modulo}$ 的个数，把个数加到答案中。
 
 代码实现时，前缀和数组可以优化成一个变量 $s$。
 
@@ -46,7 +46,7 @@ class Solution {
         for (int x : nums) {
             if (x % mod == k)
                 s = (s + 1) % mod; // 这里取模，下面 cnt[s]++ 就不需要取模了
-            ans += cnt.getOrDefault((s - k + mod) % mod, 0); // 避免减法出现负数
+            ans += cnt.getOrDefault((s - k + mod) % mod, 0); // +mod 避免减法出现负数
             cnt.merge(s, 1, Integer::sum); // cnt[s]++
         }
         return ans;
@@ -62,7 +62,7 @@ class Solution {
         int s = 0;
         for (int x : nums) {
             if (x % mod == k)
-                s = (s + 1) % mod; // 这里取模，下面 cnt[s]++ 就不需要取模了
+                s = (s + 1) % mod;
             int s2 = (s - k + mod) % mod;
             if (s2 <= n)
                 ans += cnt[s2];
@@ -83,7 +83,7 @@ public:
         int s = 0;
         for (int x: nums) {
             s += x % mod == k;
-            ans += cnt[(s - k + mod) % mod]; //  避免减法出现负数
+            ans += cnt[(s - k + mod) % mod]; // +mod 避免减法出现负数
             cnt[s % mod]++;
         }
         return ans;
@@ -94,12 +94,12 @@ public:
     long long countInterestingSubarrays(vector<int> &nums, int mod, int k) {
         int n = nums.size();
         vector<int> cnt(n + 1);
-        cnt[0] = 1; // 把 s[0]=0 算进去
+        cnt[0] = 1;
         long long ans = 0;
         int s = 0;
         for (int x: nums) {
             if (x % mod == k)
-                s = (s + 1) % mod; // 这里取模，下面 cnt[s]++ 就不需要取模了
+                s = (s + 1) % mod;
             int s2 = (s - k + mod) % mod;
             if (s2 <= n)
                 ans += cnt[s2];
@@ -118,11 +118,30 @@ func countInterestingSubarrays(nums []int, mod, k int) (ans int64) {
 		if x%mod == k {
 			s = (s + 1) % mod // 这里取模，下面 cnt[s]++ 就不需要取模了
 		}
-		ans += int64(cnt[(s-k+mod)%mod]) // 避免减法出现负数
+		ans += int64(cnt[(s-k+mod)%mod]) // +mod 避免减法出现负数
 		cnt[s]++
 	}
 	return
 }
+```
+
+```js [sol-JavaScript]
+var countInterestingSubarrays = function (nums, mod, k) {
+    const n = nums.length;
+    var cnt = new Array(n + 1).fill(0);
+    cnt[0] = 1;
+    let ans = 0;
+    let s = 0;
+    for (const x of nums) {
+        if (x % mod === k)
+            s = (s + 1) % mod; // 这里取模，下面 cnt[s]++ 就不需要取模了
+        const s2 = (s - k + mod) % mod; // +mod 避免减法出现负数
+        if (s2 <= n)
+            ans += cnt[s2];
+        cnt[s]++;
+    }
+    return ans;
+};
 ```
 
 #### 复杂度分析
