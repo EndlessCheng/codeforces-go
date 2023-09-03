@@ -54,7 +54,7 @@
 |[回溯 - 子集型](https://www.bilibili.com/video/BV1mG4y1A7Gu/)|[17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)|[代码](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/solutions/2059416/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-3orv/)|引入回溯概念用|
 ||[78. 子集](https://leetcode.cn/problems/subsets/)|[代码](https://leetcode.cn/problems/subsets/solutions/2059409/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-8tkl/)|两种写法|
 ||[131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)|[代码](https://leetcode.cn/problems/palindrome-partitioning/solutions/2059414/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-fues/)|两种写法|
-|[回溯 - 组合型与剪枝](https://www.bilibili.com/video//)|[77. 组合](https://leetcode.cn/problems/combinations/)|[代码](https://leetcode.cn/problems/combinations/solutions/2071017/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-65lh/)|两种写法|
+|[回溯 - 组合型与剪枝](https://www.bilibili.com/video/BV1xG4y1F7nC/)|[77. 组合](https://leetcode.cn/problems/combinations/)|[代码](https://leetcode.cn/problems/combinations/solutions/2071017/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-65lh/)|两种写法|
 ||[216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)|[代码](https://leetcode.cn/problems/combination-sum-iii/solutions/2071013/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-feme/)|两种写法|
 ||[22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)|[代码](https://leetcode.cn/problems/generate-parentheses/solutions/2071015/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-wcdw/)|两种写法|
 |[回溯 - 排列型](https://www.bilibili.com/video/BV1mY411D7f6/)|[46. 全排列](https://leetcode.cn/problems/permutations/)|[代码](https://leetcode.cn/problems/permutations/solutions/2079585/hui-su-bu-hui-xie-tao-lu-zai-ci-jing-que-6hrh/)|精确计算搜索树的节点个数|
