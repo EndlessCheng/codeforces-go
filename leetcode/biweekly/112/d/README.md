@@ -29,6 +29,10 @@ $$
 
 如果 $k$ 太大（循环中没有出现 $\textit{num}\ge k$），那么不存在合法子序列，返回 $0$。
 
+有关**模运算**的小知识见文末的讲解。
+
+代码中用到了**快速幂**，请看 [50. Pow(x, n)](https://leetcode-cn.com/problems/powx-n/)。
+
 ```py [sol-Python3]
 class Solution:
     def countKSubsequencesWithMaxBeauty(self, s: str, k: int) -> int:
@@ -77,7 +81,7 @@ class Solution {
         return res;
     }
 
-    // 适用于 n 比较小的场景（本题至多 26）
+    // 适用于 n 和 k 都比较小的场景（本题至多 26）
     private long comb(long n, int k) {
         long res = n;
         for (int i = 2; i <= k; i++)
@@ -100,7 +104,7 @@ class Solution {
         return res;
     }
 
-    // 适用于 n 比较小的场景（本题至多 26）
+    // 适用于 n 和 k 都比较小的场景（本题至多 26）
     long long comb(long long n, int k) {
         auto res = n;
         for (int i = 2; i <= k; i++)
@@ -173,7 +177,7 @@ func pow(x, n int) int {
 	return res
 }
 
-// 适用于 n 比较小的场景（本题至多 26）
+// 适用于 n 和 k 都比较小的场景（本题至多 26）
 func comb(n, k int) int {
 	res := n
 	for i := 2; i <= k; i++ {
@@ -187,3 +191,49 @@ func comb(n, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。时间主要用在遍历字符串 $s$ 上了。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题中字符均为小写字母，所以 $|\Sigma|=26$。
+
+## 算法小课堂：模运算
+
+如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+
+由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+
+对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
+
+你能把这个结论抽象成数学等式吗？
+
+一般地，涉及到取模的题目，通常会用到如下等式（上面计算的是 $m=10$）：
+
+$$
+(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
+$$
+
+$$
+(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
+$$
+
+证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
+
+第一个等式：
+
+$$
+\begin{aligned}
+&\ (a+b) \bmod m\\
+=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
+=&\ (r_1+r_2)\bmod m\\
+=&\ ((a\bmod m) + (b\bmod m)) \bmod m
+\end{aligned}
+$$
+
+第二个等式：
+
+$$
+\begin{aligned}
+&\ (a\cdot b) \bmod m\\
+=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
+=&\ (r_1r_2)\bmod m\\
+=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
+\end{aligned}
+$$
+
+**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
