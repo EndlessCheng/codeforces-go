@@ -11,6 +11,8 @@ import (
 
 /* 其他无法分类的算法
 
+倒数平方根 https://www.bilibili.com/video/BV17N41167dR/
+
 小奥
 https://codeforces.com/problemset/problem/700/A
 
@@ -892,6 +894,7 @@ func parseTime(s string) (hour, minute, total int) {
 // - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/)
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/)
+// https://codeforces.com/problemset/problem/1859/D
 // https://codeforces.com/problemset/problem/1626/C
 // 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
 func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
@@ -906,6 +909,16 @@ func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
 		maxR = max(maxR, r)
 	}
 	ans = append(ans, []int{l0, maxR}) // 最后发现的新区间加入答案
+
+	{
+		// 包含 x 的闭区间
+		var x int
+		i := sort.Search(len(ans), func(i int) bool { return ans[i][1] >= x })
+		if i < len(ans) && ans[i][0] <= x {
+			// ans[i]...
+		}
+	}
+
 	return
 }
 
@@ -955,4 +968,71 @@ func majorityVote(a []int) (mode int) {
 		}
 	}
 	return
+}
+
+// 给出二维平面上的 n 个坐标点，以 (x,y) 为中心的十字最多能覆盖多少个点？
+// https://atcoder.jp/contests/abc176/tasks/abc176_e
+// 进阶：每个点有不同的点权 https://atcoder.jp/contests/abc298/tasks/abc298_f
+func maxCover(a [][3]int, max func(int, int) int) (ans int) {
+	type pair struct{ r, c int }
+	grid := make(map[pair]int, len(a))
+	rowSum := map[int]int{}
+	colSum := map[int]int{}
+	for _, p := range a {
+		r, c, v := p[0], p[1], p[2]
+		grid[pair{r, c}] = v
+		rowSum[r] += v
+		colSum[c] += v
+	}
+
+	type cs struct{ c, s int }
+	colList := make([]cs, 0, len(colSum))
+	for x, s := range colSum {
+		colList = append(colList, cs{x, s})
+	}
+	sort.Slice(colList, func(i, j int) bool { return colList[i].s > colList[j].s })
+
+	for r, s := range rowSum {
+		for _, cs := range colList {
+			v, ok := grid[pair{r, cs.c}] // 每个点至多访问一次
+			if !ok {
+				ans = max(ans, s+cs.s)
+				break // 保证时间复杂度是 O(n) 的关键：colList 从大到小排序，后面的只会更小，无需遍历
+			}
+			ans = max(ans, s+cs.s-v)
+		}
+	}
+	return
+}
+
+// 至多 k 次操作，每次操作把一个数减一，目标是最小化数组最大值
+// 不能把 a[i] 改成负数
+// https://codeforces.com/problemset/problem/960/B
+func minMaxArray(a []int, k int) {
+	sort.Sort(sort.Reverse(sort.IntSlice(a)))
+	a = append(a, 0) // 哨兵
+
+	sum := 0
+	for i := 0; a[i] > 0; {
+		v := a[i]
+		for ; a[i] == v; i++ {
+			sum += v
+		}
+		if sum-k >= a[i]*i {
+			sum -= k
+			h, ex := sum/i, sum%i
+			// ex 个 h+1，i-ex 个 h，其余不变
+			for j := 0; j < ex; j++ {
+				a[j] = h + 1
+			}
+			for j := ex; j < i; j++ {
+				a[j] = h
+			}
+			return
+		}
+	}
+	// 全为 0
+	for i := range a {
+		a[i] = 0
+	}
 }
