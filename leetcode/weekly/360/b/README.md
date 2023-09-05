@@ -32,14 +32,14 @@ $$
 class Solution:
     def minimumPossibleSum(self, n: int, k: int) -> int:
         m = min(k // 2, n)
-        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2
+        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2 % (10 ** 9 + 7)
 ```
 
 ```java [sol-Java]
 class Solution {
-    public long minimumPossibleSum(int n, int k) {
+    public int minimumPossibleSum(int n, int k) {
         long m = Math.min(k / 2, n);
-        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) / 2;
+        return (int) ((m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1000000007);
     }
 }
 ```
@@ -47,20 +47,28 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long minimumPossibleSum(int n, int k) {
+    int minimumPossibleSum(int n, int k) {
         long long m = min(k / 2, n);
-        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) / 2;
+        return (m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1000000007;
     }
 };
 ```
 
 ```go [sol-Go]
-func minimumPossibleSum(n, k int) int64 {
-    m := min(k/2, n)
-    return int64((m*(m+1) + (k*2+n-m-1)*(n-m)) / 2)
+func minimumPossibleSum(n, k int) int {
+	m := min(k/2, n)
+	return (m*(m+1) + (k*2+n-m-1)*(n-m)) / 2 % 1_000_000_007
 }
 
 func min(a, b int) int { if b < a { return b }; return a }
+```
+
+```js [sol-JavaScript]
+var minimumPossibleSum = function (n, k) {
+    const m = Math.min(k >> 1, n);
+    const res = BigInt(m) * BigInt(m + 1) + BigInt(k * 2 + n - m - 1) * BigInt(n - m)
+    return Number((res / BigInt(2)) % BigInt(1000000007));
+};
 ```
 
 #### 复杂度分析

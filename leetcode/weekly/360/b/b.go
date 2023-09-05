@@ -1,14 +1,9 @@
 package main
 
 // https://space.bilibili.com/206214
-func minimumPossibleSum(n, k int) int64 {
+func minimumPossibleSum(n, k int) int {
 	m := min(k/2, n)
-	return int64((m*(m+1) + (k*2+n-m-1)*(n-m)) / 2)
+	return (m*(m+1) + (k*2+n-m-1)*(n-m)) / 2 % 1_000_000_007
 }
 
-func min(a, b int) int {
-	if b < a {
-		return b
-	}
-	return a
-}
+func min(a, b int) int { if b < a { return b }; return a }
