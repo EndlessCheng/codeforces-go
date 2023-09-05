@@ -1,6 +1,4 @@
-下午两点直播讲题，记得关注哦~（见个人主页）
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1fo4y1T7MQ/) 第四题，欢迎点赞！
 
 ### 提示 1
 
@@ -44,17 +42,15 @@ class Solution:
             for j, x in enumerate(row):
                 g[x].append((i, j))  # 相同元素放在同一组，统计位置
 
-        ans = 0
         row_max = [0] * len(mat)
         col_max = [0] * len(mat[0])
         for _, pos in sorted(g.items(), key=lambda p: p[0]):
             # 先把最大值算出来，再更新 row_max 和 col_max
             mx = [max(row_max[i], col_max[j]) + 1 for i, j in pos]
-            ans = max(ans, max(mx))
             for (i, j), f in zip(pos, mx):
                 row_max[i] = max(row_max[i], f)  # 更新第 i 行的最大 f 值
                 col_max[j] = max(col_max[j], f)  # 更新第 j 列的最大 f 值
-        return ans
+        return max(row_max)
 ```
 
 ```java [sol-Java]
@@ -96,21 +92,18 @@ public:
             for (int j = 0; j < n; j++)
                 g[mat[i][j]].emplace_back(i, j); // 相同元素放在同一组，统计位置
 
-        int ans = 0;
         vector<int> row_max(m), col_max(n);
         for (auto &[_, pos]: g) {
             vector<int> mx; // 先把最大值算出来，再更新 row_max 和 col_max
-            for (auto &[i, j]: pos) {
+            for (auto &[i, j]: pos)
                 mx.push_back(max(row_max[i], col_max[j]) + 1);
-                ans = max(ans, mx.back());
-            }
             for (int k = 0; k < pos.size(); k++) {
                 auto &[i, j] = pos[k];
                 row_max[i] = max(row_max[i], mx[k]); // 更新第 i 行的最大 f 值
                 col_max[j] = max(col_max[j], mx[k]); // 更新第 j 列的最大 f 值
             }
         }
-        return ans;
+        return *max_element(row_max.begin(), row_max.end());
     }
 };
 ```
