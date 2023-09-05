@@ -1,9 +1,36 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[这场周赛的视频讲解](https://www.bilibili.com/video/BV1BM4y1W7AQ/)
 
 ```py [sol-Python3]
 class Solution:
     def numberOfEmployeesWhoMetTarget(self, hours: List[int], target: int) -> int:
         return sum(h >= target for h in hours)
+```
+
+```java [sol-Java]
+class Solution {
+    public int numberOfEmployeesWhoMetTarget(int[] hours, int target) {
+        int ans = 0;
+        for (int h : hours) {
+            if (h >= target) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int numberOfEmployeesWhoMetTarget(vector<int> &hours, int target) {
+        int ans = 0;
+        for (int h: hours) {
+            ans += h >= target;
+        }
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -15,6 +42,16 @@ func numberOfEmployeesWhoMetTarget(hours []int, target int) (ans int) {
 	}
 	return
 }
+```
+
+```js [sol-JavaScript]
+var numberOfEmployeesWhoMetTarget = function(hours, target) {
+    let ans = 0;
+    for (const h of hours) {
+        ans += h >= target;
+    }
+    return ans;
+};
 ```
 
 #### 复杂度分析
