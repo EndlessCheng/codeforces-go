@@ -86,32 +86,3 @@
 ||[2646. 最小化旅行的价格总和](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/)|[代码](https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/solution/lei-si-da-jia-jie-she-iii-pythonjavacgo-4k3wq/)|*课后作业|
 
 其它尚未更新的 topic 请看 [每日一题题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
-
----
-
-以下是周赛相关内容。
-
-## 测试工具
-
-支持以下题目类型（点击可查看使用示例）：
-
-- [传统题（实现函数）](biweekly/27/c/c_test.go)
-- [设计题（实现方法）](weekly/182/c/c_test.go)
-- [二叉树](weekly/209/b/b_test.go)
-- [链表](weekly/95/a/a_test.go)
-
-如果觉得麻烦，还可以用 [读文件](weekly/287/c/c_test.go) 的方式测试，对应的文件在同一目录下。
-
-## 代码生成工具
-
-[见此](../copypasta/template/leetcode)
-
-## 周赛
-
-力扣部分题目来源于周赛，从周赛排行榜上可以学习其他选手的解题思路。
-
-国服的周赛始于第 83 场（2018-05-06 09:30），在此之前的周赛只有美服力扣上有（第 1 场周赛始于 2016-08-21）。
-
-[周赛对应题号整理](https://leetcode-cn.com/circle/discuss/KAQoqc/)
-
-[周赛积分算法（ELO）](https://leetcode-cn.com/circle/article/neTUV4/)
