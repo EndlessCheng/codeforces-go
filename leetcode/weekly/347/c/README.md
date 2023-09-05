@@ -1,6 +1,4 @@
-下午两点直播讲题，记得关注哦~（见个人主页）
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1fo4y1T7MQ/) 第三题，欢迎点赞！
 
 ### 提示 1
 
@@ -68,6 +66,17 @@ func minimumCost(s string) (ans int64) {
 }
 
 func min(a, b int) int { if b < a { return b }; return a }
+```
+
+```js [sol-JavaScript]
+var minimumCost = function (s) {
+    const n = s.length;
+    let ans = 0;
+    for (let i = 1; i < n; i++)
+        if (s[i - 1] !== s[i])
+            ans += Math.min(i, n - i);
+    return ans;
+};
 ```
 
 #### 复杂度分析
