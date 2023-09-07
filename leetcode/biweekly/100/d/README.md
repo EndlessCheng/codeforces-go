@@ -186,6 +186,8 @@ var repairCars = function (ranks, cars) {
 
 根据数据范围，$\textit{ranks}$ 中至多有 $100$ 个不同的数字，我们可以统计 $\textit{ranks}$ 中每个数字的出现次数，这样每次二分至多循环 $100$ 次。
 
+此外，如果循环中发现 $s\ge \textit{cars}$，可以提前退出循环。
+
 ```py [sol-Python3]
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
@@ -223,9 +225,8 @@ class Solution {
         while (left + 1 < right) {
             long mid = (left + right) >> 1;
             long s = 0;
-            for (int r = minR; r <= 100; r++) { // 至多循环 100 次
+            for (int r = minR; r <= 100 && s < cars; r++) { // 至多循环 100 次
                 s += (long) Math.sqrt(mid / r) * cnt[r];
-                // 注：也可以在这里判断 s >= cars 并提前退出循环
             }
             if (s >= cars) {
                 right = mid;
@@ -250,7 +251,7 @@ public:
         long long left = 0, right = 1LL * min_r * cars * cars;
         while (left + 1 < right) {
             long long mid = (left + right) / 2, s = 0;
-            for (int r = min_r; r <= 100; r++) // 至多循环 100 次
+            for (int r = min_r; r <= 100 && s < cars; r++) // 至多循环 100 次
                 s += (long long) sqrt(mid / r) * cnt[r];
             (s >= cars ? right : left) = mid;
         }
@@ -274,7 +275,7 @@ func repairCars(ranks []int, cars int) int64 {
 	for left+1 < right {
 		mid := (left + right) / 2
 		s := 0
-		for r := minR; r <= 100; r++ { // 至多循环 100 次
+		for r := minR; r <= 100 && s < cars; r++ { // 至多循环 100 次
 			s += int(math.Sqrt(float64(mid/r))) * cnt[r]
 		}
 		if s >= cars {
@@ -299,7 +300,7 @@ func repairCars(ranks []int, cars int) int64 {
 	}
 	return int64(sort.Search(minR*cars*cars, func(t int) bool {
 		s := 0
-		for r := minR; r <= 100; r++ {
+		for r := minR; r <= 100 && s < cars; r++ {
 			s += int(math.Sqrt(float64(t/r))) * cnt[r]
 		}
 		return s >= cars
@@ -319,7 +320,7 @@ var repairCars = function (ranks, cars) {
     while (left + 1 < right) {
         const mid = Math.floor((left + right) / 2);
         let s = 0;
-        for (let r = minR; r <= 100; r++) { // 至多循环 100 次
+        for (let r = minR; r <= 100 && s < cars; r++) { // 至多循环 100 次
             s += Math.floor(Math.sqrt(mid / r)) * cnt[r];
         }
         if (s >= cars) {
