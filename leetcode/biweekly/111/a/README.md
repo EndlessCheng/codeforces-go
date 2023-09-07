@@ -1,12 +1,8 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
-
-#### 前置知识：相向双指针
+### 前置知识：相向双指针
 
 请看[【基础算法精讲】](https://www.bilibili.com/video/BV1bP411c7oJ/)。
 
-#### 思路
+### 思路
 
 为什么可以排序呢？题目相当于从数组中选两个数，**我们只关心这两个数的和是否小于** $\textit{target}$，由于 $a+b=b+a$，无论如何排列数组元素，都不会影响加法的结果，所以排序不影响答案。
 
@@ -32,6 +28,43 @@ class Solution:
         return ans
 ```
 
+```java [sol-Java]
+class Solution {
+    public int countPairs(List<Integer> nums, int target) {
+        Collections.sort(nums);
+        int ans = 0, left = 0, right = nums.size() - 1;
+        while (left < right) {
+            if (nums.get(left) + nums.get(right) < target) {
+                ans += right - left;
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countPairs(vector<int> &nums, int target) {
+        sort(nums.begin(), nums.end());
+        int ans = 0, left = 0, right = nums.size() - 1;
+        while (left < right) {
+            if (nums[left] + nums[right] < target) {
+                ans += right - left;
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return ans;
+    }
+};
+```
+
 ```go [sol-Go]
 func countPairs(nums []int, target int) (ans int) {
 	sort.Ints(nums)
@@ -46,6 +79,22 @@ func countPairs(nums []int, target int) (ans int) {
 	}
 	return
 }
+```
+
+```js [sol-JavaScript]
+var countPairs = function (nums, target) {
+    nums.sort((a, b) => a - b);
+    let ans = 0, left = 0, right = nums.length - 1;
+    while (left < right) {
+        if (nums[left] + nums[right] < target) {
+            ans += right - left;
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return ans;
+};
 ```
 
 #### 复杂度分析
