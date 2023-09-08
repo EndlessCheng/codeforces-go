@@ -32,10 +32,12 @@ a < b    a*(1+eps) < b
 a <= b   a*(1-eps) < b
 a == b   a*(1-eps) < b && b < a*(1+eps)
 
+如何避免卡精度？如何设置合理的精度？
 避免不同数量级的浮点数的加减可以减小误差
 见下面这两份代码的区别
 https://codeforces.com/problemset/submission/621/116068024
 https://codeforces.com/problemset/submission/621/116068186
+调精度 https://codeforces.com/contest/1826/problem/F
 
 dot (dot product，数量积，点积，内积)
 https://en.wikipedia.org/wiki/Dot_product
@@ -110,19 +112,24 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 */
 
 // 返回 floor(sqrt(x))
-// 由于 float64 无法表示过大的 int64 数（比如 1e18 大小的），需要上下调整一番
-// 具体见 https://atcoder.jp/contests/abc191/tasks/abc191_d 和 https://codeforces.com/problemset/problem/1036/F
-func floorSqrt(x int64) int64 {
-	if x == 0 {
-		return 0
+// 由于 float64 无法精确表示过大的 int64 数（超出 2^53-1 的数），需要微调   https://www.zhihu.com/question/29010688
+// 举例说明：上舍入
+// x                  floor(sqrt(x)) 注意这里算的是错误的结果
+// 999999999999999999 1000000000
+// 999996000003999999 999998000
+// 880200476099999999 938190000
+// 可以用该网站查看：https://www.binaryconvert.com/convert_double.html
+// 0b1(Mantissa) * 2 ** (0b(Exponent) - 1075)
+// 可以用以下题目测试：
+// https://atcoder.jp/contests/abc191/tasks/abc191_d 
+// https://atcoder.jp/contests/abc243/tasks/abc243_g
+// https://codeforces.com/problemset/problem/1036/F
+func isqrt(x int64) int64 {
+	rt := int64(math.Sqrt(float64(x)))
+	if rt*rt > x {
+		rt--
 	}
-	res := int64(math.Sqrt(float64(x)))
-	if res*res > x {
-		res--
-	} else if (res+1)*(res+1) <= x { //（这种情况似乎不需要判断）
-		res++
-	}
-	return res
+	return rt
 }
 
 // 返回 floor(pow(x, 1/n))
@@ -233,6 +240,8 @@ func (a vec) angleTo(b vec) float64 { return math.Atan2(float64(a.det(b)), float
 // - 考虑补集
 // - 点和原点连直线，在直线一侧选两个点组成的三角形必然不会包含原点
 // - 双指针维护
+// 从 n 个向量中选出一些向量，使得向量和的模长最大 https://atcoder.jp/contests/abc139/tasks/abc139_f
+// https://codeforces.com/contest/1841/problem/F
 func polarAngleSort(ps []vec) {
 	// (-π, π]
 	// (-1e9,-1) -> (-1e9, 0)
@@ -365,6 +374,7 @@ func (a vec) withinRange(l line, r int64) bool {
 }
 
 // 点 a 在直线 l 上的投影
+// https://codeforces.com/contest/1826/problem/F
 func (a vecF) projection(l lineF) vecF {
 	v, p1a := l.vec(), a.sub(l.p1)
 	t := v.dot(p1a) / v.len2()
