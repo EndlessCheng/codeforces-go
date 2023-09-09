@@ -1,8 +1,4 @@
-### 视频讲解
-
-见[【周赛 337】](https://www.bilibili.com/video/BV1EL411C7YU/)。
-
-### 思路
+请看 [视频讲解](https://www.bilibili.com/video/BV1EL411C7YU/) 第二题。
 
 按题意模拟。
 
