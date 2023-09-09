@@ -55,13 +55,12 @@ func max(a, b int) int { if b > a { return b }; return a }
 ```py [sol2-Python3]
 class Solution:
     def longestSquareStreak(self, nums: List[int]) -> int:
-        ans, s = 0, set(nums)
+        s = set(nums)
         @cache
         def dfs(x: int) -> int:
             if x not in s: return 0
             return 1 + dfs(x * x)
-        for x in s:
-            ans = max(ans, dfs(x))
+        ans = max(map(dfs, s))
         return ans if ans > 1 else -1
 ```
 
