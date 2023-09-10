@@ -1,0 +1,12 @@
+"abcd"
+"cdab"
+2
+2
+
+"ababab"
+"ababab"
+1
+2
+
+
+
