@@ -1,10 +1,14 @@
 [视频讲解](https://www.bilibili.com/video/BV1U34y1N7Pe/)。
 
-之前在力扣上写过一篇文章：[【算法小课堂】差分数组](https://leetcode.cn/circle/discuss/FfMCgb/)。
+假设我们有一个数组，对于示例 1，我们可以把下标在 $[3,6]$ 的元素都加一，把下标在 $[1,5]$ 的元素都加一，下标在 $[4,7]$ 的元素都加一。
 
-根据这篇文章，可以用差分数组求出每个点被覆盖多少次。
+然后，我们来看看有多少个下标对应的元素值是大于 $0$ 的，这些下标就是题目要计算的，被任意区间覆盖的整数点。
 
-答案就是覆盖次数大于 $0$ 的点的个数。
+那么，如何快速地「把区间内的数都加一」呢？
+
+我之前在力扣上写过一篇文章：[【算法小课堂】差分数组](https://leetcode.cn/circle/discuss/FfMCgb/)。
+
+根据这篇文章，用差分数组 $\textit{diff}$ 快速完成区间操作，然后求它的前缀和（恢复原数组），统计前缀和中有多少个数大于 $0$，即为答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -97,4 +101,4 @@ var numberOfPoints = function(nums) {
 
 ## 相似题目
 
-请看[【算法小课堂】差分数组](https://leetcode.cn/circle/discuss/FfMCgb/)中的题单。
+请看[【算法小课堂】差分数组](https://leetcode.cn/circle/discuss/FfMCgb/) 中的题单。
