@@ -33,18 +33,20 @@ func minimumMoves(grid [][]int) int {
 	dist := make([]int, len(g))
 	type vi struct{ v, i int }
 	fa := make([]vi, len(g))
+	inQ := make([]int, len(g))
+	timestamp := 0
 	spfa := func() bool {
 		for i := range dist {
-			dist[i] = 1e9
+			dist[i] = inf
 		}
 		dist[src] = 0
-		inQ := make([]bool, len(g))
-		inQ[src] = true
+		timestamp++
+		inQ[src] = timestamp
 		q := []int{src}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
-			inQ[v] = false
+			inQ[v] = 0
 			for i, e := range g[v] {
 				if e.cap == 0 {
 					continue
@@ -53,9 +55,9 @@ func minimumMoves(grid [][]int) int {
 				if newD := dist[v] + e.cost; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = vi{v, i}
-					if !inQ[w] {
+					if inQ[w] != timestamp {
+						inQ[w] = timestamp
 						q = append(q, w)
-						inQ[w] = true
 					}
 				}
 			}
