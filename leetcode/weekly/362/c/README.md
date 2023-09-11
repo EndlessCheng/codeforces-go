@@ -87,7 +87,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minimumMoves(std::vector<std::vector<int>> &grid) {
+    int minimumMoves(vector<vector<int>> &grid) {
         vector<pair<int, int>> from, to;
         for (int i = 0; i < grid.size(); ++i) {
             for (int j = 0; j < grid[i].size(); ++j) {
