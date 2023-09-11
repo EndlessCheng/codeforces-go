@@ -12,6 +12,12 @@ import (
 https://zh.wikipedia.org/wiki/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0%E5%88%97#%E7%B7%9A%E6%80%A7%E4%BB%A3%E6%95%B8%E8%A7%A3%E6%B3%95
 https://zhuanlan.zhihu.com/p/56444434
 https://codeforces.com/blog/entry/80195 Matrix Exponentiation video + training contest
+浅谈矩阵乘法在算法竞赛中的应用 https://zhuanlan.zhihu.com/p/631804105
+F2 矩阵 有可能是可逆的，和或的 01 矩阵 似乎是肯定不可逆的，逆矩阵有时候也有一定的应用场景
+除了直接的矩阵乘法，矩阵加法有时候也有用，有时候可以通过分块矩阵 或者逆矩阵 把连加表达成矩阵求幂
+https://atcoder.jp/contests/abc299/tasks/abc299_h
+这个开关灯问题 也涉及F2矩阵的逆矩阵（或高斯消元） https://github.com/tdzl2003/leetcode_live/blob/master/poj/1222_1753_3279.md
+F2 矩阵 int64 to int64 的散列（可逆意味着一一映射，意味着无冲突） https://github.com/tdzl2003/leetcode_live/blob/master/other/int64_hash.md
 
 三对角矩阵算法（托马斯算法）https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
 https://codeforces.com/contest/24/problem/D
@@ -68,8 +74,19 @@ func rotateMatrix(a matrix) matrix {
 	return b
 }
 
-// 矩阵快速幂
+/* 矩阵运算
 
+## 练习：矩阵快速幂优化 DP
+
+- [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
+- [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
+- [1137. 第 N 个泰波那契数](https://leetcode.cn/problems/n-th-tribonacci-number/)
+- [1220. 统计元音字母序列的数目](https://leetcode.cn/problems/count-vowels-permutation/)
+- [552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)
+- [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
+- [2851. ](https://leetcode.cn/problems/string-transformation/)
+
+*/
 type matrix [][]int64
 
 func newMatrix(n, m int) matrix {
@@ -107,14 +124,16 @@ func (a matrix) mul(b matrix) matrix {
 
 func (a matrix) pow(n int64) matrix {
 	res := newIdentityMatrix(len(a))
-	for ; n > 0; n >>= 1 {
-		if n&1 > 0 {
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
 			res = res.mul(a)
 		}
 		a = a.mul(a)
 	}
 	return res
 }
+
+// -----------------------------------------------------------------------------
 
 // 比如 n*n 的国际象棋的马，从 (sx,sy) 走 k 步到 (tx,ty)，需要多少步
 // 这里可以先 O(n^2) 预处理走一步的转移，构建矩阵 a
@@ -149,8 +168,6 @@ func calcFibonacci(p, q, a0, a1, n int64) int64 {
 	return ((m[0][0]*a1+m[0][1]*a0)%mod + mod) % mod
 	//return m[0][0]
 }
-
-//
 
 func (a matrix) add(b matrix) matrix {
 	c := newMatrix(len(a), len(a[0]))
