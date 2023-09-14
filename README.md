@@ -452,6 +452,12 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [Another Codeforces Solve Tracker](https://cftracker.netlify.app/contests)
 
+[AtCoder Problems](https://kenkoooo.com/atcoder/#/table/)
+
+[AtCoder Companions](https://atcoder-companions.kakira.dev/)
+
+[AtCoder-Codeforces Rating converter](https://silverfoxxxy.github.io/rating-converter)
+
 ### Rating and Difficulties
 
 [Open Codeforces Rating System](https://codeforces.com/blog/entry/20762)
