@@ -7,50 +7,35 @@ import (
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1323D(_r io.Reader, _w io.Writer) {
-	in := bufio.NewScanner(_r)
-	in.Split(bufio.ScanWords)
-	read := func() (x int) {
-		in.Scan()
-		for _, b := range in.Bytes() {
-			x = x*10 + int(b-'0')
-		}
-		return
-	}
-
-	n := read()
+// https://space.bilibili.com/206214
+func CF1323D(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
+	var n, ans, all int
+	Fscan(in, &n)
 	a := make([]int, n)
 	for i := range a {
-		a[i] = read()
+		Fscan(in, &a[i])
+		all ^= i
 	}
 
-	b := make([]int, n)
-	search := func(l, x int) int {
-		r := n
-		for l < r {
-			m := (l + r) >> 1
-			if b[m] >= x {
-				r = m
-			} else {
-				l = m + 1
+	for k := 0; k < 28; k++ {
+		mask := 1<<(k+1) - 1
+		sort.Slice(a, func(i, j int) bool { return a[i]&mask < a[j]&mask })
+		f := func(high int) (cnt int) {
+			i, j := 0, n-1
+			for i < j {
+				if a[i]&mask+a[j]&mask <= high {
+					cnt ^= i ^ j
+					i++
+				} else {
+					j--
+				}
 			}
+			return
 		}
-		return l
+		ans |= (f(1<<k-1) ^ f(1<<(k+1)-1) ^ f(3<<k-1) ^ all) & 1 << k
 	}
-	ans := 0
-	for i := uint(0); i < 25; i++ {
-		for j, v := range a {
-			b[j] = v &^ (-1 << (i + 1))
-		}
-		sort.Ints(b)
-		cnt := 0
-		for j, v := range b {
-			cnt ^= n - search(j+1, 3<<i-v) + search(j+1, 2<<i-v) - search(j+1, 1<<i-v)
-		}
-		ans |= cnt & 1 << i
-	}
-	Fprint(_w, ans)
+	Fprint(out, ans)
 }
 
 //func main() { CF1323D(os.Stdin, os.Stdout) }
