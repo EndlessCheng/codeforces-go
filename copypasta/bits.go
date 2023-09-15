@@ -11,8 +11,8 @@ import (
 
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
-     bits.Len(x) 相当于 int(Log2(x)+eps)+1
-     或者说 2^(Len(x)-1) <= x < 2^Len(x)
+     bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
+     或者说 2^(Len(x)-1) <= x < 2^Len(x)    x>0
 
 常用技巧：拆位（提示：排序有时候很有用）
 https://codeforces.com/problemset/problem/1777/F
