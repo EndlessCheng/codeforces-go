@@ -24,7 +24,7 @@ func CF1322B(_r io.Reader, out io.Writer) {
 		f := func(high int) (cnt int) {
 			i, j := 0, n-1
 			for i < j {
-				if a[i]&mask+a[j]&mask <= high {
+				if a[i]&mask+a[j]&mask < high {
 					cnt ^= i ^ j
 					i++
 				} else {
@@ -33,7 +33,7 @@ func CF1322B(_r io.Reader, out io.Writer) {
 			}
 			return
 		}
-		ans |= (f(1<<k-1) ^ f(1<<(k+1)-1) ^ f(3<<k-1) ^ all) & 1 << k
+		ans |= (f(1<<k) ^ f(1<<(k+1)) ^ f(3<<k) ^ all) & 1 << k
 	}
 	Fprint(out, ans)
 }
