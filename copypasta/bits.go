@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	. "fmt"
+	"math"
 	"math/bits"
 )
 
@@ -13,10 +14,24 @@ import (
      bits.Len(x) 相当于 int(Log2(x)+eps)+1
      或者说 2^(Len(x)-1) <= x < 2^Len(x)
 
+常用技巧：拆位（提示：排序有时候很有用）
+https://codeforces.com/problemset/problem/1777/F
+https://codeforces.com/problemset/problem/981/D
+https://atcoder.jp/contests/abc281/tasks/abc281_f
+
+加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
+https://atcoder.jp/contests/abc091/tasks/arc092_b
+https://codeforces.com/problemset/problem/1322/B
+变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
+
+利用 lowbit
+https://codeforces.com/problemset/problem/1689/E
+交互 https://codeforces.com/problemset/problem/1780/D
+
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
 ** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
 
-常用等式（若改变了计算的顺序，注意优先级！）
+常用等式
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
 a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
@@ -29,7 +44,10 @@ https://atcoder.jp/contests/abc050/tasks/arc066_b
 
 + 与 ^ https://codeforces.com/problemset/problem/1732/C2
 
+进位的本质 https://atcoder.jp/contests/arc158/tasks/arc158_c
+
 max(a,b) = (a + b + abs(a-b)) / 2
+min(a,b) = (a + b - abs(a-b)) / 2
 
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
 相关题目 LC1835 https://leetcode-cn.com/problems/find-xor-sum-of-all-pairs-bitwise-and/
@@ -37,6 +55,8 @@ max(a,b) = (a + b + abs(a-b)) / 2
 集合论公式的二进制等价形式：
 popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
 相关题目 https://leetcode.cn/problems/number-of-excellent-pairs/
+https://oeis.org/A006234 (n+2) * 3^(n-2)   [0,2^n) 内任意两数 popcount(x) + popcount(y) - popcount(x+y) = 1 的数对个数   https://codeforces.com/problemset/problem/1761/D
+进位与分类讨论 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
 
 运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
@@ -71,17 +91,19 @@ where the signs alternate and k_1 > k_2 > k_3 > ... >k_m >= 0; sequence gives mi
 https://codeforces.com/problemset/problem/1617/E
 
 异或和相关
+https://atcoder.jp/contests/abc171/tasks/abc171_e
 https://oeis.org/A003987 异或矩阵
-https://oeis.org/A003815 异或和 i  a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
-    相关题目 https://codeforces.com/problemset/problem/1493/E
-            https://codeforces.com/problemset/problem/460/D
+https://oeis.org/A003815 前 i 个自然数的异或和 a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
+- https://codeforces.com/problemset/problem/1493/E
+- https://codeforces.com/problemset/problem/460/D
+- https://atcoder.jp/contests/abc121/tasks/abc121_d
 https://oeis.org/A145768 异或和 i*i
 https://oeis.org/A126084 异或和 质数
 https://oeis.org/A018252 异或和 合数?
 https://oeis.org/A072594 异或和 质因数分解 是积性函数 a(p^k)=p*(k&1)
-	https://oeis.org/A072595 满足 A072594(n)=0 的数
+- https://oeis.org/A072595 满足 A072594(n)=0 的数
 https://oeis.org/A178910 异或和 因子
-	https://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
+- https://oeis.org/A178911 满足 A178910(n)=n 的数 Perfex number
 
 异或与 mex
 [1800·hot10] https://codeforces.com/problemset/problem/1554/C
@@ -92,8 +114,12 @@ a < b，无法通过两边异或同一个数来做式子变形
 人为地创造出「相等」这个条件
 https://codeforces.com/problemset/problem/1720/D2
 
+路径点权异或 https://codeforces.com/problemset/problem/1709/E
+
 https://oeis.org/A038712 a(n) = n^(n-1) = 1, 3, 1, 7, 1, 3, 1, 15, 1, ...
 https://oeis.org/A080277 A038712 的前缀和  =>  a(n) = n + 2*a(n/2)
+
+https://oeis.org/A055944 a(n) = n + (reversal of base-2 digits of n) (written in base 10)
 
 二进制长度
 https://oeis.org/A029837 Binary order of n: log_2(n) rounded up to next integer
@@ -192,14 +218,20 @@ https://en.wikipedia.org/wiki/De_Bruijn_sequence
 
 套路题 https://codeforces.com/problemset/problem/1415/D
 按位归纳 https://codeforces.com/problemset/problem/925/C
+
+todo O(1) https://codeforces.com/contest/520/submission/205035892
 */
 
 // Bitset
+// 有时候也可以用 big.Int 代替
 // 部分参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
-// 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
-// 应用：https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
-// uint32 is faster than uint64 on Codeforces
-// 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
+// NOTE: 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
+// NOTE: uint32 is faster than uint64 on Codeforces
+// NOTE: 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
+//
+// https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
+// https://codeforces.com/contest/1826/problem/E
+// https://atcoder.jp/contests/abc258/tasks/abc258_g
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w
@@ -210,6 +242,12 @@ func (b Bitset) Has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get
 func (b Bitset) Flip(p int)     { b[p/_w] ^= 1 << (p % _w) }
 func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
 func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
+
+func (b Bitset) SetAll1() {
+	for i := range b {
+		b[i] = math.MaxUint
+	}
+}
 
 // 遍历所有 1 的位置
 // 如果对范围有要求，可在 f 中 return p < n
@@ -466,9 +504,15 @@ func (b Bitset) HasSubset(c Bitset) bool {
 }
 
 // 将 c 的元素合并进 b
-func (b Bitset) MergeFrom(c Bitset) {
+func (b Bitset) UnionFrom(c Bitset) {
 	for i, v := range c {
 		b[i] |= v
+	}
+}
+
+func (b Bitset) IntersectionFrom(c Bitset) {
+	for i, v := range c {
+		b[i] &= v
 	}
 }
 
@@ -560,8 +604,9 @@ func _(x int) {
 	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
 	//      (子数组长度 * 子数组 GCD) 的最大值 https://www.luogu.com.cn/problem/P5502
 	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/
+	//      https://codeforces.com/contest/1834/problem/E
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
-		ans := map[int]bool{} // 统计 op(一段区间) 的不同结果
+		vis := map[int]bool{} // 统计 op(一段区间) 的不同结果
 		set := []int{}
 		for _, v := range a {
 			for j, w := range set {
@@ -579,10 +624,10 @@ func _(x int) {
 			set = set[:j+1]
 			for _, w := range set {
 				// do w...
-				ans[w] = true
+				vis[w] = true
 			}
 		}
-		return ans
+		return vis
 	}
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
