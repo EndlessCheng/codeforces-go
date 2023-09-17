@@ -1,0 +1,247 @@
+请看 [视频讲解](https://b23.tv/PDz9NBA) 第四题。
+
+## 方法一：按照下标的 core 值分组
+
+定义 $\text{core}(n)$ 为 $n$ 除去完全平方因子后的剩余结果。
+
+例如 $\text{core}(8)=8/4=2,\ \text{core}(12)=12/4=3, \text{core}(25)=25/25=1, \text{core}(5)=5/1=5$。
+
+计算方式同质因数分解，把 $n$ 的所有出现次数为奇数的质因子相乘，即为 $\text{core}(n)$。
+
+根据题意，如果同一组中有两个数，它们的下标的 $\text{core}$ 值不同，那么这两个数相乘，就不是一个完全平方数。
+
+所以，同一组内的数字下标的 $\text{core}$ 值必须都一样。
+
+那么按照下标的 $\text{core}$ 值分组，累加同一组的元素和，最大元素和即为答案。
+
+```py [sol-Python3]
+@cache  # 保存 core(n) 的计算结果，测试用例之间可以复用
+def core(n: int) -> int:
+    res = 1
+    for i in range(2, isqrt(n) + 1):
+        e = 0
+        while n % i == 0:
+            e ^= 1
+            n //= i
+        if e:
+            res *= i
+    if n > 1:
+        res *= n
+    return res
+
+class Solution:
+    def maximumSum(self, nums: List[int]) -> int:
+        s = [0] * (len(nums) + 1)
+        for i, x in enumerate(nums, 1):
+            s[core(i)] += x
+        return max(s)
+```
+
+```java [sol-Java]
+class Solution {
+    public long maximumSum(List<Integer> nums) {
+        long ans = 0;
+        int n = nums.size();
+        long[] sum = new long[n + 1];
+        for (int i = 0; i < nums.size(); i++) {
+            int c = core(i + 1);
+            sum[c] += nums.get(i);
+            ans = Math.max(ans, sum[c]);
+        }
+        return ans;
+    }
+
+    private int core(int n) {
+        int res = 1;
+        for (int i = 2; i * i <= n; i++) {
+            int e = 0;
+            while (n % i == 0) {
+                e ^= 1;
+                n /= i;
+            }
+            if (e == 1) {
+                res *= i;
+            }
+        }
+        if (n > 1) {
+            res *= n;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int core(int n) {
+        int res = 1;
+        for (int i = 2; i * i <= n; i++) {
+            int e = 0;
+            while (n % i == 0) {
+                e ^= 1;
+                n /= i;
+            }
+            if (e) {
+                res *= i;
+            }
+        }
+        if (n > 1) {
+            res *= n;
+        }
+        return res;
+    }
+
+public:
+    long long maximumSum(vector<int> &nums) {
+        vector<long long> sum(nums.size() + 1);
+        for (int i = 0; i < nums.size(); i++) {
+            sum[core(i + 1)] += nums[i];
+        }
+        return *max_element(sum.begin(), sum.end());
+    }
+};
+```
+
+```go [sol-Go]
+func core(n int) int {
+	res := 1
+	for i := 2; i*i <= n; i++ {
+		e := 0
+		for n%i == 0 {
+			e ^= 1
+			n /= i
+		}
+		if e == 1 {
+			res *= i
+		}
+	}
+	if n > 1 {
+		res *= n
+	}
+	return res
+}
+
+func maximumSum(nums []int) (ans int64) {
+    sum := make([]int64, len(nums)+1)
+    for i, x := range nums {
+        c := core(i + 1)
+        sum[c] += int64(x)
+        ans = max(ans, sum[c])
+    }
+    return
+}
+
+func max(a, b int64) int64 { if b > a { return b }; return a }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\sqrt{n})$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：枚举 core
+
+我们还可以从 $1$ 开始枚举 $i$ 和所有 $\text{core}$ 值等于 $i$ 的下标，也就是 $ij^2$。
+
+例如 $i=3$ 时，我们可以枚举 
+
+$$
+3\times 1, 3\times 4, 3\times 9, 3\times 16,3\times 25,\cdots
+$$
+
+这些下标对应的元素值都在同一组中。
+
+可能你会觉得这不对，比如 $i=4$ 时，我们枚举的是
+
+$$
+4\times 1, 4\times 4, 4\times 9, 4\times 16,4\times 25,\cdots
+$$
+
+而这些数的 $\text{core}$ 值都等于 $1$，而不是 $4$。
+
+没有关系！在 $i=1$ 时，上面这些数都枚举到了（相当于是 $i=1$ 时枚举的数的子集），所以上面这些数的元素和不会超过 $i=1$ 时计算出来的元素和。**我们不会漏掉最大的元素和。**
+
+```py [sol-Python3]
+class Solution:
+    def maximumSum(self, nums: List[int]) -> int:
+        ans = 0
+        n = len(nums)
+        for i in range(1, n + 1):
+            s = 0
+            for j in range(1, isqrt(n // i) + 1):
+                s += nums[i * j * j - 1]  # -1 是因为数组下标从 0 开始
+            ans = max(ans, s)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long maximumSum(List<Integer> nums) {
+        var a = nums.stream().mapToInt(i -> i).toArray();
+        long ans = 0;
+        int n = a.length;
+        for (int i = 1; i <= n; i++) {
+            long sum = 0;
+            for (int j = 1; i * j * j <= n; j++) {
+                sum += a[i * j * j - 1]; // -1 是因为数组下标从 0 开始
+            }
+            ans = Math.max(ans, sum);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maximumSum(vector<int> &nums) {
+        long long ans = 0;
+        int n = nums.size();
+        for (int i = 1; i <= n; i++) {
+            long long sum = 0;
+            for (int j = 1; i * j * j <= n; j++) {
+                sum += nums[i * j * j - 1]; // -1 是因为数组下标从 0 开始
+            }
+            ans = max(ans, sum);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumSum(nums []int) (ans int64) {
+	n := len(nums)
+	for i := 1; i <= n; i++ {
+		sum := int64(0)
+		for j := 1; i*j*j <= n; j++ {
+			sum += int64(nums[i*j*j-1]) // -1 是因为数组下标从 0 开始
+		}
+		ans = max(ans, sum)
+	}
+	return
+}
+
+func max(a, b int64) int64 { if b > a { return b }; return a }
+```
+
+```js [sol-JavaScript]
+var maximumSum = function(nums) {
+    const n = nums.length;
+    let ans = 0;
+    for (let i = 1; i <= n; i++) {
+        let sum = 0;
+        for (let j = 1; i * j * j <= n; j++) {
+            sum += nums[i * j * j - 1]; // -1 是因为数组下标从 0 开始
+        }
+        ans = Math.max(ans, sum);
+    }
+    return ans;
+};
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。循环次数可近似为 $\sqrt{n}\cdot(1/\sqrt{1} + 1/\sqrt{2} + ... + 1/\sqrt{n})$，由 $f(x)=1/\sqrt{x}$ 的积分可知，$1/\sqrt{1} + 1/\sqrt{2} + ... 1/\sqrt{n} = \mathcal{O}(\sqrt{n})$，所以总的循环次数为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
