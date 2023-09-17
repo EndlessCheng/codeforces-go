@@ -8,10 +8,10 @@ func countWays(nums []int) (ans int) {
 	if nums[0] > 0 {
 		ans++
 	}
-	for i, x := range nums {
-		if x < i+1 && (i == len(nums)-1 || i+1 < nums[i+1]) {
+	for i, x := range nums[:len(nums)-1] {
+		if x < i+1 && i+1 < nums[i+1] {
 			ans++
 		}
 	}
-	return
+	return ans + 1
 }
