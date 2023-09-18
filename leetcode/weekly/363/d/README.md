@@ -134,6 +134,34 @@ func maximumSum(nums []int) (ans int64) {
 func max(a, b int64) int64 { if b > a { return b }; return a }
 ```
 
+```js [sol-JavaScript]
+function core(n) {
+    let res = 1;
+    for (let i = 2; i * i <= n; i++) {
+        let e = 0;
+        while (n % i === 0) {
+            e ^= 1;
+            n /= i;
+        }
+        if (e === 1) {
+            res *= i;
+        }
+    }
+    if (n > 1) {
+        res *= n;
+    }
+    return res;
+}
+
+var maximumSum = function (nums) {
+    const sum = new Array(nums.length + 1).fill(0);
+    for (let i = 0; i < nums.length; i++) {
+        sum[core(i + 1)] += nums[i];
+    }
+    return Math.max(...sum);
+};
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\sqrt{n})$，其中 $n$ 为 $\textit{nums}$ 的长度。
@@ -245,3 +273,129 @@ var maximumSum = function(nums) {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。循环次数可近似为 $\sqrt{n}\cdot(1/\sqrt{1} + 1/\sqrt{2} + ... + 1/\sqrt{n})$，由 $f(x)=1/\sqrt{x}$ 的积分可知，$1/\sqrt{1} + 1/\sqrt{2} + ... 1/\sqrt{n} = \mathcal{O}(\sqrt{n})$，所以总的循环次数为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法三：预处理所有 core 值
+
+按照方法二的计算方式，可以直接打表预处理 $10^4$ 内的 $\text{core}$ 值。
+
+```py [sol-Python3]
+MX = 10001
+core = [0] * MX
+for i in range(1, MX):
+    if core[i] == 0:  # i 不含完全平方因子，可以作为 core 值
+        for j in range(1, isqrt(MX // i) + 1):
+            core[i * j * j] = i
+
+class Solution:
+    def maximumSum(self, nums: List[int]) -> int:
+        s = [0] * (len(nums) + 1)
+        for i, x in enumerate(nums, 1):  # 下标从 1 开始
+            s[core[i]] += x
+        return max(s)
+```
+
+```java [sol-Java]
+class Solution {
+    private final static int MX = 10000;
+    private static int[] core = new int[MX + 1];
+
+    static {
+        for (int i = 1; i <= MX; i++) {
+            if (core[i] == 0) { // i 不含完全平方因子，可以作为 core 值
+                for (int j = 1; i * j * j <= MX; j++) {
+                    core[i * j * j] = i;
+                }
+            }
+        }
+    }
+
+    public long maximumSum(List<Integer> nums) {
+        long ans = 0;
+        int n = nums.size();
+        long[] sum = new long[n + 1];
+        for (int i = 1; i <= n; i++) {
+            sum[core[i]] += nums.get(i - 1);
+            ans = Math.max(ans, sum[core[i]]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MX = 10001;
+int core[MX];
+int init = [] {
+    for (int i = 1; i < MX; ++i) {
+        if (core[i] == 0) { // i 不含完全平方因子，可以作为 core 值
+            for (int j = 1; i * j * j < MX; ++j) {
+                core[i * j * j] = i;
+            }
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    long long maximumSum(vector<int> &nums) {
+        long long ans = 0;
+        vector<long long> sum(nums.size() + 1, 0);
+        for (int i = 1; i <= nums.size(); ++i) {
+            sum[core[i]] += nums[i - 1];
+            ans = max(ans, sum[core[i]]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+const mx int = 1e4
+var core [mx + 1]int
+func init() {
+    for i := 1; i <= mx; i++ {
+        if core[i] == 0 { // i 不含完全平方因子，可以作为 core 值
+            for j := 1; i*j*j <= mx; j++ {
+                core[i*j*j] = i
+            }
+        }
+    }
+}
+
+func maximumSum(nums []int) (ans int64) {
+    sum := make([]int64, len(nums)+1)
+    for i, x := range nums {
+        c := core[i+1]
+        sum[c] += int64(x)
+        if sum[c] > ans {
+            ans = sum[c]
+        }
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+const MX = 10001;
+const core = new Array(MX).fill(0);
+for (let i = 1; i < MX; i++) {
+    if (core[i] === 0) { // i 不含完全平方因子，可以作为 core 值
+        for (let j = 1; i * j * j < MX; j++) {
+            core[i * j * j] = i;
+        }
+    }
+}
+
+var maximumSum = function (nums) {
+    const sum = new Array(nums.length + 1).fill(0);
+    for (let i = 0; i < nums.length; i++) {
+        sum[core[i + 1]] += nums[i];
+    }
+    return Math.max(...sum);
+};
+```
+
+#### 复杂度分析
+
+同方法二。
