@@ -78,6 +78,43 @@ class Solution {
 }
 ```
 
+```java [sol-Java 数组优化]
+// 全部转成 int[] 数组，效率比 List<Integer> 更高
+class Solution {
+    public int maxNumberOfAlloys(int n, int k, int budget, List<List<Integer>> composition, List<Integer> Stock, List<Integer> Cost) {
+        int ans = 0;
+        int mx = Collections.min(Stock) + budget;
+        int[] stock = Stock.stream().mapToInt(i -> i).toArray();
+        int[] cost = Cost.stream().mapToInt(i -> i).toArray();
+        for (var Com : composition) {
+            int[] com = Com.stream().mapToInt(i -> i).toArray();
+            int left = 0, right = mx + 1;
+            while (left + 1 < right) { // 开区间写法
+                int mid = (left + right) / 2;
+                boolean ok = true;
+                long money = 0;
+                for (int i = 0; i < n; ++i) {
+                    if (stock[i] < com[i] * mid) {
+                        money += ((long) com[i] * mid - stock[i]) * cost[i];
+                        if (money > budget) {
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+                if (ok) {
+                    left = mid;
+                } else {
+                    right = mid;
+                }
+            }
+            ans = Math.max(ans, left);
+        }
+        return ans;
+    }
+}
+```
+
 ```cpp [sol-C++]
 class Solution {
 public:
