@@ -46,9 +46,26 @@ https://zh.wikipedia.org/wiki/%E7%AD%89%E5%B9%82%E6%B1%82%E5%92%8C#%E4%B8%80%E8%
 1^2 + ... + n^2 = n*(n+1)*(2*n+1)/6
 1^3 + ... + n^3 = [n(n+1)/2]^2
 
+一元二次方程/不等式
+https://codeforces.com/problemset/problem/1857/F
+
+反比例函数
+https://atcoder.jp/contests/arc158/tasks/arc158_b
+
+调和级数（枚举倍数）
+https://atcoder.jp/contests/abc089/tasks/abc089_d
+
+长为 n 的数组的所有子数组的长度之和 n*(n+1)*(n+2)/6 https://oeis.org/A000292
+长为 n 的数组的所有子数组的「长度/2下取整」之和
+n 为偶数时：m=n/2, m*(m+1)*(4*m-1)/6 https://oeis.org/A002412
+n 为奇数时：m=n/2, m*(m+1)*(4*m+5)/6 https://oeis.org/A016061
+综合：m*(m+1)*(m*4+n%2*6-1)/6
+- https://atcoder.jp/contests/abc290/tasks/abc290_e
+
 处理绝对值·曼哈顿距离转切比雪夫距离
 每个点 (x,y) 改成 (x+y,x-y)
-|x1-x2|+|y1-y2| 就可以用 max(|x1'-x2'|,|y1'-y2'|) 来计算了
+|x1-x2|+|y1-y2| 就可以用 max(|x1'-x2'|,|y1'-y2'|) 来计算了，维护 x 和 y 的前缀最大值和前缀最小值即可
+模板题 https://atcoder.jp/contests/abc178/tasks/abc178_e
 https://codeforces.com/problemset/problem/1689/D
 LC1131 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
 
@@ -211,6 +228,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
 	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
+
+	GCD(x,y) = GCD(x,y-x)   x<=y
+	https://codeforces.com/problemset/problem/1458/A
 
 	GCD 套路：枚举倍数（调和级数复杂度）
 	GCD(x,x+y) = GCD(x,y) https://codeforces.com/problemset/problem/1110/C
@@ -562,8 +582,17 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		1000003, // 1e6
 		10000019,
 		100000007,
-		1000000007, //1e9
+		1000000007, // 1e9
 		10000000019,
+		100000000003,
+		1000000000039, // 1e12
+		10000000000037,
+		100000000000031,
+		1000000000000037, // 1e15
+		10000000000000061,
+		100000000000000003,
+		1000000000000000003, // 1e18
+		10000000000000000051,
 	}
 
 	/* 质数性质统计相关
@@ -683,12 +712,15 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 判断一个数是否为质数
 	isPrime := func(n int64) bool {
+		if n < 2 || n >= 4 && n%2 == 0 {
+			return false
+		}
 		for i := int64(2); i*i <= n; i++ {
 			if n%i == 0 {
 				return false
 			}
 		}
-		return n >= 2
+		return true
 	}
 	// https://www.luogu.com.cn/problem/U82118
 	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
@@ -992,7 +1024,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	n 的因子个数 d(n) = Π(ei+1), ei 为第 i 个质数的系数 https://oeis.org/A000005 d(n) 也写作 τ(n) tau(n)
 		Positions of records (高合成数，反素数) https://oeis.org/A002182
 		Values of records https://oeis.org/A002183
-		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221 加强版 https://ac.nowcoder.com/acm/contest/82/A
+		相关题目：范围内的最多约数个数 https://www.luogu.com.cn/problem/P1221 https://www.luogu.com.cn/problem/U103401
+	             加强版 https://ac.nowcoder.com/acm/contest/82/A
 
 		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
@@ -1004,6 +1037,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			6, 60, 840, 7560, 83160,
 			720720, 8648640, 73513440, 735134400,
 			6983776800, 97772875200, 963761198400, 9316358251200, 97821761637600, 866421317361600, 8086598962041600, 74801040398884800, 897612484786617600
+
+			其它：183783600 有 960 个因子    294053760 有 1024 个因子      when hack https://leetcode.cn/problems/binary-trees-with-factors/
 
 		d(n) 前缀和 = ∑{k=1..n} floor(n/k) https://oeis.org/A006218
 	               = 见后文「数论分块/除法分块」
@@ -1084,6 +1119,37 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
 	*/
+
+	// n 以内的最多约数个数，以及对应的最小数字
+	// n <= 1e9
+	// https://www.luogu.com.cn/problem/P1221
+	maxDivisorNum := func(n int) (mxc, ans int) {
+		primes := []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29} // 多取一个质数，让乘法超出 n
+		var dfs func(int, int, int, int)
+		dfs = func(i, mxE, c, v int) {
+			if c > mxc || c == mxc && v < ans {
+				mxc, ans = c, v
+			}
+			for e := 1; e <= mxE; e++ {
+				v *= primes[i]
+				if v > n {
+					break
+				}
+				dfs(i+1, e, c*(e+1), v)
+			}
+		}
+		dfs(0, 30, 1, 1)
+		return
+	}
+
+	// 在有 mxcLimit 的前提下（限制约数个数），mxc 最大是多少
+	maxDivisorNumWithLimit := func(mxcLimit int) (mxc, ans int) {
+		rawAns := sort.Search(1e9, func(n int) bool {
+			c, _ := maxDivisorNum(n + 1)
+			return c > mxcLimit
+		})
+		return maxDivisorNum(rawAns)
+	}
 
 	// 枚举一个数的全部因子
 	divisors := func(n int64) (ds []int64) {
@@ -1279,6 +1345,38 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			}
 		}
 		return sf
+	}
+
+	// 时间复杂度 O(mx)
+	initAllCore := func() {
+		const mx int = 1e6
+		core := [mx + 1]int{}
+		for i := 1; i <= mx; i++ {
+			if core[i] == 0 { // i 不含完全平方因子
+				for j := 1; i*j*j <= mx; j++ {
+					core[i*j*j] = i
+				}
+			}
+		}
+	}
+
+	// 朴素 core
+	core := func(n int) int {
+		res := 1
+		for i := 2; i*i <= n; i++ {
+			e := 0
+			for n%i == 0 {
+				e ^= 1
+				n /= i
+			}
+			if e == 1 {
+				res *= i
+			}
+		}
+		if n > 1 {
+			res *= n
+		}
+		return res
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
@@ -2064,20 +2162,21 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 模数两两互质的线性同余方程组 - 中国剩余定理 (CRT)
 	// x ≡ bi (mod mi), bi 与 mi 互质且 Πmi <= 1e18
+	// bi 可以是负数
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// https://codeforces.com/blog/entry/61290
 	// 模板题 https://www.luogu.com.cn/problem/P1495
-	crt := func(B, M []int64) (x int64) {
-		m := int64(1)
-		for _, mi := range M {
-			m *= mi
+	crt := func(b, m []int64) (x int64) {
+		M := int64(1)
+		for _, mi := range m {
+			M *= mi
 		}
-		for i, mi := range M {
-			Mi := m / mi
+		for i, mi := range m {
+			Mi := M / mi
 			_, inv, _ := exgcd(Mi, mi)
-			x = (x + B[i]*Mi*inv) % m
+			x = (x + b[i]*Mi*inv) % M
 		}
-		x = (x + m) % m
+		x = (x + M) % M // 调整为非负
 		return
 	}
 
@@ -2352,6 +2451,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 组合数/二项式系数
 	// 不取模，仅适用于小范围的 n 和 k
+	// https://atcoder.jp/contests/abc202/tasks/abc202_d
 	initComb := func() {
 		const mx = 60
 		C := [mx + 1][mx + 1]int64{}
@@ -2995,6 +3095,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 埃及分数 - 不同的单位分数的和 (IDA*)
 	// https://www.luogu.com.cn/problem/UVA12558
 	// 贪婪算法：将一项分数分解成若干项单分子分数后的项数最少，称为第一种好算法；最大的分母数值最小，称为第二种好算法
+	// 构造：n 项和为 1 https://atcoder.jp/contests/arc163/tasks/arc163_c
 	// https://en.wikipedia.org/wiki/Egyptian_fraction
 	// https://oeis.org/A006585 number of solutions
 	// https://oeis.org/A247765 Table of denominators in the Egyptian fraction representation of n/(n+1) by the greedy algorithm
@@ -3040,7 +3141,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, distinctPrimesCountAll,
+		maxDivisorNum, maxDivisorNumWithLimit, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invM2, invP, divM, divP, calcAllInv,
