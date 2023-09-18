@@ -470,6 +470,15 @@ function pow(a, n) {
 - 时间复杂度：$\mathcal{O}(n+\log k)$，其中 $n$ 为 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 练习：矩阵快速幂
+
+- [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
+- [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
+- [1137. 第 N 个泰波那契数](https://leetcode.cn/problems/n-th-tribonacci-number/)
+- [1220. 统计元音字母序列的数目](https://leetcode.cn/problems/count-vowels-permutation/)
+- [552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)
+- [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
+
 ## 算法小课堂：模运算
 
 如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
