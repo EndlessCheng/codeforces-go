@@ -57,7 +57,7 @@ class Solution {
                 boolean ok = true;
                 long money = 0;
                 for (int i = 0; i < n; ++i) {
-                    if (stock.get(i) < com.get(i) * mid) {
+                    if (stock.get(i) < (long) com.get(i) * mid) {
                         money += ((long) com.get(i) * mid - stock.get(i)) * cost.get(i);
                         if (money > budget) {
                             ok = false;
@@ -94,7 +94,7 @@ class Solution {
                 boolean ok = true;
                 long money = 0;
                 for (int i = 0; i < n; ++i) {
-                    if (stock[i] < com[i] * mid) {
+                    if (stock[i] < (long) com[i] * mid) {
                         money += ((long) com[i] * mid - stock[i]) * cost[i];
                         if (money > budget) {
                             ok = false;
