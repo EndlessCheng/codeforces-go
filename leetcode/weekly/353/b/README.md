@@ -1,8 +1,8 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[视频讲解](https://b23.tv/8G0PNxs) 第二题。
 
 ## 前置知识：动态规划入门
 
-详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)
+详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
 
 ## 思路
 
@@ -35,7 +35,7 @@ class Solution:
                 return 0
             res = -inf
             for j in range(i):
-                if -target <= nums[i] - nums[j] <= target:
+                if abs(nums[i] - nums[j]) <= target:
                     res = max(res, dfs(j) + 1)
             return res
         ans = dfs(len(nums) - 1)
@@ -87,7 +87,7 @@ class Solution:
         f[0] = 0
         for i in range(1, n):
             for j in range(i):
-                if -target <= nums[i] - nums[j] <= target:
+                if abs(nums[i] - nums[j]) <= target:
                     f[i] = max(f[i], f[j] + 1)
         return -1 if f[-1] < 0 else f[-1]
 ```
