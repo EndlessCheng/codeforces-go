@@ -1,14 +1,14 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[视频讲解](https://b23.tv/b9ManDI) 第四题。
 
-### 提示 1
+## 提示 1
 
-$\textit{forbidden}[i]$ 的长度不超过 $10$。
+$\textit{forbidden}[i]$ 的长度至多为 $10$。
 
-### 提示 2
+## 提示 2
 
-[同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
+[滑动窗口](https://b23.tv/pRbxHhG)。
 
-### 提示 3
+## 提示 3
 
 初始化子串左端点 $\textit{left}=0$，枚举子串右端点 $\textit{right}$。
 
@@ -117,6 +117,6 @@ var longestValidSubstring = function (word, forbidden) {
 - 时间复杂度：$\mathcal{O}(L+nM^2)$，其中 $L$ 为所有 $\textit{forbidden}[i]$ 的长度之和，$n$ 为 $\textit{word}$ 的长度，$M=10$ 表示 $\textit{forbidden}[i]$ 的最长长度。请注意，在哈希表中查询一个长为 $M$ 的字符串的时间是 $\mathcal{O}(M)$，每次移动右指针会执行至多 $M$ 次这样的查询。
 - 空间复杂度：$\mathcal{O}(L)$。
 
-#### 相似题目
+## 相似题目
 
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
