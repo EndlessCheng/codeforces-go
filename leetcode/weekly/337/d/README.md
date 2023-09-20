@@ -17,7 +17,7 @@ $$
 如果 $x$ 和 $y$ 均为非负数，则 $x\equiv y \pmod m$ 相当于
 
 $$
-x\bmod p = y\bmod m
+x\bmod m = y\bmod m
 $$
 
 如果 $x<0$，$y\ge 0$，则 $x\equiv y \pmod m$ 相当于
