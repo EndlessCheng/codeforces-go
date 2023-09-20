@@ -11,12 +11,23 @@ func merge(s, t string) string {
 	if strings.Contains(t, s) {
 		return t
 	}
-	for i := min(len(s), len(t)); ; i-- {
-		// 枚举：s 的后 i 个字母和 t 的前 i 个字母是一样的
-		if s[len(s)-i:] == t[:i] {
-			return s + t[i:]
+
+	calcMaxMatchLengths := func(s string) []int {
+		match := make([]int, len(s))
+		for i, c := 1, 0; i < len(s); i++ {
+			v := s[i]
+			for c > 0 && s[c] != v {
+				c = match[c-1]
+			}
+			if s[c] == v {
+				c++
+			}
+			match[i] = c
 		}
+		return match
 	}
+	match := calcMaxMatchLengths(t+"#"+s)
+	return s + t[match[len(match)-1]:]
 }
 
 func minimumString(a, b, c string) (ans string) {
