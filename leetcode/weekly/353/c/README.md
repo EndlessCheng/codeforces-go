@@ -1,8 +1,8 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[视频讲解](https://b23.tv/8G0PNxs) 第三题。
 
 ## 前置知识：动态规划入门
 
-详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)
+详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
 
 ## 思路
 
