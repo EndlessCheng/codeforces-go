@@ -1,8 +1,6 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[视频讲解](https://b23.tv/b9ManDI) 第三题。
 
----
-
-首先证明：分割出的两个数组的支配元素就是原数组的支配元素。
+**证明**：分割出的两个数组的支配元素就是原数组的支配元素。
 
 设这两个数组的支配元素为 $y$（题目要求支配元素相同），那么对于第一个数组有
 
@@ -26,7 +24,7 @@ $$
 
 ### 算法
 
-首先求出众数 $\textit{mode}$ 及其出现次数 $\textit{total}$。
+首先求出 $\textit{nums}$ 的支配元素（绝对众数）$\textit{mode}$ 及其出现次数 $\textit{total}$。
 
 然后枚举 $i$，一边枚举一边统计 $\text{freq}_1(\textit{mode})$，那么 $\text{freq}_2(\textit{mode}) =\textit{total} -\text{freq}_1(\textit{mode})$。
 
@@ -75,4 +73,4 @@ func minimumIndex(nums []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。用摩尔投票法可以做到 $\mathcal{O}(1)$ 额外空间。
+- 空间复杂度：$\mathcal{O}(n)$。用摩尔投票法可以做到 $\mathcal{O}(1)$ 额外空间，具体见 [169. 多数元素](https://leetcode.cn/problems/majority-element/)。
