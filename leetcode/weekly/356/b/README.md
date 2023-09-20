@@ -11,16 +11,58 @@ class Solution:
         cnt = Counter()
         ans = left = 0
         for v in nums:  # 枚举子数组右端点 v=nums[i]
-            ans += left  # 子数组左端点 < left 的都是合法的
             cnt[v] += 1
             while len(cnt) == m:
-                ans += 1  # 子数组左端点等于 left 是合法的
                 x = nums[left]
                 cnt[x] -= 1
                 if cnt[x] == 0:
                     del cnt[x]
                 left += 1
+            ans += left  # 子数组左端点 < left 的都是合法的
         return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int countCompleteSubarrays(int[] nums) {
+        var set = new HashSet<Integer>();
+        for (int x : nums) set.add(x);
+        int m = set.size();
+        var cnt = new HashMap<Integer, Integer>();
+        int ans = 0, left = 0;
+        for (int v : nums) { // 枚举子数组右端点 v=nums[i]
+            cnt.merge(v, 1, Integer::sum);
+            while (cnt.size() == m) {
+                int x = nums[left++];
+                if (cnt.merge(x, -1, Integer::sum) == 0)
+                    cnt.remove(x);
+            }
+            ans += left; // 子数组左端点 < left 的都是合法的
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countCompleteSubarrays(vector<int> &nums) {
+        int m = unordered_set<int>(nums.begin(), nums.end()).size();
+        unordered_map<int, int> cnt;
+        int ans = 0, left = 0;
+        for (int v: nums) { // 枚举子数组右端点 v=nums[i]
+            cnt[v]++;
+            while (cnt.size() == m) {
+                int x = nums[left++];
+                if (--cnt[x] == 0)
+                    cnt.erase(x);
+            }
+            ans += left; // 子数组左端点 < left 的都是合法的
+        }
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -34,10 +76,8 @@ func countCompleteSubarrays(nums []int) (ans int) {
 	cnt := map[int]int{}
 	left := 0
 	for _, v := range nums { // 枚举子数组右端点 v=nums[i]
-		ans += left // 子数组左端点 < left 的都是合法的
 		cnt[v]++
 		for len(cnt) == m {
-			ans++ // 子数组左端点等于 left 是合法的
 			x := nums[left]
 			cnt[x]--
 			if cnt[x] == 0 {
@@ -45,9 +85,29 @@ func countCompleteSubarrays(nums []int) (ans int) {
 			}
 			left++
 		}
+		ans += left // 子数组左端点 < left 的都是合法的
 	}
 	return
 }
+```
+
+```js [sol-JavaScript]
+var countCompleteSubarrays = function (nums) {
+    const m = new Set(nums).size;
+    let cnt = new Map();
+    let ans = 0, left = 0;
+    for (const v of nums) { // 枚举子数组右端点 v=nums[i]
+        cnt.set(v, (cnt.get(v) ?? 0) + 1);
+        while (cnt.size === m) {
+            const x = nums[left++];
+            cnt.set(x, cnt.get(x) - 1);
+            if (cnt.get(x) === 0)
+                cnt.delete(x);
+        }
+        ans += left; // 子数组左端点 < left 的都是合法的
+    }
+    return ans;
+};
 ```
 
 #### 复杂度分析
