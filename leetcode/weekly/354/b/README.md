@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+[视频讲解](https://b23.tv/b9ManDI) 第二题。
 
 由于选的是子序列，且子序列的元素都相等，所以**元素顺序对答案没有影响**，可以先对数组**排序**。
 
@@ -8,7 +6,7 @@
 
 那么问题变成：「找最长的连续子数组，其最大值减最小值不超过 $2k$」，只要子数组满足这个要求，其中的元素都可以变成同一个数。
 
-这个问题可以用 [同向双指针](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 解决。枚举 $\textit{nums}[\textit{right}]$ 作为子数组的最后一个数，一旦 $\textit{nums}[\textit{right}]-\textit{nums}[\textit{left}]>2k$，就移动左端点。
+这个问题可以用 [滑动窗口](https://b23.tv/pRbxHhG) 解决。枚举 $\textit{nums}[\textit{right}]$ 作为子数组的最后一个数，一旦 $\textit{nums}[\textit{right}]-\textit{nums}[\textit{left}]>2k$，就移动左端点。
 
 $\textit{right}-\textit{left}+1$ 是子数组的长度，取所有长度最大值，即为答案。
 
