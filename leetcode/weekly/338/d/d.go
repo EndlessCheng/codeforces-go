@@ -13,19 +13,19 @@ func collectTheCoins(coins []int, edges [][]int) int {
 		deg[y]++
 	}
 
-	ans := n - 1
+	leftEdges := n - 1
 
 	// 用拓扑排序「剪枝」：去掉没有金币的子树
-	q := make([]int, 0, n)
+	q := []int{}
 	for i, d := range deg {
 		if d == 1 && coins[i] == 0 { // 无金币叶子
 			q = append(q, i)
 		}
 	}
 	for len(q) > 0 {
-		x := q[0]
-		q = q[1:]
-		ans--
+		x := q[len(q)-1]
+		q = q[:len(q)-1]
+		leftEdges--
 		deg[x] = 0
 		for _, y := range g[x] {
 			deg[y]--
@@ -37,25 +37,20 @@ func collectTheCoins(coins []int, edges [][]int) int {
 
 	// 再次拓扑排序
 	for i, d := range deg {
-		if d == 1 { // 有金币叶子
+		if d == 1 && coins[i] > 0 { // 有金币叶子
 			q = append(q, i)
 		}
 	}
-	ans -= len(q)
+	leftEdges -= len(q)
 	for _, x := range q {
 		for _, y := range g[x] {
 			deg[y]--
 			if deg[y] == 1 {
-				ans--
+				leftEdges--
 			}
 		}
 	}
-	return max(ans * 2, 0)
+	return max(leftEdges*2, 0)
 }
 
-func max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
-}
+func max(a, b int) int { if b > a { return b }; return a }
