@@ -10,12 +10,12 @@ func earliestFullBloom(plantTime, growTime []int) (ans int) {
 		a[i] = pair{p, growTime[i]}
 	}
 	sort.Slice(a, func(i, j int) bool { return a[i].g > a[j].g })
-	day := 0
+	days := 0
 	for _, p := range a {
-		day += p.p
-		if day+p.g > ans {
-			ans = day + p.g
-		}
+		days += p.p
+		ans = max(ans, days+p.g)
 	}
 	return
 }
+
+func max(a, b int) int { if b > a { return b }; return a }
