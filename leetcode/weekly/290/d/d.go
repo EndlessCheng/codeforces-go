@@ -2,8 +2,8 @@ package main
 
 import "sort"
 
-// github.com/EndlessCheng/codeforces-go
-func fullBloomFlowers(flowers [][]int, persons []int) []int {
+// https://space.bilibili.com/206214
+func fullBloomFlowers(flowers [][]int, people []int) []int {
 	diff := map[int]int{}
 	for _, f := range flowers {
 		diff[f[0]]++
@@ -17,20 +17,20 @@ func fullBloomFlowers(flowers [][]int, persons []int) []int {
 	}
 	sort.Ints(times)
 
-	for i, p := range persons {
-		persons[i] = p<<32 | i
+	id := make([]int, len(people))
+	for i := range id {
+		id[i] = i
 	}
-	sort.Ints(persons)
+	sort.Slice(id, func(i, j int) bool { return people[id[i]] < people[id[j]] })
 
-	ans := make([]int, len(persons))
-	i, sum := 0, 0
-	for _, p := range persons {
-		for ; i < n && times[i] <= p>>32; i++ {
-			sum += diff[times[i]]
+	j, sum := 0, 0
+	for _, i := range id {
+		for ; j < n && times[j] <= people[i]; j++ {
+			sum += diff[times[j]]
 		}
-		ans[uint32(p)] = sum
+		people[i] = sum
 	}
-	return ans
+	return people
 }
 
 func fullBloomFlowers2(flowers [][]int, persons []int) []int {
