@@ -1,5 +1,3 @@
-两种方法：二分/差分（Python/Java/C++/Go/JS/Rust）
-
 ## 方法一：转换 + 二分
 
 ![](https://pic.leetcode.cn/1695696658-skpYuS-2251.jpg)
@@ -295,7 +293,7 @@ public:
 
         int n = people.size();
         vector<int> id(n);
-        iota(id.begin(), id.end(), 0);
+        iota(id.begin(), id.end(), 0); // id[i] = i
         sort(id.begin(), id.end(), [&](int i, int j) { return people[i] < people[j]; });
 
         auto it = diff.begin();
