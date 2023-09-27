@@ -156,8 +156,8 @@ func fasterIO() {
 
 	// 读一个整数，支持负数
 	r = func() (x int) {
-		b := rc()
 		neg := false
+		b := rc()
 		for ; '0' > b || b > '9'; b = rc() {
 			// 某些多组数据的题目，不告诉有多少组数据，那么需要额外判断是否读到了 EOF
 			if b == eof {
