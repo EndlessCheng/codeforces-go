@@ -78,9 +78,13 @@ func fwt(a, b []int, fwtFunc func([]int, int) []int, invOp int) []int {
 	return c
 }
 
-// 注：若代码性能瓶颈在 FWT 上，可以通过以下方式消除比较慢的乘法和取模（CF 上需要将 int64 改成 int）
+// 注：若代码性能瓶颈在 FWT 上，可以通过以下方式消除比较慢的乘法和取模
+// （CF 旧版本用的 386）
 // 优化前 1575ms https://codeforces.com/contest/1218/submission/118700754
 // 优化后  748ms https://codeforces.com/contest/1218/submission/118704484
+// （CF 更新成 amd64 之后）
+// 优化前 779ms https://codeforces.com/contest/1218/submission/225480738
+// 优化后 545ms https://codeforces.com/contest/1218/submission/225480844
 const _mod = 1_000_000_007
 
 func add(a, b int) int {
