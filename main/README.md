@@ -1,6 +1,6 @@
 # Codeforces AC Codes
 
-Compiler info: go1.15.6, windows, 386
+Compiler info: go1.19.5, windows, amd64
 
 ## 代码框架
 
