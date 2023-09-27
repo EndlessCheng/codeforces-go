@@ -1,3 +1,16 @@
+## 需要交替播种吗？
+
+假设有两枚种子要播种，$1$ 号种子需要 $3$ 天，$2$ 号种子需要 $2$ 天。
+
+- 如果播种顺序为 $11122$，即先播种完 $1$ 号种子，再播种 $2$ 号种子，那么 $1$ 号种子在第 $3$ 天播种完毕，$2$ 号种子在第 $5$ 天播种完毕，完成播种共需 $5$ 天。
+- 如果交替播种，比如 $12112$，那么 $2$ 号种子完成播种的时间是不变的，但对于 $1$ 号种子来说，完成播种的时间却延后了一天。
+
+这说明如果要交替播种，至少有一枚种子的完成时间要延后，并且所有种子完成播种的时间是不变的。也就是说，交替播种不仅没有得到任何好处，反而会拖慢其中一些种子的播种进度。
+
+所以不应交替播种，应当种完一枚种子再开始另一枚。
+
+## 谁先播种？
+
 对于两枚种子，设其播种所需天数为 $p_1$ 和 $p_2$，生长所需天数为 $g_1$ 和 $g_2$。
 
 不妨设 $g_1\ge g_2$。我们来比较哪种播种顺序更优：
@@ -109,7 +122,7 @@ var earliestFullBloom = function (plantTime, growTime) {
 impl Solution {
     pub fn earliest_full_bloom(plant_time: Vec<i32>, grow_time: Vec<i32>) -> i32 {
         let mut id: Vec<usize> = (0..grow_time.len()).collect();
-        id.sort_by(|&i, &j| grow_time[j].cmp(&grow_time[i]));
+        id.sort_unstable_by(|&i, &j| grow_time[j].cmp(&grow_time[i]));
         let mut ans = 0;
         let mut days = 0;
         for &i in &id {
