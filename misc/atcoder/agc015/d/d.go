@@ -1,12 +1,18 @@
 package main
-import(."fmt";"math/bits")
+
+import (
+	. "fmt"
+	"io"
+	"math/bits"
+	"os"
+)
 
 // https://space.bilibili.com/206214
-func main() {
+func run(in io.Reader, out io.Writer) {
 	var low, high uint
-	Scan(&low, &high)
+	Fscan(in, &low, &high)
 	if low == high {
-		Print(1)
+		Fprint(out, 1)
 		return
 	}
 	ans := high - low + 1
@@ -19,5 +25,7 @@ func main() {
 	} else {
 		ans += mask - low + 1<<nh - high
 	}
-	Print(ans)
+	Fprint(out, ans)
 }
+
+func main() { run(os.Stdin, os.Stdout) }
