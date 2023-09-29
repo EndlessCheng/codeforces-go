@@ -27,6 +27,7 @@
 |前缀和与哈希表|[面试题 17.05. 字母与数字](https://leetcode.cn/problems/find-longest-subarray-lcci/)|[【套路】前缀和+哈希表，消除分支的技巧](https://leetcode.cn/problems/find-longest-subarray-lcci/solution/tao-lu-qian-zhui-he-ha-xi-biao-xiao-chu-3mb11/)|中等|
 ||[1590. 使数组和能被 P 整除](https://leetcode.cn/problems/make-sum-divisible-by-p/)|[【套路】前缀和+哈希表+模运算技巧](https://leetcode.cn/problems/make-sum-divisible-by-p/solution/tao-lu-qian-zhui-he-ha-xi-biao-pythonjav-rzl0/)|2039|
 |差分数组|[1094. 拼车](https://leetcode.cn/problems/car-pooling/)|[【模板讲解】差分数组](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-pyt-fln2/)|1441|
+||[2251. 花期内花的数目](https://leetcode.cn/problems/number-of-flowers-in-full-bloom/)|[两种方法：二分/差分](https://leetcode.cn/problems/number-of-flowers-in-full-bloom/solution/chai-fen-pythonjavacgo-by-endlesscheng-wz35/)|2022|
 |单调栈|[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[【图解单调栈】两种方法，两张图秒懂！](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|1571|
 ||[1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)|[【图解】两种做法，两张图秒懂！](https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/)|1908|
 ||[907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)|[【图解】贡献法+单调栈+三种实现版本](https://leetcode.cn/problems/sum-of-subarray-minimums/solution/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/)|1976|
