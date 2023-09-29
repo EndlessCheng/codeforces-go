@@ -19,13 +19,3 @@ func TestGenAtCoderProblemTemplate(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-// TODO: update REVEL_SESSION
-func TestGenAtCoderContestTemplates(t *testing.T) {
-	const contestID = "abc260"
-	// todo username := os.Getenv("ATCODER_USERNAME")
-	//   password := os.Getenv("ATCODER_PASSWORD")
-	if err := GenAtCoderContestTemplates(contestID); err != nil {
-		t.Fatal(err)
-	}
-}

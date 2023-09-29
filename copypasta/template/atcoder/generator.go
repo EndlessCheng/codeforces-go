@@ -222,12 +222,12 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	}
 
 	problemName := filepath.Base(problemURL)
-	sp := strings.Split(problemName, "_")
-	if len(sp) != 2 {
+	spIdx := strings.LastIndexByte(problemName, '_')
+	if spIdx < 0 {
 		return fmt.Errorf("invlaid url %s", problemURL)
 	}
 
-	contestID, taskID := sp[0], sp[1]
+	contestID, taskID := problemName[:spIdx], problemName[spIdx+1:]
 
 	// 生成目录
 	dirPath := filepath.Join(contestDir, contestID, taskID) + "/"
