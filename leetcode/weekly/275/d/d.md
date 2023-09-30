@@ -47,8 +47,8 @@ class Solution:
     def earliestFullBloom(self, plantTime: List[int], growTime: List[int]) -> int:
         ans = days = 0
         for p, g in sorted(zip(plantTime, growTime), key=lambda z: -z[1]):
-            days += p  # 累加生长天数
-            ans = max(ans, days + g)  # 更新最晚开花时间
+            days += p  # 累加播种天数
+            ans = max(ans, days + g)  # 再加上生长天数，就是这个种子的开花时间
         return ans
 ```
 
@@ -57,14 +57,12 @@ class Solution {
     public int earliestFullBloom(int[] plantTime, int[] growTime) {
         int n = plantTime.length;
         var id = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            id[i] = i;
-        }
+        Arrays.setAll(id, i -> i);
         Arrays.sort(id, (i, j) -> growTime[j] - growTime[i]);
         int ans = 0, days = 0;
         for (int i : id) {
-            days += plantTime[i]; // 累加生长天数
-            ans = Math.max(ans, days + growTime[i]); // 更新最晚开花时间
+            days += plantTime[i]; // 累加播种天数
+            ans = Math.max(ans, days + growTime[i]); // 再加上生长天数，就是这个种子的开花时间
         }
         return ans;
     }
@@ -80,8 +78,8 @@ public:
         sort(id.begin(), id.end(), [&](int i, int j) { return growTime[i] > growTime[j]; });
         int ans = 0, days = 0;
         for (int i : id) {
-            days += plantTime[i]; // 累加生长天数
-            ans = max(ans, days + growTime[i]); // 更新最晚开花时间
+            days += plantTime[i]; // 累加播种天数
+            ans = max(ans, days + growTime[i]); // 再加上生长天数，就是这个种子的开花时间
         }
         return ans;
     }
@@ -98,8 +96,8 @@ func earliestFullBloom(plantTime, growTime []int) (ans int) {
 	sort.Slice(a, func(i, j int) bool { return a[i].g > a[j].g })
 	days := 0
 	for _, p := range a {
-		days += p.p // 累加生长天数
-		ans = max(ans, days+p.g) // 更新最晚开花时间
+		days += p.p // 累加播种天数
+		ans = max(ans, days+p.g) // 再加上生长天数，就是这个种子的开花时间
 	}
 	return
 }
@@ -111,8 +109,8 @@ func max(a, b int) int { if b > a { return b }; return a }
 var earliestFullBloom = function (plantTime, growTime) {
     let ans = 0, days = 0;
     for (const [p, g] of _.zip(plantTime, growTime).sort((a, b) => b[1] - a[1])) {
-        days += p; // 累加生长天数
-        ans = Math.max(ans, days + g); // 更新最晚开花时间
+        days += p; // 累加播种天数
+        ans = Math.max(ans, days + g); // 再加上生长天数，就是这个种子的开花时间
     }
     return ans;
 };
@@ -126,8 +124,8 @@ impl Solution {
         let mut ans = 0;
         let mut days = 0;
         for &i in &id {
-            days += plant_time[i]; // 累加生长天数
-            ans = ans.max(days + grow_time[i]); // 更新最晚开花时间
+            days += plant_time[i]; // 累加播种天数
+            ans = ans.max(days + grow_time[i]); // 再加上生长天数，就是这个种子的开花时间
         }
         ans
     }
