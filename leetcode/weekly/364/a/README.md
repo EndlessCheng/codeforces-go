@@ -37,10 +37,7 @@ func maximumOddBinaryNumber(s string) string {
 
 ```js [sol-JavaScript]
 var maximumOddBinaryNumber = function (s) {
-    let cnt1 = 0;
-    for (const c of s) {
-        cnt1 += c === '1';
-    }
+    const cnt1 = _.sumBy(s, c => c === '1')
     return '1'.repeat(cnt1 - 1) + '0'.repeat(s.length - cnt1) + '1';
 };
 ```
