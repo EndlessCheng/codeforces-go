@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
-
----
+请看 [视频讲解](https://www.bilibili.com/video/BV1wh4y1Q7XW/) 第二题。
 
 ## 方法一
 
@@ -9,10 +7,8 @@
 直接调用 [445. 两数相加 II](https://leetcode.cn/problems/add-two-numbers-ii/solution/fan-zhuan-lian-biao-liang-shu-xiang-jia-okw6q/) 的代码即可。
 
 ```py [sol-Python3]
-# https://space.bilibili.com/206214
 class Solution:
     # 206. 反转链表
-    # 视频讲解 https://www.bilibili.com/video/BV1sd4y1x7KN/
     def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         pre = None
         cur = head
@@ -26,7 +22,7 @@ class Solution:
     # 2. 两数相加：自己和自己相加
     # 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
     def double(self, l1: Optional[ListNode]) -> Optional[ListNode]:
-        cur = dummy = ListNode()  # 哨兵节点
+        cur = dummy = ListNode()  # 哨兵节点，作为新链表的头节点的前一个节点
         carry = 0  # 进位
         while l1:  # 有一个不是空节点，或者还有进位，就继续迭代
             carry += l1.val * 2  # 节点值和进位加在一起
@@ -44,9 +40,91 @@ class Solution:
         return self.reverseList(res)
 ```
 
+```java [sol-Java]
+class Solution {
+    public ListNode doubleIt(ListNode head) {
+        head = reverseList(head);
+        ListNode res = double2(head); // 反转后，就变成【2. 两数相加】了
+        return reverseList(res);
+    }
+
+    // 206. 反转链表
+    private ListNode reverseList(ListNode head) {
+        ListNode pre = null, cur = head;
+        while (cur != null) {
+            ListNode nxt = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = nxt;
+        }
+        return pre;
+    }
+
+    // 2. 两数相加：自己和自己相加
+    // 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
+    private ListNode double2(ListNode l1) {
+        ListNode dummy = new ListNode(); // 哨兵节点，作为新链表的头节点的前一个节点
+        ListNode cur = dummy;
+        int carry = 0; // 进位
+        while (l1 != null) {
+            carry += l1.val * 2; // 节点值和进位加在一起
+            cur.next = new ListNode(carry % 10); // 每个节点保存一个数位
+            carry /= 10; // 新的进位
+            cur = cur.next; // 下一个节点
+            l1 = l1.next; // 下一个节点
+        }
+        if (carry != 0) {
+            cur.next = new ListNode(carry);
+        }
+        return dummy.next; // 哨兵节点的下一个节点就是头节点
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 206. 反转链表
+    ListNode *reverseList(ListNode *head) {
+        ListNode *pre = nullptr, *cur = head;
+        while (cur) {
+            ListNode *nxt = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = nxt;
+        }
+        return pre;
+    }
+
+    // 2. 两数相加：自己和自己相加
+    // 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
+    ListNode *double_(ListNode *l1) {
+        auto dummy = new ListNode(); // 哨兵节点，作为新链表的头节点的前一个节点
+        auto cur = dummy;
+        int carry = 0; // 进位
+        while (l1) {
+            carry += l1->val * 2; // 节点值和进位加在一起
+            cur->next = new ListNode(carry % 10); // 每个节点保存一个数位
+            carry /= 10; // 新的进位
+            cur = cur->next; // 下一个节点
+            l1 = l1->next; // 下一个节点
+        }
+        if (carry) {
+            cur->next = new ListNode(carry);
+        }
+        return dummy->next;
+    }
+
+public:
+    ListNode *doubleIt(ListNode *head) {
+        head = reverseList(head);
+        auto res = double_(head);
+        return reverseList(res);
+    }
+};
+```
+
 ```go [sol-Go]
 // 206. 反转链表
-// 视频讲解 https://www.bilibili.com/video/BV1sd4y1x7KN/
 func reverseList(head *ListNode) *ListNode {
 	var pre, cur *ListNode = nil, head
 	for cur != nil {
@@ -74,13 +152,96 @@ func double(l1 *ListNode) *ListNode {
 	if carry != 0 {
 		cur.Next = &ListNode{Val: carry}
 	}
-	return dummy.Next
+	return dummy.Next // 哨兵节点的下一个节点就是头节点
 }
 
 func doubleIt(head *ListNode) *ListNode {
 	head = reverseList(head)
 	res := double(head) // 反转后，就变成【2. 两数相加】了
 	return reverseList(res)
+}
+```
+
+```js [sol-JavaScript]
+// 206. 反转链表
+var reverseList = function (head) {
+    let pre = null;
+    let cur = head;
+    while (cur) {
+        let nxt = cur.next;
+        cur.next = pre;
+        pre = cur;
+        cur = nxt;
+    }
+    return pre;
+};
+
+// 2. 两数相加：自己和自己相加
+// 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
+var double = function (l1) {
+    let dummy = new ListNode(); // 哨兵节点，作为新链表的头节点的前一个节点
+    let cur = dummy;
+    let carry = 0; // 进位
+    while (l1) {
+        carry += l1.val * 2; // 节点值和进位加在一起
+        cur.next = new ListNode(carry % 10); // 每个节点保存一个数位
+        carry = Math.floor(carry / 10); // 新的进位
+        cur = cur.next; // 下一个节点
+        l1 = l1.next; // 下一个节点
+    }
+    if (carry) {
+        cur.next = new ListNode(carry);
+    }
+    return dummy.next; // 哨兵节点的下一个节点就是头节点
+};
+
+var doubleIt = function (head) {
+    head = reverseList(head);
+    const res = double(head); // 反转后，就变成【2. 两数相加】了
+    return reverseList(res);
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    // 206. 反转链表
+    fn reverse_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut pre = None;
+        let mut cur = head;
+        while let Some(mut node) = cur {
+            let nxt = node.next.take();
+            node.next = pre;
+            pre = Some(node);
+            cur = nxt;
+        }
+        pre
+    }
+
+    // 2. 两数相加：自己和自己相加
+    // 题解 https://leetcode-cn.com/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
+    fn double(l1: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut dummy = Some(Box::new(ListNode::new(0))); // 哨兵节点，作为新链表的头节点的前一个节点
+        let mut cur = &mut dummy;
+        let mut carry = 0; // 进位
+        let mut l1 = l1;
+        while let Some(mut node) = l1 {
+            carry += node.val * 2; // 节点值和进位加在一起
+            cur.as_mut().unwrap().next = Some(Box::new(ListNode::new(carry % 10)));// 每个节点保存一个数位
+            carry /= 10; // 新的进位
+            cur = &mut cur.as_mut().unwrap().next; // 下一个节点
+            l1 = node.next.take(); // 下一个节点
+        }
+        if carry != 0 {
+            cur.as_mut().unwrap().next = Some(Box::new(ListNode::new(carry)));
+        }
+        dummy.unwrap().next // 哨兵节点的下一个节点就是头节点
+    }
+
+    pub fn double_it(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let head = Self::reverse_list(head);
+        let res = Self::double(head); // 反转后，就变成【2. 两数相加】了
+        Self::reverse_list(res)
+    }
 }
 ```
 
@@ -154,6 +315,43 @@ func doubleIt(head *ListNode) *ListNode {
 		}
 	}
 	return head
+}
+```
+
+```js [sol-JavaScript]
+var doubleIt = function (head) {
+    if (head.val > 4) {
+        head = new ListNode(0, head);
+    }
+    for (let cur = head; cur; cur = cur.next) {
+        cur.val = cur.val * 2 % 10;
+        if (cur.next && cur.next.val > 4) {
+            cur.val++;
+        }
+    }
+    return head;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn double_it(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut head = head;
+        if head.as_ref().unwrap().val > 4 {
+            head = Some(Box::new(ListNode { val: 0, next: head }));
+        }
+        let mut cur = head.as_mut();
+        while let Some(node) = cur {
+            node.val = node.val * 2 % 10;
+            if let Some(next) = node.next.as_mut() {
+                if next.val > 4 {
+                    node.val += 1;
+                }
+            }
+            cur = node.next.as_mut();
+        }
+        head
+    }
 }
 ```
 
