@@ -32,6 +32,7 @@
 ||[25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)|[代码](https://leetcode.cn/problems/reverse-nodes-in-k-group/solutions/1992228/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-plfs/)||
 ||[24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)|[代码](https://leetcode.cn/problems/swap-nodes-in-pairs/solution/tu-jie-die-dai-di-gui-yi-zhang-tu-miao-d-51ap)|*课后作业|
 ||[445. 两数相加 II](https://leetcode.cn/problems/add-two-numbers-ii/)|[代码](https://leetcode.cn/problems/add-two-numbers-ii/solution/fan-zhuan-lian-biao-liang-shu-xiang-jia-okw6q)|*课后作业|
+||[2816. 翻倍以链表形式表示的数字](https://leetcode.cn/problems/double-a-number-represented-as-a-linked-list/)|[代码](https://leetcode.cn/problems/double-a-number-represented-as-a-linked-list/solution/o1-kong-jian-zuo-fa-kan-cheng-shi-head-y-1dco/)|*课后作业|
 |[链表 - 快慢指针](https://www.bilibili.com/video/BV1KG4y1G7cu/)|[876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/)|[代码](https://leetcode.cn/problems/middle-of-the-linked-list/solutions/1999265/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-wzwm/)||
 ||[141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)|[代码](https://leetcode.cn/problems/linked-list-cycle/solutions/1999269/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-c4sw/)||
 ||[142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)|[代码](https://leetcode.cn/problems/linked-list-cycle-ii/solutions/1999271/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-nvsq/)||
