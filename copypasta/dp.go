@@ -138,7 +138,17 @@ https://training.olinfo.it/#/task/preoii_yutaka/statement
 参考书籍推荐：
 《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
-视频讲解：
+我的视频讲解：
+https://www.bilibili.com/video/BV1Xj411K7oF 从记忆化搜索到递推
+https://www.bilibili.com/video/BV16Y411v7Y6 背包问题
+https://www.bilibili.com/video/BV1TM4y1o7ug LCS
+https://www.bilibili.com/video/BV1ub411Q7sB LIS
+https://www.bilibili.com/video/BV1ho4y1W7QK 状态机 DP
+https://www.bilibili.com/video/BV1Gs4y1E7EU 区间 DP
+https://www.bilibili.com/video/BV17o4y187h1 树形 DP
+https://www.bilibili.com/video/BV1vu4y1f7dn 树形 DP
+https://www.bilibili.com/video/BV1oF411U7qL 树形 DP
+
 https://www.bilibili.com/video/BV1gf4y1i78H 动态规划的套路 by wisdompeak
 https://www.bilibili.com/video/av70148899 DP 入门，01 背包，完全背包，多重背包
 https://www.bilibili.com/video/av77393700 LCS LIS
