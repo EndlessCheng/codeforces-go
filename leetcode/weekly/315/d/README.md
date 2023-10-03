@@ -1,21 +1,36 @@
-#### 提示 1
+[视频讲解](https://www.bilibili.com/video/BV1Ae4y1i7PM) 第四题。
+
+## 提示 1
 
 首先考虑一个简单的情况，$\textit{nums}$ 的所有元素都在 $[\textit{minK},\textit{maxK}]$ 范围内。
 
 在这种情况下，相当于要统计同时包含 $\textit{minK}$ 和 $\textit{maxK}$ 的子数组的个数。
 
-我们可以枚举子数组的右端点。遍历 $\textit{nums}$，记录 $\textit{minK}$ 上一次出现的位置 $\textit{minI}$ 和 $\textit{maxK}$ 上一次出现的位置 $\textit{maxI}$，当遍历到 $\textit{nums}[i]$ 时，如果 $\textit{minK}$ 和 $\textit{maxK}$ 之前出现过，则左端点 $\le\min(\textit{minI},\textit{maxI})$ 的子数组都是合法的，合法子数组的个数为 $\min(\textit{minI},\textit{maxI})+1$。
+我们可以枚举子数组的右端点。遍历 $\textit{nums}$，记录 $\textit{minK}$ 上一次出现的位置 $\textit{minI}$，以及 $\textit{maxK}$ 上一次出现的位置 $\textit{maxI}$，当遍历到 $\textit{nums}[i]$ 时，如果
+$\textit{minK}$ 和 $\textit{maxK}$ 之前出现过，则左端点 $\le\min(\textit{minI},\textit{maxI})$ 的子数组都是合法的。
 
-#### 提示 2
+以 $i$ 为右端点的合法子数组的个数为 
 
-回到原问题，由于子数组不能包含在 $[\textit{minK},\textit{maxK}]$ 范围之外的元素，因此我们还需要记录上一个在 $[\textit{minK},\textit{maxK}]$ 范围之外的 $\textit{nums}[i]$ 的下标，记作 $i_0$。此时合法子数组的个数为 $\min(\textit{minI},\textit{maxI})-i_0$。
+$$
+\min(\textit{minI},\textit{maxI})+1
+$$
+
+## 提示 2
+
+回到原问题，由于子数组不能包含在 $[\textit{minK},\textit{maxK}]$ 范围之外的元素，因此我们还需要记录上一个在 $[\textit{minK},\textit{maxK}]$ 范围之外的 $\textit{nums}[i]$ 的下标，记作 $i_0$。
+
+以 $i$ 为右端点的合法子数组的个数为 
+
+$$
+\min(\textit{minI},\textit{maxI})-i_0
+$$
 
 代码实现时：
 
 - 为方便计算，可以初始化 $\textit{minI},\ \textit{maxI},\ i_0$ 均为 $-1$。
-- 如果 $\min(\textit{minI},\textit{maxI})-i_0 < 0$，则表示在 $i_0$ 右侧 $\textit{minK}$ 和 $\textit{maxK}$ 没有同时出现，此时合法子数组的个数为 $0$。
+- 如果 $\min(\textit{minI},\textit{maxI})-i_0 < 0$，则表示在 $i_0$ 右侧 $\textit{minK}$ 和 $\textit{maxK}$ 没有同时出现，此时以 $i$ 为右端点的合法子数组的个数为 $0$。
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def countSubarrays(self, nums: List[int], min_k: int, max_k: int) -> int:
         ans = 0
@@ -31,13 +46,13 @@ class Solution:
         return ans
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public long countSubarrays(int[] nums, int minK, int maxK) {
-        var ans = 0L;
-        int n = nums.length, minI = -1, maxI = -1, i0 = -1;
-        for (var i = 0; i < n; ++i) {
-            var x = nums[i];
+        long ans = 0;
+        int minI = -1, maxI = -1, i0 = -1;
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
             if (x == minK) minI = i;
             if (x == maxK) maxI = i;
             if (x < minK || x > maxK) i0 = i; // 子数组不能包含 nums[i0]
@@ -48,13 +63,13 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     long long countSubarrays(vector<int> &nums, int min_k, int max_k) {
         long long ans = 0L;
         int n = nums.size(), min_i = -1, max_i = -1, i0 = -1;
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < n; i++) {
             int x = nums[i];
             if (x == min_k) min_i = i;
             if (x == max_k) max_i = i;
@@ -66,7 +81,7 @@ public:
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func countSubarrays(nums []int, minK, maxK int) (ans int64) {
 	minI, maxI, i0 := -1, -1, -1
 	for i, x := range nums {
@@ -88,7 +103,53 @@ func min(a, b int) int { if b < a { return b }; return a }
 func max(a, b int) int { if b > a { return b }; return a }
 ```
 
+```js [sol-JavaScript]
+var countSubarrays = function (nums, minK, maxK) {
+    let ans = 0, minI = -1, maxI = -1, i0 = -1;
+    for (let i = 0; i < nums.length; i++) {
+        const x = nums[i];
+        if (x === minK) minI = i;
+        if (x === maxK) maxI = i;
+        if (x < minK || x > maxK) i0 = i; // 子数组不能包含 nums[i0]
+        ans += Math.max(Math.min(minI, maxI) - i0, 0);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_subarrays(nums: Vec<i32>, min_k: i32, max_k: i32) -> i64 {
+        let mut ans = 0i64;
+        let mut min_i = -1;
+        let mut max_i = -1;
+        let mut i0 = -1;
+        for (i, &x) in nums.iter().enumerate() {
+            let i = i as i32;
+            if x == min_k {
+                min_i = i;
+            }
+            if x == max_k {
+                max_i = i;
+            }
+            if x < min_k || x > max_k {
+                i0 = i; // 子数组不能包含 nums[i0]
+            }
+            ans += 0.max(min_i.min(max_i) - i0) as i64;
+        }
+        ans
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(1)$，仅用到若干变量。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$，仅用到若干变量。
+
+## 练习：多指针滑动窗口
+
+- [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/)
+- [1248. 统计「优美子数组」](https://leetcode.cn/problems/count-number-of-nice-subarrays/)
+- [1712. 将数组分成三个子数组的方案数](https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/)
+- [992. K 个不同整数的子数组](https://leetcode.cn/problems/subarrays-with-k-different-integers/) 
