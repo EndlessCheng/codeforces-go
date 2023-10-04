@@ -6,8 +6,11 @@ package copypasta
 https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/
 
 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
-如何理解：把数组想象成一列山峰，站在 a[i] 的山顶仰望两侧的山峰，是看不到高山背后的矮山的，只能看到一座座更高的山峰
-         这就启发我们引入一个底大顶小的单调栈，入栈时不断比较栈顶元素直到找到一个比当前元素大的
+如何理解：
+把数组想象成一列山峰，站在 a[i] 的山顶仰望两侧的山峰，是看不到高山背后的矮山的，只能看到一座座更高的山峰。
+此外，如果一座山无法看到，那么在后续的遍历中，就永远无法看到这座山了。
+比如从右到左遍历，现在右边无法看到的山，继续向左也无法看到。
+这启发我们引入一个底大顶小（远大近小）的单调栈，入栈时不断弹出栈顶元素，直到栈顶比当前元素大。弹出的元素就是永远无法看到的山。
 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 一些转换：
     若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > left[r]
@@ -28,6 +31,8 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)
 - [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/)
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)
+- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)
+    - https://codeforces.com/problemset/problem/1313/C2
 
 #### 矩形系列
 
@@ -49,6 +54,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [2104. 子数组范围和](https://leetcode.cn/problems/sum-of-subarray-ranges/)
 - [2281. 巫师的总力量和](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
 - [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/)
+另见 common.go
 
 模板题
 https://www.luogu.com.cn/problem/P5788
@@ -72,13 +78,13 @@ LC321 https://leetcode.cn/problems/create-maximum-number/
 
 计算贡献（所有子数组的……的和）
 最小值 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
+- https://atcoder.jp/contests/agc057/tasks/agc057_b
 最大值-最小值 LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
 最小值*和 LC2281 https://leetcode.cn/problems/sum-of-total-strength-of-wizards/
 第二大 https://atcoder.jp/contests/abc140/tasks/abc140_e
 
 与 DP 结合
 https://codeforces.com/problemset/problem/5/E
-https://codeforces.com/problemset/problem/1313/C2
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
 按照最大值分类讨论 LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
@@ -138,7 +144,7 @@ func monotoneStack(a []int) ([]int, []int) {
 		st = append(st, i)
 	}
 
-	sum := make([]int, n+1) // int64
+	sum := make([]int, n+1)
 	for i, v := range a {
 		sum[i+1] = (sum[i] + v) % mod
 	}

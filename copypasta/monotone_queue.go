@@ -19,9 +19,10 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
 - [面试题 59-II. 队列的最大值](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)（单调队列模板题）
 - [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
-- [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)
-- [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/)
-- [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/)
+- [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/) 1672
+- [2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/) 1917
+- [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
+- [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456
 
 https://leetcode.cn/tag/monotonic-queue/problemset/
 
@@ -101,7 +102,7 @@ func FixedSizeMax(a []int, fixedSize int) []int {
 // https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
 func MaxSubSumWithLimitSize(a []int, sizeLimit int) int {
 	n := len(a)
-	sum := make([]int, n+1) // int64
+	sum := make([]int, n+1)
 	for i, v := range a {
 		sum[i+1] = sum[i] + v
 	}
@@ -172,9 +173,9 @@ func LeftPosInDiffLimit(a []int, limit int) []int {
 // 随着左端点向右，右端点必然不会向左
 func CountSubarrayByMinMax(a []int) int {
 	n := len(a)
-	ans := n * (n + 1) / 2 // int64
-	mx := MonotoneQueue{}  // 维护区间最大值
-	mi := MonotoneQueue{}  // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
+	ans := n * (n + 1) / 2
+	mx := MonotoneQueue{} // 维护区间最大值
+	mi := MonotoneQueue{} // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
 	for i, j := 0, 0; i < n; i++ {
 		// 确保符合条件再插入
 		for ; j < n && (mx.Size == 0 || mi.Size == 0 || mx.max(mx.Top(), a[j]) < 2*mi.min(mi.Top(), a[j])); j++ {
