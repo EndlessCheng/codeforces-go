@@ -18,11 +18,6 @@
 
 最大路径和是一个经典树形 DP 问题，类似 [树的直径](https://www.bilibili.com/video/BV17o4y187h1/)。
 
-由于我们需要去掉一个叶子，可以让子树返回两个值：
-
-- 带叶子的最大路径和；
-- 不带叶子的最大路径和。
-
 设 $y$ 是 $x$ 的一个儿子，想象有一条路径在 $x$ 拐弯，那么这条路径可以看成是由「从 $x$ 出发往下的路径」和「从 $y$ 出发往下的路径」拼接而成（这两条路径不重叠）。
 
 对于当前节点 $x$，假设它有多棵子树，我们一棵棵 DFS，同时维护「从 $x$ 出发往下的最大带叶子的路径和」和「从 $x$ 出发往下的最大不带叶子的路径和」。
@@ -50,7 +45,6 @@ class Solution:
             g[y].append(x)  # 建树
 
         ans = 0
-        # 返回带叶子的最大路径和，不带叶子的最大路径和
         def dfs(x: int, fa: int) -> (int, int):
             nonlocal ans
             max_s1 = p = price[x]
@@ -87,7 +81,6 @@ class Solution {
         return ans;
     }
 
-    // 返回带叶子的最大路径和，不带叶子的最大路径和
     private long[] dfs(int x, int fa) {
         long p = price[x], maxS1 = p, maxS2 = 0;
         for (var y : g[x])
@@ -117,7 +110,6 @@ public:
         }
 
         long ans = 0;
-        // 返回带叶子的最大路径和，不带叶子的最大路径和
         function<pair<long, long>(int, int)> dfs = [&](int x, int fa) -> pair<long, long> {
             long p = price[x], max_s1 = p, max_s2 = 0;
             for (int y : g[x])
@@ -146,7 +138,6 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 		g[x] = append(g[x], y)
 		g[y] = append(g[y], x) // 建树
 	}
-	// 返回带叶子的最大路径和，不带叶子的最大路径和
 	var dfs func(int, int) (int, int)
 	dfs = func(x, fa int) (int, int) {
 		p := price[x]
