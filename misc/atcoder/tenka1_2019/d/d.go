@@ -13,8 +13,8 @@ func run(_r io.Reader, out io.Writer) {
 	const mod = 998244353
 	var n, v, s, dup int
 	var f, g [90001]int
-	f[0] = 1
-	g[0] = 1
+	f[0] = 3
+	g[0] = 3
 	pow3 := 1
 	for Fscan(in, &n); n > 0; n-- {
 		Fscan(in, &v)
@@ -30,7 +30,7 @@ func run(_r io.Reader, out io.Writer) {
 	if s%2 == 0 {
 		dup = g[s/2]
 	}
-	ans := pow3 - (f[(s+1)/2]-dup)*3
+	ans := pow3 - (f[(s+1)/2] - dup)
 	Fprint(out, (ans%mod+mod)%mod)
 }
 
