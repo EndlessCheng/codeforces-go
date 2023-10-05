@@ -22,14 +22,18 @@ https://zhuanlan.zhihu.com/p/553192435
 // 并查集时间复杂度证明 https://oi-wiki.org/ds/dsu-complexity/
 // RMQ 标准算法和线性树上并查集 https://ljt12138.blog.uoj.ac/blog/4874
 //
-// 模板题 https://www.luogu.com.cn/problem/P3367
+// 另见 graph.go 中的 MST
+//
+// 模板题 LC547 https://leetcode.cn/problems/number-of-provinces/
+// LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
+// https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 基础题 https://codeforces.com/problemset/problem/1167/C
 //       https://codeforces.com/problemset/problem/1411/C
-// LC305 https://leetcode.cn/problems/number-of-islands-ii/
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 转换 https://atcoder.jp/contests/abc304/tasks/abc304_e
 // 转换 https://atcoder.jp/contests/abc238/tasks/abc238_e
+// merge 后 from 还有用 https://atcoder.jp/contests/abc279/tasks/abc279_f
 //
 // 处理图上的环
 // - https://codeforces.com/contest/1726/problem/D
@@ -85,9 +89,22 @@ func NewUnionFind(n int) UnionFind {
 	return UnionFind{fa, n}
 }
 
+// 非递归版本
 func (u UnionFind) Find(x int) int {
+	root := x
+	for u.Fa[root] != root {
+		root = u.Fa[root]
+	}
+	for u.Fa[x] != root {
+		u.Fa[x], x = root, u.Fa[x]
+	}
+	return root
+}
+
+// 递归版本
+func (u UnionFind) FindR(x int) int {
 	if u.Fa[x] != x {
-		u.Fa[x] = u.Find(u.Fa[x])
+		u.Fa[x] = u.FindR(u.Fa[x])
 	}
 	return u.Fa[x]
 }
