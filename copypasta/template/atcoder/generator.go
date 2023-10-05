@@ -227,16 +227,17 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 		return fmt.Errorf("invlaid url %s", problemURL)
 	}
 
-	contestID, taskID := problemName[:spIdx], problemName[spIdx+1:]
+	dirID, taskID := problemName[:spIdx], problemName[spIdx+1:]
+	contestName := strings.ReplaceAll(dirID, "_", "-")
 
 	// 生成目录
-	dirPath := filepath.Join(contestDir, contestID, taskID) + "/"
+	dirPath := filepath.Join(contestDir, dirID, taskID) + "/"
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return err
 	}
 
-	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit?taskScreenName=%s", contestID, problemName)
-	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestID, problemName)
+	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit?taskScreenName=%s", contestName, problemName)
+	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
 	if !isContest {
 		open.Run(statusURL)
 	}
