@@ -8,10 +8,10 @@ import (
 	"os"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func run(_r io.Reader, out io.Writer) {
-	const eps = 1e-8 // 由于任何 ±1 带来的均值变动至少是 1/n，eps 取 1e-8 绰绰有余
 	in := bufio.NewReader(_r)
+	const eps = 1e-8 // 由于任何 ±1 带来的均值变动至少是 1/n，eps 取 1e-8 绰绰有余
 
 	var n, d, pl, pr int
 	Fscan(in, &n, &d)
@@ -19,26 +19,26 @@ func run(_r io.Reader, out io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	l, r := 0.0, 1e2
+	l, r := -1.0, 101.0
 o:
 	for t := int(math.Log2((r - l) / eps)); t > 0; t-- {
-		x := (l + r) / 2
-		s := make([]float64, n+1)
+		mid := (l + r) / 2
+		sum := make([]float64, n+1)
 		for i, v := range a {
-			s[i+1] = s[i] + float64(v) - x
+			sum[i+1] = sum[i] + float64(v) - mid
 		}
 		minI := 0
-		for i, v := range s[:n+1-d] {
-			if v < s[minI] {
+		for i, v := range sum[:n+1-d] {
+			if v < sum[minI] {
 				minI = i
 			}
-			if s[i+d] >= s[minI] {
+			if sum[i+d] >= sum[minI] {
 				pl, pr = minI+1, i+d
-				l = x
+				l = mid
 				continue o
 			}
 		}
-		r = x
+		r = mid
 	}
 	Fprint(out, pl, pr)
 }
