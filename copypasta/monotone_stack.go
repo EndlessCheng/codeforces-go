@@ -1,6 +1,10 @@
 package copypasta
 
 /* 单调栈 Monotone Stack
+
+视频讲解
+https://www.bilibili.com/video/BV1VN411J7S7/
+
 举例：返回每个元素两侧严格大于它的元素位置（不存在则为 -1 或 n）
 
 如何理解：
@@ -23,15 +27,15 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 #### 单调栈
 
-- [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)（单调栈模板题）
+- [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)（单调栈模板题）
+- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/)
+- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)
+- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)
+- [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)
 - [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/)
-- [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)
-- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)
-- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)
-- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/)
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)
 - [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)
     - https://codeforces.com/problemset/problem/1313/C2
