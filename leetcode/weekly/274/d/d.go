@@ -18,8 +18,8 @@ func maximumInvitations(g []int) int { // favorite 就是内向基环森林 g
 	for len(q) > 0 { // 拓扑排序，剪掉 g 上的所有树枝
 		v := q[0]
 		q = q[1:]
-		maxDepth[v]++
 		w := g[v] // v 只有一条出边
+		maxDepth[v]++
 		maxDepth[w] = max(maxDepth[w], maxDepth[v])
 		if deg[w]--; deg[w] == 0 {
 			q = append(q, w)
@@ -28,14 +28,14 @@ func maximumInvitations(g []int) int { // favorite 就是内向基环森林 g
 
 	maxRingSize, sumChainSize := 0, 0
 	for i, d := range deg {
-		if d == 0 {
+		if d <= 0 {
 			continue
 		}
 		// 遍历基环上的点（拓扑排序后入度大于 0）
 		deg[i] = 0
 		ringSize := 1
 		for v := g[i]; v != i; v = g[v] {
-			deg[v] = 0 // 将基环上的点的入度标记为 -1，避免重复访问
+			deg[v] = -1 // 将基环上的点的入度标记为 -1，避免重复访问
 			ringSize++
 		}
 		if ringSize == 2 { // 基环大小为 2
