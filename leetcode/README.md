@@ -92,6 +92,7 @@
 |[树形 DP - 最小支配集](https://www.bilibili.com/video/BV1oF411U7qL/)|[968. 监控二叉树](https://leetcode.cn/problems/binary-tree-cameras/)|[代码](https://leetcode.cn/problems/binary-tree-cameras/solution/shi-pin-ru-he-si-kao-shu-xing-dpgai-chen-uqsf/)||
 |[单调栈](https://www.bilibili.com/video/BV1VN411J7S7/)|[739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)|[代码](https://leetcode.cn/problems/daily-temperatures/solution/shi-pin-jiang-qing-chu-wei-shi-yao-yao-y-k0ks/)|两种写法|
 ||[42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)|[代码](https://leetcode.cn/problems/trapping-rain-water/solution/zuo-liao-nbian-huan-bu-hui-yi-ge-shi-pin-ukwm/)||
+||[901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)|[代码](https://leetcode.cn/problems/online-stock-span/solution/shi-pin-yi-ge-shi-pin-jiang-tou-dan-diao-cuk7/)|*课后作业|
 ||[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[代码](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|*课后作业|
 
 其它尚未更新的 topic 请看 [每日一题题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
