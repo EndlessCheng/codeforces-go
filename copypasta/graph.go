@@ -356,6 +356,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 // 锻炼分类讨论能力 https://codeforces.com/contest/1790/problem/G
 // 带撤销的 BFS https://codeforces.com/problemset/problem/1721/D
 //            https://codeforces.com/contest/1851/problem/F
+// https://codeforces.com/problemset/problem/1874/B
 func (*graph) bfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	vis[st] = true
@@ -1025,10 +1026,7 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 
 //
 
-type dijkstraPair struct {
-	v   int
-	dis int64
-}
+type dijkstraPair struct{ v, dis int }
 type dijkstraHeap []dijkstraPair
 
 func (h dijkstraHeap) Len() int             { return len(h) }
@@ -1087,14 +1085,11 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // todo https://codeforces.com/problemset/problem/1005/F
 // todo MST https://codeforces.com/problemset/problem/545/E
 //  https://atcoder.jp/contests/arc090/tasks/arc090_c
-func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
-	type neighbor struct {
-		to int
-		wt int64
-	}
+func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int) {
+	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		v, w, wt := 0, 0, int64(0)
+		var v, w, wt int
 		Fscan(in, &v, &w, &wt)
 		v--
 		w--
@@ -1102,8 +1097,8 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 		g[w] = append(g[w], neighbor{v, wt})
 	}
 
-	const inf int64 = 1e18 // 1e9+1
-	dist = make([]int64, n)
+	const inf int = 1e18
+	dist = make([]int, n)
 	for i := range dist {
 		dist[i] = inf
 	}
@@ -1203,13 +1198,13 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 	// 次短路计数 https://www.acwing.com/problem/content/385/ https://codeforces.com/contest/1650/problem/G
 	// 长度不超过最短路长度+K 的路径个数 [NOIP2017 提高组] 逛公园 https://www.luogu.com.cn/problem/P3953
 	{
-		const inf int64 = 1e18 // 1e9+1
-		dist := make([]int64, n)
+		const inf int = 1e18
+		dist := make([]int, n)
 		for i := range dist {
 			dist[i] = inf
 		}
 		dist[st] = 0
-		dist2 := make([]int64, n)
+		dist2 := make([]int, n)
 		for i := range dist2 {
 			dist2[i] = inf
 		}
@@ -1242,11 +1237,11 @@ func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int64) {
 // 另一种 Dijkstra 写法
 // 适用于稠密图 O(n^2)
 // 建模 https://codeforces.com/contest/1528/problem/D
-func (*graph) shortestPathDijkstra2(g [][]int64, st int) []int64 {
+func (*graph) shortestPathDijkstra2(g [][]int, st int) []int {
 	n := len(g)
 
-	const inf int64 = 1e18 // 1e9+1
-	dis := make([]int64, n)
+	const inf int = 1e18
+	dis := make([]int, n)
 	for i := range dis {
 		dis[i] = inf
 	}
@@ -1336,14 +1331,11 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 // - 【思路讲解】O(nlogn) 贪心+单调栈二分 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/solution/tan-xin-pythonjavacgo-by-endlesscheng-w3k3/
 // - 加强版 LCP32 https://leetcode.cn/problems/t3fKg1/
 // - todo 打印方案 https://atcoder.jp/contests/abc216/tasks/abc216_g
-func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // 有负环时返回 nil
-	type neighbor struct {
-		to int
-		wt int64
-	}
+func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有负环时返回 nil
+	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		v, w, wt := 0, 0, int64(0)
+		var v, w, wt int
 		Fscan(in, &v, &w, &wt)
 		v--
 		w--
@@ -1351,8 +1343,8 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 		g[w] = append(g[w], neighbor{v, wt})
 	}
 
-	const inf int64 = 1e18 // 1e9+1
-	dist = make([]int64, n)
+	const inf int = 1e18 // 1e9+1
+	dist = make([]int, n)
 	for i := range dist {
 		dist[i] = inf
 	}
@@ -1407,7 +1399,8 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int64) { // �
 // LC1334 https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/
 // LC1462 https://leetcode.cn/problems/course-schedule-iv/
 // 动态加点 https://codeforces.com/problemset/problem/295/B
-// 动态加边 https://codeforces.com/problemset/problem/25/C LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+// 动态加边 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+// - https://codeforces.com/problemset/problem/25/C LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 // todo https://atcoder.jp/contests/abc243/tasks/abc243_e
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
@@ -1435,7 +1428,7 @@ func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][
 		// 所以初始化成 0 方便计算
 		dis[i][i] = 0
 	}
-	addEdge := func(from, to int, wt int) { // wt int64
+	addEdge := func(from, to, wt int) {
 		// 无法让任何最短路变短
 		if wt >= dis[from][to] {
 			return
@@ -1482,17 +1475,21 @@ func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 }
 
 // 最小环
+//
+// 另见 Dijkstra 删边：
+//（无向图）对于每条边 v-w，计算从 v 出发，在不经过边 v-w 时，到 w 的最短路，再加上 v-w 的边权
+//（有向图）v->w，计算从 w 到 v 的最短路，再加上 v->w 的边权
+//
 // 传入邻接矩阵 weights
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
 // NOTE: 无权图的情况见 shortestCycleBFS
-func (*graph) shortestCycleFloydWarshall(weights [][]int64, min func(int64, int64) int64) int64 {
-	const inf int64 = 1e18
-	//const inf int = 1e8 // *NOTE*
+func (*graph) shortestCycleFloydWarshall(weights [][]int, min func(int, int) int) int {
+	const inf int = 1e18
 	n := len(weights)
-	dist := make([][]int64, n)
+	dist := make([][]int, n)
 	for i := range dist {
-		dist[i] = append([]int64(nil), weights[i]...)
+		dist[i] = append([]int(nil), weights[i]...)
 	}
 	ans := inf
 	for k := range dist {
@@ -1515,15 +1512,12 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int64, min func(int64, int6
 // https://en.wikipedia.org/wiki/Johnson%27s_algorithm
 // https://oi-wiki.org/graph/shortest-path/#johnson
 // 模板题 https://www.luogu.com.cn/problem/P5905
-func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
-	const inf int64 = 1e18 // 1e9+1
-	type neighbor struct {
-		to int
-		wt int64
-	}
+func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int {
+	const inf int = 1e18
+	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n+1)
 	for i := 0; i < m; i++ {
-		v, w, wt := 0, 0, int64(0)
+		var v, w, wt int
 		Fscan(in, &v, &w, &wt)
 		g[v] = append(g[v], neighbor{w, wt})
 		g[w] = append(g[w], neighbor{v, wt})
@@ -1549,7 +1543,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 	}
 
 	// 以每个点为源点跑一遍 Dijkstra，代码略（注意点数为 n+1）
-	dist := make([][]int64, n+1)
+	dist := make([][]int, n+1)
 	for st := 1; st <= n; st++ {
 		dist[st] = G.shortestPathDijkstra(in, n+1, m, st)
 		for end, d := range dist[st] {
@@ -1568,11 +1562,11 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int64 {
 // 跳楼机 https://www.luogu.com.cn/problem/P3403
 // https://www.luogu.com.cn/problem/P2371
 // https://codeforces.com/problemset/problem/986/F
-func (*graph) shortestPathMod(a []int, limit int64) (ans int64) {
+func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 	sort.Ints(a) // 常数优化
-	dis := make([]int64, a[0])
+	dis := make([]int, a[0])
 	for i := range dis {
-		dis[i] = math.MaxInt64
+		dis[i] = math.MaxInt
 	}
 	dis[0] = 0
 	h := dijkstraHeap{{}}
@@ -1584,7 +1578,7 @@ func (*graph) shortestPathMod(a []int, limit int64) (ans int64) {
 		}
 		for _, ai := range a[1:] {
 			w := (v + ai) % a[0]
-			if newD := dis[v] + int64(ai); newD < dis[w] {
+			if newD := dis[v] + ai; newD < dis[w] {
 				dis[w] = newD
 				h.push(dijkstraPair{w, newD})
 			}
@@ -1595,7 +1589,7 @@ func (*graph) shortestPathMod(a []int, limit int64) (ans int64) {
 	// 如果 dis[target%a[0]] <= target 说明可以得到 target
 	for _, d := range dis {
 		if d <= limit {
-			ans += (limit-d)/int64(a[0]) + 1
+			ans += (limit-d)/a[0] + 1
 		}
 	}
 	return
@@ -1622,9 +1616,13 @@ func (*graph) shortestPathMod(a []int, limit int64) (ans int64) {
 // https://cp-algorithms.com/graph/mst_kruskal.html
 // 边权 [0,1] 的随机完全图的 MST 权值和是 ζ(3) = 1.202…	https://en.wikipedia.org/wiki/Random_minimum_spanning_tree https://www.sciencedirect.com/science/article/pii/0166218X85900587
 //
+// TIPS: 混合点权边权的问题，可以创建一个超级源点，把每个点 i 和超级源点相连，边权为点 i 的点权。这样就转换成了 MST 问题。
+// LC1168 https://leetcode.cn/problems/optimize-water-distribution-in-a-village/
+//
 // 模板题 https://www.luogu.com.cn/problem/P3366 
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 //       https://atcoder.jp/contests/abc218/tasks/abc218_e
+//       LC1135 https://leetcode.cn/problems/connecting-cities-with-minimum-cost/
 // 需要一些数论知识 https://atcoder.jp/contests/abc210/tasks/abc210_e
 // 枚举 https://atcoder.jp/contests/abc270/tasks/abc270_f
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D LC1489 https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
@@ -1722,7 +1720,7 @@ func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
 
 		// 加入 MST
 		inMST[v] = true
-		mst += minD[v].d // int64
+		mst += minD[v].d
 		if v != root {
 			edges = append(edges, [2]int{minD[v].v, v})
 		}
@@ -1745,7 +1743,7 @@ func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
 // todo http://codeforces.com/problemset/problem/888/G
 //  https://codeforces.com/problemset/problem/1550/F https://www.luogu.com.cn/blog/ETHANK/boruvka-xiao-ji
-func (*graph) boruvkaMST(n, m int) (sum int64) {
+func (*graph) boruvkaMST(n, m int) (sum int) {
 	return
 }
 
@@ -1757,7 +1755,7 @@ func (*graph) limitDegreeMST(dis [][]int, root, lim int) int {
 	const inf int = 2e9
 
 	n := len(dis)
-	mstSum := 0 // int64
+	mstSum := 0
 	rootDeg := 0
 	mst := make([][]int, n)
 	for i := range mst {
@@ -1900,7 +1898,7 @@ func (*graph) strictlySecondMST(n int, edges []struct{ v, w, wt int }, min, max 
 		return fa[x]
 	}
 
-	mstSum := 0 // int64
+	mstSum := 0
 	inMST := make([]bool, len(edges))
 	type nb struct{ to, wt int }
 	g := make([][]nb, n)
@@ -2090,7 +2088,7 @@ func (*graph) manhattanMST(points []struct{ x, y, i int }, abs func(int) int) (m
 	left := n - 1
 	for _, e := range edges {
 		if uf.Merge(e.v, e.w) >= 0 {
-			mst += e.dis // int64
+			mst += e.dis
 			left--
 			if left == 0 {
 				break
@@ -2181,7 +2179,7 @@ func (*graph) minDiffMST(n int, edges [][3]int) int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P4716
 // todo https://codeforces.com/problemset/problem/240/E
-func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
+func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int) {
 	const inf int = 2e9
 	minW := make([]int, n)
 	fa := make([]int, n)
@@ -2211,7 +2209,7 @@ func (*graph) msaEdmonds(n, root int, edges [][3]int) (ans int64) {
 			if i == root {
 				continue
 			}
-			ans += int64(wt)
+			ans += wt
 			v := i
 			for ; v != root && id[v] < 0 && rt[v] != i; v = fa[v] {
 				rt[v] = i
@@ -2564,8 +2562,8 @@ func (*graph) maxBipartiteMatchingHopcroftKarp(n int, g [][]int) (match []int, c
 // LC2172 https://leetcode.cn/problems/maximum-and-sum-of-array/
 // LC2403 https://leetcode.cn/problems/minimum-time-to-kill-all-monsters/
 // todo GCJ21 Round2D https://codingcompetitions.withgoogle.com/codejam/round/0000000000435915/00000000007dc2de
-func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match []int, sum int64) {
-	const inf int64 = 1e18
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int) (match []int, sum int) {
+	const inf int = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
 
 	match = make([]int, len(wt)) // 右部点匹配了哪一个左部点
@@ -2573,7 +2571,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match [
 		match[i] = -1
 	}
 	// 初始化顶标
-	la := make([]int64, len(wt))
+	la := make([]int, len(wt))
 	for i, r := range wt {
 		la[i] = r[0]
 		for _, w := range r[1:] {
@@ -2582,8 +2580,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match [
 			}
 		}
 	}
-	lb := make([]int64, len(wt))
-	slack := make([]int64, len(wt))
+	lb := make([]int, len(wt))
+	slack := make([]int, len(wt))
 	for i := 0; i < len(wt); i++ {
 		for { // 循环直到 DFS 找到一个匹配
 			va := make([]bool, len(wt)) // 访问标记：是否在交错树中
@@ -2642,12 +2640,12 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkresSlow(wt [][]int64) (match [
 
 // O(n^3)
 // 下标需要从 1 开始
-func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int, sum int64) {
-	const inf int64 = 1e18
+func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, sum int) {
+	const inf int = 1e18
 	// NOTE: wt 中不存在的边应初始化为 -inf
 
 	match = make([]int, len(wt)) // 右部点匹配了哪一个左部点
-	la := make([]int64, len(wt))
+	la := make([]int, len(wt))
 	for i, row := range wt {
 		la[i] = -inf
 		for _, v := range row {
@@ -2656,8 +2654,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int64) (match []int
 			}
 		}
 	}
-	lb := make([]int64, len(wt))
-	slack := make([]int64, len(wt))
+	lb := make([]int, len(wt))
+	slack := make([]int, len(wt))
 	for i := 1; i < len(wt); i++ {
 		vb := make([]bool, len(wt))
 		for j := 1; j < len(wt); j++ {
@@ -3094,16 +3092,15 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
 // todo [NOI2013] 快餐店 https://www.luogu.com.cn/problem/P1399
 func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
-	rg := make([][]int, len(g)) // g 的反图（外向基环树）
-	deg := make([]int, len(g))  // g 上每个节点的入度
-	for v, w := range g {
-		rg[w] = append(rg[w], v)
+	deg := make([]int, len(g)) // g 上每个节点的入度
+	for _, w := range g {
 		deg[w]++
 	}
 
 	// 拓扑排序，剪掉 g 上的所有树枝
 	// 拓扑排序后 deg 值为 1 的点必定在基环上，为 0 的点必定在树枝上
 	// 注：拓扑排序时还可以做 DP，比如给树枝上的每个点标记反向深度
+	rg := make([][]int, len(g)) // g 的反图（外向基环树）
 	q := []int{}
 	for i, d := range deg {
 		if d == 0 {
@@ -3113,9 +3110,10 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		//dp[v]++
 		w := g[v] // v 只有一条出边
-		//dp[w] = max(dp[w], dp[v])
+		//f[v]++
+		//f[w] = max(f[w], f[v])
+		rg[w] = append(rg[w], v) // 顺便建一下反图（在这里建反图可以避免加入基环上的边）
 		if deg[w]--; deg[w] == 0 {
 			q = append(q, w)
 		}
@@ -3127,15 +3125,13 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	rdfs = func(v, depth int) {
 		// ...
 		for _, w := range rg[v] {
-			if deg[w] == 0 { // 树枝上的点在拓扑排序后，入度均为 0
-				rdfs(w, depth+1)
-			}
+			rdfs(w, depth+1)
 		}
 	}
 
 	// 注意可能有多棵基环树
 	for i, d := range deg {
-		if d <= 0 {
+		if d <= 0 { // 注意下面标记成 -1 了
 			continue
 		}
 
@@ -3145,7 +3141,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 			ring = append(ring, v) // 收集基环上的点
 		}
 
-		// do ring ...
+		// 遍历基环
 		// 特别注意基环大小小于 3 的特殊情况
 		for _, v := range ring {
 			rdfs(v, 0)
@@ -3233,7 +3229,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 			}
 
 			// 效率更高的非递归写法
-			// 见 https://leetcode.cn/problems/longest-cycle-in-a-graph/solutions/1710828/nei-xiang-ji-huan-shu-zhao-huan-li-yong-pmqmr/
+			// 见 https://leetcode.cn/problems/longest-cycle-in-a-graph/solution/nei-xiang-ji-huan-shu-zhao-huan-li-yong-pmqmr/
 			var to []int // 有向图无向图都可以
 			time := make([]int, len(to))
 			clock := 1
@@ -3576,7 +3572,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) i
 		}
 		return 0
 	}
-	dinic := func() (maxFlow int) { // int64
+	dinic := func() (maxFlow int) {
 		for bfs() {
 			iter = make([]int, len(g))
 			for {
@@ -3707,8 +3703,8 @@ func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 	}
 
 	// 寻找增广路
-	const inf int = 1e9 // 1e18
-	maxFlow := 0        // int64
+	const inf int = 1e18
+	maxFlow := 0
 	iter := make([]int, n)
 	type pair struct{ v, i int }
 	fa := make([]pair, n)
@@ -3899,8 +3895,8 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 最小费用流的不完全算法博物馆 https://www.luogu.com.cn/blog/Atalod/zui-xiao-fei-yong-liu-di-fou-wan-quan-suan-fa-bo-wu-guan
 // 模板题 https://www.luogu.com.cn/problem/P3381
 // LC2850 建模 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
-func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
-	const inf int = 1e9 // 1e18
+func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
+	const inf int = 1e18
 	st--
 	end--
 
@@ -3918,15 +3914,14 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 		addEdge(v, w, cp, cost, i)
 	}
 
-	dist := make([]int64, len(g))
+	dist := make([]int, len(g))
 	type vi struct{ v, i int }
 	fa := make([]vi, len(g))
 	inQ := make([]int, len(g))
 	timestamp := 0 // 避免反复初始化 inQ
 	spfa := func() bool {
-		const _inf int64 = 1e18
 		for i := range dist {
-			dist[i] = _inf
+			dist[i] = inf
 		}
 		dist[st] = 0
 		timestamp++
@@ -3941,7 +3936,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 					continue
 				}
 				w := e.to
-				if newD := dist[v] + int64(e.cost); newD < dist[w] {
+				if newD := dist[v] + e.cost; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = vi{v, i}
 					if inQ[w] != timestamp {
@@ -3951,9 +3946,9 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 				}
 			}
 		}
-		return dist[end] < _inf
+		return dist[end] < inf
 	}
-	edmondsKarp := func() (maxFlow int, minCost int64) {
+	edmondsKarp := func() (maxFlow, minCost int) {
 		for spfa() {
 			// 沿 st-end 的最短路尽量增广
 			minF := inf
@@ -3972,7 +3967,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 				v = p.v
 			}
 			maxFlow += minF
-			minCost += dist[end] * int64(minF)
+			minCost += dist[end] * minF
 		}
 		return
 	}
@@ -3981,7 +3976,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int64) {
 
 // 基于原始对偶方法 (primal-dual method)
 // https://blog.xehoth.cc/DurationPlan-Primal-Dual/
-func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) int64 {
+func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) int {
 	st--
 	end--
 
@@ -3999,12 +3994,12 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 		addEdge(v, w, cp, cost)
 	}
 
-	h := make([]int64, len(g)) // 顶点的势
-	dist := make([]int64, len(g))
+	h := make([]int, len(g)) // 顶点的势
+	dist := make([]int, len(g))
 	type pair struct{ v, i int }
 	fa := make([]pair, len(g))
 	dijkstra := func() bool {
-		const _inf int64 = 1e18
+		const _inf int = 1e18
 		for i := range dist {
 			dist[i] = _inf
 		}
@@ -4021,7 +4016,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 					continue
 				}
 				w := e.to
-				if newD := dist[v] + int64(e.cost) + h[v] - h[w]; newD < dist[w] {
+				if newD := dist[v] + e.cost + h[v] - h[w]; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = pair{v, i}
 					q.push(dijkstraPair{w, newD})
@@ -4030,7 +4025,7 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 		}
 		return dist[end] < _inf
 	}
-	minCost := int64(0)
+	minCost := 0
 	for flowLimit > 0 && dijkstra() {
 		for i, d := range dist {
 			h[i] += d
@@ -4050,8 +4045,8 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 			g[v][e.rid].cap += minF
 			v = p.v
 		}
-		flowLimit -= minF               // maxFlow += minF
-		minCost += h[end] * int64(minF) // 注意这里是 h 不是 dist
+		flowLimit -= minF        // maxFlow += minF
+		minCost += h[end] * minF // 注意这里是 h 不是 dist
 	}
 	if flowLimit > 0 {
 		return -1
@@ -4150,7 +4145,7 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // Measure and Conquer: A Simple O(2^0.288n) Independent Set Algorithm http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.321.6920&rep=rep1&type=pdf
 // todo 剪枝写法
 // https://codeforces.com/problemset/problem/1105/E
-func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
+func (*graph) maximalCliques(g []int, max func(int, int) int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图
 	// 传入的 g 为状压后的邻接矩阵
 	// 定义 f(s) 为 s 的所有子集中最大团的大小
@@ -4161,13 +4156,13 @@ func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 	// 之后记忆化占主导，耗时也为 O(2^k)
 	// 主要注意的是，k 次递归的结果是否记忆化并不重要，因为这部分最多也只有 O(2^k) 个状态
 	// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
-	dp := map[int64]int{0: 0}
-	var f func(int64) int
-	f = func(s int64) int {
+	dp := map[int]int{0: 0}
+	var f func(int) int
+	f = func(s int) int {
 		if v, has := dp[s]; has {
 			return v
 		}
-		dp[s] = max(f(s&(s-1)), 1+f(s&g[bits.TrailingZeros64(uint64(s))]))
+		dp[s] = max(f(s&(s-1)), 1+f(s&g[bits.TrailingZeros(uint(s))]))
 		return dp[s]
 	}
 	ans := f(1<<len(g) - 1)
@@ -4208,7 +4203,7 @@ func (*graph) maximalCliques(g []int64, max func(int, int) int) int {
 // https://www.cnblogs.com/Khada-Jhin/p/10143074.html
 // https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
 // http://acm.hdu.edu.cn/showproblem.php?pid=6184
-func (*graph) countCycle3(n int, edges [][2]int) (ans int64) {
+func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	deg := make([]int, n)
 	for _, e := range edges {
 		v, w := e[0], e[1] // -1
@@ -4249,7 +4244,7 @@ func (*graph) countCycle3(n int, edges [][2]int) (ans int64) {
 // https://cdn.luogu.com.cn/upload/image_hosting/4ty1215p.png
 // https://www.luogu.com.cn/blog/i207M/san-yuan-huan-ji-shuo-xue-xi-bi-ji
 // 转换成判定 https://codeforces.com/problemset/problem/1468/M
-func (*graph) countCycle4(n int, edges [][2]int) (ans int64) {
+func (*graph) countCycle4(n int, edges [][2]int) (ans int) {
 	g := make([][]int, n)
 	deg := make([]int, n)
 	for _, e := range edges {
@@ -4276,7 +4271,7 @@ func (*graph) countCycle4(n int, edges [][2]int) (ans int64) {
 		for _, w := range ws {
 			for _, u := range g2[w] {
 				if less(v, u) {
-					ans += int64(cnt[u])
+					ans += cnt[u]
 					cnt[u]++
 				}
 			}
