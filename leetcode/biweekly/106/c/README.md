@@ -1,6 +1,6 @@
 [视频讲解（第三题）](https://www.bilibili.com/video/BV18u411Y7Gt/)
 
-### 提示 1
+## 提示 1
 
 题目最后要求机器人之间的距离，此时把任意两个机器人的位置交换，并不会对答案产生影响。
 
@@ -8,7 +8,7 @@
 
 既然如此，那么可以把机器人都看成是**完全一样的，无法区分**。
 
-### 提示 2
+## 提示 2
 
 相撞等价于**机器人互相穿过对方**，因为我们无法区分机器人。
 
@@ -16,7 +16,7 @@
 
 类似的思路在 [1503. 所有蚂蚁掉下来前的最后一刻](https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/) 中出现过。
 
-### 提示 3
+## 提示 3
 
 设 $d$ 秒后机器人的位置数组为 $a$，根据提示 1，可以把数组 $a$ 从小到大排序，再计算所有机器人之间两两距离之和。
 
@@ -33,24 +33,24 @@ $$
 
 计算时，为了避免溢出，需要取模。这样做的正确性见下面的「算法小课堂：模运算」。
 
-### 答疑
+## 答疑
 
-**问**：为什么不能对 $a[i]$ 取模？
+**问**：下面代码中，为什么不能对 $a[i]$ 取模？
 
 **答**：注意 $a$ 中第 $i$ 小的数要乘上 $i$，取模后每个元素的大小关系就乱了，原来第 $i$ 小的数要乘的就不一定是 $i$ 了，所以会算出错误的结果。
 
 ```py [sol-Python3]
 class Solution:
     def sumDistance(self, nums: List[int], s: str, d: int) -> int:
-        MOD = 10 ** 9 + 7
         for i, c in enumerate(s):
             nums[i] += d if c == 'R' else -d
         nums.sort()
+
         ans = s = 0
         for i, x in enumerate(nums):
             ans += i * x - s
             s += x
-        return ans % MOD
+        return ans % (10 ** 9 + 7)
 ```
 
 ```java [sol-Java]
@@ -58,11 +58,13 @@ class Solution {
     public int sumDistance(int[] nums, String s, int d) {
         final long MOD = (long) 1e9 + 7;
         int n = nums.length;
-        var a = new long[n];
-        for (int i = 0; i < n; i++) // 注意 2e9+1e9 溢出了
-            a[i] = (long) nums[i] + d * ((s.charAt(i) & 2) - 1); // L=-1, R=1
-        long ans = 0, sum = 0;
+        long[] a = new long[n]; // 用 long 是因为 nums[i]+d 可能是 2e9+1e9，溢出了
+        for (int i = 0; i < n; i++) {
+            a[i] = (long) nums[i] + (s.charAt(i) == 'L' ? -d : d);
+        }
         Arrays.sort(a);
+
+        long ans = 0, sum = 0;
         for (int i = 0; i < n; i++) {
             ans = (ans + i * a[i] - sum) % MOD;
             sum += a[i];
@@ -78,10 +80,12 @@ public:
     int sumDistance(vector<int> &nums, string s, int d) {
         const int MOD = 1e9 + 7;
         int n = nums.size();
-        long long a[n], ans = 0, sum = 0;
-        for (int i = 0; i < n; i++) // 注意 2e9+1e9 溢出了
+        vector<long long> a(n); // 用 long long 是因为 nums[i]+d 可能是 2e9+1e9，溢出了
+        for (int i = 0; i < n; i++)
             a[i] = (long long) nums[i] + d * ((s[i] & 2) - 1); // L=-1, R=1
-        sort(a, a + n);
+        sort(a.begin(), a.end());
+
+        long long ans = 0, sum = 0;
         for (int i = 0; i < n; i++) {
             ans = (ans + i * a[i] - sum) % MOD;
             sum += a[i];
@@ -93,11 +97,12 @@ public:
 
 ```go [sol-Go]
 func sumDistance(nums []int, s string, d int) (ans int) {
-	const mod int = 1e9 + 7
+	const mod = 1_000_000_007
 	for i, c := range s {
 		nums[i] += d * int(c&2-1) // L=-1, R=1
 	}
 	sort.Ints(nums)
+
 	sum := 0
 	for i, x := range nums {
 		ans = (ans + i*x - sum) % mod
@@ -107,12 +112,51 @@ func sumDistance(nums []int, s string, d int) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+var sumDistance = function(nums, s, d) {
+    for (let i = 0; i < s.length; i++) {
+        nums[i] += s[i] === 'R' ? d : -d;
+    }
+    nums.sort((a, b) => a - b);
+
+    let ans = 0, sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+        ans = (ans + i * nums[i] - sum) % (1e9 + 7);
+        sum += nums[i];
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn sum_distance(nums: Vec<i32>, S: String, d: i32) -> i32 {
+        const MOD: i64 = 1_000_000_007;
+        let mut a = vec![0; nums.len()];
+        let s = S.as_bytes();
+        for (i, &x) in nums.iter().enumerate() {
+            let d = if s[i] == 'L' as u8 { -d } else { d };
+            a[i] = x as i64 + d as i64;
+        }
+        a.sort();
+
+        let mut ans = 0i64;
+        let mut sum = 0i64;
+        for (i, &x) in a.iter().enumerate() {
+            ans = (ans + i as i64 * x - sum) % MOD;
+            sum += x;
+        }
+        ans as i32
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果需要用一个新的 $\textit{nums}$ 数组记录则需要 $\mathcal{O}(n)$ 空间，否则为 $\mathcal{O}(1)$。
 
-### 算法小课堂：模运算
+## 算法小课堂：模运算
 
 如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
 

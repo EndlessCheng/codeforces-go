@@ -4,7 +4,7 @@ import "sort"
 
 // https://space.bilibili.com/206214
 func sumDistance(nums []int, s string, d int) (ans int) {
-	const mod int = 1e9 + 7
+	const mod = 1_000_000_007
 	for i, c := range s {
 		nums[i] += d * int(c&2-1) // L=-1, R=1
 	}
