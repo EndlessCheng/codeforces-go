@@ -27,14 +27,23 @@ https://codeforces.com/problemset/problem/1251/E2
 - 按 (mi,pi) 排序，然后把 (i,mi) 画在平面直角坐标系上
 - 初始时，在 y=x 直线下方的点都可以视作是「免费」的，如果有不能免费的点，应考虑从最后一个不能免费的到末尾这段中的最小 pi，然后将 y=x 抬高成 y=x+1 继续比较
 - 维护最小 pi 可以用最小堆
+https://atcoder.jp/contests/agc057/tasks/agc057_b
 
 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
 滑动窗口中位数 LC480 https://leetcode-cn.com/problems/sliding-window-median/
+https://ac.nowcoder.com/acm/contest/65157/C
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 
 基于堆的反悔贪心（反悔堆）
+
+- [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
+- [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/)
+- [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)
+- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/)
+- [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
+
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
 https://codeforces.com/problemset/problem/1526/C2
@@ -87,16 +96,16 @@ func (h *hp) pushPop(v int) int {
 
 //
 
-// 自定义类型（int64 可以替换成其余类型）
-type hp64 []int64
+// 自定义类型（int32 可以替换成其余类型）
+type hp32 []int32
 
-func (h hp64) Len() int           { return len(h) }
-func (h hp64) Less(i, j int) bool { return h[i] < h[j] } // > 为最大堆
-func (h hp64) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp64) Push(v any)        { *h = append(*h, v.(int64)) }
-func (h *hp64) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *hp64) push(v int64)      { heap.Push(h, v) }
-func (h *hp64) pop() int64        { return heap.Pop(h).(int64) } // 稍微封装一下，方便使用
+func (h hp32) Len() int           { return len(h) }
+func (h hp32) Less(i, j int) bool { return h[i] < h[j] } // > 为最大堆
+func (h hp32) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp32) Push(v any)        { *h = append(*h, v.(int32)) }
+func (h *hp32) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hp32) push(v int32)      { heap.Push(h, v) }
+func (h *hp32) pop() int32        { return heap.Pop(h).(int32) } // 稍微封装一下，方便使用
 
 //
 
@@ -107,7 +116,7 @@ func (h *hp64) pop() int64        { return heap.Pop(h).(int64) } // 稍微封装
 // 例题 https://atcoder.jp/contests/abc170/tasks/abc170_e
 // 模拟 multiset https://codeforces.com/problemset/problem/1106/E
 type viPair struct {
-	v  int64
+	v  int
 	hi int // *viPair 在 mh 中的下标，可随着 Push Pop 等操作自动改变
 }
 type mh []*viPair // mh 指 modifiable heap
@@ -117,7 +126,7 @@ func (h mh) Less(i, j int) bool    { return h[i].v < h[j].v } // > 为最大堆
 func (h mh) Swap(i, j int)         { h[i], h[j] = h[j], h[i]; h[i].hi = i; h[j].hi = j }
 func (h *mh) Push(v any)           { *h = append(*h, v.(*viPair)) }
 func (h *mh) Pop() any             { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
-func (h *mh) push(v int64) *viPair { p := &viPair{v, len(*h)}; heap.Push(h, p); return p }
+func (h *mh) push(v int) *viPair   { p := &viPair{v, len(*h)}; heap.Push(h, p); return p }
 func (h *mh) pop() *viPair         { return heap.Pop(h).(*viPair) }
 func (h *mh) fix(i int)            { heap.Fix(h, i) }
 func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
