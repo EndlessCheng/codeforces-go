@@ -13,6 +13,41 @@ func CF1680C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+	min := func(a, b int) int {
+		if a > b {
+			return b
+		}
+		return a
+	}
+
+	var T int
+	var s string
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &s)
+		ans := len(s)
+		in0 := 0
+		out1 := strings.Count(s, "1")
+		left := 0
+		for _, b := range s {
+			v := int(b & 1)
+			in0 += v ^ 1
+			out1 -= v
+			for in0 > out1 {
+				v = int(s[left] & 1)
+				in0 -= v ^ 1
+				out1 += v
+				left++
+			}
+			ans = min(ans, out1)
+		}
+		Fprintln(out, ans)
+	}
+}
+
+func CF1680C_binarySearch(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
+	defer out.Flush()
 
 	var T int
 	var s string
