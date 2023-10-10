@@ -5,9 +5,10 @@ import (
 	. "fmt"
 	"io"
 	"sort"
+	"strings"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF1680C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
@@ -18,19 +19,22 @@ func CF1680C(_r io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &s)
 		n := len(s)
-		s1 := make([]int, n+1)
-		for i, b := range s {
-			s1[i+1] = s1[i] + int(b&1)
-		}
+		tot1 := strings.Count(s, "1")
 		Fprintln(out, sort.Search(n, func(mx int) bool {
-			c, l := 0, 0
-			for r, b := range s {
-				c += int(b&1 ^ 1)
-				for c > mx {
-					c -= int(s[l]&1 ^ 1)
-					l++
+			in0 := 0     // 窗口内的 0 的个数
+			out1 := tot1 // 窗口外的 1 的个数
+			left := 0
+			for _, b := range s {
+				v := int(b & 1)
+				in0 += v ^ 1
+				out1 -= v
+				for in0 > mx {
+					v = int(s[left] & 1)
+					in0 -= v ^ 1
+					out1 += v
+					left++
 				}
-				if s1[n]-(s1[r+1]-s1[l]) <= mx {
+				if out1 <= mx {
 					return true
 				}
 			}
