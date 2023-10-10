@@ -98,10 +98,10 @@ func init() {
 
 		// 字符串
 		"word", "s",
-		"word1", "x",
-		"word2", "y",
-		"s1", "x",
-		"s2", "y",
+		"word1", "s",
+		"word2", "t",
+		"s1", "s",
+		"s2", "t",
 
 		// 其余常见变量名
 		"number", "n",
