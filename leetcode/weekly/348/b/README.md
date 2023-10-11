@@ -1,6 +1,4 @@
-下午两点直播讲题，记得关注哦~（见个人主页）
-
----
+[视频讲解](https://www.bilibili.com/video/BV1do4y1K7Wq/) 第二题。
 
 设 $1$ 在数组中的下标为 $p$，$n$ 在数组中的下标为 $q$。
 
@@ -35,10 +33,8 @@ class Solution {
 class Solution {
 public:
     int semiOrderedPermutation(vector<int> &nums) {
-        int n = nums.size();
-        auto p = find(nums.begin(), nums.end(), 1);
-        auto q = find(nums.begin(), nums.end(), n);
-        return p - q + n - 1 - (p > q);
+        auto [p, q] = minmax_element(nums.begin(), nums.end());
+        return p - q + nums.size() - 1 - (p > q);
     }
 };
 ```
@@ -57,7 +53,7 @@ func semiOrderedPermutation(nums []int) int {
 	if p < q {
 		return p + n - 1 - q
 	}
-	return p + n - 2 - q
+	return p + n - 2 - q // 1 向左移动的时候和 n 交换了一次
 }
 ```
 
