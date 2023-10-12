@@ -6,11 +6,17 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF1678B2(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
+	max := func(a, b int) int {
+		if b > a {
+			return b
+		}
+		return a
+	}
 
 	var T, n int
 	var s string
@@ -25,10 +31,7 @@ func CF1678B2(_r io.Reader, _w io.Writer) {
 				pre = s[i]
 			}
 		}
-		if seg == 0 {
-			seg = 1
-		}
-		Fprintln(out, ans, seg)
+		Fprintln(out, ans, max(seg, 1))
 	}
 }
 
