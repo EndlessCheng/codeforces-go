@@ -39,6 +39,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)
 - [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)
     - https://codeforces.com/problemset/problem/1313/C2
+- [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
 
 #### 矩形系列
 
@@ -75,6 +76,7 @@ LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
 下下个最大元素 LC2454 https://leetcode.cn/problems/next-greater-element-iv/
 - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
 max(最小值*子数组和) LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
+- 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
 
 字典序最小
 LC316 https://leetcode.cn/problems/remove-duplicate-letters/
@@ -166,19 +168,20 @@ func monotoneStack(a []int) ([]int, []int) {
 
 	{
 		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
-		left := make([]int, n)
-		right := make([]int, n)
-		for i := range right {
-			right[i] = n
-		}
+		left := make([]int, n)  // a[left[i]] < a[i]
+		right := make([]int, n) // a[right[i]] <= a[i]
 		st := []int{-1}
 		for i, v := range a {
-			for len(st) > 1 && a[st[len(st)-1]] >= v { // 这里是 right 小于等于
+			for len(st) > 1 && v <= a[st[len(st)-1]] {
 				right[st[len(st)-1]] = i
 				st = st[:len(st)-1]
 			}
+			// 循环结束后，栈顶就是左侧 < v 的最近元素了
 			left[i] = st[len(st)-1]
 			st = append(st, i)
+		}
+		for _, i := range st[1:] {
+			right[i] = len(right)
 		}
 	}
 
