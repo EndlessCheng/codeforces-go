@@ -1,6 +1,6 @@
 package main
 
-// https://space.bilibili.com/206214/dynamic
+// https://space.bilibili.com/206214/
 func countPairs(n int, edges [][]int) (ans int64) {
 	g := make([][]int, n)
 	for _, e := range edges {
@@ -10,23 +10,24 @@ func countPairs(n int, edges [][]int) (ans int64) {
 	}
 
 	vis := make([]bool, n)
-	tot, size := 0, 0
-	var dfs func(int)
-	dfs = func(x int) {
+	var dfs func(int) int
+	dfs = func(x int) int {
 		vis[x] = true
-		size++
+		size := 1
 		for _, y := range g[x] {
 			if !vis[y] {
-				dfs(y)
+				size += dfs(y)
 			}
 		}
+		return size
 	}
+
+	total := 0
 	for i, b := range vis {
 		if !b {
-			size = 0
-			dfs(i)
-			ans += int64(size) * int64(tot)
-			tot += size
+			size := dfs(i)
+			ans += int64(size) * int64(total)
+			total += size
 		}
 	}
 	return
