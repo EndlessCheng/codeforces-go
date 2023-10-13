@@ -53,6 +53,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/)
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
+不允许有前导零+恰好删除k次 https://codeforces.com/problemset/problem/1765/N
 
 #### 贡献法
 
