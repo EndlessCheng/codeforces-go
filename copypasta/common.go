@@ -46,11 +46,16 @@ https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum
 - [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)
 - [1524. 和为奇数的子数组数目](https://leetcode.cn/problems/number-of-sub-arrays-with-odd-sum/) 1611
 - [974. 和可被 K 整除的子数组（数目）](https://leetcode.cn/problems/subarray-sums-divisible-by-k/) 1676
+   - 变形：乘积可以被 k 整除
+   - a[i] = gcd(a[i], k) 之后窗口乘积是 k 的倍数就行，不会乘爆
 - [523. 连续的子数组和（长度至少为 2 且可被 K 整除）](https://leetcode.cn/problems/continuous-subarray-sum/)
 - [1590.（移除最短子数组）使数组和能被 P 整除](https://leetcode.cn/problems/make-sum-divisible-by-p/) 2039
 - [525. 连续数组](https://leetcode.cn/problems/contiguous-array/) *转换
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908 *转换
+- [2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/) 1999 *转换
+- [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
 https://atcoder.jp/contests/abc233/tasks/abc233_d
+
 
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
@@ -100,6 +105,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [2156. 查找给定哈希值的子串](https://leetcode.cn/problems/find-substring-with-given-hash-value/) 2063
 - [346. 数据流中的移动平均值](https://leetcode.cn/problems/moving-average-from-data-stream/)（会员题）
 - [1100. 长度为 K 的无重复字符子串](https://leetcode.cn/problems/find-k-length-substrings-with-no-repeated-characters/)（会员题）
+- [1852. 每个子数组的数字种类数](https://leetcode.cn/problems/distinct-numbers-in-each-subarray/)（会员题）
 
 不定长滑动窗口（求最长/最大）
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
@@ -132,6 +138,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [2302. 统计得分小于 K 的子数组数目](https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/) 1808
 - [2537. 统计好子数组的数目](https://leetcode.cn/problems/count-the-number-of-good-subarrays/) 1892
 - [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/) 1940
+- [2743. 计算没有重复字符的子字符串数量](https://leetcode.cn/problems/count-substrings-without-repeating-character/)（会员题）
 和至少为 k 的子数组个数 https://atcoder.jp/contests/abc130/tasks/abc130_d
 
 多指针滑动窗口
@@ -200,17 +207,23 @@ LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-
 https://codeforces.com/problemset/problem/1748/C
 
 巧妙枚举
+LC939 https://leetcode.cn/problems/minimum-area-rectangle/
 https://codeforces.com/problemset/problem/1181/C
 https://codeforces.com/problemset/problem/1626/D
 https://codeforces.com/problemset/problem/846/C
 
 贪心及其证明
 - [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
-- [2410. 运动员和训练师的最大匹配数](https://leetcode.cn/problems/maximum-matching-of-players-with-trainers/)
-- [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/)
-- [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/)
-- [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/)
-         证明 https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/solution/tan-xin-ji-qi-zheng-ming-by-endlesscheng-hfwe/
+- [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/) 1348
+- [2410. 运动员和训练师的最大匹配数](https://leetcode.cn/problems/maximum-matching-of-players-with-trainers/) 1381
+- [881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/) 1530
+    - https://codeforces.com/problemset/problem/1690/E
+    - https://www.lanqiao.cn/problems/4174/learning/?contest_id=135
+    - https://codeforces.com/problemset/problem/1765/D
+- [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/) 1663
+- [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
+- [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
+https://codeforces.com/problemset/problem/1691/C
 https://codeforces.com/problemset/problem/1369/C
 	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
 	如果某个前 k 大的数 x 没有作为最大值（其中一个组的最大值是不在前 k 大中的 y），那么把 x 和 y 交换，
@@ -222,7 +235,6 @@ https://codeforces.com/problemset/problem/1369/C
 	提示 2：然后来说最小值。a 的最小值必然要分到某个组中，为了「跳过」尽量多的较小的数，优先把 a 中较小的数分到 w 较大的组中。所以 a 从小到大遍历，w 从大到小遍历。
 https://codeforces.com/problemset/problem/1479/B1 https://codeforces.com/problemset/problem/1479/B2
     https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
-1505. 最多 K 次交换相邻数位后得到的最小整数 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 https://codeforces.com/problemset/problem/1804/D
 https://codeforces.com/problemset/problem/442/C
     如果 x>=y<=z，那么删除 y 最优
@@ -246,6 +258,10 @@ https://atcoder.jp/contests/abc268/tasks/abc268_f
 https://www.luogu.com.cn/problem/P2887
 https://codeforces.com/problemset/problem/555/B
 https://codeforces.com/problemset/problem/863/E
+
+倒序
+LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
+- 加强版 https://www.luogu.com.cn/problem/P9715        ?contestId=126251
 
 观察、结论
 https://codeforces.com/problemset/problem/1442/A
@@ -320,6 +336,7 @@ https://codeforces.com/problemset/problem/1763/C
 https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://codeforces.com/problemset/problem/960/B
 https://atcoder.jp/contests/abc155/tasks/abc155_d
+https://atcoder.jp/contests/abc125/tasks/abc125_d
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
@@ -334,6 +351,7 @@ https://atcoder.jp/contests/agc015/tasks/agc015_d
 LC891 https://leetcode.cn/problems/sum-of-subsequence-widths/
 LC1588 https://leetcode.cn/problems/sum-of-all-odd-length-subarrays/
 LC2681 https://leetcode.cn/problems/power-of-heroes/
+- https://atcoder.jp/contests/arc116/tasks/arc116_b
 LC2763 https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/
 更多贡献法题目，见 monotone_stack.go
 https://codeforces.com/problemset/problem/912/D
@@ -365,7 +383,8 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 - 这里 ^2 表示任意两个数的异或
 
 小模拟
-https://leetcode.cn/problems/time-taken-to-cross-the-door/
+LC2534 https://leetcode.cn/problems/time-taken-to-cross-the-door/
+https://atcoder.jp/contests/abc279/tasks/abc279_f
 
 中模拟
 https://atcoder.jp/contests/abc319/tasks/abc319_f
@@ -465,6 +484,7 @@ https://codeforces.com/problemset/problem/1644/D
 https://codeforces.com/problemset/problem/1638/D
 https://codeforces.com/problemset/problem/1672/D
 https://codeforces.com/problemset/problem/1759/G 求字典序最小，通常可以从大往小思考
+https://codeforces.com/contest/1882/problem/B
 
 删除变添加
 https://codeforces.com/problemset/problem/295/B
@@ -562,7 +582,7 @@ func intSliceAsMapKeyExample(a []int) {
 
 func _() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	pow10 := func(x int) int64 { return int64(math.Pow10(x)) } // 不需要 round
+	pow10 := func(x int) int { return int(math.Pow10(x)) } // 不需要 round
 
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	dir4 := []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右（网格）
@@ -636,14 +656,6 @@ func _() {
 	// 另一种写法，无需考虑 a 为 0 的情况
 	ceil = func(a, b int) int {
 		return (a + b - 1) / b
-	}
-	bin := func(v int) []byte {
-		const maxLen = 30 // 62 for int64
-		s := make([]byte, maxLen+1)
-		for i := range s {
-			s[i] = byte(v >> (maxLen - i) & 1)
-		}
-		return s
 	}
 	cmp := func(a, b int) int {
 		if a == b {
@@ -753,7 +765,7 @@ func _() {
 
 	// 适用于 mod 超过 int32 范围的情况
 	// 还有一种用浮点数的写法，此略
-	mul := func(a, b, mod int64) (res int64) {
+	mul := func(a, b, mod int) (res int) {
 		for ; b > 0; b >>= 1 {
 			if b&1 == 1 {
 				res = (res + a) % mod
@@ -764,9 +776,9 @@ func _() {
 	}
 
 	// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
-	pow := func(x, n, mod int64) int64 {
+	pow := func(x, n, mod int) int {
 		x %= mod
-		res := int64(1) % mod
+		res := 1 % mod
 		for ; n > 0; n >>= 1 {
 			if n&1 == 1 {
 				res = res * x % mod
@@ -779,19 +791,16 @@ func _() {
 	// 等比数列求和取模
 	// 返回 (x^0 + x^1 + ... + x^n) % mod
 	// https://atcoder.jp/contests/abc293/tasks/abc293_e
-	gp := func(x, n, mod int64) int64 {
-		var f func(p, c int64) int64
-		f = func(p, c int64) int64 {
-			if c == 0 {
-				return 1 % mod
-			}
-			res := (1 + pow(p, (c+1)/2, mod)) * f(p, (c-1)/2)
-			if c%2 == 0 {
-				res += pow(p, c, mod)
-			}
-			return res % mod
+	var gp func(int, int) int
+	gp = func(x, n int) int {
+		if n == 0 {
+			return 1 % mod
 		}
-		return f(x, n)
+		res := (1 + pow(x, (n+1)/2, mod)) * gp(x, (n-1)/2)
+		if n%2 == 0 {
+			res += pow(x, n, mod)
+		}
+		return res % mod
 	}
 
 	// 从低位到高位
@@ -869,7 +878,7 @@ func _() {
 	// 复杂度为 O(1+2+4+...+2^(n-1)) = O(2^n)
 	// https://codeforces.com/contest/1209/problem/E2
 	subSum := func(a []int) []int {
-		sum := make([]int, 1<<len(a)) // int64
+		sum := make([]int, 1<<len(a))
 		for i, v := range a {
 			for mask, bit := 0, 1<<i; mask < bit; mask++ {
 				sv := sum[mask] + v
@@ -931,7 +940,7 @@ func _() {
 	prefixSum := func(a []int) {
 		//sort.Ints(a) // todo
 
-		sum := make([]int, len(a)+1) // int64
+		sum := make([]int, len(a)+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
@@ -959,7 +968,7 @@ func _() {
 	// LC1664 https://leetcode-cn.com/problems/ways-to-make-a-fair-array/
 	// https://atcoder.jp/contests/abc288/tasks/abc288_d
 	groupPrefixSum := func(a []int, k int) {
-		sum := make([]int, len(a)+k) // int64
+		sum := make([]int, len(a)+k)
 		for i, v := range a {
 			sum[i+k] = sum[i] + v
 		}
@@ -977,19 +986,16 @@ func _() {
 		_ = query
 	}
 
-	// 环形区间和 [l,r) 0<=l<r
+	// 环形区间和 [l,r)
 	circularRangeSum := func(a []int) {
-		na := len(a)
-		sum := make([]int64, na+1)
+		_n := len(a)
+		sum := make([]int, _n+1)
 		for i, v := range a {
-			sum[i+1] = sum[i] + int64(v)
+			sum[i+1] = sum[i] + v
 		}
-		pre := func(p int) int64 {
-			return sum[na]*int64(p/na) + sum[p%na]
-		}
-		query := func(l, r int) int64 {
-			return pre(r) - pre(l)
-		}
+		pre := func(p int) int { return sum[_n]*(p/_n) + sum[p%_n] }
+		// [l,r)
+		query := func(l, r int) int { return pre(r) - pre(l) }
 
 		_ = query
 	}
@@ -997,16 +1003,16 @@ func _() {
 	// 带权(等差数列)前缀和
 	{
 		var n int // read
-		a := make([]int64, n)
+		a := make([]int, n)
 		// read a ...
 
-		sum := make([]int64, n+1)
-		iSum := make([]int64, n+1)
+		sum := make([]int, n+1)
+		iSum := make([]int, n+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
-			iSum[i+1] = iSum[i] + int64(i+1)*v
+			iSum[i+1] = iSum[i] + (i+1)*v
 		}
-		query := func(l, r int) int64 { return iSum[r] - iSum[l] - int64(l)*(sum[r]-sum[l]) } // [l,r)
+		query := func(l, r int) int { return iSum[r] - iSum[l] - l*(sum[r]-sum[l]) } // [l,r)
 
 		_ = query
 	}
@@ -1041,14 +1047,14 @@ func _() {
 	// 矩阵每行每列的前缀和
 	rowColSum := func(a [][]int) (sumR, sumC [][]int) {
 		n, m := len(a), len(a[0])
-		sumR = make([][]int, n) // int64
+		sumR = make([][]int, n)
 		for i, row := range a {
 			sumR[i] = make([]int, m+1)
 			for j, v := range row {
 				sumR[i][j+1] = sumR[i][j] + v
 			}
 		}
-		sumC = make([][]int, n+1) // int64
+		sumC = make([][]int, n+1)
 		for i := range sumC {
 			sumC[i] = make([]int, m)
 		}
@@ -1067,8 +1073,6 @@ func _() {
 	// LC1878 https://leetcode-cn.com/problems/get-biggest-three-rhombus-sums-in-a-grid/
 	diagonalSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
-
-		// int64
 		ds := make([][]int, n+1) // 主对角线方向前缀和
 		as := make([][]int, n+1) // 反对角线方向前缀和
 		for i := range ds {
@@ -1091,11 +1095,11 @@ func _() {
 
 	// 利用每个数产生的贡献计算 ∑|ai-aj|, i!=j
 	// 相关题目 https://codeforces.com/contest/1311/problem/F
-	contributionSum := func(a []int) (sum int64) {
+	contributionSum := func(a []int) (sum int) {
 		n := len(a)
 		sort.Ints(a)
 		for i, v := range a {
-			sum += int64(v) * int64(2*i+1-n)
+			sum += v * (2*i + 1 - n)
 		}
 		return
 	}
@@ -1767,9 +1771,9 @@ func _() {
 		return
 	}
 
-	_ = []interface{}{
+	_ = []any{
 		pow10, dir4, dir8, perm3, perm4,
-		min, mins, max, maxs, abs, ceil, bin, cmp,
+		min, mins, max, maxs, abs, ceil, cmp,
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
 		pow, mul, gp, toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
