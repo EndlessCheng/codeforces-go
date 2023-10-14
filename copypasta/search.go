@@ -61,9 +61,14 @@ https://codeforces.com/problemset/problem/954/F
 部分子集
 排列（递归+跳过已经枚举的值）
 https://leetcode.cn/tag/backtracking/problemset/
+// LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
 爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
+https://atcoder.jp/contests/abc319/tasks/abc319_c
+https://atcoder.jp/contests/abc197/tasks/abc197_c
+
+不允许重复的排列：见 nextPermutation
 */
 func searchCollection() {
 	// 指数型，即 n 层循环
@@ -483,13 +488,12 @@ func searchCollection() {
 	// https://www.luogu.com.cn/problem/P5367
 	// 有重复元素 LC1830 https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
 	// https://codeforces.com/problemset/problem/1443/E
-	rankPermutation := func(perm []int) int64 {
-		const mod int64 = 1e9 + 7
+	rankPermutation := func(perm []int) int {
 		n := len(perm)
-		F := make([]int64, n)
+		F := make([]int, n)
 		F[0] = 1
 		for i := 1; i < n; i++ {
-			F[i] = F[i-1] * int64(i) % mod
+			F[i] = F[i-1] * i % mod
 		}
 
 		tree := make([]int, n+1)
@@ -508,9 +512,9 @@ func searchCollection() {
 			add(i, 1)
 		}
 
-		ans := int64(0)
+		ans := 0
 		for i, v := range perm {
-			ans += int64(sum(v-1)) * F[n-1-i] % mod
+			ans += sum(v-1) * F[n-1-i] % mod
 			add(v, -1)
 		}
 		ans++ // 从 1 开始的排名
@@ -696,7 +700,7 @@ func searchCollection() {
 枚举大小为 k 的子集
 枚举格点周围（曼哈顿距离、切比雪夫距离）
 */
-func _(min, max func(int, int) int) {
+func _(min, max func(int, int) int, abs func(int) int) {
 	// 枚举 {0,1,...,n-1} 的全部子集
 	loopSet := func(a []int) {
 		n := len(a)
@@ -885,7 +889,7 @@ func _(min, max func(int, int) int) {
 	}
 
 	/*
-		遍历以 (ox, oy) 为中心的曼哈顿距离为 dis 范围内的格点
+		遍历以 (ox, oy) 为中心的曼哈顿距离为 dis 的【边界】上的格点
 		例如 dis=2 时：
 		  #
 		 # #
@@ -911,6 +915,21 @@ func _(min, max func(int, int) int) {
 		}
 	}
 
+	{
+		// 从上到下，遍历以 (ox, oy) 为中心的曼哈顿距离 <= dis 的【所有】格点
+		var n, m, ox, oy, dis int
+		for i := max(ox-dis, 0); i <= ox+dis && i < n; i++ {
+			d := dis - abs(ox-i)
+			for j := max(oy-d, 0); j <= oy+d && j < m; j++ {
+				if i == ox && j == oy {
+					continue
+				}
+				// f(i, j)
+
+			}
+		}
+	}
+
 	// 曼哈顿圈序遍历
 	// LC1030 https://leetcode-cn.com/problems/matrix-cells-in-distance-order/
 	loopAllManhattan := func(n, m, ox, oy int, f func(x, y int)) {
@@ -931,7 +950,7 @@ func _(min, max func(int, int) int) {
 	}
 
 	/*
-		遍历以 (ox, oy) 为中心的切比雪夫距离为 dis 范围内的格点
+		遍历以 (ox, oy) 为中心的切比雪夫距离为 dis 的【边界】上的格点
 		#####
 		#   #
 		# @ #
@@ -1072,6 +1091,7 @@ func _(min, max func(int, int) int) {
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
 - [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
 https://atcoder.jp/contests/abc317/tasks/abc317_e
+逃离火灾这题的来源？https://www.luogu.com.cn/problem/UVA11624
 
 #### 综合应用
 

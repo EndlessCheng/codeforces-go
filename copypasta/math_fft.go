@@ -21,6 +21,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FFT.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Polynomial.java.html
 用 FFT 做字符串匹配 https://zhuanlan.zhihu.com/p/267765026
 Arrow product: How to enumerate directed graphs https://codeforces.com/blog/entry/115617
+能否在 O(nlogn) 时间内实现大数的进制转换？ https://www.zhihu.com/question/395557989
 
 todo https://github.com/OI-wiki/gitment/discussions/670#discussioncomment-4496021
  若多项式系数没有复数的话，可以构造多项式 H(x)=F(x)+G(x)i，把 F(x) 放实部，把 G(x) 放虚部，然后对 H(x) 跑一遍 DFT，之后把 H(x) 平方一下，可以得到
@@ -92,8 +93,7 @@ func (t *fft) idft(a []complex128) {
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
 // c[i] = ∑a[k]*b[i-k], k=0..i
 // 入参出参都是次项从低到高的系数
-// 建议全程用 int64
-func polyConvFFT(a, b []int64) []int64 {
+func polyConvFFT(a, b []int) []int {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
 	A := make([]complex128, limit)
@@ -111,9 +111,9 @@ func polyConvFFT(a, b []int64) []int64 {
 		A[i] *= B[i]
 	}
 	t.idft(A)
-	conv := make([]int64, n+m-1)
+	conv := make([]int, n+m-1)
 	for i := range conv {
-		conv[i] = int64(math.Round(real(A[i]))) // % mod
+		conv[i] = int(math.Round(real(A[i]))) // % mod
 	}
 	return conv
 }
@@ -121,7 +121,7 @@ func polyConvFFT(a, b []int64) []int64 {
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
 // 可重集大小为 k 的不同子集个数 https://codeforces.com/contest/958/problem/F3
-func polyConvFFTs(coefs [][]int64) []int64 {
+func polyConvFFTs(coefs [][]int) []int {
 	n := len(coefs)
 	if n == 1 {
 		return coefs[0]

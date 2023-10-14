@@ -3,6 +3,9 @@ package copypasta
 import . "fmt"
 
 /* 博弈论 Game Theory
+
+另见 dp.go 中的「博弈类 DP」
+
 https://en.wikipedia.org/wiki/Game_theory
 定义必胜状态为先手必胜的状态，必败状态为先手必败的状态
 定理 1：没有后继状态的状态是必败状态
@@ -17,7 +20,11 @@ https://en.wikipedia.org/wiki/Game_theory
 https://oi-wiki.org/math/game-theory/
 博弈论学习笔记 https://www.luogu.com.cn/blog/368107/notes-of-Game-Theory
 todo 取石子游戏总结 https://www.luogu.com.cn/blog/Wolfycz/qian-tan-suan-fa-bo-yi-lun-zong-ling-kai-shi-di-bo-yi-lun-post
-todo 阶梯博弈 https://codeforces.com/blog/entry/44651
+ 阶梯博弈 https://codeforces.com/blog/entry/44651
+ 巧克力博弈 https://en.wikipedia.org/wiki/Chomp
+
+mex = minimum excluded
+https://en.wikipedia.org/wiki/Mex_(mathematics)
 
 入门分类讨论 https://codeforces.com/problemset/problem/78/C
 三定理的模板题 https://codeforces.com/problemset/problem/1033/C
@@ -121,6 +128,7 @@ func _() {
 	// SG 函数 Sprague-Grundy theorem
 	// 有向图游戏的某个局面必胜 <=> 该局面对应节点的 SG 函数值 > 0
 	// 有向图游戏的某个局面必败 <=> 该局面对应节点的 SG 函数值 = 0
+	// mex = minimum excluded https://en.wikipedia.org/wiki/Mex_(mathematics)
 	// 推荐资料 Competitive Programmer’s Handbook Ch.25
 	// https://oi-wiki.org/math/game-theory/#sg
 	// https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem

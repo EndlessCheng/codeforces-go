@@ -52,26 +52,13 @@ func Asr(a, b, eps float64, f mathF) float64 {
 // todo https://www.luogu.com.cn/problem/P5667
 // 等幂和 https://codeforces.com/problemset/problem/622/F
 // 交互 找零点 https://codeforces.com/problemset/problem/1155/E
-func lagrangePolynomialInterpolation(xs, ys []int64, k int64) int64 {
-	const mod = 998244353
+func lagrangePolynomialInterpolation(xs, ys []int, k int) int {
+	inv := func(a int) int { return pow(a, mod-2) }
+	div := func(a, b int) int { return a % mod * inv(b) % mod }
 
-	pow := func(x, n int64) (res int64) {
-		x %= mod
-		res = 1
-		for ; n > 0; n >>= 1 {
-			if n&1 == 1 {
-				res = res * x % mod
-			}
-			x = x * x % mod
-		}
-		return
-	}
-	inv := func(a int64) int64 { return pow(a, mod-2) }
-	div := func(a, b int64) int64 { return a % mod * inv(b) % mod }
-
-	fk := int64(0)
+	fk := 0
 	for i, xi := range xs {
-		a, b := ys[i]%mod, int64(1)
+		a, b := ys[i]%mod, 1
 		for j, xj := range xs {
 			if j != i {
 				a = a * (k - xj) % mod

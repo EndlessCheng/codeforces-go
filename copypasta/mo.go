@@ -27,6 +27,7 @@ import (
 // 模板题 https://www.luogu.com.cn/problem/P1494
 // todo https://www.luogu.com.cn/problem/P2709
 // todo https://www.luogu.com.cn/problem/P4462
+// https://atcoder.jp/contests/abc242/tasks/abc242_g
 // https://atcoder.jp/contests/abc293/tasks/abc293_g
 // 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
 //     反向构造题 https://www.luogu.com.cn/problem/P6852
@@ -299,6 +300,7 @@ func moWithRollback(in io.Reader) []int {
 // 有关树分块的内容见 graph_tree.go 中的 limitSizeDecomposition
 // 模板题 糖果公园 https://www.luogu.com.cn/problem/P4074
 //       https://www.acwing.com/problem/content/2536/ https://www.luogu.com.cn/problem/SP10707
+// https://leetcode.cn/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
 func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 	vs := make([]int, 0, 2*n)
 	tin := make([]int, n)

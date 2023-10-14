@@ -11,7 +11,7 @@ https://en.wikipedia.org/wiki/Combination
 https://en.wikipedia.org/wiki/Enumerative_combinatorics
 https://en.wikipedia.org/wiki/Binomial_theorem
 
-鸽巢原理 pigeonhole principle
+鸽巢原理（抽屉原理） pigeonhole principle
 https://en.wikipedia.org/wiki/Pigeonhole_principle
 https://codeforces.com/problemset/problem/618/F
 
@@ -19,6 +19,8 @@ https://codeforces.com/problemset/problem/618/F
 没有思路的话可以尝试：
 - 打表 + OEIS
 - 用 DP 推导，然后尝试优化
+- 假设法
+入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
@@ -37,6 +39,9 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://atcoder.jp/contests/abc290/tasks/abc290_f
+LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/
+LC2514 https://leetcode.cn/problems/count-anagrams/
+LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/
 
 差分、前缀和与组合数
 https://codeforces.com/contest/1832/problem/E
@@ -233,6 +238,7 @@ https://oeis.org/A052913
 Assume that the first person to use a bank of payphones selects one at the end,
 and all subsequent users select the phone which puts them farthest from the current phone users.
 U(n) is the smallest number of phones such that n may be used without any two adjacent phones being used
+https://www.bilibili.com/video/BV1RT4y1j7pP/
 https://www.zhihu.com/question/278361000/answer/1004606685
 
 https://oeis.org/A089934 Table T(n,k) of the number of n X k matrices on {0,1} without adjacent 0's in any row or column
@@ -274,56 +280,44 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 讨论 https://codeforces.com/blog/entry/84822
 */
 
-func pow(x int64, n int) (res int64) {
-	x %= _mod
-	res = 1
-	for ; n > 0; n >>= 1 {
-		if n&1 > 0 {
-			res = res * x % _mod
-		}
-		x = x * x % _mod
-	}
-	return
-}
-
 // 一种避免不小心把数组开小的写法
 // https://codeforces.com/problemset/submission/1794/205053722
-type comb struct{ _f, _invF []int64 }
+type comb struct{ _f, _invF []int }
 
 func newComb(mx int) *comb {
-	c := &comb{[]int64{1}, []int64{1}}
+	c := &comb{[]int{1}, []int{1}}
 	c._init(mx)
 	return c
 }
 
 func (c *comb) _init(mx int) {
 	n := len(c._f)
-	c._f = append(make([]int64, 0, mx+1), c._f...)[:mx+1]
+	c._f = append(make([]int, 0, mx+1), c._f...)[:mx+1]
 	for i := n; i <= mx; i++ {
-		c._f[i] = c._f[i-1] * int64(i) % _mod
+		c._f[i] = c._f[i-1] * i % _mod
 	}
-	c._invF = append(make([]int64, 0, mx+1), c._invF...)[:mx+1]
+	c._invF = append(make([]int, 0, mx+1), c._invF...)[:mx+1]
 	c._invF[mx] = pow(c._f[mx], _mod-2)
 	for i := mx; i > n; i-- {
-		c._invF[i-1] = c._invF[i] * int64(i) % _mod
+		c._invF[i-1] = c._invF[i] * i % _mod
 	}
 }
 
-func (c *comb) f(n int) int64 {
+func (c *comb) f(n int) int {
 	if n >= len(c._f) {
 		c._init(n * 2)
 	}
 	return c._f[n]
 }
 
-func (c *comb) invF(n int) int64 {
+func (c *comb) invF(n int) int {
 	if n >= len(c._f) {
 		c._init(n * 2)
 	}
 	return c._invF[n]
 }
 
-func (c *comb) c(n, k int) int64 {
+func (c *comb) c(n, k int) int {
 	if k < 0 || k > n {
 		return 0
 	}
@@ -341,11 +335,10 @@ func (c *comb) c(n, k int) int64 {
 // 不重不漏 https://codeforces.com/problemset/problem/1007/B
 // 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
 // 用因子容斥 https://codeforces.com/problemset/problem/900/D
-func solveInclusionExclusion(a []int) (ans int64) {
-	n := len(a)
-	const mod int64 = 1e9 + 7 // 998244353
-	for sub := uint(0); sub < 1<<n; sub++ {
-		res := int64(0)
+// todo https://www.luogu.com.cn/problem/P1450
+func solveInclusionExclusion(a []int) (ans int) {
+	for sub := uint(0); sub < 1<<len(a); sub++ {
+		res := 0
 		for i, v := range a {
 			if sub>>i&1 > 0 {
 				// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况

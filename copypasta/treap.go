@@ -17,11 +17,8 @@ https://en.wikipedia.org/wiki/Treap
 
 模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
-
-EXTRA: FHQ Treap
-https://baobaobear.github.io/post/20191215-fhq-treap/
-FHQ-Treap 学习笔记 + 一堆题目 https://www.luogu.com.cn/blog/85514/fhq-treap-xue-xi-bi-ji
-https://www.luogu.com.cn/blog/specialflag/solution-p3369
+较为复杂的维护 https://codeforces.com/problemset/problem/85/D
+离线+lowerbound+delete https://atcoder.jp/contests/abc245/tasks/abc245_e
 */
 
 // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键
@@ -145,7 +142,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 			if o.lr[0] == nil {
 				return o.lr[1]
 			}
-			// o 有两颗子树，把优先级高的子树旋转到根，然后递归在另一棵子树中删除 o
+			// o 有两棵子树，把优先级高的子树旋转到根，然后递归在另一棵子树中删除 o
 			d = 0
 			if o.lr[0].priority > o.lr[1].priority {
 				d = 1

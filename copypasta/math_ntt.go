@@ -53,6 +53,7 @@ todo 卡常板子 https://judge.yosupo.jp/submission/65290
 todo 半在线卷积小记 https://www.luogu.com.cn/blog/command-block/ban-zai-xian-juan-ji-xiao-ji
 CDQ FFT 半在线卷积的O(nlog^2/loglogn)算法 https://www.qaq-am.com/cdqFFT/
 模板题 https://www.luogu.com.cn/problem/P4721
+https://atcoder.jp/contests/abc267/tasks/abc267_h
 */
 
 /* GF: generating function 生成函数/母函数/多项式计数
@@ -99,10 +100,10 @@ todo https://codeforces.com/contest/438/problem/E
 
 const P = 998244353
 
-func _pow(x int64, n int) (res int64) {
+func _pow(x, n int) (res int) {
 	res = 1
-	for ; n > 0; n >>= 1 {
-		if n&1 == 1 {
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
 			res = res * x % P
 		}
 		x = x * x % P
@@ -110,7 +111,7 @@ func _pow(x int64, n int) (res int64) {
 	return
 }
 
-var omega, omegaInv [31]int64 // 多开一点空间
+var omega, omegaInv [31]int // 多开一点空间
 
 func init() {
 	const g, invG = 3, 332748118
@@ -122,14 +123,14 @@ func init() {
 
 type ntt struct {
 	n    int
-	invN int64
+	invN int
 }
 
-func newNTT(n int) ntt { return ntt{n, _pow(int64(n), P-2)} }
+func newNTT(n int) ntt { return ntt{n, _pow(n, P-2)} }
 
 // 注：下面 swap 的代码，另一种写法是初始化每个 i 对应的 j https://blog.csdn.net/Flag_z/article/details/99163939
 // 由于不是性能瓶颈，实测对性能影响不大
-func (t ntt) transform(a, omega []int64) {
+func (t ntt) transform(a, omega []int) {
 	for i, j := 0, 0; i < t.n; i++ {
 		if i > j {
 			a[i], a[j] = a[j], a[i]
@@ -147,7 +148,7 @@ func (t ntt) transform(a, omega []int64) {
 		li++
 		for st := 0; st < t.n; st += l {
 			b := a[st:]
-			for i, w := 0, int64(1); i < m; i++ {
+			for i, w := 0, 1; i < m; i++ {
 				d := b[m+i] * w % P
 				b[m+i] = (b[i] - d + P) % P
 				b[i] = (b[i] + d) % P
@@ -157,18 +158,18 @@ func (t ntt) transform(a, omega []int64) {
 	}
 }
 
-func (t ntt) dft(a []int64) {
+func (t ntt) dft(a []int) {
 	t.transform(a, omega[:])
 }
 
-func (t ntt) idft(a []int64) {
+func (t ntt) idft(a []int) {
 	t.transform(a, omegaInv[:])
 	for i, v := range a {
 		a[i] = v * t.invN % P
 	}
 }
 
-type poly []int64
+type poly []int
 
 func (a poly) resize(n int) poly {
 	b := make(poly, n)
@@ -179,7 +180,10 @@ func (a poly) resize(n int) poly {
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
 // c[i] = ∑a[k]*b[i-k], k=0..i
 // 入参出参都是次项从低到高的系数
-// 模板题 https://www.luogu.com.cn/problem/P3803 https://www.luogu.com.cn/problem/P1919 https://atcoder.jp/contests/practice2/tasks/practice2_f
+// 模板题 https://judge.yosupo.jp/problem/convolution_mod
+//       https://www.luogu.com.cn/problem/P3803
+//       https://www.luogu.com.cn/problem/P1919 
+//       https://atcoder.jp/contests/practice2/tasks/practice2_f
 func (a poly) conv(b poly) poly {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
@@ -247,7 +251,7 @@ func (a poly) sub(b poly) poly {
 	return c
 }
 
-func (a poly) mul(k int64) poly {
+func (a poly) mul(k int) poly {
 	k %= P
 	b := make(poly, len(a))
 	for i, v := range a {
@@ -278,7 +282,7 @@ func (a poly) derivative() poly {
 	n := len(a)
 	d := make(poly, n)
 	for i := 1; i < n; i++ {
-		d[i-1] = a[i] * int64(i) % P
+		d[i-1] = a[i] * int(i) % P
 	}
 	return d
 }
@@ -288,10 +292,10 @@ func (a poly) integral() poly {
 	s := make(poly, n)
 	s[0] = 0 // C
 	// 线性求逆元，详见 math.go 中的 initAllInv
-	inv := make([]int64, n)
+	inv := make([]int, n)
 	inv[1] = 1
 	for i := 2; i < n; i++ {
-		inv[i] = int64(P-P/i) * inv[P%i] % P
+		inv[i] = (P - P/i) * inv[P%i] % P
 	}
 	for i := 1; i < n; i++ {
 		s[i] = a[i-1] * inv[i] % P
@@ -365,7 +369,7 @@ func (a poly) sqrt() poly {
 	rt := make(poly, m)
 	rt[0] = 1
 	if a[0] != 1 {
-		rt[0] = new(big.Int).ModSqrt(big.NewInt(a[0]), big.NewInt(P)).Int64()
+		rt[0] = int(new(big.Int).ModSqrt(big.NewInt(int64(a[0])), big.NewInt(P)).Int64())
 		//if 2*rt[0] > P { // P5277 需要
 		//	rt[0] = P - rt[0]
 		//}
@@ -428,9 +432,9 @@ func (a poly) exp() poly {
 // https://oi-wiki.org/math/poly/ln-exp/#_5
 // 模板题 https://www.luogu.com.cn/problem/P5245
 // 模板题（a[0] != 1）https://www.luogu.com.cn/problem/P5273
-func (a poly) pow(k int64) poly {
+func (a poly) pow(k int) poly {
 	n := len(a)
-	if k >= int64(n) && a[0] == 0 {
+	if k >= n && a[0] == 0 {
 		return make(poly, n)
 	}
 	k1 := k % (P - 1)
@@ -441,12 +445,12 @@ func (a poly) pow(k int64) poly {
 	shift := 0
 	for ; shift < n && a[shift] == 0; shift++ {
 	}
-	if int64(shift)*k >= int64(n) {
+	if shift*k >= n {
 		return make(poly, n)
 	}
 	a = a.rsh(shift)       // a[0] != 0
 	a.mul(_pow(a[0], P-2)) // a[0] == 1
-	return a.ln().mul(k).exp().mul(_pow(a[0], int(k1))).lsh(shift * int(k))
+	return a.ln().mul(k).exp().mul(_pow(a[0], k1)).lsh(shift * k)
 }
 
 // 多项式三角函数

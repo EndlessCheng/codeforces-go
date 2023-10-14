@@ -23,6 +23,7 @@ GCD https://codeforces.com/contest/1548/problem/B
 
 type ST [][]int
 
+// a 的下标从 0 开始
 func NewST(a []int) ST {
 	n := len(a)
 	sz := bits.Len(uint(n))
@@ -39,9 +40,9 @@ func NewST(a []int) ST {
 	return st
 }
 
-// 查询区间 [l,r)，注意 l 和 r 是从 0 开始算的
+// 查询区间 [l,r)    0 <= l < r <= n
 func (st ST) Query(l, r int) int {
-	k := bits.Len(uint(r-l)) - 1
+	k := bits.Len32(uint32(r-l)) - 1
 	return st.Op(st[l][k], st[r-1<<k][k])
 }
 
@@ -78,7 +79,7 @@ func NewST2(a []int) ST2 {
 
 // 查询区间 [l,r)，注意 l 和 r 是从 0 开始算的
 func (st ST2) Query(l, r int) int {
-	k := bits.Len(uint(r-l)) - 1
+	k := bits.Len32(uint32(r-l)) - 1
 	a, b := st[l][k], st[r-1<<k][k]
 	if a.v <= b.v { // 最小值，相等时下标取左侧
 		return a.i
