@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/MRNaADm)
+[视频讲解](https://www.bilibili.com/video/BV1PV411N76R/)
 
 ## 方法一：暴力
 
