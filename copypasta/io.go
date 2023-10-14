@@ -87,12 +87,12 @@ func fastIO() {
 			s = s[1:]
 		}
 		dotPos := len(s) - 1
-		f := int64(0)
+		f := 0
 		for i, b := range s {
 			if b == '.' {
 				dotPos = i
 			} else {
-				f = f*10 + int64(b&15)
+				f = f*10 + int(b&15)
 			}
 		}
 		if neg {

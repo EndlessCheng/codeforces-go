@@ -402,7 +402,7 @@ func mapPos(a, b []int) []int {
 //        LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 //        LC493 https://leetcode-cn.com/problems/reverse-pairs/
 // 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
-func mergeCount(a []int) int64 {
+func mergeCount(a []int) int {
 	n := len(a)
 	if n <= 1 {
 		return 0
@@ -417,7 +417,7 @@ func mergeCount(a []int) int64 {
 			a[i] = left[l]
 			l++
 		} else {
-			cnt += int64(n/2 - l)
+			cnt += n/2 - l
 			a[i] = right[r]
 			r++
 		}
@@ -532,13 +532,14 @@ func addNegabinary(a1, a2 []int) []int {
 }
 
 // 负二进制转换
+// https://atcoder.jp/contests/abc105/tasks/abc105_c
 // LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
-func toNegabinary(n int) (res string) {
+func toNegabinary(n int) (ans string) {
 	if n == 0 {
 		return "0"
 	}
 	for ; n != 0; n = -(n >> 1) {
-		res = string(byte('0'+n&1)) + res
+		ans = string(byte('0'+n&1)) + ans
 	}
 	return
 }
@@ -558,7 +559,7 @@ func toNegabinary(n int) (res string) {
 // WF1990 https://www.luogu.com.cn/problem/UVA202
 // 1e12 加强版 https://ac.nowcoder.com/acm/contest/62622/E
 // Python 代码 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=63288994
-func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
+func fractionToDecimal(a, b int) (beforeCycle, cycle []byte) {
 	if a == 0 {
 		return []byte{'0'}, nil
 	}
@@ -572,7 +573,7 @@ func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
 	if b < 0 {
 		b = -b
 	}
-	res = append(res, strconv.FormatInt(a/b, 10)...)
+	res = append(res, strconv.Itoa(a/b)...)
 
 	r := a % b
 	if r == 0 {
@@ -580,7 +581,7 @@ func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
 	}
 	res = append(res, '.')
 
-	posMap := map[int64]int{}
+	posMap := map[int]int{}
 	for r != 0 {
 		if pos, ok := posMap[r]; ok {
 			return res[:pos], res[pos:]
@@ -596,18 +597,18 @@ func fractionToDecimal(a, b int64) (beforeCycle, cycle []byte) {
 // 小数转分数
 // decimal like "2.15(376)", which means "2.15376376376..."
 // https://zh.wikipedia.org/wiki/%E5%BE%AA%E7%8E%AF%E5%B0%8F%E6%95%B0#%E5%8C%96%E7%82%BA%E5%88%86%E6%95%B8%E7%9A%84%E6%96%B9%E6%B3%95
-func decimalToFraction(decimal string) (a, b int64) {
+func decimalToFraction(decimal string) (a, b int) {
 	r := regexp.MustCompile(`(?P<integerPart>\d+)\.?(?P<nonRepeatingPart>\d*)\(?(?P<repeatingPart>\d*)\)?`)
 	match := r.FindStringSubmatch(decimal)
 	integerPart, nonRepeatingPart, repeatingPart := match[1], match[2], match[3]
-	intPartNum, _ := strconv.ParseInt(integerPart, 10, 64)
+	intPartNum, _ := strconv.Atoi(integerPart)
 	if repeatingPart == "" {
 		repeatingPart = "0"
 	}
-	b, _ = strconv.ParseInt(strings.Repeat("9", len(repeatingPart))+strings.Repeat("0", len(nonRepeatingPart)), 10, 64)
-	a, _ = strconv.ParseInt(nonRepeatingPart+repeatingPart, 10, 64)
+	b, _ = strconv.Atoi(strings.Repeat("9", len(repeatingPart)) + strings.Repeat("0", len(nonRepeatingPart)))
+	a, _ = strconv.Atoi(nonRepeatingPart + repeatingPart)
 	if nonRepeatingPart != "" {
-		v, _ := strconv.ParseInt(nonRepeatingPart, 10, 64)
+		v, _ := strconv.Atoi(nonRepeatingPart)
 		a -= v
 	}
 	a += intPartNum * b
@@ -778,7 +779,8 @@ func isCuboid(rect [][2]int) bool {
 // https://oi-wiki.org/misc/josephus/ 注意当 k 较小时，存在 O(klogn) 的做法
 // https://www.scirp.org/pdf/OJDM_2019101516120841.pdf Generalizations of the Feline and Texas Chainsaw Josephus Problems
 //
-// 相关题目 https://leetcode-cn.com/problems/find-the-winner-of-the-circular-game/
+// LCR187 https://leetcode.cn/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/
+// LC1823 https://leetcode.cn/problems/find-the-winner-of-the-circular-game/
 // https://codeforces.com/gym/101955/problem/K
 func josephusProblem(n, k int) int {
 	cur := 0
@@ -792,7 +794,7 @@ func josephusProblem(n, k int) int {
 // 环形 https://www.luogu.com.cn/problem/P2512 https://www.luogu.com.cn/problem/P3051 https://www.luogu.com.cn/problem/P4016 UVa11300 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2275
 // 环形+打印方案 https://www.luogu.com.cn/problem/P2125
 // 二维环形 https://www.acwing.com/problem/content/107/
-func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) { // int64
+func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) {
 	n := len(a)
 	avg := 0
 	for _, v := range a {
@@ -871,7 +873,7 @@ func parseExpression(s string) {
 // 返回第 k 位数字
 // https://leetcode-cn.com/contest/espressif-2021/problems/fSghVj/
 func champernowneConstant(k int) int {
-	for i, p10 := 1, 10; ; i++ { // int64
+	for i, p10 := 1, 10; ; i++ {
 		if i*p10 > k {
 			return int(strconv.Itoa(k / i)[k%i] & 15)
 		}
@@ -889,32 +891,36 @@ func parseTime(s string) (hour, minute, total int) {
 }
 
 // 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
+// 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
 // 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
 // - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 // - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/)
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/)
+// - [2655. 寻找最大长度的未覆盖区间](https://leetcode.cn/problems/find-maximal-uncovered-ranges/)（会员题）
 // https://codeforces.com/problemset/problem/1859/D
 // https://codeforces.com/problemset/problem/1626/C
 // 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
-func mergeIntervals(a [][]int, max func(int, int) int) (ans [][]int) {
+func mergeIntervals(a [][]int, max func(int, int) int) (merged [][]int) {
 	sort.Slice(a, func(i, j int) bool { return a[i][0] < a[j][0] }) // 按区间左端点排序
-	l0, maxR := a[0][0], a[0][1]
+	l0 := a[0][0]
+	maxR := a[0][1]
 	for _, p := range a[1:] { // 从第二个区间开始
 		l, r := p[0], p[1]
+		// 如果要合并 [1,1] 和 [2,2]，下面改成 if l-1 > maxR
 		if l > maxR { // 发现一个新区间
-			ans = append(ans, []int{l0, maxR}) // 先把旧的加入答案
-			l0 = l                             // 记录新区间左端点
+			merged = append(merged, []int{l0, maxR}) // 先把旧的加入答案
+			l0 = l                                   // 记录新区间左端点
 		}
 		maxR = max(maxR, r)
 	}
-	ans = append(ans, []int{l0, maxR}) // 最后发现的新区间加入答案
+	merged = append(merged, []int{l0, maxR}) // 最后发现的新区间加入答案
 
 	{
 		// 包含 x 的闭区间
 		var x int
-		i := sort.Search(len(ans), func(i int) bool { return ans[i][1] >= x })
-		if i < len(ans) && ans[i][0] <= x {
+		i := sort.Search(len(merged), func(i int) bool { return merged[i][1] >= x })
+		if i < len(merged) && merged[i][0] <= x {
 			// ans[i]...
 		}
 	}
@@ -1035,4 +1041,17 @@ func minMaxArray(a []int, k int) {
 	for i := range a {
 		a[i] = 0
 	}
+}
+
+// 将 "aa...abb...b" (a 个 'a' 和 b 个 'b') 中的 b 向左移动 k 次，得到的字典序最大的字符串是什么？
+func moveAB(a, b, k int) string {
+	if k > a*b { // 非法
+		return ""
+	}
+	const A, B = "a", "b"
+	lb, ex := k/a, k%a
+	if ex == 0 {
+		return strings.Repeat(B, lb) + strings.Repeat(A, a) + strings.Repeat(B, b-lb)
+	}
+	return strings.Repeat(B, lb) + strings.Repeat(A, a-ex) + B + strings.Repeat(A, ex) + strings.Repeat(B, b-1-lb)
 }

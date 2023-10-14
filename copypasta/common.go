@@ -56,7 +56,6 @@ https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum
 - [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 
-
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
 
@@ -337,6 +336,7 @@ https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://codeforces.com/problemset/problem/960/B
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
+https://codeforces.com/problemset/problem/1799/C
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C

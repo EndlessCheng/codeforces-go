@@ -47,40 +47,39 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 建模 https://codeforces.com/problemset/problem/1660/F2
 长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
+https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155
  http://poj.org/problem?id=2886
 */
 
-type fenwick struct {
-	tree []int64
-}
+type fenwick []int
 
 func newFenwickTree(n int) fenwick {
-	return fenwick{make([]int64, n+1)}
+	return make([]int, n+1)
 }
 
 // a[i] 增加 val
 // 1<=i<=n
-func (f fenwick) add(i int, val int64) {
-	for ; i < len(f.tree); i += i & -i {
-		f.tree[i] += val
+func (f fenwick) add(i, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] += val
 	}
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (f fenwick) pre(i int) (res int64) {
+func (f fenwick) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
-		res += f.tree[i]
+		res += f[i]
 	}
 	return
 }
 
 // 求区间和 a[l] + ... + a[r]
 // 1<=l<=r<=n
-func (f fenwick) query(l, r int) int64 {
+func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
@@ -102,14 +101,14 @@ func (f fenwick) query(l, r int) int64 {
 // [0] 维护 ∑diff[i]
 // [1] 维护 ∑i*diff[i]
 // 为了更好地利用缓存，写成 [][2] 而不是 [2][]
-type fenwickDiff [][2]int64
+type fenwickDiff [][2]int
 
 func newFenwickTreeDiff(n int) fenwickDiff {
-	return make([][2]int64, n+1)
+	return make([][2]int, n+1)
 }
 
-func (t fenwickDiff) _add(i int, val int64) {
-	for iv := int64(i) * val; i < len(t); i += i & -i {
+func (t fenwickDiff) _add(i, val int) {
+	for iv := i * val; i < len(t); i += i & -i {
 		t[i][0] += val
 		t[i][1] += iv
 	}
@@ -117,33 +116,33 @@ func (t fenwickDiff) _add(i int, val int64) {
 
 // a[l] 到 a[r] 增加 val
 // 1<=l<=r<=n
-func (t fenwickDiff) add(l, r int, val int64) {
+func (t fenwickDiff) add(l, r, val int) {
 	t._add(l, val)
 	t._add(r+1, -val)
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (t fenwickDiff) pre(i0 int) int64 {
-	var s0, s1 int64
+func (t fenwickDiff) pre(i0 int) int {
+	var s0, s1 int
 	for i := i0; i > 0; i &= i - 1 {
 		s0 += t[i][0]
 		s1 += t[i][1]
 	}
-	return int64(i0+1)*s0 - s1
+	return (i0+1)*s0 - s1
 }
 
 // 求区间和 a[l] + ... + a[r]
 // 1<=l<=r<=n
-func (t fenwickDiff) query(l, r int) int64 {
+func (t fenwickDiff) query(l, r int) int {
 	return t.pre(r) - t.pre(l-1)
 }
 
 //
 
 func _(n int) {
-	tree := make([]int, n+1) // int64
-	add := func(i int, val int) {
+	tree := make([]int, n+1) // int
+	add := func(i, val int) {
 		for ; i < len(tree); i += i & -i {
 			tree[i] += val
 		}
@@ -159,7 +158,7 @@ func _(n int) {
 	// 差分树状数组，可用于区间更新+单点查询 queryOne(i) = a[i] + sum(i) // a 从 1 开始
 	// r+1 即使超过 n 也没关系，因为不会用到
 	// 模板题 https://www.luogu.com.cn/problem/P3368
-	addRange := func(l, r int, val int) { add(l, val); add(r+1, -val) } // [l,r]
+	addRange := func(l, r, val int) { add(l, val); add(r+1, -val) } // [l,r]
 
 	// 求权值树状数组第 k 小的数（k > 0）
 	// 这里 tree[i] 表示 i 的个数
@@ -258,7 +257,9 @@ func _(n int) {
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
 	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
 	// https://codeforces.com/problemset/problem/1585/D
-	cntInversions := func(a []int) int64 {
+	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
+	// - https://ac.nowcoder.com/acm/contest/308/D
+	cntInversions := func(a []int) int {
 		n := len(a)
 		tree := make([]int, n+1)
 		add := func(i int) {
@@ -272,10 +273,10 @@ func _(n int) {
 			}
 			return
 		}
-		invCnt := int64(0)
+		invCnt := 0
 		for i, v := range a {
 			// 由于 i 从 0 开始算，这里先 sum 后 add
-			invCnt += int64(i - sum(v))
+			invCnt += i - sum(v)
 			add(v)
 		}
 		return invCnt
@@ -285,7 +286,7 @@ func _(n int) {
 	// 如果无法做到，返回 -1
 	// https://atcoder.jp/contests/arc120/tasks/arc120_c
 	// LC1850 https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
-	minSwap := func(a, b []int) (res int64) {
+	minSwap := func(a, b []int) (res int) {
 		tree := make([]int, len(a)+1)
 		add := func(i int) {
 			for i++; i < len(tree); i += i & -i {
@@ -310,7 +311,7 @@ func _(n int) {
 			}
 			j := p[0]
 			pos[v] = p[1:]
-			res += int64(i - sum(j))
+			res += i - sum(j)
 			add(j)
 		}
 		return

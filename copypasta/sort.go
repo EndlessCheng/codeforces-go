@@ -11,11 +11,16 @@ https://en.algorithmica.org/hpc/data-structures/binary-search/
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
+排序
+LC853 https://leetcode.cn/problems/car-fleet/
+
 ### 二分查找·题单
+- [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
+https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案·原理
 
@@ -25,47 +30,54 @@ sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 ### 二分答案·题单
 
-#### 二分答案（按照难度分排序）
-- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
-- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/)
-- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
-- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
-- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/)
-- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/)
-- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/)
-- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/)
-- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/)
-- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/)
-- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+#### 二分答案
+- [274. H 指数](https://leetcode.cn/problems/h-index/) *经典题
+- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/) 1542
+- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/) 1641 *典型题
+- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/) 1646
+- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/) 1676
+- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/) 1725
+- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/) 1766 *经典题
+- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/) 1913
+- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/) 1946
+- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
+- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
 https://codeforces.com/problemset/problem/1118/D2
 DP https://codeforces.com/contest/883/problem/I
 https://codeforces.com/contest/1843/problem/E
 
-#### 第 k 小/大（部分题目还可以用堆解决）
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
+#### 第 K 小/大（部分题目也可以用堆解决）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
+- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
 - [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
-- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/)
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)
-- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/)
-- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)
+- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
+- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
+- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
+- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
+综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 #### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
-- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
-- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
-- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
-- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
+- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
+- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/) 1940
+- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/) 1965
+- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/) 2081
+- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
+- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
+- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
+https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 
 #### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
-- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
-- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
-- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
+- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
+- [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
+- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
+- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 http://codeforces.com/problemset/problem/460/C
 
 #### 最大化中位数
 https://codeforces.com/problemset/problem/1201/C  也可以贪心做
+
+#### 不好想到的二分（这也能二分？！）
+https://codeforces.com/problemset/problem/1707/A
 
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
@@ -270,7 +282,7 @@ func sortCollections() {
 	// 字符串二分 · 其一
 	// 字符串有固定长度 n，二分范围从 "aaa...a" 到 "zzz...z"
 	binarySearchS1 := func(n int) []byte {
-		up := 1 // int64
+		up := 1
 		for i := 0; i < n; i++ {
 			up *= 26
 		}
@@ -295,7 +307,7 @@ func sortCollections() {
 	// 字符串二分 · 其二
 	// 字符串长度不固定，最长为 L，二分范围从 "a", "b" 到 "zzz...z"
 	binarySearchS2 := func(L int) []byte {
-		up := 1 // int64
+		up := 1
 		for i := 0; i < L; i++ {
 			up *= 26
 		}
@@ -353,7 +365,7 @@ func sortCollections() {
 	kthSmallestRangeSum := func(a []int, k int) int {
 		// 1 <= k <= n*(n+1)/2
 		n := len(a)
-		sum := make([]int, n+1) // int64
+		sum := make([]int, n+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
@@ -381,7 +393,6 @@ func sortCollections() {
 	kthSubsetSum := func(a []int, k int) int {
 		sort.Ints(a)
 		// 上界不会超过 a 的前 log(k) 个元素之和
-		// 必要时用 int64
 		ans := sort.Search(2e9, func(sum int) bool {
 			c := 0
 			var f func(p, s int)
@@ -412,6 +423,8 @@ func sortCollections() {
 	// 实数二分
 	// 最大化平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	binarySearchF := func(l, r float64, f func(x float64) bool) float64 {
+		l--
+		r++ // 松一点
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for ; step > 0; step-- {
 			mid := (l + r) / 2
@@ -429,9 +442,13 @@ func sortCollections() {
 	// NOTE: 多个下凸函数的乘积仍然是下凸函数；上凸同理 ABC130F
 	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
+	// 模板题 https://ac.nowcoder.com/acm/contest/64272/c
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
-		step := int(math.Log((r-l)/eps) / math.Log(1.5)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
+		l--
+		r++ // 松一点
+		const eps = 1e-8 // 保留小数位+2
+		step := int(math.Log((r-l)/eps) / math.Log(1.5))
 		for ; step > 0; step-- {
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
@@ -442,7 +459,7 @@ func sortCollections() {
 				l = m1 // 若求最大值写成 r = m2
 			}
 		}
-		return (l + r) / 2
+		return (l + r) / 2 // f((l + r) / 2)
 	}
 
 	// 整数三分·写法一
@@ -530,7 +547,7 @@ func sortCollections() {
 			}
 			return s < 0
 		}
-		l, r := 0., 1e5 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
+		l, r := -1.0, 1e5+1 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
 		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
 			mid := (l + r) / 2
 			if f(mid) {
