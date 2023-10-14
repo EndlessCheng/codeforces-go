@@ -7,6 +7,10 @@ import (
 )
 
 /*
+
+从集合论到位运算，常见位运算技巧分类总结！
+https://leetcode.cn/circle/discuss/CaOJ45/
+
 有关二进制枚举、枚举子集的子集、枚举大小固定集合等写法，见 search.go
 
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
@@ -14,15 +18,40 @@ import (
      bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
      或者说 2^(Len(x)-1) <= x < 2^Len(x)    x>0
 
+XOR 相关题目
+https://leetcode.cn/circle/discuss/sqPZwg/
+- [1720. 解码异或后的数组](https://leetcode.cn/problems/decode-xored-array/) 1284
+- [2433. 找出前缀异或的原始数组](https://leetcode.cn/problems/find-the-original-array-of-prefix-xor/) 1367
+- [1310. 子数组异或查询](https://leetcode.cn/problems/xor-queries-of-a-subarray/) 1460
+- [2683. 相邻值的按位异或](https://leetcode.cn/problems/neighboring-bitwise-xor/) 1518
+- [1829. 每个查询的最大异或值](https://leetcode.cn/problems/maximum-xor-for-each-query/) 1523
+- [1442. 形成两个异或相等数组的三元组数目](https://leetcode.cn/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/) 1525
+- [2429. 最小 XOR](https://leetcode.cn/problems/minimize-xor/) 1532
+- [2527. 查询数组 Xor 美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/) 1550
+- [2425. 所有数对的异或和](https://leetcode.cn/problems/bitwise-xor-of-all-pairings/) 1622
+- [2317. 操作后的最大异或和](https://leetcode.cn/problems/maximum-xor-after-operations/) 1679
+- [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
+
 常用技巧：拆位（提示：排序有时候很有用）
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
 https://atcoder.jp/contests/abc281/tasks/abc281_f
+LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
 
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
 https://codeforces.com/problemset/problem/1322/B
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
+
+拆位再合并相同位
+https://codeforces.com/problemset/problem/1874/B
+
+利用 AND/OR/XOR 的性质
+LC136 https://leetcode.cn/problems/single-number/
+LC2354 https://leetcode.cn/problems/number-of-excellent-pairs/
+LC2546 https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/
+LC2871 https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/
+LC2897 https://leetcode.cn/problems/apply-operations-on-array-to-maximize-sum-of-squares/
 
 利用 lowbit
 https://codeforces.com/problemset/problem/1689/E
@@ -170,7 +199,7 @@ https://oeis.org/A005349 digsum(n)|n   Niven (or Harshad) numbers
 	https://oeis.org/A001101 Moran numbers: n such that (n / digsum(n)) is prime
 https://oeis.org/A016052 a(1)=3, a(n+1)=a(n)+digsum(a(n))
 https://oeis.org/A051885 Smallest number whose digsum = n
-							int64(n%9+1) * int64(math.Pow10(n/9)) - 1
+							(n%9+1) * int(math.Pow10(n/9)) - 1
 							相关题目 https://codeforces.com/contest/1373/problem/E
 https://oeis.org/A077196 Smallest possible sum of the digits of a multiple of n https://oeis.org/A077194 https://oeis.org/A077195
 							相关题目（0-1 最短路）https://atcoder.jp/contests/arc084/tasks/arc084_b
@@ -518,7 +547,7 @@ func (b Bitset) IntersectionFrom(c Bitset) {
 // 注：有关子集枚举的位运算技巧，见 search.go
 func _(x int) {
 	// 利用 -v = ^v+1
-	lowbit := func(v int64) int64 { return v & -v }
+	lowbit := func(v int) int { return v & -v }
 
 	// 最低位的 1 变 0
 	x &= x - 1
@@ -531,7 +560,7 @@ func _(x int) {
 	isSubset = func(x, y int) bool { return x&y == x }  // x 和 y 的交集是 x
 
 	// 1,2,4,8,...
-	isPow2 := func(v int64) bool { return v > 0 && v&(v-1) == 0 }
+	isPow2 := func(v int) bool { return v > 0 && v&(v-1) == 0 }
 
 	// 是否有两个相邻的 1    有 https://oeis.org/A004780 没有 https://oeis.org/A003714
 	hasAdjacentOnes := func(v uint) bool { return v>>1&v > 0 }
@@ -681,7 +710,7 @@ func _(x int) {
 			tot += v
 		}
 		// 每个前缀和互不相同
-		posS := map[int]int{0: 0} // int64
+		posS := map[int]int{0: 0}
 		sum := 0
 		type result struct{ v, l, r int }
 		muls := []result{}
@@ -721,10 +750,10 @@ func _(x int) {
 	// 找三个不同的在 [l,r] 范围内的数，其异或和为 0
 	// 考虑尽可能地小化最大减最小的值，构造 (x, y, z) = (b*2-1, b*3-1, b*3), b=2^k
 	// 相关题目 https://codeforces.com/problemset/problem/460/D
-	zeroXorSum3 := func(l, r int64) []int64 {
-		for b := int64(1); b*3 <= r; b <<= 1 {
+	zeroXorSum3 := func(l, r int) []int {
+		for b := 1; b*3 <= r; b <<= 1 {
 			if x, y, z := b*2-1, b*3-1, b*3; l <= x && z <= r {
-				return []int64{x, y, z}
+				return []int{x, y, z}
 			}
 		}
 		return nil
