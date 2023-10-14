@@ -52,16 +52,18 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
 - [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/)
+  402 变形：不能自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
-不允许有前导零+恰好删除k次 https://codeforces.com/problemset/problem/1765/N
 
-#### 贡献法
+#### 贡献法（计算所有子数组的……的和）
 
 - [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
+  https://atcoder.jp/contests/agc057/tasks/agc057_b
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
-- [2104. 子数组范围和](https://leetcode.cn/problems/sum-of-subarray-ranges/)
-- [2281. 巫师的总力量和](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
+- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/)
+- [2281. 巫师的总力量和（最小值*和）](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
 - [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/)
+子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
 另见 common.go
 
 模板题
@@ -79,19 +81,6 @@ LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
 max(最小值*子数组和) LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
 - 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
 
-字典序最小
-LC316 https://leetcode.cn/problems/remove-duplicate-letters/
-- 扩展：重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
-LC402 https://leetcode.cn/problems/remove-k-digits/
-LC321 https://leetcode.cn/problems/create-maximum-number/
-
-计算贡献（所有子数组的……的和）
-最小值 LC907 https://leetcode.cn/problems/sum-of-subarray-minimums/
-- https://atcoder.jp/contests/agc057/tasks/agc057_b
-最大值-最小值 LC2104 https://leetcode.cn/problems/sum-of-subarray-ranges/
-最小值*和 LC2281 https://leetcode.cn/problems/sum-of-total-strength-of-wizards/
-第二大 https://atcoder.jp/contests/abc140/tasks/abc140_e
-
 与 DP 结合
 https://codeforces.com/problemset/problem/5/E
 https://codeforces.com/problemset/problem/1407/D
@@ -101,8 +90,11 @@ LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
 
 其他
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
-     评注：接雨水有三种不同的解法（DP、单调栈和双指针），其中双指针是 DP 的空间优化写法，讲解见 https://www.bilibili.com/video/BV1Qg411q7ia/
-          本质上是两种计算策略：计算每个下标处的接水量（纵向累加），计算一段高度对应的接水宽度（横向累加）
+评注：接雨水有三种不同的解法（前后缀分解、相向双指针和单调栈）
+     其中相向双指针是前后缀分解的空间优化写法，视频讲解见 https://www.bilibili.com/video/BV1Qg411q7ia/
+     单调栈视频讲解见 https://www.bilibili.com/video/BV1VN411J7S7/ 
+     本质上是两种计算策略：1. 竖着累加：假设每个下标都有个水桶
+                       2. 横着累加：见单调栈的做法（找上一个更大元素，在找的过程中填坑）
 LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
 LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
 LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
