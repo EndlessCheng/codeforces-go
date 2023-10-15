@@ -28,7 +28,7 @@ class Solution:
 class Solution {
     public String shortestBeautifulSubstring(String s, int k) {
         // 1 的个数不足 k
-        if (s.replaceAll("0", "").length() < k) {
+        if (s.replace("0", "").length() < k) {
             return "";
         }
         // 否则一定有解
@@ -36,7 +36,7 @@ class Solution {
             String ans = "";
             for (int i = size; i <= s.length(); i++) {
                 String t = s.substring(i - size, i);
-                if ((ans.isEmpty() || t.compareTo(ans) < 0) && t.replaceAll("0", "").length() == k) {
+                if ((ans.isEmpty() || t.compareTo(ans) < 0) && t.replace("0", "").length() == k) {
                     ans = t;
                 }
             }
@@ -132,7 +132,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public String shortestBeautifulSubstring(String S, int k) {
-        if (S.replaceAll("0", "").length() < k) {
+        if (S.replace("0", "").length() < k) {
             return "";
         }
         char[] s = S.toCharArray();
