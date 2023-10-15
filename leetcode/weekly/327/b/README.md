@@ -70,6 +70,23 @@ class Solution {
 class Solution {
 public:
     long long maxKelements(vector<int> &nums, int k) {
+        priority_queue<int> pq(less<int>(), move(nums)); // 原地堆化（最大堆）
+        long long ans = 0;
+        while (k--) {
+            int x = pq.top();
+            pq.pop();
+            ans += x;
+            pq.push((x + 2) / 3);
+        }
+        return ans;
+    }
+};
+```
+
+```cpp [sol-C++ 写法二]
+class Solution {
+public:
+    long long maxKelements(vector<int> &nums, int k) {
         make_heap(nums.begin(), nums.end()); // 原地堆化（最大堆）
         long long ans = 0;
         while (k--) {
