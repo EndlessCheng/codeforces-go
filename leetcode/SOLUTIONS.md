@@ -36,6 +36,7 @@
 |优先队列/堆|[373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)|[讲清楚为什么一开始要把 (i,0) 都入堆！](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/solution/jiang-qing-chu-wei-shi-yao-yi-kai-shi-ya-i0dj/)|中等|
 ||[1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)|[三种算法：暴力/二分答案/堆](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/)|2133|
 |位运算|[771. 宝石与石头](https://leetcode.cn/problems/jewels-and-stones/)|[本题最优解！线性时间+常数空间](https://leetcode.cn/problems/jewels-and-stones/solution/ben-ti-zui-you-jie-xian-xing-shi-jian-ch-ddw3/)|1165|
+||[137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)|[带你一步步推导出位运算公式！](https://leetcode.cn/problems/single-number-ii/solution/dai-ni-yi-bu-bu-tui-dao-chu-wei-yun-suan-wnwy/)|中等|
 |贡献法|[979. 在二叉树中分配硬币](https://leetcode.cn/problems/distribute-coins-in-binary-tree/)|[【图解】没有思路？进来秒懂！](https://leetcode.cn/problems/distribute-coins-in-binary-tree/solution/tu-jie-mei-you-si-lu-jin-lai-miao-dong-p-vrni/)|1709|
 ||[891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/)|[【图解】计算每个元素对答案的贡献，多解法](https://leetcode.cn/problems/sum-of-subsequence-widths/solution/by-endlesscheng-upd1/)|2183|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
@@ -52,7 +53,7 @@
 ||[1105. 填充书架](https://leetcode.cn/problems/filling-bookcase-shelves/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/filling-bookcase-shelves/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-0vg6/)|2014|
 ||[1235. 规划兼职工作](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/)|[动态规划+二分查找优化](https://leetcode.cn/problems/maximum-profit-in-job-scheduling/solution/dong-tai-gui-hua-er-fen-cha-zhao-you-hua-zkcg/)|2023|
 ||[1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/)|[两种思路：动态规划/单调栈](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-68nx/)|2034|
-||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
+||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[【博弈 DP】教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
 ||[801. 使序列递增的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/)|[考虑相邻元素的大小关系](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/solution/dong-tai-gui-hua-kao-lu-xiang-lin-yuan-s-ni0p/)|2066|
 ||[1079. 活字印刷](https://leetcode.cn/problems/letter-tile-possibilities/)|[O(n^2) 计数 DP](https://leetcode.cn/problems/letter-tile-possibilities/solution/on2-ji-shu-dppythonjavacgo-by-endlessche-hmez/)|*非暴力|
 ||[1444. 切披萨的方案数](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/)|[击败 100%！从递归到递推到优化，教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/solution/ji-bai-100cong-di-gui-dao-di-tui-dao-you-dxz5/)|2127|
