@@ -77,6 +77,7 @@ https://codeforces.com/problemset/problem/1296/C
 前后缀分解
 - [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
 - [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)
+- [2906. 构造乘积矩阵](https://leetcode.cn/problems/construct-product-matrix/)
 - [2256. 最小平均差](https://leetcode.cn/problems/minimum-average-difference/) 1395
 - [2483. 商店的最少代价](https://leetcode.cn/problems/minimum-penalty-for-a-shop/) 1495
 - [2420. 找到所有好下标](https://leetcode.cn/problems/find-all-good-indices/) 1695
@@ -476,15 +477,17 @@ LC936 https://leetcode.cn/problems/stamping-the-sequence/
 LC1199 https://leetcode.cn/problems/minimum-time-to-build-blocks/
 LC2382 https://leetcode.cn/problems/maximum-segment-sum-after-removals/
 LCP52 https://leetcode.cn/problems/QO5KpG/
-https://codeforces.com/problemset/problem/712/C
-https://codeforces.com/problemset/problem/621/C
-https://codeforces.com/problemset/problem/571/A
-https://codeforces.com/problemset/problem/369/E
-https://codeforces.com/problemset/problem/1644/D
-https://codeforces.com/problemset/problem/1638/D
-https://codeforces.com/problemset/problem/1672/D
-https://codeforces.com/problemset/problem/1759/G 求字典序最小，通常可以从大往小思考
-https://codeforces.com/contest/1882/problem/B
+https://codeforces.com/problemset/problem/1792/C 1500
+- 相似题目 https://codeforces.com/problemset/problem/1367/F1 2100
+https://codeforces.com/problemset/problem/1882/B
+https://codeforces.com/problemset/problem/712/C 1600
+https://codeforces.com/problemset/problem/621/C 1700
+https://codeforces.com/problemset/problem/1644/D 1700
+https://codeforces.com/problemset/problem/1672/D 1700
+https://codeforces.com/problemset/problem/1759/G 1900 求字典序最小，通常可以从大往小思考
+https://codeforces.com/problemset/problem/1638/D 2000
+https://codeforces.com/problemset/problem/571/A 2100
+https://codeforces.com/problemset/problem/369/E 2200
 
 删除变添加
 https://codeforces.com/problemset/problem/295/B
@@ -963,25 +966,27 @@ func _() {
 		_ = distanceSum
 	}
 
-	// 同余前缀和，a 的下标从 0 开始，k 为模数
+	// 同余前缀和，a 的下标从 0 开始，md 为模数
+	// 求 a[i]+a[i+md]+a[i+2*md]+...
 	// 具体用法见 query 上的注释
-	// LC1664 https://leetcode-cn.com/problems/ways-to-make-a-fair-array/
+	// LC1664 https://leetcode.cn/problems/ways-to-make-a-fair-array/
+	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
 	// https://atcoder.jp/contests/abc288/tasks/abc288_d
-	groupPrefixSum := func(a []int, k int) {
-		sum := make([]int, len(a)+k)
-		for i, v := range a {
-			sum[i+k] = sum[i] + v
+	groupPrefixSum := func(_a []int, md int) {
+		_sum := make([]int, len(_a)+md) 
+		for i, v := range _a {
+			_sum[i+md] = _sum[i] + v
 		}
-		pre := func(x, t int) int {
-			if x%k <= t {
-				return sum[x/k*k+t]
+		_pre := func(x, t int) int {
+			if x%md <= t {
+				return _sum[x/md*md+t]
 			}
-			return sum[(x+k-1)/k*k+t]
+			return _sum[(x+md-1)/md*md+t]
 		}
-		// 求下标在 [l,r) 范围内且下标模 k 同余于 t 的所有元素之和
-		query := func(l, r, t int) int {
-			t %= k
-			return pre(r, t) - pre(l, t)
+		// 求下标在 [l,r) 范围内 & 下标模 md 同余于 rem 的所有元素之和
+		query := func(l, r, rem int) int {
+			rem %= md
+			return _pre(r, rem) - _pre(l, rem) // % mod
 		}
 		_ = query
 	}
