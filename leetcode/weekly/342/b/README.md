@@ -7,10 +7,16 @@ $$
 结合等差数列求和公式，这些数的和为
 
 $$
-\dfrac{k(k+1)}{2} \cdot m
+s(m) = \dfrac{k(k+1)}{2} \cdot m
 $$
 
-再结合容斥原理，可以算出 $3$ 或 $5$ 或 $7$ 的倍数之和。具体请看 [视频讲解](https://www.bilibili.com/video/BV1Bs4y1A7Wa/) 第二题。
+再结合**容斥原理**，可以算出 $3$ **或** $5$ **或** $7$ 的倍数之和，即
+
+$$
+s(3) + s(5) + s(7) - s(15) - s(21) - s(35) + s(105)
+$$
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1Bs4y1A7Wa/) 第二题。
 
 ```py [sol-Python3]
 class Solution:
@@ -75,7 +81,7 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(1)$。
-- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 相似题目
 
