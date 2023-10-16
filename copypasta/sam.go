@@ -37,6 +37,7 @@ https://ac.nowcoder.com/acm/contest/37092#question
 区间本质不同子串个数（与 LCT 结合）https://www.luogu.com.cn/problem/P6292
 动态子串出现次数（与 LCT 结合）SPOJ NSUBSTR2 https://www.luogu.com.cn/problem/SP8747
 todo https://codeforces.com/problemset/problem/235/C
+todo LC2730 变形：相邻字符改成相邻子串（连续重复子串） https://leetcode.cn/problems/find-the-longest-semi-repetitive-substring/
 */
 
 // 如果超时/超内存，改用预分配内存池 + func init() { debug.SetGCPercent(-1) } 的写法（如下）
