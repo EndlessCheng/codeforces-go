@@ -8,7 +8,7 @@ import (
 // https://cp-algorithms.com/algebra/continued-fractions.html
 func continuedFractionCollections() {
 	// a/b = [exp[0]; exp[1],...]
-	calcContinuedFraction := func(a, b int64) (exp []int64) {
+	calcContinuedFraction := func(a, b int) (exp []int) {
 		for b != 1 {
 			exp = append(exp, a/b)
 			a, b = b, a%b
@@ -16,8 +16,8 @@ func continuedFractionCollections() {
 		exp = append(exp, a)
 		return
 	}
-	calcContinuedFractionBig := func(a_, b_ int64) (exp []*big.Int) {
-		a, b := big.NewInt(a_), big.NewInt(b_)
+	calcContinuedFractionBig := func(a_, b_ int) (exp []*big.Int) {
+		a, b := big.NewInt(int64(a_)), big.NewInt(int64(b_))
 		for !b.IsInt64() || b.Int64() != 1 {
 			r := &big.Int{}
 			a.QuoRem(a, b, r)
@@ -36,16 +36,16 @@ func continuedFractionCollections() {
 	// https://www.weiwen.io/post/about-the-pell-equations-2/
 	// 连分数表示 https://oeis.org/A240071
 	// 循环节长度 https://oeis.org/A003285
-	calcSqrtContinuedFraction := func(d int64) (exp []int64) {
+	calcSqrtContinuedFraction := func(d int) (exp []int) {
 		sqrtD := math.Sqrt(float64(d))
-		base := int64(sqrtD)
+		base := int(sqrtD)
 		if base*base == d {
-			return []int64{base}
+			return []int{base}
 		}
-		p := []int64{0}
-		q := []int64{1}
+		p := []int{0}
+		q := []int{1}
 		for i := 0; ; i++ {
-			a := int64((float64(p[i]) + sqrtD) / float64(q[i]))
+			a := int((float64(p[i]) + sqrtD) / float64(q[i]))
 			exp = append(exp, a)
 			if a == 2*base {
 				break
@@ -56,17 +56,17 @@ func continuedFractionCollections() {
 		}
 		return
 	}
-	//calcSqrtContinuedFraction := func(d int64) (exp []int64) {
+	//calcSqrtContinuedFraction := func(d int) (exp []int) {
 	//	sqrtD := math.Sqrt(float64(d))
-	//	base0 := int64(sqrtD)
+	//	base0 := int(sqrtD)
 	//	if base0*base0 == d {
-	//		return []int64{base0}
+	//		return []int{base0}
 	//	}
-	//	a := []int64{1}
-	//	b := []int64{0}
-	//	c := []int64{1}
+	//	a := []int{1}
+	//	b := []int{0}
+	//	c := []int{1}
 	//	for i := 0; ; i++ {
-	//		base := int64((float64(a[i])*sqrtD + float64(b[i])) / float64(c[i]))
+	//		base := int((float64(a[i])*sqrtD + float64(b[i])) / float64(c[i]))
 	//		exp = append(exp, base)
 	//		if base == 2*base0 {
 	//			break
@@ -83,13 +83,13 @@ func continuedFractionCollections() {
 	//	return
 	//}
 
-	gcd := func(a, b int64) int64 {
+	gcd := func(a, b int) int {
 		for b > 0 {
 			a, b = b, a%b
 		}
 		return a
 	}
-	gcds := func(a ...int64) (g int64) {
+	gcds := func(a ...int) (g int) {
 		g = a[0]
 		for _, v := range a[1:] {
 			g = gcd(g, v)
@@ -97,18 +97,18 @@ func continuedFractionCollections() {
 		return
 	}
 	// sqrt(m/n)
-	calcSqrtRatContinuedFraction := func(m, n int64) (exp []int64) {
+	calcSqrtRatContinuedFraction := func(m, n int) (exp []int) {
 		sqrtRat := math.Sqrt(float64(m) / float64(n))
-		base0 := int64(sqrtRat)
+		base0 := int(sqrtRat)
 		if base0*base0*n == m {
-			return []int64{base0}
+			return []int{base0}
 		}
-		a := []int64{1}
-		b := []int64{0}
-		c := []int64{1}
+		a := []int{1}
+		b := []int{0}
+		c := []int{1}
 		const loop = 50
 		for i := 0; i < loop; i++ {
-			base := int64((float64(a[i])*sqrtRat + float64(b[i])) / float64(c[i]))
+			base := int((float64(a[i])*sqrtRat + float64(b[i])) / float64(c[i]))
 			exp = append(exp, base)
 			tmp := base*c[i] - b[i]
 			newA := n * c[i] * a[i]
@@ -125,13 +125,13 @@ func continuedFractionCollections() {
 		}
 		return
 	}
-	calcSqrtRatContinuedFractionBig := func(m, n int64) (exp []*big.Int) {
+	calcSqrtRatContinuedFractionBig := func(m, n int) (exp []*big.Int) {
 		sqrtRat := new(big.Float).Sqrt(big.NewFloat(float64(m) / float64(n)))
 		if base0, acc := sqrtRat.Int(nil); acc == big.Exact {
 			exp = append(exp, base0)
 			return
 		}
-		bigM, bigN := big.NewInt(m), big.NewInt(n)
+		bigM, bigN := big.NewInt(int64(m)), big.NewInt(int64(n))
 		a := []*big.Int{big.NewInt(1)}
 		b := []*big.Int{big.NewInt(0)}
 		c := []*big.Int{big.NewInt(1)}
@@ -167,11 +167,11 @@ func continuedFractionCollections() {
 
 	// 将连分数化成最简分数
 	// 模板题 https://leetcode-cn.com/contest/season/2019-fall/problems/deep-dark-fraction/
-	calcRatByContinuedFraction := func(exp []int64) (a, b int64) {
+	calcRatByContinuedFraction := func(exp []int) (a, b int) {
 		n := len(exp)
-		h := make([]int64, n+2)
+		h := make([]int, n+2)
 		h[0], h[1] = 0, 1
-		k := make([]int64, n+2)
+		k := make([]int, n+2)
 		k[0], k[1] = 1, 0
 		for i, v := range exp {
 			h[i+2] = v*h[i+1] + h[i]
@@ -180,7 +180,7 @@ func continuedFractionCollections() {
 		return h[n+1], k[n+1]
 	}
 
-	_ = []interface{}{
+	_ = []any{
 		calcContinuedFraction, calcContinuedFractionBig,
 		calcSqrtContinuedFraction, calcSqrtRatContinuedFraction, calcSqrtRatContinuedFractionBig,
 		calcRatByContinuedFraction,
