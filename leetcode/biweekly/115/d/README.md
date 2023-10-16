@@ -11,17 +11,17 @@
 
 用哈希表统计每个数的出现次数，记在 $\textit{cnt}$ 中。
 
-定义 $f[i+1][j]$ 表示从 $\textit{cnt}$ 的前 $i$ 种数中选择一些数，元素和**恰好**为 $j$ 的方案数。
+定义 $f[i][j]$ 表示从 $\textit{cnt}$ 的前 $i$ 种数中选择一些数，元素和**恰好**为 $j$ 的方案数。
 
 设第 $i$ 种数的值为 $x$。
 
-枚举第 $i$ 种数选了 $k$ 个，则有
+枚举第 $i$ 种数选了 $k=0,1,2,\cdots,\textit{cnt}[x]$ 个，根据加法原理，累加这些方案数，即
 
 $$
-f[i+1][j] = \sum_{k=0}^{\textit{cnt}[x]} f[i][j-kx]
+f[i][j] = \sum_{k=0}^{\textit{cnt}[x]} f[i-1][j-kx]
 $$
 
-其中 $j-kx\ge 0$。
+注意必须满足 $j-kx\ge 0$。
 
 初始值 $f[0][0] = \textit{cnt}[0] + 1$，表示「在什么也不选的情况下，元素和为 $0$」有 $\textit{cnt}[0] + 1$ 个方案。
 
@@ -38,29 +38,35 @@ $$
 举例说明，假设 $x=2$ 并且 $\textit{cnt}[x]=3$，那么选 $0,1,2,3$ 个 $x$ 都是可以的，即
 
 $$
-f[i+1][j-2] = f[i][j-2] + f[i][j-4] + f[i][j-6] + f[i][j-8]
+f[i][j] = f[i-1][j] + f[i-1][j-2] + f[i-1][j-4] + f[i-1][j-6]
 $$
 
-所以
+我们把 $f[i][j-2]$ 的递推式也列出来看看：
+
+$$
+f[i][j-2] = f[i-1][j-2] + f[i-1][j-4] + f[i-1][j-6] + f[i-1][j-8]
+$$
+
+注意到，中间的 $f[i-1][j-2] + f[i-1][j-4] + f[i-1][j-6]$ 算了两遍，这可以优化掉：
 
 $$
 \begin{aligned}
-f[i+1][j] =\ & f[i][j] + f[i][j-2] + f[i][j-4] + f[i][j-6]\\
-=\ &f[i][j] + (f[i+1][j-2] - f[i][j-8])\\
-=\ &f[i+1][j-2] + f[i][j] - f[i][j-8]\\
+f[i][j] =\ & f[i-1][j] + f[i-1][j-2] + f[i-1][j-4] + f[i-1][j-6]\\
+=\ &f[i-1][j] + (f[i][j-2] - f[i-1][j-8])\\
+=\ &f[i][j-2] + f[i-1][j] - f[i-1][j-8]\\
 \end{aligned}
 $$
 
 一般地，我们有
 
 $$
-f[i+1][j] = f[i+1][j-x] + f[i][j] - f[i][j-(\textit{cnt}[x]+1)\cdot x]
+f[i][j] = f[i][j-x] + f[i-1][j] - f[i-1][j-(\textit{cnt}[x]+1)\cdot x]
 $$
 
 如果 $j-(\textit{cnt}[x]+1)\cdot x < 0$ 则
 
 $$
-f[i+1][j] = f[i+1][j-x] + f[i][j]
+f[i][j] = f[i][j-x] + f[i-1][j]
 $$
 
 这样就可以 $\mathcal{O}(1)$ 地算出每个 $f[i][j]$ 了。
@@ -230,12 +236,22 @@ func min(a, b int) int { if b < a { return b }; return a }
 再看一眼这个式子
 
 $$
-f[i+1][j] = \sum_{k=0}^{\textit{cnt}[x]} f[i][j-kx]
+f[i][j] = \sum_{k=0}^{\textit{cnt}[x]} f[i-1][j-kx]
 $$
 
-如果求出 $f[i]$ 的**同余前缀和**，那么 $f[i+1][j]$ 就可以转换成两个同余前缀和的差了。
+如果求出 $f[i-1]$ 的**同余前缀和**，那么 $f[i][j]$ 就可以转换成两个同余前缀和的差了，这样也可以 $\mathcal{O}(1)$ 地算出每个 $f[i][j]$。
 
-同余前缀和指 $s[p] = f[i][p] + f[i][p-x] + f[i][p-2x] +\cdots$。
+同余前缀和是指 
+
+$$
+s[p] = f[i-1][p] + f[i-1][p-x] + f[i-1][p-2x] +\cdots
+$$
+
+这可以递推算出来，即
+
+$$
+s[p] = f[i-1][p] + s[p-x]
+$$
 
 代码实现时，可以只用一个一维数组。
 
@@ -256,7 +272,7 @@ class Solution:
         for x, c in cnt.items():
             s = min(s + x * c, r)
             for j in range(x, s + 1):
-                f[j] = (f[j] + f[j - x]) % MOD  # 同余前缀和
+                f[j] = (f[j] + f[j - x]) % MOD  # 原地计算同余前缀和
             for j in range(s, (c + 1) * x - 1, -1):
                 f[j] = (f[j] - f[j - (c + 1) * x]) % MOD  # 两个同余前缀和的差
         return sum(f[l:]) % MOD
@@ -286,7 +302,7 @@ class Solution {
             int x = e.getKey(), c = e.getValue();
             sum = Math.min(sum + x * c, r);
             for (int j = x; j <= sum; j++) {
-                f[j] = (f[j] + f[j - x]) % MOD; // 同余前缀和
+                f[j] = (f[j] + f[j - x]) % MOD; // 原地计算同余前缀和
             }
             for (int j = sum; j >= x * (c + 1); j--) {
                 f[j] = (f[j] - f[j - x * (c + 1)] + MOD) % MOD; // 两个同余前缀和的差
@@ -324,9 +340,9 @@ public:
 
         int sum = 0;
         for (auto [x, c]: cnt) {
-            sum = min(sum + x * c, r); // 到目前为止，能选的元素和至多为 sum
+            sum = min(sum + x * c, r);
             for (int j = x; j <= sum; j++) {
-                f[j] = (f[j] + f[j - x]) % MOD; // 同余前缀和
+                f[j] = (f[j] + f[j - x]) % MOD; // 原地计算同余前缀和
             }
             for (int j = sum; j >= x * (c + 1); j--) {
                 f[j] = (f[j] - f[j - x * (c + 1)] + MOD) % MOD; // 两个同余前缀和的差
@@ -364,7 +380,7 @@ func countSubMultisets(nums []int, l, r int) (ans int) {
 	for x, c := range cnt {
 		sum = min(sum+x*c, r)
 		for j := x; j <= sum; j++ {
-			f[j] = (f[j] + f[j-x]) % mod // 同余前缀和
+			f[j] = (f[j] + f[j-x]) % mod // 原地计算同余前缀和
 		}
 		for j := sum; j >= x*(c+1); j-- {
 			f[j] = (f[j] - f[j-x*(c+1)]) % mod // 两个同余前缀和的差
@@ -382,7 +398,7 @@ func min(a, b int) int { if b < a { return b }; return a }
 
 #### 复杂度分析
 
-同上
+同上。
 
 ## 算法小课堂：模运算
 
