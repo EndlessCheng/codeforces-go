@@ -3,9 +3,11 @@ package copypasta
 import (
 	"index/suffixarray"
 	"math/bits"
+	"math/rand"
 	"reflect"
 	"sort"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -43,36 +45,62 @@ func _(min, max func(int, int) int) {
 	// https://en.wikipedia.org/wiki/Hash_function
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
+	// 不能用 uint32 自然溢出（或者单模数）的原因 https://en.wikipedia.org/wiki/Birthday_problem
 	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://oi-wiki.org/string/hash/
 	// 利用 set 可以求出固定长度的不同子串个数
+	// https://codeforces.com/blog/entry/60445
+	// https://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html
+	// https://codeforces.com/blog/entry/113484
 	// todo 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
+	//      从 Hash Killer I、II、III 论字符串哈希 https://www.cnblogs.com/HansBug/p/4288118.html
 	//      anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
 	//      On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
 	//      hash killer https://loj.ac/p/6758
 	//  Kapun's algorithm https://codeforces.com/blog/entry/99973
+	// 比较：给每个元素分配一个随机哈希系数 + 滑动窗口 https://codeforces.com/problemset/problem/1418/G
+	//
+	// https://codeforces.com/problemset?tags=hashing,strings
 	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// 模板题 https://www.luogu.com.cn/problem/P3370
+	// 测试哈希碰撞 https://codeforces.com/problemset/problem/514/C
+	//            https://codeforces.com/problemset/problem/1200/E
+	// 拼接字符串 https://codeforces.com/problemset/problem/1800/D
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
 	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
 	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
-	hash := func(s string) {
-		// 注意：由于自然溢出哈希很容易被卡，能用其它方法实现尽量用其它方法
-		// 更保险的做法是采用随机 base := 9e8 - rand.Intn(1e8)
-		// 模数从 2^64 改为 1e9+7，或者使用多个模数 999727999, 1070777777, 1000000007
-		const base uint64 = 1e8 + 7
-		powP := make([]uint64, len(s)+1) // powP[i] = prime^i
-		powP[0] = 1
-		preHash := make([]uint64, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
-		for i, b := range s {
-			powP[i+1] = powP[i] * base
-			preHash[i+1] = preHash[i]*base + uint64(b) // 本质是秦九韶算法
+	// todo https://ac.nowcoder.com/acm/contest/64384/D
+	stringHash := func(s string) {
+		rand.Seed(time.Now().UnixNano())
+		rand64 := [128]uint{}
+		for i := range rand64 {
+			rand64[i] = uint(rand.Int63n(1e18)) // 不要太大
 		}
 
-		// 计算子串 s[l:r] 的哈希   0<=l<=r<=len(s)
+		//powB := [6e5 + 1]uint{1}
+		//for i := 1; i < len(powB); i++ {
+		//	hi, lo := bits.Mul64(powB[i-1], base)
+		//	powB[i] = bits.Rem64(hi, lo, prime)
+		//}
+
+		// 这里实现的是多项式哈希
+		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n=len(s)
+		// 更保险的做法是采用随机 base := 9e8 - rand.Intn(1e8)
+		// 以及使用两个质数作为模数（比如 999727999, 1070777777, 1000000007 等）    自然溢出相当于模数为 2^64
+		const base uint = 1e8 + 7
+		powB := make([]uint, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希
+		powB[0] = 1
+		preHash := make([]uint, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
+		for i, b := range s {
+			powB[i+1] = powB[i] * base
+			preHash[i+1] = preHash[i]*base + rand64[b] // 秦九韶算法
+		}
+
+		// 计算子串 s[l:r] 的哈希，左闭右开 0<=l<=r<=len(s)
 		// 空串的哈希值为 0
-		subHash := func(l, r int) uint64 { return preHash[r] - preHash[l]*powP[r-l] }
+		subHash := func(l, r int) uint { return preHash[r] - preHash[l]*powB[r-l] }
+
 		_ = subHash
 	}
 
@@ -80,9 +108,11 @@ func _(min, max func(int, int) int) {
 	// https://www.luogu.com.cn/problem/solution/UVA11019
 	// UVa 11019 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=22&page=show_problem&problem=1960
 
+	//
+
 	// KMP (Knuth–Morris–Pratt algorithm)
-	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
-	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
+	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
+	// 特别地，pi[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
@@ -92,9 +122,12 @@ func _(min, max func(int, int) int) {
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC28 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
+	// LC686 https://leetcode.cn/problems/repeated-string-match/
+	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
 	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
 	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E
+	// - 不加 # 的话会面临 "cabc"+"abca" 这样的例子，算出的 border 是 "cabca"
 	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/
 	// https://codeforces.com/problemset/problem/432/D
 	// https://codeforces.com/problemset/problem/471/D
@@ -107,39 +140,46 @@ func _(min, max func(int, int) int) {
 	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
 	// https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 	// - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
-	calcMaxMatchLengths := func(s string) []int {
-		match := make([]int, len(s))
-		for i, c := 1, 0; i < len(s); i++ {
+	// 在循环同构字符串 s 中查找 t，等价于在 s+(s[:n-1]) 中查找 t 
+	// - LC2851 https://leetcode.cn/problems/string-transformation/
+	// https://www.lanqiao.cn/problems/5132/learning/?contest_id=144
+
+	// 计算前缀函数
+	// 定义见 https://oi-wiki.org/string/kmp/
+	calcPi := func(s string) []int {
+		pi := make([]int, len(s))
+		for i, cnt := 1, 0; i < len(s); i++ {
 			v := s[i]
-			for c > 0 && s[c] != v {
-				c = match[c-1]
+			for cnt > 0 && s[cnt] != v {
+				cnt = pi[cnt-1]
 			}
-			if s[c] == v {
-				c++
+			if s[cnt] == v {
+				cnt++
 			}
-			match[i] = c
+			pi[i] = cnt
 		}
-		return match
+		return pi
 	}
-	// search pattern from text, return all start positions
+
+	// 在 text 中查找 pattern，返回所有成功匹配位置（pattern 首字母的下标）
 	kmpSearch := func(text, pattern string) (pos []int) {
-		match := calcMaxMatchLengths(pattern)
-		lenP := len(pattern)
-		c := 0
+		pi := calcPi(pattern)
+		cnt := 0
 		for i, v := range text {
-			for c > 0 && pattern[c] != byte(v) {
-				c = match[c-1]
+			for cnt > 0 && pattern[cnt] != byte(v) {
+				cnt = pi[cnt-1]
 			}
-			if pattern[c] == byte(v) {
-				c++
+			if pattern[cnt] == byte(v) {
+				cnt++
 			}
-			if c == lenP {
-				pos = append(pos, i-lenP+1)
-				c = match[c-1] // 不允许重叠时 c = 0
+			if cnt == len(pattern) {
+				pos = append(pos, i-len(pattern)+1)
+				cnt = pi[cnt-1] // 如果不允许重叠，将 cnt 置为 0
 			}
 		}
 		return
 	}
+
 	// EXTRA: 最小循环节
 	// 返回循环节以及循环次数
 	// 如果没有循环节，那么返回原串和 1
@@ -148,12 +188,14 @@ func _(min, max func(int, int) int) {
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
-		match := calcMaxMatchLengths(s)
-		if m := match[n-1]; m > 0 && n%(n-m) == 0 {
+		pi := calcPi(s)
+		if m := pi[n-1]; m > 0 && n%(n-m) == 0 {
 			return s[:n-m], n / (n - m)
 		}
 		return s, 1 // 无小于 n 的循环节
 	}
+
+	//
 
 	// todo 失配树（border 树）
 	//  https://www.luogu.com.cn/problem/P5829
@@ -166,7 +208,8 @@ func _(min, max func(int, int) int) {
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	//
-	// 模板题 LC2223 https://leetcode-cn.com/problems/sum-of-scores-of-built-strings/
+	// 模板题 https://judge.yosupo.jp/problem/zalgorithm
+	//       LC2223 https://leetcode.cn/problems/sum-of-scores-of-built-strings/
 	//       https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	//       https://www.luogu.com.cn/problem/P5410
 	// 结论 https://codeforces.com/problemset/problem/535/D
@@ -246,10 +289,13 @@ func _(min, max func(int, int) int) {
 	}
 
 	// 子序列自动机
+	// 如果值域很大可以 pos := map[int][]int{} 然后二分查找
 	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
 	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
 	// LC2014 https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
 	// http://codeforces.com/problemset/problem/91/A
+	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
+	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
 	// https://codeforces.com/contest/1845/problem/C
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 	subsequenceAutomaton := func(s string) {
@@ -297,7 +343,12 @@ func _(min, max func(int, int) int) {
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	//
-	// 模板题 https://www.luogu.com.cn/problem/P3805
+	// https://oeis.org/A002620 全为 a 的字符串的奇回文子串个数 floor((n+1)^2/4)
+	// https://oeis.org/A002620 全为 a 的字符串的偶回文子串个数 floor(n^2/4)
+	// https://oeis.org/A000217 全为 a 的字符串的回文子串个数 n*(n+1)/2
+	//
+	// 模板题 https://judge.yosupo.jp/problem/enumerate_palindromes
+	//       https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.com/problemset/problem/1326/D2
 	// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
@@ -410,9 +461,9 @@ func _(min, max func(int, int) int) {
 		// EXTRA: 计算回文子串个数
 		// 易证其为 ∑(halfLen[i]/2)
 		// LC647 https://leetcode-cn.com/problems/palindromic-substrings/
-		totP := int64(0)
+		totP := 0
 		for _, hl := range halfLen {
-			totP += int64(hl / 2)
+			totP += hl / 2
 		}
 
 		_ = []interface{}{isP, midPL}
@@ -434,7 +485,9 @@ func _(min, max func(int, int) int) {
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 见 https://github.com/EndlessCheng/cp-pdf）
 	单个字符串
-		模板题 https://www.luogu.com.cn/problem/P3809 https://loj.ac/p/111
+		模板题 https://www.luogu.com.cn/problem/P3809
+			https://judge.yosupo.jp/problem/suffixarray
+			https://loj.ac/p/111
 		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
 		不可重叠最长重复子串 https://atcoder.jp/contests/abc141/tasks/abc141_e http://poj.org/problem?id=1743
@@ -442,7 +495,12 @@ func _(min, max func(int, int) int) {
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		本质不同子串个数 LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/ https://www.luogu.com.cn/problem/P2408 https://www.luogu.com.cn/problem/SP694 https://atcoder.jp/contests/practice2/tasks/practice2_i https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
+		本质不同子串个数 LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
+			https://www.luogu.com.cn/problem/P2408
+			https://www.luogu.com.cn/problem/SP694
+			https://judge.yosupo.jp/problem/number_of_substrings
+			https://atcoder.jp/contests/practice2/tasks/practice2_i
+			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode-cn.com/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
@@ -465,6 +523,7 @@ func _(min, max func(int, int) int) {
 			 AHOI13 差异 https://www.luogu.com.cn/problem/P4248
 			 - 任意两后缀的 LCP 之和
 			 对所有 i，求出 ∑j=1..n LCP(i,j) https://atcoder.jp/contests/abc213/tasks/abc213_f
+			 https://atcoder.jp/contests/abc213/tasks/abc213_f
 		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
 			todo
 		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
@@ -661,7 +720,7 @@ func _(min, max func(int, int) int) {
 
 		// debug
 		for i, h := range height {
-			suffix := string(s[sa[i]:])
+			suffix := s[sa[i]:]
 			if h == 0 {
 				println(" ", suffix)
 			} else {
@@ -669,7 +728,7 @@ func _(min, max func(int, int) int) {
 			}
 		}
 
-		_ = []interface{}{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring}
+		_ = []any{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring}
 	}
 
 	// 若输入为 []int32，通过将每个元素拆成 4 个 byte，来满足调库条件
@@ -749,10 +808,10 @@ func _(min, max func(int, int) int) {
 		return sa
 	}
 
-	_ = []interface{}{
+	_ = []any{
 		unsafeToBytes, unsafeToString,
 		indexAll,
-		hash,
+		stringHash,
 		kmpSearch, calcMinPeriod,
 		zSearch,
 		smallestRepresentation,
