@@ -9,12 +9,12 @@ import "sort"
 // 我的题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf896c
 type odtBlock struct {
 	l, r int
-	val  int64
+	val  int
 }
 
 type odt []odtBlock
 
-func newODT(arr []int64) odt {
+func newODT(arr []int) odt {
 	n := len(arr)
 	t := make(odt, n)
 	for i := range t {
@@ -49,7 +49,7 @@ func (t *odt) prepare(l, r int) (begin, end int) {
 
 // 以下方法传入的 begin, end 来自事先计算的 t.prepare
 
-func (t *odt) merge(begin, end, r int, val int64) {
+func (t *odt) merge(begin, end, r, val int) {
 	ot := *t
 	ot[begin].r = r
 	ot[begin].val = val
@@ -58,13 +58,13 @@ func (t *odt) merge(begin, end, r int, val int64) {
 	}
 }
 
-func (t odt) add(begin, end int, val int64) {
+func (t odt) add(begin, end, val int) {
 	for i := begin; i < end; i++ {
 		t[i].val += val
 	}
 }
 
-func (t odt) kth(begin, end, k int) int64 {
+func (t odt) kth(begin, end, k int) int {
 	blocks := append(odt(nil), t[begin:end]...)
 	sort.Slice(blocks, func(i, j int) bool { return blocks[i].val < blocks[j].val })
 	k--
@@ -78,22 +78,10 @@ func (t odt) kth(begin, end, k int) int64 {
 	panic(k)
 }
 
-func (odt) pow(x int64, n int, mod int64) int64 {
-	x %= mod
-	res := int64(1) % mod
-	for ; n > 0; n >>= 1 {
-		if n&1 == 1 {
-			res = res * x % mod
-		}
-		x = x * x % mod
-	}
-	return res
-}
-
-func (t odt) powSum(begin, end int, n int, mod int64) (res int64) {
+func (t odt) powSum(begin, end int, n int) (res int) {
 	for _, b := range t[begin:end] {
 		// 总和能溢出的话这里要额外取模
-		res += int64(b.r-b.l+1) * t.pow(b.val, n, mod)
+		res += (b.r - b.l + 1) * pow(b.val, n)
 	}
 	return res % mod
 }
