@@ -7,6 +7,7 @@ package copypasta
 // 推荐阅读《算法竞赛进阶指南》0x43 和 0x48 节
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
+// todo [Monoid 幺半群] Generalizing Segment Trees https://sharmaeklavya2.github.io/blog/generalizing-segment-trees.html
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/
 // 线段树进阶 Part 1 https://www.luogu.com.cn/blog/AlexWei/Segment-Tree-Part-1
 // https://codeforces.com/blog/entry/18051
@@ -20,6 +21,7 @@ package copypasta
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
+// 模板 https://codeforces.com/contest/52/problem/C
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
@@ -45,12 +47,15 @@ package copypasta
 // 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 // 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E
+// https://atcoder.jp/contests/abc285/tasks/abc285_f
+//
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的数据结构优化 DP
 // 另见 dp.go 的动态 DP
+//
 // todo http://poj.org/problem?id=2991
-// 变换成值域 https://www.luogu.com.cn/problem/SP1684 https://www.luogu.com.cn/problem/UVA11235 http://poj.org/problem?id=3368
+// 变换成值域 http://poj.org/problem?id=3368 https://www.luogu.com.cn/problem/SP1684 https://www.luogu.com.cn/problem/UVA11235
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
@@ -77,6 +82,10 @@ package copypasta
 区间 [1,1] 对应的节点编号为 1<<bits.Len(uint(n-1))   1e5 => 2^17       这也说明 [1,1] 对应节点编号x2 的节点是不会下标越界的
 区间 [n,n] 对应的节点编号为 1<<bits.Len(uint(n))-1   1e5 => 2^17-1
 当 n≠2^k 时，在内存中区间 [n,n] 的下一个就是区间 [1,1]
+
+最下面一排的节点个数
+最下面一排的节点编号之和
+https://www.luogu.com.cn/problem/P9689?contestId=133572
 
 什么时候空间最浪费？（指一般线段树的实现方式）
 当 n=2^k-1 时，此时只需要 2n 的空间
@@ -248,8 +257,9 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 
 // 延迟标记（区间修改）
-// 【有关区间 flip 的 0-1 线段树，见 segment_tree01.go】
-// 单个更新操作：
+// 有关区间 flip 的 0-1 线段树，见 segment_tree01.go
+//
+// 【单个更新操作】
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A
 //           https://codeforces.com/problemset/problem/1321/E
 //           https://codeforces.com/problemset/problem/52/C
@@ -268,8 +278,10 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E https://codeforces.com/contest/292/submission/173659179
 // todo https://codeforces.com/problemset/problem/1209/G2
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ https://leetcode.cn/problems/t3fKg1/
+// 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G
 //
-// 多个更新操作复合：
+// 【多个更新操作复合】
+// = + max https://www.luogu.com.cn/problem/P1253
 // * + ∑ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
@@ -287,12 +299,11 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 // 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
 type lazySeg []struct {
-	l, r int
-	todo int64
-	sum  int64
+	l, r      int
+	todo, sum int
 }
 
-func (lazySeg) op(a, b int64) int64 {
+func (lazySeg) op(a, b int) int {
 	return a + b // % mod
 }
 
@@ -301,7 +312,7 @@ func (t lazySeg) maintain(o int) {
 	t[o].sum = t.op(lo.sum, ro.sum)
 }
 
-func (t lazySeg) build(a []int64, o, l, r int) {
+func (t lazySeg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = a[l-1]
@@ -313,10 +324,10 @@ func (t lazySeg) build(a []int64, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t lazySeg) do(o int, add int64) {
+func (t lazySeg) do(o int, add int) {
 	to := &t[o]
-	to.todo += add                     // % mod
-	to.sum += int64(to.r-to.l+1) * add // % mod
+	to.todo += add                    // % mod
+	to.sum += (to.r - to.l + 1) * add // % mod
 }
 
 func (t lazySeg) spread(o int) {
@@ -331,7 +342,7 @@ func (t lazySeg) spread(o int) {
 // 下面代码返回 [l,r] 内第一个值不低于 val 的下标（未找到时返回 n+1）
 // o=1  [l,r] 1<=l<=r<=n
 // https://codeforces.com/problemset/problem/1179/C
-func (t lazySeg) lowerBound(o, l, r int, val int64) int {
+func (t lazySeg) lowerBound(o, l, r int, val int) int {
 	if t[o].l == t[o].r {
 		if t[o].sum >= val {
 			return t[o].l
@@ -347,7 +358,7 @@ func (t lazySeg) lowerBound(o, l, r int, val int64) int {
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazySeg) update(o, l, r int, add int64) {
+func (t lazySeg) update(o, l, r int, add int) {
 	if l <= t[o].l && t[o].r <= r {
 		t.do(o, add)
 		return
@@ -364,7 +375,7 @@ func (t lazySeg) update(o, l, r int, add int64) {
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazySeg) query(o, l, r int) int64 {
+func (t lazySeg) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -381,10 +392,10 @@ func (t lazySeg) query(o, l, r int) int64 {
 	return t.op(vl, vr)
 }
 
-func (t lazySeg) queryAll() int64 { return t[1].sum }
+func (t lazySeg) queryAll() int { return t[1].sum }
 
 // a 从 0 开始
-func newLazySegmentTree(a []int64) lazySeg {
+func newLazySegmentTree(a []int) lazySeg {
 	t := make(lazySeg, 4*len(a))
 	t.build(a, 1, 1, len(a))
 	return t
@@ -404,32 +415,37 @@ func (t lazySeg) spreadAll(o int) {
 
 // 动态开点线段树·其一·单点修改
 // LC327 https://leetcode-cn.com/problems/count-of-range-sum/
-// rt := &stNode{l: 1, r: 1e9}
+// LC2736 https://leetcode.cn/problems/maximum-sum-queries/
+// https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/
+const stNodeDefaultVal = 0 // math.MinInt
+
+var stRoot = &stNode{l: 1, r: 1e9, val: stNodeDefaultVal}
+
 type stNode struct {
 	lo, ro *stNode
 	l, r   int
-	sum    int64
+	val    int
 }
 
-func (o *stNode) get() int64 {
+func (o *stNode) get() int {
 	if o != nil {
-		return o.sum
+		return o.val
 	}
-	return 0 // inf
+	return stNodeDefaultVal
 }
 
-func (stNode) op(a, b int64) int64 {
-	return a + b //
+func (stNode) op(a, b int) int {
+	return a + b // max(a, b)
 }
 
 func (o *stNode) maintain() {
-	o.sum = o.op(o.lo.get(), o.ro.get())
+	o.val = o.op(o.lo.get(), o.ro.get())
 }
 
-func (o *stNode) build(a []int64, l, r int) {
+func (o *stNode) build(a []int, l, r int) {
 	o.l, o.r = l, r
 	if l == r {
-		o.sum = a[l-1]
+		o.val = a[l-1]
 		return
 	}
 	m := (l + r) >> 1
@@ -440,32 +456,32 @@ func (o *stNode) build(a []int64, l, r int) {
 	o.maintain()
 }
 
-func (o *stNode) update(i int, add int64) {
+func (o *stNode) update(i int, val int) {
 	if o.l == o.r {
-		o.sum += add //
+		o.val = o.op(o.val, val)
 		return
 	}
 	m := (o.l + o.r) >> 1
 	if i <= m {
 		if o.lo == nil {
-			o.lo = &stNode{l: o.l, r: m}
+			o.lo = &stNode{l: o.l, r: m, val: stNodeDefaultVal}
 		}
-		o.lo.update(i, add)
+		o.lo.update(i, val)
 	} else {
 		if o.ro == nil {
-			o.ro = &stNode{l: m + 1, r: o.r}
+			o.ro = &stNode{l: m + 1, r: o.r, val: stNodeDefaultVal}
 		}
-		o.ro.update(i, add)
+		o.ro.update(i, val)
 	}
 	o.maintain()
 }
 
-func (o *stNode) query(l, r int) int64 {
+func (o *stNode) query(l, r int) int {
 	if o == nil || l > o.r || r < o.l {
-		return 0 // inf
+		return stNodeDefaultVal
 	}
 	if l <= o.l && o.r <= r {
-		return o.sum
+		return o.val
 	}
 	return o.op(o.lo.query(l, r), o.ro.query(l, r))
 }
@@ -474,31 +490,35 @@ func (o *stNode) query(l, r int) int64 {
 // https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
 //（内存受限）https://codeforces.com/problemset/problem/1557/D
-// rt := &lazyNode{l: 1, r: 1e9}
+const stNodeDefaultTodoVal = 0
+
+var lazyRoot = &lazyNode{l: 1, r: 1e9, sum: stNodeDefaultVal}
+
 type lazyNode struct {
 	lo, ro *lazyNode
 	l, r   int
-	sum    int64
-	todo   int64
+	sum    int
+	todo   int
 }
 
-func (o *lazyNode) get() int64 {
+func (o *lazyNode) get() int {
 	if o != nil {
 		return o.sum
 	}
-	return 0 // inf
+	return stNodeDefaultVal
 }
 
-func (lazyNode) op(a, b int64) int64 {
-	return a + b //
+func (lazyNode) op(a, b int) int {
+	return a + b // max(a, b)
 }
 
 func (o *lazyNode) maintain() {
 	o.sum = o.op(o.lo.get(), o.ro.get())
 }
 
-func (o *lazyNode) build(a []int64, l, r int) {
+func (o *lazyNode) build(a []int, l, r int) {
 	o.l, o.r = l, r
+	o.todo = stNodeDefaultTodoVal
 	if l == r {
 		o.sum = a[l-1]
 		return
@@ -511,27 +531,27 @@ func (o *lazyNode) build(a []int64, l, r int) {
 	o.maintain()
 }
 
-func (o *lazyNode) do(add int64) {
-	o.todo += add                   // % mod
-	o.sum += int64(o.r-o.l+1) * add // % mod
+func (o *lazyNode) do(add int) {
+	o.todo += add                  // % mod
+	o.sum += (o.r - o.l + 1) * add // % mod
 }
 
 func (o *lazyNode) spread() {
 	m := (o.l + o.r) >> 1
 	if o.lo == nil {
-		o.lo = &lazyNode{l: o.l, r: m}
+		o.lo = &lazyNode{l: o.l, r: m, sum: stNodeDefaultVal}
 	}
 	if o.ro == nil {
-		o.ro = &lazyNode{l: m + 1, r: o.r}
+		o.ro = &lazyNode{l: m + 1, r: o.r, sum: stNodeDefaultVal}
 	}
-	if add := o.todo; add != 0 {
-		o.lo.do(add)
-		o.ro.do(add)
-		o.todo = 0 // -1
+	if todo := o.todo; todo != stNodeDefaultTodoVal {
+		o.lo.do(todo)
+		o.ro.do(todo)
+		o.todo = stNodeDefaultTodoVal
 	}
 }
 
-func (o *lazyNode) update(l, r int, add int64) {
+func (o *lazyNode) update(l, r int, add int) {
 	if l <= o.l && o.r <= r {
 		o.do(add)
 		return
@@ -547,10 +567,9 @@ func (o *lazyNode) update(l, r int, add int64) {
 	o.maintain()
 }
 
-func (o *lazyNode) query(l, r int) int64 {
-	// 对于不在线段树中的点，应按照题意来返回
+func (o *lazyNode) query(l, r int) int {
 	if o == nil || l > o.r || r < o.l {
-		return 0 // inf
+		return stNodeDefaultVal
 	}
 	if l <= o.l && o.r <= r {
 		return o.sum
@@ -576,7 +595,7 @@ func (o *stNode) merge(b *stNode) *stNode {
 	}
 	if o.l == o.r {
 		// 按照所需合并，如加法
-		o.sum += b.sum
+		o.val += b.val
 		return o
 	}
 	o.lo = o.lo.merge(b.lo)
@@ -609,7 +628,7 @@ func (o *stNode) split(b *stNode, l, r int) (*stNode, *stNode) {
 
 // 权值线段树求第 k 小
 // 调用前需保证 1 <= k <= rt.get()
-func (o *stNode) kth(k int64) int {
+func (o *stNode) kth(k int) int {
 	if o.l == o.r {
 		return o.l
 	}
@@ -646,10 +665,10 @@ func (o *stNode) kth(k int64) int {
 type pstNode struct {
 	lo, ro *pstNode
 	l, r   int // 注：如果 MLE 请换成传参的写法
-	sum    int64
+	sum    int
 }
 
-func (pstNode) op(a, b int64) int64 {
+func (pstNode) op(a, b int) int {
 	return a + b //
 }
 
@@ -660,7 +679,7 @@ func (o *pstNode) maintain() {
 // t := make([]*pstNode, 1, maxVersion+1)
 // t[0] = buildPST(a, 1, len(a))
 // 或者 t := []*pstNode{buildPST(a, 1, len(a))}
-func buildPST(a []int64, l, r int) *pstNode {
+func buildPST(a []int, l, r int) *pstNode {
 	o := &pstNode{l: l, r: r}
 	if l == r {
 		o.sum = a[l-1]
@@ -676,7 +695,7 @@ func buildPST(a []int64, l, r int) *pstNode {
 // 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
 // t = append(t, t[len(t)-1].update(i, add))
 // 注意为了拷贝一份 pstNode，这里的接收器不是指针
-func (o pstNode) modify(i int, add int64) *pstNode {
+func (o pstNode) modify(i int, add int) *pstNode {
 	if o.l == o.r {
 		o.sum += add
 		return &o
@@ -690,7 +709,7 @@ func (o pstNode) modify(i int, add int64) *pstNode {
 	return &o
 }
 
-func (o *pstNode) query(l, r int) int64 {
+func (o *pstNode) query(l, r int) int {
 	if l <= o.l && o.r <= r {
 		return o.sum
 	}
@@ -710,7 +729,7 @@ func (o *pstNode) query(l, r int) int64 {
 // 调用前需要拷贝一份 root 节点
 // 需要保证 add 非负
 // https://atcoder.jp/contests/abc253/tasks/abc253_f
-func (o *pstNode) update(l, r int, add int64) {
+func (o *pstNode) update(l, r int, add int) {
 	if l <= o.l && o.r <= r {
 		o.sum += add
 		return
@@ -734,7 +753,7 @@ func (o *pstNode) update(l, r int, add int64) {
 }
 
 // 单点查询，配合上面的区间更新使用
-func (o *pstNode) querySingle(i int) int64 {
+func (o *pstNode) querySingle(i int) int {
 	if o.l == o.r {
 		return o.sum
 	}
@@ -839,3 +858,6 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 // todo https://www.geeksforgeeks.org/wavelet-trees-introduction/
 // https://codeforces.com/blog/entry/52854
 // https://www.youtube.com/watch?v=4aSv9PcecDw
+
+// MISC: 线段树最下面一排的节点编号之和
+// https://www.luogu.com.cn/problem/P9689?contestId=133572
