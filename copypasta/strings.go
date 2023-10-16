@@ -111,8 +111,8 @@ func _(min, max func(int, int) int) {
 	//
 
 	// KMP (Knuth–Morris–Pratt algorithm)
-	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
-	// 特别地，pi[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
+	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
+	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
@@ -164,6 +164,7 @@ func _(min, max func(int, int) int) {
 	// 在 text 中查找 pattern，返回所有成功匹配位置（pattern 首字母的下标）
 	kmpSearch := func(text, pattern string) (pos []int) {
 		pi := calcPi(pattern)
+		lenP := len(pattern)
 		cnt := 0
 		for i, v := range text {
 			for cnt > 0 && pattern[cnt] != byte(v) {
@@ -172,8 +173,8 @@ func _(min, max func(int, int) int) {
 			if pattern[cnt] == byte(v) {
 				cnt++
 			}
-			if cnt == len(pattern) {
-				pos = append(pos, i-len(pattern)+1)
+			if cnt == lenP {
+				pos = append(pos, i-lenP+1)
 				cnt = pi[cnt-1] // 如果不允许重叠，将 cnt 置为 0
 			}
 		}
@@ -188,8 +189,8 @@ func _(min, max func(int, int) int) {
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
-		pi := calcPi(s)
-		if m := pi[n-1]; m > 0 && n%(n-m) == 0 {
+		match := calcPi(s)
+		if m := match[n-1]; m > 0 && n%(n-m) == 0 {
 			return s[:n-m], n / (n - m)
 		}
 		return s, 1 // 无小于 n 的循环节
