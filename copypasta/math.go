@@ -202,21 +202,33 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=number+theory
 CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 
 */
+const mod = 1_000_000_007 // 998244353
 
-func _(abs func(int64) int64, max func(int64, int64) int64) {
-	const mod = 1_000_000_007 // 998244353
-	pow := func(x, n, p int64) (res int64) {
-		x %= p
-		res = 1
-		for ; n > 0; n >>= 1 {
-			if n&1 == 1 {
-				res = res * x % p
-			}
-			x = x * x % p
+func pow(x, n int) int {
+	x %= mod
+	res := 1 % mod
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
 		}
-		return
+		x = x * x % mod
 	}
+	return res
+}
 
+func powM(x, n, p int) (res int) {
+	x %= p
+	res = 1
+	for ; n > 0; n >>= 1 {
+		if n&1 == 1 {
+			res = res * x % p
+		}
+		x = x * x % p
+	}
+	return
+}
+
+func _(abs func(int) int, min, max func(int, int) int) {
 	/* GCD LCM 相关
 	https://mathworld.wolfram.com/EuclideanAlgorithm.html
 	https://en.wikipedia.org/wiki/Euclidean_algorithm
@@ -260,7 +272,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	*/
 
-	gcd := func(a, b int64) int64 {
+	gcd := func(a, b int) int {
 		for a != 0 {
 			a, b = b%a, a
 		}
@@ -268,24 +280,24 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 例题 https://nanti.jisuanke.com/t/A1633
-	gcdPrefix := func(a []int64) []int64 {
+	gcdPrefix := func(a []int) []int {
 		n := len(a)
-		gp := make([]int64, n+1)
+		gp := make([]int, n+1)
 		for i, v := range a {
 			gp[i+1] = gcd(gp[i], v)
 		}
 		return gp
 	}
-	gcdSuffix := func(a []int64) []int64 {
+	gcdSuffix := func(a []int) []int {
 		n := len(a)
-		gs := make([]int64, n+1)
+		gs := make([]int, n+1)
 		for i := n - 1; i >= 0; i-- {
 			gs[i] = gcd(gs[i+1], a[i])
 		}
 		return gs
 	}
 
-	lcm := func(a, b int64) int64 { return a / gcd(a, b) * b }
+	lcm := func(a, b int) int { return a / gcd(a, b) * b }
 
 	// 前 n 个数的 LCM https://oeis.org/A003418 a(n) = lcm(1,...,n) ~ exp(n)
 	// 相关题目 https://atcoder.jp/contests/arc110/tasks/arc110_a
@@ -301,7 +313,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 另一种通分：「排水系统」的另一种解法 https://zxshetzy.blog.luogu.org/ling-yi-zhong-tong-fen
 	// https://oeis.org/A000793	Landau's function g(n): largest order of permutation of n elements
 	//                          Equivalently, largest LCM of partitions of n
-	lcms := []int64{
+	lcms := []int{
 		0, 1, 2, 6, 12, 60, 60, 420, 840, 2520, 2520, // 10
 		27720, 27720, 360360, 360360, 360360, 720720, 12252240, 12252240, 232792560, 232792560, // 20
 		232792560, 232792560, // 22 (int32)
@@ -382,10 +394,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 最简分数
 	// https://codeforces.com/problemset/problem/1468/F
-	type frac struct{ num, den int64 }
+	type frac struct{ num, den int }
 
 	// 如果有负数需要对 g 取绝对值
-	makeFrac := func(a, b int64) frac { g := gcd(a, b); return frac{a / g, b / g} }
+	makeFrac := func(a, b int) frac { g := gcd(a, b); return frac{a / g, b / g} }
 
 	// 比较两个（最简化后的）frac
 	// 不使用高精度、浮点数等
@@ -435,7 +447,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//       https://loj.ac/p/138
 	// todo https://codeforces.com/problemset/problem/1182/F
 	//  https://codeforces.com/problemset/problem/1098/E
-	floorSum := func(n, m, a, b int64) (res int64) {
+	floorSum := func(n, m, a, b int) (res int) {
 		if a < 0 {
 			a2 := a%m + m
 			res -= n * (n - 1) / 2 * ((a2 - a) / m)
@@ -466,19 +478,19 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return
 	}
 
-	sqCheck := func(a int64) bool { r := int64(math.Round(math.Sqrt(float64(a)))); return r*r == a }
-	cubeCheck := func(a int64) bool { r := int64(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
+	sqCheck := func(a int) bool { r := int(math.Round(math.Sqrt(float64(a)))); return r*r == a }
+	cubeCheck := func(a int) bool { r := int(math.Round(math.Cbrt(float64(a)))); return r*r*r == a }
 	// 平方数开平方
-	sqrt := func(a int64) int64 {
-		r := int64(math.Round(math.Sqrt(float64(a))))
+	sqrt := func(a int) int {
+		r := int(math.Round(math.Sqrt(float64(a))))
 		if r*r == a {
 			return r
 		}
 		return -1
 	}
 	// 立方数开立方
-	cbrt := func(a int64) int64 {
-		r := int64(math.Round(math.Cbrt(float64(a))))
+	cbrt := func(a int) int {
+		r := int(math.Round(math.Cbrt(float64(a))))
 		if r*r*r == a {
 			return r
 		}
@@ -555,10 +567,17 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A006988
 	// 补充：第 1e5, 2e5, 3e5, ..., 1e6 个素数
 	// 1299709, 2750159, 4256233, 5800079, 7368787, 8960453, 10570841, 12195257, 13834103, 15485863
-	primes10k := []int64{2, 29, 541, 7919, 104729, 1299709, 15485863, /* 1e6 */ 179424673, 2038074743, 22801763489, 252097800623, 2760727302517, 29996224275833, 323780508946331, 3475385758524527, 37124508045065437, 394906913903735329, 4185296581467695669}
+	primes10k := []int{
+		2, 29, 541, 7919, // k=3
+		104729, 1299709, 15485863, // k=6
+		179424673, 2038074743, 22801763489, // k=9
+		252097800623, 2760727302517, 29996224275833, // k=12
+		323780508946331, 3475385758524527, 37124508045065437, // k=15
+		394906913903735329, 4185296581467695669,
+	}
 
 	// map{小于 10^n 的素数个数: 小于 10^n 的最大素数} https://oeis.org/A006880 https://oeis.org/A003618   10^n-a(n): https://oeis.org/A033874
-	primes10 := map[int]int64{
+	primes10 := map[int]int{
 		4:         7,
 		25:        97,
 		168:       997, // 1e3
@@ -572,7 +591,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 大于 10^n 的最小素数 https://oeis.org/A090226 https://oeis.org/A003617    a(n)-10^n: https://oeis.org/A033873
-	primes10_ := []int64{
+	primes10_ := []int{
 		2,
 		11,
 		101,
@@ -592,7 +611,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		10000000000000061,
 		100000000000000003,
 		1000000000000000003, // 1e18
-		10000000000000000051,
+		//10000000000000000051,
 	}
 
 	/* 质数性质统计相关
@@ -711,11 +730,11 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	*/
 
 	// 判断一个数是否为质数
-	isPrime := func(n int64) bool {
+	isPrime := func(n int) bool {
 		if n < 2 || n >= 4 && n%2 == 0 {
 			return false
 		}
-		for i := int64(2); i*i <= n; i++ {
+		for i := 2; i*i <= n; i++ {
 			if n%i == 0 {
 				return false
 			}
@@ -723,20 +742,20 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return true
 	}
 	// https://www.luogu.com.cn/problem/U82118
-	isPrime = func(n int64) bool { return big.NewInt(n).ProbablyPrime(0) }
+	isPrime = func(n int) bool { return big.NewInt(int64(n)).ProbablyPrime(0) }
 
 	// 判断质数+求最大质因子
 	// 先用 Pollard-Rho 算法求出一个因子，然后递归求最大质因子
 	// https://zhuanlan.zhihu.com/p/267884783
 	// https://www.luogu.com.cn/problem/P4718
-	pollardRho := func(n int64) int64 {
+	pollardRho := func(n int) int {
 		if n == 4 {
 			return 2
 		}
 		if isPrime(n) {
 			return n
 		}
-		mul := func(a, b int64) (res int64) {
+		mul := func(a, b int) (res int) {
 			for ; b > 0; b >>= 1 {
 				if b&1 == 1 {
 					res = (res + a) % n
@@ -746,8 +765,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			return
 		}
 		for {
-			c := 1 + rand.Int63n(n-1)
-			f := func(x int64) int64 { return (mul(x, x) + c) % n }
+			c := 1 + rand.Intn(n-1)
+			f := func(x int) int { return (mul(x, x) + c) % n }
 			for t, r := f(0), f(f(0)); t != r; t, r = f(t), f(f(r)) {
 				if d := gcd(abs(t-r), n); d > 1 {
 					return d
@@ -756,9 +775,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		}
 	}
 	{
-		cacheGPF := map[int64]int64{}
-		var gpf func(int64) int64
-		gpf = func(x int64) (res int64) {
+		cacheGPF := map[int]int{}
+		var gpf func(int) int
+		gpf = func(x int) (res int) {
 			if cacheGPF[x] > 0 {
 				return cacheGPF[x]
 			}
@@ -791,6 +810,16 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 				pid[i] = len(primes)
 				for j := i * i; j <= mx; j += i {
 					pid[j] = -1
+				}
+			}
+		}
+
+		// 或者，只是单纯想标记一下
+		np := [mx + 1]bool{true, true}
+		for i := 2; i*i <= mx; i++ {
+			if !np[i] {
+				for j := i * i; j <= mx; j += i {
+					np[j] = true
 				}
 			}
 		}
@@ -883,12 +912,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// n 的质因数分解中 2 的幂次 https://oeis.org/A007814
 	// n 的质因数分解中非 2 的幂次之和 https://oeis.org/A087436
 	type factor struct {
-		p  int64
+		p  int
 		e  int
-		pe int64 // p^e
+		pe int // p^e
 	}
-	factorize := func(x int64) (factors []factor) {
-		for i := int64(2); i*i <= x; i++ {
+	factorize := func(x int) (factors []factor) {
+		for i := 2; i*i <= x; i++ {
 			if x%i > 0 {
 				continue
 			}
@@ -909,8 +938,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 质因数分解（质数及其幂次）prime factorization
 	// LC2507 https://leetcode.cn/problems/smallest-value-after-replacing-with-sum-of-prime-factors/
 	// LC2584 https://leetcode.cn/problems/split-the-array-to-make-coprime-products/
-	primeDivisors := func(x int64) (primes []int64) {
-		for i := int64(2); i*i <= x; i++ {
+	primeDivisors := func(x int) (primes []int) {
+		for i := 2; i*i <= x; i++ {
 			if x%i > 0 {
 				continue
 			}
@@ -931,12 +960,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 在 1e15 下比上面快大概 150ms
 	// https://codeforces.com/contest/1334/submission/143919621
 	// https://codeforces.com/contest/1334/submission/143919683
-	primeDivisors2 := func(x int64) (primes []int64) {
+	primeDivisors2 := func(x int) (primes []int) {
 		if x&1 == 0 {
 			primes = append(primes, 2)
 			x /= x & -x // 去掉所有的因子 2
 		}
-		for i := int64(3); i*i <= x; i += 2 {
+		for i := 3; i*i <= x; i += 2 {
 			if x%i > 0 {
 				continue
 			}
@@ -962,7 +991,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//    Define e(n) = (5^n-1)/4, f(n) = (1-x^(e(n)-1))/(1-x^e(n-1)), t(n) = x^(e(n)-6).
 	//    相关题目 LC793 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/
 	//       数学解法 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/shu-xue-tui-dao-by-jriver/
-	powerOfFactorialPrimeDivisor := func(n, p int64) (k int64) {
+	// 二分可以得到幂次至少为 p 时，n 至少是多大
+	// - https://atcoder.jp/contests/abc280/tasks/abc280_d
+	powerOfFactorialPrimeDivisor := func(n, p int) (k int) {
 		for n > 0 {
 			n /= p
 			k += n
@@ -1152,8 +1183,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 枚举一个数的全部因子
-	divisors := func(n int64) (ds []int64) {
-		for d := int64(1); d*d <= n; d++ {
+	divisors := func(n int) (ds []int) {
+		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
 				ds = append(ds, d)
 				if d*d < n {
@@ -1166,9 +1197,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 不需要排序的写法
-	divisors = func(n int64) (ds []int64) {
-		ds2 := []int64{}
-		for d := int64(1); d*d <= n; d++ {
+	divisors = func(n int) (ds []int) {
+		ds2 := []int{}
+		for d := 1; d*d <= n; d++ {
 			if n%d == 0 {
 				ds = append(ds, d)
 				if d*d < n {
@@ -1184,9 +1215,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// 无需额外空间的写法
 	// https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/
-	divisorsO1Space := func(n int64) {
+	divisorsO1Space := func(n int) {
 		// 从小到大枚举不超过 sqrt(n) 的因子
-		i := int64(1)
+		i := 1
 		for ; i*i <= n; i++ {
 			if n%i == 0 {
 				// do i ...
@@ -1861,12 +1892,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 例题 https://codeforces.com/problemset/problem/615/D
 	// https://atcoder.jp/contests/abc228/tasks/abc228_e
 	// https://cses.fi/problemset/task/1712
-	exPhi := func(a, b int64, m int) int64 {
-		phi := int64(calcPhi(m))
+	exPhi := func(a, b, m int) int {
+		phi := calcPhi(m)
 		if b >= phi {
 			b = b%phi + phi
 		}
-		return pow(a, b, int64(m))
+		return powM(a, b, m)
 	}
 
 	// 原根
@@ -1897,7 +1928,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 返回 n 的最小的原根, n >= 2
 	// 不存在时返回 -1
 	// 由于有 phi(phi(n)) 个原根，密度足够大，最小原根可以很快找到，复杂度约为 O(n^0.25logn)
-	primitiveRoot := func(n int64, calcPhi func(int64) int64) int64 {
+	primitiveRoot := func(n int) int {
 		if n != 2 && n != 4 {
 			x := n
 			if x&1 == 0 {
@@ -1911,12 +1942,12 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		pn := calcPhi(n)
 		ps := primeDivisors(pn)
 	o:
-		for g := int64(1); ; g++ {
+		for g := 1; ; g++ {
 			if gcd(g, n) > 1 {
 				continue
 			}
 			for _, p := range ps {
-				if pow(g, pn/p, n) == 1 {
+				if powM(g, pn/p, n) == 1 {
 					continue o
 				}
 			}
@@ -1956,19 +1987,37 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	*/
 	{
 		/* 涉及到 0 与逆元的题目（mod 为质数）
-		例如 res = mod^k * x % mod，后面要除掉 mod^k，得到 x（如果前面直接取模会得到 0，没法保留 x 的信息）
-		这个时候可以用二元组 (k, x) 来表示 res%mod（这里 k>=0）
-		如果 k>0 那么 res=0
-		乘法运算 (k1, x1) * (k2, x2) = (k1+k2, x1*x2)
-		除法运算 (k1, x1) / (k2, x2) = (k1-k2, x1*inv(x2))  这里 k1>=k2
-		加法运算（见下面的 add1）
+		使用场景：计算过程中会有 mod^k * x % mod，但是后面又要除掉 mod^k，得到 x
+		        如果直接取模，会得到 0，没法保留 x 的信息
+		解决方案：把取模结果用二元组 (k, x) 表示（这里 k>=0，x 与 mod 互质）
+		        如果 k>0 那么取模结果是 0
+		        如果 k=0 那么取模结果是 x
+		乘法运算 (k1, x1) * (k2, x2) = (k1+k2, x1*x2%mod)
+		除法运算 (k1, x1) / (k2, x2) = (k1-k2, x1*inv(x2)%mod)  这里 k1>=k2
+		加法运算见下面的 add1
 		https://codeforces.com/contest/1848/problem/E
 		https://codeforces.com/problemset/problem/543/D
 		https://ac.nowcoder.com/acm/contest/39759/D
+
+		注：如果 mod 是合数，例如 mod=p*q，可以用三元组 (k1,k2,x) 表示 p^k1 * q^k2 * x % mod，其中 x 与 mod 互质
+		如果 k1>0 && k2>0，那么取模结果是 0
+		如果 k1==0 || k2==0，那么取模结果是 x*pow(p,k1)%mod*pow(q,k2)%mod
+		乘法运算 (k1,k2,x) * (k1',k2',x') = (k1+k1',k2+k2',x*x'%mod)
+		除法运算 (k1,k2,x) / (k1',k2',x') = (k1-k1',k2-k2',x*inv(x')%mod)  这里 k1>=k1' && k2>=k2'
+		LC2906 https://leetcode.cn/problems/construct-product-matrix/
+
+		进一步地，如果 mod 是合数，例如 mod=p1^e1*p2^e2，可以用三元组 (k1,k2,x) 表示 p1^k1 * p2^k2 * x % mod，其中 x 与 mod 互质
+		如果 k1>=e1 && k2>=e2，那么取模结果是 0
+		如果 k1<e1 || k2<e2，那么取模结果是 x*pow(p1,k1)%mod*pow(p2,k2)%mod
+		乘法除法运算规则同上
 		*/
-		type pair struct {
-			k int
-			x int64
+		type pair struct{ k, x int }
+		toPair := func(x int) (p pair) {
+			k := 0
+			for ; x%mod == 0; x /= mod {
+				k++
+			}
+			return pair{k, x}
 		}
 		// 计算 (k,x) + (0,1)
 		// https://codeforces.com/problemset/problem/543/D
@@ -1982,24 +2031,24 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			return pair{0, p.x + 1}
 		}
 		mul := func(p, q pair) pair { return pair{p.k + q.k, p.x * q.x % mod} }
-		div := func(p, q pair) pair { return pair{p.k - q.k, p.x * pow(q.x, mod-2, mod) % mod} }
+		div := func(p, q pair) pair { return pair{p.k - q.k, p.x * pow(q.x, mod-2) % mod} }
 		// p%mod 的实际值
-		val := func(p pair) int64 {
+		val := func(p pair) int {
 			if p.k > 0 {
 				return 0
 			}
 			return p.x
 		}
 
-		_ = []any{add1, mul, div, val}
+		_ = []any{toPair, add1, mul, div, val}
 	}
 
 	// 二元一次不定方程（线性丢番图方程中的一种）https://en.wikipedia.org/wiki/Diophantine_equation
 	// exgcd solve equation ax+by=gcd(a,b)
 	// 特解满足 |x|<=|b|, |y|<=|a|
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
-	var exgcd func(a, b int64) (gcd, x, y int64)
-	exgcd = func(a, b int64) (gcd, x, y int64) {
+	var exgcd func(a, b int) (int, int, int)
+	exgcd = func(a, b int) (gcd, x, y int) {
 		if b == 0 {
 			return a, 1, 0
 		}
@@ -2012,7 +2061,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 返回最小正整数解
 	// 模板题 https://www.luogu.com.cn/problem/P1082
 	// https://codeforces.com/problemset/problem/772/C
-	invM := func(a, m int64) int64 {
+	invM := func(a, m int) int {
 		g, x, _ := exgcd(a, m)
 		if g != 1 && g != -1 {
 			return -1
@@ -2024,7 +2073,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 或者，ax-b 是 m 的倍数，求最小非负整数 x
 	// 或者，求 ax-km = b 的一个最小非负整数解
 	// 示例代码 https://codeforces.com/contest/1748/submission/205834351
-	invM2 := func(a, b, m int64) int64 {
+	invM2 := func(a, b, m int) int {
 		g, x, _ := exgcd(a, m)
 		if b%g != 0 {
 			return -1
@@ -2051,7 +2100,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	//    最简单的做法就是 min(x1+y1, x2+y2)
 	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
 	// https://codeforces.com/problemset/problem/1748/D
-	solveLinearDiophantineEquations := func(a, b, c int64) (n, x1, y1, x2, y2 int64) {
+	solveLinearDiophantineEquations := func(a, b, c int) (n, x1, y1, x2, y2 int) {
 		g, x0, y0 := exgcd(a, b)
 
 		// 无解
@@ -2105,17 +2154,17 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// ax ≡ 1 (mod p)
 	// x^-1 ≡ a^(p-2) (mod p)
 	// 滑窗 https://codeforces.com/contest/1833/problem/F
-	invP := func(a, p int64) int64 {
+	invP := func(a, p int) int {
 		if a <= 0 {
 			panic(-1)
 		}
-		return pow(a, p-2, p)
+		return powM(a, p-2, p)
 	}
 
 	// 有理数取模
 	// 模板题 https://www.luogu.com.cn/problem/P2613
-	divM := func(a, b, m int64) int64 { return a * invM(b, m) % m }
-	divP := func(a, b, p int64) int64 { return a * invP(b, p) % p }
+	divM := func(a, b, m int) int { return a * invM(b, m) % m }
+	divP := func(a, b, p int) int { return a * invP(b, p) % p }
 
 	// 一种递归求单个逆元的方法
 	// https://codeforces.com/blog/entry/84150?#comment-716585
@@ -2128,10 +2177,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	{
 		const mod = 998244353
 		const mx int = 1e6
-		inv := [mx + 1]int64{}
+		inv := [mx + 1]int{}
 		inv[1] = 1
 		for i := 2; i <= mx; i++ {
-			inv[i] = int64(mod-mod/i) * inv[mod%i] % mod
+			inv[i] = (mod - mod/i) * inv[mod%i] % mod
 		}
 	}
 
@@ -2140,20 +2189,20 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 根据 ai^-1 ≡ Πai/ai * (Πai)^-1 (mod p)，求出 Πai 的前缀积和后缀积可以得到 Πai/ai，从而求出 ai^-1 mod p
 	// https://zhuanlan.zhihu.com/p/86561431
 	// 模板题 https://www.luogu.com.cn/problem/P5431
-	calcAllInv := func(a []int64, p int64) []int64 {
+	calcAllInv := func(a []int, p int) []int {
 		n := len(a)
-		pre := make([]int64, n+1)
+		pre := make([]int, n+1)
 		pre[0] = 1
 		for i, v := range a {
 			pre[i+1] = pre[i] * v % p
 		}
 		invMulAll := invP(pre[n], p)
-		suf := make([]int64, n+1)
+		suf := make([]int, n+1)
 		suf[n] = 1
 		for i := len(a) - 1; i > 0; i-- { // i=0 不用求
 			suf[i] = suf[i+1] * a[i] % p
 		}
-		inv := make([]int64, n)
+		inv := make([]int, n)
 		for i, pm := range pre[:n] {
 			inv[i] = pm * suf[i+1] % p * invMulAll % p
 		}
@@ -2166,8 +2215,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://blog.csdn.net/synapse7/article/details/9946013
 	// https://codeforces.com/blog/entry/61290
 	// 模板题 https://www.luogu.com.cn/problem/P1495
-	crt := func(b, m []int64) (x int64) {
-		M := int64(1)
+	crt := func(b, m []int) (x int) {
+		M := 1
 		for _, mi := range m {
 			M *= mi
 		}
@@ -2189,7 +2238,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 推荐 https://blog.csdn.net/niiick/article/details/80229217
 	// todo 模板题 https://www.luogu.com.cn/problem/P4777 https://www.luogu.com.cn/problem/P4774
 	// https://codeforces.com/contest/1500/problem/B
-	excrt := func(A, B, M []int64) (x, m int64) {
+	excrt := func(A, B, M []int) (x, m int) {
 		m = 1
 		for i, mi := range M {
 			a, b := A[i]*m, B[i]-A[i]*x
@@ -2240,22 +2289,22 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 模板题 https://www.luogu.com.cn/problem/P3846
 	// https://atcoder.jp/contests/abc222/tasks/abc222_g
 	// todo https://atcoder.jp/contests/abc270/tasks/abc270_g
-	babyStepGiantStep := func(a, b, p, k int64) int64 { // 非 exBSGS 下 k=1
+	babyStepGiantStep := func(a, b, p, k int) int { // 非 exBSGS 下 k=1
 		b %= p
-		t := int64(math.Sqrt(float64(p))) + 1
-		mp := map[int64]int64{}
-		for j, x := int64(0), b; j < t; j++ {
+		t := int(math.Sqrt(float64(p))) + 1
+		mp := map[int]int{}
+		for j, x := 0, b; j < t; j++ {
 			mp[b] = j
 			x = x * a % p
 		}
-		a = pow(a, t, p)
+		a = powM(a, t, p)
 		if a == 0 {
 			if b == 0 {
 				return 1
 			}
 			return -99
 		}
-		for i, x := int64(0), k; i < t; i++ {
+		for i, x := 0, k; i < t; i++ {
 			if j, ok := mp[x]; ok && i*t >= j {
 				return i*t - j
 			}
@@ -2268,8 +2317,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// a^x ≡ b (mod m)，a 和 m 不一定互质
 	// https://zhuanlan.zhihu.com/p/132603308
 	// 模板题 https://www.luogu.com.cn/problem/P4195
-	var _exBSGS func(a, b, m, k int64) int64
-	_exBSGS = func(a, b, m, k int64) int64 {
+	var _exBSGS func(a, b, m, k int) int
+	_exBSGS = func(a, b, m, k int) int {
 		if b == 1 {
 			return 0
 		}
@@ -2286,9 +2335,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		return 1 + _exBSGS(a, b/g, m/g, k*a/g%m)
 	}
 
-	exBSGS := func(a, b, m int64) int64 {
+	exBSGS := func(a, b, m int) int {
 		x := _exBSGS(a%m, b%m, m, 1)
-		phiM := int64(calcPhi(int(m)))
+		phiM := calcPhi(m)
 		if x > phiM {
 			x = x%phiM + phiM
 		}
@@ -2303,22 +2352,22 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://blog.csdn.net/doyouseeman/article/details/52033204
 	// Tonelli-Shanks https://www.luogu.com.cn/blog/242973/solution-p5491
 	// 模板题 https://www.luogu.com.cn/problem/P5491
-	modSqrt := func(x, p int64) []int64 { // p 必须是奇素数
+	modSqrt := func(x, p int) []int { // p 必须是奇素数
 		if x == 0 {
-			return []int64{0}
+			return []int{0}
 		}
-		x0 := new(big.Int).ModSqrt(big.NewInt(x), big.NewInt(p))
+		x0 := new(big.Int).ModSqrt(big.NewInt(int64(x)), big.NewInt(int64(p)))
 		if x0 == nil {
 			return nil
 		}
 		// 如果要求小的在前，注意判断
-		return []int64{x0.Int64(), p - x0.Int64()}
+		return []int{int(x0.Int64()), p - int(x0.Int64())}
 	}
 
 	// 判断 a 是否为模 p 的二次剩余，p 必须是奇素数
 	// Jacobi 符号为 -1
-	isQuadraticResidue := func(a, p int64) bool {
-		return big.Jacobi(big.NewInt(a), big.NewInt(p)) < 0
+	isQuadraticResidue := func(a, p int) bool {
+		return big.Jacobi(big.NewInt(int64(a)), big.NewInt(int64(p))) < 0
 	}
 
 	// todo N 次剩余 / 高次同余方程 x^a ≡ b (mod p)
@@ -2362,10 +2411,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A049606 Largest odd divisor of n!
 	// https://oeis.org/A240533 a(n) = numerators of n!/10^n
 
-	calcFactorial := func(n int) int64 {
-		res := int64(1) % mod
+	calcFactorial := func(n int) int {
+		res := 1 % mod
 		for i := 2; i <= n; i++ {
-			res = res * int64(i) % mod
+			res = res * i % mod
 		}
 		return res
 	}
@@ -2376,9 +2425,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	initFactorial := func() {
 		const mx int = 1e6
-		F := [mx + 1]int64{1}
+		F := [mx + 1]int{1}
 		for i := 1; i <= mx; i++ {
-			F[i] = F[i-1] * int64(i) % mod
+			F[i] = F[i-1] * i % mod
 		}
 	}
 
@@ -2431,7 +2480,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// = 1, otherwise
 
 	// binomial(n, floor(n/2)) https://oeis.org/A001405
-	// a(n) ~ 2^n / sqrt(π * n/2)     O(2^n/sqrt(n))
+	// a(n) ~ 2^n / sqrt(π * n/2)     O(2^n/sqrt(n))         斯特林公式
 	// a(2n) ~ 4^n / sqrt(πn)         O(4^n/sqrt(n))
 	// 从一个大小为 n 的集合的子集中随机选一个，选到 floor(n/2) 大小的子集的概率约为 1 / sqrt(π * n/2)
 	// Sperner's theorem says that this is the maximal number of subsets of an n-set such that no one contains another
@@ -2439,7 +2488,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// EXTRA: https://oeis.org/A100071 a(n) = n * A001405(n-1) = 1, 2, 6, 12, 30, 60, 140, 280, 630, 1260, ...
 	//                                 a(n) = a(n-1) * n / floor(n/2)
 	// EXTRA: https://oeis.org/A107373 a(n) = (n/2) * A001405(n-1) - 2^(n-2)
-	combHalf := []int64{
+	combHalf := []int{
 		1, 1, 2, 3, 6, 10, 20, 35, 70, 126, // C(9,4)
 		252, 462, 924, 1716, 3432, 6435, 12870, 24310, 48620, 92378, // C(19,9)
 		184756, 352716, 705432, 1352078, 2704156, 5200300, 10400600, 20058300, 40116600, 77558760, // C(29,14)
@@ -2454,7 +2503,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://atcoder.jp/contests/abc202/tasks/abc202_d
 	initComb := func() {
 		const mx = 60
-		C := [mx + 1][mx + 1]int64{}
+		C := [mx + 1][mx + 1]int{}
 		for i := 0; i <= mx; i++ {
 			C[i][0], C[i][i] = 1, 1
 			for j := 1; j < i; j++ {
@@ -2465,34 +2514,22 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// O(n) 预处理阶乘及其逆元，O(1) 求组合数
 	{
-		const mod int64 = 1e9 + 7
 		const mx int = 2e6
-		F := [mx + 1]int64{1}
+		F := [mx + 1]int{1}
 		for i := 1; i <= mx; i++ {
-			F[i] = F[i-1] * int64(i) % mod
+			F[i] = F[i-1] * i % mod
 		}
-		pow := func(x, n int64) int64 {
-			//x %= mod
-			res := int64(1)
-			for ; n > 0; n >>= 1 {
-				if n&1 == 1 {
-					res = res * x % mod
-				}
-				x = x * x % mod
-			}
-			return res
-		}
-		invF := [...]int64{mx: pow(F[mx], mod-2)}
+		invF := [...]int{mx: pow(F[mx], mod-2)}
 		for i := mx; i > 0; i-- {
-			invF[i-1] = invF[i] * int64(i) % mod
+			invF[i-1] = invF[i] * i % mod
 		}
-		C := func(n, k int) int64 {
+		C := func(n, k int) int {
 			if k < 0 || k > n {
 				return 0
 			}
 			return F[n] * invF[k] % mod * invF[n-k] % mod
 		}
-		P := func(n, k int) int64 {
+		P := func(n, k int) int {
 			if k < 0 || k > n {
 				return 0
 			}
@@ -2503,15 +2540,17 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// https://yangty.blog.luogu.org/lucas-theorem-note
 		// C(n,m)%p = C(n%p,m%p) * C(n/p,m/p) % p
 		// 注意初始化 F 和 invF 时 mx 取 mod-1
-		// 推论：n&m==m 时 C(n,m) 为奇数，否则为偶数
+		// 推论：n&m==m 时 C(n,m) 为奇数，否则为偶数 https://en.wikipedia.org/wiki/Lucas%27s_theorem#Consequences
+		// - https://www.zhihu.com/question/64270942
+		// - https://atcoder.jp/contests/agc043/tasks/agc043_b
 		// https://www.luogu.com.cn/problem/P3807
 		// https://www.luogu.com.cn/problem/P7386
-		var lucas func(n, k int64) int64
-		lucas = func(n, k int64) int64 {
+		var lucas func(int, int) int
+		lucas = func(n, k int) int {
 			if k == 0 {
 				return 1
 			}
-			return C(int(n%mod), int(k%mod)) * lucas(n/mod, k/mod) % mod
+			return C(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
 		}
 
 		// 库默尔定理 https://en.wikipedia.org/wiki/Kummer%27s_theorem
@@ -2523,10 +2562,10 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		//		隔板法：把 n 个盒子当做 n-1 个隔板，这样相当于总共有 k+n-1个位置，从中选择 k 个位置放球，剩下的位置放隔板。这样就把 k 个球划分成了 n 份，放入对应的盒子中
 		// NOTE: 若改成「至多放 k 个球」，则等价于多了一个盒子，用来放「不放入盒子的球」
 		// NOTE: mx 要开两倍空间！
-		H := func(n, k int) int64 { return C(n+k-1, k) }
+		H := func(n, k int) int { return C(n+k-1, k) }
 		// 也相当于，给出元素取值种类数 kinds 和序列长度 length，求有多少种非降序列
 		// 也可以理解成在 length * (kinds-1) 的网格上走单调路径
-		H = func(kinds, length int) int64 { return C(kinds+length-1, length) }
+		H = func(kinds, length int) int { return C(kinds+length-1, length) }
 
 		// 卡特兰数 Cn = C(2n,n)/(n+1) = C(2n,n)-C(2n,n-1)
 		// C(n) = 2*(2*n-1)*C(n-1)/(n+1) with C(0) = 1
@@ -2548,8 +2587,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		//     当且仅当 n+1 为 2^k 时，卡特兰数为奇数
 		//
 		// EXTRA: 高维的情况 https://loj.ac/p/6051
-		Catalan := func(n int) int64 { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
-		Catalan = func(n int) int64 { return new(big.Int).Rem(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64() }
+		Catalan := func(n int) int { return F[2*n] * invF[n+1] % mod * invF[n] % mod }
+		Catalan = func(n int) int { return int(new(big.Int).Rem(new(big.Int).Div(new(big.Int).Binomial(int64(2*n), int64(n)), big.NewInt(int64(n+1))), big.NewInt(mod)).Int64()) }
 
 		// 默慈金数 Motzkin number https://oeis.org/A001006
 		// 从 (0,0) 移动到 (n,0) 的网格路径数，每步只能向右移动一格（可以向右上、右下、横向向右），并禁止移动到 y=0 以下的地方
@@ -2559,7 +2598,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// 生成函数推导 https://zhuanlan.zhihu.com/p/187502941
 		// https://blog.csdn.net/acdreamers/article/details/41213667
 		// http://acm.hdu.edu.cn/showproblem.php?pid=3723
-		Motzkin := func(n int) (res int64) {
+		Motzkin := func(n int) (res int) {
 			for i := 0; i <= n/2; i++ {
 				res = (res + C(n, 2*i)*Catalan(i)) % mod
 			}
@@ -2582,7 +2621,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 		// Fuss-Catalan 数、(m-1)-Dyck 路与 m 叉树 https://www.luogu.com.cn/blog/your-alpha1022/solution-p2767
 
 		// 某些组合题可能用到
-		pow2 := [mx + 1]int64{1}
+		pow2 := [mx + 1]int{1}
 		for i := 1; i <= mx; i++ {
 			pow2[i] = pow2[i-1] << 1 % mod
 		}
@@ -2591,28 +2630,27 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	}
 
 	// 适用于 n 巨大但 k 或 n-k 较小的情况
-	comb := func(n, k int) int64 {
+	comb := func(n, k int) int {
 		if k > n-k {
 			k = n - k
 		}
-		var a, b int64 = 1, 1
+		a, b := 1, 1
 		for i := 1; i <= k; i++ {
-			a = a * int64(n) % mod
+			a = a * n % mod
 			n--
-			b = b * int64(i) % mod
+			b = b * i % mod
 		}
 		return divP(a, b, mod)
 	}
 
 	// 另类组合数求法
 	{
-		const mod int64 = 1e9 + 7
 		var n, k int64
 		// 注意当 n 为负数时，可能会算出非 0 的结果，这种情况要特判
 		// 当 0 <= n < k 时结果为 0
 		_ = new(big.Int).Binomial(n, k).Int64() // small
 		_ = new(big.Int).Rem(new(big.Int).Binomial(n, k), big.NewInt(mod)).Int64()
-		_ = int64(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
+		_ = int(math.Round(math.Gamma(float64(n+1)) / math.Gamma(float64(k+1)) / math.Gamma(float64(n-k+1))))
 	}
 
 	// 扩展卢卡斯
@@ -2657,29 +2695,29 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// Unsigned Stirling numbers of first kind: s(n+1,2): a(n+1) = (n+1)*a(n) + n! https://oeis.org/A000254
 	// todo 斯特林数，斯特林反演初探 https://www.yijan.co/si-te-lin-shu-si-te-lin-fan-yan-chu-tan/
 	// todo https://codeforces.com/contest/1278/problem/F 洛谷有艹标算的题解
-	stirling1 := func(n, k int) int64 {
-		s := make([][]int64, n+1)
+	stirling1 := func(n, k int) int {
+		s := make([][]int, n+1)
 		for i := range s {
-			s[i] = make([]int64, n+1) // K+1
+			s[i] = make([]int, n+1) // K+1
 		}
 		s[0][0] = 1
 		for i := 1; i <= n; i++ {
 			for j := 1; j <= i; j++ { // j <= K
-				s[i][j] = (s[i-1][j-1] + int64(i-1)*s[i-1][j]) % mod
+				s[i][j] = (s[i-1][j-1] + int(i-1)*s[i-1][j]) % mod
 			}
 		}
 		return s[n][k]
 	}
 
-	stirling2 := func(n, k int) int64 {
-		s2 := make([][]int64, n+1)
+	stirling2 := func(n, k int) int {
+		s2 := make([][]int, n+1)
 		for i := range s2 {
-			s2[i] = make([]int64, n+1)
+			s2[i] = make([]int, n+1)
 		}
 		s2[0][0] = 1
 		for i := 1; i <= n; i++ {
 			for j := 1; j <= i; j++ {
-				s2[i][j] = (s2[i-1][j-1] + int64(j)*s2[i-1][j]) % mod
+				s2[i][j] = (s2[i-1][j-1] + j*s2[i-1][j]) % mod
 			}
 		}
 		return s2[n][k]
@@ -2688,15 +2726,15 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 第二类斯特林数·行
 	// https://www.luogu.com.cn/problem/P5395
 	stirling2RowPoly := func(n int) poly {
-		F := make([]int64, n+1)
+		F := make([]int, n+1)
 		F[0] = 1
 		for i := 1; i <= n; i++ {
-			F[i] = F[i-1] * int64(i) % P
+			F[i] = F[i-1] * i % P
 		}
 		invF := make(poly, n+1)
-		invF[n] = _pow(F[n], P-2)
+		invF[n] = nttPow(F[n], P-2)
 		for i := n; i > 0; i-- {
-			invF[i-1] = invF[i] * int64(i) % P
+			invF[i-1] = invF[i] * i % P
 		}
 		a := make(poly, n+1)
 		b := make(poly, n+1)
@@ -2706,7 +2744,7 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			} else {
 				a[i] = P - v
 			}
-			b[i] = _pow(int64(i), n) * v % P
+			b[i] = nttPow(i, n) * v % P
 		}
 		return a.conv(b)[:n+1]
 	}
@@ -2719,11 +2757,11 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// 其他公式
 	// B(n+1) = Sum_{k=0..n} C(n,k)*B(k)
 	// B(n) = Sum_{k=1..n} S2(n,k)
-	bellTriangle := func(n int) [][]int64 {
-		b := make([][]int64, n+1) // 第一列为贝尔数
-		b[0] = []int64{1}
+	bellTriangle := func(n int) [][]int {
+		b := make([][]int, n+1) // 第一列为贝尔数
+		b[0] = []int{1}
 		for i := 1; i <= n; i++ {
-			b[i] = make([]int64, i+1)
+			b[i] = make([]int, i+1)
 			b[i][0] = b[i-1][i-1]
 			for j := 1; j <= i; j++ {
 				b[i][j] = (b[i][j-1] + b[i-1][j-1]) % mod
@@ -2736,15 +2774,15 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://blog.csdn.net/a_forever_dream/article/details/106489066
 	// https://www.luogu.com.cn/problem/P5748
 	bellPoly := func(n int) poly {
-		F := make([]int64, n+1)
+		F := make([]int, n+1)
 		F[0] = 1
 		for i := 1; i <= n; i++ {
-			F[i] = F[i-1] * int64(i) % P
+			F[i] = F[i-1] * i % P
 		}
 		invF := make(poly, n+1)
-		invF[n] = _pow(F[n], P-2)
+		invF[n] = nttPow(F[n], P-2)
 		for i := n; i > 1; i-- { // 注意为了计算下面的 exp，invF[0] = 0
-			invF[i-1] = invF[i] * int64(i) % P
+			invF[i-1] = invF[i] * i % P
 		}
 
 		b := invF.exp()
@@ -2932,9 +2970,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://oeis.org/A013939 a(n) = Sum_{k = 1..n} floor(n/prime(k)) = omega(n!)
 	//
 	// EXTRA: n/k (k=1..n) 的不同数字的个数 https://oeis.org/A055086
-	//        = floor(sqrt(4*n+1)) - 1 (注意用 int64)
-	floorLoop := func(n int64) (sum int64) {
-		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
+	//        = floor(sqrt(4*n+1)) - 1
+	floorLoop := func(n int) (sum int) {
+		for l, r := 1, 0; l <= n; l = r + 1 {
 			h := n / l
 			r = n / h
 			w := r - l + 1
@@ -2945,8 +2983,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 
 	// ∑x/i, i in [low,up]
 	// 转换 https://codeforces.com/problemset/problem/1485/C
-	floorLoopRange := func(low, up, x int64, min func(int64, int64) int64) (sum int64) {
-		for l, r := low, int64(0); l <= up; l = r + 1 {
+	floorLoopRange := func(low, up, x int) (sum int) {
+		for l, r := low, 0; l <= up; l = r + 1 {
 			h := x / l
 			if h == 0 {
 				break
@@ -2966,9 +3004,9 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// https://www.luogu.com.cn/problem/P2261
 	// https://codeforces.com/problemset/problem/616/E
 	// NEERC05，紫书例题 10-25，UVa1363 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4109 https://codeforces.com/gym/101334 J
-	floorLoopRem := func(n, k int64, min func(int64, int64) int64) int64 {
+	floorLoopRem := func(n, k int) int {
 		sum := n * k
-		for l, r := int64(1), int64(0); l <= n; l = r + 1 {
+		for l, r := 1, 0; l <= n; l = r + 1 {
 			h := k / l
 			if h > 0 {
 				r = min(k/h, n)
@@ -2986,8 +3024,8 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// ∑{i=1..min(n,m)} floor(n/i)*floor(m/i)
 	// https://www.luogu.com.cn/blog/command-block/zheng-chu-fen-kuai-ru-men-xiao-ji
 	// todo ∑∑(n%i)*(m%j) 模积和 https://www.luogu.com.cn/problem/P2260
-	floorLoop2D := func(n, m int64, min func(int64, int64) int64) (sum int64) {
-		for l, r := int64(1), int64(0); l <= min(n, m); l = r + 1 {
+	floorLoop2D := func(n, m int) (sum int) {
+		for l, r := 1, 0; l <= min(n, m); l = r + 1 {
 			hn, hm := n/l, m/l
 			r = min(n/hn, m/hm)
 			w := r - l + 1
@@ -3010,13 +3048,13 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 	// todo ∑∑i*j*gcd(i,j) https://www.luogu.com.cn/problem/solution/P3768
 	sieveDu := func() {
 		const mx int = 1e6
-		phi := [mx + 1]int64{1: 1}
+		phi := [mx + 1]int{1: 1}
 		mu := [mx + 1]int{1: 1}
 		primes := []int{}
 		vis := [mx + 1]bool{}
 		for i := 2; i <= mx; i++ {
 			if !vis[i] {
-				phi[i] = int64(i - 1)
+				phi[i] = i - 1
 				mu[i] = -1
 				primes = append(primes, i)
 			}
@@ -3027,11 +3065,11 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 				}
 				vis[v] = true
 				if i%p == 0 {
-					phi[v] = phi[i] * int64(p)
+					phi[v] = phi[i] * p
 					mu[v] = 0
 					break
 				}
-				phi[v] = phi[i] * int64(p-1)
+				phi[v] = phi[i] * (p - 1)
 				mu[v] = -mu[i]
 			}
 		}
@@ -3040,18 +3078,18 @@ func _(abs func(int64) int64, max func(int64, int64) int64) {
 			mu[i+1] += mu[i]
 		}
 
-		cachePhi := map[int]int64{}
-		var sumPhi func(int) int64
-		sumPhi = func(n int) int64 {
+		cachePhi := map[int]int{}
+		var sumPhi func(int) int
+		sumPhi = func(n int) int {
 			if n <= mx {
 				return phi[n]
 			}
 			if s := cachePhi[n]; s > 0 {
 				return s
 			}
-			m := int64(n)
+			m := n
 			res := m * (m + 1) / 2
-			for l, r := int64(2), int64(0); l <= m; l = r + 1 {
+			for l, r := 2, 0; l <= m; l = r + 1 {
 				h := m / l
 				r = m / h
 				res -= (r - l + 1) * sumPhi(int(h))

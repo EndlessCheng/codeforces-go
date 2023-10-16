@@ -100,7 +100,7 @@ todo https://codeforces.com/contest/438/problem/E
 
 const P = 998244353
 
-func _pow(x, n int) (res int) {
+func nttPow(x, n int) (res int) {
 	res = 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
@@ -116,8 +116,8 @@ var omega, omegaInv [31]int // 多开一点空间
 func init() {
 	const g, invG = 3, 332748118
 	for i := 1; i < len(omega); i++ {
-		omega[i] = _pow(g, (P-1)/(1<<i))
-		omegaInv[i] = _pow(invG, (P-1)/(1<<i))
+		omega[i] = nttPow(g, (P-1)/(1<<i))
+		omegaInv[i] = nttPow(invG, (P-1)/(1<<i))
 	}
 }
 
@@ -126,7 +126,7 @@ type ntt struct {
 	invN int
 }
 
-func newNTT(n int) ntt { return ntt{n, _pow(n, P-2)} }
+func newNTT(n int) ntt { return ntt{n, nttPow(n, P-2)} }
 
 // 注：下面 swap 的代码，另一种写法是初始化每个 i 对应的 j https://blog.csdn.net/Flag_z/article/details/99163939
 // 由于不是性能瓶颈，实测对性能影响不大
@@ -312,7 +312,7 @@ func (a poly) inv() poly {
 	m := 1 << bits.Len(uint(n))
 	A := a.resize(m)
 	invA := make(poly, m)
-	invA[0] = _pow(A[0], P-2)
+	invA[0] = nttPow(A[0], P-2)
 	for l := 2; l <= m; l <<= 1 {
 		ll := l << 1
 		b := A[:l].resize(ll)
@@ -448,9 +448,9 @@ func (a poly) pow(k int) poly {
 	if shift*k >= n {
 		return make(poly, n)
 	}
-	a = a.rsh(shift)       // a[0] != 0
-	a.mul(_pow(a[0], P-2)) // a[0] == 1
-	return a.ln().mul(k).exp().mul(_pow(a[0], k1)).lsh(shift * k)
+	a = a.rsh(shift)         // a[0] != 0
+	a.mul(nttPow(a[0], P-2)) // a[0] == 1
+	return a.ln().mul(k).exp().mul(nttPow(a[0], k1)).lsh(shift * k)
 }
 
 // 多项式三角函数
