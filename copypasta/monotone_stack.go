@@ -51,8 +51,9 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 - [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
 - [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
-- [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/)
+- [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
   402 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
+- [1673. 找出最具竞争力的子序列](https://leetcode.cn/problems/find-the-most-competitive-subsequence/) 1802
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
 
 #### 贡献法（计算所有子数组的……的和）
