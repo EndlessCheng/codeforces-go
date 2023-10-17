@@ -1,14 +1,15 @@
 package main
 
-// github.com/EndlessCheng/codeforces-go
-func mostCompetitive(a []int, k int) (s []int) {
-	for i, v := range a {
-		for len(s) > 0 && len(s)+len(a)-1-i >= k && v < s[len(s)-1] {
-			s = s[:len(s)-1]
+// https://space.bilibili.com/206214
+func mostCompetitive(a []int, k int) (st []int) {
+	k = len(a) - k
+	for _, v := range a {
+		for len(st) > 0 && k > 0 && v < st[len(st)-1] {
+			st = st[:len(st)-1]
+			k--
 		}
-		if len(s) < k {
-			s = append(s, v)
-		}
+		st = append(st, v)
 	}
+	st = st[:len(st)-k]
 	return
 }
