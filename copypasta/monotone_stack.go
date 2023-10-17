@@ -152,6 +152,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	// EXTRA：计算贡献（注意取模时避免出现负数）
+	// 不需要上面的预处理，只需要一次遍历的写法，请看 https://leetcode.cn/problems/sum-of-subarray-minimums/solution/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/
 	for i, v := range a {
 		_ = v
 		//l, r := left[i]+1, right[i] // [l,r) 左闭右开
@@ -174,13 +175,13 @@ func monotoneStack(a []int) ([]int, []int) {
 			left[i] = st[len(st)-1]
 			st = append(st, i)
 		}
-		for _, i := range st[1:] {
+		for _, i := range st[1:] { // 其它语言的话，在创建 right 数组的时候初始化即可
 			right[i] = len(right)
 		}
 	}
 
 	{
-		// 不需要栈的写法
+		// 不需要栈的写法！
 		// left[i] 为左侧严格小于 a[i] 的最近元素位置（不存在时为 -1）
 		left := make([]int, n)
 		for i, v := range a {
@@ -200,6 +201,24 @@ func monotoneStack(a []int) ([]int, []int) {
 				j = right[j]
 			}
 			right[i] = j
+		}
+
+		{
+			// 也可以合并！
+			left := make([]int, n)
+			right := make([]int, n)
+			for i := range right {
+				right[i] = n
+			}
+			for i, v := range a {
+				j := i - 1
+				for j >= 0 && a[j] >= v {
+					right[j] = i
+					j = left[j]
+				}
+				left[i] = j
+			}
+			// todo 哪些 right[i]=n 能不能像单调栈那样找出来？
 		}
 	}
 
