@@ -93,7 +93,7 @@ LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
 评注：接雨水有三种不同的解法（前后缀分解、相向双指针和单调栈）
      其中相向双指针是前后缀分解的空间优化写法，视频讲解见 https://www.bilibili.com/video/BV1Qg411q7ia/
-     单调栈视频讲解见 https://www.bilibili.com/video/BV1VN411J7S7/ 
+     单调栈视频讲解见 https://www.bilibili.com/video/BV1VN411J7S7/
      本质上是两种计算策略：1. 竖着累加：假设每个下标都有个水桶
                        2. 横着累加：见单调栈的做法（找上一个更大元素，在找的过程中填坑）
 LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
@@ -176,6 +176,30 @@ func monotoneStack(a []int) ([]int, []int) {
 		}
 		for _, i := range st[1:] {
 			right[i] = len(right)
+		}
+	}
+
+	{
+		// 不需要栈的写法
+		// left[i] 为左侧严格小于 a[i] 的最近元素位置（不存在时为 -1）
+		left := make([]int, n)
+		for i, v := range a {
+			j := i - 1
+			for j >= 0 && a[j] >= v { // 符号相反
+				j = left[j]
+			}
+			left[i] = j
+		}
+
+		// right[i] 为右侧小于等于 a[i] 的最近元素位置（不存在时为 n）
+		right := make([]int, n)
+		for i := n - 1; i >= 0; i-- {
+			v := a[i]
+			j := i + 1
+			for j < n && a[j] > v { // 符号相反
+				j = right[j]
+			}
+			right[i] = j
 		}
 	}
 
