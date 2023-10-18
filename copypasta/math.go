@@ -218,9 +218,9 @@ func pow(x, n int) int {
 
 func powM(x, n, p int) (res int) {
 	x %= p
-	res = 1
-	for ; n > 0; n >>= 1 {
-		if n&1 == 1 {
+	res = 1 % p
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
 			res = res * x % p
 		}
 		x = x * x % p
