@@ -1172,34 +1172,34 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// EXTRA: 把一个维度转换成 DP 的定义 https://codeforces.com/problemset/problem/837/D
 	// EXTRA: 离散化背包 https://codeforces.com/contest/366/submission/61452111
 	zeroOneKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1)
+		f := make([]int, maxW+1)
 		for i, w := range weights {
 			v := values[i]
 			// 这里 j 的初始值可以优化成前 i 个物品的重量之和（但不能超过 maxW）
 			for j := maxW; j >= w; j-- {
-				dp[j] = max(dp[j], dp[j-w]+v)
+				f[j] = max(f[j], f[j-w]+v)
 			}
 		}
-		return dp[maxW]
+		return f[maxW]
 	}
 
 	// 0-1 背包 EXTRA: 恰好装满
 	// https://leetcode.cn/contest/sf-tech/problems/cINqyA/
 	// 转换 二维费用 https://codeforces.com/problemset/problem/730/J
 	zeroOneKnapsackExactlyFull := func(values, weights []int, maxW int) {
-		dp := make([]int, maxW+1)
-		for i := range dp {
-			dp[i] = -1e9 // -1e18
+		f := make([]int, maxW+1)
+		for i := range f {
+			f[i] = -1e9 // -1e18
 		}
-		dp[0] = 0
+		f[0] = 0
 		for i, w := range weights {
 			v := values[i]
 			for j := maxW; j >= w; j-- {
-				dp[j] = max(dp[j], dp[j-w]+v)
+				f[j] = max(f[j], f[j-w]+v)
 			}
 		}
 		for i := maxW; i >= 0; i-- {
-			if dp[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 dp[i]
+			if f[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 dp[i]
 				// ...
 			}
 		}
@@ -1211,15 +1211,15 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换 https://codeforces.com/problemset/problem/19/B LC2742 https://leetcode.cn/problems/painting-the-walls/
 	// 二维费用的情况+价值最小 https://ac.nowcoder.com/acm/contest/6218/C
 	zeroOneKnapsackAtLeastFillUp := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1)
-		for i := range dp {
-			dp[i] = 1e9 // 1e18
+		f := make([]int, maxW+1)
+		for i := range f {
+			f[i] = 1e9 // 1e18
 		}
-		dp[0] = 0
+		f[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := maxW; j >= 0; j-- {
-				dp[j] = min(dp[j], dp[max(j-w, 0)]+v) // max(j-w, 0) 蕴含了「至少」
+				f[j] = min(f[j], f[max(j-w, 0)]+v) // max(j-w, 0) 蕴含了「至少」
 			}
 		}
 
@@ -1229,12 +1229,12 @@ func _(min, max func(int, int) int, abs func(int) int) {
 				w := weights[i]
 				for j := maxW; j >= 0; j-- {
 					k := min(j+w, maxW)
-					dp[k] = min(dp[k], dp[j]+v)
+					f[k] = min(f[k], f[j]+v)
 				}
 			}
 		}
 
-		return dp[maxW]
+		return f[maxW]
 	}
 
 	// 0-1 背包 EXTRA: 从序列 a 中选若干个数，使其总和为 sum 的方案数
@@ -1250,14 +1250,14 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换 LC1434 https://leetcode-cn.com/problems/number-of-ways-to-wear-different-hats-to-each-other/
 	// 由于顺序不同也算方案，所以这题需要正序递推 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
 	zeroOneWaysToSum := func(a []int, sum int) int {
-		dp := make([]int, sum+1)
-		dp[0] = 1
+		f := make([]int, sum+1)
+		f[0] = 1
 		for _, v := range a {
-			for s := sum; s >= v; s-- {
-				dp[s] += dp[s-v] // % mod
+			for j := sum; j >= v; j-- {
+				f[j] += f[j-v] // % mod
 			}
 		}
-		return dp[sum]
+		return f[sum]
 	}
 
 	// 0-1 背包 EXTRA: 打印字典序最小的方案
@@ -1265,8 +1265,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://www.acwing.com/problem/content/description/12/
 	zeroOneKnapsackLexicographicallySmallestResult := func(values, weights []int, maxW int) (ans []int) {
 		n := len(values)
-		dp := make([]int, maxW+1) // fill
-		//dp[0] = 0
+		f := make([]int, maxW+1) // fill
+		//f[0] = 0
 		fa := make([][]int, n)
 		for i := n - 1; i >= 0; i-- {
 			fa[i] = make([]int, maxW+1)
@@ -1275,8 +1275,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			}
 			v, w := values[i], weights[i]
 			for j := maxW; j >= w; j-- {
-				if dp[j-w]+v >= dp[j] { // 注意这里要取等号，从而保证尽可能地从字典序最小的方案转移过来
-					dp[j] = dp[j-w] + v
+				if f[j-w]+v >= f[j] { // 注意这里要取等号，从而保证尽可能地从字典序最小的方案转移过来
+					f[j] = f[j-w] + v
 					fa[i][j] = j - w
 				}
 			}
@@ -1304,21 +1304,21 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		for _, v := range values {
 			totValue += v
 		}
-		dp := make([]int, totValue+1)
-		for i := range dp {
-			dp[i] = 1e18
+		f := make([]int, totValue+1)
+		for i := range f {
+			f[i] = 1e18
 		}
-		dp[0] = 0
+		f[0] = 0
 		totValue = 0
 		for i, v := range values {
 			w := weights[i]
 			totValue += v
 			for j := totValue; j >= v; j-- {
-				dp[j] = min(dp[j], dp[j-v]+w)
+				f[j] = min(f[j], f[j-v]+w)
 			}
 		}
 		for i := totValue; ; i-- {
-			if dp[i] <= maxW {
+			if f[i] <= maxW {
 				return i
 			}
 		}
@@ -1335,15 +1335,15 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode-cn.com/problems/form-largest-integer-with-digits-that-add-up-to-target/
 	// 【脑洞】求极限：lim_{maxW->∞} dp[maxW]/maxW
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1) // fill
-		//dp[0] = 0
+		f := make([]int, maxW+1) // fill
+		//f[0] = 0
 		for i, v := range values {
 			w := weights[i]
 			for j := w; j <= maxW; j++ {
-				dp[j] = max(dp[j], dp[j-w]+v)
+				f[j] = max(f[j], f[j-w]+v)
 			}
 		}
-		return dp[maxW]
+		return f[maxW]
 	}
 
 	// 完全背包 EXTRA: 方案数
@@ -1352,92 +1352,97 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
 	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
-	unboundedWaysToSum := func(a []int, sum int) int {
-		dp := make([]int, sum+1)
-		dp[0] = 1
+	unboundedWaysToSum := func(a []int, total int) int {
+		f := make([]int, total+1)
+		f[0] = 1
 		for _, v := range a {
-			for s := v; s <= sum; s++ {
-				dp[s] += dp[s-v] // % mod
+			for j := v; j <= total; j++ {
+				f[j] += f[j-v] // % mod
 			}
 		}
-		return dp[sum]
+		return f[total]
 	}
 
 	// 完全背包 EXTRA: 二维费用方案数
 	// 注意：「恰好使用 m 个物品」这个条件要当成一种费用来看待
 	// https://codeforces.com/problemset/problem/543/A
 
-	// 多重背包 - 未优化    Bounded Knapsack
-	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
-	boundedKnapsack := func(stocks, values, weights []int, maxW int) int {
-		n := len(stocks)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, maxW+1)
-		}
-		for i, num := range stocks {
-			v, w := values[i], weights[i]
-			for j := range dp[i] {
-				for k := 0; k <= num && k*w <= j; k++ {
-					dp[i+1][j] = max(dp[i+1][j], dp[i][j-k*w]+k*v)
-				}
-			}
-		}
-		return dp[n][maxW]
-	}
-
-	// 多重背包 - 优化 1 - 二进制优化
+	// 多重背包   Bounded Knapsack
 	// 模板题 https://codeforces.com/problemset/problem/106/C
+	//       https://www.luogu.com.cn/problem/P1776
 	// todo 多重背包+完全背包 https://www.luogu.com.cn/problem/P1782 https://www.luogu.com.cn/problem/P1833 https://www.luogu.com.cn/problem/P2851
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
 	// todo 打印方案
+
+	// 多重背包 - 未优化
+	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
+	boundedKnapsack := func(stocks, values, weights []int, maxW int) int {
+		n := len(stocks)
+		f := make([][]int, n+1)
+		for i := range f {
+			f[i] = make([]int, maxW+1)
+		}
+		for i, num := range stocks {
+			v, w := values[i], weights[i]
+			for j := range f[i] {
+				// 枚举选了 k=0,1,2,...num 个第 i 种物品
+				for k := 0; k <= num && k*w <= j; k++ {
+					f[i+1][j] = max(f[i+1][j], f[i][j-k*w]+k*v)
+				}
+			}
+		}
+		return f[n][maxW]
+	}
+
+	// 多重背包 - 优化 1 - 二进制优化
 	boundedKnapsackBinary := func(stocks, values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1)
+		f := make([]int, maxW+1)
 		for i, num := range stocks {
 			v, w := values[i], weights[i]
 			for k1 := 1; num > 0; k1 <<= 1 {
 				k := min(k1, num)
 				for j := maxW; j >= k*w; j-- {
-					dp[j] = max(dp[j], dp[j-k*w]+k*v)
+					f[j] = max(f[j], f[j-k*w]+k*v)
 				}
 				num -= k
 			}
 		}
-		return dp[maxW]
+		return f[maxW]
 	}
 
 	// 多重背包 - 优化 2 - 单调队列优化
 	// 参考挑战 p.340
 	// 时间复杂度 O(n*maxW)
 	boundedKnapsackMonotoneQueue := func(stocks, values, weights []int, maxW int) int {
-		dp := make([]int, maxW+1)
+		f := make([]int, maxW+1)
 		for i, num := range stocks {
 			v, w := values[i], weights[i]
-			for r := 0; r < w; r++ { // 按照 j%w 的结果，分组转移，r 表示 remainder
-				type pair struct{ x, j int }
+			for rem := 0; rem < w; rem++ { // 按照 j%w 的结果，分组转移，rem 表示 remainder
+				type pair struct{ maxF, j int }
 				q := []pair{}
 				// 为什么压缩维度了还可以正着枚举？因为转移来源都存到单调队列里面了，正序倒序都可以
 				// 并且这样相比倒着枚举，不需要先往队列里面塞 num 个数据，更加简洁
-				for j := 0; j*w+r <= maxW; j++ {
-					x := dp[j*w+r] - j*v
-					for len(q) > 0 && q[len(q)-1].x <= x {
-						q = q[:len(q)-1]
+				for j := 0; j*w+rem <= maxW; j++ {
+					t := f[j*w+rem] - j*v
+					for len(q) > 0 && q[len(q)-1].maxF <= t {
+						q = q[:len(q)-1] // 及时去掉无用数据
 					}
-					q = append(q, pair{x, j})
-					// 本质是查表法，q[0].val 就表示 dp[(j-1)*w+r]-(j-1)*v, dp[(j-2)*w+r]-(j-2)*v, …… 这些转移来源的最大值
-					dp[j*w+r] = q[0].x + j*v // 把物品个数视作两个 j 的差（前缀和思想）
-					if j-q[0].j == num {     // 至多选 num 个物品
-						q = q[1:]
+					q = append(q, pair{t, j})
+					// 本质是查表法，q[0].maxF 就表示 f[(j-1)*w+r]-(j-1)*v, f[(j-2)*w+r]-(j-2)*v, …… 这些转移来源的最大值
+					f[j*w+rem] = q[0].maxF + j*v // 把物品个数视作两个 j 的差（前缀和思想）
+					if j-q[0].j == num {         // 至多选 num 个物品
+						q = q[1:] // 及时去掉无用数据
 					}
 				}
 			}
 		}
-		return dp[maxW]
+		return f[maxW]
 	}
 
-	// 多重背包 - 求方案数
+	// 多重背包 - 求方案数 - 同余前缀和优化
+	// 讲解 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
 	boundedKnapsackWays := func(a []int) []int {
 		const mod = 1_000_000_007
