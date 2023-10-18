@@ -13,16 +13,15 @@ func run(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n, ans int
 	Fscan(in, &n)
-	a := make([]struct{ l, r int }, n)
-	for i := range a {
-		Fscan(in, &a[i].l, &a[i].r)
+	l := make([]int, n)
+	r := make([]int, n)
+	for i := range l {
+		Fscan(in, &l[i], &r[i])
 	}
-	sort.Slice(a, func(i, j int) bool { return a[i].r < a[j].r })
-	b := append(a[:0:0], a...)
-	sort.Slice(b, func(i, j int) bool { return b[i].l > b[j].l })
-
-	for i := 0; a[i].r < b[i].l; i++ {
-		ans += (n - 1 - i*2) * (b[i].l - a[i].r)
+	sort.Sort(sort.Reverse(sort.IntSlice(l)))
+	sort.Ints(r)
+	for i := 0; l[i] > r[i]; i++ {
+		ans += (n - 1 - i*2) * (l[i] - r[i])
 	}
 	Fprint(out, ans)
 }
