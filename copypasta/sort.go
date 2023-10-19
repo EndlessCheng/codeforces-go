@@ -70,6 +70,7 @@ https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
 - [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
+- [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 http://codeforces.com/problemset/problem/460/C
 
@@ -108,6 +109,21 @@ https://oeis.org/A001855 Sorting numbers: maximal number of comparisons for sort
 https://oeis.org/A003071 Sorting numbers: maximal number of comparisons for sorting n elements by list merging
 https://oeis.org/A036604 Sorting numbers: minimal number of comparisons needed to sort n elements
 */
+
+// 把两个数组绑起来排序
+// 使用方法：sort.Sort(zip{a, b})
+type zip struct {
+	a []int
+	b []int
+}
+
+//func (p zip) Less(i, j int) bool { return p.a[i] < p.a[j] || p.a[i] == p.a[j] && p.b[i] < p.b[j] }
+func (p zip) Less(i, j int) bool { return p.a[i] < p.a[j] }
+func (p zip) Len() int           { return len(p.a) }
+func (p zip) Swap(i, j int) {
+	p.a[i], p.a[j] = p.a[j], p.a[i]
+	p.b[i], p.b[j] = p.b[j], p.b[i]
+}
 
 // 记录排序过程中交换元素的下标
 // r := swapRecorder{a, &[][2]int{}}
@@ -422,9 +438,11 @@ func sortCollections() {
 
 	// 实数二分
 	// 最大化平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
+	// 0-1 分数规划见后面
 	binarySearchF := func(l, r float64, f func(x float64) bool) float64 {
+		// 松一点
 		l--
-		r++ // 松一点
+		r++
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
 		for ; step > 0; step-- {
 			mid := (l + r) / 2
@@ -445,8 +463,9 @@ func sortCollections() {
 	// 模板题 https://ac.nowcoder.com/acm/contest/64272/c
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
+		// 松一点
 		l--
-		r++ // 松一点
+		r++
 		const eps = 1e-8 // 保留小数位+2
 		step := int(math.Log((r-l)/eps) / math.Log(1.5))
 		for ; step > 0; step-- {
@@ -505,8 +524,8 @@ func sortCollections() {
 	//
 
 	// 0-1 分数规划
-	// 求 min{∑ai/∑bi}：check(k) 中判断是否有 max∑(ai-k*bi) <= 0 成立，若成立说明 k 取大了，否则 k 取小了（标准化：return max∑<=0）
-	// 求 max{∑ai/∑bi}：check(k) 中判断是否有 min∑(ai-k*bi) >= 0 成立，若成立说明 k 取小了，否则 k 取大了（标准化：return min∑<0）
+	// 求 min{∑ai/∑bi}：在 check(k) 中判断是否有 min∑(ai-k*bi) > 0 成立，若成立说明 k 取小了，否则 k 取大了
+	// 求 max{∑ai/∑bi}：在 check(k) 中判断是否有 max∑(ai-k*bi) > 0 成立，若成立说明 k 取小了，否则 k 取大了
 	// https://oi-wiki.org/misc/frac-programming/
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
@@ -528,6 +547,8 @@ func sortCollections() {
 	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
 	// 其他的一些题：
 	//      与 DP 结合 https://codeforces.com/problemset/problem/489/E
+	// 最优比率路径 https://atcoder.jp/contests/abc324/tasks/abc324_f
+	//            https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1
