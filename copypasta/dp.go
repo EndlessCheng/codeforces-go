@@ -2446,7 +2446,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 				if !isNum {
 					return 0
 				}
-				//if s == ...
+				//if val == ...
 				return 1
 			}
 			if !limitLow && !limitUp && isNum {
