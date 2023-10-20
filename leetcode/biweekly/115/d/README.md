@@ -231,7 +231,7 @@ func min(a, b int) int { if b < a { return b }; return a }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(S\sqrt{\min(S,n)})$，其中 $n$ 为 $\textit{nums}$ 的长度，$S$ 为 $\textit{nums}$ 的元素和。由 $1+2+\cdots+m=\dfrac{m(m+1)}{2}\le S$ 可知，$\textit{nums}$ 中至多有 $\mathcal{O}(\sqrt S)$ 个**不同**元素，所以哈希表的大小至多为 $\mathcal{O}(\sqrt S)$。当然，哈希表的大小不会超过 $n$。
+- 时间复杂度：$\mathcal{O}(S\sqrt{\min(S,n)})$，其中 $n$ 为 $\textit{nums}$ 的长度，$S$ 为 $\textit{nums}$ 的元素和。（下面的分析不考虑 $0$）如果哈希表中只有一个 key，那么花费 $\mathcal{O}(S)$ 的时间就算完了。想一想，哈希表最多能有多少个 key？是 $n$ 个吗？不对，如果有 $n$ 个 key，由于这些 key 互不相同，这些 key 的元素之和最少是 $1+2+\cdots+n=\dfrac{n(n+1)}{2}$，但是数组的元素和为 $S$，所以 $\dfrac{n(n+1)}{2}\le S$，所以哈希表至多约有 $\sqrt{2S}$ 个 key，在本题的约束下大约是 $200$ 个。当然，哈希表的大小不会超过 $n$，所以哈希表至多有 $\mathcal{O}(\sqrt{\min(S,n)})$ 个 key。
 - 空间复杂度：$\mathcal{O}(S)$。
 
 ## 优化方法二：同余前缀和优化
