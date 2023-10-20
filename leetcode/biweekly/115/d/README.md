@@ -3,11 +3,12 @@
 1. [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
 2. [背包问题 & 空间压缩【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
 
+## 哪种背包？
+
+- 如果区分相同数字，就是 0-1 背包。
+- 如果不区分相同数字，就是多重背包。
+
 ## 朴素 DP
-
-注意到相同数字是不作区分的，所以本题属于**多重背包**。
-
-> 如果区分相同数字就是 0-1 背包。
 
 用哈希表统计每个数的出现次数，记在 $\textit{cnt}$ 中。
 
@@ -15,7 +16,9 @@
 
 设第 $i$ 种数的值为 $x$。
 
-枚举第 $i$ 种数选了 $k=0,1,2,\cdots,\textit{cnt}[x]$ 个，根据加法原理，累加这些方案数，即
+枚举第 $i$ 种数选了 $k=0,1,2,\cdots,\textit{cnt}[x]$ 个，选完之后，剩下要解决的子问题，就是从 $\textit{cnt}$ 的前 $i-1$ 种数中选择一些数，元素和恰好为 $j-kx$ 的方案数，即 $f[i-1][j-kx]$。
+
+根据加法原理，累加这些方案数，即
 
 $$
 f[i][j] = \sum_{k=0}^{\textit{cnt}[x]} f[i-1][j-kx]
@@ -63,7 +66,7 @@ $$
 f[i][j] = f[i][j-x] + f[i-1][j] - f[i-1][j-(\textit{cnt}[x]+1)\cdot x]
 $$
 
-如果 $j-(\textit{cnt}[x]+1)\cdot x < 0$ 则
+如果 $j-(\textit{cnt}[x]+1)\cdot x < 0$，由于无法选一些数组成负数，对应的方案数为 $0$，所以
 
 $$
 f[i][j] = f[i][j-x] + f[i-1][j]
@@ -273,8 +276,9 @@ class Solution:
             s = min(s + x * c, r)
             for j in range(x, s + 1):
                 f[j] = (f[j] + f[j - x]) % MOD  # 原地计算同余前缀和
-            for j in range(s, (c + 1) * x - 1, -1):
-                f[j] = (f[j] - f[j - (c + 1) * x]) % MOD  # 两个同余前缀和的差
+            t = (c + 1) * x
+            for j in range(s, t - 1, -1):
+                f[j] = (f[j] - f[j - t]) % MOD  # 两个同余前缀和的差
         return sum(f[l:]) % MOD
 ```
 
