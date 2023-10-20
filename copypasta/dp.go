@@ -2287,9 +2287,100 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
 
-	// digitDP 是做两次记忆化搜索的写法
-	// 只做一次记忆化搜索的写法见后面的 digitDP2
-	digitDP := func(low, high string, sumUpper int) int {
+	// 只做一次记忆化搜索的写法
+	digitDP := func(low, high, sumUpper int) int {
+		lowS := strconv.Itoa(low)
+		highS := strconv.Itoa(high)
+		n := len(highS)
+		lowS = strings.Repeat("0", n-len(lowS)) + lowS // 对齐
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, sumUpper+1)
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
+		}
+
+		// 第一种写法（前导零不影响答案）
+		var f func(int, int, bool, bool) int
+		f = func(p, sum int, limitLow, limitUp bool) (res int) {
+			if p == n {
+				if sum <= sumUpper { // 合法
+					return 1
+				}
+				return 0
+			}
+			if !limitLow && !limitUp {
+				dv := &dp[p][sum]
+				if *dv >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+			lo := 0
+			if limitLow {
+				lo = int(lowS[p] - '0')
+			}
+			up := 9
+			if limitUp {
+				up = int(highS[p] - '0')
+			}
+			for d := lo; d <= up; d++ {
+				res += f(p+1, sum+d, limitLow && d == lo, limitUp && d == up)
+				//res %= mod
+			}
+			return
+		}
+		//ans := f(0, 0, true, true)
+
+		// 第二种写法（前导零影响答案）
+		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p=n 的时候可以根据情况返回 1 或者 0
+		// 下面是计算每个数都出现偶数次的方案数
+		var dfs func(int, int, bool, bool, bool) int
+		dfs = func(p, mask int, limitLow, limitUp, isNum bool) (res int) {
+			if p == n {
+				if !isNum {
+					return 0
+				}
+				if mask == 0 {
+					return 1
+				}
+				return 0
+			}
+			if !limitLow && !limitUp && isNum {
+				dv := &dp[p][mask]
+				if *dv >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+			if !isNum && lowS[p] == '0' { // 什么也不填
+				res += dfs(p+1, mask, true, false, false)
+			}
+			lo := 0
+			if limitLow {
+				lo = int(lowS[p] - '0')
+			}
+			up := 9
+			if limitUp {
+				up = int(highS[p] - '0')
+			}
+			d := 0
+			if !isNum {
+				d = 1
+			}
+			for d = max(d, lo); d <= up; d++ {
+				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitUp && d == up, true)
+				//res %= mod
+			}
+			return
+		}
+		ans := dfs(0, 0, true, true, false)
+		return ans
+	}
+
+	//（旧版写法）做两次记忆化搜索
+	digitDP2 := func(low, high string, sumUpper int) int {
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		calc := func(s string) int {
@@ -2330,7 +2421,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			//res := f(0, 0, true)
 
 			// 第二种写法（前导零影响答案）
-			// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
+			// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p=n 的时候可以根据情况返回 1 或者 0
 			// 例如 https://codeforces.com/contest/855/submission/125651587
 			// 以下代码以 https://www.luogu.com.cn/problem/P2657 为例
 			var dfs func(int, int, bool, bool) int
@@ -2388,98 +2479,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			ans++
 		}
 		ans = (ans%mod + mod) % mod
-		return ans
-	}
-
-	// 只做一次 DFS 的写法
-	digitDP2 := func(low, high, sumUpper int) int {
-		lowS := strconv.Itoa(low)
-		highS := strconv.Itoa(high)
-		n := len(highS)
-		lowS = strings.Repeat("0", n-len(lowS)) + lowS // 对齐
-		dp := make([][]int, n)
-		for i := range dp {
-			dp[i] = make([]int, sumUpper+1)
-			for j := range dp[i] {
-				dp[i][j] = -1
-			}
-		}
-
-		// 第一种写法（前导零不影响答案）
-		var f func(int, int, bool, bool) int
-		f = func(p, sum int, limitLow, limitUp bool) (res int) {
-			if p == n {
-				if sum <= sumUpper { // 合法
-					return 1
-				}
-				return 0
-			}
-			if !limitLow && !limitUp {
-				dv := &dp[p][sum]
-				if *dv >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-			}
-			lo := 0
-			if limitLow {
-				lo = int(lowS[p] - '0')
-			}
-			up := 9
-			if limitUp {
-				up = int(highS[p] - '0')
-			}
-			for d := lo; d <= up; d++ {
-				res += f(p+1, sum+d, limitLow && d == lo, limitUp && d == up)
-				res %= mod
-			}
-			return
-		}
-		//ans := f(0, 0, true, true)
-
-		// 第二种写法（前导零影响答案）
-		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
-		// 下面是计算每个数都出现偶数次的方案数
-		var dfs func(int, int, bool, bool, bool) int
-		dfs = func(p, mask int, limitLow, limitUp, isNum bool) (res int) {
-			if p == n {
-				if !isNum {
-					return 0
-				}
-				if mask == 0 {
-					return 1
-				}
-				return 0
-			}
-			if !limitLow && !limitUp && isNum {
-				dv := &dp[p][mask]
-				if *dv >= 0 {
-					return *dv
-				}
-				defer func() { *dv = res }()
-			}
-			if !isNum && lowS[p] == '0' { // 什么也不填
-				res += dfs(p+1, mask, true, false, false)
-			}
-			lo := 0
-			if limitLow {
-				lo = int(lowS[p] - '0')
-			}
-			up := 9
-			if limitUp {
-				up = int(highS[p] - '0')
-			}
-			d := 0
-			if !isNum {
-				d = 1
-			}
-			for d = max(d, lo); d <= up; d++ {
-				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitUp && d == up, true)
-				res %= mod
-			}
-			return
-		}
-		ans := dfs(0, 0, true, true, false)
 		return ans
 	}
 
