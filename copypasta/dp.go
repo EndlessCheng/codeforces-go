@@ -2439,25 +2439,27 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		// 第二种写法（前导零影响答案）
 		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
-		// 下面代码节选自 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/submissions/475895345/
+		// 下面是计算每个数都出现偶数次的方案数
 		var dfs func(int, int, bool, bool, bool) int
-		dfs = func(p, val int, limitLow, limitUp, isNum bool) (res int) {
+		dfs = func(p, mask int, limitLow, limitUp, isNum bool) (res int) {
 			if p == n {
 				if !isNum {
 					return 0
 				}
-				//if val == ...
-				return 1
+				if mask == 0 {
+					return 1
+				}
+				return 0
 			}
 			if !limitLow && !limitUp && isNum {
-				dv := &dp[p][val]
+				dv := &dp[p][mask]
 				if *dv >= 0 {
 					return *dv
 				}
 				defer func() { *dv = res }()
 			}
 			if !isNum && lowS[p] == '0' { // 什么也不填
-				res += dfs(p+1, val, true, false, false)
+				res += dfs(p+1, mask, true, false, false)
 			}
 			lo := 0
 			if limitLow {
@@ -2472,7 +2474,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 				d = 1
 			}
 			for d = max(d, lo); d <= up; d++ {
-				res += dfs(p+1, val*10+d, limitLow && d == lo, limitUp && d == up, true)
+				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitUp && d == up, true)
 				res %= mod
 			}
 			return
