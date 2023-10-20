@@ -238,6 +238,8 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 
 	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit?taskScreenName=%s", contestName, problemName)
 	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
+	shortestURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
+	
 	if !isContest {
 		open.Run(statusURL)
 	}
@@ -294,6 +296,7 @@ import (
 // 题目：%s
 // 提交：%s
 // 对拍：%s
+// 最短：%s
 func Test_run(t *testing.T) {
 	t.Log("Current test is [%s]")
 	testCases := [][2]string{%s
@@ -301,7 +304,7 @@ func Test_run(t *testing.T) {
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, run)
 }
-`, problemURL, submitURL, statusURL, taskID, examples)
+`, problemURL, submitURL, statusURL, shortestURL, taskID, examples)
 	testFilePath := dirPath + taskID + "_test.go"
 	if err := os.WriteFile(testFilePath, []byte(testFileContent), 0644); err != nil {
 		return err
