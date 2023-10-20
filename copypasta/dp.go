@@ -5,6 +5,8 @@ import (
 	"math"
 	"math/bits"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 /* 动态规划
@@ -2264,15 +2266,16 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	- https://www.luogu.com.cn/problem/P3193
 	- https://atcoder.jp/contests/abc295/tasks/abc295_f
 	LC1742 https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/
-	LC2719 数位和 https://leetcode.cn/problems/count-of-integers/
-	LC2843 数位和 https://leetcode.cn/problems/count-symmetric-integers/
-	LC2801 https://leetcode.cn/problems/count-stepping-numbers-in-range/
-	LC2827 倍数 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/
+	LC2719 数位和 https://leetcode.cn/problems/count-of-integers/ 2355
+	LC2843 数位和 https://leetcode.cn/problems/count-symmetric-integers/ 1270
+	LC2801 https://leetcode.cn/problems/count-stepping-numbers-in-range/ 2367
+	LC2827 倍数 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/ 2324
 	- https://atcoder.jp/contests/abc317/tasks/abc317_f
 	- [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
 	数位乘积不超过 k https://atcoder.jp/contests/abc208/tasks/abc208_e
 	todo 区间数位 DP https://codeforces.com/problemset/problem/1245/F
+	【转换】选两个不超过 U 的数，满足异或和为 target https://atcoder.jp/contests/arc133/tasks/arc133_d 2658
 	https://lightoj.com/problem/investigation
 	http://acm.hdu.edu.cn/showproblem.php?pid=4507
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
@@ -2283,9 +2286,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
 	*/
-	digitDP := func(low, high string, sumUpper int) int {
-		const mod = 1_000_000_007
 
+	// digitDP 是做两次记忆化搜索的写法
+	// 只做一次记忆化搜索的写法见后面的 digitDP2
+	digitDP := func(low, high string, sumUpper int) int {
 		// 返回 <=s 的符合要求的字符串数目
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		calc := func(s string) int {
@@ -2332,10 +2336,10 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			var dfs func(int, int, bool, bool) int
 			dfs = func(p, pre int, isLimit, isNum bool) (res int) {
 				if p == len(s) {
-					if isNum {
-						return 1
+					if !isNum {
+						return
 					}
-					return 0
+					return 1
 				}
 				if !isLimit && isNum {
 					dv := &dp[p][pre]
@@ -2384,57 +2388,143 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			ans++
 		}
 		ans = (ans%mod + mod) % mod
-
-		// ====================================================================================
-
-		// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
-		// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
-		calcSum := func(s string, k int) int {
-			n := len(s)
-			type pair struct{ cnt, sum int }
-			dp := make([][1 << 10]pair, n)
-			for i := range dp {
-				for j := range dp[i] {
-					dp[i][j] = pair{-1, -1}
-				}
-			}
-			var f func(int, uint16, bool, bool) pair
-			f = func(p int, mask uint16, limitUp, fill bool) (res pair) {
-				if p == n {
-					if !fill {
-						return
-					}
-					return pair{1, 0}
-				}
-				if !limitUp && fill {
-					dv := &dp[p][mask]
-					if dv.cnt >= 0 {
-						return *dv
-					}
-					defer func() { *dv = res }()
-				}
-				up := 9
-				if limitUp {
-					up = int(s[p] & 15)
-				}
-				for d := 0; d <= up; d++ {
-					tmp := mask
-					if fill || d > 0 {
-						tmp |= 1 << d
-					}
-					if bits.OnesCount16(tmp) <= k {
-						pr := f(p+1, tmp, limitUp && d == up, fill || d > 0)
-						res.cnt = (res.cnt + pr.cnt) % mod
-						res.sum = (res.sum + int(math.Pow10(n-1-p))%mod*pr.cnt%mod*int(d) + pr.sum) % mod
-					}
-				}
-				return
-			}
-			return f(0, 0, true, false).sum
-		}
-		_ = calcSum
-
 		return ans
+	}
+
+	// 只做一次 DFS 的写法
+	digitDP2 := func(low, high, sumUpper int) int {
+		lowS := strconv.Itoa(low)
+		highS := strconv.Itoa(high)
+		n := len(highS)
+		lowS = strings.Repeat("0", n-len(lowS)) + lowS // 对齐
+		dp := make([][]int, n)
+		for i := range dp {
+			dp[i] = make([]int, sumUpper+1)
+			for j := range dp[i] {
+				dp[i][j] = -1
+			}
+		}
+
+		// 第一种写法（前导零不影响答案）
+		var f func(int, int, bool, bool) int
+		f = func(p, sum int, limitLow, limitUp bool) (res int) {
+			if p == n {
+				if sum <= sumUpper { // 合法
+					return 1
+				}
+				return 0
+			}
+			if !limitLow && !limitUp {
+				dv := &dp[p][sum]
+				if *dv >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+			lo := 0
+			if limitLow {
+				lo = int(lowS[p] - '0')
+			}
+			up := 9
+			if limitUp {
+				up = int(highS[p] - '0')
+			}
+			for d := lo; d <= up; d++ {
+				res += f(p+1, sum+d, limitLow && d == lo, limitUp && d == up)
+				res %= mod
+			}
+			return
+		}
+		//ans := f(0, 0, true, true)
+
+		// 第二种写法（前导零影响答案）
+		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p>=n 的时候可以根据情况返回 1 或者 0
+		// 下面代码节选自 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/submissions/475895345/
+		var dfs func(int, int, bool, bool, bool) int
+		dfs = func(p, val int, limitLow, limitUp, isNum bool) (res int) {
+			if p == n {
+				if !isNum {
+					return 0
+				}
+				//if s == ...
+				return 1
+			}
+			if !limitLow && !limitUp && isNum {
+				dv := &dp[p][val]
+				if *dv >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+			if !isNum && lowS[p] == '0' { // 什么也不填
+				res += dfs(p+1, val, true, false, false)
+			}
+			lo := 0
+			if limitLow {
+				lo = int(lowS[p] - '0')
+			}
+			up := 9
+			if limitUp {
+				up = int(highS[p] - '0')
+			}
+			d := 0
+			if !isNum {
+				d = 1
+			}
+			for d = max(d, lo); d <= up; d++ {
+				res += dfs(p+1, val*10+d, limitLow && d == lo, limitUp && d == up, true)
+				res %= mod
+			}
+			return
+		}
+		ans := dfs(0, 0, true, true, false)
+		return ans
+	}
+
+	// 若需要计算的不是合法数字个数，而是合法数字之和，则需要在计算时考虑单个数位的贡献
+	// 以下代码以 https://codeforces.com/problemset/problem/1073/E 为例
+	calcSum := func(s string, k int) int {
+		n := len(s)
+		type pair struct{ cnt, sum int }
+		dp := make([][1 << 10]pair, n)
+		for i := range dp {
+			for j := range dp[i] {
+				dp[i][j] = pair{-1, -1}
+			}
+		}
+		var f func(int, uint16, bool, bool) pair
+		f = func(p int, mask uint16, limitUp, fill bool) (res pair) {
+			if p == n {
+				if !fill {
+					return
+				}
+				return pair{1, 0}
+			}
+			if !limitUp && fill {
+				dv := &dp[p][mask]
+				if dv.cnt >= 0 {
+					return *dv
+				}
+				defer func() { *dv = res }()
+			}
+			up := 9
+			if limitUp {
+				up = int(s[p] & 15)
+			}
+			for d := 0; d <= up; d++ {
+				tmp := mask
+				if fill || d > 0 {
+					tmp |= 1 << d
+				}
+				if bits.OnesCount16(tmp) <= k {
+					pr := f(p+1, tmp, limitUp && d == up, fill || d > 0)
+					res.cnt = (res.cnt + pr.cnt) % mod
+					res.sum = (res.sum + int(math.Pow10(n-1-p))%mod*pr.cnt%mod*int(d) + pr.sum) % mod
+				}
+			}
+			return
+		}
+		return f(0, 0, true, false).sum
 	}
 
 	// 试填法
@@ -3279,7 +3369,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 		permDP, permDP2, tsp, countCycle, subsubDP, subsubDPMemo, sosDP, plugDP,
 
-		digitDP, kth666,
+		digitDP, digitDP2, calcSum, kth666,
 
 		binaryLifting,
 
