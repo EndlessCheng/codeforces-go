@@ -56,17 +56,41 @@ https://codeforces.com/problemset/problem/954/F
 
 */
 
-/* 搜索+剪枝
-任意子集（不需要剪枝的话可以直接位运算枚举）
-部分子集
-排列（递归+跳过已经枚举的值）
-https://leetcode.cn/tag/backtracking/problemset/
-// LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
+/* 回溯
+
+子集/组合（也可以用二进制枚举做）
+- [78. 子集](https://leetcode.cn/problems/subsets/)
+- [77. 组合](https://leetcode.cn/problems/combinations/)
+- [1286. 字母组合迭代器](https://leetcode.cn/problems/iterator-for-combination/) 1591
+- [2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/) 1719
+- [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
+- [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
+- [320. 列举单词的全部缩写](https://leetcode.cn/problems/generalized-abbreviation/)（会员题）
+
+分割
+- [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
+- [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
+- [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/) 1679
+
+排列
+- [46. 全排列](https://leetcode.cn/problems/permutations/)
+- [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
+- [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
+- [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
+
+爆搜+剪枝
+- [79. 单词搜索](https://leetcode.cn/problems/word-search/)
+- [212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/)
+
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
 爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
 https://atcoder.jp/contests/abc197/tasks/abc197_c
+
+https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
+- LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
+https://oeis.org/A104113 Numbers which when chopped into one, two or more parts, added and squared result in the same number
 
 不允许重复的排列：见 nextPermutation
 */
