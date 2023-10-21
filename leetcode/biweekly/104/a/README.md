@@ -57,8 +57,7 @@ impl Solution {
     pub fn count_seniors(details: Vec<String>) -> i32 {
         let mut ans = 0;
         for s in &details {
-            let age: i32 = s[11..13].parse().unwrap();
-            if age > 60 {
+            if s[11..13].parse::<i32>().unwrap() > 60 {
                 ans += 1;
             }
         }
