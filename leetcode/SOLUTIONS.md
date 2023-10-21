@@ -76,6 +76,7 @@
 |贪心|[1144. 递减元素使数组呈锯齿状](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/)|[没有思路？一步步提示你思考！](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/solution/mei-you-si-lu-yi-bu-bu-ti-shi-ni-si-kao-cm0h2/)|1559|
 ||[1247. 交换字符使得字符串相同](https://leetcode.cn/problems/minimum-swaps-to-make-strings-equal/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/minimum-swaps-to-make-strings-equal/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-a6r1/)|1597|
 ||[870. 优势洗牌](https://leetcode.cn/problems/advantage-shuffle/)|[田忌赛马](https://leetcode.cn/problems/advantage-shuffle/solution/tian-ji-sai-ma-by-endlesscheng-yxm6/)|1648|
+||[1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/)|[枚举做几道菜+贪心](https://leetcode.cn/problems/reducing-dishes/solution/mei-ju-zuo-ji-dao-cai-tan-xin-pythonjava-k7w2/)|1679|
 ||[1145. 二叉树着色游戏](https://leetcode.cn/problems/binary-tree-coloring-game/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/binary-tree-coloring-game/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-btav/)|1741|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[两种算法：贪心/动态规划](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
 ||[1775. 通过最少操作次数使数组的和相等](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/)|[【动画】没想明白？一个动画秒懂！](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-ocuu/)|1850|
