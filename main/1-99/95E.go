@@ -50,11 +50,13 @@ func CF95E(_r io.Reader, out io.Writer) {
 	for i := 1; i <= n; i++ {
 		f[i] = 1e9
 	}
+	maxJ := 0
 	for w, num := range cnt {
+		maxJ += w * num
 		for rem := 0; rem < w; rem++ {
 			type pair struct{ minF, j int }
 			q := []pair{}
-			for j := 0; j*w+rem <= n; j++ {
+			for j := 0; j*w+rem <= maxJ; j++ {
 				t := f[j*w+rem] - j
 				for len(q) > 0 && q[len(q)-1].minF >= t {
 					q = q[:len(q)-1]
