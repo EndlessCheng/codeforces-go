@@ -13,7 +13,115 @@ import (
 
 入门视频：https://www.bilibili.com/video/BV1Xj411K7oF/
 
-入门题目：在此页面搜索【线性 DP】
+① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
+LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
+- 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
+- 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
+- LC2466 https://leetcode.cn/problems/count-ways-to-build-good-strings/
+- LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/description/
+LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
+- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
+- 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
+LC213 环形打家劫舍 https://leetcode.cn/problems/house-robber-ii/
+- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
+LC276 https://leetcode.cn/problems/paint-fence/
+LC343 https://leetcode.cn/problems/integer-break/
+LC368 https://leetcode.cn/problems/largest-divisible-subset/
+LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
+LC1416 https://leetcode.cn/problems/restore-the-array/
+LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
+- 相似题目 https://codeforces.com/problemset/problem/1624/E
+LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
+另见 LIS
+
+② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
+LC727 https://leetcode.cn/problems/minimum-window-subsequence/
+LC983 https://leetcode.cn/problems/minimum-cost-for-tickets/
+LC1639 https://leetcode.cn/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
+另见 LCS LPS
+
+③ 多维 / 额外状态
+LC123 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/
+LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
+LC309 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
+LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
+LC956 https://leetcode-cn.com/problems/tallest-billboard/
+LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
+LC1223【推荐】https://leetcode.cn/problems/dice-roll-simulation/
+LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
+LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
+LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
+LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
+
+④ 划分型 DP：将序列分成（恰好/至多）k 个连续区间，求解这些区间的某个最优性质
+一般定义 dp[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
+此时可以枚举最后一个区间的左端点 L，从 dp[i-1][L-1] 转移到 dp[i][j]，转移时考虑 a[L:j+1] 对最优解的影响
+- [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
+- [813. 最大平均值和的分组](https://leetcode.cn/problems/largest-sum-of-averages/) 1937
+- [1278. 分割回文串 III](https://leetcode.cn/problems/palindrome-partitioning-iii/) 1979
+	至多 k 个回文串 https://codeforces.com/problemset/problem/137/D
+- [1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/) 2035
+- [2478. 完美分割的方案数](https://leetcode.cn/problems/number-of-beautiful-partitions/) 2344
+- [2911. 得到 K 个半回文串的最少修改次数](https://leetcode.cn/problems/minimum-changes-to-make-k-semi-palindromes/)
+
+⑤ 划分型 DP：最小化分割出的区间个数 / 总和
+- [132. 分割回文串 II](https://leetcode.cn/problems/palindrome-partitioning-ii/)
+- [2707. 字符串中的额外字符](https://leetcode.cn/problems/extra-characters-in-a-string/) 1736
+- [2767. 将字符串分割为最少的美丽子字符串](https://leetcode.cn/problems/partition-string-into-minimum-beautiful-substrings/) 1865
+- [1105. 填充书架](https://leetcode.cn/problems/filling-bookcase-shelves/) 2014
+
+跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
+入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
+https://atcoder.jp/contests/abc281/tasks/abc281_d
+选或不选 [1800·hot10] https://codeforces.com/contest/1525/problem/D
+https://codeforces.com/problemset/problem/176/B
+https://codeforces.com/problemset/problem/1324/E
+https://codeforces.com/problemset/problem/505/C
+https://atcoder.jp/contests/abc267/tasks/abc267_d
+贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
+由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
+https://codeforces.com/problemset/problem/38/E
+好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
+https://codeforces.com/problemset/problem/446/A
+https://codeforces.com/problemset/problem/603/A
+处理区间元素不能在区间外面的技巧 https://codeforces.com/problemset/problem/811/C https://codeforces.com/contest/811/submission/174568255
+https://codeforces.com/problemset/problem/1120/C
+与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
+https://codeforces.com/problemset/problem/1168/C
+https://codeforces.com/problemset/problem/1542/D
+https://codeforces.com/problemset/problem/1845/E
+LC2143 https://leetcode.cn/problems/choose-numbers-from-two-arrays-in-range/
+
+不相交区间 DP
+LC2008 https://leetcode.cn/problems/maximum-earnings-from-taxi/
+LC1235 https://leetcode.cn/problems/maximum-profit-in-job-scheduling/
+https://codeforces.com/problemset/problem/1801/C
+
+排列型/插入型
+LC629 https://leetcode.cn/problems/k-inverse-pairs-array/ https://www.luogu.com.cn/problem/P2513
+https://www.lanqiao.cn/problems/240/learning/
+https://atcoder.jp/contests/abc282/tasks/abc282_g
+
+网格路径问题 网格图 DP
+## 练习 1
+- [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
+- [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
+- [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
+	- 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C  https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
+- [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
+	- https://www.luogu.com.cn/problem/P1216
+- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
+- [1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/)
+## 练习 2
+- [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
+- [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)
+## 练习 3
+- [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/)
+- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
+- [741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)
+- [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/)
+	- 回文串 https://codeforces.com/problemset/problem/570/E
+每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
 思考过程：
 1. 把原问题重新复述一遍，例如「从前 n 个数中选择若干个数，这些数的和为 m 的方案数」。
@@ -31,7 +139,7 @@ import (
 6.（进阶）如果复杂度过高，如何根据状态转移方程来优化？
 7.（进阶）状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等。（试试下面的题目）
 
-题目已经分类整理好：试试搜索「线性」「最大子段和」等。
+题目已经分类整理好：试试搜索「最大子段和」等。
 
 如何设计状态
 http://codeforces.com/problemset/problem/14/E
@@ -300,102 +408,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 			f(0, 0)
 		}
 	}
-
-	/* 线性 DP
-	① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
-	LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
-	- 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
-	- 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
-	- LC2466 https://leetcode.cn/problems/count-ways-to-build-good-strings/
-	- LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/description/
-	LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
-	- 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
-	- 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
-	LC213 环形打家劫舍 https://leetcode.cn/problems/house-robber-ii/
-	- 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
-	LC276 https://leetcode.cn/problems/paint-fence/
-	LC343 https://leetcode.cn/problems/integer-break/
-	LC368 https://leetcode.cn/problems/largest-divisible-subset/
-	LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
-	LC1416 https://leetcode.cn/problems/restore-the-array/
-	LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
-	- 相似题目 https://codeforces.com/problemset/problem/1624/E
-	LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
-	另见 LIS
-
-	② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
-	LC727 https://leetcode.cn/problems/minimum-window-subsequence/
-	LC983 https://leetcode.cn/problems/minimum-cost-for-tickets/
-	LC1639 https://leetcode.cn/problems/number-of-ways-to-form-a-target-string-given-a-dictionary/
-	另见 LCS LPS
-
-	③ 多维 / 额外状态
-	LC123 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/
-	LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
-	LC309 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/
-	LC920 https://leetcode-cn.com/problems/number-of-music-playlists/
-	LC956 https://leetcode-cn.com/problems/tallest-billboard/
-	LC1186 https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/
-	LC1223【推荐】https://leetcode.cn/problems/dice-roll-simulation/
-	LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
-	LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
-	LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
-	LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
-
-	入门 DP：跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
-	入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
-	入门 DP https://atcoder.jp/contests/abc281/tasks/abc281_d
-	选或不选 [1800·hot10] https://codeforces.com/contest/1525/problem/D
-	https://codeforces.com/problemset/problem/176/B
-	https://codeforces.com/problemset/problem/1324/E
-	https://codeforces.com/problemset/problem/505/C
-	https://atcoder.jp/contests/abc267/tasks/abc267_d
-	贪心+abs https://atcoder.jp/contests/abc163/tasks/abc163_e
-	由 n 个值互不相同的点组成的高度不小于 h 的 BST 有多少个 https://codeforces.com/problemset/problem/9/D
-	https://codeforces.com/problemset/problem/38/E
-	好题：涉及到相邻状态先后关系的 DP（喂兔子） https://codeforces.com/problemset/problem/358/D
-	https://codeforces.com/problemset/problem/446/A
-	https://codeforces.com/problemset/problem/603/A
-	处理区间元素不能在区间外面的技巧 https://codeforces.com/problemset/problem/811/C https://codeforces.com/contest/811/submission/174568255
-	https://codeforces.com/problemset/problem/1120/C
-	与 KMP 结合 https://codeforces.com/problemset/problem/1163/D
-	https://codeforces.com/problemset/problem/1168/C
-	https://codeforces.com/problemset/problem/1542/D
-	https://codeforces.com/problemset/problem/1845/E
-	LC2143 https://leetcode.cn/problems/choose-numbers-from-two-arrays-in-range/
-
-	不相交区间 DP
-	LC2008 https://leetcode.cn/problems/maximum-earnings-from-taxi/
-	LC1235 https://leetcode.cn/problems/maximum-profit-in-job-scheduling/
-	https://codeforces.com/problemset/problem/1801/C
-
-	排列型/插入型
-	LC629 https://leetcode.cn/problems/k-inverse-pairs-array/ https://www.luogu.com.cn/problem/P2513
-	https://www.lanqiao.cn/problems/240/learning/
-	https://atcoder.jp/contests/abc282/tasks/abc282_g
-	*/
-
-	/* 网格路径问题 网格图 DP
-	## 练习 1
-	- [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
-	- [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
-	- [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
-		- 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C  https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
-	- [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
-		- https://www.luogu.com.cn/problem/P1216
-	- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
-	- [1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/)
-	## 练习 2
-	- [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
-	- [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)
-	## 练习 3
-	- [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/)
-	- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
-	- [741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)
-	- [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/)
-		- 回文串 https://codeforces.com/problemset/problem/570/E
-	*/
-	// 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
 	// 最大子段和 LC53 https://leetcode.cn/problems/maximum-subarray/ https://www.luogu.com.cn/problem/P1115
 	//          LC2606 https://leetcode.cn/problems/find-the-substring-with-maximum-cost/
@@ -1446,6 +1458,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 多重背包 - 求方案数 - 同余前缀和优化
 	// 讲解 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
+	// LC1155 https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/
 	boundedKnapsackWays := func(a []int) []int {
 		const mod = 1_000_000_007
 		total := 0
@@ -1566,16 +1579,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	一般来说转移是合并区间或者分解区间
 	套路 https://www.luogu.com.cn/blog/BreakPlus/ou-jian-dp-zong-jie-ti-xie
 
-	① 将序列分成 K 个连续区间，求解这些区间的某个最优性质
-	一般定义 dp[i][k] 表示将 a[:i] 分成 k 个连续区间得到的最优解
-	此时可以枚举最后一个区间的左端点 j，从 dp[j-1][k-1] 转移到 dp[i][k]，转移时考虑 a[j:i] 对最优解的影响
-	LC410 https://leetcode.cn/problems/split-array-largest-sum/
-	LC813 https://leetcode.cn/problems/largest-sum-of-averages/
-	LC1278 https://leetcode.cn/problems/palindrome-partitioning-iii/
-	       至多 k 个回文串 https://codeforces.com/problemset/problem/137/D
-	LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
-
-	② 求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
+	求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
 	一般定义 dp[i][j] 表示 a[i:j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
 	LC375 https://leetcode.cn/problems/guess-number-higher-or-lower-ii/
@@ -2272,6 +2276,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	LC2827 倍数 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/ 2324
 	- https://atcoder.jp/contests/abc317/tasks/abc317_f
 	- [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
+	https://codeforces.com/contest/1710/problem/C
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
 	数位乘积不超过 k https://atcoder.jp/contests/abc208/tasks/abc208_e
 	todo 区间数位 DP https://codeforces.com/problemset/problem/1245/F
