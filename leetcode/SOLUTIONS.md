@@ -42,6 +42,7 @@
 ||[891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/)|[【图解】计算每个元素对答案的贡献，多解法](https://leetcode.cn/problems/sum-of-subsequence-widths/solution/by-endlesscheng-upd1/)|2183|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
 ||[931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-falling-path-sum/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)|1573|
+||[1155. 掷骰子等于目标和的方法数](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/)|[【击败 100%】教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solution/ji-bai-100cong-ji-yi-hua-sou-suo-dao-di-421ab/)|1654|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
 ||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
 ||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
@@ -57,7 +58,7 @@
 ||[1140. 石子游戏 II](https://leetcode.cn/problems/stone-game-ii/)|[【博弈 DP】教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-ii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-jjax/)|2035|
 ||[801. 使序列递增的最小交换次数](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/)|[考虑相邻元素的大小关系](https://leetcode.cn/problems/minimum-swaps-to-make-sequences-increasing/solution/dong-tai-gui-hua-kao-lu-xiang-lin-yuan-s-ni0p/)|2066|
 ||[1079. 活字印刷](https://leetcode.cn/problems/letter-tile-possibilities/)|[O(n^2) 计数 DP](https://leetcode.cn/problems/letter-tile-possibilities/solution/on2-ji-shu-dppythonjavacgo-by-endlessche-hmez/)|*非暴力|
-||[1444. 切披萨的方案数](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/)|[击败 100%！从递归到递推到优化，教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/solution/ji-bai-100cong-di-gui-dao-di-tui-dao-you-dxz5/)|2127|
+||[1444. 切披萨的方案数](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-ways-of-cutting-a-pizza/solution/ji-bai-100cong-di-gui-dao-di-tui-dao-you-dxz5/)|2127|
 ||[1691. 堆叠长方体的最大高度](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/)|[【图解】算法优化+详细证明](https://leetcode.cn/problems/maximum-height-by-stacking-cuboids/solution/tu-jie-suan-fa-you-hua-xiang-xi-zheng-mi-b6fq/)|2172|
 ||[834. 树中距离之和](https://leetcode.cn/problems/sum-of-distances-in-tree/)|[【图解】一张图秒懂换根 DP！](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)|2197|
 ||[1125. 最小的必要团队](https://leetcode.cn/problems/smallest-sufficient-team/)|[状压 0-1 背包，查表法 vs 刷表法](https://leetcode.cn/problems/smallest-sufficient-team/solution/zhuang-ya-0-1-bei-bao-cha-biao-fa-vs-shu-qode/)|2251|
