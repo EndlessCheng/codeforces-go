@@ -13,7 +13,7 @@
 
 遍历结束后：
 
-- 如果 $\textit{minR}$ > $\textit{maxR}$，矛盾，输出 $\texttt{Impossible}$。
+- 如果 $\textit{minR} > \textit{maxR}$，矛盾，输出 $\texttt{Impossible}$。
 - 否则如果 $\textit{maxR}=\infty$，输出 $\texttt{Infinity}$。
 - 否则输出 $\textit{maxR}+s$，表示初始 rating 的最大值，加上 $n$ 场比赛的 rating 累计变化量，就是最终 rating 的最大值。
 
