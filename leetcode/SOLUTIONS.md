@@ -1,6 +1,6 @@
 # 灵茶山艾府·高质量题解精选
 
-部分题解配有图片/动画，均包含 Python/Java/C++/Go 等语言。
+多数题解配有图片/动画，均包含 Python/Java/C++/Go 等语言。
 
 相同知识点的题目，按照 [难度分](https://zerotrac.github.io/leetcode_problem_rating/) 排序。
 
