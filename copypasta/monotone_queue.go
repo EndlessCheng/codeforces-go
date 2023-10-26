@@ -2,6 +2,8 @@ package copypasta
 
 /* 单调队列 Monotone Queue
 
+视频讲解 https://www.bilibili.com/video/BV1bM411X72E/
+
 两张图秒懂单调队列（Python/Java/C++/Go）
 https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/
 
@@ -27,13 +29,13 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 https://leetcode.cn/tag/monotonic-queue/problemset/
 
 单调队列优化 DP
+- [1425. 带限制的子序列和](https://leetcode.cn/problems/constrained-subsequence-sum/) 2032
+- [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
+      https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
+- [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
 todo https://www.luogu.com.cn/problem/P2627
  http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
  老鼠进洞 http://codeforces.com/problemset/problem/797/F
-LC375 猜数字大小 II https://leetcode-cn.com/problems/guess-number-higher-or-lower-ii/
-      https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
-LC1425 https://leetcode.cn/problems/constrained-subsequence-sum/
-LC1687 https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/
 */
 type MqData struct {
 	Val int
@@ -80,7 +82,7 @@ func (mq MonotoneQueue) Top() int {
 // https://codeforces.com/problemset/problem/940/E
 // https://codeforces.com/problemset/problem/372/C（另一种做法是用堆）
 // 贡献+差分数组 https://codeforces.com/problemset/problem/1208/E
-func FixedSizeMax(a []int, fixedSize int) []int {
+func fixedSizeMax(a []int, fixedSize int) []int {
 	n := len(a)
 	q := MonotoneQueue{} // 最大/最小由 less 来控制
 	ans := make([]int, 0, n-fixedSize+1)
@@ -100,7 +102,7 @@ func FixedSizeMax(a []int, fixedSize int) []int {
 // 子区间长度不超过 sizeLimit 的最大子区间和
 // 用单调队列维护前缀和的最小值，循环时保证单调队列对应的区间长度不超过 sizeLimit
 // https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
-func MaxSubSumWithLimitSize(a []int, sizeLimit int) int {
+func maxSubSumWithLimitSize(a []int, sizeLimit int, max func(int, int) int) int {
 	n := len(a)
 	sum := make([]int, n+1)
 	for i, v := range a {
@@ -113,7 +115,7 @@ func MaxSubSumWithLimitSize(a []int, sizeLimit int) int {
 		if q.Size > sizeLimit {
 			q.Pop()
 		}
-		ans = q.max(ans, sum[r]-q.Top())
+		ans = max(ans, sum[r]-q.Top())
 		q.Push(sum[r])
 	}
 	return ans
@@ -124,7 +126,7 @@ func MaxSubSumWithLimitSize(a []int, sizeLimit int) int {
 // 这题的关键在于，当右端点向右（枚举）时，左端点是绝对不会向左的（因为向左肯定会比当前求出的最短长度要长）
 // 想明白这一点就可以愉快地使用单调队列了
 // LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
-func ShortestSubSumAtLeastK(a []int, k int) int {
+func shortestSubSumAtLeastK(a []int, k int, min func(int, int) int) int {
 	n := len(a)
 	ans := n + 1
 	sum := make([]int, n+1)
@@ -135,7 +137,7 @@ func ShortestSubSumAtLeastK(a []int, k int) int {
 	q.Push(sum[0])
 	for r := 1; r <= n; r++ {
 		for q.Size > 0 && sum[r]-q.Top() >= k {
-			ans = q.min(ans, q.Size)
+			ans = min(ans, q.Size)
 			q.Pop()
 		}
 		q.Push(sum[r])
@@ -149,7 +151,7 @@ func ShortestSubSumAtLeastK(a []int, k int) int {
 // 对每个右端点，求最远的左端点，满足这一区间内的最大值减最小值不超过 limit
 // 求这个的同时，用单调队列维护 DP https://codeforces.com/problemset/problem/487/B
 // 完整代码（传入 less 的写法）https://codeforces.com/contest/487/submission/121388184
-func LeftPosInDiffLimit(a []int, limit int) []int {
+func leftPosInDiffLimit(a []int, limit int) []int {
 	posL := make([]int, len(a))
 	small := MonotoneQueue{} // 最小值
 	big := MonotoneQueue{}   // 最大值
@@ -171,14 +173,14 @@ func LeftPosInDiffLimit(a []int, limit int) []int {
 //
 // 思路：转变成求「区间最大值 < 2*区间最小值」的区间个数
 // 随着左端点向右，右端点必然不会向左
-func CountSubarrayByMinMax(a []int) int {
+func countSubarrayByMinMax(a []int, min, max func(int, int) int) int {
 	n := len(a)
 	ans := n * (n + 1) / 2
 	mx := MonotoneQueue{} // 维护区间最大值
 	mi := MonotoneQueue{} // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
 	for i, j := 0, 0; i < n; i++ {
 		// 确保符合条件再插入
-		for ; j < n && (mx.Size == 0 || mi.Size == 0 || mx.max(mx.Top(), a[j]) < 2*mi.min(mi.Top(), a[j])); j++ {
+		for ; j < n && (mx.Size == 0 || mi.Size == 0 || max(mx.Top(), a[j]) < 2*min(mi.Top(), a[j])); j++ {
 			mx.Push(a[j])
 			mi.Push(a[j])
 		}
@@ -199,7 +201,7 @@ func CountSubarrayByMinMax(a []int) int {
 // https://codeforces.com/problemset/problem/1237/D
 // 注意这题和 countSubarrayByMinMax 的不同之处：不满足要求的最小值一定要在最大值的右侧
 // 也可以枚举右端点，见 https://www.luogu.com.cn/blog/qianshang/solution-cf1237d
-func BalancedPlaylist(a []int, n int) (ans []int) {
+func balancedPlaylist(a []int, n int) (ans []int) {
 	a = append(append(a, a...), a...)
 	q := MonotoneQueue{} // 维护区间最大值
 	for i, j := 0, 0; i < n; i++ {
@@ -225,7 +227,7 @@ func BalancedPlaylist(a []int, n int) (ans []int) {
 // 返回：一个 n-h+1 行 m-w+1 列的矩阵 areaMax，其中 areaMax[i][j] 表示窗口左上角位于矩阵 (i,j) 时的窗口中元素的最大值
 // 例题：HA07 理想的正方形 https://www.luogu.com.cn/problem/P2216
 // 解释：https://cdn.acwing.com/media/article/image/2021/06/29/52559_7d7b27ced8-1.png
-func FixedSizeAreaMax(mat [][]int, h, w int) [][]int {
+func fixedSizeAreaMax(mat [][]int, h, w int) [][]int {
 	n, m := len(mat), len(mat[0])
 
 	// 每行求一遍滑窗最值，窗口大小为 w
@@ -264,20 +266,4 @@ func FixedSizeAreaMax(mat [][]int, h, w int) [][]int {
 		}
 	}
 	return areaMax
-}
-
-//
-
-func (MonotoneQueue) min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
-
-func (MonotoneQueue) max(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
 }
