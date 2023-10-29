@@ -1,6 +1,4 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1Tz4y1N7Wx/) 第四题。
-
-推荐先完成本题的简单版本：[2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/)，这题也在上面的视频中一并讲了。
+推荐先完成本题的简单版本：[2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/)，这题和本题都在 [视频讲解](https://www.bilibili.com/video/BV1Tz4y1N7Wx/) 第四题中讲了。
 
 为方便描述，下文将 $\textit{nums}$ 简记为 $a$。
 
@@ -44,7 +42,7 @@ $$
 
 1. 定义 $f[k]$ 表示左端点为 $k$ 的子数组的「不同计数」，如果当前遍历到 $\textit{nums}[i]$，那么 $f[k]$ 就对应着子数组 $a[k..i]$。
 2. 区间加一：例如 $a[1..3]$，$a[2..3]$ 和 $a[3..3]$ 的「不同计数」都增加了 $1$，那么就把区间 $[1,3]$ 的「不同计数」加一。
-3. 询问区间元素和：为了计算出「不同计数的平方」之和的**增加量**，需要知道从 $f[k+1]$ 到 $f[i-1]$ 的「不同计数」。
+3. 询问区间元素和：为了计算出「不同计数的平方」之和的**增加量**，需要知道从 $f[j+1]$ 到 $f[i-1]$ 的「不同计数」，这里 $j$ 为 $a[i]$ 上次出现的下标。
 
 这可以用 lazy 线段树实现，具体请看[【双周赛 98】](https://www.bilibili.com/video/BV15D4y1G7ms/)第四题的讲解（[2569. 更新数组后处理求和查询](https://leetcode.cn/problems/handling-sum-queries-after-update/)）
 
