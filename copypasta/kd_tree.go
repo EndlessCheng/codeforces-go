@@ -17,6 +17,8 @@ todo 题单 https://www.luogu.com.cn/training/4295
 todo https://codeforces.com/problemset/problem/44/G
 */
 
+var randKD = rand.New(rand.NewSource(time.Now().UnixNano()))
+
 type kdNode struct {
 	lr          [2]*kdNode
 	p, mi, mx   [2]int // 0 为 x，1 为 y
@@ -77,7 +79,7 @@ func (o *kdNode) nodes() []*kdNode {
 		}
 	}
 	f(o)
-	rand.Shuffle(len(nodes), func(i, j int) { nodes[i], nodes[j] = nodes[j], nodes[i] })
+	randKD.Shuffle(len(nodes), func(i, j int) { nodes[i], nodes[j] = nodes[j], nodes[i] })
 	return nodes
 }
 
@@ -169,7 +171,6 @@ type kdTree struct {
 }
 
 func newKdTree() *kdTree {
-	rand.Seed(time.Now().UnixNano())
 	return &kdTree{}
 }
 
