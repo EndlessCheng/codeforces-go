@@ -88,6 +88,7 @@ func init() {
 		"sales", "a",
 		"grades", "a",
 		"beans", "a",
+		"coins", "a",
 		"mat", "a",
 		"matrix", "a",
 		"grid", "a",
@@ -168,7 +169,7 @@ func namedReturnFunc(name string) modifyLineFunc {
 	}
 }
 
-func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, customFuncContent string) string {
+func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, customFuncContent string) (res string) {
 	sep := "\n"
 	if strings.ContainsRune(code, '\r') {
 		sep = "\r\n"
@@ -177,7 +178,8 @@ func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, cu
 	for _, lo := range funcLos {
 		if tp := _parseReturnType(lines[lo]); tp != "" {
 			if tp == "int64" {
-				customFuncContent = "\tans := 0\n" + customFuncContent /* return */ + " int64(ans)"
+				defer func() { res = strings.ReplaceAll(res, ") int64 {", ") (_ans int64) {") }()
+				customFuncContent = "\tans := 0\n\tdefer func() { _ans = int64(ans) }()\n\n" + customFuncContent
 			}
 			lines[lo+1] = customFuncContent
 		}
