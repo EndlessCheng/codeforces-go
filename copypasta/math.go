@@ -2738,7 +2738,7 @@ func _(abs func(int) int) {
 		s[0][0] = 1
 		for i := 1; i <= n; i++ {
 			for j := 1; j <= i; j++ { // j <= K
-				s[i][j] = (s[i-1][j-1] + int(i-1)*s[i-1][j]) % mod
+				s[i][j] = (s[i-1][j-1] + (i-1)*s[i-1][j]) % mod
 			}
 		}
 		return s[n][k]

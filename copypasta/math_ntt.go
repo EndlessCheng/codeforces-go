@@ -285,7 +285,7 @@ func (a poly) derivative() poly {
 	n := len(a)
 	d := make(poly, n)
 	for i := 1; i < n; i++ {
-		d[i-1] = a[i] * int(i) % P
+		d[i-1] = a[i] * i % P
 	}
 	return d
 }

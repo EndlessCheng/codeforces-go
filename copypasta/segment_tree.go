@@ -782,10 +782,10 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
 	}
-	if cntL := o.lo.sum - old.lo.sum; k <= int(cntL) {
+	if cntL := o.lo.sum - old.lo.sum; k <= cntL {
 		return o.lo.kth(old.lo, k)
 	} else {
-		return o.ro.kth(old.ro, k-int(cntL))
+		return o.ro.kth(old.ro, k-cntL)
 	}
 }
 
@@ -802,7 +802,7 @@ func (o *pstNode) countRange(old *pstNode, low, high int) int {
 		return 0
 	}
 	if low <= o.l && o.r <= high {
-		return int(o.sum - old.sum)
+		return o.sum - old.sum
 	}
 	m := o.lo.r
 	if high <= m {
@@ -827,12 +827,12 @@ func (o *pstNode) countRange(old *pstNode, low, high int) int {
 // 这种 k 值使得递归时左右儿子至多调用其中一个
 func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 	if o.l == o.r {
-		return o.l, int(o.sum - old.sum)
+		return o.l, o.sum - old.sum
 	}
-	if int(o.lo.sum-old.lo.sum) >= k {
+	if o.lo.sum-old.lo.sum >= k {
 		return o.lo.countMode(old.lo, k)
 	}
-	if int(o.ro.sum-old.ro.sum) >= k {
+	if o.ro.sum-old.ro.sum >= k {
 		return o.ro.countMode(old.ro, k)
 	}
 	return -1, 0
