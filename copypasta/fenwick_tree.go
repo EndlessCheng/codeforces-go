@@ -24,7 +24,9 @@ todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-s
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
 模板题 https://www.luogu.com.cn/problem/P3374
-逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A 
+https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+https://atcoder.jp/contests/arc075/tasks/arc075_c
 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972

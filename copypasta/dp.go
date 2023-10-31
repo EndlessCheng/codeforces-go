@@ -18,7 +18,7 @@ LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 - 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
 - LC2466 https://leetcode.cn/problems/count-ways-to-build-good-strings/
-- LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/description/
+- LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 - 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 - 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
@@ -32,6 +32,7 @@ LC1416 https://leetcode.cn/problems/restore-the-array/
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
 - 相似题目 https://codeforces.com/problemset/problem/1624/E
 LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
+LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
 另见 LIS
 
 ② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
@@ -52,6 +53,7 @@ LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each
 LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.com/problems/string-compression-ii/
 LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
+LC2919 https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/ 状态设计的好题
 
 ④ 划分型 DP：将序列分成（恰好/至多）k 个连续区间，求解这些区间的某个最优性质
 一般定义 dp[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
@@ -69,6 +71,7 @@ LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举�
 - [2707. 字符串中的额外字符](https://leetcode.cn/problems/extra-characters-in-a-string/) 1736
 - [2767. 将字符串分割为最少的美丽子字符串](https://leetcode.cn/problems/partition-string-into-minimum-beautiful-substrings/) 1865
 - [1105. 填充书架](https://leetcode.cn/problems/filling-bookcase-shelves/) 2014
+- [2052. 将句子分隔成行的最低成本](https://leetcode.cn/problems/minimum-cost-to-separate-sentence-into-rows/)（会员题）
 
 跳台阶+禁入点 https://atcoder.jp/contests/abc289/tasks/abc289_d
 入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
@@ -103,23 +106,24 @@ https://www.lanqiao.cn/problems/240/learning/
 https://atcoder.jp/contests/abc282/tasks/abc282_g
 
 网格路径问题 网格图 DP
-## 练习 1
+#### 练习 1
 - [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
 - [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 - [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
-	- 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C  https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
+	- 变形：连续性 & 上下界思想 https://codeforces.com/contest/1695/problem/C
+    - https://atcoder.jp/contests/arc137/tasks/arc137_b 也用到了这个思想
 - [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
 	- https://www.luogu.com.cn/problem/P1216
-- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
-- [1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/)
-## 练习 2
+- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
+- [1301. 最大得分的路径数目](https://leetcode.cn/problems/number-of-paths-with-max-score/) 1853
+#### 练习 2
 - [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
-- [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/)
-## 练习 3
-- [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/)
-- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
+- [2328. 网格图中递增路径的数目](https://leetcode.cn/problems/number-of-increasing-paths-in-a-grid/) 2001
+#### 练习 3
+- [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/) 1697
+- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/) 1952
 - [741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)
-- [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/)
+- [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/) 1957
 	- 回文串 https://codeforces.com/problemset/problem/570/E
 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
@@ -161,6 +165,7 @@ https://atcoder.jp/contests/abc232/tasks/abc232_e
 SEERC05，紫书例题 9-3，UVa 1347 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=446&page=show_problem&problem=4093
 LC956 https://leetcode-cn.com/problems/tallest-billboard/
 LC1388 https://leetcode.cn/problems/pizza-with-3n-slices/
+https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/
 混合逆序对 https://atcoder.jp/contests/arc097/tasks/arc097_c
 寻找子问题 https://atcoder.jp/contests/arc116/tasks/arc116_d
 https://codeforces.com/contest/1579/problem/G
@@ -331,7 +336,7 @@ https://oi-wiki.org/dp/
 https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
 */
-func _(min, max func(int, int) int, abs func(int) int) {
+func _(abs func(int) int) {
 	// 涉及到前缀和/子数组和的问题
 	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
 	// 下面的代码来自 LC1477 https://leetcode-cn.com/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
@@ -597,7 +602,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	//
 	// 模板题 LC1143 https://leetcode-cn.com/problems/longest-common-subsequence/
 	// EXTRA: 最短公共超序列 (SCS) LC1092 https://leetcode-cn.com/problems/shortest-common-supersequence/
-	// 变种 LC72   https://leetcode-cn.com/problems/edit-distance/
+	// 变种 LC72   https://leetcode-cn.com/problems/edit-distance/    热身 LC161 https://leetcode.cn/problems/one-edit-distance/
 	//     LC97   https://leetcode-cn.com/problems/interleaving-string/
 	//     LC115  https://leetcode-cn.com/problems/distinct-subsequences/
 	//     LC583  https://leetcode-cn.com/problems/delete-operation-for-two-strings/
@@ -1160,6 +1165,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 最优解为 f(n-1,maxW)
 	// https://oi-wiki.org/dp/knapsack/
 	// 模板题 https://www.luogu.com.cn/problem/P1048 https://atcoder.jp/contests/dp/tasks/dp_d
+	// 恰好装满 LC2915 https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/
 	// LC2291 https://leetcode.cn/problems/maximum-profit-from-trading-stocks/
 	// 转换 LC494 https://leetcode.cn/problems/target-sum/
 	//            https://atcoder.jp/contests/abc274/tasks/abc274_d
@@ -1168,6 +1174,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 转换 https://codeforces.com/problemset/problem/1516/C
 	// 转换 https://atcoder.jp/contests/dp/tasks/dp_x
 	// 转换 https://leetcode.com/discuss/interview-question/2677093/Snowflake-oror-Tough-OA-question-oror-How-to-solve
+	// LC2431 https://leetcode.cn/problems/maximize-total-tastiness-of-purchased-fruits/
 	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2
 	// 正难则反 https://atcoder.jp/contests/tenka1-2019/tasks/tenka1_2019_d
 	// 状压 LC1125 https://leetcode.cn/problems/smallest-sufficient-team/
@@ -1388,10 +1395,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2844 http://poj.org/problem?id=1742
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
+	// https://codeforces.com/problemset/problem/95/E
 	// todo 打印方案
 
 	// 多重背包 - 未优化
-	// 转换（价值主导）（由于要取 min 所以不能用二进制优化）https://codeforces.com/problemset/problem/922/E
+	// 转换（价值主导）https://codeforces.com/problemset/problem/922/E（由于要取 min 所以不能用二进制优化）
 	boundedKnapsack := func(stocks, values, weights []int, maxW int) int {
 		n := len(stocks)
 		f := make([][]int, n+1)
@@ -1411,14 +1419,16 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	}
 
 	// 多重背包 - 优化 1 - 二进制优化
+	// 由于不需要队列，常数比多重背包小，可能比多重背包更快
+	// 注意循环上界可以从 maxW 优化成 min(sum(w*num), maxW)
 	boundedKnapsackBinary := func(stocks, values, weights []int, maxW int) int {
-		f := make([]int, maxW+1)
+		f := make([]int, maxW+1) // 求最小就 fill inf
 		for i, num := range stocks {
 			v, w := values[i], weights[i]
 			for k1 := 1; num > 0; k1 <<= 1 {
 				k := min(k1, num)
 				for j := maxW; j >= k*w; j-- {
-					f[j] = max(f[j], f[j-k*w]+k*v)
+					f[j] = max(f[j], f[j-k*w]+k*v) // 求最小改成 min
 				}
 				num -= k
 			}
@@ -1429,18 +1439,20 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// 多重背包 - 优化 2 - 单调队列优化
 	// 参考挑战 p.340
 	// 时间复杂度 O(n*maxW)
+	// 注意循环上界可以从 maxW 优化成 min(sum(w*num), maxW)
 	boundedKnapsackMonotoneQueue := func(stocks, values, weights []int, maxW int) int {
-		f := make([]int, maxW+1)
+		f := make([]int, maxW+1) // 求最小就 fill inf
+		type pair struct{ maxF, j int }
+		q := []pair{}
 		for i, num := range stocks {
 			v, w := values[i], weights[i]
 			for rem := 0; rem < w; rem++ { // 按照 j%w 的结果，分组转移，rem 表示 remainder
-				type pair struct{ maxF, j int }
-				q := []pair{}
+				q = q[:0]
 				// 为什么压缩维度了还可以正着枚举？因为转移来源都存到单调队列里面了，正序倒序都可以
 				// 并且这样相比倒着枚举，不需要先往队列里面塞 num 个数据，更加简洁
 				for j := 0; j*w+rem <= maxW; j++ {
 					t := f[j*w+rem] - j*v
-					for len(q) > 0 && q[len(q)-1].maxF <= t {
+					for len(q) > 0 && t >= q[len(q)-1].maxF { // 求最小这里改成 <=
 						q = q[:len(q)-1] // 及时去掉无用数据
 					}
 					q = append(q, pair{t, j})
@@ -1457,8 +1469,11 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	// 多重背包 - 求方案数 - 同余前缀和优化
 	// 讲解 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/
+	// 另见 math_comb.go 中的「多重集组合数」
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
+	// LC2585 https://leetcode.cn/problems/number-of-ways-to-earn-points/ 1910
 	// LC1155 https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/
+	// LCR185 https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
 	boundedKnapsackWays := func(a []int) []int {
 		const mod = 1_000_000_007
 		total := 0
@@ -1472,13 +1487,13 @@ func _(min, max func(int, int) int, abs func(int) int) {
 		f[0] = cnt[0] + 1
 		delete(cnt, 0)
 
-		maxJ := 0
+		up := 0
 		for x, c := range cnt {
-			maxJ += x * c
-			for j := x; j <= maxJ; j++ {
+			up += x * c
+			for j := x; j <= up; j++ {
 				f[j] = (f[j] + f[j-x]) % mod // 同余前缀和
 			}
-			for j := maxJ; j >= x*(c+1); j-- {
+			for j := up; j >= x*(c+1); j-- {
 				f[j] = (f[j] - f[j-x*(c+1)] + mod) % mod
 			}
 		}
@@ -1492,7 +1507,6 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://codeforces.com/problemset/problem/148/E
 	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D
 	// 方案数（可以用前缀和优化）https://www.luogu.com.cn/problem/P1077
-	// 方案数 LC2585 https://leetcode.cn/problems/number-of-ways-to-earn-points/
 	type item struct{ v, w int }
 	groupKnapsack := func(groups [][]item, maxW int) int {
 		dp := make([]int, maxW+1)
@@ -1731,7 +1745,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	σ²(x) = sum(x²)/n - (sum(x)/n)²
 
 	概率
-	http://codeforces.com/problemset/problem/16/E
+	https://codeforces.com/problemset/problem/16/E
 	https://codeforces.com/problemset/problem/540/D
 	https://codeforces.com/problemset/problem/678/E
 	LC688 https://leetcode.cn/problems/knight-probability-in-chessboard/
@@ -1744,6 +1758,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 
 	期望
 	入门题 https://atcoder.jp/contests/abc280/tasks/abc280_e
+	后缀和优化 https://atcoder.jp/contests/abc326/tasks/abc326_e
 	todo https://codeforces.com/contest/1842/problem/G https://codeforces.com/blog/entry/117640
 	https://codeforces.com/problemset/problem/235/B
 	https://codeforces.com/problemset/problem/908/D
@@ -1783,6 +1798,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	与质因子分解结合 https://codeforces.com/problemset/problem/453/B
 	与排序贪心结合 https://codeforces.com/problemset/problem/1316/E
 	与概率 DP 结合 https://codeforces.com/problemset/problem/16/E
+	https://codeforces.com/problemset/problem/1430/G
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -2278,6 +2294,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	- [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
 	https://codeforces.com/contest/1710/problem/C
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
+	数位和是最后一位的倍数 https://www.lanqiao.cn/problems/5891/learning/?contest_id=145
 	数位乘积不超过 k https://atcoder.jp/contests/abc208/tasks/abc208_e
 	todo 区间数位 DP https://codeforces.com/problemset/problem/1245/F
 	【转换】选两个不超过 U 的数，满足异或和为 target https://atcoder.jp/contests/arc133/tasks/arc133_d 2658
@@ -2777,6 +2794,8 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	https://codeforces.com/blog/entry/63257
 
 	基本 LC337 https://leetcode.cn/problems/house-robber-iii/
+	LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
+	LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
 
@@ -3000,6 +3019,7 @@ func _(min, max func(int, int) int, abs func(int) int) {
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	// https://stackoverflow.com/questions/13544240/algorithm-to-find-max-independent-set-in-a-tree
 	// 经典题：没有上司的舞会 LC337 https://leetcode.cn/problems/house-robber-iii/ https://www.luogu.com.cn/problem/P1352 https://ac.nowcoder.com/acm/problem/51178
+	// 边独立集 LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
 	// 变形 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 	// 边权独立集 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/description/
 	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661

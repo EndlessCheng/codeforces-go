@@ -16,6 +16,8 @@ LC853 https://leetcode.cn/problems/car-fleet/
 
 ### 二分查找·题单
 - [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+- [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
+- [704. 二分查找](https://leetcode.cn/problems/binary-search/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
@@ -28,10 +30,10 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 我在 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/ 中说到：
 设答案为 s，那么必然有 f(s−1)<k 且 f(s)≥k。注意这和「第 k 小」是等价的。
 
-### 二分答案·题单
+### 二分答案 · 题单（右边数字为难度分）
 
 #### 二分答案
-- [274. H 指数](https://leetcode.cn/problems/h-index/) *经典题
+- [275. H 指数 II](https://leetcode.cn/problems/h-index-ii/) *经典题
 - [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/) 1542
 - [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/) 1641 *典型题
 - [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/) 1646
@@ -45,16 +47,6 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 https://codeforces.com/problemset/problem/1118/D2
 DP https://codeforces.com/contest/883/problem/I
 https://codeforces.com/contest/1843/problem/E
-
-#### 第 K 小/大（部分题目也可以用堆解决）
-- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
-- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
-- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
-- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
-- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
-综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 #### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
@@ -73,6 +65,16 @@ https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 http://codeforces.com/problemset/problem/460/C
+
+#### 第 K 小/大（部分题目也可以用堆解决）
+- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
+- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
+- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
+- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
+- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
+- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
+综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 #### 最大化中位数
 https://codeforces.com/problemset/problem/1201/C  也可以贪心做
@@ -160,7 +162,7 @@ func sortCollections() {
 	// 在多个左闭右开区间中，查找与 [l,r) 有交集的所有区间
 	// https://codeforces.com/problemset/problem/1817/A
 	type interval struct{ l, r int }
-	searchIntervals := func(a []interval, l, r int, min, max func(int, int) int) {
+	searchIntervals := func(a []interval, l, r int) {
 		li := sort.Search(len(a), func(i int) bool { return a[i].r > l })
 		if li < len(a) && a[li].l < r { // 至少有一个区间
 			ri := sort.Search(len(a), func(i int) bool { return a[i].l >= r }) - 1

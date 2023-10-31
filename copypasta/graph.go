@@ -159,11 +159,21 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 	}
 }
 
-// https://atcoder.jp/contests/arc111/tasks/arc111_b
-// EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
-// 无向图后向边定向 https://codeforces.com/problemset/problem/1519/E
-// https://codeforces.com/problemset/problem/1176/E
-// 与 MST 结合 https://codeforces.com/problemset/problem/1707/C
+/*
+## 图上的 DFS
+- [547. 省份数量](https://leetcode.cn/problems/number-of-provinces/)
+- [2316. 统计无向图中无法互相到达点对数](https://leetcode.cn/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/) 1604
+- [1319. 连通网络的操作次数](https://leetcode.cn/problems/number-of-operations-to-make-network-connected/) 1633
+- 三色标记法 [802. 找到最终的安全状态](https://leetcode.cn/problems/find-eventual-safe-states/) 1962
+
+DAG [797. 所有可能的路径](https://leetcode.cn/problems/all-paths-from-source-to-target/) 1383
+
+https://atcoder.jp/contests/arc111/tasks/arc111_b
+EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
+无向图后向边定向 https://codeforces.com/problemset/problem/1519/E
+https://codeforces.com/problemset/problem/1176/E
+与 MST 结合 https://codeforces.com/problemset/problem/1707/C
+*/
 func (*graph) dfs(n, st int, g [][]int) {
 	vis := make([]bool, n)
 	var cntV, cntE int
@@ -420,7 +430,7 @@ func (*graph) bfs(n, st int, g [][]int) {
 
 	{
 		// BFS with rollback
-		vis = make([]bool, n)
+		vis := make([]bool, n)
 		vis[st] = true
 		vs := []int{st}
 		type pair struct{ v, fa int }
@@ -547,7 +557,7 @@ func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int 
 0 2
 1 2
 */
-func (*graph) shortestCycleBFS(n int, g [][]int, min func(int, int) int) int {
+func (*graph) shortestCycleBFS(n int, g [][]int) int {
 	const inf int = 1e9
 	ans := inf
 	dis := make([]int, n)
@@ -723,7 +733,7 @@ func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
 // low(v): 在不经过 v 父亲的前提下能到达的最小的时间戳
 // 模板题 https://www.luogu.com.cn/problem/P3388
 // LC928 https://leetcode-cn.com/problems/minimize-malware-spread-ii/
-func (*graph) findCutVertices(n int, g [][]int, min func(int, int) int) (isCut []bool) {
+func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 	isCut = make([]bool, n)
 	dfn := make([]int, n) // DFS 到结点 v 的时间（从 1 开始）
 	// low[v]: v 的儿子及其邻居的 dfn 的最小值
@@ -777,7 +787,7 @@ func (*graph) findCutVertices(n int, g [][]int, min func(int, int) int) (isCut [
 // 与最短路结合 https://codeforces.com/problemset/problem/567/E
 // https://codeforces.com/problemset/problem/118/E
 // todo 构造 https://codeforces.com/problemset/problem/550/D
-func (*graph) findBridges(in io.Reader, n, m int, min func(int, int) int) (isBridge []bool) {
+func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
 	type edge struct{ v, w int }
@@ -859,7 +869,7 @@ func (*graph) findBridges(in io.Reader, n, m int, min func(int, int) int) (isBri
 5 6
 6 4
 */
-func (G *graph) findVertexBCC(g [][]int, min func(int, int) int) (comps [][]int, bccIDs []int) {
+func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 	bccIDs = make([]int, len(g)) // ID 从 1 开始编号
 	idCnt := 0
 	isCut := make([]bool, len(g))
@@ -963,7 +973,7 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	edges := make([]edge, m)
 
 	// *copy* 包含读图
-	isBridge := G.findBridges(in, n, m, nil)
+	isBridge := G.findBridges(in, n, m)
 
 	// 求原图中每个点的 bccID
 	bccIDs = make([]int, len(g))
@@ -1016,13 +1026,16 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 // A connected graph in which any two simple cycles have at most one vertex in common
 // Equivalently, it is a connected graph in which every edge belongs to at most one simple cycle
 // 如果图没有偶环，则不可能有两个奇环共用一条边（因为这样会构成一个偶环），因此没有两个环共用一条边，图一定为仙人掌（注意：反过来，一个仙人掌图是可能有偶环的）
-// 圆方树 https://oi-wiki.org/graph/block-forest/
+// todo https://www.luogu.com.cn/blog/PinkRabbit/Introduction-to-Round-Square-Tree
 // todo 静态仙人掌 https://www.luogu.com.cn/problem/P5236
 //               https://www.luogu.com.cn/problem/P4129
 //               https://www.luogu.com.cn/problem/P4244
 //               https://www.luogu.com.cn/problem/P3687
 //      动态仙人掌 https://www.luogu.com.cn/problem/P5237
 //  https://www.luogu.com.cn/problem/P6017
+
+// 圆方树 https://oi-wiki.org/graph/block-forest/ 
+// todo https://atcoder.jp/contests/abc318/tasks/abc318_g
 
 //
 
@@ -1039,7 +1052,9 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 
 // 单源最短路 Dijkstra
 // 适用于稀疏图 O(mlogm)
-// 根据《算法(第4版)》，这里实现的是 lazy 版本的 Dijkstra，复杂度为 O(mlogm)；若在插入堆时元素已在堆中，改成更新元素而不是插入元素可使复杂度降为 O(mlogn)
+// 这里实现的是懒更新（lazy）版本的 Dijkstra，复杂度为 O(mlogm)
+// 若在插入堆时元素已在堆中，改成直接更新元素，而不是插入元素，可使复杂度降为 O(mlogn)
+//
 // st 也可以是一个点集，这相当于同时对多个点跑最短路
 // 视频讲解（第四题）https://www.bilibili.com/video/BV1wj411G7sH/
 // 可视化 https://visualgo.net/zh/sssp
@@ -1049,6 +1064,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C
 //       LC743 https://leetcode-cn.com/problems/network-delay-time/
+// 超级源点 LC2473 https://leetcode.cn/problems/minimum-cost-to-buy-apples/
 // 结合二分 https://codeforces.com/problemset/problem/229/B
 // 最短路个数 https://www.luogu.com.cn/problem/P1608
 // 通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B
@@ -1405,7 +1421,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
-func (*graph) shortestPathFloydWarshall(dis [][]int, min func(int, int) int) [][]int {
+func (*graph) shortestPathFloydWarshall(dis [][]int) [][]int {
 	// dis[k][i][j] 表示「经过若干个编号不超过 k 的中间节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
 	// 为什么可以把第一维度去掉？dis[i][k] 和 dis[k][j] 不会被覆盖掉吗？
 	// 见算法导论第三版练习 25.2-4（网络上有习题解答）
@@ -1484,7 +1500,7 @@ func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
 // weights[v][w] == inf 表示没有 v-w 边
 // https://oi-wiki.org/graph/min-circle/#floyd
 // NOTE: 无权图的情况见 shortestCycleBFS
-func (*graph) shortestCycleFloydWarshall(weights [][]int, min func(int, int) int) int {
+func (*graph) shortestCycleFloydWarshall(weights [][]int) int {
 	const inf int = 1e18
 	n := len(weights)
 	dist := make([][]int, n)
@@ -1883,7 +1899,7 @@ func (*graph) limitDegreeMST(dis [][]int, root, lim int) int {
 // 模板题（严格）https://www.luogu.com.cn/problem/P4180 https://www.acwing.com/problem/content/358/
 // 注：非严格次小生成树
 //     做法更加简单，维护路径最大值即可，见 https://oi-wiki.org/graph/mst/#_10
-func (*graph) strictlySecondMST(n int, edges []struct{ v, w, wt int }, min, max func(int, int) int) int {
+func (*graph) strictlySecondMST(n int, edges []struct{ v, w, wt int }) int {
 	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
 
 	fa := make([]int, n)
@@ -2860,7 +2876,7 @@ func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
 		}
 	}
 
-	vis = make([]bool, len(g))
+	clear(vis)
 	var comp []int
 	var rdfs func(int)
 	rdfs = func(v int) {
@@ -2926,8 +2942,8 @@ outer:
 	// 能到其它所有点 https://codeforces.com/problemset/problem/1777/E
 	// - Tarjan 写法 https://codeforces.com/problemset/submission/1777/204187501
 	numCanBeVisitedFromAll := func() int {
+		clear(vis)
 		lastComp := scc[len(scc)-1]
-		vis = make([]bool, len(g))
 		rdfs(lastComp[0]) // 在反图上遍历
 		for _, b := range vis {
 			// 原图不是连通的
@@ -2937,6 +2953,7 @@ outer:
 		}
 		return len(lastComp)
 	}
+
 	_, _ = addEdge, numCanBeVisitedFromAll
 	return scc, sid
 }
@@ -2948,7 +2965,7 @@ outer:
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
 // 与最小割结合 https://www.luogu.com.cn/problem/P4126
-func (*graph) sccTarjan(g [][]int, min func(int, int) int) ([][]int, []int) {
+func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 	scc := [][]int{}
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
@@ -3073,6 +3090,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 //
+// LC684 https://leetcode.cn/problems/redundant-connection/
 // LC2876 每个点能访问到的点的个数 https://leetcode.cn/problems/count-visited-nodes-in-a-directed-graph/
 // LC2127 https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/
 // LC2359 单源最短路 https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/
@@ -3297,8 +3315,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	}
 }
 
-// 圆方树
-// todo https://www.luogu.com.cn/blog/PinkRabbit/Introduction-to-Round-Square-Tree
+// 圆方树的内容在上面
 
 /* 网络流·总结·题单 ################################################################################
 
@@ -3406,7 +3423,12 @@ https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
 最小割模型汇总 https://blog.csdn.net/qq_35649707/article/details/77482691
 下面的 topic 参考胡伯涛《最小割模型在信息学竞赛中的应用》（PDF 见 https://github.com/EndlessCheng/cp-pdf）
 
-求出最大流后，从源点出发在残余网络上 DFS，标记所有能够到达的点。遍历原边集 edges，若其中一端有标记，另一端没有标记，则这条边为最小割上的边
+如何输出最小割（只需要求一个解）
+1. 求最大流
+2. 从源点出发在残余网络上 DFS，标记所有能够到达的点
+3. 遍历原边集 edges，若其中一端有标记，另一端没有标记，则这条边为最小割上的边
+
+todo 最小割必经边？
 
 常用技巧：用容量为 inf 的边来防止割断
 
@@ -3517,8 +3539,8 @@ todo https://codeforces.com/contest/1455/problem/E
 // https://www.bilibili.com/video/BV1j64y1R7yK/
 //
 // 模板题 https://www.luogu.com.cn/problem/P3376 https://www.luogu.com.cn/problem/P2740
-func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) int) int {
-	const inf int = 1e9 // 1e18
+func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
+	const inf int = 1e18
 	st--
 	end--
 
@@ -3536,9 +3558,9 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) i
 		addEdge(v, w, cp, i)
 	}
 
-	var d []int // 从源点 st 出发的距离
+	d := make([]int, len(g)) // 从源点 st 出发的距离
 	bfs := func() bool {
-		d = make([]int, len(g))
+		clear(d)
 		d[st] = 1
 		q := []int{st}
 		for len(q) > 0 {
@@ -3554,7 +3576,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) i
 		return d[end] > 0
 	}
 	// 寻找增广路
-	var iter []int // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
+	iter := make([]int, len(g)) // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
 	var dfs func(int, int) int
 	dfs = func(v int, minF int) int {
 		if v == end {
@@ -3574,7 +3596,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int, min func(int, int) i
 	}
 	dinic := func() (maxFlow int) {
 		for bfs() {
-			iter = make([]int, len(g))
+			clear(iter)
 			for {
 				if f := dfs(st, inf); f > 0 {
 					maxFlow += f
@@ -3777,7 +3799,7 @@ func (h *hlppHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.Int
 func (h *hlppHeap) push(v int)        { heap.Push(h, v) }
 func (h *hlppHeap) pop() int          { return heap.Pop(h).(int) }
 
-func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int, min func(int, int) int) int {
+func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 	st--
 	end--
 
@@ -3893,6 +3915,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // https://oi-wiki.org/graph/flow/min-cost/
 // https://cp-algorithms.com/graph/min_cost_flow.html
 // 最小费用流的不完全算法博物馆 https://www.luogu.com.cn/blog/Atalod/zui-xiao-fei-yong-liu-di-fou-wan-quan-suan-fa-bo-wu-guan
+//
 // 模板题 https://www.luogu.com.cn/problem/P3381
 // LC2850 建模 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
@@ -4145,7 +4168,8 @@ func (*graph) findPseudoClique(g []map[int]bool, k int) []int {
 // Measure and Conquer: A Simple O(2^0.288n) Independent Set Algorithm http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.321.6920&rep=rep1&type=pdf
 // todo 剪枝写法
 // https://codeforces.com/problemset/problem/1105/E
-func (*graph) maximalCliques(g []int, max func(int, int) int) int {
+// todo https://codeforces.com/problemset/problem/1767/E
+func (*graph) maximalCliques(g []int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图
 	// 传入的 g 为状压后的邻接矩阵
 	// 定义 f(s) 为 s 的所有子集中最大团的大小
@@ -4156,16 +4180,16 @@ func (*graph) maximalCliques(g []int, max func(int, int) int) int {
 	// 之后记忆化占主导，耗时也为 O(2^k)
 	// 主要注意的是，k 次递归的结果是否记忆化并不重要，因为这部分最多也只有 O(2^k) 个状态
 	// 总的来说，记忆化将计算量由原来的「二叉树规模」变成了「meet in the middle 规模」
-	dp := map[int]int{0: 0}
-	var f func(int) int
-	f = func(s int) int {
-		if v, has := dp[s]; has {
+	memo := map[int]int{0: 0}
+	var dfs func(int) int
+	dfs = func(s int) int {
+		if v, ok := memo[s]; ok {
 			return v
 		}
-		dp[s] = max(f(s&(s-1)), 1+f(s&g[bits.TrailingZeros(uint(s))]))
-		return dp[s]
+		memo[s] = max(dfs(s&(s-1)), 1+dfs(s&g[bits.TrailingZeros(uint(s))]))
+		return memo[s]
 	}
-	ans := f(1<<len(g) - 1)
+	ans := dfs(1<<len(g) - 1)
 	return ans
 }
 

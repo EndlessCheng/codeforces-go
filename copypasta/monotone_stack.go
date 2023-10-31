@@ -55,6 +55,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
   402 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
 - [1673. 找出最具竞争力的子序列](https://leetcode.cn/problems/find-the-most-competitive-subsequence/) 1802
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
+双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
 #### 贡献法（计算所有子数组的……的和）
 

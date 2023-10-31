@@ -329,7 +329,12 @@ func (c *comb) c(n, k int) int {
 // https://codeforces.com/blog/entry/64625
 // https://ac.nowcoder.com/acm/contest/6219/C
 //
-// 多重集组合数 https://codeforces.com/problemset/problem/451/E
+// 多重集组合数
+// https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
+// https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
+// https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
+//
+// https://codeforces.com/problemset/problem/451/E
 // https://codeforces.com/problemset/problem/1342/E
 // 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
 // 不重不漏 https://codeforces.com/problemset/problem/1007/B

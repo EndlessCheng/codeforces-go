@@ -96,6 +96,9 @@ https://lnrbhaw.github.io/2019/01/05/Min-Max%E5%AE%B9%E6%96%A5%E5%AD%A6%E4%B9%A0
 todo 多项式题单 https://www.luogu.com.cn/training/1008
 https://codeforces.com/problemset/problem/958/F3
 todo https://codeforces.com/contest/438/problem/E
+todo https://leetcode.cn/contest/hust_1024_2023/problems/kzxnaX/
+- https://leetcode.cn/circle/discuss/NEDYEC/ 
+- https://oi-wiki.org/math/combinatorics/partition/#%E4%BA%94%E8%BE%B9%E5%BD%A2%E6%95%B0%E5%AE%9A%E7%90%86
 */
 
 const P = 998244353

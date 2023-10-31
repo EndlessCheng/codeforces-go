@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+/* 力扣
+
+- [470. 用 Rand7() 实现 Rand10()](https://leetcode.cn/problems/implement-rand10-using-rand7/)
+- [528. 按权重随机选择](https://leetcode.cn/problems/random-pick-with-weight/)
+- [710. 黑名单中的随机数](https://leetcode.cn/problems/random-pick-with-blacklist/)
+
+*/
+
 /* 随机化技巧
 https://oi-wiki.org/misc/rand-technique/
 随机梯度下降 SGD, Stochastic Gradient Descent https://en.wikipedia.org/wiki/Stochastic_gradient_descent

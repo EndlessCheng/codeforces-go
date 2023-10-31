@@ -18,6 +18,9 @@ https://leetcode.cn/circle/discuss/CaOJ45/
      bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
      或者说 2^(Len(x)-1) <= x < 2^Len(x)    x>0
 
+基础题
+https://leetcode.cn/problems/find-the-k-or-of-an-array/
+
 XOR 相关题目
 https://leetcode.cn/circle/discuss/sqPZwg/
 - [1720. 解码异或后的数组](https://leetcode.cn/problems/decode-xored-array/) 1284
@@ -32,11 +35,13 @@ https://leetcode.cn/circle/discuss/sqPZwg/
 - [2317. 操作后的最大异或和](https://leetcode.cn/problems/maximum-xor-after-operations/) 1679
 - [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
 
-常用技巧：拆位（提示：排序有时候很有用）
+常用技巧：拆位（部分题目排序很有用）
+LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
 https://atcoder.jp/contests/abc281/tasks/abc281_f
-LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
+https://atcoder.jp/contests/arc127/tasks/arc127_d
+考虑贡献 https://codeforces.com/problemset/problem/1362/C 1400
 
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
@@ -48,6 +53,8 @@ https://codeforces.com/problemset/problem/1874/B
 
 利用 AND/OR/XOR 的性质
 LC136 https://leetcode.cn/problems/single-number/
+LC260 https://leetcode.cn/problems/single-number-iii/
+LC137 https://leetcode.cn/problems/single-number-ii/
 LC2354 https://leetcode.cn/problems/number-of-excellent-pairs/
 LC2546 https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/
 LC2871 https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/
@@ -122,10 +129,11 @@ https://codeforces.com/problemset/problem/1617/E
 异或和相关
 https://atcoder.jp/contests/abc171/tasks/abc171_e
 https://oeis.org/A003987 异或矩阵
-https://oeis.org/A003815 前 i 个自然数的异或和 a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
+https://oeis.org/A003815 0^1^2^3^...^n: a(0)=0, a(4n+1)=1, a(4n+2)=4n+3, a(4n+3)=0, a(4n+4)=4n+4
 - https://codeforces.com/problemset/problem/1493/E
 - https://codeforces.com/problemset/problem/460/D
 - https://atcoder.jp/contests/abc121/tasks/abc121_d
+- https://atcoder.jp/contests/arc133/tasks/arc133_d
 https://oeis.org/A145768 异或和 i*i
 https://oeis.org/A126084 异或和 质数
 https://oeis.org/A018252 异或和 合数?
@@ -664,8 +672,8 @@ func _(x int) {
 	// https://codeforces.com/problemset/problem/1632/D
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
 	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
-	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int64 {
-		cnt := map[int]int64{}
+	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
+		cnt := map[int]int{}
 		type result struct{ v, l, r int } // [l,r)
 		set := []result{}
 		for i, v := range a {
@@ -688,7 +696,7 @@ func _(x int) {
 			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range set {
 				// do p...     [l,r)
-				cnt[p.v] += int64(p.r - p.l)
+				cnt[p.v] += p.r - p.l
 			}
 		}
 		return cnt

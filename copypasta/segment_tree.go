@@ -17,6 +17,7 @@ package copypasta
 //  https://en.algorithmica.org/hpc/data-structures/segment-trees/
 //  像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
 // 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
+// 线段树诡异题目收录 https://zhuanlan.zhihu.com/p/124181375
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -279,6 +280,8 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // todo https://codeforces.com/problemset/problem/1209/G2
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ https://leetcode.cn/problems/t3fKg1/
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G
+// 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
+// todo https://www.luogu.com.cn/problem/solution/P1471
 //
 // 【多个更新操作复合】
 // = + max https://www.luogu.com.cn/problem/P1253
@@ -298,9 +301,11 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 // EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
 // 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
+const todoInit = 0
+
 type lazySeg []struct {
 	l, r      int
-	todo, sum int
+	sum, todo int
 }
 
 func (lazySeg) op(a, b int) int {
@@ -308,12 +313,13 @@ func (lazySeg) op(a, b int) int {
 }
 
 func (t lazySeg) maintain(o int) {
-	lo, ro := t[o<<1], t[o<<1|1]
+	lo, ro := &t[o<<1], &t[o<<1|1]
 	t[o].sum = t.op(lo.sum, ro.sum)
 }
 
 func (t lazySeg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
+	t[o].todo = todoInit
 	if l == r {
 		t[o].sum = a[l-1]
 		return
@@ -326,15 +332,15 @@ func (t lazySeg) build(a []int, o, l, r int) {
 
 func (t lazySeg) do(o int, add int) {
 	to := &t[o]
+	to.sum += add * (to.r - to.l + 1) // % mod
 	to.todo += add                    // % mod
-	to.sum += (to.r - to.l + 1) * add // % mod
 }
 
 func (t lazySeg) spread(o int) {
-	if add := t[o].todo; add != 0 {
+	if add := t[o].todo; add != todoInit {
 		t.do(o<<1, add)
 		t.do(o<<1|1, add)
-		t[o].todo = 0
+		t[o].todo = todoInit
 	}
 }
 
@@ -783,6 +789,9 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 	}
 }
 
+// todo EXTRA: rank
+//  二分答案？
+
 // EXTRA: 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
 // low 和 high 为离散化后的值（从 1 开始）
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417
@@ -834,16 +843,6 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 
 // EXTRA: 标记永久化
 // todo 一本通 p239
-
-//
-
-// 自底向上（zkw）线段树
-// todo  张昆玮《统计的力量》
-//   https://zhuanlan.zhihu.com/p/361935620
-//   https://zhuanlan.zhihu.com/p/29876526
-//   https://zhuanlan.zhihu.com/p/29937723
-//   https://codeforces.com/blog/entry/18051 Efficient and easy segment trees
-//   https://codeforces.com/blog/entry/100454 Even more efficient but not so easy segment trees
 
 //
 

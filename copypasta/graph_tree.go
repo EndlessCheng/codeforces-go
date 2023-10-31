@@ -182,7 +182,7 @@ func (*tree) move1(g [][]int) [][]int {
 //
 // 离线好题 https://codeforces.com/problemset/problem/570/D
 // 这题的在线写法是把相同深度的 dfn 放入同一组（同组内的 dfn 是有序的），对于一棵子树的某个深度，在该组中必对应着连续的一段 dfn，二分即可找到
-func (*tree) depthSize(n, root int, g [][]int, max func(int, int) int, v int) {
+func (*tree) depthSize(n, root int, g [][]int, v int) {
 	dep := make([]int, n)
 	size := make([]int, n)
 	maxDep := make([]int, n) // EXTRA: 子树最大深度
@@ -297,10 +297,13 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
-		// https://codeforces.com/problemset/problem/208/E 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
+		// https://atcoder.jp/contests/abc202/tasks/abc202_e
 		// https://codeforces.com/problemset/problem/246/E
 		// https://codeforces.com/problemset/problem/570/D
 		// https://codeforces.com/problemset/problem/1076/E
+		// https://www.lanqiao.cn/problems/5892/learning/?contest_id=145
+		// https://codeforces.com/problemset/problem/208/E 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
+		// https://www.luogu.com.cn/problem/P7768
 		type info struct{ tin, tout, dep int }
 		is := make([]info, len(g))
 		depT := make([][]int, len(g))
@@ -391,6 +394,7 @@ func (*tree) minPathCover(g [][]int) int {
 // 求树中任意一个与 x 距离为 k 的点 https://www.luogu.com.cn/problem/T238762?contestId=65460
 // https://codeforces.com/problemset/problem/1404/B
 // https://codeforces.com/problemset/problem/1819/C
+// https://www.lanqiao.cn/problems/5890/learning/?contest_id=145
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
 	var f func(v, fa, d int)
@@ -569,7 +573,8 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
 // 求每棵子树的重心 http://codeforces.com/problemset/problem/685/B
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
-func (*tree) findCentroid(n, st int, g [][]int, max func(int, int) int) (ct int) {
+// todo 求重心的两种写法？
+func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
 	minMaxSubSize := int(1e9)
 	var findCt func(v, fa int) int
 	findCt = func(v, fa int) int {
@@ -664,10 +669,11 @@ func (*tree) centroidDecomposition(n, root int, g [][]int) {
 	f(root)
 }
 
+// todo 整理到上面
 // 点分治：求树上距离不超过 upperDis 的点对数
 // todo 待整理 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
 // todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
-func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDis int, max func(int, int) int) int {
+func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDis int) int {
 	usedCentroid := make([]bool, len(g))
 
 	size := make([]int, len(g))
@@ -802,7 +808,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
-func (*tree) lcaBinarySearch(n, root int, g [][]int, max func(int, int) int) {
+func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
 	dep := make([]int, n)

@@ -77,6 +77,7 @@ https://codeforces.com/problemset/problem/954/F
 - [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
 - [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
 - [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
+网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
 
 爆搜+剪枝
 - [79. 单词搜索](https://leetcode.cn/problems/word-search/)
@@ -584,8 +585,8 @@ func searchCollection() {
 
 	// 折半枚举/双向搜索 Meet in the middle
 	// https://codeforces.com/problemset/problem/1006/F https://atcoder.jp/contests/abc271/tasks/abc271_f https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
-	// LC805 https://leetcode.cn/problems/split-array-with-same-average/
-	// LC2035 https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/
+	// LC805 https://leetcode.cn/problems/split-array-with-same-average/ 1983
+	// LC2035 https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/ 2490
 	// O(3^(n/2)) 放A组/放B组/不选 https://www.luogu.com.cn/problem/P3067 https://www.luogu.com.cn/record/88785388
 	// https://www.luogu.com.cn/problem/P5194
 	// https://www.luogu.com.cn/problem/P4799
