@@ -4,21 +4,16 @@
 
 分类讨论：
 
-- 如果 $\textit{nums}_1$ 中有 $0$，但 $\textit{nums}_2$ 中没有 $0$，并且 $s_1 > s_2$，那么 $s_2$ 无法增加，返回 $-1$。
-- 如果 $\textit{nums}_2$ 中有 $0$，但 $\textit{nums}_1$ 中没有 $0$，并且 $s_1 < s_2$，那么 $s_1$ 无法增加，返回 $-1$。
-- 如果 $\textit{nums}_1$ 和 $\textit{nums}_1$ 中都没有 $0$，并且 $s_1 \ne s_2$，那么无法相等，返回 $-1$。
-- 否则，答案为 $\max(s_1,s_2)$。
+- 如果 $a_1 < s_2$ 并且 $\textit{nums}_1$ 中没有 $0$，那么 $s_1$ 无法增加，返回 $-1$。
+- 如果 $a_2 < s_1$ 并且 $\textit{nums}_2$ 中没有 $0$，那么 $s_2$ 无法增加，返回 $-1$。
+- 否则答案为 $\max(s_1,s_2)$。
 
 ```py [sol-Python3]
 class Solution:
     def minSum(self, nums1: List[int], nums2: List[int]) -> int:
         s1 = sum(max(x, 1) for x in nums1)
         s2 = sum(max(x, 1) for x in nums2)
-        zero1 = 0 in nums1
-        zero2 = 0 in nums2
-        if zero1 and not zero2 and s1 > s2 or \
-           not zero1 and zero2 and s1 < s2 or \
-           not zero1 and not zero2 and s1 != s2:
+        if s1 < s2 and 0 not in nums1 or s2 < s1 and 0 not in nums2:
             return -1
         return max(s1, s2)
 ```
@@ -48,9 +43,7 @@ class Solution {
             }
         }
 
-        if ((zero1 && !zero2 && s1 > s2) ||
-            (!zero1 && zero2 && s1 < s2) ||
-            (!zero1 && !zero2 && s1 != s2)) {
+        if (!zero1 && s1 < s2 || !zero2 && s2 < s1) {
             return -1;
         }
         return Math.max(s1, s2);
@@ -84,9 +77,7 @@ public:
             }
         }
 
-        if ((zero1 && !zero2 && s1 > s2) ||
-            (!zero1 && zero2 && s1 < s2) ||
-            (!zero1 && !zero2 && s1 != s2)) {
+        if (!zero1 && s1 < s2 || !zero2 && s2 < s1) {
             return -1;
         }
         return max(s1, s2);
@@ -118,15 +109,11 @@ func minSum(nums1, nums2 []int) int64 {
 		}
 	}
 
-	if zero1 && !zero2 && s1 > s2 ||
-		!zero1 && zero2 && s1 < s2 ||
-		!zero1 && !zero2 && s1 != s2 {
+	if !zero1 && s1 < s2 || !zero2 && s2 < s1 {
 		return -1
 	}
 	return max(s1, s2)
 }
-
-func max(a, b int64) int64 { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析

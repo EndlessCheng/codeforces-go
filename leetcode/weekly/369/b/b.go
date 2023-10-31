@@ -24,12 +24,8 @@ func minSum(nums1, nums2 []int) int64 {
 		}
 	}
 
-	if zero1 && !zero2 && s1 > s2 ||
-		!zero1 && zero2 && s1 < s2 ||
-		!zero1 && !zero2 && s1 != s2 {
+	if !zero1 && s1 < s2 || !zero2 && s2 < s1 {
 		return -1
 	}
 	return max(s1, s2)
 }
-
-func max(a, b int64) int64 { if b > a { return b }; return a }
