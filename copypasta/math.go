@@ -204,6 +204,7 @@ CF tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=combinatorics
 */
 const mod = 1_000_000_007 // 998244353
 
+// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
 func pow(x, n int) int {
 	x %= mod
 	res := 1 % mod
@@ -228,7 +229,33 @@ func powM(x, n, p int) (res int) {
 	return
 }
 
-func _(abs func(int) int, min, max func(int, int) int) {
+// 等比数列求和取模
+// 返回 (x^0 + x^1 + ... + x^n) % mod
+// https://atcoder.jp/contests/abc293/tasks/abc293_e
+func gp(x, n int) int {
+	if n == 0 {
+		return 1 % mod
+	}
+	res := (1 + pow(x, (n+1)/2)) * gp(x, (n-1)/2)
+	if n%2 == 0 {
+		res += pow(x, n)
+	}
+	return res % mod
+}
+
+// 适用于 mod 超过 int32 范围的情况
+// 还有一种用浮点数的写法，此略
+func mul(a, b int) (res int) {
+	for ; b > 0; b /= 2 {
+		if b%2 > 0 {
+			res = (res + a) % mod
+		}
+		a = (a + a) % mod
+	}
+	return
+}
+
+func _(abs func(int) int) {
 	/* GCD LCM 相关
 	https://mathworld.wolfram.com/EuclideanAlgorithm.html
 	https://en.wikipedia.org/wiki/Euclidean_algorithm
@@ -792,6 +819,7 @@ func _(abs func(int) int, min, max func(int, int) int) {
 
 	// 预处理: [2,mx] 范围内的质数
 	// 埃筛 埃氏筛 埃拉托斯特尼筛法 Sieve of Eratosthenes
+	// 该算法也说明了：前 n 个数的平均质因子数量是 O(loglogn) 级别的
 	// https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 	// https://oeis.org/A055399 Number of stages of sieve of Eratosthenes needed to identify n as prime or composite
 	// https://oeis.org/A230773 Minimum number of steps in an alternate definition of the Sieve of Eratosthenes needed to identify n as prime or composite
@@ -2047,6 +2075,7 @@ func _(abs func(int) int, min, max func(int, int) int) {
 	// exgcd solve equation ax+by=gcd(a,b)
 	// 特解满足 |x|<=|b|, |y|<=|a|
 	// https://cp-algorithms.com/algebra/extended-euclid-algorithm.html
+	// https://atcoder.jp/contests/abc315/tasks/abc315_g
 	var exgcd func(a, b int) (int, int, int)
 	exgcd = func(a, b int) (gcd, x, y int) {
 		if b == 0 {
@@ -2091,15 +2120,19 @@ func _(abs func(int) int, min, max func(int, int) int) {
 	//
 	// 为方便讨论，这里要求输入的 a b c 必须为正整数
 	// 注意若输入超过 1e9 可能要用高精
-	// 返回：正整数解的个数（无解时为 -1，无正整数解时为 0）
-	//      x 取最小正整数时的解 x1 y1，此时 y1 是最大正整数解
-	//      y 取最小正整数时的解 x2 y2，此时 x2 是最大正整数解
+	// 返回：n 为正整数解的个数（无解时 n=-1，无正整数解时 n=0）
+	//      (x1,y1) 为 x 取最小正整数时的解，此时 y1 是最大正整数解
+	//      (x2,y2) 为 y 取最小正整数时的解，此时 x2 是最大正整数解
+	// 可以改成非负整数解（见代码注释）
+	//
 	// 相关论文 THE NUMBER OF SOLUTIONS TO ax + by = n http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.376.403
-	// 相关题目 https://www.luogu.com.cn/problem/P5656
+	//
+	// 模板题 https://www.luogu.com.cn/problem/P5656
 	// 使非负解 x+y 尽量小 https://codeforces.com/problemset/problem/1244/C
 	//    最简单的做法就是 min(x1+y1, x2+y2)
 	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
 	// https://codeforces.com/problemset/problem/1748/D
+	// LC2910 https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/
 	solveLinearDiophantineEquations := func(a, b, c int) (n, x1, y1, x2, y2 int) {
 		g, x0, y0 := exgcd(a, b)
 
@@ -2130,6 +2163,7 @@ func _(abs func(int) int, min, max func(int, int) int) {
 		x2 = x0 + k2*b
 
 		// 无正整数解
+		// 若要求的是非负整数解，去掉等号
 		if y1 <= 0 {
 			return
 		}
@@ -2545,12 +2579,13 @@ func _(abs func(int) int, min, max func(int, int) int) {
 		// - https://atcoder.jp/contests/agc043/tasks/agc043_b
 		// https://www.luogu.com.cn/problem/P3807
 		// https://www.luogu.com.cn/problem/P7386
+		// todo https://atcoder.jp/contests/arc117/tasks/arc117_c
 		var lucas func(int, int) int
-		lucas = func(n, k int) int {
-			if k == 0 {
+		lucas = func(n, m int) int {
+			if m == 0 {
 				return 1
 			}
-			return C(n%mod, k%mod) * lucas(n/mod, k/mod) % mod
+			return C(n%mod, m%mod) * lucas(n/mod, m/mod) % mod
 		}
 
 		// 库默尔定理 https://en.wikipedia.org/wiki/Kummer%27s_theorem

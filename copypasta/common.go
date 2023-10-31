@@ -7,6 +7,7 @@ import (
 	"math/bits"
 	"math/rand"
 	"reflect"
+	"slices"
 	"sort"
 	"time"
 	"unsafe"
@@ -24,15 +25,19 @@ import (
 /*
 力扣题目分类汇总 https://leetcode.cn/circle/article/04PVPY/
 
-双变量思想
+枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
+- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
-- [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/)
-- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)
+- [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
+- [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/) 1377
+- [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
+    巧妙安排更新顺序，使得 ans，pre_max 只能使用之前的值，从而符合 i<j<k 的要求
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 
 哈希表
 - [2260. 必须拿起的最小连续卡牌数](https://leetcode.cn/problems/minimum-consecutive-cards-to-pick-up/) 1365
+- [982. 按位与为零的三元组](https://leetcode.cn/problems/triples-with-bitwise-and-equal-to-zero/) 2085
 
 前缀和
 - [1732. 找到最高海拔](https://leetcode.cn/problems/find-the-highest-altitude/)
@@ -75,13 +80,15 @@ https://leetcode.cn/problems/find-longest-subarray-lcci/
 https://codeforces.com/problemset/problem/1296/C
 
 前后缀分解
-- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
 - [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)
+- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
 - [2906. 构造乘积矩阵](https://leetcode.cn/problems/construct-product-matrix/)
 - [2256. 最小平均差](https://leetcode.cn/problems/minimum-average-difference/) 1395
 - [2483. 商店的最少代价](https://leetcode.cn/problems/minimum-penalty-for-a-shop/) 1495
+- [2909. 元素和最小的山形三元组 II](https://leetcode.cn/problems/minimum-sum-of-mountain-triplets-ii/)
+- [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
 - [2420. 找到所有好下标](https://leetcode.cn/problems/find-all-good-indices/) 1695
-- [2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode.cn/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/) 2219
+- [2167. 移除所有载有违禁货物车厢所需的最少时间](https://leetcode.cn/problems/minimum-time-to-remove-all-cars-containing-illegal-goods/) 2219 *DP
 - [2484. 统计回文子序列数目](https://leetcode.cn/problems/count-palindromic-subsequences/) 2223
 - [2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/) 2432
 - [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/) 2433
@@ -172,6 +179,7 @@ LC986 区间列表的交集 https://leetcode.cn/problems/interval-list-intersect
 相向双指针
 LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
 LC923 https://leetcode.cn/problems/3sum-with-multiplicity/
+https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/problems/C
 
 同时用到同向双指针和相向双指针的题
 https://atcoder.jp/contests/abc155/tasks/abc155_d
@@ -205,6 +213,7 @@ LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
 https://codeforces.com/problemset/problem/1748/C
+https://codeforces.com/problemset/problem/1380/C
 
 巧妙枚举
 LC939 https://leetcode.cn/problems/minimum-area-rectangle/
@@ -223,6 +232,8 @@ https://codeforces.com/problemset/problem/846/C
 - [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/) 1663
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
+https://codeforces.com/problemset/problem/1443/C 1400
+https://codeforces.com/problemset/problem/864/D 1500
 https://codeforces.com/problemset/problem/1691/C
 https://codeforces.com/problemset/problem/1369/C
 	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
@@ -243,6 +254,7 @@ https://codeforces.com/problemset/problem/1157/C2
 https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
 倒序思维 https://codeforces.com/problemset/problem/1707/A
 https://codeforces.com/contest/1873/problem/G
+https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
@@ -274,6 +286,7 @@ https://codeforces.com/problemset/problem/1608/C 对拍找反例
 脑筋急转弯
 LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/
 LC2731 https://leetcode.cn/problems/movement-of-robots/
+LC280 https://leetcode.cn/problems/wiggle-sort/
 https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1822
 https://codeforces.com/problemset/problem/1763/C
 https://atcoder.jp/contests/abc194/tasks/abc194_e
@@ -338,6 +351,9 @@ https://codeforces.com/problemset/problem/960/B
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
 https://codeforces.com/problemset/problem/1799/C
+https://codeforces.com/problemset/problem/1180/B 1500
+https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
+https://atcoder.jp/contests/arc134/tasks/arc134_d 1998
 
 大量分类讨论
 https://codeforces.com/problemset/problem/356/C
@@ -451,6 +467,7 @@ LC1526 https://leetcode-cn.com/problems/minimum-number-of-increments-on-subarray
 排序+最小操作次数 https://codeforces.com/contest/1367/problem/F2
 https://codeforces.com/contest/1830/problem/A
 从绝对值最大的开始思考 https://codeforces.com/contest/351/problem/E
+https://codeforces.com/problemset/problem/777/C 1600
 
 棋盘染色 LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
         https://codeforces.com/contest/1848/problem/A
@@ -613,36 +630,6 @@ func _() {
 		{3, 0, 1, 2}, {3, 0, 2, 1}, {3, 1, 0, 2}, {3, 1, 2, 0}, {3, 2, 0, 1}, {3, 2, 1, 0},
 	}
 
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	mins := func(a ...int) int {
-		res := a[0]
-		for _, v := range a[1:] {
-			if v < res {
-				res = v
-			}
-		}
-		return res
-	}
-	maxs := func(a ...int) int {
-		res := a[0]
-		for _, v := range a[1:] {
-			if v > res {
-				res = v
-			}
-		}
-		return res
-	}
 	abs := func(x int) int {
 		if x < 0 {
 			return -x
@@ -671,18 +658,6 @@ func _() {
 	}
 
 	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
-	minString := func(a, b string) string {
-		if len(a) != len(b) {
-			if len(a) < len(b) {
-				return a
-			}
-			return b
-		}
-		if a < b {
-			return a
-		}
-		return b
-	}
 	ternaryI := func(cond bool, r1, r2 int) int {
 		if cond {
 			return r1
@@ -764,46 +739,6 @@ func _() {
 			}
 		}
 		return b
-	}
-
-	// 适用于 mod 超过 int32 范围的情况
-	// 还有一种用浮点数的写法，此略
-	mul := func(a, b, mod int) (res int) {
-		for ; b > 0; b >>= 1 {
-			if b&1 == 1 {
-				res = (res + a) % mod
-			}
-			a = (a + a) % mod
-		}
-		return
-	}
-
-	// https://en.wikipedia.org/wiki/Exponentiation_by_squaring
-	pow := func(x, n, mod int) int {
-		x %= mod
-		res := 1 % mod
-		for ; n > 0; n >>= 1 {
-			if n&1 == 1 {
-				res = res * x % mod
-			}
-			x = x * x % mod
-		}
-		return res
-	}
-
-	// 等比数列求和取模
-	// 返回 (x^0 + x^1 + ... + x^n) % mod
-	// https://atcoder.jp/contests/abc293/tasks/abc293_e
-	var gp func(int, int) int
-	gp = func(x, n int) int {
-		if n == 0 {
-			return 1 % mod
-		}
-		res := (1 + pow(x, (n+1)/2, mod)) * gp(x, (n-1)/2)
-		if n%2 == 0 {
-			res += pow(x, n, mod)
-		}
-		return res % mod
 	}
 
 	// 从低位到高位
@@ -973,7 +908,7 @@ func _() {
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
 	// https://atcoder.jp/contests/abc288/tasks/abc288_d
 	groupPrefixSum := func(_a []int, md int) {
-		_sum := make([]int, len(_a)+md) 
+		_sum := make([]int, len(_a)+md)
 		for i, v := range _a {
 			_sum[i+md] = _sum[i] + v
 		}
@@ -1244,30 +1179,6 @@ func _() {
 		_ = update
 	}
 
-	reverse := func(a []byte) []byte {
-		n := len(a)
-		b := make([]byte, n)
-		for i, v := range a {
-			b[n-1-i] = v
-		}
-		return b
-	}
-	reverseInPlace := func(a []byte) {
-		for i, n := 0, len(a); i < n/2; i++ {
-			a[i], a[n-1-i] = a[n-1-i], a[i]
-		}
-	}
-
-	equal := func(a, b []int) bool {
-		// assert len(a) == len(b)
-		for i, v := range a {
-			if v != b[i] {
-				return false
-			}
-		}
-		return true
-	}
-
 	// 求差集 A-B, B-A 和交集 A∩B
 	// EXTRA: 求并集 union: A∪B = A-B+A∩B = merge(differenceA, intersection) 或 merge(differenceB, intersection)
 	// EXTRA: 求对称差 symmetric_difference: A▲B = A-B ∪ B-A = merge(differenceA, differenceB)
@@ -1387,36 +1298,6 @@ func _() {
 		}
 	}
 
-	// 去重
-	// a 必须是有序的
-	unique := func(a []int) (res []int) {
-		for i, v := range a {
-			if i == 0 || v != a[i-1] {
-				res = append(res, v)
-			}
-		}
-		//n = len(res)
-		return
-	}
-
-	// 原地去重
-	// a 必须是有序的
-	uniqueInPlace := func(a []int) []int {
-		n := len(a)
-		if n == 0 {
-			return nil
-		}
-		k := 0
-		for _, w := range a[1:] {
-			if a[k] != w {
-				k++
-				a[k] = w
-			}
-		}
-		//n = k + 1
-		return a[:k+1]
-	}
-
 	// 简单离散化，适合没有重复元素的场景
 	discreteSimple := func(a []int) []int {
 		id := make([]int, len(a))
@@ -1459,13 +1340,14 @@ func _() {
 		return
 	}
 
-	// 另一种写法，不要求值连续 [10,30,20,20] => [0,3,1,1]
+	// 另一种写法
 	// 对比，相差不大（~10%，Go 1.14.1）
 	// discrete  296ms/14952KB https://atcoder.jp/contests/abc221/submissions/35791381
 	// discrete2 333ms/11748KB https://atcoder.jp/contests/abc221/submissions/35791225
 	discrete2 := func(a []int, startIndex int) []int {
-		b := append([]int(nil), a...)
-		sort.Ints(b)
+		b := slices.Clone(a)
+		slices.Sort(b)
+		b = slices.Compact(b)
 		for i, v := range a {
 			a[i] = sort.SearchInts(b, v) + startIndex
 		}
@@ -1476,8 +1358,8 @@ func _() {
 	// discreteMap([]int{100,20,20,50}, 1) => map[int]int{20:1, 50:2, 100:3}
 	// 例题：LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 	discreteMap := func(a []int, startIndex int) (kth map[int]int) {
-		sorted := append([]int(nil), a...)
-		sort.Ints(sorted)
+		sorted := slices.Clone(a)
+		slices.Sort(sorted)
 
 		// 有重复元素
 		kth = map[int]int{}
@@ -1520,15 +1402,6 @@ func _() {
 		return mp
 	}
 
-	allSame := func(a ...int) bool {
-		for _, v := range a[1:] {
-			if v != a[0] {
-				return false
-			}
-		}
-		return true
-	}
-
 	// a 相对于 [0,n) 的补集
 	// a 必须是升序且无重复元素
 	complement := func(n int, a []int) (res []int) {
@@ -1555,8 +1428,8 @@ func _() {
 	// 模板题 https://codeforces.com/contest/977/problem/C
 	quickSelect := func(a []int, k int) int {
 		//k = len(a) - 1 - k // 求第 k 大
-		rand.Seed(time.Now().UnixNano())
-		rand.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
+		rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+		rd.Shuffle(len(a), func(i, j int) { a[i], a[j] = a[j], a[i] })
 		for l, r := 0, len(a)-1; l < r; {
 			v := a[l] // 切分元素
 			i, j := l, r+1
@@ -1580,29 +1453,6 @@ func _() {
 			}
 		}
 		return a[k] //  a[:k+1]  a[k:]
-	}
-
-	contains := func(a []int, x int) bool {
-		for _, v := range a {
-			if v == x {
-				return true
-			}
-		}
-		return false
-	}
-
-	// x 是否包含 y 中的所有元素，且顺序一致
-	containsAll := func(x, y []int) bool {
-		for len(y) < len(x) {
-			if len(y) == 0 {
-				return true
-			}
-			if x[0] == y[0] {
-				y = y[1:]
-			}
-			x = x[1:]
-		}
-		return false
 	}
 
 	// 扫描线 Events Sorting + Sweep Line
@@ -1717,10 +1567,10 @@ func _() {
 			ys = append(ys, b, c)
 		}
 		sort.Ints(xs)
-		xs = unique(xs)
+		xs = slices.Compact(xs)
 		xi := discreteMap(xs, 0)
 		sort.Ints(ys)
-		ys = unique(ys)
+		ys = slices.Compact(ys)
 		yi := discrete(ys, 0)
 
 		lx, ly := len(xi), len(yi)
@@ -1778,17 +1628,17 @@ func _() {
 
 	_ = []any{
 		pow10, dir4, dir8, perm3, perm4,
-		min, mins, max, maxs, abs, ceil, cmp,
-		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose, minString,
-		pow, mul, gp, toAnyBase, digits,
+		abs, ceil, cmp,
+		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose,
+		toAnyBase, digits,
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum, matrixSum, rowColSum, diagonalSum,
 		contributionSum,
 		diffOfDiff, diffMap, diff2D,
-		sort3, reverse, reverseInPlace, equal,
+		sort3,
 		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
-		unique, uniqueInPlace, discreteSimple, discrete, discrete2, discreteMap,
-		indexMap, allSame, complement, quickSelect, contains, containsAll,
+		discreteSimple, discrete, discrete2, discreteMap,
+		indexMap, complement, quickSelect,
 		sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
 	}
