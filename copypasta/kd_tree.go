@@ -25,20 +25,6 @@ type kdNode struct {
 	sz, val, sm int
 }
 
-func (kdNode) min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func (kdNode) max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func (o *kdNode) size() int {
 	if o != nil {
 		return o.sz
@@ -61,8 +47,8 @@ func (o *kdNode) maintain() {
 		o.mx[i] = o.p[i]
 		for _, ch := range o.lr {
 			if ch != nil {
-				o.mi[i] = o.min(o.mi[i], ch.mi[i])
-				o.mx[i] = o.max(o.mx[i], ch.mx[i])
+				o.mi[i] = min(o.mi[i], ch.mi[i])
+				o.mx[i] = max(o.mx[i], ch.mx[i])
 			}
 		}
 	}
