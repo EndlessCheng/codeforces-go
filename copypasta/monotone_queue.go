@@ -33,6 +33,7 @@ https://leetcode.cn/tag/monotonic-queue/problemset/
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 - [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
+https://codeforces.com/contest/487/problem/B
 todo https://www.luogu.com.cn/problem/P2627
  http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
  老鼠进洞 http://codeforces.com/problemset/problem/797/F
@@ -102,7 +103,7 @@ func fixedSizeMax(a []int, fixedSize int) []int {
 // 子区间长度不超过 sizeLimit 的最大子区间和
 // 用单调队列维护前缀和的最小值，循环时保证单调队列对应的区间长度不超过 sizeLimit
 // https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
-func maxSubSumWithLimitSize(a []int, sizeLimit int, max func(int, int) int) int {
+func maxSubSumWithLimitSize(a []int, sizeLimit int) int {
 	n := len(a)
 	sum := make([]int, n+1)
 	for i, v := range a {
@@ -126,7 +127,7 @@ func maxSubSumWithLimitSize(a []int, sizeLimit int, max func(int, int) int) int 
 // 这题的关键在于，当右端点向右（枚举）时，左端点是绝对不会向左的（因为向左肯定会比当前求出的最短长度要长）
 // 想明白这一点就可以愉快地使用单调队列了
 // LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
-func shortestSubSumAtLeastK(a []int, k int, min func(int, int) int) int {
+func shortestSubSumAtLeastK(a []int, k int) int {
 	n := len(a)
 	ans := n + 1
 	sum := make([]int, n+1)
@@ -173,7 +174,7 @@ func leftPosInDiffLimit(a []int, limit int) []int {
 //
 // 思路：转变成求「区间最大值 < 2*区间最小值」的区间个数
 // 随着左端点向右，右端点必然不会向左
-func countSubarrayByMinMax(a []int, min, max func(int, int) int) int {
+func countSubarrayByMinMax(a []int) int {
 	n := len(a)
 	ans := n * (n + 1) / 2
 	mx := MonotoneQueue{} // 维护区间最大值

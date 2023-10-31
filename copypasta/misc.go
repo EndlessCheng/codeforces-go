@@ -665,7 +665,7 @@ func calculate(s string) (ans int) {
 // 对于一个填满的网格图，每个士兵到边缘的最短路径就是离他最近的边缘的距离
 // 当一个士兵退出网格后，BFS 地更新他周围的士兵到边缘的最短路径（空格点为 0，有人的格点为 1）
 // 复杂度 O((n+m)*min(n,m)^2)
-func minMustPassSum(n, m int, targetCells [][2]int, min func(int, int) int) int {
+func minMustPassSum(n, m int, targetCells [][2]int) int {
 	dis := make([][]int, n)
 	filled := make([][]int, n) // 格子是否有人
 	inQ := make([][]bool, n)
@@ -712,7 +712,7 @@ func minMustPassSum(n, m int, targetCells [][2]int, min func(int, int) int) int 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
 // 无边界 LC1197 https://leetcode-cn.com/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
-func minKnightMoves(x, y int, abs func(int) int, max func(int, int) int) int {
+func minKnightMoves(x, y int, abs func(int) int) int {
 	x, y = abs(x), abs(y)
 	if x+y == 1 {
 		return 3
@@ -901,7 +901,7 @@ func parseTime(s string) (hour, minute, total int) {
 // https://codeforces.com/problemset/problem/1859/D
 // https://codeforces.com/problemset/problem/1626/C
 // 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
-func mergeIntervals(a [][]int, max func(int, int) int) (merged [][]int) {
+func mergeIntervals(a [][]int) (merged [][]int) {
 	sort.Slice(a, func(i, j int) bool { return a[i][0] < a[j][0] }) // 按区间左端点排序
 	l0 := a[0][0]
 	maxR := a[0][1]
@@ -937,7 +937,7 @@ func mergeIntervals(a [][]int, max func(int, int) int) (merged [][]int) {
 // - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
 // 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
 // 变形 https://codeforces.com/contest/1630/problem/C
-func minJumpNumbers(a []int, max func(int, int) int) (ans int) {
+func minJumpNumbers(a []int) (ans int) {
 	curR := 0 // 已建造的桥的右端点
 	nxtR := 0 // 下一座桥的右端点的最大值
 	// 这里没有遍历到 n-1，因为它已经是终点了
@@ -979,7 +979,7 @@ func majorityVote(a []int) (mode int) {
 // 给出二维平面上的 n 个坐标点，以 (x,y) 为中心的十字最多能覆盖多少个点？
 // https://atcoder.jp/contests/abc176/tasks/abc176_e
 // 进阶：每个点有不同的点权 https://atcoder.jp/contests/abc298/tasks/abc298_f
-func maxCover(a [][3]int, max func(int, int) int) (ans int) {
+func maxCover(a [][3]int) (ans int) {
 	type pair struct{ r, c int }
 	grid := make(map[pair]int, len(a))
 	rowSum := map[int]int{}
@@ -1054,4 +1054,47 @@ func moveAB(a, b, k int) string {
 		return strings.Repeat(B, lb) + strings.Repeat(A, a) + strings.Repeat(B, b-lb)
 	}
 	return strings.Repeat(B, lb) + strings.Repeat(A, a-ex) + B + strings.Repeat(A, ex) + strings.Repeat(B, b-1-lb)
+}
+
+// https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/problems/C
+func twoApplesADay(a []int) int {
+	n := len(a)
+	if n == 1 {
+		return 1
+	}
+
+	const low = 1
+	sort.Ints(a)
+o:
+	for _, sum := range []int{a[0] + a[n-2], a[0] + a[n-1], a[1] + a[n-1]} {
+		ans := low - 1
+		l, r := 0, n-1
+		for l < r {
+			if a[l]+a[r] == sum {
+				l++
+				r--
+				continue
+			}
+			if ans >= low {
+				continue o
+			}
+			if a[l]+a[r] < sum {
+				ans = sum - a[l]
+				l++
+			} else {
+				ans = sum - a[r]
+				r--
+			}
+			if ans < low {
+				continue o
+			}
+		}
+		if ans < low {
+			ans = sum - a[l]
+		}
+		if ans >= low {
+			return ans
+		}
+	}
+	return -1
 }

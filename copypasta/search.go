@@ -724,7 +724,7 @@ func searchCollection() {
 枚举大小为 k 的子集
 枚举格点周围（曼哈顿距离、切比雪夫距离）
 */
-func _(min, max func(int, int) int, abs func(int) int) {
+func _(abs func(int) int) {
 	// 枚举 {0,1,...,n-1} 的全部子集
 	loopSet := func(a []int) {
 		n := len(a)

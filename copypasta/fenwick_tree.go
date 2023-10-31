@@ -329,7 +329,7 @@ func _(n int) {
 // https://www.luogu.com.cn/problem/P4137
 // LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // - 需要将 a 转换成 DFS 序且从 0 开始，同时最终答案需要 +1
-func rangeMex(a []int, qs []struct{ l, r, i int }, min func(int, int) int) []int {
+func rangeMex(a []int, qs []struct{ l, r, i int }) []int {
 	const mx int = 1e5 + 2
 	// 权值树状数组
 	// 这里 tree[v] = min{pos[v-lowbit(v)+1], ..., pos[v]}

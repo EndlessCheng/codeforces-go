@@ -762,7 +762,7 @@ func _(x int) {
 	// 在 [low,high] 区间内找两个数字 A B，使其异或值最大且不超过 limit
 	// 返回值保证 A <= B
 	// 复杂度 O(log(high))
-	maxXorWithLimit := func(low, high, limit int, min func(int, int) int) (int, int) {
+	maxXorWithLimit := func(low, high, limit int) (int, int) {
 		n := bits.Len(uint(high ^ low))
 		maxXor := 1<<n - 1
 		mid := high&^maxXor | 1<<(n-1)

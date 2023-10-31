@@ -76,7 +76,7 @@ todo https://www.luogu.com.cn/problem/P3396
  https://codeforces.com/problemset/problem/1207/F
  https://codeforces.com/contest/455/problem/D
 */
-func _(min, max func(int, int) int) {
+func _() {
 	type block struct {
 		l, r           int // [l,r]
 		origin, sorted []int

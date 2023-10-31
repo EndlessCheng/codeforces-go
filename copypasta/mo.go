@@ -273,7 +273,7 @@ func moWithRollback(in io.Reader) []int {
 			l, r = l0, l0
 			// 重置数据 ...
 			res = 0
-			cnt = make([]int, n+1)
+			clear(cnt)
 		}
 		for ; r < q.r; r++ {
 			add(r)

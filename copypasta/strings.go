@@ -29,7 +29,7 @@ https://codeforces.com/problemset/problem/1823/D https://codeforces.com/blog/ent
 https://en.wikipedia.org/wiki/Bitap_algorithm shift-or / shift-and / Baeza-Yates–Gonnet algorithm
 */
 
-func _(min, max func(int, int) int) {
+func _() {
 	// 注：如果 s 是常量的话，由于其在编译期分配到只读段，对应的地址是无法写入的
 	unsafeToBytes := func(s string) []byte { return *(*[]byte)(unsafe.Pointer(&s)) }
 	unsafeToString := func(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
@@ -72,10 +72,10 @@ func _(min, max func(int, int) int) {
 	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
 	// todo https://ac.nowcoder.com/acm/contest/64384/D
 	stringHash := func(s string) {
-		rand.Seed(time.Now().UnixNano())
+		rd := rand.New(rand.NewSource(time.Now().UnixNano()))
 		rand64 := [128]uint{}
 		for i := range rand64 {
-			rand64[i] = uint(rand.Int63n(1e18)) // 不要太大
+			rand64[i] = uint(rd.Int63n(1e18)) // 不要太大
 		}
 
 		//powB := [6e5 + 1]uint{1}
@@ -86,7 +86,7 @@ func _(min, max func(int, int) int) {
 
 		// 这里实现的是多项式哈希
 		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n=len(s)
-		// 更保险的做法是采用随机 base := 9e8 - rand.Intn(1e8)
+		// 更保险的做法是采用随机 base := 9e8 - rd.Intn(1e8)
 		// 以及使用两个质数作为模数（比如 999727999, 1070777777, 1000000007 等）    自然溢出相当于模数为 2^64
 		const base uint = 1e8 + 7
 		powB := make([]uint, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希
