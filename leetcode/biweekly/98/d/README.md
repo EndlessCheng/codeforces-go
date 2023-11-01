@@ -129,10 +129,7 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    static constexpr int MX = 4e5 + 1;
-
-    int cnt1[MX];
-    bool flip[MX];
+    vector<int> cnt1, flip;
 
     // 维护区间 1 的个数
     void maintain(int o) {
@@ -177,6 +174,8 @@ class Solution {
 public:
     vector<long long> handleQuery(vector<int> &nums1, vector<int> &nums2, vector<vector<int>> &queries) {
         int n = nums1.size();
+        cnt1.resize(n * 4);
+        flip.resize(n * 4);
         build(nums1, 1, 1, n);
         vector<long long> ans;
         long long sum = accumulate(nums2.begin(), nums2.end(), 0LL);
