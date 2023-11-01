@@ -1,6 +1,4 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，不仅讲做法，还会教你如何一步步思考，记得关注哦~
-
----
+[视频讲解](https://www.bilibili.com/video/BV1am4y1a7Zi/) 第二题
 
 如果没有 AB，那么 AA 和 BB 只能交替连接，答案为
 
@@ -60,7 +58,7 @@ func min(a, b int) int { if b < a { return b }; return a }
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-### 附：记忆化搜索
+## 附：记忆化搜索
 
 定义 $\textit{dfs}(x,y,z,k)$，其中 $x,y,z$ 为 AA/BB/AB 的剩余数量，$k=0,1,2$ 表示上一个字符串是 AA/BB/AB，此时可以构造出的字符串的最大长度。
 
