@@ -3,7 +3,7 @@ package main
 import . "fmt"
 
 // github.com/EndlessCheng/codeforces-go
-func q(i, j, k int) (d int) {
+func q34(i, j, k int) (d int) {
 	Println("?", i, j, k)
 	Scan(&d)
 	return
@@ -14,9 +14,9 @@ func CF1634D() {
 	for Scan(&T); T > 0; T-- {
 		Scan(&n)
 		a, b, c := 1, 2, 3
-		d := q(1, 2, 3)
+		d := q34(1, 2, 3)
 		for i := 4; i <= n; i++ {
-			x, y := q(a, b, i), q(a, c, i)
+			x, y := q34(a, b, i), q34(a, c, i)
 			if x <= d && y <= d {
 				continue
 			}
@@ -30,9 +30,9 @@ func CF1634D() {
 		for i == a || i == b || i == c {
 			i++
 		}
-		if q(a, b, i) == d {
+		if q34(a, b, i) == d {
 			Println("!", a, b)
-		} else if q(a, c, i) == d {
+		} else if q34(a, c, i) == d {
 			Println("!", a, c)
 		} else {
 			Println("!", b, c)
