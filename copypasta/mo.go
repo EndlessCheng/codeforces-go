@@ -319,7 +319,7 @@ func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 	}
 	initTime(root, -1)
 
-	// initTime 的逻辑可以并到求 pa dep 的 DFS 中
+	// initTime 的逻辑可以合并到求 pa dep 的 DFS 中
 	var getLCA func(int, int) int // 见 graph_tree.go 中的 lcaBinarySearch
 
 	blockSize := int(math.Ceil(float64(2*n) / math.Sqrt(float64(q)))) // int(math.Round(math.Pow(float64(2*n), 2.0/3)))
