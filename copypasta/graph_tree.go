@@ -1046,6 +1046,7 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 		}
 	}
 	build(root, -1, 0)
+
 	type stPair struct{ v, i int }
 	const mx = 17 + 1 // bits.Len(len(dep))
 	var st [][mx]stPair
@@ -1195,8 +1196,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // todo https://www.luogu.com.cn/problem/P2680
 // https://codeforces.com/problemset/problem/1707/C
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
-	var father []int // father[v] 表示 v 的父节点
-
+	var pa [][]int
 	_lca := func(v, w int) (_ int) { return }
 
 	diff := make([]int, n)
@@ -1205,7 +1205,7 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 		diff[w] += val
 		lca := _lca(v, w)
 		diff[lca] -= val // 点权
-		if f := father[lca]; f >= 0 {
+		if f := pa[lca][0]; f >= 0 {
 			diff[f] -= val // 点权
 		}
 		//diff[lca] -= 2 * val // 边权
@@ -1241,6 +1241,67 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 	f(root, -1)
 
 	return ans
+}
+
+// LCA+DFN：虚树 Virtual Tree / Auxiliary Tree
+// https://oi-wiki.org/graph/virtual-tree/ 栈相比两次排序，效率更高
+// https://www.luogu.com.cn/blog/SSerxhs/qian-tan-xu-shu
+// https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
+// https://codeforces.com/problemset/problem/613/D
+// https://www.luogu.com.cn/problem/P4103
+// https://www.luogu.com.cn/problem/P7409
+// https://www.luogu.com.cn/problem/P3233
+// https://www.luogu.com.cn/problem/P2495
+func (*tree) virtualTree(g [][]int) {
+	dfn := make([]int, len(g))
+	ts := 0
+	_ = ts
+	// 向上查找<lcaBinarySearch>
+	// buildPa 开头添加：
+	// dfn[v] = ts; ts++
+	var _lca func(int, int) int
+
+	vt := make([][]int, len(g))
+	const root = 0
+	st := []int{root} // 用根节点作为栈底哨兵
+	makeVT := func(nodes []int) [][]int {
+		sort.Slice(nodes, func(i, j int) bool { return dfn[nodes[i]] < dfn[nodes[j]] })
+		vt[root] = vt[root][:0]
+		st = st[:1]
+		for _, v := range nodes {
+			if v == root {
+				continue
+			}
+			// ... 某些题目需要判断 v 和 pa[v][0] 是否都在 nodes 中
+			vt[v] = vt[v][:0]
+			lca := _lca(st[len(st)-1], v)
+			if lca != st[len(st)-1] {
+				// 回溯
+				for dfn[st[len(st)-2]] > dfn[lca] {
+					top := st[len(st)-1]
+					st = st[:len(st)-1]
+					p := st[len(st)-1]
+					vt[p] = append(vt[p], top)
+				}
+				if lca != st[len(st)-2] { // lca 不在栈中（首次遇到）
+					vt[lca] = vt[lca][:0]
+					vt[lca] = append(vt[lca], st[len(st)-1])
+					st[len(st)-1] = lca // 加到栈中
+				} else { // lca 已经在栈中
+					vt[lca] = append(vt[lca], st[len(st)-1])
+					st = st[:len(st)-1]
+				}
+			}
+			st = append(st, v)
+		}
+		// 最后的回溯
+		for i := 1; i < len(st); i++ {
+			vt[st[i-1]] = append(vt[st[i-1]], st[i])
+		}
+		return vt
+	}
+
+	_ = makeVT
 }
 
 // 树链剖分/重链剖分 (HLD, Heavy Light Decomposition）
@@ -1530,7 +1591,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // 模板题 https://www.luogu.com.cn/problem/U41492
 //       https://codeforces.com/problemset/problem/600/E https://www.acwing.com/problem/content/3191/
 // todo HNOI09 梦幻布丁 https://www.luogu.com.cn/problem/P3201 https://www.acwing.com/problem/content/2156/
-// 所有子树 mex LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// LC2003 所有子树 mex https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // https://ac.nowcoder.com/acm/contest/4010/E
@@ -1657,10 +1718,6 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 		bid[v] = len(rt) - 1
 	}
 }
-
-// TODO: 虚树 Virtual Tree / Auxiliary Tree
-// https://oi-wiki.org/graph/virtual-tree/
-// https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
 
 // 普吕弗序列（Prufer 序列，Prüfer sequence）
 // https://en.wikipedia.org/wiki/Pr%C3%BCfer_sequence
