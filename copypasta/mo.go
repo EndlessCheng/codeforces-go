@@ -320,7 +320,7 @@ func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 	initTime(root, -1)
 
 	// initTime 的逻辑可以并到求 pa dep 的 DFS 中
-	var _lca func(v, w int) int // 见 tree.lcaBinarySearch
+	var getLCA func(int, int) int // 见 graph_tree.go 中的 lcaBinarySearch
 
 	blockSize := int(math.Ceil(float64(2*n) / math.Sqrt(float64(q)))) // int(math.Round(math.Pow(float64(2*n), 2.0/3)))
 	type query struct{ lb, l, r, lca, qid int }
@@ -333,7 +333,7 @@ func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 		if tin[v] > tin[w] {
 			v, w = w, v
 		}
-		if lca := _lca(v, w); lca != v {
+		if lca := getLCA(v, w); lca != v {
 			qs[i] = query{tout[v] / blockSize, tout[v], tin[w] + 1, lca, i}
 		} else {
 			qs[i] = query{tin[v] / blockSize, tin[v], tin[w] + 1, -1, i}
