@@ -152,6 +152,7 @@
     - 多重背包
       - 二进制优化
       - 单调队列优化
+      - 同余前缀和优化（求方案数）
     - 分组背包
     - 树上背包（依赖背包）
     - 字典序最小方案
@@ -241,6 +242,7 @@
       - ST 表
       - Tarjan
       - 树上差分
+      - 虚树
     - 重链剖分（HLD）
     - 长链剖分
     - 树上启发式合并（DSU）
@@ -265,13 +267,13 @@
       - 超大背包问题
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
-  - [杂项A common.go](/copypasta/common.go)
+  - [杂项 A common.go](/copypasta/common.go)
     - 算法思路整理
     - 前缀和
     - 二维前缀和
     - 二维差分
     - 离散化
-  - [杂项B misc.go](/copypasta/misc.go)
+  - [杂项 B misc.go](/copypasta/misc.go)
 - [快速输入输出模板 io.go](/copypasta/io.go)
 
 欢迎关注 bilibili[@灵茶山艾府](https://space.bilibili.com/206214)，高质量算法教学，持续输出中！
