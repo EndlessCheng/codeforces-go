@@ -811,7 +811,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, n)
-	dep := make([]int, n)
+	dep := make([]int, n) // 根节点的深度为 0
 	var buildPa func(int, int)
 	buildPa = func(v, p int) {
 		pa[v][0] = p
@@ -822,8 +822,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			}
 		}
 	}
-	buildPa(root, -1) // d 从 0 开始
-	// 倍增
+	buildPa(root, -1)
 	for i := 0; i+1 < mx; i++ {
 		for v := range pa {
 			if p := pa[v][i]; p != -1 {
@@ -1246,29 +1245,44 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // LCA+DFN：虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/ 栈相比两次排序，效率更高
 // https://www.luogu.com.cn/blog/SSerxhs/qian-tan-xu-shu
-// https://www.luogu.com.cn/problem/P5891 https://class.luogu.com.cn/classroom/lgr66
 // https://codeforces.com/problemset/problem/613/D
 // https://www.luogu.com.cn/problem/P4103
+// https://www.luogu.com.cn/problem/P5891
 // https://www.luogu.com.cn/problem/P7409
 // https://www.luogu.com.cn/problem/P3233
 // https://www.luogu.com.cn/problem/P2495
 func (*tree) virtualTree(g [][]int) {
+	var dep []int
+	var _lca func(int, int) int
+
 	dfn := make([]int, len(g))
 	ts := 0
 	_ = ts
 	// 向上查找<lcaBinarySearch>
-	// buildPa 开头添加：
+	// 在 buildPa 开头添加：
 	// dfn[v] = ts; ts++
-	var _lca func(int, int) int
 
 	vt := make([][]int, len(g))
+	// vt := make([][]edge, len(g))
+	inNodes := make([]int, len(g))
+	for i := range inNodes {
+		inNodes[i] = -1
+	}
+	addVtEdge := func(v, w int) {
+		vt[v] = append(vt[v], w)
+		// wt := dep[w] - dep[v]
+		// vt[v] = append(vt[v], edge{w, wt})
+		// 也可以在 DFS 的时候算出边权
+	}
 	const root = 0
 	st := []int{root} // 用根节点作为栈底哨兵
-	makeVT := func(nodes []int) [][]int {
+	// nodes 为询问的「关键节点」
+	do := func(nodes []int, qid int) {
 		sort.Slice(nodes, func(i, j int) bool { return dfn[nodes[i]] < dfn[nodes[j]] })
 		vt[root] = vt[root][:0]
 		st = st[:1]
 		for _, v := range nodes {
+			inNodes[v] = qid
 			if v == root {
 				continue
 			}
@@ -1278,17 +1292,15 @@ func (*tree) virtualTree(g [][]int) {
 			if lca != st[len(st)-1] {
 				// 回溯
 				for dfn[st[len(st)-2]] > dfn[lca] {
-					top := st[len(st)-1]
+					addVtEdge(st[len(st)-2], st[len(st)-1])
 					st = st[:len(st)-1]
-					p := st[len(st)-1]
-					vt[p] = append(vt[p], top)
 				}
 				if lca != st[len(st)-2] { // lca 不在栈中（首次遇到）
 					vt[lca] = vt[lca][:0]
-					vt[lca] = append(vt[lca], st[len(st)-1])
+					addVtEdge(lca, st[len(st)-1])
 					st[len(st)-1] = lca // 加到栈中
 				} else { // lca 已经在栈中
-					vt[lca] = append(vt[lca], st[len(st)-1])
+					addVtEdge(lca, st[len(st)-1])
 					st = st[:len(st)-1]
 				}
 			}
@@ -1296,12 +1308,55 @@ func (*tree) virtualTree(g [][]int) {
 		}
 		// 最后的回溯
 		for i := 1; i < len(st); i++ {
-			vt[st[i-1]] = append(vt[st[i-1]], st[i])
+			addVtEdge(st[i-1], st[i])
 		}
-		return vt
+
+		const inf int = 1e18
+		// 计算 nodes 两两间的：
+		// 路径长度和
+		// 最短路径
+		// 最长路径（直径）
+		sumWt, gMinL, gMaxL := 0, inf, 0
+		var f func(int) (int, int, int)
+		f = func(v int) (size, minL, maxL int) {
+			// 如果 inNodes[v] != qid，那么 v 只是关键节点之间路径上的「拐点」
+			imp := inNodes[v] == qid
+			if imp {
+				size = 1
+			}
+			minL = inf
+			for _, w := range vt[v] {
+				sz, mn, mx := f(w)
+				wt := dep[w] - dep[v]
+				sumWt += wt * sz * (len(nodes) - sz) // 贡献法
+				size += sz
+
+				mn += wt
+				if imp {
+					gMinL = min(gMinL, mn)
+				} else {
+					gMinL = min(gMinL, minL+mn)
+					minL = min(minL, mn)
+				}
+
+				mx += wt
+				gMaxL = max(gMaxL, maxL+mx)
+				maxL = max(maxL, mx)
+			}
+			if minL == inf {
+				minL = 0
+			}
+			return
+		}
+		rt := root
+		if inNodes[rt] != qid && len(vt[rt]) == 1 {
+			// 注意 root 只是一个哨兵，得从真正的根节点开始
+			rt = vt[rt][0]
+		}
+		f(rt)
 	}
 
-	_ = makeVT
+	_ = do
 }
 
 // 树链剖分/重链剖分 (HLD, Heavy Light Decomposition）
