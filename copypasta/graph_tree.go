@@ -783,7 +783,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 // 适用于可以动态添加节点（挂叶子）的情形
 // NOTE: 多个点的 LCA 等于 dfn_min 和 dfn_max 的 LCA
 // https://oi-wiki.org/graph/lca/#_5
-// 另见 mo.go 中的树上莫队部分
+// 另见 mo.go 中的【树上莫队】
 //
 // 倍增 LC1483 https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/
 // 模板题 https://www.luogu.com.cn/problem/P3379
@@ -1246,7 +1246,6 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 // https://oi-wiki.org/graph/virtual-tree/ 栈相比两次排序，效率更高
 // 题单 https://www.luogu.com.cn/training/3682#problems
 // 入门 https://codeforces.com/problemset/problem/613/D 2800
-// https://codeforces.com/problemset/problem/1111/E 2500
 // https://codeforces.com/problemset/problem/1320/E 3000
 // https://www.luogu.com.cn/problem/P4103 [HE14] 大工程
 // https://www.luogu.com.cn/problem/P3233 [HN14] 世界树
