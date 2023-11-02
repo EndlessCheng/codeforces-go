@@ -72,7 +72,7 @@ func CF613D(_r io.Reader, _w io.Writer) {
 		return pa[v][0]
 	}
 
-	g2 := make([][]int, n)
+	vt := make([][]int, n)
 	st := []int{0}
 	imp := make([]int, n)
 o:
@@ -84,7 +84,7 @@ o:
 			vs[i]--
 		}
 		sort.Slice(vs, func(i, j int) bool { return dfn[vs[i]] < dfn[vs[j]] })
-		g2[0] = g2[0][:0]
+		vt[0] = vt[0][:0]
 		st = st[:1]
 		for _, v := range vs {
 			imp[v] = q
@@ -95,35 +95,31 @@ o:
 				Fprintln(out, -1)
 				continue o
 			}
-			g2[v] = g2[v][:0]
+			vt[v] = vt[v][:0]
 			lca := _lca(st[len(st)-1], v)
 			if lca != st[len(st)-1] {
-				for dfn[st[len(st)-2]] > dfn[lca] {
-					top := st[len(st)-1]
+				for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
+					p := st[len(st)-2]
+					vt[p] = append(vt[p], st[len(st)-1])
 					st = st[:len(st)-1]
-					p := st[len(st)-1]
-					g2[p] = append(g2[p], top)
 				}
-				if lca != st[len(st)-2] {
-					g2[lca] = g2[lca][:0]
-					g2[lca] = append(g2[lca], st[len(st)-1])
+				if lca != st[len(st)-1] {
+					vt[lca] = vt[lca][:0]
+					vt[lca] = append(vt[lca], st[len(st)-1])
 					st[len(st)-1] = lca
-				} else {
-					g2[lca] = append(g2[lca], st[len(st)-1])
-					st = st[:len(st)-1]
 				}
 			}
 			st = append(st, v)
 		}
 		for i := 1; i < len(st); i++ {
-			g2[st[i-1]] = append(g2[st[i-1]], st[i])
+			vt[st[i-1]] = append(vt[st[i-1]], st[i])
 		}
 
 		ans := 0
 		var f func(int) int
 		f = func(v int) int {
 			res := 0
-			for _, w := range g2[v] {
+			for _, w := range vt[v] {
 				res += f(w)
 			}
 			if imp[v] == q {
