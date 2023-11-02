@@ -56,7 +56,7 @@ func CF613D(_r io.Reader, _w io.Writer) {
 		}
 		return v
 	}
-	_lca := func(v, w int) int {
+	getLCA := func(v, w int) int {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
@@ -96,18 +96,16 @@ o:
 				continue o
 			}
 			vt[v] = vt[v][:0]
-			lca := _lca(st[len(st)-1], v)
+			lca := getLCA(st[len(st)-1], v)
+			for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
+				p := st[len(st)-2]
+				vt[p] = append(vt[p], st[len(st)-1])
+				st = st[:len(st)-1]
+			}
 			if lca != st[len(st)-1] {
-				for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
-					p := st[len(st)-2]
-					vt[p] = append(vt[p], st[len(st)-1])
-					st = st[:len(st)-1]
-				}
-				if lca != st[len(st)-1] {
-					vt[lca] = vt[lca][:0]
-					vt[lca] = append(vt[lca], st[len(st)-1])
-					st[len(st)-1] = lca
-				}
+				vt[lca] = vt[lca][:0]
+				vt[lca] = append(vt[lca], st[len(st)-1])
+				st[len(st)-1] = lca
 			}
 			st = append(st, v)
 		}
