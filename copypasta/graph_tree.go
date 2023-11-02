@@ -844,7 +844,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 		return v
 	}
-	_lca := func(v, w int) int {
+	getLCA := func(v, w int) int {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
@@ -859,7 +859,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 		return pa[v][0]
 	}
-	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[_lca(v, w)]*2 }
+	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 v 不是 to 的子孙，返回 -1
@@ -880,7 +880,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		if v == to {
 			panic(-1)
 		}
-		if _lca(v, to) == v { // to 在 v 下面
+		if getLCA(v, to) == v { // to 在 v 下面
 			return uptoDep(to, dep[v]+1)
 		}
 		// lca 在 v 上面
@@ -901,7 +901,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 	// 返回值是一个数组，因为可能有两个中点
 	// 在有两个中点的情况下，保证返回值的第一个中点离 v 更近
 	midPath := func(v, w int) []int {
-		lca := _lca(v, w)
+		lca := getLCA(v, w)
 		dv := dep[v] - dep[lca]
 		dw := dep[w] - dep[lca]
 		if dv == dw {
@@ -987,7 +987,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 
 		// 求 LCA(v,w) 的同时，顺带求出 v-w 上的边权最值
-		_lca := func(v, w int) (lca int, maxWt data) {
+		getLCA := func(v, w int) (lca int, maxWt data) {
 			//pathLen := dep[v] + dep[w]
 			if dep[v] > dep[w] {
 				v, w = w, v
@@ -1013,7 +1013,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			return
 		}
 
-		_ = _lca
+		_ = getLCA
 	}
 
 	_ = []interface{}{disVW, uptoKthPa, down1, move1, midPath}
@@ -1075,16 +1075,16 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 		return b.i
 	}
 	// 注意下标的换算，打印 LCA 的话要 +1
-	_lca := func(v, w int) int {
+	getLCA := func(v, w int) int {
 		pv, pw := pos[v], pos[w]
 		if pv > pw {
 			pv, pw = pw, pv
 		}
 		return vs[stQuery(pv, pw+1)]
 	}
-	_d := func(v, w int) int { return disRoot[v] + disRoot[w] - disRoot[_lca(v, w)]*2 }
+	getDis := func(v, w int) int { return disRoot[v] + disRoot[w] - disRoot[getLCA(v, w)]*2 }
 
-	_ = _d
+	_ = getDis
 }
 
 // 最近公共祖先 · 其三 · Tarjan 离线算法
@@ -1196,13 +1196,13 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // https://codeforces.com/problemset/problem/1707/C
 func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 	var pa [][]int
-	_lca := func(v, w int) (_ int) { return }
+	var getLCA func(int, int) int
 
 	diff := make([]int, n)
 	update := func(v, w int, val int) {
 		diff[v] += val
 		diff[w] += val
-		lca := _lca(v, w)
+		lca := getLCA(v, w)
 		diff[lca] -= val // 点权
 		if f := pa[lca][0]; f >= 0 {
 			diff[f] -= val // 点权
@@ -1244,16 +1244,18 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 
 // LCA+DFN：虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/ 栈相比两次排序，效率更高
-// https://www.luogu.com.cn/blog/SSerxhs/qian-tan-xu-shu
-// https://codeforces.com/problemset/problem/613/D
-// https://www.luogu.com.cn/problem/P4103
+// 题单 https://www.luogu.com.cn/training/3682#problems
+// 入门 https://codeforces.com/problemset/problem/613/D 2800
+// https://codeforces.com/problemset/problem/1111/E 2500
+// https://codeforces.com/problemset/problem/1320/E 3000
+// https://www.luogu.com.cn/problem/P4103 [HE14] 大工程
+// https://www.luogu.com.cn/problem/P3233 [HN14] 世界树
+// https://www.luogu.com.cn/problem/P2495 [SD11] 消耗战
 // https://www.luogu.com.cn/problem/P5891
 // https://www.luogu.com.cn/problem/P7409
-// https://www.luogu.com.cn/problem/P3233
-// https://www.luogu.com.cn/problem/P2495
 func (*tree) virtualTree(g [][]int) {
 	var dep []int
-	var _lca func(int, int) int
+	var getLCA func(int, int) int
 
 	dfn := make([]int, len(g))
 	ts := 0
@@ -1288,7 +1290,7 @@ func (*tree) virtualTree(g [][]int) {
 			}
 			// ... 某些题目需要判断 v 和 pa[v][0] 是否都在 nodes 中
 			vt[v] = vt[v][:0]
-			lca := _lca(st[len(st)-1], v)
+			lca := getLCA(st[len(st)-1], v)
 			if lca != st[len(st)-1] {
 				// 回溯
 				for dfn[st[len(st)-2]] > dfn[lca] {
