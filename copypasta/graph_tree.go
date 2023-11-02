@@ -1290,20 +1290,15 @@ func (*tree) virtualTree(g [][]int) {
 			// ... 某些题目需要判断 v 和 pa[v][0] 是否都在 nodes 中
 			vt[v] = vt[v][:0]
 			lca := getLCA(st[len(st)-1], v)
-			if lca != st[len(st)-1] {
-				// 回溯
-				for dfn[st[len(st)-2]] > dfn[lca] {
-					addVtEdge(st[len(st)-2], st[len(st)-1])
-					st = st[:len(st)-1]
-				}
-				if lca != st[len(st)-2] { // lca 不在栈中（首次遇到）
-					vt[lca] = vt[lca][:0]
-					addVtEdge(lca, st[len(st)-1])
-					st[len(st)-1] = lca // 加到栈中
-				} else { // lca 已经在栈中
-					addVtEdge(lca, st[len(st)-1])
-					st = st[:len(st)-1]
-				}
+			// 回溯
+			for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
+				addVtEdge(st[len(st)-2], st[len(st)-1])
+				st = st[:len(st)-1]
+			}
+			if lca != st[len(st)-1] { // lca 不在栈中（首次遇到）
+				vt[lca] = vt[lca][:0]
+				addVtEdge(lca, st[len(st)-1])
+				st[len(st)-1] = lca // 加到栈中
 			}
 			st = append(st, v)
 		}
