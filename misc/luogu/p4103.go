@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 	"sort"
 )
 
@@ -77,7 +76,7 @@ func p4103(_r io.Reader, _w io.Writer) {
 		}
 		return v
 	}
-	_lca := func(v, w int) int {
+	getLCA := func(v, w int) int {
 		if dep[v] > dep[w] {
 			v, w = w, v
 		}
@@ -112,20 +111,16 @@ func p4103(_r io.Reader, _w io.Writer) {
 				continue
 			}
 			vt[v] = vt[v][:0]
-			lca := _lca(st[len(st)-1], v)
+			lca := getLCA(st[len(st)-1], v)
+			for len(st) > 1 && dfn[lca] <= dfn[st[len(st)-2]] {
+				p := st[len(st)-2]
+				vt[p] = append(vt[p], st[len(st)-1])
+				st = st[:len(st)-1]
+			}
 			if lca != st[len(st)-1] {
-				for dfn[st[len(st)-2]] > dfn[lca] {
-					addVtEdge(st[len(st)-2], st[len(st)-1])
-					st = st[:len(st)-1]
-				}
-				if lca != st[len(st)-2] {
-					vt[lca] = vt[lca][:0]
-					addVtEdge(lca, st[len(st)-1])
-					st[len(st)-1] = lca
-				} else {
-					addVtEdge(lca, st[len(st)-1])
-					st = st[:len(st)-1]
-				}
+				vt[lca] = vt[lca][:0]
+				vt[lca] = append(vt[lca], st[len(st)-1])
+				st[len(st)-1] = lca
 			}
 			st = append(st, v)
 		}
@@ -171,4 +166,4 @@ func p4103(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { p4103(os.Stdin, os.Stdout) }
+//func main() { p4103(os.Stdin, os.Stdout) }
