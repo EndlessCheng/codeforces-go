@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"math/bits"
+	"slices"
 	"sort"
 )
 
@@ -478,11 +479,6 @@ func searchCollection() {
 	}
 	permuteAll := func(a []int, do func()) { _permute(a, 0, do) }
 
-	reverse := func(a []int) {
-		for i, n := 0, len(a); i < n/2; i++ {
-			a[i], a[n-1-i] = a[n-1-i], a[i]
-		}
-	}
 	// 调用完之后
 	// 返回 true：a 修改为其下一个排列（即比 a 大且字典序最小的排列）
 	// 返回 false：a 修改为其字典序最小的排列（即 a 排序后的结果）
@@ -492,7 +488,7 @@ func searchCollection() {
 		for i >= 0 && a[i] >= a[i+1] {
 			i--
 		}
-		defer reverse(a[i+1:])
+		defer slices.Reverse(a[i+1:])
 		if i < 0 {
 			return false
 		}
