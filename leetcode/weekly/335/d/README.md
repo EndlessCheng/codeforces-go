@@ -1,5 +1,3 @@
-分组背包模板题。
-
 定义 $f[i][j]$ 表示用前 $i$ 种题目恰好组成 $j$ 分的方案数。
 
 对于第 $i$ 种题目，枚举做 $k$ 道题目，则子问题为「前 $i-1$ 种题目恰好组成 $j-k\cdot \textit{marks}_i$ 分的方案数」，因此有
@@ -14,7 +12,8 @@ $$
 
 > 注：滚动优化后，$k=0$ 就是 $f[j]$，无需计算。
 
-附：[本题视频讲解](https://www.bilibili.com/video/BV1SN411c7eD/)
+- [本题视频讲解](https://www.bilibili.com/video/BV1SN411c7eD/)
+- 更快的做法请看 [2902. 和带限制的子多重集合的数目](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/)
 
 ```py [sol1-Python3]
 class Solution:
