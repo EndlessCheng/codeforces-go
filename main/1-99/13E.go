@@ -18,7 +18,7 @@ func CF13E(_r io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	const B = 316 // 常量在除法和取模时更快
+	const B = 500
 	type pair struct{ last, jump int32 }
 	data := make([]pair, n)
 	f := func(i int32) {
