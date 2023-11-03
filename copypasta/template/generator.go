@@ -136,7 +136,6 @@ import (
 // %s
 func TestCF%[3]s(t *testing.T) {
 	testCases := [][2]string{%s
-		
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, CF%[3]s)
 }
