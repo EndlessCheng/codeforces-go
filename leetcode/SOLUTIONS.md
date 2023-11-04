@@ -39,6 +39,7 @@
 |位运算|[771. 宝石与石头](https://leetcode.cn/problems/jewels-and-stones/)|[本题最优解！线性时间+常数空间](https://leetcode.cn/problems/jewels-and-stones/solution/ben-ti-zui-you-jie-xian-xing-shi-jian-ch-ddw3/)|1165|
 ||[137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)|[带你一步步推导出位运算公式！](https://leetcode.cn/problems/single-number-ii/solution/dai-ni-yi-bu-bu-tui-dao-chu-wei-yun-suan-wnwy/)|中等|
 ||[260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)|[【图解】一张图秒懂！转换成 136！](https://leetcode.cn/problems/single-number-iii/solution/tu-jie-yi-zhang-tu-miao-dong-zhuan-huan-np9d2/)|中等|
+||[421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)|[【图解】简洁高效，一图秒懂！](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)|中等|
 |贡献法|[979. 在二叉树中分配硬币](https://leetcode.cn/problems/distribute-coins-in-binary-tree/)|[【图解】没有思路？进来秒懂！](https://leetcode.cn/problems/distribute-coins-in-binary-tree/solution/tu-jie-mei-you-si-lu-jin-lai-miao-dong-p-vrni/)|1709|
 ||[891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/)|[【图解】计算每个元素对答案的贡献，多解法](https://leetcode.cn/problems/sum-of-subsequence-widths/solution/by-endlesscheng-upd1/)|2183|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
