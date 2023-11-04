@@ -27,6 +27,7 @@ import (
 
 枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
+   - https://codeforces.com/problemset/problem/702/B
 - [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
 - [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
@@ -93,7 +94,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/) 2432
 - [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/) 2433
 
-定长滑动窗口
+#### 定长滑动窗口
 - [1456. 定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/) 1263
 - [2269. 找到一个数字的 K 美丽值](https://leetcode.cn/problems/find-the-k-beauty-of-a-number/) 1280
 - [1984. 学生分数的最小差值](https://leetcode.cn/problems/minimum-difference-between-highest-and-lowest-of-k-scores/) 1306
@@ -114,7 +115,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [1100. 长度为 K 的无重复字符子串](https://leetcode.cn/problems/find-k-length-substrings-with-no-repeated-characters/)（会员题）
 - [1852. 每个子数组的数字种类数](https://leetcode.cn/problems/distinct-numbers-in-each-subarray/)（会员题）
 
-不定长滑动窗口（求最长/最大）
+#### 不定长滑动窗口（求最长/最大）
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
 - [1493. 删掉一个元素以后全为 1 的最长子数组](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/) 1423
 - [904. 水果成篮](https://leetcode.cn/problems/fruit-into-baskets/) 1516
@@ -132,13 +133,13 @@ https://codeforces.com/problemset/problem/1296/C
 - [159. 至多包含两个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-two-distinct-characters/)（会员题）
 - [340. 至多包含 K 个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/)（会员题）
 
-不定长滑动窗口（求最短/最小）
+#### 不定长滑动窗口（求最短/最小）
 - [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 - [1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/) 1878
 - [1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/) 1932
 - [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
 
-不定长滑动窗口（求子数组个数）
+#### 不定长滑动窗口（求子数组个数）
 - [2799. 统计完全子数组的数目](https://leetcode.cn/problems/count-complete-subarrays-in-an-array/) 1398
 - [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)
 - [1358. 包含所有三种字符的子字符串数目](https://leetcode.cn/problems/number-of-substrings-containing-all-three-characters/) 1646
@@ -148,9 +149,10 @@ https://codeforces.com/problemset/problem/1296/C
 - [2743. 计算没有重复字符的子字符串数量](https://leetcode.cn/problems/count-substrings-without-repeating-character/)（会员题）
 和至少为 k 的子数组个数 https://atcoder.jp/contests/abc130/tasks/abc130_d
 
-多指针滑动窗口
+#### 多指针滑动窗口
 - [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/) 1592
 - [1248. 统计「优美子数组」](https://leetcode.cn/problems/count-number-of-nice-subarrays/) 1624
+- [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721
 - [1712. 将数组分成三个子数组的方案数](https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/) 2079
 - [2444. 统计定界子数组的数目](https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/) 2093
 - [992. K 个不同整数的子数组](https://leetcode.cn/problems/subarrays-with-k-different-integers/) 2210
@@ -590,14 +592,20 @@ hashmap 3259ms https://codeforces.com/problemset/submission/570/209063603
 
 // slice 作为 map 的 key
 // 长度为 0 的 slice 对应空字符串
-func intSliceAsMapKeyExample(a []int) {
+func intSliceAsMapKeyExample(cnt map[string]int, a []int) {
 	// 如果后面还会修改 a，可以先 copy 一份
 	//a = append(a[:0:0], a...)
-	cnt := map[string]int{}
 	sh := (*reflect.SliceHeader)(unsafe.Pointer(&a))
-	// 装作 byte slice
-	sh.Len *= bits.UintSize / 8
-	cnt[*(*string)(unsafe.Pointer(sh))]++
+	sh.Len *= bits.UintSize / 8 // 装作 byte slice
+	s := *(*string)(unsafe.Pointer(sh))
+	cnt[s]++
+}
+
+// 力扣上的 int 和 int64 是一样的，但是有些题目要求返回 []int64
+// 此时可以用指针强转
+func intsToInt64s(a []int) []int64 {
+	int64s := *(*[]int64)(unsafe.Pointer(&a))
+	return int64s
 }
 
 func _() {
@@ -657,7 +665,7 @@ func _() {
 		return 1
 	}
 
-	sort3 := func(a ...int) (x, y, z int) { sort.Ints(a); return a[0], a[1], a[2] }
+	sort3 := func(a ...int) (x, y, z int) { slices.Sort(a); return a[0], a[1], a[2] }
 	ternaryI := func(cond bool, r1, r2 int) int {
 		if cond {
 			return r1
@@ -837,7 +845,7 @@ func _() {
 	// 对 sum' 求出 a'
 	// 由于 -min(sum) 是 a 的所有负数之和，所以找到一个 a' 的子集和，若其等于 -min(sum)，则将该子集在 a' 中的元素取相反数，就得到了 a
 	recoverArrayFromSubsetSum := func(sum []int) []int {
-		sort.Ints(sum)
+		slices.Sort(sum)
 		n := bits.TrailingZeros(uint(len(sum)))
 		skip := map[int]int{}
 		ans := make([]int, 0, n)
@@ -876,8 +884,6 @@ func _() {
 
 	// 前缀和
 	prefixSum := func(a []int) {
-		//sort.Ints(a) // todo
-
 		sum := make([]int, len(a)+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
@@ -1037,7 +1043,7 @@ func _() {
 	// 相关题目 https://codeforces.com/contest/1311/problem/F
 	contributionSum := func(a []int) (sum int) {
 		n := len(a)
-		sort.Ints(a)
+		slices.Sort(a)
 		for i, v := range a {
 			sum += v * (2*i + 1 - n)
 		}
@@ -1046,6 +1052,7 @@ func _() {
 
 	// 差分数组
 	// 请看 https://leetcode.cn/circle/discuss/FfMCgb/
+	// - [1893. 检查是否区域内所有整数都被覆盖](https://leetcode.cn/problems/check-if-all-the-integers-in-a-range-are-covered/) 1307（暴力也可）
 	// - [1094. 拼车](https://leetcode.cn/problems/car-pooling/) 1441
 	// - [1109. 航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/) 1570
 	// - [2406. 将区间分为最少组数](https://leetcode.cn/problems/divide-intervals-into-minimum-number-of-groups/) 1713
@@ -1053,8 +1060,11 @@ func _() {
 	// - [995. K 连续位的最小翻转次数](https://leetcode.cn/problems/minimum-number-of-k-consecutive-bit-flips/) 1835
 	// - [2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/) 2029
 	// - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-	// https://codeforces.com/problemset/problem/1700/C
+	// - [370. 区间加法](https://leetcode.cn/problems/range-addition/)（会员题）
+	// https://codeforces.com/problemset/problem/816/B 1400
+	// https://codeforces.com/problemset/problem/1700/C 1700
 	// 浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
+	// 差分思想 https://codeforces.com/problemset/problem/1634/F 2700
 
 	// 二阶差分
 	// https://ac.nowcoder.com/acm/contest/56446/C
@@ -1113,7 +1123,7 @@ func _() {
 		for x := range diff {
 			xs = append(xs, x)
 		}
-		sort.Ints(xs)
+		slices.Sort(xs)
 
 		// 左闭右开区间 [_cnt[i].x, _cnt[i+1].x) 中的值都是 _cnt[i].c
 		type _pair struct{ x, c int }
@@ -1229,7 +1239,7 @@ func _() {
 		for k := range mp {
 			keys = append(keys, k)
 		}
-		sort.Ints(keys)
+		slices.Sort(keys)
 		return keys
 	}
 
@@ -1505,7 +1515,7 @@ func _() {
 			events = append(events, l<<1|1, r<<1) // 先出后进
 			//events = append(events, l<<1, r<<1|1) // 先进后出
 		}
-		sort.Ints(events)
+		slices.Sort(events)
 
 		for _, e := range events {
 			pos, delta := e>>1, e&1
