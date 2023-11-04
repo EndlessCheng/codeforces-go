@@ -267,8 +267,9 @@
       - 超大背包问题
   - [随机算法 rand.go](/copypasta/rand.go)
     - 模拟退火
-  - [杂项 A common.go](/copypasta/common.go)
+  - [基础算法 common.go](/copypasta/common.go)
     - 算法思路整理
+    - 滑动窗口
     - 前缀和
     - 二维前缀和
     - 二维差分
