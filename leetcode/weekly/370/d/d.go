@@ -38,12 +38,10 @@ func maxBalancedSubsequenceSum(nums []int) int64 {
 		t[i] = math.MinInt
 	}
 
-	ans := math.MinInt
 	for i, x := range nums {
 		j := sort.SearchInts(b, x-i) + 1 // nums[i]-i 离散化后的值（从 1 开始）
 		f := max(t.preMax(j), 0) + x
-		ans = max(ans, f)
 		t.update(j, f)
 	}
-	return int64(ans)
+	return int64(t.preMax(len(b)))
 }
