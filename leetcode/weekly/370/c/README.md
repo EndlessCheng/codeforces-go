@@ -6,18 +6,16 @@
 
 ## 思路
 
-正难则反，先把所有 $\textit{values}[i]$ 加到答案中，然后考虑哪些 $\textit{values}[i]$ 不能选。
+正难则反，先把所有 $\textit{values}[i]$ 加到答案中，然后考虑哪些 $\textit{values}[i]$ 不能选（撤销，不加入答案）。
 
-设当前节点为 $x$，计算以 $x$ 为根的子树是健康时，失去的最小分数。那么答案就是 $\textit{values}$ 的元素和，减去「以 $0$ 为根的子树是健康时，失去的最小分数」。
+设当前节点为 $x$，计算以 $x$ 为根的子树是健康时，失去的最小分数。那么答案就是 $\textit{values}$ 的元素和，减去「以 $0$ 为根的子树是健康时，**失去**的最小分数」。
 
-用「选或不选」分类讨论：
+用「**选或不选**」分类讨论：
 
-- 不选 $\textit{values}[x]$，那么它的所有子孙节点都可以选，失去的最小分数就是 $\textit{values}[x]$。
-- 选 $\textit{values}[x]$，问题变成「以 $y$ 为根的子树是健康时，失去的最小分数」，这里 $y$ 是 $x$ 的儿子。如果有多个儿子，累加失去的最小分数。
+- 第一种情况：失去 $\textit{values}[x]$，也就是不加入答案，那么 $x$ 的所有子孙节点都可以加入答案，失去的最小分数就是 $\textit{values}[x]$。
+- 第二种情况：$\textit{values}[x]$ 加入答案，问题变成「以 $y$ 为根的子树是健康时，失去的最小分数」，这里 $y$ 是 $x$ 的儿子。如果有多个儿子，累加失去的最小分数。
 
-这两种情况取最小值。
-
-特别地，如果 $x$ 是叶子节点，那么只能不选，直接返回 $\textit{values}[x]$。
+这两种情况取最小值。注意第一种情况是不会往下递归的，所以当我们递归到叶子的时候，叶子一定不能加入答案，此时直接返回 $\textit{values}[x]$。
 
 代码实现时，为了方便判断 $x$ 是否为叶子节点，可以假设还有一条 $0$ 到 $-1$ 的边，这样不会误把根节点 $0$ 当作叶子。 
 
@@ -34,11 +32,11 @@ class Solution:
         def dfs(x: int, fa: int) -> int:
             if len(g[x]) == 1:  # x 是叶子
                 return values[x]
-            loss = 0  # 不选 values[x]
+            loss = 0  # 第二种情况
             for y in g[x]:
                 if y != fa:
                     loss += dfs(y, x)  # 计算以 y 为根的子树是健康时，失去的最小分数
-            return min(values[x], loss)  # 选/不选 values[x]，取最小值
+            return min(values[x], loss)  # 两种情况取最小值
         return sum(values) - dfs(0, -1)
 ```
 
@@ -67,13 +65,13 @@ class Solution {
         if (g[x].size() == 1) { // x 是叶子
             return values[x];
         }
-        long loss = 0; // 不选 values[x]
+        long loss = 0; // 第二种情况
         for (int y : g[x]) {
             if (y != fa) {
                 loss += dfs(y, x, g, values); // 计算以 y 为根的子树是健康时，失去的最小分数
             }
         }
-        return Math.min(values[x], loss); // 选/不选 values[x]，取最小值
+        return Math.min(values[x], loss); // 两种情况取最小值
     }
 }
 ```
@@ -95,13 +93,13 @@ public:
             if (g[x].size() == 1) { // x 是叶子
                 return values[x];
             }
-            long long loss = 0; // 不选 values[x]
+            long long loss = 0; // 第二种情况
             for (int y: g[x]) {
                 if (y != fa) {
                     loss += dfs(y, x); // 计算以 y 为根的子树是健康时，失去的最小分数
                 }
             }
-            return min((long long) values[x], loss); // 选/不选 values[x]，取最小值
+            return min((long long) values[x], loss); // 两种情况取最小值
         };
         return accumulate(values.begin(), values.end(), 0LL) - dfs(0, -1);
     }
@@ -126,13 +124,13 @@ func maximumScoreAfterOperations(edges [][]int, values []int) int64 {
 		if len(g[x]) == 1 { // x 是叶子
 			return values[x]
 		}
-		loss := 0 // 不选 values[x]
+		loss := 0 // 第二种情况
 		for _, y := range g[x] {
 			if y != fa {
 				loss += dfs(y, x) // 计算以 y 为根的子树是健康时，失去的最小分数
 			}
 		}
-		return min(values[x], loss) // 选/不选 values[x]，取最小值
+		return min(values[x], loss) // 两种情况取最小值
 	}
 	return int64(total - dfs(0, -1))
 }
@@ -146,3 +144,5 @@ func maximumScoreAfterOperations(edges [][]int, values []int) int64 {
 #### 相似题目
 
 - [337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/)
+
+更多题目见【基础算法精讲】视频简介中的课后题。
