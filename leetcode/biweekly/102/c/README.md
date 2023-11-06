@@ -1,6 +1,6 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+### 本题视频讲解
 
----
+见[【双周赛 102】](https://www.bilibili.com/video/BV1Es4y1N7v1/) 第三题。
 
 ### 前置知识：二叉树的 BFS（层序遍历）
 
