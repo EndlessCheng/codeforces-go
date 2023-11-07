@@ -1,12 +1,12 @@
 请看 [视频讲解](https://www.bilibili.com/video/BV1Fc411R7xA/)。
 
-根据题意，如果第 $j$ 列的元素值都是 $0$（忽略第 $j$ 行的元素），说明没有队伍可以击败它，返回 $j$。
+根据题意，如果第 $j$ 列的元素值都是 $0$，说明没有队伍可以击败它，返回 $j$。
 
 ```py [sol-Python3]
 class Solution:
     def findChampion(self, grid: List[List[int]]) -> int:
         for j, col in enumerate(zip(*grid)):
-            if 1 not in col[:j] + col[j + 1:]:  # 没有队伍可以击败 j
+            if 1 not in col:  # 没有队伍可以击败 j
                 return j
 ```
 
@@ -17,7 +17,7 @@ class Solution {
         for (int j = 0; ; j++) {
             boolean ok = true;
             for (int i = 0; i < n; i++) {
-                if (i != j && grid[i][j] != 0) { // 有队伍可以击败 j
+                if (grid[i][j] != 0) { // 有队伍可以击败 j
                     ok = false;
                     break;
                 }
@@ -38,7 +38,7 @@ public:
         for (int j = 0;; j++) {
             bool ok = true;
             for (int i = 0; i < n; i++) {
-                if (i != j && grid[i][j]) { // 有队伍可以击败 j
+                if (grid[i][j]) { // 有队伍可以击败 j
                     ok = false;
                     break;
                 }
@@ -55,8 +55,8 @@ public:
 func findChampion(grid [][]int) int {
 next:
 	for j := range grid[0] {
-		for i, row := range grid {
-			if i != j && row[j] > 0 { // 有队伍可以击败 j
+		for _, row := range grid {
+			if row[j] > 0 { // 有队伍可以击败 j
 				continue next
 			}
 		}
