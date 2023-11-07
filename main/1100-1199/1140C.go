@@ -2,56 +2,36 @@ package main
 
 import (
 	"bufio"
-	. "container/heap"
+	"container/heap"
 	. "fmt"
 	"io"
 	"sort"
 )
 
-type intHeap1140C struct {
-	sort.IntSlice
-}
-
-func (h *intHeap1140C) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *intHeap1140C) Pop() (v interface{}) {
-	n := len(h.IntSlice)
-	h.IntSlice, v = h.IntSlice[:n-1], h.IntSlice[n-1]
-	return
-}
-
-// github.com/EndlessCheng/codeforces-go
-func Sol1140C(reader io.Reader, writer io.Writer) {
-	type pair struct {
-		x, y int
-	}
-
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
-	var n, k int
+// https://space.bilibili.com/206214
+func CF1140C(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
+	var n, k, ans, sum int
 	Fscan(in, &n, &k)
-	arr := make([]pair, n)
-	for i := range arr {
-		Fscan(in, &arr[i].y, &arr[i].x)
+	a := make([]struct{ len, b int }, n)
+	for i := range a {
+		Fscan(in, &a[i].len, &a[i].b)
 	}
-	sort.Slice(arr, func(i, j int) bool { return arr[i].x > arr[j].x || arr[i].x == arr[j].x && arr[i].y > arr[j].y })
+	sort.Slice(a, func(i, j int) bool { return a[i].b > a[j].b })
 
-	var ans, sum int64
-	h := &intHeap1140C{}
-	for _, p := range arr {
-		Push(h, p.y)
-		sum += int64(p.y)
+	h := &hp40{}
+	for _, p := range a {
+		heap.Push(h, p.len)
+		sum += p.len
 		for h.Len() > k {
-			sum -= int64(Pop(h).(int))
+			sum -= heap.Pop(h).(int)
 		}
-		if newAns := sum * int64(p.x); newAns > ans {
-			ans = newAns
-		}
+		ans = max(ans, sum*p.b)
 	}
 	Fprint(out, ans)
 }
 
-//func main() {
-//	Sol1140C(os.Stdin, os.Stdout)
-//}
+//func main() { CF1140C(os.Stdin, os.Stdout) }
+type hp40 struct{ sort.IntSlice }
+func (h *hp40) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp40) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }

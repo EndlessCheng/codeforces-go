@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestSol1140C(t *testing.T) {
+func TestCF1140C(t *testing.T) {
 	// just copy from website
 	rawText := `
 4 3
@@ -24,5 +24,5 @@ inputCopy
 55 50
 outputCopy
 10000`
-	testutil.AssertEqual(t, rawText, Sol1140C)
+	testutil.AssertEqual(t, rawText, CF1140C)
 }
