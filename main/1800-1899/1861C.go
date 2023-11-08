@@ -38,7 +38,7 @@ o:
 				}
 				unsortedSize = min(unsortedSize, curSize)
 			} else {
-				if curSize >= unsortedSize {
+				if curSize >= unsortedSize { // 长度 >= unsortedSize 的都是无序的
 					Fprintln(out, "NO")
 					continue o
 				}
