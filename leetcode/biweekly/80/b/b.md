@@ -1,34 +1,144 @@
-对于正整数，$xy\ge\textit{success}$ 等价于 $y\ge\left\lceil\dfrac{\textit{success}}{x}\right\rceil$，也等价于 $y>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$
+对于正整数，$xy\ge\textit{success}$ 等价于 $y\ge\left\lceil\dfrac{\textit{success}}{x}\right\rceil$。
 
-这样对 $\textit{potions}$ 排序后，就可以愉快地使用库函数二分 $\textit{potions}$ 了。
+由于 $\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1$，所以上式也等价于 $y>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$。
 
-除了可以使用库函数二分外，另一个好处是每次二分只需要做一次除法，避免在二分内部做乘法，效率更高。
+这样对 $\textit{potions}$ 排序后，就可以二分查找了：设 $x=\textit{spells}[i]$，$j$ 是最小的满足 $\textit{potions}[j]>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$ 的下标，由于数组已经排序，那么下标大于 $j$ 的也同样满足该式，这一共有 $m-j$ 个，其中 $m$ 是 $\textit{potions}$ 的长度。
 
-```Python [sol1-Python3]
+为什么不等式一定要这样变形？好处是每次二分只需要做一次除法，避免多次在二分循环内做乘法，效率更高。另外的好处是部分语言可以直接调用库函数二分。
+
+有关二分查找的视频讲解，请看[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
+
+```Python [sol-Python3]
 class Solution:
     def successfulPairs(self, spells: List[int], potions: List[int], success: int) -> List[int]:
         potions.sort()
-        return [len(potions) - bisect_right(potions, (success - 1) // x) for x in spells]
+        m = len(potions)
+        success -= 1
+        return [m - bisect_right(potions, success // x) for x in spells]
 ```
 
-```C++ [sol1-C++]
+```java [sol-Java]
+class Solution {
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        Arrays.sort(potions);
+        for (int i = 0; i < spells.length; i++) {
+            long target = (success - 1) / spells[i];
+            if (target < potions[potions.length - 1]) { // 防止 long 转成 int 溢出
+                spells[i] = potions.length - upperBound(potions, (int) target);
+            } else {
+                spells[i] = 0;
+            }
+        }
+        return spells;
+    }
+
+    // 直接二分 long 是 28ms，改成 int 是 26ms
+    private int upperBound(int[] nums, int target) {
+        int left = -1, right = nums.length; // 开区间 (left, right)
+        while (left + 1 < right) { // 区间不为空
+            // 循环不变量：
+            // nums[left] < target
+            // nums[right] >= target
+            int mid = (left + right) >>> 1;
+            if (nums[mid] > target) {
+                right = mid; // 二分范围缩小到 (left, mid)
+            } else {
+                left = mid; // 二分范围缩小到 (mid, right)
+            }
+        }
+        return right;
+    }
+}
+```
+
+```C++ [sol-C++]
 class Solution {
 public:
     vector<int> successfulPairs(vector<int> &spells, vector<int> &potions, long long success) {
         sort(potions.begin(), potions.end());
-        for (auto &x : spells)
-            x = potions.end() - upper_bound(potions.begin(), potions.end(), (success - 1) / x);
+        for (int &x : spells) {
+            long long target = (success - 1) / x;
+            if (target < potions.back()) {
+                // 这样写每次二分就只用 int 比较，避免把 potions 中的元素转成 long long 比较
+                x = potions.end() - upper_bound(potions.begin(), potions.end(), (int) target);
+            } else {
+                x = 0;
+            }
+        }
         return spells;
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func successfulPairs(spells, potions []int, success int64) []int {
-	sort.Ints(potions)
+	slices.Sort(potions)
 	for i, x := range spells {
 		spells[i] = len(potions) - sort.SearchInts(potions, (int(success)-1)/x+1)
 	}
 	return spells
 }
 ```
+
+```js [sol-JavaScript]
+var successfulPairs = function (spells, potions, success) {
+    potions.sort((a, b) => a - b);
+    for (let i = 0; i < spells.length; i++) {
+        const target = Math.ceil(success / spells[i]);
+        spells[i] = potions.length - lowerBound(potions, target);
+    }
+    return spells;
+};
+
+var lowerBound = function (nums, target) {
+    let left = -1, right = nums.length; // 开区间 (left, right)
+    while (left + 1 < right) { // 区间不为空
+        // 循环不变量：
+        // nums[left] < target
+        // nums[right] >= target
+        const mid = left + ((right - left) >> 1);
+        if (nums[mid] >= target) {
+            right = mid; // 范围缩小到 (left, mid)
+        } else {
+            left = mid; // 范围缩小到 (mid, right)
+        }
+    }
+    return right; // 或者 left+1
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn successful_pairs(mut spells: Vec<i32>, mut potions: Vec<i32>, success: i64) -> Vec<i32> {
+        potions.sort_unstable();
+        let last = potions[potions.len() - 1] as i64;
+        for x in spells.iter_mut() {
+            let target = (success - 1) / *x as i64;
+            if target < last { // 防止 i64 转成 i32 溢出（这样不需要把 potions 转成 i64 比较）
+                let j = potions.partition_point(|&x| x <= target as i32);
+                *x = (potions.len() - j) as i32;
+            } else {
+                *x = 0;
+            }
+        }
+        spells
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((n+m)\log m)$，其中 $n$ 为 $\textit{spells}$ 的长度，$m$ 为 $\textit{potions}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销，仅用到若干额外变量。返回值不计入。
+
+## 思考题
+
+把乘法改成**异或**要怎么做？
+
+这题是 [1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)，做法见 [我的题解](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/solution/bu-hui-zi-dian-shu-zhi-yong-ha-xi-biao-y-p2pu/)。
+
+---
+
+欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
+
+[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
