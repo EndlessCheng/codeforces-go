@@ -1,7 +1,3 @@
-下午两点【b站@灵茶山艾府】直播讲这场周赛（以及昨晚的双周赛），欢迎关注！
-
----
-
 把名字相同的员工对应的访问时间（转成分钟数）分到同一组中。
 
 对于每一组的访问时间 $a$，排序后，判断是否有 $a[i]-a[i-2] < 60$，如果有，那么把这一组的员工名字加到答案中。
@@ -98,5 +94,5 @@ func findHighAccessEmployees(accessTimes [][]string) (ans []string) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(Ln\log n)$，其中 $n$ 为 $\textit{accessTimes}$ 的长度，$L$ 为员工姓名的最大长度，本题不超过 $10$。
+- 时间复杂度：$\mathcal{O}(Ln + n\log n)$，其中 $n$ 为 $\textit{accessTimes}$ 的长度，$L$ 为员工姓名的最大长度，本题不超过 $10$。
 - 空间复杂度：$\mathcal{O}(Ln)$。
