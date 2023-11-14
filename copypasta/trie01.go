@@ -5,6 +5,18 @@ import (
 	"math/bits"
 )
 
+/*
+## 练习：0-1 trie（右边分数为题目难度）
+
+- [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/) ~2000
+- [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)
+- [1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/) 2359
+- [1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/) 2479
+- [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
+- [2479. 两个不重叠子树的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/)（会员题）
+
+ */
+
 // 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
@@ -15,11 +27,14 @@ import (
 // LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 // LC2479 利用先序遍历的特点 https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/
 // https://codeforces.com/problemset/problem/706/D
-// 数组前缀异或数组后缀的最大值（前后缀不重叠）https://codeforces.com/problemset/problem/282/E
+// 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）https://codeforces.com/problemset/problem/282/E
 // https://codeforces.com/contest/1446/problem/C
+// 字典序最小 https://codeforces.com/problemset/problem/923/C
+// 启发式合并 https://codeforces.com/problemset/problem/1777/F
 // todo https://codeforces.com/problemset/problem/1055/F
 //  转换 https://codeforces.com/contest/1720/problem/D2
 //  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
+//  https://codeforces.com/problemset/problem/1849/F
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
@@ -28,7 +43,7 @@ type trie01Node struct {
 
 type trie01 struct{ root *trie01Node }
 
-func newTrie01() *trie01 { return &trie01{&trie01Node{min: math.MaxInt32}} }
+func newTrie01() *trie01 { return &trie01{&trie01Node{min: math.MaxInt}} }
 
 const trieBitLen = 31 // 30 for 1e9, 63 for int64, or bits.Len(MAX_VAL)
 
@@ -48,7 +63,7 @@ func (t *trie01) put(v int) *trie01Node {
 	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
-			o.son[b] = &trie01Node{min: math.MaxInt32}
+			o.son[b] = &trie01Node{min: math.MaxInt}
 		}
 		o = o.son[b]
 		o.cnt++
@@ -73,6 +88,7 @@ func (t *trie01) del(v int) *trie01Node {
 
 // v 与 trie 上所有数的最大异或值，trie 不能是空的
 // 模板题 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
+// 加约束 LC2935 https://leetcode.cn/problems/maximum-strong-pair-xor-ii/
 // 离线 LC1707 https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
 // todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 // todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
@@ -90,20 +106,25 @@ func (t *trie01) maxXor(v int) (ans int) {
 	return
 }
 
+// 动态维护任意两数异或的最小值 https://atcoder.jp/contests/abc308/tasks/abc308_g https://ac.nowcoder.com/acm/contest/53485/F
+// 需要用平衡树
+
 // 上面也可以用哈希表做
-// https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/discuss/91049/Java-O(n)-solution-using-bit-manipulation-and-HashMap/95535
+// https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/
+// O(1) space 做法 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/lei-si-kuai-su-pai-xu-de-fen-zhi-suan-fa-9eqx/
 func findMaximumXOR(a []int) (ans int) {
 	mask := 0
 	for i := trieBitLen - 1; i >= 0; i-- {
 		mask |= 1 << i
-		try := ans | 1<<i
-		leftPart := map[int]bool{a[0] & mask: true}
-		for _, v := range a[1:] {
-			if leftPart[v&mask^try] { // 对每个 v' = v&mask，判断是否有 w' 满足 v' ^ w' = try
-				ans = try
+		newAns := ans | 1<<i
+		has := map[int]bool{}
+		for _, v := range a {
+			v &= mask
+			if has[v^newAns] { // 对每个 v' = v&mask，判断是否有 w' 满足 v' ^ w' = newAns
+				ans = newAns
 				break
 			}
-			leftPart[v&mask] = true
+			has[v] = true
 		}
 	}
 	return
@@ -222,6 +243,7 @@ func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
 // roots[0] = trie01Node{}.put(0, trieBitLen-1)
 // roots[i+1] = roots[i].put(v, trieBitLen-1)
 // 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735 https://www.acwing.com/problem/content/258/
+// todo https://codeforces.com/problemset/problem/1777/F
 func (o trie01Node) put(v, k int) *trie01Node {
 	if k < 0 {
 		return &o
@@ -236,8 +258,8 @@ func (o trie01Node) put(v, k int) *trie01Node {
 }
 
 // n 个 [0, 2^k) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
-// n*(k-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n))
-// 实际使用的时候，可以简单地用 n*(k+2-logn) 代替
+// n*(k-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n)) = bit.Len(n)-1
+// 实际使用的时候，可以简单地用 n*(k+3-bit.Len(n)) 代替
 // 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
 // 传入 n 和数据范围上限 maxV
 // 返回 n 个数，每个数的范围在 [0, maxV] 中

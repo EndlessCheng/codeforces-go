@@ -7,17 +7,20 @@ package copypasta
 // 推荐阅读《算法竞赛进阶指南》0x43 和 0x48 节
 // https://oi-wiki.org/ds/seg/
 // https://cp-algorithms.com/data_structures/segment_tree.html
-// todo [Monoid 幺半群] Generalizing Segment Trees https://sharmaeklavya2.github.io/blog/generalizing-segment-trees.html
+// [Monoid 幺半群] Generalizing Segment Trees https://sharmaeklavya2.github.io/blog/generalizing-segment-trees.html
 // 总结得比较详细 https://www.acwing.com/blog/content/1684/
 // 线段树进阶 Part 1 https://www.luogu.com.cn/blog/AlexWei/Segment-Tree-Part-1
 // https://codeforces.com/blog/entry/18051
 // https://codeforces.com/blog/entry/89313
 // https://codeforces.com/blog/entry/15890
 // todo 高效线段树 crazySegmentTree https://codeforces.com/blog/entry/89399
-//  https://en.algorithmica.org/hpc/data-structures/segment-trees/
-//  像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
+// https://en.algorithmica.org/hpc/data-structures/segment-trees/
+// 像使用 STL 一样使用线段树 https://zhuanlan.zhihu.com/p/459679512 https://zhuanlan.zhihu.com/p/459880950
 // 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
 // 线段树诡异题目收录 https://zhuanlan.zhihu.com/p/124181375
+// Limitの线段树题单 https://www.luogu.com.cn/training/1124
+
+// todo 二维线段树 https://www.luogu.com.cn/problem/P3437
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -49,6 +52,7 @@ package copypasta
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 // 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E
 // https://atcoder.jp/contests/abc285/tasks/abc285_f
+// todo https://codeforces.com/problemset/problem/19/D 2800
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // LC https://leetcode-cn.com/tag/segment-tree/
@@ -145,24 +149,21 @@ type seg []struct {
 	val  int
 }
 
-// 单点更新：build 和 update 通用
-func (t seg) set(o, val int) {
-	t[o].val = val
-}
-
 // 合并两个节点上的数据：maintain 和 query 通用
 // 要求操作满足区间可加性
 // 例如 + * | & ^ min max gcd mulMatrix 摩尔投票 最大子段和 ...
-func (seg) op(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
+func (seg) mergeInfo(a, b int) int {
+	return max(a, b)
+}
+
+// 单点更新：build 和 update 通用
+func (t seg) set(o, val int) {
+	t[o].val = t.mergeInfo(t[o].val, val)
 }
 
 func (t seg) maintain(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].val = t.op(lo.val, ro.val)
+	t[o].val = t.mergeInfo(lo.val, ro.val)
 }
 
 func (t seg) build(a []int, o, l, r int) {
@@ -206,7 +207,7 @@ func (t seg) query(o, l, r int) int {
 	}
 	vl := t.query(o<<1, l, r)
 	vr := t.query(o<<1|1, l, r)
-	return t.op(vl, vr)
+	return t.mergeInfo(vl, vr)
 }
 
 func (t seg) queryAll() int { return t[1].val }
@@ -266,6 +267,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //           https://codeforces.com/problemset/problem/52/C
 // + min/max 转换 https://codeforces.com/gym/294041/problem/E
 //           【推荐】https://codeforces.com/problemset/problem/1208/D
+//           todo 转换 https://atcoder.jp/contests/abc327/tasks/abc327_f
 // + max DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
@@ -281,7 +283,8 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ https://leetcode.cn/problems/t3fKg1/
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
-// todo https://www.luogu.com.cn/problem/solution/P1471
+// todo https://www.luogu.com.cn/problem/P1471
+//  斐波那契 https://codeforces.com/problemset/problem/446/C 2400
 //
 // 【多个更新操作复合】
 // = + max https://www.luogu.com.cn/problem/P1253
@@ -308,13 +311,19 @@ type lazySeg []struct {
 	sum, todo int
 }
 
-func (lazySeg) op(a, b int) int {
+func (t lazySeg) do(o int, add int) {
+	to := &t[o]
+	to.sum += add * (to.r - to.l + 1) // % mod
+	to.todo += add                    // % mod
+}
+
+func (lazySeg) mergeInfo(a, b int) int {
 	return a + b // % mod
 }
 
 func (t lazySeg) maintain(o int) {
 	lo, ro := &t[o<<1], &t[o<<1|1]
-	t[o].sum = t.op(lo.sum, ro.sum)
+	t[o].sum = t.mergeInfo(lo.sum, ro.sum)
 }
 
 func (t lazySeg) build(a []int, o, l, r int) {
@@ -328,12 +337,6 @@ func (t lazySeg) build(a []int, o, l, r int) {
 	t.build(a, o<<1, l, m)
 	t.build(a, o<<1|1, m+1, r)
 	t.maintain(o)
-}
-
-func (t lazySeg) do(o int, add int) {
-	to := &t[o]
-	to.sum += add * (to.r - to.l + 1) // % mod
-	to.todo += add                    // % mod
 }
 
 func (t lazySeg) spread(o int) {
@@ -395,7 +398,7 @@ func (t lazySeg) query(o, l, r int) int {
 	}
 	vl := t.query(o<<1, l, r)
 	vr := t.query(o<<1|1, l, r)
-	return t.op(vl, vr)
+	return t.mergeInfo(vl, vr)
 }
 
 func (t lazySeg) queryAll() int { return t[1].sum }
@@ -423,14 +426,22 @@ func (t lazySeg) spreadAll(o int) {
 // LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/
 // https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/
-const stNodeDefaultVal = 0 // math.MinInt
-
-var stRoot = &stNode{l: 1, r: 1e9, val: stNodeDefaultVal}
+const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
 type stNode struct {
 	lo, ro *stNode
 	l, r   int
 	val    int
+}
+
+// 1 1e9
+// -2e9 2e9
+func newStRoot(l, r int) *stNode {
+	return &stNode{l: l, r: r, val: stNodeDefaultVal}
+}
+
+func (stNode) mergeInfo(a, b int) int {
+	return max(a, b)
 }
 
 func (o *stNode) get() int {
@@ -440,12 +451,8 @@ func (o *stNode) get() int {
 	return stNodeDefaultVal
 }
 
-func (stNode) op(a, b int) int {
-	return a + b // max(a, b)
-}
-
 func (o *stNode) maintain() {
-	o.val = o.op(o.lo.get(), o.ro.get())
+	o.val = o.mergeInfo(o.lo.get(), o.ro.get())
 }
 
 func (o *stNode) build(a []int, l, r int) {
@@ -462,9 +469,9 @@ func (o *stNode) build(a []int, l, r int) {
 	o.maintain()
 }
 
-func (o *stNode) update(i int, val int) {
+func (o *stNode) update(i, val int) {
 	if o.l == o.r {
-		o.val = o.op(o.val, val)
+		o.val = o.mergeInfo(o.val, val)
 		return
 	}
 	m := (o.l + o.r) >> 1
@@ -489,7 +496,7 @@ func (o *stNode) query(l, r int) int {
 	if l <= o.l && o.r <= r {
 		return o.val
 	}
-	return o.op(o.lo.query(l, r), o.ro.query(l, r))
+	return o.mergeInfo(o.lo.query(l, r), o.ro.query(l, r))
 }
 
 // 动态开点线段树·其二·延迟标记（区间修改）

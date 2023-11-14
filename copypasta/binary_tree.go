@@ -4,18 +4,27 @@ package copypasta
 
 ## 二叉树练习题
 
-#### 练习 A
+#### 自顶向下
 
+- [112. 路径总和](https://leetcode.cn/problems/path-sum/)
+- [129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/)
+- [257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/)
+- [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
+- [437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) *前缀和
 - [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
 - [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
+
+#### 自底向上
+
 - [100. 相同的树](https://leetcode.cn/problems/same-tree/)
 - [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
 - [110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)
-- [112. 路径总和](https://leetcode.cn/problems/path-sum/)
-- [113. 路径总和 II](https://leetcode.cn/problems/path-sum-ii/)
-- [129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/)
 - [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)
-- [257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/)
+- [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
+- [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
+
+#### BFS
+
 - [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/)
 - [103. 二叉树的锯齿形层序遍历](https://leetcode.cn/problems/binary-tree-zigzag-level-order-traversal/)
 - [199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)

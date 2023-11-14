@@ -325,6 +325,10 @@ func (c *comb) c(n, k int) int {
 }
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
+/*
+- [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/)
+- [2930. 重新排列后包含指定子字符串的字符串数目](https://leetcode.cn/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/)
+*/
 // 参考《挑战程序设计竞赛》P296
 // https://codeforces.com/blog/entry/64625
 // https://ac.nowcoder.com/acm/contest/6219/C

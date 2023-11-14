@@ -67,7 +67,7 @@ https://codeforces.com/problemset/problem/1689/E
 TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
 ** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
 
-常用等式
+若干恒等式
 a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
 a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)

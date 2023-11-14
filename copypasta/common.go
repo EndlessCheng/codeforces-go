@@ -23,7 +23,9 @@ import (
 // 重谈主定理及其证明 https://www.luogu.com.cn/blog/GJY-JURUO/master-theorem
 
 /*
-力扣题目分类汇总 https://leetcode.cn/circle/article/04PVPY/
+力扣题目分类汇总
+https://leetcode.cn/circle/article/04PVPY/
+https://leetcode.cn/circle/discuss/vEFf96/
 
 枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
@@ -232,6 +234,7 @@ https://codeforces.com/problemset/problem/846/C
     - https://www.lanqiao.cn/problems/4174/learning/?contest_id=135
     - https://codeforces.com/problemset/problem/1765/D
 - [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/) 1663
+- [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/)
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
 https://codeforces.com/problemset/problem/1443/C 1400
@@ -355,6 +358,7 @@ https://atcoder.jp/contests/abc125/tasks/abc125_d
 https://codeforces.com/problemset/problem/1799/C
 https://codeforces.com/problemset/problem/1180/B 1500
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
+https://codeforces.com/problemset/problem/1861/C 1600
 https://atcoder.jp/contests/arc134/tasks/arc134_d 1998
 
 大量分类讨论
@@ -373,6 +377,7 @@ LC2681 https://leetcode.cn/problems/power-of-heroes/
 - https://atcoder.jp/contests/arc116/tasks/arc116_b
 LC2763 https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/
 更多贡献法题目，见 monotone_stack.go
+https://codeforces.com/problemset/problem/1648/A 1400 维度独立
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
 https://codeforces.com/problemset/problem/1208/E
@@ -1576,12 +1581,12 @@ func _() {
 			xs = append(xs, a)
 			ys = append(ys, b, c)
 		}
-		sort.Ints(xs)
+		slices.Sort(xs)
 		xs = slices.Compact(xs)
-		xi := discreteMap(xs, 0)
-		sort.Ints(ys)
+		xi := discreteMap(xs, 0) // todo
+		slices.Sort(ys)
 		ys = slices.Compact(ys)
-		yi := discrete(ys, 0)
+		yi := discrete(ys, 0) // todo
 
 		lx, ly := len(xi), len(yi)
 		glr := make([][]int, lx)

@@ -5,6 +5,7 @@ import (
 	"io"
 	"math/bits"
 	"reflect"
+	"slices"
 	"sort"
 	"unsafe"
 )
@@ -62,7 +63,7 @@ func (*tree) hash(g [][]int, root int) {
 				ids = append(ids, dfs(w, v))
 			}
 		}
-		sort.Ints(ids)
+		slices.Sort(ids)
 		// do ids...
 
 		_ids := append(ids[:0:0], ids...) // 如果后面用不到 ids 可以去掉
@@ -725,8 +726,8 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 	}
 
 	countPairs := func(ds []int) int {
+		slices.Sort(ds)
 		cnt := 0
-		sort.Ints(ds)
 		j := len(ds)
 		for i, di := range ds {
 			for ; j > 0 && di+ds[j-1] > upperDis; j-- {
@@ -859,7 +860,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		}
 		return pa[v][0]
 	}
-	disVW := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
+	getDis := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 v 不是 to 的子孙，返回 -1
@@ -1016,7 +1017,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		_ = getLCA
 	}
 
-	_ = []interface{}{disVW, uptoKthPa, down1, move1, midPath}
+	_ = []interface{}{getDis, uptoKthPa, down1, move1, midPath}
 }
 
 // 最近公共祖先 · 其二 · 基于 RMQ
@@ -1244,9 +1245,13 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 
 // LCA+DFN：虚树 Virtual Tree / Auxiliary Tree
 // https://oi-wiki.org/graph/virtual-tree/ 栈相比两次排序，效率更高
+// 【点评】除了 DFS 遍历虚树，也可以把虚树上的所有点整合到数组 vtNodes 中，并计算出每个点的父节点 vtPa
+// 然后按照 DFN 从小到大排序 vtNodes，倒着遍历 vtNodes 数组，就可以直接自底向上算了
+// 但这样做还要再排序，并使用几个额外的数组，所以相比之下直接 DFS 更好
+//
 // 题单 https://www.luogu.com.cn/training/3682#problems
 // 入门 https://codeforces.com/problemset/problem/613/D 2800
-// https://codeforces.com/problemset/problem/1320/E 3000
+// 换根 DP https://codeforces.com/problemset/problem/1320/E 3000
 // https://www.luogu.com.cn/problem/P4103 [HE14] 大工程
 // https://www.luogu.com.cn/problem/P3233 [HN14] 世界树
 // https://www.luogu.com.cn/problem/P2495 [SD11] 消耗战
@@ -1299,6 +1304,7 @@ func (*tree) virtualTree(g [][]int) {
 				vt[lca] = vt[lca][:0]
 				addVtEdge(lca, st[len(st)-1])
 				st[len(st)-1] = lca // 加到栈中
+				// ... 标记 lca 是虚点
 			}
 			st = append(st, v)
 		}
@@ -1307,11 +1313,11 @@ func (*tree) virtualTree(g [][]int) {
 			addVtEdge(st[i-1], st[i])
 		}
 
-		const inf int = 1e18
 		// 计算 nodes 两两间的：
 		// 路径长度和
 		// 最短路径
 		// 最长路径（直径）
+		const inf int = 1e18
 		sumWt, gMinL, gMaxL := 0, inf, 0
 		var f func(int) (int, int, int)
 		f = func(v int) (size, minL, maxL int) {
@@ -1350,6 +1356,11 @@ func (*tree) virtualTree(g [][]int) {
 			rt = vt[rt][0]
 		}
 		f(rt)
+
+		// 收尾工作：reset 数组
+		//for _, v := range nodes {
+		//	idx[v] = 0
+		//}
 	}
 
 	_ = do

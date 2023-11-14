@@ -25,6 +25,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 另见 graph.go 中的 MST
 //
 // 模板题 LC547 https://leetcode.cn/problems/number-of-provinces/
+// LC684 https://leetcode.cn/problems/redundant-connection/
 // LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
