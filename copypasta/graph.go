@@ -6,6 +6,7 @@ import (
 	"io"
 	"math"
 	"math/bits"
+	"slices"
 	"sort"
 )
 
@@ -661,10 +662,7 @@ func (*graph) eulerianPathOnUndirectedGraph(n, m int) []int {
 	}
 	f(st) // for i := range g { f(i) }
 
-	for i, n := 0, len(path); i < n/2; i++ {
-		path[i], path[n-1-i] = path[n-1-i], path[i]
-	}
-
+	slices.Reverse(path)
 	return path
 }
 
@@ -715,10 +713,7 @@ func (*graph) eulerianPathOnDirectedGraph(n, m int) []int {
 	}
 	f(st)
 
-	for i, n := 0, len(path); i < n/2; i++ {
-		path[i], path[n-1-i] = path[n-1-i], path[i]
-	}
-
+	slices.Reverse(path)
 	return path
 }
 
@@ -877,7 +872,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	type edge struct{ v, w int } // eid
-	stack := []edge{}            // 存边是为了解决一些特殊题目（基本写法存点就行）
+	st := []edge{}               // 存边是为了解决一些特殊题目（基本写法存点就行）
 	var tarjan func(v, fa int) int
 	tarjan = func(v, fa int) int {
 		dfsClock++
@@ -887,7 +882,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 		for _, w := range g[v] {
 			e := edge{v, w} // ne.eid
 			if dfn[w] == 0 {
-				stack = append(stack, e)
+				st = append(st, e)
 				childCnt++
 				lowW := tarjan(w, v)
 				if lowW >= dfn[v] {
@@ -896,7 +891,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 					comp := []int{}
 					//eids := []int{}
 					for {
-						e, stack = stack[len(stack)-1], stack[:len(stack)-1]
+						e, st = st[len(st)-1], st[:len(st)-1]
 						if bccIDs[e.v] != idCnt {
 							bccIDs[e.v] = idCnt
 							comp = append(comp, e.v)
@@ -920,7 +915,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 				}
 				lowV = min(lowV, lowW)
 			} else if w != fa && dfn[w] < dfn[v] {
-				stack = append(stack, e) // 简单写法中，可以省略
+				st = append(st, e) // 简单写法中，可以省略
 				lowV = min(lowV, dfn[w])
 			}
 		}
@@ -1406,8 +1401,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有
 // dis[v][w] == inf 表示没有 v-w 边
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
-// https://oi-wiki.org/graph/shortest-path/#floyd
-// https://zhuanlan.zhihu.com/p/623757829
+// 带你发明 Floyd 算法！https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/
 //
 // 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 // https://codeforces.com/problemset/problem/33/B
@@ -1415,7 +1409,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有
 // LC1334 https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/
 // LC1462 https://leetcode.cn/problems/course-schedule-iv/
 // 动态加点 https://codeforces.com/problemset/problem/295/B
-// 动态加边 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+// 动态加边 LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/
 // - https://codeforces.com/problemset/problem/25/C LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 // todo https://atcoder.jp/contests/abc243/tasks/abc243_e
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
@@ -1438,7 +1432,7 @@ func (*graph) shortestPathFloydWarshall(dis [][]int) [][]int {
 
 	// 动态加边
 	// https://codeforces.com/problemset/problem/25/C
-	// LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
+	// LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/
 	for i := range dis {
 		// 注意 from=i 或者 to=j 时，下面的 dis[i][from] 和 dis[to][j] 都需要 dis[i][i] 这样的值
 		// 所以初始化成 0 方便计算
@@ -1579,7 +1573,7 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int {
 // https://www.luogu.com.cn/problem/P2371
 // https://codeforces.com/problemset/problem/986/F
 func (*graph) shortestPathMod(a []int, limit int) (ans int) {
-	sort.Ints(a) // 常数优化
+	slices.Sort(a) // 常数优化
 	dis := make([]int, a[0])
 	for i := range dis {
 		dis[i] = math.MaxInt
@@ -1612,9 +1606,10 @@ func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 }
 
 // k 短路
-// A* 算法
+// A* 算法   astar
 // 可持久化可并堆优化
 // https://en.wikipedia.org/wiki/K_shortest_path_routing
+// https://www.youtube.com/watch?v=CgW0HPHqFE8
 // todo https://oi-wiki.org/graph/kth-path/
 // todo 模板题 https://www.luogu.com.cn/problem/P2483
 
@@ -1641,7 +1636,8 @@ func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 //       LC1135 https://leetcode.cn/problems/connecting-cities-with-minimum-cost/
 // 需要一些数论知识 https://atcoder.jp/contests/abc210/tasks/abc210_e
 // 枚举 https://atcoder.jp/contests/abc270/tasks/abc270_f
-// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D LC1489 https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
+// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D 
+// - LC1489 https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
 // 判断给定的边是否均在同一棵 MST 中 https://codeforces.com/problemset/problem/891/C
 // 二分图无环 https://codeforces.com/problemset/problem/1408/E
 // 与 LCA 结合 https://codeforces.com/problemset/problem/733/F
@@ -3010,9 +3006,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 
 	// 由于每个强连通分量都是在它的所有后继强连通分量被求出之后求得的
 	// 上面得到的 scc 是拓扑序的逆序
-	for i, n := 0, len(scc); i < n/2; i++ {
-		scc[i], scc[n-1-i] = scc[n-1-i], scc[i]
-	}
+	slices.Reverse(scc)
 
 	sid := make([]int, len(g))
 	for i, cp := range scc {
@@ -3090,7 +3084,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 // todo https://www.luogu.com.cn/blog/user52918/qian-tan-ji-huan-shu
 // todo 题单 https://www.luogu.com.cn/blog/ShadderLeave/ji-huan-shu-bi-ji
 //
-// LC684 https://leetcode.cn/problems/redundant-connection/
+// LC684 并查集更简单 https://leetcode.cn/problems/redundant-connection/
 // LC2876 每个点能访问到的点的个数 https://leetcode.cn/problems/count-visited-nodes-in-a-directed-graph/
 // LC2127 https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/
 // LC2359 单源最短路 https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/
@@ -3122,6 +3116,7 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	q := []int{}
 	for i, d := range deg {
 		if d == 0 {
+			//f[i] = 1
 			q = append(q, i)
 		}
 	}
@@ -3129,9 +3124,9 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 		v := q[0]
 		q = q[1:]
 		w := g[v] // v 只有一条出边
-		//f[v]++
+		rg[w] = append(rg[w], v) // 顺便建反图（在这里建反图可以避免加入基环上的边）
+		//f[v] += a[v]
 		//f[w] = max(f[w], f[v])
-		rg[w] = append(rg[w], v) // 顺便建一下反图（在这里建反图可以避免加入基环上的边）
 		if deg[w]--; deg[w] == 0 {
 			q = append(q, w)
 		}
