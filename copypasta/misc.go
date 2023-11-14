@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"math"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -809,7 +810,7 @@ func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) {
 	for i := 1; i < n; i++ {
 		sum[i] = sum[i-1] + a[i] - avg
 	}
-	sort.Ints(sum) // 也可以用快速选择求中位数
+	slices.Sort(sum) // 也可以用快速选择求中位数
 	mid := sum[n/2]
 	for _, v := range sum {
 		ans += abs(v - mid)
@@ -1064,7 +1065,7 @@ func twoApplesADay(a []int) int {
 	}
 
 	const low = 1
-	sort.Ints(a)
+	slices.Sort(a)
 o:
 	for _, sum := range []int{a[0] + a[n-2], a[0] + a[n-1], a[1] + a[n-1]} {
 		ans := low - 1

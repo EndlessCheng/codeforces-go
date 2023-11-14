@@ -299,7 +299,7 @@ func searchCollection() {
 		}
 		f(s, "")
 		ss = ss[1:] // 去掉空字符串
-		sort.Strings(ss)
+		slices.Sort(ss)
 		j := 0
 		for i := 1; i < len(ss); i++ {
 			if ss[j] != ss[i] {
@@ -617,7 +617,7 @@ func searchCollection() {
 		}
 		f(0)
 		l := ws
-		sort.Ints(l)
+		slices.Sort(l)
 		// l 去重略
 
 		ws, end = nil, n

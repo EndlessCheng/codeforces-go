@@ -3,6 +3,7 @@ package copypasta
 import (
 	"bytes"
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -10,9 +11,10 @@ import (
 https://en.algorithmica.org/hpc/data-structures/binary-search/
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
+打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
 
-排序
 LC853 https://leetcode.cn/problems/car-fleet/
+自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
 
 ### 二分查找·题单
 - [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
@@ -336,9 +338,7 @@ func sortCollections() {
 				k--
 				s = append(s, byte('a'+k%26))
 			}
-			for i, n := 0, len(s); i < n/2; i++ {
-				s[i], s[n-1-i] = s[n-1-i], s[i]
-			}
+			slices.Reverse(s)
 			return s
 		}
 		kth := sort.Search(up, func(k int) bool {
@@ -409,7 +409,7 @@ func sortCollections() {
 	// 代码见 https://codeforces.com/gym/101234/submission/116219928
 	// https://codeforces.com/gym/101234/problem/G
 	kthSubsetSum := func(a []int, k int) int {
-		sort.Ints(a)
+		slices.Sort(a)
 		// 上界不会超过 a 的前 log(k) 个元素之和
 		ans := sort.Search(2e9, func(sum int) bool {
 			c := 0
@@ -563,7 +563,7 @@ func sortCollections() {
 			for i, p := range ps {
 				a[i] = float64(p[0]) - rate*float64(p[1])
 			}
-			sort.Float64s(a) // 由于只需要求最大的 k 个数，也可以用 nthElement
+			slices.Sort(a) // 由于只需要求最大的 k 个数，也可以用 nthElement
 			s := .0
 			for _, v := range a[n-k:] {
 				s += v

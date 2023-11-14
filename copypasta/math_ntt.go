@@ -3,6 +3,7 @@ package copypasta
 import (
 	"math/big"
 	"math/bits"
+	"slices"
 )
 
 /* NTT: number-theoretic transform 快速数论变换
@@ -97,8 +98,9 @@ todo 多项式题单 https://www.luogu.com.cn/training/1008
 https://codeforces.com/problemset/problem/958/F3
 todo https://codeforces.com/contest/438/problem/E
 todo https://leetcode.cn/contest/hust_1024_2023/problems/kzxnaX/
-- https://leetcode.cn/circle/discuss/NEDYEC/ 
-- https://oi-wiki.org/math/combinatorics/partition/#%E4%BA%94%E8%BE%B9%E5%BD%A2%E6%95%B0%E5%AE%9A%E7%90%86
+ https://leetcode.cn/circle/discuss/NEDYEC/ 
+ https://oi-wiki.org/math/combinatorics/partition/#%E4%BA%94%E8%BE%B9%E5%BD%A2%E6%95%B0%E5%AE%9A%E7%90%86
+ https://leetcode.cn/circle/discuss/Qvv72W/view/DJalmi/
 */
 
 const P = 998244353
@@ -213,9 +215,7 @@ func polyConvNTTs(coefs []poly) poly {
 }
 
 func (a poly) reverse() poly {
-	for i, n := 0, len(a); i < n/2; i++ {
-		a[i], a[n-1-i] = a[n-1-i], a[i]
-	}
+	slices.Reverse(a)
 	return a
 }
 

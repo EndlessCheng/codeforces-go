@@ -2,7 +2,7 @@ package copypasta
 
 import (
 	"math"
-	"sort"
+	"slices"
 )
 
 /* 根号分治 Sqrt Decomposition
@@ -38,8 +38,8 @@ https://codeforces.com/problemset/problem/1806/E
 见下面的 floorDivide https://codeforces.com/problemset/problem/786/C
 四次方根 https://atcoder.jp/contests/abc293/tasks/abc293_f
 https://leetcode.com/discuss/interview-question/3517350/
-- Given a list of pairs {L,R} & an array. 
-  Find out the total number of pairs (i, j) where 
+- Given a list of pairs {L,R} & an array.
+  Find out the total number of pairs (i, j) where
   (arr[i], arr[j]) should be equal to exactly one of the given Q pairs. And i < j.
 
 自动 O(n√n)
@@ -66,7 +66,7 @@ Unrolled linked list https://en.wikipedia.org/wiki/Unrolled_linked_list
 【推荐】https://www.luogu.com.cn/blog/220037/Sqrt1
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
-【都是我对数据结构的爱啊】区间 rank 的 N 种解法，你都会了吗 https://www.luogu.com.cn/blog/Peterprpr/HunterNoHorse
+区间 rank 的 N 种解法 https://www.luogu.com.cn/blog/Peterprpr/HunterNoHorse
 
 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 好题 https://codeforces.com/problemset/problem/91/E
@@ -75,33 +75,32 @@ https://cp-algorithms.com/sequences/rmq.html
 todo https://www.luogu.com.cn/problem/P3396
  https://codeforces.com/problemset/problem/1207/F
  https://codeforces.com/contest/455/problem/D
+https://codeforces.com/problemset/problem/13/E 2700
+https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 */
-func _() {
+func _(a []int) {
+	// 下标从 0 开始
 	type block struct {
 		l, r           int // [l,r]
 		origin, sorted []int
 		//lazyAdd int
 	}
-	var blocks []block
-	sqrtInit := func(a []int) {
-		n := len(a)
-		blockSize := int(math.Sqrt(float64(n)))
-		//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
-		blockNum := (n-1)/blockSize + 1
-		blocks = make([]block, blockNum)
-		for i, v := range a {
-			j := i / blockSize
-			if i%blockSize == 0 {
-				blocks[j] = block{l: i, origin: make([]int, 0, blockSize)}
-			}
-			blocks[j].origin = append(blocks[j].origin, v)
+	n := len(a)
+	blockSize := int(math.Sqrt(float64(n))) // 建议设为常量，避免超时 【提示】大一点可能更快一些
+	//blockSize := int(math.Sqrt(float64(n) * math.Log2(float64(n+1))))
+	blocks := make([]block, (n-1)/blockSize+1)
+	for i, v := range a {
+		j := i / blockSize
+		if i%blockSize == 0 {
+			blocks[j] = block{l: i, origin: make([]int, 0, blockSize)}
 		}
-		for i := range blocks {
-			b := &blocks[i]
-			b.r = b.l + len(b.origin) - 1
-			b.sorted = append([]int(nil), b.origin...)
-			sort.Ints(b.sorted)
-		}
+		blocks[j].origin = append(blocks[j].origin, v)
+	}
+	for i := range blocks {
+		b := &blocks[i]
+		b.r = b.l + len(b.origin) - 1
+		b.sorted = append([]int(nil), b.origin...)
+		slices.Sort(b.sorted)
 	}
 	sqrtOp := func(l, r int, v int) { // [l,r], starts at 0
 		for i := range blocks {
@@ -125,7 +124,7 @@ func _() {
 		}
 	}
 
-	_ = []interface{}{sqrtInit, sqrtOp}
+	_ = sqrtOp
 }
 
 // 如果 f(i) 的计算结果近似 n/i

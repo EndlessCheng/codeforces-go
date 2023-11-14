@@ -5,6 +5,7 @@ import (
 	"math/big"
 	"math/bits"
 	"math/rand"
+	"slices"
 	"sort"
 )
 
@@ -2000,7 +2001,7 @@ func _(abs func(int) int) {
 				roots = append(roots, rtPow)
 			}
 		}
-		sort.Ints(roots)
+		slices.Sort(roots)
 		return roots
 	}
 

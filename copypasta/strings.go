@@ -5,6 +5,7 @@ import (
 	"math/bits"
 	"math/rand"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -37,7 +38,7 @@ func _() {
 	// 返回 t 在 s 中的所有位置（允许重叠）
 	indexAll := func(s, t []byte) []int {
 		pos := suffixarray.New(s).Lookup(t, -1)
-		sort.Ints(pos)
+		slices.Sort(pos)
 		return pos
 	}
 
