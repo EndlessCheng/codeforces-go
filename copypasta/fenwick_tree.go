@@ -4,6 +4,7 @@ import "sort"
 
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
 https://en.wikipedia.org/wiki/Fenwick_tree
+带你发明树状数组！https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
 原论文 https://doi.org/10.1002/spe.4380240306
 树状数组 tree 的基本用途是维护序列 a 的前缀和（tree 和 a 的下标都从 1 开始）
 tree[i] = a[i-lowbit(i)+1] + ... + a[i]
@@ -24,7 +25,11 @@ todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-s
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
 模板题 https://www.luogu.com.cn/problem/P3374
-逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A 
+- [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)
+- [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
+- [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
+- [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/)
+逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 https://atcoder.jp/contests/arc075/tasks/arc075_c
 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
@@ -50,33 +55,46 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
+LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
+ 看着像三维偏序 https://codeforces.com/problemset/problem/12/D 2400
  https://codeforces.com/gym/101649 I 题
  http://poj.org/problem?id=2155
  http://poj.org/problem?id=2886
 */
 
+const fenwickInitVal = 0 // -1e18
+
 type fenwick []int
 
 func newFenwickTree(n int) fenwick {
-	return make([]int, n+1)
+	t := make(fenwick, n) // n+1
+	for i := range t {
+		t[i] = fenwickInitVal
+	}
+	return t
+}
+
+func (fenwick) op(a, b int) int {
+	return a + b // max(a, b)
 }
 
 // a[i] 增加 val
 // 1<=i<=n
-func (f fenwick) add(i, val int) {
+func (f fenwick) update(i, val int) {
 	for ; i < len(f); i += i & -i {
-		f[i] += val
+		f[i] = f.op(f[i], val)
 	}
 }
 
 // 求前缀和 a[1] + ... + a[i]
 // 1<=i<=n
-func (f fenwick) pre(i int) (res int) {
+func (f fenwick) pre(i int) int {
+	res := fenwickInitVal
 	for ; i > 0; i &= i - 1 {
-		res += f[i]
+		res = f.op(res, f[i])
 	}
-	return
+	return res
 }
 
 // 求区间和 a[l] + ... + a[r]
@@ -201,15 +219,16 @@ func _(n int) {
 	// 常数优化：O(n) 建树
 	// https://oi-wiki.org/ds/fenwick/#tricks
 	init := func(a []int) { // len(tree) = len(a) + 1
-		for i := 1; i < len(tree); i++ {
-			tree[i] += a[i-1]
+		for i, v := range a {
+			i++	
+			tree[i] += v
 			if j := i + i&-i; j < len(tree) {
 				tree[j] += tree[i]
 			}
 		}
 	}
 
-	// 常数优化（不推荐。实测只快了几毫秒）
+	// 另外一种写法（效率和算两次一样）
 	// https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
 		if l > r {
