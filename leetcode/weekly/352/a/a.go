@@ -1,17 +1,21 @@
 package main
 
 // https://space.bilibili.com/206214
-func longestAlternatingSubarray(a []int, threshold int) (ans int) {
-	for i, n := 0, len(a); i < n; {
-		if a[i]%2 > 0 || a[i] > threshold {
-			i++
-		} else {
-			i0 := i
-			for i++; i < n && a[i] <= threshold && a[i]%2 != a[i-1]%2; i++ {}
-			ans = max(ans, i-i0)
+func longestAlternatingSubarray(nums []int, threshold int) (ans int) {
+	n := len(nums)
+	i := 0
+	for i < n {
+		if nums[i] > threshold || nums[i]%2 != 0 {
+			i++ // 直接跳过
+			continue
 		}
+		start := i // 记录这一组的开始位置
+		i++ // 开始位置已经满足要求，从下一个位置开始判断
+		for i < n && nums[i] <= threshold && nums[i]%2 != nums[i-1]%2 {
+			i++
+		}
+		// 从 start 到 i-1 是满足题目要求的子数组
+		ans = max(ans, i-start)
 	}
 	return
 }
-
-func max(a, b int) int { if b > a { return b }; return a }

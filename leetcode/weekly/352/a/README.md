@@ -1,45 +1,176 @@
-下午两点直播讲题，记得关注[【b站@灵茶山艾府】](https://space.bilibili.com/206214)哦~
+## 分组循环
 
----
+**适用场景**：按照题目要求，数组会被分割成若干组，且每一组的判断/处理逻辑是一样的。
 
-题目的约束实际上把数组划分成了若干段，每段都满足要求，且互不相交。
+**核心思想**：
 
-那么遍历一遍，计算每一段的长度，取最大值，即为答案。
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组在哪结束。
+
+这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
+
+时间复杂度乍一看是 $\mathcal{O}(n^2)$，但注意变量 $i$ 只会增加，不会重置也不会减少。所以二重循环总共循环 $\mathcal{O}(n)$ 次，所以时间复杂度是 $\mathcal{O}(n)$。
 
 ```py [sol-Python3]
 class Solution:
-    def longestAlternatingSubarray(self, a: List[int], threshold: int) -> int:
-        ans, i, n = 0, 0, len(a)
+    def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
+        n = len(nums)
+        ans = i = 0
         while i < n:
-            if a[i] % 2 or a[i] > threshold:
+            if nums[i] > threshold or nums[i] % 2:
+                i += 1  # 直接跳过
+                continue
+            start = i  # 记录这一组的开始位置
+            i += 1  # 开始位置已经满足要求，从下一个位置开始判断
+            while i < n and nums[i] <= threshold and nums[i] % 2 != nums[i - 1] % 2:
                 i += 1
-            else:
-                i0 = i
-                i += 1
-                while i < n and a[i] <= threshold and a[i] % 2 != a[i - 1] % 2:
-                    i += 1  # i 是全局变量，二重循环 i+=1 至多执行 O(n) 次
-                ans = max(ans, i - i0)
+            # 从 start 到 i-1 是满足题目要求的子数组
+            ans = max(ans, i - start)
         return ans
 ```
 
+```java [sol-Java]
+public class Solution {
+    public int longestAlternatingSubarray(int[] nums, int threshold) {
+        int n = nums.length;
+        int ans = 0, i = 0;
+        while (i < n) {
+            if (nums[i] > threshold || nums[i] % 2 != 0) {
+                i++; // 直接跳过
+                continue;
+            }
+            int start = i; // 记录这一组的开始位置
+            i++; // 开始位置已经满足要求，从下一个位置开始判断
+            while (i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2) {
+                i++;
+            }
+            // 从 start 到 i-1 是满足题目要求的子数组
+            ans = Math.max(ans, i - start);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int longestAlternatingSubarray(vector<int> &nums, int threshold) {
+        int n = nums.size();
+        int ans = 0, i = 0;
+        while (i < n) {
+            if (nums[i] > threshold || nums[i] % 2) {
+                i++; // 直接跳过
+                continue;
+            }
+            int start = i; // 记录这一组的开始位置
+            i++; // 开始位置已经满足要求，从下一个位置开始判断
+            while (i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2) {
+                i++;
+            }
+            // 从 start 到 i-1 是满足题目要求的子数组
+            ans = max(ans, i - start);
+        }
+        return ans; 
+    }
+};
+```
+
 ```go [sol-Go]
-func longestAlternatingSubarray(a []int, threshold int) (ans int) {
-	for i, n := 0, len(a); i < n; {
-		if a[i]%2 > 0 || a[i] > threshold {
-			i++
-		} else {
-			i0 := i
-			for i++; i < n && a[i] <= threshold && a[i]%2 != a[i-1]%2; i++ {}
-			ans = max(ans, i-i0)
+func longestAlternatingSubarray(nums []int, threshold int) (ans int) {
+	n := len(nums)
+	i := 0
+	for i < n {
+		if nums[i] > threshold || nums[i]%2 != 0 {
+			i++ // 直接跳过
+			continue
 		}
+		start := i // 记录这一组的开始位置
+		i++ // 开始位置已经满足要求，从下一个位置开始判断
+		for i < n && nums[i] <= threshold && nums[i]%2 != nums[i-1]%2 {
+			i++
+		}
+		// 从 start 到 i-1 是满足题目要求的子数组
+		ans = max(ans, i-start)
 	}
 	return
 }
+```
 
-func max(a, b int) int { if b > a { return b }; return a }
+```js [sol-JavaScript]
+var longestAlternatingSubarray = function(nums, threshold) {
+    const n = nums.length;
+    let ans = 0, i = 0;
+    while (i < n) {
+        if (nums[i] > threshold || nums[i] % 2 !== 0) {
+            i++; // 直接跳过
+            continue;
+        }
+        let start = i; // 记录这一组的开始位置
+        i++; // 开始位置已经满足要求，从下一个位置开始判断
+        while (i < n && nums[i] <= threshold && nums[i] % 2 !== nums[i - 1] % 2) {
+            i++;
+        }
+        // 从 start 到 i-1 是满足题目要求的子数组
+        ans = Math.max(ans, i - start);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn longest_alternating_subarray(nums: Vec<i32>, threshold: i32) -> i32 {
+        let n = nums.len();
+        let mut ans = 0;
+        let mut i = 0;
+        while i < n {
+            if nums[i] > threshold || nums[i] % 2 != 0 {
+                i += 1; // 直接跳过
+                continue;
+            }
+            let start = i; // 记录这一组的开始位置
+            i += 1; // 开始位置已经满足要求，从下一个位置开始判断
+            while i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2 {
+                i += 1;
+            }
+            // 从 start 到 i-1 是满足题目要求的子数组
+            ans = ans.max(i - start);
+        }
+        ans as i32
+    }
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。注意 $i$ 是全局变量，只会增加，不会减少。所以二重循环至多执行 $\mathcal{O}(n)$ 次。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。时间复杂度乍一看是 $\mathcal{O}(n^2)$，但注意变量 $i$ 只会增加，不会重置也不会减少。所以二重循环总共循环 $\mathcal{O}(n)$ 次，所以时间复杂度是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+
+## 练习
+
+一般来说，分组循环的模板如下（可根据题目调整）：
+
+```py
+n = len(nums)
+i = 0
+while i < n:
+    start = i
+    while i < n and ...:
+        i += 1
+    # 从 start 到 i-1 是一组
+    # 下一组从 i 开始，无需 i += 1
+```
+
+学会一个模板是远远不够的，需要大量练习才能灵活运用。
+
+- [1446. 连续字符](https://leetcode.cn/problems/consecutive-characters/)
+- [1869. 哪种连续子字符串更长](https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/)
+- [1957. 删除字符使字符串变好](https://leetcode.cn/problems/delete-characters-to-make-fancy-string/)
+- [2038. 如果相邻两个颜色均相同则删除当前颜色](https://leetcode.cn/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/)
+- [1759. 统计同质子字符串的数目](https://leetcode.cn/problems/count-number-of-homogenous-substrings/)
+- [2110. 股票平滑下跌阶段的数目](https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/)
+- [1578. 使绳子变成彩色的最短时间](https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/)
+- [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/)
+- [228. 汇总区间](https://leetcode.cn/problems/summary-ranges/)
+- [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/)
