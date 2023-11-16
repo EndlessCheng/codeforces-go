@@ -9,7 +9,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func f600(s string) int {
+func isDigit(s string) int {
 	if len(s) == 0 || len(s) > 1 && s[0] == '0' {
 		return 1
 	}
@@ -26,7 +26,7 @@ func CF600A(in io.Reader, out io.Writer) {
 	Fscan(bufio.NewReader(in), &s)
 	a := [2][]string{}
 	for _, s := range strings.Split(strings.ReplaceAll(s, ";", ","), ",") {
-		v := f600(s)
+		v := isDigit(s)
 		a[v] = append(a[v], s)
 	}
 	for _, b := range a {
