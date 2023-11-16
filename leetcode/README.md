@@ -111,6 +111,7 @@
 附：
 
 - [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+- [【简单题杀手】分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
 - [差分数组](https://leetcode.cn/circle/discuss/FfMCgb/)
 - [【图解】二维前缀和](https://leetcode.cn/circle/discuss/UUuRex/)
 - [从周赛中学算法 - 2023·上](https://leetcode.cn/circle/discuss/v2RXSN/)
