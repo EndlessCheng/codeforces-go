@@ -175,6 +175,7 @@
   - 数位 DP
   - 倍增优化 DP
   - 斜率优化 DP（CHT）
+  - WQS 二分优化 DP（凸优化 DP / 带权二分）
   - 树形 DP
     - 树的直径个数
     - 在任一直径上的节点个数
@@ -193,6 +194,7 @@
   - 双连通分量（BCC）
     - v-BCC
     - e-BCC
+  - 圆方树
   - 最短路
     - Dijkstra
     - SPFA（队列优化的 Bellman-Ford）
@@ -233,7 +235,6 @@
     - Dijkstra
   - 三元环计数
   - 四元环计数
-  - 仙人掌
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
@@ -276,7 +277,7 @@
     - 二维前缀和
     - 二维差分
     - 离散化
-  - [杂项 B misc.go](/copypasta/misc.go)
+  - [杂项 misc.go](/copypasta/misc.go)
 - [快速输入输出模板 io.go](/copypasta/io.go)
 
 欢迎关注 bilibili[@灵茶山艾府](https://space.bilibili.com/206214)，高质量算法教学，持续输出中！
