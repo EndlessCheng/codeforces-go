@@ -4,6 +4,7 @@ import (
 	"container/heap"
 	"math"
 	"math/bits"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -30,7 +31,8 @@ LC368 https://leetcode.cn/problems/largest-divisible-subset/
 LC1105 https://leetcode.cn/problems/filling-bookcase-shelves/
 LC1416 https://leetcode.cn/problems/restore-the-array/
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/
-- 相似题目 https://codeforces.com/problemset/problem/1624/E
+- 变形：改成环形数组要怎么做
+- 相似题目 https://codeforces.com/problemset/problem/1624/E 2000
 LC2547 https://leetcode.cn/problems/minimum-cost-to-split-an-array/
 LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
 另见 LIS
@@ -54,6 +56,7 @@ LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode-cn.c
 LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
 LC2919 https://leetcode.cn/problems/minimum-increment-operations-to-make-array-beautiful/ 状态设计的好题
+https://codeforces.com/contest/404/problem/D 1900
 
 ④ 划分型 DP：将序列分成（恰好/至多）k 个连续区间，求解这些区间的某个最优性质
 一般定义 dp[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
@@ -732,19 +735,18 @@ func _(abs func(int) int) {
 	// 转换 https://codeforces.com/problemset/problem/1562/E
 	// 变体 https://codeforces.com/problemset/problem/1350/B
 	//【网络流 24 题】能取出多少个长为 len(LIS) 的不相交子序列 https://loj.ac/p/6005 https://www.luogu.com.cn/problem/P2766
-	lisSlow := func(a []int) (ans int) {
+	lisSlow := func(a []int) int {
 		n := len(a)
-		dp := make([]int, n)
+		f := make([]int, n)
 		for i, v := range a {
-			dp[i] = 1
+			f[i] = 1
 			for j, w := range a[:i] {
 				if w < v { // 改成 <= 为非降
-					dp[i] = max(dp[i], dp[j]+1)
+					f[i] = max(f[i], f[j]+1)
 				}
 			}
-			ans = max(ans, dp[i])
 		}
-		return
+		return slices.Max(f)
 	}
 
 	// 最长上升子序列 (LIS)   最长递增子序列
@@ -880,11 +882,7 @@ func _(abs func(int) int) {
 				}
 			}
 		}
-		ans := 0
-		for _, v := range dp[n] {
-			ans = max(ans, v)
-		}
-		return ans
+		return slices.Max(dp[n])
 	}
 
 	// LCIS 打印方案
@@ -1185,6 +1183,7 @@ func _(abs func(int) int) {
 	// 打印方案 https://codeforces.com/problemset/problem/864/E
 	// 变形，需要多加一个维度 https://atcoder.jp/contests/abc275/tasks/abc275_f
 	// 贡献 https://atcoder.jp/contests/abc159/tasks/abc159_f
+	// 抽屉原理 https://codeforces.com/contest/577/problem/B 1900
 	// NOIP06·提高 金明的预算方案（也可以用树上背包做）https://www.luogu.com.cn/problem/P1064
 	// EXTRA: 恰好装满（相当于方案数不为 0）LC416 https://leetcode-cn.com/problems/partition-equal-subset-sum/
 	//        必须定义成恰好装满（紫书例题 9-5，UVa 12563）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=441&page=show_problem&problem=4008
@@ -1369,7 +1368,7 @@ func _(abs func(int) int) {
 
 	// 完全背包 EXTRA: 方案数
 	// LC518 https://leetcode-cn.com/problems/coin-change-ii/
-	// https://codeforces.com/problemset/problem/1673/C
+	// https://codeforces.com/problemset/problem/1673/C 1500
 	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
 	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode-cn.com/problems/combination-sum-iv/
@@ -1378,7 +1377,7 @@ func _(abs func(int) int) {
 		f[0] = 1
 		for _, v := range a {
 			for j := v; j <= total; j++ {
-				f[j] += f[j-v] // % mod
+				f[j] = (f[j] + f[j-v]) % mod
 			}
 		}
 		return f[total]
@@ -1696,6 +1695,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/855/B
 	https://codeforces.com/problemset/problem/623/B
 	式子变形 https://codeforces.com/contest/1826/problem/D
+	https://codeforces.com/contest/404/problem/D 1900
 	*/
 
 	/* 分治 DP
@@ -2718,6 +2718,7 @@ func _(abs func(int) int) {
 	//  http://poj.org/problem?id=3709
 	//  https://codeforces.com/problemset/problem/311/B
 	//  https://codeforces.com/problemset/problem/1715/E
+	//  https://codeforces.com/problemset/problem/631/E 2600
 	cht := func(a, b []int) int {
 		n := len(a)
 		dp := make([]int, n)
@@ -2755,24 +2756,62 @@ func _(abs func(int) int) {
 		return dp[n-1]
 	}
 
-	// 凸优化 DP / 带权二分 / WQS 二分
-	// 《浅析一类二分方法》
-	// 把强制选 k 个物品的问题转换成选任意个物品的问题
-	// todo https://www.luogu.com.cn/blog/daniu/wqs-er-fen
-	//      https://www.luogu.com.cn/blog/Flying2018/wqs-er-fen-min-ke-fu-si-ji-hu-xue-xi-bi-ji
-	// todo https://www.cnblogs.com/CreeperLKF/p/9045491.html
-	// todo https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
-	// todo https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
+	// WQS 二分 / 凸优化 DP / 带权二分 / Alien Trick
+	// 原文：《浅析一类二分方法》
+	// 把最多选 k 个物品的问题（时间复杂度高）转换成选任意个物品的问题（更容易解决，时间复杂度低）
+	// 要求满足性质：k 越大，额外产生的收益是单调递减的
+	// 具体解释见下面的代码注释
+	// https://zhuanlan.zhihu.com/p/340514421
+	// https://www.cnblogs.com/CreeperLKF/p/9045491.html
+	// https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
+	// https://www.luogu.com.cn/blog/daniu/wqs-er-fen
+	// https://www.luogu.com.cn/blog/Flying2018/wqs-er-fen-min-ke-fu-si-ji-hu-xue-xi-bi-ji
+	// https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
 	//
-	// todo https://leetcode-cn.com/problems/minimum-white-tiles-after-covering-with-carpets/solution/wqs-er-fen-on-log-n-by-zerotrac2-cp7j/
-	//
-	// http://codeforces.com/problemset/problem/739/E（这题还可以费用流）
-	// IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
-	//           https://www.luogu.com.cn/problem/P6246
-	// LC188 https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iv/solution/yi-chong-ji-yu-wqs-er-fen-de-you-xiu-zuo-x36r/
-	// https://www.luogu.com.cn/problem/U72600
-	// https://www.luogu.com.cn/training/3495#problems
-	// 单度限制最小生成树（恰好）https://codeforces.com/problemset/problem/125/E
+	// 题单 https://www.luogu.com.cn/training/3495#problems
+	// todo 单度限制最小生成树（恰好）https://codeforces.com/problemset/problem/125/E 2400
+	//  （这题还可以费用流）http://codeforces.com/problemset/problem/739/E 3000
+	//  种树 https://www.luogu.com.cn/problem/P1484
+	//  IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
+	//            https://www.luogu.com.cn/problem/P6246
+	//  https://www.luogu.com.cn/problem/P5308
+	//  IOI16 aliens https://www.luogu.com.cn/problem/P5896
+	//  https://www.luogu.com.cn/problem/U72600
+	//  LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
+	//  LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
+	wqs := func(prices []int, k int) (ans int) {
+		// 以 LC188 为例 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
+		// 二分交易「手续费」fee，做一个 LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+		// 那么 fee 越小，交易次数越多；fee 越大，交易次数越小
+		// 如果交易次数小于 k，说明 fee 取大了，反之 fee 取小了
+		// 如果某个 fee 对应着恰好 k 次交易，就得到了正确答案
+
+		// fee 最大为 slices.Max(prices)，此时不赚钱（但也可以交易）
+		// +1 可以保证至少触发一次 ans 赋值
+		sort.Search(slices.Max(prices)+1, func(fee int) bool {
+			f0, f1 := 0, math.MinInt/2
+			cnt0, cnt1 := 0, 0
+			for _, p := range prices {
+				if f0-p >= f1 { // 取等号，让交易次数尽量多
+					f1 = f0 - p
+					cnt1 = cnt0
+				}
+				if f1+p-fee >= f0 { // 取等号，让交易次数尽量多
+					f0 = f1 + p - fee
+					cnt0 = cnt1 + 1 // 卖出才算完整交易
+				}
+			}
+			if cnt0 >= k { // 至少 k 次交易
+				ans = f0 + k*fee // 直接算，因为最终一定会二分到恰好 k 次交易
+				return false
+			}
+			if fee == 0 { // 说明无论如何，交易次数都小于 k
+				ans = f0 // f0 就是答案
+			}
+			return true
+		})
+		return
+	}
 
 	// 四边形不等式优化 Knuth's Optimization
 	// https://oi-wiki.org/dp/opt/quadrangle/
@@ -2780,6 +2819,16 @@ func _(abs func(int) int) {
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式
 	//      决策单调性优化讲解 https://www.luogu.com.cn/blog/83547/zong-dong-tai-gui-hua-di-ben-zhi-kan-si-bian-xing-fou-deng-shi-you-hua
 	// 扔蛋问题 LC887 https://leetcode-cn.com/problems/super-egg-drop/
+
+	// CDQ 分治优化 DP
+	// todo https://oi-wiki.org/misc/cdq-divide/
+	//  推荐 https://blog.nowcoder.net/n/f44d4aada5a24f619442dd6ddffa7320
+	//  推荐 https://zhuanlan.zhihu.com/p/332996578
+	//  https://www.bilibili.com/video/BV1mC4y1s7ic
+	//  [学习笔记]CDQ分治和整体二分 https://www.luogu.com.cn/blog/Owencodeisking/post-xue-xi-bi-ji-cdq-fen-zhi-hu-zheng-ti-er-fen
+	//  https://www.luogu.com.cn/blog/ljc20020730/cdq-fen-zhi-xue-xi-bi-ji
+	//  动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
+	//  CDQ 优化 DP https://www.luogu.com.cn/problem/P2487
 
 	/* 树形 DP
 	思考方向：
@@ -2793,9 +2842,10 @@ func _(abs func(int) int) {
 	https://codeforces.com/blog/entry/20935
 	https://codeforces.com/blog/entry/63257
 
-	基本 LC337 https://leetcode.cn/problems/house-robber-iii/
+	LC337 https://leetcode.cn/problems/house-robber-iii/
 	LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
 	LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/
+	LC2925 https://leetcode.cn/problems/maximum-score-after-applying-operations-on-a-tree/
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
 
@@ -2825,12 +2875,13 @@ func _(abs func(int) int) {
 	// LC1245 https://leetcode-cn.com/problems/tree-diameter/
 	// 变形 LC2246 https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/
 	// 变形 https://codeforces.com/problemset/problem/1238/F
+	// 虚树直径 https://www.luogu.com.cn/problem/P4103
 	diameter := func(st int, g [][]int) (diameter int) {
 		var f func(v, fa int) int
 		f = func(v, fa int) (maxL int) {
 			for _, w := range g[v] {
 				if w != fa {
-					subL := f(w, v) + 1
+					subL := f(w, v) + 1 // wt
 					diameter = max(diameter, maxL+subL)
 					maxL = max(maxL, subL)
 				}
@@ -3161,6 +3212,7 @@ func _(abs func(int) int) {
 	// 计数 https://codeforces.com/problemset/problem/1691/F
 	// https://codeforces.com/problemset/problem/1794/E
 	// https://codeforces.com/contest/1882/problem/D
+	// 虚树 https://codeforces.com/problemset/problem/1320/E 3000
 
 	// 给一棵无根树
 	// 返回每个点到其余点的距离之和
@@ -3399,7 +3451,7 @@ func _(abs func(int) int) {
 
 		binaryLifting,
 
-		cht,
+		cht, wqs,
 
 		diameter, countDiameter, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
