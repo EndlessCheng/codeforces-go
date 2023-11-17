@@ -45,7 +45,9 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/) 1913
 - [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/) 1946
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
+- [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
+https://codeforces.com/contest/670/problem/D2 1500
 https://codeforces.com/problemset/problem/1118/D2
 DP https://codeforces.com/contest/883/problem/I
 https://codeforces.com/contest/1843/problem/E
@@ -582,15 +584,11 @@ func sortCollections() {
 		return (l + r) / 2
 	}
 
+	// WQS 二分
+	// 见 dp.go
+
 	// CDQ 分治
-	// todo https://oi-wiki.org/misc/cdq-divide/
-	//      推荐 https://blog.nowcoder.net/n/f44d4aada5a24f619442dd6ddffa7320
-	//      推荐 https://zhuanlan.zhihu.com/p/332996578
-	//      https://www.bilibili.com/video/BV1mC4y1s7ic
-	//      [学习笔记]CDQ分治和整体二分 https://www.luogu.com.cn/blog/Owencodeisking/post-xue-xi-bi-ji-cdq-fen-zhi-hu-zheng-ti-er-fen
-	//      https://www.luogu.com.cn/blog/ljc20020730/cdq-fen-zhi-xue-xi-bi-ji
-	//      动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
-	//      CDQ 优化 DP https://www.luogu.com.cn/problem/P2487
+	// 见 dp.go
 
 	// 整体二分 Parallel Binary Search
 	// https://oi-wiki.org/misc/parallel-binsearch/
@@ -644,8 +642,6 @@ func sortCollections() {
 		f(tar, 0, len(qs)+1) // 这样可以将无法满足要求的 ans[i] 赋值为 len(qs)
 		return ans
 	}
-
-	// WQS 二分见 dp.go
 
 	// 倍增
 	// https://www.acwing.com/problem/content/description/111/
