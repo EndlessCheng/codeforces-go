@@ -1,7 +1,6 @@
 package main
 
 import (
-	"cmp"
 	"slices"
 	"sort"
 )
@@ -13,12 +12,12 @@ func maximumSumQueries(nums1, nums2 []int, queries [][]int) []int {
 	for i, x := range nums1 {
 		a[i] = pair{x, nums2[i]}
 	}
-	slices.SortFunc(a, func(a, b pair) int { return cmp.Compare(b.x, a.x) })
+	slices.SortFunc(a, func(a, b pair) int { return b.x - a.x })
 	qid := make([]int, len(queries))
 	for i := range qid {
 		qid[i] = i
 	}
-	slices.SortFunc(qid, func(i, j int) int { return cmp.Compare(queries[j][0], queries[i][0]) })
+	slices.SortFunc(qid, func(i, j int) int { return queries[j][0] - queries[i][0] })
 
 	ans := make([]int, len(queries))
 	type data struct{ y, s int }
