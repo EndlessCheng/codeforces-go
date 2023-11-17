@@ -2760,7 +2760,7 @@ func _(abs func(int) int) {
 	// 原文：《浅析一类二分方法》
 	// 把最多选 k 个物品的问题（时间复杂度高）转换成选任意个物品的问题（更容易解决，时间复杂度低）
 	// 要求满足性质：k 越大，额外产生的收益是单调递减的
-	// 具体解释见下面的代码注释
+	// 具体请看下面的代码注释
 	// https://zhuanlan.zhihu.com/p/340514421
 	// https://www.cnblogs.com/CreeperLKF/p/9045491.html
 	// https://taodaling.github.io/blog/2020/07/31/WQS%E4%BA%8C%E5%88%86/
@@ -2769,29 +2769,27 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
 	//
 	// 题单 https://www.luogu.com.cn/training/3495#problems
+	// 种树（打家劫舍）https://www.luogu.com.cn/problem/P1484
+	// LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
 	// todo 单度限制最小生成树（恰好）https://codeforces.com/problemset/problem/125/E 2400
 	//  （这题还可以费用流）http://codeforces.com/problemset/problem/739/E 3000
-	//  种树 https://www.luogu.com.cn/problem/P1484
-	//  IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
-	//            https://www.luogu.com.cn/problem/P6246
+	//  结合四边形不等式 IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
+	//  - https://www.luogu.com.cn/problem/P6246
 	//  https://www.luogu.com.cn/problem/P5308
 	//  IOI16 aliens https://www.luogu.com.cn/problem/P5896
 	//  https://www.luogu.com.cn/problem/U72600
-	//  LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
 	//  LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
-	wqs := func(prices []int, k int) (ans int) {
-		// 以 LC188 为例 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
-		// 二分交易「手续费」fee，做一个 LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
-		// 那么 fee 越小，交易次数越多；fee 越大，交易次数越小
-		// 如果交易次数小于 k，说明 fee 取大了，反之 fee 取小了
-		// 如果某个 fee 对应着恰好 k 次交易，就得到了正确答案
+	wqs := func(a []int, k int) (ans int) {
+		// 代码分为两部分：dpWithFee 和 sort.Search
+		// 前者是需要实现的 DP，后者是固定的模板，一般只需要注意二分上界
 
-		// fee 最大为 slices.Max(prices)，此时不赚钱（但也可以交易）
-		// +1 可以保证至少触发一次 ans 赋值
-		sort.Search(slices.Max(prices)+1, func(fee int) bool {
+		// dpWithFee 是一个更容易解决的 DP：每次产生一次「选择」的时候（例如完成一次买卖），额外有手续费 fee，但没有至多 k 次的限制了
+		// 返回最大收益，以及在收益最大的前提下，「选择」次数的最大值
+		// LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+		dpWithFee := func(fee int) (res, cnt int) {
 			f0, f1 := 0, math.MinInt/2
 			cnt0, cnt1 := 0, 0
-			for _, p := range prices {
+			for _, p := range a {
 				if f0-p >= f1 { // 取等号，让交易次数尽量多
 					f1 = f0 - p
 					cnt1 = cnt0
@@ -2801,15 +2799,60 @@ func _(abs func(int) int) {
 					cnt0 = cnt1 + 1 // 卖出才算完整交易
 				}
 			}
-			if cnt0 >= k { // 至少 k 次交易
-				ans = f0 + k*fee // 直接算，因为最终一定会二分到恰好 k 次交易
+			return f0, cnt0
+		}
+
+		// 下面是 WQS 二分模板
+		// 以 LC188 为例 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
+		// 二分交易「手续费」fee，做一个 LC714 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/
+		// 那么 fee 越小，交易次数越多；fee 越大，交易次数越小
+		// 如果交易次数小于 k，说明 fee 取大了，反之 fee 取小了
+		// 如果某个 fee 对应着恰好 k 次交易，就得到了正确答案
+
+		// fee 最大为 slices.Max(a)，此时可以保证收益为 0（但仍然可以完成交易，比如卖出价格-买入价格-fee=0）
+		// +1 可以保证至少触发一次 ans 赋值
+		sort.Search(slices.Max(a)+1, func(fee int) bool {
+			res, cnt := dpWithFee(fee)
+			if cnt >= k { // 至少 k 次交易
+				ans = res + k*fee // 直接算，因为最终一定会二分到恰好 k 次交易
 				return false
 			}
 			if fee == 0 { // 说明无论如何，交易次数都小于 k
-				ans = f0 // f0 就是答案
+				ans = res // fee 为 0 时，res 最大，也就是答案
 			}
 			return true
 		})
+
+		// 下面是另一个例子 https://www.luogu.com.cn/problem/P1484
+		// 这题的 dpWithFee 就只需要实现一个打家劫舍的 DP
+		dpWithFee = func(fee int) (res, cnt int) {
+			var f0, f1, cnt0, cnt1 int
+			for _, v := range a {
+				v -= fee
+				if f1 > f0+v { // 不选
+					f0 = f1
+					cnt0 = cnt1
+				} else { // 选（相等时也选）
+					f0, f1 = f1, f0+v
+					cnt0, cnt1 = cnt1, cnt0+1
+				}
+			}
+			return f1, cnt1
+		}
+		// WQS 模板（代码和上面一样）
+		// fee 最大为 slices.Max(a)，此时可以保证收益为 0
+		sort.Search(slices.Max(a)+1, func(fee int) bool {
+			res, cnt := dpWithFee(fee)
+			if cnt >= k {
+				ans = res + k*fee
+				return false
+			}
+			if fee == 0 {
+				ans = res
+			}
+			return true
+		})
+
 		return
 	}
 
