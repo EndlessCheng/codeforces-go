@@ -235,13 +235,6 @@
     - Dijkstra
   - 三元环计数
   - 四元环计数
-  - 支配树
-  - 弦图
-  - 完美消除序列
-  - 图同构
-  - LGV 引理
-  - 动态图完全连通性
-    - ETT
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
@@ -284,9 +277,6 @@
     - 二维前缀和
     - 二维差分
     - 离散化
-    - 扫描线
-      - 矩形面积并
-      - 矩形并的周长
   - [杂项 misc.go](/copypasta/misc.go)
 - [快速输入输出模板 io.go](/copypasta/io.go)
 
