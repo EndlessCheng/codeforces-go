@@ -1,3 +1,9 @@
+## 题意解读
+
+选一个最长连续子数组，满足子数组元素依次是偶数，奇数，偶数，奇数，……，且元素值均不超过 $\textit{threshold}$。
+
+例如 $\textit{nums}=[2,1,1,4,3,4,2,8],\textit{threshold}=5$，数组可以分成 $[2,1],1,[4,3,4],[2],8$，其中 $[\cdots]$ 是子数组，其余数字不满足要求。所以最长连续子数组的长度是 $3$。
+
 ## 分组循环
 
 **适用场景**：按照题目要求，数组会被分割成若干组，且每一组的判断/处理逻辑是一样的。
@@ -5,7 +11,7 @@
 **核心思想**：
 
 - 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
-- 内层循环负责遍历组，找出这一组在哪结束。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
 
 这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
 
@@ -24,7 +30,7 @@ class Solution:
             i += 1  # 开始位置已经满足要求，从下一个位置开始判断
             while i < n and nums[i] <= threshold and nums[i] % 2 != nums[i - 1] % 2:
                 i += 1
-            # 从 start 到 i-1 是满足题目要求的子数组
+            # 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
             ans = max(ans, i - start)
         return ans
 ```
@@ -44,7 +50,7 @@ public class Solution {
             while (i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2) {
                 i++;
             }
-            // 从 start 到 i-1 是满足题目要求的子数组
+            // 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
             ans = Math.max(ans, i - start);
         }
         return ans;
@@ -68,7 +74,7 @@ public:
             while (i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2) {
                 i++;
             }
-            // 从 start 到 i-1 是满足题目要求的子数组
+            // 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
             ans = max(ans, i - start);
         }
         return ans; 
@@ -90,7 +96,7 @@ func longestAlternatingSubarray(nums []int, threshold int) (ans int) {
 		for i < n && nums[i] <= threshold && nums[i]%2 != nums[i-1]%2 {
 			i++
 		}
-		// 从 start 到 i-1 是满足题目要求的子数组
+		// 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
 		ans = max(ans, i-start)
 	}
 	return
@@ -111,7 +117,7 @@ var longestAlternatingSubarray = function(nums, threshold) {
         while (i < n && nums[i] <= threshold && nums[i] % 2 !== nums[i - 1] % 2) {
             i++;
         }
-        // 从 start 到 i-1 是满足题目要求的子数组
+        // 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
         ans = Math.max(ans, i - start);
     }
     return ans;
@@ -134,7 +140,7 @@ impl Solution {
             while i < n && nums[i] <= threshold && nums[i] % 2 != nums[i - 1] % 2 {
                 i += 1;
             }
-            // 从 start 到 i-1 是满足题目要求的子数组
+            // 从 start 到 i-1 是满足题目要求的（并且无法再延长的）子数组
             ans = ans.max(i - start);
         }
         ans as i32
@@ -174,3 +180,5 @@ while i < n:
 - [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/)
 - [228. 汇总区间](https://leetcode.cn/problems/summary-ranges/)
 - [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/)
+
+[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
