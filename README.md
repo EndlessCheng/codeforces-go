@@ -195,9 +195,6 @@
     - v-BCC
     - e-BCC
   - 圆方树
-  - 仙人掌【AcWing】
-    - 静态仙人掌
-    - 动态仙人掌
   - 最短路
     - Dijkstra
     - SPFA（队列优化的 Bellman-Ford）
