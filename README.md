@@ -70,10 +70,10 @@
   - [字典树 trie.go](/copypasta/trie.go)
     - 持久化
     - AC 自动机
-  - [异或字典树 trie01.go](/copypasta/trie01.go)
+  - [0-1 字典树 trie01.go](/copypasta/trie01.go)
     - 删除元素
     - 持久化
-    - 【研究】异或字典树上最多有多少个节点
+    - 【研究】0-1 字典树上最多有多少个节点
 - 数学
   - [数论 math.go](/copypasta/math.go)
     - 辗转相除法（最大公因数 GCD）
