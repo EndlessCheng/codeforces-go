@@ -36,15 +36,16 @@ import (
 //      https://codeforces.com/contest/617/problem/E
 //      https://codeforces.com/contest/877/problem/F
 //      https://www.codechef.com/problems/QCHEF
-func normalMo(in io.Reader, a []int, q int) []int {
+func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
-	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(q))))
+	nq := len(queries)
+	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(nq))))
 	type query struct{ lb, l, r, qid int }
-	qs := make([]query, q)
-	for i := range qs {
-		var l, r int
-		Fscan(in, &l, &r) // 从 1 开始，[l,r)
-		qs[i] = query{l / blockSize, l, r + 1, i}
+	qs := make([]query, nq)
+	for i, q := range queries {
+		// 输入是从 1 开始的
+		l, r := q[0], q[1]
+		qs[i] = query{l / blockSize, l, r + 1, i} // [l,r)
 	}
 	sort.Slice(qs, func(i, j int) bool {
 		a, b := qs[i], qs[j]
@@ -77,7 +78,7 @@ func normalMo(in io.Reader, a []int, q int) []int {
 		// ...
 		return cnt
 	}
-	ans := make([]int, q)
+	ans := make([]int, nq)
 	for _, q := range qs {
 		for ; r < q.r; r++ {
 			move(r, 1)

@@ -178,12 +178,12 @@ func countSubarrayByMinMax(a []int) int {
 	n := len(a)
 	ans := n * (n + 1) / 2
 	mx := MonotoneQueue{} // 维护区间最大值
-	mi := MonotoneQueue{} // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
+	mn := MonotoneQueue{} // 维护区间最小值（需要新定义一个有不同 less 的 monotoneQueue）
 	for i, j := 0, 0; i < n; i++ {
 		// 确保符合条件再插入
-		for ; j < n && (mx.Size == 0 || mi.Size == 0 || max(mx.Top(), a[j]) < 2*min(mi.Top(), a[j])); j++ {
+		for ; j < n && (mx.Size == 0 || mn.Size == 0 || max(mx.Top(), a[j]) < 2*min(mn.Top(), a[j])); j++ {
 			mx.Push(a[j])
-			mi.Push(a[j])
+			mn.Push(a[j])
 		}
 		sz := j - i
 		ans -= sz
@@ -191,8 +191,8 @@ func countSubarrayByMinMax(a []int) int {
 		if mx.Size == sz {
 			mx.Pop()
 		}
-		if mi.Size == sz {
-			mi.Pop()
+		if mn.Size == sz {
+			mn.Pop()
 		}
 	}
 	return ans

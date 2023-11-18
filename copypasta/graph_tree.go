@@ -1,8 +1,6 @@
 package copypasta
 
 import (
-	. "fmt"
-	"io"
 	"math/bits"
 	"reflect"
 	"slices"
@@ -775,6 +773,13 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 // 点分树（动态点分治）
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
+//  点分树+堆 https://www.luogu.com.cn/problem/P2056 https://www.luogu.com.cn/problem/SP2666
+//  无修改，点分树+vector+前缀和 https://www.luogu.com.cn/problem/P3241
+//  借助点分树移动答案 https://www.luogu.com.cn/problem/P3345
+//  动态加点的点分树+平衡树 https://www.luogu.com.cn/problem/P3920 
+//  - 除去动态加点就是点分树套路。加点时默认新点的点分父亲为原树父亲，当某点分子树不平衡度超过某个阈值，重新点分治即可。
+//  边分树+虚树 https://www.luogu.com.cn/problem/P4220
+//  边分树+虚树 https://www.luogu.com.cn/problem/P4565
 
 // 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
 // 【模板讲解】树上倍增算法（以及最近公共祖先） 
@@ -1096,27 +1101,22 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 // https://cp-algorithms.com/graph/lca_tarjan.html
 // 扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
 // LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
-func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
+func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
+	n := len(edges) - 1
 	g := make([][]int, n)
-	for i := 1; i < n; i++ {
-		v, w := 0, 0
-		Fscan(in, &v, &w)
-		v--
-		w--
+	for _, e := range edges {
+		v, w := e[0], e[1]
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
 
-	lca := make([]int, q)
-	dis := make([]int, q) // dis(q.v,q.w)
+	nq := len(queries)
+	lca := make([]int, nq)
+	dis := make([]int, nq) // dis(q.v,q.w)
 	type query struct{ w, i int }
-	qs := make([][]query, n)
-	for i := 0; i < q; i++ {
-		v, w := 0, 0
-		Fscan(in, &v, &w)
-		v--
-		w--
-
+	qs := make([][]query, len(g))
+	for i, q := range queries {
+		v, w := q[0], q[1]
 		// 第一种写法：保证在 v=w 时恰好只更新一个（结合下面的 if w := q.w; w == v || ... 理解）
 		qs[v] = append(qs[v], query{w, i})
 		if v != w {
@@ -1134,7 +1134,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		//}
 	}
 
-	_fa := make([]int, n)
+	_fa := make([]int, len(g))
 	for i := range _fa {
 		_fa[i] = i
 	}
@@ -1146,14 +1146,14 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 		return _fa[x]
 	}
 
-	dep := make([]int, n)
+	dep := make([]int, len(g))
 	// 为什么不用 bool 数组？
 	// 对于下面代码中的 do(v, w, lcaVW)
 	// 如果 v 是 w 的祖先节点，那么 w 递归结束后会触发一次，v 递归结束后又会触发一次
 	// 如果 do 中有增量更新，这样就错了
 	// 而三色标记法可以保证只会触发一次
-	color := make([]int8, n)
-	var tarjan func(v, d int)
+	color := make([]int8, len(g))
+	var tarjan func(int, int)
 	tarjan = func(v, d int) {
 		dep[v] = d
 		color[v] = 1
@@ -1195,7 +1195,7 @@ func (*tree) lcaTarjan(in io.Reader, n, q, root int) []int {
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
 // todo https://www.luogu.com.cn/problem/P2680
 // https://codeforces.com/problemset/problem/1707/C
-func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
+func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 	var pa [][]int
 	var getLCA func(int, int) int
 
@@ -1210,13 +1210,8 @@ func (*tree) differenceInTree(in io.Reader, n, root int, g [][]int) []int {
 		}
 		//diff[lca] -= 2 * val // 边权
 	}
-	var q int
-	Fscan(in, &q)
-	for i := 0; i < q; i++ {
-		var v, w, val int
-		Fscan(in, &v, &w, &val)
-		v--
-		w--
+	for _, q := range queries {
+		v, w, val := q[0], q[1], q[2]
 		update(v, w, val)
 	}
 

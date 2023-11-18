@@ -149,6 +149,7 @@ https://atcoder.jp/contests/abc282/tasks/abc282_g
 题目已经分类整理好：试试搜索「最大子段和」等。
 
 如何设计状态
+《挑战》p.62-64 多重部分和问题
 http://codeforces.com/problemset/problem/14/E
 https://codeforces.com/problemset/problem/360/B
 https://codeforces.com/problemset/problem/452/D 题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf452d
@@ -245,7 +246,7 @@ https://codeforces.com/problemset/problem/1479/B2
 - 相似技巧 LC1681 https://leetcode.cn/problems/minimum-incompatibility/discussion/comments/2051770
 https://codeforces.com/contest/414/problem/B
 多重组合
-- 见挑战
+- 见「多重背包 - 求方案数 - 同余前缀和优化」
 多重排列
 - dp[i][j] 表示前 i 类数字组成长为 j 的排列个数
 - dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
@@ -260,9 +261,6 @@ https://codeforces.com/problemset/problem/864/E
 双指针优化 DP
 https://codeforces.com/problemset/problem/883/I
 https://training.olinfo.it/#/task/preoii_yutaka/statement
-
-参考书籍推荐：
-《算法竞赛进阶指南》- 介绍了大量且全面的 DP 内容，是目前市面上讲解 DP 最好的一本书
 
 我的视频讲解：
 https://www.bilibili.com/video/BV1Xj411K7oF 从记忆化搜索到递推
@@ -2756,7 +2754,7 @@ func _(abs func(int) int) {
 		return dp[n-1]
 	}
 
-	// WQS 二分 / 凸优化 DP / 带权二分 / Alien Trick
+	// WQS 二分 / 凸优化 DP / 带权二分 / Alien Trick / Alien DP / Monge グラフ上のd-辺最短路長を計算するアルゴリズム 
 	// 原文：《浅析一类二分方法》
 	// 把最多选 k 个物品的问题（时间复杂度高）转换成选任意个物品的问题（更容易解决，时间复杂度低）
 	// 要求满足性质：k 越大，额外产生的收益是单调递减的
@@ -2767,10 +2765,12 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/blog/daniu/wqs-er-fen
 	// https://www.luogu.com.cn/blog/Flying2018/wqs-er-fen-min-ke-fu-si-ji-hu-xue-xi-bi-ji
 	// https://www.luogu.com.cn/blog/juruoforever/wqs-er-fen-qian-xi
+	// https://noshi91.github.io/algorithm-encyclopedia/d-edge-shortest-path-monge
 	//
 	// 题单 https://www.luogu.com.cn/training/3495#problems
 	// 种树（打家劫舍）https://www.luogu.com.cn/problem/P1484
 	// LC188 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/
+	// LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 	// todo 单度限制最小生成树（恰好）https://codeforces.com/problemset/problem/125/E 2400
 	//  （这题还可以费用流）http://codeforces.com/problemset/problem/739/E 3000
 	//  结合四边形不等式 IOI00 邮局 https://www.luogu.com.cn/problem/P4767 
@@ -2778,7 +2778,6 @@ func _(abs func(int) int) {
 	//  https://www.luogu.com.cn/problem/P5308
 	//  IOI16 aliens https://www.luogu.com.cn/problem/P5896
 	//  https://www.luogu.com.cn/problem/U72600
-	//  LC2209 https://leetcode.cn/problems/minimum-white-tiles-after-covering-with-carpets/
 	wqs := func(a []int, k int) (ans int) {
 		// 代码分为两部分：dpWithFee 和 sort.Search
 		// 前者是需要实现的 DP，后者是固定的模板，一般只需要注意二分上界
@@ -2808,7 +2807,7 @@ func _(abs func(int) int) {
 		// 那么 fee 越小，交易次数越多；fee 越大，交易次数越小
 		// 如果交易次数小于 k，说明 fee 取大了，反之 fee 取小了
 		// 如果某个 fee 对应着恰好 k 次交易，就得到了正确答案
-
+		//
 		// fee 最大为 slices.Max(a)，此时可以保证收益为 0（但仍然可以完成交易，比如卖出价格-买入价格-fee=0）
 		// +1 可以保证至少触发一次 ans 赋值
 		sort.Search(slices.Max(a)+1, func(fee int) bool {
@@ -2856,7 +2855,8 @@ func _(abs func(int) int) {
 		return
 	}
 
-	// 四边形不等式优化 Knuth's Optimization
+	// 四边形不等式优化 Knuth's Optimization / Knuth-Yao speedup
+	// 满足该性质的 DAG 叫做 Monge 图
 	// https://oi-wiki.org/dp/opt/quadrangle/
 	// https://jeffreyxiao.me/blog/knuths-optimization
 	// todo https://blog.csdn.net/weixin_43914593/article/details/105150937 算法竞赛专题解析（10）：DP优化(1)--四边形不等式

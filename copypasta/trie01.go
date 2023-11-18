@@ -15,7 +15,7 @@ import (
 - [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
 - [2479. 两个不重叠子树的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/)（会员题）
 
- */
+*/
 
 // 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -113,18 +113,19 @@ func (t *trie01) maxXor(v int) (ans int) {
 // https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/
 // O(1) space 做法 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/lei-si-kuai-su-pai-xu-de-fen-zhi-suan-fa-9eqx/
 func findMaximumXOR(a []int) (ans int) {
-	mask := 0
-	for i := trieBitLen - 1; i >= 0; i-- {
-		mask |= 1 << i
-		newAns := ans | 1<<i
-		has := map[int]bool{}
+	highBit := trieBitLen - 1
+	//highBit := bits.Len(uint(slices.Max(a))) - 1
+	seen := map[int]bool{}
+	for i := highBit; i >= 0; i-- {
+		clear(seen)
+		mask := ans | 1<<i
 		for _, v := range a {
 			v &= mask
-			if has[v^newAns] { // 对每个 v' = v&mask，判断是否有 w' 满足 v' ^ w' = newAns
-				ans = newAns
+			if seen[v^mask] { // 对每个 v' = v&mask，判断是否有 w' 满足 v' ^ w' = mask
+				ans = mask
 				break
 			}
-			has[v] = true
+			seen[v] = true
 		}
 	}
 	return
@@ -260,6 +261,7 @@ func (o trie01Node) put(v, k int) *trie01Node {
 // n 个 [0, 2^k) 范围内的数构成的 0-1 trie 至多可以有多少个节点？
 // n*(k-logn) + 2^(logn+1) - 1, 这里 logn = int(log_2(n)) = bit.Len(n)-1
 // 实际使用的时候，可以简单地用 n*(k+3-bit.Len(n)) 代替
+// O(max(n*(logU-logn),n))
 // 构造方法：先用不超过 n 的最大的 2 的幂次个数来构建一个完全二叉树，然后把剩余的数放入二叉树的下一层
 // 传入 n 和数据范围上限 maxV
 // 返回 n 个数，每个数的范围在 [0, maxV] 中

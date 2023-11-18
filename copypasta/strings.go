@@ -13,6 +13,9 @@ import (
 )
 
 /*
+API 题
+https://codeforces.com/problemset/problem/600/A 1600
+
 字符串问题的特殊性：
 不同子串之间会共享一些局部信息，巧妙地利用这些局部信息可以设计出更加高效的算法。
 

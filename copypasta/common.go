@@ -1,8 +1,6 @@
 package copypasta
 
 import (
-	. "fmt"
-	"io"
 	"math"
 	"math/bits"
 	"math/rand"
@@ -30,9 +28,12 @@ https://leetcode.cn/circle/discuss/vEFf96/
 枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
    - https://codeforces.com/problemset/problem/702/B
-- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
 - [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
+- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161
+- [2815. 数组中的最大数对和](https://leetcode.cn/problems/max-pair-sum-in-an-array/) 1295
+- [2748. 美丽下标对的数目](https://leetcode.cn/problems/number-of-beautiful-pairs/) 1301
+- [2342. 数位和相等数对的最大和](https://leetcode.cn/problems/max-sum-of-a-pair-with-equal-sum-of-digits/) 1309
 - [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/) 1377
 - [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
     巧妙安排更新顺序，使得 ans，pre_max 只能使用之前的值，从而符合 i<j<k 的要求
@@ -198,7 +199,19 @@ a[i] - b[j] > target 的方案数    同上
 子数组元素和 = < > target 的方案数：用前缀和，转换成上面 a[i] - b[j] 的形式
 子序列元素和 = < > target 的方案数：0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
 
-分组循环 O(n)   228-c.md
+## 分组循环
+
+https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/
+
+**适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
+
+**核心思想**：
+
+- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的统计工作（更新答案最大值）。
+- 内层循环负责遍历组，找出这一组最远在哪结束。
+
+这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
+
 - [1446. 连续字符](https://leetcode.cn/problems/consecutive-characters/)
 - [1869. 哪种连续子字符串更长](https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/)
 - [1957. 删除字符使字符串变好](https://leetcode.cn/problems/delete-characters-to-make-fancy-string/)
@@ -237,6 +250,7 @@ https://codeforces.com/problemset/problem/846/C
 - [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/)
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
+https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/1443/C 1400
 https://codeforces.com/problemset/problem/864/D 1500
 https://codeforces.com/problemset/problem/1691/C
@@ -293,7 +307,8 @@ LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-pl
 LC2731 https://leetcode.cn/problems/movement-of-robots/
 LC280 https://leetcode.cn/problems/wiggle-sort/
 https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1822
-https://codeforces.com/problemset/problem/1763/C
+https://codeforces.com/problemset/problem/1169/B 1500
+https://codeforces.com/problemset/problem/1763/C 2000
 https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://atcoder.jp/contests/abc196/tasks/abc196_e
 
@@ -358,7 +373,7 @@ https://atcoder.jp/contests/abc125/tasks/abc125_d
 https://codeforces.com/problemset/problem/1799/C
 https://codeforces.com/problemset/problem/1180/B 1500
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
-https://codeforces.com/problemset/problem/1861/C 1600
+https://codeforces.com/problemset/problem/1861/C 1600 好题！
 https://atcoder.jp/contests/arc134/tasks/arc134_d 1998
 
 大量分类讨论
@@ -793,25 +808,18 @@ func _() {
 
 	// 合并有序数组，保留至多 k 个元素
 	// https://codeforces.com/problemset/problem/587/C
+	// https://codeforces.com/problemset/problem/1665/E
 	mergeWithLimit := func(a, b []int, k int) []int {
 		i, n := 0, len(a)
 		j, m := 0, len(b)
 		res := make([]int, 0, min(n+m, k))
 		for len(res) < k {
 			if i == n {
-				if len(res)+m-j > k {
-					res = append(res, b[j:j+k-len(res)]...)
-				} else {
-					res = append(res, b[j:]...)
-				}
+				res = append(res, b[j:min(j+k-len(res), m)]...)
 				break
 			}
 			if j == m {
-				if len(res)+n-i > k {
-					res = append(res, a[i:i+k-len(res)]...)
-				} else {
-					res = append(res, a[i:]...)
-				}
+				res = append(res, a[i:min(i+k-len(res), n)]...)
 				break
 			}
 			if a[i] < b[j] {
@@ -1487,12 +1495,12 @@ func _() {
 	// LC 套题 https://leetcode-cn.com/tag/line-sweep/
 	// http://poj.org/problem?id=2932
 	// 转换 https://atcoder.jp/contests/arc068/tasks/arc068_c
-	sweepLine := func(in io.Reader, n int) {
+	sweepLine := func(ranges [][]int) {
+		n := len(ranges)
 		type event struct{ pos, delta int }
 		events := make([]event, 0, 2*n)
-		for i := 0; i < n; i++ {
-			var l, r int
-			Fscan(in, &l, &r)
+		for _, p := range ranges {
+			l, r := p[0], p[1]
 			events = append(events, event{l, 1}, event{r, -1})
 		}
 		sort.Slice(events, func(i, j int) bool {
@@ -1511,11 +1519,11 @@ func _() {
 
 	// 扫描线另一种写法，把 delta 压缩进 pos
 	// 这样可以避免写一个复杂的 sort.Slice
-	sweepLine2 := func(in io.Reader, n int) {
+	sweepLine2 := func(ranges [][]int) {
+		n := len(ranges)
 		events := make([]int, 0, 2*n)
-		for i := 0; i < n; i++ {
-			var l, r int
-			Fscan(in, &l, &r)
+		for _, p := range ranges {
+			l, r := p[0], p[1]
 			// 注意移位后是否溢出
 			events = append(events, l<<1|1, r<<1) // 先出后进
 			//events = append(events, l<<1, r<<1|1) // 先进后出
@@ -1534,12 +1542,12 @@ func _() {
 	}
 
 	// 扫描线：一维格点刷漆，返回被刷到的格点数
-	countCoveredPoints := func(in io.Reader, m int) int {
+	countCoveredPoints := func(ranges [][]int) int {
 		type pair struct{ p, d int }
+		m := len(ranges)
 		es := make([]pair, 0, 2*m)
-		for i := 0; i < m; i++ {
-			var l, r int
-			Fscan(in, &l, &r)
+		for _, p := range ranges {
+			l, r := p[0], p[1]
 			es = append(es, pair{l, 1}, pair{r, -1})
 		}
 		// assert len(es) > 0

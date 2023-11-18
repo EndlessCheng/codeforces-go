@@ -9,3 +9,8 @@ https://atcoder.jp/contests/abc300/submissions/44909568
 极大地简化了判断逻辑！妙哉！
 
 */
+
+/* 有思路但是不好实现
+https://codeforces.com/problemset/problem/1861/C 1600
+
+*/

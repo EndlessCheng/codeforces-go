@@ -149,6 +149,7 @@ func _() {
 	// - https://codeforces.com/problemset/problem/850/C
 	// - https://codeforces.com/problemset/problem/1823/E
 	// todo https://www.luogu.com.cn/problem/P2148
+	//  https://atcoder.jp/contests/arc151/tasks/arc151_c
 
 	// 剪纸博弈
 	// https://www.acwing.com/problem/content/description/221/ http://poj.org/problem?id=2311

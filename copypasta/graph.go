@@ -117,19 +117,18 @@ AOJ 2230
 // namespace
 type graph struct{}
 
-// len(g[v]) 表示结点 v 在无向图上的度/有向图上的出度
-// 对于树来说叶结点有 len(g[v]) == 1
-func (*graph) readGraph(in io.Reader, n, m int) [][]int {
-	g := make([][]int, n)
+// g[v] 表示 v 的邻居
+func (*graph) readGraph(in io.Reader, n, m int) {
+	type neighbor struct{ to, wt int }
+	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
-		var v, w int
-		Fscan(in, &v, &w)
+		var v, w, wt int
+		Fscan(in, &v, &w, &wt)
 		v--
 		w--
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+		g[v] = append(g[v], neighbor{w, wt})
+		g[w] = append(g[w], neighbor{v, wt})
 	}
-	return g
 }
 
 // 链式前向星
@@ -782,20 +781,15 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 // 与最短路结合 https://codeforces.com/problemset/problem/567/E
 // https://codeforces.com/problemset/problem/118/E
 // todo 构造 https://codeforces.com/problemset/problem/550/D
-func (*graph) findBridges(in io.Reader, n, m int) (isBridge []bool) {
+func (*graph) findBridges(n int, edges [][]int) (isBridge []bool) {
 	type neighbor struct{ to, eid int }
 	g := make([][]neighbor, n)
-	type edge struct{ v, w int }
-	edges := make([]edge, m)
-	for i := 0; i < m; i++ {
-		var v, w int
-		Fscan(in, &v, &w)
-		v--
-		w--
+	for i, e := range edges {
+		v, w := e[0], e[1]
 		g[v] = append(g[v], neighbor{w, i})
 		g[w] = append(g[w], neighbor{v, i})
-		edges[i] = edge{v, w}
 	}
+
 	isBridge = make([]bool, len(edges))
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
@@ -961,14 +955,10 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 // 缩点后形成一棵 bridge tree
 // 模板题 https://codeforces.com/problemset/problem/1000/E
 // 较为综合的一道题 http://codeforces.com/problemset/problem/732/F
-func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int) {
+func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) {
+	isBridge := G.findBridges(n, edges)
 	type neighbor struct{ to, eid int }
-	type edge struct{ v, w int }
-	g := make([][]neighbor, n)
-	edges := make([]edge, m)
-
-	// *copy* 包含读图
-	isBridge := G.findBridges(in, n, m)
+	var g [][]neighbor
 
 	// 求原图中每个点的 bccID
 	bccIDs = make([]int, len(g))
@@ -997,7 +987,9 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	// 遍历 edges，若两端点的 bccIDs 不同（割边）则建边
 	g2 := make([][]int, idCnt)
 	for _, e := range edges {
-		if v, w := bccIDs[e.v]-1, bccIDs[e.w]-1; v != w {
+		v, w := e[0], e[1]
+		v, w = bccIDs[v]-1, bccIDs[w]-1
+		if v != w {
 			g2[v] = append(g2[v], w)
 			g2[w] = append(g2[w], v)
 		}
@@ -1007,7 +999,8 @@ func (G *graph) findEdgeBCC(in io.Reader, n, m int) (comps [][]int, bccIDs []int
 	for eid, b := range isBridge {
 		if b {
 			e := edges[eid]
-			v, w := bccIDs[e.v]-1, bccIDs[e.w]-1
+			v, w := e[0], e[1]
+			v, w = bccIDs[v]-1, bccIDs[w]-1
 			g2[v] = append(g2[v], w)
 			g2[w] = append(g2[w], v)
 		}
@@ -1096,14 +1089,11 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // todo https://codeforces.com/problemset/problem/1005/F
 // todo MST https://codeforces.com/problemset/problem/545/E
 //  https://atcoder.jp/contests/arc090/tasks/arc090_c
-func (*graph) shortestPathDijkstra(in io.Reader, n, m, st int) (dist []int) {
+func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
-	for i := 0; i < m; i++ {
-		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
 		g[v] = append(g[v], neighbor{w, wt})
 		g[w] = append(g[w], neighbor{v, wt})
 	}
@@ -1342,14 +1332,11 @@ func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 // - 【思路讲解】O(nlogn) 贪心+单调栈二分 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/solution/tan-xin-pythonjavacgo-by-endlesscheng-w3k3/
 // - 加强版 LCP32 https://leetcode.cn/problems/t3fKg1/
 // - todo 打印方案 https://atcoder.jp/contests/abc216/tasks/abc216_g
-func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有负环时返回 nil
+func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dist []int) { // 有负环时返回 nil
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
-	for i := 0; i < m; i++ {
-		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
 		g[v] = append(g[v], neighbor{w, wt})
 		g[w] = append(g[w], neighbor{v, wt})
 	}
@@ -1384,6 +1371,7 @@ func (*graph) shortestPathSPFA(in io.Reader, n, m, st int) (dist []int) { // 有
 			}
 		}
 	}
+	// 注意循环完了 inQ[i] 都是 false
 
 	// EXTRA: 只是找负环的话，初始时将所有点入队即可
 	// 注意不能只从一个点出发找负环，因为可能这个点无法到达负环
@@ -1457,17 +1445,14 @@ func (*graph) shortestPathFloydWarshall(dis [][]int) [][]int {
 // 位压缩版 O(n^3/w)
 // LC2101 https://leetcode-cn.com/problems/detonate-the-maximum-bombs/
 // https://atcoder.jp/contests/abc287/tasks/abc287_h
-func (*graph) floydWarshallBitset(in io.Reader, n, m int) []int {
+func (*graph) floydWarshallBitset(n int, edges [][]int) []int {
 	vs := make([]Bitset, n) // vs[i] 表示从 i 出发可以到达的节点
 	for i := range vs {
 		vs[i] = NewBitset(n)
 		vs[i].Set(i) // i 可以到达 i
 	}
-	for i := 0; i < m; i++ {
-		var v, w int
-		Fscan(in, &v, &m)
-		v--
-		w--
+	for _, e := range edges {
+		v, w := e[0], e[1]
 		vs[v].Set(w) // 有向边 v->w
 	}
 	for k := range vs {
@@ -1522,25 +1507,25 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int) int {
 // https://en.wikipedia.org/wiki/Johnson%27s_algorithm
 // https://oi-wiki.org/graph/shortest-path/#johnson
 // 模板题 https://www.luogu.com.cn/problem/P5905
-func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int {
+func (G *graph) shortestPathJohnson(n int, edges [][]int) [][]int {
 	const inf int = 1e18
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n+1)
-	for i := 0; i < m; i++ {
-		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2] // 输入的节点编号从 1 开始	
 		g[v] = append(g[v], neighbor{w, wt})
 		g[w] = append(g[w], neighbor{v, wt})
 	}
 
 	// 建虚拟节点 0 并且往其他的点都连一条边权为 0 的边
+	const src = 0
 	for v := 1; v <= n; v++ {
-		g[0] = append(g[0], neighbor{v, 0})
-		g[v] = append(g[v], neighbor{})
+		g[src] = append(g[src], neighbor{v, 0})
+		g[v] = append(g[v], neighbor{src, 0})
 	}
 
-	// 跑 SPFA，代码略（注意点数为 n+1）
-	h := G.shortestPathSPFA(in, n+1, m, 0)
+	// 跑 SPFA（省略建图，注意点数为 n+1）
+	h := G.shortestPathSPFA(n+1, 0, edges)
 	if h == nil {
 		return nil
 	}
@@ -1552,10 +1537,10 @@ func (G *graph) shortestPathJohnson(in io.Reader, n, m int) [][]int {
 		}
 	}
 
-	// 以每个点为源点跑一遍 Dijkstra，代码略（注意点数为 n+1）
+	// 以每个点为源点跑一遍 Dijkstra（省略建图，注意点数为 n+1）
 	dist := make([][]int, n+1)
 	for st := 1; st <= n; st++ {
-		dist[st] = G.shortestPathDijkstra(in, n+1, m, st)
+		dist[st] = G.shortestPathDijkstra(n+1, st, edges)
 		for end, d := range dist[st] {
 			if d < inf {
 				dist[st][end] -= h[st] - h[end]
@@ -1613,10 +1598,70 @@ func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 // todo https://oi-wiki.org/graph/kth-path/
 // todo 模板题 https://www.luogu.com.cn/problem/P2483
 
-// 最小斯坦纳树
+// 最小斯坦纳树 minimum Steiner tree problem
+// 输入：一个带权无向图，k 个关键节点
+// 返回：连通 k 个关键节点的最小代价
+// https://en.wikipedia.org/wiki/Steiner_tree_problem
 // https://oi-wiki.org/graph/steiner-tree/
-// todo 模板题 https://www.luogu.com.cn/problem/P6192
-//  WC08 游览计划 https://www.luogu.com.cn/problem/P4294
+// 模板题 https://www.luogu.com.cn/problem/P6192
+// todo 输出方案 WC08 游览计划 https://www.luogu.com.cn/problem/P4294
+func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
+	type nb struct{ to, wt int }
+	g := make([][]nb, n)
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
+		g[v] = append(g[v], nb{w, wt})
+		g[w] = append(g[w], nb{v, wt})
+	}
+
+	const inf int = 1e9
+	k := len(points)
+	f := make([][]int, 1<<k)
+	for i := range f {
+		f[i] = make([]int, n)
+		for j := range f[i] {
+			f[i][j] = inf
+		}
+	}
+	for i, v := range points {
+		f[1<<i][v] = 0
+	}
+
+	inQ := make([]bool, n)
+	for s := 1; s < len(f); s++ {
+		fs := f[s]
+		for sub := s & (s - 1); sub > s^sub; sub = (sub - 1) & s {
+			for i := 0; i < n; i++ {
+				fs[i] = min(fs[i], f[sub][i]+f[s^sub][i])
+			}
+		}
+		// SPFA
+		q := []int{}
+		for i, fv := range fs {
+			if fv < inf {
+				q = append(q, i)
+				inQ[i] = true
+			}
+		}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			inQ[v] = false
+			for _, e := range g[v] {
+				w := e.to
+				if newD := fs[v] + e.wt; newD < fs[w] {
+					fs[w] = newD
+					if !inQ[w] {
+						inQ[w] = true
+						q = append(q, w)
+					}
+				}
+			}
+		}
+	}
+	ans := slices.Min(f[len(f)-1])
+	return ans
+}
 
 // 最小生成树 Kruskal
 // 适用于稀疏图 O(mlogm)，或者边已经按权值排序的情况
@@ -1650,21 +1695,9 @@ func (*graph) shortestPathMod(a []int, limit int) (ans int) {
 // - https://codeforces.com/problemset/problem/1857/G
 // 与 DFS 搜索树结合 https://codeforces.com/problemset/problem/1707/C
 // 变形！https://atcoder.jp/contests/abc282/tasks/abc282_e
-func (*graph) mstKruskal(in io.Reader, n, m int) int {
-	type edge struct {
-		v, w, wt int
-		eid      int // 某些题目需要
-	}
-	edges := make([]edge, m)
-	for i := range edges {
-		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
-		v--
-		w--
-		edges[i] = edge{v, w, wt, i}
-	}
+func (*graph) mstKruskal(n int, edges [][]int) int {
 	// 边权范围小的话也可以用桶排
-	sort.Slice(edges, func(i, j int) bool { return edges[i].wt < edges[j].wt })
+	sort.Slice(edges, func(i, j int) bool { return edges[i][2] < edges[j][2] })
 
 	fa := make([]int, n) // n+1
 	for i := range fa {
@@ -1681,10 +1714,11 @@ func (*graph) mstKruskal(in io.Reader, n, m int) int {
 	sum := 0
 	cntE := 0
 	for _, e := range edges {
-		fv, fw := find(e.v), find(e.w)
+		v, w, wt := e[0], e[1], e[2]
+		fv, fw := find(v), find(w)
 		if fv != fw {
 			fa[fv] = fw
-			sum += e.wt
+			sum += wt
 			cntE++
 		}
 	}
@@ -2768,14 +2802,11 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 // 拓扑序是否唯一：任意时刻队列中不能有超过一个元素
 // - LC444 https://leetcode.cn/problems/sequence-reconstruction/
 // 检查一个序列是否为拓扑序，可以仿造拓扑排序的算法，从前往后检查节点的入度是否为 0，然后减少相邻节点的入度，直到找到一个入度不为 0 的点或者遍历到末尾
-func (*graph) topoSort(in io.Reader, n, m int) []int {
+func (*graph) topoSort(n int, edges [][]int) []int {
 	g := make([][]int, n)
 	deg := make([]int, len(g))
-	for i := 0; i < m; i++ {
-		v, w := 0, 0
-		Fscan(in, &v, &w)
-		v--
-		w--
+	for _, e := range edges {
+		v, w := e[0], e[1]
 		g[v] = append(g[v], w) // 注意特判自环的情况
 		deg[w]++
 	}
@@ -3123,7 +3154,8 @@ func (*graph) pseudotree(g []int) { // g 为内向基环树（森林）
 	for len(q) > 0 {
 		v := q[0]
 		q = q[1:]
-		w := g[v] // v 只有一条出边
+		// 注意 v 只有一条出边
+		w := g[v]
 		rg[w] = append(rg[w], v) // 顺便建反图（在这里建反图可以避免加入基环上的边）
 		//f[v] += a[v]
 		//f[w] = max(f[w], f[v])
@@ -3534,7 +3566,7 @@ todo https://codeforces.com/contest/1455/problem/E
 // https://www.bilibili.com/video/BV1j64y1R7yK/
 //
 // 模板题 https://www.luogu.com.cn/problem/P3376 https://www.luogu.com.cn/problem/P2740
-func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
+func (*graph) maxFlowDinic(n, st, end int, edges [][]int) int {
 	const inf int = 1e18
 	st--
 	end--
@@ -3545,12 +3577,9 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap, eid})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -1}) // 无向图上 0 换成 cap
 	}
-	for i := 0; i < m; i++ {
-		var v, w, cp int
-		Fscan(in, &v, &w, &cp)
-		v--
-		w--
-		addEdge(v, w, cp, i)
+	for i, e := range edges {
+		v, w, edgeCap := e[0], e[1], e[2]
+		addEdge(v, w, edgeCap, i)
 	}
 
 	d := make([]int, len(g)) // 从源点 st 出发的距离
@@ -3616,7 +3645,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 
 	// EXTRA: 求流的分配方案（即反向边上的 cap）
 	// https://loj.ac/p/115 https://www.acwing.com/problem/content/2190/
-	ans := make([]int, m)
+	ans := make([]int, len(edges))
 	for _, es := range g { // v
 		for _, e := range es {
 			w, i := e.to, e.eid
@@ -3678,7 +3707,7 @@ func (*graph) maxFlowDinic(in io.Reader, n, m, st, end int) int {
 // https://oi-wiki.org/graph/flow/max-flow/#isap
 // https://www.renfei.org/blog/isap.html
 // 测试了一下性能和 Dinic 差不多
-func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
+func (*graph) maxFlowISAP(n, st, end int, edges [][]int) int {
 	st--
 	end--
 
@@ -3688,12 +3717,9 @@ func (*graph) maxFlowISAP(in io.Reader, n, m, st, end int) int {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
-	for i := 0; i < m; i++ {
-		var v, w, cp int
-		Fscan(in, &v, &w, &cp)
-		v--
-		w--
-		addEdge(v, w, cp)
+	for _, e := range edges {
+		v, w, edgeCap := e[0], e[1], e[2]
+		addEdge(v, w, edgeCap)
 	}
 
 	// 计算从汇点 end 出发的距离
@@ -3794,7 +3820,7 @@ func (h *hlppHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.Int
 func (h *hlppHeap) push(v int)        { heap.Push(h, v) }
 func (h *hlppHeap) pop() int          { return heap.Pop(h).(int) }
 
-func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
+func (*graph) maxFlowHLPP(n, st, end int, edges [][]int) int {
 	st--
 	end--
 
@@ -3804,12 +3830,9 @@ func (*graph) maxFlowHLPP(in io.Reader, n, m, st, end int) int {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0})
 	}
-	for i := 0; i < m; i++ {
-		var v, w, cp int
-		Fscan(in, &v, &w, &cp)
-		v--
-		w--
-		addEdge(v, w, cp)
+	for _, e := range edges {
+		v, w, edgeCap := e[0], e[1], e[2]
+		addEdge(v, w, edgeCap)
 	}
 
 	// 计算从汇点 end 出发的距离
@@ -3913,7 +3936,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3381
 // LC2850 建模 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
-func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
+func (*graph) minCostFlowSPFA(n, st, end int, edges [][]int) (int, int) {
 	const inf int = 1e18
 	st--
 	end--
@@ -3924,31 +3947,26 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost, eid})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost, -1}) // 无向图上 0 换成 cap
 	}
-	for i := 0; i < m; i++ {
-		var v, w, cp, cost int
-		Fscan(in, &v, &w, &cp, &cost)
-		v--
-		w--
-		addEdge(v, w, cp, cost, i)
+	for i, e := range edges {
+		v, w, edgeCap, edgeCost := e[0], e[1], e[2], e[3]
+		addEdge(v, w, edgeCap, edgeCost, i)
 	}
 
 	dist := make([]int, len(g))
 	type vi struct{ v, i int }
 	fa := make([]vi, len(g))
-	inQ := make([]int, len(g))
-	timestamp := 0 // 避免反复初始化 inQ
+	inQ := make([]bool, len(g))
 	spfa := func() bool {
 		for i := range dist {
 			dist[i] = inf
 		}
 		dist[st] = 0
-		timestamp++
-		inQ[st] = timestamp
+		inQ[st] = true
 		q := []int{st}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
-			inQ[v] = 0
+			inQ[v] = false
 			for i, e := range g[v] {
 				if e.cap == 0 {
 					continue
@@ -3957,13 +3975,14 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
 				if newD := dist[v] + e.cost; newD < dist[w] {
 					dist[w] = newD
 					fa[w] = vi{v, i}
-					if inQ[w] != timestamp {
-						inQ[w] = timestamp
+					if !inQ[w] {
+						inQ[w] = true
 						q = append(q, w)
 					}
 				}
 			}
 		}
+		// 循环结束后所有 inQ[v] 都为 false，无需重置
 		return dist[end] < inf
 	}
 	edmondsKarp := func() (maxFlow, minCost int) {
@@ -3994,7 +4013,7 @@ func (*graph) minCostFlowSPFA(in io.Reader, n, m, st, end int) (int, int) {
 
 // 基于原始对偶方法 (primal-dual method)
 // https://blog.xehoth.cc/DurationPlan-Primal-Dual/
-func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) int {
+func (*graph) minCostFlowDijkstra(n, st, end, flowLimit int, edges [][]int) int {
 	st--
 	end--
 
@@ -4004,12 +4023,9 @@ func (*graph) minCostFlowDijkstra(in io.Reader, n, m, st, end, flowLimit int) in
 		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
 		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
 	}
-	for i := 0; i < m; i++ {
-		var v, w, cp, cost int
-		Fscan(in, &v, &w, &cp, &cost)
-		v--
-		w--
-		addEdge(v, w, cp, cost)
+	for _, e := range edges {
+		v, w, edgeCap, edgeCost := e[0], e[1], e[2], e[3]
+		addEdge(v, w, edgeCap, edgeCost)
 	}
 
 	h := make([]int, len(g)) // 顶点的势
@@ -4333,19 +4349,19 @@ func (*graph) cactusDFS(g [][]int, n int) [][2]int {
 				fa[w] = v
 				f(w)
 			} else if w != fa[v] && vis[w] == 1 {
-				mi, mx := v, v
+				mn, mx := v, v
 				for x := v; x != w; {
 					x = fa[x]
-					if x < mi {
-						mi = x
+					if x < mn {
+						mn = x
 					} else if x > mx {
 						mx = x
 					}
 				}
-				minMax[v] = [2]int{mi, mx}
+				minMax[v] = [2]int{mn, mx}
 				for x := v; x != w; {
 					x = fa[x]
-					minMax[x] = [2]int{mi, mx}
+					minMax[x] = [2]int{mn, mx}
 				}
 			}
 		}
@@ -4376,19 +4392,19 @@ func (*graph) cactusDFS2(g [][]int, n int) [][2]int {
 			if vis[w] == 0 {
 				f(w, v)
 			} else if w != fa && vis[w] == 1 {
-				mi, mx := w, w
+				mn, mx := w, w
 				for i := len(s) - 1; s[i] != w; i-- {
 					x := s[i]
-					if x < mi {
-						mi = x
+					if x < mn {
+						mn = x
 					} else if x > mx {
 						mx = x
 					}
 				}
-				minMax[w] = [2]int{mi, mx}
+				minMax[w] = [2]int{mn, mx}
 				for i := len(s) - 1; s[i] != w; i-- {
 					x := s[i]
-					minMax[x] = [2]int{mi, mx}
+					minMax[x] = [2]int{mn, mx}
 				}
 			}
 		}

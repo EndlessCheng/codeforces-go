@@ -21,6 +21,8 @@ package copypasta
 // Limitの线段树题单 https://www.luogu.com.cn/training/1124
 
 // todo 二维线段树 https://www.luogu.com.cn/problem/P3437
+//      https://www.luogu.com.cn/problem/P4514
+//      树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -51,6 +53,7 @@ package copypasta
 // 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
 // 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E
+// 区间最小的 31 个数 https://codeforces.com/problemset/problem/1665/E 2500
 // https://atcoder.jp/contests/abc285/tasks/abc285_f
 // todo https://codeforces.com/problemset/problem/19/D 2800
 //

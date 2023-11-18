@@ -24,6 +24,8 @@ https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
 
 思维·转换
+https://www.luogu.com.cn/problem/P5930
+- 3D 接雨水 LC407 https://leetcode.cn/problems/trapping-rain-water-ii/
 https://www.luogu.com.cn/problem/P2859
 https://www.luogu.com.cn/problem/P4952 枚举中位数
 LC857 https://leetcode.cn/problems/minimum-cost-to-hire-k-workers/
