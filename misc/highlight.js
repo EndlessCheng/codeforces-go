@@ -117,8 +117,8 @@
             // 额外高亮
             const colorRed = "#ff0000";
             text = text
-                .highlight("取模", colorRed)
-                .highlight("取余", colorRed)
+//                .highlight("取模", colorRed)
+//                .highlight("取余", colorRed)
                 .highlight("重复边", colorRed)
                 .highlight("重边", colorRed)
                 .highlight("最后", colorRed);
