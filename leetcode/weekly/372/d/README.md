@@ -67,8 +67,7 @@ class Solution {
 
         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
         for (int i = 0; i < heights.length; i++) { // 从小到大枚举下标 i
-            int h = heights[i];
-            while (!pq.isEmpty() && pq.peek()[0] < h) {
+            while (!pq.isEmpty() && pq.peek()[0] < heights[i]) {
                 ans[pq.poll()[1]] = i; // 可以跳到 i（此时 i 是最小的）
             }
             for (int[] p : left[i]) {
@@ -100,8 +99,7 @@ public:
 
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
         for (int i = 0; i < heights.size(); i++) { // 从小到大枚举下标 i
-            int x = heights[i];
-            while (!pq.empty() && pq.top().first < x) {
+            while (!pq.empty() && pq.top().first < heights[i]) {
                 ans[pq.top().second] = i; // 可以跳到 i（此时 i 是最小的）
                 pq.pop();
             }
@@ -313,7 +311,7 @@ public:
 
         vector<int> ans;
         for (auto &q : queries) {
-            int i = q[0], q[1];
+            int i = q[0], j = q[1];
             if (i > j) {
                 swap(i, j);
             }
