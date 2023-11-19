@@ -1,4 +1,6 @@
-请先完成 [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)。
+请看 [视频讲解](https://www.bilibili.com/video/BV1MG411X7zR/) 第四题。
+
+## 方法一：0-1 trie + 滑动窗口
 
 由于答案和 $\textit{nums}$ 的元素顺序无关，先排序。
 
@@ -98,7 +100,7 @@ class Trie {
     }
 
     // 删除 val，但不删除节点
-    // 要求 val 必须在 t 中
+    // 要求 val 必须在 trie 中
     public void remove(int val) {
         Node cur = root;
         for (int i = HIGH_BIT; i >= 0; i--) {
@@ -107,8 +109,8 @@ class Trie {
         }
     }
 
-    // 返回 val 与 t 中一个元素的最大异或和
-    // 要求 t 不能为空
+    // 返回 val 与 trie 中一个元素的最大异或和
+    // 要求 trie 不能为空
     public int maxXor(int val) {
         Node cur = root;
         int ans = 0;
@@ -168,7 +170,7 @@ public:
     }
 
     // 删除 val，但不删除节点
-    // 要求 val 必须在 t 中
+    // 要求 val 必须在 trie 中
     void remove(int val) {
         Node *cur = root;
         for (int i = HIGH_BIT; i >= 0; i--) {
@@ -177,8 +179,8 @@ public:
         }
     }
 
-    // 返回 val 与 t 中一个元素的最大异或和
-    // 要求 t 不能为空
+    // 返回 val 与 trie 中一个元素的最大异或和
+    // 要求 trie 不能为空
     int max_xor(int val) {
         Node *cur = root;
         int ans = 0;
@@ -199,7 +201,7 @@ class Solution {
 public:
     int maximumStrongPairXor(vector<int> &nums) {
         sort(nums.begin(), nums.end());
-        Trie t;
+        Trie t{};
         int ans = 0, left = 0;
         for (int y: nums) {
             t.insert(y);
@@ -284,6 +286,115 @@ func maximumStrongPairXor(nums []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，本题 $U=100$，也就是说 $\textit{nums}[i]$ 二进制长度不会超过 $7$。
 - 空间复杂度：$\mathcal{O}(n\log U)$。
+
+## 方法二：哈希表
+
+原理请看我的这篇题解：[【图解】简洁高效，一图秒懂！](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)
+
+把 hashset 改成 hashmap，一边遍历数组，一边记录每个 key 对应的最大的 $\textit{nums}[i]$。
+
+由于数组已经排好序，所以每个 key 对应的 $x=\textit{nums}[i]$ 一定是当前最大的，只要 $2x\ge y$，就说明这个比特位可以是 $1$。
+
+```py [sol-Python3]
+class Solution:
+    def maximumStrongPairXor(self, nums: List[int]) -> int:
+        nums.sort()
+        ans = mask = 0
+        high_bit = nums[-1].bit_length() - 1
+        for i in range(high_bit, -1, -1):  # 从最高位开始枚举
+            mask |= 1 << i
+            new_ans = ans | (1 << i)  # 这个比特位可以是 1 吗？
+            d = {}
+            for y in nums:
+                mask_y = y & mask  # 低于 i 的比特位置为 0
+                if new_ans ^ mask_y in d and d[new_ans ^ mask_y] * 2 >= y:
+                    ans = new_ans  # 这个比特位可以是 1
+                    break
+                d[mask_y] = y
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumStrongPairXor(int[] nums) {
+        Arrays.sort(nums);
+        int highBit = 31 - Integer.numberOfLeadingZeros(nums[nums.length - 1]);
+
+        int ans = 0, mask = 0;
+        Map<Integer, Integer> mp = new HashMap<>();
+        for (int i = highBit; i >= 0; i--) { // 从最高位开始枚举
+            mp.clear();
+            mask |= 1 << i;
+            int newAns = ans | (1 << i); // 这个比特位可以是 1 吗？
+            for (int y : nums) {
+                int maskY = y & mask; // 低于 i 的比特位置为 0
+                if (mp.containsKey(newAns ^ maskY) && mp.get(newAns ^ maskY) * 2 >= y) {
+                    ans = newAns; // 这个比特位可以是 1
+                    break;
+                }
+                mp.put(maskY, y);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumStrongPairXor(vector<int> &nums) {
+        sort(nums.begin(), nums.end());
+        int high_bit = 31 - __builtin_clz(nums.back());
+
+        int ans = 0, mask = 0;
+        unordered_map<int, int> mp;
+        for (int i = high_bit; i >= 0; i--) { // 从最高位开始枚举
+            mp.clear();
+            mask |= 1 << i;
+            int new_ans = ans | (1 << i); // 这个比特位可以是 1 吗？
+            for (int y: nums) {
+                int mask_y = y & mask; // 低于 i 的比特位置为 0
+                auto it = mp.find(new_ans ^ mask_y);
+                if (it != mp.end() && it->second * 2 >= y) {
+                    ans = new_ans; // 这个比特位可以是 1
+                    break;
+                }
+                mp[mask_y] = y;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumStrongPairXor(nums []int) (ans int) {
+	slices.Sort(nums)
+	highBit := bits.Len(uint(nums[len(nums)-1])) - 1
+	mp := map[int]int{}
+	mask := 0
+	for i := highBit; i >= 0; i-- { // 从最高位开始枚举
+		clear(mp)
+		mask |= 1 << i
+		newAns := ans | 1<<i // 这个比特位可以是 1 吗？
+		for _, y := range nums {
+			maskY := y & mask // 低于 i 的比特位置为 0
+			if x, ok := mp[newAns^maskY]; ok && x*2 >= y {
+				ans = newAns // 这个比特位可以是 1
+				break
+			}
+			mp[maskY] = y
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，本题 $U=2^{20}-1$，也就是说 $\textit{nums}[i]$ 二进制长度不会超过 $20$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 练习：0-1 trie（右边分数为题目难度）
 
