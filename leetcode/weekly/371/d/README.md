@@ -1,8 +1,4 @@
-下午两点【b站@灵茶山艾府】直播讲这场周赛（以及昨晚的双周赛），欢迎关注！
-
----
-
-请先完成 [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)。
+请看 [视频讲解](https://www.bilibili.com/video/BV1MG411X7zR/) 第四题。
 
 ## 方法一：0-1 trie + 滑动窗口
 
