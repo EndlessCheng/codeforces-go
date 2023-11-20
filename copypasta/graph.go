@@ -743,10 +743,10 @@ func (*graph) findCutVertices(n int, g [][]int) (isCut []bool) {
 			if dfn[w] == 0 {
 				childCnt++
 				lowW := tarjan(w, v)
+				lowV = min(lowV, lowW)
 				if lowW >= dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 的祖先（可以连到 v 上，这也算割顶）
 					isCut[v] = true
 				}
-				lowV = min(lowV, lowW)
 			} else if w != fa { // （w!=fa 可以省略，但为了保证某些题目没有重复统计所以保留）   找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
@@ -802,10 +802,10 @@ func (*graph) findBridges(n int, edges [][]int) (isBridge []bool) {
 		for _, e := range g[v] {
 			if w := e.to; dfn[w] == 0 {
 				lowW := tarjan(w, e.eid)
+				lowV = min(lowV, lowW)
 				if lowW > dfn[v] { // 以 w 为根的子树中没有反向边能连回 v 或 v 的祖先，所以 v-w 必定是桥
 					isBridge[e.eid] = true
 				}
-				lowV = min(lowV, lowW)
 			} else if e.eid != fid { // 找到 v 的反向边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
@@ -829,14 +829,19 @@ func (*graph) findBridges(n int, edges [][]int) (isBridge []bool) {
 	return
 }
 
-// 无向图的双连通分量 Biconnected Components (BCC)          也叫重连通图
-// v-BCC：任意割点都是至少两个不同 v-BCC 的公共点              广义圆方树
-// 每个 v-BCC 的点数就是一个极大环，所有即
+// 无向图的双连通分量 Biconnected Components (BCC) / 重连通图
+// 点双连通分量 v-BCC：任意割点都是至少两个不同点双的公共点
+// 点双也叫 Block
+// 缩点后形成一棵 block-cut tree / BC-tree https://en.wikipedia.org/wiki/Biconnected_component#Block-cut_tree
+// 每条树边恰好在一个点双内
+// 每个点双的点数就是一个极大环的点数
 // https://oi-wiki.org/graph/bcc/
 // https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
+//
+// 模板题 https://www.luogu.com.cn/problem/P8435
 // 好题 https://codeforces.com/problemset/problem/962/F
-// https://leetcode-cn.com/problems/s5kipK/
-// 结合树链剖分 https://codeforces.com/problemset/problem/487/E
+// LCP54 https://leetcode.cn/problems/s5kipK/
+// todo 结合树链剖分 https://codeforces.com/problemset/problem/487/E
 /*
 使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
 基础样例 - 一个割点两个简单环
@@ -862,13 +867,13 @@ func (*graph) findBridges(n int, edges [][]int) (isBridge []bool) {
 func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 	bccIDs = make([]int, len(g)) // ID 从 1 开始编号
 	idCnt := 0
-	isCut := make([]bool, len(g))
+	isCut := make([]bool, len(g)) // 缩点用
 
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	type edge struct{ v, w int } // eid
 	st := []edge{}               // 存边是为了解决一些特殊题目（基本写法存点就行）
-	var tarjan func(v, fa int) int
+	var tarjan func(int, int) int
 	tarjan = func(v, fa int) int {
 		dfsClock++
 		dfn[v] = dfsClock
@@ -880,6 +885,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 				st = append(st, e)
 				childCnt++
 				lowW := tarjan(w, v)
+				lowV = min(lowV, lowW)
 				if lowW >= dfn[v] {
 					isCut[v] = true
 					idCnt++
@@ -900,7 +906,7 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 							break
 						}
 					}
-					// （仙人掌）点数和边数相同，说明该 v-BCC 是一个简单环，且环上所有的边只属于一个简单环
+					// 仙人掌点双：点数和边数相同，说明该 v-BCC 是一个简单环，且环上所有的边只属于一个简单环
 					//if len(comp) == len(eids) {
 					//	for _, eid := range eids {
 					//		onSimpleCycle[eid] = true
@@ -908,7 +914,6 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 					//}
 					comps = append(comps, comp)
 				}
-				lowV = min(lowV, lowW)
 			} else if w != fa && dfn[w] < dfn[v] {
 				st = append(st, e) // 简单写法中，可以省略
 				lowV = min(lowV, dfn[w])
@@ -934,8 +939,8 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 	// EXTRA: 缩点
 	// BCC 和割点作为新图中的节点，并在每个割点与包含它的所有 BCC 之间连边
 	cutIDs := make([]int, len(g))
-	for i, is := range isCut {
-		if is {
+	for i, ok := range isCut {
+		if ok {
 			idCnt++ // 接在 BCC 之后给割点编号
 			cutIDs[i] = idCnt
 		}
@@ -944,7 +949,9 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 		v++
 		for _, w := range cp {
 			if w = cutIDs[w]; w > 0 {
-				// add(v,w); add(w,v) ...
+				// add(v, w)
+				// add(w, v)
+				// ...
 			}
 		}
 	}
@@ -952,8 +959,9 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 	return
 }
 
-// e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
+// 边双连通分量 e-BCC：删除无向图中所有的割边后，剩下的每一个 CC 都是 e-BCC
 // 缩点后形成一棵 bridge tree
+// 模板题 https://www.luogu.com.cn/problem/P8436
 // 模板题 https://codeforces.com/problemset/problem/1000/E
 // 较为综合的一道题 http://codeforces.com/problemset/problem/732/F
 func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) {
@@ -965,13 +973,13 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 	bccIDs = make([]int, len(g))
 	idCnt := 0
 	var comp []int
-	var f2 func(int)
-	f2 = func(v int) {
+	var dfs2 func(int)
+	dfs2 = func(v int) {
 		bccIDs[v] = idCnt
 		comp = append(comp, v)
 		for _, e := range g[v] {
 			if w := e.to; !isBridge[e.eid] && bccIDs[w] == 0 {
-				f2(w)
+				dfs2(w)
 			}
 		}
 	}
@@ -979,7 +987,7 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 		if id == 0 {
 			idCnt++
 			comp = []int{}
-			f2(i)
+			dfs2(i)
 			comps = append(comps, comp)
 		}
 	}
@@ -1010,21 +1018,160 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 	return
 }
 
-// 仙人掌图 Cactus graph
-// https://en.wikipedia.org/wiki/Cactus_graph
+// 圆方树 Round-square tree
+// 圆点：原图中的点
+// 方点：每个点双的虚拟节点
+// 动机：直接点双缩点会丢失信息，应当如何把点双和原图上的点联系起来？
+// 目标：能够快速求出图中任意两点间的最短路
+//
+// 狭义圆方树（仙人掌图） Cactus / Cactus tree
+// 一条边至多在一个简单回路中 / 任意两个简单回路至多有一个公共点
+// 注意：只有两个点的点双无需建方点
+// 图片请看 https://en.wikipedia.org/wiki/Cactus_graph
 // A connected graph in which any two simple cycles have at most one vertex in common
 // Equivalently, it is a connected graph in which every edge belongs to at most one simple cycle
 // 如果图没有偶环，则不可能有两个奇环共用一条边（因为这样会构成一个偶环），因此没有两个环共用一条边，图一定为仙人掌（注意：反过来，一个仙人掌图是可能有偶环的）
-// todo https://www.luogu.com.cn/blog/PinkRabbit/Introduction-to-Round-Square-Tree
-// todo 静态仙人掌 https://www.luogu.com.cn/problem/P5236
-//               https://www.luogu.com.cn/problem/P4129
-//               https://www.luogu.com.cn/problem/P4244
-//               https://www.luogu.com.cn/problem/P3687
-//      动态仙人掌 https://www.luogu.com.cn/problem/P5237
-//  https://www.luogu.com.cn/problem/P6017
-
-// 圆方树 https://oi-wiki.org/graph/block-forest/ 
+//
+// 广义圆方树 Round-square tree
+// 一条边可以在多个简单回路中
+// 注意：只有两个点的点双也要建方点
+// https://oi-wiki.org/graph/block-forest/
+// Block graph：每个点双都是完全图 https://en.wikipedia.org/wiki/Block_graph
+//
+// 静态仙人掌 https://www.luogu.com.cn/problem/P5236
+// todo https://www.luogu.com.cn/problem/P4129
+//  https://www.luogu.com.cn/problem/P4244
+//  https://www.luogu.com.cn/problem/P3687
+// todo 动态仙人掌 https://www.luogu.com.cn/problem/P5237
+// todo 题单 圆方树——处理仙人掌的利器 https://immortalco.blog.uoj.ac/blog/1955
+//
+// todo https://www.luogu.com.cn/problem/P4630
+//  https://www.luogu.com.cn/problem/P4606
+//  https://www.luogu.com.cn/problem/UVA1464
 // todo https://atcoder.jp/contests/abc318/tasks/abc318_g
+func (*graph) roundSquareTree(n int, edges [][]int, abs func(int) int) {
+	type nb struct{ to, wt int }
+	g := make([][]nb, n)
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
+		v--
+		w--
+		g[v] = append(g[v], nb{w, wt})
+		g[w] = append(g[w], nb{v, wt})
+	}
+
+	g2 := make([][]nb, len(g)*2)
+	ringWtSum := make([]int, len(g)*2)
+	bccID := len(g)
+	dis := make([]int, len(g))
+
+	dfn := make([]int, len(g))
+	dfsClock := 0
+	st := []int{}
+	aWt := make([]int, len(g)) // 如果栈中存边的话可以合并到栈中
+	var tarjan func(int, int) int
+	tarjan = func(v, fa int) int {
+		st = append(st, v)
+		dfsClock++
+		dfn[v] = dfsClock
+		lowV := dfsClock
+		for _, e := range g[v] {
+			w := e.to
+			if dfn[w] == 0 {
+				aWt[w] = e.wt
+				dis[w] = dis[v] + e.wt
+				lowW := tarjan(w, v)
+				lowV = min(lowV, lowW)
+				if lowW >= dfn[v] { // v 是割点
+					// v 和方点 bccID 连边，边权为 0
+					g2[v] = append(g2[v], nb{bccID, 0})
+					g2[bccID] = append(g2[bccID], nb{v, 0})
+					ancestor := st[len(st)-1]
+					ringWtSum[bccID] = aWt[ancestor] + dis[ancestor] - dis[v] // 这个点双的环长
+					// 遍历这个点双中的点（除了割点 v）
+					for {
+						x := st[len(st)-1]
+						st = st[:len(st)-1]
+						d := dis[x] - dis[v]
+						d = min(d, ringWtSum[bccID]-d)
+						// 点 x 和方点 bccID 连边，边权为 x 到 v 的最短距离 d
+						g2[x] = append(g2[x], nb{bccID, d})
+						g2[bccID] = append(g2[bccID], nb{x, d})
+						if x == w {
+							break
+						}
+					}
+					bccID++
+				}
+			} else if w != fa && dfn[w] < dfn[v] { // 返祖边
+				aWt[v] = e.wt
+				lowV = min(lowV, dfn[w])
+			}
+		}
+		return lowV
+	}
+	tarjan(0, -1)
+
+	const mx = 20 // bits.Len(最大节点数*2)
+	pa := make([][mx]int, bccID)
+	dep := make([]int, bccID)
+	dis2 := make([]int, bccID)
+	var buildPa func(int, int)
+	buildPa = func(v, fa int) {
+		pa[v][0] = fa
+		for _, e := range g2[v] {
+			if w := e.to; w != fa {
+				dis2[w] = dis2[v] + e.wt
+				dep[w] = dep[v] + 1
+				buildPa(w, v)
+			}
+		}
+	}
+	buildPa(0, -1)
+	for i := 0; i+1 < mx; i++ {
+		for v := range pa {
+			if p := pa[v][i]; p != -1 {
+				pa[v][i+1] = pa[p][i]
+			} else {
+				pa[v][i+1] = -1
+			}
+		}
+	}
+	getLca := func(v, w int) (int, int) {
+		if dep[v] > dep[w] {
+			v, w = w, v
+		}
+		for k := uint(dep[w] - dep[v]); k > 0; k &= k - 1 {
+			w = pa[w][bits.TrailingZeros(k)]
+		}
+		if w == v { // 一个点是另一个点的祖先节点（必然是圆点）
+			return v, -1
+		}
+		for i := mx - 1; i >= 0; i-- {
+			if pv, pw := pa[v][i], pa[w][i]; pv != pw {
+				v, w = pv, pw
+			}
+		}
+		if pa[v][0] < len(g) { // 圆点
+			return pa[v][0], -1
+		}
+		// 此时 pa[v][0] 是方点
+		return v, w // 方点下面的两个圆点
+	}
+	// 返回仙人掌上两点间的最短距离
+	getDis := func(v, w int) int {
+		x, y := getLca(v, w)
+		if y < 0 { // x = lca
+			return dis2[v] + dis2[w] - dis2[x]*2
+		}
+		// 看图理解 https://cdn.luogu.com.cn/upload/image_hosting/k0rtviky.png
+		dxy := abs(dis[x] - dis[y]) // x 和 y 在同一个点双，应当使用原图的 dis 信息
+		dxy = min(dxy, ringWtSum[pa[x][0]]-dxy)
+		return dis2[v] + dis2[w] - dis2[x] - dis2[y] + dxy
+	}
+
+	_ = getDis
+}
 
 //
 
@@ -1388,11 +1535,13 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dist []int) { // 有�
 // 任意两点最短路 Floyd-Warshall  O(n^3)  本质是求 Min-plus matrix multiplication
 // 传入邻接矩阵 dis
 // dis[v][w] == inf 表示没有 v-w 边
+// 带你发明 Floyd 算法！https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
-// 带你发明 Floyd 算法！https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/
+// https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 //
-// 题目推荐 https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
+// 模板题 https://www.luogu.com.cn/problem/B3647
+// 传递闭包 https://www.luogu.com.cn/problem/B3611
 // https://codeforces.com/problemset/problem/33/B
 // https://codeforces.com/problemset/problem/1204/C
 // LC1334 https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/
@@ -1408,10 +1557,21 @@ func (*graph) shortestPathFloydWarshall(dis [][]int) [][]int {
 	// dis[k][i][j] 表示「经过若干个编号不超过 k 的中间节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
 	// 为什么可以把第一维度去掉？dis[i][k] 和 dis[k][j] 不会被覆盖掉吗？
 	// 见算法导论第三版练习 25.2-4（网络上有习题解答）
-	for k := range dis { // 中间节点的最大编号
+
+	// 初始化，注意 dis[i][i] = 0
+	//dis := make([][]int, n)
+	//for i := range dis {
+	//	dis[i] = make([]int, n)
+	//	for j := range dis[i] {
+	//		if j != i {
+	//			dis[i][j] = math.MaxInt / 2
+	//		}
+	//	}
+	//}
+	for k := range dis {
 		for i := range dis {
 			for j := range dis {
-				// 决策（k 不是中间节点，k 是中间节点）
+				// 不选 k，选 k
 				dis[i][j] = min(dis[i][j], dis[i][k]+dis[k][j])
 			}
 		}
@@ -1633,7 +1793,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 		fs := f[s]
 		for sub := s & (s - 1); sub > s^sub; sub = (sub - 1) & s {
 			for i := 0; i < n; i++ {
-				fs[i] = min(fs[i], f[sub][i]+f[s^sub][i])
+				fs[i] = min(fs[i], f[sub][i]+f[s^sub][i]) // 合并最短路
 			}
 		}
 		// SPFA
@@ -2782,6 +2942,8 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 // 可以用来判断有向图是否有环、求 DAG 上的 DP 等
 // https://oi-wiki.org/graph/topo/
 // https://cp-algorithms.com/graph/topological-sort.html
+//
+// 模板题 https://www.luogu.com.cn/problem/B3644
 // 树上拓扑+记录变成叶子的时间 LC2603 https://leetcode.cn/problems/collect-coins-in-a-tree/
 // DAG DP LC2050 https://leetcode-cn.com/problems/parallel-courses-iii/
 //        LC1857 https://leetcode-cn.com/problems/largest-color-value-in-a-directed-graph/

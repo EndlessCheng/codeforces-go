@@ -197,7 +197,7 @@
   - 双连通分量（BCC）
     - v-BCC
     - e-BCC
-  - 圆方树
+  - 仙人掌 & 圆方树
   - 最短路
     - Dijkstra
     - SPFA（队列优化的 Bellman-Ford）
