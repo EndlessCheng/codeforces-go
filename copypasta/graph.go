@@ -2,7 +2,7 @@ package copypasta
 
 import (
 	"container/heap"
-	. "fmt"
+	"fmt"
 	"io"
 	"math"
 	"math/bits"
@@ -117,13 +117,14 @@ AOJ 2230
 // namespace
 type graph struct{}
 
+// 建图：邻接表写法
 // g[v] 表示 v 的邻居
 func (*graph) readGraph(in io.Reader, n, m int) {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for i := 0; i < m; i++ {
 		var v, w, wt int
-		Fscan(in, &v, &w, &wt)
+		fmt.Fscan(in, &v, &w, &wt)
 		v--
 		w--
 		g[v] = append(g[v], neighbor{w, wt})
@@ -131,31 +132,31 @@ func (*graph) readGraph(in io.Reader, n, m int) {
 	}
 }
 
-// 链式前向星
-// https://oi-wiki.org//graph/save/#_14
+// 建图：链表写法（链式前向星）
+// 节点 v 的邻居形成一条链表（用数组下标代替指针）
+// 添加 v 的一个邻居 w 时，用链表的【头插法】把 w 插入到链表的头节点之前
 func (*graph) readGraphList(in io.Reader, n, m int) {
-	type edge struct{ to, prev int }
-	edgeID := make([]int, n)
-	for i := range edgeID {
-		edgeID[i] = -1
+	type node struct{ to, next int }
+	head := make([]int, n) // head[i] 表示 i 的邻居链表的头节点
+	for i := range head {
+		head[i] = -1 // -1 表示 nil
 	}
-	edges := make([]edge, m) // 2*m
+	nodes := make([]node, m) // 无向图是 m*2
 	for i := 0; i < m; i++ {
 		var v, w int
-		Fscan(in, &v, &w)
+		fmt.Fscan(in, &v, &w)
 		v--
 		w--
-		edges[i] = edge{w, edgeID[v]}
-		edgeID[v] = i
+		nodes[i] = node{w, head[v]} // 头插法
+		head[v] = i
 	}
 
-	// loop all edges start at v
+	// 遍历 v 的所有邻居 w
+	// 和遍历链表是一样的
 	var v int
-	for i := edgeID[v]; i != -1; {
-		e := edges[i]
-		w := e.to
-		_ = w // do(w)
-		i = e.prev
+	for cur := head[v]; cur != -1; cur = nodes[cur].next {
+		w := nodes[cur].to
+		_ = w // do(w) ...
 	}
 }
 
