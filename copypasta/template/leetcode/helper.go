@@ -96,6 +96,7 @@ func init() {
 		"grid2", "a2",
 		"words", "a",
 		"events", "a",
+		"heights", "a",
 
 		// 字符串
 		"word", "s",
