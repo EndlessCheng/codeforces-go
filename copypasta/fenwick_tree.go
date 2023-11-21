@@ -4,24 +4,14 @@ import "sort"
 
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
 https://en.wikipedia.org/wiki/Fenwick_tree
-带你发明树状数组！https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
-原论文 https://doi.org/10.1002/spe.4380240306
-树状数组 tree 的基本用途是维护序列 a 的前缀和（tree 和 a 的下标都从 1 开始）
-tree[i] = a[i-lowbit(i)+1] + ... + a[i]
-看图 https://oi-wiki.org/ds/fenwick/
-更新 a[i] 的时候，会首先更新最下面的包含 a[i] 的 tree[i]，然后逐渐往上，更新包含这个元素的 tree[i]
-这些节点（下标）都在 i 后面，所以更新的时候是从小往大算
-计算某个前缀的时候，需要拆分区间，先把最右边的 arr[i-lowbit(i)+1] + ... + arr[i] 算出来，然后再去掉 i 最低位，算下一个区间
-所以计算前缀是从大往小算
-这里从小往大和从大往小说的是 i 的变化
+【推荐阅读】带你发明树状数组！https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
 
 可视化 https://visualgo.net/zh/fenwicktree
 
-推荐阅读《算法竞赛进阶指南》0x42 节
-https://oi-wiki.org/ds/bit/
 todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-shuo-zu-zong-ru-men-dao-ru-fen
  浅谈树状数组的优化及扩展 https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
  浅谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
+https://oi-wiki.org/ds/bit/
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
 模板题 https://www.luogu.com.cn/problem/P3374
@@ -160,6 +150,36 @@ func (t fenwickDiff) query(l, r int) int {
 
 //
 
+// 树套树
+// 三维偏序：树状数组套动态开点权值线段树 https://www.luogu.com.cn/problem/P3810
+// 树状数组在这里就是纯纯工具人，只用来拆分区间
+type fenwickWithSeg []*stNode // 见 segment_tree.go
+
+func newFenwickTreeWithSeg(mx int) fenwickWithSeg {
+	t := make(fenwickWithSeg, mx+1)
+	for i := range t {
+		t[i] = newStRoot(1, mx)
+	}
+	return t
+}
+
+// 二维单点更新：位置 (i,j) 用 val 更新
+func (f fenwickWithSeg) update(i, j, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i].update(j, val)
+	}
+}
+
+// 二维前缀和：累加所有 x <= i 且 y <= j 的值
+func (f fenwickWithSeg) pre(i, j int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f[i].query(1, j)
+	}
+	return
+}
+
+//
+
 func _(n int) {
 	tree := make([]int, n+1) // int
 	add := func(i, val int) {
@@ -220,7 +240,7 @@ func _(n int) {
 	// https://oi-wiki.org/ds/fenwick/#tricks
 	init := func(a []int) { // len(tree) = len(a) + 1
 		for i, v := range a {
-			i++	
+			i++
 			tree[i] += v
 			if j := i + i&-i; j < len(tree) {
 				tree[j] += tree[i]

@@ -20,10 +20,6 @@ package copypasta
 // 线段树诡异题目收录 https://zhuanlan.zhihu.com/p/124181375
 // Limitの线段树题单 https://www.luogu.com.cn/training/1124
 
-// todo 二维线段树 https://www.luogu.com.cn/problem/P3437
-//      https://www.luogu.com.cn/problem/P4514
-//      树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
-
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
@@ -67,8 +63,9 @@ package copypasta
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
-// 线段树二分
+// 线段树二分（代码见下面的 queryFirstLessPosInRange）
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
+// LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
 
 // EXTRA: 权值线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
@@ -76,6 +73,14 @@ package copypasta
 // 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
 // https://codeforces.com/problemset/problem/1042/D
 // todo 区间只出现一次的数的最大值 https://codeforces.com/problemset/problem/69/E
+
+// EXTRA: 树套树
+// 代码见 fenwick_tree.go
+// 三维偏序：树状数组套动态开点权值线段树 https://www.luogu.com.cn/problem/P3810
+// todo 二逼平衡树 https://www.luogu.com.cn/problem/P3380
+//  二维线段树 https://www.luogu.com.cn/problem/P3437
+//  https://www.luogu.com.cn/problem/P4514
+//  树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
 
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
@@ -428,7 +433,8 @@ func (t lazySeg) spreadAll(o int) {
 // 动态开点线段树·其一·单点修改
 // LC327 https://leetcode-cn.com/problems/count-of-range-sum/
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/
-// https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/
+// LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/
+// 树套树（见 fenwick_tree.go）https://www.luogu.com.cn/problem/P3810
 const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
 type stNode struct {
@@ -656,6 +662,9 @@ func (o *stNode) kth(k int) int {
 }
 
 //
+
+// 线段树分治
+// todo https://www.luogu.com.cn/problem/P5787
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/

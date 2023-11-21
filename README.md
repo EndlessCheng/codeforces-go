@@ -32,6 +32,7 @@
   - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
+    - 树套树 & 三维偏序
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
     - 延迟标记（懒标记）
     - 动态开点
