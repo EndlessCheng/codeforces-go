@@ -25,10 +25,10 @@
   - [堆（优先队列）heap.go](/copypasta/heap.go)
     - 支持修改、删除指定元素
   - [并查集 union_find.go](/copypasta/union_find.go)
-    - 点权
-    - 边权（种类）
-    - 持久化
-    - 回滚操作（动态图连通性）
+    - 点权并查集
+    - 边权并查集（种类并查集）
+    - 可持久化并查集
+    - 回滚并查集 & 动态图连通性
   - [稀疏表（ST 表）sparse_table.go](/copypasta/sparse_table.go)
   - [树状数组 fenwick_tree.go](/copypasta/fenwick_tree.go)
     - 差分树状数组（支持区间加、区间求和）
