@@ -106,10 +106,31 @@ func (t *trie01) maxXor(v int) (ans int) {
 	return
 }
 
+// v 与 trie 上所有数的第 k 大异或值
+// k 从 1 开始
+// 如果 k 超过 trie 中元素个数，返回 0
+// [十二省联考 2019] 异或粽子 https://www.luogu.com.cn/problem/P5283
+func (t *trie01) maxXorKth(v, k int) (ans int) {
+	o := t.root
+	for i := trieBitLen - 1; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b^1] != nil {
+			if k <= o.son[b^1].cnt {
+				ans |= 1 << i
+				b ^= 1
+			} else {
+				k -= o.son[b^1].cnt
+			}
+		}
+		o = o.son[b]
+	}
+	return
+}
+
 // 动态维护任意两数异或的最小值 https://atcoder.jp/contests/abc308/tasks/abc308_g https://ac.nowcoder.com/acm/contest/53485/F
 // 需要用平衡树
 
-// 上面也可以用哈希表做
+// maxXor 也可以用哈希表做
 // https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/
 // O(1) space 做法 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/lei-si-kuai-su-pai-xu-de-fen-zhi-suan-fa-9eqx/
 func findMaximumXOR(a []int) (ans int) {
