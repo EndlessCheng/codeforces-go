@@ -106,7 +106,6 @@ func normalMo(a []int, queries [][]int) []int {
 // https://codeforces.com/problemset/problem/940/F
 // https://codeforces.com/problemset/problem/1476/G
 // todo https://www.codechef.com/FEB17/problems/DISTNUM3
-// todo 二逼平衡树（树套树）https://www.luogu.com.cn/problem/P3380
 func moWithUpdate(in io.Reader) []int {
 	var n, q int
 	Fscan(in, &n, &q)
