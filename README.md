@@ -62,7 +62,10 @@
 - [字符串 strings.go](/copypasta/strings.go)
   - 字符串哈希
   - KMP
+    - pi 函数
+    - border
     - 最小循环节
+    - fail 树（失配树 / border 树）
   - 扩展 KMP（Z algorithm）
   - 最小表示法
   - 最长回文子串 

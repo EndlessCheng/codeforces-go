@@ -49,6 +49,7 @@ func _() {
 	// https://en.wikipedia.org/wiki/Hash_function
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
+	// https://planetmath.org/goodhashtableprimes
 	// 不能用 uint32 自然溢出（或者单模数）的原因 https://en.wikipedia.org/wiki/Birthday_problem
 	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://oi-wiki.org/string/hash/
@@ -75,6 +76,13 @@ func _() {
 	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
 	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
 	// todo https://ac.nowcoder.com/acm/contest/64384/D
+	// 与线段树结合，可以做到单点修改 s[i]
+	// - hash(s+t) = hash(s) * base^|t| + hash(t)
+	// 与线段树结合，可以做到区间更新
+	// - [l,r] 区间加一：根据 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
+	//                 从右往左看，区间增加了 base^(n-1-r) + ... + base^(n-1-l)
+	//                 见 segment_tree.go 中的「区间加等比数列」
+	// - 区间替换成某个数：https://codeforces.com/problemset/problem/580/E 2500
 	stringHash := func(s string) {
 		rd := rand.New(rand.NewSource(time.Now().UnixNano()))
 		rand64 := [128]uint{}
@@ -101,7 +109,7 @@ func _() {
 			preHash[i+1] = preHash[i]*base + rand64[b] // 秦九韶算法
 		}
 
-		// 计算子串 s[l:r] 的哈希，左闭右开 0<=l<=r<=len(s)
+		// 计算左闭右开区间 [l,r) 的哈希 0<=l<=r<=len(s)
 		// 空串的哈希值为 0
 		subHash := func(l, r int) uint { return preHash[r] - preHash[l]*powB[r-l] }
 
@@ -115,8 +123,8 @@ func _() {
 	//
 
 	// KMP (Knuth–Morris–Pratt algorithm)
-	// match[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
-	// 特别地，match[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
+	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
+	// 特别地，pi[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
@@ -149,7 +157,10 @@ func _() {
 	// https://www.lanqiao.cn/problems/5132/learning/?contest_id=144
 
 	// 计算前缀函数
-	// 定义见 https://oi-wiki.org/string/kmp/
+	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度
+	// 定义 s[:i+1] 的最大真 border 为 s[:pi[i]]    完整定义见 https://www.luogu.com.cn/problem/P5829
+	// 注：「真」指的是不等于整个字符串
+	// 注：next[i] = pi[i]-1  指的是回跳的下标
 	calcPi := func(s string) []int {
 		pi := make([]int, len(s))
 		for i, cnt := 1, 0; i < len(s); i++ {
@@ -193,17 +204,37 @@ func _() {
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
 		n := len(s)
-		match := calcPi(s)
-		if m := match[n-1]; m > 0 && n%(n-m) == 0 {
+		pi := calcPi(s)
+		if m := pi[n-1]; m > 0 && n%(n-m) == 0 {
 			return s[:n-m], n / (n - m)
 		}
 		return s, 1 // 无小于 n 的循环节
 	}
 
-	//
+	// fail 树 / 失配树 / border 树
+	// i+1 的父节点为 pi[i]    注：i 从 0 开始
+	// 性质：
+	// 1. s[:i] 的所有 border 长度：i 到根节点路径上的所有节点
+	// 2.（1 的推论）前缀 s[:i] 有长为 x 的真 border：等价于 x 是 i 的祖先节点
+	// 3. s[:i] 和 s[:j] 的最长公共 border：s[:LCA(i,j)]   
+	// - 求真 border 的情况见下面的注释
+	// https://ac.nowcoder.com/study/live/738/3/1
+	// https://www.luogu.com.cn/problem/P5829
+	failTree := func(s string) {
+		pi := calcPi(s)
+		g := make([][]int, len(s)+1)
+		for i, p := range pi {
+			g[p] = append(g[p], i+1)
+		}
 
-	// todo 失配树（border 树）
-	//  https://www.luogu.com.cn/problem/P5829
+		// 求 s[:i] 和 s[:j] 的最长公共真 border
+		// fail 树上跑 LCA
+		// 直接把 graph_tree.go 中的倍增 LCA 搬过来
+		// 唯一需要修改的是 getLCA 中，当 w==v 时，改成返回 pa[v][0]，表示真 border
+		// https://www.luogu.com.cn/record/136415394
+	}
+
+	//
 
 	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
@@ -294,7 +325,7 @@ func _() {
 	}
 
 	// 子序列自动机
-	// 如果值域很大可以 pos := map[int][]int{} 然后二分查找
+	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
 	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
 	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
 	// LC2014 https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
@@ -817,7 +848,7 @@ func _() {
 		unsafeToBytes, unsafeToString,
 		indexAll,
 		stringHash,
-		kmpSearch, calcMinPeriod,
+		kmpSearch, calcMinPeriod, failTree,
 		zSearch,
 		smallestRepresentation,
 		subsequenceAutomaton,
