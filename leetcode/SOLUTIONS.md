@@ -45,6 +45,7 @@
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
 ||[931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-falling-path-sum/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)|1573|
 ||[1155. 掷骰子等于目标和的方法数](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/)|[【击败 100%】教你一步步思考动态规划！](https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solution/ji-bai-100cong-ji-yi-hua-sou-suo-dao-di-421ab/)|1654|
+||[2304. 网格中的最小路径代价](https://leetcode.cn/problems/minimum-path-cost-in-a-grid/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-path-cost-in-a-grid/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-bd25/)|1658|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
 ||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
 ||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
