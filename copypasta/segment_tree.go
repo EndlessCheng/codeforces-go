@@ -77,8 +77,11 @@ package copypasta
 // EXTRA: 树套树
 // 代码见 fenwick_tree.go
 // 三维偏序：树状数组套动态开点权值线段树 https://www.luogu.com.cn/problem/P3810
-// todo 二逼平衡树 https://www.luogu.com.cn/problem/P3380
-//  二维线段树 https://www.luogu.com.cn/problem/P3437
+// 二逼平衡树 https://www.luogu.com.cn/problem/P3380
+// - 两种 O((n+q)lognlogU) 做法：
+// - 树状数组套动态开点权值线段树（AC）
+// - 动态开点权值线段树套下标平衡树（TLE）https://www.luogu.com.cn/record/136191286
+// todo 二维线段树 https://www.luogu.com.cn/problem/P3437
 //  https://www.luogu.com.cn/problem/P4514
 //  树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
 
@@ -431,10 +434,11 @@ func (t lazySeg) spreadAll(o int) {
 //
 
 // 动态开点线段树·其一·单点修改
-// LC327 https://leetcode-cn.com/problems/count-of-range-sum/
-// LC2736 https://leetcode.cn/problems/maximum-sum-queries/
-// LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/
-// 树套树（见 fenwick_tree.go）https://www.luogu.com.cn/problem/P3810
+// 注：如果 TLE 可以使用 func init() { debug.SetGCPercent(-1) } 加速
+// LC327 https://leetcode.cn/problems/count-of-range-sum/
+// LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/ 1533
+// LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
+// 树套树见 fenwick_tree.go
 const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
 type stNode struct {
@@ -443,39 +447,25 @@ type stNode struct {
 	val    int
 }
 
-// 1 1e9
+var emptyStNode = &stNode{val: stNodeDefaultVal}
+
+func init() {
+	emptyStNode.lo = emptyStNode
+	emptyStNode.ro = emptyStNode
+}
+
+// 0 1e9
 // -2e9 2e9
 func newStRoot(l, r int) *stNode {
-	return &stNode{l: l, r: r, val: stNodeDefaultVal}
+	return &stNode{lo: emptyStNode, ro: emptyStNode, l: l, r: r, val: stNodeDefaultVal}
 }
 
 func (stNode) mergeInfo(a, b int) int {
 	return max(a, b)
 }
 
-func (o *stNode) get() int {
-	if o != nil {
-		return o.val
-	}
-	return stNodeDefaultVal
-}
-
 func (o *stNode) maintain() {
-	o.val = o.mergeInfo(o.lo.get(), o.ro.get())
-}
-
-func (o *stNode) build(a []int, l, r int) {
-	o.l, o.r = l, r
-	if l == r {
-		o.val = a[l-1]
-		return
-	}
-	m := (l + r) >> 1
-	o.lo = &stNode{}
-	o.lo.build(a, l, m)
-	o.ro = &stNode{}
-	o.ro.build(a, m+1, r)
-	o.maintain()
+	o.val = o.mergeInfo(o.lo.val, o.ro.val)
 }
 
 func (o *stNode) update(i, val int) {
@@ -485,13 +475,13 @@ func (o *stNode) update(i, val int) {
 	}
 	m := (o.l + o.r) >> 1
 	if i <= m {
-		if o.lo == nil {
-			o.lo = &stNode{l: o.l, r: m, val: stNodeDefaultVal}
+		if o.lo == emptyStNode {
+			o.lo = &stNode{lo: emptyStNode, ro: emptyStNode, l: o.l, r: m, val: stNodeDefaultVal}
 		}
 		o.lo.update(i, val)
 	} else {
-		if o.ro == nil {
-			o.ro = &stNode{l: m + 1, r: o.r, val: stNodeDefaultVal}
+		if o.ro == emptyStNode {
+			o.ro = &stNode{lo: emptyStNode, ro: emptyStNode, l: m + 1, r: o.r, val: stNodeDefaultVal}
 		}
 		o.ro.update(i, val)
 	}
@@ -499,7 +489,7 @@ func (o *stNode) update(i, val int) {
 }
 
 func (o *stNode) query(l, r int) int {
-	if o == nil || l > o.r || r < o.l {
+	if o == emptyStNode || l > o.r || r < o.l {
 		return stNodeDefaultVal
 	}
 	if l <= o.l && o.r <= r {
@@ -632,14 +622,14 @@ func (o *stNode) merge(b *stNode) *stNode {
 // https://www.luogu.com.cn/problem/P5494
 // rt, rt2 := rt.split(nil, l, r)
 func (o *stNode) split(b *stNode, l, r int) (*stNode, *stNode) {
-	if o == nil || l > o.r || r < o.l {
-		return o, nil
+	if o == emptyStNode || l > o.r || r < o.l {
+		return o, emptyStNode
 	}
 	if l <= o.l && o.r <= r {
-		return nil, o
+		return emptyStNode, o
 	}
-	if b == nil {
-		b = &stNode{l: o.l, r: o.r}
+	if b == emptyStNode {
+		b = &stNode{lo: emptyStNode, ro: emptyStNode, l: o.l, r: o.r, val: stNodeDefaultVal}
 	}
 	o.lo, b.lo = o.lo.split(b.lo, l, r)
 	o.ro, b.ro = o.ro.split(b.ro, l, r)
@@ -649,16 +639,16 @@ func (o *stNode) split(b *stNode, l, r int) (*stNode, *stNode) {
 }
 
 // 权值线段树求第 k 小
-// 调用前需保证 1 <= k <= rt.get()
+// 调用前需保证 1 <= k <= root.val
 func (o *stNode) kth(k int) int {
 	if o.l == o.r {
 		return o.l
 	}
-	if cntL := o.lo.get(); k <= cntL {
+	cntL := o.lo.val
+	if k <= cntL {
 		return o.lo.kth(k)
-	} else {
-		return o.ro.kth(k - cntL)
 	}
+	return o.ro.kth(k - cntL)
 }
 
 //
