@@ -73,14 +73,14 @@
   - 后缀数组（SA）
   - [后缀自动机（SAM）sam.go](/copypasta/sam.go)
   - [字典树 trie.go](/copypasta/trie.go)
-    - 持久化
-    - AC 自动机
+    - 可持久化字典树
   - [0-1 字典树 trie01.go](/copypasta/trie01.go)
     - 最大异或和
     - 第 k 大异或和
     - 删除元素
     - 可持久化 0-1 字典树
     - 【研究】0-1 字典树上最多有多少个节点
+  - [AC 自动机 acam.go](/copypasta/acam.go)
 - 数学
   - [数论 math.go](/copypasta/math.go)
     - 辗转相除法（最大公因数 GCD）

@@ -7,6 +7,9 @@ import (
 )
 
 /* 后缀自动机 Suffix automaton (SAM)
+
+如果我们既能知道前缀信息，又能知道后缀信息，就可以做字符串匹配
+
 将字符串的所有子串压缩后的结果
 【推荐】https://oi-wiki.org/string/sam/ 证明了 SAM 的状态数不会超过 2n-1 (n>=2)，最坏情况下为 abbb...bbb
 【推荐】可视化工具：SAM Drawer https://yutong.site/sam/ https://mivik.gitee.io/sam-visualizer/

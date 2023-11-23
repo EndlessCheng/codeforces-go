@@ -86,13 +86,62 @@ func (t *trie01) del(v int) *trie01Node {
 	return o
 }
 
-// v 与 trie 上所有数的最大异或值，trie 不能是空的
+// 返回 v 与 trie 上所有数的最小异或值，trie 不能是空的
+// 注：若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie01 中删掉，算好后再把 a[i] 重新插入
+// https://codeforces.com/problemset/problem/888/G 2300
+func (t *trie01) minXor(v int) (ans int) {
+	o := t.root
+	for i := trieBitLen - 1; i >= 0; i-- {
+		b := v >> i & 1
+		if o.son[b] == nil {
+			ans |= 1 << i
+			b ^= 1
+		}
+		o = o.son[b]
+	}
+	return
+}
+
+// 完全图，边权为 a[v]^a[w]，求 MST
+// Boruvka 算法，分治连边
+// O(nlognlogU)
+// http://codeforces.com/problemset/problem/888/G 2300
+func xorMST(a []int) (ans int) {
+	var f func([]int, int)
+	f = func(a []int, p int) {
+		if a == nil || p < 0 {
+			return
+		}
+		b := [2][]int{}
+		for _, v := range a {
+			k := v >> p & 1
+			b[k] = append(b[k], v)
+		}
+		if b[0] != nil && b[1] != nil {
+			// b[0] 与 b[1] 之间一条边权最小的边
+			t := newTrie01()
+			for _, v := range b[0] {
+				t.put(v)
+			}
+			minXor := math.MaxInt
+			for _, v := range b[1] {
+				minXor = min(minXor, t.minXor(v))
+			}
+			ans += minXor
+		}
+		f(b[0], p-1)
+		f(b[1], p-1)
+	}
+	f(a, trieBitLen-1)
+	return
+}
+
+// 返回 v 与 trie 上所有数的最大异或值，trie 不能是空的
 // 模板题 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
 // 加约束 LC2935 https://leetcode.cn/problems/maximum-strong-pair-xor-ii/
 // 离线 LC1707 https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
 // todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
 // todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
-// EXTRA: minXor: 若要求 a[i] 与数组 a 中元素的最小异或值，可以先把 a[i] 从 trie01 中删掉，然后搜索一遍即可，最后把 a[i] 重新插入
 func (t *trie01) maxXor(v int) (ans int) {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
@@ -106,7 +155,7 @@ func (t *trie01) maxXor(v int) (ans int) {
 	return
 }
 
-// v 与 trie 上所有数的第 k 大异或值
+// 返回 v 与 trie 上所有数的第 k 大异或值
 // k 从 1 开始
 // 如果 k 超过 trie 中元素个数，返回 0
 // [十二省联考 2019] 异或粽子 https://www.luogu.com.cn/problem/P5283
