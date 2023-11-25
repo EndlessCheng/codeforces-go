@@ -59,13 +59,13 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 #### 贡献法（计算所有子数组的……的和）
 
-- [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)
+- [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/) 1976
   https://atcoder.jp/contests/agc057/tasks/agc057_b
-- [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/)
-- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/)
-     https://codeforces.com/contest/817/problem/D
-- [2281. 巫师的总力量和（最小值*和）](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
-- [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/)
+- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) O(n) 做法难度大约 2000
+  https://codeforces.com/contest/817/problem/D
+- [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/) 2051
+- [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/) 2397
+- [2281. 巫师的总力量和（最小值*和）](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/) 2621
 子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
 另见 common.go
 
