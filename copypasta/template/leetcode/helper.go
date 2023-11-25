@@ -92,8 +92,8 @@ func init() {
 		"mat", "a",
 		"matrix", "a",
 		"grid", "a",
-		"grid1", "a1",
-		"grid2", "a2",
+		"grid1", "a",
+		"grid2", "b",
 		"words", "a",
 		"events", "a",
 		"heights", "a",
@@ -102,8 +102,10 @@ func init() {
 		"word", "s",
 		"word1", "s",
 		"word2", "t",
+		"word3", "z",
 		"s1", "s",
 		"s2", "t",
+		"s3", "z",
 
 		// 其余常见变量名
 		"number", "n",
