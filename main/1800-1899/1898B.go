@@ -25,14 +25,9 @@ func CF1898B(_r io.Reader, _w io.Writer) {
 			if v <= w {
 				continue
 			}
-			k := v / w
+			k := (v - 1) / w
 			ans += k
-			if v%w > 0 {
-				a[i] = v / (k + 1)
-			} else {
-				ans--
-				a[i] = w
-			}
+			a[i] = v / (k + 1)
 		}
 		Fprintln(out, ans)
 	}
