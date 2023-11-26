@@ -21,11 +21,8 @@ func CF1898B(_r io.Reader, _w io.Writer) {
 		}
 		ans := 0
 		for i := n - 2; i >= 0; i-- {
-			v, w := a[i], a[i+1]
-			if v <= w {
-				continue
-			}
-			k := (v - 1) / w
+			v := a[i]
+			k := (v - 1) / a[i+1]
 			ans += k
 			a[i] = v / (k + 1)
 		}
