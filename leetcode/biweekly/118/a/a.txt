@@ -1,0 +1,14 @@
+["leet","code"]
+"e"
+[0,1]
+
+["abc","bcd","aaaa","cbc"]
+"a"
+[0,2]
+
+["abc","bcd","aaaa","cbc"]
+"z"
+[]
+
+
+
