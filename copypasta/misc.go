@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-/* 其他无法分类的算法
+/* 其他无法分类的算法 ad-hoc
 
 倒数平方根 https://www.bilibili.com/video/BV17N41167dR/
 
@@ -1098,4 +1098,108 @@ o:
 		}
 	}
 	return -1
+}
+
+// 只能交换相邻的相差为 1 的数字（也可以交换 0 和 9）
+// 输出最小字典序
+//
+// 设 a=s[0]，答案的首位只可能是 a-1 或 a（如果 a=9，那么可能和 0 互换；如果是 0，那么不需要互换，特判即可）
+// 能不能是 a-1 呢？判断第一个 a-1 左边是否只有 a 和 a-2
+// 然后讨论 a=s[1]，依此类推
+// 用 10 个队列存对应数字出现的下标，每次取队首判断即可
+// 时间复杂度 O(10n)：一次判断过程复杂度是 O(10)，一共有 n 次判断
+//
+// https://ac.nowcoder.com/acm/contest/65259/C
+// 不能交换 0 和 9 的版本见后
+func makeLexicographicallySmallestStringBySwappingAdjacentElements(s string, abs func(int) int) string {
+	n := len(s)
+	pos := [10][]int{}
+	for i, b := range s {
+		b -= '0'
+		pos[b] = append(pos[b], i)
+	}
+
+	check := func(b byte) bool {
+		if len(pos[b]) == 0 {
+			return false
+		}
+		for i := byte(0); i <= 9; i++ {
+			if i == b {
+				continue
+			}
+			d := abs(int(i) - int(b))
+			if d != 1 && d != 9 && len(pos[i]) > 0 && pos[i][0] < pos[b][0] {
+				return false
+			}
+		}
+		return true
+	}
+
+	ans := make([]byte, 0, n)
+	used := make([]bool, n+1)
+	for i := 0; i < n; {
+		b := s[i] - '0'
+		x := (b + 9) % 10 // b-1
+		y := (b + 1) % 10
+		if x > y {
+			x, y = y, x
+		}
+		if x < b && check(x) {
+			b = x
+		} else if y < b && check(y) {
+			b = y
+		}
+
+		ans = append(ans, '0'+b)
+		used[pos[b][0]] = true
+		pos[b] = pos[b][1:]
+
+		for used[i] {
+			i++
+		}
+	}
+	return string(ans)
+}
+
+// 不能交换 0 和 9 的版本
+func makeLexicographicallySmallestStringBySwappingAdjacentElements2(a []int) []int {
+	const mx = 9
+	pos := [mx + 1][]int{}
+	for i, v := range a {
+		pos[v] = append(pos[v], i)
+	}
+
+	check := func(v int) bool {
+		if len(pos[v]) == 0 {
+			return false
+		}
+		for i := 0; i <= mx; i++ {
+			if (i < v-1 || i > v+1) && len(pos[i]) > 0 && pos[i][0] < pos[v][0] {
+				return false
+			}
+		}
+		return true
+	}
+
+	n := len(a)
+	ans := make([]int, 0, n)
+	used := make([]bool, n+1)
+	for i := 0; i < n; {
+		v := a[i]
+		if v == 0 {
+			continue
+		}
+		if check(v - 1) { // 把 v-1 换过来
+			v--
+		}
+
+		ans = append(ans, v)
+		used[pos[v][0]] = true
+		pos[v] = pos[v][1:]
+
+		for used[i] {
+			i++
+		}
+	}
+	return ans
 }
