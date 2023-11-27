@@ -249,24 +249,27 @@ func (*graph) dfs(n, st int, g [][]int) {
 		// https://codeforces.com/problemset/problem/936/B
 		// https://codeforces.com/problemset/problem/1217/D 给一个有向图着色，使得没有一个环只有一个颜色，求使用的颜色数量的最小值
 		// https://codeforces.com/problemset/problem/1547/G
+		// 与 AC 自动机结合 https://www.luogu.com.cn/problem/P2444
 		color := make([]int8, n)
-		var f func(int)
-		f = func(v int) {
+		var f func(int) bool
+		f = func(v int) bool {
 			color[v] = 1
 			for _, w := range g[v] {
-				if c := color[w]; c == 0 { // 未访问过，即 DFS 树上的树边【树枝边】
-					f(w)
+				c := color[w]
+				if c == 0 { // 未访问过，即 DFS 树上的树边【树枝边】
+					if f(w) {
+						return true
+					}
 				} else if c == 1 { // 后向边，说明有环
-
-				} else { // 前向边或横向边，说明有多条路径可以到 w
-
-				}
+					return true
+				} // else: 前向边或横向边，说明有多条路径可以到 w
 			}
 			color[v] = 2
+			return false
 		}
 		for i, c := range color {
 			if c == 0 {
-				f(i)
+				f(i) // ...
 			}
 		}
 	}
@@ -1045,10 +1048,17 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 // todo 动态仙人掌 https://www.luogu.com.cn/problem/P5237
 // todo 题单 圆方树——处理仙人掌的利器 https://immortalco.blog.uoj.ac/blog/1955
 //
-// todo https://www.luogu.com.cn/problem/P4630
+// todo 题单 https://www.cnblogs.com/alex-wei/p/high_level_graph_theory.html
+//  https://www.luogu.com.cn/problem/P4630
 //  https://www.luogu.com.cn/problem/P4606
+//  https://www.luogu.com.cn/problem/P5058
+//  https://www.luogu.com.cn/problem/P4334
+//  https://www.luogu.com.cn/problem/P3225
+//  https://www.luogu.com.cn/problem/P8456
+//  https://codeforces.com/problemset/problem/1763/F 3000
+//  https://codeforces.com/problemset/problem/487/E 3200
 //  https://www.luogu.com.cn/problem/UVA1464
-// todo https://atcoder.jp/contests/abc318/tasks/abc318_g
+// https://atcoder.jp/contests/abc318/tasks/abc318_g 2260
 func (*graph) roundSquareTree(n int, edges [][]int, abs func(int) int) {
 	type nb struct{ to, wt int }
 	g := make([][]nb, n)
@@ -1170,7 +1180,36 @@ func (*graph) roundSquareTree(n int, edges [][]int, abs func(int) int) {
 		return dis2[v] + dis2[w] - dis2[x] - dis2[y] + dxy
 	}
 
-	_ = getDis
+	// EX: 判断从 src 到 dst 的简单路径上是否包含点 target
+	// 只要路径上有个方点与 y 相连即可
+	// https://atcoder.jp/contests/abc318/tasks/abc318_g
+	pathContains := func(src, dst, target int) (ok bool) {
+		var g2 [][]int
+		var dfs func(int, int) bool
+		dfs = func(v, fa int) bool {
+			if v == dst {
+				return true
+			}
+			for _, w := range g2[v] {
+				if w != fa && dfs(w, v) {
+					if !ok && w >= n {
+						for _, x := range g2[w] {
+							if x == target {
+								ok = true
+								break
+							}
+						}
+					}
+					return true
+				}
+			}
+			return false
+		}
+		dfs(src, -1)
+		return
+	}
+
+	_ = []any{getDis, pathContains}
 }
 
 //
@@ -1222,6 +1261,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 转换 https://codeforces.com/problemset/problem/1693/C
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
 // 线段树建图优化 https://codeforces.com/problemset/problem/786/B
+// - todo [SNOI2017] 炸弹 https://www.luogu.com.cn/problem/P5025
 // 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
 // todo 与扩欧结合 https://www.acwing.com/problem/content/3418/
 // 跑两遍最短路，第二次修正边权来改变最短路 https://codeforces.com/problemset/problem/715/B
@@ -1421,6 +1461,7 @@ func (*graph) shortestPathDijkstra2(g [][]int, st int) []int {
 // EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
 // 例题: https://codeforces.com/problemset/problem/173/B
 // 网格图 https://codeforces.com/problemset/problem/590/C
+// 建图技巧 https://www.lanqiao.cn/problems/6281/learning/?contest_id=146
 // 建图技巧 https://codeforces.com/problemset/problem/821/D
 // 建图技巧 https://codeforces.com/problemset/problem/1340/C
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
@@ -1944,15 +1985,13 @@ func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
 
 // Boruvka's algorithm
 // 用于求解边权互不相同的无向图的最小生成森林
+// 见 trie01.go 中的 xorMST
 // https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
 // https://oi-wiki.org/graph/mst/#boruvka
 // https://www.geeksforgeeks.org/boruvkas-algorithm-greedy-algo-9/
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BoruvkaMST.java.html
-// todo http://codeforces.com/problemset/problem/888/G
-//  https://codeforces.com/problemset/problem/1550/F https://www.luogu.com.cn/blog/ETHANK/boruvka-xiao-ji
-func (*graph) boruvkaMST(n, m int) (sum int) {
-	return
-}
+// http://codeforces.com/problemset/problem/888/G
+// todo https://codeforces.com/problemset/problem/1550/F https://www.luogu.com.cn/blog/ETHANK/boruvka-xiao-ji
 
 // 单点度数（单度）限制最小生成树   O(n^2)
 // 点 root 的度数不超过 lim
@@ -3025,26 +3064,24 @@ func (*graph) topoSort(n int, edges [][]int) []int {
 }
 
 // 强连通分量分解 Strongly Connected Component (SCC)
+// 支持自环和重边
 // https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm
 // https://oi-wiki.org/graph/scc/#kosaraju
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KosarajuSharirSCC.java.html
 // 模板题 https://www.luogu.com.cn/problem/P1726
 //       https://atcoder.jp/contests/practice2/tasks/practice2_g
+// 缩点后与 DAG DP 结合 https://codeforces.com/contest/1900/problem/E
 // 计数 https://codeforces.com/problemset/problem/427/C
 // https://www.luogu.com.cn/problem/P2341
 // 建图转换 https://codeforces.com/problemset/problem/1239/D
 // 与高斯消元结合 https://www.luogu.com.cn/problem/P6030
-func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
-	type edge struct{ v, w int }
-	edges := make([]edge, 0, m) // 缩点用
+func (*graph) sccKosaraju(n int, edges [][]int) ([][]int, []int) {
 	g := make([][]int, n)
 	rg := make([][]int, len(g))
-	addEdge := func(v, w int) {
-		//v--
-		//w--
+	for _, e := range edges {
+		v, w := e[0], e[1]
 		g[v] = append(g[v], w)
 		rg[w] = append(rg[w], v)
-		edges = append(edges, edge{v, w})
 	}
 
 	// 生成 DFS 后序（用于跑逆后序遍历，这样生成的 SCC 一定是拓扑序）
@@ -3066,6 +3103,7 @@ func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
 		}
 	}
 
+	scc := [][]int{}
 	clear(vis)
 	var comp []int
 	var rdfs func(int)
@@ -3078,37 +3116,39 @@ func (*graph) sccKosaraju(n, m int) ([][]int, []int) {
 			}
 		}
 	}
-	scc := [][]int{}
 outer:
 	for i := len(g) - 1; i >= 0; i-- { // 逆后序遍历，就可以像无向图那样求出 SCC
-		if v := vs[i]; !vis[v] {
-			comp = []int{}
-			rdfs(v)
-			scc = append(scc, comp)
+		v := vs[i]
+		if vis[v] {
+			continue
+		}
+		comp = []int{}
+		rdfs(v)
+		scc = append(scc, comp)
 
-			// EXTRA: 无需实际缩点，判断缩点后是否出度为 0
-			{
-				for _, u := range comp {
-					for _, w := range g[u] {
-						if !vis[w] { // 出度不为 0
-							continue outer
-						}
+		// EXTRA: 直接在这里判断缩点后是否出度为 0（无需实际缩点）
+		{
+			for _, u := range comp {
+				for _, w := range g[u] {
+					if !vis[w] { // 出度不为 0
+						continue outer
 					}
 				}
-				// 出度为 0
 			}
+			// 出度为 0
 		}
 	}
 
 	// 记录每个点所属 SCC 的下标，用于缩点和查询
 	sid := make([]int, len(g))
 	for i, cc := range scc {
+		// 还可以汇合同一个 SCC 的权值等 ...
 		for _, v := range cc {
 			sid[v] = i
 		}
 	}
 
-	// EXTRA: 缩点: 将边 v-w 转换成 sid[v]-sid[w]
+	// 缩点: 将边 v-w 转换成 sid[v]-sid[w]
 	// 缩点后得到了一张 DAG，点的编号范围为 [0,len(scc)-1]
 	// 注意这样可能会产生重边，不能有重边时可以用 map 或对每个点排序去重
 	// 模板题 点权 https://www.luogu.com.cn/problem/P3387
@@ -3116,14 +3156,15 @@ outer:
 	// 检测路径是否可达/唯一/无穷 https://codeforces.com/problemset/problem/1547/G
 	ns := len(scc)
 	g2 := make([][]int, ns)
-	deg := make([]int, ns)
-	for _, e := range edges {
-		if v, w := sid[e.v], sid[e.w]; v != w {
-			g2[v] = append(g2[v], w)
-			deg[w]++
-		} else {
-			// 这里可以记录自环（指 len(scc) == 1 但是有自环）、汇合同一个 SCC 的权值等 ...
-
+	deg := make([]int, ns) // 求拓扑序 DP
+	for v, ws := range g {
+		v = sid[v]
+		for _, w := range ws {
+			w = sid[w]
+			if v != w {
+				g2[v] = append(g2[v], w)
+				deg[w]++
+			}
 		}
 	}
 
@@ -3143,13 +3184,17 @@ outer:
 		}
 		return len(lastComp)
 	}
+	_ = numCanBeVisitedFromAll
 
-	_, _ = addEdge, numCanBeVisitedFromAll
 	return scc, sid
 }
 
 // SCC Tarjan
+// 支持自环和重边
 // 常数比 Kosaraju 略小（在 AtCoder 上的测试显示，5e5 的数据下比 Kosaraju 快了约 100ms）
+// CF 上差不多 Kosaraju 436ms https://codeforces.com/problemset/submission/1900/234527101
+//            Tarjan   451ms https://codeforces.com/problemset/submission/1900/234526944
+// - 估计是因为递归栈的开销导致的（64 位递归栈比 32 位的更耗内存，更容易 cache miss）
 // https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 // https://oi-wiki.org/graph/scc/#tarjan
 // https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TarjanSCC.java.html
@@ -3159,30 +3204,30 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 	scc := [][]int{}
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
-	stk := []int{} // 注意这不是递归栈，单纯地将搜索到的节点组成一个先进先出的数据结构
-	inStk := make([]bool, len(g))
+	st := []int{}
+	inSt := make([]bool, len(g))
 	var tarjan func(int) int
 	tarjan = func(v int) int {
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
-		stk = append(stk, v)
-		inStk[v] = true
+		st = append(st, v)
+		inSt[v] = true
 		for _, w := range g[v] {
 			if dfn[w] == 0 {
 				lowW := tarjan(w)
 				lowV = min(lowV, lowW)
-			} else if inStk[w] { // 找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
+			} else if inSt[w] { // 找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
 				lowV = min(lowV, dfn[w])
 			}
 		}
 		if dfn[v] == lowV { // 回不去了，再也回不去了，祖先（节点）已成历史
 			comp := []int{}
 			for {
-				w := stk[len(stk)-1]
-				stk = stk[:len(stk)-1]
+				w := st[len(st)-1]
+				st = st[:len(st)-1]
 				// 避免搜索树上的另一棵子树上的点 v，通过横向边，把 dfn[w] 错误地更新到 lowV（注意 dfn[w] 都小于后面新遍历到的点的 dfn 值）
-				inStk[w] = false
+				inSt[w] = false
 				comp = append(comp, w)
 				if w == v {
 					break
@@ -3202,10 +3247,25 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 	// 上面得到的 scc 是拓扑序的逆序
 	slices.Reverse(scc)
 
+	// 缩点
 	sid := make([]int, len(g))
-	for i, cp := range scc {
-		for _, v := range cp {
+	for i, cc := range scc {
+		// 还可以汇合同一个 SCC 的权值等 ...
+		for _, v := range cc {
 			sid[v] = i
+		}
+	}
+	ns := len(scc)
+	g2 := make([][]int, ns)
+	deg := make([]int, ns)
+	for v, ws := range g {
+		v = sid[v]
+		for _, w := range ws {
+			w = sid[w]
+			if v != w {
+				g2[v] = append(g2[v], w)
+				deg[w]++
+			}
 		}
 	}
 
@@ -3235,7 +3295,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 // 模板题 https://www.luogu.com.cn/problem/P4782
 // 建边练习【模板代码】 https://codeforces.com/contest/468/problem/B
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 https://atcoder.jp/contests/practice2/tasks/practice2_h
-func (G *graph) solve2SAT(n, m int) []bool {
+func (G *graph) solve2SAT(n int, edges [][]int) []bool {
 	// 分为左右两部，左边 [0,n) 范围的点表示 x 为真，右边 [n,2*n) 范围的点表示 x 为假（¬x 用 x+n 表示）
 	// 例如，当 x y 均为真时，就连一条 a
 	g := make([][]int, n*2)
@@ -3254,7 +3314,7 @@ func (G *graph) solve2SAT(n, m int) []bool {
 		rg[w] = append(rg[w], v)
 	}
 	// 读图，求 sid ...
-	_, sid := G.sccKosaraju(n*2, m)
+	_, sid := G.sccKosaraju(n*2, edges)
 	ans := make([]bool, n)
 	for i, id := range sid[:n] {
 		// x 和 ¬x 处于同一个 SCC 时无解（因为 x ⇔ ¬x）
@@ -3718,6 +3778,50 @@ and with flow conservation also being required for the source and sink (i.e. the
 《算法导论》思考题 29-5
 todo https://codeforces.com/contest/1455/problem/E
  https://codeforces.com/blog/entry/85186?#comment-728533
+*/
+
+/* 网络流建模技巧/转换技巧 ################################################################################
+todo 整合到其它 blocks
+todo 重新看一下挑战
+
+标准建模（指派问题）：
+	http://poj.org/problem?id=2175
+	http://poj.org/problem?id=3686
+边容量减少：
+	若 flow<=cap' 则最大流不变；若 flow>cap' 需要将多出的流退回去 todo
+    最小割+退流 https://www.luogu.com.cn/problem/P3308
+流量任意：
+	todo
+容量为负数：
+	todo
+费用为负数：
+	todo 挑战:228
+求最小割划分成两个集合：
+	Dual Core CPU http://poj.org/problem?id=3469
+无重复边的往返最短路：
+	http://poj.org/problem?id=2135
+	转换成流量为 2 的最小费用流
+点边转换
+   将点拆为入点和出点（v 和 v+n），即可把点的属性变成边的属性，从而方便应用最大流、最小割等算法
+   将边的中间加一个节点，把边的属性体现在中间的点上
+上下界费用流
+	对每条边新增一条边 e'
+	e.cap-=minCap
+	e'.cap=minCap
+	e'.cost=e.cost-M // 一个足够大的常数
+	跑完 MCMF 后加上 M*∑minCap
+
+Disjoint paths
+Edge-disjoint paths: It turns out that the maximum number of edge-disjoint paths equals the maximum flow of the graph, assuming that the capacity of each edge is one.
+Node-disjoint paths: 拆点法
+
+路径覆盖问题 Path cover + 打印
+todo https://zhuanlan.zhihu.com/p/125759333
+todo Competitive Programmer’s Handbook Ch.20
+todo 线性规划与网络流 24 题 - 最小路径覆盖问题 https://byvoid.com/zhs/blog/lpf24-3/
+
+给一 DAG，求它的最大反链大小、一组最大反链构造以及所有最大反链的并
+https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 */
 
 // 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)
