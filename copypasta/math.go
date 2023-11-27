@@ -33,6 +33,8 @@ https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1
 https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
 另见数论分块
 
+基本不等式：总长为 x 的篱笆能围出来的最大面积是多少
+
 AP: Sn = n*(2*a1+(n-1)*d)/2
 GP: Sn = a1*(q^n-1)/(q-1), q!=1
        = a1*n, q==1
@@ -363,8 +365,10 @@ func _(abs func(int) int) {
 	//     = ∑mu(i)*floor(n/i)^3
 	// #{(a,b,c,d) | 1<=a,b,c,d<=n, gcd(a,b,c,d)=1}   https://oeis.org/A082540
 	//     = ∑mu(i)*floor(n/i)^4
+	// 证明见后面【莫比乌斯反演】
 
 	// GCD 求和相关
+	// 证明需要用到莫比乌斯函数，见后面的【莫比乌斯反演】附近的小技巧
 	// ∑gcd(n,i) = ∑{d|n}d*phi(n/d)          https://oeis.org/A018804 https://www.luogu.com.cn/problem/P2303
 	//     更简化的公式见小粉兔博客 https://www.cnblogs.com/PinkRabbit/p/8278728.html
 	// ∑n/gcd(n,i) = ∑{d|n}d*phi(d)          https://oeis.org/A057660
@@ -374,6 +378,7 @@ func _(abs func(int) int) {
 	//     https://www.luogu.com.cn/problem/P1390
 	//     训练指南例题 2-9，UVa11426 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=26&page=show_problem&problem=2421
 	// ∑∑∑gcd(i,j,k) = ∑phi(i)*(floor(n/i))^3   https://ac.nowcoder.com/acm/contest/7608/B
+	// 证明见后面【莫比乌斯反演】
 
 	// LCM 性质统计相关
 	// https://oeis.org/A048691 #{(a,b) | lcm(a,b)=n}，等价于 #{(x,y) | x|n, y|n, gcd(x,y)=1}
@@ -898,6 +903,10 @@ func _(abs func(int) int) {
 	// 一个典型的例子见下面 σ(n) 的线性筛求法
 	// https://codeforces.com/contest/1512/problem/G
 	// https://codeforces.com/gym/103107/problem/F
+	// i^N 的异或和 https://ac.nowcoder.com/acm/problem/112055
+	// 
+	// 一个有用的性质：积性函数的和函数也是积性函数
+	// https://codeforces.com/problemset/problem/757/E 2500
 	sieveEulerTemplate := func() []int {
 		const mx int = 1e7
 		f := make([]int, mx+1)
@@ -960,6 +969,24 @@ func _(abs func(int) int) {
 		}
 		if x > 1 {
 			factors = append(factors, factor{x, 1, x})
+		}
+		return
+	}
+
+	// 利用质数加速分解
+	// 只需要预处理 sqrt(mx) 以内的质数
+	// https://www.lanqiao.cn/problems/6281/learning/?contest_id=146
+	factorizeFast := func(x int) (ps []int) {
+		for _, p := range primes {
+			if p*p > x {
+				break
+			}
+			for ; x%p == 0; x /= p {
+			}
+			ps = append(ps, p)
+		}
+		if x > 1 {
+			ps = append(ps, x)
 		}
 		return
 	}
@@ -1178,6 +1205,9 @@ func _(abs func(int) int) {
 
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
+
+	https://oeis.org/A019554 Smallest number whose square is divisible by n
+	- LC2949 https://leetcode.cn/problems/count-beautiful-substrings-ii/
 	*/
 
 	// n 以内的最多约数个数，以及对应的最小数字
@@ -1513,6 +1543,25 @@ func _(abs func(int) int) {
 				// do(p, e) ...
 
 			}
+		}
+
+		// EXTRA: 最长子序列 GCD > 1
+		{
+			var nums []int
+			cnt := map[int]int{}
+			for _, x := range nums {
+				for x > 1 {
+					p := lpf[x]
+					for x /= p; lpf[x] == p; x /= p {
+					}
+					cnt[p]++
+				}
+			}
+			res := 0
+			for _, c := range cnt {
+				res = max(res, c)
+			}
+			// res
 		}
 
 		// 求 x 的所有因子
@@ -1862,6 +1911,7 @@ func _(abs func(int) int) {
 	}
 
 	// 预处理 [1,mx] 欧拉函数
+	// O(UloglogU) 的写法
 	initPhi := func() {
 		const mx int = 1e6
 		phi := [mx + 1]int{}
@@ -1877,7 +1927,22 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// 线性筛 https://oi-wiki.org/math/sieve/#_8
+	// O(UlogU) 的写法
+	initPhi = func() {
+		const mx int = 1e6
+		phi := [mx + 1]int{}
+		for i := 1; i <= mx; i++ {
+			phi[i] = i
+		}
+		for i := 1; i <= mx; i++ {
+			for j := i * 2; j <= mx; j += i {
+				phi[j] -= phi[i]
+			}
+		}
+	}
+
+	// O(U) 的写法
+	// https://oi-wiki.org/math/sieve/#_8
 	// https://www.luogu.com.cn/discuss/show/213297
 	sievePhi := func() {
 		const mx int = 1e6
@@ -2949,34 +3014,74 @@ func _(abs func(int) int) {
 		}
 	}
 
+	/* 常用结论 & 题型
+
+	第一类：【有互质约束的计数问题】
+	[n == 1] = sum_{d|n} mu(d)
+	把 n 替换成 gcd(i,j) 得到 [gcd(i,j) == 1] = sum_{d|gcd(i,j)} mu(d)
+	可以整合到其它和式中，解决一类【有互质约束的计数问题】
+	例如 sum_i sum_j [gcd(i,j) == 1]
+	  = sum_i sum_j sum_{d|gcd(i,j)} mu(d)
+	改成先枚举 d，那么 i 和 j 必须是 d 的倍数，才能使 d|gcd(i,j) 成立
+	我们可以直接计算这样的 i 和 j 的个数（为什么算法变快了，这是根本原因）
+	上式 = sum_d mu(d) * floor(MAX_I/d) * floor(MAX_J/d)，用二维整除分块解决
+	题目：
+	https://www.luogu.com.cn/problem/P2522 https://www.luogu.com.cn/blog/_post/139077
+	https://www.luogu.com.cn/problem/P3455
+	todo https://www.luogu.com.cn/problem/P2257
+	 https://www.luogu.com.cn/problem/P1829
+	 https://www.luogu.com.cn/problem/P3327
+	 更多例子 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
+	 https://atcoder.jp/contests/agc038/tasks/agc038_c 2327
+
+	第二类：【GCD 求和问题】
+	n = sum_{d|n} phi(d)
+	把 n 替换成 gcd(i,j) 得到 gcd(i,j) = sum_{d|gcd(i,j)} phi(d)
+	可以整合到其它和式中，解决一类【GCD 求和问题】
+	例如 sum_i sum_j gcd(i,j)
+	  = sum_i sum_j sum_{d|gcd(i,j)} phi(d)
+	改成先枚举 d，那么 i 和 j 必须是 d 的倍数，才能使 d|gcd(i,j) 成立
+	我们可以直接计算这样的 i 和 j 的个数（为什么算法变快了，这是根本原因）
+	上式 = sum_d phi(d) * floor(MAX_I/d) * floor(MAX_J/d)，用二维整除分块解决
+	题目：
+	https://www.luogu.com.cn/problem/P2398
+	https://atcoder.jp/contests/abc162/tasks/abc162_e 1662
+	sum_i gcd(i,n) https://www.luogu.com.cn/problem/P2303
+	sum_i sum_j gcd(a[i],a[j]) https://codeforces.com/contest/1900/problem/D
+	- 改成枚举 a[i] 的因子 ~U^(1/3) https://codeforces.com/blog/entry/122677?#comment-1088190
+
+	n = sum_d d * [n == d]
+	gcd(i,j) = sum_d d * [gcd(i,j) == d]
+	这样就可以把【GCD 求和】转换成【互质约束计数】了
+	*/
+
 	// 狄利克雷卷积 Dirichlet convolution
 	// https://en.wikipedia.org/wiki/Dirichlet_convolution
 	// https://zhuanlan.zhihu.com/p/137619492
 
+	// 先看上面写的【常用结论】!
 	// 莫比乌斯反演 Möbius inversion formula
 	// https://en.wikipedia.org/wiki/M%C3%B6bius_inversion_formula
-	// todo 题目 https://oi-wiki.org/math/mobius/
+	// 实用技巧 https://www.cnblogs.com/linzhengmin/p/11060871.html
 	// https://zhuanlan.zhihu.com/p/138038817
-	// 莫比乌斯反演-让我们从基础开始 https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
+	// https://www.luogu.com.cn/blog/An-Amazing-Blog/mu-bi-wu-si-fan-yan-ji-ge-ji-miao-di-dong-xi
 	// https://www.luogu.com.cn/blog/61088/jian-dan-shuo-lun-tian-keng
 	// [Tutorial] Generalized Möbius Inversion on Posets https://codeforces.com/blog/entry/98413
 	//
-	// todo 专题练习[一些好玩的数学题] https://www.luogu.com.cn/training/1432
-	// https://codeforces.com/problemset/problem/547/C
-	// https://codeforces.com/problemset/problem/900/D
-	// https://codeforces.com/problemset/problem/1559/E
-	// todo https://www.luogu.com.cn/problem/P2257
-	//  https://www.luogu.com.cn/problem/P2522
+	// todo 重新做一遍
+	//  https://codeforces.com/problemset/problem/900/D 2000
+	//  GCD=1 的子序列个数 https://codeforces.com/problemset/problem/803/F 2000 https://ac.nowcoder.com/acm/problem/112055
+	//  https://codeforces.com/problemset/problem/1559/E 2200
+	//  https://codeforces.com/problemset/problem/547/C 2300
+	//  GCD=1 的数对个数 * (i-j) https://codeforces.com/problemset/problem/1780/F 2300
+	// todo 题目 https://oi-wiki.org/math/mobius/
+	//  题目 https://www.cnblogs.com/peng-ym/p/8647856.html
+	//  专题练习[一些好玩的数学题] https://www.luogu.com.cn/training/1432
 	//  https://www.luogu.com.cn/blog/203623/sol-jrksjr6D https://www.luogu.com.cn/blog/Silver187/qian-lian-di-shi-jie-ti-xie
-	//  GCD=1 的子序列个数 https://codeforces.com/problemset/problem/803/F https://ac.nowcoder.com/acm/problem/112055
-	//  GCD=1 的数对个数 * (i-j) https://codeforces.com/problemset/problem/1780/F
-
-	// todo 推式子 https://ac.nowcoder.com/acm/contest/11171/E
-
-	//
+	//  推式子 https://ac.nowcoder.com/acm/contest/11171/E
 
 	// 数论分块/除法分块/整除分块
-	// https://oi-wiki.org/math/mobius/#_3
+	// https://oi-wiki.org/math/number-theory/sqrt-decomposition/
 	//     https://oeis.org/A006218
 	//     a(n) = ∑{k=1..n} floor(n/k)
 	//          = n * (log(n) + 2*gamma - 1) + O(sqrt(n))
@@ -3011,8 +3116,8 @@ func _(abs func(int) int) {
 		for l, r := 1, 0; l <= n; l = r + 1 {
 			h := n / l
 			r = n / h
-			w := r - l + 1
-			sum += h * w // for all i in [l,r], floor(n/i) = floor(n/l)
+			w := r - l + 1 // sum[r+1] - sum[l]
+			sum += h * w   // for all i in [l,r], floor(n/i) = floor(n/l)
 		}
 		return
 	}
@@ -3064,7 +3169,7 @@ func _(abs func(int) int) {
 		for l, r := 1, 0; l <= min(n, m); l = r + 1 {
 			hn, hm := n/l, m/l
 			r = min(n/hn, m/hm)
-			w := r - l + 1
+			w := r - l + 1 // sum[r+1] - sum[l]
 			sum += hn * hm * w
 		}
 		return
@@ -3076,6 +3181,7 @@ func _(abs func(int) int) {
 	// https://blog.csdn.net/weixin_43914593/article/details/104229700 算法竞赛专题解析（4）：杜教筛--以及积性函数的前世今生
 	// https://www.luogu.com.cn/blog/command-block/du-jiao-shai
 	// http://baihacker.github.io/main/
+	// https://www.cnblogs.com/peng-ym/p/9446555.html
 	// The prefix-sum of multiplicative function: the black algorithm http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_the_black_algorithm.html
 	// The prefix-sum of multiplicative function: Dirichlet convolution http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_dirichlet_convolution.html
 	// The prefix-sum of multiplicative function: powerful number sieve http://baihacker.github.io/main/2020/The_prefix-sum_of_multiplicative_function_powerful_number_sieve.html
@@ -3167,6 +3273,7 @@ func _(abs func(int) int) {
 	//
 
 	// 埃及分数 - 不同的单位分数的和 (IDA*)
+	// https://www.luogu.com.cn/problem/P1763
 	// https://www.luogu.com.cn/problem/UVA12558
 	// 贪婪算法：将一项分数分解成若干项单分子分数后的项数最少，称为第一种好算法；最大的分母数值最小，称为第二种好算法
 	// 构造：n 项和为 1 https://atcoder.jp/contests/arc163/tasks/arc163_c
@@ -3214,7 +3321,7 @@ func _(abs func(int) int) {
 		primes, primes10k, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
-		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
+		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, factorizeFast, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
 		maxDivisorNum, maxDivisorNumWithLimit, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
