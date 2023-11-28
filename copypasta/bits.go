@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"math"
 	"math/bits"
+	"slices"
 )
 
 /*
@@ -30,10 +31,11 @@ https://leetcode.cn/circle/discuss/sqPZwg/
 - [1829. 每个查询的最大异或值](https://leetcode.cn/problems/maximum-xor-for-each-query/) 1523
 - [1442. 形成两个异或相等数组的三元组数目](https://leetcode.cn/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/) 1525
 - [2429. 最小 XOR](https://leetcode.cn/problems/minimize-xor/) 1532
-- [2527. 查询数组 Xor 美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/) 1550
+- [2527. 查询数组 XOR 美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/) 1550
 - [2425. 所有数对的异或和](https://leetcode.cn/problems/bitwise-xor-of-all-pairings/) 1622
 - [2317. 操作后的最大异或和](https://leetcode.cn/problems/maximum-xor-after-operations/) 1679
 - [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
+- [2939. 最大异或乘积](https://leetcode.cn/problems/maximum-xor-product/)
 
 常用技巧：拆位（部分题目排序很有用）
 LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
@@ -45,7 +47,7 @@ https://atcoder.jp/contests/arc127/tasks/arc127_d
 
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
-https://codeforces.com/problemset/problem/1322/B
+https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
 
 拆位再合并相同位
@@ -59,6 +61,7 @@ LC2354 https://leetcode.cn/problems/number-of-excellent-pairs/
 LC2546 https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/
 LC2871 https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/
 LC2897 https://leetcode.cn/problems/apply-operations-on-array-to-maximize-sum-of-squares/
+两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
 
 利用 lowbit
 https://codeforces.com/problemset/problem/1689/E
@@ -625,14 +628,18 @@ func _(x int) {
 
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
 	// 利用操作的单调性求解
-	// 复杂度 O(f * n * logU)，f 为 op(x,y) 的时间复杂度，n 为 a 的长度，U 为 a 中元素最大值
-	// 改进 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
+	// 时间复杂度：O(fnlogU)，其中 f 为 op(x,y) 的时间复杂度，一般是 O(1)，n=len(a)，U=max(a)
+	// 空间复杂度：O(logU)，返回值不计入
 	// |: LC898 https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/
-	//    https://www.luogu.com.cn/problem/T236955?contestId=65460
+	//    https://www.luogu.com.cn/problem/P8569
+	//    - 做法见下面的 bitOpTrickCnt      
+	//    - 题目源于这场比赛 https://www.luogu.com.cn/contest/65460#problems
+	//    - 其它做法 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
 	// &: LC1521 https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
 	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
 	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ https://www.dotcpp.com/oj/problem2709.html
+	//      LC2941 https://leetcode.cn/problems/maximum-gcd-sum-of-a-subarray/
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/891/A
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
@@ -641,60 +648,54 @@ func _(x int) {
 	//      (子数组长度 * 子数组 GCD) 的最大值 https://www.luogu.com.cn/problem/P5502
 	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/
 	//      https://codeforces.com/contest/1834/problem/E
-	bitOpTrick := func(a []int, op func(x, y int) int) map[int]bool {
-		vis := map[int]bool{} // 统计 op(一段区间) 的不同结果
-		set := []int{}
+	bitOpTrick := func(a []int, op func(x, y int) int) map[int]struct{} {
+		ans := map[int]struct{}{}
+		opRes := []int{} // 以 a[i] 结尾的所有子数组，在 op 操作下的所有结果
 		for _, v := range a {
-			for j, w := range set {
-				set[j] = op(w, v)
+			for j, x := range opRes {
+				opRes[j] = op(x, v) // 每个都和新遍历到的 a[i] 算一下
 			}
-			set = append(set, v)
-			// 去重
-			j := 0
-			for _, w := range set[1:] {
-				if set[j] != w {
-					j++
-					set[j] = w
-				}
-			}
-			set = set[:j+1]
-			for _, w := range set {
-				// do w...
-				vis[w] = true
+			opRes = append(opRes, v)      // a[i] 单独组成一个子数组
+			opRes = slices.Compact(opRes) // 去重
+			for _, w := range opRes {
+				// 统计 w... 根据题目改动
+				ans[w] = struct{}{}
 			}
 		}
-		return vis
+		return ans
 	}
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
-	// 甚至还可以做到把每个运算结果对应的每个区间长度的出现次数求出来（需要差分 map）
+	// 甚至还可以做到把每个运算结果对应的每个区间长度的出现次数求出来（需要差分）
 	// https://codeforces.com/problemset/problem/475/D
 	// https://codeforces.com/problemset/problem/1632/D
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
 	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
+	// https://www.luogu.com.cn/problem/P8569
 	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
 		cnt := map[int]int{}
+		// 视情况，r 可以省略
 		type result struct{ v, l, r int } // [l,r)
-		set := []result{}
+		opRes := []result{}
 		for i, v := range a {
-			for j, p := range set {
-				set[j].v = op(p.v, v)
+			for j, p := range opRes {
+				opRes[j].v = op(p.v, v)
 			}
-			set = append(set, result{v, i, i + 1})
+			opRes = append(opRes, result{v, i, i + 1})
 			// 去重
 			j := 0
-			for _, q := range set[1:] {
-				if set[j].v != q.v {
+			for _, q := range opRes[1:] {
+				if opRes[j].v != q.v {
 					j++
-					set[j] = q
+					opRes[j] = q
 				} else {
-					set[j].r = q.r
+					opRes[j].r = q.r // 如果省略 r 的话，这行可以去掉
 				}
 			}
-			set = set[:j+1]
+			opRes = opRes[:j+1]
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
 			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
-			for _, p := range set {
+			for _, p := range opRes {
 				// do p...     [l,r)
 				cnt[p.v] += p.r - p.l
 			}
@@ -703,7 +704,8 @@ func _(x int) {
 	}
 
 	//（接上）考虑乘法
-	// 问题：给一数组 a，元素均为正整数，求区间和等于区间积的区间个数
+	// 输入：数组 a，元素均为正整数
+	// 输出：满足【元素和等于元素乘积】的非空连续子数组的个数
 	// 我们来考虑对每个区间右端点，有多少个合法的区间左端点
 	// 核心思路是，对于每个满足题目要求的区间，其区间积不会超过 sum(a)
 	// 由于乘积至少要乘 2 才会变化，所以对于一个固定的区间右端点，不同的区间积至多有 O(log(sum(a))) 个
