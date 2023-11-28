@@ -118,12 +118,12 @@ public class Solution {
         Map<Integer, Integer> cnt = new HashMap<>();
         int n = s.length();
         int sum = n; // 保证非负
-        cnt.put((k - 1) << 16 | sum, 1); // 添加 (k-1, sum)
+        cnt.put((k - 1) << 17 | sum, 1); // 添加 (k-1, sum)
         long ans = 0;
         for (int i = 0; i < n; i++) {
             int bit = (AEIOU_MASK >> (s.charAt(i) - 'a')) & 1;
             sum += bit * 2 - 1; // 1 -> 1    0 -> -1
-            ans += cnt.merge((i % k) << 16 | sum, 1, Integer::sum) - 1; // ans += cnt[(i%k,sum)]++
+            ans += cnt.merge((i % k) << 17 | sum, 1, Integer::sum) - 1; // ans += cnt[(i%k,sum)]++
         }
         return ans;
     }
@@ -219,12 +219,12 @@ public:
         unordered_map<int, int> cnt;
         int n = s.length();
         int sum = n; // 保证非负
-        cnt[(k - 1) << 16 | sum]++; // 添加 (k-1, sum)
+        cnt[(k - 1) << 17 | sum]++; // 添加 (k-1, sum)
         long long ans = 0;
         for (int i = 0; i < n; i++) {
             int bit = (AEIOU_MASK >> (s[i] - 'a')) & 1;
             sum += bit * 2 - 1; // 1 -> 1    0 -> -1
-            ans += cnt[(i % k) << 16 | sum]++;
+            ans += cnt[(i % k) << 17 | sum]++;
         }
         return ans;
     }
