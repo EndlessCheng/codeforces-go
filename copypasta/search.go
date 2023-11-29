@@ -67,13 +67,14 @@ https://codeforces.com/problemset/problem/954/F
 - [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
 - [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
 - [320. 列举单词的全部缩写](https://leetcode.cn/problems/generalized-abbreviation/)（会员题）
+https://codeforces.com/problemset/problem/550/B 1400
 
 分割
 - [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
 - [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
 - [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/) 1679
 
-排列
+排列（部分题目可以用状压 DP 继续优化）
 - [46. 全排列](https://leetcode.cn/problems/permutations/)
 - [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
 - [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
