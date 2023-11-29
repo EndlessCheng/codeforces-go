@@ -211,13 +211,13 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 // 模板题 https://ac.nowcoder.com/acm/contest/6383/B
 // 例题 https://codeforces.com/problemset/problem/383/C
 //     https://codeforces.com/problemset/problem/877/E
-func (*tree) subtreeSize(n, root int, g [][]int) {
-	type node struct{ dfn, size int } // 注意 dfn 从 1 开始
-	nodes := make([]node, n)
+// 结合 AC 自动机 https://codeforces.com/contest/163/problem/E
+func (*tree) subtreeSize(root int, g [][]int) {
+	nodes := make([]struct{ dfn, size int }, len(g))
 	dfn := 0
-	var buildDFN func(v, fa int) int
+	var buildDFN func(int, int) int
 	buildDFN = func(v, fa int) int {
-		dfn++
+		dfn++ // 相当于 dfn 从 1 开始
 		nodes[v].dfn = dfn
 		sz := 1
 		for _, w := range g[v] {
@@ -235,13 +235,14 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 	isAncestor := func(f, v int) bool { return nodes[f].dfn < nodes[v].dfn && nodes[v].dfn < nodes[f].dfn+nodes[f].size }
 
 	{
-		dfnToNodeID := make([]int, n+1)
+		dfnToNodeID := make([]int, len(g)+1)
 		for v, o := range nodes {
 			dfnToNodeID[o.dfn] = v
 		}
 	}
 
 	{
+		// 如何使用？一般配合树状数组/线段树等数据结构
 		var v int
 		var update, query func(int, int)
 		var queryOne func(int)
@@ -251,6 +252,32 @@ func (*tree) subtreeSize(n, root int, g [][]int) {
 		update(o.dfn, o.dfn+o.size-1) // 更新子树
 		query(o.dfn, o.dfn+o.size-1)  // 查询子树
 		queryOne(o.dfn)               // 查询单个节点
+	}
+
+	{
+		// 如果递归消耗太多内存，可以改为手动模拟栈
+		// 下面的代码是有向树，不需要传入 fa
+		// https://codeforces.com/contest/163/submission/233981400
+		root := 0
+		nodes := make([]struct{ l, r int }, len(g)) // 左闭右开
+		type stackInfo struct{ v, i int }
+		st := []stackInfo{{root, 0}}
+		nodes[root].l = 1
+		dfn := 1
+		for len(st) > 0 {
+			p := st[len(st)-1]
+			v, i := p.v, p.i
+			if i < len(g[v]) {
+				dfn++
+				w := g[v][i]
+				nodes[w].l = dfn
+				st[len(st)-1].i++
+				st = append(st, stackInfo{w, 0})
+			} else {
+				nodes[v].r = dfn + 1
+				st = st[:len(st)-1]
+			}
+		}
 	}
 
 	_ = isAncestor
@@ -303,31 +330,35 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 		// https://www.lanqiao.cn/problems/5892/learning/?contest_id=145
 		// https://codeforces.com/problemset/problem/208/E 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
 		// https://www.luogu.com.cn/problem/P7768
+		var a []int // read...
 		type info struct{ tin, tout, dep int }
-		is := make([]info, len(g))
-		depT := make([][]int, len(g))
-		t := 0
-		var f func(v, fa, d int)
+		nodes := make([]info, len(g))
+		depTS := make([][]int, len(g))
+		rowVal := make([][]int, len(g))
+		ts := 0
+		var f func(int, int, int)
 		f = func(v, fa, d int) {
-			t++
-			is[v].tin = t
-			is[v].dep = d
-			depT[d] = append(depT[d], t)
+			ts++
+			nodes[v].tin = ts
+			nodes[v].dep = d
+			depTS[d] = append(depTS[d], ts)
+			rowVal[d] = append(rowVal[d], a[v])
 			for _, w := range g[v] {
 				if w != fa {
 					f(w, v, d+1)
 				}
 			}
-			is[v].tout = t
+			nodes[v].tout = ts
 		}
 		f(root, -1, 0)
 
-		// 深度 d 上的这一排节点与子树 v 求交集，返回对应的深度 d 的节点区间 [l,r)
+		// 返回子树 v 中的绝对深度为 d 的这一排节点在 depTS[d] 中的下标范围 [l,r)
+		// 结合 RMQ 可以求出这一排节点的最大点权
+		// d += nodes[v].dep // 如果 d 是从 v 开始算的话（相对深度）还要加上节点在整棵树的深度
 		query := func(v, d int) (int, int) {
-			nf := is[v]
-			//d += nf.dep // 如果 d 是从 v 开始算的话还要加上节点在整棵树的深度
-			l := sort.SearchInts(depT[d], nf.tin)
-			r := sort.SearchInts(depT[d], nf.tout+1)
+			nf := nodes[v]
+			l := sort.SearchInts(depTS[d], nf.tin)
+			r := sort.SearchInts(depTS[d], nf.tout+1)
 			return l, r
 		}
 		_ = query
@@ -771,6 +802,7 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 }
 
 // 点分树（动态点分治）
+// todo https://ac.nowcoder.com/courses/cover/live/707
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 //  点分树+堆 https://www.luogu.com.cn/problem/P2056 https://www.luogu.com.cn/problem/SP2666
@@ -814,10 +846,10 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
-func (*tree) lcaBinarySearch(n, root int, g [][]int) {
+func (*tree) lcaBinarySearch(root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
-	pa := make([][mx]int, n)
-	dep := make([]int, n) // 根节点的深度为 0
+	pa := make([][mx]int, len(g))
+	dep := make([]int, len(g)) // 根节点的深度为 0
 	var buildPa func(int, int)
 	buildPa = func(v, p int) {
 		pa[v][0] = p
@@ -845,8 +877,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		if d > dep[v] {
 			panic(-1)
 		}
-		for k := dep[v] - d; k > 0; k &= k - 1 {
-			v = pa[v][bits.TrailingZeros(uint(k))]
+		for k := uint(dep[v] - d); k > 0; k &= k - 1 {
+			v = pa[v][bits.TrailingZeros(k)]
 		}
 		return v
 	}
@@ -953,8 +985,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E
 		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685
 		type nb struct{ to, wt int }
-		g := make([][]nb, n)
-		// read g ...
+		var g [][]nb // read g ...
 
 		const mx = 18
 		type data int
@@ -962,8 +993,8 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 			p     int
 			maxWt data
 		}
-		pa := make([][mx]pair, n)
-		dep := make([]int, n)
+		pa := make([][mx]pair, len(g))
+		dep := make([]int, len(g))
 		var build func(v, p, d int)
 		build = func(v, p, d int) {
 			pa[v][0].p = p
@@ -1030,6 +1061,7 @@ func (*tree) lcaBinarySearch(n, root int, g [][]int) {
 // 由于预处理 ST 表是基于一个长度为 2n 的序列，所以常数上是比倍增算法要大的。内存占用也比倍增要大一倍左右（这点可忽略）
 // 优点是查询的复杂度低，适用于查询量大的情形
 // https://oi-wiki.org/graph/lca/#rmq
+// todo DFS 序求 LCA（常数更小） https://www.cnblogs.com/alex-wei/p/DFN_LCA.html
 // https://codeforces.com/problemset/problem/342/E
 func (*tree) lcaRMQ(root int, g [][]int) {
 	vs := make([]int, 0, 2*len(g)-1)  // 欧拉序列
