@@ -4,13 +4,15 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF161D(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n, k, v, w, ans int
+	var n, k, v, w ,ans int
 	Fscan(in, &n, &k)
+	k = min(k, n-1)
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
 		Fscan(in, &v, &w)
@@ -20,51 +22,83 @@ func CF161D(_r io.Reader, out io.Writer) {
 		g[w] = append(g[w], v)
 	}
 
-	hson := make([]int, n)
-	var _f func(v, fa int) int
-	_f = func(v, fa int) int {
-		maxDep, hs := 0, -1
+	markCentroid := make([]bool, len(g))
+	size := make([]int, len(g))
+	var findCentroid func(int, int, int) (int, int, int)
+	findCentroid = func(v, fa, compSize int) (minSize, ct, faCt int) {
+		minSize = math.MaxInt
+		maxSubSize := 0
+		size[v] = 1
 		for _, w := range g[v] {
-			if w != fa {
-				if mxD := _f(w, v); mxD > maxDep {
-					maxDep, hs = mxD, w
+			if w != fa && !markCentroid[w] {
+				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
+					minSize, ct, faCt = minSizeW, ctW, faCtW
+				}
+				maxSubSize = max(maxSubSize, size[w])
+				size[v] += size[w]
+			}
+		}
+		maxSubSize = max(maxSubSize, compSize-size[v])
+		if maxSubSize < minSize {
+			minSize, ct, faCt = maxSubSize, v, fa
+		}
+		return
+	}
+
+	_cnt := make([]int, n)
+	_cnt[0] = 1
+	tmp := make([]int, n)
+	var dfs func(int, int, int)
+	dfs = func(v, fa, compSize int) {
+		_, ct, faCt := findCentroid(v, fa, compSize)
+		markCentroid[ct] = true
+		defer func() { markCentroid[ct] = false }()
+		for _, w := range g[ct] {
+			if !markCentroid[w] {
+				if w != faCt {
+					dfs(w, ct, size[w])
+				} else {
+					dfs(w, ct, compSize-size[ct])
 				}
 			}
 		}
-		hson[v] = hs
-		return maxDep + 1
-	}
-	_f(0, -1)
 
-	var f func(v, fa int) []int
-	f = func(v, fa int) []int {
-		if hson[v] == -1 {
-			return []int{1}
-		}
-		cnt := f(hson[v], v)
-		for _, w := range g[v] {
-			if w != fa && w != hson[v] {
-				subCnt := f(w, v)
-				// 注意要先计算再合并，否则会把合并的结果额外算到答案上
-				for i, c := range subCnt {
-					if j := len(cnt) - k + len(subCnt) - i; 0 <= j && j < len(cnt) {
-						ans += cnt[j] * c
+		cnt := _cnt[:1]
+		for _, w := range g[ct] {
+			if markCentroid[w] {
+				continue
+			}
+			t := tmp[:1]
+			var f func(int, int, int)
+			f = func(v, fa, d int) {
+				if k-d < len(cnt) {
+					ans += cnt[k-d]
+				}
+				if d == len(t) {
+					t = append(t, 1)
+				} else {
+					t[d]++
+				}
+				if d >= k {
+					return
+				}
+				for _, w := range g[v] {
+					if w != fa && !markCentroid[w] {
+						f(w, v, d+1)
 					}
 				}
-				shift := len(cnt) - len(subCnt)
-				for i, c := range subCnt {
-					cnt[i+shift] += c
+			}
+			f(w, ct, 1)
+			for i, c := range t {
+				if i >= len(cnt) {
+					cnt = append(cnt, c)
+				} else {
+					cnt[i] += c
 				}
 			}
 		}
-		cnt = append(cnt, 1)
-		if len(cnt) > k {
-			ans += cnt[0]
-			cnt = cnt[1:]
-		}
-		return cnt
 	}
-	f(0, -1)
+	dfs(0, -1, len(g))
 	Fprint(out, ans)
 }
 
