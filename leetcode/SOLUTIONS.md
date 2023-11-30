@@ -96,7 +96,8 @@
 |脑筋急转弯|[481. 神奇字符串](https://leetcode.cn/problems/magical-string/)|[【动画】一个动画秒懂本题+简洁写法](https://leetcode.cn/problems/magical-string/solution/by-endlesscheng-z8o1/)|中等|
 ||[895. 最大频率栈](https://leetcode.cn/problems/maximum-frequency-stack/)|[【动画】没想明白？一个动画秒懂！](https://leetcode.cn/problems/maximum-frequency-stack/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-oich/)|2028|
 |构造|[1605. 给定行和列的和求可行矩阵](https://leetcode.cn/problems/find-valid-matrix-given-row-and-column-sums/)|[【动画】没有思路？一个动画秒懂！附优化写法](https://leetcode.cn/problems/find-valid-matrix-given-row-and-column-sums/solution/mei-you-si-lu-yi-ge-dong-hua-miao-dong-f-eezj/)|1868|
-|思维题|[1040. 移动石子直到连续 II](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/)|[【图解】下跳棋](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/solution/tu-jie-xia-tiao-qi-pythonjavacgo-by-endl-r1eb/)|2456|
+|思维题|[1657. 确定两个字符串是否接近](https://leetcode.cn/problems/determine-if-two-strings-are-close/)|[理解操作本质+简洁写法](https://leetcode.cn/problems/determine-if-two-strings-are-close/solution/li-jie-cao-zuo-ben-zhi-jian-ji-xie-fa-py-b18i/)|1530|
+||[1040. 移动石子直到连续 II](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/)|[【图解】下跳棋](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/solution/tu-jie-xia-tiao-qi-pythonjavacgo-by-endl-r1eb/)|2456|
 ||[1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)|[【图解】不会字典树？只用哈希表也能做！](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/solution/bu-hui-zi-dian-shu-zhi-yong-ha-xi-biao-y-p2pu/)|2479|
 |网格图|[面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)|[【模板】网格图 DFS（附题单！）](https://leetcode.cn/problems/pond-sizes-lcci/solution/mo-ban-wang-ge-tu-dfsfu-ti-dan-by-endles-p0n1/)|中等|
 ||[1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)|[【动画】两种思路：先外后内/出界标记（附题单！）](https://leetcode.cn/problems/number-of-closed-islands/solution/liang-chong-si-lu-xian-wai-hou-nei-chu-j-b1e4/)|1659|
