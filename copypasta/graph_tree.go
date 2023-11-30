@@ -635,14 +635,17 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // https://oi-wiki.org/graph/tree-divide/
 // https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
-// 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+// https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+// https://liu-cheng-ao.blog.uoj.ac/blog/2969
 // todo 重心树 代码 https://www.luogu.com.cn/record/103317317
 //
 // 模板题 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
 // todo 无需去重的做法（染色法）https://www.luogu.com.cn/blog/1239004072Angel/solution-p4178
 // 多个询问 https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114
+// https://www.luogu.com.cn/problem/P4149
 // 也可以树形 DP https://codeforces.com/problemset/problem/161/D 1800
 // https://codeforces.com/problemset/problem/321/C 2100
+// todo https://codeforces.com/contest/776/problem/F 2800
 // todo https://www.luogu.com.cn/problem/P2664
 // todo https://codeforces.com/contest/914/problem/E 2400
 // 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
@@ -650,7 +653,7 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 //  https://www.luogu.com.cn/problem/SP2939
 //  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
 func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
-	markCentroid := make([]bool, len(g))
+	deleted := make([]bool, len(g))
 	// 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
 	size := make([]int, len(g))
 	var findCentroid func(int, int, int) (int, int, int)
@@ -660,7 +663,7 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 		size[v] = 1
 		for _, e := range g[v] {
 			w := e.to
-			if w != fa && !markCentroid[w] {
+			if w != fa && !deleted[w] {
 				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
 					minSize, ct, faCt = minSizeW, ctW, faCtW
 				}
@@ -680,23 +683,11 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 	var dfs func(int, int, int)
 	dfs = func(v, fa, compSize int) {
 		_, ct, faCt := findCentroid(v, fa, compSize)
-		markCentroid[ct] = true
-		defer func() { markCentroid[ct] = false }()
-		for _, e := range g[ct] {
-			w := e.to
-			if !markCentroid[w] {
-				if w != faCt {
-					dfs(w, ct, size[w])
-				} else {
-					dfs(w, ct, compSize-size[ct])
-				}
-			}
-		}
 
 		has := map[int]bool{0: true} // 0 表示重心的数据
 		for _, e := range g[ct] {
 			w := e.to
-			if markCentroid[w] {
+			if deleted[w] {
 				continue
 			}
 			tmp := tmp[:0]
@@ -706,7 +697,7 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 
 				tmp = append(tmp, d)
 				for _, e := range g[v] {
-					if w := e.to; w != fa && !markCentroid[w] {
+					if w := e.to; w != fa && !deleted[w] {
 						f(w, v, d+e.wt)
 					}
 				}
@@ -716,6 +707,19 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 			// 否则会把在同一棵子树内的数据当作另一棵子树的数据
 			for _, d := range tmp {
 				has[d] = true
+			}
+		}
+
+		// 删除重心
+		deleted[ct] = true
+		for _, e := range g[ct] {
+			w := e.to
+			if !deleted[w] {
+				if w != faCt {
+					dfs(w, ct, size[w])
+				} else {
+					dfs(w, ct, compSize-size[ct])
+				}
 			}
 		}
 	}
@@ -738,6 +742,7 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 //  - 除去动态加点就是点分树套路。加点时默认新点的点分父亲为原树父亲，当某点分子树不平衡度超过某个阈值，重新点分治即可。
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4220
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4565
+// todo 思维 | 最大深度最小的点分树 https://www.luogu.com.cn/problem/P5912
 
 // todo 边分治
 // https://oi-wiki.org/graph/tree-divide/#%E8%BE%B9%E5%88%86%E6%B2%BB
