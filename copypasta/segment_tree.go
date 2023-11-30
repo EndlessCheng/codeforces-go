@@ -296,6 +296,9 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
 // todo https://www.luogu.com.cn/problem/P1471
 //  斐波那契 https://codeforces.com/problemset/problem/446/C 2400
+// 区间加等比数列（q 恒定）：提出首项后，剩余的是固定的 1 + q^1 + q^2 + ... + q^(线段树区间长度-1)
+//                       可以预处理 1 + q^1 + q^2 + ... 的前缀和
+//                       线段树维护首项的和
 //
 // 【多个更新操作复合】
 // = + max https://www.luogu.com.cn/problem/P1253
@@ -856,9 +859,11 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 //
 
 // 李超线段树
+// 用来维护在平面直角坐标系上的线段关系
 // todo https://oi-wiki.org/ds/li-chao-tree/
-//   https://zhuanlan.zhihu.com/p/64946571
-//   https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
+//  https://zhuanlan.zhihu.com/p/64946571
+//  https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
+//  模板题 https://www.luogu.com.cn/problem/P4097
 
 //
 
