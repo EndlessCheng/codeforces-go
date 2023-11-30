@@ -651,7 +651,8 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit int) int {
 	// 下面代码是求树上距离（最短路径长度）不超过 upperLimit 的点对数
 	markCentroid := make([]bool, len(g))
-	size := make([]int, len(g)) // 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
+	// 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
+	size := make([]int, len(g))
 	var findCentroid func(int, int, int) (int, int, int)
 	findCentroid = func(v, fa, compSize int) (minSize, ct, faCt int) {
 		minSize = math.MaxInt
@@ -674,68 +675,51 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit 
 		return
 	}
 
-	var dfs func(int, int, int) int
-	dfs = func(v, fa, compSize int) (ans int) {
+	ans := 0
+	tmp := make([]int, len(g))
+	var dfs func(int, int, int)
+	dfs = func(v, fa, compSize int) {
 		_, ct, faCt := findCentroid(v, fa, compSize)
-
 		markCentroid[ct] = true
 		defer func() { markCentroid[ct] = false }()
-
-		// 子问题：DFS 按 ct 分割后的子树
 		for _, e := range g[ct] {
 			w := e.to
 			if !markCentroid[w] {
 				if w != faCt {
-					ans += dfs(w, ct, size[w])
+					dfs(w, ct, size[w])
 				} else {
-					ans += dfs(w, ct, compSize-size[ct])
+					dfs(w, ct, compSize-size[ct])
 				}
 			}
 		}
 
-		// 计算距离不超过 upperLimit 的点对个数（相向双指针）
-		countPairs := func(d []int) (res int) {
-			slices.Sort(d) // 这里的排序让总时间复杂度多了个 logn
-			l, r := 0, len(d)-1
-			for l < r {
-				if d[l]+d[r] <= upperLimit {
-					res += r - l
-					l++
-				} else {
-					r--
-				}
-			}
-			return
-		}
-
-		// 计算答案：统计经过 ct 的点对数
-		// dis[0] = 0 是为了方便统计 ct 和另外一个点的点对数
-		dis := make([]int, compSize)
-		nd := 1
+		has := map[int]bool{0: true} // 0 表示重心的数据
 		for _, e := range g[ct] {
 			w := e.to
 			if markCentroid[w] {
 				continue
 			}
-			subD := dis[nd:nd]
-			var collectDis func(int, int, int)
-			collectDis = func(v, fa, d int) {
-				subD = append(subD, d)
+			tmp := tmp[:0]
+			var f func(int, int, int)
+			f = func(v, fa, d int) {
+				// do d...
+
+				tmp = append(tmp, d)
 				for _, e := range g[v] {
-					w := e.to
-					if w != fa && !markCentroid[w] {
-						collectDis(w, v, d+e.wt)
+					if w := e.to; w != fa && !markCentroid[w] {
+						f(w, v, d+e.wt)
 					}
 				}
 			}
-			collectDis(w, ct, e.wt)
-			nd += len(subD)
-			ans -= countPairs(subD) // 已经在 DFS 子树中算过了，先减掉，这样下面 ans += countPairs(dis) 就不会算重复
+			f(w, ct, e.wt)
+			// 注意在递归结束后，才把 tmp 的数据加入 has
+			// 否则会把在同一棵子树内的数据当作另一棵子树的数据
+			for _, d := range tmp {
+				has[d] = true
+			}
 		}
-		ans += countPairs(dis)
-		return
 	}
-	ans := dfs(root, -1, len(g))
+	dfs(root, -1, len(g))
 	return ans
 }
 
