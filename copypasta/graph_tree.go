@@ -643,13 +643,13 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // 多个询问 https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114
 // 也可以树形 DP https://codeforces.com/problemset/problem/161/D 1800
 // https://codeforces.com/problemset/problem/321/C 2100
+// todo https://www.luogu.com.cn/problem/P2664
 // todo https://codeforces.com/contest/914/problem/E 2400
 // 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
 // todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
 //  https://www.luogu.com.cn/problem/SP2939
 //  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
-func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit int) int {
-	// 下面代码是求树上距离（最短路径长度）不超过 upperLimit 的点对数
+func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 	markCentroid := make([]bool, len(g))
 	// 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
 	size := make([]int, len(g))
@@ -724,6 +724,9 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit 
 }
 
 // 点分树（动态点分治）
+// 有的问题我们不是非常关心树的形态特点，比如路径问题，联通块问题，寻找关键点问题等等
+// 以路径问题为例，处理 p 到 q 的路径信息，不一定非得用到 p 和 q 的 LCA，
+// 也可以利用 p 到 q 的路径上的某个关键点 x，只要我们可以快速地处理 p 到 x 和 q 到 x 的信息，我们就可以快速地处理 p 到 q 的信息
 // todo https://ac.nowcoder.com/courses/cover/live/707
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
 //  https://oi-wiki.org/graph/tree-divide/#%E7%82%B9%E5%88%86%E6%A0%91
