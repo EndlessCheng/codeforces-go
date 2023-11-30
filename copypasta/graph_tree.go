@@ -1,6 +1,7 @@
 package copypasta
 
 import (
+	"math"
 	"math/bits"
 	"reflect"
 	"slices"
@@ -604,206 +605,143 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 求每棵子树的重心 http://codeforces.com/problemset/problem/685/B
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
 // todo 求重心的两种写法？
-func (*tree) findCentroid(n, st int, g [][]int) (ct int) {
-	minMaxSubSize := int(1e9)
-	var findCt func(v, fa int) int
+func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
+	minOfMaxSubSize := math.MaxInt
+	var findCt func(int, int) int
 	findCt = func(v, fa int) int {
 		size := 1
 		maxSubSize := 0
 		for _, w := range g[v] {
 			if w != fa {
 				sz := findCt(w, v)
-				size += sz
 				maxSubSize = max(maxSubSize, sz)
+				size += sz
 			}
 		}
 		maxSubSize = max(maxSubSize, n-size) // 向上的子树大小
-		if maxSubSize < minMaxSubSize {
-			minMaxSubSize = maxSubSize
-			ct = v
+		if maxSubSize < minOfMaxSubSize {
+			minOfMaxSubSize = maxSubSize
+			centroid = v
 		}
 		return size
 	}
-	findCt(st, -1)
+	findCt(root, -1)
 	return
 }
 
-// 点分治 - 重心分解（CD, Centroid Decomposition）
+// 点分治 重心分解（CD, Centroid Decomposition）
+// 适合处理树上路径相关问题
+// 每次以重心为根递归处理，这样做递归深度不会超过 O(logn)
 // https://oi-wiki.org/graph/tree-divide/
 // https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
 // 点分治略解 https://www.luogu.com.cn/blog/user9012/dian-fen-zhi-lve-xie
+// todo 重心树 代码 https://www.luogu.com.cn/record/103317317
 //
-// 模板题 https://codeforces.com/problemset/problem/321/C
-// todo https://codeforces.com/contest/914/problem/E
-// todo 长至多为 k 的路径个数 http://poj.org/problem?id=1741 https://www.acwing.com/problem/content/254/
-// todo 长为 k 的路径是否存在（多次询问）http://poj.org/problem?id=2114 https://www.luogu.com.cn/problem/P3806
-// 好题 https://codeforces.com/contest/1174/problem/F https://codeforces.com/contest/1174/submission/82371930
+// 模板题 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
+// todo 无需去重的做法（染色法）https://www.luogu.com.cn/blog/1239004072Angel/solution-p4178
+// 多个询问 https://www.luogu.com.cn/problem/P3806
+// todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
+// https://codeforces.com/problemset/problem/321/C 2100
+// todo https://codeforces.com/contest/914/problem/E 2400
+// todo 长度至多为 k 的路径个数 http://poj.org/problem?id=1741 https://www.acwing.com/problem/content/254/
+// todo 长为 k 的路径是否存在（多次询问）https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114 
+// 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
 // todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
 //  https://www.luogu.com.cn/problem/SP2939
-//  ∑∑min(av,aw)*dis(v,w) https://ac.nowcoder.com/acm/contest/11171/D
-func (*tree) centroidDecomposition(n, root int, g [][]int) {
-	type node struct{ dep, fa int }
-	nodes := make([]node, n)
-	var build func(v, fa, d int)
-	build = func(v, fa, d int) {
-		nodes[v] = node{d, fa}
-		for _, w := range g[v] {
-			if w != fa {
-				build(w, v, d+1)
-			}
-		}
-	}
-	build(root, -1, 0)
-
-	usedCentroid := make([]bool, n)
-	size := make([]int, n)
-	var calcSize func(v, fa int) int
-	calcSize = func(v, fa int) int {
-		sz := 1
-		for _, w := range g[v] {
-			if w != fa && !usedCentroid[w] {
-				sz += calcSize(w, v)
-			}
-		}
-		size[v] = sz
-		return sz
-	}
-	var compSize int
-	var findCentroid func(v, fa int) int
-	findCentroid = func(v, fa int) int {
-		for _, w := range g[v] {
-			if w != fa && !usedCentroid[w] && size[w] > compSize>>1 {
-				return findCentroid(w, v)
-			}
-		}
-		return v
-	}
-
-	var f func(v int)
-	f = func(v int) {
-		calcSize(v, -1)
-		compSize = size[v]
-		ct := findCentroid(v, -1)
-		usedCentroid[ct] = true
-		//defer func() { usedCentroid[ct] = false }()
-
-		// do ct...
-
-		for _, w := range g[ct] {
-			if !usedCentroid[w] {
-				f(w)
-			}
-		}
-	}
-	f(root)
-}
-
-// todo 整理到上面
-// 点分治：求树上距离不超过 upperDis 的点对数
-// todo 待整理 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
-// todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
-func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDis int) int {
-	usedCentroid := make([]bool, len(g))
-
-	size := make([]int, len(g))
-	var calcSize func(int, int) int
-	calcSize = func(v, fa int) int {
-		sz := 1
-		for _, e := range g[v] {
-			if w := e.to; w != fa && !usedCentroid[w] {
-				sz += calcSize(w, v)
-			}
-		}
-		size[v] = sz
-		return sz
-	}
-
-	var compSize int
-	var findCentroid func(int, int) (int, int)
-	findCentroid = func(v, fa int) (minSize, ct int) {
-		minSize = int(1e9)
+//  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
+func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit int) int {
+	// 下面代码是求树上距离（最短路径长度）不超过 upperLimit 的点对数
+	markCentroid := make([]bool, len(g))
+	size := make([]int, len(g)) // 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
+	var findCentroid func(int, int, int) (int, int, int)
+	findCentroid = func(v, fa, compSize int) (minSize, ct, faCt int) {
+		minSize = math.MaxInt
 		maxSubSize := 0
-		sizeV := 1 // 除去了 usedCentroid 子树的剩余大小
+		size[v] = 1
 		for _, e := range g[v] {
-			if w := e.to; w != fa && !usedCentroid[w] {
-				if minSizeW, ctW := findCentroid(w, v); minSizeW < minSize {
-					minSize = minSizeW
-					ct = ctW
+			if w := e.to; w != fa && !markCentroid[w] {
+				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
+					minSize, ct, faCt = minSizeW, ctW, faCtW
 				}
 				maxSubSize = max(maxSubSize, size[w])
-				sizeV += size[w]
+				size[v] += size[w]
 			}
 		}
-		maxSubSize = max(maxSubSize, compSize-sizeV)
+		maxSubSize = max(maxSubSize, compSize-size[v])
 		if maxSubSize < minSize {
-			minSize = maxSubSize
-			ct = v
+			minSize, ct, faCt = maxSubSize, v, fa
 		}
 		return
 	}
 
-	var disToCentroid []int
-	var calcDisToCentroid func(v, fa, d int)
-	calcDisToCentroid = func(v, fa, d int) {
-		disToCentroid = append(disToCentroid, d)
-		for _, e := range g[v] {
-			if w := e.to; w != fa && !usedCentroid[w] {
-				calcDisToCentroid(w, v, d+e.wt)
-			}
-		}
-	}
+	var dfs func(int, int, int) int
+	dfs = func(v, fa, compSize int) (ans int) {
+		_, ct, faCt := findCentroid(v, fa, compSize)
 
-	countPairs := func(ds []int) int {
-		slices.Sort(ds)
-		cnt := 0
-		j := len(ds)
-		for i, di := range ds {
-			for ; j > 0 && di+ds[j-1] > upperDis; j-- {
-			}
-			cnt += j
-			if j > i {
-				cnt--
-			}
-		}
-		return cnt >> 1
-	}
+		markCentroid[ct] = true
+		defer func() { markCentroid[ct] = false }()
 
-	var f func(v, fa int) int
-	f = func(v, fa int) (ans int) {
-		calcSize(v, fa)
-		compSize = size[v]
-		_, ct := findCentroid(v, fa)
-		usedCentroid[ct] = true
-		defer func() { usedCentroid[ct] = false }()
-
-		// 统计按 ct 分割后的子树中的点对数
+		// 子问题：DFS 按 ct 分割后的子树
 		for _, e := range g[ct] {
-			if w := e.to; !usedCentroid[w] {
-				ans += f(w, v)
+			if w := e.to; !markCentroid[w] {
+				if w != faCt {
+					ans += dfs(w, v, size[w])
+				} else {
+					ans += dfs(w, v, compSize-size[ct])
+				}
 			}
 		}
 
-		// 统计经过 ct 的点对数
-		// 0 是方便统计包含 ct 的部分
-		ds := []int{0}
-		for _, e := range g[ct] {
-			if w := e.to; !usedCentroid[w] {
-				disToCentroid = []int{}
-				calcDisToCentroid(w, ct, e.wt)
-				ans -= countPairs(disToCentroid)
-				ds = append(ds, disToCentroid...)
+		// 计算距离不超过 upperLimit 的点对个数（相向双指针）
+		countPairs := func(d []int) (res int) {
+			slices.Sort(d) // 这里的排序让总时间复杂度多了个 logn
+			l, r := 0, len(d)-1
+			for l < r {
+				if d[l]+d[r] <= upperLimit {
+					res += r - l
+					l++
+				} else {
+					r--
+				}
 			}
+			return
 		}
-		ans += countPairs(ds)
+
+		// 计算答案：统计经过 ct 的点对数
+		// dis[0] = 0 是为了方便统计 ct 和另外一个点的点对数
+		dis := make([]int, compSize)
+		nd := 1
+		for _, e := range g[ct] {
+			w := e.to
+			if markCentroid[w] {
+				continue
+			}
+			subD := dis[nd:nd]
+			var collectDis func(int, int, int)
+			collectDis = func(v, fa, d int) {
+				subD = append(subD, d)
+				for _, e := range g[v] {
+					if w := e.to; w != fa && !markCentroid[w] {
+						collectDis(w, v, d+e.wt)
+					}
+				}
+			}
+			collectDis(w, ct, e.wt)
+			nd += len(subD)
+			ans -= countPairs(subD) // 已经在 DFS 子树中算过了，先减掉，这样下面 ans += countPairs(dis) 就不会算重复
+		}
+		ans += countPairs(dis)
 		return
 	}
-	return f(root, -1)
+	ans := dfs(root, -1, len(g))
+	return ans
 }
 
 // 点分树（动态点分治）
 // todo https://ac.nowcoder.com/courses/cover/live/707
 // todo https://oi-wiki.org/graph/dynamic-tree-divide/
+//  https://oi-wiki.org/graph/tree-divide/#%E7%82%B9%E5%88%86%E6%A0%91
 // todo 模板题 https://www.luogu.com.cn/problem/P6329
 //  点分树+堆 https://www.luogu.com.cn/problem/P2056 https://www.luogu.com.cn/problem/SP2666
 //  无修改，点分树+vector+前缀和 https://www.luogu.com.cn/problem/P3241
@@ -812,6 +750,9 @@ func (*tree) numPairsWithDistanceLimit(g [][]struct{ to, wt int }, root, upperDi
 //  - 除去动态加点就是点分树套路。加点时默认新点的点分父亲为原树父亲，当某点分子树不平衡度超过某个阈值，重新点分治即可。
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4220
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4565
+
+// todo 边分治
+// https://oi-wiki.org/graph/tree-divide/#%E8%BE%B9%E5%88%86%E6%B2%BB
 
 // 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
 // 【模板讲解】树上倍增算法（以及最近公共祖先） 
