@@ -640,12 +640,10 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 //
 // 模板题 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
 // todo 无需去重的做法（染色法）https://www.luogu.com.cn/blog/1239004072Angel/solution-p4178
-// 多个询问 https://www.luogu.com.cn/problem/P3806
-// todo 求树上距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D 可以参考洛谷的代码
+// 多个询问 https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114
+// 也可以树形 DP https://codeforces.com/problemset/problem/161/D 1800
 // https://codeforces.com/problemset/problem/321/C 2100
 // todo https://codeforces.com/contest/914/problem/E 2400
-// todo 长度至多为 k 的路径个数 http://poj.org/problem?id=1741 https://www.acwing.com/problem/content/254/
-// todo 长为 k 的路径是否存在（多次询问）https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114 
 // 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
 // todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
 //  https://www.luogu.com.cn/problem/SP2939
@@ -660,7 +658,8 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit 
 		maxSubSize := 0
 		size[v] = 1
 		for _, e := range g[v] {
-			if w := e.to; w != fa && !markCentroid[w] {
+			w := e.to
+			if w != fa && !markCentroid[w] {
 				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
 					minSize, ct, faCt = minSizeW, ctW, faCtW
 				}
@@ -684,11 +683,12 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit 
 
 		// 子问题：DFS 按 ct 分割后的子树
 		for _, e := range g[ct] {
-			if w := e.to; !markCentroid[w] {
+			w := e.to
+			if !markCentroid[w] {
 				if w != faCt {
-					ans += dfs(w, v, size[w])
+					ans += dfs(w, ct, size[w])
 				} else {
-					ans += dfs(w, v, compSize-size[ct])
+					ans += dfs(w, ct, compSize-size[ct])
 				}
 			}
 		}
@@ -722,7 +722,8 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root, upperLimit 
 			collectDis = func(v, fa, d int) {
 				subD = append(subD, d)
 				for _, e := range g[v] {
-					if w := e.to; w != fa && !markCentroid[w] {
+					w := e.to
+					if w != fa && !markCentroid[w] {
 						collectDis(w, v, d+e.wt)
 					}
 				}
