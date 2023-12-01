@@ -255,7 +255,8 @@
   - [树上问题 graph_tree.go](/copypasta/graph_tree.go)
     - 直径
     - 重心
-      - 点分治
+    - 点分治
+    - 点分树
     - 最近公共祖先（LCA）
       - 倍增
       - ST 表

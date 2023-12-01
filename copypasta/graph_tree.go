@@ -645,10 +645,10 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // https://www.luogu.com.cn/problem/P4149
 // 也可以树形 DP https://codeforces.com/problemset/problem/161/D 1800
 // https://codeforces.com/problemset/problem/321/C 2100
-// todo https://codeforces.com/contest/776/problem/F 2800
 // todo https://www.luogu.com.cn/problem/P2664
 // todo https://codeforces.com/contest/914/problem/E 2400
 // 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
+// todo https://codeforces.com/contest/776/problem/F 2800
 // todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
 //  https://www.luogu.com.cn/problem/SP2939
 //  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
@@ -683,6 +683,9 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 	var dfs func(int, int, int)
 	dfs = func(v, fa, compSize int) {
 		_, ct, faCt := findCentroid(v, fa, compSize)
+		//if size[v] == 1 {
+		//	return
+		//}
 
 		has := map[int]bool{0: true} // 0 表示重心的数据
 		for _, e := range g[ct] {
@@ -727,25 +730,152 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 	return ans
 }
 
-// 点分树（动态点分治）
-// 有的问题我们不是非常关心树的形态特点，比如路径问题，联通块问题，寻找关键点问题等等
-// 以路径问题为例，处理 p 到 q 的路径信息，不一定非得用到 p 和 q 的 LCA，
-// 也可以利用 p 到 q 的路径上的某个关键点 x，只要我们可以快速地处理 p 到 x 和 q 到 x 的信息，我们就可以快速地处理 p 到 q 的信息
-// todo https://ac.nowcoder.com/courses/cover/live/707
-// todo https://oi-wiki.org/graph/dynamic-tree-divide/
-//  https://oi-wiki.org/graph/tree-divide/#%E7%82%B9%E5%88%86%E6%A0%91
-// todo 模板题 https://www.luogu.com.cn/problem/P6329
-//  点分树+堆 https://www.luogu.com.cn/problem/P2056 https://www.luogu.com.cn/problem/SP2666
-//  无修改，点分树+vector+前缀和 https://www.luogu.com.cn/problem/P3241
+// 动态点分治 点分树
+// 维护 x 到 ct 的信息和 ct 到其余点的信息，就可以快速地处理 x 到其余所有点的信息（对于一个 x 来说，它的 ct 有 O(logn) 个）
+// 适用于不关心树的形态的问题，比如路径问题，联通块问题，寻找关键点问题等等
+// 提示：结合【贡献法】
+// https://oi-wiki.org/graph/dynamic-tree-divide/
+// https://oi-wiki.org/graph/tree-divide/#%E7%82%B9%E5%88%86%E6%A0%91
+//
+// 无修改 https://www.luogu.com.cn/problem/P3241
+// 单点修改 https://www.luogu.com.cn/problem/P6329
+// todo 点分树+堆 https://www.luogu.com.cn/problem/P2056 https://www.luogu.com.cn/problem/SP2666
 //  借助点分树移动答案 https://www.luogu.com.cn/problem/P3345
 //  动态加点的点分树+平衡树 https://www.luogu.com.cn/problem/P3920 
 //  - 除去动态加点就是点分树套路。加点时默认新点的点分父亲为原树父亲，当某点分子树不平衡度超过某个阈值，重新点分治即可。
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4220
 //  边分树+虚树 https://www.luogu.com.cn/problem/P4565
-// todo 思维 | 最大深度最小的点分树 https://www.luogu.com.cn/problem/P5912
+//  思维 | 最大深度最小的点分树 https://www.luogu.com.cn/problem/P5912
+func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a []int) {
+	deleted := make([]bool, len(g))
+	size := make([]int, len(g))
+	var findCentroid func(int, int, int) (int, int, int)
+	findCentroid = func(v, fa, compSize int) (minSize, ct, faCt int) {
+		minSize = math.MaxInt
+		maxSubSize := 0
+		size[v] = 1
+		for _, e := range g[v] {
+			w := e.to
+			if w != fa && !deleted[w] {
+				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
+					minSize, ct, faCt = minSizeW, ctW, faCtW
+				}
+				maxSubSize = max(maxSubSize, size[w])
+				size[v] += size[w]
+			}
+		}
+		maxSubSize = max(maxSubSize, compSize-size[v])
+		if maxSubSize < minSize {
+			minSize, ct, faCt = maxSubSize, v, fa
+		}
+		return
+	}
 
-// todo 边分治
-// https://oi-wiki.org/graph/tree-divide/#%E8%BE%B9%E5%88%86%E6%B2%BB
+	// paCts[x] 存储着 x 到其 ct 的信息（x 的 ct 有 O(logn) 个）
+	// paCts[x][0] 是连通块最大的重心，paCts[x][-1] 是连通块最小的重心
+	// 注意：这个顺序不能表示与 x 的远近关系（可能 x 就在 paCts[x][0] 旁边，但离 paCts[x][1] 比较远）
+	type disInfo struct{ ct, sonI, ctDis int }
+	paCts := make([][]disInfo, len(g))
+
+	// sonInfo[ct][i] 存储着 ct 到其重心连通块内的 g[ct][i] 这棵子树的其余点的信息
+	sonInfo := make([][]fenwick, len(g))
+
+	// mergeSonInfo[ct] 存储着 ct 到其重心连通块内的其余点的信息（不含 ct 这个点）
+	mergeSonInfo := make([]fenwick, len(g))
+
+	var dfs func(int, int, int)
+	dfs = func(v, fa, compSize int) {
+		_, ct, faCt := findCentroid(v, fa, compSize)
+
+		sonInfo[ct] = make([]fenwick, len(g[ct]))
+		totA := make(fenwick, compSize+1)
+		for idx, e := range g[ct] {
+			w := e.to
+			if deleted[w] {
+				continue
+			}
+			var sizeW int
+			if w != faCt {
+				sizeW = size[w]
+			} else {
+				sizeW = compSize - size[ct]
+			}
+			sumA := make(fenwick, sizeW+1)
+			var f func(int, int, int)
+			f = func(v, fa, d int) {
+				paCts[v] = append(paCts[v], disInfo{ct, idx, d})
+				sumA[d] += a[v]
+				totA[d] += a[v]
+				for _, e := range g[v] {
+					w := e.to
+					if w != fa && !deleted[w] {
+						f(w, v, d+e.wt) // d+1
+					}
+				}
+			}
+			f(w, ct, e.wt) // 1
+			for i := 1; i <= sizeW; i++ {
+				if j := i + i&-i; j <= sizeW {
+					sumA[j] += sumA[i]
+				}
+			}
+			sonInfo[ct][idx] = sumA
+		}
+		for i := 1; i <= compSize; i++ {
+			if j := i + i&-i; j <= compSize {
+				totA[j] += totA[i]
+			}
+		}
+		mergeSonInfo[ct] = totA
+
+		deleted[ct] = true
+		for _, e := range g[ct] {
+			w := e.to
+			if deleted[w] {
+				continue
+			}
+			if w != faCt {
+				dfs(w, ct, size[w])
+			} else {
+				dfs(w, ct, compSize-size[ct])
+			}
+		}
+	}
+	dfs(root, -1, len(g))
+
+	update := func(x, val int) {
+		delta := val - a[x]
+		a[x] = val
+		for _, p := range paCts[x] {
+			sonInfo[p.ct][p.sonI].update(p.ctDis, delta)
+			mergeSonInfo[p.ct].update(p.ctDis, delta)
+		}
+	}
+
+	// https://www.luogu.com.cn/problem/P6329
+	query := func(cur, k int) int {
+		// 单独统计 cur
+		res := a[cur]
+		// 统计 cur 作为重心时，到它所在重心连通块的其余点的信息
+		res += mergeSonInfo[cur].pre(min(k, len(mergeSonInfo[cur])-1))
+		for _, p := range paCts[cur] {
+			if p.ctDis > k {
+				continue
+			}
+			// 单独统计 cur 与 p.ct 的信息
+			res += a[p.ct]
+			// 统计 p.ct 到重心连通块内的其余点的信息（个数），注意不能包含 cur 所在子树（否则就重复统计了）
+			res += mergeSonInfo[p.ct].pre(min(k-p.ctDis, len(mergeSonInfo[p.ct])-1)) -
+				sonInfo[p.ct][p.sonI].pre(min(k-p.ctDis, len(sonInfo[p.ct][p.sonI])-1))
+		}
+		return res
+	}
+
+	_ = []any{update, query}
+}
+
+// 边分治
+// todo https://oi-wiki.org/graph/tree-divide/#%E8%BE%B9%E5%88%86%E6%B2%BB
 
 // 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
 // 【模板讲解】树上倍增算法（以及最近公共祖先） 
