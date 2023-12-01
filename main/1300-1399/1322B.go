@@ -18,7 +18,7 @@ func CF1322B(_r io.Reader, out io.Writer) {
 		all ^= i
 	}
 
-	for k := 0; k < 28; k++ {
+	for k := 0; k < 25; k++ {
 		mask := 1<<(k+1) - 1
 		sort.Slice(a, func(i, j int) bool { return a[i]&mask < a[j]&mask })
 		f := func(high int) (cnt int) {
