@@ -324,10 +324,9 @@
 - [DP 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2C2200-)：几乎每场都有 DP。
 - [数学综合：数论、组合数学、概率期望等 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Ccombinatorics%2Cfft%2Cmatrices%2Cnumber+theory%2Cprobabilities%2Cchinese+remainder+theorem%2C2200-)：包含 6 个 tag。
 - [图论综合：图论+树上问题 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2C2-sat%2Cdsu%2Cflows%2Cgraph+matchings%2Cgraphs%2Cshortest+paths%2Ctrees%2C2200-)：包含 7 个 tag。
-- 其它：
-   - [字符串 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cstring+suffix+structures%2Cstrings%2C2200-)：数据结构题不好筛选，可以找树状数组/线段树的题单，这里只单独筛选字符串的题。
-   - [交互 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=interactive%2C2200-)：偶尔做做，了解一些解题套路。
-   - [博弈 2000+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=games%2C2000-)：也适合锻炼手玩。由于题目比较少，从 2000 开始筛选。
+- [字符串 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cstring+suffix+structures%2Cstrings%2C2200-)：数据结构题不好筛选，可以找树状数组/线段树的题单，这里只单独筛选字符串的题。
+- [交互 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=interactive%2C2200-)：偶尔做做，了解一些解题套路。
+- [博弈 2000+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=games%2C2000-)：也适合锻炼手玩。由于题目比较少，从 2000 开始筛选。
 
 **我的 Codeforces 账号**
 
