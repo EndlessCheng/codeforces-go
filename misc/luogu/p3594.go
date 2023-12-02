@@ -44,7 +44,8 @@ func p3594(_r io.Reader, out io.Writer) {
 	type pair struct{ l, s int }
 	q := []pair{{0, sd}}
 	s := sd
-	for i, left := d, 0; i < n; i++ {
+	left := 0
+	for i := d; i < n; i++ {
 		sd += a[i] - a[i-d]
 		for len(q) > 0 && sd >= q[len(q)-1].s {
 			q = q[:len(q)-1]
