@@ -318,7 +318,7 @@
 
 见识更高的山、更广的海。
 
-按人数从高到低，做 2200+ 的题目。不要设置难度上限！由于按人数排序，难度分不会太高，不设上限可以避免错过高分好题。
+按人数从高到低，做 2200+ 的题目。**建议不设置难度上限**！由于按人数排序，难度分不会太高，**不设上限可以避免错过高分好题**。
 
 - [构造题 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2200-)：锻炼手玩能力
 - [DP 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2C2200-)：几乎每场都有 DP
