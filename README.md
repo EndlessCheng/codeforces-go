@@ -327,7 +327,7 @@
 - 其它：
    - [字符串 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cstring+suffix+structures%2Cstrings%2C2200-)：数据结构题不好筛选，可以找树状数组/线段树的题单，这里只单独筛选字符串的题。
    - [交互 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=interactive%2C2200-)：偶尔做做，了解一些解题套路。
-   - [博弈 2000+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=games%2C2000-)：非常适合手玩！由于题目比较少，从 2000 开始筛选。
+   - [博弈 2000+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=games%2C2000-)：也适合锻炼手玩。由于题目比较少，从 2000 开始筛选。
 
 **我的 Codeforces 账号**
 
