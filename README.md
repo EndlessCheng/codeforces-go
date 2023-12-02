@@ -316,24 +316,17 @@
 
 ### Rating >= 2100（个人训练用，仅供参考）
 
-#### 大开脑洞
+见识更高的山、更广的海。
 
-- [构造](https://codeforces.com/problemset?tags=constructive%20algorithms,2000-2500)
-- [贪心](https://codeforces.com/problemset?tags=greedy,2000-2500)
-- [交互](https://codeforces.com/problemset?tags=interactive,2000-2500)
+按人数从高到低，做 2200+ 的题目。不要设置难度上限！由于按人数排序，难度分不会太高，不设上限可以避免错过高分好题。
 
-#### 数学抽象
-
-- [DP](https://codeforces.com/problemset?tags=dp,2000-2500)
-- [数论](https://codeforces.com/problemset?tags=number%20theory,2000-2500)
-- [组合计数](https://codeforces.com/problemset?tags=combinatorics,2000-2500)
-- [概率期望](https://codeforces.com/problemset?tags=probabilities,2000-2500)
-- [博弈](https://codeforces.com/problemset?tags=games,2000-2500)
-
-#### 建模转换
-
-- [图&树](https://codeforces.com/problemset?tags=combine-tags-by-or,graphs,trees,flows,dsu,2-sat,graph%20matchings,shortest%20paths,2000-2500)
-- [字符串](https://codeforces.com/problemset?tags=string%20suffix%20structures,combine-tags-by-or,strings,2000-2500)
+- [构造题 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2200-)：锻炼手玩能力
+- [DP 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2C2200-)：几乎每场都有 DP
+- [数学综合：数论、组合数学、概率期望等 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Ccombinatorics%2Cfft%2Cmatrices%2Cnumber+theory%2Cprobabilities%2Cchinese+remainder+theorem%2C2200-)：包含 6 个 tag
+- [图论综合：图论+树上问题 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2C2-sat%2Cdsu%2Cflows%2Cgraph+matchings%2Cgraphs%2Cshortest+paths%2Ctrees%2C2200-)：包含 7 个 tag
+- [字符串 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Cstring+suffix+structures%2Cstrings%2C2200-)
+   - 注：数据结构题不好筛选，可以找树状数组/线段树的题单，这里只单独筛选字符串的题
+- [交互 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=interactive%2C2200-)：偶尔做做，了解一些解题套路
 
 **我的 Codeforces 账号**
 
