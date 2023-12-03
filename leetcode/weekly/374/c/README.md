@@ -155,3 +155,10 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。忽略切片开销。
 
 注：可以进一步优化至 $\mathcal{O}(n|\Sigma|)$，具体见视频。
+
+## 相似题目：枚举字母种类数+滑窗
+
+- [395. 至少有 K 个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
+- [1763. 最长的美好子字符串](https://leetcode.cn/problems/longest-nice-substring/)
+
+如果你发现了其它相似题目，欢迎在评论区补充！
