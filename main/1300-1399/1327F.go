@@ -18,6 +18,8 @@ func cf1327F(_r io.Reader, out io.Writer) {
 	}
 
 	ans := 1
+	f := make([]int, n+2)
+	f[0] = 1
 	for b := 0; b < k; b++ {
 		maxL := make([]int, n+1)
 		d := make([]int, n+2)
@@ -30,18 +32,17 @@ func cf1327F(_r io.Reader, out io.Writer) {
 			}
 		}
 
-		f := make([]int, n+2)
-		f[0] = 1
 		sumF := 1
 		sd := 0
-		l := 0
+		left := 0
 		for i := 1; i <= n+1; i++ {
-			for l < maxL[i-1] {
-				sumF -= f[l]
-				l++
+			for left < maxL[i-1] {
+				sumF -= f[left]
+				left++
 			}
 			sd += d[i]
 			if sd > 0 {
+				f[i] = 0
 				continue
 			}
 			sumF %= mod
