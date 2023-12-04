@@ -43,6 +43,7 @@
 ||[260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)|[【图解】一张图秒懂！转换成 136！](https://leetcode.cn/problems/single-number-iii/solution/tu-jie-yi-zhang-tu-miao-dong-zhuan-huan-np9d2/)|中等|
 ||[421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)|[【图解】简洁高效，一图秒懂！](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)|中等|
 |贡献法|[979. 在二叉树中分配硬币](https://leetcode.cn/problems/distribute-coins-in-binary-tree/)|[【图解】没有思路？进来秒懂！](https://leetcode.cn/problems/distribute-coins-in-binary-tree/solution/tu-jie-mei-you-si-lu-jin-lai-miao-dong-p-vrni/)|1709|
+||[2477. 到达首都的最少油耗](https://leetcode.cn/problems/minimum-fuel-cost-to-report-to-the-capital/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/minimum-fuel-cost-to-report-to-the-capital/solution/kao-lu-mei-tiao-bian-shang-zhi-shao-xu-y-uamv/)|2012|
 ||[891. 子序列宽度之和](https://leetcode.cn/problems/sum-of-subsequence-widths/)|[【图解】计算每个元素对答案的贡献，多解法](https://leetcode.cn/problems/sum-of-subsequence-widths/solution/by-endlesscheng-upd1/)|2183|
 |动态规划|[剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[【图解】教你一步步思考动态规划！](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|中等|
 ||[931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-falling-path-sum/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-2cwkb/)|1573|
