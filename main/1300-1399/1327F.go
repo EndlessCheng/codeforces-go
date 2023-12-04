@@ -33,21 +33,21 @@ func cf1327F(_r io.Reader, out io.Writer) {
 		}
 
 		sumF := 1
-		sd := 0
+		sumD := 0
 		left := 0
 		for i := 1; i <= n+1; i++ {
 			for left < maxL[i-1] {
 				sumF -= f[left]
 				left++
 			}
-			sd += d[i]
-			if sd > 0 {
+			sumD += d[i]
+			if sumD > 0 {
 				f[i] = 0
 				continue
 			}
 			sumF %= mod
 			f[i] = sumF
-			sumF = sumF * 2
+			sumF *= 2
 		}
 		ans = ans * f[n+1] % mod
 	}
