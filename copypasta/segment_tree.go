@@ -174,11 +174,6 @@ func (t seg) set(o, val int) {
 	t[o].val = t.mergeInfo(t[o].val, val)
 }
 
-func (t seg) maintain(o int) {
-	lo, ro := t[o<<1], t[o<<1|1]
-	t[o].val = t.mergeInfo(lo.val, ro.val)
-}
-
 func (t seg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
@@ -189,6 +184,10 @@ func (t seg) build(a []int, o, l, r int) {
 	t.build(a, o<<1, l, m)
 	t.build(a, o<<1|1, m+1, r)
 	t.maintain(o)
+}
+
+func (t seg) maintain(o int) {
+	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
 }
 
 // o=1  1<=i<=n
@@ -333,20 +332,27 @@ type lazySeg []struct {
 	todo int
 }
 
-func (t lazySeg) do(o int, todo int) {
-	to := &t[o]
-	to.sum += todo * (to.r - to.l + 1)
-	to.todo += todo
-	// % mod
-}
-
 func (lazySeg) mergeInfo(a, b int) int {
 	return a + b // % mod
 }
 
-func (t lazySeg) maintain(o int) {
-	lo, ro := &t[o<<1], &t[o<<1|1]
-	t[o].sum = t.mergeInfo(lo.sum, ro.sum)
+func (t lazySeg) do(o int, v int) {
+	to := &t[o]
+	
+	// 更新 v 对整个区间的影响
+	to.sum += v * (to.r - to.l + 1)
+
+	// 更新 v 对左右儿子的影响
+	to.todo += v
+	// % mod
+}
+
+func (t lazySeg) spread(o int) {
+	if v := t[o].todo; v != todoInit {
+		t.do(o<<1, v)
+		t.do(o<<1|1, v)
+		t[o].todo = todoInit
+	}
 }
 
 func (t lazySeg) build(a []int, o, l, r int) {
@@ -362,46 +368,23 @@ func (t lazySeg) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t lazySeg) spread(o int) {
-	if todo := t[o].todo; todo != todoInit {
-		t.do(o<<1, todo)
-		t.do(o<<1|1, todo)
-		t[o].todo = todoInit
-	}
-}
-
-// 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
-// 下面代码返回 [l,r] 内第一个值不低于 val 的下标（未找到时返回 n+1）
-// o=1  [l,r] 1<=l<=r<=n
-// https://codeforces.com/problemset/problem/1179/C
-func (t lazySeg) lowerBound(o, l, r int, val int) int {
-	if t[o].l == t[o].r {
-		if t[o].sum >= val {
-			return t[o].l
-		}
-		return t[o].l + 1
-	}
-	t.spread(o)
-	// 注意判断比较的对象是当前节点还是子节点，是先递归左子树还是右子树
-	if t[o<<1].sum >= val {
-		return t.lowerBound(o<<1, l, r, val)
-	}
-	return t.lowerBound(o<<1|1, l, r, val)
+func (t lazySeg) maintain(o int) {
+	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazySeg) update(o, l, r int, todo int) {
+func (t lazySeg) update(o, l, r int, v int) {
 	if l <= t[o].l && t[o].r <= r {
-		t.do(o, todo)
+		t.do(o, v)
 		return
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
-		t.update(o<<1, l, r, todo)
+		t.update(o<<1, l, r, v)
 	}
 	if m < r {
-		t.update(o<<1|1, l, r, todo)
+		t.update(o<<1|1, l, r, v)
 	}
 	t.maintain(o)
 }
@@ -425,6 +408,25 @@ func (t lazySeg) query(o, l, r int) int {
 }
 
 func (t lazySeg) queryAll() int { return t[1].sum }
+
+// 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
+// 下面代码返回 [l,r] 内第一个值不低于 val 的下标（未找到时返回 n+1）
+// o=1  [l,r] 1<=l<=r<=n
+// https://codeforces.com/problemset/problem/1179/C
+func (t lazySeg) lowerBound(o, l, r int, val int) int {
+	if t[o].l == t[o].r {
+		if t[o].sum >= val {
+			return t[o].l
+		}
+		return t[o].l + 1
+	}
+	t.spread(o)
+	// 注意判断比较的对象是当前节点还是子节点，是先递归左子树还是右子树
+	if t[o<<1].sum >= val {
+		return t.lowerBound(o<<1, l, r, val)
+	}
+	return t.lowerBound(o<<1|1, l, r, val)
+}
 
 // a 的下标从 0 开始
 func newLazySegmentTree(a []int) lazySeg {
