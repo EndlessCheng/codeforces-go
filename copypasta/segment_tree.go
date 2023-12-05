@@ -1,5 +1,7 @@
 package copypasta
 
+import "math/bits"
+
 // 线段树讲解 by 灵茶山艾府（13:30 开始）https://www.bilibili.com/video/BV15D4y1G7ms
 
 // 可视化 https://visualgo.net/zh/segmenttree
@@ -167,7 +169,7 @@ func (seg) mergeInfo(a, b int) int {
 	return max(a, b)
 }
 
-// 单点更新：build 和 update 通用
+// 单点更新：见 update
 func (t seg) set(o, val int) {
 	t[o].val = t.mergeInfo(t[o].val, val)
 }
@@ -180,7 +182,7 @@ func (t seg) maintain(o int) {
 func (t seg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t.set(o, a[l-1])
+		t[o].val = a[l-1]
 		return
 	}
 	m := (l + r) >> 1
@@ -223,10 +225,14 @@ func (t seg) query(o, l, r int) int {
 
 func (t seg) queryAll() int { return t[1].val }
 
-// a 不能为空
+// a 的下标从 0 开始
 func newSegmentTree(a []int) seg {
-	t := make(seg, 4*len(a))
-	t.build(a, 1, 1, len(a))
+	n := len(a)
+	if n == 0 {
+		panic("slice can't be empty")
+	}
+	t := make(seg, 2<<bits.Len(uint(n-1)))
+	t.build(a, 1, 1, n)
 	return t
 }
 
@@ -302,7 +308,8 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 // 【多个更新操作复合】
 // = + max https://www.luogu.com.cn/problem/P1253
-// * + ∑ https://www.luogu.com.cn/problem/P3373 https://leetcode-cn.com/problems/fancy-sequence/
+//         代码 https://www.luogu.com.cn/record/138265877
+// * + ∑ https://www.luogu.com.cn/problem/P3373 LC1622 https://leetcode.cn/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
 // 线段树维护区间加、乘、赋值、平方和、立方和 http://acm.hdu.edu.cn/showproblem.php?pid=4578
@@ -321,14 +328,16 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 const todoInit = 0
 
 type lazySeg []struct {
-	l, r      int
-	sum, todo int
+	l, r int
+	sum  int
+	todo int
 }
 
-func (t lazySeg) do(o int, add int) {
+func (t lazySeg) do(o int, todo int) {
 	to := &t[o]
-	to.sum += add * (to.r - to.l + 1) // % mod
-	to.todo += add                    // % mod
+	to.sum += todo * (to.r - to.l + 1)
+	to.todo += todo
+	// % mod
 }
 
 func (lazySeg) mergeInfo(a, b int) int {
@@ -354,9 +363,9 @@ func (t lazySeg) build(a []int, o, l, r int) {
 }
 
 func (t lazySeg) spread(o int) {
-	if add := t[o].todo; add != todoInit {
-		t.do(o<<1, add)
-		t.do(o<<1|1, add)
+	if todo := t[o].todo; todo != todoInit {
+		t.do(o<<1, todo)
+		t.do(o<<1|1, todo)
 		t[o].todo = todoInit
 	}
 }
@@ -381,18 +390,18 @@ func (t lazySeg) lowerBound(o, l, r int, val int) int {
 }
 
 // o=1  [l,r] 1<=l<=r<=n
-func (t lazySeg) update(o, l, r int, add int) {
+func (t lazySeg) update(o, l, r int, todo int) {
 	if l <= t[o].l && t[o].r <= r {
-		t.do(o, add)
+		t.do(o, todo)
 		return
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
-		t.update(o<<1, l, r, add)
+		t.update(o<<1, l, r, todo)
 	}
 	if m < r {
-		t.update(o<<1|1, l, r, add)
+		t.update(o<<1|1, l, r, todo)
 	}
 	t.maintain(o)
 }
@@ -417,10 +426,14 @@ func (t lazySeg) query(o, l, r int) int {
 
 func (t lazySeg) queryAll() int { return t[1].sum }
 
-// a 从 0 开始
+// a 的下标从 0 开始
 func newLazySegmentTree(a []int) lazySeg {
-	t := make(lazySeg, 4*len(a))
-	t.build(a, 1, 1, len(a))
+	n := len(a)
+	if n == 0 {
+		panic("slice can't be empty")
+	}
+	t := make(lazySeg, 2<<bits.Len(uint(n-1)))
+	t.build(a, 1, 1, n)
 	return t
 }
 
