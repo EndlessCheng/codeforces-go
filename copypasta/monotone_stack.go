@@ -380,6 +380,7 @@ func numSubmat(mat [][]int) (ans int) {
 // LC316 https://leetcode.cn/problems/remove-duplicate-letters/
 //       https://atcoder.jp/contests/abc299/tasks/abc299_g
 // EXTRA: 重复个数不超过 limit https://leetcode.cn/contest/tianchi2022/problems/ev2bru/
+// https://codeforces.com/contest/1886/problem/C
 func removeDuplicateLetters(s string) string {
 	left := ['z' + 1]int{}
 	for _, c := range s {
