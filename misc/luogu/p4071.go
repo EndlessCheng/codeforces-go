@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -82,4 +81,4 @@ func p4071(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { p4071(os.Stdin, os.Stdout) }
+//func main() { p4071(os.Stdin, os.Stdout) }
