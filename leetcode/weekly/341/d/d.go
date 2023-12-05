@@ -79,5 +79,3 @@ func minimumTotalPrice(n int, edges [][]int, price []int, trips [][]int) int {
 	nh, h, _ := dfs(0, -1)
 	return min(nh, h)
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
