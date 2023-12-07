@@ -11,6 +11,8 @@ https://oi-wiki.org/ds/lct/
 https://www.cnblogs.com/flashhu/p/8324551.html
 https://www.luogu.com.cn/blog/command-block/lct-xiao-ji
 https://codeforces.com/blog/entry/80383
+todo 支持子树操作的动态树(魔改LCT) https://www.luogu.com.cn/blog/Y-B-X/zhi-chi-zi-shu-cao-zuo-di-dong-tai-shu-mo-gai-lct
+ https://www.luogu.com.cn/problem/P5649
 
 TIPS: 若要修改一个点，可以将这个点 splay 上来修改后 maintain，这样就不需要考虑修改这个点对父节点的影响了
 TIPS: 对于卡常的题目，用 findRoot 判断连通性的逻辑可以用并查集代替
