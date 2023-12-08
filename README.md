@@ -70,6 +70,7 @@
   - 最小表示法
   - 最长回文子串 
     - Manacher 算法
+  - [回文自动机（回文树，PAM）pam.go](/copypasta/pam.go)
   - 后缀数组（SA）
   - [后缀自动机（SAM）sam.go](/copypasta/sam.go)
   - [字典树 trie.go](/copypasta/trie.go)
