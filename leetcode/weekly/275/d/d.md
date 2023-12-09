@@ -141,6 +141,6 @@ impl Solution {
 
 - [1665. 完成所有任务的最少初始能量](https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/)
 
-欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-更多精彩题解，请看 [往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
