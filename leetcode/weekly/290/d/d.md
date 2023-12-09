@@ -13,7 +13,7 @@
 - 在 $\textit{starts}$ 中二分查找大于 $\textit{people}[i]$ 的下一个数的下标（若不存在则为 $n$），即为开花数。
 - 在 $\textit{ends}$ 中二分查找大于等于 $\textit{people}[i]$ 的下一个数的下标（若不存在则为 $n$），即为凋落数。
 
-关于二分查找的原理，请看视频讲解：[二分查找 红蓝染色法【基础算法精讲 04】](https://b23.tv/AhwfbS2)。
+关于二分查找的原理，请看视频讲解：[二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
 
 ```Python [sol-Python3]
 class Solution:
@@ -403,6 +403,6 @@ impl Solution {
 
 请看[【算法小课堂】差分数组](https://leetcode.cn/circle/discuss/FfMCgb/) 中的题单。
 
-欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-更多精彩题解，请看 [往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
