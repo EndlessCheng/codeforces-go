@@ -131,30 +131,48 @@ func _() {
 	// https://cp-algorithms.com/string/prefix-function.html
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/KMP.java.html
 	//
+	// todo 题单 https://www.luogu.com.cn/training/53971
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC28 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
 	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
-	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
-	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E
+	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/ 1837
+	// https://codeforces.com/problemset/problem/126/B 1700
+	// https://codeforces.com/problemset/problem/471/D 1800
+	// https://codeforces.com/problemset/problem/432/D 2000
+	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B 2000
+	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B 2000
+	// https://codeforces.com/problemset/problem/1200/E 2000
+	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C 2000
+	// 与 DP 结合 https://codeforces.com/problemset/problem/1163/D 2100
+	// https://codeforces.com/problemset/problem/526/D 2200
+	// todo 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I 2200
+	// https://codeforces.com/problemset/problem/1003/F 2200
+	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E 2200
 	// - 不加 # 的话会面临 "cabc"+"abca" 这样的例子，算出的 border 是 "cabca"
-	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/
-	// https://codeforces.com/problemset/problem/432/D
-	// https://codeforces.com/problemset/problem/471/D
-	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B
-	// 与 DP 结合 https://codeforces.com/problemset/problem/1163/D
-	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B
-	// https://codeforces.com/problemset/problem/1003/F
+	// - LC2800 https://leetcode.cn/problems/shortest-string-that-contains-three-strings/ 1856
+	// todo 与 DP 结合 https://codeforces.com/problemset/problem/808/G 2300
+	// LC1397 与数位 DP 结合 https://leetcode.cn/problems/find-all-good-strings/ 2667
 	// http://acm.hdu.edu.cn/showproblem.php?pid=2087
-	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C
-	// 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I
-	// https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
+	// - https://oj.socoding.cn/p/1446 
 	// - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 	// 在循环同构字符串 s 中查找 t，等价于在 s+(s[:n-1]) 中查找 t 
-	// - LC2851 https://leetcode.cn/problems/string-transformation/
+	// - LC2851 https://leetcode.cn/problems/string-transformation/ 2858
 	// https://www.lanqiao.cn/problems/5132/learning/?contest_id=144
+	// todo https://www.luogu.com.cn/problem/P4391
+	//  https://www.luogu.com.cn/problem/UVA10298
+	//  https://www.luogu.com.cn/problem/P3435
+	//  https://www.luogu.com.cn/problem/UVA11022
+	//  https://www.luogu.com.cn/problem/P4824
+	//  https://www.luogu.com.cn/problem/P2375
+	//  https://www.luogu.com.cn/problem/P7114
+	//  https://www.luogu.com.cn/problem/P3426
+	//  https://www.luogu.com.cn/problem/P3193
+	//  https://www.luogu.com.cn/problem/P4503
+	//  https://www.luogu.com.cn/problem/P3538
+	//  https://www.luogu.com.cn/problem/P4036
 
 	// 计算前缀函数
 	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度
@@ -199,7 +217,8 @@ func _() {
 	// EXTRA: 最小循环节
 	// 返回循环节以及循环次数
 	// 如果没有循环节，那么返回原串和 1
-	// https://codeforces.com/problemset/problem/182/D
+	// https://codeforces.com/problemset/problem/182/D 1400
+	// https://codeforces.com/problemset/problem/526/D 2200
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
 	calcMinPeriod := func(s string) (string, int) {
@@ -245,10 +264,11 @@ func _() {
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
 	//
 	// 模板题 https://judge.yosupo.jp/problem/zalgorithm
-	//       LC2223 https://leetcode.cn/problems/sum-of-scores-of-built-strings/
+	//       LC2223 https://leetcode.cn/problems/sum-of-scores-of-built-strings/ 2220
 	//       https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	//       https://www.luogu.com.cn/problem/P5410
-	// 结论 https://codeforces.com/problemset/problem/535/D
+	// todo 结论 https://codeforces.com/problemset/problem/535/D 1900
+	// DP https://codeforces.com/contest/1051/problem/E 2600
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
@@ -282,6 +302,9 @@ func _() {
 		z[0] = n
 		return z
 	}
+	// 在 text 中查找 pattern 的所有（首字母）位置
+	// 技巧：把 pattern 拼在 text 前面（中间插入一个范围之外的字符），得到字符串 s，
+	//      只要 LCP(s, s[i:]) == len(pattern)，就说明 i 是一个匹配的位置
 	zSearch := func(text, pattern string) (pos []int) {
 		s := pattern + "#" + text
 		z := calcZ(s)
@@ -291,6 +314,22 @@ func _() {
 			}
 		}
 		return
+	}
+	// 这个技巧还可以用来比较 text 的任意后缀 text[i:] 与 pattern 的字典序
+	// 等价于 strings.Compare(text[i:], pattern)
+	// 时间复杂度：求出 z 数组后，每次比较只需 O(1) 时间 
+	// https://codeforces.com/contest/1051/problem/E
+	zCompare := func(text, pattern string, i int) int {
+		s := pattern + "#" + text
+		z := calcZ(s)
+		lcp := z[len(pattern)+1+i]
+		if lcp == len(pattern) { // 相等
+			return 0
+		}
+		if text[i+lcp] < pattern[lcp] {
+			return -1
+		}
+		return 1
 	}
 
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
@@ -383,17 +422,24 @@ func _() {
 	// https://oeis.org/A002620 全为 a 的字符串的偶回文子串个数 floor(n^2/4)
 	// https://oeis.org/A000217 全为 a 的字符串的回文子串个数 n*(n+1)/2
 	//
+	// todo 题单 https://www.luogu.com.cn/training/53971
 	// 模板题 https://judge.yosupo.jp/problem/enumerate_palindromes
 	//       https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
 	// https://codeforces.com/problemset/problem/1326/D2
 	// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
+	// https://www.luogu.com.cn/problem/P4555
 	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
 	//  LC1745 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
 	// LC2472 不重叠回文子字符串（长度至少为 k）的最大数目 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
 	// - 只需要考虑长度为 k or k+1 的
+	// todo https://www.luogu.com.cn/problem/P1659
+	//  https://www.luogu.com.cn/problem/P3501
+	//  https://www.luogu.com.cn/problem/UVA11475
+	//  https://www.luogu.com.cn/problem/P6216
+	//  https://www.luogu.com.cn/problem/P5446
 	manacher := func(s string) {
 		// 将 s 改造为 t，这样就不需要分 len(s) 的奇偶来讨论了，因为新串 t 的每个回文子串都是奇回文串（都有回文中心）
 		// s 和 t 的下标转换关系：
@@ -407,8 +453,8 @@ func _() {
 		}
 		t = append(t, '#', '$')
 
-		// 定义一个奇回文串的半长度=(长度+1)/2，即保留回文中心，去掉一侧后的剩余字符串的长度
-		// halfLen[i] 表示在 t 上的以 t[i] 为回文中心的最长回文子串的半长度
+		// 定义一个奇回文串的回文半径=(长度+1)/2，即保留回文中心，去掉一侧后的剩余字符串的长度
+		// halfLen[i] 表示在 t 上的以 t[i] 为回文中心的最长回文子串的回文半径
 		// 即 [i-halfLen[i]+1,i+halfLen[i]-1] 是 t 上的一个回文子串
 		halfLen := make([]int, len(t)-2)
 		halfLen[1] = 1
@@ -419,7 +465,7 @@ func _() {
 			if i < r {
 				// 记 i 关于 mid 的对称位置 i'=mid*2-i
 				// 若以 i' 为中心的最长回文子串范围超出了以 mid 为中心的回文串的范围（即 i+halfLen[i'] >= r）
-				// 则 halfLen[i] 应先初始化为已知的半长度 r-i，然后再继续暴力匹配
+				// 则 halfLen[i] 应先初始化为已知的回文半径 r-i，然后再继续暴力匹配
 				// 否则 halfLen[i] 与 halfLen[i'] 相等
 				hl = min(halfLen[mid*2-i], r-i)
 			}
@@ -849,7 +895,7 @@ func _() {
 		indexAll,
 		stringHash,
 		kmpSearch, calcMinPeriod, failTree,
-		zSearch,
+		calcZ, zSearch, zCompare,
 		smallestRepresentation,
 		subsequenceAutomaton,
 		manacher,
