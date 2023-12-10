@@ -12,11 +12,10 @@ import (
 func cf1550E(in io.Reader, out io.Writer) {
 	n, k, s := 0, 0, ""
 	Fscan(bufio.NewReader(in), &n, &k, &s)
+	start := make([][17]int32, n+1)
 	ans := sort.Search(n/k, func(low int) bool {
 		low++
-		start := make([][]int, n+1)
-		start[0] = make([]int, k)
-		cnt := make([]int, k)
+		cnt := make([]int32, k)
 		for i, b := range s {
 			if b == '?' {
 				for j := range cnt {
@@ -30,10 +29,9 @@ func cf1550E(in io.Reader, out io.Writer) {
 				cnt[b-'a'] = t + 1
 			}
 			i++
-			start[i] = make([]int, k)
 			for j, c := range cnt {
-				if c >= low {
-					start[i][j] = i - low + 1
+				if c >= int32(low) {
+					start[i][j] = int32(i - low + 1)
 				} else {
 					start[i][j] = start[i-1][j]
 				}
@@ -41,8 +39,8 @@ func cf1550E(in io.Reader, out io.Writer) {
 		}
 
 		u := 1 << k
-		f := make([]int, u)
-		f[0] = n + 1
+		f := make([]int32, u)
+		f[0] = int32(n + 1)
 		for i, fv := range f {
 			fv--
 			if fv < 0 {
