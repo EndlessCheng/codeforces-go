@@ -65,7 +65,7 @@ class Solution:
 // 更快的写法见【数组】版本
 class Solution {
     public int[] secondGreaterElement(int[] nums) {
-        int n = nums.size();
+        int n = nums.length;
         int[] ans = new int[n];
         Arrays.fill(ans, -1);
         List<Integer> s = new ArrayList<>();
@@ -80,8 +80,9 @@ class Solution {
             while (j > 0 && nums[s.get(j - 1)] < x) {
                 j--; // s 栈顶的下一个更大元素是 x
             }
-            t.addAll(s.subList(j, s.size())); // 把从 s 弹出的这一整段元素加到 t
-            s.subList(j, s.size()).clear(); // 弹出一整段元素
+            List<Integer> popped = s.subList(j, s.size());
+            t.addAll(popped); // 把从 s 弹出的这一整段元素加到 t
+            popped.clear(); // 弹出一整段元素
             s.add(i); // 当前元素（的下标）加到 s 栈顶
         }
         return ans;
@@ -190,8 +191,7 @@ var secondGreaterElement = function (nums) {
 ```rust [sol-Rust]
 impl Solution {
     pub fn second_greater_element(nums: Vec<i32>) -> Vec<i32> {
-        let n = nums.len();
-        let mut ans = vec![-1; n];
+        let mut ans = vec![-1; nums.len()];
         let mut s = Vec::new();
         let mut t = Vec::new();
         for (i, &x) in nums.iter().enumerate() {
