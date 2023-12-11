@@ -32,6 +32,7 @@
 |单调栈|[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[【图解单调栈】两种方法，两张图秒懂！](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|1571|
 ||[1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)|[【图解】两种做法，两张图秒懂！](https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/)|1908|
 ||[907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)|[【图解】贡献法+单调栈+三种实现版本](https://leetcode.cn/problems/sum-of-subarray-minimums/solution/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/)|1976|
+||[2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)|[O(n) 一次遍历+双单调栈](https://leetcode.cn/problems/next-greater-element-iv/solution/by-endlesscheng-q6t5/)|2175|
 ||[316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)|[跟着我过一遍示例 2，你就明白怎么做了](https://leetcode.cn/problems/remove-duplicate-letters/solution/gen-zhao-wo-guo-yi-bian-shi-li-2ni-jiu-m-zd6u)|2185|
 |单调队列|[862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)|[【图解】两张图秒懂单调队列](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/)|2307|
 |优先队列/堆|[2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/)|[【证明】堆化的时间复杂度](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/)|1277|
