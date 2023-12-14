@@ -162,6 +162,30 @@ func (r *RG) IntSliceOrdered(size int, min, max int, inc, unique bool) []int {
 	return a
 }
 
+// IntSliceDiffNeighbor generates a random int slice with a fixed size and its values in range [min, max]
+// It's guaranteed that a[i] != a[i+1] for all i in [0, size-2]
+func (r *RG) IntSliceDiffNeighbor(size int, min, max int) []int {
+	if min >= max {
+		panic("min must less than max")
+	}
+	a := make([]int, size)
+	a[0] = r._int(min, max)
+	for i := 1; i < size; i++ {
+		for {
+			a[i] = r._int(min, max)
+			if a[i] != a[i-1] {
+				break
+			}
+		}
+	}
+	for _, v := range a {
+		r.sb.WriteString(strconv.Itoa(v))
+		r.Space()
+	}
+	r.NewLine()
+	return a
+}
+
 // IntMatrix generates a random int matrix with fixed row and col and its values in range [min, max]
 func (r *RG) IntMatrix(row, col int, min, max int) [][]int {
 	a := make([][]int, row)
