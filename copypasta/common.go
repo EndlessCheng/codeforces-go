@@ -37,11 +37,13 @@ https://leetcode.cn/circle/discuss/vEFf96/
 - [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/) 1377
 - [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
     巧妙安排更新顺序，使得 ans，pre_max 只能使用之前的值，从而符合 i<j<k 的要求
+- [454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 
 哈希表
 - [2260. 必须拿起的最小连续卡牌数](https://leetcode.cn/problems/minimum-consecutive-cards-to-pick-up/) 1365
 - [982. 按位与为零的三元组](https://leetcode.cn/problems/triples-with-bitwise-and-equal-to-zero/) 2085
+- [面试题 16.21. 交换和](https://leetcode.cn/problems/sum-swap-lcci/)
 
 前缀和
 - [1732. 找到最高海拔](https://leetcode.cn/problems/find-the-highest-altitude/)
@@ -63,6 +65,7 @@ https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908 *转换
 - [2488. 统计中位数为 K 的子数组](https://leetcode.cn/problems/count-subarrays-with-median-k/) 1999 *转换
 - [2949. 统计美丽子字符串 II](https://leetcode.cn/problems/count-beautiful-substrings-ii/)
+- [面试题 17.05. 字母与数字](https://leetcode.cn/problems/find-longest-subarray-lcci/)
 - [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 
@@ -100,7 +103,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [2565. 最少得分子序列](https://leetcode.cn/problems/subsequence-with-the-minimum-score/) 2432
 - [2552. 统计上升四元组](https://leetcode.cn/problems/count-increasing-quadruplets/) 2433
 
-#### 定长滑动窗口
+#### 定长滑动窗口（右边数字为难度分）
 - [1456. 定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/) 1263
 - [2269. 找到一个数字的 K 美丽值](https://leetcode.cn/problems/find-the-k-beauty-of-a-number/) 1280
 - [1984. 学生分数的最小差值](https://leetcode.cn/problems/minimum-difference-between-highest-and-lowest-of-k-scores/) 1306
@@ -124,6 +127,7 @@ https://codeforces.com/problemset/problem/69/E 1800
 
 #### 不定长滑动窗口（求最长/最大）
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+   - 翻转至多一个任意子串后的无重复字符的最长子串 https://codeforces.com/contest/1234/problem/F
 - [1493. 删掉一个元素以后全为 1 的最长子数组](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/) 1423
 - [904. 水果成篮](https://leetcode.cn/problems/fruit-into-baskets/) 1516
 - [1695. 删除子数组的最大得分](https://leetcode.cn/problems/maximum-erasure-value/) 1529
@@ -139,12 +143,14 @@ https://codeforces.com/problemset/problem/69/E 1800
 - [1610. 可见点的最大数目](https://leetcode.cn/problems/maximum-number-of-visible-points/) 2147
 - [159. 至多包含两个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-two-distinct-characters/)（会员题）
 - [340. 至多包含 K 个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/)（会员题）
+与单调队列结合 https://www.luogu.com.cn/problem/P3594
 
 #### 不定长滑动窗口（求最短/最小）
 - [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 - [1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/) 1878
 - [1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/) 1932
 - [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+- [面试题 17.18. 最短超串](https://leetcode.cn/problems/shortest-supersequence-lcci/)
 https://codeforces.com/problemset/problem/701/C
 
 #### 不定长滑动窗口（求子数组个数）
@@ -156,6 +162,7 @@ https://codeforces.com/problemset/problem/701/C
 - [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/) 1940
 - [2743. 计算没有重复字符的子字符串数量](https://leetcode.cn/problems/count-substrings-without-repeating-character/)（会员题）
 和至少为 k 的子数组个数 https://atcoder.jp/contests/abc130/tasks/abc130_d
+其它题目见【前缀和】
 
 #### 多指针滑动窗口
 - [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/) 1592
@@ -235,6 +242,7 @@ LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
 https://codeforces.com/problemset/problem/1380/C 1400
+https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/525/C 1600
 https://codeforces.com/problemset/problem/1748/C 1600
 
@@ -253,8 +261,11 @@ https://codeforces.com/problemset/problem/846/C
     - https://www.lanqiao.cn/problems/4174/learning/?contest_id=135
     - https://codeforces.com/problemset/problem/1765/D
 - [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/) 1663
-- [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/)
+- [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/) 1822
+- [2952. 需要添加的硬币的最小数量](https://leetcode.cn/problems/minimum-number-of-coins-to-be-added/)
+    - LC330 https://leetcode.cn/problems/patching-array/
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
+- todo 复习 [2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/) 2091
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
 https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/1443/C 1400
@@ -281,12 +292,17 @@ https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?opti
 https://codeforces.com/contest/1873/problem/G
 https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 
-中位数贪心（右边数字为难度分）
+中位数贪心（右边数字为难度分） // 注：算长度用左闭右开区间思考，算中间值用闭区间思考
+为方便描述，将 $\textit{nums}$ 简记为 $a$。
+**定理**：将 $a$ 的所有元素变为 $a$ 的**中位数**是最优的。
+**证明**：设 $a$ 的长度为 $n$，设要将所有 $a[i]$ 变为 $x$。假设 $a$ 已经从小到大排序。首先，如果 $x$ 取在区间 $[a[0],a[n-1]]$ 之外，那么 $x$ 向区间方向移动可以使距离和变小；同时，如果 $x$ 取在区间 $[a[0],a[n-1]]$ 之内，无论如何移动 $x$，它到 $a[0]$ 和 $a[n-1]$ 的距离和都是一个定值 $a[n-1]-a[0]$，那么去掉 $a[0]$ 和 $a[n-1]$ 这两个最左最右的数，问题规模缩小。不断缩小问题规模，如果最后剩下 $1$ 个数，那么 $x$ 就取它；如果最后剩下 $2$ 个数，那么 $x$ 取这两个数之间的任意值都可以（包括这两个数）。因此 $x$ 可以取 $a[n/2]$。
+题单（右边数字为难度分）
 - [462. 最小操作次数使数组元素相等 II](https://leetcode.cn/problems/minimum-moves-to-equal-array-elements-ii/)
 - [2033. 获取单值网格的最小操作数](https://leetcode.cn/problems/minimum-operations-to-make-a-uni-value-grid/) 1672
 - [2448. 使数组相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-make-array-equal/) 2005
 - [2607. 使子数组元素和相等](https://leetcode.cn/problems/make-k-subarray-sums-equal/) 2071
 - [1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode.cn/problems/minimum-adjacent-swaps-for-k-consecutive-ones/) 2467
+- [LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)
 https://codeforces.com/problemset/problem/710/B 1400
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
@@ -308,6 +324,7 @@ LC1202 https://leetcode.cn/problems/smallest-string-with-swaps/
 LC2948 https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/
 https://codeforces.com/contest/252/problem/B
 https://codeforces.com/contest/109/problem/D 2000
+shift+reverse https://codeforces.com/contest/1907/problem/F
 
 区间与点的最大匹配/覆盖问题
 https://www.luogu.com.cn/problem/P2887
@@ -340,13 +357,14 @@ https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?opti
 构造
 LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
-LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/
-1500 https://codeforces.com/problemset/problem/1809/C
+LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
 https://atcoder.jp/contests/arc145/tasks/arc145_a
-+贪心 https://codeforces.com/problemset/problem/118/C
-+分类讨论 https://codeforces.com/problemset/problem/584/C
-+分类讨论 https://codeforces.com/problemset/problem/708/B
-[1800·hot10] https://codeforces.com/problemset/problem/1554/D
+https://codeforces.com/contest/803/problem/A 1400
+https://codeforces.com/problemset/problem/1809/C 1500
+贪心 https://codeforces.com/problemset/problem/118/C
+分类讨论 https://codeforces.com/problemset/problem/584/C
+分类讨论 https://codeforces.com/problemset/problem/708/B
+https://codeforces.com/problemset/problem/1554/D 1800
 相邻字母在字母表中不相邻 https://codeforces.com/contest/1156/problem/B
 棋盘放最多的马 https://codeforces.com/problemset/problem/142/B
 两点间恰好 k 条最短路径 http://codeforces.com/problemset/problem/388/B
@@ -394,6 +412,7 @@ https://codeforces.com/problemset/problem/1763/C
 https://codeforces.com/problemset/problem/960/B
 https://codeforces.com/problemset/problem/1799/C
 https://codeforces.com/problemset/problem/1009/B 1400 脑筋急转弯
+https://codeforces.com/contest/1251/problem/B 1400
 https://codeforces.com/problemset/problem/1180/B 1500
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/1861/C 1600 好题！
@@ -412,6 +431,8 @@ https://codeforces.com/problemset/problem/1647/D
 https://atcoder.jp/contests/agc015/tasks/agc015_d
 
 贡献法
+LC979 https://leetcode.cn/problems/distribute-coins-in-binary-tree/ 1709
+LC2477 https://leetcode.cn/problems/minimum-fuel-cost-to-report-to-the-capital/ 2012
 LC891 https://leetcode.cn/problems/sum-of-subsequence-widths/
 LC1588 https://leetcode.cn/problems/sum-of-all-odd-length-subarrays/
 LC2681 https://leetcode.cn/problems/power-of-heroes/
@@ -812,6 +833,48 @@ func _() {
 		return
 	}
 
+	// 按照从小到大的顺序，生成所有回文数
+	// https://oeis.org/A002113
+	// https://leetcode.cn/problems/minimum-cost-to-make-array-equalindromic/
+	// LC2081 https://leetcode.cn/problems/sum-of-k-mirror-numbers/
+	// EXTRA: 单个数字的情况 LC564 https://leetcode.cn/problems/find-the-closest-palindrome/
+	initPalindromeNumber := func() {
+		const mx int = 1e9
+		pal := []int{}
+		// 哨兵。根据题目来定，也可以设置成 -2e9 等
+		pal = append(pal, 0)
+
+		// 严格按顺序从小到大生成所有回文数
+	outer:
+		for base := 1; ; base *= 10 {
+			// 生成奇数长度回文数，例如 base = 10，生成的范围是 101 ~ 999
+			for i := base; i < base*10; i++ {
+				x := i
+				for t := i / 10; t > 0; t /= 10 {
+					x = x*10 + t%10
+				}
+				if x > mx {
+					break outer
+				}
+				pal = append(pal, x)
+			}
+			// 生成偶数长度回文数，例如 base = 10，生成的范围是 1001 ~ 9999
+			for i := base; i < base*10; i++ {
+				x := i
+				for t := i; t > 0; t /= 10 {
+					x = x*10 + t%10
+				}
+				if x > mx {
+					break outer
+				}
+				pal = append(pal, x)
+			}
+		}
+
+		// 哨兵。根据 mx 调整，如果 mx 是 2e9 的话要写成 mx+2
+		pal = append(pal, mx+1)
+	}
+
 	// 合并有序数组，保留重复元素
 	// a b 必须是有序的（可以为空）
 	merge := func(a, b []int) []int {
@@ -924,29 +987,46 @@ func _() {
 		return sum
 	}
 
-	// 前缀和
+	// 前缀和应用：求距离和
 	prefixSum := func(a []int) {
+		slices.Sort(a)
 		sum := make([]int, len(a)+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
 
-		// 返回所有数到 target 的距离之和，即 sum(abs(a[i]-target))
-		// 需要保证 a 是有序的
+		// 返回 a 的所有数到 target 的距离之和，即 sum(abs(a[i]-target))
+		// ！需要保证 a 是有序的
 		// LC2602 https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/
 		// - 原题是 https://atcoder.jp/contests/abc255/tasks/abc255_d
 		distanceSum := func(target int) int {
 			i := sort.SearchInts(a, target)
-			left := target*i - sum[i]
-			right := sum[len(a)] - sum[i] - target*(len(a)-i)
-			return left + right
+			s1 := target*i - sum[i]
+			s2 := sum[len(a)] - sum[i] - target*(len(a)-i)
+			return s1 + s2
+		}
+
+		// https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/
+		// 返回 a 的下标在左闭右开区间 [left,right) 内的所有数到 target 的距离之和
+		// ！需要保证 a 是有序的
+		distanceSumRange := func(left, right, target int) int {
+			i := sort.SearchInts(a, target)
+			if i <= left { // target <= a[i] <= a[left]
+				return sum[right] - sum[left] - target*(right-left)
+			}
+			if i >= right { // target > a[i-1] >= a[right-1]
+				return target*(right-left) - (sum[right] - sum[left])
+			}
+			s1 := target*(i-left) - (sum[i] - sum[left])
+			s2 := sum[right] - sum[i] - target*(right-i)
+			return s1 + s2
 		}
 
 		// EXTRA: 青蛙跳井
 		// 一次询问（下标从 1 开始）https://codeforces.com/problemset/problem/1141/E
 		// 多次询问（下标从 0 开始）https://codeforces.com/problemset/problem/1490/G
 
-		_ = distanceSum
+		_ = []any{distanceSum, distanceSumRange}
 	}
 
 	// 同余前缀和，a 的下标从 0 开始，md 为模数
@@ -1170,10 +1250,10 @@ func _() {
 		// 左闭右开区间 [_cnt[i].x, _cnt[i+1].x) 中的值都是 _cnt[i].c
 		type _pair struct{ x, c int }
 		_cnt := make([]_pair, len(xs))
-		_c := 0
+		sd := 0
 		for _, x := range xs {
-			_c += diff[x]
-			_cnt = append(_cnt, _pair{x, _c})
+			sd += diff[x]
+			_cnt = append(_cnt, _pair{x, sd})
 		}
 		// 返回 x 被多少个 ps 中的区间包含（由于 ps 是闭区间，端点也算包含）
 		query := func(x int) int {
@@ -1187,10 +1267,10 @@ func _() {
 		{
 			// 如果只对左端点感兴趣，可以改为如下写法
 			_cnt := make(map[int]int, len(xs)) // 前缀和
-			_c := 0
+			sd := 0
 			for _, x := range xs {
-				_c += diff[x]
-				_cnt[x] = _c
+				sd += diff[x]
+				_cnt[x] = sd
 			}
 		}
 
@@ -1682,7 +1762,7 @@ func _() {
 		pow10, dir4, dir8, perm3, perm4,
 		abs, ceil, cmp,
 		ternaryI, ternaryS, zip, zipI, mergeMap, xorSet, rotateCopy, transpose,
-		toAnyBase, digits,
+		toAnyBase, digits, initPalindromeNumber,
 		subSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum, matrixSum, rowColSum, diagonalSum,
 		contributionSum,
