@@ -13,7 +13,7 @@ func cf1913C(_r io.Reader, _w io.Writer) {
 	defer out.Flush()
 
 	var m, op, v int
-	cnt := [30]int{}
+	cnt := make([]int, 30)
 o:
 	for Fscan(in, &m); m > 0; m-- {
 		Fscan(in, &op, &v)
