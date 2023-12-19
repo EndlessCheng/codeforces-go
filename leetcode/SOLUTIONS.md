@@ -17,7 +17,8 @@
 ||[1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/)|[【动画】一写就错？两种写法，总有一种适合你！](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/solution/dong-hua-yi-xie-jiu-cuo-liang-chong-xie-iijwz/)|1932|
 ||[2106. 摘水果](https://leetcode.cn/problems/maximum-fruits-harvested-after-at-most-k-steps/)|[滑动窗口，简洁写法](https://leetcode.cn/problems/maximum-fruits-harvested-after-at-most-k-steps/solution/hua-dong-chuang-kou-jian-ji-xie-fa-pytho-1c2d/)|2062|
 ||[1782. 统计点对的数目](https://leetcode.cn/problems/count-pairs-of-nodes/)|[击败 100%！从双指针到终极优化，十万个查询都不怕！](https://leetcode.cn/problems/count-pairs-of-nodes/solution/ji-bai-100cong-shuang-zhi-zhen-dao-zhong-yhze/)|2457|
-|二分答案|[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[【图解】一图掌握二分答案！四种写法！附题单！](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|中等|
+|二分|[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[【图解】一图掌握二分答案！四种写法！附题单！](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|中等|
+||[1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)|[【图解】利用行最大值判断峰顶位置](https://leetcode.cn/problems/find-a-peak-element-ii/solution/tu-jie-li-yong-xing-zui-da-zhi-pan-duan-r4e0n/)|中等|
 ||[878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/)|[【图解】二分答案+容斥原理](https://leetcode.cn/problems/nth-magical-number/solution/er-fen-da-an-rong-chi-yuan-li-by-endless-9j34/)|1897|
 ||[2594. 修车的最少时间](https://leetcode.cn/problems/minimum-time-to-repair-cars/)|[二分答案+优化（附题单！）](https://leetcode.cn/problems/minimum-time-to-repair-cars/solution/er-fen-da-an-pythonjavacgo-by-endlessche-keqf/)|1915|
 ||[2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)|[【套路】二分答案！附题单！](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/solution/er-fen-da-an-by-endlesscheng-r418/)|2021|
