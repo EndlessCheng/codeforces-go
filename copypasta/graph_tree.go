@@ -604,7 +604,6 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
 // 求每棵子树的重心 http://codeforces.com/problemset/problem/685/B
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
-// todo 求重心的两种写法？
 func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 	minOfMaxSubSize := math.MaxInt
 	var findCt func(int, int) int
@@ -771,8 +770,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 		return
 	}
 
-	// paCts[x] 存储着 x 到其 ct 的信息（x 的 ct 有 O(logn) 个）
-	// paCts[x][0] 是连通块最大的重心，paCts[x][-1] 是连通块最小的重心
+	// paCts[x] 存储着 x 到其 ct 的信息（x 在 O(logn) 个重心连通块中）
+	// paCts[x][0] 是最大的重心连通块，paCts[x][-1] 是最小的重心连通块
 	// 注意：这个顺序不能表示与 x 的远近关系（可能 x 就在 paCts[x][0] 旁边，但离 paCts[x][1] 比较远）
 	type disInfo struct{ ct, sonI, ctDis int }
 	paCts := make([][]disInfo, len(g))
@@ -1877,6 +1876,7 @@ func (*tree) limitSizeDecomposition(n, blockSize int, g [][]int) {
 // https://oeis.org/A000272 Cayley's formula https://en.wikipedia.org/wiki/Cayley%27s_formula
 // https://www.luogu.com.cn/problem/P6086
 // todo 光之大陆 https://www.acwing.com/problem/content/2420/
+// todo https://codeforces.com/problemset/problem/156/D
 func (*tree) treeToPrufer(n int, pa []int) []int { // 传入的 pa 是以 n 为根时的每个节点的父节点
 	deg := make([]int, n+1)
 	for i := 1; i < n; i++ {
