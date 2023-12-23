@@ -9,6 +9,7 @@ import (
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
+- [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
 - [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
 - [2530. 执行 K 次操作后的最大分数](https://leetcode.cn/problems/maximal-score-after-applying-k-operations/) 1386
 - [1962. 移除石子使总数最小](https://leetcode.cn/problems/remove-stones-to-minimize-the-total/) 1419
@@ -78,7 +79,7 @@ https://codeforces.com/problemset/problem/1701/D
 
 // 下面这些都是最小堆
 
-type hp struct{ sort.IntSlice }
+type hp struct{ sort.IntSlice } // 继承 sort.IntSlice 的 Len Less Swap，这样就只需要实现 Push 和 Pop
 
 //func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 加上这行变成最大堆
 func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
