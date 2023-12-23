@@ -65,9 +65,13 @@ https://codeforces.com/problemset/problem/954/F
 - [1286. 字母组合迭代器](https://leetcode.cn/problems/iterator-for-combination/) 1591
 - [2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/) 1719
 - [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
+- [LCP 51. 烹饪料理](https://leetcode.cn/problems/UEcfPD/)
+- [2151. 基于陈述统计最多好人数](https://leetcode.cn/problems/maximum-good-people-based-on-statements/) 1980
 - [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
+- [1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/) 2309
 - [320. 列举单词的全部缩写](https://leetcode.cn/problems/generalized-abbreviation/)（会员题）
 https://codeforces.com/problemset/problem/550/B 1400
+https://codeforces.com/problemset/problem/962/C 1400
 
 分割
 - [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
@@ -815,6 +819,7 @@ func _(abs func(int) int) {
 	// https://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
 	// 比如在 n 个数中求满足某种性质的最大子集，则可以从 n 开始倒着枚举子集大小，直到找到一个符合性质的子集
 	// 例题（TS1）GCJ 2018 R2 Costume Change https://codingcompetitions.withgoogle.com/codejam/round/0000000000007706/0000000000045875
+	// https://leetcode.cn/problems/closed-number-lcci/
 	loopSubsetK := func(a []int, k int) {
 		n := len(a)
 		for sub := 1<<k - 1; sub < 1<<n; {
@@ -1086,59 +1091,46 @@ func _(abs func(int) int) {
 }
 
 /*
-## 题单
+网格/矩阵上的搜索
+NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
+
+## 题单（右边数字为难度分）
 
 #### 网格图 DFS
-
 - [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
-- [1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)
-- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/)
 - [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/)
 - [面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)
 - [463. 岛屿的周长](https://leetcode.cn/problems/island-perimeter/)
+- [1034. 边界着色](https://leetcode.cn/problems/coloring-a-border/) 1579
+- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/) 1615
+- [1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/) 1659
 - [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
 - [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
 - [529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)
-- [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/)
-- [1034. 边界着色](https://leetcode.cn/problems/coloring-a-border/)
+- [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
+   - https://codeforces.com/contest/616/problem/C
 
 #### 网格图 BFS
-
-- [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/)
-- [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/)
-- [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/)
-- [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/)
-- [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/)
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
-- [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/)
-- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/)
+- [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/) *多源 BFS
+- [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/) 1433
+- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
+- [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/) 1666
+- [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/) 1826
+- [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/) 1837
 https://atcoder.jp/contests/abc317/tasks/abc317_e
-逃离火灾这题的来源？https://www.luogu.com.cn/problem/UVA11624
 
 #### 综合应用
-
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
-- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/)
-- [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/)
+- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
+- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097
+- [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/) 2297
+- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
+   - https://www.luogu.com.cn/problem/UVA11624
+- [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
 - [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
 - [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
+- [LCP 31. 变换的迷宫](https://leetcode-cn.com/problems/Db3wC1/)
+易错题 https://codeforces.com/problemset/problem/540/C 2000
 */
-
-// 网格/矩阵上的搜索
-// NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
-// 易错题 https://codeforces.com/problemset/problem/540/C
-// 思维转换 LCP31 https://leetcode-cn.com/problems/Db3wC1/
-// LC778 https://leetcode.cn/problems/swim-in-rising-water/
-// LC1631 https://leetcode.cn/problems/path-with-minimum-effort/
-// BFS:
-// LC542 https://leetcode.cn/problems/01-matrix/
-// LC994 https://leetcode.cn/problems/rotting-oranges/
-// LC1162 https://leetcode.cn/problems/as-far-from-land-as-possible/
-// LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
-// LC2258 https://leetcode.cn/problems/escape-the-spreading-fire/
-// LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
-// LCP13 https://leetcode.cn/problems/xun-bao/
-// LCP75 https://leetcode.cn/problems/rdmXM7/
 func gridCollection() {
 	type pair struct{ x, y int }
 	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右
