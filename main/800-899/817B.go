@@ -27,11 +27,11 @@ func cf817B(_r io.Reader, out io.Writer) {
 	if c0 > 2 {
 		ans = c0 * (c0 - 1) * (c0 - 2) / 6
 	} else if c1 := cnt[a[1]]; c0 > 1 {
-		ans = c0 * (c0 - 1) / 2 * c1
+		ans = c1
 	} else if c1 > 1 {
-		ans = c1 * (c1 - 1) / 2 * c0
+		ans = c1 * (c1 - 1) / 2
 	} else {
-		ans = c0 * c1 * cnt[a[2]]
+		ans = cnt[a[2]]
 	}
 	Fprint(out, ans)
 }
