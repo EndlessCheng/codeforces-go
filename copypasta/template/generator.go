@@ -85,7 +85,7 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 
 	example, err := parseExamples(luoguURL)
 	if err != nil {
-		return err
+		fmt.Println(err)
 	}
 
 	exampleStr := ""
