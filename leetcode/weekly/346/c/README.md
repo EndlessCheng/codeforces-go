@@ -204,6 +204,4 @@ impl Solution {
 - [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
 - [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
 
-欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
-
-[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
