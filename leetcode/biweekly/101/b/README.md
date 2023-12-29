@@ -1,10 +1,8 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
-
----
+[本题视频讲解](https://www.bilibili.com/video/BV1Ga4y1M72A/)
 
 ### 前置知识：动态规划入门
 
-见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)。
+请看 `b23.tv/pc522x3`
 
 ### 思路
 
