@@ -1,12 +1,12 @@
-[视频讲解](https://www.bilibili.com/video/BV1i24y1e7E7/) 已出炉，欢迎点赞三连~
+### 视频讲解
 
-视频讲解额外讲了另外一种使用对称性的做法。
+见[【双周赛 95】](https://www.bilibili.com/video/BV1i24y1e7E7/)第三题。视频额外讲了一种使用对称性的做法。
 
----
+### 前言
 
-可能有的同学猜了个结论过了，但如果我把问题中的「异或」改成「求和」，你还会做吗？
+我知道有的同学猜个结论过了，但假如我把问题中的「异或」换成「求和」，阁下又该如何应对？
 
----
+### 思路
 
 位运算经典技巧：由于每个比特位互不相干，所以拆分成每个比特位分别计算。
 
@@ -40,6 +40,27 @@ $$
 class Solution:
     def xorBeauty(self, nums: List[int]) -> int:
         return reduce(xor, nums)
+```
+
+```java [sol1-Java]
+class Solution {
+    public int xorBeauty(int[] nums) {
+        int ans = 0;
+        for (int x : nums) ans ^= x;
+        return ans;
+    }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    int xorBeauty(vector<int>& nums) {
+        int ans = 0;
+        for (int x : nums) ans ^= x;
+        return ans;
+    }
+};
 ```
 
 ```go [sol1-Go]
