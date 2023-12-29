@@ -99,6 +99,6 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(\log \textit{num})$，即 $\textit{num}$ 的十进制长度。
 - 空间复杂度：$\mathcal{O}(1)$，仅用到若干变量。
 
-欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
