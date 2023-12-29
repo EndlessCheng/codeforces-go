@@ -1,4 +1,4 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1aC4y1G7dB/) 第二题。
+[本题视频讲解](https://www.bilibili.com/video/BV1aC4y1G7dB/)
 
 ## 方法一：枚举
 
@@ -102,7 +102,7 @@ func shortestBeautifulSubstring(s string, k int) string {
 
 ## 方法二：滑动窗口
 
-原理请看 [滑动窗口【基础算法精讲 03】](https://b23.tv/pRbxHhG)
+原理请看 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)
 
 由于答案中恰好有 $k$ 个 $1$，我们也可以用滑动窗口找最短的答案。
 
