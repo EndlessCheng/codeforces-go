@@ -145,6 +145,6 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
 
-欢迎关注 [B站@灵茶山艾府](https://b23.tv/JMcHRRp)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
