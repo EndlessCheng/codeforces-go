@@ -1,0 +1,11 @@
+"aaaa"
+2
+
+"abcdef"
+-1
+
+"abcaba"
+1
+
+
+

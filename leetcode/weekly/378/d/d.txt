@@ -1,0 +1,14 @@
+"abcabc"
+[[1,1,3,5],[0,2,5,5]]
+[true,true]
+
+"abbcdecbba"
+[[0,2,7,9]]
+[false]
+
+"acbcab"
+[[1,2,4,5]]
+[true]
+
+
+
