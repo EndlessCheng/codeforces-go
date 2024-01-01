@@ -14,20 +14,16 @@ func cf1800E2(_r io.Reader, _w io.Writer) {
 
 	var T, n, k int
 	var s, t string
+o:
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &k, &s, &t)
-		k = min(k, n)
-		if n-k < k {
-			if s[n-k:k] != t[n-k:k] {
-				Fprintln(out, "NO")
-				continue
-			}
-			s = s[:n-k] + s[k:]
-			t = t[:n-k] + t[k:]
-		}
 		cnt := [26]int{}
-		for i, b := range s {
-			cnt[b-'a']++
+		for i := range s {
+			if n-k <= i && i < k && s[i] != t[i] {
+				Fprintln(out, "NO")
+				continue o
+			}
+			cnt[s[i]-'a']++
 			cnt[t[i]-'a']--
 		}
 		if cnt == [26]int{} {
