@@ -11,12 +11,6 @@ func CF1790F(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
 
 	var T, n, v, w int
 	for Fscan(in, &T); T > 0; T-- {
