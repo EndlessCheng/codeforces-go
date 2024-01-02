@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"bytes"
 	"fmt"
 	"math/rand"
 	"sort"
@@ -424,6 +425,27 @@ func (r *RG) GraphWeightedEdges(n, m, st, minWeight, maxWeight int, directed boo
 		weight := r._int(minWeight, maxWeight)
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], weight))
 		edges[i] = [3]int{e[0], e[1], weight}
+	}
+	return
+}
+
+func (r *RG) GraphMatrix(n int, directed bool) (g [][]byte) {
+	upper := n * (n - 1) / 2
+	m := r._int(0, upper)
+	edges := r.graphEdges(n, m, 0, directed)
+	g = make([][]byte, n)
+	for i := range g {
+		g[i] = bytes.Repeat([]byte{'0'}, n)
+	}
+	for _, e := range edges {
+		g[e[0]][e[1]] = '1'
+		if !directed {
+			g[e[1]][e[0]] = '1'
+		}
+	}
+	for _, row := range g {
+		r.sb.WriteString(string(row))
+		r.NewLine()
 	}
 	return
 }
