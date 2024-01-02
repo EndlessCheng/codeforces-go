@@ -6,41 +6,34 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF463D(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	max := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-
-	var n, m, ans int
-	Fscan(in, &m, &n)
-	a := make([]int, m)
-	pos := make([][]int, n)
-	for i := range pos {
-		pos[i] = make([]int, m+1)
+	var n, k, ans int
+	Fscan(in, &n, &k)
+	a := make([]int, n)
+	index := make([][]int, k)
+	for i := range index {
+		index[i] = make([]int, n+1)
 		for j := range a {
 			Fscan(in, &a[j])
-			pos[i][a[j]] = j
+			index[i][a[j]] = j
 		}
 	}
 
-	dp := make([]int, m) // 最长路
-	for i, v := range a {
-	o:
-		for j, w := range a[:i] {
-			for _, p := range pos {
-				if p[w] > p[v] { // 把其中一行当作（1-n），其余行映射一下
-					continue o
+	f := make([]int, n)
+	for i, x := range a { // 以最后一个排列 a 为基准
+	next:
+		for j, y := range a[:i] { // 枚举在 x 左边的数 y
+			for _, idx := range index {
+				if idx[y] > idx[x] { // 对于其余排列，y 的位置必须在 x 的左边
+					continue next
 				}
 			}
-			dp[i] = max(dp[i], dp[j])
+			f[i] = max(f[i], f[j])
 		}
-		dp[i]++
-		ans = max(ans, dp[i])
+		f[i]++
+		ans = max(ans, f[i])
 	}
 	Fprint(out, ans)
 }
