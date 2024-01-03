@@ -41,6 +41,7 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 最多交换 k 次相邻字母后，得到的最小字典序
 - LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 整除对统计 https://codeforces.com/problemset/problem/301/D
+https://codeforces.com/contest/1915/problem/F
 区间统计技巧 https://codeforces.com/problemset/problem/369/E
 区间包含计数 https://codeforces.com/problemset/problem/652/D
 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
@@ -48,6 +49,7 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
+https://codeforces.com/problemset/problem/1334/F 2500
 LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  看着像三维偏序 https://codeforces.com/problemset/problem/12/D 2400
@@ -84,6 +86,7 @@ func (f fenwick) update(i, val int) {
 // 1<=i<=n
 func (f fenwick) pre(i int) int {
 	res := fenwickInitVal
+	//i = min(i, len(f)-1)
 	for ; i > 0; i &= i - 1 {
 		res = f.op(res, f[i])
 	}
@@ -322,6 +325,16 @@ func _(n int) {
 		}
 	}
 
+	// a 的下标从 1 开始
+	initFrom := func(a []int) {
+		for i := 1; i < len(a); i++ {
+			if j := i + i&-i; j < len(a) {
+				a[j] += a[i]
+			}
+		}
+		tree = a
+	}
+
 	// 另外一种写法（效率和算两次一样）
 	// https://www.luogu.com.cn/blog/countercurrent-time/qian-tan-shu-zhuang-shuo-zu-you-hua
 	query = func(l, r int) (s int) {
@@ -432,7 +445,7 @@ func _(n int) {
 		return
 	}
 
-	_ = []interface{}{add, sum, query, addRange, kth, mex, init, cntInversions, minSwap}
+	_ = []interface{}{add, sum, query, addRange, kth, mex, init, initFrom, cntInversions, minSwap}
 }
 
 // 给一个数组 a 和一些询问 qs，对每个询问计算 mex(a[l..r])

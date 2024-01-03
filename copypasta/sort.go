@@ -20,10 +20,16 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
 - [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
 - [704. 二分查找](https://leetcode.cn/problems/binary-search/)
+- [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) *应用
+- [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) *应用
+- [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
+- [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
+- [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
+- [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案·原理
@@ -47,10 +53,14 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
+- [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
+- [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
+https://codeforces.com/contest/1701/problem/C 1400
 https://codeforces.com/contest/670/problem/D2 1500
-https://codeforces.com/problemset/problem/1118/D2
-DP https://codeforces.com/contest/883/problem/I
-https://codeforces.com/contest/1843/problem/E
+https://codeforces.com/problemset/problem/1610/C 1600
+https://codeforces.com/contest/1843/problem/E 1600
+https://codeforces.com/problemset/problem/1118/D2 1700
+DP https://codeforces.com/contest/883/problem/I 1900
 
 #### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
@@ -64,14 +74,17 @@ https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 
 #### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
+   同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
-- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-http://codeforces.com/problemset/problem/460/C
+- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
+http://codeforces.com/problemset/problem/460/C 1700
+https://codeforces.com/problemset/problem/1550/E 2500
 
 #### 第 K 小/大（部分题目也可以用堆解决）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
+- [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
 - [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
 - [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
@@ -441,6 +454,7 @@ func sortCollections() {
 	// 见 https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
 
 	// 实数二分
+	// LC2137 https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/
 	// 最大化平均值 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	// 0-1 分数规划见后面
 	binarySearchF := func(l, r float64, f func(x float64) bool) float64 {

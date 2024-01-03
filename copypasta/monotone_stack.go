@@ -28,24 +28,24 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 #### 单调栈
 
 - [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)（单调栈模板题）
-- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/)
-- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)
-- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)
+- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/) 1212
 - [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)
 - [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
-- [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/)
-- [456. 132 模式](https://leetcode.cn/problems/132-pattern/)
-- [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)
-- [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/)
-- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/)
+- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/) 1571
+- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) 1709
+- [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
+- [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
+- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
     - https://codeforces.com/problemset/problem/1313/C2
+- [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
+- [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/) 2482
 - [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
 
 #### 矩形系列
 
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
 - [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
-- [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/)
+- [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
 
 #### 字典序最小
 
@@ -61,7 +61,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 - [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/) 1976
   https://atcoder.jp/contests/agc057/tasks/agc057_b
-- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) O(n) 做法难度大约 2000
+- [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) $\mathcal{O}(n)$ 做法难度大约 2000
   https://codeforces.com/contest/817/problem/D
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/) 2051
 - [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/) 2397
@@ -69,27 +69,15 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
 另见 common.go
 
-模板题
-https://www.luogu.com.cn/problem/P5788
-https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
-
-NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
-转换 https://codeforces.com/problemset/problem/280/B
-转换 LC2289 https://leetcode.cn/problems/steps-to-make-array-non-decreasing/
-max >= sum https://codeforces.com/problemset/problem/1691/D
-LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
-你从单调栈学到了什么思想？LC1944 https://leetcode.cn/problems/number-of-visible-people-in-a-queue/
-下下个最大元素 LC2454 https://leetcode.cn/problems/next-greater-element-iv/
-- 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
-max(最小值*子数组和) LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
-- 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
-
-与 DP 结合
+#### 单调栈优化 DP
+LC1335 按照最大值分类讨论 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
+LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
+[2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/)
 https://codeforces.com/problemset/problem/5/E
 https://codeforces.com/problemset/problem/1407/D
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C
-按照最大值分类讨论 LC1335 https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/
-LC2355 https://leetcode.cn/problems/maximum-number-of-books-you-can-take/
+https://codeforces.com/problemset/problem/1913/D
+- 原题 https://tlx.toki.id/problems/ksn-2021/2A
 
 其他
 LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
@@ -107,6 +95,19 @@ LC2736 https://leetcode.cn/problems/maximum-sum-queries/
 后缀数组+不同矩形对应方案数之和 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 与 bitOpTrickCnt 结合（见 bits.go）https://codeforces.com/problemset/problem/875/D
 已知部分 right 还原全部 right；已知 right 还原 a https://codeforces.com/problemset/problem/1158/C
+
+https://www.luogu.com.cn/problem/P5788
+https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
+NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
+转换 https://codeforces.com/problemset/problem/280/B
+转换 LC2289 https://leetcode.cn/problems/steps-to-make-array-non-decreasing/
+max >= sum https://codeforces.com/problemset/problem/1691/D
+LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
+你从单调栈学到了什么思想？LC1944 https://leetcode.cn/problems/number-of-visible-people-in-a-queue/
+下下个最大元素 LC2454 https://leetcode.cn/problems/next-greater-element-iv/
+- 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
+max(最小值*子数组和) LC1856 https://leetcode.cn/problems/maximum-subarray-min-product/
+- 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
 */
 func monotoneStack(a []int) ([]int, []int) {
 	const mod int = 1e9 + 7

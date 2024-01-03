@@ -34,6 +34,7 @@ A modulo multiplication method that is 2x faster than compiler implementation ht
 【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
 https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
 模板 https://blog.orzsiyuan.com/archives/Polynomial-Template/
+jiangly 模板 https://atcoder.jp/contests/arc163/submissions/45737810
 https://blog.csdn.net/weixin_43973966/article/details/88996932
 https://cp-algorithms.com/algebra/polynomial.html
 http://blog.miskcoo.com/2015/05/polynomial-inverse
@@ -61,7 +62,7 @@ https://atcoder.jp/contests/abc267/tasks/abc267_h
 https://en.wikipedia.org/wiki/Generating_function
 
 普通生成函数 OGF
-指数生成函数 EGF
+指数生成函数 EGF 入门题 https://codeforces.com/problemset/problem/891/E 3000
 狄利克雷生成函数 DGFs
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shuo-za-tan
  【推荐】数数入门 https://www.luogu.com.cn/blog/CJL/conut-ru-men

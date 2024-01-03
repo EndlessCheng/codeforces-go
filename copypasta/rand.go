@@ -23,6 +23,7 @@ https://codeforces.com/problemset/problem/1523/D
 Kick Start 2021 Round C Binary Operator https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ec290
 https://codeforces.com/problemset/problem/1689/D https://www.luogu.com.cn/blog/wangxiwen/solution-cf1689d
 https://atcoder.jp/contests/abc272/tasks/abc272_g
+todo https://codeforces.com/problemset/problem/364/D 2900
 
 随机映射
 https://codeforces.com/problemset/problem/1746/F 2800

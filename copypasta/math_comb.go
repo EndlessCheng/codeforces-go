@@ -21,6 +21,7 @@ https://codeforces.com/problemset/problem/618/F
 - 用 DP 推导，然后尝试优化
 - 假设法
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
+https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
@@ -39,9 +40,12 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://atcoder.jp/contests/abc290/tasks/abc290_f
-LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/
-LC2514 https://leetcode.cn/problems/count-anagrams/
-LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/
+LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
+LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
+LC1916 https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/ 2486
+LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/
+LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
+todo https://www.luogu.com.cn/problem/P6017
 
 差分、前缀和与组合数
 https://codeforces.com/contest/1832/problem/E
@@ -96,7 +100,8 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 todo 可重集排列组合 https://oi-wiki.org/math/combination/
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10
-错排 https://oeis.org/A000166 subfactorial numbers  a[n]=(n-1)*(a[n-1]+a[n-2])  https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
+错排 https://oeis.org/A000166 subfactorial numbers  a[0]=1, a[1]=0, a[n]=(n-1)*(a[n-1]+a[n-2])  
+https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 	https://oeis.org/A082491 n! * A000166(n)   a(n+2) = (n+2)*(n+1)*(a(n+1)+(n+1)*a(n))
 	https://oeis.org/A000255 错排的比较对象的范围是 [1,n+1]  a(n) = n*a(n-1) + (n-1)*a(n-2), a(0) = a(1) = 1
 	https://oeis.org/A000153 错排的比较对象的范围是 [1,n+2]  a(n) = n*a(n-1) + (n-2)*a(n-2), a(0) = 0, a(1) = 1
@@ -104,8 +109,13 @@ todo https://codeforces.com/problemset/problem/451/E
 	https://oeis.org/A001909 错排的比较对象的范围是 [1,n+4]  a(n) = n*a(n-1) + (n-4)*a(n-2), a(2) = 0, a(3) = 1
 		https://atcoder.jp/contests/abc172/tasks/abc172_e
     https://oeis.org/A127548 和两个排列都不同的错排数（这两个排列也互为错排）
+https://www.luogu.com.cn/problem/P4071
 圆排列 https://zh.wikipedia.org/wiki/%E5%9C%86%E6%8E%92%E5%88%97
     Q(n,n) = (n-1)!
+
+Gaussian binomial coefficient
+https://en.wikipedia.org/wiki/Gaussian_binomial_coefficient
+https://codeforces.com/contest/1916/problem/H2
 
 https://oeis.org/A000522 Total number of arrangements of a set with n elements: a(n) = Sum_{k=0..n} n!/k!    Total number of permutations of all subsets of an n-set
                           a(n) = n*a(n-1) + 1, a(0) = 1
@@ -345,6 +355,8 @@ func (c *comb) c(n, k int) int {
 // 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
 // 用因子容斥 https://codeforces.com/problemset/problem/900/D
 // todo https://www.luogu.com.cn/problem/P1450
+// 辅助思考 DP https://atcoder.jp/contests/arc115/tasks/arc115_e 
+//            https://codeforces.com/contest/1591/problem/F
 func solveInclusionExclusion(a []int) (ans int) {
 	for sub := uint(0); sub < 1<<len(a); sub++ {
 		res := 0
@@ -363,3 +375,9 @@ func solveInclusionExclusion(a []int) (ans int) {
 	ans = (ans%mod + mod) % mod
 	return
 }
+
+/* min-max 反演
+https://www.luogu.com.cn/blog/meizhuhe/min-max-fan-yan-xue-xi-bi-ji
+https://www.zhihu.com/question/630790586/answer/3297271864
+https://uoj.ac/problem/449
+*/

@@ -6,7 +6,7 @@ import "math/bits"
 st[i][j] 对应的区间是 [i, i+2^j)
 https://oi-wiki.org/ds/sparse-table/
 https://codeforces.com/blog/entry/66643
-Tarjan RMQ https://codeforces.com/blog/entry/48994
+扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
 一些 RMQ 的性能对比 https://codeforces.com/blog/entry/78931
 一个 RMQ 问题的快速算法，以及区间众数 https://zhuanlan.zhihu.com/p/79423299
 将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
@@ -18,7 +18,9 @@ https://codeforces.com/contest/1709/problem/D
 二分/三指针 https://codeforces.com/problemset/problem/689/D
 变长/种类 https://www.jisuanke.com/contest/11346/challenges
 GCD https://codeforces.com/contest/1548/problem/B
-题目推荐 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
+todo https://ac.nowcoder.com/acm/problem/240870 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=53616019
+
+https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 */
 
 type ST [][]int

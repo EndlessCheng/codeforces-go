@@ -12,7 +12,7 @@ func (q Deque) Empty() bool {
 	return len(q.l) == 0 && len(q.r) == 0
 }
 
-func (q Deque) Size() int {
+func (q Deque) Len() int {
 	return len(q.l) + len(q.r)
 }
 

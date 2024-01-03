@@ -4,6 +4,7 @@ package copypasta
 // 支持区间翻转比特、单比特加减等
 // 某些情况下可作为 Bitset 的代替品
 // LC2569 https://leetcode.cn/problems/handling-sum-queries-after-update/
+// https://www.luogu.com.cn/problem/P2572
 // https://codeforces.com/contest/1705/problem/E
 // https://codeforces.com/problemset/problem/877/E
 type seg01 []struct {
@@ -18,13 +19,8 @@ type seg01 []struct {
 	// 还可以维护：
 	// 连续 0 的最长长度（前缀、后缀、区间）
 	// 连续 1 的最长长度（前缀、后缀、区间）
-}
-
-// 见 buildWithBinary
-func newSeg01(a string) seg01 {
-	t := make(seg01, 4*len(a))
-	t.buildWithBinary(a, 1, 1, len(a))
-	return t
+	// 见 https://www.luogu.com.cn/problem/P2572
+	// 代码 https://www.luogu.com.cn/record/138274036
 }
 
 func (t seg01) maintain(o int) {
@@ -39,14 +35,18 @@ func (t seg01) maintain(o int) {
 	t[o].ones = lo.ones + ro.ones
 }
 
-func (t seg01) build(o, l, r int) {
-	t[o].l, t[o].r, t[o].state = l, r, -1 // 初始全为 0，故设置为 -1
-	if l == r {
-		return
-	}
-	m := (l + r) >> 1
-	t.build(o<<1, l, m)
-	t.build(o<<1|1, m+1, r)
+func (t seg01) doFlip(O int) {
+	o := &t[O]
+	o.state = -o.state
+	o.ones = o.r - o.l + 1 - o.ones
+	o.flip = !o.flip
+}
+
+// 见 buildWithBinary
+func newSeg01(a string) seg01 {
+	t := make(seg01, 4*len(a))
+	t.buildWithBinary(a, 1, 1, len(a))
+	return t
 }
 
 // a 从左到右是二进制从低到高
@@ -68,11 +68,14 @@ func (t seg01) buildWithBinary(a string, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg01) doFlip(O int) {
-	o := &t[O]
-	o.state = -o.state
-	o.ones = o.r - o.l + 1 - o.ones
-	o.flip = !o.flip
+func (t seg01) build(o, l, r int) {
+	t[o].l, t[o].r, t[o].state = l, r, -1 // 初始全为 0，故设置为 -1
+	if l == r {
+		return
+	}
+	m := (l + r) >> 1
+	t.build(o<<1, l, m)
+	t.build(o<<1|1, m+1, r)
 }
 
 func (t seg01) spread(o int) {

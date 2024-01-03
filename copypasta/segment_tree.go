@@ -21,6 +21,7 @@ import "math/bits"
 // 数组两倍空间线段树 https://www.cnblogs.com/chy-2003/p/11815396.html
 // 线段树诡异题目收录 https://zhuanlan.zhihu.com/p/124181375
 // Limitの线段树题单 https://www.luogu.com.cn/training/1124
+// todo [题单] 线段树的进阶用法 https://www.luogu.com.cn/training/221#problems
 
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
@@ -879,6 +880,7 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 //  https://zhuanlan.zhihu.com/p/64946571
 //  https://www.luogu.com.cn/blog/fzber0103/Li-Chao-Tree
 //  模板题 https://www.luogu.com.cn/problem/P4097
+//  https://codeforces.com/contest/1303/problem/G
 
 //
 

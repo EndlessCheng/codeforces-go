@@ -25,7 +25,8 @@ https://oi-wiki.org/string/ac-automaton/
 https://ac.nowcoder.com/study/live/738/4/1
 https://zhuanlan.zhihu.com/p/533603249
 https://www.cnblogs.com/sclbgw7/p/9260756.html
-todo 题单 https://www.luogu.com.cn/training/9372#information
+todo 题单 https://www.luogu.com.cn/training/9372
+         https://www.luogu.com.cn/training/53971
          https://www.cnblogs.com/alex-wei/p/Common_String_Theory_Theory_automaton_related.html
          https://ac.nowcoder.com/acm/contest/29086
 
@@ -61,16 +62,26 @@ todo LC1408 模式串之间的包含关系 https://leetcode.cn/problems/string-m
 - 注：https://codeforces.com/blog/entry/68292?#comment-526002
 todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
  NOI11 阿狸的打字机 https://www.luogu.com.cn/problem/P2414
+ https://www.luogu.com.cn/problem/P3121
+ https://www.luogu.com.cn/problem/P3041
+ https://www.luogu.com.cn/problem/P4052
+ https://www.luogu.com.cn/problem/P3311
+ https://www.luogu.com.cn/problem/P2292
+ https://www.luogu.com.cn/problem/P5840
  https://www.acwing.com/solution/content/25473/
  https://www.acwing.com/solution/content/54646/
- https://codeforces.com/problemset/problem/163/E
- https://codeforces.com/problemset/problem/1437/G
- https://codeforces.com/problemset/problem/963/D
+ https://codeforces.com/problemset/problem/710/F 2400
+ https://codeforces.com/problemset/problem/1202/E 2400
+ https://codeforces.com/problemset/problem/696/D 2500
+ https://codeforces.com/problemset/problem/963/D 2500
+ https://codeforces.com/problemset/problem/1437/G 2600
+ https://codeforces.com/problemset/problem/1207/G 2700
+ https://codeforces.com/problemset/problem/163/E 2800
+ https://codeforces.com/problemset/problem/1801/G 3400
+ https://codeforces.com/gym/102511/problem/G ICPC Final 2019 G
  LC30 串联所有单词的子串 https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/
  ? LC616 给字符串添加加粗标签 https://leetcode-cn.com/problems/add-bold-tag-in-string/
  LC2781 最长合法子字符串的长度 https://leetcode.cn/problems/length-of-the-longest-valid-substring/solution/aczi-dong-ji-onjie-fa-wu-shi-chang-du-10-47dy/
- https://codeforces.com/contest/1801/problem/G 3400
- https://codeforces.com/gym/102511/problem/G
 */
 
 // 如果 MLE 请把指针替换成 uint32，代码见 https://codeforces.com/contest/163/submission/233981400

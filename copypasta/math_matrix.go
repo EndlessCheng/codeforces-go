@@ -355,6 +355,8 @@ func (a matrix) determinant(mod int) int {
 
 // 求矩阵的特征多项式
 // todo https://www.cnblogs.com/ywwyww/p/8522541.html
+//  https://www.luogu.com.cn/problem/P7776
+//  Berlekamp–Massey 算法 https://www.luogu.com.cn/problem/P5487
 
 // 线性基（异或空间的极大线性无关子集）
 // https://oi-wiki.org/math/basis/

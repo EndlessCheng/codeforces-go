@@ -8,9 +8,25 @@ import (
 )
 
 /*
-
 从集合论到位运算，常见位运算技巧分类总结！
 https://leetcode.cn/circle/discuss/CaOJ45/
+
+《灵茶八题》完整题目列表 & 题解
+https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
++ 表示元素和
+^ 表示异或和
+所有子数组的 + 的 +
+所有子数组的 ^ 的 ^
+所有子数组的 ^ 的 +
+所有子数组的 + 的 ^
+所有子序列的 + 的 +
+所有子序列的 ^ 的 ^
+所有子序列的 ^ 的 +
+所有子序列的 + 的 ^
+所有子数组的 ^2 的 + 的 + https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
+- 这里 ^2 表示任意两个数的异或
+所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
+https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
 
 有关二进制枚举、枚举子集的子集、枚举大小固定集合等写法，见 search.go
 
@@ -21,6 +37,10 @@ https://leetcode.cn/circle/discuss/CaOJ45/
 
 基础题
 https://leetcode.cn/problems/find-the-k-or-of-an-array/
+
+位运算与 ASCII
+https://codeforces.com/contest/691/problem/B
+https://codeforces.com/contest/1907/problem/B
 
 XOR 相关题目
 https://leetcode.cn/circle/discuss/sqPZwg/
@@ -36,18 +56,21 @@ https://leetcode.cn/circle/discuss/sqPZwg/
 - [2317. 操作后的最大异或和](https://leetcode.cn/problems/maximum-xor-after-operations/) 1679
 - [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
 - [2939. 最大异或乘积](https://leetcode.cn/problems/maximum-xor-product/)
+https://codeforces.com/problemset/problem/1895/D
+https://codeforces.com/problemset/problem/1790/E
 
 常用技巧：拆位（部分题目排序很有用）
 LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
+https://codeforces.com/problemset/problem/1895/D 1900
 https://atcoder.jp/contests/abc281/tasks/abc281_f
 https://atcoder.jp/contests/arc127/tasks/arc127_d
 考虑贡献 https://codeforces.com/problemset/problem/1362/C 1400
 
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
-https://codeforces.com/problemset/problem/1322/B 2100
+所有 a[i]+a[j] 的异或和 https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
 
 拆位再合并相同位
@@ -71,15 +94,21 @@ TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.g
 ** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
 
 若干恒等式
-a|b = (a^b) + (a&b)    a^b = (a|b) - (a&b)
+a|b = (a^b) + (a&b)    
+a&b = (a|b) - (a^b)
+a^b = (a|b) - (a&b)
 a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
     = (a|b)*2 - (a^b)
+(a^b) & (a&b) = 0 恒成立
 相关题目
 https://codeforces.com/problemset/problem/76/D
 https://codeforces.com/problemset/problem/1325/D
 https://codeforces.com/problemset/problem/1368/D
+https://codeforces.com/problemset/problem/1790/E
 https://atcoder.jp/contests/abc050/tasks/arc066_b
+
+a|b = (^a)&b + a
 
 + 与 ^ https://codeforces.com/problemset/problem/1732/C2
 
@@ -682,7 +711,7 @@ func _(x int) {
 				opRes[j].v = op(p.v, v)
 			}
 			opRes = append(opRes, result{v, i, i + 1})
-			// 去重
+			// 去重（合并 v 相同的 result）
 			j := 0
 			for _, q := range opRes[1:] {
 				if opRes[j].v != q.v {

@@ -95,7 +95,7 @@ func add(a, b int) int {
 	return a
 }
 
-func sub(a, b int) int {
+func sub_(a, b int) int {
 	a -= b
 	if a < 0 {
 		a += _mod

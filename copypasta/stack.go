@@ -12,8 +12,9 @@ LC2751 https://leetcode.cn/problems/robot-collisions/
 栈的应用 https://codeforces.com/problemset/problem/1092/D1
         https://codeforces.com/problemset/problem/1092/D2
 
-括号匹配
+括号匹配/有效括号
 下标范围有限制 https://codeforces.com/problemset/problem/543/D
+https://leetcode.cn/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/
 
 对顶栈
 LC2296 https://leetcode.cn/problems/design-a-text-editor/

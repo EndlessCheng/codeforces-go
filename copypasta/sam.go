@@ -8,7 +8,7 @@ import (
 
 /* 后缀自动机 Suffix automaton (SAM)
 
-如果我们既能知道前缀信息，又能知道后缀信息，就可以做字符串匹配
+如果我们既知道前缀信息，又知道后缀信息，就可以做字符串匹配
 
 将字符串的所有子串压缩后的结果
 【推荐】https://oi-wiki.org/string/sam/ 证明了 SAM 的状态数不会超过 2n-1 (n>=2)，最坏情况下为 abbb...bbb
@@ -33,7 +33,8 @@ https://codeforces.com/blog/entry/20861
 后缀自动机六·重复旋律9 http://hihocoder.com/problemset/problem/1466
 https://ac.nowcoder.com/acm/contest/37092#question
 
-模板题：子串出现次数 https://www.luogu.com.cn/problem/P3804
+todo 题单 https://www.luogu.com.cn/training/3202
+模板题：子串出现次数*子串长度的最大值 https://www.luogu.com.cn/problem/P3804
 多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode-cn.com/problems/longest-common-subpath/
 第 k 小子串（也可以用后缀数组做，见题解区）SPOJ SUBLEX https://www.luogu.com.cn/problem/SP7258 TJOI15 弦论 https://www.luogu.com.cn/problem/P3975
 动态本质不同子串个数（也可以用后缀数组做，见题解区）https://www.luogu.com.cn/problem/P4070
@@ -44,7 +45,7 @@ todo LC2730 变形：相邻字符改成相邻子串（连续重复子串） http
 */
 
 // 如果超时/超内存，改用预分配内存池 + func init() { debug.SetGCPercent(-1) } 的写法（如下）
-// 如果仍然超内存且环境为 64 位，则需要把指针改成 int32 下标的写法 https://www.luogu.com.cn/record/76046834 https://www.luogu.com.cn/record/76047438
+// 如果仍然超内存且环境为 64 位，则需要把指针改成 uint32 下标的写法 https://www.luogu.com.cn/record/76046834 https://www.luogu.com.cn/record/76047438
 //const mx int = 1e7
 //var samNodes [2 * mx]*node
 
@@ -80,25 +81,25 @@ type node struct { // 也叫 state
 type sam struct {
 	nodes []*node
 	last  *node
+
+	originS string // 可选
 }
 
 // 构建字符串 s 的后缀自动机
 // 基础用法见下面的 index
 func newSam(s string) *sam {
 	m := &sam{}
+	m.originS = s
 	m.last = m.newNode(nil, next{}, 0, -1)
 	m.buildSam(s)
+	m.buildRev()
 	return m
 }
 
-func (m *sam) newNode(fa *node, _ch next, length, i int) *node {
+func (m *sam) newNode(fa *node, ch next, length, i int) *node {
 	// 如果 next 是 map 则需要 clone
-	//ch := make(next, len(_ch))
-	//for c, o := range _ch {
-	//	ch[c] = o
-	//}
-	//_ch = ch
-	o := &node{fa: fa, ch: _ch, len: length, i: i}
+	// ch = maps.Clone(ch)
+	o := &node{fa: fa, ch: ch, len: length, i: i}
 	m.nodes = append(m.nodes, o)
 	return o
 }
@@ -143,12 +144,25 @@ func (m *sam) buildRev() {
 	}
 }
 
-func (m *sam) dfs(v *node) {
-	for _, w := range v.rev {
-		m.dfs(w)
-		// ...
-
+// 返回一个最长的子串，其长度乘出现次数最大
+// 如果有多个长度乘出现次数相同的子串，返回其中字典序最小的
+func (m *sam) example() (ans string) {
+	mx := -1
+	var dfs func(*node) int
+	dfs = func(v *node) int {
+		for _, w := range v.rev {
+			v.cnt += dfs(w)
+		}
+		res := v.len * v.cnt
+		sub := m.originS[v.i+1-v.len : v.i+1]   // 对应的子串
+		if res > mx || res == mx && sub < ans { // 字符串比较大小可以用后缀数组优化
+			mx = res
+			ans = sub
+		}
+		return v.cnt
 	}
+	dfs(m.nodes[0])
+	return
 }
 
 // 等价于 strings.Index(s, substr)
