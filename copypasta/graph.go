@@ -1261,6 +1261,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 转换 LC2577 https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/
 // 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
 // 转换 https://codeforces.com/contest/1842/problem/D
+// 双关键字 https://codeforces.com/contest/1915/problem/G
 // 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
 // 基于 max LC1631 https://leetcode.cn/problems/path-with-minimum-effort/ 1948
@@ -1587,7 +1588,7 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dist []int) { // 有�
 }
 
 // 任意两点最短路 Floyd-Warshall  O(n^3)  本质是求 Min-plus matrix multiplication
-// 带你发明 Floyd 算法！https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/
+// 【图解】带你发明 Floyd 算法！https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/
 // https://en.wikipedia.org/wiki/Floyd%E2%80%93Warshall_algorithm
 // https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
 // https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
@@ -1603,6 +1604,7 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dist []int) { // 有�
 // 动态加点 https://codeforces.com/problemset/problem/295/B
 // 动态加边 LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/ 1811
 // - https://codeforces.com/problemset/problem/25/C
+// DP https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/
 // todo https://atcoder.jp/contests/abc243/tasks/abc243_e
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
@@ -1613,12 +1615,13 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	// 见算法导论第三版练习 25.2-4（网络上有习题解答）
 
 	// 初始化，保证 g[i][i] = 0
+	const inf = math.MaxInt / 2
 	g := make([][]int, n)
 	for i := range g {
 		g[i] = make([]int, n)
 		for j := range g[i] {
 			if j != i {
-				g[i][j] = math.MaxInt / 2
+				g[i][j] = inf
 			}
 		}
 	}
@@ -1629,6 +1632,9 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	}
 	for k := range g {
 		for i := range g {
+			if g[i][k] == inf {
+				continue
+			}
 			for j := range g {
 				g[i][j] = min(g[i][j], g[i][k]+g[k][j])
 			}
@@ -1960,13 +1966,14 @@ func (*graph) mstKruskal(n int, edges [][]int) int {
 // 建模+打印方案 https://codeforces.com/problemset/problem/1245/D
 // https://codeforces.com/contest/1508/problem/C
 // todo https://codeforces.com/problemset/problem/959/E
-func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
+func (*graph) mstPrim(dis [][]int, root int) (mstSum int, edges [][2]int) {
 	edges = make([][2]int, 0, len(dis)-1)
 
 	// 注意：dis 需要保证 dis[i][i] = inf，从而避免自环的影响
 
 	const inf int = 2e9
-	minD := make([]struct{ v, d int }, len(dis)) // minD[i].d 表示当前 MST 到点 i 的最小距离，对应的边为 minD[i].v-i
+	// minD[i].d 表示当前 MST 到点 i 的最小距离，对应的边为 minD[i].v-i
+	minD := make([]struct{ v, d int }, len(dis))
 	for i := range minD {
 		minD[i].d = inf
 	}
@@ -1986,19 +1993,89 @@ func (*graph) mstPrim(dis [][]int, root int) (mst int, edges [][2]int) {
 
 		// 加入 MST
 		inMST[v] = true
-		mst += minD[v].d
+		mstSum += minD[v].d
 		if v != root {
 			edges = append(edges, [2]int{minD[v].v, v})
 		}
 
 		// 更新 minD
 		for w, d := range dis[v] {
-			if !inMST[w] && d < minD[w].d { // 注：若 mstPrim 结束后 minD 无其他用途，!inMST[w] 的判断可以去掉
+			// 注：若 mstPrim 结束后 minD 无其他用途，!inMST[w] 的判断可以去掉
+			if !inMST[w] && d < minD[w].d {
 				minD[w].d = d
 				minD[w].v = v
 			}
 		}
 	}
+}
+
+// 处理多个连通块的 Prim 算法
+// 返回每个连通块的 MST 边权和 mstSum，以及每个 MST 的边 edges
+// 注意：dis 需要保证 dis[i][i] = inf，从而避免自环的影响
+func (*graph) mstPrimMultiComp(dis [][]int) (totalMST int, mstSum []int, edges [][][2]int) {
+	const inf int = 2e9
+
+	nodes := []int{}
+	vis := make([]bool, len(dis))
+	var dfs func(int)
+	dfs = func(v int) {
+		vis[v] = true
+		nodes = append(nodes, v)
+		for w, d := range dis[v] {
+			if d < inf && !vis[w] {
+				dfs(w)
+			}
+		}
+	}
+
+	// minD[i].d 表示当前 MST 到点 i 的最小距离，对应的边为 minD[i].v-i
+	minD := make([]struct{ v, d int }, len(dis))
+	for i := range minD {
+		minD[i].d = inf
+	}
+	inMST := make([]bool, len(dis)) // 初始时所有点都不在 MST 中
+	for root, b := range vis {
+		if b {
+			continue
+		}
+		nodes = []int{}
+		dfs(root)
+
+		sum := 0
+		es := [][2]int{}
+		minD[root].d = 0
+		for {
+			// 根据切分定理，求不在当前 MST 的点到当前 MST 的最小距离，即 minD[v].d
+			v := -1
+			for _, w := range nodes {
+				if !inMST[w] && (v < 0 || minD[w].d < minD[v].d) {
+					v = w
+				}
+			}
+			if v < 0 { // 已求出 MST
+				break
+			}
+
+			// 加入 MST
+			inMST[v] = true
+			sum += minD[v].d
+			if v != root {
+				es = append(es, [2]int{minD[v].v, v})
+			}
+
+			// 更新 minD
+			for _, w := range nodes {
+				if !inMST[w] && dis[v][w] < minD[w].d {
+					minD[w].d = dis[v][w]
+					minD[w].v = v
+				}
+			}
+		}
+		totalMST += sum
+		mstSum = append(mstSum, sum)
+		edges = append(edges, es)
+	}
+	return
 }
 
 // Boruvka's algorithm
@@ -2583,7 +2660,7 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 	return components
 }
 
-// 二分图判定+染色
+// 二分图判定+染色      二分图染色
 // 注：二分图也叫偶图
 // https://en.wikipedia.org/wiki/Bipartite_graph
 // https://oi-wiki.org/graph/bi-graph/#_3
@@ -2600,20 +2677,23 @@ func (*graph) inverseGraphComponents(n int, g [][]int) [][]int {
 // 树至多加多少条边仍然是二分图 https://codeforces.com/problemset/problem/862/B
 // 与背包结合（NEERC01，紫书例题 9-19，UVa 1627）https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4502
 // 与分组背包结合 https://codeforces.com/problemset/problem/1354/E
+// 转换 https://codeforces.com/problemset/problem/547/D 2600
+// todo 转换 https://codeforces.com/problemset/problem/741/C 2600
 func (*graph) isBipartite(g [][]int) bool {
 	colors := make([]int8, len(g)) // 0 表示未访问该节点
 	var f func(int, int8) bool
 	f = func(v int, c int8) bool {
 		colors[v] = c
 		for _, w := range g[v] {
-			// 如果要分组，用 3^c，便于填入下标；如果要根据染色来 +/-，用 -c
+			// 如果要分组，传入 3^c，后续可以当成下标
+			// 如果要根据颜色来确定正负号，传入 -c
 			if colors[w] == c || colors[w] == 0 && !f(w, 3^c) {
 				return false
 			}
 		}
 		return true
 	}
-	//f(0, 1) // 只有一个 CC
+	// 可能有多个连通块
 	for i, c := range colors {
 		if c != 0 {
 			continue
@@ -3373,6 +3453,7 @@ func (G *graph) solve2SAT(n int, edges [][]int) []bool {
 // https://codeforces.com/contest/1907/problem/G
 // 拆点 https://codeforces.com/problemset/problem/1200/F
 // https://codeforces.com/contest/1770/problem/D
+// 构造 建图 https://codeforces.com/problemset/problem/1270/G 2700
 // https://atcoder.jp/contests/abc266/tasks/abc266_f
 // 删除一条边使得直径最长 https://ac.nowcoder.com/acm/contest/9977/c
 // [IOI2008] 岛屿 https://www.luogu.com.cn/problem/P4381
@@ -4472,7 +4553,7 @@ func (*graph) maximalCliques(g []int) int {
 	// 一种求最大团的做法，适用于点数不超过 50 的图
 	// 传入的 g 为状压后的邻接矩阵
 	// 定义 f(s) 为 s 的所有子集中最大团的大小
-	// 则转移时要么不取 lb（low bit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
+	// 则转移时要么不取 lb（lowbit），要么取 lb 并去掉不与 lb 相邻的点（包括 lb）
 	// 将这一过程记忆化可大幅减少运行时间，理由如下：
 	// 由于每次都会去掉 lb，所以至多 k=len(g)/2 次递归后会进入右半部分没有 1 的状态
 	// 将这 k 次递归过程视作一棵二叉树，则其耗时为 O(2^k)
