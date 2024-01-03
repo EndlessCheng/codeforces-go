@@ -1,10 +1,10 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，记得关注哦~
+## 本题视频讲解
 
----
+见[【周赛 341】](https://www.bilibili.com/video/BV1ng4y1T7QA/) 第三题。
+
+## 方法一：考虑相邻字母
 
 下文将 $\textit{word}$ 简记为 $s$。
-
-# 方法一：考虑相邻字母
 
 对于两个相邻字符 $x$ 和 $y$（$x$ 在 $y$ 左侧），使 $s$ 有效的话需要插入
 
@@ -73,11 +73,11 @@ func addMinimum(s string) int {
 - 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
 - 空间复杂度：$O(1)$。仅用到若干额外变量。
 
-# 方法二：考虑 abc 的周期数
+## 方法二：考虑 abc 的个数
 
-计算出 $\text{`abc'}$ 的周期数 $t$，那么有效字符串的长度为 $3t$，需要插入的字符个数为 $3t-n$。
+假设答案由 $t$ 个 $\text{`abc'}$ 组成，那么需要插入的字符个数为 $3t-n$。
 
-对于两个相邻字符 $x$ 和 $y$（$x$ 在 $y$ 左侧），如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{`abc'}$ 周期内，否则一定不在。
+对于两个相邻字符 $x$ 和 $y$（$x$ 在 $y$ 左侧），如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{`abc'}$ 内，否则一定不在。
 
 所以 $t$ 就是 $x\ge y$ 的次数加一。
 
@@ -129,3 +129,7 @@ func addMinimum(s string) int {
 
 - 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
 - 空间复杂度：$O(1)$。仅用到若干额外变量。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
