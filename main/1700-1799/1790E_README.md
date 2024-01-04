@@ -16,14 +16,16 @@ $$
 a\operatorname{and} b = \dfrac{a\operatorname{xor} b}{2}
 $$
 
-如果 $a\operatorname{xor} b$ 是奇数，或者 $(a\operatorname{xor} b) \operatorname{and}\  (a\operatorname{and} b) \ne 0$，那么无解。后者是因为 $a\operatorname{xor} b$ 中的 $1$ 说明在这个比特位上必定一个是 $0$ 另一个是 $1$，$\operatorname{and}$ 结果必定是 $0$，所以 $a\operatorname{xor} b$ 和 $a\operatorname{and} b$ 在同一个比特位上不可能都是 $1$，所以 $(a\operatorname{xor} b) \operatorname{and}\  (a\operatorname{and} b) = 0$ 恒成立。
+如果 $a\operatorname{xor} b$ 是奇数，或者 $(a\operatorname{xor} b) \operatorname{and}\  (a\operatorname{and} b) \ne 0$，那么无解。后者是因为 $a\operatorname{xor} b$ 中的 $1$ 说明在这个比特位上必定一个是 $0$ 另一个是 $1$，$\operatorname{and}$ 结果必定是 $0$，所以 $a\operatorname{xor} b$ 和 $a\operatorname{and} b$ 在同一个比特位上不可能都是 $1$，所以 $(a\operatorname{xor} b) \operatorname{and}\  (a\operatorname{and} b) = 0$ 恒成立。从集合的角度上来说就是 $a\operatorname{xor} b$ 和 $a\operatorname{and} b$ **不相交**。
 
-否则解一定存在，例如下面是一组解：
+现在 $a\operatorname{and} b$ 和 $a\operatorname{xor} b$ 都知道了，可以构造出一组解了。
+
+由于 $a\operatorname{and} b$ 中的 $1$ 在 $a$ 和 $b$ 中都有，而 $a\operatorname{xor} b$ 中的 $1$ 要么在 $a$ 中，要么在 $b$ 中，不妨全部给 $a$，得
 
 $$
 \begin{cases}
-a = (a\operatorname{xor} b) \operatorname{or}\ (a\operatorname{and} b)\\
-b = a\operatorname{and} b
+a = (a\operatorname{xor} b) \operatorname{or}\ (a\operatorname{and} b) = (a\operatorname{xor} b) + (a\operatorname{and} b) = \dfrac{3(a\operatorname{xor} b)}{2}\\
+b = a\operatorname{and} b = \dfrac{a\operatorname{xor} b}{2}
 \end{cases}
 $$
 
