@@ -9,32 +9,27 @@ import (
 // https://space.bilibili.com/206214
 func cf990C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	n, s, ans := 0, "", 0
-	l := map[int]int{}
-	r := map[int]int{}
+	var n, ans int
+	var s string
+	cnt := map[int]int{}
 	for Fscan(in, &n); n > 0; n-- {
 		Fscan(in, &s)
-		cnt, mn := 0, 0
+		c, mn := 0, 0
 		for _, b := range s {
 			if b == '(' {
-				cnt++
+				c++
 			} else {
-				cnt--
-				mn = min(mn, cnt)
+				c--
+				mn = min(mn, c)
 			}
 		}
-		if cnt == mn {
-			if cnt == 0 {
-				ans++
+		if mn == 0 || mn == c {
+			if c == 0 {
+				ans += cnt[c]*2 + 1
+			} else {
+				ans += cnt[-c]
 			}
-			ans += l[-cnt]
-		}
-		if mn >= 0 {
-			ans += r[-cnt]
-			l[cnt]++
-		}
-		if cnt == mn {
-			r[cnt]++
+			cnt[c]++
 		}
 	}
 	Fprint(out, ans)
