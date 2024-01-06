@@ -1,7 +1,3 @@
-简洁写法（Python/Java/C++/Go/JS/Rust）
-
----
-
 遍历链表，在当前节点 $\textit{cur}$ 后面插入 $\textit{gcd}$ 节点，同时 $\textit{gcd}$ 节点指向 $\textit{cur}$ 的下一个节点。
 
 插入后，$\textit{cur}$ 更新为 $\textit{cur}.\textit{next}.\textit{next}$，也就是 $\textit{cur}$ 原来的下一个节点，开始下一轮循环。
