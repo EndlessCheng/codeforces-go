@@ -207,11 +207,15 @@ func maxPartitionsAfterOperations(s string, k int) int {
 
 我们可以从 $i$ 开始向左扩展，每遇到一个字符，$\textit{mask}$ 集合要么不变，要么增加一个字符。
 
-所以到 $i$ 为止的 $\textit{mask}$ 至多有 $|\Sigma|$ 个不同的值。这里 $|\Sigma|=26$。
+- 如果没有修改，那么到 $i$ 为止的 $\textit{mask}$ 至多有 $|\Sigma|$ 个不同的值。这里 $|\Sigma|=26$。
+- 如果中途有修改，那么从修改位置向左可以分出 $\mathcal{O}(|\Sigma|^2)$ 个不同的值。
 
-所以只有 $\mathcal{O}(n|\Sigma|)$ 个状态。
+所以只有 $\mathcal{O}(n|\Sigma|^2)$ 个状态。
 
-- 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n|\Sigma|)$，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，所以动态规划的时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
-- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
+- 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。分类讨论：
+   - 如果 $\textit{mask}$ 之前没有修改，这样的状态有 $\mathcal{O}(n|\Sigma|)$ 个，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，即枚举修改成什么字母的时间。
+   - 如果 $\textit{mask}$ 之前有修改，这样的状态有 $\mathcal{O}(n|\Sigma|^2)$ 个，单个状态的计算时间为 $\mathcal{O}(1)$，因为我们只能不修改。
+   - 所以时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|^2)$。
 
 周赛总结更新啦！请看 [2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
