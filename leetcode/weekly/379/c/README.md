@@ -277,6 +277,96 @@ func maximumSetSize(nums1, nums2 []int) int {
 }
 ```
 
+还有一种理解方式：
+
+- 从 $\textit{nums}_1$ 中选择不超过 $n/2$ 个元素，并让这些元素尽量与 $\textit{nums}_2$ 没有交集。这可以选 $c_1=\min(n_1, n/2)$ 个。
+- 从 $\textit{nums}_2$ 中选择不超过 $n/2$ 个元素，并让这些元素尽量与 $\textit{nums}_1$ 没有交集。这可以选 $c_2=\min(n_2, n/2)$ 个。
+- 如果这两部分没有交集，那么答案就是 $c_1+c_2$。
+- 如果这两部分有交集，那么答案就是 $\textit{nums}_1$ 和 $\textit{nums}_2$ 的**并集**的大小。
+- 这两种情况取最小值。
+
+```py [sol-Python3]
+class Solution:
+    def maximumSetSize(self, nums1: List[int], nums2: List[int]) -> int:
+        set1 = set(nums1)
+        set2 = set(nums2)
+        n = len(nums1)
+        c1 = min(len(set1), n // 2)
+        c2 = min(len(set2), n // 2)
+        return min(len(set1 | set2), c1 + c2)
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumSetSize(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = new HashSet<>();
+        for (int x : nums1) {
+            set1.add(x);
+        }
+        int all = set1.size();
+        Set<Integer> set2 = new HashSet<>();
+        for (int x : nums2) {
+            if (set2.contains(x)) {
+                continue;
+            }
+            set2.add(x);
+            if (!set1.contains(x)) {
+                all++;
+            }
+        }
+
+        int n = nums1.length;
+        int c1 = Math.min(set1.size(), n / 2);
+        int c2 = Math.min(set2.size(), n / 2);
+        return Math.min(all, c1 + c2);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumSetSize(vector<int> &nums1, vector<int> &nums2) {
+        unordered_set<int> set1(nums1.begin(), nums1.end());
+        unordered_set<int> set2(nums2.begin(), nums2.end());
+        int all = set1.size() + set2.size();
+        for (int x : set1) {
+            all -= set2.count(x); // 去掉重复的
+        }
+
+        int n = nums1.size();
+        int c1 = min((int) set1.size(), n / 2);
+        int c2 = min((int) set2.size(), n / 2);
+        return min(all, c1 + c2);
+    }
+};
+```
+
+```go [sol-Go]
+func maximumSetSize(nums1, nums2 []int) int {
+	set1 := map[int]bool{}
+	for _, x := range nums1 {
+		set1[x] = true
+	}
+	all := len(set1)
+	set2 := map[int]bool{}
+	for _, x := range nums2 {
+		if set2[x] {
+			continue
+		}
+		set2[x] = true
+		if !set1[x] {
+			all++
+		}
+	}
+
+	n := len(nums1)
+	c1 := min(len(set1), n/2)
+	c2 := min(len(set2), n/2)
+	return min(all, c1+c2)
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 为 $\textit{nums}_1$ 的长度，$m$ 为 $\textit{nums}_2$ 的长度。
