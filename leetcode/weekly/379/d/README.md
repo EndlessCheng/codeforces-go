@@ -1,8 +1,10 @@
 **前置知识**：[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-定义 $\textit{dfs}(i,\textit{mask}, \textit{changed})$ 表示当前遍历到 $s[i]$，当前这一段的字符集合是 $\textit{mask}$，是否已经修改了字符（$\textit{changed}$），后续可以得到的最大分割数。
+## 方法一：记忆化搜索+记录字符集合
 
-分类讨论：
+定义 $\textit{dfs}(i,\textit{mask}, \textit{changed})$ 表示当前遍历到 $s[i]$，当前这一段在 $i$ 之前的字符集合是 $\textit{mask}$，是否已经修改了字符（$\textit{changed}$），后续可以得到的最大分割数。
+
+讨论是否修改 $s[i]$，以及当前字母能否加到 $\textit{mask}$ 中：
 
 - 如果不改 $s[i]$：
    - 如果 $s[i]$ 加到 $\textit{mask}$ 后，集合的大小超过了 $k$，那么 $s[i]$ 必须划分到下一段子串中。答案为 $\textit{dfs}(i+1, \{s[i]\},\textit{changed}) + 1$。
@@ -217,5 +219,218 @@ func maxPartitionsAfterOperations(s string, k int) int {
    - 如果 $\textit{mask}$ 之前有修改，这样的状态有 $\mathcal{O}(n|\Sigma|^2)$ 个，单个状态的计算时间为 $\mathcal{O}(1)$，因为我们只能不修改。
    - 所以时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
 - 空间复杂度：$\mathcal{O}(n|\Sigma|^2)$。
+
+## 方法二：前后缀分解
+
+### 提示 1
+
+能否从右往左分割？
+
+我们需要证明，对于 $s$ 的任意**后缀**，从左往右分割出的段数，等于从右往左分割出的段数。
+
+考虑 $s$ 的某个后缀，假设从左往右分成了 $n$ 段，从左往右分别记作 $L_1,L_2,\cdots,L_n$，每一段最左边的字母下标分别记作 $p_1,p_2,\cdots,p_n$。再假设从右往左分成了 $m$ 段，**从右往左**分别记作 $R_1,R_2,\cdots,R_m$，每一段最左边（终点）的字母下标分别记作 $q_1,q_2,\cdots,q_m$，最右边（起点）的字母下标分别记作 $r_1,r_2,\cdots,r_m$。
+
+![w379d.png](https://pic.leetcode.cn/1704712474-pevDnh-w379d.png)
+
+对于 $R_1$，显然它包含 $L_n$，所以 $R_1$ 的终点 $q_1\le p_n$。如果 $q_1\le p_{n-1}$，那么 $R_1$ 会包含 $L_{n-1}$ 和 $L_n$，这是不可能的，因为这两段的字符种类是大于 $k$ 的。所以 $q_1 > p_{n-1}$。
+
+这意味着对于 $R_2$，它的起点 $r_2$ 在 $L_{n-1}$ 中。同样地，$R_2$ 的终点 $q_2$ 必须大于 $p_{n-2}$，否则 $R_2$ 除了完整地包含 $L_{n-2}$，还包含 $L_{n-1}$ 的字母，这会让 $R_2$ 的字母种类数超过 $k$。
+
+依此类推，每个 $R_i$ 的起点 $r_i$ 都在 $L_{n+1-i}$ 中。而最后一段 $R_m$ 的起点 $r_m$ 在 $L_1$ 中。这意味着 $n=m$。所以从左往右分割出的段数，等于从右往左分割出的段数。
+
+### 提示 2
+
+遍历 $s$，枚举要修改的字母 $s[i]$。
+
+设从左往右分割到 $i-1$ 时，分割出了 $\textit{preSeg}$ 段，最新一段（记作 $L$）的字符集合为 $\textit{preMask}$，其大小为 $\textit{preSize}$。
+
+设从右往左分割到 $i+1$ 时，分割出了 $\textit{sufSeg}$ 段，最新一段（记作 $R$）的字符集合为 $\textit{sufMask}$，其大小为 $\textit{sufSize}$。
+
+设 $\textit{preMask}$ 和 $\textit{sufMask}$ 的并集大小为 $\textit{unionSize}$。
+
+分类讨论：
+
+- 情况 1：如果 $\textit{unionSize}<k$，那么无论把 $s[i]$ 改成什么，并集的大小都不会超过 $k$，这意味着 $L$ 和 $R$ 必须合并成一段。
+- 情况 2：如果 $\textit{unionSize}<26$，并且 $\textit{preSize}$ 和 $\textit{sufSize}$ 都等于 $k$，那么把 $s[i]$ 改成一个既不在 $L$ 又不在 $R$ 中的字母，从而使 $L$ 和 $R$ 都是最大分割，这样就多出了一段。
+- 情况 3：不是情况 1 也不是情况 2，那么总段数不变。
+
+代码实现时，可以从右往左遍历 $s$，把 $\textit{sufSeg}$ 和 $\textit{sufMask}$ 都记录下来。然后从左往右遍历 $s$，在计算 $\textit{preSeg}$ 和 $\textit{preMask}$ 的同时，按照上述分类讨论，计算出修改后的段数，更新答案的最大值。
+
+```py [sol-Python3]
+class Solution:
+    def maxPartitionsAfterOperations(self, s: str, k: int) -> int:
+        seg, mask, size = 1, 0, 0
+        def update(i: int) -> None:
+            nonlocal seg, mask, size
+            bit = 1 << (ord(s[i]) - ord('a'))
+            if mask & bit:
+                return
+            size += 1
+            if size > k:
+                seg += 1  # s[i] 在新的一段中
+                mask = bit
+                size = 1
+            else:
+                mask |= bit
+
+        n = len(s)
+        suf = [None] * n + [(0, 0)]
+        for i in range(n - 1, -1, -1):
+            update(i)
+            suf[i] = (seg, mask)
+
+        ans = seg  # 不修改任何字母
+        seg, mask, size = 1, 0, 0
+        for i in range(n):
+            suf_seg, suf_mask = suf[i + 1]
+            res = seg + suf_seg  # 情况 3
+            union_size = (mask | suf_mask).bit_count()
+            if union_size < k:
+                res -= 1  # 情况 1
+            elif union_size < 26 and size == k and suf_mask.bit_count() == k:
+                res += 1  # 情况 2
+            ans = max(ans, res)
+            update(i)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private int seg = 1, mask = 0, size = 0;
+
+    public int maxPartitionsAfterOperations(String S, int k) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int[] sufSeg = new int[n + 1];
+        int[] sufMask = new int[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            update(s[i], k);
+            sufSeg[i] = seg;
+            sufMask[i] = mask;
+        }
+
+        int ans = seg; // 不修改任何字母
+        seg = 1; mask = 0; size = 0;
+        for (int i = 0; i < n; i++) {
+            int res = seg + sufSeg[i + 1]; // 情况 3
+            int unionSize = Integer.bitCount(mask | sufMask[i + 1]);
+            if (unionSize < k) {
+                res--; // 情况 1
+            } else if (unionSize < 26 && size == k && Integer.bitCount(sufMask[i + 1]) == k) {
+                res++; // 情况 2
+            }
+            ans = Math.max(ans, res);
+            update(s[i], k);
+        }
+        return ans;
+    }
+
+    private void update(char c, int k) {
+        int bit = 1 << (c - 'a');
+        if ((mask & bit) != 0) {
+            return;
+        }
+        if (++size > k) {
+            seg++; // c 在新的一段中
+            mask = bit;
+            size = 1;
+        } else {
+            mask |= bit;
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxPartitionsAfterOperations(string s, int k) {
+        int seg = 1, mask = 0, size = 0;
+        auto update = [&](int i) {
+            int bit = 1 << (s[i] - 'a');
+            if (mask & bit) return;
+            if (++size > k) {
+                seg++; // s[i] 在新的一段中
+                mask = bit;
+                size = 1;
+            } else {
+                mask |= bit;
+            }
+        };
+
+        int n = s.length();
+        vector<pair<int, int>> suf(n + 1);
+        for (int i = n - 1; i >= 0; i--) {
+            update(i);
+            suf[i] = {seg, mask};
+        }
+
+        int ans = seg; // 不修改任何字母
+        seg = 1, mask = 0, size = 0;
+        for (int i = 0; i < n; i++) {
+            auto [suf_seg, suf_mask] = suf[i + 1];
+            int res = seg + suf_seg; // 情况 3
+            int union_size = __builtin_popcount(mask | suf_mask);
+            if (union_size < k) {
+                res--; // 情况 1
+            } else if (union_size < 26 && size == k && __builtin_popcount(suf_mask) == k) {
+                res++; // 情况 2
+            }
+            ans = max(ans, res);
+            update(i);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxPartitionsAfterOperations(s string, k int) int {
+	seg, mask, size := 1, 0, 0
+	update := func(i int) {
+		bit := 1 << (s[i] - 'a')
+		if mask&bit > 0 {
+			return
+		}
+		size++
+		if size > k {
+			seg++ // s[i] 在新的一段中
+			mask = bit
+			size = 1
+		} else {
+			mask |= bit
+		}
+	}
+
+	n := len(s)
+	type pair struct{ seg, mask int }
+	suf := make([]pair, n+1)
+	for i := n - 1; i >= 0; i-- {
+		update(i)
+		suf[i] = pair{seg, mask}
+	}
+
+	ans := seg // 不修改任何字母
+	seg, mask, size = 1, 0, 0
+	for i := range s {
+		p := suf[i+1]
+		res := seg + p.seg // 情况 3
+		unionSize := bits.OnesCount(uint(mask | p.mask))
+		if unionSize < k {
+			res-- // 情况 1
+		} else if unionSize < 26 && size == k && bits.OnesCount(uint(p.mask)) == k {
+			res++ // 情况 2
+		}
+		ans = max(ans, res)
+		update(i)
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 周赛总结更新啦！请看 [2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)

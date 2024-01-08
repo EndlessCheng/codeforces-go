@@ -7,6 +7,48 @@ import (
 
 // https://space.bilibili.com/206214
 func maxPartitionsAfterOperations(s string, k int) int {
+	seg, mask, size := 1, 0, 0
+	update := func(i int) {
+		bit := 1 << (s[i] - 'a')
+		if mask&bit > 0 {
+			return
+		}
+		size++
+		if size > k {
+			seg++ // s[i] 在新的一段中
+			mask = bit
+			size = 1
+		} else {
+			mask |= bit
+		}
+	}
+
+	n := len(s)
+	type pair struct{ seg, mask int }
+	suf := make([]pair, n+1)
+	for i := n - 1; i >= 0; i-- {
+		update(i)
+		suf[i] = pair{seg, mask}
+	}
+
+	ans := seg // 不修改任何字母
+	seg, mask, size = 1, 0, 0
+	for i := range s {
+		p := suf[i+1]
+		res := seg + p.seg // 情况 3
+		unionSize := bits.OnesCount(uint(mask | p.mask))
+		if unionSize < k {
+			res-- // 情况 1
+		} else if unionSize < 26 && size == k && bits.OnesCount(uint(p.mask)) == k {
+			res++ // 情况 2
+		}
+		ans = max(ans, res)
+		update(i)
+	}
+	return ans
+}
+
+func maxPartitionsAfterOperations2(s string, k int) int {
 	n := len(s)
 	type args struct {
 		i, mask int

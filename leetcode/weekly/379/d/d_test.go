@@ -23,9 +23,9 @@ func TestCompareInf(_t *testing.T) {
 	inputGenerator := func() (s string, k int) {
 		//return
 		rg := testutil2.NewRandGenerator()
-		n := rg.Int(1, 10)
-		s = rg.Str(n, n, 'a', 'd')
-		k = rg.Int(1, 7)
+		n := rg.Int(1, 40)
+		s = rg.Str(n, n, 'a', 'e')
+		k = rg.Int(1, 22)
 		return
 	}
 
@@ -51,8 +51,10 @@ func TestCompareInf(_t *testing.T) {
 		f(s)
 		for i := 0; i < len(s); i++ {
 			t := []byte(s)
-			t[i] = 'z'
-			f(string(t))
+			for ch := byte('a'); ch <= 'z'; ch++ {
+				t[i] = ch
+				f(string(t))
+			}
 		}
 		return
 	}
@@ -63,5 +65,5 @@ func TestCompareInf(_t *testing.T) {
 	//}
 	//return
 
-	testutil.CompareInf(_t, inputGenerator, runAC, maxPartitionsAfterOperations)
+	testutil.CompareInf(_t, inputGenerator, runAC, maxPartitionsAfterOperationsWA)
 }
