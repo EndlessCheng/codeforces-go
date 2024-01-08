@@ -23,7 +23,7 @@ func cf1097C(_r io.Reader, out io.Writer) {
 				mn = min(mn, c)
 			}
 		}
-		if mn == 0 || c == mn {
+		if mn == 0 || mn == c {
 			if cnt[-c] > 0 {
 				cnt[-c]--
 				ans++
