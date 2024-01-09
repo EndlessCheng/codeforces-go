@@ -207,15 +207,13 @@ func maxPartitionsAfterOperations(s string, k int) int {
 
 有多少个状态呢？可能你会觉得非常多，但是我们可以换个角度看：考虑到 $i$ 为止，有多少种不同的字符集合，即有多少个不同的 $\textit{mask}$。
 
-我们可以从 $i$ 开始向左扩展，每遇到一个字符，$\textit{mask}$ 集合要么不变，要么增加一个字符。
-
-- 如果没有修改，那么到 $i$ 为止的 $\textit{mask}$ 至多有 $|\Sigma|$ 个不同的值。这里 $|\Sigma|=26$。
-- 如果中途有修改，那么从修改位置向左可以分出 $\mathcal{O}(|\Sigma|^2)$ 个不同的值。
+- 如果没有修改，那么 $\textit{mask}$ 是唯一的。
+- 如果中途有修改，我们可以从 $i$ 开始向左扩展，每遇到一个字符，$\textit{mask}$ 集合要么不变，要么增加一个字符。那么有 $\mathcal{O}(|\Sigma|)$ 个本质不同的修改位置，每个位置有 $\mathcal{O}(|\Sigma|)$ 个不同的修改方式，所以有 $\mathcal{O}(|\Sigma|^2)$ 个不同的 $\textit{mask}$。这里 $|\Sigma|=26$。
 
 所以只有 $\mathcal{O}(n|\Sigma|^2)$ 个状态。
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。分类讨论：
-   - 如果 $\textit{mask}$ 之前没有修改，这样的状态有 $\mathcal{O}(n|\Sigma|)$ 个，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，即枚举修改成什么字母的时间。
+   - 如果 $\textit{mask}$ 之前没有修改，这样的状态有 $\mathcal{O}(n)$ 个，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，即枚举修改成什么字母的时间。
    - 如果 $\textit{mask}$ 之前有修改，这样的状态有 $\mathcal{O}(n|\Sigma|^2)$ 个，单个状态的计算时间为 $\mathcal{O}(1)$，因为我们只能不修改。
    - 所以时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
 - 空间复杂度：$\mathcal{O}(n|\Sigma|^2)$。
