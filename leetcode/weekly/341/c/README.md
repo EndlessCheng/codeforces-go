@@ -1,6 +1,4 @@
-## 本题视频讲解
-
-见[【周赛 341】](https://www.bilibili.com/video/BV1ng4y1T7QA/) 第三题。
+[视频讲解](https://www.bilibili.com/video/BV1ng4y1T7QA/) 第三题。
 
 ## 方法一：考虑相邻字母
 
@@ -25,7 +23,7 @@ $$
 
 最后补齐开头的 $s[0]-\text{`a'}$，和结尾的 $\text{`c'}-s[n-1]$。这俩可以合并为 $s[0]-s[n-1]+2$。
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def addMinimum(self, s: str) -> int:
         ans = ord(s[0]) - ord(s[-1]) + 2
@@ -34,31 +32,33 @@ class Solution:
         return ans
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int addMinimum(String word) {
-        var s = word.toCharArray();
+        char[] s = word.toCharArray();
         int ans = s[0] + 2 - s[s.length - 1];
-        for (int i = 1; i < s.length; ++i)
+        for (int i = 1; i < s.length; i++) {
             ans += (s[i] + 2 - s[i - 1]) % 3;
+        }
         return ans;
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     int addMinimum(string s) {
         int ans = s[0] + 2 - s.back();
-        for (int i = 1; i < s.length(); ++i)
+        for (int i = 1; i < s.length(); i++) {
             ans += (s[i] + 2 - s[i - 1]) % 3;
+        }
         return ans;
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func addMinimum(s string) int {
 	ans := int(s[0]) - int(s[len(s)-1]) + 2
 	for i := 1; i < len(s); i++ {
@@ -68,52 +68,83 @@ func addMinimum(s string) int {
 }
 ```
 
+```js [sol-JavaScript]
+var addMinimum = function(s) {
+    let ans = s.charCodeAt(0) + 2 - s.charCodeAt(s.length - 1);
+    for (let i = 1; i < s.length; i++) {
+        ans += (s.charCodeAt(i) + 2 - s.charCodeAt(i - 1)) % 3;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn add_minimum(word: String) -> i32 {
+        let s = word.as_bytes();
+        let mut ans = s[0] as i32 - *s.last().unwrap() as i32 + 2;
+        for i in 1..s.len() {
+            ans += (s[i] as i32 - s[i - 1] as i32 + 2) % 3;
+        }
+        ans
+    }
+}
+```
+
 ### 复杂度分析
 
-- 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
-- 空间复杂度：$O(1)$。仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
 
 ## 方法二：考虑 abc 的个数
 
 假设答案由 $t$ 个 $\text{`abc'}$ 组成，那么需要插入的字符个数为 $3t-n$。
 
-对于两个相邻字符 $x$ 和 $y$（$x$ 在 $y$ 左侧），如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{`abc'}$ 内，否则一定不在。
+对于两个相邻字符 $x$ 和 $y$（$x$ 在 $y$ 左侧）：
+
+- 如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{`abc'}$ 内，否则一定不在。
+- 如果 $x\ge y$，那么 $x$ 和 $y$ 一定不在同一个 $\text{`abc'}$ 内。
+
+例如 $s=\text{`caa'}$ 中的 $s[0]\ge s[1], s[1]\ge s[2]$，所以需要 $t=3$ 个 $\text{`abc'}$，即 $\text{`ab}\textbf{ca}\text{bc}\textbf{a}\text{bc'}$。
 
 所以 $t$ 就是 $x\ge y$ 的次数加一。
 
-```py [sol2-Python3]
+```py [sol-Python3]
 class Solution:
     def addMinimum(self, s: str) -> int:
         t = 1 + sum(x >= y for x, y in pairwise(s))
         return t * 3 - len(s)
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
     public int addMinimum(String word) {
-        var s = word.toCharArray();
+        char[] s = word.toCharArray();
         int t = 1;
-        for (int i = 1; i < s.length; ++i)
-            if (s[i - 1] >= s[i]) // 必须生成一个新的 abc
-                ++t;
+        for (int i = 1; i < s.length; i++) {
+            if (s[i - 1] >= s[i]) { // 必须生成一个新的 abc
+                t++;
+            }
+        }
         return t * 3 - s.length;
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     int addMinimum(string s) {
         int t = 1;
-        for (int i = 1; i < s.length(); ++i)
+        for (int i = 1; i < s.length(); i++) {
             t += s[i - 1] >= s[i]; // 必须生成一个新的 abc
+        }
         return t * 3 - s.length();
     }
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 func addMinimum(s string) int {
 	t := 1
 	for i := 1; i < len(s); i++ {
@@ -125,10 +156,35 @@ func addMinimum(s string) int {
 }
 ```
 
+```js [sol-JavaScript]
+var addMinimum = function(s) {
+    let t = 1;
+    for (let i = 1; i < s.length; i++) {
+        t += s[i - 1] >= s[i]; // 必须生成一个新的 abc
+    }
+    return t * 3 - s.length;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn add_minimum(word: String) -> i32 {
+        let s = word.as_bytes();
+        let mut t = 1;
+        for i in 1..s.len() {
+            if s[i - 1] >= s[i] {
+                t += 1; // 必须生成一个新的 abc
+            }
+        }
+        return t * 3 - s.len() as i32;
+    }
+}
+```
+
 ### 复杂度分析
 
-- 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
-- 空间复杂度：$O(1)$。仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
