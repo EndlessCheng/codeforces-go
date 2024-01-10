@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/8G0PNxs) 第四题。
+[视频讲解](https://www.bilibili.com/video/BV1XW4y1f7Wv/) 第四题。
 
 ## 提示 1
 
@@ -12,7 +12,7 @@
 
 ## 提示 3
 
-子数组同时加上/减去一个数，非常适合用**差分数组**来维护。
+子数组同时加上/减去一个数，非常适合用 [差分数组](https://leetcode.cn/circle/discuss/FfMCgb/) 来维护，请至少做一道差分数组题目再往下阅读。
 
 设差分数组为 $d$。那么把 $\textit{nums}[i]$ 到 $\textit{nums}[i+k-1]$ 同时减去 $1$，等价于把 $d[i]$ 减 $1$，$d[i+k]$ 加 $1$。
 

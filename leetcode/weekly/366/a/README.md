@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://b23.tv/JMcHRRp)直播讲题，欢迎关注！
-
----
+[视频讲解](https://www.bilibili.com/video/BV1e84y117R9/)
 
 设 $k = \left\lfloor\dfrac{n}{m}\right\rfloor$。
 

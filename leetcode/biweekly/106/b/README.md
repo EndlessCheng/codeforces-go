@@ -1,12 +1,10 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://b23.tv/JMcHRRp)直播讲题，记得关注哦~
+[双周赛视频讲解](https://www.bilibili.com/video/BV18u411Y7Gt/)
 
----
+## 前置知识：滑动窗口
 
-### 前置知识：同向双指针（滑动窗口）
+请看[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)
 
-见[【基础算法精讲 01】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
-
-### 思路
+## 思路
 
 移动右指针 $\textit{right}$，并统计相邻相同的情况出现了多少次，记作 $\textit{same}$
 

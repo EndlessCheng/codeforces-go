@@ -1,6 +1,6 @@
-[视频讲解](https://b23.tv/MRNaADm) 第四题。
+[视频讲解](https://www.bilibili.com/video/BV1PV411N76R/) 第四题。
 
-关于换根 DP 的原理，推荐看 834. 树中距离之和的[【图解】一张图秒懂换根 DP！](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)
+换根 DP 原理：[【图解】一张图秒懂换根 DP！](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/)
 
 本题可以先计算出以 $0$ 为根时的答案：在建图的时候，对于一条 $x\rightarrow y$ 的边，把 $(y,1)$ 加到 $x$ 的邻居，把 $(x,-1)$ 加到 $y$ 的邻居，从而可以在递归过程中统计有多少条边是需要反向的。
 

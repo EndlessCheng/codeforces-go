@@ -1,4 +1,4 @@
-证明过程请看 [视频讲解](https://b23.tv/MRNaADm) 第二题。
+证明过程请看 [视频讲解](https://www.bilibili.com/video/BV1PV411N76R/) 第二题。
 
 假设 $x$ 出现次数最多，其出现次数为 $\textit{maxCnt}$。
 
@@ -16,7 +16,7 @@
 
 按照 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/) 的做法，可以用二分查找在 $\mathcal{O}(\log n)$ 的时间计算 $\textit{nums}[n/2]$ 第一次和最后一次出现的位置，从而算出 $\textit{maxCnt}$。
 
-关于二分的原理（34 题）请看视频讲解[【基础算法精讲 04】](https://b23.tv/CBJnyNJ)。
+关于二分的原理，请看视频[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 ```py [sol-Python3]
 class Solution:

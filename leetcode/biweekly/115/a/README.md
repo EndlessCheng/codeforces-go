@@ -1,4 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://b23.tv/JMcHRRp)直播讲题，欢迎关注！
+按题意模拟即可。
 
 ```py [sol-Python3]
 class Solution:
@@ -17,7 +17,6 @@ class Solution:
 ```
 
 ```java [sol-Java]
-// https://space.bilibili.com/206214
 class Solution {
     public List<Integer> lastVisitedIntegers(List<String> words) {
         List<Integer> ans = new ArrayList<>();

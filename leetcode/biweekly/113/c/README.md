@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/MRNaADm) 第三题。
+[视频讲解](https://www.bilibili.com/video/BV1PV411N76R/) 第三题。
 
 突破口：$0\le k\le 100$。
 

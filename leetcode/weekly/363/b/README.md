@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/PDz9NBA) 第二题。
+[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第二题。
 
 在选择学生人数固定的时候，选择方案是否唯一呢？
 

@@ -1,4 +1,4 @@
-请看 [视频讲解](https://b23.tv/PDz9NBA) 第四题。
+[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第四题。
 
 ## 方法一：按照下标的 core 值分组
 

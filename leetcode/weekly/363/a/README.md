@@ -1,4 +1,4 @@
-请看 [视频讲解](https://b23.tv/PDz9NBA)。
+[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/)
 
 把所有满足下标的二进制中的 $1$ 的个数等于 $k$ 的 $\textit{nums}[i]$ 加起来，就是答案。
 

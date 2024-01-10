@@ -1,6 +1,4 @@
-下午两点[【b站@灵茶山艾府】](https://b23.tv/JMcHRRp)直播讲题，欢迎关注！
-
----
+[视频讲解](https://www.bilibili.com/video/BV1Ww411T7JP/) 第四题。
 
 ## 提示 1
 

@@ -1,6 +1,4 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://b23.tv/JMcHRRp)直播讲题，记得关注哦~
-
----
+[视频讲解](https://www.bilibili.com/video/BV15V4y1m7Sb/) 第二题。
 
 根据题意，把 $\texttt{a}$ 替换成 $\texttt{z}$ 会让字典序变大，所以子串里面是不能包含 $\texttt{a}$ 的。
 

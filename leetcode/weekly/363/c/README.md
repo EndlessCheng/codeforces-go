@@ -1,10 +1,10 @@
-请看 [视频讲解](https://b23.tv/PDz9NBA) 第三题。
+[本题视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/)
 
 挨个判断每台机器最多可以制造多少份合金。
 
 假设要制造 $\textit{num}$ 份合金，由于 $\textit{num}$ 越小，花费的钱越少，$\textit{num}$ 越多，花费的钱越多，有**单调性**，可以二分。
 
-有关二分的基础知识，请看视频讲解[【基础算法精讲 04】](https://b23.tv/CBJnyNJ)。
+有关二分的基础知识，请看视频讲解[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 对于第 $j$ 类金属：
 

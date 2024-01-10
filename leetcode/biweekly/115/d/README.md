@@ -1,7 +1,6 @@
 ## 前置知识
 
-1. [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
-2. [背包问题 & 空间压缩【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
+[背包问题 & 空间压缩【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)
 
 ## 哪种背包？
 

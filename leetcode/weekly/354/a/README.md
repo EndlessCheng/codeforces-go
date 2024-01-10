@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/b9ManDI)
+[视频讲解](https://www.bilibili.com/video/BV1DM4y1x7bR/)
 
 ## 算法一：遍历
 

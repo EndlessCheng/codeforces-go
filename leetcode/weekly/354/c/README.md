@@ -1,4 +1,4 @@
-[视频讲解](https://b23.tv/b9ManDI) 第三题。
+[视频讲解](https://www.bilibili.com/video/BV1DM4y1x7bR/) 第三题。
 
 **证明**：分割出的两个数组的支配元素就是原数组的支配元素。
 
