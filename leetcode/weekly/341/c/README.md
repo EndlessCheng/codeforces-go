@@ -101,14 +101,14 @@ impl Solution {
 
 ## 方法二：考虑 abc 的个数
 
-假设答案由 $t$ 个 $\text{`abc'}$ 组成，那么需要插入的字母个数为 $3t-n$。
+假设答案由 $t$ 个 $\text{``abc''}$ 组成，那么需要插入的字母个数为 $3t-n$。
 
 对于两个相邻字母 $x$ 和 $y$（$x$ 在 $y$ 左侧）：
 
-- 如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{`abc'}$ 内。
-- 如果 $x\ge y$，那么 $x$ 和 $y$ 一定不在同一个 $\text{`abc'}$ 内。
+- 如果 $x<y$，那么 $x$ 和 $y$ 可以在同一个 $\text{``abc''}$ 内。
+- 如果 $x\ge y$，那么 $x$ 和 $y$ 一定不在同一个 $\text{``abc''}$ 内。
 
-例如 $s=\text{`caa'}$ 中的 $s[0]\ge s[1], s[1]\ge s[2]$，所以需要 $t=3$ 个 $\text{`abc'}$，即 $\text{`ab}\textbf{ca}\text{bc}\textbf{a}\text{bc'}$。
+例如 $s=\text{``caa''}$ 中的 $s[0]\ge s[1], s[1]\ge s[2]$，所以需要 $t=3$ 个 $\text{``abc''}$，即 $\text{``ab}\textbf{ca}\text{bc}\textbf{a}\text{bc''}$。
 
 所以 $t$ 就是 $x\ge y$ 的次数加一。
 
