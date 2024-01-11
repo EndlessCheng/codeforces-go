@@ -383,6 +383,9 @@ func _(abs func(int) int) {
 	}
 
 	// 由于数据范围的原因，采用 map 记忆化         dpMap
+	// LC1553 https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/
+	// LC2998 https://leetcode.cn/problems/minimum-number-of-operations-to-make-x-and-y-equal/
+	// LC638 https://leetcode.cn/problems/shopping-offers/
 	// https://codeforces.com/problemset/problem/510/D
 	// https://codeforces.com/problemset/problem/1746/D
 	// 如何估计时间复杂度 https://atcoder.jp/contests/abc275/tasks/abc275_d
@@ -613,7 +616,8 @@ func _(abs func(int) int) {
 	// 更快的做法（位运算）见 SPOJ LCS0 https://www.luogu.com.cn/problem/SP12076
 	//
 	// 模板题 LC1143 https://leetcode.cn/problems/longest-common-subsequence/
-	// LC72   https://leetcode.cn/problems/edit-distance/    热身 LC161 https://leetcode.cn/problems/one-edit-distance/
+	// LC72   https://leetcode.cn/problems/edit-distance/    
+	// - 热身 LC161 https://leetcode.cn/problems/one-edit-distance/
 	// LC97   https://leetcode.cn/problems/interleaving-string/
 	// LC115  https://leetcode.cn/problems/distinct-subsequences/
 	// LC583  https://leetcode.cn/problems/delete-operation-for-two-strings/
@@ -625,16 +629,16 @@ func _(abs func(int) int) {
 	// 若其中一个序列无重复元素，可以转换成 LIS LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/ 2351
 	// - https://www.luogu.com.cn/problem/P1439 
 	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/ 会员题
-	// 三个字符串的 LCS + 输出方案 https://www.luogu.com.cn/problem/P2364
-	// 权值 https://atcoder.jp/contests/abc185/tasks/abc185_e
 	// 其中一个改为子串 https://codeforces.com/problemset/problem/163/A 1700
-	// https://codeforces.com/problemset/problem/1446/B
-	//【相同子序列个数】https://atcoder.jp/contests/abc130/tasks/abc130_e
-	// 多个排列的 LCS（转化成 DAG 最长路）https://codeforces.com/problemset/problem/463/D
-	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D
-	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
-	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B
+	// https://codeforces.com/problemset/problem/1446/B 1800
+	// 多个排列的 LCS https://codeforces.com/problemset/problem/463/D 1900
+	// - 三个字符串的 LCS + 输出方案 https://www.luogu.com.cn/problem/P2364
+	// 转换【巧妙】https://codeforces.com/problemset/problem/1114/D 1900
+	// 与 KMP 结合 https://codeforces.com/problemset/problem/346/B 2000
 	// follow up 要求某个子串 sub 一定在 LCS 中
+	// 权值 https://atcoder.jp/contests/abc185/tasks/abc185_e
+	//【相同子序列个数】https://atcoder.jp/contests/abc130/tasks/abc130_e
+	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	lcs := func(s, t []byte) int {
 		// dp[i][j] = LCS(s[:i], t[:j])
 		n, m := len(s), len(t)
@@ -2347,37 +2351,37 @@ func _(abs func(int) int) {
 	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
 	相邻数字约束 SC09 https://www.luogu.com.cn/problem/P2657
 	数位统计
-	LC233 https://leetcode.cn/problems/number-of-digit-one/
-	      https://leetcode.cn/problems/1nzheng-shu-zhong-1chu-xian-de-ci-shu-lcof/
-	      https://leetcode.cn/problems/number-of-2s-in-range-lcci/
-	      http://acm.hdu.edu.cn/showproblem.php?pid=3555
-	      http://acm.hdu.edu.cn/showproblem.php?pid=2089
-	      LC1067 https://leetcode.cn/problems/digit-count-in-range/ 2025 会员题
-	LC357 https://leetcode.cn/problems/count-numbers-with-unique-digits/
-	LC600 二进制不含连续 1 的数字个数 https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/
-	LC788 含有某些特殊数字 https://leetcode.cn/problems/rotated-digits/
-	LC1215 https://leetcode.cn/problems/stepping-numbers/ 1675 会员题
-	LC902 最大为 N 的数字组合 https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/ 1990
-	LC248 中心对称数个数 https://leetcode.cn/problems/strobogrammatic-number-iii/ 会员题
-	- 互补 LC1088 https://leetcode.cn/problems/confusing-number-ii/ 2077 会员题
-	LC1012 有重复数字的数字个数 https://leetcode.cn/problems/numbers-with-repeated-digits/ 2230
-	- LC2376 互补问题 无重复数字的数字个数 https://leetcode.cn/problems/count-special-integers/ 2120
-	LC1742 https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/
-	LC2827 倍数 https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/ 2324
-	- https://atcoder.jp/contests/abc317/tasks/abc317_f
-	- [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
-	LC2719 数位和 https://leetcode.cn/problems/count-of-integers/ 2355
-	LC2843 数位和 https://leetcode.cn/problems/count-symmetric-integers/
-	LC2801 https://leetcode.cn/problems/count-stepping-numbers-in-range/ 2367
-	LC1397 与 KMP 结合 https://leetcode.cn/problems/find-all-good-strings/ 2667
-	- https://www.luogu.com.cn/problem/P3193
-	- https://atcoder.jp/contests/abc295/tasks/abc295_f
-	- 与 AC 自动机结合 https://ac.nowcoder.com/acm/problem/20366
+	- [600. 不含连续 1 的非负整数](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/)（[题解](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/solution/by-endlesscheng-1egu/)）
+	- [788. 旋转数字](https://leetcode.cn/problems/rotated-digits/)（[题解](https://leetcode.cn/problems/rotated-digits/solution/by-endlesscheng-9b96/)）
+	- [902. 最大为 N 的数字组合](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/)（[题解](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/solution/shu-wei-dp-tong-yong-mo-ban-xiang-xi-zhu-e5dg/)）1990
+	- [233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/)（[题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/)）
+	- [面试题 17.06. 2 出现的次数](https://leetcode.cn/problems/number-of-2s-in-range-lcci/)（[题解](https://leetcode.cn/problems/number-of-2s-in-range-lcci/solution/by-endlesscheng-x4mf/)）
+	    http://acm.hdu.edu.cn/showproblem.php?pid=3555
+	    http://acm.hdu.edu.cn/showproblem.php?pid=2089
+	- [2376. 统计特殊整数](https://leetcode.cn/problems/count-special-integers/)（[题解](https://leetcode.cn/problems/count-special-integers/solution/shu-wei-dp-mo-ban-by-endlesscheng-xtgx/)）2120
+	- [357. 统计各位数字都不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)
+	- [1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)（[题解](https://leetcode.cn/problems/numbers-with-repeated-digits/solution/by-endlesscheng-c5vg/)）2230
+	- [2999. 统计强大整数的数目](https://leetcode.cn/problems/count-the-number-of-powerful-integers/)
+	- [2827. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/) 2324
+	    https://atcoder.jp/contests/abc317/tasks/abc317_f
+	    [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
+	- [2719. 统计整数数目](https://leetcode.cn/problems/count-of-integers/) 2355
+	- [2801. 统计范围内的步进数字数目](https://leetcode.cn/problems/count-stepping-numbers-in-range/) 2367
+	- [1397. 找到所有好字符串](https://leetcode.cn/problems/find-all-good-strings/) 2667 *KMP
+		- https://www.luogu.com.cn/problem/P3193
+		- https://atcoder.jp/contests/abc295/tasks/abc295_f
+		- 与 AC 自动机结合 https://ac.nowcoder.com/acm/problem/20366
+	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/) 2025（会员题）
+	- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）
+	- [248. 中心对称数 III](https://leetcode.cn/problems/strobogrammatic-number-iii/)（会员题）
+		互补 [1088. 易混淆数 II](https://leetcode.cn/problems/confusing-number-ii/) 2077（会员题）
+	- [2843. 统计对称整数的数目](https://leetcode.cn/problems/count-symmetric-integers/) *1270
+	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *1278
 	https://codeforces.com/contest/1710/problem/C
-	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://www.acwing.com/problem/content/313/
+	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://ac.nowcoder.com/acm/contest/28262/E
 	数位和是最后一位的倍数 https://www.lanqiao.cn/problems/5891/learning/?contest_id=145
 	数位乘积不超过 k https://atcoder.jp/contests/abc208/tasks/abc208_e
-	todo 区间数位 DP https://codeforces.com/problemset/problem/1245/F
+	todo https://codeforces.com/problemset/problem/1245/F
 	【转换】选两个不超过 U 的数，满足异或和为 target https://atcoder.jp/contests/arc133/tasks/arc133_d 2658
 	https://lightoj.com/problem/investigation
 	http://acm.hdu.edu.cn/showproblem.php?pid=4507
@@ -2389,9 +2393,9 @@ func _(abs func(int) int) {
 	*/
 
 	// 只做一次记忆化搜索的写法
-	digitDP := func(low, high, sumUpper int) int {
-		lowS := strconv.Itoa(low)
-		highS := strconv.Itoa(high)
+	digitDP := func(low, high int, sumUpper int) int {
+		lowS := strconv.Itoa(int(low))
+		highS := strconv.Itoa(int(high))
 		n := len(highS)
 		lowS = strings.Repeat("0", n-len(lowS)) + lowS // 对齐
 		dp := make([][]int, n)
@@ -2404,7 +2408,7 @@ func _(abs func(int) int) {
 
 		// 第一种写法（前导零不影响答案）
 		var f func(int, int, bool, bool) int
-		f = func(p, sum int, limitLow, limitUp bool) (res int) {
+		f = func(p, sum int, limitLow, limitHigh bool) (res int) {
 			if p == n {
 				// 不合法
 				if sum > sumUpper {
@@ -2413,23 +2417,26 @@ func _(abs func(int) int) {
 				// 合法
 				return 1
 			}
-			if !limitLow && !limitUp {
+			if !limitLow && !limitHigh {
 				dv := &dp[p][sum]
 				if *dv >= 0 {
 					return *dv
 				}
 				defer func() { *dv = res }()
 			}
+
 			lo := 0
 			if limitLow {
 				lo = int(lowS[p] - '0')
 			}
-			up := 9
-			if limitUp {
-				up = int(highS[p] - '0')
+			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
+			hi := 9
+			if limitHigh {
+				hi = int(highS[p] - '0')
 			}
-			for d := lo; d <= up; d++ {
-				res += f(p+1, sum+d, limitLow && d == lo, limitUp && d == up)
+
+			for d := lo; d <= hi; d++ {
+				res += f(p+1, sum+d, limitLow && d == lo, limitHigh && d == hi)
 				res %= mod
 			}
 			return
@@ -2440,7 +2447,7 @@ func _(abs func(int) int) {
 		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p=n 的时候可以根据情况返回 1 或者 0
 		// 下面是计算每个数都出现偶数次的方案数
 		var dfs func(int, int, bool, bool, bool) int
-		dfs = func(p, mask int, limitLow, limitUp, isNum bool) (res int) {
+		dfs = func(p, mask int, limitLow, limitHigh, isNum bool) (res int) {
 			if p == n {
 				if !isNum {
 					return 0
@@ -2450,7 +2457,7 @@ func _(abs func(int) int) {
 				}
 				return 1
 			}
-			if !limitLow && !limitUp && isNum {
+			if !limitLow && !limitHigh && isNum {
 				dv := &dp[p][mask]
 				if *dv >= 0 {
 					return *dv
@@ -2460,20 +2467,23 @@ func _(abs func(int) int) {
 			if !isNum && lowS[p] == '0' { // 什么也不填
 				res += dfs(p+1, mask, true, false, false)
 			}
+
 			lo := 0
 			if limitLow {
 				lo = int(lowS[p] - '0')
 			}
-			up := 9
-			if limitUp {
-				up = int(highS[p] - '0')
+			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
+			hi := 9
+			if limitHigh {
+				hi = int(highS[p] - '0')
 			}
-			d := 0
+
+			d := lo
 			if !isNum {
-				d = 1
+				d = max(lo, 1)
 			}
-			for d = max(d, lo); d <= up; d++ {
-				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitUp && d == up, true)
+			for ; d <= hi; d++ {
+				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitHigh && d == hi, true)
 				res %= mod
 			}
 			return
