@@ -2371,12 +2371,9 @@ func _(abs func(int) int) {
 		- https://www.luogu.com.cn/problem/P3193
 		- https://atcoder.jp/contests/abc295/tasks/abc295_f
 		- 与 AC 自动机结合 https://ac.nowcoder.com/acm/problem/20366
-	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/) 2025（会员题）
-	- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）
-	- [248. 中心对称数 III](https://leetcode.cn/problems/strobogrammatic-number-iii/)（会员题）
-		互补 [1088. 易混淆数 II](https://leetcode.cn/problems/confusing-number-ii/) 2077（会员题）
-	- [2843. 统计对称整数的数目](https://leetcode.cn/problems/count-symmetric-integers/) *1270
-	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *1278
+	- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）1675
+	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/)（会员题）2025 *LC233
+	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *非暴力做法 枚举数位和+DP
 	https://codeforces.com/contest/1710/problem/C
 	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://ac.nowcoder.com/acm/contest/28262/E
 	数位和是最后一位的倍数 https://www.lanqiao.cn/problems/5891/learning/?contest_id=145
@@ -2390,6 +2387,10 @@ func _(abs func(int) int) {
 	注：一些第 k 小的题目需要与二分结合，或者用试填法（见后面的 kth666）
 	todo 套题 https://www.luogu.com.cn/blog/s-r-f/oi-bi-ji-shuo-wei-dp-ge-ji-dui-shuo-wei-dp-di-yi-dian-li-xie
 	todo 套题 https://codeforces.com/blog/entry/53960
+	对称
+	https://leetcode.cn/problems/strobogrammatic-number-iii/
+	https://leetcode.cn/problems/confusing-number-ii/ 2077
+	https://leetcode.cn/problems/count-symmetric-integers/
 	*/
 
 	// 只做一次记忆化搜索的写法
