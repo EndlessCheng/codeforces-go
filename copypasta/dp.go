@@ -1598,11 +1598,12 @@ func _(abs func(int) int) {
 	LC664 打印机 https://leetcode.cn/problems/strange-printer/
 	LC678 也有非 DP 做法 https://leetcode.cn/problems/valid-parenthesis-string/
 	LC1312 插入形成回文 https://leetcode.cn/problems/minimum-insertion-steps-to-make-a-string-palindrome/ 1787
+	- https://www.luogu.com.cn/problem/P1435
 	LC1130 https://leetcode.cn/problems/minimum-cost-tree-from-leaf-values/ 1919
 	LC1770 https://leetcode.cn/problems/maximum-score-from-performing-multiplication-operations/ 2068
 	LC1547 https://leetcode.cn/problems/minimum-cost-to-cut-a-stick/ 2116
 	LC1039 最优三角剖分 https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/ 2130
-	- https://www.luogu.com.cn/problem/P1435
+	- 方案数 不保证凸 https://codeforces.com/problemset/problem/437/E 2500
 	LC546 移除盒子 状态定义 https://leetcode.cn/problems/remove-boxes/ 从 CF 难度来看，这题可以评 2900（力扣难度）
 	- 原题是紫书例题 9-27 https://www.luogu.com.cn/problem/UVA10559 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=17&page=show_problem&problem=1500
 	- https://codeforces.com/problemset/problem/1107/E 2400
@@ -2351,23 +2352,23 @@ func _(abs func(int) int) {
 	所有数字均出现偶数次的数字个数 https://codeforces.com/problemset/problem/855/E
 	相邻数字约束 SC09 https://www.luogu.com.cn/problem/P2657
 	数位统计
-	- [600. 不含连续 1 的非负整数](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/)（[题解](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/solution/by-endlesscheng-1egu/)）
+	- 入门题 [2719. 统计整数数目](https://leetcode.cn/problems/count-of-integers/)
 	- [788. 旋转数字](https://leetcode.cn/problems/rotated-digits/)（[题解](https://leetcode.cn/problems/rotated-digits/solution/by-endlesscheng-9b96/)）
 	- [902. 最大为 N 的数字组合](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/)（[题解](https://leetcode.cn/problems/numbers-at-most-n-given-digit-set/solution/shu-wei-dp-tong-yong-mo-ban-xiang-xi-zhu-e5dg/)）1990
 	- [233. 数字 1 的个数](https://leetcode.cn/problems/number-of-digit-one/)（[题解](https://leetcode.cn/problems/number-of-digit-one/solution/by-endlesscheng-h9ua/)）
 	- [面试题 17.06. 2 出现的次数](https://leetcode.cn/problems/number-of-2s-in-range-lcci/)（[题解](https://leetcode.cn/problems/number-of-2s-in-range-lcci/solution/by-endlesscheng-x4mf/)）
 	    http://acm.hdu.edu.cn/showproblem.php?pid=3555
 	    http://acm.hdu.edu.cn/showproblem.php?pid=2089
+	- [600. 不含连续 1 的非负整数](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/)（[题解](https://leetcode.cn/problems/non-negative-integers-without-consecutive-ones/solution/by-endlesscheng-1egu/)）
 	- [2376. 统计特殊整数](https://leetcode.cn/problems/count-special-integers/)（[题解](https://leetcode.cn/problems/count-special-integers/solution/shu-wei-dp-mo-ban-by-endlesscheng-xtgx/)）2120
-	- [357. 统计各位数字都不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)
 	- [1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)（[题解](https://leetcode.cn/problems/numbers-with-repeated-digits/solution/by-endlesscheng-c5vg/)）2230
+	- [357. 统计各位数字都不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)
 	- [2999. 统计强大整数的数目](https://leetcode.cn/problems/count-the-number-of-powerful-integers/)
 	- [2827. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/) 2324
 	    https://atcoder.jp/contests/abc317/tasks/abc317_f
 	    [SCOI2009] windy 数 https://www.luogu.com.cn/problem/P2657
-	- [2719. 统计整数数目](https://leetcode.cn/problems/count-of-integers/) 2355
 	- [2801. 统计范围内的步进数字数目](https://leetcode.cn/problems/count-stepping-numbers-in-range/) 2367
-	- [1397. 找到所有好字符串](https://leetcode.cn/problems/find-all-good-strings/) 2667 *KMP
+	- [1397. 找到所有好字符串](https://leetcode.cn/problems/find-all-good-strings/) 2667
 		- https://www.luogu.com.cn/problem/P3193
 		- https://atcoder.jp/contests/abc295/tasks/abc295_f
 		- 与 AC 自动机结合 https://ac.nowcoder.com/acm/problem/20366
