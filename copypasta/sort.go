@@ -30,6 +30,7 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 - [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
 - [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
+https://codeforces.com/problemset/problem/600/B 1300
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案·原理
