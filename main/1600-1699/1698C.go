@@ -17,24 +17,16 @@ func cf1698C(_r io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		a := make([]int, n)
+		has := map[int]bool{}
 		for i := range a {
 			Fscan(in, &a[i])
+			has[a[i]] = true
 		}
 		sort.Ints(a)
-		if a[2] < 0 || a[1] < 0 && a[2] == 0 || a[n-3] > 0 || a[n-2] > 0 && a[n-3] == 0 {
-			Fprintln(out, "NO")
-			continue
-		}
-		has := map[int]bool{}
-		for _, v := range a {
-			has[v] = true
-		}
-		if n == 3 && !has[a[0]+a[1]+a[2]] ||
-			n == 4 && (!has[a[0]+a[1]+a[2]] || !has[a[0]+a[1]+a[3]] || !has[a[0]+a[2]+a[3]] || !has[a[1]+a[2]+a[3]]) ||
-			n > 4 && !has[a[0]+a[n-1]] {
-			Fprintln(out, "NO")
-		} else {
+		if has[a[0]+a[1]+a[2]] && has[a[0]+a[1]+a[n-1]] && has[a[0]+a[n-2]+a[n-1]] && has[a[n-3]+a[n-2]+a[n-1]] {
 			Fprintln(out, "YES")
+		} else {
+			Fprintln(out, "NO")
 		}
 	}
 }
