@@ -2335,14 +2335,10 @@ func _(abs func(int) int) {
 	}
 
 	/* 数位 DP
-
-	一般用 dp[i][j] 表示当前在第 i 位，前面维护了一个为 j 的值，且后面的位数可以随便选时的数字个数
-	在解释状态的含义时，网上的很多文章都漏了「后面的位数可以随便选」这个约束，只有加上这个约束，我们才能根据「是否紧贴上界」来完成相对应的代码逻辑
-
-	视频讲解，从 19:30 开始 https://www.bilibili.com/video/BV1rS4y1s721
+	[v1.0 模板视频讲解](https://www.bilibili.com/video/BV1rS4y1s721/?t=19m36s)
+	[v2.0 模板视频讲解](https://www.bilibili.com/video/BV1Fg4y1Q7wv/?t=31m28s)
 	https://zhuanlan.zhihu.com/p/348851463
 	https://www.bilibili.com/video/BV1MT4y1376C
-	https://www.bilibili.com/video/BV1yT4y1u7jW
 
 	入门题 https://atcoder.jp/contests/abc154/tasks/abc154_e
 	      https://atcoder.jp/contests/dp/tasks/dp_s
