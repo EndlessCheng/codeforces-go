@@ -243,7 +243,7 @@ class Solution:
         for i in pos_a:
             while j < m and pos_b[j] < i - k:
                 j += 1
-            if j < m and abs(pos_b[j] - i) <= k:
+            if j < m and pos_b[j] <= i + k:
                 ans.append(i)
         return ans
 
@@ -286,7 +286,7 @@ class Solution {
             while (j < m && posB.get(j) < i - k) {
                 j++;
             }
-            if (j < m && Math.abs(posB.get(j) - i) <= k) {
+            if (j < m && posB.get(j) <= i + k) {
                 ans.add(i);
             }
         }
@@ -341,7 +341,7 @@ public:
             while (j < m && posB[j] < i - k) {
                 j++;
             }
-            if (j < m && abs(posB[j] - i) <= k) {
+            if (j < m && posB[j] <= i + k) {
                 ans.push_back(i);
             }
         }
@@ -394,7 +394,7 @@ func beautifulIndices(s, a, b string, k int) (ans []int) {
 		for j < m && posB[j] < i-k {
 			j++
 		}
-		if j < m && abs(posB[j] - i) <= k {
+		if j < m && posB[j] <= i+k {
 			ans = append(ans, i)
 		}
 	}
@@ -431,8 +431,6 @@ func kmp(text, pattern string) (pos []int) {
 	}
 	return
 }
-
-func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
 #### 复杂度分析

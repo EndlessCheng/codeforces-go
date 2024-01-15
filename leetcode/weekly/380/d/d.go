@@ -10,7 +10,7 @@ func beautifulIndices(s, a, b string, k int) (ans []int) {
 		for j < m && posB[j] < i-k {
 			j++
 		}
-		if j < m && abs(posB[j] - i) <= k {
+		if j < m && posB[j] <= i+k {
 			ans = append(ans, i)
 		}
 	}
@@ -47,5 +47,3 @@ func kmp(text, pattern string) (pos []int) {
 	}
 	return
 }
-
-func abs(x int) int { if x < 0 { return -x }; return x }
