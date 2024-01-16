@@ -11,7 +11,7 @@ func cf1921F(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	const B = 300
+	const B = 150
 	var sum, sum2 [B][1e5 + B]int // 分块题目推荐用定长数组
 
 	var T, n, q, s, d, k int
