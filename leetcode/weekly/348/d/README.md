@@ -204,7 +204,7 @@ $\textit{limitLow}$ 的用法类似 $\textit{limitHigh}$，如果为 $\textit{li
 class Solution:
     def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
         n = len(num2)
-        num1 = '0' * (n - len(num1)) + num1  # 补前导零，和 num2 对齐
+        num1 = num1.zfill(n)  # 补前导零，和 num2 对齐
 
         @cache
         def dfs(i: int, s: int, limit_low: bool, limit_high: bool) -> int:
