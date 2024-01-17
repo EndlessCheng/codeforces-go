@@ -1,6 +1,6 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214
 func minimumTime(nums1, nums2 []int, x int) int {
@@ -11,12 +11,13 @@ func minimumTime(nums1, nums2 []int, x int) int {
 		s1 += nums1[i]
 		s2 += nums2[i]
 	}
-	sort.Slice(id, func(i, j int) bool { return nums2[id[i]] < nums2[id[j]] })
+	slices.SortFunc(id, func(i, j int) int { return nums2[i] - nums2[j] })
 
 	f := make([]int, n+1)
-	for _, i := range id {
-		for j := n; j > 0; j-- {
-			f[j] = max(f[j], f[j-1]+nums1[i]+nums2[i]*j)
+	for i, p := range id {
+		a, b := nums1[p], nums2[p]
+		for j := i + 1; j > 0; j-- {
+			f[j] = max(f[j], f[j-1]+a+b*j)
 		}
 	}
 
@@ -27,5 +28,3 @@ func minimumTime(nums1, nums2 []int, x int) int {
 	}
 	return -1
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
