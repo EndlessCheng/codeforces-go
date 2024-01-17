@@ -7,7 +7,6 @@ import (
 	"slices"
 	"sort"
 	"strconv"
-	"strings"
 )
 
 /* 动态规划
@@ -451,20 +450,21 @@ func _(abs func(int) int) {
 	// 环状最大两段子段和：思路类似，注意取反后需要传入 a[1:n-1] https://www.luogu.com.cn/problem/P1121 https://ac.nowcoder.com/acm/contest/7738/B
 	// 去掉一个最大值的最大子段和（值域比较小）https://codeforces.com/contest/1359/problem/D
 	// 变形题：
-	// - LC2321 https://leetcode.cn/problems/maximum-score-of-spliced-array/
-	// - LC1749 https://leetcode.cn/problems/maximum-absolute-sum-of-any-subarray/
-	//   - 另一种做法是计算前缀和的最大值与最小值的差
-	// - LC1191 重复 k 次 https://leetcode.cn/problems/k-concatenation-maximum-sum/
-	// - https://codeforces.com/problemset/problem/33/C
-	// - https://codeforces.com/problemset/problem/788/A
-	// - https://codeforces.com/problemset/problem/1155/D
-	// - https://codeforces.com/problemset/problem/1197/D 思路 https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz 里面搜本题链接
-	// - https://codeforces.com/problemset/problem/1373/D
-	// - 需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
-	// - 本质是去掉一个最小的子段 https://codeforces.com/contest/1845/problem/D
-	// - https://atcoder.jp/contests/arc137/tasks/arc137_b
+	// LC2321 https://leetcode.cn/problems/maximum-score-of-spliced-array/
+	// LC1749 https://leetcode.cn/problems/maximum-absolute-sum-of-any-subarray/
+	// - 另一种做法是计算前缀和的最大值与最小值的差
+	// LC1191 重复 k 次 https://leetcode.cn/problems/k-concatenation-maximum-sum/
+	// https://codeforces.com/problemset/problem/33/C
+	// https://codeforces.com/problemset/problem/1285/B 1300
+	// https://codeforces.com/problemset/problem/788/A
+	// https://codeforces.com/problemset/problem/1155/D
+	// https://codeforces.com/problemset/problem/1197/D 思路 https://docs.qq.com/sheet/DWGFoRGVZRmxNaXFz 里面搜本题链接
+	// https://codeforces.com/problemset/problem/1373/D
+	// 需要一些转换技巧 https://codeforces.com/problemset/problem/1082/E
+	// 本质是去掉一个最小的子段 https://codeforces.com/contest/1845/problem/D
+	// https://atcoder.jp/contests/arc137/tasks/arc137_b
 	// 多个小数组合并 https://codeforces.com/problemset/problem/75/D
-	//    这题做法需要用到上面说到的第二种思路
+	// - 这题做法需要用到上面说到的第二种思路
 	// 二维的情况（最大子阵和）可以枚举上下边界，转换成一维   O(n^3)
 	// 树上的情况 https://codeforces.com/contest/1843/problem/F2
 	maxSubarraySum := func(a []int) int {
@@ -1772,6 +1772,7 @@ func _(abs func(int) int) {
 	 https://www.luogu.com.cn/blog/Troverld/gai-shuai-ji-wang-xue-xi-bi-ji
 	 一类概率期望问题的杀器：势函数和鞅的停时定理 https://www.cnblogs.com/TinyWong/p/12887591.html https://codeforces.com/blog/entry/87598 最后一题
 	 鞅与停时定理学习笔记 https://www.luogu.com.cn/blog/gxy001/yang-yu-ting-shi-ding-li-xue-xi-bi-ji
+	todo 生成函数与期望 http://www.matrix67.com/blog/archives/4534
 
 	期望的可加性
 	https://zhidao.baidu.com/question/259203053.html
@@ -2372,7 +2373,7 @@ func _(abs func(int) int) {
 	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/)（会员题）2025 *LC233
 	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *非暴力做法 枚举数位和+DP
 	https://codeforces.com/contest/1710/problem/C
-	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://ac.nowcoder.com/acm/contest/28262/E
+	数位和 digsum(n)|n https://www.luogu.com.cn/problem/P4127 https://atcoder.jp/contests/abc336/tasks/abc336_e https://ac.nowcoder.com/acm/contest/28262/E
 	数位和是最后一位的倍数 https://www.lanqiao.cn/problems/5891/learning/?contest_id=145
 	数位乘积不超过 k https://atcoder.jp/contests/abc208/tasks/abc208_e
 	todo https://codeforces.com/problemset/problem/1245/F
@@ -2392,10 +2393,10 @@ func _(abs func(int) int) {
 
 	// 只做一次记忆化搜索的写法
 	digitDP := func(low, high int, sumUpper int) int {
-		lowS := strconv.Itoa(int(low))
+		lowS := strconv.Itoa(int(low)) // 不加前导零
 		highS := strconv.Itoa(int(high))
 		n := len(highS)
-		lowS = strings.Repeat("0", n-len(lowS)) + lowS // 对齐
+		diffLH := n - len(lowS)
 		dp := make([][]int, n)
 		for i := range dp {
 			dp[i] = make([]int, sumUpper+1)
@@ -2424,8 +2425,8 @@ func _(abs func(int) int) {
 			}
 
 			lo := 0
-			if limitLow {
-				lo = int(lowS[p] - '0')
+			if limitLow && p >= diffLH {
+				lo = int(lowS[p-diffLH] - '0')
 			}
 			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
 			hi := 9
@@ -2442,33 +2443,31 @@ func _(abs func(int) int) {
 		//ans := f(0, 0, true, true)
 
 		// 第二种写法（前导零影响答案）
-		// 对于需要判断/禁止前导零的情况，可以加一个额外的维度 isNum，表示已经填入了数字（没有前导零的合法状态），最后 p=n 的时候可以根据情况返回 1 或者 0
+		// 注意，仍然无需使用 isNum
 		// 下面是计算每个数都出现偶数次的方案数
-		var dfs func(int, int, bool, bool, bool) int
-		dfs = func(p, mask int, limitLow, limitHigh, isNum bool) (res int) {
+		var dfs func(int, int, bool, bool) int
+		dfs = func(p, mask int, limitLow, limitHigh bool) (res int) {
 			if p == n {
-				if !isNum {
-					return 0
-				}
+				// 如果 low=0，那么 0 是题目允许的吗？
+				//if limitLow {
+				//	return 0
+				//}
 				if mask > 0 {
 					return 0
 				}
 				return 1
 			}
-			if !limitLow && !limitHigh && isNum {
+			if !limitLow && !limitHigh {
 				dv := &dp[p][mask]
 				if *dv >= 0 {
 					return *dv
 				}
 				defer func() { *dv = res }()
 			}
-			if !isNum && lowS[p] == '0' { // 什么也不填
-				res += dfs(p+1, mask, true, false, false)
-			}
 
 			lo := 0
-			if limitLow {
-				lo = int(lowS[p] - '0')
+			if limitLow && p >= diffLH {
+				lo = int(lowS[p-diffLH] - '0')
 			}
 			// 注：不要修改这里！如果对数位有其它限制，应当写在下面 for 循环中
 			hi := 9
@@ -2477,16 +2476,18 @@ func _(abs func(int) int) {
 			}
 
 			d := lo
-			if !isNum {
-				d = max(lo, 1)
+			if limitLow && p < diffLH {
+				// 什么也不填
+				res = dfs(p+1, mask, true, false)
+				d++
 			}
 			for ; d <= hi; d++ {
-				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitHigh && d == hi, true)
+				res += dfs(p+1, mask^1<<d, limitLow && d == lo, limitHigh && d == hi)
 				res %= mod
 			}
 			return
 		}
-		ans := dfs(0, 0, true, true, false)
+		ans := dfs(0, 0, true, true)
 		return ans
 	}
 
