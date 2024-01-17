@@ -1,5 +1,7 @@
 package main
 
+import "slices"
+
 // https://space.bilibili.com/206214
 func minOperationsQueries(n int, edges [][]int, queries [][]int) []int {
 	type edge struct{ to, wt int }
@@ -75,13 +77,8 @@ func minOperationsQueries(n int, edges [][]int, queries [][]int) []int {
 			}
 			v = pa[v][0].p
 		}
-		lca := v
-		pathLen -= depth[lca] * 2
-		maxCnt := 0
-		for j := 0; j < 26; j++ {
-			maxCnt = max(maxCnt, cnt[j])
-		}
-		return pathLen - maxCnt
+		// 现在 v 是 LCA
+		return pathLen - depth[v] * 2 - slices.Max(cnt[:])
 	}
 
 	ans := make([]int, len(queries))
@@ -90,5 +87,3 @@ func minOperationsQueries(n int, edges [][]int, queries [][]int) []int {
 	}
 	return ans
 }
-
-func max(a, b int) int { if b > a { return b }; return a }

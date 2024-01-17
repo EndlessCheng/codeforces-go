@@ -340,13 +340,8 @@ func minOperationsQueries(n int, edges [][]int, queries [][]int) []int {
 			}
 			v = pa[v][0].p
 		}
-		lca := v
-		pathLen -= depth[lca] * 2
-		maxCnt := 0
-		for j := 0; j < 26; j++ {
-			maxCnt = max(maxCnt, cnt[j])
-		}
-		return pathLen - maxCnt
+		// 现在 v 是 LCA
+		return pathLen - depth[v] * 2 - slices.Max(cnt[:])
 	}
 
 	ans := make([]int, len(queries))
@@ -355,11 +350,11 @@ func minOperationsQueries(n int, edges [][]int, queries [][]int) []int {
 	}
 	return ans
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}((n+q)U\log n)$，其中 $q$ 为 $\textit{queries}$ 的长度，$U$ 为边权种类数。
 - 空间复杂度：$\mathcal{O}(nU\log n)$。返回值的长度不计入。
+
+[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
