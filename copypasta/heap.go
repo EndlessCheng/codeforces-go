@@ -43,7 +43,7 @@ https://codeforces.com/problemset/problem/1251/E2
 https://atcoder.jp/contests/agc057/tasks/agc057_b
 
 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
-滑动窗口中位数 LC480 https://leetcode-cn.com/problems/sliding-window-median/
+滑动窗口中位数 LC480 https://leetcode.cn/problems/sliding-window-median/
 https://ac.nowcoder.com/acm/contest/65157/C
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
@@ -60,7 +60,7 @@ https://ac.nowcoder.com/acm/contest/65157/C
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
 https://codeforces.com/problemset/problem/1526/C2
-JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode-cn.com/problems/course-schedule-iii/
+JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode.cn/problems/course-schedule-iii/
 用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
 股票买卖 https://codeforces.com/problemset/problem/865/D
 https://atcoder.jp/contests/abc249/tasks/abc249_f
@@ -174,14 +174,14 @@ func (h *lazyHeap) empty() bool { h.do(); return len(h.IntSlice) == 0 }
 
 // 对顶堆求动态中位数：medians[i] = a[:i+1] 的中位数
 // https://www.luogu.com.cn/problem/P1168
-// LC295 https://leetcode-cn.com/problems/find-median-from-data-stream/
-// 与树状数组结合 https://leetcode-cn.com/contest/season/2020-fall/problems/5TxKeK/
+// LC295 https://leetcode.cn/problems/find-median-from-data-stream/
+// 与树状数组结合 https://leetcode.cn/contest/season/2020-fall/problems/5TxKeK/
 func dynamicMedians(a []int) []int {
 	n := len(a)
 	medians := make([]int, 0, n)
 	var big, small hp
 	for _, v := range a {
-		if len(big.IntSlice) == len(small.IntSlice) {
+		if big.Len() == small.Len() {
 			big.push(-small.pushPop(-v))
 		} else {
 			small.push(-big.pushPop(v))
