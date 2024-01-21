@@ -1,0 +1,8 @@
+"abcde"
+5
+
+"xycdefghij"
+12
+
+
+

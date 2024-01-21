@@ -1,0 +1,11 @@
+"abcde"
+5
+
+"xyzxyzxyzxyz"
+12
+
+"aabbccddeeffgghhiiiiii"
+24
+
+
+
