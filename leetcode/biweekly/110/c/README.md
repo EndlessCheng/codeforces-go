@@ -1,14 +1,12 @@
-下午两点[【b站@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，欢迎关注！
+[视频讲解](https://www.bilibili.com/video/BV1bV4y1e72v/) 第三题。
 
----
-
-### 提示 1
+## 提示 1
 
 最终所有元素一定变成了一个在 $\textit{nums}$ 中的数。
 
 枚举这个数。
 
-### 提示 2
+## 提示 2
 
 考虑把数字 $x$「扩散」到其它位置，那么每一秒 $x$ 都可以向左右扩散一位。
 
@@ -22,7 +20,7 @@ $$
 
 取所有耗时的最小值，即为答案。
 
-### 提示 3
+## 提示 3
 
 统计所有相同数字的下标，记到一个哈希表 $\textit{pos}$ 中。
 
@@ -41,6 +39,53 @@ class Solution:
             mx = max((j - i) // 2 for i, j in pairwise(a))
             ans = min(ans, mx)
         return ans
+```
+
+```java [sol-Java]
+public class Solution {
+    public int minimumSeconds(List<Integer> nums) {
+        int n = nums.size();
+        Map<Integer, List<Integer>> pos = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            pos.computeIfAbsent(nums.get(i), k -> new ArrayList<>()).add(i);
+        }
+
+        int ans = n;
+        for (List<Integer> a : pos.values()) {
+            a.add(a.get(0) + n);
+            int mx = 0;
+            for (int i = 1; i < a.size(); ++i) {
+                mx = Math.max(mx, (a.get(i) - a.get(i - 1)) / 2);
+            }
+            ans = Math.min(ans, mx);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumSeconds(vector<int> &nums) {
+        int n = nums.size();
+        unordered_map<int, vector<int>> pos;
+        for (int i = 0; i < n; i++) {
+            pos[nums[i]].push_back(i);
+        }
+
+        int ans = n;
+        for (auto &[_, a] : pos) {
+            a.push_back(a[0] + n);
+            int mx = 0;
+            for (int i = 1; i < a.size(); ++i) {
+                mx = max(mx, (a[i] - a[i - 1]) / 2);
+            }
+            ans = min(ans, mx);
+        }
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -62,12 +107,11 @@ func minimumSeconds(nums []int) int {
 	}
 	return ans
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
