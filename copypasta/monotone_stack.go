@@ -35,8 +35,6 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) 1709
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
-- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
-    - https://codeforces.com/problemset/problem/1313/C2 1900
 - [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
     - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
@@ -76,6 +74,8 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 
 #### 单调栈优化 DP
 - [1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/) 2035 按照最大值分类讨论
+- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
+    - https://codeforces.com/problemset/problem/1313/C2 1900
 - [2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/) 2582
 - [2355. 你能拿走的最大图书数量](https://leetcode.cn/problems/maximum-number-of-books-you-can-take/)（会员题）
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C 2100
