@@ -7,11 +7,8 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func cf445A(_r io.Reader, _w io.Writer) {
+func cf445A(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-
 	var n, m int
 	var s []byte
 	Fscan(in, &n, &m)
@@ -19,11 +16,7 @@ func cf445A(_r io.Reader, _w io.Writer) {
 		Fscan(in, &s)
 		for j, b := range s {
 			if b == '.' {
-				if (i+j)%2 > 0 {
-					s[j] = 'W'
-				} else {
-					s[j] = 'B'
-				}
+				s[j] = "BW"[(i+j)%2]
 			}
 		}
 		Fprintf(out, "%s\n", s)
