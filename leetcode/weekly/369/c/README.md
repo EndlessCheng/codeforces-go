@@ -1,8 +1,8 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/) 第三题。
+[视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/) 第三题。
 
 ## 前置知识
 
-请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
+请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)
 
 ## 写法一：记忆化搜索
 
@@ -71,23 +71,26 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-public:
-    long long minIncrementOperations(vector<int>& nums, int k) {
-        int n = nums.size();
-        vector<vector<long long>> memo(n, vector<long long>(3, -1)); // -1 表示没有计算过
-        function<long long(int, int)> dfs = [&](int i, int j) -> long long {
-            if (i < 0) {
-                return 0;
-            }
-            auto &res = memo[i][j]; // 注意这里是引用
-            if (res != -1) { // 之前计算过
-                return res;
-            }
-            res = dfs(i - 1, 0) + max(k - nums[i], 0); // nums[i] 增大
-            if (j < 2) res = min(res, dfs(i - 1, j + 1)); // nums[i] 不增大
+    vector<array<long long, 3>> memo;
+    
+    long long dfs(vector<int> &nums, int i, int j, int k) {
+        if (i < 0) {
+            return 0;
+        }
+        auto &res = memo[i][j]; // 注意这里是引用
+        if (res != -1) { // 之前计算过
             return res;
-        };
-        return dfs(n - 1, 0);
+        }
+        res = dfs(nums, i - 1, 0, k) + max(k - nums[i], 0); // nums[i] 增大
+        if (j < 2) res = min(res, dfs(nums, i - 1, j + 1, k)); // nums[i] 不增大
+        return res;
+    }
+
+public:
+    long long minIncrementOperations(vector<int> &nums, int k) {
+        int n = nums.size();
+        memo = vector<array<long long, 3>>(n, {-1, -1, -1}); // -1 表示没有计算过
+        return dfs(nums, n - 1, 0, k);
     }
 };
 ```
@@ -117,9 +120,6 @@ func minIncrementOperations(nums []int, k int) int64 {
 	}
 	return int64(dfs(n-1, 0))
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -148,7 +148,7 @@ class Solution:
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long minIncrementOperations(vector<int>& nums, int k) {
+    long long minIncrementOperations(vector<int> &nums, int k) {
         long long f0 = 0, f1 = 0, f2 = 0;
         for (int x : nums) {
             long long inc = f0 + max(k - x, 0);
@@ -187,9 +187,6 @@ func minIncrementOperations(nums []int, k int) int64 {
 	}
 	return int64(f0)
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
