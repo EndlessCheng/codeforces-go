@@ -60,6 +60,7 @@ https://atcoder.jp/contests/abc267/tasks/abc267_h
 
 /* GF: generating function 生成函数/母函数/多项式计数
 https://en.wikipedia.org/wiki/Generating_function
+todo generatingfunctionology https://www2.math.upenn.edu/~wilf/gfologyLinked2.pdf
 
 普通生成函数 OGF
 指数生成函数 EGF 入门题 https://codeforces.com/problemset/problem/891/E 3000
@@ -69,7 +70,7 @@ todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shu
  https://www.bilibili.com/video/BV1Zg411T7Eq
 https://oi-wiki.org/math/gen-func/intro/
 OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
-【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/
+【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/ https://www.luogu.com.cn/blog/lx-2003/gf-correct
 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
 狄利克雷相关（含 DGFs）https://www.luogu.com.cn/blog/command-block/gcd-juan-ji-xiao-ji
 狄利克雷生成函数浅谈 https://www.luogu.com.cn/blog/gxy001/di-li-ke-lei-sheng-cheng-han-shuo-qian-tan
