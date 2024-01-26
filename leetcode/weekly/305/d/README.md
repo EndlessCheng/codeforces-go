@@ -1,29 +1,24 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，感兴趣的小伙伴可以来 [关注](https://space.bilibili.com/206214/dynamic) 一波哦~
+[视频讲解](https://www.bilibili.com/video/BV1CN4y1V7uE) 第四题。
 
----
+看到**子序列**和**相邻**就可以往 DP 上想（回顾一下经典题 [300. 最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/)，它也是子序列和相邻）。
 
-定义 $f[i][c]$ 表示 $s$ 的前 $i$ 个字母中的以 $c$ 结尾的理想字符串的最长长度。
+字符串题目套路：枚举字符。定义 $f[i][c]$ 表示 $s$ 的前 $i$ 个字母中的以 $c$ 结尾的理想字符串的最长长度。
 
-考虑 $s[i]$ 选或不选，根据题意：
+根据题意：
 
-- 选，需要从 $f[i-1]$ 中的 $[s[i]-k,s[i]+k]$ 范围内的字符转移过来，即
+- 选 $s[i]$ 作为理想字符串中的字符，需要从 $f[i-1]$ 中的 $[s[i]-k,s[i]+k]$ 范围内的字符转移过来，即
 
   $$
   f[i][s[i]] = 1 + \max_{c=\max(s[i]-k,0)}^{\min(s[i]+k,25)} f[i-1][c]
   $$
 
-- 不选，则 $f[i][c] = f[i-1][c]$。
+- 其余情况，$f[i][c] = f[i-1][c]$。
 
 答案为 $\max(f[n-1])$。
 
 代码实现时第一维可以压缩掉。
 
-#### 复杂度分析
-
-- 时间复杂度：$O(nk)$，其中 $n$ 为 $s$ 的长度。
-- 空间复杂度：$O(|\Sigma|)$，其中 $|\Sigma|$ 为字符集合的大小，本题中字符均为小写字母，所以 $|\Sigma|=26$。
-
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def longestIdealString(self, s: str, k: int) -> int:
         f = [0] * 26
@@ -33,14 +28,15 @@ class Solution:
         return max(f)
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int longestIdealString(String s, int k) {
-        var f = new int[26];
-        for (var i = 0; i < s.length(); i++) {
-            var c = s.charAt(i) - 'a';
-            for (var j = Math.max(c - k, 0); j <= Math.min(c + k, 25); j++)
+        int[] f = new int[26];
+        for (char c : s.toCharArray()) {
+            c -= 'a';
+            for (int j = Math.max(c - k, 0); j <= Math.min(c + k, 25); j++) {
                 f[c] = Math.max(f[c], f[j]);
+            }
             f[c]++;
         }
         return Arrays.stream(f).max().getAsInt();
@@ -48,36 +44,32 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     int longestIdealString(string &s, int k) {
-        int f[26] = {};
+        int f[26]{};
         for (char c : s) {
             c -= 'a';
             f[c] = 1 + *max_element(f + max(c - k, 0), f + min(c + k + 1, 26));
         }
-        return *max_element(f, f + 26);
+        return ranges::max(f);
     }
 };
 ```
 
-```go [sol1-Go]
-func longestIdealString(s string, k int) (ans int) {
+```go [sol-Go]
+func longestIdealString(s string, k int) int {
 	f := [26]int{}
 	for _, c := range s {
 		c := int(c - 'a')
-		for j := max(c-k, 0); j <= min(c+k, 25); j++ {
-			f[c] = max(f[c], f[j])
-		}
-		f[c]++
+		f[c] = 1 + slices.Max(f[max(c-k, 0):min(c+k+1, 26)])
 	}
-	for _, v := range f {
-		ans = max(ans, v)
-	}
-	return
+	return slices.Max(f[:])
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：$O(nk)$，其中 $n$ 为 $s$ 的长度。
+- 空间复杂度：$O(|\Sigma|)$，其中 $|\Sigma|$ 为字符集合的大小，本题中字符均为小写字母，所以 $|\Sigma|=26$。
