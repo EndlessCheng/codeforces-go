@@ -1,21 +1,20 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func maxNumberOfAlloys(_, _, budget int, composition [][]int, stock, cost []int) (ans int) {
-	mx := stock[0]
-	for _, s := range stock {
-		mx = min(mx, s)
-	}
-	mx += budget
-	for _, com := range composition {
-		res := sort.Search(mx, func(num int) bool {
-			num++
+	mx := slices.Min(stock) + budget
+	for _, comp := range composition {
+		ans += sort.Search(mx-ans, func(num int) bool {
+			num += ans + 1
 			money := 0
 			for i, s := range stock {
-				if s < com[i]*num {
-					money += (com[i]*num - s) * cost[i]
+				if s < comp[i]*num {
+					money += (comp[i]*num - s) * cost[i]
 					if money > budget {
 						return true
 					}
@@ -23,10 +22,6 @@ func maxNumberOfAlloys(_, _, budget int, composition [][]int, stock, cost []int)
 			}
 			return false
 		})
-		ans = max(ans, res)
 	}
 	return
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
