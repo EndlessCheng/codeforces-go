@@ -45,6 +45,7 @@
   - [笛卡尔树 cartesian_tree.go](/copypasta/cartesian_tree.go)
   - [二叉搜索树公共方法 bst.go](/copypasta/bst.go)
   - [Treap treap.go](/copypasta/treap.go)
+    - [前 k 小元素和](/copypasta/treap_kthsum.go)
   - [伸展树 splay.go](/copypasta/splay.go)
   - [动态树 LCT link_cut_tree.go](/copypasta/link_cut_tree.go)
   - [红黑树 red_black_tree.go](/copypasta/red_black_tree.go)
