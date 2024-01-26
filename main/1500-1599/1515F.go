@@ -33,7 +33,8 @@ func cf1515F(_r io.Reader, _w io.Writer) {
 		g[w] = append(g[w], edge{v, i})
 	}
 
-	var f, r []int
+	Fprintln(out, "YES")
+	todo := []int{}
 	vis := make([]bool, n)
 	var dfs func(int)
 	dfs = func(v int) {
@@ -44,22 +45,17 @@ func cf1515F(_r io.Reader, _w io.Writer) {
 				continue
 			}
 			dfs(w)
-			if a[w] > x {
-				f = append(f, e.eid)
+			if a[w] >= x {
+				Fprintln(out, e.eid)
 				a[v] += a[w] - x
 			} else {
-				r = append(r, e.eid)
+				todo = append(todo, e.eid)
 			}
 		}
 	}
 	dfs(0)
-
-	Fprintln(out, "YES")
-	for _, i := range f {
-		Fprintln(out, i)
-	}
-	for i := len(r) - 1; i >= 0; i-- {
-		Fprintln(out, r[i])
+	for i := len(todo) - 1; i >= 0; i-- {
+		Fprintln(out, todo[i])
 	}
 }
 
