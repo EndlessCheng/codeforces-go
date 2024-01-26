@@ -20,8 +20,8 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
 - [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
 - [704. 二分查找](https://leetcode.cn/problems/binary-search/)
-- [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) *应用
-- [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) *应用
+- [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) 1196 *应用
+- [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) 1477 *应用
 - [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
@@ -31,6 +31,7 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
 - [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
 https://codeforces.com/problemset/problem/600/B 1300
+https://codeforces.com/problemset/problem/165/B 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案·原理
@@ -64,8 +65,10 @@ https://codeforces.com/problemset/problem/1118/D2 1700
 DP https://codeforces.com/contest/883/problem/I 1900
 
 #### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
+- [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
 - [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
 - [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/) 1940
+- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
 - [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/) 1965
 - [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/) 2081
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
