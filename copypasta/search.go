@@ -1118,6 +1118,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/) 1666
 - [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/) 1826
 - [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/) 1837
+- [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
 https://atcoder.jp/contests/abc317/tasks/abc317_e
 
 #### 综合应用
