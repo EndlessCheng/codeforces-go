@@ -299,4 +299,78 @@ func minimumCost(nums []int, k, dist int) int64 {
 - 时间复杂度：$\mathcal{O}(n\log \textit{dist})$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(\textit{dist})$。
 
+#### 附：对顶堆+懒删除
+
+```go [sol-Go]
+func minimumCost(nums []int, k int, dist int) int64 {
+	k--
+	l := &lazyHeap{todo: map[int]int{}} // 最大堆
+	r := &lazyHeap{todo: map[int]int{}} // 最小堆，所有元素取反
+	for _, x := range nums[1 : dist+2] {
+		l.push(x)
+	}
+	for l.size > k {
+		r.push(-l.pop())
+	}
+
+	mn := l.sum
+	for i := dist + 2; i < len(nums); i++ {
+		// 移除 out
+		out := nums[i-dist-1]
+		if out <= l.top() {
+			l.del(out)
+		} else {
+			r.del(-out)
+		}
+
+		// 添加 in
+		in := nums[i]
+		if in < l.top() {
+			l.push(in)
+		} else {
+			r.push(-in)
+		}
+
+		// 维护大小
+		if l.size == k-1 {
+			l.push(-r.pop())
+		} else if l.size == k+1 {
+			r.push(-l.pop())
+		}
+
+		mn = min(mn, l.sum)
+	}
+	return int64(nums[0] + mn)
+}
+
+type lazyHeap struct {
+	sort.IntSlice
+	todo map[int]int
+	size int // 实际大小
+	sum  int // 实际元素和
+}
+
+func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除
+func (h *lazyHeap) push(v int) {
+	if h.todo[v] > 0 {
+		h.todo[v]--
+	} else {
+		heap.Push(h, v)
+	}
+	h.size++
+	h.sum += v
+}
+func (h *lazyHeap) pop() int { h.do(); h.size--; v := heap.Pop(h).(int); h.sum -= v; return v }
+func (h *lazyHeap) top() int { h.do(); return h.IntSlice[0] }
+func (h *lazyHeap) do() {
+	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
+		h.todo[h.IntSlice[0]]--
+		heap.Pop(h)
+	}
+}
+```
+
 [2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
