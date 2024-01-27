@@ -51,6 +51,7 @@ https://codeforces.com/contest/1915/problem/F
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1334/F 2500
 LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
+贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
  看着像三维偏序 https://codeforces.com/problemset/problem/12/D 2400
  https://codeforces.com/gym/101649 I 题
