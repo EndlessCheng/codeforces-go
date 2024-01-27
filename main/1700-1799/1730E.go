@@ -10,18 +10,21 @@ import (
 func cf1730E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	const mx = 1000001
-	divisors := [mx][]int{}
-	for i := 1; i < mx; i++ {
+	divisors := [mx][]uint32{}
+	for i := uint32(1); i < mx; i++ {
 		for j := i * 2; j < mx; j += i {
 			divisors[j] = append(divisors[j], i)
 		}
 	}
 
 	var T, n int
+	pos := [mx][]int{}
 	for Fscan(in, &T); T > 0; T-- {
+		for i := range pos {
+			pos[i] = pos[i][:0]
+		}
 		Fscan(in, &n)
 		a := make([]int, n)
-		pos := [mx][]int{}
 		for i := range a {
 			Fscan(in, &a[i])
 			pos[a[i]] = append(pos[a[i]], i)
@@ -63,66 +66,23 @@ func cf1730E(_r io.Reader, out io.Writer) {
 
 		ans := 0
 		for i, v := range a {
-			l, r := leftHi[i], rightHi[i]
-			ans += min(r, rightLo[i]) - i
+			r := rightHi[i]
+			ans += min(rightLo[i], r) - i // 全为 v 的子数组个数
 			for _, d := range divisors[v] {
 				ps := pos[d]
-				if len(ps) == 0 {
-					continue
+				l := leftHi[i]
+				if len(ps) > 0 && ps[0] < i {
+					j := ps[0]
+					ps = ps[1:]
+					if j > l && rightLo[j] > i {
+						ans += (j - max(leftLo[j], l)) * (min(rightLo[j], r) - i)
+					}
+					l = max(l, j) // 避免重复统计
 				}
-				firstDi := ps[0]
-				if firstDi >= r {
-					continue
-				}
-				lf, rf := leftLo[firstDi], rightLo[firstDi]
-				lf = max(lf, l)
-				rf = min(rf, r)
-				if firstDi > i {
-					if lf > i {
-						continue
-					}
-					// 左边 (lf, i] 右边 [firstDi, rf)
-					ans += (i - lf) * (rf - firstDi)
-				} else if len(ps) == 1 {
-					if firstDi <= l || rf < i {
-						continue
-					}
-					// 左边 (lf, firstDi] 右边 [i, rf)
-					ans += (firstDi - lf) * (rf - i)
-				} else {
-					secondDi := ps[1]
-					if firstDi <= l && secondDi >= r {
-						continue
-					}
-					ls, rs := leftLo[secondDi], rightLo[secondDi]
-					if ls > i {
-						// 由 firstDi 负责
-						if firstDi > l && rf > i {
-							// 左边 (lf, firstDi] 右边 [i, rf)
-							ans += (firstDi - lf) * (rf - i)
-						}
-						continue
-					}
-					ls = max(ls, l)
-					rs = min(rs, r)
-					if rf < i {
-						// 由 secondDi 负责
-						if secondDi < r {
-							// 左边 (ls, i] 右边 [secondDi, rs)
-							ans += (i - ls) * (rs - secondDi)
-						}
-						continue
-					}
-					if firstDi <= l {
-						// 左边 (ls, i] 右边 [secondDi, rs)
-						ans += (i - ls) * (rs - secondDi)
-					} else if secondDi >= r {
-						// 左边 (lf, firstDi] 右边 [i, rf)
-						ans += (firstDi - lf) * (rf - i)
-					} else {
-						// 左边 (lf, i] 右边 [i, rs) 减去
-						// 左边 (firstDi, i] 右边 [i, secondDi)
-						ans += (i-lf)*(rs-i) - (i-firstDi)*(secondDi-i)
+				if len(ps) > 0 {
+					j := ps[0]
+					if j < r && leftLo[j] < i {
+						ans += (i - max(leftLo[j], l)) * (min(rightLo[j], r) - j)
 					}
 				}
 			}
