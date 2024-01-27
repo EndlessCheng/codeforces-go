@@ -5,11 +5,12 @@ import (
 	"slices"
 )
 
-/* 根号分治 Sqrt Decomposition
+/* 根号算法 根号分治 Sqrt Decomposition
 一种技巧：组合两种算法从而降低复杂度 O(n^2) -> O(n√n)
 常用于图论或者某些数组统计类题目
 参考 Competitive Programmer’s Handbook Ch.27
 王悦同《根号算法——不只是分块》
+todo 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-threshold/pu-li-mei-xue-qian-tan-gen-hao-fen-zhi
 
 题目花样很多，下面举个例子
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
@@ -23,6 +24,7 @@ import (
 
 可以从这题上手 https://www.luogu.com.cn/problem/P3396 同 https://codeforces.com/contest/103/problem/D
 https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
+https://codeforces.com/problemset/problem/1921/F
 https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/425/D
 https://codeforces.com/problemset/problem/677/D
@@ -67,6 +69,8 @@ Unrolled linked list https://en.wikipedia.org/wiki/Unrolled_linked_list
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
 todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 区间 rank 的 N 种解法 https://www.luogu.com.cn/blog/Peterprpr/HunterNoHorse
+浅谈归约矩乘 https://www.luogu.com.cn/blog/Ynoi/qian-tan-gui-yue-ju-cheng
+为什么有些题只能用根号科技？https://www.luogu.com.cn/blog/include-c/sqrt-tech
 
 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 好题 https://codeforces.com/problemset/problem/91/E
