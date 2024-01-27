@@ -70,6 +70,7 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 - [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/) 2397
 - [2281. 巫师的总力量和（最小值*和）](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/) 2621
 子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
+最大值是最小值的倍数 https://codeforces.com/problemset/problem/1730/E 2700
 更多「贡献」话题见 common.go
 
 #### 单调栈优化 DP
