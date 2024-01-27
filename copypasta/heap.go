@@ -25,7 +25,7 @@ https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
 
-思维·转换
+#### 思维·转换
 https://www.luogu.com.cn/problem/P5930
 - 3D 接雨水 LC407 https://leetcode.cn/problems/trapping-rain-water-ii/
 https://www.luogu.com.cn/problem/P2859
@@ -41,22 +41,17 @@ https://codeforces.com/problemset/problem/1251/E2
 - 初始时，在 y=x 直线下方的点都可以视作是「免费」的，如果有不能免费的点，应考虑从最后一个不能免费的到末尾这段中的最小 pi，然后将 y=x 抬高成 y=x+1 继续比较
 - 维护最小 pi 可以用最小堆
 https://atcoder.jp/contests/agc057/tasks/agc057_b
-
-求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
-滑动窗口中位数 LC480 https://leetcode.cn/problems/sliding-window-median/
 https://ac.nowcoder.com/acm/contest/65157/C
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 
-基于堆的反悔贪心（反悔堆）
-
+#### 基于堆的反悔贪心（反悔堆）
 - [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
 - [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/)
 - [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)
 - [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/)
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
-
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
 https://codeforces.com/problemset/problem/1526/C2
@@ -66,7 +61,7 @@ JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcod
 https://atcoder.jp/contests/abc249/tasks/abc249_f
 前缀和 https://codeforces.com/problemset/problem/1779/C 推荐
 
-区间贪心相关
+#### 区间贪心相关
 最小不相交区间划分数
 - https://www.acwing.com/problem/content/113/
 - https://www.acwing.com/problem/content/908/
@@ -97,7 +92,7 @@ func (h *hp) replace(v int) int {
 	return top
 }
 
-// pushPop 将 v 入堆，然后弹出并返回堆顶
+// pushPop 先将 v 入堆，然后弹出并返回堆顶
 // 使用见下面的 dynamicMedians
 func (h *hp) pushPop(v int) int {
 	if h.Len() > 0 && v > h.IntSlice[0] { // 最大堆改成 v < h.IntSlice[0]
@@ -107,7 +102,29 @@ func (h *hp) pushPop(v int) int {
 	return v
 }
 
-//
+// 对顶堆：前缀中位数
+// 返回数组 medians，其中 medians[i] 等于前缀 a[:i+1] 的中位数
+// 如果前缀长度是偶数，取大的那个作为中位数
+// LC295 https://leetcode.cn/problems/find-median-from-data-stream/
+// - https://www.luogu.com.cn/problem/P1168
+// 与树状数组结合 https://leetcode.cn/contest/season/2020-fall/problems/5TxKeK/
+func dynamicMedians(a []int) []int {
+	medians := make([]int, len(a))
+	l := hp{} // 大根堆，元素取反
+	r := hp{} // 小根堆
+	for i, v := range a {
+		if l.Len() == r.Len() {
+			r.push(-l.pushPop(-v))
+		} else {
+			l.push(-r.pushPop(v))
+		}
+		// 如果 i 是奇数，另一个中位数是 -l.IntSlice[0]
+		medians[i] = r.IntSlice[0]
+	}
+	return medians
+}
+
+////
 
 // 自定义类型（int32 可以替换成其余类型）
 type hp32 []int32
@@ -120,7 +137,7 @@ func (h *hp32) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]
 func (h *hp32) push(v int32)      { heap.Push(h, v) }
 func (h *hp32) pop() int32        { return heap.Pop(h).(int32) } // 稍微封装一下，方便使用
 
-//
+////
 
 // 支持修改、删除指定元素的堆
 // 用法：调用 push 会返回一个 *viPair 指针，记作 p
@@ -144,125 +161,129 @@ func (h *mh) pop() *viPair         { return heap.Pop(h).(*viPair) }
 func (h *mh) fix(i int)            { heap.Fix(h, i) }
 func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 
-// 另一种实现：懒删除
+////
+
+// 懒删除堆
 // https://codeforces.com/problemset/problem/796/C
 type lazyHeap struct {
 	sort.IntSlice
 	todo map[int]int
+	size int // 实际大小
+	sum  int // 实际元素和
 }
 
-//func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
-func (h *lazyHeap) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *lazyHeap) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
-func (h *lazyHeap) del(v int)  { h.todo[v]++ }
-func (h *lazyHeap) do() {
-	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
-		h.todo[h.IntSlice[0]]--
-		heap.Pop(h)
-	}
-}
+func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除
 func (h *lazyHeap) push(v int) {
 	if h.todo[v] > 0 {
 		h.todo[v]--
 	} else {
 		heap.Push(h, v)
 	}
+	h.size++
+	h.sum += v
 }
-func (h *lazyHeap) pop() int    { h.do(); return heap.Pop(h).(int) }
-func (h *lazyHeap) top() int    { h.do(); return h.IntSlice[0] }
-func (h *lazyHeap) empty() bool { h.do(); return len(h.IntSlice) == 0 }
-
-// 对顶堆求动态中位数：medians[i] = a[:i+1] 的中位数
-// https://www.luogu.com.cn/problem/P1168
-// LC295 https://leetcode.cn/problems/find-median-from-data-stream/
-// 与树状数组结合 https://leetcode.cn/contest/season/2020-fall/problems/5TxKeK/
-func dynamicMedians(a []int) []int {
-	n := len(a)
-	medians := make([]int, 0, n)
-	var big, small hp
-	for _, v := range a {
-		if big.Len() == small.Len() {
-			big.push(-small.pushPop(-v))
-		} else {
-			small.push(-big.pushPop(v))
-		}
-		medians = append(medians, big.IntSlice[0])
+func (h *lazyHeap) _do() {
+	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
+		h.todo[h.IntSlice[0]]--
+		heap.Pop(h)
 	}
-	return medians
 }
-
-// 下面是对顶堆模板
-// 可以用来动态维护第 k 小 / 前 k 小的元素之和
-// 还支持调整 k 的值
-// 这里 k 就是 left 的大小
-// 第 k 小 = left.a[0]
-// 前 k 小的元素之和 = left.s
-// 应用见 https://codeforces.com/contest/1374/problem/E2 https://codeforces.com/contest/1374/submission/193671570
-type maxMinHeap struct {
-	left  *maxHp
-	right *minHp
-}
-
-// 向对顶堆中插入 v
-// 保证 left 大小不变
-func (h *maxMinHeap) push(v pair) {
-	h.right.push(h.left.pushPop(v))
-	//h.left.push(h.right.pushPop(v)) // 这样写就是插入 v 的同时扩大 left
-}
-
-// 缩小 left
-func (h *maxMinHeap) l2r() {
-	if h.left.Len() == 0 {
-		panic("h.left is empty")
-	}
-	h.right.push(heap.Pop(h.left).(pair))
-}
-
-// 扩大 left
-func (h *maxMinHeap) r2l() {
-	if h.right.Len() == 0 {
-		panic("h.right is empty")
-	}
-	h.left.push(heap.Pop(h.right).(pair))
-}
-
-type pair struct{ t, i int }
-type minHp struct {
-	a []pair
-	s int // 维护堆中元素之和
-}
-
-func (h minHp) Len() int           { return len(h.a) }
-func (h minHp) Less(i, j int) bool { return h.a[i].t < h.a[j].t }
-func (h minHp) Swap(i, j int)      { h.a[i], h.a[j] = h.a[j], h.a[i] }
-func (h *minHp) Push(v any)        { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
-func (h *minHp) Pop() any          { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
-func (h *minHp) push(v pair)       { heap.Push(h, v) }
-func (h *minHp) pushPop(v pair) pair {
-	if h.Len() > 0 && v.t > h.a[0].t {
-		h.s += v.t - h.a[0].t
-		v, h.a[0] = h.a[0], v
+func (h *lazyHeap) pop() int    { h._do(); h.size--; v := heap.Pop(h).(int); h.sum -= v; return v }
+func (h *lazyHeap) top() int    { h._do(); return h.IntSlice[0] }
+func (h *lazyHeap) empty() bool { return h.size == 0 }
+func (h *lazyHeap) pushPop(v int) int {
+	if h.size > 0 && v < h.top() { // 最大堆，v 比堆顶小就替换堆顶
+		h.sum += v - h.IntSlice[0]
+		v, h.IntSlice[0] = h.IntSlice[0], v
 		heap.Fix(h, 0)
 	}
 	return v
 }
 
-type maxHp struct {
-	a []pair
-	s int
+// 对顶堆：滑动窗口前 k 小元素和
+// 保证 1 <= k <= windowSize <= n
+// 返回数组 kthSum，其中 kthSum[i] 为 a[i:i+windowSize] 的前 k 小元素和
+// LC3013 https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
+func slidingWindowKthSum(a []int, windowSize, k int) []int {
+	h := newKthHeap()
+	// 注：也可以 copy 一份 a[:k] 然后堆化
+	for _, v := range a[:k] {
+		h.l.push(v)
+	}
+	for _, v := range a[k:windowSize] {
+		h.add(v)
+	}
+	kthSum := make([]int, len(a)-windowSize+1)
+	kthSum[0] = h.l.sum
+	for r := windowSize; r < len(a); r++ {
+		l := r - windowSize // 前一个窗口的左端点
+		h.add(a[r])
+		h.del(a[l]) // 先加再删（注意 windowSize=1 的情况）
+		kthSum[l+1] = h.l.sum
+	}
+	return kthSum
 }
 
-func (h maxHp) Len() int           { return len(h.a) }
-func (h maxHp) Less(i, j int) bool { return h.a[i].t > h.a[j].t }
-func (h maxHp) Swap(i, j int)      { h.a[i], h.a[j] = h.a[j], h.a[i] }
-func (h *maxHp) Push(v any)        { h.s += v.(pair).t; h.a = append(h.a, v.(pair)) }
-func (h *maxHp) Pop() any          { v := h.a[len(h.a)-1]; h.s -= v.t; h.a = h.a[:len(h.a)-1]; return v }
-func (h *maxHp) push(v pair)       { heap.Push(h, v) }
-func (h *maxHp) pushPop(v pair) pair {
-	if h.Len() > 0 && v.t < h.a[0].t {
-		h.s += v.t - h.a[0].t
-		v, h.a[0] = h.a[0], v
-		heap.Fix(h, 0)
-	}
-	return v
+type kthHeap struct {
+	l *lazyHeap // 最大堆
+	r *lazyHeap // 最小堆，所有元素取反
 }
+
+func newKthHeap() *kthHeap {
+	return &kthHeap{&lazyHeap{todo: map[int]int{}}, &lazyHeap{todo: map[int]int{}}}
+}
+
+func (h *kthHeap) empty() bool {
+	return h.l.size == 0 && h.r.size == 0
+}
+
+func (h *kthHeap) size() int {
+	return h.l.size + h.r.size
+}
+
+func (h *kthHeap) l2r() {
+	if h.l.size == 0 {
+		panic("h.l is empty")
+	}
+	h.r.push(-h.l.pop())
+}
+
+func (h *kthHeap) r2l() {
+	if h.r.size == 0 {
+		panic("h.r is empty")
+	}
+	h.l.push(-h.r.pop())
+}
+
+// 保证 h.l 大小不变
+func (h *kthHeap) add(v int) {
+	h.r.push(-h.l.pushPop(v))
+}
+
+// 保证 h.l 大小不变
+func (h *kthHeap) del(v int) {
+	if v <= h.l.top() {
+		h.l.del(v)
+		h.r2l()
+	} else {
+		h.r.del(-v)
+	}
+}
+
+// 把 h.l 的大小调整为 k
+func (h *kthHeap) balance(k int) {
+	for h.l.size > k {
+		h.l2r()
+	}
+	for h.l.size < k {
+		h.r2l()
+	}
+}
+
+// 其它题目
+// 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
+// LC480 滑动窗口中位数 https://leetcode.cn/problems/sliding-window-median/
+// https://codeforces.com/contest/1374/problem/E2 代码 https://codeforces.com/contest/1374/submission/193671570
