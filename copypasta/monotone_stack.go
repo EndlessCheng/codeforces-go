@@ -26,7 +26,6 @@ https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
 #### 单调栈
-
 - [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)（单调栈模板题）
 - [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/) 1212
 - [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)
@@ -44,13 +43,11 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 
 #### 矩形系列
-
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
 - [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
 - [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
 
 #### 字典序最小
-
 - [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
 - [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
@@ -60,7 +57,6 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
 #### 贡献法（计算所有子数组的……的和）
-
 - [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/) 1976
    - https://atcoder.jp/contests/agc057/tasks/agc057_b
 - [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) $\mathcal{O}(n)$ 做法难度大约 2000
