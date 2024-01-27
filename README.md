@@ -23,7 +23,11 @@
     - 二维单调队列
   - [双端队列 deque.go](/copypasta/deque.go)
   - [堆（优先队列）heap.go](/copypasta/heap.go)
-    - 支持修改、删除指定元素
+    - 支持修改、删除指定元素的堆
+    - 懒删除堆
+    - 对顶维
+    - 前缀中位数
+    - 滑动窗口前 k 小元素和
   - [并查集 union_find.go](/copypasta/union_find.go)
     - 点权并查集
     - 边权并查集（种类并查集）
