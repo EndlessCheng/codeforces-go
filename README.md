@@ -367,6 +367,8 @@
 
 [算法竞赛入门到进阶](https://github.com/luoyongjun999/code)
 
+[《算法竞赛》配套题单](https://www.luogu.com.cn/training/441063)
+
 [OI Public Library（含国家队论文）](https://github.com/enkerewpo/OI-Public-Library)
 
 [算法竞赛 (ICPC, OI, etc) 论文，课件，文档，笔记等](https://github.com/LzyRapx/Competitive-Programming-Docs)
@@ -397,6 +399,10 @@
 
 [F0RE1GNERS 模板](https://github.com/F0RE1GNERS/template)
 
+https://github.com/hh2048/XCPC 含 jiangly 模板
+
+https://www.cnblogs.com/alex-wei/p/contents.html
+
 [【模板整合计划】目录](https://www.cnblogs.com/Xing-Ling/p/10930556.html)
 
 [算法学习笔记（目录）](https://zhuanlan.zhihu.com/p/105467597)
@@ -410,6 +416,8 @@
 [洛谷原试炼场](https://www.luogu.com.cn/paste/0id3h6on)
 
 [Links of ICPC/CCPC Contests from China](https://codeforces.com/blog/entry/84429)
+
+[AtCoder 题目分类](https://atcoder-tags.herokuapp.com/explain)
 
 ### AtCoder 版《挑战程序设计竞赛》
 
@@ -446,6 +454,8 @@ https://www.luogu.com.cn/blog/command-block/blog-suo-yin-zhi-ding-post
 https://wcysai.github.io/
 
 https://www.luogu.com.cn/blog/Troverld/index
+
+[C++ @cache](https://codeforces.com/blog/entry/124683)
 
 ## 其他 Others
 
