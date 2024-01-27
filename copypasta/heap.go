@@ -207,6 +207,7 @@ func (h *lazyHeap) pushPop(v int) int {
 // 保证 1 <= k <= windowSize <= n
 // 返回数组 kthSum，其中 kthSum[i] 为 a[i:i+windowSize] 的前 k 小元素和
 // LC3013 https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
+// 另见 treap_kthsum.go
 func slidingWindowKthSum(a []int, windowSize, k int) []int {
 	h := newKthHeap()
 	// 注：也可以 copy 一份 a[:k] 然后堆化
