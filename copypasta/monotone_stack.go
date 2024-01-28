@@ -33,6 +33,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/) 1571
 - [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) 1709
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
+- [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
 - [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
