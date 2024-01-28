@@ -138,6 +138,7 @@ https://codeforces.com/problemset/problem/69/E 1800
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
    - 翻转至多一个任意子串后的无重复字符的最长子串 https://codeforces.com/contest/1234/problem/F
 - [1493. 删掉一个元素以后全为 1 的最长子数组](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/) 1423
+- [1208. 尽可能使字符串相等](https://leetcode.cn/problems/get-equal-substrings-within-budget/) 1497
 - [2730. 找到最长的半重复子字符串](https://leetcode.cn/problems/find-the-longest-semi-repetitive-substring/) 1502
 - [904. 水果成篮](https://leetcode.cn/problems/fruit-into-baskets/) 1516
 - [1695. 删除子数组的最大得分](https://leetcode.cn/problems/maximum-erasure-value/) 1529
@@ -156,6 +157,7 @@ https://codeforces.com/problemset/problem/69/E 1800
 - [2968. 执行操作使频率分数最大](https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/) 2444
 - [395. 至少有 K 个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
 - [1763. 最长的美好子字符串](https://leetcode.cn/problems/longest-nice-substring/)
+- [424. 替换后的最长重复字符](https://leetcode.cn/problems/longest-repeating-character-replacement/) *有些特殊
 - [159. 至多包含两个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-two-distinct-characters/)（会员题）
 - [340. 至多包含 K 个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/)（会员题）
 与单调队列结合 https://www.luogu.com.cn/problem/P3594
@@ -174,10 +176,12 @@ https://codeforces.com/problemset/problem/701/C 1500
 - [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)
 - [1358. 包含所有三种字符的子字符串数目](https://leetcode.cn/problems/number-of-substrings-containing-all-three-characters/) 1646
 - [2962. 统计最大元素出现至少 K 次的子数组](https://leetcode.cn/problems/count-subarrays-where-max-element-appears-at-least-k-times/) 1701
+- [LCP 68. 美观的花束](https://leetcode.cn/problems/1GxJYY/)
 - [2302. 统计得分小于 K 的子数组数目](https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/) 1808
 - [2537. 统计好子数组的数目](https://leetcode.cn/problems/count-the-number-of-good-subarrays/) 1892
 - [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/) 1940
 - [2972. 统计移除递增子数组的数目 II](https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-ii/) 2153
+- [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）*二分答案
 - [2743. 计算没有重复字符的子字符串数量](https://leetcode.cn/problems/count-substrings-without-repeating-character/)（会员题）
 和至少为 k 的子数组个数 https://atcoder.jp/contests/abc130/tasks/abc130_d
 变形：改成子数组 https://codeforces.com/problemset/problem/550/B
@@ -196,7 +200,6 @@ https://codeforces.com/problemset/problem/701/C 1500
 入门题 https://codeforces.com/problemset/problem/602/B
 入门题 https://codeforces.com/problemset/problem/279/B
 https://atcoder.jp/contests/abc229/tasks/abc229_d
-LC424 替换后的最长重复字符 有些特殊的滑窗 https://leetcode.cn/problems/longest-repeating-character-replacement/
 LC2271 毯子覆盖的最多白色砖块数 需要多思考一点点 https://leetcode.cn/problems/maximum-white-tiles-covered-by-a-carpet/
 - https://atcoder.jp/contests/abc098/tasks/arc098_b
 较为复杂 https://atcoder.jp/contests/abc294/tasks/abc294_e
@@ -262,6 +265,7 @@ LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-di
 LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
+https://codeforces.com/problemset/problem/1272/C 1200
 https://codeforces.com/problemset/problem/1380/C 1400
 https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/525/C 1600
@@ -475,6 +479,7 @@ https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/1861/C 1600 好题！
 https://codeforces.com/contest/1914/problem/F 1900
 https://codeforces.com/problemset/problem/1761/E 2400
+https://codeforces.com/problemset/problem/1730/E 2700
 https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
@@ -500,6 +505,7 @@ LC2681 https://leetcode.cn/problems/power-of-heroes/
 - https://atcoder.jp/contests/arc116/tasks/arc116_b
 LC2763 https://leetcode.cn/problems/sum-of-imbalance-numbers-of-all-subarrays/
 更多贡献法题目，见 monotone_stack.go
+https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 https://codeforces.com/problemset/problem/1648/A 1400 维度独立
 https://codeforces.com/problemset/problem/912/D
 https://codeforces.com/problemset/problem/915/F
