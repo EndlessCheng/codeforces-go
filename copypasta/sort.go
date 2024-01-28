@@ -54,8 +54,10 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/) 1946
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
+- [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
 - [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
+- [2604. 吃掉所有谷子的最短时间](https://leetcode.cn/problems/minimum-time-to-eat-all-grains/)（会员题）
 - [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
 https://codeforces.com/contest/1701/problem/C 1400
 https://codeforces.com/contest/670/problem/D2 1500
@@ -83,6 +85,7 @@ https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 - [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
+- [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
 http://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
 
@@ -95,6 +98,7 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
 - [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
 - [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
+- [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）*滑动窗口
 综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 #### 最大化中位数
