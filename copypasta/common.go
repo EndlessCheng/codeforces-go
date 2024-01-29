@@ -258,9 +258,11 @@ https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/j
 - [1887. 使数组元素相等的减少操作次数](https://leetcode.cn/problems/reduction-operations-to-make-the-array-elements-equal/) 1428
 - [2038. 如果相邻两个颜色均相同则删除当前颜色](https://leetcode.cn/problems/remove-colored-pieces-if-both-neighbors-are-the-same-color/) 1468
 - [1759. 统计同质子字符串的数目](https://leetcode.cn/problems/count-number-of-homogenous-substrings/) 1491
+- [3011. 判断一个数组是否可以变为有序](https://leetcode.cn/problems/find-if-array-can-be-sorted/) 1497
 - [1578. 使绳子变成彩色的最短时间](https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/) 1574
 - [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/) 1580
 - [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/) 1581
+- [2948. 交换得到字典序最小的数组](https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/) 2047
 LC1180（会员）https://leetcode.cn/problems/count-substrings-with-only-one-distinct-letter/
 LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
@@ -345,6 +347,7 @@ https://codeforces.com/problemset/problem/710/B 1400
 
 排序不等式
 - [2285. 道路的最大总重要性](https://leetcode.cn/problems/maximum-total-importance-of-roads/) 1496
+- [3016. 输入单词需要的最少按键次数 II](https://leetcode.cn/problems/minimum-number-of-pushes-to-type-word-ii/) 1534
 - [1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/) 1679
 - [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/) 1822
 - [2809. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/) 2979
