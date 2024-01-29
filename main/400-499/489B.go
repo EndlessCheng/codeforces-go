@@ -10,13 +10,6 @@ import (
 // https://space.bilibili.com/206214
 func cf489B(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	abs := func(x int) int {
-		if x < 0 {
-			return -x
-		}
-		return x
-	}
-
 	var n, m, ans int
 	Fscan(in, &n)
 	a := make([]int, n)
@@ -36,7 +29,7 @@ func cf489B(_r io.Reader, out io.Writer) {
 		for j < m && b[j] < v-1 {
 			j++
 		}
-		if j < m && abs(v-b[j]) <= 1 {
+		if j < m && b[j] <= v+1 {
 			ans++
 			j++
 		}
