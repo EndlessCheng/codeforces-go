@@ -35,9 +35,6 @@ o:
 		vis := map[int32]bool{}
 		for _, x := range a {
 			for _, p := range primes {
-				if p*p > x {
-					break
-				}
 				if x%p > 0 {
 					continue
 				}
