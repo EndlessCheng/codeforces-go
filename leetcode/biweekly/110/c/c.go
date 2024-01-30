@@ -10,15 +10,11 @@ func minimumSeconds(nums []int) int {
 	n := len(nums)
 	ans := n
 	for _, a := range pos {
-		a = append(a, a[0]+n)
-		mx := 0
+		mx := n - a[len(a)-1] + a[0]
 		for i := 1; i < len(a); i++ {
-			mx = max(mx, (a[i]-a[i-1])/2)
+			mx = max(mx, a[i]-a[i-1])
 		}
-		ans = min(ans, mx)
+		ans = min(ans, mx/2)
 	}
 	return ans
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }

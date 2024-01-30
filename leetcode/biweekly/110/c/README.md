@@ -24,7 +24,9 @@ $$
 
 统计所有相同数字的下标，记到一个哈希表 $\textit{pos}$ 中。
 
-本题数组可以视作是环形的，假设最左边的 $x$ 的下标是 $i$，只需要在 $\textit{pos}[x]$ 列表末尾添加一个 $i+n$，就可以转换成非环形数组处理了。
+设 $\textit{pos}[x]$ 列表第一个下标是 $p$，最后一个下标是 $q$。本题数组可以视作是**环形**的，所以 $p$ 和 $q$ 也是相邻的，耗时为 $\left\lfloor\dfrac{n-(q-p)}{2}\right\rfloor$。
+
+也可以在 $\textit{pos}[x]$ 列表末尾添加一个 $p+n$，就可以转换成非环形数组处理了。
 
 ```py [sol-Python3]
 class Solution:
@@ -36,7 +38,7 @@ class Solution:
         ans = n = len(nums)
         for a in pos.values():
             a.append(a[0] + n)
-            mx = max((j - i) // 2 for i, j in pairwise(a))
+            mx = max(j - i for i, j in pairwise(a)) // 2
             ans = min(ans, mx)
         return ans
 ```
@@ -52,12 +54,11 @@ public class Solution {
 
         int ans = n;
         for (List<Integer> a : pos.values()) {
-            a.add(a.get(0) + n);
-            int mx = 0;
-            for (int i = 1; i < a.size(); ++i) {
-                mx = Math.max(mx, (a.get(i) - a.get(i - 1)) / 2);
+            int mx = n - a.get(a.size() - 1) + a.get(0);
+            for (int i = 1; i < a.size(); i++) {
+                mx = Math.max(mx, a.get(i) - a.get(i - 1));
             }
-            ans = Math.min(ans, mx);
+            ans = Math.min(ans, mx / 2); // 最后再除 2
         }
         return ans;
     }
@@ -76,12 +77,11 @@ public:
 
         int ans = n;
         for (auto &[_, a] : pos) {
-            a.push_back(a[0] + n);
-            int mx = 0;
+            int mx = n - a.back() + a[0];
             for (int i = 1; i < a.size(); ++i) {
-                mx = max(mx, (a[i] - a[i - 1]) / 2);
+                mx = max(mx, a[i] - a[i - 1]);
             }
-            ans = min(ans, mx);
+            ans = min(ans, mx / 2); // 最后再除 2
         }
         return ans;
     }
@@ -98,12 +98,11 @@ func minimumSeconds(nums []int) int {
 	n := len(nums)
 	ans := n
 	for _, a := range pos {
-		a = append(a, a[0]+n)
-		mx := 0
+		mx := n - a[len(a)-1] + a[0]
 		for i := 1; i < len(a); i++ {
-			mx = max(mx, (a[i]-a[i-1])/2)
+			mx = max(mx, a[i]-a[i-1])
 		}
-		ans = min(ans, mx)
+		ans = min(ans, mx/2) // 最后再除 2
 	}
 	return ans
 }
