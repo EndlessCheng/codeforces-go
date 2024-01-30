@@ -1119,6 +1119,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/) 1433
 - [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
 - [1926. 迷宫中离入口最近的出口](https://leetcode.cn/problems/nearest-exit-from-entrance-in-maze/) 1638
+- [1091. 二进制矩阵中的最短路径](https://leetcode.cn/problems/shortest-path-in-binary-matrix/) 1658
 - [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/) 1666
 - [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/) 1826
 - [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/) 1837
@@ -1133,7 +1134,9 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 #### 综合应用
 - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097
+- [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
 - [1036. 逃离大迷宫](https://leetcode.cn/problems/escape-a-large-maze/) 2165
+- [864. 获取所有钥匙的最短路径](https://leetcode.cn/problems/shortest-path-to-get-all-keys/) 2259
 - [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/) 2297
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
    - https://www.luogu.com.cn/problem/UVA11624
