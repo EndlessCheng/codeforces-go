@@ -4,22 +4,23 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 type seg52 []struct {
 	l, r      int
-	min, todo int64
+	min, todo int
 }
 
 func (t seg52) maintain(o int) {
-	t[o].min = min52(t[o<<1].min, t[o<<1|1].min)
+	t[o].min = min(t[o<<1].min, t[o<<1|1].min)
 }
 
 func (t seg52) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t[o].min = int64(a[l-1])
+		t[o].min = a[l-1]
 		return
 	}
 	m := (l + r) >> 1
@@ -42,8 +43,8 @@ func (t seg52) spread(o int) {
 func (t seg52) update(o, l, r, v int) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
-		t[o].min += int64(v)
-		t[o].todo += int64(v)
+		t[o].min += v
+		t[o].todo += v
 		return
 	}
 	t.spread(o)
@@ -57,7 +58,7 @@ func (t seg52) update(o, l, r, v int) {
 	t.maintain(o)
 }
 
-func (t seg52) query(o, l, r int) int64 {
+func (t seg52) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].min
 	}
@@ -69,7 +70,7 @@ func (t seg52) query(o, l, r int) int64 {
 	if l > m {
 		return t.query(o<<1|1, l, r)
 	}
-	return min52(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	return min(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
 func CF52C(_r io.Reader, _w io.Writer) {
@@ -83,7 +84,7 @@ func CF52C(_r io.Reader, _w io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	t := make(seg52, 4*n)
+	t := make(seg52, 2<<bits.Len(uint(n-1)))
 	t.build(a, 1, 1, n)
 	for Fscanf(in, "\n%d\n", &q); q > 0; q-- {
 		m, _ := Fscanln(in, &l, &r, &v)
@@ -98,7 +99,7 @@ func CF52C(_r io.Reader, _w io.Writer) {
 			}
 		} else {
 			if l > r {
-				Fprintln(out, min52(t.query(1, l, n), t.query(1, 1, r)))
+				Fprintln(out, min(t.query(1, l, n), t.query(1, 1, r)))
 			} else {
 				Fprintln(out, t.query(1, l, r))
 			}
@@ -106,13 +107,4 @@ func CF52C(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func min52(a, b int64) int64 {
-	if a < b {
-		return a
-	}
-	return b
-}
-
 //func main() { CF52C(os.Stdin, os.Stdout) }
-
-
