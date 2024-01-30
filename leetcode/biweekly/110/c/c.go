@@ -14,7 +14,7 @@ func minimumSeconds(nums []int) int {
 		for i := 1; i < len(a); i++ {
 			mx = max(mx, a[i]-a[i-1])
 		}
-		ans = min(ans, mx/2)
+		ans = min(ans, mx)
 	}
-	return ans
+	return ans / 2 // 最后再除 2
 }

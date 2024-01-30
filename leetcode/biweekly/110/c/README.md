@@ -38,9 +38,9 @@ class Solution:
         ans = n = len(nums)
         for a in pos.values():
             a.append(a[0] + n)
-            mx = max(j - i for i, j in pairwise(a)) // 2
+            mx = max(j - i for i, j in pairwise(a))
             ans = min(ans, mx)
-        return ans
+        return ans // 2  # 最后再除 2
 ```
 
 ```java [sol-Java]
@@ -58,9 +58,9 @@ public class Solution {
             for (int i = 1; i < a.size(); i++) {
                 mx = Math.max(mx, a.get(i) - a.get(i - 1));
             }
-            ans = Math.min(ans, mx / 2); // 最后再除 2
+            ans = Math.min(ans, mx);
         }
-        return ans;
+        return ans / 2; // 最后再除 2
     }
 }
 ```
@@ -81,9 +81,9 @@ public:
             for (int i = 1; i < a.size(); ++i) {
                 mx = max(mx, a[i] - a[i - 1]);
             }
-            ans = min(ans, mx / 2); // 最后再除 2
+            ans = min(ans, mx);
         }
-        return ans;
+        return ans / 2; // 最后再除 2
     }
 };
 ```
@@ -102,9 +102,9 @@ func minimumSeconds(nums []int) int {
 		for i := 1; i < len(a); i++ {
 			mx = max(mx, a[i]-a[i-1])
 		}
-		ans = min(ans, mx/2) // 最后再除 2
+		ans = min(ans, mx)
 	}
-	return ans
+	return ans / 2 // 最后再除 2
 }
 ```
 
