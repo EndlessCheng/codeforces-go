@@ -907,9 +907,10 @@ func parseTime(s string) (hour, minute, total int) {
 // - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
 // - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
 // - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/) 1632
+// - [2963. 统计好分割方案的数目](https://leetcode.cn/problems/count-the-number-of-good-partitions/) 1985
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/) 2159
-// - https://leetcode.cn/problems/count-the-number-of-good-partitions/
 // - [2655. 寻找最大长度的未覆盖区间](https://leetcode.cn/problems/find-maximal-uncovered-ranges/)（会员题）
+// 另见 common.go 中的「区间贪心」
 // https://codeforces.com/problemset/problem/1859/D
 // https://codeforces.com/problemset/problem/1626/C
 // 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
