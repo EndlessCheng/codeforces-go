@@ -1,8 +1,8 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/) 第四题。
+[本题视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/)
 
-## 前置知识
+## 前置知识：动态规划入门
 
-[动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
+请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)，制作不易，欢迎点赞！
 
 ## 写法一：自顶向下（记忆化搜索）
 
@@ -80,6 +80,23 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
+    int dfs(int i, int j, int fa, vector<array<int, 14>> &memo, vector<vector<int>> &g, vector<int> &coins, int k) {
+        int &res = memo[i][j]; // 注意这里是引用
+        if (res != -1) { // 之前计算过
+            return res;
+        }
+        int res1 = (coins[i] >> j) - k;
+        int res2 = coins[i] >> (j + 1);
+        for (int ch: g[i]) {
+            if (ch == fa) continue;
+            res1 += dfs(ch, j, i, memo, g, coins, k); // 不右移
+            if (j < 13) { // j+1 >= 14 相当于 res2 += 0，无需递归
+                res2 += dfs(ch, j + 1, i, memo, g, coins, k); // 右移
+            }
+        }
+        return res = max(res1, res2); // 记忆化
+    };
+
 public:
     int maximumPoints(vector<vector<int>> &edges, vector<int> &coins, int k) {
         int n = coins.size();
@@ -90,24 +107,10 @@ public:
             g[y].push_back(x);
         }
 
-        vector<vector<int>> memo(n, vector<int>(14, -1)); // -1 表示没有计算过
-        function<int(int, int, int)> dfs = [&](int i, int j, int fa) -> int {
-            auto &res = memo[i][j]; // 注意这里是引用
-            if (res != -1) { // 之前计算过
-                return res;
-            }
-            int res1 = (coins[i] >> j) - k;
-            int res2 = coins[i] >> (j + 1);
-            for (int ch: g[i]) {
-                if (ch == fa) continue;
-                res1 += dfs(ch, j, i); // 不右移
-                if (j < 13) { // j+1 >= 14 相当于 res2 += 0，无需递归
-                    res2 += dfs(ch, j + 1, i); // 右移
-                }
-            }
-            return res = max(res1, res2); // 记忆化
-        };
-        return dfs(0, 0, -1);
+        array<int, 14> init_val;
+        ranges::fill(init_val, -1); // -1 表示没有计算过
+        vector<array<int, 14>> memo(n, init_val);
+        return dfs(0, 0, -1, memo, g, coins, k);
     }
 };
 ```
@@ -149,8 +152,6 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 	}
 	return dfs(0, 0, -1)
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -284,8 +285,6 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 	}
 	return dfs(0, -1)[0]
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
