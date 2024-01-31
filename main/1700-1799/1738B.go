@@ -20,11 +20,7 @@ o:
 		for i := range s {
 			Fscan(in, &s[i])
 		}
-		if k == 1 {
-			Fprintln(out, "Yes")
-			continue
-		}
-		if s[0] > (n-k+1)*(s[1]-s[0]) {
+		if k > 1 && s[0] > (n-k+1)*(s[1]-s[0]) {
 			Fprintln(out, "No")
 			continue
 		}
