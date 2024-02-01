@@ -41,6 +41,7 @@
 |优先队列/堆|[2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/)|[【证明】堆化的时间复杂度](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/)|1277|
 ||[373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)|[讲清楚为什么一开始要把 (i,0) 都入堆！](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/solution/jiang-qing-chu-wei-shi-yao-yi-kai-shi-ya-i0dj/)|中等|
 ||[1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)|[三种算法：暴力/二分答案/堆](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/)|2133|
+||[LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)|[转换+中位数贪心+对顶堆](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)|困难|
 |位运算|[771. 宝石与石头](https://leetcode.cn/problems/jewels-and-stones/)|[本题最优解！线性时间+常数空间](https://leetcode.cn/problems/jewels-and-stones/solution/ben-ti-zui-you-jie-xian-xing-shi-jian-ch-ddw3/)|1165|
 ||[1457. 二叉树中的伪回文路径](https://leetcode.cn/problems/pseudo-palindromic-paths-in-a-binary-tree/)|[一步步优化：从数组到位运算](https://leetcode.cn/problems/pseudo-palindromic-paths-in-a-binary-tree/solution/yi-bu-bu-you-hua-cong-shu-zu-dao-wei-yun-hu0b/)|1405|
 ||[137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)|[带你一步步推导出位运算公式！](https://leetcode.cn/problems/single-number-ii/solution/dai-ni-yi-bu-bu-tui-dao-chu-wei-yun-suan-wnwy/)|中等|
@@ -104,6 +105,7 @@
 ||[1798. 你能构造出连续值的最大数目](https://leetcode.cn/problems/maximum-number-of-consecutive-values-you-can-make/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/maximum-number-of-consecutive-values-you-can-make/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-7xlx/)|1931|
 ||[2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/)|[贪心及其证明](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/solution/tan-xin-ji-qi-zheng-ming-by-endlesscheng-hfwe/)|2033|
 ||[630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)|[贪心还能反悔？](https://leetcode.cn/problems/course-schedule-iii/solution/tan-xin-huan-neng-fan-hui-pythonjavacgoj-lcwp/)|困难|
+||[LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)|[转换+中位数贪心+对顶堆](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)|困难|
 ||[1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode.cn/problems/minimum-adjacent-swaps-for-k-consecutive-ones/)|[【图解】转换成中位数贪心+空间优化](https://leetcode.cn/problems/minimum-adjacent-swaps-for-k-consecutive-ones/solution/tu-jie-zhuan-huan-cheng-zhong-wei-shu-ta-iz4v/)|2467|
 |脑筋急转弯|[481. 神奇字符串](https://leetcode.cn/problems/magical-string/)|[【动画】一个动画秒懂本题+简洁写法](https://leetcode.cn/problems/magical-string/solution/by-endlesscheng-z8o1/)|中等|
 ||[895. 最大频率栈](https://leetcode.cn/problems/maximum-frequency-stack/)|[【动画】没想明白？一个动画秒懂！](https://leetcode.cn/problems/maximum-frequency-stack/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-oich/)|2028|
