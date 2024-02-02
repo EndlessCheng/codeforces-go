@@ -27,12 +27,12 @@ func cf1914E2(_r io.Reader, _w io.Writer) {
 		d := 0
 		for i, p := range a {
 			if i%2 == 0 {
-				d += p.x - 1
+				d += p.x
 			} else {
-				d -= p.y - 1
+				d -= p.y
 			}
 		}
-		Fprintln(out, d)
+		Fprintln(out, d-n%2)
 	}
 }
 
