@@ -2,9 +2,10 @@ package copypasta
 
 /* 单调队列 Monotone Queue
 
-视频讲解 https://www.bilibili.com/video/BV1bM411X72E/
+视频讲解 
+https://www.bilibili.com/video/BV1bM411X72E/
 
-两张图秒懂单调队列（Python/Java/C++/Go）
+两张图秒懂单调队列
 https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/
 
 需要不断维护队列的单调性，时刻保证队列元素从大到小或从小到大
