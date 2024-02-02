@@ -103,6 +103,7 @@
 ||[1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/)|1885|
 ||[1147. 段式回文](https://leetcode.cn/problems/longest-chunked-palindrome-decomposition/)|[【图解】贪心做法，一图秒懂！](https://leetcode.cn/problems/longest-chunked-palindrome-decomposition/solution/tu-jie-tan-xin-zuo-fa-yi-tu-miao-dong-py-huik/)|1912|
 ||[1798. 你能构造出连续值的最大数目](https://leetcode.cn/problems/maximum-number-of-consecutive-values-you-can-make/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/maximum-number-of-consecutive-values-you-can-make/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-7xlx/)|1931|
+||[1686. 石子游戏 VI](https://leetcode.cn/problems/stone-game-vi/)|[巧妙转换](https://leetcode.cn/problems/stone-game-vi/solution/xiang-xi-jie-shi-wei-shi-yao-yao-an-zhao-0zsg/)|2001|
 ||[2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/)|[贪心及其证明](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/solution/tan-xin-ji-qi-zheng-ming-by-endlesscheng-hfwe/)|2033|
 ||[630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)|[贪心还能反悔？](https://leetcode.cn/problems/course-schedule-iii/solution/tan-xin-huan-neng-fan-hui-pythonjavacgoj-lcwp/)|困难|
 ||[LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)|[转换+中位数贪心+对顶堆](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)|困难|
