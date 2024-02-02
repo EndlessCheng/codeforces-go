@@ -20,31 +20,37 @@ https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专�
 todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
 单调队列求最值等
-- [面试题 59-II. 队列的最大值](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)（单调队列模板题）
 - [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
+- [LCR 184. 设计自助结算系统](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)
 - [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/) 1672
 - [2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/) 1917
 - [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
 - [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456
 
 单调队列优化 DP
-
-0. 思考：能否通过某种性质，来保证双端队列是有序的？
+一般用来维护区间最值
+0. 前提：区间右端点变大时，左端点也在变大（同滑动窗口）
 1. 转移前，去掉队首无用数据
 2. 计算转移（直接从队首转移）
 3. 把 f[i] 插入队尾前，去掉队尾无用数据
 
+- [2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/) 1709 可以用单调队列优化到 $\mathcal{O}(n)$
+- [1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/) 1954
 - [1425. 带限制的子序列和](https://leetcode.cn/problems/constrained-subsequence-sum/) 2032
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
-- [2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)
-- [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/)
+- [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
+- [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
    - 反过来 https://codeforces.com/contest/1898/problem/B 1500
-- [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
-https://codeforces.com/contest/487/problem/B 2000
+https://codeforces.com/problemset/problem/487/B 2000
+https://codeforces.com/problemset/problem/1237/D 2000
+https://codeforces.com/contest/1918/problem/D
+https://codeforces.com/problemset/problem/1077/F2 2100
 https://www.luogu.com.cn/problem/P3594
+https://www.luogu.com.cn/problem/P3957
+https://www.luogu.com.cn/problem/P1419
 todo https://www.luogu.com.cn/problem/P2627
  http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
  老鼠进洞 http://codeforces.com/problemset/problem/797/F
