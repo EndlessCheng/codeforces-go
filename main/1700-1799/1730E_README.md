@@ -6,8 +6,6 @@
 
 看上去思路比较简单，但是实现起来还是有些技巧的。
 
-以下代码，下标从 $0$ 开始。
-
 1. 预处理每个数的因子列表，这可以反向枚举因子及其倍数得到。
 2. 用 [单调栈](https://www.bilibili.com/video/BV1VN411J7S7/) 预处理：
    - $a[i]$ 左边最近更大或相等元素的下标 $\textit{leftHi}[i]$。如果不存在则为 $-1$。
@@ -16,7 +14,7 @@
    - $a[i]$ 右边最近更小元素的下标 $\textit{rightLo}[i]$。如果不存在则为 $n$。
 3. 预处理 $a$ 中相同元素的下标列表 $\textit{pos}$。其中 $\textit{pos}[v]$ 表示 $v$ 在 $a$ 中的下标列表（下标从小到大）。
 4. 枚举 $v=a[i]$ 及其因子 $d$。设 $l=\textit{leftHi}[i],\ r=\textit{rightHi}[i]$。
-5. 第一种情况：如果 $v$ 左侧最近 $d$ 存在，设其下标为 $j$，那么子数组左端点范围为 $(\max(\textit{leftLo}[j], l), j]$，右端点范围为 $[i, \min(\textit{rightLo}[j], r))$，两个范围长度的乘积加入答案中。注意前提是 $j > l$ 且 $\textit{rightLo}[j] > i$。然后更新 $l=\max(l,j)$，防止情况二重复统计。
+5. 第一种情况：如果 $v$ 左侧最近 $d$ 存在，设其下标为 $j$，那么子数组左端点范围为 $(\max(\textit{leftLo}[j], l), j]$，右端点范围为 $[i, \min(\textit{rightLo}[j], r))$，两个范围长度的乘积加入答案中。注意前提是 $j > l$ 且 $\textit{rightLo}[j] > i$。然后更新 $l$ 为 $\max(l,j)$，防止情况二重复统计。
 6. 第二种情况：如果 $v$ 右侧最近 $d$ 存在，设其下标为 $j$，那么子数组左端点范围为 $(\max(\textit{leftLo}[j], l), i]$，右端点范围为 $[j, \min(\textit{rightLo}[j], r))$，两个范围长度的乘积加入答案中。注意前提是 $j < r$ 且 $\textit{leftLo}[j] < i$。
 
 怎么找 $v$ 左右最近的 $d$ 的下标？在遍历 $a$ 的同时维护 $\textit{pos}$ 列表，对于在 $a[i]$ 左侧的相同数字，我们只保留最大的小于 $i$ 的下标。
