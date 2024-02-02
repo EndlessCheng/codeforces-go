@@ -24,7 +24,7 @@ $$
 class Solution:
     def maximumLength(self, nums: List[int]) -> int:
         cnt = Counter(nums)
-        ans = cnt[1] - (cnt[1] % 2 ^ 1)
+        ans = cnt[1] - 1 | 1  # 奇数
         del cnt[1]
         for x in cnt:
             res = 0
@@ -43,7 +43,7 @@ class Solution {
             cnt.merge((long) x, 1, Integer::sum);
         }
         Integer c1 = cnt.remove(1L);
-        int ans = c1 != null ? c1 - (c1 % 2 ^ 1) : 0;
+        int ans = c1 != null ? c1 - 1 | 1 : 0;
         for (long x : cnt.keySet()) {
             int res = 0;
             for (; cnt.getOrDefault(x, 0) > 1; x *= x) {
@@ -64,7 +64,7 @@ public:
         for (int x : nums) {
             cnt[x]++;
         }
-        int ans = cnt[1] - (cnt[1] % 2 ^ 1);
+        int ans = cnt[1] - 1 | 1; // 奇数
         cnt.erase(1);
         for (auto &[num, _] : cnt) {
             int res = 0;
@@ -85,7 +85,7 @@ func maximumLength(nums []int) int {
 	for _, x := range nums {
 		cnt[x]++
 	}
-	ans := cnt[1] - (cnt[1]%2 ^ 1)
+	ans := cnt[1] - 1 | 1 // 奇数
 	delete(cnt, 1)
 	for x := range cnt {
 		res := 0
@@ -93,7 +93,7 @@ func maximumLength(nums []int) int {
 			res += 2
 		}
 		res += cnt[x]
-		ans = max(ans, res-(res%2^1)) // 保证 res 是奇数
+		ans = max(ans, res-1|1) // 保证 res 是奇数
 	}
 	return ans
 }

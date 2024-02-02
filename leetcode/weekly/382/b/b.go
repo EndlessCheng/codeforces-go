@@ -6,7 +6,7 @@ func maximumLength(nums []int) int {
 	for _, x := range nums {
 		cnt[x]++
 	}
-	ans := cnt[1] - (cnt[1]%2 ^ 1)
+	ans := cnt[1] - 1 | 1
 	delete(cnt, 1)
 	for x := range cnt {
 		res := 0
@@ -14,7 +14,7 @@ func maximumLength(nums []int) int {
 			res += 2
 		}
 		res += cnt[x]
-		ans = max(ans, res-(res%2^1)) // 保证 res 是奇数
+		ans = max(ans, res-1|1) // 保证 res 是奇数
 	}
 	return ans
 }
