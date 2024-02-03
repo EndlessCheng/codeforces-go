@@ -63,6 +63,7 @@
 ||[2008. 出租车的最大盈利](https://leetcode.cn/problems/maximum-earnings-from-taxi/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-earnings-from-taxi/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-k15a/)|1872|
 ||[823. 带因子的二叉树](https://leetcode.cn/problems/binary-trees-with-factors/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/binary-trees-with-factors/solution/cong-ji-yi-hua-sou-suo-dao-di-tui-jiao-n-nbk6/)|1900|
 ||[1043. 分隔数组以得到最大和](https://leetcode.cn/problems/partition-array-for-maximum-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/partition-array-for-maximum-sum/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-rq5i/)|1916|
+||[1690. 石子游戏 VII](https://leetcode.cn/problems/stone-game-vii/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/stone-game-vii/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-zktx/)|1951|
 ||[1092. 最短公共超序列](https://leetcode.cn/problems/shortest-common-supersequence/)|[【输出具体方案】从递归到递推，教你一步步思考动态规划！](https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/)|1977|
 ||[940. 不同的子序列 II](https://leetcode.cn/problems/distinct-subsequences-ii/)|[细分问题+复杂度优化](https://leetcode.cn/problems/distinct-subsequences-ii/solution/xi-fen-wen-ti-fu-za-du-you-hua-pythonjav-1ihu/)|1985|
 ||[1223. 掷骰子模拟](https://leetcode.cn/problems/dice-roll-simulation/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/dice-roll-simulation/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-sje6/)|2008|
