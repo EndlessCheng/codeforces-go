@@ -1,6 +1,9 @@
 package copypasta
 
 /*
+数学思维
+https://codeforces.com/problemset/problem/23/C 2500
+
 朗伯 W 函数   Lambert W function
 https://en.wikipedia.org/wiki/Lambert_W_function
 Bounds and inequalities https://en.wikipedia.org/wiki/Lambert_W_function#Bounds_and_inequalities
