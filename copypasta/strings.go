@@ -71,10 +71,10 @@ func _() {
 	// 测试哈希碰撞 https://codeforces.com/problemset/problem/514/C
 	//            https://codeforces.com/problemset/problem/1200/E
 	// 拼接字符串 https://codeforces.com/problemset/problem/1800/D
-	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode-cn.com/problems/repeated-dna-sequences/
-	// LC1044 最长重复子串（二分哈希）https://leetcode-cn.com/problems/longest-duplicate-substring/
-	// LC1554 只有一个不同字符的字符串 https://leetcode-cn.com/problems/strings-differ-by-one-character/
-	// 倒序哈希 https://leetcode-cn.com/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
+	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode.cn/problems/repeated-dna-sequences/
+	// LC1044 最长重复子串（二分哈希）https://leetcode.cn/problems/longest-duplicate-substring/
+	// LC1554 只有一个不同字符的字符串 https://leetcode.cn/problems/strings-differ-by-one-character/
+	// 倒序哈希 https://leetcode.cn/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
 	// todo https://ac.nowcoder.com/acm/contest/64384/D
 	// 与线段树结合，可以做到单点修改 s[i]
 	// - hash(s+t) = hash(s) * base^|t| + hash(t)
@@ -134,7 +134,8 @@ func _() {
 	// todo 题单 https://www.luogu.com.cn/training/53971
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC28 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
-	//       LC1392 https://leetcode-cn.com/problems/longest-happy-prefix/
+	//       LC1392 https://leetcode.cn/problems/longest-happy-prefix/
+	// LC https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ *二分/双指针找最近下标
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
@@ -257,7 +258,7 @@ func _() {
 
 	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
-	// 参考 Competitive Programmer’s Handbook Ch.26
+	// 视频讲解 https://www.bilibili.com/video/BV1it421W7D8/
 	// https://oi-wiki.org/string/z-func/
 	// 可视化 https://personal.utdallas.edu/~besp/demo/John2010/z-algorithm.htm
 	// https://cp-algorithms.com/string/z-function.html
@@ -365,9 +366,10 @@ func _() {
 
 	// 子序列自动机
 	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
-	// LC727 https://leetcode-cn.com/problems/minimum-window-subsequence/
-	// LC792 https://leetcode-cn.com/problems/number-of-matching-subsequences/
-	// LC2014 https://leetcode-cn.com/problems/longest-subsequence-repeated-k-times/
+	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/
+	// LC792 https://leetcode.cn/problems/number-of-matching-subsequences/
+	// LC2014 https://leetcode.cn/problems/longest-subsequence-repeated-k-times/
+	// LC466 https://leetcode.cn/problems/count-the-repetitions/
 	// http://codeforces.com/problemset/problem/91/A
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
@@ -413,7 +415,7 @@ func _() {
 	// https://oi-wiki.org/string/manacher/
 	// https://cp-algorithms.com/string/manacher.html
 	// https://codeforces.com/blog/entry/12143
-	// https://leetcode-cn.com/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode-solution/
+	// https://leetcode.cn/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode-solution/
 	// https://www.zhihu.com/question/37289584
 	// https://blog.csdn.net/synapse7/article/details/18908413
 	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
@@ -425,14 +427,14 @@ func _() {
 	// todo 题单 https://www.luogu.com.cn/training/53971
 	// 模板题 https://judge.yosupo.jp/problem/enumerate_palindromes
 	//       https://www.luogu.com.cn/problem/P3805
-	//       LC5 https://leetcode-cn.com/problems/longest-palindromic-substring/
+	//       LC5 https://leetcode.cn/problems/longest-palindromic-substring/
 	// https://codeforces.com/problemset/problem/1326/D2
 	// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
 	// https://www.luogu.com.cn/problem/P4555
 	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
 	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
-	//  LC1745 分割成三个非空回文子字符串 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
+	//  LC1745 分割成三个非空回文子字符串 https://leetcode.cn/problems/palindrome-partitioning-iv/
 	// LC2472 不重叠回文子字符串（长度至少为 k）的最大数目 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
 	// - 只需要考虑长度为 k or k+1 的
 	// todo https://www.luogu.com.cn/problem/P1659
@@ -518,8 +520,8 @@ func _() {
 		// startPL[i] 表示以 s[i] 为首字母的最长回文子串的长度
 		// endPL[i]   表示以 s[i] 为尾字母的最长回文子串的长度
 		// [国家集训队]最长双回文串 https://www.luogu.com.cn/problem/P4555
-		// LC1960 两个回文子字符串长度的最大乘积 https://leetcode-cn.com/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
-		// LC214 https://leetcode-cn.com/problems/shortest-palindrome/
+		// LC1960 两个回文子字符串长度的最大乘积 https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
+		// LC214 https://leetcode.cn/problems/shortest-palindrome/
 		startPL := make([]int, len(s))
 		endPL := make([]int, len(s))
 		for i := 2; i < len(halfLen); i++ {
@@ -542,7 +544,7 @@ func _() {
 
 		// EXTRA: 计算回文子串个数
 		// 易证其为 ∑(halfLen[i]/2)
-		// LC647 https://leetcode-cn.com/problems/palindromic-substrings/
+		// LC647 https://leetcode.cn/problems/palindromic-substrings/
 		totP := 0
 		for _, hl := range halfLen {
 			totP += hl / 2
@@ -570,14 +572,14 @@ func _() {
 		模板题 https://www.luogu.com.cn/problem/P3809
 			https://judge.yosupo.jp/problem/suffixarray
 			https://loj.ac/p/111
-		可重叠最长重复子串 LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/ LC1062 https://leetcode-cn.com/problems/longest-repeating-substring/
+		可重叠最长重复子串 LC1044 https://leetcode.cn/problems/longest-duplicate-substring/ LC1062 https://leetcode.cn/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
 		不可重叠最长重复子串 https://atcoder.jp/contests/abc141/tasks/abc141_e http://poj.org/problem?id=1743
 			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#是否有某字符串在文本串中至少不重叠地出现了两次
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
 		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		本质不同子串个数 LC1698 https://leetcode-cn.com/problems/number-of-distinct-substrings-in-a-string/
+		本质不同子串个数 LC1698 https://leetcode.cn/problems/number-of-distinct-substrings-in-a-string/
 			https://www.luogu.com.cn/problem/P2408
 			https://www.luogu.com.cn/problem/SP694
 			https://judge.yosupo.jp/problem/number_of_substrings
@@ -585,7 +587,7 @@ func _() {
 			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/A
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
-			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode-cn.com/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
+			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode.cn/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
 		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
 			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
 		带限制的不同子串个数
@@ -611,7 +613,7 @@ func _() {
 		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
 			todo
 	两个字符串
-		最长公共子串 LC718 https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
+		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
 			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
 		长度不小于 k 的公共子串的个数 http://poj.org/problem?id=3415
 			单调栈
@@ -623,7 +625,7 @@ func _() {
 			构造 s+s+"#"+t+t+"|"
 		todo http://poj.org/problem?id=3729
 	多个字符串
-		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode-cn.com/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode.cn/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
@@ -735,7 +737,7 @@ func _() {
 
 		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意这里是左闭右开区间
 		// https://codeforces.com/problemset/problem/611/D
-		// LC1977 https://leetcode-cn.com/problems/number-of-ways-to-separate-numbers/
+		// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
 		compareSub := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
@@ -755,7 +757,7 @@ func _() {
 		}
 
 		// EXTRA: 可重叠最长重复子串
-		// LC1044 https://leetcode-cn.com/problems/longest-duplicate-substring/
+		// LC1044 https://leetcode.cn/problems/longest-duplicate-substring/
 		longestDupSubstring := func() string {
 			maxP, maxH := 0, 0
 			for i, h := range height {
@@ -777,7 +779,7 @@ func _() {
 		// EXTRA: 找出数组中的所有字符串，其是某个字符串的子串
 		// 先拼接字符串，然后根据 height 判断前后是否有能匹配的
 		// NOTE: 下面的代码展示了一种「标记 s[i] 属于原数组的哪个元素」的技巧: 在 i>0&&s[i]=='#' 时将 cnt++，其余的 s[i] 指向的 cnt 就是原数组的下标
-		// LC1408 https://leetcode-cn.com/problems/string-matching-in-an-array/ 「小题大做」
+		// LC1408 https://leetcode.cn/problems/string-matching-in-an-array/ 「小题大做」
 		findAllSubstring := func(a []string) (ans []string) {
 			s := "#" + strings.Join(a, "#")
 			n := len(s)
