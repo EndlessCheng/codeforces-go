@@ -1,0 +1,14 @@
+"abacaba"
+3
+2
+
+"abacaba"
+4
+1
+
+"abcbabcd"
+2
+4
+
+
+

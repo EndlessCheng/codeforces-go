@@ -1,0 +1,239 @@
+1. 遍历所有 $3 \times 3$ 的子网格。
+2. 遍历网格内的所有左右相邻格子和上下相邻格子，如果存在差值超过 $\textit{threshold}$ 的情况，则枚举下一个子网格。
+3. 如果合法，计算子网格的平均值 $\textit{avg}$，等于子网格的元素和除以 $9$ 下取整。
+4. 更新子网格内的 $\textit{result}[i][j]$，由于需要计算平均值，我们先把 $\textit{avg}$ 加到 $\textit{result}[i][j]$ 中，同时用一个 $\textit{cnt}$ 矩阵统计 $(i,j)$ 在多少个合法子网格内。
+5. 最后返回答案。如果 $\textit{cnt}[i][j]=0$ 则 $\textit{result}[i][j] = \textit{image}[i][j]$，否则 $\textit{result}[i][j] = \left\lfloor\dfrac{\textit{result}[i][j]}{\textit{cnt}[i][j]}\right\rfloor$。
+
+```py [sol-Python3]
+class Solution:
+    def resultGrid(self, a: List[List[int]], threshold: int) -> List[List[int]]:
+        m, n = len(a), len(a[0])
+        result = [[0] * n for _ in range(m)]
+        cnt = [[0] * n for _ in range(m)]
+        for i in range(2, m):
+            for j in range(2, n):
+                # 检查左右相邻格子
+                ok = True
+                for row in a[i - 2: i + 1]:
+                    if abs(row[j - 2] - row[j - 1]) > threshold or abs(row[j - 1] - row[j]) > threshold:
+                        ok = False
+                        break  # 不合法，下一个
+                if not ok: continue
+
+                # 检查上下相邻格子
+                for y in range(j - 2, j + 1):
+                    if abs(a[i - 2][y] - a[i - 1][y]) > threshold or abs(a[i - 1][y] - a[i][y]) > threshold:
+                        ok = False
+                        break  # 不合法，下一个
+                if not ok: continue
+
+                # 合法，计算 3x3 子网格的平均值
+                avg = sum(a[x][y] for x in range(i - 2, i + 1) for y in range(j - 2, j + 1)) // 9
+
+                # 更新 3x3 子网格内的 result
+                for x in range(i - 2, i + 1):
+                    for y in range(j - 2, j + 1):
+                        result[x][y] += avg  # 先累加，最后再求平均值
+                        cnt[x][y] += 1
+
+        for i, row in enumerate(cnt):
+            for j, c in enumerate(row):
+                if c == 0:  # (i,j) 不属于任何子网格
+                    result[i][j] = a[i][j]
+                else:
+                    result[i][j] //= c  # 求平均值
+        return result
+```
+
+```java [sol-Java]
+public class Solution {
+    public int[][] resultGrid(int[][] a, int threshold) {
+        int m = a.length;
+        int n = a[0].length;
+        int[][] result = new int[m][n];
+        int[][] cnt = new int[m][n];
+        for (int i = 2; i < m; i++) {
+            next:
+            for (int j = 2; j < n; j++) {
+                // 检查左右相邻格子
+                for (int x = i - 2; x <= i; x++) {
+                    if (Math.abs(a[x][j - 2] - a[x][j - 1]) > threshold || Math.abs(a[x][j - 1] - a[x][j]) > threshold) {
+                        continue next; // 不合法，下一个
+                    }
+                }
+
+                // 检查上下相邻格子
+                for (int y = j - 2; y <= j; ++y) {
+                    if (Math.abs(a[i - 2][y] - a[i - 1][y]) > threshold || Math.abs(a[i - 1][y] - a[i][y]) > threshold) {
+                        continue next; // 不合法，下一个
+                    }
+                }
+
+                // 合法，计算 3x3 子网格的平均值
+                int avg = 0;
+                for (int x = i - 2; x <= i; x++) {
+                    for (int y = j - 2; y <= j; y++) {
+                        avg += a[x][y];
+                    }
+                }
+                avg /= 9;
+
+                // 更新 3x3 子网格内的 result
+                for (int x = i - 2; x <= i; x++) {
+                    for (int y = j - 2; y <= j; y++) {
+                        result[x][y] += avg; // 先累加，最后再求平均值
+                        cnt[x][y]++;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cnt[i][j] == 0) { // (i,j) 不属于任何子网格
+                    result[i][j] = a[i][j];
+                } else {
+                    result[i][j] /= cnt[i][j]; // 求平均值
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> resultGrid(vector<vector<int>> &a, int threshold) {
+        int m = a.size(), n = a[0].size();
+        vector<vector<int>> result(m, vector<int>(n));
+        vector<vector<int>> cnt(m, vector<int>(n));
+        for (int i = 2; i < m; i++) {
+            for (int j = 2; j < n; j++) {
+                // 检查左右相邻格子
+                bool ok = true;
+                for (int x = i - 2; x <= i; x++) {
+                    if (abs(a[x][j - 2] - a[x][j - 1]) > threshold || abs(a[x][j - 1] - a[x][j]) > threshold) {
+                        ok = false;
+                        break; // 不合法，下一个
+                    }
+                }
+                if (!ok) continue;
+
+                // 检查上下相邻格子
+                for (int y = j - 2; y <= j; y++) {
+                    if (abs(a[i - 2][y] - a[i - 1][y]) > threshold || abs(a[i - 1][y] - a[i][y]) > threshold) {
+                        ok = false;
+                        break; // 不合法，下一个
+                    }
+                }
+                if (!ok) continue;
+
+                // 合法，计算 3x3 子网格的平均值
+                int avg = 0;
+                for (int x = i - 2; x <= i; x++) {
+                    for (int y = j - 2; y <= j; y++) {
+                        avg += a[x][y];
+                    }
+                }
+                avg /= 9;
+
+                // 更新 3x3 子网格内的 result
+                for (int x = i - 2; x <= i; x++) {
+                    for (int y = j - 2; y <= j; y++) {
+                        result[x][y] += avg; // 先累加，最后再求平均值
+                        cnt[x][y]++;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cnt[i][j] == 0) { // (i,j) 不属于任何子网格
+                    result[i][j] = a[i][j];
+                } else {
+                    result[i][j] /= cnt[i][j]; // 求平均值
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+
+```go [sol-Go]
+func resultGrid(a [][]int, threshold int) [][]int {
+	m, n := len(a), len(a[0])
+	result := make([][]int, m)
+	cnt := make([][]int, m)
+	for i := range result {
+		result[i] = make([]int, n)
+		cnt[i] = make([]int, n)
+	}
+	for i := 2; i < m; i++ {
+	next:
+		for j := 2; j < n; j++ {
+			// 检查左右相邻格子
+			for _, row := range a[i-2 : i+1] {
+				if abs(row[j-2]-row[j-1]) > threshold || abs(row[j-1]-row[j]) > threshold {
+					continue next // 不合法，下一个
+				}
+			}
+
+			// 检查上下相邻格子
+			for y := j - 2; y <= j; y++ {
+				if abs(a[i-2][y]-a[i-1][y]) > threshold || abs(a[i-1][y]-a[i][y]) > threshold {
+					continue next // 不合法，下一个
+				}
+			}
+
+			// 合法，计算 3x3 子网格的平均值
+			avg := 0
+			for x := i - 2; x <= i; x++ {
+				for y := j - 2; y <= j; y++ {
+					avg += a[x][y]
+				}
+			}
+			avg /= 9
+
+			// 更新 3x3 子网格内的 result
+			for x := i - 2; x <= i; x++ {
+				for y := j - 2; y <= j; y++ {
+					result[x][y] += avg // 先累加，最后再求平均值
+					cnt[x][y]++
+				}
+			}
+		}
+	}
+
+	for i, row := range cnt {
+		for j, c := range row {
+			if c == 0 { // (i,j) 不属于任何子网格
+				result[i][j] = a[i][j]
+			} else {
+				result[i][j] /= c // 求平均值
+			}
+		}
+	}
+	return result
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(Amn)$，其中 $m$ 和 $n$ 分别为 $\textit{a}$ 的行数和列数，$A=9$ 表示子网格大小。
+- 空间复杂度：$\mathcal{O}(mn)$。
+
+## 思考题
+
+如果额外输入两个数 $w$ 和 $h$，把题目中 $3\times 3$ 改成 $w\times h$，要怎么做？你能做到 $\mathcal{O}(mn)$ 的时间复杂度吗？
+
+欢迎在评论区分享你的思路/代码。
+
+相关题目：[2132. 用邮票贴满网格图](https://leetcode.cn/problems/stamping-the-grid/)，[我的题解](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/)，包含了解决思考题需要掌握的算法。
+
+[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
