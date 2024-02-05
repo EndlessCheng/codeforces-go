@@ -110,6 +110,7 @@
 ||[2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/)|[代码](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/solution/by-endlesscheng-7ukp/)|*课后作业|
 ||[862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)|[代码](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/)|*课后作业|
 ||[1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/)|[代码](https://leetcode.cn/problems/max-value-of-equation/solution/on-dan-diao-dui-lie-fu-ti-dan-pythonjava-hhrr/)|*课后作业|
+||[1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/)|[代码](https://leetcode.cn/problems/jump-game-vi/solution/yi-bu-bu-you-hua-cong-di-gui-dao-di-tui-84qn3/)|*课后作业|
 ||[2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)|[代码](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/solution/dpcong-on2-dao-onpythonjavacgo-by-endles-nux5/)|*课后作业|
 
 其它尚未更新的 topic 请看 [每日一题题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
