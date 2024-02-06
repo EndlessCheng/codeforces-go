@@ -48,9 +48,10 @@ https://ac.nowcoder.com/acm/contest/65157/C
 
 #### 基于堆的反悔贪心（反悔堆）
 - [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
-- [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/)
 - [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)
-- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/)
+- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
+- [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/) 2074
+- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
@@ -107,7 +108,6 @@ func (h *hp) pushPop(v int) int {
 // 如果前缀长度是偶数，取大的那个作为中位数
 // LC295 https://leetcode.cn/problems/find-median-from-data-stream/
 // - https://www.luogu.com.cn/problem/P1168
-// 与树状数组结合 https://leetcode.cn/contest/season/2020-fall/problems/5TxKeK/
 func dynamicMedians(a []int) []int {
 	medians := make([]int, len(a))
 	l := hp{} // 大根堆，元素取反
@@ -206,7 +206,7 @@ func (h *lazyHeap) pushPop(v int) int {
 // 对顶堆：滑动窗口前 k 小元素和
 // 保证 1 <= k <= windowSize <= n
 // 返回数组 kthSum，其中 kthSum[i] 为 a[i:i+windowSize] 的前 k 小元素和
-// LC3013 https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
+// - [3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/) 2540
 // 另见 treap_kthsum.go
 func slidingWindowKthSum(a []int, windowSize, k int) []int {
 	h := newKthHeap()
