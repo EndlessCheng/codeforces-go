@@ -5,7 +5,6 @@ import (
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
 	"github.com/stretchr/testify/assert"
 	"io"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -64,7 +63,7 @@ func TestCompare(_t *testing.T) {
 			solve(Case)
 		}
 
-		_leftData, _ := ioutil.ReadAll(in)
+		_leftData, _ := io.ReadAll(in)
 		if _s := strings.TrimSpace(string(_leftData)); _s != "" {
 			panic("有未读入的数据：\n" + _s)
 		}
@@ -115,8 +114,7 @@ func TestCheck(_t *testing.T) {
 		}
 	}
 
-	target := 0
-	testutil.CheckRunResultsInfWithTarget(_t, inputGenerator, target, run)
+	testutil.CheckRunResultsInfWithTarget(_t, inputGenerator, 0, run)
 
 	//runHack := func(in io.Reader, out io.Writer) { }
 	//testutil.CheckRunResultsInf(_t, inputGenerator, runHack)
