@@ -32,12 +32,12 @@ o:
 		}
 
 		tot, mx := 0, 0
-		diff := [26]int{}
+		same := [26]int{}
 		for i := 0; i < n/2; i++ {
 			if s[i] == s[n-1-i] {
 				tot++
-				diff[s[i]-'a']++
-				mx = max(mx, diff[s[i]-'a'])
+				same[s[i]-'a']++
+				mx = max(mx, same[s[i]-'a'])
 			}
 		}
 		Fprintln(out, max((tot+1)/2, mx))

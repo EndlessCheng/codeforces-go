@@ -20,7 +20,7 @@ $$
 m_i\operatorname{xor} m_j = 2^{26}-1-2^k
 $$
 
-的 $(m_i,m_j)$ 数对个数。上式中的减号也可以换成异或。
+的 $(m_i,m_j)$ 数对个数。
 
 套路和 [1. 两数之和](https://leetcode.cn/problems/two-sum/) 是一样的，用哈希表或者数组解决。
 
@@ -55,6 +55,6 @@ func main() {
 }
 ```
 
-时间复杂度：$\mathcal{O}(L+26n)$。其中 $L$ 为字符串长度之和。
+时间复杂度：$\mathcal{O}(L+|\Sigma|n)$。其中 $L$ 为字符串长度之和，$|\Sigma|$ 为字符集合的大小，本题中字符均为小写字母，所以 $|\Sigma|=26$。
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
