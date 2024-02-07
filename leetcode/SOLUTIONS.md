@@ -132,11 +132,24 @@
 
 更多题目请看[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
 
-- [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
-- [【简单题杀手】分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
-- [【图解】二维前缀和](https://leetcode.cn/circle/discuss/UUuRex/)
+### 分类题单
+
+- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+
+### 周赛总结
+
 - [从周赛中学算法 - 2023·下](https://leetcode.cn/circle/discuss/lUu0KB/)
 - [从周赛中学算法 - 2023·上](https://leetcode.cn/circle/discuss/v2RXSN/)
 - [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
 - [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
+
+### 其它
+
+- [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+- [【简单题杀手】分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
+- [【图解】二维前缀和](https://leetcode.cn/circle/discuss/UUuRex/)
 - [如何科学上分（科学刷题）](https://www.bilibili.com/read/cv22332590/)
