@@ -11,23 +11,6 @@ import (
 从集合论到位运算，常见位运算技巧分类总结！
 https://leetcode.cn/circle/discuss/CaOJ45/
 
-《灵茶八题》完整题目列表 & 题解
-https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
-+ 表示元素和
-^ 表示异或和
-所有子数组的 + 的 +
-所有子数组的 ^ 的 ^
-所有子数组的 ^ 的 +
-所有子数组的 + 的 ^
-所有子序列的 + 的 +
-所有子序列的 ^ 的 ^
-所有子序列的 ^ 的 +
-所有子序列的 + 的 ^
-所有子数组的 ^2 的 + 的 + https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
-- 这里 ^2 表示任意两个数的异或
-所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
-https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
-
 有关二进制枚举、枚举子集的子集、枚举大小固定集合等写法，见 search.go
 
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
@@ -35,32 +18,81 @@ https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
      bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
      或者说 2^(Len(x)-1) <= x < 2^Len(x)    x>0
 
-基础题
-https://leetcode.cn/problems/find-the-k-or-of-an-array/
+### 基础题
+- [1486. 数组异或操作](https://leetcode.cn/problems/xor-operation-in-an-array/) 1181
+- [2595. 奇偶位数](https://leetcode.cn/problems/number-of-even-and-odd-bits/) 1207
+- [231. 2 的幂](https://leetcode.cn/problems/power-of-two/)
+- [342. 4 的幂](https://leetcode.cn/problems/power-of-four/)
+- [476. 数字的补数](https://leetcode.cn/problems/number-complement/) 1235
+- [191. 位 1 的个数](https://leetcode.cn/problems/number-of-1-bits/)
+- [338. 比特位计数](https://leetcode.cn/problems/counting-bits/) 也可以 DP
+- [1356. 根据数字二进制下 1 的数目排序](https://leetcode.cn/problems/sort-integers-by-the-number-of-1-bits/) 1258
+- [461. 汉明距离](https://leetcode.cn/problems/hamming-distance/)
+- [2220. 转换数字的最少位翻转次数](https://leetcode.cn/problems/minimum-bit-flips-to-convert-number/) 1282
+- [868. 二进制间距](https://leetcode.cn/problems/binary-gap/) 1307
+- [2917. 找出数组中的 K-or 值](https://leetcode.cn/problems/find-the-k-or-of-an-array/) 1389
+- [693. 交替位二进制数](https://leetcode.cn/problems/binary-number-with-alternating-bits/)
 
-位运算与 ASCII
-https://codeforces.com/contest/691/problem/B
-https://codeforces.com/contest/1907/problem/B
+### 与或（AND/OR）的性质
+TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
+** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
+- [2980. 检查按位或是否存在尾随零](https://leetcode.cn/problems/check-if-bitwise-or-has-trailing-zeros/) 1234
+- [1318. 或运算的最小翻转次数](https://leetcode.cn/problems/minimum-flips-to-make-a-or-b-equal-to-c/) 1383
+- [2419. 按位与最大的最长子数组](https://leetcode.cn/problems/longest-subarray-with-maximum-bitwise-and/) 1496
+- [2871. 将数组分割成最多数目的子数组](https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/) 1750
+- [2401. 最长优雅子数组](https://leetcode.cn/problems/longest-nice-subarray/) 1750
+- [2680. 最大或值](https://leetcode.cn/problems/maximum-or/) 1912 可以做到 $\mathcal{O}(1)$ 额外空间
+- [2411. 按位或最大的最小子数组长度](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/) 1938
+- [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/) 2133
+- [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/) 2384
+两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
 
-XOR 相关题目
-https://leetcode.cn/circle/discuss/sqPZwg/
+### 异或（XOR）的性质
 - [1720. 解码异或后的数组](https://leetcode.cn/problems/decode-xored-array/) 1284
 - [2433. 找出前缀异或的原始数组](https://leetcode.cn/problems/find-the-original-array-of-prefix-xor/) 1367
 - [1310. 子数组异或查询](https://leetcode.cn/problems/xor-queries-of-a-subarray/) 1460
 - [2683. 相邻值的按位异或](https://leetcode.cn/problems/neighboring-bitwise-xor/) 1518
 - [1829. 每个查询的最大异或值](https://leetcode.cn/problems/maximum-xor-for-each-query/) 1523
+- [2997. 使数组异或和等于 K 的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-array-xor-equal-to-k/) 1525
 - [1442. 形成两个异或相等数组的三元组数目](https://leetcode.cn/problems/count-triplets-that-can-form-two-arrays-of-equal-xor/) 1525
-- [2429. 最小 XOR](https://leetcode.cn/problems/minimize-xor/) 1532
-- [2527. 查询数组 XOR 美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/) 1550
-- [2425. 所有数对的异或和](https://leetcode.cn/problems/bitwise-xor-of-all-pairings/) 1622
+- [2429. 最小异或](https://leetcode.cn/problems/minimize-xor/) 1532
+- [2527. 查询数组异或美丽值](https://leetcode.cn/problems/find-xor-beauty-of-array/) 1550
 - [2317. 操作后的最大异或和](https://leetcode.cn/problems/maximum-xor-after-operations/) 1679
+- [2588. 统计美丽子数组数目](https://leetcode.cn/problems/count-the-number-of-beautiful-subarrays/) 1697
+- [2564. 子字符串异或查询](https://leetcode.cn/problems/substring-xor-queries/) 1959
 - [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
-- [2939. 最大异或乘积](https://leetcode.cn/problems/maximum-xor-product/)
+- [2857. 统计距离为 k 的点对](https://leetcode.cn/problems/count-pairs-of-points-with-distance-k/) 2082
 https://codeforces.com/problemset/problem/1895/D
 https://codeforces.com/problemset/problem/1790/E
 
-常用技巧：拆位（部分题目排序很有用）
-LC1835 https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/
+### 利用 lowbit
+https://codeforces.com/problemset/problem/1689/E
+交互 https://codeforces.com/problemset/problem/1780/D
+
+### 拆位 / 贡献法（部分题目排序很有用）
+- [477. 汉明距离总和](https://leetcode.cn/problems/total-hamming-distance/)
+- [1863. 找出所有子集的异或总和再求和](https://leetcode.cn/problems/sum-of-all-subset-xor-totals/) 可以做到 $\mathcal{O}(n)$ 时间
+- [2425. 所有数对的异或和](https://leetcode.cn/problems/bitwise-xor-of-all-pairings/) 1622 可以做到 $\mathcal{O}(n+m)$ 时间
+- [2275. 按位与结果大于零的最长组合](https://leetcode.cn/problems/largest-combination-with-bitwise-and-greater-than-zero/) 1642
+- [1835. 所有数对按位与结果的异或和](https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/) 1825 也有恒等式做法
+- [2505. 所有子序列和的按位或](https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/)（会员题）
+《灵茶八题》完整题目列表 & 题解
+https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
++ 表示元素和
+^ 表示异或和
+所有子数组的 + 的 + https://www.luogu.com.cn/problem/U360300
+所有子数组的 ^ 的 ^ https://www.luogu.com.cn/problem/U360487
+所有子数组的 ^ 的 + https://www.luogu.com.cn/problem/U360489
+所有子数组的 + 的 ^ https://www.luogu.com.cn/problem/U360500
+所有子序列的 + 的 + https://www.luogu.com.cn/problem/U360640
+所有子序列的 ^ 的 ^ https://www.luogu.com.cn/problem/U360641
+所有子序列的 ^ 的 + https://www.luogu.com.cn/problem/U360642 LC1863 https://leetcode.cn/problems/sum-of-all-subset-xor-totals/
+所有子序列的 + 的 ^ https://www.luogu.com.cn/problem/U360643
+所有子数组的 ^2 的 + 的 + https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
+- 这里 ^2 表示子数组中任意两个数的异或
+所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
+https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
+
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
 https://codeforces.com/problemset/problem/1895/D 1900
@@ -68,63 +100,76 @@ https://atcoder.jp/contests/abc281/tasks/abc281_f
 https://atcoder.jp/contests/arc127/tasks/arc127_d
 考虑贡献 https://codeforces.com/problemset/problem/1362/C 1400
 
+### 试填法
+- [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
+- [3022. 给定操作次数内使剩余元素的或值最小](https://leetcode.cn/problems/minimize-or-of-remaining-elements-using-operations/)
+https://codeforces.com/contest/1918/problem/C 1400
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
 所有 a[i]+a[j] 的异或和 https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
+拆位再合并相同位 https://codeforces.com/problemset/problem/1874/B
 
-拆位再合并相同位
-https://codeforces.com/problemset/problem/1874/B
-
-利用 AND/OR/XOR 的性质
-LC136 https://leetcode.cn/problems/single-number/
-LC260 https://leetcode.cn/problems/single-number-iii/
-LC137 https://leetcode.cn/problems/single-number-ii/
-LC2354 https://leetcode.cn/problems/number-of-excellent-pairs/
-LC2546 https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/
-LC2871 https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/
-LC2897 https://leetcode.cn/problems/apply-operations-on-array-to-maximize-sum-of-squares/
-两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
-
-利用 lowbit
-https://codeforces.com/problemset/problem/1689/E
-交互 https://codeforces.com/problemset/problem/1780/D
-
-TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
-** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
-
-若干恒等式
-a|b = (a^b) + (a&b)    
+### 恒等式
+结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
+- [1835. 所有数对按位与结果的异或和](https://leetcode.cn/problems/find-xor-sum-of-all-pairs-bitwise-and/) 1825
+集合论公式的二进制等价形式：
+popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
+- [2354. 优质数对的数目](https://leetcode.cn/problems/number-of-excellent-pairs/) 2076
+https://oeis.org/A006234 (n+2) * 3^(n-2)   [0,2^n) 内任意两数 popcount(x) + popcount(y) - popcount(x+y) = 1 的数对个数
+- https://codeforces.com/problemset/problem/1761/D
+进位与分类讨论 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
+a|b = (a^b) + (a&b)
 a&b = (a|b) - (a^b)
 a^b = (a|b) - (a&b)
 a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
     = (a|b)*2 - (a^b)
 (a^b) & (a&b) = 0 恒成立
-相关题目
 https://codeforces.com/problemset/problem/76/D
 https://codeforces.com/problemset/problem/1325/D
 https://codeforces.com/problemset/problem/1368/D
 https://codeforces.com/problemset/problem/1790/E
 https://atcoder.jp/contests/abc050/tasks/arc066_b
-
 a|b = (^a)&b + a
-
 + 与 ^ https://codeforces.com/problemset/problem/1732/C2
-
 进位的本质 https://atcoder.jp/contests/arc158/tasks/arc158_c
-
 max(a,b) = (a + b + abs(a-b)) / 2
 min(a,b) = (a + b - abs(a-b)) / 2
 
-结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
-相关题目 LC1835 https://leetcode-cn.com/problems/find-xor-sum-of-all-pairs-bitwise-and/
+### 思维题（贪心、脑筋急转弯等）
+- [2546. 执行逐位运算使字符串相等](https://leetcode.cn/problems/apply-bitwise-operations-to-make-strings-equal/) 1605
+- [1558. 得到目标数组的最少函数调用次数](https://leetcode.cn/problems/minimum-numbers-of-function-calls-to-make-target-array/) 1637
+- [2571. 将整数减少到零需要的最少操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-an-integer-to-0/) 1649 巧妙结论
+- [2568. 最小无法得到的或值](https://leetcode.cn/problems/minimum-impossible-or/) 1754
+- [2939. 最大异或乘积](https://leetcode.cn/problems/maximum-xor-product/) 2128
+- [2749. 得到整数零需要执行的最少操作数](https://leetcode.cn/problems/minimum-operations-to-make-the-integer-zero/) 2132
+- [2835. 使子序列的和等于目标的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-form-subsequence-with-target-sum/) 2207
+    - 相似题目 https://codeforces.com/problemset/problem/1918/C
+- [2897. 对数组执行操作使平方和最大](https://leetcode.cn/problems/apply-operations-on-array-to-maximize-sum-of-squares/) 2301
+- [810. 黑板异或游戏](https://leetcode.cn/problems/chalkboard-xor-game/) 2341
+https://codeforces.com/problemset/problem/309/C 1900
 
-集合论公式的二进制等价形式：
-popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
-相关题目 https://leetcode.cn/problems/number-of-excellent-pairs/
-https://oeis.org/A006234 (n+2) * 3^(n-2)   [0,2^n) 内任意两数 popcount(x) + popcount(y) - popcount(x+y) = 1 的数对个数   https://codeforces.com/problemset/problem/1761/D
-进位与分类讨论 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
+### 其它
+- [136. 只出现一次的数字](https://leetcode.cn/problems/single-number/)
+- [287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/)
+- [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)
+- [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
+- [645. 错误的集合](https://leetcode.cn/problems/set-mismatch/)
+- [190. 颠倒二进制位](https://leetcode.cn/problems/reverse-bits/)
+- [371. 两整数之和](https://leetcode.cn/problems/sum-of-two-integers/)
+- [201. 数字范围按位与](https://leetcode.cn/problems/bitwise-and-of-numbers-range/)
+- [2154. 将找到的值乘以 2](https://leetcode.cn/problems/keep-multiplying-found-values-by-two/) 可以做到 $\mathcal{O}(n)$ 时间
+- [2044. 统计按位或能得到最大值的子集数目](https://leetcode.cn/problems/count-number-of-maximum-bitwise-or-subsets/) 1568
+- [2438. 二的幂数组中查询范围内的乘积](https://leetcode.cn/problems/range-product-queries-of-powers/) 1610
+- [1680. 连接连续二进制数字](https://leetcode.cn/problems/concatenation-of-consecutive-binary-numbers/) 1630
+- [982. 按位与为零的三元组](https://leetcode.cn/problems/triples-with-bitwise-and-equal-to-zero/) 2085
+- [1611. 使整数变为 0 的最少操作次数](https://leetcode.cn/problems/minimum-one-bit-operations-to-make-integers-zero/) 2345
+
+### 位运算与字符串
+LC3019 https://leetcode.cn/problems/number-of-changing-keys/
+https://codeforces.com/contest/691/problem/B
+https://codeforces.com/contest/1907/problem/B
 
 运算符优先级 https://golang.org/ref/spec#Operators
 Precedence    Operator
@@ -134,11 +179,7 @@ Precedence    Operator
     2         &&
     1         ||
 
-一些子集的枚举算法见 search.go
-S∪{i}: S|1<<i
-S\{i}: S&^(1<<i)
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
-检测是否只有一个 1：x&(x-1) == 0
 
 https://oeis.org/A060142 每一段连续 0 的长度均为偶数的数：如 100110000100
 Ordered set S defined by these rules: 0 is in S and if x is in S then 2x+1 and 4x are in S
@@ -150,7 +191,7 @@ https://oeis.org/A048004 最长连续 1 为 k 的长为 n 的二进制串的个�
 相关题目：https://codeforces.com/problemset/problem/1027/E
 
 https://oeis.org/A047778 Concatenation of first n numbers in binary, converted to base 10
-相关题目 LC1680 https://leetcode-cn.com/problems/concatenation-of-consecutive-binary-numbers/
+相关题目 LC1680 https://leetcode.cn/problems/concatenation-of-consecutive-binary-numbers/
 钱珀瑙恩数 Champernowne constant https://en.wikipedia.org/wiki/Champernowne_constant
 
 https://oeis.org/A072339
@@ -277,7 +318,7 @@ https://oeis.org/A007632 既是二进制回文数又是十进制回文数
 
 https://oeis.org/A090994 Number of meaningful differential operations of the n-th order on the space R^9
 a(k+5) = a(k+4) + 4*a(k+3) - 3*a(k+2) - 3*a(k+1) + a(k)
-相关题目 LC1215 https://leetcode-cn.com/problems/stepping-numbers/
+相关题目 LC1215 https://leetcode.cn/problems/stepping-numbers/
 
 二进制字符串
 https://oeis.org/A052944 a(n) = 2^n + n - 1  Shortest length of bit-string containing all bit-strings of given length n
@@ -488,7 +529,7 @@ func (b Bitset) ResetRange(l, r int) {
 }
 
 // 左移 k 位
-// LC1981 https://leetcode-cn.com/problems/minimize-the-difference-between-target-and-chosen-elements/
+// LC1981 https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/
 func (b Bitset) Lsh(k int) {
 	if k == 0 {
 		return
@@ -659,15 +700,18 @@ func _(x int) {
 	// 利用操作的单调性求解
 	// 时间复杂度：O(fnlogU)，其中 f 为 op(x,y) 的时间复杂度，一般是 O(1)，n=len(a)，U=max(a)
 	// 空间复杂度：O(logU)，返回值不计入
-	// |: LC898 https://leetcode-cn.com/problems/bitwise-ors-of-subarrays/
+	// |: LC898 https://leetcode.cn/problems/bitwise-ors-of-subarrays/ 2133
+	//    - 原题 https://codeforces.com/problemset/problem/243/A 1600
+	//    LC2411 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 1938
 	//    https://www.luogu.com.cn/problem/P8569
 	//    - 做法见下面的 bitOpTrickCnt      
 	//    - 题目源于这场比赛 https://www.luogu.com.cn/contest/65460#problems
 	//    - 其它做法 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
-	// &: LC1521 https://leetcode-cn.com/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+	// &: LC1521 https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
 	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
-	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ https://www.dotcpp.com/oj/problem2709.html
+	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ 
+	//             https://www.dotcpp.com/oj/problem2709.html
 	//      LC2941 https://leetcode.cn/problems/maximum-gcd-sum-of-a-subarray/
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/891/A
@@ -742,6 +786,7 @@ func _(x int) {
 	// 据此我们只需要在加入一个新的数后，去重并去掉区间积超过 sum(a) 的区间，就可以暴力做出此题
 	// 注：根据以上推导过程，我们还可以得出总的答案个数至多为 O(nlog(sum(a)))
 	// https://www.dotcpp.com/oj/problem2622.html
+	// https://codeforces.com/problemset/problem/1872/G 2000
 	// 变形·面试题：把「区间和」改成「区间异或和」
 	countSumEqMul := func(a []int) (ans int) {
 		tot := 0
@@ -774,7 +819,7 @@ func _(x int) {
 			for muls[0].v > tot {
 				muls = muls[1:]
 			}
-			// 此时我们将区间 [0,i] 划分成了 len(muls) 个（左闭右开）区间，对 ∀j∈[muls[k].l,muls[k].r)，[j,i] 的区间积均为 muls[k].v
+			// 此时我们将区间 [muls[0].l,i] 划分成了 len(muls) 个（左闭右开）区间，对 ∀j∈[muls[k].l,muls[k].r)，[j,i] 的区间积均为 muls[k].v
 			for _, p := range muls {
 				// 判断左端点前缀和对应下标是否在范围内
 				if pos, has := posS[sum-p.v]; has && p.l <= pos && pos < p.r {
@@ -868,7 +913,7 @@ func _(x int) {
 
 // https://halfrost.com/go_s2_de_bruijn/
 
-// LC137 https://leetcode-cn.com/problems/single-number-ii/
+// LC137 https://leetcode.cn/problems/single-number-ii/
 // 除了某个元素只出现一次以外，其余每个元素均出现了三次。返回只出现了一次的元素
 // 		定义两个集合 ones 和 twos，初始为空
 // 		第一次出现就放在 ones 中
