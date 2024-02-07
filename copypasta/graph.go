@@ -176,6 +176,7 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 
 DAG [797. 所有可能的路径](https://leetcode.cn/problems/all-paths-from-source-to-target/) 1383
 
+找包含指定边的环 https://codeforces.com/contest/1927/problem/F
 https://atcoder.jp/contests/arc111/tasks/arc111_b
 EXTRA: 先染色，再递归 https://codeforces.com/problemset/problem/1470/D
 无向图后向边定向 https://codeforces.com/problemset/problem/1519/E
@@ -208,6 +209,30 @@ func (*graph) dfs(n, st int, g [][]int) {
 			}
 		}
 	}
+
+	// 返回一个以 start 为起点和终点的简单环
+	// ！必须保证 start 在一个环中
+	// 例如 cycle=[1,2,3] 表示一个 1->2->3->1 的环
+	// https://codeforces.com/contest/1927/problem/F 先用 tarjan 去掉所有割边
+	cycleAt := func(start int) []int {
+		vis := make([]bool, len(g))
+		cycle := []int{}
+		var dfs func(int, int) bool
+		dfs = func(v, fa int) bool {
+			vis[v] = true
+			cycle = append(cycle, v) // v+1
+			for _, w := range g[v] {
+				if w != fa && (w == start || !vis[w] && dfs(w, v)) {
+					return true
+				}
+			}
+			cycle = cycle[:len(cycle)-1]
+			return false
+		}
+		dfs(start, -1)
+		return cycle
+	}
+	_ = cycleAt
 
 	{
 		// 奇偶标记法
@@ -289,16 +314,17 @@ func (*graph) dfs(n, st int, g [][]int) {
 		f = func(v, fa int) {
 			vis[v] = true
 			for _, w := range g[v] {
-				if w != fa {
-					if w == v {
-						// 自环
-						c = 1
-					} else if vis[w] { // 返祖边或者横向边（v 连向不在子树 v 上的点 w）
-						// 一般环
-						c = 2
-					} else { // 树枝边
-						f(w, v)
-					}
+				if w == fa {
+					continue
+				}
+				if w == v {
+					// 自环
+					c = 1
+				} else if vis[w] { // 返祖边或者横向边（v 连向不在子树 v 上的点 w）
+					// 一般环
+					c = 2
+				} else { // 树枝边
+					f(w, v)
 				}
 			}
 		}
