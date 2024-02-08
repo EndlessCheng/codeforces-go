@@ -56,6 +56,7 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 - [1673. 找出最具竞争力的子序列](https://leetcode.cn/problems/find-the-most-competitive-subsequence/) 1802
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
 - [2030. 含特定字母的最小子序列](https://leetcode.cn/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/) 2562
+https://codeforces.com/problemset/problem/1730/C 1200
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
 #### 贡献法（计算所有子数组的……的和）

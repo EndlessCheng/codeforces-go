@@ -45,9 +45,10 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
    - 反过来 https://codeforces.com/contest/1898/problem/B 1500
+https://codeforces.com/contest/1918/problem/D 1900
 https://codeforces.com/problemset/problem/487/B 2000
+https://codeforces.com/contest/940/problem/E 2000
 https://codeforces.com/problemset/problem/1237/D 2000
-https://codeforces.com/contest/1918/problem/D
 https://codeforces.com/problemset/problem/1077/F2 2100
 https://www.luogu.com.cn/problem/P3594
 https://www.luogu.com.cn/problem/P3957
@@ -118,7 +119,7 @@ func fixedSizeMax(a []int, fixedSize int) []int {
 	return ans
 }
 
-// 子区间长度不超过 sizeLimit 的最大子区间和
+// 子数组长度不超过 sizeLimit 的最大子数组和
 // 用单调队列维护前缀和的最小值，循环时保证单调队列对应的区间长度不超过 sizeLimit
 // https://www.acwing.com/problem/content/137/ https://ac.nowcoder.com/acm/contest/1006/D
 func maxSubSumWithLimitSize(a []int, sizeLimit int) int {
