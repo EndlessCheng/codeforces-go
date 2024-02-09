@@ -359,6 +359,7 @@ func (a matrix) determinant(mod int) int {
 //  Berlekamp–Massey 算法 https://www.luogu.com.cn/problem/P5487
 
 // 线性基（异或空间的极大线性无关子集）
+// 可以用来解决「子序列异或和」相关问题
 // https://oi-wiki.org/math/basis/
 // https://en.wikipedia.org/wiki/Basis_(linear_algebra)
 // 【推荐】https://www.luogu.com.cn/blog/Marser/solution-p3812
@@ -373,15 +374,15 @@ func (a matrix) determinant(mod int) int {
 //
 // 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
 // 题单 https://www.luogu.com.cn/training/11251
+// https://codeforces.com/problemset/problem/959/F
 // todo 构造 https://codeforces.com/problemset/problem/1427/E
 //  https://codeforces.com/problemset/problem/1101/G
 //  https://codeforces.com/problemset/problem/895/C
 //  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
 //  https://www.luogu.com.cn/problem/P3857
-//  最右线性基 https://codeforces.com/problemset/problem/1778/E
 type xorBasis struct {
 	b   []int
-	num uint8
+	num int
 
 	canBeZero bool
 	basis     []int
@@ -416,7 +417,9 @@ func (b *xorBasis) insert(v int) {
 }
 
 // EXTRA: 如果遇到线性相关的基，保留位置最靠右的
-// https://codeforces.com/problemset/problem/1778/E
+// https://codeforces.com/problemset/problem/1100/F 2500
+// https://codeforces.com/problemset/problem/1778/E 2500
+// https://atcoder.jp/contests/abc223/tasks/abc223_h
 func (b *xorBasis) insertRightMost(idx, v int) {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
@@ -430,7 +433,7 @@ func (b *xorBasis) insertRightMost(idx, v int) {
 			return
 		}
 		if idx >= b.rightMost[i] { // 注意 b.rightMost[i] 的初始值为 0
-			idx, b.rightMost[i] = b.rightMost[i], idx
+			idx, b.rightMost[i] = b.rightMost[i], idx // 换个旧的 idx
 			v, b.b[i] = b.b[i], v // 继续插入之前的基
 		}
 		v ^= b.b[i]
@@ -441,12 +444,13 @@ func (b *xorBasis) insertRightMost(idx, v int) {
 // v 能否被线性基表出
 func (b *xorBasis) decompose(v int) bool {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		if v>>i&1 > 0 {
-			if b.b[i] == 0 {
-				return false
-			}
-			v ^= b.b[i]
+		if v>>i&1 == 0 {
+			continue
 		}
+		if b.b[i] == 0 { // || b.rightMost[i] < lowerIndex
+			return false
+		}
+		v ^= b.b[i]
 	}
 	return true
 }
@@ -454,10 +458,16 @@ func (b *xorBasis) decompose(v int) bool {
 // https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
 func (b *xorBasis) maxXor() (xor int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
-		//if xor>>i&1 > 0 {
-		//	continue
-		//}
 		if xor^b.b[i] > xor {
+			xor ^= b.b[i]
+		}
+	}
+	return
+}
+
+func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (xor int) {
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if xor>>i&1 == 0 && b.rightMost[i] >= lowerIndex && xor^b.b[i] > xor {
 			xor ^= b.b[i]
 		}
 	}
