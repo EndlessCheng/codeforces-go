@@ -57,7 +57,7 @@ import "math/bits"
 // todo https://codeforces.com/problemset/problem/19/D 2800
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
-// LC https://leetcode-cn.com/tag/segment-tree/
+// 力扣 https://leetcode-cn.com/tag/segment-tree/
 // 另见 dp.go 的数据结构优化 DP
 // 另见 dp.go 的动态 DP
 //
@@ -339,7 +339,7 @@ func (lazySeg) mergeInfo(a, b int) int {
 
 func (t lazySeg) do(o int, v int) {
 	to := &t[o]
-	
+
 	// 更新 v 对整个区间的影响
 	to.sum += v * (to.r - to.l + 1)
 
@@ -727,14 +727,15 @@ func buildPST(a []int, l, r int) *pstNode {
 }
 
 // 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
-// t = append(t, t[len(t)-1].update(i, add))
+// t = append(t, t[len(t)-1].modify(i, add))
 // 注意为了拷贝一份 pstNode，这里的接收器不是指针
 func (o pstNode) modify(i int, add int) *pstNode {
 	if o.l == o.r {
 		o.sum += add
 		return &o
 	}
-	if m := o.lo.r; i <= m {
+	m := (o.l + o.r) >> 1
+	if i <= m {
 		o.lo = o.lo.modify(i, add)
 	} else {
 		o.ro = o.ro.modify(i, add)
@@ -747,7 +748,7 @@ func (o *pstNode) query(l, r int) int {
 	if l <= o.l && o.r <= r {
 		return o.sum
 	}
-	m := o.lo.r
+	m := (o.l + o.r) >> 1
 	if r <= m {
 		return o.lo.query(l, r)
 	}
@@ -777,7 +778,7 @@ func (o *pstNode) update(l, r int, add int) {
 		o.ro.sum += add
 		o.sum = 0
 	}
-	m := o.lo.r
+	m := (o.l + o.r) >> 1
 	if l <= m {
 		o.lo.update(l, r, add)
 	}
@@ -791,7 +792,7 @@ func (o *pstNode) querySingle(i int) int {
 	if o.l == o.r {
 		return o.sum
 	}
-	m := o.lo.r
+	m := (o.l + o.r) >> 1
 	if i <= m {
 		return o.sum + o.lo.querySingle(i)
 	}
@@ -806,15 +807,16 @@ func (o *pstNode) querySingle(i int) int {
 // 初始 t[0] = buildPST(1, len(a))
 //     t[i+1] = t[i].update(kth[i], 1)   kth[i] 为 a[i] 离散化后的值（从 1 开始）
 // 查询 t[r].kth(t[l-1], k)               类似前缀和 [l,r] 1<=l<=r<=n
+// https://www.luogu.com.cn/problem/P2617
 func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
 	}
-	if cntL := o.lo.sum - old.lo.sum; k <= cntL {
+	cntL := o.lo.sum - old.lo.sum
+	if k <= cntL {
 		return o.lo.kth(old.lo, k)
-	} else {
-		return o.ro.kth(old.ro, k-cntL)
 	}
+	return o.ro.kth(old.ro, k-cntL)
 }
 
 // todo EXTRA: rank
@@ -832,7 +834,7 @@ func (o *pstNode) countRange(old *pstNode, low, high int) int {
 	if low <= o.l && o.r <= high {
 		return o.sum - old.sum
 	}
-	m := o.lo.r
+	m := (o.l + o.r) >> 1
 	if high <= m {
 		return o.lo.countRange(old.lo, low, high)
 	}
@@ -865,6 +867,16 @@ func (o *pstNode) countMode(old *pstNode, k int) (mode, count int) {
 	}
 	return -1, 0
 }
+
+//
+
+// 动态开点主席树
+// 如果 TLE 可以禁用垃圾回收 func init() { debug.SetGCPercent(-1) } 能快一倍
+// 模板题 https://atcoder.jp/contests/abc339/tasks/abc339_g
+// - 使用方法见代码 https://atcoder.jp/contests/abc339/submissions/50126709
+// https://codeforces.com/problemset/problem/1771/F 代码 https://codeforces.com/contest/1771/submission/245657179
+
+//
 
 // EXTRA: 子序列自动机 Sequence Automation
 // https://www.luogu.com.cn/problem/P5826
