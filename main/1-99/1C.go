@@ -6,7 +6,7 @@ import (
 	"math"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 type vecF struct{ x, y float64 }
 
 func (a vecF) sub(b vecF) vecF     { return vecF{a.x - b.x, a.y - b.y} }
