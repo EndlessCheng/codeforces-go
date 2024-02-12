@@ -40,10 +40,10 @@ func Test(t *testing.T) {
 func TestCompare(_t *testing.T) {
 	return
 	testutil.DebugTLE = 0
-
+	rg := testutil.NewRandGenerator()
 	inputGenerator := func() string {
 		//return ``
-		rg := testutil.NewRandGenerator()
+		rg.Clear()
 		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 3)
 		rg.NewLine()
@@ -87,11 +87,10 @@ func TestCheck(_t *testing.T) {
 	return
 	assert := assert.New(_t)
 	_ = assert
-
 	testutil.DebugTLE = 0
-
+	rg := testutil.NewRandGenerator()
 	inputGenerator := func() (string, testutil.OutputChecker) {
-		rg := testutil.NewRandGenerator()
+		rg.Clear()
 		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 5)
 		rg.NewLine()
@@ -123,9 +122,9 @@ func TestCheck(_t *testing.T) {
 func TestRE(_t *testing.T) {
 	return
 	testutil.DebugTLE = 0
-
+	rg := testutil.NewRandGenerator()
 	inputGenerator := func() (string, testutil.OutputChecker) {
-		rg := testutil.NewRandGenerator()
+		rg.Clear()
 		rg.One() // 若不是多测则 remove
 		n := rg.Int(1, 5)
 		rg.NewLine()
