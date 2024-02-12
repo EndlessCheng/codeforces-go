@@ -10,18 +10,6 @@ import (
 // https://space.bilibili.com/206214
 func CF730J(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
-	max := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
 	var n, sa, sb, m, maxSave int
 	Fscan(in, &n)
 	a := make([]struct{ a, b int }, n)
