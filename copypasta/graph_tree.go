@@ -288,7 +288,7 @@ func (*tree) subtreeSize(root int, g [][]int) {
 // 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
 // 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
 // 例题 https://codeforces.com/problemset/problem/1328/E
-// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/
+// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
 // 好题（需要充分利用入出时间戳的性质）https://codeforces.com/problemset/problem/1528/C
 // 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
 //    先用 BFS 建树，然后 DFS 跑建好的树
@@ -299,10 +299,11 @@ func (*tree) subtreeSize(root int, g [][]int) {
 //    }
 // 其他：见 mo.go 中的树上莫队部分
 func (*tree) inOutTimestamp(g [][]int, root int) {
+	// DFS 序
 	timeIn := make([]int, len(g))
 	timeOut := make([]int, len(g))
 	at := make([]int, len(g)+1)
-	clock := 0 // -1（0 适用于多个连通块的情况）
+	clock := 0
 	var f func(v, fa int)
 	f = func(v, fa int) {
 		clock++
@@ -1194,7 +1195,9 @@ func (*tree) lcaRMQ(root int, g [][]int) {
 // https://core.ac.uk/download/pdf/82125836.pdf
 // https://oi-wiki.org/graph/lca/#tarjan
 // https://cp-algorithms.com/graph/lca_tarjan.html
-// 扩展：Tarjan RMQ https://codeforces.com/blog/entry/48994
+// todo 线性做法 https://ljt12138.blog.uoj.ac/blog/4874
+// 类似思路可以用在求 RMQ 上 https://codeforces.com/blog/entry/48994
+//
 // LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
 	n := len(edges) - 1
@@ -1412,6 +1415,7 @@ func (*tree) virtualTree(g [][]int) {
 		var f func(int) (int, int, int)
 		f = func(v int) (size, minL, maxL int) {
 			// 如果 inNodes[v] != qid，那么 v 只是关键节点之间路径上的「拐点」
+			// 在处理虚树 DP 时，可能需要额外考虑 v 不在 nodes 中的情况
 			imp := inNodes[v] == qid
 			if imp {
 				size = 1
@@ -1758,7 +1762,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://codeforces.com/problemset/problem/1805/E
 // https://codeforces.com/contest/1824/problem/C
 
-// 写法一：按大小合并
+// 写法一：按 map 的大小合并
 // 路径点权异或 https://codeforces.com/problemset/problem/1709/E
 func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
 	var f func(v, fa, xor int) map[int]bool
@@ -1784,11 +1788,12 @@ func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
 	f(root, -1, 0)
 }
 
-// 写法二：轻重儿子合并
+// 写法二：轻重儿子合并 · map 版本
 // 根节点到树上任意节点的轻边数不超过 O(logn) 条
-func (*tree) dsu(root int, g [][]int, vals []int) { // vals 为点权
+// 某些题目可以不用 map，而是像莫队那样添加和撤销，这样只用数组就行，例如 https://codeforces.com/problemset/problem/375/D
+func (*tree) dsuMap(root int, g [][]int, vals []int) { // vals 为点权
 	hson := make([]int, len(g))
-	var build func(v, fa int) int
+	var build func(int, int) int
 	build = func(v, fa int) int {
 		sz, hsz, hs := 1, 0, -1
 		for _, w := range g[v] {
@@ -1800,14 +1805,14 @@ func (*tree) dsu(root int, g [][]int, vals []int) { // vals 为点权
 				}
 			}
 		}
-		hson[v] = hs
+		hson[v] = hs // 叶子的重儿子是 -1
 		return sz
 	}
 	build(root, -1)
 
 	// 例如：统计子树的点权种类数
 	ans := make([]int, len(g))
-	var f func(v, fa int) map[int]bool
+	var f func(int, int) map[int]bool
 	f = func(v, fa int) map[int]bool {
 		if hson[v] < 0 { // 叶结点
 			ans[v] = 1
@@ -1829,6 +1834,79 @@ func (*tree) dsu(root int, g [][]int, vals []int) { // vals 为点权
 		merge(vals[v])
 		ans[v] = len(has)
 		return has
+	}
+	f(root, -1)
+}
+
+// 写法三：轻重儿子合并 · 数组版本
+// 根节点到树上任意节点的轻边数不超过 O(logn) 条
+// 不用 map，而是像莫队那样添加和撤销，这样只需要数组，常数更小
+// 例如 https://codeforces.com/problemset/problem/375/D
+func (*tree) dsuArr(root int, g [][]int, vals []int) { // vals 为点权
+	dfn := 0
+	nodes := make([]struct{ l, r, hson int }, len(g)) // [l,r)
+	nodeVals := make([]int, 0, len(g))
+	var build func(int, int) int
+	build = func(v, fa int) int {
+		nodes[v].l = dfn
+		dfn++
+		nodeVals = append(nodeVals, vals[v])
+		size, hsz, hson := 1, 0, -1
+		for _, w := range g[v] {
+			if w != fa {
+				sz := build(w, v)
+				size += sz
+				if sz > hsz {
+					hsz, hson = sz, w
+				}
+			}
+		}
+		nodes[v].r = nodes[v].l + size
+		nodes[v].hson = hson
+		return size
+	}
+	build(root, -1)
+
+	//（离线）统计子树中的出现次数 >= k 的点权个数（1 <= k <= n）
+	cnt := [1e5 + 1]int{}
+	cc := make([]int, len(nodeVals)+1)
+	var f func(int, int)
+	f = func(v, fa int) {
+		hson := nodes[v].hson
+		for _, w := range g[v] {
+			if w == fa || w == hson {
+				continue
+			}
+			f(w, v)
+			// 恢复现场，这样下一棵子树不会受到影响
+			for _, x := range nodeVals[nodes[w].l:nodes[w].r] {
+				cc[cnt[x]]--
+				cnt[x]--
+			}
+		}
+		if hson >= 0 {
+			f(hson, v)
+			// 此时重儿子的数据已经添加
+		}
+
+		// 添加根节点的数据
+		cnt[vals[v]]++
+		cc[cnt[vals[v]]]++
+
+		for _, w := range g[v] {
+			if w == fa || w == hson {
+				continue
+			}
+			// 添加非重儿子的数据
+			for _, x := range nodeVals[nodes[w].l:nodes[w].r] {
+				cnt[x]++
+				cc[cnt[x]]++
+			}
+		}
+
+		// 子树 v 的每个节点的数据都已添加，回答询问
+		// 此时 cc[k] 就是子树 v 中的出现次数 >= k 的点权个数
+		// ...
 	}
 	f(root, -1)
 }
