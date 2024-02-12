@@ -16,16 +16,20 @@ const (
 )
 
 func NewRandGenerator() *RG {
-	return &RG{&strings.Builder{}}
+	return NewRandGeneratorWithSeed(1)
 }
 
 func NewRandGeneratorWithSeed(seed int64) *RG {
 	rand.Seed(seed)
-	return NewRandGenerator()
+	return &RG{&strings.Builder{}}
 }
 
 type RG struct {
 	sb *strings.Builder
+}
+
+func (r *RG) Clear() {
+	r.sb.Reset()
 }
 
 // for random string, see Str
