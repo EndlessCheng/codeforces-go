@@ -11,12 +11,6 @@ func CF1324F(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	max := func(a, b int) int {
-		if a >= b {
-			return a
-		}
-		return b
-	}
 
 	var n, v, w int
 	Fscan(in, &n)

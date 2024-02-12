@@ -11,18 +11,6 @@ func CF1304C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	min := func(a, b int64) int64 {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	max := func(a, b int64) int64 {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	type pair struct{ t, down, up int64 }
 
 	solve := func() (ans bool) {

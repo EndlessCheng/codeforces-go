@@ -29,15 +29,15 @@ var curMin int
 
 func (t seg65) update(o, i, v int) {
 	if t[o].l == t[o].r {
-		t[o].min = min65(t[o].min, abs65(v-t[o].a[0]))
-		curMin = min65(curMin, t[o].min)
+		t[o].min = min(t[o].min, abs65(v-t[o].a[0]))
+		curMin = min(curMin, t[o].min)
 		return
 	}
 	if t[o].r <= i {
 		a := t[o].a
 		p := sort.SearchInts(a, v)
 		if (p == 0 || v-a[p-1] >= curMin) && (p == len(a) || a[p]-v >= curMin) {
-			curMin = min65(curMin, t[o].min)
+			curMin = min(curMin, t[o].min)
 			return // 提前退出
 		}
 	}
@@ -46,7 +46,7 @@ func (t seg65) update(o, i, v int) {
 		t.update(o<<1|1, i, v) // 先右后左，这样可以从右往左更新
 	}
 	t.update(o<<1, i, v)
-	t[o].min = min65(t[o<<1].min, t[o<<1|1].min)
+	t[o].min = min(t[o<<1].min, t[o<<1|1].min)
 }
 
 func (t seg65) query(o, l int) int {
@@ -56,7 +56,7 @@ func (t seg65) query(o, l int) int {
 	if (t[o].l+t[o].r)>>1 < l {
 		return t.query(o<<1|1, l)
 	}
-	return min65(t.query(o<<1, l), t[o<<1|1].min)
+	return min(t.query(o<<1, l), t[o<<1|1].min)
 }
 
 func CF765F(_r io.Reader, _w io.Writer) {
@@ -91,13 +91,6 @@ func CF765F(_r io.Reader, _w io.Writer) {
 	for _, v := range ans {
 		Fprintln(out, v)
 	}
-}
-
-func min65(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 func abs65(x int) int {

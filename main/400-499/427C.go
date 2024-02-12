@@ -8,14 +8,8 @@ import (
 
 // https://space.bilibili.com/206214
 func CF427C(_r io.Reader, out io.Writer) {
-	const mod = 1_000_000_007
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
 	in := bufio.NewReader(_r)
+	const mod = 1_000_000_007
 	var n, m, v, w int
 	Fscan(in, &n)
 	a := make([]int, n)

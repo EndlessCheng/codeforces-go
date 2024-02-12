@@ -9,12 +9,6 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF888E(_r io.Reader, out io.Writer) {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	in := bufio.NewReader(_r)
 	var n, m, ans int
 	Fscan(in, &n, &m)

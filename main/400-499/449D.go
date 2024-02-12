@@ -10,7 +10,7 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF449D(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	const mod, mx = 1e9 + 7, 20
+	const mod, mx = 1_000_000_007, 20
 	var n, v int
 	Fscan(in, &n)
 	p2 := make([]int, n+1)

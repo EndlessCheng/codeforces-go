@@ -9,13 +9,6 @@ import (
 // https://space.bilibili.com/206214
 func CF295B(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
-
 	var n int
 	Fscan(in, &n)
 	d := make([][]int, n)

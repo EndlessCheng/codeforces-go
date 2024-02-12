@@ -10,12 +10,6 @@ import (
 // github.com/EndlessCheng/codeforces-go
 func CF2B(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
 	var n, v int
 	Fscan(in, &n)
 	zx := -1
