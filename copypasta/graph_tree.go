@@ -212,6 +212,7 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 // 模板题 https://ac.nowcoder.com/acm/contest/6383/B
 // 例题 https://codeforces.com/problemset/problem/383/C
 //     https://codeforces.com/problemset/problem/877/E
+// https://codeforces.com/problemset/problem/916/E
 // 结合 AC 自动机 https://codeforces.com/contest/163/problem/E
 func (*tree) subtreeSize(root int, g [][]int) {
 	nodes := make([]struct{ dfn, size int }, len(g))
@@ -320,8 +321,9 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
+	// https://codeforces.com/problemset/problem/916/E
 	isAncestor := func(f, v int) bool { return timeIn[f] < timeIn[v] && timeIn[v] <= timeOut[f] }
-	sameSubtree := func(v, w int) bool { return isAncestor(v, w) || isAncestor(w, v) }
+	isAncestor2 := func(v, w int) bool { return isAncestor(v, w) || isAncestor(w, v) }
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
@@ -366,7 +368,7 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 		_ = query
 	}
 
-	_, _ = isAncestor, sameSubtree
+	_, _ = isAncestor, isAncestor2
 }
 
 // 树上最小路径覆盖，要求路径之间不相交，即每个顶点恰好被覆盖一次（路径长度可以为 0，即一个点）
@@ -877,7 +879,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // 边分治
 // todo https://oi-wiki.org/graph/tree-divide/#%E8%BE%B9%E5%88%86%E6%B2%BB
 
-// 最近公共祖先 · 其一 · 基于树上倍增和二分搜索
+// 最近公共祖先 · 其一 · 基于树上倍增
 // 【模板讲解】树上倍增算法（以及最近公共祖先） 
 // - 请看 https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/
 // O(nlogn) 预处理，O(logn) 查询
@@ -889,9 +891,10 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 //
 // 倍增 LC1483 https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/
 // 模板题 https://www.luogu.com.cn/problem/P3379
-// 到两点距离相同的点的数量 https://codeforces.com/problemset/problem/519/E
+// https://codeforces.com/problemset/problem/33/D 2000
+// 到两点距离相同的点的数量 https://codeforces.com/problemset/problem/519/E 2100
+// https://codeforces.com/problemset/problem/916/E 2400
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
-// https://codeforces.com/problemset/problem/33/D
 // 路径点权乘积 https://ac.nowcoder.com/acm/contest/6913/C
 //
 // 维护元素和 LC2836 https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/
@@ -910,7 +913,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // 树上倍增-查询深度最小的未被标记的点 https://codeforces.com/problemset/problem/980/E
 // 题目推荐 https://cp-algorithms.com/graph/lca.html#toc-tgt-2
 // todo poj2763 poj1986 poj3728
-func (*tree) lcaBinarySearch(root int, g [][]int) {
+func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, len(g))
 	dep := make([]int, len(g)) // 根节点的深度为 0
@@ -965,6 +968,7 @@ func (*tree) lcaBinarySearch(root int, g [][]int) {
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 v 不是 to 的子孙，返回 -1
+	// https://codeforces.com/problemset/problem/916/E
 	down1 := func(v, to int) int {
 		if dep[v] >= dep[to] {
 			return -1
@@ -1357,7 +1361,7 @@ func (*tree) virtualTree(g [][]int) {
 	dfn := make([]int, len(g))
 	ts := 0
 	_ = ts
-	// 向上查找<lcaBinarySearch>
+	// 向上查找<lcaBinaryLifting>
 	// 在 buildPa 开头添加：
 	// dfn[v] = ts; ts++
 
@@ -1479,7 +1483,7 @@ func (*tree) virtualTree(g [][]int) {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 //
-// 注：若没有修改操作，见 lcaBinarySearch（路径查询）以及 subtreeSize（子树查询）
+// 注：若没有修改操作，见 lcaBinaryLifting（路径查询）以及 subtreeSize（子树查询）
 //
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
 // 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
