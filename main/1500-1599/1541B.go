@@ -6,25 +6,26 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF1541B(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var T, n, ai int
+	var T, n, aj int
 	for Fscan(in, &T); T > 0; T-- {
-		ans := 0
 		Fscan(in, &n)
-		pos := make([]int, n*2+1)
-		for i := 1; i <= n; i++ {
-			Fscan(in, &ai)
-			for aj := 1; ai*aj < i*2; aj++ {
-				if j := pos[aj]; j > 0 && ai*aj == i+j {
+		idx := make([]int, n*2+1)
+		ans := 0
+		for j := 1; j <= n; j++ {
+			Fscan(in, &aj)
+			for ai := 1; ai*aj < j*2; ai++ {
+				i := idx[ai]
+				if i > 0 && ai*aj == i+j {
 					ans++
 				}
 			}
-			pos[ai] = i
+			idx[aj] = j
 		}
 		Fprintln(out, ans)
 	}
