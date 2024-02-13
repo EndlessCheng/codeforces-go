@@ -68,7 +68,7 @@ outputCopy
 }
 
 func TestCompareCF1129A2(t *testing.T) {
-	//return
+	return
 	testutil.DebugTLE = 0
 
 	inputGenerator := func() string {
@@ -88,14 +88,14 @@ func TestCompareCF1129A2(t *testing.T) {
 		return rg.String()
 	}
 
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, CF1129A2)
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF1129A2, CF1129A2)
 }
 
-func dist(a, b, n int) int {
+func distCF1129A2(a, b, n int) int {
 	return (b + n - a) % n
 }
 
-func runBF(in io.Reader, out io.Writer) {
+func runBF1129A2(in io.Reader, out io.Writer) {
 	var n, m int
 	fmt.Fscan(in, &n, &m)
 	nums, cnt := [5004]int{}, [5004]int{}
@@ -106,7 +106,7 @@ func runBF(in io.Reader, out io.Writer) {
 			nums[a] = b
 		} else {
 			cnt[a] += 1
-			if dist(a, b, n) < dist(a, nums[a], n) {
+			if distCF1129A2(a, b, n) < distCF1129A2(a, nums[a], n) {
 				nums[a] = b
 			}
 
@@ -117,7 +117,7 @@ func runBF(in io.Reader, out io.Writer) {
 		ans := 0
 		for j := 1; j < n+1; j++ {
 			if nums[j] > 0 {
-				ans = int(math.Max(float64(ans), float64(dist(i, j, n)+cnt[j]*n+dist(j, nums[j], n))))
+				ans = int(math.Max(float64(ans), float64(distCF1129A2(i, j, n)+cnt[j]*n+distCF1129A2(j, nums[j], n))))
 			}
 		}
 		res += strconv.Itoa(ans) + " "
