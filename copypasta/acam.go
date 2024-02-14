@@ -68,8 +68,6 @@ todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
  https://www.luogu.com.cn/problem/P3311
  https://www.luogu.com.cn/problem/P2292
  https://www.luogu.com.cn/problem/P5840
- https://www.acwing.com/solution/content/25473/
- https://www.acwing.com/solution/content/54646/
  https://codeforces.com/problemset/problem/710/F 2400
  https://codeforces.com/problemset/problem/1202/E 2400
  https://codeforces.com/problemset/problem/696/D 2500
@@ -82,7 +80,8 @@ todo 最长前缀查询 https://www.luogu.com.cn/problem/P5231
  LC30 串联所有单词的子串 https://leetcode-cn.com/problems/substring-with-concatenation-of-all-words/
  ? LC616 给字符串添加加粗标签 https://leetcode-cn.com/problems/add-bold-tag-in-string/
  LC2781 最长合法子字符串的长度 https://leetcode.cn/problems/length-of-the-longest-valid-substring/solution/aczi-dong-ji-onjie-fa-wu-shi-chang-du-10-47dy/
-*/
+ https://www.acwing.com/solution/content/25473/
+ https://www.acwing.com/solution/content/54646/*/
 
 // 如果 MLE 请把指针替换成 uint32，代码见 https://codeforces.com/contest/163/submission/233981400
 
