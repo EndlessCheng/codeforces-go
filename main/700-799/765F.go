@@ -7,14 +7,15 @@ import (
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 type seg65 []struct {
-	l, r, min int
-	a         []int
+	l, r    int
+	minDiff int
+	a       []int
 }
 
 func (t seg65) build(a []int, o, l, r int) {
-	t[o].l, t[o].r, t[o].min = l, r, 2e9
+	t[o].l, t[o].r, t[o].minDiff = l, r, 2e9
 	t[o].a = append([]int(nil), a[l-1:r]...)
 	sort.Ints(t[o].a)
 	if l == r {
@@ -29,34 +30,35 @@ var curMin int
 
 func (t seg65) update(o, i, v int) {
 	if t[o].l == t[o].r {
-		t[o].min = min(t[o].min, abs65(v-t[o].a[0]))
-		curMin = min(curMin, t[o].min)
+		t[o].minDiff = min(t[o].minDiff, abs65(v-t[o].a[0]))
+		curMin = min(curMin, t[o].minDiff)
 		return
 	}
-	if t[o].r <= i {
+	if i >= t[o].r {
+		// v 到该子树所有元素的最小差值
 		a := t[o].a
 		p := sort.SearchInts(a, v)
 		if (p == 0 || v-a[p-1] >= curMin) && (p == len(a) || a[p]-v >= curMin) {
-			curMin = min(curMin, t[o].min)
-			return // 提前退出
+			curMin = min(curMin, t[o].minDiff)
+			return // 没法更新 minDiff，提前退出
 		}
 	}
 	m := (t[o].l + t[o].r) >> 1
 	if i > m {
-		t.update(o<<1|1, i, v) // 先右后左，这样可以从右往左更新
+		t.update(o<<1|1, i, v) // 先右后左，方便剪枝
 	}
 	t.update(o<<1, i, v)
-	t[o].min = min(t[o<<1].min, t[o<<1|1].min)
+	t[o].minDiff = min(t[o<<1].minDiff, t[o<<1|1].minDiff)
 }
 
 func (t seg65) query(o, l int) int {
 	if l <= t[o].l {
-		return t[o].min
+		return t[o].minDiff
 	}
 	if (t[o].l+t[o].r)>>1 < l {
 		return t.query(o<<1|1, l)
 	}
-	return min(t.query(o<<1, l), t[o<<1|1].min)
+	return min(t.query(o<<1, l), t[o<<1|1].minDiff)
 }
 
 func CF765F(_r io.Reader, _w io.Writer) {
