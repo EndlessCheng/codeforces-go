@@ -17,15 +17,17 @@ todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-s
 https://oi-wiki.org/ds/bit/
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
-模板题 https://www.luogu.com.cn/problem/P3374
-- [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)
+- [307. 区域和检索 - 数组可修改](https://leetcode.cn/problems/range-sum-query-mutable/) *模板题
+   - https://www.luogu.com.cn/problem/P3374
+- [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/) *逆序对
+- [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/) 2030
 - [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
-- [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/)
-逆序对 https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
+
+关于逆序对，见下面的 cntInversions
+
 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 https://atcoder.jp/contests/arc075/tasks/arc075_c
-1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
@@ -37,7 +39,6 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
 多变量统计 https://codeforces.com/problemset/problem/1194/E
          T4 https://www.nowcoder.com/discuss/1022136
-三元逆序对 https://codeforces.com/problemset/problem/61/E
 最多交换 k 次相邻字母后，得到的最小字典序
 - LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 整除对统计 https://codeforces.com/problemset/problem/301/D
@@ -112,6 +113,7 @@ func (f fenwick) query(l, r int) int {
 //   = ∑(m-i+1)*diff[i]
 //   = (m+1)∑diff[i] - ∑i*diff[i]
 // https://ac.nowcoder.com/acm/problem/50454
+// https://codeforces.com/problemset/problem/916/E 2400
 // todo 二维差分 上帝造题的七分钟 https://www.luogu.com.cn/problem/P4514
 // todo 离线询问（按 x y 分组）https://codeforces.com/contest/1824/problem/D
 
@@ -121,7 +123,7 @@ func (f fenwick) query(l, r int) int {
 type fenwickDiff [][2]int
 
 func newFenwickTreeDiff(n int) fenwickDiff {
-	return make([][2]int, n+1)
+	return make(fenwickDiff, n+1)
 }
 
 func (t fenwickDiff) _add(i, val int) {
@@ -382,12 +384,22 @@ func _(n int) {
 	// 求逆序对的方法之一
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 	// 归并做法见 misc.go 中的 mergeCount
-	// 扩展 https://codeforces.com/problemset/problem/362/C
+	// 扩展 https://codeforces.com/problemset/problem/362/C 1900
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
-	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
-	// https://codeforces.com/problemset/problem/1585/D
+	// todo 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
+	// https://codeforces.com/problemset/problem/1585/D 1900
+	// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
 	// - https://ac.nowcoder.com/acm/contest/308/D
+	// todo https://codeforces.com/problemset/problem/911/D
+	//  https://codeforces.com/contest/987/problem/E
+	//  https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
+	//  https://atcoder.jp/contests/abc296/tasks/abc296_f
+	//  https://atcoder.jp/contests/arc136/tasks/arc136_b
+	//  https://www.codechef.com/problems/DYNAINV?tab=statement
+	//  https://ac.nowcoder.com/acm/problem/20861
+	// 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
+	// 三元逆序对 https://codeforces.com/problemset/problem/61/E
 	cntInversions := func(a []int) int {
 		n := len(a)
 		tree := make([]int, n+1)
@@ -414,7 +426,7 @@ func _(n int) {
 	// 通过邻项交换，把数组 a 变成数组 b，需要的最小操作次数
 	// 如果无法做到，返回 -1
 	// https://atcoder.jp/contests/arc120/tasks/arc120_c
-	// LC1850 https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
+	// LC1850 https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/ 2073
 	minSwap := func(a, b []int) (res int) {
 		tree := make([]int, len(a)+1)
 		add := func(i int) {
