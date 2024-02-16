@@ -24,7 +24,7 @@ class Solution:
 class Solution {
     public int maxFrequencyElements(int[] nums) {
         int ans = 0, maxCnt = 0;
-        HashMap<Integer, Integer> cnt = new HashMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>();
         for (int x : nums) {
             int c = cnt.merge(x, 1, Integer::sum);
             if (c > maxCnt) {
