@@ -75,7 +75,7 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    int f(string s, int k) {
+    int f(string_view s, int k) {
         int res = 0;
         for (int m = 1; m <= 26 && k * m <= s.length(); m++) {
             int cnt[26]{};
@@ -103,10 +103,11 @@ public:
     int countCompleteSubstrings(string word, int k) {
         int n = word.length();
         int ans = 0;
+        string_view s(word); // string_view 的 substr 没有拷贝
         for (int i = 0; i < n;) {
             int st = i;
             for (i++; i < n && abs(int(word[i]) - int(word[i - 1])) <= 2; i++);
-            ans += f(word.substr(st, i - st), k);
+            ans += f(s.substr(st, i - st), k);
         }
         return ans;
     }
@@ -161,4 +162,4 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 - [395. 至少有 K 个重复字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-least-k-repeating-characters/)
 - [1763. 最长的美好子字符串](https://leetcode.cn/problems/longest-nice-substring/)
 
-如果你发现了其它相似题目，欢迎在评论区补充！
+如果你还知道其它相似题目，欢迎在评论区补充！
