@@ -1,4 +1,6 @@
-## 方法一：字符串+哈希表
+## 方法一：字符串
+
+把 $\textit{arr}_1$ 的所有前缀丢到一个哈希集合中，然后遍历 $\textit{arr}_2$ 的所有前缀，统计在哈希集合中的最长长度。
 
 ```py [sol-Python3]
 class Solution:
@@ -95,35 +97,26 @@ func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 - 时间复杂度：$\mathcal{O}((n+m)\log^2 U)$，其中 $n$ 为 $\textit{arr}_1$ 的长度，$m$ 为 $\textit{arr}_2$ 的长度，$U$ 为数组元素的最大值。
 - 空间复杂度：$\mathcal{O}(n\log^2 U)$。
 
-## 方法二：数位数组+哈希表
+## 方法二：不用字符串
 
 ```py [sol-Python3]
 class Solution:
     def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
         st = set()
-        a = []
         for x in arr1:
-            a.clear()
             while x:
-                a.append(x % 10)
-                x //= 10
-            x = 0
-            for i in range(len(a) - 1, -1, -1):
-                x = x * 10 + a[i]
                 st.add(x)
+                x //= 10
 
         ans = 0
         for x in arr2:
-            a.clear()
-            while x:
-                a.append(x % 10)
+            while x and x not in st:
                 x //= 10
-            x = 0
-            for i in range(len(a) - 1, -1, -1):
-                x = x * 10 + a[i]
-                if x not in st:
-                    break
-                ans = max(ans, len(a) - i)
+            cnt = 0
+            while x:
+                cnt += 1
+                x //= 10
+            ans = max(ans, cnt)
         return ans
 ```
 
@@ -131,33 +124,20 @@ class Solution:
 class Solution {
     public int longestCommonPrefix(int[] arr1, int[] arr2) {
         Set<Integer> st = new HashSet<>();
-        int[] a = new int[9];
         for (int x : arr1) {
-            int index = 0;
             for (; x > 0; x /= 10) {
-                a[index++] = x % 10;
-            }
-            x = 0;
-            for (int i = index - 1; i >= 0; i--) {
-                x = x * 10 + a[i];
                 st.add(x);
             }
         }
 
         int ans = 0;
         for (int x : arr2) {
-            int index = 0;
+            for (; x > 0 && !st.contains(x); x /= 10) ;
+            int cnt = 0;
             for (; x > 0; x /= 10) {
-                a[index++] = x % 10;
+                cnt++;
             }
-            x = 0;
-            for (int i = index - 1; i >= 0; i--) {
-                x = x * 10 + a[i];
-                if (!st.contains(x)) {
-                    break;
-                }
-                ans = Math.max(ans, index - i);
-            }
+            ans = Math.max(ans, cnt);
         }
         return ans;
     }
@@ -169,33 +149,20 @@ class Solution {
 public:
     int longestCommonPrefix(vector<int> &arr1, vector<int> &arr2) {
         unordered_set<int> st;
-        vector<int> a;
         for (int x : arr1) {
-            a.clear();
             for (; x; x /= 10) {
-                a.push_back(x % 10);
-            }
-            x = 0;
-            for (int i = a.size() - 1; i >= 0; i--) {
-                x = x * 10 + a[i];
                 st.insert(x);
             }
         }
 
         int ans = 0;
         for (int x : arr2) {
-            a.clear();
+            for (; x && !st.contains(x); x /= 10);
+            int cnt = 0;
             for (; x; x /= 10) {
-                a.push_back(x % 10);
+                cnt++;
             }
-            x = 0;
-            for (int i = a.size() - 1; i >= 0; i--) {
-                x = x * 10 + a[i];
-                if (!st.contains(x)) {
-                    break;
-                }
-                ans = max(ans, (int) a.size() - i);
-            }
+            ans = max(ans, cnt);
         }
         return ans;
     }
@@ -205,32 +172,20 @@ public:
 ```go [sol-Go]
 func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 	has := map[int]bool{}
-	a := []int{}
 	for _, v := range arr1 {
-		a = a[:0]
-		for x := v; x > 0; x /= 10 {
-			a = append(a, x%10)
-		}
-		v = 0
-		for i := len(a) - 1; i >= 0; i-- {
-			v = v*10 + a[i]
+		for ; v > 0; v /= 10 {
 			has[v] = true
 		}
 	}
 
 	for _, v := range arr2 {
-		a = a[:0]
-		for x := v; x > 0; x /= 10 {
-			a = append(a, x%10)
+		for ; v > 0 && !has[v]; v /= 10 {
 		}
-		v = 0
-		for i := len(a) - 1; i >= 0; i-- {
-			v = v*10 + a[i]
-			if !has[v] {
-				break
-			}
-			ans = max(ans, len(a)-i)
+		cnt := 0
+		for ; v > 0; v /= 10 {
+			cnt++
 		}
+		ans = max(ans, cnt)
 	}
 	return
 }
