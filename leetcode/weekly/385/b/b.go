@@ -3,7 +3,7 @@ package main
 import "strconv"
 
 // https://space.bilibili.com/206214
-func longestCommonPrefix(arr1, arr2 []int) (ans int) {
+func longestCommonPrefix(arr1, arr2 []int) int {
 	has := map[int]bool{}
 	for _, v := range arr1 {
 		for ; v > 0; v /= 10 {
@@ -11,16 +11,16 @@ func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 		}
 	}
 
+	mx := 0
 	for _, v := range arr2 {
 		for ; v > 0 && !has[v]; v /= 10 {
 		}
-		cnt := 0
-		for ; v > 0; v /= 10 {
-			cnt++
-		}
-		ans = max(ans, cnt)
+		mx = max(mx, v)
 	}
-	return
+	if mx == 0 {
+		return 0
+	}
+	return len(strconv.Itoa(mx))
 }
 
 func longestCommonPrefix2(arr1, arr2 []int) (ans int) {

@@ -1,4 +1,4 @@
-## 方法一：字符串
+## 方法一：用字符串处理
 
 把 $\textit{arr}_1$ 的所有前缀丢到一个哈希集合中，然后遍历 $\textit{arr}_2$ 的所有前缀，统计在哈希集合中的最长长度。
 
@@ -97,7 +97,9 @@ func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 - 时间复杂度：$\mathcal{O}((n+m)\log^2 U)$，其中 $n$ 为 $\textit{arr}_1$ 的长度，$m$ 为 $\textit{arr}_2$ 的长度，$U$ 为数组元素的最大值。
 - 空间复杂度：$\mathcal{O}(n\log^2 U)$。
 
-## 方法二：不用字符串
+## 方法二：用整数处理
+
+用整数处理。另外不需要在计算过程中取长度最大值，而是取数值的最大值，因为数值越大长度越长。
 
 ```py [sol-Python3]
 class Solution:
@@ -108,16 +110,12 @@ class Solution:
                 st.add(x)
                 x //= 10
 
-        ans = 0
+        mx = 0
         for x in arr2:
             while x and x not in st:
                 x //= 10
-            cnt = 0
-            while x:
-                cnt += 1
-                x //= 10
-            ans = max(ans, cnt)
-        return ans
+            mx = max(mx, x)
+        return len(str(mx)) if mx else 0
 ```
 
 ```java [sol-Java]
@@ -130,16 +128,12 @@ class Solution {
             }
         }
 
-        int ans = 0;
+        int mx = 0;
         for (int x : arr2) {
             for (; x > 0 && !st.contains(x); x /= 10) ;
-            int cnt = 0;
-            for (; x > 0; x /= 10) {
-                cnt++;
-            }
-            ans = Math.max(ans, cnt);
+            mx = Math.max(mx, x);
         }
-        return ans;
+        return mx > 0 ? Integer.toString(mx).length() : 0;
     }
 }
 ```
@@ -155,22 +149,18 @@ public:
             }
         }
 
-        int ans = 0;
+        int mx = 0;
         for (int x : arr2) {
             for (; x && !st.contains(x); x /= 10);
-            int cnt = 0;
-            for (; x; x /= 10) {
-                cnt++;
-            }
-            ans = max(ans, cnt);
+            mx = max(mx, x);
         }
-        return ans;
+        return mx ? to_string(mx).length() : 0;
     }
 };
 ```
 
 ```go [sol-Go]
-func longestCommonPrefix(arr1, arr2 []int) (ans int) {
+func longestCommonPrefix(arr1, arr2 []int) int {
 	has := map[int]bool{}
 	for _, v := range arr1 {
 		for ; v > 0; v /= 10 {
@@ -178,16 +168,16 @@ func longestCommonPrefix(arr1, arr2 []int) (ans int) {
 		}
 	}
 
+	mx := 0
 	for _, v := range arr2 {
 		for ; v > 0 && !has[v]; v /= 10 {
 		}
-		cnt := 0
-		for ; v > 0; v /= 10 {
-			cnt++
-		}
-		ans = max(ans, cnt)
+		mx = max(mx, v)
 	}
-	return
+	if mx == 0 {
+		return 0
+	}
+	return len(strconv.Itoa(mx))
 }
 ```
 
