@@ -8,6 +8,7 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -48,19 +49,18 @@ func _() {
 	// https://en.wikipedia.org/wiki/Hash_function
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
-	// https://planetmath.org/goodhashtableprimes
-	// 不能用 uint32 自然溢出（或者单模数）的原因 https://en.wikipedia.org/wiki/Birthday_problem
-	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://oi-wiki.org/string/hash/
-	// 利用 set 可以求出固定长度的不同子串个数
-	// https://codeforces.com/blog/entry/60445
+	// On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
+	// Hacking a weak hash https://codeforces.com/blog/entry/113484
+	// Rolling hash and 8 interesting problems https://codeforces.com/blog/entry/60445
+	// 选一个合适的质数 https://planetmath.org/goodhashtableprimes
+	// 生日问题 https://en.wikipedia.org/wiki/Birthday_problem
+	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html
-	// https://codeforces.com/blog/entry/113484
 	// todo 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
-	//      从 Hash Killer I、II、III 论字符串哈希 https://www.cnblogs.com/HansBug/p/4288118.html
-	//      anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
-	//      On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
-	//      hash killer https://loj.ac/p/6758
+	//  从 Hash Killer I、II、III 论字符串哈希 https://www.cnblogs.com/HansBug/p/4288118.html
+	//  anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
+	//  hash killer https://loj.ac/p/6758
 	//  Kapun's algorithm https://codeforces.com/blog/entry/99973
 	// 比较：给每个元素分配一个随机哈希系数 + 滑动窗口 https://codeforces.com/problemset/problem/1418/G
 	//
@@ -86,18 +86,25 @@ func _() {
 	// todo 带修回文串 jiangly 代码 https://atcoder.jp/contests/abc331/submissions/48134608
 	// todo https://www.luogu.com.cn/problem/P2757
 	stringHash := func(s string) {
+		// 如果 OJ 使用的是低于 Go 1.20 的版本，加上这句话
+		rand.Seed(time.Now().UnixNano())
+
+		// 把字符映射到一个随机数上，更难被 hack
 		randMap := [128]int{}
 		for i := range randMap {
-			randMap[i] = rand.Intn(1e18) // 不要太大
+			randMap[i] = rand.Intn(1 << 60) // 不要超过 2^63-1-(mod-1)*base
 		}
 
-		// 这里实现的是多项式哈希
-		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n=len(s)
-		// 更保险的做法是采用随机 base := 9e8 - rd.Intn(1e8)
-		// 以及使用两个质数作为模数（比如 999727999, 1070777777, 1000000007 等）    自然溢出相当于模数为 2^64
-		const base int = 1e8 + 7
+		// const base int = 1e8 + 7
+		// 随机 base，更难被 hack
+		base := 9e8 - rand.Intn(1e8)
+
+		// 更难被 hack 的做法是用两个质数作为模数，比如 999727999, 1070777777, 1000000007 等   注：自然溢出相当于模数为 2^64
 		const mod = 1070777777
-		powB := make([]int, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希
+
+		// 多项式哈希
+		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
+		powB := make([]int, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希等
 		powB[0] = 1
 		preHash := make([]int, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
 		for i, b := range s {
@@ -105,7 +112,7 @@ func _() {
 			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法
 		}
 
-		// 计算左闭右开区间 [l,r) 的哈希 0<=l<=r<=len(s)
+		// 计算左闭右开区间 [l,r) 的哈希值    0<=l<=r<=len(s)
 		// 空串的哈希值为 0
 		subHash := func(l, r int) int {
 			return ((preHash[r]-preHash[l]*powB[r-l])%mod + mod) % mod
