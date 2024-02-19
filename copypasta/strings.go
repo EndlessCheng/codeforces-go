@@ -92,7 +92,7 @@ func _() {
 		// 把字符映射到一个随机数上，更难被 hack
 		randMap := [128]int{}
 		for i := range randMap {
-			randMap[i] = rand.Intn(1 << 60) // 不要超过 2^63-1-(mod-1)*base
+			randMap[i] = rand.Intn(1 << 60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
 		}
 
 		// const base int = 1e8 + 7
