@@ -2,36 +2,37 @@ package main
 
 import (
 	. "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
-	"sort"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
 func closestNodes(root *TreeNode, queries []int) [][]int {
 	a := []int{}
 	var dfs func(*TreeNode)
-	dfs = func(o *TreeNode) {
-		if o == nil {
+	dfs = func(node *TreeNode) {
+		if node == nil {
 			return
 		}
-		dfs(o.Left)
-		a = append(a, o.Val)
-		dfs(o.Right)
+		dfs(node.Left)
+		a = append(a, node.Val)
+		dfs(node.Right)
 	}
 	dfs(root)
 
 	ans := make([][]int, len(queries))
 	for i, q := range queries {
-		min, max := -1, -1
-		// 这是怎么转换的，可以看我上面贴的视频链接
-		j := sort.SearchInts(a, q+1) - 1
-		if j >= 0 {
-			min = a[j]
-		}
-		j = sort.SearchInts(a, q)
+		mn, mx := -1, -1
+		j, ok := slices.BinarySearch(a, q)
 		if j < len(a) {
-			max = a[j]
+			mx = a[j]
 		}
-		ans[i] = []int{min, max}
+		if !ok {
+			j--
+		}
+		if j >= 0 {
+			mn = a[j]
+		}
+		ans[i] = []int{mn, mx}
 	}
 	return ans
 }
