@@ -193,3 +193,5 @@ impl Solution {
 
 - 时间复杂度：排序写法 $\mathcal{O}(n\log n)$，快速选择写法 $\mathcal{O}(n)$，其中 $n$ 为二叉树的节点个数。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
