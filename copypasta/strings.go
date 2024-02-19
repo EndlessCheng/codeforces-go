@@ -112,7 +112,7 @@ func _() {
 			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法
 		}
 
-		// 计算左闭右开区间 [l,r) 的哈希值    0<=l<=r<=len(s)
+		// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)    0<=l<=r<=len(s)
 		// 空串的哈希值为 0
 		subHash := func(l, r int) int {
 			return ((preHash[r]-preHash[l]*powB[r-l])%mod + mod) % mod
