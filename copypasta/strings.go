@@ -83,7 +83,7 @@ func _() {
 	//                 从右往左看，区间增加了 base^(n-1-r) + ... + base^(n-1-l)
 	//                 见 segment_tree.go 中的「区间加等比数列」
 	// - 区间替换成某个数：https://codeforces.com/problemset/problem/580/E 2500
-	// todo 带修回文串 jiangly 代码 https://atcoder.jp/contests/abc331/submissions/48134608
+	// todo 带修回文串 https://atcoder.jp/contests/abc331/tasks/abc331_f
 	// todo https://www.luogu.com.cn/problem/P2757
 	stringHash := func(s string) {
 		// 如果 OJ 使用的是低于 Go 1.20 的版本，加上这句话
