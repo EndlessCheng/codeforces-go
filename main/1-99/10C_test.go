@@ -8,7 +8,7 @@ import (
 
 // https://codeforces.com/problemset/problem/10/C
 // https://codeforces.com/problemset/status/10/problem/C
-func Test_cf10C(t *testing.T) {
+func TestCF10C(t *testing.T) {
 	testCases := [][2]string{
 		{
 			`4`,
