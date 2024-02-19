@@ -8,7 +8,6 @@ import (
 	"slices"
 	"sort"
 	"strings"
-	"time"
 	"unsafe"
 )
 
@@ -65,53 +64,52 @@ func _() {
 	//  Kapun's algorithm https://codeforces.com/blog/entry/99973
 	// 比较：给每个元素分配一个随机哈希系数 + 滑动窗口 https://codeforces.com/problemset/problem/1418/G
 	//
-	// https://codeforces.com/problemset?tags=hashing,strings
-	// 题目推荐 https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// 测试哈希碰撞 https://codeforces.com/problemset/problem/514/C
 	//            https://codeforces.com/problemset/problem/1200/E
+	//            https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
 	// 拼接字符串 https://codeforces.com/problemset/problem/1800/D
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode.cn/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode.cn/problems/longest-duplicate-substring/
 	// LC1554 只有一个不同字符的字符串 https://leetcode.cn/problems/strings-differ-by-one-character/
+	// https://codeforces.com/problemset?tags=hashing,strings
+	// https://cp-algorithms.com/string/string-hashing.html#toc-tgt-7
 	// 倒序哈希 https://leetcode.cn/problems/find-substring-with-given-hash-value/solution/dao-xu-hua-dong-chuang-kou-o1-kong-jian-xpgkp/
 	// todo https://ac.nowcoder.com/acm/contest/64384/D
 	// 与线段树结合，可以做到单点修改 s[i]
-	// - hash(s+t) = hash(s) * base^|t| + hash(t)
+	// - 合并：hash(s+t) = hash(s) * base^|t| + hash(t)
 	// 与线段树结合，可以做到区间更新
 	// - [l,r] 区间加一：根据 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
 	//                 从右往左看，区间增加了 base^(n-1-r) + ... + base^(n-1-l)
 	//                 见 segment_tree.go 中的「区间加等比数列」
 	// - 区间替换成某个数：https://codeforces.com/problemset/problem/580/E 2500
+	// todo 带修回文串 jiangly 代码 https://atcoder.jp/contests/abc331/submissions/48134608
+	// todo https://www.luogu.com.cn/problem/P2757
 	stringHash := func(s string) {
-		rd := rand.New(rand.NewSource(time.Now().UnixNano()))
-		rand64 := [128]uint{}
-		for i := range rand64 {
-			rand64[i] = uint(rd.Int63n(1e18)) // 不要太大
+		randMap := [128]int{}
+		for i := range randMap {
+			randMap[i] = rand.Intn(1e18) // 不要太大
 		}
-
-		//powB := [6e5 + 1]uint{1}
-		//for i := 1; i < len(powB); i++ {
-		//	hi, lo := bits.Mul64(powB[i-1], base)
-		//	powB[i] = bits.Rem64(hi, lo, prime)
-		//}
 
 		// 这里实现的是多项式哈希
 		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n=len(s)
 		// 更保险的做法是采用随机 base := 9e8 - rd.Intn(1e8)
 		// 以及使用两个质数作为模数（比如 999727999, 1070777777, 1000000007 等）    自然溢出相当于模数为 2^64
-		const base uint = 1e8 + 7
-		powB := make([]uint, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希
+		const base int = 1e8 + 7
+		const mod = 1070777777
+		powB := make([]int, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希
 		powB[0] = 1
-		preHash := make([]uint, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
+		preHash := make([]int, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
 		for i, b := range s {
-			powB[i+1] = powB[i] * base
-			preHash[i+1] = preHash[i]*base + rand64[b] // 秦九韶算法
+			powB[i+1] = powB[i] * base % mod
+			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法
 		}
 
 		// 计算左闭右开区间 [l,r) 的哈希 0<=l<=r<=len(s)
 		// 空串的哈希值为 0
-		subHash := func(l, r int) uint { return preHash[r] - preHash[l]*powB[r-l] }
+		subHash := func(l, r int) int {
+			return ((preHash[r]-preHash[l]*powB[r-l])%mod + mod) % mod
+		}
 
 		_ = subHash
 	}
@@ -123,7 +121,7 @@ func _() {
 	//
 
 	// KMP (Knuth–Morris–Pratt algorithm)
-	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度
+	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度    pi[0] = 0
 	// 特别地，pi[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
@@ -135,7 +133,8 @@ func _() {
 	// 模板题 https://loj.ac/p/103 https://www.luogu.com.cn/problem/P3375
 	//       LC28 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
 	//       LC1392 https://leetcode.cn/problems/longest-happy-prefix/
-	// LC https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ *二分/双指针找最近下标
+	//       LC3036 https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/ 
+	// LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ 2016 *二分/双指针找最近下标
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
@@ -176,13 +175,14 @@ func _() {
 	//  https://www.luogu.com.cn/problem/P4036
 
 	// 计算前缀函数
-	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度
+	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度    pi[0] = 0
 	// 定义 s[:i+1] 的最大真 border 为 s[:pi[i]]    完整定义见 https://www.luogu.com.cn/problem/P5829
-	// 注：「真」指的是不等于整个字符串
-	// 注：next[i] = pi[i]-1  指的是回跳的下标
+	// 注：「真」表示不等于整个字符串
+	// 注：很多资料上的 next[i] = pi[i]-1 表示回跳的下标
 	calcPi := func(s string) []int {
 		pi := make([]int, len(s))
-		for i, cnt := 1, 0; i < len(s); i++ {
+		cnt := 0
+		for i := 1; i < len(s); i++ {
 			v := s[i]
 			for cnt > 0 && s[cnt] != v {
 				cnt = pi[cnt-1]
@@ -195,20 +195,20 @@ func _() {
 		return pi
 	}
 
-	// 在 text 中查找 pattern，返回所有成功匹配位置（pattern 首字母的下标）
+	// 在文本串 text 中查找模式串 pattern，返回所有成功匹配的位置（pattern[0] 在 text 中的下标）
 	kmpSearch := func(text, pattern string) (pos []int) {
 		pi := calcPi(pattern)
-		lenP := len(pattern)
 		cnt := 0
-		for i, v := range text {
-			for cnt > 0 && pattern[cnt] != byte(v) {
+		for i := range text {
+			v := text[i]
+			for cnt > 0 && pattern[cnt] != v {
 				cnt = pi[cnt-1]
 			}
-			if pattern[cnt] == byte(v) {
+			if pattern[cnt] == v {
 				cnt++
 			}
-			if cnt == lenP {
-				pos = append(pos, i-lenP+1)
+			if cnt == len(pattern) {
+				pos = append(pos, i-len(pattern)+1)
 				cnt = pi[cnt-1] // 如果不允许重叠，将 cnt 置为 0
 			}
 		}
@@ -219,6 +219,7 @@ func _() {
 	// 返回循环节以及循环次数
 	// 如果没有循环节，那么返回原串和 1
 	// https://codeforces.com/problemset/problem/182/D 1400
+	// https://codeforces.com/problemset/problem/1690/F 1700
 	// https://codeforces.com/problemset/problem/526/D 2200
 	// http://poj.org/problem?id=2406 https://www.luogu.com.cn/problem/UVA455
 	// LC459 https://leetcode.cn/problems/repeated-substring-pattern/
@@ -261,13 +262,17 @@ func _() {
 	// 视频讲解 https://www.bilibili.com/video/BV1it421W7D8/
 	// https://oi-wiki.org/string/z-func/
 	// 可视化 https://personal.utdallas.edu/~besp/demo/John2010/z-algorithm.htm
+	// - abababzabababab
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
-	//
-	// 模板题 https://judge.yosupo.jp/problem/zalgorithm
-	//       LC2223 https://leetcode.cn/problems/sum-of-scores-of-built-strings/ 2220
-	//       https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
-	//       https://www.luogu.com.cn/problem/P5410
+	// - [3036. 匹配模式数组的子数组数目 II](https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/)
+	// - [3008. 找出数组中的美丽下标 II](https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/) 2016
+	// - [2223. 构造字符串的总得分和](https://leetcode.cn/problems/sum-of-scores-of-built-strings/) 2220
+	// - [3031. 将单词恢复初始状态所需的最短时间 II](https://leetcode.cn/problems/minimum-time-to-revert-word-to-initial-state-ii/) 2278
+	// - LC https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
+	// https://judge.yosupo.jp/problem/zalgorithm
+	// https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
+	// https://www.luogu.com.cn/problem/P5410
 	// todo 结论 https://codeforces.com/problemset/problem/535/D 1900
 	// DP https://codeforces.com/contest/1051/problem/E 2600
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
@@ -304,11 +309,11 @@ func _() {
 		return z
 	}
 	// 在 text 中查找 pattern 的所有（首字母）位置
-	// 技巧：把 pattern 拼在 text 前面（中间插入一个范围之外的字符），得到字符串 s，
+	// 技巧：把 pattern 拼在 text 前面（中间插入一个不在输入中的字符），得到字符串 s，
 	//      只要 LCP(s, s[i:]) == len(pattern)，就说明 i 是一个匹配的位置
+	// 可以用这题测试 LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ 2016
 	zSearch := func(text, pattern string) (pos []int) {
-		s := pattern + "#" + text
-		z := calcZ(s)
+		z := calcZ(pattern + "#" + text)
 		for i, l := range z[len(pattern)+1:] {
 			if l == len(pattern) {
 				pos = append(pos, i)
@@ -316,21 +321,27 @@ func _() {
 		}
 		return
 	}
-	// 这个技巧还可以用来比较 text 的任意后缀 text[i:] 与 pattern 的字典序
-	// 等价于 strings.Compare(text[i:], pattern)
-	// 时间复杂度：求出 z 数组后，每次比较只需 O(1) 时间 
-	// https://codeforces.com/contest/1051/problem/E
-	zCompare := func(text, pattern string, i int) int {
-		s := pattern + "#" + text
-		z := calcZ(s)
-		lcp := z[len(pattern)+1+i]
-		if lcp == len(pattern) { // 相等
-			return 0
+	// zSearch 中的技巧还可以用来比较 text 的任意后缀 text[i:] 与 pattern 的大小（字典序）
+	// res[i] 等同于 strings.Compare(text[i:], pattern)
+	// https://codeforces.com/contest/1051/problem/E 2600
+	zCompare := func(text, pattern string) []int {
+		z := calcZ(pattern + "#" + text)
+		compare := func(i int) int {
+			lcp := z[len(pattern)+1+i]
+			if lcp == len(pattern) { // 相等
+				return 0
+			}
+			// 比较 LCP 的下一个字母
+			if text[i+lcp] < pattern[lcp] {
+				return -1
+			}
+			return 1
 		}
-		if text[i+lcp] < pattern[lcp] {
-			return -1
+		res := make([]int, len(text))
+		for i := range res {
+			res[i] = compare(i)
 		}
-		return 1
+		return res
 	}
 
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
