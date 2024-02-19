@@ -7,7 +7,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func CF10C(_r io.Reader, _w io.Writer) {
+func CF10C(_r io.Reader, _w io.Writer) { // 方便测试，见 10C_test.go
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
