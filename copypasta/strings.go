@@ -54,6 +54,7 @@ func _() {
 	// Hacking a weak hash https://codeforces.com/blog/entry/113484
 	// Rolling hash and 8 interesting problems https://codeforces.com/blog/entry/60445
 	// 选一个合适的质数 https://planetmath.org/goodhashtableprimes
+	// 999727999, 1070777777, 1000000007
 	// 生日问题 https://en.wikipedia.org/wiki/Birthday_problem
 	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html
@@ -95,13 +96,13 @@ func _() {
 			randMap[i] = rand.Intn(1 << 60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
 		}
 
-		// const base int = 1e8 + 7
-		// 随机 base，更难被 hack
+		// 随机 base 和 mod，更难被 hack
+		// 更稳的做法是用两组 base 和 mod
 		base := 9e8 - rand.Intn(1e8)
-
-		// 更难被 hack 的做法是随机 mod
-		// 更难被 hack 的做法是用两个质数作为模数，比如 999727999, 1070777777, 1000000007 等   注：自然溢出相当于模数为 2^64
-		const mod = 1070777777
+		mod := 1e9 + rand.Intn(1e9)
+		// 更稳的做法，保证 mod 是质数
+		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
+		// for !isPrime(mod) { mod++ }
 
 		// 多项式哈希
 		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
