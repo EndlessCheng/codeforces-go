@@ -50,6 +50,7 @@ func _() {
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 	// https://oi-wiki.org/string/hash/
+	// 如何卡自然溢出（随机 base 也可以卡）https://blog.csdn.net/weixin_45750972/article/details/107457997
 	// On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
 	// Hacking a weak hash https://codeforces.com/blog/entry/113484
 	// Rolling hash and 8 interesting problems https://codeforces.com/blog/entry/60445
@@ -96,11 +97,12 @@ func _() {
 			randMap[i] = rand.Intn(1 << 60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
 		}
 
-		// 随机 base 和 mod，更难被 hack
+		// 随机 base，更难被 hack
 		// 更稳的做法是用两组 base 和 mod
 		base := 9e8 - rand.Intn(1e8)
-		mod := 1e9 + rand.Intn(1e9)
-		// 更稳的做法，保证 mod 是质数
+		const mod = 1070777777
+		// 或者随机质数 mod
+		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围不能太小，否则可以用多合一拼起来的数据卡掉
 		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
 		// for !isPrime(mod) { mod++ }
 
