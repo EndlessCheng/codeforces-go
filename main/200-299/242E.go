@@ -6,19 +6,19 @@ import (
 	"io"
 )
 
-type node242E struct {
-	l, r        int
-	sum         int
+type node42 struct {
+	l, r        int32
+	sum         int32
 	revChildren bool
 }
-type segTree242E []node242E
+type seg42 []node42
 
-func (t segTree242E) _pushUp(o int) {
+func (t seg42) _pushUp(o int) {
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].sum = lo.sum + ro.sum
 }
 
-func (t segTree242E) _build(arr []int, pos uint8, o, l, r int) {
+func (t seg42) _build(arr []int32, pos uint8, o int, l, r int32) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		t[o].sum = arr[l-1] >> pos & 1
@@ -30,7 +30,7 @@ func (t segTree242E) _build(arr []int, pos uint8, o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segTree242E) _spread(o int) {
+func (t seg42) _spread(o int) {
 	if t[o].revChildren {
 		lo, ro := &t[o<<1], &t[o<<1|1]
 		lo.sum = lo.r - lo.l + 1 - lo.sum
@@ -41,7 +41,7 @@ func (t segTree242E) _spread(o int) {
 	}
 }
 
-func (t segTree242E) _rev(o, l, r int) {
+func (t seg42) _rev(o int, l, r int32) {
 	ol, or := t[o].l, t[o].r
 	if l <= ol && or <= r {
 		t[o].sum = or - ol + 1 - t[o].sum
@@ -59,7 +59,7 @@ func (t segTree242E) _rev(o, l, r int) {
 	t._pushUp(o)
 }
 
-func (t segTree242E) _query(o, l, r int) (res int) {
+func (t seg42) _query(o int, l, r int32) (res int32) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
 	}
@@ -74,9 +74,9 @@ func (t segTree242E) _query(o, l, r int) (res int) {
 	return
 }
 
-func (t segTree242E) init(arr []int, pos uint8) { t._build(arr, pos, 1, 1, len(arr)) }
-func (t segTree242E) rev(l, r int)              { t._rev(1, l, r) }
-func (t segTree242E) query(l, r int) int        { return t._query(1, l, r) }
+func (t seg42) init(arr []int32, pos uint8) { t._build(arr, pos, 1, 1, int32(len(arr))) }
+func (t seg42) rev(l, r int32)              { t._rev(1, l, r) }
+func (t seg42) query(l, r int32) int32      { return t._query(1, l, r) }
 
 // github.com/EndlessCheng/codeforces-go
 func Sol242E(reader io.Reader, writer io.Writer) {
@@ -86,23 +86,23 @@ func Sol242E(reader io.Reader, writer io.Writer) {
 
 	var n, q int
 	Fscan(in, &n)
-	arr := make([]int, n)
+	arr := make([]int32, n)
 	for i := range arr {
 		Fscan(in, &arr[i])
 	}
-	trees := make([]segTree242E, 20)
+	trees := make([]seg42, 20)
 	for i := range trees {
-		trees[i] = make(segTree242E, 4*n)
+		trees[i] = make(seg42, 4*n)
 		trees[i].init(arr, uint8(i))
 	}
 
 	for Fscan(in, &q); q > 0; q-- {
-		var op, l, r, x int
+		var op, l, r, x int32
 		Fscan(in, &op, &l, &r)
 		if op == 1 {
-			sum := int64(0)
+			sum := 0
 			for i, t := range trees {
-				sum += 1 << uint(i) * int64(t.query(l, r))
+				sum += 1 << uint(i) * int(t.query(l, r))
 			}
 			Fprintln(out, sum)
 		} else {
