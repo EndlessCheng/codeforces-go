@@ -50,11 +50,7 @@ func cf1926F(_r io.Reader, out io.Writer) {
 			*p = res
 			return res
 		}
-		ans := N * N
-		for cur, ok := a[0], true; ok; ok = cur != a[0] {
-			ans = min(ans, f(1, cur, 0)+bits.OnesCount(uint(cur^a[0])))
-		}
-		Fprintln(out, ans)
+		Fprintln(out, f(0, 0, 0))
 	}
 }
 
