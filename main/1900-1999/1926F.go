@@ -13,7 +13,6 @@ func cf1926F(_r io.Reader, out io.Writer) {
 	var T int
 	var s string
 	const N = 7
-	const MASK = 1<<(N-2) - 1
 	a := [N]int{}
 	dp := [N][1 << N][1 << (N - 2)]int{}
 	for Fscan(in, &T); T > 0; T-- {
@@ -41,23 +40,11 @@ func cf1926F(_r io.Reader, out io.Writer) {
 				return *p
 			}
 			res := N * N
-		o:
 			for cur, ok := a[i], true; ok; ok = cur != a[i] {
-				for t, lb := pre5, 0; t > 0; t ^= lb {
-					lb = t & -t
-					if cur&lb > 0 && cur&(lb<<2) > 0 {
-						cur = (cur - 1) & a[i]
-						continue o
-					}
+				if cur>>2&cur&pre5 == 0 {
+					cur5 := pre7 >> 2 & pre7 & (cur >> 1)
+					res = min(res, f(i+1, cur, cur5)+bits.OnesCount(uint(cur^a[i])))
 				}
-				cur5 := 0
-				for t, lb := cur>>1&MASK, 0; t > 0; t ^= lb {
-					lb = t & -t
-					if pre7&lb > 0 && pre7&(lb<<2) > 0 {
-						cur5 |= lb
-					}
-				}
-				res = min(res, f(i+1, cur, cur5)+bits.OnesCount(uint(cur^a[i])))
 				cur = (cur - 1) & a[i]
 			}
 			*p = res
