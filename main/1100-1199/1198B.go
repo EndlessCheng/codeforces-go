@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -42,5 +41,4 @@ func cf1198B(_r io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { cf1198B(os.Stdin, os.Stdout) }
-func max(a, b int) int { if b > a { return b }; return a }
+//func main() { cf1198B(os.Stdin, os.Stdout) }
