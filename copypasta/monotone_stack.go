@@ -31,14 +31,20 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)
 - [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
 - [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/) 1571
+- [962. 最大宽度坡](https://leetcode.cn/problems/maximum-width-ramp/) 1608
 - [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) 1709
+- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) *也有其它做法
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
 - [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
+- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
 - [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
+    - 中间的人可以和 i j 身高相等 https://www.luogu.com.cn/problem/P1823
+    - 环形数组 https://codeforces.com/problemset/problem/5/E 2400
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
     - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/) 2482
+- [1776. 车队 II](https://leetcode.cn/problems/car-fleet-ii/) 2531
 - [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
 转换 https://codeforces.com/problemset/problem/280/B 1800
 max >= sum https://codeforces.com/problemset/problem/1691/D 1800
@@ -88,15 +94,15 @@ https://codeforces.com/problemset/problem/5/E 2400
 https://codeforces.com/problemset/problem/91/B 1500
 
 其他
-LC42 接雨水 https://leetcode-cn.com/problems/trapping-rain-water/
+LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
 评注：接雨水有三种不同的解法（前后缀分解、相向双指针和单调栈）
      其中相向双指针是前后缀分解的空间优化写法，视频讲解见 https://www.bilibili.com/video/BV1Qg411q7ia/
      单调栈视频讲解见 https://www.bilibili.com/video/BV1VN411J7S7/
      本质上是两种计算策略：1. 竖着累加：假设每个下标都有个水桶
                        2. 横着累加：见单调栈的做法（找上一个更大元素，在找的过程中填坑）
-LC84 柱状图中最大的矩形 https://leetcode-cn.com/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
-LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode-cn.com/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
-LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+LC84 柱状图中最大的矩形 https://leetcode.cn/problems/largest-rectangle-in-histogram/ http://poj.org/problem?id=2559 http://poj.org/problem?id=2082
+LC85 最大全 1 矩形（实现见下面的 maximalRectangleArea）https://leetcode.cn/problems/maximal-rectangle/ 原题为 http://poj.org/problem?id=3494
+LC1504 全 1 矩形个数（实现见下面的 numSubmat）https://leetcode.cn/problems/count-submatrices-with-all-ones/
 LC768 https://leetcode.cn/problems/max-chunks-to-make-sorted-ii/
 LC2735 https://leetcode.cn/problems/collecting-chocolates/solutions/2305119/xian-xing-zuo-fa-by-heltion-ypdx/
 LC2736 https://leetcode.cn/problems/maximum-sum-queries/
@@ -222,7 +228,8 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
-	// https://codeforces.com/problemset/problem/547/B LC1950 https://leetcode-cn.com/problems/maximum-of-minimum-values-in-all-subarrays/
+	// https://codeforces.com/problemset/problem/547/B 
+	// LC1950 https://leetcode.cn/problems/maximum-of-minimum-values-in-all-subarrays/
 	{
 		ans := make([]int, n+1)
 		for i := range ans {
@@ -230,14 +237,10 @@ func monotoneStack(a []int) ([]int, []int) {
 		}
 		for i, v := range a {
 			sz := right[i] - left[i] - 1
-			if v > ans[sz] {
-				ans[sz] = v
-			}
+			ans[sz] = max(ans[sz], v)
 		}
 		for i := n - 1; i > 0; i-- {
-			if ans[i+1] > ans[i] {
-				ans[i] = ans[i+1]
-			}
+			ans[i] = max(ans[i], ans[i+1])
 		}
 		// ans[1:]
 	}
@@ -283,7 +286,7 @@ func permLR(perm []int) ([]int, []int) {
 }
 
 // 最大全 1 矩形
-// LC85 https://leetcode-cn.com/problems/maximal-rectangle/
+// LC85 https://leetcode.cn/problems/maximal-rectangle/
 func maximalRectangleArea(mat [][]int) (ans int) {
 	const target = 1
 	n, m := len(mat), len(mat[0])
@@ -339,7 +342,7 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 }
 
 // 全 1 矩形个数
-// LC1504 https://leetcode-cn.com/problems/count-submatrices-with-all-ones/
+// LC1504 https://leetcode.cn/problems/count-submatrices-with-all-ones/
 // 参考 https://leetcode.com/problems/count-submatrices-with-all-ones/discuss/720265/Java-Detailed-Explanation-From-O(MNM)-to-O(MN)-by-using-Stack
 func numSubmat(mat [][]int) (ans int) {
 	m := len(mat[0])
