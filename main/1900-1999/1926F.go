@@ -31,18 +31,18 @@ func cf1926F(_r io.Reader, out io.Writer) {
 			}
 		}
 		var f func(int, int, int) int
-		f = func(i, pre7, pre5 int) int {
+		f = func(i, pre, pre5 int) int {
 			if i == N {
 				return 0
 			}
-			p := &dp[i][pre7][pre5]
+			p := &dp[i][pre][pre5]
 			if *p != -1 {
 				return *p
 			}
 			res := N * N
 			for cur, ok := a[i], true; ok; ok = cur != a[i] {
 				if cur>>2&cur&pre5 == 0 {
-					cur5 := pre7 >> 2 & pre7 & (cur >> 1)
+					cur5 := pre >> 2 & pre & (cur >> 1)
 					res = min(res, f(i+1, cur, cur5)+bits.OnesCount(uint(cur^a[i])))
 				}
 				cur = (cur - 1) & a[i]
