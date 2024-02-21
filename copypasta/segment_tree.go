@@ -283,10 +283,10 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A
 //           https://codeforces.com/problemset/problem/1321/E
 //           https://codeforces.com/problemset/problem/52/C
-// + min/max 转换 https://codeforces.com/gym/294041/problem/E
+//           转换 https://codeforces.com/gym/294041/problem/E
 //           【推荐】https://codeforces.com/problemset/problem/1208/D
 //           todo 转换 https://atcoder.jp/contests/abc327/tasks/abc327_f
-// + max DP https://atcoder.jp/contests/dp/tasks/dp_w
+//           DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
@@ -298,19 +298,24 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E https://codeforces.com/contest/292/submission/173659179
 // todo https://codeforces.com/problemset/problem/1209/G2
-// 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ https://leetcode.cn/problems/t3fKg1/
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G
+// 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
+//                   LCP32 https://leetcode.cn/problems/t3fKg1/
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
 // todo https://www.luogu.com.cn/problem/P1471
 //  斐波那契 https://codeforces.com/problemset/problem/446/C 2400
-// 区间加等比数列（q 恒定）：提出首项后，剩余的是固定的 1 + q^1 + q^2 + ... + q^(线段树区间长度-1)
-//                       可以预处理 1 + q^1 + q^2 + ... 的前缀和
-//                       线段树维护首项的和
+// 区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
+//   多项式更新 Competitive Programmer’s Handbook Ch.28
+// 区间加等比数列（q 恒定）
+//   提出首项后，剩余的是固定的 1 + q^1 + q^2 + ... + q^(线段树区间长度-1)
+//    可以预处理 1 + q^1 + q^2 + ... 的前缀和
+//    线段树维护首项的和
 //
 // 【多个更新操作复合】
 // = + max https://www.luogu.com.cn/problem/P1253
 //         代码 https://www.luogu.com.cn/record/138265877
-// * + ∑ https://www.luogu.com.cn/problem/P3373 LC1622 https://leetcode.cn/problems/fancy-sequence/
+// * + ∑ https://www.luogu.com.cn/problem/P3373
+//       LC1622 https://leetcode.cn/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
 // 线段树维护区间加、乘、赋值、平方和、立方和 http://acm.hdu.edu.cn/showproblem.php?pid=4578
@@ -323,9 +328,6 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //  https://codeforces.com/blog/entry/57319
 //  区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
 //  模板题 https://www.luogu.com.cn/problem/P6242
-//
-// EXTRA: 多项式更新 Competitive Programmer’s Handbook Ch.28
-// 比如区间加等差数列（差分法）https://www.luogu.com.cn/problem/P1438 https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B
 const todoInit = 0
 
 type lazySeg []struct {
