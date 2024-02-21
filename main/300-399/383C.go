@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF383C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, q, v, w, op, val int
+	var n, q, v, w, dfn, op, val int
 	Fscan(in, &n, &q)
 	a := make([]int, n)
 	for i := range a {
@@ -27,38 +27,35 @@ func CF383C(_r io.Reader, _w io.Writer) {
 		g[w] = append(g[w], v)
 	}
 
-	tree := make([]int, n+1)
-	add := func(i, v int) {
-		for ; i <= n; i += i & -i {
-			tree[i] += v
-		}
-	}
-	addR := func(l, r, v int) { add(l, v); add(r, -v) }
-	query := func(i int) (v int) {
-		for ; i > 0; i &= i - 1 {
-			v += tree[i]
-		}
-		return
-	}
-
-	type node struct{ dfn, sz, d int }
-	nodes := make([]node, n)
-	dfn := 0
-	var f func(v, fa, d int) int
-	f = func(v, fa, d int) int {
+	nodes := make([]struct{ sgn, l, r int }, n)
+	var f func(int, int, int) int
+	f = func(v, fa, sgn int) int {
+		nodes[v].sgn = sgn
 		dfn++
-		nodes[v].dfn = dfn
-		nodes[v].d = d
+		nodes[v].l = dfn
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
-				sz += f(w, v, d+1)
+				sz += f(w, v, -sgn)
 			}
 		}
-		nodes[v].sz = sz
+		nodes[v].r = nodes[v].l + sz
 		return sz
 	}
-	f(0, -1, 0)
+	f(0, -1, 1)
+
+	tree := make([]int, n+1)
+	add := func(i, val int) {
+		for ; i <= n; i += i & -i {
+			tree[i] += val
+		}
+	}
+	pre := func(i int) (res int) {
+		for ; i > 0; i &= i - 1 {
+			res += tree[i]
+		}
+		return
+	}
 
 	for ; q > 0; q-- {
 		Fscan(in, &op, &v)
@@ -66,16 +63,10 @@ func CF383C(_r io.Reader, _w io.Writer) {
 		o := nodes[v]
 		if op == 1 {
 			Fscan(in, &val)
-			if o.d&1 > 0 {
-				val = -val
-			}
-			addR(o.dfn, o.dfn+o.sz, val)
+			add(o.l, val*o.sgn)
+			add(o.r, -val*o.sgn)
 		} else {
-			ans := query(o.dfn)
-			if o.d&1 > 0 {
-				ans = -ans
-			}
-			Fprintln(out, a[v]+ans)
+			Fprintln(out, a[v]+pre(o.l)*o.sgn)
 		}
 	}
 }
