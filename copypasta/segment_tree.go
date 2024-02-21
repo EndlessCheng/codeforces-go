@@ -26,7 +26,7 @@ import "math/bits"
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
-// 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
+// 最大子段和 https://www.luogu.com.cn/problem/P4513 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
 // 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
