@@ -26,10 +26,9 @@ import "math/bits"
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
-// 模板 https://codeforces.com/contest/52/problem/C
-// 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最大子段和 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A https://www.acwing.com/problem/content/246/ https://www.luogu.com.cn/problem/P4513
 // 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
+// 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
 // 开方（也可以并查集）https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
 // 取模（也可以并查集） https://codeforces.com/problemset/problem/438/D
@@ -47,7 +46,9 @@ import "math/bits"
 //     https://www.luogu.com.cn/problem/P3765
 //     https://codeforces.com/contest/1514/problem/D
 // GCD https://codeforces.com/problemset/problem/914/D
-// 最小差值 https://codeforces.com/problemset/problem/765/F
+// 最小差值 https://codeforces.com/problemset/problem/765/F 3100
+//         https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
+//         不允许相等 https://www.luogu.com.cn/problem/P5926
 // 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E
 // 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
@@ -801,6 +802,7 @@ func (o *pstNode) querySingle(i int) int {
 
 // 主席树相当于对数组的每个前缀建立一棵线段树
 // 离散化时，求 kth 需要将相同元素也视作不同的
+// 附：Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
 
 // EXTRA: 查询区间 [l,r] 中第 k 小在整个数组上的名次（从 1 开始）
 // 注意返回的是（排序去重后的数组的）下标，不是元素值
