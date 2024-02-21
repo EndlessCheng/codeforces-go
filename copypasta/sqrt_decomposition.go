@@ -22,22 +22,24 @@ todo 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-
 例子是 https://codeforces.com/problemset/problem/1806/E
 注意：**枚举时要做到不重不漏**
 
-可以从这题上手 https://www.luogu.com.cn/problem/P3396 同 https://codeforces.com/contest/103/problem/D
-https://www.luogu.com.cn/problem/T279521?contestId=65460 https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
-https://codeforces.com/problemset/problem/1921/F
+可以从这题上手 https://www.luogu.com.cn/problem/P3396 
+            同 https://codeforces.com/contest/103/problem/D 2100
+https://www.luogu.com.cn/problem/T279521?contestId=65460 
+- https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
+LCP16 https://leetcode.cn/problems/you-le-yuan-de-you-lan-ji-hua/
+https://codeforces.com/problemset/problem/1921/F 1900
+https://codeforces.com/problemset/problem/797/E 2000
+https://codeforces.com/problemset/problem/1207/F 2100
+https://codeforces.com/problemset/problem/1806/E 2200
+https://codeforces.com/problemset/problem/425/D 2300
+https://codeforces.com/problemset/problem/677/D 2300
+https://codeforces.com/problemset/problem/1468/M 2300 或四元环
 https://codeforces.com/problemset/problem/342/E 2400
-https://codeforces.com/problemset/problem/425/D
-https://codeforces.com/problemset/problem/677/D
-https://codeforces.com/problemset/problem/786/C 2400
-https://codeforces.com/problemset/problem/797/E
-https://codeforces.com/problemset/problem/1207/F
-https://codeforces.com/problemset/problem/1468/M 或四元环
-LCP16 https://leetcode-cn.com/problems/you-le-yuan-de-you-lan-ji-hua/
-https://codeforces.com/problemset/problem/1039/D
-https://codeforces.com/problemset/problem/1039/E
-大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H
-https://codeforces.com/problemset/problem/1806/E
-见下面的 floorDivide https://codeforces.com/problemset/problem/786/C
+https://codeforces.com/problemset/problem/506/D 2400
+见下面的 floorDivide https://codeforces.com/problemset/problem/786/C 2400
+大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H 2400
+https://codeforces.com/problemset/problem/1039/D 2800
+https://codeforces.com/problemset/problem/1039/E 3400
 四次方根 https://atcoder.jp/contests/abc293/tasks/abc293_f
 https://leetcode.com/discuss/interview-question/3517350/
 - Given a list of pairs {L,R} & an array.
@@ -45,10 +47,10 @@ https://leetcode.com/discuss/interview-question/3517350/
   (arr[i], arr[j]) should be equal to exactly one of the given Q pairs. And i < j.
 
 自动 O(n√n)
-https://codeforces.com/problemset/problem/1790/F
+https://codeforces.com/problemset/problem/1790/F 2100
 
 随机+分块
-https://codeforces.com/contest/1840/problem/G2
+https://codeforces.com/contest/1840/problem/G2 2500
 */
 
 // TIPS: n 的整数分拆中，不同数字的个数至多有 O(√n) 种
