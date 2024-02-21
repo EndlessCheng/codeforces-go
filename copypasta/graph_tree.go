@@ -214,32 +214,36 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 //     https://codeforces.com/problemset/problem/877/E
 // https://codeforces.com/problemset/problem/916/E
 // 结合 AC 自动机 https://codeforces.com/contest/163/problem/E
-func (*tree) subtreeSize(root int, g [][]int) {
-	nodes := make([]struct{ dfn, size int }, len(g))
+func (*tree) subtreeSize(root int, g [][]int, a []int) {
+	newOrder := make([]int, len(a))
+	
+	nodes := make([]struct{ l, r int }, len(g)) // 闭区间
 	dfn := 0
 	var buildDFN func(int, int) int
 	buildDFN = func(v, fa int) int {
+		newOrder[dfn] = a[v] // 按照遍历顺序得到的点权顺序
+
 		dfn++ // 相当于 dfn 从 1 开始
-		nodes[v].dfn = dfn
+		nodes[v].l = dfn
 		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
 				sz += buildDFN(w, v)
 			}
 		}
-		nodes[v].size = sz
+		nodes[v].r = nodes[v].l + sz - 1
 		return sz
 	}
 	buildDFN(root, -1)
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
-	isAncestor := func(f, v int) bool { return nodes[f].dfn < nodes[v].dfn && nodes[v].dfn < nodes[f].dfn+nodes[f].size }
+	isAncestor := func(f, v int) bool { return nodes[f].l < nodes[v].l && nodes[v].l <= nodes[f].r }
 
 	{
 		dfnToNodeID := make([]int, len(g)+1)
 		for v, o := range nodes {
-			dfnToNodeID[o.dfn] = v
+			dfnToNodeID[o.l] = v
 		}
 	}
 
@@ -251,9 +255,9 @@ func (*tree) subtreeSize(root int, g [][]int) {
 
 		// 注意 o.dfn 从 1 开始
 		o := nodes[v]
-		update(o.dfn, o.dfn+o.size-1) // 更新子树
-		query(o.dfn, o.dfn+o.size-1)  // 查询子树
-		queryOne(o.dfn)               // 查询单个节点
+		update(o.l, o.r) // 更新子树
+		query(o.l, o.r)  // 查询子树
+		queryOne(o.l)    // 查询单个节点
 	}
 
 	{
