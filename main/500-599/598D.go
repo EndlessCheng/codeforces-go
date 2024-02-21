@@ -12,7 +12,7 @@ func CF598D(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	type pair struct{ x, y int }
-	dir4 := [...]pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+	dir4 := []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 
 	var n, m, q, x, y int
 	Fscan(in, &n, &m, &q)
