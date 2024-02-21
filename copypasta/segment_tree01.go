@@ -1,5 +1,7 @@
 package copypasta
 
+import "math/bits"
+
 // 0-1 线段树
 // 支持区间翻转比特、单比特加减等
 // 某些情况下可作为 Bitset 的代替品
@@ -42,10 +44,19 @@ func (t seg01) doFlip(O int) {
 	o.flip = !o.flip
 }
 
+func (t seg01) spread(o int) {
+	if t[o].flip {
+		t.doFlip(o << 1)
+		t.doFlip(o<<1 | 1)
+		t[o].flip = false
+	}
+}
+
 // 见 buildWithBinary
 func newSeg01(a string) seg01 {
-	t := make(seg01, 4*len(a))
-	t.buildWithBinary(a, 1, 1, len(a))
+	n := len(a)
+	t := make(seg01, 2<<bits.Len(uint(n-1)))
+	t.buildWithBinary(a, 1, 1, n)
 	return t
 }
 
@@ -76,14 +87,6 @@ func (t seg01) build(o, l, r int) {
 	m := (l + r) >> 1
 	t.build(o<<1, l, m)
 	t.build(o<<1|1, m+1, r)
-}
-
-func (t seg01) spread(o int) {
-	if t[o].flip {
-		t.doFlip(o << 1)
-		t.doFlip(o<<1 | 1)
-		t[o].flip = false
-	}
 }
 
 // 将 [l,r] 内的 0 置为 1，1 置为 0
