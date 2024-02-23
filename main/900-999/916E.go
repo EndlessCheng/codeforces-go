@@ -40,7 +40,7 @@ func cf916E(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, q, dfn, op, v, w, add, rt int
+	var n, q, dfn, op, v, w, val, rt int
 	Fscan(in, &n, &q)
 	a := make([]int, n)
 	for i := range a {
@@ -63,8 +63,8 @@ func cf916E(_r io.Reader, _w io.Writer) {
 	build = func(v, p int) int {
 		dfn++
 		nodes[v].l = dfn
-		sz := 1
 		pa[v][0] = p
+		sz := 1
 		for _, w := range g[v] {
 			if w != p {
 				dep[w] = dep[v] + 1
@@ -115,24 +115,24 @@ func cf916E(_r io.Reader, _w io.Writer) {
 		if op == 1 {
 			rt = v
 		} else if op == 2 {
-			Fscan(in, &w, &add)
+			Fscan(in, &w, &val)
 			w--
 			lca := getLCA(v, w)
 			if lca == rt {
-				t.add(1, n, add)
+				t.add(1, n, val)
 			} else if !isAncestor(lca, rt) {
 				// 更新 lca 子树
 				p := nodes[lca]
-				t.add(p.l, p.r, add)
+				t.add(p.l, p.r, val)
 			} else { // lca 是 rt 的祖先
 				maxD := max(dep[getLCA(rt, v)], dep[getLCA(rt, w)])
 				if maxD < dep[rt] {
 					subV := uptoDep(rt, maxD+1)
 					p := nodes[subV]
-					t.add(p.l, p.r, -add)
+					t.add(p.l, p.r, -val)
 				}
 				// 更新整棵树
-				t.add(1, n, add)
+				t.add(1, n, val)
 			}
 		} else {
 			if v == rt {
