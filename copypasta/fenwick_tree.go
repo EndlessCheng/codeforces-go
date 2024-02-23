@@ -31,33 +31,34 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
-    https://codeforces.com/problemset/problem/246/E
+    https://codeforces.com/problemset/problem/246/E 2400
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 树状数组的性质能使其支持动态 [1,x] 或 [x,n] 范围上的最值更新查询等操作
-    https://codeforces.com/problemset/problem/629/D
-    https://codeforces.com/problemset/problem/1635/F
+    https://codeforces.com/problemset/problem/629/D 2000
+    https://codeforces.com/problemset/problem/1635/F 2800
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
 多变量统计 https://codeforces.com/problemset/problem/1194/E
          T4 https://www.nowcoder.com/discuss/1022136
 最多交换 k 次相邻字母后，得到的最小字典序
 - LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
-整除对统计 https://codeforces.com/problemset/problem/301/D
-https://codeforces.com/contest/1915/problem/F
-区间统计技巧 https://codeforces.com/problemset/problem/369/E
-区间包含计数 https://codeforces.com/problemset/problem/652/D
-区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
-建模 https://codeforces.com/problemset/problem/1660/F2
-长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
+LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
+https://codeforces.com/contest/1915/problem/F 1500
+区间包含计数 https://codeforces.com/problemset/problem/652/D 1800
+长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C 1900
+https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
+区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 2100
+- 联系 https://www.luogu.com.cn/problem/P1972
+建模 https://codeforces.com/problemset/problem/1660/F2 2100
+整除对统计 https://codeforces.com/problemset/problem/301/D 2200
+区间统计技巧 https://codeforces.com/problemset/problem/369/E 2200
+三维偏序 https://codeforces.com/problemset/problem/12/D 2400
+https://codeforces.com/problemset/problem/1334/F 2500
 多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
-https://codeforces.com/problemset/problem/1334/F 2500
-LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
 贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
-todo https://codeforces.com/problemset/problem/961/E（不止一种做法）
- 看着像三维偏序 https://codeforces.com/problemset/problem/12/D 2400
- https://codeforces.com/gym/101649 I 题
- http://poj.org/problem?id=2155
- http://poj.org/problem?id=2886
+https://codeforces.com/gym/101649 I 题
+http://poj.org/problem?id=2155
+http://poj.org/problem?id=2886
 */
 
 const fenwickInitVal = 0 // -1e18
@@ -113,6 +114,7 @@ func (f fenwick) query(l, r int) int {
 //   = ∑(m-i+1)*diff[i]
 //   = (m+1)∑diff[i] - ∑i*diff[i]
 // https://ac.nowcoder.com/acm/problem/50454
+// https://codeforces.com/problemset/problem/383/C 2000
 // https://codeforces.com/problemset/problem/916/E 2400
 // todo 二维差分 上帝造题的七分钟 https://www.luogu.com.cn/problem/P4514
 // todo 离线询问（按 x y 分组）https://codeforces.com/contest/1824/problem/D
