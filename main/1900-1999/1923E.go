@@ -42,7 +42,6 @@ func cf1923E(_r io.Reader, _w io.Writer) {
 				}
 			}
 			cnt[c] = tmp + 1
-			return
 		}
 		dfs(0, -1)
 		Fprintln(out, ans)
