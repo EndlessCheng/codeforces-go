@@ -1,44 +1,18 @@
 package main
 
 import (
-    "container/list"
     . "github.com/EndlessCheng/codeforces-go/leetcode/testutil"
     "math"
     "math/bits"
+    "slices"
     "sort"
     "strconv"
     "strings"
 )
 
-// LC 18
-func fourSum(a []int, target int) (ans [][]int) {
-    sort.Ints(a)
-    n := len(a)
-    for i := 0; i < n-3 && a[i]+a[i+1]+a[i+2]+a[i+3] <= target; i++ {
-        if i > 0 && a[i] == a[i-1] || a[i]+a[n-3]+a[n-2]+a[n-1] < target {
-            continue
-        }
-        for j := i + 1; j < n-2 && a[i]+a[j]+a[j+1]+a[j+2] <= target; j++ {
-            if j > i+1 && a[j] == a[j-1] || a[i]+a[j]+a[n-2]+a[n-1] < target {
-                continue
-            }
-            for l, r := j+1, n-1; l < r; {
-                if s := a[i] + a[j] + a[l] + a[r]; s == target {
-                    ans = append(ans, []int{a[i], a[j], a[l], a[r]})
-                    for l++; l < r && a[l] == a[l-1]; l++ {
-                    }
-                    for r--; l < r && a[r] == a[r+1]; r-- {
-                    }
-                } else if s < target {
-                    l++
-                } else {
-                    r--
-                }
-            }
-        }
-    }
-    return
-}
+// https://space.bilibili.com/206214
+
+
 
 // LC 19
 func removeNthFromEnd(head *ListNode, n int) *ListNode {
@@ -832,42 +806,6 @@ func detectCycle(head *ListNode) *ListNode {
     return nil
 }
 
-// 146 LRU 缓存
-type lruEntry struct {
-    key, value int
-}
-
-type LRUCache struct {
-    cap   int
-    cache map[int]*list.Element
-    lst   *list.List
-}
-
-func NewLRUCache(capacity int) LRUCache {
-    return LRUCache{capacity, map[int]*list.Element{}, list.New()}
-}
-
-func (c *LRUCache) Get(key int) int {
-    e := c.cache[key]
-    if e == nil {
-        return -1
-    }
-    c.lst.MoveToFront(e) // 刷新缓存使用时间
-    return e.Value.(lruEntry).value
-}
-
-func (c *LRUCache) Put(key, value int) {
-    if e := c.cache[key]; e != nil {
-        e.Value = lruEntry{key, value}
-        c.lst.MoveToFront(e) // 刷新缓存使用时间
-        return
-    }
-    c.cache[key] = c.lst.PushFront(lruEntry{key, value})
-    if len(c.cache) > c.cap {
-        delete(c.cache, c.lst.Remove(c.lst.Back()).(lruEntry).key)
-    }
-}
-
 // LC 148
 func mergeList(head1, head2 *ListNode) *ListNode {
     dummyHead := &ListNode{}
@@ -972,12 +910,6 @@ func rangeBitwiseAnd(m, n int) int {
 
 // LC 209
 func minSubArrayLen(s int, a []int) int {
-    min := func(a, b int) int {
-        if a < b {
-            return a
-        }
-        return b
-    }
     n := len(a)
     sum := make([]int, n+1)
     for i, v := range a {
@@ -1153,19 +1085,10 @@ func maxSubsequence(a []int, k int) (s []int) {
     return
 }
 
-func lexicographicalLess(a, b []int) bool {
-    for i := 0; i < len(a) && i < len(b); i++ {
-        if a[i] != b[i] {
-            return a[i] < b[i]
-        }
-    }
-    return len(a) < len(b)
-}
-
 func greatFirstMerge(a, b []int) []int {
     merged := make([]int, len(a)+len(b))
     for i := range merged {
-        if lexicographicalLess(a, b) {
+        if slices.Compare(a, b) < 0 {
             merged[i], b = b[0], b[1:]
         } else {
             merged[i], a = a[0], a[1:]
@@ -1183,7 +1106,7 @@ func maxNumber(nums1, nums2 []int, k int) (res []int) {
         s1 := maxSubsequence(nums1, i)
         s2 := maxSubsequence(nums2, k-i)
         merged := greatFirstMerge(s1, s2)
-        if lexicographicalLess(res, merged) {
+        if slices.Compare(res, merged) < 0 {
             res = merged
         }
     }
@@ -1652,67 +1575,8 @@ func hitBricks(g [][]int, hits [][]int) []int {
     return ans
 }
 
-// LC 834 返回一个表示节点 i 与其他所有节点距离之和的列表 ans
-func sumOfDistancesInTree(n int, edges [][]int) []int {
-    g := make([][]int, n)
-    for _, e := range edges {
-        v, w := e[0], e[1]
-        g[v] = append(g[v], w)
-        g[w] = append(g[w], v)
-    }
-
-    size := make([]int, n)
-    sum := make([]int, n)
-    var f func(v, fa int) int
-    f = func(v, fa int) int {
-        sz := 1
-        for _, w := range g[v] {
-            if w == fa {
-                continue
-            }
-            s := f(w, v)
-            sum[v] += sum[w] + s
-            sz += s
-        }
-        size[v] = sz
-        return sz
-    }
-    f(0, -1)
-
-    ans := make([]int, n)
-    var f2 func(u, f int)
-    f2 = func(v, fa int) {
-        ans[v] = sum[v]
-        for _, w := range g[v] {
-            if w == fa {
-                continue
-            }
-            sumV, sumW := sum[v], sum[w]
-            sizeV, sizeW := size[v], size[w]
-
-            sum[v] -= sum[w] + size[w]
-            size[v] -= size[w]
-            sum[w] += sum[v] + size[v]
-            size[w] += size[v]
-
-            f2(w, v)
-
-            sum[v], sum[w] = sumV, sumW
-            size[v], size[w] = sizeV, sizeW
-        }
-    }
-    f2(0, -1)
-    return ans
-}
-
 // LC 968
 func minCameraCover(root *TreeNode) int {
-    min := func(a, b int) int {
-        if a < b {
-            return a
-        }
-        return b
-    }
     var f func(*TreeNode) (a, b, c int)
     f = func(o *TreeNode) (a, b, c int) {
         if o == nil {
@@ -1730,12 +1594,6 @@ func minCameraCover(root *TreeNode) int {
 }
 
 // LC 1190
-func reverse(a []byte) string {
-    for i, n := 0, len(a); i < n/2; i++ {
-        a[i], a[n-1-i] = a[n-1-i], a[i]
-    }
-    return string(a)
-}
 func reverseParentheses(s string) string {
     l := strings.IndexByte(s, '(')
     if l == -1 {
@@ -1746,7 +1604,9 @@ func reverseParentheses(s string) string {
             c++
         } else if s[r] == ')' {
             if c--; c == 0 {
-                return s[:l] + reverse([]byte(reverseParentheses(s[l+1:r]))) + reverseParentheses(s[r+1:])
+                d := []byte(reverseParentheses(s[l+1:r]))
+                slices.Reverse(d)
+                return s[:l] + string(d) + reverseParentheses(s[r+1:])
             }
         }
     }
