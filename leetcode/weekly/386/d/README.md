@@ -125,7 +125,7 @@ class Solution {
             }
             if (cnt == 0) {
                 if (pq.isEmpty() || v <= pq.peek()) {
-                    cnt += 1; // 留给左边，用来快速复习/考试
+                    cnt++; // 留给左边，用来快速复习/考试
                     continue;
                 }
                 slow += pq.poll() + 1;
@@ -166,7 +166,7 @@ public:
                 }
                 if (cnt == 0) {
                     if (pq.empty() || v <= pq.top()) {
-                        cnt += 1; // 留给左边，用来快速复习/考试
+                        cnt++; // 留给左边，用来快速复习/考试
                         continue;
                     }
                     slow += pq.top() + 1;
