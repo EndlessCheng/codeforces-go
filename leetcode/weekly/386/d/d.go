@@ -26,7 +26,7 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 	ans := n + sort.Search(m+1-n, func(mx int) bool {
 		mx += n
 		cnt, slow := 0, total
-		h = h[:0]
+		h.IntSlice = h.IntSlice[:0]
 		for t := mx - 1; t >= 0; t-- {
 			i := changeIndices[t] - 1
 			v := nums[i]
@@ -35,18 +35,18 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 				continue
 			}
 			if cnt == 0 {
-				if len(h) == 0 || v <= h[0].v {
+				if h.Len() == 0 || v <= h.IntSlice[0] {
 					cnt++ // 留给左边，用来快速复习/考试
 					continue
 				}
-				slow += heap.Pop(&h).(pair).v + 1
+				slow += heap.Pop(&h).(int) + 1
 				cnt += 2 // 反悔：一天快速复习，一天考试
 			}
 			slow -= v + 1
 			cnt-- // 快速复习，然后消耗一天来考试
-			heap.Push(&h, pair{v, i})
+			heap.Push(&h, v)
 		}
-		return cnt >= slow // 剩余天数不能快速复习+考试
+		return cnt >= slow // 剩余天数不能慢速复习+考试
 	})
 	if ans > m {
 		return -1
@@ -54,11 +54,6 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 	return ans
 }
 
-type pair struct{ v, i int }
-type hp []pair
-
-func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].v < h[j].v }
-func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+type hp struct{ sort.IntSlice }
+func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }

@@ -38,7 +38,7 @@
 
 - 设当前天数为 $t$，设 $i = \textit{changeIndices}[t] - 1$。
 - 如果 $i$ 不是在 $\textit{changeIndices}$ 中首次出现的数，或者 $\textit{nums}[i]\le 1$，那么把时间留给左边再决定做什么，$\textit{cnt}$ 加一。
-- 否则如果 $\textit{cnt}>0$，我们直接快速复习第 $i$ 门课程，并消耗一天用来考试，把 $\textit{cnt}$ 减一。然后把 $(\textit{nums}[i],i)$ 加到一个**小根堆**中。
+- 否则如果 $\textit{cnt}>0$，我们直接快速复习第 $i$ 门课程，并消耗一天用来考试，把 $\textit{cnt}$ 减一。然后把 $\textit{nums}[i]$ 加到一个**小根堆**中。
 - 否则如果 $\textit{cnt}=0$，那么尝试在小根堆中「反悔」一个复习时间比 $\textit{nums}[i]$ 小的数。如果堆为空或者堆顶大于等于 $\textit{nums}[i]$ 就不反悔，否则弹出堆顶并把 $\textit{cnt}$ 加二（一天快速复习，一天考试），然后做法同上述 $\textit{cnt}>0$ 的情况。这里从堆中弹出的课程，相当于用更靠左的时间去慢速复习+考试。
 
 遍历结束后，对于每个未快速复习的课程，全部使用慢速复习+考试，将 $\textit{cnt}$ 减去这些课程对应的 $\textit{nums}[i]+1$。如果最终 $\textit{cnt}\ge 0$ 则说明可以在 $\textit{mx}$ 天内搞定所有课程的复习+考试。这一过程可以在遍历中动态维护，具体见代码。
@@ -66,14 +66,14 @@ class Solution:
                     cnt += 1  # 留给左边，用来快速复习/考试
                     continue
                 if cnt == 0:
-                    if not h or v <= h[0][0]:
+                    if not h or v <= h[0]:
                         cnt += 1  # 留给左边，用来快速复习/考试
                         continue
-                    slow += heappop(h)[0] + 1
+                    slow += heappop(h) + 1
                     cnt += 2  # 反悔：一天快速复习，一天考试
                 slow -= v + 1
                 cnt -= 1  # 快速复习，然后消耗一天来考试
-                heappush(h, (v, i))
+                heappush(h, v)
             return cnt >= slow  # 剩余天数不能慢速复习+考试
 
         ans = n + bisect_left(range(n, m + 1), True, key=check)
@@ -100,7 +100,7 @@ class Solution {
             firstT[changeIndices[t] - 1] = t;
         }
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> a - b);
         int left = n - 1, right = m + 1;
         while (left + 1 < right) {
             pq.clear();
@@ -114,7 +114,7 @@ class Solution {
         return right > m ? -1 : right;
     }
 
-    private boolean check(int[] nums, int[] changeIndices, int[] firstT, PriorityQueue<int[]> pq, long slow, int mx) {
+    private boolean check(int[] nums, int[] changeIndices, int[] firstT, PriorityQueue<Integer> pq, long slow, int mx) {
         int cnt = 0;
         for (int t = mx - 1; t >= 0; t--) {
             int i = changeIndices[t] - 1;
@@ -124,16 +124,16 @@ class Solution {
                 continue;
             }
             if (cnt == 0) {
-                if (pq.isEmpty() || v <= pq.peek()[0]) {
+                if (pq.isEmpty() || v <= pq.peek()) {
                     cnt += 1; // 留给左边，用来快速复习/考试
                     continue;
                 }
-                slow += pq.poll()[0] + 1;
+                slow += pq.poll() + 1;
                 cnt += 2; // 反悔：一天快速复习，一天考试
             }
             slow -= v + 1;
             cnt--; // 快速复习，然后消耗一天来考试
-            pq.offer(new int[]{v, i});
+            pq.offer(v);
         }
         return cnt >= slow; // 剩余天数不能慢速复习+考试
     }
@@ -156,7 +156,7 @@ public:
         auto check = [&](int mx) -> bool {
             int cnt = 0;
             long long slow = total; // 慢速复习+考试所需天数
-            priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+            priority_queue<int, vector<int>, greater<>> pq;
             for (int t = mx - 1; t >= 0; t--) {
                 int i = changeIndices[t] - 1;
                 int v = nums[i];
@@ -165,17 +165,17 @@ public:
                     continue;
                 }
                 if (cnt == 0) {
-                    if (pq.empty() || v <= pq.top().first) {
+                    if (pq.empty() || v <= pq.top()) {
                         cnt += 1; // 留给左边，用来快速复习/考试
                         continue;
                     }
-                    slow += pq.top().first + 1;
+                    slow += pq.top() + 1;
                     pq.pop();
                     cnt += 2; // 反悔：一天快速复习，一天考试
                 }
                 slow -= v + 1;
                 cnt--; // 快速复习，然后消耗一天来考试
-                pq.emplace(v, i);
+                pq.push(v);
             }
             return cnt >= slow; // 剩余天数不能慢速复习+考试
         };
@@ -211,7 +211,7 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 	ans := n + sort.Search(m+1-n, func(mx int) bool {
 		mx += n
 		cnt, slow := 0, total
-		h = h[:0]
+		h.IntSlice = h.IntSlice[:0]
 		for t := mx - 1; t >= 0; t-- {
 			i := changeIndices[t] - 1
 			v := nums[i]
@@ -220,16 +220,16 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 				continue
 			}
 			if cnt == 0 {
-				if len(h) == 0 || v <= h[0].v {
+				if h.Len() == 0 || v <= h.IntSlice[0] {
 					cnt++ // 留给左边，用来快速复习/考试
 					continue
 				}
-				slow += heap.Pop(&h).(pair).v + 1
+				slow += heap.Pop(&h).(int) + 1
 				cnt += 2 // 反悔：一天快速复习，一天考试
 			}
 			slow -= v + 1
 			cnt-- // 快速复习，然后消耗一天来考试
-			heap.Push(&h, pair{v, i})
+			heap.Push(&h, v)
 		}
 		return cnt >= slow // 剩余天数不能慢速复习+考试
 	})
@@ -239,13 +239,9 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 	return ans
 }
 
-type pair struct{ v, i int }
-type hp []pair
-func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].v < h[j].v }
-func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+type hp struct{ sort.IntSlice }
+func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 ```
 
 #### 复杂度分析
