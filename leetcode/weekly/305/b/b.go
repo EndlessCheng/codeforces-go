@@ -9,7 +9,7 @@ func reachableNodes(n int, edges [][]int, restricted []int) (ans int) {
 	g := make([][]int, n)
 	for _, e := range edges {
 		x, y := e[0], e[1]
-		if !r[x] && !r[y] {
+		if !r[x] && !r[y] { // 都不受限才连边
 			g[x] = append(g[x], y)
 			g[y] = append(g[y], x)
 		}
