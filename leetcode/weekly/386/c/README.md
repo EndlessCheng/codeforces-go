@@ -10,13 +10,15 @@
 
 搞定所有课程的复习+考试，至少要多少天？
 
-## 提示 1
+## 方法一：二分答案+正向遍历
+
+#### 提示 1
 
 答案越大，越能够搞定所有课程，反之越不能。
 
 有单调性，可以**二分答案**。
 
-## 提示 2
+#### 提示 2
 
 考试的时间越晚越好，这样我们能有更充足的时间复习。
 
@@ -182,6 +184,148 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 			}
 		}
 		return true
+	})
+	if ans > m {
+		return -1
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(m\log m)$，其中 $m$ 为 $\textit{changeIndices}$ 的长度。二分的时候保证 $n\le m$，时间复杂度以 $m$ 为主。
+- 空间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+
+## 方法二：二分答案+逆向遍历
+
+也可以倒着遍历 $\textit{changeIndices}$ 的前 $\textit{mx}$ 个数。
+
+- 初始化需要考试的课程数 $\textit{exam}=n$ 和需要复习的天数 $\textit{study}=0$。
+- 如果第一次遇到 $\textit{changeIndices}[i]$，那么就考试，把 $\textit{exam}$ 减一，把 $\textit{study}$ 增加这门课程需要的复习天数。
+- 否则这天用来复习，把 $\textit{study}$ 减一（前提是 $\textit{study}>0$）。
+
+最后如果 $\textit{exam}=0$ 且 $\textit{study}=0$，就表示所有课程都考完了，并且考试前有足够的天数用来复习。
+
+```py [sol-Python3]
+class Solution:
+    def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
+        n, m = len(nums), len(changeIndices)
+        if n > m: return -1
+
+        done = [0] * n  # 避免反复创建和初始化数组
+        def check(mx: int) -> bool:
+            exam, study = n, 0
+            for i in range(mx - 1, -1, -1):
+                idx = changeIndices[i] - 1
+                if done[idx] != mx:
+                    done[idx] = mx
+                    exam -= 1  # 考试
+                    study += nums[idx]  # 需要复习的天数
+                elif study:
+                    study -= 1  # 复习
+            return exam == 0 and study == 0  # 考完了并且复习完了
+
+        left = n + sum(nums)
+        ans = left + bisect_left(range(left, m + 1), True, key=check)
+        return -1 if ans > m else ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int earliestSecondToMarkIndices(int[] nums, int[] changeIndices) {
+        int n = nums.length;
+        int m = changeIndices.length;
+        if (n > m) {
+            return -1;
+        }
+
+        int[] done = new int[n]; // 避免反复创建和初始化数组
+        int left = n - 1, right = m + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+            if (check(nums, changeIndices, done, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right > m ? -1 : right;
+    }
+
+    private boolean check(int[] nums, int[] changeIndices, int[] done, int mx) {
+        int exam = nums.length;
+        int study = 0;
+        for (int i = mx - 1; i >= 0 && study <= i + 1; i--) { // 要复习的天数不能太多
+            int idx = changeIndices[i] - 1;
+            if (done[idx] != mx) {
+                done[idx] = mx;
+                exam--; // 考试
+                study += nums[idx]; // 需要复习的天数
+            } else if (study > 0) {
+                study--; // 复习
+            }
+        }
+        return exam == 0 && study == 0; // 考完了并且复习完了
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int earliestSecondToMarkIndices(vector<int> &nums, vector<int> &changeIndices) {
+        int n = nums.size(), m = changeIndices.size();
+        if (n > m) return -1;
+
+        vector<int> done(n); // 避免反复创建和初始化数组
+        auto check = [&](int mx) -> bool {
+            int exam = n, study = 0;
+            for (int i = mx - 1; i >= 0 && study <= i + 1; i--) { // 要复习的天数不能太多
+                int idx = changeIndices[i] - 1;
+                if (done[idx] != mx) {
+                    done[idx] = mx;
+                    exam--; // 考试
+                    study += nums[idx]; // 需要复习的天数
+                } else if (study) {
+                    study--; // 复习
+                }
+            }
+            return exam == 0 && study == 0; // 考完了并且复习完了
+        };
+
+        int left = n - 1, right = m + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right > m ? -1 : right;
+    }
+};
+```
+
+```go [sol-Go]
+func earliestSecondToMarkIndices(nums, changeIndices []int) int {
+	n, m := len(nums), len(changeIndices)
+	if n > m {
+		return -1
+	}
+
+	done := make([]int, n) // 避免反复创建和初始化数组
+	ans := n + sort.Search(m+1-n, func(mx int) bool {
+		mx += n
+		exam, study := n, 0
+		for i := mx - 1; i >= 0; i-- {
+			idx := changeIndices[i] - 1
+			if done[idx] != mx {
+				done[idx] = mx
+				exam-- // 考试
+				study += nums[idx] // 需要复习的天数
+			} else if study > 0 {
+				study-- // 复习
+			}
+		}
+		return exam == 0 && study == 0 // 考完了并且复习完了
 	})
 	if ans > m {
 		return -1
