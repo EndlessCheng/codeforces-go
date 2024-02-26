@@ -1,6 +1,6 @@
 [视频讲解](https://www.bilibili.com/video/BV1yu4y1z7sE/) 第四题。
 
-![w364D-c.png](https://pic.leetcode.cn/1695525563-NYpzGx-w364D-c.png)
+![w364D-2-c.png](https://pic.leetcode.cn/1708991317-yqozUn-w364D-2-c.png)
 
 代码实现时，为避免反复 DFS 同一个非质数连通块，可以把每个非质数所处的连通块的大小记录下来（类似记忆化搜索）。如果之前计算过，就无需再次 DFS。
 
