@@ -96,7 +96,7 @@ class Solution {
 
         int[] firstT = new int[n];
         Arrays.fill(firstT, -1);
-        for (int t = m - 1; t >= 0; --t) {
+        for (int t = m - 1; t >= 0; t--) {
             firstT[changeIndices[t] - 1] = t;
         }
 
