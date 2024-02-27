@@ -3,7 +3,7 @@
 ```py [sol-Python3]
 class Solution:
     def isPossibleToSplit(self, nums: List[int]) -> bool:
-        return Counter(nums).most_common(1)[0][1] <= 2
+        return max(Counter(nums).values()) <= 2
 ```
 
 ```java [sol-Java]
