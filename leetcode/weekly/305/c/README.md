@@ -1,26 +1,29 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，感兴趣的小伙伴可以来 [关注](https://space.bilibili.com/206214/dynamic) 一波哦~
+**前置知识**：[动态规划入门](https://b23.tv/72onpYq)。
 
----
+如何想出状态定义？
 
-定义 $f[i+1]$ 表示从 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 的这些元素能否有效划分。那么 $f[0] = \texttt{true}$，答案为 $f[n]$。
+- 如果 $\textit{nums}$ 的最后两个数相等，那么去掉这两个数，问题变成剩下 $n-2$ 个数能否有效划分。
+- 如果 $\textit{nums}$ 的最后三个数相等，那么去掉这三个数，问题变成剩下 $n-3$ 个数能否有效划分。
+- 如果 $\textit{nums}$ 的最后三个数是连续递增的，那么去掉这三个数，问题变成剩下 $n-3$ 个数能否有效划分。
 
-根据题意，有
+我们要解决的问题都形如「$\textit{nums}$ 的前 $i$ 个数能否有效划分」。
+
+于是定义 $f[0] = \texttt{true}$，$f[i+1]$ 表示能否有效划分 $\textit{nums}[0]$ 到 $\textit{nums}[i]$。
+
+根据有效划分的定义，有
 
 $$
-f[i+1] = \text{OR}
+f[i+1] = \vee
 \begin{cases} 
-f[i-1]\ \text{AND}\ \textit{nums}[i] = \textit{nums}[i-1],&i>0\\
-f[i-2]\ \text{AND}\ \textit{nums}[i] = \textit{nums}[i-1] = \textit{nums}[i-2],&i>1\\
-f[i-2]\ \text{AND}\ \textit{nums}[i] = \textit{nums}[i-1]+1 = \textit{nums}[i-2]+2,&i>1
+f[i-1]\ \wedge\ \textit{nums}[i] = \textit{nums}[i-1],&i>0\\
+f[i-2]\ \wedge\ \textit{nums}[i] = \textit{nums}[i-1] = \textit{nums}[i-2],&i>1\\
+f[i-2]\ \wedge\ \textit{nums}[i] = \textit{nums}[i-1]+1 = \textit{nums}[i-2]+2,&i>1
 \end{cases}
 $$
 
-#### 复杂度分析
+答案为 $f[n]$。
 
-- 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(n)$。
-
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def validPartition(self, nums: List[int]) -> bool:
         n = len(nums)
@@ -33,40 +36,44 @@ class Solution:
         return f[n]
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public boolean validPartition(int[] nums) {
-        var n = nums.length;
-        var f = new boolean[n + 1];
+        int n = nums.length;
+        boolean[] f = new boolean[n + 1];
         f[0] = true;
-        for (var i = 1; i < n; ++i)
+        for (int i = 1; i < n; i++) {
             if (f[i - 1] && nums[i] == nums[i - 1] ||
                 i > 1 && f[i - 2] && (nums[i] == nums[i - 1] && nums[i] == nums[i - 2] ||
-                                      nums[i] == nums[i - 1] + 1 && nums[i] == nums[i - 2] + 2))
+                                      nums[i] == nums[i - 1] + 1 && nums[i] == nums[i - 2] + 2)) {
                 f[i + 1] = true;
+            }
+        }
         return f[n];
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     bool validPartition(vector<int> &nums) {
         int n = nums.size();
-        bool f[n + 1]; memset(f, 0, sizeof(f));
+        vector<int> f(n + 1);
         f[0] = true;
-        for (int i = 1; i < n; ++i)
+        for (int i = 1; i < n; i++) {
             if (f[i - 1] && nums[i] == nums[i - 1] ||
                 i > 1 && f[i - 2] && (nums[i] == nums[i - 1] && nums[i] == nums[i - 2] ||
-                                      nums[i] == nums[i - 1] + 1 && nums[i] == nums[i - 2] + 2))
+                                      nums[i] == nums[i - 1] + 1 && nums[i] == nums[i - 2] + 2)) {
                 f[i + 1] = true;
+            }
+        }
         return f[n];
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func validPartition(nums []int) bool {
 	n := len(nums)
 	f := make([]bool, n+1)
@@ -81,3 +88,50 @@ func validPartition(nums []int) bool {
 	return f[n]
 }
 ```
+
+```js [sol-JavaScript]
+var validPartition = function(nums) {
+    const n = nums.length;
+    const f = Array(n + 1).fill(false);
+    f[0] = true;
+    for (let i = 1; i < n; i++) {
+        if (f[i - 1] && nums[i] === nums[i - 1] ||
+            i > 1 && f[i - 2] && (nums[i] === nums[i - 1] && nums[i] === nums[i - 2] ||
+                                  nums[i] === nums[i - 1] + 1 && nums[i] === nums[i - 2] + 2)) {
+            f[i + 1] = true;
+        }
+    }
+    return f[n];
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn valid_partition(nums: Vec<i32>) -> bool {
+        let n = nums.len();
+        let mut f = vec![false; n + 1];
+        f[0] = true;
+        for i in 1..n {
+            if (f[i - 1] && nums[i] == nums[i - 1] ||
+                i > 1 && f[i - 2] && (nums[i] == nums[i - 1] && nums[i] == nums[i - 2] ||
+                                      nums[i] == nums[i - 1] + 1 && nums[i] == nums[i - 2] + 2)) {
+                f[i + 1] = true;
+            }
+        }
+        f[n]
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+有多少种有效划分的**方案数**？模 $10^9+7$。
+
+欢迎在评论区发表你的思路/代码。
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
