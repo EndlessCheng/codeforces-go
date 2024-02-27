@@ -24,7 +24,7 @@ func countPaths(n int, edges [][]int) (ans int64) {
 	}
 
 	size := make([]int, n+1)
-	var nodes []int
+	nodes := []int{}
 	var dfs func(int, int)
 	dfs = func(x, fa int) {
 		nodes = append(nodes, x)
@@ -38,13 +38,13 @@ func countPaths(n int, edges [][]int) (ans int64) {
 		if np[x] { // 跳过非质数
 			continue
 		}
-		sum := 0
+		sum := 1
 		for _, y := range g[x] { // 质数 x 把这棵树分成了若干个连通块
 			if !np[y] {
 				continue
 			}
 			if size[y] == 0 {
-				nodes = []int{}
+				nodes = nodes[:0]
 				dfs(y, -1) // 遍历 y 所在连通块，在不经过质数的前提下，统计有多少个非质数
 				for _, z := range nodes {
 					size[z] = len(nodes)
@@ -54,7 +54,6 @@ func countPaths(n int, edges [][]int) (ans int64) {
 			ans += int64(size[y]) * int64(sum)
 			sum += size[y]
 		}
-		ans += int64(sum) // 从 x 出发的路径
 	}
 	return
 }
