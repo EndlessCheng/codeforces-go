@@ -6,6 +6,12 @@ class Solution:
         return max(Counter(nums).values()) <= 2
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def isPossibleToSplit(self, nums: List[int]) -> bool:
+        return all(c <= 2 for c in Counter(nums).values())
+```
+
 ```java [sol-Java]
 class Solution {
     public boolean isPossibleToSplit(int[] nums) {
