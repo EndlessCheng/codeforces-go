@@ -21,6 +21,7 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
+        nodes = []
         def dfs(x: int, fa: int) -> None:
             nodes.append(x)
             for y in g[x]:
@@ -37,7 +38,7 @@ class Solution:
                 if is_prime[y]:
                     continue
                 if size[y] == 0:  # 尚未计算过
-                    nodes = []
+                    nodes.clear()
                     dfs(y, -1)  # 遍历 y 所在连通块，在不经过质数的前提下，统计有多少个非质数
                     for z in nodes:
                         size[z] = len(nodes)
@@ -194,7 +195,7 @@ func countPaths(n int, edges [][]int) (ans int64) {
 	}
 
 	size := make([]int, n+1)
-	var nodes []int
+	nodes := []int{}
 	var dfs func(int, int)
 	dfs = func(x, fa int) {
 		nodes = append(nodes, x)
@@ -214,7 +215,7 @@ func countPaths(n int, edges [][]int) (ans int64) {
 				continue
 			}
 			if size[y] == 0 { // 尚未计算过
-				nodes = []int{}
+				nodes = nodes[:0]
 				dfs(y, -1) // 遍历 y 所在连通块，在不经过质数的前提下，统计有多少个非质数
 				for _, z := range nodes {
 					size[z] = len(nodes)
