@@ -190,6 +190,8 @@ https://oeis.org/A006577 Number of halving and tripling steps to reach 1 in '3x+
 https://oeis.org/A008884 3x+1 sequence starting at 27
 LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
+Funny sum https://codeforces.com/blog/entry/125796?#comment-1116197
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -834,6 +836,14 @@ func _(abs func(int) int) {
 		}
 	}
 
+	/* 题单：预处理质数
+	- [204. 计数质数](https://leetcode.cn/problems/count-primes/)
+	- [2761. 和等于目标值的质数对](https://leetcode.cn/problems/prime-pairs-with-target-sum/) 1505
+	- [2523. 范围内最接近的两个质数](https://leetcode.cn/problems/closest-prime-numbers-in-range/) 1650
+	- [2601. 质数减法运算](https://leetcode.cn/problems/prime-subtraction-operation/) 1779
+	- [2867. 统计树中的合法路径数目](https://leetcode.cn/problems/count-valid-paths-in-a-tree/) 2428
+	*/
+
 	// 预处理: [2,mx] 范围内的质数
 	// 埃筛 埃氏筛 埃拉托斯特尼筛法 Sieve of Eratosthenes
 	// 该算法也说明了：前 n 个数的平均质因子数量是 O(loglogn) 级别的
@@ -1139,7 +1149,7 @@ func _(abs func(int) int) {
 
 		max(d(i)), i=1..10^n https://oeis.org/A066150
 			方便估计复杂度 - 近似为开立方
-			4, 12, 32, 
+			4, 12, 32,
 			64, /1e4/
 			128, /1e5/
 			240, /1e6/
