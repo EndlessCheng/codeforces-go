@@ -1,9 +1,6 @@
 package copypasta
 
-import (
-	"math/rand"
-	"time"
-)
+import "math/rand"
 
 /* k-d tree: k-dimensional tree; k 维树
 https://en.wikipedia.org/wiki/K-d_tree
@@ -16,9 +13,6 @@ todo 题单 https://www.luogu.com.cn/training/4295
 模板题 https://www.luogu.com.cn/problem/P4148
 todo https://codeforces.com/problemset/problem/44/G
 */
-
-var randKD = rand.New(rand.NewSource(time.Now().UnixNano()))
-
 type kdNode struct {
 	lr          [2]*kdNode
 	p, mi, mx   [2]int // 0 为 x，1 为 y
@@ -65,7 +59,7 @@ func (o *kdNode) nodes() []*kdNode {
 		}
 	}
 	f(o)
-	randKD.Shuffle(len(nodes), func(i, j int) { nodes[i], nodes[j] = nodes[j], nodes[i] })
+	rand.Shuffle(len(nodes), func(i, j int) { nodes[i], nodes[j] = nodes[j], nodes[i] })
 	return nodes
 }
 
