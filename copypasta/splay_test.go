@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"math/rand"
 	"testing"
-	"time"
 )
 
 func Test_splay(t *testing.T) {
 	//root := buildSplay(1,9)
 	//root = root.splay(1)
-	rand.Seed(time.Now().UnixNano())
 	n := 30
 	a := make([]int, n)
 	for i := range a {

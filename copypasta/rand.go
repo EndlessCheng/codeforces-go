@@ -16,6 +16,7 @@ import (
 
 /* 随机化技巧
 https://oi-wiki.org/misc/rand-technique/
+https://www.luogu.com.cn/blog/DengDuck/qian-tan-ha-xi-yu-chu-li-ha-xi-chong-tu-di-yi-suo-fang-fa
 随机梯度下降 SGD, Stochastic Gradient Descent https://en.wikipedia.org/wiki/Stochastic_gradient_descent
 https://codeforces.com/problemset/problem/995/C
 https://codeforces.com/problemset/problem/1314/D 推荐
@@ -24,12 +25,14 @@ Kick Start 2021 Round C Binary Operator https://codingcompetitions.withgoogle.co
 https://codeforces.com/problemset/problem/1689/D https://www.luogu.com.cn/blog/wangxiwen/solution-cf1689d
 https://atcoder.jp/contests/abc272/tasks/abc272_g
 todo https://codeforces.com/problemset/problem/364/D 2900
+推荐 https://atcoder.jp/contests/abc339/tasks/abc339_f
 
 随机映射
 https://codeforces.com/problemset/problem/1746/F 2800
 
-xor hashing
-https://codeforces.com/problemset/problem/1830/C
+异或哈希 xor hashing
+https://codeforces.com/problemset/problem/1830/C 2400
+https://codeforces.com/problemset/problem/1771/F 2500
 */
 
 /* 模拟退火 (Simulated Annealing, SA)

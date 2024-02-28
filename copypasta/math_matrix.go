@@ -86,6 +86,9 @@ func rotateMatrix(a matrix) matrix {
 - [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
 - [2851. ](https://leetcode.cn/problems/string-transformation/)
 
+已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n https://www.luogu.com.cn/problem/P9777
+由于 f(n) * f(1) = f(n+1) + f(n-1)
+所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 */
 type matrix [][]int
 
@@ -419,6 +422,7 @@ func (b *xorBasis) insert(v int) {
 // EXTRA: 如果遇到线性相关的基，保留位置最靠右的
 // https://codeforces.com/problemset/problem/1100/F 2500
 // https://codeforces.com/problemset/problem/1778/E 2500
+// https://codeforces.com/problemset/problem/1902/F 2400
 // https://atcoder.jp/contests/abc223/tasks/abc223_h
 func (b *xorBasis) insertRightMost(idx, v int) {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
@@ -530,6 +534,7 @@ func (b *xorBasis) rank(xor int) (k int) {
 	panic("todo")
 }
 
+// https://codeforces.com/problemset/problem/1902/F
 func (b *xorBasis) merge(other *xorBasis) {
 	for i := len(other.b) - 1; i >= 0; i-- {
 		x := other.b[i]

@@ -92,7 +92,7 @@ func newTreap() *treap {
 
 // https://www.jstatsoft.org/article/view/v008i14/xorshift.pdf
 // https://en.wikipedia.org/wiki/Xorshift
-// 当然，也可以用 rand.Int() 或者 rd: rand.NewSource 后 rd.Int63()，后者速度略慢于 fastRand
+// 任何 Go 版本都通用的写法
 func (t *treap) fastRand() uint {
 	t.rd ^= t.rd << 13
 	t.rd ^= t.rd >> 17

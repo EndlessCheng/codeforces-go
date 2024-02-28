@@ -12,6 +12,8 @@ https://codeforces.com/blog/entry/66643
 将 LCA、RMQ、LA 优化至理论最优复杂度 https://www.luogu.com.cn/blog/ICANTAKIOI/yi-shang-shou-ke-ji-jiang-lcarmqla-you-hua-zhi-zui-you-fu-za-du
 RMQ 标准算法和线性树上并查集 https://ljt12138.blog.uoj.ac/blog/4874
 随机 RMQ https://www.luogu.com.cn/problem/P3793
+todo O(n)-O(1) lca/rmq, not method of 4 russians https://codeforces.com/blog/entry/125371
+todo O(n)-O(1) RMQ https://atcoder.jp/contests/arc165/submissions/45673031
 
 模板题 https://www.luogu.com.cn/problem/P3865
 https://codeforces.com/contest/1709/problem/D

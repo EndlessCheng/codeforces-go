@@ -2,6 +2,7 @@ package copypasta
 
 import (
 	"bytes"
+	"fmt"
 	"math"
 	"regexp"
 	"slices"
@@ -23,7 +24,9 @@ https://codeforces.com/problemset/problem/700/A
 Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
 
 Smallest positive integer k such that n = +-1+-2+-...+-k for some choice of +'s and -'s https://oeis.org/A140358
-相关题目 https://codeforces.com/problemset/problem/1278/B
+https://codeforces.com/problemset/problem/11/B
+https://codeforces.com/problemset/problem/1278/B
+LC754 https://leetcode.cn/problems/reach-a-number/ 1880
 
 Numbers n such that n is the substring identical to the least significant bits of its base 2 representation.
 https://oeis.org/A181891
@@ -402,12 +405,14 @@ func mapPos(a, b []int) []int {
 	return ids
 }
 
-// 归并排序与逆序对
-// LC 面试题 51 https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-// EXTRA: LC315 https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/
-//        LC327 https://leetcode-cn.com/problems/count-of-range-sum/
-//        LC493 https://leetcode-cn.com/problems/reverse-pairs/
-// 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
+/* 归并排序与逆序对
+- 归并排序：[912. 排序数组](https://leetcode.cn/problems/sort-an-array/)
+- [LCR 170. 交易逆序对的总数](https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
+- [327. 区间和的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
+- [327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)
+- [493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)
+一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
+*/
 func mergeCount(a []int) int {
 	n := len(a)
 	if n <= 1 {
@@ -570,6 +575,7 @@ func toNegabinary(n int) (ans string) {
 // WF1990 https://www.luogu.com.cn/problem/UVA202
 // 1e12 加强版 https://ac.nowcoder.com/acm/contest/62622/E
 // Python 代码 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=63288994
+// b 进制下是否为有限小数 https://codeforces.com/problemset/problem/983/A 1700
 func fractionToDecimal(a, b int) (beforeCycle, cycle []byte) {
 	if a == 0 {
 		return []byte{'0'}, nil

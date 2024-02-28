@@ -23,6 +23,7 @@ NOTE: 树上两点的关系：v 和 w 相等【特判】、v 是 w 的祖先、w
 NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y 走到根的路径上，找到到 x 的距离，从而求出 y 到 x 的距离 https://codeforces.com/problemset/problem/1790/F
 
 简单 DFS
+- [2368. 受限条件下可到达节点的数目](https://leetcode.cn/problems/reachable-nodes-with-restrictions/) 1477
 https://codeforces.com/problemset/problem/580/C
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
@@ -209,14 +210,16 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一棵子树，方便用树状数组/线段树维护
 // 【时间戳的写法见后面】
-// 模板题 https://ac.nowcoder.com/acm/contest/6383/B
-// 例题 https://codeforces.com/problemset/problem/383/C
-//     https://codeforces.com/problemset/problem/877/E
-// https://codeforces.com/problemset/problem/916/E
-// 结合 AC 自动机 https://codeforces.com/contest/163/problem/E
+// 讲解：https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/
+//
+// https://codeforces.com/problemset/problem/877/E 2000
+// https://codeforces.com/problemset/problem/383/C 2000
+// https://ac.nowcoder.com/acm/contest/6383/B
+// https://codeforces.com/problemset/problem/916/E 2400
+// 结合 AC 自动机 https://codeforces.com/contest/163/problem/E 2800
 func (*tree) subtreeSize(root int, g [][]int, a []int) {
 	newOrder := make([]int, len(a))
-	
+
 	nodes := make([]struct{ l, r int }, len(g)) // 闭区间
 	dfn := 0
 	var buildDFN func(int, int) int
@@ -238,6 +241,7 @@ func (*tree) subtreeSize(root int, g [][]int, a []int) {
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
+	// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
 	isAncestor := func(f, v int) bool { return nodes[f].l < nodes[v].l && nodes[v].l <= nodes[f].r }
 
 	{
@@ -331,14 +335,15 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 
 	{
 		// 与深度时间戳结合，二分求某个子树在某个深度的节点范围
-		// https://atcoder.jp/contests/abc202/tasks/abc202_e
-		// https://codeforces.com/problemset/problem/246/E
-		// https://codeforces.com/problemset/problem/570/D
-		// https://codeforces.com/problemset/problem/1076/E
 		// https://www.lanqiao.cn/problems/5892/learning/?contest_id=145
-		// https://codeforces.com/problemset/problem/208/E 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
+		// https://codeforces.com/problemset/problem/1076/E 1900
+		// https://codeforces.com/problemset/problem/208/E 2100 
+		// - 加强版 https://www.luogu.com.cn/problem/P5384（需要差分）
+		// https://codeforces.com/problemset/problem/570/D 2200
+		// https://codeforces.com/problemset/problem/246/E 2400
+		// https://atcoder.jp/contests/abc202/tasks/abc202_e
 		// https://www.luogu.com.cn/problem/P7768
-		var a []int // read...
+		var a []int // 点权   read... 
 		type info struct{ tin, tout, dep int }
 		nodes := make([]info, len(g))
 		depTS := make([][]int, len(g))
@@ -1287,7 +1292,7 @@ func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
 }
 
 // LCA 应用：树上差分
-// 入门（单点更新）LC2445 https://leetcode.cn/problems/number-of-nodes-with-value-one/description/
+// 入门（单点更新）LC2445 https://leetcode.cn/problems/number-of-nodes-with-value-one/
 // 操作为更新 v-w 路径上的点权或边权（初始为 0）
 // 点权时 diff[lca] -= val 且 diff[father[lca]] -= val
 //    把 x-lca-y 看成 x-lca'-lca-y，这里 lca' 是 lca 的儿子，

@@ -13,6 +13,14 @@ https://leetcode.cn/circle/discuss/CaOJ45/
 
 有关二进制枚举、枚举子集的子集、枚举大小固定集合等写法，见 search.go
 
+运算符优先级 https://golang.org/ref/spec#Operators
+Precedence    Operator
+    5         *  /  %  <<  >>  &  &^
+    4         +  -  |  ^
+    3         ==  !=  <  <=  >  >=
+    2         &&
+    1         ||
+
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
      bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
@@ -102,7 +110,9 @@ https://atcoder.jp/contests/arc127/tasks/arc127_d
 
 ### 试填法
 - [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
-- [3022. 给定操作次数内使剩余元素的或值最小](https://leetcode.cn/problems/minimize-or-of-remaining-elements-using-operations/)
+- [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/)，[试填法题解](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solution/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)
+- [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/) 2349
+- [3022. 给定操作次数内使剩余元素的或值最小](https://leetcode.cn/problems/minimize-or-of-remaining-elements-using-operations/) 2918
 https://codeforces.com/contest/1918/problem/C 1400
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
 https://atcoder.jp/contests/abc091/tasks/arc092_b
@@ -170,14 +180,6 @@ https://codeforces.com/problemset/problem/309/C 1900
 LC3019 https://leetcode.cn/problems/number-of-changing-keys/
 https://codeforces.com/contest/691/problem/B
 https://codeforces.com/contest/1907/problem/B
-
-运算符优先级 https://golang.org/ref/spec#Operators
-Precedence    Operator
-    5         *  /  %  <<  >>  &  &^
-    4         +  -  |  ^
-    3         ==  !=  <  <=  >  >=
-    2         &&
-    1         ||
 
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 

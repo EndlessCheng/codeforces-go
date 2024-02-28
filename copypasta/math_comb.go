@@ -15,6 +15,9 @@ https://en.wikipedia.org/wiki/Binomial_theorem
 https://en.wikipedia.org/wiki/Pigeonhole_principle
 https://codeforces.com/problemset/problem/618/F
 
+简单计数
+https://codeforces.com/problemset/problem/617/B 1300
+
 一些组合问题
 没有思路的话可以尝试：
 - 打表 + OEIS
@@ -33,6 +36,7 @@ https://codeforces.com/problemset/problem/1261/D2 推荐
 https://codeforces.com/problemset/problem/1288/C
 https://codeforces.com/problemset/problem/1342/E
 https://codeforces.com/problemset/problem/1359/E
+https://codeforces.com/contest/1931/problem/G
 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
 https://codeforces.com/problemset/problem/1763/D 推荐 分类讨论
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
@@ -43,7 +47,7 @@ https://atcoder.jp/contests/abc290/tasks/abc290_f
 LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
 LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
 LC1916 https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/ 2486
-LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/
+LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/ 2645
 LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
 todo https://www.luogu.com.cn/problem/P6017
 

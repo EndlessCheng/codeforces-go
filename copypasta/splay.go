@@ -10,6 +10,8 @@ import (
 https://en.wikipedia.org/wiki/Splay_tree
 https://oi-wiki.org/ds/splay/
 https://www.cnblogs.com/cjyyb/p/7499020.html
+复杂度分析 https://www.bilibili.com/video/BV1q7421K7yu/
+
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 文艺平衡树 https://www.luogu.com.cn/problem/P3391
 LC1825 https://leetcode.cn/problems/finding-mk-average/ https://leetcode.cn/problems/finding-mk-average/solutions/2067232/by-jessechan-19j2/

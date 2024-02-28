@@ -229,7 +229,7 @@ func monotoneStack(a []int) ([]int, []int) {
 
 	// EXTRA: 求所有长为 i 的子区间的最小值的最大值
 	// https://codeforces.com/problemset/problem/547/B 
-	// LC1950 https://leetcode.cn/problems/maximum-of-minimum-values-in-all-subarrays/
+	// LC1950 https://leetcode.cn/problems/maximum-of-minimum-values-in-all-subarrays/（会员题）
 	{
 		ans := make([]int, n+1)
 		for i := range ans {

@@ -67,6 +67,7 @@ https://codeforces.com/problemset/problem/954/F
 - [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
 - [LCP 51. 烹饪料理](https://leetcode.cn/problems/UEcfPD/)
 - [2151. 基于陈述统计最多好人数](https://leetcode.cn/problems/maximum-good-people-based-on-statements/) 1980
+- [2959. 关闭分部的可行集合数目](https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/) 2077
 - [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
 - [1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/) 2309
 - [320. 列举单词的全部缩写](https://leetcode.cn/problems/generalized-abbreviation/)（会员题）
@@ -1112,7 +1113,8 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)
 - [1559. 二维网格图中探测环](https://leetcode.cn/problems/detect-cycles-in-2d-grid/) 1838
 - [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
-   - https://codeforces.com/contest/616/problem/C
+   - https://codeforces.com/contest/616/problem/C 1600
+https://codeforces.com/problemset/problem/598/D 1700
 
 #### 网格图 BFS
 - [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/) *多源 BFS
@@ -1128,6 +1130,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [490. 迷宫](https://leetcode.cn/problems/the-maze/)（会员题）
 - [505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)（会员题）
 - [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
+http://codeforces.com/problemset/problem/329/B
 https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 

@@ -32,6 +32,8 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
     https://codeforces.com/problemset/problem/246/E 2400
+置换 LC2179 https://leetcode.cn/problems/count-good-triplets-in-an-array/
+- 同样的置换思想 LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 树状数组的性质能使其支持动态 [1,x] 或 [x,n] 范围上的最值更新查询等操作
     https://codeforces.com/problemset/problem/629/D 2000
