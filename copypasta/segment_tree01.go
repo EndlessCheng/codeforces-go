@@ -204,7 +204,7 @@ func (t seg01) all0(l, r int) bool { return t.onesCount(1, l, r) == 0 }
 func (t seg01) all1(l, r int) bool { return t.onesCount(1, l, r) == r-l+1 }
 func (t seg01) index0() int        { return t.next0(1, 1) }
 func (t seg01) index1() int        { return t.next1(1, 1) }
-func (t seg01) trailingZeros() int { return t.index1() }
+func (t seg01) trailingZeros() int { return t.index1() } // -1
 func (t seg01) len() int {
 	if t[1].state < 0 {
 		return 0
