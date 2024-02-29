@@ -86,8 +86,7 @@ var minIncrements = function(n, cost) {
 
 ```rust [sol-Rust]
 impl Solution {
-    pub fn min_increments(n: i32, cost: Vec<i32>) -> i32 {
-        let mut cost = cost;
+    pub fn min_increments(n: i32, mut cost: Vec<i32>) -> i32 {
         let mut ans = 0;
         for i in (1..=n as usize / 2).rev() { // 从最后一个非叶节点开始算
             ans += (cost[i * 2 - 1] - cost[i * 2]).abs(); // 两个子节点变成一样的
@@ -105,6 +104,6 @@ impl Solution {
 
 ## 思考题
 
-如果可以对节点值**减一**要怎么做？
+如果还可以对节点值**减一**要怎么做？
 
 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
