@@ -246,7 +246,7 @@ func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:le
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m\log (mn))$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{changeIndices}$ 的长度。二分的时候保证 $n\le m$，时间复杂度以 $m$ 为主。注意堆中至多有 $n$ 个元素。
+- 时间复杂度：$\mathcal{O}(m\log m \log n)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{changeIndices}$ 的长度。二分的时候保证 $n\le m$，时间复杂度以 $m$ 为主。注意堆中至多有 $n$ 个元素。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 #### 题单：二分答案
