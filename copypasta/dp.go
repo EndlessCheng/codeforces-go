@@ -1035,7 +1035,7 @@ func _(abs func(int) int) {
 	}
 
 	// O(n^2) 计算 LCP —— 如果你不想用后缀数组的话
-	// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/description/
+	// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
 	lcp := func(s string) {
 		n := len(s)
 		lcp := make([][]int, n+1)
@@ -1619,6 +1619,7 @@ func _(abs func(int) int) {
 	LC546 移除盒子 状态定义 https://leetcode.cn/problems/remove-boxes/ 从 CF 难度来看，这题可以评 2900（力扣难度）
 	- 原题是紫书例题 9-27 https://www.luogu.com.cn/problem/UVA10559 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=17&page=show_problem&problem=1500
 	- https://codeforces.com/problemset/problem/1107/E 2400
+	LC3018 https://leetcode.cn/problems/maximum-number-of-removal-queries-that-can-be-processed-i/ 会员题
 	另见 LPS
 
 	最短括号超序列 UVa1626 紫书例题 9-10 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4501
@@ -2376,7 +2377,7 @@ func _(abs func(int) int) {
 	- [2376. 统计特殊整数](https://leetcode.cn/problems/count-special-integers/)（[题解](https://leetcode.cn/problems/count-special-integers/solution/shu-wei-dp-mo-ban-by-endlesscheng-xtgx/)）2120
 	- [1012. 至少有 1 位重复的数字](https://leetcode.cn/problems/numbers-with-repeated-digits/)（[题解](https://leetcode.cn/problems/numbers-with-repeated-digits/solution/by-endlesscheng-c5vg/)）2230
 	- [357. 统计各位数字都不同的数字个数](https://leetcode.cn/problems/count-numbers-with-unique-digits/)
-	- [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258 
+	- [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
 	    - 有更简单的做法，见 https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/solutions/2603673/er-fen-da-an-shu-wei-dpwei-yun-suan-pyth-tkir/
 	- [2827. 范围中美丽整数的数目](https://leetcode.cn/problems/number-of-beautiful-integers-in-the-range/) 2324
 	    - 整除 https://atcoder.jp/contests/abc317/tasks/abc317_f
@@ -2761,7 +2762,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset?order=BY_RATING_ASC&tags=data+structures%2Cdp
 	入门：数组优化 https://codeforces.com/contest/1842/problem/C
 	             LC2713 https://leetcode.cn/problems/maximum-strictly-increasing-cells-in-a-matrix/
-	变量优化 O(n) LC2746 https://leetcode.cn/problems/decremental-string-concatenation/description/
+	线段树 LC2407 https://leetcode.cn/problems/longest-increasing-subsequence-ii/ 2280
+	变量优化 O(n) LC2746 https://leetcode.cn/problems/decremental-string-concatenation/
 	长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C
 	Lazy 线段树 https://atcoder.jp/contests/dp/tasks/dp_w
 	值域线段树 https://atcoder.jp/contests/abc339/tasks/abc339_e
@@ -3003,9 +3005,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/blog/entry/63257
 
 	LC337 https://leetcode.cn/problems/house-robber-iii/
-	LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
-	LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/
-	LC2925 https://leetcode.cn/problems/maximum-score-after-applying-operations-on-a-tree/
+	LC2925 https://leetcode.cn/problems/maximum-score-after-applying-operations-on-a-tree/ 1940
+	LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/ 2351
 	简单 DFS https://leetcode.cn/problems/find-number-of-coins-to-place-in-tree-nodes/
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
@@ -3014,12 +3015,14 @@ func _(abs func(int) int) {
 	todo 题单 https://ac.nowcoder.com/acm/problem/collection/807
 	     题单 https://ac.nowcoder.com/acm/problem/collection/809
 	https://codeforces.com/problemset/problem/369/C 1600
-	https://codeforces.com/problemset/problem/743/D
+	https://codeforces.com/problemset/problem/743/D 1800
 	https://codeforces.com/problemset/problem/855/C
 	https://codeforces.com/problemset/problem/982/C
 	https://codeforces.com/problemset/problem/1083/A
 	好题 http://codeforces.com/problemset/problem/1249/F
 	好题 https://codeforces.com/problemset/problem/1453/E
+	两端点颜色相同，中间节点颜色不等于两端点 https://codeforces.com/contest/1923/problem/E
+	- 对于每个点，统计往上走能到哪些同色点（中途不能经过同色点）
 	二分答案 https://codeforces.com/problemset/problem/1739/D
 	如何定义状态 https://codeforces.com/problemset/problem/461/B
 	**如何转移 https://codeforces.com/problemset/problem/538/E
@@ -3235,7 +3238,6 @@ func _(abs func(int) int) {
 	// - EXTRA：可以修改树上的点权 https://www.luogu.com.cn/problem/P4719 https://www.luogu.com.cn/problem/P4751
 	// 边独立集 LC2378 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/
 	// 变形 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
-	// 边权独立集 https://leetcode.cn/problems/choose-edges-to-maximize-score-in-a-tree/description/
 	// 方案是否唯一 Tehran06，紫书例题 9-13，UVa 1220 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=247&page=show_problem&problem=3661
 	maxIndependentSetOfTree := func(n int, g [][]int, a []int) int { // 无根树
 		var f func(int, int) (notChosen, chosen int)
@@ -3354,9 +3356,9 @@ func _(abs func(int) int) {
 	// 换根 DP / 二次扫描法
 	// 【图解】一张图秒懂换根 DP！（Python/Java/C++/Go/JS）https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/
 	// https://codeforces.com/blog/entry/20935
-	// todo 另一种模板（用的前后缀+扣掉中间访问的子树 w 的思路） https://ei1333.hateblo.jp/entry/2017/04/10/224413
-	//          https://atcoder.jp/contests/abc222/editorial/2763
-	//          https://qiita.com/keymoon/items/2a52f1b0fb7ef67fb89e
+	// https://ei1333.hateblo.jp/entry/2017/04/10/224413
+	//
+	// todo 题集 https://atcoder-tags.herokuapp.com/tags/Dynamic-Programming/Every-Direction-DP
 	//
 	// LC310 也可以用拓扑排序的思想 https://leetcode.cn/problems/minimum-height-trees/
 	// LC834 https://leetcode.cn/problems/sum-of-distances-in-tree
@@ -3364,29 +3366,38 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/219/D 1700
 	// - LC2858 https://leetcode.cn/problems/minimum-edge-reversals-so-every-node-is-reachable/
 	// - LC2581 https://leetcode.cn/problems/count-number-of-possible-root-nodes/
+	// https://codeforces.com/contest/1822/problem/F 1700
 	// https://codeforces.com/problemset/problem/1092/F 1900
 	// https://codeforces.com/contest/1882/problem/D 1900
 	// https://codeforces.com/problemset/problem/337/D 2000
+	// https://codeforces.com/problemset/problem/791/D 2100
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D 2300
 	// https://codeforces.com/problemset/problem/1626/E 2400
 	// https://codeforces.com/problemset/problem/1794/E 2400
 	// 计数 https://codeforces.com/problemset/problem/1691/F 2500
 	// 虚树 https://codeforces.com/problemset/problem/1320/E 3000
-	// 还可以用直径做 https://atcoder.jp/contests/abc222/tasks/abc222_f
+	// https://atcoder.jp/contests/dp/tasks/dp_v
+	// https://atcoder.jp/contests/abc222/tasks/abc222_f 还可以用直径做 
+	// todo https://atcoder.jp/contests/ttpc2019/tasks/ttpc2019_m
+	//  https://atcoder.jp/contests/abc337/tasks/abc337_g
+	// 对于每个点 v，计算到点 v 距离为 k 的点权和（k 是定值） https://www.luogu.com.cn/problem/P3047
 	// https://www.luogu.com.cn/problem/P3478
 	// https://www.luogu.com.cn/problem/P2986
 	// https://ac.nowcoder.com/acm/contest/59717/F
 
-	// 给一棵无根树
-	// 返回每个点到其余点的距离之和
-	// LC834 https://leetcode.cn/problems/sum-of-distances-in-tree
-	// - 【图解】一张图秒懂换根 DP！（Python/Java/C++/Go/JS）https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/
+	// 换根 DP · 其一（简单情况）
+	// 第一次 DFS 算出以 0 为根的答案 ans0（一般是自底向上）
+	// 第二次 DFS 基于 ans0，算出从节点 x 换到子节点 y 的答案的「变化量」，从而计算出其它节点的答案（一般是自顶向下）
+	//
+	// 每个点到其余点的距离之和 LC834 https://leetcode.cn/problems/sum-of-distances-in-tree
+	// - 【图解】一张图秒懂换根 DP！https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/
 	// - 变形：把距离之和改成每个距离的平方之和？
 	// - 记录子树大小 size[v] 和子树每个节点的深度之和 sum(dep[sub])
+	// https://atcoder.jp/contests/abc220/tasks/abc220_f
 	// 任意两点距离除以 k 的上取整之和 https://codeforces.com/problemset/problem/791/D
-	sumOfDistancesInTree := func(g [][]int) []int {
+	reroot1 := func(g [][]int) []int {
 		ans := make([]int, len(g))
-		size := make([]int, len(g)) //
+		size := make([]int, len(g))
 		var dfs func(int, int, int)
 		dfs = func(x, fa, depth int) {
 			ans[0] += depth // 
@@ -3414,44 +3425,126 @@ func _(abs func(int) int) {
 		return ans
 	}
 
-	// 积蓄程度 https://www.acwing.com/problem/content/289/ http://poj.org/problem?id=3585
-	rerootDP := func(n int) {
-		type edge struct{ to, cap int }
-		g := make([][]edge, n)
-		// read...
-
-		subCap := make([]int, n)
-		var f func(v, fa int) int
-		f = func(v, fa int) (c int) {
+	// 换根 DP · 其二（维护最大次大的情况）
+	// 下面代码以 https://codeforces.com/contest/1822/problem/F 为例（略有改动）
+	// ans[i] 表示以 i 为根时的树高 - 从 0 到 i 的移动花费
+	// g 是无向树
+	reroot2 := func(g [][]struct{ to, wt, moveCost int }) []int {
+		nodes := make([]struct{ w, fi, se int }, len(g))
+		var dfs func(int, int) int
+		dfs = func(v, fa int) int {
 			for _, e := range g[v] {
-				if w := e.to; w != fa {
-					if len(g[w]) == 1 {
-						c += e.cap
-					} else {
-						c += min(e.cap, f(w, v))
-					}
+				w := e.to
+				if w == fa {
+					continue
+				}
+				mx := dfs(w, v) + e.wt
+				if mx > nodes[v].fi {
+					nodes[v].se = nodes[v].fi
+					nodes[v].fi = mx
+					nodes[v].w = w
+				} else if mx > nodes[v].se {
+					nodes[v].se = mx
 				}
 			}
-			subCap[v] = c
-			return
+			return nodes[v].fi
 		}
-		f(0, -1)
+		dfs(0, -1)
 
-		ans := make([]int, n)
-		var reroot func(v, fa, ansV int)
-		reroot = func(v, fa, ansV int) {
-			ans[v] = ansV
+		ans := make([]int, len(g))
+		var reroot func(int, int, int, int)
+		reroot = func(v, fa, mxFa, cost int) {
+			ans[v] = max(mxFa, nodes[v].fi) - cost
 			for _, e := range g[v] {
-				if w, c := e.to, e.cap; w != fa {
-					if sc := subCap[w]; len(g[v]) == 1 {
-						reroot(w, v, sc+c)
-					} else {
-						reroot(w, v, sc+min(c, ansV-min(sc, c)))
-					}
+				w := e.to
+				if w == fa {
+					continue
+				}
+				if w != nodes[v].w {
+					reroot(w, v, max(mxFa, nodes[v].fi)+e.wt, cost+e.moveCost)
+				} else {
+					reroot(w, v, max(mxFa, nodes[v].se)+e.wt, cost+e.moveCost)
 				}
 			}
 		}
-		reroot(0, -1, subCap[0])
+		reroot(0, -1, 0, 0)
+		return ans
+	}
+
+	// 换根 DP · 其三（前后缀分解写法，适用性最广）
+	// 使用时根据题目修改 data unitData moveEdge merge
+	// https://nyaannyaan.github.io/library/tree/rerooting.hpp.html
+	// https://qiita.com/keymoon/items/2a52f1b0fb7ef67fb89e
+	// https://atcoder.jp/contests/dp/tasks/dp_v
+	// https://codeforces.com/contest/1822/problem/F 1700
+	// https://atcoder.jp/contests/abc160/tasks/abc160_f
+	// https://atcoder.jp/contests/abc222/tasks/abc222_f
+	rerootPreSuf := func(g [][]int, root int) {
+		// type data struct{ x, y int }
+		type data int
+		const unit data = 0
+		// 返回 d 在通过 v-w 边之后的结果    *也可以传入边权
+		moveEdge := func(d data, v, w int) data {
+			return d + 1
+		}
+		// 返回 p 和 q 合并后的结果（p 和 q 已经包含边的信息）
+		merge := func(p, q data) data {
+			return max(p, q) // p + q
+		}
+
+		// 以 root 为根时的子树信息
+		subData := make([]data, len(g))
+		var dfs func(int, int)
+		dfs = func(v, fa int) {
+			res := unit
+			for _, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				dfs(w, v)
+				res = merge(res, moveEdge(subData[w], v, w)) // v-w 边
+			}
+			subData[v] = res
+		}
+		dfs(root, -1)
+
+		ansAtRoot := make([]data, len(g))
+		var reroot func(int, int, data)
+		reroot = func(v, fa int, movedFaData data) {
+			// 必要时特判 fa < 0 的情况
+			ansAtRoot[v] = merge(movedFaData, subData[v])
+
+			// suf 是 g[v] 的子树后缀汇总信息（已经包含 v-g[v][i] 边）
+			ngv := len(g[v])
+			suf := make([]data, ngv+1)
+			suf[ngv] = unit
+			for i := ngv - 1; i >= 0; i-- {
+				w := g[v][i]
+				if w != fa {
+					suf[i] = merge(suf[i+1], moveEdge(subData[w], v, w)) // v-w 边
+				} else {
+					suf[i] = suf[i+1]
+				}
+			}
+
+			// pre 是 g[v] 子树前缀汇总信息（已经包含 v-g[v][i] 边）
+			pre := unit
+			for i, w := range g[v] {
+				if w == fa {
+					continue
+				}
+				// mergedData 是除了 subData[w] 以外的子树汇总信息（已经包含 v-g[v][i] 边）
+				mergedData := merge(movedFaData, merge(pre, suf[i+1]))
+				reroot(w, v, moveEdge(mergedData, w, v))     // w-v 边（以 w 为根）
+				pre = merge(pre, moveEdge(subData[w], v, w)) // v-w 边
+			}
+		}
+		reroot(root, -1, unit)
+
+		for _, res := range ansAtRoot {
+			_ = res
+			// ...
+		}
 	}
 
 	// 树上所有路径的位运算与(&)的和
@@ -3618,7 +3711,7 @@ func _(abs func(int) int) {
 
 		diameter, countDiameter, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
-		sumOfDistancesInTree, rerootDP,
+		reroot1, reroot2, rerootPreSuf,
 		andPathSum, xorPathSum, xorPathXorSum,
 	}
 }
