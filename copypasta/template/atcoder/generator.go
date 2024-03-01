@@ -272,6 +272,10 @@ func main() { run(os.Stdin, os.Stdout) }
 		// 比赛时，在 IDE 中打开 A 题
 		defer open.Run(absPath(mainFilePath))
 	}
+	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
+		open.Run(absPath(mainFilePath))
+		return fmt.Errorf("文件已存在！")
+	}
 	if err := os.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
 	}
