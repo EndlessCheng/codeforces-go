@@ -15,7 +15,8 @@ func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [
 	var delta int
 	dis := make([][2]int, n)
 	for i := range dis {
-		dis[i] = [2]int{math.MaxInt, math.MaxInt}
+		dis[i][0] = math.MaxInt / 2
+		dis[i][1] = math.MaxInt / 2
 	}
 	dis[source] = [2]int{}
 	dijkstra := func(k int) {
@@ -70,4 +71,9 @@ func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [
 	return edges
 }
 
-func min(a, b int) int { if b < a { return b }; return a }
+func min(a, b int) int {
+	if b < a {
+		return b
+	}
+	return a
+}

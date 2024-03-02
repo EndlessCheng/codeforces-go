@@ -39,7 +39,7 @@
 
 1. 从 $\textit{source}$ 到 $x$ 的最短路，这是第二遍 Dijkstra 算出来的，即 $d_{x,1}$。
 2. 从 $x$ 到 $y$，即 $w$。
-3. 从 $y$ 到 $\textit{destination}$ 的最短路，由于后面的边还没有修改，这个最短路是第一遍 Dijkstra 算出来的，即 $d_{\textit{destination},0} - d_{y,0}$。注意这个式子仅当 $y$ 在从 $\textit{source}$ 到 $\textit{destination}$ 的最短路上才成立。不过，如果 $y$ 不在最短路上，修改 $x-y$ 并不会对最短路产生影响，所以代码中并没有判断 $y$ 是否在最短路上。
+3. 从 $y$ 到 $\textit{destination}$ 的最短路，由于后面的边还没有修改，这个最短路是第一遍 Dijkstra 算出来的，即 $d_{\textit{destination},0} - d_{y,0}$。
 
 这三部分之和需要等于 $\textit{target}$，所以有
 
@@ -57,7 +57,7 @@ $$
 
 根据「什么时候无解」中的分析，如果第二遍 Dijkstra 跑完后，从起点到终点的最短路仍然小于 $\textit{target}$，那么就说明无法修改，返回空数组。
 
-否则，答案就是我们在第二遍 Dijkstra 中作出的修改。注意第二遍 Dijkstra 跑完后可能还有些边是 $-1$（因为在 $w=1$ 的时候没有修改，或者有些边不影响最短路），把这些边都改成 $1$ 就行。
+否则，答案就是我们在第二遍 Dijkstra 中做出的修改。注意第二遍 Dijkstra 跑完后可能还有些边是 $-1$（因为在 $w=1$ 的时候没有修改，或者有些边不影响最短路），把这些边都改成 $1$ 就行。
 
 代码实现时，为了修改边权，需要在邻接表中额外记录边的编号。
 
@@ -127,7 +127,7 @@ class Solution {
         var dis = new int[n][2];
         for (int i = 0; i < n; i++)
             if (i != source)
-                dis[i][0] = dis[i][1] = Integer.MAX_VALUE;
+                dis[i][0] = dis[i][1] = Integer.MAX_VALUE / 2;
 
         dijkstra(g, edges, destination, dis, 0, 0);
         int delta = target - dis[destination][0];
@@ -138,7 +138,7 @@ class Solution {
         if (dis[destination][1] < target) // 最短路无法再变大，无法达到 target
             return new int[][]{};
 
-        for (var e : edges)
+        for (int[] e : edges)
             if (e[2] == -1) // 剩余没修改的边全部改成 1
                 e[2] = 1;
         return edges;
@@ -148,7 +148,7 @@ class Solution {
     // 这里 k 表示第一次/第二次
     private void dijkstra(List<int[]> g[], int[][] edges, int destination, int[][] dis, int delta, int k) {
         int n = g.length;
-        var vis = new boolean[n];
+        boolean[] vis = new boolean[n];
         for (; ; ) {
             // 找到当前最短路，去更新它的邻居的最短路
             // 根据数学归纳法，dis[x][k] 一定是最短路长度
@@ -159,7 +159,7 @@ class Solution {
             if (x == destination) // 起点 source 到终点 destination 的最短路已确定
                 return;
             vis[x] = true; // 标记，在后续的循环中无需反复更新 x 到其余点的最短路长度
-            for (var e : g[x]) {
+            for (int[] e : g[x]) {
                 int y = e[0], eid = e[1];
                 int wt = edges[eid][2];
                 if (wt == -1)
@@ -250,7 +250,8 @@ func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [
 	var delta int
 	dis := make([][2]int, n)
 	for i := range dis {
-		dis[i] = [2]int{math.MaxInt, math.MaxInt}
+		dis[i][0] = math.MaxInt / 2
+		dis[i][1] = math.MaxInt / 2
 	}
 	dis[source] = [2]int{}
 	dijkstra := func(k int) { // 这里 k 表示第一次/第二次
@@ -305,8 +306,6 @@ func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [
 	}
 	return edges
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
 ```
 
 #### 复杂度分析
