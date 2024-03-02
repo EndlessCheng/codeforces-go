@@ -15,8 +15,8 @@ func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [
 	var delta int
 	dis := make([][2]int, n)
 	for i := range dis {
-		dis[i][0] = math.MaxInt / 2
-		dis[i][1] = math.MaxInt / 2
+		dis[i][0] = math.MaxInt32 / 2
+		dis[i][1] = math.MaxInt32 / 2
 	}
 	dis[source] = [2]int{}
 	dijkstra := func(k int) {
