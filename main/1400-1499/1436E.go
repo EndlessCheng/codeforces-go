@@ -47,29 +47,22 @@ func (t seg36) preMin(o, r int) int {
 
 func cf1436E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n int
+	var n, v int
 	Fscan(in, &n)
-	a := make([]int, n+1)
-	left := make([]int, n+1)
-	last := make([]int, n+2)
-	for i := 1; i <= n; i++ {
-		Fscan(in, &a[i])
-		left[i] = last[a[i]]
-		last[a[i]] = i
-	}
-
 	has := make([]bool, n+3)
+	last := make([]int, n+2)
 	t := make(seg36, 2<<bits.Len(uint(n-1)))
 	t.build(1, 1, n)
 	for i := 1; i <= n; i++ {
-		v := a[i]
+		Fscan(in, &v)
 		if v == 1 {
 			has[2] = true
 		} else {
 			has[1] = true
-			if t.preMin(1, v-1) > left[i] {
+			if t.preMin(1, v-1) > last[v] {
 				has[v] = true
 			}
+			last[v] = i
 		}
 		t.update(1, v, i)
 	}
