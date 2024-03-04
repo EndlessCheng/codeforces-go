@@ -13,7 +13,7 @@ import (
 
 入门视频：https://www.bilibili.com/video/BV1Xj411K7oF/
 
-① 前缀/后缀之间的转移，例如从 dp[i-1] 转移到 dp[i]，或者从 dp[j] 转移到 dp[i]
+① 前缀/后缀之间的转移，例如从 f[i-1] 转移到 f[i]，或者从 f[j] 转移到 f[i]
 LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - 变形：有障碍物 https://atcoder.jp/contests/abc129/tasks/abc129_c
 - 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
@@ -38,12 +38,12 @@ LC2297 https://leetcode.cn/problems/jump-game-viii/
 LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
 另见「最长递增子序列」
 
-② 双序列问题，一般定义 dp[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
+② 双序列问题，一般定义 f[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
 见下面的「最长公共子序列」，包含大量扩展题目
 
 ③ 划分型 DP：将序列分成（恰好/至多）k 个连续区间，求解这些区间的某个最优性质
-一般定义 dp[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
-此时可以枚举最后一个区间的左端点 L，从 dp[i-1][L-1] 转移到 dp[i][j]，转移时考虑 a[L:j+1] 对最优解的影响
+一般定义 f[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
+此时可以枚举最后一个区间的左端点 L，从 f[i-1][L-1] 转移到 f[i][j]，转移时考虑 a[L:j+1] 对最优解的影响
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
 - [813. 最大平均值和的分组](https://leetcode.cn/problems/largest-sum-of-averages/) 1937
 - [1278. 分割回文串 III](https://leetcode.cn/problems/palindrome-partitioning-iii/) 1979
@@ -277,9 +277,9 @@ https://codeforces.com/contest/414/problem/B
 多重组合
 - 见「多重背包 - 求方案数 - 同余前缀和优化」
 多重排列
-- dp[i][j] 表示前 i 类数字组成长为 j 的排列个数
-- dp[i][j] = ∑dp[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
-- 边界 dp[0][0] = 1
+- f[i][j] 表示前 i 类数字组成长为 j 的排列个数
+- f[i][j] = ∑f[i-1][k]*C(j,k), 0<=k<=min(j,cnt[i])
+- 边界 f[0][0] = 1
 todo https://atcoder.jp/contests/abc234/tasks/abc234_f
 带约束的计数 DP https://codeforces.com/problemset/problem/1767/C
 https://codeforces.com/problemset/problem/1794/D
@@ -322,7 +322,7 @@ https://www.bilibili.com/video/av89052674 动态规划 · 二 - 坐标、双序�
 2.3 节
 3176 https://www.luogu.com.cn/problem/P1216 数字三角形
 2229 https://www.luogu.com.cn/problem/P6065 将 n 分拆为若干个 2 的次幂的和的方法数 https://oeis.org/A018819
-2385 https://www.luogu.com.cn/problem/P2690 dp[i分钟][j移动次数] = max(dp[i-1][j], dp[i-1][j-1]) + 当前分钟是否有苹果落在 j 次移动后的位置   最后答案为 max{dp[n-1]}
+2385 https://www.luogu.com.cn/problem/P2690 f[i分钟][j移动次数] = max(f[i-1][j], f[i-1][j-1]) + 当前分钟是否有苹果落在 j 次移动后的位置   最后答案为 max{f[n-1]}
 3616 https://www.luogu.com.cn/problem/P2889 DAG 最长路
 3280 https://www.luogu.com.cn/problem/P2890 增删取 min，跑区间 DP
 1742 http://acm.hdu.edu.cn/showproblem.php?pid=2844 多重背包
@@ -368,29 +368,29 @@ https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从
 */
 func _(abs func(int) int) {
 	// 涉及到前缀和/子数组和的问题
-	// 定义 dp[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
+	// 定义 f[i] 表示前缀 a[:i] 中子数组和为 targetSum 的最短子数组长度
 	// 下面的代码来自 LC1477 https://leetcode.cn/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/
 	prefixSumDP := func(a []int, targetSum int) int {
 		n := len(a)
 		const inf int = 1e9
 
 		ans := inf
-		dp := make([]int, n+1)
-		for _i := range dp {
-			dp[_i] = inf
+		f := make([]int, n+1)
+		for _i := range f {
+			f[_i] = inf
 		}
 		preSumPos := map[int]int{0: -1}
 		sum := 0
 		for i, v := range a {
-			dp[i+1] = dp[i]
+			f[i+1] = f[i]
 			sum += v
 			if p, ok := preSumPos[sum-targetSum]; ok {
 				// sum_[p+1,i] == targetSum
 				l := i - p
-				if dp[p+1] < inf {
-					ans = min(ans, dp[p+1]+l)
+				if f[p+1] < inf {
+					ans = min(ans, f[p+1]+l)
 				}
-				dp[i+1] = min(dp[i+1], l)
+				f[i+1] = min(f[i+1], l)
 			}
 			preSumPos[sum] = i
 		}
@@ -410,16 +410,16 @@ func _(abs func(int) int) {
 	mapDP := func(n int) {
 		{
 			// 一维（多维见下）
-			dp := map[int]int{}
+			memo := map[int]int{}
 			var f func(int) int
 			f = func(x int) (res int) {
 				//if x == 0 {
 				//	return
 				//}
-				if v, ok := dp[x]; ok {
+				if v, ok := memo[x]; ok {
 					return v
 				}
-				defer func() { dp[x] = res }()
+				defer func() { memo[x] = res }()
 
 				return
 			}
@@ -429,17 +429,17 @@ func _(abs func(int) int) {
 		{
 			// 多维
 			type pair struct{ x, y int }
-			dp := map[pair]int{}
+			memo := map[pair]int{}
 			var f func(int, int) int
 			f = func(x, y int) (res int) {
 				//if x == n {
 				//  return
 				//}
 				p := pair{x, y}
-				if v, ok := dp[p]; ok {
+				if v, ok := memo[p]; ok {
 					return v
 				}
-				defer func() { dp[p] = res }()
+				defer func() { memo[p] = res }()
 
 				return
 			}
@@ -450,7 +450,7 @@ func _(abs func(int) int) {
 	// 最大子段和 LC53 https://leetcode.cn/problems/maximum-subarray/ https://www.luogu.com.cn/problem/P1115
 	//          LC2606 https://leetcode.cn/problems/find-the-substring-with-maximum-cost/
 	// 有三种思路
-	// 1. 定义状态 dp[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 dp[i]=max(dp[i−1],0)+a[i]，答案为 max(dp)
+	// 1. 定义状态 f[i] 表示以 a[i] 结尾的最大子段和，则有状态转移方程 f[i]=max(f[i−1],0)+a[i]，答案为 max(f)
 	// 2. 遍历 a 的同时维护前缀和的最小值，则遍历到 a[i] 时，当前最大子段和为 sum[i]-min(sum[j]), j<i
 	// 3. 合并：线段树/倍增 https://www.luogu.com.cn/problem/P4513
 	//                   https://codeforces.com/contest/1843/problem/F2
@@ -578,11 +578,11 @@ func _(abs func(int) int) {
 	// LC122 https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/
 	// 扩展：O(1) 回答交换其中两个元素后的最大子序列交替和 https://codeforces.com/problemset/problem/1420/C2
 	maxAlternatingSumDP := func(a []int) int {
-		dp := [2]int{0, -1e9}
+		f := [2]int{0, -1e9}
 		for _, v := range a {
-			dp = [2]int{max(dp[0], dp[1]-v), max(dp[1], dp[0]+v)}
+			f = [2]int{max(f[0], f[1]-v), max(f[1], f[0]+v)}
 		}
-		return dp[1]
+		return f[1]
 	}
 
 	maxAlternatingSumGreedy := func(a []int) (ans int) {
@@ -629,6 +629,7 @@ func _(abs func(int) int) {
 	}
 
 	// 最长公共子序列 (LCS)
+	// 视频讲解：https://www.bilibili.com/video/BV1TM4y1o7ug/
 	// 有向无环图：s1[i] == s2[j] (i-1,j-1) -> (i,j) $ 1
 	//           s1[i] != s2[j] (i-1,j) -> (i,j) $ 0
 	//                          (i,j-1) -> (i,j) $ 0
@@ -659,7 +660,7 @@ func _(abs func(int) int) {
 	//【相同子序列个数】https://atcoder.jp/contests/abc130/tasks/abc130_e
 	// 20多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	lcs := func(s, t []byte) int {
-		// dp[i][j] = LCS(s[:i], t[:j])
+		// f[i][j] = LCS(s[:i], t[:j])
 		n, m := len(s), len(t)
 		f := make([][]int, n+1)
 		for i := range f {
@@ -668,7 +669,6 @@ func _(abs func(int) int) {
 		for i, v := range s {
 			for j, w := range t {
 				if v == w {
-					// ignore values from dp[i][j+1] and dp[i+1][j]
 					f[i+1][j+1] = f[i][j] + 1
 				} else {
 					f[i+1][j+1] = max(f[i][j+1], f[i+1][j])
@@ -739,7 +739,7 @@ func _(abs func(int) int) {
 	// 最长上升子序列 (LIS)
 	// 视频讲解：https://www.bilibili.com/video/BV1ub411Q7sB/
 	// 这种写法适用于一些定义比较复杂的变形题
-	// O(n^2) - 定义 dp[i] 为以 a[i] 为末尾的 LIS 的长度
+	// O(n^2) - 定义 f[i] 为以 a[i] 为末尾的 LIS 的长度
 	//          可以把此问题想象成一个「跳跃游戏」，任选一个初始位置向右跳跃，每次只能跳到比当前位置更高的位置，问最多能跳多少次（最后答案加一）
 	//          这样能更容易地看出转移的顺序，然后变成一个 DAG 上求最长路的问题
 	// 转换 http://acm.hdu.edu.cn/showproblem.php?pid=1950
@@ -881,57 +881,57 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/10/D
 	lcis := func(a, b []int) int {
 		n, m := len(a), len(b)
-		dp := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, m)
+		f := make([][]int, n+1)
+		for i := range f {
+			f[i] = make([]int, m)
 		}
 		for i, v := range a {
 			mx := 0
 			for j, w := range b {
 				if v == w {
-					dp[i+1][j] = mx + 1
+					f[i+1][j] = mx + 1
 				} else {
-					dp[i+1][j] = dp[i][j]
+					f[i+1][j] = f[i][j]
 				}
 				if w < v {
-					mx = max(mx, dp[i][j])
+					mx = max(mx, f[i][j])
 				}
 			}
 		}
-		return slices.Max(dp[n])
+		return slices.Max(f[n])
 	}
 
 	// LCIS 打印方案
 	lcisPath := func(a, b []int) (ans int, lcis []int) {
 		n, m := len(a), len(b)
-		dp := make([][]int, n+1)
+		f := make([][]int, n+1)
 		fa := make([][]int, n+1)
-		for i := range dp {
-			dp[i] = make([]int, m)
+		for i := range f {
+			f[i] = make([]int, m)
 			fa[i] = make([]int, m)
 		}
 		for i, v := range a {
 			mx, k := 0, -1
 			for j, w := range b {
 				if v == w {
-					dp[i+1][j] = mx + 1
+					f[i+1][j] = mx + 1
 					fa[i+1][j] = k // k < j
 				} else {
-					dp[i+1][j] = dp[i][j]
+					f[i+1][j] = f[i][j]
 					fa[i+1][j] = j
 				}
-				if w < v && dp[i][j] > mx {
-					mx, k = dp[i][j], j
+				if w < v && f[i][j] > mx {
+					mx, k = f[i][j], j
 				}
 			}
 		}
 		ansJ := 0
-		for j, dv := range dp[n] {
-			if dv > dp[n][ansJ] {
+		for j, fv := range f[n] {
+			if fv > f[n][ansJ] {
 				ansJ = j
 			}
 		}
-		ans = dp[n][ansJ]
+		ans = f[n][ansJ]
 		var getLCIS func(i, j int)
 		getLCIS = func(i, j int) {
 			if i == 0 || j < 0 {
@@ -948,8 +948,8 @@ func _(abs func(int) int) {
 
 	// 长度为 m 的 LIS 个数
 	// 赤壁之战 https://www.acwing.com/problem/content/299/
-	// 定义 dp[i][j] 表示 a[:j+1] 的长度为 i 且以 a[j] 结尾的 LIS
-	// 则有 dp[i][j] = ∑dp[i-1][k]  (k<j && a[k]<a[j])
+	// 定义 f[i][j] 表示 a[:j+1] 的长度为 i 且以 a[j] 结尾的 LIS
+	// 则有 f[i][j] = ∑f[i-1][k]  (k<j && a[k]<a[j])
 	// 注意到当 j 增加 1 时，只多了 k=j 这一个新决策，这样可以用树状数组来维护
 	// 复杂度 O(mnlogn)
 	countLIS := func(a []int, m int) int {
@@ -961,10 +961,9 @@ func _(abs func(int) int) {
 		}
 
 		n := len(a)
-		const mod int = 1e9 + 7
 		tree := make([]int, n+2)
 		add := func(i, val int) {
-			for ; i < n+2; i += i & -i {
+			for ; i < len(tree); i += i & -i {
 				tree[i] = (tree[i] + val) % mod
 			}
 		}
@@ -975,9 +974,9 @@ func _(abs func(int) int) {
 			return
 		}
 
-		dp := make([][]int, m+1)
-		for i := range dp {
-			dp[i] = make([]int, n)
+		f := make([][]int, m+1)
+		for i := range f {
+			f[i] = make([]int, n)
 		}
 		for i := 1; i <= m; i++ {
 			tree = make([]int, n+2)
@@ -985,12 +984,12 @@ func _(abs func(int) int) {
 				add(1, 1)
 			}
 			for j, v := range a {
-				dp[i][j] = sum(v - 1)
-				add(v, dp[i-1][j])
+				f[i][j] = sum(v - 1)
+				add(v, f[i-1][j])
 			}
 		}
 		ans := 0
-		for _, v := range dp[m] {
+		for _, v := range f[m] {
 			ans = (ans + v) % mod
 		}
 		return ans
@@ -1002,7 +1001,6 @@ func _(abs func(int) int) {
 	// 倒序遍历即可 LC1987 https://leetcode.cn/problems/number-of-unique-good-subsequences/
 	// 需要一点构造能力 https://codeforces.com/problemset/problem/645/E
 	distinctSubsequence := func(s string) int {
-		const mod int = 1e9 + 7
 		f := [26]int{}
 		sumF := 0
 		for _, b := range s {
@@ -1031,19 +1029,18 @@ func _(abs func(int) int) {
 
 	// 滚动数组写法
 	distinctSubsequence = func(s string) int {
-		const mod int = 1e9 + 7
 		last := make([]int, 26)
-		dp := 1
+		f := 1
 		for _, v := range s {
 			v -= 'a'
-			res := dp - last[v]
+			res := f - last[v]
 			if res < 0 {
 				res += mod
 			}
-			dp = (dp + res) % mod
+			f = (f + res) % mod
 			last[v] = (last[v] + res) % mod
 		}
-		return (dp + mod - 1) % mod // 去掉空序列
+		return (f + mod - 1) % mod // 去掉空序列
 	}
 
 	// O(n^2) 计算 LCP —— 如果你不想用后缀数组的话
@@ -1165,7 +1162,7 @@ func _(abs func(int) int) {
 	https://arxiv.org/pdf/2308.11307.pdf
 	http://acm.hdu.edu.cn/showproblem.php?pid=6804
 
-	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 dp[i] 是否为正 LC1049 https://leetcode.cn/problems/last-stone-weight-ii/
+	NOTE: 若求能否凑成 1,2,3,...,M，只需判断 f[i] 是否为正 LC1049 https://leetcode.cn/problems/last-stone-weight-ii/
 	套题 https://www.acwing.com/problem/
 	混合背包 https://www.luogu.com.cn/problem/P1833
 	*/
@@ -1200,7 +1197,7 @@ func _(abs func(int) int) {
 	// 转移对象是下标 https://codeforces.com/problemset/problem/981/E 2200
 	// 排序+转换 https://codeforces.com/problemset/problem/1203/F2 2300
 	// 转移对象是下标 https://codeforces.com/edu/course/2/lesson/9/3/practice/contest/307094/problem/I
-	// - dp[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值	// 变形，需要多加一个维度 https://atcoder.jp/contests/abc275/tasks/abc275_f
+	// - f[i][j] 表示前 i 个数，凑成 j 的所有方案中，最小下标的最大值	// 变形，需要多加一个维度 https://atcoder.jp/contests/abc275/tasks/abc275_f
 	// 正难则反 https://atcoder.jp/contests/tenka1-2019/tasks/tenka1_2019_d
 	// 贡献 https://atcoder.jp/contests/abc159/tasks/abc159_f
 	// NOIP06·提高 金明的预算方案（也可以用树上背包做）https://www.luogu.com.cn/problem/P1064
@@ -1238,7 +1235,7 @@ func _(abs func(int) int) {
 			}
 		}
 		for i := maxW; i >= 0; i-- {
-			if f[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 dp[i]
+			if f[i] >= 0 { // 能恰好装满 i，此时背包物品价值和的最大值是 f[i]
 				// ...
 			}
 		}
@@ -1373,7 +1370,7 @@ func _(abs func(int) int) {
 	// 至少 https://www.luogu.com.cn/problem/P2918
 	// 恰好装满 LC322 https://leetcode.cn/problems/coin-change/
 	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/
-	// 【脑洞】求极限：lim_{maxW->∞} dp[maxW]/maxW
+	// 【脑洞】求极限：lim_{maxW->∞} f[maxW]/maxW
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		f := make([]int, maxW+1) // fill
 		//f[0] = 0
@@ -1494,7 +1491,6 @@ func _(abs func(int) int) {
 	// LC1155 https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/
 	// LCR185 https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
 	boundedKnapsackWays := func(a []int) []int {
-		const mod = 1_000_000_007
 		total := 0
 		cnt := map[int]int{}
 		for _, x := range a {
@@ -1526,20 +1522,21 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/148/E
 	// todo 进一步优化 https://codeforces.com/problemset/problem/1442/D
 	// 方案数（可以用前缀和优化）https://www.luogu.com.cn/problem/P1077
-	type item struct{ v, w int }
-	groupKnapsack := func(groups [][]item, maxW int) int {
-		dp := make([]int, maxW+1)
+	groupKnapsack := func(groups [][]struct{ value, weight int }, maxW int) int {
+		f := make([]int, maxW+1)
 		for _, g := range groups {
 			// 这里 j 的初始值可以优化成前 i 个组的每组最大重量之和（但不能超过 maxW）
 			for j := maxW; j >= 0; j-- {
 				for _, it := range g {
-					if v, w := it.v, it.w; w <= j {
-						dp[j] = max(dp[j], dp[j-w]+v) // 如果 it.w 可能为 0 则需要用 dp[2][] 来滚动（或者保证每组至多一个 0 且 0 在该组最前面）
+					v, w := it.value, it.weight
+					if w <= j {
+						// ！如果 it.w 可能为 0 则需要用 f[2][] 来滚动（或者保证每组至多一个 0 且 0 在该组最前面）
+						f[j] = max(f[j], f[j-w]+v)
 					}
 				}
 			}
 		}
-		return dp[maxW]
+		return f[maxW]
 	}
 
 	// todo 撤销计数
@@ -1552,21 +1549,21 @@ func _(abs func(int) int) {
 	// 与二分图染色结合 https://codeforces.com/problemset/problem/1354/E
 	// 转换 https://codeforces.com/problemset/problem/1637/D
 	groupKnapsackFill := func(groups [][]int, maxW int) []bool {
-		dp := make([]bool, maxW+1) // dp[i][j] 表示能否从前 i 组物品中选出重量恰好为 j 的，且每组都恰好选一个物品
-		dp[0] = true
+		f := make([]bool, maxW+1) // f[i][j] 表示能否从前 i 组物品中选出重量恰好为 j 的，且每组都恰好选一个物品
+		f[0] = true
 		for _, g := range groups {
 		next:
 			for j := maxW; j >= 0; j-- { // 这里 j 的初始值可以优化至前 i 组的最大元素值之和
 				for _, w := range g {
-					if w <= j && dp[j-w] {
-						dp[j] = true
+					if w <= j && f[j-w] {
+						f[j] = true
 						continue next
 					}
 				}
-				dp[j] = false // 由于我们是滚动数组的写法，dp[i][j] 无法满足时要标记成 false
+				f[j] = false // 由于我们是滚动数组的写法，f[i][j] 无法满足时要标记成 false
 			}
 		}
-		return dp // dp[j] 表示从每组恰好选一个，能否凑成重量 j
+		return f // f[j] 表示从每组恰好选一个，能否凑成重量 j
 	}
 
 	// 树上背包/树形背包/依赖背包
@@ -1586,27 +1583,27 @@ func _(abs func(int) int) {
 	//   加强版 https://www.luogu.com.cn/problem/U53878
 	//   https://www.luogu.com.cn/problem/P3177
 	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
-	treeKnapsack := func(g [][]int, items []item, root, maxW int) int {
-		var f func(int) []int
-		f = func(v int) []int {
+	treeKnapsack := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
+		var dfs func(int) []int
+		dfs = func(v int) []int {
 			it := items[v]
-			dp := make([]int, maxW+1)
-			for i := it.w; i <= maxW; i++ {
-				dp[i] = it.v // 根节点必须选
+			f := make([]int, maxW+1)
+			for i := it.weight; i <= maxW; i++ {
+				f[i] = it.value // 根节点必须选
 			}
 			for _, to := range g[v] {
-				dt := f(to)
-				for j := maxW; j >= it.w; j-- {
+				ft := dfs(to)
+				for j := maxW; j >= it.weight; j-- {
 					// 类似分组背包，枚举分给子树 to 的容量 w，对应的子树的最大价值为 dt[w]
 					// w 不可超过 j-it.w，否则无法选择根节点
-					for w := 0; w <= j-it.w; w++ {
-						dp[j] = max(dp[j], dp[j-w]+dt[w])
+					for w := 0; w <= j-it.weight; w++ {
+						f[j] = max(f[j], f[j-w]+ft[w])
 					}
 				}
 			}
-			return dp
+			return f
 		}
-		return f(root)[maxW]
+		return dfs(root)[maxW]
 	}
 
 	/* 区间 DP
@@ -1614,7 +1611,7 @@ func _(abs func(int) int) {
 	套路 https://www.luogu.com.cn/blog/BreakPlus/ou-jian-dp-zong-jie-ti-xie
 
 	求解关于某个序列的最优性质，要求大区间的最优解可以依赖于小区间的最优解
-	一般定义 dp[i][j] 表示 a[i:j] 的最优解
+	一般定义 f[i][j] 表示子数组 a[i] 到 a[j] 的最优解
 	此时可以枚举区间大小和区间左端点，从小区间转移到大区间
 	LC375 https://leetcode.cn/problems/guess-number-higher-or-lower-ii/
 	LC312 戳气球 https://leetcode.cn/problems/burst-balloons/
@@ -1684,32 +1681,32 @@ func _(abs func(int) int) {
 	}
 
 	// 统计区间内回文串个数
-	// 返回一个二维数组 dp, dp[i][j] 表示 [i,j] 内的回文串的个数
+	// 返回一个二维数组 f, f[i][j] 表示 s[i:j+1] 内的回文串的个数
 	// https://codeforces.com/problemset/problem/245/H
 	countPalindromes := func(s string) [][]int {
 		n := len(s)
-		dp := make([][]int, n)
-		for i := range dp {
-			dp[i] = make([]int, n)
-			dp[i][i] = 1
+		f := make([][]int, n)
+		for i := range f {
+			f[i] = make([]int, n)
+			f[i][i] = 1
 			if i+1 < n && s[i] == s[i+1] {
-				dp[i][i+1] = 1
+				f[i][i+1] = 1
 			}
 		}
 		for i := n - 3; i >= 0; i-- {
 			for j := i + 2; j < n; j++ {
 				if s[i] == s[j] {
-					dp[i][j] = dp[i+1][j-1]
+					f[i][j] = f[i+1][j-1]
 				}
 			}
 		}
-		// 到这里为止，dp[i][j] = 1 表示 s[i:j+1] 是回文串
+		// 到这里为止，f[i][j] = 1 表示 s[i:j+1] 是回文串
 		for i := n - 2; i >= 0; i-- {
 			for j := i + 1; j < n; j++ {
-				dp[i][j] += dp[i][j-1] + dp[i+1][j] - dp[i+1][j-1] // 容斥
+				f[i][j] += f[i][j-1] + f[i+1][j] - f[i+1][j-1] // 容斥
 			}
 		}
-		return dp
+		return f
 	}
 
 	// 石子合并
@@ -1723,24 +1720,24 @@ func _(abs func(int) int) {
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
 		}
-		dp := make([][]int, n)
-		for i := range dp {
-			dp[i] = make([]int, n)
-			for j := range dp[i] {
-				dp[i][j] = 1e9
+		f := make([][]int, n)
+		for i := range f {
+			f[i] = make([]int, n)
+			for j := range f[i] {
+				f[i][j] = 1e9
 			}
-			dp[i][i] = 0
+			f[i][i] = 0
 		}
 		for sz := 2; sz <= n; sz++ {
 			for l := 0; l+sz <= n; l++ {
 				r := l + sz - 1
 				for i := l; i < r; i++ {
-					dp[l][r] = min(dp[l][r], dp[l][i]+dp[i+1][r])
+					f[l][r] = min(f[l][r], f[l][i]+f[i+1][r])
 				}
-				dp[l][r] += sum[r+1] - sum[l]
+				f[l][r] += sum[r+1] - sum[l]
 			}
 		}
-		return dp[0][n-1]
+		return f[0][n-1]
 	}
 
 	/* 环形 DP
@@ -1896,7 +1893,6 @@ func _(abs func(int) int) {
 	// todo 状态设计 https://codeforces.com/problemset/problem/744/C 2400
 	// 状态设计 https://codeforces.com/problemset/problem/1550/E 2500
 	permDP := func(a []int, check func(int, int) bool) int {
-		const mod = 1_000_000_007
 		n := len(a)
 		f := make([]int, 1<<n)
 		// 求最小值的题目
@@ -1932,7 +1928,6 @@ func _(abs func(int) int) {
 	// LC2741 https://leetcode.cn/problems/special-permutations/ 2021
 	// LC1681 https://leetcode.cn/problems/minimum-incompatibility/ 2390
 	permDP2 := func(a []int, check func(int, int) bool) int {
-		const mod = 1_000_000_007
 		n := len(a)
 		f := make([][]int, 1<<n)
 		for i := range f {
@@ -1969,8 +1964,8 @@ func _(abs func(int) int) {
 	// 旅行商问题  travelling salesman problem  TSP
 	// 图论中的一个等价形式是：给定一个加权完全图（顶点表示城市，边表示道路，权重是道路的距离），求一权值和最小的哈密尔顿回路。
 	// 返回一个 ans 数组，ans[i] 表示从 st 出发，访问完所有位置且最后停在 i 的最短路径（注意可能要特判 i==st 的情况）
-	// 做法：定义 dp[s][i] 表示已访问的集合为 s，最后一个访问的位置是 i 时的最小花费
-	//      则有 dp[s|1<<j][j] = min(dp[s|1<<j][j], dp[s][i]+dist[i][j])
+	// 做法：定义 f[s][i] 表示已访问的集合为 s，最后一个访问的位置是 i 时的最小花费
+	//      则有 f[s|1<<j][j] = min(f[s|1<<j][j], f[s][i]+dist[i][j])
 	//      枚举 i 和 j 时可以用 TrailingZeros 来直接枚举每个 1 和 0 的位置
 	// https://en.wikipedia.org/wiki/Travelling_salesman_problem
 	// https://en.wikipedia.org/wiki/Hamiltonian_path HCP
@@ -2056,7 +2051,7 @@ func _(abs func(int) int) {
 
 	// 枚举子集的子集
 	// 复杂度 O(3^n)，证明：元素个数为 k 的集合有 C(n,k) 个，其子集有 2^k 个，故有 ∑C(n,k)*2^k = (2+1)^n = 3^n
-	// 例如：dp[set] = max{dp[set^sub] + sum of sub} for all valid sub
+	// 例如：f[set] = max{f[set^sub] + sum of sub} for all valid sub
 	//
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
 	// - [2305. 公平分发饼干](https://leetcode.cn/problems/fair-distribution-of-cookies/) 1887
@@ -2213,15 +2208,15 @@ func _(abs func(int) int) {
 	sosDP := func(a []int) []int {
 		// 从子集转移的写法
 		const mx = 20 // bits.Len(uint(max(a))
-		dp := make([]int, 1<<mx)
+		f := make([]int, 1<<mx)
 		for _, v := range a {
-			dp[v]++
+			f[v]++
 		}
 		for i := 0; i < mx; i++ {
 			for s := 0; s < 1<<mx; s++ {
 				s |= 1 << i
 				// 将 s 的子集 s^1<<i 的统计量合并到 s 中
-				dp[s] += dp[s^1<<i]
+				f[s] += f[s^1<<i]
 			}
 		}
 
@@ -2230,7 +2225,7 @@ func _(abs func(int) int) {
 			for i := 0; i < mx; i++ {
 				for s := 1<<mx - 1; s >= 0; s-- {
 					if s>>i&1 == 0 {
-						dp[s] += dp[s|1<<i]
+						f[s] += f[s|1<<i]
 					}
 				}
 			}
@@ -2239,23 +2234,23 @@ func _(abs func(int) int) {
 		{
 			// 维护集合最大和次大的写法
 			type pair struct{ fi, se int }
-			dp := make([]pair, 1<<mx)
+			f := make([]pair, 1<<mx)
 			for i := 0; i < mx; i++ {
 				for s := 0; s < 1<<mx; s++ {
 					s |= 1 << i
-					p, q := dp[s], dp[s^1<<i]
+					p, q := f[s], f[s^1<<i]
 					if q.se > p.fi {
-						dp[s] = q
+						f[s] = q
 					} else if q.fi > p.fi {
-						dp[s] = pair{q.fi, p.fi}
+						f[s] = pair{q.fi, p.fi}
 					} else if q.fi > p.se {
-						dp[s].se = q.fi
+						f[s].se = q.fi
 					}
 				}
 			}
 		}
 
-		return dp
+		return f
 	}
 
 	/* 插头 DP（Plug DP）/ 轮廓线 DP（Broken Profile DP）
@@ -2292,39 +2287,39 @@ func _(abs func(int) int) {
 		set := func(k, v int) int { return 1 << (k << 1) * v }
 
 		ans := 0
-		dp := map[int]int{0: 1}
+		f := map[int]int{0: 1}
 		for i, row := range g {
-			tmp := dp
-			dp = make(map[int]int, len(tmp))
+			tmp := f
+			f = make(map[int]int, len(tmp))
 			for s, dv := range tmp {
-				dp[s<<2] = dv // 轮廓线移动到当前行
+				f[s<<2] = dv // 轮廓线移动到当前行
 			}
 			for j, empty := range row {
-				tmp := dp
-				dp = make(map[int]int, len(tmp))
+				tmp := f
+				f = make(map[int]int, len(tmp))
 				for s, dv := range tmp {
 					switch x, y := get(s, j), get(s, j+1); {
 					case !empty: // 障碍格
 						if x == 0 && y == 0 { // 空
-							dp[s] += dv
+							f[s] += dv
 						}
 					case x == 0 && y == 0: // ┌ 单独形成一对括号
 						if j+1 < m && row[j+1] && i+1 < n && g[i+1][j] {
-							dp[s|set(j, 1)|set(j+1, 2)] += dv
+							f[s|set(j, 1)|set(j+1, 2)] += dv
 						}
 					case x == 0 && y > 0:
 						if j+1 < m && row[j+1] { // └
-							dp[s] += dv
+							f[s] += dv
 						}
 						if i+1 < n && g[i+1][j] { // │
-							dp[s|set(j, y)^set(j+1, y)] += dv
+							f[s|set(j, y)^set(j+1, y)] += dv
 						}
 					case x > 0 && y == 0:
 						if j+1 < m && row[j+1] { // ─
-							dp[s^set(j, x)|set(j+1, x)] += dv
+							f[s^set(j, x)|set(j+1, x)] += dv
 						}
 						if i+1 < n && g[i+1][j] { // ┐
-							dp[s] += dv
+							f[s] += dv
 						}
 					case x == 1 && y == 1: // ┘ 消去 x 和 y，并找到和 y 匹配的右括号，将其改成左括号
 						// 注：这里和下边的 k 的位置可以事先预处理出来
@@ -2333,7 +2328,7 @@ func _(abs func(int) int) {
 								c++
 							} else if t == 2 {
 								if c--; c == 0 {
-									dp[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 2 改成 1 要异或 3
+									f[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 2 改成 1 要异或 3
 									break
 								}
 							}
@@ -2344,13 +2339,13 @@ func _(abs func(int) int) {
 								c++
 							} else if t == 1 {
 								if c--; c == 0 {
-									dp[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 1 改成 2 要异或 3
+									f[s^set(j, x)^set(j+1, y)^set(k, 3)] += dv // 将 1 改成 2 要异或 3
 									break
 								}
 							}
 						}
 					case x == 2 && y == 1: // ┘ 消去右括号和左括号，连接两个插头
-						dp[s^set(j, x)^set(j+1, y)] += dv
+						f[s^set(j, x)^set(j+1, y)] += dv
 					default: // ┘ x == 1 && y == 2
 						// 此时封闭整个路径，这只应当发生在最后一个合法格子上
 						if i == endX && j == endY {
@@ -2431,11 +2426,11 @@ func _(abs func(int) int) {
 		highS := strconv.Itoa(int(high))
 		n := len(highS)
 		diffLH := n - len(lowS)
-		dp := make([][]int, n)
-		for i := range dp {
-			dp[i] = make([]int, sumUpper+1)
-			for j := range dp[i] {
-				dp[i][j] = -1
+		memo := make([][]int, n)
+		for i := range memo {
+			memo[i] = make([]int, sumUpper+1)
+			for j := range memo[i] {
+				memo[i][j] = -1
 			}
 		}
 
@@ -2451,7 +2446,7 @@ func _(abs func(int) int) {
 				return 1
 			}
 			if !limitLow && !limitHigh {
-				dv := &dp[p][sum]
+				dv := &memo[p][sum]
 				if *dv >= 0 {
 					return *dv
 				}
@@ -2492,7 +2487,7 @@ func _(abs func(int) int) {
 				return 1
 			}
 			if !limitLow && !limitHigh {
-				dv := &dp[p][mask]
+				dv := &memo[p][mask]
 				if *dv >= 0 {
 					return *dv
 				}
@@ -2531,11 +2526,11 @@ func _(abs func(int) int) {
 		// TIPS: 某些情况下思考补集会更加容易，即求不符合要求的字符串数目
 		calc := func(s string) int {
 			// 注：如果参数太多可以用 map + struct
-			dp := make([][]int, len(s))
-			for i := range dp {
-				dp[i] = make([]int, sumUpper+1)
-				for j := range dp[i] {
-					dp[i][j] = -1
+			memo := make([][]int, len(s))
+			for i := range memo {
+				memo[i] = make([]int, sumUpper+1)
+				for j := range memo[i] {
+					memo[i][j] = -1
 				}
 			}
 
@@ -2546,7 +2541,7 @@ func _(abs func(int) int) {
 					return 1
 				} // sum
 				if !isLimit {
-					dv := &dp[p][sum]
+					dv := &memo[p][sum]
 					if *dv >= 0 {
 						return *dv
 					} // *dv + sum*int(math.Pow10(n-p))
@@ -2579,7 +2574,7 @@ func _(abs func(int) int) {
 					return 1
 				}
 				if !isLimit && isNum {
-					dv := &dp[p][pre]
+					dv := &memo[p][pre]
 					if *dv >= 0 {
 						return *dv
 					}
@@ -2634,10 +2629,10 @@ func _(abs func(int) int) {
 	calcSum := func(s string, k int) int {
 		n := len(s)
 		type pair struct{ cnt, sum int }
-		dp := make([][1 << 10]pair, n)
-		for i := range dp {
-			for j := range dp[i] {
-				dp[i][j] = pair{-1, -1}
+		memo := make([][1 << 10]pair, n)
+		for i := range memo {
+			for j := range memo[i] {
+				memo[i][j] = pair{-1, -1}
 			}
 		}
 		var f func(int, uint16, bool, bool) pair
@@ -2649,7 +2644,7 @@ func _(abs func(int) int) {
 				return pair{1, 0}
 			}
 			if !limitUp && fill {
-				dv := &dp[p][mask]
+				dv := &memo[p][mask]
 				if dv.cnt >= 0 {
 					return *dv
 				}
@@ -2678,23 +2673,24 @@ func _(abs func(int) int) {
 	// 试填法
 	// 第 k 个包含 3 个连续的 6 的数 https://www.acwing.com/problem/content/312/
 	kth666 := func(k int) (ans []byte) {
-		// dp[i][3] 表示由 i 位数字构成的魔鬼数的个数
-		// dp[i][j] (j<3) 表示 i 位数字构成的、开头有连续 j 个 6 的非魔鬼数的个数
+		// f[i][3] 表示由 i 位数字构成的魔鬼数的个数
+		// f[i][j] (j<3) 表示 i 位数字构成的、开头有连续 j 个 6 的非魔鬼数的个数
 		const mx = 30  // 长度上限
 		const cont = 3 // 连续 3 个数才算符合要求
-		dp := [mx][cont + 1]int{}
-		dp[0][0] = 1
+		f := [mx][cont + 1]int{}
+		f[0][0] = 1
 		for i := 1; i < mx; i++ {
 			for j := 0; j < cont; j++ {
-				dp[i][0] += dp[i-1][j] * 9 // 开头无 6，直接转移（0-9 中除去 6 共 9 个数）
-				dp[i][j+1] = dp[i-1][j]    // 开头有 j+1 个 6，下一个有 j 个 6
+				f[i][0] += f[i-1][j] * 9 // 开头无 6，直接转移（0-9 中除去 6 共 9 个数）
+				f[i][j+1] = f[i-1][j]    // 开头有 j+1 个 6，下一个有 j 个 6
 			}
-			dp[i][cont] += dp[i-1][cont] * 10
+			f[i][cont] += f[i-1][cont] * 10
 		}
 
 		const tarDigit byte = '6'
 		n := 1
-		for ; dp[n][cont] < k; n++ {
+		for f[n][cont] < k {
+			n++
 		}
 		has := 0
 		for i := 1; i <= n; i++ {
@@ -2707,7 +2703,7 @@ func _(abs func(int) int) {
 				}
 				sum := 0
 				for j := need; j <= cont; j++ {
-					sum += dp[n-i][j]
+					sum += f[n-i][j]
 				}
 				if sum >= k { // 填入
 					ans = append(ans, digit)
@@ -2818,16 +2814,16 @@ func _(abs func(int) int) {
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
 	//
-	// 若状态转移方程具有类似于 dp[i] = min{dp[j]-a[i]*b[j]}, j<i 的形式，方程中包含一个 i 和 j 的乘积项，且序列 a 和 b 均单调递增
-	// 若将 (b[j],dp[j]) 看作二维平面上的点，则 dp[i] 就是所有斜率为 a[i] 且过其中一点的直线中，与 y 轴的最小截距
-	// 我们可以用一个单调队列来维护 (b[j],dp[j]) 的相邻点所构成的下凸包
-	// 对于斜率 a[i]，我们需要在队列中寻找一个位置 k，其左侧斜率小于 a[i]，右侧斜率大于 a[i]，此时经过点 (b[k],dp[k]) 能取到最小截距
+	// 若状态转移方程具有类似于 f[i] = min{f[j]-a[i]*b[j]}, j<i 的形式，方程中包含一个 i 和 j 的乘积项，且序列 a 和 b 均单调递增
+	// 若将 (b[j],f[j]) 看作二维平面上的点，则 f[i] 就是所有斜率为 a[i] 且过其中一点的直线中，与 y 轴的最小截距
+	// 我们可以用一个单调队列来维护 (b[j],f[j]) 的相邻点所构成的下凸包
+	// 对于斜率 a[i]，我们需要在队列中寻找一个位置 k，其左侧斜率小于 a[i]，右侧斜率大于 a[i]，此时经过点 (b[k],f[k]) 能取到最小截距
 	//
-	// 具体到实现，设两转移来源的下标为 j 和 k，若 k < j 且 dp[k]-a[i]*b[k] < dp[j]-a[i]*b[j]
-	// 则有 (dp[j]-dp[k])/(b[j]-b[k]) > a[i]
+	// 具体到实现，设两转移来源的下标为 j 和 k，若 k < j 且 f[k]-a[i]*b[k] < f[j]-a[i]*b[j]
+	// 则有 (f[j]-f[k])/(b[j]-b[k]) > a[i]
 	// 据此式，用单调队列来维护斜率（下凸包）
-	// 转移前，在单调队列中找到斜率 a[i] 的对应位置，然后代入转移方程，求出 dp[i]
-	// 转移后，将点 (b[i],dp[i]) 加入单调队列中
+	// 转移前，在单调队列中找到斜率 a[i] 的对应位置，然后代入转移方程，求出 f[i]
+	// 转移后，将点 (b[i],f[i]) 加入单调队列中
 	//
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
@@ -2851,16 +2847,16 @@ func _(abs func(int) int) {
 	//  结合李超线段树 https://codeforces.com/contest/1175/problem/G 3000
 	cht := func(a, b []int) int {
 		n := len(a)
-		dp := make([]int, n)
+		f := make([]int, n)
 		// 计算两点间的斜率，若分子分母均在 32 位整数范围内，可以去掉浮点，改用乘法（或者用 lessPair）
 		slope := func(i, j int) float64 {
 			if b[i] == b[j] { // 若保证不相等则去掉
-				if dp[j] > dp[i] {
+				if f[j] > f[i] {
 					return 1e99
 				}
 				return -1e99
 			}
-			return float64(dp[j]-dp[i]) / float64(b[j]-b[i])
+			return float64(f[j]-f[i]) / float64(b[j]-b[i])
 		}
 		q := []int{0}
 		for i := 1; i < n; i++ {
@@ -2875,15 +2871,15 @@ func _(abs func(int) int) {
 			j = sort.Search(len(q)-1, func(j int) bool { return slope(j, j+1) > float64(k) })
 
 			// 转移
-			dp[i] = dp[j] - a[i]*b[j]
+			f[i] = f[j] - a[i]*b[j]
 
-			// 然后，将点 (b[i],dp[i]) 加入单调队列中
+			// 然后，将点 (b[i],f[i]) 加入单调队列中
 			for len(q) > 1 && slope(q[len(q)-1], i) < slope(q[len(q)-2], q[len(q)-1]) {
 				q = q[:len(q)-1]
 			}
 			q = append(q, i)
 		}
-		return dp[n-1]
+		return f[n-1]
 	}
 
 	// WQS 二分 / 凸优化 DP / 带权二分 / Alien Trick / Alien DP / Monge グラフ上のd-辺最短路長を計算するアルゴリズム 
@@ -3075,7 +3071,7 @@ func _(abs func(int) int) {
 	// http://acm.hdu.edu.cn/showproblem.php?pid=3534
 	// https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45988692
 	countDiameter := func(st int, g [][]int) (diameter, diameterCnt int) {
-		var f func(v, fa int) (int, int)
+		var f func(int, int) (int, int)
 		f = func(v, fa int) (int, int) {
 			mxDep, cnt := 0, 1
 			for _, w := range g[v] {
@@ -3154,7 +3150,7 @@ func _(abs func(int) int) {
 	// https://ac.nowcoder.com/acm/contest/view-submission?submissionId=45987468
 	// 注意这里的 cnt 初始化与 countDiameter 的不同之处
 	countVerticesOnDiameter := func(st int, g [][]int) (diameter, verticesCnt int) {
-		var f func(v, fa int) (int, int)
+		var f func(int, int) (int, int)
 		f = func(v, fa int) (int, int) {
 			mxDep, cnt := 0, 0
 			for _, w := range g[v] {
@@ -3182,7 +3178,7 @@ func _(abs func(int) int) {
 	// 变形 LC2538 https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/
 	maxPathSum := func(st int, g [][]int, a []int) (ans int) {
 		// 点权
-		var f func(v, fa int) int
+		var f func(int, int) int
 		f = func(v, fa int) int {
 			val := a[v]
 			ans = max(ans, val)
@@ -3201,8 +3197,8 @@ func _(abs func(int) int) {
 		{
 			// 边权
 			type nb struct{ to, wt int }
-			var g [][]nb
-			var f func(v, fa int) int
+			var g [][]nb // read...
+			var f func(int, int) int
 			f = func(v, fa int) int {
 				maxS := 0
 				for _, e := range g[v] {
@@ -3221,8 +3217,8 @@ func _(abs func(int) int) {
 		{
 			// 点权+边权
 			type nb struct{ to, wt int }
-			var g [][]nb
-			var f func(v, fa int) int
+			var g [][]nb // read...
+			var f func(int, int) int
 			f = func(v, fa int) int {
 				val := a[v]
 				ans = max(ans, val)
@@ -3298,9 +3294,9 @@ func _(abs func(int) int) {
 	// 返回最小点权和（最小支配集的情形即所有点权均为一）
 	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
 	// 视频讲解：https://www.bilibili.com/video/BV1oF411U7qL/
-	// dp[i][0]：i 属于支配集 = a[i]+∑min(dp[w][0],dp[w][1],dp[w][2])
-	// dp[i][1]：i 不属于支配集，且被儿子支配 = ∑min(dp[w][0],dp[w][1]) + 如果全选 dp[w][1] 则补上 min{dp[w][0]-dp[w][1]}
-	// dp[i][2]：i 不属于支配集，且被父亲支配 = ∑min(dp[w][0],dp[w][1])
+	// f[i][0]：i 属于支配集 = a[i]+∑min(f[w][0],f[w][1],f[w][2])
+	// f[i][1]：i 不属于支配集，且被儿子支配 = ∑min(f[w][0],f[w][1]) + 如果全选 f[w][1] 则补上 min{f[w][0]-f[w][1]}
+	// f[i][2]：i 不属于支配集，且被父亲支配 = ∑min(f[w][0],f[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	//
 	// 监控二叉树 LC968 https://leetcode.cn/problems/binary-tree-cameras/
