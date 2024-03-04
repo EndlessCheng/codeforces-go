@@ -74,6 +74,15 @@ LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode.cn/p
 LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
 https://codeforces.com/contest/404/problem/D 1900
 
+从 X 操作到 Y（部分题目也可以用 BFS）
+-1 +1 /5 /11 [2998. 使 X 和 Y 相等的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-x-and-y-equal/) 1795
++a[i] -a[i] ^a[i] [2059. 转化数字的最小运算数](https://leetcode.cn/problems/minimum-operations-to-convert-number/) 1850
+-1 *2 [991. 坏了的计算器](https://leetcode.cn/problems/broken-calculator/) 1909
+/2 /3 [1553. 吃掉 N 个橘子的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/) 2048
+[LCP 09. 最小跳跃次数](https://leetcode.cn/problems/zui-xiao-tiao-yue-ci-shu/)
+[LCP 20. 快速公交](https://leetcode.cn/problems/meChtZ/)
+*5 /6 https://ac.nowcoder.com/acm/contest/71512/D
+
 预处理
 LC2638 https://leetcode.cn/problems/count-the-number-of-k-free-subsets/
 
@@ -153,6 +162,9 @@ https://atcoder.jp/contests/abc282/tasks/abc282_g
 7.（进阶）状态不好确定时，尝试转化问题模型、逆序思考、增加维度等等。（试试下面的题目）
 
 题目已经分类整理好：试试搜索「最大子段和」等。
+
+常规题目
+预处理 https://codeforces.com/contest/1932/problem/F
 
 如何设计状态
 https://codeforces.com/problemset/problem/553/A 1500
@@ -1835,7 +1847,7 @@ func _(abs func(int) int) {
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 
 	状压 DP 本质上就是在集合与集合之间转移，所以一定要能熟练地把集合语言翻译成位运算
-	请看：《从集合论到位运算，常见位运算技巧分类总结！》https://leetcode.cn/circle/discuss/CaOJ45/
+	推荐阅读《从集合论到位运算，常见位运算技巧分类总结！》https://leetcode.cn/circle/discuss/CaOJ45/
 
 	浅谈状压 DP https://www.luogu.com.cn/blog/yijan/zhuang-ya-dp
 	https://blog.csdn.net/weixin_43914593/article/details/106432695 算法竞赛专题解析（15）：DP应用--状态压缩DP
@@ -1854,12 +1866,13 @@ func _(abs func(int) int) {
 	LCP69 https://leetcode.cn/problems/rMeRt2/
 	LCP76 https://leetcode.cn/problems/1ybDKD/
 	https://www.luogu.com.cn/problem/P1879
-	循环移位 https://codeforces.com/contest/1209/problem/E2
-	https://codeforces.com/problemset/problem/401/D
-	与质因子分解结合 https://codeforces.com/problemset/problem/453/B
-	与排序贪心结合 https://codeforces.com/problemset/problem/1316/E
-	与概率 DP 结合 https://codeforces.com/problemset/problem/16/E
-	https://codeforces.com/problemset/problem/1430/G
+	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
+	https://codeforces.com/problemset/problem/401/D 2000
+	https://codeforces.com/problemset/problem/453/B 2000 与质因子分解结合
+	https://codeforces.com/contest/895/problem/C 2000
+	https://codeforces.com/problemset/problem/1316/E 2300 与排序贪心结合
+	https://codeforces.com/contest/1209/problem/E2 2500 循环移位
+	https://codeforces.com/problemset/problem/1430/G 2600
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -3005,6 +3018,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/blog/entry/63257
 
 	LC337 https://leetcode.cn/problems/house-robber-iii/
+	LC1372 https://leetcode.cn/problems/longest-zigzag-path-in-a-binary-tree/
 	LC2925 https://leetcode.cn/problems/maximum-score-after-applying-operations-on-a-tree/ 1940
 	LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/ 2351
 	简单 DFS https://leetcode.cn/problems/find-number-of-coins-to-place-in-tree-nodes/
@@ -3485,8 +3499,9 @@ func _(abs func(int) int) {
 		type data int
 		const unit data = 0
 		// 返回 d 在通过 v-w 边之后的结果    *也可以传入边权
-		moveEdge := func(d data, v, w int) data {
-			return d + 1
+		// swap=true 表示 v-w 是换根时的那条边
+		moveEdge := func(d data, v, w int, swap bool) data {
+			return d + 1 // weight from v to w
 		}
 		// 返回 p 和 q 合并后的结果（p 和 q 已经包含边的信息）
 		merge := func(p, q data) data {
@@ -3503,7 +3518,7 @@ func _(abs func(int) int) {
 					continue
 				}
 				dfs(w, v)
-				res = merge(res, moveEdge(subData[w], v, w)) // v-w 边
+				res = merge(res, moveEdge(subData[w], v, w, false)) // v-w 边
 			}
 			subData[v] = res
 		}
@@ -3522,7 +3537,7 @@ func _(abs func(int) int) {
 			for i := ngv - 1; i >= 0; i-- {
 				w := g[v][i]
 				if w != fa {
-					suf[i] = merge(suf[i+1], moveEdge(subData[w], v, w)) // v-w 边
+					suf[i] = merge(suf[i+1], moveEdge(subData[w], v, w, false)) // v-w 边
 				} else {
 					suf[i] = suf[i+1]
 				}
@@ -3536,8 +3551,8 @@ func _(abs func(int) int) {
 				}
 				// mergedData 是除了 subData[w] 以外的子树汇总信息（已经包含 v-g[v][i] 边）
 				mergedData := merge(movedFaData, merge(pre, suf[i+1]))
-				reroot(w, v, moveEdge(mergedData, w, v))     // w-v 边（以 w 为根）
-				pre = merge(pre, moveEdge(subData[w], v, w)) // v-w 边
+				reroot(w, v, moveEdge(mergedData, w, v, true))      // w-v 边（以 w 为根）
+				pre = merge(pre, moveEdge(subData[w], v, w, false)) // v-w 边
 			}
 		}
 		reroot(root, -1, unit)
