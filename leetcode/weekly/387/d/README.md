@@ -85,8 +85,8 @@ class Solution {
         Arrays.sort(sorted); // 只排序不去重
         int n = nums.length;
 
-        ArrayList<Integer> a = new ArrayList<>(n); // 预分配空间
-        ArrayList<Integer> b = new ArrayList<>();
+        List<Integer> a = new ArrayList<>(n); // 预分配空间
+        List<Integer> b = new ArrayList<>();
         a.add(nums[0]);
         b.add(nums[1]);
 
