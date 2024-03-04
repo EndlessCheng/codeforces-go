@@ -26,44 +26,51 @@ import "math/bits"
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
-// 最大子段和 https://www.luogu.com.cn/problem/P4513 https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
-// 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
-// 最值及其下标 https://codeforces.com/contest/474/problem/E
 // 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
-// 开方（也可以并查集）https://codeforces.com/problemset/problem/920/F https://www.luogu.com.cn/problem/P4145 http://acm.hdu.edu.cn/showproblem.php?pid=4027
-// 取模（也可以并查集） https://codeforces.com/problemset/problem/438/D
-// 转换的好题 https://codeforces.com/problemset/problem/1187/D
-// 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C
-// k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G
+// 最大子段和 https://www.luogu.com.cn/problem/P4513 
+// - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
+// 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
+// GCD https://codeforces.com/problemset/problem/914/D 1900
+// 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C 2000
+// 最值及其下标 https://codeforces.com/contest/474/problem/E 2000
+// 区间最短线段长度 https://codeforces.com/problemset/problem/522/D 2000
+// 开方（也可以并查集）https://codeforces.com/problemset/problem/920/F 2000
+// - https://www.luogu.com.cn/problem/P4145
+// - http://acm.hdu.edu.cn/showproblem.php?pid=4027
+// 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
+// - LC169 https://leetcode.cn/problems/majority-element/
+// - LC1157 https://leetcode.cn/problems/online-majority-element-in-subarray/
+// - https://www.luogu.com.cn/problem/P3567
+// - https://www.luogu.com.cn/problem/P3765
+// - https://codeforces.com/contest/1514/problem/D 2000
+// 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 2100
+// - 联系 https://www.luogu.com.cn/problem/P1972
+// todo 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E 2200
+// 取模 https://codeforces.com/problemset/problem/438/D 2300
+// k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G 2300
+// 转换的好题 https://codeforces.com/problemset/problem/1187/D 2400
+// 所有子数组的 mex 的 mex https://codeforces.com/problemset/problem/1436/E 2400
 // 区间 mex https://www.luogu.com.cn/problem/P4137
 // - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
 // - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
 // - 反向构造题 https://www.luogu.com.cn/problem/P6852
-// 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
-//     LC169 https://leetcode.cn/problems/majority-element/
-//     LC1157 https://leetcode-cn.com/problems/online-majority-element-in-subarray/
-//     https://www.luogu.com.cn/problem/P3567
-//     https://www.luogu.com.cn/problem/P3765
-//     https://codeforces.com/contest/1514/problem/D
-// GCD https://codeforces.com/problemset/problem/914/D
-// 最小差值 https://codeforces.com/problemset/problem/765/F 3100
-//         https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
-//         不允许相等 https://www.luogu.com.cn/problem/P5926
-// 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E
-// 区间最短线段长度 https://codeforces.com/problemset/problem/522/D
-// 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 联系 https://www.luogu.com.cn/problem/P1972
-// 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E
+// 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E 2400
 // 区间最小的 31 个数 https://codeforces.com/problemset/problem/1665/E 2500
-// https://atcoder.jp/contests/abc285/tasks/abc285_f
 // todo https://codeforces.com/problemset/problem/19/D 2800
+// 最小差值 https://codeforces.com/problemset/problem/765/F 3100
+// - https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
+// - 不允许相等 https://www.luogu.com.cn/problem/P5926
+// https://atcoder.jp/contests/abc285/tasks/abc285_f
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
-// 力扣 https://leetcode-cn.com/tag/segment-tree/
+// 力扣 https://leetcode.cn/tag/segment-tree/
 // 另见 dp.go 的数据结构优化 DP
 // 另见 dp.go 的动态 DP
 //
 // todo http://poj.org/problem?id=2991
-// 变换成值域 http://poj.org/problem?id=3368 https://www.luogu.com.cn/problem/SP1684 https://www.luogu.com.cn/problem/UVA11235
+// 变换成值域 http://poj.org/problem?id=3368
+// - https://www.luogu.com.cn/problem/SP1684
+// - https://www.luogu.com.cn/problem/UVA11235
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
@@ -75,7 +82,7 @@ import "math/bits"
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
 // 浅谈权值线段树到主席树 https://www.luogu.com.cn/blog/your-alpha1022/WeightSegmentTree-ChairmanTree
 // 谈树状数组套权值树 https://www.luogu.com.cn/blog/bfqaq/qian-tan-shu-zhuang-shuo-zu-quan-zhi-shu
-// https://codeforces.com/problemset/problem/1042/D
+// https://codeforces.com/problemset/problem/1042/D 1800
 // todo 区间只出现一次的数的最大值 https://codeforces.com/problemset/problem/69/E
 
 // EXTRA: 树套树
@@ -86,6 +93,7 @@ import "math/bits"
 // - 树状数组套动态开点权值线段树（AC）
 // - 动态开点权值线段树套下标平衡树（TLE）https://www.luogu.com.cn/record/136191286
 // todo 二维线段树 https://www.luogu.com.cn/problem/P3437
+// - LC308 https://leetcode.cn/problems/range-sum-query-2d-mutable/
 //  https://www.luogu.com.cn/problem/P4514
 //  树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
 
@@ -93,7 +101,7 @@ import "math/bits"
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
 // 这个性质可以用于优化建图
 // https://www.luogu.com.cn/blog/forever-captain/DS-optimize-graph
-// https://codeforces.com/problemset/problem/786/B
+// https://codeforces.com/problemset/problem/786/B 2300
 // todo https://www.luogu.com.cn/problem/P6348
 
 /* 一些细节
@@ -291,14 +299,16 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
 // = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
-// max max 离散化 https://codeforces.com/contest/1557/problem/D
-// https://codeforces.com/problemset/problem/1114/F
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
-// =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C
-// 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C
-// 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E https://codeforces.com/contest/292/submission/173659179
-// todo https://codeforces.com/problemset/problem/1209/G2
-// 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G
+// 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
+// - https://codeforces.com/contest/292/submission/173659179
+// 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
+// max max 离散化 https://codeforces.com/contest/1557/problem/D 2200
+// 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C 2300
+// https://codeforces.com/problemset/problem/145/E 2400
+// https://codeforces.com/problemset/problem/1114/F 2400
+// =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C 2600
+// todo https://codeforces.com/problemset/problem/1209/G2 3200
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
