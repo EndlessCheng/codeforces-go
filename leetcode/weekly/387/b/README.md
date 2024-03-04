@@ -1,6 +1,6 @@
 ## 方法一：二维前缀和
 
-请看[【图解】二维前缀和](https://leetcode.cn/circle/discuss/UUuRex/) 以及 [视频讲解](https://www.bilibili.com/video/BV14r421W7oR/)。
+请看[【图解】二维前缀和](https://leetcode.cn/problems/range-sum-query-2d-immutable/solution/tu-jie-yi-zhang-tu-miao-dong-er-wei-qian-84qp/) 以及 [视频讲解](https://www.bilibili.com/video/BV14r421W7oR/)。
 
 ```py [sol-Python3]
 class Solution:
