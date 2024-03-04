@@ -331,6 +331,7 @@
 
 按人数从高到低，做 2200+ 的题目。**建议不设置难度上限**！由于按人数排序，难度分不会太高，**不设上限可以避免错过高分好题**。
 
+- [按照洛谷通过人数排序的 CF 题单](https://www.luogu.com.cn/training/465300)
 - [构造题 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=constructive+algorithms%2C2200-)：锻炼手玩能力。
 - [DP 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=dp%2C2200-)：几乎每场都有 DP。
 - [数学综合：数论、组合数学、概率期望等 2200+](https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=combine-tags-by-or%2Ccombinatorics%2Cfft%2Cmatrices%2Cnumber+theory%2Cprobabilities%2Cchinese+remainder+theorem%2C2200-)：包含 6 个 tag。
