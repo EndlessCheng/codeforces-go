@@ -8,10 +8,10 @@ import (
 // https://space.bilibili.com/206214
 type fenwick []int
 
-// 把下标为 i 的元素增加 1
-func (f fenwick) add(i int) {
+// 把下标为 i 的元素增加 v
+func (f fenwick) add(i, v int) {
 	for ; i < len(f); i += i & -i {
-		f[i]++
+		f[i] += v
 	}
 }
 
@@ -31,20 +31,18 @@ func resultArray(nums []int) (ans []int) {
 
 	a := nums[:1]
 	b := []int{nums[1]}
-	t1 := make(fenwick, m+1)
-	t2 := make(fenwick, m+1)
-	t1.add(sort.SearchInts(sorted, nums[0]) + 1)
-	t2.add(sort.SearchInts(sorted, nums[1]) + 1)
+	t := make(fenwick, m+1)
+	t.add(m-sort.SearchInts(sorted, nums[0]), 1)
+	t.add(m-sort.SearchInts(sorted, nums[1]), -1)
 	for _, x := range nums[2:] {
-		v := sort.SearchInts(sorted, x) + 1
-		gc1 := len(a) - t1.pre(v) // greaterCount(a, v)
-		gc2 := len(b) - t2.pre(v) // greaterCount(b, v)
-		if gc1 > gc2 || gc1 == gc2 && len(a) <= len(b) {
+		v := m - sort.SearchInts(sorted, x)
+		d := t.pre(v - 1)
+		if d > 0 || d == 0 && len(a) <= len(b) {
 			a = append(a, x)
-			t1.add(v)
+			t.add(v, 1)
 		} else {
 			b = append(b, x)
-			t2.add(v)
+			t.add(v, -1)
 		}
 	}
 	return append(a, b...)
