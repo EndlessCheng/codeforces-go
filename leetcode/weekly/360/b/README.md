@@ -28,18 +28,20 @@ $$
 \dfrac{m(m+1) + (2k+n-m-1)(n-m)}{2}
 $$
 
+最后，别忘了对 $10^9+7$ 取模。
+
 ```py [sol-Python3]
 class Solution:
     def minimumPossibleSum(self, n: int, k: int) -> int:
         m = min(k // 2, n)
-        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2 % (10 ** 9 + 7)
+        return (m * (m + 1) + (k * 2 + n - m - 1) * (n - m)) // 2 % 1_000_000_007
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minimumPossibleSum(int n, int k) {
         long m = Math.min(k / 2, n);
-        return (int) ((m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1000000007);
+        return (int) ((m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1_000_000_007);
     }
 }
 ```
@@ -49,7 +51,7 @@ class Solution {
 public:
     int minimumPossibleSum(int n, int k) {
         long long m = min(k / 2, n);
-        return (m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1000000007;
+        return (m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1'000'000'007;
     }
 };
 ```
@@ -59,19 +61,31 @@ func minimumPossibleSum(n, k int) int {
 	m := min(k/2, n)
 	return (m*(m+1) + (k*2+n-m-1)*(n-m)) / 2 % 1_000_000_007
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
 ```
 
 ```js [sol-JavaScript]
-var minimumPossibleSum = function (n, k) {
+var minimumPossibleSum = function(n, k) {
     const m = Math.min(k >> 1, n);
-    const res = BigInt(m) * BigInt(m + 1) + BigInt(k * 2 + n - m - 1) * BigInt(n - m)
-    return Number((res / BigInt(2)) % BigInt(1000000007));
+    return ((BigInt(m) * BigInt(m + 1) + BigInt(k * 2 + n - m - 1) * BigInt(n - m)) / 2n) % 1_000_000_007n;
 };
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn minimum_possible_sum(n: i32, target: i32) -> i32 {
+        let n = n as i64;
+        let k = target as i64;
+        let m = n.min(k / 2);
+        ((m * (m + 1) + (n - m - 1 + k * 2) * (n - m)) / 2 % 1_000_000_007) as i32
+    }
+}
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(1)$。
-- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
