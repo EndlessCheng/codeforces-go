@@ -24,11 +24,11 @@
 
 在 $\textit{nums}[i] > 1$ 的情况下，如果用快速复习+考试，只需要花费 $2$ 天。这比只用慢速复习+考试要更快。
 
-但是！如果一门课程对应的 $\textit{changeIndices}$ 很靠后，可能没有时间快速复习这门课程并完成考试。比如只剩下 $2$ 天，但是还有 $3$ 门课程没有考。
+但是！如果一门课程对应的 $\textit{changeIndices}$ 很靠后，可能没有时间快速复习这门课程并完成考试。比如只剩下 $2$ 天，但是还有 $3$ 门课程没有考。这样的课程用慢速复习更合适。
 
 此外，如果一门课程的复习时间很长（$\textit{nums}[i]$ 很大），当我们把后续时间都用在快速复习其它复习时间比较小的课程上，可能就没有时间快速复习 $\textit{nums}[i]$ 很大的课程了（还要留一天来考试）。
 
-如何权衡把哪些课程快速复习，把哪些课程慢速复习呢？
+**如何权衡哪些课程快速复习，哪些课程慢速复习呢？**
 
 ## 提示 3
 
@@ -74,7 +74,7 @@ class Solution:
                 slow -= v + 1
                 cnt -= 1  # 快速复习，然后消耗一天来考试
                 heappush(h, v)
-            return cnt >= slow  # 剩余天数不能慢速复习+考试
+            return cnt >= slow  # 剩余天数搞定慢速复习+考试
 
         ans = n + bisect_left(range(n, m + 1), True, key=check)
         return -1 if ans > m else ans
@@ -135,7 +135,7 @@ class Solution {
             cnt--; // 快速复习，然后消耗一天来考试
             pq.offer(v);
         }
-        return cnt >= slow; // 剩余天数不能慢速复习+考试
+        return cnt >= slow; // 剩余天数搞定慢速复习+考试
     }
 }
 ```
@@ -177,7 +177,7 @@ public:
                 cnt--; // 快速复习，然后消耗一天来考试
                 pq.push(v);
             }
-            return cnt >= slow; // 剩余天数不能慢速复习+考试
+            return cnt >= slow; // 剩余天数搞定慢速复习+考试
         };
 
         int left = n - 1, right = m + 1;
@@ -231,7 +231,7 @@ func earliestSecondToMarkIndices(nums, changeIndices []int) int {
 			cnt-- // 快速复习，然后消耗一天来考试
 			heap.Push(&h, v)
 		}
-		return cnt >= slow // 剩余天数不能慢速复习+考试
+		return cnt >= slow // 剩余天数搞定慢速复习+考试
 	})
 	if ans > m {
 		return -1
@@ -249,11 +249,11 @@ func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:le
 - 时间复杂度：$\mathcal{O}(m\log m \log n)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{changeIndices}$ 的长度。二分的时候保证 $n\le m$，时间复杂度以 $m$ 为主。注意堆中至多有 $n$ 个元素。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-#### 题单：二分答案
+## 题单：二分答案
 
 - [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 
-#### 题单：基于堆的反悔贪心（反悔堆）
+## 题单：基于堆的反悔贪心（反悔堆）
 
 - [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)（被和谐了，请在题目页搜索魔塔游戏）
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
