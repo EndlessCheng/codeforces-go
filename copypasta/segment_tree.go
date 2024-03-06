@@ -505,7 +505,7 @@ func (o *stNode) update(i, val int) {
 		o.val = o.mergeInfo(o.val, val)
 		return
 	}
-	m := (o.l + o.r) >> 1
+	m := (o.l + o.r) >> 1 // 使用右移而不是除法，这样保证负数也是下取整     或者 o.l + (o.r - o.l) / 2
 	if i <= m {
 		if o.lo == emptyStNode {
 			o.lo = &stNode{lo: emptyStNode, ro: emptyStNode, l: o.l, r: m, val: stNodeDefaultVal}
