@@ -1,72 +1,336 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV1md4y1P75q) 已出炉，欢迎点赞三连，在评论区分享你对这场周赛的看法~
+## 转换
 
----
+计算 $\textit{nums}$ 中所有**非负数**的和，记作 $\textit{sum}$。
 
-## 方法一：堆
+$\textit{nums}$ 的任意一个子序列的元素和，都等价于从 $\textit{sum}$ 中减去某些**非负数** / 加上某些**负数**得到。
 
-#### 提示 1
+例如 $\textit{nums}=[1,2,3,-4]$，其非负数的和为 $1+2+3=6$，我们可以从 $6$ 中减去 $2$ 得到 $\textit{nums}$ 的子序列 $[1,3]$ 的和 $1+3=4$，也可以把 $6$ 和 $-4$ 相加，得到 $\textit{nums}$ 的子序列 $[1,2,3,-4]$ 的和 $2$。
 
-记 $\textit{nums}$ 中所有非负数的和为 $\textit{sum}$。
+注意到，「减去非负数」和「加上负数」都相当于减去 $|\textit{nums}[i]|$。
 
-任意一个子序列的和，都等价于从 $\textit{sum}$ 中减去某些非负数 / 加上某些负数得到。
+$\textit{sum}$ 减去的数越小，$\textit{nums}$ 的子序列和就越大。
 
-#### 提示 2
+现在要解决的问题是：
 
-将 $\textit{nums}$ 所有数取绝对值。然后按照从小到大的顺序取出 $\textit{sum}$ 需要减去的子序列，如何做到？
+- 把每个 $\textit{nums}[i]$ **取绝对值**后，$\textit{nums}$ 的第 $k$ 小的子序列和是多少？
 
-#### 提示 3-1
+## 方法一：二分答案 + 爆搜
 
-将 $\textit{nums}$ 所有数取绝对值后排序，然后用最大堆来实现。
+#### 前置知识
 
-#### 提示 3-2
+1. [二分原理](https://www.bilibili.com/video/BV1AP41137w7/)
+2. [子集型回溯](https://www.bilibili.com/video/BV1mG4y1A7Gu/)
 
-具体来说，最大堆维护子序列的和，以及（后续需要减去的）数字的下标 $i$。
+二分答案，设当前二分的值为 $\textit{sumLimit}$。
 
-初始时，将 $\textit{sum}$ 和下标 $0$ 入堆。
+问题变成：判断是否有至少 $k$ 个子序列，其元素和 $s$ 不超过 $\textit{sumLimit}$？
 
-每次弹出堆顶时，将子序列的和减去 $\textit{nums}[i]$，并考虑是否保留 $\textit{nums}[i-1]$，从而满足子序列每个元素「选或不选」的要求。
+> 注：一道题能否二分答案，得看它有没有单调性。对于本题，$\textit{sumLimit}$ 越大，这样的子序列越多，有单调性，可以二分答案。
 
-循环 $k-1$ 次后，堆顶的和就是答案。
+爆搜，从小到大考虑每个 $\textit{nums}[i]$ **选或不选**。在递归中，如果发现 $\textit{cnt}=k$ 或者 $s+\textit{nums}[i]>\textit{sumLimit}$，就不再继续递归，因为前者说明我们已经找到 $k$ 个和不超过 $\textit{sumLimit}$ 的子序列，后者说明子序列的和太大。
+
+二分下界：$0$。
+
+二分上界：$\sum\limits_{i=0}^{n-1}|\textit{nums}[i]|$，即 $\textit{nums}$ 的所有元素的绝对值的和。
+
+最后，用 $\textit{sum}$ 减去二分得到的值，即为答案。
+
+#### 答疑
+
+**问**：有没有可能，二分得到的值，并不是 $\textit{nums}$ 的子序列和？比如 $\textit{nums}[i]$ 都是偶数，但二分得到的却是一个奇数。
+
+**答**：设二分得到的值为 $x$，那么 $x$ 一定是 $\textit{nums}$ 的子序列和。使用**反证法**证明：
+
+假设 $x$ 不是 $\textit{nums}$ 的子序列和，也就是没有任何子序列的和等于 $x$，这意味着 $s \le x$ 等价于 $s\le x-1$，我们能从 $\textit{nums}$ 中找到 $k$ 个元素和不超过 $x-1$ 的子序列，所以 $\texttt{check}(x-1) = \texttt{true}$。但二分循环结束时，有 $\texttt{check}(x-1) = \texttt{false}$，矛盾，所以原命题成立，$x$ 一定是 $\textit{nums}$ 的子序列和。
+
+```py [sol-Python3]
+class Solution:
+    def kSum(self, nums: List[int], k: int) -> int:
+        s = 0
+        for i, x in enumerate(nums):
+            if x >= 0:
+                s += x
+            else:
+                nums[i] = -x
+        nums.sort()
+
+        def check(sum_limit: int) -> bool:
+            cnt = 1  # 空子序列算一个
+            def dfs(i: int, s: int) -> None:
+                nonlocal cnt
+                if cnt == k or i == len(nums) or s + nums[i] > sum_limit:
+                    return
+                cnt += 1  # s + nums[i] <= sum_limit
+                dfs(i + 1, s + nums[i])  # 选
+                dfs(i + 1, s)  # 不选
+            dfs(0, 0)
+            return cnt == k  # 找到 k 个元素和不超过 sum_limit 的子序列
+        return s - bisect_left(range(sum(nums)), True, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public long kSum(int[] nums, int k) {
+        long sum = 0, right = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= 0) {
+                sum += nums[i];
+            } else {
+                nums[i] = -nums[i];
+            }
+            right += nums[i];
+        }
+        Arrays.sort(nums);
+
+        long left = -1;
+        while (left + 1 < right) { // 开区间二分，原理见【前置知识】
+            long mid = (left + right) / 2;
+            cnt = k - 1; // 空子序列算一个
+            dfs(0, mid, nums);
+            if (cnt == 0) { // 找到 k 个元素和不超过 mid 的子序列
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return sum - right;
+    }
+
+    private int cnt;
+
+    // 反向递归，增加改成减少，这样可以少传一些参数
+    private void dfs(int i, long s, int[] nums) {
+        if (cnt == 0 || i == nums.length || s < nums[i]) {
+            return;
+        }
+        cnt--;
+        dfs(i + 1, s - nums[i], nums); // 选
+        dfs(i + 1, s, nums); // 不选
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long kSum(vector<int> &nums, int k) {
+        long sum = 0;
+        for (int &x : nums) {
+            if (x >= 0) {
+                sum += x;
+            } else {
+                x = -x;
+            }
+        }
+        ranges::sort(nums);
+
+        auto check = [&](long sum_limit) -> bool {
+            int cnt = 1; // 空子序列算一个
+            function<void(int, long long)> dfs = [&](int i, long long s) {
+                if (cnt == k || i == nums.size() || s + nums[i] > sum_limit) {
+                    return;
+                }
+                cnt++; // s + nums[i] <= sum_limit
+                dfs(i + 1, s + nums[i]); // 选
+                dfs(i + 1, s); // 不选
+            };
+            dfs(0, 0);
+            return cnt == k; // 找到 k 个元素和不超过 sum_limit 的子序列
+        };
+
+        long long left = -1, right = accumulate(nums.begin(), nums.end(), 0LL);
+        while (left + 1 < right) { // 开区间二分，原理见【前置知识】
+            long long mid = (left + right) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return sum - right;
+    }
+};
+```
+
+```go [sol-Go]
+func kSum(nums []int, k int) int64 {
+	sum, total := 0, 0
+	for i, x := range nums {
+		if x >= 0 {
+			sum += x
+			total += x
+		} else {
+			total -= x
+			nums[i] = -x
+		}
+	}
+	slices.Sort(nums)
+
+	kthS := sort.Search(total, func(sumLimit int) bool {
+		cnt := 1 // 空子序列算一个
+		var dfs func(int, int)
+		dfs = func(i, s int) {
+			if cnt == k || i == len(nums) || s+nums[i] > sumLimit {
+				return
+			}
+			cnt++ // s + nums[i] <= sumLimit
+			dfs(i+1, s+nums[i]) // 选
+			dfs(i+1, s) // 不选
+		}
+		dfs(0, 0)
+		return cnt == k // 找到 k 个元素和不超过 sumLimit 的子序列
+	})
+	return int64(sum - kthS)
+}
+```
+
+```js [sol-JavaScript]
+var kSum = function(nums, k) {
+    let sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] >= 0) {
+            sum += nums[i];
+        } else {
+            nums[i] = -nums[i];
+        }
+    }
+    nums.sort((a, b) => a - b);
+
+    let cnt;
+    // 反向递归，增加改成减少，这样可以少传一些参数
+    function dfs(i, s) {
+        if (cnt === 0 || i === nums.length || s < nums[i]) {
+            return;
+        }
+        cnt--;
+        dfs(i + 1, s - nums[i], nums); // 选
+        dfs(i + 1, s, nums); // 不选
+    }
+
+    let left = -1, right = _.sum(nums);
+    while (left + 1 < right) { // 开区间二分，原理见【前置知识】
+        const mid = Math.floor((left + right) / 2);
+        cnt = k - 1; // 空子序列算一个
+        dfs(0, mid, nums);
+        if (cnt === 0) { // 找到 k 个元素和不超过 mid 的子序列
+            right = mid;
+        } else {
+            left = mid;
+        }
+    }
+    return sum - right;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn k_sum(mut nums: Vec<i32>, k: i32) -> i64 {
+        let mut sum = 0;
+        for x in &mut nums {
+            if *x >= 0 {
+                sum += *x as i64;
+            } else {
+                *x = -*x;
+            }
+        }
+        nums.sort_unstable();
+
+        // 反向递归，增加改成减少，这样可以少传一些参数
+        fn dfs(i: usize, s: i64, nums: &Vec<i32>, cnt: &mut i32) {
+            if *cnt == 0 || i == nums.len() || s < nums[i] as i64 {
+                return;
+            }
+            *cnt -= 1;
+            dfs(i + 1, s - nums[i] as i64, nums, cnt); // 选
+            dfs(i + 1, s, nums, cnt); // 不选
+        }
+
+        let mut left = -1;
+        let mut right = nums.iter().map(|&x| x as i64).sum::<i64>();
+        while left + 1 < right { // 开区间二分，原理见【前置知识】
+            let mid = (left + right) / 2;
+            let mut cnt = k - 1; // 空子序列算一个
+            dfs(0, mid, &nums, &mut cnt); // 找到 k 个元素和不超过 mid 的子序列
+            if cnt == 0 {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        sum - right
+    }
+}
+```
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log n + k\log k)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(k)$。
+- 时间复杂度：$\mathcal{O}(n\log n + k\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\sum\limits_{i=0}^{n-1}|\textit{nums}[i]|$。注意 $\texttt{check}$ 的时间复杂度取决于递归中 `cnt++` 的次数，这不超过 $k-1$。
+- 空间复杂度：$\mathcal{O}(\min(k,n))$。空间复杂度取决于递归的栈开销，我们至多递归 $\min(k,n)$ 层。
 
-```py [sol1-Python3]
+## 方法二：最大堆
+
+如何**不重不漏**地生成 $\textit{nums}$ 的所有子序列？
+
+以**有序非负数组** $\textit{nums}=[1,2,3]$ 为例，有 $2^3=8$ 个子序列，生成的方法如下：
+
+1. 从空子序列 $[]$ 开始。
+2. 在 $[]$ 末尾添加 $1$ 得到 $[1]$
+3. 在 $[1]$ 末尾添加 $2$ 得到 $[1,2]$。也可以把末尾的 $1$ 替换成 $2$ 得到 $[2]$。
+4. 在 $[1,2]$ 末尾添加 $3$ 得到 $[1,2,3]$。在 $[2]$ 末尾添加 $3$ 得到 $[2,3]$。也可以把末尾的 $2$ 替换成 $3$ 得到 $[1,3]$ 和 $[3]$。
+
+上述过程结合最小堆，就可以按照从小到大的顺序生成所有子序列了（堆中维护子序列的和以及元素下标），取其中第 $k$ 个子序列的和，作为 $\textit{sum}$ 要减去的数。
+
+代码实现时，也可以改成在一开始把 $\textit{sum}$ 入堆。
+
+#### 答疑
+
+**问**：为什么结合最小堆，就一定是按元素和从小到大的顺序生成的？有没有可能先生成一个大的，再生成一个小的？
+
+**答**：把子序列和它通过添加/替换生成的子序列之间连一条有向边，我们可以得到一棵以 $[]$ 为根的有向树。把边权定义成相邻节点的子序列元素和的差，由于 $\textit{nums}$ 是有序的且没有负数，所以树是**没有负数边权**的。那么上述算法其实就是在这棵树上跑 [Dijkstra 算法](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。把元素和当作海拔高度，算法执行过程就好比不断上涨的水位，我们会按照海拔高度从低到高淹没节点，所以出堆的元素和是非降的。
+
+```py [sol-Python3]
 class Solution:
     def kSum(self, nums: List[int], k: int) -> int:
-        sum = 0
+        s = 0
         for i, x in enumerate(nums):
-            if x >= 0: sum += x
-            else: nums[i] = -x
+            if x >= 0:
+                s += x
+            else:
+                nums[i] = -x
         nums.sort()
-        h = [(-sum, 0)]  # 取负号变成最大堆
+
+        h = [(-s, 0)]  # 取负号变成最大堆
         for _ in range(k - 1):
             s, i = heappop(h)
             if i < len(nums):
-                heappush(h, (s + nums[i], i + 1))  # 保留 nums[i-1]
-                if i: heappush(h, (s + nums[i] - nums[i - 1], i + 1))  # 不保留 nums[i-1]
+                # 在子序列的末尾添加 nums[i]
+                heappush(h, (s + nums[i], i + 1))
+                if i:  # 替换子序列的末尾元素为 nums[i]
+                    heappush(h, (s + nums[i] - nums[i - 1], i + 1))
         return -h[0][0]
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public long kSum(int[] nums, int k) {
-        var sum = 0L;
-        for (var i = 0; i < nums.length; i++)
-            if (nums[i] >= 0) sum += nums[i];
-            else nums[i] = -nums[i];
+        long sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] >= 0) {
+                sum += nums[i];
+            } else {
+                nums[i] = -nums[i];
+            }
+        }
         Arrays.sort(nums);
-        var pq = new PriorityQueue<Pair<Long, Integer>>((a, b) -> Long.compare(b.getKey(), a.getKey()));
+
+        PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<>((a, b) -> Long.compare(b.getKey(), a.getKey()));
         pq.offer(new Pair<>(sum, 0));
         while (--k > 0) {
-            var p = pq.poll();
-            var s = p.getKey();
-            var i = p.getValue();
+            Pair<Long, Integer> p = pq.poll();
+            long s = p.getKey();
+            int i = p.getValue();
             if (i < nums.length) {
-                pq.offer(new Pair<>(s - nums[i], i + 1)); // 保留 nums[i-1]
-                if (i > 0) pq.offer(new Pair<>(s - nums[i] + nums[i - 1], i + 1)); // 不保留 nums[i-1]，把之前减去的加回来
+                // 在子序列的末尾添加 nums[i]
+                pq.offer(new Pair<>(s - nums[i], i + 1));
+                if (i > 0) { // 替换子序列的末尾元素为 nums[i]
+                    pq.offer(new Pair<>(s - nums[i] + nums[i - 1], i + 1));
+                }
             }
         }
         return pq.peek().getKey();
@@ -74,23 +338,31 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     long long kSum(vector<int> &nums, int k) {
         long sum = 0L;
-        for (int &x : nums)
-            if (x >= 0) sum += x;
-            else x = -x;
-        sort(nums.begin(), nums.end());
+        for (int &x : nums) {
+            if (x >= 0) {
+                sum += x;
+            } else {
+                x = -x;
+            }
+        }
+        ranges::sort(nums);
+
         priority_queue<pair<long, int>> pq;
         pq.emplace(sum, 0);
         while (--k) {
-            auto[sum, i] = pq.top();
+            auto [sum, i] = pq.top();
             pq.pop();
             if (i < nums.size()) {
-                pq.emplace(sum - nums[i], i + 1); // 保留 nums[i-1]
-                if (i) pq.emplace(sum - nums[i] + nums[i - 1], i + 1); // 不保留 nums[i-1]，把之前减去的加回来
+                // 在子序列的末尾添加 nums[i]
+                pq.emplace(sum - nums[i], i + 1);
+                if (i) { // 替换子序列的末尾元素为 nums[i]
+                    pq.emplace(sum - nums[i] + nums[i - 1], i + 1);
+                }
             }
         }
         return pq.top().first;
@@ -98,7 +370,7 @@ public:
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func kSum(nums []int, k int) int64 {
 	n := len(nums)
 	sum := 0
@@ -109,177 +381,110 @@ func kSum(nums []int, k int) int64 {
 			nums[i] = -x
 		}
 	}
-	sort.Ints(nums)
-	h := &hp{{sum, 0}}
+	slices.Sort(nums)
+
+	h := hp{{sum, 0}}
 	for ; k > 1; k-- {
-		p := heap.Pop(h).(pair)
-		if p.i < n {
-			heap.Push(h, pair{p.sum - nums[p.i], p.i + 1}) // 保留 nums[p.i-1]
-			if p.i > 0 {
-				heap.Push(h, pair{p.sum - nums[p.i] + nums[p.i-1], p.i + 1}) // 不保留 nums[p.i-1]，把之前减去的加回来
+		p := heap.Pop(&h).(pair)
+		i := p.i
+		if i < n {
+		    // 在子序列的末尾添加 nums[i]
+			heap.Push(&h, pair{p.sum - nums[i], i + 1})
+			if i > 0 { // 替换子序列的末尾元素为 nums[i]
+				heap.Push(&h, pair{p.sum - nums[i] + nums[i-1], i + 1})
 			}
 		}
 	}
-	return int64((*h)[0].sum)
+	return int64(h[0].sum)
 }
 
 type pair struct{ sum, i int }
 type hp []pair
-
 func (h hp) Len() int            { return len(h) }
 func (h hp) Less(i, j int) bool  { return h[i].sum > h[j].sum }
 func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v interface{}) { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+func (h *hp) Push(v any)         { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() any           { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 ```
 
-## 方法二：二分
-
-我们还可以用二分来求出从 $\textit{sum}$ 中减去的第 $k-1$ 小的子序列和。
-
-依然是所有元素取绝对值，然后排序。
-
-二分子序列和，记作 $\textit{limit}$，统计元素和 $s$ 不超过 $\textit{limit}$ 的子序列个数 $\textit{cnt}$。
-
-我们可以写一个简单的回溯，从小到大考虑每个 $\textit{nums}[i]$ 选或者不选，如果遇到 $\textit{cnt}\ge k-1$ 或者 $s+\textit{nums}[i]>\textit{limit}$ 的情况就立刻返回。
-
-用 $\textit{sum}$ 减去二分得到的值就是答案。
-
-#### 复杂度分析
-
-- 时间复杂度：$O(n\log n + k\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\sum|\textit{nums}[i]|$。
-- 空间复杂度：$O(\min(k,n))$，至多递归 $\min(k,n)$ 层。
-
-```py [sol2-Python3]
-class Solution:
-    def kSum(self, nums: List[int], k: int) -> int:
-        sum = tot = 0
-        for i, x in enumerate(nums):
-            if x >= 0:
-                sum += x
-                tot += x
-            else:
-                tot -= x
-                nums[i] = -x
-        nums.sort()
-
-        def count(limit: int) -> int:
-            cnt = 0
-            def f(i: int, s: int) -> None:
-                nonlocal cnt
-                if i == len(nums) or cnt >= k - 1 or s + nums[i] > limit:
-                    return
-                cnt += 1
-                f(i + 1, s + nums[i])  # 选
-                f(i + 1, s)  # 不选
-            f(0, 0)
-            return cnt
-        return sum - bisect_left(range(tot), k - 1, key=count)
-```
-
-```java [sol2-Java]
-class Solution {
-    int[] nums;
-    long limit;
-    int k, cnt;
-
-    void f(int i, long s) {
-        if (i == nums.length || cnt >= k || s + nums[i] > limit) return;
-        ++cnt;
-        f(i + 1, s + nums[i]); // 选
-        f(i + 1, s); // 不选
+```js [sol-JavaScript]
+var kSum = function(nums, k) {
+    let sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] >= 0) {
+            sum += nums[i];
+        } else {
+            nums[i] = -nums[i];
+        }
     }
+    nums.sort((a, b) => a - b);
 
-    public long kSum(int[] nums, int k) {
-        long sum = 0L, tot = 0L;
-        for (var i = 0; i < nums.length; i++) {
-            if (nums[i] >= 0) sum += nums[i];
-            else nums[i] = -nums[i];
-            tot += nums[i];
+    const pq = new MaxPriorityQueue({priority: e => e[0]});
+    pq.enqueue([sum, 0]);
+    while (--k) {
+        const [s, i] = pq.dequeue().element;
+        if (i < nums.length) {
+            // 在子序列的末尾添加 nums[i]
+            pq.enqueue([s - nums[i], i + 1]);
+            if (i > 0) { // 替换子序列的末尾元素为 nums[i]
+                pq.enqueue([s - nums[i] + nums[i - 1], i + 1]);
+            }
         }
-        Arrays.sort(nums);
-
-        this.nums = nums;
-        this.k = k - 1;
-        long left = 0L, right = tot;
-        while (left < right) {
-            var mid = (left + right) / 2;
-            this.limit = mid;
-            cnt = 0;
-            f(0, 0L);
-            if (cnt >= k - 1) right = mid;
-            else left = mid + 1;
-        }
-        return sum - left;
     }
-}
-```
-
-```cpp [sol2-C++]
-class Solution {
-public:
-    long long kSum(vector<int> &nums, int k) {
-        long sum = 0L;
-        for (int &x : nums) {
-            if (x >= 0) sum += x;
-            else x = -x;
-        }
-        sort(nums.begin(), nums.end());
-
-        --k;
-        auto check = [&](long limit) -> bool {
-            int cnt = 0;
-            function<void(int, long)> f = [&](int i, long s) {
-                if (i == nums.size() || cnt >= k || s + nums[i] > limit) return;
-                ++cnt;
-                f(i + 1, s + nums[i]); // 选
-                f(i + 1, s); // 不选
-            };
-            f(0, 0L);
-            return cnt >= k;
-        };
-        long left = 0L, right = accumulate(nums.begin(), nums.end(), 0L);
-        while (left < right) {
-            long mid = (left + right) / 2;
-            if (check(mid)) right = mid;
-            else left = mid + 1;
-        }
-        return sum - left;
-    }
+    return pq.front().element[0];
 };
 ```
 
-```go [sol2-Go]
-func kSum(nums []int, k int) int64 {
-	n := len(nums)
-	sum, tot := 0, 0
-	for i, x := range nums {
-		if x >= 0 {
-			sum += x
-			tot += x
-		} else {
-			tot -= x
-			nums[i] = -x
-		}
-	}
-	sort.Ints(nums)
+```rust [sol-Rust]
+use std::collections::BinaryHeap;
 
-	k--
-	kthSmallest := sort.Search(tot, func(limit int) bool {
-		cnt := 0
-		var f func(int, int)
-		f = func(i, s int) {
-			if i == n || cnt >= k || s+nums[i] > limit {
-				return
-			}
-			cnt++
-			f(i+1, s+nums[i]) // 选
-			f(i+1, s)         // 不选
-		}
-		f(0, 0)
-		return cnt >= k
-	})
-	return int64(sum - kthSmallest)
+impl Solution {
+    pub fn k_sum(mut nums: Vec<i32>, mut k: i32) -> i64 {
+        let mut sum = 0;
+        for x in &mut nums {
+            if *x >= 0 {
+                sum += *x as i64;
+            } else {
+                *x = -*x;
+            }
+        }
+        nums.sort_unstable();
+
+        let mut h = BinaryHeap::new();
+        h.push((sum, 0));
+        while k > 1 {
+            let (s, i) = h.pop().unwrap();
+            if i < nums.len() {
+                // 在子序列的末尾添加 nums[i]
+                h.push((s - nums[i] as i64, i + 1));
+                if i > 0 { // 替换子序列的末尾元素为 nums[i]
+                    h.push((s - nums[i] as i64 + nums[i - 1] as i64, i + 1));
+                }
+            }
+            k -= 1;
+        }
+        h.peek().unwrap().0
+    }
 }
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + k\log k)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(k)$。
+
+## 题单：第 K 小/大
+
+- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
+- [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
+- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
+- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+- [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
+- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
+- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
+- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
+- [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）
+
+更多题单，请点我个人主页 - 讨论发布。
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
