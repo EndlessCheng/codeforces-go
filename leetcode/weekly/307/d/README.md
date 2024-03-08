@@ -263,7 +263,7 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log n + k\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\sum\limits_{i=0}^{n-1}|\textit{nums}[i]|$。注意 $\texttt{check}$ 的时间复杂度取决于递归中 `cnt++` 的次数，这不超过 $k-1$。
 - 空间复杂度：$\mathcal{O}(\min(k,n))$。空间复杂度取决于递归的栈开销，我们至多递归 $\min(k,n)$ 层。
 
-## 方法二：堆
+## 方法二：最小堆
 
 如何**不重不漏**地生成 $\textit{nums}$ 的所有子序列？
 
@@ -274,9 +274,7 @@ impl Solution {
 3. 在 $[1]$ 末尾添加 $2$ 得到 $[1,2]$。也可以把末尾的 $1$ 替换成 $2$ 得到 $[2]$。
 4. 在 $[1,2]$ 末尾添加 $3$ 得到 $[1,2,3]$。在 $[2]$ 末尾添加 $3$ 得到 $[2,3]$。也可以把末尾的 $2$ 替换成 $3$ 得到 $[1,3]$ 和 $[3]$。
 
-上述过程结合最小堆，就可以按照从小到大的顺序生成所有子序列了（堆中维护子序列的和以及元素下标），取其中第 $k$ 个子序列的和，作为 $\textit{sum}$ 要减去的数。
-
-代码实现时，可以改成在一开始把 $\textit{sum}$ 入堆，改用最大堆维护。
+上述过程结合**最小堆**，就可以按照从小到大的顺序生成所有子序列了（堆中维护子序列的和以及元素下标），取生成的第 $k$ 个子序列的和，作为 $\textit{sum}$ 要减去的数。
 
 #### 答疑
 
@@ -287,23 +285,23 @@ impl Solution {
 ```py [sol-Python3]
 class Solution:
     def kSum(self, nums: List[int], k: int) -> int:
-        s = 0
+        sum = 0
         for i, x in enumerate(nums):
             if x >= 0:
-                s += x
+                sum += x
             else:
                 nums[i] = -x
         nums.sort()
 
-        h = [(-s, 0)]  # 取负号变成最大堆
+        h = [(0, 0)]  # 空子序列
         for _ in range(k - 1):
             s, i = heappop(h)
             if i < len(nums):
                 # 在子序列的末尾添加 nums[i]
-                heappush(h, (s + nums[i], i + 1))
+                heappush(h, (s + nums[i], i + 1))  # 下一个添加/替换的元素下标为 i+1
                 if i:  # 替换子序列的末尾元素为 nums[i]
                     heappush(h, (s + nums[i] - nums[i - 1], i + 1))
-        return -h[0][0]
+        return sum - h[0][0]
 ```
 
 ```java [sol-Java]
@@ -319,21 +317,21 @@ class Solution {
         }
         Arrays.sort(nums);
 
-        PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<>((a, b) -> Long.compare(b.getKey(), a.getKey()));
-        pq.offer(new Pair<>(sum, 0));
+        PriorityQueue<Pair<Long, Integer>> pq = new PriorityQueue<>((a, b) -> Long.compare(a.getKey(), b.getKey()));
+        pq.offer(new Pair<>(0L, 0)); // 空子序列
         while (--k > 0) {
             Pair<Long, Integer> p = pq.poll();
             long s = p.getKey();
             int i = p.getValue();
             if (i < nums.length) {
                 // 在子序列的末尾添加 nums[i]
-                pq.offer(new Pair<>(s - nums[i], i + 1));
+                pq.offer(new Pair<>(s + nums[i], i + 1)); // 下一个添加/替换的元素下标为 i+1
                 if (i > 0) { // 替换子序列的末尾元素为 nums[i]
-                    pq.offer(new Pair<>(s - nums[i] + nums[i - 1], i + 1));
+                    pq.offer(new Pair<>(s + nums[i] - nums[i - 1], i + 1));
                 }
             }
         }
-        return pq.peek().getKey();
+        return sum - pq.peek().getKey();
     }
 }
 ```
@@ -352,20 +350,20 @@ public:
         }
         ranges::sort(nums);
 
-        priority_queue<pair<long, int>> pq;
-        pq.emplace(sum, 0);
+        priority_queue<pair<long, int>, vector<pair<long, int>>, greater<>> pq;
+        pq.emplace(0, 0); // 空子序列
         while (--k) {
-            auto [sum, i] = pq.top();
+            auto [s, i] = pq.top();
             pq.pop();
             if (i < nums.size()) {
                 // 在子序列的末尾添加 nums[i]
-                pq.emplace(sum - nums[i], i + 1);
+                pq.emplace(s + nums[i], i + 1); // 下一个添加/替换的元素下标为 i+1
                 if (i) { // 替换子序列的末尾元素为 nums[i]
-                    pq.emplace(sum - nums[i] + nums[i - 1], i + 1);
+                    pq.emplace(s + nums[i] - nums[i - 1], i + 1);
                 }
             }
         }
-        return pq.top().first;
+        return sum - pq.top().first;
     }
 };
 ```
@@ -383,25 +381,25 @@ func kSum(nums []int, k int) int64 {
 	}
 	slices.Sort(nums)
 
-	h := hp{{sum, 0}}
+	h := hp{{0, 0}} // 空子序列
 	for ; k > 1; k-- {
 		p := heap.Pop(&h).(pair)
 		i := p.i
 		if i < n {
 		    // 在子序列的末尾添加 nums[i]
-			heap.Push(&h, pair{p.sum - nums[i], i + 1})
+			heap.Push(&h, pair{p.sum + nums[i], i + 1}) // 下一个添加/替换的元素下标为 i+1
 			if i > 0 { // 替换子序列的末尾元素为 nums[i]
-				heap.Push(&h, pair{p.sum - nums[i] + nums[i-1], i + 1})
+				heap.Push(&h, pair{p.sum + nums[i] - nums[i-1], i + 1})
 			}
 		}
 	}
-	return int64(h[0].sum)
+	return int64(sum - h[0].sum)
 }
 
 type pair struct{ sum, i int }
 type hp []pair
 func (h hp) Len() int            { return len(h) }
-func (h hp) Less(i, j int) bool  { return h[i].sum > h[j].sum }
+func (h hp) Less(i, j int) bool  { return h[i].sum < h[j].sum }
 func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *hp) Push(v any)         { *h = append(*h, v.(pair)) }
 func (h *hp) Pop() any           { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
@@ -419,19 +417,19 @@ var kSum = function(nums, k) {
     }
     nums.sort((a, b) => a - b);
 
-    const pq = new MaxPriorityQueue({priority: e => e[0]});
-    pq.enqueue([sum, 0]);
+    const pq = new MinPriorityQueue({priority: e => e[0]});
+    pq.enqueue([0, 0]); // 空子序列
     while (--k) {
         const [s, i] = pq.dequeue().element;
         if (i < nums.length) {
             // 在子序列的末尾添加 nums[i]
-            pq.enqueue([s - nums[i], i + 1]);
+            pq.enqueue([s + nums[i], i + 1]); // 下一个添加/替换的元素下标为 i+1
             if (i > 0) { // 替换子序列的末尾元素为 nums[i]
-                pq.enqueue([s - nums[i] + nums[i - 1], i + 1]);
+                pq.enqueue([s + nums[i] - nums[i - 1], i + 1]);
             }
         }
     }
-    return pq.front().element[0];
+    return sum - pq.front().element[0];
 };
 ```
 
@@ -450,13 +448,14 @@ impl Solution {
         }
         nums.sort_unstable();
 
+        // 注意：为方便实现，改成最大堆，在一开始把 sum 入堆，循环中的加法改成减法
         let mut h = BinaryHeap::new();
-        h.push((sum, 0));
+        h.push((sum, 0)); // 空子序列
         while k > 1 {
             let (s, i) = h.pop().unwrap();
             if i < nums.len() {
                 // 在子序列的末尾添加 nums[i]
-                h.push((s - nums[i] as i64, i + 1));
+                h.push((s - nums[i] as i64, i + 1)); // 下一个添加/替换的元素下标为 i+1
                 if i > 0 { // 替换子序列的末尾元素为 nums[i]
                     h.push((s - nums[i] as i64 + nums[i - 1] as i64, i + 1));
                 }
