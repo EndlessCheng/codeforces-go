@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1yu4y1z7sE/)。
-
 把一个 $1$ 放末尾，其余全部放在开头。
 
 ```py [sol-Python3]
@@ -22,7 +20,7 @@ public class Solution {
 class Solution {
 public:
     string maximumOddBinaryNumber(string s) {
-        int cnt1 = count(s.begin(), s.end(), '1');
+        int cnt1 = ranges::count(s, '1');
         return string(cnt1 - 1, '1') + string(s.length() - cnt1, '0') + '1';
     }
 };
@@ -55,3 +53,7 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
