@@ -59,13 +59,13 @@ https://codeforces.com/problemset/problem/954/F
 
 /* 回溯
 
-子集/组合（也可以用二进制枚举做）
+子集（也可以用二进制枚举做）
 - [78. 子集](https://leetcode.cn/problems/subsets/)
-- [77. 组合](https://leetcode.cn/problems/combinations/)
+- [784. 字母大小写全排列](https://leetcode.cn/problems/letter-case-permutation/) 1342
 - [1286. 字母组合迭代器](https://leetcode.cn/problems/iterator-for-combination/) 1591
+- [LCP 51. 烹饪料理](https://leetcode.cn/problems/UEcfPD/)
 - [2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/) 1719
 - [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
-- [LCP 51. 烹饪料理](https://leetcode.cn/problems/UEcfPD/)
 - [2151. 基于陈述统计最多好人数](https://leetcode.cn/problems/maximum-good-people-based-on-statements/) 1980
 - [2959. 关闭分部的可行集合数目](https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/) 2077
 - [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
@@ -74,9 +74,16 @@ https://codeforces.com/problemset/problem/954/F
 https://codeforces.com/problemset/problem/550/B 1400
 https://codeforces.com/problemset/problem/962/C 1400
 
+组合
+- [77. 组合](https://leetcode.cn/problems/combinations/)
+- [216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)
+- [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+- [301. 删除无效的括号](https://leetcode.cn/problems/remove-invalid-parentheses/)
+
 分割
-- [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
 - [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
+- [306. 累加数](https://leetcode.cn/problems/additive-number/)
+- [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
 - [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/) 1679
 
 排列（部分题目可以用状压 DP 继续优化）
@@ -1129,6 +1136,7 @@ https://codeforces.com/problemset/problem/598/D 1700
 - [1210. 穿过迷宫的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/) 2022
 - [490. 迷宫](https://leetcode.cn/problems/the-maze/)（会员题）
 - [505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)（会员题）
+- [499. 迷宫 III](https://leetcode.cn/problems/the-maze-iii/)（会员题）
 - [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
 http://codeforces.com/problemset/problem/329/B
 https://atcoder.jp/contests/abc317/tasks/abc317_e
