@@ -91,6 +91,7 @@
 |[动态规划 - 从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)|[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)|[代码](https://leetcode.cn/problems/house-robber/solutions/2102725/ru-he-xiang-chu-zhuang-tai-ding-yi-he-zh-1wt1/)|包含空间优化|
 ||[70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)|[代码](https://leetcode.cn/problems/climbing-stairs/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-7zm1/)|*课后作业|
 ||[746. 使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)|[代码](https://leetcode.cn/problems/min-cost-climbing-stairs/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-j99e/)|*课后作业|
+||[2466. 统计构造好字符串的方案数](https://leetcode.cn/problems/count-ways-to-build-good-strings/)|[代码](https://leetcode.cn/problems/count-ways-to-build-good-strings/solution/by-endlesscheng-4j22/)|*课后作业|
 ||[213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)|[代码](https://leetcode.cn/problems/house-robber-ii/solution/jian-ji-xie-fa-zhi-jie-diao-yong-198-ti-qhvri/)|*课后作业|
 |[0-1 背包 完全背包 至多/恰好/至少](https://www.bilibili.com/video/BV16Y411v7Y6/)|[494. 目标和](https://leetcode.cn/problems/target-sum/)|[代码](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)|包含空间优化|
 ||[322. 零钱兑换](https://leetcode.cn/problems/coin-change/)|[代码](https://leetcode.cn/problems/coin-change/solutions/2119065/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-21m5/)|包含空间优化|
