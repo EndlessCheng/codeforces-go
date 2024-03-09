@@ -26,21 +26,21 @@
 ||[2302. 统计得分小于 K 的子数组数目](https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/)|[代码](https://leetcode.cn/problems/count-subarrays-with-score-less-than-k/solution/by-endlesscheng-b120/)|*课后作业|
 ||[1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/)|[代码](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/solution/ni-xiang-si-wei-pythonjavacgo-by-endless-b4jt/)|*课后作业|
 ||[1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/)|[代码](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/solution/tong-xiang-shuang-zhi-zhen-hua-dong-chua-z7tu/)|*课后作业|
-|[二分查找](https://www.bilibili.com/video/BV1AP41137w7/)|[34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)|[代码](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/solutions/1980196/er-fen-cha-zhao-zong-shi-xie-bu-dui-yi-g-t9l9/)|三种写法|
+|[二分查找](https://www.bilibili.com/video/BV1AP41137w7/)|[34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)|[代码](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/solution/er-fen-cha-zhao-zong-shi-xie-bu-dui-yi-g-t9l9/)|三种写法|
 ||[2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/)|[代码](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/solution/mo-ni-by-endlesscheng-8e43/)|*课后作业|
 ||[2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/)|[代码](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/solution/by-endlesscheng-1kbp/)|*课后作业|
 ||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
 ||[2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)|[代码](https://leetcode.cn/problems/minimum-time-to-complete-trips/solution/er-fen-da-an-python-yi-xing-gao-ding-by-xwvs8/)|*课后作业|
 ||[2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)|[代码](https://leetcode.cn/problems/minimize-maximum-of-array/solution/liang-chong-zuo-fa-er-fen-da-an-fen-lei-qhee6/)|*课后作业|
 ||[2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/)|[代码](https://leetcode.cn/problems/maximum-number-of-alloys/solution/er-fen-da-an-fu-ti-dan-by-endlesscheng-3jdr/)|*课后作业|
-|[二分查找 - 变形](https://www.bilibili.com/video/BV1QK411d76w/)|[162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)|[代码](https://leetcode.cn/problems/find-peak-element/solutions/1987497/by-endlesscheng-9ass/)||
-||[153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/solutions/1987499/by-endlesscheng-owgd/)||
-||[33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/search-in-rotated-sorted-array/solutions/1987503/by-endlesscheng-auuh/)|两种方法|
+|[二分查找 - 变形](https://www.bilibili.com/video/BV1QK411d76w/)|[162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)|[代码](https://leetcode.cn/problems/find-peak-element/solution/by-endlesscheng-9ass/)||
+||[153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/solution/by-endlesscheng-owgd/)||
+||[33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/search-in-rotated-sorted-array/solution/by-endlesscheng-auuh/)|两种方法|
 ||[1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)|[代码](https://leetcode.cn/problems/find-a-peak-element-ii/solution/tu-jie-li-yong-xing-zui-da-zhi-pan-duan-r4e0n/)|*课后作业|
 ||[154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/solution/zhi-yao-ni-hui-153-jiu-neng-kan-dong-pyt-qqc6/)|*课后作业|
-|[链表 - 反转系列](https://www.bilibili.com/video/BV1sd4y1x7KN/)|[206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)|[代码](https://leetcode.cn/problems/reverse-linked-list/solutions/1992225/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-o5zy/)||
-||[92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)|[代码](https://leetcode.cn/problems/reverse-linked-list-ii/solutions/1992226/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-teqq/)||
-||[25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)|[代码](https://leetcode.cn/problems/reverse-nodes-in-k-group/solutions/1992228/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-plfs/)||
+|[链表 - 反转系列](https://www.bilibili.com/video/BV1sd4y1x7KN/)|[206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/)|[代码](https://leetcode.cn/problems/reverse-linked-list/solution/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-o5zy/)||
+||[92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)|[代码](https://leetcode.cn/problems/reverse-linked-list-ii/solution/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-teqq/)||
+||[25. K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)|[代码](https://leetcode.cn/problems/reverse-nodes-in-k-group/solution/you-xie-cuo-liao-yi-ge-shi-pin-jiang-tou-plfs/)||
 ||[24. 两两交换链表中的节点](https://leetcode.cn/problems/swap-nodes-in-pairs/)|[代码](https://leetcode.cn/problems/swap-nodes-in-pairs/solution/tu-jie-die-dai-di-gui-yi-zhang-tu-miao-d-51ap)|*课后作业|
 ||[445. 两数相加 II](https://leetcode.cn/problems/add-two-numbers-ii/)|[代码](https://leetcode.cn/problems/add-two-numbers-ii/solution/fan-zhuan-lian-biao-liang-shu-xiang-jia-okw6q)|*课后作业|
 ||[2816. 翻倍以链表形式表示的数字](https://leetcode.cn/problems/double-a-number-represented-as-a-linked-list/)|[代码](https://leetcode.cn/problems/double-a-number-represented-as-a-linked-list/solution/o1-kong-jian-zuo-fa-kan-cheng-shi-head-y-1dco/)|*课后作业|
@@ -87,6 +87,7 @@
 |[回溯 - 排列型](https://www.bilibili.com/video/BV1mY411D7f6/)|[46. 全排列](https://leetcode.cn/problems/permutations/)|[代码](https://leetcode.cn/problems/permutations/solutions/2079585/hui-su-bu-hui-xie-tao-lu-zai-ci-jing-que-6hrh/)|精确计算搜索树的节点个数|
 ||[51. N 皇后](https://leetcode.cn/problems/n-queens/)|[代码](https://leetcode.cn/problems/n-queens/solutions/2079586/hui-su-tao-lu-miao-sha-nhuang-hou-shi-pi-mljv/)||
 ||[52. N 皇后 II](https://leetcode.cn/problems/n-queens-ii/)|[代码](https://leetcode.cn/problems/n-queens-ii/solution/hui-su-miao-sha-nhuang-hou-yi-ge-shi-pin-l41l)||
+||[2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/)|[代码](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/solution/tong-yong-zuo-fa-zui-xiao-fei-yong-zui-d-iuw8/)|*课后作业|
 |[动态规划 - 从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)|[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)|[代码](https://leetcode.cn/problems/house-robber/solutions/2102725/ru-he-xiang-chu-zhuang-tai-ding-yi-he-zh-1wt1/)|包含空间优化|
 ||[213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)|[代码](https://leetcode.cn/problems/house-robber-ii/solution/jian-ji-xie-fa-zhi-jie-diao-yong-198-ti-qhvri/)|*课后作业|
 |[0-1 背包 完全背包 至多/恰好/至少](https://www.bilibili.com/video/BV16Y411v7Y6/)|[494. 目标和](https://leetcode.cn/problems/target-sum/)|[代码](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)|包含空间优化|
@@ -127,7 +128,7 @@
 ||[1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/)|[代码](https://leetcode.cn/problems/jump-game-vi/solution/yi-bu-bu-you-hua-cong-di-gui-dao-di-tui-84qn3/)|*课后作业|
 ||[2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)|[代码](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/solution/dpcong-on2-dao-onpythonjavacgo-by-endles-nux5/)|*课后作业|
 
-其它尚未更新的 topic 请看 [每日一题题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+其它尚未更新的 topic 请看 [题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
 ### 分类题单
 
