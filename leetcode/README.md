@@ -31,6 +31,8 @@
 ||[2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/)|[代码](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/solution/by-endlesscheng-1kbp/)|*课后作业|
 ||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
 ||[2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)|[代码](https://leetcode.cn/problems/minimum-time-to-complete-trips/solution/er-fen-da-an-python-yi-xing-gao-ding-by-xwvs8/)|*课后作业|
+||[2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)|[代码](https://leetcode.cn/problems/minimize-maximum-of-array/solution/liang-chong-zuo-fa-er-fen-da-an-fen-lei-qhee6/)|*课后作业|
+||[2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/)|[代码](https://leetcode.cn/problems/maximum-number-of-alloys/solution/er-fen-da-an-fu-ti-dan-by-endlesscheng-3jdr/)|*课后作业|
 |[二分查找 - 变形](https://www.bilibili.com/video/BV1QK411d76w/)|[162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)|[代码](https://leetcode.cn/problems/find-peak-element/solutions/1987497/by-endlesscheng-9ass/)||
 ||[153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/solutions/1987499/by-endlesscheng-owgd/)||
 ||[33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)|[代码](https://leetcode.cn/problems/search-in-rotated-sorted-array/solutions/1987503/by-endlesscheng-auuh/)|两种方法|
