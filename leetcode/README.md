@@ -10,9 +10,9 @@
 |---|---|---|---|
 |[相向双指针 1](https://www.bilibili.com/video/BV1bP411c7oJ/)|[167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)|[代码](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/solution/san-shu-zhi-he-bu-hui-xie-xiang-xiang-sh-6wbq/)||
 ||[15. 三数之和](https://leetcode.cn/problems/3sum/)|[代码](https://leetcode.cn/problems/3sum/solution/shuang-zhi-zhen-xiang-bu-ming-bai-yi-ge-pno55/)|包含两个优化|
+||[2824. 统计和小于目标的下标对数目](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/)|[代码](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/solution/onlogn-pai-xu-shuang-zhi-zhen-by-endless-qk40/)|*课后作业|
 ||[16. 最接近的三数之和](https://leetcode.cn/problems/3sum-closest/)|[代码](https://leetcode.cn/problems/3sum-closest/solution/ji-zhi-you-hua-ji-yu-san-shu-zhi-he-de-z-qgqi/)|*课后作业|
 ||[18. 四数之和](https://leetcode.cn/problems/4sum/)|[代码](https://leetcode.cn/problems/4sum/solution/ji-zhi-you-hua-ji-yu-san-shu-zhi-he-de-z-1f0b/)|*课后作业|
-||[2824. 统计和小于目标的下标对数目](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/)|[代码](https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/solution/onlogn-pai-xu-shuang-zhi-zhen-by-endless-qk40/)|*课后作业|
 ||[611. 有效三角形的个数](https://leetcode.cn/problems/valid-triangle-number/)|[代码](https://leetcode.cn/problems/valid-triangle-number/solution/zhuan-huan-cheng-abcyong-xiang-xiang-shu-1ex3/)|*课后作业|
 |[相向双指针 2](https://www.bilibili.com/video/BV1Qg411q7ia/)|[11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)|[代码](https://leetcode.cn/problems/container-with-most-water/solution/by-endlesscheng-f0xz/)||
 ||[42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)|[代码](https://leetcode.cn/problems/trapping-rain-water/solution/zuo-liao-nbian-huan-bu-hui-yi-ge-shi-pin-ukwm/)|额外讲了**前后缀分解**|
