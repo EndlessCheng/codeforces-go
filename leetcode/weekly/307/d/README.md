@@ -27,7 +27,7 @@ $\textit{sum}$ 减去的数越小，$\textit{nums}$ 的子序列和就越大。
 
 > 注：一道题能否二分答案，得看它有没有单调性。对于本题，$\textit{sumLimit}$ 越大，这样的子序列越多，有单调性，可以二分答案。
 
-爆搜，从小到大考虑每个 $\textit{nums}[i]$ **选或不选**。在递归中，如果发现 $\textit{cnt}=k$ 或者 $s+\textit{nums}[i]>\textit{sumLimit}$，就不再继续递归，因为前者说明我们已经找到 $k$ 个和不超过 $\textit{sumLimit}$ 的子序列，后者说明子序列的和太大。
+爆搜，从小到大考虑每个 $\textit{nums}[i]$ **选或不选**。在递归中，如果发现 $\textit{cnt}=k$ 或者 $s+\textit{nums}[i]>\textit{sumLimit}$，就不再继续递归，因为前者说明我们已经找到 $k$ 个和不超过 $\textit{sumLimit}$ 的子序列，后者说明子序列的和太大。由于每个 $\textit{nums}[i]$ 都取了绝对值，没有负数，$s$ 不会减小，所以可以**剪枝**。
 
 二分下界：$0$。
 
