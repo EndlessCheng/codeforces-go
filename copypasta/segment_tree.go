@@ -694,6 +694,9 @@ func (o *stNode) kth(k int) int {
 // https://zhuanlan.zhihu.com/p/250565583
 // https://blog.csdn.net/weixin_43914593/article/details/108861279
 //
+// 数组写法 https://codeforces.com/problemset/submission/323/250523407
+// 需要 n*(4+logn) 的空间
+//
 // 另见 union_find.go 中的「可持久化并查集」
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
@@ -711,7 +714,7 @@ func (o *stNode) kth(k int) int {
 // 在线做法 https://codeforces.com/problemset/problem/1262/D2
 type pstNode struct {
 	lo, ro *pstNode
-	l, r   int // 注：如果 MLE 请换成传参的写法
+	l, r   int // 注：如果 MLE 请换成传参的写法，或者使用数组版本
 	sum    int
 }
 
@@ -838,8 +841,9 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 
 // EXTRA: 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
 // low 和 high 为离散化后的值（从 1 开始）
+// https://codeforces.com/problemset/problem/323/C 2400
+// https://codeforces.com/problemset/problem/538/F 2200
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417
-// https://codeforces.com/problemset/problem/538/F
 // 调用方式同上 t[r].countRange(t[l-1], low, high)
 func (o *pstNode) countRange(old *pstNode, low, high int) int {
 	if high < o.l || o.r < low {
