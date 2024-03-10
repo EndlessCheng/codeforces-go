@@ -130,6 +130,7 @@ func fasterIO() {
 	rc := func() byte {
 		if _i == _n {
 			_n, _ = os.Stdin.Read(buf)
+			// EOF 一定要判断！不判断会 RE：https://codeforces.com/problemset/submission/323/250522741
 			if _n == 0 { // EOF
 				return eof
 			}
