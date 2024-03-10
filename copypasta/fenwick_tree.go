@@ -68,7 +68,7 @@ const fenwickInitVal = 0 // -1e18
 type fenwick []int
 
 func newFenwickTree(n int) fenwick {
-	t := make(fenwick, n) // n+1
+	t := make(fenwick, n+1)
 	for i := range t {
 		t[i] = fenwickInitVal
 	}
