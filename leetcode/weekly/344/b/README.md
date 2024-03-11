@@ -1,118 +1,187 @@
-### 本题视频讲解
-
-见[【周赛 344】](https://www.bilibili.com/video/BV1YL41187Rx/)第二题，欢迎点赞投币！
-
-### 思路
-
 用哈希表 $\textit{cnt}$ 统计每个数的出现次数。
 
 用哈希表 $\textit{freq}$ 统计出现次数的出现次数，从而可以 $\mathcal{O}(1)$ 回答 $\texttt{hasFrequency}$。
 
-添加删除元素的时候，除了修改 $\textit{cnt}[\textit{number}]$，还需要根据 $\textit{cnt}[\textit{number}]$ 的变化来修改 $\textit{freq}$，具体见代码。
+增删元素的时候，除了修改 $\textit{cnt}[\textit{number}]$，还需要根据 $\textit{cnt}[\textit{number}]$ 的变化来修改 $\textit{freq}$，具体见代码。
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class FrequencyTracker:
     def __init__(self):
-        self.cnt = Counter()  # 每个数的出现次数
-        self.freq = Counter()  # 出现次数的出现次数
+        self.cnt = Counter()  # number 的出现次数
+        self.freq = Counter()  # number 的出现次数的出现次数
 
-    def add(self, number: int) -> None:
-        self.freq[self.cnt[number]] -= 1  # 直接减，因为下面询问的不会涉及到 frequency=0
-        self.cnt[number] += 1
-        self.freq[self.cnt[number]] += 1
+    def add(self, number: int, delta=1) -> None:
+        self.freq[self.cnt[number]] -= 1  # 去掉一个旧的 cnt[number]
+        self.cnt[number] += delta
+        self.freq[self.cnt[number]] += 1  # 添加一个新的 cnt[number]
 
     def deleteOne(self, number: int) -> None:
-        if self.cnt[number] == 0: return  # 不删除任何内容
-        self.freq[self.cnt[number]] -= 1
-        self.cnt[number] -= 1
-        self.freq[self.cnt[number]] += 1
+        if self.cnt[number]:
+            self.add(number, -1)
 
     def hasFrequency(self, frequency: int) -> bool:
-        return self.freq[frequency] > 0
+        return self.freq[frequency] > 0  # 至少有一个 number 的出现次数恰好为 frequency
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class FrequencyTracker {
-    private Map<Integer, Integer> cnt = new HashMap<>(); // 每个数的出现次数
-    private Map<Integer, Integer> freq = new HashMap<>(); // 出现次数的出现次数
+    private final Map<Integer, Integer> cnt = new HashMap<>(); // number 的出现次数
+    private final Map<Integer, Integer> freq = new HashMap<>(); // number 的出现次数的出现次数
 
     public FrequencyTracker() {}
 
+    public void update(int number, int delta) {
+        int c = cnt.merge(number, delta, Integer::sum);
+        freq.merge(c - delta, -1, Integer::sum); // 去掉一个旧的 cnt[number]
+        freq.merge(c, 1, Integer::sum); // 添加一个新的 cnt[number]
+    }
+
     public void add(int number) {
-        // 直接减，因为下面询问的不会涉及到 frequency=0
-        freq.merge(cnt.getOrDefault(number, 0), -1, Integer::sum);
-        int c = cnt.merge(number, 1, Integer::sum);
-        freq.merge(c, 1, Integer::sum);
+        update(number, 1);
     }
 
     public void deleteOne(int number) {
-        if (cnt.getOrDefault(number, 0) == 0) return; // 不删除任何内容
-        freq.merge(cnt.get(number), -1, Integer::sum);
-        int c = cnt.merge(number, -1, Integer::sum);
-        freq.merge(c, 1, Integer::sum);
+        if (cnt.getOrDefault(number, 0) > 0) {
+            update(number, -1);
+        }
     }
 
     public boolean hasFrequency(int frequency) {
-        return freq.getOrDefault(frequency, 0) > 0;
+        return freq.getOrDefault(frequency, 0) > 0; // 至少有一个 number 的出现次数恰好为 frequency
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class FrequencyTracker {
-    unordered_map<int, int> cnt; // 每个数的出现次数
-    unordered_map<int, int> freq; // 出现次数的出现次数
+    unordered_map<int, int> cnt; // number 的出现次数
+    unordered_map<int, int> freq; // number 的出现次数的出现次数
 public:
     FrequencyTracker() {}
 
     void add(int number) {
-        --freq[cnt[number]]; // 直接减，因为下面询问的不会涉及到 frequency=0
-        ++freq[++cnt[number]];
+        --freq[cnt[number]]; // 去掉一个旧的 cnt[number]
+        ++freq[++cnt[number]]; // 添加一个新的 cnt[number]
     }
 
     void deleteOne(int number) {
         if (!cnt[number]) return; // 不删除任何内容
-        --freq[cnt[number]];
-        ++freq[--cnt[number]];
+        --freq[cnt[number]]; // 去掉一个旧的 cnt[number]
+        ++freq[--cnt[number]]; // 添加一个新的 cnt[number]
     }
 
     bool hasFrequency(int frequency) {
-        return freq[frequency];
+        return freq[frequency]; // 至少有一个 number 的出现次数恰好为 frequency
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 type FrequencyTracker struct {
-	cnt  map[int]int // 每个数的出现次数
-	freq map[int]int // 出现次数的出现次数
+	cnt  map[int]int // number 的出现次数
+	freq map[int]int // number 的出现次数的出现次数
 }
 
-func Constructor() (_ FrequencyTracker) {
+func Constructor() FrequencyTracker {
 	return FrequencyTracker{map[int]int{}, map[int]int{}}
 }
 
+func (f FrequencyTracker) update(number, delta int) {
+	f.freq[f.cnt[number]]-- // 去掉一个旧的 cnt[number]
+	f.cnt[number] += delta
+	f.freq[f.cnt[number]]++ // 添加一个新的 cnt[number]
+}
+
 func (f FrequencyTracker) Add(number int) {
-	f.freq[f.cnt[number]]-- // 直接减，因为下面询问的不会涉及到 frequency=0
-	f.cnt[number]++
-	f.freq[f.cnt[number]]++
+	f.update(number, 1)
 }
 
 func (f FrequencyTracker) DeleteOne(number int) {
-	if f.cnt[number] == 0 {
-		return // 不删除任何内容
+	if f.cnt[number] > 0 {
+		f.update(number, -1)
 	}
-	f.freq[f.cnt[number]]--
-	f.cnt[number]--
-	f.freq[f.cnt[number]]++
 }
 
 func (f FrequencyTracker) HasFrequency(frequency int) bool {
-	return f.freq[frequency] > 0
+	return f.freq[frequency] > 0 // 至少有一个 number 的出现次数恰好为 frequency
 }
 ```
 
-### 复杂度分析
+```js [sol-JavaScript]
+class FrequencyTracker {
+    constructor() {
+        this.cnt = new Map(); // number 的出现次数
+        this.freq = new Map(); // number 的出现次数的出现次数
+    }
+
+    add(number, delta = 1) {
+        let c = this.cnt.get(number) ?? 0;
+        this.freq.set(c, (this.freq.get(c) ?? 0) - 1); // 去掉一个旧的 cnt[number]
+        c += delta;
+        this.cnt.set(number, c);
+        this.freq.set(c, (this.freq.get(c) ?? 0) + 1); // 添加一个新的 cnt[number]
+    }
+
+    deleteOne(number) {
+        if ((this.cnt.get(number) ?? 0) > 0) {
+            this.add(number, -1);
+        }
+    }
+
+    hasFrequency(frequency) {
+        return (this.freq.get(frequency) ?? 0) > 0; // 至少有一个 number 的出现次数恰好为 frequency
+    }
+}
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+struct FrequencyTracker {
+    cnt: HashMap<i32, i32>, // number 的出现次数
+    freq: HashMap<i32, i32>, // number 的出现次数的出现次数
+}
+
+impl FrequencyTracker {
+    fn new() -> Self {
+        Self { cnt: HashMap::new(), freq: HashMap::new() }
+    }
+
+    fn update(&mut self, number: i32, delta: i32) {
+        let c = self.cnt.entry(number).or_insert(0);
+        *self.freq.entry(*c).or_insert(0) -= 1; // 去掉一个旧的 cnt[number]
+        *c += delta;
+        *self.freq.entry(*c).or_insert(0) += 1; // 添加一个新的 cnt[number]
+    }
+
+    fn add(&mut self, number: i32) {
+        self.update(number, 1);
+    }
+
+    fn delete_one(&mut self, number: i32) {
+        if *self.cnt.get(&number).unwrap_or(&0) > 0 {
+            self.update(number, -1);
+        }
+    }
+
+    fn has_frequency(&self, frequency: i32) -> bool {
+        *self.freq.get(&frequency).unwrap_or(&0) > 0 // 至少有一个 number 的出现次数恰好为 frequency
+    }
+}
+```
+
+#### 复杂度分析
 
 - 时间复杂度：所有操作均为 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(q)$。其中 $q$ 为操作次数。
+
+## 分类题单
+
+- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+- [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
