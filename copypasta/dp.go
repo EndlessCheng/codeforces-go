@@ -19,6 +19,7 @@ LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/
 - 变形：有花费 LC746 https://leetcode.cn/problems/min-cost-climbing-stairs/
 - LC2466 https://leetcode.cn/problems/count-ways-to-build-good-strings/ 1694
 - LC2533 https://leetcode.cn/problems/number-of-good-binary-strings/
+- LC377 https://leetcode.cn/problems/combination-sum-iv/ 每次可以往上爬 nums[i] 步
 LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 - 变形：恰好选 floor(n/2) 个 https://atcoder.jp/contests/abc162/tasks/abc162_f
 - 变形：矩阵打家劫舍 https://codeforces.com/problemset/problem/1195/C
@@ -36,15 +37,16 @@ LC2312 https://leetcode.cn/problems/selling-pieces-of-wood/ 2363
 LC2944 https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/
 LC2297 https://leetcode.cn/problems/jump-game-viii/
 LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
+https://codeforces.com/contest/1547/problem/E 1500
 另见「最长递增子序列」
 
 ② 双序列问题，一般定义 f[i][j] 表示对子问题 (s1[:i],s2[:j]) 的求解结果
 见下面的「最长公共子序列」，包含大量扩展题目
 
-③ 划分型 DP：将序列分成（恰好/至多）k 个连续区间，求解这些区间的某个最优性质
-一般定义 f[i][j] 表示将 a[:j+1] 分成 i+1 个连续区间得到的最优解
-此时可以枚举最后一个区间的左端点 L，从 f[i-1][L-1] 转移到 f[i][j]，转移时考虑 a[L:j+1] 对最优解的影响
-- [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
+③ 划分型 DP：将数组分成恰好（或至多）k 个连续子数组，求解与这些子数组有关的最优值
+一般定义 f[i][j] 表示将 a[:j] 分成 i 个连续子数组得到的最优解
+此时可以枚举最后一个子数组的左端点 L，从 f[i-1][L] 转移到 f[i][j]，转移时考虑 a[L:j] 对最优解的影响
+- [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/) 做法不止一种
 - [813. 最大平均值和的分组](https://leetcode.cn/problems/largest-sum-of-averages/) 1937
 - [1278. 分割回文串 III](https://leetcode.cn/problems/palindrome-partitioning-iii/) 1979
 - [1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/) 2035
@@ -52,7 +54,7 @@ LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
 - [2911. 得到 K 个半回文串的最少修改次数](https://leetcode.cn/problems/minimum-changes-to-make-k-semi-palindromes/)
 https://www.luogu.com.cn/problem/P2679
 
-④ 划分型 DP：最小化分割出的区间个数 / 总和
+④ 划分型 DP：最小化/最大化分割出的子数组个数等
 - [132. 分割回文串 II](https://leetcode.cn/problems/palindrome-partitioning-ii/)
     至多 k 个 https://codeforces.com/problemset/problem/137/D
 - [2707. 字符串中的额外字符](https://leetcode.cn/problems/extra-characters-in-a-string/) 1736
@@ -62,6 +64,7 @@ https://www.luogu.com.cn/problem/P2679
 - [2463. 最小移动总距离](https://leetcode.cn/problems/minimum-total-distance-traveled/) 2454
 - [2977. 转换字符串的最小成本 II](https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/) 2696
 - [2052. 将句子分隔成行的最低成本](https://leetcode.cn/problems/minimum-cost-to-separate-sentence-into-rows/)（会员题）
+https://codeforces.com/problemset/problem/1005/D 1500
 
 ⑤ 多维 / 额外状态
 LC1477 https://leetcode.cn/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/ 1851
@@ -181,6 +184,7 @@ https://codeforces.com/problemset/problem/1783/D 2000 推公式
 https://codeforces.com/problemset/problem/1025/D 2100
 https://codeforces.com/problemset/problem/1027/E 2100
 https://codeforces.com/problemset/problem/1579/G 2200
+todo https://codeforces.com/problemset/problem/441/E 2400 考虑 x+i 的尾零个数
 https://codeforces.com/contest/1927/problem/G
 https://atcoder.jp/contests/arc115/tasks/arc115_e 容斥
 - https://codeforces.com/contest/1591/problem/F
@@ -1284,7 +1288,7 @@ func _(abs func(int) int) {
 	// 转换 https://codeforces.com/problemset/problem/478/D
 	// 转换 LC494 https://leetcode.cn/problems/target-sum/
 	// 转换 LC1434 https://leetcode.cn/problems/number-of-ways-to-wear-different-hats-to-each-other/
-	// 由于顺序不同也算方案，所以这题需要正序递推 LC377 https://leetcode.cn/problems/combination-sum-iv/
+	// 由于顺序不同也算方案，所以这题需要正序递推（爬楼梯）LC377 https://leetcode.cn/problems/combination-sum-iv/
 	zeroOneWaysToSum := func(a []int, sum int) int {
 		f := make([]int, sum+1)
 		f[0] = 1
@@ -1388,7 +1392,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/1673/C 1500
 	// https://www.luogu.com.cn/problem/P1832
 	// https://www.luogu.com.cn/problem/P6205（需要高精）
-	// 类似完全背包但是枚举的思路不一样 LC377 https://leetcode.cn/problems/combination-sum-iv/
+	// 类似完全背包但是枚举的思路不一样（爬楼梯）LC377 https://leetcode.cn/problems/combination-sum-iv/
 	unboundedWaysToSum := func(a []int, total int) int {
 		f := make([]int, total+1)
 		f[0] = 1
@@ -1837,6 +1841,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1824/B2 2300
 	Kick Start 2020 Round F Yeetzhee https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff48/00000000003f4dea
 	todo https://leetcode.cn/contest/ubiquant2022/problems/I3Gm2h/
+	 https://ac.nowcoder.com/acm/contest/76681/J
 	*/
 
 	/* 状压 DP
@@ -1859,9 +1864,11 @@ func _(abs func(int) int) {
 	LC1411 https://leetcode.cn/problems/number-of-ways-to-paint-n-3-grid/
 	LC1931 https://leetcode.cn/problems/painting-a-grid-with-three-different-colors/
 	LC2184 https://leetcode.cn/problems/number-of-ways-to-build-sturdy-brick-wall/
+	LC2247 https://leetcode.cn/problems/maximum-cost-of-trip-with-k-highways/ 会员题
 	LCP53 https://leetcode.cn/problems/EJvmW4/
 	LCP69 https://leetcode.cn/problems/rMeRt2/
 	LCP76 https://leetcode.cn/problems/1ybDKD/
+	todo LCP82 https://leetcode.cn/problems/cnHoX6/
 	https://www.luogu.com.cn/problem/P1879
 	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
 	https://codeforces.com/problemset/problem/401/D 2000
@@ -3294,9 +3301,9 @@ func _(abs func(int) int) {
 	// 返回最小点权和（最小支配集的情形即所有点权均为一）
 	// 下面的定义省去了（……时的最小支配集的元素个数）   w 为 i 的儿子
 	// 视频讲解：https://www.bilibili.com/video/BV1oF411U7qL/
-	// f[i][0]：i 属于支配集 = a[i]+∑min(f[w][0],f[w][1],f[w][2])
-	// f[i][1]：i 不属于支配集，且被儿子支配 = ∑min(f[w][0],f[w][1]) + 如果全选 f[w][1] 则补上 min{f[w][0]-f[w][1]}
-	// f[i][2]：i 不属于支配集，且被父亲支配 = ∑min(f[w][0],f[w][1])
+	// f[i][0]：选 i = a[i]+∑min(f[w][0],f[w][1],f[w][2])
+	// f[i][1]：不选 i，且 i 被儿子支配 = ∑min(f[w][0],f[w][1]) + max(min{f[w][0]-f[w][1]}, 0)
+	// f[i][2]：不选 i，且 i 被父亲支配 = ∑min(f[w][0],f[w][1])
 	// https://brooksj.com/2019/06/20/%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%94%AF%E9%85%8D%E9%9B%86%EF%BC%8C%E6%9C%80%E5%B0%8F%E7%82%B9%E8%A6%86%E7%9B%96%E9%9B%86%EF%BC%8C%E6%9C%80%E5%A4%A7%E7%82%B9%E7%8B%AC%E7%AB%8B%E9%9B%86/
 	//
 	// 监控二叉树 LC968 https://leetcode.cn/problems/binary-tree-cameras/
