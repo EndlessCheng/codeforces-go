@@ -44,6 +44,9 @@ https://en.wikipedia.org/wiki/Tree_traversal#Pre-order,_NLR
 
 树的最小表示：复杂度分析
 https://leetcode.cn/problems/special-binary-string/solutions/1731760/on-log-n-by-hqztrue-nrmw/
+
+其它
+https://codeforces.com/problemset/problem/1491/E 2400
 */
 
 // namespace
@@ -223,25 +226,28 @@ func (*tree) subtreeSize(root int, g [][]int, a []int) {
 	nodes := make([]struct{ l, r int }, len(g)) // 闭区间
 	dfn := 0
 	var buildDFN func(int, int) int
-	buildDFN = func(v, fa int) int {
+	buildDFN = func(v, fa int) (size int) {
 		newOrder[dfn] = a[v] // 按照遍历顺序得到的点权顺序
 
 		dfn++ // 相当于 dfn 从 1 开始
 		nodes[v].l = dfn
-		sz := 1
 		for _, w := range g[v] {
 			if w != fa {
-				sz += buildDFN(w, v)
+				sz := buildDFN(w, v)
+				size += sz
 			}
 		}
-		nodes[v].r = nodes[v].l + sz - 1
-		return sz
+		nodes[v].r = nodes[v].l + size
+		size++
+		return
 	}
 	buildDFN(root, -1)
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
 	// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
+	// 判断给定点集是否都在一条路径上 https://codeforces.com/contest/1702/problem/G2 2000
+	// https://codeforces.com/problemset/problem/1527/D 2400
 	isAncestor := func(f, v int) bool { return nodes[f].l < nodes[v].l && nodes[v].l <= nodes[f].r }
 
 	{
@@ -642,6 +648,7 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 
 // 点分治 重心分解（CD, Centroid Decomposition）
 // 适合处理树上路径相关问题
+// 考察完经过某个重心的所有路径，后面就无需再考察这个重心了，直接将其删除
 // 每次以重心为根递归处理，这样做递归深度不会超过 O(logn)
 // https://oi-wiki.org/graph/tree-divide/
 // https://zhuanlan.zhihu.com/p/359209926
@@ -650,20 +657,26 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // https://liu-cheng-ao.blog.uoj.ac/blog/2969
 // todo 重心树 代码 https://www.luogu.com.cn/record/103317317
 //
-// 模板题 https://www.luogu.com.cn/problem/P4178 http://poj.org/problem?id=1741
+// 模板题 https://www.luogu.com.cn/problem/P4178
+// - http://poj.org/problem?id=1741
 // todo 无需去重的做法（染色法）https://www.luogu.com.cn/blog/1239004072Angel/solution-p4178
-// 多个询问 https://www.luogu.com.cn/problem/P3806 http://poj.org/problem?id=2114
+// 多个询问 https://www.luogu.com.cn/problem/P3806
+// - http://poj.org/problem?id=2114
 // https://www.luogu.com.cn/problem/P4149
 // 也可以树形 DP https://codeforces.com/problemset/problem/161/D 1800
 // https://codeforces.com/problemset/problem/321/C 2100
-// todo https://www.luogu.com.cn/problem/P2664
-// todo https://codeforces.com/contest/914/problem/E 2400
-// 好题 https://codeforces.com/contest/1174/problem/F 2400 https://codeforces.com/contest/1174/submission/82371930
+// https://codeforces.com/problemset/problem/914/E 2400
+// 好题 https://codeforces.com/contest/1174/problem/F 2400
+// - https://codeforces.com/contest/1174/submission/82371930
 // todo https://codeforces.com/contest/776/problem/F 2800
-// todo UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
+//  https://www.luogu.com.cn/problem/P2664
 //  https://www.luogu.com.cn/problem/SP2939
 //  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
-func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
+//  UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
+
+// 点分治 · 其一
+// 遍历右边的子树 B，去看左边的子树 A（路径是 A 中的点 - 重心 - B 中的点）
+func (tree) centroidDecomposition(g [][]struct{ to, wt int }) int {
 	deleted := make([]bool, len(g))
 	// 注：其实只需要保存 ct 的邻居的 size，但这并不好维护
 	size := make([]int, len(g))
@@ -675,7 +688,8 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 		for _, e := range g[v] {
 			w := e.to
 			if w != fa && !deleted[w] {
-				if minSizeW, ctW, faCtW := findCentroid(w, v, compSize); minSizeW < minSize {
+				minSizeW, ctW, faCtW := findCentroid(w, v, compSize)
+				if minSizeW < minSize {
 					minSize, ct, faCt = minSizeW, ctW, faCtW
 				}
 				maxSubSize = max(maxSubSize, size[w])
@@ -698,7 +712,7 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 		//	return
 		//}
 
-		has := map[int]bool{0: true} // 0 表示重心的数据
+		pathValSet := map[int]bool{0: true} // 0 表示重心的数据
 		for _, e := range g[ct] {
 			w := e.to
 			if deleted[w] {
@@ -706,21 +720,21 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 			}
 			tmp := tmp[:0]
 			var f func(int, int, int)
-			f = func(v, fa, d int) {
-				// do d...
+			f = func(v, fa, pathVal int) {
+				// do path & pathValSet like 2sum
 
-				tmp = append(tmp, d)
+				tmp = append(tmp, pathVal)
 				for _, e := range g[v] {
 					if w := e.to; w != fa && !deleted[w] {
-						f(w, v, d+e.wt)
+						f(w, v, pathVal+e.wt)
 					}
 				}
 			}
 			f(w, ct, e.wt)
-			// 注意在递归结束后，才把 tmp 的数据加入 has
+			// 注意在递归结束后，才把 tmp 的数据加入 pathValSet
 			// 否则会把在同一棵子树内的数据当作另一棵子树的数据
-			for _, d := range tmp {
-				has[d] = true
+			for _, pathVal := range tmp {
+				pathValSet[pathVal] = true
 			}
 		}
 
@@ -737,7 +751,118 @@ func (*tree) centroidDecomposition(g [][]struct{ to, wt int }, root int) int {
 			}
 		}
 	}
-	dfs(root, -1, len(g))
+	dfs(0, -1, len(g))
+	return ans
+}
+
+// 点分治 · 其二
+// 适用场景：对每个点，计算和这个点有关的路径信息
+// 1. 从重心出发，统计整个重心连通块的路径信息
+// 2. 对于重心的子树 A，先去掉子树 A 的路径信息
+// 3. 然后计算子树 A 的路径信息
+// 4. 计算完毕后，恢复子树 A 的路径信息，处理重心的下一棵子树
+// 5. 去掉整个重心连通块的路径信息，处理下一个重心连通块
+// 下面的代码以 https://codeforces.com/problemset/problem/914/E 2400 为例
+func (tree) centroidDecomposition2(g [][]int, s string) []int {
+	deleted := make([]bool, len(g))
+	size := make([]int, len(g))
+	var findCentroid func(int, int, int) (int, int, int)
+	findCentroid = func(v, fa, compSize int) (minSize, ct, faCt int) {
+		minSize = math.MaxInt
+		maxSubSize := 0
+		size[v] = 1
+		for _, w := range g[v] {
+			if w != fa && !deleted[w] {
+				minSizeW, ctW, faCtW := findCentroid(w, v, compSize)
+				if minSizeW < minSize {
+					minSize, ct, faCt = minSizeW, ctW, faCtW
+				}
+				maxSubSize = max(maxSubSize, size[w])
+				size[v] += size[w]
+			}
+		}
+		maxSubSize = max(maxSubSize, compSize-size[v])
+		if maxSubSize < minSize {
+			minSize, ct, faCt = maxSubSize, v, fa
+		}
+		return
+	}
+
+	ans := make([]int, len(g))
+	for i := range ans {
+		ans[i] = 1
+	}
+
+	// 更新从 ct 出发的路径信息
+	cnt := [1 << 20]int{}
+	var updateCC func(int, int, int, int)
+	updateCC = func(v, fa, delta, pathMask int) {
+		pathMask ^= 1 << (s[v] - 'a')
+		cnt[pathMask] += delta
+		for _, w := range g[v] {
+			if w != fa && !deleted[w] {
+				updateCC(w, v, delta, pathMask)
+			}
+		}
+	}
+
+	// 计算「经过 v 向上，在重心拐弯，到其它子树」的路径信息
+	// pathMask 从 ct 的儿子开始
+	var calc func(int, int, int) int
+	calc = func(v, fa, pathMask int) int {
+		pathMask ^= 1 << (s[v] - 'a')
+		// 单独计算：从 v 出发的路径信息
+		res := cnt[pathMask]
+		for i := 1; i < len(cnt); i <<= 1 {
+			res += cnt[pathMask^i]
+		}
+		// 把 v 下面的也加上，这样最终算出的是经过 v 的路径信息
+		for _, w := range g[v] {
+			if w != fa && !deleted[w] {
+				res += calc(w, v, pathMask)
+			}
+		}
+		ans[v] += res
+		return res
+	}
+
+	var dfs func(int, int, int)
+	dfs = func(v, fa, compSize int) {
+		_, ct, faCt := findCentroid(v, fa, compSize)
+
+		updateCC(ct, -1, 1, 0)
+		// 单独计算：从 ct 出发的路径信息
+		res := cnt[0]
+		for i := 1; i < len(cnt); i <<= 1 {
+			res += cnt[i]
+		}
+		// 再加上经过 ct 的路径信息
+		for _, w := range g[ct] {
+			if deleted[w] {
+				continue
+			}
+			// 排除 w 子树后再计算
+			updateCC(w, ct, -1, 1<<(s[ct]-'a'))
+			res += calc(w, ct, 0)
+			updateCC(w, ct, 1, 1<<(s[ct]-'a'))
+		}
+		// v->w 和 w->v 算了两次，同时去掉 [v] 这一个点的路径信息（注意初始化的时候 ans[i] = 1）
+		ans[ct] += res / 2
+		updateCC(ct, -1, -1, 0)
+
+		// 删除重心
+		deleted[ct] = true
+		for _, w := range g[ct] {
+			if !deleted[w] {
+				if w != faCt {
+					dfs(w, ct, size[w])
+				} else {
+					dfs(w, ct, compSize-size[ct])
+				}
+			}
+		}
+	}
+	dfs(0, -1, len(g))
 	return ans
 }
 
@@ -901,6 +1026,7 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // 倍增 LC1483 https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/
 // 模板题 https://www.luogu.com.cn/problem/P3379
 // https://codeforces.com/problemset/problem/33/D 2000
+// https://codeforces.com/problemset/problem/1304/E 2000
 // 到两点距离相同的点的数量 https://codeforces.com/problemset/problem/519/E 2100
 // https://codeforces.com/problemset/problem/916/E 2400
 // https://atcoder.jp/contests/arc060/tasks/arc060_c
@@ -976,10 +1102,11 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	getDis := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
-	// 如果 v 不是 to 的子孙，返回 -1
+	// 如果 to 不是 v 的子孙，返回 -1
 	// https://codeforces.com/problemset/problem/916/E
+	// https://codeforces.com/problemset/problem/1702/G2
 	down1 := func(v, to int) int {
-		if dep[v] >= dep[to] {
+		if dep[to] <= dep[v] {
 			return -1
 		}
 		to = uptoDep(to, dep[v]+1)
@@ -1495,6 +1622,7 @@ func (*tree) virtualTree(g [][]int) {
 // 注：若没有修改操作，见 lcaBinaryLifting（路径查询）以及 subtreeSize（子树查询）
 //
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
+//            https://codeforces.com/problemset/problem/343/D 2100
 // 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
 // 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
@@ -1510,8 +1638,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int) { // va
 	type node struct{ depth, size, hson, fa, top, dfn int }
 	nodes := make([]node, n)
 	//idv := make([]int, n+1) // idv[nodes[v].dfn] == v
-
-	var build func(v, fa, dep int) int
+	var build func(int, int, int) int
 	build = func(v, fa, dep int) int {
 		size, hsz, hson := 1, 0, -1
 		for _, w := range g[v] {
@@ -1543,7 +1670,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int) { // va
 	}
 
 	dfn := 0
-	var markTop func(v, top int)
+	var markTop func(int, int)
 	markTop = func(v, top int) {
 		o := &nodes[v]
 		o.top = top
