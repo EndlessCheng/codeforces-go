@@ -10,7 +10,7 @@
 class Solution:
     def findKOr(self, nums: List[int], k: int) -> int:
         ans = 0
-        for i in range(31):
+        for i in range(max(nums).bit_length()):
             cnt1 = sum(x >> i & 1 for x in nums)
             if cnt1 >= k:
                 ans |= 1 << i
@@ -38,7 +38,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int findKOr(vector<int>& nums, int k) {
+    int findKOr(vector<int> &nums, int k) {
         int ans = 0;
         for (int i = 0; i < 31; i++) {
             int cnt1 = 0;
