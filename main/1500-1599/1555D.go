@@ -30,9 +30,7 @@ func CF1555D(_r io.Reader, _w io.Writer) {
 		Fscan(in, &l, &r)
 		ans := n
 		for _, s := range sum {
-			if c := s[r] - s[l-1]; c < ans {
-				ans = c
-			}
+			ans = min(ans, s[r]-s[l-1])
 		}
 		Fprintln(out, ans)
 	}
