@@ -163,6 +163,48 @@ func (t fenwickDiff) query(l, r int) int {
 
 //
 
+// 二维差分树状数组
+// https://codeforces.com/problemset/problem/869/E 2400
+type fenwickDiff2 [][]int
+
+func newFenwickTreeDiff2(n, m int) fenwickDiff2 {
+	t := make(fenwickDiff2, n+1)
+	for i := range t {
+		t[i] = make([]int, m+1)
+	}
+	return t
+}
+
+func (t fenwickDiff2) add(x, y, val int) {
+	for i := x; i < len(t); i += i & -i {
+		for j := y; j < len(t[i]); j += j & -j {
+			t[i][j] += val
+		}
+	}
+}
+
+// 二维矩阵左上角 (x1,y1) 右下角 (x2,y2) 区域增加 val
+// 下标从 1 开始
+func (t fenwickDiff2) update(x1, y1, x2, y2, val int) {
+	t.add(x1, y1, val)
+	t.add(x1, y2+1, -val)
+	t.add(x2+1, y1, -val)
+	t.add(x2+1, y2+1, val)
+}
+
+// 获取二维矩阵 (x,y) 的值
+// 下标从 1 开始
+func (t fenwickDiff2) get(x, y int) (res int) {
+	for i := x; i > 0; i &= i - 1 {
+		for j := y; j > 0; j &= j - 1 {
+			res += t[i][j]
+		}
+	}
+	return
+}
+
+//
+
 // 树套树：树状数组套动态开点权值线段树
 // 三维偏序 https://www.luogu.com.cn/problem/P3810 https://www.luogu.com.cn/record/136178821
 // 二逼平衡树 https://www.luogu.com.cn/problem/P3380 https://www.luogu.com.cn/record/136286395
@@ -395,6 +437,7 @@ func _(n int) {
 	// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
 	// - https://ac.nowcoder.com/acm/contest/308/D
+	// https://codeforces.com/problemset/problem/749/E 期望 贡献
 	// todo https://codeforces.com/problemset/problem/911/D
 	//  https://codeforces.com/contest/987/problem/E
 	//  https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
@@ -404,6 +447,7 @@ func _(n int) {
 	//  https://ac.nowcoder.com/acm/problem/20861
 	// 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
 	// 三元逆序对 https://codeforces.com/problemset/problem/61/E
+	// todo 互质逆序对 小白月赛 87G https://ac.nowcoder.com/acm/contest/73854/G
 	cntInversions := func(a []int) int {
 		n := len(a)
 		tree := make([]int, n+1)
