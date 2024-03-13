@@ -1,209 +1,250 @@
-[视频讲解](https://www.bilibili.com/video/BV1ka4y137ua/)（周赛 345 第三题）
+## 方法一：网格图 DFS
 
-# 方法一：动态规划
+从第一列的任一单元格 $(i,0)$ 开始递归。枚举往右上/右/右下三个方向走，如果走一步后，没有出界，且格子值大于 $\textit{grid}[i][j]$，则可以走，继续递归。
 
-### 前置知识：动态规划、记忆化搜索
+在递归过程中，记录能访问到的最大列号，作为答案。
 
-见 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)。
+代码实现时，为避免重复递归之前访问过的格子，可以用一个 $\textit{vis}$ 数组标记访问过的格子。但实际上，可以把 $\textit{grid}[i][j]$ 置为 $0$ 从而无需创建 $\textit{vis}$ 数组。这是因为网格值均为正数，并且我们只能访问到比当前格子值更大的格子，所以置为 $0$ 会导致永远无法访问到该格子，这正是我们所希望的。
 
-### 记忆化搜索
-
-写一个递归函数 $\textit{dfs}(i,j)$，返回并记录从 $(i,j)$ 出发时的答案。
-
-枚举向右边的三个方向走，如果对应的格子没有出界，且格子值大于 $\textit{grid}[i][j]$，则有
-
-$$
-\textit{dfs}(i,j) = \max(\textit{dfs}(i-1,j+1)+1,\textit{dfs}(i,j+1)+1,\textit{dfs}(i+1,j+1)+1)
-$$
-
-递归边界：$\textit{dfs}(i,n-1)=0$。
-
-递归入口：$\textit{dfs}(i,0)$。取最大值即为答案。
-
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def maxMoves(self, grid: List[List[int]]) -> int:
         m, n = len(grid), len(grid[0])
-        @cache
-        def dfs(i: int, j: int) -> int:
-            if j == n - 1:
-                return 0
-            res = 0
-            for k in i - 1, i, i + 1:
+        ans = 0
+        def dfs(i: int, j: int) -> None:
+            nonlocal ans
+            ans = max(ans, j)
+            if ans == n - 1:  # ans 已达到最大值
+                return
+            for k in i - 1, i, i + 1:  # 向右上/右/右下走一步
                 if 0 <= k < m and grid[k][j + 1] > grid[i][j]:
-                    res = max(res, dfs(k, j + 1) + 1)
-            return res
-        return max(dfs(i, 0) for i in range(m))
+                    dfs(k, j + 1)
+            grid[i][j] = 0
+        for i in range(m):
+            dfs(i, 0)  # 从第一列的任一单元格出发
+        return ans
 ```
 
-```go [sol1-Go]
-func maxMoves(grid [][]int) (ans int) {
-	m, n := len(grid), len(grid[0])
-	memo := make([][]int, m)
-	for i := range memo {
-		memo[i] = make([]int, n)
-		for j := range memo[i] {
-			memo[i][j] = -1 // -1 表示没被计算过
-		}
-	}
-	var dfs func(int, int) int
-	dfs = func(i, j int) (res int) {
-		if j == n-1 {
-			return
-		}
-		p := &memo[i][j]
-		if *p != -1 {
-			return *p
-		}
-		for k := max(i-1, 0); k < min(i+2, m); k++ {
-			if grid[k][j+1] > grid[i][j] {
-				res = max(res, dfs(k, j+1)+1)
-			}
-		}
-		*p = res // 记忆化
-		return
-	}
-	for i := 0; i < m; i++ {
-		ans = max(ans, dfs(i, 0))
-	}
-	return
-}
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题中状态个数等于 $\mathcal{O}(mn)$，单个状态的计算时间为 $\mathcal{O}(1)$，因此时间复杂度为 $\mathcal{O}(mn)$。
-- 空间复杂度：$\mathcal{O}(mn)$。
-
-### 1:1 翻译成递推
-
-根据视频中讲的，我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
-
-做法：
-
-- $\textit{dfs}$ 改成 $f$ 数组。
-- 递归改成循环（每个参数都对应一层循环）。由于递归是从左向右移动，所以递推是从右到左移动。
-- 递归边界改成 $f$ 数组的初始值。本题可以直接把 $f[i][j]$ 初始化为 $0$。
-
-```Python [sol2-Python3]
-class Solution:
-    def maxMoves(self, grid: List[List[int]]) -> int:
-        m, n = len(grid), len(grid[0])
-        f = [[0] * n for _ in range(m)]
-        for j in range(n - 2, -1, -1):
-            for i, row in enumerate(grid):
-                for k in i - 1, i, i + 1:
-                    if 0 <= k < m and grid[k][j + 1] > row[j]:
-                        f[i][j] = max(f[i][j], f[k][j + 1] + 1)
-        return max(row[0] for row in f)
-```
-
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
+    private int ans;
+
     public int maxMoves(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        var f = new int[m][n];
-        for (int j = n - 2; j >= 0; j--)
-            for (int i = 0; i < m; i++)
-                for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++)
-                    if (grid[k][j + 1] > grid[i][j])
-                        f[i][j] = Math.max(f[i][j], f[k][j + 1] + 1);
-        int ans = 0;
-        for (int i = 0; i < m; i++)
-            ans = Math.max(ans, f[i][0]);
+        for (int i = 0; i < grid.length; i++) {
+            dfs(i, 0, grid); // 从第一列的任一单元格出发
+        }
         return ans;
+    }
+
+    private void dfs(int i, int j, int[][] grid) {
+        ans = Math.max(ans, j);
+        if (ans == grid[0].length - 1) { // ans 已达到最大值
+            return;
+        }
+        // 向右上/右/右下走一步
+        for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, grid.length); k++) {
+            if (grid[k][j + 1] > grid[i][j]) {
+                dfs(k, j + 1, grid);
+            }
+        }
+        grid[i][j] = 0;
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
     int maxMoves(vector<vector<int>> &grid) {
-        int m = grid.size(), n = grid[0].size(), f[m][n];
-        memset(f, 0, sizeof(f));
-        for (int j = n - 2; j >= 0; j--)
-            for (int i = 0; i < m; i++)
-                for (int k = max(i - 1, 0); k < min(i + 2, m); k++)
-                    if (grid[k][j + 1] > grid[i][j])
-                        f[i][j] = max(f[i][j], f[k][j + 1] + 1);
+        int m = grid.size(), n = grid[0].size();
         int ans = 0;
-        for (int i = 0; i < m; i++)
-            ans = max(ans, f[i][0]);
+        function<void(int, int)> dfs = [&](int i, int j) {
+            ans = max(ans, j);
+            if (ans == n - 1) { // ans 已达到最大值
+                return;
+            }
+            // 向右上/右/右下走一步
+            for (int k = max(i - 1, 0); k < min(i + 2, m); k++) {
+                if (grid[k][j + 1] > grid[i][j]) {
+                    dfs(k, j + 1);
+                }
+            }
+            grid[i][j] = 0;
+        };
+        for (int i = 0; i < m; i++) {
+            dfs(i, 0); // 从第一列的任一单元格出发
+        }
         return ans;
     }
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 func maxMoves(grid [][]int) (ans int) {
 	m, n := len(grid), len(grid[0])
-	f := make([][]int, m)
-	for i := range f {
-		f[i] = make([]int, n)
-	}
-	for j := n - 2; j >= 0; j-- {
-		for i, row := range grid {
-			for k := max(i-1, 0); k < min(i+2, m); k++ {
-				if grid[k][j+1] > row[j] {
-					f[i][j] = max(f[i][j], f[k][j+1]+1)
-				}
+	var dfs func(int, int)
+	dfs = func(i, j int) {
+		ans = max(ans, j)
+		if ans == n-1 { // ans 已达到最大值
+			return
+		}
+		// 向右上/右/右下走一步
+		for k := max(i-1, 0); k < min(i+2, m); k++ {
+			if grid[k][j+1] > grid[i][j] {
+				dfs(k, j+1)
 			}
 		}
+		grid[i][j] = 0
 	}
-	for _, r := range f {
-		ans = max(ans, r[0])
+	for i := range grid {
+		dfs(i, 0) // 从第一列的任一单元格出发
 	}
 	return
 }
+```
 
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
+```js [sol-JavaScript]
+var maxMoves = function(grid) {
+    const m = grid.length, n = grid[0].length;
+    let ans = 0;
+    function dfs(i, j) {
+        ans = Math.max(ans, j);
+        if (ans === n - 1) { // ans 已达到最大值
+            return;
+        }
+        // 向右上/右/右下走一步
+        for (let k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+            if (grid[k][j + 1] > grid[i][j]) {
+                dfs(k, j + 1);
+            }
+        }
+        grid[i][j] = 0;
+    }
+    for (let i = 0; i < m; i++) {
+        dfs(i, 0); // 从第一列的任一单元格出发
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn max_moves(mut grid: Vec<Vec<i32>>) -> i32 {
+        fn dfs(i: usize, j: usize, ans: &mut usize, grid: &mut Vec<Vec<i32>>) {
+            if j > *ans {
+                *ans = j
+            }
+            if *ans == grid[0].len() - 1 { // ans 已达到最大值
+                return;
+            }
+            // 向右上/右/右下走一步
+            for k in i.saturating_sub(1)..grid.len().min(i + 2) {
+                if grid[k][j + 1] > grid[i][j] {
+                    dfs(k, j + 1, ans, grid);
+                }
+            }
+            grid[i][j] = 0;
+        }
+        let mut ans = 0;
+        for i in 0..grid.len() {
+            dfs(i, 0, &mut ans, &mut grid); // 从第一列的任一单元格出发
+        }
+        ans as i32
+    }
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题中状态个数等于 $\mathcal{O}(mn)$，单个状态的计算时间为 $\mathcal{O}(1)$，因此时间复杂度为 $\mathcal{O}(mn)$。
-- 空间复杂度：$\mathcal{O}(mn)$。
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。每个格子至多递归一次。
+- 空间复杂度：$\mathcal{O}(n)$。递归需要 $\mathcal{O}(n)$ 的栈空间。
 
-> 注：利用滚动数组，空间可以进一步优化至 $O(m)$。
+## 方法二：网格图 BFS
 
-### 相似题目：网格图 DP
+双数组写法，见 [视频讲解](https://www.bilibili.com/video/BV1hG4y1277i/)。
 
-- [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
-- [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
-- [64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/)
-- [120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)
-- [931. 下降路径最小和](https://leetcode.cn/problems/minimum-falling-path-sum/)
-- [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/)
+一开始把所有 $(i,0)$ 都加入一个列表。每一轮循环，遍历列表中的坐标，把右边这一列的能到达的格子坐标加入一个新列表。
 
-# 方法二：BFS
+返回可以到达的最大列号，即为最大移动次数。
 
-也可以用 BFS 做，每一轮向右搜索一列。
-
-```py [sol3-Python3]
+```py [sol-Python3]
 class Solution:
     def maxMoves(self, grid: List[List[int]]) -> int:
         m, n = len(grid), len(grid[0])
-        q = range(m)
         vis = [-1] * m
+        q = range(m)
         for j in range(n - 1):
             tmp = q
             q = []
             for i in tmp:
                 for k in i - 1, i, i + 1:
                     if 0 <= k < m and vis[k] != j and grid[k][j + 1] > grid[i][j]:
-                        vis[k] = j  # 时间戳标记，避免重复创建 vis 数组
+                        vis[k] = j  # 第 k 行目前最右访问到了 j
                         q.append(k)
-            if len(q) == 0:
+            if not q:  # 无法再往右走了
                 return j
         return n - 1
 ```
 
-```go [sol3-Go]
+```java [sol-Java]
+class Solution {
+    public int maxMoves(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] vis = new int[m];
+        Arrays.fill(vis, -1);
+        List<Integer> q = new ArrayList<>(m);
+        for (int i = 0; i < m; i++) {
+            q.add(i);
+        }
+        for (int j = 0; j < n - 1; j++) {
+            List<Integer> nxt = new ArrayList<>();
+            for (int i : q) {
+                for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+                    if (vis[k] != j && grid[k][j + 1] > grid[i][j]) {
+                        vis[k] = j; // 第 k 行目前最右访问到了 j
+                        nxt.add(k);
+                    }
+                }
+            }
+            if (nxt.isEmpty()) { // 无法再往右走了
+                return j;
+            }
+            q = nxt;
+        }
+        return n - 1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxMoves(vector<vector<int>> &grid) {
+        int m = grid.size(), n = grid[0].size();
+        vector<int> vis(m, -1), q(m);
+        iota(q.begin(), q.end(), 0);
+        for (int j = 0; j < n - 1; j++) {
+            vector<int> nxt;
+            for (int i : q) {
+                for (int k = max(i - 1, 0); k < min(i + 2, m); k++) {
+                    if (vis[k] != j && grid[k][j + 1] > grid[i][j]) {
+                        vis[k] = j; // 第 k 行目前最右访问到了 j
+                        nxt.push_back(k);
+                    }
+                }
+            }
+            if (nxt.empty()) { // 无法再往右走了
+                return j;
+            }
+            q = move(nxt);
+        }
+        return n - 1;
+    }
+};
+```
+
+```go [sol-Go]
 func maxMoves(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 	vis := make([]int, m)
@@ -217,23 +258,80 @@ func maxMoves(grid [][]int) int {
 		for _, i := range tmp {
 			for k := max(i-1, 0); k < min(i+2, m); k++ {
 				if vis[k] != j+1 && grid[k][j+1] > grid[i][j] {
-					vis[k] = j + 1 // 时间戳标记，避免重复创建 vis 数组
+					vis[k] = j + 1 // 第 k 行目前最右访问到了 j
 					q = append(q, k)
 				}
 			}
 		}
-		if q == nil {
+		if q == nil { // 无法再往右走了
 			return j
 		}
 	}
 	return n - 1
 }
+```
 
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
+```js [sol-JavaScript]
+var maxMoves = function(grid) {
+    const m = grid.length, n = grid[0].length;
+    const vis = Array(m).fill(-1);
+    let q = [...Array(m).keys()];
+    for (let j = 0; j < n - 1; j++) {
+        let nxt = [];
+        for (const i of q) {
+            for (let k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+                if (vis[k] !== j && grid[k][j + 1] > grid[i][j]) {
+                    vis[k] = j; // 第 k 行目前最右访问到了 j
+                    nxt.push(k);
+                }
+            }
+        }
+        if (nxt.length === 0) { // 无法再往右走了
+            return j;
+        }
+        q = nxt;
+    }
+    return n - 1;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn max_moves(mut grid: Vec<Vec<i32>>) -> i32 {
+        let m = grid.len();
+        let n = grid[0].len();
+        let mut vis = vec![n; m];
+        let mut q = (0..m).collect::<Vec<_>>();
+        for j in 0..n - 1 {
+            let mut nxt = Vec::new();
+            for &i in &q {
+                for k in i.saturating_sub(1)..m.min(i + 2) {
+                    if vis[k] != j && grid[k][j + 1] > grid[i][j] {
+                        vis[k] = j; // 第 k 行目前最右访问到了 j
+                        nxt.push(k);
+                    }
+                }
+            }
+            if nxt.is_empty() { // 无法再往右走了
+                return j as i32;
+            }
+            q = nxt;
+        }
+        (n - 1) as i32
+    }
+}
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。每个格子至多入队一次。
 - 空间复杂度：$\mathcal{O}(m)$。
+
+## 题单
+
+- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+- 更多题单，点我个人主页 - 讨论发布。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
