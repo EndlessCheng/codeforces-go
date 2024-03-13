@@ -297,7 +297,7 @@ var maxMoves = function(grid) {
 
 ```rust [sol-Rust]
 impl Solution {
-    pub fn max_moves(mut grid: Vec<Vec<i32>>) -> i32 {
+    pub fn max_moves(grid: Vec<Vec<i32>>) -> i32 {
         let m = grid.len();
         let n = grid[0].len();
         let mut vis = vec![n; m];
@@ -326,6 +326,175 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。每个格子至多入队一次。
 - 空间复杂度：$\mathcal{O}(m)$。
+
+## 空间优化
+
+由于 $\textit{grid}[i][j]>0$，我们可以把要入队的格子值变为其相反数，从而判断哪些格子在队列中。此外，一个数一旦变成负数就不会比当前格子值大了，这可以保证一个格子值只会被标记（改成相反数）一次。
+
+这样就不需要队列和 $\textit{vis}$ 数组了。
+
+```py [sol-Python3]
+class Solution:
+    def maxMoves(self, grid: List[List[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+        for row in grid:
+            row[0] *= -1  # 入队标记
+        for j in range(n - 1):
+            for i, row in enumerate(grid):
+                if row[j] > 0:  # 不在队列中
+                    continue
+                for k in i - 1, i, i + 1:
+                    if 0 <= k < m and grid[k][j + 1] > -row[j]:
+                        grid[k][j + 1] *= -1  # 入队标记
+            if all(row[j + 1] > 0 for row in grid):  # 无法再往右走了
+                return j
+        return n - 1
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxMoves(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        for (int[] row : grid) {
+            row[0] *= -1; // 入队标记
+        }
+        for (int j = 0; j < n - 1; j++) {
+            boolean ok = false;
+            for (int i = 0; i < m; i++) {
+                if (grid[i][j] > 0) { // 不在队列中
+                    continue;
+                }
+                for (int k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+                    if (grid[k][j + 1] > -grid[i][j]) {
+                        grid[k][j + 1] *= -1; // 入队标记
+                        ok = true;
+                    }
+                }
+            }
+            if (!ok) { // 无法再往右走了
+                return j;
+            }
+        }
+        return n - 1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxMoves(vector<vector<int>> &grid) {
+        int m = grid.size(), n = grid[0].size();
+        for (auto &row: grid) {
+            row[0] *= -1; // 入队标记
+        }
+        for (int j = 0; j < n - 1; j++) {
+            bool ok = false;
+            for (int i = 0; i < m; i++) {
+                if (grid[i][j] > 0) continue; // 不在队列中
+                for (int k = max(i - 1, 0); k < min(i + 2, m); k++) {
+                    if (grid[k][j + 1] > -grid[i][j]) {
+                        grid[k][j + 1] *= -1; // 入队标记
+                        ok = true;
+                    }
+                }
+            }
+            if (!ok) { // 无法再往右走了
+                return j;
+            }
+        }
+        return n - 1;
+    }
+};
+```
+
+```go [sol-Go]
+func maxMoves(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+	for _, row := range grid {
+		row[0] *= -1 // 入队标记
+	}
+	for j := 0; j < n-1; j++ {
+		ok := false
+		for i := 0; i < m; i++ {
+			if grid[i][j] > 0 { // 不在队列中
+				continue
+			}
+			for k := max(i-1, 0); k < min(i+2, m); k++ {
+				if grid[k][j+1] > -grid[i][j] {
+					grid[k][j+1] *= -1 // 入队标记
+					ok = true
+				}
+			}
+		}
+		if !ok { // 无法再往右走了
+			return j
+		}
+	}
+	return n - 1
+}
+```
+
+```js [sol-JavaScript]
+var maxMoves = function(grid) {
+    const m = grid.length, n = grid[0].length;
+    for (const row of grid) {
+        row[0] *= -1; // 入队标记
+    }
+    for (let j = 0; j < n - 1; j++) {
+        let ok = false;
+        for (let i = 0; i < m; i++) {
+            if (grid[i][j] > 0) continue; // 不在队列中
+            for (let k = Math.max(i - 1, 0); k < Math.min(i + 2, m); k++) {
+                if (grid[k][j + 1] > -grid[i][j]) {
+                    grid[k][j + 1] *= -1; // 入队标记
+                    ok = true;
+                }
+            }
+        }
+        if (!ok) { // 无法再往右走了
+            return j;
+        }
+    }
+    return n - 1;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn max_moves(mut grid: Vec<Vec<i32>>) -> i32 {
+        let m = grid.len();
+        let n = grid[0].len();
+        for row in grid.iter_mut() {
+            row[0] *= -1; // 入队标记
+        }
+        for j in 0..n - 1 {
+            let mut ok = false;
+            for i in 0..m {
+                if grid[i][j] > 0 { // 不在队列中
+                    continue;
+                }
+                for k in i.saturating_sub(1)..m.min(i + 2) {
+                    if grid[k][j + 1] > -grid[i][j] {
+                        grid[k][j + 1] *= -1; // 入队标记
+                        ok = true;
+                    }
+                }
+            }
+            if !ok { // 无法再往右走了
+                return j as i32;
+            }
+        }
+        (n - 1) as i32
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 题单
 
