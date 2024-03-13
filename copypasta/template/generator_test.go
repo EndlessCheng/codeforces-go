@@ -12,7 +12,7 @@ func TestGenCodeforcesProblemTemplates(t *testing.T) {
 		t.Fatal(err)
 	}
 	problemURL := strings.TrimSpace(string(raw))
-	if err := GenCodeforcesProblemTemplates(problemURL, true); err != nil {
+	if err := GenCodeforcesProblemTemplates(problemURL, false); err != nil {
 		t.Fatal(err)
 	}
 }
