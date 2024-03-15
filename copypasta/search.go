@@ -1113,6 +1113,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [2658. 网格图中鱼的最大数目](https://leetcode.cn/problems/maximum-number-of-fish-in-a-grid/) 1490
 - [1034. 边界着色](https://leetcode.cn/problems/coloring-a-border/) 1579
 - [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/) 1615
+- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
 - [1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/) 1659
 - [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
 - [1391. 检查网格中是否存在有效路径](https://leetcode.cn/problems/check-if-there-is-a-valid-path-in-a-grid/) 1746
