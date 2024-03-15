@@ -125,6 +125,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [3003. 执行操作后的最大分割数量](https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/) 3039
 https://codeforces.com/problemset/problem/1178/B 1300
 https://codeforces.com/problemset/problem/1706/C 1400
+https://codeforces.com/problemset/problem/1837/F 2400
 
 #### 定长滑动窗口（右边数字为难度分）
 - [1456. 定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/) 1263
@@ -339,6 +340,10 @@ https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?opti
 https://codeforces.com/contest/1873/problem/G
 https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 
+数学思维
+https://codeforces.com/problemset/problem/23/C 2500
+- https://codeforces.com/problemset/problem/798/D 2400
+
 ### 乘法贪心
 https://codeforces.com/problemset/problem/45/I 1400
 https://codeforces.com/problemset/problem/934/A 1400
@@ -413,15 +418,16 @@ https://codeforces.com/problemset/problem/863/E
 LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 - 加强版 https://www.luogu.com.cn/problem/P9715        ?contestId=126251
 
-观察、结论
+思维：观察、结论
 https://codeforces.com/problemset/problem/1442/A
 https://codeforces.com/problemset/problem/558/C
 https://codeforces.com/problemset/problem/1610/E
 https://codeforces.com/problemset/problem/1811/C
 https://codeforces.com/problemset/problem/1822/D
 https://codeforces.com/problemset/problem/1608/C 对拍找反例
+https://codeforces.com/contest/1744/problem/F 2000
 
-脑筋急转弯
+思维：脑筋急转弯
 LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/
 LC2731 https://leetcode.cn/problems/movement-of-robots/
 LC280 https://leetcode.cn/problems/wiggle-sort/
@@ -494,6 +500,7 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 LC494 https://leetcode.cn/problems/target-sum/
 
 分类讨论（部分题是易错题）
+http://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/30/A 1400
 https://codeforces.com/problemset/problem/45/I 1400
@@ -524,6 +531,7 @@ https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
 https://codeforces.com/problemset/problem/1861/C 1600 好题！
 https://codeforces.com/contest/1914/problem/F 1900
+https://codeforces.com/problemset/problem/209/C 2400
 https://codeforces.com/problemset/problem/1761/E 2400
 https://codeforces.com/problemset/problem/1730/E 2700
 https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
@@ -538,6 +546,7 @@ https://codeforces.com/problemset/problem/356/C
 https://codeforces.com/problemset/problem/460/D
 https://codeforces.com/problemset/problem/796/C
 https://codeforces.com/problemset/problem/1374/E2
+https://codeforces.com/problemset/problem/1527/D 2400
 https://codeforces.com/problemset/problem/1647/D
 +构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
 https://atcoder.jp/contests/agc015/tasks/agc015_d
@@ -561,6 +570,7 @@ https://codeforces.com/problemset/problem/1777/D 树
 https://codeforces.com/problemset/problem/1788/D 好题！
 https://codeforces.com/problemset/problem/1789/C 好题！
 https://codeforces.com/problemset/problem/1808/D
+https://codeforces.com/contest/749/problem/E 2400
 https://atcoder.jp/contests/abc290/tasks/abc290_e 好题！
 https://atcoder.jp/contests/abc159/tasks/abc159_f 与 0-1 背包结合
 ^+ https://atcoder.jp/contests/abc201/tasks/abc201_e
@@ -752,8 +762,9 @@ https://codeforces.com/problemset/problem/707/D
 
 函数内的递归 lambda 会额外消耗非常多的内存（~100MB / 1e6 递归深度）
 写在 main 里面 + slice MLE      https://codeforces.com/contest/767/submission/174193385
-写在 main 里面 + array 257424KB https://codeforces.com/contest/767/submission/174194515
 写在 main 外面 + slice 188364KB https://codeforces.com/contest/767/submission/174194380
+附：
+写在 main 里面 + array 257424KB https://codeforces.com/contest/767/submission/174194515
 写在 main 外面 + array 154500KB https://codeforces.com/contest/767/submission/174193693
 
 在特殊情况下，改为手动模拟栈可以减少 > 100MB 的内存
@@ -763,6 +774,11 @@ https://codeforces.com/problemset/problem/707/D
 slice    249ms https://codeforces.com/problemset/submission/570/209063267
 hashmap 3259ms https://codeforces.com/problemset/submission/570/209063603
 */
+
+// bool2int returns 0 if x is false or 1 if x is true.
+func bool2int(x bool) int {
+	return int(*(*uint8)(unsafe.Pointer(&x)))
+}
 
 // slice 作为 map 的 key
 // 长度为 0 的 slice 对应空字符串
