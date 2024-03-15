@@ -11,15 +11,13 @@ func sellingWood(m, n int, prices [][]int) int64 {
 	}
 	for i := 1; i <= m; i++ {
 		for j := 1; j <= n; j++ {
-			for k := 1; k <= j/2; k++ { // 垂直切割
+			for k := 1; k <= j/2; k++ { // 垂直切割，枚举宽度 k
 				f[i][j] = max(f[i][j], f[i][k]+f[i][j-k])
 			}
-			for k := 1; k <= i/2; k++ { // 水平切割
+			for k := 1; k <= i/2; k++ { // 水平切割，枚举高度 k
 				f[i][j] = max(f[i][j], f[k][j]+f[i-k][j])
 			}
 		}
 	}
 	return f[m][n]
 }
-
-func max(a, b int64) int64 { if b > a { return b }; return a }
