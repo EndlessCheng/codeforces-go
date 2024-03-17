@@ -1,10 +1,10 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1RH4y1W7DP/) 第三题。
-
-统计 $\textit{word}$ 中每个字母的出现次数，记到一个数组 $\textit{cnt}$ 中。
+[视频讲解](https://www.bilibili.com/video/BV1RH4y1W7DP/) 第三题。
 
 **定理**：必然有一种字母是不需要删除的。
 
 **反证法**：如果每种字母都至少删除一个，那么可以都增加一，不影响字母数量之差。
+
+统计 $\textit{word}$ 中每个字母的出现次数，记到一个数组 $\textit{cnt}$ 中。
 
 枚举 $i$ 作为出现次数最小的字母，为了保留尽量多的字母，字母 $i$ 肯定不需要删除。此外，出现次数最多的字母，其出现次数不能超过 $\textit{cnt}[i]+k$。
 
