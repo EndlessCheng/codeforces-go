@@ -9,6 +9,7 @@ import (
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
+#### 第 K 小/大
 - [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
 - [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
 - [2530. 执行 K 次操作后的最大分数](https://leetcode.cn/problems/maximal-score-after-applying-k-operations/) 1386
@@ -24,6 +25,9 @@ import (
 https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
+
+#### 模拟 
+- [2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/) 2589
 
 #### 思维·转换
 https://www.luogu.com.cn/problem/P5930
@@ -46,21 +50,31 @@ https://ac.nowcoder.com/acm/contest/65157/C
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 
+#### 会议室
+https://codeforces.com/problemset/problem/845/C
+https://leetcode.cn/problems/meeting-rooms-ii/
+https://leetcode.cn/problems/meeting-rooms-iii/
+https://leetcode.cn/problems/t3fKg1/
+https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
+
 #### 基于堆的反悔贪心（反悔堆）
-- [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
 - [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
+- [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
+   - JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053
 - [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/) 2074
 - [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582
+- [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
-https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
-https://codeforces.com/problemset/problem/1526/C2
-JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053 LC630 https://leetcode.cn/problems/course-schedule-iii/
-用堆来不断修正最优决策 https://codeforces.com/problemset/problem/1428/E
-股票买卖 https://codeforces.com/problemset/problem/865/D
+https://codeforces.com/problemset/problem/1526/C2 1600
+https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
+https://codeforces.com/problemset/problem/730/I 2000
+https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
+https://codeforces.com/problemset/problem/865/D 2400 股票买卖
+https://codeforces.com/problemset/problem/3/D 2600 难度虚高
 https://atcoder.jp/contests/abc249/tasks/abc249_f
-前缀和 https://codeforces.com/problemset/problem/1779/C 推荐
+https://www.cnblogs.com/nth-element/p/11768155.html
 
 #### 区间贪心相关
 最小不相交区间划分数
@@ -165,6 +179,7 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 
 // 懒删除堆
 // https://codeforces.com/problemset/problem/796/C
+// LC716 https://leetcode.cn/problems/max-stack/
 type lazyHeap struct {
 	sort.IntSlice
 	todo map[int]int

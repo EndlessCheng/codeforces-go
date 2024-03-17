@@ -22,6 +22,7 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [704. 二分查找](https://leetcode.cn/problems/binary-search/)
 - [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) 1196 *应用
 - [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) 1477 *应用
+- [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721 *应用
 - [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
@@ -55,7 +56,11 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
 - [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
+- [3048. 标记所有下标的最早秒数 I](https://leetcode.cn/problems/earliest-second-to-mark-indices-i/) 2263
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
+- [2071. 你可以安排的最多任务数目](https://leetcode.cn/problems/maximum-number-of-tasks-you-can-assign/) 2648
+- [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
+- [1891. 割绳子](https://leetcode.cn/problems/cutting-ribbons/)（会员题）
 - [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
 - [2604. 吃掉所有谷子的最短时间](https://leetcode.cn/problems/minimum-time-to-eat-all-grains/)（会员题）
 - [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
@@ -77,6 +82,8 @@ DP https://codeforces.com/contest/883/problem/I 1900
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
+https://codeforces.com/contest/1918/problem/D 1900
+https://codeforces.com/problemset/problem/1837/F 2400
 
 #### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
@@ -94,6 +101,7 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
 - [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+- [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
 - [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
 - [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
 - [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
@@ -556,15 +564,15 @@ func sortCollections() {
 	// https://www.luogu.com.cn/blog/yestoday/post-01-fen-shuo-gui-hua-yang-xie
 	// 模板题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/C http://poj.org/problem?id=2976
 	//       https://codeforces.com/gym/101649 K
-	//       https://www.luogu.com.cn/problem/P1570
+	//       最大平均值（如果把 ci 当作 1）https://www.luogu.com.cn/problem/P1570
 	//       https://loj.ac/p/149
 	// 有长度限制的连续子段的（最大/最小）算数平均值
 	//     https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
-	//     https://codeforces.com/problemset/problem/1003/C
-	//     https://www.luogu.com.cn/problem/P1404
+	//     https://codeforces.com/problemset/problem/1003/C 1300
+	//     - https://www.luogu.com.cn/problem/P1404
+	//     - LC644 https://leetcode-cn.com/problems/maximum-average-subarray-ii/（会员题）
+	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	//     https://www.acwing.com/problem/content/104/
-	//     LC644 https://leetcode-cn.com/problems/maximum-average-subarray-ii/
-	//     O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
 	// 与生成树结合，即最优比率生成树 https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
 	// 与负环判定结合，即最优比率环 https://www.luogu.com.cn/problem/P1768 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621

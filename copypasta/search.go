@@ -1143,7 +1143,7 @@ http://codeforces.com/problemset/problem/329/B
 https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 
-#### 综合应用
+#### 进阶
 - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097
 - [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
@@ -1152,6 +1152,7 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 - [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/) 2297
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
    - https://www.luogu.com.cn/problem/UVA11624
+- [2556. 二进制矩阵中翻转最多一次使路径不连通](https://leetcode.cn/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/) 2369
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
 - [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
 - [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)

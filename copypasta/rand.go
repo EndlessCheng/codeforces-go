@@ -33,6 +33,9 @@ https://codeforces.com/problemset/problem/1746/F 2800
 异或哈希 xor hashing
 https://codeforces.com/problemset/problem/1830/C 2400
 https://codeforces.com/problemset/problem/1771/F 2500
+
+多项式哈希 加法哈希
+https://codeforces.com/problemset/problem/869/E 2400
 */
 
 /* 模拟退火 (Simulated Annealing, SA)
