@@ -2,16 +2,16 @@ package main
 
 import "sort"
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func longestObstacleCourseAtEachPosition(obstacles []int) []int {
 	ans := make([]int, len(obstacles))
-	dp := []int{}
-	for i, v := range obstacles {
-		p := sort.SearchInts(dp, v+1)
-		if p < len(dp) {
-			dp[p] = v
+	g := []int{}
+	for i, x := range obstacles {
+		p := sort.SearchInts(g, x+1)
+		if p < len(g) {
+			g[p] = x
 		} else {
-			dp = append(dp, v)
+			g = append(g, x)
 		}
 		ans[i] = p + 1
 	}
