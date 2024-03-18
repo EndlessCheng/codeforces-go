@@ -79,7 +79,7 @@ class Solution:
         for x, c in a:
             s += c
             if s >= mid:
-                return sum(abs(y - x) * c for y, c in a)  # 把所有数变成 x
+                return sum(abs(y - x) * c for y, c in a)  # 把所有数都变成 x
 ```
 
 ```go [sol2-Go]
@@ -97,7 +97,7 @@ func minCost(nums, cost []int) (ans int64) {
 	for _, p := range a {
 		s += int64(p.c)
 		if s >= mid {
-			// 把所有数变成 p.x
+			// 把所有数都变成 p.x
 			for _, q := range a {
 				ans += int64(abs(q.x-p.x)) * int64(q.c)
 			}
