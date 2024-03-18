@@ -1,4 +1,4 @@
-请看 [视频讲解](https://www.bilibili.com/vidseo/BV11x421r7q5/) 第二题。
+请看 [视频讲解](https://www.bilibili.com/video/BV11x421r7q5/) 第二题。
 
 由于要按照元素从小到大标记，但又不能直接对数组排序（因为有对特定 $\textit{index}$ 的标记），我们可以创建一个 $\textit{ids}$ 数组，其中 $\textit{ids}[i]=i$，然后对该数组按照 $\textit{nums}[\textit{ids}[i]]$ 从小到大排序。注意要使用**稳定排序**，因为相同元素值的下标需要按照下标从小到大排。也可以对于相同元素值按照下标从小到大排序。
 
