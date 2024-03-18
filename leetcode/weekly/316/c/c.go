@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func minCost(nums, cost []int) (ans int64) {
@@ -11,9 +14,9 @@ func minCost(nums, cost []int) (ans int64) {
 		a[i] = pair{nums[i], c}
 		sumCost += int64(c)
 	}
-	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.x < b.x })
+	slices.SortFunc(a, func(p, q pair) int { return p.x - q.x })
 
-	s, mid := int64(0), sumCost/2
+	s, mid := int64(0), (sumCost+1)/2
 	for _, p := range a {
 		s += int64(p.c)
 		if s >= mid {
@@ -50,4 +53,9 @@ func minCost2(nums, cost []int) int64 {
 	return ans
 }
 
-func min(a, b int64) int64 { if a > b { return b }; return a }
+func min(a, b int64) int64 {
+	if a > b {
+		return b
+	}
+	return a
+}
