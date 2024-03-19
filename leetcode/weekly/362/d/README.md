@@ -89,32 +89,31 @@ class Solution:
         return m[0][s != t]
 
     # KMP 模板
-    def calc_max_match(self, s: str) -> List[int]:
-        match = [0] * len(s)
+    def calc_pi(self, s: str) -> List[int]:
+        pi = [0] * len(s)
         c = 0
         for i in range(1, len(s)):
             v = s[i]
             while c and s[c] != v:
-                c = match[c - 1]
+                c = pi[c - 1]
             if s[c] == v:
                 c += 1
-            match[i] = c
-        return match
+            pi[i] = c
+        return pi
 
     # KMP 模板
     # 返回 text 中出现了多少次 pattern（允许 pattern 重叠）
     def kmp_search(self, text: str, pattern: str) -> int:
-        match = self.calc_max_match(pattern)
+        pi = self.calc_pi(pattern)
         match_cnt = c = 0
         for i, v in enumerate(text):
-            v = text[i]
             while c and pattern[c] != v:
-                c = match[c - 1]
+                c = pi[c - 1]
             if pattern[c] == v:
                 c += 1
             if c == len(pattern):
                 match_cnt += 1
-                c = match[c - 1]
+                c = pi[c - 1]
         return match_cnt
 
     # 矩阵乘法

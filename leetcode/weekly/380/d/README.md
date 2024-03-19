@@ -40,7 +40,6 @@ class Solution:
         res = []
         c = 0
         for i, v in enumerate(text):
-            v = text[i]
             while c and pattern[c] != v:
                 c = pi[c - 1]
             if pattern[c] == v:
@@ -262,7 +261,6 @@ class Solution:
         res = []
         c = 0
         for i, v in enumerate(text):
-            v = text[i]
             while c and pattern[c] != v:
                 c = pi[c - 1]
             if pattern[c] == v:
