@@ -124,6 +124,8 @@
 ||[901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/)|[代码](https://leetcode.cn/problems/online-stock-span/solution/shi-pin-yi-ge-shi-pin-jiang-tou-dan-diao-cuk7/)|*课后作业|
 ||[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[代码](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|*课后作业|
 ||[1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/)|[代码](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/solution/dan-diao-zhan-de-ben-zhi-ji-shi-qu-diao-8tp3s/)|*课后作业|
+||[84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)|[代码](https://leetcode.cn/problems/largest-rectangle-in-histogram/solution/dan-diao-zhan-fu-ti-dan-pythonjavacgojsr-89s7/)|*课后作业|
+||[1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/)|[代码](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/solution/liang-chong-fang-fa-dan-diao-zhan-shuang-24zl/)|*课后作业|
 |[单调队列](https://www.bilibili.com/video/BV1bM411X72E/)|[239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)|[代码]( https://leetcode.cn/problems/sliding-window-maximum/solution/shi-pin-yi-ge-shi-pin-miao-dong-dan-diao-ezj6/)||
 ||[2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/)|[代码](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/solution/by-endlesscheng-7ukp/)|*课后作业|
 ||[862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/)|[代码](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/solution/liang-zhang-tu-miao-dong-dan-diao-dui-li-9fvh/)|*课后作业|
