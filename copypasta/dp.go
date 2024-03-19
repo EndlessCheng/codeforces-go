@@ -11,7 +11,11 @@ import (
 
 /* 动态规划
 
-入门视频：https://www.bilibili.com/video/BV1Xj411K7oF/
+题单：入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望
+https://leetcode.cn/circle/discuss/tXLS3i/
+
+入门视频
+https://www.bilibili.com/video/BV1Xj411K7oF/
 
 ① 前缀/后缀之间的转移，例如从 f[i-1] 转移到 f[i]，或者从 f[j] 转移到 f[i]
 LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/ 
