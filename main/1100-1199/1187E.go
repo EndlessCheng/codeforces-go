@@ -6,52 +6,43 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1187E(_r io.Reader, _w io.Writer) {
+// https://space.bilibili.com/206214
+func CF1187E(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
-	var n, v, w int
+	var n, ans int
 	Fscan(in, &n)
 	g := make([][]int, n+1)
 	for i := 1; i < n; i++ {
+		var v, w int
 		Fscan(in, &v, &w)
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
 
 	size := make([]int, n+1)
-	sum := make([]int64, n+1)
-	var f func(v, fa int) (int, int64)
-	f = func(v, fa int) (sz int, s int64) {
-		sz = 1
+	var dfs func(int, int) int
+	dfs = func(v, fa int) (sum int) {
+		size[v] = 1
 		for _, w := range g[v] {
 			if w != fa {
-				subSz, subSum := f(w, v)
-				sz += subSz
-				s += subSum
+				sum += dfs(w, v)
+				size[v] += size[w]
 			}
 		}
-		size[v] = sz
-		s += int64(sz)
-		sum[v] = s
-		return
+		return sum + size[v]
 	}
-	f(1, 0)
 
-	ans := int64(0)
-	var reroot func(v, fa int, othersSum int64)
-	reroot = func(v, fa int, othersSum int64) {
+	var reroot func(int, int, int)
+	reroot = func(v, fa, res int) {
+		ans = max(ans, res)
 		for _, w := range g[v] {
 			if w != fa {
-				// 涂黑 w 后，「父子树」的贡献为涂黑父节点的贡献 n-size[w]，加上涂黑父节点的非 w 子树的贡献 sum[v]-int64(size[v])-sum[w]
-				reroot(w, v, othersSum+int64(n-size[w])+sum[v]-int64(size[v])-sum[w])
+				reroot(w, v, res+n-size[w]*2)
 			}
 		}
-		if s := int64(n) + othersSum + sum[v] - int64(size[v]); s > ans {
-			ans = s
-		}
 	}
-	reroot(1, 0, 0)
-	Fprint(_w, ans)
+	reroot(1, 0, dfs(1, 0))
+	Fprint(out, ans)
 }
 
 //func main() { CF1187E(os.Stdin, os.Stdout) }
