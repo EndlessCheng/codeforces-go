@@ -22,6 +22,7 @@ todo 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-
 例子是 https://codeforces.com/problemset/problem/1806/E
 注意：**枚举时要做到不重不漏**
 
+- [1714. 数组中特殊等间距元素的和](https://leetcode.cn/problems/sum-of-special-evenly-spaced-elements-in-array/)（会员题）
 可以从这题上手 https://www.luogu.com.cn/problem/P3396 
             同 https://codeforces.com/contest/103/problem/D 2100
 https://www.luogu.com.cn/problem/T279521?contestId=65460 

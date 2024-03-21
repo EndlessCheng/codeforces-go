@@ -42,8 +42,7 @@ Precedence    Operator
 - [693. 交替位二进制数](https://leetcode.cn/problems/binary-number-with-alternating-bits/)
 
 ### 与或（AND/OR）的性质
-TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.go 中的 trie.maxXor
-** 代码和题目见下面的 bitOpTrick 和 bitOpTrickCnt
+& 和 | 在区间求和上具有单调性（本页面搜索 bitOpTrick 和 bitOpTrickCnt）
 - [2980. 检查按位或是否存在尾随零](https://leetcode.cn/problems/check-if-bitwise-or-has-trailing-zeros/) 1234
 - [1318. 或运算的最小翻转次数](https://leetcode.cn/problems/minimum-flips-to-make-a-or-b-equal-to-c/) 1383
 - [2419. 按位与最大的最长子数组](https://leetcode.cn/problems/longest-subarray-with-maximum-bitwise-and/) 1496
@@ -54,8 +53,11 @@ TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.g
 - [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/) 2133
 - [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/) 2384
 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
+连续数字 AND 等于目标值 https://codeforces.com/problemset/problem/1775/C 1600
+https://codeforces.com/problemset/problem/1004/F 2600
 
 ### 异或（XOR）的性质
+另见 strings.go 中的 trie.maxXor
 - [1720. 解码异或后的数组](https://leetcode.cn/problems/decode-xored-array/) 1284
 - [2433. 找出前缀异或的原始数组](https://leetcode.cn/problems/find-the-original-array-of-prefix-xor/) 1367
 - [1310. 子数组异或查询](https://leetcode.cn/problems/xor-queries-of-a-subarray/) 1460
@@ -72,6 +74,7 @@ TIPS: & 和 | 在区间求和上具有单调性；^ 的区间求和见 strings.g
 - [2857. 统计距离为 k 的点对](https://leetcode.cn/problems/count-pairs-of-points-with-distance-k/) 2082
 https://codeforces.com/problemset/problem/1895/D
 https://codeforces.com/problemset/problem/1790/E
+https://codeforces.com/problemset/problem/835/E 2400 交互
 
 ### 利用 lowbit
 https://codeforces.com/problemset/problem/1689/E
@@ -94,13 +97,15 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 所有子数组的 + 的 ^ https://www.luogu.com.cn/problem/U360500
 所有子序列的 + 的 + https://www.luogu.com.cn/problem/U360640
 所有子序列的 ^ 的 ^ https://www.luogu.com.cn/problem/U360641
-所有子序列的 ^ 的 + https://www.luogu.com.cn/problem/U360642 LC1863 https://leetcode.cn/problems/sum-of-all-subset-xor-totals/
+所有子序列的 ^ 的 + https://www.luogu.com.cn/problem/U360642 
+- LC1863 https://leetcode.cn/problems/sum-of-all-subset-xor-totals/ 1372
+- https://codeforces.com/problemset/problem/1614/C 1500
 所有子序列的 + 的 ^ https://www.luogu.com.cn/problem/U360643
-所有子数组的 ^2 的 + 的 + https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
+所有子数组的 ^2 的 + 的 + https://ac.nowcoder.com/acm/contest/65051/D https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
 - 这里 ^2 表示子数组中任意两个数的异或
 所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
 https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
-
+https://codeforces.com/problemset/problem/1513/B 1400
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
 https://codeforces.com/problemset/problem/1895/D 1900
@@ -705,23 +710,24 @@ func _(x int) {
 	// |: LC898 https://leetcode.cn/problems/bitwise-ors-of-subarrays/ 2133
 	//    - 原题 https://codeforces.com/problemset/problem/243/A 1600
 	//    LC2411 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 1938
+	//    https://codeforces.com/problemset/problem/1004/F 2600 线段树 merge
 	//    https://www.luogu.com.cn/problem/P8569
 	//    - 做法见下面的 bitOpTrickCnt      
 	//    - 题目源于这场比赛 https://www.luogu.com.cn/contest/65460#problems
 	//    - 其它做法 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
 	// &: LC1521 https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
-	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/
-	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ 
-	//             https://www.dotcpp.com/oj/problem2709.html
-	//      LC2941 https://leetcode.cn/problems/maximum-gcd-sum-of-a-subarray/
+	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/ 1603
+	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ 1929
+	//      - https://www.dotcpp.com/oj/problem2709.html
+	//      LC2941 https://leetcode.cn/problems/maximum-gcd-sum-of-a-subarray/（会员题）
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
-	//      https://codeforces.com/problemset/problem/891/A
+	//      https://codeforces.com/problemset/problem/891/A 1500
 	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
 	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
 	//      (子数组长度 * 子数组 GCD) 的最大值 https://www.luogu.com.cn/problem/P5502
-	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/
+	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/ 1560
 	//      https://codeforces.com/contest/1834/problem/E
 	bitOpTrick := func(a []int, op func(x, y int) int) map[int]struct{} {
 		ans := map[int]struct{}{}
@@ -750,9 +756,11 @@ func _(x int) {
 	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
 		cnt := map[int]int{}
 		// 视情况，r 可以省略
+		// 或者把 l 和 r 改成 cnt
 		type result struct{ v, l, r int } // [l,r)
 		opRes := []result{}
 		for i, v := range a {
+			// 计算的相当于是在 i 结束的 suf op
 			for j, p := range opRes {
 				opRes[j].v = op(p.v, v)
 			}

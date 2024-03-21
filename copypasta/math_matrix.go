@@ -380,7 +380,8 @@ func (a matrix) determinant(mod int) int {
 // https://codeforces.com/problemset/problem/959/F
 // todo 构造 https://codeforces.com/problemset/problem/1427/E
 //  https://codeforces.com/problemset/problem/1101/G
-//  https://codeforces.com/problemset/problem/895/C
+//  https://codeforces.com/problemset/problem/895/C   
+//  - 加强版 https://loj.ac/p/2978
 //  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
 //  https://www.luogu.com.cn/problem/P3857
 type xorBasis struct {

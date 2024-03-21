@@ -24,6 +24,7 @@ NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y
 
 简单 DFS
 - [2368. 受限条件下可到达节点的数目](https://leetcode.cn/problems/reachable-nodes-with-restrictions/) 1477
+- [3004. 相同颜色的最大子树](https://leetcode.cn/problems/maximum-subtree-of-the-same-color/)（会员题）
 https://codeforces.com/problemset/problem/580/C
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
@@ -416,16 +417,16 @@ func (*tree) minPathCover(g [][]int) int {
 	return len(g) - edgeNum
 }
 
-// 树的直径/最长链（DP 求法另见 dp.go 中的 diameter）
+// 树的直径/最长链       （树形 DP 做法另见 dp.go 中的 diameter）
 // 返回树的某条直径的两端点以及直径长度（最长链长度）
 // 树的中心：树的直径的中点。直径长度为偶数时有一个，为奇数时有两个
-//    如果给每条边加一个中点，那么可以保证树的中心为一个
+// - 如果给每条边加一个中点，那么可以保证树的中心为一个
 // 性质：
-//    直径的中点到所有叶子的距离和最小
-//    对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
+// - 直径的中点到所有叶子的距离和最小
+// - 对于两棵树，记第一棵树直径两端点为 u 和 v，第二棵树直径两端点为 x 和 y。若用一条边连接两棵树，则新树存在某条直径，其两端点一定是 u,v,x,y 中的两个点
 //
 // 为什么不能用类似找直径的做法求**图**的直径呢？比如做两次 BFS
-// 你可以用这个例子试一下：
+// 反例：
 // 1 2
 // 1 3
 // 2 4
@@ -435,32 +436,35 @@ func (*tree) minPathCover(g [][]int) int {
 //
 // 随机树的直径 https://zhuanlan.zhihu.com/p/398621082
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
-// LC1245 https://leetcode-cn.com/problems/tree-diameter/
-// EXTRA: 森林的情况 https://codeforces.com/problemset/problem/455/C
-// 转换的好题 https://codeforces.com/problemset/problem/734/E
-// 转换成求部分直径 https://codeforces.com/problemset/problem/1617/E https://oeis.org/A072339
-// 必须边 https://www.luogu.com.cn/problem/P3304 https://www.acwing.com/problem/content/description/391/
-// 求树中任意一个与 x 距离为 k 的点 https://www.luogu.com.cn/problem/T238762?contestId=65460
-// https://codeforces.com/problemset/problem/1404/B
-// https://codeforces.com/problemset/problem/1819/C
+//
+// LC1245 https://leetcode.cn/problems/tree-diameter/
+// https://codeforces.com/problemset/problem/1404/B 1900
+// https://codeforces.com/problemset/problem/455/C 2100
+// https://codeforces.com/problemset/problem/734/E 2100 转换的好题 
+// https://codeforces.com/problemset/problem/911/F 2400 贪心
+// https://codeforces.com/problemset/problem/1819/C 2400
+// https://codeforces.com/problemset/problem/1617/E 2700 转换成求部分直径 
+// - https://oeis.org/A072339
+// https://www.luogu.com.cn/problem/P3304 必须边 
+// https://www.luogu.com.cn/problem/T238762?contestId=65460 求树中任意一个与 x 距离为 k 的点 
 // https://www.lanqiao.cn/problems/5890/learning/?contest_id=145
 func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	maxD, u := -1, 0
-	var f func(v, fa, d int)
-	f = func(v, fa, d int) {
+	var findMaxDepth func(int, int, int)
+	findMaxDepth = func(v, fa, d int) {
 		if d > maxD {
 			maxD, u = d, v
 		}
 		for _, w := range g[v] {
 			if w != fa {
-				f(w, v, d+1) // d+e.wt
+				findMaxDepth(w, v, d+1) // d+e.wt
 			}
 		}
 	}
-	f(st, -1, 0)
+	findMaxDepth(st, -1, 0)
 	dv := u
 	maxD = -1
-	f(u, -1, 0)
+	findMaxDepth(u, -1, 0)
 	dw := u
 
 	// EXTRA: 获取所有直径端点
@@ -470,20 +474,20 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 	// 下标最小的直径端点 https://codeforces.com/problemset/problem/592/D
 	// 树上非严格次长距离 https://ac.nowcoder.com/acm/contest/9557/C（另一种做法见下面的 secondDiameter）
 	isEnd := make([]bool, len(g))
-	var findEnds func(v, fa, d int)
-	findEnds = func(v, fa, d int) {
+	var findAllEnds func(v, fa, d int)
+	findAllEnds = func(v, fa, d int) {
 		if d == maxD {
 			isEnd[v] = true
 			return
 		}
 		for _, w := range g[v] {
 			if w != fa {
-				findEnds(w, v, d+1)
+				findAllEnds(w, v, d+1)
 			}
 		}
 	}
-	findEnds(dv, -1, 0)
-	findEnds(dw, -1, 0)
+	findAllEnds(dv, -1, 0)
+	findAllEnds(dw, -1, 0)
 	ends := []int{}
 	for v, e := range isEnd {
 		if e {
@@ -540,29 +544,27 @@ func (*tree) diameter(st int, g [][]int) (int, int, int) {
 
 	// EXTRA: 求出无根树上每个点的最远点及距离（紫书 p.282 思考题）
 	// 从任意直径的两个端点出发跑 DFS，取最大值
-	// 相关题目 https://codeforces.com/problemset/problem/337/D
+	// https://codeforces.com/problemset/problem/337/D 2000
+	// https://codeforces.com/problemset/problem/911/F 2400
 	// 每个点相距为 k 的点 https://atcoder.jp/contests/abc267/tasks/abc267_f
 	farthest := make([]struct{ v, d int }, len(g))
 	for i := range farthest {
 		farthest[i].d = -1
 	}
-	var cur int
-	var findFarthest func(v, fa, d int)
-	findFarthest = func(v, fa, d int) {
+	var findFarthest func(int, int, int, int)
+	findFarthest = func(v, fa, d, tar int) {
 		if d > farthest[v].d {
 			farthest[v].d = d
-			farthest[v].v = cur
+			farthest[v].v = tar
 		}
 		for _, w := range g[v] {
 			if w != fa {
-				findFarthest(w, v, d+1)
+				findFarthest(w, v, d+1, tar)
 			}
 		}
 	}
-	cur = dv
-	findFarthest(dv, -1, 0)
-	cur = dw
-	findFarthest(dw, -1, 0)
+	findFarthest(dv, -1, 0, dv)
+	findFarthest(dw, -1, 0, dw)
 
 	return dv, dw, maxD
 }
@@ -650,6 +652,7 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // 适合处理树上路径相关问题
 // 考察完经过某个重心的所有路径，后面就无需再考察这个重心了，直接将其删除
 // 每次以重心为根递归处理，这样做递归深度不会超过 O(logn)
+// 或者说，每个点至多被 O(log n) 个在重心拐弯的路径覆盖
 // https://oi-wiki.org/graph/tree-divide/
 // https://zhuanlan.zhihu.com/p/359209926
 // https://codeforces.com/blog/entry/81661
@@ -808,6 +811,7 @@ func (tree) centroidDecomposition2(g [][]int, s string) []int {
 
 	// 计算「经过 v 向上，在重心拐弯，到其它子树」的路径信息
 	// pathMask 从 ct 的儿子开始
+	// 每个 v 至多被 O(log n) 个在重心拐弯的路径覆盖
 	var calc func(int, int, int) int
 	calc = func(v, fa, pathMask int) int {
 		pathMask ^= 1 << (s[v] - 'a')
@@ -1036,8 +1040,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // 维护边权出现次数 LC2846 https://leetcode.cn/problems/minimum-edge-weight-equilibrium-queries-in-a-tree/
 // 维护最大值（与 MST 结合）https://codeforces.com/problemset/problem/609/E
 //    变体 https://codeforces.com/problemset/problem/733/F
-// 维护最大值（与 MST 结合）LC1697 https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths/
-// 维护最大值（与 MST 结合）LC1724（上面这题的在线版）https://leetcode-cn.com/problems/checking-existence-of-edge-length-limited-paths-ii/
+// 维护最大值（与 MST 结合）LC1697 https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/
+// 维护最大值（与 MST 结合）LC1724（上面这题的在线版）https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths-ii/
 // 维护最大值和严格次大值（严格次小 MST）：见 graph.go 中的 strictlySecondMST
 // 维护前十大（点权）https://codeforces.com/problemset/problem/587/C
 // 维护最大子段和 https://codeforces.com/contest/1843/problem/F2
@@ -1170,6 +1174,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		// 从 v 开始向根移动至多 d 距离，返回最大移动次数，以及能移动到的离根最近的点
 		// NOIP2012·提高 疫情控制 https://www.luogu.com.cn/problem/P1084
 		// 变形 https://codeforces.com/problemset/problem/932/D
+		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
 		uptoDep := func(v, d int) (int, int) {
 			step := 0
 			dv := dep[v]
@@ -1188,6 +1193,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		// EXTRA: 倍增的时候维护其他属性，如边权最值等
 		// 下面的代码来自 https://codeforces.com/problemset/problem/609/E
 		// EXTRA: 额外维护最值边的下标，见 https://codeforces.com/contest/733/submission/120955685
+		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
 		type nb struct{ to, wt int }
 		var g [][]nb // read g ...
 
@@ -1887,7 +1893,7 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // 模板题 https://www.luogu.com.cn/problem/U41492
 //       https://codeforces.com/problemset/problem/600/E https://www.acwing.com/problem/content/3191/
 // todo HNOI09 梦幻布丁 https://www.luogu.com.cn/problem/P3201 https://www.acwing.com/problem/content/2156/
-// LC2003 所有子树 mex https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// LC2003 所有子树 mex https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/
 // 距离等于 k 的点对数 https://codeforces.com/problemset/problem/161/D
 //            变形题 https://ac.nowcoder.com/acm/contest/4853/E 题解 https://ac.nowcoder.com/discuss/394080
 // https://ac.nowcoder.com/acm/contest/4010/E

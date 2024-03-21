@@ -28,8 +28,12 @@ https://codeforces.com/problemset/problem/1140/C 1600
 
 #### 模拟 
 - [2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/) 2589
+https://codeforces.com/contest/1945/problem/G
 
 #### 思维·转换
+- [2054. 两个最好的不重叠活动](https://leetcode.cn/problems/two-best-non-overlapping-events/) 1883
+- [264. 丑数 II](https://leetcode.cn/problems/ugly-number-ii/)
+- [313. 超级丑数](https://leetcode.cn/problems/super-ugly-number/)
 https://www.luogu.com.cn/problem/P5930
 - 3D 接雨水 LC407 https://leetcode.cn/problems/trapping-rain-water-ii/
 https://www.luogu.com.cn/problem/P2859

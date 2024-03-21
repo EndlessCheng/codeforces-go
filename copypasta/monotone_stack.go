@@ -51,6 +51,7 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 
 #### 矩形系列
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
+- [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
 - [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
 - [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
 

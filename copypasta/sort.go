@@ -13,6 +13,9 @@ BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
 
+利用这题测试一下，你有没有学到二分的本质？
+https://codeforces.com/contest/1945/problem/E
+
 LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
 
@@ -30,6 +33,7 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 - [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
+- [1182. 与目标颜色间的最短距离](https://leetcode.cn/problems/shortest-distance-to-target-color/)（会员题）
 - [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
 https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/165/B 1500

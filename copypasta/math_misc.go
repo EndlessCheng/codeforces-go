@@ -1,8 +1,8 @@
 package copypasta
 
 /*
-数学思维
-https://codeforces.com/problemset/problem/23/C 2500
+- [343. 整数拆分](https://leetcode.cn/problems/integer-break/)
+- [651. 四个键的键盘](https://leetcode.cn/problems/4-keys-keyboard/)（会员题）
 
 朗伯 W 函数   Lambert W function
 https://en.wikipedia.org/wiki/Lambert_W_function

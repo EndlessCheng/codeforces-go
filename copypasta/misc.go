@@ -13,6 +13,7 @@ import (
 
 /* 其他无法分类的算法 ad-hoc
 
+- [764. 最大加号标志](https://leetcode.cn/problems/largest-plus-sign/) 1753
 最大子矩形 https://www.luogu.com.cn/problem/P1578
 
 倒数平方根 https://www.bilibili.com/video/BV17N41167dR/
@@ -1221,4 +1222,90 @@ func makeLexicographicallySmallestStringBySwappingAdjacentElements2(a []int) []i
 		}
 	}
 	return ans
+}
+
+// minimalist tower defense
+func bestWay() {
+	const goldTowerCost = 50
+	const goldTowerLevel1Cost = 20
+	const targetMoney1 = 120
+	const targetMoney2 = 240
+
+	calc := func(buyLimit1, buyLimit2 int) {
+		fmt.Print("购买个数限制为 ", buyLimit1, " ", buyLimit2, " ")
+		type worker struct {
+			nextT, period, output int
+			leveled               bool
+		}
+		ws := []*worker{{0, 15, 20, true}}
+
+		curTime := 0
+		nextCanBuyTime := 0
+		curMoney := 50
+		goldTowerCount := 0
+		for ; ; curTime++ {
+			for _, w := range ws {
+				if w.nextT == curTime {
+					curMoney += w.output
+					w.nextT += w.period
+				}
+			}
+			if curMoney >= targetMoney1 {
+				break
+			}
+			if goldTowerCount < buyLimit1 && curTime >= nextCanBuyTime && curMoney >= goldTowerCost {
+				//fmt.Println("第", curTime, "秒买")
+				ws = append(ws, &worker{curTime + 7, 30, 20, false})
+				goldTowerCount++
+				curMoney -= goldTowerCost
+				nextCanBuyTime = curTime + 10
+			}
+		}
+
+		//fmt.Println("第", curTime, "秒升级 1")
+		fmt.Print(curTime, " ")
+		curMoney -= targetMoney1
+		ws[0].output += 20
+		for ; ; curTime++ {
+			for _, w := range ws {
+				if w.nextT == curTime {
+					curMoney += w.output
+					w.nextT += w.period
+				}
+			}
+			if curMoney >= targetMoney2 {
+				break
+			}
+
+			// 升级
+			for _, w := range ws {
+				if curMoney < goldTowerLevel1Cost {
+					break
+				}
+				if !w.leveled {
+					w.leveled = true
+					curMoney -= goldTowerLevel1Cost
+					w.output += 10
+				}
+			}
+
+			if goldTowerCount < buyLimit2 && curTime >= nextCanBuyTime && curMoney >= goldTowerCost {
+				//fmt.Println("第", curTime, "秒买")
+				ws = append(ws, &worker{curTime + 7, 30, 20, false})
+				goldTowerCount++
+				curMoney -= goldTowerCost
+				nextCanBuyTime = curTime + 10
+			}
+		}
+
+		//fmt.Println("第", curTime, "秒升级 2")
+		fmt.Println(curTime)
+	}
+
+	for buyLimit1 := 0; buyLimit1 <= 5; buyLimit1++ {
+		for buyLimit2 := 5; buyLimit2 <= 10; buyLimit2++ {
+			calc(buyLimit1, buyLimit2)
+		}
+		fmt.Println()
+	}
 }

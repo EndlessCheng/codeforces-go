@@ -23,6 +23,15 @@ https://codeforces.com/problemset/problem/617/B 1300
 - 打表 + OEIS
 - 用 DP 推导，然后尝试优化
 - 假设法
+- [1359. 有效的快递序列数目](https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/) 1723
+LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
+- [1643. 第 K 条最小指令](https://leetcode.cn/problems/kth-smallest-instructions/) 2080
+LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
+LC1916 https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/ 2486
+LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/ 2645
+LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
+- [LCP 25. 古董键盘](https://leetcode.cn/problems/Uh984O/)
+另见下面的「放球问题」
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
@@ -44,17 +53,13 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://atcoder.jp/contests/abc290/tasks/abc290_f
-LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
-LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
-LC1916 https://leetcode.cn/problems/count-ways-to-build-rooms-in-an-ant-colony/ 2486
-LC2954 https://leetcode.cn/problems/count-the-number-of-infection-sequences/ 2645
-LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会员题）
 todo https://www.luogu.com.cn/problem/P6017
 
 差分、前缀和与组合数
 https://codeforces.com/contest/1832/problem/E
 
-放球问题
+## 放球问题
+视频讲解：https://www.bilibili.com/video/BV1p6421g736/
 最基础的问题，把 n 个无区别的球放入 m 个有区别的盒子中，不允许空盒（n>=m）：
 - 解答：考虑用 m-1 个隔板隔开这些球，这些球之间有 n-1 个位置可以放置隔板，所以方案数为 C(n-1,m-1)
 变形：允许空盒
@@ -63,6 +68,11 @@ https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 https://www.luogu.com.cn/blog/over-knee-socks/post-ball-box
 https://www.cnblogs.com/Xing-Ling/p/11176939.html
 https://blog.csdn.net/weixin_33759269/article/details/86017932
+- [1641. 统计字典序元音字符串的数目](https://leetcode.cn/problems/count-sorted-vowel-strings/) 1519
+- [1621. 大小为 K 的不重叠线段的数目](https://leetcode.cn/problems/number-of-sets-of-k-non-overlapping-line-segments/) 2198
+- [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
+- [2338. 统计理想数组的数目](https://leetcode.cn/problems/count-the-number-of-ideal-arrays/) 2615
+https://codeforces.com/contest/1931/problem/G 2000
 扩展例题 https://codeforces.com/problemset/problem/893/E
 todo 十二重计数法 https://www.luogu.com.cn/problem/P5824
 
@@ -104,7 +114,8 @@ a(n) = 长度为 n 的字符串的所有子串长度之和
 todo 可重集排列组合 https://oi-wiki.org/math/combination/
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10
-错排 https://oeis.org/A000166 subfactorial numbers  a[0]=1, a[1]=0, a[n]=(n-1)*(a[n-1]+a[n-2])  
+错排 https://oeis.org/A000166 subfactorial numbers  a[0]=1, a[1]=0, a[n]=(n-1)*(a[n-1]+a[n-2])
+- [634. 寻找数组的错位排列](https://leetcode.cn/problems/find-the-derangement-of-an-array/)（会员题）
 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 	https://oeis.org/A082491 n! * A000166(n)   a(n+2) = (n+2)*(n+1)*(a(n+1)+(n+1)*a(n))
 	https://oeis.org/A000255 错排的比较对象的范围是 [1,n+1]  a(n) = n*a(n-1) + (n-1)*a(n-2), a(0) = a(1) = 1
@@ -153,6 +164,7 @@ https://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n
 https://oeis.org/A018819 Binary partition function: number of partitions of n into powers of 2
 	相关题目 https://www.luogu.com.cn/problem/P6065 http://poj.org/problem?id=2229
 https://oeis.org/A000740 将 n 分拆成若干互质整数的方法数 a(n) = sum_{d|n} mu(n/d)*2^(d-1)
+严格递增 https://oeis.org/A000009 Number of partitions of n into distinct parts    number of partitions of n into odd parts
 
 华林问题 Waring's problem
 https://en.wikipedia.org/wiki/Waring%27s_problem

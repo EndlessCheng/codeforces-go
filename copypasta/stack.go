@@ -15,6 +15,7 @@ https://codeforces.com/problemset/problem/1092/D1
 https://codeforces.com/problemset/problem/1092/D2
 
 括号匹配/有效括号
+- [32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
 下标范围有限制 https://codeforces.com/problemset/problem/543/D
 https://leetcode.cn/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/
 

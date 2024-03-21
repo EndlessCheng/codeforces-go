@@ -96,6 +96,11 @@ https://codeforces.com/problemset/problem/962/C 1400
 爆搜+剪枝
 - [79. 单词搜索](https://leetcode.cn/problems/word-search/)
 - [212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/)
+- [140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/)
+- [473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)
+- [488. 祖玛游戏](https://leetcode.cn/problems/zuma-game/)
+- [638. 大礼包](https://leetcode.cn/problems/shopping-offers/)
+- [1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/) 1882
 
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
@@ -593,10 +598,14 @@ func searchCollection() {
 	// http://poj.org/problem?id=2248
 
 	// 折半枚举/双向搜索 Meet in the middle
-	// https://codeforces.com/problemset/problem/1006/F https://atcoder.jp/contests/abc271/tasks/abc271_f https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
-	// LC805 https://leetcode.cn/problems/split-array-with-same-average/ 1983
-	// LC2035 https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/ 2490
-	// O(3^(n/2)) 放A组/放B组/不选 https://www.luogu.com.cn/problem/P3067 https://www.luogu.com.cn/record/88785388
+	// - [805. 数组的均值分割](https://leetcode.cn/problems/split-array-with-same-average/) 1983
+	// - [1755. 最接近目标值的子序列和](https://leetcode.cn/problems/closest-subsequence-sum/) 2364
+	// - [2035. 将数组分成两个数组并最小化数组和的差](https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/) 2490
+	// https://codeforces.com/problemset/problem/1006/F 
+	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
+	// https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
+	// O(3^(n/2)) 放A组/放B组/不选 https://www.luogu.com.cn/problem/P3067
+	// - https://www.luogu.com.cn/record/88785388
 	// https://www.luogu.com.cn/problem/P5194
 	// https://www.luogu.com.cn/problem/P4799
 	// https://codeforces.com/problemset/problem/327/E
@@ -1015,6 +1024,7 @@ func _(abs func(int) int) {
 	// 第一排在右上，最后一排在左下
 	// 每排从左上到右下
 	// LC2711 https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/
+	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 	loopDiagonal := func(n, m int) {
 		for s := 1; s < n+m; s++ {
 			minJ := max(0, m-s)
@@ -1030,6 +1040,7 @@ func _(abs func(int) int) {
 	// 第一排在左上，最后一排在右下
 	// 每排从左下到右上
 	// LC498 https://leetcode.cn/problems/diagonal-traverse/
+	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 	loopAntiDiagonal := func(n, m int) {
 		for s := 0; s < n+m-1; s++ {
 			minJ := max(0, s-n+1)
@@ -1131,10 +1142,12 @@ https://codeforces.com/problemset/problem/598/D 1700
 - [1926. 迷宫中离入口最近的出口](https://leetcode.cn/problems/nearest-exit-from-entrance-in-maze/) 1638
 - [1091. 二进制矩阵中的最短路径](https://leetcode.cn/problems/shortest-path-in-binary-matrix/) 1658
 - [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/) 1666
+- [1824. 最少侧跳次数](https://leetcode.cn/problems/minimum-sideway-jumps/) 1778 0-1 BFS
 - [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/) 1826
 - [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/) 1837
 - [1293. 网格中的最短路径](https://leetcode.cn/problems/shortest-path-in-a-grid-with-obstacles-elimination/) 1967
 - [1210. 穿过迷宫的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/) 2022
+- [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069 0-1 BFS
 - [490. 迷宫](https://leetcode.cn/problems/the-maze/)（会员题）
 - [505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)（会员题）
 - [499. 迷宫 III](https://leetcode.cn/problems/the-maze-iii/)（会员题）
@@ -1154,9 +1167,10 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
    - https://www.luogu.com.cn/problem/UVA11624
 - [2556. 二进制矩阵中翻转最多一次使路径不连通](https://leetcode.cn/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/) 2369
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
-- [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
 - [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
-- [LCP 31. 变换的迷宫](https://leetcode-cn.com/problems/Db3wC1/)
+- [LCP 31. 变换的迷宫](https://leetcode.cn/problems/Db3wC1/)
+- [LCP 45. 自行车炫技赛场](https://leetcode.cn/problems/kplEvH/)
+- [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
 - [1728. 猫和老鼠 II](https://leetcode.cn/problems/cat-and-mouse-ii/) 2849
 易错题 https://codeforces.com/problemset/problem/540/C 2000
 */
