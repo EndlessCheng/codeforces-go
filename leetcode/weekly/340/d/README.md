@@ -46,7 +46,7 @@ class Solution:
                 g = grid[i][j]
                 col_st = col_stacks[j]
                 mn = inf if i < m - 1 or j < n - 1 else 1
-                if g:
+                if g:  # 可以向右/向下跳
                     # 在单调栈上二分
                     k = bisect_left(row_st, -(j + g), key=lambda p: p[1])
                     if k < len(row_st):
@@ -54,7 +54,6 @@ class Solution:
                     k = bisect_left(col_st, -(i + g), key=lambda p: p[1])
                     if k < len(col_st):
                         mn = min(mn, col_st[k][0] + 1)
-
                 if mn < inf:
                     # 插入单调栈
                     while row_st and mn <= row_st[-1][0]:
@@ -81,7 +80,7 @@ class Solution {
                 int g = grid[i][j];
                 List<int[]> colSt = colStacks[j];
                 mn = i < m - 1 || j < n - 1 ? Integer.MAX_VALUE : 1;
-                if (g > 0) {
+                if (g > 0) { // 可以向右/向下跳
                     // 在单调栈上二分
                     int k = search(rowSt, j + g);
                     if (k < rowSt.size()) {
@@ -137,7 +136,7 @@ public:
                 int g = grid[i][j];
                 auto &col_st = col_stacks[j];
                 mn = i < m - 1 || j < n - 1 ? INT_MAX : 1;
-                if (g) {
+                if (g) { // 可以向右/向下跳
                     // 在单调栈上二分
                     auto it = lower_bound(row_st.begin(), row_st.end(), j + g, [](const auto &a, const int b) {
                         return a.second > b;
@@ -179,7 +178,7 @@ func minimumVisitedCells(grid [][]int) (mn int) {
 			if i < m-1 || j < n-1 {
 				mn = math.MaxInt
 			}
-			if g := grid[i][j]; g > 0 {
+			if g := grid[i][j]; g > 0 { // 可以向右/向下跳
 				// 在单调栈上二分
 				k := sort.Search(len(rowSt), func(k int) bool { return rowSt[k].i <= j+g })
 				if k < len(rowSt) {
@@ -224,7 +223,7 @@ var minimumVisitedCells = function(grid) {
             const g = grid[i][j];
             const colSt = colStacks[j];
             mn = i < m - 1 || j < n - 1 ? Infinity : 1;
-            if (g) {
+            if (g) { // 可以向右/向下跳
                 // 在单调栈上二分
                 let k = search(rowSt, j + g);
                 if (k < rowSt.length) {
@@ -279,7 +278,7 @@ impl Solution {
             for (j, &g) in row.iter().enumerate().rev() {
                 let col_st = &mut col_stacks[j];
                 mn = if i < m - 1 || j < n - 1 { i32::MAX } else { 1 };
-                if g > 0 {
+                if g > 0 { // 可以向右/向下跳
                     let g = g as usize;
                     // 在单调栈上二分
                     let k = row_st.partition_point(|(_, idx)| *idx > j + g);
@@ -317,21 +316,21 @@ impl Solution {
 
 ## 方法二：贪心+最小堆
 
-这个思路类似 [Dijkstra 算法](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)，我们来以一种计算「最短路」的方式求解最少格子数。
+这个思路类似 [Dijkstra 算法](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。
 
 从起点 $(0,0)$ 开始，小到大枚举 $i$ 和 $j$。
 
 假设枚举到 $(i,j)$，设从 $(0,0)$ 到 $(i,j)$ 经过了 $f$ 个格子，设 $g=\textit{grid}[i][j]$。
 
 - 从 $(i,j)$ 出发向右，我们最远可以到达第 $g+j$ 列，把数对 $(f,g+j)$ 保存到一个数据结构 $\textit{rowH}$ 中。
-- 从 $(i,j)$ 出发向下，我们最远可以到达第 $g+i$ 列，把数对 $(f,g+i)$ 保存到另一个数据结构 $\textit{colH}$ 中。
+- 从 $(i,j)$ 出发向下，我们最远可以到达第 $g+i$ 行，把数对 $(f,g+i)$ 保存到另一个数据结构 $\textit{colH}$ 中。
 
 怎么算出 $f$？答案就在 $\textit{rowH}$ 和 $\textit{colH}$ 中。
 
 - 从 $\textit{rowH}$ 中找到一个 $f$ 值最小的，且可以到达第 $j$ 列的数对。
 - 从 $\textit{colH}$ 中找到一个 $f$ 值最小的，且可以到达第 $i$ 行的数对。
 
-这样的数据结构需要支持：
+选择哪种数据结构实现？这样的数据结构需要支持：
 
 - 添加元素。
 - 查找最小元素。
