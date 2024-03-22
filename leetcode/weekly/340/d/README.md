@@ -47,7 +47,7 @@ class Solution:
                 col_st = col_stacks[j]
                 mn = inf if i < m - 1 or j < n - 1 else 1
                 if g:  # 可以向右/向下跳
-                    # 在单调栈上二分
+                    # 在单调栈上二分查找最优转移来源
                     k = bisect_left(row_st, -(j + g), key=lambda p: p[1])
                     if k < len(row_st):
                         mn = row_st[k][0] + 1
@@ -81,7 +81,7 @@ class Solution {
                 List<int[]> colSt = colStacks[j];
                 mn = i < m - 1 || j < n - 1 ? Integer.MAX_VALUE : 1;
                 if (g > 0) { // 可以向右/向下跳
-                    // 在单调栈上二分
+                    // 在单调栈上二分查找最优转移来源
                     int k = search(rowSt, j + g);
                     if (k < rowSt.size()) {
                         mn = rowSt.get(k)[0] + 1;
@@ -137,7 +137,7 @@ public:
                 auto &col_st = col_stacks[j];
                 mn = i < m - 1 || j < n - 1 ? INT_MAX : 1;
                 if (g) { // 可以向右/向下跳
-                    // 在单调栈上二分
+                    // 在单调栈上二分查找最优转移来源
                     auto it = lower_bound(row_st.begin(), row_st.end(), j + g, [](const auto &a, const int b) {
                         return a.second > b;
                     });
@@ -179,7 +179,7 @@ func minimumVisitedCells(grid [][]int) (mn int) {
 				mn = math.MaxInt
 			}
 			if g := grid[i][j]; g > 0 { // 可以向右/向下跳
-				// 在单调栈上二分
+				// 在单调栈上二分查找最优转移来源
 				k := sort.Search(len(rowSt), func(k int) bool { return rowSt[k].i <= j+g })
 				if k < len(rowSt) {
 					mn = rowSt[k].x
@@ -224,7 +224,7 @@ var minimumVisitedCells = function(grid) {
             const colSt = colStacks[j];
             mn = i < m - 1 || j < n - 1 ? Infinity : 1;
             if (g) { // 可以向右/向下跳
-                // 在单调栈上二分
+                // 在单调栈上二分查找最优转移来源
                 let k = search(rowSt, j + g);
                 if (k < rowSt.length) {
                     mn = rowSt[k][0] + 1;
@@ -280,7 +280,7 @@ impl Solution {
                 mn = if i < m - 1 || j < n - 1 { i32::MAX } else { 1 };
                 if g > 0 { // 可以向右/向下跳
                     let g = g as usize;
-                    // 在单调栈上二分
+                    // 在单调栈上二分查找最优转移来源
                     let k = row_st.partition_point(|(_, idx)| *idx > j + g);
                     if k < row_st.len() {
                         mn = row_st[k].0 + 1;
