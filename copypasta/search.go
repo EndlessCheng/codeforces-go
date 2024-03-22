@@ -1167,6 +1167,7 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
    - https://www.luogu.com.cn/problem/UVA11624
 - [2556. 二进制矩阵中翻转最多一次使路径不连通](https://leetcode.cn/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/) 2369
 - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
+- [2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/) 2582
 - [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
 - [LCP 31. 变换的迷宫](https://leetcode.cn/problems/Db3wC1/)
 - [LCP 45. 自行车炫技赛场](https://leetcode.cn/problems/kplEvH/)
