@@ -1,51 +1,58 @@
 package main
 
-import "math"
+import (
+	"container/heap"
+	"math"
+)
 
 // https://space.bilibili.com/206214
-const inf = math.MaxInt / 3 // 防止更新最短路时加法溢出
-
-type Graph [][]int
+type Graph [][]pair
 
 func Constructor(n int, edges [][]int) Graph {
-	d := make([][]int, n) // 邻接矩阵
-	for i := range d {
-		d[i] = make([]int, n)
-		for j := range d[i] {
-			if j != i {
-				d[i][j] = inf // 初始化为无穷大，表示 i 到 j 没有边
-			}
-		}
-	}
+	g := make(Graph, n) // 邻接表
 	for _, e := range edges {
-		d[e[0]][e[1]] = e[2] // 添加一条边（输入保证没有重边和自环）
+		g[e[0]] = append(g[e[0]], pair{e[1], e[2]})
 	}
-	for k := range d {
-		for i := range d {
-			for j := range d {
-				d[i][j] = min(d[i][j], d[i][k]+d[k][j])
+	return g
+}
+
+func (g Graph) AddEdge(e []int) {
+	g[e[0]] = append(g[e[0]], pair{e[1], e[2]})
+}
+
+func (g Graph) ShortestPath(start, end int) int {
+	dis := make([]int, len(g))
+	for i := range dis {
+		dis[i] = math.MaxInt
+	}
+	dis[start] = 0
+	h := hp{{start, 0}}
+	for len(h) > 0 {
+		p := heap.Pop(&h).(pair)
+		x, d := p.x, p.d
+		if x == end {
+			return d
+		}
+		if d > dis[x] {
+			continue
+		}
+		for _, e := range g[x] {
+			y, w := e.x, e.d
+			newD := d + w
+			if newD < dis[y] {
+				dis[y] = newD
+				heap.Push(&h, pair{y, newD})
 			}
 		}
 	}
-	return d
+	return -1
 }
 
-func (d Graph) AddEdge(e []int) {
-	x, y, w := e[0], e[1], e[2]
-	if w >= d[x][y] {
-		return
-	}
-	for i := range d {
-		for j := range d {
-			d[i][j] = min(d[i][j], d[i][x]+w+d[y][j])
-		}
-	}
-}
+type pair struct{ x, d int }
+type hp []pair
 
-func (d Graph) ShortestPath(start, end int) int {
-	ans := d[start][end]
-	if ans == inf {
-		return -1
-	}
-	return ans
-}
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].d < h[j].d }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
+func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
