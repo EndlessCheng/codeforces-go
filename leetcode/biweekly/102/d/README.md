@@ -531,7 +531,7 @@ impl Graph {
 - 时间复杂度：
     - 初始化 $\mathcal{O}(n+m)$。其中 $m$ 为 $\textit{edges}$ 的长度。
     - $\texttt{addEdge}$ $\mathcal{O}(1)$。
-    - $\texttt{shortestPath}$ $\mathcal{O}(m\log m)$。其中 $m$ 为调用 $\texttt{shortestPath}$ 时，图的边数。当图是稠密图时，复杂度为 $\mathcal{O}(n^2\log n)$。
+    - $\texttt{shortestPath}$ $\mathcal{O}(n + m\log m)$。其中 $m$ 为调用 $\texttt{shortestPath}$ 时，图的边数。当图是稠密图时，复杂度为 $\mathcal{O}(n^2\log n)$。
 - 空间复杂度：$\mathcal{O}(n+m)$。其中 $m$ 为 $\textit{edges}$ 的长度加上 $\texttt{addEdge}$ 的调用次数。
 
 ## 方法二：Floyd 算法
