@@ -1,6 +1,6 @@
 解决本题您需要掌握如下知识：
 
-1. 前缀和
+1. 前缀和，[原理讲解](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)
 2. 哈希表
 3. 模运算
 
