@@ -12,9 +12,11 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
 func init() { debug.SetGCPercent(-1) }
 
 模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
+最长匹配后缀 https://leetcode.cn/problems/longest-common-suffix-queries/
 前后缀同时匹配 LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
             LC3045 https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
 - 把 (s[i], s[n-1-i]) 插入字典树
+LC527 https://leetcode.cn/problems/word-abbreviation/
 https://codeforces.com/contest/514/problem/C
 回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
 与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
@@ -25,10 +27,8 @@ todo https://codeforces.com/contest/455/problem/B
 */
 type trieNode struct {
 	son [26]*trieNode
-	cnt int //（子树中）完整字符串的个数
-	val int // []int
-
-	isEnd bool
+	end int
+	val int
 }
 
 func (o *trieNode) empty() bool {
@@ -43,7 +43,6 @@ func (o *trieNode) empty() bool {
 type trie struct{ root *trieNode }
 
 func newTrie() *trie {
-	// init with a root (empty string)
 	return &trie{&trieNode{}}
 }
 
@@ -61,7 +60,7 @@ func (t *trie) put(s string, val int) *trieNode {
 		o = o.son[b]
 		//o.cnt++ // 写法一：统计 o 对应的字符串是多少个完整字符串的前缀
 	}
-	o.cnt++ // 写法二：统计 o 上有多少个完整字符串
+	o.end++ // 写法二：统计 o 上有多少个完整字符串
 	o.val = val
 	return o
 }
@@ -75,7 +74,7 @@ func (t *trie) dfs() {
 			return
 		}
 		// 统计从根到 o 的路径
-		sum += o.cnt //
+		sum += o.end //
 
 		for _, child := range o.son {
 			f(child, sum)
@@ -92,7 +91,7 @@ func (t *trie) longestChainWords() (ans int) {
 		if o == nil {
 			return
 		}
-		if o.isEnd {
+		if o.end > 0 {
 			cnt++
 			ans = max(ans, cnt)
 		} else {
@@ -106,22 +105,21 @@ func (t *trie) longestChainWords() (ans int) {
 	return
 }
 
-// 查找字符串 s
-func (t *trie) find(s string) *trieNode {
+// 字符串 s 与字典树中字符串的最长公共前缀
+// 返回最后一个匹配的节点（最长公共前缀），以及是否找到 s
+func (t *trie) find(s string) (*trieNode, bool) {
 	o := t.root
 	for _, b := range s {
-		o = o.son[t.ord(b)]
-		// 未找到 s，且 s 不是任何字符串的前缀
-		if o == nil {
-			return nil
+		nxt := o.son[t.ord(b)]
+		if nxt == nil {
+			return o, false
 		}
-		//sum += o.cnt
+		o = nxt
 	}
-	// 未找到 s，但是 s 是某个字符串的前缀
-	if o.cnt == 0 { // 已删除
-		return nil
+	if o.end == 0 { // 已删除
+		return o, false
 	}
-	return o
+	return o, true
 }
 
 // 删除字符串 s，返回字符串末尾对应的节点
@@ -135,13 +133,12 @@ func (t *trie) delete(s string) *trieNode {
 		if o == nil {
 			return nil
 		}
-		//o.cnt-- // 对应 put 的写法
 	}
-	o.cnt--
-	if o.cnt == 0 {
+	o.end--
+	if o.end == 0 {
 		for i := len(s) - 1; i >= 0; i-- {
 			f := fa[i]
-			f.son[t.ord(rune(s[i]))] = nil
+			f.son[t.ord(rune(s[i]))] = nil // 完全删除节点
 			if !f.empty() {
 				break
 			}
@@ -158,7 +155,7 @@ func (t *trie) rank(s string) (k int) {
 		b = t.ord(b)
 		for _, son := range o.son[:b] {
 			if son != nil {
-				k += son.cnt
+				k += son.end
 			}
 		}
 		o = o.son[b]
@@ -178,12 +175,12 @@ outer:
 	for {
 		for i, son := range o.son[:] {
 			if son != nil {
-				if k < son.cnt {
+				if k < son.end {
 					o = son
 					s = append(s, t.chr(byte(i)))
 					continue outer
 				}
-				k -= son.cnt
+				k -= son.end
 			}
 		}
 		return
@@ -203,7 +200,7 @@ func (t *trie) countPrefixOfString(s string) (cnt int) {
 		if o == nil {
 			return
 		}
-		cnt += o.cnt
+		cnt += o.end
 	}
 	return
 }
@@ -220,7 +217,7 @@ func (t *trie) countStringHasPrefix(p string) int {
 			return 0
 		}
 	}
-	return o.cnt
+	return o.end
 }
 
 // s 的本质不同子串数量 O(n^2)
@@ -250,7 +247,7 @@ func (t *trie) countDistinctSubstring(s string) (cnt int) {
 // roots[i+1] = roots[i].put(s)
 func (o trieNode) put(s []byte) *trieNode {
 	if len(s) == 0 {
-		o.cnt++
+		o.end++
 		return &o
 	}
 	b := s[0] - 'a' //
