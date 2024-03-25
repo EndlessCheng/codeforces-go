@@ -954,8 +954,8 @@ func mergeIntervals(a [][]int) [][]int {
 // 如果无法到达 n-1，返回 -1
 // 注：对于复杂变形题，采用分组循环不易写错
 // - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
-// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/)
-// - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
+// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/) 1746
+// - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/) 1885
 // 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
 // 变形 https://codeforces.com/contest/1630/problem/C
 func minJumpNumbers(a []int) (ans int) {
