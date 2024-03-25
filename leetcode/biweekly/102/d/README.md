@@ -554,6 +554,12 @@ $$
 
 对于 $\texttt{shortestPath}$，返回 $f[\textit{start}][\textit{end}]$ 即可。
 
+#### 答疑
+
+**问**：在 $\texttt{addEdge}$ 中，上式 $f[i][j]$ 的计算依赖于 $f[i][x]$ 的值，如果先计算 $f[i][j]$，再计算 $f[i][x]$，我们还需要重新计算 $f[i][j]$ 吗？
+
+**答**：没有必要，每个 $f[i][j]$ 只需要计算一次。如果 $f[i][x]$ 因为 $x-y$ 这条边变小，说明从 $i$ 到 $x$ 的最短路包含 $x-y$ 这条边。那么对于 $f[i][j]$，最短路不可能是 $i---x-y---j$，这意味着最短路会经过 $x-y$ 这条边**两次**。
+
 ```py [sol-Python3]
 class Graph:
     def __init__(self, n: int, edges: List[List[int]]):
