@@ -16,8 +16,7 @@ class Solution:
         sl = SortedList()
         ans = []
         for x, f in zip(nums, freq):
-            if cnt[x] in sl:
-                sl.remove(cnt[x])  # 多个 cnt[x] 只会移除一个
+            sl.discard(cnt[x])  # 多个 cnt[x] 只会移除一个
             cnt[x] += f
             sl.add(cnt[x])
             ans.append(sl[-1])
