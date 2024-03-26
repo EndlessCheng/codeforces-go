@@ -17,6 +17,9 @@ https://leetcode.cn/circle/discuss/tXLS3i/
 入门视频
 https://www.bilibili.com/video/BV1Xj411K7oF/
 
+如何用记忆化搜索打印具体方案
+https://leetcode.cn/problems/shortest-common-supersequence/solution/cong-di-gui-dao-di-tui-jiao-ni-yi-bu-bu-auy8z/
+
 ① 前缀/后缀之间的转移，例如从 f[i-1] 转移到 f[i]，或者从 f[j] 转移到 f[i]
 LC70 爬楼梯 https://leetcode.cn/problems/climbing-stairs/ 
 - LC509 https://leetcode.cn/problems/fibonacci-number/
@@ -33,14 +36,12 @@ LC198 打家劫舍 https://leetcode.cn/problems/house-robber/
 LC213 环形打家劫舍 https://leetcode.cn/problems/house-robber-ii/
 - 相似题目 https://atcoder.jp/contests/abc251/tasks/abc251_e
 LC276 https://leetcode.cn/problems/paint-fence/
-LC343 https://leetcode.cn/problems/integer-break/
 LC368 https://leetcode.cn/problems/largest-divisible-subset/
 LC2369 https://leetcode.cn/problems/check-if-there-is-a-valid-partition-for-the-array/ 1780
 - 变形：改成环形数组要怎么做
 - 相似题目 https://codeforces.com/problemset/problem/1624/E 2000
 LC983 https://leetcode.cn/problems/minimum-cost-for-tickets/ 1786
 LC1416 https://leetcode.cn/problems/restore-the-array/ 1920
-LC2312 https://leetcode.cn/problems/selling-pieces-of-wood/ 2363
 LC2944 https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/
 LC2297 https://leetcode.cn/problems/jump-game-viii/
 LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
@@ -82,6 +83,7 @@ LC920 https://leetcode.cn/problems/number-of-music-playlists/ 2400
 LC1531 看起来是区间 DP，仔细分析后是线性 DP https://leetcode.cn/problems/string-compression-ii/ 2576
 LC2464 https://leetcode.cn/problems/minimum-subarrays-in-a-valid-split/ 枚举选哪个
 https://codeforces.com/contest/404/problem/D 1900
+https://codeforces.com/problemset/problem/6/D 2600
 
 从 X 操作到 Y（部分题目也可以用 BFS）
 -1 +1 /5 /11 [2998. 使 X 和 Y 相等的最少操作次数](https://leetcode.cn/problems/minimum-number-of-operations-to-make-x-and-y-equal/) 1795
@@ -150,8 +152,9 @@ https://atcoder.jp/contests/abc282/tasks/abc282_g
 - [1289. 下降路径最小和 II](https://leetcode.cn/problems/minimum-falling-path-sum-ii/) 1697
 - [2435. 矩阵中和能被 K 整除的路径](https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/) 1952
 - [741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)
+   - https://codeforces.com/problemset/problem/213/C 2000
 - [1463. 摘樱桃 II](https://leetcode.cn/problems/cherry-pickup-ii/) 1957
-	- 回文串 https://codeforces.com/problemset/problem/570/E
+   - 回文串 https://codeforces.com/problemset/problem/570/E
 每行至多选三个 https://atcoder.jp/contests/abc175/tasks/abc175_e
 
 思考过程：
