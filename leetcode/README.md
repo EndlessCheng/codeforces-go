@@ -159,5 +159,5 @@
 
 - [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 - [【简单题杀手】分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
-- [【图解】二维前缀和](https://leetcode.cn/circle/discuss/UUuRex/)
+- [【图解】一张图秒懂二维前缀和](https://leetcode.cn/problems/range-sum-query-2d-immutable/solution/tu-jie-yi-zhang-tu-miao-dong-er-wei-qian-84qp/)
 - [如何科学上分（科学刷题）](https://www.bilibili.com/read/cv22332590/)
