@@ -155,6 +155,7 @@
 
 ### 周赛总结
 
+- [如何科学上分（科学刷题）](https://www.bilibili.com/read/cv22332590/)
 - [从周赛中学算法 - 2023·下](https://leetcode.cn/circle/discuss/lUu0KB/)
 - [从周赛中学算法 - 2023·上](https://leetcode.cn/circle/discuss/v2RXSN/)
 - [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
@@ -164,4 +165,3 @@
 
 - [【简单题杀手】分组循环](https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/)
 - [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
-- [如何科学上分（科学刷题）](https://www.bilibili.com/read/cv22332590/)
