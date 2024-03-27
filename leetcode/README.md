@@ -30,6 +30,7 @@
 ||[2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/)|[代码](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/solution/mo-ni-by-endlesscheng-8e43/)|*课后作业|
 ||[2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/)|[代码](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/solution/by-endlesscheng-1kbp/)|*课后作业|
 ||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
+||[875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)|[代码](https://leetcode.cn/problems/koko-eating-bananas/solution/er-fen-da-an-fu-ti-dan-pythonjavacgojsru-eb18/)|*课后作业|
 ||[2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)|[代码](https://leetcode.cn/problems/minimum-time-to-complete-trips/solution/er-fen-da-an-python-yi-xing-gao-ding-by-xwvs8/)|*课后作业|
 ||[2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)|[代码](https://leetcode.cn/problems/minimize-maximum-of-array/solution/liang-chong-zuo-fa-er-fen-da-an-fen-lei-qhee6/)|*课后作业|
 ||[2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/)|[代码](https://leetcode.cn/problems/maximum-number-of-alloys/solution/er-fen-da-an-fu-ti-dan-by-endlesscheng-3jdr/)|*课后作业|
