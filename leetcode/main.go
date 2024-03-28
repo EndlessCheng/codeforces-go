@@ -1604,7 +1604,7 @@ func reverseParentheses(s string) string {
             c++
         } else if s[r] == ')' {
             if c--; c == 0 {
-                d := []byte(reverseParentheses(s[l+1:r]))
+                d := []byte(reverseParentheses(s[l+1 : r]))
                 slices.Reverse(d)
                 return s[:l] + string(d) + reverseParentheses(s[r+1:])
             }
