@@ -46,9 +46,12 @@ import "math/bits"
 // 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 2100
 // - 联系 https://www.luogu.com.cn/problem/P1972
 // todo 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E 2200
+// https://codeforces.com/problemset/problem/1179/C 2200
 // 取模 https://codeforces.com/problemset/problem/438/D 2300
 // k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G 2300
 // 转换的好题 https://codeforces.com/problemset/problem/1187/D 2400
+// 区间 swap & reverse https://codeforces.com/problemset/problem/1401/F 2400
+// - 联想 reverse bit 的递归思路
 // 所有子数组的 mex 的 mex https://codeforces.com/problemset/problem/1436/E 2400
 // 区间 mex https://www.luogu.com.cn/problem/P4137
 // - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
@@ -74,7 +77,7 @@ import "math/bits"
 // http://poj.org/problem?id=3470
 // todo http://poj.org/problem?id=1201
 
-// 线段树二分（代码见下面的 queryFirstLessPosInRange）
+// 线段树二分
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
 
@@ -169,7 +172,7 @@ i/n    n i range
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
 type seg []struct {
 	l, r int
-	val  int
+	val  int // info
 }
 
 // 合并两个节点上的数据：maintain 和 query 通用
@@ -196,10 +199,6 @@ func (t seg) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg) maintain(o int) {
-	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
-}
-
 // o=1  1<=i<=n
 func (t seg) update(o, i, val int) {
 	if t[o].l == t[o].r {
@@ -213,6 +212,10 @@ func (t seg) update(o, i, val int) {
 		t.update(o<<1|1, i, val)
 	}
 	t.maintain(o)
+}
+
+func (t seg) maintain(o int) {
+	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
@@ -234,6 +237,48 @@ func (t seg) query(o, l, r int) int {
 
 func (t seg) queryAll() int { return t[1].val }
 
+// 线段树二分
+// 返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
+// 此时线段树维护区间最大值
+// t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+// https://leetcode.cn/problems/booking-concert-tickets-in-groups/
+// - https://leetcode.cn/problems/booking-concert-tickets-in-groups/submissions/517574644/
+// https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
+// - https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/submissions/517575667/
+func (t seg) findFirst(o, l, r int, f func(int) bool) int {
+	if t[o].l > r || t[o].r < l || !f(t[o].val) {
+		return -1
+	}
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	idx := t.findFirst(o<<1, l, r, f)
+	if idx < 0 {
+		idx = t.findFirst(o<<1|1, l, r, f)
+	}
+	return idx
+}
+
+// 线段树二分
+// 返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
+// 此时线段树维护区间最小值
+// t.findFirst(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+func (t seg) findLast(o, l, r int, f func(int) bool) int {
+	if t[o].l > r || t[o].r < l || !f(t[o].val) {
+		return -1
+	}
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	idx := t.findLast(o<<1|1, l, r, f)
+	if idx < 0 {
+		idx = t.findLast(o<<1, l, r, f)
+	}
+	return idx
+}
+
 // a 的下标从 0 开始
 func newSegmentTree(a []int) seg {
 	n := len(a)
@@ -245,43 +290,6 @@ func newSegmentTree(a []int) seg {
 	return t
 }
 
-// EXTRA: 查询整个区间小于 v 的最靠左的位置
-// 这里线段树维护的是区间最小值
-// 需要先判断 t[1].min < v
-func (t seg) queryFirstLessPos(o, v int) int {
-	if t[o].l == t[o].r {
-		return t[o].l
-	}
-	if t[o<<1].val < v {
-		return t.queryFirstLessPos(o<<1, v)
-	}
-	return t.queryFirstLessPos(o<<1|1, v)
-}
-
-// EXTRA: 查询 [l,r] 上小于 v 的最靠左的位置
-// 这里线段树维护的是区间最小值
-// 不存在时返回 0
-func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
-	if t[o].val >= v {
-		return 0
-	}
-	if t[o].l == t[o].r {
-		return t[o].l
-	}
-	m := (t[o].l + t[o].r) >> 1
-	if l <= m {
-		if pos := t.queryFirstLessPosInRange(o<<1, l, r, v); pos > 0 {
-			return pos
-		}
-	}
-	if m < r {
-		if pos := t.queryFirstLessPosInRange(o<<1|1, l, r, v); pos > 0 { // 注：这里 pos > 0 的判断可以省略，因为 pos == 0 时最后仍然会返回 0
-			return pos
-		}
-	}
-	return 0
-}
-
 //
 
 // 延迟标记（区间修改）
@@ -289,25 +297,30 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 //
 // 【单个更新操作】
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A
-//           https://codeforces.com/problemset/problem/1321/E
-//           https://codeforces.com/problemset/problem/52/C
+//           https://codeforces.com/problemset/problem/1321/E 2000
+//           https://codeforces.com/problemset/problem/52/C 2200
 //           转换 https://codeforces.com/gym/294041/problem/E
 //           【推荐】https://codeforces.com/problemset/problem/1208/D
 //           todo 转换 https://atcoder.jp/contests/abc327/tasks/abc327_f
 //           DP https://atcoder.jp/contests/dp/tasks/dp_w
-// + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D https://www.luogu.com.cn/problem/P3372
+// + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D
+//     https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
-// = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F https://codeforces.com/problemset/problem/558/E
+// = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F 
+//     https://codeforces.com/problemset/problem/558/E 2300
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
 // - https://codeforces.com/contest/292/submission/173659179
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
+// https://codeforces.com/problemset/problem/620/E 2100
 // max max 离散化 https://codeforces.com/contest/1557/problem/D 2200
 // 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C 2300
 // https://codeforces.com/problemset/problem/145/E 2400
 // https://codeforces.com/problemset/problem/1114/F 2400
+// https://codeforces.com/problemset/problem/240/F 2600
 // =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C 2600
+// 数位修改 考察对懒标记的理解 https://codeforces.com/problemset/problem/794/F 2800
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
@@ -331,7 +344,7 @@ func (t seg) queryFirstLessPosInRange(o, l, r, v int) int {
 // 线段树维护区间加、乘、赋值、平方和、立方和 http://acm.hdu.edu.cn/showproblem.php?pid=4578
 // - https://www.cnblogs.com/dyhaohaoxuexi/p/14046275.html
 // 注：区间赋值（=x）可以看成是先 *0 再 +x
-// 三维向量 * + 交换 ∑^2 http://118.190.20.162/view.page?gpid=T119
+// 三维向量 * + 交换 ∑^2 http://118.190.20.162/view.page?gpid=T119（需要注册 CCF）
 //
 // 吉老师线段树 Segment Tree Beats
 // todo https://oi-wiki.org/ds/seg-beats/
@@ -342,7 +355,7 @@ const todoInit = 0
 
 type lazySeg []struct {
 	l, r int
-	sum  int
+	sum  int // info
 	todo int
 }
 
@@ -382,10 +395,6 @@ func (t lazySeg) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t lazySeg) maintain(o int) {
-	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
-}
-
 // o=1  [l,r] 1<=l<=r<=n
 func (t lazySeg) update(o, l, r int, v int) {
 	if l <= t[o].l && t[o].r <= r {
@@ -401,6 +410,10 @@ func (t lazySeg) update(o, l, r int, v int) {
 		t.update(o<<1|1, l, r, v)
 	}
 	t.maintain(o)
+}
+
+func (t lazySeg) maintain(o int) {
+	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
 }
 
 // o=1  [l,r] 1<=l<=r<=n
@@ -423,23 +436,44 @@ func (t lazySeg) query(o, l, r int) int {
 
 func (t lazySeg) queryAll() int { return t[1].sum }
 
-// 如果维护的数据（或者判断条件）具有单调性，我们就可以在线段树上二分
-// 下面代码返回 [l,r] 内第一个值不低于 val 的下标（未找到时返回 n+1）
-// o=1  [l,r] 1<=l<=r<=n
-// https://codeforces.com/problemset/problem/1179/C
-func (t lazySeg) lowerBound(o, l, r int, val int) int {
+// 线段树二分
+// 返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
+// 此时线段树维护区间最大值
+// t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
+	if t[o].l > r || t[o].r < l || !f(t[o].sum) {
+		return -1
+	}
 	if t[o].l == t[o].r {
-		if t[o].sum >= val {
-			return t[o].l
-		}
-		return t[o].l + 1
+		return t[o].l
 	}
 	t.spread(o)
-	// 注意判断比较的对象是当前节点还是子节点，是先递归左子树还是右子树
-	if t[o<<1].sum >= val {
-		return t.lowerBound(o<<1, l, r, val)
+	idx := t.findFirst(o<<1, l, r, f)
+	if idx < 0 {
+		idx = t.findFirst(o<<1|1, l, r, f)
 	}
-	return t.lowerBound(o<<1|1, l, r, val)
+	return idx
+}
+
+// 线段树二分
+// 返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
+// 此时线段树维护区间最小值
+// t.findFirst(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+func (t lazySeg) findLast(o, l, r int, f func(int) bool) int {
+	if t[o].l > r || t[o].r < l || !f(t[o].sum) {
+		return -1
+	}
+	if t[o].l == t[o].r {
+		return t[o].l
+	}
+	t.spread(o)
+	idx := t.findLast(o<<1|1, l, r, f)
+	if idx < 0 {
+		idx = t.findLast(o<<1, l, r, f)
+	}
+	return idx
 }
 
 // a 的下标从 0 开始
