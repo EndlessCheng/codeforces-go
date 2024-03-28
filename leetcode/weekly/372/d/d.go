@@ -1,6 +1,9 @@
 package main
 
-import "container/heap"
+import (
+	"container/heap"
+	"math/bits"
+)
 
 // https://space.bilibili.com/206214
 func leftmostBuildingQueries(heights []int, queries [][]int) []int {
@@ -57,26 +60,24 @@ func (t seg) build(a []int, o, l, r int) {
 	t[o] = max(t[o<<1], t[o<<1|1])
 }
 
-func (t seg) query(o, l, r, L, v int) int {
-	if v >= t[o] {
+func (t seg) findFirst(o, l, r, L, R int, f func(int) bool) int {
+	if l > R || r < L || !f(t[o]) {
 		return 0
 	}
 	if l == r {
 		return l
 	}
 	m := (l + r) >> 1
-	if L <= m {
-		pos := t.query(o<<1, l, m, L, v)
-		if pos > 0 {
-			return pos
-		}
+	idx := t.findFirst(o<<1, l, m, L, R, f)
+	if idx == 0 {
+		idx = t.findFirst(o<<1|1, m+1, r, L, R, f)
 	}
-	return t.query(o<<1|1, m+1, r, L, v)
+	return idx
 }
 
 func leftmostBuildingQueriesSeg(heights []int, queries [][]int) []int {
 	n := len(heights)
-	t := make(seg, n*4)
+	t := make(seg, 2<<bits.Len(uint(n-1)))
 	t.build(heights, 1, 1, n)
 	ans := make([]int, len(queries))
 	for qi, q := range queries {
@@ -87,7 +88,9 @@ func leftmostBuildingQueriesSeg(heights []int, queries [][]int) []int {
 		if i == j || heights[i] < heights[j] {
 			ans[qi] = j
 		} else {
-			pos := t.query(1, 1, n, j+1, heights[i])
+			pos := t.findFirst(1, 1, n, j+1, n, func(mx int) bool {
+				return mx > heights[i]
+			})
 			ans[qi] = pos - 1 // 不存在时刚好得到 -1
 		}
 	}
