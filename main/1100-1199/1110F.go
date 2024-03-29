@@ -121,22 +121,11 @@ func cf1110F(_r io.Reader, _w io.Writer) {
 		}
 		for _, e := range g[v] {
 			p := nodes[e.to]
-			l, r := p.l, p.r
-			if l > 1 {
-				t.update(1, 1, l-1, e.wt)
-			}
-			t.update(1, l, r, -e.wt)
-			if r < n {
-				t.update(1, r+1, n, e.wt)
-			}
+			t.update(1, 1, n, e.wt)
+			t.update(1, p.l, p.r, -e.wt*2)
 			f(e.to)
-			if l > 1 {
-				t.update(1, 1, l-1, -e.wt)
-			}
-			t.update(1, l, r, e.wt)
-			if r < n {
-				t.update(1, r+1, n, -e.wt)
-			}
+			t.update(1, 1, n, -e.wt)
+			t.update(1, p.l, p.r, e.wt*2)
 		}
 	}
 	f(0)
