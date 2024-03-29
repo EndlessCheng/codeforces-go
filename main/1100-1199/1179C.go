@@ -33,7 +33,7 @@ func (t seg79) update(o, i, v int) {
 	}
 	lo, ro := t[o<<1], t[o<<1|1]
 	t[o].s = lo.s + ro.s
-	t[o].mx = max79(lo.mx+ro.s, ro.mx)
+	t[o].mx = max(lo.mx+ro.s, ro.mx)
 }
 
 func (t seg79) binarySearch(o, s int) int {
@@ -83,13 +83,6 @@ func CF1179C(_r io.Reader, _w io.Writer) {
 		}
 		Fprintln(out, t.binarySearch(1, 0))
 	}
-}
-
-func max79(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
 
 //func main() { CF1179C(os.Stdin, os.Stdout) }
