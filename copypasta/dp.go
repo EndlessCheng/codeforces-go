@@ -2000,6 +2000,42 @@ func _(abs func(int) int) {
 		return f[len(f)-1]
 	}
 
+	// 无向图最长简单路径
+	// https://codeforces.com/contest/1950/problem/G
+	longestSimplePath := func(g [][]int) int {
+		n := len(g)
+		memo := make([][]int, n)
+		for i := range memo {
+			memo[i] = make([]int, 1<<n)
+			for j := range memo[i] {
+				memo[i][j] = -1
+			}
+		}
+		var f func(int, int) int
+		f = func(v, mask int) (res int) {
+			if mask == 1<<n-1 {
+				return 1
+			}
+			p := &memo[v][mask]
+			if *p != -1 {
+				return *p
+			}
+			for _, w := range g[v] {
+				if mask>>w&1 == 0 {
+					res = max(res, f(w, mask|1<<w))
+				}
+			}
+			res++
+			*p = res
+			return
+		}
+		ans := 0
+		for i := range g { // 枚举起点
+			ans = max(ans, f(i, 1<<i))
+		}
+		return ans
+	}
+
 	// 无向图简单环数量
 	// https://blog.csdn.net/fangzhenpeng/article/details/49078233
 	// https://codeforces.com/problemset/problem/11/D
@@ -2380,8 +2416,8 @@ func _(abs func(int) int) {
 		- https://www.luogu.com.cn/problem/P3193
 		- https://atcoder.jp/contests/abc295/tasks/abc295_f
 		- 与 AC 自动机结合 https://ac.nowcoder.com/acm/problem/20366
-	- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）1675
-	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/)（会员题）2025 *LC233
+	- [1215. 步进数](https://leetcode.cn/problems/stepping-numbers/)（会员题）
+	- [1067. 范围内的数字计数](https://leetcode.cn/problems/digit-count-in-range/)（会员题） *LC233
 	- [1742. 盒子中小球的最大数量](https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/) *非暴力做法 枚举数位和+DP
 	- [2843. 统计对称整数的数目](https://leetcode.cn/problems/count-symmetric-integers/) *非暴力做法
 	https://codeforces.com/contest/1710/problem/C
@@ -2769,6 +2805,8 @@ func _(abs func(int) int) {
 
 	前缀和优化 DP
 	LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
+	- [1997. 访问完所有房间的第一天](https://leetcode.cn/problems/first-day-where-you-have-been-in-all-the-rooms/) 2260
+	     - https://codeforces.com/problemset/problem/1552/F 2200 数据加强
 	LC2327 https://leetcode.cn/problems/number-of-people-aware-of-a-secret/
 	LC2463 https://leetcode.cn/problems/minimum-total-distance-traveled/
 	LC2478 https://leetcode.cn/problems/number-of-beautiful-partitions/
@@ -3367,6 +3405,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/contest/1882/problem/D 1900
 	// https://codeforces.com/problemset/problem/337/D 2000
 	// https://codeforces.com/problemset/problem/791/D 2100
+	// https://codeforces.com/problemset/problem/1187/E 2100
 	// 注意不存在逆元的情形 https://codeforces.com/problemset/problem/543/D 2300
 	// https://codeforces.com/problemset/problem/1626/E 2400
 	// https://codeforces.com/problemset/problem/1794/E 2400
@@ -3699,7 +3738,7 @@ func _(abs func(int) int) {
 
 		longestPalindromeSubsequence, mergeStones, countPalindromes,
 
-		permDP, permDP2, tsp, countCycle, subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
+		permDP, permDP2, tsp, longestSimplePath, countCycle, subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		digitDP, digitDP2, calcSum, kth666,
 
