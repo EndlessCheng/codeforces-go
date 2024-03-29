@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // https://space.bilibili.com/206214
@@ -16,7 +17,7 @@ func cf1950G(_r io.Reader, _w io.Writer) {
 	var s, t string
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
-		g := make([][]int, n)
+		g := make([]int, n)
 		a := make([]struct{ x, y int }, n)
 		idx := map[string]int{}
 		for i := range a {
@@ -31,39 +32,34 @@ func cf1950G(_r io.Reader, _w io.Writer) {
 			a[i].y = idx[t] - 1
 			for j, p := range a[:i] {
 				if p.x == a[i].x || p.y == a[i].y {
-					g[i] = append(g[i], j)
-					g[j] = append(g[j], i)
+					g[i] |= 1 << j
+					g[j] |= 1 << i
 				}
 			}
 		}
 
-		dp := make([][16]int, 1<<n)
-		for i := range dp {
-			for j := range dp[i] {
-				dp[i][j] = -1
-			}
+		f := make([][]int, 1<<n)
+		for i := range f {
+			f[i] = make([]int, n)
 		}
-		var f func(int, int) int
-		f = func(mask, v int) (res int) {
-			if mask == 1<<n-1 {
-				return 1
-			}
-			p := &dp[mask][v]
-			if *p != -1 {
-				return *p
-			}
-			for _, w := range g[v] {
-				if mask>>w&1 == 0 {
-					res = max(res, f(mask|1<<w, w))
+		for j := range f[0] {
+			f[1<<j][j] = 1
+		}
+		ans := 1
+		for s, fs := range f {
+			for _s := uint(s); _s > 0; _s &= _s - 1 {
+				i := bits.TrailingZeros(_s)
+				if fs[i] == 0 {
+					continue
+				}
+				for cus, lb := g[i]&^s, 0; cus > 0; cus ^= lb {
+					lb = cus & -cus
+					ns := s | lb
+					j := bits.TrailingZeros(uint(lb))
+					f[ns][j] = max(f[ns][j], fs[i]+1)
+					ans = max(ans, f[ns][j])
 				}
 			}
-			res++
-			*p = res
-			return
-		}
-		ans := 0
-		for i := range g {
-			ans = max(ans, f(1<<i, i))
 		}
 		Fprintln(out, n-ans)
 	}
