@@ -88,6 +88,8 @@ https://codeforces.com/problemset/problem/962/C 1400
 
 排列（部分题目可以用状压 DP 继续优化）
 - [46. 全排列](https://leetcode.cn/problems/permutations/)
+- [51. N 皇后](https://leetcode.cn/problems/n-queens/)
+- [52. N 皇后 II](https://leetcode.cn/problems/n-queens-ii/)
 - [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
 - [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
 - [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
@@ -101,6 +103,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [488. 祖玛游戏](https://leetcode.cn/problems/zuma-game/)
 - [638. 大礼包](https://leetcode.cn/problems/shopping-offers/)
 - [1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/) 1882
+- [面试题 17.25. 单词矩阵](https://leetcode.cn/problems/word-rectangle-lcci/)
 
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
@@ -214,7 +217,7 @@ func searchCollection() {
 	}
 
 	// 可重复组合
-	// 以 LC1467 为例 https://leetcode-cn.com/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
+	// 以 LC1467 为例 https://leetcode.cn/problems/probability-of-a-two-boxes-having-the-same-number-of-distinct-balls/
 	// 每个数至多可选 upper[i] 个，从中随机选择 m 个（m<=∑upper），求满足题设条件的概率
 	// 枚举每个数选了多少个，根据乘法原理计算某个组合的个数（例如 upper=[4,3,1]，m=4，其中选2个0，2个1就有C(4,2)*C(3,2)种）
 	// 总数有 C(∑upper,m) 种
@@ -267,7 +270,7 @@ func searchCollection() {
 	// 即有 n 个位置，从左往右地枚举每个位置上可能出现的值（值必须在 a 中且不能重复）
 	// 对比上面的子集搜索，那是对每个位置枚举是否选择（两个分支），而这里每个位置有 n 个分支
 	// https://www.luogu.com.cn/problem/P1118
-	// LC1307 https://leetcode-cn.com/problems/verbal-arithmetic-puzzle/
+	// LC1307 https://leetcode.cn/problems/verbal-arithmetic-puzzle/
 	searchPermutations := func(a []int) bool {
 		n := len(a)
 		used := 0
@@ -525,7 +528,7 @@ func searchCollection() {
 	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 	// https://oi-wiki.org/math/cantor/
 	// https://www.luogu.com.cn/problem/P5367
-	// 有重复元素 LC1830 https://leetcode-cn.com/problems/minimum-number-of-operations-to-make-string-sorted/
+	// 有重复元素 LC1830 https://leetcode.cn/problems/minimum-number-of-operations-to-make-string-sorted/
 	// https://codeforces.com/problemset/problem/1443/E
 	rankPermutation := func(perm []int) int {
 		n := len(perm)
@@ -563,7 +566,7 @@ func searchCollection() {
 
 	// 逆康托展开 Inverse Cantor Expansion
 	// 返回字典序第 k 小的排列，元素范围为 [1,n]
-	// LC60 https://leetcode-cn.com/problems/permutation-sequence/
+	// LC60 https://leetcode.cn/problems/permutation-sequence/
 	// https://codeforces.com/problemset/problem/1443/E
 	kthPermutation := func(n, k int) []int {
 		F := make([]int, n)
@@ -896,7 +899,7 @@ func _(abs func(int) int) {
 	}
 
 	// 顺时针遍历矩阵从外向内的第 d 圈（保证不自交）
-	// LC1914 https://leetcode-cn.com/problems/cyclically-rotating-a-grid/
+	// LC1914 https://leetcode.cn/problems/cyclically-rotating-a-grid/
 	loopAround := func(a [][]int, d int) []int {
 		n, m := len(a), len(a[0])
 		b := make([]int, 0, (n+m-d*4-2)*2)
@@ -976,7 +979,7 @@ func _(abs func(int) int) {
 	}
 
 	// 曼哈顿圈序遍历
-	// LC1030 https://leetcode-cn.com/problems/matrix-cells-in-distance-order/
+	// LC1030 https://leetcode.cn/problems/matrix-cells-in-distance-order/
 	loopAllManhattan := func(n, m, ox, oy int, f func(x, y int)) {
 		f(ox, oy)
 		maxDist := max(ox, n-1-ox) + max(oy, m-1-oy)
@@ -1173,7 +1176,13 @@ https://atcoder.jp/contests/abc317/tasks/abc317_e
 - [LCP 45. 自行车炫技赛场](https://leetcode.cn/problems/kplEvH/)
 - [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
 - [1728. 猫和老鼠 II](https://leetcode.cn/problems/cat-and-mouse-ii/) 2849
+- [1102. 得分最高的路径](https://leetcode.cn/problems/path-with-maximum-minimum-value/)（会员题）
 易错题 https://codeforces.com/problemset/problem/540/C 2000
+
+#### 其它
+- [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
+- [59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
+
 */
 func gridCollection() {
 	type pair struct{ x, y int }
@@ -1197,7 +1206,7 @@ func gridCollection() {
 
 	// 矩形网格图，返回从起点 (s.x,s.y) 到其余所有可达点的最短距离。'#' 表示无法通过的格子   bfsGridAll 单源最短距离
 	// https://codeforces.com/contest/1520/problem/G
-	// LC2146 https://leetcode-cn.com/problems/k-highest-ranked-items-within-a-price-range/
+	// LC2146 https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/
 	disAll := func(g [][]byte, sx, sy int) [][]int {
 		n, m := len(g), len(g[0])
 		dis := make([][]int, n)
@@ -1262,7 +1271,7 @@ func gridCollection() {
 	}
 
 	// 从 s 出发寻找 t，返回所有 t 所处的坐标。'#' 表示无法通过的格子   bfsGrid 可达
-	// https://leetcode-cn.com/contest/season/2020-spring/problems/xun-bao/
+	// https://leetcode.cn/contest/season/2020-spring/problems/xun-bao/
 	findAllReachableTargets := func(g [][]byte, s pair, t byte) (ps []pair) {
 		n, m := len(g), len(g[0])
 		vis := make([][]bool, n)
@@ -1318,7 +1327,7 @@ func gridCollection() {
 		return
 	}
 
-	// 下列代码来自 LC1254 https://leetcode-cn.com/problems/number-of-closed-islands/
+	// 下列代码来自 LC1254 https://leetcode.cn/problems/number-of-closed-islands/
 	// NOTE: 对于搜索格子的题，可以不用创建 vis 而是通过修改格子的值为范围外的值（如零、负数、'#' 等）来做到这一点  dfsGrid
 	dfsValidGrids := func(g [][]byte) (comps [][]pair) {
 		n, m := len(g), len(g[0])
@@ -1362,7 +1371,7 @@ func gridCollection() {
 		return
 	}
 
-	// 周赛 212D https://leetcode-cn.com/problems/rank-transform-of-a-matrix/
+	// 周赛 212D https://leetcode.cn/problems/rank-transform-of-a-matrix/
 	findSameValueCC := func(mat [][]int) {
 		type pair struct{ x, y int }
 		type vPos struct {

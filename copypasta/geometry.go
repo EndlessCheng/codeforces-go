@@ -91,6 +91,9 @@ A=i+b/2-1, A为多边形面积，i为内部格点数，b为边上格点数
 https://codeforces.com/problemset/problem/1548/D1
 https://codeforces.com/problemset/problem/1548/D2
 
+曼哈顿最近点对
+LC2613 https://leetcode.cn/problems/beautiful-pairs/
+
 TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
 顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
 曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)

@@ -11,15 +11,15 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 func init() { debug.SetGCPercent(-1) }
 
-模板题 LC208 https://leetcode-cn.com/problems/implement-trie-prefix-tree/
+模板题 LC208 https://leetcode.cn/problems/implement-trie-prefix-tree/
 最长匹配后缀 https://leetcode.cn/problems/longest-common-suffix-queries/
-前后缀同时匹配 LC745 https://leetcode-cn.com/problems/prefix-and-suffix-search/
+前后缀同时匹配 LC745 https://leetcode.cn/problems/prefix-and-suffix-search/
             LC3045 https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
 - 把 (s[i], s[n-1-i]) 插入字典树
 LC527 https://leetcode.cn/problems/word-abbreviation/
 https://codeforces.com/contest/514/problem/C
-回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode-cn.com/problems/palindrome-pairs/
-与 DP 结合 https://leetcode-cn.com/problems/re-space-lcci/
+回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode.cn/problems/palindrome-pairs/
+与 DP 结合 https://leetcode.cn/problems/re-space-lcci/
 与贪心堆结合 https://codeforces.com/problemset/problem/965/E
 todo https://codeforces.com/contest/455/problem/B
 
@@ -123,7 +123,7 @@ func (t *trie) find(s string) (*trieNode, bool) {
 }
 
 // 删除字符串 s，返回字符串末尾对应的节点
-// LC1804 https://leetcode-cn.com/problems/implement-trie-ii-prefix-tree/
+// LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
 func (t *trie) delete(s string) *trieNode {
 	fa := make([]*trieNode, len(s))
 	o := t.root
@@ -191,8 +191,8 @@ outer:
 // 见 bst.go 中的 prev 和 next
 
 // 返回字符串 s 在 trie 中的前缀个数
-// https://www.acwing.com/problem/content/144/
 // https://codeforces.com/gym/101628/problem/K
+// https://www.acwing.com/problem/content/144/
 func (t *trie) countPrefixOfString(s string) (cnt int) {
 	o := t.root
 	for _, b := range s {
@@ -208,7 +208,7 @@ func (t *trie) countPrefixOfString(s string) (cnt int) {
 // 返回 trie 中前缀为 p 的字符串个数
 // 此时 o.cnt 保存子树字符串个数
 // https://codeforces.com/gym/101628/problem/K
-// LC1804 https://leetcode-cn.com/problems/implement-trie-ii-prefix-tree/
+// LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
 func (t *trie) countStringHasPrefix(p string) int {
 	o := t.root
 	for _, b := range p {

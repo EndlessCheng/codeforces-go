@@ -297,10 +297,11 @@ func newSegmentTree(a []int) seg {
 //
 // 【单个更新操作】
 // + min/max https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A
+//           【推荐】https://codeforces.com/problemset/problem/1208/D 1900
 //           https://codeforces.com/problemset/problem/1321/E 2000
 //           https://codeforces.com/problemset/problem/52/C 2200
+//           https://codeforces.com/problemset/problem/1110/F 2600
 //           转换 https://codeforces.com/gym/294041/problem/E
-//           【推荐】https://codeforces.com/problemset/problem/1208/D
 //           todo 转换 https://atcoder.jp/contests/abc327/tasks/abc327_f
 //           DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D

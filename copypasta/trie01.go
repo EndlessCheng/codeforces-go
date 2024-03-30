@@ -9,7 +9,7 @@ import (
 ## 练习：0-1 trie（右边分数为题目难度）
 
 - [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/) ~2000
-- [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/)
+- [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/) 2349
 - [1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/) 2359
 - [1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/) 2479
 - [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
@@ -76,7 +76,7 @@ func (t *trie01) put(v int) *trie01Node {
 }
 
 // https://codeforces.com/problemset/problem/282/E
-// LC1938 https://leetcode-cn.com/problems/maximum-genetic-difference-query/
+// LC1938 https://leetcode.cn/problems/maximum-genetic-difference-query/
 func (t *trie01) del(v int) *trie01Node {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
@@ -137,11 +137,11 @@ func xorMST(a []int) (ans int) {
 }
 
 // 返回 v 与 trie 上所有数的最大异或值，trie 不能是空的
-// 模板题 LC421 https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/
+// 模板题 LC421 https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/
 // 加约束 LC2935 https://leetcode.cn/problems/maximum-strong-pair-xor-ii/
-// 离线 LC1707 https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
+// 离线 LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/ 注：可以通过记录子树最小值来在线查询
+// https://codeforces.com/problemset/problem/1847/C
 // todo 模板题：树上最长异或路径 https://www.luogu.com.cn/problem/P4551
-// todo 好题：区间异或第 k 大 https://www.luogu.com.cn/problem/P5283
 func (t *trie01) maxXor(v int) (ans int) {
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
@@ -204,7 +204,7 @@ func findMaximumXOR(a []int) (ans int) {
 // v 与 trie 上所有不超过 limit 的数的最大异或值
 // 不存在时返回 -1
 // https://codeforces.com/problemset/problem/979/D
-// LC1707 https://leetcode-cn.com/problems/maximum-xor-with-an-element-from-array/
+// LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/
 func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 	o := t.root
 	if o.min > limit {
@@ -225,7 +225,7 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 // 求与 v 异或值不超过 limit 的元素个数
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
 // 如果在 limit 上而不是 limit+1 上讨论，就要单独处理走到叶子的情况了（恰好等于 limit）
-// LC1803 https://leetcode-cn.com/problems/count-pairs-with-xor-in-a-range/
+// LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 // 补集 https://codeforces.com/problemset/problem/665/E
 // https://codeforces.com/problemset/problem/817/E
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
@@ -309,11 +309,13 @@ func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
 }
 
 // 持久化
+// EXTRA: 可持久化异或字典树
 // 注意为了拷贝一份 trie01Node，这里的接收器不是指针
 // roots := make([]*trie01Node, n+1)
 // roots[0] = trie01Node{}.put(0, trieBitLen-1)
 // roots[i+1] = roots[i].put(v, trieBitLen-1)
-// 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735 https://www.acwing.com/problem/content/258/
+// 模板题（最大异或和） https://www.luogu.com.cn/problem/P4735
+// todo https://www.luogu.com.cn/problem/P4592
 // todo https://codeforces.com/problemset/problem/1777/F
 func (o trie01Node) put(v, k int) *trie01Node {
 	if k < 0 {

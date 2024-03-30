@@ -375,6 +375,11 @@ func (a matrix) determinant(mod int) int {
 // 线性基求交 https://www.cnblogs.com/BakaCirno/p/11298102.html
 // https://zhuanlan.zhihu.com/p/139074556
 //
+// 图上线性基
+// https://www.luogu.com.cn/problem/P4151
+// https://codeforces.com/problemset/problem/724/G 2600
+// 类似思想 https://codeforces.com/problemset/problem/19/E 2900
+//
 // 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
 // 题单 https://www.luogu.com.cn/training/11251
 // https://codeforces.com/problemset/problem/959/F
@@ -385,11 +390,13 @@ func (a matrix) determinant(mod int) int {
 //  异或最短路/最长路 https://codeforces.com/problemset/problem/845/G https://www.luogu.com.cn/problem/P4151
 //  https://www.luogu.com.cn/problem/P3857
 type xorBasis struct {
-	b   []int
-	num int
+	b []int // 核心就这一个
 
-	canBeZero bool
-	basis     []int
+	num int
+	or  int
+
+	canBeZero bool  // 见 minXor 和 kthXor
+	basis     []int // 见 initOnce
 
 	rightMost []int
 }
@@ -404,7 +411,8 @@ func newXorBasis(a []int) *xorBasis {
 }
 
 // 尝试插入 v，看能否找到一个新的线性无关基
-func (b *xorBasis) insert(v int) {
+func (b *xorBasis) insert(v int) bool {
+	b.or |= v
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if v>>i&1 == 0 {
@@ -413,11 +421,12 @@ func (b *xorBasis) insert(v int) {
 		if b.b[i] == 0 { // 线性无关
 			b.b[i] = v
 			b.num++
-			return
+			return true
 		}
 		v ^= b.b[i]
 	}
 	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+	return false
 }
 
 // EXTRA: 如果遇到线性相关的基，保留位置最靠右的
@@ -425,7 +434,7 @@ func (b *xorBasis) insert(v int) {
 // https://codeforces.com/problemset/problem/1778/E 2500
 // https://codeforces.com/problemset/problem/1902/F 2400
 // https://atcoder.jp/contests/abc223/tasks/abc223_h
-func (b *xorBasis) insertRightMost(idx, v int) {
+func (b *xorBasis) insertRightMost(idx, v int) bool {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if v>>i&1 == 0 {
@@ -435,15 +444,16 @@ func (b *xorBasis) insertRightMost(idx, v int) {
 			b.b[i] = v
 			b.rightMost[i] = idx
 			b.num++
-			return
+			return true
 		}
 		if idx >= b.rightMost[i] { // 注意 b.rightMost[i] 的初始值为 0
 			idx, b.rightMost[i] = b.rightMost[i], idx // 换个旧的 idx
-			v, b.b[i] = b.b[i], v // 继续插入之前的基
+			v, b.b[i] = b.b[i], v                     // 继续插入之前的基
 		}
 		v ^= b.b[i]
 	}
 	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+	return false
 }
 
 // v 能否被线性基表出
@@ -460,7 +470,8 @@ func (b *xorBasis) decompose(v int) bool {
 	return true
 }
 
-// https://www.luogu.com.cn/problem/P3812 https://loj.ac/p/113
+// https://www.luogu.com.cn/problem/P3812
+// https://loj.ac/p/113
 func (b *xorBasis) maxXor() (xor int) {
 	for i := len(b.b) - 1; i >= 0; i-- {
 		if xor^b.b[i] > xor {
@@ -468,6 +479,16 @@ func (b *xorBasis) maxXor() (xor int) {
 		}
 	}
 	return
+}
+
+func (b *xorBasis) maxXorWithVal(val int) int {
+	xor := val
+	for i := len(b.b) - 1; i >= 0; i-- {
+		if xor^b.b[i] > xor {
+			xor ^= b.b[i]
+		}
+	}
+	return xor
 }
 
 func (b *xorBasis) maxXorWithLowerIndex(lowerIndex int) (xor int) {

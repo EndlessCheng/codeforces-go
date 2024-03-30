@@ -88,7 +88,7 @@ func _() {
 	// todo 带修回文串 https://atcoder.jp/contests/abc331/tasks/abc331_f
 	// todo https://www.luogu.com.cn/problem/P2757
 	stringHash := func(s string) {
-		// 如果 OJ 使用的是低于 Go 1.20 的版本，加上这句话
+		// 如果 OJ 的 Go 版本低于 1.20，加上这句话
 		rand.Seed(time.Now().UnixNano())
 
 		// 把字符映射到一个随机数上，更难被 hack
@@ -98,7 +98,7 @@ func _() {
 		}
 
 		// 随机 base，更难被 hack
-		// 更稳的做法是用两组 base 和 mod
+		// 更稳的做法是用两组随机 base 和 mod
 		base := 9e8 - rand.Intn(1e8)
 		const mod = 1070777777
 		// 或者随机质数 mod
@@ -145,14 +145,15 @@ func _() {
 	//       LC28 https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/
 	//       LC1392 https://leetcode.cn/problems/longest-happy-prefix/
 	//       LC3036 https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/ 
+	//       LC3037 https://leetcode.cn/problems/find-pattern-in-infinite-stream-ii/
 	// LC3008 https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/ 2016 *二分/双指针找最近下标
 	// LC686 https://leetcode.cn/problems/repeated-string-match/
 	// - a 复制 k 或 k+1 份，k=(len(b)-1)/len(a)+1
 	// 最长回文前缀 LC214 https://leetcode.cn/problems/shortest-palindrome/
 	// LC1316 https://leetcode.cn/problems/distinct-echo-substrings/ 1837
+	// https://codeforces.com/problemset/problem/1137/B 1600 构造
 	// https://codeforces.com/problemset/problem/126/B 1700
 	// https://codeforces.com/problemset/problem/471/D 1800
-	// https://codeforces.com/problemset/problem/432/D 2000
 	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B 2000
 	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B 2000
 	// https://codeforces.com/problemset/problem/1200/E 2000
@@ -192,16 +193,16 @@ func _() {
 	// 注：很多资料上的 next[i] = pi[i]-1 表示回跳的下标
 	calcPi := func(s string) []int {
 		pi := make([]int, len(s))
-		cnt := 0
+		match := 0
 		for i := 1; i < len(s); i++ {
 			v := s[i]
-			for cnt > 0 && s[cnt] != v {
-				cnt = pi[cnt-1]
+			for match > 0 && s[match] != v {
+				match = pi[match-1]
 			}
-			if s[cnt] == v {
-				cnt++
+			if s[match] == v {
+				match++
 			}
-			pi[i] = cnt
+			pi[i] = match
 		}
 		return pi
 	}
@@ -209,18 +210,18 @@ func _() {
 	// 在文本串 text 中查找模式串 pattern，返回所有成功匹配的位置（pattern[0] 在 text 中的下标）
 	kmpSearch := func(text, pattern string) (pos []int) {
 		pi := calcPi(pattern)
-		cnt := 0
+		match := 0
 		for i := range text {
 			v := text[i]
-			for cnt > 0 && pattern[cnt] != v {
-				cnt = pi[cnt-1]
+			for match > 0 && pattern[match] != v {
+				match = pi[match-1]
 			}
-			if pattern[cnt] == v {
-				cnt++
+			if pattern[match] == v {
+				match++
 			}
-			if cnt == len(pattern) {
+			if match == len(pattern) {
 				pos = append(pos, i-len(pattern)+1)
-				cnt = pi[cnt-1] // 如果不允许重叠，将 cnt 置为 0
+				match = pi[match-1] // 如果不允许重叠，将 cnt 置为 0
 			}
 		}
 		return
@@ -290,11 +291,24 @@ func _() {
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
 	// 每个前缀的出现次数 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/C
-	//		用 z[i] 来进行区间更新操作，实现时用一个差分数组即可
+	//      例如 z[i]=3，那么把长为 1,2,3 的前缀的出现次数都 +1
+	//		用差分数组实现，代码 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/submission/89189534
 	//		注：字符串倒过来就是每个后缀的出现次数
 	// 既是前缀又是后缀的子串个数 https://codeforces.com/problemset/problem/432/D
-	//		解法之一是 a[z[i]]++ 然后求 a 的后缀和
-	//		解法之二是对 z 排序二分，见我的代码
+	//		方法一
+	//      求出 z 数组，以及 z 数组排序后的数组 sortedZ。
+	//      设长为 L 的同时是 s 前缀和后缀的字符串为 t，那么 t 需要满足 z[n-L] == L。
+	//      如果 t 出现在 s 的中间某一段，那么 t 对应的 z[i] 一定 >= L。（后缀的前缀是子串。）
+	//      所以，在 sortedZ 中二分找第一个 >= L 的数的下标 j，那么 t 的出现次数就是 n-j。
+	//      时间复杂度 O(nlogn)。
+	//      https://codeforces.com/contest/432/submission/247583742
+	//
+	//      方法二
+	//      统计 z[i] 的出现次数，记到 cnt 数组中。
+	//      原地计算 cnt 数组的后缀和，那么 cnt[L] 就是在方法一中，原本要通过排序+二分才能算出的个数了。
+	//      时间复杂度 O(n)。
+	//      https://codeforces.com/contest/432/submission/247584529
+	//
 	//		其他解法有 KMP+DP 或 SA，见 https://www.luogu.com.cn/problem/solution/CF432D
 	// 最长回文前缀 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/D
 	//		构造 s+reverse(s)
@@ -388,10 +402,13 @@ func _() {
 
 	// 子序列自动机
 	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
+	// - [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)
+	// - [514. 自由之路](https://leetcode.cn/problems/freedom-trail/)
 	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/
 	// LC792 https://leetcode.cn/problems/number-of-matching-subsequences/
 	// LC2014 https://leetcode.cn/problems/longest-subsequence-repeated-k-times/
 	// LC466 https://leetcode.cn/problems/count-the-repetitions/
+	// - [727. 最小窗口子序列](https://leetcode.cn/problems/minimum-window-subsequence/)（会员题）
 	// http://codeforces.com/problemset/problem/91/A
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
@@ -591,17 +608,25 @@ func _() {
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 见 https://github.com/EndlessCheng/cp-pdf）
 	单个字符串
-		模板题 https://www.luogu.com.cn/problem/P3809
+		模板题 
+			https://www.luogu.com.cn/problem/P3809
 			https://judge.yosupo.jp/problem/suffixarray
 			https://loj.ac/p/111
-		可重叠最长重复子串 LC1044 https://leetcode.cn/problems/longest-duplicate-substring/ LC1062 https://leetcode.cn/problems/longest-repeating-substring/
+		可重叠最长重复子串
+			LC1044 https://leetcode.cn/problems/longest-duplicate-substring/ 
+			LC1062 https://leetcode.cn/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
-		不可重叠最长重复子串 https://atcoder.jp/contests/abc141/tasks/abc141_e http://poj.org/problem?id=1743
+		不可重叠最长重复子串 
+			https://atcoder.jp/contests/abc141/tasks/abc141_e 
+			- http://poj.org/problem?id=1743
 			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#是否有某字符串在文本串中至少不重叠地出现了两次
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
-		可重叠的至少出现 k 次的最长重复子串 https://www.luogu.com.cn/problem/P2852 http://poj.org/problem?id=3261
+		可重叠的至少出现 k 次的最长重复子串 
+			https://www.luogu.com.cn/problem/P2852 
+			- http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
-		本质不同子串个数 LC1698 https://leetcode.cn/problems/number-of-distinct-substrings-in-a-string/
+		本质不同子串个数
+			LC1698 https://leetcode.cn/problems/number-of-distinct-substrings-in-a-string/
 			https://www.luogu.com.cn/problem/P2408
 			https://www.luogu.com.cn/problem/SP694
 			https://judge.yosupo.jp/problem/number_of_substrings
@@ -610,14 +635,18 @@ func _() {
 			枚举每个后缀，计算前缀总数，再减掉重复，即 height[i]
 			所以个数为 n*(n+1)/2-sum{height[i]} https://oi-wiki.org/string/sa/#_13
 			相似思路 LC2261 含最多 K 个可整除元素的子数组 https://leetcode.cn/problems/k-divisible-elements-subarrays/solution/by-freeyourmind-2m6j/
-		不同子串长度之和 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
+		不同子串长度之和
+			https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/H
 			思路同上，即 n*(n+1)*(n+2)/6-sum{height[i]*(height[i]+1)/2}
 		带限制的不同子串个数
 			https://codeforces.com/problemset/problem/271/D
 			这题可以枚举每个后缀，跳过 height[i] 个字符，然后在前缀和上二分
-		重复次数最多的连续重复子串 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F http://poj.org/problem?id=3693 (数据弱)
+		重复次数最多的连续重复子串 
+			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F
+			- http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体代码见 main/edu/2/suffixarray/step5/f/main.go
-		重复两次的最长连续重复子串 LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
+		重复两次的最长连续重复子串
+			LC1316 https://leetcode.cn/problems/distinct-echo-substrings/
 			题解 https://leetcode.cn/problems/distinct-echo-substrings/solution/geng-kuai-de-onlog2n-jie-fa-hou-zhui-shu-8wby/
 		子串统计类题目
 			用单调栈统计矩形面积 + 用单调栈跳过已经统计的
@@ -630,9 +659,12 @@ func _() {
 			 - 任意两后缀的 LCP 之和
 			 对所有 i，求出 ∑j=1..n LCP(i,j) https://atcoder.jp/contests/abc213/tasks/abc213_f
 			 https://atcoder.jp/contests/abc213/tasks/abc213_f
-		从字符串首尾取字符最小化字典序 https://oi-wiki.org/string/sa/#_10
+		从字符串首尾取字符最小化字典序
+			https://oi-wiki.org/string/sa/#_10
 			todo
-		第 k 小子串 https://www.luogu.com.cn/problem/P3975 https://codeforces.com/problemset/problem/128/B
+		第 k 小子串 
+			https://www.luogu.com.cn/problem/P3975
+			https://codeforces.com/problemset/problem/128/B
 			todo
 	两个字符串
 		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
@@ -657,6 +689,7 @@ func _() {
 			拼接反转后的串 s[i]+="#"+reverse(s)，拼接所有串，二分答案，对 height 分组，判定组内元素在每个字符串或其反转串中出现
 		acSearch（https://www.luogu.com.cn/problem/P3796）的后缀数组做法
 			拼接所有串（模式+文本，# 隔开），对每个模式 p 找其左右范围，满足该范围内 height[i] >= len(p)，这可以用 ST+二分或线段树二分求出，然后统计区间内的属于文本串的后缀
+		不在其它字符串中出现的最短字典序最小子串 https://leetcode.cn/problems/shortest-uncommon-substring-in-an-array/
 	逆向
 		todo 根据 sa 反推有多少个能生成 sa 的字符串 https://codeforces.com/problemset/problem/1526/E
 	todo 待整理 http://poj.org/problem?id=3581

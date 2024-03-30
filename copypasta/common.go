@@ -88,6 +88,7 @@ https://codeforces.com/problemset/problem/466/C
 - [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 交错前缀和 https://codeforces.com/contest/1915/problem/E
+http://codeforces.com/problemset/problem/1446/D1 2600 转换
 
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
@@ -144,6 +145,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [487. 最大连续 1 的个数 II](https://leetcode.cn/problems/max-consecutive-ones-ii/)（会员题）
 - [1746. 经过一次操作后的最大子数组和](https://leetcode.cn/problems/maximum-subarray-sum-after-one-operation/)（会员题）
 https://codeforces.com/problemset/problem/1178/B 1300
+https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/1837/F 2400
 
@@ -271,6 +273,7 @@ https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 a[i] + b[j] = target 的方案数
 a[i] + b[j] < target 的方案数    相向双指针 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+                                         https://codeforces.com/problemset/problem/1538/C 1300
 a[i] + b[j] > target 的方案数    同上
 a[i] - b[j] = target 的方案数
 a[i] - b[j] < target 的方案数    滑窗
@@ -351,6 +354,7 @@ https://codeforces.com/problemset/problem/846/C
 - [3088. 使字符串反回文](https://leetcode.cn/problems/make-string-anti-palindrome/)（会员题）
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/545/D 1300
+https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/1443/C 1400
 https://codeforces.com/problemset/problem/864/D 1500
@@ -411,6 +415,7 @@ https://codeforces.com/problemset/problem/934/A 1400
 - [LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)
 - [296. 最佳的碰头地点](https://leetcode.cn/problems/best-meeting-point/) 二维的情况（会员题）
 https://codeforces.com/problemset/problem/710/B 1400
+中位数相关 https://codeforces.com/problemset/problem/166/C 1500 *可以做到对不同的 x 用 O(log n) 时间回答
 
 ### 排序不等式
 - [2285. 道路的最大总重要性](https://leetcode.cn/problems/maximum-total-importance-of-roads/) 1496
@@ -471,7 +476,8 @@ LC280 https://leetcode.cn/problems/wiggle-sort/
 LC3012 https://leetcode.cn/problems/minimize-length-of-array-using-operations/
 https://codeforces.com/problemset/problem/1009/B 1400
 https://codeforces.com/problemset/problem/1169/B 1500
-https://codeforces.com/problemset/problem/500/C  1600
+https://codeforces.com/problemset/problem/500/C 1600
+https://codeforces.com/problemset/problem/601/A 1600
 https://codeforces.com/problemset/problem/1763/C 2000
 https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://atcoder.jp/contests/abc196/tasks/abc196_e
@@ -1097,7 +1103,8 @@ func _() {
 		return sum
 	}
 
-	// 前缀和应用：求距离和
+	// 前缀和
+	// LC303 https://leetcode.cn/problems/range-sum-query-immutable/
 	prefixSum := func(a []int) {
 		slices.Sort(a)
 		sum := make([]int, len(a)+1)

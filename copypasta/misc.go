@@ -392,7 +392,7 @@ func miscCollection() {
 // b 是 a 的一个排列（允许有重复元素）
 // 返回 b 中各个元素在 a 中的下标（重复的元素顺序保持一致）
 // 可用于求从 a 变到 b 需要的相邻位元素交换的最小次数，即返回结果的逆序对个数
-// LC1850 https://leetcode-cn.com/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
+// LC1850 https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/
 func mapPos(a, b []int) []int {
 	pos := map[int][]int{}
 	for i, v := range a {
@@ -409,9 +409,9 @@ func mapPos(a, b []int) []int {
 /* 归并排序与逆序对
 - 归并排序：[912. 排序数组](https://leetcode.cn/problems/sort-an-array/)
 - [LCR 170. 交易逆序对的总数](https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
-- [327. 区间和的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
-- [327. 区间和的个数](https://leetcode-cn.com/problems/count-of-range-sum/)
-- [493. 翻转对](https://leetcode-cn.com/problems/reverse-pairs/)
+- [327. 区间和的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)
+- [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
+- [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
 一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
 */
 func mergeCount(a []int) int {
@@ -442,8 +442,8 @@ func mergeCount(a []int) int {
 // Strong conjecture: there is a constant c around 2.54 such that a(n) is asymptotic to n!/c^n
 // Weak conjecture: lim_{n -> infinity} (1/n) * log(n!/a(n)) = constant = 0.90....
 // https://arxiv.org/pdf/2107.13460.pdf
-// LC51 https://leetcode-cn.com/problems/n-queens/
-// LC52 https://leetcode-cn.com/problems/n-queens-ii/
+// LC51 https://leetcode.cn/problems/n-queens/
+// LC52 https://leetcode.cn/problems/n-queens-ii/
 func totalNQueens(n int) (ans int) {
 	var f func(row, columns, diagonals1, diagonals2 int)
 	f = func(row, columns, diagonals1, diagonals2 int) {
@@ -464,7 +464,7 @@ func totalNQueens(n int) (ans int) {
 
 // 格雷码 https://oeis.org/A003188 https://oeis.org/A014550
 // https://en.wikipedia.org/wiki/Gray_code
-// LC89 https://leetcode-cn.com/problems/gray-code/
+// LC89 https://leetcode.cn/problems/gray-code/
 // 转换 https://codeforces.com/problemset/problem/1419/E
 func grayCode(length int) []int {
 	ans := make([]int, 1<<length)
@@ -513,7 +513,7 @@ func countValidSubstring(s string) (ans int) {
 }
 
 // 负二进制数相加
-// LC1073 https://leetcode-cn.com/problems/adding-two-negabinary-numbers/
+// LC1073 https://leetcode.cn/problems/adding-two-negabinary-numbers/
 func addNegabinary(a1, a2 []int) []int {
 	if len(a1) < len(a2) {
 		a1, a2 = a2, a1
@@ -545,7 +545,7 @@ func addNegabinary(a1, a2 []int) []int {
 
 // 负二进制转换
 // https://atcoder.jp/contests/abc105/tasks/abc105_c
-// LC1017 https://leetcode-cn.com/problems/convert-to-base-2/
+// LC1017 https://leetcode.cn/problems/convert-to-base-2/
 func toNegabinary(n int) (ans string) {
 	if n == 0 {
 		return "0"
@@ -572,7 +572,7 @@ func toNegabinary(n int) (ans string) {
 // https://oeis.org/A084680 Order of 10 modulo n [i.e., least m such that 10^m = 1 (mod n)] or 0 when no such number exists
 // https://oeis.org/A002329 Periods of reciprocals of integers prime to 10
 //
-// LC166 https://leetcode-cn.com/problems/fraction-to-recurring-decimal/
+// LC166 https://leetcode.cn/problems/fraction-to-recurring-decimal/
 // WF1990 https://www.luogu.com.cn/problem/UVA202
 // 1e12 加强版 https://ac.nowcoder.com/acm/contest/62622/E
 // Python 代码 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=63288994
@@ -636,7 +636,7 @@ func decimalToFraction(decimal string) (a, b int) {
 }
 
 // 表达式计算（无括号）
-// LC227 https://leetcode-cn.com/problems/basic-calculator-ii/
+// LC227 https://leetcode.cn/problems/basic-calculator-ii/
 func calculate(s string) (ans int) {
 	s = strings.ReplaceAll(s, " ", "")
 	v, sign, stack := 0, '+', []int{}
@@ -728,7 +728,7 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 }
 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
-// 无边界 LC1197 https://leetcode-cn.com/problems/minimum-knight-moves/
+// 无边界 LC1197 https://leetcode.cn/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 func minKnightMoves(x, y int, abs func(int) int) int {
 	x, y = abs(x), abs(y)
@@ -836,7 +836,7 @@ func minMoveToAllSameInCircle(a []int, abs func(int) int) (ans int) {
 }
 
 // 表达式转表达式树
-// https://leetcode-cn.com/submissions/detail/186220993/
+// https://leetcode.cn/submissions/detail/186220993/
 func parseExpression(s string) {
 	s = strings.TrimSpace(s)
 	type node struct {
@@ -889,7 +889,7 @@ func parseExpression(s string) {
 // https://en.wikipedia.org/wiki/Champernowne_constant
 // https://oeis.org/A033307
 // 返回第 k 位数字
-// https://leetcode-cn.com/contest/espressif-2021/problems/fSghVj/
+// https://leetcode.cn/contest/espressif-2021/problems/fSghVj/
 func champernowneConstant(k int) int {
 	for i, p10 := 1, 10; ; i++ {
 		if i*p10 > k {

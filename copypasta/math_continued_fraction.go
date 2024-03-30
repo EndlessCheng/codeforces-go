@@ -177,7 +177,7 @@ func continuedFractionCollections() {
 	}
 
 	// 将连分数化成最简分数
-	// 模板题 https://leetcode-cn.com/contest/season/2019-fall/problems/deep-dark-fraction/
+	// 模板题 https://leetcode.cn/contest/season/2019-fall/problems/deep-dark-fraction/
 	calcRatByContinuedFraction := func(exp []int) (a, b int) {
 		n := len(exp)
 		h := make([]int, n+2)

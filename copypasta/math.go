@@ -132,7 +132,7 @@ https://oeis.org/A064413 EKG sequence (or ECG sequence)
 a(1) = 1; a(2) = 2; for n > 2, a(n) = smallest number not already used which shares a factor with a(n-1)
 
 https://oeis.org/A002326 least m > 0 such that 2n+1 divides 2^m-1
-LC1806 https://leetcode-cn.com/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
+LC1806 https://leetcode.cn/problems/minimum-number-of-operations-to-reinitialize-a-permutation/
 
 https://oeis.org/A003136 Loeschian number: numbers of the form x^2 + xy + y^2
 https://en.wikipedia.org/wiki/Loeschian_number
@@ -282,6 +282,7 @@ func _(abs func(int) int) {
 	Tighter time complexity for GCD https://codeforces.com/blog/entry/63771
 	Runtime of finding the GCD of an array https://codeforces.com/blog/entry/92720
 
+	更相减损术
 	GCD(x,y) = GCD(x,y-x)   x<=y
 	https://codeforces.com/problemset/problem/1458/A
 
@@ -311,6 +312,7 @@ func _(abs func(int) int) {
 	https://en.wikipedia.org/wiki/Coin_problem
 	https://www.luogu.com.cn/problem/P3951
 	https://codeforces.com/contest/1526/problem/B
+	- [2979. 最贵的无法购买的商品](https://leetcode.cn/problems/most-expensive-item-that-can-not-be-bought/)（会员题）
 
 	*/
 
@@ -415,7 +417,7 @@ func _(abs func(int) int) {
 	// 代码和题目见 bits.go 中的 bitOpTrick
 
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
-	// LC1819 https://leetcode-cn.com/problems/number-of-different-subsequences-gcds/
+	// LC1819 https://leetcode.cn/problems/number-of-different-subsequences-gcds/
 	// 我的题解 https://leetcode.cn/problems/number-of-different-subsequences-gcds/solution/ji-bai-100mei-ju-gcdxun-huan-you-hua-pyt-get7/
 	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
 		const mx int = 4e5 //
@@ -568,7 +570,11 @@ func _(abs func(int) int) {
 	// p^2+p+1 https://oeis.org/A060800 = sigma(p^2)
 	// prime index prime https://oeis.org/A006450
 	primes := []int{ // 预处理 mask 的见下
-		2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+		2, 3, 5, 7, 11,
+		13, 17, 19, 23, 29,
+		31, 37, 41, 43, 47,
+		53, 59, 61, 67, 71,
+		73, 79, 83, 89, 97,
 		101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
 		211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
 		307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397,
@@ -598,11 +604,17 @@ func _(abs func(int) int) {
 		for i := 2; i <= mx; i++ {
 			for j, p := range primes {
 				if i%p == 0 {
-					//if i%(p*p) == 0 { // 有平方因子
-					//	primeMask[i] = -1
-					//	break
-					//}
+					//if i%(p*p) == 0 { primeMask[i] = -1; break } // 有平方因子
 					primeMask[i] |= 1 << j // 把 j 加到集合中
+				}
+			}
+
+			// 只保留奇数次数质因子的写法
+			// http://codeforces.com/problemset/problem/895/C 2000
+			x := i
+			for j, p := range primes {
+				for ; x%p == 0; x /= p {
+					primeMask[i] ^= 1 << j
 				}
 			}
 		}
@@ -1078,8 +1090,8 @@ func _(abs func(int) int) {
 	//    The simplest way to obtain this sequence is by constructing a power series
 	//       A(x) = Sum_{k >= 1} x^a(k) whose exponents give the terms of the sequence.
 	//    Define e(n) = (5^n-1)/4, f(n) = (1-x^(e(n)-1))/(1-x^e(n-1)), t(n) = x^(e(n)-6).
-	//    相关题目 LC793 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/
-	//       数学解法 https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/shu-xue-tui-dao-by-jriver/
+	//    相关题目 LC793 https://leetcode.cn/problems/preimage-size-of-factorial-zeroes-function/
+	//       数学解法 https://leetcode.cn/problems/preimage-size-of-factorial-zeroes-function/solution/shu-xue-tui-dao-by-jriver/
 	// 二分可以得到幂次至少为 p 时，n 至少是多大
 	// - https://atcoder.jp/contests/abc280/tasks/abc280_d
 	powerOfFactorialPrimeDivisor := func(n, p int) (k int) {
@@ -1194,7 +1206,7 @@ func _(abs func(int) int) {
 		完全数/完美数/完备数 https://oeis.org/A000396 Perfect numbers (σ(n) = 2n)
 			https://en.wikipedia.org/wiki/Perfect_number
 			https://en.wikipedia.org/wiki/Euclid%E2%80%93Euler_theorem
-			LC507 https://leetcode-cn.com/problems/perfect-number/
+			LC507 https://leetcode.cn/problems/perfect-number/
 		过剩数/丰数/盈数 https://oeis.org/A005101 Abundant numbers (σ(n) > 2n)
 			https://en.wikipedia.org/wiki/Abundant_number
 		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
@@ -1533,6 +1545,9 @@ func _(abs func(int) int) {
 	// 		n/LPF(n)*GPF(n) https://oeis.org/A130064
 	// 		n/GPF(n)*LPF(n) https://oeis.org/A130065
 	//
+	// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
+	// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
+	// - [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
 	// https://codeforces.com/problemset/problem/385/C
 	// https://codeforces.com/gym/103107/problem/F (另一种做法是欧拉筛）
 	lpfAll := func() {
@@ -2605,7 +2620,7 @@ func _(abs func(int) int) {
 	// Number of ways to choose n disjoint pairs of items from 2*n items
 	// Number of perfect matchings in the complete graph K(2n)
 	// https://atcoder.jp/contests/abc236/tasks/abc236_d
-	// LC1359 有效的快递序列数目 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
+	// LC1359 有效的快递序列数目 https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/
 	// 奇阶乘模 2^64 http://acm.hdu.edu.cn/showproblem.php?pid=6481 https://www.90yang.com/hdu6481-a-math-problem/
 	calcOddFactorialBig := func(n int) *big.Int {
 		return new(big.Int).Rsh(new(big.Int).MulRange(int64(n+1), int64(2*n)), uint(n))
@@ -2717,7 +2732,7 @@ func _(abs func(int) int) {
 		// https://oeis.org/A000108
 		// 从 n=0 开始：1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845, 35357670, 129644790
 		// 所有在 n×n 格点中不越过对角线的单调路径的个数
-		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259 https://leetcode-cn.com/problems/handshakes-that-dont-cross/
+		// Number of noncrossing partitions of the n-set (不相交握手问题) LC1259 https://leetcode.cn/problems/handshakes-that-dont-cross/
 		// Dyck Path https://mathworld.wolfram.com/DyckPath.html
 		// https://www.luogu.com.cn/problem/P1641
 		// 
@@ -2817,7 +2832,7 @@ func _(abs func(int) int) {
 	//    将 n 个元素排成 k 个非空循环排列的方法数
 	//    s(n,k) 的递推公式： s(n,k)=(n-1)*s(n-1,k)+s(n-1,k-1), 1<=k<=n-1
 	//    边界条件：s(n,0)=0, n>=1    s(n,n)=1, n>=0
-	//    LC1866 https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
+	//    LC1866 https://leetcode.cn/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/
 	//    建筑师 https://www.luogu.com.cn/problem/P4609
 	//    UVa1638 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4513
 	//    todo https://www.luogu.com.cn/problem/P5408
@@ -3349,6 +3364,8 @@ func _(abs func(int) int) {
 	https://oeis.org/A001605 使 F(n) 为质数的 n
 	https://oeis.org/A191797 C(F(n), 2)
 	https://oeis.org/A001177 Fibonacci entry points: a(n) = least k >= 1 such that n divides Fibonacci number
+	https://oeis.org/A059389 Sums of two nonzero Fibonacci numbers
+	https://oeis.org/A059390 Numbers that are not the sum of two nonzero Fibonacci numbers
 	异或和 F(n) 1,0,2,1,4,12,1,20,54,1,88,200,33,344,826,225,1756,3268,7313,1788
 	定义 f(m) 为最小的满足 F(i)+F(j) ≡ 0 (mod m) 的 i (j<=i)，f(m) 大概是 O(√m) 的
 	todo https://codeforces.com/problemset/problem/226/C

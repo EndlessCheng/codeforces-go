@@ -26,7 +26,8 @@ https://codeforces.com/blog/entry/20861
 
 【推荐】后缀自动机一·基本概念 http://hihocoder.com/problemset/problem/1441
 后缀自动机二·重复旋律5 http://hihocoder.com/problemset/problem/1445
-后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449 SPOJ NSUBSTR https://www.luogu.com.cn/problem/SP8222
+后缀自动机三·重复旋律6 http://hihocoder.com/problemset/problem/1449
+    SPOJ NSUBSTR https://www.luogu.com.cn/problem/SP8222
     对每个 i，求长为 i 的且出现次数最多的子串的出现次数，可以在 dfs rev 的同时求出 maxCnt[o.len].max(o.cnt)，最后倒序更新一下 maxCnt
 后缀自动机四·重复旋律7 http://hihocoder.com/problemset/problem/1457
 后缀自动机五·重复旋律8 http://hihocoder.com/problemset/problem/1465
@@ -35,8 +36,11 @@ https://ac.nowcoder.com/acm/contest/37092#question
 
 todo 题单 https://www.luogu.com.cn/training/3202
 模板题：子串出现次数*子串长度的最大值 https://www.luogu.com.cn/problem/P3804
-多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode-cn.com/problems/longest-common-subpath/
-第 k 小子串（也可以用后缀数组做，见题解区）SPOJ SUBLEX https://www.luogu.com.cn/problem/SP7258 TJOI15 弦论 https://www.luogu.com.cn/problem/P3975
+多串最长公共子串（另见后缀数组）SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812
+- https://loj.ac/p/171
+- LC1923 https://leetcode.cn/problems/longest-common-subpath/
+第 k 小子串（也可以用后缀数组做，见题解区）SPOJ SUBLEX https://www.luogu.com.cn/problem/SP7258 
+- TJOI15 弦论 https://www.luogu.com.cn/problem/P3975
 动态本质不同子串个数（也可以用后缀数组做，见题解区）https://www.luogu.com.cn/problem/P4070
 区间本质不同子串个数（与 LCT 结合）https://www.luogu.com.cn/problem/P6292
 动态子串出现次数（与 LCT 结合）SPOJ NSUBSTR2 https://www.luogu.com.cn/problem/SP8747
@@ -284,3 +288,4 @@ func (m *sam) printSAM() {
 // todo https://www.luogu.com.cn/problem/P6139
 //  https://codeforces.com/problemset/problem/1437/G
 //  有一组互不相同的字符串list，求在给定字符串s中，有几个子串出现在list中。 s比较小，但list可能很大。
+//  不在其它字符串中出现的最短字典序最小子串 https://leetcode.cn/problems/shortest-uncommon-substring-in-an-array/

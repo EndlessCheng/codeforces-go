@@ -21,11 +21,15 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
    - https://www.luogu.com.cn/problem/P3374
 - [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/) *逆序对
 - [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/) 2030
+- [3072. 将元素分配到两个数组中 II](https://leetcode.cn/problems/distribute-elements-into-two-arrays-ii/)
 - [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
+- [2519. 统计 K-Big 索引的数量](https://leetcode.cn/problems/count-the-number-of-k-big-indices/)（会员题）
+- [2613. 美数对](https://leetcode.cn/problems/beautiful-pairs/)（会员题）*曼哈顿最近点对
 
 关于逆序对，见下面的 cntInversions
 
+https://codeforces.com/problemset/problem/1234/D 1600
 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 https://atcoder.jp/contests/arc075/tasks/arc075_c
 静态区间种类 - 离线做法
@@ -516,7 +520,7 @@ func _(n int) {
 // 树状数组维护前缀最小值的条件是每次修改只能往小改，那么从后往前做就好了
 // 将询问离线：按照右端点排序（或分组），计算 mex。原理见代码中 query 的注释
 // https://www.luogu.com.cn/problem/P4137
-// LC2003 https://leetcode-cn.com/problems/smallest-missing-genetic-value-in-each-subtree/
+// LC2003 https://leetcode.cn/problems/smallest-missing-genetic-value-in-each-subtree/
 // - 需要将 a 转换成 DFS 序且从 0 开始，同时最终答案需要 +1
 func rangeMex(a []int, qs []struct{ l, r, i int }) []int {
 	const mx int = 1e5 + 2

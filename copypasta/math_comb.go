@@ -241,7 +241,7 @@ n married couples are seated in a row so that every wife is to the left of her h
 考虑顺序可以发现，对于每一对夫妻来说，妻子在丈夫左侧的情况和在右侧的情况相同且不同对夫妻之间是独立的
 因此每有一对夫妻，符合条件的排列个数就减半
 所以结果为 a(n) = (2n)!/2^n https://oeis.org/A000680
-或者见这道题目的背景 LC1359 https://leetcode-cn.com/problems/count-all-valid-pickup-and-delivery-options/
+或者见这道题目的背景 LC1359 https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/
 
 NxN 大小的对称置换矩阵的个数 https://oeis.org/A000085
 这里的对称指仅关于主对角线对称
@@ -258,7 +258,7 @@ The number of 3 X n matrices of integers for which the upper-left hand corner is
 the rows and columns are weakly increasing, and two adjacent entries differ by at most 1
 a(n+2) = 5*a(n+1) - 2*a(n), with a(0) = 1, a(1) = 4
 https://oeis.org/A052913
-相关题目 LC1411 https://leetcode-cn.com/problems/number-of-ways-to-paint-n-x-3-grid/
+相关题目 LC1411 https://leetcode.cn/problems/number-of-ways-to-paint-n-x-3-grid/
 
 男厕问题 / 电话问题 https://oeis.org/A185456
 Assume that the first person to use a bank of payphones selects one at the end,

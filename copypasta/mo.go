@@ -26,8 +26,10 @@ import (
 // 对于每个块，右端点在 [1,n] 中一直向右或者一直向左，而左端点只在块内「抖动」
 // 对于每个块，右端点的移动次数是 O(n)，总移动次数是 O(n * 块个数) = O(n^2 / 块大小)
 // 对于每个询问，左端点移动次数是 O(块大小)，总移动次数是 O(m * 块大小)
-// n^2 / 块大小 = m * 块大小  =>  块大小取 n / √m 时，总的时间复杂度最优，为 O(n√m)
-// 换句话说，回答一个询问的均摊时间复杂度为 O(n / √m)
+// n^2 / 块大小 = m * 块大小  =>  块大小取 n/√m 时，总的时间复杂度最优，为 O(n√m)
+// 换句话说，回答一个询问的均摊时间复杂度为 O(n/√m)
+// 注 1：如果块大小取 √n，那么移动次数约为 (n+m)√n >= 2n√m，当且仅当 n=m 时取等号（基本不等式），其中不等式右侧为块大小取 n/√m 时的移动次数
+// 注 2：为防止块大小为 0，代码中要取 ceil(n/√m)
 //
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494
@@ -52,12 +54,12 @@ func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
 	m := len(queries)
 	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
-	type query struct{ lb, l, r, qid int }
-	qs := make([]query, m)
+	type moQuery struct{ lb, l, r, qid int } // [l,r)
+	qs := make([]moQuery, m)
 	for i, q := range queries {
 		// 输入是从 1 开始的
-		l, r := q[0], q[1]
-		qs[i] = query{l / blockSize, l, r + 1, i} // [l,r)
+		l, r := q[0], q[1] // read...
+		qs[i] = moQuery{l / blockSize, l, r + 1, i}
 	}
 	sort.Slice(qs, func(i, j int) bool {
 		a, b := qs[i], qs[j]
@@ -84,7 +86,7 @@ func normalMo(a []int, queries [][]int) []int {
 			cnt--
 		}
 	}
-	getAns := func(q query) int {
+	getAns := func(q moQuery) int {
 		// 提醒：q.r 是加一后的，计算时需要注意
 		// sz := q.r - q.l
 		// ...
@@ -413,10 +415,14 @@ func moOnTree(n, root, q int, g [][]int, vals []int) []int {
 }
 
 // 二次离线莫队
+// 1. 用莫队把询问分块（第一次离线）
+// 2. 把莫队左右指针的移动记录下来（第二次离线）
+// 3. 用（另一种）离线算法，更高效地处理左右指针的移动
 // https://oi-wiki.org/misc/mo-algo-secondary-offline/
+// https://www.cnblogs.com/Nero-Claudius/p/MoQueue1.html
 // todo https://www.luogu.com.cn/blog/gxy001/mu-dui-er-ci-li-xian
 //  https://kewth.github.io/2019/10/16/%E8%8E%AB%E9%98%9F%E4%BA%8C%E6%AC%A1%E7%A6%BB%E7%BA%BF/
 //  静态区间逆序对 https://www.luogu.com.cn/problem/P5047
-//  https://www.luogu.com.cn/problem/P5501
 //  https://www.luogu.com.cn/problem/P4887
+//  https://www.luogu.com.cn/problem/P5501
 //  https://www.luogu.com.cn/problem/P5398

@@ -6,7 +6,7 @@ package copypasta
 // https://oi-wiki.org/ds/odt/
 // todo 随机数据下的复杂度证明 https://zhuanlan.zhihu.com/p/102786071
 
-// 模板题 LC715 https://leetcode-cn.com/problems/range-module/
+// 模板题 LC715 https://leetcode.cn/problems/range-module/
 // LC699 https://leetcode.cn/problems/falling-squares/
 // https://atcoder.jp/contests/abl/tasks/abl_e 代码【比较全面】https://atcoder.jp/contests/abl/submissions/36147029
 // https://codeforces.com/problemset/problem/292/E 代码 https://codeforces.com/contest/292/submission/173666674

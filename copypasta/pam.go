@@ -25,7 +25,7 @@ https://hihocoder.com/problemset/problem/1602
 模板题 https://www.luogu.com.cn/problem/P5496
 本质不同回文子串的出现次数 https://www.luogu.com.cn/problem/P3649
 todo 最小回文划分 https://codeforces.com/problemset/problem/932/G 2900
- 能否划分成三段回文 LC1745 https://leetcode-cn.com/problems/palindrome-partitioning-iv/
+ 能否划分成三段回文 LC1745 https://leetcode.cn/problems/palindrome-partitioning-iv/
  最长双回文串（另一种做法是 Manacher）https://www.luogu.com.cn/problem/P4555
  https://codeforces.com/gym/104787/problem/C
  [SHOI2011] 双倍回文 https://www.luogu.com.cn/problem/P4287

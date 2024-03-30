@@ -55,6 +55,7 @@ Precedence    Operator
 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
 连续数字 AND 等于目标值 https://codeforces.com/problemset/problem/1775/C 1600
 https://codeforces.com/problemset/problem/1004/F 2600
+https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
 
 ### 异或（XOR）的性质
 另见 strings.go 中的 trie.maxXor
@@ -133,7 +134,9 @@ popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
 - [2354. 优质数对的数目](https://leetcode.cn/problems/number-of-excellent-pairs/) 2076
 https://oeis.org/A006234 (n+2) * 3^(n-2)   [0,2^n) 内任意两数 popcount(x) + popcount(y) - popcount(x+y) = 1 的数对个数
 - https://codeforces.com/problemset/problem/1761/D
-进位与分类讨论 https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
+进位与分类讨论 https://codeforces.com/problemset/problem/1761/D 2100
+- https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d 
+- https://www.cnblogs.com/linyihdfj/p/16893607.html
 a|b = (a^b) + (a&b)
 a&b = (a|b) - (a^b)
 a^b = (a|b) - (a&b)
@@ -141,13 +144,14 @@ a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
     = (a|b)*2 - (a^b)
 (a^b) & (a&b) = 0 恒成立
-https://codeforces.com/problemset/problem/76/D
-https://codeforces.com/problemset/problem/1325/D
-https://codeforces.com/problemset/problem/1368/D
-https://codeforces.com/problemset/problem/1790/E
+https://codeforces.com/problemset/problem/1790/E 1400
+https://codeforces.com/problemset/problem/76/D 1700
+https://codeforces.com/problemset/problem/627/A 1700
+https://codeforces.com/problemset/problem/1325/D 1700
+https://codeforces.com/problemset/problem/1368/D 1700
 https://atcoder.jp/contests/abc050/tasks/arc066_b
 a|b = (^a)&b + a
-+ 与 ^ https://codeforces.com/problemset/problem/1732/C2
++ 与 ^ https://codeforces.com/problemset/problem/1732/C2 2100
 进位的本质 https://atcoder.jp/contests/arc158/tasks/arc158_c
 max(a,b) = (a + b + abs(a-b)) / 2
 min(a,b) = (a + b - abs(a-b)) / 2

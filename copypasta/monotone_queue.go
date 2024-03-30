@@ -145,7 +145,7 @@ func maxSubSumWithLimitSize(a []int, sizeLimit int) int {
 // 转换成两个前缀和的差至少为 k
 // 这题的关键在于，当右端点向右（枚举）时，左端点是绝对不会向左的（因为向左肯定会比当前求出的最短长度要长）
 // 想明白这一点就可以愉快地使用单调队列了
-// LC862 https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
+// LC862 https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/
 func shortestSubSumAtLeastK(a []int, k int) int {
 	n := len(a)
 	ans := n + 1

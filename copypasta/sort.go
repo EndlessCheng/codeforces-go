@@ -19,35 +19,28 @@ https://codeforces.com/contest/1945/problem/E
 LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
 
-### 二分查找·题单
+### 二分查找
 - [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
 - [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
 - [704. 二分查找](https://leetcode.cn/problems/binary-search/)
 - [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) 1196 *应用
 - [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) 1477 *应用
 - [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721 *应用
-- [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
-- [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
-- [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
-- [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
-- [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
-- [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 - [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
 - [1182. 与目标颜色间的最短距离](https://leetcode.cn/problems/shortest-distance-to-target-color/)（会员题）
+- [2819. 购买巧克力后的最小相对损失](https://leetcode.cn/problems/minimum-relative-loss-after-buying-chocolates/)（会员题）
 - [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
 https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/165/B 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
-### 二分答案·原理
+### 二分答案原理
 
 为什么二分的结果一定就是我们要求的，可不可能无法由数组中的元素组合得到？
 我在 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/ 中说到：
 设答案为 s，那么必然有 f(s−1)<k 且 f(s)≥k。注意这和「第 k 小」是等价的。
 
-### 二分答案 · 题单（右边数字为难度分）
-
-#### 二分答案
+### 二分答案
 - [275. H 指数 II](https://leetcode.cn/problems/h-index-ii/) *经典题
 - [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/) 1542
 - [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/) 1641 *典型题
@@ -75,7 +68,7 @@ https://codeforces.com/contest/1843/problem/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
 DP https://codeforces.com/contest/883/problem/I 1900
 
-#### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
+### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
 - [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
 - [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/) 1940
@@ -89,7 +82,7 @@ https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/contest/1918/problem/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 
-#### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
+### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
    同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
 - [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
@@ -100,7 +93,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 http://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
 
-#### 第 K 小/大（部分题目也可以用堆解决）
+### 第 K 小/大（部分题目也可以用堆解决）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
 - [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
@@ -112,6 +105,14 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
 - [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）*滑动窗口
 综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
+
+### 其它
+- [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
+- [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
+- [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
+- [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
+- [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+- [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 
 #### 最大化中位数
 https://codeforces.com/problemset/problem/1201/C  也可以贪心做
@@ -243,7 +244,7 @@ func sortCollections() {
 	}
 
 	// 插入排序
-	// 相关题目 LC1536 https://leetcode-cn.com/problems/minimum-swaps-to-arrange-a-binary-grid/
+	// 相关题目 LC1536 https://leetcode.cn/problems/minimum-swaps-to-arrange-a-binary-grid/
 	insertionSort := func(a []int) {
 		n := len(a)
 		for i := 1; i < n; i++ {
@@ -390,8 +391,8 @@ func sortCollections() {
 
 	// 有序矩阵中的第 k 小
 	// 有序矩阵：每行和每列元素均为不降序列
-	// LC378 https://leetcode-cn.com/problems/kth-smallest-element-in-a-sorted-matrix/
-	// LC719 https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
+	// LC378 https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/
+	// LC719 https://leetcode.cn/problems/find-k-th-smallest-pair-distance/
 	kthSmallest := func(a [][]int, k int) int {
 		// 注意 k 从 1 开始
 		n, m := len(a), len(a[0])
@@ -414,7 +415,7 @@ func sortCollections() {
 
 	// 区间和的第 k 小（数组元素均为非负）
 	// 每个区间和可以视作一个有序上三角矩阵中的元素，在数组元素均为非负时，该矩阵从左往右和从下往上均为非降序列
-	// 1508 https://leetcode-cn.com/problems/range-sum-of-sorted-subarray-sums/
+	// 1508 https://leetcode.cn/problems/range-sum-of-sorted-subarray-sums/
 	kthSmallestRangeSum := func(a []int, k int) int {
 		// 1 <= k <= n*(n+1)/2
 		n := len(a)
@@ -574,7 +575,7 @@ func sortCollections() {
 	//     https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	//     https://codeforces.com/problemset/problem/1003/C 1300
 	//     - https://www.luogu.com.cn/problem/P1404
-	//     - LC644 https://leetcode-cn.com/problems/maximum-average-subarray-ii/（会员题）
+	//     - LC644 https://leetcode.cn/problems/maximum-average-subarray-ii/（会员题）
 	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	//     https://www.acwing.com/problem/content/104/
 	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F

@@ -4,11 +4,13 @@ import "math/bits"
 
 // 0-1 线段树
 // 支持区间翻转比特、单比特加减等
-// 某些情况下可作为 Bitset 的代替品
+// 要点：维护对偶问题的答案
+// 某些情况下可作为 Bitset 的替代品
 // LC2569 https://leetcode.cn/problems/handling-sum-queries-after-update/
 // https://www.luogu.com.cn/problem/P2572
 // https://codeforces.com/contest/1705/problem/E
 // https://codeforces.com/problemset/problem/877/E
+// http://codeforces.com/problemset/problem/145/E 2400
 type seg01 []struct {
 	l, r int
 	ones int // EXTRA: 1 的个数

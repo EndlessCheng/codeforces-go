@@ -26,6 +26,7 @@ NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y
 - [2368. 受限条件下可到达节点的数目](https://leetcode.cn/problems/reachable-nodes-with-restrictions/) 1477
 - [3004. 相同颜色的最大子树](https://leetcode.cn/problems/maximum-subtree-of-the-same-color/)（会员题）
 https://codeforces.com/problemset/problem/580/C
+https://codeforces.com/problemset/problem/34/D 1600
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
@@ -191,7 +192,7 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 	dep := make([]int, n)
 	size := make([]int, n)
 	maxDep := make([]int, n) // EXTRA: 子树最大深度
-	var build func(v, fa, d int) int
+	var build func(int, int, int) int
 	build = func(v, fa, d int) int {
 		dep[v] = d
 		sz := 1
@@ -218,17 +219,19 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 //
 // https://codeforces.com/problemset/problem/877/E 2000
 // https://codeforces.com/problemset/problem/383/C 2000
-// https://ac.nowcoder.com/acm/contest/6383/B
+// https://codeforces.com/problemset/problem/620/E 2100
 // https://codeforces.com/problemset/problem/916/E 2400
-// 结合 AC 自动机 https://codeforces.com/contest/163/problem/E 2800
+// https://codeforces.com/problemset/problem/1110/F 2600
+// https://codeforces.com/problemset/problem/163/E 2800 结合 AC 自动机 
+// https://ac.nowcoder.com/acm/contest/6383/B
 func (*tree) subtreeSize(root int, g [][]int, a []int) {
-	newOrder := make([]int, len(a))
+	newOrder := make([]int, 0, len(a))
 
-	nodes := make([]struct{ l, r int }, len(g)) // 闭区间
+	nodes := make([]struct{ l, r int }, len(g)) // 闭区间 [l,r]
 	dfn := 0
 	var buildDFN func(int, int) int
 	buildDFN = func(v, fa int) (size int) {
-		newOrder[dfn] = a[v] // 按照遍历顺序得到的点权顺序
+		newOrder = append(newOrder, a[v]) // 按照遍历顺序得到的点权顺序
 
 		dfn++ // 相当于 dfn 从 1 开始
 		nodes[v].l = dfn
@@ -1625,7 +1628,7 @@ func (*tree) virtualTree(g [][]int) {
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
 //
-// 注：若没有修改操作，见 lcaBinaryLifting（路径查询）以及 subtreeSize（子树查询）
+// 注：若没有修改操作，更简单的做法见 lcaBinaryLifting（路径查询）以及 subtreeSize（子树查询）
 //
 // 模板题（点权）https://www.luogu.com.cn/problem/P3384
 //            https://codeforces.com/problemset/problem/343/D 2100
@@ -1633,9 +1636,12 @@ func (*tree) virtualTree(g [][]int) {
 // 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
 // 好题 https://codeforces.com/contest/1174/problem/F
 // 归并树 https://codeforces.com/problemset/problem/587/C
-// todo 子异和 https://www.luogu.com.cn/problem/P5127
-// todo 完成题单 https://www.luogu.com.cn/training/1654
+// todo 题单 https://www.luogu.com.cn/training/1654
+// todo https://www.luogu.com.cn/problem/P5127
 // TODO: 处理边权的情况
+//   https://www.luogu.com.cn/problem/P1505
+//   https://www.luogu.com.cn/problem/P4315
+//   https://www.luogu.com.cn/problem/P4114
 // todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
 //  https://www.luogu.com.cn/problem/P4211
 // 结合广义圆方树 https://codeforces.com/problemset/problem/487/E
