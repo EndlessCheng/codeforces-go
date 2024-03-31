@@ -10,7 +10,9 @@ func minimumDistance(points [][]int) int {
 	const inf = math.MaxInt
 	maxX1, maxX2, maxY1, maxY2 := -inf, -inf, -inf, -inf
 	minX1, minX2, minY1, minY2 := inf, inf, inf, inf
-	for _, p := range points {
+	var maxXi, minXi, maxYi, minYi int
+
+	for i, p := range points {
 		x := p[0] + p[1]
 		y := p[1] - p[0]
 
@@ -18,6 +20,7 @@ func minimumDistance(points [][]int) int {
 		if x > maxX1 {
 			maxX2 = maxX1
 			maxX1 = x
+			maxXi = i
 		} else if x > maxX2 {
 			maxX2 = x
 		}
@@ -26,6 +29,7 @@ func minimumDistance(points [][]int) int {
 		if x < minX1 {
 			minX2 = minX1
 			minX1 = x
+			minXi = i
 		} else if x < minX2 {
 			minX2 = x
 		}
@@ -34,6 +38,7 @@ func minimumDistance(points [][]int) int {
 		if y > maxY1 {
 			maxY2 = maxY1
 			maxY1 = y
+			maxYi = i
 		} else if y > maxY2 {
 			maxY2 = y
 		}
@@ -42,27 +47,26 @@ func minimumDistance(points [][]int) int {
 		if y < minY1 {
 			minY2 = minY1
 			minY1 = y
+			minYi = i
 		} else if y < minY2 {
 			minY2 = y
 		}
 	}
 
 	ans := math.MaxInt
-	for _, p := range points {
-		x := p[0] + p[1]
-		y := p[1] - p[0]
-		dx := f(x, maxX1, maxX2) - f(x, minX1, minX2)
-		dy := f(y, maxY1, maxY2) - f(y, minY1, minY2)
+	for _, i := range []int{maxXi, minXi, maxYi, minYi} {
+		dx := f(i != maxXi, maxX1, maxX2) - f(i != minXi, minX1, minX2)
+		dy := f(i != maxYi, maxY1, maxY2) - f(i != minYi, minY1, minY2)
 		ans = min(ans, max(dx, dy))
 	}
 	return ans
 }
 
-func f(v, v1, v2 int) int {
-	if v == v1 {
-		return v2
+func f(b bool, v1, v2 int) int {
+	if b {
+		return v1
 	}
-	return v1
+	return v2
 }
 
 func minimumDistance2(points [][]int) int {

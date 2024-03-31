@@ -368,6 +368,235 @@ func f(v, v1, v2 int) int {
 }
 ```
 
+进一步地，要删除的点只能是 $x'$ 或 $y'$ 最大最小的点（不然删不删都一样），所以额外维护最大最小值的下标，可以少一次对 $\textit{points}$ 的遍历。
+
+```py [sol-Python3]
+class Solution:
+    def minimumDistance(self, points: List[List[int]]) -> int:
+        max_x1 = max_x2 = max_y1 = max_y2 = -inf
+        min_x1 = min_x2 = min_y1 = min_y2 = inf
+        max_xi = min_xi = max_yi = min_yi = 0
+
+        for i, (x, y) in enumerate(points):
+            x, y = x + y, y - x
+
+            # x 最大次大
+            if x > max_x1:
+                max_x2 = max_x1
+                max_x1 = x
+                max_xi = i
+            elif x > max_x2:
+                max_x2 = x
+
+            # x 最小次小
+            if x < min_x1:
+                min_x2 = min_x1
+                min_x1 = x
+                min_xi = i
+            elif x < min_x2:
+                min_x2 = x
+
+            # y 最大次大
+            if y > max_y1:
+                max_y2 = max_y1
+                max_y1 = y
+                max_yi = i
+            elif y > max_y2:
+                max_y2 = y
+
+            # y 最小次小
+            if y < min_y1:
+                min_y2 = min_y1
+                min_y1 = y
+                min_yi = i
+            elif y < min_y2:
+                min_y2 = y
+
+        ans = inf
+        for i in max_xi, min_xi, max_yi, min_yi:
+            dx = (max_x2 if i == max_xi else max_x1) - (min_x2 if i == min_xi else min_x1)
+            dy = (max_y2 if i == max_yi else max_y1) - (min_y2 if i == min_yi else min_y1)
+            ans = min(ans, max(dx, dy))
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumDistance(int[][] points) {
+        final int INF = Integer.MAX_VALUE;
+        int maxX1 = -INF, maxX2 = -INF, maxY1 = -INF, maxY2 = -INF;
+        int minX1 = INF, minX2 = INF, minY1 = INF, minY2 = INF;
+        int maxXi = 0, minXi = 0, maxYi = 0, minYi = 0;
+
+        for (int i = 0; i < points.length; i++) {
+            int[] p = points[i];
+            int x = p[0] + p[1];
+            int y = p[1] - p[0];
+
+            // x 最大次大
+            if (x > maxX1) {
+                maxX2 = maxX1;
+                maxX1 = x;
+                maxXi = i;
+            } else if (x > maxX2) {
+                maxX2 = x;
+            }
+
+            // x 最小次小
+            if (x < minX1) {
+                minX2 = minX1;
+                minX1 = x;
+                minXi = i;
+            } else if (x < minX2) {
+                minX2 = x;
+            }
+
+            // y 最大次大
+            if (y > maxY1) {
+                maxY2 = maxY1;
+                maxY1 = y;
+                maxYi = i;
+            } else if (y > maxY2) {
+                maxY2 = y;
+            }
+
+            // y 最小次小
+            if (y < minY1) {
+                minY2 = minY1;
+                minY1 = y;
+                minYi = i;
+            } else if (y < minY2) {
+                minY2 = y;
+            }
+        }
+
+        int ans = INF;
+        for (int i : new int[]{maxXi, minXi, maxYi, minYi}) {
+            int dx = (i == maxXi ? maxX2 : maxX1) - (i == minXi ? minX2 : minX1);
+            int dy = (i == maxYi ? maxY2 : maxY1) - (i == minYi ? minY2 : minY1);
+            ans = Math.min(ans, Math.max(dx, dy));
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // 更新最大次大
+    void update_max(int i, int v, int &max_i, int &max1, int &max2) {
+        if (v > max1) {
+            max_i = i;
+            max2 = max1;
+            max1 = v;
+        } else if (v > max2) {
+            max2 = v;
+        }
+    }
+
+    // 更新最小次小
+    void update_min(int i, int v, int &min_i, int &min1, int &min2) {
+        if (v < min1) {
+            min_i = i;
+            min2 = min1;
+            min1 = v;
+        } else if (v < min2) {
+            min2 = v;
+        }
+    }
+
+public:
+    int minimumDistance(vector<vector<int>> &points) {
+        int max_xi, min_xi, max_yi, min_yi;
+        int max_x1 = INT_MIN, max_x2 = INT_MIN, max_y1 = INT_MIN, max_y2 = INT_MIN;
+        int min_x1 = INT_MAX, min_x2 = INT_MAX, min_y1 = INT_MAX, min_y2 = INT_MAX;
+
+        for (int i = 0; i < points.size(); i++) {
+            auto &p = points[i];
+            int x = p[0] + p[1];
+            int y = p[1] - p[0];
+            update_max(i, x, max_xi, max_x1, max_x2);
+            update_min(i, x, min_xi, min_x1, min_x2);
+            update_max(i, y, max_yi, max_y1, max_y2);
+            update_min(i, y, min_yi, min_y1, min_y2);
+        }
+
+        int ans = INT_MAX;
+        for (int i : {max_xi, min_xi, max_yi, min_yi}) {
+            int dx = (i == max_xi ? max_x2 : max_x1) - (i == min_xi ? min_x2 : min_x1);
+            int dy = (i == max_yi ? max_y2 : max_y1) - (i == min_yi ? min_y2 : min_y1);
+            ans = min(ans, max(dx, dy));
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumDistance(points [][]int) int {
+	const inf = math.MaxInt
+	maxX1, maxX2, maxY1, maxY2 := -inf, -inf, -inf, -inf
+	minX1, minX2, minY1, minY2 := inf, inf, inf, inf
+	var maxXi, minXi, maxYi, minYi int
+
+	for i, p := range points {
+		x := p[0] + p[1]
+		y := p[1] - p[0]
+
+		// x 最大次大
+		if x > maxX1 {
+			maxX2 = maxX1
+			maxX1 = x
+			maxXi = i
+		} else if x > maxX2 {
+			maxX2 = x
+		}
+
+		// x 最小次小
+		if x < minX1 {
+			minX2 = minX1
+			minX1 = x
+			minXi = i
+		} else if x < minX2 {
+			minX2 = x
+		}
+
+		// y 最大次大
+		if y > maxY1 {
+			maxY2 = maxY1
+			maxY1 = y
+			maxYi = i
+		} else if y > maxY2 {
+			maxY2 = y
+		}
+
+		// y 最小次小
+		if y < minY1 {
+			minY2 = minY1
+			minY1 = y
+			minYi = i
+		} else if y < minY2 {
+			minY2 = y
+		}
+	}
+
+	ans := math.MaxInt
+	for _, i := range []int{maxXi, minXi, maxYi, minYi} {
+		dx := f(i != maxXi, maxX1, maxX2) - f(i != minXi, minX1, minX2)
+		dy := f(i != maxYi, maxY1, maxY2) - f(i != minYi, minY1, minY2)
+		ans = min(ans, max(dx, dy))
+	}
+	return ans
+}
+
+func f(b bool, v1, v2 int) int {
+	if b {
+		return v1
+	}
+	return v2
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{points}$ 的长度。
