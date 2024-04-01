@@ -6,14 +6,16 @@ func findChampion(n int, edges [][]int) int {
 	for _, e := range edges {
 		weak[e[1]] = true
 	}
+
 	ans := -1
 	for i, w := range weak {
-		if !w {
-			if ans != -1 {
-				return -1
-			}
-			ans = i
+		if w {
+			continue
 		}
+		if ans != -1 {
+			return -1 // 冠军只能有一个
+		}
+		ans = i
 	}
 	return ans
 }
