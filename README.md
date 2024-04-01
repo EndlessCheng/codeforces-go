@@ -499,10 +499,6 @@ My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_t
 
 [ACD Ladders](https://www.acodedaily.com/)
 
-[UpSolve.me](https://upsolve.me/)
-
-[Codeforces Upsolving Helper](https://codeforces-upsolving-helper.herokuapp.com/)
-
 [Contests Filter](https://codeforceshelper.herokuapp.com/contests)
 
 [Codeforced](http://codeforced.github.io/handle/)
