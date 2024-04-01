@@ -580,7 +580,7 @@ func minimumDistance(points [][]int) int {
 		}
 	}
 
-	ans := math.MaxInt
+	ans := inf
 	for _, i := range []int{maxXi, minXi, maxYi, minYi} {
 		dx := f(i != maxXi, maxX1, maxX2) - f(i != minXi, minX1, minX2)
 		dy := f(i != maxYi, maxY1, maxY2) - f(i != minYi, minY1, minY2)
