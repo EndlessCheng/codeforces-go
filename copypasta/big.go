@@ -5,7 +5,15 @@ import (
 	"math/bits"
 )
 
-// https://codeforces.com/problemset/problem/1244/C
+/* 高精度
+加减乘除模 https://www.luogu.com.cn/problem/P1932
+- https://www.luogu.com.cn/record/153957114
+https://codeforces.com/problemset/problem/1244/C
+
+读入
+v := &big.Int{}
+Fscan(in, v)
+*/
 
 // 以 s 结尾的方法，s 代表 self
 type Int struct{ *big.Int }
