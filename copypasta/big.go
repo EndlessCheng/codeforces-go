@@ -11,7 +11,7 @@ import (
 https://codeforces.com/problemset/problem/1244/C
 
 读入
-v := &big.Int{}
+v := &big.Int{} // 或者 new(big.Int)
 Fscan(in, v)
 */
 
