@@ -30,6 +30,7 @@
 |[二分查找](https://www.bilibili.com/video/BV1AP41137w7/)|[34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)|[代码](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/solution/er-fen-cha-zhao-zong-shi-xie-bu-dui-yi-g-t9l9/)|三种写法|
 ||[2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/)|[代码](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/solution/mo-ni-by-endlesscheng-8e43/)|*课后作业|
 ||[2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/)|[代码](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/solution/by-endlesscheng-1kbp/)|*课后作业|
+||[2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/)|[代码](https://leetcode.cn/problems/count-the-number-of-fair-pairs/solution/er-fen-cha-zhao-de-ling-huo-yun-yong-by-wplbj/)|*课后作业|
 ||[275. H 指数 II](https://leetcode.cn/problems/h-index-ii/)|[代码](https://leetcode.cn/problems/h-index-ii/solution/tu-jie-yi-tu-zhang-wo-er-fen-da-an-si-ch-d15k/)|*课后作业|
 ||[875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)|[代码](https://leetcode.cn/problems/koko-eating-bananas/solution/er-fen-da-an-fu-ti-dan-pythonjavacgojsru-eb18/)|*课后作业|
 ||[2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)|[代码](https://leetcode.cn/problems/minimum-time-to-complete-trips/solution/er-fen-da-an-python-yi-xing-gao-ding-by-xwvs8/)|*课后作业|
