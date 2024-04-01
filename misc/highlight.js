@@ -4,10 +4,6 @@
 // @version      0.1
 // @description  highlight some important words
 // @author       灵茶山艾府
-// @matchx        https://atcoder.jp/contests/*
-// @exclude      https://atcoder.jp/contests/*/submissions/*
-// @match        https://codingcompetitions.withgoogle.com/*
-// @match        https://leetcode-cn.com/contest/*
 // @match        https://leetcode.cn/contest/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=leetcode.cn
 // ==/UserScript==
@@ -80,7 +76,8 @@
         // "相同",
         // "独一无二", "唯一", "只有", "两个",
         // "所有", /*"每",*/ "任何", "任意", "或", "之一", "反之", /*"必须",*/ "仅", "其他",
-        // "最小", "最大", "最少", "最多", "最短", "最长", "最早", "最晚", // todo regex 最...
+        "之和",
+        "最小", "最大", "最少", "最多", "最短", "最长", "最早", "最晚", "最高", // todo regex 最...
         // // "最后", "第一", 
         // "至少", "至多", "恰好", "刚好",
         // "非空", "连续",
