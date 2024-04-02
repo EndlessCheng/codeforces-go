@@ -33,6 +33,21 @@ inputCopy
 -3898 7239
 -3905 7252
 outputCopy
-4 3`
-	testutil.AssertEqualCase(t, rawText, 0, CF598C)
+4 3
+inputCopy
+4
+9800 9981
+61 9899
+-9926 -9932
+-149 -9926
+outputCopy
+3 4
+inputCopy
+3
+-5 1
+-5 -1
+5 0
+outputCopy
+1 2`
+	testutil.AssertEqualCase(t, rawText, 0, cf598C)
 }
