@@ -8,29 +8,23 @@ import (
 	"sort"
 )
 
-type vec671A struct {
+type vec71 struct {
 	x, y int
 }
 
-func (a vec671A) sub(b vec671A) vec671A { return vec671A{a.x - b.x, a.y - b.y} }
-func (a vec671A) len() float64          { return math.Hypot(float64(a.x), float64(a.y)) }
+func (a vec71) sub(b vec71) vec71 { return vec71{a.x - b.x, a.y - b.y} }
+func (a vec71) len() float64      { return math.Hypot(float64(a.x), float64(a.y)) }
 
 // github.com/EndlessCheng/codeforces-go
-func Sol671A(reader io.Reader, writer io.Writer) {
+func cf671A(reader io.Reader, writer io.Writer) {
 	type pair struct {
 		d   float64
 		idx int
 	}
-	read := func(in io.Reader) vec671A {
+	read := func(in io.Reader) vec71 {
 		var x, y int
 		Fscan(in, &x, &y)
-		return vec671A{x, y}
-	}
-	max := func(a, b float64) float64 {
-		if a > b {
-			return a
-		}
-		return b
+		return vec71{x, y}
 	}
 	in := bufio.NewReader(reader)
 	out := bufio.NewWriter(writer)
@@ -73,6 +67,4 @@ func Sol671A(reader io.Reader, writer io.Writer) {
 	Fprintf(out, "%.12f", ans)
 }
 
-//func main() {
-//	Sol671A(os.Stdin, os.Stdout)
-//}
+//func main() { cf671A(os.Stdin, os.Stdout) }
