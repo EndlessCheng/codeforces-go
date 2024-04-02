@@ -1,8 +1,6 @@
-[视频讲解](https://b23.tv/8G0PNxs) 第二题。
-
 ## 前置知识：动态规划入门
 
-详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://b23.tv/72onpYq)
+请看视频：[动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)
 
 ## 思路
 
@@ -25,6 +23,8 @@ $$
 递归边界：$\textit{dfs}(0)=0$。
 
 递归入口：$\textit{dfs}(n-1)$。也就是答案。如果答案是负数就返回 $-1$。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1XW4y1f7Wv/) 第二题。
 
 ```py [sol-Python3]
 class Solution:
@@ -73,11 +73,9 @@ func maximumJumps(nums []int, target int) int {
 	}
 	return ans
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
-然后按照 [视频](https://www.bilibili.com/video/BV1Xj411K7oF/) 中讲的，1:1 翻译成递推。
+然后按照视频中讲的，1:1 翻译成递推。
 
 ```py [sol-Python3]
 class Solution:
@@ -109,8 +107,6 @@ func maximumJumps(nums []int, target int) int {
 	}
 	return f[n-1]
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
@@ -123,3 +119,19 @@ func max(a, b int) int { if b > a { return b }; return a }
 如果改成求「最小跳跃次数」呢？
 
 那样 BFS 也是可以做的。
+
+## 分类题单
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+
+更多题单，点我个人主页 - 讨论发布。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
