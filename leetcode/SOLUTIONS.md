@@ -103,6 +103,7 @@
 ||[1015. 可被 K 整除的最小整数](https://leetcode.cn/problems/smallest-integer-divisible-by-k/)|[【图解】三种算法+优化](https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/)|1875|
 ||[754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)|[【图解】分类讨论+详细证明+简洁写法+优化](https://leetcode.cn/problems/reach-a-number/solution/fen-lei-tao-lun-xiang-xi-zheng-ming-jian-sqj2/)|1880|
 ||[1739. 放置盒子](https://leetcode.cn/problems/building-boxes/)|[【动画】没想明白？一个动画秒懂！附 O(1) 做法](https://leetcode.cn/problems/building-boxes/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-8vbe/)|2198|
+||[3102. 最小化曼哈顿距离](https://leetcode.cn/problems/minimize-manhattan-distances/)|[【图解】曼哈顿距离转切比雪夫距离](https://leetcode.cn/problems/minimize-manhattan-distances/solution/tu-jie-man-ha-dun-ju-chi-heng-deng-shi-b-op84/)|待定|
 ||[1330. 翻转子数组得到最大的数组值](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/)|[不会化简？请看这！](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/bu-hui-hua-jian-qing-kan-zhe-pythonjavac-c2s6/)|2482|
 ||[1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/)|[【图解】质因子分解+放球问题](https://leetcode.cn/problems/count-ways-to-make-array-with-product/solution/tu-jie-zhi-yin-zi-fen-jie-fang-qiu-wen-t-fboo/)|2500|
 ||[1819. 序列中不同最大公约数的数目](https://leetcode.cn/problems/number-of-different-subsequences-gcds/)|[击败100%！枚举GCD+循环优化](https://leetcode.cn/problems/number-of-different-subsequences-gcds/solution/ji-bai-100mei-ju-gcdxun-huan-you-hua-pyt-get7/)|2540|
