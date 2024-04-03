@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
 	"sort"
 )
 
@@ -23,17 +24,17 @@ func cf371E(_r io.Reader, _w io.Writer) {
 	Fscan(in, &k)
 
 	sort.Slice(a, func(i, j int) bool { return a[i].v < a[j].v })
-	mn := int(1e18)
-	for r := 1; r < n; r++ {
-		ss += a[r].v*min(r, k-1) - s
-		s += a[r].v
+	mn := math.MaxInt
+	for r, p := range a {
+		ss += p.v*min(r-1, k-1) - s
+		s += p.v
 		if l := r + 1 - k; l >= 0 {
 			if ss < mn {
 				mn = ss
 				mnR = r + 1
 			}
 			s -= a[l].v
-			ss -= s - a[l].v * (k - 1)
+			ss -= s - a[l].v*(k-1)
 		}
 	}
 	for _, p := range a[mnR-k : mnR] {
