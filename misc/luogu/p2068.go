@@ -8,9 +8,9 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type seg []struct{ l, r, val int }
+type seg2068 []struct{ l, r, val int }
 
-func (t seg) build(o, l, r int) {
+func (t seg2068) build(o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
 		return
@@ -21,7 +21,7 @@ func (t seg) build(o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg) update(o, i int, val int) {
+func (t seg2068) update(o, i int, val int) {
 	if t[o].l == t[o].r {
 		t[o].val += val
 		return
@@ -35,11 +35,11 @@ func (t seg) update(o, i int, val int) {
 	t.maintain(o)
 }
 
-func (t seg) maintain(o int) {
+func (t seg2068) maintain(o int) {
 	t[o].val = t[o<<1].val + t[o<<1|1].val
 }
 
-func (t seg) query(o, l, r int) (res int) {
+func (t seg2068) query(o, l, r int) (res int) {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
 	}
@@ -61,7 +61,7 @@ func p2068(_r io.Reader, _w io.Writer) {
 	var n, m, l, r int
 	var op string
 	Fscan(in, &n, &m)
-	t := make(seg, 2<<bits.Len(uint(n-1)))
+	t := make(seg2068, 2<<bits.Len(uint(n-1)))
 	t.build(1, 1, n)
 	for ; m > 0; m-- {
 		Fscan(in, &op, &l, &r)
