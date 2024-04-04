@@ -186,7 +186,8 @@ func (a poly) resize(n int) poly {
 }
 
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
-// c[i] = ∑a[k]*b[i-k], k=0..i
+// c[k] = ∑a[i]*b[k-i], i=0..k
+// 如果求 ∑a[i]*b[i]，可以把 b 反转后再求卷积
 // 入参出参都是次项从低到高的系数
 // 模板题 https://judge.yosupo.jp/problem/convolution_mod
 //       https://www.luogu.com.cn/problem/P3803
