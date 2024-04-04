@@ -88,7 +88,7 @@ https://codeforces.com/problemset/problem/466/C
 - [2489. 固定比率的子字符串数](https://leetcode.cn/problems/number-of-substrings-with-fixed-ratio/)（会员题）
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 交错前缀和 https://codeforces.com/contest/1915/problem/E
-http://codeforces.com/problemset/problem/1446/D1 2600 转换
+https://codeforces.com/problemset/problem/1446/D1 2600 转换
 
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
@@ -173,6 +173,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - [2067. 等计数子串的数量](https://leetcode.cn/problems/number-of-equal-count-substrings/)（会员题）
 - [2107. 分享 K 个糖果后独特口味的数量](https://leetcode.cn/problems/number-of-unique-flavors-after-sharing-k-candies/)（会员题）
 https://codeforces.com/problemset/problem/69/E 1800
+https://codeforces.com/problemset/problem/371/E 2000
 
 #### 不定长滑动窗口（求最长/最大）
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
@@ -321,9 +322,10 @@ https://codeforces.com/problemset/problem/1748/C 1600
 
 ### 巧妙枚举
 LC939 https://leetcode.cn/problems/minimum-area-rectangle/
-https://codeforces.com/problemset/problem/1181/C
-https://codeforces.com/problemset/problem/1626/D
-https://codeforces.com/problemset/problem/846/C
+https://codeforces.com/problemset/problem/846/C 1800
+https://codeforces.com/problemset/problem/1181/C 1900
+https://codeforces.com/problemset/problem/1626/D 2100
+https://codeforces.com/problemset/problem/339/E 2700
 
 ### 贪心及其证明
 - [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
@@ -497,37 +499,38 @@ LC2188 https://leetcode.cn/problems/minimum-time-to-finish-the-race/ 2315
 LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/ 2351
 
 构造
-todo 题单 https://www.luogu.com.cn/training/14#problems
+题单 https://www.luogu.com.cn/training/14#problems
 LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 LC2745 https://leetcode.cn/problems/construct-the-longest-new-string/ 1607
 LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
-https://codeforces.com/problemset/problem/1717/C 1300
-https://codeforces.com/problemset/problem/1788/C 1300
-https://codeforces.com/contest/803/problem/A 1400
-https://codeforces.com/problemset/problem/1863/D 1400
-https://codeforces.com/problemset/problem/1630/A 1500
-https://codeforces.com/problemset/problem/1809/C 1500
-分类讨论 https://codeforces.com/problemset/problem/584/C 1700
-https://codeforces.com/problemset/problem/847/C 1800
-相邻字母在字母表中不相邻 https://codeforces.com/contest/1156/problem/B 1800
-https://codeforces.com/problemset/problem/1267/L 1800
-最短/最长 LIS https://codeforces.com/problemset/problem/1304/D 1800
-https://codeforces.com/problemset/problem/1554/D 1800
-贪心 https://codeforces.com/problemset/problem/118/C 1900
-分类讨论 https://codeforces.com/problemset/problem/708/B 1900
-分类讨论 https://codeforces.com/contest/1854/problem/A2 1900
-棋盘放最多的马 https://codeforces.com/problemset/problem/142/B
-两点间恰好 k 条最短路径 http://codeforces.com/problemset/problem/388/B 1900
-https://codeforces.com/problemset/problem/327/D
-https://codeforces.com/problemset/problem/515/D
-度数均为 k 且至少（恰好）有一条割边 https://codeforces.com/problemset/problem/550/D
-https://codeforces.com/problemset/problem/1789/D
-todo https://codeforces.com/problemset/problem/1823/D
-https://codeforces.com/problemset/problem/1761/E 2400
-交互 二分 https://codeforces.com/problemset/problem/1838/F 3000
+https://codeforces.com/problemset/problem/1717/C  1300
+https://codeforces.com/problemset/problem/1788/C  1300
+https://codeforces.com/problemset/problem/803/A   1400
+https://codeforces.com/problemset/problem/1863/D  1400
+https://codeforces.com/problemset/problem/1630/A  1500
+https://codeforces.com/problemset/problem/1809/C  1500
+https://codeforces.com/problemset/problem/584/C   1700 分类讨论
+https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
+https://codeforces.com/problemset/problem/847/C   1800
+https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表中不相邻
+https://codeforces.com/problemset/problem/1267/L  1800
+https://codeforces.com/problemset/problem/1304/D  1800 最短/最长 LIS
+https://codeforces.com/problemset/problem/1554/D  1800
+https://codeforces.com/problemset/problem/118/C   1900 贪心
+https://codeforces.com/problemset/problem/327/D   1900
+https://codeforces.com/problemset/problem/388/B   1900 两点间恰好 k 条最短路径
+https://codeforces.com/problemset/problem/550/D   1900 度数均为 k 且至少（恰好）有一条割边
+https://codeforces.com/problemset/problem/708/B   1900 分类讨论
+https://codeforces.com/problemset/problem/1823/D  1900
+https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
+https://codeforces.com/problemset/problem/515/D   2000
+https://codeforces.com/problemset/problem/1558/C  2000
+https://codeforces.com/problemset/problem/1789/D  2200
+https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/1838/F  3000 交互 二分
 https://atcoder.jp/contests/arc145/tasks/arc145_a
-OR 构造 https://atcoder.jp/contests/agc015/tasks/agc015_d
+https://atcoder.jp/contests/agc015/tasks/agc015_d bit OR
 
 不好想到的构造
 https://codeforces.com/contest/1659/problem/D
@@ -545,7 +548,7 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 LC494 https://leetcode.cn/problems/target-sum/
 
 分类讨论（部分题是易错题）
-http://codeforces.com/problemset/problem/870/C 1300
+https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/30/A 1400
 https://codeforces.com/problemset/problem/45/I 1400
@@ -1162,6 +1165,7 @@ func _() {
 
 		// -1 操作执行 maxOp 次，最小化最大值    remove
 		// ！需要保证 a 是有序的
+		// 类似题目 https://codeforces.com/problemset/problem/1065/C 1600
 		minHigh := func(maxOp int) int {
 			n := len(a)
 			i := sort.Search(n, func(i int) bool { return sum[n]-sum[n-i]-a[n-1-i]*i > maxOp })
@@ -1249,6 +1253,8 @@ func _() {
 	// https://codeforces.com/contest/1107/problem/D
 	// https://codeforces.com/problemset/problem/1731/D
 	// https://codeforces.com/problemset/problem/611/C
+	// 分类讨论 https://www.luogu.com.cn/problem/P3625
+	// - https://atcoder.jp/contests/abc347/tasks/abc347_f
 	matrixSum := func(a [][]int) {
 		n, m := len(a), len(a[0])
 		// sum 第一行和第一列都是 0
