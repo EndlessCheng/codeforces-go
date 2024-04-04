@@ -11,18 +11,6 @@ func CF1579G(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	min := func(a, b int) int {
-		if a > b {
-			return b
-		}
-		return a
-	}
-	max := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
 	const inf int = 1e9
 	const mx = 2001
 	pre := make([]int, mx)
