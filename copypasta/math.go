@@ -13,7 +13,7 @@ import (
 
 鸽巢原理 抽屉原理
 https://en.wikipedia.org/wiki/Pigeonhole_principle
-http://codeforces.com/problemset/problem/1178/E
+https://codeforces.com/problemset/problem/1178/E
 
 アルゴリズムと数学 演習問題集 https://atcoder.jp/contests/math-and-algorithm
 
@@ -22,12 +22,19 @@ http://codeforces.com/problemset/problem/1178/E
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 https://euler.stephan-brumme.com/toolbox/
 
-NOTE: a%-b == a%b
-NOTE: 对于整数来说有
-       ax≤b  =>  x≤⌊b/a⌋       ax<b  =>  x<⌈b/a⌉
-       ax>b  =>  x>⌊b/a⌋       ax≥b  =>  x≥⌈b/a⌉
-NOTE: ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
-NOTE: ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
+a%-b == a%b
+a < b 等价于 a ≤ b-1
+a > b 等价于 a ≥ b+1
+
+对于整数来说有
+ax≤b  =>  x≤⌊b/a⌋           ax<b  =>  x<⌈b/a⌉
+ax>b  =>  x>⌊b/a⌋           ax≥b  =>  x≥⌈b/a⌉
+推论
+x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i
+x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i
+
+⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
+⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
 https://oeis.org/A257212           Least d>0 such that floor(n/d) - floor(n/(d+1)) <= 1
 https://oeis.org/A257213 mex(n/i); Least d>0 such that floor(n/d) = floor(n/(d+1))
@@ -610,7 +617,7 @@ func _(abs func(int) int) {
 			}
 
 			// 只保留奇数次数质因子的写法
-			// http://codeforces.com/problemset/problem/895/C 2000
+			// https://codeforces.com/problemset/problem/895/C 2000
 			x := i
 			for j, p := range primes {
 				for ; x%p == 0; x /= p {
@@ -2243,8 +2250,8 @@ func _(abs func(int) int) {
 	// 为方便讨论，这里要求输入的 a b c 必须为正整数
 	// 注意若输入超过 1e9 可能要用高精
 	// 返回：n 为正整数解的个数（无解时 n=-1，无正整数解时 n=0）
-	//      (x1,y1) 为 x 取最小正整数时的解，此时 y1 是最大正整数解
-	//      (x2,y2) 为 y 取最小正整数时的解，此时 x2 是最大正整数解
+	// - 当 n > 0 时：(x1, y1) 为 x 取最小正整数时的解，此时 y1 是最大正整数解
+	// - 当 n > 0 时：(x2, y2) 为 y 取最小正整数时的解，此时 x2 是最大正整数解
 	// 可以改成非负整数解（见代码注释）
 	//
 	// 相关论文 THE NUMBER OF SOLUTIONS TO ax + by = n http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.376.403
