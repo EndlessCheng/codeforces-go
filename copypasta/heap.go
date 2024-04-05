@@ -9,7 +9,7 @@ import (
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
-#### 第 K 小/大
+#### 第 K 小/大（值/和）
 - [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
 - [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
 - [2530. 执行 K 次操作后的最大分数](https://leetcode.cn/problems/maximal-score-after-applying-k-operations/) 1386
@@ -25,6 +25,10 @@ import (
 https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
+https://codeforces.com/problemset/problem/1862/E 1600
+
+#### 懒删除
+本页面搜索【懒删除堆】
 
 #### 模拟 
 - [2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/) 2589
@@ -43,7 +47,7 @@ https://codeforces.com/contest/713/problem/C 使序列严格递增的最小操�
     https://codeforces.com/blog/entry/47094?#comment-315068
     https://codeforces.com/blog/entry/77298 Slope trick
 https://codeforces.com/problemset/problem/884/D 从结果倒推（类似霍夫曼编码）
-http://codeforces.com/problemset/problem/912/D 贡献
+https://codeforces.com/problemset/problem/912/D 贡献
 https://codeforces.com/problemset/problem/1251/E2
 - 按 (mi,pi) 排序，然后把 (i,mi) 画在平面直角坐标系上
 - 初始时，在 y=x 直线下方的点都可以视作是「免费」的，如果有不能免费的点，应考虑从最后一个不能免费的到末尾这段中的最小 pi，然后将 y=x 抬高成 y=x+1 继续比较
@@ -182,13 +186,15 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 ////
 
 // 懒删除堆
-// https://codeforces.com/problemset/problem/796/C
 // LC716 https://leetcode.cn/problems/max-stack/
+// LC3092 https://leetcode.cn/problems/most-frequent-ids/
+// https://codeforces.com/problemset/problem/796/C 1900
+// https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 type lazyHeap struct {
 	sort.IntSlice
 	todo map[int]int
 	size int // 实际大小
-	sum  int // 实际元素和
+	sum  int // 实际元素和（可选）
 }
 
 func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
