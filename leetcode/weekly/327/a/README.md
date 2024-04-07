@@ -64,6 +64,38 @@ func maximumCount(nums []int) int {
 }
 ```
 
+```js [sol-JavaScript]
+var maximumCount = function(nums) {
+    let neg = 0;
+    let pos = 0;
+    for (const x of nums) {
+        if (x < 0) {
+            neg++;
+        } else if (x > 0) {
+            pos++;
+        }
+    }
+    return Math.max(neg, pos);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn maximum_count(nums: Vec<i32>) -> i32 {
+        let mut neg = 0;
+        let mut pos = 0;
+        for &x in &nums {
+            if x < 0 {
+                neg += 1;
+            } else if x > 0 {
+                pos += 1;
+            }
+        }
+        neg.max(pos)
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
@@ -77,8 +109,6 @@ func maximumCount(nums []int) int {
 
 所以通过二分查找第一个 $\ge 0$ 和第一个 $> 0$ 的位置，就可以用 $\mathcal{O}(\log n)$ 的时间解决本题，原理请看 [【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-注：第一个 $>0$ 的位置，等价于第一个 $\ge 1$ 的位置。
-
 ```py [sol-Python3]
 class Solution:
     def maximumCount(self, nums: List[int]) -> int:
@@ -91,24 +121,34 @@ class Solution:
 public class Solution {
     public int maximumCount(int[] nums) {
         int neg = lowerBound(nums, 0);
+        // 第一个 > 0 的位置，等价于第一个 >= 1 的位置
         int pos = nums.length - lowerBound(nums, 1);
         return Math.max(neg, pos);
     }
 
-    // 见 https://www.bilibili.com/video/BV1AP41137w7/
+    // 返回 nums 中第一个 >= target 的数的下标
+    // 如果不存在这样的数，返回 nums.length
+    // 详见 https://www.bilibili.com/video/BV1AP41137w7/
     private int lowerBound(int[] nums, int target) {
-        int left = -1, right = nums.length; // 开区间 (left, right)
-        while (left + 1 < right) { // 区间不为空
+        // 二分范围：开区间 (left, right)
+        int left = -1;
+        int right = nums.length;
+        // 开区间不为空
+        while (left + 1 < right) {
             // 循环不变量：
             // nums[left] < target
             // nums[right] >= target
             int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid; // 范围缩小到 (mid, right)
+            if (nums[mid] >= target) {
+                // 二分范围缩小至 (left, mid)
+                right = mid;
             } else {
-                right = mid; // 范围缩小到 (left, mid)
+                // 二分范围缩小至 (mid, right)
+                left = mid;
             }
         }
+        // 此时 left 等于 right - 1
+        // 因为 nums[right - 1] < target 且 nums[right] >= target，所以答案是 right
         return right;
     }
 }
@@ -128,8 +168,54 @@ public:
 ```go [sol-Go]
 func maximumCount(nums []int) int {
     neg := sort.SearchInts(nums, 0)
+    // 第一个 > 0 的位置，等价于第一个 >= 1 的位置
     pos := len(nums) - sort.SearchInts(nums, 1)
     return max(neg, pos)
+}
+```
+
+```js [sol-JavaScript]
+var maximumCount = function(nums) {
+    const neg = lowerBound(nums, 0);
+    // 第一个 > 0 的位置，等价于第一个 >= 1 的位置
+    const pos = nums.length - lowerBound(nums, 1);
+    return Math.max(neg, pos);
+};
+
+// 返回 nums 中第一个 >= target 的数的下标
+// 如果不存在这样的数，返回 nums.length
+// 详见 https://www.bilibili.com/video/BV1AP41137w7/
+function lowerBound(nums, target) {
+    // 二分范围：开区间 (left, right)
+    let left = -1;
+    let right = nums.length;
+    // 开区间不为空
+    while (left + 1 < right) {
+        // 循环不变量：
+        // nums[left] < target
+        // nums[right] >= target
+        const mid = Math.floor((left + right) / 2);
+        if (nums[mid] >= target) {
+            // 二分范围缩小至 (left, mid)
+            right = mid;
+        } else {
+            // 二分范围缩小至 (mid, right)
+            left = mid;
+        }
+    }
+    // 此时 left 等于 right - 1
+    // 因为 nums[right - 1] < target 且 nums[right] >= target，所以答案是 right
+    return right;
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn maximum_count(nums: Vec<i32>) -> i32 {
+        let neg = nums.partition_point(|&x| x < 0);
+        let pos = nums.len() - nums.partition_point(|&x| x <= 0);
+        neg.max(pos) as _
+    }
 }
 ```
 
