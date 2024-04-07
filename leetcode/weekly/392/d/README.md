@@ -8,6 +8,8 @@
 
 这可以用 DFS 或者并查集实现。请看 [视频讲解](https://www.bilibili.com/video/BV1ut421H7Wv/) 第四题，欢迎点赞关注！
 
+代码实现时，可以把 AND 的初始值设为 $-1$，因为其二进制中的数都是 $1$，与任何 $x$ 求 AND 的结果都是 $x$。
+
 ## 方法一：DFS
 
 ```py [sol-Python3]
@@ -209,15 +211,15 @@ class Solution {
         for (int i = 0; i < n; i++) {
             fa[i] = i;
         }
-        int[] and_ = new int[n];
-        Arrays.fill(and_, -1);
+        int[] and = new int[n];
+        Arrays.fill(and, -1);
 
         for (int[] e : edges) {
             int x = find(e[0], fa);
             int y = find(e[1], fa);
-            and_[y] &= e[2];
+            and[y] &= e[2];
             if (x != y) {
-                and_[y] &= and_[x];
+                and[y] &= and[x];
                 fa[x] = y;
             }
         }
@@ -225,7 +227,7 @@ class Solution {
         int[] ans = new int[query.length];
         for (int i = 0; i < query.length; i++) {
             int s = query[i][0], t = query[i][1];
-            ans[i] = s == t ? 0 : find(s, fa) != find(t, fa) ? -1 : and_[find(s, fa)];
+            ans[i] = s == t ? 0 : find(s, fa) != find(t, fa) ? -1 : and[find(s, fa)];
         }
         return ans;
     }
@@ -322,15 +324,18 @@ func minimumCost(n int, edges, query [][]int) []int {
 - 时间复杂度：$\mathcal{O}((n+m+q)\log n)$，其中 $m$ 为 $\textit{edges}$ 的长度，$q$ 为 $\textit{query}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n+m)$。返回值不计入。
 
-## 分类题单
+## 相关题目
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
-2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
-4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+[图论题单](https://leetcode.cn/circle/discuss/01LUak/) 中的 DFS。
+
+## 其它题单
+
+- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+- [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 
 更多题单，点我个人主页 - 讨论发布。
 
