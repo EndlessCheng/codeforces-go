@@ -27,6 +27,7 @@ class Solution {
         for (int x : nums) {
             right = Math.max(right, x);
         }
+        // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
         while (left + 1 < right) {
             int mid = (left + right) / 2;
             if (check(nums, mid)) {
@@ -38,7 +39,6 @@ class Solution {
         return right;
     }
 
-    // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
     private boolean check(int[] nums, int limit) {
         long extra = 0;
         for (int i = nums.length - 1; i > 0; i--) {
