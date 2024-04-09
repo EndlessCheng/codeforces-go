@@ -165,6 +165,18 @@ public:
 };
 ```
 
+```cpp [sol-C++ 写法二]
+class Solution {
+public:
+    int maximumCount(vector<int> &nums) {
+        auto [left, right] = ranges::equal_range(nums, 0);
+        int neg = left - nums.begin();
+        int pos = nums.end() - right;
+        return max(neg, pos);
+    }
+};
+```
+
 ```go [sol-Go]
 func maximumCount(nums []int) int {
     neg := sort.SearchInts(nums, 0)
@@ -174,7 +186,7 @@ func maximumCount(nums []int) int {
 }
 ```
 
-```js [sol-JavaScript]
+```js [sol-JS]
 var maximumCount = function(nums) {
     const neg = lowerBound(nums, 0);
     // 第一个 > 0 的位置，等价于第一个 >= 1 的位置
@@ -207,6 +219,14 @@ function lowerBound(nums, target) {
     // 因为 nums[right - 1] < target 且 nums[right] >= target，所以答案是 right
     return right;
 }
+```
+
+```js [sol-JS lodash]
+var maximumCount = function(nums) {
+    const neg = _.sortedIndex(nums, 0);
+    const pos = nums.length - _.sortedLastIndex(nums, 0);
+    return Math.max(neg, pos)
+};
 ```
 
 ```rust [sol-Rust]
