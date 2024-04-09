@@ -56,6 +56,10 @@
 ||[83. 删除排序链表中的重复元素](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/)|[代码](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/solutions/2004062/ru-he-qu-zhong-yi-ge-shi-pin-jiang-tou-p-98g7/)||
 ||[82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)|[代码](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/solutions/2004067/ru-he-qu-zhong-yi-ge-shi-pin-jiang-tou-p-2ddn/)||
 |[二叉树与递归 - 深入理解](https://www.bilibili.com/video/BV1UD4y1Y769/)|[104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/maximum-depth-of-binary-tree/solution/kan-wan-zhe-ge-shi-pin-rang-ni-dui-di-gu-44uz/)|两种方法|
+||[111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/minimum-depth-of-binary-tree/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-0sxz/)|*课后作业|
+||[129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/)|[代码](https://leetcode.cn/problems/sum-root-to-leaf-numbers/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-gbu9/)|*课后作业|
+||[1448. 统计二叉树中好节点的数目](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/)|[代码](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/solution/jian-ji-xie-fa-pythonjavacgojs-by-endles-gwxt/)|*课后作业|
+||[987. 二叉树的垂序遍历](https://leetcode.cn/problems/vertical-order-traversal-of-a-binary-tree/)|[代码](https://leetcode.cn/problems/vertical-order-traversal-of-a-binary-tree/solution/si-chong-xie-fa-dfsha-xi-biao-shuang-shu-tg6q/)|*课后作业|
 |[二叉树与递归 - 灵活运用](https://www.bilibili.com/video/BV18M411z7bb/)|[100. 相同的树](https://leetcode.cn/problems/same-tree/)|[代码](https://leetcode.cn/problems/same-tree/solutions/2015056/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-empk/)||
 ||[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)|[代码](https://leetcode.cn/problems/symmetric-tree/solutions/2015063/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-6dq5/)||
 ||[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)|[代码](https://leetcode.cn/problems/balanced-binary-tree/solutions/2015068/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-c3wj/)||
