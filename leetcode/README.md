@@ -2,7 +2,7 @@
 
 大家好，我是 [灵茶山艾府](https://space.bilibili.com/206214)。
 
-我制作了一系列算法教学视频，整理成合集[【基础算法精讲】](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是合集中的视频链接、题目和代码，代码包含 Python/Java/C++/Go 等多种语言。
+我制作了一系列算法教学视频，整理成合集[【基础算法精讲】](https://space.bilibili.com/206214/channel/collectiondetail?sid=842776)。以下是合集中的视频链接、配套题目和代码，代码包含 Python/Java/C++/Go 等多种语言。
 
 制作不易，欢迎点赞投币，也欢迎转发给你的朋友或刷题群！
 
@@ -57,6 +57,7 @@
 ||[82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)|[代码](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/solutions/2004067/ru-he-qu-zhong-yi-ge-shi-pin-jiang-tou-p-2ddn/)||
 |[二叉树与递归 - 深入理解](https://www.bilibili.com/video/BV1UD4y1Y769/)|[104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/maximum-depth-of-binary-tree/solution/kan-wan-zhe-ge-shi-pin-rang-ni-dui-di-gu-44uz/)|两种方法|
 ||[111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/minimum-depth-of-binary-tree/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-0sxz/)|*课后作业|
+||[112. 路径总和](https://leetcode.cn/problems/path-sum/)|[代码](https://leetcode.cn/problems/path-sum/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-icwe/)|*课后作业|
 ||[129. 求根节点到叶节点数字之和](https://leetcode.cn/problems/sum-root-to-leaf-numbers/)|[代码](https://leetcode.cn/problems/sum-root-to-leaf-numbers/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-gbu9/)|*课后作业|
 ||[1448. 统计二叉树中好节点的数目](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/)|[代码](https://leetcode.cn/problems/count-good-nodes-in-binary-tree/solution/jian-ji-xie-fa-pythonjavacgojs-by-endles-gwxt/)|*课后作业|
 ||[987. 二叉树的垂序遍历](https://leetcode.cn/problems/vertical-order-traversal-of-a-binary-tree/)|[代码](https://leetcode.cn/problems/vertical-order-traversal-of-a-binary-tree/solution/si-chong-xie-fa-dfsha-xi-biao-shuang-shu-tg6q/)|*课后作业|
