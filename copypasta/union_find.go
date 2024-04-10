@@ -9,6 +9,12 @@ import (
 只有路径压缩的并查集复杂度是 O(nlogn) 的，这也是大多数情况下的实现方案
 只有启发式合并（按深度合并）的并查集的复杂度也是 O(nlogn) 的，适用于可持久化的场景
 
+只有路径压缩的并查集，可以构造一棵二项树（binomial tree）
+结合图片讲解 https://en.wikipedia.org/wiki/Binomial_heap
+每次把二项树的根节点连到一个新的孤立点上，然后对最深的点调用 find
+这样可以得到一棵几乎一样的树（区别仅仅是根节点多了一个儿子）
+所以，只要重复上述过程，就可以让每次 find 都是 O(logn) 级别的了
+
 具体的时间复杂度证明见《算法导论》
 https://zhuanlan.zhihu.com/p/553192435
 
@@ -27,6 +33,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 模板题 LC547 https://leetcode.cn/problems/number-of-provinces/
 // LC684 https://leetcode.cn/problems/redundant-connection/
 // LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
+// https://www.luogu.com.cn/problem/P1111
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 基础题 https://codeforces.com/problemset/problem/1167/C
