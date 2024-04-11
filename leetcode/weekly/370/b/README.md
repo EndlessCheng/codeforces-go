@@ -1,8 +1,6 @@
-本质上是看是否恰好有一个入度为 $0$ 的点。
+标记所有 $\textit{edges}[i][1]$，这些队伍都不是冠军。
 
-对每个节点，判断它是否出现在 $\textit{edges}[i][1]$ 中。
-
-如果恰好有一个节点没有出现，说明没有可以击败它的队伍，返回这个节点的编号。否则返回 $-1$。
+然后遍历每个节点 $i$，如果恰好有一个 $i$ 没有被标记，说明没有可以击败 $i$ 的队伍，$i$ 队是冠军。否则返回 $-1$。
 
 附：[视频讲解](https://www.bilibili.com/video/BV1Fc411R7xA/) 第二题。
 
@@ -11,7 +9,7 @@ class Solution:
     def findChampion(self, n: int, edges: List[List[int]]) -> int:
         is_weak = [False] * n
         for _, y in edges:
-            is_weak[y] = True
+            is_weak[y] = True  # 不是冠军
 
         ans = -1
         for i, weak in enumerate(is_weak):
@@ -28,7 +26,7 @@ class Solution {
     public int findChampion(int n, int[][] edges) {
         boolean[] isWeak = new boolean[n];
         for (int[] e : edges) {
-            isWeak[e[1]] = true;
+            isWeak[e[1]] = true; // 不是冠军
         }
 
         int ans = -1;
@@ -52,7 +50,7 @@ public:
     int findChampion(int n, vector<vector<int>> &edges) {
         vector<int> is_weak(n);
         for (auto &e : edges) {
-            is_weak[e[1]] = true;
+            is_weak[e[1]] = true; // 不是冠军
         }
 
         int ans = -1;
@@ -70,11 +68,34 @@ public:
 };
 ```
 
+```c [sol-C]
+int findChampion(int n, int** edges, int edgesSize, int* edgesColSize) {
+    bool* is_weak = calloc(n, sizeof(bool));
+    for (int i = 0; i < edgesSize; i++) {
+        is_weak[edges[i][1]] = true; // 不是冠军
+    }
+
+    int ans = -1;
+    for (int i = 0; i < n; i++) {
+        if (is_weak[i]) {
+            continue;
+        }
+        if (ans != -1) {
+            free(is_weak);
+            return -1; // 冠军只能有一个
+        }
+        ans = i;
+    }
+    free(is_weak);
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func findChampion(n int, edges [][]int) int {
     weak := make([]bool, n)
     for _, e := range edges {
-        weak[e[1]] = true
+        weak[e[1]] = true // 不是冠军
     }
 
     ans := -1
@@ -95,7 +116,7 @@ func findChampion(n int, edges [][]int) int {
 var findChampion = function(n, edges) {
     const isWeak = Array(n).fill(false);
     for (const [, y] of edges) {
-        isWeak[y] = true;
+        isWeak[y] = true; // 不是冠军
     }
 
     let ans = -1;
@@ -117,7 +138,7 @@ impl Solution {
     pub fn find_champion(n: i32, edges: Vec<Vec<i32>>) -> i32 {
         let mut is_weak = vec![false; n as usize];
         for e in &edges {
-            is_weak[e[1] as usize] = true;
+            is_weak[e[1] as usize] = true; // 不是冠军
         }
 
         let mut ans = -1;
