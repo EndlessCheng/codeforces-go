@@ -1,7 +1,6 @@
 分类讨论：
 
-- $s=t$，不移动即可，答案是 $0$。
-- $s$ 和 $t$ 不在同一个连通块中，答案是 $-1$。
+- $s$ 和 $t$ 不在同一个连通块中。答案是 $-1$。
 - $s$ 和 $t$ 在同一个连通块中。由于 AND 的性质是 **AND 的数字越多，结果越小**。在可以重复经过边的前提下，最优方案是把 $s$ 所在连通块内的边都走一遍。
 
 所以我们需要知道 $s$ 和 $t$ 在哪个连通块，以及连通块内边权的 AND 是多少。
@@ -35,7 +34,7 @@ class Solution:
             if ids[i] < 0:
                 cc_and.append(dfs(i))
 
-        return [0 if s == t else -1 if ids[s] != ids[t] else cc_and[ids[s]]
+        return [-1 if ids[s] != ids[t] else cc_and[ids[s]]
                 for s, t in query]
 ```
 
@@ -62,7 +61,7 @@ class Solution {
         int[] ans = new int[query.length];
         for (int i = 0; i < query.length; i++) {
             int s = query[i][0], t = query[i][1];
-            ans[i] = s == t ? 0 : ids[s] != ids[t] ? -1 : ccAnd.get(ids[s]);
+            ans[i] = ids[s] != ids[t] ? -1 : ccAnd.get(ids[s]);
         }
         return ans;
     }
@@ -118,7 +117,7 @@ public:
         ans.reserve(query.size()); // 预分配空间
         for (auto &q: query) {
             int s = q[0], t = q[1];
-            ans.push_back(s == t ? 0 : ids[s] != ids[t] ? -1 : cc_and[ids[s]]);
+            ans.push_back(ids[s] != ids[t] ? -1 : cc_and[ids[s]]);
         }
         return ans;
     }
@@ -161,9 +160,6 @@ func minimumCost(n int, edges, query [][]int) []int {
 	ans := make([]int, len(query))
 	for i, q := range query {
 		s, t := q[0], q[1]
-		if s == t {
-			continue
-		}
 		if ids[s] != ids[t] {
 			ans[i] = -1
 		} else {
@@ -200,7 +196,7 @@ class Solution:
                 and_[y] &= and_[x]
                 fa[x] = y
 
-        return [0 if s == t else -1 if find(s) != find(t) else and_[find(s)]
+        return [-1 if find(s) != find(t) else and_[find(s)]
                 for s, t in query]
 ```
 
@@ -227,7 +223,7 @@ class Solution {
         int[] ans = new int[query.length];
         for (int i = 0; i < query.length; i++) {
             int s = query[i][0], t = query[i][1];
-            ans[i] = s == t ? 0 : find(s, fa) != find(t, fa) ? -1 : and[find(s, fa)];
+            ans[i] = find(s, fa) != find(t, fa) ? -1 : and[find(s, fa)];
         }
         return ans;
     }
@@ -246,10 +242,7 @@ class Solution {
     vector<int> fa, and_;
 
     int find(int x) {
-        if (fa[x] != x) {
-            fa[x] = find(fa[x]);
-        }
-        return fa[x];
+        return fa[x] == x ? x : fa[x] = find(fa[x]);
     };
 
 public:
@@ -271,7 +264,7 @@ public:
         ans.reserve(query.size()); // 预分配空间
         for (auto &q: query) {
             int s = q[0], t = q[1];
-            ans.push_back(s == t ? 0 : find(s) != find(t) ? -1 : and_[find(s)]);
+            ans.push_back(find(s) != find(t) ? -1 : and_[find(s)]);
         }
         return ans;
     }
@@ -306,9 +299,6 @@ func minimumCost(n int, edges, query [][]int) []int {
 	ans := make([]int, len(query))
 	for i, q := range query {
 		s, t := q[0], q[1]
-		if s == t {
-			continue
-		}
 		if find(s) != find(t) {
 			ans[i] = -1
 		} else {
