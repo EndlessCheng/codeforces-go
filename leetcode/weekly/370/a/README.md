@@ -10,7 +10,7 @@
 
 ## 方法一：横看成岭
 
-如果 $\textit{grid}[i]$ 有 $n-1$ 个 $1$，即元素和为 $n-1$，那么 $i$ 队就是冠军。
+如果 $\textit{grid}[i]$ 有 $n-1$ 个 $1$，即元素和为 $n-1$，说明 $i$ 队比其它 $n-1$ 个队都要强，$i$ 队是冠军。
 
 也可以判断，对于这一行的所有不等于 $i$ 的 $j$，都有 $\textit{grid}[i][j]=1$。这样可以在遇到 $0$ 的时候，提前退出循环。
 
@@ -258,6 +258,105 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{grid}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法三：打擂台
+
+假设冠军是 $\textit{ans}=0$，我们从 $i=1$ 开始遍历，寻找可以击败 $\textit{ans}$ 的队伍，也就是 $\textit{grid}[i][\textit{ans}]=1$。
+
+如果没有出现 $\textit{grid}[i][\textit{ans}]=1$，那么答案就是 $\textit{ans}$，否则冠军可能是 $i$，更新 $\textit{ans}=i$。然后从 $i+1$ 继续向后遍历，因为 $[1,i-1]$ 中没有比 $0$ 强的队，更别说比 $i$ 强了。重复上述过程，最后返回 $\textit{ans}$。
+
+```py [sol-Python3]
+class Solution:
+    def findChampion(self, grid: List[List[int]]) -> int:
+        ans = 0
+        for i, row in enumerate(grid):
+            if row[ans]:
+                ans = i
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int findChampion(int[][] grid) {
+        int ans = 0;
+        for (int i = 1; i < grid.length; i++) {
+            if (grid[i][ans] == 1) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int findChampion(vector<vector<int>> &grid) {
+        int ans = 0;
+        for (int i = 1; i < grid.size(); i++) {
+            if (grid[i][ans]) {
+                ans = i;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+int findChampion(int** grid, int gridSize, int* gridColSize) {
+    int ans = 0;
+    for (int i = 1; i < gridSize; i++) {
+        if (grid[i][ans]) {
+            ans = i;
+        }
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func findChampion(grid [][]int) (ans int) {
+    for i, row := range grid {
+        if row[ans] == 1 {
+            ans = i
+        }
+    }
+    return
+}
+```
+
+```js [sol-JS]
+var findChampion = function(grid) {
+    let ans = 0;
+    for (let i = 1; i < grid.length; i++) {
+        if (grid[i][ans]) {
+            ans = i;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn find_champion(grid: Vec<Vec<i32>>) -> i32 {
+        let mut ans = 0;
+        for (i, row) in grid.iter().enumerate() {
+            if row[ans] == 1 {
+                ans = i;
+            }
+        }
+        ans as _
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{grid}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
