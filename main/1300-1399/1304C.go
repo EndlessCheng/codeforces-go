@@ -6,55 +6,33 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF1304C(_r io.Reader, _w io.Writer) {
+// https://space.bilibili.com/206214
+func cf1304C(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	type pair struct{ t, down, up int64 }
 
-	solve := func() (ans bool) {
-		var n, initT, t, down, up int64
-		Fscan(in, &n, &initT)
-		a := make([]pair, n)
-		b := make([]pair, 0, n)
-		for i := range a {
-			Fscan(in, &t, &down, &up)
-			a[i] = pair{t, down, up}
-			if i == 0 || t > a[i-1].t {
-				b = append(b, a[i])
-			} else {
-				b[len(b)-1].down = max(b[len(b)-1].down, down)
-				b[len(b)-1].up = min(b[len(b)-1].up, up)
+	var T, n, t, l, r int
+	for Fscan(in, &T); T > 0; T-- {
+		Fscan(in, &n, &t)
+		ok := true
+		for ll, rr, pre := t, t, 0; n > 0; n-- {
+			Fscan(in, &t, &l, &r)
+			ll -= t - pre
+			rr += t - pre
+			if l > rr || r < ll {
+				ok = false
 			}
+			ll = max(ll, l)
+			rr = min(rr, r)
+			pre = t
 		}
-
-		down, up = initT, initT
-		for i, p := range b {
-			if p.down > p.up {
-				return false
-			}
-			if i == 0 {
-				down -= p.t
-				up += p.t
-			} else {
-				down -= p.t - b[i-1].t
-				up += p.t - b[i-1].t
-			}
-			if down > p.up || up < p.down {
-				return false
-			}
-			down = max(down, p.down)
-			up = min(up, p.up)
+		if ok {
+			Fprintln(out, "YES")
+		} else {
+			Fprintln(out, "NO")
 		}
-		return true
-	}
-
-	var t int
-	Fscan(in, &t)
-	for _case := 1; _case <= t; _case++ {
-		Fprintln(out, map[bool]string{true: "YES", false: "NO"} [solve()])
 	}
 }
 
-//func main() { CF1304C(os.Stdin, os.Stdout) }
+//func main() { cf1304C(os.Stdin, os.Stdout) }
