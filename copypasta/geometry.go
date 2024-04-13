@@ -91,22 +91,35 @@ A=i+b/2-1, A为多边形面积，i为内部格点数，b为边上格点数
 https://codeforces.com/problemset/problem/1548/D1
 https://codeforces.com/problemset/problem/1548/D2
 
-曼哈顿最近点对
-LC2613 https://leetcode.cn/problems/beautiful-pairs/
-
-TIPS: 旋转坐标，适用于基于曼哈顿距离的题目
+曼哈顿距离
+TIPS: 旋转坐标
+【图解】https://leetcode.cn/problems/minimize-manhattan-distances/solution/tu-jie-man-ha-dun-ju-chi-heng-deng-shi-b-op84/
 顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
-曼哈顿距离 |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
+曼哈顿距离转成切比雪夫距离（棋盘距离） |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
+模板题 https://atcoder.jp/contests/abc178/tasks/abc178_e
+https://leetcode.cn/problems/minimize-manhattan-distances/
+https://codeforces.com/problemset/problem/1689/D
+https://www.luogu.com.cn/problem/P5098
 todo LC1956 https://leetcode.cn/problems/minimum-time-for-k-virus-variants-to-spread/
+点到点集的最大曼哈顿距离 https://codeforces.com/problemset/problem/491/B
+更多维数 https://codeforces.com/problemset/problem/1093/G
+- http://poj.org/problem?id=2926
+LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
+反向：切比雪夫距离转成曼哈顿距离 https://www.luogu.com.cn/problem/P3964
+- 逆时针旋转 45° (x,y) -> ((x-y)/2, (x+y)/2)
+- 切比雪夫距离的等价表述：一个点到周围八方向的相邻点的距离都是 1
 
-TIPS: 另一种处理曼哈顿距离的方法是分四种情况讨论，即
+TIPS: 另一种方法是分四种情况讨论，即
 |a-b|+|c-d|
 = max(a-b, b-a) + max(c-d, d-c)
 = max((a-b)+(c-d), (b-a)+(c-d), (a-b)+(d-c), (b-a)+(d-c))
-另外一种思路见 https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
+https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
 LC1330 https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/
-todo 上面这题求最小 https://atcoder.jp/contests/arc119/tasks/arc119_e
-LC1131 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
+- todo 上面这题求最小 https://atcoder.jp/contests/arc119/tasks/arc119_e
+LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
+
+曼哈顿最近点对
+LC2613 https://leetcode.cn/problems/beautiful-pairs/
 
 https://oeis.org/A053411 Circle numbers
 a(n)= number of points (i,j), i,j integers, contained in a circle of diameter n, centered at the origin

@@ -33,6 +33,9 @@ ax>b  =>  x>⌊b/a⌋           ax≥b  =>  x≥⌈b/a⌉
 x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i
 x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i
 
+1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
+1<<x > v  =>  x > bits.Len(uint(v))       1<<x ≥ v  =>  x > bits.Len(uint(v-1))
+
 ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
 ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
 
@@ -73,14 +76,13 @@ n 为奇数时：m=n/2, m*(m+1)*(4*m+5)/6 https://oeis.org/A016061
 - https://atcoder.jp/contests/abc290/tasks/abc290_e
 
 处理绝对值·曼哈顿距离转切比雪夫距离
-每个点 (x,y) 改成 (x+y,x-y)
-|x1-x2|+|y1-y2| 就可以用 max(|x1'-x2'|,|y1'-y2'|) 来计算了，维护 x 和 y 的前缀最大值和前缀最小值即可
-模板题 https://atcoder.jp/contests/abc178/tasks/abc178_e
-https://codeforces.com/problemset/problem/1689/D
-LC1131 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
+见 geometry.go
 
-处理绝对值·分类讨论
-https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/bu-hui-hua-jian-qing-kan-zhe-pythonjavac-c2s6/
+由 1~m 的排列组成的质数
+https://oeis.org/A216444 List of primes with property that if they have d digits, these digits are a permutation of {1..d}
+1423, 2143, 2341, 4231
+1234657, 1245763, 1246537, ..., 7641253, 7642513, 7652413
+https://oeis.org/A216444/b216444.txt 所有数据，共 538 个
 
 N*N 的乘法表中有多少个不同数字？
 https://oeis.org/A027424 Number of distinct products ij with 1 <= i, j <= n (number of distinct terms in n X n multiplication table)
@@ -1311,6 +1313,7 @@ func _(abs func(int) int) {
 	}
 
 	// 不需要排序的写法
+	// https://codeforces.com/contest/1955/problem/G
 	divisors = func(n int) (ds []int) {
 		ds2 := []int{}
 		for d := 1; d*d <= n; d++ {
@@ -1388,9 +1391,9 @@ func _(abs func(int) int) {
 	// NOTE: halfDivisors(x) 为 ≤√x 的因数集合 https://oeis.org/A161906
 	// https://codeforces.com/problemset/problem/1730/E
 	divisorsAll := func() {
-		const mx = 1_000_000
-		divisors := [mx + 1][]int{} // 如果 mx 很大会 MLE，改成 int32
-		for i := 1; i <= mx; i++ {
+		const mx = 1_000_001
+		divisors := [mx + 1][]int32{} // 如果 mx 很大会 MLE，改成 int32
+		for i := int32(1); i <= mx; i++ {
 			for j := i; j <= mx; j += i {
 				divisors[j] = append(divisors[j], i)
 			}
@@ -1463,7 +1466,7 @@ func _(abs func(int) int) {
 		}
 
 		isSquareNumber := func(x int) bool { return len(divisors[x])&1 == 1 }
-		halfDivisors := func(x int) []int { d := divisors[x]; return d[:(len(d)-1)/2+1] }
+		halfDivisors := func(x int) []int32 { d := divisors[x]; return d[:(len(d)-1)/2+1] }
 
 		_, _ = isSquareNumber, halfDivisors
 	}
@@ -2555,6 +2558,13 @@ func _(abs func(int) int) {
 	// https://en.wikipedia.org/wiki/Stirling%27s_approximation
 	// n! ~ √(2πn)*(n/e)^n
 	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
+
+	// 【模板】快速阶乘算法 https://www.luogu.com.cn/problem/P5282
+
+	// https://oeis.org/A061006 威尔逊定理 Wilson's theorem
+	// https://en.wikipedia.org/wiki/Wilson%27s_theorem
+	// 如果 p 是质数，(p-1)! % p = p-1
+	// 如果 p 是合数，(p-1)! % p = 0 除非 p=4，此时 (p-1)! % p = 2
 
 	// https://oeis.org/A008904  n! 的最后一个非 0 数字  a(n) is the final nonzero digit of n!
 	// https://math.stackexchange.com/questions/130352/last-non-zero-digit-of-a-factorial
