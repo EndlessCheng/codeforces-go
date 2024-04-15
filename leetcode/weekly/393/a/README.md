@@ -1,3 +1,5 @@
+## 方法一：枚举
+
 请看 [视频讲解](https://www.bilibili.com/video/BV1dJ4m1V7hK/)，欢迎点赞关注！
 
 ```py [sol-Python3]
@@ -63,6 +65,92 @@ func findLatestTime(s string) string {
 			return fmt.Sprintf("%02d:%02d", h, m)
 		}
 	}
+}
+```
+
+## 方法二：直接判断
+
+```py [sol-Python3]
+class Solution:
+    def findLatestTime(self, s: str) -> str:
+        s = list(s)
+        if s[0] == '?':
+            s[0] = '1' if s[1] == '?' or s[1] <= '1' else '0'
+        if s[1] == '?':
+            s[1] = '1' if s[0] == '1' else '9'
+        if s[3] == '?':
+            s[3] = '5'
+        if s[4] == '?':
+            s[4] = '9'
+        return ''.join(s)
+```
+
+```java [sol-Java]
+public class Solution {
+    public String findLatestTime(String s) {
+        char[] t = s.toCharArray();
+        if (t[0] == '?') {
+            t[0] = t[1] == '?' || t[1] <= '1' ? '1' : '0';
+        }
+        if (t[1] == '?') {
+            t[1] = t[0] == '1' ? '1' : '9';
+        }
+        if (t[3] == '?') {
+            t[3] = '5';
+        }
+        if (t[4] == '?') {
+            t[4] = '9';
+        }
+        return new String(t);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string findLatestTime(string s) {
+        if (s[0] == '?') {
+            s[0] = s[1] == '?' || s[1] <= '1' ? '1' : '0';
+        }
+        if (s[1] == '?') {
+            s[1] = s[0] == '1' ? '1' : '9';
+        }
+        if (s[3] == '?') {
+            s[3] = '5';
+        }
+        if (s[4] == '?') {
+            s[4] = '9';
+        }
+        return s;
+    }
+};
+```
+
+```go [sol-Go]
+func findLatestTime(s string) string {
+	t := []byte(s)
+	if t[0] == '?' {
+		if t[1] == '?' || t[1] <= '1' {
+			t[0] = '1'
+		} else {
+			t[0] = '0'
+		}
+	}
+	if t[1] == '?' {
+		if t[0] == '1' {
+			t[1] = '1'
+		} else {
+			t[1] = '9'
+		}
+	}
+	if t[3] == '?' {
+		t[3] = '5'
+	}
+	if t[4] == '?' {
+		t[4] = '9'
+	}
+	return string(t)
 }
 ```
 
