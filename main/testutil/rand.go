@@ -454,6 +454,7 @@ func (r *RG) GraphMatrix(n int, directed bool) (g [][]byte) {
 	return
 }
 
+// Graph Hack SPFA
 // GraphHackSPFA generates a undirected grid graph with n nodes, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
 //
 // For example, a 10 nodes 2 row grid graph looks like this:
