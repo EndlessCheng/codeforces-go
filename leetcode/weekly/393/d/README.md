@@ -8,7 +8,7 @@
 
 - 不划分：继续向后递归 $\textit{dfs}(i+1,j, \textit{and})$。
 - 划分：如果 $\textit{and}= \textit{andValues}[j]$，那么划分，即 $\textit{dfs}(i+1,j+1, -1) + \textit{nums}[i]$。
-- 这两种情况取最大值。
+- 这两种情况取最小值。
 
 注：因为 $-1$ 的二进制全为 $1$，与任何数 $x$ 的 AND 都是 $x$，适合初始化。
 
