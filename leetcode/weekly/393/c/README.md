@@ -31,11 +31,13 @@ $$
 
 代码中使用二进制来操作集合，请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-### 答疑
+## 答疑
 
 **问**：为什么二分出来的答案，一定是一个可以组合出的金额？
 
 **答**：反证法。如果答案 $m$ 不是任何 $\textit{coins}[i]$ 的倍数，那么 $\le m$ 的金额个数和 $\le m-1$ 的金额个数是一样的。也就是说，对于 $m-1$，我们同样可以组合出 $k$ 个不同的金额，说明 $m-1$ 同样可以满足要求，即 `check(m - 1) == true`，这与循环不变量相矛盾。
+
+## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -173,6 +175,202 @@ func lcm(a, b int) int {
 
 - 时间复杂度：$\mathcal{O}(n2^n\log (mk)\log M)$，其中 $n$ 为 $\textit{coins}$ 的长度，$m=\min(coins),\ M=\max(\textit{coins})$。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 优化
+
+预处理每个子集的 $\texttt{LCM}$。
+
+```py [sol-Python3]
+class Solution:
+    def findKthSmallest(self, coins: List[int], k: int) -> int:
+        subset_lcm = [1] * (1 << len(coins))
+        for i, x in enumerate(coins):
+            bit = 1 << i
+            for mask in range(bit):
+                # 刷表法 DP，在集合 mask 的基础上添加元素 i
+                subset_lcm[bit | mask] = lcm(subset_lcm[mask], x)
+
+        def check(m: int) -> bool:
+            cnt = 0
+            for i in range(1, len(subset_lcm)):  # 枚举所有非空子集
+                cnt += m // subset_lcm[i] if i.bit_count() % 2 else -(m // subset_lcm[i])
+            return cnt >= k
+        return bisect_left(range(min(coins) * k), True, k, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public long findKthSmallest(int[] coins, int k) {
+        long[] subsetLcm = new long[1 << coins.length];
+        subsetLcm[0] = 1;
+        for (int i = 0; i < coins.length; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                //刷表法 DP，在集合 mask 的基础上添加元素 i
+                subsetLcm[bit | mask] = lcm(subsetLcm[mask], coins[i]);
+            }
+        }
+
+        int mx = Integer.MAX_VALUE;
+        for (int x : coins) {
+            mx = Math.min(mx, x);
+        }
+        long left = k - 1, right = (long) mx * k;
+        while (left + 1 < right) {
+            long mid = (left + right) / 2;
+            if (check(mid, subsetLcm, k)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(long m, long[] subsetLcm, int k) {
+        long cnt = 0;
+        for (int i = 1; i < subsetLcm.length; i++) { // 枚举所有非空子集
+            cnt += Integer.bitCount(i) % 2 == 1 ? m / subsetLcm[i] : -m / subsetLcm[i];
+        }
+        return cnt >= k;
+    }
+
+    private long lcm(long a, long b) {
+        return a * b / gcd(a, b);
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    public long findKthSmallest(int[] coins, int k) {
+        long[] subsetLcm = new long[1 << coins.length];
+        subsetLcm[0] = 1;
+        for (int i = 0; i < coins.length; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                //刷表法 DP，在集合 mask 的基础上添加元素 i
+                subsetLcm[bit | mask] = lcm(subsetLcm[mask], coins[i]);
+            }
+        }
+        for (int i = 1; i < subsetLcm.length; i++) {
+            if (Integer.bitCount(i) % 2 == 0) {
+                subsetLcm[i] *= -1;
+            }
+        }
+
+        int mx = Integer.MAX_VALUE;
+        for (int x : coins) {
+            mx = Math.min(mx, x);
+        }
+        long left = k - 1, right = (long) mx * k;
+        while (left + 1 < right) {
+            long mid = (left + right) / 2;
+            if (check(mid, subsetLcm, k)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(long m, long[] subsetLcm, int k) {
+        long cnt = 0;
+        for (int i = 1; i < subsetLcm.length; i++) { // 枚举所有非空子集
+            cnt += m / subsetLcm[i];
+        }
+        return cnt >= k;
+    }
+
+    private long lcm(long a, long b) {
+        return a * b / gcd(a, b);
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long findKthSmallest(vector<int>& coins, int k) {
+        vector<long long> subset_lcm(1 << coins.size());
+        subset_lcm[0] = 1;
+        for (int i = 0; i < coins.size(); i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                // 刷表法 DP，在集合 mask 的基础上添加元素 i
+                subset_lcm[bit | mask] = lcm(subset_lcm[mask], coins[i]);
+            }
+        }
+
+        auto check = [&](long long m) -> bool {
+            long long cnt = 0;
+            for (int i = 1; i < subset_lcm.size(); i++) { // 枚举所有非空子集
+                cnt += __builtin_popcount(i) % 2 ? m / subset_lcm[i] : -m / subset_lcm[i];
+            }
+            return cnt >= k;
+        };
+
+        long long left = k - 1, right = (long long) ranges::min(coins) * k;
+        while (left + 1 < right) {
+            long long mid = (left + right) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right;
+    }
+};
+```
+
+```go [sol-Go]
+func findKthSmallest(coins []int, k int) int64 {
+	subsetLcm := make([]int, 1<<len(coins))
+	subsetLcm[0] = 1
+	for i, x := range coins {
+		bit := 1 << i
+		for mask, l := range subsetLcm[:bit] {
+			// 刷表法 DP，在集合 mask 的基础上添加元素 i
+			subsetLcm[bit|mask] = lcm(l, x)
+		}
+	}
+
+	ans := sort.Search(slices.Max(coins)*k, func(m int) bool {
+		cnt := 0
+		for i := uint(1); i < 1<<len(coins); i++ { // 枚举所有非空子集
+			c := m / subsetLcm[i]
+			if bits.OnesCount(i)%2 == 0 {
+				c = -c
+			}
+			cnt += c
+		}
+		return cnt >= k
+	})
+	return int64(ans)
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(2^n(\log M + \log (mk))$，其中 $n$ 为 $\textit{coins}$ 的长度，$m=\min(coins),\ M=\max(\textit{coins})$。
+- 空间复杂度：$\mathcal{O}(2^n)$。
 
 ## 相似题目
 

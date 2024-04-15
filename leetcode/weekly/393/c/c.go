@@ -8,22 +8,24 @@ import (
 
 // https://space.bilibili.com/206214
 func findKthSmallest(coins []int, k int) int64 {
+	subsetLcm := make([]int, 1<<len(coins))
+	subsetLcm[0] = 1
+	for i, x := range coins {
+		bit := 1 << i
+		for mask, l := range subsetLcm[:bit] {
+			subsetLcm[bit|mask] = lcm(l, x)
+		}
+	}
+	for i := range subsetLcm {
+		if bits.OnesCount(uint(i))%2 == 0 {
+			subsetLcm[i] *= -1
+		}
+	}
+
 	ans := sort.Search(slices.Max(coins)*k, func(m int) bool {
 		cnt := 0
-	next:
-		for i := uint(1); i < 1<<len(coins); i++ { // 枚举所有非空子集
-			lcmRes := 1 // 计算子集 LCM
-			for j := i; j > 0; j &= j - 1 {
-				lcmRes = lcm(lcmRes, coins[bits.TrailingZeros(j)])
-				if lcmRes > m { // 太大了
-					continue next
-				}
-			}
-			c := m / lcmRes
-			if bits.OnesCount(i)%2 == 0 {
-				c = -c
-			}
-			cnt += c
+		for _, l := range subsetLcm[1:] {
+			cnt += m / l
 		}
 		return cnt >= k
 	})
