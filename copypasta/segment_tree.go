@@ -26,6 +26,7 @@ import "math/bits"
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
+// 模板（单点修改、区间查询）https://www.luogu.com.cn/problem/P2068
 // 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
 // 最大子段和 https://www.luogu.com.cn/problem/P4513 
 // - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
@@ -237,8 +238,7 @@ func (t seg) query(o, l, r int) int {
 
 func (t seg) queryAll() int { return t[1].val }
 
-// 线段树二分
-// 返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
+// 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
 // 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
 // 此时线段树维护区间最大值
 // t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
@@ -260,11 +260,10 @@ func (t seg) findFirst(o, l, r int, f func(int) bool) int {
 	return idx
 }
 
-// 线段树二分
-// 返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
+// 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
 // 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
 // 此时线段树维护区间最小值
-// t.findFirst(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
 func (t seg) findLast(o, l, r int, f func(int) bool) int {
 	if t[o].l > r || t[o].r < l || !f(t[o].val) {
 		return -1
@@ -286,7 +285,7 @@ func newSegmentTree(a []int) seg {
 		panic("slice can't be empty")
 	}
 	t := make(seg, 2<<bits.Len(uint(n-1)))
-	t.build(a, 1, 1, n)
+	t.build(a, 1, 1, n) // 如果希望下标从 0 到 n-1，这里的参数 l 和 r 可以改成 0 和 n-1
 	return t
 }
 
@@ -305,6 +304,7 @@ func newSegmentTree(a []int) seg {
 //           todo 转换 https://atcoder.jp/contests/abc327/tasks/abc327_f
 //           DP https://atcoder.jp/contests/dp/tasks/dp_w
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D
+//     https://www.luogu.com.cn/problem/P2068
 //     https://www.luogu.com.cn/problem/P3372
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
@@ -314,14 +314,16 @@ func newSegmentTree(a []int) seg {
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
 // - https://codeforces.com/contest/292/submission/173659179
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
-// https://codeforces.com/problemset/problem/620/E 2100
-// max max 离散化 https://codeforces.com/contest/1557/problem/D 2200
-// 矩阵乘法 ∑ https://codeforces.com/problemset/problem/718/C 2300
-// https://codeforces.com/problemset/problem/145/E 2400
+// https://codeforces.com/problemset/problem/620/E  2100
+// https://codeforces.com/problemset/problem/1295/E 2200
+// https://codeforces.com/problemset/problem/1557/D 2200 max max 离散化 
+// https://codeforces.com/problemset/problem/718/C  2300 矩阵乘法 ∑ 
+// https://codeforces.com/problemset/problem/145/E  2400
 // https://codeforces.com/problemset/problem/1114/F 2400
-// https://codeforces.com/problemset/problem/240/F 2600
-// =max 求和的 O(log^2) 性质 https://codeforces.com/contest/1439/problem/C 2600
-// 数位修改 考察对懒标记的理解 https://codeforces.com/problemset/problem/794/F 2800
+// https://codeforces.com/problemset/problem/240/F  2600
+// https://codeforces.com/problemset/problem/1439/C 2600 =max 求和的 O(log^2) 性质 
+// https://codeforces.com/problemset/problem/1614/E 2600
+// https://codeforces.com/problemset/problem/794/F  2800 数位修改 考察对懒标记的理解 
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
@@ -437,8 +439,7 @@ func (t lazySeg) query(o, l, r int) int {
 
 func (t lazySeg) queryAll() int { return t[1].sum }
 
-// 线段树二分
-// 返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
+// 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
 // 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
 // 此时线段树维护区间最大值
 // t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
@@ -457,11 +458,10 @@ func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
 	return idx
 }
 
-// 线段树二分
-// 返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
+// 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
 // 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
 // 此时线段树维护区间最小值
-// t.findFirst(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
 func (t lazySeg) findLast(o, l, r int, f func(int) bool) int {
 	if t[o].l > r || t[o].r < l || !f(t[o].sum) {
 		return -1
@@ -484,7 +484,7 @@ func newLazySegmentTree(a []int) lazySeg {
 		panic("slice can't be empty")
 	}
 	t := make(lazySeg, 2<<bits.Len(uint(n-1)))
-	t.build(a, 1, 1, n)
+	t.build(a, 1, 1, n) // 如果希望下标从 0 到 n-1，这里的参数 l 和 r 可以改成 0 和 n-1
 	return t
 }
 
@@ -505,6 +505,7 @@ func (t lazySeg) spreadAll(o int) {
 // LC327 https://leetcode.cn/problems/count-of-range-sum/
 // LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/ 1533
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
+// todo https://codeforces.com/problemset/problem/1614/E 2600
 // 树套树见 fenwick_tree.go
 const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
@@ -729,36 +730,33 @@ func (o *stNode) kth(k int) int {
 // https://zhuanlan.zhihu.com/p/250565583
 // https://blog.csdn.net/weixin_43914593/article/details/108861279
 //
-// 数组写法 https://codeforces.com/problemset/submission/323/250523407
-// 需要 n*(4+logn) 的空间
+// 数组写法 https://codeforces.com/problemset/submission/840/254783792 
+//        https://codeforces.com/problemset/submission/323/250523407
+// 数组大小 n * (bits.Len(n-1) + 3)
 //
 // 另见 union_find.go 中的「可持久化并查集」
 //
 // 模板题 https://www.luogu.com.cn/problem/P3919
-//       https://www.luogu.com.cn/problem/P3834 https://www.acwing.com/problem/content/257/ https://ac.nowcoder.com/acm/contest/7613/C
-// 区间更新单点查询 https://atcoder.jp/contests/abc253/tasks/abc253_f
-// 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 https://codeforces.com/problemset/problem/484/E
-// 与 DFS序+深度 结合 https://codeforces.com/problemset/problem/893/F
+//       https://www.luogu.com.cn/problem/P3834
+//       https://ac.nowcoder.com/acm/contest/7613/C
+// https://atcoder.jp/contests/abc253/tasks/abc253_f 区间更新单点查询 
+// https://codeforces.com/problemset/problem/1262/D2 1800 *在线做法 
+// https://codeforces.com/problemset/problem/484/E 2500 二分，转换成找最长的已填入数字的区间，做法类似最大子段和 
+// https://codeforces.com/problemset/problem/840/D 2500
 // todo 种类数 https://codeforces.com/problemset/problem/620/E
 //  https://codeforces.com/problemset/problem/786/C
 //  差分 https://codeforces.com/problemset/problem/813/E
 //  https://codeforces.com/problemset/problem/837/G
-//  https://codeforces.com/problemset/problem/840/D
-//  https://codeforces.com/problemset/problem/893/F
+//  https://codeforces.com/problemset/problem/893/F 2300 与 DFS序+深度 结合
 //  https://codeforces.com/problemset/problem/961/E（不止一种做法）
-// 在线做法 https://codeforces.com/problemset/problem/1262/D2
 type pstNode struct {
 	lo, ro *pstNode
 	l, r   int // 注：如果 MLE 请换成传参的写法，或者使用数组版本
 	sum    int
 }
 
-func (pstNode) op(a, b int) int {
-	return a + b //
-}
-
-func (o *pstNode) maintain() {
-	o.sum = o.op(o.lo.sum, o.ro.sum)
+func (pstNode) mergeInfo(a, b int) int {
+	return a + b // 根据题目修改
 }
 
 // t := make([]*pstNode, 1, maxVersion+1)
@@ -779,6 +777,7 @@ func buildPST(a []int, l, r int) *pstNode {
 
 // 一般写法是更新到当前版本，然后把返回的新版本加在 t 的末尾，即
 // t = append(t, t[len(t)-1].modify(i, add))
+// t[i] = t[i-1].modify(i, add)
 // 注意为了拷贝一份 pstNode，这里的接收器不是指针
 func (o pstNode) modify(i int, add int) *pstNode {
 	if o.l == o.r {
@@ -795,20 +794,24 @@ func (o pstNode) modify(i int, add int) *pstNode {
 	return &o
 }
 
-func (o *pstNode) query(l, r int) int {
+func (o *pstNode) maintain() {
+	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
+}
+
+func (o *pstNode) queryRange(l, r int) int {
 	if l <= o.l && o.r <= r {
 		return o.sum
 	}
 	m := (o.l + o.r) >> 1
 	if r <= m {
-		return o.lo.query(l, r)
+		return o.lo.queryRange(l, r)
 	}
 	if m < l {
-		return o.ro.query(l, r)
+		return o.ro.queryRange(l, r)
 	}
-	vl := o.lo.query(l, r)
-	vr := o.ro.query(l, r)
-	return o.op(vl, vr)
+	vl := o.lo.queryRange(l, r)
+	vr := o.ro.queryRange(l, r)
+	return o.mergeInfo(vl, vr)
 }
 
 // 区间更新（只能配合单点查询）
@@ -853,13 +856,14 @@ func (o *pstNode) querySingle(i int) int {
 // 主席树相当于对数组的每个前缀建立一棵线段树
 // 离散化时，求 kth 需要将相同元素也视作不同的
 // 附：Wavelet Trees https://codeforces.com/blog/entry/52854 https://ideone.com/Tkters
+// 题目见上
 
-// EXTRA: 查询区间 [l,r] 中第 k 小在整个数组上的名次（从 1 开始）
-// 注意返回的是（排序去重后的数组的）下标，不是元素值
+// EXTRA: 查询区间 [l,r] 中第 k 小（k 从 1 开始）的数
 // 初始 t[0] = buildPST(1, len(a))
 //     t[i+1] = t[i].update(kth[i], 1)   kth[i] 为 a[i] 离散化后的值（从 1 开始）
 // 查询 t[r].kth(t[l-1], k)               类似前缀和 [l,r] 1<=l<=r<=n
 // https://www.luogu.com.cn/problem/P2617
+// https://codeforces.com/problemset/problem/840/D
 func (o *pstNode) kth(old *pstNode, k int) int {
 	if o.l == o.r {
 		return o.l
@@ -869,6 +873,20 @@ func (o *pstNode) kth(old *pstNode, k int) int {
 		return o.lo.kth(old.lo, k)
 	}
 	return o.ro.kth(old.ro, k-cntL)
+}
+
+// EXTRA: 查询区间 [l,r] 中 val 的出现次数
+// t[r].query(t[l-1], val)
+// https://codeforces.com/problemset/problem/840/D
+func (o *pstNode) query(old *pstNode, val int) int {
+	if o.l == o.r {
+		return o.sum - old.sum
+	}
+	m := (o.l + o.r) >> 1
+	if val <= m {
+		return o.lo.query(old.lo, val)
+	}
+	return o.ro.query(old.ro, val)
 }
 
 // todo EXTRA: rank
