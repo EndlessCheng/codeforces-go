@@ -60,11 +60,11 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long findKthSmallest(int[] coins, int k) {
-        int mx = Integer.MAX_VALUE;
+        int mn = Integer.MAX_VALUE;
         for (int x : coins) {
-            mx = Math.min(mx, x);
+            mn = Math.min(mn, x);
         }
-        long left = k - 1, right = (long) mx * k;
+        long left = k - 1, right = (long) mn * k;
         while (left + 1 < right) {
             long mid = (left + right) / 2;
             if (check(mid, coins, k)) {
@@ -211,11 +211,11 @@ class Solution {
             }
         }
 
-        int mx = Integer.MAX_VALUE;
+        int mn = Integer.MAX_VALUE;
         for (int x : coins) {
-            mx = Math.min(mx, x);
+            mn = Math.min(mn, x);
         }
-        long left = k - 1, right = (long) mx * k;
+        long left = k - 1, right = (long) mn * k;
         while (left + 1 < right) {
             long mid = (left + right) / 2;
             if (check(mid, subsetLcm, k)) {
@@ -263,11 +263,11 @@ class Solution {
             }
         }
 
-        int mx = Integer.MAX_VALUE;
+        int mn = Integer.MAX_VALUE;
         for (int x : coins) {
-            mx = Math.min(mx, x);
+            mn = Math.min(mn, x);
         }
-        long left = k - 1, right = (long) mx * k;
+        long left = k - 1, right = (long) mn * k;
         while (left + 1 < right) {
             long mid = (left + right) / 2;
             if (check(mid, subsetLcm, k)) {
