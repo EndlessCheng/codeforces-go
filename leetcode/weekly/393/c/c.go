@@ -22,7 +22,7 @@ func findKthSmallest(coins []int, k int) int64 {
 		}
 	}
 
-	ans := sort.Search(slices.Max(coins)*k, func(m int) bool {
+	ans := sort.Search(slices.Min(coins)*k, func(m int) bool {
 		cnt := 0
 		for _, l := range subsetLcm[1:] {
 			cnt += m / l

@@ -341,7 +341,7 @@ func findKthSmallest(coins []int, k int) int64 {
 		}
 	}
 
-	ans := sort.Search(slices.Max(coins)*k, func(m int) bool {
+	ans := sort.Search(slices.Min(coins)*k, func(m int) bool {
 		cnt := 0
 		for i := uint(1); i < 1<<len(coins); i++ { // 枚举所有非空子集
 			c := m / subsetLcm[i]
