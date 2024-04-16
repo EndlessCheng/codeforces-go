@@ -279,9 +279,13 @@ impl Solution {
 
 #### 答疑
 
+**问**：这是怎么想到的？为什么这种做法可以生成所有的子序列？
+
+**答**：这种做法本质是把 [78. 子集](https://leetcode.cn/problems/subsets/) 的「枚举选哪个」写法的 `for` 循环去掉，把循环变量 `j` 加到了递归参数中。毕竟 `for` 循环就相当于不断地替换最后一个数，而往下递归则相当于在末尾添加数字。关于「枚举选哪个」可以看我的[【基础算法精讲 14】](https://www.bilibili.com/video/BV1mG4y1A7Gu/)中的「答案视角」。
+
 **问**：为什么结合最小堆，就一定是按元素和从小到大的顺序生成的？有没有可能先生成一个大的，再生成一个小的？
 
-**答**：把子序列和它通过添加/替换生成的子序列之间连一条有向边，我们可以得到一棵以 $[]$ 为根的有向树。把边权定义成相邻节点的子序列元素和的差，由于 $\textit{nums}$ 是有序的且没有负数，所以树是**没有负数边权**的。那么上述算法其实就是在这棵树上跑 [Dijkstra 算法](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。把元素和当作海拔高度，算法执行过程就好比不断上涨的水位，我们会按照海拔高度从低到高淹没节点，所以出堆的元素和是非降的。
+**答**：把子序列和它通过添加/替换生成的子序列之间连一条有向边，我们可以得到一棵以空子序列 $[]$ 为根的有向树。把边权定义成相邻节点的子序列元素和的差，由于 $\textit{nums}$ 是有序的且没有负数，所以树是**没有负数边权**的。那么上述算法其实就是在这棵树上跑 [Dijkstra 算法](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。把元素和当作海拔高度，算法执行过程就好比不断上涨的水位，我们会按照海拔高度从低到高淹没节点，所以出堆的元素和是非降的。
 
 ```py [sol-Python3]
 class Solution:
@@ -341,7 +345,7 @@ class Solution {
 class Solution {
 public:
     long long kSum(vector<int> &nums, int k) {
-        long sum = 0L;
+        long long sum = 0;
         for (int &x : nums) {
             if (x >= 0) {
                 sum += x;
@@ -351,7 +355,7 @@ public:
         }
         ranges::sort(nums);
 
-        priority_queue<pair<long, int>, vector<pair<long, int>>, greater<>> pq;
+        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
         pq.emplace(0, 0); // 空子序列
         while (--k) {
             auto [s, i] = pq.top();
@@ -485,6 +489,18 @@ impl Solution {
 - [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
 - [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）
 
-更多题单，请点我个人主页 - 讨论发布。
+## 分类题单
 
-[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+
+更多题单，点我个人主页 - 讨论发布。
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
