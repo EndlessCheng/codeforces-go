@@ -8,8 +8,6 @@ import (
 )
 
 // https://space.bilibili.com/206214
-const mod = 998244353
-
 func CF1857G(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
