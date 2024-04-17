@@ -4,10 +4,10 @@
 
 首先把 $\textit{and}$ 与 $\textit{nums}[i]$ 计算 AND。
 
-分类讨论：
+用「选或不选」来分类讨论：
 
-- 不划分：继续向后递归 $\textit{dfs}(i+1,j, \textit{and})$。
-- 划分：如果 $\textit{and}= \textit{andValues}[j]$，那么划分，即 $\textit{dfs}(i+1,j+1, -1) + \textit{nums}[i]$。
+- 不划分：继续向后递归 $\textit{dfs}(i+1,j,\textit{and})$。
+- 划分：如果 $\textit{and}=\textit{andValues}[j]$，那么划分，即 $\textit{dfs}(i+1,j+1,-1) + \textit{nums}[i]$。
 - 这两种情况取最小值。
 
 注：因为 $-1$ 的二进制全为 $1$，与任何数 $x$ 的 AND 都是 $x$，适合初始化。
@@ -19,8 +19,6 @@
 - 如果 $j=m$ 且 $i=n$，划分成功，返回 $0$。
 
 递归入口：$\textit{dfs}(0,0,-1)$，即答案。如果答案是 $\infty$ 则返回 $-1$。
-
-关于状态个数，见下面的复杂度分析。
 
 请看 [视频讲解](https://www.bilibili.com/video/BV1dJ4m1V7hK/) 第四题，欢迎点赞关注！
 
@@ -168,6 +166,116 @@ AND 的**性质**：AND 的数越多，AND 的结果就越小。
 
 - 时间复杂度：$\mathcal{O}(nm\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{andValues}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nm\log U)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以动态规划的时间复杂度为 $\mathcal{O}(nm\log U)$。
 - 空间复杂度：$\mathcal{O}(nm\log U)$。
+
+### 附：单调队列优化
+
+```py [sol-Python3]
+class Solution:
+    def minimumValueSum(self, nums: List[int], andValues: List[int]) -> int:
+        n = len(nums)
+        f = [0] + [inf] * n
+        new_f = [0] * (n + 1)
+        for target in andValues:
+            new_f[0] = inf
+            a = []
+            q = deque()
+            qi = 0
+            for i, x in enumerate(nums):
+                for p in a:
+                    p[0] &= x
+                a.append([x, i])
+
+                # 原地去重
+                j = 1
+                for ap, aq in pairwise(a):
+                    if ap[0] != aq[0]:
+                        a[j] = aq
+                        j += 1
+                del a[j:]
+
+                # 去掉无用数据
+                while a and a[0][0] < target:
+                    a.pop(0)
+
+                if a and a[0][0] == target:
+                    r = (a[1][1] - 1) if len(a) > 1 else i
+                    while qi <= r:
+                        while q and f[qi] <= f[q[-1]]:
+                            q.pop()
+                        q.append(qi)
+                        qi += 1
+                    while q[0] < a[0][1]:
+                        q.popleft()
+                    new_f[i + 1] = f[q[0]] + x
+                else:
+                    new_f[i + 1] = inf
+            f, new_f = new_f, f
+        return f[n] if f[n] < inf else -1
+```
+
+```go [sol-Go]
+func minimumValueSum(nums, andValues []int) int {
+	const inf = math.MaxInt / 2
+	n := len(nums)
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		f[i] = inf
+	}
+	newF := make([]int, n+1)
+	for _, target := range andValues {
+		newF[0] = inf
+		type pair struct{ and, l int }
+		a := []pair{}
+		q := []int{}
+		qi := 0
+		for i, x := range nums {
+			for j := range a {
+				a[j].and &= x
+			}
+			a = append(a, pair{x, i})
+
+			// 原地去重
+			j := 1
+			for k := 1; k < len(a); k++ {
+				if a[k].and != a[k-1].and {
+					a[j] = a[k]
+					j++
+				}
+			}
+			a = a[:j]
+
+			// 去掉无用数据
+			for len(a) > 0 && a[0].and < target {
+				a = a[1:]
+			}
+
+			if len(a) > 0 && a[0].and == target {
+				r := i
+				if len(a) > 1 {
+					r = a[1].l - 1
+				}
+				for ; qi <= r; qi++ {
+					for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
+						q = q[:len(q)-1]
+					}
+					q = append(q, qi)
+				}
+				for q[0] < a[0].l {
+					q = q[1:]
+				}
+				newF[i+1] = f[q[0]] + x
+			} else {
+				newF[i+1] = inf
+			}
+		}
+		f, newF = newF, f
+	}
+	if f[n] < inf {
+		return f[n]
+	}
+	return -1
+}
+```
 
 ## 分类题单
 

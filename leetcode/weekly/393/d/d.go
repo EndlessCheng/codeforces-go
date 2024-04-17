@@ -8,6 +8,68 @@ import (
 
 // https://space.bilibili.com/206214
 func minimumValueSum(nums, andValues []int) int {
+	const inf = math.MaxInt / 2
+	n := len(nums)
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		f[i] = inf
+	}
+	newF := make([]int, n+1)
+	for _, target := range andValues {
+		newF[0] = inf
+		type pair struct{ and, l int }
+		a := []pair{}
+		q := []int{}
+		qi := 0
+		for i, x := range nums {
+			for j := range a {
+				a[j].and &= x
+			}
+			a = append(a, pair{x, i})
+
+			// 原地去重
+			j := 1
+			for k := 1; k < len(a); k++ {
+				if a[k].and != a[k-1].and {
+					a[j] = a[k]
+					j++
+				}
+			}
+			a = a[:j]
+
+			// 去掉无用数据
+			for len(a) > 0 && a[0].and < target {
+				a = a[1:]
+			}
+
+			if len(a) > 0 && a[0].and == target {
+				r := i
+				if len(a) > 1 {
+					r = a[1].l - 1
+				}
+				for ; qi <= r; qi++ {
+					for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
+						q = q[:len(q)-1]
+					}
+					q = append(q, qi)
+				}
+				for q[0] < a[0].l {
+					q = q[1:]
+				}
+				newF[i+1] = f[q[0]] + x
+			} else {
+				newF[i+1] = inf
+			}
+		}
+		f, newF = newF, f
+	}
+	if f[n] < inf {
+		return f[n]
+	}
+	return -1
+}
+
+func minimumValueSumDP(nums, andValues []int) int {
 	n, m := len(nums), len(andValues)
 	type args struct{ i, j, and int }
 	memo := map[args]int{}
