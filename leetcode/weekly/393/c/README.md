@@ -176,7 +176,7 @@ func lcm(a, b int) int {
 - 时间复杂度：$\mathcal{O}(n2^n\log (mk)\log M)$，其中 $n$ 为 $\textit{coins}$ 的长度，$m=\min(coins),\ M=\max(\textit{coins})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 优化
+## 优化一
 
 预处理每个子集的 $\texttt{LCM}$。
 
@@ -371,6 +371,196 @@ func lcm(a, b int) int {
 
 - 时间复杂度：$\mathcal{O}(2^n(\log M + \log (mk))$，其中 $n$ 为 $\textit{coins}$ 的长度，$m=\min(coins),\ M=\max(\textit{coins})$。
 - 空间复杂度：$\mathcal{O}(2^n)$。
+
+## 优化二
+
+进一步地，如果 $\textit{coins}$ 中有 $2$，那么所有 $2$ 的倍数我们都可以生成，所有 $\textit{coins}$ 中的其它 $2$ 的倍数都无需考虑。按照这个方法可以去掉 $\textit{coins}$ 中的一些元素。
+
+```py [sol-Python3]
+class Solution:
+    def findKthSmallest(self, coins: List[int], k: int) -> int:
+        coins.sort()
+        a = []
+        for x in coins:
+            if all(x % y for y in a):
+                a.append(x)
+
+        subset_lcm = [1] * (1 << len(a))
+        for i, x in enumerate(a):
+            bit = 1 << i
+            for mask in range(bit):
+                # 刷表法 DP，在集合 mask 的基础上添加元素 i
+                subset_lcm[bit | mask] = lcm(subset_lcm[mask], x)
+
+        def check(m: int) -> bool:
+            cnt = 0
+            for i in range(1, len(subset_lcm)):  # 枚举所有非空子集
+                cnt += m // subset_lcm[i] if i.bit_count() % 2 else -(m // subset_lcm[i])
+            return cnt >= k
+        return bisect_left(range(a[0] * k), True, k, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public long findKthSmallest(int[] coins, int k) {
+        Arrays.sort(coins);
+        int n = 0;
+        next:
+        for (int x : coins) {
+            for (int i = 0; i < n; i++) {
+                if (x % coins[i] == 0) {
+                    continue next;
+                }
+            }
+            coins[n++] = x;
+        }
+
+        long[] subsetLcm = new long[1 << n];
+        subsetLcm[0] = 1;
+        for (int i = 0; i < n; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                //刷表法 DP，在集合 mask 的基础上添加元素 i
+                subsetLcm[bit | mask] = lcm(subsetLcm[mask], coins[i]);
+            }
+        }
+        for (int i = 1; i < subsetLcm.length; i++) {
+            if (Integer.bitCount(i) % 2 == 0) {
+                subsetLcm[i] *= -1;
+            }
+        }
+
+        long left = k - 1, right = (long) coins[0] * k;
+        while (left + 1 < right) {
+            long mid = (left + right) / 2;
+            if (check(mid, subsetLcm, k)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    private boolean check(long m, long[] subsetLcm, int k) {
+        long cnt = 0;
+        for (int i = 1; i < subsetLcm.length; i++) { // 枚举所有非空子集
+            cnt += m / subsetLcm[i];
+        }
+        return cnt >= k;
+    }
+
+    private long lcm(long a, long b) {
+        return a * b / gcd(a, b);
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long findKthSmallest(vector<int>& coins, int k) {
+        ranges::sort(coins);
+        int n = 0;
+        for (int x : coins) {
+            bool ok = true;
+            for (int i = 0; i < n; i++) {
+                if (x % coins[i] == 0) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                coins[n++] = x;
+            }
+        }
+
+        vector<long long> subset_lcm(1 << n);
+        subset_lcm[0] = 1;
+        for (int i = 0; i < n; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                // 刷表法 DP，在集合 mask 的基础上添加元素 i
+                subset_lcm[bit | mask] = lcm(subset_lcm[mask], coins[i]);
+            }
+        }
+
+        auto check = [&](long long m) -> bool {
+            long long cnt = 0;
+            for (int i = 1; i < subset_lcm.size(); i++) { // 枚举所有非空子集
+                cnt += __builtin_popcount(i) % 2 ? m / subset_lcm[i] : -m / subset_lcm[i];
+            }
+            return cnt >= k;
+        };
+
+        long long left = k - 1, right = (long long) coins[0] * k;
+        while (left + 1 < right) {
+            long long mid = (left + right) / 2;
+            (check(mid) ? right : left) = mid;
+        }
+        return right;
+    }
+};
+```
+
+```go [sol-Go]
+func findKthSmallest(coins []int, k int) int64 {
+	slices.Sort(coins)
+	a := coins[:0]
+next:
+	for _, x := range coins {
+		for _, y := range a {
+			if x%y == 0 {
+				continue next
+			}
+		}
+		a = append(a, x)
+	}
+
+	subsetLcm := make([]int, 1<<len(a))
+	subsetLcm[0] = 1
+	for i, x := range a {
+		bit := 1 << i
+		for mask, l := range subsetLcm[:bit] {
+			subsetLcm[bit|mask] = lcm(l, x)
+		}
+	}
+	for i := range subsetLcm {
+		if bits.OnesCount(uint(i))%2 == 0 {
+			subsetLcm[i] *= -1
+		}
+	}
+
+	ans := sort.Search(a[0]*k, func(m int) bool {
+		cnt := 0
+		for _, l := range subsetLcm[1:] {
+			cnt += m / l
+		}
+		return cnt >= k
+	})
+	return int64(ans)
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + 2^t(\log M + \log (mk))$，其中 $t=\min(n, M/2)$，$n$ 为 $\textit{coins}$ 的长度，$m=\min(coins),\ M=\max(\textit{coins})$。最坏情况下 $\textit{coins}$ 可以包含 $[13,25]$ 内的所有数字。
+- 空间复杂度：$\mathcal{O}(2^t)$。
 
 ## 相似题目
 

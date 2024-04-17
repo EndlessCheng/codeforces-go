@@ -8,9 +8,21 @@ import (
 
 // https://space.bilibili.com/206214
 func findKthSmallest(coins []int, k int) int64 {
-	subsetLcm := make([]int, 1<<len(coins))
+	slices.Sort(coins)
+	a := coins[:0]
+next:
+	for _, x := range coins {
+		for _, y := range a {
+			if x%y == 0 {
+				continue next
+			}
+		}
+		a = append(a, x)
+	}
+
+	subsetLcm := make([]int, 1<<len(a))
 	subsetLcm[0] = 1
-	for i, x := range coins {
+	for i, x := range a {
 		bit := 1 << i
 		for mask, l := range subsetLcm[:bit] {
 			subsetLcm[bit|mask] = lcm(l, x)
@@ -22,7 +34,7 @@ func findKthSmallest(coins []int, k int) int64 {
 		}
 	}
 
-	ans := sort.Search(slices.Min(coins)*k, func(m int) bool {
+	ans := sort.Search(a[0]*k, func(m int) bool {
 		cnt := 0
 		for _, l := range subsetLcm[1:] {
 			cnt += m / l
