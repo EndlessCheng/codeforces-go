@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func CF1365C(_r io.Reader, out io.Writer) {
 	in := bufio.NewReader(_r)
 	var n, v, ans int
@@ -26,9 +26,7 @@ func CF1365C(_r io.Reader, out io.Writer) {
 		cnt[p-i]++
 	}
 	for _, c := range cnt {
-		if c > ans {
-			ans = c
-		}
+		ans = max(ans, c)
 	}
 	Fprint(out, ans)
 }
