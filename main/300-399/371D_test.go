@@ -35,5 +35,5 @@ outputCopy
 7
 10
 5`
-	testutil.AssertEqual(t, rawText, Sol371D)
+	testutil.AssertEqual(t, rawText, cf371D)
 }

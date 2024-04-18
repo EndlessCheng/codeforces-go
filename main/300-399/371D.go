@@ -6,21 +6,21 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func Sol371D(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
+// https://space.bilibili.com/206214
+func cf371D(_r io.Reader, _w io.Writer) {
+	in := bufio.NewReader(_r)
+	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
 	var n int
 	Fscan(in, &n)
-	water := make([]int, n)
-	cp := make([]int, n)
-	for i := range cp {
-		Fscan(in, &cp[i])
+	cap := make([]int, n)
+	for i := range cap {
+		Fscan(in, &cap[i])
 	}
+	water := make([]int, n)
 
-	fa := make([]int, n)
+	fa := make([]int, n+1)
 	for i := range fa {
 		fa[i] = i
 	}
@@ -31,33 +31,26 @@ func Sol371D(reader io.Reader, writer io.Writer) {
 		}
 		return fa[i]
 	}
-	merge := func(from, to int) { fa[find(from)] = find(to) }
 
-	var m, op, idx, x int
+	var m, op, i, x int
 	for Fscan(in, &m); m > 0; m-- {
-		Fscan(in, &op, &idx)
-		idx--
-		if op == 1 {
-			Fscan(in, &x)
-			for idx = find(idx); ; idx = find(idx) {
-				if water[idx]+x < cp[idx] {
-					water[idx] += x
-					break
-				}
-				x -= cp[idx] - water[idx]
-				water[idx] = cp[idx]
-				idx++
-				if idx == n {
-					break
-				}
-				merge(idx-1, idx)
+		Fscan(in, &op, &i)
+		i--
+		if op == 2 {
+			Fprintln(out, water[i])
+			continue
+		}
+		Fscan(in, &x)
+		for i = find(i); i < n; i = find(i) {
+			if water[i]+x < cap[i] {
+				water[i] += x
+				break
 			}
-		} else {
-			Fprintln(out, water[idx])
+			x -= cap[i] - water[i]
+			water[i] = cap[i]
+			fa[i] = i + 1
 		}
 	}
 }
 
-//func main() {
-//	Sol371D(os.Stdin, os.Stdout)
-//}
+//func main() { cf371D(os.Stdin, os.Stdout) }
