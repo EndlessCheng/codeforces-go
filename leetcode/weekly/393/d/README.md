@@ -169,6 +169,10 @@ AND 的**性质**：AND 的数越多，AND 的结果就越小。
 
 ### 附：单调队列优化
 
+对于一个固定的 $\textit{andValues}[j]$，当子数组右端点 $i$ 变大时，符合要求（子数组 AND 等于 $\textit{andValues}[j]$）的子数组左端点的范围区间也在右移，所以计算 DP 的转移来源，类似计算 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)（本题是滑动窗口最小值）。
+
+原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)，欢迎点赞关注~
+
 ```py [sol-Python3]
 class Solution:
     def minimumValueSum(self, nums: List[int], andValues: List[int]) -> int:
@@ -206,7 +210,7 @@ class Solution:
                         qi += 1
                     while q[0] < a[0][1]:
                         q.popleft()
-                    new_f[i + 1] = f[q[0]] + x
+                    new_f[i + 1] = f[q[0]] + x  # 队首就是最小值
                 else:
                     new_f[i + 1] = inf
             f, new_f = new_f, f
@@ -263,7 +267,7 @@ func minimumValueSum(nums, andValues []int) int {
 				for q[0] < a[0].l {
 					q = q[1:]
 				}
-				newF[i+1] = f[q[0]] + x
+				newF[i+1] = f[q[0]] + x // 队首就是最小值
 			} else {
 				newF[i+1] = inf
 			}
