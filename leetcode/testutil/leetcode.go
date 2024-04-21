@@ -280,29 +280,30 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 			}
 		}
 
-		const maxInputSize = 150
-		inputInfo := strings.Join(rawIn, "\n")
-		if len(inputInfo) > maxInputSize { // 截断过长的输入
-			inputInfo = inputInfo[:maxInputSize] + "..."
-		}
-
-		var outs []reflect.Value
-		_f := func() { outs = fValue.Call(ins) }
-		if targetCaseNum == 0 && isTLE(_f) {
-			allCasesOk = false
-			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", curCaseNum+1, inputInfo)
-			continue
-		} else if targetCaseNum != 0 {
-			_f()
-		}
-
 		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			const maxInputSize = 150
+			inputInfo := strings.Join(rawIn, "\n")
+			if len(inputInfo) > maxInputSize { // 截断过长的输入
+				inputInfo = inputInfo[:maxInputSize] + "..."
+			}
+
+			var outs []reflect.Value
+			_f := func() { outs = fValue.Call(ins) }
+			if targetCaseNum == 0 && isTLE(_f) {
+				allCasesOk = false
+				t.Errorf("【超时 %d】\nInput:\n%s", curCaseNum+1, inputInfo)
+				return
+			}
+			if targetCaseNum != 0 {
+				_f()
+			}
+
 			for i, out := range outs {
 				rawActualOut, er := toRawString(out)
 				if er != nil {
 					t.Fatal(er)
 				}
-				if AssertOutput && !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
+				if AssertOutput && !assert.Equal(t, rawExpectedOuts[i], rawActualOut, "【答案错误 %d】\nInput:\n%s", curCaseNum+1, inputInfo) {
 					allCasesOk = false
 				}
 			}
@@ -320,7 +321,6 @@ func RunLeetCodeFuncWithExamples(t *testing.T, f interface{}, rawExamples [][]st
 		return RunLeetCodeFuncWithExamples(t, f, rawExamples, 0)
 	}
 
-	t.Log("OK")
 	return nil
 }
 
@@ -391,7 +391,6 @@ func RunLeetCodeClassWithExamples(t *testing.T, constructor interface{}, rawExam
 		targetCaseNum += len(rawExamples) + 1
 	}
 
-outer:
 	for curCaseNum, example := range rawExamples {
 		if targetCaseNum > 0 && curCaseNum+1 != targetCaseNum {
 			continue
@@ -435,74 +434,75 @@ outer:
 			}
 		}
 
-		// call constructor, get struct instance
-		obj := cFunc.Call(constructorIns)[0]
-
-		// use a pointer to call methods
-		pObj := reflect.New(obj.Type())
-		pObj.Elem().Set(obj)
-
-		if DebugCallIndex < 0 {
-			DebugCallIndex += len(rawArgsList)
-		}
-		rawActualOut := &strings.Builder{}
-		rawActualOut.WriteString("[null")
-		for callIndex := 1; callIndex < len(rawArgsList); callIndex++ {
-			name := methodNames[callIndex]
-			method := pObj.MethodByName(name)
-			emptyValue := reflect.Value{}
-			if method == emptyValue {
-				return fmt.Errorf("invalid test data: %s", methodNames[callIndex])
-			}
-			methodType := method.Type()
-
-			// parse method input
-			methodArgs, er := parseRawArray(rawArgsList[callIndex])
-			if er != nil {
-				return er
-			}
-			in := make([]reflect.Value, methodType.NumIn()) // 注意：若入参为空，methodArgs 可能是 [] 也可能是 [null]
-			for i := range in {
-				in[i], err = parseRawArg(methodType.In(i), methodArgs[i])
-				if err != nil {
-					return
-				}
-			}
-
-			if callIndex == DebugCallIndex {
-				print() // 在这里打断点
-			}
-
-			// call method
-			var actualOuts []reflect.Value
-			_f := func() { actualOuts = method.Call(in) }
-			if targetCaseNum == 0 && isTLE(_f) {
-				allCasesOk = false
-				t.Errorf("Time Limit Exceeded %d\nCall Index %d", curCaseNum+1, callIndex)
-				continue outer // 直接跑下一个测试用例
-			} else if targetCaseNum != 0 {
-				_f()
-			}
-
-			if len(actualOuts) > 0 {
-				s, er := toRawString(actualOuts[0])
-				if er != nil {
-					return er
-				}
-				rawActualOut.WriteByte(',')
-				rawActualOut.WriteString(s)
-			} else {
-				rawActualOut.WriteString(",null")
-			}
-		}
-		rawActualOut.WriteByte(']')
-
-		// 比较前，去除 rawExpectedOut 中逗号后的空格
-		rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
-
 		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+			// call constructor, get struct instance
+			obj := cFunc.Call(constructorIns)[0]
+
+			// use a pointer to call methods
+			pObj := reflect.New(obj.Type())
+			pObj.Elem().Set(obj)
+
+			if DebugCallIndex < 0 {
+				DebugCallIndex += len(rawArgsList)
+			}
+			rawActualOut := &strings.Builder{}
+			rawActualOut.WriteString("[null")
+			for callIndex := 1; callIndex < len(rawArgsList); callIndex++ {
+				name := methodNames[callIndex]
+				method := pObj.MethodByName(name)
+				emptyValue := reflect.Value{}
+				if method == emptyValue {
+					t.Fatalf("invalid test data: %s", methodNames[callIndex])
+				}
+				methodType := method.Type()
+
+				// parse method input
+				methodArgs, er := parseRawArray(rawArgsList[callIndex])
+				if er != nil {
+					t.Fatal(er)
+				}
+				in := make([]reflect.Value, methodType.NumIn()) // 注意：若入参为空，methodArgs 可能是 [] 也可能是 [null]
+				for i := range in {
+					in[i], er = parseRawArg(methodType.In(i), methodArgs[i])
+					if er != nil {
+						t.Fatal(er)
+					}
+				}
+
+				if callIndex == DebugCallIndex {
+					print() // 在这里打断点
+				}
+
+				// call method
+				var actualOuts []reflect.Value
+				_f := func() { actualOuts = method.Call(in) }
+				if targetCaseNum == 0 && isTLE(_f) {
+					allCasesOk = false
+					t.Errorf("【【超时 %d】】\nCall Index %d", curCaseNum+1, callIndex)
+					return // 直接跑下一个测试用例
+				} 
+				if targetCaseNum != 0 {
+					_f()
+				}
+
+				if len(actualOuts) > 0 {
+					s, er := toRawString(actualOuts[0])
+					if er != nil {
+						t.Fatal(er)
+					}
+					rawActualOut.WriteByte(',')
+					rawActualOut.WriteString(s)
+				} else {
+					rawActualOut.WriteString(",null")
+				}
+			}
+			rawActualOut.WriteByte(']')
+
+			// 比较前，去除 rawExpectedOut 中逗号后的空格
+			rawExpectedOut = strings.ReplaceAll(rawExpectedOut, ", ", ",")
+
 			// todo: 提示错在哪个 callIndex 上
-			if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut.String(), "Wrong Answer %d", curCaseNum+1) {
+			if AssertOutput && !assert.Equal(t, rawExpectedOut, rawActualOut.String(), "【答案错误 %d】", curCaseNum+1) {
 				allCasesOk = false
 			}
 		})
@@ -592,12 +592,12 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		expectedOut := runAC.Call(inArgs)
 		var actualOut []reflect.Value
 		if isTLE(func() { actualOut = run.Call(inArgs) }) {
-			t.Errorf("Time Limit Exceeded %d\nInput:\n%s", tc, inputInfo)
+			t.Errorf("【超时 %d】\nInput:\n%s", tc, inputInfo)
 			continue
 		}
 
 		for i, eOut := range expectedOut {
-			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "Wrong Answer %d\nInput:\n%s", tc, inputInfo)
+			assert.Equal(t, eOut.Interface(), actualOut[i].Interface(), "【答案错误 %d】\nInput:\n%s", tc, inputInfo)
 		}
 
 		// 每到 2 的幂次就打印检测了多少个测试数据
