@@ -1,3 +1,5 @@
+## 方法一：状态机
+
 对于每种字母，定义如下四种状态：
 
 - $0$：初始状态。如果遇到小写字母，转到状态 $1$，否则不合法，转到状态 $-1$。
@@ -16,8 +18,6 @@
 - 对于任何英文字母：其小写字母二进制低 $5$ 位，一定和其大写字母二进制低 $5$ 位相等。
 
 请看 [视频讲解](https://www.bilibili.com/video/BV1gu4m1F7B8/) 第二题，欢迎点赞关注！
-
-## 写法一
 
 ```py [sol-Python3]
 class Solution:
@@ -128,11 +128,13 @@ func numberOfSpecialChars(word string) (ans int) {
 - 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 为 $\textit{word}$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为英文字母，所以 $|\Sigma|=26$。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
-## 写法二：位运算优化
+## 方法二：位运算
 
-我们可以把小写字母加到集合 $\textit{lower}$ 中，大写字母（转成小写后）加到集合 $\textit{upper}$ 中。如果遍历到小写字母 $c$ 时，发现 $c$ 的也在 $\textit{upper}$ 中，则把 $c$ 加到集合 $\textit{invalid}$ 中。
+我们可以把小写字母加到集合 $\textit{lower}$ 中，大写字母（转成小写后）加到集合 $\textit{upper}$ 中。如果遍历到小写字母 $c$ 时，发现 $c$ 也在 $\textit{upper}$ 中，说明大写字母在小写字母前面，把 $c$ 加到集合 $\textit{invalid}$ 中。
 
 最后计算 $\textit{lower}$ 和 $\textit{upper}$ 的交集，并从交集中去掉 $\textit{invalid}$ 中的元素，剩下的元素个数即为答案。
+
+这可以用位运算实现，原理请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
 ```py [sol-Python3]
 class Solution:
