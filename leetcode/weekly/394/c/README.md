@@ -154,7 +154,7 @@ func minimumOperations(grid [][]int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn + nU^2)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数，$U$ 为元素种类数，即 $10$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nU)$，单个状态的计算时间为 $\mathcal{O}(U)$，所以动态规划的时间复杂度为 $\mathcal{O}(nU^2)$。
-- 空间复杂度：$\mathcal{O}(mn + nU)$。
+- 空间复杂度：$\mathcal{O}(nU)$。
 
 ## 方法二：递推 + 优化
 
