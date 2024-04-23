@@ -11,10 +11,11 @@ import (
 )
 
 /*
-新人推荐：编程基础 0 到 1 
+编程入门题单
+https://leetcode.cn/studyplan/primers-list/
 https://leetcode.cn/studyplan/programming-skills/
 
-分类题单
+我整理的分类题单
 https://leetcode.cn/circle/discuss/0viNMK/ 滑动窗口（定长/不定长/多指针）
 https://leetcode.cn/circle/discuss/SqopEo/ 二分算法（二分答案/最小化最大值/最大化最小值/第K小）
 https://leetcode.cn/circle/discuss/9oZFK9/ 单调栈（矩形系列/字典序最小/贡献法）
@@ -22,8 +23,9 @@ https://leetcode.cn/circle/discuss/YiXPXW/ 网格图（DFS/BFS/综合应用）
 https://leetcode.cn/circle/discuss/dHn9Vk/ 位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）
 https://leetcode.cn/circle/discuss/01LUak/ 图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）
 https://leetcode.cn/circle/discuss/tXLS3i/ 动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）
+https://leetcode.cn/circle/discuss/mOr1u6/ 常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）
 
-力扣题目分类汇总 
+力扣题目分类汇总
 https://leetcode.cn/circle/article/04PVPY/
 https://leetcode.cn/circle/discuss/vEFf96/
 
@@ -48,6 +50,7 @@ https://leetcode.cn/problems/apply-operations-to-make-string-empty/
 - [1014. 最佳观光组合](https://leetcode.cn/problems/best-sightseeing-pair/) 1730
 - [454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)
 - [2613. 美数对](https://leetcode.cn/problems/beautiful-pairs/)（会员题）
+- [2964. 可被整除的三元组数量](https://leetcode.cn/problems/number-of-divisible-triplet-sums/)（会员题）
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 异或 https://codeforces.com/problemset/problem/1800/F 1900
 
