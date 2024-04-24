@@ -229,12 +229,12 @@ $$
 \min\left(\left\lfloor\dfrac{\textit{mainTank}-1}{4}\right\rfloor, \textit{additionalTank}\right)
 $$
 
-例如 $\textit{mainTank}=9$，可以从副油箱得到 $2$ 升燃料（如果有的话）。
+对于 $\textit{mainTank}=8$ 只能算出 $1$，而对于 $\textit{mainTank}=9$，则可以恰好从副油箱得到 $2$ 升燃料（如果有的话）。
 
 所以答案为
 
 $$
-\left(\textit{mainTank} + \min\left(\left\lfloor\dfrac{\textit{mainTank}}{4}\right\rfloor, \textit{additionalTank}\right)\right)\cdot 10
+\left(\textit{mainTank} + \min\left(\left\lfloor\dfrac{\textit{mainTank}-1}{4}\right\rfloor, \textit{additionalTank}\right)\right)\cdot 10
 $$
 
 ```py [sol-Python3]
