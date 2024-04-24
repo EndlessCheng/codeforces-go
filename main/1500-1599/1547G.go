@@ -29,7 +29,7 @@ func cf1547G(_r io.Reader, _w io.Writer) {
 			inStack[v] = true
 			if inCycle {
 				ans[v] = -1
-			} else if ans[v] < 2 {
+			} else {
 				// 首次访问：ans[v] = 1
 				// 再次访问：ans[v] = 2
 				ans[v]++
