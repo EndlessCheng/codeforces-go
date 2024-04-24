@@ -30,16 +30,18 @@ func cf1547G(_r io.Reader, _w io.Writer) {
 			if inCycle {
 				ans[v] = -1
 			} else if ans[v] < 2 {
+				// 首次访问：ans[v] = 1
+				// 再次访问：ans[v] = 2
 				ans[v]++
 			}
 			for _, w := range g[v] {
 				if ans[w] < 0 {
 					continue
 				}
-				if inStack[w] { // w 在环上
+				if inCycle || inStack[w] { // w 在环上，再访问一次（w 至多访问三次）
 					dfs(w, true) // 从 w 出发能到达的点都在环上
-				} else if ans[w] < 2 || ans[w] == 2 && inCycle {
-					dfs(w, inCycle)
+				} else if ans[w] < 2 { // 除非后面发现 w 在环上，否则至多访问 w 两次
+					dfs(w, false)
 				}
 			}
 			inStack[v] = false
