@@ -59,8 +59,8 @@ func cf1789D(_r io.Reader, _w io.Writer) {
 			for s[k] == t[k] {
 				k--
 			}
-			s = xor(s, lsh(s, r-k))
 			ans = append(ans, r-k)
+			s = xor(s, lsh(s, r-k))
 		}
 
 		Fprintln(out, len(ans))
