@@ -87,6 +87,9 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	if err != nil {
 		fmt.Println(err)
 	}
+	if len(example) == 0 {
+		fmt.Println("未获取到样例，请手动添加")
+	}
 
 	exampleStr := ""
 	for _, p := range example {
