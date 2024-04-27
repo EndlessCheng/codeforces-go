@@ -191,7 +191,7 @@ func (t seg) set(o, val int) {
 func (t seg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t[o].val = a[l-1]
+		t[o].val = a[l]
 		return
 	}
 	m := (l + r) >> 1
@@ -278,14 +278,14 @@ func (t seg) findLast(o, l, r int, f func(int) bool) int {
 	return idx
 }
 
-// a 的下标从 0 开始
+// a 的下标从 0 开始，线段树的区间下标也从 0 开始
 func newSegmentTree(a []int) seg {
 	n := len(a)
 	if n == 0 {
 		panic("slice can't be empty")
 	}
 	t := make(seg, 2<<bits.Len(uint(n-1)))
-	t.build(a, 1, 1, n) // 如果希望下标从 0 到 n-1，这里的参数 l 和 r 可以改成 0 和 n-1
+	t.build(a, 1, 0, n-1)
 	return t
 }
 
@@ -389,7 +389,7 @@ func (t lazySeg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	t[o].todo = todoInit
 	if l == r {
-		t[o].sum = a[l-1]
+		t[o].sum = a[l]
 		return
 	}
 	m := (l + r) >> 1
@@ -477,14 +477,14 @@ func (t lazySeg) findLast(o, l, r int, f func(int) bool) int {
 	return idx
 }
 
-// a 的下标从 0 开始
+// a 的下标从 0 开始，线段树的区间下标也从 0 开始
 func newLazySegmentTree(a []int) lazySeg {
 	n := len(a)
 	if n == 0 {
 		panic("slice can't be empty")
 	}
 	t := make(lazySeg, 2<<bits.Len(uint(n-1)))
-	t.build(a, 1, 1, n) // 如果希望下标从 0 到 n-1，这里的参数 l 和 r 可以改成 0 和 n-1
+	t.build(a, 1, 0, n-1)
 	return t
 }
 
@@ -760,12 +760,12 @@ func (pstNode) mergeInfo(a, b int) int {
 }
 
 // t := make([]*pstNode, 1, maxVersion+1)
-// t[0] = buildPST(a, 1, len(a))
-// 或者 t := []*pstNode{buildPST(a, 1, len(a))}
+// t[0] = buildPST(a, 0, len(a)-1)
+// 或者 t := []*pstNode{buildPST(a, 0, len(a)-1)}
 func buildPST(a []int, l, r int) *pstNode {
 	o := &pstNode{l: l, r: r}
 	if l == r {
-		o.sum = a[l-1]
+		o.sum = a[l]
 		return o
 	}
 	m := (l + r) >> 1
