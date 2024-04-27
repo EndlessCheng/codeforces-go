@@ -117,7 +117,7 @@ public:
     vector<int> findColumnWidth(vector<vector<int>>& grid) {
         int n = grid[0].size();
         vector<int> ans(n);
-        for (size_t j = 0; j < n; j++) {
+        for (int j = 0; j < n; j++) {
             for (auto& row : grid) {
                 int len = row[j] <= 0;
                 for (int x = row[j]; x; x /= 10) {
