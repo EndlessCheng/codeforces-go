@@ -5,7 +5,7 @@
 例如 $x = 100100$，那么 $\textit{nums}[i]$ 一定在如下序列中：
 
 $$
-1\underline{00}1\underline{00},1\underline{00}1\underline{01},1\underline{00}1\underline{10},1\underline{00}1\underline{11},1\underline{01}1\underline{00},1\underline{01}1\underline{01}\cdots
+1\underline{00}1\underline{00},1\underline{00}1\underline{01},1\underline{00}1\underline{10},1\underline{00}1\underline{11},1\underline{01}1\underline{00},1\underline{01}1\underline{01},\cdots
 $$
 
 只看下划线上的数，是一个自然数序列
