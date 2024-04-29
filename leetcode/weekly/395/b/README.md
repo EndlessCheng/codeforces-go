@@ -6,7 +6,7 @@
 
 问题变成：
 
-- 判断 $\textit{nums}_2$ 是否为序列 ${\textit{nums}_1[i] + \textit{diff}}$ 的子序列。
+- 判断 $\textit{nums}_2$ 是否为序列 $\textit{nums}_1[i] + \textit{diff}$ 的子序列。
 
 做法同 [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)，可以用**同向双指针**解决。
 
@@ -24,7 +24,7 @@ class Solution:
             # 在 {nums1[i] + diff} 中找子序列 nums2
             j = 0
             for v in nums1[i:]:
-                if j < len(nums2) and nums2[j] == v + diff:
+                if nums2[j] == v + diff:
                     j += 1
                     # nums2 是 {nums1[i] + diff} 的子序列
                     if j == len(nums2):
@@ -45,7 +45,7 @@ class Solution {
             // 在 {nums1[i] + diff} 中找子序列 nums2
             int j = 0;
             for (int k = i; k < nums1.length; k++) {
-                if (j < nums2.length && nums2[j] == nums1[k] + diff && ++j == nums2.length) {
+                if (nums2[j] == nums1[k] + diff && ++j == nums2.length) {
                     // nums2 是 {nums1[i] + diff} 的子序列
                     return diff;
                 }
@@ -70,7 +70,7 @@ public:
             // 在 {nums1[i] + diff} 中找子序列 nums2
             int j = 0;
             for (int k = i; k < nums1.size(); k++) {
-                if (j < nums2.size() && nums2[j] == nums1[k] + diff && ++j == nums2.size()) {
+                if (nums2[j] == nums1[k] + diff && ++j == nums2.size()) {
                     // nums2 是 {nums1[i] + diff} 的子序列
                     return diff;
                 }
@@ -93,7 +93,7 @@ func minimumAddedInteger(nums1, nums2 []int) int {
 		// 在 {nums1[i] + diff} 中找子序列 nums2
 		j := 0
 		for _, v := range nums1[i:] {
-			if j < len(nums2) && nums2[j] == v+diff {
+			if nums2[j] == v+diff {
 				j++
 				// nums2 是 {nums1[i] + diff} 的子序列
 				if j == len(nums2) {

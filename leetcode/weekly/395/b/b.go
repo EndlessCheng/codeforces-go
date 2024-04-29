@@ -15,7 +15,7 @@ func minimumAddedInteger(nums1, nums2 []int) int {
 		// 在 {nums1[i] + diff} 中找子序列 nums2
 		j := 0
 		for _, v := range nums1[i:] {
-			if j < len(nums2) && nums2[j] == v+diff {
+			if nums2[j] == v+diff {
 				j++
 				// nums2 是 {nums1[i] + diff} 的子序列
 				if j == len(nums2) {
