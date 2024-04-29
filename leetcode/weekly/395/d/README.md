@@ -12,7 +12,7 @@
 
 ## 提示 2：滑动窗口
 
-怎么计算 $\texttt{distinct}$ 值 $\le \textit{upper}$ 的子数组个数？
+怎么计算 $\texttt{distinct}$ 值 $\le \textit{upper}$ 的子数组个数 $\textit{cnt}$？
 
 这又是一个套路，见[【题单】滑动窗口](https://leetcode.cn/circle/discuss/0viNMK/) 中的「不定长滑动窗口（求子数组个数）」，类似 [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)。
 
@@ -20,9 +20,9 @@
 
 用一个哈希表 $\textit{freq}$ 统计窗口（子数组）内的元素及其出现次数。
 
-枚举窗口右端点 $r$，把 $\textit{nums}[r]$ 加入 $\textit{freq}$。如果发现 $\textit{freq}$ 的大小超过 $\textit{upper}$，就不断增大窗口左端点 $l$，直到 $\textit{freq}$ 的大小 $\le \textit{upper}$ 为止。
+枚举窗口右端点 $r$，把 $\textit{nums}[r]$ 加入 $\textit{freq}$（出现次数加一）。如果发现 $\textit{freq}$ 的大小超过 $\textit{upper}$，就不断移出窗口左端点元素 $\textit{nums}[l]$（出现次数减一，如果出现次数等于 $0$ 就从 $\textit{freq}$ 中移除），直到 $\textit{freq}$ 的大小 $\le \textit{upper}$ 为止。
 
-此时右端点为 $r$，左端点为 $l,l+1,l+2,\cdots,r$ 的子数组都是满足要求的（$\texttt{distinct}$ 值 $\le \textit{upper}$），一共有 $r-l+1$ 个，加入统计的子数组个数 $\textit{cnt}$。
+此时右端点为 $r$，左端点为 $l,l+1,l+2,\cdots,r$ 的子数组都是满足要求的（$\texttt{distinct}$ 值 $\le \textit{upper}$），一共有 $r-l+1$ 个，加到子数组个数 $\textit{cnt}$ 中。
 
 ## 其它细节
 
