@@ -49,7 +49,7 @@ $$
 class Solution:
     def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
         MOD = 1_000_000_007
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, k: int) -> int:
             if i == 0:
                 return 1 if k == 1 and j <= limit else 0
@@ -307,6 +307,321 @@ func numberOfStableArrays(zero, one, limit int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(\textit{zero}\cdot \textit{one})$。
 - 空间复杂度：$\mathcal{O}(\textit{zero}\cdot \textit{one})$。
+
+## 方法三：容斥原理+乘法原理
+
+回顾一个经典的组合数学问题：
+
+- 把 $n$ 个无区别的小球，放入 $m$ 个有区别的盒子，不允许空盒，有多少种方案？
+
+这可以用**隔板法**解决，$n$ 个小球之间有 $n-1$ 个空隙，从中选择 $m-1$ 个空隙，插入 $m-1$ 个隔板，这样就把小球分成了 $m$ 组，并且每一组都是非空的，方案数就是 $n-1$ 选 $m-1$ 的组合数 $\dbinom {n-1} {m-1}$。
+
+回到原问题：
+
+- 把 $0$ 分成 $i$ 组，方案数就是 $f_0[i] = \dbinom {\textit{zero}-1} {i-1}$；
+- 把 $1$ 分成 $i$ 组，方案数就是 $f_1[i] = \dbinom {\textit{one}-1} {i-1}$。
+
+例如 $10110001$，相当于把 $0$ 分成了 $2$ 组，把 $1$ 分成了 $3$ 组。
+
+一般地，设 $1$ 分成了 $i$ 组，那么 $0$ 会分成多少组？
+
+有如下四种情况：
+
+- $0$ 分成 $i-1$ 组，例如 $10110001$。注意第一个数和最后一个数一定是 $1$。
+- $0$ 分成 $i$ 组，且第一个数是 $0$，例如 $01010011$。注意最后一个数一定是 $1$。
+- $0$ 分成 $i$ 组，且第一个数是 $1$，例如 $10100110$。注意最后一个数一定是 $0$。
+- $0$ 分成 $i+1$ 组，例如 $01010110$。注意第一个数和最后一个数一定是 $0$。
+
+由于 $0$ 和 $1$ 内部的分组方案是互相独立的，例如
+
+$$
+\begin{aligned}
+&11010001\\
+&10110001\\
+&10100011
+\end{aligned}
+$$
+
+$0$ 的分组不变，只有 $1$ 的分组在变。所以根据乘法原理，把 $1$ 分成 $i$ 组的方案数为
+
+$$
+(f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
+$$
+
+接下来，考虑 $\textit{limit}$ 带来的影响。推荐先看 [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/) 以及 [我的题解](https://leetcode.cn/problems/distribute-candies-among-children-ii/solution/o1-rong-chi-yuan-li-pythonjavacgo-by-end-2woj/)。
+
+根据**容斥原理**，对于 $f_0[i] = \dbinom {\textit{zero}-1} {i-1}$，我们需要减去「至少 $1$ 组有超过 $\textit{limit}$ 个 $0$」的方案数，再加上「至少 $2$ 组有超过 $\textit{limit}$ 个 $0$」的方案数，再减去「至少 $3$ 组有超过 $\textit{limit}$ 个 $0$」的方案数，……，直到「至少 $j$ 组有超过 $\textit{limit}$ 个 $0$」的方案数，$j$ 的值见下文。
+
+- 至少 $j$ 组有超过 $\textit{limit}$ 个 $0$，相当于先从 $i$ 组中选 $j$ 组，每组先放入 $\textit{limit}$ 个 $0$，然后再把剩下的 $\textit{zero} - j\cdot \textit{limit}$ 分成 $i$ 组（需要满足 $\textit{zero} - j\cdot \textit{limit} \ge i$），方案数为
+
+$$
+\dbinom {i} {j} \dbinom {\textit{zero} - j\cdot \textit{limit}-1} {i-1}
+$$
+
+所以
+
+$$
+f_0[i] = \dbinom {\textit{zero}-1} {i-1} + \sum_{j} (-1)^j \dbinom {i} {j} \dbinom {\textit{zero} - j\cdot \textit{limit}-1} {i-1}
+$$
+
+其中 $j\ge 1$ 且需要满足 $\textit{zero} - j\cdot \textit{limit} \ge i$，即
+
+$$
+1\le j\le \left\lfloor\dfrac{zero - i}{\textit{limit}}\right\rfloor
+$$
+
+同理有
+
+$$
+f_1[i] = \dbinom {\textit{one}-1} {i-1} + \sum_{j} (-1)^j \dbinom {i} {j} \dbinom {\textit{one} - j\cdot \textit{limit}-1} {i-1}
+$$
+
+其中
+
+$$
+1\le j\le \left\lfloor\dfrac{one - i}{\textit{limit}}\right\rfloor
+$$
+
+最终答案为
+
+$$
+\sum_{i} (f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
+$$
+
+其中 $i\le \textit{one}$ 且 $i\le \textit{zero}+1$ 且 $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$
+
+整理得
+
+$$
+\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil \le i\le \min(\textit{one},\textit{zero}+1)
+$$
+
+代码实现时，上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
+
+代码实现时，可以预处理阶乘及其 [逆元](https://oi-wiki.org/math/number-theory/inverse/#%E5%BF%AB%E9%80%9F%E5%B9%82%E6%B3%95)，利用公式 $C(n,m) = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+
+```py [sol-Python3]
+MOD = 1_000_000_007
+MX = 1001
+
+fac = [0] * MX  # f[i] = i!
+fac[0] = 1
+for i in range(1, MX):
+    fac[i] = fac[i - 1] * i % MOD
+
+inv_f = [0] * MX  # inv_f[i] = i!^-1
+inv_f[-1] = pow(fac[-1], -1, MOD)
+for i in range(MX - 1, 0, -1):
+    inv_f[i - 1] = inv_f[i] * i % MOD
+
+def comb(n: int, m: int) -> int:
+    return fac[n] * inv_f[m] * inv_f[n - m] % MOD
+
+class Solution:
+    def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
+        if zero > one:
+            zero, one = one, zero  # 保证空间复杂度为 O(min(zero, one))
+        f0 = [0] * (zero + 3)
+        for i in range((zero - 1) // limit + 1, zero + 1):
+            f0[i] = comb(zero - 1, i - 1)
+            for j in range(1, (zero - i) // limit + 1):
+                f0[i] = (f0[i] + (-1 if j % 2 else 1) * comb(i, j) * comb(zero - j * limit - 1, i - 1)) % MOD
+
+        ans = 0
+        for i in range((one - 1) // limit + 1, min(one, zero + 1) + 1):
+            f1 = comb(one - 1, i - 1)
+            for j in range(1, (one - i) // limit + 1):
+                f1 = (f1 + (-1 if j % 2 else 1) * comb(i, j) * comb(one - j * limit - 1, i - 1)) % MOD
+            ans = (ans + (f0[i - 1] + f0[i] * 2 + f0[i + 1]) * f1) % MOD
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 1001;
+
+    private static final long[] F = new long[MX]; // f[i] = i!
+    private static final long[] INV_F = new long[MX]; // inv_f[i] = i!^-1
+
+    static {
+        F[0] = 1;
+        for (int i = 1; i < MX; i++) {
+            F[i] = F[i - 1] * i % MOD;
+        }
+
+        INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+        for (int i = MX - 1; i > 0; i--) {
+            INV_F[i - 1] = INV_F[i] * i % MOD;
+        }
+    }
+
+    public int numberOfStableArrays(int zero, int one, int limit) {
+        if (zero > one) {
+            // swap，保证空间复杂度为 O(min(zero, one))
+            int t = zero;
+            zero = one;
+            one = t;
+        }
+        long[] f0 = new long[zero + 3];
+        for (int i = (zero - 1) / limit + 1; i <= zero; i++) {
+            f0[i] = comb(zero - 1, i - 1);
+            for (int j = 1; j <= (zero - i) / limit; j++) {
+                f0[i] = (f0[i] + (1 - j % 2 * 2) * comb(i, j) * comb(zero - j * limit - 1, i - 1)) % MOD;
+            }
+        }
+
+        long ans = 0;
+        for (int i = (one - 1) / limit + 1; i <= Math.min(one, zero + 1); i++) {
+            long f1 = comb(one - 1, i - 1);
+            for (int j = 1; j <= (one - i) / limit; j++) {
+                f1 = (f1 + (1 - j % 2 * 2) * comb(i, j) * comb(one - j * limit - 1, i - 1)) % MOD;
+            }
+            ans = (ans + (f0[i - 1] + f0[i] * 2 + f0[i + 1]) * f1) % MOD;
+        }
+        return (int) ((ans + MOD) % MOD); // 保证结果非负
+    }
+
+    private long comb(int n, int m) {
+        return F[n] * INV_F[m] % MOD * INV_F[n - m] % MOD;
+    }
+
+    private static long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MX = 1001;
+
+long long F[MX]; // F[i] = i!
+long long INV_F[MX]; // INV_F[i] = i!^-1
+
+long long pow(long long x, int n) {
+    long long res = 1;
+    for (; n; n /= 2) {
+        if (n % 2) {
+            res = res * x % MOD;
+        }
+        x = x * x % MOD;
+    }
+    return res;
+}
+
+auto init = [] {
+    F[0] = 1;
+    for (int i = 1; i < MX; i++) {
+        F[i] = F[i - 1] * i % MOD;
+    }
+
+    INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+    for (int i = MX - 1; i; i--) {
+        INV_F[i - 1] = INV_F[i] * i % MOD;
+    }
+    return 0;
+}();
+
+long long comb(int n, int m) {
+    return F[n] * INV_F[m] % MOD * INV_F[n - m] % MOD;
+}
+
+class Solution {
+public:
+    int numberOfStableArrays(int zero, int one, int limit) {
+        if (zero > one) {
+            swap(zero, one); // 保证空间复杂度为 O(min(zero, one))
+        }
+        vector<long long> f0(zero + 3);
+        for (int i = (zero - 1) / limit + 1; i <= zero; i++) {
+            f0[i] = comb(zero - 1, i - 1);
+            for (int j = 1; j <= (zero - i) / limit; j++) {
+                f0[i] = (f0[i] + (1 - j % 2 * 2) * comb(i, j) * comb(zero - j * limit - 1, i - 1)) % MOD;
+            }
+        }
+
+        long long ans = 0;
+        for (int i = (one - 1) / limit + 1; i <= min(one, zero + 1); i++) {
+            long long f1 = comb(one - 1, i - 1);
+            for (int j = 1; j <= (one - i) / limit; j++) {
+                f1 = (f1 + (1 - j % 2 * 2) * comb(i, j) * comb(one - j * limit - 1, i - 1)) % MOD;
+            }
+            ans = (ans + (f0[i - 1] + f0[i] * 2 + f0[i + 1]) * f1) % MOD;
+        }
+        return (ans + MOD) % MOD; // 保证结果非负
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+const mx = 1001
+
+var f [mx]int    // f[i] = i!
+var invF [mx]int // invF[i] = i!^-1
+
+func init() {
+	f[0] = 1
+	for i := 1; i < mx; i++ {
+		f[i] = f[i-1] * i % mod
+	}
+
+	invF[mx-1] = pow(f[mx-1], mod-2)
+	for i := mx - 1; i > 0; i-- {
+		invF[i-1] = invF[i] * i % mod
+	}
+}
+
+func comb(n, m int) int {
+	return f[n] * invF[m] % mod * invF[n-m] % mod
+}
+
+func numberOfStableArrays(zero, one, limit int) (ans int) {
+	if zero > one {
+		zero, one = one, zero // 保证空间复杂度为 O(min(zero, one))
+	}
+	f0 := make([]int, zero+3)
+	for i := (zero-1)/limit + 1; i <= zero; i++ {
+		f0[i] = comb(zero-1, i-1)
+		for j := 1; j <= (zero-i)/limit; j++ {
+			f0[i] = (f0[i] + (1-j%2*2)*comb(i, j)*comb(zero-j*limit-1, i-1)) % mod
+		}
+	}
+
+	for i := (one-1)/limit + 1; i <= min(one, zero+1); i++ {
+		f1 := comb(one-1, i-1)
+		for j := 1; j <= (one-i)/limit; j++ {
+			f1 = (f1 + (1-j%2*2)*comb(i, j)*comb(one-j*limit-1, i-1)) % mod
+		}
+		ans = (ans + (f0[i-1]+f0[i]*2+f0[i+1])*f1) % mod
+	}
+	return (ans + mod) % mod // 保证结果非负
+}
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}\left(\dfrac{\textit{zero}\cdot\textit{one}}{\textit{limit}}\right)$。忽略预处理的时间和空间。
+- 空间复杂度：$\mathcal{O}(\min(\textit{zero},\textit{one}))$。
 
 ## 分类题单
 
