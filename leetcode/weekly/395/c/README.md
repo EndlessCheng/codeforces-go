@@ -167,6 +167,10 @@ func minEnd(n, x int) int64 {
 - 时间复杂度：$\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 更快的做法？
+
+请看《Hacker's Delight》第 7.5 节。
+
 ## 思考题
 
 额外输入一个 $\textit{forbidden}$ 数组，表示禁止出现在 $\textit{nums}$ 中的数。
