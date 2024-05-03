@@ -120,6 +120,7 @@ func init() {
 		"point2", "p2",
 		"point3", "p3",
 		"pairs", "ps",
+		"query", "qs",
 		"queries", "qs",
 		"startPos", "st",
 		"start", "st",
