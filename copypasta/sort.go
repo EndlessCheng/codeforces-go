@@ -8,10 +8,13 @@ import (
 )
 
 /*
+本页面力扣题目已整理至【题单】二分算法（二分答案/最小化最大值/最大化最小值/第K小）
+https://leetcode.cn/circle/discuss/SqopEo/
+
 https://en.algorithmica.org/hpc/data-structures/binary-search/
 BFPRT https://en.wikipedia.org/wiki/Median_of_medians
-sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
+sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
 利用这题测试一下，你有没有学到二分的本质？
 https://codeforces.com/contest/1945/problem/E
@@ -25,12 +28,15 @@ LC853 https://leetcode.cn/problems/car-fleet/
 - [704. 二分查找](https://leetcode.cn/problems/binary-search/)
 - [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) 1196 *应用
 - [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) 1477 *应用
+- [2389. 和有限的最长子序列](https://leetcode.cn/problems/longest-subsequence-with-limited-sum/)
 - [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721 *应用
 - [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
 - [1182. 与目标颜色间的最短距离](https://leetcode.cn/problems/shortest-distance-to-target-color/)（会员题）
 - [2819. 购买巧克力后的最小相对损失](https://leetcode.cn/problems/minimum-relative-loss-after-buying-chocolates/)（会员题）
 - [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
+- [2838. Maximum Coins Heroes Can Collect](https://leetcode.cn/problems/maximum-coins-heroes-can-collect/)（会员题）
 https://codeforces.com/problemset/problem/600/B 1300
+https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
@@ -61,23 +67,28 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
 - [2604. 吃掉所有谷子的最短时间](https://leetcode.cn/problems/minimum-time-to-eat-all-grains/)（会员题）
 - [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
-https://codeforces.com/contest/1701/problem/C 1400
-https://codeforces.com/contest/670/problem/D2 1500
+https://codeforces.com/problemset/problem/1701/C 1400
+https://codeforces.com/problemset/problem/670/D2 1500
+https://codeforces.com/problemset/problem/991/C  1500
 https://codeforces.com/problemset/problem/1610/C 1600
-https://codeforces.com/contest/1843/problem/E 1600
+https://codeforces.com/problemset/problem/1665/C 1600
+https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
-DP https://codeforces.com/contest/883/problem/I 1900
+https://codeforces.com/problemset/problem/883/I 1900 DP
+https://codeforces.com/problemset/problem/1260/D 1900 区间合并
+https://codeforces.com/problemset/problem/1955/H
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
 - [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
 - [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/) 1940
 - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
-- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/) 1965
+- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/) 1965 *变形：最大化最小值
 - [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/) 2081
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
+- [774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)（会员题）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/contest/1918/problem/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
@@ -85,12 +96,12 @@ https://codeforces.com/problemset/problem/1837/F 2400
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 - [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
    同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
-- [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 - [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
 - [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
-http://codeforces.com/problemset/problem/460/C 1700
+https://codeforces.com/problemset/problem/1623/C 1600
+https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
 
 ### 第 K 小/大（部分题目也可以用堆解决）
@@ -98,6 +109,7 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
 - [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
+- [878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/) 1897
 - [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
 - [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
 - [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
@@ -107,6 +119,7 @@ https://codeforces.com/problemset/problem/1550/E 2500
 综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 ### 其它
+- [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/) 1182
 - [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
 - [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
 - [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
@@ -189,12 +202,41 @@ func sortCollections() {
 
 		// 判断是否为非降序列
 		sort.IntsAreSorted(a)
+		slices.IsSorted(a)
 
 		// 判断是否为严格递增序列
 		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] <= a[j] })
+		slices.IsSortedFunc(a, func(x, y int) int { return x - y - 1 })
 
 		// 判断是否为非增序列
 		sort.IsSorted(sort.Reverse(sort.IntSlice(a)))
+		slices.IsSortedFunc(a, func(x, y int) int { return y - x })
+
+		// 判断是否为严格递减序列
+		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] >= a[j] })
+		slices.IsSortedFunc(a, func(x, y int) int { return y - x - 1 })
+	}
+
+	// a 是一个非降的有很多重复元素的数组，返回 a 中不同元素个数
+	// 时间复杂度 O(klogn)，其中 k 是 a 中不同元素个数
+	distinctAsc := func(a []int) (cnt int) {
+		for len(a) > 0 {
+			cnt++
+			i := sort.SearchInts(a, a[0]+1)
+			a = a[i:]
+		}
+		return
+	}
+
+	// a 是一个非增的有很多重复元素的数组，返回 a 中不同元素个数
+	// 时间复杂度 O(klogn)，其中 k 是 a 中不同元素个数
+	distinctDesc := func(a []int) (cnt int) {
+		for len(a) > 0 {
+			cnt++
+			i := sort.Search(len(a), func(i int) bool { return a[i] < a[0] })
+			a = a[i:]
+		}
+		return
 	}
 
 	// 在多个左闭右开区间中，查找与 [l,r) 有交集的所有区间
@@ -698,6 +740,7 @@ func sortCollections() {
 	}
 
 	_ = []interface{}{
+		distinctAsc, distinctDesc,
 		searchIntervals,
 		minSwaps,
 		insertionSort,
