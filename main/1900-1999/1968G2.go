@@ -28,7 +28,12 @@ func cf1968G2(_r io.Reader, _w io.Writer) {
 				z[i]++
 			}
 		}
+
+		memo := make([]int, n+1)
 		getK := func(lcp int) int {
+			if memo[lcp] > 0 {
+				return memo[lcp]
+			}
 			cnt := 1
 			for i := lcp; i <= n-lcp; {
 				if z[i] >= lcp {
@@ -38,24 +43,11 @@ func cf1968G2(_r io.Reader, _w io.Writer) {
 					i++
 				}
 			}
+			memo[lcp] = cnt
 			return cnt
 		}
-
-		f := make([]int, n+1)
-		i := r
-		for lcp := 1; lcp*lcp <= n; lcp++ {
-			// 给定 LCP，最多分多少段？
-			for k := getK(lcp); i > k; i-- {
-				f[i] = lcp - 1
-			}
-		}
-		for ; i >= l; i-- {
-			// 给定 i，分成 i 段，LCP 是多少？
-			f[i] = sort.Search(n/i, func(lcp int) bool { return getK(lcp+1) < i })
-		}
-
-		for _, v := range f[l : r+1] {
-			Fprint(out, v, " ")
+		for i := l; i <= r; i++ {
+			Fprint(out, sort.Search(n/i, func(lcp int) bool { return getK(lcp+1) < i }), " ")
 		}
 		Fprintln(out)
 	}
