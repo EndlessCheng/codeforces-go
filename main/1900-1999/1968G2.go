@@ -43,7 +43,7 @@ func cf1968G2(_r io.Reader, _w io.Writer) {
 
 		f := make([]int, n+1)
 		i := r
-		for lcp := 1; lcp*lcp <= n*9; lcp++ {
+		for lcp := 1; lcp*lcp <= n; lcp++ {
 			// 给定 LCP，最多分多少段？
 			for k := getK(lcp); i > k; i-- {
 				f[i] = lcp - 1
