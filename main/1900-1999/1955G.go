@@ -11,12 +11,20 @@ func cf1955G(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	const mx = 1_000_001
-	D := [mx][]int{}
-	for i := 1; i < mx; i++ {
-		for j := i; j < mx; j += i {
-			D[j] = append(D[j], i)
+	divisors := func(n int) (ds []int) {
+		ds2 := []int{}
+		for d := 1; d*d <= n; d++ {
+			if n%d == 0 {
+				ds = append(ds, d)
+				if d*d < n {
+					ds2 = append(ds2, n/d)
+				}
+			}
 		}
+		for i := len(ds2) - 1; i >= 0; i-- {
+			ds = append(ds, ds2[i])
+		}
+		return
 	}
 	gcd := func(a, b int) int {
 		for a != 0 {
@@ -37,7 +45,7 @@ func cf1955G(_r io.Reader, _w io.Writer) {
 			}
 			vis[i] = make([]int, m)
 		}
-		ds := D[gcd(a[0][0], a[n-1][m-1])]
+		ds := divisors(gcd(a[0][0], a[n-1][m-1]))
 		for i := len(ds) - 1; ; i-- {
 			d := ds[i]
 			var dfs func(int, int) bool
