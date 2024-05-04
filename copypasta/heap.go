@@ -6,6 +6,9 @@ import (
 )
 
 /*
+本页面力扣题目已整理至【题单】常用数据结构
+https://leetcode.cn/circle/discuss/mOr1u6/
+
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
@@ -26,6 +29,7 @@ https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
 https://codeforces.com/problemset/problem/1862/E 1600
+https://codeforces.com/problemset/problem/1196/F 2200
 
 #### 懒删除
 本页面搜索【懒删除堆】
@@ -75,9 +79,11 @@ https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 - [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 题单 https://www.luogu.com.cn/training/8793
+https://www.luogu.com.cn/problem/P3045
 https://codeforces.com/problemset/problem/1526/C2 1600
 https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
 https://codeforces.com/problemset/problem/730/I 2000
+- 加强版 https://atcoder.jp/contests/agc018/tasks/agc018_c
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
@@ -188,6 +194,7 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // 懒删除堆
 // LC716 https://leetcode.cn/problems/max-stack/
 // LC3092 https://leetcode.cn/problems/most-frequent-ids/
+// https://codeforces.com/problemset/problem/1883/D 1500
 // https://codeforces.com/problemset/problem/796/C 1900
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 type lazyHeap struct {
