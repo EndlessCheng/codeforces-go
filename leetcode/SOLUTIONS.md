@@ -4,7 +4,7 @@
 
 相同知识点的题目，按照 [难度分](https://zerotrac.github.io/leetcode_problem_rating/) 排序。
 
-|知识点|题目|题解|难度分|
+|知识点|题目|题解|难度|
 |---|---|---|---|
 |哈希表|[1. 两数之和](https://leetcode.cn/problems/two-sum/)|[【动画】从两数之和中，我们可以学到什么？](https://leetcode.cn/problems/two-sum/solution/dong-hua-cong-liang-shu-zhi-he-zhong-wo-0yvmj/)|简单|
 |链表|[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
