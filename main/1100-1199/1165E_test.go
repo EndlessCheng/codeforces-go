@@ -25,5 +25,5 @@ inputCopy
 4 2
 outputCopy
 20`
-	testutil.AssertEqualCase(t, rawText, -1, Sol1165E)
+	testutil.AssertEqualCase(t, rawText, -1, cf1165E)
 }

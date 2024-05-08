@@ -4,38 +4,31 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"slices"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func Sol1165E(reader io.Reader, writer io.Writer) {
-	in := bufio.NewReader(reader)
-	out := bufio.NewWriter(writer)
-	defer out.Flush()
-
-	const mod int64 = 998244353
-	var n int
+// https://space.bilibili.com/206214
+func cf1165E(_r io.Reader, out io.Writer) {
+	in := bufio.NewReader(_r)
+	const mod = 998244353
+	var n, ans int
 	Fscan(in, &n)
-	a := make([]int64, n)
+	a := make([]int, n)
 	for i := range a {
 		Fscan(in, &a[i])
-		// https://oeis.org/A003991
-		a[i] *= int64(n-i) * int64(i+1)
+		a[i] *= (n - i) * (i + 1)
 	}
-	sort.Slice(a, func(i, j int) bool { return a[i] > a[j] })
+	slices.SortFunc(a, func(a, b int) int { return b - a })
 	b := make([]int, n)
 	for i := range b {
 		Fscan(in, &b[i])
 	}
-	sort.Ints(b)
+	slices.Sort(b)
 
-	ans := int64(0)
-	for i, ai := range a {
-		ans = (ans + ai%mod*int64(b[i])) % mod
+	for i, v := range a {
+		ans = (ans + v%mod*b[i]) % mod
 	}
 	Fprint(out, ans)
 }
 
-//func main() {
-//	Sol1165E(os.Stdin, os.Stdout)
-//}
+//func main() { cf1165E(os.Stdin, os.Stdout) }
