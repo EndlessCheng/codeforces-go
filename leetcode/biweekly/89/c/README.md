@@ -1,12 +1,12 @@
-[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 已出炉，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
-
 ## 方法一：二分答案
 
-「最小化最大值」就是二分答案的代名词。
+「最小化最大值」就是二分答案的代名词。我们猜测一个上界 $\textit{limit}$，即要求操作后所有元素均不超过 $\textit{limit}$。由于 $\textit{limit}$ 越大越能够满足，越小越无法满足，有**单调性**，可以二分答案。
 
-二分答案 $\textit{limit}$，那么我们可以从后往前模拟：如果 $\textit{nums}[i]>\textit{limit}$，那么应当去掉多余的 $\textit{extra}=\textit{nums}[i]-\textit{limit}$ 加到 $\textit{nums}[i-1]$ 上，最后如果 $\textit{nums}[0]\le\textit{limit}$，则二分判定成功。
+从后往前模拟：如果 $\textit{nums}[i]>\textit{limit}$，那么应当去掉多余的 $\textit{extra}=\textit{nums}[i]-\textit{limit}$ 加到 $\textit{nums}[i-1]$ 上，最后如果 $\textit{nums}[0]\le\textit{limit}$，则二分判定成功。
 
 代码实现时可以不用修改 $\textit{nums}$，而是维护 $\textit{extra}$ 变量。
+
+附：[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第三题。
 
 ```py [sol-Python3]
 class Solution:
@@ -148,14 +148,17 @@ func minimizeArrayValue(nums []int) (ans int) {
 - 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$O(1)$，仅用到若干变量。
 
-### 分类题单
+## 分类题单
 
-- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
-- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
-- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-- [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-- [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 
-更多题单，点我个人主页 - 讨论发布。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
