@@ -79,8 +79,7 @@ func fetchTaskNum(contestID string) (taskNum int, err error) {
 
 func login(username, password string) (session *grequests.Session, err error) {
 	session = grequests.NewSession(&grequests.RequestOptions{
-		UserAgent:    ua,
-		UseCookieJar: true,
+		UserAgent: ua,
 	})
 
 	// "touch" home page to get CSRF token
@@ -239,7 +238,7 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	submitURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submit?taskScreenName=%s", contestName, problemName)
 	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
 	shortestURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
-	
+
 	if !isContest {
 		open.Run(statusURL)
 	}
@@ -327,8 +326,7 @@ func genAtCoderContestTemplates(contestID string, taskNum, retryTimes int) error
 
 	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
 	session := grequests.NewSession(&grequests.RequestOptions{
-		UserAgent:    ua,
-		UseCookieJar: true,
+		UserAgent: ua,
 	})
 
 	tasksHome := fmt.Sprintf("https://atcoder.jp/contests/%s/tasks", contestID)
@@ -401,8 +399,7 @@ func GenAtCoderContestTemplates(contestID string) error {
 func GenAtCoderProblemTemplate(problemURL string) error {
 	const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36"
 	session := grequests.NewSession(&grequests.RequestOptions{
-		UserAgent:    ua,
-		UseCookieJar: true,
+		UserAgent: ua,
 	})
 	return genTemplates(session, problemURL, false)
 }
