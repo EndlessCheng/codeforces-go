@@ -71,8 +71,13 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 			if targetCaseNum != 0 {
 				_f()
 			}
-			actualOutput := removeExtraSpace(mockWriter.String())
 
+			// 还有剩余未读入的内容
+			if mockReader.Len() > 0 {
+				t.Log("[警告] 有未读入的内容")
+			}
+
+			actualOutput := removeExtraSpace(mockWriter.String())
 			if !assert.Equal(t, expectedOutput, actualOutput, "Wrong Answer %d\nInput:\n%s", curCaseNum+1, inputInfo) {
 				allPassed = false
 				handleOutput(actualOutput)
