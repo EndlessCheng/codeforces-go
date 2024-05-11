@@ -393,13 +393,13 @@ func findMinimumTime(tasks [][]int) (ans int) {
 
 ## 方法三：栈+二分查找
 
-由于每次都是从右到左新增时间点，相当于把若干右侧的区间合并成一个大区间，因此可以用栈来优化。
+由于每次都是**从右到左**新增时间点，如果把连续的时间点看成闭区间，那么从右到左新增时间点，会把若干**右侧**的区间合并成一个大区间，也就是从 $\textit{end}$ 倒着开始，先合并右边，再合并左边，因此可以用栈来优化。
 
 栈中维护闭区间的左右端点，以及从栈底到栈顶的区间长度之和（类似前缀和）。
 
 由于一旦发现区间相交就立即合并，所以栈中保存的都是**不相交**的区间。
 
-合并前，先尝试在栈中**二分查找**包含左端点 $\textit{start}$ 的区间。由于栈中还保存了区间长度之和，所以可以算出 $[\textit{start},\textit{end}]$ 范围内的运行中的时间点个数。
+合并前，先尝试在栈中**二分查找**包含左端点 $\textit{start}$ 的区间。由于栈中还保存了区间长度之和，所以可以快速得到 $[\textit{start},\textit{end}]$ 范围内的运行中的时间点个数。
 
 如果还需要新增时间点，那么就从右到左合并，具体细节见代码。
 
@@ -410,7 +410,7 @@ class Solution:
     def findMinimumTime(self, tasks: List[List[int]]) -> int:
         tasks.sort(key=lambda t: t[1])
         # 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
-        st = [(-2, -2, 0)]  # 哨兵
+        st = [(-2, -2, 0)]  # 哨兵，保证不和任何区间相交
         for start, end, d in tasks:
             _, r, s = st[bisect_left(st, (start,)) - 1]
             d -= st[-1][2] - s  # 去掉运行中的时间点
@@ -431,7 +431,7 @@ class Solution {
         Arrays.sort(tasks, (a, b) -> a[1] - b[1]);
         // 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
         List<int[]> st = new ArrayList<>();
-        st.add(new int[]{-2, -2, 0}); // 哨兵
+        st.add(new int[]{-2, -2, 0}); // 哨兵，保证不和任何区间相交
         for (int[] t : tasks) {
             int start = t[0], end = t[1], d = t[2];
             int[] e = st.get(lowerBound(st, start) - 1);
@@ -477,7 +477,7 @@ public:
     int findMinimumTime(vector<vector<int>>& tasks) {
         ranges::sort(tasks, [](auto& a, auto& b) { return a[1] < b[1]; });
         // 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
-        vector<array<int, 3>> st{{-2, -2, 0}}; // 哨兵
+        vector<array<int, 3>> st{{-2, -2, 0}}; // 哨兵，保证不和任何区间相交
         for (auto& t : tasks) {
             int start = t[0], end = t[1], d = t[2];
             auto [_, r, s] = *--lower_bound(st.begin(), st.end(), start, [](const auto& a, int b) {
@@ -507,12 +507,12 @@ func findMinimumTime(tasks [][]int) int {
     slices.SortFunc(tasks, func(a, b []int) int { return a[1] - b[1] })
     // 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
     type tuple struct{ l, r, s int }
-    st := []tuple{{-2, -2, 0}} // 哨兵
+    st := []tuple{{-2, -2, 0}} // 哨兵，保证不和任何区间相交
     for _, p := range tasks {
         start, end, d := p[0], p[1], p[2]
         i := sort.Search(len(st), func(i int) bool { return st[i].l >= start }) - 1
         d -= st[len(st)-1].s - st[i].s // 去掉运行中的时间点
-        if start <= st[i].r {          // start 在区间 st[i] 内
+        if start <= st[i].r { // start 在区间 st[i] 内
             d -= st[i].r - start + 1 // 去掉运行中的时间点
         }
         if d <= 0 {
