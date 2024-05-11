@@ -36,7 +36,7 @@ func isTLE(f func()) bool {
 
 func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc) {
 	if len(testCases) == 0 {
-		panic("empty testcase")
+		t.Error("empty testcase")
 		return
 	}
 
