@@ -313,6 +313,11 @@ func minCostToEqualizeArray(nums []int, c1 int, c2 int) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 相似题目
+
+- [1753. 移除石子的最大得分](https://leetcode.cn/problems/maximum-score-from-removing-stones/) 1488
+- [1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/) 1804
+
 ## 分类题单
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
