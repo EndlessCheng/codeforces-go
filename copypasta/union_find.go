@@ -3,6 +3,7 @@ package copypasta
 import (
 	. "fmt"
 	"io"
+	"slices"
 )
 
 /* 并查集
@@ -85,6 +86,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // - https://codeforces.com/problemset/problem/1157/E
 // - https://codeforces.com/problemset/problem/1791/F
 // todo https://codeforces.com/contest/884/problem/E
+// https://codeforces.com/problemset/problem/1416/D 2600 DSU 重构树
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
@@ -199,7 +201,8 @@ func _(n int) {
 	// 区间并查集 / 涂色并查集 / 刷墙并查集
 	// LC1851 https://leetcode.cn/problems/minimum-interval-to-include-each-query/ 2286
 	// LC2158 https://leetcode.cn/problems/amount-of-new-area-painted-each-day/
-	// https://codeforces.com/problemset/problem/724/D
+	// https://codeforces.com/problemset/problem/724/D 1900
+	// https://codeforces.com/problemset/problem/371/D 1800
 	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
 		//if l < 0 {
 		//	l = 0
@@ -245,6 +248,32 @@ func _(n int) {
 		return
 	}
 
+	// 同一连通块内的数字从小到大排序
+	// https://codeforces.com/contest/1971/problem/G
+	sortCC := func(a []int) {
+		n := len(a)
+		comps := make([][]int, n)
+		for i := 0; i < n; i++ {
+			rt := find(i)
+			comps[rt] = append(comps[rt], i)
+		}
+		for _, cc := range comps {
+			if cc == nil {
+				continue
+			}
+			// 注意 cc 已经是有序的
+			// 收集连通块内的元素，排序，然后重新填回去
+			b := make([]int, len(cc))
+			for ci, i := range cc {
+				b[ci] = a[i]
+			}
+			slices.Sort(b)
+			for ci, i := range cc {
+				a[i] = b[ci]
+			}
+		}
+	}
+
 	{
 		// 按秩合并
 		rank := make([]int, n)
@@ -264,7 +293,7 @@ func _(n int) {
 		_ = merge
 	}
 
-	_ = []interface{}{merge, same, mergeBig, mergeRangeTo, getRoots, countRoots, getComps}
+	_ = []interface{}{merge, same, mergeBig, mergeRangeTo, getRoots, countRoots, getComps, sortCC}
 }
 
 // 二维并查集
@@ -291,10 +320,14 @@ func moveRobot(start ufPoint, command string) ufPoint {
 		e.merge(p, ufPoint{p.x, p.y + 1})
 		s.merge(p, ufPoint{p.x + 1, p.y})
 		switch c {
-		case 'W': p = w.find(p)
-		case 'N': p = n.find(p)
-		case 'E': p = e.find(p)
-		default:  p = s.find(p)
+		case 'W':
+			p = w.find(p)
+		case 'N':
+			p = n.find(p)
+		case 'E':
+			p = e.find(p)
+		default:
+			p = s.find(p)
 		}
 	}
 	return p
