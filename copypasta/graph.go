@@ -3781,6 +3781,18 @@ func (G *graph) sat2(n int) []bool {
 	// 令 a=0，即 addEdge(x,1,x,0)，表示 x 恒为假
 	// 令 a=1，即 addEdge(x,0,x,1)，表示 x 恒为真
 	// https://www.luogu.com.cn/problem/P4782
+	// https://codeforces.com/contest/1971/problem/H addClause(abs(a),a>0,abs(b),b>0)
+	addClause := func(x int, a bool, y int, b bool) {
+		va := 0
+		if a {
+			va = 1
+		}
+		vb := 0
+		if b {
+			vb = 1
+		}
+		addEdge(x, va^1, y, vb)
+	}
 
 	// read input & addEdge ...
 
@@ -3797,7 +3809,7 @@ func (G *graph) sat2(n int) []bool {
 		ans[i] = id < sid[i+n]
 	}
 
-	_ = addEdge
+	_ = addClause
 	return ans
 }
 
