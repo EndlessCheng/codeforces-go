@@ -1,6 +1,9 @@
 package copypasta
 
-import "math/bits"
+import (
+	"math/bits"
+	"slices"
+)
 
 /* 组合数学
 
@@ -24,6 +27,7 @@ https://codeforces.com/problemset/problem/617/B 1300
 - 用 DP 推导，然后尝试优化
 - 假设法
 - [1359. 有效的快递序列数目](https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/) 1723
+- [2147. 分隔长廊的方案数](https://leetcode.cn/problems/number-of-ways-to-divide-a-long-corridor/) 1915
 LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
 - [1643. 第 K 条最小指令](https://leetcode.cn/problems/kth-smallest-instructions/) 2080
 LC2842 https://leetcode.cn/problems/count-k-subsequences-of-a-string-with-maximum-beauty/ 2092
@@ -35,6 +39,7 @@ LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
+https://codeforces.com/problemset/problem/1475/E 1600
 https://codeforces.com/problemset/problem/213/B
 https://codeforces.com/problemset/problem/300/C
 https://codeforces.com/problemset/problem/520/E
@@ -84,6 +89,7 @@ todo NOI 一轮复习 IV：组合计数 https://www.luogu.com.cn/blog/ix-35/noi-
 上式亦为 C(n, 0) + C(n+1, 1) + ... + C(n+m, m) = C(n+m+1, m)
    https://atcoder.jp/contests/abc154/tasks/abc154_f
    https://codeforces.com/contest/1696/problem/E
+   https://codeforces.com/contest/1967/problem/C
 范德蒙德恒等式 Vandermonde's identity https://en.wikipedia.org/wiki/Vandermonde%27s_identity
 ∑i=[0..k] C(n,i)*C(m,k-i) = C(n+m,k)   https://www.luogu.com.cn/problem/P7386
 特别地：∑i=[0..m] C(n,i)*C(m,i) = ∑i=[0..m] C(n,i)*C(m,m-i) = C(n+m,m)   https://codeforces.com/problemset/problem/785/D
@@ -157,6 +163,9 @@ todo 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/neder
     https://studyingfather.com/archives/3000
     https://blog.csdn.net/visit_world/article/details/52734860
     相关题目 https://www.luogu.com.cn/problem/P6189
+https://oeis.org/A002865 Number of partitions of n that do not contain 1 as a part
+- a(n) ~ Pi * exp(sqrt(2*n/3)*Pi) / (12*sqrt(2)*n^(3/2)) * (1 - (3*sqrt(3/2)/Pi + 13*Pi/(24*sqrt(6)))/sqrt(n) + (217*Pi^2/6912 + 9/(2*Pi^2) + 13/8)/n)
+- 用来计算 https://leetcode.cn/problems/combination-sum/ 的时间复杂度
 https://oeis.org/A104513 The number of consecutive integers > 1 beginning with A104512(n), the sum of which equals n, or 0 if impossible.
 						a(n)=0 iff n=2^k
 https://oeis.org/A069283 将 n 分拆成至少两个连续整数的方法数 = n 的奇因子数 - 1
@@ -306,39 +315,37 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 讨论 https://codeforces.com/blog/entry/84822
 */
 
-// 一种避免不小心把数组开小的写法
+// 一种避免不小心把数组开小的写法（无需思考要开多大的数组）
 // https://codeforces.com/problemset/submission/1794/205053722
 type comb struct{ _f, _invF []int }
 
-func newComb(mx int) *comb {
-	c := &comb{[]int{1}, []int{1}}
-	c._init(mx)
-	return c
+func newComb() *comb {
+	return &comb{[]int{1}, []int{1}}
 }
 
-func (c *comb) _init(mx int) {
+func (c *comb) _grow(mx int) {
 	n := len(c._f)
-	c._f = append(make([]int, 0, mx+1), c._f...)[:mx+1]
+	c._f = slices.Grow(c._f, mx+1)[:mx+1]
 	for i := n; i <= mx; i++ {
-		c._f[i] = c._f[i-1] * i % _mod
+		c._f[i] = c._f[i-1] * i % mod
 	}
-	c._invF = append(make([]int, 0, mx+1), c._invF...)[:mx+1]
-	c._invF[mx] = pow(c._f[mx], _mod-2)
+	c._invF = slices.Grow(c._invF, mx+1)[:mx+1]
+	c._invF[mx] = pow(c._f[mx], mod-2)
 	for i := mx; i > n; i-- {
-		c._invF[i-1] = c._invF[i] * i % _mod
+		c._invF[i-1] = c._invF[i] * i % mod
 	}
 }
 
 func (c *comb) f(n int) int {
 	if n >= len(c._f) {
-		c._init(n * 2)
+		c._grow(n * 2)
 	}
 	return c._f[n]
 }
 
 func (c *comb) invF(n int) int {
 	if n >= len(c._f) {
-		c._init(n * 2)
+		c._grow(n * 2)
 	}
 	return c._invF[n]
 }
@@ -347,7 +354,14 @@ func (c *comb) c(n, k int) int {
 	if k < 0 || k > n {
 		return 0
 	}
-	return c.f(n) * c.invF(k) % _mod * c.invF(n-k) % _mod
+	return c.f(n) * c.invF(k) % mod * c.invF(n-k) % mod
+}
+
+func (c *comb) p(n, k int) int {
+	if k < 0 || k > n {
+		return 0
+	}
+	return c.f(n) * c.invF(n-k) % mod
 }
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
@@ -374,16 +388,17 @@ func (c *comb) c(n, k int) int {
 // 辅助思考 DP https://atcoder.jp/contests/arc115/tasks/arc115_e 
 //            https://codeforces.com/contest/1591/problem/F
 func solveInclusionExclusion(a []int) (ans int) {
-	for sub := uint(0); sub < 1<<len(a); sub++ {
+	// 枚举所有非空子集
+	// 计算子集对容斥的贡献
+	for sub := uint(1); sub < 1<<len(a); sub++ {
 		res := 0
 		for i, v := range a {
 			if sub>>i&1 > 0 {
-				// 视情况而定，有时候包含元素 i 表示考虑这种情况，有时候表示不考虑这种情况
-				_ = v // do v...
+				_ = v
 
 			}
 		}
-		if bits.OnesCount(sub)&1 > 0 { // 某些题目是 == 0
+		if bits.OnesCount(sub)%2 == 0 {
 			res = -res
 		}
 		ans += res // mod
