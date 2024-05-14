@@ -16,6 +16,8 @@
 
 直接加起来，就是 $3\cdot C(n-(\textit{limit}+1)+2, 2)$，但这样就重复统计了「至少两个小朋友分到的糖果超过 $\textit{limit}$」的情况，要减去。
 
+> 注：三个小朋友分到的糖果均超过 $\textit{limit}$ 的情况，已经包含在**至少**两个小朋友分到的糖果超过 $\textit{limit}$ 的情况中了。
+
 #### 至少两个小朋友分到的糖果超过 limit
 
 只关注 $A$ 和 $B$。如果他们俩分到的糖果超过 $\textit{limit}$，那么至少分出去了 $2\cdot (\textit{limit}+1)$ 颗糖果，问题变成剩下 $n-2\cdot (\textit{limit}+1)$ 颗糖果分给三个小朋友的方案数，即 $C(n-2\cdot(\textit{limit}+1)+2, 2)$。注意 $C$ 分到的糖果是否超过 $\textit{limit}$ 我们是不关注的。
@@ -37,6 +39,8 @@
 $$
 C(n+2, 2) - 3\cdot C(n-\textit{limit}+1, 2) + 3\cdot C(n-2\cdot\textit{limit}, 2) - C(n-3\cdot \textit{limit}-1, 2)
 $$
+
+请看 [视频讲解](https://www.bilibili.com/video/BV1Ww411T7JP/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 def c2(n: int) -> int:
@@ -89,3 +93,19 @@ func distributeCandies(n int, limit int) int {
 
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 分类题单
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)

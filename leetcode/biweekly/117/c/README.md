@@ -1,3 +1,5 @@
+请看 [视频讲解](https://www.bilibili.com/video/BV1Ww411T7JP/) 第三题，欢迎点赞关注~
+
 正难则反。总共有 $26^n$ 个字符串，减去不含 `leet` 的字符串个数，就得到了答案。
 
 不含 `leet` 的字符串，需要至少满足如下三个条件中的一个：
@@ -40,7 +42,7 @@ $$
 
 其中 $x^n$ 可以用快速幂计算，具体请看 [50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)。
 
-关于取模的知识点，见文末的「算法小课堂」。
+关于取模的知识点，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ```py [sol-Python3]
 class Solution:
@@ -153,48 +155,18 @@ class Solution:
 - 时间复杂度：$\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 算法小课堂：模运算
+## 分类题单
 
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
-
-你能把这个结论抽象成数学等式吗？
-
-一般涉及到取模的题目，会用到如下两个恒等式（上面计算的是 $m=10$）：
-
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
-
-$$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
-$$
-
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
-
-第一个等式：
-
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
