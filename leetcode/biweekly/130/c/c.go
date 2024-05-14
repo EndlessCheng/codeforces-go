@@ -3,7 +3,7 @@ package main
 import "math"
 
 // https://space.bilibili.com/206214
-func minimumSubstringsInPartition(s string) int {
+func minimumSubstringsInPartition2(s string) int {
 	n := len(s)
 	memo := make([]int, n)
 	for i := range memo {
@@ -20,23 +20,17 @@ func minimumSubstringsInPartition(s string) int {
 		}
 		res := math.MaxInt
 		cnt := [26]int{}
-		k := 0
-	next:
+		k, maxCnt := 0, 0
 		for j := i; j >= 0; j-- {
 			b := s[j] - 'a'
 			if cnt[b] == 0 {
 				k++
 			}
 			cnt[b]++
-			if (i-j+1)%k > 0 {
-				continue
+			maxCnt = max(maxCnt, cnt[b])
+			if i-j+1 == k*maxCnt {
+				res = min(res, dfs(j-1)+1)
 			}
-			for _, c := range cnt {
-				if c > 0 && c != cnt[b] {
-					continue next
-				}
-			}
-			res = min(res, dfs(j-1)+1)
 		}
 		*p = res // 记忆化
 		return res
@@ -44,29 +38,23 @@ func minimumSubstringsInPartition(s string) int {
 	return dfs(n - 1)
 }
 
-func minimumSubstringsInPartition2(s string) int {
+func minimumSubstringsInPartition(s string) int {
 	n := len(s)
 	f := make([]int, n+1)
 	for i := range s {
 		f[i+1] = math.MaxInt
 		cnt := [26]int{}
-		k := 0
-	next:
+		k, maxCnt := 0, 0
 		for j := i; j >= 0; j-- {
 			b := s[j] - 'a'
 			if cnt[b] == 0 {
 				k++
 			}
 			cnt[b]++
-			if (i-j+1)%k > 0 {
-				continue
+			maxCnt = max(maxCnt, cnt[b])
+			if i-j+1 == k*maxCnt {
+				f[i+1] = min(f[i+1], f[j]+1)
 			}
-			for _, c := range cnt {
-				if c != 0 && c != cnt[b] {
-					continue next
-				}
-			}
-			f[i+1] = min(f[i+1], f[j]+1)
 		}
 	}
 	return f[n]

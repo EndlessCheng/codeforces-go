@@ -14,7 +14,7 @@ $$
 
 我们可以在倒序枚举 $j$ 的同时，用一个哈希表（或者数组）统计每个字符的出现次数。如果子串中每个字母的出现次数都相等，那么子串是平衡的。
 
-**优化**：设子串中有 $k$ 种字母，如果子串长度不是 $k$ 的倍数，那么子串一定不是平衡的。
+**优化**：设子串中有 $k$ 种字母，字母出现次数的最大值为 $\textit{maxCnt}$。子串是平衡的，当且仅当子串长度等于 $k\cdot \textit{maxCnt}$。
 
 递归边界：$\textit{dfs}(-1) = 0$。
 
@@ -38,13 +38,35 @@ class Solution:
                 return 0
             res = inf
             cnt = Counter()
+            max_cnt = 0
             for j in range(i, -1, -1):
                 cnt[s[j]] += 1
-                if (i - j + 1) % len(cnt):
-                    continue
-                c0 = cnt[s[j]]
-                if all(c == c0 for c in cnt.values()):
+                max_cnt = max(max_cnt, cnt[s[j]])
+                if i - j + 1 == len(cnt) * max_cnt:
                     res = min(res, dfs(j - 1) + 1)
+            return res
+        return dfs(len(s) - 1)
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minimumSubstringsInPartition(self, s: str) -> int:
+        @cache
+        def dfs(i: int) -> int:
+            if i < 0:
+                return 0
+            res = inf
+            cnt = Counter()
+            max_cnt = 0
+            for j in range(i, -1, -1):
+                cnt[s[j]] += 1
+                # 手动计算 max 和 min
+                if cnt[s[j]] > max_cnt:
+                    max_cnt = cnt[s[j]]
+                if i - j + 1 == len(cnt) * max_cnt:
+                    r = dfs(j - 1) + 1
+                    if r < res:
+                        res = r
             return res
         return dfs(len(s) - 1)
 ```
@@ -68,19 +90,13 @@ public class Solution {
         }
         int res = Integer.MAX_VALUE;
         int[] cnt = new int[26];
-        int k = 0;
-        next:
+        int k = 0, maxCnt = 0;
         for (int j = i; j >= 0; j--) {
             k += cnt[s[j] - 'a']++ == 0 ? 1 : 0;
-            if ((i - j + 1) % k != 0) {
-                continue;
+            maxCnt = Math.max(maxCnt, cnt[s[j] - 'a']);
+            if (i - j + 1 == k * maxCnt) {
+                res = Math.min(res, dfs(j - 1, s, memo) + 1);
             }
-            for (int c : cnt) {
-                if (c > 0 && c != cnt[s[j] - 'a']) {
-                    continue next;
-                }
-            }
-            res = Math.min(res, dfs(j - 1, s, memo) + 1);
         }
         memo[i] = res; // 记忆化
         return res;
@@ -103,19 +119,13 @@ public:
                 return res;
             }
             res = INT_MAX;
-            int cnt[26]{}, k = 0;
+            int cnt[26]{}, k = 0, max_cnt = 0;
             for (int j = i; j >= 0; j--) {
                 k += cnt[s[j] - 'a']++ == 0;
-                if ((i - j + 1) % k) {
-                    continue;
+                max_cnt = max(max_cnt, cnt[s[j] - 'a']);
+                if (i - j + 1 == k * max_cnt) {
+                    res = min(res, dfs(j - 1) + 1);
                 }
-                for (int c : cnt) {
-                    if (c && c != cnt[s[j] - 'a']) {
-                        goto next;
-                    }
-                }
-                res = min(res, dfs(j - 1) + 1);
-                next:;
             }
             return res;
         };
@@ -142,23 +152,17 @@ func minimumSubstringsInPartition(s string) int {
 		}
 		res := math.MaxInt
 		cnt := [26]int{}
-		k := 0
-	next:
+		k, maxCnt := 0, 0
 		for j := i; j >= 0; j-- {
 			b := s[j] - 'a'
 			if cnt[b] == 0 {
 				k++
 			}
 			cnt[b]++
-			if (i-j+1)%k > 0 {
-				continue
+			maxCnt = max(maxCnt, cnt[b])
+			if i-j+1 == k*maxCnt {
+				res = min(res, dfs(j-1)+1)
 			}
-			for _, c := range cnt {
-				if c > 0 && c != cnt[b] {
-					continue next
-				}
-			}
-			res = min(res, dfs(j-1)+1)
 		}
 		*p = res // 记忆化
 		return res
@@ -169,8 +173,8 @@ func minimumSubstringsInPartition(s string) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2|\Sigma|)$，其中 $n$ 为 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n)$，单个状态的计算时间为 $\mathcal{O}(n|\Sigma|)$，所以动态规划的时间复杂度为 $\mathcal{O}(n^2|\Sigma|)$。
-- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。注意递归中至多会创建 $n$ 个长为 $|\Sigma|$ 的 $\textit{cnt}$ 数组。
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $s$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n)$，单个状态的计算时间为 $\mathcal{O}(n)$，所以动态规划的时间复杂度为 $\mathcal{O}(n^2)$。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。注意递归中至多会创建 $n$ 个长为 $|\Sigma|$ 的 $\textit{cnt}$ 数组。
 
 ## 方法二：递推（1:1 翻译）
 
@@ -193,13 +197,29 @@ class Solution:
         f = [0] + [inf] * n
         for i in range(n):
             cnt = Counter()
+            max_cnt = 0
             for j in range(i, -1, -1):
                 cnt[s[j]] += 1
-                if (i - j + 1) % len(cnt):
-                    continue
-                c0 = cnt[s[j]]
-                if all(c == c0 for c in cnt.values()):
+                max_cnt = max(max_cnt, cnt[s[j]])
+                if i - j + 1 == len(cnt) * max_cnt:
                     f[i + 1] = min(f[i + 1], f[j] + 1)
+        return f[n]
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minimumSubstringsInPartition(self, s: str) -> int:
+        n = len(s)
+        f = [0] + [inf] * n
+        for i in range(n):
+            cnt = Counter()
+            max_cnt = 0
+            for j in range(i, -1, -1):
+                cnt[s[j]] += 1
+                if cnt[s[j]] > max_cnt:
+                    max_cnt = cnt[s[j]]
+                if i - j + 1 == len(cnt) * max_cnt and f[j] + 1 < f[i + 1]:
+                    f[i + 1] = f[j] + 1
         return f[n]
 ```
 
@@ -214,19 +234,13 @@ class Solution {
         int[] cnt = new int[26];
         for (int i = 0; i < n; i++) {
             Arrays.fill(cnt, 0);
-            int k = 0;
-            next:
+            int k = 0, maxCnt = 0;
             for (int j = i; j >= 0; j--) {
                 k += cnt[s[j] - 'a']++ == 0 ? 1 : 0;
-                if ((i - j + 1) % k > 0) {
-                    continue;
+                maxCnt = Math.max(maxCnt, cnt[s[j] - 'a']);
+                if (i - j + 1 == k * maxCnt) {
+                    f[i + 1] = Math.min(f[i + 1], f[j] + 1);
                 }
-                for (int c : cnt) {
-                    if (c != 0 && c != cnt[s[j] - 'a']) {
-                        continue next;
-                    }
-                }
-                f[i + 1] = Math.min(f[i + 1], f[j] + 1);
             }
         }
         return f[n];
@@ -242,19 +256,13 @@ public:
         vector<int> f(n + 1, INT_MAX);
         f[0] = 0;
         for (int i = 0; i < n; i++) {
-            int cnt[26]{}, k = 0;
+            int cnt[26]{}, k = 0, max_cnt = 0;
             for (int j = i; j >= 0; j--) {
                 k += cnt[s[j] - 'a']++ == 0;
-                if ((i - j + 1) % k) {
-                    continue;
+                max_cnt = max(max_cnt, cnt[s[j] - 'a']);
+                if (i - j + 1 == k * max_cnt) {
+                    f[i + 1] = min(f[i + 1], f[j] + 1);
                 }
-                for (int c : cnt) {
-                    if (c && c != cnt[s[j] - 'a']) {
-                        goto next;
-                    }
-                }
-                f[i + 1] = min(f[i + 1], f[j] + 1);
-                next:;
             }
         }
         return f[n];
@@ -269,23 +277,17 @@ func minimumSubstringsInPartition(s string) int {
 	for i := range s {
 		f[i+1] = math.MaxInt
 		cnt := [26]int{}
-		k := 0
-	next:
+		k, maxCnt := 0, 0
 		for j := i; j >= 0; j-- {
 			b := s[j] - 'a'
 			if cnt[b] == 0 {
 				k++
 			}
 			cnt[b]++
-			if (i-j+1)%k > 0 {
-				continue
+			maxCnt = max(maxCnt, cnt[b])
+			if i-j+1 == k*maxCnt {
+				f[i+1] = min(f[i+1], f[j]+1)
 			}
-			for _, c := range cnt {
-				if c != 0 && c != cnt[b] {
-					continue next
-				}
-			}
-			f[i+1] = min(f[i+1], f[j]+1)
 		}
 	}
 	return f[n]
@@ -294,8 +296,8 @@ func minimumSubstringsInPartition(s string) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2|\Sigma|)$，其中 $n$ 为 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
-- 空间复杂度：$\mathcal{O}(n + |\Sigma|)$。
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(n + |\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 
 ## 分类题单
 
@@ -307,5 +309,6 @@ func minimumSubstringsInPartition(s string) int {
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
