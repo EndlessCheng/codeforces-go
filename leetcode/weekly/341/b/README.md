@@ -116,7 +116,7 @@ impl Solution {
 
 注意到，小于 $d$ 的正整数无法被 $d$ 整除。
 
-把 $\textit{nums}$ 排序，我们只需要遍历那些 $\ge d$ 的 $\textit{nums}[i]$。当 $\textit{nums}[i] < d$ 时，退出内层循环。
+把 $\textit{nums}$ 排序，从大到小遍历 $\textit{nums}$。只需遍历 $\ge d$ 的 $\textit{nums}[i]$，当 $\textit{nums}[i] < d$ 时，退出内层循环。
 
 ```py [sol-Python3]
 class Solution:
@@ -269,13 +269,13 @@ impl Solution {
 
 在优化 1 的基础上，把 $\textit{divisors}$ 从小到大排序，并统计 $\textit{nums}$ 中的重复元素个数 $\textit{dup}$，例如 $\textit{nums}=[3,3,3,2,1,1]$，其中有 $\textit{dup}=3$ 个数是重复的。
 
-遍历 $d=\textit{divisors}[i]$，如果发现
+遍历 $d=\textit{divisors}[i]$，如果
 
 $$
 (\textit{maxCnt}-\textit{dup} + 1)\cdot d > \max(\textit{nums})
 $$
 
-说明 $d$ 的倍数 $d,2d,3d,\cdots,(\textit{maxCnt}-\textit{dup} + 1)\cdot d$ 中的最大值已经超出了 $\textit{nums}$ 的最大值，即使把 $\textit{nums}$ 中的重复元素也算上，我们也无法统计出一个比 $\textit{maxCnt}$ 还大的数，直接退出外层循环。
+说明 $d$ 的倍数 $d,2d,3d,\cdots,(\textit{maxCnt}-\textit{dup} + 1)\cdot d$ 中的最大值已经超出了 $\textit{nums}$ 的最大值，即使把 $\textit{nums}$ 中的重复元素也算上，我们也无法统计出比 $\textit{maxCnt}$ 还多的倍数，所以直接退出外层循环。
 
 对于 C++ 等语言，为避免乘法溢出，可以改为判断
 
