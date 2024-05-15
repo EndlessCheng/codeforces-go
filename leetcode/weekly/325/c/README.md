@@ -26,6 +26,12 @@
 
 > 请注意，二分的区间的定义是：尚未确定 $f(d)$ 与 $k$ 的大小关系的 $d$ 的值组成的集合（范围）。在区间左侧外面的 $d$ 都是 $f(d)\ge k$ 的，在区间右侧外面的 $d$ 都是 $f(d)< k$ 的。在理解二分时，请牢记区间的定义及其性质。
 
+### 答疑
+
+**问**：为什么二分出来的答案，一定来自数组中价格的差？有没有可能，二分出来的答案不是任何价格的差？
+
+**答**：反证法。如果答案 $d$ 不是任何价格的差，也就是说，礼盒中任意两种糖果的价格的绝对差都大于 $d$，也就是大于等于 $d+1$。那么对于 $d+1$ 来说，它也可以满足 `f(d + 1) == true`，这与循环不变量相矛盾。
+
 ```py [sol-Python3]
 class Solution:
     def maximumTastiness(self, price: List[int], k: int) -> int:
@@ -135,45 +141,18 @@ func maximumTastiness(price []int, k int) int {
 - 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 为 $\textit{price}$ 的长度，$U=\left\lfloor\dfrac{\max(\textit{price})-\min(\textit{price})}{k-1}\right\rfloor$。
 - 空间复杂度：$\mathcal{O}(1)$，忽略排序的空间，仅用到若干额外变量。
 
-## 二分答案·题单
+## 分类题单
 
-#### 二分答案（按照难度分排序）
-- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
-- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/)
-- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
-- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
-- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/)
-- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/)
-- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/)
-- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/)
-- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/)
-- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/)
-- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 
-#### 第 k 小/大（部分题目还可以用堆解决）
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
-- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
-- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
-- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/)
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/)
-- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/)
-- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
-#### 最小化最大值
-- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
-- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
-- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
-- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
-
-#### 最大化最小值
-- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
-- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
-- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
-
-[往期每日一题题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
-
----
-
-欢迎关注[ biIibiIi@灵茶山艾府](https://space.bilibili.com/206214)，高质量算法教学，持续输出中~
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
