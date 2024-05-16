@@ -480,9 +480,7 @@ public:
         vector<array<int, 3>> st{{-2, -2, 0}}; // 哨兵，保证不和任何区间相交
         for (auto& t : tasks) {
             int start = t[0], end = t[1], d = t[2];
-            auto [_, r, s] = *--lower_bound(st.begin(), st.end(), start, [](const auto& a, int b) {
-                return a[0] < b;
-            });
+            auto [_, r, s] = *--ranges::lower_bound(st, start, {}, [](auto& x) { return x[0]; });
             d -= st.back()[2] - s; // 去掉运行中的时间点
             if (start <= r) { // start 在区间 st[i] 内
                 d -= r - start + 1; // 去掉运行中的时间点
@@ -544,6 +542,7 @@ func findMinimumTime(tasks [][]int) int {
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
 
