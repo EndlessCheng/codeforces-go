@@ -53,7 +53,7 @@ outputCopy
 	testutil.AssertEqualCase(t, rawText, -1, CF1817A)
 }
 
-func TestCompare(_t *testing.T) {
+func TestCompare_CF1817A(_t *testing.T) {
 	//return
 	testutil.DebugTLE = 0
 
