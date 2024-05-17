@@ -31,7 +31,7 @@ func CF85E(_r io.Reader, out io.Writer) {
 	}
 	ans := sort.Search(1e4+1, func(lim int) bool {
 		cs := make([]int, n)
-		cc := 0
+		cc := 0 // 想象用两个圆去覆盖这 n 个点，某些点在两圆交集中，这些点去哪个集合都可以
 		for i, c := range cs {
 			if c == 0 {
 				cc++
