@@ -9,12 +9,12 @@ func countSquares(mat [][]int) (ans int) {
 			sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + mij
 		}
 	}
-	querySum2D := func(r1, c1, r2, c2 int) int {
+	query := func(r1, c1, r2, c2 int) int {
 		return sum[r2][c2] - sum[r2][c1] - sum[r1][c2] + sum[r1][c1]
 	}
 	for i, mi := range mat {
 		for j := range mi {
-			for sz := 1; i+sz <= len(mat) && j+sz <= len(mi) && querySum2D(i, j, i+sz, j+sz) == sz*sz; sz++ {
+			for sz := 1; i+sz <= len(mat) && j+sz <= len(mi) && query(i, j, i+sz, j+sz) == sz*sz; sz++ {
 				ans++
 			}
 		}
