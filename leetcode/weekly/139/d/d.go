@@ -3,17 +3,17 @@ package main
 // github.com/EndlessCheng/codeforces-go
 func numSubmatrixSumTarget(a [][]int, target int) (ans int) {
 	n, m := len(a), len(a[0])
-	sum2d := make([][]int, n+1) // TEMPLATE
-	sum2d[0] = make([]int, m+1)
+	sum := make([][]int, n+1)
+	sum[0] = make([]int, m+1)
 	for i, row := range a {
-		sum2d[i+1] = make([]int, m+1)
+		sum[i+1] = make([]int, m+1)
 		for j, v := range row {
-			sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + v
+			sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + v
 		}
 	}
 	// 左闭右开
 	query := func(r1, c1, r2, c2 int) int {
-		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
+		return sum[r2][c2] - sum[r2][c1] - sum[r1][c2] + sum[r1][c1]
 	}
 
 	for r1 := range a {
