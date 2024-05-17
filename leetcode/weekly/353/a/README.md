@@ -60,7 +60,7 @@ impl Solution {
 
 ## 分类题单
 
-**以下题单没有特定的顺序，可以按照个人喜好刷题。**
+以下题单没有特定的顺序，可以按照个人喜好刷题。
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
