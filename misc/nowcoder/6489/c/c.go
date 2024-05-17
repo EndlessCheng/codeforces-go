@@ -22,12 +22,12 @@ func getScores(n int, qs []int) []int {
 		y += d.y
 	}
 
-	sum2d := make([][]int, n+1)
-	sum2d[0] = make([]int, n+1)
+	_s := make([][]int, n+1)
+	_s[0] = make([]int, n+1)
 	for i, row := range mat {
-		sum2d[i+1] = make([]int, n+1)
+		_s[i+1] = make([]int, n+1)
 		for j, v := range row {
-			sum2d[i+1][j+1] = sum2d[i+1][j] + sum2d[i][j+1] - sum2d[i][j] + v
+			_s[i+1][j+1] = _s[i+1][j] + _s[i][j+1] - _s[i][j] + v
 		}
 	}
 	query := func(r1, c1, r2, c2 int) int {
@@ -43,7 +43,7 @@ func getScores(n int, qs []int) []int {
 		if c2 > n {
 			c2 = n
 		}
-		return sum2d[r2][c2] - sum2d[r2][c1] - sum2d[r1][c2] + sum2d[r1][c1]
+		return _s[r2][c2] - _s[r2][c1] - _s[r1][c2] + _s[r1][c1]
 	}
 
 	ans := make([]int, 0, len(qs))
