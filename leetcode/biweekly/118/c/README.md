@@ -1,8 +1,4 @@
-[本题视频讲解](https://www.bilibili.com/video/BV1Rw411P72r/)
-
-## 前置知识：动态规划入门
-
-请看 `b23.tv/pc522x3`
+请看 [视频讲解](https://www.bilibili.com/video/BV1Rw411P72r/) 第三题，欢迎点赞关注~
 
 ## 一、启发思考：寻找子问题
 
@@ -43,6 +39,8 @@ $$
 
 - 如果一个状态（递归入参）是第一次遇到，那么可以在返回前，把状态及其结果记到一个 $\textit{memo}$ 数组中。
 - 如果一个状态不是第一次遇到（$\textit{memo}$ 中保存的结果不等于 $\textit{memo}$ 的初始值），那么可以直接返回 $\textit{memo}$ 中保存的结果。
+
+具体请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含如何把记忆化搜索 1:1 翻译成递推的技巧。
 
 ```py [sol-Python3]
 class Solution:
@@ -269,7 +267,7 @@ public:
         int n = prices.size();
         deque<pair<int, int>> q;
         q.emplace_front(n + 1, 0); // 哨兵
-        for (int i = n; i ; i--) {
+        for (int i = n; i > 0; i--) {
             while (q.back().first > i * 2 + 1) { // 右边离开窗口
                 q.pop_back();
             }
@@ -307,3 +305,21 @@ func minimumCoins(prices []int) int {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prices}$ 的长度。每个下标只会入队出队各至多一次。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 分类题单
+
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
