@@ -275,7 +275,7 @@ $$
 (\textit{maxCnt}-\textit{dup} + 1)\cdot d > \max(\textit{nums})
 $$
 
-说明 $d$ 的倍数 $d,2d,3d,\cdots,(\textit{maxCnt}-\textit{dup} + 1)\cdot d$ 中的最大值已经超出了 $\textit{nums}$ 的最大值，即使把 $\textit{nums}$ 中的重复元素也算上，我们也无法统计出比 $\textit{maxCnt}$ 还多的倍数，所以直接退出外层循环。
+说明 $d$ 的倍数 $d,2d,3d,\cdots,(\textit{maxCnt}-\textit{dup} + 1)\cdot d$ 中的最大值已经超出了 $\textit{nums}$ 的最大值，即使把 $\textit{nums}$ 中的重复元素也算上，我们也无法统计出比 $\textit{maxCnt}$ 还多的倍数。由于我们已经把 $\textit{divisors}$ 从小到大排序了，当前的 $d$ 满足上面的不等式，那后面的更大的 $d$ 也同样满足上面的不等式，所以后面不可能找到一个比 $\textit{maxCnt}$ 更大的数，直接退出外层循环。
 
 对于 C++ 等语言，为避免乘法溢出，可以改为判断
 
@@ -488,9 +488,11 @@ impl Solution {
 
 ## 分类题单
 
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
