@@ -284,6 +284,14 @@ func _(abs func(int) int) {
 	https://en.wikipedia.org/wiki/Euclidean_algorithm
 	https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm
 
+	GCD 卷积（GCD Convolution）
+	https://codeforces.com/blog/entry/112346
+	https://judge.yosupo.jp/problem/gcd_convolution
+	https://atcoder.jp/contests/agc038/tasks/agc038_c
+	https://codeforces.com/gym/103688/problem/E
+	https://codeforces.com/problemset/problem/1884/D
+	https://ac.nowcoder.com/acm/contest/73854/G
+
 	https://oeis.org/A051010 Triangle T(m,n) giving of number of steps in the Euclidean algorithm for gcd(m,n) with 0<=m<n
 	https://oeis.org/A034883 Maximum length of Euclidean algorithm starting with n and any nonnegative i<n
 	https://oeis.org/A049826 GCD(n,i) 的迭代次数之和，O(nlogn)
@@ -330,24 +338,6 @@ func _(abs func(int) int) {
 			a, b = b%a, a
 		}
 		return b
-	}
-
-	// 例题 https://nanti.jisuanke.com/t/A1633
-	gcdPrefix := func(a []int) []int {
-		n := len(a)
-		gp := make([]int, n+1)
-		for i, v := range a {
-			gp[i+1] = gcd(gp[i], v)
-		}
-		return gp
-	}
-	gcdSuffix := func(a []int) []int {
-		n := len(a)
-		gs := make([]int, n+1)
-		for i := n - 1; i >= 0; i-- {
-			gs[i] = gcd(gs[i+1], a[i])
-		}
-		return gs
 	}
 
 	lcm := func(a, b int) int { return a / gcd(a, b) * b }
@@ -428,7 +418,7 @@ func _(abs func(int) int) {
 	// 统计数组的所有子序列的 GCD 的不同个数，复杂度 O(Clog^2C)
 	// LC1819 https://leetcode.cn/problems/number-of-different-subsequences-gcds/
 	// 我的题解 https://leetcode.cn/problems/number-of-different-subsequences-gcds/solution/ji-bai-100mei-ju-gcdxun-huan-you-hua-pyt-get7/
-	countDifferentSubsequenceGCDs := func(a []int, gcd func(int, int) int) (ans int) {
+	countDifferentSubsequenceGCDs := func(a []int) (ans int) {
 		const mx int = 4e5 //
 		has := [mx + 1]bool{}
 		for _, v := range a {
@@ -704,7 +694,7 @@ func _(abs func(int) int) {
 	2, 6, 30, 210, 2310, 30030, 510510, 9699690, 223092870, /9/
 	6469693230, 200560490130, 7420738134810, 304250263527210, 13082761331670030, 614889782588491410
 
-	质数间隙 https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
+	质数间隙 prime gap https://en.wikipedia.org/wiki/Prime_gap https://oeis.org/A001223
 	Positions of records https://oeis.org/A002386 https://oeis.org/A005669
 	Values of records https://oeis.org/A005250
 	Gap 均值 https://oeis.org/A286888 a(n)= floor((prime(n) - 2)/(n - 1))
@@ -876,6 +866,7 @@ func _(abs func(int) int) {
 	//         4, 25, 168, 1229, 9592, 78498, 664579, 5761455, 50847534, /* 1e9 */
 	//         455052511, 4118054813, 37607912018, 346065536839, 3204941750802, 29844570422669, 279238341033925, 2623557157654233, 24739954287740860, 234057667276344607,
 	// 思想应用 https://codeforces.com/contest/1646/problem/E
+	// https://codeforces.com/problemset/problem/576/A
 	sieve := func() {
 		const mx int = 1e6
 		primes := []int{}
@@ -939,7 +930,7 @@ func _(abs func(int) int) {
 
 	// 线筛 线性筛 欧拉筛
 	// 每个合数都从其 LPF 标记到（在遍历到 i = 合数/LPF 的时候，标记这些合数）
-	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 p.136-137
+	// 参考 https://oi-wiki.org/math/sieve/ 以及进阶指南 pp.136-137
 	// mx = 3e7 时比埃氏筛大约快 100ms https://codeforces.com/problemset/submission/986/206447142
 	//                              https://codeforces.com/problemset/submission/986/206445786
 	// https://www.luogu.com.cn/problem/P3383
@@ -1048,6 +1039,7 @@ func _(abs func(int) int) {
 	// 质因数分解（质数及其幂次）prime factorization
 	// LC2507 https://leetcode.cn/problems/smallest-value-after-replacing-with-sum-of-prime-factors/
 	// LC2584 https://leetcode.cn/problems/split-the-array-to-make-coprime-products/
+	// https://codeforces.com/problemset/problem/1878/F 1900
 	primeDivisors := func(x int) (primes []int) {
 		for i := 2; i*i <= x; i++ {
 			if x%i > 0 {
@@ -1193,6 +1185,7 @@ func _(abs func(int) int) {
 												https://atcoder.jp/contests/abc172/tasks/abc172_d
 		n*n*d(n) https://oeis.org/A034714   前缀和 https://oeis.org/A319085
 		d(n)|n https://oeis.org/A033950 refactorable numbers / tau numbers
+	        https://codeforces.com/problemset/problem/1878/F 1900
 			n/d(n) https://oeis.org/A036762
 		n%d(n) https://oeis.org/A054008
 		a(1)=1, a(n+1)=a(n)+d(a(n)) https://oeis.org/A064491
@@ -1221,6 +1214,7 @@ func _(abs func(int) int) {
 		亏数/缺数/不足数 https://oeis.org/A005100 Deficient numbers (σ(n) < 2n)
 			https://en.wikipedia.org/wiki/Deficient_number
 			https://ac.nowcoder.com/acm/contest/10322/A O(nlogn) 可以先预处理因子
+	n 的因子倒数和 https://www.quora.com/What-is-the-formula-for-the-sum-of-the-reciprocal-of-the-positive-integral-divisors-of-a-number
 
 	n 的因子之积 μ(n) = n^(d(n)/2.0) https://oeis.org/A007955
 	because we can form d(n)/2 pairs from the factors, each with product n
@@ -1241,7 +1235,7 @@ func _(abs func(int) int) {
 	高合成数/反质数 Highly Composite Numbers https://oeis.org/A002182
 	https://oi-wiki.org/math/prime/#_7
 	性质：一个高合成数一定是由另一个高合成数乘一个质数得到
-	见进阶指南 p.140-141
+	见进阶指南 pp.140-141
 	Number of divisors of n-th highly composite number https://oeis.org/A002183
 	Number of highly composite numbers not divisible by n https://oeis.org/A199337
 	求出不超过 n 的最大的反质数 https://www.luogu.com.cn/problem/P1463
@@ -1267,7 +1261,7 @@ func _(abs func(int) int) {
 	- LC2949 https://leetcode.cn/problems/count-beautiful-substrings-ii/
 	*/
 
-	// n 以内的最多约数个数，以及对应的最小数字
+	// n 以内的最多约数个数 mxc，以及对应的最小数字 ans
 	// n <= 1e9
 	// https://www.luogu.com.cn/problem/P1221
 	maxDivisorNum := func(n int) (mxc, ans int) {
@@ -1289,13 +1283,35 @@ func _(abs func(int) int) {
 		return
 	}
 
-	// 在有 mxcLimit 的前提下（限制约数个数），mxc 最大是多少
+	// 在有 mxcLimit 的前提下（限制约数个数），mxc 最大是多少，以及对应的最小数字 ans
 	maxDivisorNumWithLimit := func(mxcLimit int) (mxc, ans int) {
 		rawAns := sort.Search(1e9, func(n int) bool {
 			c, _ := maxDivisorNum(n + 1)
 			return c > mxcLimit
 		})
 		return maxDivisorNum(rawAns)
+	}
+
+	// 因子个数恰好为 tarD 的最小正整数
+	// tarD <= 1000，保证答案不超过 1e18
+	minNumOfTargetDivisors := func(tarD int) int {
+		primes := []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43}
+		ans := math.MaxInt
+		var dfs func(int, int, int, int)
+		dfs = func(i, res, leftD, preE int) {
+			if leftD == 1 {
+				ans = min(ans, res)
+				return
+			}
+			for e := 1; e <= preE && res <= ans/primes[i]; e++ {
+				res *= primes[i]
+				if leftD%(e+1) == 0 {
+					dfs(i+1, res, leftD/(e+1), e)
+				}
+			}
+		}
+		dfs(0, 1, tarD, math.MaxInt)
+		return ans
 	}
 
 	// 枚举一个数的全部因子
@@ -1390,11 +1406,12 @@ func _(abs func(int) int) {
 	// NOTE: divisors[x] 为奇数 => x 为完全平方数 https://oeis.org/A000290
 	// NOTE: halfDivisors(x) 为 ≤√x 的因数集合 https://oeis.org/A161906
 	// https://codeforces.com/problemset/problem/1730/E
+	// https://codeforces.com/problemset/problem/1777/C 1700
 	divisorsAll := func() {
 		const mx = 1_000_001
-		divisors := [mx + 1][]int32{} // 如果 mx 很大会 MLE，改成 int32
-		for i := int32(1); i <= mx; i++ {
-			for j := i; j <= mx; j += i {
+		divisors := [mx][]int32{} // 如果 mx 很大会 MLE，改成 int32
+		for i := int32(1); i < mx; i++ {
+			for j := i; j < mx; j += i {
 				divisors[j] = append(divisors[j], i)
 			}
 		}
@@ -1403,9 +1420,9 @@ func _(abs func(int) int) {
 			// https://oeis.org/A038548 Number of divisors of n that are at most sqrt(n)
 			// https://oeis.org/A094820 Partial sums of A038548
 			// 更细致的优化：d 与 x/d 奇偶性相同 https://codeforces.com/contest/1081/problem/E
-			divisors := [mx + 1][]int{}
-			for i := 1; i*i <= mx; i++ {
-				for j := i * i; j <= mx; j += i {
+			divisors := [mx][]int{}
+			for i := 1; i*i < mx; i++ {
+				for j := i * i; j < mx; j += i {
 					divisors[j] = append(divisors[j], i)
 				}
 			}
@@ -2805,17 +2822,22 @@ func _(abs func(int) int) {
 	}
 
 	// 适用于 n 巨大但 k 或 n-k 较小的情况
+	// https://codeforces.com/problemset/problem/451/E
 	comb := func(n, k int) int {
+		if n < k {
+			return 0
+		}
 		if k > n-k {
 			k = n - k
 		}
+		// 注意 k = 0 时要返回 1
+		n %= mod
 		a, b := 1, 1
 		for i := 1; i <= k; i++ {
-			a = a * n % mod
-			n--
+			a = a * (n - i + 1) % mod
 			b = b * i % mod
 		}
-		return divP(a, b, mod)
+		return a * pow(b, mod-2) % mod
 	}
 
 	// 另类组合数求法
@@ -3399,12 +3421,15 @@ func _(abs func(int) int) {
 	// starting at n until reach 1 or a prime; or -1 if a prime is never reached
 	// https://www.zhihu.com/question/48612677/answer/487252829
 
-	_ = []interface{}{
+	_ = []any{
 		primes, primes10k, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
-		gcd, gcdPrefix, gcdSuffix, lcm, lcms, makeFrac, lessFrac, countDifferentSubsequenceGCDs, floorSum,
+		gcd, lcm, lcms,
+		makeFrac, lessFrac,
+		countDifferentSubsequenceGCDs,
+		floorSum,
 		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		maxDivisorNum, maxDivisorNumWithLimit, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
+		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
 		exgcd, solveLinearDiophantineEquations, invM, invM2, invP, divM, divP, calcAllInv,
