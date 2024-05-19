@@ -20,11 +20,8 @@ func cf1689C(in io.Reader, out io.Writer) {
 		}
 		var dfs func(int, int) int
 		dfs = func(v, fa int) int {
-			if len(g[v]) == 1 {
-				return 1
-			}
-			if len(g[v]) == 2 {
-				return 2
+			if len(g[v]) <= 2 {
+				return len(g[v])
 			}
 			mx := int(1e9)
 			for _, w := range g[v] {
