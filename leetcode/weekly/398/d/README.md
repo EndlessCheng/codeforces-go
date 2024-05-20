@@ -123,7 +123,7 @@ func waysToReachStair(k int) int {
 
 有多少个状态？
 
-对于 $j$ 来说，由于 $i+1\le k$ 的限制，有 $\mathcal{O}(\log k)$ 个不同的 $j$。
+对于 $j$ 来说，如果 $i+2^j > k + 1$，就不会再递归了。放缩一下，以「$2^j > k + 1$ 不再递归」来估计，只有 $\mathcal{O}(\log k)$ 个不同的 $j$。
 
 对于固定的 $j$ 和 $\textit{preDown}$，有多少个不同的 $i$？
 
