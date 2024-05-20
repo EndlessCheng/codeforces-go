@@ -92,8 +92,8 @@ public:
 ```go [sol-Go]
 func waysToReachStair(k int) int {
 	type args struct {
-		i, j int
-		preDown  bool
+		i, j    int
+		preDown bool
 	}
 	memo := map[args]int{}
 	var dfs func(int, int, bool) int
