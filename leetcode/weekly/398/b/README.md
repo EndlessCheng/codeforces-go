@@ -14,9 +14,68 @@ $$
 
 计算 $a$ 的前缀和 $s$，可以快速判断子数组和是否为 $0$。
 
-代码实现时，相邻两数的异或和的最低位取反，即为 $a[i]$。
-
 具体请看 [视频讲解](https://www.bilibili.com/video/BV19D421G7mw/) 第二题，欢迎点赞关注！
+
+```py [sol-Python3]
+class Solution:
+    def isArraySpecial(self, nums: List[int], queries: List[List[int]]) -> List[bool]:
+        s = list(accumulate((x % 2 == y % 2 for x, y in pairwise(nums)), initial=0))
+        return [s[from_] == s[to] for from_, to in queries]
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean[] isArraySpecial(int[] nums, int[][] queries) {
+        int[] s = new int[nums.length];
+        for (int i = 1; i < nums.length; i++) {
+            s[i] = s[i - 1] + (nums[i - 1] % 2 == nums[i] % 2 ? 1 : 0);
+        }
+        boolean[] ans = new boolean[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int[] q = queries[i];
+            ans[i] = s[q[0]] == s[q[1]];
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& queries) {
+        vector<int> s(nums.size());
+        for (int i = 1; i < nums.size(); i++) {
+            s[i] = s[i - 1] + (nums[i - 1] % 2 == nums[i] % 2);
+        }
+        vector<bool> ans(queries.size());
+        for (int i = 0; i < queries.size(); i++) {
+            auto& q = queries[i];
+            ans[i] = s[q[0]] == s[q[1]];
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func isArraySpecial(nums []int, queries [][]int) []bool {
+	s := make([]int, len(nums))
+	for i := 1; i < len(nums); i++ {
+		s[i] = s[i-1]
+		if nums[i-1]%2 == nums[i]%2 {
+			s[i]++
+		}
+	}
+	ans := make([]bool, len(queries))
+	for i, q := range queries {
+		ans[i] = s[q[0]] == s[q[1]]
+	}
+	return ans
+}
+```
+
+另一种写法，相邻两数的异或和的最低位取反，即为 $a[i]$。
 
 ```py [sol-Python3]
 class Solution:
