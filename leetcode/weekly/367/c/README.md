@@ -13,9 +13,15 @@
 
 ### 答疑
 
-**问**：为什么不用算绝对值？如果 $\textit{mx} < \textit{nums}[j]$ 并且 $|\textit{mx} - \textit{nums}[j]| \ge \textit{valueDifference}$，不就错过答案了吗？
+**问**：为什么不用算绝对值？万一 $\textit{mx} < \textit{nums}[j]$，并满足 $|\textit{mx} - \textit{nums}[j]| = \textit{nums}[j] - \textit{mx} \ge \textit{valueDifference}$，不就错过答案了吗？
 
-**答**：由于 $\textit{mn} \le \textit{mx}$，在上面这个「如果……」成立的前提下，一定会有 $\textit{nums}[j] - mn \ge \textit{valueDifference}$，不会错过答案。
+**答**：在上述条件成立的前提下，由于 $\textit{mn} \le \textit{mx}$，得
+
+$$
+\textit{nums}[j] - \textit{mn} \ge \textit{nums}[j] - \textit{mx} \ge \textit{valueDifference}
+$$ 
+
+所以此时 $\textit{mn}$ 是满足要求的，不会错过答案。
 
 ```py [sol-Python3]
 class Solution:
