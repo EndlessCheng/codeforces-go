@@ -1,21 +1,21 @@
 不妨设 $i\le j - \textit{indexDifference}$。
 
-类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，我们可以在枚举 $j$ 的同时，维护从 $\textit{nums}[0]$ 到 $\textit{nums}[j - \textit{indexDifference}]$ 的最大值 $\textit{mx}$ 和最小值 $\textit{mn}$。
+枚举 $j$，寻找左边的 $i$。要想满足 $|\textit{nums}[i]-\textit{nums}[j]|\ge \textit{valueDifference}$，要找的 $\textit{nums}[i]$ 应当尽量大或者尽量小。
 
-那么，只要满足下面两个条件中的一个，就可以返回答案了。
+类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，我们可以在枚举 $j$ 的同时，维护 $\textit{nums}[0]$ 到 $\textit{nums}[j - \textit{indexDifference}]$ 中的最大值 $\textit{mx}$ 和最小值 $\textit{mn}$。
+
+那么，只要满足以下两个条件中的一个，就可以返回答案了。
 
 - $\textit{mx} -\textit{nums}[j] \ge \textit{valueDifference}$
 - $\textit{nums}[j] - mn \ge \textit{valueDifference}$
 
-代码实现时，由于要输出下标，可以改成维护最大值的下标 $\textit{maxIdx}$ 和最小值的下标 $\textit{minIdx}$。
-
-请看 [视频讲解](https://www.bilibili.com/video/BV1aC4y1G7dB?t=16m) 第三题。
+由于要输出 $\textit{mx}$ 或者 $\textit{mn}$ 在数组中的下标，我们可以记录最大值的下标 $\textit{maxIdx}$ 和最小值的下标 $\textit{minIdx}$。
 
 ### 答疑
 
 **问**：为什么不用算绝对值？如果 $\textit{mx} < \textit{nums}[j]$ 并且 $|\textit{mx} - \textit{nums}[j]| \ge \textit{valueDifference}$，不就错过答案了吗？
 
-**答**：不会的，如果出现这种情况，那么一定会有 $\textit{nums}[j] - mn \ge \textit{valueDifference}$。
+**答**：由于 $\textit{mn} \le \textit{mx}$，在上面这个「如果……」成立的前提下，一定会有 $\textit{nums}[j] - mn \ge \textit{valueDifference}$，不会错过答案。
 
 ```py [sol-Python3]
 class Solution:
