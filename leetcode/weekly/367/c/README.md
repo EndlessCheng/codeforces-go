@@ -1,19 +1,30 @@
-不妨设 $i\le j - \textit{indexDifference}$。
+不妨假设 $i$ 在左，$j$ 在右，即 $i\le j - \textit{indexDifference}$。
 
-枚举 $j$，寻找左边的 $i$。要想满足 $|\textit{nums}[i]-\textit{nums}[j]|\ge \textit{valueDifference}$，要找的 $\textit{nums}[i]$ 应当尽量大或者尽量小。
+枚举 $j$，寻找左边的 $i$。要想满足 $|\textit{nums}[i]-\textit{nums}[j]|\ge \textit{valueDifference}$，要找的 $\textit{nums}[i]$ 应当尽量大或者尽量小，这样差的绝对值才能尽量大。
 
 类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，我们可以在枚举 $j$ 的同时，维护 $\textit{nums}[0]$ 到 $\textit{nums}[j - \textit{indexDifference}]$ 中的最大值 $\textit{mx}$ 和最小值 $\textit{mn}$。
 
-那么，只要满足以下两个条件中的一个，就可以返回答案了。
+例如 $\textit{indexDifference}=2$，从 $j=2$ 开始遍历数组：
+
+- 遍历到 $\textit{nums}[2]$，用 $\textit{nums}[0]$ 更新 $\textit{mx}$ 和 $\textit{mn}$。
+- 遍历到 $\textit{nums}[3]$，用 $\textit{nums}[1]$ 更新 $\textit{mx}$ 和 $\textit{mn}$。
+- 遍历到 $\textit{nums}[4]$，用 $\textit{nums}[2]$ 更新 $\textit{mx}$ 和 $\textit{mn}$。
+- 依此类推。
+
+这个过程可以保证 $\textit{mx}$ 和 $\textit{mn}$ 在数组中的下标 $i$ 满足 $i\le j - \textit{indexDifference}$，即题目的第一个要求。
+
+对于题目的第二个要求，可以转换成如下两个不等式：
 
 - $\textit{mx} -\textit{nums}[j] \ge \textit{valueDifference}$
 - $\textit{nums}[j] - mn \ge \textit{valueDifference}$
 
-由于要输出 $\textit{mx}$ 或者 $\textit{mn}$ 在数组中的下标，我们可以记录最大值的下标 $\textit{maxIdx}$ 和最小值的下标 $\textit{minIdx}$。
+满足其一即可返回答案。不用算绝对值的原因见下面的答疑。
+
+由于要输出 $\textit{mx}$ 或者 $\textit{mn}$ 在数组中的下标，我们可以记录 $\textit{mx}$ 在数组中的下标 $\textit{maxIdx}$，以及 $\textit{mn}$ 在数组中的下标 $\textit{minIdx}$。由于知道下标就能知道元素值，所以只需记录下标，无需记录 $\textit{mx}$ 和 $\textit{mn}$。
 
 ### 答疑
 
-**问**：为什么不用算绝对值？万一 $\textit{mx} < \textit{nums}[j]$，并满足 $|\textit{mx} - \textit{nums}[j]| = \textit{nums}[j] - \textit{mx} \ge \textit{valueDifference}$，不就错过答案了吗？
+**问**：为什么不用算绝对值？万一 $\textit{mx} < \textit{nums}[j]$，并且 $|\textit{mx} - \textit{nums}[j]| = \textit{nums}[j] - \textit{mx} \ge \textit{valueDifference}$，不就错过答案了吗？
 
 **答**：在上述条件成立的前提下，由于 $\textit{mn} \le \textit{mx}$，得
 
