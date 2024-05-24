@@ -4,6 +4,7 @@ package copypasta
 // 用两个 slice 头对头拼在一起实现
 // 在知道数据量的情况下，也可以直接创建个两倍数据量大小的 slice，然后用两个下标表示头尾，初始化在 slice 正中
 // 应用见 graph.go 中的 01 最短路
+// https://codeforces.com/problemset/problem/1584/E 2300 单调双端队列
 
 // l-1,...1,0,0,1...,r-1
 type Deque struct{ l, r []any }

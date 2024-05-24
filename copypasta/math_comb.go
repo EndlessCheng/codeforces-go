@@ -39,22 +39,25 @@ LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
+https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
-https://codeforces.com/problemset/problem/213/B
-https://codeforces.com/problemset/problem/300/C
-https://codeforces.com/problemset/problem/520/E
-https://codeforces.com/problemset/problem/559/C
-https://codeforces.com/problemset/problem/869/C
-https://codeforces.com/problemset/problem/1204/E 推荐
-https://codeforces.com/problemset/problem/1261/D2 推荐
-https://codeforces.com/problemset/problem/1288/C
-https://codeforces.com/problemset/problem/1342/E
-https://codeforces.com/problemset/problem/1359/E
-https://codeforces.com/contest/1931/problem/G
-https://codeforces.com/problemset/problem/1761/D https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d https://www.cnblogs.com/linyihdfj/p/16893607.html
-https://codeforces.com/problemset/problem/1763/D 推荐 分类讨论
+https://codeforces.com/problemset/problem/300/C 1800
+https://codeforces.com/problemset/problem/869/C 1800
+https://codeforces.com/problemset/problem/213/B 1900
+https://codeforces.com/problemset/problem/1359/E 2000
+https://codeforces.com/problemset/problem/1931/G 2000 放球问题 构造
+https://codeforces.com/problemset/problem/1761/D 2100
+- https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d
+- https://www.cnblogs.com/linyihdfj/p/16893607.html
+https://codeforces.com/problemset/problem/520/E 2200
+https://codeforces.com/problemset/problem/559/C 2200
+https://codeforces.com/problemset/problem/1763/D 2200 推荐 分类讨论
+https://codeforces.com/problemset/problem/1204/E 2300 推荐
+https://codeforces.com/problemset/problem/1342/E 2300
+https://codeforces.com/problemset/problem/1261/D2 2400 推荐
+https://codeforces.com/problemset/problem/1608/D 2400
 https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
-加强版 https://codeforces.com/contest/1838/problem/E
+加强版 https://codeforces.com/contest/1838/problem/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://atcoder.jp/contests/abc290/tasks/abc290_f
@@ -365,20 +368,23 @@ func (c *comb) p(n, k int) int {
 }
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
-/*
-- [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/)
-- [2930. 重新排列后包含指定子字符串的字符串数目](https://leetcode.cn/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/)
-*/
+//
 // 参考《挑战程序设计竞赛》P296
 // https://codeforces.com/blog/entry/64625
 // https://ac.nowcoder.com/acm/contest/6219/C
 //
-// 多重集组合数
-// https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
+// - [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/)
+//    - 扩展 https://codeforces.com/problemset/problem/451/E
+// - [2930. 重新排列后包含指定子字符串的字符串数目](https://leetcode.cn/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/)
+// - [3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/) 2388
+// - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
+//      - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
+// https://codeforces.com/problemset/problem/630/K 1500
+//
+// 多重集组合数 https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
 // https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
 // https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
 //
-// https://codeforces.com/problemset/problem/451/E
 // https://codeforces.com/problemset/problem/1342/E
 // 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
 // 不重不漏 https://codeforces.com/problemset/problem/1007/B
@@ -387,7 +393,8 @@ func (c *comb) p(n, k int) int {
 // todo https://www.luogu.com.cn/problem/P1450
 // 辅助思考 DP https://atcoder.jp/contests/arc115/tasks/arc115_e 
 //            https://codeforces.com/contest/1591/problem/F
-func solveInclusionExclusion(a []int) (ans int) {
+func solveInclusionExclusion(a []int) int {
+	ans := 0 // 无限制时的答案，根据题目修改
 	// 枚举所有非空子集
 	// 计算子集对容斥的贡献
 	for sub := uint(1); sub < 1<<len(a); sub++ {
@@ -398,13 +405,14 @@ func solveInclusionExclusion(a []int) (ans int) {
 
 			}
 		}
-		if bits.OnesCount(sub)%2 == 0 {
+		// 如果是直接求容斥（空集 ans = 0），这里改成 %2 == 0
+		if bits.OnesCount(sub)%2 > 0 {
 			res = -res
 		}
 		ans += res // mod
 	}
 	ans = (ans%mod + mod) % mod
-	return
+	return ans
 }
 
 /* min-max 反演

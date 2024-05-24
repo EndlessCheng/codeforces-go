@@ -27,6 +27,7 @@ NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y
 - [3004. 相同颜色的最大子树](https://leetcode.cn/problems/maximum-subtree-of-the-same-color/)（会员题）
 https://codeforces.com/problemset/problem/580/C
 https://codeforces.com/problemset/problem/34/D 1600
+https://codeforces.com/problemset/problem/1675/D 1300 树分成尽量少的链
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
 树上统计（从下往上）典型题 https://codeforces.com/problemset/problem/766/E
@@ -209,12 +210,12 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 
 	// EXTRA: 一种贪心策略是，将 g[v] 按照 maxDep 从大到小排序
 	// https://codeforces.com/contest/1510/submission/111986751
-	sort.Slice(g[v], func(i, j int) bool { return maxDep[g[v][i]] > maxDep[g[v][j]] })
+	slices.SortFunc(g[v], func(a, b int) int { return maxDep[b] - maxDep[a] })
 }
 
 // 树上每个子树的信息：子树大小，DFS 序（从 1 开始）
 // 这样的话 [o.dfn, o.dfn+o.size-1] 就表示一棵子树，方便用树状数组/线段树维护
-// 【时间戳的写法见后面】
+// 【如果不需要用到子树大小，推荐时间戳的写法，见后面 inOutTimestamp】
 // 讲解：https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/
 //
 // https://codeforces.com/problemset/problem/877/E 2000
@@ -317,13 +318,14 @@ func (*tree) subtreeSize(root int, g [][]int, a []int) {
 //        g[v] = append(g[v], w)
 //    }
 // 其他：见 mo.go 中的树上莫队部分
+// https://codeforces.com/problemset/problem/1416/D 2600
 func (*tree) inOutTimestamp(g [][]int, root int) {
 	// DFS 序
 	timeIn := make([]int, len(g))
 	timeOut := make([]int, len(g))
 	at := make([]int, len(g)+1)
-	clock := 0
-	var f func(v, fa int)
+	clock := 0 // 也可以改成从 -1 开始
+	var f func(int, int)
 	f = func(v, fa int) {
 		clock++
 		timeIn[v] = clock
@@ -335,7 +337,7 @@ func (*tree) inOutTimestamp(g [][]int, root int) {
 		}
 		timeOut[v] = clock
 	}
-	f(root, -1)
+	f(root, -1) // 注意森林的情况
 
 	// 返回 [f 是 v 的祖先节点]
 	// f == v 的情况请单独处理
@@ -444,6 +446,7 @@ func (*tree) minPathCover(g [][]int) int {
 // https://codeforces.com/problemset/problem/1404/B 1900
 // https://codeforces.com/problemset/problem/455/C 2100
 // https://codeforces.com/problemset/problem/734/E 2100 转换的好题 
+// https://codeforces.com/problemset/problem/1000/E 2100 e-BCC
 // https://codeforces.com/problemset/problem/911/F 2400 贪心
 // https://codeforces.com/problemset/problem/1819/C 2400
 // https://codeforces.com/problemset/problem/1617/E 2700 转换成求部分直径 
@@ -625,7 +628,7 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
 // 求两个重心 https://codeforces.com/problemset/problem/1406/C
-// 求每棵子树的重心 http://codeforces.com/problemset/problem/685/B
+// 求每棵子树的重心 https://codeforces.com/problemset/problem/685/B
 // Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
 func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 	minOfMaxSubSize := math.MaxInt
@@ -1178,6 +1181,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		// NOIP2012·提高 疫情控制 https://www.luogu.com.cn/problem/P1084
 		// 变形 https://codeforces.com/problemset/problem/932/D
 		// 点权写法 https://codeforces.com/problemset/problem/1059/E 2400
+		// https://www.luogu.com.cn/problem/P7167
 		uptoDep := func(v, d int) (int, int) {
 			step := 0
 			dv := dep[v]
@@ -1526,7 +1530,7 @@ func (*tree) virtualTree(g [][]int) {
 	st := []int{root} // 用根节点作为栈底哨兵
 	// nodes 为询问的「关键节点」
 	do := func(nodes []int, qid int) {
-		sort.Slice(nodes, func(i, j int) bool { return dfn[nodes[i]] < dfn[nodes[j]] })
+		slices.SortFunc(nodes, func(a, b int) int { return dfn[a] - dfn[b] })
 		vt[root] = vt[root][:0]
 		st = st[:1]
 		for _, v := range nodes {
@@ -1627,6 +1631,7 @@ func (*tree) virtualTree(g [][]int) {
 // https://codeforces.com/blog/entry/81317
 // 树链剖分详解 https://www.cnblogs.com/zwfymqz/p/8094500.html
 // 树链剖分详解 https://www.luogu.com.cn/blog/communist/shu-lian-pou-fen-yang-xie
+// O(log n) 查询 https://codeforces.com/blog/entry/127896
 //
 // 注：若没有修改操作，更简单的做法见 lcaBinaryLifting（路径查询）以及 subtreeSize（子树查询）
 //

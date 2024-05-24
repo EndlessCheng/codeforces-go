@@ -8,7 +8,8 @@ import (
 /* 高精度
 加减乘除模 https://www.luogu.com.cn/problem/P1932
 - https://www.luogu.com.cn/record/153957114
-https://codeforces.com/problemset/problem/1244/C
+https://codeforces.com/problemset/problem/1181/B 1500
+https://codeforces.com/problemset/problem/1244/C 2000
 
 读入
 v := &big.Int{} // 或者 new(big.Int)

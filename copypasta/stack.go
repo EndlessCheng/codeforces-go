@@ -16,6 +16,9 @@ https://codeforces.com/problemset/problem/1092/D2
 
 括号匹配/有效括号
 - [32. 最长有效括号](https://leetcode.cn/problems/longest-valid-parentheses/)
+- [1614. 括号的最大嵌套深度](https://leetcode.cn/problems/maximum-nesting-depth-of-the-parentheses/) 1323
+- [1963. 使字符串平衡的最小交换次数](https://leetcode.cn/problems/minimum-number-of-swaps-to-make-the-string-balanced/) 1689
+- [2116. 判断一个括号字符串是否有效](https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/) 2038
 下标范围有限制 https://codeforces.com/problemset/problem/543/D
 https://leetcode.cn/problems/maximum-nesting-depth-of-two-valid-parentheses-strings/
 

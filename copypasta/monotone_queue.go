@@ -28,6 +28,9 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
 - [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456
 
+单调双端队列
+https://codeforces.com/problemset/problem/1584/E 2300 
+
 单调队列优化 DP
 一般用来维护区间最值
 0. 前提：区间右端点变大时，左端点也在变大（同滑动窗口）
@@ -41,6 +44,7 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
 - [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
+- [3117. 划分数组得到最小的值之和](https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/) 2735
 - [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
@@ -50,12 +54,13 @@ https://codeforces.com/problemset/problem/487/B 2000
 https://codeforces.com/contest/940/problem/E 2000
 https://codeforces.com/problemset/problem/1237/D 2000
 https://codeforces.com/problemset/problem/1077/F2 2100
+https://www.luogu.com.cn/problem/P3572
 https://www.luogu.com.cn/problem/P3594
 https://www.luogu.com.cn/problem/P3957
 https://www.luogu.com.cn/problem/P1419
 todo https://www.luogu.com.cn/problem/P2627
  http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
- 老鼠进洞 http://codeforces.com/problemset/problem/797/F
+ 老鼠进洞 https://codeforces.com/problemset/problem/797/F
 */
 type MqData struct {
 	Val int

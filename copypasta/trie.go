@@ -1,7 +1,8 @@
 package copypasta
 
 /* 前缀树/字典树/单词查找树
-另类解读：如果将字符串长度视作定值的话，trie 树是一种 O(n) 排序，O(1) 查询的数据结构
+适用于多串前缀/后缀匹配
+另类解读：如果将字符串长度视作定值 L 的话，trie 树是一种 O(nL) 排序，O(L) 查询的数据结构
 https://oi-wiki.org/string/trie/
 https://www.quora.com/q/threadsiiithyderabad/Tutorial-on-Trie-and-example-problems
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieST.java.html
@@ -22,8 +23,8 @@ https://codeforces.com/contest/514/problem/C
 与 DP 结合 https://leetcode.cn/problems/re-space-lcci/
 与贪心堆结合 https://codeforces.com/problemset/problem/965/E
 todo https://codeforces.com/contest/455/problem/B
-
 深刻理解 https://atcoder.jp/contests/abc273/tasks/abc273_e
+https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
 type trieNode struct {
 	son [26]*trieNode

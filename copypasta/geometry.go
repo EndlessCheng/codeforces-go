@@ -108,6 +108,7 @@ LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
 反向：切比雪夫距离转成曼哈顿距离 https://www.luogu.com.cn/problem/P3964
 - 逆时针旋转 45° (x,y) -> ((x-y)/2, (x+y)/2)
 - 切比雪夫距离的等价表述：一个点到周围八方向的相邻点的距离都是 1
+https://atcoder.jp/contests/abc351/tasks/abc351_e
 
 TIPS: 另一种方法是分四种情况讨论，即
 |a-b|+|c-d|

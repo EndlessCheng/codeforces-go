@@ -200,9 +200,10 @@ func _(n int) {
 
 	// 区间并查集 / 涂色并查集 / 刷墙并查集
 	// LC1851 https://leetcode.cn/problems/minimum-interval-to-include-each-query/ 2286
+	// - 变形：额外传入数组 nums，计算包含元素值为 queries[i] 的最短的 intervals[i]
 	// LC2158 https://leetcode.cn/problems/amount-of-new-area-painted-each-day/
+	// https://codeforces.com/problemset/problem/371/D 1800 经典题
 	// https://codeforces.com/problemset/problem/724/D 1900
-	// https://codeforces.com/problemset/problem/371/D 1800
 	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
 		//if l < 0 {
 		//	l = 0

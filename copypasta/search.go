@@ -105,6 +105,8 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/) 1882
 - [面试题 17.25. 单词矩阵](https://leetcode.cn/problems/word-rectangle-lcci/)
 
+关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
+
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
 爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
@@ -769,8 +771,7 @@ func _(abs func(int) int) {
 	// 作为结束条件，处理完 0 之后，会有 -1&set == set
 	//
 	// 你可能会好奇，为什么 sub = (sub - 1) & set 这样写一定可以「跳到」下一个子集呢？会不会漏呢？
-	// 因为二进制的减法的特点是，每次会把 lowbit 那个 1 改成 0，lowbit 右边的 0 全部改成 1
-	// 由于下一个子集必然比 sub 小，减法的这种特点可以保证 sub-1 之后的二进制数必然包含下一个子集
+	// 正确性理由见 https://leetcode.cn/circle/discuss/CaOJ45/
 	loopSubset := func(n, set int) {
 		// 所有子集
 		for sub, ok := set, true; ok; ok = sub != set {
@@ -1027,6 +1028,7 @@ func _(abs func(int) int) {
 	// 第一排在右上，最后一排在左下
 	// 每排从左上到右下
 	// LC2711 https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/
+	// - [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/) 1548
 	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 	loopDiagonal := func(n, m int) {
 		for s := 1; s < n+m; s++ {
@@ -1132,11 +1134,14 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
 - [1391. 检查网格中是否存在有效路径](https://leetcode.cn/problems/check-if-there-is-a-valid-path-in-a-grid/) 1746
 - [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
+   - https://codeforces.com/problemset/problem/1651/D 1900
 - [529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)
 - [1559. 二维网格图中探测环](https://leetcode.cn/problems/detect-cycles-in-2d-grid/) 1838
 - [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
    - https://codeforces.com/contest/616/problem/C 1600
+https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
+https://codeforces.com/problemset/problem/1365/D 1700
 
 #### 网格图 BFS
 - [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/) *多源 BFS
@@ -1155,11 +1160,15 @@ https://codeforces.com/problemset/problem/598/D 1700
 - [505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)（会员题）
 - [499. 迷宫 III](https://leetcode.cn/problems/the-maze-iii/)（会员题）
 - [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
-http://codeforces.com/problemset/problem/329/B
+https://codeforces.com/problemset/problem/329/B 1500
+https://codeforces.com/problemset/problem/1955/H 2300
+https://codeforces.com/problemset/problem/1301/F 2600 BFS 进阶玩法
+- 同色入队 - 往四周走 - 同色跳跃 - 往四周走 - 同色跳跃 - ...
+- 记录访问过的颜色
 https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 
-#### 进阶
+#### 综合
 - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097
 - [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)

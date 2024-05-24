@@ -85,6 +85,8 @@ func rotateMatrix(a matrix) matrix {
 - [552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)
 - [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
 - [2851. 字符串转换](https://leetcode.cn/problems/string-transformation/) 2858
+https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
+https://www.luogu.com.cn/problem/P10310
 
 已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n https://www.luogu.com.cn/problem/P9777
 由于 f(n) * f(1) = f(n+1) + f(n-1)

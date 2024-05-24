@@ -899,7 +899,7 @@ func champernowneConstant(k int) int {
 	}
 }
 
-// 力扣见过多次了
+// 解析时间 力扣见过多次了
 func parseTime(s string) (hour, minute, total int) {
 	hour = int(s[0]&15)*10 + int(s[1]&15)
 	minute = int(s[3]&15)*10 + int(s[4]&15)
@@ -917,9 +917,10 @@ func parseTime(s string) (hour, minute, total int) {
 // - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/) 2159
 // - [2655. 寻找最大长度的未覆盖区间](https://leetcode.cn/problems/find-maximal-uncovered-ranges/)（会员题）
 // 另见 common.go 中的「区间贪心」
-// https://codeforces.com/problemset/problem/1859/D
-// https://codeforces.com/problemset/problem/1626/C
-// 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
+// https://codeforces.com/problemset/problem/1626/C 1700
+// - 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
+// https://codeforces.com/problemset/problem/1859/D 1800
+// https://codeforces.com/problemset/problem/1260/D 1900
 func mergeIntervals(a [][]int) [][]int {
 	slices.SortFunc(a, func(a, b []int) int { return a[0] - b[0] }) // 按区间左端点排序
 	merged := [][]int{}
