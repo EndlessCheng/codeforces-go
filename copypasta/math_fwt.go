@@ -86,12 +86,10 @@ func fwt(a, b []int, fwtFunc func([]int, int) []int, invOp int) []int {
 // （CF 更新成 amd64 之后）
 // 优化前 779ms https://codeforces.com/contest/1218/submission/225480738
 // 优化后 545ms https://codeforces.com/contest/1218/submission/225480844
-const _mod = 1_000_000_007
-
 func add(a, b int) int {
 	a += b
-	if a >= _mod {
-		a -= _mod
+	if a >= mod {
+		a -= mod
 	}
 	return a
 }
@@ -99,14 +97,14 @@ func add(a, b int) int {
 func sub_(a, b int) int {
 	a -= b
 	if a < 0 {
-		a += _mod
+		a += mod
 	}
 	return a
 }
 
 func div2(a int) int {
 	if a&1 > 0 {
-		a += _mod
+		a += mod
 	}
 	return a >> 1
 }
@@ -115,9 +113,9 @@ func div2(a int) int {
 // 原理是负数右移会不断补 1，所以最后二进制都是 1，因此返回值等价于 a+_mod
 // 而对于非负数，右移后二进制全为 0，所以返回结果仍然是 a
 func norm32(a int32) int32 {
-	return a + a>>31&_mod
+	return a + a>>31&mod
 }
 
 func norm64(a int64) int64 {
-	return a + a>>63&_mod
+	return a + a>>63&mod
 }
