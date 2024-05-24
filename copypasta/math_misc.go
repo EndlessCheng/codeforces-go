@@ -4,6 +4,9 @@ package copypasta
 - [343. 整数拆分](https://leetcode.cn/problems/integer-break/)
 - [651. 四个键的键盘](https://leetcode.cn/problems/4-keys-keyboard/)（会员题）
 
+置换的平方根（见第二个回答的例子）
+https://math.stackexchange.com/questions/266569/how-to-find-the-square-root-of-a-permutation
+
 朗伯 W 函数   Lambert W function
 https://en.wikipedia.org/wiki/Lambert_W_function
 Bounds and inequalities https://en.wikipedia.org/wiki/Lambert_W_function#Bounds_and_inequalities
