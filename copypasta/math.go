@@ -34,7 +34,10 @@ x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i
 x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i
 
 1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
-1<<x > v  =>  x > bits.Len(uint(v))       1<<x ≥ v  =>  x > bits.Len(uint(v-1))
+1<<x > v  =>  x ≥ bits.Len(uint(v))       1<<x ≥ v  =>  x ≥ bits.Len(uint(v-1))
+
+p<<x ≤ q
+https://codeforces.com/problemset/problem/1883/E 1600
 
 ⌊⌊x/n⌋/m⌋ = ⌊x/(n*m)⌋
 ⌈⌈x/n⌉/m⌉ = ⌈x/(n*m)⌉
