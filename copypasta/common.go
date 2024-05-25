@@ -33,12 +33,17 @@ https://leetcode.cn/circle/discuss/vEFf96/
 https://codeforces.com/problemset/problem/1101/B
 https://leetcode.cn/problems/apply-operations-to-make-string-empty/
 
+## 暴力枚举
+https://codeforces.com/problemset/problem/681/B 1300
+- [2207. 字符串中最多数目的子序列](https://leetcode.cn/problems/maximize-number-of-subsequences-in-a-string/) 1550
+
 ## 枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
    - https://codeforces.com/problemset/problem/702/B
 - [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
 - [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
-- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161
+- [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161 经典题
+    - https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/
 - [2815. 数组中的最大数对和](https://leetcode.cn/problems/max-pair-sum-in-an-array/) 1295
 - [2748. 美丽下标对的数目](https://leetcode.cn/problems/number-of-beautiful-pairs/) 1301
 - [2342. 数位和相等数对的最大和](https://leetcode.cn/problems/max-sum-of-a-pair-with-equal-sum-of-digits/) 1309
@@ -48,13 +53,16 @@ https://leetcode.cn/problems/apply-operations-to-make-string-empty/
 - [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
     巧妙安排更新顺序，使得 ans，pre_max 只能使用之前的值，从而符合 i<j<k 的要求
 - [1014. 最佳观光组合](https://leetcode.cn/problems/best-sightseeing-pair/) 1730
+- [1814. 统计一个数组中好对子的数目](https://leetcode.cn/problems/count-nice-pairs-in-an-array/) 1738
 - [454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/)
+- [1214. 查找两棵二叉搜索树之和](https://leetcode.cn/problems/two-sum-bsts/)（会员题）
 - [2613. 美数对](https://leetcode.cn/problems/beautiful-pairs/)（会员题）
 - [2964. 可被整除的三元组数量](https://leetcode.cn/problems/number-of-divisible-triplet-sums/)（会员题）
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
 异或 https://codeforces.com/problemset/problem/1800/F 1900
 
 ## 枚举右，维护左：需要维护两种值（pair）
+https://codeforces.com/problemset/problem/1895/C 1400
 https://codeforces.com/contest/1931/problem/D
 https://leetcode.cn/problems/count-beautiful-substrings-ii/
 
@@ -118,13 +126,16 @@ https://codeforces.com/problemset/problem/1296/C
 - [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
   注：带修改的接雨水 https://codeforces.com/gym/104821/problem/M
   - https://www.zhihu.com/question/627281278/answer/3280684055
+  - 全排列接雨水 https://atcoder.jp/contests/tenka1-2015-final/tasks/tenka1_2015_final_e
 - [123. 买卖股票的最佳时机 III](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/) 拆分成两个 121 题
+- [1422. 分割字符串的最大得分](https://leetcode.cn/problems/maximum-score-after-splitting-a-string/) 1238
 - [2256. 最小平均差](https://leetcode.cn/problems/minimum-average-difference/) 1395
 - [1493. 删掉一个元素以后全为 1 的最长子数组](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/) 1423
 - [845. 数组中的最长山脉](https://leetcode.cn/problems/longest-mountain-in-array/) 1437 *也可以分组循环
 - [2909. 元素和最小的山形三元组 II](https://leetcode.cn/problems/minimum-sum-of-mountain-triplets-ii/) 1479
 - [2483. 商店的最少代价](https://leetcode.cn/problems/minimum-penalty-for-a-shop/) 1495
 - [1525. 字符串的好分割数目](https://leetcode.cn/problems/number-of-good-ways-to-split-a-string/) 1500
+- [3096. 得到更多分数的最少关卡数目](https://leetcode.cn/problems/minimum-levels-to-gain-more-points/) 1501
 - [2874. 有序三元组中的最大值 II](https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-ii/) 1583
 - [1031. 两个非重叠子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-two-non-overlapping-subarrays/) 1680
 - [689. 三个无重叠子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-3-non-overlapping-subarrays/)
@@ -150,6 +161,7 @@ https://codeforces.com/problemset/problem/1296/C
 https://codeforces.com/problemset/problem/1178/B 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1706/C 1400
+https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/1837/F 2400
 
 #### 定长滑动窗口（右边数字为难度分）
@@ -160,6 +172,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - [1343. 大小为 K 且平均值大于等于阈值的子数组数目](https://leetcode.cn/problems/number-of-sub-arrays-of-size-k-and-average-greater-than-or-equal-to-threshold/) 1317
 - [2090. 半径为 k 的子数组平均值](https://leetcode.cn/problems/k-radius-subarray-averages/) 1358
 - [2379. 得到 K 个黑块的最少涂色次数](https://leetcode.cn/problems/minimum-recolors-to-get-k-consecutive-black-blocks/) 1360
+- [1652. 拆炸弹](https://leetcode.cn/problems/defuse-the-bomb/) 1417
 - [1052. 爱生气的书店老板](https://leetcode.cn/problems/grumpy-bookstore-owner/) 1418
 - [2841. 几乎唯一子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-almost-unique-subarray/) 1546
 - [2461. 长度为 K 子数组中的最大和](https://leetcode.cn/problems/maximum-sum-of-distinct-subarrays-with-length-k/) 1553
@@ -181,6 +194,7 @@ https://codeforces.com/problemset/problem/371/E 2000
 #### 不定长滑动窗口（求最长/最大）
 - [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
    - 翻转至多一个任意子串后的无重复字符的最长子串 https://codeforces.com/contest/1234/problem/F
+- [3090. 每个字符最多出现两次的最长子字符串](https://leetcode.cn/problems/maximum-length-substring-with-two-occurrences/) 1329
 - [1493. 删掉一个元素以后全为 1 的最长子数组](https://leetcode.cn/problems/longest-subarray-of-1s-after-deleting-one-element/) 1423
 - [1208. 尽可能使字符串相等](https://leetcode.cn/problems/get-equal-substrings-within-budget/) 1497
 - [2730. 找到最长的半重复子字符串](https://leetcode.cn/problems/find-the-longest-semi-repetitive-substring/) 1502
@@ -192,6 +206,7 @@ https://codeforces.com/problemset/problem/371/E 2000
 - [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/) 1672  *需要 SortedList
 - [2401. 最长优雅子数组](https://leetcode.cn/problems/longest-nice-subarray/) 1750 *位运算
 - [1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/) 1817
+    - https://codeforces.com/problemset/problem/1692/E 1200
 - [1838. 最高频元素的频数](https://leetcode.cn/problems/frequency-of-the-most-frequent-element/) 1876
 - [2516. 每种字符至少取 K 个](https://leetcode.cn/problems/take-k-of-each-character-from-left-and-right/) 1948
 - [2831. 找出最长等值子数组](https://leetcode.cn/problems/find-the-longest-equal-subarray/) 1976
@@ -205,15 +220,19 @@ https://codeforces.com/problemset/problem/371/E 2000
 - [159. 至多包含两个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-two-distinct-characters/)（会员题）
 - [340. 至多包含 K 个不同字符的最长子串](https://leetcode.cn/problems/longest-substring-with-at-most-k-distinct-characters/)（会员题）
 与单调队列结合 https://www.luogu.com.cn/problem/P3594
+https://codeforces.com/problemset/problem/1873/F 1300
 
 #### 不定长滑动窗口（求最短/最小）
 - [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 - [1234. 替换子串得到平衡字符串](https://leetcode.cn/problems/replace-the-substring-for-balanced-string/) 1878
+- [2875. 无限数组的最短子数组](https://leetcode.cn/problems/minimum-size-subarray-in-infinite-array/) 1914
 - [1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/) 1932
 - [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
 - [面试题 17.18. 最短超串](https://leetcode.cn/problems/shortest-supersequence-lcci/)
-改成和最小 https://codeforces.com/problemset/problem/224/B 1500
+https://codeforces.com/problemset/problem/1354/B 1200
+https://codeforces.com/problemset/problem/224/B 1500 和最小
 https://codeforces.com/problemset/problem/701/C 1500
+https://codeforces.com/problemset/problem/1777/C 1700
 
 #### 不定长滑动窗口（求子数组个数）
 - [2799. 统计完全子数组的数目](https://leetcode.cn/problems/count-complete-subarrays-in-an-array/) 1398
@@ -231,15 +250,19 @@ https://codeforces.com/problemset/problem/701/C 1500
 变形：改成子数组 https://codeforces.com/problemset/problem/550/B
 其它题目见【前缀和】
 
-#### 多指针滑动窗口
+#### 进阶 多指针滑动窗口
 - [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/) 1592 恰好等于
 - [1248. 统计「优美子数组」](https://leetcode.cn/problems/count-number-of-nice-subarrays/) 1624 类似 930
 - [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721
+- [1477. 找两个和为目标值且不重叠的子数组](https://leetcode.cn/problems/find-two-non-overlapping-sub-arrays-each-with-target-sum/) 1851
 - [1712. 将数组分成三个子数组的方案数](https://leetcode.cn/problems/ways-to-split-array-into-three-subarrays/) 2079
 - [2444. 统计定界子数组的数目](https://leetcode.cn/problems/count-subarrays-with-fixed-bounds/) 2093
 - [1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/) *非暴力做法
 - [992. K 个不同整数的子数组](https://leetcode.cn/problems/subarrays-with-k-different-integers/) 2210
 - [1989. 捉迷藏中可捕获的最大人数](https://leetcode.cn/problems/maximum-number-of-people-that-can-be-caught-in-tag/)（会员题）
+
+### 多指针
+- [1213. 三个有序数组的交集](https://leetcode.cn/problems/intersection-of-three-sorted-arrays/)（会员题）
 
 LC2234 https://leetcode.cn/problems/maximum-total-beauty-of-the-gardens/ 2562
 类似 [795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/) 1817
@@ -257,6 +280,7 @@ https://codeforces.com/contest/1833/problem/F
 计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
 mex https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://codeforces.com/problemset/problem/165/C
+- [1099. 小于 K 的两数之和](https://leetcode.cn/problems/two-sum-less-than-k/)（会员题）
 
 双序列双指针
 LC88 https://leetcode.cn/problems/merge-sorted-array/
@@ -278,10 +302,11 @@ https://atcoder.jp/contests/abc155/tasks/abc155_d
 a[i] + b[j] = target 的方案数
 a[i] + b[j] < target 的方案数    相向双指针 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
                                          https://codeforces.com/problemset/problem/1538/C 1300
+                               - [259. 较小的三数之和](https://leetcode.cn/problems/3sum-smaller/)（会员题）
 a[i] + b[j] > target 的方案数    同上
 a[i] - b[j] = target 的方案数
 a[i] - b[j] < target 的方案数    滑窗
-a[i] - b[j] > target 的方案数    同上
+a[i] - b[j] > target 的方案数    同上 >= https://atcoder.jp/contests/abc353/tasks/abc353_c
 子数组元素和 = < > target 的方案数：用前缀和，转换成上面 a[i] - b[j] 的形式
 子序列元素和 = < > target 的方案数：0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
 
@@ -295,6 +320,7 @@ https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/j
 - [1446. 连续字符](https://leetcode.cn/problems/consecutive-characters/) 1165
 - [1869. 哪种连续子字符串更长](https://leetcode.cn/problems/longer-contiguous-segments-of-ones-than-zeros/) 1205
 - [1957. 删除字符使字符串变好](https://leetcode.cn/problems/delete-characters-to-make-fancy-string/) 1358
+- [674. 最长连续递增序列](https://leetcode.cn/problems/longest-continuous-increasing-subsequence/)
 - [978. 最长湍流子数组](https://leetcode.cn/problems/longest-turbulent-subarray/) 1393
 - [2110. 股票平滑下跌阶段的数目](https://leetcode.cn/problems/number-of-smooth-descent-periods-of-a-stock/) 1408
 - [228. 汇总区间](https://leetcode.cn/problems/summary-ranges/)
@@ -307,6 +333,7 @@ https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/j
 - [1578. 使绳子变成彩色的最短时间](https://leetcode.cn/problems/minimum-time-to-make-rope-colorful/) 1574
 - [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/) 1580
 - [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/) 1581
+- [3105. 最长的严格递增或递减子数组](https://leetcode.cn/problems/longest-strictly-increasing-or-strictly-decreasing-subarray/)
 - [467. 环绕字符串中唯一的子字符串](https://leetcode.cn/problems/unique-substrings-in-wraparound-string/) ~1700
 - [2948. 交换得到字典序最小的数组](https://leetcode.cn/problems/make-lexicographically-smallest-array-by-swapping-elements/) 2047
 - [2393. 严格递增的子数组个数](https://leetcode.cn/problems/count-strictly-increasing-subarrays/)（会员题）
@@ -318,6 +345,8 @@ LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 - https://atcoder.jp/contests/abc317/tasks/abc317_e
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
 https://codeforces.com/problemset/problem/1272/C 1200
+https://codeforces.com/problemset/problem/1343/C 1200
+https://codeforces.com/problemset/problem/1873/F 1300
 https://codeforces.com/problemset/problem/1380/C 1400
 https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/525/C 1600
@@ -325,35 +354,51 @@ https://codeforces.com/problemset/problem/1748/C 1600
 
 ### 巧妙枚举
 LC939 https://leetcode.cn/problems/minimum-area-rectangle/
+- [1577. 数的平方等于两数乘积的方法数](https://leetcode.cn/problems/number-of-ways-where-square-of-number-is-equal-to-product-of-two-numbers/) 1594
 https://codeforces.com/problemset/problem/846/C 1800
 https://codeforces.com/problemset/problem/1181/C 1900
 https://codeforces.com/problemset/problem/1626/D 2100
 https://codeforces.com/problemset/problem/339/E 2700
 
 ### 贪心及其证明
+- [2587. 重排数组以得到最大前缀分数](https://leetcode.cn/problems/rearrange-array-to-maximize-prefix-score/) 1337
 - [455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
 - [1029. 两地调度](https://leetcode.cn/problems/two-city-scheduling/) 1348
+- [2165. 重排数字的最小值](https://leetcode.cn/problems/smallest-value-of-the-rearranged-number/) 1362
 - [2410. 运动员和训练师的最大匹配数](https://leetcode.cn/problems/maximum-matching-of-players-with-trainers/) 1381
+- [3111. 覆盖所有点的最少矩形数目](https://leetcode.cn/problems/minimum-rectangles-to-cover-points/) 1401
+- [2139. 得到目标值的最少行动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-score/) 1417
 - [2645. 构造有效字符串的最少插入数](https://leetcode.cn/problems/minimum-additions-to-make-valid-string/) 1478
+- [3091. 执行操作使数据元素之和大于等于 K](https://leetcode.cn/problems/apply-operations-to-make-sum-of-array-greater-than-or-equal-to-k/) 1522
 - [881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/) 1530
     - https://codeforces.com/problemset/problem/1690/E
     - https://www.lanqiao.cn/problems/4174/learning/?contest_id=135
     - https://codeforces.com/problemset/problem/1765/D
 - [2522. 将字符串分割成值不超过 K 的子字符串](https://leetcode.cn/problems/partition-string-into-substrings-with-values-at-most-k/) 1605
-- [2086. 喂食仓鼠的最小食物桶数](https://leetcode.cn/problems/minimum-number-of-food-buckets-to-feed-the-hamsters/) 1623 原标题是【从房屋收集雨水需要的最少水桶数】
+- [2086. 喂食仓鼠的最小食物桶数](https://leetcode.cn/problems/minimum-number-of-food-buckets-to-feed-the-hamsters/) 1623 注：原标题是「从房屋收集雨水需要的最少水桶数」
+- [2375. 根据模式串构造最小数字](https://leetcode.cn/problems/construct-smallest-number-from-di-string/) 1642
 - [2611. 老鼠和奶酪](https://leetcode.cn/problems/mice-and-cheese/) 1663
 - [1567. 乘积为正数的最长子数组长度](https://leetcode.cn/problems/maximum-length-of-subarray-with-positive-product/) 1710
+- [3085. 成为 K 特殊字符串需要删除的最少字符数](https://leetcode.cn/problems/minimum-deletions-to-make-string-k-special/) 1765
 - [2952. 需要添加的硬币的最小数量](https://leetcode.cn/problems/minimum-number-of-coins-to-be-added/) 1784
-    - LC330 https://leetcode.cn/problems/patching-array/
+- [553. 最优除法](https://leetcode.cn/problems/optimal-division/)
+- [330. 按要求补齐数组](https://leetcode.cn/problems/patching-array/)
 - [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/) 1822
 - [2311. 小于等于 K 的最长二进制子序列](https://leetcode.cn/problems/longest-binary-subsequence-less-than-or-equal-to-k/) 1840
 - [3035. 回文字符串的最大数量](https://leetcode.cn/problems/maximum-palindromes-after-operations/) 1857
+- [3081. 替换字符串中的问号使分数最小](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/) 1905
 - [1147. 段式回文](https://leetcode.cn/problems/longest-chunked-palindrome-decomposition/) 1912
 - [1686. 石子游戏 VI](https://leetcode.cn/problems/stone-game-vi/) 2001
     - https://codeforces.com/contest/1914/problem/E2 1400
+- [2333. 最小差值平方和](https://leetcode.cn/problems/minimum-sum-of-squared-difference/) 2011
+    - 有 k%(i+1) 个元素可以多减少 1
+- [1648. 销售价值减少的颜色球](https://leetcode.cn/problems/sell-diminishing-valued-colored-balls/)
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
 - todo 复习 [2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/) 2091
+- todo 复习 [659. 分割数组为连续子序列](https://leetcode.cn/problems/split-array-into-consecutive-subsequences/)
+- [1889. 装包裹的最小浪费空间](https://leetcode.cn/problems/minimum-space-wasted-from-packaging/) 2214
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
+- [420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)
 - [LCP 26. 导航装置](https://leetcode.cn/problems/hSRGyL/)
 - [418. 屏幕可显示句子的数量](https://leetcode.cn/problems/sentence-screen-fitting/)（会员题）
 - [3088. 使字符串反回文](https://leetcode.cn/problems/make-string-anti-palindrome/)（会员题）
@@ -364,6 +409,7 @@ https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/1443/C 1400
 https://codeforces.com/problemset/problem/864/D 1500
 https://codeforces.com/problemset/problem/1659/C 1500
+https://codeforces.com/problemset/problem/1661/C 1700 奇数天+1 偶数天 +2
 https://codeforces.com/problemset/problem/1691/C
 https://codeforces.com/problemset/problem/1369/C
 	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
@@ -385,6 +431,7 @@ https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?opti
 倒序思维 https://codeforces.com/problemset/problem/1707/A
 https://codeforces.com/contest/1873/problem/G
 https://atcoder.jp/contests/arc147/tasks/arc147_e 难
+https://www.luogu.com.cn/problem/P1016
 
 数学思维
 https://codeforces.com/problemset/problem/23/C 2500
@@ -417,6 +464,7 @@ https://codeforces.com/problemset/problem/934/A 1400
 - [1478. 安排邮筒](https://leetcode.cn/problems/allocate-mailboxes/) 2190
 - [2968. 执行操作使频率分数最大](https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/) 2444
 - [1703. 得到连续 K 个 1 的最少相邻交换次数](https://leetcode.cn/problems/minimum-adjacent-swaps-for-k-consecutive-ones/) 2467
+- [3086. 拾起 K 个 1 需要的最少行动次数](https://leetcode.cn/problems/minimum-moves-to-pick-k-ones/) 2673
 - [LCP 24. 数字游戏](https://leetcode.cn/problems/5TxKeK/)
 - [296. 最佳的碰头地点](https://leetcode.cn/problems/best-meeting-point/) 二维的情况（会员题）
 https://codeforces.com/problemset/problem/710/B 1400
@@ -428,9 +476,19 @@ https://codeforces.com/problemset/problem/710/B 1400
 - [1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/) 1679
 - [2931. 购买物品的最大开销](https://leetcode.cn/problems/maximum-spending-after-buying-items/) 1822
 - [2809. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/) 2979
+https://codeforces.com/problemset/problem/1165/E 1600
 
-每次取两个数减一，最后剩下的数最小
-https://cs.stackexchange.com/a/145450
+## 相邻不同
+每次取两个数减一，最后剩下的数最小 / 操作次数最多 https://cs.stackexchange.com/a/145450
+- [1753. 移除石子的最大得分](https://leetcode.cn/problems/maximum-score-from-removing-stones/) 1488
+- [767. 重构字符串](https://leetcode.cn/problems/reorganize-string/) 1681
+- [1054. 距离相等的条形码](https://leetcode.cn/problems/distant-barcodes/) 1702
+- [1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/) 1804
+   - https://codeforces.com/problemset/problem/1579/D 1400
+- [3139. 使数组中所有元素相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-equalize-array/) 2666
+- [621. 任务调度器](https://leetcode.cn/problems/task-scheduler/) 相同元素至少间隔 n
+- [358. K 距离间隔重排字符串](https://leetcode.cn/problems/rearrange-string-k-distance-apart/)（会员题）
+https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
@@ -466,6 +524,8 @@ LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 - 加强版 https://www.luogu.com.cn/problem/P9715        ?contestId=126251
 
 思维：观察、结论
+- [2498. 青蛙过河 II](https://leetcode.cn/problems/frog-jump-ii/)
+- [782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/) 2430
 https://codeforces.com/problemset/problem/1442/A
 https://codeforces.com/problemset/problem/558/C
 https://codeforces.com/problemset/problem/1610/E
@@ -507,12 +567,18 @@ LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 LC2745 https://leetcode.cn/problems/construct-the-longest-new-string/ 1607
 LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
+https://codeforces.com/problemset/problem/1028/B  1200
+https://codeforces.com/problemset/problem/1713/C  1200
 https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300
 https://codeforces.com/problemset/problem/803/A   1400
+https://codeforces.com/problemset/problem/1838/C  1400
 https://codeforces.com/problemset/problem/1863/D  1400
 https://codeforces.com/problemset/problem/1630/A  1500
+https://codeforces.com/problemset/problem/1710/A  1500
+https://codeforces.com/problemset/problem/1722/G  1500
 https://codeforces.com/problemset/problem/1809/C  1500
+https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
@@ -529,8 +595,9 @@ https://codeforces.com/problemset/problem/1823/D  1900
 https://codeforces.com/problemset/problem/1854/A2 1900 分类讨论
 https://codeforces.com/problemset/problem/515/D   2000
 https://codeforces.com/problemset/problem/1558/C  2000
-https://codeforces.com/problemset/problem/1789/D  2200
+https://codeforces.com/problemset/problem/1789/D  2200 推荐 位运算 把 X 变成 Y 不断靠近答案
 https://codeforces.com/problemset/problem/1761/E  2400
+https://codeforces.com/problemset/problem/1521/E  2700 二维相邻不同
 https://codeforces.com/problemset/problem/1838/F  3000 交互 二分
 https://atcoder.jp/contests/arc145/tasks/arc145_a
 https://atcoder.jp/contests/agc015/tasks/agc015_d bit OR
@@ -589,10 +656,13 @@ https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
 https://atcoder.jp/contests/arc134/tasks/arc134_d 1998
+- [335. 路径交叉](https://leetcode.cn/problems/self-crossing/)
+- [2162. 设置时间的最少代价](https://leetcode.cn/problems/minimum-cost-to-set-cooking-time/) 1852
 https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/
 https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii/
 
 大量分类讨论
+- [420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)
 https://codeforces.com/problemset/problem/356/C
 https://codeforces.com/problemset/problem/460/D
 https://codeforces.com/problemset/problem/796/C
@@ -616,6 +686,7 @@ https://codeforces.com/problemset/problem/1648/A 1400 维度独立
 https://codeforces.com/problemset/problem/1691/C 1400
 https://codeforces.com/problemset/problem/1789/C 1500 好题！
 https://codeforces.com/problemset/problem/383/A 1600 好题
+https://codeforces.com/problemset/problem/1165/E 1600
 https://codeforces.com/problemset/problem/1777/D 1900 树
 https://codeforces.com/problemset/problem/1788/D 2000 好题！
 https://codeforces.com/problemset/problem/912/D 2100
@@ -716,15 +787,19 @@ others https://codeforces.com/blog/entry/118706
 
 - [2343. 裁剪数字后查询第 K 小的数字](https://leetcode.cn/problems/query-kth-smallest-trimmed-number/) 1652
 - [2070. 每一个查询的最大美丽值](https://leetcode.cn/problems/most-beautiful-item-for-each-query/) 1724
+- [1847. 最近的房间](https://leetcode.cn/problems/closest-room/) 2082
 - [2503. 矩阵查询可获得的最大分数](https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/) 2196
 - [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/) 2286
 - [1697. 检查边长度限制的路径是否存在](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/) 2300
-- [2747. 统计没有收到请求的服务器数目](https://leetcode.cn/problems/count-zero-request-servers/)
+- [2747. 统计没有收到请求的服务器数目](https://leetcode.cn/problems/count-zero-request-servers/) 2405
 - [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
 - [2736. 最大和查询](https://leetcode.cn/problems/maximum-sum-queries/) 2533
 */
 
-/* 逆向思维 / 正难则反：从终点出发 / 小学奥数告诉我们，不可行方案永远比可行方案好求
+/* 逆向思维 / 正难则反
+不可行方案通常比可行方案好求
+- [2171. 拿出最少数目的魔法豆](https://leetcode.cn/problems/removing-minimum-number-of-magic-beans/) 1748
+- [1354. 多次求和构造目标数组](https://leetcode.cn/problems/construct-target-array-with-multiple-sums/) 2015
 LC803 https://leetcode.cn/problems/bricks-falling-when-hit/
 LC936 https://leetcode.cn/problems/stamping-the-sequence/
 LC1199 https://leetcode.cn/problems/minimum-time-to-build-blocks/
@@ -735,6 +810,7 @@ https://codeforces.com/problemset/problem/1792/C 1500
 https://codeforces.com/problemset/problem/1882/B
 https://codeforces.com/problemset/problem/712/C 1600
 https://codeforces.com/problemset/problem/621/C 1700
+https://codeforces.com/problemset/problem/1301/C 1700
 https://codeforces.com/problemset/problem/1644/D 1700
 https://codeforces.com/problemset/problem/1672/D 1700
 https://codeforces.com/problemset/problem/1759/G 1900 求字典序最小，通常可以从大往小思考
@@ -1050,14 +1126,27 @@ func _() {
 	// 返回 a 的各个子集的元素和
 	// 复杂度为 O(1+2+4+...+2^(n-1)) = O(2^n)
 	// https://codeforces.com/contest/1209/problem/E2
-	subSum := func(a []int) []int {
+	// LC3116 https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/
+	subsetSum := func(a []int) []int {
 		sum := make([]int, 1<<len(a))
 		for i, v := range a {
-			for mask, bit := 0, 1<<i; mask < bit; mask++ {
-				sv := sum[mask] + v
-				sum[bit|mask] = sv
-				// NOTE: 若要直接在此考察 sv（相当于遍历 sum），注意别漏了 sum[0] = 0 的情况
+			bit := 1 << i
+			for mask, s := range sum[:bit] {
+				sum[bit|mask] = s + v // + 可以改成其它运算，例如 gcd
 			}
+		}
+		return sum
+	}
+
+	// 另一种写法（benchmark 结果和上面差不多）
+	subsetSum = func(a []int) []int {
+		sum := make([]int, 1<<len(a))
+		for i, v := range a {
+			sum[1<<i] = v
+		}
+		for i := range sum {
+			lb := i & -i
+			sum[i] = sum[i^lb] + sum[lb]
 		}
 		return sum
 	}
@@ -1111,6 +1200,7 @@ func _() {
 
 	// 前缀和
 	// LC303 https://leetcode.cn/problems/range-sum-query-immutable/
+	// https://codeforces.com/problemset/problem/901/C 2300
 	prefixSum := func(a []int) {
 		slices.Sort(a)
 		sum := make([]int, len(a)+1)
@@ -1130,6 +1220,7 @@ func _() {
 		}
 
 		// LC2968 https://leetcode.cn/problems/apply-operations-to-maximize-frequency-score/
+		// LC3086 https://leetcode.cn/problems/minimum-moves-to-pick-k-ones/ 2673
 		// 返回下标在左闭右开区间 [left,right) 内的所有 a[i] 到 target 的距离之和
 		// ！需要保证 a 是有序的
 		distanceSumRange := func(left, right, target int) int {
@@ -1157,7 +1248,7 @@ func _() {
 
 		// +1 操作执行 maxOp 次，最大化最小值   fill
 		// ！需要保证 a 是有序的
-		// LC3081 https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/
+		// - [3081. 替换字符串中的问号使分数最小](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/) 1905
 		maxLow := func(maxOp int) int {
 			i := sort.Search(len(a), func(i int) bool { return a[i]*i-sum[i] > maxOp })
 			// low * i - sum[i] <= maxOp, i=n 时也适用
@@ -1168,6 +1259,7 @@ func _() {
 
 		// -1 操作执行 maxOp 次，最小化最大值    remove
 		// ！需要保证 a 是有序的
+		// - [1300. 转变数组后最接近目标值的数组和](https://leetcode.cn/problems/sum-of-mutated-array-closest-to-target/) 1607
 		// 类似题目 https://codeforces.com/problemset/problem/1065/C 1600
 		minHigh := func(maxOp int) int {
 			n := len(a)
@@ -1247,9 +1339,10 @@ func _() {
 	// - [304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/) *模板题
 	// - [1314. 矩阵区域和](https://leetcode.cn/problems/matrix-block-sum/) 1484
 	// - [3070. 元素和小于等于 k 的子矩阵的数目](https://leetcode.cn/problems/count-submatrices-with-top-left-element-and-sum-less-than-k/) 1499
-	// - [1277. 统计全为 1 的正方形子矩阵](https://leetcode.cn/problems/count-square-submatrices-with-all-ones/) 1613
-	// - [221. 最大正方形](https://leetcode.cn/problems/maximal-square/)
+	// - [1277. 统计全为 1 的正方形子矩阵](https://leetcode.cn/problems/count-square-submatrices-with-all-ones/) 1613  也可以 DP
 	// - [1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode.cn/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/) 1735
+	// - [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) 也可以 DP
+	//     - https://codeforces.com/problemset/problem/1301/E 2500
 	// - [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
 	// - [1074. 元素和为目标值的子矩阵数量](https://leetcode.cn/problems/number-of-submatrices-that-sum-to-target/) 2189
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
@@ -1258,13 +1351,15 @@ func _() {
 	// https://codeforces.com/problemset/problem/611/C
 	// 分类讨论 https://www.luogu.com.cn/problem/P3625
 	// - https://atcoder.jp/contests/abc347/tasks/abc347_f
-	matrixSum := func(a [][]int) {
+	matrixSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])
 		// sum 第一行和第一列都是 0
 		sum := make([][]int, n+1)
-		sum[0] = make([]int, m+1)
+		for i := range sum {
+			sum[i] = make([]int, m+1)
+			//for j := range sum[i] { sum[i][j] = 1e18 }
+		}
 		for i, row := range a {
-			sum[i+1] = make([]int, m+1)
 			for j, v := range row {
 				sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + v
 			}
@@ -1590,11 +1685,13 @@ func _() {
 	- [2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/) 2029
 	- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
 	- [370. 区间加法](https://leetcode.cn/problems/range-addition/)（会员题）
+	- [2237. 计算街道上满足所需亮度的位置数量](https://leetcode.cn/problems/count-positions-on-street-with-required-brightness/)（会员题）
 	- [3009. 折线图上的最大交点数量](https://leetcode.cn/problems/maximum-number-of-intersections-on-the-chart/)（会员题）
 	https://codeforces.com/problemset/problem/816/B 1400
 	https://codeforces.com/problemset/problem/1700/C 1700
 	浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
 	差分思想 https://codeforces.com/problemset/problem/1634/F 2700
+	https://www.lanqiao.cn/problems/17164/learning/?contest_id=179
 	*/
 
 	// 二阶差分
@@ -1688,7 +1785,7 @@ func _() {
 	}
 
 	// 二维差分
-	// https://blog.csdn.net/weixin_43914593/article/details/113782108
+	// 【图解】从一维差分到二维差分 https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/
 	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/ 1583
 	// LC2132 https://leetcode.cn/problems/stamping-the-grid/ 2364（也可以不用差分）
 	// https://www.luogu.com.cn/problem/P3397
@@ -2027,7 +2124,7 @@ func _() {
 	}
 
 	// 扫描线另一种写法，把 delta 压缩进 pos
-	// 这样可以避免写一个复杂的 sort.Slice
+	// 这样可以避免写一个复杂的排序
 	sweepLine2 := func(ranges [][]int) {
 		n := len(ranges)
 		events := make([]int, 0, 2*n)
@@ -2166,9 +2263,9 @@ func _() {
 		rotateCopy, transpose,
 		initPalindromeNumber,
 
-		subSum, recoverArrayFromSubsetSum, subSumSorted,
+		subsetSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum,
-		matrixSum, rowColSum, diagonalSum, rightTriangleSum, contributionSum,
+		matrixSum2D, rowColSum, diagonalSum, rightTriangleSum, contributionSum,
 
 		diffOfDiff, diffMap, diff2D,
 
