@@ -20,27 +20,15 @@ func cf1301E(in io.Reader, _w io.Writer) {
 		size[i] = make([]int16, m)
 		f[i] = make([]int16, m)
 	}
-	col := make([]int16, m)
 	a := make([][]byte, n)
 	mxSz := 0
 	for i := range a {
 		Fscan(in, &a[i])
-		row := int16(0)
 		for j, c := range a[i] {
-			if j == 0 || c != a[i][j-1] {
-				row = 1
-			} else {
-				row++
-			}
-			if i == 0 || c != a[i-1][j] {
-				col[j] = 1
-			} else {
-				col[j]++
-			}
-			if i == 0 || j == 0 || c != a[i-1][j-1] {
+			if i == 0 || j == 0 || c != a[i][j-1] || c != a[i-1][j] || c != a[i-1][j-1] {
 				f[i][j] = 1
 			} else {
-				f[i][j] = min(f[i-1][j-1]+1, row, col[j])
+				f[i][j] = min(f[i][j-1], f[i-1][j], f[i-1][j-1]) + 1
 			}
 			sz16 := f[i][j]
 			sz := int(sz16)
