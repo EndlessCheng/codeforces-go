@@ -18,14 +18,15 @@ https://en.wikipedia.org/wiki/Binomial_theorem
 https://en.wikipedia.org/wiki/Pigeonhole_principle
 https://codeforces.com/problemset/problem/618/F
 
-简单计数
-https://codeforces.com/problemset/problem/617/B 1300
-
-一些组合问题
 没有思路的话可以尝试：
+- 正难则反，例如 https://codeforces.com/problemset/problem/1301/C 1700
 - 打表 + OEIS
 - 用 DP 推导，然后尝试优化
 - 假设法
+
+简单计数
+https://codeforces.com/problemset/problem/617/B 1300
+
 - [1359. 有效的快递序列数目](https://leetcode.cn/problems/count-all-valid-pickup-and-delivery-options/) 1723
 - [2147. 分隔长廊的方案数](https://leetcode.cn/problems/number-of-ways-to-divide-a-long-corridor/) 1915
 LC2514 https://leetcode.cn/problems/count-anagrams/ 2070
