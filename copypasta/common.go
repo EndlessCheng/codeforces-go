@@ -24,6 +24,7 @@ https://leetcode.cn/circle/discuss/dHn9Vk/ 位运算（基础/性质/拆位/试�
 https://leetcode.cn/circle/discuss/01LUak/ 图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）
 https://leetcode.cn/circle/discuss/tXLS3i/ 动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）
 https://leetcode.cn/circle/discuss/mOr1u6/ 常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）
+https://leetcode.cn/circle/discuss/IYT3ss/ 数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）
 
 力扣题目分类汇总
 https://leetcode.cn/circle/article/04PVPY/
