@@ -11,6 +11,9 @@ import (
 从集合论到位运算，常见位运算技巧分类总结！
 https://leetcode.cn/circle/discuss/CaOJ45/
 
+本页面的力扣题目已整理至【题单】位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）
+https://leetcode.cn/circle/discuss/dHn9Vk/
+
 有关二进制枚举、枚举子集的子集、枚举大小固定集合等写法，见 search.go
 
 运算符优先级 https://golang.org/ref/spec#Operators
@@ -48,12 +51,15 @@ Precedence    Operator
 - [2419. 按位与最大的最长子数组](https://leetcode.cn/problems/longest-subarray-with-maximum-bitwise-and/) 1496
 - [2871. 将数组分割成最多数目的子数组](https://leetcode.cn/problems/split-array-into-maximum-number-of-subarrays/) 1750
 - [2401. 最长优雅子数组](https://leetcode.cn/problems/longest-nice-subarray/) 1750
+- [3097. 或值至少为 K 的最短子数组 II](https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/) 1891
 - [2680. 最大或值](https://leetcode.cn/problems/maximum-or/) 1912 可以做到 $\mathcal{O}(1)$ 额外空间
 - [2411. 按位或最大的最小子数组长度](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/) 1938
 - [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/) 2133
 - [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/) 2384
-两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数 https://codeforces.com/problemset/problem/1665/E
-连续数字 AND 等于目标值 https://codeforces.com/problemset/problem/1775/C 1600
+https://codeforces.com/problemset/problem/1775/B 1300
+https://codeforces.com/problemset/problem/1299/A 1500
+https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
+https://codeforces.com/problemset/problem/1665/E 2500 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数
 https://codeforces.com/problemset/problem/1004/F 2600
 https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
 
@@ -73,8 +79,8 @@ https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
 - [2564. 子字符串异或查询](https://leetcode.cn/problems/substring-xor-queries/) 1959
 - [1734. 解码异或后的排列](https://leetcode.cn/problems/decode-xored-permutation/) 2024
 - [2857. 统计距离为 k 的点对](https://leetcode.cn/problems/count-pairs-of-points-with-distance-k/) 2082
-https://codeforces.com/problemset/problem/1895/D
-https://codeforces.com/problemset/problem/1790/E
+https://codeforces.com/problemset/problem/1968/F 1800
+https://codeforces.com/problemset/problem/1895/D 1900
 https://codeforces.com/problemset/problem/835/E 2400 交互
 
 ### 利用 lowbit
@@ -98,14 +104,16 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 所有子数组的 + 的 ^ https://www.luogu.com.cn/problem/U360500
 所有子序列的 + 的 + https://www.luogu.com.cn/problem/U360640
 所有子序列的 ^ 的 ^ https://www.luogu.com.cn/problem/U360641
-所有子序列的 ^ 的 + https://www.luogu.com.cn/problem/U360642 
+所有子序列的 ^ 的 + https://www.luogu.com.cn/problem/U360642
 - LC1863 https://leetcode.cn/problems/sum-of-all-subset-xor-totals/ 1372
 - https://codeforces.com/problemset/problem/1614/C 1500
 所有子序列的 + 的 ^ https://www.luogu.com.cn/problem/U360643
 所有子数组的 ^2 的 + 的 + https://ac.nowcoder.com/acm/contest/65051/D https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
 - 这里 ^2 表示子数组中任意两个数的异或
 所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
+拆位+贡献的好题！https://ac.nowcoder.com/acm/contest/78807/F
 https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
+https://codeforces.com/problemset/problem/1601/A 1300
 https://codeforces.com/problemset/problem/1513/B 1400
 https://codeforces.com/problemset/problem/1777/F
 https://codeforces.com/problemset/problem/981/D
@@ -125,6 +133,8 @@ https://atcoder.jp/contests/abc091/tasks/arc092_b
 所有 a[i]+a[j] 的异或和 https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
 拆位再合并相同位 https://codeforces.com/problemset/problem/1874/B
+https://ac.nowcoder.com/acm/contest/58860/G 河南省第十四届 ICPC 大学生程序设计竞赛
+https://ac.nowcoder.com/acm/contest/82957/F 牛客小白月赛 94
 
 ### 恒等式
 结合律：(a&b)^(a&c) = a&(b^c)    其他符号类似
@@ -135,7 +145,7 @@ popcount(a&b) + popcount(a|b) = popcount(a) + popcount(b)
 https://oeis.org/A006234 (n+2) * 3^(n-2)   [0,2^n) 内任意两数 popcount(x) + popcount(y) - popcount(x+y) = 1 的数对个数
 - https://codeforces.com/problemset/problem/1761/D
 进位与分类讨论 https://codeforces.com/problemset/problem/1761/D 2100
-- https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d 
+- https://www.luogu.com.cn/blog/linyihdfj/solution-cf1761d
 - https://www.cnblogs.com/linyihdfj/p/16893607.html
 a|b = (a^b) + (a&b)
 a&b = (a|b) - (a^b)
@@ -174,6 +184,8 @@ https://codeforces.com/problemset/problem/309/C 1900
 - [287. 寻找重复数](https://leetcode.cn/problems/find-the-duplicate-number/)
 - [260. 只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)
 - [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
+   - 除了某个元素只出现一次以外，其余每个元素均出现了三次，返回只出现了一次的元素
+   - 题解 https://leetcode.cn/problems/single-number-ii/solution/dai-ni-yi-bu-bu-tui-dao-chu-wei-yun-suan-wnwy/
 - [645. 错误的集合](https://leetcode.cn/problems/set-mismatch/)
 - [190. 颠倒二进制位](https://leetcode.cn/problems/reverse-bits/)
 - [371. 两整数之和](https://leetcode.cn/problems/sum-of-two-integers/)
@@ -186,9 +198,26 @@ https://codeforces.com/problemset/problem/309/C 1900
 - [1611. 使整数变为 0 的最少操作次数](https://leetcode.cn/problems/minimum-one-bit-operations-to-make-integers-zero/) 2345
 
 ### 位运算与字符串
+https://leetcode.cn/problems/count-the-number-of-special-characters-i/
+https://leetcode.cn/problems/count-the-number-of-special-characters-ii/
 LC3019 https://leetcode.cn/problems/number-of-changing-keys/
 https://codeforces.com/contest/691/problem/B
 https://codeforces.com/contest/1907/problem/B
+
+### 倍增
+把二进制视作 01 数组，倍增计算 01 数组的前缀异或和（从左往右的前缀）
+y := x
+y ^= y >> 1
+y ^= y >> 2
+y ^= y >> 4
+y ^= y >> 8
+y ^= y >> 16
+y ^= y >> 32
+此时 y 就是 x 的前缀异或和
+特别地，y 的最右边的比特就是 bits.OnesCount(x) % 2
+
+### 构造
+https://codeforces.com/contest/1722/problem/G 1500
 
 构造 2^n-1，即 n 个 1 的另一种方法: ^(-1<<n)
 
@@ -707,6 +736,34 @@ func _(x int) {
 		return
 	}
 
+	// bitOpTrick 的简单版本
+	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
+	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
+	bitOpTrickSimple := func(a []int, k int) int {
+		// 返回最短非空子数组，其 OR >= k
+		// 如果不存在，返回 -1
+		// 时间复杂度 O(nlogU)，因为单个 a[l] 最多被更新 O(logU) 次
+		ans := math.MaxInt
+		for r, v := range a {
+			if v >= k {
+				return 1
+			}
+			for l := r - 1; l >= 0 && a[l]|v != a[l]; l-- {
+				a[l] |= v
+				if a[l] >= k {
+					ans = min(ans, r-l+1)
+					break
+				}
+			}
+			// 循环结束后，原数组的 OR(a[l:r+1]) 记录在 a[l] 中
+			// 对于更一般的场合，可以在 a[:r+1] 中二分查找 target
+		}
+		if ans == math.MaxInt {
+			ans = -1
+		}
+		return ans
+	}
+
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
 	// 利用操作的单调性求解
 	// 时间复杂度：O(fnlogU)，其中 f 为 op(x,y) 的时间复杂度，一般是 O(1)，n=len(a)，U=max(a)
@@ -714,12 +771,14 @@ func _(x int) {
 	// |: LC898 https://leetcode.cn/problems/bitwise-ors-of-subarrays/ 2133
 	//    - 原题 https://codeforces.com/problemset/problem/243/A 1600
 	//    LC2411 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 1938
+	//    LC3097 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	//    https://codeforces.com/problemset/problem/1004/F 2600 线段树 merge
 	//    https://www.luogu.com.cn/problem/P8569
 	//    - 做法见下面的 bitOpTrickCnt      
 	//    - 题目源于这场比赛 https://www.luogu.com.cn/contest/65460#problems
 	//    - 其它做法 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
 	// &: LC1521 https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/
+	//    LC3117 https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
 	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/ 1603
 	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ 1929
@@ -752,6 +811,8 @@ func _(x int) {
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
 	// 甚至还可以做到把每个运算结果对应的每个区间长度的出现次数求出来（需要差分）
+	// LC3097 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
+	// LC3117 https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/
 	// https://codeforces.com/problemset/problem/475/D
 	// https://codeforces.com/problemset/problem/1632/D
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
@@ -770,16 +831,16 @@ func _(x int) {
 			}
 			opRes = append(opRes, result{v, i, i + 1})
 			// 去重（合并 v 相同的 result）
-			j := 0
-			for _, q := range opRes[1:] {
-				if opRes[j].v != q.v {
+			j := 1
+			for k := 1; k < len(opRes); k++ {
+				if opRes[k].v != opRes[k-1].v {
+					opRes[j] = opRes[k]
 					j++
-					opRes[j] = q
 				} else {
-					opRes[j].r = q.r // 如果省略 r 的话，这行可以去掉
+					opRes[j].r = opRes[k].r // 如果省略 r 的话，这行可以去掉
 				}
 			}
-			opRes = opRes[:j+1]
+			opRes = opRes[:j]
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
 			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range opRes {
@@ -919,7 +980,7 @@ func _(x int) {
 	_ = []interface{}{
 		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		bitOpTrick, bitOpTrickCnt, countSumEqMul,
+		bitOpTrickSimple, bitOpTrick, bitOpTrickCnt, countSumEqMul,
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
