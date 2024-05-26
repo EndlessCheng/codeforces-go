@@ -1,4 +1,4 @@
-## 方法一：正序回答询问
+### 方法一：正序回答询问+有序集合+线段树
 
 ![b131d.png](https://pic.leetcode.cn/1716685098-OuZZol-b131d.png)
 
@@ -267,7 +267,7 @@ func getResults(queries [][]int) (ans []bool) {
 
 注：如果要做到值域无关，可以用动态开点线段树。
 
-## 方法二：倒序回答询问
+### 方法二：倒序回答询问+有序集合+树状数组
 
 倒序回答询问，在 $x$ 处添加障碍物就变成删除障碍物了。
 
@@ -492,6 +492,332 @@ func getResults(queries [][]int) (ans []bool) {
 		} else {
 			// 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
 			maxGap := max(t.preMax(pre.Key), x-pre.Key)
+			ans = append(ans, maxGap >= q[2])
+		}
+	}
+	slices.Reverse(ans)
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(U + q\log U)$，其中 $q$ 是 $\textit{queries}$ 的长度，$U$ 是 $\textit{x}$ 的最大值。注意题目保证 $U\le 3q$。
+- 空间复杂度：$\mathcal{O}(U)$。
+
+### 方法三：倒序回答询问+并查集+树状数组
+
+用并查集实现方法二中有序集合的删除、查找前驱和查找后继。
+
+需要维护两个并查集，分别记作 $\textit{left}$ 和 $\textit{right}$。
+
+- 删除 $x$：把 $\textit{left}$ 中的 $x$ 指向 $x-1$，把 $\textit{right}$ 中的 $x$ 指向 $x+1$。如果要批量删除开区间 $(p,q)$ 中的元素 $x$，可以把 $\textit{left}$ 中的 $x$ 指向 $p$，把 $\textit{right}$ 中的 $x$ 指向 $q$。
+- 查找 $x$ 的前驱：$x-1$ 在 $\textit{left}$ 中的代表元。
+- 查找 $x$ 的后继：$x+1$ 在 $\textit{right}$ 中的代表元。如果 $x$ 已经删除，也可以查询 $x$ 在 $\textit{right}$ 中的代表元。
+
+```py [sol-Python3]
+class Solution:
+    def getResults(self, queries: List[List[int]]) -> List[bool]:
+        m = max(q[1] for q in queries) + 1
+        t = [0] * m
+
+        def update(i: int, val: int) -> None:
+            while i < m:
+                t[i] = max(t[i], val)
+                i += i & -i
+
+        def pre_max(i: int) -> int:
+            res = 0
+            while i:
+                res = max(res, t[i])
+                i &= i - 1
+            return res
+
+        left = list(range(m + 1))
+        right = left.copy()
+
+        def find(fa: List[int], x: int) -> int:
+            if fa[x] != x:
+                fa[x] = find(fa, fa[x])
+            return fa[x]
+
+        pos = [0] + sorted(q[1] for q in queries if q[0] == 1)
+        for p, q in pairwise(pos):
+            update(q, q - p)
+            for j in range(p + 1, q):
+                left[j] = p  # 删除 j
+                right[j] = q
+        for j in range(pos[-1] + 1, m):
+            left[j] = pos[-1]  # 删除 j
+            right[j] = m
+
+        ans = []
+        for q in reversed(queries):
+            x = q[1]
+            pre = find(left, x - 1)  # x 左侧最近障碍物的位置
+            if q[0] == 1:
+                left[x] = x - 1  # 删除 x
+                right[x] = x + 1
+                nxt = find(right, x)  # x 右侧最近障碍物的位置
+                update(nxt, nxt - pre)  # 更新 d[nxt] = nxt - pre
+            else:
+                # 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
+                max_gap = max(pre_max(pre), x - pre)
+                ans.append(max_gap >= q[2])
+        return ans[::-1]
+```
+
+```java [sol-Java]
+class Fenwick {
+    private final int[] tree;
+
+    public Fenwick(int size) {
+        tree = new int[size];
+    }
+
+    public void update(int i, int val) {
+        for (; i < tree.length; i += i & -i) {
+            tree[i] = Math.max(tree[i], val);
+        }
+    }
+
+    public int preMax(int i) {
+        int res = 0;
+        for (; i > 0; i &= i - 1) {
+            res = Math.max(res, tree[i]);
+        }
+        return res;
+    }
+}
+
+class UnionFind {
+    public final int[] fa;
+
+    public UnionFind(int size) {
+        fa = new int[size];
+        for (int i = 1; i < size; i++) {
+            fa[i] = i;
+        }
+    }
+
+    public int find(int x) {
+        if (fa[x] != x) {
+            fa[x] = find(fa[x]);
+        }
+        return fa[x];
+    }
+}
+
+public class Solution {
+    public static List<Boolean> getResults(int[][] queries) {
+        int m = 0;
+        List<Integer> pos = new ArrayList<>();
+        pos.add(0);
+        for (int[] q : queries) {
+            m = Math.max(m, q[1]);
+            if (q[0] == 1) {
+                pos.add(q[1]);
+            }
+        }
+        m++;
+
+        UnionFind left = new UnionFind(m + 1);
+        UnionFind right = new UnionFind(m + 1);
+        Fenwick t = new Fenwick(m);
+        Collections.sort(pos);
+        for (int i = 1; i < pos.size(); i++) {
+            int p = pos.get(i - 1);
+            int q = pos.get(i);
+            t.update(q, q - p);
+            for (int j = p + 1; j < q; j++) {
+                left.fa[j] = p; // 删除 j
+                right.fa[j] = q;
+            }
+        }
+        for (int j = pos.get(pos.size() - 1) + 1; j < m; j++) {
+            left.fa[j] = pos.get(pos.size() - 1); // 删除 j
+            right.fa[j] = m;
+        }
+
+        List<Boolean> ans = new ArrayList<>();
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int[] q = queries[i];
+            int x = q[1];
+            int pre = left.find(x - 1); // x 左侧最近障碍物的位置
+            if (q[0] == 1) {
+                left.fa[x] = x - 1; // 删除 x
+                right.fa[x] = x + 1;
+                int nxt = right.find(x); // x 右侧最近障碍物的位置
+                t.update(nxt, nxt - pre); // 更新 d[nxt] = nxt - pre
+            } else {
+                // 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
+                int maxGap = Math.max(t.preMax(pre), x - pre);
+                ans.add(maxGap >= q[2]);
+            }
+        }
+        Collections.reverse(ans);
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class UnionFind {
+public:
+    vector<int> fa;
+
+    UnionFind(int size) : fa(size) {
+        for (int i = 1; i < size; i++) {
+            fa[i] = i;
+        }
+    }
+
+    int find(int x) {
+        if (fa[x] != x) {
+            fa[x] = find(fa[x]);
+        }
+        return fa[x];
+    }
+};
+
+class Solution {
+    vector<int> t;
+
+    void update(int i, int val) {
+        for (; i < t.size(); i += i & -i) {
+            t[i] = max(t[i], val);
+        }
+    }
+
+    int pre_max(int i) {
+        int res = 0;
+        for (; i; i &= i - 1) {
+            res = max(res, t[i]);
+        }
+        return res;
+    }
+
+public:
+    vector<bool> getResults(vector<vector<int>>& queries) {
+        int m = 0;
+        vector<int> pos = {0};
+        for (auto& q : queries) {
+            m = max(m, q[1]);
+            if (q[0] == 1) {
+                pos.push_back(q[1]);
+            }
+        }
+        m++;
+        ranges::sort(pos);
+
+        UnionFind left(m + 1);
+        UnionFind right(m + 1);
+        t.resize(m);
+        for (int i = 1; i < pos.size(); i++) {
+            int p = pos[i - 1];
+            int q = pos[i];
+            update(q, q - p);
+            for (int j = p + 1; j < q; j++) {
+                left.fa[j] = p; // 删除 j
+                right.fa[j] = q;
+            }
+        }
+        for (int j = pos.back() + 1; j < m; j++) {
+            left.fa[j] = pos.back(); // 删除 j
+            right.fa[j] = m;
+        }
+
+        vector<bool> ans;
+        for (int i = queries.size() - 1; i >= 0; i--) {
+            auto& q = queries[i];
+            int x = q[1];
+            int pre = left.find(x - 1); // x 左侧最近障碍物的位置
+            if (q[0] == 1) {
+                left.fa[x] = x - 1; // 删除 x
+                right.fa[x] = x + 1;
+                int nxt = right.find(x); // x 右侧最近障碍物的位置
+                update(nxt, nxt - pre); // 更新 d[nxt] = nxt - pre
+            } else {
+                // 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
+                int max_gap = max(pre_max(pre), x - pre);
+                ans.push_back(max_gap >= q[2]);
+            }
+        }
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type fenwick []int
+
+func (f fenwick) update(i, val int) {
+	for ; i < len(f); i += i & -i {
+		f[i] = max(f[i], val)
+	}
+}
+
+func (f fenwick) preMax(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res = max(res, f[i])
+	}
+	return res
+}
+
+type uf []int
+
+func (f uf) find(x int) int {
+	if f[x] != x {
+		f[x] = f.find(f[x])
+	}
+	return f[x]
+}
+
+func getResults(queries [][]int) (ans []bool) {
+	m := 0
+	pos := []int{0}
+	for _, q := range queries {
+		m = max(m, q[1])
+		if q[0] == 1 {
+			pos = append(pos, q[1])
+		}
+	}
+	m++
+
+	left := make(uf, m+1)
+	right := make(uf, m+1)
+	for i := range left {
+		left[i] = i
+		right[i] = i
+	}
+	t := make(fenwick, m)
+	slices.Sort(pos)
+	for i := 1; i < len(pos); i++ {
+		p, q := pos[i-1], pos[i]
+		t.update(q, q-p)
+		for j := p + 1; j < q; j++ {
+			left[j] = p // 删除 j
+			right[j] = q
+		}
+	}
+	for j := pos[len(pos)-1] + 1; j < m; j++ {
+		left[j] = pos[len(pos)-1] // 删除 j
+		right[j] = m
+	}
+
+	for i := len(queries) - 1; i >= 0; i-- {
+		q := queries[i]
+		x := q[1]
+		pre := left.find(x - 1) // x 左侧最近障碍物的位置
+		if q[0] == 1 {
+			left[x] = x - 1 // 删除 x
+			right[x] = x + 1
+			nxt := right.find(x)   // x 右侧最近障碍物的位置
+			t.update(nxt, nxt-pre) // 更新 d[nxt] = nxt - pre
+		} else {
+			// 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
+			maxGap := max(t.preMax(pre), x-pre)
 			ans = append(ans, maxGap >= q[2])
 		}
 	}

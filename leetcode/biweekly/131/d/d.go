@@ -22,38 +22,59 @@ func (f fenwick) preMax(i int) (res int) {
 	return res
 }
 
+type uf []int
+
+func (f uf) find(x int) int {
+	if f[x] != x {
+		f[x] = f.find(f[x])
+	}
+	return f[x]
+}
+
 func getResults(queries [][]int) (ans []bool) {
 	m := 0
-	set := redblacktree.New[int, struct{}]()
-	set.Put(0, struct{}{}) // 哨兵
 	pos := []int{0}
 	for _, q := range queries {
 		m = max(m, q[1])
 		if q[0] == 1 {
-			set.Put(q[1], struct{}{})
 			pos = append(pos, q[1])
 		}
 	}
 	m++
-	set.Put(m, struct{}{}) // 哨兵
 
+	left := make(uf, m+1)
+	right := make(uf, m+1)
+	for i := range left {
+		left[i] = i
+		right[i] = i
+	}
 	t := make(fenwick, m)
 	slices.Sort(pos)
 	for i := 1; i < len(pos); i++ {
-		t.update(pos[i], pos[i]-pos[i-1])
+		p, q := pos[i-1], pos[i]
+		t.update(q, q-p)
+		for j := p + 1; j < q; j++ {
+			left[j] = p
+			right[j] = q
+		}
+	}
+	for j := pos[len(pos)-1] + 1; j < m; j++ {
+		left[j] = pos[len(pos)-1]
+		right[j] = m
 	}
 
 	for i := len(queries) - 1; i >= 0; i-- {
 		q := queries[i]
 		x := q[1]
-		pre, _ := set.Floor(x - 1) // x 左侧最近障碍物的位置
+		pre := left.find(x - 1) // x 左侧最近障碍物的位置
 		if q[0] == 1 {
-			set.Remove(x)
-			nxt, _ := set.Ceiling(x) // x 右侧最近障碍物的位置
-			t.update(nxt.Key, nxt.Key-pre.Key) // 更新 d[nxt] = nxt - pre
+			left[x] = x - 1
+			right[x] = x + 1
+			nxt := right.find(x)   // x 右侧最近障碍物的位置
+			t.update(nxt, nxt-pre) // 更新 d[nxt] = nxt - pre
 		} else {
 			// 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
-			maxGap := max(t.preMax(pre.Key), x-pre.Key)
+			maxGap := max(t.preMax(pre), x-pre)
 			ans = append(ans, maxGap >= q[2])
 		}
 	}
