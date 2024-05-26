@@ -22,13 +22,42 @@ func (f fenwick) preMax(i int) (res int) {
 	return res
 }
 
-type uf []int
+type delUf struct {
+	left  []int
+	right []int
+}
 
-func (f uf) find(x int) int {
-	if f[x] != x {
-		f[x] = f.find(f[x])
+func newDelUf(n int) delUf {
+	left := make([]int, n+1)
+	right := make([]int, n+1)
+	for i := range left {
+		left[i] = i
+		right[i] = i
 	}
-	return f[x]
+	return delUf{left, right}
+}
+
+func (f delUf) find(fa []int, x int) int {
+	if fa[x] != x {
+		fa[x] = f.find(fa, fa[x])
+	}
+	return fa[x]
+}
+
+func (f delUf) delete(x int) {
+	if f.find(f.left, x) != x { // x 已经被删除
+		return
+	}
+	f.left[x] = x - 1
+	f.right[x] = x + 1
+}
+
+func (f delUf) prev(x int) int {
+	return f.find(f.left, x-1)
+}
+
+func (f delUf) next(x int) int {
+	return f.find(f.right, x+1)
 }
 
 func getResults(queries [][]int) (ans []bool) {
@@ -42,35 +71,27 @@ func getResults(queries [][]int) (ans []bool) {
 	}
 	m++
 
-	left := make(uf, m+1)
-	right := make(uf, m+1)
-	for i := range left {
-		left[i] = i
-		right[i] = i
-	}
+	uf := newDelUf(m)
 	t := make(fenwick, m)
 	slices.Sort(pos)
 	for i := 1; i < len(pos); i++ {
 		p, q := pos[i-1], pos[i]
 		t.update(q, q-p)
 		for j := p + 1; j < q; j++ {
-			left[j] = p
-			right[j] = q
+			uf.delete(j)
 		}
 	}
 	for j := pos[len(pos)-1] + 1; j < m; j++ {
-		left[j] = pos[len(pos)-1]
-		right[j] = m
+		uf.delete(j)
 	}
 
 	for i := len(queries) - 1; i >= 0; i-- {
 		q := queries[i]
 		x := q[1]
-		pre := left.find(x - 1) // x 左侧最近障碍物的位置
+		pre := uf.prev(x) // x 左侧最近障碍物的位置
 		if q[0] == 1 {
-			left[x] = x - 1
-			right[x] = x + 1
-			nxt := right.find(x)   // x 右侧最近障碍物的位置
+			uf.delete(x)
+			nxt := uf.next(x)   // x 右侧最近障碍物的位置
 			t.update(nxt, nxt-pre) // 更新 d[nxt] = nxt - pre
 		} else {
 			// 最大长度要么是 [0,pre] 中的最大 d，要么是 [pre,x] 这一段的长度
