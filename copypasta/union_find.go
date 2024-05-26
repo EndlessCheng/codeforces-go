@@ -297,6 +297,56 @@ func _(n int) {
 	_ = []interface{}{merge, same, mergeBig, mergeRangeTo, getRoots, countRoots, getComps, sortCC}
 }
 
+// 用并查集实现有序集合的删除、查找前驱和查找后继
+// LC https://leetcode.cn/problems/block-placement-queries/
+type delUf struct {
+	left  []int
+	right []int
+}
+
+func newDelUf(n int) delUf {
+	// 把 0 和 n+1 当作哨兵
+	// 如果有删除 0 的情况，想清楚有没有 corner case
+	left := make([]int, n+2)
+	right := make([]int, n+2)
+	for i := range left {
+		left[i] = i
+		right[i] = i
+	}
+	return delUf{left, right}
+}
+
+func (f delUf) _find(fa []int, x int) int {
+	if fa[x] != x {
+		fa[x] = f._find(fa, fa[x])
+	}
+	return fa[x]
+}
+
+// 删除 x
+func (f delUf) delete(x int) {
+	if f._find(f.left, x) != x { // x 已经被删除
+		return
+	}
+	f.left[x] = x - 1
+	f.right[x] = x + 1
+}
+
+// 查找前驱：返回严格小于 x 的最大元素
+func (f delUf) prev(x int) int {
+	if x <= 0 {
+		panic("x must be positive")
+	}
+	return f._find(f.left, x-1)
+}
+
+// 查找后继：返回严格大于 x 的最小元素
+func (f delUf) next(x int) int {
+	return f._find(f.right, x+1)
+}
+
+//
+
 // 二维并查集
 type ufPoint struct{ x, y int } // int32
 type uf2d map[ufPoint]ufPoint
