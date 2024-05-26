@@ -266,7 +266,7 @@ func maximumSumSubsequence(nums []int, queries [][]int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+q)\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n+q\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 总结
