@@ -7,6 +7,10 @@ import (
 
 // https://space.bilibili.com/206214
 func maxPartitionsAfterOperations(s string, k int) int {
+	if k == 26 {
+		return 1
+	}
+
 	seg, mask, size := 1, 0, 0
 	update := func(i int) {
 		bit := 1 << (s[i] - 'a')

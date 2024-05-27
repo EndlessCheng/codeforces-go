@@ -29,3 +29,7 @@
 "abcdeeefghi"
 5
 3
+
+"tzaxomrbtieqpkduclsjhdyxonfwwbnbqgbvdxaqhbip"
+26
+1

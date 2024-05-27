@@ -1,5 +1,3 @@
-**前置知识**：[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
-
 ## 方法一：记忆化搜索+记录字符集合
 
 定义 $\textit{dfs}(i,\textit{mask}, \textit{changed})$ 表示当前遍历到 $s[i]$，当前这一段在 $i$ 之前的字符集合是 $\textit{mask}$，是否已经修改了字符（$\textit{changed}$），后续可以得到的最大分割数。
@@ -18,6 +16,8 @@
 递归边界：$\textit{dfs}(n,*,*) = 1$。注意当 $i>0$ 时，$\textit{mask}\ne 0$，表示一段子串的字符集合。所以递归到 $i=n$ 时，$\textit{mask}$ 就是最后一段的字符集合了，返回 $1$。
 
 递归入口：$\textit{dfs}(0,0,\texttt{false})$，也就是答案。
+
+代码实现时，用二进制表示集合，用位运算实现集合相关操作，具体请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
 ```py [sol-Python3]
 class Solution:
@@ -257,6 +257,9 @@ func maxPartitionsAfterOperations(s string, k int) int {
 ```py [sol-Python3]
 class Solution:
     def maxPartitionsAfterOperations(self, s: str, k: int) -> int:
+        if k == 26:
+            return 1
+
         seg, mask, size = 1, 0, 0
         def update(i: int) -> None:
             nonlocal seg, mask, size
@@ -297,6 +300,10 @@ class Solution {
     private int seg = 1, mask = 0, size = 0;
 
     public int maxPartitionsAfterOperations(String S, int k) {
+        if (k == 26) {
+            return 1;
+        }
+
         char[] s = S.toCharArray();
         int n = s.length;
         int[] sufSeg = new int[n + 1];
@@ -343,6 +350,10 @@ class Solution {
 class Solution {
 public:
     int maxPartitionsAfterOperations(string s, int k) {
+        if (k == 26) {
+            return 1;
+        }
+
         int seg = 1, mask = 0, size = 0;
         auto update = [&](int i) {
             int bit = 1 << (s[i] - 'a');
@@ -384,6 +395,10 @@ public:
 
 ```go [sol-Go]
 func maxPartitionsAfterOperations(s string, k int) int {
+	if k == 26 {
+		return 1
+	}
+
 	seg, mask, size := 1, 0, 0
 	update := func(i int) {
 		bit := 1 << (s[i] - 'a')
@@ -431,4 +446,20 @@ func maxPartitionsAfterOperations(s string, k int) int {
 - 时间复杂度：$\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-周赛总结更新啦！请看 [2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
+## 分类题单
+
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
