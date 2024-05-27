@@ -30,6 +30,12 @@ func Test_cf1066B(t *testing.T) {
 0 0 1 1 0 1 0 0 0 1`,
 			`3`,
 		},
+		
+		{
+			`19 8
+0 1 0 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0`,
+			`-1`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf1066B)
 }
