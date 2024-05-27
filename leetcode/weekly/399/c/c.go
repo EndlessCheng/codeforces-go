@@ -15,10 +15,10 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
 		cnt2[x]++
 	}
 
-	m := slices.Max(nums1) / k
+	u := slices.Max(nums1) / k
 	for i, c := range cnt2 {
 		s := 0
-		for j := i; j <= m; j += i {
+		for j := i; j <= u; j += i {
 			s += cnt1[j]
 		}
 		ans += int64(s * c)
