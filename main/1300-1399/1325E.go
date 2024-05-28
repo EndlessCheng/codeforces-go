@@ -8,9 +8,9 @@ import (
 
 // github.com/EndlessCheng/codeforces-go
 func CF1325E(_r io.Reader, _w io.Writer) {
-	const mx, inf int = 1e6, 1e9
-	lpf := [mx + 1]int{1: 1}
-	for i := 2; i <= mx; i++ {
+	const mx, inf int32 = 1e6, 1e9
+	lpf := [mx + 1]int32{1: 1}
+	for i := int32(2); i <= mx; i++ {
 		if lpf[i] == 0 {
 			for j := i; j <= mx; j += i {
 				if lpf[j] == 0 {
@@ -20,12 +20,12 @@ func CF1325E(_r io.Reader, _w io.Writer) {
 		}
 	}
 
-	g := make([][]int, mx)
-	var n, v int
+	g := make([][]int32, mx)
+	var n, v int32
 	in := bufio.NewReader(_r)
 	for Fscan(in, &n); n > 0; n-- {
 		Fscan(in, &v)
-		ps := make([]int, 0, 2)
+		ps := make([]int32, 0, 2)
 		for v > 1 {
 			p := lpf[v]
 			cnt := 1
@@ -49,14 +49,14 @@ func CF1325E(_r io.Reader, _w io.Writer) {
 	}
 
 	ans := inf
-	dist := make([]int, mx)
+	dist := make([]int32, mx)
 	for i := range dist {
 		dist[i] = -1
 	}
-	type pair struct{ v, fa int }
+	type pair struct{ v, fa int32 }
 	var p pair
-	for st := 1; st < 1000; st++ {
-		vs := []int{st}
+	for st := int32(1); st < 1000; st++ {
+		vs := []int32{st}
 		dist[st] = 0
 		q := []pair{{st, -1}}
 	o:
