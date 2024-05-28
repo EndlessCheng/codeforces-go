@@ -32,6 +32,7 @@ https://codeforces.com/problemset/problem/1921/F 1900
 https://codeforces.com/problemset/problem/797/E 2000
 https://codeforces.com/problemset/problem/1207/F 2100
 https://codeforces.com/problemset/problem/1806/E 2200
+https://codeforces.com/problemset/problem/1968/G2 2200 也可以直接记忆化
 https://codeforces.com/problemset/problem/425/D 2300
 https://codeforces.com/problemset/problem/677/D 2300
 https://codeforces.com/problemset/problem/1468/M 2300 或四元环
@@ -39,6 +40,7 @@ https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/506/D 2400
 见下面的 floorDivide https://codeforces.com/problemset/problem/786/C 2400
 大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H 2400
+https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
 四次方根 https://atcoder.jp/contests/abc293/tasks/abc293_f
