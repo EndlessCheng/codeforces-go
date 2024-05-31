@@ -1,7 +1,9 @@
 package main
 
 // https://space.bilibili.com/206214
-func findMissingAndRepeatedValues(grid [][]int) []int {
+
+
+func findMissingAndRepeatedValues2(grid [][]int) []int {
 	n := len(grid)
 	cnt := make([]int, n*n+1)
 	for _, row := range grid {

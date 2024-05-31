@@ -345,9 +345,147 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 方法三：数学
+
+设 $a$ 出现两次，$b$ 出现零次。
+
+累加 $\textit{grid}$ 的所有元素（$a$ 多加了一次，$b$ 少加了一次），再减去 $1$ 到 $n^2$ 的元素和，我们得到了 $a-b$，设计算出的结果为 $d_1$，则有
+
+$$
+a-b=d_1 
+$$
+
+累加 $\textit{grid}$ 的所有元素的平方（$a^2$ 多加了一次，$b^2$ 少加了一次），再减去 $1$ 到 $n^2$ 的平方和，我们得到了 $a^2-b^2$，设计算出的结果为 $d_2$，则有
+
+$$
+a^2-b^2=(a+b)(a-b) =d_2
+$$
+
+得
+
+$$
+a+b = \dfrac{d_2}{d_1}
+$$
+
+知道了 $a-b$ 和 $a+b$，解方程组，得
+
+$$
+\begin{align}
+&a = \dfrac{d_2/d_1+d_1}{2}\\
+&b = \dfrac{d_2/d_1-d_1}{2}
+\end{align}
+$$
+
+注：设 $m=n^2$，则 $1$ 到 $m$ 的和为 $\dfrac{m(m+1)}{2}$，平方和为 $\dfrac{m  (m + 1)  (2m  + 1)}{6}$。
+
+```py [sol-Python3]
+class Solution:
+    def findMissingAndRepeatedValues(self, grid: List[List[int]]) -> List[int]:
+        m = len(grid) ** 2
+        d1 = sum(x for row in grid for x in row) - m * (m + 1) // 2
+        d2 = sum(x * x for row in grid for x in row) - m * (m + 1) * (m * 2 + 1) // 6
+        return [(d2 // d1 + d1) // 2, (d2 // d1 - d1) // 2]
+```
+
+```java [sol-Java]
+public class Solution {
+    public int[] findMissingAndRepeatedValues(int[][] grid) {
+        int n = grid.length;
+        int m = n * n;
+        int d1 = -m * (m + 1) / 2;
+        long d2 = (long) -m * (m + 1) * (m * 2 + 1) / 6;
+        for (int[] row : grid) {
+            for (int x : row) {
+                d1 += x;
+                d2 += x * x;
+            }
+        }
+        int d = (int) (d2 / d1);
+        return new int[]{(d + d1) / 2, (d - d1) / 2};
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = n * n;
+        int d1 = -m * (m + 1) / 2;
+        long long d2 = (long long) -m * (m + 1) * (m * 2 + 1) / 6;
+        for (auto& row : grid) {
+            for (int x : row) {
+                d1 += x;
+                d2 += x * x;
+            }
+        }
+        int d = d2 / d1;
+        return {(d + d1) / 2, (d - d1) / 2};
+    }
+};
+```
+
+```go [sol-Go]
+func findMissingAndRepeatedValues(grid [][]int) []int {
+	n := len(grid)
+	m := n * n
+	d1 := -m * (m + 1) / 2
+	d2 := -m * (m + 1) * (m*2 + 1) / 6
+	for _, row := range grid {
+		for _, x := range row {
+			d1 += x
+			d2 += x * x
+		}
+	}
+	return []int{(d2/d1 + d1) / 2, (d2/d1 - d1) / 2}
+}
+```
+
+```js [sol-JavaScript]
+var findMissingAndRepeatedValues = function(grid) {
+    const n = grid.length;
+    const m = n * n;
+    let d1 = -m * (m + 1) / 2;
+    let d2 = -m * (m + 1) * (m * 2 + 1) / 6;
+    for (const row of grid) {
+        for (const x of row) {
+            d1 += x;
+            d2 += x * x;
+        }
+    }
+    return [(d2 / d1 + d1) / 2, (d2 / d1 - d1) / 2];
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn find_missing_and_repeated_values(grid: Vec<Vec<i32>>) -> Vec<i32> {
+        let n = grid.len() as i32;
+        let m = n * n;
+        let mut d1 = -m * (m + 1) / 2;
+        let m = m as i64;
+        let mut d2 = -m * (m + 1) * (m * 2 + 1) / 6;
+        for row in grid {
+            for x in row {
+                d1 += x;
+                d2 += (x * x) as i64;
+            }
+        }
+        let d = (d2 / d1 as i64) as i32;
+        vec![(d + d1) / 2, (d - d1) / 2]
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 思考题
 
-代码在计算 `ans[x >> shift & 1] ^= x` 时，遍历了 $1$ 到 $n^2$ 的每个数，你能用 $\mathcal{O}(1)$ 的公式解决吗？
+方法二在计算 `ans[x >> shift & 1] ^= x` 时，遍历了 $1$ 到 $n^2$ 的每个数，你能用 $\mathcal{O}(1)$ 的公式解决吗？
 
 欢迎在评论区发表你的思路/代码。
 
