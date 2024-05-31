@@ -254,8 +254,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func run(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
+func run(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
@@ -264,7 +263,7 @@ func run(_r io.Reader, _w io.Writer) {
 
 }
 
-func main() { run(os.Stdin, os.Stdout) }
+func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
 `
 	mainFilePath := dirPath + taskID + ".go"
 	if !isContest || taskID == "a" {
