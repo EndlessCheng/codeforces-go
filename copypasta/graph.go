@@ -915,10 +915,11 @@ func (*graph) eulerianPathOnUndirectedGraph(m int, g [][]struct{ to, eid int }) 
 	}
 
 	// NOTE: 若没有奇度数，则返回的是欧拉回路
+	// 注意：如果 m~1e6，建议把 dfs 写在外面，防止 MLE
 	path := make([]int, 0, len(g)) // m
 	vis := make([]bool, m)
-	var f func(int)
-	f = func(v int) {
+	var dfs func(int)
+	dfs = func(v int) {
 		for len(g[v]) > 0 {
 			e := g[v][0]
 			g[v] = g[v][1:]
@@ -928,15 +929,58 @@ func (*graph) eulerianPathOnUndirectedGraph(m int, g [][]struct{ to, eid int }) 
 			}
 			vis[i] = true
 			w := e.to
-			f(w)
+			dfs(w)
 			// 输出边的写法，注意是倒序
 			// path = append(path, i)   [2]int{v, w}
 		}
-		// 输出点的写法，最后需要反转 path
+		// 输出点的写法（最后需要反转 path）
 		path = append(path, v)
 	}
-	f(st) // for i := range g { f(i) }
+	dfs(st) // for i := range g { dfs(i) }
 
+	slices.Reverse(path) // 如果输出的是点
+	return path
+}
+
+// 无向【完全图】欧拉回路/欧拉路径
+// 如果 n 是偶数，会去掉一些边
+// https://codeforces.com/contest/1981/problem/D 2400
+func (*graph) eulerianPathOnUndirectedCompleteGraph(n int) []int {
+	g := make([]int, n)
+	vis := make([][]bool, n)
+	for i := range vis {
+		vis[i] = make([]bool, n)
+	}
+	if n%2 == 0 {
+		// 去掉 n/2-1 条边，保证至多两个奇度数点
+		// 如果要求欧拉回路的话，i 改成从 1 开始（去掉 n/2 条边，保证所有点度数都是偶数）
+		for i := 2; i < n; i += 2 {
+			vis[i-1][i] = true
+			vis[i][i-1] = true
+		}
+	}
+
+	// 不允许自环的话，加上这个 for 循环（注意自环不影响度数的奇偶性）
+	for i, r := range vis {
+		r[i] = true
+	}
+
+	// 注意：如果 n~1e3，会导致递归深度 ~1e6，建议把 dfs 写在外面，防止 MLE
+	path := []int{}
+	var dfs func(int)
+	dfs = func(v int) {
+		for ; g[v] < n; g[v]++ {
+			w := g[v]
+			if vis[v][w] {
+				continue
+			}
+			vis[v][w] = true
+			vis[w][v] = true
+			dfs(w)
+		}
+		path = append(path, v) // 记录节点
+	}
+	dfs(0)
 	slices.Reverse(path)
 	return path
 }
@@ -973,18 +1017,19 @@ func (*graph) eulerianPathOnDirectedGraph(m int, g [][]struct{ to, eid int }) []
 		st = 0 // 任选一起点（比如字典序最小），此时返回的是欧拉回路
 	}
 
+	// 注意：如果 m~1e6，建议把 dfs 写在外面，防止 MLE
 	path := make([]int, 0, m+1)
-	var f func(int)
-	f = func(v int) {
+	var dfs func(int)
+	dfs = func(v int) {
 		for len(g[v]) > 0 {
 			e := g[v][0]
 			g[v] = g[v][1:]
-			f(e.to)
+			dfs(e.to)
 			// NOTE: 输出边的话移在这里 append e.eid
 		}
 		path = append(path, v)
 	}
-	f(st)
+	dfs(st)
 
 	slices.Reverse(path)
 	return path
@@ -2275,6 +2320,7 @@ func (*graph) mstKruskal(n int, edges [][]int) int {
 	cntE := 0
 	for _, e := range edges {
 		v, w, wt := e[0], e[1], e[2]
+		//v, w, wt := e.v, e.w, e.wt
 		fv, fw := find(v), find(w)
 		if fv != fw {
 			fa[fv] = fw
@@ -5312,10 +5358,10 @@ func (*graph) cactusDFS2(g [][]int, n int) [][2]int {
 /*
 misc
 
-反复迭代 a = a + a%10
+反复迭代 a <- a + a%10
 
-https://codeforces.com/problemset/problem/1714/E
-https://codeforces.com/contest/1848/problem/D
+https://codeforces.com/problemset/problem/1714/E 1400
+https://codeforces.com/problemset/problem/1848/D 2200
 
 0 0
 5 0
