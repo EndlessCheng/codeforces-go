@@ -21,7 +21,7 @@
 
 仍然是从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$：
 - 如果 $\textit{nums}[j]\&x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变小（求交集后，集合元素只会减少不会变多），更新 $\textit{nums}[j]=\textit{nums}[j]\&x$。
-- 否则 $\textit{nums}[j]\&x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的超集，同时也是 $\textit{nums}[k]\ (k<j)$ 的超集（因为前面的循环保证了每个集合都是其左侧相邻集合的超集），那么后续的循环都不会改变元素值，退出内层循环。具体例子可以看 [视频讲解](https://www.bilibili.com/video/BV1Qx4y1E7zj/) 第四题。
+- 否则 $\textit{nums}[j]\&x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的超集，同时也是 $\textit{nums}[k]\ (k<j)$ 的超集（因为前面的循环保证了每个集合都是其左侧相邻集合的超集），在 $A\subseteq B$ 的前提下，$A\cap B=A$，所以后续的循环都不会改变元素值，退出内层循环。具体例子可以看 [视频讲解](https://www.bilibili.com/video/BV1Qx4y1E7zj/) 第四题。
 - 在循环中，用 $|\textit{nums}[j]-k|$ 更新答案的最小值。
 - 注意单个元素也可以组成子数组，用 $|\textit{nums}[i]-k|$ 更新答案的最小值。
 
