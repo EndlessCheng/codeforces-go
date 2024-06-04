@@ -94,7 +94,7 @@ public:
 
 ```go [sol-Go]
 func clearStars(s string) string {
-	st := [26][]int{}
+	st := make([][]int, 26)
 	for i, c := range s {
 		if c != '*' {
 			st[c-'a'] = append(st[c-'a'], i)
@@ -124,12 +124,12 @@ func clearStars(s string) string {
 
 ## 写法二
 
-也可以用一个布尔数组标记需要删除的下标。
+把要删除的字母改成 `*`，然后去掉所有 `*` 号。
 
 ```py [sol-Python3]
 class Solution:
     def clearStars(self, s: str) -> str:
-        delete = [False] * len(s)
+        s = list(s)
         st = [[] for _ in range(26)]
         for i, c in enumerate(s):
             if c != '*':
@@ -137,9 +137,9 @@ class Solution:
                 continue
             for p in st:
                 if p:
-                    delete[p.pop()] = True
+                    s[p.pop()] = '*'
                     break
-        return ''.join(c for d, c in zip(delete, s) if not d and c != '*')
+        return ''.join(c for c in s if c != '*')
 ```
 
 ```java [sol-Java]
@@ -147,7 +147,6 @@ class Solution {
     public String clearStars(String S) {
         char[] s = S.toCharArray();
         int n = s.length;
-        boolean[] del = new boolean[n];
         List<Integer>[] st = new ArrayList[26];
         Arrays.setAll(st, i -> new ArrayList<>());
         for (int i = 0; i < n; i++) {
@@ -157,7 +156,7 @@ class Solution {
             }
             for (List<Integer> p : st) {
                 if (!p.isEmpty()) {
-                    del[p.remove(p.size() - 1)] = true;
+                    s[p.remove(p.size() - 1)] = '*';
                     break;
                 }
             }
@@ -165,7 +164,7 @@ class Solution {
 
         StringBuilder t = new StringBuilder();
         for (int i = 0; i < n; i++) {
-            if (!del[i] && s[i] != '*') {
+            if (s[i] != '*') {
                 t.append(s[i]);
             }
         }
@@ -179,7 +178,6 @@ class Solution {
 public:
     string clearStars(string s) {
         int n = s.length();
-        vector<int> del(n);
         stack<int> st[26];
         for (int i = 0; i < n; i++) {
             if (s[i] != '*') {
@@ -188,28 +186,22 @@ public:
             }
             for (auto& p : st) {
                 if (!p.empty()) {
-                    del[p.top()] = true;
+                    s[p.top()] = '*';
                     p.pop();
                     break;
                 }
             }
         }
-
-        string t;
-        for (int i = 0; i < n; i++) {
-            if (!del[i] && s[i] != '*') {
-                t += s[i];
-            }
-        }
-        return t;
+        s.erase(remove(s.begin(), s.end(), '*'), s.end());
+        return s;
     }
 };
 ```
 
 ```go [sol-Go]
-func clearStars(s string) string {
-	del := make([]bool, len(s))
-	st := [26][]int{}
+func clearStars(S string) string {
+	s := []byte(S)
+	st := make([][]int, 26)
 	for i, c := range s {
 		if c != '*' {
 			st[c-'a'] = append(st[c-'a'], i)
@@ -217,24 +209,24 @@ func clearStars(s string) string {
 		}
 		for j, ps := range st {
 			if m := len(ps); m > 0 {
-				del[ps[m-1]] = true
+				s[ps[m-1]] = '*'
 				st[j] = ps[:m-1]
 				break
 			}
 		}
 	}
 
-	t := []byte{}
-	for i, d := range del {
-		if !d && s[i] != '*' {
-			t = append(t, s[i])
+	t := s[:0]
+	for _, c := range s {
+		if c != '*' {
+			t = append(t, c)
 		}
 	}
 	return string(t)
 }
 ```
 
-#### 复杂度分析
+#### 复杂度分析（写法二）
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 - 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。

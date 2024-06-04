@@ -1,9 +1,9 @@
 package main
 
 // https://space.bilibili.com/206214
-func clearStars(s string) string {
-	st := [26][]int{}
-	del := make([]bool, len(s))
+func clearStars(S string) string {
+	s := []byte(S)
+	st := make([][]int, 26)
 	for i, c := range s {
 		if c != '*' {
 			st[c-'a'] = append(st[c-'a'], i)
@@ -11,17 +11,17 @@ func clearStars(s string) string {
 		}
 		for j, ps := range st {
 			if m := len(ps); m > 0 {
-				del[ps[m-1]] = true
+				s[ps[m-1]] = '*'
 				st[j] = ps[:m-1]
 				break
 			}
 		}
 	}
 
-	t := []byte{}
-	for i, d := range del {
-		if !d && s[i] != '*' {
-			t = append(t, s[i])
+	t := s[:0]
+	for _, c := range s {
+		if c != '*' {
+			t = append(t, c)
 		}
 	}
 	return string(t)
