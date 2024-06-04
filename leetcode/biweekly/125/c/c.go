@@ -13,6 +13,9 @@ func countPairsOfConnectableServers(edges [][]int, signalSpeed int) []int {
 
 	ans := make([]int, n)
 	for i, gi := range g {
+		if len(gi) == 1 {
+			continue
+		}
 		var cnt int
 		var dfs func(int, int, int)
 		dfs = func(x, fa, sum int) {

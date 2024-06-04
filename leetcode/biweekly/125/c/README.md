@@ -2,6 +2,8 @@
 
 ![b125C.png](https://pic.leetcode.cn/1709427910-nOCIAc-b125C.png)
 
+**优化**：如果 $c$ 只有一个邻居，则答案为 $0$，不调用 $\text{dfs}$。
+
 [视频讲解](https://www.bilibili.com/video/BV1AU411F7Fp/) 第三题。
 
 ```py [sol-Python3]
@@ -22,6 +24,8 @@ class Solution:
 
         ans = [0] * n
         for i, gi in enumerate(g):
+            if len(gi) == 1:
+                continue
             s = 0
             for y, wt in gi:
                 cnt = dfs(y, i, wt)
@@ -46,6 +50,9 @@ class Solution {
 
         int[] ans = new int[n];
         for (int i = 0; i < n; i++) {
+            if (g[i].size() == 1) {
+                continue;
+            }
             int sum = 0;
             for (int[] e : g[i]) {
                 int cnt = dfs(e[0], i, e[1], g, signalSpeed);
@@ -93,6 +100,9 @@ public:
 
         vector<int> ans(n);
         for (int i = 0; i < n; i++) {
+            if (g[i].size() == 1) {
+                continue;
+            }
             int sum = 0;
             for (auto &[y, wt] : g[i]) {
                 int cnt = dfs(y, i, wt);
@@ -118,6 +128,9 @@ func countPairsOfConnectableServers(edges [][]int, signalSpeed int) []int {
 
 	ans := make([]int, n)
 	for i, gi := range g {
+		if len(gi) == 1 {
+			continue
+		}
 		var cnt int
 		var dfs func(int, int, int)
 		dfs = func(x, fa, sum int) {
