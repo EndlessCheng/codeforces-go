@@ -50,7 +50,7 @@ func TestCompareCF214B(t *testing.T) {
 		return rg.String()
 	}
 
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, run, CF214B)
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF_CF214B, CF214B)
 }
 
 func scanInt(scanner *bufio.Scanner) int {
@@ -69,7 +69,7 @@ func diminish(count []int, k int) bool {
 	return false
 }
 
-func run(_r io.Reader, out io.Writer) {
+func runBF_CF214B(_r io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(_r)
 	scanner.Split(bufio.ScanWords)
 	writer := bufio.NewWriter(out)
