@@ -231,7 +231,126 @@ func clearStars(S string) string {
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 - 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
-注：用最小堆或者有序集合，可以把 $\mathcal{O}(n|\Sigma|)$ 优化至 $\mathcal{O}(n\log |\Sigma|)$。
+## 写法三：位运算优化
+
+用一个二进制数 $\textit{mask}$ 记录哪些字母对应的列表是非空的，那么 $\textit{mask}$ 尾零的个数即为最小的字母。
+
+原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+```py [sol-Python3]
+class Solution:
+    def clearStars(self, s: str) -> str:
+        s = list(s)
+        st = [[] for _ in range(26)]
+        mask = 0
+        for i, c in enumerate(s):
+            if c != '*':
+                c = ord(c) - ord('a')
+                st[c].append(i)
+                mask |= 1 << c
+            else:
+                lb = mask & -mask
+                p = st[lb.bit_length() - 1]
+                s[p.pop()] = '*'
+                if not p:
+                    mask ^= lb
+        return ''.join(c for c in s if c != '*')
+```
+
+```java [sol-Java]
+class Solution {
+    public String clearStars(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int mask = 0;
+        List<Integer>[] st = new ArrayList[26];
+        Arrays.setAll(st, i -> new ArrayList<>());
+        for (int i = 0; i < n; i++) {
+            if (s[i] != '*') {
+                st[s[i] - 'a'].add(i);
+                mask |= 1 << (s[i] - 'a');
+            } else {
+                int k = Integer.numberOfTrailingZeros(mask);
+                List<Integer> p = st[k];
+                s[p.remove(p.size() - 1)] = '*';
+                if (p.isEmpty()) {
+                    mask ^= 1 << k;
+                }
+            }
+        }
+
+        StringBuilder t = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            if (s[i] != '*') {
+                t.append(s[i]);
+            }
+        }
+        return t.toString();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string clearStars(string s) {
+        int n = s.length(), mask = 0;
+        stack<int> st[26];
+        for (int i = 0; i < n; i++) {
+            if (s[i] != '*') {
+                st[s[i] - 'a'].push(i);
+                mask |= 1 << (s[i] - 'a');
+            } else {
+                int k = __builtin_ctz(mask);
+                auto& p = st[k];
+                s[p.top()] = '*';
+                p.pop();
+                if (p.empty()) {
+                    mask ^= 1 << k;
+                }
+            }
+        }
+        s.erase(remove(s.begin(), s.end(), '*'), s.end());
+        return s;
+    }
+};
+```
+
+```go [sol-Go]
+func clearStars(S string) string {
+	s := []byte(S)
+	st := make([][]int, 26)
+	mask := 0
+	for i, c := range s {
+		if c != '*' {
+			c -= 'a'
+			st[c] = append(st[c], i)
+			mask |= 1 << c
+		} else {
+			k := bits.TrailingZeros(uint(mask))
+			p := st[k]
+			s[p[len(p)-1]] = '*'
+			st[k] = p[:len(p)-1]
+			if len(st[k]) == 0 {
+				mask ^= 1 << k
+			}
+		}
+	}
+
+	t := s[:0]
+	for _, c := range s {
+		if c != '*' {
+			t = append(t, c)
+		}
+	}
+	return string(t)
+}
+```
+
+#### 复杂度分析（写法三）
+
+- 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 ## 思考题
 

@@ -1,19 +1,24 @@
 package main
 
+import "math/bits"
+
 // https://space.bilibili.com/206214
 func clearStars(S string) string {
 	s := []byte(S)
 	st := make([][]int, 26)
+	mask := 0
 	for i, c := range s {
 		if c != '*' {
-			st[c-'a'] = append(st[c-'a'], i)
-			continue
-		}
-		for j, ps := range st {
-			if m := len(ps); m > 0 {
-				s[ps[m-1]] = '*'
-				st[j] = ps[:m-1]
-				break
+			c -= 'a'
+			st[c] = append(st[c], i)
+			mask |= 1 << c
+		} else {
+			k := bits.TrailingZeros(uint(mask))
+			p := st[k]
+			s[p[len(p)-1]] = '*'
+			st[k] = p[:len(p)-1]
+			if len(st[k]) == 0 {
+				mask ^= 1 << k
 			}
 		}
 	}
