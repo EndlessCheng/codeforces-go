@@ -1,12 +1,10 @@
-请看 [视频讲解](https://www.bilibili.com/video/BV1fo4y1T7MQ/) 第四题，欢迎点赞！
-
 ### 提示 1
 
 按元素值从小往大计算。
 
 ### 提示 2
 
-定义 $f[i][j]$ 表示到达 $\textit{mat}[i][j]$ 时所访问的单元格的最大数量。那么答案就是所有 $f[i][j]$ 的最大值。
+定义 $f[i][j]$ 表示到达 $\textit{mat}[i][j]$ 时，访问过的单元格的最大数量（包含 $\textit{mat}[i][j]$）。那么答案就是所有 $f[i][j]$ 的最大值。
 
 如何计算 $f[i][j]$？从哪转移过来？
 
@@ -30,9 +28,9 @@ $$
 
 ### 细节
 
-代码实现时 $f[i][j]$ 可以省略，因为只需要每行每列的 $f$ 值的最大值。
+代码实现时 $f[i][j]$ 可以省略，因为只需要知道每行每列的 $f$ 值的最大值。
 
-对于相同元素，在全部计算出最大值后，再更新到 $\textit{rowMax}$ 和 $\textit{colMax}$ 中。
+对于相同元素，先计算出 $(i,j)$ 处的最大值，再更新到 $\textit{rowMax}$ 和 $\textit{colMax}$ 中。
 
 ```py [sol-Python3]
 class Solution:
@@ -56,23 +54,32 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxIncreasingCells(int[][] mat) {
-        var g = new TreeMap<Integer, List<int[]>>();
-        int m = mat.length, n = mat[0].length;
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
+        int m = mat.length;
+        int n = mat[0].length;
+        TreeMap<Integer, List<int[]>> g = new TreeMap<>();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 // 相同元素放在同一组，统计位置
                 g.computeIfAbsent(mat[i][j], k -> new ArrayList<>()).add(new int[]{i, j});
+            }
+        }
 
         int ans = 0;
-        int[] rowMax = new int[m], colMax = new int[n];
-        for (var pos : g.values()) {
-            var mx = new int[pos.size()];  // 先把最大值算出来，再更新 rowMax 和 colMax
-            for (int i = 0; i < pos.size(); i++) {
-                mx[i] = Math.max(rowMax[pos.get(i)[0]], colMax[pos.get(i)[1]]) + 1;
-                ans = Math.max(ans, mx[i]);
+        int[] rowMax = new int[m];
+        int[] colMax = new int[n];
+        for (List<int[]> pos : g.values()) {
+            int[] mx = new int[pos.size()]; // 先把最大值算出来，再更新 rowMax 和 colMax
+            for (int k = 0; k < pos.size(); k++) {
+                int[] p = pos.get(k);
+                int i = p[0];
+                int j = p[1];
+                mx[k] = Math.max(rowMax[i], colMax[j]) + 1;
+                ans = Math.max(ans, mx[k]);
             }
             for (int k = 0; k < pos.size(); k++) {
-                int i = pos.get(k)[0], j = pos.get(k)[1];
+                int[] p = pos.get(k);
+                int i = p[0];
+                int j = p[1];
                 rowMax[i] = Math.max(rowMax[i], mx[k]); // 更新第 i 行的最大 f 值
                 colMax[j] = Math.max(colMax[j], mx[k]); // 更新第 j 列的最大 f 值
             }
@@ -85,65 +92,83 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int maxIncreasingCells(vector<vector<int>> &mat) {
-        map<int, vector<pair<int, int>>> g;
+    int maxIncreasingCells(vector<vector<int>>& mat) {
         int m = mat.size(), n = mat[0].size();
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
+        map<int, vector<pair<int, int>>> g;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 g[mat[i][j]].emplace_back(i, j); // 相同元素放在同一组，统计位置
+            }
+        }
 
         vector<int> row_max(m), col_max(n);
-        for (auto &[_, pos]: g) {
+        for (auto& [_, pos] : g) {
             vector<int> mx; // 先把最大值算出来，再更新 row_max 和 col_max
-            for (auto &[i, j]: pos)
+            for (auto& [i, j] : pos) {
                 mx.push_back(max(row_max[i], col_max[j]) + 1);
+            }
             for (int k = 0; k < pos.size(); k++) {
-                auto &[i, j] = pos[k];
+                auto& [i, j] = pos[k];
                 row_max[i] = max(row_max[i], mx[k]); // 更新第 i 行的最大 f 值
                 col_max[j] = max(col_max[j], mx[k]); // 更新第 j 列的最大 f 值
             }
         }
-        return *max_element(row_max.begin(), row_max.end());
+        return ranges::max(row_max);
     }
 };
 ```
 
 ```go [sol-Go]
-func maxIncreasingCells(mat [][]int) (ans int) {
-	type pair struct{ x, y int }
-	g := map[int][]pair{}
-	for i, row := range mat {
-		for j, x := range row {
-			g[x] = append(g[x], pair{i, j}) // 相同元素放在同一组，统计位置
-		}
-	}
-	a := make([]int, 0, len(g))
-	for k := range g {
-		a = append(a, k)
-	}
-	sort.Ints(a) // 从小到大
+func maxIncreasingCells(mat [][]int) int {
+    type pair struct{ x, y int }
+    g := map[int][]pair{}
+    for i, row := range mat {
+        for j, x := range row {
+            g[x] = append(g[x], pair{i, j}) // 相同元素放在同一组，统计位置
+        }
+    }
+    keys := make([]int, 0, len(g))
+    for k := range g {
+        keys = append(keys, k)
+    }
+    slices.Sort(keys)
 
-	rowMax := make([]int, len(mat))
-	colMax := make([]int, len(mat[0]))
-	for _, x := range a {
-		pos := g[x]
-		mx := make([]int, len(pos))
-		for i, p := range pos {
-			mx[i] = max(rowMax[p.x], colMax[p.y]) + 1 // 先把最大值算出来，再更新 rowMax 和 colMax
-			ans = max(ans, mx[i])
-		}
-		for i, p := range pos {
-			rowMax[p.x] = max(rowMax[p.x], mx[i]) // 更新第 p.x 行的最大 f 值
-			colMax[p.y] = max(colMax[p.y], mx[i]) // 更新第 p.y 列的最大 f 值
-		}
-	}
-	return
+    rowMax := make([]int, len(mat))
+    colMax := make([]int, len(mat[0]))
+    for _, x := range keys {
+        pos := g[x]
+        mx := make([]int, len(pos))
+        for i, p := range pos {
+            mx[i] = max(rowMax[p.x], colMax[p.y]) + 1 // 先把最大值算出来，再更新 rowMax 和 colMax
+        }
+        for i, p := range pos {
+            rowMax[p.x] = max(rowMax[p.x], mx[i]) // 更新第 p.x 行的最大 f 值
+            colMax[p.y] = max(colMax[p.y], mx[i]) // 更新第 p.y 列的最大 f 值
+        }
+    }
+    return slices.Max(rowMax)
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn\log (mn))$，其中 $m$ 和 $n$ 分别为 $\textit{mat}$ 的行数和列数。瓶颈在排序上。
+- 时间复杂度：$\mathcal{O}(mn\log (mn))$，其中 $m$ 和 $n$ 分别为 $\textit{mat}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(mn)$。
+
+## 分类题单
+
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
