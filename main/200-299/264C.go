@@ -30,7 +30,7 @@ func cf264C(in io.Reader, out io.Writer) {
 			} else {
 				mx = mx2
 			}
-			f[c] = max(f[c]+max(p.v*a, 0), max(mx, 0)+p.v*b)
+			f[c] = max(f[c]+max(p.v*a, 0), mx+p.v*b)
 			if f[c] > mx1 {
 				if c != mxC {
 					mx2 = mx1
