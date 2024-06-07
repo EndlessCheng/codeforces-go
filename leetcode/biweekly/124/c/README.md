@@ -26,7 +26,7 @@
 ```py [sol-Python3]
 class Solution:
     def maxOperations(self, nums: List[int]) -> int:
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, target: int) -> int:
             if i >= j:
                 return 0
@@ -52,8 +52,8 @@ class Solution {
     private int[][] memo;
 
     public int maxOperations(int[] nums) {
-        int n = nums.length;
         this.nums = nums;
+        int n = nums.length;
         memo = new int[n][n];
         int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
         int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
@@ -170,14 +170,14 @@ func helper(a []int, target int) int {
 ```py [sol-Python3]
 class Solution:
     def maxOperations(self, nums: List[int]) -> int:
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, target: int) -> int:
             nonlocal done
             if done:
-                return 0  # 这里写什么都可以
+                return 0
             if i >= j:
                 done = True
-                return 0  # 这里写什么都可以
+                return 0
             res = 0
             if nums[i] + nums[i + 1] == target:  # 删除前两个数
                 res = max(res, dfs(i + 2, j, target) + 1)
@@ -190,14 +190,8 @@ class Solution:
         done = False
         n = len(nums)
         res1 = dfs(2, n - 1, nums[0] + nums[1])  # 删除前两个数
-        if done:
-            return n // 2
         res2 = dfs(0, n - 3, nums[-2] + nums[-1])  # 删除后两个数
-        if done:
-            return n // 2
         res3 = dfs(1, n - 2, nums[0] + nums[-1])  # 删除第一个和最后一个数
-        if done:
-            return n // 2
         return max(res1, res2, res3) + 1  # 加上第一次操作
 ```
 
@@ -208,25 +202,19 @@ class Solution {
     private boolean done;
 
     public int maxOperations(int[] nums) {
-        int n = nums.length;
         this.nums = nums;
+        int n = nums.length;
         memo = new int[n][n];
         int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
-        if (done) {
-            return n / 2;
-        }
         int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
-        if (done) {
-            return n / 2;
-        }
         int res3 = helper(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
-        if (done) {
-            return n / 2;
-        }
         return Math.max(Math.max(res1, res2), res3) + 1; // 加上第一次操作
     }
 
     private int helper(int i, int j, int target) {
+        if (done) { // 说明之前已经算出了 res = n / 2
+            return 0; // 返回任意 <= n/2 的数均可
+        }
         for (int[] row : memo) {
             Arrays.fill(row, -1); // -1 表示没有计算过
         }
@@ -235,11 +223,11 @@ class Solution {
 
     private int dfs(int i, int j, int target) {
         if (done) {
-            return 0; // 这里写什么都可以
+            return 0;
         }
         if (i >= j) {
             done = true;
-            return 0; // 这里写什么都可以
+            return 0;
         }
         if (memo[i][j] != -1) { // 之前计算过
             return memo[i][j];
@@ -267,6 +255,7 @@ public:
         vector<vector<int>> memo(n, vector<int>(n));
         bool done = false;
         auto helper = [&](int i, int j, int target) -> int {
+            if (done) return 0;
             for (auto& row : memo) {
                 ranges::fill(row, -1); // -1 表示没有计算过
             }
@@ -287,11 +276,8 @@ public:
             return dfs(i, j);
         };
         int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
-        if (done) return n / 2;
         int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
-        if (done) return n / 2;
         int res3 = helper(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
-        if (done) return n / 2;
         return max({res1, res2, res3}) + 1; // 加上第一次操作
     }
 };
@@ -356,8 +342,8 @@ func helper(a []int, target int) (res int, done bool) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n^2)$。
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n^2)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以动态规划的时间复杂度为 $\mathcal{O}(n^2)$。
+- 空间复杂度：$\mathcal{O}(n^2)$。保存多少状态，就需要多少空间。
 
 ## 方法二：1:1 翻译成递推
 
@@ -497,6 +483,10 @@ func helper(a []int, target int) int {
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n^2)$。
+
+## 总结（对于本题来说）
+
+![](https://pic.leetcode.cn/1710769845-JRnIfA-dp-2.jpg)
 
 ## 分类题单
 
