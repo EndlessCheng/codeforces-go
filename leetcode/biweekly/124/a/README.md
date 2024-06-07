@@ -91,6 +91,12 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+额外输入一个整数 $k$。每一步操作，你需要从数组中选出和为 $k$ 的两个整数，并将它们移出数组。最多可以执行多少次操作？
+
+见 [1679. K 和数对的最大数目](https://leetcode.cn/problems/max-number-of-k-sum-pairs/)。
+
 ## 分类题单
 
 以下题单没有特定的顺序，可以按照个人喜好刷题。
