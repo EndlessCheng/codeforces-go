@@ -167,6 +167,8 @@ func helper(a []int, target int) int {
 
 答案最大是 $\left\lfloor\dfrac{n}{2}\right\rfloor$。如果可以递归到 $i\ge j$ 的状态，说明可以执行 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 次操作，不需要再计算了，直接返回 $\left\lfloor\dfrac{n}{2}\right\rfloor$。
 
+比如下面代码中，如果发现 `res1` 已经算出了最多的操作次数，那么后面计算 `res2` 和 `res3` 的两个递归就不需要再进行下去了，毕竟算出来的值不可能比 `res1` 还要大。
+
 ```py [sol-Python3]
 class Solution:
     def maxOperations(self, nums: List[int]) -> int:
@@ -213,7 +215,7 @@ class Solution {
 
     private int helper(int i, int j, int target) {
         if (done) { // 说明之前已经算出了 res = n / 2
-            return 0; // 返回任意 <= n/2 的数均可
+            return 0;
         }
         for (int[] row : memo) {
             Arrays.fill(row, -1); // -1 表示没有计算过
