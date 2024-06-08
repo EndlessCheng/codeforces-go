@@ -18,19 +18,19 @@ func cf1237D(in io.Reader, _w io.Writer) {
 	}
 	a = append(append(a, a...), a...)
 	q := []int{}
-	for l, r := 0, 0; l < n; l++ {
-		for ; r < n*3 && (len(q) == 0 || a[r]*2 >= a[q[0]]); r++ {
-			for len(q) > 0 && a[q[len(q)-1]] <= a[r] {
+	for i, j := 0, 0; i < n; i++ {
+		for ; j < n*3 && (len(q) == 0 || a[j]*2 >= a[q[0]]); j++ {
+			for len(q) > 0 && a[q[len(q)-1]] <= a[j] {
 				q = q[:len(q)-1]
 			}
-			q = append(q, r)
+			q = append(q, j)
 		}
-		if r == n*3 {
+		if j == n*3 {
 			Fprint(out, "-1 ")
 		} else {
-			Fprint(out, r-l, " ")
+			Fprint(out, j-i, " ")
 		}
-		if q[0] == l {
+		if q[0] == i {
 			q = q[1:]
 		}
 	}
