@@ -51,9 +51,13 @@ func (b bitset) lastIndex1() int {
 }
 
 func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	if slices.Contains(rewardValues, m-1) {
+		return m*2 - 1
+	}
+
 	slices.Sort(rewardValues)
 	rewardValues = slices.Compact(rewardValues) // 去重
-	m := rewardValues[len(rewardValues)-1]
 	f := make(bitset, m*2/w+1)
 	f[0] = 1
 	for _, v := range rewardValues {

@@ -141,6 +141,137 @@ func maxTotalReward(rewardValues []int) int {
 }
 ```
 
+## 优化
+
+设 $m=\max(\textit{rewardValues})$，如果数组中包含 $m-1$，则答案为 $2m-1$，无需计算 DP。
+
+```py [sol-Python3]
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        m = max(rewardValues)
+        if m - 1 in rewardValues:
+            return m * 2 - 1
+
+        f = 1
+        for v in sorted(set(rewardValues)):
+            f |= (f & ((1 << v) - 1)) << v
+        return f.bit_length() - 1
+```
+
+```java [sol-Java]
+import java.math.BigInteger;
+
+class Solution {
+    public int maxTotalReward(int[] rewardValues) {
+        int m = 0;
+        for (int v : rewardValues) {
+            m = Math.max(m, v);
+        }
+        for (int v : rewardValues) {
+            if (v == m - 1) {
+                return m * 2 - 1;
+            }
+        }
+
+        BigInteger f = BigInteger.ONE;
+        for (int v : Arrays.stream(rewardValues).distinct().sorted().toArray()) {
+            BigInteger mask = BigInteger.ONE.shiftLeft(v).subtract(BigInteger.ONE);
+            f = f.or(f.and(mask).shiftLeft(v));
+        }
+        return f.bitLength() - 1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxTotalReward(vector<int>& rewardValues) {
+        int m = ranges::max(rewardValues);
+        if (ranges::find(rewardValues, m - 1) != rewardValues.end()) {
+            return m * 2 - 1;
+        }
+
+        ranges::sort(rewardValues);
+        rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
+        bitset<100000> f{1};
+        for (int v : rewardValues) {
+            int shift = f.size() - v;
+            // 左移 shift 再右移 shift，把所有 >= v 的比特位置 0
+            // f |= f << shift >> shift << v;
+            f |= f << shift >> (shift - v); // 简化上式
+        }
+        for (int i = m * 2 - 1;; i--) {
+            if (f.test(i)) {
+                return i;
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+const w = bits.UintSize
+
+type bitset []uint
+
+// b <<= k
+func (b bitset) lsh(k int) bitset {
+	shift, offset := k/w, k%w
+	if offset == 0 {
+		// Fast path
+		copy(b[shift:], b)
+	} else {
+		for i := len(b) - 1; i > shift; i-- {
+			b[i] = b[i-shift]<<offset | b[i-shift-1]>>(w-offset)
+		}
+		b[shift] = b[0] << offset
+	}
+	clear(b[:shift])
+	return b
+}
+
+// 把 >= start 的清零
+func (b bitset) resetRange(start int) bitset {
+	i := start / w
+	b[i] &= ^(^uint(0) << (start % w))
+	clear(b[i+1:])
+	return b
+}
+
+// b |= c
+func (b bitset) unionFrom(c bitset) {
+	for i, v := range c {
+		b[i] |= v
+	}
+}
+
+func (b bitset) lastIndex1() int {
+	for i := len(b) - 1; i >= 0; i-- {
+		if b[i] != 0 {
+			return i*w | (bits.Len(b[i]) - 1)
+		}
+	}
+	return -1
+}
+
+func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	if slices.Contains(rewardValues, m-1) {
+		return m*2 - 1
+	}
+
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+	f := make(bitset, m*2/w+1)
+	f[0] = 1
+	for _, v := range rewardValues {
+		f.unionFrom(slices.Clone(f).lsh(v).resetRange(v * 2))
+	}
+	return f.lastIndex1()
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nm/w)$，其中 $n$ 是 $\textit{rewardValues}$ 的长度，$m=\max(\textit{rewardValues})$，$w=64$ 或 $32$。
