@@ -274,35 +274,24 @@ func maxTotalReward(rewardValues []int) int {
 
 ## 优化二
 
-排序去重后，如果有两数之和等于 $m-1$，也可以直接返回 $2m-1$。
+如果有两个不同元素之和等于 $m-1$，也可以直接返回 $2m-1$。
+
+由于在随机数据下，几乎 100% 的概率有两数之和等于 $m-1$，而力扣又喜欢出随机数据，所以在大多数情况下，本题就是一道 [1. 两数之和](https://leetcode.cn/problems/two-sum/)。
 
 ```py [sol-Python3]
 class Solution:
-    # 167. 两数之和 II - 输入有序数组
-    # https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
-    def twoSum(self, numbers: List[int], target: int) -> bool:
-        left = 0
-        right = len(numbers) - 1
-        while left < right:
-            s = numbers[left] + numbers[right]
-            if s == target:
-                return True
-            if s > target:
-                right -= 1
-            else:
-                left += 1
-        return False
-
     def maxTotalReward(self, rewardValues: List[int]) -> int:
-        a = sorted(set(rewardValues))
-        m = a[-1]
-        if len(a) == 1:
-            return m
-        if a[-2] == m - 1 or self.twoSum(a, m - 1):
-            return m * 2 - 1
+        m = max(rewardValues)
+        s = set()
+        for v in rewardValues:
+            if v in s:
+                continue
+            if v == m - 1 or m - 1 - v in s:
+                return m * 2 - 1
+            s.add(v)
 
         f = 1
-        for v in a:
+        for v in sorted(s):
             f |= (f & ((1 << v) - 1)) << v
         return f.bit_length() - 1
 ```
@@ -311,83 +300,59 @@ class Solution:
 import java.math.BigInteger;
 
 class Solution {
-    public int maxTotalReward(int[] a) {
-        Arrays.sort(a);
-        // 原地去重
-        int n = 1;
-        for (int k = 1; k < a.length; k++) {
-            if (a[k] != a[k - 1]) {
-                a[n++] = a[k];
+    public int maxTotalReward(int[] rewardValues) {
+        int m = 0;
+        for (int v : rewardValues) {
+            m = Math.max(m, v);
+        }
+        Set<Integer> set = new HashSet<>();
+        for (int v : rewardValues) {
+            if (v == m - 1) {
+                return m * 2 - 1;
             }
+            if (set.contains(v)) {
+                continue;
+            }
+            if (set.contains(m - 1 - v)) {
+                return m * 2 - 1;
+            }
+            set.add(v);
         }
 
-        int m = a[n - 1];
-        if (n == 1) {
-            return m;
-        }
-        if (a[n - 2] == m - 1 || twoSum(a, n, m - 1)) {
-            return m * 2 - 1;
-        }
-
+        Arrays.sort(rewardValues);
+        int pre = 0;
         BigInteger f = BigInteger.ONE;
-        for (int i = 0; i < n; i++) {
-            int v = a[i];
+        for (int v : rewardValues) {
+            if (v == pre) {
+                continue;
+            }
             BigInteger mask = BigInteger.ONE.shiftLeft(v).subtract(BigInteger.ONE);
             f = f.or(f.and(mask).shiftLeft(v));
+            pre = v;
         }
         return f.bitLength() - 1;
-    }
-
-    // 167. 两数之和 II - 输入有序数组
-    // https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
-    private boolean twoSum(int[] numbers, int n, int target) {
-        int left = 0;
-        int right = n - 1;
-        while (left < right) {
-            int s = numbers[left] + numbers[right];
-            if (s == target) {
-                return true;
-            }
-            if (s > target) {
-                right--;
-            } else {
-                left++;
-            }
-        }
-        return false;
     }
 }
 ```
 
 ```cpp [sol-C++]
 class Solution {
-    // 167. 两数之和 II - 输入有序数组
-    // https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
-    bool twoSum(vector<int>& numbers, int target) {
-        int left = 0, right = numbers.size() - 1;
-        while (left < right) {
-            int s = numbers[left] + numbers[right];
-            if (s == target) {
-                return true;
-            }
-            s > target ? --right : ++left;
-        }
-        return false;
-    }
-
 public:
     int maxTotalReward(vector<int>& rewardValues) {
+        int m = ranges::max(rewardValues);
+        unordered_set<int> s;
+        for (int v : rewardValues) {
+            if (s.contains(v)) {
+                continue;
+            }
+            if (v == m - 1 || s.contains(m - 1 - v)) {
+                return m * 2 - 1;
+            }
+            s.insert(v);
+        }
+
         ranges::sort(rewardValues);
         rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
-
-        int n = rewardValues.size();
-        int m = rewardValues.back();
-        if (n == 1) {
-            return m;
-        }
-        if (rewardValues[n - 2] == m - 1 || twoSum(rewardValues, m - 1)) {
-            return m * 2 - 1;
-        }
 
         bitset<100000> f{1};
         for (int v : rewardValues) {
@@ -450,37 +415,24 @@ func (b bitset) lastIndex1() int {
 	return -1
 }
 
-// 167. 两数之和 II - 输入有序数组
-// https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
-func twoSum(numbers []int, target int) bool {
-	left, right := 0, len(numbers)-1
-	for left < right {
-		s := numbers[left] + numbers[right]
-		if s == target {
-			return true
-		}
-		if s > target {
-			right--
-		} else {
-			left++
-		}
-	}
-	return false
-}
-
 func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	has := map[int]bool{}
+	for _, v := range rewardValues {
+		if v == m-1 {
+			return m*2 - 1
+		}
+		if has[v] {
+			continue
+		}
+		if has[m-1-v] {
+			return m*2 - 1
+		}
+		has[v] = true
+	}
+
 	slices.Sort(rewardValues)
 	rewardValues = slices.Compact(rewardValues) // 去重
-
-	n := len(rewardValues)
-	m := rewardValues[n-1]
-	if n == 1 {
-		return m
-	}
-	if rewardValues[n-2] == m-1 || twoSum(rewardValues, m-1) {
-		return m*2 - 1
-	}
-
 	f := make(bitset, m*2/w+1)
 	f[0] = 1
 	for _, v := range rewardValues {
@@ -493,7 +445,7 @@ func maxTotalReward(rewardValues []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nm/w)$，其中 $n$ 是 $\textit{rewardValues}$ 的长度，$m=\max(\textit{rewardValues})$，$w=64$ 或 $32$。
-- 空间复杂度：$\mathcal{O}(m/w)$。
+- 空间复杂度：$\mathcal{O}(n + m/w)$。
 
 #### 相似题目
 
