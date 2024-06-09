@@ -21,6 +21,8 @@
 
 递归入口：根据三种初始操作，分别为 $\textit{dfs}(2,n-1), \textit{dfs}(0,n-3), \textit{dfs}(1,n-2)$。三者取最大值再加一（加上第一次操作），即为答案。
 
+代码实现时，在计算第二次区间 DP 和第三次区间 DP 时，无需重置 $\textit{memo}$ 数组，这是因为不同的 $\textit{target}$ 不会递归到同一对 $(i,j)$ 上。这可以用反证法证明：假如不同的 $\textit{target}$ 递归到同一对 $(i,j)$ 上，这说明之前的操作次数相同，且删除的元素和相同，所以两次区间 DP 对应的得分是相同的，矛盾。
+
 ### 优化前
 
 ```py [sol-Python3]
@@ -55,17 +57,13 @@ class Solution {
         this.nums = nums;
         int n = nums.length;
         memo = new int[n][n];
-        int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
-        int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
-        int res3 = helper(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
-        return Math.max(Math.max(res1, res2), res3) + 1; // 加上第一次操作
-    }
-
-    private int helper(int i, int j, int target) {
         for (int[] row : memo) {
             Arrays.fill(row, -1); // -1 表示没有计算过
         }
-        return dfs(i, j, target);
+        int res1 = dfs(2, n - 1, nums[0] + nums[1]); // 删除前两个数
+        int res2 = dfs(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
+        int res3 = dfs(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
+        return Math.max(Math.max(res1, res2), res3) + 1; // 加上第一次操作
     }
 
     private int dfs(int i, int j, int target) {
@@ -95,26 +93,20 @@ class Solution {
 public:
     int maxOperations(vector<int>& nums) {
         int n = nums.size();
-        vector<vector<int>> memo(n, vector<int>(n));
-        auto helper = [&](int i, int j, int target) -> int {
-            for (auto& row : memo) {
-                ranges::fill(row, -1); // -1 表示没有计算过
-            }
-            function<int(int, int)> dfs = [&](int i, int j) -> int {
-                if (i >= j) return 0;
-                int& res = memo[i][j]; // 注意这里是引用
-                if (res != -1) return res; // 之前计算过
-                res = 0;
-                if (nums[i] + nums[i + 1] == target) res = max(res, dfs(i + 2, j) + 1);
-                if (nums[j - 1] + nums[j] == target) res = max(res, dfs(i, j - 2) + 1);
-                if (nums[i] + nums[j] == target) res = max(res, dfs(i + 1, j - 1) + 1);
-                return res;
-            };
-            return dfs(i, j);
+        vector<vector<int>> memo(n, vector<int>(n, -1)); // -1 表示没有计算过
+        function<int(int, int, int)> dfs = [&](int i, int j, int target) -> int {
+            if (i >= j) return 0;
+            int& res = memo[i][j]; // 注意这里是引用
+            if (res != -1) return res; // 之前计算过
+            res = 0;
+            if (nums[i] + nums[i + 1] == target) res = max(res, dfs(i + 2, j, target) + 1);
+            if (nums[j - 1] + nums[j] == target) res = max(res, dfs(i, j - 2, target) + 1);
+            if (nums[i] + nums[j] == target) res = max(res, dfs(i + 1, j - 1, target) + 1);
+            return res;
         };
-        int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
-        int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
-        int res3 = helper(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
+        int res1 = dfs(2, n - 1, nums[0] + nums[1]); // 删除前两个数
+        int res2 = dfs(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
+        int res3 = dfs(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
         return max({res1, res2, res3}) + 1; // 加上第一次操作
     }
 };
@@ -207,6 +199,9 @@ class Solution {
         this.nums = nums;
         int n = nums.length;
         memo = new int[n][n];
+        for (int[] row : memo) {
+            Arrays.fill(row, -1); // -1 表示没有计算过
+        }
         int res1 = helper(2, n - 1, nums[0] + nums[1]); // 删除前两个数
         int res2 = helper(0, n - 3, nums[n - 2] + nums[n - 1]); // 删除后两个数
         int res3 = helper(1, n - 2, nums[0] + nums[n - 1]); // 删除第一个和最后一个数
@@ -216,9 +211,6 @@ class Solution {
     private int helper(int i, int j, int target) {
         if (done) { // 说明之前已经算出了 res = n / 2
             return 0;
-        }
-        for (int[] row : memo) {
-            Arrays.fill(row, -1); // -1 表示没有计算过
         }
         return dfs(i, j, target);
     }
@@ -254,13 +246,10 @@ class Solution {
 public:
     int maxOperations(vector<int>& nums) {
         int n = nums.size();
-        vector<vector<int>> memo(n, vector<int>(n));
+        vector<vector<int>> memo(n, vector<int>(n, -1)); // -1 表示没有计算过
         bool done = false;
         auto helper = [&](int i, int j, int target) -> int {
             if (done) return 0;
-            for (auto& row : memo) {
-                ranges::fill(row, -1); // -1 表示没有计算过
-            }
             function<int(int, int)> dfs = [&](int i, int j) -> int {
                 if (done) return 0;
                 if (i >= j) {
