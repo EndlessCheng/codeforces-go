@@ -1,29 +1,31 @@
-怎么计算子数组的 AND？
+怎么计算子数组的 OR？
 
 首先，我们有如下 $\mathcal{O}(n^2)$ 的暴力算法：
 
-从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$，更新 $\textit{nums}[j]=\textit{nums}[j]\&x$。
+从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$，更新 $\textit{nums}[j]=\textit{nums}[j]\ \vert\ x$。
 
-- $i=1$ 时，我们会把 $\textit{nums}[0]$ 到 $\textit{nums}[1]$ 的 AND 记录在 $\textit{nums}[0]$ 中。 
-- $i=2$ 时，我们会把 $\textit{nums}[1]$ 到 $\textit{nums}[2]$ 的 AND 记录在 $\textit{nums}[1]$ 中，$\textit{nums}[0]$ 到 $\textit{nums}[2]$ 的 AND 记录在 $\textit{nums}[0]$ 中。
-- $i=3$ 时，我们会把 $\textit{nums}[2]$ 到 $\textit{nums}[3]$ 的 AND 记录在 $\textit{nums}[2]$ 中；$\textit{nums}[1]$ 到 $\textit{nums}[3]$ 的 AND 记录在 $\textit{nums}[1]$ 中；$\textit{nums}[0]$ 到 $\textit{nums}[3]$ 的 AND 记录在 $\textit{nums}[0]$ 中。
-- 按照该算法，可以计算出所有子数组的 AND。注意单个元素也算子数组。
+- $i=1$ 时，我们会把 $\textit{nums}[0]$ 到 $\textit{nums}[1]$ 的 OR 记录在 $\textit{nums}[0]$ 中。 
+- $i=2$ 时，我们会把 $\textit{nums}[1]$ 到 $\textit{nums}[2]$ 的 OR 记录在 $\textit{nums}[1]$ 中，$\textit{nums}[0]$ 到 $\textit{nums}[2]$ 的 OR 记录在 $\textit{nums}[0]$ 中。
+- $i=3$ 时，我们会把 $\textit{nums}[2]$ 到 $\textit{nums}[3]$ 的 OR 记录在 $\textit{nums}[2]$ 中；$\textit{nums}[1]$ 到 $\textit{nums}[3]$ 的 OR 记录在 $\textit{nums}[1]$ 中；$\textit{nums}[0]$ 到 $\textit{nums}[3]$ 的 OR 记录在 $\textit{nums}[0]$ 中。
+- 按照该算法，可以计算出所有子数组的 OR。注意单个元素也算子数组。
 
 下面来优化该算法。
 
 前置知识：[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-把二进制数看成集合，两个数的 AND 就是两个集合的**交集**。
+把二进制数看成集合，两个数的 OR 就是两个集合的**并集**。
 
-对于两个二进制数 $a$ 和 $b$，如果 $a\&b = a$，从集合的角度上看，$a$ 对应的集合是 $b$ 对应的集合的子集。或者说，$b$ 对应的集合是 $a$ 对应的集合的**超集**。
+对于两个二进制数 $a$ 和 $b$，如果 $a\ \vert\ b = a$，从集合的角度上看，$b$ 对应的集合是 $a$ 对应的集合的子集。
 
 据此我们可以提出如下优化：
 
 仍然是从左到右正向遍历 $\textit{nums}$，对于 $x=\textit{nums}[i]$，从 $i-1$ 开始倒着遍历 $\textit{nums}[j]$：
-- 如果 $\textit{nums}[j]\&x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变小（求交集后，集合元素只会减少不会变多），更新 $\textit{nums}[j]=\textit{nums}[j]\&x$。
-- 否则 $\textit{nums}[j]\&x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的超集，同时也是 $\textit{nums}[k]\ (k<j)$ 的超集（因为前面的循环保证了每个集合都是其左侧相邻集合的超集），在 $A\subseteq B$ 的前提下，$A\cap B=A$，所以后续的循环都不会改变元素值，退出内层循环。具体例子可以看 [视频讲解](https://www.bilibili.com/video/BV1Qx4y1E7zj/) 第四题。
+- 如果 $\textit{nums}[j]\ \vert\ x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变大（求并集后，集合元素只会增多不会减少），更新 $\textit{nums}[j]=\textit{nums}[j]\ \vert\ x$。
+- 否则 $\textit{nums}[j]\ \vert\ x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的子集，同时也是 $\textit{nums}[k]\ (k<j)$ 的子集（因为前面的循环保证了每个集合都是其左侧相邻集合的子集），在 $B\subseteq A$ 的前提下，$A\cup B=A$，所以后续的循环都不会改变元素值，退出内层循环。
 - 在循环中，用 $|\textit{nums}[j]-k|$ 更新答案的最小值。
-- 注意单个元素也可以组成子数组，用 $|\textit{nums}[i]-k|$ 更新答案的最小值。
+- 注意单个元素也可以组成子数组，也要用 $|\textit{nums}[i]-k|$ 更新答案的最小值。
+
+具体例子可以看 [视频讲解](https://www.bilibili.com/video/BV1Qx4y1E7zj/) 第四题（计算的是子数组 AND）。
 
 ```py [sol-Python3]
 class Solution:
@@ -32,8 +34,8 @@ class Solution:
         for i, x in enumerate(nums):
             ans = min(ans, abs(x - k))
             j = i - 1
-            while j >= 0 and nums[j] & x != nums[j]:
-                nums[j] &= x
+            while j >= 0 and nums[j] | x != nums[j]:
+                nums[j] |= x
                 ans = min(ans, abs(nums[j] - k))
                 j -= 1
         return ans
@@ -46,8 +48,8 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             int x = nums[i];
             ans = Math.min(ans, Math.abs(x - k));
-            for (int j = i - 1; j >= 0 && (nums[j] & x) != nums[j]; j--) {
-                nums[j] &= x;
+            for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
+                nums[j] |= x;
                 ans = Math.min(ans, Math.abs(nums[j] - k));
             }
         }
@@ -64,8 +66,8 @@ public:
         for (int i = 0; i < nums.size(); i++) {
             int x = nums[i];
             ans = min(ans, abs(x - k));
-            for (int j = i - 1; j >= 0 && (nums[j] & x) != nums[j]; j--) {
-                nums[j] &= x;
+            for (int j = i - 1; j >= 0 && (nums[j] | x) != nums[j]; j--) {
+                nums[j] |= x;
                 ans = min(ans, abs(nums[j] - k));
             }
         }
@@ -79,8 +81,8 @@ func minimumDifference(nums []int, k int) int {
 	ans := math.MaxInt
 	for i, x := range nums {
 		ans = min(ans, abs(x-k))
-		for j := i - 1; j >= 0 && nums[j]&x != nums[j]; j-- {
-			nums[j] &= x
+		for j := i - 1; j >= 0 && nums[j]|x != nums[j]; j-- {
+			nums[j] |= x
 			ans = min(ans, abs(nums[j]-k))
 		}
 	}
@@ -92,14 +94,14 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在 AND 运算下，每个数字至多可以减少 $29$ 次。总体上看，二重循环的总循环次数等于每个数字可以减少的次数之和，即 $O(n\log U)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在 OR 运算下，每个数字至多可以增大 $29$ 次。总体上看，二重循环的总循环次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 思考题
 
-1. 把 AND 换成 OR 怎么做？
-2. 把 AND 换成 GCD 怎么做？
-3. 把 AND 换成 LCM 怎么做？
+1. 把 OR 换成 AND 怎么做？[1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)
+2. 把 OR 换成 GCD 怎么做？
+3. 把 OR 换成 LCM 怎么做？
 
 欢迎在评论区发表你的思路/代码。
 
