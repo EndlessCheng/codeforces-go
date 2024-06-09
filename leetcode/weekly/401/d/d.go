@@ -50,14 +50,37 @@ func (b bitset) lastIndex1() int {
 	return -1
 }
 
+// 167. 两数之和 II - 输入有序数组
+// https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/
+func twoSum(numbers []int, target int) bool {
+	left, right := 0, len(numbers)-1
+	for left < right {
+		s := numbers[left] + numbers[right]
+		if s == target {
+			return true
+		}
+		if s > target {
+			right--
+		} else {
+			left++
+		}
+	}
+	return false
+}
+
 func maxTotalReward(rewardValues []int) int {
-	m := slices.Max(rewardValues)
-	if slices.Contains(rewardValues, m-1) {
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+
+	n := len(rewardValues)
+	m := rewardValues[n-1]
+	if n == 1 {
+		return m
+	}
+	if rewardValues[n-2] == m-1 || twoSum(rewardValues, m-1) {
 		return m*2 - 1
 	}
 
-	slices.Sort(rewardValues)
-	rewardValues = slices.Compact(rewardValues) // 去重
 	f := make(bitset, m*2/w+1)
 	f[0] = 1
 	for _, v := range rewardValues {
