@@ -10,6 +10,7 @@ import (
 - https://www.luogu.com.cn/record/153957114
 https://codeforces.com/problemset/problem/1181/B 1500
 https://codeforces.com/problemset/problem/1244/C 2000
+https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/ 可以用来优化 0-1 背包
 
 读入
 v := &big.Int{} // 或者 new(big.Int)
