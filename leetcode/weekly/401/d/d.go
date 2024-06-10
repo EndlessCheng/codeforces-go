@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/big"
 	"math/bits"
 	"slices"
 )
@@ -50,7 +51,7 @@ func (b bitset) lastIndex1() int {
 	return -1
 }
 
-func maxTotalReward(rewardValues []int) int {
+func maxTotalReward2(rewardValues []int) int {
 	m := slices.Max(rewardValues)
 	has := map[int]bool{}
 	for _, v := range rewardValues {
@@ -74,4 +75,33 @@ func maxTotalReward(rewardValues []int) int {
 		f.unionFrom(slices.Clone(f).lsh(v).resetRange(v * 2))
 	}
 	return f.lastIndex1()
+}
+
+func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	has := map[int]bool{}
+	for _, v := range rewardValues {
+		if v == m-1 {
+			return m*2 - 1
+		}
+		if has[v] {
+			continue
+		}
+		if has[m-1-v] {
+			return m*2 - 1
+		}
+		has[v] = true
+	}
+
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+
+	one := big.NewInt(1)
+	f := big.NewInt(1)
+	p := new(big.Int)
+	for _, v := range rewardValues {
+		mask := p.Sub(p.Lsh(one, uint(v)), one)
+		f.Or(f, p.Lsh(p.And(f, mask), uint(v)))
+	}
+	return f.BitLen() - 1
 }

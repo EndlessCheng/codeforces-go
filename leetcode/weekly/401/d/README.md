@@ -23,7 +23,7 @@ $$
 
 答案为最大的满足 $f[n][j]=\texttt{true}$ 的 $j$。
 
-这可以解决周赛第三题，但第四题范围很大，需要去掉第一个维度，并用 **bitset** 优化。
+这可以解决周赛第三题，但第四题范围很大，需要去掉第一个维度，并用 **bitset** 优化（也可以用 **bigint**）。
 
 用一个二进制数 $f$ 保存状态，二进制从低到高第 $j$ 位为 $1$ 表示 $f[j]=\texttt{true}$，为 $0$ 表示 $f[j]=\texttt{false}$。
 
@@ -67,6 +67,7 @@ public:
     int maxTotalReward(vector<int>& rewardValues) {
         ranges::sort(rewardValues);
         rewardValues.erase(unique(rewardValues.begin(), rewardValues.end()), rewardValues.end());
+
         bitset<100000> f{1};
         for (int v : rewardValues) {
             int shift = f.size() - v;
@@ -84,6 +85,22 @@ public:
 ```
 
 ```go [sol-Go]
+func maxTotalReward(rewardValues []int) int {
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+
+	one := big.NewInt(1)
+	f := big.NewInt(1)
+	p := new(big.Int)
+	for _, v := range rewardValues {
+		mask := p.Sub(p.Lsh(one, uint(v)), one)
+		f.Or(f, p.Lsh(p.And(f, mask), uint(v)))
+	}
+	return f.BitLen() - 1
+}
+```
+
+```go [sol-Go bitset]
 const w = bits.UintSize
 
 type bitset []uint
@@ -131,6 +148,7 @@ func (b bitset) lastIndex1() int {
 func maxTotalReward(rewardValues []int) int {
 	slices.Sort(rewardValues)
 	rewardValues = slices.Compact(rewardValues) // 去重
+
 	m := rewardValues[len(rewardValues)-1]
 	f := make(bitset, m*2/w+1)
 	f[0] = 1
@@ -211,6 +229,27 @@ public:
 ```
 
 ```go [sol-Go]
+func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	if slices.Contains(rewardValues, m-1) {
+		return m*2 - 1
+	}
+
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+
+	one := big.NewInt(1)
+	f := big.NewInt(1)
+	p := new(big.Int)
+	for _, v := range rewardValues {
+		mask := p.Sub(p.Lsh(one, uint(v)), one)
+		f.Or(f, p.Lsh(p.And(f, mask), uint(v)))
+	}
+	return f.BitLen() - 1
+}
+```
+
+```go [sol-Go bitset]
 const w = bits.UintSize
 
 type bitset []uint
@@ -371,6 +410,37 @@ public:
 ```
 
 ```go [sol-Go]
+func maxTotalReward(rewardValues []int) int {
+	m := slices.Max(rewardValues)
+	has := map[int]bool{}
+	for _, v := range rewardValues {
+		if v == m-1 {
+			return m*2 - 1
+		}
+		if has[v] {
+			continue
+		}
+		if has[m-1-v] {
+			return m*2 - 1
+		}
+		has[v] = true
+	}
+
+	slices.Sort(rewardValues)
+	rewardValues = slices.Compact(rewardValues) // 去重
+
+	one := big.NewInt(1)
+	f := big.NewInt(1)
+	p := new(big.Int)
+	for _, v := range rewardValues {
+		mask := p.Sub(p.Lsh(one, uint(v)), one)
+		f.Or(f, p.Lsh(p.And(f, mask), uint(v)))
+	}
+	return f.BitLen() - 1
+}
+```
+
+```go [sol-Go bitset]
 const w = bits.UintSize
 
 type bitset []uint
