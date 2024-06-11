@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 )
 
 // https://space.bilibili.com/206214
@@ -12,11 +13,8 @@ func cf1362C(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var T, n int
 	for Fscan(in, &T); T > 0; T-- {
-		ans := 0
-		for Fscan(in, &n); n > 0; n /= 2 {
-			ans += n
-		}
-		Fprintln(out, ans)
+		Fscan(in, &n)
+		Fprintln(out, n*2-bits.OnesCount(uint(n)))
 	}
 }
 
