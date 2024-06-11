@@ -12,10 +12,9 @@ func cf1362C(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var T, n int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n)
 		ans := 0
-		for i := 0; n>>i > 0; i++ {
-			ans += n >> i
+		for Fscan(in, &n); n > 0; n /= 2 {
+			ans += n
 		}
 		Fprintln(out, ans)
 	}
