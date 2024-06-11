@@ -1,13 +1,13 @@
 package main
 
 import (
-	"sort"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
 func findMaximumElegance(items [][]int, k int) int64 {
 	// 把利润从大到小排序
-	sort.Slice(items, func(i, j int) bool { return items[i][0] > items[j][0] })
+	slices.SortFunc(items, func(a, b []int) int { return b[0] - a[0] })
 	ans, totalProfit := 0, 0
 	vis := map[int]bool{}
 	duplicate := []int{} // 栈
@@ -24,10 +24,8 @@ func findMaximumElegance(items [][]int, k int) int64 {
 			vis[category] = true
 			totalProfit += profit - duplicate[len(duplicate)-1] // 选一个重复类别中的最小利润替换
 			duplicate = duplicate[:len(duplicate)-1]
-		} // else 比前面的利润小，而且类别还重复了，选它只会让 totalProfit 变小，len(vis) 不变，优雅度不会变大
+		} // else：比前面的利润小，而且类别还重复了，选它只会让 totalProfit 变小，len(vis) 不变，优雅度不会变大
 		ans = max(ans, totalProfit+len(vis)*len(vis))
 	}
 	return int64(ans)
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
