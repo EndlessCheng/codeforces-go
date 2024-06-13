@@ -13,7 +13,7 @@
 
 按照这个过程，继续考虑选择后面的项目。计算优雅度，取最大值，即为答案。
 
-代码实现时，我们应当移除已选项目中类别和前面重复且利润最小的项目，这可以用一个栈 $\textit{duplicate}$ 来维护，由于利润从大到小排序，所以栈顶就是最小的利润。入栈前判断 $\textit{category}$ 之前是否遇到过，没遇到才入栈。
+代码实现时，我们应当移除已选项目中类别和前面重复且利润最小的项目，这可以用一个栈 $\textit{duplicate}$ 来维护，由于利润从大到小排序，所以栈顶就是最小的利润。入栈前判断 $\textit{category}$ 之前是否遇到过，遇到则入栈。
 
 注：这个算法叫做**反悔贪心**。
 
@@ -126,6 +126,14 @@ func findMaximumElegance(items [][]int, k int) int64 {
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{items}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 思考题
+
+计算 $k$ 个数：$\textit{distinctCategories}$ 恰好等于 $1,2,3,\cdots,k$ 时的最大优雅度。
+
+## 相似题目
+
+见 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/) 中的「§5.5 反悔堆」。
 
 ## 分类题单
 
