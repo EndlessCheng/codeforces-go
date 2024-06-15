@@ -34,7 +34,7 @@ func isTLE(f func()) bool {
 	}
 }
 
-func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc) {
+func AssertEqualStringCaseWithPrefix(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc, prefix string) {
 	if len(testCases) == 0 {
 		t.Error("empty testcase")
 		return
@@ -51,7 +51,7 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 			continue
 		}
 
-		t.Run(fmt.Sprintf("Case %d", curCaseNum+1), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%sCase %d", prefix, curCaseNum+1), func(t *testing.T) {
 			input := removeExtraSpace(tc[0])
 			const maxInputSize = 150
 			inputInfo := input
@@ -98,6 +98,10 @@ func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum in
 	}
 
 	t.Log("OK")
+}
+
+func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc) {
+	AssertEqualStringCaseWithPrefix(t, testCases, targetCaseNum, runFunc, "")
 }
 
 func AssertEqualFileCaseWithName(t *testing.T, dir, inName, ansName string, targetCaseNum int, runFunc ioFunc) {
