@@ -113,7 +113,6 @@ import (
 	"os"
 )
 
-// https://space.bilibili.com/206214
 func cf%[1]s(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()

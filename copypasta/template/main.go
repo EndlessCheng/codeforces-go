@@ -8,7 +8,6 @@ import (
 	"strings"
 )
 
-// https://space.bilibili.com/206214
 func run(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
