@@ -23,7 +23,7 @@ func Test(t *testing.T) {
 
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
 		tarCase := 0 // -1
-		testutil.AssertEqualStringCase(t, customTestCases, tarCase, run)
+		testutil.AssertEqualStringCaseWithPrefix(t, customTestCases, tarCase, run, "Custom ")
 		t.Log("======= custom =======")
 	}
 
