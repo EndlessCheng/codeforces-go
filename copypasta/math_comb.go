@@ -369,31 +369,26 @@ func (c *comb) p(n, k int) int {
 }
 
 // 容斥原理 (PIE, the principle of inclusion and exclusion)
-//
-// 参考《挑战程序设计竞赛》P296
+// 《挑战程序设计竞赛》P296
 // https://codeforces.com/blog/entry/64625
 // https://ac.nowcoder.com/acm/contest/6219/C
 //
 // - [2929. 给小朋友们分糖果 II](https://leetcode.cn/problems/distribute-candies-among-children-ii/)
-//    - 扩展 https://codeforces.com/problemset/problem/451/E
+//    - 扩展 https://codeforces.com/problemset/problem/451/E 2300
 // - [2930. 重新排列后包含指定子字符串的字符串数目](https://leetcode.cn/problems/number-of-strings-which-can-be-rearranged-to-contain-substring/)
 // - [3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/) 2388
 // - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
-//      - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
+//    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://codeforces.com/problemset/problem/630/K 1500
-//
-// 多重集组合数 https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
-// https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
-// https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
-//
-// https://codeforces.com/problemset/problem/1342/E
-// 如何将问题转化成可以容斥的结构 https://codeforces.com/problemset/problem/1228/E
-// 不重不漏 https://codeforces.com/problemset/problem/1007/B
-// 与 SOS DP 结合 https://codeforces.com/problemset/problem/449/D
-// 用因子容斥 https://codeforces.com/problemset/problem/900/D
+// https://codeforces.com/problemset/problem/900/D 2000 用因子容斥 
+// https://codeforces.com/problemset/problem/1228/E 2300 如何将问题转化成可以容斥的结构 
+// https://codeforces.com/problemset/problem/1342/E 2300
+// https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 
+// https://codeforces.com/problemset/problem/1007/B 2400 不重不漏 
+// https://codeforces.com/problemset/problem/1591/F 2400 辅助思考 DP 
+// https://codeforces.com/problemset/problem/1400/G 2600
+// https://atcoder.jp/contests/arc115/tasks/arc115_e 辅助思考 DP 
 // todo https://www.luogu.com.cn/problem/P1450
-// 辅助思考 DP https://atcoder.jp/contests/arc115/tasks/arc115_e 
-//            https://codeforces.com/contest/1591/problem/F
 func solveInclusionExclusion(a []int) int {
 	ans := 0 // 无限制时的答案，根据题目修改
 	// 枚举所有非空子集
@@ -415,6 +410,10 @@ func solveInclusionExclusion(a []int) int {
 	ans = (ans%mod + mod) % mod
 	return ans
 }
+
+// 多重集组合数 https://oi-wiki.org/math/combinatorics/combination/#%E5%A4%9A%E9%87%8D%E9%9B%86%E7%9A%84%E7%BB%84%E5%90%88%E6%95%B0-2
+// https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
+// https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
 
 /* min-max 反演
 https://www.luogu.com.cn/blog/meizhuhe/min-max-fan-yan-xue-xi-bi-ji
