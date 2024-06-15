@@ -1,10 +1,18 @@
 由于选的是子序列，且操作后子序列的元素都相等，所以**元素顺序对答案没有影响**，可以先对数组**排序**。
 
-由于替换操作替换的是一个连续范围内的数，所以排序后，选出的子序列必然也是一段**连续子数组**。
+示例 1 排序后 $\textit{nums}=[1,2,4,6]$。由于每个数 $x$ 可以改成闭区间 $[x-k,x+k]$ 中的数，我们把示例 1 的每个数看成闭区间，也就是
 
-那么问题变成：「找最长的连续子数组，其最大值减最小值不超过 $2k$」，只要子数组满足这个要求，其中的元素都可以变成同一个数。
+![lc2779.png](https://pic.leetcode.cn/1718412275-eYvnMI-lc2779.png)
 
-这个问题可以用 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 解决。枚举 $\textit{nums}[\textit{right}]$ 作为子数组的最后一个数，一旦 $\textit{nums}[\textit{right}]-\textit{nums}[\textit{left}]>2k$，就移动左端点 $\textit{left}$。
+题目要求的「由相等元素组成的最长子序列」，相当于选出若干闭区间，这些区间的交集不为空。
+
+由于区间的长度都是 $2k$，问题可以转换成：
+
+- 排序后，找最长的连续子数组，其最大值减最小值不超过 $2k$。
+
+只要子数组满足这个要求，对应的区间的交集就不为空，也就是子数组的元素都可以变成同一个数。
+
+这可以用 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/) 解决。枚举 $\textit{nums}[\textit{right}]$ 作为子数组的最后一个数，一旦 $\textit{nums}[\textit{right}]-\textit{nums}[\textit{left}]>2k$，就移动左端点 $\textit{left}$。
 
 左端点停止移动时，下标在 $[\textit{left},\textit{right}]$ 的子数组就是满足要求的子数组，用子数组长度 $\textit{right}-\textit{left}+1$ 更新答案的最大值。
 
@@ -27,8 +35,7 @@ class Solution {
         int ans = 0;
         int left = 0;
         for (int right = 0; right < nums.length; right++) {
-            int x = nums[right];
-            while (x - nums[left] > k * 2) {
+            while (nums[right] - nums[left] > k * 2) {
                 left++;
             }
             ans = Math.max(ans, right - left + 1);
@@ -45,8 +52,7 @@ public:
         ranges::sort(nums);
         int ans = 0, left = 0;
         for (int right = 0; right < nums.size(); right++) {
-            int x = nums[right];
-            while (x - nums[left] > k * 2) {
+            while (nums[right] - nums[left] > k * 2) {
                 left++;
             }
             ans = max(ans, right - left + 1);
