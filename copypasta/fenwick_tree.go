@@ -21,7 +21,7 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
    - https://www.luogu.com.cn/problem/P3374
 - [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/) *逆序对
 - [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/) 2030
-- [3072. 将元素分配到两个数组中 II](https://leetcode.cn/problems/distribute-elements-into-two-arrays-ii/)
+- [3072. 将元素分配到两个数组中 II](https://leetcode.cn/problems/distribute-elements-into-two-arrays-ii/) 2053
 - [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
 - [2519. 统计 K-Big 索引的数量](https://leetcode.cn/problems/count-the-number-of-k-big-indices/)（会员题）
@@ -57,6 +57,7 @@ https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
 建模 https://codeforces.com/problemset/problem/1660/F2 2100
 整除对统计 https://codeforces.com/problemset/problem/301/D 2200
 区间统计技巧 https://codeforces.com/problemset/problem/369/E 2200
+https://codeforces.com/problemset/problem/1967/C 2300
 三维偏序 https://codeforces.com/problemset/problem/12/D 2400
 https://codeforces.com/problemset/problem/1334/F 2500
 多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
@@ -95,7 +96,7 @@ func (f fenwick) update(i, val int) {
 // 1<=i<=n
 func (f fenwick) pre(i int) int {
 	res := fenwickInitVal
-	//i = min(i, len(f)-1)
+	i = min(i, len(f)-1)
 	for ; i > 0; i &= i - 1 {
 		res = f.op(res, f[i])
 	}
@@ -105,6 +106,9 @@ func (f fenwick) pre(i int) int {
 // 求区间和 a[l] + ... + a[r]
 // 1<=l<=r<=n
 func (f fenwick) query(l, r int) int {
+	if r < l {
+		return 0
+	}
 	return f.pre(r) - f.pre(l-1)
 }
 
@@ -434,6 +438,7 @@ func _(n int) {
 	// 求逆序对的方法之一
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 	// 归并做法见 misc.go 中的 mergeCount
+	// LCR 170. 交易逆序对的总数 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 	// 扩展 https://codeforces.com/problemset/problem/362/C 1900
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
 	// todo 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
