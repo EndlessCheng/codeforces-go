@@ -15,6 +15,3 @@ func countDaysTogether(arriveAlice, leaveAlice, arriveBob, leaveBob string) int 
 	left := calcDays(max(arriveAlice, arriveBob))
 	return max(right - left + 1, 0)
 }
-
-func min(a, b string) string { if b < a { return b }; return a }
-func max[T int | string](a, b T) T { if b > a { return b }; return a }
