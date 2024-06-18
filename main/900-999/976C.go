@@ -8,7 +8,7 @@ import (
 
 // https://space.bilibili.com/206214
 func cf976C(in io.Reader, out io.Writer) {
-	var n, mxR, mxI int
+	var n int
 	Fscan(in, &n)
 	a := make([]struct{ l, r, i int }, n)
 	for i := range a {
@@ -16,13 +16,10 @@ func cf976C(in io.Reader, out io.Writer) {
 		a[i].i = i
 	}
 	sort.Slice(a, func(i, j int) bool { a, b := a[i], a[j]; return a.l < b.l || a.l == b.l && a.r > b.r })
-	for _, p := range a {
-		if p.r <= mxR {
-			Fprintln(out, p.i+1, mxI+1)
+	for i := 1; i < n; i++ {
+		if a[i].r <= a[i-1].r {
+			Fprintln(out, a[i].i+1, a[i-1].i+1)
 			return
-		}
-		if p.r > mxR {
-			mxR, mxI = p.r, p.i
 		}
 	}
 	Fprintln(out, -1, -1)
