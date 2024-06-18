@@ -209,16 +209,16 @@ https://oeis.org/A031878 Maximal number of edges in Hamiltonian path in complete
 a(n) = C(n, 2)        n%2==0
 a(n) = C(n, 2)-n/2+1  n%2==1
 
-环与独立集 https://codeforces.com/problemset/problem/1364/D
-匹配与独立集 https://codeforces.com/problemset/problem/1198/C
+https://codeforces.com/problemset/problem/1364/D 环与独立集
+https://codeforces.com/problemset/problem/1198/C 匹配与独立集
 
-构造 https://codeforces.com/problemset/problem/41/E  1900
-归纳 https://codeforces.com/problemset/problem/412/D 2000
-转换 https://codeforces.com/problemset/problem/788/B 2100
-加边 https://codeforces.com/problemset/problem/723/E 2200
+https://codeforces.com/problemset/problem/41/E 1900 构造
+https://codeforces.com/problemset/problem/412/D 2000 归纳
+https://codeforces.com/problemset/problem/788/B 2100 转换
+https://codeforces.com/problemset/problem/723/E 2200 加边
 https://codeforces.com/problemset/problem/1196/F 2200 第k小路径
-转换 https://codeforces.com/problemset/problem/788/C 2300
-转换 https://codeforces.com/problemset/problem/632/F 2400
+https://codeforces.com/problemset/problem/788/C 2300 转换
+https://codeforces.com/problemset/problem/632/F 2400 转换
 给一无向图，从中删除恰好一条边，求可以让图变成二分图的所有边的下标 https://codeforces.com/problemset/problem/19/E 2900
 倒水问题 https://www.luogu.com.cn/problem/P1432
 顶点有限制的生成树 https://codeforces.com/problemset/problem/723/F
@@ -1555,11 +1555,13 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 //
 // ## 题单：Dijkstra
 // - [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/)
+// - [3112. 访问消失节点的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-disappearing-nodes/) 1757 理解原理
 // - [2642. 设计可以求最短路径的图类](https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/) 1811
 // - [1514. 概率最大的路径](https://leetcode.cn/problems/path-with-maximum-probability/) 1846
 // - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948 *max 做法不止一种
 // - [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069 也可以 0-1 BFS
 // - [1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/) 2079
+// - [3123. 最短路径中的边](https://leetcode.cn/problems/find-edges-in-shortest-paths/) 2093
 // - [1976. 到达目的地的方案数](https://leetcode.cn/problems/number-of-ways-to-arrive-at-destination/) 2095
 // - [2662. 前往目标的最小代价](https://leetcode.cn/problems/minimum-cost-of-a-path-with-special-roads/) 2154
 // - [2045. 到达目的地的第二短时间](https://leetcode.cn/problems/second-minimum-time-to-reach-destination/) 2202 也可以 BFS
@@ -1982,6 +1984,7 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dis []int) { // 有负
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
+// 利用最短路简化分类讨论 https://codeforces.com/gym/105139/problem/L
 func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	// g[k][i][j] 表示「经过若干个编号不超过 k 的中间节点」时，从 i 到 j 的最短路长度，其中第一维可以压缩掉
 	// 为什么可以把第一维度去掉？g[i][k] 和 g[k][j] 不会被覆盖掉吗？
@@ -2056,7 +2059,7 @@ func (*graph) floydWarshallBitset(n int, edges [][]int) []int {
 	for k := range vs {
 		for i := range vs {
 			if vs[i].Has(k) {
-				vs[i].UnionFrom(vs[k]) // i->j 现在可以 i->k->j
+				vs[i].Or(vs[k]) // i->j 现在可以 i->k->j
 			}
 		}
 	}
@@ -2298,6 +2301,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // - https://codeforces.com/problemset/problem/1857/G 2000
 // https://codeforces.com/problemset/problem/1707/C 2400 与 DFS 搜索树结合
 // https://codeforces.com/problemset/problem/632/F 2400 转换
+// https://codeforces.com/problemset/problem/1981/E 2600
 // https://atcoder.jp/contests/abc282/tasks/abc282_e 无环即生成树
 // https://atcoder.jp/contests/typical90/tasks/typical90_ai 子树 MST 必须包含特殊点 
 func (*graph) mstKruskal(n int, edges [][]int) int {
@@ -3172,10 +3176,12 @@ DAG 上的最小路径覆盖，要求路径之间不相交，即每个顶点恰�
 
 // 二分图最大匹配 - 匈牙利算法/增广路算法 O(nm)    Hungarian algorithm
 // 注：更推荐用 Dinic，可以达到 O(m√n) 的复杂度（而且这个复杂度一般不会跑满）
-// - 超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即最大匹配
+// - 超级源点 S 连左部，右部连超级汇点 T，所有边的容量均为 1，那么 S 到 T 的最大流即为二分图的最大匹配
+// - 时间复杂度证明 https://www.cnblogs.com/Itst/p/12556871.html
+// - 时间复杂度证明 https://oi-wiki.org/graph/flow/max-flow/#%E7%89%B9%E6%AE%8A%E6%83%85%E5%BD%A2%E4%B8%8B%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90
 // - 代码 https://www.luogu.com.cn/record/123020820
-// 【推荐】可视化 https://visualgo.net/zh/matching
-//        选择「图示 - CP4 3.11a*」，然后选择「增广路 - 标准」
+// 可视化【推荐】 https://visualgo.net/zh/matching
+// - 选择左下的图示 -> CP4 3.11a*，然后选择增广路 -> 标准
 // https://www.renfei.org/blog/bipartite-matching.html 推荐
 // https://oi-wiki.org/topic/graph-matching/bigraph-match/
 // https://zhuanlan.zhihu.com/p/62981901
@@ -3598,13 +3604,13 @@ func (*graph) sccKosaraju(n int, edges [][]int) ([][]int, []int) {
 		}
 	}
 
-	scc := [][]int{}
+	allScc := [][]int{}
 	clear(vis)
-	var comp []int
+	var scc []int
 	var rdfs func(int)
 	rdfs = func(v int) {
 		vis[v] = true
-		comp = append(comp, v)
+		scc = append(scc, v)
 		for _, w := range rg[v] {
 			if !vis[w] {
 				rdfs(w)
@@ -3617,13 +3623,13 @@ outer:
 		if vis[v] {
 			continue
 		}
-		comp = []int{}
+		scc = []int{}
 		rdfs(v)
-		scc = append(scc, comp)
+		allScc = append(allScc, scc)
 
 		// EXTRA: 直接在这里判断缩点后是否出度为 0（无需实际缩点）
 		{
-			for _, u := range comp {
+			for _, u := range scc {
 				for _, w := range g[u] {
 					if !vis[w] { // 出度不为 0
 						continue outer
@@ -3636,7 +3642,7 @@ outer:
 
 	// 记录每个点所属 SCC 的下标，用于缩点和查询
 	sid := make([]int, len(g))
-	for i, cc := range scc {
+	for i, cc := range allScc {
 		// 还可以汇合同一个 SCC 的权值等 ...
 		for _, v := range cc {
 			sid[v] = i
@@ -3649,7 +3655,7 @@ outer:
 	// 模板题 点权 https://www.luogu.com.cn/problem/P3387
 	// 		 边权 https://codeforces.com/contest/894/problem/E
 	// 检测路径是否可达/唯一/无穷 https://codeforces.com/problemset/problem/1547/G
-	ns := len(scc)
+	ns := len(allScc)
 	g2 := make([][]int, ns)
 	deg := make([]int, ns) // 求拓扑序 DP
 	for v, ws := range g {
@@ -3669,7 +3675,7 @@ outer:
 	// - Tarjan 写法 https://codeforces.com/problemset/submission/1777/204187501
 	numCanBeVisitedFromAll := func() int {
 		clear(vis)
-		lastComp := scc[len(scc)-1]
+		lastComp := allScc[len(allScc)-1]
 		rdfs(lastComp[0]) // 在反图上遍历
 		for _, b := range vis {
 			// 原图不是连通的
@@ -3681,7 +3687,7 @@ outer:
 	}
 	_ = numCanBeVisitedFromAll
 
-	return scc, sid
+	return allScc, sid
 }
 
 // SCC Tarjan
@@ -3696,39 +3702,42 @@ outer:
 // https://stackoverflow.com/questions/32750511/does-tarjans-scc-algorithm-give-a-topological-sort-of-the-scc
 // 与最小割结合 https://www.luogu.com.cn/problem/P4126
 func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
-	scc := [][]int{}
+	// low(v) 定义为以下两种情况的最小值
+	// 1. dfn[v]
+	// 2. subtree(v) 的返祖边所指向的节点的 dfn，也就是经过恰好一条不在 DFS 树上的边，能够到达 subtree(v) 的节点的 dfn
+	allScc := [][]int{}
 	dfn := make([]int, len(g)) // 值从 1 开始
 	dfsClock := 0
 	st := []int{}
-	inSt := make([]bool, len(g))
 	var tarjan func(int) int
 	tarjan = func(v int) int {
 		dfsClock++
 		dfn[v] = dfsClock
 		lowV := dfsClock
 		st = append(st, v)
-		inSt[v] = true
 		for _, w := range g[v] {
 			if dfn[w] == 0 {
 				lowW := tarjan(w)
 				lowV = min(lowV, lowW)
-			} else if inSt[w] { // 找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
+			} else { 
+				// 如果 0 < dfn[w] != inf，说明 w 在 st 中，那么找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
+				// 不需要判断 dfn[w] == inf 的情况，直接取 min 即可
 				lowV = min(lowV, dfn[w])
 			}
 		}
 		if dfn[v] == lowV { // 回不去了，再也回不去了，祖先（节点）已成历史
-			comp := []int{}
+			scc := []int{}
 			for {
 				w := st[len(st)-1]
 				st = st[:len(st)-1]
 				// 避免搜索树上的另一棵子树上的点 v，通过横向边，把 dfn[w] 错误地更新到 lowV（注意 dfn[w] 都小于后面新遍历到的点的 dfn 值）
-				inSt[w] = false
-				comp = append(comp, w) // 也可以直接 sid[w] = v
+				dfn[w] = math.MaxInt // 相当于 inStack[w] = false
+				scc = append(scc, w) // 如果要计算 sid，可以在这里写 sid[w] = v
 				if w == v {
 					break
 				}
 			}
-			scc = append(scc, comp)
+			allScc = append(allScc, scc)
 		}
 		return lowV
 	}
@@ -3739,19 +3748,19 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 	}
 
 	// 由于每个强连通分量都是在它的所有后继强连通分量被求出之后求得的
-	// 上面得到的 scc 是拓扑序的逆序
-	slices.Reverse(scc)
+	// 上面得到的 allScc 是拓扑序的逆序
+	slices.Reverse(allScc)
 
 	// 缩点
 	sid := make([]int, len(g))
-	for i, cc := range scc {
+	for i, scc := range allScc {
 		// 还可以汇合同一个 SCC 的权值等 ...
-		for _, v := range cc {
+		for _, v := range scc {
 			sid[v] = i
 		}
 	}
 
-	ns := len(scc)
+	ns := len(allScc)
 	g2 := make([][]int, ns)
 	deg := make([]int, ns)
 	for v, ws := range g {
@@ -3765,7 +3774,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 		}
 	}
 
-	return scc, sid
+	return allScc, sid
 }
 
 // Gabow's algorithm
@@ -4232,7 +4241,10 @@ CF Tag https://codeforces.com/problemset?order=BY_RATING_ASC&tags=flows
 
 /* 最大流·建模·转换 ################################################################################
 
+Max-Flow，简称 MF
+
 可视化 https://visualgo.net/zh/maxflow
+选择左下的图示 - CS4234 MF Demo 或者 CP4 8.15*，然后选择左下的 Dinic - 前进
 
 https://en.wikipedia.org/wiki/Maximum_flow
 
@@ -4322,6 +4334,7 @@ https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem
 https://codeforces.com/problemset/problem/700/C 2600
 
 建模·转换
+https://www.luogu.com.cn/problem/P1345
 https://www.acwing.com/problem/content/2282/
 平均边权最小 https://www.acwing.com/problem/content/2281/
 点连通度 SEERC04 F https://codeforces.com/gym/101461 http://poj.org/problem?id=1966 UVa1660 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4535
@@ -4474,8 +4487,10 @@ https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 // https://cp-algorithms.com/graph/dinic.html
 // [Tutorial] My way of understanding Dinitz's ("Dinic's") algorithm https://codeforces.com/blog/entry/104960
 // https://www.bilibili.com/video/BV1j64y1R7yK/
+// 时间复杂度证明 https://www.zhihu.com/question/34374412
 //
-// 模板题 https://www.luogu.com.cn/problem/P3376 https://www.luogu.com.cn/problem/P2740
+// 模板题 https://www.luogu.com.cn/problem/P3376
+//       https://www.luogu.com.cn/problem/P2740
 func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	type neighbor struct{ to, rid, cap, eid int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
@@ -5176,7 +5191,9 @@ func (*graph) maximalCliques(g []int) int {
 func (*graph) countCycle3(n int, edges [][2]int) (ans int) {
 	deg := make([]int, n)
 	for _, e := range edges {
-		v, w := e[0], e[1] // -1
+		v, w := e[0], e[1]
+		v--
+		w--
 		deg[v]++
 		deg[w]++
 	}
@@ -5218,7 +5235,9 @@ func (*graph) countCycle4(n int, edges [][2]int) (ans int) {
 	g := make([][]int, n)
 	deg := make([]int, n)
 	for _, e := range edges {
-		v, w := e[0], e[1] // -1
+		v, w := e[0], e[1]
+		v--
+		w--
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 		deg[v]++
