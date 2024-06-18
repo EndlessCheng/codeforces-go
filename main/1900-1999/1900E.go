@@ -4,15 +4,16 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
+	"slices"
 )
 
-// https://space.bilibili.com/206214
 func CF1900E(_r io.Reader, _w io.Writer) {
 	in := bufio.NewReader(_r)
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var T, n, m, v, w int
+	var T, n, m int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n, &m)
 		a := make([]int, n)
@@ -20,60 +21,55 @@ func CF1900E(_r io.Reader, _w io.Writer) {
 			Fscan(in, &a[i])
 		}
 		g := make([][]int, n)
-		rg := make([][]int, n)
 		for ; m > 0; m-- {
+			var v, w int
 			Fscan(in, &v, &w)
-			v--
-			w--
-			g[v] = append(g[v], w)
-			rg[w] = append(rg[w], v)
+			g[v-1] = append(g[v-1], w-1)
 		}
 
-		vs := make([]int, 0, n)
-		vis := make([]bool, n)
-		var dfs func(int)
-		dfs = func(v int) {
-			vis[v] = true
+		allScc := [][]int{}
+		dfn := make([]int, n)
+		ts := 0
+		st := []int{}
+		var tarjan func(int) int
+		tarjan = func(v int) int {
+			ts++
+			dfn[v] = ts
+			lowV := ts
+			st = append(st, v)
 			for _, w := range g[v] {
-				if !vis[w] {
-					dfs(w)
+				if dfn[w] == 0 {
+					lowV = min(lowV, tarjan(w))
+				} else {
+					lowV = min(lowV, dfn[w])
 				}
 			}
-			vs = append(vs, v)
-		}
-		for i, b := range vis {
-			if !b {
-				dfs(i)
-			}
-		}
-
-		scc := [][]int{}
-		clear(vis)
-		var comp []int
-		var rdfs func(int)
-		rdfs = func(v int) {
-			vis[v] = true
-			comp = append(comp, v)
-			for _, w := range rg[v] {
-				if !vis[w] {
-					rdfs(w)
+			if dfn[v] == lowV {
+				scc := []int{}
+				for {
+					w := st[len(st)-1]
+					st = st[:len(st)-1]
+					dfn[w] = math.MaxInt
+					scc = append(scc, w)
+					if w == v {
+						break
+					}
 				}
+				allScc = append(allScc, scc)
+			}
+			return lowV
+		}
+		for i, t := range dfn {
+			if t == 0 {
+				tarjan(i)
 			}
 		}
-		for i := n - 1; i >= 0; i-- {
-			v := vs[i]
-			if vis[v] {
-				continue
-			}
-			comp = []int{}
-			rdfs(v)
-			scc = append(scc, comp)
-		}
+		slices.Reverse(allScc)
 
-		ns := len(scc)
+		ns := len(allScc)
 		a2 := make([]int, ns)
 		sid := make([]int, n)
-		for i, cc := range scc {
+		for i, cc := range allScc {
 			for _, v := range cc {
 				a2[i] += a[v]
 				sid[v] = i
@@ -107,7 +103,7 @@ func CF1900E(_r io.Reader, _w io.Writer) {
 			v := q[0]
 			q = q[1:]
 			p := f[v]
-			p.len += len(scc[v])
+			p.len += len(allScc[v])
 			p.s += a2[v]
 			if gr(p, ans) {
 				ans = p
