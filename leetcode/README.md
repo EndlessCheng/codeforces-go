@@ -150,7 +150,7 @@
 ||[1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/)|[代码](https://leetcode.cn/problems/jump-game-vi/solution/yi-bu-bu-you-hua-cong-di-gui-dao-di-tui-84qn3/)|*课后作业|
 ||[2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/)|[代码](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/solution/dpcong-on2-dao-onpythonjavacgo-by-endles-nux5/)|*课后作业|
 
-其它尚未更新的 topic 请看 [题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+其他尚未更新的 topic 请看 [题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
 ### 分类题单
 
@@ -174,7 +174,7 @@
 - [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
 - [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
 
-### 其它
+### 其他
 
 - 🔥[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 - [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)
