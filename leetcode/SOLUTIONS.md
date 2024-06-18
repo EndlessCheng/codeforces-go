@@ -176,7 +176,7 @@
 - [从周赛中学算法 - 2022·下](https://leetcode.cn/circle/discuss/WR1MJP/)
 - [从周赛中学算法 - 2022·上](https://leetcode.cn/circle/discuss/G0n5iY/)
 
-### 其它
+### 其他
 
 - 🔥[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 - [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)
