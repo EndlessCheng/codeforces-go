@@ -92,6 +92,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [52. N 皇后 II](https://leetcode.cn/problems/n-queens-ii/)
 - [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
 - [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
+- [2014. 重复 K 次的最长子序列](https://leetcode.cn/problems/longest-subsequence-repeated-k-times/) 2558
 - [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
 网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
 
@@ -505,6 +506,8 @@ func searchCollection() {
 	// 调用完之后
 	// 返回 true：a 修改为其下一个排列（即比 a 大且字典序最小的排列）
 	// 返回 false：a 修改为其字典序最小的排列（即 a 排序后的结果）
+	// - [31. 下一个排列](https://leetcode.cn/problems/next-permutation/)
+	// - [1850. 邻位交换的最小次数](https://leetcode.cn/problems/minimum-adjacent-swaps-to-reach-the-kth-smallest-number/) 2073
 	nextPermutation := func(a []int) bool {
 		n := len(a)
 		i := n - 2
@@ -1139,6 +1142,8 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
 - [1559. 二维网格图中探测环](https://leetcode.cn/problems/detect-cycles-in-2d-grid/) 1838
 - [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
    - https://codeforces.com/contest/616/problem/C 1600
+   - 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
+   - 可以改一排和一列 https://codeforces.com/problemset/problem/1985/H2
 https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
 https://codeforces.com/problemset/problem/1365/D 1700
