@@ -3719,7 +3719,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 			if dfn[w] == 0 {
 				lowW := tarjan(w)
 				lowV = min(lowV, lowW)
-			} else { 
+			} else {
 				// 如果 0 < dfn[w] != inf，说明 w 在 st 中，那么找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
 				// 不需要判断 dfn[w] == inf 的情况，直接取 min 即可
 				lowV = min(lowV, dfn[w])
@@ -4481,7 +4481,6 @@ https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 */
 
 // 最大流 Dinic's algorithm O(n^2 * m)  二分图上为 O(m√n)
-// 如果容量是浮点数，下面代码中 > 0 的判断要改成 > eps
 // https://en.wikipedia.org/wiki/Dinic%27s_algorithm
 // https://oi-wiki.org/graph/flow/max-flow/#dinic
 // https://cp-algorithms.com/graph/dinic.html
@@ -4527,9 +4526,9 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		}
 	}
 
-	d := make([]int, len(g)) // 从源点 st 出发的距离
+	d := make([]int, len(g))
 	bfs := func() bool {
-		clear(d)
+		clear(d) // d[i] = 0 表示没有访问过
 		d[st] = 1
 		q := []int{st}
 		for len(q) > 0 {
@@ -4544,39 +4543,36 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		}
 		return d[end] > 0
 	}
-	// 寻找增广路
-	iter := make([]int, len(g)) // 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
+	// 当前弧，在其之前的边已经没有用了，避免对没有用的边进行多次检查
+	iter := make([]int, len(g))
+	// 寻找增广路（多路增广）
 	var dfs func(int, int) int
-	dfs = func(v, minF int) int {
+	dfs = func(v, totalFlow int) (curFlow int) {
 		if v == end {
-			return minF
+			return totalFlow
 		}
 		for ; iter[v] < len(g[v]); iter[v]++ {
 			e := &g[v][iter[v]]
 			if w := e.to; e.cap > 0 && d[w] > d[v] {
-				if f := dfs(w, min(minF, e.cap)); f > 0 {
-					e.cap -= f
-					g[w][e.rid].cap += f
-					return f
+				f := dfs(w, min(totalFlow-curFlow, e.cap))
+				if f == 0 {
+					continue
 				}
-			}
-		}
-		return 0
-	}
-	dinic := func() (maxFlow int) {
-		for bfs() {
-			clear(iter)
-			for {
-				if f := dfs(st, 1e18); f > 0 {
-					maxFlow += f
-				} else {
+				e.cap -= f
+				g[w][e.rid].cap += f
+				curFlow += f
+				if curFlow == totalFlow {
 					break
 				}
 			}
 		}
 		return
 	}
-	maxFlow := dinic()
+	maxFlow := 0
+	for bfs() {
+		clear(iter)
+		maxFlow += dfs(st, math.MaxInt)
+	}
 
 	// EXTRA: 容量复原（不存原始容量的写法）
 	for _, es := range g {
