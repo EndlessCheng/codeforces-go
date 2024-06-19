@@ -30,7 +30,7 @@ $$
 
 代码实现时 $f[i][j]$ 可以省略，因为只需要知道每行每列的 $f$ 值的最大值。
 
-对于相同元素，先计算出 $(i,j)$ 处的最大值，再更新到 $\textit{rowMax}$ 和 $\textit{colMax}$ 中。
+对于相同元素，如果计算出 $f$ 值就立刻更新到 $\textit{rowMax}$ 和 $\textit{colMax}$ 中，会导致它们互相影响，算出比实际答案更大的结果。正确做法是对于相同元素，先算出所有 $f$ 值，暂存到 $\textit{fs}$ 数组中，算完后再把 $\textit{fs}$ 中的数据更新到 $\textit{rowMax}$ 和 $\textit{colMax}$ 中。
 
 最后答案为 $\textit{rowMax}$ 的最大值。（或者 $\textit{colMax}$ 的最大值，由于这两个最大值相等，计算其一即可。）
 
@@ -45,9 +45,9 @@ class Solution:
         row_max = [0] * len(mat)
         col_max = [0] * len(mat[0])
         for _, pos in sorted(g.items(), key=lambda p: p[0]):
-            # 先把最大值算出来，再更新 row_max 和 col_max
-            mx = [max(row_max[i], col_max[j]) + 1 for i, j in pos]
-            for (i, j), f in zip(pos, mx):
+            # 先把所有 f 值都算出来，再更新 row_max 和 col_max
+            fs = [max(row_max[i], col_max[j]) + 1 for i, j in pos]
+            for (i, j), f in zip(pos, fs):
                 row_max[i] = max(row_max[i], f)  # 更新第 i 行的最大 f 值
                 col_max[j] = max(col_max[j], f)  # 更新第 j 列的最大 f 值
         return max(row_max)
@@ -70,20 +70,21 @@ class Solution {
         int[] rowMax = new int[m];
         int[] colMax = new int[n];
         for (List<int[]> pos : g.values()) {
-            int[] mx = new int[pos.size()]; // 先把最大值算出来，再更新 rowMax 和 colMax
+            // 先把所有 f 值都算出来，再更新 rowMax 和 colMax
+            int[] fs = new int[pos.size()];
             for (int k = 0; k < pos.size(); k++) {
                 int[] p = pos.get(k);
                 int i = p[0];
                 int j = p[1];
-                mx[k] = Math.max(rowMax[i], colMax[j]) + 1;
-                ans = Math.max(ans, mx[k]);
+                fs[k] = Math.max(rowMax[i], colMax[j]) + 1;
+                ans = Math.max(ans, fs[k]);
             }
             for (int k = 0; k < pos.size(); k++) {
                 int[] p = pos.get(k);
                 int i = p[0];
                 int j = p[1];
-                rowMax[i] = Math.max(rowMax[i], mx[k]); // 更新第 i 行的最大 f 值
-                colMax[j] = Math.max(colMax[j], mx[k]); // 更新第 j 列的最大 f 值
+                rowMax[i] = Math.max(rowMax[i], fs[k]); // 更新第 i 行的最大 f 值
+                colMax[j] = Math.max(colMax[j], fs[k]); // 更新第 j 列的最大 f 值
             }
         }
         return ans;
@@ -105,14 +106,15 @@ public:
 
         vector<int> row_max(m), col_max(n);
         for (auto& [_, pos] : g) {
-            vector<int> mx; // 先把最大值算出来，再更新 row_max 和 col_max
+            // 先把所有 f 值都算出来，再更新 row_max 和 col_max
+            vector<int> fs;
             for (auto& [i, j] : pos) {
-                mx.push_back(max(row_max[i], col_max[j]) + 1);
+                fs.push_back(max(row_max[i], col_max[j]) + 1);
             }
             for (int k = 0; k < pos.size(); k++) {
                 auto& [i, j] = pos[k];
-                row_max[i] = max(row_max[i], mx[k]); // 更新第 i 行的最大 f 值
-                col_max[j] = max(col_max[j], mx[k]); // 更新第 j 列的最大 f 值
+                row_max[i] = max(row_max[i], fs[k]); // 更新第 i 行的最大 f 值
+                col_max[j] = max(col_max[j], fs[k]); // 更新第 j 列的最大 f 值
             }
         }
         return ranges::max(row_max);
@@ -139,13 +141,14 @@ func maxIncreasingCells(mat [][]int) int {
     colMax := make([]int, len(mat[0]))
     for _, x := range keys {
         pos := g[x]
-        mx := make([]int, len(pos))
+        // 先把所有 f 值都算出来，再更新 rowMax 和 colMax
+        fs := make([]int, len(pos))
         for i, p := range pos {
-            mx[i] = max(rowMax[p.x], colMax[p.y]) + 1 // 先把最大值算出来，再更新 rowMax 和 colMax
+            fs[i] = max(rowMax[p.x], colMax[p.y]) + 1
         }
         for i, p := range pos {
-            rowMax[p.x] = max(rowMax[p.x], mx[i]) // 更新第 p.x 行的最大 f 值
-            colMax[p.y] = max(colMax[p.y], mx[i]) // 更新第 p.y 列的最大 f 值
+            rowMax[p.x] = max(rowMax[p.x], fs[i]) // 更新第 p.x 行的最大 f 值
+            colMax[p.y] = max(colMax[p.y], fs[i]) // 更新第 p.y 列的最大 f 值
         }
     }
     return slices.Max(rowMax)
