@@ -15,9 +15,9 @@ func cf1950F(in io.Reader, out io.Writer) {
 			continue
 		}
 		h := bits.Len(uint(a))
-		b -= 1<<h - 1 - a
+		b -= 1<<h - c
 		if b > 0 {
-			h += (b + a) / (a + 1)
+			h += (b-1)/c + 1
 		}
 		Fprintln(out, h)
 	}
