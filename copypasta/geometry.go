@@ -52,6 +52,7 @@ https://en.wikipedia.org/wiki/Determinant#Geometric_meaning
 - b在a右侧
 0 ab平行或重合（共基线）
 关于有向面积 https://cp-algorithms.com/geometry/oriented-triangle-area.html
+https://codeforces.com/gym/105139/problem/B
 
 1° = (π/180)rad
 1rad = (180/π)°
@@ -97,8 +98,9 @@ TIPS: 旋转坐标
 顺时针旋转 45° (x,y) -> (x+y,y-x) 记作 (x',y')
 曼哈顿距离转成切比雪夫距离（棋盘距离） |x1-x2|+|y1-y2| = max(|x1'-x2'|,|y1'-y2'|)
 模板题 https://atcoder.jp/contests/abc178/tasks/abc178_e
-https://leetcode.cn/problems/minimize-manhattan-distances/
-https://codeforces.com/problemset/problem/1689/D
+LC3102 https://leetcode.cn/problems/minimize-manhattan-distances/ 2216
+https://codeforces.com/problemset/problem/1689/D 1900
+https://codeforces.com/problemset/problem/1979/E 2400
 https://www.luogu.com.cn/problem/P5098
 todo LC1956 https://leetcode.cn/problems/minimum-time-for-k-virus-variants-to-spread/
 点到点集的最大曼哈顿距离 https://codeforces.com/problemset/problem/491/B

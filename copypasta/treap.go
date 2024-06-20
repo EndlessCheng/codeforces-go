@@ -18,8 +18,9 @@ todo Merging treaps https://codeforces.com/blog/entry/108601
 
 模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
-较为复杂的维护 https://codeforces.com/problemset/problem/85/D
-离线+lowerbound+delete https://atcoder.jp/contests/abc245/tasks/abc245_e
+https://codeforces.com/problemset/problem/85/D 较为复杂的维护
+https://atcoder.jp/contests/abc245/tasks/abc245_e 离线+lowerbound+delete
+https://atcoder.jp/contests/abc356/tasks/abc356_f 维护关键位置
 */
 
 // 用 GoLand 的话强烈建议加入到 Live Templates 中，比赛时直接敲快捷键

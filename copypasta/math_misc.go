@@ -21,4 +21,6 @@ x = (b/a)*W((a/b)*e^(-c/b))
 LC2749 https://leetcode.cn/problems/minimum-operations-to-make-the-integer-zero/
 
 一元五次方程的根 布灵根式 Bring radical https://en.wikipedia.org/wiki/Bring_radical
+
+带余项的泰勒公式、欧拉-麦克劳林公式的推导 https://zhuanlan.zhihu.com/p/148221397
 */

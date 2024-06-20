@@ -10,7 +10,7 @@ import "math/bits"
 // https://www.luogu.com.cn/problem/P2572
 // https://codeforces.com/contest/1705/problem/E
 // https://codeforces.com/problemset/problem/877/E
-// http://codeforces.com/problemset/problem/145/E 2400
+// https://codeforces.com/problemset/problem/145/E 2400
 type seg01 []struct {
 	l, r int
 	ones int // EXTRA: 1 的个数

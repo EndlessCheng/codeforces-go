@@ -20,6 +20,9 @@ import (
 小奥
 https://codeforces.com/problemset/problem/700/A
 
+原地哈希
+LC442 https://leetcode.cn/problems/find-all-duplicates-in-an-array/
+
 三维 n 皇后 https://oeis.org/A068940
 Maximal number of chess queens that can be placed on a 3-dimensional chessboard of order n so that no two queens attack each other
 
@@ -899,83 +902,6 @@ func champernowneConstant(k int) int {
 	}
 }
 
-// 解析时间 力扣见过多次了
-func parseTime(s string) (hour, minute, total int) {
-	hour = int(s[0]&15)*10 + int(s[1]&15)
-	minute = int(s[3]&15)*10 + int(s[4]&15)
-	total = hour*60 + minute
-	return
-}
-
-// 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
-// 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
-// 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
-// - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
-// - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
-// - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/) 1632
-// - [2963. 统计好分割方案的数目](https://leetcode.cn/problems/count-the-number-of-good-partitions/) 1985
-// - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/) 2159
-// - [2655. 寻找最大长度的未覆盖区间](https://leetcode.cn/problems/find-maximal-uncovered-ranges/)（会员题）
-// 另见 common.go 中的「区间贪心」
-// https://codeforces.com/problemset/problem/1626/C 1700
-// - 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
-// https://codeforces.com/problemset/problem/1859/D 1800
-// https://codeforces.com/problemset/problem/1260/D 1900
-func mergeIntervals(a [][]int) [][]int {
-	slices.SortFunc(a, func(a, b []int) int { return a[0] - b[0] }) // 按区间左端点排序
-	merged := [][]int{}
-	l0 := a[0][0]
-	maxR := a[0][1]
-	for _, p := range a[1:] { // 从第二个区间开始
-		l, r := p[0], p[1]
-		// 如果要合并 [1,1] 和 [2,2]，下面改成 if l-1 > maxR
-		if l > maxR { // 发现一个新区间
-			merged = append(merged, []int{l0, maxR}) // 先把旧的加入答案
-			l0 = l                                   // 记录新区间左端点
-		}
-		maxR = max(maxR, r)
-	}
-	merged = append(merged, []int{l0, maxR}) // 最后发现的新区间加入答案
-
-	{
-		// 包含 x 的闭区间
-		var x int
-		i := sort.Search(len(merged), func(i int) bool { return merged[i][1] >= x })
-		if i < len(merged) && merged[i][0] <= x {
-			// ans[i]...
-		}
-	}
-
-	return merged
-}
-
-// 从 i 可以跳到 [i,i+a[i]] 中的任意整点
-// 返回从 0 跳到 n-1 的最小跳跃次数
-// 如果无法到达 n-1，返回 -1
-// 注：对于复杂变形题，采用分组循环不易写错
-// - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
-// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/) 1746
-// - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/) 1885
-// 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
-// 变形 https://codeforces.com/contest/1630/problem/C
-func minJumpNumbers(a []int) (ans int) {
-	curR := 0 // 已建造的桥的右端点
-	nxtR := 0 // 下一座桥的右端点的最大值
-	// 这里没有遍历到 n-1，因为它已经是终点了
-	for i, d := range a[:len(a)-1] {
-		r := i + d
-		nxtR = max(nxtR, r)
-		if i == curR { // 到达已建造的桥的右端点
-			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
-				return -1
-			}
-			curR = nxtR // 建造下一座桥
-			ans++
-		}
-	}
-	return
-}
-
 // 摩尔投票法求绝对众数（absolute mode, majority）
 // Boyer–Moore majority vote algorithm
 // https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
@@ -1222,4 +1148,89 @@ func makeLexicographicallySmallestStringBySwappingAdjacentElements2(a []int) []i
 		}
 	}
 	return ans
+}
+
+// 解析时分
+// - [1736. 替换隐藏数字得到的最晚时间](https://leetcode.cn/problems/latest-time-by-replacing-hidden-digits/) 1264
+// - [3114. 替换字符可以得到的最晚时间](https://leetcode.cn/problems/latest-time-you-can-obtain-after-replacing-characters/) 1291
+// - [2224. 转化时间需要的最少操作数](https://leetcode.cn/problems/minimum-number-of-operations-to-convert-time/) 1296
+// - [2933. 高访问员工](https://leetcode.cn/problems/high-access-employees/) 1537
+// 解析月日：LC2409 https://leetcode.cn/problems/count-days-spent-together/
+func parseTime(s string) (hour, minute, total int) {
+	hour = int(s[0]&15)*10 + int(s[1]&15)
+	minute = int(s[3]&15)*10 + int(s[4]&15)
+	total = hour*60 + minute
+	return
+}
+
+// 从 i 可以跳到 [i,i+a[i]] 中的任意整点
+// 返回从 0 跳到 n-1 的最小跳跃次数
+// 如果无法到达 n-1，返回 -1
+// 注：对于复杂变形题，采用分组循环不易写错
+// - [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)
+// - [1024. 视频拼接](https://leetcode.cn/problems/video-stitching/) 1746
+// - [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/) 1885
+// 【图解】https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/
+// https://codeforces.com/problemset/problem/1630/C 2200 变形 
+// https://codeforces.com/problemset/problem/1066/B 1500 这题其实不算，但如果每个加热器的 r 不同，就是跳跃游戏 II 了
+func minJumpNumbers(a []int) (ans int) {
+	curR := 0 // 已建造的桥的右端点
+	nxtR := 0 // 下一座桥的右端点的最大值
+	// 这里没有遍历到 n-1，因为它已经是终点了
+	for i, d := range a[:len(a)-1] {
+		r := i + d
+		nxtR = max(nxtR, r)
+		if i == curR { // 到达已建造的桥的右端点
+			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
+				return -1
+			}
+			curR = nxtR // 建造下一座桥
+			ans++
+		}
+	}
+	return
+}
+
+// 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
+// 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
+// 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
+// - [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
+// - [55. 跳跃游戏](https://leetcode.cn/problems/jump-game/)
+// - [763. 划分字母区间](https://leetcode.cn/problems/partition-labels/) 1443
+// - [3169. 无需开会的工作日](https://leetcode.cn/problems/count-days-without-meetings/) ~1500
+// - [2580. 统计将重叠区间合并成组的方案数](https://leetcode.cn/problems/count-ways-to-group-overlapping-ranges/) 1632
+// - [2963. 统计好分割方案的数目](https://leetcode.cn/problems/count-the-number-of-good-partitions/) 1985
+// - [2584. 分割数组使乘积互质](https://leetcode.cn/problems/split-the-array-to-make-coprime-products/) 2159
+// - [2655. 寻找最大长度的未覆盖区间](https://leetcode.cn/problems/find-maximal-uncovered-ranges/)（会员题）
+// 另见 common.go 中的「区间贪心」
+// https://codeforces.com/problemset/problem/1626/C 1700
+// - 倒序合并代码 https://codeforces.com/contest/1626/submission/211306494
+// https://codeforces.com/problemset/problem/1859/D 1800
+// https://codeforces.com/problemset/problem/1260/D 1900
+func mergeIntervals(a [][]int) [][]int {
+	slices.SortFunc(a, func(a, b []int) int { return a[0] - b[0] }) // 按区间左端点排序
+	merged := [][]int{}
+	l0 := a[0][0]
+	maxR := a[0][1]
+	for _, p := range a[1:] { // 从第二个区间开始
+		l, r := p[0], p[1]
+		// 如果要合并 [1,1] 和 [2,2]，下面改成 if l-1 > maxR
+		if l > maxR { // 发现一个新区间
+			merged = append(merged, []int{l0, maxR}) // 先把旧的加入答案
+			l0 = l                                   // 记录新区间左端点
+		}
+		maxR = max(maxR, r)
+	}
+	merged = append(merged, []int{l0, maxR}) // 最后发现的新区间加入答案
+
+	{
+		// 包含 x 的闭区间
+		var x int
+		i := sort.Search(len(merged), func(i int) bool { return merged[i][1] >= x })
+		if i < len(merged) && merged[i][0] <= x {
+			// ans[i]...
+		}
+	}
+
+	return merged
 }

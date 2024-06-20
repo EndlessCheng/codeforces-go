@@ -11,7 +11,9 @@ import (
 
 // bufio.NewWriter
 // 相比 fmt.Println，每减少 1e5 次 Flush 可以加速约 200ms（Codeforces/AtCoder）
-// 对比：
+// 也就是说，对于 1e4 及以下量级的输出，加不加 buffer 都一样，所以直接用 fmt.Println 输出即可
+// 注：大多数 CF 题目都是 T <= 1e4 的
+// 附对比：
 // 405ms https://codeforces.com/contest/1603/submission/135520593
 // 187ms https://codeforces.com/contest/1603/submission/134450945
 // NOTE: 调用 Fprintln 打印 int(0)   1e6 次的耗时为 77ms https://codeforces.com/contest/1603/submission/169796327

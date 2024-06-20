@@ -34,9 +34,10 @@ https://codeforces.com/problemset/problem/1196/F 2200
 #### 懒删除
 本页面搜索【懒删除堆】
 
-#### 模拟 
+#### 模拟
 - [2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/) 2589
-https://codeforces.com/contest/1945/problem/G
+https://codeforces.com/problemset/problem/1985/F
+https://codeforces.com/problemset/problem/1945/G 2500
 
 #### 思维·转换
 - [2054. 两个最好的不重叠活动](https://leetcode.cn/problems/two-best-non-overlapping-events/) 1883
@@ -75,7 +76,7 @@ https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 - [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
    - JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053
 - [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/) 2074
-- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582
+- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582 也可以用栈
 - [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 题单 https://www.luogu.com.cn/training/8793

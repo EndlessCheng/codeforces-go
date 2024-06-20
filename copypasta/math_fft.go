@@ -34,6 +34,7 @@ todo https://github.com/OI-wiki/gitment/discussions/670#discussioncomment-449602
 模板题 https://www.luogu.com.cn/problem/P3803
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
 todo https://codeforces.com/problemset/problem/993/E
+ https://codeforces.com/gym/104081/problem/K
 */
 
 type fft struct {

@@ -11,7 +11,7 @@ import (
 只有启发式合并（按深度合并）的并查集的复杂度也是 O(nlogn) 的，适用于可持久化的场景
 
 只有路径压缩的并查集，可以构造一棵二项树（binomial tree）
-结合图片讲解 https://en.wikipedia.org/wiki/Binomial_heap
+结合图片讲解 https://upload.wikimedia.org/wikipedia/commons/c/cf/Binomial_Trees.svg (https://en.wikipedia.org/wiki/Binomial_heap)
 每次把二项树的根节点连到一个新的孤立点上，然后对最深的点调用 find
 这样可以得到一棵几乎一样的树（区别仅仅是根节点多了一个儿子）
 所以，只要重复上述过程，就可以让每次 find 都是 O(logn) 级别的了
@@ -43,9 +43,16 @@ https://zhuanlan.zhihu.com/p/553192435
 // 转换 https://atcoder.jp/contests/abc304/tasks/abc304_e
 // 转换 https://atcoder.jp/contests/abc238/tasks/abc238_e
 // merge 后 from 还有用 https://atcoder.jp/contests/abc279/tasks/abc279_f
+// 处理图上的环 https://codeforces.com/contest/1726/problem/D
 //
-// 处理图上的环
-// - https://codeforces.com/contest/1726/problem/D
+// 质因子并查集 GCD>1 并查集
+// 预处理质因子（见 math.go 中的 primeDivisorsAll）
+// 枚举 a[i] 的质因子 p，用 pre[p] 记录质因子上一次出现的下标（初始化成 -1），然后 merge(i, pre[p]) if pre[p] > 0
+// - [2709. 最大公约数遍历](https://leetcode.cn/problems/greatest-common-divisor-traversal/) 2172
+// - [1627. 带阈值的图连通性](https://leetcode.cn/problems/graph-connectivity-with-threshold/) 2221
+// - [952. 按公因数计算最大组件大小](https://leetcode.cn/problems/largest-component-size-by-common-factor/) 2272
+//       下标距离有上界 https://codeforces.com/contest/1978/problem/F
+// - [1998. 数组的最大公因数排序](https://leetcode.cn/problems/gcd-sort-of-an-array/) 2429
 //
 // 数组标记/区间合并相关
 // - 经典模型是一维区间覆盖染色，通过倒序+并查集解决
@@ -298,6 +305,7 @@ func _(n int) {
 }
 
 // 用并查集实现有序集合的删除、查找前驱和查找后继
+// 无法构造一棵二项树，单次操作均摊复杂度是 O(1) 的
 // LC https://leetcode.cn/problems/block-placement-queries/
 type delUf struct {
 	left  []int
@@ -441,23 +449,24 @@ func _(n int) {
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-11
 // https://cp-algorithms.com/data_structures/disjoint_set_union.html#toc-tgt-12
 // https://oi-wiki.org/ds/dsu/#_9
-// 模板题 https://codeforces.com/contest/1850/problem/H
-//       https://codeforces.com/problemset/problem/1074/D 
+//
+// 模板题 https://codeforces.com/problemset/problem/1850/H 1700
+//       https://codeforces.com/problemset/problem/1074/D 2400? 1700!
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/D
-// 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D
-// 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D
+// 种类并查集：狼人和平民 https://codeforces.com/problemset/problem/1594/D 1700
+// 种类并查集：同义词反义词 https://codeforces.com/problemset/problem/766/D 2000
 // 种类并查集：食物链 https://www.luogu.com.cn/problem/P2024
 // 种类并查集：不能构成二分图的第一条边 https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/J
-// 种类并查集 + 维护集合大小 https://codeforces.com/problemset/problem/1290/C
+// 种类并查集 + 维护集合大小 https://codeforces.com/problemset/problem/1290/C 2400
 // todo https://codeforces.com/contest/1615/problem/D
 //      https://codeforces.com/contest/1713/problem/E
 // 边权：https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
 // 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
 //      LC2307 https://leetcode.cn/problems/check-for-contradictions-in-equations/ 也可以 DFS
-// https://codeforces.com/problemset/problem/1788/F
+// https://codeforces.com/problemset/problem/1788/F 2500
 func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加减法
-	const kinds = 2
+	const kinds = 3
 	fa := make([]int, n) // n+1
 	for i := range fa {
 		fa[i] = i
@@ -472,8 +481,11 @@ func _(n int) {
 		}
 		return fa[x]
 	}
-	// 调用前需要保证 same(x, y) 为 true
+	same := func(x, y int) bool { return find(x) == find(y) }
 	delta := func(x, y int) int {
+		if !same(x, y) { // 如果题目保证 same，则可以去掉
+			return -1
+		}
 		find(x)
 		find(y)
 		return ((dis[x]-dis[y])%kinds + kinds) % kinds
@@ -486,7 +498,6 @@ func _(n int) {
 		}
 		return delta(from, to) == d
 	}
-	same := func(x, y int) bool { return find(x) == find(y) }
 
 	// 统计每个集合中各个类型的个数
 	cnt := make([][kinds]int, len(fa))
@@ -600,6 +611,7 @@ func (o *pufNode) merge(x, y int) *pufNode {
 // https://loj.ac/p/121
 // https://atcoder.jp/contests/abc302/tasks/abc302_h （基于 https://atcoder.jp/contests/arc111/tasks/arc111_b）
 // todo https://codeforces.com/contest/891/problem/C
+//  https://codeforces.com/problemset/problem/1217/F
 //  https://codeforces.com/contest/1681/problem/F
 // todo Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
