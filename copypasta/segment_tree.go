@@ -27,10 +27,28 @@ import "math/bits"
 // func init() { debug.SetGCPercent(-1) }
 
 // 模板（单点修改、区间查询）https://www.luogu.com.cn/problem/P2068
-// 最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
-// 最大子段和 https://www.luogu.com.cn/problem/P4513 
-// - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
-// 最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 (https://www.luogu.com.cn/contest/42328)
+
+/*
+如果一个题目可以用分治解决，那么这个题目的带修改版本可以用线段树解决
+
+带修最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
+带修最大子段和 https://www.luogu.com.cn/problem/P4513
+- https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
+带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
+带修打家劫舍 https://www.luogu.com.cn/problem/P3097
+- LC https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
+*/
+
+// 势能线段树：区间开方、区间取模、区间 GCD 一个数，都是可以暴力更新的
+// 关于线段树上的一些进阶操作 https://www.luogu.com/article/aentaeud
+// 区间开方见 CF920F
+// 区间取模见 CF438D
+// 区间 GCD 一个数见 https://www.luogu.com.cn/problem/P9989 https://www.cnblogs.com/Athanasy/p/17940070
+// https://www.luogu.com.cn/problem/P10516
+// 另见吉老师线段树 Segment Tree Beats https://www.luogu.com.cn/problem/P6242 【模板】线段树 3（区间最值操作、区间历史最值）
+// 另见 Kinetic Tournament 树 (KTT) https://www.luogu.com.cn/problem/P5693
+// https://www.luogu.com.cn/problem/P10587
+
 // GCD https://codeforces.com/problemset/problem/914/D 1900
 // 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C 2000
 // 最值及其下标 https://codeforces.com/contest/474/problem/E 2000
@@ -169,8 +187,13 @@ i/n    n i range
 3.9941 1049600 4192257 [1048577,1048577]
 */
 
+// 线段树有两个下标，一个是线段树底层数组的下标，一个是线段树维护的区间的下标。
+// 底层数组的下标：一般是从 1 开始的，从 0 开始也可以，把左右子树下标改成 2*i+1 和 2*i+2 就行。下面的代码从 1 开始。
+// 线段树维护的区间的下标：这个其实无所谓，从 0 从 1 开始都可以。下面的代码从 0 开始。
+
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
+// 如果想记录最值及其下标，可以把 val 的类型改成 pair
 type seg []struct {
 	l, r int
 	val  int // info
@@ -231,9 +254,9 @@ func (t seg) query(o, l, r int) int {
 	if m < l {
 		return t.query(o<<1|1, l, r)
 	}
-	vl := t.query(o<<1, l, r)
-	vr := t.query(o<<1|1, l, r)
-	return t.mergeInfo(vl, vr)
+	lRes := t.query(o<<1, l, r)
+	rRes := t.query(o<<1|1, l, r)
+	return t.mergeInfo(lRes, rRes)
 }
 
 func (t seg) queryAll() int { return t[1].val }
@@ -349,7 +372,7 @@ func newSegmentTree(a []int) seg {
 // 注：区间赋值（=x）可以看成是先 *0 再 +x
 // 三维向量 * + 交换 ∑^2 http://118.190.20.162/view.page?gpid=T119（需要注册 CCF）
 //
-// 吉老师线段树 Segment Tree Beats
+// 吉老师线段树 吉司机线段树 Segment Tree Beats (Seg-beats)
 // todo https://oi-wiki.org/ds/seg-beats/
 //  https://codeforces.com/blog/entry/57319
 //  区间最值操作与区间历史最值详解 https://www.luogu.com.cn/blog/Hakurei-Reimu/seg-beats
@@ -432,9 +455,9 @@ func (t lazySeg) query(o, l, r int) int {
 	if m < l {
 		return t.query(o<<1|1, l, r)
 	}
-	vl := t.query(o<<1, l, r)
-	vr := t.query(o<<1|1, l, r)
-	return t.mergeInfo(vl, vr)
+	lRes := t.query(o<<1, l, r)
+	rRes := t.query(o<<1|1, l, r)
+	return t.mergeInfo(lRes, rRes)
 }
 
 func (t lazySeg) queryAll() int { return t[1].sum }
@@ -506,6 +529,7 @@ func (t lazySeg) spreadAll(o int) {
 // LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/ 1533
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 // todo https://codeforces.com/problemset/problem/1614/E 2600
+// https://atcoder.jp/contests/abc351/tasks/abc351_f
 // 树套树见 fenwick_tree.go
 const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
@@ -655,7 +679,9 @@ func (o *lazyNode) query(l, r int) int {
 		return o.sum
 	}
 	o.spread()
-	return o.op(o.lo.query(l, r), o.ro.query(l, r))
+	lRes := o.lo.query(l, r)
+	rRes := o.ro.query(l, r)
+	return o.op(lRes, rRes)
 }
 
 // EXTRA: 线段树合并
