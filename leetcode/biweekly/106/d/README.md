@@ -1,34 +1,22 @@
-## 预备知识
+由于矩阵元素值只有 $0$ 和 $1$，对于矩阵的每一行，把这一行看成一个二进制数。
 
-为方便描述，对于每一行，把这一行的 $1$ 的**列号**保存到集合中。例如这一行是 $[1,0,1,1]$，其中 $1$ 的列号集合为 $\{0,2,3\}$，等价于二进制数 $1101_{(2)}$。
+- 如果答案只有 $1$ 行，根据题目要求，每一列的和至多为 $\left\lfloor 1/2 \right\rfloor = 0$，也就是这一行必须全为 $0$。
+- 如果答案有 $2$ 行，每一列的和至多为 $\left\lfloor 2/2 \right\rfloor = 1$，所以同一列至多有一个 $1$，不能有两个 $1$。从二进制角度来理解，就是这两行对应二进制数的 AND 等于 $0$。
+- 如果答案有 $3$ 行，每一列的和至多为 $\left\lfloor 3/2 \right\rfloor = 1$，这和 $2$ 行的情况是一样的。如果可以选 $3$ 行，那么必然也可以选 $2$ 行，所以无需考虑答案有 $3$ 行的情况。
+- 如果答案有 $4$ 行，下面细说。
 
-两个集合有交集，等价于对应的二进制数的 AND 不为 $0$。
+⚠**注意**：以下讨论的前提是，不存在小于 $4$ 行的答案。
 
-关于集合与位运算的知识点，请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+如果答案有 $4$ 行，则有如下性质：
 
-## 分类讨论
+**性质一**：每一列的和至多为 $\left\lfloor 4/2 \right\rfloor = 2$。
 
-1. 如果答案只有 $1$ 行，根据题目要求，每一列的和至多为 $\left\lfloor 1/2 \right\rfloor = 0$，也就是这一行必须全为 $0$。
-2. 如果答案有 $2$ 行，每一列的和至多为 $\left\lfloor 2/2 \right\rfloor = 1$，所以同一列至多有一个 $1$，不能有两个 $1$。从二进制角度来理解，就是这两行 AND 的结果等于 $0$。
-3. 如果答案有 $3$ 行，每一列的和至多为 $\left\lfloor 3/2 \right\rfloor = 1$，这和 $2$ 行的情况是一样的。如果可以选 $3$ 行，那么必然也可以选 $2$ 行，所以无需考虑答案有 $3$ 行的情况。
-4. **假定上面的情况都不存在答案**。如果答案有 $4$ 行，每一列的和至多为 $\left\lfloor 4/2 \right\rfloor = 2$，且任意两行的 AND 均不为 $0$（否则答案可以是 $2$ 行）。不妨设第一行的 $1$ 的个数最少，继续分类讨论。请大家拿出纸笔，当成一个类似**数独**的游戏来玩，考虑其他行怎么填数字（假定列数 $n=5$）：
-   1. 如果第一行是 $10000$，由于任意两行的 AND 均不为 $0$，其他行的第一列必须填 $1$。但这样的话，第一列的数字和等于 $4$，不符合要求。
-   2. 如果第一行是 $11000$，其他行前两列至少要有一个 $1$，那么第二行可以是 $10\texttt{\_\_\_}$，第三行可以是 $01\texttt{\_\_\_}$，但第四行无论怎么填，都会导致有一列的和超过 $2$，不符合要求。
-   3. 对于第一行至少有 $3$ 个 $1$ 的情况，由于第一行的 $1$ 的个数最少，所以这 $4$ 行一共有至少 $3\cdot 4=12$ 个 $1$。但同时，由于每列至多允许有 $2$ 个 $1$，总共至多允许有 $2n=2\cdot 5 = 10$ 个 $1$，由于 $12>10$，所以不满足要求。
-5. 如果答案超过 $4$ 行，类似上面的方法，可以证明答案是不存在的。
-
-因此，**答案至多两行**。
-
-## 算法
-
-1. 把每一行的 $1$ 的**列号**，保存到一个二进制数中。
-2. 由于至多有 $2^n\le 32$ 个不同的二进制数，而行数 $m\le 10^4$ 远大于 $32$，所以可以把二进制数去重，保存到一个哈希表 $\textit{maskToIdx}$ 中，key 为二进制数，value 为行号。
-3. 如果有一行全为 $0$，返回这一行的行号。
-4. 否则，写一个二重循环，枚举从 $\textit{maskToIdx}$ 中选两个 key 的所有组合，如果有两行的二进制数的 AND 的结果等于 $0$，返回这两行的行号。
-
-## 注
-
-本题 $n$ 至多为 $5$，而当 $n=6$ 时，存在如下合法构造：
+**性质二**：**任意** $2$ 行的 AND 均不为 $0$（否则答案可以是 $2$ 行）。任意是什么意思？第一行和第二行的 AND 不为 $0$、第一行和第三行的 AND 不为 $0$、第一行和第四行的 AND 不为 $0$、第二行和第三行的 AND 不为 $0$、第二行和第四行的 AND 不为 $0$、第三行和第四行的 AND 不为 $0$。一共有 $C(4,2)=6$ 个约束。
+   
+- 第一行和第二行的 AND 不为 $0$，根据性质二，其中一列（不妨设为第一列）的第一行和第二行都是 $1$，结合性质一，这一列的第三行和第四行都是 $0$。所以这一列从上到下是 $1100$。
+- 第一行和第三行的 AND 不为 $0$，根据性质二，其中一列（不妨设为第二列）的第一行和第三行都是 $1$，结合性质一，这一列的第二行和第四行都是 $0$。所以这一列从上到下是 $1010$。
+- ……
+- 依此类推，有 $C(4,2)=6$ 种选择两行的方式，且**包含两个** $1$ **的列互不相同**。如果列数 $n$ 可以等于 $6$，则存在如下合法构造：
 
 $$
 111000\\
@@ -37,11 +25,37 @@ $$
 001011
 $$
 
-此时就要考虑 $4$ 行的情况了。
+但本题 $n$ 至多为 $5$，无法满足。比如只考虑前 $5$ 列，那么在上述构造中，只需选择第三行和第四行，因为这两行的 AND 为 $0$。
 
-请看 [视频讲解](https://www.bilibili.com/video/BV18u411Y7Gt/) 第四题。
+继续讨论，如果答案有 $k$ 行（$k>4$）且不存在小于 $k$ 行的答案，类似地，有如下性质：
 
-## 优化前
+**性质一**：每一列的和至多为 $\left\lfloor k/2 \right\rfloor$。
+
+**性质二**：任意 $k-2$ 行，必定存在一列，其元素和大于 $\left\lfloor (k-2)/2 \right\rfloor$，即大于等于 $\left\lfloor k/2 \right\rfloor$。
+
+结合这两个性质，从 $k$ 行中任选 $k-2$ 行，一定存在一列，其元素和恰好等于 $\left\lfloor k/2 \right\rfloor$。
+
+根据前文 $k=4$ 的讨论，我们需要至少 $C(k,k-2)$ 个互不相同的列。
+
+但当 $k\ge 4$ 时，有
+
+$$
+C(k,k-2)=C(k,2)\ge C(4,2)=6 > n
+$$
+
+无法满足。
+
+综上所述，在 $n\le 5$ 的数据范围下，只需考虑答案为 $1$ 行或者 $2$ 行的情况（$3$ 行的情况转换成 $2$ 行），如果不存在 $1$ 行和 $2$ 行的答案，则无解。
+
+## 算法
+
+1. 遍历每一行，从左到右，算出一个长为 $n$ 的二进制数。
+2. 由于至多有 $2^n\le 32$ 个不同的二进制数，而行数 $m\le 10^4$ 远大于 $32$，所以可以把二进制数去重，保存到一个哈希表 $\textit{maskToIdx}$ 中，key 为二进制数，value 为行号。
+3. 如果有一行全为 $0$，返回这一行的行号。
+4. 否则，写一个二重循环，枚举从 $\textit{maskToIdx}$ 中选两个数的所有组合，如果有两个数的 AND 等于 $0$，返回对应的行号。注意题目要求按**升序**返回。
+5. 如果无解，返回空数组。
+
+## 方法一
 
 ```py [sol-Python3]
 class Solution:
@@ -136,10 +150,7 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 	for x, i := range maskToIdx {
 		for y, j := range maskToIdx {
 			if x&y == 0 {
-				if i < j {
-					return []int{i, j}
-				}
-				return []int{j, i}
+				return []int{min(i, j), max(i, j)}
 			}
 		}
 	}
@@ -152,13 +163,13 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 - 时间复杂度：$\mathcal{O}(mn+4^n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(2^n)$。至多有 $2^n$ 个不同的二进制数。
 
-## 优化
+## 方法二
 
 用长为 $2^n$ 的数组代替哈希表，数组元素初始化成 $-1$。
 
 对于二重循环，由于 $x$ 和 $y$ 没有交集，可以直接枚举 $x$ 的补集的非空子集作为 $y$。
 
-原理请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+如何枚举一个集合的子集？请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
 ```py [sol-Python3]
 class Solution:
@@ -281,11 +292,9 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 		}
 		c := u ^ x
 		for y := c; y > 0; y = (y - 1) & c {
-			if j := maskToIdx[y]; j >= 0 {
-				if i < j {
-					return []int{i, j}
-				}
-				return []int{j, i}
+			j := maskToIdx[y]
+			if j >= 0 {
+				return []int{min(i, j), max(i, j)}
 			}
 		}
 	}
@@ -296,6 +305,188 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn+3^n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。由于元素个数为 $k$ 的集合有 $C(n,k)$ 个，其子集有 $2^k$ 个，根据二项式定理，$\sum\limits_{k=0}^n C(n,k)2^k = (2+1)^n = 3^n$，所以二重循环的时间复杂度为 $O(3^n)$。
+- 空间复杂度：$\mathcal{O}(2^n)$。
+
+## 方法三：SOSDP（选读）
+
+⚠**提醒**：该方法为竞赛算法，阅读前最好有一些状压 DP 的经验。
+
+回顾方法二，相当于寻找一个**子集的子集** $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$。
+
+这可以用 **SOSDP**（Sum over Subsets Dynamic Programming）更快地计算出来。
+
+设全集 $U=\{0,1,2,\cdots,n-1\}$。
+
+设 $S$ 为 $U$ 的子集，$f[S]$ 定义如下：
+
+- 如果 $S$ 不存在子集 $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$，则 $f[S]=-1$。
+- 如果 $S$ 存在子集 $Y$，满足 $\textit{maskToIdx}[Y]\ge 0$，则 $f[S]$ 等于任意满足要求的 $\textit{maskToIdx}[Y]$。
+
+为方便编程，不妨取最大值，即定义
+
+$$
+f[S] = \max\limits_{Y\subseteq S} \textit{maskToIdx}[Y]
+$$
+
+先来说怎么用 $f[S]$ 计算答案。我们可以枚举 $U$ 的所有非空真子集 $S$，如果 $f[S]\ge 0$ 且 $\textit{maskToIdx}[\complement_US]\ge 0$，根据 $f$ 的定义，这意味着 $S$ 的某个子集的 $\textit{maskToIdx}$ 值和 $\complement_US$ 的 $\textit{maskToIdx}$ 值均为非负数，且这两个集合不相交，符合要求，返回答案。
+
+然后来说怎么递推计算 $f[S]$。我们可以枚举 $S$ 中的元素 $b$，从 $S$ 中去掉 $b$，问题规模变小，这样就可以递推计算了，即
+
+$$
+f[S] = \max\limits_{b\in S} f[S\setminus \{b\}]
+$$
+
+初始值 $f[i] = \textit{maskToIdx}[i]$。
+
+代码实现时，可以把 $\textit{maskToIdx}$ 去掉，直接在遍历 $\textit{grid}$ 的过程中初始化 $f$。
+
+```py [sol-Python3]
+class Solution:
+    def goodSubsetofBinaryMatrix(self, grid: List[List[int]]) -> List[int]:
+        n = len(grid[0])
+        f = [-1] * (1 << n)
+        for i, row in enumerate(grid):
+            mask = 0
+            for j, x in enumerate(row):
+                mask |= x << j
+            if mask == 0:
+                return [i]
+            f[mask] = i
+
+        u = (1 << n) - 1
+        for s in range(1, u):
+            for b in range(n):
+                if (s >> b & 1) == 0:
+                    continue
+                i = f[s] = max(f[s], f[s ^ (1 << b)])
+                if i < 0:
+                    continue
+                j = f[u ^ s]
+                if j >= 0:
+                    return sorted((i, j))
+        return []
+```
+
+```java [sol-Java]
+class Solution {
+    public List<Integer> goodSubsetofBinaryMatrix(int[][] grid) {
+        int n = grid[0].length;
+        int[] f = new int[1 << n];
+        Arrays.fill(f, -1);
+        for (int i = 0; i < grid.length; i++) {
+            int mask = 0;
+            for (int j = 0; j < n; j++) {
+                mask |= grid[i][j] << j;
+            }
+            if (mask == 0) {
+                return List.of(i);
+            }
+            f[mask] = i;
+        }
+
+        int u = (1 << n) - 1;
+        for (int s = 1; s < u; s++) {
+            for (int b = 0; b < n; b++) {
+                if ((s >> b & 1) == 0) {
+                    continue;
+                }
+                f[s] = Math.max(f[s], f[s ^ (1 << b)]);
+                int i = f[s];
+                if (i < 0) {
+                    continue;
+                }
+                int j = f[u ^ s];
+                if (j >= 0) {
+                    return i < j ? List.of(i, j) : List.of(j, i);
+                }
+            }
+        }
+        return List.of();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> goodSubsetofBinaryMatrix(vector<vector<int>>& grid) {
+        int n = grid[0].size();
+        vector<int> f(1 << n, -1);
+        for (int i = 0; i < grid.size(); i++) {
+            int mask = 0;
+            for (int j = 0; j < n; j++) {
+                mask |= grid[i][j] << j;
+            }
+            if (mask == 0) {
+                return {i};
+            }
+            f[mask] = i;
+        }
+
+        int u = (1 << n) - 1;
+        for (int s = 1; s < u; s++) {
+            for (int b = 0; b < n; b++) {
+                if ((s >> b & 1) == 0) {
+                    continue;
+                }
+                f[s] = max(f[s], f[s ^ (1 << b)]);
+                int i = f[s];
+                if (i < 0) {
+                    continue;
+                }
+                int j = f[u ^ s];
+                if (j >= 0) {
+                    return {min(i, j), max(i, j)};
+                }
+            }
+        }
+        return {};
+    }
+};
+```
+
+```go [sol-Go]
+func goodSubsetofBinaryMatrix(grid [][]int) []int {
+	n := len(grid[0])
+	f := make([]int, 1<<n)
+	for i := range f {
+		f[i] = -1
+	}
+	for i, row := range grid {
+		mask := 0
+		for j, x := range row {
+			mask |= x << j
+		}
+		if mask == 0 {
+			return []int{i}
+		}
+		f[mask] = i
+	}
+
+	u := 1<<n - 1
+	for s := 1; s < u; s++ {
+		for b := 0; b < n; b++ {
+			if s>>b&1 == 0 {
+				continue
+			}
+			f[s] = max(f[s], f[s^1<<b])
+			i := f[s]
+			if i < 0 {
+				continue
+			}
+			j := f[u^s]
+			if j >= 0 {
+				return []int{min(i, j), max(i, j)}
+			}
+		}
+	}
+	return nil
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn+n2^n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(2^n)$。
 
 ## 分类题单
