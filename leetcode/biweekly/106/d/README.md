@@ -326,7 +326,7 @@ $$
 f[S] = \max\limits_{Y\subseteq S} \textit{maskToIdx}[Y]
 $$
 
-先来说怎么用 $f[S]$ 计算答案。我们可以枚举 $U$ 的所有非空真子集 $S$，如果 $f[S]\ge 0$ 且 $\textit{maskToIdx}[\complement_US]\ge 0$，根据 $f$ 的定义，这意味着 $S$ 的某个子集的 $\textit{maskToIdx}$ 值和 $\complement_US$ 的 $\textit{maskToIdx}$ 值均为非负数，且这两个集合不相交，符合要求，返回答案。
+先来说怎么用 $f[S]$ 计算答案。我们可以枚举 $U$ 的所有非空真子集 $S$，如果 $f[S]\ge 0$ 且 $\textit{maskToIdx}[\complement_US]\ge 0$，根据 $f$ 的定义，这意味着 $S$ 的某个子集的 $\textit{maskToIdx}$ 值和补集 $\complement_US$ 的 $\textit{maskToIdx}$ 值均为非负数，且这两个集合不相交，符合要求，返回答案。
 
 然后来说怎么递推计算 $f[S]$。我们可以枚举 $S$ 中的元素 $b$，从 $S$ 中去掉 $b$，问题规模变小，这样就可以递推计算了，即
 
