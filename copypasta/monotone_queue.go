@@ -48,12 +48,14 @@ https://codeforces.com/problemset/problem/1584/E 2300
 - [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
-   - 反过来 https://codeforces.com/contest/1898/problem/B 1500
-https://codeforces.com/contest/1918/problem/D 1900
+   - 反过来 https://codeforces.com/problemset/problem/1898/B 1500
+https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/487/B 2000
-https://codeforces.com/contest/940/problem/E 2000
+https://codeforces.com/problemset/problem/940/E 2000
 https://codeforces.com/problemset/problem/1237/D 2000
 https://codeforces.com/problemset/problem/1077/F2 2100
+https://codeforces.com/problemset/problem/1216/F 2100
+https://codeforces.com/problemset/problem/797/F 2600
 https://www.luogu.com.cn/problem/P3572
 https://www.luogu.com.cn/problem/P3594
 https://www.luogu.com.cn/problem/P3957
