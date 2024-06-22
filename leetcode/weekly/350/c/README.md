@@ -1,210 +1,299 @@
-下午两点[【biIibiIi@灵茶山艾府】](https://space.bilibili.com/206214)直播讲题，不仅讲做法，还会教你如何一步步思考，记得关注哦~
+## 前言
 
----
+本题属于 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的状压 DP「排列型 ② 相邻相关」。
 
-## 前置知识：模运算
+如果你从未做过状压 DP，推荐先做一道「排列型 ① 相邻无关」的题目，例如 [526. 优美的排列](https://leetcode.cn/problems/beautiful-arrangement/)。
 
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+由于本题与 526 题类似，所以下面的内容，我会接着 [526 题解](https://leetcode.cn/problems/beautiful-arrangement/solution/jiao-ni-yi-bu-bu-si-kao-zhuang-ya-dpcong-c6kd/) 继续讲。
 
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+## 一、记忆化搜索
 
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
+相比 526（题解的第二种状态定义），本题需要额外知道上一个选的数的下标是多少，因此要多一个参数。
 
-你能把这个结论抽象成数学等式吗？
+定义 $\textit{dfs}(S,i)$ 表示在可以选的下标集合为 $S$，上一个选的数的下标是 $i$ 时，可以构造出多少个特别排列。
 
-一般地，涉及到取模的题目，通常会用到如下等式（上面计算的是 $m=10$）：
+枚举当前要选的数的下标 $j$，那么接下来要解决的问题是，在可以选的下标集合为 $S\setminus \{j\}$，上一个选的数的下标是 $j$ 时，可以构造出多少个特别排列。
 
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
+累加这些方案数，得
 
 $$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
+\textit{dfs}(S,i) = \sum_{j\in S} \textit{dfs}(S\setminus \{j\},j)
 $$
 
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
+其中 $j$ 满足 $\textit{nums}[j]\bmod \textit{nums}[i]=0$ 或 $\textit{nums}[i]\bmod \textit{nums}[j]=0$。
 
-第一个等式：
+**递归边界**：$\textit{dfs}(\varnothing,i) = 1$，表示找到了一个特别排列。
 
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
+**递归入口**：$\textit{dfs}(U\setminus \{i\},i)$，其中全集 $U=\{0,1,2,\cdots,n-1\}$。
 
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
-
-## 前置知识：位运算
-
-详见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
-
-## 前置知识：动态规划入门
-
-详见 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)
-
-## 思路
-
-仿照 [排列型回溯](https://www.bilibili.com/video/BV1mY411D7f6/) 的定义方式，我们需要知道当前还有哪些数（下标）可以选，以及上一个选的数（下标）是多少。
-
-定义 $\textit{dfs}(i,j)$ 表示当前可以选的下标集合为 $i$，上一个选的数的下标是 $j$ 时，可以构造出多少个特别排列。
-
-枚举当前要选的数的下标 $k$，如果 $\textit{nums}[k]$ 与 $\textit{nums}[j]$ 满足题目整除的要求，则
-
-$$
-\textit{dfs}(i,j) = \sum_{k\in i} \textit{dfs}(i\setminus \{k\},k)
-$$
-
-递归边界：$\textit{dfs}(0,j) = 1$，表示找到了一个特别排列。
-
-递归入口：$\textit{dfs}(U\setminus \{j\},j)$，其中全集 $U=\{0,1,2,\cdots,n-1\}$。枚举特别排列的第一个数的下标 $j$，累加所有 $\textit{dfs}(U\setminus \{j\},j)$，即为答案。
+枚举特别排列的第一个数的下标 $i$，累加所有 $\textit{dfs}(U\setminus \{i\},i)$，即为答案。
 
 ```py [sol-Python3]
 class Solution:
     def specialPerm(self, nums: List[int]) -> int:
-        MOD = 10 ** 9 + 7
         @cache
-        def dfs(i: int, j: int) -> int:
-            if i == 0: return 1  # 找到一个特别排列
+        def dfs(s: int, i: int) -> int:
+            if s == 0:
+                return 1  # 找到一个特别排列
             res = 0
-            for k, x in enumerate(nums):
-                if i >> k & 1 and (nums[j] % x == 0 or x % nums[j] == 0):
-                    res += dfs(i ^ (1 << k), k)
+            pre = nums[i]
+            for j, x in enumerate(nums):
+                if s >> j & 1 and (pre % x == 0 or x % pre == 0):
+                    res += dfs(s ^ (1 << j), j)
             return res
+
         n = len(nums)
-        return sum(dfs(((1 << n) - 1) ^ (1 << j), j) for j in range(n)) % MOD
+        u = (1 << n) - 1
+        return sum(dfs(u ^ (1 << i), i) for i in range(n)) % 1_000_000_007
+```
+
+```java [sol-Java]
+public class Solution {
+    public int specialPerm(int[] nums) {
+        int n = nums.length;
+        int u = (1 << n) - 1;
+        long[][] memo = new long[u][n];
+        for (long[] row : memo) {
+            Arrays.fill(row, -1); // -1 表示没有计算过
+        }
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += dfs(u ^ (1 << i), i, nums, memo);
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+
+    private long dfs(int s, int i, int[] nums, long[][] memo) {
+        if (s == 0) {
+            return 1; // 找到一个特别排列
+        }
+        if (memo[s][i] != -1) { // 之前计算过
+            return memo[s][i];
+        }
+        long res = 0;
+        for (int j = 0; j < nums.length; j++) {
+            if ((s >> j & 1) > 0 && (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0)) {
+                res += dfs(s ^ (1 << j), j, nums, memo);
+            }
+        }
+        return memo[s][i] = res; // 记忆化
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int specialPerm(vector<int>& nums) {
+        int n = nums.size(), u = (1 << n) - 1;
+        vector<vector<long long>> memo(u, vector<long long>(n, -1)); // -1 表示没有计算过
+        auto dfs = [&](auto&& dfs, int s, int i) -> long long {
+            if (s == 0) {
+                return 1; // 找到一个特别排列
+            }
+            auto& res = memo[s][i]; // 注意这里是引用
+            if (res != -1) { // 之前计算过
+                return res;
+            }
+            res = 0;
+            for (int j = 0; j < n; j++) {
+                if ((s >> j & 1) && (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0)) {
+                    res += dfs(dfs, s ^ (1 << j), j);
+                }
+            }
+            return res;
+        };
+        long long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += dfs(dfs, u ^ (1 << i), i);
+        }
+        return ans % 1'000'000'007;
+    }
+};
 ```
 
 ```go [sol-Go]
 func specialPerm(nums []int) (ans int) {
-	const mod int = 1e9 + 7
-	n := len(nums)
-	m := 1 << n
-	memo := make([][]int, m)
-	for i := range memo {
-		memo[i] = make([]int, n)
-		for j := range memo[i] {
-			memo[i][j] = -1
-		}
-	}
-	var dfs func(int, int) int
-	dfs = func(i, j int) (res int) {
-		if i == 0 {
-			return 1 // 找到一个特别排列
-		}
-		p := &memo[i][j]
-		if *p != -1 {
-			return *p
-		}
-		for k, x := range nums {
-			if i>>k&1 > 0 && (nums[j]%x == 0 || x%nums[j] == 0) {
-				res = (res + dfs(i^(1<<k), k)) % mod
-			}
-		}
-		*p = res
-		return
-	}
-	for j := range nums {
-		ans = (ans + dfs((m-1)^(1<<j), j)) % mod
-	}
-	return
+    n := len(nums)
+    u := 1<<n - 1
+    memo := make([][]int, u)
+    for i := range memo {
+        memo[i] = make([]int, n)
+        for j := range memo[i] {
+            memo[i][j] = -1 // -1 表示没有计算过
+        }
+    }
+    var dfs func(int, int) int
+    dfs = func(s, i int) (res int) {
+        if s == 0 {
+            return 1 // 找到一个特别排列
+        }
+        p := &memo[s][i]
+        if *p != -1 { // 之前计算过
+            return *p
+        }
+        for j, x := range nums {
+            if s>>j&1 > 0 && (nums[i]%x == 0 || x%nums[i] == 0) {
+                res += dfs(s^(1<<j), j)
+            }
+        }
+        *p = res // 记忆化
+        return
+    }
+    for i := range nums {
+        ans += dfs(u^(1<<i), i)
+    }
+    return ans % 1_000_000_007
 }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^22^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题中状态个数等于 $\mathcal{O}(n2^n)$，单个状态的计算时间为 $\mathcal{O}(n)$，因此时间复杂度为 $\mathcal{O}(n^22^n)$。
-- 空间复杂度：$\mathcal{O}(n2^n)$。
+- 空间复杂度：$\mathcal{O}(n2^n)$。保存多少状态，就需要多少空间。
 
-## 1:1 翻译成递推
+## 二、1:1 翻译成递推
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-做法：
+具体来说，$f[S][i]$ 的定义和 $\textit{dfs}(S,i)$ 的定义是一样的，都表示在可以选的下标集合为 $S$，上一个选的数的下标是 $i$ 时，可以构造出多少个特别排列。
 
-- $\textit{dfs}$ 改成 $f$ 数组；
-- 递归改成循环（每个参数都对应一层循环）；
-- 递归边界改成 $f$ 数组的初始值。
-
-具体来说，$f[i][j]$ 的含义和状态转移方程 $\textit{dfs}(i,j)$ 是一样的，即
+相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
 $$
-f[i][j] =\sum_{k\in i} f[i\setminus \{k\}][k]
+f[S][i] =\sum_{j\in S} f[S\setminus \{j\}][j]
 $$
 
-初始值 $f[0][j]=1$。（翻译自 $\textit{dfs}(0,j)=1$。）
+初始值 $f[\varnothing][i]=1$，翻译自递归边界 $\textit{dfs}(\varnothing,i)=1$。
 
-答案为 $f[U\setminus \{j\}][j]$ 之和。（翻译自 $\textit{dfs}(U\setminus \{j\},j)$。）
+答案为 $f[U\setminus \{i\}][i]$ 之和，翻译自递归入口 $\textit{dfs}(U\setminus \{i\},i)$。
+
+代码中用二进制和位运算实现集合相关操作，原理请看 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)。
+
+> 注：在随机数据下，由于相邻元素无法整除，记忆化搜索有很多状态无法访问到，记忆化搜索比递推快。
 
 ```py [sol-Python3]
 class Solution:
     def specialPerm(self, nums: List[int]) -> int:
-        MOD = 10 ** 9 + 7
         n = len(nums)
-        m = 1 << n
-        f = [[0] * n for _ in range(m)]
+        u = (1 << n) - 1
+        f = [[0] * n for _ in range(u)]
         f[0] = [1] * n
-        for i in range(1, m):
-            for k, x in enumerate(nums):
-                if i >> k & 1 == 0: continue
-                for j, y in enumerate(nums):
-                    if x % y == 0 or y % x == 0:
-                        f[i][j] += f[i ^ (1 << k)][k]
-        return sum(f[(m - 1) ^ (1 << j)][j] for j in range(n)) % MOD
+        for s in range(1, u):
+            for i, pre in enumerate(nums):
+                if s >> i & 1:
+                    continue
+                for j, x in enumerate(nums):
+                    if s >> j & 1 and (pre % x == 0 or x % pre == 0):
+                        f[s][i] += f[s ^ (1 << j)][j]
+        return sum(f[u ^ (1 << i)][i] for i in range(n)) % 1_000_000_007
+```
+
+```java [sol-Java]
+public class Solution {
+    public int specialPerm(int[] nums) {
+        int n = nums.length;
+        int u = (1 << n) - 1;
+        long[][] f = new long[u][n];
+        Arrays.fill(f[0], 1L);
+        for (int s = 1; s < u; s++) {
+            for (int i = 0; i < n; i++) {
+                if ((s >> i & 1) != 0) {
+                    continue;
+                }
+                for (int j = 0; j < n; j++) {
+                    if ((s >> j & 1) != 0 && (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0)) {
+                        f[s][i] += f[s ^ (1 << j)][j];
+                    }
+                }
+            }
+        }
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += f[u ^ (1 << i)][i];
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int specialPerm(vector<int>& nums) {
+        int n = nums.size(), u = (1 << n) - 1;
+        vector<vector<long long>> f(u, vector<long long>(n));
+        ranges::fill(f[0], 1LL);
+        for (int s = 1; s < u; s++) {
+            for (int i = 0; i < n; i++) {
+                if (s >> i & 1) {
+                    continue;
+                }
+                for (int j = 0; j < n; j++) {
+                    if ((s >> j & 1) && (nums[i] % nums[j] == 0 || nums[j] % nums[i] == 0)) {
+                        f[s][i] += f[s ^ (1 << j)][j];
+                    }
+                }
+            }
+        }
+        long long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += f[u ^ (1 << i)][i];
+        }
+        return ans % 1'000'000'007;
+    }
+};
 ```
 
 ```go [sol-Go]
-func specialPerm(nums []int) (ans int) {
-	const mod int = 1e9 + 7
-	n := len(nums)
-	m := 1 << n
-	f := make([][]int, m)
-	f[0] = make([]int, n)
-	for j := range f[0] {
-		f[0][j] = 1
-	}
-	for i := 1; i < m; i++ {
-		f[i] = make([]int, n)
-		for j, x := range nums {
-			for k, y := range nums {
-				if i>>k&1 > 0 && (x%y == 0 || y%x == 0) {
-					f[i][j] = (f[i][j] + f[i^(1<<k)][k]) % mod
-				}
-			}
-		}
-	}
-	for j := range nums {
-		ans = (ans + f[(m-1)^(1<<j)][j]) % mod
-	}
-	return
+func specialPerm2(nums []int) (ans int) {
+    n := len(nums)
+    u := 1<<n - 1
+    f := make([][]int, u)
+    for i := range f {
+        f[i] = make([]int, n)
+    }
+    for i := range nums {
+        f[0][i] = 1
+    }
+    for s := 1; s < u; s++ {
+        for i, pre := range nums {
+            if s>>i&1 != 0 {
+                continue
+            }
+            for j, x := range nums {
+                if s>>j&1 != 0 && (pre%x == 0 || x%pre == 0) {
+                    f[s][i] += f[s^(1<<j)][j]
+                }
+            }
+        }
+    }
+    for i := range nums {
+        ans += f[u^(1<<i)][i]
+    }
+    return ans % 1_000_000_007
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^22^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题中状态个数等于 $\mathcal{O}(n2^n)$，单个状态的计算时间为 $\mathcal{O}(n)$，因此时间复杂度为 $\mathcal{O}(n^22^n)$。
+- 时间复杂度：$\mathcal{O}(n^22^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n2^n)$。
 
-## 状压 DP 题单
+## 分类题单
 
-- [996. 正方形数组的数目](https://leetcode.cn/problems/number-of-squareful-arrays/)，和本题没啥区别
-- [2172. 数组的最大与和](https://leetcode.cn/problems/maximum-and-sum-of-array/)，[题解](https://leetcode.cn/problems/maximum-and-sum-of-array/solution/zhuang-tai-ya-suo-dp-by-endlesscheng-5eqn/)
-- [1125. 最小的必要团队](https://leetcode.cn/problems/smallest-sufficient-team/)，[题解](https://leetcode.cn/problems/smallest-sufficient-team/solution/zhuang-ya-0-1-bei-bao-cha-biao-fa-vs-shu-qode/)
-- [2305. 公平分发饼干](https://leetcode.cn/problems/fair-distribution-of-cookies/)，[题解](https://leetcode.cn/problems/fair-distribution-of-cookies/solution/by-endlesscheng-80ao/)
-- [1494. 并行课程 II](https://leetcode.cn/problems/parallel-courses-ii/)，[题解](https://leetcode.cn/problems/parallel-courses-ii/solution/zi-ji-zhuang-ya-dpcong-ji-yi-hua-sou-suo-oxwd/)
-- [LCP 53. 守护太空城](https://leetcode.cn/problems/EJvmW4/)，[题解](https://leetcode.cn/problems/EJvmW4/solution/by-endlesscheng-pk2q/)
-- [1879. 两个数组最小的异或值之和](https://leetcode.cn/problems/minimum-xor-sum-of-two-arrays/)
-- [1986. 完成任务的最少工作时间段](https://leetcode.cn/problems/minimum-number-of-work-sessions-to-finish-the-tasks/)
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
