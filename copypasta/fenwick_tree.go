@@ -112,6 +112,35 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
+// 离线二维数点
+// 对于每个询问，回答：a[l:r+1] 中有多少个值在 [lower, upper] 中的数
+// 转换成：a[:r+1] 中的值在 [lower, upper] 中的数，减去 a[:l] 中的值在 [lower, upper] 中的数
+// 一边遍历 a，一边更新【值域树状数组】，一边回答离线后的询问
+// 所有下标均从 0 开始
+// https://codeforces.com/problemset/problem/1899/G 1900
+func areaPointCountOffline(a []int, queries []struct{ l, r, lower, upper int }) []int {
+	// 注：如果值域大，可以先把 a[i] 离散化，lower 和 upper 二分转换一下
+	type data struct{ lower, upper, sign, qid int }
+	qs := make([][]data, len(a))
+	for i, q := range queries {
+		l, r, lower, upper := q.l, q.r, q.lower, q.upper
+		if l > 0 {
+			qs[l-1] = append(qs[l-1], data{lower, upper, -1, i})
+		}
+		qs[r] = append(qs[r], data{lower, upper, 1, i})
+	}
+
+	ans := make([]int, len(queries))
+	t := newFenwickTree(len(a)) // 值域树状数组
+	for i, v := range a {
+		t.update(v, 1)
+		for _, p := range qs[i] {
+			ans[p.qid] += p.sign * t.query(p.lower, p.upper)
+		}
+	}
+	return ans
+}
+
 //
 
 // 差分版本

@@ -918,8 +918,10 @@ func (o *pstNode) query(old *pstNode, val int) int {
 // todo EXTRA: rank
 //  二分答案？
 
-// EXTRA: 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
+// 在线二维数点
+// 查询区间 [l,r] 中在 [low,high] 范围内的元素个数
 // low 和 high 为离散化后的值（从 1 开始）
+// 离线二维数点见 fenwick_tree.go 中的 areaPointCountOffline
 // https://codeforces.com/problemset/problem/323/C 2400
 // https://codeforces.com/problemset/problem/538/F 2200
 // http://acm.hdu.edu.cn/showproblem.php?pid=4417
