@@ -338,10 +338,10 @@ class Solution:
             # f[i+1][j+1] 表示包含【左上角为 (0,0) 右下角为 (i,j) 的子矩形】中的所有 1 的最小矩形面积
             f = [[0] * (n + 1) for _ in range(m + 1)]
             border = [(-1, 0, 0)] * n
-            for i in range(m):
+            for i, row in enumerate(a):
                 left, right = -1, 0
-                for j in range(n):
-                    if a[i][j]:
+                for j, x in enumerate(row):
+                    if x:
                         if left < 0:
                             left = j
                         right = j
@@ -397,9 +397,9 @@ class Solution:
 def rotate(a: List[List[int]]) -> List[List[int]]:
     m, n = len(a), len(a[0])
     b = [[0] * m for _ in range(n)]
-    for i in range(m):
-        for j in range(n):
-            b[j][m - 1 - i] = a[i][j]
+    for i, row in enumerate(a):
+        for j, x in enumerate(row):
+            b[j][m - 1 - i] = x
     return b
 ```
 
