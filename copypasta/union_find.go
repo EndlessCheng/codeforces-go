@@ -44,6 +44,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 转换 https://atcoder.jp/contests/abc238/tasks/abc238_e
 // merge 后 from 还有用 https://atcoder.jp/contests/abc279/tasks/abc279_f
 // 处理图上的环 https://codeforces.com/contest/1726/problem/D
+// https://codeforces.com/problemset/problem/1851/G 2000 离线
 //
 // 质因子并查集 GCD>1 并查集
 // 预处理质因子（见 math.go 中的 primeDivisorsAll）
@@ -94,6 +95,27 @@ https://zhuanlan.zhihu.com/p/553192435
 // - https://codeforces.com/problemset/problem/1791/F
 // todo https://codeforces.com/contest/884/problem/E
 // https://codeforces.com/problemset/problem/1416/D 2600 DSU 重构树
+
+// 轻量级模板
+// 采用非递归写法，效率更好
+func _(n int) {
+	fa := make([]int, n)
+	for i := range fa {
+		fa[i] = i
+	}
+	find := func(x int) int {
+		rt := x
+		for fa[rt] != rt {
+			rt = fa[rt]
+		}
+		for fa[x] != rt {
+			fa[x], x = rt, fa[x]
+		}
+		return rt
+	}
+	_ = find
+}
+
 type UnionFind struct {
 	Fa     []int
 	Groups int // 连通分量个数
