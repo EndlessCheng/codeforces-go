@@ -9,7 +9,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public String removeTrailingZeros(String num) {
-        return num.replaceAll("0+$", ""); // 注：可能是 O(n^2)，推荐手写
+        return num.replaceAll("0+$", "");
     }
 }
 ```
