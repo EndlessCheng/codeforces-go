@@ -15,7 +15,7 @@
 
 分类讨论：
 
-- 如果 $n \le 3$，那么 $1$ 的个数最少的那一行只有一个 $1$。不妨假设 $1$ 在第一列，根据性质二，其余每一行的第一列都必须是 $1$，与性质一矛盾。
+- 如果 $n \le 3$，那么 $1$ 的个数最少的那一行只有一个 $1$。不妨假设 $1$ 在第一列，根据性质二，其余每一行的第一列都必须是 $1$，那么第一列一共有 $k$ 个 $1$，与性质一矛盾。
 - 否则，由于 $n \le 5$，那么 $1$ 的个数最少的那一行有两个 $1$。不妨假设这两个 $1$ 在第一列和第二列，根据性质二，其余每一行的第一列或第二列必须有 $1$，那么前两列总共至少有 $k+1$ 个 $1$，但是性质一告诉我们前两列至多有 $k/2\cdot 2=k$ 个 $1$，矛盾。
 
 所以如果不存在小于 $4$ 行的答案，那么也不会存在 $\ge 4$ 行的答案。
@@ -142,12 +142,17 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 
 对于二重循环，由于 $x$ 和 $y$ 没有交集，可以直接枚举 $x$ 的补集的非空子集作为 $y$。
 
+此外，可以把枚举 $y$ 的过程放在遍历 $\textit{grid}$ 的过程中。
+
 如何枚举一个集合的子集？请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+> 截至本文发布时，该方法的 Python 和 Java 实现可以击败 100%。
 
 ```py [sol-Python3]
 class Solution:
     def goodSubsetofBinaryMatrix(self, grid: List[List[int]]) -> List[int]:
         n = len(grid[0])
+        u = (1 << n) - 1
         mask_to_idx = [-1] * (1 << n)
         for i, row in enumerate(grid):
             mask = 0
@@ -155,18 +160,16 @@ class Solution:
                 mask |= x << j
             if mask == 0:
                 return [i]
-            mask_to_idx[mask] = i
-
-        u = (1 << n) - 1
-        for x, i in enumerate(mask_to_idx):
-            if i < 0:
+            if mask_to_idx[mask] >= 0:
+                # 之前判断过，无需重复判断
                 continue
-            y = c = u ^ x
+            y = c = u ^ mask
             while y:
                 j = mask_to_idx[y]
                 if j >= 0:
                     return sorted((i, j))
                 y = (y - 1) & c
+            mask_to_idx[mask] = i
         return []
 ```
 
@@ -176,6 +179,7 @@ class Solution {
         int n = grid[0].length;
         int[] maskToIdx = new int[1 << n];
         Arrays.fill(maskToIdx, -1);
+        int u = (1 << n) - 1;
         for (int i = 0; i < grid.length; i++) {
             int mask = 0;
             for (int j = 0; j < n; j++) {
@@ -184,22 +188,18 @@ class Solution {
             if (mask == 0) {
                 return List.of(i);
             }
-            maskToIdx[mask] = i;
-        }
-
-        int u = (1 << n) - 1;
-        for (int x = 1; x < 1 << n; x++) {
-            int i = maskToIdx[x];
-            if (i < 0) {
+            if (maskToIdx[mask] >= 0) {
+                // 之前判断过，无需重复判断
                 continue;
             }
-            int c = u ^ x;
+            int c = u ^ mask; // mask 的补集
             for (int y = c; y > 0; y = (y - 1) & c) {
                 int j = maskToIdx[y];
                 if (j >= 0) {
                     return i < j ? List.of(i, j) : List.of(j, i);
                 }
             }
+            maskToIdx[mask] = i;
         }
         return List.of();
     }
@@ -212,6 +212,7 @@ public:
     vector<int> goodSubsetofBinaryMatrix(vector<vector<int>>& grid) {
         int n = grid[0].size();
         vector<int> mask_to_idx(1 << n, -1);
+        int u = (1 << n) - 1;
         for (int i = 0; i < grid.size(); i++) {
             int mask = 0;
             for (int j = 0; j < n; j++) {
@@ -220,20 +221,18 @@ public:
             if (mask == 0) {
                 return {i};
             }
-            mask_to_idx[mask] = i;
-        }
-
-        int u = (1 << n) - 1;
-        for (int x = 1; x < 1 << n; x++) {
-            int i = mask_to_idx[x];
-            if (i < 0) continue;
-            int c = u ^ x;
+            if (mask_to_idx[mask] >= 0) {
+                // 之前判断过，无需重复判断
+                continue;
+            }
+            int c = u ^ mask; // mask 的补集
             for (int y = c; y; y = (y - 1) & c) {
                 int j = mask_to_idx[y];
                 if (j >= 0) {
                     return {min(i, j), max(i, j)};
                 }
             }
+            mask_to_idx[mask] = i;
         }
         return {};
     }
@@ -247,6 +246,7 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 	for i := range maskToIdx {
 		maskToIdx[i] = -1
 	}
+	u := 1<<n - 1
 	for i, row := range grid {
 		mask := 0
 		for j, x := range row {
@@ -255,21 +255,18 @@ func goodSubsetofBinaryMatrix(grid [][]int) []int {
 		if mask == 0 {
 			return []int{i}
 		}
-		maskToIdx[mask] = i
-	}
-
-	u := 1<<n - 1
-	for x, i := range maskToIdx {
-		if i < 0 {
+		if maskToIdx[mask] >= 0 {
+			// 之前判断过，无需重复判断
 			continue
 		}
-		c := u ^ x
+		c := u ^ mask // mask 的补集
 		for y := c; y > 0; y = (y - 1) & c {
 			j := maskToIdx[y]
 			if j >= 0 {
 				return []int{min(i, j), max(i, j)}
 			}
 		}
+		maskToIdx[mask] = i
 	}
 	return nil
 }
