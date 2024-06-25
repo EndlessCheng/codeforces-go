@@ -55,12 +55,7 @@ class Solution:
 
     # 顺时针旋转矩阵 90°
     def rotate(self, a: List[List[int]]) -> List[List[int]]:
-        m, n = len(a), len(a[0])
-        b = [[0] * m for _ in range(n)]
-        for i, row in enumerate(a):
-            for j, x in enumerate(row):
-                b[j][m - 1 - i] = x
-        return b
+        return list(zip(*reversed(a)))
 ```
 
 ```java [sol-Java]
@@ -395,12 +390,7 @@ class Solution:
 
 # 顺时针旋转矩阵 90°
 def rotate(a: List[List[int]]) -> List[List[int]]:
-    m, n = len(a), len(a[0])
-    b = [[0] * m for _ in range(n)]
-    for i, row in enumerate(a):
-        for j, x in enumerate(row):
-            b[j][m - 1 - i] = x
-    return b
+    return list(zip(*reversed(a)))
 ```
 
 ```java [sol-Java]
