@@ -1,8 +1,8 @@
 根据题意，把 $\texttt{a}$ 替换成 $\texttt{z}$ 会让字典序变大，所以被替换的子串不能包含 $\texttt{a}$。反过来，如果子串不含 $\texttt{a}$，那么对其操作可以让 $s$ 字典序变小。
 
-从左到右找到第一个**不等于** $\texttt{a}$ 的字符 $s[i]$，从 $i$ 开始，把每个字符都减一，直到遍历结束或者遇到了 $\texttt{a}$。
+从左到右找到第一个**不等于** $\texttt{a}$ 的字符 $s[i]$，然后从 $i$ 开始，把每个字符都减一，直到遍历结束或者遇到了 $\texttt{a}$。例如 $\texttt{abca}$ 操作中间的子串 $\texttt{bc}$，得到答案 $\texttt{aaba}$。
 
-特别地，如果 $s$ 全为 $\texttt{a}$，由于题目要求**必须操作一次**，那么就把最后一个 $\texttt{a}$ 改成 $\texttt{z}$。
+**细节**：如果 $s$ 全为 $\texttt{a}$，由于题目要求**必须操作一次**，可以把最后一个 $\texttt{a}$ 改成 $\texttt{z}$。
 
 [本题视频讲解](https://www.bilibili.com/video/BV15V4y1m7Sb/) 第二题。
 
@@ -66,6 +66,24 @@ public:
 };
 ```
 
+```c [sol-C]
+char* smallestString(char* s) {
+    int i = 0;
+    for (; s[i]; i++) {
+        if (s[i] > 'a') {
+            // 继续向后遍历
+            for (; s[i] > 'a'; i++) {
+                s[i]--;
+            }
+            return s;
+        }
+    }
+    // 所有字母均为 a
+    s[i - 1] = 'z';
+    return s;
+}
+```
+
 ```go [sol-Go]
 func smallestString(s string) string {
     t := []byte(s)
@@ -84,10 +102,53 @@ func smallestString(s string) string {
 }
 ```
 
+```js [sol-JavaScript]
+var smallestString = function(S) {
+    const s = S.split('');
+    const n = s.length;
+    for (let i = 0; i < n; i++) {
+        if (s[i] > 'a') {
+            // 继续向后遍历
+            for (; i < n && s[i] > 'a'; i++) {
+                s[i] = String.fromCharCode(s[i].charCodeAt(0) - 1);
+            }
+            return s.join('');
+        }
+    }
+    // 所有字母均为 a
+    s[n - 1] = 'z';
+    return s.join('');
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn smallest_string(S: String) -> String {
+        let mut s = S.into_bytes();
+        let n = s.len();
+        for i in 0..n {
+            if s[i] > b'a' {
+                // 继续向后遍历
+                for j in i..n {
+                    if s[j] == b'a' {
+                        break;
+                    }
+                    s[j] -= 1;
+                }
+                return unsafe { String::from_utf8_unchecked(s) };
+            }
+        }
+        // 所有字母均为 a
+        s[n - 1] = b'z';
+        unsafe { String::from_utf8_unchecked(s) }
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$，如果可以直接修改 $s$ 则为 $\mathcal{O}(1)$ 空间（C++）。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果可以直接修改 $s$ 则为 $\mathcal{O}(1)$ 额外空间（C/C++）。
 
 ## 分类题单
 
