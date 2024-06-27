@@ -38,6 +38,7 @@ LC853 https://leetcode.cn/problems/car-fleet/
 https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
+https://codeforces.com/problemset/problem/1971/E 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案原理
@@ -67,16 +68,19 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 - [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
 - [2604. 吃掉所有谷子的最短时间](https://leetcode.cn/problems/minimum-time-to-eat-all-grains/)（会员题）
 - [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
+
+### 二分答案：求最小
 https://codeforces.com/problemset/problem/1701/C 1400
-https://codeforces.com/problemset/problem/670/D2 1500
-https://codeforces.com/problemset/problem/991/C  1500
-https://codeforces.com/problemset/problem/1610/C 1600
+https://codeforces.com/problemset/problem/991/C 1500
 https://codeforces.com/problemset/problem/1665/C 1600
 https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
-https://codeforces.com/problemset/problem/883/I 1900 DP
+
+### 二分答案：求最大
+https://codeforces.com/problemset/problem/670/D2 1500
+https://codeforces.com/problemset/problem/760/B 1500
+https://codeforces.com/problemset/problem/1610/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
-https://codeforces.com/problemset/problem/1955/H
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
@@ -90,7 +94,9 @@ https://codeforces.com/problemset/problem/1955/H
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
 - [774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)（会员题）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
-https://codeforces.com/contest/1918/problem/D 1900
+https://codeforces.com/problemset/problem/1840/D 1400
+https://codeforces.com/problemset/problem/883/I 1900 DP
+https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
@@ -113,6 +119,7 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
 - [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
 - [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
+- [3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/) 2388
 - [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
 - [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
 - [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）*滑动窗口
@@ -268,7 +275,7 @@ func sortCollections() {
 		for i := range id {
 			id[i] = i
 		}
-		sort.Slice(id, func(i, j int) bool { return a[id[i]] < a[id[j]] }) // 简单离散化
+		slices.SortFunc(id, func(i, j int) int { return a[i] - a[j] }) // 简单离散化
 
 		ans := len(a)
 		for i, v := range id {
@@ -563,6 +570,7 @@ func sortCollections() {
 	}
 
 	// 整数三分·写法一
+	// 返回 [l,r] 内单峰函数的峰顶
 	// 比较两个三分点值的大小，每次去掉 1/3 的区间
 	// https://codeforces.com/blog/entry/11497
 	// https://codeforces.com/blog/entry/43440
@@ -592,6 +600,8 @@ func sortCollections() {
 	}
 
 	// 整数三分·写法二
+	// 返回 [l,r] 内单峰函数的峰顶
+	// 如果求的是最小值，返回的就是最小的满足 f(m) < f(m+1) 的 m
 	// 二分导数零点（准确说是一阶差分），即比较 f(m) 和 f(m+1), m=(l+r)/2
 	// 这种写法的优点是两次运算可以将枚举范围减半，而三分点的写法两次运算仅去掉了 1/3 的范围（效率比 log(2)/log(1.5) ≈ 1.71）
 	// 但是，如果存在相邻 f 值相同，且只有两个的情况：f(i-1)<f(i)=f(i+1)<f(i+2)，这种写法将会失效，而三分点的写法保证了两个三分点的间隔，可以正常运行
