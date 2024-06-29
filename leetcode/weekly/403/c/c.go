@@ -4,6 +4,14 @@ import "math"
 
 // https://space.bilibili.com/206214
 func maximumTotalCost(a []int) int64 {
+	f0, f1 := 0, a[0]
+	for i := 1; i < len(a); i++ {
+		f0, f1 = f1, max(f1+a[i], f0+a[i-1]-a[i])
+	}
+	return int64(f1)
+}
+
+func maximumTotalCost2(a []int) int64 {
 	f0, f1 := 0, 0
 	for i := len(a) - 1; i >= 0; i-- {
 		f0, f1 = f1+a[i], max(f1+a[i], f0-a[i])
