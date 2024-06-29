@@ -49,7 +49,7 @@ class Solution:
 public class Solution {
     public int paintWalls(int[] cost, int[] time) {
         int n = cost.length;
-        int[][] memo = new int[n][n * 2 + 1];
+        int[][] memo = new int[n][n * 2];
         for (int[] row : memo) {
             Arrays.fill(row, -1); // -1 表示没有计算过
         }
@@ -79,7 +79,7 @@ class Solution {
 public:
     int paintWalls(vector<int>& cost, vector<int>& time) {
         int n = cost.size();
-        vector<vector<int>> memo(n, vector<int>(n * 2 + 1, -1)); // -1 表示没有计算过
+        vector<vector<int>> memo(n, vector<int>(n * 2, -1)); // -1 表示没有计算过
         auto dfs = [&](auto&& dfs, int i, int j) -> int {
             if (j > i) { // 剩余的墙都可以免费刷
                 return 0;
@@ -104,7 +104,7 @@ func paintWalls(cost, time []int) int {
 	n := len(cost)
 	memo := make([][]int, n)
 	for i := range memo {
-		memo[i] = make([]int, n*2+1)
+		memo[i] = make([]int, n*2)
 		for j := range memo[i] {
 			memo[i][j] = -1 // 没有计算过
 		}
