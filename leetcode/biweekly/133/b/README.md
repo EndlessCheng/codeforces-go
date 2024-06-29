@@ -78,7 +78,8 @@ func minOperations(nums []int) (ans int) {
 
 ## 思考题
 
-如果把题目中的 $3$ 替换成 $k$，你能想出一个 $\mathcal{O}(n)$ 的做法吗？
+1. 如果把题目中的 $3$ 替换成 $k$，你能想出一个 $\mathcal{O}(n)$ 的做法吗？
+2. 操作次数不限，把所有元素都变成 $1$ 的最大的 $k$ 是多少？见 [CF1955E](https://codeforces.com/problemset/problem/1955/E)。
 
 ## 分类题单
 
