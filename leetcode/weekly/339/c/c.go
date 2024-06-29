@@ -1,15 +1,15 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214
-func miceAndCheese(reward1, reward2 []int, k int) (ans int) {
-	for i, x := range reward2 {
-		ans += x
-		reward1[i] -= x
+func miceAndCheese(r1, r2 []int, k int) (ans int) {
+	for i, x := range r2 {
+		ans += x // 先全部给第二只老鼠
+		r1[i] -= x
 	}
-	sort.Sort(sort.Reverse(sort.IntSlice(reward1)))
-	for _, x := range reward1[:k] {
+	slices.SortFunc(r1, func(a, b int) int { return b - a })
+	for _, x := range r1[:k] {
 		ans += x
 	}
 	return
