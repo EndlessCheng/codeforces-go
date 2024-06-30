@@ -115,6 +115,8 @@ func init() {
 		"num3", "z",
 		"size", "n",
 		"edges", "es",
+		"edges1", "es1",
+		"edges2", "es2",
 		"points", "ps",
 		"point1", "p1",
 		"point2", "p2",
