@@ -1,8 +1,8 @@
-### 本题视频讲解
+## 本题视频讲解
 
 见[【力扣杯2023春·个人赛】](https://www.bilibili.com/video/BV1dg4y1j78A/)第四题。
 
-### 思路
+## 思路
 
 1. 遍历，找到 S 和 T 的位置。
 2. BFS，计算 T 到其余点的最短距离。
@@ -187,7 +187,7 @@ public:
         // 4. 二分答案 https://www.bilibili.com/video/BV1AP41137w7/
         int vis[m][n], maxDis;
         memset(vis, -1, sizeof(vis));
-        function<bool(int, int)> dfs = [&](int x, int y) {
+        auto dfs = [&](auto&& dfs, int x, int y) {
             if (x < 0 || x >= m || y < 0 || y >= n || vis[x][y] == maxDis || maze[x][y] == '#')
                 return false;
             if (maze[x][y] == 'T') // 到达终点
@@ -199,14 +199,14 @@ public:
                  maze[x][n - 1 - y] != '#' && disFromT[x][n - 1 - y] > maxDis))
                 return false;
             for (auto &d: dirs)
-                if (dfs(x + d[0], y + d[1]))
+                if (dfs(dfs, x + d[0], y + d[1]))
                     return true;
             return false;
         };
         int left = -1, right = m * n + 1;
         while (left + 1 < right) {
             maxDis = left + (right - left) / 2;
-            (dfs(sx, sy) ? right : left) = maxDis;
+            (dfs(dfs, sx, sy) ? right : left) = maxDis;
         }
         return right > m * n ? -1 : right;
     }
@@ -303,11 +303,31 @@ func challengeOfTheKeeper(maze []string) int {
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn\log(mn))$，其中 $m$ 和 $n$ 分别为 $\textit{maze}$ 的行数和列数。本题 $m=n$。
 - 空间复杂度：$\mathcal{O}(mn)$。
 
-### 相似题目
+## 相似题目
 
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
+
+## 分类题单
+
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+
