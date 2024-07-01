@@ -6,87 +6,67 @@ import (
 	"io"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func CF455C(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
+func cf455C(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-
-	var n, m, q, v, w, u, core, maxD, op int
+	var n, m, q, op, x, y int
 	Fscan(in, &n, &m, &q)
-	g := make([][]int, n)
-	for i := 0; i < m; i++ {
-		Fscan(in, &v, &w)
-		v--
-		w--
-		g[v] = append(g[v], w)
-		g[w] = append(g[w], v)
+	g := make([][]int, n+1)
+	for ; m > 0; m-- {
+		Fscan(in, &x, &y)
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
 	}
 
-	size := make([]int, n)
-	fa := make([]int, n)
-	var find func(int) int
-	find = func(x int) int {
-		if fa[x] != x {
-			fa[x] = find(fa[x])
-		}
-		return fa[x]
+	d := make([]int, n+1)
+	fa := make([]int, n+1)
+	for i := range fa {
+		fa[i] = i
 	}
-	merge := func(from, to int) {
-		from, to = find(from), find(to)
-		if from == to {
+	find := func(x int) int {
+		rt := x
+		for fa[rt] != rt {
+			rt = fa[rt]
+		}
+		for fa[x] != rt {
+			fa[x], x = rt, fa[x]
+		}
+		return rt
+	}
+
+	for i := 1; i <= n; i++ {
+		if fa[i] != i {
+			continue
+		}
+		var dfs func(int, int) int
+		dfs = func(x, from int) (maxL int) {
+			fa[x] = i
+			for _, y := range g[x] {
+				if y != from {
+					subL := dfs(y, x) + 1
+					d[i] = max(d[i], maxL+subL)
+					maxL = max(maxL, subL)
+				}
+			}
 			return
 		}
-		sf, st := size[from], size[to]
-		s1, s2 := (sf+1)/2, (st+1)/2
-		if s1 > s2 {
-			s1, s2 = s2, s1
-		}
-		if s1+1 >= s2 {
-			size[to] = s1 + s2 + 1
-		} else if sf > st {
-			size[to] = sf
-		} else {
-			size[to] = st
-		}
-		fa[from] = to
-	}
-
-	vis := make([]bool, n)
-	var f func(v, p, d int)
-	f = func(v, p, d int) {
-		vis[v] = true
-		fa[v] = core
-		if d > maxD {
-			maxD = d
-			u = v
-		}
-		for _, w := range g[v] {
-			if w != p {
-				f(w, v, d+1)
-			}
-		}
-	}
-	for i, b := range vis {
-		if !b {
-			core = i
-			maxD = -1
-			f(i, -1, 0)
-			maxD = -1
-			f(u, -1, 0)
-			size[i] = maxD
-		}
+		dfs(i, 0)
 	}
 
 	for ; q > 0; q-- {
-		Fscan(in, &op, &v)
+		Fscan(in, &op, &x)
 		if op == 1 {
-			Fprintln(out, size[find(v-1)])
-		} else {
-			Fscan(in, &w)
-			merge(v-1, w-1)
+			Fprintln(out, d[find(x)])
+			continue
+		}
+		Fscan(in, &y)
+		x = find(x)
+		y = find(y)
+		if x != y {
+			d[x] = max(d[x], d[y], (d[x]+1)/2+(d[y]+1)/2+1)
+			fa[y] = x
 		}
 	}
 }
 
-//func main() { CF455C(os.Stdin, os.Stdout) }
+//func main() { cf455C(bufio.NewReader(os.Stdin), os.Stdout) }
