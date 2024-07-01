@@ -1,10 +1,81 @@
-## 核心思路
+## 方法一：枚举
+
+用一个长为 $2$ 的 $\textit{cnt}$ 数组，分别记录偶数行和奇数行分别放了多少个球。
+
+从 $i=1$ 开始枚举，如果 $i$ 是奇数则把 $\textit{cnt}[1]$ 增加 $i$，如果 $i$ 是偶数则把 $\textit{cnt}[0]$ 增加 $i$。
+
+增加后，如果
+
+- $\textit{cnt}[0] > \textit{red}$ 或者 $\textit{cnt}[1] > \textit{blue}$
+- $\textit{cnt}[0] > \textit{blue}$ 或者 $\textit{cnt}[1] > \textit{red}$
+
+这两个条件都成立，说明无法把第 $i$ 行填满，返回 $i-1$。
+
+```py [sol-Python3]
+class Solution:
+    def maxHeightOfTriangle(self, red: int, blue: int) -> int:
+        cnt = [0, 0]
+        for i in count(1):
+            cnt[i % 2] += i
+            if (cnt[0] > red or cnt[1] > blue) and (cnt[0] > blue or cnt[1] > red):
+                return i - 1
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxHeightOfTriangle(int red, int blue) {
+        int[] cnt = new int[2];
+        for (int i = 1; ; i++) {
+            cnt[i % 2] += i;
+            if ((cnt[0] > red || cnt[1] > blue) && (cnt[0] > blue || cnt[1] > red)) {
+                return i - 1;
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxHeightOfTriangle(int red, int blue) {
+        int cnt[2]{};
+        for (int i = 1; ; i++) {
+            cnt[i % 2] += i;
+            if ((cnt[0] > red || cnt[1] > blue) && (cnt[0] > blue || cnt[1] > red)) {
+                return i - 1;
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func maxHeightOfTriangle(red, blue int) int {
+	cnt := [2]int{}
+	for i := 1; ; i++ {
+		cnt[i%2] += i
+		if (cnt[0] > red || cnt[1] > blue) && (cnt[0] > blue || cnt[1] > red) {
+			return i - 1
+		}
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\min(\sqrt{\textit{red}}, \sqrt{\textit{blue}}))$。理由见方法二的分析。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：数学公式
+
+### 核心思路
 
 奇数行放红球，偶数行放蓝球；或者奇数行放蓝球，偶数行放红球。
 
 计算最多能放多少排。两种情况取最大值。
 
-## 奇数行
+### 奇数行
 
 设奇数行有 $k$ 行，那么需要
 
@@ -26,7 +97,7 @@ $$
 k \le \left\lfloor\sqrt n\right\rfloor
 $$
 
-## 偶数行
+### 偶数行
 
 设偶数行有 $k$ 行，那么需要
 
@@ -48,7 +119,7 @@ $$
 k \le \left\lfloor\dfrac{\sqrt{4n+1}-1}{2}\right\rfloor
 $$
 
-## 答案
+### 答案
 
 设有 $\textit{odd}$ 个奇数行，$\textit{even}$ 个偶数行，那么总行数为
 
@@ -133,5 +204,6 @@ func maxHeightOfTriangle(red, blue int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
