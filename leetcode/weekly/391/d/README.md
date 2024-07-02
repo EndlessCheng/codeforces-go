@@ -1,24 +1,24 @@
-![w391-c.png](https://pic.leetcode.cn/1711856129-vydCEa-w391-c.png)
+![minimize-manhattan-distances.png](https://pic.leetcode.cn/1719906297-iZvmWo-minimize-manhattan-distances.png)
 
-这两种投影长度，其中较大者为曼哈顿距离（较小者是两段折线的投影长度之差，不合法），即如下恒等式
+这两种投影长度，其中较大者为曼哈顿距离（较小者是两段折线的投影长度**之差**，不合法），即如下恒等式
 
 $$
 |x_1 - x_2| + |y_1 - y_2| = \max(|x_1'-x_2'|,|y_1'-y_2'|)
 $$
 
-其中等式左侧为 $(x_1,y_1)$ 和 $(x_2,y_2)$ 的**曼哈顿距离**，等式右侧 $(x',y') = (x+y,y-x)$，计算的是 $(x_1',y_1')$ 和 $(x_2',y_2')$ 两点的曼哈顿距离投影到 $x'$ 轴和 $y'$ 轴的线段长度的最大值，即**切比雪夫距离**。
+其中等式左侧为 $(x_1,y_1)$ 和 $(x_2,y_2)$ 的**曼哈顿距离**，等式右侧 $(x',y') = (x+y,y-x)$，计算的是 $(x_1',y_1')$ 和 $(x_2',y_2')$ 两点的曼哈顿距离投影到 $x$ 轴和 $y$ 轴的线段长度的最大值，即**切比雪夫距离**。
 
 所以要求任意两点曼哈顿距离的最大值，根据上面的恒等式，我们只需要计算任意两个 $(x',y')$ 切比雪夫距离的最大值，即横纵坐标差的最大值
 
 $$
-\max(\max(x') - \min(x'), \max(y') - \min(y'))
+\max\{\max(x') - \min(x'), \max(y') - \min(y')\}
 $$
 
-附：[视频讲解](https://www.bilibili.com/video/BV1fq421A7CY/) 第四题，欢迎点赞关注！
+请看 [视频讲解](https://www.bilibili.com/video/BV1fq421A7CY/) 第四题，欢迎点赞关注！
 
 ## 方法一：有序集合
 
-本题可以删除一个点，我们可以枚举要删除的点，并用有序集合维护其它 $n-1$ 个点的 $x'$ 和 $y'$ 的最大值和最小值。
+枚举要删除的点，用**有序集合**维护其他 $n-1$ 个点的 $x'$ 和 $y'$ 的最大值和最小值。
 
 ```py [sol-Python3]
 from sortedcontainers import SortedList
@@ -30,6 +30,7 @@ class Solution:
         for x, y in points:
             xs.add(x + y)
             ys.add(y - x)
+
         ans = inf
         for x, y in points:
             x, y = x + y, y - x
@@ -50,14 +51,20 @@ class Solution {
             xs.merge(p[0] + p[1], 1, Integer::sum);
             ys.merge(p[1] - p[0], 1, Integer::sum);
         }
+
         int ans = Integer.MAX_VALUE;
         for (int[] p : points) {
-            int x = p[0] + p[1], y = p[1] - p[0];
+            int x = p[0] + p[1];
+            int y = p[1] - p[0];
             if (xs.get(x) == 1) xs.remove(x);
             else xs.merge(x, -1, Integer::sum);
             if (ys.get(y) == 1) ys.remove(y);
             else ys.merge(y, -1, Integer::sum);
-            ans = Math.min(ans, Math.max(xs.lastKey() - xs.firstKey(), ys.lastKey() - ys.firstKey()));
+
+            int dx = xs.lastKey() - xs.firstKey();
+            int dy = ys.lastKey() - ys.firstKey();
+            ans = Math.min(ans, Math.max(dx, dy));
+
             xs.merge(x, 1, Integer::sum);
             ys.merge(y, 1, Integer::sum);
         }
@@ -69,18 +76,23 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minimumDistance(vector<vector<int>> &points) {
+    int minimumDistance(vector<vector<int>>& points) {
         multiset<int> xs, ys;
-        for (auto &p : points) {
+        for (auto& p : points) {
             xs.insert(p[0] + p[1]);
             ys.insert(p[1] - p[0]);
         }
+
         int ans = INT_MAX;
-        for (auto &p : points) {
+        for (auto& p : points) {
             int x = p[0] + p[1], y = p[1] - p[0];
             xs.erase(xs.find(x));
             ys.erase(ys.find(y));
-            ans = min(ans, max(*xs.rbegin() - *xs.begin(), *ys.rbegin() - *ys.begin()));
+
+            int dx = *xs.rbegin() - *xs.begin();
+            int dy = *ys.rbegin() - *ys.begin();
+            ans = min(ans, max(dx, dy));
+
             xs.insert(x);
             ys.insert(y);
         }
@@ -99,6 +111,7 @@ func minimumDistance(points [][]int) int {
 		put(xs, x)
 		put(ys, y)
 	}
+
 	ans := math.MaxInt
 	for _, p := range points {
 		x, y := p[0]+p[1], p[1]-p[0]
@@ -260,7 +273,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     // 更新最大次大
-    void update_max(int v, int &max1, int &max2) {
+    void update_max(int v, int& max1, int& max2) { // 注意这里是引用
         if (v > max1) {
             max2 = max1;
             max1 = v;
@@ -270,7 +283,7 @@ class Solution {
     }
 
     // 更新最小次小
-    void update_min(int v, int &min1, int &min2) {
+    void update_min(int v, int& min1, int& min2) { // 注意这里是引用
         if (v < min1) {
             min2 = min1;
             min1 = v;
@@ -280,11 +293,11 @@ class Solution {
     }
 
 public:
-    int minimumDistance(vector<vector<int>> &points) {
+    int minimumDistance(vector<vector<int>>& points) {
         int max_x1 = INT_MIN, max_x2 = INT_MIN, max_y1 = INT_MIN, max_y2 = INT_MIN;
         int min_x1 = INT_MAX, min_x2 = INT_MAX, min_y1 = INT_MAX, min_y2 = INT_MAX;
 
-        for (auto &p : points) {
+        for (auto& p : points) {
             int x = p[0] + p[1];
             int y = p[1] - p[0];
             update_max(x, max_x1, max_x2);
@@ -294,7 +307,7 @@ public:
         }
 
         int ans = INT_MAX;
-        for (auto &p : points) {
+        for (auto& p : points) {
             int x = p[0] + p[1];
             int y = p[1] - p[0];
             int dx = (x == max_x1 ? max_x2 : max_x1) - (x == min_x1 ? min_x2 : min_x1);
@@ -484,7 +497,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     // 更新最大次大
-    void update_max(int i, int v, int &max_i, int &max1, int &max2) {
+    void update_max(int i, int v, int& max_i, int& max1, int& max2) {
         if (v > max1) {
             max_i = i;
             max2 = max1;
@@ -495,7 +508,7 @@ class Solution {
     }
 
     // 更新最小次小
-    void update_min(int i, int v, int &min_i, int &min1, int &min2) {
+    void update_min(int i, int v, int& min_i, int& min1, int& min2) {
         if (v < min1) {
             min_i = i;
             min2 = min1;
@@ -506,13 +519,13 @@ class Solution {
     }
 
 public:
-    int minimumDistance(vector<vector<int>> &points) {
+    int minimumDistance(vector<vector<int>>& points) {
         int max_xi, min_xi, max_yi, min_yi;
         int max_x1 = INT_MIN, max_x2 = INT_MIN, max_y1 = INT_MIN, max_y2 = INT_MIN;
         int min_x1 = INT_MAX, min_x2 = INT_MAX, min_y1 = INT_MAX, min_y2 = INT_MAX;
 
         for (int i = 0; i < points.size(); i++) {
-            auto &p = points[i];
+            auto& p = points[i];
             int x = p[0] + p[1];
             int y = p[1] - p[0];
             update_max(i, x, max_xi, max_x1, max_x2);
@@ -615,14 +628,19 @@ func f(b bool, v1, v2 int) int {
 
 ## 分类题单
 
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
-更多题单，点我个人主页 - 讨论发布。
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-[往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
