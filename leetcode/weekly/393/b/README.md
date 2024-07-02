@@ -104,6 +104,8 @@ func maximumPrimeDifference(nums []int) int {
 
 遍历 $\sqrt {100} = 10$ 以内的质数 $2,3,5,7$，标记其倍数为合数。
 
+注意标记 $i$ 的倍数时，只需从 $j = i^2$ 开始，因为小于 $i^2$ 的合数 $j$ 一定有一个小于 $i$ 的质因子。可以用反证法证明：如果小于 $i^2$ 的合数 $j$ 没有小于 $i$ 的质因子，那么合数 $j$ 至少是两个 $\ge i$ 的数的乘积，这与 $j < i^2$ 矛盾。
+
 ```py [sol-Python3]
 not_prime = [False] * 101
 not_prime[1] = True
@@ -233,6 +235,76 @@ func maximumPrimeDifference(nums []int) int {
 - 空间复杂度：$\mathcal{O}(1)$。
 
 **注**：从两边向中间找的好处是，在随机数据下，根据质数密度，期望 $\mathcal{O}(\log U)$ 的时间就能找到质数，其中 $U=\max(\textit{nums})\le 100$。
+
+## 方法三：位运算
+
+把 $100$ 内的**质数组成的集合**，保存到两个 $64$ 位整数中。（Python 只需要一个 `int`）
+
+原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+```py [sol-Python3]
+class Solution:
+    def maximumPrimeDifference(self, nums: List[int]) -> int:
+        PRIME_MASK = 0x20208828828208a20a08a28ac
+        i = 0
+        while PRIME_MASK >> nums[i] & 1 == 0:
+            i += 1
+        j = len(nums) - 1
+        while PRIME_MASK >> nums[j] & 1 == 0:
+            j -= 1
+        return j - i
+```
+
+```java [sol-Java]
+class Solution {
+    private static final long[] PRIME_MASK = {0x28208a20a08a28acL, 0x202088288L};
+
+    public int maximumPrimeDifference(int[] nums) {
+        int i = 0;
+        while ((PRIME_MASK[nums[i] / 64] >> (nums[i] % 64) & 1) == 0) {
+            i++;
+        }
+        int j = nums.length - 1;
+        while ((PRIME_MASK[nums[j] / 64] >> (nums[j] % 64) & 1) == 0) {
+            j--;
+        }
+        return j - i;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr uint64_t PRIME_MASK[2]{0x28208a20a08a28ac, 0x202088288};
+public:
+    int maximumPrimeDifference(vector<int>& nums) {
+        int i = 0;
+        while ((PRIME_MASK[nums[i] / 64] >> (nums[i] % 64) & 1) == 0) {
+            i++;
+        }
+        int j = nums.size() - 1;
+        while ((PRIME_MASK[nums[j] / 64] >> (nums[j] % 64) & 1) == 0) {
+            j--;
+        }
+        return j - i;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumPrimeDifference(nums []int) int {
+	primeMask := [2]uint{0x28208a20a08a28ac, 0x202088288}
+	i := 0
+	for primeMask[nums[i]/64]>>(nums[i]%64)&1 == 0 {
+		i++
+	}
+	j := len(nums) - 1
+	for primeMask[nums[j]/64]>>(nums[j]%64)&1 == 0 {
+		j--
+	}
+	return j - i
+}
+```
 
 ## 分类题单
 
