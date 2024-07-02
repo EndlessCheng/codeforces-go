@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-const mod int = 1e9 + 7
+const mod = 1_000_000_007
 
 func monkeyMove(n int) int {
 	return (pow(2, n) - 2 + mod) % mod
