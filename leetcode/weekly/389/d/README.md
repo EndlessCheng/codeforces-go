@@ -4,9 +4,9 @@
 
 把 $0$ 看成「空位」。
 
-第二种操作相当于把一个 $1$ 移动到它相邻的空位上，如果我们想得到一个下标在 $j$ 的 $1$，必须操作 $|\textit{aliceIndex} - j|$ 次。
+**第二种操作**相当于把一个 $1$ 移动到和它相邻的空位上，如果我们想得到一个下标在 $j$ 的 $1$，必须操作 $|\textit{aliceIndex} - j|$ 次。
 
-对于第一种操作，贪心地把和 $\textit{aliceIndex}$ 相邻的 $0$ 变成 $1$（在此之前先移动相邻的 $1$），然后结合第二种操作，把相邻的 $1$ 移动到 $\textit{aliceIndex}$，只需 $2$ 次操作就可以得到一个 $1$。
+对于**第一种操作**，贪心地把和 $\textit{aliceIndex}$ 相邻的 $0$ 变成 $1$（在此之前先移动相邻的 $1$），然后结合第二种操作，把相邻的 $1$ 移动到 $\textit{aliceIndex}$，只需 $2$ 次操作就可以得到一个 $1$。
 
 我们分 $\textit{maxChanges}$ 较大，和 $\textit{maxChanges}$ 较小两种情况讨论。
 
@@ -247,7 +247,7 @@ func minimumMoves(nums []int, k, maxChanges int) int64 {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
