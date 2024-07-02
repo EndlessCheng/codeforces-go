@@ -238,7 +238,7 @@ func maximumPrimeDifference(nums []int) int {
 
 ## 方法三：位运算
 
-把 $100$ 内的**质数组成的集合**，保存到两个 $64$ 位整数中。（Python 只需要一个 `int`）
+把 $100$ 内的**质数组成的集合**，「压缩」成两个 $64$ 位整数。（Python 只需要一个 `int`）
 
 原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
@@ -319,6 +319,7 @@ func maximumPrimeDifference(nums []int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
