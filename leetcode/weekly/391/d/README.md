@@ -18,7 +18,7 @@ $$
 
 ## 方法一：有序集合
 
-枚举要删除的点，用**有序集合**维护其他 $n-1$ 个点的 $x'$ 和 $y'$ 的最大值和最小值。
+枚举要移除的点，用**有序集合**维护其他 $n-1$ 个点的 $x'$ 和 $y'$ 的最大值和最小值。
 
 ```py [sol-Python3]
 from sortedcontainers import SortedList
@@ -57,9 +57,9 @@ class Solution {
             int x = p[0] + p[1];
             int y = p[1] - p[0];
             if (xs.get(x) == 1) xs.remove(x);
-            else xs.merge(x, -1, Integer::sum);
+            else xs.merge(x, -1, Integer::sum); // 移除一个 x
             if (ys.get(y) == 1) ys.remove(y);
-            else ys.merge(y, -1, Integer::sum);
+            else ys.merge(y, -1, Integer::sum); // 移除一个 y
 
             int dx = xs.lastKey() - xs.firstKey();
             int dy = ys.lastKey() - ys.firstKey();
@@ -86,8 +86,8 @@ public:
         int ans = INT_MAX;
         for (auto& p : points) {
             int x = p[0] + p[1], y = p[1] - p[0];
-            xs.erase(xs.find(x));
-            ys.erase(ys.find(y));
+            xs.erase(xs.find(x)); // 移除一个 x
+            ys.erase(ys.find(y)); // 移除一个 y
 
             int dx = *xs.rbegin() - *xs.begin();
             int dy = *ys.rbegin() - *ys.begin();
@@ -115,8 +115,8 @@ func minimumDistance(points [][]int) int {
 	ans := math.MaxInt
 	for _, p := range points {
 		x, y := p[0]+p[1], p[1]-p[0]
-		remove(xs, x)
-		remove(ys, y)
+		remove(xs, x) // 移除一个 x
+		remove(ys, y) // 移除一个 y
 		ans = min(ans, max(xs.Right().Key-xs.Left().Key, ys.Right().Key-ys.Left().Key))
 		put(xs, x)
 		put(ys, y)
@@ -146,9 +146,9 @@ func remove(t *redblacktree.Tree[int, int], v int) {
 
 ## 方法二：维护最大次大、最小次小
 
-优化：如果把最大的 $x'$ 删掉，那么次大 $x'$ 就作为剩下 $n-1$ 个 $x'$ 中的最大值了，对于最小值也同理。
+优化：如果把最大的 $x'$ 移除，那么次大的 $x'$ 就是剩下 $n-1$ 个 $x'$ 中的最大值了，对于最小值也同理。
 
-所以我们可以维护 $x'$ 和 $y'$ 的最大次大、最小次小，一共 $8$ 个数。
+所以只需维护 $x'$ 和 $y'$ 的最大次大、最小次小，一共 $8$ 个数。
 
 ```py [sol-Python3]
 class Solution:
@@ -381,7 +381,7 @@ func f(v, v1, v2 int) int {
 }
 ```
 
-进一步地，要删除的点只能是 $x'$ 或 $y'$ 最大最小的点（不然删不删都一样），所以额外维护最大最小值的下标，可以少一次对 $\textit{points}$ 的遍历。
+进一步地，要移除的点只能是 $x'$ 或 $y'$ 最大最小的点（不然移除前后都一样），所以额外维护最大最小值的**下标**，可以少一次对 $\textit{points}$ 的遍历。
 
 ```py [sol-Python3]
 class Solution:
