@@ -108,6 +108,7 @@
 ||[2466. 统计构造好字符串的方案数](https://leetcode.cn/problems/count-ways-to-build-good-strings/)|[代码](https://leetcode.cn/problems/count-ways-to-build-good-strings/solution/by-endlesscheng-4j22/)|*课后作业|
 ||[2266. 统计打字方案数](https://leetcode.cn/problems/count-number-of-texts/)|[代码](https://leetcode.cn/problems/count-number-of-texts/solution/by-endlesscheng-gj8f/)|*课后作业|
 ||[213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)|[代码](https://leetcode.cn/problems/house-robber-ii/solution/jian-ji-xie-fa-zhi-jie-diao-yong-198-ti-qhvri/)|*课后作业|
+||[LCR 166. 珠宝的最高价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)|[代码](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)|*课后作业|
 |[0-1 背包 完全背包 至多/恰好/至少](https://www.bilibili.com/video/BV16Y411v7Y6/)|[494. 目标和](https://leetcode.cn/problems/target-sum/)|[代码](https://leetcode.cn/problems/target-sum/solutions/2119041/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-s1cx/)|包含空间优化|
 ||[322. 零钱兑换](https://leetcode.cn/problems/coin-change/)|[代码](https://leetcode.cn/problems/coin-change/solutions/2119065/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-21m5/)|包含空间优化|
 ||[2915. 和为目标值的最长子序列的长度](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/)|[代码](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/solution/mo-ban-qia-hao-zhuang-man-xing-0-1-bei-b-0nca/)|*课后作业|
