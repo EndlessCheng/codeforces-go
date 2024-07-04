@@ -130,6 +130,7 @@
 ||[124. 二叉树中的最大路径和](https://leetcode.cn/problems/binary-tree-maximum-path-sum/)|[代码](https://leetcode.cn/problems/binary-tree-maximum-path-sum/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-n9s91/)||
 ||[2246. 相邻字符不同的最长路径](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/)|[代码](https://leetcode.cn/problems/longest-path-with-different-adjacent-characters/solution/by-endlesscheng-92fw/)||
 ||[687. 最长同值路径](https://leetcode.cn/problems/longest-univalue-path/)|[代码](https://leetcode.cn/problems/longest-univalue-path/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-524j4/)|*课后作业|
+||[3203. 合并两棵树后的最小直径](https://leetcode.cn/problems/find-minimum-diameter-after-merging-two-trees/)|[代码](https://leetcode.cn/problems/find-minimum-diameter-after-merging-two-trees/solution/lian-jie-zhi-jing-zhong-dian-pythonjavac-0e1c/)|*课后作业|
 ||[1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/)|[代码](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/solution/tu-jie-on3-mei-ju-zhi-jing-duan-dian-che-am2n/)|*课后作业|
 ||[2538. 最大价值和与最小价值和的差值](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/)|[代码](https://leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/solution/by-endlesscheng-5l70/)|*课后作业|
 |[树形 DP - 最大独立集](https://www.bilibili.com/video/BV1vu4y1f7dn/)|[337. 打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/)|[代码](https://leetcode.cn/problems/house-robber-iii/solution/shi-pin-ru-he-si-kao-shu-xing-dppythonja-a7t1/)||
