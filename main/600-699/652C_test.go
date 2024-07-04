@@ -52,7 +52,7 @@ func TestCompareCF652C(t *testing.T) {
 		return rg.String()
 	}
 
-	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF, CF652C)
+	testutil.AssertEqualRunResultsInf(t, inputGenerator, runBF_CF652C, CF652C)
 }
 
 var scanner *bufio.Scanner
@@ -76,7 +76,7 @@ func getS() string {
 	return scanner.Text()
 }
 
-func runBF(_r io.Reader, out io.Writer) {
+func runBF_CF652C(_r io.Reader, out io.Writer) {
 	scanner = bufio.NewScanner(_r)
 	scanner.Split(bufio.ScanWords)
 	writer = bufio.NewWriter(out)
