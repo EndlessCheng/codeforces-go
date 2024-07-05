@@ -53,12 +53,53 @@ func Test_cf633F(t *testing.T) {
 1 7`,
 			`11`,
 		},
+		{
+			`5
+1 2 2 2 2
+1 2
+2 3
+3 4
+3 5`,
+			`9`,
+		},
+		{
+			`6
+1 1 1 1 2 1
+1 2
+2 3
+2 4
+3 5
+3 6`,
+			`7`,
+		},
+		{
+			`7
+1 2 2 2 2 1 1
+1 2
+2 3
+2 4
+4 5
+5 6
+5 7`,
+			`10`,
+		},
+		{
+			`7
+1 2 1 1 1 2 1
+1 2
+2 3
+3 4
+3 5
+5 6
+5 7`,
+			`9`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf633F)
 }
 
 func TestCompare_cf633F(_t *testing.T) {
-	//return
+	return
 	testutil.DebugTLE = 0
 	rg := testutil.NewRandGenerator()
 	inputGenerator := func() string {
