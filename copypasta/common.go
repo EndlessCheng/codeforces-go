@@ -41,12 +41,12 @@ https://codeforces.com/problemset/problem/681/B 1300
 ## 枚举右，维护左
 - [1. 两数之和](https://leetcode.cn/problems/two-sum/)
    - https://codeforces.com/problemset/problem/702/B
-- [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
-- [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 - [1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/) 1161 经典题
     - https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/
 - [2815. 数组中的最大数对和](https://leetcode.cn/problems/max-pair-sum-in-an-array/) 1295
 - [2748. 美丽下标对的数目](https://leetcode.cn/problems/number-of-beautiful-pairs/) 1301
+- [219. 存在重复元素 II](https://leetcode.cn/problems/contains-duplicate-ii/)
+- [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 - [2342. 数位和相等数对的最大和](https://leetcode.cn/problems/max-sum-of-a-pair-with-equal-sum-of-digits/) 1309
 - [1679. K 和数对的最大数目](https://leetcode.cn/problems/max-number-of-k-sum-pairs/) 1346
 - [1010. 总持续时间可被 60 整除的歌曲](https://leetcode.cn/problems/pairs-of-songs-with-total-durations-divisible-by-60/) 1377
@@ -101,6 +101,7 @@ https://codeforces.com/problemset/problem/466/C
 https://atcoder.jp/contests/abc233/tasks/abc233_d
 交错前缀和 https://codeforces.com/contest/1915/problem/E
 https://codeforces.com/problemset/problem/1446/D1 2600 转换
+https://www.luogu.com.cn/problem/AT_joisc2014_h 三个字母映射到一些大整数上，从而区分开
 
 前缀和思想 LC1523 https://leetcode.cn/problems/count-odd-numbers-in-an-interval-range/
 有点数形结合 https://codeforces.com/problemset/problem/1748/C
@@ -164,6 +165,9 @@ https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/1837/F 2400
+昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
+- 预处理前后缀 GCD，由于前缀 GCD 只有 O(logU) 个不同的值，可以只枚举 O(logU) 个 L 和 O(n) 个 R，
+- 枚举 R 的同时计算修改后的子数组 GCD，然后和前后缀 GCD 求 GCD
 
 #### 定长滑动窗口（右边数字为难度分）
 - [1456. 定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/) 1263
@@ -189,6 +193,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - [1852. 每个子数组的数字种类数](https://leetcode.cn/problems/distinct-numbers-in-each-subarray/)（会员题）
 - [2067. 等计数子串的数量](https://leetcode.cn/problems/number-of-equal-count-substrings/)（会员题）
 - [2107. 分享 K 个糖果后独特口味的数量](https://leetcode.cn/problems/number-of-unique-flavors-after-sharing-k-candies/)（会员题）
+https://codeforces.com/problemset/problem/608/B 1500
 https://codeforces.com/problemset/problem/69/E 1800
 https://codeforces.com/problemset/problem/371/E 2000
 
@@ -251,6 +256,9 @@ https://codeforces.com/problemset/problem/1777/C 1700
 变形：改成子数组 https://codeforces.com/problemset/problem/550/B
 其它题目见【前缀和】
 
+#### 滑窗的同时维护数据
+https://codeforces.com/problemset/problem/898/D 1600
+
 #### 进阶 多指针滑动窗口
 - [930. 和相同的二元子数组](https://leetcode.cn/problems/binary-subarrays-with-sum/) 1592 恰好等于
 - [1248. 统计「优美子数组」](https://leetcode.cn/problems/count-number-of-nice-subarrays/) 1624 类似 930
@@ -264,6 +272,7 @@ https://codeforces.com/problemset/problem/1777/C 1700
 
 ### 多指针
 - [1213. 三个有序数组的交集](https://leetcode.cn/problems/intersection-of-three-sorted-arrays/)（会员题）
+https://codeforces.com/problemset/problem/1971/F 1600
 
 LC2234 https://leetcode.cn/problems/maximum-total-beauty-of-the-gardens/ 2562
 类似 [795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/) 1817
@@ -347,11 +356,18 @@ LC2257 https://leetcode.cn/problems/count-unguarded-cells-in-the-grid/
 LC2495（会员）逆向思维 https://leetcode.cn/problems/number-of-subarrays-having-even-product/
 https://codeforces.com/problemset/problem/1272/C 1200
 https://codeforces.com/problemset/problem/1343/C 1200
+https://codeforces.com/problemset/problem/1821/C 1300 枚举答案
 https://codeforces.com/problemset/problem/1873/F 1300
 https://codeforces.com/problemset/problem/1380/C 1400
 https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/525/C 1600
 https://codeforces.com/problemset/problem/1748/C 1600
+https://codeforces.com/problemset/problem/1849/D 1700
+
+### 哨兵
+- [1465. 切割后面积最大的蛋糕](https://leetcode.cn/problems/maximum-area-of-a-piece-of-cake-after-horizontal-and-vertical-cuts/) 1445
+- [2975. 移除栅栏得到的正方形田地的最大面积](https://leetcode.cn/problems/maximum-square-area-by-removing-fences-from-a-field/) 1873
+不是哨兵，但图像类似 [2943. 最大化网格图中正方形空洞的面积](https://leetcode.cn/problems/maximize-area-of-square-hole-in-grid/) 1677
 
 ### 巧妙枚举
 LC939 https://leetcode.cn/problems/minimum-area-rectangle/
@@ -393,26 +409,21 @@ https://codeforces.com/problemset/problem/339/E 2700
     - https://codeforces.com/contest/1914/problem/E2 1400
 - [2333. 最小差值平方和](https://leetcode.cn/problems/minimum-sum-of-squared-difference/) 2011
     - 有 k%(i+1) 个元素可以多减少 1
-- [1648. 销售价值减少的颜色球](https://leetcode.cn/problems/sell-diminishing-valued-colored-balls/)
 - [2136. 全部开花的最早一天](https://leetcode.cn/problems/earliest-possible-day-of-full-bloom/) 2033
+- [1648. 销售价值减少的颜色球](https://leetcode.cn/problems/sell-diminishing-valued-colored-balls/) 2050
 - todo 复习 [2193. 得到回文串的最少操作次数](https://leetcode.cn/problems/minimum-number-of-moves-to-make-palindrome/) 2091
 - todo 复习 [659. 分割数组为连续子序列](https://leetcode.cn/problems/split-array-into-consecutive-subsequences/)
 - [1889. 装包裹的最小浪费空间](https://leetcode.cn/problems/minimum-space-wasted-from-packaging/) 2214
 - [1505. 最多 K 次交换相邻数位后得到的最小整数](https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/) 2337
 - [420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)
 - [LCP 26. 导航装置](https://leetcode.cn/problems/hSRGyL/)
-- [418. 屏幕可显示句子的数量](https://leetcode.cn/problems/sentence-screen-fitting/)（会员题）
 - [3088. 使字符串反回文](https://leetcode.cn/problems/make-string-anti-palindrome/)（会员题）
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/388/A 1400
-https://codeforces.com/problemset/problem/1443/C 1400
-https://codeforces.com/problemset/problem/864/D 1500
-https://codeforces.com/problemset/problem/1659/C 1500
-https://codeforces.com/problemset/problem/1661/C 1700 奇数天+1 偶数天 +2
-https://codeforces.com/problemset/problem/1691/C
-https://codeforces.com/problemset/problem/1369/C
+https://codeforces.com/problemset/problem/492/C 1400
+https://codeforces.com/problemset/problem/1369/C 1400
 	提示 1：前 k 大的数一定可以作为最大值。且尽量把大的数放在 w[i] = 1 的组中，这样可以计入答案两次。
 	如果某个前 k 大的数 x 没有作为最大值（其中一个组的最大值是不在前 k 大中的 y），那么把 x 和 y 交换，
 	如果 x 是某个组的最小值，那么交换后 y 必然也是最小值，此时答案不变。
@@ -421,18 +432,28 @@ https://codeforces.com/problemset/problem/1369/C
 		   如果 y 交换后也不是最小值，那么答案变大了 x-y。
 	无论如何，这样交换都不会使答案变小，因此前 k 大的数一定可以作为最大值。
 	提示 2：然后来说最小值。a 的最小值必然要分到某个组中，为了「跳过」尽量多的较小的数，优先把 a 中较小的数分到 w 较大的组中。所以 a 从小到大遍历，w 从大到小遍历。
-https://codeforces.com/problemset/problem/1479/B1 https://codeforces.com/problemset/problem/1479/B2
+https://codeforces.com/problemset/problem/1443/C 1400
+https://codeforces.com/problemset/problem/1691/C 1400
+https://codeforces.com/problemset/problem/864/D 1500
+https://codeforces.com/problemset/problem/985/C 1500
+https://codeforces.com/problemset/problem/1659/C 1500
+https://codeforces.com/problemset/problem/1759/E 1500
+https://codeforces.com/problemset/problem/1873/G 1500
+https://codeforces.com/problemset/problem/913/C 1600
+https://codeforces.com/problemset/problem/1707/A 1600 倒序思维
+https://codeforces.com/problemset/problem/1157/C2 1700
+https://codeforces.com/problemset/problem/1661/C 1700 奇数天+1 偶数天 +2
+https://codeforces.com/problemset/problem/3/B 1900
+https://codeforces.com/problemset/problem/1479/B1 1900
+https://codeforces.com/problemset/problem/1804/D 2000
+https://codeforces.com/problemset/problem/1479/B2 2100
     https://www.luogu.com.cn/blog/wsyhb/post-ti-xie-cf1479b1-painting-the-array-i
-https://codeforces.com/problemset/problem/1804/D
-https://codeforces.com/problemset/problem/442/C
+https://codeforces.com/problemset/problem/442/C 2500
     如果 x>=y<=z，那么删除 y 最优
     结束后剩下一个长为 m 的 /\ 形状的序列，由于无法取到最大值和次大值，那么加上剩下最小的 m-2 个数
-https://codeforces.com/problemset/problem/1157/C2
-https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
-倒序思维 https://codeforces.com/problemset/problem/1707/A
-https://codeforces.com/contest/1873/problem/G
 https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 https://www.luogu.com.cn/problem/P1016
+https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
 
 数学思维
 https://codeforces.com/problemset/problem/23/C 2500
@@ -495,9 +516,10 @@ https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/solutions/371326/xing-cheng-mu-biao-shu-zu-de-zi-shu-zu-zui-shao-ze/
 https://codeforces.com/problemset/problem/448/C
 
-邻项交换（最小代价排序/字典序最小）
+邻项交换（最小代价排序/字典序最小） Exchange Arguments
+https://codeforces.com/blog/entry/63533
 某些题目和逆序对有关
-LC1665 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/ 1901
+- [1665. 完成所有任务的最少初始能量](https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/) 1901
 https://codeforces.com/problemset/problem/1638/B 1100
 https://codeforces.com/problemset/problem/920/C 1400
 https://codeforces.com/problemset/problem/435/B 1400
@@ -525,15 +547,17 @@ LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
 - 加强版 https://www.luogu.com.cn/problem/P9715        ?contestId=126251
 
 思维：观察、结论
-- [2498. 青蛙过河 II](https://leetcode.cn/problems/frog-jump-ii/)
+- [2498. 青蛙过河 II](https://leetcode.cn/problems/frog-jump-ii/) 1759
 - [782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/) 2430
-https://codeforces.com/problemset/problem/1442/A
-https://codeforces.com/problemset/problem/558/C
-https://codeforces.com/problemset/problem/1610/E
-https://codeforces.com/problemset/problem/1811/C
-https://codeforces.com/problemset/problem/1822/D
-https://codeforces.com/problemset/problem/1608/C 对拍找反例
-https://codeforces.com/contest/1744/problem/F 2000
+https://codeforces.com/problemset/problem/1811/C 1100
+https://codeforces.com/problemset/problem/1822/D 1200
+https://codeforces.com/problemset/problem/1077/C 1300
+https://codeforces.com/problemset/problem/1364/B 1300
+https://codeforces.com/problemset/problem/1608/C 1700
+https://codeforces.com/problemset/problem/1442/A 1800
+https://codeforces.com/problemset/problem/558/C  1900
+https://codeforces.com/problemset/problem/1744/F 2000
+https://codeforces.com/problemset/problem/1610/E 2300
 
 思维：脑筋急转弯
 LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/
@@ -541,6 +565,7 @@ LC2731 https://leetcode.cn/problems/movement-of-robots/
 LC280 https://leetcode.cn/problems/wiggle-sort/
 LC3012 https://leetcode.cn/problems/minimize-length-of-array-using-operations/
 https://codeforces.com/problemset/problem/1009/B 1400
+https://codeforces.com/problemset/problem/1883/F 1400
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
 https://codeforces.com/problemset/problem/601/A 1600
@@ -562,25 +587,34 @@ LC2198 https://leetcode.cn/problems/number-of-single-divisor-triplets/（会员�
 LC2188 https://leetcode.cn/problems/minimum-time-to-finish-the-race/ 2315
 LC2920 https://leetcode.cn/problems/maximum-points-after-collecting-coins-from-all-nodes/ 2351
 
+枚举答案
+https://codeforces.com/contest/1977/problem/C
+
 构造
 题单 https://www.luogu.com.cn/training/14#problems
 LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 LC2745 https://leetcode.cn/problems/construct-the-longest-new-string/ 1607
 LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
+构造反例 https://leetcode.cn/problems/parallel-courses-iii/solution/tuo-bu-pai-xu-dong-tai-gui-hua-by-endles-dph6/2310439
+构造 TLE 数据 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/solutions/2805413/bitset-you-hua-0-1-bei-bao-by-endlessche-m1xn/comments/2320111
 https://codeforces.com/problemset/problem/1028/B  1200
 https://codeforces.com/problemset/problem/1713/C  1200
 https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300
+https://codeforces.com/problemset/problem/1815/A  1300
+https://codeforces.com/problemset/problem/1978/C  1300
 https://codeforces.com/problemset/problem/803/A   1400
 https://codeforces.com/problemset/problem/1838/C  1400
 https://codeforces.com/problemset/problem/1863/D  1400
+https://codeforces.com/problemset/problem/1896/C  1400
 https://codeforces.com/problemset/problem/1630/A  1500
 https://codeforces.com/problemset/problem/1710/A  1500
 https://codeforces.com/problemset/problem/1722/G  1500
 https://codeforces.com/problemset/problem/1809/C  1500
 https://codeforces.com/problemset/problem/1968/E  1600
 https://codeforces.com/problemset/problem/584/C   1700 分类讨论
+https://codeforces.com/problemset/problem/1332/D  1700 给你一个错误代码，构造 hack 数据
 https://codeforces.com/problemset/problem/142/B   1800 棋盘放最多的马
 https://codeforces.com/problemset/problem/847/C   1800
 https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表中不相邻
@@ -618,41 +652,47 @@ https://codeforces.com/problemset/problem/1365/F 仍然对称
 把一个环形数组切两刀，分成两段，要求相等，求方案数 => 和为 sum(a)/2 的子数组个数
 LC494 https://leetcode.cn/problems/target-sum/
 
+行列独立 LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
+
 分类讨论（部分题是易错题）
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
 https://codeforces.com/problemset/problem/30/A 1400
 https://codeforces.com/problemset/problem/45/I 1400
+https://codeforces.com/problemset/problem/489/C 1400
 https://codeforces.com/problemset/problem/934/A 1400
-https://codeforces.com/problemset/problem/193/A
-https://codeforces.com/problemset/problem/489/C
-https://codeforces.com/problemset/problem/1605/C
-https://codeforces.com/problemset/problem/382/C
-https://codeforces.com/problemset/problem/1051/C
-https://codeforces.com/problemset/problem/1095/E
-https://codeforces.com/problemset/problem/796/C
-https://codeforces.com/problemset/problem/1594/F
-https://codeforces.com/problemset/problem/1798/E
-https://codeforces.com/problemset/problem/1811/F
-https://codeforces.com/problemset/problem/1714/F 锻炼代码实现技巧的好题
-https://codeforces.com/problemset/problem/1832/D2
-https://codeforces.com/contest/1833/problem/G 样例给的挺良心的
-https://codeforces.com/problemset/problem/411/C
-https://codeforces.com/contest/1516/problem/C
-https://codeforces.com/problemset/problem/1763/C
-https://codeforces.com/problemset/problem/960/B
-https://codeforces.com/problemset/problem/1799/C
-https://codeforces.com/problemset/problem/1292/A 1400 也有简单写法
 https://codeforces.com/problemset/problem/1009/B 1400 脑筋急转弯
-https://codeforces.com/contest/1251/problem/B 1400
+https://codeforces.com/problemset/problem/1251/B 1400
+https://codeforces.com/problemset/problem/1292/A 1400 也有简单写法
+https://codeforces.com/problemset/problem/1605/C 1400
+https://codeforces.com/problemset/problem/960/B 1500
+https://codeforces.com/problemset/problem/1051/C 1500
 https://codeforces.com/problemset/problem/1180/B 1500
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
+https://codeforces.com/problemset/problem/898/E 1600
 https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
 https://codeforces.com/problemset/problem/1861/C 1600 好题！
-https://codeforces.com/contest/1914/problem/F 1900
+https://codeforces.com/problemset/problem/1978/D 1600
+https://codeforces.com/problemset/problem/193/A 1700
+https://codeforces.com/problemset/problem/382/C 1700
+https://codeforces.com/problemset/problem/411/C 1700
+https://codeforces.com/problemset/problem/1516/C 1700
+https://codeforces.com/problemset/problem/1799/C 1700
+https://codeforces.com/problemset/problem/1833/G 1800 样例给的挺良心的
+https://codeforces.com/problemset/problem/796/C 1900
+https://codeforces.com/problemset/problem/1095/E 1900
+https://codeforces.com/problemset/problem/1714/F 1900 锻炼代码实现技巧的好题
+https://codeforces.com/problemset/problem/1914/F 1900
+https://codeforces.com/problemset/problem/1763/C 2000
+https://codeforces.com/problemset/problem/1978/E 2000
+https://codeforces.com/problemset/problem/1811/F 2100
+https://codeforces.com/problemset/problem/1798/E 2300
 https://codeforces.com/problemset/problem/209/C 2400
+https://codeforces.com/problemset/problem/1594/F 2400
 https://codeforces.com/problemset/problem/1761/E 2400
+https://codeforces.com/problemset/problem/1832/D2 2400
 https://codeforces.com/problemset/problem/1730/E 2700
+https://codeforces.com/gym/105139/problem/L
 https://atcoder.jp/contests/diverta2019/tasks/diverta2019_c
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 https://atcoder.jp/contests/abc125/tasks/abc125_d
@@ -664,13 +704,13 @@ https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii
 
 大量分类讨论
 - [420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)
-https://codeforces.com/problemset/problem/356/C
-https://codeforces.com/problemset/problem/460/D
-https://codeforces.com/problemset/problem/796/C
-https://codeforces.com/problemset/problem/1374/E2
+https://codeforces.com/problemset/problem/796/C 1900
+https://codeforces.com/problemset/problem/1647/D 1900
+https://codeforces.com/problemset/problem/356/C 2100
+https://codeforces.com/problemset/problem/460/D 2300
 https://codeforces.com/problemset/problem/1527/D 2400
-https://codeforces.com/problemset/problem/1647/D
-+构造 https://atcoder.jp/contests/arc153/tasks/arc153_c
+https://codeforces.com/problemset/problem/1374/E2 2500
+https://atcoder.jp/contests/arc153/tasks/arc153_c +构造
 https://atcoder.jp/contests/agc015/tasks/agc015_d
 
 贡献法
@@ -688,6 +728,7 @@ https://codeforces.com/problemset/problem/1691/C 1400
 https://codeforces.com/problemset/problem/1789/C 1500 好题！
 https://codeforces.com/problemset/problem/383/A 1600 好题
 https://codeforces.com/problemset/problem/1165/E 1600
+https://codeforces.com/problemset/problem/1715/C 1700 也可以用增量法
 https://codeforces.com/problemset/problem/1777/D 1900 树
 https://codeforces.com/problemset/problem/1788/D 2000 好题！
 https://codeforces.com/problemset/problem/912/D 2100
@@ -700,6 +741,14 @@ https://atcoder.jp/contests/abc159/tasks/abc159_f 与 0-1 背包结合
 ^+ https://atcoder.jp/contests/abc201/tasks/abc201_e
 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 
+增量法
+- [2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/) 2033
+      结合线段树优化 DP https://codeforces.com/contest/833/problem/B 2200
+- [828. 统计子串中的唯一字符](https://leetcode.cn/problems/count-unique-characters-of-all-substrings-of-a-given-string/) 2034
+- [2916. 子数组不同元素数目的平方和 II](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/) 2816
+https://codeforces.com/problemset/problem/1715/C 1700 也可以用贡献法
+https://codeforces.com/problemset/problem/1428/F 2400
+
 小模拟
 LC2534 https://leetcode.cn/problems/time-taken-to-cross-the-door/
 https://atcoder.jp/contests/abc279/tasks/abc279_f
@@ -710,6 +759,9 @@ https://atcoder.jp/contests/abc319/tasks/abc319_f
 其他
 删除一个字符 + 删除最长连续前缀 https://codeforces.com/problemset/problem/1430/D
 https://codeforces.com/problemset/problem/521/D
+
+先撤销，再恢复
+LC3187 https://leetcode.cn/problems/peaks-in-array/
 
 合法括号字符串 (Regular Bracket Sequence, RBS)
 https://codeforces.com/problemset/problem/1097/C 1400
@@ -855,6 +907,7 @@ https://www.jvruo.com/archives/1844/
 https://www.cnblogs.com/nth-element/p/11768155.html
 题单 https://www.luogu.com.cn/training/8793
 LC1388 双向链表反悔贪心 https://leetcode.cn/problems/pizza-with-3n-slices/
+LC2813 https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/
 */
 
 /* 集合哈希
@@ -875,6 +928,11 @@ https://codeforces.com/problemset/problem/707/D
 参考 https://draveness.me/golang/docs/part3-runtime/ch07-memory/golang-garbage-collector/
     https://zhuanlan.zhihu.com/p/77943973
 
+128MB ~1e7 个 int64
+256MB ~3e7 个 int64
+512MB ~6e7 个 int64
+1GB   ~1e8 个 int64
+
 如果没有禁用 GC 但 MLE，可以尝试 1.19 新增的 debug.SetMemoryLimit
 例如 debug.SetMemoryLimit(200<<20)，其中 200 可以根据题目的约束来修改
 具体见如下测试：
@@ -890,7 +948,7 @@ https://codeforces.com/problemset/problem/707/D
 对比 https://codeforces.com/problemset/submission/375/118043978
     https://codeforces.com/problemset/submission/375/118044262
 
-函数内的递归 lambda 会额外消耗非常多的内存（~100MB / 1e6 递归深度）
+函数内的递归 lambda 会额外消耗非常多的内存（100~200MB / 1e6 递归深度）
 写在 main 里面 + slice MLE      https://codeforces.com/contest/767/submission/174193385
 写在 main 外面 + slice 188364KB https://codeforces.com/contest/767/submission/174194380
 附：
@@ -930,7 +988,7 @@ func intsToInt64s(a []int) []int64 {
 
 func _() {
 	const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-	pow10 := func(x int) int { return int(math.Pow10(x)) } // 不需要 round
+	pow10 := func(x int) int { return int(math.Pow10(x)) } // 底层实现是查表，不需要 round
 
 	// TIPS: dir4[i] 和 dir4[i^1] 互为相反方向
 	dir4 := []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 上下左右（网格）
@@ -964,6 +1022,8 @@ func _() {
 		}
 		return x
 	}
+	// - [1936. 新增的最少台阶数](https://leetcode.cn/problems/add-minimum-number-of-rungs/) 1323
+	// - [1785. 构成特定和需要添加的最少元素](https://leetcode.cn/problems/minimum-elements-to-add-to-form-a-given-sum/) 1432
 	ceil := func(a, b int) int {
 		// assert a >= 0 && b > 0
 		if a == 0 {
@@ -1004,6 +1064,8 @@ func _() {
 
 	// 顺时针旋转矩阵 90°
 	// 返回一个拷贝
+	// Python3: list(zip(*reversed(a))) 或者 list(zip(*a[::-1]))
+	// 注：逆时针旋转矩阵 90° 就是 list(zip(*a))[::-1]
 	rotateCopy := func(a [][]int) [][]int {
 		n, m := len(a), len(a[0])
 		b := make([][]int, m)
@@ -1017,8 +1079,10 @@ func _() {
 		}
 		return b
 	}
+	rotate := rotateCopy
+
 	// 转置
-	transpose := func(a [][]int) [][]int {
+	transposeCopy := func(a [][]int) [][]int {
 		n, m := len(a), len(a[0])
 		b := make([][]int, m)
 		for i := range b {
@@ -1202,10 +1266,10 @@ func _() {
 	// 前缀和
 	// LC303 https://leetcode.cn/problems/range-sum-query-immutable/
 	// https://codeforces.com/problemset/problem/901/C 2300
-	prefixSum := func(a []int) {
-		slices.Sort(a)
-		sum := make([]int, len(a)+1)
-		for i, v := range a {
+	prefixSum := func(arr []int) {
+		slices.Sort(arr)
+		sum := make([]int, len(arr)+1)
+		for i, v := range arr {
 			sum[i+1] = sum[i] + v
 		}
 
@@ -1214,9 +1278,9 @@ func _() {
 		// LC2602 https://leetcode.cn/problems/minimum-operations-to-make-all-array-elements-equal/
 		// - 原题是 https://atcoder.jp/contests/abc255/tasks/abc255_d
 		distanceSum := func(target int) int {
-			i := sort.SearchInts(a, target)
+			i := sort.SearchInts(arr, target)
 			s1 := target*i - sum[i]
-			s2 := sum[len(a)] - sum[i] - target*(len(a)-i)
+			s2 := sum[len(arr)] - sum[i] - target*(len(arr)-i)
 			return s1 + s2
 		}
 
@@ -1225,7 +1289,7 @@ func _() {
 		// 返回下标在左闭右开区间 [left,right) 内的所有 a[i] 到 target 的距离之和
 		// ！需要保证 a 是有序的
 		distanceSumRange := func(left, right, target int) int {
-			i := sort.SearchInts(a, target)
+			i := sort.SearchInts(arr, target)
 			if i <= left { // target <= a[i] <= a[left]
 				return sum[right] - sum[left] - target*(right-left)
 			}
@@ -1240,10 +1304,10 @@ func _() {
 		// 返回 a 的所有数移动到 [low, high] 内的移动距离之和
 		// ！需要保证 a 是有序的
 		moveSum := func(low, high int) int {
-			i := sort.SearchInts(a, low)
-			j := sort.SearchInts(a, high+1)
+			i := sort.SearchInts(arr, low)
+			j := sort.SearchInts(arr, high+1)
 			s1 := low*i - sum[i]
-			s2 := sum[len(a)] - sum[j] - high*(len(a)-j)
+			s2 := sum[len(arr)] - sum[j] - high*(len(arr)-j)
 			return s1 + s2
 		}
 
@@ -1251,7 +1315,7 @@ func _() {
 		// ！需要保证 a 是有序的
 		// - [3081. 替换字符串中的问号使分数最小](https://leetcode.cn/problems/replace-question-marks-in-string-to-minimize-its-value/) 1905
 		maxLow := func(maxOp int) int {
-			i := sort.Search(len(a), func(i int) bool { return a[i]*i-sum[i] > maxOp })
+			i := sort.Search(len(arr), func(i int) bool { return arr[i]*i-sum[i] > maxOp })
 			// low * i - sum[i] <= maxOp, i=n 时也适用
 			low := (sum[i] + maxOp) / i
 			// 注：如果存在 sum[i] + maxOp < 0 的情况，直接用 % i == 0 if else 实现
@@ -1263,8 +1327,8 @@ func _() {
 		// - [1300. 转变数组后最接近目标值的数组和](https://leetcode.cn/problems/sum-of-mutated-array-closest-to-target/) 1607
 		// 类似题目 https://codeforces.com/problemset/problem/1065/C 1600
 		minHigh := func(maxOp int) int {
-			n := len(a)
-			i := sort.Search(n, func(i int) bool { return sum[n]-sum[n-i]-a[n-1-i]*i > maxOp })
+			n := len(arr)
+			i := sort.Search(n, func(i int) bool { return sum[n]-sum[n-i]-arr[n-1-i]*i > maxOp })
 			// 注意：这里的 i 表示，把最大的 i 个数减小到 high
 			// sum[n] - sum[n-i] - high * i <= maxOp, i=n 时也适用
 			high := (sum[n] - sum[n-i] - maxOp + i - 1) / i
@@ -1285,9 +1349,9 @@ func _() {
 	// LC1664 https://leetcode.cn/problems/ways-to-make-a-fair-array/
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/
 	// https://atcoder.jp/contests/abc288/tasks/abc288_d
-	groupPrefixSum := func(_a []int, md int) {
-		_sum := make([]int, len(_a)+md)
-		for i, v := range _a {
+	groupPrefixSum := func(arr []int, md int) {
+		_sum := make([]int, len(arr)+md)
+		for i, v := range arr {
 			_sum[i+md] = _sum[i] + v
 		}
 		_pre := func(x, t int) int {
@@ -1305,10 +1369,10 @@ func _() {
 	}
 
 	// 无限循环数组的区间和 [l,r)
-	circularRangeSum := func(a []int, md int) {
-		_n := len(a)
+	circularRangeSum := func(arr []int, md int) {
+		_n := len(arr)
 		sum := make([]int, _n+1)
-		for i, v := range a {
+		for i, v := range arr {
 			sum[i+1] = sum[i] + v
 		}
 		pre := func(p int) int { return sum[_n]*(p/_n) + sum[p%_n] }
@@ -1336,6 +1400,40 @@ func _() {
 		_ = query
 	}
 
+	// 拆位前缀和
+	bitSum := func(a []int) {
+		m := bits.Len(uint(slices.Max(a)))
+		sum := make([][]int, len(a))
+		for i, v := range a {
+			sum[i] = make([]int, m)
+			for j := range sum[i] {
+				sum[i+1][j] = sum[i][j] + v>>j&1
+			}
+		}
+
+		// 返回 [l,r] 内的 AND
+		queryAnd := func(l, r int) (res int) {
+			for j, s := range sum[r+1] {
+				if s-sum[l][j] == r-l+1 { // 全是 1
+					res |= 1 << j
+				}
+			}
+			return
+		}
+
+		// 返回 [l,r] 内的 OR
+		queryOr := func(l, r int) (res int) {
+			for j, s := range sum[r+1] {
+				if s > sum[l][j] { // 有 1
+					res |= 1 << j
+				}
+			}
+			return
+		}
+
+		_ = []any{queryAnd, queryOr}
+	}
+
 	// 二维前缀和 sum2d
 	// - [304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/) *模板题
 	// - [1314. 矩阵区域和](https://leetcode.cn/problems/matrix-block-sum/) 1484
@@ -1344,6 +1442,7 @@ func _() {
 	// - [1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode.cn/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/) 1735
 	// - [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) 也可以 DP
 	//     - https://codeforces.com/problemset/problem/1301/E 2500
+	//     - 思考：如果是菱形怎么 DP
 	// - [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
 	// - [1074. 元素和为目标值的子矩阵数量](https://leetcode.cn/problems/number-of-submatrices-that-sum-to-target/) 2189
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
@@ -1375,6 +1474,75 @@ func _() {
 		}
 
 		_ = []any{query, query2}
+	}
+
+	/* 菱形（曼哈顿距离）区域和
+	原矩阵 n 行 m 列
+
+	原坐标顺时针旋转 45°，再上移 n-1
+	(x,y) -> (x+y,y-x+n-1)
+	复原成原坐标（下移 n-1，再逆时针旋转 45°）
+	设 y' = y - n + 1
+	(x,y') -> ((x-y')/2, (x+y')/2)
+
+	映射前（坐标系顺序，不是矩阵顺序）
+	n=4, m=3
+	(0,2) (1,2) (2,2) (3,2)
+	(0,1) (1,1) (2,1) (3,1)
+	(0,0) (1,0) (2,0) (3,0)
+
+	映射后
+	横纵坐标范围 [0, n+m-2]
+	设 y' = y - n + 1
+	满足 -x <= y' <= x 且 -(2n-2-x) <= y' <= 2m-2-x 且 (x+y')%2 == 0
+	y^
+	5|            (0,2)
+	4|      (0,1)       (1,2)
+	3|(0,0)       (1,1)       (2,2)
+	2|      (1,0)       (2,1)       (3,2)   <- (n+m-2, m-1)
+	1|            (2,0)       (3,1)
+	0|                  (3,0)
+	 |------------------------------------> x
+	    0     1     2     3     4     5
+
+	若按照 for x for y 的顺序，会从左到右一列一列遍历，每列从下到上
+
+	映射前：以 (x,y) 为中心，曼哈顿距离为 r 的菱形区域
+	映射后：左上角在 (x'-r,y'-r)，右下角在 (x'+r,y'+r) 的正方形区域
+	注意下标和 0 取 max，和 n+m-2 取 min
+	*/
+	rhombusSum := func(a [][]int) {
+		n, m := len(a), len(a[0])
+		size := n + m - 1
+		b := make([][]int, size)
+		for i := range b {
+			b[i] = make([]int, size)
+		}
+		for i, r := range a {
+			for j, v := range r {
+				b[i+j][j-i+n-1] = v // 映射
+			}
+		}
+
+		sum := make([][]int, size+1)
+		for i := range sum {
+			sum[i] = make([]int, size+1)
+		}
+		for i, row := range b {
+			for j, v := range row {
+				sum[i+1][j+1] = sum[i+1][j] + sum[i][j+1] - sum[i][j] + v
+			}
+		}
+		// 返回到 (x,y) 曼哈顿距离不超过 r 的格子元素和
+		// 左闭右闭写法 r1<=r<=r2 && c1<=c<=c2
+		query := func(x, y, r int) int {
+			x, y = x+y, y-x+n-1
+			r1, c1 := max(x-r, 0), max(y-r, 0)
+			r2, c2 := min(x+r, size-1), min(y+r, size-1)
+			return sum[r2+1][c2+1] - sum[r2+1][c1] - sum[r1][c2+1] + sum[r1][c1]
+		}
+
+		_ = query
 	}
 
 	// 矩阵每行每列的前缀和
@@ -1690,6 +1858,7 @@ func _() {
 	- [3009. 折线图上的最大交点数量](https://leetcode.cn/problems/maximum-number-of-intersections-on-the-chart/)（会员题）
 	https://codeforces.com/problemset/problem/816/B 1400
 	https://codeforces.com/problemset/problem/1700/C 1700
+	https://codeforces.com/problemset/problem/1955/E 1700
 	浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
 	差分思想 https://codeforces.com/problemset/problem/1634/F 2700
 	https://www.lanqiao.cn/problems/17164/learning/?contest_id=179
@@ -1741,11 +1910,12 @@ func _() {
 		_ = update2
 	}
 
-	// 离散差分，传入闭区间列表 ps，不要求有序
-	// https://codeforces.com/problemset/problem/1420/D
-	diffMap := func(ps []struct{ l, r int }) {
+	// 离散差分，传入闭区间列表 a，不要求有序
+	// 例如，求被 n 个区间覆盖的整点个数：https://leetcode.cn/problems/count-days-without-meetings/
+	// https://codeforces.com/problemset/problem/1420/D 1800
+	diffMap := func(a []struct{ l, r int }) {
 		diff := map[int]int{} // or make with cap
-		for _, p := range ps {
+		for _, p := range a {
 			diff[p.l]++
 			diff[p.r+1]--
 		}
@@ -1755,68 +1925,122 @@ func _() {
 		}
 		slices.Sort(xs)
 
-		// 左闭右开区间 [_cnt[i].x, _cnt[i+1].x) 中的值都是 _cnt[i].c
+		// 左闭右开区间 [posAndCnt[i].x, posAndCnt[i+1].x) 中的值都是 posAndCnt[i].c
+		// 特别地：
+		// posAndCnt[0].x 是最小的区间左端点
+		// posAndCnt[len(posAndCnt)-1].x-1 是最大的区间右端点
 		type _pair struct{ x, c int }
-		_cnt := make([]_pair, len(xs))
+		posAndCnt := make([]_pair, len(xs))
 		sd := 0
 		for _, x := range xs {
 			sd += diff[x]
-			_cnt = append(_cnt, _pair{x, sd})
+			posAndCnt = append(posAndCnt, _pair{x, sd})
 		}
-		// 返回 x 被多少个 ps 中的区间包含（由于 ps 是闭区间，端点也算包含）
+		// 返回 x 被多少个 a 中的区间包含（由于 a 是闭区间，端点也算包含）
 		query := func(x int) int {
-			i := sort.Search(len(_cnt), func(i int) bool { return _cnt[i].x > x }) - 1
+			i := sort.Search(len(posAndCnt), func(i int) bool { return posAndCnt[i].x > x }) - 1
 			if i < 0 {
 				return 0
 			}
-			return _cnt[i].c
+			return posAndCnt[i].c
+		}
+
+		{
+			// 有多少个整点被至少一个区间覆盖？
+			coveredCnt := 0
+			for i := 0; i < len(posAndCnt)-1; i++ {
+				if posAndCnt[i].c > 0 {
+					coveredCnt += posAndCnt[i+1].x - posAndCnt[i].x
+				}
+			}
 		}
 
 		{
 			// 如果只对左端点感兴趣，可以改为如下写法
-			_cnt := make(map[int]int, len(xs)) // 前缀和
+			preCnt := make(map[int]int, len(xs)) // 前缀和
 			sd := 0
 			for _, x := range xs {
 				sd += diff[x]
-				_cnt[x] = sd
+				preCnt[x] = sd
 			}
 		}
 
 		_ = query
 	}
 
-	// 二维差分
+	// 二维差分（矩形差分）
 	// 【图解】从一维差分到二维差分 https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/
 	// 模板题 LC2536 https://leetcode.cn/problems/increment-submatrices-by-one/ 1583
 	// LC2132 https://leetcode.cn/problems/stamping-the-grid/ 2364（也可以不用差分）
 	// https://www.luogu.com.cn/problem/P3397
 	// LCP74 离散化 https://leetcode.cn/problems/xepqZ5/
+	// https://codeforces.com/problemset/problem/1985/H2
 	diff2D := func(n, m int) {
 		diff := make([][]int, n+2)
 		for i := range diff {
 			diff[i] = make([]int, m+2)
 		}
-		// 将区域 r1<=r<=r2 && c1<=c<=c2 上的数都加上 x
-		// 多 +1 是为了方便求前缀和
-		update := func(r1, c1, r2, c2, x int) {
-			diff[r1+1][c1+1] += x
-			diff[r1+1][c2+2] -= x
-			diff[r2+2][c1+1] -= x
-			diff[r2+2][c2+2] += x
+		// 将区域 r1<=r<=r2 && c1<=c<=c2 内的数都加上 val（额外 +1 是为了方便求前缀和）
+		update := func(r1, c1, r2, c2, val int) {
+			diff[r1+1][c1+1] += val
+			diff[r1+1][c2+2] -= val
+			diff[r2+2][c1+1] -= val
+			diff[r2+2][c2+2] += val
 		}
-		// 直接在 diff 上还原原始矩阵
-		for i := 1; i <= n; i++ {
-			for j := 1; j <= m; j++ {
-				diff[i][j] += diff[i][j-1] + diff[i-1][j] - diff[i-1][j-1]
+		// 直接在 diff 上还原原始矩阵（计算二维前缀和）
+		for i := 0; i < n; i++ {
+			for j := 0; j < m; j++ {
+				diff[i+1][j+1] += diff[i+1][j] + diff[i][j+1] - diff[i][j]
+				// 此时 diff[i+1][j+1] 就是区域更新后的矩阵的 a[i][j]
 			}
 		}
-		// 切出中间的 n*m 的原始矩阵
+		// 切出中间 n*m 的结果矩阵
 		diff = diff[1 : n+1]
 		for i, row := range diff {
 			diff[i] = row[1 : m+1]
 		}
 
 		_ = update
+	}
+
+	// 菱形（曼哈顿距离）差分
+	// 原矩阵 n 行 m 列
+	// 原理见上面的 sumRhombus
+	// https://ac.nowcoder.com/acm/contest/83687/F
+	diffRhombus := func(n, m, q int) [][]int {
+		size := n + m - 1
+		diff := make([][]int, size+2)
+		for i := range diff {
+			diff[i] = make([]int, size+2)
+		}
+		// 将映射后的区域 r1<=r<=r2 && c1<=c<=c2 内的数都加上 val（额外 +1 是为了方便求前缀和）
+		update := func(r1, c1, r2, c2, val int) {
+			diff[r1+1][c1+1] += val
+			diff[r1+1][c2+2] -= val
+			diff[r2+2][c1+1] -= val
+			diff[r2+2][c2+2] += val
+		}
+		for ; q > 0; q-- {
+			var x, y, r, val int
+			//Fscan(in, &x, &y, &r, &val);x--;y--
+			x, y = x+y, y-x+n-1 // 映射
+			update(max(x-r, 0), max(y-r, 0), min(x+r, size-1), min(y+r, size-1), val)
+		}
+
+		ans := make([][]int, n)
+		for i := range ans {
+			ans[i] = make([]int, m)
+		}
+		for i := 0; i < size; i++ {
+			for j := 0; j < size; j++ {
+				diff[i+1][j+1] += diff[i+1][j] + diff[i][j+1] - diff[i][j]
+				x, y := i, j-(n-1)
+				if -x <= y && y <= x && -(2*n-2-x) <= y && y <= 2*n-2-x && (x+y)%2 == 0 {
+					ans[(x-y)/2][(x+y)/2] = diff[i+1][j+1] // 复原
+				}
+			}
+		}
+		return ans
 	}
 
 	// 求差集 A-B, B-A 和交集 A∩B
@@ -1892,27 +2116,6 @@ func _() {
 				j++
 			} else {
 				i++
-				j++
-			}
-		}
-	}
-
-	// EXTRA: a 是否为 b 的子序列
-	// https://codeforces.com/problemset/problem/778/A
-	isSubSequence := func(a, b []int) bool {
-		i, n := 0, len(a)
-		j, m := 0, len(b)
-		for {
-			if i == n {
-				return true
-			}
-			if j == m {
-				return false
-			}
-			if a[i] == b[j] {
-				i++
-				j++
-			} else {
 				j++
 			}
 		}
@@ -2131,7 +2334,6 @@ func _() {
 		events := make([]int, 0, 2*n)
 		for _, p := range ranges {
 			l, r := p[0], p[1]
-			// 注意移位后是否溢出
 			events = append(events, l<<1|1, r<<1) // 先出后进
 			//events = append(events, l<<1, r<<1|1) // 先进后出
 		}
@@ -2261,16 +2463,17 @@ func _() {
 		pow10, dir4, dir8, perm3, perm4,
 		abs, ceil,
 		mergeMap, xorSet,
-		rotateCopy, transpose,
+		rotateCopy, rotate, transposeCopy,
 		initPalindromeNumber,
 
-		subsetSum, recoverArrayFromSubsetSum, subSumSorted,
 		prefixSum, groupPrefixSum, circularRangeSum,
-		matrixSum2D, rowColSum, diagonalSum, rightTriangleSum, contributionSum,
+		bitSum,
+		subsetSum, recoverArrayFromSubsetSum, subSumSorted,
+		matrixSum2D, rhombusSum, rowColSum, diagonalSum, rightTriangleSum, contributionSum,
 
-		diffOfDiff, diffMap, diff2D,
+		diffOfDiff, diffMap, diff2D, diffRhombus,
 
-		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isSubSequence, isDisjoint,
+		merge, mergeWithLimit, splitDifferenceAndIntersection, intersection, isSubset, isDisjoint,
 
 		discrete, discrete2, discreteMap, indexMap,
 		complement, quickSelect, sweepLine, sweepLine2, countCoveredPoints,
