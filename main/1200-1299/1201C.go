@@ -4,7 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
@@ -16,8 +16,9 @@ func CF1201C(_r io.Reader, out io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
-	sort.Ints(a)
-	a = a[n/2:]
+
+	slices.Sort(a)
+	a = a[n/2:] // 题目保证 n 是奇数
 	i, n := 1, len(a)
 	for ; i < n; i++ {
 		if a[i] != a[i-1] {
