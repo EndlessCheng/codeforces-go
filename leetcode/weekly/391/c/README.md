@@ -11,9 +11,13 @@
 |  $4$ | $1$  | $[1],[0,1],[1,0,1]$  | $3$ |
 |  $5$ | $1$  | $[1]$  | $1$ |
 
-**算法**：遍历 $\textit{nums}$ 的同时，维护 $\textit{cnt}$，表示右端点下标为 $i$ 的交替子数组的最长长度，这也是右端点下标为 $i$ 的交替子数组的个数。
+把 $\textit{nums}_4$ 加到以 $3$ 为右端点的交替子数组的末尾，可以得到 $2$ 个交替子数组 $[0,1]$ 和 $[1,0,1]$，再算上 $\textit{nums}_4$ 单独作为一个长为 $1$ 的交替子数组，因此以 $4$ 为右端点的交替子数组有 $3$ 个。
 
-- 如果 $i>0$ 且 $\textit{nums}_i \ne \textit{nums}_{i-1}$，那么把 $\textit{cnt}$ 增加 $1$，意思是「以 $i$ 为右端点的交替子数组的最长长度」比「以 $i-1$ 为右端点的交替子数组的最长长度」要多 $1$。
+一般地，如果 $\textit{nums}_i \ne \textit{nums}_{i-1}$，我们可以把 $\textit{nums}_i$ 加到所有以 $i-1$ 为右端点的交替子数组的末尾，所以「以 $i$ 为右端点的交替子数组个数」比「以 $i-1$ 为右端点的交替子数组个数」多 $1$。
+
+**算法**：遍历 $\textit{nums}$ 的同时，维护 $\textit{cnt}$，表示右端点下标为 $i$ 的交替子数组的个数。
+
+- 如果 $i>0$ 且 $\textit{nums}_i \ne \textit{nums}_{i-1}$，根据上面的讨论，把 $\textit{cnt}$ 增加 $1$。
 - 否则，把 $\textit{cnt}$ 重置为 $1$，表示 $\textit{nums}_i$ 单独组成一个长为 $1$ 的交替子数组。
 
 累加遍历过程中的 $\textit{cnt}$ 值，即为答案。
@@ -47,7 +51,7 @@ class Solution:
 class Solution {
     public long countAlternatingSubarrays(int[] nums) {
         long ans = 0;
-        int cnt = 0; // 连续交替长度
+        int cnt = 0;
         for (int i = 0; i < nums.length; i++) {
             if (i > 0 && nums[i] != nums[i - 1]) {
                 cnt++;
@@ -66,7 +70,7 @@ class Solution {
 public:
     long long countAlternatingSubarrays(vector<int>& nums) {
         long long ans = 0;
-        int cnt = 0; // 连续交替长度
+        int cnt = 0;
         for (int i = 0; i < nums.size(); i++) {
             if (i > 0 && nums[i] != nums[i - 1]) {
                 cnt++;
@@ -83,7 +87,7 @@ public:
 ```c [sol-C]
 long long countAlternatingSubarrays(int* nums, int numsSize) {
     long long ans = 0;
-    int cnt = 0; // 连续交替长度
+    int cnt = 0;
     for (int i = 0; i < numsSize; i++) {
         if (i > 0 && nums[i] != nums[i - 1]) {
             cnt++;
@@ -98,7 +102,7 @@ long long countAlternatingSubarrays(int* nums, int numsSize) {
 
 ```go [sol-Go]
 func countAlternatingSubarrays(nums []int) (ans int64) {
-	cnt := 0 // 连续交替长度
+	cnt := 0
 	for i, x := range nums {
 		if i > 0 && x == nums[i-1] {
 			cnt = 1
@@ -114,7 +118,7 @@ func countAlternatingSubarrays(nums []int) (ans int64) {
 ```js [sol-JS]
 var countAlternatingSubarrays = function(nums) {
     let ans = 0;
-    let cnt = 0; // 连续交替长度
+    let cnt = 0;
     for (let i = 0; i < nums.length; i++) {
         if (i > 0 && nums[i] != nums[i - 1]) {
             cnt++;
@@ -131,7 +135,7 @@ var countAlternatingSubarrays = function(nums) {
 impl Solution {
     pub fn count_alternating_subarrays(nums: Vec<i32>) -> i64 {
         let mut ans = 0;
-        let mut cnt = 0; // 连续交替长度
+        let mut cnt = 0;
         for i in 0..nums.len() {
             if i > 0 && nums[i] != nums[i - 1] {
                 cnt += 1;
