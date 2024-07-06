@@ -235,17 +235,22 @@ func fasterIO() {
 		return
 	}
 
-	// 手写输出，适用于有大量（~1e6）输出的场景，CF 上可以再快 60~90ms
-	// 使用前 https://codeforces.com/contest/1208/submission/176961129
-	// 使用后 https://codeforces.com/contest/1208/submission/176963572
-	outS := make([]byte, 0, 1e6*22) // 或者创建一个全局 array _o，然后 outS := _o[:0]（效率几乎一样）
-	tmpS := [20]byte{}              // 可根据绝对值的十进制长度的上限调整
+	// 手写输出，可能会加快几十 ms
+	// 使用前 202ms https://codeforces.com/contest/1208/submission/176961129 （新版）https://codeforces.com/contest/1208/submission/269050123 218ms
+	// 使用后 139ms https://codeforces.com/contest/1208/submission/176963572 （新版）https://codeforces.com/contest/1208/submission/269052669 171ms
+	// 注：也可以全部初始化成空格/换行，这样可以直接倒着写入（需要 OJ 支持特判输出有多个空格/换行），不过实测没啥区别，处理负号还要多写一些逻辑
+	// 注：也可以创建一个全局数组 _o，然后 outS := _o[:0]，不过效率几乎一样
+
+	const outputN = 1000000                       // 输出的 int 个数的最大值
+	const intWidth = 20                           // 输出的 int 绝对值的十进制长度的最大值
+	outS := make([]byte, 0, outputN*(intWidth+2)) // 如果没有负数，+2 改成 +1
+	tmpS := [intWidth]byte{}                      // 临时保存输出的内容（因为遍历数位是从右往左）
 	wInt := func(x int) {
-		if x == 0 { // 如果保证不为零则去掉
+		if x == 0 { // 如果保证 x != 0 则去掉
 			outS = append(outS, '0')
 			return
 		}
-		if x < 0 { // 如果保证是非负数则去掉
+		if x < 0 { // 如果保证 x >= 0 则去掉
 			x = -x
 			outS = append(outS, '-')
 		}
@@ -255,6 +260,7 @@ func fasterIO() {
 			tmpS[p] = '0' | byte(x%10)
 		}
 		outS = append(outS, tmpS[p:]...)
+		//outS = append(outS, '\n') // 空格/换行需要手动添加
 	}
 
 	// 最后，直接用 os.Stdout 输出（最上面的 out 是不需要创建的）
