@@ -5,6 +5,8 @@ import (
 	"math"
 	"math/bits"
 	"slices"
+	"strconv"
+	"strings"
 )
 
 /*
@@ -45,7 +47,7 @@ Precedence    Operator
 - [693. 交替位二进制数](https://leetcode.cn/problems/binary-number-with-alternating-bits/)
 
 ### 与或（AND/OR）的性质
-& 和 | 在区间求和上具有单调性（本页面搜索 bitOpTrick 和 bitOpTrickCnt）
+& 和 | 在区间求和上具有单调性（本页面搜索 logTrickCnt）
 - [2980. 检查按位或是否存在尾随零](https://leetcode.cn/problems/check-if-bitwise-or-has-trailing-zeros/) 1234
 - [1318. 或运算的最小翻转次数](https://leetcode.cn/problems/minimum-flips-to-make-a-or-b-equal-to-c/) 1383
 - [2419. 按位与最大的最长子数组](https://leetcode.cn/problems/longest-subarray-with-maximum-bitwise-and/) 1496
@@ -108,19 +110,21 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 - LC1863 https://leetcode.cn/problems/sum-of-all-subset-xor-totals/ 1372
 - https://codeforces.com/problemset/problem/1614/C 1500
 所有子序列的 + 的 ^ https://www.luogu.com.cn/problem/U360643
-所有子数组的 ^2 的 + 的 + https://ac.nowcoder.com/acm/contest/65051/D https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
+所有子数组的 ^2 的 + 的 + https://ac.nowcoder.com/acm/contest/65051/D
+- https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
 - 这里 ^2 表示子数组中任意两个数的异或
 所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
-拆位+贡献的好题！https://ac.nowcoder.com/acm/contest/78807/F
+https://ac.nowcoder.com/acm/contest/78807/F 拆位+贡献的好题！
 https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
 https://codeforces.com/problemset/problem/1601/A 1300
+https://codeforces.com/problemset/problem/1362/C 1400
 https://codeforces.com/problemset/problem/1513/B 1400
-https://codeforces.com/problemset/problem/1777/F
-https://codeforces.com/problemset/problem/981/D
+https://codeforces.com/problemset/problem/1879/D 1700
+https://codeforces.com/problemset/problem/981/D  1900
 https://codeforces.com/problemset/problem/1895/D 1900
+https://codeforces.com/problemset/problem/1777/F 2400
 https://atcoder.jp/contests/abc281/tasks/abc281_f
 https://atcoder.jp/contests/arc127/tasks/arc127_d
-考虑贡献 https://codeforces.com/problemset/problem/1362/C 1400
 
 ### 试填法
 - [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
@@ -199,8 +203,9 @@ https://codeforces.com/problemset/problem/309/C 1900
 
 ### 位运算与字符串
 https://leetcode.cn/problems/count-the-number-of-special-characters-i/
-https://leetcode.cn/problems/count-the-number-of-special-characters-ii/
+LC3121 https://leetcode.cn/problems/count-the-number-of-special-characters-ii/
 LC3019 https://leetcode.cn/problems/number-of-changing-keys/
+LC3170 https://leetcode.cn/problems/lexicographically-minimum-string-after-removing-stars/
 https://codeforces.com/contest/691/problem/B
 https://codeforces.com/contest/1907/problem/B
 
@@ -238,6 +243,21 @@ https://oeis.org/A072339
 Any number n can be written (in two ways, one with m even and one with m odd) in the form n = 2^k_1 - 2^k_2 + 2^k_3 - ... + 2^k_m
 where the signs alternate and k_1 > k_2 > k_3 > ... >k_m >= 0; sequence gives minimal value of m
 https://codeforces.com/problemset/problem/1617/E
+
+Exponent of highest power of 2 dividing n, a.k.a. the binary carry sequence, the ruler sequence, or the 2-adic valuation of n
+a(n) = 0 if n is odd, otherwise 1 + a(n/2)
+https://oeis.org/A007814
+https://oeis.org/A011371 A007814 的前缀和
+- a(n) = n minus (number of 1's in binary expansion of n). Also highest power of 2 dividing n!
+- a(n) = floor(n/2) + a(floor(n/2))
+
+The ruler function: exponent of the highest power of 2 dividing 2n. Equivalently, the 2-adic valuation of 2n
+a(n) = 1 if n is odd, otherwise 1 + a(n/2)
+https://oeis.org/A001511
+https://oeis.org/A005187 A001511 的前缀和
+- a(n) = Sum_{k >= 0} floor(n/2^k)
+- a(n) = a(floor(n/2)) + n
+- https://codeforces.com/problemset/problem/1362/C 1500
 
 异或和相关
 https://atcoder.jp/contests/abc171/tasks/abc171_e
@@ -279,7 +299,7 @@ https://oeis.org/A083652 A070939 的前缀和
 
 OnesCount 相当于二进制的 digsum
 https://oeis.org/A000120 wt(n) = OnesCount(n)
-https://oeis.org/A000788 前缀和 a(0) = 0, a(2n) = a(n)+a(n-1)+n, a(2n+1) = 2a(n)+n+1
+https://oeis.org/A000788 前缀和 计算方式及其逆问题，见本页面的 sumOnesCount 和 sumOnesCountInv
 https://oeis.org/A121853 前缀积 https://www.luogu.com.cn/problem/P4317
 https://oeis.org/A092391 n+OnesCount(n)
 	https://oeis.org/A010061 二进制自我数/哥伦比亚数（A092391 的补集）
@@ -383,7 +403,7 @@ todo O(1) https://codeforces.com/contest/520/submission/205035892
 // https://atcoder.jp/contests/abc258/tasks/abc258_g
 const _w = bits.UintSize
 
-func NewBitset(n int) Bitset { return make(Bitset, n/_w+1) } // (n+_w-1)/_w
+func NewBitset(n int) Bitset { return make(Bitset, (n+_w-1)/_w) } // 需要 ceil(n/_w) 个 _w 位整数
 
 type Bitset []uint
 
@@ -525,7 +545,8 @@ func (b Bitset) All1(l, r int) bool {
 // 反转 [l,r) 范围内的比特
 // https://codeforces.com/contest/1705/problem/E
 func (b Bitset) FlipRange(l, r int) {
-	maskL, maskR := ^uint(0)<<(l%_w), ^uint(0)<<(r%_w)
+	maskL := ^uint(0) << (l % _w)
+	maskR := ^uint(0) << (r % _w)
 	i := l / _w
 	if i == r/_w {
 		b[i] ^= maskL ^ maskR
@@ -540,7 +561,8 @@ func (b Bitset) FlipRange(l, r int) {
 
 // 将 [l,r) 范围内的比特全部置 1
 func (b Bitset) SetRange(l, r int) {
-	maskL, maskR := ^uint(0)<<(l%_w), ^uint(0)<<(r%_w)
+	maskL := ^uint(0) << (l % _w)
+	maskR := ^uint(0) << (r % _w)
 	i := l / _w
 	if i == r/_w {
 		b[i] |= maskL ^ maskR
@@ -555,7 +577,8 @@ func (b Bitset) SetRange(l, r int) {
 
 // 将 [l,r) 范围内的比特全部置 0
 func (b Bitset) ResetRange(l, r int) {
-	maskL, maskR := ^uint(0)<<(l%_w), ^uint(0)<<(r%_w)
+	maskL := ^uint(0) << (l % _w)
+	maskR := ^uint(0) << (r % _w)
 	i := l / _w
 	if i == r/_w {
 		b[i] &= ^maskL | maskR
@@ -568,6 +591,13 @@ func (b Bitset) ResetRange(l, r int) {
 	b[i] &= maskR
 }
 
+// 将 >= start 的比特全部置 0
+func (b Bitset) ResetFrom(start int) {
+	i := start / _w
+	b[i] &= ^(^uint(0) << (start % _w))
+	clear(b[i+1:])
+}
+
 // 左移 k 位
 // LC1981 https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/
 func (b Bitset) Lsh(k int) {
@@ -576,9 +606,7 @@ func (b Bitset) Lsh(k int) {
 	}
 	shift, offset := k/_w, k%_w
 	if shift >= len(b) {
-		for i := range b {
-			b[i] = 0
-		}
+		clear(b)
 		return
 	}
 	if offset == 0 {
@@ -590,9 +618,7 @@ func (b Bitset) Lsh(k int) {
 		}
 		b[shift] = b[0] << offset
 	}
-	for i := 0; i < shift; i++ {
-		b[i] = 0
-	}
+	clear(b[:shift]) // 低位补 0
 }
 
 // 右移 k 位
@@ -602,9 +628,7 @@ func (b Bitset) Rsh(k int) {
 	}
 	shift, offset := k/_w, k%_w
 	if shift >= len(b) {
-		for i := range b {
-			b[i] = 0
-		}
+		clear(b)
 		return
 	}
 	lim := len(b) - 1 - shift
@@ -618,22 +642,28 @@ func (b Bitset) Rsh(k int) {
 		// 注意：若前后调用 lsh 和 rsh，需要注意超出 n 的范围的 1 对结果的影响（如果需要，可以把范围开大点）
 		b[lim] = b[len(b)-1] >> offset
 	}
-	for i := lim + 1; i < len(b); i++ {
-		b[i] = 0
-	}
+	clear(b[lim+1:]) // 高位补 0
 }
-
-// 借用 bits 库中的一些方法的名字
-func (b Bitset) OnesCount() (c int) {
-	for _, v := range b {
-		c += bits.OnesCount(v)
-	}
-	return
-}
-func (b Bitset) TrailingZeros() int { return b.Index1() }
-func (b Bitset) Len() int           { return b.LastIndex1() + 1 }
 
 // 下面几个方法均需保证长度相同
+func (b Bitset) Or(c Bitset) {
+	for i, v := range c {
+		b[i] |= v
+	}
+}
+
+func (b Bitset) And(c Bitset) {
+	for i, v := range c {
+		b[i] &= v
+	}
+}
+
+func (b Bitset) Xor(c Bitset) {
+	for i, v := range c {
+		b[i] ^= v
+	}
+}
+
 func (b Bitset) Equals(c Bitset) bool {
 	for i, v := range b {
 		if v != c[i] {
@@ -652,17 +682,26 @@ func (b Bitset) HasSubset(c Bitset) bool {
 	return true
 }
 
-// 将 c 的元素合并进 b
-func (b Bitset) UnionFrom(c Bitset) {
-	for i, v := range c {
-		b[i] |= v
+// 借用 bits 库中的一些方法的名字
+func (b Bitset) OnesCount() (c int) {
+	for _, v := range b {
+		c += bits.OnesCount(v)
 	}
+	return
 }
+func (b Bitset) TrailingZeros() int { return b.Index1() }
+func (b Bitset) Len() int           { return b.LastIndex1() + 1 }
 
-func (b Bitset) IntersectionFrom(c Bitset) {
-	for i, v := range c {
-		b[i] &= v
+func (b Bitset) String() string {
+	idx := &strings.Builder{}
+	for i, v := range b {
+		for ; v > 0; v &= v - 1 {
+			j := i*_w | bits.TrailingZeros(v)
+			idx.WriteString(strconv.Itoa(j))
+			idx.WriteByte(' ')
+		}
 	}
+	return idx.String()
 }
 
 // 注：有关子集枚举的位运算技巧，见 search.go
@@ -690,6 +729,45 @@ func _(x int) {
 	hasAdjacentZeros := func(v uint) bool {
 		v |= v >> 1 // 若没有相邻的 0，则 v 会变成全 1 的数
 		return v&(v+1) > 0
+	}
+
+	// x 和 y 二进制的最长公共前缀
+	// 等价于 [x, y] 的区间 AND
+	lcp := func(x, y int) int {
+		return x & y &^ (1<<bits.Len(uint(x^y)) - 1)
+	}
+	rangeAND := lcp
+
+	// x 和 y 二进制的最长公共后缀
+	lcs := func(x, y int) int {
+		diff := x ^ y
+		return x & y &^ (diff | -diff) // lowbit(diff) 及其左侧所有比特置 0
+	}
+
+	// [l, r] 的区间 OR
+	// https://codeforces.com/contest/1981/problem/B
+	rangeOR := func(l, r int) int {
+		return l&r | (1<<bits.Len(uint(l^r)) - 1)
+	}
+
+	// [0, n] 的异或和
+	// 公式推导 https://leetcode.cn/problems/xor-operation-in-an-array/solution/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/
+	preXor := func(n int) int {
+		switch n % 4 {
+		case 0:
+			return n
+		case 1:
+			return 1
+		case 2:
+			return n + 1
+		default: // 包括 -1
+			return 0
+		}
+	}
+	// [l, r] 的区间 XOR
+	// LC1486 https://leetcode.cn/problems/xor-operation-in-an-array/
+	rangeXor := func(l, r int) int {
+		return preXor(r) ^ preXor(l-1)
 	}
 
 	bits31 := func(v int) []byte {
@@ -736,10 +814,10 @@ func _(x int) {
 		return
 	}
 
-	// bitOpTrick 的简单版本
+	// logTrick 的简单版本
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
-	bitOpTrickSimple := func(a []int, k int) int {
+	logTrickSimple := func(a []int, k int) int {
 		// 返回最短非空子数组，其 OR >= k
 		// 如果不存在，返回 -1
 		// 时间复杂度 O(nlogU)，因为单个 a[l] 最多被更新 O(logU) 次
@@ -764,7 +842,7 @@ func _(x int) {
 		return ans
 	}
 
-	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果    logTrick
+	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果
 	// 利用操作的单调性求解
 	// 时间复杂度：O(fnlogU)，其中 f 为 op(x,y) 的时间复杂度，一般是 O(1)，n=len(a)，U=max(a)
 	// 空间复杂度：O(logU)，返回值不计入
@@ -772,13 +850,16 @@ func _(x int) {
 	//    - 原题 https://codeforces.com/problemset/problem/243/A 1600
 	//    LC2411 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/ 1938
 	//    LC3097 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
+	//    LC3171 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
 	//    https://codeforces.com/problemset/problem/1004/F 2600 线段树 merge
 	//    https://www.luogu.com.cn/problem/P8569
-	//    - 做法见下面的 bitOpTrickCnt      
+	//    - 做法见下面的 logTrickCnt
 	//    - 题目源于这场比赛 https://www.luogu.com.cn/contest/65460#problems
 	//    - 其它做法 https://www.luogu.com.cn/blog/203623/sol-The-seventh-district
 	// &: LC1521 https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/
 	//    LC3117 https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/
+	//    LC3209 https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
+	//    https://codeforces.com/problemset/problem/1878/E 1400 (见下面的 logTrickCnt) 也有其他做法
 	// GCD: 原理：固定右端点时，向左扩展，GCD 要么不变，要么至少减半，所以固定右端点时，只有 O(log U) 个 GCD
 	//      LC2447 https://leetcode.cn/problems/number-of-subarrays-with-gcd-equal-to-k/ 1603
 	//      LC2654 https://leetcode.cn/problems/minimum-number-of-operations-to-make-all-array-elements-equal-to-1/ 1929
@@ -786,27 +867,28 @@ func _(x int) {
 	//      LC2941 https://leetcode.cn/problems/maximum-gcd-sum-of-a-subarray/（会员题）
 	//      https://codeforces.com/edu/course/2/lesson/9/2/practice/contest/307093/problem/G
 	//      https://codeforces.com/problemset/problem/891/A 1500
-	//      https://codeforces.com/problemset/problem/475/D (见下面的 bitOpTrickCnt)
-	//      https://codeforces.com/problemset/problem/1632/D (见下面的 bitOpTrickCnt)
-	//      已知所有 GCD 还原数组 a https://codeforces.com/problemset/problem/894/C
-	//      (子数组长度 * 子数组 GCD) 的最大值 https://www.luogu.com.cn/problem/P5502
+	//      https://codeforces.com/problemset/problem/475/D 2000 (见下面的 logTrickCnt)
+	//      https://codeforces.com/problemset/problem/1632/D 2000 (见下面的 logTrickCnt)
+	//      https://codeforces.com/problemset/problem/894/C 1900 已知所有 GCD 还原数组 a 
+	//      https://www.luogu.com.cn/problem/P5502 (子数组长度 * 子数组 GCD) 的最大值 (见下面的 logTrickCnt)
+	//      - https://www.lanqiao.cn/problems/18521/learning/?contest_id=191 (子数组元素和 * 子数组 GCD) 的最大值
 	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/ 1560
-	//      https://codeforces.com/contest/1834/problem/E
-	bitOpTrick := func(a []int, op func(x, y int) int) map[int]struct{} {
-		ans := map[int]struct{}{}
-		opRes := []int{} // 以 a[i] 结尾的所有子数组，在 op 操作下的所有结果
+	//      https://codeforces.com/contest/1834/problem/E 2300
+	logTrick := func(a []int, op func(x, y int) int) map[int]struct{} {
+		allRes := map[int]struct{}{}
+		curRes := []int{} // 以 a[i] 结尾的所有子数组，在 op 操作下的所有结果
 		for _, v := range a {
-			for j, x := range opRes {
-				opRes[j] = op(x, v) // 每个都和新遍历到的 a[i] 算一下
+			for j, x := range curRes {
+				curRes[j] = op(x, v) // 每个都和新遍历到的 a[i] 算一下
 			}
-			opRes = append(opRes, v)      // a[i] 单独组成一个子数组
-			opRes = slices.Compact(opRes) // 去重
-			for _, w := range opRes {
+			curRes = append(curRes, v)      // a[i] 单独组成一个子数组
+			curRes = slices.Compact(curRes) // 去重
+			for _, w := range curRes {
 				// 统计 w... 根据题目改动
-				ans[w] = struct{}{}
+				allRes[w] = struct{}{}
 			}
 		}
-		return ans
+		return allRes
 	}
 
 	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
@@ -815,35 +897,36 @@ func _(x int) {
 	// LC3117 https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/
 	// https://codeforces.com/problemset/problem/475/D
 	// https://codeforces.com/problemset/problem/1632/D
+	// https://codeforces.com/problemset/problem/1878/E 1400
 	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
 	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
 	// https://www.luogu.com.cn/problem/P8569
-	bitOpTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
+	logTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
 		cnt := map[int]int{}
 		// 视情况，r 可以省略
-		// 或者把 l 和 r 改成 cnt
+		// 或者把 l 和 r 换掉，改成维护 r-l
 		type result struct{ v, l, r int } // [l,r)
-		opRes := []result{}
+		curRes := []result{}
 		for i, v := range a {
 			// 计算的相当于是在 i 结束的 suf op
-			for j, p := range opRes {
-				opRes[j].v = op(p.v, v)
+			for j, p := range curRes {
+				curRes[j].v = op(p.v, v)
 			}
-			opRes = append(opRes, result{v, i, i + 1})
+			curRes = append(curRes, result{v, i, i + 1})
 			// 去重（合并 v 相同的 result）
 			j := 1
-			for k := 1; k < len(opRes); k++ {
-				if opRes[k].v != opRes[k-1].v {
-					opRes[j] = opRes[k]
+			for k := 1; k < len(curRes); k++ {
+				if curRes[k].v != curRes[k-1].v {
+					curRes[j] = curRes[k]
 					j++
 				} else {
-					opRes[j].r = opRes[k].r // 如果省略 r 的话，这行可以去掉
+					curRes[j-1].r = curRes[k].r // 如果省略 r 的话，这行可以去掉
 				}
 			}
-			opRes = opRes[:j]
+			curRes = curRes[:j]
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
-			// 对 ∀p∈set，∀j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
-			for _, p := range opRes {
+			// 对于任意 p∈set，任意 j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
+			for _, p := range curRes {
 				// do p...     [l,r)
 				cnt[p.v] += p.r - p.l
 			}
@@ -894,7 +977,8 @@ func _(x int) {
 			for muls[0].v > tot {
 				muls = muls[1:]
 			}
-			// 此时我们将区间 [muls[0].l,i] 划分成了 len(muls) 个（左闭右开）区间，对 ∀j∈[muls[k].l,muls[k].r)，[j,i] 的区间积均为 muls[k].v
+			// 此时我们将区间 [muls[0].l,i] 划分成了 len(muls) 个（左闭右开）区间
+			// 对于任意 k，任意 j∈[muls[k].l,muls[k].r)，[j,i] 的区间积均为 muls[k].v
 			for _, p := range muls {
 				// 判断左端点前缀和对应下标是否在范围内
 				if pos, has := posS[sum-p.v]; has && p.l <= pos && pos < p.r {
@@ -978,9 +1062,11 @@ func _(x int) {
 	}
 
 	_ = []interface{}{
-		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros, bits31, _bits31, _bits32, initEvenZeros,
+		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros,
+		lcp, lcs, rangeAND, rangeOR, rangeXor,
+		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		bitOpTrickSimple, bitOpTrick, bitOpTrickCnt, countSumEqMul,
+		logTrickSimple, logTrick, logTrickCnt, countSumEqMul,
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
