@@ -59,7 +59,6 @@ func cf1778F(in io.Reader, _w io.Writer) {
 			Fscan(in, &a[i])
 		}
 		g := make([][]int, n)
-		g[0] = []int{-1}
 		for i := 1; i < n; i++ {
 			var v, w int
 			Fscan(in, &v, &w)
@@ -94,7 +93,7 @@ func cf1778F(in io.Reader, _w io.Writer) {
 			if subGcd[v]*subGcd[v]%targetGcd == 0 {
 				return 1
 			}
-			if len(g[v]) == 1 || a[v]*a[v]%targetGcd > 0 {
+			if a[v]*a[v]%targetGcd > 0 {
 				return 1e9
 			}
 			cnt := 1
@@ -108,8 +107,8 @@ func cf1778F(in io.Reader, _w io.Writer) {
 
 		for _, d := range divisors[a[0]] {
 			cnt := 0
-			for _, w := range g[0][1:] {
-				cnt += dfs(w, 0, d)
+			for _, v := range g[0] {
+				cnt += dfs(v, 0, d)
 			}
 			if cnt < k {
 				Fprintln(out, a[0]*d)
