@@ -2,7 +2,7 @@
 
 多数题解配有图片/动画，均包含 Python/Java/C++/Go 等语言。
 
-相同知识点的题目，按照 [难度分](https://zerotrac.github.io/leetcode_problem_rating/) 排序。
+相同知识点的题目，按照 [难度分](https://huxulm.github.io/lc-rating/zen) 排序。
 
 |知识点|题目|题解|难度|
 |---|---|---|---|
@@ -152,7 +152,7 @@
 |LCA|[1483. 树节点的第 K 个祖先](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/)|[【模板讲解】树上倍增算法（以及最近公共祖先）](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)|2115|
 |树状数组|[307. 区域和检索 - 数组可修改](https://leetcode.cn/problems/range-sum-query-mutable/)|[【模板讲解】带你发明树状数组！附数学证明](https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/)|中等|
 
-更多题目请看[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
+**更多题目请看**[【基础算法精讲】题目列表](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/README.md)
 
 ### 分类题单
 
