@@ -814,7 +814,7 @@ func _(x int) {
 		return
 	}
 
-	// logTrick 的简单版本
+	// logTrick 的简单版本 · 其一
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
 	logTrickSimple := func(a []int, k int) int {
@@ -834,10 +834,35 @@ func _(x int) {
 				}
 			}
 			// 循环结束后，原数组的 OR(a[l:r+1]) 记录在 a[l] 中
-			// 对于更一般的场合，可以在 a[:r+1] 中二分查找 target
+			// 对于更一般的场合（比如求子数组个数），可以在 a[:r+1] 中二分查找 target，
+			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleCntK
 		}
 		if ans == math.MaxInt {
 			ans = -1
+		}
+		return ans
+	}
+
+	// logTrick 的简单版本 · 其二
+	// 找值为 k 的子数组个数
+	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
+	logTrickSimpleCntK := func(nums []int, k int) int {
+		ans := 0
+		cnt := 0
+		for i, v := range nums {
+			if v == k {
+				cnt++
+			}
+			for j := i - 1; j >= 0 && nums[j]&v != nums[j]; j-- {
+				if nums[j] == k {
+					cnt--
+				}
+				nums[j] &= v
+				if nums[j] == k {
+					cnt++
+				}
+			}
+			ans += cnt
 		}
 		return ans
 	}
@@ -1066,7 +1091,7 @@ func _(x int) {
 		lcp, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		logTrickSimple, logTrick, logTrickCnt, countSumEqMul,
+		logTrickSimple, logTrickSimpleCntK, logTrick, logTrickCnt, countSumEqMul,
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
