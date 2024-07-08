@@ -129,7 +129,7 @@ func _() {
 		}
 
 		// 计算 s[l1:r1] + s[l2:r2] 的哈希值，注意这是左闭右开区间 [l,r)
-		concat := func(l1, r1, l2, r2 int) int {
+		concatHash := func(l1, r1, l2, r2 int) int {
 			h1 := preHash[r1] - preHash[l1]*powBase[r1-l1]
 			h2 := preHash[r2] - preHash[l2]*powBase[r2-l2]
 			return ((h1%mod*powBase[r2-l2]+h2)%mod + mod) % mod
@@ -143,7 +143,7 @@ func _() {
 			return
 		}
 
-		_ = []any{subHash, concat, calcHash}
+		_ = []any{subHash, concatHash, calcHash}
 	}
 
 	// todo 二维字符串哈希
