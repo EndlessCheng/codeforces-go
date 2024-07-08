@@ -103,11 +103,11 @@ func _() {
 		}
 
 		// 随机 base，更难被 hack
-		// 更稳的做法是用两组随机 base 和 mod
+		// 注：更稳的做法是用两组随机 base 和 mod
 		base := 9e8 - rand.Intn(1e8)
 		const mod = 1_070_777_777
 		// 或者随机质数 mod
-		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围不能太小，否则可以用多合一拼起来的数据卡掉
+		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围（上下限之差）不能太小，否则可以用多合一拼起来的数据卡掉
 		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
 		// for !isPrime(mod) { mod++ }
 
@@ -128,6 +128,13 @@ func _() {
 			return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
 		}
 
+		// 计算 s[l1:r1] + s[l2:r2] 的哈希值，注意这是左闭右开区间 [l,r)
+		concat := func(l1, r1, l2, r2 int) int {
+			h1 := preHash[r1] - preHash[l1]*powBase[r1-l1]
+			h2 := preHash[r2] - preHash[l2]*powBase[r2-l2]
+			return ((h1%mod*powBase[r2-l2]+h2)%mod + mod) % mod
+		}
+
 		// 计算（准备与 s 匹配的）其他字符串的哈希值
 		calcHash := func(t string) (h int) {
 			for _, b := range t {
@@ -136,7 +143,7 @@ func _() {
 			return
 		}
 
-		_ = []any{subHash, calcHash}
+		_ = []any{subHash, concat, calcHash}
 	}
 
 	// todo 二维字符串哈希
