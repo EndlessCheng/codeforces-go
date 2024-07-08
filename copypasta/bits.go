@@ -844,20 +844,20 @@ func _(x int) {
 	}
 
 	// logTrick 的简单版本 · 其二
-	// 找值为 k 的子数组个数
+	// 找 op 值为 k 的子数组个数
 	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
-	logTrickSimpleCntK := func(nums []int, k int) int {
+	logTrickSimpleCntK := func(nums []int, k int, op func(int, int) int) int {
 		ans := 0
 		cnt := 0
 		for i, v := range nums {
 			if v == k {
 				cnt++
 			}
-			for j := i - 1; j >= 0 && nums[j]&v != nums[j]; j-- {
+			for j := i - 1; j >= 0 && op(nums[j], v) != nums[j]; j-- {
 				if nums[j] == k {
 					cnt--
 				}
-				nums[j] &= v
+				nums[j] = op(nums[j], v)
 				if nums[j] == k {
 					cnt++
 				}
