@@ -50,7 +50,8 @@ func _() {
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 	// https://oi-wiki.org/string/hash/
-	// 如何卡自然溢出（随机 base 也可以卡）https://blog.csdn.net/weixin_45750972/article/details/107457997
+	// 如何卡自然溢出（随机 base 也可以卡）https://prutekoi.github.io/post/qia-zi-ran-yi-chu-ha-xi/
+	// https://blog.csdn.net/weixin_45750972/article/details/107457997
 	// On the mathematics behind rolling hashes and anti-hash tests https://codeforces.com/blog/entry/60442
 	// Hacking a weak hash https://codeforces.com/blog/entry/113484
 	// Rolling hash and 8 interesting problems https://codeforces.com/blog/entry/60445
@@ -59,18 +60,22 @@ func _() {
 	// 生日问题 https://en.wikipedia.org/wiki/Birthday_problem
 	// 线性同余方法（LCG）https://en.wikipedia.org/wiki/Linear_congruential_generator
 	// https://rng-58.blogspot.com/2017/02/hashing-and-probability-of-collision.html
-	// todo 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
-	//  从 Hash Killer I、II、III 论字符串哈希 https://www.cnblogs.com/HansBug/p/4288118.html
-	//  anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
-	//  hash killer https://loj.ac/p/6758
-	//  Kapun's algorithm https://codeforces.com/blog/entry/99973
+	// 【推荐】滚动哈希和卡哈希的数学原理 https://notes.sshwy.name/Math/Rolling-Hash-and-Hack
+	// 浅谈字符串 hash 的应用 https://www.luogu.com.cn/blog/Flying2018/qian-tan-zi-fu-chuan-hash
+	// 从 Hash Killer I、II、III 论字符串哈希 https://www.cnblogs.com/HansBug/p/4288118.html
+	// anti-hash: 最好不要自然溢出 https://codeforces.com/blog/entry/4898
+	// hash killer https://loj.ac/p/6758
+	// Kapun's algorithm https://codeforces.com/blog/entry/99973
 	// 比较：给每个元素分配一个随机哈希系数 + 滑动窗口 https://codeforces.com/problemset/problem/1418/G
+	//
+	// Python/Java/C++ 实现见 https://leetcode.cn/problems/construct-string-with-minimum-cost/solution/hou-zhui-shu-zu-by-endlesscheng-32h9/
 	//
 	// 模板题 https://www.luogu.com.cn/problem/P3370
 	// 测试哈希碰撞 https://codeforces.com/problemset/problem/514/C
 	//            https://codeforces.com/problemset/problem/1200/E
 	//            https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
 	// 拼接字符串 https://codeforces.com/problemset/problem/1800/D
+	// LC3213 最小代价构造字符串 https://leetcode.cn/problems/construct-string-with-minimum-cost/
 	// LC187 找出所有重复出现的长为 10 的子串 https://leetcode.cn/problems/repeated-dna-sequences/
 	// LC1044 最长重复子串（二分哈希）https://leetcode.cn/problems/longest-duplicate-substring/
 	// LC1554 只有一个不同字符的字符串 https://leetcode.cn/problems/strings-differ-by-one-character/
@@ -94,32 +99,33 @@ func _() {
 		// 把字符映射到一个随机数上，更难被 hack
 		randMap := [128]int{}
 		for i := range randMap {
-			randMap[i] = rand.Intn(1 << 60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
+			randMap[i] = i + rand.Intn(1<<60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
 		}
 
 		// 随机 base，更难被 hack
 		// 更稳的做法是用两组随机 base 和 mod
 		base := 9e8 - rand.Intn(1e8)
-		const mod = 1070777777
+		const mod = 1_070_777_777
 		// 或者随机质数 mod
 		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围不能太小，否则可以用多合一拼起来的数据卡掉
 		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
 		// for !isPrime(mod) { mod++ }
 
-		// 多项式哈希
-		// hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
-		powB := make([]int, len(s)+1) // powP[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希等
-		powB[0] = 1
+		// 多项式字符串哈希（方便计算子串哈希值）
+		// 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
+		powBase := make([]int, len(s)+1) // powBase[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希等
+		powBase[0] = 1
 		preHash := make([]int, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
 		for i, b := range s {
-			powB[i+1] = powB[i] * base % mod
-			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法
+			powBase[i+1] = powBase[i] * base % mod
+			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法计算多项式哈希
 		}
 
 		// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)    0<=l<=r<=len(s)
 		// 空串的哈希值为 0
+		// 计算方法类似前缀和
 		subHash := func(l, r int) int {
-			return ((preHash[r]-preHash[l]*powB[r-l])%mod + mod) % mod
+			return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
 		}
 
 		_ = subHash
@@ -321,12 +327,13 @@ func _() {
 	calcZ := func(s string) []int {
 		n := len(s)
 		z := make([]int, n)
-		for i, l, r := 1, 0, 0; i < n; i++ {
-			if i <= r {
-				z[i] = min(z[i-l], r-i+1)
+		boxL, boxR := 0, 0 // z-box 左右边界
+		for i := 1; i < n; i++ {
+			if i <= boxR {
+				z[i] = min(z[i-boxL], boxR-i+1)
 			}
 			for i+z[i] < n && s[z[i]] == s[i+z[i]] {
-				l, r = i, i+z[i]
+				boxL, boxR = i, i+z[i]
 				z[i]++
 			}
 		}
@@ -400,16 +407,41 @@ func _() {
 		return s[i : i+n]
 	}
 
+	// 判断子序列 / 最长匹配长度
+	// 返回 s 最长前缀的长度，满足该前缀是 t 的子序列
+	// - [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)
+	// - [2486. 追加字符以获得子序列](https://leetcode.cn/problems/append-characters-to-string-to-make-subsequence/) 1363
+	// - [3132. 找出与数组相加的整数 II](https://leetcode.cn/problems/find-the-integer-added-to-array-ii/) 1620
+	// - [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/)
+	// - [1055. 形成字符串的最短路径](https://leetcode.cn/problems/shortest-way-to-form-string/)（会员题）
+	// https://codeforces.com/problemset/problem/1194/C 1300
+	// https://codeforces.com/problemset/problem/778/A 1700
+	isSubseq := func(s, t string) int {
+		if s == "" {
+			return 0
+		}
+		cnt := 0
+		for _, b := range t {
+			if s[cnt] != byte(b) {
+				continue
+			}
+			cnt++
+			if cnt == len(s) {
+				break
+			}
+		}
+		return cnt
+	}
+
 	// 子序列自动机
 	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
-	// - [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)
 	// - [514. 自由之路](https://leetcode.cn/problems/freedom-trail/)
 	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/
 	// LC792 https://leetcode.cn/problems/number-of-matching-subsequences/
 	// LC2014 https://leetcode.cn/problems/longest-subsequence-repeated-k-times/
 	// LC466 https://leetcode.cn/problems/count-the-repetitions/
 	// - [727. 最小窗口子序列](https://leetcode.cn/problems/minimum-window-subsequence/)（会员题）
-	// http://codeforces.com/problemset/problem/91/A
+	// https://codeforces.com/problemset/problem/91/A
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
 	// https://codeforces.com/contest/1845/problem/C
@@ -608,21 +640,21 @@ func _() {
 
 	题目总结：（部分参考《后缀数组——处理字符串的有力工具》，PDF 见 https://github.com/EndlessCheng/cp-pdf）
 	单个字符串
-		模板题 
+		模板题
 			https://www.luogu.com.cn/problem/P3809
 			https://judge.yosupo.jp/problem/suffixarray
 			https://loj.ac/p/111
 		可重叠最长重复子串
-			LC1044 https://leetcode.cn/problems/longest-duplicate-substring/ 
+			LC1044 https://leetcode.cn/problems/longest-duplicate-substring/
 			LC1062 https://leetcode.cn/problems/longest-repeating-substring/
 			相当于求 max(height)，实现见下面的 longestDupSubstring
-		不可重叠最长重复子串 
-			https://atcoder.jp/contests/abc141/tasks/abc141_e 
+		不可重叠最长重复子串
+			https://atcoder.jp/contests/abc141/tasks/abc141_e
 			- http://poj.org/problem?id=1743
 			可参考《算法与实现》p.223 以及 https://oi-wiki.org/string/sa/#是否有某字符串在文本串中至少不重叠地出现了两次
 			重要技巧：按照 height 分组，每组中根据 sa 来处理组内后缀的位置
-		可重叠的至少出现 k 次的最长重复子串 
-			https://www.luogu.com.cn/problem/P2852 
+		可重叠的至少出现 k 次的最长重复子串
+			https://www.luogu.com.cn/problem/P2852
 			- http://poj.org/problem?id=3261
 			二分答案，对 height 分组，判定组内元素个数不小于 k
 		本质不同子串个数
@@ -641,7 +673,7 @@ func _() {
 		带限制的不同子串个数
 			https://codeforces.com/problemset/problem/271/D
 			这题可以枚举每个后缀，跳过 height[i] 个字符，然后在前缀和上二分
-		重复次数最多的连续重复子串 
+		重复次数最多的连续重复子串
 			https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/F
 			- http://poj.org/problem?id=3693 (数据弱)
 			核心思想是枚举长度然后计算 LCP(i,i+l)，然后看是否还能再重复一次，具体代码见 main/edu/2/suffixarray/step5/f/main.go
@@ -662,9 +694,9 @@ func _() {
 		从字符串首尾取字符最小化字典序
 			https://oi-wiki.org/string/sa/#_10
 			todo
-		第 k 小子串 
-			https://www.luogu.com.cn/problem/P3975
-			https://codeforces.com/problemset/problem/128/B
+		第 k 小子串
+			https://www.luogu.com.cn/problem/P3975 不同位置的相同子串算作一个/多个
+			todo https://codeforces.com/problemset/problem/128/B 2100
 			todo
 	两个字符串
 		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
@@ -701,14 +733,14 @@ func _() {
 	 https://www.luogu.com.cn/problem/P4070
 	*/
 	suffixArray := func(s string) {
-		// 后缀数组 sa
+		// 后缀数组 sa（后缀序）
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
 		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").UnsafeAddr()))
 		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
 
 		{
-			// 不用反射
+			// 不用反射（推荐）
 			type _tp struct {
 				_  []byte
 				sa []int32
@@ -846,7 +878,7 @@ func _() {
 					cnt++
 				}
 			}
-			// sa & height ...
+			// 计算 sa & height ...
 			for i, p := range sa {
 				if l := lens[p]; l > 0 {
 					if height[i] >= l || i+1 < n && height[i+1] >= l {
@@ -867,7 +899,19 @@ func _() {
 			}
 		}
 
-		_ = []any{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring}
+		// 注：极限优化用
+		// 同 sa.Lookup([]byte(t), -1) 
+		// 但 sa.Lookup 会 copy sa slice，下面的代码可以避免 copy
+		// ！请勿修改返回值
+		lookUp := func(t string) []int32 {
+			// 找后缀序中的第一个 >= t 的后缀
+			i := sort.Search(len(sa), func(i int) bool { return strings.Compare(s[sa[i]:], t) >= 0 })
+			// 找后缀序中的第一个「前缀不含 t」的后缀
+			j := i + sort.Search(len(sa)-i, func(j int) bool { return !strings.HasPrefix(s[sa[j+i]:], t) })
+			return sa[i:j]
+		}
+
+		_ = []any{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring, lookUp}
 	}
 
 	// 若输入为 []int32，通过将每个元素拆成 4 个 byte，来满足调库条件
@@ -954,7 +998,7 @@ func _() {
 		kmpSearch, calcMinPeriod, failTree,
 		calcZ, zSearch, zCompare,
 		smallestRepresentation,
-		subsequenceAutomaton,
+		isSubseq, subsequenceAutomaton,
 		manacher,
 		suffixArray, suffixArrayInt, suffixArrayInt2,
 	}
