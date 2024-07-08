@@ -845,6 +845,7 @@ func _(x int) {
 
 	// logTrick 的简单版本 · 其二
 	// 找 op 值为 k 的子数组个数
+	// 支持 AND OR GCD 等
 	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
 	logTrickSimpleCntK := func(nums []int, k int, op func(int, int) int) int {
 		ans := 0
