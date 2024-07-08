@@ -128,7 +128,15 @@ func _() {
 			return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
 		}
 
-		_ = subHash
+		// 计算（准备与 s 匹配的）其他字符串的哈希值
+		calcHash := func(t string) (h int) {
+			for _, b := range t {
+				h = (h*base + randMap[b]) % mod
+			}
+			return
+		}
+
+		_ = []any{subHash, calcHash}
 	}
 
 	// todo 二维字符串哈希
