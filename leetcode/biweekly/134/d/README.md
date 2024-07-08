@@ -23,7 +23,7 @@
 - 如果 $\textit{nums}[j]\&x\ne\textit{nums}[j]$，说明 $\textit{nums}[j]$ 可以变小（求交集后，集合元素只会减少不会变多），更新 $\textit{nums}[j]=\textit{nums}[j]\&x$。
 - 否则 $\textit{nums}[j]\&x=\textit{nums}[j]$，从集合的角度看，此时 $x$ 不仅是 $\textit{nums}[j]$ 的超集，同时也是 $\textit{nums}[k]\ (k<j)$ 的超集（因为前面的循环保证了每个集合都是其左侧相邻集合的超集），在 $A\subseteq B$ 的前提下，$A\cap B=A$，所以后续的循环都不会改变元素值，**退出内层循环**。
 
-## 写法一：二分查找
+## 方法一：二分查找
 
 由于每个元素都是其右侧元素的子集，所以从 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 的元素值是非降的。既然是有序数组，我们可以在 $[0,i]$ 中**二分查找** $k$，做法见 [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)（[视频讲解](https://www.bilibili.com/video/BV1AP41137w7/)）。
 
@@ -113,7 +113,7 @@ func countSubarrays(nums []int, k int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n\log U + n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在 AND 运算下，每个数字至多可以减小 $29$ 次。总体上看（除去二分），二重循环的总循环次数等于每个数字可以减小的次数之和，即 $O(n\log U)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 写法二：三指针
+## 方法二：三指针
 
 由于元素值只会减少，所以当 $i$ 增大时，$\textit{left}$ 和 $\textit{right}$ 不会减少，有了单调性的保证，上面的二分查找可以改成 [滑动窗口](https://www.bilibili.com/video/BV1hd4y1r7Gq/)：
 
@@ -208,6 +208,93 @@ func countSubarrays(nums []int, k int) (ans int64) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $\textit{left}$ 和 $\textit{right}$ 只会增大，不会减少，所以 $\textit{left}$ 和 $\textit{right}$ 的移动次数之和为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法三：维护等于 k 的子数组个数
+
+在更新 $\textit{nums}[j]$ 的同时，维护值等于 $k$ 的元素个数，也就是 AND 值为 $k$ 的子数组个数。
+
+```py [sol-Python3]
+class Solution:
+    def countSubarrays(self, nums: List[int], k: int) -> int:
+        ans = cnt = 0
+        for i, x in enumerate(nums):
+            if x == k: cnt += 1
+            for j in range(i - 1, -1, -1):
+                if nums[j] & x == nums[j]: break
+                if nums[j] == k: cnt -= 1
+                nums[j] &= x
+                if nums[j] == k: cnt += 1
+            ans += cnt
+        return ans
+```
+
+```java [sol-Java]
+public class Solution {
+    public long countSubarrays(int[] nums, int k) {
+        long ans = 0;
+        int cnt = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            cnt += x == k ? 1 : 0;
+            for (int j = i - 1; j >= 0 && (nums[j] & x) != nums[j]; j--) {
+                cnt -= nums[j] == k ? 1 : 0;
+                nums[j] &= x;
+                cnt += nums[j] == k ? 1 : 0;
+            }
+            ans += cnt;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, int k) {
+        long long ans = 0;
+        int cnt = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            int x = nums[i];
+            cnt += x == k;
+            for (int j = i - 1; j >= 0 && (nums[j] & x) != nums[j]; j--) {
+                cnt -= nums[j] == k;
+                nums[j] &= x;
+                cnt += nums[j] == k;
+            }
+            ans += cnt;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countSubarrays(nums []int, k int) (ans int64) {
+	cnt := 0
+	for i, x := range nums {
+		if x == k {
+			cnt++
+		}
+		for j := i - 1; j >= 0 && nums[j]&x != nums[j]; j-- {
+			if nums[j] == k {
+				cnt--
+			}
+			nums[j] &= x
+			if nums[j] == k {
+				cnt++
+			}
+		}
+		ans += int64(cnt)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 相似题目

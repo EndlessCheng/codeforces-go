@@ -30,3 +30,23 @@ func countSubarrays2(nums []int, k int) (ans int64) {
 	}
 	return
 }
+
+func countSubarrays3(nums []int, k int) (ans int64) {
+	cnt := 0
+	for i, x := range nums {
+		if x == k {
+			cnt++
+		}
+		for j := i - 1; j >= 0 && nums[j]&x != nums[j]; j-- {
+			if nums[j] == k {
+				cnt--
+			}
+			nums[j] &= x
+			if nums[j] == k {
+				cnt++
+			}
+		}
+		ans += int64(cnt)
+	}
+	return
+}
