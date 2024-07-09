@@ -75,7 +75,7 @@ class Solution {
         // 多项式字符串哈希（方便计算子串哈希值）
         // 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
         final int MOD = 1_070_777_777;
-        int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
+        final int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
         int[] powBase = new int[n + 1]; // powBase[i] = base^i
         int[] preHash = new int[n + 1]; // 前缀哈希值 preHash[i] = hash(target[0] 到 target[i-1])
         powBase[0] = 1;
@@ -122,7 +122,7 @@ class Solution {
         // 多项式字符串哈希（方便计算子串哈希值）
         // 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
         final int MOD = 1_070_777_777;
-        int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
+        final int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
         int[] powBase = new int[n + 1]; // powBase[i] = base^i
         int[] preHash = new int[n + 1]; // 前缀哈希值 preHash[i] = hash(target[0] 到 target[i-1])
         powBase[0] = 1;
@@ -179,8 +179,8 @@ public:
         // 多项式字符串哈希（方便计算子串哈希值）
         // 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
         const int MOD = 1'070'777'777;
-        mt19937 gen{random_device{}()};
-        const int BASE = uniform_int_distribution<>(8e8, 9e8)(gen); // 随机 base，防止 hack
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+        const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
         vector<int> pow_base(n + 1); // pow_base[i] = base^i
         vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(s[:i])
         pow_base[0] = 1;
