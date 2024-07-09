@@ -46,6 +46,11 @@ func _() {
 	}
 
 	// 字符串哈希 rolling hash, Rabin–Karp algorithm
+	//
+	// mod 和 base 一定不能是固定的，哪怕用了双模数也不行！
+	// 见 Anti-hash Test Generator https://heltion.github.io/anti-hash/ https://codeforces.com/blog/entry/129538
+	// 可以用随机 base 避免被 hack
+	//
 	// https://en.wikipedia.org/wiki/Hash_function
 	// https://en.wikipedia.org/wiki/Rolling_hash
 	// https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
@@ -92,20 +97,15 @@ func _() {
 	// - 区间替换成某个数：https://codeforces.com/problemset/problem/580/E 2500
 	// todo 带修回文串 https://atcoder.jp/contests/abc331/tasks/abc331_f
 	// todo https://www.luogu.com.cn/problem/P2757
-	stringHash := func(s string) {
+	stringHashSingleMod := func(s string) {
 		// 如果 OJ 的 Go 版本低于 1.20，加上这句话
 		rand.Seed(time.Now().UnixNano())
 
-		// 把字符映射到一个随机数上，更难被 hack
-		randMap := [128]int{}
-		for i := range randMap {
-			randMap[i] = i + rand.Intn(1<<60) // 注：随机结果不要超过 2^63-1-(mod-1)*base
-		}
+		// 下面实现的是单模哈希的版本
+		// 双模哈希见后面
 
-		// 随机 base，更难被 hack
-		// 注：更稳的做法是用两组随机 base 和 mod
-		base := 9e8 - rand.Intn(1e8)
 		const mod = 1_070_777_777
+		base := 9e8 - rand.Intn(1e8)
 		// 或者随机质数 mod
 		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围（上下限之差）不能太小，否则可以用多合一拼起来的数据卡掉
 		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
@@ -114,11 +114,11 @@ func _() {
 		// 多项式字符串哈希（方便计算子串哈希值）
 		// 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
 		powBase := make([]int, len(s)+1) // powBase[i] = base^i，用它当作哈希系数是为了方便求任意子串哈希，求拼接字符串的哈希等
-		powBase[0] = 1
 		preHash := make([]int, len(s)+1) // preHash[i] = hash(s[:i]) 前缀哈希
+		powBase[0] = 1
 		for i, b := range s {
 			powBase[i+1] = powBase[i] * base % mod
-			preHash[i+1] = (preHash[i]*base + randMap[b]) % mod // 秦九韶算法计算多项式哈希
+			preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 		}
 
 		// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)    0<=l<=r<=len(s)
@@ -138,7 +138,50 @@ func _() {
 		// 计算（准备与 s 匹配的）其他字符串的哈希值
 		calcHash := func(t string) (h int) {
 			for _, b := range t {
-				h = (h*base + randMap[b]) % mod
+				h = (h*base + int(b)) % mod
+			}
+			return
+		}
+
+		_ = []any{subHash, concatHash, calcHash}
+	}
+
+	// 双模哈希
+	stringHashDoubleMod := func(s string) {
+		const mod1 = 1_070_777_777
+		const mod2 = 1_000_000_007
+		base1 := 9e8 - rand.Intn(1e8)
+		base2 := 9e8 - rand.Intn(1e8)
+
+		type hPair struct{ h1, h2 int }
+		powBase := make([]hPair, len(s)+1)
+		preHash := make([]hPair, len(s)+1)
+		powBase[0] = hPair{1, 1}
+		for i, b := range s {
+			powBase[i+1] = hPair{powBase[i].h1 * base1 % mod1, powBase[i].h2 * base2 % mod2}
+			preHash[i+1] = hPair{(preHash[i].h1*base1 + int(b)) % mod1, (preHash[i].h2*base2 + int(b)) % mod2}
+		}
+
+		// 计算子串 s[l:r] 的哈希值
+		// 空串的哈希值为 0
+		subHash := func(l, r int) hPair {
+			h1 := ((preHash[r].h1-preHash[l].h1*powBase[r-l].h1)%mod1 + mod1) % mod1
+			h2 := ((preHash[r].h2-preHash[l].h2*powBase[r-l].h2)%mod2 + mod2) % mod2
+			return hPair{h1, h2}
+		}
+
+		// 计算 s[l1:r1] + s[l2:r2] 的哈希值
+		concatHash := func(l1, r1, l2, r2 int) hPair {
+			h1 := (((preHash[r1].h1-preHash[l1].h1*powBase[r1-l1].h1)%mod1*powBase[r2-l2].h1+preHash[r2].h1-preHash[l2].h1*powBase[r2-l2].h1)%mod1 + mod1) % mod1
+			h2 := (((preHash[r1].h2-preHash[l1].h2*powBase[r1-l1].h2)%mod2*powBase[r2-l2].h2+preHash[r2].h2-preHash[l2].h2*powBase[r2-l2].h2)%mod2 + mod2) % mod2
+			return hPair{h1, h2}
+		}
+
+		// 计算（准备与 s 匹配的）其他字符串的哈希值
+		calcHash := func(t string) (p hPair) {
+			for _, b := range t {
+				p.h1 = (p.h1*base1 + int(b)) % mod1
+				p.h2 = (p.h2*base2 + int(b)) % mod2
 			}
 			return
 		}
@@ -1009,7 +1052,7 @@ func _() {
 	_ = []any{
 		unsafeToBytes, unsafeToString,
 		indexAll,
-		stringHash,
+		stringHashSingleMod, stringHashDoubleMod,
 		kmpSearch, calcMinPeriod, failTree,
 		calcZ, zSearch, zCompare,
 		smallestRepresentation,
