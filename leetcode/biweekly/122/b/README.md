@@ -1,15 +1,19 @@
-[视频讲解](https://www.bilibili.com/video/BV1oV411D7gB/) 第二题。
-
 **适用场景**：按照题目要求，数组会被分割成若干组，每一组的判断/处理逻辑是相同的。
 
 **核心思想**：
 
-- 外层循环负责遍历组之前的准备工作（记录开始位置），和遍历组之后的工作（排序）。
-- 内层循环负责遍历组，找出这一组最远在哪结束。
+- **外层循环**负责遍历组之前的准备工作（记录开始位置），和遍历组之后的工作（排序）。
+- **内层循环**负责遍历组，找出这一组最远在哪结束。
 
 这个写法的好处是，各个逻辑块分工明确，也不需要特判最后一组（易错点）。以我的经验，这个写法是所有写法中最不容易出 bug 的，推荐大家记住。
 
 ## 方法一：直接排序
+
+内层循环不断向后遍历，直到到达数组末尾，或者遇到二进制中的 $1$ 的个数不同的元素。
+
+组内元素可以相邻交换，根据冒泡排序的思想，组内元素是可以从小到大排序的。
+
+对于每一组，都从小到大排序。如果最后数组是有序的，返回 $\texttt{true}$，否则返回 $\texttt{false}$。
 
 ```py [sol-Python3]
 class Solution:
@@ -30,7 +34,7 @@ class Solution:
 class Solution {
     public boolean canSortArray(int[] nums) {
         int n = nums.length;
-        for (int i = 0; i < n; ) {
+        for (int i = 0; i < n;) {
             int start = i;
             int ones = Integer.bitCount(nums[i++]);
             while (i < n && Integer.bitCount(nums[i]) == ones) {
@@ -51,7 +55,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    bool canSortArray(vector<int> &nums) {
+    bool canSortArray(vector<int>& nums) {
         for (int i = 0, n = nums.size(); i < n;) {
             int start = i;
             int ones = __builtin_popcount(nums[i++]);
@@ -87,7 +91,9 @@ func canSortArray(nums []int) bool {
 
 ## 方法二：记录每一段的最小值和最大值
 
-如果每一段的最小值，都大于等于上一段的最大值，那么我们就能把数组排成递增的。如果最小值小于上一段的最大值，那么无法排成递增的。
+对于每一组，如果这一组的每个数，都大于等于上一组的最大值 $\textit{preMax}$，那么我们就能把数组排成递增的，否则不行。
+
+由于题目保证 $\textit{nums}[i] > 0$，我们可以把 $\textit{preMax}$ 和本组最大值 $\textit{mx}$ 都初始化成 $0$。
 
 ```py [sol-Python3]
 class Solution:
@@ -95,18 +101,14 @@ class Solution:
         n = len(nums)
         i = pre_max = 0
         while i < n:
-            mn = mx = nums[i]
-            ones = mn.bit_count()
-            i += 1
+            mx = 0
+            ones = nums[i].bit_count()
             while i < n and nums[i].bit_count() == ones:
                 x = nums[i]
-                if x < mn:
-                    mn = x
-                elif x > mx:
-                    mx = x
+                if x < pre_max:  # 无法排成有序的
+                    return False
+                mx = max(mx, x)  # 更新本组最大值
                 i += 1
-            if mn < pre_max:
-                return False
             pre_max = mx
         return True
 ```
@@ -115,16 +117,15 @@ class Solution:
 class Solution {
     public boolean canSortArray(int[] nums) {
         int n = nums.length;
-        int i = 0, preMax = 0;
-        while (i < n) {
-            int mn = nums[i], mx = mn;
-            int ones = Integer.bitCount(mn);
-            for (i++; i < n && Integer.bitCount(nums[i]) == ones; i++) {
-                mn = Math.min(mn, nums[i]);
-                mx = Math.max(mx, nums[i]);
-            }
-            if (mn < preMax) {
-                return false;
+        int preMax = 0;
+        for (int i = 0; i < n;) {
+            int mx = 0;
+            int ones = Integer.bitCount(nums[i]);
+            while (i < n && Integer.bitCount(nums[i]) == ones) {
+                if (nums[i] < preMax) { // 无法排成有序的
+                    return false;
+                }
+                mx = Math.max(mx, nums[i++]); // 更新本组最大值
             }
             preMax = mx;
         }
@@ -136,18 +137,17 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    bool canSortArray(vector<int> &nums) {
+    bool canSortArray(vector<int>& nums) {
         int n = nums.size();
-        int i = 0, pre_max = 0;
-        while (i < n) {
-            int mn = nums[i], mx = mn;
-            int ones = __builtin_popcount(mn);
-            for (i++; i < n && __builtin_popcount(nums[i]) == ones; i++) {
-                mn = min(mn, nums[i]);
-                mx = max(mx, nums[i]);
-            }
-            if (mn < pre_max) {
-                return false;
+        int pre_max = 0;
+        for (int i = 0; i < n;) {
+            int mx = 0;
+            int ones = __builtin_popcount(nums[i]);
+            while (i < n && __builtin_popcount(nums[i]) == ones) {
+                if (nums[i] < pre_max) { // 无法排成有序的
+                    return false;
+                }
+                mx = max(mx, nums[i++]); // 更新本组最大值
             }
             pre_max = mx;
         }
@@ -160,14 +160,13 @@ public:
 func canSortArray(nums []int) bool {
 	preMax := 0
 	for i, n := 0, len(nums); i < n; {
-		mn, mx := nums[i], nums[i]
-		ones := bits.OnesCount(uint(mn))
-		for i++; i < n && bits.OnesCount(uint(nums[i])) == ones; i++ {
-			mn = min(mn, nums[i])
-			mx = max(mx, nums[i])
-		}
-		if mn < preMax {
-			return false
+		mx := 0
+		ones := bits.OnesCount(uint(nums[i]))
+		for ; i < n && bits.OnesCount(uint(nums[i])) == ones; i++ {
+			if nums[i] < preMax { // 无法排成有序的
+				return false
+			}
+			mx = max(mx, nums[i]) // 更新本组最大值
 		}
 		preMax = mx
 	}
@@ -210,4 +209,21 @@ while i < n:
 - [1839. 所有元音按顺序排布的最长子字符串](https://leetcode.cn/problems/longest-substring-of-all-vowels-in-order/) 1580
 - [2765. 最长交替子序列](https://leetcode.cn/problems/longest-alternating-subarray/) 1581
 
-[2023 下半年周赛题目总结](https://leetcode.cn/circle/discuss/lUu0KB/)
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

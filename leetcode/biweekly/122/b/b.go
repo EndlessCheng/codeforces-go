@@ -8,14 +8,13 @@ import (
 func canSortArray(nums []int) bool {
 	preMax := 0
 	for i, n := 0, len(nums); i < n; {
-		mn, mx := nums[i], nums[i]
-		ones := bits.OnesCount(uint(mn))
-		for i++; i < n && bits.OnesCount(uint(nums[i])) == ones; i++ {
-			mn = min(mn, nums[i])
-			mx = max(mx, nums[i])
-		}
-		if mn < preMax {
-			return false
+		mx := 0
+		ones := bits.OnesCount(uint(nums[i]))
+		for ; i < n && bits.OnesCount(uint(nums[i])) == ones; i++ {
+			if nums[i] < preMax { // 无法排成有序的
+				return false
+			}
+			mx = max(mx, nums[i]) // 更新本组最大值
 		}
 		preMax = mx
 	}
