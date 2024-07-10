@@ -60,9 +60,9 @@ class Solution:
                 # 计算子串 target[i-sz:i] 的哈希值（计算方法类似前缀和）
                 sub_hash = (pre_hash[i] - pre_hash[i - sz] * pow_base[sz]) % MOD
                 # 手写 min，避免超时
-                res = f[i - sz] + min_cost[sub_hash]
-                if res < f[i]:
-                    f[i] = res
+                tmp = f[i - sz] + min_cost[sub_hash]
+                if tmp < f[i]:
+                    f[i] = tmp
         return -1 if f[n] == inf else f[n]
 ```
 
@@ -423,6 +423,356 @@ func minimumCost(target string, words []string, costs []int) int {
 
 - 时间复杂度：$\mathcal{O}(n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
 - 空间复杂度：$\mathcal{O}(n\sqrt{L})$。
+
+## 方法三：AC 自动机
+
+> 考虑到字符串哈希不一定 100% 正确，后缀数组又需要太多空间，从某种程度上来说，AC 自动机是本题标准做法。
+
+原理见 [OI Wiki](https://oi-wiki.org/string/ac-automaton/)。学习之前推荐先看看我的 [KMP 原理讲解](https://www.zhihu.com/question/21923021/answer/37475572)。
+
+做法同后缀数组，改成在 AC 自动机上寻找匹配。
+
+```py [sol-Python3]
+class Node:
+    __slots__ = 'son', 'fail', 'last', 'len', 'cost'
+
+    def __init__(self):
+        self.son = [None] * 26
+        self.fail = None  # 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+        self.last = None  # 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
+        self.len = 0
+        self.cost = inf
+
+
+class AhoCorasick:
+    def __init__(self):
+        self.root = Node()
+
+    def put(self, s: str, cost: int) -> None:
+        cur = self.root
+        for b in s:
+            b = ord(b) - ord('a')
+            if cur.son[b] is None:
+                cur.son[b] = Node()
+            cur = cur.son[b]
+        cur.len = len(s)
+        cur.cost = min(cur.cost, cost)
+
+    def build_fail(self) -> None:
+        self.root.fail = self.root.last = self.root
+        q = deque()
+        for i, son in enumerate(self.root.son):
+            if son is None:
+                self.root.son[i] = self.root
+            else:
+                son.fail = son.last = self.root  # 第一层的失配指针，都指向根节点 ∅
+                q.append(son)
+        # BFS
+        while q:
+            cur = q.popleft()
+            for i, son in enumerate(cur.son):
+                if son is None:
+                    # 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    # 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
+                    cur.son[i] = cur.fail.son[i]
+                    continue
+                son.fail = cur.fail.son[i]  # 计算失配位置
+                # 沿着 last 往上走，可以直接跳到一定是某个 words[k] 的最后一个字母的节点（如果跳到 root 表示没有匹配）
+                son.last = son.fail if son.fail.len else son.fail.last
+                q.append(son)
+
+
+class Solution:
+    def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
+        ac = AhoCorasick()
+        for w, c in zip(words, costs):
+            ac.put(w, c)
+        ac.build_fail()
+
+        n = len(target)
+        f = [0] + [inf] * n
+        cur = root = ac.root
+        for i in range(1, n + 1):
+            cur = cur.son[ord(target[i - 1]) - ord('a')]  # 如果没有匹配相当于移动到 fail 的 son[target[i-1]-'a']
+            if cur.len:  # 匹配到了一个尽可能长的 words[k]
+                f[i] = min(f[i], f[i - cur.len] + cur.cost)
+            # 还可能匹配其余更短的 words[k]，要在 last 链上找
+            fail = cur.last
+            while fail != root:
+                # 手写 min，避免超时
+                tmp = f[i - fail.len] + fail.cost
+                if tmp < f[i]:
+                    f[i] = tmp
+                fail = fail.last
+        return -1 if f[n] == inf else f[n]
+```
+
+```java [sol-Java]
+class Node {
+    Node[] son = new Node[26];
+    Node fail; // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+    Node last; // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
+    int len;
+    int cost = Integer.MAX_VALUE;
+}
+
+class AhoCorasick {
+    Node root = new Node();
+
+    void put(String s, int cost) {
+        Node cur = root;
+        for (char b : s.toCharArray()) {
+            b -= 'a';
+            if (cur.son[b] == null) {
+                cur.son[b] = new Node();
+            }
+            cur = cur.son[b];
+        }
+        cur.len = s.length();
+        cur.cost = Math.min(cur.cost, cost);
+    }
+
+    void buildFail() {
+        root.fail = root.last = root;
+        Queue<Node> q = new ArrayDeque<>();
+        for (int i = 0; i < root.son.length; i++) {
+            Node son = root.son[i];
+            if (son == null) {
+                root.son[i] = root;
+            } else {
+                son.fail = son.last = root; // 第一层的失配指针，都指向根节点 ∅
+                q.add(son);
+            }
+        }
+        // BFS
+        while (!q.isEmpty()) {
+            Node cur = q.poll();
+            for (int i = 0; i < 26; i++) {
+                Node son = cur.son[i];
+                if (son == null) {
+                    // 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    // 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
+                    cur.son[i] = cur.fail.son[i];
+                    continue;
+                }
+                son.fail = cur.fail.son[i]; // 计算失配位置
+                // 沿着 last 往上走，可以直接跳到一定是某个 words[k] 的最后一个字母的节点（如果跳到 root 表示没有匹配）
+                son.last = son.fail.len > 0 ? son.fail : son.fail.last;
+                q.add(son);
+            }
+        }
+    }
+}
+
+public class Solution {
+    public int minimumCost(String target, String[] words, int[] costs) {
+        AhoCorasick ac = new AhoCorasick();
+        for (int i = 0; i < words.length; i++) {
+            ac.put(words[i], costs[i]);
+        }
+        ac.buildFail();
+
+        char[] t = target.toCharArray();
+        int n = t.length;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MAX_VALUE / 2);
+        f[0] = 0;
+        Node cur = ac.root;
+        for (int i = 1; i <= n; i++) {
+            cur = cur.son[t[i - 1] - 'a']; // 如果没有匹配相当于移动到 fail 的 son[t[i-1]-'a']
+            if (cur.len > 0) { // 匹配到了一个尽可能长的 words[k]
+                f[i] = Math.min(f[i], f[i - cur.len] + cur.cost);
+            }
+            // 还可能匹配其余更短的 words[k]，要在 last 链上找
+            for (Node fail = cur.last; fail != ac.root; fail = fail.last) {
+                f[i] = Math.min(f[i], f[i - fail.len] + fail.cost);
+            }
+        }
+        return f[n] == Integer.MAX_VALUE / 2 ? -1 : f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+struct Node {
+    Node* son[26]{};
+    Node* fail; // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+    Node* last; // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
+    int len;
+    int cost = INT_MAX;
+};
+
+struct AhoCorasick {
+    Node* root = new Node();
+
+    void put(string& s, int cost) {
+        auto cur = root;
+        for (char b : s) {
+            b -= 'a';
+            if (cur->son[b] == nullptr) {
+                cur->son[b] = new Node();
+            }
+            cur = cur->son[b];
+        }
+        cur->len = s.length();
+        cur->cost = min(cur->cost, cost);
+    }
+
+    void build_fail() {
+        root->fail = root->last = root;
+        queue<Node*> q;
+        for (auto& son : root->son) {
+            if (son == nullptr) {
+                son = root;
+            } else {
+                son->fail = son->last = root; // 第一层的失配指针，都指向根节点 ∅
+                q.push(son);
+            }
+        }
+        // BFS
+        while (!q.empty()) {
+            auto cur = q.front();
+            q.pop();
+            for (int i = 0; i < 26; i++) {
+                auto& son = cur->son[i];
+                if (son == nullptr) {
+                    // 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    // 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
+                    son = cur->fail->son[i];
+                    continue;
+                }
+                son->fail = cur->fail->son[i]; // 计算失配位置
+                // 沿着 last 往上走，可以直接跳到一定是某个 words[k] 的最后一个字母的节点（如果跳到 root 表示没有匹配）
+                son->last = son->fail->len ? son->fail : son->fail->last;
+                q.push(son);
+            }
+        }
+    }
+};
+
+class Solution {
+public:
+    int minimumCost(string target, vector<string>& words, vector<int>& costs) {
+        AhoCorasick ac;
+        for (int i = 0; i < words.size(); i++) {
+            ac.put(words[i], costs[i]);
+        }
+        ac.build_fail();
+
+        int n = target.size();
+        vector<int> f(n + 1, INT_MAX / 2);
+        f[0] = 0;
+        auto cur = ac.root;
+        for (int i = 1; i <= n; i++) {
+            cur = cur->son[target[i - 1] - 'a']; // 如果没有匹配相当于移动到 fail 的 son[target[i-1]-'a']
+            if (cur->len) { // 匹配到了一个尽可能长的 words[k]
+                f[i] = min(f[i], f[i - cur->len] + cur->cost);
+            }
+            // 还可能匹配其余更短的 words[k]，要在 last 链上找
+            for (auto fail = cur->last; fail != ac.root; fail = fail->last) {
+                f[i] = min(f[i], f[i - fail->len] + fail->cost);
+            }
+        }
+        return f[n] == INT_MAX / 2 ? -1 : f[n];
+    }
+};
+```
+
+```go [sol-Go]
+type node struct {
+	son  [26]*node
+	fail *node // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+	last *node // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
+	len  int
+	cost int
+}
+
+type acam struct {
+	root *node
+}
+
+func (ac *acam) put(s string, cost int) {
+	cur := ac.root
+	for _, b := range s {
+		b -= 'a'
+		if cur.son[b] == nil {
+			cur.son[b] = &node{cost: math.MaxInt}
+		}
+		cur = cur.son[b]
+	}
+	cur.len = len(s)
+	cur.cost = min(cur.cost, cost)
+}
+
+func (ac *acam) buildFail() {
+	ac.root.fail = ac.root
+	ac.root.last = ac.root
+	q := []*node{}
+	for i, son := range ac.root.son[:] {
+		if son == nil {
+			ac.root.son[i] = ac.root
+		} else {
+			son.fail = ac.root // 第一层的失配指针，都指向根节点 ∅
+			son.last = ac.root
+			q = append(q, son)
+		}
+	}
+	// BFS
+	for len(q) > 0 {
+		cur := q[0]
+		q = q[1:]
+		for i, son := range cur.son[:] {
+			if son == nil {
+				// 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+				// 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
+				cur.son[i] = cur.fail.son[i]
+				continue
+			}
+			son.fail = cur.fail.son[i] // 计算失配位置
+			if son.fail.len > 0 {
+				son.last = son.fail
+			} else {
+				// 沿着 last 往上走，可以直接跳到一定是某个 words[k] 的最后一个字母的节点（如果跳到 root 表示没有匹配）
+				son.last = son.fail.last
+			}
+			q = append(q, son)
+		}
+	}
+}
+
+func minimumCost(target string, words []string, costs []int) int {
+	ac := &acam{root: &node{}}
+	for i, w := range words {
+		ac.put(w, costs[i])
+	}
+	ac.buildFail()
+
+	n := len(target)
+	f := make([]int, n+1)
+	cur := ac.root
+	for i, b := range target {
+		cur = cur.son[b-'a'] // 如果没有匹配相当于移动到 fail 的 son[b-'a']
+		i++
+		f[i] = math.MaxInt / 2
+		if cur.len > 0 { // 匹配到了一个尽可能长的 words[k]
+			f[i] = min(f[i], f[i-cur.len]+cur.cost)
+		}
+		// 还可能匹配其余更短的 words[k]，要在 last 链上找
+		for fail := cur.last; fail != ac.root; fail = fail.last {
+			f[i] = min(f[i], f[i-fail.len]+fail.cost)
+		}
+	}
+	if f[n] == math.MaxInt/2 {
+		return -1
+	}
+	return f[n]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。其中 $|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 
 ## 分类题单
 
