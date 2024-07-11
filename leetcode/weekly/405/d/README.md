@@ -357,8 +357,8 @@ func minimumCost(target string, words []string, costs []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(L + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
+- 空间复杂度：$\mathcal{O}(n + m)$。其中 $m$ 是 $\textit{words}$ 的长度。
 
 ## 方法二：后缀数组
 
@@ -421,8 +421,8 @@ func minimumCost(target string, words []string, costs []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
-- 空间复杂度：$\mathcal{O}(n\sqrt{L})$。
+- 时间复杂度：$\mathcal{O}(L + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
+- 空间复杂度：$\mathcal{O}(L + n\sqrt{L})$。
 
 ## 方法三：AC 自动机
 
@@ -499,7 +499,7 @@ class Solution:
             # 还可能匹配其余更短的 words[k]，要在 last 链上找
             fail = cur.last
             while fail != root:
-                # 手写 min，避免超时
+                # 手写 min 更快
                 tmp = f[i - fail.len] + fail.cost
                 if tmp < f[i]:
                     f[i] = tmp
@@ -771,8 +771,8 @@ func minimumCost(target string, words []string, costs []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
-- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。其中 $|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(L + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
+- 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。其中 $|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 
 ## 分类题单
 
