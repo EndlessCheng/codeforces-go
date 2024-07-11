@@ -814,6 +814,8 @@ func _(x int) {
 		return
 	}
 
+	//
+
 	// logTrick 的简单版本 · 其一
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
@@ -847,19 +849,19 @@ func _(x int) {
 	// 找 op 值为 k 的子数组个数
 	// 支持 AND OR GCD 等
 	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
-	logTrickSimpleCntK := func(nums []int, k int, op func(int, int) int) int {
+	logTrickSimpleCntK := func(a []int, k int, op func(int, int) int) int {
 		ans := 0
 		cnt := 0
-		for i, v := range nums {
+		for i, v := range a {
 			if v == k {
 				cnt++
 			}
-			for j := i - 1; j >= 0 && op(nums[j], v) != nums[j]; j-- {
-				if nums[j] == k {
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				if a[j] == k {
 					cnt--
 				}
-				nums[j] = op(nums[j], v)
-				if nums[j] == k {
+				a[j] = op(a[j], v)
+				if a[j] == k {
 					cnt++
 				}
 			}
@@ -867,6 +869,49 @@ func _(x int) {
 		}
 		return ans
 	}
+
+	// logTrick 的简单版本 · 其三
+	// 返回 op(子数组) 的所有不同结果
+	// https://leetcode.cn/problems/bitwise-ors-of-subarrays/
+	logTrickSimpleAllRes := func(a []int, op func(int, int) int) map[int]bool {
+		has := map[int]bool{}
+		for i, v := range a {
+			has[v] = true
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				a[j] = op(a[j], v)
+				has[a[j]] = true
+			}
+		}
+		return has
+	}
+
+	// logTrick 的简单版本 · 其四
+	// 返回 op(子数组) 的所有不同结果及其出现次数
+	// 注：效率不如 logTrickCnt
+	// https://codeforces.com/problemset/problem/475/D 2000
+	logTrickSimpleAllResCnt := func(a []int, op func(int, int) int) map[int]int {
+		cnt := map[int]int{}
+		endICnt := map[int]int{} // 以 i 结尾的 op(子数组) 的不同结果及其出现次数
+		for i, v := range a {
+			endICnt[v]++
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				pre := a[j]
+				endICnt[pre]--
+				if endICnt[pre] == 0 {
+					delete(endICnt, pre) // 保证 len(endICnt) = O(log U)
+				}
+				a[j] = op(a[j], v)
+				endICnt[a[j]]++
+			}
+			for opRes, c := range endICnt {
+				cnt[opRes] += c
+			}
+		}
+		return cnt
+	}
+
+	// 需要注意的是，上面计算的内容，丢失了「子数组值为 s 时，左端点的下标范围」的信息，所以适用性更广的写法见更后面的 logTrickCnt
+	// 例如 https://codeforces.com/problemset/problem/1632/D (2000) 用 logTrickCnt 写起来更简单
 
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果
 	// 利用操作的单调性求解
@@ -939,6 +984,7 @@ func _(x int) {
 				curRes[j].v = op(p.v, v)
 			}
 			curRes = append(curRes, result{v, i, i + 1})
+
 			// 去重（合并 v 相同的 result）
 			j := 1
 			for k := 1; k < len(curRes); k++ {
@@ -950,6 +996,7 @@ func _(x int) {
 				}
 			}
 			curRes = curRes[:j]
+
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
 			// 对于任意 p∈set，任意 j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range curRes {
@@ -1092,7 +1139,8 @@ func _(x int) {
 		lcp, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		logTrickSimple, logTrickSimpleCntK, logTrick, logTrickCnt, countSumEqMul,
+		logTrickSimple, logTrickSimpleCntK, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
+		logTrick, logTrickCnt, countSumEqMul,
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
