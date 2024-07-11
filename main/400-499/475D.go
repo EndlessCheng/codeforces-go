@@ -20,27 +20,29 @@ func CF475D(_r io.Reader, _w io.Writer) {
 
 	var n, x, q int
 	Fscan(in, &n)
-	cnt := map[int]int64{}
-	type pair struct{ v, l, r int }
-	set := []pair{}
+	cnt := map[int]int{}
+	type pair struct{ v, cnt int }
+	opRes := []pair{}
 	for i := 0; i < n; i++ {
 		Fscan(in, &x)
-		for j, p := range set {
-			set[j].v = gcd(p.v, x)
+		for j, p := range opRes {
+			opRes[j].v = gcd(p.v, x)
 		}
-		set = append(set, pair{x, i, i + 1})
-		k := 0
-		for _, q := range set[1:] {
-			if set[k].v != q.v {
+		opRes = append(opRes, pair{x, 1})
+
+		k := 1
+		for j := 1; j < len(opRes); j++ {
+			if opRes[j].v != opRes[j-1].v {
+				opRes[k] = opRes[j]
 				k++
-				set[k] = q
 			} else {
-				set[k].r = q.r
+				opRes[k-1].cnt += opRes[j].cnt
 			}
 		}
-		set = set[:k+1]
-		for _, p := range set {
-			cnt[p.v] += int64(p.r - p.l)
+		opRes = opRes[:k]
+
+		for _, p := range opRes {
+			cnt[p.v] += p.cnt
 		}
 	}
 	for Fscan(in, &q); q > 0; q-- {
