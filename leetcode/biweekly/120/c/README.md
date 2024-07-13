@@ -245,11 +245,10 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。注意二重循环中的下标 $i$ 和 $j$ 都只会减小，不会变大。由于下标只会减小 $\mathcal{O}(n)$ 次，所以二重循环的总循环次数是 $\mathcal{O}(n)$ 的。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 思考题
+## 思考题（变形题）
 
-移除的子数组，**最短长度**是多少？
-
-见 [1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/)。
+1. 移除的子数组，最短长度是多少？见 [1574. 删除最短的子数组使剩余数组有序](https://leetcode.cn/problems/shortest-subarray-to-be-removed-to-make-array-sorted/)。
+2. 改成移除所有元素值在 $[L,R]$ 内的元素，使得移除后，剩余元素是非降的。有多少个这样的 $(L,R)$ 数对？见 [CF1167E. Range Deleting](https://codeforces.com/problemset/problem/1167/E)。
 
 ## 分类题单
 
