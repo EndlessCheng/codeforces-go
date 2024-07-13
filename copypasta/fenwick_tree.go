@@ -48,19 +48,22 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 最多交换 k 次相邻字母后，得到的最小字典序
 - LC1505 https://leetcode.cn/problems/minimum-possible-integer-after-at-most-k-adjacent-swaps-on-digits/
 LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
-https://codeforces.com/contest/1915/problem/F 1500
-区间包含计数 https://codeforces.com/problemset/problem/652/D 1800
-长为 k 的上升子序列个数 https://codeforces.com/problemset/problem/597/C 1900
+
+https://codeforces.com/problemset/problem/1915/F 1500
+https://codeforces.com/problemset/problem/652/D 1800 区间包含计数
+https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
 https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
-区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 2100
+https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和
 - 联系 https://www.luogu.com.cn/problem/P1972
-建模 https://codeforces.com/problemset/problem/1660/F2 2100
-整除对统计 https://codeforces.com/problemset/problem/301/D 2200
-区间统计技巧 https://codeforces.com/problemset/problem/369/E 2200
+https://codeforces.com/problemset/problem/1660/F2 2100 建模
+https://codeforces.com/problemset/problem/301/D 2200 整除对统计
+https://codeforces.com/problemset/problem/369/E 2200 区间统计技巧
+https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
-三维偏序 https://codeforces.com/problemset/problem/12/D 2400
+https://codeforces.com/problemset/problem/12/D 2400 三维偏序
 https://codeforces.com/problemset/problem/1334/F 2500
-多重前缀和 https://atcoder.jp/contests/abc256/tasks/abc256_f
+
+https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 https://codeforces.com/gym/101649 I 题
