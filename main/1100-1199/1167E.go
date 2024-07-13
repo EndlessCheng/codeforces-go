@@ -8,7 +8,7 @@ import (
 func cf1167E(in io.Reader, out io.Writer) {
 	var n, x, v int
 	Fscan(in, &n, &x)
-	ps := [1e6 + 1]struct{ l, r, v int }{}
+	ps := make([]struct{ l, r, v int }, x+1)
 	for i := range ps {
 		ps[i].l = 1e9
 		ps[i].v = i
