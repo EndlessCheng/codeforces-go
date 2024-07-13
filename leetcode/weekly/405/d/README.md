@@ -438,7 +438,7 @@ class Node:
 
     def __init__(self):
         self.son = [None] * 26
-        self.fail = None  # 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+        self.fail = None  # 当 cur.son[i] 不能匹配 target 中的某个字符时，cur.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
         self.last = None  # 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
         self.len = 0
         self.cost = inf
@@ -472,7 +472,7 @@ class AhoCorasick:
             cur = q.popleft()
             for i, son in enumerate(cur.son):
                 if son is None:
-                    # 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    # 虚拟子节点 cur.son[i]，和 cur.fail.son[i] 是同一个
                     # 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
                     cur.son[i] = cur.fail.son[i]
                     continue
@@ -497,20 +497,20 @@ class Solution:
             if cur.len:  # 匹配到了一个尽可能长的 words[k]
                 f[i] = min(f[i], f[i - cur.len] + cur.cost)
             # 还可能匹配其余更短的 words[k]，要在 last 链上找
-            fail = cur.last
-            while fail != root:
+            match_node = cur.last
+            while match_node != root:
                 # 手写 min 更快
-                tmp = f[i - fail.len] + fail.cost
+                tmp = f[i - match_node.len] + match_node.cost
                 if tmp < f[i]:
                     f[i] = tmp
-                fail = fail.last
+                match_node = match_node.last
         return -1 if f[n] == inf else f[n]
 ```
 
 ```java [sol-Java]
 class Node {
     Node[] son = new Node[26];
-    Node fail; // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+    Node fail; // 当 cur.son[i] 不能匹配 target 中的某个字符时，cur.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
     Node last; // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
     int len;
     int cost = Integer.MAX_VALUE;
@@ -550,7 +550,7 @@ class AhoCorasick {
             for (int i = 0; i < 26; i++) {
                 Node son = cur.son[i];
                 if (son == null) {
-                    // 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    // 虚拟子节点 cur.son[i]，和 cur.fail.son[i] 是同一个
                     // 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
                     cur.son[i] = cur.fail.son[i];
                     continue;
@@ -584,8 +584,8 @@ public class Solution {
                 f[i] = Math.min(f[i], f[i - cur.len] + cur.cost);
             }
             // 还可能匹配其余更短的 words[k]，要在 last 链上找
-            for (Node fail = cur.last; fail != ac.root; fail = fail.last) {
-                f[i] = Math.min(f[i], f[i - fail.len] + fail.cost);
+            for (Node match = cur.last; match != ac.root; match = match.last) {
+                f[i] = Math.min(f[i], f[i - match.len] + match.cost);
             }
         }
         return f[n] == Integer.MAX_VALUE / 2 ? -1 : f[n];
@@ -596,9 +596,9 @@ public class Solution {
 ```cpp [sol-C++]
 struct Node {
     Node* son[26]{};
-    Node* fail; // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+    Node* fail; // 当 cur.son[i] 不能匹配 target 中的某个字符时，cur.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
     Node* last; // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
-    int len;
+    int len = 0;
     int cost = INT_MAX;
 };
 
@@ -636,7 +636,7 @@ struct AhoCorasick {
             for (int i = 0; i < 26; i++) {
                 auto& son = cur->son[i];
                 if (son == nullptr) {
-                    // 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+                    // 虚拟子节点 cur.son[i]，和 cur.fail.son[i] 是同一个
                     // 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
                     son = cur->fail->son[i];
                     continue;
@@ -669,8 +669,8 @@ public:
                 f[i] = min(f[i], f[i - cur->len] + cur->cost);
             }
             // 还可能匹配其余更短的 words[k]，要在 last 链上找
-            for (auto fail = cur->last; fail != ac.root; fail = fail->last) {
-                f[i] = min(f[i], f[i - fail->len] + fail->cost);
+            for (auto match = cur->last; match != ac.root; match = match->last) {
+                f[i] = min(f[i], f[i - match->len] + match->cost);
             }
         }
         return f[n] == INT_MAX / 2 ? -1 : f[n];
@@ -681,7 +681,7 @@ public:
 ```go [sol-Go]
 type node struct {
 	son  [26]*node
-	fail *node // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+	fail *node // 当 cur.son[i] 不能匹配 target 中的某个字符时，cur.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
 	last *node // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
 	len  int
 	cost int
@@ -723,7 +723,7 @@ func (ac *acam) buildFail() {
 		q = q[1:]
 		for i, son := range cur.son[:] {
 			if son == nil {
-				// 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+				// 虚拟子节点 cur.son[i]，和 cur.fail.son[i] 是同一个
 				// 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
 				cur.son[i] = cur.fail.son[i]
 				continue
@@ -758,8 +758,8 @@ func minimumCost(target string, words []string, costs []int) int {
 			f[i] = min(f[i], f[i-cur.len]+cur.cost)
 		}
 		// 还可能匹配其余更短的 words[k]，要在 last 链上找
-		for fail := cur.last; fail != ac.root; fail = fail.last {
-			f[i] = min(f[i], f[i-fail.len]+fail.cost)
+		for match := cur.last; match != ac.root; match = match.last {
+			f[i] = min(f[i], f[i-match.len]+match.cost)
 		}
 	}
 	if f[n] == math.MaxInt/2 {

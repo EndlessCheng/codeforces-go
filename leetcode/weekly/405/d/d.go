@@ -10,7 +10,7 @@ import (
 // https://space.bilibili.com/206214
 type node struct {
 	son  [26]*node
-	fail *node // 当 o.son[i] 不能匹配 target 中的某个字符时，o.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
+	fail *node // 当 cur.son[i] 不能匹配 target 中的某个字符时，cur.fail.son[i] 即为下一个待匹配节点（等于 root 则表示没有匹配）
 	last *node // 后缀链接（suffix link），用来快速跳到一定是某个 words[k] 的最后一个字母的节点（等于 root 则表示没有）
 	len  int
 	cost int
@@ -52,7 +52,7 @@ func (ac *acam) buildFail() {
 		q = q[1:]
 		for i, son := range cur.son[:] {
 			if son == nil {
-				// 虚拟子节点 o.son[i]，和 o.fail.son[i] 是同一个
+				// 虚拟子节点 cur.son[i]，和 cur.fail.son[i] 是同一个
 				// 方便失配时直接跳到下一个可能匹配的位置（但不一定是某个 words[k] 的最后一个字母）
 				cur.son[i] = cur.fail.son[i]
 				continue
@@ -87,8 +87,8 @@ func minimumCost(target string, words []string, costs []int) int {
 			f[i] = min(f[i], f[i-cur.len]+cur.cost)
 		}
 		// 还可能匹配其余更短的 words[k]，要在 last 链上找
-		for fail := cur.last; fail != ac.root; fail = fail.last {
-			f[i] = min(f[i], f[i-fail.len]+fail.cost)
+		for match := cur.last; match != ac.root; match = match.last {
+			f[i] = min(f[i], f[i-match.len]+match.cost)
 		}
 	}
 	if f[n] == math.MaxInt/2 {
