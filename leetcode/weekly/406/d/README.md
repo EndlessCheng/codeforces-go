@@ -1,3 +1,5 @@
+## 贪心策略
+
 首先，每条水平线和垂直线，最终都要全部切完。
 
 - 水平线（横切）开销 $\textit{horizontalCut}[i]$ 对答案的**贡献**，等于 $\textit{horizontalCut}[i]$ 乘以横切次数（经过多少块蛋糕），即在此之前的竖切次数加一。
@@ -48,7 +50,7 @@ $$
 
 这意味着，**谁的开销更大，就先切谁**，并且这个先后顺序与 $\textit{cntH}$ 和 $\textit{cntV}$ 无关。换句话说，按照该规则去切蛋糕，得到的操作序列，如果把开销大的操作移动后面，必然会得到更大的总开销。
 
-### 算法
+## 写法一
 
 1. 把 $\textit{horizontalCut}$ 和 $\textit{verticalCut}$ 从大到小排序。
 2. 初始化 $\textit{cntH} = 1, \textit{cntV} = 1, i = 0, j = 0$。
@@ -143,6 +145,85 @@ func minimumCost(m, n int, horizontalCut, verticalCut []int) int64 {
 			ans += verticalCut[j] * cntV // 竖切
 			j++
 			cntH++ // 需要横切的蛋糕块增加
+		}
+	}
+	return int64(ans)
+}
+```
+
+## 写法二（优化）
+
+$\textit{cntH}$ 和 $\textit{cntV}$ 这两个变量可以省略，因为从上面的过程可以发现，$\textit{cntH}=j+1,\ \textit{cntV}=i+1$。
+
+```py [sol-Python3]
+class Solution:
+    def minimumCost(self, m: int, n: int, horizontalCut: List[int], verticalCut: List[int]) -> int:
+        horizontalCut.sort(reverse=True)
+        verticalCut.sort(reverse=True)
+        ans = i = j = 0
+        while i < m - 1 or j < n - 1:
+            if j == n - 1 or i < m - 1 and horizontalCut[i] > verticalCut[j]:
+                ans += horizontalCut[i] * (j + 1)  # 横切
+                i += 1
+            else:
+                ans += verticalCut[j] * (i + 1)  # 竖切
+                j += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long minimumCost(int m, int n, int[] horizontalCut, int[] verticalCut) {
+        Arrays.sort(horizontalCut); // 下面倒序遍历
+        Arrays.sort(verticalCut);
+        long ans = 0;
+        int i = m - 2;
+        int j = n - 2;
+        while (i >= 0 || j >= 0) {
+            if (j < 0 || i >= 0 && horizontalCut[i] > verticalCut[j]) {
+                ans += horizontalCut[i--] * (n - 1 - j); // 横切
+            } else {
+                ans += verticalCut[j--] * (m - 1 - i); // 竖切
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
+        ranges::sort(horizontalCut, greater<>());
+        ranges::sort(verticalCut, greater<>());
+        long long ans = 0;
+        int i = 0, j = 0;
+        while (i < m - 1 || j < n - 1) {
+            if (j == n - 1 || i < m - 1 && horizontalCut[i] > verticalCut[j]) {
+                ans += horizontalCut[i++] * (j + 1); // 横切
+            } else {
+                ans += verticalCut[j++] * (i + 1); // 竖切
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumCost(m, n int, horizontalCut, verticalCut []int) int64 {
+	slices.SortFunc(horizontalCut, func(a, b int) int { return b - a })
+	slices.SortFunc(verticalCut, func(a, b int) int { return b - a })
+	ans := 0
+	i, j := 0, 0
+	for i < m-1 || j < n-1 {
+		if j == n-1 || i < m-1 && horizontalCut[i] > verticalCut[j] {
+			ans += horizontalCut[i] * (j + 1) // 横切
+			i++
+		} else {
+			ans += verticalCut[j] * (i + 1) // 竖切
+			j++
 		}
 	}
 	return int64(ans)
