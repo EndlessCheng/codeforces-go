@@ -1,5 +1,7 @@
 package copypasta
 
+import "sort"
+
 /* 单调栈 Monotone Stack
 
 视频讲解
@@ -37,6 +39,8 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 - [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
 - [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
 - [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
+- [3113. 边界元素是最大值的子数组数目](https://leetcode.cn/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/) 2046
+    - 相似题目 [2421. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)
 - [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
 - [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
     - 中间的人可以和 i j 身高相等 https://www.luogu.com.cn/problem/P1823
@@ -411,7 +415,7 @@ func removeDuplicateLetters(s string) string {
 // 讲解：https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/
 // LC962 https://leetcode.cn/problems/maximum-width-ramp/
 // LC1124 https://leetcode.cn/problems/longest-well-performing-interval/
-// 有点相关 http://codeforces.com/problemset/problem/1788/E
+// 有点相关 https://codeforces.com/problemset/problem/1788/E
 func longestSubarrayWithLowerSum(a []int, lowerSum int) (int, int) {
 	n := len(a)
 	sum := make([]int, n+1)
@@ -437,4 +441,37 @@ func longestSubarrayWithLowerSum(a []int, lowerSum int) (int, int) {
 	r-- // 闭区间
 
 	return l, r
+}
+
+// 静态区间最值
+// https://ac.nowcoder.com/acm/contest/86034/F
+func rangeMaxWithSt(a []int, queries []struct{ l, r int }) []int {
+	// 离线询问
+	type pair struct{ left, qid int }
+	qs := make([][]pair, len(a))
+	for i, q := range queries {
+		l, r := q.l, q.r // l 和 r 的下标从 0 开始
+		qs[r] = append(qs[r], pair{l, i})
+	}
+
+	ans := make([]int, len(queries))
+	maxSt := []int{} // 单调栈，维护最大
+	minSt := []int{} // 单调栈，维护最小
+	for right, v := range a {
+		for len(maxSt) > 0 && v >= a[maxSt[len(maxSt)-1]] {
+			maxSt = maxSt[:len(maxSt)-1]
+		}
+		maxSt = append(maxSt, right)
+
+		for len(minSt) > 0 && v <= a[minSt[len(minSt)-1]] {
+			minSt = minSt[:len(minSt)-1]
+		}
+		minSt = append(minSt, right)
+
+		for _, p := range qs[right] {
+			ans[p.qid] = a[maxSt[sort.SearchInts(maxSt, p.left)]] // 计算区间最大
+			//ans[p.qid] = a[minSt[sort.SearchInts(minSt, p.left)]] // 计算区间最小
+		}
+	}
+	return ans
 }
