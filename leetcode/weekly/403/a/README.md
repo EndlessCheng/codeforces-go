@@ -12,7 +12,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public double minimumAverage(int[] nums) {
         Arrays.sort(nums);
         int ans = Integer.MAX_VALUE;
