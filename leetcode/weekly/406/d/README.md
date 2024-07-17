@@ -110,8 +110,8 @@ class Solution {
 class Solution {
 public:
     long long minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
-        ranges::sort(horizontalCut, greater<>());
-        ranges::sort(verticalCut, greater<>());
+        ranges::sort(horizontalCut, greater());
+        ranges::sort(verticalCut, greater());
         long long ans = 0;
         int cnt_h = 1, cnt_v = 1;
         int i = 0, j = 0;
@@ -195,8 +195,8 @@ class Solution {
 class Solution {
 public:
     long long minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
-        ranges::sort(horizontalCut, greater<>());
-        ranges::sort(verticalCut, greater<>());
+        ranges::sort(horizontalCut, greater());
+        ranges::sort(verticalCut, greater());
         long long ans = 0;
         int i = 0, j = 0;
         while (i < m - 1 || j < n - 1) {
