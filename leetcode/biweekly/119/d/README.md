@@ -10,8 +10,6 @@
 class Solution:
     def numberOfSets(self, n: int, maxDistance: int, roads: List[List[int]]) -> int:
         g = [[inf] * n for _ in range(n)]
-        for i in range(n):
-            g[i][i] = 0  # 也可以不写，下面判断 maxDistance 时要保证 j != i
         for x, y, wt in roads:
             g[x][y] = min(g[x][y], wt)
             g[y][x] = min(g[y][x], wt)
@@ -36,7 +34,7 @@ class Solution:
             for i, di in enumerate(f):
                 if (s >> i & 1) == 0:  # i 不在集合 s 中
                     continue
-                for j, dij in enumerate(di):
+                for j, dij in enumerate(di[:i]):
                     if s >> j & 1 and dij > maxDistance:
                         return 0
             return 1
@@ -49,9 +47,8 @@ class Solution:
 class Solution {
     public int numberOfSets(int n, int maxDistance, int[][] roads) {
         int[][] g = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(g[i], Integer.MAX_VALUE / 2); // 防止加法溢出
-            g[i][i] = 0; // 也可以不写，下面判断 maxDistance 时要保证 j != i
+        for (int[] row : g) {
+            Arrays.fill(row, Integer.MAX_VALUE / 2); // 防止加法溢出
         }
         for (int[] e : roads) {
             int x = e[0];
@@ -85,7 +82,7 @@ class Solution {
             // 判断保留的节点之间的最短路是否均不超过 maxDistance
             for (int i = 0; i < n; i++) {
                 if ((s >> i & 1) == 0) continue;
-                for (int j = 0; j < n; j++) {
+                for (int j = 0; j < i; j++) {
                     if ((s >> j & 1) == 1 && f[i][j] > maxDistance) {
                         continue next;
                     }
@@ -103,9 +100,6 @@ class Solution {
 public:
     int numberOfSets(int n, int maxDistance, vector<vector<int>>& roads) {
         vector<vector<int>> g(n, vector<int>(n, INT_MAX / 2)); // 防止加法溢出
-        for (int i = 0; i < n; i++) {
-            g[i][i] = 0; // 也可以不写，下面判断 maxDistance 时要保证 j != i
-        }
         for (auto& e: roads) {
             int x = e[0], y = e[1], wt = e[2];
             g[x][y] = min(g[x][y], wt);
@@ -134,7 +128,7 @@ public:
             // 判断保留的节点之间的最短路是否均不超过 maxDistance
             for (int i = 0; i < n; i++) {
                 if (((s >> i) & 1) == 0) continue;
-                for (int j = 0; j < n; j++) {
+                for (int j = 0; j < i; j++) {
                     if ((s >> j) & 1 && f[i][j] > maxDistance) {
                         return false;
                     }
@@ -158,9 +152,7 @@ func numberOfSets(n, maxDistance int, roads [][]int) (ans int) {
 	for i := range g {
 		g[i] = make([]int, n)
 		for j := range g[i] {
-			if j != i { // g[i][i] = 0（也可以不加这个 if，下面判断 maxDistance 时要保证 j != i）
-				g[i][j] = math.MaxInt / 2 // 防止加法溢出
-			}
+            g[i][j] = math.MaxInt / 2 // 防止加法溢出
 		}
 	}
 	for _, e := range roads {
@@ -194,7 +186,7 @@ next:
 		// 判断保留的节点之间的最短路是否均不超过 maxDistance
 		for i, di := range f {
 			if s>>i&1 == 0 { continue }
-			for j, dij := range di {
+			for j, dij := range di[:i] {
 				if s>>j&1 > 0 && dij > maxDistance {
 					continue next
 				}
@@ -244,8 +236,6 @@ $$
 class Solution:
     def numberOfSets(self, n: int, maxDistance: int, roads: List[List[int]]) -> int:
         g = [[inf] * n for _ in range(n)]
-        for i in range(n):
-            g[i][i] = 0  # 也可以不写，下面判断 maxDistance 时要保证 j != i
         for x, y, wt in roads:
             g[x][y] = min(g[x][y], wt)
             g[y][x] = min(g[y][x], wt)
@@ -260,7 +250,7 @@ class Solution:
             for i in range(n):
                 for j in range(n):
                     f[s][i][j] = min(f[t][i][j], f[t][i][k] + f[t][k][j])  # 手动求 min 可以更快
-                    if ok and s >> i & 1 and s >> j & 1 and f[s][i][j] > maxDistance:
+                    if ok and j < i and s >> i & 1 and s >> j & 1 and f[s][i][j] > maxDistance:
                         ok = 0
             ans += ok
         return ans
@@ -270,9 +260,8 @@ class Solution:
 class Solution {
     public int numberOfSets(int n, int maxDistance, int[][] roads) {
         int[][] g = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(g[i], Integer.MAX_VALUE / 2);
-            g[i][i] = 0; // 也可以不写，下面判断 maxDistance 时要保证 j != i
+        for (int[] row : g) {
+            Arrays.fill(row, Integer.MAX_VALUE / 2);
         }
         for (int[] e : roads) {
             int x = e[0];
@@ -297,7 +286,7 @@ class Solution {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     f[s][i][j] = Math.min(f[t][i][j], f[t][i][k] + f[t][k][j]);
-                    if (ok && (s >> i & 1) != 0 && (s >> j & 1) != 0 && f[s][i][j] > maxDistance) {
+                    if (ok && j < i && (s >> i & 1) != 0 && (s >> j & 1) != 0 && f[s][i][j] > maxDistance) {
                         ok = false;
                     }
                 }
@@ -314,10 +303,7 @@ class Solution {
 public:
     int numberOfSets(int n, int maxDistance, vector<vector<int>>& roads) {
         vector<vector<int>> g(n, vector<int>(n, INT_MAX / 2));
-        for (int i = 0; i < n; i++) {
-            g[i][i] = 0; // 也可以不写，下面判断 maxDistance 时要保证 j != i
-        }
-        for (auto& e : roads) {
+        for (auto& e: roads) {
             int x = e[0], y = e[1], wt = e[2];
             g[x][y] = min(g[x][y], wt);
             g[y][x] = min(g[y][x], wt);
@@ -333,7 +319,7 @@ public:
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     f[s][i][j] = min(f[t][i][j], f[t][i][k] + f[t][k][j]);
-                    if (ok && (s >> i & 1) && (s >> j & 1) && f[s][i][j] > maxDistance) {
+                    if (ok && j < i && (s >> i & 1) && (s >> j & 1) && f[s][i][j] > maxDistance) {
                         ok = false;
                     }
                 }
@@ -351,9 +337,7 @@ func numberOfSets(n, maxDistance int, roads [][]int) int {
 	for i := range g {
 		g[i] = make([]int, n)
 		for j := range g[i] {
-			if j != i { // g[i][i] = 0（也可以不加这个 if，下面判断 maxDistance 时要保证 j != i）
-				g[i][j] = math.MaxInt / 2 // 防止加法溢出
-			}
+            g[i][j] = math.MaxInt / 2 // 防止加法溢出
 		}
 	}
 	for _, e := range roads {
@@ -381,7 +365,7 @@ func numberOfSets(n, maxDistance int, roads [][]int) int {
 		for i := 0; i < n; i++ {
 			for j := 0; j < n; j++ {
 				f[s][i][j] = min(f[t][i][j], f[t][i][k]+f[t][k][j])
-				if ok && s>>i&1 != 0 && s>>j&1 != 0 && f[s][i][j] > maxDistance {
+				if ok && j < i && s>>i&1 != 0 && s>>j&1 != 0 && f[s][i][j] > maxDistance {
 					ok = false
 				}
 			}

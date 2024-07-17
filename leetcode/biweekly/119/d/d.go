@@ -41,7 +41,7 @@ func numberOfSets(n, maxDistance int, roads [][]int) int {
 		for i := 0; i < n; i++ {
 			for j := 0; j < n; j++ {
 				f[s][i][j] = min(f[t][i][j], f[t][i][k]+f[t][k][j])
-				if ok && s>>i&1 != 0 && s>>j&1 != 0 && f[s][i][j] > maxDistance {
+				if ok && j < i && s>>i&1 != 0 && s>>j&1 != 0 && f[s][i][j] > maxDistance {
 					ok = false
 				}
 			}
