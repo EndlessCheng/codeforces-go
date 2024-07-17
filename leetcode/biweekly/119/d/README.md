@@ -238,6 +238,8 @@ $$
 
 ⚠注意：该计算过程不需要保证 $i$ 和 $j$ 都是 $S$ 中的元素，$S$ 只是中间节点的编号集合，不是保留的编号集合。但是，设 $i$ 和 $j$ 都是 $S$ 中的元素，从点 $i$ 到点 $j$，在只经过 $S$ 中的节点的情况下，最短路长度就是 $f[S][i][j]$。所以在「$i$ 和 $j$ 都是 $S$ 中的元素」的前提下，$S$ 也可以作为当前保留的节点集合，$f[S][i][j]$ 可以用来与 $\textit{maxDistance}$ 比大小。
 
+代码实现时，节点 $k$ 可以是 $S$ 中的任一元素（比如最小元素或最大元素）。
+
 ```py [sol-Python3]
 class Solution:
     def numberOfSets(self, n: int, maxDistance: int, roads: List[List[int]]) -> int:
