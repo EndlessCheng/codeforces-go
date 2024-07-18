@@ -6,11 +6,10 @@ import (
 )
 
 // github.com/EndlessCheng/codeforces-go
-const mod int64 = 1e9 + 7
+type matrix82 [3][3]int64
 
-type matrix [3][3]int64
-
-func (a matrix) mul(b matrix) (c matrix) {
+func (a matrix82) mul(b matrix82) (c matrix82) {
+	const mod = 1_000_000_007
 	for i, r := range a {
 		for j := range b[0] {
 			for k, v := range r {
@@ -21,7 +20,7 @@ func (a matrix) mul(b matrix) (c matrix) {
 	return
 }
 
-func (a matrix) pow(n int64) (res matrix) {
+func (a matrix82) pow(n int64) (res matrix82) {
 	for i := range res {
 		res[i][i] = 1
 	}
@@ -35,6 +34,7 @@ func (a matrix) pow(n int64) (res matrix) {
 }
 
 func CF1182E(in io.Reader, out io.Writer) {
+	const mod = 1_000_000_007
 	pow := func(x, n int64) (res int64) {
 		res = 1
 		for ; n > 0; n >>= 1 {
@@ -50,7 +50,7 @@ func CF1182E(in io.Reader, out io.Writer) {
 	f1 = f1 * c % mod
 	f2 = f2 * c % mod * c % mod
 	f3 = f3 * c % mod * c % mod * c % mod
-	m := matrix{
+	m := matrix82{
 		{1, 1, 1},
 		{1, 0, 0},
 		{0, 1, 0},
