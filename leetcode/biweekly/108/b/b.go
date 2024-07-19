@@ -1,6 +1,6 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214
 func relocateMarbles(nums, moveFrom, moveTo []int) []int {
@@ -8,14 +8,16 @@ func relocateMarbles(nums, moveFrom, moveTo []int) []int {
 	for _, x := range nums {
 		set[x] = struct{}{}
 	}
+
 	for i, x := range moveFrom {
 		delete(set, x)
 		set[moveTo[i]] = struct{}{}
 	}
+
 	ans := make([]int, 0, len(set))
 	for x := range set {
 		ans = append(ans, x)
 	}
-	sort.Ints(ans)
+	slices.Sort(ans)
 	return ans
 }
