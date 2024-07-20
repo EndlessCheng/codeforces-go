@@ -29,6 +29,8 @@ https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
 https://codeforces.com/problemset/problem/1862/E 1600
+https://codeforces.com/problemset/problem/1862/E 1600
+https://codeforces.com/problemset/problem/1935/C 1800
 https://codeforces.com/problemset/problem/1196/F 2200
 
 #### 懒删除
@@ -59,6 +61,8 @@ https://codeforces.com/problemset/problem/1251/E2
 - 维护最小 pi 可以用最小堆
 https://atcoder.jp/contests/agc057/tasks/agc057_b
 https://ac.nowcoder.com/acm/contest/65157/C
+https://www.luogu.com.cn/problem/P7840
+- https://atcoder.jp/contests/abc359/tasks/abc359_f
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
@@ -78,6 +82,9 @@ https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 - [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/) 2074
 - [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582 也可以用栈
 - [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
+- [2463. 最小移动总距离](https://leetcode.cn/problems/minimum-total-distance-traveled/) 做到 O((n+m)log(n+m))  模拟费用流
+   - https://codeforces.com/problemset/problem/797/F 2600
+   - https://www.cnblogs.com/Scarab/p/17672813.html
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 题单 https://www.luogu.com.cn/training/8793
 https://www.luogu.com.cn/problem/P3045
@@ -90,6 +97,16 @@ https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
 https://atcoder.jp/contests/abc249/tasks/abc249_f
 https://www.cnblogs.com/nth-element/p/11768155.html
+
+#### 模拟费用流
+https://www.luogu.com/article/wn7c3auk 模拟费用流小记 by command_block
+https://www.cnblogs.com/Call-me-Eric/p/17878027.html
+https://blog.csdn.net/wyy603/article/details/105038432
+https://www.luogu.com.cn/problem/P4694
+https://uoj.ac/problem/455
+https://www.luogu.com.cn/problem/P1484
+https://codeforces.com/problemset/problem/730/I 2000
+https://www.luogu.com.cn/problem/P6122
 
 #### 区间贪心相关
 最小不相交区间划分数
