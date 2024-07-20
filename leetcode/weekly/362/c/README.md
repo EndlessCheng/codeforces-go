@@ -312,6 +312,11 @@ func minimumMoves(grid [][]int) int {
 func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}((mn)^4)$。其中 $m=3,n=3$。复杂度为图中节点个数、边的个数、最大流三者之积，也就是 $\mathcal{O}(mn\times (mn)^2\times mn) = \mathcal{O}((mn)^4)$。
+- 空间复杂度：$\mathcal{O}((mn)^2)$。
+
 ## 相似题目
 
 下面是一些涉及到「匹配」的题目：
