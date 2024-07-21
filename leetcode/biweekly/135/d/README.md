@@ -61,7 +61,7 @@ class Solution:
 
 如何**不重不漏**地统计呢？
 
-![lc3225-cut.png](https://pic.leetcode.cn/1721570150-lvUEyU-lc3225-cut.png)
+![lc3225-cut.png](https://pic.leetcode.cn/1721579697-tcrvBA-lc3225-cut.png)
 
 定义 $\textit{dfs}(j,\textit{pre},\textit{dec})$ 表示考虑第 $0$ 列到第 $j$ 列，其中：
 
