@@ -1,0 +1,8 @@
+"leetcoder"
+true
+
+"bbcd"
+false
+
+
+
