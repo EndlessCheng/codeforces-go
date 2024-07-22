@@ -12,7 +12,8 @@
 
 - 如果修改 $p$，那么把 $p$ 改成 $0$ 可以让差值尽量大，此时差值为 $q$。
 - 如果修改 $q$，那么把 $q$ 改成 $k$ 可以让差值尽量大，此时差值为 $k-p$。
-- 如果 $\max(q, k-p)\ge X$，那么改一个数就行。否则要改两个数。
+- 如果 $\max(q, k-p)\ge X$，改其中一个数就行。
+- 如果 $\max(q, k-p) < X$，$p$ 和 $q$ 两个数都要改。
 
 注意题目保证 $n$ 是偶数。
 
@@ -32,7 +33,7 @@
 2. 有 $n/2-\textit{cnt}[X]$ 对 $(p,q)$ 至少要改一个数。
 3. 在 2 的基础上，有额外的 $\textit{cnt}_2[0] + \textit{cnt}_2[1] + \cdots + \textit{cnt}_2[X-1]$ 对 $(p,q)$ **还要再改一个数**（根据提示 1）。这可以在枚举 $X$ 的同时，维护一个变量 $\textit{sum}_2$ 表示这些 $\textit{cnt}_2[i]$ 的和。
 
-综上，至少要修改
+综上所述，至少要修改
 
 $$
 \dfrac{n}{2} - \textit{cnt}[X] + \textit{sum}_2
@@ -168,7 +169,7 @@ func minChanges(nums []int, k int) int {
 - 改成 $[0,x-1]$ 中的数。这意味着 $p$ 和 $q$ 的距离变小，两者靠近即可，只需改其中一个数。
 - 改成 $x$。无需修改。
 - 改成 $[x,\textit{mx}]$ 中的数。根据方法一中的分析，只需改其中一个数。
-- 改成 $[\textit{mx}+1,k]$ 中的数。根据方法一中的分析，两个数都需要改。
+- 改成 $[\textit{mx}+1,k]$ 中的数。根据方法一中的分析，两个数都要改。
 
 把这些操作次数加到 $\textit{minModify}$ 数组中。这可以用**差分数组**实现，具体见 [差分数组原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看。
 
