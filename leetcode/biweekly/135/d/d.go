@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func maximumScore2(grid [][]int) (ans int64) {
+func maximumScore(grid [][]int) (ans int64) {
 	n := len(grid)
 	colSum := make([][]int64, n)
 	for j := range colSum {
@@ -16,12 +16,6 @@ func maximumScore2(grid [][]int) (ans int64) {
 		f[j] = make([][2]int64, n+1)
 	}
 	for j := 0; j < n-1; j++ {
-		// 单独计算 pre=0 的情况
-		for cur, s := range colSum[j+1] {
-			f[j+1][0][0] = max(f[j+1][0][0], f[j][cur][0]+s)
-			f[j+1][0][1] = max(f[j+1][0][1], f[j][cur][0])
-		}
-
 		// 用前缀最大值优化
 		preMax := f[j][0][1] - colSum[j][0]
 		for pre := 1; pre <= n; pre++ {
@@ -36,6 +30,10 @@ func maximumScore2(grid [][]int) (ans int64) {
 			f[j+1][pre][0] = max(f[j+1][pre][0], sufMax-colSum[j+1][pre])
 			sufMax = max(sufMax, f[j][pre][0]+colSum[j+1][pre])
 		}
+
+		// 单独计算 pre=0 的状态
+		f[j+1][0][0] = sufMax // 无需考虑 f[j][0][0]，因为不能连续三列全白
+		f[j+1][0][1] = max(f[j][0][0], f[j][n][0]) // 第 j 列要么全白，要么全黑
 	}
 
 	for _, row := range f[n-1] {
@@ -44,7 +42,7 @@ func maximumScore2(grid [][]int) (ans int64) {
 	return ans
 }
 
-func maximumScore3(grid [][]int) (ans int64) {
+func maximumScore2(grid [][]int) (ans int64) {
 	n := len(grid)
 	colSum := make([][]int64, n)
 	for j := range colSum {
@@ -93,7 +91,7 @@ func maximumScore3(grid [][]int) (ans int64) {
 	return ans
 }
 
-func maximumScore(grid [][]int) (ans int64) {
+func maximumScore3(grid [][]int) (ans int64) {
 	n := len(grid)
 	colSum := make([][]int64, n)
 	for j := range colSum {

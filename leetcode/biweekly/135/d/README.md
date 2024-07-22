@@ -8,7 +8,7 @@
 - 第 $j$ 列有多少个黑格。
 - 第 $j-1$ 列有多少个黑格。
 
-定义 $\textit{dfs}(j,\textit{cur},\textit{pre})$ 表示考虑第 $0$ 列到第 $j$ 列，其中第 $j+1$ 列有 $\textit{pre}$ 个黑格，第 $j$ 列有 $\textit{cur}$ 个黑格，在第 $0$ 列到第 $j$ 列中能得到最大总分。
+定义 $\textit{dfs}(j,\textit{cur},\textit{pre})$ 表示考虑第 $0$ 列到第 $j$ 列，其中第 $j+1$ 列有 $\textit{pre}$ 个黑格、第 $j$ 列有 $\textit{cur}$ 个黑格，返回在第 $0$ 列到第 $j$ 列中能得到的最大总分。
 
 枚举第 $j-1$ 列有 $\textit{nxt}$ 个黑格，问题变成：
 
@@ -20,7 +20,7 @@
 
 递归边界：$j=0$ 时返回 $s$。
 
-递归入口：$\max\limits_{i=0}^{n} \textit{dfs}(n-1,i,0)$。枚举第 $n-1$ 列有 $i$ 个黑格。
+递归入口：$\max\limits_{i=0}^{n} \textit{dfs}(n-1,i,0)$。枚举第 $n-1$ 列有 $i$ 个黑格，取递归结果的最大值，作为答案。
 
 由于做法超时，这里仅展示 Python 代码。
 
@@ -55,28 +55,26 @@ class Solution:
 
 ## 二、记忆化搜索
 
-如果不枚举 $\textit{nxt}$，而是枚举 $\textit{cur}$ 呢？
+如果不考虑第 $j-1$ 列呢？不去枚举 $\textit{nxt}$，而是枚举 $\textit{cur}$ 呢？
 
 我们的原则是，在从右往左递归的过程中，只把第 $j$ 列或者第 $j+1$ 列的格子计入总分，不考虑第 $j-1$ 列的格子。
 
 如何**不重不漏**地统计呢？
 
-![lc3225-cut.png](https://pic.leetcode.cn/1721579697-tcrvBA-lc3225-cut.png)
+![lc3225-cut.png](https://pic.leetcode.cn/1721611450-qHRMdb-lc3225-cut.png)
 
 定义 $\textit{dfs}(j,\textit{pre},\textit{dec})$ 表示考虑第 $0$ 列到第 $j$ 列，其中：
 
 - 第 $j+1$ 列有 $\textit{pre}$ 个黑格；
 - 第 $j+1$ 列和第 $j+2$ 列的黑格个数的大小关系用布尔值 $\textit{dec}$ 表示，只有当第 $j+1$ 列的黑格个数小于第 $j+2$ 列的黑格个数时 $\textit{dec}$ 才为 $\texttt{true}$。
 
-在上述约束下，第 $0$ 列到第 $j$ 列中能得到最大总分。
+在上述约束下，返回第 $0$ 列到第 $j$ 列中能得到的最大总分。
 
 枚举第 $j$ 列有 $\textit{cur}$ 个黑格，按照上图中的四种情况计算。
 
 递归边界：$j=-1$ 时返回 $0$。
 
-递归入口：$\max\limits_{i=0}^{n} \textit{dfs}(n-2,i,0)$。枚举第 $n-1$ 列有 $i$ 个黑格。注意第 $n-1$ 列的格子会在 $j=n-2$ 中计入。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1JE4m1d7br/) 第四题，欢迎点赞关注！
+递归入口：$\max\limits_{i=0}^{n} \textit{dfs}(n-2,i,0)$。枚举第 $n-1$ 列有 $i$ 个黑格，取递归结果的最大值，作为答案。注意第 $n-1$ 列的格子会在 $j=n-2$ 中计入。
 
 ```py [sol-Python3]
 class Solution:
@@ -503,13 +501,13 @@ func maximumScore(grid [][]int) (ans int64) {
 
 把最内层的枚举 $\textit{cur}$ 的循环优化掉。
 
-单独计算 $\textit{pre}=0$ 的状态。下面讨论 $\textit{pre}>0$ 的情况。
+首先计算 $\textit{pre}>0$ 的状态，然后单独计算 $\textit{pre}=0$ 的状态。
 
-### 1) dec = 1
+### 1) pre > 0 且 dec = 1
 
-先说 $\textit{dec}=1$ 的状态。
+$\textit{pre}> 0$ 的状态，没有情况四。
 
-我们相当于计算的是 $f[j][\textit{pre}][0]$ 与下式（情况二）的最大值：
+对于 $f[j+1][\textit{pre}][1]$，需要计算 $f[j][\textit{pre}][0]$（情况一）与下式（情况二）的最大值：
 
 $$
 \begin{aligned}
@@ -526,26 +524,61 @@ $$
 
 可以一边**从小到大**枚举 $\textit{pre}$，一边用一个变量 $\textit{preMax}$ 维护。
 
-### 2) dec = 0
+### 2) pre > 0 且 dec = 0
 
-然后说 $\textit{dec}=0$ 的状态。
-
-除了上面 $\textit{dec}=1$ 要计算的，$\textit{dec}=0$ 也要计算外，还需要计算下式（情况三）的最大值：
+对于 $f[j+1][\textit{pre}][0]$，除了上面 $\textit{dec}=1$ 要计算的，这里也要计算外，还需要计算下式（情况三）的最大值：
 
 $$
 \begin{aligned}
 & \max\limits_{\textit{cur}=pre+1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}]  - \textit{colSum}[j + 1][\textit{pre}] \}      \\
-={} & - \textit{colSum}[j + 1][\textit{pre}] +   \max\limits_{\textit{cur}=pre+1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}]  \}       \\
+={} & - \textit{colSum}[j + 1][\textit{pre}] +   \max\limits_{\textit{cur}=pre+1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}] \}       \\
 \end{aligned}
 $$
 
 其中
 
 $$
-\max\limits_{\textit{cur}=pre+1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}]  \}
+\max\limits_{\textit{cur}=pre+1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}] \}
 $$
 
 可以一边**从大到小**枚举 $\textit{pre}$，一边用一个变量 $\textit{sufMax}$ 维护。
+
+### 3) pre = 0 且 dec = 0
+
+$\textit{pre}=0$ 的状态，没有情况二。
+
+对于 $f[j+1][0][0]$，需要计算 $f[j][0][0]$（情况一）与下式（情况三）的最大值：
+
+$$
+\max\limits_{\textit{cur}=1}^{n} \{ f[j][\textit{cur}][0] + \textit{colSum}[j + 1][\textit{cur}] \}
+$$
+
+这正是上面循环结束后的 $\textit{sufMax}$。
+
+此外，由于不可能连续三列全白，所以无需考虑从 $f[j][0][0]$（情况一）转移过来，因此
+
+$$
+f[j+1][0][0] = \textit{sufMax}
+$$
+
+### 4) pre = 0 且 dec = 1
+
+对于 $f[j+1][0][1]$，需要计算下式（情况一与情况四）的最大值：
+
+$$
+\max\limits_{\textit{cur}=0}^{n} f[j][\textit{cur}][0]
+$$
+
+但在 $\textit{pre}=0$ 且 $\textit{dec}=1$ 的前提下，其实只需考虑第 $j$ 列全白（$\textit{cur}=0$）或全黑（$\textit{cur}=n$）两种情况。沿用上文图片中的证明方法，考虑第 $j-1$ 列的黑格个数 $B_{j-1}$：
+
+- 如果 $B_{j-1} \ge B_j$，第 $j$ 列全白更好。
+- 如果 $B_{j-1} < B_j$，第 $j$ 列多出的段左右都是白格，所以全黑更好。
+
+因此
+
+$$
+f[j+1][0][1] = \max(f[j][0][0], f[j][n][0])
+$$
 
 ```py [sol-Python3]
 class Solution:
@@ -555,10 +588,6 @@ class Solution:
 
         f = [[[0, 0] for _ in range(n + 1)] for _ in range(n)]
         for j in range(n - 1):
-            # 单独计算 pre=0 的情况
-            f[j + 1][0][0] = max(r[0] + s for r, s in zip(f[j], col_sum[j + 1]))
-            f[j + 1][0][1] = max(r[0] for r in f[j])
-
             # 用前缀最大值优化
             pre_max = f[j][0][1] - col_sum[j][0]
             for pre in range(1, n + 1):
@@ -570,6 +599,10 @@ class Solution:
             for pre in range(n - 1, 0, -1):
                 f[j + 1][pre][0] = max(f[j + 1][pre][0], suf_max - col_sum[j + 1][pre])
                 suf_max = max(suf_max, f[j][pre][0] + col_sum[j + 1][pre])
+
+            # 单独计算 pre=0 的状态
+            f[j + 1][0][0] = suf_max  # 无需考虑 f[j][0][0]，因为不能连续三列全白
+            f[j + 1][0][1] = max(f[j][0][0], f[j][n][0])  # 第 j 列要么全白，要么全黑
 
         return max(f[-1][i][0] for i in range(n + 1))
 ```
@@ -587,12 +620,6 @@ class Solution {
 
         long[][][] f = new long[n][n + 1][2];
         for (int j = 0; j < n - 1; j++) {
-            // 单独计算 pre=0 的情况
-            for (int cur = 0; cur <= n; cur++) {
-                f[j + 1][0][0] = Math.max(f[j + 1][0][0], f[j][cur][0] + colSum[j + 1][cur]);
-                f[j + 1][0][1] = Math.max(f[j + 1][0][1], f[j][cur][0]);
-            }
-
             // 用前缀最大值优化
             long preMax = f[j][0][1] - colSum[j][0];
             for (int pre = 1; pre <= n; pre++) {
@@ -606,6 +633,10 @@ class Solution {
                 f[j + 1][pre][0] = Math.max(f[j + 1][pre][0], sufMax - colSum[j + 1][pre]);
                 sufMax = Math.max(sufMax, f[j][pre][0] + colSum[j + 1][pre]);
             }
+
+            // 单独计算 pre=0 的状态
+            f[j + 1][0][0] = sufMax; // 无需考虑 f[j][0][0]，因为不能连续三列全白
+            f[j + 1][0][1] = Math.max(f[j][0][0], f[j][n][0]); // 第 j 列要么全白，要么全黑
         }
 
         long ans = 0;
@@ -631,12 +662,6 @@ public:
 
         vector<vector<array<long long, 2>>> f(n, vector<array<long long, 2>>(n + 1));
         for (int j = 0; j < n - 1; j++) {
-            // 单独计算 pre=0 的情况
-            for (int cur = 0; cur <= n; cur++) {
-                f[j + 1][0][0] = max(f[j + 1][0][0], f[j][cur][0] + col_sum[j + 1][cur]);
-                f[j + 1][0][1] = max(f[j + 1][0][1], f[j][cur][0]);
-            }
-
             // 用前缀最大值优化
             long long pre_max = f[j][0][1] - col_sum[j][0];
             for (int pre = 1; pre <= n; pre++) {
@@ -650,6 +675,10 @@ public:
                 f[j + 1][pre][0] = max(f[j + 1][pre][0], suf_max - col_sum[j + 1][pre]);
                 suf_max = max(suf_max, f[j][pre][0] + col_sum[j + 1][pre]);
             }
+
+            // 单独计算 pre=0 的状态
+            f[j + 1][0][0] = suf_max; // 无需考虑 f[j][0][0]，因为不能连续三列全白
+            f[j + 1][0][1] = max(f[j][0][0], f[j][n][0]); // 第 j 列要么全白，要么全黑
         }
 
         long long ans = 0;
@@ -677,12 +706,6 @@ func maximumScore(grid [][]int) (ans int64) {
 		f[j] = make([][2]int64, n+1)
 	}
 	for j := 0; j < n-1; j++ {
-		// 单独计算 pre=0 的情况
-		for cur, s := range colSum[j+1] {
-			f[j+1][0][0] = max(f[j+1][0][0], f[j][cur][0]+s)
-			f[j+1][0][1] = max(f[j+1][0][1], f[j][cur][0])
-		}
-
 		// 用前缀最大值优化
 		preMax := f[j][0][1] - colSum[j][0]
 		for pre := 1; pre <= n; pre++ {
@@ -697,6 +720,10 @@ func maximumScore(grid [][]int) (ans int64) {
 			f[j+1][pre][0] = max(f[j+1][pre][0], sufMax-colSum[j+1][pre])
 			sufMax = max(sufMax, f[j][pre][0]+colSum[j+1][pre])
 		}
+
+		// 单独计算 pre=0 的状态
+		f[j+1][0][0] = sufMax // 无需考虑 f[j][0][0]，因为不能连续三列全白
+		f[j+1][0][1] = max(f[j][0][0], f[j][n][0]) // 第 j 列要么全白，要么全黑
 	}
 
 	for _, row := range f[n-1] {
@@ -708,10 +735,10 @@ func maximumScore(grid [][]int) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{grid}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{grid}$ 的长度。这是本题的最优复杂度，因为遍历 $\textit{grid}$ 就需要 $\mathcal{O}(n^2)$ 的时间了。
 - 空间复杂度：$\mathcal{O}(n^2)$。
 
-注：用滚动数组可以把空间复杂度优化至 $\mathcal{O}(n)$。
+> 注：空间复杂度可以进一步优化至 $\mathcal{O}(n)$，需要用到滚动数组，并在 DP 的过程中计算列的前缀和。
 
 ## 分类题单
 
