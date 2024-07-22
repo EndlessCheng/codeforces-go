@@ -1,3 +1,5 @@
+## 方法一：差分数组
+
 **请先阅读**：[差分数组原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看。
 
 「子数组内的每个元素的值增加或减少 $1$」，这个操作可以转换成修改**差分数组**两个位置上的数。
@@ -112,28 +114,80 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 方法二
+## 方法二：进一步分析差分数组的性质
 
+创建一个数组 $a$，其中 $a[i] = \textit{target}[i]-\textit{nums}[i]$。
+
+如果我们能把 $a$ 变成全为 $0$ 的数组（或者把全为 $0$ 的数组变成 $a$），那么就能把 $\textit{nums}$ 变成 $\textit{target}$。最小操作次数是多少呢？
+
+计算 $a$ 的长为 $n+1$ 的差分数组 $d$。例如示例 2 的 $a=[1,-2,2]$，对应的 $d=[1,-3,4,-2]$，注意这里的 $d[n]=-a[n-1]$。
+
+为什么差分数组的长度是 $n+1$ 而不是 $n$？如果区间操作是 $a$ 的后缀 $a[i]$ 到 $a[n-1]$，那么我们会修改差分数组的 $d[i]$ 和 $d[n]$。一般来说 $d[n]$ 是可以忽略的，但对于本题，我们接下来的分析，需要用到 $d[n]$。
+
+我们把 $d$ 看成是从一个全 $0$ 的差分数组开始，通过若干次操作得到的差分数组，并且每次操作都会**恰好**修改两个数 $d[i]$ 和 $d[j]$，即使操作的是 $a$ 的后缀。
+
+仍然以 $d=[1,-3,4,-2]$ 为例说明。想一想，**差分数组中的正数，对应着什么样的数**？$d[0]=1$，那么一定有一个对应的操作，在把 $d[0]$ 增加 $1$ 的同时，把 $d[j]$ 减少了 $1$。这说明我们可以**把差分数组中的正数和负数一一对应起来**。
+
+![LC3229-cut.png](https://pic.leetcode.cn/1721618787-jmBcJH-LC3229-cut.png)
+
+在 $d=[1,-3,4,-2]$ 这个例子中，$d[0]=1$ 和 $d[2]=4$ 对应着 $5$ 个 $+1$ 操作。由于我们是从全 $0$ 的差分数组开始的，所以一定有 $5$ 个对应的 $-1$ 操作，这正好是 $d[1]=-3$ 和 $d[3]=-2$。
+
+如果同一个 $d[i]$ 上面既有 $+1$，又有 $-1$，那这肯定不如只有 $+1$ 或者只有 $-1$ 优。所以最优操作中，没有 $+1$ 和 $-1$「互相抵消」的情况。
+
+由于每次操作会产生一个 $+1$ 和一个 $-1$，所以**操作次数就等于所有正数** $d[i]$ **之和**。
 
 ```py [sol-Python3]
 class Solution:
     def minimumOperations(self, nums: List[int], target: List[int]) -> int:
-        a = [t - x for x, t in zip(nums, target)]
-        return max(a[0], 0) + sum(max(y - x, 0) for x, y in pairwise(a)) + max(-a[-1], 0)
+        a = [0] + [t - x for x, t in zip(nums, target)] + [0]  # 前后加 0，方便计算
+        return sum(max(y - x, 0) for x, y in pairwise(a))
 ```
 
 ```java [sol-Java]
-
+class Solution {
+    public long minimumOperations(int[] nums, int[] target) {
+        int n = nums.length;
+        long ans = Math.max(target[0] - nums[0], 0);
+        for (int i = 1; i < n; i++) {
+            ans += Math.max((target[i] - nums[i]) - (target[i - 1] - nums[i - 1]), 0);
+        }
+        ans += Math.max(-(target[n - 1] - nums[n - 1]), 0);
+        return ans;
+    }
+}
 ```
 
 ```cpp [sol-C++]
-
+class Solution {
+public:
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        int n = nums.size();
+        long long ans = max(target[0] - nums[0], 0);
+        for (int i = 1; i < n; i++) {
+            ans += max((target[i] - nums[i]) - (target[i - 1] - nums[i - 1]), 0);
+        }
+        ans += max(-(target[n - 1] - nums[n - 1]), 0);
+        return ans;
+    }
+};
 ```
 
 ```go [sol-Go]
-
+func minimumOperations(nums, target []int) int64 {
+	n := len(nums)
+	ans := max(target[0]-nums[0], 0)
+	for i := 1; i < n; i++ {
+		ans += max((target[i]-nums[i])-(target[i-1]-nums[i-1]), 0)
+	}
+	ans += max(-(target[n-1] - nums[n-1]), 0)
+	return int64(ans)
+}
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。
 
 ## 相似题目
 
