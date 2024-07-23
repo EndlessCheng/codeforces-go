@@ -222,7 +222,8 @@ class Solution {
         boolean found5 = false;
         for (int i = n - 1; i >= 0; i--) {
             char c = num.charAt(i);
-            if (found0 && (c == '0' || c == '5') || found5 && (c == '2' || c == '7')) {
+            if (found0 && (c == '0' || c == '5') ||
+                found5 && (c == '2' || c == '7')) {
                 return n - i - 2;
             }
             if (c == '0') {
@@ -244,7 +245,8 @@ public:
         bool found0 = false, found5 = false;
         for (int i = n - 1; i >= 0; i--) {
             char c = num[i];
-            if (found0 && (c == '0' || c == '5') || found5 && (c == '2' || c == '7')) {
+            if (found0 && (c == '0' || c == '5') ||
+                found5 && (c == '2' || c == '7')) {
                 return n - i - 2;
             }
             if (c == '0') {
@@ -265,7 +267,8 @@ int minimumOperations(char* num) {
     bool found0 = false, found5 = false;
     for (int i = n - 1; i >= 0; i--) {
         char c = num[i];
-        if (found0 && (c == '0' || c == '5') || found5 && (c == '2' || c == '7')) {
+        if (found0 && (c == '0' || c == '5') ||
+            found5 && (c == '2' || c == '7')) {
             return n - i - 2;
         }
         if (c == '0') {
@@ -284,7 +287,8 @@ func minimumOperations(num string) int {
     var found0, found5 bool
     for i := n - 1; i >= 0; i-- {
         c := num[i]
-        if found0 && (c == '0' || c == '5') || found5 && (c == '2' || c == '7') {
+        if found0 && (c == '0' || c == '5') ||
+           found5 && (c == '2' || c == '7') {
             return n - i - 2
         }
         if c == '0' {
@@ -306,7 +310,8 @@ var minimumOperations = function(num) {
     let found0 = false, found5 = false;
     for (let i = n - 1; i >= 0; i--) {
         const c = num[i];
-        if (found0 && (c === '0' || c === '5') || found5 && (c === '2' || c === '7')) {
+        if (found0 && (c === '0' || c === '5') ||
+            found5 && (c === '2' || c === '7')) {
             return n - i - 2;
         }
         if (c === '0') {
@@ -326,7 +331,8 @@ impl Solution {
         let mut found0 = false;
         let mut found5 = false;
         for (i, c) in num.bytes().enumerate().rev() {
-            if found0 && (c == b'0' || c == b'5') || found5 && (c == b'2' || c == b'7') {
+            if found0 && (c == b'0' || c == b'5') ||
+               found5 && (c == b'2' || c == b'7') {
                 return n - i as i32 - 2;
             }
             if c == b'0' {

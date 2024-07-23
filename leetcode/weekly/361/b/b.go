@@ -10,7 +10,8 @@ func minimumOperations(num string) int {
 	var found0, found5 bool
 	for i := n - 1; i >= 0; i-- {
 		c := num[i]
-		if found0 && (c == '0' || c == '5') || found5 && (c == '2' || c == '7') {
+		if found0 && (c == '0' || c == '5') || 
+		   found5 && (c == '2' || c == '7') {
 			return n - i - 2
 		}
 		if c == '0' {
