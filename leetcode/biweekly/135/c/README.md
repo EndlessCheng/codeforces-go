@@ -243,7 +243,7 @@ public:
         vector<int> d(k + 2);
         for (int i = 0; i < n / 2; i++) {
             int p = nums[i], q = nums[n - 1 - i];
-            if (p > q) {  // 保证 p <= q
+            if (p > q) { // 保证 p <= q
                 swap(p, q);
             }
             int x = q - p;
