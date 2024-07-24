@@ -46,7 +46,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public int minimumOperations(String num) {
         int zero = num.length() - (num.contains("0") ? 1 : 0);
         return min(zero, f(num, "00"), f(num, "25"), f(num, "50"), f(num, "75"));
