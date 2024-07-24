@@ -109,6 +109,12 @@ func maxOperations(s string) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+你能构造一个 $s$，让返回值尽量大吗？
+
+如果 $n=10^5$，答案最大能是多少？会不会超过 int 范围？
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
