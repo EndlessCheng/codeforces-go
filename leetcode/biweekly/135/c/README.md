@@ -168,7 +168,7 @@ func minChanges(nums []int, k int) int {
 
 - 改成 $[0,x-1]$ 中的数。这意味着 $p$ 和 $q$ 的距离变小，两者靠近即可，只需改其中一个数。
 - 改成 $x$。无需修改。
-- 改成 $[x,\textit{mx}]$ 中的数。根据方法一中的分析，只需改其中一个数。
+- 改成 $[x+1,\textit{mx}]$ 中的数。根据方法一中的分析，只需改其中一个数。
 - 改成 $[\textit{mx}+1,k]$ 中的数。根据方法一中的分析，两个数都要改。
 
 把这些操作次数加到 $\textit{minModify}$ 数组中。这可以用**差分数组**实现，具体见 [差分数组原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看。
