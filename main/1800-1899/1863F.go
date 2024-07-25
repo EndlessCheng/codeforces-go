@@ -15,23 +15,23 @@ func cf1863F(in io.Reader, out io.Writer) {
 			Fscan(in, &sum[i])
 			sum[i] ^= sum[i-1]
 		}
-		l := make([]int, n+1)
-		for i := 1; i <= n; i++ {
-			r := 0
-			for j := n; j >= i; j-- {
-				xor := sum[j] ^ sum[i-1]
-				ok := i == 1 && j == n || l[j] < 0 || r < 0 || l[j]&xor != 0 || r&xor != 0
+		leftBits := make([]int, n)
+		for l := 0; l < n; l++ {
+			rightBits := 0
+			for r := n - 1; r >= l; r-- {
+				xor := sum[r+1] ^ sum[l]
+				ok := l == 0 && r == n-1 || leftBits[r] < 0 || rightBits < 0 || leftBits[r]&xor != 0 || rightBits&xor != 0
 				if ok {
 					if xor == 0 {
-						l[j] = -1
-						r = -1
+						leftBits[r] = -1
+						rightBits = -1
 					} else {
 						high := 1 << (bits.Len(uint(xor)) - 1)
-						l[j] |= high
-						r |= high
+						leftBits[r] |= high
+						rightBits |= high
 					}
 				}
-				if j == i {
+				if r == l {
 					if ok {
 						Fprint(out, "1")
 					} else {
