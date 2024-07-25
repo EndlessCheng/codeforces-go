@@ -16,22 +16,24 @@ func cf1863F(in io.Reader, out io.Writer) {
 			sum[i] ^= sum[i-1]
 		}
 		leftBits := make([]int, n)
-		for l := 0; l < n; l++ {
+		for i := 0; i < n; i++ {
 			rightBits := 0
-			for r := n - 1; r >= l; r-- {
-				xor := sum[r+1] ^ sum[l]
-				ok := l == 0 && r == n-1 || leftBits[r] < 0 || rightBits < 0 || leftBits[r]&xor != 0 || rightBits&xor != 0
+			for j := n - 1; j >= i; j-- {
+				s2 := sum[j+1] ^ sum[i]
+				ok := i == 0 && j == n-1 || // 递归入口
+					rightBits < 0 || rightBits&s2 != 0 ||  // 能从 f(i,R) 递归到 f(i,j)
+					leftBits[j] < 0 || leftBits[j]&s2 != 0 // 能从 f(L,j) 递归到 f(i,j)
 				if ok {
-					if xor == 0 {
-						leftBits[r] = -1
+					if s2 == 0 {
+						leftBits[j] = -1
 						rightBits = -1
 					} else {
-						high := 1 << (bits.Len(uint(xor)) - 1)
-						leftBits[r] |= high
+						high := 1 << (bits.Len(uint(s2)) - 1)
+						leftBits[j] |= high
 						rightBits |= high
 					}
 				}
-				if r == l {
+				if j == i {
 					if ok {
 						Fprint(out, "1")
 					} else {
