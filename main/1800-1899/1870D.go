@@ -15,23 +15,22 @@ func cf1870D(in io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		type pair struct{ i, c int }
-		st := []pair{}
+		st := []pair{{}}
 		for i := 1; i <= n; i++ {
 			Fscan(in, &c)
-			for len(st) > 0 && c <= st[len(st)-1].c {
+			for c <= st[len(st)-1].c {
 				st = st[:len(st)-1]
 			}
 			st = append(st, pair{i, c})
 		}
 
 		Fscan(in, &k)
-		preI, preC, preH := 0, 0, int(1e9)
-		for _, p := range st {
-			d := p.c - preC
-			h := min(k/d, preH)
+		h := int(1e9)
+		for i := 1; i < len(st); i++ {
+			d := st[i].c - st[i-1].c
+			h = min(h, k/d)
 			k -= d * h
-			Fprint(out, strings.Repeat(strconv.Itoa(h)+" ", p.i-preI))
-			preI, preC, preH = p.i, p.c, h
+			Fprint(out, strings.Repeat(strconv.Itoa(h)+" ", st[i].i-st[i-1].i))
 		}
 		Fprintln(out)
 	}
