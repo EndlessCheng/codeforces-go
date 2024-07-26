@@ -1,54 +1,8 @@
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+由于 $b_i$ 和 $c_i$ 都比较小，可以暴力循环计算。
 
----
+更快的做法是用**快速幂**，请看[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
-## 算法小课堂：模运算
-
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
-
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
-
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
-
-你能把这个结论抽象成数学等式吗？
-
-一般涉及到取模的题目，会用到如下两个恒等式（上面计算的是 $m=10$）：
-
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
-
-$$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
-$$
-
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
-
-第一个等式：
-
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
-
-对于本题，我们可以用**快速幂**计算答案（暴力 for 循环计算也可以），具体请看 [50. Pow(x, n)](https://leetcode-cn.com/problems/powx-n/)。
+本题还需要取模，如果你不知道如何正确地取模，请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ```py [sol-Python3]
 class Solution:
@@ -70,12 +24,15 @@ public class Solution {
         return ans;
     }
 
-    private long pow(long x, int n, int mod) {
-        long res = 1;
-        for (; n > 0; n /= 2) {
-            if (n % 2 > 0)
+    // 本题 mod 很小，即使平方也不会超过 int 范围，所以不需要用 long
+    private int pow(int x, int n, int mod) {
+        int res = 1;
+        while (n > 0) {
+            if (n % 2 > 0) {
                 res = res * x % mod;
+            }
             x = x * x % mod;
+            n /= 2;
         }
         return res;
     }
@@ -84,20 +41,24 @@ public class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    long long pow(long long x, int n, int m) {
-        long long res = 1;
-        for (; n; n /= 2) {
-            if (n % 2) res = res * x % m;
-            x = x * x % m;
+    // 本题 mod 很小，即使平方也不会超过 int 范围，所以不需要用 long long
+    int pow(int x, int n, int mod) {
+        int res = 1;
+        while (n) {
+            if (n & 1) {
+                res = res * x % mod;
+            }
+            x = x * x % mod;
+            n >>= 1;
         }
         return res;
     }
 
 public:
-    vector<int> getGoodIndices(vector<vector<int>> &variables, int target) {
+    vector<int> getGoodIndices(vector<vector<int>>& variables, int target) {
         vector<int> ans;
         for (int i = 0; i < variables.size(); i++) {
-            auto &v = variables[i];
+            auto& v = variables[i];
             if (pow(pow(v[0], v[1], 10), v[2], v[3]) == target) {
                 ans.push_back(i);
             }
@@ -105,6 +66,33 @@ public:
         return ans;
     }
 };
+```
+
+```c [sol-C]
+// 本题 mod 很小，即使平方也不会超过 int 范围，所以不需要用 long long
+int qpow(int x, int n, int mod) {
+    int res = 1;
+    while (n) {
+        if (n & 1) {
+            res = res * x % mod;
+        }
+        x = x * x % mod;
+        n >>= 1;
+    }
+    return res;
+}
+
+int* getGoodIndices(int** variables, int variablesSize, int* variablesColSize, int target, int* returnSize) {
+    int* ans = malloc(variablesSize * sizeof(int));
+    *returnSize = 0;
+    for (int i = 0; i < variablesSize; i++) {
+        int* v = variables[i];
+        if (qpow(qpow(v[0], v[1], 10), v[2], v[3]) == target) {
+            ans[(*returnSize)++] = i;
+        }
+    }
+    return ans;
+}
 ```
 
 ```go [sol-Go]
@@ -129,7 +117,76 @@ func pow(x, n, mod int) int {
 }
 ```
 
+```js [sol-JavaScript]
+var getGoodIndices = function(variables, target) {
+    const ans = [];
+    for (let i = 0; i < variables.length; i++) {
+        const [a, b, c, m] = variables[i];
+        if (pow(pow(a, b, 10), c, m) === target) {
+            ans.push(i);
+        }
+    }
+    return ans;
+};
+
+// 本题 mod 很小，即使平方也不会超过 MAX_SAFE_INTEGER 范围，所以不需要用 BigInt
+function pow(x, n, mod) {
+    let res = 1;
+    while (n) {
+        if (n % 2) {
+            res = res * x % mod;
+        }
+        x = x * x % mod;
+        n = Math.floor(n / 2);
+    }
+    return res;
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn get_good_indices(variables: Vec<Vec<i32>>, target: i32) -> Vec<i32> {
+        let pow = |mut x, mut n, m| {
+            // 本题 m 很小，即使平方也不会超过 i32 范围，所以不需要用 i64
+            let mut res = 1;
+            while n > 0 {
+                if n % 2 > 0 {
+                    res = res * x % m;
+                }
+                x = x * x % m;
+                n /= 2;
+            }
+            res
+        };
+        let check = |v: &Vec<_>| pow(pow(v[0], v[1], 10), v[2], v[3]) == target;
+        variables.iter()
+            .enumerate()
+            .filter_map(|(i, v)| check(v).then_some(i as i32))
+            .collect()
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{variables}$ 的长度，$U$ 为 $b_i$ 和 $c_i$ 的最大值，本题为 $10^3$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{variables}$ 的长度，$U$ 为 $b_i$ 和 $c_i$ 的最大值，本题 $U=10^3$。
 - 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
