@@ -70,6 +70,7 @@
 ||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
 ||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
 ||[790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)|[【图解】找不到规律？请看图！](https://leetcode.cn/problems/domino-and-tromino-tiling/solution/by-endlesscheng-umpp/)|1830|
+||[1227. 飞机座位分配概率](https://leetcode.cn/problems/airplane-seat-assignment-probability/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/airplane-seat-assignment-probability/solution/tu-jie-mei-xiang-ming-bai-yi-zhang-tu-mi-8bn4/)|中等|
 ||[2008. 出租车的最大盈利](https://leetcode.cn/problems/maximum-earnings-from-taxi/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-earnings-from-taxi/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-k15a/)|1872|
 ||[823. 带因子的二叉树](https://leetcode.cn/problems/binary-trees-with-factors/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/binary-trees-with-factors/solution/cong-ji-yi-hua-sou-suo-dao-di-tui-jiao-n-nbk6/)|1900|
 ||[1043. 分隔数组以得到最大和](https://leetcode.cn/problems/partition-array-for-maximum-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/partition-array-for-maximum-sum/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-rq5i/)|1916|
