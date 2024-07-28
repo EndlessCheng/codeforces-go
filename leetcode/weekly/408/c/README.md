@@ -1,6 +1,6 @@
 注意到，如果子串中的 $0$ 非常多，多到 $0$ 的个数的平方比 $1$ 的个数都要大，那么这样的子串必然不是 $1$ 显著子串。
 
-设 $\textit{cnt}_0$ 为 $0$ 的个数，$\textit{cnt}_1$ 为 $1$ 的个数，那么必须满足
+设 $\textit{cnt}_0$ 为子串中的 $0$ 的个数，$\textit{cnt}_1$ 为子串中的 $1$ 的个数，那么必须满足
 
 $$
 \textit{cnt}_0^2 \le \textit{cnt}_1 \le n
@@ -27,7 +27,7 @@ $$
 
 分类讨论：
 
-- 如果 $\textit{cnt}_0^2\le \textit{cnt}_1$，那么子串右端点可以是 $p,p+1,p+2,\cdots, q-1$，一共有 $q-p$ 个。
+- 如果 $\textit{cnt}_0^2\le \textit{cnt}_1$，那么子串右端点可以是 $p,p+1,p+2,\cdots, q-1$，一共有 $q-p$ 个。注意一定要保证子串中**恰好**有 $\textit{cnt}_0$ 个 $0$。
 - 如果 $\textit{cnt}_0^2> \textit{cnt}_1$，那么为了补足 $1$ 的个数，子串右端点的最小值就不是 $p$ 了，而是 $p + (\textit{cnt}_0^2 - \textit{cnt}_1)$，一共有 $q - p - (\textit{cnt}_0^2 - \textit{cnt}_1)$ 个。如果这个值是负数，则说明没有符合要求的子串。
 
 综上所述，当子串左端点为 $\textit{left}$ 且子串中有恰好 $\textit{cnt}_0$ 个 $0$ 时，一共有
@@ -53,10 +53,10 @@ class Solution:
         a = [i for i, b in enumerate(s) if b == '0']
         tot1 = n - len(a)
         a.append(n)  # 哨兵
-        ans = i = 0
+        ans = i = 0  # >= left 的第一个 0 的下标是 a[i]
         for left, b in enumerate(s):
             if b == '1':
-                ans += a[i] - left
+                ans += a[i] - left  # 不含 0 的子串个数
             for k in range(i, len(a) - 1):
                 cnt0 = k - i + 1
                 if cnt0 * cnt0 > tot1:
@@ -65,7 +65,7 @@ class Solution:
                 # 可以改成手动比大小，那样更快
                 ans += max(a[k + 1] - a[k] - max(cnt0 * cnt0 - cnt1, 0), 0)
             if b == '0':
-                i += 1
+                i += 1  # 这个 0 后面不会再枚举到了
         return ans
 ```
 
@@ -86,10 +86,10 @@ class Solution {
         a[m] = n; // 哨兵
 
         int ans = 0;
-        int i = 0;
+        int i = 0; // >= left 的第一个 0 的下标是 a[i]
         for (int left = 0; left < n; left++) {
             if (s[left] == '1') {
-                ans += a[i] - left;
+                ans += a[i] - left; // 不含 0 的子串个数
             }
             for (int k = i; k < m; k++) {
                 int cnt0 = k - i + 1;
@@ -100,7 +100,7 @@ class Solution {
                 ans += Math.max(a[k + 1] - a[k] - Math.max(cnt0 * cnt0 - cnt1, 0), 0);
             }
             if (s[left] == '0') {
-                i++;
+                i++; // 这个 0 后面不会再枚举到了
             }
         }
         return ans;
@@ -123,10 +123,10 @@ public:
         int tot1 = n - a.size();
         a.push_back(n); // 哨兵
 
-        int ans = 0, i = 0;
+        int ans = 0, i = 0; // >= left 的第一个 0 的下标是 a[i]
         for (int left = 0; left < n; left++) {
             if (s[left] == '1') {
-                ans += a[i] - left;
+                ans += a[i] - left; // 不含 0 的子串个数
             }
             for (int k = i; k < a.size() - 1; k++) {
                 int cnt0 = k - i + 1;
@@ -137,7 +137,7 @@ public:
                 ans += max(a[k + 1] - a[k] - max(cnt0 * cnt0 - cnt1, 0), 0);
             }
             if (s[left] == '0') {
-                i++;
+                i++; // 这个 0 后面不会再枚举到了
             }
         }
         return ans;
@@ -160,7 +160,7 @@ func numberOfSubstrings(s string) (ans int) {
 
 	for left, b := range s {
 		if b == '1' {
-			ans += a[0] - left
+			ans += a[0] - left // 不含 0 的子串个数
 		}
 		for k, j := range a[:len(a)-1] {
 			cnt0 := k + 1
@@ -171,7 +171,7 @@ func numberOfSubstrings(s string) (ans int) {
 			ans += max(a[k+1]-j-max(cnt0*cnt0-cnt1, 0), 0)
 		}
 		if b == '0' {
-			a = a[1:]
+			a = a[1:] // 这个 0 后面不会再枚举到了
 		}
 	}
 	return
@@ -305,7 +305,7 @@ func numberOfSubstrings(s string) (ans int) {
 - 时间复杂度：$\mathcal{O}(n\sqrt{n})$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-注：使用双端队列，可以把空间复杂度优化到 $\mathcal{O}(\sqrt{n})$。
+注：使用队列，只保存 $\textit{right}$ 及其左侧的 $\mathcal{O}(\sqrt{n})$ 个 $0$ 的下标，可以把空间复杂度优化到 $\mathcal{O}(\sqrt{n})$。
 
 ## 分类题单
 
