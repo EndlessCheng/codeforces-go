@@ -222,6 +222,25 @@ func sortCollections() {
 		// 判断是否为严格递减序列
 		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] >= a[j] })
 		slices.IsSortedFunc(a, func(x, y int) int { return y - x - 1 })
+
+		var x int
+		_ = []any{
+			sort.SearchInts(a, x),       // >= x 的第一个数的下标，若不存在则为 len(a)
+			sort.SearchInts(a, x+1),     // >  x 的第一个数的下标，若不存在则为 len(a)
+			sort.SearchInts(a, x+1) - 1, // <= x 的最后一个数的下标，若不存在则为 -1
+			sort.SearchInts(a, x) - 1,   // <  x 的最后一个数的下标，若不存在则为 -1
+		}
+
+		// 注：浮点数可以用 Nextafter 算出 > x 的下一个浮点数
+		math.Nextafter(float64(x), math.MaxFloat64) // x=1 时，结果为 1.0000000000000002
+		math.Nextafter(float64(x), -math.MaxFloat64) // x=1 时，结果为 0.9999999999999999
+
+		_ = []any{
+			sort.SearchInts(a, x+1),          // <= x 的元素个数
+			sort.SearchInts(a, x),            // <  x 的元素个数
+			len(a) - sort.SearchInts(a, x),   // >= x 的元素个数
+			len(a) - sort.SearchInts(a, x+1), // >  x 的元素个数
+		}
 	}
 
 	// a 是一个非降的有很多重复元素的数组，返回 a 中不同元素个数
