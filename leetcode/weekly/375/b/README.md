@@ -12,7 +12,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public List<Integer> getGoodIndices(int[][] variables, int target) {
         List<Integer> ans = new ArrayList<>();
         for (int i = 0; i < variables.length; i++) {
