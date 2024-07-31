@@ -191,16 +191,14 @@ func numberOfStableArrays(zero, one, limit int) int {
 
 ## 方法二：递推
 
-根据 [视频](https://www.bilibili.com/video/BV1Xj411K7oF/) 中讲的，把方法一 1:1 地翻译成递推。
-
-定义 $f[i][j][k]$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
+和 $\textit{dfs}(i,j,k)$ 一样，定义 $f[i][j][k]$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
 
 状态转移方程：
 
 $$
 \begin{aligned}
-&f[i][j][0] = f[i-1][j][0] + f[i-1][j][1] - f[i-\textit{limit}-1][j][1]\\
-&f[i][j][1] = f[i][j-1][0] + f[i][j-1][1] - f[i][j-\textit{limit}-1][0]
+f[i][j][0] &= f[i-1][j][0] + f[i-1][j][1] - f[i-\textit{limit}-1][j][1]     \\
+f[i][j][1] &= f[i][j-1][0] + f[i][j-1][1] - f[i][j-\textit{limit}-1][0]     \\
 \end{aligned}
 $$
 
@@ -388,7 +386,7 @@ $$
 \sum_{i} (f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
 $$
 
-其中 $i\le \textit{one}$ 且 $i\le \textit{zero}+1$ 且 $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$
+其中 $i\le \textit{one}$ 且 $i\le \textit{zero}+1$ 且 $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$。
 
 整理得
 
@@ -398,7 +396,9 @@ $$
 
 代码实现时，上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
 
-代码实现时，可以预处理阶乘及其 [逆元](https://oi-wiki.org/math/number-theory/inverse/#%E5%BF%AB%E9%80%9F%E5%B9%82%E6%B3%95)，利用公式 $C(n,m) = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+代码实现时，可以预处理阶乘及其逆元，利用公式 $C(n,m) = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+
+关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -625,13 +625,19 @@ func pow(x, n int) int {
 
 ## 分类题单
 
+以下题单没有特定的顺序，可以按照个人喜好刷题。
+
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
 5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
