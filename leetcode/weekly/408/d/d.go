@@ -1,7 +1,35 @@
 package main
 
 // https://space.bilibili.com/206214
-func canReachCorner(x, y int, circles [][]int) bool {
+func canReachCorner(x int, y int, circles [][]int) bool {
+	vis := make([]bool, len(circles))
+	var dfs func(int) bool
+	dfs = func(i int) bool {
+		ox, oy, r := circles[i][0], circles[i][1], circles[i][2]
+		if oy <= r || ox+r >= x {
+			return true
+		}
+		vis[i] = true
+		for j, b := range vis {
+			if !b {
+				qx, qy, qr := circles[j][0], circles[j][1], circles[j][2]
+				if (ox-qx)*(ox-qx)+(oy-qy)*(oy-qy) <= (r+qr)*(r+qr) && dfs(j) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	for i, c := range circles {
+		ox, oy, r := c[0], c[1], c[2]
+		if (ox <= r || oy+r >= y) && !vis[i] && dfs(i) {
+			return false
+		}
+	}
+	return true
+}
+
+func canReachCorner2(x, y int, circles [][]int) bool {
 	n := len(circles)
 	// 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
 	fa := make([]int, n+2)

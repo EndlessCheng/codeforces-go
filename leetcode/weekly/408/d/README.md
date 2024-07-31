@@ -1,12 +1,6 @@
-## ⚠观前必读
+## 方法一：并查集
 
-本题没有限制圆心必须在矩形内部，但测试表明，所有**测试数据的圆心均在矩形内部**，估计过段时间会修改题目描述，保证圆心均在矩形内部。所以**下面代码只考虑圆心一定在矩形内部的情况**。
-
-## 思路
-
-等价转换：
-
-- 如果从矩形【左边界/上边界】到矩形【下边界/右边界】的路被圆堵死，则无法从矩形左下角移动到矩形右上角。
+**等价转换**：如果从矩形【左边界/上边界】到矩形【下边界/右边界】的路被圆堵死，则无法从矩形左下角移动到矩形右上角。
 
 怎么判断呢？
 
@@ -14,7 +8,9 @@
 
 也可以把桥理解成切割线，如果能把从矩形左下角到矩形右上角的路径**切断**，则无法从矩形左下角移动到矩形右上角。
 
-## 具体做法
+注意题目保证圆心均在矩形内部。
+
+### 具体做法
 
 抽象成一个图论题：
 
@@ -30,12 +26,14 @@
 
 最后，如果节点 $n$ 和 $n+1$ 不在并查集的同一个连通块中，则返回 $\texttt{true}$，否则返回 $\texttt{false}$。也可以在遍历每个圆的过程中判断。
 
+两圆是否相交相切，可以判断圆心距离与两圆半径之和的大小关系。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Mi421a7cZ/) 第四题，欢迎点赞关注！
 
 ```py [sol-Python3]
 class Solution:
-    def canReachCorner(self, x: int, y: int, a: List[List[int]]) -> bool:
-        n = len(a)
+    def canReachCorner(self, x: int, y: int, circles: List[List[int]]) -> bool:
+        n = len(circles)
         # 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
         fa = list(range(n + 2))
         # 非递归并查集
@@ -49,12 +47,12 @@ class Solution:
         def merge(x: int, y: int) -> None:
             fa[find(x)] = find(y)
 
-        for i, (ox, oy, r) in enumerate(a):
+        for i, (ox, oy, r) in enumerate(circles):
             if ox <= r or oy + r >= y:  # 圆 i 和左边界或上边界有交集
                 merge(i, n)
             if oy <= r or ox + r >= x:  # 圆 i 和下边界或右边界有交集
                 merge(i, n + 1)
-            for j, (qx, qy, qr) in enumerate(a[:i]):
+            for j, (qx, qy, qr) in enumerate(circles[:i]):
                 if (ox - qx) * (ox - qx) + (oy - qy) * (oy - qy) <= (r + qr) * (r + qr):
                     merge(i, j)  # 圆 i 和圆 j 有交集
             if find(n) == find(n + 1):  # 无法到达终点
@@ -117,8 +115,8 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    bool canReachCorner(int x, int y, vector<vector<int>>& a) {
-        int n = a.size();
+    bool canReachCorner(int x, int y, vector<vector<int>>& circles) {
+        int n = circles.size();
         // 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
         vector<int> fa(n + 2);
         iota(fa.begin(), fa.end(), 0);
@@ -139,8 +137,8 @@ public:
             fa[find(x)] = find(y);
         };
 
-        for (int i = 0; i < a.size(); i++) {
-            int ox = a[i][0], oy = a[i][1], r = a[i][2];
+        for (int i = 0; i < circles.size(); i++) {
+            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
             if (ox <= r || oy + r >= y) { // 圆 i 和左边界或上边界有交集
                 merge(i, n);
             }
@@ -148,7 +146,7 @@ public:
                 merge(i, n + 1);
             }
             for (int j = 0; j < i; j++) {
-                int qx = a[j][0], qy = a[j][1], qr = a[j][2];
+                int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
                 if ((long long) (ox - qx) * (ox - qx) + (long long) (oy - qy) * (oy - qy) <= (long long) (r + qr) * (r + qr)) {
                     merge(i, j); // 圆 i 和圆 j 有交集
                 }
@@ -163,8 +161,8 @@ public:
 ```
 
 ```go [sol-Go]
-func canReachCorner(x, y int, a [][]int) bool {
-	n := len(a)
+func canReachCorner(x, y int, circles [][]int) bool {
+	n := len(circles)
 	// 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
 	fa := make([]int, n+2)
 	for i := range fa {
@@ -184,7 +182,8 @@ func canReachCorner(x, y int, a [][]int) bool {
 	merge := func(x, y int) {
 		fa[find(x)] = find(y)
 	}
-	for i, c := range a {
+
+	for i, c := range circles {
 		ox, oy, r := c[0], c[1], c[2]
 		if ox <= r || oy+r >= y { // 圆 i 和左边界或上边界有交集
 			merge(i, n)
@@ -192,7 +191,7 @@ func canReachCorner(x, y int, a [][]int) bool {
 		if oy <= r || ox+r >= x { // 圆 i 和下边界或右边界有交集
 			merge(i, n+1)
 		}
-		for j, q := range a[:i] {
+		for j, q := range circles[:i] {
 			if (ox-q[0])*(ox-q[0])+(oy-q[1])*(oy-q[1]) <= (r+q[2])*(r+q[2]) {
 				merge(i, j) // 圆 i 和圆 j 有交集
 			}
@@ -210,9 +209,132 @@ func canReachCorner(x, y int, a [][]int) bool {
 - 时间复杂度：$\mathcal{O}(n^2\log n)$，其中 $n$ 是 $\textit{circles}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-注：如果建图 + DFS，可以做到 $\mathcal{O}(n^2)$ 的时间复杂度，但那样常数太大，比并查集慢。
+## 方法二：DFS
 
-更多相似题目，见下面数据结构题单中的「**并查集**」。
+从与左边界或上边界相交相切的圆出发，DFS 这张图，如果可以到达下边界或右边界，则说明路被堵死。
+
+代码实现时，无需建图，直接判断圆心距离与两圆半径之和的大小关系。
+
+```py [sol-Python3]
+class Solution:
+    def canReachCorner(self, x: int, y: int, circles: List[List[int]]) -> bool:
+        vis = [False] * len(circles)
+        def dfs(i: int) -> bool:
+            ox, oy, r = circles[i]
+            if oy <= r or ox + r >= x:
+                return True
+            vis[i] = True
+            for j, (qx, qy, qr) in enumerate(circles):
+                if not vis[j] and (ox - qx) * (ox - qx) + (oy - qy) * (oy - qy) <= (r + qr) * (r + qr) and dfs(j):
+                    return True
+            return False
+        for i, (ox, oy, r) in enumerate(circles):
+            if (ox <= r or oy + r >= y) and not vis[i] and dfs(i):
+                return False
+        return True
+```
+
+```java [sol-Java]
+class Solution {
+    public boolean canReachCorner(int x, int y, int[][] circles) {
+        boolean[] vis = new boolean[circles.length];
+        for (int i = 0; i < circles.length; i++) {
+            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
+            if ((ox <= r || oy + r >= y) && !vis[i] && dfs(i, x, circles, vis)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean dfs(int i, int x, int[][] circles, boolean[] vis) {
+        int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
+        if (oy <= r || ox + r >= x) {
+            return true;
+        }
+        vis[i] = true;
+        for (int j = 0; j < circles.length; j++) {
+            if (!vis[j]) {
+                int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
+                if ((long) (ox - qx) * (ox - qx) + (long) (oy - qy) * (oy - qy) <= (long) (r + qr) * (r + qr) && dfs(j, x, circles, vis)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    bool canReachCorner(int x, int y, vector<vector<int>>& circles) {
+        int n = circles.size();
+        vector<int> vis(n);
+        auto dfs = [&](auto&& dfs, int i) -> bool {
+            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
+            if (oy <= r || ox + r >= x) {
+                return true;
+            }
+            vis[i] = true;
+            for (int j = 0; j < n; j++) {
+                if (!vis[j]) {
+                    int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
+                    if ((long long) (ox - qx) * (ox - qx) + (long long) (oy - qy) * (oy - qy) <= (long long) (r + qr) * (r + qr) && dfs(dfs, j)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
+        for (int i = 0; i < n; i++) {
+            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
+            if ((ox <= r || oy + r >= y) && !vis[i] && dfs(dfs, i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+```
+
+```go [sol-Go]
+func canReachCorner(x, y int, circles [][]int) bool {
+	vis := make([]bool, len(circles))
+	var dfs func(int) bool
+	dfs = func(i int) bool {
+		ox, oy, r := circles[i][0], circles[i][1], circles[i][2]
+		if oy <= r || ox+r >= x {
+			return true
+		}
+		vis[i] = true
+		for j, b := range vis {
+			if !b {
+				qx, qy, qr := circles[j][0], circles[j][1], circles[j][2]
+				if (ox-qx)*(ox-qx)+(oy-qy)*(oy-qy) <= (r+qr)*(r+qr) && dfs(j) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	for i, c := range circles {
+		ox, oy, r := c[0], c[1], c[2]
+		if (ox <= r || oy+r >= y) && !vis[i] && dfs(i) {
+			return false
+		}
+	}
+	return true
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{circles}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见下面图论题单中的「**DFS**」和数据结构题单中的「**并查集**」。
 
 ## 分类题单
 
