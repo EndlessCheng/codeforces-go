@@ -43,14 +43,16 @@ dot (dot product，数量积，点积，内积)
 https://en.wikipedia.org/wiki/Dot_product
 https://en.wikipedia.org/wiki/Inner_product_space
 中学课本是用力的做功引入数量积的（物体在力 F 的作用下产生位移 s，力 F 所做的功等于 |F||s|cosθ）
-据此课本上定义 A·B = |A||B|cosθ，然后证明了其等于 x1x2+y1y2
+据此课本上定义 a·b = |a||b|cosθ，然后证明了其等于 x1x2+y1y2
+注意当 π/2<θ<π 时，上式是负数，可以用来判断两个向量是同向还是异向
 
-det (determinant，行列式，叉积的模，有向面积)
+det (determinant，行列式，平行四边形的有向面积，二维向量叉积的 z 分量的值)
 https://en.wikipedia.org/wiki/Determinant#Geometric_meaning
-|A||B|sinθ
-+ b在a左侧
-- b在a右侧
-0 ab平行或重合（共基线）
+a×b 的 z 分量的值 = |a||b|sinθ = x1y2-y1x2，其中 θ 是 a 到 b 的夹角
+考虑 x1y2-y1x2 的值：
+正：b 在 a 左侧
+负：b 在 a 右侧
+零：a 和 b 平行或重合（共基线）
 关于有向面积 https://cp-algorithms.com/geometry/oriented-triangle-area.html
 https://codeforces.com/gym/105139/problem/B
 
@@ -117,8 +119,10 @@ TIPS: 另一种方法是分四种情况讨论，即
 = max(a-b, b-a) + max(c-d, d-c)
 = max((a-b)+(c-d), (b-a)+(c-d), (a-b)+(d-c), (b-a)+(d-c))
 https://leetcode.com/problems/reverse-subarray-to-maximize-array-value/discuss/489882/O(n)-Solution-with-explanation
+纯数学证明 https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/bu-hui-hua-jian-qing-kan-zhe-pythonjavac-c2s6/
 LC1330 https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/
 - todo 上面这题求最小 https://atcoder.jp/contests/arc119/tasks/arc119_e
+- https://codeforces.com/problemset/problem/1898/D
 LC1131 三维 https://leetcode.cn/problems/maximum-of-absolute-value-expression/
 
 曼哈顿最近点对
@@ -137,15 +141,18 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 
 // isqrt 返回 floor(sqrt(x))
 // 函数名来自 Python 中的 math.isqrt
-// 由于 float64 无法精确表示过大的 int（超出 2^53-1 的），需要微调   
-// - 精确：指 float64 对应着唯一的 int https://www.zhihu.com/question/29010688
-// 举例说明：上舍入
+// 由于 float64 无法【精确】表示过大的 int（超出 2^53-1 的），需要微调   
+// 注：【精确】指代码中的 float64 必须要对应着唯一的 int，才能保证计算结果正确 https://www.zhihu.com/question/29010688
+//
+// 举例说明（上舍入错误）
 // x                  floor(sqrt(x)) 注意这里算的是错误的结果，需要用 if 调整，见下面代码
 // 999999999999999999 1000000000
 // 999996000003999999 999998000
 // 880200476099999999 938190000
-// 可以用该网站查看：https://www.binaryconvert.com/convert_double.html
+//
+// 附：https://www.binaryconvert.com/convert_double.html
 // 0b1(Mantissa) * 2 ** (0b(Exponent) - 1075)
+//
 // 可以用以下题目测试：
 // https://atcoder.jp/contests/abc191/tasks/abc191_d 
 // https://atcoder.jp/contests/abc243/tasks/abc243_g
