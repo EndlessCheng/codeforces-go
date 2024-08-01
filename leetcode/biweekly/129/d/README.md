@@ -394,9 +394,11 @@ $$
 \left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil \le i\le \min(\textit{one},\textit{zero}+1)
 $$
 
-代码实现时，上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
+代码实现时：
 
-代码实现时，可以预处理阶乘及其逆元，利用公式 $C(n,m) = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+1. 上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
+2. $(-1)^j$ 可以用 $1-j\bmod 2\cdot 2$ 表示，因为当 $j$ 是偶数时，该式为 $1$；当 $j$ 是奇数时，该式为 $-1$，符合 $(-1)^j$。
+3. 预处理阶乘及其逆元，利用公式 $\dbinom {n} {m} = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
 
 关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
