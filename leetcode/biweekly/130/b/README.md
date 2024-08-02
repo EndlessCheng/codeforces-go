@@ -15,7 +15,7 @@ class Solution:
         def check(size: int) -> bool:
             vis = set()
             for (x, y), c in zip(points, s):
-                if abs(x) <= size and abs(y) <= size:
+                if abs(x) <= size and abs(y) <= size:  # 点在正方形中
                     if c in vis:
                         return True
                     vis.add(c)
@@ -49,14 +49,13 @@ class Solution {
     boolean check(int size, int[][] points, char[] s) {
         int vis = 0;
         for (int i = 0; i < points.length; i++) {
-            int x = points[i][0];
-            int y = points[i][1];
-            int c = s[i] - 'a';
-            if (Math.abs(x) <= size && Math.abs(y) <= size) {
-                if ((vis >> c & 1) > 0) {
+            // 判断点是否在正方形中
+            if (Math.abs(points[i][0]) <= size && Math.abs(points[i][1]) <= size) {
+                int c = s[i] - 'a';
+                if ((vis >> c & 1) > 0) { // c 在集合中
                     return false;
                 }
-                vis |= 1 << c;
+                vis |= 1 << c; // 把 c 加入集合
             }
         }
         ans = Integer.bitCount(vis);
@@ -73,12 +72,13 @@ public:
         auto check = [&](int size) -> bool {
             int vis = 0;
             for (int i = 0; i < points.size(); i++) {
-                int x = points[i][0], y = points[i][1], c = s[i] - 'a';
-                if (abs(x) <= size && abs(y) <= size) {
-                    if (vis >> c & 1) {
+                // 判断点是否在正方形中
+                if (abs(points[i][0]) <= size && abs(points[i][1]) <= size) {
+                    char c = s[i] - 'a';
+                    if (vis >> c & 1) { // c 在集合中
                         return false;
                     }
-                    vis |= 1 << c;
+                    vis |= 1 << c; // 把 c 加入集合
                 }
             }
             ans = __builtin_popcount(vis);
@@ -96,21 +96,21 @@ public:
 
 ```go [sol-Go]
 func maxPointsInsideSquare(points [][]int, s string) (ans int) {
-	sort.Search(1_000_000_001, func(size int) bool {
-		vis := 0
-		for i, p := range points {
-			if abs(p[0]) <= size && abs(p[1]) <= size {
-				c := s[i] - 'a'
-				if vis>>c&1 > 0 {
-					return true
-				}
-				vis |= 1 << c
-			}
-		}
-		ans = bits.OnesCount(uint(vis))
-		return false
-	})
-	return
+    sort.Search(1_000_000_001, func(size int) bool {
+        vis := 0
+        for i, p := range points {
+            if abs(p[0]) <= size && abs(p[1]) <= size { // 点在正方形中
+                c := s[i] - 'a'
+                if vis>>c&1 > 0 { // c 在集合中
+                    return true
+                }
+                vis |= 1 << c // 把 c 加入集合
+            }
+        }
+        ans = bits.OnesCount(uint(vis))
+        return false
+    })
+    return
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
@@ -133,7 +133,7 @@ $$
 
 定义 $\textit{minD}_2[c]$ 为标签为 $c$ 的所有点到 $(0,0)$ 的**次小**切比雪夫距离。
 
-那么正方形不能包含切比雪夫距离大于等于 $\textit{min}_2 = \min(\textit{minD}_2)$ 的点。
+那么正方形不能包含切比雪夫距离大于等于 $\textit{min}_2 = \min(\textit{minD}_2)$ 的点，否则正方形会包含标签相同的点。
 
 换句话说，可以包含的点需要满足
 
@@ -167,9 +167,7 @@ class Solution {
         Arrays.fill(minD, Integer.MAX_VALUE);
         int min2 = Integer.MAX_VALUE;
         for (int i = 0; i < points.length; i++) {
-            int x = points[i][0];
-            int y = points[i][1];
-            int d = Math.max(Math.abs(x), Math.abs(y));
+            int d = Math.max(Math.abs(points[i][0]), Math.abs(points[i][1]));
             int c = s.charAt(i) - 'a';
             if (d < minD[c]) {
                 // d 是目前最小的，那么 minD[c] 是次小的
@@ -198,8 +196,8 @@ public:
         int min_d[26], min2 = INT_MAX;
         ranges::fill(min_d, INT_MAX);
         for (int i = 0; i < points.size(); i++) {
-            int x = points[i][0], y = points[i][1], c = s[i] - 'a';
-            int d = max(abs(x), abs(y));
+            int d = max(abs(points[i][0]), abs(points[i][1]));
+            char c = s[i] - 'a';
             if (d < min_d[c]) {
                 // d 是目前最小的，那么 min_d[c] 是次小的
                 min2 = min(min2, min_d[c]);
@@ -220,29 +218,29 @@ public:
 
 ```go [sol-Go]
 func maxPointsInsideSquare(points [][]int, s string) (ans int) {
-	minD := [26]int{}
-	for i := range minD {
-		minD[i] = math.MaxInt
-	}
-	min2 := math.MaxInt
-	for i, p := range points {
-		x, y, c := p[0], p[1], s[i]-'a'
-		d := max(abs(x), abs(y))
-		if d < minD[c] {
-			// d 是目前最小的，那么 min_d[c] 是次小的
-			min2 = min(min2, minD[c])
-			minD[c] = d
-		} else {
-			// d 可能是次小的
-			min2 = min(min2, d)
-		}
-	}
-	for _, d := range minD {
-		if d < min2 {
-			ans++
-		}
-	}
-	return
+    minD := [26]int{}
+    for i := range minD {
+        minD[i] = math.MaxInt
+    }
+    min2 := math.MaxInt
+    for i, p := range points {
+        d := max(abs(p[0]), abs(p[1]))
+        c := s[i] - 'a'
+        if d < minD[c] {
+            // d 是目前最小的，那么 min_d[c] 是次小的
+            min2 = min(min2, minD[c])
+            minD[c] = d
+        } else {
+            // d 可能是次小的
+            min2 = min(min2, d)
+        }
+    }
+    for _, d := range minD {
+        if d < min2 {
+            ans++
+        }
+    }
+    return
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
