@@ -1,264 +1,116 @@
-## 方法一：并查集
-
-**等价转换**：如果从矩形【左边界/上边界】到矩形【下边界/右边界】的路被圆堵死，则无法从矩形左下角移动到矩形右上角。
+如果从矩形【上边界/左边界】到矩形【右边界/下边界】的路被圆堵死，则无法从矩形左下角移动到矩形右上角。
 
 怎么判断呢？
 
-如果圆和圆相交或相切，则相当于在两个圆之间架起了一座桥。如果圆和矩形边界相交或相切，则相当于在矩形边界和圆之间架起了一座桥。如果可以从矩形【左边界/上边界】通过桥到达矩形【下边界/右边界】，则说明路被堵死，无法从矩形左下角移动到矩形右上角。
+首先考虑圆心都在矩形内部的情况。如果圆和圆相交或相切，则相当于在两个圆之间架起了一座桥。如果圆和矩形边界相交或相切，则相当于在矩形边界和圆之间架起了一座桥。如果可以从矩形【上边界/左边界】通过桥到达矩形【右边界/下边界】，则说明路被堵死，无法从矩形左下角移动到矩形右上角。
 
 也可以把桥理解成切割线，如果能把从矩形左下角到矩形右上角的路径**切断**，则无法从矩形左下角移动到矩形右上角。
 
-注意题目保证圆心均在矩形内部。
+用图论的术语来说，就是把圆抽象成节点，在相交或相切的节点之间连边，得到一张无向图。如果从与【上边界/左边界】相交的节点出发，**DFS** 这张图，到达与【右边界/下边界】相交的节点，则说明无法从矩形左下角移动到矩形右上角。
+
+需要注意，本题没有保证圆心一定在矩形内部，如何处理这种情况呢？
+
+![lc3235-c.png](https://pic.leetcode.cn/1722577942-JcJHCE-lc3235-c.png)
+
+注：把两圆的两个交点连起来，该线段与 $O_1O_2$ 相交得到的交点作为点 $A$ 也可以，但这种情况点 $A$ 横纵坐标的分母会是一个 $10^{18}$ 数量级的数，在与 $\textit{X}$ 或 $\textit{Y}$ 相乘时会产生 $10^{27}$ 数量级的数，超出了 64 位整数的范围，需要用大整数实现，更麻烦。
+
+如何判断圆是否与矩形边界相交相切？
+
+![lc3235-2-c.png](https://pic.leetcode.cn/1722579370-cPlOGI-lc3235-2-c.png)
 
 ### 具体做法
 
-抽象成一个图论题：
+从与矩形【上边界/左边界】相交/相切的圆开始 DFS。
 
-- 把第 $i$ 个圆视作节点 $i$，其中 $0\le i \le n-1$。
-- 把矩形【左边界/上边界】视作节点 $n$。
-- 把矩形【下边界/右边界】视作节点 $n+1$。
+如果当前 DFS 到了圆 $i$：
 
-遍历每个圆 $i$：
+- 先判断其是否与矩形【右边界/下边界】相交或相切，如果是，则 DFS 返回 $\texttt{true}$。
+- 否则，判断其是否与其他圆 $j$ 相交或相切，如果是，则判断点 $A$ 是否严格在矩形内，如果在，则递归 $j$，如果收到了 $\texttt{true}$，则 DFS 返回 $\texttt{true}$。
 
-- 判断是否与矩形【左边界/上边界】相交或相切，如果是，则合并节点 $i$ 和 $n$。
-- 判断是否与矩形【下边界/右边界】相交或相切，如果是，则合并节点 $i$ 和 $n+1$。
-- 判断是否与其他圆 $j$ 相交或相切，如果是，则合并节点 $i$ 和 $j$。
+最后，如果最外层调用 DFS 的地方收到了 $\texttt{true}$，则表示无法从矩形左下角移动到矩形右上角，返回 $\texttt{false}$。
 
-最后，如果节点 $n$ 和 $n+1$ 不在并查集的同一个连通块中，则返回 $\texttt{true}$，否则返回 $\texttt{false}$。也可以在遍历每个圆的过程中判断。
-
-两圆是否相交相切，可以判断圆心距离与两圆半径之和的大小关系。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Mi421a7cZ/) 第四题，欢迎点赞关注！
+代码实现时，可以在递归之前，特判圆包含矩形左下角或者矩形右上角的情况，此时可以直接返回 $\texttt{false}$。
 
 ```py [sol-Python3]
 class Solution:
-    def canReachCorner(self, x: int, y: int, circles: List[List[int]]) -> bool:
-        n = len(circles)
-        # 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
-        fa = list(range(n + 2))
-        # 非递归并查集
-        def find(x: int) -> int:
-            rt = x
-            while fa[rt] != rt:
-                rt = fa[rt]
-            while fa[x] != rt:
-                fa[x], x = rt, fa[x]
-            return rt
-        def merge(x: int, y: int) -> None:
-            fa[find(x)] = find(y)
+    def canReachCorner(self, X: int, Y: int, circles: List[List[int]]) -> bool:
+        # 判断点 (x,y) 是否在圆 (ox,oy,r) 内
+        def in_circle(ox: int, oy: int, r: int, x: int, y: int) -> bool:
+            return (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r
 
-        for i, (ox, oy, r) in enumerate(circles):
-            if ox <= r or oy + r >= y:  # 圆 i 和左边界或上边界有交集
-                merge(i, n)
-            if oy <= r or ox + r >= x:  # 圆 i 和下边界或右边界有交集
-                merge(i, n + 1)
-            for j, (qx, qy, qr) in enumerate(circles[:i]):
-                if (ox - qx) * (ox - qx) + (oy - qy) * (oy - qy) <= (r + qr) * (r + qr):
-                    merge(i, j)  # 圆 i 和圆 j 有交集
-            if find(n) == find(n + 1):  # 无法到达终点
-                return False
-        return True
-```
-
-```java [sol-Java]
-class UnionFind {
-    private final int[] fa;
-
-    public UnionFind(int size) {
-        fa = new int[size];
-        for (int i = 1; i < size; i++) {
-            fa[i] = i;
-        }
-    }
-
-    public int find(int x) {
-        if (fa[x] != x) {
-            fa[x] = find(fa[x]);
-        }
-        return fa[x];
-    }
-
-    public void merge(int x, int y) {
-        fa[find(x)] = find(y);
-    }
-}
-
-class Solution {
-    public boolean canReachCorner(int x, int y, int[][] circles) {
-        int n = circles.length;
-        // 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
-        UnionFind uf = new UnionFind(n + 2);
-        for (int i = 0; i < n; i++) {
-            int[] c = circles[i];
-            int ox = c[0], oy = c[1], r = c[2];
-            if (ox <= r || oy + r >= y) { // 圆 i 和左边界或上边界有交集
-                uf.merge(i, n);
-            }
-            if (oy <= r || ox + r >= x) { // 圆 i 和下边界或右边界有交集
-                uf.merge(i, n + 1);
-            }
-            for (int j = 0; j < i; j++) {
-                int[] q = circles[j];
-                if ((long) (ox - q[0]) * (ox - q[0]) + (long) (oy - q[1]) * (oy - q[1]) <= (long) (r + q[2]) * (r + q[2])) {
-                    uf.merge(i, j); // 圆 i 和圆 j 有交集
-                }
-            }
-            if (uf.find(n) == uf.find(n + 1)) { // 无法到达终点
-                return false;
-            }
-        }
-        return true;
-    }
-}
-```
-
-```cpp [sol-C++]
-class Solution {
-public:
-    bool canReachCorner(int x, int y, vector<vector<int>>& circles) {
-        int n = circles.size();
-        // 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
-        vector<int> fa(n + 2);
-        iota(fa.begin(), fa.end(), 0);
-        // 非递归并查集
-        auto find = [&](int x) {
-            int rt = x;
-            while (fa[rt] != rt) {
-                rt = fa[rt];
-            }
-            while (fa[x] != rt) {
-                int temp = fa[x];
-                fa[x] = rt;
-                x = temp;
-            }
-            return rt;
-        };
-        auto merge = [&](int x, int y) {
-            fa[find(x)] = find(y);
-        };
-
-        for (int i = 0; i < circles.size(); i++) {
-            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
-            if (ox <= r || oy + r >= y) { // 圆 i 和左边界或上边界有交集
-                merge(i, n);
-            }
-            if (oy <= r || ox + r >= x) { // 圆 i 和下边界或右边界有交集
-                merge(i, n + 1);
-            }
-            for (int j = 0; j < i; j++) {
-                int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
-                if ((long long) (ox - qx) * (ox - qx) + (long long) (oy - qy) * (oy - qy) <= (long long) (r + qr) * (r + qr)) {
-                    merge(i, j); // 圆 i 和圆 j 有交集
-                }
-            }
-            if (find(n) == find(n + 1)) { // 无法到达终点
-                return false;
-            }
-        }
-        return true;
-    }
-};
-```
-
-```go [sol-Go]
-func canReachCorner(x, y int, circles [][]int) bool {
-	n := len(circles)
-	// 并查集中的 n 表示左边界或上边界，n+1 表示下边界或右边界
-	fa := make([]int, n+2)
-	for i := range fa {
-		fa[i] = i
-	}
-	// 非递归并查集
-	find := func(x int) int {
-		rt := x
-		for fa[rt] != rt {
-			rt = fa[rt]
-		}
-		for fa[x] != rt {
-			fa[x], x = rt, fa[x]
-		}
-		return rt
-	}
-	merge := func(x, y int) {
-		fa[find(x)] = find(y)
-	}
-
-	for i, c := range circles {
-		ox, oy, r := c[0], c[1], c[2]
-		if ox <= r || oy+r >= y { // 圆 i 和左边界或上边界有交集
-			merge(i, n)
-		}
-		if oy <= r || ox+r >= x { // 圆 i 和下边界或右边界有交集
-			merge(i, n+1)
-		}
-		for j, q := range circles[:i] {
-			if (ox-q[0])*(ox-q[0])+(oy-q[1])*(oy-q[1]) <= (r+q[2])*(r+q[2]) {
-				merge(i, j) // 圆 i 和圆 j 有交集
-			}
-		}
-		if find(n) == find(n+1) { // 无法到达终点
-			return false
-		}
-	}
-	return true
-}
-```
-
-#### 复杂度分析
-
-- 时间复杂度：$\mathcal{O}(n^2\log n)$，其中 $n$ 是 $\textit{circles}$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$。
-
-## 方法二：DFS
-
-从与左边界或上边界相交相切的圆出发，DFS 这张图，如果可以到达下边界或右边界，则说明路被堵死。
-
-代码实现时，无需建图，直接判断圆心距离与两圆半径之和的大小关系。
-
-```py [sol-Python3]
-class Solution:
-    def canReachCorner(self, x: int, y: int, circles: List[List[int]]) -> bool:
         vis = [False] * len(circles)
         def dfs(i: int) -> bool:
-            ox, oy, r = circles[i]
-            if oy <= r or ox + r >= x:
+            x1, y1, r1 = circles[i]
+            # 圆 i 是否与矩形右边界/下边界相交相切
+            if y1 <= Y and abs(x1 - X) <= r1 or \
+               x1 <= X and y1 <= r1 or \
+               x1 > X and in_circle(x1, y1, r1, X, 0):
                 return True
             vis[i] = True
-            for j, (qx, qy, qr) in enumerate(circles):
-                if not vis[j] and (ox - qx) * (ox - qx) + (oy - qy) * (oy - qy) <= (r + qr) * (r + qr) and dfs(j):
+            for j, (x2, y2, r2) in enumerate(circles):
+                # 在两圆相交相切的前提下，点 A 是否严格在矩形内
+                if not vis[j] and \
+                   (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) and \
+                   x1 * r2 + x2 * r1 < (r1 + r2) * X and \
+                   y1 * r2 + y2 * r1 < (r1 + r2) * Y and \
+                   dfs(j):
                     return True
             return False
-        for i, (ox, oy, r) in enumerate(circles):
-            if (ox <= r or oy + r >= y) and not vis[i] and dfs(i):
+
+        for i, (x, y, r) in enumerate(circles):
+            # 圆 i 包含矩形左下角 or
+            # 圆 i 包含矩形右上角 or
+            # 圆 i 与矩形上边界/左边界相交相切
+            if in_circle(x, y, r, 0, 0) or \
+               in_circle(x, y, r, X, Y) or \
+               not vis[i] and (x <= X and abs(y - Y) <= r or
+                               y <= Y and x <= r or
+                               y > Y and in_circle(x, y, r, 0, Y)) and dfs(i):
                 return False
         return True
 ```
 
 ```java [sol-Java]
 class Solution {
-    public boolean canReachCorner(int x, int y, int[][] circles) {
+    public boolean canReachCorner(int X, int Y, int[][] circles) {
         boolean[] vis = new boolean[circles.length];
         for (int i = 0; i < circles.length; i++) {
-            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
-            if ((ox <= r || oy + r >= y) && !vis[i] && dfs(i, x, circles, vis)) {
+            long x = circles[i][0], y = circles[i][1], r = circles[i][2];
+            if (inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
+                inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
+                // 圆 i 是否与矩形上边界/左边界相交相切
+                !vis[i] && (x <= X && Math.abs(y - Y) <= r ||
+                            y <= Y && x <= r ||
+                            y > Y && inCircle(x, y, r, 0, Y)) && dfs(i, X, Y, circles, vis)) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean dfs(int i, int x, int[][] circles, boolean[] vis) {
-        int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
-        if (oy <= r || ox + r >= x) {
+    // 判断点 (x,y) 是否在圆 (ox,oy,r) 内
+    private boolean inCircle(long ox, long oy, long r, long x, long y) {
+        return (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r;
+    }
+
+    private boolean dfs(int i, int X, int Y, int[][] circles, boolean[] vis) {
+        long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
+        // 圆 i 是否与矩形右边界/下边界相交相切
+        if (y1 <= Y && Math.abs(x1 - X) <= r1 ||
+            x1 <= X && y1 <= r1 ||
+            x1 > X && inCircle(x1, y1, r1, X, 0)) {
             return true;
         }
         vis[i] = true;
         for (int j = 0; j < circles.length; j++) {
-            if (!vis[j]) {
-                int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
-                if ((long) (ox - qx) * (ox - qx) + (long) (oy - qy) * (oy - qy) <= (long) (r + qr) * (r + qr) && dfs(j, x, circles, vis)) {
-                    return true;
-                }
+            long x2 = circles[j][0], y2 = circles[j][1], r2 = circles[j][2];
+            // 在两圆相交相切的前提下，点 A 是否严格在矩形内
+            if (!vis[j] &&
+                (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) &&
+                x1 * r2 + x2 * r1 < (r1 + r2) * X &&
+                y1 * r2 + y2 * r1 < (r1 + r2) * Y &&
+                dfs(j, X, Y, circles, vis)) {
+                return true;
             }
         }
         return false;
@@ -268,29 +120,44 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
+    // 判断点 (x,y) 是否在圆 (ox,oy,r) 内
+    bool in_circle(long long ox, long long oy, long long r, long long x, long long y) {
+        return (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r;
+    }
+
 public:
-    bool canReachCorner(int x, int y, vector<vector<int>>& circles) {
+    bool canReachCorner(int X, int Y, vector<vector<int>>& circles) {
         int n = circles.size();
         vector<int> vis(n);
-        auto dfs = [&](auto&& dfs, int i) -> bool {
-            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
-            if (oy <= r || ox + r >= x) {
+        auto&& dfs = [&](auto&& dfs, int i) -> bool {
+            long long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
+            // 圆 i 是否与矩形右边界/下边界相交相切
+            if (y1 <= Y && abs(x1 - X) <= r1 ||
+                x1 <= X && y1 <= r1 ||
+                x1 > X && in_circle(x1, y1, r1, X, 0)) {
                 return true;
             }
             vis[i] = true;
             for (int j = 0; j < n; j++) {
-                if (!vis[j]) {
-                    int qx = circles[j][0], qy = circles[j][1], qr = circles[j][2];
-                    if ((long long) (ox - qx) * (ox - qx) + (long long) (oy - qy) * (oy - qy) <= (long long) (r + qr) * (r + qr) && dfs(dfs, j)) {
-                        return true;
-                    }
+                long long x2 = circles[j][0], y2 = circles[j][1], r2 = circles[j][2];
+                // 在两圆相交相切的前提下，点 A 是否严格在矩形内
+                if (!vis[j] && (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) &&
+                    x1 * r2 + x2 * r1 < (r1 + r2) * X &&
+                    y1 * r2 + y2 * r1 < (r1 + r2) * Y &&
+                    dfs(dfs, j)) {
+                    return true;
                 }
             }
             return false;
         };
         for (int i = 0; i < n; i++) {
-            int ox = circles[i][0], oy = circles[i][1], r = circles[i][2];
-            if ((ox <= r || oy + r >= y) && !vis[i] && dfs(dfs, i)) {
+            long long x = circles[i][0], y = circles[i][1], r = circles[i][2];
+            if (in_circle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
+                in_circle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
+                // 圆 i 是否与矩形上边界/左边界相交相切
+                !vis[i] && (x <= X && abs(y - Y) <= r ||
+                            y <= Y && x <= r ||
+                            y > Y && in_circle(x, y, r, 0, Y)) && dfs(dfs, i)) {
                 return false;
             }
         }
@@ -300,33 +167,46 @@ public:
 ```
 
 ```go [sol-Go]
-func canReachCorner(x, y int, circles [][]int) bool {
+// 判断点 (x,y) 是否在圆 (ox,oy,r) 内
+func inCircle(ox, oy, r, x, y int) bool {
+	return (ox-x)*(ox-x)+(oy-y)*(oy-y) <= r*r
+}
+
+func canReachCorner(X, Y int, circles [][]int) bool {
 	vis := make([]bool, len(circles))
 	var dfs func(int) bool
 	dfs = func(i int) bool {
-		ox, oy, r := circles[i][0], circles[i][1], circles[i][2]
-		if oy <= r || ox+r >= x {
+		x1, y1, r1 := circles[i][0], circles[i][1], circles[i][2]
+		// 圆 i 是否与矩形右边界/下边界相交相切
+		if y1 <= Y && abs(x1-X) <= r1 || x1 <= X && y1 <= r1 || x1 > X && inCircle(x1, y1, r1, X, 0) {
 			return true
 		}
 		vis[i] = true
-		for j, b := range vis {
-			if !b {
-				qx, qy, qr := circles[j][0], circles[j][1], circles[j][2]
-				if (ox-qx)*(ox-qx)+(oy-qy)*(oy-qy) <= (r+qr)*(r+qr) && dfs(j) {
-					return true
-				}
+		for j, c := range circles {
+			x2, y2, r2 := c[0], c[1], c[2]
+			// 在两圆相交相切的前提下，点 A 是否严格在矩形内
+			if !vis[j] && (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2) <= (r1+r2)*(r1+r2) &&
+				x1*r2+x2*r1 < (r1+r2)*X &&
+				y1*r2+y2*r1 < (r1+r2)*Y &&
+				dfs(j) {
+				return true
 			}
 		}
 		return false
 	}
 	for i, c := range circles {
-		ox, oy, r := c[0], c[1], c[2]
-		if (ox <= r || oy+r >= y) && !vis[i] && dfs(i) {
+		x, y, r := c[0], c[1], c[2]
+		if inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
+			inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
+			// 圆 i 是否与矩形上边界/左边界相交相切
+			!vis[i] && (x <= X && abs(y-Y) <= r || y <= Y && x <= r || y > Y && inCircle(x, y, r, 0, Y)) && dfs(i) {
 			return false
 		}
 	}
 	return true
 }
+
+func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
 #### 复杂度分析
