@@ -32,13 +32,14 @@ func cf1996F(in io.Reader, out io.Writer) {
 			return true
 		})
 		ans := 0
-		for i, p := range a {
+		for _, p := range a {
 			if p.a > mx {
 				k := (p.a-mx-1)/p.b + 1
 				ans += (p.a*2 - (k-1)*p.b) * k / 2
-				a[i].a -= k * p.b
 			}
 		}
+		// 二分结束后，剩余的 left 次操作，每次操作的得分一定都恰好等于 mx
+		// 反证法：如果操作若干次后，后续的操作只能得到 < mx 的分数，那么上面的二分结果必然 < mx，矛盾
 		Fprintln(out, ans+mx*left)
 	}
 }
