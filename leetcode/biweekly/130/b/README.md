@@ -133,7 +133,7 @@ $$
 
 定义 $\textit{minD}_2[c]$ 为标签为 $c$ 的所有点到 $(0,0)$ 的**次小**切比雪夫距离。
 
-![lc3143.png](https://pic.leetcode.cn/1722694809-ilEcxt-lc3143.png)
+![lc3143.png](https://pic.leetcode.cn/1722695389-Arudlg-lc3143.png)
 
 换句话说，可以在正方形中的点需要满足
 
