@@ -17,7 +17,7 @@ func maxPointsInsideSquare(points [][]int, s string) (ans int) {
 		x, y, c := p[0], p[1], s[i]-'a'
 		d := max(abs(x), abs(y))
 		if d < minD[c] {
-			// d 是目前最小的，那么 min_d[c] 是次小的
+			// d 是目前最小的，那么 minD[c] 是次小的
 			min2 = min(min2, minD[c])
 			minD[c] = d
 		} else {

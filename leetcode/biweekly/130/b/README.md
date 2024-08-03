@@ -2,7 +2,7 @@
 
 由于正方形边长越大，越不合法，有单调性，所以可以**二分边长的一半**。
 
-在二分中统计遇到的字符，如果没有遇到重复的字符，则正方形合法，则用字符个数更新答案的最大值。
+在二分中统计遇到的字符，如果没有遇到重复的字符，说明正方形合法，用字符个数更新答案的最大值。
 
 关于二分算法的原理，请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
 
@@ -133,9 +133,9 @@ $$
 
 定义 $\textit{minD}_2[c]$ 为标签为 $c$ 的所有点到 $(0,0)$ 的**次小**切比雪夫距离。
 
-那么正方形不能包含切比雪夫距离大于等于 $\textit{min}_2 = \min(\textit{minD}_2)$ 的点，否则正方形会包含标签相同的点。
+![lc3143.png](https://pic.leetcode.cn/1722694809-ilEcxt-lc3143.png)
 
-换句话说，可以包含的点需要满足
+换句话说，可以在正方形中的点需要满足
 
 $$
 \textit{minD}[c] < \textit{min}_2
@@ -227,7 +227,7 @@ func maxPointsInsideSquare(points [][]int, s string) (ans int) {
         d := max(abs(p[0]), abs(p[1]))
         c := s[i] - 'a'
         if d < minD[c] {
-            // d 是目前最小的，那么 min_d[c] 是次小的
+            // d 是目前最小的，那么 minD[c] 是次小的
             min2 = min(min2, minD[c])
             minD[c] = d
         } else {
