@@ -1,0 +1,103 @@
+遍历 $\textit{pick}$，用一个 $n\times 11$ 大小的矩阵，统计每个玩家得到的每种颜色的球的个数。
+
+遍历每个玩家，如果该玩家至少有一种颜色的球大于玩家编号，则把答案加一。
+
+```py [sol-Python3]
+class Solution:
+    def winningPlayerCount(self, n: int, pick: List[List[int]]) -> int:
+        cnts = [[0] * 11 for _ in range(n)]
+        for x, y in pick:
+            cnts[x][y] += 1
+
+        ans = 0
+        for i, cnt in enumerate(cnts):
+            if any(c > i for c in cnt):
+                ans += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int winningPlayerCount(int n, int[][] pick) {
+        int[][] cnts = new int[n][11];
+        for (int[] p : pick) {
+            cnts[p[0]][p[1]]++;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int c : cnts[i]) {
+                if (c > i) {
+                    ans++;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int winningPlayerCount(int n, vector<vector<int>>& pick) {
+        vector<array<int, 11>> cnts(n);
+        for (auto& p : pick) {
+            cnts[p[0]][p[1]]++;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int c : cnts[i]) {
+                if (c > i) {
+                    ans++;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func winningPlayerCount(n int, pick [][]int) (ans int) {
+	cnts := make([][11]int, n)
+	for _, p := range pick {
+		cnts[p[0]][p[1]]++
+	}
+
+	for i, cnt := range cnts {
+		for _, c := range cnt {
+			if c > i {
+				ans++
+				break
+			}
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU+m)$，其中 $m$ 是 $\textit{pick}$ 的长度，$U$ 是 $y_i$ 的最大值。
+- 空间复杂度：$\mathcal{O}(nU)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
