@@ -40,9 +40,7 @@ o:
 					continue
 				}
 				t := j<<1 | b
-				if i > n-k {
-					res += f[i][t]
-				} else if !pal[t] {
+				if i > n-k || !pal[t] {
 					res += f[i][t&mask]
 				}
 			}
