@@ -23,7 +23,7 @@
 - 子树 $x$ 的最大深度。
 - $x$ 往上走到某个节点再往下拐弯的路径长度。
 
-为了算出第二种情况，我们可以在 DFS 额外传入一个参数 $\textit{fromUp}$。
+对于第二种情况，可以作为 DFS 的一个参数 $\textit{fromUp}$。
 
 如果 $x$ 的儿子 $y = \textit{my}$，那么往下传入的参数更新为
 
@@ -84,7 +84,8 @@ class Solution {
         List<Integer>[] g = new ArrayList[edges.length + 1];
         Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : edges) {
-            int x = e[0], y = e[1];
+            int x = e[0];
+            int y = e[1];
             g[x].add(y);
             g[y].add(x);
         }
@@ -99,7 +100,9 @@ class Solution {
     }
 
     private int dfs(int x, int fa, List<Integer>[] g, int[][] nodes) {
-        int maxD = 0, maxD2 = 0, my = 0;
+        int maxD = 0;
+        int maxD2 = 0;
+        int my = 0;
         for (int y : g[x]) {
             if (y == fa) {
                 continue;
@@ -120,7 +123,9 @@ class Solution {
     }
 
     private void reroot(int x, int fa, int fromUp, List<Integer>[] g, int[][] nodes, int[] ans) {
-        int maxD = nodes[x][0], maxD2 = nodes[x][1], my = nodes[x][2];
+        int maxD = nodes[x][0];
+        int maxD2 = nodes[x][1];
+        int my = nodes[x][2];
         ans[x] = Math.max(fromUp, maxD);
         for (int y : g[x]) {
             if (y != fa) {
