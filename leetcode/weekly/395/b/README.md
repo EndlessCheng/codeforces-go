@@ -166,8 +166,8 @@ impl Solution {
             let x = nums2[0] - nums1[i];
             // 在 {nums1[i] + x} 中找子序列 nums2
             let mut j = 0;
-            for k in i..nums1.len() {
-                if nums2[j] == nums1[k] + x && { j += 1; j == nums2.len() } {
+            for &v in &nums1[i..] {
+                if nums2[j] == v + x && { j += 1; j == nums2.len() } {
                     // nums2 是 {nums1[i] + x} 的子序列
                     return x;
                 }
