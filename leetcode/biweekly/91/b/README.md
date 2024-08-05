@@ -1,9 +1,11 @@
+**题意**：每次可以爬 $\textit{zero}$ 或 $\textit{one}$ 个台阶，返回爬 $\textit{low}$ 到 $\textit{high}$ 个台阶的方案数。
+
 定义 $f[i]$ 表示构造长为 $i$ 的字符串的方案数，其中构造空串的方案数为 $1$，即 $f[0]=1$。
 
 有两类得到长为 $i$ 的字符串的方法：
 
-- 如果 $i\ge \textit{zero}$，那么可以在长为 $i-\textit{zero}$ 的字符串末尾添加 $\textit{zero}$ 个 `0`，方案数为 $f[i-\textit{zero}]$。
-- 如果 $i\ge \textit{one}$，那么可以在长为 $i-\textit{one}$ 的字符串末尾添加 $\textit{one}$ 个 `1`，方案数为 $f[i-\textit{one}]$。
+- 如果 $i\ge \textit{zero}$，那么可以在长为 $i-\textit{zero}$ 的字符串末尾添加 $\textit{zero}$ 个 $0$，方案数为 $f[i-\textit{zero}]$。
+- 如果 $i\ge \textit{one}$，那么可以在长为 $i-\textit{one}$ 的字符串末尾添加 $\textit{one}$ 个 $1$，方案数为 $f[i-\textit{one}]$。
 - 两类方案互相独立，相加得
 
 $$
@@ -11,6 +13,8 @@ f[i] = f[i-\textit{zero}] + f[i-\textit{one}]
 $$
 
 对比一下 [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)，相当于本题的 $\textit{zero}=1,\ \textit{one}=2$，即 $f[i]=f[i-1]+f[i-2]$。
+
+答案为 $\sum\limits_{i=\textit{low}}^{\textit{high}} f[i]$。
 
 代码中用到了取模，不了解或者写错的同学请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -119,17 +123,18 @@ impl Solution {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
