@@ -1298,39 +1298,6 @@ func singleNonDuplicate(a []int) int {
     return a[i]
 }
 
-// LC 600 不含连续 1 的非负整数
-func findIntegers(N int) int {
-    s := strconv.FormatInt(int64(N), 2)
-    n := len(s)
-    dp := make([][2]int, n)
-    for i := range dp {
-        dp[i] = [2]int{-1, -1}
-    }
-    var f func(p, prevIsOne int, isUpper bool) int
-    f = func(p, prevIsOne int, isUpper bool) (res int) {
-        if p == n {
-            return 1
-        }
-        if !isUpper {
-            dv := &dp[p][prevIsOne]
-            if *dv >= 0 {
-                return *dv
-            }
-            defer func() { *dv = res }()
-        }
-        up := 1
-        if isUpper {
-            up = int(s[p] & 1)
-        }
-        res = f(p+1, 0, isUpper && 0 == up)
-        if prevIsOne == 0 && up == 1 {
-            res += f(p+1, 1, isUpper)
-        }
-        return
-    }
-    return f(0, 0, true)
-}
-
 // LC 621 任务调度器
 func leastInterval(tasks []byte, n int) int {
     cnt := map[byte]int{}
@@ -1378,56 +1345,6 @@ func isPossible(nums []int) bool {
         }
     }
     return true
-}
-
-// LC 721
-func accountsMerge(accounts [][]string) (ans [][]string) {
-    emailToIndex := map[string]int{}
-    emailToName := map[string]string{}
-    for _, account := range accounts {
-        name := account[0]
-        for _, email := range account[1:] {
-            if _, has := emailToIndex[email]; !has {
-                emailToIndex[email] = len(emailToIndex)
-                emailToName[email] = name
-            }
-        }
-    }
-
-    fa := make([]int, len(emailToIndex))
-    for i := range fa {
-        fa[i] = i
-    }
-    var find func(int) int
-    find = func(x int) int {
-        if fa[x] != x {
-            fa[x] = find(fa[x])
-        }
-        return fa[x]
-    }
-    union := func(from, to int) {
-        fa[find(from)] = find(to)
-    }
-
-    for _, account := range accounts {
-        firstIndex := emailToIndex[account[1]]
-        for _, email := range account[2:] {
-            union(emailToIndex[email], firstIndex)
-        }
-    }
-
-    indexToEmails := map[int][]string{}
-    for email, index := range emailToIndex {
-        index = find(index)
-        indexToEmails[index] = append(indexToEmails[index], email)
-    }
-
-    for _, emails := range indexToEmails {
-        sort.Strings(emails)
-        account := append([]string{emailToName[emails[0]]}, emails...)
-        ans = append(ans, account)
-    }
-    return
 }
 
 // LC 738 返回 <=N 的最大的非降整数
@@ -1544,24 +1461,6 @@ func hitBricks(g [][]int, hits [][]int) []int {
         }
         t[x][y] = 1
     }
-    return ans
-}
-
-// LC 968
-func minCameraCover(root *TreeNode) int {
-    var f func(*TreeNode) (a, b, c int)
-    f = func(o *TreeNode) (a, b, c int) {
-        if o == nil {
-            return 1e9, 0, 0
-        }
-        la, lb, lc := f(o.Left)
-        ra, rb, rc := f(o.Right)
-        a = lc + rc + 1
-        b = min(a, min(la+rb, ra+lb))
-        c = min(a, lb+rb)
-        return
-    }
-    _, ans, _ := f(root)
     return ans
 }
 
