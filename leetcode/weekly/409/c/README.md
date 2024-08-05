@@ -1,3 +1,5 @@
+## 方法一：区间并查集
+
 由于题目保证添加的边（捷径）不会交叉，从贪心的角度看，遇到捷径就走捷径是最优的。
 
 把目光放在**边**上。
@@ -42,16 +44,16 @@ class Solution:
                 fa[x], x = rt, fa[x]
             return rt
 
-        ans = [0] * len(queries)
+        ans = []
         cnt = n - 1  # 并查集连通块个数
-        for qi, (l, r) in enumerate(queries):
+        for l, r in queries:
             fr = find(r - 1)
             i = find(l)
             while i < r - 1:
                 cnt -= 1
                 fa[i] = fr
                 i = find(i + 1)
-            ans[qi] = cnt
+            ans.append(cnt)
         return ans
 ```
 
@@ -167,6 +169,120 @@ func shortestDistanceAfterQueries(n int, queries [][]int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+q)$，其中 $q$ 是 $\textit{queries}$ 的长度。注意每个点只会被合并一次，在后面的循环中会被 `i = find(l)` 以及 `i = find(i + 1)` 跳过。由于数组的特殊性，每次合并的复杂度为 $\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
+
+## 方法二：记录跳转位置
+
+定义 $\textit{nxt}[i]$ 表示 $i$ 指向的最右节点编号，这里 $0\le i \le n-2$。
+
+初始值 $\textit{nxt}[i]=i+1$。
+
+连一条从 $L$ 到 $R$ 的边，分类讨论：
+
+- 如果之前连了一条从 $L'$ 到 $R'$ 的边，且区间 $[L,R]$ 被 $[L',R']$ 包含，则什么也不做。
+- 否则更新 $\textit{nxt}[L] = R$，在更新前，标记 $[\textit{nxt}[L], R-1]$ 中的没有被标记的点，表示这些点被更大的区间包含。怎么标记？把 $\textit{nxt}[i]$ 置为 $0$。
+
+和方法一一样，维护一个 $\textit{cnt}$ 变量，每把一个 $\textit{nxt}[i]$ 置为 $0$，就把 $\textit{cnt}$ 减一。
+
+```py [sol-Python3]
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        ans = []
+        nxt = list(range(1, n))
+        cnt = n - 1
+        for l, r in queries:
+            if 0 < nxt[l] < r:
+                i = nxt[l]
+                while i < r:
+                    cnt -= 1
+                    nxt[i], i = 0, nxt[i]
+                nxt[l] = r
+            ans.append(cnt)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] shortestDistanceAfterQueries(int n, int[][] queries) {
+        int[] nxt = new int[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            nxt[i] = i + 1;
+        }
+
+        int[] ans = new int[queries.length];
+        int cnt = n - 1;
+        for (int qi = 0; qi < queries.length; qi++) {
+            int l = queries[qi][0];
+            int r = queries[qi][1];
+            if (nxt[l] > 0 && nxt[l] < r) {
+                for (int i = nxt[l]; i < r;) {
+                    cnt--;
+                    int tmp = nxt[i];
+                    nxt[i] = 0;
+                    i = tmp;
+                }
+                nxt[l] = r;
+            }
+            ans[qi] = cnt;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        vector<int> nxt(n - 1);
+        iota(nxt.begin(), nxt.end(), 1);
+
+        vector<int> ans(queries.size());
+        int cnt = n - 1;
+        for (int qi = 0; qi < queries.size(); qi++) {
+            int l = queries[qi][0], r = queries[qi][1];
+            if (nxt[l] && nxt[l] < r) {
+                for (int i = nxt[l]; i < r;) {
+                    cnt--;
+                    int tmp = nxt[i];
+                    nxt[i] = 0;
+                    i = tmp;
+                }
+                nxt[l] = r;
+            }
+            ans[qi] = cnt;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func shortestDistanceAfterQueries(n int, queries [][]int) []int {
+	nxt := make([]int, n-1)
+	for i := range nxt {
+		nxt[i] = i + 1
+	}
+
+	ans := make([]int, len(queries))
+	cnt := n - 1
+	for qi, q := range queries {
+		l, r := q[0], q[1]
+		if nxt[l] > 0 && nxt[l] < r {
+			for i := nxt[l]; i < r; i, nxt[i] = nxt[i], 0 {
+				cnt--
+			}
+			nxt[l] = r
+		}
+		ans[qi] = cnt
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+q)$，其中 $q$ 是 $\textit{queries}$ 的长度。注意内层循环的 `cnt--` 至多执行 $\mathcal{O}(n)$ 次，所以二重循环是 $\mathcal{O}(n+q)$ 的时间。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
 
 更多相似题目，见下面数据结构题单中的「**数组上的并查集**」和「**区间并查集**」。
