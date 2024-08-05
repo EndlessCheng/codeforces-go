@@ -2,7 +2,7 @@
 
 本题相当于对每个节点，计算以该节点为根时，树的最大深度。
 
-其中从 $x\rightarrow y$ 的有向边的边权为 $(y+1)\bmod 2 + 1$，即当 $y$ 是奇数时，边权为 $1$；当 $y$ 是偶数时，边权为 $2$。
+其中从 $x\rightarrow y$ 的有向边的边权为 $2 - y\bmod 2$，即当 $y$ 是奇数时，边权为 $1$；当 $y$ 是偶数时，边权为 $2$。
 
 ⚠**注意**：如果 $x$ 和 $y$ 的奇偶性不同，那么从 $x\rightarrow y$ 的有向边和从 $y\rightarrow x$ 的有向边的边权是不一样的。
 
@@ -28,13 +28,13 @@
 如果 $x$ 的儿子 $y = \textit{my}$，那么往下传入的参数更新为
 
 $$
-\max(\textit{fromUp}, \textit{maxD}_2 + (x+1)\bmod 2 + 1)
+\max(\textit{fromUp}, \textit{maxD}_2 + 2 - x\bmod 2)
 $$
 
 如果 $x$ 的儿子 $y\ne \textit{my}$，那么往下传入的参数更新为
 
 $$
-\max(\textit{fromUp}, \textit{maxD} + (x+1)\bmod 2 + 1)
+\max(\textit{fromUp}, \textit{maxD} + 2 - x\bmod 2)
 $$
 
 注：我把[【图解】一张图秒懂换根 DP](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/) 这题叫做**第一类换根 DP**，本题需要额外维护次大信息，我称其为**第二类换根 DP**。
@@ -56,7 +56,7 @@ class Solution:
             for y in g[x]:
                 if y == fa:
                     continue
-                depth = dfs(y, x) + (y + 1) % 2 + 1  # 从 x 出发，往 my 方向的最大深度
+                depth = dfs(y, x) + 2 - y % 2  # 从 x 出发，往 my 方向的最大深度
                 if depth > max_d:
                     max_d2 = max_d
                     max_d = depth
@@ -71,9 +71,10 @@ class Solution:
         def reroot(x: int, fa: int, from_up: int) -> None:
             max_d, max_d2, my = nodes[x]
             ans[x] = max(from_up, max_d)
+            w = 2 - x % 2  # 从 y 到 x 的边权
             for y in g[x]:
                 if y != fa:
-                    reroot(y, x, max(from_up, max_d2 if y == my else max_d) + (x + 1) % 2 + 1)
+                    reroot(y, x, max(from_up, max_d2 if y == my else max_d) + w)
         reroot(0, -1, 0)
         return ans
 ```
@@ -107,7 +108,7 @@ class Solution {
             if (y == fa) {
                 continue;
             }
-            int depth = dfs(y, x, g, nodes) + (y + 1) % 2 + 1; // 从 x 出发，往 my 方向的最大深度
+            int depth = dfs(y, x, g, nodes) + 2 - y % 2; // 从 x 出发，往 my 方向的最大深度
             if (depth > maxD) {
                 maxD2 = maxD;
                 maxD = depth;
@@ -129,7 +130,7 @@ class Solution {
         ans[x] = Math.max(fromUp, maxD);
         for (int y : g[x]) {
             if (y != fa) {
-                reroot(y, x, Math.max(fromUp, (y == my ? maxD2 : maxD)) + (x + 1) % 2 + 1, g, nodes, ans);
+                reroot(y, x, Math.max(fromUp, (y == my ? maxD2 : maxD)) + 2 - x % 2, g, nodes, ans);
             }
         }
     }
@@ -155,7 +156,7 @@ public:
                 if (y == fa) {
                     continue;
                 }
-                int depth = dfs(dfs, y, x) + (y + 1) % 2 + 1; // 从 x 出发，往 my 方向的最大深度
+                int depth = dfs(dfs, y, x) + 2 - y % 2; // 从 x 出发，往 my 方向的最大深度
                 if (depth > max_d) {
                     max_d2 = max_d;
                     max_d = depth;
@@ -175,7 +176,7 @@ public:
             ans[x] = max(from_up, max_d);
             for (int y : g[x]) {
                 if (y != fa) {
-                    reroot(reroot, y, x, max(from_up, (y == my ? max_d2 : max_d)) + (x + 1) % 2 + 1);
+                    reroot(reroot, y, x, max(from_up, (y == my ? max_d2 : max_d)) + 2 - x % 2);
                 }
             }
         };
@@ -203,7 +204,7 @@ func timeTaken(edges [][]int) []int {
 			if y == fa {
 				continue
 			}
-			maxD := dfs(y, x) + (y+1)%2 + 1 // 从 x 出发，往 y 方向的最大深度
+			maxD := dfs(y, x) + 2 - y%2 // 从 x 出发，往 y 方向的最大深度
 			if maxD > p.maxD {
 				p.maxD2 = p.maxD
 				p.maxD = maxD
@@ -225,7 +226,7 @@ func timeTaken(edges [][]int) []int {
 			if y == fa {
 				continue
 			}
-			w := (x+1)%2 + 1 // 从 y 到 x 的边权
+			w := 2 - x%2 // 从 y 到 x 的边权
 			if y == p.y { // 对于 y 来说，上面要选次大的
 				reroot(y, x, max(fromUp, p.maxD2)+w)
 			} else { // 对于 y 来说，上面要选最大的

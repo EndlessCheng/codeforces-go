@@ -17,7 +17,7 @@ func timeTaken(edges [][]int) []int {
 			if y == fa {
 				continue
 			}
-			maxD := dfs(y, x) + (y+1)%2 + 1 // 从 x 出发，往 y 方向的最大深度
+			maxD := dfs(y, x) + 2 - y%2 // 从 x 出发，往 y 方向的最大深度
 			if maxD > p.maxD {
 				p.maxD2 = p.maxD
 				p.maxD = maxD
@@ -39,7 +39,7 @@ func timeTaken(edges [][]int) []int {
 			if y == fa {
 				continue
 			}
-			w := (x+1)%2 + 1
+			w := 2 - x%2
 			if y == p.y { // 对于 y 来说，上面要选次大的
 				reroot(y, x, max(fromUp, p.maxD2)+w)
 			} else { // 对于 y 来说，上面要选最大的
