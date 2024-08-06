@@ -33,6 +33,21 @@ class Solution:
         return nums2[0] - nums1[0]
 ```
 
+```py [sol-Python3 iter]
+class Solution:
+    def minimumAddedInteger(self, nums1: List[int], nums2: List[int]) -> int:
+        nums1.sort()
+        nums2.sort()
+        for i in range(2, 0, -1):
+            x = nums2[0] - nums1[i]
+            it = iter(nums1[i:])
+            # 判断 {nums2[j] - x} 是否为 nums1[i:] 的子序列
+            # in 会消耗迭代器
+            if all(v - x in it for v in nums2):
+                return x
+        return nums2[0] - nums1[0]
+```
+
 ```java [sol-Java]
 class Solution {
     public int minimumAddedInteger(int[] nums1, int[] nums2) {
@@ -133,7 +148,7 @@ func minimumAddedInteger(nums1, nums2 []int) int {
 }
 ```
 
-```js [sol-JavaScript]
+```js [sol-JS]
 var minimumAddedInteger = function(nums1, nums2) {
     nums1.sort((a, b) => a - b);
     nums2.sort((a, b) => a - b);
@@ -182,7 +197,7 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}_1$ 的长度。瓶颈在排序上。
-- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销，忽略切片的空间。
 
 ## 分类题单
 
