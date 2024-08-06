@@ -2,9 +2,9 @@
 
 **前置知识**：[动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含如何把记忆化搜索 1:1 翻译成递推的技巧。
 
-看示例 3，$\textit{zero}=3,\ \textit{one}=3,\ \textit{limit}=2$。
-
 先解释 $\textit{limit}$，意思是数组中至多有连续 $\textit{limit}$ 个 $0$，且至多有连续 $\textit{limit}$ 个 $1$。
+
+看示例 3，$\textit{zero}=3,\ \textit{one}=3,\ \textit{limit}=2$。
 
 考虑稳定数组的最后一个位置填 $0$ 还是 $1$：
 
@@ -16,16 +16,18 @@
 
 改成定义 $\textit{dfs}(i,j,k)$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
 
-如果 $k=0$，考虑第 $i+j-1$ 个位置要填什么：
+考虑 $\textit{dfs}(i,j,0)$ 怎么算。现在，第 $i+j$ 个位置填的是 $0$，考虑第 $i+j-1$ 个位置要填什么：
 
 - 填 $0$，问题变成 $\textit{dfs}(i-1,j,0)$。
 - 填 $1$，问题变成 $\textit{dfs}(i-1,j,1)$。
 
-但是，$\textit{dfs}(i-1,j,0)$ 包含了「最后连续 $\textit{limit}$ 个位置填 $0$」的方案，如果在这个方案末尾再加一个 $0$，就有连续 $\textit{limit}+1$ 个 $0$ 了，这是不合法的。
+看上去，把这两种情况加起来，我们就得到了 $\textit{dfs}(i,j,0)$。
+
+但是，$\textit{dfs}(i-1,j,0)$ 包含了「最后连续 $\textit{limit}$ 个位置填 $0$」的方案，如果在这个方案末尾再加一个 $0$，就有连续 $\textit{limit}+1$ 个 $0$ 了，这是不合法的，要减掉。
 
 $\textit{dfs}(i-1,j,0)$ 中的「最后连续 $\textit{limit}$ 个位置填 $0$」的方案有多少个？
 
-因为 $\textit{dfs}$ 的定义是稳定数组的方案数，只包含合法方案，所以在最后连续 $\textit{limit}$ 个位置填 $0$ 的情况下，倒数第 $\textit{limit}+1$ 个位置一定要填 $1$，这有 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 种方案。对于 $\textit{dfs}(i,j,0)$ 来说，这 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 个方案就是不合法方案了，要减去，得
+因为 $\textit{dfs}$ 的定义是稳定数组的方案数，只包含合法方案，所以在最后连续 $\textit{limit}$ 个位置填 $0$ 的情况下，倒数第 $\textit{limit}+1$ 个位置一定要填 $1$，这有 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 种方案。对于 $\textit{dfs}(i,j,0)$ 来说，这 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 个方案就是不合法方案了，要减掉，得
 
 $$
 \textit{dfs}(i,j,0) = \textit{dfs}(i-1,j,0) + \textit{dfs}(i-1,j,1) - \textit{dfs}(i-\textit{limit}-1,j,1)
@@ -37,7 +39,7 @@ $$
 \textit{dfs}(i,j,1) = \textit{dfs}(i,j-1,0) + \textit{dfs}(i,j-1,1) - \textit{dfs}(i,j-\textit{limit}-1,0)
 $$
 
-递归边界 1：如果 $i<0$ 或者 $j<0$，返回 $0$。也可以在计算 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 前判断 $i>\textit{limit}$，在计算 $\textit{dfs}(i,j-\textit{limit}-1,0)$ 前判断 $j>\textit{limit}$。
+递归边界 1：如果 $i<0$ 或者 $j<0$，返回 $0$。也可以在递归 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 前判断 $i>\textit{limit}$，在递归 $\textit{dfs}(i,j-\textit{limit}-1,0)$ 前判断 $j>\textit{limit}$。下面代码在递归前判断。
 
 递归边界 2：如果 $i=0$，那么当 $k=1$ 且 $j\le \textit{limit}$ 的情况下返回 $1$，否则返回 $0$；如果 $j=0$，那么当 $k=0$ 且 $i\le \textit{limit}$ 的情况下返回 $1$，否则返回 $0$。
 
@@ -386,7 +388,11 @@ $$
 \sum_{i} (f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
 $$
 
-其中 $i\le \textit{one}$ 且 $i\le \textit{zero}+1$ 且 $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$。
+其中：
+
+1. $i\le \textit{one}$。因为 $1$ 最多分成 $\textit{one}$ 组。
+2. $i-1\le \textit{zero}$。因为 $0$ 最多分成 $\textit{zero}$ 组，当 $i-1 > \textit{zero}$ 时，上式中的 $f_0[i-1] = f_0[i] = f_0[i+1] = 0$，无需累加。
+3. $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$。因为每组至多 $\textit{limit}$ 个 $1$，分成 $i$ 组，至多 $i\cdot \textit{limit}$ 个 $1$，这个数必须 $\ge \textit{one}$，不然剩下的 $1$ 放到哪一组都会导致组内 $1$ 的个数超过 $\textit{limit}$。
 
 整理得
 
