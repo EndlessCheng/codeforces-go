@@ -280,6 +280,91 @@ func shortestDistanceAfterQueries(n int, queries [][]int) []int {
 }
 ```
 
+也可以把 $\textit{nxt}[i]$ 置为 $r$，这样可以把进入循环和继续循环的逻辑合并成一个：当 $\textit{nxt}[i]<r$ 时进入循环/继续循环。
+
+```py [sol-Python3]
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        ans = []
+        nxt = list(range(1, n))
+        cnt = n - 1
+        for i, r in queries:
+            while nxt[i] < r:
+                cnt -= 1
+                nxt[i], i = r, nxt[i]
+            ans.append(cnt)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] shortestDistanceAfterQueries(int n, int[][] queries) {
+        int[] nxt = new int[n - 1];
+        for (int i = 0; i < n - 1; i++) {
+            nxt[i] = i + 1;
+        }
+
+        int[] ans = new int[queries.length];
+        int cnt = n - 1;
+        for (int qi = 0; qi < queries.length; qi++) {
+            int i = queries[qi][0];
+            int r = queries[qi][1];
+            while (nxt[i] < r) {
+                cnt--;
+                int tmp = nxt[i];
+                nxt[i] = r;
+                i = tmp;
+            }
+            ans[qi] = cnt;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
+        vector<int> nxt(n - 1);
+        iota(nxt.begin(), nxt.end(), 1);
+
+        vector<int> ans(queries.size());
+        int cnt = n - 1;
+        for (int qi = 0; qi < queries.size(); qi++) {
+            int i = queries[qi][0], r = queries[qi][1];
+            while (nxt[i] < r) {
+                cnt--;
+                int tmp = nxt[i];
+                nxt[i] = r;
+                i = tmp;
+            }
+            ans[qi] = cnt;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func shortestDistanceAfterQueries(n int, queries [][]int) []int {
+	nxt := make([]int, n-1)
+	for i := range nxt {
+		nxt[i] = i + 1
+	}
+
+	ans := make([]int, len(queries))
+	cnt := n - 1
+	for qi, q := range queries {
+		for i, r := q[0], q[1]; nxt[i] < r; i, nxt[i] = nxt[i], r {
+			cnt--
+		}
+		ans[qi] = cnt
+	}
+	return ans
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+q)$，其中 $q$ 是 $\textit{queries}$ 的长度。注意内层循环的 `cnt--` 至多执行 $\mathcal{O}(n)$ 次，所以二重循环是 $\mathcal{O}(n+q)$ 的时间。

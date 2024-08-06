@@ -10,12 +10,8 @@ func shortestDistanceAfterQueries(n int, queries [][]int) []int {
 	ans := make([]int, len(queries))
 	cnt := n - 1
 	for qi, q := range queries {
-		l, r := q[0], q[1]
-		if nxt[l] > 0 && nxt[l] < r {
-			for i := nxt[l]; i < r; i, nxt[i] = nxt[i], 0 {
-				cnt--
-			}
-			nxt[l] = r
+		for i, r := q[0], q[1]; nxt[i] < r; i, nxt[i] = nxt[i], r {
+			cnt--
 		}
 		ans[qi] = cnt
 	}
