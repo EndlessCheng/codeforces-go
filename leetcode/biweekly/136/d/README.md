@@ -244,6 +244,10 @@ func timeTaken(edges [][]int) []int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{edges}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 相似题目
+
+- [CF1822F. Gardening Friends](https://codeforces.com/problemset/problem/1822/F)
+
 更多相似题目，见下面 DP 题单中的「**换根 DP**」。
 
 ## 分类题单
