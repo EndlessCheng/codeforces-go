@@ -28,13 +28,13 @@
 如果 $x$ 的儿子 $y = \textit{my}$，那么往下传入的参数更新为
 
 $$
-\max(\textit{fromUp}, \textit{maxD}_2 + 2 - x\bmod 2)
+\max(\textit{fromUp}, \textit{maxD}_2) + 2 - x\bmod 2
 $$
 
 如果 $x$ 的儿子 $y\ne \textit{my}$，那么往下传入的参数更新为
 
 $$
-\max(\textit{fromUp}, \textit{maxD} + 2 - x\bmod 2)
+\max(\textit{fromUp}, \textit{maxD}) + 2 - x\bmod 2
 $$
 
 注：我把[【图解】一张图秒懂换根 DP](https://leetcode.cn/problems/sum-of-distances-in-tree/solution/tu-jie-yi-zhang-tu-miao-dong-huan-gen-dp-6bgb/) 这题叫做**第一类换根 DP**，本题需要额外维护次大信息，我称其为**第二类换根 DP**。
