@@ -1,20 +1,14 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 )
 
-// https://space.bilibili.com/206214
-func cf1822F(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-
-	var T, n, wt, c, v, w int
+func cf1822F(in io.Reader, out io.Writer) {
+	var T, n, k, c, v, w int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n, &wt, &c)
+		Fscan(in, &n, &k, &c)
 		g := make([][]int, n)
 		for i := 1; i < n; i++ {
 			Fscan(in, &v, &w)
@@ -24,38 +18,40 @@ func cf1822F(_r io.Reader, _w io.Writer) {
 			g[w] = append(g[w], v)
 		}
 
-		ds := make([]struct{ w, fi, se int }, n)
+		nodes := make([]struct{ maxD, maxD2, my int }, n)
 		var dfs func(int, int) int
-		dfs = func(v, fa int) int {
-			for _, w := range g[v] {
-				if w == fa {
+		dfs = func(x, fa int) int {
+			p := &nodes[x]
+			for _, y := range g[x] {
+				if y == fa {
 					continue
 				}
-				mx := dfs(w, v) + wt
-				if mx > ds[v].fi {
-					ds[v].se = ds[v].fi
-					ds[v].fi = mx
-					ds[v].w = w
-				} else if mx > ds[v].se {
-					ds[v].se = mx
+				d := dfs(y, x) + k
+				if d > p.maxD {
+					p.maxD2 = p.maxD
+					p.maxD = d
+					p.my = y
+				} else if d > p.maxD2 {
+					p.maxD2 = d
 				}
 			}
-			return ds[v].fi
+			return p.maxD
 		}
 		ans := dfs(0, -1)
 
 		var reroot func(int, int, int, int)
-		reroot = func(v, fa, mxFa, cost int) {
-			ans = max(ans, max(mxFa, ds[v].fi)-cost)
-			for _, w := range g[v] {
-				if w == fa {
+		reroot = func(x, fa, fromUp, cost int) {
+			p := nodes[x]
+			ans = max(ans, max(fromUp, p.maxD)-cost)
+			for _, y := range g[x] {
+				if y == fa {
 					continue
 				}
-				if w != ds[v].w {
-					reroot(w, v, max(mxFa, ds[v].fi)+wt, cost+c)
-				} else {
-					reroot(w, v, max(mxFa, ds[v].se)+wt, cost+c)
+				exceptY := p.maxD
+				if y == p.my {
+					exceptY = p.maxD2
 				}
+				reroot(y, x, max(fromUp, exceptY)+k, cost+c)
 			}
 		}
 		reroot(0, -1, 0, 0)
@@ -63,4 +59,4 @@ func cf1822F(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { cf1822F(os.Stdin, os.Stdout) }
+//func main() { cf1822F(bufio.NewReader(os.Stdin), os.Stdout) }
