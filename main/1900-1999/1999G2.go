@@ -7,7 +7,7 @@ func cf1999G2() {
 	for Scan(&T); T > 0; T-- {
 		l, r := 1, 999
 		for l+1 < r {
-			sz := (r - l + 2) / 3
+			sz := (r - l + 1) / 3
 			p, q := l+sz, r-sz
 			Println("?", p, q)
 			Scan(&s)
