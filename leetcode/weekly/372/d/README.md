@@ -1,6 +1,6 @@
 [本题视频讲解](https://www.bilibili.com/video/BV1pC4y1j7Pw/)
 
-## 方法一：离线做法+最小堆
+## 方法一：离线+最小堆
 
 > 离线：按照自己定义的某种顺序回答询问，而不是按照输入顺序 $\textit{queries}[0],\textit{queries}[1],\cdots$ 回答询问。
 
@@ -55,7 +55,7 @@ class Solution {
         int[] ans = new int[queries.length];
         Arrays.fill(ans, -1);
         List<int[]>[] qs = new ArrayList[heights.length];
-        Arrays.setAll(qs, e -> new ArrayList<>());
+        Arrays.setAll(qs, i -> new ArrayList<>());
 
         for (int i = 0; i < queries.length; i++) {
             int a = queries[i][0];
@@ -127,7 +127,7 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
     for i := range ans {
         ans[i] = -1
     }
-    left := make([][]pair, len(heights))
+    qs := make([][]pair, len(heights))
     for i, q := range queries {
         a, b := q[0], q[1]
         if a > b {
@@ -136,7 +136,7 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
         if a == b || heights[a] < heights[b] {
             ans[i] = b // a 直接跳到 b
         } else {
-            left[b] = append(left[b], pair{heights[a], i}) // 离线询问
+            qs[b] = append(qs[b], pair{heights[a], i}) // 离线询问
         }
     }
 
@@ -146,7 +146,7 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
             // 堆顶的 heights[a] 可以跳到 heights[i]
             ans[heap.Pop(&h).(pair).i] = i
         }
-        for _, p := range left[i] {
+        for _, p := range qs[i] {
             heap.Push(&h, p) // 后面再回答
         }
     }
@@ -167,11 +167,180 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
 - 时间复杂度：$\mathcal{O}(n + q\log q)$，其中 $n$ 为 $\textit{heights}$ 的长度，$q$ 为 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + q)$。
 
-## 方法二：在线做法+线段树二分
+## 方法二：离线+单调栈二分
+
+同方法一，先遍历 $\textit{queries}$，处理出 $\textit{qs}$。
+
+然后倒序遍历 $\textit{heights}$。试想一下，如果 $\textit{heights}[2]=8,\ \textit{heights}[3]=6$，那么对于在 $\textit{heights}[2]$ 左边的高度来说，$\textit{heights}[3]$ 必然不是第一个相遇的位置，因为我们总是可以选择比 $\textit{heights}[3]$ 更大且更靠左的 $\textit{heights}[2]$。这意味着，当我们遍历到一个更大的高度时，之前遍历过的更小的高度就是垃圾数据了，要及时清除掉。
+
+这启发我们用一个**底大顶小**的**单调栈**维护高度。原理请看 [单调栈【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
+
+由于栈中高度严格递减（从栈底到栈顶），可以**二分查找**最后一个大于 $\textit{heights}[a]$ 的高度。原理请看 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+
+代码实现时，为方便计算下标，栈中保存的是高度的下标。
+
+```py [sol-Python3]
+class Solution:
+    def leftmostBuildingQueries(self, heights: List[int], queries: List[List[int]]) -> List[int]:
+        ans = [-1] * len(queries)
+        qs = [[] for _ in heights]
+        for i, (a, b) in enumerate(queries):
+            if a > b:
+                a, b = b, a  # 保证 a <= b
+            if a == b or heights[a] < heights[b]:
+                ans[i] = b  # a 直接跳到 b
+            else:
+                qs[b].append((heights[a], i))  # 离线询问
+
+        st = []
+        for i in range(len(heights) - 1, -1, -1):
+            for ha, qi in qs[i]:
+                # 取反后，相当于找 < -ha 的最大下标，这可以先找 >= -ha 的最小下标，然后减一得到
+                j = bisect_left(st, -ha, key=lambda i: -heights[i]) - 1
+                if j >= 0:
+                    ans[qi] = st[j]
+            while st and heights[i] >= heights[st[-1]]:
+                st.pop()
+            st.append(i)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] leftmostBuildingQueries(int[] heights, int[][] queries) {
+        int n = heights.length;
+        int[] ans = new int[queries.length];
+        List<int[]>[] qs = new ArrayList[n];
+        Arrays.setAll(qs, i -> new ArrayList<>());
+
+        for (int i = 0; i < queries.length; i++) {
+            int a = queries[i][0];
+            int b = queries[i][1];
+            if (a > b) {
+                int tmp = a;
+                a = b;
+                b = tmp; // 保证 a <= b
+            }
+            if (a == b || heights[a] < heights[b]) {
+                ans[i] = b; // a 直接跳到 b
+            } else {
+                qs[b].add(new int[]{heights[a], i}); // 离线询问
+            }
+        }
+
+        int[] st = new int[n];
+        int top = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int[] q : qs[i]) {
+                ans[q[1]] = binarySearch(heights, st, top, q[0]);
+            }
+            while (top > 0 && heights[i] >= heights[st[top - 1]]) {
+                top--;
+            }
+            st[top++] = i;
+        }
+        return ans;
+    }
+
+    // 返回 st 中最后一个 > x 的高度的下标
+    // 如果不存在，返回 -1
+    // https://www.bilibili.com/video/BV1AP41137w7/
+    private int binarySearch(int[] heights, int[] st, int right, int x) {
+        int left = -1; // 开区间 (left, right)
+        while (left + 1 < right) { // 开区间不为空
+            int mid = (left + right) >>> 1;
+            if (heights[st[mid]] > x) {
+                left = mid; // 范围缩小到 (mid, right)
+            } else {
+                right = mid; // 范围缩小到 (left, mid)
+            }
+        }
+        return left < 0 ? -1 : st[left];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> leftmostBuildingQueries(vector<int>& heights, vector<vector<int>>& queries) {
+        vector<int> ans(queries.size());
+        vector<vector<pair<int, int>>> qs(heights.size());
+        for (int i = 0; i < queries.size(); i++) {
+            int a = queries[i][0], b = queries[i][1];
+            if (a > b) {
+                swap(a, b); // 保证 a <= b
+            }
+            if (a == b || heights[a] < heights[b]) {
+                ans[i] = b; // i 直接跳到 j
+            } else {
+                qs[b].emplace_back(heights[a], i); // 离线询问
+            }
+        }
+
+        vector<int> st;
+        for (int i = heights.size() - 1; i >= 0; i--) {
+            for (auto& [ha, qi] : qs[i]) {
+                // 取反后，相当于找 < -ha 的最大下标，这可以先找 >= -ha 的最小下标，然后减一得到
+                auto it = ranges::lower_bound(st, -ha, {}, [&](int j) { return -heights[j]; });
+                ans[qi] = it > st.begin() ? *prev(it) : -1;
+            }
+            while (!st.empty() && heights[i] >= heights[st.back()]) {
+                st.pop_back();
+            }
+            st.push_back(i);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func leftmostBuildingQueries(heights []int, queries [][]int) []int {
+    ans := make([]int, len(queries))
+    type pair struct{ h, i int }
+    qs := make([][]pair, len(heights))
+    for i, q := range queries {
+        a, b := q[0], q[1]
+        if a > b {
+            a, b = b, a // 保证 a <= b
+        }
+        if a == b || heights[a] < heights[b] {
+            ans[i] = b // a 直接跳到 b
+        } else {
+            qs[b] = append(qs[b], pair{heights[a], i}) // 离线询问
+        }
+    }
+
+    st := []int{}
+    for i := len(heights) - 1; i >= 0; i-- {
+        for _, q := range qs[i] {
+            j := sort.Search(len(st), func(i int) bool { return heights[st[i]] <= q.h }) - 1
+            if j >= 0 {
+                ans[q.i] = st[j]
+            } else {
+                ans[q.i] = -1
+            }
+        }
+        for len(st) > 0 && heights[i] >= heights[st[len(st)-1]] {
+            st = st[:len(st)-1]
+        }
+        st = append(st, i)
+    }
+    return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + q\log n)$，其中 $n$ 为 $\textit{heights}$ 的长度，$q$ 为 $\textit{queries}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n+q)$。
+
+## 方法三：在线+线段树二分
 
 > 在线：按照输入顺序 $\textit{queries}[0],\textit{queries}[1],\cdots$ 一个一个地回答询问。
 
-问题相当于计算区间 $[b+1,n-1]$ 中第一个大于 $v = \textit{heights}[a]$ 的高度的位置。
+问题相当于计算区间 $[b+1,n-1]$ 中第一个大于 $v = \textit{heights}[a]$ 的高度的位置。这可以用**线段树二分**解决。
 
 构建一棵维护区间**最大值** $\textit{mx}$ 的线段树，分类讨论：
 
@@ -320,7 +489,7 @@ class Solution {
 public:
     vector<int> leftmostBuildingQueries(vector<int>& heights, vector<vector<int>>& queries) {
         int n = heights.size();
-        mx.resize(2 << (__lg(n) + 1));
+        mx.resize(4 << __lg(n));
         build(1, 0, n - 1, heights);
 
         vector<int> ans;
