@@ -20,7 +20,7 @@ func cf1592F1(in io.Reader, out io.Writer) {
 	for i := n - 1; i >= 0; i-- {
 		for j := m - 1; j >= 0; j-- {
 			suf[i][j] = suf[i][j+1] ^ suf[i+1][j] ^ suf[i+1][j+1]
-			if suf[i][j] == 0 == (a[i][j] == 'B') {
+			if suf[i][j] == a[i][j]&1 {
 				ans++
 				a[i][j] = 0
 				suf[i][j] ^= 1
