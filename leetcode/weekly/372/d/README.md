@@ -171,7 +171,7 @@ func (h *hp) Pop() any          { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; 
 
 同方法一，先遍历 $\textit{queries}$，处理出 $\textit{qs}$。
 
-然后倒序遍历 $\textit{heights}$。试想一下，如果 $\textit{heights}[2]=8,\ \textit{heights}[3]=6$，那么对于在 $\textit{heights}[2]$ 左边的高度来说，$\textit{heights}[3]$ 必然不是第一个相遇的位置，因为我们总是可以选择比 $\textit{heights}[3]$ 更大且更靠左的 $\textit{heights}[2]$。这意味着，当我们遍历到一个更大的高度时，之前遍历过的更小的高度就是垃圾数据了，要及时清除掉。
+然后**倒序遍历** $\textit{heights}$。试想一下，如果 $\textit{heights}[2]=8,\ \textit{heights}[3]=6$，那么对于在 $\textit{heights}[2]$ 左边的高度来说，$\textit{heights}[3]$ 必然不是第一个相遇的位置，因为我们总是可以选择比 $\textit{heights}[3]$ 更大且更靠左的 $\textit{heights}[2]$。这意味着，当我们遍历到一个更大的高度时，之前遍历过的更小的高度就是无用数据了，要及时清除掉。
 
 这启发我们用一个**底大顶小**的**单调栈**维护高度。原理请看 [单调栈【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
 
@@ -342,12 +342,16 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
 
 问题相当于计算区间 $[b+1,n-1]$ 中第一个大于 $v = \textit{heights}[a]$ 的高度的位置。这可以用**线段树二分**解决。
 
-构建一棵维护区间**最大值** $\textit{mx}$ 的线段树，分类讨论：
+创建一棵维护区间最大值 $\textit{mx}$ 的线段树。
 
-- 如果当前区间 $\textit{mx}\le v$，则整个区间都不存在大于 $v$ 的数，返回 $-1$。
+对于每个询问，递归这棵线段树，分类讨论：
+
+- 如果当前区间（线段树的节点对应的区间）最大值 $\textit{mx}\le v$，则当前区间没有大于 $v$ 的数，返回 $-1$。
 - 如果当前区间只包含一个元素，则找到答案，返回该元素的下标。
-- 如果左子树包含区间左端点 $b+1$，则递归左子树。
+- 如果左子树包含 $b+1$，则递归左子树。
 - 如果左子树返回 $-1$，则返回递归右子树的结果。
+
+注：方法三是最灵活的，如果题目还有动态修改 $\textit{heights}[i]$ 的操作，方法三也可以做。
 
 ```py [sol-Python3]
 class Solution:
