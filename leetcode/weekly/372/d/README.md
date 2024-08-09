@@ -351,7 +351,7 @@ func leftmostBuildingQueries(heights []int, queries [][]int) []int {
 - 如果左子树包含 $b+1$，则递归左子树。
 - 如果左子树返回 $-1$，则返回递归右子树的结果。
 
-注：方法三是最灵活的，如果题目还有动态修改 $\textit{heights}[i]$ 的操作，方法三也可以做。
+> 注：方法三是最灵活的，如果题目还有动态修改 $\textit{heights}[i]$ 的操作，方法三也可以做。
 
 ```py [sol-Python3]
 class Solution:
