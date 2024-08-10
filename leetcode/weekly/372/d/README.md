@@ -24,7 +24,7 @@
 
 1. $a$：回答询问时，用其高度 $\textit{heights}[a]$ 和当前高度 $\textit{heights}[i]$ 比大小，如果 $\textit{heights}[a] < \textit{heights}[i]$ 则找到答案。
 2. $b$：决定了在什么位置把询问加入堆中。注意在遍历到位置 $b$ 之前是不能入堆的。在遍历到位置 $b$ 时入堆，这样后续只需要比较 $\textit{heights}[a] < \textit{heights}[i]$，如果成立，就间接地说明 $\textit{heights}[b] < \textit{heights}[i]$ 也成立。并且，由于我们是从左往右遍历 $\textit{heights}$ 的，当前下标 $i$ 就是 Alice 和 Bob 可以相遇的最左边建筑的下标。
-3. 回答询问的位置。如果堆顶 $\textit{heights}[a]$ 小于当前位置的高度 $\textit{heights}[i]$，则回答堆顶询问，并弹出堆顶。
+3. 回答询问的位置 $i$。如果堆顶 $\textit{heights}[a]$ 小于当前位置的高度 $\textit{heights}[i]$，则回答堆顶询问，并弹出堆顶。
 
 ```py [sol-Python3]
 class Solution:
