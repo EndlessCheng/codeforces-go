@@ -99,7 +99,7 @@ public:
                 swap(a, b); // 保证 a <= b
             }
             if (a == b || heights[a] < heights[b]) {
-                ans[i] = b; // i 直接跳到 j
+                ans[i] = b; // a 直接跳到 b
             } else {
                 qs[b].emplace_back(heights[a], i); // 离线询问
             }
@@ -272,7 +272,7 @@ public:
                 swap(a, b); // 保证 a <= b
             }
             if (a == b || heights[a] < heights[b]) {
-                ans[i] = b; // i 直接跳到 j
+                ans[i] = b; // a 直接跳到 b
             } else {
                 qs[b].emplace_back(heights[a], i); // 离线询问
             }
