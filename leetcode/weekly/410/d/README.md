@@ -1,3 +1,5 @@
+## 方法一：前缀和优化 DP
+
 看示例 1，$\textit{nums}=[2,3,2]$。
 
 如果 $\textit{arr}_1[2]=2$，那么 $\textit{arr}_2[2]=\textit{nums}[2] - \textit{arr}_1[2]=2-2= 0$。考虑枚举 $\textit{arr}_1[1]$ 是多少：
@@ -155,7 +157,7 @@ func countOfPairs(nums []int) (ans int) {
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(nm)$。
 
-## 空间优化
+### 空间优化
 
 进一步分析，$\textit{maxK} \ge 0$ 即
 
@@ -282,7 +284,7 @@ func countOfPairs(nums []int) (ans int) {
 }
 ```
 
-## 进一步优化
+### 进一步优化
 
 如果 $j_0 > \min(\textit{nums}[i],m)$，那么后面计算出的 $f[j]$ 均为 $0$，我们可以直接返回 $0$。
 
@@ -396,6 +398,258 @@ func countOfPairs(nums []int) (ans int) {
 
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m=\textit{nums}[n-1]$。
 - 空间复杂度：$\mathcal{O}(m)$。
+
+## 方法二：组合数学
+
+首先来看一个特殊的情况：所有 $\textit{nums}[i]$ 都相同。
+
+例如示例 2，$\textit{nums}=[5,5,5,5]$，在所有元素都相同的情况下，只要 $\textit{arr}_1$ 是单调非递减的，那么 $\textit{arr}_2$ 就一定是单调非递增的。
+
+问题变成：
+
+- 计算长为 $n=4$ 的单调非递减数组个数，数组元素范围是 $[0,5]$。
+
+![w410d-C.png](https://pic.leetcode.cn/1723373547-JXaMKp-w410d-C.png)
+
+考虑一条从左下角走到右上角的路径，每次只能向右或向上走。向右走时，把之前向上走的次数（或者说当前高度）作为数组元素值。如上图，对应的数组为 $[2,3,3,4]$。
+
+由于路径与单调非递减数组是一一对应的，所以问题变成路径个数是多少。
+
+要向上走 $5$ 步，向右走 $4$ 步，一共走 $5+4=9$ 步。选择其中 $4$ 步向右走，于是问题变成从 $9$ 步中选 $4$ 步的方案数，即
+
+$$
+C(9,4) = 126
+$$
+
+以 $m=\textit{nums}[n-1]$ 为基准，如果所有元素都等于 $m$，那么问题等价于从 $m+n$ 步中选 $n$ 步的方案数，即
+
+$$
+C(m+n,n)
+$$
+
+回到原问题，来看看 $\textit{nums}[i]$ 会如何影响路径个数。
+
+为方便描述，下文把 $\textit{arr}_1$ 记作 $a$。
+
+如果 $a[i-1] = x,\ a[i] = y$，那么必须满足 $x\le y$ 且 $\textit{nums}[i-1]-x\ge \textit{nums}[i]-y$，即
+
+$$
+y \ge \max(x, x+ \textit{nums}[i]-\textit{nums}[i-1])
+$$
+
+分类讨论：
+
+- 如果 $\textit{nums}[i]-\textit{nums}[i-1]\le 0$，那么上式相当于 $y\ge x$。由于我们要计算的就是单调非递减的数组个数，所以这不会影响上面得出的 $C(m+n,m)$ 的结论。
+- 如果 $\textit{nums}[i]-\textit{nums}[i-1]> 0$，那么上式相当于 $y\ge x + \textit{nums}[i]-\textit{nums}[i-1]$。这意味着 $a[i]$ 填的数字必须比 $a[i-1]$ 填的数字多至少 $d=\textit{nums}[i]-\textit{nums}[i-1]$。用路径来理解，就是在 $i$ 这个位置向右走之前，要「**强制性**」地向上走 $d$ 步。
+
+剩下的 $m+n-d$ 步可以随意安排向右走还是向上走。于是问题变成从 $m+n-d$ 步中选 $n$ 步向右走的方案数，即
+
+$$
+C(m+n-d,n)
+$$
+
+一般地，设 $d_i=\max(\textit{nums}[i]-\textit{nums}[i-1],0)$，计算
+
+$$
+m = \textit{nums}[n-1] - (d_1 + d_2 + \cdots + d_{n-1})
+$$
+
+那么答案为
+
+$$
+\begin{cases} 
+0, & m < 0     \\
+C(m+n,n), & m \ge 0     \\
+\end{cases}
+$$
+
+由于 $C(m+n,n) = C(m+n,m)$，答案也可以是 $C(m+n,m)$。
+
+```py [sol-Python3]
+class Solution:
+    def countOfPairs(self, nums: List[int]) -> int:
+        MOD = 1_000_000_007
+        m = nums[-1]
+        for x, y in pairwise(nums):
+            m -= max(y - x, 0)
+        return comb(m + len(nums), m) % MOD if m >= 0 else 0
+```
+
+```py [sol-Python3 预处理]
+MOD = 1_000_000_007
+MX = 3001  # MAX_N + MAX_M = 2000 + 1000 = 3000
+
+fac = [0] * MX  # f[i] = i!
+fac[0] = 1
+for i in range(1, MX):
+    fac[i] = fac[i - 1] * i % MOD
+
+inv_f = [0] * MX  # inv_f[i] = i!^-1
+inv_f[-1] = pow(fac[-1], -1, MOD)
+for i in range(MX - 1, 0, -1):
+    inv_f[i - 1] = inv_f[i] * i % MOD
+
+def comb(n: int, m: int) -> int:
+    return fac[n] * inv_f[m] * inv_f[n - m] % MOD
+
+class Solution:
+    def countOfPairs(self, nums: List[int]) -> int:
+        m = nums[-1]
+        for x, y in pairwise(nums):
+            m -= max(y - x, 0)
+        return comb(m + len(nums), m) if m >= 0 else 0
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 3001; // MAX_N + MAX_M = 2000 + 1000 = 3000
+
+    private static final long[] F = new long[MX]; // f[i] = i!
+    private static final long[] INV_F = new long[MX]; // inv_f[i] = i!^-1
+
+    static {
+        F[0] = 1;
+        for (int i = 1; i < MX; i++) {
+            F[i] = F[i - 1] * i % MOD;
+        }
+
+        INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+        for (int i = MX - 1; i > 0; i--) {
+            INV_F[i - 1] = INV_F[i] * i % MOD;
+        }
+    }
+
+    public int countOfPairs(int[] nums) {
+        int n = nums.length;
+        int m = nums[n - 1];
+        for (int i = 1; i < n; i++) {
+            m -= Math.max(nums[i] - nums[i - 1], 0);
+            if (m < 0) {
+                return 0;
+            }
+        }
+        return (int) comb(m + n, n);
+    }
+
+    private long comb(int n, int m) {
+        return F[n] * INV_F[m] % MOD * INV_F[n - m] % MOD;
+    }
+
+    private static long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MX = 3001; // MAX_N + MAX_M = 2000 + 1000 = 3000
+
+long long F[MX]; // F[i] = i!
+long long INV_F[MX]; // INV_F[i] = i!^-1
+
+long long pow(long long x, int n) {
+    long long res = 1;
+    for (; n; n /= 2) {
+        if (n % 2) {
+            res = res * x % MOD;
+        }
+        x = x * x % MOD;
+    }
+    return res;
+}
+
+auto init = [] {
+    F[0] = 1;
+    for (int i = 1; i < MX; i++) {
+        F[i] = F[i - 1] * i % MOD;
+    }
+
+    INV_F[MX - 1] = pow(F[MX - 1], MOD - 2);
+    for (int i = MX - 1; i; i--) {
+        INV_F[i - 1] = INV_F[i] * i % MOD;
+    }
+    return 0;
+}();
+
+long long comb(int n, int m) {
+    return F[n] * INV_F[m] % MOD * INV_F[n - m] % MOD;
+}
+
+class Solution {
+public:
+    int countOfPairs(vector<int>& nums) {
+        int n = nums.size(), m = nums.back();
+        for (int i = 1; i < n; i++) {
+            m -= max(nums[i] - nums[i - 1], 0);
+            if (m < 0) {
+                return 0;
+            }
+        }
+        return comb(m + n, n);
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+const mx = 3001 // MAX_N + MAX_M = 2000 + 1000 = 3000
+
+var f [mx]int    // f[i] = i!
+var invF [mx]int // invF[i] = i!^-1
+
+func init() {
+	f[0] = 1
+	for i := 1; i < mx; i++ {
+		f[i] = f[i-1] * i % mod
+	}
+
+	invF[mx-1] = pow(f[mx-1], mod-2)
+	for i := mx - 1; i > 0; i-- {
+		invF[i-1] = invF[i] * i % mod
+	}
+}
+
+func comb(n, m int) int {
+	return f[n] * invF[m] % mod * invF[n-m] % mod
+}
+
+func countOfPairs(nums []int) int {
+	n := len(nums)
+	m := nums[n-1]
+	for i := 1; i < n; i++ {
+		m -= max(nums[i]-nums[i-1], 0)
+		if m < 0 {
+			return 0
+		}
+	}
+	return comb(m+n, n)
+}
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。忽略预处理的时间和空间。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 更多相似题目，见下面动态规划题单中的「**§11.1 前缀和优化 DP**」。
 
