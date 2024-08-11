@@ -1,0 +1,10 @@
+2
+["RIGHT","DOWN"]
+3
+
+3
+["DOWN","RIGHT","UP"]
+1
+
+
+
