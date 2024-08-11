@@ -465,6 +465,12 @@ $$
 
 由于 $C(m+n,n) = C(m+n,m)$，答案也可以是 $C(m+n,m)$。
 
+### 答疑
+
+**问**：为什么要以 $\textit{nums}[n-1]$ 为基准？
+
+**答**：因为我们是基于「单调非递减的数组个数」计算答案的，而这个数组的最后一项至多为 $\textit{nums}[n-1]$。当然，如果以 $\textit{arr}_2$，也就是「单调非递增的数组个数」计算答案，也可以以 $\textit{nums}[0]$ 为基准，计算方法是类似的，感兴趣的读者可以自行推导，从而加深对方法二的理解。
+
 ```py [sol-Python3]
 class Solution:
     def countOfPairs(self, nums: List[int]) -> int:
