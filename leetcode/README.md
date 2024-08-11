@@ -71,6 +71,8 @@
 ||[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)|[代码](https://leetcode.cn/problems/symmetric-tree/solutions/2015063/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-6dq5/)||
 ||[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)|[代码](https://leetcode.cn/problems/balanced-binary-tree/solutions/2015068/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-c3wj/)||
 ||[199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)|[代码](https://leetcode.cn/problems/binary-tree-right-side-view/solutions/2015061/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-r1nc/)||
+||[226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)|[代码](https://leetcode.cn/problems/invert-binary-tree/solution/shi-pin-shen-ru-li-jie-di-gui-pythonjava-zhqh/)|*课后作业|
+||[617. 合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/)|[代码](https://leetcode.cn/problems/merge-two-binary-trees/solution/kan-dao-di-gui-jiu-yun-dai-ni-li-jie-di-leixm/)|*课后作业|
 ||[1026. 节点与其祖先之间的最大差值](https://leetcode.cn/problems/maximum-difference-between-node-and-ancestor/)|[代码](https://leetcode.cn/problems/maximum-difference-between-node-and-ancestor/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-wj9v/)|*课后作业|
 ||[1080. 根到叶路径上的不足节点](https://leetcode.cn/problems/insufficient-nodes-in-root-to-leaf-paths/)|[代码](https://leetcode.cn/problems/insufficient-nodes-in-root-to-leaf-paths/solution/jian-ji-xie-fa-diao-yong-zi-shen-pythonj-64lf/)|*课后作业|
 ||[1110. 删点成林](https://leetcode.cn/problems/delete-nodes-and-return-forest/)|[代码](https://leetcode.cn/problems/delete-nodes-and-return-forest/solution/he-shi-ji-lu-da-an-pythonjavacgo-by-endl-lpcd/)|*课后作业|
