@@ -229,25 +229,24 @@ class Solution:
                     p[0] &= x
                 a.append([x, i])
 
-                # 原地去重
-                j = 1
-                for ap, aq in pairwise(a):
-                    if ap[0] != aq[0]:
-                        a[j] = aq
+                # 原地去重，并去掉 AND 值小于 target 的数据
+                j = 0
+                last = -1
+                for p in a:
+                    and_ = p[0]
+                    if and_ >= target and and_ != last:
+                        a[j] = p
                         j += 1
+                        last = and_
                 del a[j:]
 
-                # 去掉无用数据（由于 a 很小，直接暴力删 a[0]）
-                while a and a[0][0] < target:
-                    a.pop(0)
-
-                # 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                # 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
                 # 下面是单调队列的滑窗过程
 
                 if a and a[0][0] == target:
                     # 现在 a[0][1] 和 a[1][1]-1 分别是子数组左端点的最小值和最大值
                     r = a[1][1] - 1 if len(a) > 1 else i
-                    
+
                     # 单调队列：右边入
                     while qi <= r:
                         while q and f[qi] <= f[q[-1]]:
@@ -275,45 +274,41 @@ class Solution {
         int[] f = new int[n + 1];
         Arrays.fill(f, 1, n + 1, INF);
         int[] newF = new int[n + 1];
-        int[] and = new int[n]; // logTrick 子数组 AND
-        int[] left = new int[n]; // logTrick 子数组左端点
+        int[] and = new int[18]; // logTrick 子数组 AND
+        int[] left = new int[18]; // logTrick 子数组左端点
         int[] q = new int[n + 1]; // 用数组模拟单调队列，保存 f 的下标
 
         for (int target : andValues) {
-            int al = 0, ar = 0; // and 和 left 的元素下标范围 [al, ar)
+            int an = 0; // and 和 left 的大小
             int ql = 0, qr = 0; // q 的元素下标范围 [ql, qr)
             int qi = 0; // 单调队列目前处理到 f[qi]
 
             newF[0] = INF;
             for (int i = 0; i < n; i++) {
                 int x = nums[i];
-                for (int j = al; j < ar; j++) {
+                for (int j = 0; j < an; j++) {
                     and[j] &= x;
                 }
-                and[ar] = x;
-                left[ar++] = i;
+                and[an] = x;
+                left[an++] = i;
 
-                // 原地去重
-                int j = al + 1;
-                for (int k = al + 1; k < ar; k++) {
-                    if (and[k] != and[k - 1]) {
-                        and[j] = and[k];
+                // 原地去重，并去掉 AND 值小于 target 的数据
+                int j = 0;
+                int last = -1;
+                for (int k = 0; k < an; k++) {
+                    if (and[k] >= target && and[k] != last) {
+                        last = and[j] = and[k];
                         left[j++] = left[k];
                     }
                 }
-                ar = j;
+                an = j;
 
-                // 去掉无用数据
-                while (al < ar && and[al] < target) {
-                    al++;
-                }
-
-                // 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                // 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
                 // 下面是单调队列的滑窗过程
 
-                if (ar > al && and[al] == target) {
-                    // 现在 left[al] 和 left[al+1]-1 分别是子数组左端点的最小值和最大值
-                    int r = al + 1 < ar ? left[al + 1] - 1 : i;
+                if (an > 0 && and[0] == target) {
+                    // 现在 left[0] 和 left[1]-1 分别是子数组左端点的最小值和最大值
+                    int r = an > 1 ? left[1] - 1 : i;
 
                     // 单调队列：右边入
                     for (; qi <= r; qi++) {
@@ -324,7 +319,7 @@ class Solution {
                     }
 
                     // 单调队列：左边出
-                    while (ql < qr && q[ql] < left[al]) {
+                    while (ql < qr && q[ql] < left[0]) {
                         ql++;
                     }
 
@@ -366,21 +361,18 @@ public:
                 }
                 a.emplace_back(x, i);
 
-                // 原地去重
-                int j = 1;
-                for (int k = 1; k < a.size(); k++) {
-                    if (a[k].first != a[k - 1].first) {
-                        a[j++] = a[k];
+                // 原地去重，并去掉 AND 值小于 target 的数据
+                int j = 0, last = -1;
+                for (auto& p : a) {
+                    int and_ = p.first;
+                    if (and_ >= target && and_ != last) {
+                        a[j++] = p;
+                        last = and_;
                     }
                 }
                 a.resize(j);
 
-                // 去掉无用数据（由于 a 很小，直接暴力删 a[0]）
-                while (!a.empty() && a[0].first < target) {
-                    a.erase(a.begin());
-                }
-
-                // 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                // 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
                 // 下面是单调队列的滑窗过程
 
                 if (!a.empty() && a[0].first == target) {
