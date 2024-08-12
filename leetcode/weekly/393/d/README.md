@@ -40,7 +40,7 @@
 
 **递归边界**：
 
-- 如果 $m-j>n-i$，那么剩余元素无法划分，返回 $\infty$。
+- 如果 $n-i<m-j$，那么剩余元素不足，无法划分，返回 $\infty$。
 - 如果 $j=m$ 且 $i<n$，还有元素没有划分，返回 $\infty$。
 - 如果 $j=m$ 且 $i=n$，划分成功，返回 $0$。
 
@@ -54,13 +54,11 @@ class Solution:
         n, m = len(nums), len(andValues)
         @cache
         def dfs(i: int, j: int, and_: int) -> int:
-            if m - j > n - i:  # 剩余元素不足
+            if n - i < m - j:  # 剩余元素不足
                 return inf
             if j == m:  # 分了 m 段
                 return 0 if i == n else inf
             and_ &= nums[i]
-            if and_ < andValues[j]:  # 剪枝：无法等于 andValues[j]
-                return inf
             res = dfs(i + 1, j, and_)  # 不划分
             if and_ == andValues[j]:  # 划分，nums[i] 是这一段的最后一个数
                 res = min(res, dfs(i + 1, j + 1, -1) + nums[i])
@@ -80,17 +78,14 @@ class Solution {
     private int dfs(int i, int j, int and, int[] nums, int[] andValues, Map<Long, Integer> memo) {
         int n = nums.length;
         int m = andValues.length;
-        if (m - j > n - i) { // 剩余元素不足
+        if (n - i < m - j) { // 剩余元素不足
             return Integer.MAX_VALUE / 2; // 除 2 防止下面 + nums[i] 溢出
         }
         if (j == m) { // 分了 m 段
             return i == n ? 0 : Integer.MAX_VALUE / 2;
         }
         and &= nums[i];
-        if (and < andValues[j]) { // 剪枝：无法等于 andValues[j]
-            return Integer.MAX_VALUE / 2;
-        }
-        // 三个状态压缩成一个 long
+        // 三个参数压缩成一个 long
         long mask = (long) i << 36 | (long) j << 32 | and;
         if (memo.containsKey(mask)) { // 之前计算过
             return memo.get(mask);
@@ -113,17 +108,14 @@ public:
         int n = nums.size(), m = andValues.size();
         unordered_map<long long, int> memo;
         auto dfs = [&](auto&& dfs, int i, int j, int and_) -> int {
-            if (m - j > n - i) { // 剩余元素不足
+            if (n - i < m - j) { // 剩余元素不足
                 return INF;
             }
             if (j == m) { // 分了 m 段
                 return i == n ? 0 : INF;
             }
             and_ &= nums[i];
-            if (and_ < andValues[j]) { // 剪枝：无法等于 andValues[j]
-                return INF;
-            }
-            // 三个状态压缩成一个 long long
+            // 三个参数压缩成一个 long long
             long long mask = (long long) i << 36 | (long long) j << 32 | and_;
             if (memo.contains(mask)) { // 之前计算过
                 return memo[mask];
@@ -148,7 +140,7 @@ func minimumValueSum(nums, andValues []int) int {
     memo := map[args]int{}
     var dfs func(int, int, int) int
     dfs = func(i, j, and int) int {
-        if m-j > n-i { // 剩余元素不足
+        if n-i < m-j { // 剩余元素不足
             return inf
         }
         if j == m { // 分了 m 段
@@ -158,9 +150,6 @@ func minimumValueSum(nums, andValues []int) int {
             return inf
         }
         and &= nums[i]
-        if and < andValues[j] { // 剪枝：无法等于 andValues[j]
-            return inf
-        }
         p := args{i, j, and}
         if res, ok := memo[p]; ok { // 之前计算过
             return res
@@ -192,18 +181,38 @@ AND 的**性质**：AND 的数越多，AND 的结果就越小。
 
 所以对于 $\textit{dfs}$ 中的一个固定的参数 $i$，只有 $\mathcal{O}(\log U)$ 个不同的参数 $\textit{and}$ 的值。再乘上 $\mathcal{O}(m)$ 个不同的参数 $j$，一共有 $\mathcal{O}(nm\log U)$ 个状态。
 
-- **时间复杂度**：$\mathcal{O}(nm\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{andValues}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nm\log U)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以动态规划的时间复杂度为 $\mathcal{O}(nm\log U)$。
-- **空间复杂度**：$\mathcal{O}(nm\log U)$。
+- 时间复杂度：$\mathcal{O}(nm\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{andValues}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nm\log U)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以动态规划的时间复杂度为 $\mathcal{O}(nm\log U)$。
+- 空间复杂度：$\mathcal{O}(nm\log U)$。
 
 本题属于**划分型 DP**，更多相似题目，见 [DP 题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**§6.3 约束划分个数**」。
 
-#### 附：单调队列优化
+#### 附：单调队列 + logTrick 优化
 
 <details><summary>点我展开</summary>
 
 <br/>
 
-对于一个固定的 $\textit{andValues}[j]$，当子数组右端点 $i$ 变大时，符合要求（子数组 AND 等于 $\textit{andValues}[j]$）的子数组左端点的范围区间也在右移，所以计算 DP 的转移来源，类似计算 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)（本题是滑动窗口最小值）。原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
+⚠**阅读要求**：读者需要做过一些单调队列优化 DP 的题目，以及一些 logTrick 的题目。
+
+定义 $f[j][i+1]$ 表示把 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 分成 $j$ 段的最小子数组值之和。
+
+如果第 $j$ 段的下标范围是从 $k$ 到 $i$，那么有状态转移方程
+
+$$
+f[j][i+1] = \textit{nums}[i] + \min_{k} f[j-1][k]
+$$
+
+其中下标从 $k$ 到 $i$ 的 $\textit{nums}$ 的 AND 必须恰好等于 $\textit{target} = \textit{andValues}[j-1]$。
+
+为了计算 $k$ 的范围，需要用到 **logTrick**，具体见 [讲解（方法二）](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/)。相关题目可以看 [位运算题单](https://leetcode.cn/circle/discuss/dHn9Vk/)。
+
+对于一个固定的 $\textit{target}$，当子数组右端点 $i$ 变大时，子数组左端点 $k$ 的范围区间 $[l,r]$ 也在右移，所以计算 DP 转移来源的最小值，可以像 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) 那样用**单调队列**解决，原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
+
+初始值：$f[0][0]=0,\ f[0][i\ge 1]=\infty,\ f[j\ge 1][0]=\infty$。
+
+答案：$f[m][n]$。
+
+代码实现时，$f$ 数组的第一个维度可以去掉，改成用两个一维数组滚动计算。
 
 ```py [sol-Python3]
 class Solution:
@@ -212,10 +221,11 @@ class Solution:
         f = [0] + [inf] * n
         new_f = [0] * (n + 1)
         for target in andValues:
+            a = []  # logTrick 子数组 AND 和子数组左端点
+            q = deque()  # 单调队列，保存 f 的下标
+            qi = 0  # 单调队列目前处理到 f[qi]
+
             new_f[0] = inf
-            a = []
-            q = deque()
-            qi = 0
             for i, x in enumerate(nums):
                 for p in a:
                     p[0] &= x
@@ -229,19 +239,29 @@ class Solution:
                         j += 1
                 del a[j:]
 
-                # 去掉无用数据
+                # 去掉无用数据（由于 a 很小，直接暴力删 a[0]）
                 while a and a[0][0] < target:
                     a.pop(0)
 
+                # 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                # 下面是单调队列的滑窗过程
+
                 if a and a[0][0] == target:
-                    r = (a[1][1] - 1) if len(a) > 1 else i
+                    # 现在 a[0][1] 和 a[1][1]-1 分别是子数组左端点的最小值和最大值
+                    r = a[1][1] - 1 if len(a) > 1 else i
+                    
+                    # 单调队列：右边入
                     while qi <= r:
                         while q and f[qi] <= f[q[-1]]:
                             q.pop()
                         q.append(qi)
                         qi += 1
+
+                    # 单调队列：左边出
                     while q[0] < a[0][1]:
                         q.popleft()
+
+                    # 单调队列：计算答案
                     new_f[i + 1] = f[q[0]] + x  # 队首就是最小值
                 else:
                     new_f[i + 1] = inf
@@ -249,69 +269,231 @@ class Solution:
         return f[n] if f[n] < inf else -1
 ```
 
-```go [sol-Go]
-func minimumValueSum(nums, andValues []int) int {
-	const inf = math.MaxInt / 2
-	n := len(nums)
-	f := make([]int, n+1)
-	for i := 1; i <= n; i++ {
-		f[i] = inf
-	}
-	newF := make([]int, n+1)
-	for _, target := range andValues {
-		newF[0] = inf
-		type pair struct{ and, l int }
-		a := []pair{}
-		q := []int{}
-		qi := 0
-		for i, x := range nums {
-			for j := range a {
-				a[j].and &= x
-			}
-			a = append(a, pair{x, i})
+```java [sol-Java]
+class Solution {
+    public int minimumValueSum(int[] nums, int[] andValues) {
+        final int INF = Integer.MAX_VALUE / 2;
+        int n = nums.length;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, 1, n + 1, INF);
+        int[] newF = new int[n + 1];
+        int[] and = new int[n]; // logTrick 子数组 AND
+        int[] left = new int[n]; // logTrick 子数组左端点
+        int[] q = new int[n + 1]; // 用数组模拟单调队列，保存 f 的下标
 
-			// 原地去重
-			j := 1
-			for k := 1; k < len(a); k++ {
-				if a[k].and != a[k-1].and {
-					a[j] = a[k]
-					j++
-				}
-			}
-			a = a[:j]
+        for (int target : andValues) {
+            int al = 0, ar = 0; // and 和 left 的元素下标范围 [al, ar)
+            int ql = 0, qr = 0; // q 的元素下标范围 [ql, qr)
+            int qi = 0; // 单调队列目前处理到 f[qi]
 
-			// 去掉无用数据
-			for len(a) > 0 && a[0].and < target {
-				a = a[1:]
-			}
+            newF[0] = INF;
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                for (int j = al; j < ar; j++) {
+                    and[j] &= x;
+                }
+                and[ar] = x;
+                left[ar++] = i;
 
-			if len(a) > 0 && a[0].and == target {
-				r := i
-				if len(a) > 1 {
-					r = a[1].l - 1
-				}
-				for ; qi <= r; qi++ {
-					for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
-						q = q[:len(q)-1]
-					}
-					q = append(q, qi)
-				}
-				for q[0] < a[0].l {
-					q = q[1:]
-				}
-				newF[i+1] = f[q[0]] + x // 队首就是最小值
-			} else {
-				newF[i+1] = inf
-			}
-		}
-		f, newF = newF, f
-	}
-	if f[n] < inf {
-		return f[n]
-	}
-	return -1
+                // 原地去重
+                int j = al + 1;
+                for (int k = al + 1; k < ar; k++) {
+                    if (and[k] != and[k - 1]) {
+                        and[j] = and[k];
+                        left[j++] = left[k];
+                    }
+                }
+                ar = j;
+
+                // 去掉无用数据
+                while (al < ar && and[al] < target) {
+                    al++;
+                }
+
+                // 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                // 下面是单调队列的滑窗过程
+
+                if (ar > al && and[al] == target) {
+                    // 现在 left[al] 和 left[al+1]-1 分别是子数组左端点的最小值和最大值
+                    int r = al + 1 < ar ? left[al + 1] - 1 : i;
+
+                    // 单调队列：右边入
+                    for (; qi <= r; qi++) {
+                        while (qr > ql && f[qi] <= f[q[qr - 1]]) {
+                            qr--;
+                        }
+                        q[qr++] = qi;
+                    }
+
+                    // 单调队列：左边出
+                    while (ql < qr && q[ql] < left[al]) {
+                        ql++;
+                    }
+
+                    // 单调队列：计算答案
+                    newF[i + 1] = f[q[ql]] + x; // 队首就是最小值
+                } else {
+                    newF[i + 1] = INF;
+                }
+            }
+            int[] tmp = f;
+            f = newF;
+            newF = tmp;
+        }
+        return f[n] < INF ? f[n] : -1;
+    }
 }
 ```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        const int INF = INT_MAX / 2;
+        int n = nums.size();
+        vector<int> f(n + 1, INF);
+        vector<int> new_f(n + 1);
+
+        f[0] = 0;
+        for (int target : andValues) {
+            vector<pair<int, int>> a; // logTrick 子数组 AND 和子数组左端点
+            deque<int> q; // 单调队列，保存 f 的下标
+            int qi = 0; // 单调队列目前处理到 f[qi]
+
+            new_f[0] = INF;
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                for (auto& [and_, _] : a) {
+                    and_ &= x;
+                }
+                a.emplace_back(x, i);
+
+                // 原地去重
+                int j = 1;
+                for (int k = 1; k < a.size(); k++) {
+                    if (a[k].first != a[k - 1].first) {
+                        a[j++] = a[k];
+                    }
+                }
+                a.resize(j);
+
+                // 去掉无用数据（由于 a 很小，直接暴力删 a[0]）
+                while (!a.empty() && a[0].first < target) {
+                    a.erase(a.begin());
+                }
+
+                // 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+                // 下面是单调队列的滑窗过程
+
+                if (!a.empty() && a[0].first == target) {
+                    // 现在 a[0].second 和 a[1].second-1 分别是子数组左端点的最小值和最大值
+                    int r = a.size() > 1 ? a[1].second - 1 : i;
+
+                    // 单调队列：右边入
+                    for (; qi <= r; qi++) {
+                        while (!q.empty() && f[qi] <= f[q.back()]) {
+                            q.pop_back();
+                        }
+                        q.push_back(qi);
+                    }
+
+                    // 单调队列：左边出
+                    while (q.front() < a[0].second) {
+                        q.pop_front();
+                    }
+
+                    // 单调队列：计算答案
+                    new_f[i + 1] = f[q.front()] + x; // 队首就是最小值
+                } else {
+                    new_f[i + 1] = INF;
+                }
+            }
+            swap(f, new_f);
+        }
+        return f[n] < INF ? f[n] : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumValueSum(nums, andValues []int) int {
+    const inf = math.MaxInt / 2
+    n := len(nums)
+    f := make([]int, n+1)
+    for i := 1; i <= n; i++ {
+        f[i] = inf
+    }
+    newF := make([]int, n+1)
+    for _, target := range andValues {
+        type pair struct{ and, l int }
+        a := []pair{} // logTrick 子数组 AND 和子数组左端点
+        q := []int{} // 单调队列，保存 f 的下标
+        qi := 0 // 单调队列目前处理到 f[qi]
+
+        newF[0] = inf
+        for i, x := range nums {
+            for j := range a {
+                a[j].and &= x
+            }
+            a = append(a, pair{x, i})
+
+            // 原地去重
+            j := 1
+            for k := 1; k < len(a); k++ {
+                if a[k].and != a[k-1].and {
+                    a[j] = a[k]
+                    j++
+                }
+            }
+            a = a[:j]
+
+            // 去掉无用数据
+            for len(a) > 0 && a[0].and < target {
+                a = a[1:]
+            }
+
+            // 上面这一大段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+            // 下面是单调队列的滑窗过程
+
+            if len(a) > 0 && a[0].and == target {
+                // 现在 a[0].l 和 a[1].l-1 分别是子数组左端点的最小值和最大值
+                r := i
+                if len(a) > 1 {
+                    r = a[1].l - 1
+                }
+
+                // 单调队列：右边入
+                for ; qi <= r; qi++ {
+                    for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
+                        q = q[:len(q)-1]
+                    }
+                    q = append(q, qi)
+                }
+
+                // 单调队列：左边出
+                for q[0] < a[0].l {
+                    q = q[1:]
+                }
+
+                // 单调队列：计算答案
+                newF[i+1] = f[q[0]] + x // 队首就是最小值
+            } else {
+                newF[i+1] = inf
+            }
+        }
+        f, newF = newF, f
+    }
+    if f[n] < inf {
+        return f[n]
+    }
+    return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nm\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{andValues}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 </details>
 
