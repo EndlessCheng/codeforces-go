@@ -1,4 +1,6 @@
-## 寻找子问题
+## 方法一：记忆化搜索
+
+### 寻找子问题
 
 看示例 1，$\textit{nums} = [1,4,3,3,2],\ \textit{andValues} = [0,3,3,2]$。
 
@@ -20,7 +22,7 @@
 >
 > 注 2：动态规划有「**选或不选**」和「**枚举选哪个**」两种基本思考方式。在做题时，可根据题目要求，选择适合题目的一种来思考。本题用到的是「**选或不选**」。
 
-## 状态定义与状态转移方程
+### 状态定义与状态转移方程
 
 递归需要哪些参数？
 
@@ -186,13 +188,9 @@ AND 的**性质**：AND 的数越多，AND 的结果就越小。
 
 本题属于**划分型 DP**，更多相似题目，见 [DP 题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**§6.3 约束划分个数**」。
 
-#### 附：单调队列 + logTrick 优化
+## 方法二：单调队列 + logTrick 优化
 
-<details><summary>点我展开</summary>
-
-<br/>
-
-⚠**阅读要求**：读者需要做过一些单调队列优化 DP 的题目，以及一些 logTrick 的题目。
+⚠**阅读要求：读者需要做过一些单调队列优化 DP 的题目，以及一些 logTrick 的题目。**
 
 定义 $f[j][i+1]$ 表示把 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 分成 $j$ 段的最小子数组值之和。
 
@@ -494,8 +492,6 @@ func minimumValueSum(nums, andValues []int) int {
 
 - 时间复杂度：$\mathcal{O}(nm\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$m$ 为 $\textit{andValues}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n)$。
-
-</details>
 
 ## 分类题单
 
