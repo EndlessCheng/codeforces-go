@@ -18,6 +18,17 @@ $$
 
 代码中用到了取模，不了解或者写错的同学请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
+### 答疑
+
+**问**：代码中计算 $f[i]$ 的那两段代码是什么意思？
+
+**答**：相当于把递推式 $f[i] = f[i-\textit{zero}] + f[i-\textit{one}]$ 拆分成了两步：
+
+1. 第一步，把 $f[i-\textit{zero}]$ 加到 $f[i]$ 中。
+2. 第二步，把 $f[i-\textit{one}]$ 加到 $f[i]$ 中。
+   
+由于注意第一步必须满足 $i-\textit{zero}\ge 0$，否则无法转移。第二步也同理，必须满足 $i-\textit{one}\ge 0$。
+
 ```py [sol-Python3]
 class Solution:
     def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
@@ -135,6 +146,7 @@ impl Solution {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
