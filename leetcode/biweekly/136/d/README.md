@@ -150,7 +150,7 @@ public:
 
         // nodes[x] 保存子树 x 的最大深度 max_d，次大深度 max_d2，以及最大深度要往儿子 my 走
         vector<tuple<int, int, int>> nodes(g.size());
-        auto&& dfs = [&](auto&& dfs, int x, int fa) -> int {
+        auto dfs = [&](auto&& dfs, int x, int fa) -> int {
             int max_d = 0, max_d2 = 0, my = 0;
             for (int y : g[x]) {
                 if (y == fa) {
@@ -171,7 +171,7 @@ public:
         dfs(dfs, 0, -1);
 
         vector<int> ans(g.size());
-        auto&& reroot = [&](auto&& reroot, int x, int fa, int from_up) -> void {
+        auto reroot = [&](auto&& reroot, int x, int fa, int from_up) -> void {
             auto& [max_d, max_d2, my] = nodes[x];
             ans[x] = max(from_up, max_d);
             for (int y : g[x]) {
@@ -264,5 +264,8 @@ func timeTaken(edges [][]int) []int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
