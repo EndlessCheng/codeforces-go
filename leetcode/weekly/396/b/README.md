@@ -37,7 +37,7 @@ class Solution {
 class Solution {
 public:
     int minimumOperationsToMakeKPeriodic(string word, int k) {
-        int n = word.size(), mx = 0;
+        int n = word.length(), mx = 0;
         unordered_map<string, int> cnt;
         for (int i = k; i <= n; i += k) {
             mx = max(mx, ++cnt[word.substr(i - k, k)]);
@@ -62,6 +62,36 @@ func minimumOperationsToMakeKPeriodic(word string, k int) int {
 }
 ```
 
+```js [sol-JavaScript]
+var minimumOperationsToMakeKPeriodic = function(word, k) {
+    const n = word.length;
+    const cnt = new Map();
+    for (let i = k; i <= n; i += k) {
+        const sub = word.slice(i - k, i);
+        cnt.set(sub, (cnt.get(sub) ?? 0) + 1);
+    }
+    const mx = Math.max(...Array.from(cnt.values()));
+    return Math.floor(n / k) - mx;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn minimum_operations_to_make_k_periodic(word: String, k: i32) -> i32 {
+        let n = word.len();
+        let k = k as usize;
+        let mut cnt = HashMap::new();
+        for i in (k..=n).step_by(k) {
+            *cnt.entry(&word[i - k..i]).or_insert(0) += 1;
+        }
+        let mx = *cnt.values().max().unwrap();
+        (n / k) as i32 - mx
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{word}$ 的长度。
@@ -69,13 +99,20 @@ func minimumOperationsToMakeKPeriodic(word string, k int) int {
 
 ## 分类题单
 
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
