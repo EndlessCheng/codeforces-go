@@ -18,7 +18,7 @@ class Solution:
         col_sum = [sum(col) - 1 for col in zip(*grid)]  # 提前减一
         ans = 0
         for row in grid:
-            row_sum = sum(row) - 1
+            row_sum = sum(row) - 1  # 提前减一
             ans += row_sum * sum(cs for x, cs in zip(row, col_sum) if x)
         return ans
 ```
@@ -73,7 +73,7 @@ public:
 
         long long ans = 0;
         for (auto& row : grid) {
-            int row_sum = reduce(row.begin(), row.end(), 0) - 1; // 提前减一
+            int row_sum = reduce(row.begin(), row.end()) - 1; // 提前减一
             for (int j = 0; j < row.size(); j++) {
                 if (row[j] == 1) {
                     ans += row_sum * col_sum[j];
@@ -201,6 +201,7 @@ impl Solution {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
