@@ -9,18 +9,20 @@ func countGoodNodes(edges [][]int) (ans int) {
 		g[x] = append(g[x], y)
 		g[y] = append(g[y], x)
 	}
+
 	var dfs func(int, int) int
 	dfs = func(x, fa int) int {
-		size, pre, ok := 1, 0, true
+		size, sz0, ok := 1, 0, true
 		for _, y := range g[x] {
 			if y == fa {
 				continue
 			}
 			sz := dfs(y, x)
-			if pre > 0 && sz != pre {
-				ok = false
+			if sz0 == 0 {
+				sz0 = sz // 记录第一个儿子子树的大小
+			} else if sz != sz0 {
+				ok = false // 注意后面的子树 y 仍然要递归计算 ans
 			}
-			pre = sz // 记录上一个儿子子树的大小
 			size += sz
 		}
 		if ok {

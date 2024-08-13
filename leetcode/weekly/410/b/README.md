@@ -17,14 +17,15 @@ class Solution:
 
         ans = 0
         def dfs(x: int, fa: int) -> int:
-            size, pre, ok = 1, 0, True
+            size, sz0, ok = 1, 0, True
             for y in g[x]:
                 if y == fa:
                     continue  # 不能递归到父节点
                 sz = dfs(y, x)
-                if 0 < pre != sz:
-                    ok = False
-                pre = sz  # 记录上一个儿子子树的大小
+                if sz0 == 0:
+                    sz0 = sz  # 记录第一个儿子子树的大小
+                elif sz != sz0:
+                    ok = False  # 注意后面的子树 y 仍然要递归计算 ans
                 size += sz
             nonlocal ans
             ans += ok
@@ -53,17 +54,18 @@ class Solution {
 
     private int dfs(int x, int fa, List<Integer>[] g) {
         int size = 1;
-        int pre = 0;
+        int sz0 = 0;
         boolean ok = true;
         for (int y : g[x]) {
             if (y == fa) {
                 continue; // 不能递归到父节点
             }
             int sz = dfs(y, x, g);
-            if (pre > 0 && sz != pre) {
-                ok = false;
+            if (sz0 == 0) {
+                sz0 = sz; // 记录第一个儿子子树的大小
+            } else if (sz != sz0) {
+                ok = false; // 注意后面的子树 y 仍然要递归计算 ans
             }
-            pre = sz; // 记录上一个儿子子树的大小
             size += sz;
         }
         if (ok) {
@@ -87,18 +89,19 @@ public:
         }
 
         int ans = 0;
-        auto&& dfs = [&](auto&& dfs, int x, int fa) -> int {
-            int size = 1, pre = 0;
+        auto dfs = [&](auto&& dfs, int x, int fa) -> int {
+            int size = 1, sz0 = 0;
             bool ok = true;
             for (int y : g[x]) {
                 if (y == fa) {
                     continue; // 不能递归到父节点
                 }
                 int sz = dfs(dfs, y, x);
-                if (pre > 0 && sz != pre) {
-                    ok = false;
+                if (sz0 == 0) {
+                    sz0 = sz; // 记录第一个儿子子树的大小
+                } else if (sz != sz0) {
+                    ok = false; // 注意后面的子树 y 仍然要递归计算 ans
                 }
-                pre = sz; // 记录上一个儿子子树的大小
                 size += sz;
             }
             ans += ok;
@@ -119,18 +122,20 @@ func countGoodNodes(edges [][]int) (ans int) {
 		g[x] = append(g[x], y)
 		g[y] = append(g[y], x)
 	}
+
 	var dfs func(int, int) int
 	dfs = func(x, fa int) int {
-		size, pre, ok := 1, 0, true
+		size, sz0, ok := 1, 0, true
 		for _, y := range g[x] {
 			if y == fa {
-				continue // 不能递归到父节点
+				continue
 			}
 			sz := dfs(y, x)
-			if pre > 0 && sz != pre {
-				ok = false
+			if sz0 == 0 {
+				sz0 = sz // 记录第一个儿子子树的大小
+			} else if sz != sz0 {
+				ok = false // 注意后面的子树 y 仍然要递归计算 ans
 			}
-			pre = sz // 记录上一个儿子子树的大小
 			size += sz
 		}
 		if ok {
@@ -148,7 +153,7 @@ func countGoodNodes(edges [][]int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{edges}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-相似题目：明天（下周一）上午我会发布树的题单，敬请期待！
+更多相似题目，见下面 [树题单](https://leetcode.cn/circle/discuss/K0n2gO/) 中的「**§3.3 自底向上 DFS**」。
 
 ## 分类题单
 
@@ -164,5 +169,8 @@ func countGoodNodes(edges [][]int) (ans int) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
