@@ -129,7 +129,7 @@ public:
     bool canReachCorner(int X, int Y, vector<vector<int>>& circles) {
         int n = circles.size();
         vector<int> vis(n);
-        auto&& dfs = [&](auto&& dfs, int i) -> bool {
+        auto dfs = [&](auto&& dfs, int i) -> bool {
             long long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
             // 圆 i 是否与矩形右边界/下边界相交相切
             if (y1 <= Y && abs(x1 - X) <= r1 ||
@@ -232,5 +232,8 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
