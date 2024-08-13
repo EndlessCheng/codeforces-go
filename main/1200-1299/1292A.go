@@ -24,7 +24,7 @@ func cf1292A(_r io.Reader, _w io.Writer) {
 		} else {
 			cnt -= s
 		}
-		if cnt > 0 || ban[0][1] > 0 || ban[1][n] > 0 {
+		if cnt > 0 {
 			Fprintln(out, "No")
 		} else {
 			Fprintln(out, "Yes")
