@@ -67,9 +67,29 @@ public:
 };
 ```
 
+```c [sol-C]
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+int countPairs(int* nums, int numsSize, int target) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+    int ans = 0, left = 0, right = numsSize - 1;
+    while (left < right) {
+        if (nums[left] + nums[right] < target) {
+            ans += right - left;
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func countPairs(nums []int, target int) (ans int) {
-	sort.Ints(nums)
+	slices.Sort(nums)
 	left, right := 0, len(nums)-1
 	for left < right {
 		if nums[left]+nums[right] < target {
@@ -97,6 +117,26 @@ var countPairs = function(nums, target) {
     }
     return ans;
 };
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_pairs(mut nums: Vec<i32>, target: i32) -> i32 {
+        nums.sort_unstable();
+        let mut ans = 0;
+        let mut left = 0;
+        let mut right = nums.len() - 1;
+        while left < right {
+            if nums[left] + nums[right] < target {
+                ans += right - left;
+                left += 1;
+            } else {
+                right -= 1;
+            }
+        }
+        ans as _
+    }
+}
 ```
 
 #### 复杂度分析
