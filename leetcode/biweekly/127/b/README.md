@@ -63,7 +63,7 @@ public:
     int minimumLevels(vector<int>& possible) {
         int n = possible.size();
         // s = cnt1 - cnt0 = cnt1 - (n - cnt1) = cnt1 * 2 - n
-        int s = reduce(possible.begin(), possible.end(), 0) * 2 - n;
+        int s = reduce(possible.begin(), possible.end()) * 2 - n;
         int pre = 0;
         for (int i = 0; i < n - 1; i++) {
             pre += possible[i] ? 2 : -2;
@@ -169,6 +169,7 @@ impl Solution {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
