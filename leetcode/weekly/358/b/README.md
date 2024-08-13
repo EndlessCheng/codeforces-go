@@ -50,7 +50,8 @@ class Solution {
 
     // 206. 反转链表
     private ListNode reverseList(ListNode head) {
-        ListNode pre = null, cur = head;
+        ListNode pre = null;
+        ListNode cur = head;
         while (cur != null) {
             ListNode nxt = cur.next;
             cur.next = pre;
@@ -84,10 +85,10 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     // 206. 反转链表
-    ListNode *reverseList(ListNode *head) {
-        ListNode *pre = nullptr, *cur = head;
+    ListNode* reverseList(ListNode* head) {
+        ListNode* pre = nullptr, *cur = head;
         while (cur) {
-            ListNode *nxt = cur->next;
+            auto nxt = cur->next;
             cur->next = pre;
             pre = cur;
             cur = nxt;
@@ -97,9 +98,9 @@ class Solution {
 
     // 2. 两数相加：自己和自己相加
     // 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
-    ListNode *double_(ListNode *l1) {
-        auto dummy = new ListNode(); // 哨兵节点，作为新链表的头节点的前一个节点
-        auto cur = dummy;
+    ListNode* double_(ListNode* l1) {
+        ListNode dummy; // 哨兵节点，作为新链表的头节点的前一个节点
+        auto cur = &dummy;
         int carry = 0; // 进位
         while (l1) {
             carry += l1->val * 2; // 节点值和进位加在一起
@@ -111,11 +112,11 @@ class Solution {
         if (carry) {
             cur->next = new ListNode(carry);
         }
-        return dummy->next;
+        return dummy.next;
     }
 
 public:
-    ListNode *doubleIt(ListNode *head) {
+    ListNode* doubleIt(ListNode* head) {
         head = reverseList(head);
         auto res = double_(head);
         return reverseList(res);
@@ -164,7 +165,7 @@ func doubleIt(head *ListNode) *ListNode {
 
 ```js [sol-JavaScript]
 // 206. 反转链表
-var reverseList = function (head) {
+var reverseList = function(head) {
     let pre = null;
     let cur = head;
     while (cur) {
@@ -178,7 +179,7 @@ var reverseList = function (head) {
 
 // 2. 两数相加：自己和自己相加
 // 题解 https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/
-var double = function (l1) {
+var double = function(l1) {
     let dummy = new ListNode(); // 哨兵节点，作为新链表的头节点的前一个节点
     let cur = dummy;
     let carry = 0; // 进位
@@ -195,7 +196,7 @@ var double = function (l1) {
     return dummy.next; // 哨兵节点的下一个节点就是头节点
 };
 
-var doubleIt = function (head) {
+var doubleIt = function(head) {
     head = reverseList(head);
     const res = double(head); // 反转后，就变成【2. 两数相加】了
     return reverseList(res);
@@ -275,12 +276,14 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public ListNode doubleIt(ListNode head) {
-        if (head.val > 4)
+        if (head.val > 4) {
             head = new ListNode(0, head);
-        for (var cur = head; cur != null; cur = cur.next) {
+        }
+        for (ListNode cur = head; cur != null; cur = cur.next) {
             cur.val = cur.val * 2 % 10;
-            if (cur.next != null && cur.next.val > 4)
+            if (cur.next != null && cur.next.val > 4) {
                 cur.val++;
+            }
         }
         return head;
     }
@@ -290,13 +293,15 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    ListNode *doubleIt(ListNode *head) {
-        if (head->val > 4)
+    ListNode* doubleIt(ListNode* head) {
+        if (head->val > 4) {
             head = new ListNode(0, head);
+        }
         for (auto cur = head; cur; cur = cur->next) {
             cur->val = cur->val * 2 % 10;
-            if (cur->next && cur->next->val > 4)
+            if (cur->next && cur->next->val > 4) {
                 cur->val++;
+            }
         }
         return head;
     }
@@ -319,7 +324,7 @@ func doubleIt(head *ListNode) *ListNode {
 ```
 
 ```js [sol-JavaScript]
-var doubleIt = function (head) {
+var doubleIt = function(head) {
     if (head.val > 4) {
         head = new ListNode(0, head);
     }
@@ -359,3 +364,23 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为链表的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
