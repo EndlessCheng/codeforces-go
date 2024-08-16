@@ -202,7 +202,7 @@ $$
 
 其中下标从 $k$ 到 $i$ 的 $\textit{nums}$ 的 AND 必须恰好等于 $\textit{target} = \textit{andValues}[j-1]$。
 
-为了计算 $k$ 的范围，需要用到 **logTrick**，具体见 [讲解（方法二）](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/)。相关题目可以看 [位运算题单](https://leetcode.cn/circle/discuss/dHn9Vk/)。
+为了计算 $k$ 的范围，需要用到 **logTrick**。相关题目可以看 [位运算题单](https://leetcode.cn/circle/discuss/dHn9Vk/)。
 
 对于一个固定的 $\textit{target}$，当子数组右端点 $i$ 变大时，子数组左端点 $k$ 的范围区间 $[l,r]$ 也在右移，所以计算 DP 转移来源的最小值，可以像 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) 那样用**单调队列**解决，原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
@@ -211,6 +211,10 @@ $$
 答案：$f[m][n]$。
 
 代码实现时，$f$ 数组的第一个维度可以去掉，改成用两个一维数组滚动计算。
+
+### 写法一：用额外数组维护
+
+如果觉得写法一的 logTrick 不好理解的话，可以看写法二，相对来说更加简洁。
 
 ```py [sol-Python3]
 class Solution:
@@ -462,6 +466,235 @@ func minimumValueSum(nums, andValues []int) int {
 
                 // 单调队列：左边出
                 for q[0] < a[0].l {
+                    q = q[1:]
+                }
+
+                // 单调队列：计算答案
+                newF[i+1] = f[q[0]] + x // 队首就是最小值
+            } else {
+                newF[i+1] = inf
+            }
+        }
+        f, newF = newF, f
+    }
+    if f[n] < inf {
+        return f[n]
+    }
+    return -1
+}
+```
+
+### 写法二：原地计算+三指针
+
+见 [讲解（方法二）](https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/solution/jian-ji-xie-fa-o1-kong-jian-pythonjavacg-u7fv/)。
+
+```py [sol-Python3]
+class Solution:
+    def minimumValueSum(self, nums: List[int], andValues: List[int]) -> int:
+        n = len(nums)
+        f = [0] + [inf] * n
+        new_f = [0] * (n + 1)
+        for target in andValues:
+            a = nums.copy()  # 也可以写 nums[:]
+            left = right = 0  # 子数组右端点为 i 时，子数组左端点的最小值和最大值+1
+            q = deque()  # 单调队列，保存 f 的下标
+            qi = 0  # 单调队列目前处理到 f[qi]
+
+            new_f[0] = inf
+            for i, x in enumerate(a):
+                for j in range(i - 1, -1, -1):
+                    if a[j] & x == a[j]:
+                        break
+                    a[j] &= x
+                while left <= i and a[left] < target:
+                    left += 1
+                while right <= i and a[right] <= target:
+                    right += 1
+
+                # 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值+1
+                # 下面是单调队列的滑窗过程
+
+                if left < right:
+                    # 单调队列：右边入
+                    while qi < right:
+                        while q and f[qi] <= f[q[-1]]:
+                            q.pop()
+                        q.append(qi)
+                        qi += 1
+
+                    # 单调队列：左边出
+                    while q[0] < left:
+                        q.popleft()
+
+                    # 单调队列：计算答案
+                    new_f[i + 1] = f[q[0]] + x  # 队首就是最小值
+                else:
+                    new_f[i + 1] = inf
+            f, new_f = new_f, f
+        return f[n] if f[n] < inf else -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumValueSum(int[] nums, int[] andValues) {
+        final int INF = Integer.MAX_VALUE / 2;
+        int n = nums.length;
+        int[] f = new int[n + 1];
+        Arrays.fill(f, 1, n + 1, INF);
+        int[] newF = new int[n + 1];
+        int[] q = new int[n + 1]; // 用数组模拟单调队列，保存 f 的下标
+
+        for (int target : andValues) {
+            int[] a = nums.clone();
+            int left = 0, right = 0;
+            int ql = 0, qr = 0; // q 的元素下标范围 [ql, qr)
+            int qi = 0; // 单调队列目前处理到 f[qi]
+
+            newF[0] = INF;
+            for (int i = 0; i < n; i++) {
+                int x = a[i];
+                for (int j = i - 1; j >= 0 && (a[j] & x) != a[j]; j--) {
+                    a[j] &= x;
+                }
+                while (left <= i && a[left] < target) {
+                    left++;
+                }
+                while (right <= i && a[right] <= target) {
+                    right++;
+                }
+
+                // 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值+1
+                // 下面是单调队列的滑窗过程
+
+                if (left < right) {
+                    // 单调队列：右边入
+                    for (; qi < right; qi++) {
+                        while (qr > ql && f[qi] <= f[q[qr - 1]]) {
+                            qr--;
+                        }
+                        q[qr++] = qi;
+                    }
+
+                    // 单调队列：左边出
+                    while (ql < qr && q[ql] < left) {
+                        ql++;
+                    }
+
+                    // 单调队列：计算答案
+                    newF[i + 1] = f[q[ql]] + x; // 队首就是最小值
+                } else {
+                    newF[i + 1] = INF;
+                }
+            }
+            int[] tmp = f;
+            f = newF;
+            newF = tmp;
+        }
+        return f[n] < INF ? f[n] : -1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumValueSum(vector<int>& nums, vector<int>& andValues) {
+        const int INF = INT_MAX / 2;
+        int n = nums.size();
+        vector<int> f(n + 1, INF);
+        vector<int> new_f(n + 1);
+
+        f[0] = 0;
+        for (int target : andValues) {
+            auto a = nums;
+            int left = 0, right = 0;
+            deque<int> q; // 单调队列，保存 f 的下标
+            int qi = 0; // 单调队列目前处理到 f[qi]
+
+            new_f[0] = INF;
+            for (int i = 0; i < n; i++) {
+                int x = a[i];
+                for (int j = i - 1; j >= 0 && (a[j] & x) != a[j]; j--) {
+                    a[j] &= x;
+                }
+                while (left <= i && a[left] < target) {
+                    left++;
+                }
+                while (right <= i && a[right] <= target) {
+                    right++;
+                }
+
+                // 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值+1
+                // 下面是单调队列的滑窗过程
+
+                if (left < right) {
+                    // 单调队列：右边入
+                    for (; qi < right; qi++) {
+                        while (!q.empty() && f[qi] <= f[q.back()]) {
+                            q.pop_back();
+                        }
+                        q.push_back(qi);
+                    }
+
+                    // 单调队列：左边出
+                    while (q.front() < left) {
+                        q.pop_front();
+                    }
+
+                    // 单调队列：计算答案
+                    new_f[i + 1] = f[q.front()] + x; // 队首就是最小值
+                } else {
+                    new_f[i + 1] = INF;
+                }
+            }
+            swap(f, new_f);
+        }
+        return f[n] < INF ? f[n] : -1;
+    }
+};
+```
+
+```go [sol-Go]
+func minimumValueSum(nums, andValues []int) int {
+    const inf = math.MaxInt / 2
+    n := len(nums)
+    f := make([]int, n+1)
+    for i := 1; i <= n; i++ {
+        f[i] = inf
+    }
+    newF := make([]int, n+1)
+    for _, target := range andValues {
+        nums := slices.Clone(nums)
+        left, right := 0, 0
+        q := []int{} // 单调队列，保存 f 的下标
+        qi := 0 // 单调队列目前处理到 f[qi]
+
+        newF[0] = inf
+        for i, x := range nums {
+            for j := i - 1; j >= 0 && nums[j]&x != nums[j]; j-- {
+                nums[j] &= x
+            }
+            for left <= i && nums[left] < target {
+                left++
+            }
+            for right <= i && nums[right] <= target {
+                right++
+            }
+
+            // 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值+1
+            // 下面是单调队列的滑窗过程
+
+            if left < right {
+                // 单调队列：右边入
+                for ; qi < right; qi++ {
+                    for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
+                        q = q[:len(q)-1]
+                    }
+                    q = append(q, qi)
+                }
+
+                // 单调队列：左边出
+                for q[0] < left {
                     q = q[1:]
                 }
 

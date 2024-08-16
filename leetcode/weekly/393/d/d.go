@@ -3,11 +3,69 @@ package main
 import (
 	"math"
 	"math/bits"
+	"slices"
 	"sort"
 )
 
 // https://space.bilibili.com/206214
 func minimumValueSum(nums, andValues []int) int {
+	const inf = math.MaxInt / 2
+	n := len(nums)
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		f[i] = inf
+	}
+	newF := make([]int, n+1)
+	for _, target := range andValues {
+		nums := slices.Clone(nums)
+		left, right := 0, 0
+		q := []int{} // 单调队列，保存 f 的下标
+		qi := 0      // 单调队列目前处理到 f[qi]
+
+		newF[0] = inf
+		for i, x := range nums {
+			for j := i - 1; j >= 0 && nums[j]&x != nums[j]; j-- {
+				nums[j] &= x
+			}
+			for left <= i && nums[left] < target {
+				left++
+			}
+			for right <= i && nums[right] <= target {
+				right++
+			}
+
+			// 上面这段的目的是求出子数组右端点为 i 时，子数组左端点的最小值和最大值
+			// 下面是单调队列的滑窗过程
+
+			if left < right {
+				// 单调队列：右边入
+				for ; qi < right; qi++ {
+					for len(q) > 0 && f[qi] <= f[q[len(q)-1]] {
+						q = q[:len(q)-1]
+					}
+					q = append(q, qi)
+				}
+
+				// 单调队列：左边出
+				for q[0] < left {
+					q = q[1:]
+				}
+
+				// 单调队列：计算答案
+				newF[i+1] = f[q[0]] + x // 队首就是最小值
+			} else {
+				newF[i+1] = inf
+			}
+		}
+		f, newF = newF, f
+	}
+	if f[n] < inf {
+		return f[n]
+	}
+	return -1
+}
+
+func minimumValueSum22(nums, andValues []int) int {
 	const inf = math.MaxInt / 2
 	n := len(nums)
 	f := make([]int, n+1)
