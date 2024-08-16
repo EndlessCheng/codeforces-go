@@ -865,7 +865,7 @@ func _(x int) {
 			}
 			// 循环结束后，原数组的 OR(a[l:r+1]) 记录在 a[l] 中
 			// 对于更一般的场合（比如求子数组个数），可以在 a[:r+1] 中二分查找 target，
-			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleCntK
+			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleTargetPos
 		}
 		if ans == math.MaxInt {
 			ans = -1
@@ -874,22 +874,22 @@ func _(x int) {
 	}
 
 	// logTrick 的简单版本 · 其二
-	// 找 op 值为 k 的子数组个数
+	// 计算子数组 op 值恰好为 target 的子数组个数
 	// 支持 AND OR GCD 等
 	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
-	logTrickSimpleCntK := func(a []int, k int, op func(int, int) int) int {
+	logTrickSimpleCntTarget := func(a []int, target int, op func(int, int) int) int {
 		ans := 0
 		cnt := 0
 		for i, v := range a {
-			if v == k {
+			if v == target {
 				cnt++
 			}
 			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
-				if a[j] == k {
+				if a[j] == target {
 					cnt--
 				}
 				a[j] = op(a[j], v)
-				if a[j] == k {
+				if a[j] == target {
 					cnt++
 				}
 			}
@@ -898,7 +898,30 @@ func _(x int) {
 		return ans
 	}
 
-	// logTrick 的简单版本 · 其三
+	// logTrick 的简单版本 · 其三（三指针）
+	// 当子数组右端点为 i 且子数组 op 值恰好为 target 时，计算子数组左端点的范围
+	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/ 题解方法二
+	// https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/ 结合单调队列优化 DP
+	logTrickSimpleTargetPos := func(a []int, target int, op func(int, int) int) {
+		left, right := 0, 0
+		for i, x := range a {
+			for j := i - 1; j >= 0 && op(a[j], x) != a[j]; j-- {
+				a[j] = op(a[j], x)
+			}
+			for left <= i && a[left] < target {
+				left++
+			}
+			for right <= i && a[right] <= target {
+				right++
+			}
+			// 右端点为 i 且子数组 op 值恰好为 target 时，
+			// 子数组左端点的范围为左闭右开区间 [left, right)
+			// 处理 [left, right) 的逻辑写在这里 ...
+			
+		}
+	}
+
+	// logTrick 的简单版本 · 其四
 	// 返回 op(子数组) 的所有不同结果
 	// 讲解 https://leetcode.cn/problems/bitwise-ors-of-subarrays/solution/logtrick-ji-qi-jin-jie-tong-ji-mei-ge-ji-rleb/
 	// https://leetcode.cn/problems/bitwise-ors-of-subarrays/
@@ -914,7 +937,7 @@ func _(x int) {
 		return has
 	}
 
-	// logTrick 的简单版本 · 其四
+	// logTrick 的简单版本 · 其五
 	// 返回 op(子数组) 的所有不同结果及其出现次数
 	// 注：效率不如 logTrickCnt
 	// https://codeforces.com/problemset/problem/475/D 2000
@@ -1168,8 +1191,10 @@ func _(x int) {
 		lcp, lcpLen, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		logTrickSimple, logTrickSimpleCntK, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
+
+		logTrickSimple, logTrickSimpleCntTarget, logTrickSimpleTargetPos, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
 		logTrick, logTrickCnt, countSumEqMul,
+
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
