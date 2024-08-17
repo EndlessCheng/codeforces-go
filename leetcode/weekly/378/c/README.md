@@ -8,7 +8,7 @@
 - 或者，从最长和次长的特殊子串（$a[0],a[1]$）中取三个长度一样的特殊子串：
   - 如果 $a[0]=a[1]$，那么可以取三个长度均为 $a[0]-1$ 的特殊子串。
   - 如果 $a[0]>a[1]$，那么可以取三个长度均为 $a[1]$ 的特殊子串：从最长中取两个，从次长中取一个。
-  - 这两种情况合并成 $\min(a[0]-1, a[1])$。
+  - 这两种情况可以合并成 $\min(a[0]-1, a[1])$，如果 $a[0]-1 < a[1]$，这只能是第一种情况，因为 $a[0]\ge a[1]$，我们取二者较小值 $a[0]-1$；如果 $a[0]-1\ge a[1]$，即 $a[0] > a[1]$，这是第二种情况，我们也取的是二者较小值 $a[1]$。
 - 又或者，从最长、次长、第三长的的特殊子串（$a[0],a[1],a[2]$）中各取一个长为 $a[2]$ 的特殊子串。
 
 这三种情况取最大值，即
@@ -46,7 +46,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public int maximumLength(String S) {
         char[] s = S.toCharArray();
         List<Integer>[] groups = new ArrayList[26];
@@ -150,8 +150,7 @@ var maximumLength = function(s) {
             continue;
         }
         a.sort((x, y) => y - x);
-        a.push(0);
-        a.push(0); // 假设还有两个空串
+        a.push(0, 0); // 假设还有两个空串
         ans = Math.max(ans, a[0] - 2, Math.min(a[0] - 1, a[1]), a[2]);
     }
 
@@ -202,18 +201,20 @@ impl Solution {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

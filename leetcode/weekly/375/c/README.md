@@ -25,7 +25,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public long countSubarrays(int[] nums, int k) {
         int mx = 0;
         for (int x : nums) {
@@ -53,8 +53,8 @@ public class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long countSubarrays(vector<int> &nums, int k) {
-        int mx = *max_element(nums.begin(), nums.end());
+    long long countSubarrays(vector<int>& nums, int k) {
+        int mx = ranges::max(nums);
         long long ans = 0;
         int cnt_mx = 0, left = 0;
         for (int x : nums) {
@@ -114,6 +114,7 @@ func countSubarrays(nums []int, k int) (ans int64) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
