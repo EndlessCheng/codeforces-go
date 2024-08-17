@@ -33,7 +33,7 @@ func cf1468J(in io.Reader, out io.Writer) {
 			var v, w, wt int
 			Fscan(in, &v, &w, &wt)
 			if wt > k {
-				es = append(es, edge{v, w, wt - k})
+				es = append(es, edge{v, w, wt})
 				continue
 			}
 			mx = max(mx, wt)
@@ -46,26 +46,23 @@ func cf1468J(in io.Reader, out io.Writer) {
 		}
 		slices.SortFunc(es, func(a, b edge) int { return a.wt - b.wt })
 
-		ans := int(1e18)
 		if cc == 1 {
-			ans = k - mx
+			ans := k - mx
 			if len(es) > 0 {
-				ans = min(ans, es[0].wt)
+				ans = min(ans, es[0].wt-k)
 			}
-		}
-
-		sum := 0
-		for _, e := range es {
-			v, w, wt := find(e.v), find(e.w), e.wt
-			if v != w {
-				fa[v] = w
-				sum += wt
+			Fprintln(out, ans)
+		} else {
+			sum := 0
+			for _, e := range es {
+				v, w := find(e.v), find(e.w)
+				if v != w {
+					fa[v] = w
+					sum += e.wt - k
+				}
 			}
+			Fprintln(out, sum)
 		}
-		if sum > 0 {
-			ans = min(ans, sum)
-		}
-		Fprintln(out, ans)
 	}
 }
 
