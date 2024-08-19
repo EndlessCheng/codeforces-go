@@ -368,7 +368,7 @@ class Solution {
 public:
     int waysToReachStair(int k) {
         int ans = 0;
-        for (int j = k > 1 ? 32 - __builtin_clz(k - 1) : 0; (1 << j) - k <= j + 1; j++) {
+        for (int j = k ? __lg(k - 1) + 1 : 0; (1 << j) - k <= j + 1; j++) {
             ans += c[j + 1][(1 << j) - k];
         }
         return ans;
