@@ -20,7 +20,7 @@ $$
 
 我们可以在 $(i,j)$ 和 $(i+1, j_2)$ 之间连边，得到一个有向图。
 
-一开始什么数也没填，所以 $j=0$，最终模 $k$ 要等于 $0$，所以 $j$ 也等于 $0$。所以答案是一条从起点 $(0,0)$ 到终点 $(m,0)$ 的**字典序最大路径**，其中 $m=\left\lceil\dfrac{n}{2}\right\rceil$，因为我们只需填一半的数字，另一半可以镜像得到。
+一开始什么数也没填，所以 $j=0$；最终模 $k$ 要等于 $0$，所以 $j$ 也等于 $0$。所以答案是一条从起点 $(0,0)$ 到终点 $(m,0)$ 的**字典序最大路径**，其中 $m=\left\lceil\dfrac{n}{2}\right\rceil$，因为我们只需填一半的数字，另一半可以镜像得到。
 
 用 DFS 搜索，每次从 $d=9$ 开始倒着枚举，即可得到字典序最大路径。
 
@@ -43,7 +43,7 @@ class Solution:
         for i in range(1, n):
             pow10[i] = pow10[i - 1] * 10 % k
 
-        ans = [None] * n
+        ans = [''] * n
         m = (n + 1) // 2
         vis = [[False] * k for _ in range(m + 1)]
         def dfs(i: int, j: int) -> bool:
@@ -86,7 +86,7 @@ class Solution {
         vis[i][j] = true;
         for (int d = 9; d >= 0; d--) { // 贪心：从大到小枚举
             int j2;
-            if (n % 2 == 1 && i == m - 1) { // 正中间
+            if (n % 2 > 0 && i == m - 1) { // 正中间
                 j2 = (j + d * pow10[i]) % k;
             } else {
                 j2 = (j + d * (pow10[i] + pow10[n - 1 - i])) % k;
