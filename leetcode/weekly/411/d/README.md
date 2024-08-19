@@ -1,3 +1,5 @@
+## 方法一：滑动窗口+前缀和+二分查找
+
 **核心思路**：对于每个询问，计算以 $l$ 为右端点的合法子串个数，以 $l+1$ 为右端点的合法子串个数，……，以 $r$ 为右端点的合法子串个数。
 
 我们需要知道以 $i$ 为右端点的合法子串，其左端点最小是多少。
@@ -25,8 +27,6 @@ $$
 代码实现时，两种情况可以合并为一种。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hH4y1c7T5/) 第四题，欢迎点赞关注！
-
-## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -163,21 +163,27 @@ func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
 - 时间复杂度：$\mathcal{O}(n+q\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。注意 $\textit{l}$ 只会增加不会减少，所以二重循环的时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。返回值不计入。
 
-## 优化：双指针预处理
+## 方法二：预处理
 
-我们可以对于每个 $i$，计算出最小的 $j$，满足 $\textit{left}[j]\ge i$。
+上面的做法，每次都要二分找最小 $j$，满足 $\textit{left}[j]\ge l$。能否不用二分呢？
+
+也可以直接预处理，对每个左端点 $l=0,1,2,\cdots,n-1$，计算出最小的 $j$，满足 $\textit{left}[j]\ge l$。
 
 由于 $\textit{left}$ 数组是有序的，这个过程可以用**双指针**实现。
 
-将计算出的 $j$ 保存到 $\textit{left}_2[j]$ 中。
+将计算出的 $j$ 保存到 $\textit{right}[l]$ 中。如果不存在满足 $\textit{left}[j]\ge l$ 的 $j$，则 $\textit{right}[l] = n$。
 
-这样回答询问时，$j$ 就可以直接通过 $\textit{left}_2[l]$ 获取到了，注意这个数不能超过 $r+1$，所以有
+现在 $\textit{left}[\textit{right}[l]]\ge l$ 且 $\textit{left}[\textit{right}[l]-1] < l$。
+
+预处理后，回答询问时，$j$ 可以直接通过 $\textit{right}[l]$ 获取到。注意这个数不能超过 $r+1$，所以有
 
 $$
-j = \min(\textit{left}_2[l], r+1)
+j = \min(\textit{right}[l], r+1)
 $$
 
-> 注：这个优化可以显著减少 Java 的运行时间，其他语言不明显。
+### 写法一
+
+更快的写法见下面的写法二。
 
 ```py [sol-Python3]
 class Solution:
@@ -193,19 +199,18 @@ class Solution:
                 cnt[ord(s[l]) & 1] -= 1
                 l += 1
             left[i] = l
-            # 计算 i-left[i]+1 的前缀和
             pre[i + 1] = pre[i] + i - l + 1
 
-        left2 = [0] * n
+        right = [0] * n
         l = 0
         for i in range(n):
             while l < n and left[l] < i:
                 l += 1
-            left2[i] = l
+            right[i] = l
 
         ans = []
         for l, r in queries:
-            j = min(left2[l], r + 1)
+            j = min(right[l], r + 1)
             ans.append(pre[r + 1] - pre[j] + (j - l + 1) * (j - l) // 2)
         return ans
 ```
@@ -225,24 +230,23 @@ class Solution {
                 cnt[s[l++] & 1]--;
             }
             left[i] = l;
-            // 计算 i-left[i]+1 的前缀和
             sum[i + 1] = sum[i] + i - l + 1;
         }
 
-        int[] left2 = new int[n];
+        int[] right = new int[n];
         l = 0;
         for (int i = 0; i < n; i++) {
             while (l < n && left[l] < i) {
                 l++;
             }
-            left2[i] = l;
+            right[i] = l;
         }
 
         long[] ans = new long[queries.length];
         for (int i = 0; i < queries.length; i++) {
             int ql = queries[i][0];
             int qr = queries[i][1];
-            int j = Math.min(left2[ql], qr + 1);
+            int j = Math.min(right[ql], qr + 1);
             ans[i] = sum[qr + 1] - sum[j] + (long) (j - ql + 1) * (j - ql) / 2;
         }
         return ans;
@@ -264,23 +268,22 @@ public:
                 cnt[s[l++] & 1]--;
             }
             left[i] = l;
-            // 计算 i-left[i]+1 的前缀和
             sum[i + 1] = sum[i] + i - l + 1;
         }
 
-        vector<int> left2(n);
+        vector<int> right(n);
         l = 0;
         for (int i = 0; i < n; i++) {
             while (l < n && left[l] < i) {
                 l++;
             }
-            left2[i] = l;
+            right[i] = l;
         }
 
         vector<long long> ans(queries.size());
         for (int i = 0; i < queries.size(); i++) {
             int l = queries[i][0], r = queries[i][1];
-            int j = min(left2[l], r + 1);
+            int j = min(right[l], r + 1);
             ans[i] = sum[r + 1] - sum[j] + (long long) (j - l + 1) * (j - l) / 2;
         }
         return ans;
@@ -302,23 +305,146 @@ func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
 			l++
 		}
 		left[i] = l
-		// 计算 i-left[i]+1 的前缀和
 		sum[i+1] = sum[i] + i - l + 1
 	}
 
-	left2 := make([]int, n)
+	right := make([]int, n)
 	l = 0
-	for i := range left2 {
+	for i := range right {
 		for l < n && left[l] < i {
 			l++
 		}
-		left2[i] = l
+		right[i] = l
 	}
 
 	ans := make([]int64, len(queries))
 	for i, q := range queries {
 		l, r := q[0], q[1]
-		j := min(left2[l], r+1)
+		j := min(right[l], r+1)
+		ans[i] = int64(sum[r+1] - sum[j] + (j-l+1)*(j-l)/2)
+	}
+	return ans
+}
+```
+
+### 写法二
+
+在上面的方法中，我们找的是最小的 $j$，满足 $\textit{left}[j]\ge l$。
+
+也可以找最小的 $j$，满足 $\textit{left}[j] > l$，这不会影响计算出的合法子串个数。
+
+现在 $\textit{left}[\textit{right}[l]] > l$ 且 $\textit{left}[\textit{right}[l]-1] \le l$。
+
+在滑窗的过程中，如果发现窗口不满足要求，那么在移动左端点 $l$ 之前，可以记录 $\textit{right}[l]=i$。
+
+```py [sol-Python3]
+class Solution:
+    def countKConstraintSubstrings(self, s: str, k: int, queries: List[List[int]]) -> List[int]:
+        n = len(s)
+        right = [n] * n
+        pre = [0] * (n + 1)
+        cnt = [0, 0]
+        l = 0
+        for i, c in enumerate(s):
+            cnt[ord(c) & 1] += 1
+            while cnt[0] > k and cnt[1] > k:
+                cnt[ord(s[l]) & 1] -= 1
+                right[l] = i
+                l += 1
+            pre[i + 1] = pre[i] + i - l + 1
+
+        ans = []
+        for l, r in queries:
+            j = min(right[l], r + 1)
+            ans.append(pre[r + 1] - pre[j] + (j - l + 1) * (j - l) // 2)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long[] countKConstraintSubstrings(String S, int k, int[][] queries) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int[] right = new int[n];
+        long[] sum = new long[n + 1];
+        int[] cnt = new int[2];
+        int l = 0;
+        for (int i = 0; i < n; i++) {
+            cnt[s[i] & 1]++;
+            while (cnt[0] > k && cnt[1] > k) {
+                cnt[s[l] & 1]--;
+                right[l++] = i;
+            }
+            sum[i + 1] = sum[i] + i - l + 1;
+        }
+        // 剩余没填的 right[l] 均为 n
+        Arrays.fill(right, l, n, n);
+
+        long[] ans = new long[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int ql = queries[i][0];
+            int qr = queries[i][1];
+            int j = Math.min(right[ql], qr + 1);
+            ans[i] = sum[qr + 1] - sum[j] + (long) (j - ql + 1) * (j - ql) / 2;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<long long> countKConstraintSubstrings(string s, int k, vector<vector<int>>& queries) {
+        int n = s.length();
+        vector<int> right(n, n);
+        vector<long long> sum(n + 1);
+        int cnt[2]{}, l = 0;
+        for (int i = 0; i < n; i++) {
+            cnt[s[i] & 1]++;
+            while (cnt[0] > k && cnt[1] > k) {
+                cnt[s[l] & 1]--;
+                right[l++] = i;
+            }
+            sum[i + 1] = sum[i] + i - l + 1;
+        }
+
+        vector<long long> ans(queries.size());
+        for (int i = 0; i < queries.size(); i++) {
+            int l = queries[i][0], r = queries[i][1];
+            int j = min(right[l], r + 1);
+            ans[i] = sum[r + 1] - sum[j] + (long long) (j - l + 1) * (j - l) / 2;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
+	n := len(s)
+	right := make([]int, n)
+	sum := make([]int, n+1)
+	cnt := [2]int{}
+	l := 0
+	for i, c := range s {
+		cnt[c&1]++
+		for cnt[0] > k && cnt[1] > k {
+			cnt[s[l]&1]--
+			right[l] = i
+			l++
+		}
+		sum[i+1] = sum[i] + i - l + 1
+	}
+	// 剩余没填的 right[l] 均为 n
+	for ; l < n; l++ {
+		right[l] = n
+	}
+
+	ans := make([]int64, len(queries))
+	for i, q := range queries {
+		l, r := q[0], q[1]
+		j := min(right[l], r+1)
 		ans[i] = int64(sum[r+1] - sum[j] + (j-l+1)*(j-l)/2)
 	}
 	return ans
