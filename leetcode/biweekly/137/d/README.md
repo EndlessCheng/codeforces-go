@@ -22,6 +22,35 @@ class Solution:
     def maximumValueSum(self, board: List[List[int]]) -> int:
         def update(row: List[int]) -> None:
             for j, x in enumerate(row):
+                for k in range(3):
+                    if x > p[k][0] and all(j != j2 for _, j2 in p[:k]):
+                        p[k], (x, j) = (x, j), p[k]
+
+        m = len(board)
+        suf = [None] * m
+        p = [(-inf, -1)] * 3  # 最大、次大、第三大
+        for i in range(m - 1, 1, -1):
+            update(board[i])
+            suf[i] = p[:]
+
+        ans = -inf
+        p = [(-inf, -1)] * 3  # 重置，计算 pre
+        for i, row in enumerate(board[:-2]):
+            update(row)
+            for j2, y in enumerate(board[i + 1]):  # 第二个车
+                for x, j1 in p:  # 第一个车
+                    for z, j3 in suf[i + 2]:  # 第三个车
+                        if j1 != j2 and j1 != j3 and j2 != j3:  # 没有同列的车
+                            ans = max(ans, x + y + z)  # 注：手动 if 更快
+                            break
+        return ans
+```
+
+```py [sol-Python3 更快写法]
+class Solution:
+    def maximumValueSum(self, board: List[List[int]]) -> int:
+        def update(row: List[int]) -> None:
+            for j, x in enumerate(row):
                 if x > p[0][0]:
                     if p[0][1] != j:  # 如果相等，仅更新最大
                         if p[1][1] != j:  # 如果相等，仅更新最大和次大
