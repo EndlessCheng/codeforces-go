@@ -19,12 +19,12 @@ func sumE(k int) (res int) {
 	if cnt1 <= k {
 		k -= cnt1
 		res += sumI
-		n++ // 填 1
+		n |= 1 // 最低位填 1
 	}
 	// 剩余的 k 个幂次，由 n 的低 k 个 1 补充
 	for ; k > 0; k-- {
 		res += bits.TrailingZeros(uint(n))
-		n &= n - 1
+		n &= n - 1 // 去掉最低位的 1（置为 0）
 	}
 	return
 }
