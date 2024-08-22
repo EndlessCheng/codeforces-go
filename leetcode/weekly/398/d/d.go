@@ -46,7 +46,7 @@ func waysToReachStair2(k int) int {
 			return v
 		}
 		res := dfs(i+1<<j, j+1, false)
-		if !preDown && i > 0 {
+		if !preDown {
 			res += dfs(i-1, j, true)
 		}
 		if i == k {

@@ -30,7 +30,7 @@
 枚举当前使用哪个操作：
 
 - 使用操作二：接下来要解决的问题是 $\textit{dfs}(i+2^j,j+1,\texttt{false})$，将其方案数加到返回值中。
-- 使用操作一（前提是 $\textit{preDown}=\texttt{false}$ 且 $i>0$）：接下来要解决的问题是 $\textit{dfs}(i-1,j,\texttt{true})$，将其方案数加到返回值中。
+- 使用操作一（前提是 $\textit{preDown}=\texttt{false}$）：接下来要解决的问题是 $\textit{dfs}(i-1,j,\texttt{true})$，将其方案数加到返回值中。注意当 $\textit{preDown}=\texttt{false}$ 时，$i>0$ 必然成立。
 - 此外，如果 $i=k$（到达终点），则找到了一个方案，把返回值加一。
 
 ⚠**注意**：到达第 $k$ 个台阶后，还可以继续操作，重新回到第 $k$ 个台阶。所以 $i=k$ 并不是递归边界。
@@ -52,7 +52,7 @@ class Solution:
                 return 0
             res = 1 if i == k else 0
             res += dfs(i + (1 << j), j + 1, False)  # 操作二
-            if i and not pre_down:
+            if not pre_down:
                 res += dfs(i - 1, j, True)  # 操作一
             return res
         return dfs(1, 0, False)
@@ -64,6 +64,7 @@ class Solution {
         return dfs(1, 0, 0, k, new HashMap<>());
     }
 
+    // preDown = 0/1 表示 false/true
     private int dfs(int i, int j, int preDown, int k, Map<Long, Integer> memo) {
         if (i > k + 1) { // 无法到达终点 k
             return 0;
@@ -75,7 +76,7 @@ class Solution {
         }
         int res = i == k ? 1 : 0;
         res += dfs(i + (1 << j), j + 1, 0, k, memo); // 操作二
-        if (preDown == 0 && i > 0) {
+        if (preDown == 0) {
             res += dfs(i - 1, j, 1, k, memo); // 操作一
         }
         memo.put(mask, res); // 记忆化
@@ -100,7 +101,7 @@ public:
             }
             int res = i == k;
             res += dfs(dfs, i + (1 << j), j + 1, false); // 操作二
-            if (i && !pre_down) {
+            if (!pre_down) {
                 res += dfs(dfs, i - 1, j, true); // 操作一
             }
             return memo[mask] = res; // 记忆化
@@ -127,7 +128,7 @@ func waysToReachStair(k int) int {
 			return v
 		}
 		res := dfs(i+1<<j, j+1, false) // 操作二
-		if !preDown && i > 0 {
+		if !preDown {
 			res += dfs(i-1, j, true) // 操作一
 		}
 		if i == k {
