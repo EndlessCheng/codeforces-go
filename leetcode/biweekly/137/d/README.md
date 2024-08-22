@@ -262,6 +262,106 @@ func maximumValueSum(board [][]int) int64 {
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{board}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(m)$。
 
+## 附：费用流做法
+
+建图：
+
+- 把第 $i$ 行看作节点 $i$，第 $j$ 列看作节点 $m+j$。
+- 创建一个**完全二分图**，在第 $i$ 行到第 $j$ 列之间连边，容量为 $1$，费用为 $-\textit{grid}[i][j]$。因为我们求的是最小费用流，取负号转成求最大费用流。
+- 从超级节点 $R=m+n$ 向所有行节点 $0,1,2,\cdots,m-1$ 连边，容量为 $1$，费用为 $0$。
+- 从所有列节点 $m,m+1,m+2,\cdots,m+n-1$ 向超级节点 $C=m+n+1$ 连边，容量为 $1$，费用为 $0$。
+- 从超级源点 $S=m+n+2$ 向 $R$ 连边，容量为 $3$，费用为 $0$。如果题目要放置 $4$ 个车，甚至 $k$ 个车，只需把这里的 $3$ 改成 $k$ 即可。 
+
+这样建图可以保证三个车不会同行同列（否则节点 $i$ 或者节点 $m+j$ 的流量会超过 $1$，也就是超过容量）。
+
+计算从 $S$ 到 $C$ 的最小费用最大流，取相反数，即为答案。
+
+```go [sol-Go]
+func maximumValueSum(board [][]int) int64 {
+	m, n := len(board), len(board[0])
+	// rid 为反向边在邻接表中的下标
+	type neighbor struct{ to, rid, cap, cost int }
+	g := make([][]neighbor, m+n+3)
+	addEdge := func(from, to, cap, cost int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+	}
+	R := m + n
+	C := m + n + 1
+	S := m + n + 2
+	for i, row := range board {
+		addEdge(R, i, 1, 0)
+		for j, x := range row {
+			addEdge(i, m+j, 1, -x)
+		}
+	}
+	for j := range board[0] {
+		addEdge(m+j, C, 1, 0)
+	}
+	addEdge(S, R, 3, 0) // 把 3 改成 k 可以支持 k 个车
+
+	// 下面是费用流模板
+	dis := make([]int, len(g))
+	type vi struct{ v, i int }
+	fa := make([]vi, len(g))
+	inQ := make([]bool, len(g))
+	spfa := func() bool {
+		for i := range dis {
+			dis[i] = math.MaxInt
+		}
+		dis[S] = 0
+		inQ[S] = true
+		q := []int{S}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			inQ[v] = false
+			for i, e := range g[v] {
+				if e.cap == 0 {
+					continue
+				}
+				w := e.to
+				newD := dis[v] + e.cost
+				if newD < dis[w] {
+					dis[w] = newD
+					fa[w] = vi{v, i}
+					if !inQ[w] {
+						inQ[w] = true
+						q = append(q, w)
+					}
+				}
+			}
+		}
+		// 循环结束后所有 inQ[v] 都为 false，无需重置
+		return dis[C] < math.MaxInt
+	}
+
+	minCost := 0
+	for spfa() {
+		minF := math.MaxInt
+		for v := C; v != S; {
+			p := fa[v]
+			minF = min(minF, g[p.v][p.i].cap)
+			v = p.v
+		}
+		for v := C; v != S; {
+			p := fa[v]
+			e := &g[p.v][p.i]
+			e.cap -= minF
+			g[v][e.rid].cap += minF
+			v = p.v
+		}
+		minCost += dis[C] * minF
+	}
+	return int64(-minCost)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{board}$ 的行数和列数。由于这里创建的是完全二分图，算法跑 $3$ 次 $\mathcal{O}(mn)$ 的 SPFA 就结束了。
+- 空间复杂度：$\mathcal{O}(mn)$。
+
 ## 套路：枚举中间
 
 - [3128. 直角三角形](https://leetcode.cn/problems/right-triangles/) 1541
