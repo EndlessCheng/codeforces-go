@@ -1,10 +1,32 @@
-划分型 DP **固定套路**，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「§6.2 计算划分个数」。
+首先说明，分割方案是一定存在的，因为单个字母是平衡的，我们一定可以把 $s$ 划分成 $n$ 个平衡子串。
 
-注意本题答案是存在的，因为单个字母是平衡的，我们一定可以划分成 $n$ 个子串。
+## 一、寻找子问题
 
-## 方法一：记忆化搜索
+示例 1 的 $s=\texttt{fabccddg}$，枚举最后一段的长度：
 
-定义 $\textit{dfs}(i)$ 表示划分前缀 $s[0]$ 到 $s[i]$ 的最小划分个数，则有
+- 最后一段分割出一个长为 $1$ 的子串，即 $\texttt{g}$，这是平衡的，问题变成剩余字符串 $\texttt{fabccdd}$ 最少能分割出多少个平衡子串。
+- 最后一段分割出一个长为 $2$ 的子串，即 $\texttt{dg}$，这是平衡的，问题变成剩余字符串 $\texttt{fabccd}$ 最少能分割出多少个平衡子串。
+- ……
+
+在这个过程中，我们只需要知道剩余字符串的长度，因为剩余字符串一定是 $s$ 的一个前缀。
+
+这些问题都是**和原问题相似的、规模更小的子问题**，可以用**递归**解决。
+
+> 注 1：从右往左思考，主要是为了方便把递归翻译成递推。从左往右思考也是可以的。
+>
+> 注 2：动态规划有「**选或不选**」和「**枚举选哪个**」两种基本思考方式。在做题时，可根据题目要求，选择适合题目的一种来思考。本题用到的是「**枚举选哪个**」。
+
+## 二、状态定义与状态转移方程
+
+根据上面的讨论，我们只需要在递归过程中跟踪以下信息：
+
+- $i$：剩余字符串是 $s[0]$ 到 $s[i]$。
+
+因此，定义状态为 $\textit{dfs}(i)$，表示当剩余字符串是 $s[0]$ 到 $s[i]$ 时，最少能分割出多少个平衡子串。
+
+枚举最后一段从 $s[j]$ 到 $s[i]$，如果这个子串是平衡的，那么接下来要解决的问题是：当剩余字符串是 $s[0]$ 到 $s[j-1]$ 时，最少能分割出多少个平衡子串，即 $\textit{dfs}(j-1)$。
+
+枚举所有小于等于 $i$ 的 $j$，取 $\textit{dfs}(j-1)$ 的最小值，即
 
 $$
 \textit{dfs}(i) = \min_{j=0}^{i} \textit{dfs}(j-1) + 1
@@ -12,27 +34,37 @@ $$
 
 其中 $s[j]$ 到 $s[i]$ 是平衡子串。
 
-我们可以在倒序枚举 $j$ 的同时，用一个哈希表（或者数组）统计每个字符的出现次数。如果子串中每个字母的出现次数都相等，那么子串是平衡的。
+如何快速判断子串是平衡的呢？
 
-**优化**：设子串中有 $k$ 种字母，字母出现次数的最大值为 $\textit{maxCnt}$。子串是平衡的，当且仅当子串长度等于 $k\cdot \textit{maxCnt}$。
+我们可以在**倒序枚举** $j$ 的同时，用一个哈希表（或者数组）统计每个字符的出现次数。如果子串中每个字母的出现次数都相等，那么子串是平衡的。
 
-递归边界：$\textit{dfs}(-1) = 0$。
+**优化**：设子串中有 $k$ 种字母，字母出现次数的最大值为 $\textit{maxCnt}$。子串是平衡的，当且仅当子串长度 $i-j+1$ 等于 $k\cdot \textit{maxCnt}$。
 
-递归入口：$\textit{dfs}(n-1)$，即答案。
+**递归边界**：$\textit{dfs}(-1) = 0$。
+
+**递归入口**：$\textit{dfs}(n-1)$，也就是答案。
+
+## 三、递归搜索 + 保存递归返回值 = 记忆化搜索
 
 考虑到整个递归过程中有大量重复递归调用（递归入参相同）。由于递归函数没有副作用，同样的入参无论计算多少次，算出来的结果都是一样的，因此可以用**记忆化搜索**来优化：
 
 - 如果一个状态（递归入参）是第一次遇到，那么可以在返回前，把状态及其结果记到一个 $\textit{memo}$ 数组中。
 - 如果一个状态不是第一次遇到（$\textit{memo}$ 中保存的结果不等于 $\textit{memo}$ 的初始值），那么可以直接返回 $\textit{memo}$ 中保存的结果。
 
-**注意**：$\textit{memo}$ 数组的**初始值**一定不能等于要记忆化的值！例如初始值设置为 $0$，并且要记忆化的 $\textit{dfs}(i)$ 也等于 $0$，那就没法判断 $0$ 到底表示第一次遇到这个状态，还是表示之前遇到过了，从而导致记忆化失效。一般把初始值设置为 $-1$。本题由于 $\textit{dfs}(i) > 0$，可以初始化成 $0$。
+**注意**：$\textit{memo}$ 数组的**初始值**一定不能等于要记忆化的值！例如初始值设置为 $0$，并且要记忆化的 $\textit{dfs}(i)$ 也等于 $0$，那就没法判断 $0$ 到底表示第一次遇到这个状态，还是表示之前遇到过了，从而导致记忆化失效。一般把初始值设置为 $-1$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1cz421m786/) 第三题，欢迎点赞关注！
+本题当 $i\ge 0$ 时，$\textit{dfs}(i)$ 一定是正数（因为任意字符串都存在合法分割方案），所以 $\textit{memo}$ 数组初始化成 $0$ 也可以。
+
+> Python 用户可以无视上面这段，直接用 `@cache` 装饰器。
+
+具体请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1cz421m786/)（第三题），欢迎点赞关注！
 
 ```py [sol-Python3]
 class Solution:
     def minimumSubstringsInPartition(self, s: str) -> int:
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int) -> int:
             if i < 0:
                 return 0
@@ -51,7 +83,7 @@ class Solution:
 ```py [sol-Python3 写法二]
 class Solution:
     def minimumSubstringsInPartition(self, s: str) -> int:
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int) -> int:
             if i < 0:
                 return 0
@@ -60,8 +92,7 @@ class Solution:
             max_cnt = 0
             for j in range(i, -1, -1):
                 cnt[s[j]] += 1
-                # 手动计算 max 和 min
-                if cnt[s[j]] > max_cnt:
+                if cnt[s[j]] > max_cnt:  # 手动 if 比大小
                     max_cnt = cnt[s[j]]
                 if i - j + 1 == len(cnt) * max_cnt:
                     r = dfs(j - 1) + 1
@@ -77,7 +108,6 @@ class Solution {
         char[] s = S.toCharArray();
         int n = s.length;
         int[] memo = new int[n];
-        Arrays.fill(memo, -1); // -1 表示没有计算过
         return dfs(n - 1, s, memo);
     }
 
@@ -85,7 +115,7 @@ class Solution {
         if (i < 0) {
             return 0;
         }
-        if (memo[i] != -1) { // 之前计算过
+        if (memo[i] > 0) { // 之前计算过
             return memo[i];
         }
         int res = Integer.MAX_VALUE;
@@ -109,13 +139,13 @@ class Solution {
 public:
     int minimumSubstringsInPartition(string s) {
         int n = s.length();
-        vector<int> memo(n, -1); // -1 表示没有计算过
-        function<int(int)> dfs = [&](int i) -> int {
+        vector<int> memo(n);
+        auto dfs = [&](auto&& dfs, int i) -> int {
             if (i < 0) {
                 return 0;
             }
             int& res = memo[i]; // 注意这里是引用
-            if (res != -1) { // 之前计算过
+            if (res) { // 之前计算过
                 return res;
             }
             res = INT_MAX;
@@ -124,12 +154,12 @@ public:
                 k += cnt[s[j] - 'a']++ == 0;
                 max_cnt = max(max_cnt, cnt[s[j] - 'a']);
                 if (i - j + 1 == k * max_cnt) {
-                    res = min(res, dfs(j - 1) + 1);
+                    res = min(res, dfs(dfs, j - 1) + 1);
                 }
             }
             return res;
         };
-        return dfs(n - 1);
+        return dfs(dfs, n - 1);
     }
 };
 ```
@@ -138,16 +168,13 @@ public:
 func minimumSubstringsInPartition(s string) int {
 	n := len(s)
 	memo := make([]int, n)
-	for i := range memo {
-		memo[i] = -1 // -1 表示没有计算过
-	}
 	var dfs func(int) int
 	dfs = func(i int) int {
 		if i < 0 {
 			return 0
 		}
 		p := &memo[i]
-		if *p != -1 { // 之前计算过
+		if *p > 0 { // 之前计算过
 			return *p
 		}
 		res := math.MaxInt
@@ -176,9 +203,13 @@ func minimumSubstringsInPartition(s string) int {
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $s$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n)$，单个状态的计算时间为 $\mathcal{O}(n)$，所以动态规划的时间复杂度为 $\mathcal{O}(n^2)$。
 - 空间复杂度：$\mathcal{O}(n|\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。注意递归中至多会创建 $n$ 个长为 $|\Sigma|$ 的 $\textit{cnt}$ 数组。
 
-## 方法二：递推（1:1 翻译）
+## 四、1:1 翻译成递推
 
-定义 $f[i+1]$ 表示划分前缀 $s[0]$ 到 $s[i]$ 的最小划分个数，则有
+我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
+
+具体来说，$f[i+1]$ 的定义和 $\textit{dfs}(i)$ 的定义是一样的，都表示当剩余字符串是 $s[0]$ 到 $s[i]$ 时，最少能分割出多少个平衡子串。这里 $+1$ 是为了把 $\textit{dfs}(-1)$ 这个状态也翻译过来，这样我们可以把 $f[0]$ 作为初始值。
+
+相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
 $$
 f[i+1] = \min_{j=0}^{i}f[j] + 1
@@ -216,7 +247,7 @@ class Solution:
             max_cnt = 0
             for j in range(i, -1, -1):
                 cnt[s[j]] += 1
-                if cnt[s[j]] > max_cnt:
+                if cnt[s[j]] > max_cnt:  # 手动 if 比大小
                     max_cnt = cnt[s[j]]
                 if i - j + 1 == len(cnt) * max_cnt and f[j] + 1 < f[i + 1]:
                     f[i + 1] = f[j] + 1
@@ -234,7 +265,8 @@ class Solution {
         int[] cnt = new int[26];
         for (int i = 0; i < n; i++) {
             Arrays.fill(cnt, 0);
-            int k = 0, maxCnt = 0;
+            int k = 0;
+            int maxCnt = 0;
             for (int j = i; j >= 0; j--) {
                 k += cnt[s[j] - 'a']++ == 0 ? 1 : 0;
                 maxCnt = Math.max(maxCnt, cnt[s[j] - 'a']);
@@ -299,6 +331,8 @@ func minimumSubstringsInPartition(s string) int {
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 为 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + |\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 
+更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**§6.2 最优划分**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
@@ -313,6 +347,7 @@ func minimumSubstringsInPartition(s string) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
