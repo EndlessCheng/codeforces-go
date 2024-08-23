@@ -67,24 +67,21 @@ $$
 
 代码中用到了一些位运算技巧，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
+代码实现时，乘以 $2^{i-1}$ 可以写成 `<< (i - 1)`。为了避免特判 $i=0$ 的情况，`<< (i - 1)` 可以用 `<< i >> 1` 代替
+
 ```py [sol-Python3]
 class Solution:
     def findProductsOfElements(self, queries: List[List[int]]) -> List[int]:
         def sum_e(k: int) -> int:
             res = n = cnt1 = sum_i = 0
-            for i in range((k + 1).bit_length() - 1, 0, -1):
-                c = (cnt1 << i) + (i << (i - 1))  # 新增的幂次个数
+            for i in range((k + 1).bit_length() - 1, -1, -1):
+                c = (cnt1 << i) + (i << i >> 1)  # 新增的幂次个数
                 if c <= k:
                     k -= c
-                    res += (sum_i << i) + ((i * (i - 1) // 2) << (i - 1))
+                    res += (sum_i << i) + ((i * (i - 1) // 2) << i >> 1)
                     sum_i += i  # 之前填的 1 的幂次之和
                     cnt1 += 1  # 之前填的 1 的个数
                     n |= 1 << i  # 填 1
-            # 最低位单独计算
-            if cnt1 <= k:
-                k -= cnt1
-                res += sum_i
-                n |= 1  # 最低位填 1
             # 剩余的 k 个幂次，由 n 的低 k 个 1 补充
             for _ in range(k):
                 lb = n & -n
@@ -112,21 +109,15 @@ class Solution {
         long n = 0;
         long cnt1 = 0; // 之前填的 1 的个数
         long sumI = 0; // 之前填的 1 的幂次之和
-        for (long i = 63 - Long.numberOfLeadingZeros(k + 1); i > 0; i--) {
-            long c = (cnt1 << i) + (i << (i - 1)); // 新增的幂次个数
+        for (long i = 63 - Long.numberOfLeadingZeros(k + 1); i >= 0; i--) {
+            long c = (cnt1 << i) + (i << i >> 1); // 新增的幂次个数
             if (c <= k) {
                 k -= c;
-                res += (sumI << i) + ((i * (i - 1) / 2) << (i - 1));
+                res += (sumI << i) + ((i * (i - 1) / 2) << i >> 1);
                 sumI += i;
                 cnt1++;
                 n |= 1L << i; // 填 1
             }
-        }
-        // 最低位单独计算
-        if (cnt1 <= k) {
-            k -= cnt1;
-            res += sumI;
-            n |= 1; // 最低位填 1
         }
         // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
         while (k-- > 0) {
@@ -137,7 +128,7 @@ class Solution {
     }
 
     private int pow(long x, long n, long mod) {
-        long res = 1 % mod;
+        long res = 1 % mod; // 注意 mod 可能等于 1
         for (; n > 0; n /= 2) {
             if (n % 2 == 1) {
                 res = res * x % mod;
@@ -152,7 +143,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     int pow(long long x, long long n, long long mod) {
-        long long res = 1 % mod;
+        long long res = 1 % mod; // 注意 mod 可能等于 1
         for (; n; n /= 2) {
             if (n % 2) {
                 res = res * x % mod;
@@ -164,21 +155,15 @@ class Solution {
 
     long long sum_e(long long k) {
         long long res = 0, n = 0, cnt1 = 0, sum_i = 0;
-        for (long long i = __lg(k + 1); i; i--) {
-            long long c = (cnt1 << i) + (i << (i - 1)); // 新增的幂次个数
+        for (long long i = __lg(k + 1); i >= 0; i--) {
+            long long c = (cnt1 << i) + (i << i >> 1); // 新增的幂次个数
             if (c <= k) {
                 k -= c;
-                res += (sum_i << i) + ((i * (i - 1) / 2) << (i - 1));
+                res += (sum_i << i) + ((i * (i - 1) / 2) << i >> 1);
                 sum_i += i; // 之前填的 1 的幂次之和
                 cnt1++; // 之前填的 1 的个数
                 n |= 1LL << i; // 填 1
             }
-        }
-        // 最低位单独计算
-        if (cnt1 <= k) {
-            k -= cnt1;
-            res += sum_i;
-            n |= 1; // 最低位填 1
         }
         // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
         while (k--) {
@@ -203,50 +188,44 @@ public:
 
 ```go [sol-Go]
 func sumE(k int) (res int) {
-	var n, cnt1, sumI int
-	for i := bits.Len(uint(k+1)) - 1; i > 0; i-- {
-		c := cnt1<<i + i<<(i-1) // 新增的幂次个数
-		if c <= k {
-			k -= c
-			res += sumI<<i + i*(i-1)/2<<(i-1)
-			sumI += i   // 之前填的 1 的幂次之和
-			cnt1++      // 之前填的 1 的个数
-			n |= 1 << i // 填 1
-		}
-	}
-	// 最低位单独计算
-	if cnt1 <= k {
-		k -= cnt1
-		res += sumI
-		n |= 1 // 最低位填 1
-	}
-	// 剩余的 k 个幂次，由 n 的低 k 个 1 补充
-	for ; k > 0; k-- {
-		res += bits.TrailingZeros(uint(n))
-		n &= n - 1 // 去掉最低位的 1（置为 0）
-	}
-	return
-}
-
-func findProductsOfElements(queries [][]int64) []int {
-	ans := make([]int, len(queries))
-	for i, q := range queries {
-		er := sumE(int(q[1]) + 1)
-		el := sumE(int(q[0]))
-		ans[i] = pow(2, er-el, int(q[2]))
-	}
-	return ans
+    var n, cnt1, sumI int
+    for i := bits.Len(uint(k+1)) - 1; i >= 0; i-- {
+        c := cnt1<<i + i<<i>>1 // 新增的幂次个数
+        if c <= k {
+            k -= c
+            res += sumI<<i + i*(i-1)/2<<i>>1
+            sumI += i   // 之前填的 1 的幂次之和
+            cnt1++      // 之前填的 1 的个数
+            n |= 1 << i // 填 1
+        }
+    }
+    // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
+    for ; k > 0; k-- {
+        res += bits.TrailingZeros(uint(n))
+        n &= n - 1 // 去掉最低位的 1（置为 0）
+    }
+    return
 }
 
 func pow(x, n, mod int) int {
-	res := 1 % mod
-	for ; n > 0; n /= 2 {
-		if n%2 > 0 {
-			res = res * x % mod
-		}
-		x = x * x % mod
-	}
-	return res
+    res := 1 % mod // 注意 mod 可能等于 1
+    for ; n > 0; n /= 2 {
+        if n%2 > 0 {
+            res = res * x % mod
+        }
+        x = x * x % mod
+    }
+    return res
+}
+
+func findProductsOfElements(queries [][]int64) []int {
+    ans := make([]int, len(queries))
+    for i, q := range queries {
+        er := sumE(int(q[1]) + 1)
+        el := sumE(int(q[0]))
+        ans[i] = pow(2, er-el, int(q[2]))
+    }
+    return ans
 }
 ```
 
