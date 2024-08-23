@@ -1,34 +1,46 @@
 ## 提示 1：二分答案
 
-套路，见[【题单】二分答案](https://leetcode.cn/circle/discuss/SqopEo/) 中的「第 K 小/大」。
+$\textit{nums}$ 的唯一性数组有多少个？也就是 $\textit{nums}$ 的非空连续子数组的个数。
 
-一共有 $m = \dfrac{n(n+1)}{2}$ 个非空连续子数组，中位数是其中第 $k = \left\lceil\dfrac{m}{2}\right\rceil$ 个。
+长为 $n$ 的子数组有 $1$ 个，长为 $n-1$ 的子数组有 $2$ 个，……，长为 $1$ 的子数组有 $n$ 个。
+ 
+所有一共有 $m = 1+2+\cdots +n = \dfrac{n(n+1)}{2}$ 个非空连续子数组。
 
-二分中位数 $\textit{upper}$，问题变成：
+这 $m$ 个子数组，对应着 $m$ 个 $\texttt{distinct}$ 值。
+
+中位数是这 $m$ 个数中的第 $k = \left\lceil\dfrac{m}{2}\right\rceil$ 小元素。例如 $m=4$ 时，中位数是其中第 $2$ 小元素。
+
+考虑这 $m$ 个数中，小于等于某个定值 $\textit{upper}$ 的数有多少个。
+
+由于 $\textit{upper}$ 越大，小于等于 $\textit{upper}$ 的数越多，有**单调性**，故可以**二分**中位数为 $\textit{upper}$，问题变成：
 
 - $\texttt{distinct}$ 值 $\le \textit{upper}$ 的子数组有多少个？
 
 设子数组的个数为 $\textit{cnt}$，如果 $\textit{cnt} < k$ 说明二分的 $\textit{upper}$ 小了，更新二分左边界 $\textit{left}$，否则更新二分右边界 $\textit{right}$。
 
+如果你没有想到二分答案，可以做做 [二分题单](https://leetcode.cn/circle/discuss/SqopEo/) 中的「**第 K 小/大**」。
+
 ## 提示 2：滑动窗口
 
 怎么计算 $\texttt{distinct}$ 值 $\le \textit{upper}$ 的子数组个数 $\textit{cnt}$？
 
-这又是一个套路，见[【题单】滑动窗口](https://leetcode.cn/circle/discuss/0viNMK/) 中的「不定长滑动窗口（求子数组个数）」，类似 [713. 乘积小于 K 的子数组](https://leetcode.cn/problems/subarray-product-less-than-k/)。
-
-由于子数组越长，不同元素个数（$\texttt{distinct}$ 值）不会变小，这样的**单调性**可以让我们滑窗。
+由于子数组越长，不同元素个数（$\texttt{distinct}$ 值）不会变小，有**单调性**，故可以用**滑动窗口**计算子数组个数。
 
 用一个哈希表 $\textit{freq}$ 统计窗口（子数组）内的元素及其出现次数。
 
-枚举窗口右端点 $r$，把 $\textit{nums}[r]$ 加入 $\textit{freq}$（出现次数加一）。如果发现 $\textit{freq}$ 的大小超过 $\textit{upper}$，就不断移出窗口左端点元素 $\textit{nums}[l]$（出现次数减一，如果出现次数等于 $0$ 就从 $\textit{freq}$ 中移除），直到 $\textit{freq}$ 的大小 $\le \textit{upper}$ 为止。
+枚举窗口右端点 $r$，把 $\textit{nums}[r]$ 加入 $\textit{freq}$（出现次数加一）。如果发现 $\textit{freq}$ 的大小超过 $\textit{upper}$，说明窗口内的元素过多，那么不断移出窗口左端点元素 $\textit{nums}[l]$（出现次数减一，如果出现次数等于 $0$ 就从 $\textit{freq}$ 中移除），直到 $\textit{freq}$ 的大小 $\le \textit{upper}$ 为止。
 
 此时右端点为 $r$，左端点为 $l,l+1,l+2,\cdots,r$ 的子数组都是满足要求的（$\texttt{distinct}$ 值 $\le \textit{upper}$），一共有 $r-l+1$ 个，加到子数组个数 $\textit{cnt}$ 中。
+
+如果你没有想到滑动窗口，可以做做 [滑动窗口题单](https://leetcode.cn/circle/discuss/0viNMK/) 中的「**不定长滑动窗口（求子数组个数）**」。
 
 ## 其它细节
 
 开区间二分左边界：$0$，一定不满足要求，因为没有子数组的 $\texttt{distinct}$ 值是 $0$。
 
-开区间二分右边界：$n$ 或者 $\textit{nums}$ 中的不同元素个数，一定满足要求，因为所有子数组的 $\texttt{distinct}$ 值不超过 $n$。
+开区间二分右边界：$n$，或者 $\textit{nums}$ 中的不同元素个数，一定满足要求，因为所有子数组的 $\texttt{distinct}$ 值都不超过 $n$。
+
+用开区间计算二分仅仅是个人喜好，你也可以使用闭区间或半闭半开区间计算二分，并无本质区别。
 
 ## 答疑
 
@@ -52,14 +64,14 @@ class Solution:
             cnt = l = 0
             freq = defaultdict(int)
             for r, in_ in enumerate(nums):
-                freq[in_] += 1
-                while len(freq) > upper:
+                freq[in_] += 1  # 移入右端点
+                while len(freq) > upper:  # 窗口内元素过多
                     out = nums[l]
-                    freq[out] -= 1
+                    freq[out] -= 1  # 移出左端点
                     if freq[out] == 0:
                         del freq[out]
                     l += 1
-                cnt += r - l + 1
+                cnt += r - l + 1  # 右端点固定为 r 时，有 r-l+1 个合法左端点
                 if cnt >= k:
                     return True
             return False
@@ -90,14 +102,14 @@ class Solution {
         int l = 0;
         HashMap<Integer, Integer> freq = new HashMap<>();
         for (int r = 0; r < nums.length; r++) {
-            freq.merge(nums[r], 1, Integer::sum);
-            while (freq.size() > upper) {
+            freq.merge(nums[r], 1, Integer::sum); // 移入右端点
+            while (freq.size() > upper) { // 窗口内元素过多
                 int out = nums[l++];
-                if (freq.merge(out, -1, Integer::sum) == 0) {
+                if (freq.merge(out, -1, Integer::sum) == 0) { // 移出左端点
                     freq.remove(out);
                 }
             }
-            cnt += r - l + 1;
+            cnt += r - l + 1; // 右端点固定为 r 时，有 r-l+1 个合法左端点
             if (cnt >= k) {
                 return true;
             }
@@ -119,14 +131,14 @@ public:
             int l = 0;
             unordered_map<int, int> freq;
             for (int r = 0; r < n; r++) {
-                freq[nums[r]]++;
-                while (freq.size() > upper) {
+                freq[nums[r]]++; // 移入右端点
+                while (freq.size() > upper) { // 窗口内元素过多
                     int out = nums[l++];
-                    if (--freq[out] == 0) {
+                    if (--freq[out] == 0) { // 移出左端点
                         freq.erase(out);
                     }
                 }
-                cnt += r - l + 1;
+                cnt += r - l + 1; // 右端点固定为 r 时，有 r-l+1 个合法左端点
                 if (cnt >= k) {
                     return true;
                 }
@@ -154,16 +166,16 @@ func medianOfUniquenessArray(nums []int) int {
 		l := 0
 		freq := map[int]int{}
 		for r, in := range nums {
-			freq[in]++
-			for len(freq) > upper {
+			freq[in]++ // 移入右端点
+			for len(freq) > upper { // 窗口内元素过多
 				out := nums[l]
-				freq[out]--
+				freq[out]-- // 移出左端点
 				if freq[out] == 0 {
 					delete(freq, out)
 				}
 				l++
 			}
-			cnt += r - l + 1
+			cnt += r - l + 1 // 右端点固定为 r 时，有 r-l+1 个合法左端点
 			if cnt >= k {
 				return true
 			}
@@ -181,16 +193,20 @@ func medianOfUniquenessArray(nums []int) int {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
