@@ -27,6 +27,12 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - [2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/) 1917
 - [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
 - [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456
+https://codeforces.com/problemset/problem/6/E 1900
+
+注：如果要维护区间次小值（次大值），可以用 last 记录上一个被 pop 的元素，然后分类讨论：
+- 如果队列中至少有两个元素，那么取队首后面的元素为次小值
+- 否则，次小值为 last
+- 注意 last 的位置在队首左边，需要注意是否小于左边界（或者保证区间长度至少为 2）
 
 单调双端队列
 https://codeforces.com/problemset/problem/1584/E 2300 
