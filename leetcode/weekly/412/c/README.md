@@ -1,4 +1,4 @@
-**核心观察**：对于两个数 $x$ 和 $y$，如果 $x<y$ 且 $x\cdot \textit{multiplier} \ge y$，那么 $x\cdot \textit{multiplier} < y\cdot \textit{multiplier}$。
+**核心观察**：对于两个数 $x$ 和 $y$，如果 $x$ 在 $y$ 左边，且 $x\le y$ 以及 $x\cdot \textit{multiplier} > y$，那么操作 $y$ 之后，根据 $x\le y$，我们有 $x\cdot \textit{multiplier} \le y\cdot \textit{multiplier}$，这意味着下一次一定会操作 $x$。继续推导下去，后面的操作顺序是 $y,x,y,x,\cdots$
 
 这意味着当两个数接近时，我们会**交替操作**这两个数，而**不会连续操作同一个数**。
 
@@ -6,7 +6,7 @@
 
 那么，首先用最小堆手动模拟操作，直到原数组的最大值 $\textit{mx}$ 成为这 $n$ 个数的最小值。根据上面的结论，后面的操作就不需要手动模拟了。
 
-假设此时还剩下 $k$ 次操作，那么：
+设此时还剩下 $k$ 次操作，那么：
 
 - 对于前 $k\bmod n$ 小的数，还可以再操作 $\left\lfloor\dfrac{k}{n}\right\rfloor+1$ 次。
 - 其余元素，还可以再操作 $\left\lfloor\dfrac{k}{n}\right\rfloor$ 次。
