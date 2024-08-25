@@ -1,3 +1,5 @@
+## 写法一
+
 **核心观察**：对于两个数 $x$ 和 $y$，如果 $x$ 在 $y$ 左边，且 $x\le y$ 以及 $x\cdot \textit{multiplier} > y$，那么操作 $y$ 之后，根据 $x\le y$，我们有 $x\cdot \textit{multiplier} \le y\cdot \textit{multiplier}$，这意味着下一次一定会操作 $x$。继续推导下去，后面的操作顺序是 $y,x,y,x,\cdots$
 
 这意味着当两个数接近时，我们会**交替操作**这两个数，而**不会连续操作同一个数**。
@@ -14,8 +16,6 @@
 用**快速幂**计算操作这么多次后的结果，原理见[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1cMW6ePEwC/)，欢迎点赞关注！
-
-## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -221,7 +221,7 @@ func pow(x, n int) int {
 - 时间复杂度：$\mathcal{O}(n\log n\log_{m} U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$m=\textit{multiplier}$。瓶颈在模拟那，每个数至多操作 $\mathcal{O}(\log_{m} U)$ 次。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 优化
+## 写法二：优化
 
 设把每个 $\textit{nums}[i]$ 都操作到至少为 $\textit{nums}$ 的最大值，总共需要操作 $\textit{total}$ 次。
 
@@ -507,7 +507,368 @@ func pow(x, n int) int {
 
 - 时间复杂度：
     - $k$ 较小时为 $\mathcal{O}(n+k\log n)$。Java 是 $\mathcal{O}(n\log n+k\log n)$。
-    - $k$ 较大时为 $\mathcal{O}(n\log_{m} U+ n\log n)$。如果像 C++ 那样使用快速选择，时间复杂度为 $\mathcal{O}(n\log_{m} U)$。
+    - $k$ 较大时为 $\mathcal{O}(n\log_{m} U+ n\log n)$ 或 $\mathcal{O}(n\log_{m} U)$。如果像 C++ 那样使用**快速选择**，时间复杂度为 $\mathcal{O}(n\log_{m} U)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法三：进一步优化
+
+方法二瓶颈在暴力把每个 $\textit{nums}[i]$ 乘到至少为 $\textit{mx}$ 上。
+
+通过预处理，把 $\textit{nums}[i]$ 乘到至少为 $\textit{mx}$，这一步可以做到 $\mathcal{O}(1)$。
+
+根据 [@hqztrue](/u/hqztrue) 的 [题解](https://leetcode.cn/problems/final-array-state-after-k-multiplication-operations-ii/solutions/2892649/xian-xing-suan-fa-by-hqztrue-30fk/)，代码实现如下。
+
+> 注：由于常数比较大，该优化并不明显。仅用来说明当 $k$ 比较大时，存在 $\mathcal{O}(n)$ 的做法。
+
+```py [sol-Python3]
+class Solution:
+    def getFinalState(self, nums: List[int], k: int, multiplier: int) -> List[int]:
+        if multiplier == 1:  # 数组不变
+            return nums
+
+        MOD = 1_000_000_007
+        n = len(nums)
+        mx = max(nums)
+
+        # 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+        e_pow_m = []
+        pow_m = pow2 = 1
+        e = 0
+        while pow2 <= mx:
+            if pow_m < pow2:  # 由于 multiplier >= 2，这里只需写 if 而不是 while
+                pow_m *= multiplier
+                e += 1
+            e_pow_m.append((e, pow_m))
+            pow2 <<= 1
+
+        # 把每个数都操作到 >= mx
+        left = k
+        clone = nums.copy()
+        mx_len = mx.bit_length()
+        for i, x in enumerate(nums):
+            e, pow_m = e_pow_m[mx_len - x.bit_length()]
+            if pow_m // multiplier * x >= mx:  # 多操作了一次
+                pow_m //= multiplier
+                e -= 1
+            elif x * pow_m < mx:  # 少操作了一次
+                pow_m *= multiplier
+                e += 1
+            left -= e
+            if left < 0:
+                break
+            nums[i] *= pow_m
+
+        if left < 0:
+            # 暴力模拟
+            h = [(x, i) for i, x in enumerate(clone)]
+            heapify(h)
+            for _ in range(k):
+                x, i = h[0]
+                heapreplace(h, (x * multiplier, i))
+            for x, j in h:
+                clone[j] = x % MOD
+            return clone
+
+        # 剩余的操作可以直接用公式计算
+        k = left
+        pow1 = pow(multiplier, k // n, MOD)
+        pow2 = pow1 * multiplier % MOD
+        for i, (x, j) in enumerate(sorted((x, i) for i, x in enumerate(nums))):
+            nums[j] = x * (pow2 if i < k % n else pow1) % MOD
+        return nums
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int[] getFinalState(int[] nums, int k, int multiplier) {
+        if (multiplier == 1) { // 数组不变
+            return nums;
+        }
+
+        int n = nums.length;
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        // 打表，计算出最小的 exp 满足 multiplier^exp >= 2^i
+        int mxLZ = Integer.numberOfLeadingZeros(mx);
+        int mxLen = Integer.SIZE - mxLZ;
+        long[] powMs = new long[mxLen];
+        int[] exps = new int[mxLen];
+        int exp = 0, m = 0;
+        for (long pow2 = 1, powM = 1; pow2 <= mx; pow2 <<= 1) {
+            if (powM < pow2) { // 由于 multiplier >= 2，这里只需写 if 而不是 while
+                powM *= multiplier;
+                exp++;
+            }
+            powMs[m] = powM;
+            exps[m++] = exp;
+        }
+
+        // 把每个数都操作到 >= mx
+        long[] a = new long[n];
+        int left = k;
+        for (int i = 0; i < n && left >= 0; i++) {
+            int j = Integer.numberOfLeadingZeros(nums[i]) - mxLZ;
+            long x = nums[i];
+            long powM = powMs[j];
+            int e = exps[j];
+            if (powM / multiplier * x >= mx) { // 多操作了一次
+                powM /= multiplier;
+                e--;
+            } else if (x * powM < mx) { // 少操作了一次
+                powM *= multiplier;
+                e++;
+            }
+            left -= e;
+            a[i] = x * powM;
+        }
+
+        if (left < 0) {
+            // 暴力模拟
+            PriorityQueue<long[]> pq = new PriorityQueue<>((p, q) -> p[0] != q[0] ? Long.compare(p[0], q[0]) : Long.compare(p[1], q[1]));
+            for (int i = 0; i < n; i++) {
+                pq.offer(new long[]{nums[i], i});
+            }
+            while (k-- > 0) {
+                long[] p = pq.poll();
+                p[0] *= multiplier;
+                pq.offer(p);
+            }
+            while (!pq.isEmpty()) {
+                long[] p = pq.poll();
+                nums[(int) p[1]] = (int) (p[0] % MOD);
+            }
+            return nums;
+        }
+
+        Integer[] ids = new Integer[n];
+        Arrays.setAll(ids, i -> i);
+        Arrays.sort(ids, (i, j) -> Long.compare(a[i], a[j]));
+
+        // 剩余的操作可以直接用公式计算
+        k = left;
+        long pow1 = pow(multiplier, k / n);
+        long pow2 = pow1 * multiplier % MOD;
+        for (int i = 0; i < n; i++) {
+            int j = ids[i];
+            nums[j] = (int) (a[j] % MOD * (i < k % n ? pow2 : pow1) % MOD);
+        }
+        return nums;
+    }
+
+    private long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    const int MOD = 1'000'000'007;
+
+    long long pow(long long x, int n) {
+        long long res = 1;
+        for (; n; n /= 2) {
+            if (n % 2) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+
+public:
+    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
+        if (multiplier == 1) { // 数组不变
+            return move(nums);
+        }
+
+        int n = nums.size();
+        int mx = ranges::max(nums);
+        // 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+        vector<pair<int, long long>> e_pow_m;
+        long long pow_m = 1;
+        int e = 0;
+        for (int pow2 = 1; pow2 <= mx; pow2 <<= 1) {
+            if (pow_m < pow2) { // 由于 multiplier >= 2，这里只需写 if 而不是 while
+                pow_m *= multiplier;
+                e++;
+            }
+            e_pow_m.emplace_back(e, pow_m);
+        }
+
+        vector<pair<long long, int>> h(n);
+        for (int i = 0; i < n; i++) {
+            h[i] = {nums[i], i};
+        }
+        auto clone = h;
+
+        // 把每个数都操作到 >= mx
+        int left = k;
+        int mx_clz = __builtin_clz(mx);
+        for (int i = 0; i < n && left >= 0; i++) {
+            auto [e, pow_m] = e_pow_m[__builtin_clz(nums[i]) - mx_clz];
+            long long x = nums[i];
+            if (pow_m / multiplier * x >= mx) { // 多操作了一次
+                pow_m /= multiplier;
+                e--;
+            } else if (x * pow_m < mx) { // 少操作了一次
+                pow_m *= multiplier;
+                e++;
+            }
+            left -= e;
+            h[i].first *= pow_m;
+        }
+
+        if (left < 0) {
+            // 暴力模拟
+            h = move(clone);
+            ranges::make_heap(h, greater<>()); // 最小堆，O(n) 堆化
+            while (k--) {
+                ranges::pop_heap(h, greater<>());
+                h.back().first *= multiplier;
+                ranges::push_heap(h, greater<>());
+            }
+            for (auto& [x, j] : h) {
+                nums[j] = x % MOD;
+            }
+            return move(nums);
+        }
+
+        // 剩余的操作可以直接用公式计算
+        k = left;
+        long long pow1 = pow(multiplier, k / n);
+        long long pow2 = pow1 * multiplier % MOD;
+        // ranges::sort(h) 换成快速选择
+        ranges::nth_element(h, h.begin() + k % n);
+        for (int i = 0; i < n; i++) {
+            auto& [x, j] = h[i];
+            nums[j] = x % MOD * (i < k % n ? pow2 : pow1) % MOD;
+        }
+        return move(nums);
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+
+func getFinalState(nums []int, k int, multiplier int) []int {
+	if multiplier == 1 { // 数组不变
+		return nums
+	}
+
+	n := len(nums)
+	mx := 0
+	h := make(hp, n)
+	for i, x := range nums {
+		mx = max(mx, x)
+		h[i] = pair{x, i}
+	}
+	clone := slices.Clone(h)
+
+	// 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+	mxLen := bits.Len(uint(mx))
+	type ep struct{ e, powM int }
+	ePowM := make([]ep, 0, mxLen)
+	for pow2, powM, e := 1, 1, 0; pow2 <= mx; pow2 <<= 1 {
+		if powM < pow2 { // 由于 multiplier >= 2，这里只需写 if 而不是 for
+			powM *= multiplier
+			e++
+		}
+		ePowM = append(ePowM, ep{e, powM})
+	}
+
+	// 把每个数都操作到 >= mx
+	left := k
+	for i := range h {
+		x := h[i].x
+		p := ePowM[mxLen-bits.Len(uint(x))]
+		e, powM := p.e, p.powM
+		if powM/multiplier*x >= mx { // 多操作了一次
+			powM /= multiplier
+			e--
+		} else if x*powM < mx { // 少操作了一次
+			powM *= multiplier
+			e++
+		}
+		left -= e
+		if left < 0 {
+			break
+		}
+		h[i].x *= powM
+	}
+
+	if left < 0 {
+		// 暴力模拟
+		h = clone
+		heap.Init(&h)
+		for ; k > 0; k-- {
+			h[0].x *= multiplier
+			heap.Fix(&h, 0)
+		}
+		sort.Slice(h, func(i, j int) bool { return less(h[i], h[j]) })
+		for _, p := range h {
+			nums[p.i] = p.x % mod
+		}
+		return nums
+	}
+
+	// 剩余的操作可以直接用公式计算
+	k = left
+	pow1 := pow(multiplier, k/n)
+	pow2 := pow1 * multiplier % mod
+	sort.Slice(h, func(i, j int) bool { return less(h[i], h[j]) })
+	for i, p := range h {
+		pw := pow1
+		if i < k%n {
+			pw = pow2
+		}
+		nums[p.i] = p.x % mod * pw % mod
+	}
+	return nums
+}
+
+type pair struct{ x, i int }
+func less(a, b pair) bool { return a.x < b.x || a.x == b.x && a.i < b.i }
+
+type hp []pair
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return less(h[i], h[j]) }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (hp) Push(any)             {}
+func (hp) Pop() (_ any)         { return }
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+```
+
+设 $n$ 是 $\textit{nums}$ 的长度。
+
+打表和计算快速幂的时间由于只有 $\mathcal{O}(\log)$，忽略不计。
+
+- 时间复杂度：
+  - $k$ 较小时为 $\mathcal{O}(n+k\log n)$。Java 是 $\mathcal{O}(n\log n+k\log n)$。
+  - $k$ 较大时为 $\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$。如果像 C++ 那样使用**快速选择**，时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面数据结构题单中的「**堆**」。

@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"math/bits"
 	"slices"
 	"sort"
 )
@@ -23,17 +24,36 @@ func getFinalState(nums []int, k int, multiplier int) []int {
 	}
 	clone := slices.Clone(h)
 
-	// 每个数直接暴力乘到 >= mx
-	left := k
-outer:
-	for i := range h {
-		for h[i].x < mx {
-			h[i].x *= multiplier
-			left--
-			if left < 0 {
-				break outer
-			}
+	// 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+	mxLen := bits.Len(uint(mx))
+	type ep struct{ e, powM int }
+	ePowM := make([]ep, 0, mxLen)
+	for pow2, powM, e := 1, 1, 0; pow2 <= mx; pow2 <<= 1 {
+		if powM < pow2 {
+			powM *= multiplier
+			e++
 		}
+		ePowM = append(ePowM, ep{e, powM})
+	}
+
+	// 每个数操作到 >= mx
+	left := k
+	for i := range h {
+		x := h[i].x
+		p := ePowM[mxLen-bits.Len(uint(x))]
+		e, powM := p.e, p.powM
+		if powM/multiplier*x >= mx { // 多操作了一次
+			powM /= multiplier
+			e--
+		} else if x*powM < mx { // 少操作了一次
+			powM *= multiplier
+			e++
+		}
+		left -= e
+		if left < 0 {
+			break
+		}
+		h[i].x *= powM
 	}
 
 	if left < 0 {
