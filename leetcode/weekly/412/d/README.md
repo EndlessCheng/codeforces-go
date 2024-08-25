@@ -250,6 +250,57 @@ class Solution {
 }
 ```
 
+```java [sol-Java 写法二]
+class Solution {
+    private static final int[] POW10 = {1, 10, 100, 1000, 10000, 100000, 1000000};
+
+    public int countPairs(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int[] a = new int[7];
+        for (int x : nums) {
+            Set<Integer> vis = new HashSet<>();
+            vis.add(x); // 不交换
+            ans += cnt.getOrDefault(x, 0);
+            int m = 0;
+            for (int v = x; v > 0; v /= 10) {
+                a[m++] = v % 10;
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = i + 1; j < m; j++) {
+                    if (a[i] == a[j]) { // 小优化
+                        continue;
+                    }
+                    int y = x + (a[j] - a[i]) * (POW10[i] - POW10[j]);
+                    if (vis.add(y)) {
+                        ans += cnt.getOrDefault(y, 0); // 交换一次
+                    }
+                    swap(a, i, j);
+                    for (int p = i + 1; p < m; p++) {
+                        for (int q = p + 1; q < m; q++) {
+                            int z = y + (a[q] - a[p]) * (POW10[p] - POW10[q]);
+                            if (vis.add(z)) {
+                                ans += cnt.getOrDefault(z, 0); // 交换两次
+                            }
+                        }
+                    }
+                    swap(a, i, j);
+                }
+            }
+            cnt.merge(x, 1, Integer::sum);
+        }
+        return ans;
+    }
+
+    private void swap(int[] a, int i, int j) {
+        int tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+}
+```
+
 ```cpp [sol-C++]
 const int POW10[7] = {1, 10, 100, 1000, 10000, 100000, 1000000};
 
