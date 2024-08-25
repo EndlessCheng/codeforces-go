@@ -255,7 +255,7 @@ class Solution:
                 x, i = h[0]
                 heapreplace(h, (x * multiplier, i))
             for x, j in h:
-                nums[j] = x
+                nums[j] = x % MOD
             return nums
 
         # 每个数直接暴力操作到 >= mx
@@ -400,7 +400,7 @@ public:
                 ranges::push_heap(h, greater<>());
             }
             for (auto& [x, j] : h) {
-                nums[j] = x;
+                nums[j] = x % MOD;
             }
             return move(nums);
         }
