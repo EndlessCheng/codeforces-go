@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/heap"
+	"slices"
 	"sort"
 )
 
@@ -20,22 +21,47 @@ func getFinalState(nums []int, k int, multiplier int) []int {
 		mx = max(mx, x)
 		h[i] = pair{x, i}
 	}
-	heap.Init(&h)
+	clone := slices.Clone(h)
 
-	// 模拟，直到堆顶是 mx
-	for ; k > 0 && h[0].x < mx; k-- {
-		h[0].x *= multiplier
-		heap.Fix(&h, 0)
+	// 每个数直接暴力乘到 >= mx
+	left := k
+outer:
+	for i := range h {
+		for h[i].x < mx {
+			h[i].x *= multiplier
+			left--
+			if left < 0 {
+				break outer
+			}
+		}
+	}
+
+	if left < 0 {
+		// 暴力模拟
+		h = clone
+		heap.Init(&h)
+		for ; k > 0; k-- {
+			h[0].x *= multiplier
+			heap.Fix(&h, 0)
+		}
+		sort.Slice(h, func(i, j int) bool { return less(h[i], h[j]) })
+		for _, p := range h {
+			nums[p.i] = p.x % mod
+		}
+		return nums
 	}
 
 	// 剩余的操作可以直接用公式计算
+	k = left
+	pow1 := pow(multiplier, k/n)
+	pow2 := pow1 * multiplier % mod
 	sort.Slice(h, func(i, j int) bool { return less(h[i], h[j]) })
 	for i, p := range h {
-		e := k / n
+		pw := pow1
 		if i < k%n {
-			e++
+			pw = pow2
 		}
-		nums[p.i] = p.x % mod * pow(multiplier, e) % mod
+		nums[p.i] = p.x % mod * pw % mod
 	}
 	return nums
 }
