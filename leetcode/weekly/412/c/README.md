@@ -218,7 +218,7 @@ func pow(x, n int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。瓶颈在模拟那，每个数至多操作 $\mathcal{O}(\log U)$ 次。
+- 时间复杂度：$\mathcal{O}(n\log n\log_{m} U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$m=\textit{multiplier}$。瓶颈在模拟那，每个数至多操作 $\mathcal{O}(\log_{m} U)$ 次。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 优化
@@ -503,11 +503,11 @@ func pow(x, n int) int {
 
 #### 复杂度分析
 
-设 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+设 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$m=\textit{multiplier}$。
 
 - 时间复杂度：
     - $k$ 较小时为 $\mathcal{O}(n+k\log n)$。Java 是 $\mathcal{O}(n\log n+k\log n)$。
-    - $k$ 较大时为 $\mathcal{O}(n\log U+ n\log n)$。如果像 C++ 那样使用快速选择，时间复杂度为 $\mathcal{O}(n\log U)$。
+    - $k$ 较大时为 $\mathcal{O}(n\log_{m} U+ n\log n)$。如果像 C++ 那样使用快速选择，时间复杂度为 $\mathcal{O}(n\log_{m} U)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面数据结构题单中的「**堆**」。
