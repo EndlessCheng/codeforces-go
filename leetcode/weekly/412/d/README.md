@@ -346,7 +346,7 @@ public:
 var pow10 = [...]int{1, 10, 100, 1000, 10000, 100000, 1000000}
 
 func countPairs(nums []int) int {
-	sort.Ints(nums)
+	slices.Sort(nums)
 	ans := 0
 	cnt := make(map[int]int)
 	a := [len(pow10)]int{}

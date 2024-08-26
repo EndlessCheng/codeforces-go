@@ -2,6 +2,8 @@
 
 把第二次交换的代码移除即可得到本题的代码。
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def countPairs(self, nums: List[int]) -> int:
@@ -119,6 +121,160 @@ func atoi(s []byte) (res int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + n\log^3 U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(n + \log^2 U)$。
+
+## 优化后
+
+原理请看请看 [周赛第四题题解](https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892072/pai-xu-mei-ju-you-wei-hu-zuo-pythonjavac-vbg0/)。
+
+```py [sol-Python3]
+POW10 = [10 ** i for i in range(7)]
+
+class Solution:
+    def countPairs(self, nums: List[int]) -> int:
+        nums.sort()
+        ans = 0
+        cnt = defaultdict(int)
+        for x in nums:
+            st = {x}  # 不交换
+            a = list(map(int, str(x)))[::-1]
+            m = len(a)
+            for i in range(m):
+                for j in range(i + 1, m):
+                    st.add(x + (a[j] - a[i]) * (POW10[i] - POW10[j]))  # 交换一次
+            ans += sum(cnt[v] for v in st)
+            cnt[x] += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[] POW10 = {1, 10, 100, 1000, 10000, 100000, 1000000};
+
+    public int countPairs(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int[] a = new int[7];
+        for (int x : nums) {
+            Set<Integer> st = new HashSet<>();
+            st.add(x); // 不交换
+            int m = 0;
+            for (int v = x; v > 0; v /= 10) {
+                a[m++] = v % 10;
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = i + 1; j < m; j++) {
+                    st.add(x + (a[j] - a[i]) * (POW10[i] - POW10[j])); // 交换一次
+                }
+            }
+            for (int v : st) {
+                ans += cnt.getOrDefault(v, 0);
+            }
+            cnt.merge(x, 1, Integer::sum);
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 写法二]
+class Solution {
+    private static final int[] POW10 = {1, 10, 100, 1000, 10000, 100000, 1000000};
+
+    public int countPairs(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int[] a = new int[7];
+        for (int x : nums) {
+            Set<Integer> vis = new HashSet<>();
+            vis.add(x); // 不交换
+            ans += cnt.getOrDefault(x, 0);
+            int m = 0;
+            for (int v = x; v > 0; v /= 10) {
+                a[m++] = v % 10;
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = i + 1; j < m; j++) {
+                    if (a[i] == a[j]) { // 小优化
+                        continue;
+                    }
+                    int y = x + (a[j] - a[i]) * (POW10[i] - POW10[j]);
+                    if (vis.add(y)) {
+                        ans += cnt.getOrDefault(y, 0); // 交换一次
+                    }
+                }
+            }
+            cnt.merge(x, 1, Integer::sum);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int POW10[7] = {1, 10, 100, 1000, 10000, 100000, 1000000};
+
+class Solution {
+public:
+    int countPairs(vector<int>& nums) {
+        ranges::sort(nums);
+        int ans = 0, a[7];
+        unordered_map<int, int> cnt;
+        for (int x : nums) {
+            unordered_set<int> st = {x}; // 不交换
+            int m = 0;
+            for (int v = x; v; v /= 10) {
+                a[m++] = v % 10;
+            }
+            for (int i = 0; i < m; i++) {
+                for (int j = i + 1; j < m; j++) {
+                    st.insert(x + (a[j] - a[i]) * (POW10[i] - POW10[j])); // 交换一次
+                }
+            }
+            for (int v : st) {
+                ans += cnt.contains(v) ? cnt[v] : 0;
+            }
+            cnt[x]++;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+var pow10 = [...]int{1, 10, 100, 1000, 10000, 100000, 1000000}
+
+func countPairs(nums []int) int {
+	slices.Sort(nums)
+	ans := 0
+	cnt := make(map[int]int)
+	a := [len(pow10)]int{}
+	for _, x := range nums {
+		st := map[int]struct{}{x: {}} // 不交换
+		m := 0
+		for v := x; v > 0; v /= 10 {
+			a[m] = v % 10
+			m++
+		}
+		for i := 0; i < m; i++ {
+			for j := i + 1; j < m; j++ {
+				st[x+(a[j]-a[i])*(pow10[i]-pow10[j])] = struct{}{} // 交换一次
+			}
+		}
+		for x := range st {
+			ans += cnt[x]
+		}
+		cnt[x]++
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + n\log^2 U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n + \log^2 U)$。
 
 更多相似题目，见下面数据结构题单中的「**常用技巧**」。
