@@ -1,10 +1,10 @@
-[视频讲解](https://www.bilibili.com/video/BV1rT411P7NA) 已出炉，**包括本题双指针的原理和时间复杂度分析**，欢迎点赞三连，在评论区分享你对这场力扣杯的看法~
+[视频讲解](https://www.bilibili.com/video/BV1rT411P7NA) 已出炉，**包括本题滑窗的原理和时间复杂度分析**，欢迎点赞三连，在评论区分享你对这场力扣杯的看法~
 
 ```py [sol1-Python3]
 class Solution:
     def beautifulBouquet(self, flowers: List[int], cnt: int) -> int:
         ans = left = 0
-        c = Counter()
+        c = defaultdict(int)
         for right, x in enumerate(flowers):
             c[x] += 1
             while c[x] > cnt:
