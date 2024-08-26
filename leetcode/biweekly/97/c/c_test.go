@@ -13,3 +13,4 @@ func Test_c(t *testing.T) {
 	}
 }
 // https://leetcode.cn/contest/biweekly-contest-97/problems/maximize-win-from-two-segments/
+// https://leetcode.cn/problems/maximize-win-from-two-segments/

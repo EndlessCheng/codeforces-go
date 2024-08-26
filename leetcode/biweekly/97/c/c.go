@@ -2,7 +2,11 @@ package main
 
 // https://space.bilibili.com/206214
 func maximizeWin(prizePositions []int, k int) (ans int) {
-	pre := make([]int, len(prizePositions)+1)
+	n := len(prizePositions)
+	if k*2+1 >= prizePositions[n-1]-prizePositions[0] {
+		return n
+	}
+	pre := make([]int, n+1)
 	left := 0
 	for right, p := range prizePositions {
 		for p-prizePositions[left] > k {
@@ -13,5 +17,3 @@ func maximizeWin(prizePositions []int, k int) (ans int) {
 	}
 	return
 }
-
-func max(a, b int) int { if a < b { return b }; return a }
