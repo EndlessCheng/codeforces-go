@@ -1,10 +1,10 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV1na41137jv) 已出炉，**介绍了单调队列的原理**，欢迎点赞三连，在评论区分享你对这场双周赛的看法~
-
-**前置题目**：[239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)。
+**前置知识**：[239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/) 以及 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
 本题的一种做法是二分答案，这样就转换成了 239 题。
 
 但实际上不用二分，在 239 这题的基础上，把定长滑窗改为**不定长滑窗**，具体见代码注释。
+
+本题 [视频讲解](https://www.bilibili.com/video/BV1na41137jv)。
 
 ```py [sol-Python3]
 class Solution:
