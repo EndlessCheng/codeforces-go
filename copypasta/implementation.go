@@ -5,6 +5,7 @@ LC588 https://leetcode.cn/problems/design-in-memory-file-system/
 LC2534 https://leetcode.cn/problems/time-taken-to-cross-the-door/
 LC723 https://leetcode.cn/problems/candy-crush/（会员题）
 - [2254. 设计视频共享平台](https://leetcode.cn/problems/design-video-sharing-platform/)（会员题）
+- [723. 粉碎糖果](https://leetcode.cn/problems/candy-crush/)（会员题）消除游戏
 */
 
 /* 大模拟
