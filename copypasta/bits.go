@@ -1186,6 +1186,47 @@ func _(x int) {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
+	// 给定 multiplier >= 2
+	// O(1) 计算把任意正整数 x 通过不断乘 multiplier，直到 >= y，需要乘多少次
+	// 原理：
+	// 设 <= x 的最大 2 的幂为 2^i，即 x = k1 * 2^i，其中 1 <= k1 < 2
+	// 设 <= y 的最大 2 的幂为 2^j，即 y = k2 * 2^j，其中 1 <= k2 < 2
+	// 那么 ceil(log_m (y/x)) = ceil(log_m (k2/k1)2^(j-i)) ≈ ceil(log_m 2^(j-i))，误差 ± 1，因为 1/2 < k2/k1 < 2
+	// LC3266 https://leetcode.cn/problems/final-array-state-after-k-multiplication-operations-ii/
+	fastMulToTarget := func(multiplier int) {
+		// 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+		const mx int = 1e9 // 所有 y 的最大值
+		type ep struct{ e, powM int }
+		ePowM := make([]ep, 0, bits.Len(uint(mx)))
+		for pow2, powM, e := 1, 1, 0; pow2 <= mx; pow2 <<= 1 {
+			if powM < pow2 { // 由于 multiplier >= 2，这里只需写 if 而不是 for
+				powM *= multiplier
+				e++
+			}
+			ePowM = append(ePowM, ep{e, powM})
+		}
+
+		// 返回最小的 e，满足 x * multiplier^e >= y
+		// 额外返回 powM = multiplier^e
+		fastMul := func(x, y int) (e, powM int) {
+			if x >= y {
+				return 0, 1
+			}
+			p := ePowM[bits.Len(uint(y))-bits.Len(uint(x))]
+			e, powM = p.e, p.powM
+			if powM/multiplier*x >= y { // 多乘了一次
+				powM /= multiplier
+				e--
+			} else if x*powM < y { // 少乘了一次
+				powM *= multiplier
+				e++
+			}
+			return
+		}
+
+		_ = fastMul
+	}
+
 	_ = []interface{}{
 		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros,
 		lcp, lcpLen, lcs, rangeAND, rangeOR, rangeXor,
@@ -1197,6 +1238,7 @@ func _(x int) {
 
 		zeroXorSum3,
 		maxXorWithLimit,
+		fastMulToTarget,
 	}
 }
 
