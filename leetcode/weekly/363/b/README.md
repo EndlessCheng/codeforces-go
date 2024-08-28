@@ -1,35 +1,39 @@
-[视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第二题。
-
 在选择学生人数固定的时候，选择方案是否唯一呢？
 
-是的。比如选了 $k$ 个学生，那么所有 $\textit{nums}[i] < k$ 的学生都要选，所有 $\textit{nums}[i] > k$ 的都不能选，并且不能出现 $\textit{nums}[i] = k$ 的情况。这意味着**在选择学生人数固定的时候，选择方案是唯一的**。为方便判断，可以把 $\textit{nums}$ 从小到大排序。
+假设恰好选 $k$ 个学生，那么：
 
-既然「所有 $\textit{nums}[i] < k$ 的学生都要选」，那么我们必须选 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 这一共 $i+1$ 个学生。
+- 所有 $\textit{nums}[i] < k$ 的学生都要选；
+- 所有 $\textit{nums}[i] > k$ 的都不能选；
+- 不能出现 $\textit{nums}[i] = k$ 的情况，因为每个学生只有选或不选两种可能。
 
-由于数组已经排好序，$\textit{nums}[0]$ 到 $\textit{nums}[i]$ 都必须小于 $i+1$，且 $\textit{nums}[i+1]$ 到 $\textit{nums}[n-1]$ 都必须大于 $i+1$。
+这意味着**在选择学生人数固定的时候，选择方案是唯一的**。把 $\textit{nums}$ **从小到大排序**后，唯一性可以更明显地看出来：
 
-由于 $\textit{nums}[i]$ 都大于等于它左边的数，$\textit{nums}[i+1]$ 都小于等于它右边的数，所以只需要判断
+- 以 $k$ 为分界线，左边的都要选，右边的都不能选。
+
+具体地，如果选 $\textit{nums}[i-1]$ 而不选 $\textit{nums}[i]$，由于数组已排序，我们必须要选下标为 $0,1,2,\cdots,i-1$ 的学生，一共 $i$ 个，而下标 $\ge i$ 的学生都不能选，所以需要满足
 
 $$
-\textit{nums}[i] < i+1 < \textit{nums}[i+1]
+\textit{nums}[i-1] < i < \textit{nums}[i]
 $$
 
-上式成立就意味着我们可以选 $i+1$ 个学生，算作一种方案。
+枚举 $i=1,2,\cdots,n-1$，如果上式成立，就意味着我们可以选 $i$ 个学生，算作一种方案。
 
-特别地，如果 $i=n-1$，我们只需要判断是否满足 $\textit{nums}[i] < n$，在题目约束下，这是一定可以满足的。所以最后把答案加一。
+特殊情况：
 
-此外，如果 $\textit{nums}[0] > 0$，那么所有 $\textit{nums}[i]$ 都是大于 $0$ 的，我们可以一个学生都不选。
+- 如果 $\textit{nums}[0] > 0$，那么可以一个学生都不选。
+- 如果 $\textit{nums}[n-1] < n$，那么可以所有学生都选。由于数据范围保证 $\textit{nums}[i]<n$，所以这种方案一定存在。
+
+[视频讲解【周赛 363】](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第二题。
 
 ```py [sol-Python3]
 class Solution:
     def countWays(self, nums: List[int]) -> int:
         nums.sort()
-        n = len(nums)
         ans = nums[0] > 0  # 一个学生都不选
-        for i, (x, y) in enumerate(pairwise(nums)):
-            if x < i + 1 < y:
+        for i, (x, y) in enumerate(pairwise(nums), 1):
+            if x < i < y:
                 ans += 1
-        return ans + 1  # +1 是因为可以都选
+        return ans + 1  # 一定可以都选
 ```
 
 ```java [sol-Java]
@@ -37,14 +41,13 @@ class Solution {
     public int countWays(List<Integer> nums) {
         int[] a = nums.stream().mapToInt(i -> i).toArray();
         Arrays.sort(a);
-        int n = a.length;
         int ans = a[0] > 0 ? 1 : 0; // 一个学生都不选
-        for (int i = 0; i < n - 1; i++) {
-            if (a[i] < i + 1 && i + 1 < a[i + 1]) {
+        for (int i = 1; i < a.length; i++) {
+            if (a[i - 1] < i && i < a[i]) {
                 ans++;
             }
         }
-        return ans + 1; // +1 是因为可以都选
+        return ans + 1; // 一定可以都选
     }
 }
 ```
@@ -52,47 +55,74 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int countWays(vector<int> &nums) {
-        sort(nums.begin(), nums.end());
-        int n = nums.size();
+    int countWays(vector<int>& nums) {
+        ranges::sort(nums);
         int ans = nums[0] > 0; // 一个学生都不选
-        for (int i = 0; i < n - 1; i++) {
-            if (nums[i] < i + 1 && i + 1 < nums[i + 1]) {
-                ans++;
-            }
+        for (int i = 1; i < nums.size(); i++) {
+            ans += nums[i - 1] < i && i < nums[i];
         }
-        return ans + 1; // +1 是因为可以都选
+        return ans + 1; // 一定可以都选
     }
 };
+```
+
+```c [sol-C]
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+int countWays(int* nums, int numsSize) {
+    qsort(nums, numsSize, sizeof(int), cmp);
+    int ans = nums[0] > 0; // 一个学生都不选
+    for (int i = 1; i < numsSize; i++) {
+        ans += nums[i - 1] < i && i < nums[i];
+    }
+    return ans + 1; // +1 是因为可以都选
+}
 ```
 
 ```go [sol-Go]
 func countWays(nums []int) (ans int) {
-	sort.Ints(nums)
-	if nums[0] > 0 { // 一个学生都不选
-		ans++
-	}
-	for i, x := range nums[:len(nums)-1] {
-		if x < i+1 && i+1 < nums[i+1] {
-			ans++
-		}
-	}
-	return ans + 1 // +1 是因为可以都选
+    slices.Sort(nums)
+    if nums[0] > 0 { // 一个学生都不选
+        ans = 1
+    }
+    for i := 1; i < len(nums); i++ {
+        if nums[i-1] < i && i < nums[i] {
+            ans++
+        }
+    }
+    return ans + 1 // 一定可以都选
 }
 ```
 
 ```js [sol-JavaScript]
-var countWays = function (nums) {
+var countWays = function(nums) {
     nums.sort((a, b) => a - b);
-    const n = nums.length;
     let ans = nums[0] > 0 ? 1 : 0; // 一个学生都不选
-    for (let i = 0; i < n - 1; i++) {
+    for (let i = 1; i < nums.length; i++) {
         if (nums[i] < i + 1 && i + 1 < nums[i + 1]) {
             ans++;
         }
     }
-    return ans + 1; // +1 是因为可以都选
+    return ans + 1; // 一定可以都选
 };
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_ways(mut nums: Vec<i32>) -> i32 {
+        nums.sort_unstable();
+        let mut ans = (nums[0] > 0) as i32; // 一个学生都不选
+        for i in 1..nums.len() {
+            let k = i as i32;
+            if nums[i - 1] < k && k < nums[i] {
+                ans += 1;
+            }
+        }
+        ans + 1 // 一定可以都选
+    }
+}
 ```
 
 #### 复杂度分析
@@ -100,4 +130,24 @@ var countWays = function (nums) {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(1)$。忽略排序的栈开销。
 
-注：如果采用桶排序，可以做到 $\mathcal{O}(n)$ 的时间复杂度。
+注：如果采用计数排序，可以做到 $\mathcal{O}(n)$ 的时间复杂度。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
