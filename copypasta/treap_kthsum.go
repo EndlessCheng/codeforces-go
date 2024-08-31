@@ -116,6 +116,7 @@ func (t *treapSum) cntSum(size int) (cnt, sum int) {
 }
 
 // 返回前 k 小数的和（k 从 1 开始）
+// https://www.codechef.com/problems/OKLAMA
 func (t *treapSum) kth(k int) (sum int) {
 	if k > t.root.getSize() {
 		panic(-1)
