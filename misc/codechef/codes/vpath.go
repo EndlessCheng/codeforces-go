@@ -32,10 +32,13 @@ func vPath(in io.Reader, _w io.Writer) {
 					continue
 				}
 				res := dfs(w, v)
+				// *2 表示是否包含 v
 				ans = (ans + res*s*2) % mod
 				s = (s + res) % mod
 			}
 			ans = (ans + s) % mod
+			// *2 表示下面的每个路径集合都可以选择是否包含 v
+			// +1 是 v 单独组成一个集合
 			return (s*2 + 1) % mod
 		}
 		dfs(0, -1)
