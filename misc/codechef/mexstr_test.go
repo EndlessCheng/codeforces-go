@@ -7,6 +7,7 @@ import (
 
 // https://www.codechef.com/problems/MEXSTR
 // https://www.codechef.com/status/MEXSTR?status=Correct
+// https://discuss.codechef.com/t/mexstr-editorial/
 func Test_mexStr(t *testing.T) {
 	testCases := [][2]string{
 		{
