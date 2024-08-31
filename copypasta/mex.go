@@ -9,4 +9,6 @@ https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1436/E 2400
 https://codeforces.com/problemset/problem/1527/D 2400
 
+https://www.codechef.com/problems/MEXSTR
+
 */
