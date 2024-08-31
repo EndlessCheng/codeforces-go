@@ -16,8 +16,9 @@ BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-利用这题测试一下，你有没有学到二分的本质？
-https://codeforces.com/contest/1945/problem/E
+测试一下，你有没有学到二分的本质？
+https://codeforces.com/contest/1945/problem/E 1700
+https://codeforces.com/contest/1999/problem/G2 1700
 
 LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
@@ -80,7 +81,9 @@ https://codeforces.com/problemset/problem/1118/D2 1700
 https://codeforces.com/problemset/problem/670/D2 1500
 https://codeforces.com/problemset/problem/760/B 1500
 https://codeforces.com/problemset/problem/1610/C 1600
+https://codeforces.com/problemset/problem/1946/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
+https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
@@ -92,6 +95,7 @@ https://codeforces.com/problemset/problem/1260/D 1900 区间合并
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
+- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
 - [774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)（会员题）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1840/D 1400
@@ -104,11 +108,13 @@ https://codeforces.com/problemset/problem/1837/F 2400
    同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
 - [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
+
+### 最大化中位数
+https://codeforces.com/contest/1993/problem/D
 
 ### 第 K 小/大（部分题目也可以用堆解决）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
