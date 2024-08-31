@@ -20,7 +20,7 @@ import (
 // NOTE: 调用 Fprintln 打印 int(1e9) 1e6 次的耗时为 155ms https://codeforces.com/contest/1603/submission/169796385
 
 // 带有 IO 缓冲区的输入输出，适用于绝大多数题目
-// 相比 fmt.Scan，每读入 1e6 个 int 可以加速约 13000ms（Codeforces/AtCoder）
+// 相比 fmt.Scan，每读入 1e5 个 int 可以加速约 1300ms（Codeforces/AtCoder）
 // 对比：（3e4 个 int）
 // 623ms https://codeforces.com/problemset/submission/981/124239306
 // 233ms https://codeforces.com/problemset/submission/981/124237530
@@ -123,10 +123,12 @@ func fastIO() {
 // NOTE: 额外的好处是，这种避开 Fscan 的写法可以节省一部分内存（1e6 下有 10M 左右）
 // C++ 选手可以参考 https://codeforces.com/contest/1826/submission/204581714
 func fasterIO() {
-	const eof = 0
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
-	_i, _n, buf := 0, 0, make([]byte, 1<<12) // 4KB
+
+	const eof = 0
+	buf := make([]byte, 1<<12) // 4KB
+	_i, _n := 0, 0
 
 	// 读一个字符
 	rc := func() byte {
