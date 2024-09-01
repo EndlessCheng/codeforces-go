@@ -1,0 +1,474 @@
+![lc3276.png](https://pic.leetcode.cn/1725186494-jnwWda-lc3276.png)
+
+看示例 1，$\textit{grid}$ 的最大值为 $4$。
+
+讨论 $4$ **选或不选**：
+
+- 不选 $4$，问题变成在 $[1,3]$ 中选数字，每行至多一个数且没有相同元素时，所选元素之和的最大值。
+- 选 $4$，**枚举**选哪一行的 $4$（本例中只能选第二行），问题变成在 $[1,3]$ 中选数字，第二行不能选数字，每行至多一个数且没有相同元素时，所选元素之和的最大值。
+
+于是，我们需要在递归的过程中，跟踪两个信息：
+
+- $i$：当前要在 $[1,i]$ 中选数字。
+- $j$：已选的行号集合为 $j$。后续所选数字所在的行号不能在 $j$ 中。
+
+因此，定义状态为 $\textit{dfs}(i,j)$，表示在 $[1,i]$ 中选数字，所选数字所处的行号不能在集合 $j$ 中，每行至多一个数且没有相同元素时，所选元素之和的最大值。
+
+讨论元素 $i$ **选或不选**：
+
+- 不选 $i$，问题变成在 $[1,i-1]$ 中选数字，所选数字所处的行号不能在集合 $j$ 中，每行至多一个数且没有相同元素时，所选元素之和的最大值，即 $\textit{dfs}(i-1,j)$。
+- 选 $i$，**枚举**选第 $k$ 行的 $i$（提前预处理 $i$ 所处的行号），问题变成在 $[1,i-1]$ 中选数字（注意 $i$ 只能选一次），所选数字所处的行号不能在集合 $j\cup \{k\}$ 中，每行至多一个数且没有相同元素时，所选元素之和的最大值，即 $\textit{dfs}(i-1,j\cup \{k\})$。
+
+两种情况取最大值，即为 $\textit{dfs}(i,j)$。
+
+递归边界：$\textit{dfs}(0,j) = 0$。
+
+递归入口：$\textit{dfs}(\textit{mx},\varnothing)$。一开始没有选行号。
+
+代码用到了一些位运算技巧，原理请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+[本题视频讲解](https://www.bilibili.com/video/BV142Hae7E5y/)（第三题），欢迎点赞关注~
+
+## 记忆化搜索
+
+```py [sol-Python3]
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        mx = max(map(max, grid))
+        pos = [[] for _ in range(mx + 1)]
+        for i, row in enumerate(grid):
+            for x in set(row):  # 去重
+                pos[x].append(i)
+
+        @cache
+        def dfs(i: int, j: int) -> int:
+            if i == 0:
+                return 0
+            # 不选 x
+            res = dfs(i - 1, j)
+            # 枚举选第 k 行的 x
+            for k in pos[i]:
+                if (j >> k & 1) == 0:
+                    res = max(res, dfs(i - 1, j | 1 << k) + i)
+            return res
+        return dfs(mx, 0)
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        pos = defaultdict(list)
+        for i, row in enumerate(grid):
+            for x in set(row):  # 去重
+                pos[x].append(i)
+        all_nums = list(pos)
+
+        @cache
+        def dfs(i: int, j: int) -> int:
+            if i < 0:
+                return 0
+            # 不选 x
+            res = dfs(i - 1, j)
+            # 枚举选第 k 行的 x
+            for k in pos[all_nums[i]]:
+                if (j >> k & 1) == 0:
+                    res = max(res, dfs(i - 1, j | 1 << k) + all_nums[i])
+            return res
+        return dfs(len(all_nums) - 1, 0)
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxScore(List<List<Integer>> grid) {
+        Map<Integer, Integer> pos = new HashMap<>();
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid.get(i)) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos.merge(x, 1 << i, (a, b) -> a | b);
+            }
+        }
+
+        List<Integer> allNums = new ArrayList<>(pos.keySet());
+        int n = allNums.size();
+        int[][] memo = new int[n][1 << m];
+        for (int[] row : memo) {
+            Arrays.fill(row, -1); // -1 表示没有计算过
+        }
+        return dfs(n - 1, 0, pos, allNums, memo);
+    }
+
+    private int dfs(int i, int j, Map<Integer, Integer> pos, List<Integer> allNums, int[][] memo) {
+        if (i < 0) {
+            return 0;
+        }
+        if (memo[i][j] != -1) { // 之前计算过
+            return memo[i][j];
+        }
+        // 不选 x
+        int res = dfs(i - 1, j, pos, allNums, memo);
+        // 枚举选第 k 行的 x
+        int x = allNums.get(i);
+        for (int t = pos.get(x), lb; t > 0; t ^= lb) {
+            lb = t & -t; // lb = 1<<k，其中 k 是行号
+            if ((j & lb) == 0) { // 没选过第 k 行的数
+                res = Math.max(res, dfs(i - 1, j | lb, pos, allNums, memo) + x);
+            }
+        }
+        return memo[i][j] = res; // 记忆化
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxScore(vector<vector<int>>& grid) {
+        unordered_map<int, int> pos;
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid[i]) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos[x] |= 1 << i;
+            }
+        }
+
+        vector<int> all_nums;
+        for (auto& [x, _] : pos) {
+            all_nums.push_back(x);
+        }
+
+        int n = all_nums.size();
+        vector<vector<int>> memo(n, vector<int>(1 << m, -1)); // -1 表示没有计算过
+        auto dfs = [&](auto&& dfs, int i, int j) -> int {
+            if (i < 0) {
+                return 0;
+            }
+            int& res = memo[i][j]; // 注意这里是引用
+            if (res != -1) {
+                return res;
+            }
+            // 不选 x
+            res = dfs(dfs, i - 1, j);
+            // 枚举选第 k 行的 x
+            int x = all_nums[i];
+            for (int t = pos[x], lb; t; t ^= lb) {
+                lb = t & -t; // lb = 1<<k，其中 k 是行号
+                if ((j & lb) == 0) { // 没选过第 k 行的数
+                    res = max(res, dfs(dfs, i - 1, j | lb) + x);
+                }
+            }
+            return res;
+        };
+        return dfs(dfs, n - 1, 0);
+    }
+};
+```
+
+```go [sol-Go]
+func maxScore(grid [][]int) int {
+	pos := map[int]int{}
+	for i, row := range grid {
+		for _, x := range row {
+			// 保存所有包含 x 的行号（压缩成二进制数）
+			pos[x] |= 1 << i
+		}
+	}
+
+	allNums := make([]int, 0, len(pos))
+	for x := range pos {
+		allNums = append(allNums, x)
+	}
+
+	n := len(allNums)
+	memo := make([][]int, n)
+	for i := range memo {
+		memo[i] = make([]int, 1<<len(grid))
+		for j := range memo[i] {
+			memo[i][j] = -1 // -1 表示没有计算过
+		}
+	}
+	var dfs func(i, j int) int
+	dfs = func(i, j int) int {
+		if i < 0 {
+			return 0
+		}
+		p := &memo[i][j]
+		if *p != -1 { // 之前计算过
+			return *p
+		}
+		// 不选 x
+		res := dfs(i-1, j)
+		// 枚举选第 k 行的 x
+		x := allNums[i]
+		for t, lb := pos[x], 0; t > 0; t ^= lb {
+			lb = t & -t    // lb = 1<<k，其中 k 是行号
+			if j&lb == 0 { // 没选过第 k 行的数
+				res = max(res, dfs(i-1, j|lb)+x)
+			}
+		}
+		*p = res // 记忆化
+		return res
+	}
+	return dfs(n-1, 0)
+}
+```
+
+## 递推
+
+```py [sol-Python3]
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        pos = defaultdict(list)
+        for i, row in enumerate(grid):
+            for x in set(row):  # 去重
+                pos[x].append(i)
+        all_nums = list(pos)
+
+        u = 1 << len(grid)
+        f = [[0] * u for _ in range(len(all_nums) + 1)]
+        for i, x in enumerate(all_nums):
+            for j in range(u):
+                f[i + 1][j] = f[i][j]  # 不选 x
+                for k in pos[x]:
+                    if (j >> k & 1) == 0:  # 没选过第 k 行的数
+                        f[i + 1][j] = max(f[i + 1][j], f[i][j | 1 << k] + x)  # 选第 k 行的 x
+        return f[-1][0]
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxScore(List<List<Integer>> grid) {
+        Map<Integer, Integer> pos = new HashMap<>();
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid.get(i)) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos.merge(x, 1 << i, (a, b) -> a | b);
+            }
+        }
+
+        List<Integer> allNums = new ArrayList<>(pos.keySet());
+        int u = 1 << m;
+        int[][] f = new int[allNums.size() + 1][u];
+        for (int i = 0; i < allNums.size(); i++) {
+            int x = allNums.get(i);
+            int posMask = pos.get(x);
+            for (int j = 0; j < u; j++) {
+                f[i + 1][j] = f[i][j]; // 不选 x
+                for (int t = posMask, lb; t > 0; t ^= lb) {
+                    lb = t & -t; // lb = 1<<k，其中 k 是行号
+                    if ((j & lb) == 0) { // 没选过第 k 行的数
+                        f[i + 1][j] = Math.max(f[i + 1][j], f[i][j | lb] + x); // 选第 k 行的 x
+                    }
+                }
+            }
+        }
+        return f[allNums.size()][0];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxScore(vector<vector<int>>& grid) {
+        unordered_map<int, int> pos;
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid[i]) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos[x] |= 1 << i;
+            }
+        }
+
+        vector<int> all_nums;
+        for (auto& [x, _] : pos) {
+            all_nums.push_back(x);
+        }
+
+        int u = 1 << m;
+        vector<vector<int>> f(all_nums.size() + 1, vector<int>(u));
+        for (int i = 0; i < all_nums.size(); i++) {
+            int x = all_nums[i];
+            for (int j = 0; j < u; j++) {
+                f[i + 1][j] = f[i][j]; // 不选 x
+                for (int t = pos[x], lb; t; t ^= lb) {
+                    lb = t & -t; // lb = 1<<k，其中 k 是行号
+                    if ((j & lb) == 0) { // 没选过第 k 行的数
+                        f[i + 1][j] = max(f[i + 1][j], f[i][j | lb] + x); // 选第 k 行的 x
+                    }
+                }
+            }
+        }
+        return f.back()[0];
+    }
+};
+```
+
+```go [sol-Go]
+func maxScore(grid [][]int) int {
+	pos := map[int]int{}
+	for i, row := range grid {
+		for _, x := range row {
+			// 保存所有包含 x 的行号（压缩成二进制数）
+			pos[x] |= 1 << i
+		}
+	}
+
+	allNums := make([]int, 0, len(pos))
+	for x := range pos {
+		allNums = append(allNums, x)
+	}
+
+	f := make([][]int, len(allNums)+1)
+	for i := range f {
+		f[i] = make([]int, 1<<len(grid))
+	}
+	for i, x := range allNums {
+		for j, v := range f[i] {
+			f[i+1][j] = v // 不选 x
+			for t, lb := pos[x], 0; t > 0; t ^= lb {
+				lb = t & -t    // lb = 1<<k，其中 k 是行号
+				if j&lb == 0 { // 没选过第 k 行的数
+					f[i+1][j] = max(f[i+1][j], f[i][j|lb]+x) // 选第 k 行的 x
+				}
+			}
+		}
+	}
+	return f[len(allNums)][0]
+}
+```
+
+## 空间压缩
+
+去掉 $f$ 的第一个维度。
+
+```py [sol-Python3]
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        pos = defaultdict(list)
+        for i, row in enumerate(grid):
+            for x in set(row):  # 去重
+                pos[x].append(i)
+
+        u = 1 << len(grid)
+        f = [0] * u
+        for x, ps in pos.items():
+            for j in range(u):
+                for k in ps:
+                    if (j >> k & 1) == 0:
+                        f[j] = max(f[j], f[j | 1 << k] + x)
+        return f[0]
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxScore(List<List<Integer>> grid) {
+        Map<Integer, Integer> pos = new HashMap<>();
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid.get(i)) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos.merge(x, 1 << i, (a, b) -> a | b);
+            }
+        }
+
+        int u = 1 << m;
+        int[] f = new int[u];
+        for (Map.Entry<Integer, Integer> e : pos.entrySet()) {
+            int x = e.getKey();
+            int posMask = e.getValue();
+            for (int j = 0; j < u; j++) {
+                for (int t = posMask, lb; t > 0; t ^= lb) {
+                    lb = t & -t; // lb = 1<<k，其中 k 是行号
+                    if ((j & lb) == 0) { // 没选过第 k 行的数
+                        f[j] = Math.max(f[j], f[j | lb] + x);
+                    }
+                }
+            }
+        }
+        return f[0];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxScore(vector<vector<int>>& grid) {
+        unordered_map<int, int> pos;
+        int m = grid.size();
+        for (int i = 0; i < m; i++) {
+            for (int x : grid[i]) {
+                // 保存所有包含 x 的行号（压缩成二进制数）
+                pos[x] |= 1 << i;
+            }
+        }
+
+        int u = 1 << m;
+        vector<int> f(u);
+        for (auto& [x, pos_mask] : pos) {
+            for (int j = 0; j < u; j++) {
+                for (int t = pos_mask, lb; t; t ^= lb) {
+                    lb = t & -t; // lb = 1<<k，其中 k 是行号
+                    if ((j & lb) == 0) { // 没选过第 k 行的数
+                        f[j] = max(f[j], f[j | lb] + x);
+                    }
+                }
+            }
+        }
+        return f[0];
+    }
+};
+```
+
+```go [sol-Go]
+func maxScore(grid [][]int) int {
+	pos := map[int]int{}
+	for i, row := range grid {
+		for _, x := range row {
+			// 保存所有包含 x 的行号（压缩成二进制数）
+			pos[x] |= 1 << i
+		}
+	}
+
+	f := make([]int, 1<<len(grid))
+	for x, posMask := range pos {
+		for j := range f {
+			for t, lb := posMask, 0; t > 0; t ^= lb {
+				lb = t & -t    // lb = 1<<k，其中 k 是行号
+				if j&lb == 0 { // 没选过第 k 行的数
+					f[j] = max(f[j], f[j|lb]+x)
+				}
+			}
+		}
+	}
+	return f[0]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn2^m)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(mn + 2^m)$ 或 $\mathcal{O}(k + 2^m)$，其中 $k$ 是 $\textit{grid}$ 中的不同元素的个数。
+
+更多相似题目，见下面动态规划题单中的「**状压 DP**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
