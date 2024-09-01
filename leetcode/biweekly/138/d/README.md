@@ -60,6 +60,19 @@ $$
 class Solution:
     def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
         a = [((h - 1) // power + 1, d) for h, d in zip(health, damage)]
+        a.sort(key=lambda p: p[0] / p[1])
+
+        ans = s = 0
+        for k, d in a:
+            s += k
+            ans += s * d
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
+        a = [((h - 1) // power + 1, d) for h, d in zip(health, damage)]
         a.sort(key=cmp_to_key(lambda p, q: p[0] * q[1] - q[0] * p[1]))
 
         ans = s = 0
