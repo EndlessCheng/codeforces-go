@@ -62,7 +62,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long countGoodIntegers(int n, int k) {
-        long[] fac = new long[n + 1];
+        int[] fac = new int[n + 1];
         fac[0] = 1;
         for (int i = 1; i <= n; i++) {
             fac[i] = fac[i - 1] * i;
@@ -89,7 +89,7 @@ class Solution {
             for (char c : sortedS) {
                 cnt[c - '0']++;
             }
-            long res = (n - cnt[0]) * fac[n - 1];
+            int res = (n - cnt[0]) * fac[n - 1];
             for (int c : cnt) {
                 res /= fac[c];
             }
@@ -104,7 +104,7 @@ class Solution {
 class Solution {
 public:
     long long countGoodIntegers(int n, int k) {
-        vector<long long> factorial(n + 1);
+        vector<int> factorial(n + 1);
         factorial[0] = 1;
         for (int i = 1; i <= n; i++) {
             factorial[i] = factorial[i - 1] * i;
@@ -129,7 +129,7 @@ public:
             for (char c : s) {
                 cnt[c - '0']++;
             }
-            long long res = (n - cnt[0]) * factorial[n - 1];
+            int res = (n - cnt[0]) * factorial[n - 1];
             for (int c : cnt) {
                 res /= factorial[c];
             }
