@@ -50,6 +50,12 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ajHYeoEG5/) 第四题，欢迎点赞关注~
 
+## 答疑
+
+**问**：本题可以用 $k/\textit{damage}$ 比大小吗？除法的结果需要用浮点数表示，精度误差是否会影响结果？
+
+**答**：本题 $10^5$ 的值域范围是可以的，但如果范围是 $10^9$ 就可能会有问题，见 [2280. 表示一个折线图的最少线段数](https://leetcode.cn/problems/minimum-lines-to-represent-a-line-chart/)，可以用浮点数写试试。
+
 ```py [sol-Python3]
 class Solution:
     def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
