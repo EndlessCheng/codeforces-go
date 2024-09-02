@@ -142,6 +142,12 @@ func maximumSubarrayXor(nums []int, queries [][]int) []int {
 - 时间复杂度：$\mathcal{O}(n^2+q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度
 - 空间复杂度：$\mathcal{O}(n^2)$。返回值不计入。
 
+## 思考题
+
+如果把 $\textit{nums}$ 的长度增大到 $10^6$，且只要求计算 $\textit{nums}$ 的「异或值」，你能想出一个更快的做法吗？
+
+见 [视频讲解](https://www.bilibili.com/video/BV142Hae7E5y/) 的最后。证明需要用到 Lucas 定理。
+
 更多相似题目，见下面动态规划题单中的「**区间 DP**」。
 
 ## 分类题单
