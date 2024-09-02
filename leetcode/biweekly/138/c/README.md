@@ -62,10 +62,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long countGoodIntegers(int n, int k) {
-        int[] fac = new int[n + 1];
-        fac[0] = 1;
+        int[] factorial = new int[n + 1];
+        factorial[0] = 1;
         for (int i = 1; i <= n; i++) {
-            fac[i] = fac[i - 1] * i;
+            factorial[i] = factorial[i - 1] * i;
         }
 
         long ans = 0;
@@ -73,8 +73,7 @@ class Solution {
         int base = (int) Math.pow(10, (n - 1) / 2);
         for (int i = base; i < base * 10; i++) { // 枚举回文数左半边
             String s = Integer.toString(i);
-            StringBuilder rev = new StringBuilder(s).reverse();
-            s += rev.substring(n % 2);
+            s += new StringBuilder(s).reverse().substring(n % 2);
             if (Long.parseLong(s) % k > 0) { // 回文数不能被 k 整除
                 continue;
             }
@@ -89,9 +88,9 @@ class Solution {
             for (char c : sortedS) {
                 cnt[c - '0']++;
             }
-            int res = (n - cnt[0]) * fac[n - 1];
+            int res = (n - cnt[0]) * factorial[n - 1];
             for (int c : cnt) {
-                res /= fac[c];
+                res /= factorial[c];
             }
             ans += res;
         }
