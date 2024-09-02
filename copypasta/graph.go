@@ -569,6 +569,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 }
 
 /* 图上的 BFS
+https://codeforces.com/problemset/problem/689/B 1600 最短路模板题
 https://codeforces.com/problemset/problem/601/A 1600 脑筋急转弯
 https://codeforces.com/problemset/problem/1721/D 1800 带撤销的 BFS
 https://codeforces.com/problemset/problem/1851/F 1800 带撤销的 BFS
@@ -690,9 +691,9 @@ func (*graph) bfs(n, st int, g [][]int) {
 }
 
 // 字典序最小最短路 · 其一
-// 边权为 1，要求路径上的边权颜色字典序最小
-// 只需要计算最短路的边权颜色的异或值
+// 路径的点权序列的字典序最小（边权为 1）
 // https://codeforces.com/problemset/problem/1209/F 2600
+// https://ac.nowcoder.com/acm/contest/76652/B
 func (*graph) lexicographicallySmallestShortestPath(g [][]struct{ to, color int }, st, end int) []int {
 	dis := make([]int, len(g))
 	from := make([]int, len(g)) // 可选（输出具体路径用）
@@ -1580,7 +1581,8 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C 1900
 // 结合二分 https://codeforces.com/problemset/problem/229/B 1700
-// 最短路个数 https://www.luogu.com.cn/problem/P1608
+// 最短路个数 https://www.luogu.com.cn/problem/P1144
+//           https://www.luogu.com.cn/problem/P1608
 // 【理解本质】通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B 2000
 // 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 【理解本质】https://atcoder.jp/contests/abc271/tasks/abc271_e
@@ -1588,6 +1590,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // - LC2473 https://leetcode.cn/problems/minimum-cost-to-buy-apples/
 // 建模 https://www.luogu.com.cn/problem/P4644
 // 建模 LC864 https://leetcode.cn/problems/shortest-path-to-get-all-keys/ 2259
+// https://codeforces.com/problemset/problem/1725/M 1800 分层图最短路
 // 建模【好题】https://codeforces.com/contest/1528/problem/D
 // 建模+转换+多源最短路 https://codeforces.com/problemset/problem/1753/D
 // 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
@@ -1724,7 +1727,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 
 	// EXTRA: 在最短路 DAG 上跑拓扑（如最短路计数）
 	// LC1976 https://leetcode.cn/problems/number-of-ways-to-arrive-at-destination/
-	// https://www.luogu.com.cn/problem/P1144 https://www.luogu.com.cn/problem/P1608 
+	// 最短路个数 https://www.luogu.com.cn/problem/P1144 https://www.luogu.com.cn/problem/P1608 
 	// 也可以把转移写在求最短路的代码中，见 https://www.luogu.com.cn/record/56683589
 	// 紧急情况 https://www.acwing.com/problem/content/1477/
 	// 条条大路通罗马 https://www.acwing.com/problem/content/1579/
@@ -1759,7 +1762,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 	// EXTRA: 次短路
 	// 模板题 https://www.luogu.com.cn/problem/P2865
 	// LC2045 https://leetcode.cn/problems/second-minimum-time-to-reach-destination/ 2202
-	// 次短路计数 https://www.acwing.com/problem/content/385/ https://codeforces.com/contest/1650/problem/G
+	// 次短路计数 https://codeforces.com/contest/1650/problem/G http://poj.org/problem?id=3463 https://www.acwing.com/problem/content/385/
 	// 长度不超过最短路长度+K 的路径个数 [NOIP2017 提高组] 逛公园 https://www.luogu.com.cn/problem/P3953
 	{
 		const inf int = 1e18
@@ -1829,24 +1832,25 @@ func (*graph) shortestPathDijkstra2(g [][]int, st int) []int {
 }
 
 // 0-1 最短路 / 0-1 BFS
-// https://oi-wiki.org/graph/bfs/#bfs_3
+// https://oi-wiki.org/graph/bfs/#%E5%8F%8C%E7%AB%AF%E9%98%9F%E5%88%97-bfs
 // https://codeforces.com/blog/entry/22276
 // EXTRA: 1-2 最短路 https://codeforces.com/blog/entry/90917
 //
 // - [1824. 最少侧跳次数](https://leetcode.cn/problems/minimum-sideway-jumps/) 1778
 // - [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069
 // - [2290. 到达角落需要移除障碍物的最小数目](https://leetcode.cn/problems/minimum-obstacle-removal-to-reach-corner/) 2138
-// 例题: https://codeforces.com/problemset/problem/173/B 1800
-// 网格图 https://codeforces.com/problemset/problem/590/C 2200
+// https://codeforces.com/problemset/problem/173/B 1800
+// https://codeforces.com/problemset/problem/1063/B 1800
+// https://codeforces.com/problemset/problem/1941/G 2000 也可以 BFS（需要合适的建图方式）
+// https://codeforces.com/problemset/problem/877/D 2100 也可以 BFS
+// https://codeforces.com/problemset/problem/590/C 2200 网格图
+// https://codeforces.com/problemset/problem/821/D 2200 建图技巧
+// https://codeforces.com/problemset/problem/1340/C 2400 建图技巧
+// https://codeforces.com/problemset/problem/1442/C 2400
+// https://codeforces.com/problemset/problem/1749/E 2400 建图技巧
 // 建图技巧 https://www.lanqiao.cn/problems/6281/learning/?contest_id=146
-// 建图技巧 https://codeforces.com/problemset/problem/821/D
-// 建图技巧 https://codeforces.com/problemset/problem/1340/C
-// 建图技巧 https://codeforces.com/problemset/problem/1749/E 2400
 // 哪里有 1 https://atcoder.jp/contests/abc213/tasks/abc213_e
 //         https://atcoder.jp/contests/abc176/tasks/abc176_d
-// https://codeforces.com/problemset/problem/877/D（也可以 BFS）
-// https://codeforces.com/problemset/problem/1063/B
-// https://codeforces.com/problemset/problem/1442/C
 func (*graph) bfs01(g [][]struct{ to, wt int }, st int) []int {
 	const inf int = 1e18
 	dis := make([]int, len(g))
@@ -1975,7 +1979,7 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dis []int) { // 有负
 // LC1462 https://leetcode.cn/problems/course-schedule-iv/ 1693
 // LC2976 https://leetcode.cn/problems/minimum-cost-to-convert-string-i/
 // - 原题 https://codeforces.com/problemset/problem/33/B 1800
-// 可以用动态加点进一步优化 https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/
+// LC2959 https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/
 // 动态加点 https://codeforces.com/problemset/problem/295/B
 // 动态加边 LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/ 1811
 // - https://codeforces.com/problemset/problem/25/C
@@ -1991,6 +1995,10 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	// 见算法导论第三版练习 25.2-4（网络上有习题解答）
 
 	// 初始化，保证 g[i][i] = 0
+	// 注：如果没有动态加边的需求，其实 g[i][i] 是否初始化成 0 无所谓
+	// 但还是需要注意，代码中是否有判断 g[i][i] 的值的逻辑
+	// 【技巧】用 Floyd 计算完 g[i][j] 之后，如果要判断所有 g[i][j]，可以利用 g[i][j] = g[j][i] 的性质，只判断 j < i 的情况，从而减少一半的计算量
+
 	const inf = math.MaxInt / 2
 	g := make([][]int, n)
 	for i := range g {
@@ -2022,6 +2030,7 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	// 动态加边
 	// https://codeforces.com/problemset/problem/25/C
 	// LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/
+	// LC2959 https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/ 结合状压 DP
 	for i := range g {
 		// 注意 from=i 或者 to=j 时，下面的 g[i][from] 和 g[to][j] 都需要 g[i][i] 这样的值
 		// 所以初始化成 0 方便计算
@@ -2043,31 +2052,77 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 	return g
 }
 
-// 位压缩版 O(n^3/w)
+// 位压缩版 Floyd
+// 时间复杂度 O(n^3/w), w=bits.UintSize，一般是 64
 // LC2101 https://leetcode.cn/problems/detonate-the-maximum-bombs/ 1880
 // https://atcoder.jp/contests/abc287/tasks/abc287_h
 func (*graph) floydWarshallBitset(n int, edges [][]int) []int {
-	vs := make([]Bitset, n) // vs[i] 表示从 i 出发可以到达的节点
-	for i := range vs {
-		vs[i] = NewBitset(n)
-		vs[i].Set(i) // i 可以到达 i
+	f := make([]Bitset, n) // f[i] 表示从 i 出发可以到达的节点集合
+	for i := range f {
+		f[i] = NewBitset(n)
+		f[i].Set(i) // i 可以到它自己
 	}
 	for _, e := range edges {
-		v, w := e[0], e[1]
-		vs[v].Set(w) // 有向边 v->w
+		v, w := e[0], e[1] // 有向边 v->w
+		f[v].Set(w)
 	}
-	for k := range vs {
-		for i := range vs {
-			if vs[i].Has(k) {
-				vs[i].Or(vs[k]) // i->j 现在可以 i->k->j
+	for k := range f {
+		for i := range f {
+			if f[i].Has(k) { // i 可以到 k
+				f[i].Or(f[k]) // k 能到的点，i 也可以到           i->j 现在可以 i->k->j
 			}
 		}
 	}
 	reach := make([]int, n) // reach[i] 表示从 i 出发可以到达的节点数（注意读题，一般都要包括自己）
-	for i, bs := range vs {
-		reach[i] = bs.OnesCount()
+	for i, s := range f {
+		reach[i] = s.OnesCount()
 	}
 	return reach
+}
+
+// 子集 Floyd
+// LC2959 https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/
+func (*graph) floydWarshallSubset(n int, edges [][]int) {
+	g := make([][]int, n)
+	for i := range g {
+		g[i] = make([]int, n)
+		for j := range g[i] {
+			g[i][j] = math.MaxInt / 2
+		}
+	}
+	for _, e := range edges {
+		x, y, wt := e[0], e[1], e[2]
+		g[x][y] = min(g[x][y], wt)
+		g[y][x] = min(g[y][x], wt)
+	}
+
+	f := make([][][]int, 1<<n)
+	for i := range f {
+		f[i] = make([][]int, n)
+		for j := range f[i] {
+			f[i][j] = make([]int, n)
+			for k := range f[i][j] {
+				f[i][j][k] = math.MaxInt / 2
+			}
+		}
+	}
+
+	f[0] = g
+	// check f[0][i][j] ...
+
+	for s := uint(1); s < 1<<n; s++ {
+		k := bits.TrailingZeros(s) // 中转节点（选任一 s 中的元素）
+		t := s ^ 1<<k
+		for i := 0; i < n; i++ {
+			for j := 0; j < n; j++ {
+				f[s][i][j] = min(f[t][i][j], f[t][i][k]+f[t][k][j])
+				if j < i {
+					// 因为 f[s][i][j] = f[s][j][i]，只需要检查一半
+					// check f[s][i][j] ...
+				}
+			}
+		}
+	}
 }
 
 // 最小环
@@ -2289,6 +2344,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // - [1489. 找到最小生成树里的关键边和伪关键边](https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/) 2572
 // https://atcoder.jp/contests/abc210/tasks/abc210_e 需要一些数论知识 
 // https://atcoder.jp/contests/abc270/tasks/abc270_f 枚举 
+// https://codeforces.com/problemset/problem/1468/J 1800 分类讨论
 // https://codeforces.com/problemset/problem/1095/F 1900 边权为 a[i]+a[j] 的混合 MST 
 // - 完全图找个最小的 a[i] 和其余点连边
 // https://codeforces.com/problemset/problem/733/F 2200 与 LCA 结合 
@@ -3721,7 +3777,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 				lowV = min(lowV, lowW)
 			} else {
 				// 如果 0 < dfn[w] != inf，说明 w 在 st 中，那么找到 v 的到其祖先节点的边 v-w，用 dfn[w] 来更新 lowV
-				// 不需要判断 dfn[w] == inf 的情况，直接取 min 即可
+				// 实际上，不需要判断 dfn[w] == inf 的情况，直接取 min 即可
 				lowV = min(lowV, dfn[w])
 			}
 		}
@@ -4487,6 +4543,9 @@ https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 // [Tutorial] My way of understanding Dinitz's ("Dinic's") algorithm https://codeforces.com/blog/entry/104960
 // https://www.bilibili.com/video/BV1j64y1R7yK/
 // 时间复杂度证明 https://www.zhihu.com/question/34374412
+// - 一次增广令至少一条边饱和（cap = 0），所以有至多 O(m) 条增广路，每条增广路的长度为 O(n)，所以多路增广的时间是 O(nm)
+// - 由于每次 BFS 都会使 d[end] 变大，至多变大 O(n) 次，所以总的时间复杂度为 O(n) * O(nm) = O(n^2 * m)
+// 关于二分图上的时间复杂度，见 https://www.cnblogs.com/Itst/p/12556871.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3376
 //       https://www.luogu.com.cn/problem/P2740
@@ -4877,35 +4936,57 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 //
 // 模板题 https://www.luogu.com.cn/problem/P3381
 // https://codeforces.com/problemset/problem/237/E 2000
-// LC2850 建模 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
-func (*graph) minCostFlowSPFA(n, st, end int, edges [][]int) (int, int) {
-	const inf int = 1e18
-	st--
-	end--
+//
+// 常见建模方式（下面代码按照这种建模写的）
+// 建模的时候，一般可以理解成在一个矩阵 a 上，每行每列至多选一个数，问所选数字之和的最小值
+// 创建一个（完全）二分图，左部为行，右部为列
+// - 行 -> 列，容量为 1，费用为 grid[i][j]
+// - 超级源点 S -> 行，容量为 1，费用为 0
+// - 列 -> 超级汇点 T，容量为 1，费用为 0
+// 如果求最大值可以把元素值（费用）取反，最后答案再取反
+// 如果每行可以选多个，可以修改从超级源点到左部（行）的容量
+// 如果每列可以选多个，可以修改从右部（列）到超级汇点的容量
+// 如果要限制至多选 k 个元素，可以在超级源点前面再加一个节点，连到超级源点，容量为 k，费用为 0（相当于超级源点的流出量至多为 k）。如果满流，则表示恰好选了 k 个元素
+//
+// 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
+// 完全二分图 + 至多选 k=3 个数 LC3257 https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/
+// 二分图 + 稀疏矩阵 LC3276 https://leetcode.cn/problems/select-cells-in-grid-with-maximum-score/
+func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
+	n := len(a)
+	m := len(a[0])
+	S := n + m
+	T := S + 1
 
 	// rid 为反向边在邻接表中的下标
-	type neighbor struct{ to, rid, cap, cost, eid int }
-	g := make([][]neighbor, n) // end+1
-	addEdge := func(from, to, cap, cost, eid int) {
-		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost, eid})
-		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost, -1}) // 无向图上 0 换成 cap
+	type neighbor struct{ to, rid, cap, cost int } // 如果输入的是 edges，可以额外记录边的下标
+	g := make([][]neighbor, T+1)
+	addEdge := func(from, to, cap, cost int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
 	}
-	for i, e := range edges {
-		v, w, edgeCap, edgeCost := e[0], e[1], e[2], e[3]
-		addEdge(v, w, edgeCap, edgeCost, i)
+	for i, row := range a {
+		for j, v := range row {
+			addEdge(i, n+j, 1, v) // 如果求最大，改成 -v
+		}
+		addEdge(S, i, 1, 0) // 如果是一对多，改 cap
+		// 特别地，如果这一行的所有 v 都相同，可以把 S->i 的 cost 改成 v，i->n+j 的 cost 改成 0
 	}
+	for j := range a[0] {
+		addEdge(n+j, T, 1, 0) // 如果是多对一，改 cap
+	}
+	//addEdge(T+1, S, k, 0) // 如果要限制至多选 k 个元素（g 的大小改成 T+2）
 
-	dist := make([]int, len(g))
+	dis := make([]int, len(g))
 	type vi struct{ v, i int }
 	fa := make([]vi, len(g))
 	inQ := make([]bool, len(g))
 	spfa := func() bool {
-		for i := range dist {
-			dist[i] = inf
+		for i := range dis {
+			dis[i] = math.MaxInt
 		}
-		dist[st] = 0
-		inQ[st] = true
-		q := []int{st}
+		dis[S] = 0
+		inQ[S] = true
+		q := []int{S}
 		for len(q) > 0 {
 			v := q[0]
 			q = q[1:]
@@ -4915,9 +4996,9 @@ func (*graph) minCostFlowSPFA(n, st, end int, edges [][]int) (int, int) {
 					continue
 				}
 				w := e.to
-				newD := dist[v] + e.cost
-				if newD < dist[w] {
-					dist[w] = newD
+				newD := dis[v] + e.cost
+				if newD < dis[w] {
+					dis[w] = newD
 					fa[w] = vi{v, i}
 					if !inQ[w] {
 						inQ[w] = true
@@ -4927,32 +5008,31 @@ func (*graph) minCostFlowSPFA(n, st, end int, edges [][]int) (int, int) {
 			}
 		}
 		// 循环结束后所有 inQ[v] 都为 false，无需重置
-		return dist[end] < inf
+		return dis[T] < math.MaxInt
 	}
-	edmondsKarp := func() (maxFlow, minCost int) {
-		for spfa() {
-			// 沿 st-end 的最短路尽量增广
-			minF := inf
-			for v := end; v != st; {
-				p := fa[v]
-				if c := g[p.v][p.i].cap; c < minF {
-					minF = c
-				}
-				v = p.v
-			}
-			for v := end; v != st; {
-				p := fa[v]
-				e := &g[p.v][p.i]
-				e.cap -= minF
-				g[v][e.rid].cap += minF
-				v = p.v
-			}
-			maxFlow += minF
-			minCost += dist[end] * minF
+
+	maxFlow := 0 // 可选
+	minCost := 0
+	for spfa() {
+		// 沿 st-end 的最短路尽量增广
+		// 特别地，如果建图时所有边的容量都设为 1，那么 minF 必然为 1，下面第一个 for 循环可以省略
+		minF := math.MaxInt
+		for v := T; v != S; {
+			p := fa[v]
+			minF = min(minF, g[p.v][p.i].cap)
+			v = p.v
 		}
-		return
+		for v := T; v != S; {
+			p := fa[v]
+			e := &g[p.v][p.i]
+			e.cap -= minF
+			g[v][e.rid].cap += minF
+			v = p.v
+		}
+		maxFlow += minF
+		minCost += dis[T] * minF
 	}
-	return edmondsKarp()
+	return maxFlow, minCost
 }
 
 // 基于原始对偶方法 (primal-dual method)
