@@ -1,6 +1,6 @@
 ![lc3276.png](https://pic.leetcode.cn/1725186494-jnwWda-lc3276.png)
 
-看示例 1，$\textit{grid}$ 的最大值为 $4$。
+看示例 1，$\textit{grid}$ 的最大值 $\textit{mx}=4$。
 
 讨论 $4$ **选或不选**：
 
@@ -453,7 +453,118 @@ func maxScore(grid [][]int) int {
 - 时间复杂度：$\mathcal{O}(mn2^m)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(mn + 2^m)$ 或 $\mathcal{O}(k + 2^m)$，其中 $k$ 是 $\textit{grid}$ 中的不同元素的个数。
 
-更多相似题目，见下面动态规划题单中的「**状压 DP**」。
+## 附：费用流做法
+
+和 [3257. 放三个车的价值之和最大 II](https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/) 一样，本题也可以抽象成图论模型，用**费用流**解决。
+
+- 创建一个**二分图**，左部为元素值，右部为行号。
+- 把第 $i$ 个元素看作节点 $i$，第 $j$ 行看作节点 $k+j$。其中 $k$ 是 $\textit{grid}$ 中的不同元素个数。
+- 在第 $i$ 个元素到第 $j$ 行之间连边，容量为 $1$，费用为 $0$。
+- 从超级源点 $S=k+m$ 向所有元素节点 $0,1,2,\cdots,k-1$ 连边，容量为 $1$，费用为节点值取反。取反是为了方便套最小费用流模板。
+- 从所有行节点 $k,k+1,k+2,\cdots,k+m-1$ 向超级汇点 $T=k+m+1$ 连边，容量为 $1$，费用为 $0$。
+
+这样建图可以保证同样的元素至多选一个，且每一行至多选一个元素。
+
+计算从 $S$ 到 $T$ 的最小费用流，取相反数，即为答案。
+
+```go
+func maxScore(grid [][]int) int {
+	pos := map[int]int{}
+	for i, row := range grid {
+		for _, x := range row {
+			// 保存所有包含 x 的行号（压缩成二进制数）
+			pos[x] |= 1 << i
+		}
+	}
+
+	// 建图
+	k := len(pos)
+	m := len(grid)
+	// rid 为反向边在邻接表中的下标
+	type neighbor struct{ to, rid, cap, cost int }
+	g := make([][]neighbor, k+m+2)
+	addEdge := func(from, to, cap, cost int) {
+		g[from] = append(g[from], neighbor{to, len(g[to]), cap, cost})
+		g[to] = append(g[to], neighbor{from, len(g[from]) - 1, 0, -cost})
+	}
+	S := k + m
+	T := k + m + 1
+	i := 0
+	for x, posMask := range pos {
+		for t := uint(posMask); t > 0; t &= t - 1 {
+			j := bits.TrailingZeros(t)
+			addEdge(i, k+j, 1, 0)
+		}
+		addEdge(S, i, 1, -x)
+		i++
+	}
+	for j := range grid {
+		addEdge(k+j, T, 1, 0)
+	}
+
+	// 下面是费用流模板
+	dis := make([]int, len(g))
+	type vi struct{ v, i int }
+	fa := make([]vi, len(g))
+	inQ := make([]bool, len(g))
+	spfa := func() bool {
+		for i := range dis {
+			dis[i] = math.MaxInt
+		}
+		dis[S] = 0
+		inQ[S] = true
+		q := []int{S}
+		for len(q) > 0 {
+			v := q[0]
+			q = q[1:]
+			inQ[v] = false
+			for i, e := range g[v] {
+				if e.cap == 0 {
+					continue
+				}
+				w := e.to
+				newD := dis[v] + e.cost
+				if newD < dis[w] {
+					dis[w] = newD
+					fa[w] = vi{v, i}
+					if !inQ[w] {
+						inQ[w] = true
+						q = append(q, w)
+					}
+				}
+			}
+		}
+		// 循环结束后所有 inQ[v] 都为 false，无需重置
+		return dis[T] < math.MaxInt
+	}
+
+	minCost := 0
+	for spfa() {
+		minF := math.MaxInt
+		for v := T; v != S; {
+			p := fa[v]
+			minF = min(minF, g[p.v][p.i].cap)
+			v = p.v
+		}
+		for v := T; v != S; {
+			p := fa[v]
+			e := &g[p.v][p.i]
+			e.cap -= minF
+			g[v][e.rid].cap += minF
+			v = p.v
+		}
+		minCost += dis[T] * minF
+	}
+	return -minCost
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(m^2n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。由于二分图的特殊性，算法跑至多 $m$ 次 $\mathcal{O}(mn)$ 的 SPFA 就结束了。
+- 空间复杂度：$\mathcal{O}(mn)$。
+
+更多相似题目，见下面动态规划题单中的「**状压 DP**」和图论题单中的「**二分图**」和「**网络流**」。
 
 ## 分类题单
 
