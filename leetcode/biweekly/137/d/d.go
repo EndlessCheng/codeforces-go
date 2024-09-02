@@ -16,10 +16,10 @@ func maximumValueSum(board [][]int) int64 {
 	C := m + n + 1
 	S := m + n + 2
 	for i, row := range board {
-		addEdge(R, i, 1, 0)
 		for j, x := range row {
 			addEdge(i, m+j, 1, -x)
 		}
+		addEdge(R, i, 1, 0)
 	}
 	for j := range board[0] {
 		addEdge(m+j, C, 1, 0)
