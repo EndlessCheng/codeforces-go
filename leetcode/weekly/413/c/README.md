@@ -564,6 +564,10 @@ func maxScore(grid [][]int) int {
 - 时间复杂度：$\mathcal{O}(m^2n)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。由于二分图的特殊性，算法跑至多 $m$ 次 $\mathcal{O}(mn)$ 的 SPFA 就结束了。
 - 空间复杂度：$\mathcal{O}(mn)$。
 
+## 相似题目
+
+- [1434. 每个人戴不同帽子的方案数](https://leetcode.cn/problems/number-of-ways-to-wear-different-hats-to-each-other/)
+
 更多相似题目，见下面动态规划题单中的「**状压 DP**」和图论题单中的「**二分图**」和「**网络流**」。
 
 ## 分类题单
