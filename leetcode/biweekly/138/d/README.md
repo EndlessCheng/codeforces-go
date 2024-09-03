@@ -56,7 +56,7 @@ $$
 
 **答**：本题 $10^5$ 的值域范围是可以的，但如果范围是 $10^9$ 就可能会有问题，见 [2280. 表示一个折线图的最少线段数](https://leetcode.cn/problems/minimum-lines-to-represent-a-line-chart/)，可以用浮点数写试试。
 
-```py [sol-Python3]
+```py [sol-Py]
 class Solution:
     def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
         a = [((h - 1) // power + 1, d) for h, d in zip(health, damage)]
@@ -69,7 +69,7 @@ class Solution:
         return ans
 ```
 
-```py [sol-Python3 写法二]
+```py [sol-Py 写法二]
 class Solution:
     def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
         a = [((h - 1) // power + 1, d) for h, d in zip(health, damage)]
@@ -79,6 +79,19 @@ class Solution:
         for k, d in a:
             s += k
             ans += s * d
+        return ans
+```
+
+```py [sol-Py 写法三]
+class Solution:
+    def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
+        n = len(damage)
+        for i in range(n):
+            health[i] = (health[i] - 1) // power + 1
+        ans = s = 0
+        for i in sorted(range(n), key=lambda i: health[i] / damage[i]):
+            s += health[i]
+            ans += s * damage[i]
         return ans
 ```
 
