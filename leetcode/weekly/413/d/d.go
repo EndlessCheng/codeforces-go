@@ -1,20 +1,15 @@
 package main
 
 // https://space.bilibili.com/206214
-func maximumSubarrayXor(nums []int, queries [][]int) []int {
-	n := len(nums)
-	f := make([][]int, n)
+func maximumSubarrayXor(f []int, queries [][]int) []int {
+	n := len(f)
 	mx := make([][]int, n)
-	for i := range f {
-		f[i] = make([]int, n)
-		mx[i] = make([]int, n)
-	}
 	for i := n - 1; i >= 0; i-- {
-		f[i][i] = nums[i]
-		mx[i][i] = nums[i]
+		mx[i] = make([]int, n)
+		mx[i][i] = f[i]
 		for j := i + 1; j < n; j++ {
-			f[i][j] = f[i][j-1] ^ f[i+1][j]
-			mx[i][j] = max(f[i][j], mx[i+1][j], mx[i][j-1])
+			f[j] ^= f[j-1]
+			mx[i][j] = max(f[j], mx[i+1][j], mx[i][j-1])
 		}
 	}
 

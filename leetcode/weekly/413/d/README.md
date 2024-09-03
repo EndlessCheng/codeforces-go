@@ -137,6 +137,109 @@ func maximumSubarrayXor(nums []int, queries [][]int) []int {
 }
 ```
 
+## 优化
+
+去掉 $f$ 的第一个维度。
+
+进一步地，直接把 $\textit{nums}$ 当作 $f$ 数组。
+
+```py [sol-Python3]
+class Solution:
+    def maximumSubarrayXor(self, f: List[int], queries: List[List[int]]) -> List[int]:
+        n = len(f)
+        mx = [[0] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            mx[i][i] = f[i]
+            for j in range(i + 1, n):
+                f[j] ^= f[j - 1]
+                mx[i][j] = max(f[j], mx[i + 1][j], mx[i][j - 1])
+        return [mx[l][r] for l, r in queries]
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def maximumSubarrayXor(self, f: List[int], queries: List[List[int]]) -> List[int]:
+        n = len(f)
+        mx = [[0] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            mx[i][i] = f[i]
+            for j in range(i + 1, n):
+                f[j] ^= f[j - 1]
+                res = f[j]
+                if mx[i + 1][j] > res:
+                    res = mx[i + 1][j]
+                if mx[i][j - 1] > res:
+                    res = mx[i][j - 1]
+                mx[i][j] = res
+        return [mx[l][r] for l, r in queries]
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] maximumSubarrayXor(int[] f, int[][] queries) {
+        int n = f.length;
+        int[][] mx = new int[n][n];
+        for (int i = n - 1; i >= 0; i--) {
+            mx[i][i] = f[i];
+            for (int j = i + 1; j < n; j++) {
+                f[j] ^= f[j - 1];
+                mx[i][j] = Math.max(f[j], Math.max(mx[i + 1][j], mx[i][j - 1]));
+            }
+        }
+
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            ans[i] = mx[queries[i][0]][queries[i][1]];
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> maximumSubarrayXor(vector<int>& f, vector<vector<int>>& queries) {
+        int n = f.size();
+        vector<vector<int>> mx(n, vector<int>(n));
+        for (int i = n - 1; i >= 0; i--) {
+            mx[i][i] = f[i];
+            for (int j = i + 1; j < n; j++) {
+                f[j] ^= f[j - 1];
+                mx[i][j] = max({f[j], mx[i + 1][j], mx[i][j - 1]});
+            }
+        }
+
+        vector<int> ans;
+        for (auto& q : queries) {
+            ans.push_back(mx[q[0]][q[1]]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maximumSubarrayXor(f []int, queries [][]int) []int {
+	n := len(f)
+	mx := make([][]int, n)
+	for i := n - 1; i >= 0; i-- {
+		mx[i] = make([]int, n)
+		mx[i][i] = f[i]
+		for j := i + 1; j < n; j++ {
+			f[j] ^= f[j-1]
+			mx[i][j] = max(f[j], mx[i+1][j], mx[i][j-1])
+		}
+	}
+
+	ans := make([]int, len(queries))
+	for i, q := range queries {
+		ans[i] = mx[q[0]][q[1]]
+	}
+	return ans
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2+q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度
