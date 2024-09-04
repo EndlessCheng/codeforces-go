@@ -3,10 +3,63 @@ package main
 import (
 	"math"
 	"math/bits"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
 func maxScore(grid [][]int) int {
+	pos := map[int]int{}
+	for i, row := range grid {
+		for _, x := range row {
+			// 保存所有包含 x 的行号（压缩成二进制数）
+			pos[x] |= 1 << i
+		}
+	}
+
+	allNums := make([]int, 0, len(pos))
+	for x := range pos {
+		allNums = append(allNums, x)
+	}
+	slices.Sort(allNums) // 下面从大到小递归
+
+	n := len(allNums)
+	memo := make([][]int, n)
+	for i := range memo {
+		memo[i] = make([]int, 1<<len(grid))
+		for j := range memo[i] {
+			memo[i][j] = -1 // -1 表示没有计算过
+		}
+	}
+	var dfs func(i, j int) int
+	dfs = func(i, j int) int {
+		if i < 0 {
+			return 0
+		}
+		p := &memo[i][j]
+		if *p != -1 { // 之前计算过
+			return *p
+		}
+		// 枚举选第 k 行的 x
+		// 如果循环结束后 res > 0，就不再递归不选的情况
+		res := 0
+		x := allNums[i]
+		for t, lb := pos[x], 0; t > 0; t ^= lb {
+			lb = t & -t    // lb = 1<<k，其中 k 是行号
+			if j&lb == 0 { // 没选过第 k 行的数
+				res = max(res, dfs(i-1, j|lb)+x)
+			}
+		}
+		if res == 0 {
+			// 不选 x
+			res = dfs(i-1, j)
+		}
+		*p = res // 记忆化
+		return res
+	}
+	return dfs(n-1, 0)
+}
+
+func maxScoreFlow(grid [][]int) int {
 	pos := map[int]int{}
 	for i, row := range grid {
 		for _, x := range row {
