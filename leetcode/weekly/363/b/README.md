@@ -3,12 +3,17 @@
 假设恰好选 $k$ 个学生，那么：
 
 - 所有 $\textit{nums}[i] < k$ 的学生都要选；
-- 所有 $\textit{nums}[i] > k$ 的都不能选；
+- 所有 $\textit{nums}[i] > k$ 的学生都不能选；
 - 不能出现 $\textit{nums}[i] = k$ 的情况，因为每个学生只有选或不选两种可能。
 
-这意味着**在选择学生人数固定的时候，选择方案是唯一的**。把 $\textit{nums}$ **从小到大排序**后，唯一性可以更明显地看出来：
+这意味着**在选择学生人数固定的时候，选择方案是唯一的**。把 $\textit{nums}$ 从小到大排序后，唯一性可以更明显地看出来：
 
 - 以 $k$ 为分界线，左边的都要选，右边的都不能选。
+  
+排序后：
+
+- 如果选了 $\textit{nums}[i]$，那么比 $\textit{nums}[i]$ 更小的学生也要选。
+- 如果不选 $\textit{nums}[i]$，那么比 $\textit{nums}[i]$ 更大的学生也不选。
 
 具体地，如果选 $\textit{nums}[i-1]$ 而不选 $\textit{nums}[i]$，由于数组已排序，我们必须要选下标为 $0,1,2,\cdots,i-1$ 的学生，一共 $i$ 个，而下标 $\ge i$ 的学生都不能选，所以需要满足
 
@@ -16,14 +21,14 @@ $$
 \textit{nums}[i-1] < i < \textit{nums}[i]
 $$
 
-枚举 $i=1,2,\cdots,n-1$，如果上式成立，就意味着我们可以选 $i$ 个学生，算作一种方案。
+枚举 $i=1,2,\cdots,n-1$（枚举分界线的位置），如果上式成立，就意味着我们可以选 $i$ 个学生，算作一种方案。
 
 特殊情况：
 
 - 如果 $\textit{nums}[0] > 0$，那么可以一个学生都不选。
 - 如果 $\textit{nums}[n-1] < n$，那么可以所有学生都选。由于数据范围保证 $\textit{nums}[i]<n$，所以这种方案一定存在。
 
-[视频讲解【周赛 363】](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第二题。
+见 [视频讲解](https://www.bilibili.com/video/BV1Lm4y1N7mf/) 第二题。
 
 ```py [sol-Python3]
 class Solution:
