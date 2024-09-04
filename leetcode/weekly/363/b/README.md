@@ -82,7 +82,7 @@ int countWays(int* nums, int numsSize) {
     for (int i = 1; i < numsSize; i++) {
         ans += nums[i - 1] < i && i < nums[i];
     }
-    return ans + 1; // +1 是因为可以都选
+    return ans + 1; // 一定可以都选
 }
 ```
 
@@ -106,7 +106,7 @@ var countWays = function(nums) {
     nums.sort((a, b) => a - b);
     let ans = nums[0] > 0 ? 1 : 0; // 一个学生都不选
     for (let i = 1; i < nums.length; i++) {
-        if (nums[i] < i + 1 && i + 1 < nums[i + 1]) {
+        if (nums[i - 1] < i && i < nums[i]) {
             ans++;
         }
     }
