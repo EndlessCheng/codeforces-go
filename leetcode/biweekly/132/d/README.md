@@ -112,10 +112,8 @@ public:
         unordered_map<int, vector<int>> fs;
         vector<array<int, 3>> records(k + 1);
         for (int x : nums) {
-            if (!fs.contains(x)) {
-                fs[x] = vector<int>(k + 1);
-            }
             auto& f = fs[x];
+            f.resize(k + 1);
             for (int j = k; j >= 0; j--) {
                 f[j]++;
                 if (j) {
@@ -233,10 +231,8 @@ public:
         unordered_map<int, vector<int>> fs;
         vector<int> mx(k + 2);
         for (int x : nums) {
-            if (!fs.contains(x)) {
-                fs[x] = vector<int>(k + 1);
-            }
             auto& f = fs[x];
+            f.resize(k + 1);
             for (int j = k; j >= 0; j--) {
                 f[j] = max(f[j], mx[j]) + 1;
                 mx[j + 1] = max(mx[j + 1], f[j]);
