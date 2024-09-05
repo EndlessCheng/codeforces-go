@@ -1,12 +1,33 @@
-遍历到 $x=\textit{nums}[i]$ 时，我们需要维护以 $x$ 结尾的、至多包含 $j$ 个不同相邻元素的子序列的最大长度，定义为 $f[x][j]$，初始全为 $0$。
+## 引入
+
+以示例 1 为例，$\textit{nums}=[1,2,1,1,3]$。
+
+假如好子序列的最后一个数是 $\textit{nums}[3]=1$，分类讨论：
+
+- $1$ 单独作为一个子序列。
+- $1$ 和好子序列的倒数第二个数相同。
+- $1$ 和好子序列的倒数第二个数不同。由于 $1$ 左边只有 $2$，那么就需要知道，最后一个数是 $2$ 的好子序列的最长长度。
+
+在这个过程中，我们需要跟踪如下关键信息：
+
+- 子序列的最后一个数 $x$。下文把该子序列称作「以 $x$ 结尾的子序列」。
+- 子序列中有多少个 `seq[i] != seq[i + 1]`，也就是「相邻不同」数对的个数。
+
+## 思路
+
+遍历到 $x=\textit{nums}[i]$ 时，维护以 $x$ 结尾的、有**至多** $j$ 个「相邻不同」数对的子序列的最大长度，定义为 $f[x][j]$，初始值全为 $0$。
 
 对于 $x$，有三种决策：
 
-1. 不选：$f[x][j]$ 不变。
-2. 选，且和子序列的前一个数一样，或者作为子序列的第一个数：$f[x][j]$ 增加 $1$。
-3. 选，且和子序列的前一个数不一样：设前一个数为 $y$，我们需要知道最大的 $f[y][j-1]$。
+1. 不选：$f[x][j]$ 不变。但其实这种情况无需考虑，因为直接把 $x$ 加到以 $x$ 结尾的好子序列的末尾，并不会增加「相邻不同」数对的个数。为了让子序列尽量长，选肯定是更优的。
+2. 选，且 $x$ 与子序列末尾相同，或者作为子序列的第一个数：$f[x][j]$ 增加 $1$。
+3. 选，且 $x$ 与子序列末尾不同：设末尾元素为 $y$，我们需要知道最大的 $f[y][j-1]$。
 
-对于第三种决策，暴力枚举 $y$ 就太慢了（可以通过第三题但无法通过本题）。我们可以维护 $f[\cdot][j-1]$ 中的最大值 $\textit{mx}$、最大值对应的数字 $\textit{num}$，以及 $f[\textit{num}_2][j-1]$ 中的最大值 $\textit{mx}_2$，其中 $\textit{num}_2\ne \textit{num}$。
+对于第三种决策，如果暴力枚举 $y$，可以通过 [3176. 求出最长好子序列 I](https://leetcode.cn/problems/find-the-maximum-length-of-a-good-subsequence-i/)，但无法通过本题。
+
+## 优化
+
+考虑维护 $f[\cdot][j-1]$ 中的最大值 $\textit{mx}$，最大值对应的数字 $\textit{num}$，以及 $f[\textit{num}_2][j-1]$ 中的最大值 $\textit{mx}_2$，其中 $\textit{num}_2\ne \textit{num}$。
 
 于是：
 
@@ -22,8 +43,6 @@ $$
 对于不同的 $j$，我们需要维护对应的 $\textit{mx},\textit{mx}_2,\textit{num}$。用一个长为 $k+1$ 的数组 $\textit{records}$ 记录。
 
 由于在计算 $f[x][j]$ 时会用到 $\textit{records}[j-1]$，然后更新 $\textit{records}[j]$，可以倒序枚举 $j$，以避免使用覆盖后的数据。
-
-## 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -162,16 +181,16 @@ func maximumLength(nums []int, k int) int {
 }
 ```
 
-## 优化
+## 进一步优化
 
-其实只需要维护 $\textit{mx}$，因为：
+只需要维护 $\textit{mx}$，无需判断 $x$ 和子序列的最后一个数是否相等。因为：
 
-- 如果 $x\ne \textit{num}$，那么最大的 $f[y][j-1]$ 就是 $\textit{mx}$。
-- 如果 $x = \textit{num}$，相当于把 $x$ 加到以 $x$ 结尾的子序列的末尾，也就是用 $f[x][j-1] + 1$ 更新 $f[x][j]$ 的最大值。注意这个转移方程是不符合状态定义的，但由于 $j$ 越大，能选的数越多，所以 $f[x][j]\ge f[x][j-1]$，这样更新其实不影响结果，因为第二种决策会用 $f[x][j] + 1$ 更新 $f[x][j]$，这不会低于 $f[x][j-1] + 1$。
+- 如果 $x\ne \textit{num}$，那么转移和前文是一样的，用 $\textit{mx} + 1$ 更新 $f[x][j]$ 的最大值。
+- 如果 $x = \textit{num}$，如果强行转移，相当于用 $f[x][j-1] + 1$ 更新 $f[x][j]$ 的最大值。注意这个转移是不符合状态定义的（应该用 $f[x][j]+1$），但由于 $j$ 越大，能选的数越多，所以 $f[x][j]\ge f[x][j-1]$，考虑到第二种决策会用 $f[x][j] + 1$ 更新 $f[x][j]$，这不会低于 $f[x][j-1] + 1$。所以用 $f[x][j-1] + 1$ 更新 $f[x][j]$ 的最大值其实不会改变 $f[x][j]$。
 
-所以直接用 $\textit{mx}+1$ 更新 $f[x][j]$ 的最大值即可。
+综上所述，直接用 $\textit{mx}+1$ 更新 $f[x][j]$ 的最大值即可。
 
-此外，为了避免判断 $i=0$ 的情况，可以往 $\textit{mx}$ 数组的最左边插入一个 $0$，把 $\textit{mx}$ 的下标加一。
+此外，为了避免判断 $j=0$ 的情况，可以往 $\textit{mx}$ 数组的最左边插入一个 $0$，把 $\textit{mx}$ 的下标加一。此时 $\textit{mx}[j+1]$ 表示 $f[x][j]$ 的最大值。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Tx4y1b7wk/) 第四题，欢迎点赞关注！
 
@@ -259,7 +278,7 @@ func maximumLength(nums []int, k int) int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -268,7 +287,8 @@ func maximumLength(nums []int, k int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
