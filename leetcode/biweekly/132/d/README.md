@@ -186,9 +186,11 @@ func maximumLength(nums []int, k int) int {
 - 如果 $x\ne \textit{num}$，那么转移和前文是一样的，用 $\textit{mx} + 1$ 更新 $f[x][j]$ 的最大值。
 - 如果 $x = \textit{num}$，强行使用 $\textit{mx} + 1$，相当于用 $f[x][j-1] + 1$ 更新 $f[x][j]$ 的最大值。注意这个转移是不符合状态定义的（应该用 $f[x][j]+1$），但由于 $j$ 越大，能选的数越多，所以 $f[x][j]\ge f[x][j-1]$，考虑到第二种决策会用 $f[x][j] + 1$ 更新 $f[x][j]$，这不会低于 $f[x][j-1] + 1$。所以用 $f[x][j-1] + 1$ 更新 $f[x][j]$ 的最大值其实不会改变 $f[x][j]$。
 
-综上所述，直接用 $\textit{mx}+1$ 更新 $f[x][j]$ 的最大值即可。
+综上所述，可以直接用 $\textit{mx}+1$ 更新 $f[x][j]$ 的最大值，无需考虑次大值 $\textit{mx}_2$。
 
-此外，为了避免判断 $j=0$ 的情况，可以往 $\textit{mx}$ 数组的最左边插入一个 $0$，把 $\textit{mx}$ 的下标加一。此时 $\textit{mx}[j+1]$ 表示 $f[x][j]$ 的最大值。
+上面代码中的 $\textit{records}$ 数组可以简化为 $\textit{mx}$ 数组。
+
+上面代码需要判断 $j$ 和 $0$ 的大小关系，为避免判断，可以往 $\textit{mx}$ 数组的最左边插入一个 $0$，把 $\textit{mx}$ 的下标加一。此时 $\textit{mx}[j+1]$ 表示 $f[x][j]$ 的最大值。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Tx4y1b7wk/) 第四题，欢迎点赞关注！
 
