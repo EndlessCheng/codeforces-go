@@ -27,7 +27,7 @@
 
 ## 优化
 
-考虑维护 $f[\cdot][j-1]$ 中的最大值 $\textit{mx}$，最大值对应的数字 $\textit{num}$，以及 $f[\textit{num}_2][j-1]$ 中的最大值 $\textit{mx}_2$，其中 $\textit{num}_2\ne \textit{num}$。
+（$j$ 为定值）维护 $f[\cdot][j-1]$ 的最大值 $\textit{mx}$ 与对应的数字 $\textit{num}$，也就是 $f[\textit{num}][j-1]$ 是最大的。同时维护次大值 $f[\textit{num}_2][j-1]$，其中 $\textit{num}_2\ne \textit{num}$。
 
 于是：
 
