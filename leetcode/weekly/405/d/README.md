@@ -24,7 +24,11 @@ $$
 
 细节：$\textit{words}$ 中可能有相同字符串，这些字符串对应的成本应当取最小的。
 
-> 注：该方法不保证 100% 正确，如果您发现了反例（哈希冲突），请在下方评论。
+### 写法一（单模哈希）
+
+根据**生日攻击**，设 $M$ 为模数，仅仅计算大约 $\sqrt {\dfrac{\pi}{2}M}$ 个不同字符串的哈希，就有 $50\%$ 的概率会发生哈希碰撞，也就是有两个不同的字符串，哈希值是一样的。
+
+⚠**注意**：单模哈希并**不保证百分之百正确**，如果你发现提交下面代码 WA 了，可以重复提交。当然，更安全的做法是后面的写法二（双模哈希）。
 
 ```py [sol-Python3]
 class Solution:
@@ -201,7 +205,7 @@ public:
                 h = (h * BASE + b) % MOD;
             }
             int m = words[i].length();
-            if (min_cost[m].find(h) == min_cost[m].end()) {
+            if (!min_cost[m].contains(h)) {
                 min_cost[m][h] = costs[i];
             } else {
                 min_cost[m][h] = min(min_cost[m][h], costs[i]);
@@ -321,6 +325,216 @@ func minimumCost(target string, words []string, costs []int) int {
 		}
 		if minCost[m] == nil {
 			minCost[m] = map[int]int{}
+		}
+		if minCost[m][h] == 0 {
+			minCost[m][h] = costs[i]
+		} else {
+			minCost[m][h] = min(minCost[m][h], costs[i])
+		}
+	}
+
+	// 有 O(√L) 个不同的长度
+	sortedLens := make([]int, 0, len(lens))
+	for l := range lens {
+		sortedLens = append(sortedLens, l)
+	}
+	slices.Sort(sortedLens)
+
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		f[i] = math.MaxInt / 2
+		for _, sz := range sortedLens {
+			if sz > i {
+				break
+			}
+			if cost, ok := minCost[sz][subHash(i-sz, i)]; ok {
+				f[i] = min(f[i], f[i-sz]+cost)
+			}
+		}
+	}
+	if f[n] == math.MaxInt/2 {
+		return -1
+	}
+	return f[n]
+}
+```
+
+### 写法二（双模哈希）
+
+用两对 $\textit{mod}$ 和 $\textit{base}$ 计算哈希值，也就是每个字符串都有两个哈希值。
+
+设 $M_1$ 和 $M_2$ 为模数，此时要计算大约 $\sqrt {\dfrac{\pi}{2}M_1M_2}$ 个不同字符串的哈希，才有 $50\%$ 的概率会发生哈希碰撞。所以该做法几乎百分之百正确。
+
+注：对于 Python 来说，只需要把 $\textit{mod}$ 和 $\textit{base}$ 改大就行。这里提供一个大模数：$9\cdot 10^{18} + 41$。
+
+```java [sol-Java]
+// 基于上面的「更快写法」
+class Solution {
+    public int minimumCost(String target, String[] words, int[] costs) {
+        char[] t = target.toCharArray();
+        int n = t.length;
+        final int MOD1 = 1_070_777_777;
+        final int MOD2 = 1_000_000_007;
+        final int BASE1 = (int) 8e8 + new Random().nextInt((int) 1e8);
+        final int BASE2 = (int) 8e8 + new Random().nextInt((int) 1e8);
+        int[] powBase1 = new int[n + 1];
+        int[] powBase2 = new int[n + 1];
+        int[] preHash1 = new int[n + 1];
+        int[] preHash2 = new int[n + 1];
+        powBase1[0] = powBase2[0] = 1;
+        for (int i = 0; i < n; i++) {
+            powBase1[i + 1] = (int) ((long) powBase1[i] * BASE1 % MOD1);
+            powBase2[i + 1] = (int) ((long) powBase2[i] * BASE2 % MOD2);
+            preHash1[i + 1] = (int) (((long) preHash1[i] * BASE1 + t[i]) % MOD1);
+            preHash2[i + 1] = (int) (((long) preHash2[i] * BASE2 + t[i]) % MOD2);
+        }
+
+        Map<Long, Integer> minCost = new HashMap<>(); // 哈希值 -> 最小成本
+        for (int i = 0; i < words.length; i++) {
+            long h1 = 0;
+            long h2 = 0;
+            for (char b : words[i].toCharArray()) {
+                h1 = (h1 * BASE1 + b) % MOD1;
+                h2 = (h2 * BASE2 + b) % MOD2;
+            }
+            minCost.merge(h1 << 32 | h2, costs[i], Integer::min);
+        }
+
+        // 有 O(√L) 个不同的长度
+        Set<Integer> lengthSet = new HashSet<>();
+        for (String w : words) {
+            lengthSet.add(w.length());
+        }
+        int[] sortedLens = new int[lengthSet.size()];
+        int k = 0;
+        for (int len : lengthSet) {
+            sortedLens[k++] = len;
+        }
+        Arrays.sort(sortedLens);
+
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MAX_VALUE / 2);
+        f[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int len : sortedLens) {
+                if (len > i) {
+                    break;
+                }
+                // 计算子串 target[i-sz] 到 target[i-1] 的哈希值（计算方法类似前缀和）
+                long subHash1 = ((preHash1[i] - (long) preHash1[i - len] * powBase1[len]) % MOD1 + MOD1) % MOD1;
+                long subHash2 = ((preHash2[i] - (long) preHash2[i - len] * powBase2[len]) % MOD2 + MOD2) % MOD2;
+                long subHash = subHash1 << 32 | subHash2;
+                f[i] = Math.min(f[i], f[i - len] + minCost.getOrDefault(subHash, Integer.MAX_VALUE / 2));
+            }
+        }
+        return f[n] == Integer.MAX_VALUE / 2 ? -1 : f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumCost(string target, vector<string>& words, vector<int>& costs) {
+        int n = target.length();
+        const int MOD1 = 1'070'777'777;
+        const int MOD2 = 1'000'000'007;
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+        const int BASE1 = uniform_int_distribution<>(8e8, 9e8)(rng);
+        const int BASE2 = uniform_int_distribution<>(8e8, 9e8)(rng);
+        vector<int> pow_base1(n + 1), pow_base2(n + 1);
+        vector<int> pre_hash1(n + 1), pre_hash2(n + 1);
+        pow_base1[0] = pow_base2[0] = 1;
+        for (int i = 0; i < n; i++) {
+            pow_base1[i + 1] = (long long) pow_base1[i] * BASE1 % MOD1;
+            pow_base2[i + 1] = (long long) pow_base2[i] * BASE2 % MOD2;
+            pre_hash1[i + 1] = ((long long) pre_hash1[i] * BASE1 + target[i]) % MOD1;
+            pre_hash2[i + 1] = ((long long) pre_hash2[i] * BASE2 + target[i]) % MOD2;
+        }
+
+        // 计算 target[l] 到 target[r-1] 的哈希值
+        auto sub_hash = [&](int l, int r) {
+            long long h1 = ((pre_hash1[r] - (long long) pre_hash1[l] * pow_base1[r - l]) % MOD1 + MOD1) % MOD1;
+            long long h2 = ((pre_hash2[r] - (long long) pre_hash2[l] * pow_base2[r - l]) % MOD2 + MOD2) % MOD2;
+            return h1 << 32 | h2;
+        };
+
+        map<int, unordered_map<long long, int>> min_cost; // 长度 -> 哈希值 -> 最小成本
+        for (int i = 0; i < words.size(); i++) {
+            long long h1 = 0, h2 = 0;
+            for (char b : words[i]) {
+                h1 = (h1 * BASE1 + b) % MOD1;
+                h2 = (h2 * BASE2 + b) % MOD2;
+            }
+            long long h = h1 << 32 | h2;
+            int m = words[i].length();
+            if (!min_cost[m].contains(h)) {
+                min_cost[m][h] = costs[i];
+            } else {
+                min_cost[m][h] = min(min_cost[m][h], costs[i]);
+            }
+        }
+
+        vector<int> f(n + 1, INT_MAX / 2);
+        f[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (auto& [len, mc] : min_cost) {
+                if (len > i) {
+                    break;
+                }
+                auto it = mc.find(sub_hash(i - len, i));
+                if (it != mc.end()) {
+                    f[i] = min(f[i], f[i - len] + it->second);
+                }
+            }
+        }
+        return f[n] == INT_MAX / 2 ? -1 : f[n];
+    }
+};
+```
+
+```go [sol-Go]
+// 基于上面的「更快写法」
+func minimumCost(target string, words []string, costs []int) int {
+	n := len(target)
+	const mod1 = 1_070_777_777
+	const mod2 = 1_000_000_007
+	base1 := 9e8 - rand.Intn(1e8)
+	base2 := 9e8 - rand.Intn(1e8)
+
+	type hPair struct{ h1, h2 int }
+	powBase := make([]hPair, n+1)
+	preHash := make([]hPair, n+1)
+	powBase[0] = hPair{1, 1}
+	for i, b := range target {
+		powBase[i+1] = hPair{powBase[i].h1 * base1 % mod1, powBase[i].h2 * base2 % mod2}
+		preHash[i+1] = hPair{(preHash[i].h1*base1 + int(b)) % mod1, (preHash[i].h2*base2 + int(b)) % mod2}
+	}
+
+	// 计算子串 target[l:r] 的哈希值
+	// 空串的哈希值为 0
+	subHash := func(l, r int) hPair {
+		h1 := ((preHash[r].h1-preHash[l].h1*powBase[r-l].h1)%mod1 + mod1) % mod1
+		h2 := ((preHash[r].h2-preHash[l].h2*powBase[r-l].h2)%mod2 + mod2) % mod2
+		return hPair{h1, h2}
+	}
+
+	calcHash := func(t string) (p hPair) {
+		for _, b := range t {
+			p.h1 = (p.h1*base1 + int(b)) % mod1
+			p.h2 = (p.h2*base2 + int(b)) % mod2
+		}
+		return
+	}
+
+	minCost := make([]map[hPair]int, n+1) // [words[i] 的长度][words[i] 的哈希值] -> 最小成本
+	lens := map[int]struct{}{} // 所有 words[i] 的长度集合
+	for i, w := range words {
+		m := len(w)
+		lens[m] = struct{}{}
+		h := calcHash(w)
+		if minCost[m] == nil {
+			minCost[m] = map[hPair]int{}
 		}
 		if minCost[m][h] == 0 {
 			minCost[m][h] = costs[i]
@@ -564,7 +778,7 @@ class AhoCorasick {
     }
 }
 
-public class Solution {
+class Solution {
     public int minimumCost(String target, String[] words, int[] costs) {
         AhoCorasick ac = new AhoCorasick();
         for (int i = 0; i < words.length; i++) {
