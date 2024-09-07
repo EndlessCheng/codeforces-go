@@ -25,6 +25,8 @@
 
 对于第三种决策，如果暴力枚举 $y$，可以通过 [3176. 求出最长好子序列 I](https://leetcode.cn/problems/find-the-maximum-length-of-a-good-subsequence-i/)，但无法通过本题。
 
+如何更快地计算最大的 $f[y][j-1]$ 呢？能否不暴力枚举 $y$？
+
 ## 优化
 
 当 $j$ 为定值时，设：
@@ -36,6 +38,8 @@
 
 - 如果 $x\ne \textit{num}$，那么最大的 $f[y][j-1]$ 就是 $\textit{mx}$。
 - 如果 $x = \textit{num}$，那么最大的 $f[y][j-1]$ 就是 $\textit{mx}_2$。
+
+这样我们就无需暴力枚举 $y$ 了。
 
 把最大的 $f[y][j-1]$ 记作 $m$，则 $f[x][j]$ 更新为
 
