@@ -20,6 +20,10 @@ import (
 小奥
 https://codeforces.com/problemset/problem/700/A
 
+消消乐
+- [954. 二倍数对数组](https://leetcode.cn/problems/array-of-doubled-pairs/) 1548
+- [2007. 从双倍数组中还原原数组](https://leetcode.cn/problems/find-original-array-from-doubled-array/) 1557
+
 原地哈希
 LC442 https://leetcode.cn/problems/find-all-duplicates-in-an-array/
 
@@ -693,7 +697,7 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 		dis[i] = make([]int, m)
 		filled[i] = make([]int, m)
 		for j := range dis[i] {
-			dis[i][j] = min(min(i, n-1-i), min(j, m-1-j))
+			dis[i][j] = min(i, n-1-i, j, m-1-j)
 			filled[i][j] = 1
 		}
 		inQ[i] = make([]bool, m)
@@ -733,11 +737,15 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 // 无边界 LC1197 https://leetcode.cn/problems/minimum-knight-moves/
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 func minKnightMoves(x, y int, abs func(int) int) int {
+	// TODO 算法来源？
 	x, y = abs(x), abs(y)
+	if x == 2 && y == 2 {
+		return 4
+	}
 	if x+y == 1 {
 		return 3
 	}
-	ans := max(max((x+1)/2, (y+1)/2), (x+y+2)/3)
+	ans := max((x+1)/2, (y+1)/2, (x+y+2)/3)
 	ans += (ans ^ x ^ y) & 1
 	return ans
 }
@@ -1163,7 +1171,9 @@ func parseTime(s string) (hour, minute, total int) {
 	return
 }
 
-// 从 i 可以跳到 [i,i+a[i]] 中的任意整点
+// 区间覆盖
+// 给定一些区间，从中选择尽量少的区间，覆盖一条指定线段 [s,t]。
+// 变形说法：从 i 可以跳到 [i,i+a[i]] 中的任意整点
 // 返回从 0 跳到 n-1 的最小跳跃次数
 // 如果无法到达 n-1，返回 -1
 // 注：对于复杂变形题，采用分组循环不易写错
@@ -1191,6 +1201,7 @@ func minJumpNumbers(a []int) (ans int) {
 	return
 }
 
+// 区间合并
 // 合并 a 中所有重叠的闭区间（哪怕只有一个端点重叠，也算重叠）
 // 注意 [1,1] 和 [2,2] 不能合并成 [1,2]
 // 注：这种做法在变形题中容易写错，更加稳定的做法是差分数组
