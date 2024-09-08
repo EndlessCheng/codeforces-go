@@ -67,12 +67,11 @@ class Solution:
         start.sort()
 
         def check(score: int) -> bool:
-            pre_x = -inf  # 也可以只用一个 x 变量
+            x = -inf
             for s in start:
-                x = pre_x + score
+                x = max(x + score, s)  # x 必须 >= 区间左端点 s
                 if x > s + d:
                     return False
-                pre_x = max(x, s)
             return True
 
         left, right = 0, (start[-1] + d - start[0]) // (len(start) - 1) + 1
@@ -92,12 +91,11 @@ class Solution:
         # 二分最小的不满足要求的 score+1，最终得到的答案就是最大的满足要求的 score
         def check(score: int) -> bool:
             score += 1
-            pre_x = -inf  # 也可以只用一个 x 变量
+            x = -inf
             for s in start:
-                x = pre_x + score
+                x = max(x + score, s)  # x 必须 >= 区间左端点 s
                 if x > s + d:
                     return True
-                pre_x = max(x, s)
             return False
         return bisect_left(range((start[-1] + d - start[0]) // (len(start) - 1)), True, key=check)
 ```
@@ -121,13 +119,12 @@ class Solution {
     }
 
     private boolean check(int[] start, int d, int score) {
-        long preX = Long.MIN_VALUE; // 也可以只用一个 x 变量
+        long x = Long.MIN_VALUE;
         for (int s : start) {
-            long x = preX + score;
+            x = Math.max(x + score, s); // x 必须 >= 区间左端点 s
             if (x > s + d) {
                 return false;
             }
-            preX = Math.max(x, s);
         }
         return true;
     }
@@ -141,13 +138,12 @@ public:
         ranges::sort(start);
 
         auto check = [&](int score) -> bool {
-            long long pre_x = LLONG_MIN; // 也可以只用一个 x 变量
+            long long x = LLONG_MIN;
             for (int s : start) {
-                long long x = pre_x + score;
+                x = max(x + score, (long long) s); // x 必须 >= 区间左端点 s
                 if (x > s + d) {
                     return false;
                 }
-                pre_x = max(x, (long long) s);
             }
             return true;
         };
@@ -166,15 +162,15 @@ public:
 func maxPossibleScore(start []int, d int) int {
 	slices.Sort(start)
 	n := len(start)
+	// 二分最小的不满足要求的 score+1，最终得到的答案就是最大的满足要求的 score
 	return sort.Search((start[n-1]+d-start[0])/(n-1), func(score int) bool {
 		score++
-		preX := math.MinInt // 也可以只用一个 x 变量
+		x := math.MinInt
 		for _, s := range start {
-			x := preX + score
+			x = max(x+score, s) // x 必须 >= 区间左端点 s
 			if x > s+d {
 				return true
 			}
-			preX = max(x, s)
 		}
 		return false
 	})
