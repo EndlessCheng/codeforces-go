@@ -267,6 +267,8 @@ impl Solution {
 
 欢迎在评论区发表的你的思路/代码。
 
+更多相似题目，见下面数据结构题单中的「**§4.3 单调队列**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
