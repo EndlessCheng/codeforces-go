@@ -8,6 +8,12 @@
 
 代码用到了一些位运算技巧，原理请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
+#### 答疑
+
+**问**：为什么可以直接更新 $\textit{ans}$，为什么不需要写 `ans = max(ans, ...)`？
+
+**答**：更新 $\textit{ans}$ 时必然会伴随着二分区间左边界 $\textit{left}$ 的更新，那么下一次更新 $\textit{ans}$ 的时候，正方形的边长一定更长，包含的点数不会变少，所以可以直接更新，无需写 `max`。
+
 ```py [sol-Python3]
 class Solution:
     def maxPointsInsideSquare(self, points: List[List[int]], s: str) -> int:
