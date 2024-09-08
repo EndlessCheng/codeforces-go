@@ -24,20 +24,20 @@
 
 设从 $(x,y)$ 移动到第 $i$ 个兵的最小步数为 $\textit{dis}[i][x][y]$，这可以用网格图 BFS 算出来：反向思考，计算从第 $i$ 个兵的位置出发，通过「马走日」移动到 $(x,y)$ 的最小步数。
 
-设当前位置为 $(x,y) = \textit{positions}[i]$，考虑枚举吃掉哪个兵：
+设当前位置为 $(x,y) = \textit{positions}[i]$，考虑枚举吃掉第 $j$ 个兵：
 
-- 如果第 $j$ 个兵不在集合 $\textit{mask}$ 中，那么移动 $\textit{dis}[j][x][y]$ 步后，问题变成当前马在第 $j$ 个兵的位置，且剩余没有被吃掉的兵的集合为 $\textit{mask}\setminus \{j\}$ 的情况下，继续游戏，两名玩家的总移动次数的最大值，即 $\textit{dfs}(j,\textit{mask}\setminus \{j\})$。
+- 如果第 $j$ 个兵在集合 $\textit{mask}$ 中，把马移动 $\textit{dis}[j][x][y]$ 步，吃掉第 $j$ 个兵。现在问题变成当前马在第 $j$ 个兵的位置，且剩余没有被吃掉的兵的集合为 $\textit{mask}\setminus \{j\}$ 的情况下，继续游戏，两名玩家的总移动次数的最大值，即 $\textit{dfs}(j,\textit{mask}\setminus \{j\})$。
 
 如果当前是 Alice 操作，则有
 
 $$
-\textit{dfs}(i,\textit{mask}) = \max_{j\notin \textit{mask}}  \textit{dfs}(j,\textit{mask}\setminus \{j\}) + \textit{dis}[j][x][y]
+\textit{dfs}(i,\textit{mask}) = \max_{j\in \textit{mask}}  \textit{dfs}(j,\textit{mask}\setminus \{j\}) + \textit{dis}[j][x][y]
 $$
 
 如果当前是 Bob 操作，则有
 
 $$
-\textit{dfs}(i,\textit{mask}) = \min_{j\notin \textit{mask}}  \textit{dfs}(j,\textit{mask}\setminus \{j\}) + \textit{dis}[j][x][y]
+\textit{dfs}(i,\textit{mask}) = \min_{j\in \textit{mask}}  \textit{dfs}(j,\textit{mask}\setminus \{j\}) + \textit{dis}[j][x][y]
 $$
 
 如何判断当前是谁在操作？
@@ -526,9 +526,8 @@ func maxMoves(kx, ky int, positions [][]int) int {
 
 ## 思考题
 
-如果棋盘有 $10^9$ 那么大呢？能否用数学公式 $\mathcal{O}(1)$ 算出来马的最小移动步数？
-
-见 [1197. 进击的骑士](https://leetcode.cn/problems/minimum-knight-moves/)（会员题）
+1. 如果要计算的是 Alice 一个人的移动次数之和呢？
+2. 如果棋盘有 $10^9$ 那么大呢？能否用数学公式 $\mathcal{O}(1)$ 算出来马的最小移动步数？见 [1197. 进击的骑士](https://leetcode.cn/problems/minimum-knight-moves/)（会员题）
 
 更多相似题目，见下面动态规划题单中的「**状压 DP**」。
 
