@@ -1,6 +1,10 @@
-**套路**：需要考虑相邻元素 + 有消除操作 = 栈。
+用栈维护，遇到星号 `*` 则弹出栈顶，否则把字符入栈。最后从栈底到栈顶就是答案。
 
-请看 [视频讲解](https://www.bilibili.com/video/BV1mG411V7fj) 第二题。
+> 注：题目保证生成的输入总是可以执行题面中描述的操作。
+
+如果你没有想到栈，推荐做做 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/) 中的 3.1 节和 3.3 节。
+
+> 注：本题类似前段时间的每日一题 [3174. 清除数字](https://leetcode.cn/problems/clear-digits/)。~~所以为什么两题难度不一样~~
 
 ```py [sol-Python3]
 class Solution:
@@ -47,6 +51,21 @@ public:
 };
 ```
 
+```c [sol-C]
+char* removeStars(char* s) {
+    int top = 0; // 栈顶
+    for (int i = 0; s[i]; i++) {
+        if (s[i] == '*') {
+            top--; // 出栈
+        } else {
+            s[top++] = s[i]; // 入栈（把 s 当作栈）
+        }
+    }
+    s[top] = '\0';
+    return s;
+}
+```
+
 ```go [sol-Go]
 func removeStars(s string) string {
 	st := []rune{}
@@ -79,7 +98,7 @@ var removeStars = function(s) {
 impl Solution {
     pub fn remove_stars(s: String) -> String {
         let mut st = vec![];
-        for &c in s.as_bytes() {
+        for c in s.bytes() {
             if c == b'*' {
                 st.pop();
             } else {
@@ -94,20 +113,13 @@ impl Solution {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。
-- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。其中 C++ 不计入返回值的空间。
-
-## 相似题目
-
-- [1047. 删除字符串中的所有相邻重复项](https://leetcode.cn/problems/remove-all-adjacent-duplicates-in-string/)
-- [2197. 替换数组中的非互质数](https://leetcode.cn/problems/replace-non-coprime-numbers-in-array/)
-- [2216. 美化数组的最少删除数](https://leetcode.cn/problems/minimum-deletions-to-make-array-beautiful/)
-- [2273. 移除字母异位词后的结果数组](https://leetcode.cn/problems/find-resultant-array-after-removing-anagrams/)
+- 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果把 $s$ 当作栈，则空间复杂度为 $\mathcal{O}(1)$，见 C 语言。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -116,7 +128,7 @@ impl Solution {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
