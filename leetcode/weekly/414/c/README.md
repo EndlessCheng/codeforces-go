@@ -18,6 +18,12 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 一行]
+class Solution:
+    def findMaximumScore(self, nums: List[int]) -> int:
+        return sum(accumulate(nums[:-1], max))
+```
+
 ```java [sol-Java]
 class Solution {
     public long findMaximumScore(List<Integer> nums) {
