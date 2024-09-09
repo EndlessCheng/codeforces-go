@@ -196,10 +196,18 @@ impl Solution {
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prizePositions}$ 的长度。虽然写了个二重循环，但是内层循环中对 $\textit{left}$ 加一的**总**执行次数不会超过 $n$ 次，所以总的时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 总结
+
+本题是一种更高级的「**枚举右，维护左**」，枚举的对象不是单个元素，而是子数组（滑动窗口），同时维护的也是子数组的最大长度。
+
+有一道和本题很像的题目：[1031. 两个非重叠子数组的最大和](https://leetcode.cn/problems/maximum-sum-of-two-non-overlapping-subarrays/)，请用 $\mathcal{O}(n)$ 的时间解决。
+
+更多「枚举右，维护左」的题目，见下面数据结构题单的第零章。
 
 ## 分类题单
 
