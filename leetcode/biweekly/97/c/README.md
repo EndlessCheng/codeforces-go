@@ -10,7 +10,7 @@ $$
 
 由于 $\textit{right}$ 变大时，$\textit{left}$ 也会变大，有单调性，可以用**滑动窗口**快速算出 $\textit{left}$。原理见 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-⚠**注意**：$\textit{left}$ 不一定是线段的左端点。$\textit{prizePositions}[\textit{left}]$ 是最左边的被线段覆盖的那个奖品的位置。
+⚠**注意**：$\textit{prizePositions}[\textit{left}]$ 不一定是线段的左端点。$\textit{prizePositions}[\textit{left}]$ 只是最左边的被线段覆盖的那个奖品的位置，线段左端点可能比 $\textit{prizePositions}[\textit{left}]$ 更小。
 
 ## 两条线段
 
