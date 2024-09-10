@@ -47,6 +47,8 @@ $$
 - 如果吃掉了 $0,2,4,\cdots$ 个兵，那么当前轮到 Alice 操作。
 - 如果吃掉了 $1,3,5,\cdots$ 个兵，那么当前轮到 Bob 操作。
 
+> 注：也可以写两个递归函数，直接从代码层面区分开谁在操作。
+
 递归边界：$\textit{dfs}(i,\varnothing) = 0$。所有兵都被吃掉，游戏结束。
 
 递归入口：$\textit{dfs}(n,U)$。即答案。
@@ -95,6 +97,56 @@ class Solution:
                     res = op(res, dfs(j, mask ^ (1 << j)) + d[x][y])
             return res
         return dfs(n, u)
+```
+
+```py [sol-Python3 写法二]
+DIRS = ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1))
+
+class Solution:
+    def maxMoves(self, kx: int, ky: int, positions: List[List[int]]) -> int:
+        n = len(positions)
+        # 计算马到兵的步数，等价于计算兵到其余格子的步数
+        dis = [[[-1] * 50 for _ in range(50)] for _ in range(n)]
+        for d, (px, py) in zip(dis, positions):
+            d[px][py] = 0
+            q = [(px, py)]
+            step = 1
+            while q:
+                tmp = q
+                q = []
+                for p in tmp:
+                    for dx, dy in DIRS:
+                        x, y = p[0] + dx, p[1] + dy
+                        if 0 <= x < 50 and 0 <= y < 50 and d[x][y] < 0:
+                            d[x][y] = step
+                            q.append((x, y))
+                step += 1
+
+        positions.append((kx, ky))
+
+        @cache
+        def alice(i: int, mask: int) -> int:
+            if mask == 0:
+                return 0
+            res = 0
+            x, y = positions[i]
+            for j, d in enumerate(dis):
+                if mask >> j & 1:
+                    res = max(res, bob(j, mask ^ (1 << j)) + d[x][y])
+            return res
+
+        @cache
+        def bob(i: int, mask: int) -> int:
+            if mask == 0:
+                return 0
+            res = inf
+            x, y = positions[i]
+            for j, d in enumerate(dis):
+                if mask >> j & 1:
+                    res = min(res, alice(j, mask ^ (1 << j)) + d[x][y])
+            return res
+
+        return alice(n, (1 << n) - 1)
 ```
 
 ```java [sol-Java]
@@ -527,7 +579,7 @@ func maxMoves(kx, ky int, positions [][]int) int {
 ## 思考题
 
 1. 如果要计算的是 Alice 一个人的移动次数之和呢？
-2. 如果棋盘有 $10^9$ 那么大呢？能否用数学公式 $\mathcal{O}(1)$ 算出来马的最小移动步数？见 [1197. 进击的骑士](https://leetcode.cn/problems/minimum-knight-moves/)（会员题）
+2. 如果棋盘无限大呢？能否用数学公式 $\mathcal{O}(1)$ 算出马的最小移动步数？见 [1197. 进击的骑士](https://leetcode.cn/problems/minimum-knight-moves/)（会员题）
 
 更多相似题目，见下面动态规划题单中的「**状压 DP**」。
 
