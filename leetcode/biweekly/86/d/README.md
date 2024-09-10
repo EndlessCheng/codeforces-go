@@ -1,8 +1,10 @@
 **前置题目**：[239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)，视频讲解请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
-题目要求机器人连续运行，看成一个子数组，或者说窗口。
+题目要求机器人连续运行，看成一个连续子数组，题目要求计算最长子数组长度。
 
-枚举窗口右端点 $\textit{right}$，由于有 $\textit{budget}$ 的限制，所以 $\textit{right}$ 越大，窗口左端点 $\textit{left}$ 也越大，有单调性，可以用滑动窗口解决。
+枚举子数组右端点 $\textit{right}$，我们需要知道此时左端点 $\textit{left}$ 的最小值，这样子数组尽量长。
+
+由于有 $\textit{budget}$ 的限制，所以 $\textit{right}$ 越大，$\textit{left}$ 也越大，有单调性，可以用**滑动窗口**解决。
 
 本题的一种做法是二分答案，这样就转换成了固定长度的 239 题。
 
@@ -12,7 +14,7 @@
 2. **出**：如果总开销超过 $\textit{budget}$，则不断移出左端点，直到总开销不超过 $\textit{budget}$。特别地，如果左端点恰好等于队首，则弹出队首。
 3. **更新答案**：用窗口长度 $\textit{right}-\textit{left}+1$ 更新答案的最大值。
 
-⚠**注意**：为了方便判断左端点是否要出队，单调队列中保存的是下标。
+⚠**注意**：为了方便判断队首是否要出队，单调队列中保存的是下标。
 
 ```py [sol-Python3]
 class Solution:
