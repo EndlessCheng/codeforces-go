@@ -9,13 +9,13 @@
 - 1324 模式中的 4 的个数：在 $k$ 右侧的比 $x=\textit{nums}[j]$ 大的元素个数，记作 $\textit{great}[k][x]$。
 - 1324 模式中的 1 的个数：在 $j$ 左侧的比 $x=\textit{nums}[k]$ 小的元素个数，记作 $\textit{less}[j][x]$。
 
-对于固定的 $j$ 和 $k$，也就是固定 1324 模式中的 3 和 2，然后把 1 的个数和 4 的个数相乘（乘法原理），即
+枚举 $j$ 和 $k$（枚举 1324 模式中的 3 和 2），把满足大小关系的 1 的个数和 4 的个数相乘（乘法原理），即为 1324 模式的个数：
 
 $$
 \textit{less}[j][\textit{nums}[k]]\cdot \textit{great}[k][\textit{nums}[j]]
 $$
 
-加到答案中。
+将其加到答案中。
 
 如何计算 $\textit{great}[k][x]$ 和 $\textit{less}[j][x]$？
 
@@ -26,7 +26,22 @@ $$
 - 对于 $3$，有一个比 $3$ 大的数，所以 $\textit{great}[k][3] = 1$。
 - 对于 $4$，有一个比 $3$ 大的数，所以 $\textit{great}[k][4] = 1$。
 
-这启发我们倒序遍历 $\textit{nums}$，遍历到 $k$ 时：
+考虑动态规划：
+
+- 如果 $x\ge \textit{nums}[k+1]$，那么「$k$ 右边的比 $x$ 大的数」等同于「$k+1$ 右边的比 $x$ 大的数」，即 $\textit{great}[k][x] = \textit{great}[k+1][x]$。
+- 如果 $x< \textit{nums}[k+1]$，那么额外加一，即 $\textit{great}[k][x] = \textit{great}[k+1][x] + 1$。
+
+整理得
+
+$$
+\textit{great}[k][x] =
+\begin{cases}
+\textit{great}[k+1][x], & x\ge \textit{nums}[k+1]     \\
+\textit{great}[k+1][x] + 1, & x < \textit{nums}[k+1]     \\
+\end{cases}
+$$
+
+具体代码怎么写？可以倒序遍历 $\textit{nums}$，遍历到 $k$ 时：
 
 1. 首先把 $\textit{great}[k+1]$ 复制到 $\textit{great}[k]$ 中，这样我们就只需要考虑比 $\textit{nums}[k+1]$ 小的数。
 2. 然后把 $\textit{great}[k][1],\textit{great}[k][2],\cdots,\textit{great}[k][\textit{nums}[k+1]-1]$ 都加一。
@@ -36,9 +51,17 @@ $$
 1. 对于 $\textit{nums}[n-1]= 5$，把 $\textit{great}[n-2][1],\textit{great}[n-2][2],\textit{great}[n-2][3],\textit{great}[n-2][4]$ 都加一。
 2. 对于 $\textit{nums}[n-2]= 3$，首先把 $\textit{great}[n-2]$ 复制到 $\textit{great}[n-3]$ 中，然后把 $\textit{great}[n-3][1],\textit{great}[n-3][2]$ 都加一。更新后，$\textit{great}[n-3]$ 数组的前面几个数分别为 $2,2,1,1$。
 
-对于 $\textit{less}$ 的计算也同理。
+对于 $\textit{less}$ 的计算也同理：
 
-代码实现时，可以在枚举 $j$ 的同时更新 $\textit{less}$，这样只需要用一维数组维护 $\textit{less}$。
+$$
+\textit{less}[j][x] =
+\begin{cases}
+\textit{less}[j-1][x], & x\le \textit{nums}[j-1]     \\
+\textit{less}[j-1][x] + 1, & x > \textit{nums}[j-1]     \\
+\end{cases}
+$$
+
+代码实现时，可以在正序枚举 $j$ 的同时计算 $\textit{less}$，这样 $\textit{less}$ 数组的第一个维度可以优化掉。
 
 本题 [视频讲解](https://www.bilibili.com/video/BV1mD4y1E7QK/)。
 
