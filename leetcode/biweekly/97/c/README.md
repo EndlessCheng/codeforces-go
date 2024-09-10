@@ -462,6 +462,8 @@ impl Solution {
 
 更多「枚举右，维护左」的题目，见下面数据结构题单的第零章。
 
+更多不定长滑窗题目，见下面滑动窗口题单的第二章。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
