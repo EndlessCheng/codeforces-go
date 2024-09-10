@@ -1,4 +1,6 @@
-## 一条线段
+## 方法一：枚举右，维护左
+
+### 一条线段
 
 从特殊到一般，先想想只有一条线段要怎么做。
 
@@ -12,7 +14,7 @@ $$
 
 ⚠**注意**：$\textit{prizePositions}[\textit{left}]$ 不一定是线段的左端点。$\textit{prizePositions}[\textit{left}]$ 只是最左边的被线段覆盖的那个奖品的位置，线段左端点可能比 $\textit{prizePositions}[\textit{left}]$ 更小。
 
-## 两条线段
+### 两条线段
 
 两条线段一左一右。
 
@@ -200,6 +202,257 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prizePositions}$ 的长度。虽然写了个二重循环，但是内层循环中对 $\textit{left}$ 加一的**总**执行次数不会超过 $n$ 次，所以总的时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：换一个角度
+
+两条线段一共涉及到 $4$ 个下标：
+
+1. 第一条线段覆盖的最小奖品下标。
+2. 第一条线段覆盖的最大奖品下标。
+3. 第二条线段覆盖的最小奖品下标。
+4. 第二条线段覆盖的最大奖品下标。
+
+考虑「枚举中间」，也就是第一条线段覆盖的最大奖品下标，和第二条线段覆盖的最小奖品下标。
+
+### 第一条线段
+
+写一个和方法一一样的滑动窗口：
+
+- 枚举覆盖的最大奖品下标为 $\textit{right}$，维护覆盖的最小奖品下标 $\textit{left}$。
+- 向右移动 $\textit{right}$，如果发现 $\textit{prizePositions}[\textit{right}] - \textit{prizePositions}[\textit{left}] > k$，就向右移动 $\textit{left}$。
+- 循环结束时，覆盖的奖品个数为 $\textit{right}-\textit{left}+1$。
+
+### 第二条线段
+
+仍然是滑动窗口，但改成枚举 $\textit{left}$，维护 $\textit{right}$。
+
+- 向右移动 $\textit{left}$，如果发现 $\textit{prizePositions}[\textit{right}] - \textit{prizePositions}[\textit{left}] \le k$，就向右移动 $\textit{right}$。
+- 循环结束时，$\textit{right}-1$ 是覆盖的最大奖品下标，覆盖的奖品个数为 $\textit{right}-\textit{left}$。
+
+### 合二为一
+
+枚举 $\textit{mid}$，既作为第一条线段的 $\textit{right}$，又作为第二条线段的 $\textit{left}$。
+
+同方法一，用滑动窗口枚举第二条线段，同时维护第一条线段能覆盖的最多奖品个数 $\textit{mx}$。
+
+枚举 $\textit{mid}$：
+
+1. 首先，跑第二条线段的滑动窗口。
+2. 用 $\textit{mx} + \textit{right} - \textit{mid}$ 更新答案的最大值。
+3. 然后，跑第一条线段的滑动窗口。
+4. 用 $\textit{right}-\textit{left}+1$ 更新 $\textit{mx}$ 的最大值。
+
+⚠**注意**：不能先跑第一条线段的滑动窗口，否则 $\textit{mx} + \textit{right} - \textit{mid}$ 可能会把 $\textit{mid}$ 处的奖品计入两次。
+
+```py [sol-Python3]
+class Solution:
+    def maximizeWin(self, prizePositions: List[int], k: int) -> int:
+        n = len(prizePositions)
+        if k * 2 + 1 >= prizePositions[-1] - prizePositions[0]:
+            return n
+        ans = mx = left = right = 0
+        for mid, p in enumerate(prizePositions):
+            # 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+            while right < n and prizePositions[right] - p <= k:
+                right += 1
+            # 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+            ans = max(ans, mx + right - mid)
+            # 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+            while p - prizePositions[left] > k:
+                left += 1
+            # 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+            mx = max(mx, mid - left + 1)
+        return ans
+```
+
+```py [sol-Python3 手写 max]
+# 把 max 改成手动 if 比较，效率更高一点
+class Solution:
+    def maximizeWin(self, prizePositions: List[int], k: int) -> int:
+        n = len(prizePositions)
+        if k * 2 + 1 >= prizePositions[-1] - prizePositions[0]:
+            return n
+        ans = mx = left = right = 0
+        for mid, p in enumerate(prizePositions):
+            while right < n and prizePositions[right] - p <= k:
+                right += 1
+            t = mx + right - mid
+            if t > ans: ans = t
+            while p - prizePositions[left] > k:
+                left += 1
+            t = mid - left + 1
+            if t > mx: mx = t
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximizeWin(int[] prizePositions, int k) {
+        int n = prizePositions.length;
+        if (k * 2 + 1 >= prizePositions[n - 1] - prizePositions[0]) {
+            return n;
+        }
+        int ans = 0;
+        int mx = 0;
+        int left = 0;
+        int right = 0;
+        for (int mid = 0; mid < n; mid++) {
+            // 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+            while (right < n && prizePositions[right] - prizePositions[mid] <= k) {
+                right++;
+            }
+            // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+            ans = Math.max(ans, mx + right - mid);
+            // 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+            while (prizePositions[mid] - prizePositions[left] > k) {
+                left++;
+            }
+            // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+            mx = Math.max(mx, mid - left + 1);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximizeWin(vector<int>& prizePositions, int k) {
+        int n = prizePositions.size();
+        if (k * 2 + 1 >= prizePositions[n - 1] - prizePositions[0]) {
+            return n;
+        }
+        int ans = 0, mx = 0, left = 0, right = 0;
+        for (int mid = 0; mid < n; mid++) {
+            // 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+            while (right < n && prizePositions[right] - prizePositions[mid] <= k) {
+                right++;
+            }
+            // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+            ans = max(ans, mx + right - mid);
+            // 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+            while (prizePositions[mid] - prizePositions[left] > k) {
+                left++;
+            }
+            // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+            mx = max(mx, mid - left + 1);
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
+
+int maximizeWin(int* prizePositions, int n, int k) {
+    if (k * 2 + 1 >= prizePositions[n - 1] - prizePositions[0]) {
+        return n;
+    }
+    int ans = 0, mx = 0, left = 0, right = 0;
+    for (int mid = 0; mid < n; mid++) {
+        // 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+        while (right < n && prizePositions[right] - prizePositions[mid] <= k) {
+            right++;
+        }
+        // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+        ans = MAX(ans, mx + right - mid);
+        // 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+        while (prizePositions[mid] - prizePositions[left] > k) {
+            left++;
+        }
+        // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+        mx = MAX(mx, mid - left + 1);
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func maximizeWin(prizePositions []int, k int) (ans int) {
+    n := len(prizePositions)
+    if k*2+1 >= prizePositions[n-1]-prizePositions[0] {
+        return n
+    }
+    mx, left, right := 0, 0, 0
+    for mid, p := range prizePositions {
+        // 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+        for right < n && prizePositions[right]-p <= k {
+            right++
+        }
+        // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+        ans = max(ans, mx+right-mid)
+        // 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+        for p-prizePositions[left] > k {
+            left++
+        }
+        // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+        mx = max(mx, mid-left+1)
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+var maximizeWin = function(prizePositions, k) {
+    let n = prizePositions.length;
+    if (k * 2 + 1 >= prizePositions[n - 1] - prizePositions[0]) {
+        return n;
+    }
+    let ans = 0, mx = 0, left = 0, right = 0;
+    for (let mid = 0; mid < n; mid++) {
+        // 把 prizePositions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+        while (right < n && prizePositions[right] - prizePositions[mid] <= k) {
+            right++;
+        }
+        // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+        ans = Math.max(ans, mx + right - mid);
+        // 把 prizePositions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+        while (prizePositions[mid] - prizePositions[left] > k) {
+            left++;
+        }
+        // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+        mx = Math.max(mx, mid - left + 1);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn maximize_win(prize_positions: Vec<i32>, k: i32) -> i32 {
+        let n = prize_positions.len();
+        if k * 2 + 1 >= prize_positions[n - 1] - prize_positions[0] {
+            return n as _;
+        }
+        let mut ans = 0;
+        let mut mx = 0;
+        let mut left = 0;
+        let mut right = 0;
+        for (mid, &p) in prize_positions.iter().enumerate() {
+            // 把 prize_positions[mid] 视作第二条线段的左端点，计算第二条线段可以覆盖的最大奖品下标
+            while right < n && prize_positions[right] - p <= k {
+                right += 1;
+            }
+            // 循环结束后，right-1 是第二条线段可以覆盖的最大奖品下标
+            ans = ans.max(mx + right - mid);
+            // 把 prize_positions[mid] 视作第一条线段的右端点，计算第一条线段可以覆盖的最小奖品下标
+            while p - prize_positions[left] > k {
+                left += 1;
+            }
+            // 循环结束后，left 是第一条线段可以覆盖的最小奖品下标
+            mx = mx.max(mid - left + 1);
+        }
+        ans as _
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prizePositions}$ 的长度。理由同上面的复杂度分析。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 总结
 
