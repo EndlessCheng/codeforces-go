@@ -16,13 +16,13 @@ $$
 
 ### 两条线段
 
-两条线段一左一右。
+两条线段一左一右。考虑**枚举右**（第二条线段），同时**维护左**（第一条线段）能覆盖的最多奖品个数。
 
 贪心地想，两条线段**不相交**肯定比相交更好，覆盖的奖品可能更多。
 
-设**第二条线段**右端点在 $\textit{prizePositions}[\textit{right}]$ 时，最远（最小）覆盖的奖品的位置为 $\textit{prizePositions}[\textit{left}]$。
+设第二条线段右端点在 $\textit{prizePositions}[\textit{right}]$ 时，最远（最小）覆盖的奖品的位置为 $\textit{prizePositions}[\textit{left}]$。
 
-我们需要计算在 $\textit{prizePositions}[\textit{left}]$ 左侧的**第一条线段**最多可以覆盖多少个奖品。这可以保证两条线段不相交。
+我们需要计算在 $\textit{prizePositions}[\textit{left}]$ 左侧的第一条线段最多可以覆盖多少个奖品。这可以保证两条线段不相交。
 
 定义 $\textit{mx}[i+1]$ 表示第一条线段右端点 $\le \textit{prizePositions}[i]$ 时，最多可以覆盖多少个奖品。特别地，定义 $\textit{mx}[0]=0$。
 
@@ -451,7 +451,7 @@ impl Solution {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prizePositions}$ 的长度。理由同上面的复杂度分析。
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{prizePositions}$ 的长度。理由同方法一的复杂度分析。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 总结
