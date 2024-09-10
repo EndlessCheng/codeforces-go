@@ -60,7 +60,7 @@ func cf599E(in io.Reader, out io.Writer) {
 			for sub, ok := m, true; ok; ok = sub != m {
 				subMask := sub | lb
 				for t2 := uint(subMask); t2 > 0; t2 &= t2 - 1 {
-					child := bits.TrailingZeros(t2) // root 的儿子
+					child := bits.TrailingZeros(t2) // subMask 子树的根，同时也是 root 的儿子
 					if check(mask, root, subMask, child) {
 						f[mask][root] += f[mask^subMask][root] * f[subMask][child]
 					}
