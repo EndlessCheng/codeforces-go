@@ -29,8 +29,23 @@ class Solution {
     public long findMaximumScore(List<Integer> nums) {
         long ans = 0;
         int mx = 0;
-        for (int i = 0; i + 1 < nums.size(); i++) {
+        for (int i = 0; i < nums.size() - 1; i++) {
             mx = Math.max(mx, nums.get(i));
+            ans += mx;
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long findMaximumScore(List<Integer> nums) {
+        Object[] a = nums.toArray(); // 转成数组效率更高
+        long ans = 0;
+        int mx = 0;
+        for (int i = 0; i < a.length - 1; i++) {
+            mx = Math.max(mx, (int) a[i]);
             ans += mx;
         }
         return ans;
