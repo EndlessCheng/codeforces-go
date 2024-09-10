@@ -357,7 +357,7 @@ class Solution:
 class Solution {
     public long countQuadruplets(int[] nums) {
         long cnt4 = 0;
-        long[] cnt3 = new long[nums.length];
+        int[] cnt3 = new int[nums.length];
         for (int l = 2; l < nums.length; l++) {
             int cnt2 = 0;
             for (int j = 0; j < l; j++) {
@@ -380,7 +380,7 @@ class Solution {
 public:
     long long countQuadruplets(vector<int>& nums) {
         long long cnt4 = 0;
-        vector<long long> cnt3(nums.size());
+        vector<int> cnt3(nums.size());
         for (int l = 2; l < nums.size(); l++) {
             int cnt2 = 0;
             for (int j = 0; j < l; j++) {
