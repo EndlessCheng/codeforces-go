@@ -48,7 +48,7 @@ func cf599E(in io.Reader, out io.Writer) {
 	for i := 0; i < n; i++ {
 		f[1<<i][i] = 1
 	}
-	for mask := 1; mask < 1<<n; mask++ {
+	for mask := 2; mask < 1<<n; mask++ {
 		if mask&(mask-1) == 0 {
 			continue
 		}
