@@ -43,7 +43,7 @@ $$
 \textit{mx}[i + 1] = \max(\textit{mx}[i], i - \textit{left}_i + 1)
 $$
 
-上式也可以理解为 $i - \textit{left}_i + 1$ 的前缀最大值。
+> 上式也可以理解为 $i - \textit{left}_i + 1$ 的前缀最大值。
 
 如何计算两条线段可以覆盖的奖品个数？
 
