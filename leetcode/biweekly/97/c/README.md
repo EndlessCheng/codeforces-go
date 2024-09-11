@@ -1,3 +1,7 @@
+## 题意
+
+一维数轴上有 $n$ 个点，用两条长为 $k$ 的线段，一共最多可以覆盖多少个点？
+
 ## 方法一：枚举右，维护左
 
 ### 一条线段
@@ -28,13 +32,18 @@ $$
 
 如何计算 $\textit{mx}$？
 
-根据 $\textit{mx}$ 的定义，我们相当于在计算 $i - \textit{left}_i + 1$ 的**前缀最大值**，其中 $\textit{left}_i$ 表示右端点覆盖奖品 $\textit{prizePositions}[i]$ 时，最左边的被线段覆盖的奖品。
+考虑动态规划：
 
-所以有
+- 线段右端点**等于** $\textit{prizePositions}[i]$ 时，可以覆盖最多的奖品，即 $i - \textit{left}_i + 1$。其中 $\textit{left}_i$ 表示右端点覆盖奖品 $\textit{prizePositions}[i]$ 时，最左边的被线段覆盖的奖品。
+- 线段右端点**小于** $\textit{prizePositions}[i]$ 时，可以覆盖最多的奖品，这等价于右端点 $\le \textit{prizePositions}[i-1]$ 时，最多可以覆盖多少个奖品，即 $\textit{mx}[i]$。注：这里可以说明为什么状态要定义成 $\textit{mx}[i+1]$ 而不是 $\textit{mx}[i]$，这可以避免当 $i=0$ 时出现 $i-1=-1$ 这种情况。
+
+二者取最大值，得
 
 $$
 \textit{mx}[i + 1] = \max(\textit{mx}[i], i - \textit{left}_i + 1)
 $$
+
+上式也可以理解为 $i - \textit{left}_i + 1$ 的前缀最大值。
 
 如何计算两条线段可以覆盖的奖品个数？
 
@@ -55,7 +64,7 @@ $$
 
 如果脑中没有一幅直观的图像，可以看看 [视频讲解【双周赛 97】](https://www.bilibili.com/video/BV1rM4y1X7z9/)的第三题。
 
-**小优化**：如果 $2k+1\ge \textit{prizePositions}[n-1] - \textit{prizePositions}[0]$，说明所有奖品都可以被覆盖，直接返回 $n$。
+**小优化**：如果 $2k+1\ge \textit{prizePositions}[n-1] - \textit{prizePositions}[0]$，说明所有奖品都可以被覆盖，直接返回 $n$。例如 $\textit{prizePositions}=[0,1,2,3],\ k=1$，那么第一条线段覆盖 $0$ 和 $1$，第二条线段覆盖 $2$ 和 $3$，即可覆盖所有奖品。
 
 ```py [sol-Python3]
 class Solution:
