@@ -51,6 +51,8 @@ $$
 
 我们遍历了所有的奖品作为第二条线段的右端点，通过 $\textit{mx}[\textit{left}]$ 保证第一条线段与第二条线段不相交，且第一条线段覆盖了第二条线段左侧的最多奖品。那么这样遍历后，算出的答案就一定是所有情况中的最大值。
 
+⚠**注意**：可以在计算第二条线段的滑动窗口的同时，更新和第一条线段有关的 $\textit{mx}$。这是因为两条线段一样长，第二条线段移动到 $\textit{right}$ 时所覆盖的奖品个数，也是第一条线段移动到 $\textit{right}$ 时所覆盖的奖品个数。
+
 如果脑中没有一幅直观的图像，可以看看 [视频讲解【双周赛 97】](https://www.bilibili.com/video/BV1rM4y1X7z9/)的第三题。
 
 **小优化**：如果 $2k+1\ge \textit{prizePositions}[n-1] - \textit{prizePositions}[0]$，说明所有奖品都可以被覆盖，直接返回 $n$。
@@ -240,7 +242,7 @@ impl Solution {
 1. 首先，跑第二条线段的滑动窗口。
 2. 用 $\textit{mx} + \textit{right} - \textit{mid}$ 更新答案的最大值。
 3. 然后，跑第一条线段的滑动窗口。
-4. 用 $\textit{right}-\textit{left}+1$ 更新 $\textit{mx}$ 的最大值。
+4. 用 $\textit{mid}-\textit{left}+1$ 更新 $\textit{mx}$ 的最大值。
 
 ⚠**注意**：不能先跑第一条线段的滑动窗口，否则 $\textit{mx} + \textit{right} - \textit{mid}$ 可能会把 $\textit{mid}$ 处的奖品计入两次。
 
