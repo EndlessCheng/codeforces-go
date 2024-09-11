@@ -69,7 +69,7 @@ $$
 class Solution:
     def countQuadruplets(self, nums: List[int]) -> int:
         n = len(nums)
-        great = [0] * n
+        great = [None] * n
         great[-1] = [0] * (n + 1)
         for k in range(n - 2, 1, -1):
             great[k] = great[k + 1].copy()  # 也可以写 great[k+1][:]
@@ -199,7 +199,7 @@ $$
 class Solution:
     def countQuadruplets(self, nums: List[int]) -> int:
         n = len(nums)
-        great = [0] * n
+        great = [None] * n
         great[-1] = [0] * (n + 1)
         for k in range(n - 2, 0, -1):
             great[k] = great[k + 1].copy()
