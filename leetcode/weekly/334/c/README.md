@@ -2,7 +2,7 @@
 
 ### 提示 1
 
-如果 $2\cdot\textit{nums}\le \textit{nums}[j]$，则称 $\textit{nums}[i]$ 与 $\textit{nums}[j]$ **匹配**。
+如果 $2\cdot\textit{nums}[i]\le \textit{nums}[j]$，则称 $\textit{nums}[i]$ 与 $\textit{nums}[j]$ **匹配**。
 
 如果可以匹配 $k$ 对，那么也可以匹配小于 $k$ 对，去掉一些数对即可做到。
 
