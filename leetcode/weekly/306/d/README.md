@@ -145,7 +145,7 @@ public:
             int up = is_limit ? s[i] - '0' : 9;
             // 枚举要填入的数字 d
             // 如果前面没有填数字，则必须从 1 开始（因为不能有前导零）
-            for (int d = 1 - is_num; d <= up; d++) {
+            for (int d = is_num ? 0 : 1; d <= up; d++) {
                 if ((mask >> d & 1) == 0) { // d 不在 mask 中，说明之前没有填过 d
                     res += dfs(dfs, i + 1, mask | (1 << d), is_limit && d == up, true);
                 }
@@ -266,8 +266,7 @@ var countSpecialNumbers = function(n) {
         const up = isLimit ? +s[i] : 9;
         // 枚举要填入的数字 d
         // 如果前面没有填数字，则必须从 1 开始（因为不能有前导零）
-        const low = isNum ? 0 : 1;
-        for (let d = low; d <= up; d++) {
+        for (let d = isNum ? 0 : 1; d <= up; d++) {
             if ((mask >> d & 1) === 0) { // d 不在 mask 中，说明之前没有填过 d
                 res += dfs(i + 1, mask | (1 << d), isLimit && d === up, true);
             }
