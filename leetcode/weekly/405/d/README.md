@@ -247,7 +247,7 @@ func minimumCost(target string, words []string, costs []int) int {
 		powBase[i+1] = powBase[i] * base % mod
 		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 	}
-	// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
 	// 计算方法类似前缀和
 	subHash := func(l, r int) int {
 		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
@@ -309,7 +309,7 @@ func minimumCost(target string, words []string, costs []int) int {
 		powBase[i+1] = powBase[i] * base % mod
 		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 	}
-	// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
 	// 计算方法类似前缀和
 	subHash := func(l, r int) int {
 		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
@@ -1028,14 +1028,18 @@ func minimumCost(target string, words []string, costs []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
-- 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。其中 $|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(L|\Sigma| + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和，$|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。有多少个匹配，就有多少次状态转移。
+- 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。
+
+## 相似题目
+
+- [3292. 形成目标字符串需要的最少字符串数 II](https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/)
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -1044,6 +1048,9 @@ func minimumCost(target string, words []string, costs []int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

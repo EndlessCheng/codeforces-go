@@ -188,7 +188,7 @@ func minimumCostHash2(target string, words []string, costs []int) int {
 		powBase[i+1] = powBase[i] * base % mod
 		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 	}
-	// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r) 其中 0<=l<=r<=len(s)
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r) 其中 0<=l<=r<=len(s)
 	// 空串的哈希值为 0
 	// 计算方法类似前缀和
 	subHash := func(l, r int) int {
