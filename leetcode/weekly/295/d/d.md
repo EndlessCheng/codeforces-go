@@ -1,23 +1,16 @@
-#### 提示 1
+从 $(i,j)$ 移动到与其相邻的格子 $(i',j')$，视作一条从 $(i,j)$ 到 $(i',j')$ 的有向边，边权为 $\textit{grid}[i'][j']$。
 
-把障碍物当作可以经过的单元格，经过它的「花费」为 $1$。
+问题变成计算从起点到终点的最短路。
 
-#### 提示 2
+这可以用 Dijkstra 算法解决，原理请看 [Dijkstra 算法介绍](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。
 
-问题转化成从起点到终点的最短路。
+由于本题的边权只有 $0$ 和 $1$，也可以用 **0-1 BFS** 解决。
 
-#### 提示 3
+0-1 BFS 本质是对 Dijkstra 算法的优化。因为边权只有 $0$ 和 $1$，我们可以把最小堆换成**双端队列**，遇到 $0$ 边权就加入**队首**，遇到 $1$ 边权就加入**队尾**，这样可以保证队首总是最小的，就不需要最小堆了。
 
-我们可以用 Dijkstra，但还可以用 0-1 BFS 来将时间复杂度优化至 $O(mn)$。
+[本题视频讲解](https://www.bilibili.com/video/BV1iF41157dG)（第四题）。
 
-具体见 [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 官方题解的方法二，本文不再赘述。
-
-#### 复杂度分析
-
-- 时间复杂度：$O(mn)$。
-- 空间复杂度：$O(mn)$。
-
-```Python [sol1-Python3]
+```Python [sol-Python3]
 class Solution:
     def minimumObstacles(self, grid: List[List[int]]) -> int:
         m, n = len(grid), len(grid[0])
@@ -25,39 +18,49 @@ class Solution:
         dis[0][0] = 0
         q = deque([(0, 0)])
         while q:
-            x, y = q.popleft()
-            for nx, ny in (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1):
-                if 0 <= nx < m and 0 <= ny < n:
+            i, j = q.popleft()
+            for x, y in (i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j):
+                if 0 <= x < m and 0 <= y < n:
                     g = grid[x][y]
-                    if dis[x][y] + g < dis[nx][ny]:
-                        dis[nx][ny] = dis[x][y] + g
-                        if g == 0: q.appendleft((nx, ny))
-                        else: q.append((nx, ny))
-        return dis[m - 1][n - 1]
+                    if dis[i][j] + g < dis[x][y]:
+                        dis[x][y] = dis[i][j] + g
+                        if g == 0:
+                            q.appendleft((x, y))
+                        else:
+                            q.append((x, y))
+        return dis[-1][-1]
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
-    final static int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    private static final int[][] DIRS = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
 
     public int minimumObstacles(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        var dis = new int[m][n];
-        for (var i = 0; i < m; i++) Arrays.fill(dis[i], Integer.MAX_VALUE);
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dis = new int[m][n];
+        for (int[] row : dis) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
         dis[0][0] = 0;
-        var q = new ArrayDeque<int[]>();
+        Deque<int[]> q = new ArrayDeque<>();
         q.addFirst(new int[]{0, 0});
         while (!q.isEmpty()) {
-            var p = q.pollFirst();
-            int x = p[0], y = p[1];
-            for (var d : dirs) {
-                int nx = x + d[0], ny = y + d[1];
-                if (0 <= nx && nx < m && 0 <= ny && ny < n) {
-                    var g = grid[nx][ny];
-                    if (dis[x][y] + g < dis[nx][ny]) {
-                        dis[nx][ny] = dis[x][y] + g;
-                        if (g == 0) q.addFirst(new int[]{nx, ny});
-                        else q.addLast(new int[]{nx, ny});
+            int[] p = q.pollFirst();
+            int i = p[0];
+            int j = p[1];
+            for (int[] d : DIRS) {
+                int x = i + d[0];
+                int y = j + d[1];
+                if (0 <= x && x < m && 0 <= y && y < n) {
+                    int g = grid[x][y];
+                    if (dis[i][j] + g < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + g;
+                        if (g == 0) {
+                            q.addFirst(new int[]{x, y});
+                        } else {
+                            q.addLast(new int[]{x, y});
+                        }
                     }
                 }
             }
@@ -67,28 +70,26 @@ class Solution {
 }
 ```
 
-```C++ [sol1-C++]
+```cpp [sol-C++]
 class Solution {
-    static constexpr int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-
+    static constexpr int DIRS[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 public:
     int minimumObstacles(vector<vector<int>> &grid) {
         int m = grid.size(), n = grid[0].size();
-        int dis[m][n];
-        memset(dis, 0x3f, sizeof(dis));
+        vector<vector<int>> dis(m, vector<int>(n, INT_MAX));
         dis[0][0] = 0;
         deque<pair<int, int>> q;
         q.emplace_front(0, 0);
         while (!q.empty()) {
-            auto[x, y] = q.front();
+            auto [i, j] = q.front();
             q.pop_front();
-            for (auto &[dx, dy] : dirs) {
-                int nx = x + dx, ny = y + dy;
-                if (0 <= nx && nx < m && 0 <= ny && ny < n) {
-                    int g = grid[nx][ny];
-                    if (dis[x][y] + g < dis[nx][ny]) {
-                        dis[nx][ny] = dis[x][y] + g;
-                        g == 0 ? q.emplace_front(nx, ny) : q.emplace_back(nx, ny);
+            for (auto& [dx, dy] : DIRS) {
+                int x = i + dx, y = j + dy;
+                if (0 <= x && x < m && 0 <= y && y < n) {
+                    int g = grid[x][y];
+                    if (dis[i][j] + g < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + g;
+                        g == 0 ? q.emplace_front(x, y) : q.emplace_back(x, y);
                     }
                 }
             }
@@ -98,21 +99,20 @@ public:
 };
 ```
 
-```go [sol1-Go]
-type pair struct{ x, y int }
-var dir4 = []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
-
-func minimumObstacles(grid [][]int) (ans int) {
+```go [sol-Go]
+func minimumObstacles(grid [][]int) int {
+	type pair struct{ x, y int }
+	dirs := []pair{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
 	m, n := len(grid), len(grid[0])
 	dis := make([][]int, m)
 	for i := range dis {
 		dis[i] = make([]int, n)
 		for j := range dis[i] {
-			dis[i][j] = m * n
+			dis[i][j] = math.MaxInt
 		}
 	}
 	dis[0][0] = 0
-	q := [2][]pair{{{}}}
+	q := [2][]pair{{{}}} // 两个 slice 头对头来实现 deque
 	for len(q[0]) > 0 || len(q[1]) > 0 {
 		var p pair
 		if len(q[0]) > 0 {
@@ -120,7 +120,7 @@ func minimumObstacles(grid [][]int) (ans int) {
 		} else {
 			p, q[1] = q[1][0], q[1][1:]
 		}
-		for _, d := range dir4 {
+		for _, d := range dirs {
 			x, y := p.x+d.x, p.y+d.y
 			if 0 <= x && x < m && 0 <= y && y < n {
 				g := grid[x][y]
@@ -135,3 +135,33 @@ func minimumObstacles(grid [][]int) (ans int) {
 }
 ```
 
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。每个点至多入队两次。
+- 空间复杂度：$\mathcal{O}(mn)$。
+
+## 思考题
+
+构造一个 $\textit{grid}$，使得上述算法消耗的空间尽量多。
+
+欢迎在评论区分享你的思路/代码。
+
+更多相似题目，见下面网格图题单中的「**0-1 BFS**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
