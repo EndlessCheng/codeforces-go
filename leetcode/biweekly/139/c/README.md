@@ -21,6 +21,8 @@
 
 最后，枚举 $i=k-1,k,k+1,\cdots,n-k-1$，两两组合 $\textit{pre}[i]$ 和 $\textit{suf}[i+1]$ 中的元素计算 XOR，取其中最大值作为答案。
 
+**小优化**：如果在循环中，发现答案 $\textit{ans}$ 达到了理论最大值 $2^7-1$，则立刻返回答案。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ub4mekE1x/) 第三题，欢迎点赞关注~
 
 ```py [sol-Python3]
@@ -39,6 +41,7 @@ class Solution:
                         f[j + 1][x | v] = True
             suf[i] = f[k].copy()
 
+        max_xor = (1 << mx.bit_length()) - 1  # 理论最大值
         ans = 0
         pre = [[False] * (mx + 1) for _ in range(k + 1)]
         pre[0][0] = True
@@ -52,8 +55,10 @@ class Solution:
             for x, has_x in enumerate(pre[k]):
                 if has_x:
                     for y, has_y in enumerate(suf[i + 1]):
-                        if has_y:
-                            ans = max(ans, x ^ y)
+                        if has_y and x ^ y > ans:  # 手写 if
+                            ans = x ^ y
+            if ans == max_xor:
+                return max_xor
         return ans
 ```
 
@@ -101,6 +106,9 @@ class Solution {
                     }
                 }
             }
+            if (ans == MX - 1) {
+                return ans;
+            }
         }
         return ans;
     }
@@ -111,15 +119,15 @@ class Solution {
 class Solution {
 public:
     int maxValue(vector<int>& nums, int k) {
-        const int mx = 1 << 7;
+        const int MX = 1 << 7;
         int n = nums.size();
-        vector<array<int, mx>> suf(n);
-        vector<array<int, mx>> f(k + 1);
+        vector<array<int, MX>> suf(n);
+        vector<array<int, MX>> f(k + 1);
         f[0][0] = true;
         for (int i = n - 1; i >= k; i--) {
             int v = nums[i];
             for (int j = k - 1; j >= 0; j--) {
-                for (int x = 0; x < mx; x++) {
+                for (int x = 0; x < MX; x++) {
                     if (f[j][x]) {
                         f[j + 1][x | v] = true;
                     }
@@ -129,12 +137,12 @@ public:
         }
 
         int ans = 0;
-        vector<array<int, mx>> pre(k + 1);
+        vector<array<int, MX>> pre(k + 1);
         pre[0][0] = true;
         for (int i = 0; i < n - k; i++) {
             int v = nums[i];
             for (int j = k - 1; j >= 0; j--) {
-                for (int x = 0; x < mx; x++) {
+                for (int x = 0; x < MX; x++) {
                     if (pre[j][x]) {
                         pre[j + 1][x | v] = true;
                     }
@@ -143,14 +151,17 @@ public:
             if (i < k - 1) {
                 continue;
             }
-            for (int x = 0; x < mx; x++) {
+            for (int x = 0; x < MX; x++) {
                 if (pre[k][x]) {
-                    for (int y = 0; y < mx; y++) {
+                    for (int y = 0; y < MX; y++) {
                         if (suf[i + 1][y]) {
                             ans = max(ans, x ^ y);
                         }
                     }
                 }
+            }
+            if (ans == MX - 1) {
+                return ans;
             }
         }
         return ans;
@@ -198,6 +209,9 @@ func maxValue(nums []int, k int) (ans int) {
 					}
 				}
 			}
+		}
+		if ans == mx-1 {
+			return
 		}
 	}
 	return

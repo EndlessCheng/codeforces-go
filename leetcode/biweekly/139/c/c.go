@@ -41,6 +41,9 @@ func maxValue(nums []int, k int) (ans int) {
 				}
 			}
 		}
+		if ans == mx-1 {
+			return
+		}
 	}
 	return
 }
