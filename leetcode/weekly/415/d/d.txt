@@ -1,0 +1,14 @@
+["abc","aaaaa","bcdef"]
+"aabcdabc"
+3
+
+["abababab","ab"]
+"ababaababa"
+2
+
+["abcdef"]
+"xyz"
+-1
+
+
+
