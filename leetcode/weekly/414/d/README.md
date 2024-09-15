@@ -237,8 +237,8 @@ public:
             for (int step = 1; !q.empty(); step++) {
                 vector<pair<int, int>> tmp;
                 for (auto& [qx, qy] : q) {
-                    for (auto& dir : dirs) {
-                        int x = qx + dir[0], y = qy + dir[1];
+                    for (auto& [dx, dy] : dirs) {
+                        int x = qx + dx, y = qy + dy;
                         if (0 <= x && x < 50 && 0 <= y && y < 50 && dis[i][x][y] < 0) {
                             dis[i][x][y] = step;
                             tmp.emplace_back(x, y);
@@ -471,8 +471,8 @@ public:
             for (int step = 1; !q.empty(); step++) {
                 vector<pair<int, int>> tmp;
                 for (auto& [qx, qy] : q) {
-                    for (auto& dir : dirs) {
-                        int x = qx + dir[0], y = qy + dir[1];
+                    for (auto& [dx, dy] : dirs) {
+                        int x = qx + dx, y = qy + dy;
                         if (0 <= x && x < 50 && 0 <= y && y < 50 && dis[i][x][y] < 0) {
                             dis[i][x][y] = step;
                             tmp.emplace_back(x, y);
