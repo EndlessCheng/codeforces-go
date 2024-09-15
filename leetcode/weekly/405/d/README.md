@@ -916,7 +916,7 @@ public:
         }
         ac.build_fail();
 
-        int n = target.size();
+        int n = target.length();
         vector<int> f(n + 1, INT_MAX / 2);
         f[0] = 0;
         auto cur = ac.root;
