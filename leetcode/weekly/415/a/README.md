@@ -1,8 +1,8 @@
-本题和 [2965. 找出缺失和重复的数字](https://leetcode.cn/problems/find-missing-and-repeated-values/) 本质是一样的，见 [我的题解](https://leetcode.cn/problems/find-missing-and-repeated-values/solutions/2569783/mo-ni-pythonjavacgo-by-endlesscheng-mexz/)。
+本题和 [2965. 找出缺失和重复的数字](https://leetcode.cn/problems/find-missing-and-repeated-values/) 本质是一样的，见 [我的题解](https://leetcode.cn/problems/find-missing-and-repeated-values/solutions/2569783/mo-ni-pythonjavacgo-by-endlesscheng-mexz/)，有位运算和数学两种做法。
 
-有位运算和数学两种做法，下面用的位运算。
+## 位运算
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+需要两次遍历。一次遍历见下面的数学做法。
 
 ```py [sol-Python3]
 class Solution:
@@ -83,6 +83,99 @@ func getSneakyNumbers(nums []int) []int {
 		ans[x>>shift&1] ^= x
 	}
 	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 数学
+
+设多出的两个数分别为 $x$ 和 $y$。
+
+也就是说，$\textit{nums} = [0,1,2,\cdots,n-1,x,y]$。
+
+设 $\textit{nums}$ 的元素和为 $s$，$\textit{nums}$ 的元素平方之和为 $s_2$，那么有
+
+$$
+\begin{aligned}
+&x+y = s - (0 + 1 + 2 + \cdots + n-1) = a     \\
+&x^2+y^2 = s_2 - (0^2 + 1^2 + 2^2 + \cdots + (n-1)^2) = b   \\
+\end{aligned}
+$$
+
+解得
+
+$$
+\begin{cases}
+x  = \dfrac{a-\sqrt{2b-a^2}}{2}     \\
+y  = \dfrac{a+\sqrt{2b-a^2}}{2}    \\
+\end{cases}
+$$
+
+也可以先算出 $x$，然后算出 $y=a-x$。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1Qp4me2Emz/)，欢迎点赞关注~
+
+```py [sol-Python3]
+class Solution:
+    def getSneakyNumbers(self, nums: List[int]) -> List[int]:
+        n = len(nums) - 2
+        a = -n * (n - 1) // 2
+        b = -n * (n - 1) * (n * 2 - 1) // 6
+        for x in nums:
+            a += x
+            b += x * x
+        x = int((a - sqrt(b * 2 - a * a)) / 2)
+        return [x, a - x]
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] getSneakyNumbers(int[] nums) {
+        int n = nums.length - 2;
+        int a = -n * (n - 1) / 2;
+        int b = -n * (n - 1) * (n * 2 - 1) / 6;
+        for (int x : nums) {
+            a += x;
+            b += x * x;
+        }
+        int x = (int) ((a - Math.sqrt(b * 2 - a * a)) / 2);
+        return new int[]{x, a - x};
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> getSneakyNumbers(vector<int>& nums) {
+        int n = nums.size() - 2;
+        int a = -n * (n - 1) / 2;
+        int b = -n * (n - 1) * (n * 2 - 1) / 6;
+        for (int x : nums) {
+            a += x;
+            b += x * x;
+        }
+        int x = (a - sqrt(b * 2 - a * a)) / 2;
+        return {x, a - x};
+    }
+};
+```
+
+```go [sol-Go]
+func getSneakyNumbers(nums []int) []int {
+	n := len(nums) - 2
+	a := -n * (n - 1) / 2
+	b := -n * (n - 1) * (n*2 - 1) / 6
+	for _, x := range nums {
+		a += x
+		b += x * x
+	}
+	x := int((float64(a) - math.Sqrt(float64(b*2-a*a))) / 2)
+	return []int{x, a - x}
 }
 ```
 
