@@ -9,7 +9,7 @@
 设 $v=\textit{nums}[i]$，用**刷表法**转移：
 
 - 不选 $v$，那么 $f[i][j][x] = f[i+1][j][x]$。
-- 选 $v$，如果 $f[i+1][j][x]=\texttt{true}$，那么 $f[i][j][x|v]=\texttt{true}$。
+- 选 $v$，如果 $f[i+1][j][x]=\texttt{true}$，那么 $f[i][j+1][x|v]=\texttt{true}$。
 
 初始值 $f[n][0][0]=\texttt{true}$。什么也不选，OR 等于 $0$。
 
@@ -265,7 +265,7 @@ func maxValue(nums []int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(nkU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 所有元素的 OR，本题至多为 $2^7-1$。
 - 空间复杂度：$\mathcal{O}(n+k)U)$。
 
-更多相似题目，见下面动态规划题单中的「**§3.1 0-1 背包**」。
+更多相似题目，见下面动态规划题单中的「**§3.1 0-1 背包**」和「**专题：前后缀分解**」。
 
 ## 分类题单
 
