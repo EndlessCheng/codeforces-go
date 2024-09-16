@@ -32,7 +32,7 @@ class Solution:
     def maxValue(self, nums: List[int], k: int) -> int:
         mx = reduce(or_, nums)
         n = len(nums)
-        suf = [None] * n
+        suf = [None] * (n - k + 1)
         f = [[False] * (mx + 1) for _ in range(k + 1)]
         f[0][0] = True
         for i in range(n - 1, k - 1, -1):
@@ -42,7 +42,8 @@ class Solution:
                 for x, has_x in enumerate(f[j]):
                     if has_x:
                         f[j + 1][x | v] = True
-            suf[i] = f[k].copy()
+            if i <= n - k:
+                suf[i] = f[k].copy()
 
         ans = 0
         pre = [[False] * (mx + 1) for _ in range(k + 1)]
@@ -69,14 +70,15 @@ class Solution:
 class Solution:
     def maxValue(self, nums: List[int], k: int) -> int:
         n = len(nums)
-        suf = [None] * n
+        suf = [None] * (n - k + 1)
         f = [set() for _ in range(k + 1)]
         f[0].add(0)
         for i in range(n - 1, k - 1, -1):
             v = nums[i]
             for j in range(min(k - 1, n - 1 - i), -1, -1):
                 f[j + 1].update(x | v for x in f[j])
-            suf[i] = f[k].copy()
+            if i <= n - k:
+                suf[i] = f[k].copy()
 
         mx = reduce(or_, nums)
         ans = 0
@@ -98,7 +100,7 @@ class Solution {
     public int maxValue(int[] nums, int k) {
         final int MX = 1 << 7;
         int n = nums.length;
-        boolean[][] suf = new boolean[n][];
+        boolean[][] suf = new boolean[n - k + 1][];
         boolean[][] f = new boolean[k + 1][MX];
         f[0][0] = true;
         for (int i = n - 1; i >= k; i--) {
@@ -111,7 +113,9 @@ class Solution {
                     }
                 }
             }
-            suf[i] = f[k].clone();
+            if (i <= n - k) {
+                suf[i] = f[k].clone();
+            }
         }
 
         int ans = 0;
@@ -153,7 +157,7 @@ public:
     int maxValue(vector<int>& nums, int k) {
         const int MX = 1 << 7;
         int n = nums.size();
-        vector<array<int, MX>> suf(n);
+        vector<array<int, MX>> suf(n - k + 1);
         vector<array<int, MX>> f(k + 1);
         f[0][0] = true;
         for (int i = n - 1; i >= k; i--) {
@@ -166,7 +170,9 @@ public:
                     }
                 }
             }
-            suf[i] = f[k];
+            if (i <= n - k) {
+                suf[i] = f[k];
+            }
         }
 
         int ans = 0;
@@ -206,7 +212,7 @@ public:
 func maxValue(nums []int, k int) (ans int) {
 	const mx = 1 << 7
 	n := len(nums)
-	suf := make([][mx]bool, n)
+	suf := make([][mx]bool, n-k+1)
 	f := make([][mx]bool, k+1)
 	f[0][0] = true
 	for i := n - 1; i >= k; i-- {
@@ -219,7 +225,9 @@ func maxValue(nums []int, k int) (ans int) {
 				}
 			}
 		}
-		suf[i] = f[k]
+		if i <= n-k {
+			suf[i] = f[k]
+		}
 	}
 
 	pre := make([][mx]bool, k+1)

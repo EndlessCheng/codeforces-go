@@ -4,7 +4,7 @@ package main
 func maxValue(nums []int, k int) (ans int) {
 	const mx = 1 << 7
 	n := len(nums)
-	suf := make([][mx]bool, n)
+	suf := make([][mx]bool, n-k+1)
 	f := make([][mx]bool, k+1)
 	f[0][0] = true
 	for i := n - 1; i >= k; i-- {
@@ -17,7 +17,9 @@ func maxValue(nums []int, k int) (ans int) {
 				}
 			}
 		}
-		suf[i] = f[k]
+		if i <= n-k {
+			suf[i] = f[k]
+		}
 	}
 
 	pre := make([][mx]bool, k+1)
