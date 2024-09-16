@@ -2,7 +2,7 @@
 
 比如左部计算出的 OR 有 $[2,3,5]$，右部计算出的 OR 有 $[1,3,6]$，两两组合计算 XOR，取其中最大值作为答案。
 
-把 OR 理解成一个类似加法的东西，本题是一个二维的 0-1 背包。不了解 0-1 背包的同学请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+把 OR 理解成一个类似加法的东西，本题是一个二维的 0-1 背包。如果你不了解 0-1 背包，或者不理解为什么下面代码 $j$ 要倒序枚举，请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 考虑计算右部，定义 $f[i][j][x]$ 表示从 $\textit{nums}[i]$ 到 $\textit{nums}[n-1]$ 中选出 $j$ 个数，这些数的 OR 是否等于 $x$。
 
@@ -21,7 +21,9 @@
 
 最后，枚举 $i=k-1,k,k+1,\cdots,n-k-1$，两两组合 $\textit{pre}[i]$ 和 $\textit{suf}[i+1]$ 中的元素计算 XOR，取其中最大值作为答案。
 
-**小优化**：如果在循环中，发现答案 $\textit{ans}$ 达到了理论最大值 $2^7-1$，则立刻返回答案。
+**小优化**：如果在循环中，发现答案 $\textit{ans}$ 达到了理论最大值 $2^7-1$（或者所有元素的 OR），则立刻返回答案。
+
+也可以用哈希集合代替布尔数组，见下面的 Python 优化代码。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ub4mekE1x/) 第三题，欢迎点赞关注~
 
@@ -35,18 +37,18 @@ class Solution:
         f[0][0] = True
         for i in range(n - 1, k - 1, -1):
             v = nums[i]
-            for j in range(k - 1, -1, -1):
+            # 注意当 i 比较大的时候，循环次数应和 i 有关，因为更大的 j，对应的 f[j] 全为 False
+            for j in range(min(k - 1, n - 1 - i), -1, -1):
                 for x, has_x in enumerate(f[j]):
                     if has_x:
                         f[j + 1][x | v] = True
             suf[i] = f[k].copy()
 
-        max_xor = (1 << mx.bit_length()) - 1  # 理论最大值
         ans = 0
         pre = [[False] * (mx + 1) for _ in range(k + 1)]
         pre[0][0] = True
         for i, v in enumerate(nums[:-k]):
-            for j in range(k - 1, -1, -1):
+            for j in range(min(k - 1, i), -1, -1):
                 for x, has_x in enumerate(pre[j]):
                     if has_x:
                         pre[j + 1][x | v] = True
@@ -57,8 +59,37 @@ class Solution:
                     for y, has_y in enumerate(suf[i + 1]):
                         if has_y and x ^ y > ans:  # 手写 if
                             ans = x ^ y
-            if ans == max_xor:
-                return max_xor
+            if ans == mx:
+                return ans
+        return ans
+```
+
+```py [sol-Python3 优化]
+# 使用 set 代替 bool list
+class Solution:
+    def maxValue(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        suf = [None] * n
+        f = [set() for _ in range(k + 1)]
+        f[0].add(0)
+        for i in range(n - 1, k - 1, -1):
+            v = nums[i]
+            for j in range(min(k - 1, n - 1 - i), -1, -1):
+                f[j + 1].update(x | v for x in f[j])
+            suf[i] = f[k].copy()
+
+        mx = reduce(or_, nums)
+        ans = 0
+        pre = [set() for _ in range(k + 1)]
+        pre[0].add(0)
+        for i, v in enumerate(nums[:-k]):
+            for j in range(min(k - 1, i), -1, -1):
+                pre[j + 1].update(x | v for x in pre[j])
+            if i < k - 1:
+                continue
+            ans = max(ans, max(x ^ y for x in pre[k] for y in suf[i + 1]))
+            if ans == mx:
+                return ans
         return ans
 ```
 
@@ -72,7 +103,8 @@ class Solution {
         f[0][0] = true;
         for (int i = n - 1; i >= k; i--) {
             int v = nums[i];
-            for (int j = k - 1; j >= 0; j--) {
+            // 注意当 i 比较大的时候，循环次数应和 i 有关，因为更大的 j，对应的 f[j] 全为 false
+            for (int j = Math.min(k - 1, n - 1 - i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
                     if (f[j][x]) {
                         f[j + 1][x | v] = true;
@@ -87,7 +119,7 @@ class Solution {
         pre[0][0] = true;
         for (int i = 0; i < n - k; i++) {
             int v = nums[i];
-            for (int j = k - 1; j >= 0; j--) {
+            for (int j = Math.min(k - 1, i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
                     if (pre[j][x]) {
                         pre[j + 1][x | v] = true;
@@ -126,7 +158,8 @@ public:
         f[0][0] = true;
         for (int i = n - 1; i >= k; i--) {
             int v = nums[i];
-            for (int j = k - 1; j >= 0; j--) {
+            // 注意当 i 比较大的时候，循环次数应和 i 有关，因为更大的 j，对应的 f[j] 全为 false
+            for (int j = min(k - 1, n - 1 - i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
                     if (f[j][x]) {
                         f[j + 1][x | v] = true;
@@ -141,7 +174,7 @@ public:
         pre[0][0] = true;
         for (int i = 0; i < n - k; i++) {
             int v = nums[i];
-            for (int j = k - 1; j >= 0; j--) {
+            for (int j = min(k - 1, i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
                     if (pre[j][x]) {
                         pre[j + 1][x | v] = true;
@@ -178,7 +211,8 @@ func maxValue(nums []int, k int) (ans int) {
 	f[0][0] = true
 	for i := n - 1; i >= k; i-- {
 		v := nums[i]
-		for j := k - 1; j >= 0; j-- {
+		// 注意当 i 比较大的时候，循环次数应和 i 有关，因为更大的 j，对应的 f[j] 全为 false
+		for j := min(k-1, n-1-i); j >= 0; j-- {
 			for x, hasX := range f[j] {
 				if hasX {
 					f[j+1][x|v] = true
@@ -191,7 +225,7 @@ func maxValue(nums []int, k int) (ans int) {
 	pre := make([][mx]bool, k+1)
 	pre[0][0] = true
 	for i, v := range nums[:n-k] {
-		for j := k - 1; j >= 0; j-- {
+		for j := min(k-1, i); j >= 0; j-- {
 			for x, hasX := range pre[j] {
 				if hasX {
 					pre[j+1][x|v] = true
