@@ -262,8 +262,8 @@ func maxValue(nums []int, k int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nkU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 所有元素的 OR，本题至多为 $2^7-1$。
-- 空间复杂度：$\mathcal{O}(n+k)U)$。
+- 时间复杂度：$\mathcal{O}(nkU + nU^2)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 所有元素的 OR，本题至多为 $2^7-1$。DP 是 $\mathcal{O}(nkU)$ 的，计算 XOR 最大值是 $\mathcal{O}(nU^2)$ 的。
+- 空间复杂度：$\mathcal{O}((n+k)U)$。
 
 更多相似题目，见下面动态规划题单中的「**§3.1 0-1 背包**」和「**专题：前后缀分解**」。
 
