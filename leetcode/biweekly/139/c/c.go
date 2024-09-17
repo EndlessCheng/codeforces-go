@@ -4,12 +4,11 @@ import "math"
 
 // https://space.bilibili.com/206214
 const bitWidth = 7
+const mx = 1 << bitWidth
 
 func maxValue(nums []int, k int) (ans int) {
-	const mx = 1 << bitWidth
 	n := len(nums)
-	k2 := min(k, bitWidth)
-
+	k2 := min(k, bitWidth) // 至多选 k2 个数
 	suf := make([][mx]bool, n-k+1)
 	f := make([][mx]bool, k2+1)
 	f[0][0] = true
@@ -88,7 +87,7 @@ func findMaximumXOR(a, b []int) (ans int) {
 	for i := bitWidth - 1; i >= 0; i-- { // 从最高位开始枚举
 		mask |= 1 << i
 		newAns := ans | 1<<i // 这个比特位可以是 1 吗？
-		seen := [1 << bitWidth]bool{}
+		seen := [mx]bool{}
 		for _, x := range a {
 			seen[x&mask] = true // 低于 i 的比特位置为 0
 		}

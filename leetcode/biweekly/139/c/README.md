@@ -309,7 +309,7 @@ class Solution:
                 f[j + 1].update(x | v for x in f[j])
             if i <= n - k:
                 suf[i] = f[k2].copy()
-            # 遍历 v 的超集
+            # 枚举 v 的超集
             s = v
             while s <= mx:
                 cnt[s] += 1
@@ -326,7 +326,7 @@ class Solution:
         for i, v in enumerate(nums[:-k]):
             for j in range(min(k2 - 1, i), -1, -1):
                 pre[j + 1].update(x | v for x in pre[j])
-            # 遍历 v 的超集
+            # 枚举 v 的超集
             s = v
             while s <= mx:
                 cnt[s] += 1
@@ -385,7 +385,7 @@ class Solution {
             if (i <= n - k) {
                 suf[i] = f[k2].clone();
             }
-            // 遍历 v 的超集
+            // 枚举 v 的超集
             for (int s = v; s < MX; s = (s + 1) | v) {
                 if (++cnt[s] == k) {
                     // 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
@@ -411,7 +411,7 @@ class Solution {
                     }
                 }
             }
-            // 遍历 v 的超集
+            // 枚举 v 的超集
             for (int s = v; s < MX; s = (s + 1) | v) {
                 if (++cnt[s] == k) {
                     // 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
@@ -515,7 +515,7 @@ public:
             if (i <= n - k) {
                 suf[i] = f[k2];
             }
-            // 遍历 v 的超集
+            // 枚举 v 的超集
             for (int s = v; s < MX; s = (s + 1) | v) {
                 if (++cnt[s] == k) {
                     // 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
@@ -539,7 +539,7 @@ public:
                     }
                 }
             }
-            // 遍历 v 的超集
+            // 枚举 v 的超集
             for (int s = v; s < MX; s = (s + 1) | v) {
                 if (++cnt[s] == k) {
                     // 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
@@ -570,12 +570,11 @@ public:
 
 ```go [sol-Go]
 const bitWidth = 7
+const mx = 1 << bitWidth
 
 func maxValue(nums []int, k int) (ans int) {
-	const mx = 1 << bitWidth
 	n := len(nums)
 	k2 := min(k, bitWidth) // 至多选 k2 个数
-
 	suf := make([][mx]bool, n-k+1)
 	f := make([][mx]bool, k2+1)
 	f[0][0] = true
@@ -593,7 +592,7 @@ func maxValue(nums []int, k int) (ans int) {
 		if i <= n-k {
 			suf[i] = f[k2]
 		}
-		// 遍历 v 的超集
+		// 枚举 v 的超集
 		for s := v; s < mx; s = (s + 1) | v {
 			cnt[s]++
 			if cnt[s] == k {
@@ -618,7 +617,7 @@ func maxValue(nums []int, k int) (ans int) {
 				}
 			}
 		}
-		// 遍历 v 的超集
+		// 枚举 v 的超集
 		for s := v; s < mx; s = (s + 1) | v {
 			cnt[s]++
 			if cnt[s] == k {
@@ -654,7 +653,7 @@ func findMaximumXOR(a, b []int) (ans int) {
 	for i := bitWidth - 1; i >= 0; i-- { // 从最高位开始枚举
 		mask |= 1 << i
 		newAns := ans | 1<<i // 这个比特位可以是 1 吗？
-		seen := [1 << bitWidth]bool{}
+		seen := [mx]bool{}
 		for _, x := range a {
 			seen[x&mask] = true // 低于 i 的比特位置为 0
 		}
