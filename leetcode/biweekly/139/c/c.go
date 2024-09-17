@@ -64,14 +64,12 @@ func maxValue(nums []int, k int) (ans int) {
 			continue
 		}
 		a := []int{}
+		b := []int{}
 		for x, has := range pre[k2] {
 			if has && minI[x] <= i {
 				a = append(a, x)
 			}
-		}
-		b := []int{}
-		for x, has := range suf[i+1] {
-			if has && i < maxI[x] {
+			if suf[i+1][x] && maxI[x] > i {
 				b = append(b, x)
 			}
 		}

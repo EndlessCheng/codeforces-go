@@ -422,14 +422,12 @@ class Solution {
                 continue;
             }
             int na = 0;
+            int nb = 0;
             for (int x = 0; x < MX; x++) {
                 if (pre[k2][x] && minI[x] <= i) {
                     a[na++] = x;
                 }
-            }
-            int nb = 0;
-            for (int x = 0; x < MX; x++) {
-                if (suf[i + 1][x] && i < maxI[x]) {
+                if (suf[i + 1][x] && maxI[x] > i) {
                     b[nb++] = x;
                 }
             }
@@ -556,8 +554,6 @@ public:
                 if (pre[k2][x] && min_i[x] <= i) {
                     a.push_back(x);
                 }
-            }
-            for (int x = 0; x < MX; x++) {
                 if (suf[i + 1][x] && max_i[x] > i) {
                     b.push_back(x);
                 }
@@ -634,14 +630,12 @@ func maxValue(nums []int, k int) (ans int) {
 			continue
 		}
 		a := []int{}
+		b := []int{}
 		for x, has := range pre[k2] {
 			if has && minI[x] <= i {
 				a = append(a, x)
 			}
-		}
-		b := []int{}
-		for x, has := range suf[i+1] {
-			if has && i < maxI[x] {
+			if suf[i+1][x] && maxI[x] > i {
 				b = append(b, x)
 			}
 		}
