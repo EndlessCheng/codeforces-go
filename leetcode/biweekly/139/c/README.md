@@ -27,6 +27,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ub4mekE1x/) 第三题，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def maxValue(self, nums: List[int], k: int) -> int:
@@ -263,7 +265,421 @@ func maxValue(nums []int, k int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nkU + nU^2)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 所有元素的 OR，本题至多为 $2^7-1$。DP 是 $\mathcal{O}(nkU)$ 的，计算 XOR 最大值是 $\mathcal{O}(nU^2)$ 的。
-- 空间复杂度：$\mathcal{O}((n+k)U)$。
+- 空间复杂度：$\mathcal{O}(nU)$。
+
+## 优化
+
+例如 $x=1101_{(2)}$，我们**至多**要选几个 $\textit{nums}[i]$，就能 OR 得到 $x$？
+
+答案是 $3$ 个。考虑 $x$ 中的每个比特 $1$，它来自某个 $\textit{nums}[i]$。
+
+设 $\textit{nums}$ 所有元素 OR 的二进制长度为 $w$（本题数据范围保证 $w\le 7$）。
+
+一般地，我们至多选 $w$ 个 $\textit{nums}[i]$，就能 OR 得到 $x$。
+
+但是，本题要求（前缀/后缀）**恰好**选 $k$ 个元素。选的元素越多 OR 越大，那么某些比较小的 $x$ 可能无法 OR 出来。
+
+为了判断（前缀/后缀）恰好选 $k$ 个元素能否 OR 出整数 $x$，定义：
+
+- $\textit{minI}[x]$，表示从 $0$ 开始遍历，至少要遍历到 $i$ 才有可能找到 $k$ 个数 OR 等于 $x$。如果无法得到 $x$ 那么 $\textit{minI}[x] = \infty$。
+- $\textit{maxI}[x]$，表示从 $n-1$ 开始遍历，至少要遍历到 $i$ 才有可能找到 $k$ 个数 OR 等于 $x$。如果无法得到 $x$ 那么 $\textit{maxI}[x] = 0$。
+
+根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，如果能 OR 得到 $x$，那么参与 OR 运算的元素都是 $x$ 的子集。换句话说，$x$ 是参与 OR 运算的元素的**超集**（superset）。
+
+对于 $\textit{minI}[x]$ 的计算，我们可以在遍历 $\textit{nums}$ 的同时，用一个数组 $\textit{cnt}$ 维护 $\textit{nums}$ 元素的超集的出现次数。如果发现 $\textit{cnt}[x]=k$，说明至少要遍历到 $i$ 才有可能找到 $k$ 个数 OR 等于 $x$，记录 $\textit{minI}[x]=i$。对于 $\textit{maxI}[x]$ 的计算也同理。
+
+对于两数异或最大值的计算，可以用**试填法**解决，见[【图解】421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solutions/2511644/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)。
+
+```py [sol-Python3]
+class Solution:
+    def maxValue(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        mx = reduce(or_, nums)
+        w = mx.bit_length()
+        k2 = min(k, w)  # 至多选 k2 个数
+
+        suf = [None] * (n - k + 1)
+        f = [set() for _ in range(k2 + 1)]
+        f[0].add(0)
+        max_i = [0] * (mx + 1)
+        cnt = [0] * (mx + 1)
+        for i in range(n - 1, k - 1, -1):
+            v = nums[i]
+            for j in range(min(k2 - 1, n - 1 - i), -1, -1):
+                f[j + 1].update(x | v for x in f[j])
+            if i <= n - k:
+                suf[i] = f[k2].copy()
+            # 遍历 v 的超集
+            s = v
+            while s <= mx:
+                cnt[s] += 1
+                if cnt[s] == k:
+                    # 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    max_i[s] = i
+                s = (s + 1) | v
+
+        ans = 0
+        pre = [set() for _ in range(k2 + 1)]
+        pre[0].add(0)
+        min_i = [inf] * (mx + 1)
+        cnt = [0] * (mx + 1)
+        for i, v in enumerate(nums[:-k]):
+            for j in range(min(k2 - 1, i), -1, -1):
+                pre[j + 1].update(x | v for x in pre[j])
+            # 遍历 v 的超集
+            s = v
+            while s <= mx:
+                cnt[s] += 1
+                if cnt[s] == k:
+                    # 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    min_i[s] = i
+                s = (s + 1) | v
+            if i < k - 1:
+                continue
+            a = [x for x in pre[k2] if min_i[x] <= i]
+            b = [x for x in suf[i + 1] if max_i[x] > i]
+            ans = max(ans, self.findMaximumXOR(a, b, w))
+            if ans == mx:
+                return ans
+        return ans
+
+    # 421. 数组中两个数的最大异或值
+    # 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    def findMaximumXOR(self, a: List[int], b: List[int], w: int) -> int:
+        ans = mask = 0
+        for i in range(w - 1, -1, -1):  # 从最高位开始枚举
+            mask |= 1 << i
+            new_ans = ans | (1 << i)  # 这个比特位可以是 1 吗？
+            set_a = set(x & mask for x in a)  # 低于 i 的比特位置为 0
+            for x in b:
+                x &= mask  # 低于 i 的比特位置为 0
+                if new_ans ^ x in set_a:
+                    ans = new_ans  # 这个比特位可以是 1
+                    break
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int BIT_WIDTH = 7;
+
+    public int maxValue(int[] nums, int k) {
+        final int MX = 1 << BIT_WIDTH;
+        int n = nums.length;
+        int k2 = Math.min(k, BIT_WIDTH); // 至多选 k2 个数
+
+        boolean[][] suf = new boolean[n - k + 1][];
+        boolean[][] f = new boolean[k2 + 1][MX];
+        f[0][0] = true;
+        int[] maxI = new int[MX];
+        int[] cnt = new int[MX];
+        for (int i = n - 1; i >= k; i--) {
+            int v = nums[i];
+            for (int j = Math.min(k2 - 1, n - 1 - i); j >= 0; j--) {
+                for (int x = 0; x < MX; x++) {
+                    if (f[j][x]) {
+                        f[j + 1][x | v] = true;
+                    }
+                }
+            }
+            if (i <= n - k) {
+                suf[i] = f[k2].clone();
+            }
+            // 遍历 v 的超集
+            for (int s = v; s < MX; s = (s + 1) | v) {
+                if (++cnt[s] == k) {
+                    // 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    maxI[s] = i;
+                }
+            }
+        }
+
+        int ans = 0;
+        boolean[][] pre = new boolean[k2 + 1][MX];
+        pre[0][0] = true;
+        int[] minI = new int[MX];
+        Arrays.fill(minI, Integer.MAX_VALUE);
+        Arrays.fill(cnt, 0);
+        int[] a = new int[MX];
+        int[] b = new int[MX];
+        for (int i = 0; i < n - k; i++) {
+            int v = nums[i];
+            for (int j = Math.min(k2 - 1, i); j >= 0; j--) {
+                for (int x = 0; x < MX; x++) {
+                    if (pre[j][x]) {
+                        pre[j + 1][x | v] = true;
+                    }
+                }
+            }
+            // 遍历 v 的超集
+            for (int s = v; s < MX; s = (s + 1) | v) {
+                if (++cnt[s] == k) {
+                    // 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    minI[s] = i;
+                }
+            }
+            if (i < k - 1) {
+                continue;
+            }
+            int na = 0;
+            for (int x = 0; x < MX; x++) {
+                if (pre[k2][x] && minI[x] <= i) {
+                    a[na++] = x;
+                }
+            }
+            int nb = 0;
+            for (int x = 0; x < MX; x++) {
+                if (suf[i + 1][x] && i < maxI[x]) {
+                    b[nb++] = x;
+                }
+            }
+            ans = Math.max(ans, findMaximumXOR(a, na, b, nb));
+            if (ans == MX - 1) {
+                return ans;
+            }
+        }
+        return ans;
+    }
+
+    // 421. 数组中两个数的最大异或值
+    // 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    private int findMaximumXOR(int[] a, int n, int[] b, int m) {
+        int ans = 0;
+        int mask = 0;
+        boolean[] seen = new boolean[1 << BIT_WIDTH];
+        for (int i = BIT_WIDTH - 1; i >= 0; i--) { // 从最高位开始枚举
+            mask |= 1 << i;
+            int newAns = ans | (1 << i); // 这个比特位可以是 1 吗？
+            Arrays.fill(seen, false);
+            for (int j = 0; j < n; j++) {
+                seen[a[j] & mask] = true; // 低于 i 的比特位置为 0
+            }
+            for (int j = 0; j < m; j++) {
+                int x = b[j] & mask; // 低于 i 的比特位置为 0
+                if (seen[newAns ^ x]) {
+                    ans = newAns; // 这个比特位可以是 1
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr int BIT_WIDTH = 7;
+
+    // 421. 数组中两个数的最大异或值
+    // 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    int findMaximumXOR(vector<int>& a, vector<int>& b) {
+        int ans = 0, mask = 0;
+        vector<int> seen(1 << BIT_WIDTH);
+        for (int i = BIT_WIDTH - 1; i >= 0; i--) { // 从最高位开始枚举
+            mask |= 1 << i;
+            int new_ans = ans | (1 << i); // 这个比特位可以是 1 吗？
+            ranges::fill(seen, false);
+            for (int x : a) {
+                seen[x & mask] = true; // 低于 i 的比特位置为 0
+            }
+            for (int x : b) {
+                x &= mask; // 低于 i 的比特位置为 0
+                if (seen[new_ans ^ x]) {
+                    ans = new_ans; // 这个比特位可以是 1
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+
+public:
+    int maxValue(vector<int>& nums, int k) {
+        const int MX = 1 << BIT_WIDTH;
+        int n = nums.size();
+        int k2 = min(k, BIT_WIDTH); // 至多选 k2 个数
+
+        vector<array<int, MX>> suf(n - k + 1);
+        vector<array<int, MX>> f(k2 + 1);
+        f[0][0] = true;
+        int max_i[MX]{}, cnt[MX]{};
+        for (int i = n - 1; i >= k; i--) {
+            int v = nums[i];
+            // 注意当 i 比较大的时候，循环次数应和 i 有关，因为更大的 j，对应的 f[j] 全为 false
+            for (int j = min(k2 - 1, n - 1 - i); j >= 0; j--) {
+                for (int x = 0; x < MX; x++) {
+                    if (f[j][x]) {
+                        f[j + 1][x | v] = true;
+                    }
+                }
+            }
+            if (i <= n - k) {
+                suf[i] = f[k2];
+            }
+            // 遍历 v 的超集
+            for (int s = v; s < MX; s = (s + 1) | v) {
+                if (++cnt[s] == k) {
+                    // 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    max_i[s] = i;
+                }
+            }
+        }
+
+        int ans = 0;
+        vector<array<int, MX>> pre(k2 + 1);
+        pre[0][0] = true;
+        int min_i[MX]{};
+        ranges::fill(min_i, INT_MAX);
+        ranges::fill(cnt, 0);
+        for (int i = 0; i < n - k; i++) {
+            int v = nums[i];
+            for (int j = min(k2 - 1, i); j >= 0; j--) {
+                for (int x = 0; x < MX; x++) {
+                    if (pre[j][x]) {
+                        pre[j + 1][x | v] = true;
+                    }
+                }
+            }
+            // 遍历 v 的超集
+            for (int s = v; s < MX; s = (s + 1) | v) {
+                if (++cnt[s] == k) {
+                    // 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+                    min_i[s] = i;
+                }
+            }
+            if (i < k - 1) {
+                continue;
+            }
+            vector<int> a, b;
+            for (int x = 0; x < MX; x++) {
+                if (pre[k2][x] && min_i[x] <= i) {
+                    a.push_back(x);
+                }
+            }
+            for (int x = 0; x < MX; x++) {
+                if (suf[i + 1][x] && max_i[x] > i) {
+                    b.push_back(x);
+                }
+            }
+            ans = max(ans, findMaximumXOR(a, b));
+            if (ans == MX - 1) {
+                return ans;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+const bitWidth = 7
+
+func maxValue(nums []int, k int) (ans int) {
+	const mx = 1 << bitWidth
+	n := len(nums)
+	k2 := min(k, bitWidth) // 至多选 k2 个数
+
+	suf := make([][mx]bool, n-k+1)
+	f := make([][mx]bool, k2+1)
+	f[0][0] = true
+	maxI := [mx]int{}
+	cnt := [mx]int{}
+	for i := n - 1; i >= k; i-- {
+		v := nums[i]
+		for j := min(k2-1, n-1-i); j >= 0; j-- {
+			for x, hasX := range f[j] {
+				if hasX {
+					f[j+1][x|v] = true
+				}
+			}
+		}
+		if i <= n-k {
+			suf[i] = f[k2]
+		}
+		// 遍历 v 的超集
+		for s := v; s < mx; s = (s + 1) | v {
+			cnt[s]++
+			if cnt[s] == k {
+				// 从 n-1 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+				maxI[s] = i
+			}
+		}
+	}
+
+	pre := make([][mx]bool, k2+1)
+	pre[0][0] = true
+	minI := [mx]int{}
+	for i := range minI {
+		minI[i] = math.MaxInt
+	}
+	cnt = [mx]int{}
+	for i, v := range nums[:n-k] {
+		for j := min(k2-1, i); j >= 0; j-- {
+			for x, hasX := range pre[j] {
+				if hasX {
+					pre[j+1][x|v] = true
+				}
+			}
+		}
+		// 遍历 v 的超集
+		for s := v; s < mx; s = (s + 1) | v {
+			cnt[s]++
+			if cnt[s] == k {
+				// 从 0 开始遍历，至少要遍历到 i 才有可能找到 k 个数 OR 等于 s
+				minI[s] = i
+			}
+		}
+		if i < k-1 {
+			continue
+		}
+		a := []int{}
+		for x, has := range pre[k2] {
+			if has && minI[x] <= i {
+				a = append(a, x)
+			}
+		}
+		b := []int{}
+		for x, has := range suf[i+1] {
+			if has && i < maxI[x] {
+				b = append(b, x)
+			}
+		}
+		ans = max(ans, findMaximumXOR(a, b))
+		if ans == mx-1 {
+			return
+		}
+	}
+	return
+}
+
+// 421. 数组中两个数的最大异或值
+// 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+func findMaximumXOR(a, b []int) (ans int) {
+	mask := 0
+	for i := bitWidth - 1; i >= 0; i-- { // 从最高位开始枚举
+		mask |= 1 << i
+		newAns := ans | 1<<i // 这个比特位可以是 1 吗？
+		seen := [1 << bitWidth]bool{}
+		for _, x := range a {
+			seen[x&mask] = true // 低于 i 的比特位置为 0
+		}
+		for _, x := range b {
+			x &= mask // 低于 i 的比特位置为 0
+			if seen[newAns^x] {
+				ans = newAns
+				break
+			}
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 所有元素的 OR，本题至多为 $2^7-1$。
+- 空间复杂度：$\mathcal{O}(nU)$。
 
 更多相似题目，见下面动态规划题单中的「**§3.1 0-1 背包**」和「**专题：前后缀分解**」。
 
