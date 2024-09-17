@@ -12,27 +12,25 @@
 
 如果第一段能划分出一个长为 $2$ 的子串，即 $\texttt{aa}$，那么也可以划分出一个更短的，长为 $1$ 的子串，即 $\texttt{a}$。
 
-所以只需考虑**最大**的 $r$，满足 $\textit{target}$ 下标从 $0$ 到 $r$ 这一段是某个 $\textit{words}[i]$ 的前缀。
+假如我们选择第一段划分出一个长为 $1$ 的子串，那么接下来要解决的问题为：$\textit{target}$ 的长为 $n-1$ 的后缀的最小划分个数，也就是从下标 $1$ 开始，剩余字符串的最小划分个数。
 
-如果第一段划分出一个长为 $1$ 的子串，那么接下来要解决的问题为：$\textit{target}$ 的长为 $n-1$ 的后缀的最小划分个数，也就是从下标 $1$ 开始，剩余字符串的最小划分个数。
+一般地，对于每个 $i$，都计算一个最大的 $\textit{sz}_i$，满足从 $\textit{target}[i]$ 开始的长为 $\textit{sz}_i$ 的子串是某个 $\textit{words}[i]$ 的前缀。
 
-一般地，对于每个 $i$，都计算一个 $r_i$，满足 $\textit{target}$ 下标从 $i$ 到 $r_i$ 这一段是某个 $\textit{words}[i]$ 的前缀。
-
-算出 $r_i$ 后，我们可以枚举当前这一段的长度：
+算出 $\textit{sz}_i$ 后，我们可以枚举当前这一段的长度：
 
 - 长为 $1$，那么接下来思考从 $i+1$ 开始，剩余字符串的最小划分个数。
 - 长为 $2$，那么接下来思考从 $i+2$ 开始，剩余字符串的最小划分个数。
 - ……
-- 长为 $r_i$，那么接下来思考从 $i+r_i$ 开始，剩余字符串的最小划分个数。
+- 长为 $\textit{sz}_i$，那么接下来思考从 $i+\textit{sz}_i$ 开始，剩余字符串的最小划分个数。
 
-相当于我们可以从下标 $i$「跳到」下标 $i+1,i+2,\cdots,i+r_i$ 中的任意位置。如果跳到 $n$，表示 $\textit{target}$ 划分完毕。
+相当于我们可以从下标 $i$「跳到」下标 $i+1,i+2,\cdots,i+\textit{sz}_i$ 中的任意位置。如果跳到 $n$，表示 $\textit{target}$ 划分完毕。
 
 问题转换成：
 
-1. 计算 $r_i$。
+1. 计算 $\textit{sz}_i$。
 2. 计算从 $0$ 跳到 $n$ 的最小跳跃次数。这类似 [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) 或者 [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)，请看 [我的图解（1326 题）](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solutions/2123855/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/)。
 
-如何计算 $r_i$？
+如何计算 $\textit{sz}_i$？
 
 > 可以用字典树 + 枚举，这可以通过 [周赛第三题](https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-i/)，但无法通过本题。
 
@@ -40,13 +38,9 @@
 
 由于 $\textit{words}$ 的长度至多为 $100$，所以每个集合至多保存 $100$ 个哈希值，根据生日攻击理论，单模哈希绰绰有余，碰撞概率很小。
 
-对于 $i$，我们需要计算最大的长度 $\textit{sz}$，满足 $\textit{target}$ 从下标 $i$ 开始的长为 $\textit{sz}$ 的子串的哈希值是否在对应的集合中。
+对于 $i$，**二分** $\textit{sz}_i$，每次 `check` 只需要看子串哈希值是否在集合中。原理见 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-这可以用**二分**算出来，原理见 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
-
-算出 $\textit{sz}$，就可以算出从 $i$ 向右，最远可以跳到 $i+\textit{sz}$。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1Qp4me2Emz/) 第四题，欢迎点赞关注~
+具体请看 [本题视频讲解](https://www.bilibili.com/video/BV1Qp4me2Emz/) 第四题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
