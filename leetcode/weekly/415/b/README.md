@@ -262,6 +262,38 @@ class Solution:
         return f[4]
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def maxScore(self, a: List[int], b: List[int]) -> int:
+        f0 = f1 = f2 = f3 = -inf
+        for y in b:
+            f3 = max(f3, a[3] * y + f2)
+            f2 = max(f2, a[2] * y + f1)
+            f1 = max(f1, a[1] * y + f0)
+            f0 = max(f0, a[0] * y)
+        return f3
+```
+
+```py [sol-Python3 极致优化]
+class Solution:
+    def maxScore(self, a: List[int], b: List[int]) -> int:
+        a0, a1, a2, a3 = a  # 去掉访问 list 的开销
+        f0 = f1 = f2 = f3 = -inf
+        for y in b:
+            t = a3 * y + f2
+            if t > f3: f3 = t  # 手动 max 效率更高
+
+            t = a2 * y + f1
+            if t > f2: f2 = t
+
+            t = a1 * y + f0
+            if t > f1: f1 = t
+
+            t = a0 * y
+            if t > f0: f0 = t
+        return f3
+```
+
 ```java [sol-Java]
 class Solution {
     public long maxScore(int[] a, int[] b) {
