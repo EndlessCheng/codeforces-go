@@ -12,6 +12,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ub4mekE1x/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
@@ -23,10 +25,10 @@ class Solution:
             i, j = q.popleft()
             for x, y in (i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j):
                 if 0 <= x < m and 0 <= y < n:
-                    g = grid[x][y]
-                    if dis[i][j] + g < dis[x][y]:
-                        dis[x][y] = dis[i][j] + g
-                        if g == 0:
+                    cost = grid[x][y]
+                    if dis[i][j] + cost < dis[x][y]:
+                        dis[x][y] = dis[i][j] + cost
+                        if cost == 0:
                             q.appendleft((x, y))
                         else:
                             q.append((x, y))
@@ -43,7 +45,7 @@ class Solution {
         Object[][] a = new Object[m][];
         int[][] dis = new int[m][n];
         for (int i = 0; i < m; i++) {
-            a[i] = grid.get(i).toArray(); // 转成数组效率高
+            a[i] = grid.get(i).toArray();
             Arrays.fill(dis[i], Integer.MAX_VALUE);
         }
 
@@ -58,10 +60,10 @@ class Solution {
                 int x = i + d[0];
                 int y = j + d[1];
                 if (0 <= x && x < m && 0 <= y && y < n) {
-                    int g = (int) a[x][y];
-                    if (dis[i][j] + g < dis[x][y]) {
-                        dis[x][y] = dis[i][j] + g;
-                        if (g == 0) {
+                    int cost = (int) a[x][y];
+                    if (dis[i][j] + cost < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + cost;
+                        if (cost == 0) {
                             q.addFirst(new int[]{x, y});
                         } else {
                             q.addLast(new int[]{x, y});
@@ -91,10 +93,10 @@ public:
             for (auto& [dx, dy] : DIRS) {
                 int x = i + dx, y = j + dy;
                 if (0 <= x && x < m && 0 <= y && y < n) {
-                    int g = grid[x][y];
-                    if (dis[i][j] + g < dis[x][y]) {
-                        dis[x][y] = dis[i][j] + g;
-                        g == 0 ? q.emplace_front(x, y) : q.emplace_back(x, y);
+                    int cost = grid[x][y];
+                    if (dis[i][j] + cost < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + cost;
+                        cost == 0 ? q.emplace_front(x, y) : q.emplace_back(x, y);
                     }
                 }
             }
@@ -116,6 +118,7 @@ func findSafeWalk(grid [][]int, health int) bool {
 			dis[i][j] = math.MaxInt
 		}
 	}
+
 	dis[0][0] = grid[0][0]
 	q := [2][]pair{{{}}} // 两个 slice 头对头来实现 deque
 	for len(q[0]) > 0 || len(q[1]) > 0 {
@@ -125,18 +128,171 @@ func findSafeWalk(grid [][]int, health int) bool {
 		} else {
 			p, q[1] = q[1][0], q[1][1:]
 		}
+		i, j := p.x, p.y
 		for _, d := range dirs {
-			x, y := p.x+d.x, p.y+d.y
+			x, y := i+d.x, j+d.y
 			if 0 <= x && x < m && 0 <= y && y < n {
-				g := grid[x][y]
-				if dis[p.x][p.y]+g < dis[x][y] {
-					dis[x][y] = dis[p.x][p.y] + g
-					q[g] = append(q[g], pair{x, y})
+				cost := grid[x][y]
+				if dis[i][j]+cost < dis[x][y] {
+					dis[x][y] = dis[i][j] + cost
+					q[cost] = append(q[cost], pair{x, y})
 				}
 			}
 		}
 	}
 	return dis[m-1][n-1] < health
+}
+```
+
+## 写法二
+
+提前判断血扣完了，或者已经抵达终点。
+
+```py [sol-Python3]
+class Solution:
+    def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
+        m, n = len(grid), len(grid[0])
+        dis = [[inf] * n for _ in range(m)]
+        dis[0][0] = grid[0][0]
+        q = deque([(0, 0)])
+        while True:
+            i, j = q.popleft()
+            if dis[i][j] >= health:
+                return False
+            if i == m - 1 and j == n - 1:
+                return True
+            for x, y in (i, j + 1), (i, j - 1), (i + 1, j), (i - 1, j):
+                if 0 <= x < m and 0 <= y < n:
+                    cost = grid[x][y]
+                    if dis[i][j] + cost < dis[x][y]:
+                        dis[x][y] = dis[i][j] + cost
+                        if cost == 0:
+                            q.appendleft((x, y))
+                        else:
+                            q.append((x, y))
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int[][] DIRS = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+
+    public boolean findSafeWalk(List<List<Integer>> grid, int health) {
+        int m = grid.size();
+        int n = grid.get(0).size();
+        Object[][] a = new Object[m][];
+        int[][] dis = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            a[i] = grid.get(i).toArray();
+            Arrays.fill(dis[i], Integer.MAX_VALUE);
+        }
+
+        dis[0][0] = (int) a[0][0];
+        Deque<int[]> q = new ArrayDeque<>();
+        q.addFirst(new int[]{0, 0});
+        while (true) {
+            int[] p = q.pollFirst();
+            int i = p[0];
+            int j = p[1];
+            if (dis[i][j] >= health) {
+                return false;
+            }
+            if (i == m - 1 && j == n - 1) {
+                return true;
+            }
+            for (int[] d : DIRS) {
+                int x = i + d[0];
+                int y = j + d[1];
+                if (0 <= x && x < m && 0 <= y && y < n) {
+                    int cost = (int) a[x][y];
+                    if (dis[i][j] + cost < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + cost;
+                        if (cost == 0) {
+                            q.addFirst(new int[]{x, y});
+                        } else {
+                            q.addLast(new int[]{x, y});
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    static constexpr int DIRS[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+public:
+    bool findSafeWalk(vector<vector<int>>& grid, int health) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> dis(m, vector<int>(n, INT_MAX));
+        dis[0][0] = grid[0][0];
+        deque<pair<int, int>> q;
+        q.emplace_front(0, 0);
+        while (true) {
+            auto [i, j] = q.front();
+            q.pop_front();
+            if (dis[i][j] >= health) {
+                return false;
+            }
+            if (i == m - 1 && j == n - 1) {
+                return true;
+            }
+            for (auto& [dx, dy] : DIRS) {
+                int x = i + dx, y = j + dy;
+                if (0 <= x && x < m && 0 <= y && y < n) {
+                    int cost = grid[x][y];
+                    if (dis[i][j] + cost < dis[x][y]) {
+                        dis[x][y] = dis[i][j] + cost;
+                        cost == 0 ? q.emplace_front(x, y) : q.emplace_back(x, y);
+                    }
+                }
+            }
+        }
+    }
+};
+```
+
+```go [sol-Go]
+func findSafeWalk(grid [][]int, health int) bool {
+	type pair struct{ x, y int }
+	dirs := []pair{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+	m, n := len(grid), len(grid[0])
+	dis := make([][]int, m)
+	for i := range dis {
+		dis[i] = make([]int, n)
+		for j := range dis[i] {
+			dis[i][j] = math.MaxInt
+		}
+	}
+
+	dis[0][0] = grid[0][0]
+	q := [2][]pair{{{}}} // 两个 slice 头对头来实现 deque
+	for {
+		var p pair
+		if len(q[0]) > 0 {
+			p, q[0] = q[0][len(q[0])-1], q[0][:len(q[0])-1]
+		} else {
+			p, q[1] = q[1][0], q[1][1:]
+		}
+		i, j := p.x, p.y
+		if dis[i][j] >= health {
+			return false
+		}
+		if i == m-1 && j == n-1 {
+			return true
+		}
+		for _, d := range dirs {
+			x, y := i+d.x, j+d.y
+			if 0 <= x && x < m && 0 <= y && y < n {
+				cost := grid[x][y]
+				if dis[i][j]+cost < dis[x][y] {
+					dis[x][y] = dis[i][j] + cost
+					q[cost] = append(q[cost], pair{x, y})
+				}
+			}
+		}
+	}
 }
 ```
 
