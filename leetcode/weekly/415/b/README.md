@@ -72,7 +72,9 @@ class Solution:
             if i < 0:  # j >= 0，没选完
                 return -inf
             return max(dfs(i - 1, j), dfs(i - 1, j - 1) + a[j] * b[i])
-        return dfs(len(b) - 1, 3)
+        ans = dfs(len(b) - 1, 3)
+        dfs.cache_clear()  # 状态个数比较多的题目需要用，防止爆内存
+        return ans
 ```
 
 ```java [sol-Java]
