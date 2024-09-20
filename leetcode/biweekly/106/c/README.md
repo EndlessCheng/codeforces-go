@@ -31,11 +31,11 @@ $$
 
 其中 $a[0] + a[1] + \cdots + a[i-1]$ 可以一边遍历 $a$，一边计算出来。
 
-计算时，为了避免溢出，需要取模。这样做的正确性见下面的「算法小课堂：模运算」。
+计算时，为了避免溢出，需要取模。原理见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ## 答疑
 
-**问**：下面代码中，为什么不能对 $a[i]$ 取模？
+**问**：排序之前，为什么不能对 $a[i]$ 取模？
 
 **答**：注意 $a$ 中第 $i$ 小的数要乘上 $i$，取模后每个元素的大小关系就乱了，原来第 $i$ 小的数要乘的就不一定是 $i$ 了，所以会算出错误的结果。
 
@@ -130,15 +130,15 @@ var sumDistance = function(nums, s, d) {
 
 ```rust [sol-Rust]
 impl Solution {
-    pub fn sum_distance(nums: Vec<i32>, S: String, d: i32) -> i32 {
+    pub fn sum_distance(nums: Vec<i32>, s: String, d: i32) -> i32 {
         const MOD: i64 = 1_000_000_007;
         let mut a = vec![0; nums.len()];
-        let s = S.as_bytes();
+        let s = s.as_bytes();
         for (i, &x) in nums.iter().enumerate() {
-            let d = if s[i] == 'L' as u8 { -d } else { d };
+            let d = if s[i] == b'L' as u8 { -d } else { d };
             a[i] = x as i64 + d as i64;
         }
-        a.sort();
+        a.sort_unstable();
 
         let mut ans = 0i64;
         let mut sum = 0i64;
@@ -156,48 +156,22 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。
 - 空间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(1)$。如果需要用一个新的 $\textit{nums}$ 数组记录则需要 $\mathcal{O}(n)$ 空间，否则为 $\mathcal{O}(1)$。
 
-## 算法小课堂：模运算
+## 分类题单
 
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-你能把这个结论抽象成数学等式吗？
-
-一般地，涉及到取模的题目，通常会用到如下等式（上面计算的是 $m=10$）：
-
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
-
-$$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
-$$
-
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
-
-第一个等式：
-
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

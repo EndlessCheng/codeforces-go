@@ -136,7 +136,7 @@ impl Solution {
         let mut ans = 0i64;
         let mut cnt_x = 0;
         let mut cnt_y = 0;
-        for &c in text.as_bytes() {
+        for c in text.bytes() {
             if c == y {
                 ans += cnt_x as i64;
                 cnt_y += 1;
