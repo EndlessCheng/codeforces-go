@@ -35,7 +35,7 @@ class Solution:
         MOD = 1_000_000_007
         f = [1] + [0] * high  # f[i] 表示构造长为 i 的字符串的方案数
         for i in range(1, high + 1):
-            if i >= zero: f[i] = (f[i] + f[i - zero]) % MOD
+            if i >= zero: f[i] = f[i - zero]
             if i >= one:  f[i] = (f[i] + f[i - one]) % MOD
         return sum(f[low:]) % MOD
 ```
@@ -48,7 +48,7 @@ class Solution {
         int[] f = new int[high + 1]; // f[i] 表示构造长为 i 的字符串的方案数
         f[0] = 1; // 构造空串的方案数为 1
         for (int i = 1; i <= high; i++) {
-            if (i >= zero) f[i] = (f[i] + f[i - zero]) % MOD;
+            if (i >= zero) f[i] = f[i - zero];
             if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
             if (i >= low)  ans = (ans + f[i]) % MOD;
         }
@@ -66,7 +66,7 @@ public:
         vector<int> f(high + 1); // f[i] 表示构造长为 i 的字符串的方案数
         f[0] = 1; // 构造空串的方案数为 1
         for (int i = 1; i <= high; i++) {
-            if (i >= zero) f[i] = (f[i] + f[i - zero]) % MOD;
+            if (i >= zero) f[i] = f[i - zero];
             if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
             if (i >= low)  ans = (ans + f[i]) % MOD;
         }
@@ -81,7 +81,7 @@ func countGoodStrings(low, high, zero, one int) (ans int) {
 	f := make([]int, high+1) // f[i] 表示构造长为 i 的字符串的方案数
 	f[0] = 1 // 构造空串的方案数为 1
 	for i := 1; i <= high; i++ {
-		if i >= zero { f[i] = (f[i] + f[i-zero]) % mod }
+		if i >= zero { f[i] = f[i-zero] }
 		if i >= one  { f[i] = (f[i] + f[i-one]) % mod }
 		if i >= low  { ans = (ans + f[i]) % mod }
 	}
@@ -96,7 +96,7 @@ var countGoodStrings = function (low, high, zero, one) {
     f[0] = 1; // 构造空串的方案数为 1
     let ans = 0;
     for (let i = 1; i <= high; i++) {
-        if (i >= zero) f[i] = (f[i] + f[i - zero]) % MOD;
+        if (i >= zero) f[i] = f[i - zero];
         if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
         if (i >= low)  ans = (ans + f[i]) % MOD;
     }
@@ -113,7 +113,7 @@ impl Solution {
         f[0] = 1; // 构造空串的方案数为 1
         for i in 1..=high as usize {
             if i >= zero as usize {
-                f[i] = (f[i] + f[i - zero as usize]) % MOD;
+                f[i] = f[i - zero as usize];
             }
             if i >= one as usize {
                 f[i] = (f[i] + f[i - one as usize]) % MOD;
@@ -136,7 +136,7 @@ impl Solution {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -145,7 +145,7 @@ impl Solution {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
