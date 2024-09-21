@@ -87,7 +87,8 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 	if err != nil {
 		fmt.Println(err)
 	}
-	if len(example) == 0 {
+	emptyExample := len(example) == 0
+	if emptyExample {
 		fmt.Println("未获取到样例，请手动添加")
 	}
 
@@ -113,6 +114,7 @@ import (
 	"os"
 )
 
+// https://github.com/EndlessCheng
 func cf%[1]s(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
@@ -160,10 +162,14 @@ func Test_cf%[3]s(t *testing.T) {
 	if err := os.WriteFile(mainFilePath, []byte(mainStr), 0644); err != nil {
 		return err
 	}
-	open.Run(absPath(mainFilePath))
 	testFilePath := dir + problemID + "_test.go"
 	if err := os.WriteFile(testFilePath, []byte(mainTestStr), 0644); err != nil {
 		return err
+	}
+	if emptyExample {
+		open.Run(absPath(testFilePath))
+	} else {
+		open.Run(absPath(mainFilePath))
 	}
 	return nil
 }
