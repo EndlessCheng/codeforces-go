@@ -1,0 +1,10 @@
+["hello","world","leetcode"]
+["world","hello"]
+true
+
+["hello","programming","fun"]
+["world","programming","leetcode"]
+false
+
+
+
