@@ -236,7 +236,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{workerTimes}$ 的长度，$U\le 5\cdot 10^{15}$ 是二分上界。二分 $\mathcal{O}(\log U)$ 次，每次 $\mathcal{O}(n)$ 时间。开平方有专门的 CPU 指令，可以视作 $\mathcal{O}(1)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{workerTimes}$ 的长度，$U\le 5\cdot 10^{10}(10^5+1)$ 是二分上界。二分 $\mathcal{O}(\log U)$ 次，每次 $\mathcal{O}(n)$ 时间。开平方有专门的 CPU 指令，可以视作 $\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 更多相似题目，见下面二分题单中的「**二分答案：求最小**」。
