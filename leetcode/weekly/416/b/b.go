@@ -11,7 +11,7 @@ import (
 func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 	maxT := slices.Max(workerTimes)
 	h := (mountainHeight-1)/len(workerTimes) + 1
-	ans := 1 + sort.Search(maxT*h*(h+1)/2, func(m int) bool {
+	ans := 1 + sort.Search(maxT*h*(h+1)/2-1, func(m int) bool {
 		m++
 		leftH := mountainHeight
 		for _, t := range workerTimes {
@@ -44,9 +44,9 @@ func minNumberOfSeconds2(mountainHeight int, workerTimes []int) int64 {
 
 type worker struct{ nxt, delta, base int }
 type hp []worker
+
 func (h hp) Len() int           { return len(h) }
 func (h hp) Less(i, j int) bool { return h[i].nxt < h[j].nxt }
 func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (hp) Push(any)             {}
 func (hp) Pop() (_ any)         { return }
-
