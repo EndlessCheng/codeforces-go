@@ -1,14 +1,12 @@
 下文把 $\textit{word}_1$ 和 $\textit{word}_2$ 简称为 $s$ 和 $t$。
 
-由于子串可以重排，只要子串可以涵盖（见 76 题）字符串 $t$，那么子串可以重排使得 $t$ 是子串的前缀。
+由于子串可以重排，只要子串可以涵盖（见 76 题）字符串 $t$，那么子串就可以通过重排，使得 $t$ 是子串的前缀。
 
 所以本题是 [76. 最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/) 的求个数版本，做法都是**滑动窗口**，请看 [我的题解](https://leetcode.cn/problems/minimum-window-substring/solutions/2713911/liang-chong-fang-fa-cong-o52mn-dao-omnfu-3ezz/)。
 
 滑动窗口的内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\cdots,\textit{left}-1$ 的所有子串都是合法的，这一共有 $\textit{left}$ 个，把 $\textit{left}$ 加入答案。
 
-类似的「把答案增加 $\textit{left}$」的题目还有 [2962. 统计最大元素出现至少 K 次的子数组](https://leetcode.cn/problems/count-subarrays-where-max-element-appears-at-least-k-times/) 等。
-
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/) 第三+四题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -151,7 +149,7 @@ func validSubstringCount(s, t string) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $\textit{nums}$ 的长度，$|\Sigma|=26$ 是字符集合的大小。虽然写了个二重循环，但是内层循环中对 $\textit{left}$ 加一的**总**执行次数不会超过 $n$ 次，所以总的时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
-更多相似题目，见下面滑动窗口题单中的「**§2.3 求子数组个数**」。
+更多相似题目，见下面滑动窗口题单中的「**§2.3 求子数组个数**」，例如 [2962. 统计最大元素出现至少 K 次的子数组](https://leetcode.cn/problems/count-subarrays-where-max-element-appears-at-least-k-times/) 等。
 
 ## 分类题单
 

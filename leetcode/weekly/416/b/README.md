@@ -1,3 +1,96 @@
+## 方法一：最小堆模拟
+
+循环 $\textit{mountainHeight}$ 次，每次选一个「工作后总用时」最短的工人，把山的高度降低 $1$。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/)，欢迎点赞关注~
+
+```py [sol-Python3]
+class Solution:
+    def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
+        h = [(t, t, t) for t in workerTimes]
+        heapify(h)
+        for _ in range(mountainHeight):
+            # 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+            nxt, delta, base = h[0]
+            heapreplace(h, (nxt + delta + base, delta + base, base))
+        return max(nxt - delta for nxt, delta, _ in h)
+```
+
+```java [sol-Java]
+class Solution {
+    public long minNumberOfSeconds(int mountainHeight, int[] workerTimes) {
+        PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[0], b[0]));
+        for (int t : workerTimes) {
+            pq.offer(new long[]{t, t, t});
+        }
+        long ans = 0;
+        while (mountainHeight-- > 0) {
+            // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+            long[] w = pq.poll();
+            long nxt = w[0], delta = w[1], base = w[2];
+            ans = Math.max(ans, nxt);
+            pq.offer(new long[] {nxt + delta + base, delta + base, base});
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
+        priority_queue<tuple<long long, long long, int>, vector<tuple<long long, long long, int>>, greater<>> pq;
+        for (int t : workerTimes) {
+            pq.emplace(t, t, t);
+        }
+        long long ans = 0;
+        while (mountainHeight--) {
+            // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+            auto [nxt, delta, base] = pq.top(); pq.pop();
+            ans = max(ans, nxt);
+            pq.emplace(nxt + delta + base, delta + base, base);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
+	h := make(hp, len(workerTimes))
+	for i, t := range workerTimes {
+		h[i] = worker{t, t, t}
+	}
+	heap.Init(&h)
+
+	ans := 0
+	for ; mountainHeight > 0; mountainHeight-- {
+		ans = max(ans, h[0].nxt)
+		h[0].delta += h[0].base
+		h[0].nxt += h[0].delta
+		heap.Fix(&h, 0)
+	}
+	return int64(ans)
+}
+
+// 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
+type worker struct{ nxt, delta, base int }
+type hp []worker
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].nxt < h[j].nxt }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (hp) Push(any)             {}
+func (hp) Pop() (_ any)         { return }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\textit{mountainHeight}\log n)$，其中 $n$ 是 $\textit{workerTimes}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：二分答案
+
 由于花的时间越多，能够降低的高度也越多，所以有**单调性**，可以二分答案。
 
 问题变成：
@@ -35,7 +128,7 @@ $$
 - 开区间二分下界：$0$，无法把山的高度降低到 $0$。
 - 开区间二分上界：设 $\textit{maxT}$ 为 $\textit{workerTimes}$ 的最大值，假设每个工人都是最慢的 $\textit{maxT}$，那么单个工人要把山降低 $h=\left\lceil\dfrac{mountainHeight}{n}\right\rceil$，耗时 $\textit{maxT}\cdot(1+2+\cdots+h)=\textit{maxT}\cdot\dfrac{h(h+1)}{2}$，将其作为开区间的二分上界，一定可以把山的高度降低到 $\le 0$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
