@@ -29,7 +29,7 @@ class Solution {
             long[] w = pq.poll();
             long nxt = w[0], delta = w[1], base = w[2];
             ans = Math.max(ans, nxt);
-            pq.offer(new long[] {nxt + delta + base, delta + base, base});
+            pq.offer(new long[]{nxt + delta + base, delta + base, base});
         }
         return ans;
     }
