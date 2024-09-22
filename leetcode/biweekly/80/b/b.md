@@ -6,7 +6,7 @@
 
 为什么不等式一定要这样变形？好处是每次二分只需要做一次除法，避免多次在二分循环内做乘法，效率更高。另外的好处是部分语言可以直接调用库函数二分。
 
-有关二分查找的原理，请看[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)
+有关二分查找的原理，请看[【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
 ```Python [sol-Python3]
 class Solution:
@@ -68,6 +68,41 @@ public:
         return spells;
     }
 };
+```
+
+```c [sol-C]
+int cmp(const void* a, const void* b) {
+    return *(int*)a - *(int*)b;
+}
+
+// 返回 nums 中的第一个大于 target 的元素下标
+int upperBound(int* nums, int numsSize, int target) {
+    int left = -1, right = numsSize; // 开区间 (left, right)
+    while (left + 1 < right) { // 区间不为空
+        int mid = left + (right - left) / 2;
+        if (nums[mid] > target) {
+            right = mid; // 二分范围缩小到 (left, mid)
+        } else {
+            left = mid; // 二分范围缩小到 (mid, right)
+        }
+    }
+    return right;
+}
+
+int* successfulPairs(int* spells, int spellsSize, int* potions, int potionsSize, long long success, int* returnSize) {
+    qsort(potions, potionsSize, sizeof(int), cmp);
+    for (int i = 0; i < spellsSize; i++) {
+        long long target = (success - 1) / spells[i];
+        if (target < potions[potionsSize - 1]) {
+            // 这样写每次二分就只用 int 比较，避免把 potions 中的元素转成 long long 比较
+            spells[i] = potionsSize - upperBound(potions, potionsSize, target);
+        } else {
+            spells[i] = 0;
+        }
+    }
+    *returnSize = spellsSize;
+    return spells;
+}
 ```
 
 ```go [sol-Go]
@@ -139,17 +174,19 @@ impl Solution {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
