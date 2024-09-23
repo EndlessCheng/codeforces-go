@@ -15,11 +15,11 @@ func cf812C(in io.Reader, out io.Writer) {
 	for i := range a {
 		Fscan(in, &a[i])
 	}
+	b := make([]int, n)
 	ans := sort.Search(n, func(k int) bool {
 		k++
-		b := slices.Clone(a)
 		for i := range b {
-			b[i] += (i + 1) * k
+			b[i] = a[i] + (i+1)*k
 		}
 		slices.Sort(b)
 		tot := 0
