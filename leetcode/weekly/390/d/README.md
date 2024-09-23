@@ -92,16 +92,25 @@ class Solution {
 
 ```cpp [sol-C++]
 struct Node {
-    Node *son[26]{};
+    Node* son[26]{};
     int min_l = INT_MAX, i;
 };
 
+void dfs_free(Node* node) {
+    for (int i = 0; i < 26; i++) {
+        if (node->son[i]) {
+            dfs_free(node->son[i]);
+        }
+    }
+    delete node;
+}
+
 class Solution {
 public:
-    vector<int> stringIndices(vector<string> &wordsContainer, vector<string> &wordsQuery) {
-        Node *root = new Node();
+    vector<int> stringIndices(vector<string>& wordsContainer, vector<string>& wordsQuery) {
+        Node* root = new Node();
         for (int idx = 0; idx < wordsContainer.size(); ++idx) {
-            auto &s = wordsContainer[idx];
+            auto& s = wordsContainer[idx];
             int l = s.length();
             auto cur = root;
             if (l < cur->min_l) {
@@ -123,13 +132,14 @@ public:
 
         vector<int> ans;
         ans.reserve(wordsQuery.size());
-        for (auto &s: wordsQuery) {
+        for (auto& s : wordsQuery) {
             auto cur = root;
             for (int i = s.length() - 1; i >= 0 && cur->son[s[i] - 'a']; i--) {
                 cur = cur->son[s[i] - 'a'];
             }
             ans.push_back(cur->i);
         }
+        dfs_free(root); // 防止爆内存
         return ans;
     }
 };
@@ -178,24 +188,24 @@ func stringIndices(wordsContainer, wordsQuery []string) []int {
 - 时间复杂度：$\mathcal{O}(L_1|\Sigma| + L_2)$，其中 $L_1$ 为 $\textit{wordsContainer}$ 中的所有字符串的长度**之和**，$L_2$ 为 $\textit{wordsQuery}$ 中的所有字符串的长度**之和**，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
 - 空间复杂度：$\mathcal{O}(L_1|\Sigma|)$。返回值不计入。
 
-#### 相似题目
-
-- [208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/)
-- [2416. 字符串的前缀分数和](https://leetcode.cn/problems/sum-of-prefix-scores-of-strings/) 1725
-- [336. 回文对](https://leetcode.cn/problems/palindrome-pairs/)
-- [745. 前缀和后缀搜索](https://leetcode.cn/problems/prefix-and-suffix-search/)
-- [3045. 统计前后缀下标对 II](https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/) 2328
-- [527. 单词缩写](https://leetcode.cn/problems/word-abbreviation/)（会员题）
-- [1804. 实现 Trie （前缀树） II](https://leetcode.cn/problems/implement-trie-ii-prefix-tree/)（会员题）
+更多相似题目，见下面数据结构题单中的「**字典树**」。
 
 ## 分类题单
 
-- [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
-- [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-- [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
-- [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-- [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
-- [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
-- [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-更多题单，点我个人主页 - 讨论发布。
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
