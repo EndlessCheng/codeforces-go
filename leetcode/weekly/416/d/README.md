@@ -15,7 +15,9 @@ class Solution:
             return 0
 
         # t 的字母出现次数与 s 的字母出现次数之差
-        cnt = Counter(t)
+        cnt = defaultdict(int)  # 也可以用 Counter(t)，但是会慢很多
+        for b in t:
+            cnt[b] += 1
         # 窗口内有 less 个字母的出现次数比 t 的少
         less = len(cnt)
 
