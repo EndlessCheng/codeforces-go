@@ -34,7 +34,7 @@ func minNumberOfSeconds2(mountainHeight int, workerTimes []int) int64 {
 
 	ans := 0
 	for ; mountainHeight > 0; mountainHeight-- {
-		ans = max(ans, h[0].nxt)
+		ans = h[0].nxt
 		h[0].delta += h[0].base
 		h[0].nxt += h[0].delta
 		heap.Fix(&h, 0)

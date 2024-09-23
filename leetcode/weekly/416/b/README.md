@@ -13,7 +13,7 @@ class Solution:
             # 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
             nxt, delta, base = h[0]
             heapreplace(h, (nxt + delta + base, delta + base, base))
-        return max(nxt - delta for nxt, delta, _ in h)
+        return nxt  # 最后一个出堆的 nxt 即为答案
 ```
 
 ```java [sol-Java]
@@ -28,7 +28,7 @@ class Solution {
             // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
             long[] w = pq.poll();
             long nxt = w[0], delta = w[1], base = w[2];
-            ans = Math.max(ans, nxt);
+            ans = nxt; // 最后一个出堆的 nxt 即为答案
             pq.offer(new long[]{nxt + delta + base, delta + base, base});
         }
         return ans;
@@ -48,7 +48,7 @@ public:
         while (mountainHeight--) {
             // 工作后总用时，当前工作（山高度降低 1）用时，workerTimes[i]
             auto [nxt, delta, base] = pq.top(); pq.pop();
-            ans = max(ans, nxt);
+            ans = nxt; // 最后一个出堆的 nxt 即为答案
             pq.emplace(nxt + delta + base, delta + base, base);
         }
         return ans;
@@ -66,7 +66,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 
 	ans := 0
 	for ; mountainHeight > 0; mountainHeight-- {
-		ans = max(ans, h[0].nxt)
+		ans = h[0].nxt // 最后一个出堆的 nxt 即为答案
 		h[0].delta += h[0].base
 		h[0].nxt += h[0].delta
 		heap.Fix(&h, 0)
