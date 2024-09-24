@@ -128,6 +128,14 @@ $$
 - 开区间二分下界：$0$，无法把山的高度降低到 $0$。
 - 开区间二分上界：设 $\textit{maxT}$ 为 $\textit{workerTimes}$ 的最大值，假设每个工人都是最慢的 $\textit{maxT}$，那么单个工人要把山降低 $h=\left\lceil\dfrac{mountainHeight}{n}\right\rceil$，耗时 $\textit{maxT}\cdot(1+2+\cdots+h)=\textit{maxT}\cdot\dfrac{h(h+1)}{2}$，将其作为开区间的二分上界，一定可以把山的高度降低到 $\le 0$。
 
+代码实现时，可以用等式
+
+$$
+\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
+$$
+
+计算上取整。讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1WRtDejEjD/)，欢迎点赞关注~
 
 ```py [sol-Python3]
