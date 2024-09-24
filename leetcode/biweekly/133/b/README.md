@@ -1,18 +1,30 @@
-分类讨论：
+## 题意
 
-- 如果 $\textit{nums}[0]=1$，无需修改，问题变成剩下 $n-1$ 个数如何操作。接下来考虑 $\textit{nums}[1]$。
-- 如果 $\textit{nums}[0]=0$，修改，问题变成剩下 $n-1$ 个数如何操作。接下来考虑 $\textit{nums}[1]$。
+给定一个 $01$ 数组 $\textit{nums}$，每次操作，你可以：
 
-所以从左到右遍历数组，一边遍历一边修改。
+- 选一个 $[0,n-3]$ 中的下标 $i$，把 $\textit{nums}[i],\textit{nums}[i+1],\textit{nums}[i+2]$ 都反转，即异或 $1$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV17w4m1e7Nw/) 第二题，欢迎点赞关注！
+返回把 $\textit{nums}$ 全变成 $1$ 的最小操作次数，如果无法做到则返回 $-1$。
+
+## 思路
+
+讨论是否需要对 $i=0$ 执行操作：
+
+- 如果 $\textit{nums}[0]=1$，不执行操作，问题变成剩下 $n-1$ 个数的子问题。
+- 如果 $\textit{nums}[0]=0$，一定要操作，问题变成剩下 $n-1$ 个数的子问题。
+
+接下来，讨论是否需要对 $i=1$ 执行操作，处理方式同上。
+
+依此类推，一直到 $i=n-3$ 处理完后，还剩下 $\textit{nums}[n-2]$ 和 $\textit{nums}[n-1]$，这两个数必须都等于 $1$，否则无法达成题目要求。
+
+[视频讲解](https://www.bilibili.com/video/BV17w4m1e7Nw/) 第二题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
         ans = 0
         for i in range(len(nums) - 2):
-            if nums[i] == 0:
+            if nums[i] == 0:  # 必须操作
                 nums[i + 1] ^= 1
                 nums[i + 2] ^= 1
                 ans += 1
@@ -25,7 +37,7 @@ class Solution {
         int n = nums.length;
         int ans = 0;
         for (int i = 0; i < n - 2; i++) {
-            if (nums[i] == 0) {
+            if (nums[i] == 0) { // 必须操作
                 nums[i + 1] ^= 1;
                 nums[i + 2] ^= 1;
                 ans++;
@@ -43,7 +55,7 @@ public:
         int n = nums.size();
         int ans = 0;
         for (int i = 0; i < n - 2; i++) {
-            if (nums[i] == 0) {
+            if (nums[i] == 0) { // 必须操作
                 nums[i + 1] ^= 1;
                 nums[i + 2] ^= 1;
                 ans++;
@@ -54,11 +66,25 @@ public:
 };
 ```
 
+```c [sol-C]
+int minOperations(int* nums, int n) {
+    int ans = 0;
+    for (int i = 0; i < n - 2; i++) {
+        if (nums[i] == 0) { // 必须操作
+            nums[i + 1] ^= 1;
+            nums[i + 2] ^= 1;
+            ans++;
+        }
+    }
+    return nums[n - 2] && nums[n - 1] ? ans : -1;
+}
+```
+
 ```go [sol-Go]
 func minOperations(nums []int) (ans int) {
 	n := len(nums)
 	for i, x := range nums[:n-2] {
-		if x == 0 {
+		if x == 0 { // 必须操作
 			nums[i+1] ^= 1
 			nums[i+2] ^= 1
 			ans++
@@ -71,21 +97,59 @@ func minOperations(nums []int) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+var minOperations = function(nums) {
+    const n = nums.length;
+    let ans = 0;
+    for (let i = 0; i < n - 2; i++) {
+        if (nums[i] === 0) { // 必须操作
+            nums[i + 1] ^= 1;
+            nums[i + 2] ^= 1;
+            ans++;
+        }
+    }
+    return nums[n - 2] && nums[n - 1] ? ans : -1;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_operations(mut nums: Vec<i32>) -> i32 {
+        let n = nums.len();
+        let mut ans = 0;
+        for i in 0..n - 2 {
+            if nums[i] == 0 { // 必须操作
+                nums[i + 1] ^= 1;
+                nums[i + 2] ^= 1;
+                ans += 1;
+            }
+        }
+
+        if nums[n - 2] != 0 && nums[n - 1] != 0 {
+            ans
+        } else {
+            -1
+        }
+    }
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度，$k=3$ 为每次操作反转的元素个数。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 思考题
 
-1. 如果把题目中的 $3$ 替换成 $k$，你能想出一个 $\mathcal{O}(n)$ 的做法吗？
-2. 选一个固定的 $k$，操作次数不限，要把所有元素都变成 $1$，这个 $k$ 最大能是多少？见 [CF1955E](https://codeforces.com/problemset/problem/1955/E)。
+把题目中的 $3$ 替换成 $k$，其中 $1\le k \le n$，你能想出一个与 $k$ 无关的 $\mathcal{O}(n)$ 做法吗？
+
+见 [CF1955E](https://codeforces.com/problemset/problem/1955/E)，枚举 $k$，变成上述思考题。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -94,7 +158,8 @@ func minOperations(nums []int) (ans int) {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
