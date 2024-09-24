@@ -17,8 +17,6 @@
 
 依此类推，一直到 $i=n-3$ 处理完后，还剩下 $\textit{nums}[n-2]$ 和 $\textit{nums}[n-1]$，这两个数必须都等于 $1$，否则无法达成题目要求。
 
-[视频讲解](https://www.bilibili.com/video/BV17w4m1e7Nw/) 第二题，欢迎点赞关注~
-
 ```py [sol-Python3]
 class Solution:
     def minOperations(self, nums: List[int]) -> int:
