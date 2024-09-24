@@ -27,9 +27,11 @@ class Solution:
             if cnt[b] == 0:
                 # 窗口内 b 的出现次数和 t 一样
                 less -= 1
-            while less == 0:
+            while less == 0:  # 窗口符合要求
                 if cnt[s[left]] == 0:
-                    # s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
+                    # s[left] 移出窗口之前，检查出现次数，
+                    # 如果窗口内 s[left] 的出现次数和 t 一样，
+                    # 那么 s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
                     less += 1
                 cnt[s[left]] += 1
                 left += 1
@@ -60,15 +62,20 @@ class Solution {
         long ans = 0;
         int left = 0;
         for (char b : s) {
-            if (--cnt[b - 'a'] == 0) {
-                // 窗口内 b 的出现次数和 t 一样
+            cnt[b - 'a']--;
+            if (cnt[b - 'a'] == 0) {
+                // b 移入窗口后，窗口内 b 的出现次数和 t 一样
                 less--;
             }
             while (less == 0) { // 窗口符合要求
-                if (cnt[s[left++] - 'a']++ == 0) {
-                    // s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
+                char outChar = s[left++]; // 准备移出窗口的字母
+                if (cnt[outChar - 'a'] == 0) {
+                    // outChar 移出窗口之前检查出现次数，
+                    // 如果窗口内 outChar 的出现次数和 t 一样，
+                    // 那么 outChar 移出窗口后，窗口内 outChar 的出现次数比 t 的少
                     less++;
                 }
+                cnt[outChar - 'a']++;
             }
             ans += left;
         }
@@ -90,17 +97,28 @@ public:
         }
         int less = 0; // 统计窗口内有多少个字母的出现次数比 t 的少
         for (int c : cnt) {
-            less += c > 0;
+            if (c > 0) {
+                less++;
+            }
         }
 
         long long ans = 0;
         int left = 0;
         for (char b : s) {
-            // 如果窗口内 b 的出现次数和 t 一样，那么 less 减一
-            less -= --cnt[b - 'a'] == 0;
+            cnt[b - 'a']--;
+            if (cnt[b - 'a'] == 0) {
+                // b 移入窗口后，窗口内 b 的出现次数和 t 一样
+                less--;
+            }
             while (less == 0) { // 窗口符合要求
-                // s[left] 移出窗口后，如果窗口内 s[left] 的出现次数比 t 的少，那么 less 加一
-                less += cnt[s[left++] - 'a']++ == 0;
+                char out_char = s[left++]; // 准备移出窗口的字母
+                if (cnt[out_char - 'a'] == 0) {
+                    // out_char 移出窗口之前，检查出现次数，
+                    // 如果窗口内 out_char 的出现次数和 t 一样，
+                    // 那么 out_char 移出窗口后，窗口内 out_char 的出现次数比 t 的少
+                    less++;
+                }
+                cnt[out_char - 'a']++;
             }
             ans += left;
         }
@@ -134,7 +152,9 @@ func validSubstringCount(s, t string) (ans int64) {
 		}
 		for less == 0 { // 窗口符合要求
 			if cnt[s[left]-'a'] == 0 {
-				// s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
+                // s[left] 移出窗口之前，检查出现次数，
+                // 如果窗口内 s[left] 的出现次数和 t 一样，
+                // 那么 s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
 				less++
 			}
 			cnt[s[left]-'a']++
