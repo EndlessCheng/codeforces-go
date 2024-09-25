@@ -1,22 +1,19 @@
-## 方法一：统计因子
+## 方法一：枚举因子
 
-### 提示
-
-如果 $x$ 能被 $d$ 整除，那么 $x$ 必然有一个等于 $d$ 的因子。
-
-### 思路
+### 分析
 
 为方便描述，把 $\textit{nums}_1$ 和 $\textit{nums}_2$ 记作 $a$ 和 $b$。
 
-1. 遍历 $a$，统计所有元素的因子个数，记录到哈希表 $\textit{cnt}$ 中。
-2. 遍历 $b$，那么有 $\textit{cnt}[b[i]\cdot k]$ 个数可以被 $b[i]\cdot k$ 整除，加入答案。
+$a[i]$ 能被 $b[j]\cdot k$ 整除，等价于 $a[i]$ 是 $k$ 的倍数且 $\dfrac{a[i]}{k}$ 能被 $b[j]$ 整除。
 
-### 优化
+也就是说，$\dfrac{a[i]}{k}$ 有一个因子 $d$ 等于 $b[j]$。
 
-1. 如果 $a[i]$ 不是 $k$ 的倍数，无法被 $b[i]\cdot k$ 整除，直接跳过不统计。
-2. 此外，可以改为统计 $\dfrac{a[i]}{k}$ 的因子，这样需要循环的次数会更少；相应地，遍历 $b$ 时只需要把 $\textit{cnt}[b[i]]$ 加入答案。
+### 算法
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV17t421N7L6/)，欢迎点赞关注！
+1. 遍历 $a$，枚举 $\dfrac{a[i]}{k}$ 的所有因子，统计到哈希表 $\textit{cnt}$ 中。比如遍历完后 $\textit{cnt}[3] = 5$，说明有 $5$ 个 $\dfrac{a[i]}{k}$ 可以被 $3$ 整除，等价于有 $5$ 个 $a[i]$ 可以被 $3\cdot k$ 整除。
+2. 遍历 $b$，把 $\textit{cnt}[b[j]]$ 加入答案。例如 $b[j]=3$，那么就找到了 $\textit{cnt}[3]$ 个优质数对。
+
+枚举因子的技巧请看 [视频讲解](https://www.bilibili.com/video/BV17t421N7L6/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -26,12 +23,12 @@ class Solution:
             if x % k:
                 continue
             x //= k
-            for d in range(1, isqrt(x) + 1):
+            for d in range(1, isqrt(x) + 1):  # 枚举因子
                 if x % d:
                     continue
-                cnt[d] += 1
+                cnt[d] += 1  # 统计因子
                 if d * d < x:
-                    cnt[x // d] += 1
+                    cnt[x // d] += 1  # 因子总是成对出现
         return sum(cnt[x] for x in nums2)
 ```
 
@@ -44,13 +41,13 @@ class Solution {
                 continue;
             }
             x /= k;
-            for (int d = 1; d * d <= x; d++) {
+            for (int d = 1; d * d <= x; d++) { // 枚举因子
                 if (x % d > 0) {
                     continue;
                 }
-                cnt.merge(d, 1, Integer::sum);
+                cnt.merge(d, 1, Integer::sum); // cnt[d]++
                 if (d * d < x) {
-                    cnt.merge(x / d, 1, Integer::sum);
+                    cnt.merge(x / d, 1, Integer::sum); // cnt[x/d]++
                 }
             }
         }
@@ -74,13 +71,13 @@ public:
                 continue;
             }
             x /= k;
-            for (int d = 1; d * d <= x; d++) {
+            for (int d = 1; d * d <= x; d++) { // 枚举因子
                 if (x % d) {
                     continue;
                 }
-                cnt[d]++;
+                cnt[d]++; // 统计因子
                 if (d * d < x) {
-                    cnt[x / d]++;
+                    cnt[x / d]++; // 因子总是成对出现
                 }
             }
         }
@@ -96,26 +93,81 @@ public:
 
 ```go [sol-Go]
 func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
-	cnt := map[int]int{}
-	for _, x := range nums1 {
-		if x%k > 0 {
-			continue
-		}
-		x /= k
-		for d := 1; d*d <= x; d++ {
-			if x%d == 0 {
-				cnt[d]++
-				if d*d < x {
-					cnt[x/d]++
-				}
-			}
-		}
-	}
+    cnt := map[int]int{}
+    for _, x := range nums1 {
+        if x%k > 0 {
+            continue
+        }
+        x /= k
+        for d := 1; d*d <= x; d++ { // 枚举因子
+            if x%d == 0 {
+                cnt[d]++ // 统计因子
+                if d*d < x {
+                    cnt[x/d]++ // 因子总是成对出现
+                }
+            }
+        }
+    }
 
-	for _, x := range nums2 {
-		ans += int64(cnt[x])
-	}
-	return
+    for _, x := range nums2 {
+        ans += int64(cnt[x])
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+var numberOfPairs = function(nums1, nums2, k) {
+    const cnt = new Map();
+    for (let x of nums1) {
+        if (x % k) {
+            continue;
+        }
+        x /= k;
+        for (let d = 1; d * d <= x; d++) { // 枚举因子
+            if (x % d) {
+                continue;
+            }
+            cnt.set(d, (cnt.get(d) || 0) + 1); // 统计因子
+            if (d * d < x) {
+                cnt.set(x / d, (cnt.get(x / d) ?? 0) + 1); // 因子总是成对出现
+            }
+        }
+    }
+
+    let ans = 0;
+    for (const x of nums2) {
+        ans += cnt.get(x) ?? 0;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn number_of_pairs(nums1: Vec<i32>, nums2: Vec<i32>, k: i32) -> i64 {
+        let mut cnt = HashMap::new();
+        for mut x in nums1 {
+            if x % k != 0 {
+                continue;
+            }
+            x /= k;
+            let mut d = 1;
+            while d * d <= x {
+                if x % d == 0 {
+                    *cnt.entry(d).or_insert(0) += 1;
+                    if d * d < x {
+                        *cnt.entry(x / d).or_insert(0) += 1;
+                    }
+                }
+                d += 1;
+            }
+        }
+
+        nums2.iter().map(|x| *cnt.get(x).unwrap_or(&0) as i64).sum()
+    }
 }
 ```
 
@@ -126,9 +178,18 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
 
 ## 方法二：枚举倍数
 
-统计 $a[i]/k$ 和 $b[i]$ 的出现次数，分别保存到哈希表 $\textit{cnt}_1$ 和 $\textit{cnt}_2$ 中。设 $\textit{cnt}_1$ 中的最大 key 为 $u$。
+### 分析
 
-枚举 $\textit{cnt}_2$ 中的元素 $i$，然后枚举 $i$ 的倍数 $i,2i,3i,\cdots$，一直到 $u$，累加这些数在 $\textit{cnt}_1$ 中的 value，乘上 $\textit{cnt}_2[i]$，加入答案。
+横看成岭侧成峰，我们还可以枚举 $b[j]$ 的倍数。
+
+例如 $b[j]=3$，枚举 $3,6,9,12,\cdots$，统计 $a$ 中有多少个 $\dfrac{a[i]}{k}$ 等于 $3,6,9,12,\cdots$
+
+### 算法
+
+1. 统计 $\dfrac{a[i]}{k}$ 的出现次数，保存到哈希表 $\textit{cnt}_1$ 中。
+2. 统计 $b[j]$ 的出现次数（相同 $b[j]$ 无需重复计算），保存到哈希表 $\textit{cnt}_2$ 中。
+3. 设 $\textit{cnt}_1$ 中的最大 key 为 $u$。
+4. 枚举 $\textit{cnt}_2$ 中的元素 $x$，然后枚举 $x$ 的倍数 $y=x,2x,3x,\cdots$（不超过 $u$），累加 $\textit{cnt}_1[y]$，再乘上 $\textit{cnt}_2[x]$，加入答案。
 
 ```py [sol-Python3]
 class Solution:
@@ -136,11 +197,12 @@ class Solution:
         cnt1 = Counter(x // k for x in nums1 if x % k == 0)
         if not cnt1:
             return 0
+
         ans = 0
         u = max(cnt1)
-        for i, c in Counter(nums2).items():
-            s = sum(cnt1[j] for j in range(i, u + 1, i))
-            ans += s * c
+        for x, cnt in Counter(nums2).items():
+            s = sum(cnt1[y] for y in range(x, u + 1, x))  # 枚举 x 的倍数
+            ans += s * cnt
         return ans
 ```
 
@@ -150,7 +212,7 @@ class Solution {
         Map<Integer, Integer> cnt1 = new HashMap<>();
         for (int x : nums1) {
             if (x % k == 0) {
-                cnt1.merge(x / k, 1, Integer::sum);
+                cnt1.merge(x / k, 1, Integer::sum); // cnt1[x/k]++
             }
         }
         if (cnt1.isEmpty()) {
@@ -159,20 +221,66 @@ class Solution {
 
         Map<Integer, Integer> cnt2 = new HashMap<>();
         for (int x : nums2) {
-            cnt2.merge(x, 1, Integer::sum);
+            cnt2.merge(x, 1, Integer::sum); // cnt2[x]++
         }
 
         long ans = 0;
         int u = Collections.max(cnt1.keySet());
         for (Map.Entry<Integer, Integer> e : cnt2.entrySet()) {
+            int x = e.getKey();
+            int cnt = e.getValue();
             int s = 0;
-            int i = e.getKey();
-            for (int j = i; j <= u; j += i) {
-                if (cnt1.containsKey(j)) {
-                    s += cnt1.get(j);
+            for (int y = x; y <= u; y += x) { // 枚举 x 的倍数
+                if (cnt1.containsKey(y)) {
+                    s += cnt1.get(y);
                 }
             }
-            ans += (long) s * e.getValue();
+            ans += (long) s * cnt;
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long numberOfPairs(int[] nums1, int[] nums2, int k) {
+        int mx1 = 0;
+        for (int x : nums1) {
+            if (x % k == 0) {
+                mx1 = Math.max(mx1, x / k);
+            }
+        }
+        if (mx1 == 0) {
+            return 0;
+        }
+
+        int[] cnt1 = new int[mx1 + 1];
+        for (int x : nums1) {
+            if (x % k == 0) {
+                cnt1[x / k]++;
+            }
+        }
+
+        int mx2 = 0;
+        for (int x : nums2) {
+            mx2 = Math.max(mx2, x);
+        }
+        int[] cnt2 = new int[mx2 + 1];
+        for (int x : nums2) {
+            cnt2[x]++;
+        }
+
+        long ans = 0;
+        for (int x = 1; x <= mx2; x++) {
+            if (cnt2[x] == 0) {
+                continue;
+            }
+            int s = 0;
+            for (int y = x; y <= mx1; y += x) { // 枚举 x 的倍数
+                s += cnt1[y];
+            }
+            ans += (long) s * cnt2[x];
         }
         return ans;
     }
@@ -192,6 +300,7 @@ public:
         if (cnt1.empty()) {
             return 0;
         }
+
         unordered_map<int, int> cnt2;
         for (int x : nums2) {
             cnt2[x]++;
@@ -199,12 +308,12 @@ public:
 
         long long ans = 0;
         int u = ranges::max_element(cnt1)->first;
-        for (auto& [i, c] : cnt2) {
+        for (auto& [x, cnt] : cnt2) {
             int s = 0;
-            for (int j = i; j <= u; j += i) {
-                s += cnt1.contains(j) ? cnt1[j] : 0;
+            for (int y = x; y <= u; y += x) { // 枚举 x 的倍数
+                s += cnt1.contains(y) ? cnt1[y] : 0;
             }
-            ans += (long long) s * c;
+            ans += (long long) s * cnt;
         }
         return ans;
     }
@@ -213,26 +322,96 @@ public:
 
 ```go [sol-Go]
 func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
-	cnt1 := map[int]int{}
-	for _, x := range nums1 {
-		if x%k == 0 {
-			cnt1[x/k]++
-		}
-	}
-	cnt2 := map[int]int{}
-	for _, x := range nums2 {
-		cnt2[x]++
-	}
+    cnt1 := map[int]int{}
+    for _, x := range nums1 {
+        if x%k == 0 {
+            cnt1[x/k]++
+        }
+    }
+    if len(cnt1) == 0 {
+        return
+    }
 
-	u := slices.Max(nums1) / k
-	for i, c := range cnt2 {
-		s := 0
-		for j := i; j <= u; j += i {
-			s += cnt1[j]
-		}
-		ans += int64(s * c)
-	}
-	return
+    cnt2 := map[int]int{}
+    for _, x := range nums2 {
+        cnt2[x]++
+    }
+
+    u := slices.Max(nums1) / k
+    for x, cnt := range cnt2 {
+        s := 0
+        for y := x; y <= u; y += x { // 枚举 x 的倍数
+            s += cnt1[y]
+        }
+        ans += int64(s * cnt)
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+const numberOfPairs = function(nums1, nums2, k) {
+    const cnt1 = new Map();
+    for (const x of nums1) {
+        if (x % k === 0) {
+            cnt1.set(x / k, (cnt1.get(x / k) ?? 0) + 1);
+        }
+    }
+    if (cnt1.size === 0) {
+        return 0;
+    }
+
+    const cnt2 = new Map();
+    for (const x of nums2) {
+        cnt2.set(x, (cnt2.get(x) ?? 0) + 1);
+    }
+
+    const u = Math.max(...nums1) / k;
+    let ans = 0;
+    for (const [x, cnt] of cnt2.entries()) {
+        let s = 0;
+        for (let y = x; y <= u; y += x) { // 枚举 x 的倍数
+            s += cnt1.get(y) ?? 0;
+        }
+        ans += s * cnt;
+    }
+    return ans;
+}
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn number_of_pairs(nums1: Vec<i32>, nums2: Vec<i32>, k: i32) -> i64 {
+        let mut cnt1 = HashMap::new();
+        for x in nums1 {
+            if x % k == 0 {
+                *cnt1.entry(x / k).or_insert(0) += 1;
+            }
+        }
+        if cnt1.is_empty() {
+            return 0;
+        }
+
+        let mut cnt2 = HashMap::new();
+        for x in nums2 {
+            *cnt2.entry(x).or_insert(0) += 1;
+        }
+
+        let mut ans = 0i64;
+        let u = *cnt1.keys().max().unwrap();
+        for (x, cnt) in cnt2 {
+            let mut s = 0;
+            for y in (x..=u).step_by(x as usize) { // 枚举 x 的倍数
+                if let Some(&c) = cnt1.get(&y) {
+                    s += c;
+                }
+            }
+            ans += s as i64 * cnt as i64;
+        }
+        ans
+    }
 }
 ```
 
@@ -245,7 +424,7 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -254,7 +433,8 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
