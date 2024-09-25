@@ -1,8 +1,26 @@
 对于正整数，$xy\ge\textit{success}$ 等价于 $y\ge\left\lceil\dfrac{\textit{success}}{x}\right\rceil$。
 
-由于 $\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1$，所以上式也等价于 $y>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$。
+为了方便二分，可以利用如下等式： 
 
-这样对 $\textit{potions}$ 排序后，就可以二分查找了：设 $x=\textit{spells}[i]$，$j$ 是最小的满足 $\textit{potions}[j]>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$ 的下标，由于数组已经排序，那么下标大于 $j$ 的也同样满足该式，这一共有 $m-j$ 个，其中 $m$ 是 $\textit{potions}$ 的长度。
+$$
+\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
+$$
+
+讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+
+根据上式，我们有
+
+$$
+y\ge\left\lceil\dfrac{\textit{success}}{x}\right\rceil = \left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor + 1
+$$ 
+
+这等价于 
+
+$$
+y>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor
+$$
+
+对 $\textit{potions}$ 排序后，就可以二分查找了：设 $x=\textit{spells}[i]$，$j$ 是最小的满足 $\textit{potions}[j]>\left\lfloor\dfrac{\textit{success}-1}{x}\right\rfloor$ 的下标，由于数组已经排序，那么下标大于 $j$ 的也同样满足该式，这一共有 $m-j$ 个，其中 $m$ 是 $\textit{potions}$ 的长度。
 
 为什么不等式一定要这样变形？好处是每次二分只需要做一次除法，避免多次在二分循环内做乘法，效率更高。另外的好处是部分语言可以直接调用库函数二分。
 
@@ -115,7 +133,7 @@ func successfulPairs(spells, potions []int, success int64) []int {
 }
 ```
 
-```js [sol-JavaScript]
+```js [sol-JS]
 var successfulPairs = function(spells, potions, success) {
     potions.sort((a, b) => a - b);
     for (let i = 0; i < spells.length; i++) {
@@ -140,6 +158,17 @@ var lowerBound = function(nums, target) {
     }
     return right;
 }
+```
+
+```js [sol-JS lodash]
+var successfulPairs = function(spells, potions, success) {
+    potions.sort((a, b) => a - b);
+    for (let i = 0; i < spells.length; i++) {
+        const target = Math.ceil(success / spells[i]);
+        spells[i] = potions.length - _.sortedIndex(potions, target);
+    }
+    return spells;
+};
 ```
 
 ```rust [sol-Rust]
