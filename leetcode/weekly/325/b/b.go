@@ -2,25 +2,23 @@ package main
 
 // https://space.bilibili.com/206214
 func takeCharacters(s string, k int) int {
-	n := len(s)
-	c, j := [3]int{}, n
-	for c[0] < k || c[1] < k || c[2] < k {
-		if j == 0 {
-			return -1
-		}
-		j--
-		c[s[j]-'a']++
+	cnt := [3]int{}
+	for _, c := range s {
+		cnt[c-'a']++ // 一开始，把所有字母都取走
 	}
-	ans := n - j
-	for i := 0; i < n && j < n; i++ {
-		c[s[i]-'a']++
-		for j < n && c[s[j]-'a'] > k {
-			c[s[j]-'a']--
-			j++
-		}
-		ans = min(ans, i+1+n-j)
+	if cnt[0] < k || cnt[1] < k || cnt[2] < k {
+		return -1 // 字母个数不足 k
 	}
-	return ans
-}
 
-func min(a, b int) int { if b < a { return b }; return a }
+	mx, left := 0, 0
+	for right, c := range s {
+		c -= 'a'
+		cnt[c]-- // 移入窗口，相当于不取走 c
+		for cnt[c] < k { // 窗口之外的 c 不足 k
+			cnt[s[left]-'a']++ // 移出窗口，相当于取走 s[left]
+			left++
+		}
+		mx = max(mx, right-left+1)
+	}
+	return len(s) - mx
+}
