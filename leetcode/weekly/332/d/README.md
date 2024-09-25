@@ -145,6 +145,12 @@ func minimumScore(s, t string) int {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $s$ 的长度。注意时间复杂度与 $t$ 的长度无关。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 变形题
+
+删除 $s$ 中的子串，使得 $t$ 仍然是 $s$ 的子序列。可以删除的最长子串长度是多少？
+
+见 [CF1203D2](https://codeforces.com/problemset/problem/1203/D2)。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
