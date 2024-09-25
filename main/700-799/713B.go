@@ -37,7 +37,7 @@ func cf713B() {
 
 	l2 := sort.Search(r2, func(j int) bool { return q(u, j+1, d, r2) == 0 })
 	u2 := sort.Search(d, func(i int) bool { return q(i+1, l2, d, r2) == 0 })
-	d2 := sort.Search(d, func(i int) bool { return i >= u2 && q(u2, l2, i, r2) > 0 })
+	d2 := u2 + sort.Search(d-u2, func(i int) bool { return q(u2, l2, u2+i, r2) > 0 })
 
 	Println("!", u1+1, l1+1, d1+1, r1+1, u2+1, l2+1, d2+1, r2+1)
 }
