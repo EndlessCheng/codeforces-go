@@ -323,12 +323,14 @@ public:
 ```go [sol-Go]
 func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
     cnt1 := map[int]int{}
+    u := 0
     for _, x := range nums1 {
         if x%k == 0 {
+            u = max(u, x/k)
             cnt1[x/k]++
         }
     }
-    if len(cnt1) == 0 {
+    if u == 0 {
         return
     }
 
@@ -337,7 +339,6 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
         cnt2[x]++
     }
 
-    u := slices.Max(nums1) / k
     for x, cnt := range cnt2 {
         s := 0
         for y := x; y <= u; y += x { // 枚举 x 的倍数
@@ -352,12 +353,14 @@ func numberOfPairs(nums1, nums2 []int, k int) (ans int64) {
 ```js [sol-JavaScript]
 const numberOfPairs = function(nums1, nums2, k) {
     const cnt1 = new Map();
+    let u = 0;
     for (const x of nums1) {
         if (x % k === 0) {
+            u = Math.max(u, x / k);
             cnt1.set(x / k, (cnt1.get(x / k) ?? 0) + 1);
         }
     }
-    if (cnt1.size === 0) {
+    if (u === 0) {
         return 0;
     }
 
@@ -366,7 +369,6 @@ const numberOfPairs = function(nums1, nums2, k) {
         cnt2.set(x, (cnt2.get(x) ?? 0) + 1);
     }
 
-    const u = Math.max(...nums1) / k;
     let ans = 0;
     for (const [x, cnt] of cnt2.entries()) {
         let s = 0;
