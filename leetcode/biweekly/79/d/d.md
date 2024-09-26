@@ -696,7 +696,7 @@ impl BookMyShow {
 - 时间复杂度：
   - 初始化为 $\mathcal{O}(n)$。
   - $\texttt{gather}$ 为 $\mathcal{O}(\log n)$。由于每次要么递归左半区间，要么递归右半区间，因此线段树二分的时间复杂度为线段树的树高，即 $\mathcal{O}(\log n)$。
-  - $\texttt{scatter}$ 可以从整体上来分析：由于装满的水桶后面不会再遍历了，所有 $\texttt{scatter}$ 的循环次数之和为 $\mathcal{O}(n)$，所以时间复杂度**之和**为 $\mathcal{O}((n+q)\log n)$，其中 $q$ 为 $\texttt{scatter}$ 的调用次数。如果近似认为 $n=q$，那么**均摊复杂度**为 $\mathcal{O}(\log n)$。
+  - $\texttt{scatter}$ 可以从整体上来分析：由于装满的水桶后面不会再遍历了，所有 $\texttt{scatter}$ 的循环次数之和为 $\mathcal{O}(n+q)$（$q$ 为 $\texttt{scatter}$ 的调用次数），所以时间复杂度**之和**为 $\mathcal{O}((n+q)\log n)$。如果近似认为 $n=q$，那么**均摊复杂度**为 $\mathcal{O}(\log n)$。
 - 空间复杂度：$\mathcal{O}(n)$。线段树需要 $\mathcal{O}(n)$ 的空间。
 
 ## 分类题单
