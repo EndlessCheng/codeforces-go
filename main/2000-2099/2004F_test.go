@@ -25,6 +25,24 @@ func Test_cf2004F(t *testing.T) {
 14
 5`,
 		},
+		{
+			`1
+5
+3 7 99 4 6`,
+			``,
+		},
+		{
+			`1
+4
+3 7 99 10`,
+			``,
+		},
+		{
+			`1
+4
+1 20 80 1`,
+			``,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf2004F)
 }
