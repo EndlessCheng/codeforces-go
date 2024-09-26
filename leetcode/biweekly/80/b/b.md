@@ -55,8 +55,8 @@ class Solution {
         int left = -1, right = nums.length; // 开区间 (left, right)
         while (left + 1 < right) { // 区间不为空
             // 循环不变量：
-            // nums[left] < target
-            // nums[right] >= target
+            // nums[left] <= target
+            // nums[right] > target
             int mid = (left + right) >>> 1;
             if (nums[mid] > target) {
                 right = mid; // 二分范围缩小到 (left, mid)
