@@ -147,7 +147,7 @@ https://codeforces.com/contest/1993/problem/D 2200
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 
 #### 不好想到的二分（这也能二分？！）
-https://codeforces.com/problemset/problem/1707/A
+https://codeforces.com/problemset/problem/1707/A 1600
 
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
@@ -165,10 +165,10 @@ https://codeforces.com/problemset/problem/1707/A
 1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
 3484 https://www.acwing.com/problem/content/122/ 二分位置
 
-https://codeforces.com/problemset/problem/1697/D
-隐藏的二分 https://atcoder.jp/contests/abc203/tasks/abc203_d
-隐藏的二分 https://codeforces.com/problemset/problem/1354/D
-转换的好题 https://codeforces.com/problemset/problem/1181/D
+https://codeforces.com/problemset/problem/1697/D 1900
+https://atcoder.jp/contests/abc203/tasks/abc203_d 隐藏的二分
+https://codeforces.com/problemset/problem/1354/D 1900 隐藏的二分
+https://codeforces.com/problemset/problem/1181/D 2200 转换的好题
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
