@@ -73,6 +73,7 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 ### 二分答案：求最小
 https://codeforces.com/problemset/problem/1701/C 1400
 https://codeforces.com/problemset/problem/991/C 1500
+https://codeforces.com/problemset/problem/1208/B 1500
 https://codeforces.com/problemset/problem/1665/C 1600
 https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
@@ -80,6 +81,7 @@ https://codeforces.com/problemset/problem/1118/D2 1700
 ### 二分答案：求最大
 https://codeforces.com/problemset/problem/670/D2 1500
 https://codeforces.com/problemset/problem/760/B 1500
+https://codeforces.com/problemset/problem/812/C 1500 同时记录一个副产物
 https://codeforces.com/problemset/problem/1610/C 1600
 https://codeforces.com/problemset/problem/1946/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
@@ -113,8 +115,12 @@ https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
 
+### 最小化中位数
+https://codeforces.com/contest/2008/problem/H 2100
+
 ### 最大化中位数
-https://codeforces.com/contest/1993/problem/D
+https://codeforces.com/problemset/problem/1201/C 1400 也可以贪心做
+https://codeforces.com/contest/1993/problem/D 2200
 
 ### 第 K 小/大（部分题目也可以用堆解决）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
@@ -139,9 +145,6 @@ https://codeforces.com/contest/1993/problem/D
 - [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
-
-#### 最大化中位数
-https://codeforces.com/problemset/problem/1201/C  也可以贪心做
 
 #### 不好想到的二分（这也能二分？！）
 https://codeforces.com/problemset/problem/1707/A
