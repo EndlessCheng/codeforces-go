@@ -127,7 +127,7 @@ func fasterIO() {
 	defer out.Flush()
 
 	const eof = 0
-	buf := make([]byte, 1<<12) // 4KB
+	buf := make([]byte, 4096) // 4KB
 	_i, _n := 0, 0
 
 	// 读一个字符
@@ -275,9 +275,10 @@ func fasterIO() {
 // 数据个数未知 https://www.luogu.com.cn/problem/P2762
 // 仅加速用 https://codeforces.com/problemset/problem/375/B
 // 注意由于 buffer 的缘故，bufio.Scanner 不要和 bufio.Reader 混用
+// 如果每行只有几个数，可以用 fmt.Fscanln 读入
 func lineIO() {
-	in := bufio.NewScanner(os.Stdin)
-	in.Buffer(nil, 1e9) // 若单个 token 大小超过 65536 则加上这行
+	in := bufio.NewScanner(os.Stdin) // 默认 4KB 初始 buffer
+	in.Buffer(nil, math.MaxInt)      // 若单个 token 大小超过 65536 则加上这行，否则会报错
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 
