@@ -29,6 +29,10 @@
 
 否则可以执行操作。从第一个没有装满，也就是接水量 $\le m-1$ 的水桶开始倒水，这也可以用线段树二分求出。
 
+关于线段树需要开多大的数组，推导过程可以看 [OI Wiki](https://oi-wiki.org/ds/seg/#%E5%AE%9E%E7%8E%B0)。
+
+> 本题只有单点修改，没有区间更新，无需懒标记。
+
 ```py [sol-Python3]
 class BookMyShow:
     def __init__(self, n: int, m: int):
@@ -254,7 +258,7 @@ class BookMyShow {
     }
 
 public:
-    BookMyShow(int n, int m) : n(n), m(m), mn(2 << (__lg(n) + 1)), sum(2 << (__lg(n) + 1)) {}
+    BookMyShow(int n, int m) : n(n), m(m), mn(4 << __lg(n)), sum(4 << __lg(n)) {}
 
     vector<int> gather(int k, int maxRow) {
         // 找第一个能倒入 k 升水的水桶
