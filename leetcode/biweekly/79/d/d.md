@@ -204,7 +204,7 @@ class BookMyShow {
 class BookMyShow {
     int n, m;
     vector<int> mn;
-    vector<int long> sum;
+    vector<long long> sum;
 
     // 把下标 i 上的元素值增加 val
     void update(int o, int l, int r, int i, int val) {
