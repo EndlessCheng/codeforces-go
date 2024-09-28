@@ -123,6 +123,7 @@
 ||[1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/)|[枚举做几道菜+贪心](https://leetcode.cn/problems/reducing-dishes/solution/mei-ju-zuo-ji-dao-cai-tan-xin-pythonjava-k7w2/)|1679|
 ||[1145. 二叉树着色游戏](https://leetcode.cn/problems/binary-tree-coloring-game/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/binary-tree-coloring-game/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-btav/)|1741|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[两种算法：贪心/动态规划](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
+||[134. 加油站](https://leetcode.cn/problems/gas-station/)|[用【折线图】直观理解](https://leetcode.cn/problems/gas-station/solutions/2933132/yong-zhe-xian-tu-zhi-guan-li-jie-pythonj-qccr/)|中等|
 ||[1775. 通过最少操作次数使数组的和相等](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/)|[【动画】没想明白？一个动画秒懂！](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-ocuu/)|1850|
 ||[1616. 分割两个字符串得到回文串](https://leetcode.cn/problems/split-two-strings-to-make-palindrome/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/split-two-strings-to-make-palindrome/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-imvy/)|1868|
 ||[1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/)|1885|
