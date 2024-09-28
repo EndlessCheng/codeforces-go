@@ -4,6 +4,10 @@ package copypasta
 
 模板见 template/interactive_problem
 
+## 基础
+
+https://codeforces.com/problemset/problem/1167/B 1400
+
 ## 二分
 
 https://codeforces.com/problemset/problem/1807/E 1300 数组
