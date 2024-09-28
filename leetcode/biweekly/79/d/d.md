@@ -471,7 +471,7 @@ type BookMyShow struct {
 }
 
 func Constructor(n, m int) BookMyShow {
-    t := make(seg, 2<<bits.Len(uint(n-1)))
+    t := make(seg, 2<<bits.Len(uint(n-1))) // 比 4n 更小
     t.build(1, 0, n-1)
     return BookMyShow{t, n, m}
 }
@@ -510,8 +510,9 @@ class BookMyShow {
     constructor(n, m) {
         this.n = n;
         this.m = m;
-        this.min = Array(n * 4).fill(0);
-        this.sum = Array(n * 4).fill(0);
+        const size = 2 << (32 - Math.clz32(n)); // 比 4n 更小
+        this.min = Array(size).fill(0);
+        this.sum = Array(size).fill(0);
     }
 
     // 把下标 i 上的元素值增加 val
