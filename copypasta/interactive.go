@@ -54,11 +54,14 @@ https://codeforces.com/problemset/problem/1839/E 2400
 
 https://codeforces.com/problemset/problem/2001/C 1500 二分
 https://codeforces.com/problemset/problem/1146/C 1700 二分 直径
-https://codeforces.com/problemset/problem/1305/D 1900 LCA 拓扑排序
+https://codeforces.com/problemset/problem/1534/D 1800
+https://codeforces.com/problemset/problem/1044/B 1900
+https://codeforces.com/problemset/problem/1305/D 1900 LCA 排除法 拓扑排序
 https://codeforces.com/problemset/problem/1174/F 2400
 
 ## 图
 
+https://codeforces.com/problemset/problem/1815/B 2000
 https://codeforces.com/problemset/problem/1498/E 2200
 https://codeforces.com/problemset/problem/1514/E 2700
 
