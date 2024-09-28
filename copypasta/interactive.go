@@ -33,6 +33,7 @@ https://codeforces.com/problemset/problem/1365/G 2800
 ## 数组 思维 构造
 
 https://codeforces.com/problemset/problem/727/C 1400
+https://codeforces.com/problemset/problem/2013/C 1400
 https://codeforces.com/problemset/problem/896/B 2000
 https://codeforces.com/problemset/problem/1521/C 2000
 https://codeforces.com/problemset/problem/1634/D 2000
