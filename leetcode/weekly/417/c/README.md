@@ -21,11 +21,13 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def f(self, word: str, k: int) -> int:
-        cnt1 = defaultdict(int)  # 元音
-        ans = cnt2 = left = 0  # cnt2 维护辅音
+        cnt1 = defaultdict(int)  # 每种元音的个数
+        ans = cnt2 = left = 0  # cnt2 维护辅音个数
         for b in word:
             if b in "aeiou":
                 cnt1[b] += 1
@@ -57,8 +59,8 @@ class Solution {
     private long f(char[] word, int k) {
         long ans = 0;
         // 这里用哈希表实现，替换成数组会更快
-        HashMap<Character, Integer> cnt1 = new HashMap<>(); // 元音
-        int cnt2 = 0; // 辅音
+        HashMap<Character, Integer> cnt1 = new HashMap<>(); // 每种元音的个数
+        int cnt2 = 0; // 辅音个数
         int left = 0;
         for (char b : word) {
             if ("aeiou".indexOf(b) >= 0) {
@@ -91,8 +93,8 @@ class Solution {
     long long f(string& word, int k) {
         long long ans = 0;
         // 这里用哈希表实现，替换成数组会更快
-        unordered_map<char, int> cnt1; // 元音
-        int cnt2 = 0; // 辅音
+        unordered_map<char, int> cnt1; // 每种元音的个数
+        int cnt2 = 0; // 辅音个数
         int left = 0;
         for (char b : word) {
             if (VOWEL.find(b) != string::npos) {
@@ -126,8 +128,8 @@ public:
 ```go [sol-Go]
 func f(word string, k int) (ans int64) {
 	// 这里用哈希表实现，替换成数组会更快
-	cnt1 := map[byte]int{} // 元音
-	cnt2 := 0 // 辅音
+	cnt1 := map[byte]int{} // 每种元音的个数
+	cnt2 := 0 // 辅音个数
 	left := 0
 	for _, b := range word {
 		if strings.ContainsRune("aeiou", b) {
@@ -157,10 +159,349 @@ func countOfSubstrings(word string, k int) int64 {
 }
 ```
 
+## 优化一
+
+1. 把哈希表改成数组，额外用一个变量 $\textit{size}_1$ 维护元音种类数。
+2. 判断元音的代码可以用位运算优化，把 $\texttt{aeiou}$ 视作集合 $\{0,4,8,14,20\}$，根据 [从集合论到位运算](https://leetcode.cn/circle/discuss/CaOJ45/)，这等于 $1065233$。用 `(1065233 >> b & 1) > 0` 可以判断字母 $b$ 是否为元音。
+
+> Python 代码无需优化，保持原样就行。
+
+```java [sol-Java]
+class Solution {
+    public long countOfSubstrings(String word, int k) {
+        char[] s = word.toCharArray();
+        return f(s, k) - f(s, k + 1);
+    }
+
+    private long f(char[] word, int k) {
+        final int VOWEL_MASK = 1065233;
+        long ans = 0;
+        int[] cnt1 = new int['u' - 'a' + 1];
+        int size1 = 0; // 元音种类数
+        int cnt2 = 0;
+        int left = 0;
+        for (char b : word) {
+            b -= 'a';
+            if ((VOWEL_MASK >> b & 1) > 0) {
+                if (cnt1[b]++ == 0) {
+                    size1++;
+                }
+            } else {
+                cnt2++;
+            }
+            while (size1 == 5 && cnt2 >= k) {
+                int out = word[left] - 'a';
+                if ((VOWEL_MASK >> out & 1) > 0) {
+                    if (--cnt1[out] == 0) {
+                        size1--;
+                    }
+                } else {
+                    cnt2--;
+                }
+                left++;
+            }
+            ans += left;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    const int VOWEL_MASK = 1065233;
+
+    long long f(string& word, int k) {
+        long long ans = 0;
+        int cnt1['u' - 'a' + 1]{};
+        int size1 = 0; // 元音种类数
+        int cnt2 = 0;
+        int left = 0;
+        for (char b : word) {
+            b -= 'a';
+            if (VOWEL_MASK >> b & 1) {
+                if (cnt1[b]++ == 0) {
+                    size1++;
+                }
+            } else {
+                cnt2++;
+            }
+            while (size1 == 5 && cnt2 >= k) {
+                char out = word[left] - 'a';
+                if (VOWEL_MASK >> out & 1) {
+                    if (--cnt1[out] == 0) {
+                        size1--;
+                    }
+                } else {
+                    cnt2--;
+                }
+                left++;
+            }
+            ans += left;
+        }
+        return ans;
+    }
+
+public:
+    long long countOfSubstrings(string word, int k) {
+        return f(word, k) - f(word, k + 1);
+    }
+};
+```
+
+```go [sol-Go]
+func f(word string, k int) (ans int64) {
+	const vowelMask = 1065233
+	cnt1 := ['u' - 'a' + 1]int{}
+	size1 := 0 // 元音种类数
+	cnt2 := 0
+	left := 0
+	for _, b := range word {
+		b -= 'a'
+		if vowelMask>>b&1 > 0 {
+			if cnt1[b] == 0 {
+				size1++
+			}
+			cnt1[b]++
+		} else {
+			cnt2++
+		}
+		for size1 == 5 && cnt2 >= k {
+			out := word[left] - 'a'
+			if vowelMask>>out&1 > 0 {
+				cnt1[out]--
+				if cnt1[out] == 0 {
+					size1--
+				}
+			} else {
+				cnt2--
+			}
+			left++
+		}
+		ans += int64(left)
+	}
+	return
+}
+
+func countOfSubstrings(word string, k int) int64 {
+	return f(word, k) - f(word, k+1)
+}
+```
+
+## 优化二
+
+把两个滑动窗口合并成一个。我一般把这种滑窗叫做**三指针滑窗**。
+
+属于是极限优化了，不过代码实在太长，要不是能更快点，我才不想把这个代码放进来呢……
+
+```py [sol-Python3]
+class Solution:
+    def countOfSubstrings(self, word: str, k: int) -> int:
+        cnt_vowel1 = defaultdict(int)
+        cnt_vowel2 = defaultdict(int)
+        cnt_consonant1 = cnt_consonant2 = 0
+        ans = left1 = left2 = 0
+        for b in word:
+            if b in "aeiou":
+                cnt_vowel1[b] += 1
+                cnt_vowel2[b] += 1
+            else:
+                cnt_consonant1 += 1
+                cnt_consonant2 += 1
+
+            while len(cnt_vowel1) == 5 and cnt_consonant1 >= k:
+                out = word[left1]
+                if out in "aeiou":
+                    cnt_vowel1[out] -= 1
+                    if cnt_vowel1[out] == 0:
+                        del cnt_vowel1[out]
+                else:
+                    cnt_consonant1 -= 1
+                left1 += 1
+
+            while len(cnt_vowel2) == 5 and cnt_consonant2 > k:
+                out = word[left2]
+                if out in "aeiou":
+                    cnt_vowel2[out] -= 1
+                    if cnt_vowel2[out] == 0:
+                        del cnt_vowel2[out]
+                else:
+                    cnt_consonant2 -= 1
+                left2 += 1
+
+            ans += left1 - left2
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countOfSubstrings(String word, int k) {
+        final int VOWEL_MASK = 1065233;
+        char[] s = word.toCharArray();
+        long ans = 0;
+        int[] cntVowel1 = new int['u' - 'a' + 1], cntVowel2 = new int['u' - 'a' + 1];
+        int sizeVowel1 = 0, sizeVowel2 = 0; // 元音种类数
+        int cntConsonant1 = 0, cntConsonant2 = 0;
+        int left1 = 0, left2 = 0;
+        for (char b : s) {
+            b -= 'a';
+            if ((VOWEL_MASK >> b & 1) > 0) {
+                if (cntVowel1[b]++ == 0) {
+                    sizeVowel1++;
+                }
+                if (cntVowel2[b]++ == 0) {
+                    sizeVowel2++;
+                }
+            } else {
+                cntConsonant1++;
+                cntConsonant2++;
+            }
+
+            while (sizeVowel1 == 5 && cntConsonant1 >= k) {
+                int out = s[left1] - 'a';
+                if ((VOWEL_MASK >> out & 1) > 0) {
+                    if (--cntVowel1[out] == 0) {
+                        sizeVowel1--;
+                    }
+                } else {
+                    cntConsonant1--;
+                }
+                left1++;
+            }
+
+            while (sizeVowel2 == 5 && cntConsonant2 > k) {
+                int out = s[left2] - 'a';
+                if ((VOWEL_MASK >> out & 1) > 0) {
+                    if (--cntVowel2[out] == 0) {
+                        sizeVowel2--;
+                    }
+                } else {
+                    cntConsonant2--;
+                }
+                left2++;
+            }
+
+            ans += left1 - left2;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countOfSubstrings(string word, int k) {
+        const int VOWEL_MASK = 1065233;
+        long long ans = 0;
+        int cnt_vowel1['u' - 'a' + 1]{}, cnt_vowel2['u' - 'a' + 1]{};
+        int size_vowel1 = 0, size_vowel2 = 0; // 元音种类数
+        int cnt_consonant1 = 0, cnt_consonant2 = 0;
+        int left1 = 0, left2 = 0;
+        for (int b : word) {
+            b -= 'a';
+            if (VOWEL_MASK >> b & 1) {
+                if (cnt_vowel1[b]++ == 0) {
+                    size_vowel1++;
+                }
+                if (cnt_vowel2[b]++ == 0) {
+                    size_vowel2++;
+                }
+            } else {
+                cnt_consonant1++;
+                cnt_consonant2++;
+            }
+
+            while (size_vowel1 == 5 && cnt_consonant1 >= k) {
+                char out = word[left1] - 'a';
+                if (VOWEL_MASK >> out & 1) {
+                    if (--cnt_vowel1[out] == 0) {
+                        size_vowel1--;
+                    }
+                } else {
+                    cnt_consonant1--;
+                }
+                left1++;
+            }
+
+            while (size_vowel2 == 5 && cnt_consonant2 > k) {
+                char out = word[left2] - 'a';
+                if (VOWEL_MASK >> out & 1) {
+                    if (--cnt_vowel2[out] == 0) {
+                        size_vowel2--;
+                    }
+                } else {
+                    cnt_consonant2--;
+                }
+                left2++;
+            }
+
+            ans += left1 - left2;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countOfSubstrings(word string, k int) (ans int64) {
+	const vowelMask = 1065233
+	var cntVowel1, cntVowel2 ['u' - 'a' + 1]int
+	sizeVowel1, sizeVowel2 := 0, 0 // 元音种类数
+	cntConsonant1, cntConsonant2 := 0, 0
+	left1, left2 := 0, 0
+	for _, b := range word {
+		b -= 'a'
+		if vowelMask>>b&1 > 0 {
+			if cntVowel1[b] == 0 {
+				sizeVowel1++
+			}
+			cntVowel1[b]++
+			if cntVowel2[b] == 0 {
+				sizeVowel2++
+			}
+			cntVowel2[b]++
+		} else {
+			cntConsonant1++
+			cntConsonant2++
+		}
+
+		for sizeVowel1 == 5 && cntConsonant1 >= k {
+			out := word[left1] - 'a'
+			if vowelMask>>out&1 > 0 {
+				cntVowel1[out]--
+				if cntVowel1[out] == 0 {
+					sizeVowel1--
+				}
+			} else {
+				cntConsonant1--
+			}
+			left1++
+		}
+
+		for sizeVowel2 == 5 && cntConsonant2 > k {
+			out := word[left2] - 'a'
+			if vowelMask>>out&1 > 0 {
+				cntVowel2[out]--
+				if cntVowel2[out] == 0 {
+					sizeVowel2--
+				}
+			} else {
+				cntConsonant2--
+			}
+			left2++
+		}
+
+		ans += int64(left1 - left2)
+	}
+	return
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{word}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(1)$ 或者 $\mathcal{O}(|\Sigma|)$，其中 $|\Sigma|=21$。
 
 更多相似题目，见下面滑动窗口题单中的「**§5.1 三指针滑动窗口**」。
 
