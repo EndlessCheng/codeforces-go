@@ -104,6 +104,8 @@ $$
 
 也就是 $i$ 小于等于 $k-1$ 的二进制长度减一，即 $i$ 小于 $k-1$ 的二进制长度。
 
+### 写法一
+
 ```py [sol-Python3]
 class Solution:
     def kthCharacter(self, k: int, operations: List[int]) -> str:
@@ -157,6 +159,66 @@ func kthCharacter(k int64, operations []int) byte {
 		if k > 1<<i { // k 在右半边
 			inc += operations[i]
 			k -= 1 << i
+		}
+	}
+	return 'a' + byte(inc%26)
+}
+```
+
+### 写法二
+
+本质上，我们相当于在遍历 $k-1$ 二进制的每个比特 $1$。
+
+```py [sol-Python3]
+class Solution:
+    def kthCharacter(self, k: int, operations: List[int]) -> str:
+        k -= 1
+        len_k = k.bit_length()
+        inc = sum(op for i, op in enumerate(operations[:len_k]) if k >> i & 1)
+        return ascii_lowercase[inc % 26]
+```
+
+```java [sol-Java]
+class Solution {
+    public char kthCharacter(long k, int[] operations) {
+        k--;
+        int n = Math.min(operations.length, 64 - Long.numberOfLeadingZeros(k));
+        int inc = 0;
+        for (int i = 0; i < n; i++) {
+            if ((k >> i & 1) > 0) {
+                inc += operations[i];
+            }
+        }
+        return (char) ('a' + inc % 26);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    char kthCharacter(long long k, vector<int>& operations) {
+        k--;
+        int n = min((int) operations.size(), (int) __lg(k) + 1);
+        int inc = 0;
+        for (int i = 0; i < n; i++) {
+            if (k >> i & 1) {
+                inc += operations[i];
+            }
+        }
+        return 'a' + inc % 26;
+    }
+};
+```
+
+```go [sol-Go]
+func kthCharacter(k int64, operations []int) byte {
+	k--
+	n := min(len(operations), bits.Len64(uint64(k)))
+	inc := 0
+	for i, op := range operations[:n] {
+		if k>>i&1 > 0 {
+			inc += op
 		}
 	}
 	return 'a' + byte(inc%26)

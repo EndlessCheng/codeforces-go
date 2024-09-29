@@ -4,12 +4,12 @@ import "math/bits"
 
 // https://space.bilibili.com/206214
 func kthCharacter(k int64, operations []int) byte {
-	n := min(len(operations), bits.Len64(uint64(k-1)))
+	k--
+	n := min(len(operations), bits.Len64(uint64(k)))
 	inc := 0
-	for i := n - 1; i >= 0; i-- {
-		if k > 1<<i { // k 在右半边
-			inc += operations[i]
-			k -= 1 << i
+	for i, op := range operations[:n] {
+		if k>>i&1 > 0 {
+			inc += op
 		}
 	}
 	return 'a' + byte(inc%26)
