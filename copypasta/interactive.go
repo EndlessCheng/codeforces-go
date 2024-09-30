@@ -12,6 +12,7 @@ https://codeforces.com/problemset/problem/1167/B 1400
 
 https://codeforces.com/problemset/problem/1807/E 1300 数组
 https://codeforces.com/problemset/problem/1999/G1 1500
+https://codeforces.com/problemset/problem/1698/D 1600
 https://codeforces.com/problemset/problem/1479/A 1700 数组（同 LC162）
 https://codeforces.com/problemset/problem/1999/G2 1700 三分
 https://codeforces.com/problemset/problem/1010/B 1800
@@ -25,6 +26,7 @@ https://codeforces.com/problemset/problem/1838/F 3000
 
 ## 位运算
 
+https://codeforces.com/problemset/problem/1556/D 1800
 https://codeforces.com/problemset/problem/1780/D 1800
 https://codeforces.com/problemset/problem/1207/E 1900 脑筋急转弯
 https://codeforces.com/problemset/problem/1088/D 2000
