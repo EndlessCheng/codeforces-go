@@ -5,9 +5,8 @@ import "math/bits"
 // https://space.bilibili.com/206214
 func kthCharacter(k int64, operations []int) byte {
 	k--
-	n := min(len(operations), bits.Len64(uint64(k)))
 	inc := 0
-	for i, op := range operations[:n] {
+	for i, op := range operations[:bits.Len64(uint64(k))] {
 		if k>>i&1 > 0 {
 			inc += op
 		}

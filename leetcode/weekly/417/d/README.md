@@ -31,9 +31,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public char kthCharacter(long k, int[] operations) {
-        // n 不需要太大，可以和 k-1 的二进制长度取最小值，详细解释见下文
-        int n = Math.min(operations.length, 64 - Long.numberOfLeadingZeros(k - 1));
-        return f(k, operations, n - 1);
+        // 从 k-1 的二进制长度减一开始，详细解释见下文
+        return f(k, operations, 63 - Long.numberOfLeadingZeros(k - 1));
     }
 
     private char f(long k, int[] operations, int i) {
@@ -102,16 +101,17 @@ $$
 i\le \lfloor \log_2 (k-1) \rfloor
 $$
 
-也就是 $i$ 小于等于 $k-1$ 的二进制长度减一，即 $i$ 小于 $k-1$ 的二进制长度。
+也就是 $i$ 小于等于 $k-1$ 的二进制长度减一。
+
+注意题目保证执行完所有操作后字符串至少有 $k$ 个字母，所以无需担心下标 $i$ 越界的情况。
 
 ### 写法一
 
 ```py [sol-Python3]
 class Solution:
     def kthCharacter(self, k: int, operations: List[int]) -> str:
-        n = min(len(operations), (k - 1).bit_length())
         inc = 0
-        for i in range(n - 1, -1, -1):
+        for i in range((k - 1).bit_length() - 1, -1, -1):
             if k > 1 << i:  # k 在右半边
                 inc += operations[i]
                 k -= 1 << i
@@ -121,9 +121,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public char kthCharacter(long k, int[] operations) {
-        int n = Math.min(operations.length, 64 - Long.numberOfLeadingZeros(k - 1));
         int inc = 0;
-        for (int i = n - 1; i >= 0; i--) {
+        for (int i = 63 - Long.numberOfLeadingZeros(k - 1); i >= 0; i--) {
             if (k > (1L << i)) { // k 在右半边
                 inc += operations[i];
                 k -= (1L << i);
@@ -138,9 +137,8 @@ class Solution {
 class Solution {
 public:
     char kthCharacter(long long k, vector<int>& operations) {
-        int n = min((int) operations.size(), (int) __lg(k - 1) + 1);
         int inc = 0;
-        for (int i = n - 1; i >= 0; i--) {
+        for (int i = __lg(k - 1); i >= 0; i--) {
             if (k > (1LL << i)) { // k 在右半边
                 inc += operations[i];
                 k -= (1LL << i);
@@ -153,9 +151,8 @@ public:
 
 ```go [sol-Go]
 func kthCharacter(k int64, operations []int) byte {
-	n := min(len(operations), bits.Len64(uint64(k-1)))
 	inc := 0
-	for i := n - 1; i >= 0; i-- {
+	for i := bits.Len64(uint64(k-1)) - 1; i >= 0; i-- {
 		if k > 1<<i { // k 在右半边
 			inc += operations[i]
 			k -= 1 << i
@@ -191,9 +188,8 @@ class Solution:
 class Solution {
     public char kthCharacter(long k, int[] operations) {
         k--;
-        int n = Math.min(operations.length, 64 - Long.numberOfLeadingZeros(k));
         int inc = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 63 - Long.numberOfLeadingZeros(k); i >= 0; i--) {
             if ((k >> i & 1) > 0) {
                 inc += operations[i];
             }
@@ -208,9 +204,8 @@ class Solution {
 public:
     char kthCharacter(long long k, vector<int>& operations) {
         k--;
-        int n = min((int) operations.size(), (int) __lg(k) + 1);
         int inc = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = __lg(k); i >= 0; i--) {
             if (k >> i & 1) {
                 inc += operations[i];
             }
@@ -223,9 +218,8 @@ public:
 ```go [sol-Go]
 func kthCharacter(k int64, operations []int) byte {
 	k--
-	n := min(len(operations), bits.Len64(uint64(k)))
 	inc := 0
-	for i, op := range operations[:n] {
+	for i, op := range operations[:bits.Len64(uint64(k))] {
 		if k>>i&1 > 0 {
 			inc += op
 		}
@@ -236,7 +230,7 @@ func kthCharacter(k int64, operations []int) byte {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(\min(n, \log k))$，其中 $n$ 是 $\textit{operations}$ 的长度。
+- 时间复杂度：$\mathcal{O}(\log k)$。注意题目保证 $\textit{operations}$ 数组足够长。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
