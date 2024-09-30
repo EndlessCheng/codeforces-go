@@ -178,6 +178,15 @@ class Solution:
         return ascii_lowercase[inc % 26]
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def kthCharacter(self, k: int, operations: List[int]) -> str:
+        k -= 1
+        len_k = k.bit_length()
+        inc = sum(k >> i & op for i, op in enumerate(operations[:len_k]))
+        return ascii_lowercase[inc % 26]
+```
+
 ```java [sol-Java]
 class Solution {
     public char kthCharacter(long k, int[] operations) {
