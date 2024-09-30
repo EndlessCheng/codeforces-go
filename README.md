@@ -320,6 +320,7 @@
     - 离散化
   - [杂项 misc.go](/copypasta/misc.go)
 - [快速输入输出模板 io.go](/copypasta/io.go)
+- [交互题单 interactive.go](/copypasta/interactive.go)
 
 ## 分类题单
 
