@@ -292,8 +292,6 @@ func countOfSubstrings(word string, k int) int64 {
 
 把两个滑动窗口合并成一个。我一般把这种滑窗叫做**三指针滑窗**。
 
-属于是极限优化了，不过代码实在太长，要不是能更快点，我才不想把这个代码放进来呢……
-
 ```py [sol-Python3]
 class Solution:
     def countOfSubstrings(self, word: str, k: int) -> int:
