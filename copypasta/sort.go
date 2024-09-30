@@ -16,9 +16,12 @@ BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
+长为 n 的二分区间，最坏情况下的二分次数，等于 n 的二进制长度 bits.Len(n)
+
 测试一下，你有没有学到二分的本质？
 https://codeforces.com/contest/1945/problem/E 1700
 https://codeforces.com/contest/1999/problem/G2 1700
+https://codeforces.com/problemset/problem/1624/F 2000
 
 LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
