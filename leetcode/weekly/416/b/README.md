@@ -118,7 +118,7 @@ $$
 所以第 $i$ 名工人可以把山的高度降低
 
 $$
-\left\lfloor \dfrac{-1 + \sqrt{1 + 8k}}{2} \right\rfloor
+\left\lfloor \dfrac{-1 + \sqrt{1 + 8k}}{2} \right\rfloor = \left\lfloor \dfrac{-1 + \lfloor\sqrt{1 + 8k}\rfloor}{2} \right\rfloor
 $$
 
 累加上式，如果和 $\ge \textit{mountainHeight}$，则说明答案 $\le m$，否则说明答案 $> m$。
@@ -144,7 +144,7 @@ class Solution:
         def check(m: int) -> bool:
             left_h = mountainHeight
             for t in workerTimes:
-                left_h -= int((sqrt(m // t * 8 + 1) - 1) / 2)
+                left_h -= (isqrt(m // t * 8 + 1) - 1) // 2
                 if left_h <= 0:
                     return True
             return False
@@ -157,7 +157,7 @@ class Solution:
 ```py [sol-Python3 写法二]
 class Solution:
     def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
-        f = lambda m: sum(int((sqrt(m // t * 8 + 1) - 1) / 2) for t in workerTimes)
+        f = lambda m: sum((isqrt(m // t * 8 + 1) - 1) // 2 for t in workerTimes)
         max_t = max(workerTimes)
         h = (mountainHeight - 1) // len(workerTimes) + 1
         return bisect_left(range(max_t * h * (h + 1) // 2), mountainHeight, 1, key=f)
@@ -186,7 +186,7 @@ class Solution {
 
     private boolean check(long m, int leftH, int[] workerTimes) {
         for (int t : workerTimes) {
-            leftH -= (int) ((Math.sqrt(m / t * 8 + 1) - 1) / 2);
+            leftH -= ((int) Math.sqrt(m / t * 8 + 1) - 1) / 2;
             if (leftH <= 0) {
                 return true;
             }
@@ -203,7 +203,7 @@ public:
         auto check = [&](long long m) {
             int left_h = mountainHeight;
             for (int t : workerTimes) {
-                left_h -= (int) ((sqrt(m / t * 8 + 1) - 1) / 2);
+                left_h -= ((int) sqrt(m / t * 8 + 1) - 1) / 2;
                 if (left_h <= 0) {
                     return true;
                 }
@@ -227,11 +227,11 @@ public:
 func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 	maxT := slices.Max(workerTimes)
 	h := (mountainHeight-1)/len(workerTimes) + 1
-	ans := 1 + sort.Search(maxT*h*(h+1)/2, func(m int) bool {
+	ans := 1 + sort.Search(maxT*h*(h+1)/2-1, func(m int) bool {
 		m++
 		leftH := mountainHeight
 		for _, t := range workerTimes {
-			leftH -= int((math.Sqrt(float64(m/t*8+1)) - 1) / 2)
+			leftH -= (int(math.Sqrt(float64(m/t*8+1))) - 1) / 2
 			if leftH <= 0 {
 				return true
 			}

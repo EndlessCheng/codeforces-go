@@ -15,7 +15,7 @@ func minNumberOfSeconds(mountainHeight int, workerTimes []int) int64 {
 		m++
 		leftH := mountainHeight
 		for _, t := range workerTimes {
-			leftH -= int((math.Sqrt(float64(m/t*8+1)) - 1) / 2)
+			leftH -= (int(math.Sqrt(float64(m/t*8+1))) - 1) / 2
 			if leftH <= 0 {
 				return true
 			}
