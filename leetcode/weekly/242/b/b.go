@@ -2,22 +2,31 @@ package main
 
 import (
 	"math"
+	"slices"
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
+// https://space.bilibili.com/206214
 func minSpeedOnTime(dist []int, hour float64) int {
-	h100 := int(math.Round(hour * 100))
 	n := len(dist)
-	if h100 <= (n-1)*100 { // hour 必须严格大于 n-1
+	h100 := int(math.Round(hour * 100)) // 下面不会用到任何浮点数
+	delta := h100 - (n-1)*100
+	if delta <= 0 { // 无法到达终点
 		return -1
 	}
-	return 1 + sort.Search(1e7-1, func(v int) bool {
+
+	maxDist := slices.Max(dist)
+	if h100 <= n*100 { // 特判
+		// 见题解中的公式
+		return max(maxDist, (dist[n-1]*100-1)/delta+1)
+	}
+
+	return 1 + sort.Search(maxDist-1, func(v int) bool {
 		v++
-		h := n - 1
+		t := 0
 		for _, d := range dist[:n-1] {
-			h += (d - 1) / v
+			t += (d-1)/v + 1
 		}
-		return (h*v+dist[n-1])*100 <= h100*v
+		return (t*v+dist[n-1])*100 <= h100*v
 	})
 }
