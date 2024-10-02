@@ -424,44 +424,6 @@ func sortColors(nums []int) {
     }
 }
 
-// LC 79
-func exist(board [][]byte, word string) bool {
-    type pair struct{ x, y int }
-    var dir4 = []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
-    h, w := len(board), len(board[0])
-    vis := make([][]bool, h)
-    for i := range vis {
-        vis[i] = make([]bool, w)
-    }
-    var f func(i, j, k int) bool
-    f = func(i, j, k int) bool {
-        if board[i][j] != word[k] {
-            return false
-        }
-        if k == len(word)-1 {
-            return true
-        }
-        vis[i][j] = true
-        defer func() { vis[i][j] = false }() // 回溯时还原已访问的单元格
-        for _, d := range dir4 {
-            if x, y := i+d.x, j+d.y; 0 <= x && x < h && 0 <= y && y < w && !vis[x][y] {
-                if f(x, y, k+1) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    for i, r := range board {
-        for j := range r {
-            if f(i, j, 0) {
-                return true
-            }
-        }
-    }
-    return false
-}
-
 // LC 86
 func partition(head *ListNode, x int) *ListNode {
     small := &ListNode{}
