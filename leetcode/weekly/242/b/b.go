@@ -21,7 +21,8 @@ func minSpeedOnTime(dist []int, hour float64) int {
 		return max(maxDist, (dist[n-1]*100-1)/delta+1)
 	}
 
-	return 1 + sort.Search(maxDist-1, func(v int) bool {
+	h := h100 / (n * 100)
+	return 1 + sort.Search((maxDist-1)/h, func(v int) bool {
 		v++
 		t := 0
 		for _, d := range dist[:n-1] {
