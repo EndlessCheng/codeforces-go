@@ -49,7 +49,7 @@ class Solution {
 class Solution {
 public:
     long long maximumTotalSum(vector<int>& maximumHeight) {
-        sort(maximumHeight.rbegin(), maximumHeight.rend()); // 从大到小排序
+        ranges::sort(maximumHeight, greater()); // 从大到小排序
         for (int i = 1; i < maximumHeight.size(); i++) {
             maximumHeight[i] = min(maximumHeight[i], maximumHeight[i - 1] - 1);
             if (maximumHeight[i] <= 0) {
