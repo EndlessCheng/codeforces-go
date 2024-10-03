@@ -21,20 +21,16 @@ func cf758E(in io.Reader, _w io.Writer) {
 		Fscan(in, &v, &w, &wt, &p)
 		es[i] = edge{v, w, wt, p}
 		g[v] = append(g[v], nb{w, i})
-		g[w] = append(g[w], nb{v, i})
 	}
 
 	// 第一次 DFS：预处理每棵子树的 minSum（子树最小重量和）以及 extraDec（见下面注释）
 	a := make([]struct{ minSum, extraDec int }, n+1)
-	var dfs func(int, int) (int, int)
-	dfs = func(v, fa int) (minSum, maxSum int) {
+	var dfs func(int) (int, int)
+	dfs = func(v int) (minSum, maxSum int) {
 		for _, e := range g[v] {
 			w := e.to
-			if w == fa {
-				continue
-			}
 			// 递归计算子树 w 的最小重量和 mn、最大重量和 mx
-			mn, mx := dfs(w, v)
+			mn, mx := dfs(w)
 			p := es[e.i].p
 			// v-w 边的强度不能小于子树 w 的最小重量和
 			if mn < 0 || p < mn {
@@ -54,7 +50,7 @@ func cf758E(in io.Reader, _w io.Writer) {
 		// 最后返回子树 v 的最小重量和、最大重量和
 		return
 	}
-	minSum, _ := dfs(1, 0)
+	minSum, _ := dfs(1)
 	if minSum < 0 {
 		Fprint(out, -1)
 		return
@@ -64,17 +60,14 @@ func cf758E(in io.Reader, _w io.Writer) {
 	// 核心思想：优先减重最下面的边
 	// 如果不这样做，先减重上面的，那么由于上面的边强度变小，下面的边也得跟着减重，不如先减重下面的边优
 	dec := 0
-	var modify func(int, int)
-	modify = func(v, fa int) {
+	var modify func(int)
+	modify = func(v int) {
 		for _, ew := range g[v] {
 			w := ew.to
-			if w == fa {
-				continue
-			}
 			// 递归之前，只累加需要减重的量，在递归之后处理减重，这样就可以保证下面的边先减重
 			dec += a[w].extraDec
 			// 处理 w 子树内部的减重
-			modify(w, v)
+			modify(w)
 			// 处理 v-w 这条边的减重
 			e := &es[ew.i]
 			// v-w 这条边，重量可以减到 1，强度可以减到子树 w 的最小重量和
@@ -84,7 +77,7 @@ func cf758E(in io.Reader, _w io.Writer) {
 			dec -= d
 		}
 	}
-	modify(1, 0)
+	modify(1)
 
 	Fprintln(out, n)
 	for _, e := range es {
