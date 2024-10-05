@@ -35,7 +35,7 @@ class Solution:
         suf = [m] * (n + 1)
         j = m - 1
         for i in range(n - 1, -1, -1):
-            if j >= 0 and s[i] == t[j]:
+            if s[i] == t[j]:
                 j -= 1
             if j < 0:  # t 是 s 的子序列
                 return 0
@@ -92,7 +92,7 @@ public:
         vector<int> suf(n + 1);
         suf[n] = m;
         for (int i = n - 1, j = m - 1; i >= 0; i--) {
-            if (j >= 0 && s[i] == t[j]) {
+            if (s[i] == t[j]) {
                 j--;
             }
             if (j < 0) { // t 是 s 的子序列
