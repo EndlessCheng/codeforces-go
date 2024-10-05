@@ -233,6 +233,10 @@ func kthCharacter(k int64, operations []int) byte {
 - 时间复杂度：$\mathcal{O}(\log k)$。注意题目保证 $\textit{operations}$ 数组足够长。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 相似题目
+
+- [1545. 找出第 N 个二进制字符串中的第 K 位](https://leetcode.cn/problems/find-kth-bit-in-nth-binary-string/) 做到 $\mathcal{O}(\log k)$
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
