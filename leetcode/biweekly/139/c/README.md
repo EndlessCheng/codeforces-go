@@ -527,7 +527,7 @@ public:
         int ans = 0;
         vector<array<int, MX>> pre(k2 + 1);
         pre[0][0] = true;
-        int min_i[MX]{};
+        int min_i[MX];
         ranges::fill(min_i, INT_MAX);
         ranges::fill(cnt, 0);
         for (int i = 0; i < n - k; i++) {
