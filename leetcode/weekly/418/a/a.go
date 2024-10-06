@@ -12,6 +12,7 @@ func maxGoodNumber(nums []int) (ans int) {
 		lenB := bits.Len(uint(b))
 		return (b<<lenA | a) - (a<<lenB | b)
 	})
+
 	for _, x := range nums {
 		ans = ans<<bits.Len(uint(x)) | x
 	}

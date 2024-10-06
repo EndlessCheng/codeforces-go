@@ -20,7 +20,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxGoodNumber(int[] nums) {
-        Integer[] arr = Arrays.stream(nums).boxed().toArray(Integer[]::new);
+        // Integer[] arr = Arrays.stream(nums).boxed().toArray(Integer[]::new);
+        Integer[] arr = new Integer[]{nums[0], nums[1], nums[2]};
         Arrays.sort(arr, (a, b) -> {
             int lenA = 32 - Integer.numberOfLeadingZeros(a);
             int lenB = 32 - Integer.numberOfLeadingZeros(b);
@@ -63,6 +64,7 @@ func maxGoodNumber(nums []int) (ans int) {
 		lenB := bits.Len(uint(b))
 		return (b<<lenA | a) - (a<<lenB | b)
 	})
+
 	for _, x := range nums {
 		ans = ans<<bits.Len(uint(x)) | x
 	}
