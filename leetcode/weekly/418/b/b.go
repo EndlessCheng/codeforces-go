@@ -13,7 +13,7 @@ func remainingMethods(n, k int, invocations [][]int) (ans []int) {
 	dfs = func(x int) {
 		isSuspicious[x] = true
 		for _, y := range g[x] {
-			if !isSuspicious[y] {
+			if !isSuspicious[y] { // 避免无限递归
 				dfs(y)
 			}
 		}

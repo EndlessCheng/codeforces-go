@@ -12,6 +12,8 @@
 2. 遍历 $\textit{invocations}$，如果存在从「非可疑方法」到「可疑方法」的边，则删除后无法编译，返回数组 $[0,1,2,\cdots,n-1]$。
 3. 否则可以正常删除，把非可疑方法加入答案。
 
+⚠**注意**：图中可能有环，为避免 DFS 无限递归下去，只需 DFS 没有访问过（没有被标记）的节点。
+
 ```py [sol-Python3 哈希集合]
 class Solution:
     def remainingMethods(self, n: int, k: int, invocations: List[List[int]]) -> List[int]:
@@ -24,7 +26,7 @@ class Solution:
         def dfs(x: int) -> None:
             suspicious.add(x)
             for y in g[x]:
-                if y not in suspicious:
+                if y not in suspicious:  # 避免无限递归
                     dfs(y)
         dfs(k)
 
@@ -50,7 +52,7 @@ class Solution:
         def dfs(x: int) -> None:
             is_suspicious[x] = True
             for y in g[x]:
-                if not is_suspicious[y]:
+                if not is_suspicious[y]:  # 避免无限递归
                     dfs(y)
         dfs(k)
 
@@ -102,7 +104,7 @@ class Solution {
     private void dfs(int x, List<Integer>[] g, boolean[] isSuspicious) {
         isSuspicious[x] = true;
         for (int y : g[x]) {
-            if (!isSuspicious[y]) {
+            if (!isSuspicious[y]) { // 避免无限递归
                 dfs(y, g, isSuspicious);
             }
         }
@@ -124,7 +126,7 @@ public:
         auto dfs = [&](auto&& dfs, int x) -> void {
             is_suspicious[x] = true;
             for (int y : g[x]) {
-                if (!is_suspicious[y]) {
+                if (!is_suspicious[y]) { // 避免无限递归
                     dfs(dfs, y);
                 }
             }
@@ -166,7 +168,7 @@ func remainingMethods(n, k int, invocations [][]int) (ans []int) {
 	dfs = func(x int) {
 		isSuspicious[x] = true
 		for _, y := range g[x] {
-			if !isSuspicious[y] {
+			if !isSuspicious[y] { // 避免无限递归
 				dfs(y)
 			}
 		}
