@@ -115,9 +115,8 @@ public:
 ```go [sol-Go]
 func maxPathLength(coordinates [][]int, k int) int {
 	kx, ky := coordinates[k][0], coordinates[k][1]
-	sort.Slice(coordinates, func(i, j int) bool {
-		a, b := coordinates[i], coordinates[j]
-		return a[0] < b[0] || a[0] == b[0] && a[1] > b[1]
+	slices.SortFunc(coordinates, func(a, b []int) int {
+		return cmp.Or(a[0]-b[0], b[1]-a[1])
 	})
 
 	g := []int{}
