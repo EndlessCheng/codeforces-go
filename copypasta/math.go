@@ -22,6 +22,14 @@ https://codeforces.com/problemset/problem/1178/E
 https://en.wikipedia.org/wiki/List_of_recreational_number_theory_topics
 https://euler.stephan-brumme.com/toolbox/
 
+1+2+...+x = x*(x+1)/2 <= k
+解得 x <= (int(math.Sqrt(float64(k*8+1)) - 1)) / 2
+如果是 >= 要添加 math.Ceil
+
+如果是 x*(x-1)/2 <= k
+解得 x <= (int(math.Sqrt(float64(k*8+1)) + 1)) / 2
+注意精度
+
 a%-b == a%b
 a < b 等价于 a ≤ b-1
 a > b 等价于 a ≥ b+1
@@ -29,9 +37,10 @@ a > b 等价于 a ≥ b+1
 对于整数来说有
 ax≤b  =>  x≤⌊b/a⌋           ax<b  =>  x<⌈b/a⌉
 ax>b  =>  x>⌊b/a⌋           ax≥b  =>  x≥⌈b/a⌉
+
 推论
-x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i
-x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i
+x<<i ≤ s  =>  x ≤ s>>i      x<<i < s  =>  x ≤ (s-1)>>i     相当于 x<<i ≤ s-1
+x<<i > s  =>  x > s>>i      x<<i ≥ s  =>  x > (s-1)>>i     相当于 x<<i > s-1
 
 1<<x ≤ v  =>  x ≤ bits.Len(uint(v))-1     1<<x < v  =>  x ≤ bits.Len(uint(v-1))-1
 1<<x > v  =>  x ≥ bits.Len(uint(v))       1<<x ≥ v  =>  x ≥ bits.Len(uint(v-1))
@@ -69,6 +78,7 @@ https://codeforces.com/problemset/problem/1857/F
 https://atcoder.jp/contests/arc158/tasks/arc158_b
 
 调和级数（枚举倍数）
+https://codeforces.com/contest/1996/problem/D 1500
 https://atcoder.jp/contests/abc089/tasks/abc089_d
 
 长为 n 的数组的所有子数组的长度之和 n*(n+1)*(n+2)/6 https://oeis.org/A000292
@@ -94,6 +104,15 @@ https://mathoverflow.net/questions/31663/distinct-numbers-in-multiplication-tabl
 勾股数 https://oeis.org/A008846
 斜边 https://oeis.org/A004613 Numbers that are divisible only by primes congruent to 1 mod 4
 https://en.wikipedia.org/wiki/Pythagorean_triple https://zh.wikipedia.org/wiki/%E5%8B%BE%E8%82%A1%E6%95%B0
+
+https://oeis.org/A000328 Number of points of norm <= n^2 in square lattice
+sum(isqrt(n*n-y*y) for y in range(1, n)) * 4 + 4*n + 1
+https://oeis.org/A051132 Number of ordered pairs of integers (x,y) with x^2+y^2 < n^2
+https://oeis.org/A046109 Number of lattice points (x,y) on the circumference of a circle of radius n with center at (0,0)
+a(n) = 8*A046080(n) + 4 for n > 0
+https://oeis.org/A046080 Number of integer-sided right triangles with hypotenuse n
+                         Number of ways n^2 can be written as the sum of two positive squares
+Let n = 2^e_2 * product_i p_i^f_i * product_j q_j^g_j where p_i == 1 mod 4, q_j == 3 mod 4; then a(n) = (1/2)*(product_i (2*f_i + 1) - 1)
 
 https://oeis.org/A000079 2^n
 虽然是个很普通的序列，但也能出现在一些意想不到的地方
@@ -204,6 +223,9 @@ LC1387 https://leetcode.cn/problems/sort-integers-by-the-power-value/
 
 Funny sum https://codeforces.com/blog/entry/125796?#comment-1116197
 
+todo https://ac.nowcoder.com/acm/contest/85687/F
+- https://ac.nowcoder.com/acm/discuss/blogs?tagId=270235
+
 挑战 2.6 节练习题
 2429 分解 LCM/GCD = a*b 且 gcd(a,b)=1 且 a+b 最小
 1930 https://www.luogu.com.cn/problem/UVA10555 https://www.luogu.com.cn/problem/SP1166 floatToRat
@@ -287,6 +309,8 @@ func _(abs func(int) int) {
 	https://en.wikipedia.org/wiki/Euclidean_algorithm
 	https://stackoverflow.com/questions/3980416/time-complexity-of-euclids-algorithm
 
+	https://codeforces.com/contest/2008/problem/G 1800
+
 	GCD 卷积（GCD Convolution）
 	https://codeforces.com/blog/entry/112346
 	https://judge.yosupo.jp/problem/gcd_convolution
@@ -324,6 +348,9 @@ func _(abs func(int) int) {
 	a 中任意两数互质 <=> 每个质数至多整除一个 a[i]
 	https://codeforces.com/contest/1770/problem/C
 
+	LCM
+	https://codeforces.com/gym/105139/problem/L 分类讨论
+
 	todo https://codeforces.com/contest/1462/problem/D 的 O(nlogn) 解法
 
 	Frobenius problem / Coin problem / Chicken McNugget Theorem
@@ -333,6 +360,10 @@ func _(abs func(int) int) {
 	https://www.luogu.com.cn/problem/P3951
 	https://codeforces.com/contest/1526/problem/B
 	- [2979. 最贵的无法购买的商品](https://leetcode.cn/problems/most-expensive-item-that-can-not-be-bought/)（会员题）
+
+	裴蜀定理 Bézout's identity
+	LC1250 https://leetcode.cn/problems/check-if-it-is-a-good-array/
+	https://www.codechef.com/problems/SJ1
 
 	*/
 
@@ -414,6 +445,31 @@ func _(abs func(int) int) {
 	// ∑lcm(n,i) = n*(1+∑{d|n}d*phi(d))/2 = n*(1+A057660(n))/2   https://oeis.org/A051193
 	// ∑lcm(n,i)/n = A051193(n)/n = (1+∑{d|n}d*phi(d))/2 = (1+A057660(n))/2   https://oeis.org/A057661
 	// ∑∑lcm(i,j)   https://oeis.org/A064951
+
+	// 统计 a 中所有数对的 GCD 的出现次数
+	// O(n + UlogU), U=max(a)
+	// LC3312 https://leetcode.cn/problems/sorted-gcd-pair-queries/
+	// - https://www.codechef.com/problems/KGCD 3056 难点在输出方案
+	// - https://discuss.codechef.com/t/KGCD-editorial/
+	countGCD := func(a []int) []int {
+		mx := slices.Max(a)
+		cntX := make([]int, mx+1)
+		for _, x := range a {
+			cntX[x]++
+		}
+
+		cntG := make([]int, mx+1)
+		for i := mx; i > 0; i-- {
+			c := 0
+			for j := i; j <= mx; j += i {
+				c += cntX[j]
+				cntG[i] -= cntG[j] // gcd 是 2i,3i,4i,... 的数对不能统计进来
+			}
+			cntG[i] += c * (c - 1) / 2 // c 个数选 2 个，组成 c*(c-1)/2 个数对
+		}
+
+		return cntG
+	}
 
 	// 统计数组的所有子区间的 GCD 的不同个数
 	// 代码和题目见 bits.go 中的 bitOpTrick
@@ -781,10 +837,6 @@ func _(abs func(int) int) {
 		3, 271, 5_195_969, 1801241230056600467
 		https://oeis.org/A223037
 
-	Exponent of highest power of 2 dividing n, a.k.a. the binary carry sequence, the ruler sequence, or the 2-adic valuation of n
-	a(n) = 0 if n is odd, otherwise 1 + a(n/2)
-	https://oeis.org/A007814
-
 	https://oeis.org/A000043 Mersenne exponents: primes p such that 2^p - 1 is prime. Then 2^p - 1 is called a Mersenne prime
 
 	*/
@@ -927,6 +979,23 @@ func _(abs func(int) int) {
 			pi[i] = pi[i-1]
 			if pid[i] > 0 {
 				pi[i]++
+			}
+		}
+	}
+
+	// 也可以直接算
+	// https://leetcode.cn/problems/find-the-count-of-numbers-which-are-not-special/
+	allPi := func() {
+		const mx int = 1e6
+		pi := [mx + 1]int{}
+		for i := 2; i <= mx; i++ {
+			if pi[i] == 0 {
+				pi[i] = pi[i-1] + 1
+				for j := i * i; j <= mx; j += i {
+					pi[j] = -1
+				}
+			} else {
+				pi[i] = pi[i-1]
 			}
 		}
 	}
@@ -1254,14 +1323,12 @@ func _(abs func(int) int) {
 		Numbers that are not squarefree https://oeis.org/A013929
 		Numbers that are divisible by a square greater than 1
 
-	https://oeis.org/A000188 square root of largest square dividing n
-	https://oeis.org/A120486 Partial sums of A000188  a(n) = Sum_{k=1..n} phi(k)*floor(n/k^2)
-
 	a(n) = Min {m>n | m has same prime factors as n ignoring multiplicity} https://oeis.org/A065642
 		Numbers such that a(n)/n is not an integer are listed in https://oeis.org/A284342
 
-	https://oeis.org/A019554 Smallest number whose square is divisible by n
-	- LC2949 https://leetcode.cn/problems/count-beautiful-substrings-ii/
+	https://oeis.org/A006446 Numbers k such that floor(sqrt(k)) divides k
+	- https://codeforces.com/problemset/problem/1737/B
+
 	*/
 
 	// n 以内的最多约数个数 mxc，以及对应的最小数字 ans
@@ -1316,6 +1383,8 @@ func _(abs func(int) int) {
 		dfs(0, 1, tarD, math.MaxInt)
 		return ans
 	}
+
+	// https://codeforces.com/problemset/problem/1372/B 1300
 
 	// 枚举一个数的全部因子
 	divisors := func(n int) (ds []int) {
@@ -1549,7 +1618,7 @@ func _(abs func(int) int) {
 	}
 
 	// LPF(n): least prime dividing n (when n > 1); a(1) = 1 https://oeis.org/A020639
-	// 有时候数据范围比较大，用 primeFactorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
+	// 有时候数据范围比较大，用 primeDivisorsAll 预处理会 MLE，这时候就要用 LPF 了（同样是预处理但是内存占用低）
 	// 先预处理出 LPF，然后对要处理的数 v 不断地除 LPF(v) 直到等于 1
 	// 		LPF 前缀和 https://oeis.org/A046669 https://oeis.org/A088821 前缀积 https://oeis.org/A072486
 	//      - a(n) ~ n^2/(2 log n)
@@ -1619,12 +1688,48 @@ func _(abs func(int) int) {
 			for x > 1 {
 				p := lpf[x]
 				e := 1
-				for x /= p; lpf[x] == p; x /= p {
+				for x /= p; x%p == 0; x /= p {
 					e++
 				}
 				// do(p, e) ...
 
 			}
+		}
+
+		// x 的质因子分解中，每个质数的幂次 e 改成 ceil(e/2) = (e+1)/2
+		// https://oeis.org/A019554 Smallest number whose square is divisible by n
+		// LC2949 https://leetcode.cn/problems/count-beautiful-substrings-ii/ 2445
+		// https://codeforces.com/problemset/problem/1778/F 2600
+		ceilSqrt := func(x int) int {
+			res := 1
+			for x > 1 {
+				p := lpf[x]
+				for p2 := p * p; x%p2 == 0; x /= p2 {
+					res *= p
+				}
+				if x%p == 0 {
+					res *= p
+					x /= p
+				}
+			}
+			return res
+		}
+
+		// x 的质因子分解中，每个质数的幂次 e 改成 floor(e/2)
+		// https://oeis.org/A000188 square root of largest square dividing n
+		// https://oeis.org/A120486 Partial sums of A000188  a(n) = Sum_{k=1..n} phi(k)*floor(n/k^2)
+		floorSqrt := func(x int) int {
+			res := 1
+			for x > 1 {
+				p := lpf[x]
+				for p2 := p * p; x%p2 == 0; x /= p2 {
+					res *= p
+				}
+				if x%p == 0 {
+					x /= p
+				}
+			}
+			return res
 		}
 
 		// EXTRA: 最长子序列 GCD > 1
@@ -1634,7 +1739,7 @@ func _(abs func(int) int) {
 			for _, x := range nums {
 				for x > 1 {
 					p := lpf[x]
-					for x /= p; lpf[x] == p; x /= p {
+					for x /= p; x%p == 0; x /= p {
 					}
 					cnt[p]++
 				}
@@ -1656,7 +1761,7 @@ func _(abs func(int) int) {
 			for x > 1 {
 				p := lpf[x]
 				e := 1
-				for x /= p; lpf[x] == p; x /= p {
+				for x /= p; x%p == 0; x /= p {
 					e++
 				}
 				d := ds
@@ -1726,7 +1831,7 @@ func _(abs func(int) int) {
 			for x > 1 {
 				p := lpf[x]
 				e := 1
-				for x /= p; lpf[x] == p; x /= p {
+				for x /= p; x%p == 0; x /= p {
 					e ^= 1
 				}
 				if e > 0 {
@@ -1815,7 +1920,7 @@ func _(abs func(int) int) {
 			for x > 1 {
 				p := lpf[x]
 				r *= p
-				for x /= p; lpf[x] == p; x /= p {
+				for x /= p; x%p == 0; x /= p {
 				}
 			}
 			return r
@@ -1828,7 +1933,7 @@ func _(abs func(int) int) {
 		// https://oeis.org/A029908 不动点
 		sopfr := func(x int) (s int) {
 			for x > 1 {
-				for p := lpf[x]; lpf[x] == p; x /= p {
+				for p := lpf[x]; x%p == 0; x /= p {
 					s += p
 				}
 			}
@@ -1840,19 +1945,19 @@ func _(abs func(int) int) {
 			for x > 1 {
 				p := lpf[x]
 				s += p
-				for x /= p; lpf[x] == p; x /= p {
+				for x /= p; x%p == 0; x /= p {
 				}
 			}
 			return
 		}
 
-		_ = []interface{}{factorize, divisors, squareDivisors, core, coreAll, rad, sopfr, sopf}
+		_ = []interface{}{factorize, ceilSqrt, floorSqrt, divisors, squareDivisors, core, coreAll, rad, sopfr, sopf}
 	}
 
 	// 预处理质因子
 	// 例如 pf[12] = [2,3]
 	// for i>=2, pf[i][0] == i means i is prime
-	primeFactorsAll := func() {
+	primeDivisorsAll := func() {
 		const mx int = 1e6
 		pf := [mx + 1][]int{}
 		for i := 2; i <= mx; i++ {
@@ -2360,7 +2465,7 @@ func _(abs func(int) int) {
 	// http://blog.miskcoo.com/2014/09/linear-find-all-invert
 	// https://www.zhihu.com/question/59033693
 	// 模板题 https://www.luogu.com.cn/problem/P3811
-	{
+	calcAllInv := func() {
 		const mod = 998244353
 		const mx int = 1e6
 		inv := [mx + 1]int{}
@@ -2375,7 +2480,7 @@ func _(abs func(int) int) {
 	// 根据 ai^-1 ≡ Πai/ai * (Πai)^-1 (mod p)，求出 Πai 的前缀积和后缀积可以得到 Πai/ai，从而求出 ai^-1 mod p
 	// https://zhuanlan.zhihu.com/p/86561431
 	// 模板题 https://www.luogu.com.cn/problem/P5431
-	calcAllInv := func(a []int, p int) []int {
+	calcAllInv2 := func(a []int, p int) []int {
 		n := len(a)
 		pre := make([]int, n+1)
 		pre[0] = 1
@@ -2760,6 +2865,8 @@ func _(abs func(int) int) {
 		H := func(n, k int) int { return C(n+k-1, k) }
 		// 也相当于，给出元素取值种类数 kinds 和序列长度 length，求有多少种非降序列
 		// 也可以理解成在 length * (kinds-1) 的网格上走单调路径
+		// 图解 https://leetcode.cn/problems/find-the-count-of-monotonic-pairs-ii/solutions/2876190/qian-zhui-he-you-hua-dppythonjavacgo-by-3biek/
+		// https://leetcode.cn/problems/find-the-count-of-monotonic-pairs-ii/
 		H = func(kinds, length int) int { return C(kinds+length-1, length) }
 
 		// 卡特兰数 Cn = C(2n,n)/(n+1) = C(2n,n)-C(2n,n-1)
@@ -3428,22 +3535,38 @@ func _(abs func(int) int) {
 		primes, primes10k, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
 		gcd, lcm, lcms,
+		countGCD, countDifferentSubsequenceGCDs,
+
 		makeFrac, lessFrac,
-		countDifferentSubsequenceGCDs,
+
 		floorSum,
-		isPrime, sieve, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2, powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
-		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor, divisorsAll, primeFactorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
+
+		isPrime, sieve, allPi, sieveEuler, sieveEulerTemplate, factorize, primeDivisors, primeDivisors2,
+		powerOfFactorialPrimeDivisor, primeExponentsCountAll, primeExponentsCount,
+
+		maxDivisorNum, maxDivisorNumWithLimit, minNumOfTargetDivisors, divisors, divisorsO1Space, oddDivisorsNum, maxSqrtDivisor,
+		divisorsAll, primeDivisorsAll, lpfAll, initSquarefreeNumbers, initAllCore, core, distinctPrimesCountAll,
+
 		calcPhi, initPhi, sievePhi, exPhi,
 		primitiveRoot, primitiveRootsAll,
-		exgcd, solveLinearDiophantineEquations, invM, invM2, invP, divM, divP, calcAllInv,
+
+		exgcd, solveLinearDiophantineEquations,
+		invM, invM2, invP, divM, divP, calcAllInv, calcAllInv2,
+
 		crt, excrt,
+
 		babyStepGiantStep, exBSGS,
 		modSqrt, isQuadraticResidue,
-		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf, initComb, comb,
+
+		factorial, calcFactorial, calcFactorialBig, initFactorial, _factorial, calcEvenFactorialBig, calcOddFactorialBig, combHalf,
+		initComb, comb,
 		stirling1, stirling2, stirling2RowPoly,
 		bellTriangle, bellPoly, setPartition,
+
 		calcMu, sieveMu,
+
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
+
 		sieveDu,
 	}
 }
