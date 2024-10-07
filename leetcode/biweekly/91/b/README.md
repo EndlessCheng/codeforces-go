@@ -14,9 +14,172 @@ $$
 
 对比一下 [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)，相当于本题的 $\textit{zero}=1,\ \textit{one}=2$，即 $f[i]=f[i-1]+f[i-2]$。
 
-答案为 $\sum\limits_{i=\textit{low}}^{\textit{high}} f[i]$。
+初始值：$f[0]=1$，表示得到空串的方案数是 $1$，即什么也不做，也算一种方案。
+
+答案：$\sum\limits_{i=\textit{low}}^{\textit{high}} f[i]$。
 
 代码中用到了取模，不了解或者写错的同学请看 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
+
+## 写法一：记忆化搜索
+
+```py [sol-Python3]
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
+        MOD = 1_000_000_007
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
+        def dfs(i: int) -> int:
+            if i < 0:
+                return 0
+            if i == 0:
+                return 1
+            return (dfs(i - zero) + dfs(i - one)) % MOD
+        return sum(dfs(i) for i in range(low, high + 1)) % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int countGoodStrings(int low, int high, int zero, int one) {
+        int[] memo = new int[high + 1];
+        Arrays.fill(memo, -1); // -1 表示没有计算过
+        int ans = 0;
+        for (int i = low; i <= high; i++) {
+            ans = (ans + dfs(i, zero, one, memo)) % MOD;
+        }
+        return ans;
+    }
+
+    private int dfs(int i, int zero, int one, int[] memo) {
+        if (i < 0) {
+            return 0;
+        }
+        if (i == 0) {
+            return 1;
+        }
+        if (memo[i] != -1) { // 之前计算过
+            return memo[i];
+        }
+        return memo[i] = (dfs(i - zero, zero, one, memo) + dfs(i - one, zero, one, memo)) % MOD;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countGoodStrings(int low, int high, int zero, int one) {
+        const int MOD = 1'000'000'007;
+        vector<int> memo(high + 1, -1); // -1 表示没有计算过
+        auto dfs = [&](auto&& dfs, int i) -> int {
+            if (i < 0) {
+                return 0;
+            }
+            if (i == 0) {
+                return 1;
+            }
+            int& res = memo[i]; // 注意这里是引用
+            if (res != -1) { // 之前计算过
+                return res;
+            }
+            return res = (dfs(dfs, i - zero) + dfs(dfs, i - one)) % MOD;
+        };
+        int ans = 0;
+        for (int i = low; i <= high; i++) {
+            ans = (ans + dfs(dfs, i)) % MOD;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countGoodStrings(low int, high int, zero int, one int) (ans int) {
+    const mod = 1_000_000_007
+    memo := make([]int, high+1)
+    for i := range memo {
+        memo[i] = -1 // -1 表示没有计算过
+    }
+    var dfs func(int) int
+    dfs = func(i int) int {
+        if i < 0 {
+            return 0
+        }
+        if i == 0 {
+            return 1
+        }
+        p := &memo[i]
+        if *p == -1 { // 没有计算过
+            *p = (dfs(i-zero) + dfs(i-one)) % mod
+        }
+        return *p
+    }
+    for i := low; i <= high; i++ {
+        ans += dfs(i)
+    }
+    return ans % mod
+}
+```
+
+```js [sol-JavaScript]
+var countGoodStrings = function(low, high, zero, one) {
+    const MOD = 1_000_000_007;
+    const memo = Array(high + 1).fill(-1); // -1 表示没有计算过
+    function dfs(i) {
+        if (i < 0) {
+            return 0;
+        }
+        if (i === 0) {
+            return 1;
+        }
+        if (memo[i] !== -1) { // 之前计算过
+            return memo[i];
+        }
+        return memo[i] = (dfs(i - zero) + dfs(i - one)) % MOD;
+    }
+    let ans = 0;
+    for (let i = low; i <= high; i++) {
+        ans = (ans + dfs(i)) % MOD;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_good_strings(low: i32, high: i32, zero: i32, one: i32) -> i32 {
+        const MOD: i32 = 1_000_000_007;
+        
+        fn dfs(i: i32, zero: i32, one: i32, memo: &mut Vec<i32>) -> i32 {
+            if i < 0 {
+                return 0;
+            }
+            if i == 0 {
+                return 1;
+            }
+            if memo[i as usize] != -1 { // 之前计算过
+                return memo[i as usize];
+            }
+            memo[i as usize] = (dfs(i - zero, zero, one, memo) + dfs(i - one, zero, one, memo)) % MOD;
+            memo[i as usize]
+        }
+
+        let mut ans = 0;
+        let mut memo = vec![-1; (high + 1) as usize]; // -1 表示没有计算过
+        for i in low..=high {
+            ans = (ans + dfs(i, zero, one, &mut memo)) % MOD;
+        }
+        ans
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\textit{high})$。
+- 空间复杂度：$\mathcal{O}(\textit{high})$。
+
+## 写法二：递推
 
 ### 答疑
 
