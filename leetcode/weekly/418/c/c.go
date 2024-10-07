@@ -9,52 +9,36 @@ func constructGridLayout(n int, edges [][]int) [][]int {
 		g[y] = append(g[y], x)
 	}
 
-	// 每种度数选一个点
-	degToNode := [5]int{-1, -1, -1, -1, -1}
-	for x, to := range g {
-		degToNode[len(to)] = x
+	// 找一个度数最小的点
+	x := 0
+	for i, to := range g {
+		if len(to) < len(g[x]) {
+			x = i
+		}
 	}
 
-	var row []int
-	if degToNode[1] != -1 {
-		// 矩阵只有一列
-		row = []int{degToNode[1]}
-	} else if degToNode[4] == -1 {
-		// 矩阵只有两列
-		x := degToNode[2]
+	row := []int{x}
+	vis := make([]bool, n)
+	vis[x] = true
+	degSt := len(g[x]) // 起点的度数
+	for { // 注意题目保证 n >= 2，可以至少循环一次
+		nxt := -1
 		for _, y := range g[x] {
-			if len(g[y]) == 2 {
-				row = []int{x, y}
-				break
+			if !vis[y] && (nxt < 0 || len(g[y]) < len(g[nxt])) {
+				nxt = y
 			}
 		}
-	} else {
-		// 矩形至少有三列
-		// 寻找度数为 2333...32 的序列作为第一排
-		x := degToNode[2]
-		row = []int{x}
-		pre := x
-		x = g[x][0]
-		for len(g[x]) > 2 {
-			row = append(row, x)
-			for _, y := range g[x] {
-				if y != pre && len(g[y]) < 4 {
-					pre = x
-					x = y
-					break
-				}
-			}
+		x = nxt
+		row = append(row, x)
+		vis[x] = true
+		if len(g[x]) == degSt {
+			break
 		}
-		row = append(row, x) // x 的度数是 2
 	}
 
 	k := len(row)
 	ans := make([][]int, n/k)
 	ans[0] = row
-	vis := make([]bool, n)
-	for _, x := range row {
-		vis[x] = true
-	}
 	for i := 1; i < len(ans); i++ {
 		ans[i] = make([]int, k)
 		for j, x := range ans[i-1] {

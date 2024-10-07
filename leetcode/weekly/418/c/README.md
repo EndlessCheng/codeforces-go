@@ -40,6 +40,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV15y1iYUE2h/)，欢迎点赞关注~
 
+## 写法一：分类讨论
+
 ```py [sol-Python3]
 class Solution:
     def constructGridLayout(self, n: int, edges: List[List[int]]) -> List[List[int]]:
@@ -315,6 +317,228 @@ func constructGridLayout(n int, edges [][]int) [][]int {
         }
     }
     return ans
+}
+```
+
+## 写法二：合三为一
+
+上文的三种情况，可以统一起来：
+
+1. 首先找到一个度数最小的点 $x$。
+2. 找 $x$ 的度数最小的邻居 $y$。
+3. 找 $y$ 的度数最小的邻居 $z$，且 $z$ 之前没有访问过。（或者判断 $z\ne x$ 也可以，但是代码要更长一些。）
+4. 依此类推，直到找到一个点，度数和起点是一样的。
+
+```py [sol-Python3]
+class Solution:
+    def constructGridLayout(self, n: int, edges: List[List[int]]) -> List[List[int]]:
+        g = [[] for _ in range(n)]
+        for x, y in edges:
+            g[x].append(y)
+            g[y].append(x)
+
+        # 找一个度数最小的点
+        x = 0
+        for i, to in enumerate(g):
+            if len(to) < len(g[x]):
+                x = i
+
+        row = [x]
+        vis = [False] * n
+        vis[x] = True
+        deg_st = len(g[x])  # 起点的度数
+        while True:  # 注意题目保证 n >= 2，可以至少循环一次
+            nxt = -1
+            for y in g[x]:
+                if not vis[y] and (nxt < 0 or len(g[y]) < len(g[nxt])):
+                    nxt = y
+            x = nxt
+            row.append(x)
+            vis[x] = True
+            if len(g[x]) == deg_st:
+                break
+
+        ans = [[] for _ in range(n // len(row))]
+        ans[0] = row
+        for i in range(1, len(ans)):
+            for x in ans[i - 1]:
+                for y in g[x]:
+                    # x 上左右的邻居都访问过了，没访问过的邻居只会在 x 下面
+                    if not vis[y]:
+                        vis[y] = True
+                        ans[i].append(y)
+                        break
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int[][] constructGridLayout(int n, int[][] edges) {
+        List<Integer>[] g = new ArrayList[n];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] e : edges) {
+            int x = e[0];
+            int y = e[1];
+            g[x].add(y);
+            g[y].add(x);
+        }
+
+        // 找一个度数最小的点
+        int x = 0;
+        for (int i = 0; i < g.length; i++) {
+            if (g[i].size() < g[x].size()) {
+                x = i;
+            }
+        }
+
+        List<Integer> row = new ArrayList<>();
+        row.add(x);
+        int degSt = g[x].size(); // 起点的度数
+        int pre = -1;
+        do { // 注意题目保证 n >= 2，可以至少循环一次
+            int nxt = -1;
+            for (int y : g[x]) {
+                if (y != pre && (nxt < 0 || g[y].size() < g[nxt].size())) {
+                    nxt = y;
+                }
+            }
+            pre = x;
+            x = nxt;
+            row.add(x);
+        } while (g[x].size() > degSt);
+
+        int k = row.size();
+        int[][] ans = new int[n / k][k];
+        boolean[] vis = new boolean[n];
+        for (int j = 0; j < k; j++) {
+            x = row.get(j);
+            ans[0][j] = x;
+            vis[x] = true;
+        }
+        for (int i = 1; i < ans.length; i++) {
+            for (int j = 0; j < k; j++) {
+                for (int y : g[ans[i - 1][j]]) {
+                    // 上左右的邻居都访问过了，没访问过的邻居只会在下面
+                    if (!vis[y]) {
+                        vis[y] = true;
+                        ans[i][j] = y;
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> constructGridLayout(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> g(n);
+        for (auto& e : edges) {
+            int x = e[0], y = e[1];
+            g[x].push_back(y);
+            g[y].push_back(x);
+        }
+
+        // 找一个度数最小的点
+        int x = 0;
+        for (int i = 0; i < g.size(); i++) {
+            if (g[i].size() < g[x].size()) {
+                x = i;
+            }
+        }
+
+        vector<int> row = {x};
+        vector<int> vis(n);
+        vis[x] = true;
+        int deg_st = g[x].size(); // 起点的度数
+        do { // 注意题目保证 n >= 2，可以至少循环一次
+            int nxt = -1;
+            for (int y : g[x]) {
+                if (!vis[y] && (nxt < 0 || g[y].size() < g[nxt].size())) {
+                    nxt = y;
+                }
+            }
+            x = nxt;
+            row.push_back(x);
+            vis[x] = true;
+        } while (g[x].size() > deg_st);
+
+        vector<vector<int>> ans(n / row.size());
+        ans[0] = move(row);
+        for (int i = 1; i < ans.size(); i++) {
+            for (int x : ans[i - 1]) {
+                for (int y : g[x]) {
+                    // x 上左右的邻居都访问过了，没访问过的邻居只会在 x 下面
+                    if (!vis[y]) {
+                        vis[y] = true;
+                        ans[i].push_back(y);
+                        break;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func constructGridLayout(n int, edges [][]int) [][]int {
+	g := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		g[x] = append(g[x], y)
+		g[y] = append(g[y], x)
+	}
+
+	// 找一个度数最小的点
+	x := 0
+	for i, to := range g {
+		if len(to) < len(g[x]) {
+			x = i
+		}
+	}
+
+	row := []int{x}
+	vis := make([]bool, n)
+	vis[x] = true
+	degSt := len(g[x]) // 起点的度数
+	for { // 注意题目保证 n >= 2，可以至少循环一次
+		nxt := -1
+		for _, y := range g[x] {
+			if !vis[y] && (nxt < 0 || len(g[y]) < len(g[nxt])) {
+				nxt = y
+			}
+		}
+		x = nxt
+		row = append(row, x)
+		vis[x] = true
+		if len(g[x]) == degSt {
+			break
+		}
+	}
+
+	k := len(row)
+	ans := make([][]int, n/k)
+	ans[0] = row
+	for i := 1; i < len(ans); i++ {
+		ans[i] = make([]int, k)
+		for j, x := range ans[i-1] {
+			for _, y := range g[x] {
+				// 上左右的邻居都访问过了，没访问过的邻居只会在 x 下面
+				if !vis[y] {
+					vis[y] = true
+					ans[i][j] = y
+					break
+				}
+			}
+		}
+	}
+	return ans
 }
 ```
 
