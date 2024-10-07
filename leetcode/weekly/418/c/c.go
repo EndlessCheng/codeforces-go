@@ -30,6 +30,7 @@ func constructGridLayout(n int, edges [][]int) [][]int {
 		}
 	} else {
 		// 矩形至少有三列
+		// 寻找度数为 2333...32 的序列作为第一排
 		x := degToNode[2]
 		row = []int{x}
 		pre := x
@@ -44,7 +45,7 @@ func constructGridLayout(n int, edges [][]int) [][]int {
 				}
 			}
 		}
-		row = append(row, x)
+		row = append(row, x) // x 的度数是 2
 	}
 
 	k := len(row)

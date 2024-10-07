@@ -24,7 +24,7 @@
 
 1. 如果最小度数是 $1$，类似示例 2，答案只有一列。选其中一个度数为 $1$ 的点，作为第一行。
 2. 如果不存在度数为 $4$ 的点，类似示例 1，答案只有两列。选其中一个度数为 $2$ 的点 $x$，以及 $x$ 的一个度数为 $2$ 的邻居 $y$，作为第一行。
-3. 否则，答案至少有三列。从其中一个度数为 $2$ 的点（拼图的角）开始，不断寻找度数小于 $4$ 的点（拼图的边），直到找到度数为 $2$ 的点（拼图的另一个角）为止。把遇到的点按顺序作为第一行。
+3. 否则，答案至少有三列。从其中一个度数为 $2$ 的点（拼图的角）开始，不断寻找度数等于 $3$ 的点（拼图的边），直到找到度数为 $2$ 的点（拼图的另一个角）为止。把遇到的点按顺序作为第一行。
 
 代码实现时，每种度数只需要知道一个点就够了。
 
@@ -65,18 +65,19 @@ class Solution:
                     break
         else:
             # 答案至少有三列
+            # 寻找度数为 2333...32 的序列作为第一排
             x = deg_to_node[2]
             row = [x]
             pre = x
             x = g[x][0]
-            while len(g[x]) > 2:
+            while len(g[x]) == 3:
                 row.append(x)
                 for y in g[x]:
                     if y != pre and len(g[y]) < 4:
                         pre = x
                         x = y
                         break
-            row.append(x)
+            row.append(x)  # x 的度数是 2
 
         ans = [[] for _ in range(n // len(row))]
         ans[0] = row
@@ -129,11 +130,12 @@ class Solution {
             }
         } else {
             // 答案至少有三列
+            // 寻找度数为 2333...32 的序列作为第一排
             int x = degToNode[2];
             row.add(x);
             int pre = x;
             x = g[x].get(0);
-            while (g[x].size() > 2) {
+            while (g[x].size() == 3) {
                 row.add(x);
                 for (int y : g[x]) {
                     if (y != pre && g[y].size() < 4) {
@@ -143,7 +145,7 @@ class Solution {
                     }
                 }
             }
-            row.add(x);
+            row.add(x); // x 的度数是 2
         }
 
         int k = row.size();
@@ -203,11 +205,12 @@ public:
             }
         } else {
             // 答案至少有三列
+            // 寻找度数为 2333...32 的序列作为第一排
             int x = deg_to_node[2];
             row = {x};
             int pre = x;
             x = g[x][0];
-            while (g[x].size() > 2) {
+            while (g[x].size() == 3) {
                 row.push_back(x);
                 for (int y : g[x]) {
                     if (y != pre && g[y].size() < 4) {
@@ -217,7 +220,7 @@ public:
                     }
                 }
             }
-            row.push_back(x);
+            row.push_back(x); // x 的度数是 2
         }
 
         vector<int> vis(n);
@@ -245,72 +248,73 @@ public:
 
 ```go [sol-Go]
 func constructGridLayout(n int, edges [][]int) [][]int {
-	g := make([][]int, n)
-	for _, e := range edges {
-		x, y := e[0], e[1]
-		g[x] = append(g[x], y)
-		g[y] = append(g[y], x)
-	}
+    g := make([][]int, n)
+    for _, e := range edges {
+        x, y := e[0], e[1]
+        g[x] = append(g[x], y)
+        g[y] = append(g[y], x)
+    }
 
-	// 每种度数选一个点
-	degToNode := [5]int{-1, -1, -1, -1, -1}
-	for x, to := range g {
-		degToNode[len(to)] = x
-	}
+    // 每种度数选一个点
+    degToNode := [5]int{-1, -1, -1, -1, -1}
+    for x, to := range g {
+        degToNode[len(to)] = x
+    }
 
-	var row []int
-	if degToNode[1] != -1 {
-		// 答案只有一列
-		row = []int{degToNode[1]}
-	} else if degToNode[4] == -1 {
-		// 答案只有两列
-		x := degToNode[2]
-		for _, y := range g[x] {
-			if len(g[y]) == 2 {
-				row = []int{x, y}
-				break
-			}
-		}
-	} else {
-		// 答案至少有三列
-		x := degToNode[2]
-		row = []int{x}
-		pre := x
-		x = g[x][0]
-		for len(g[x]) > 2 {
-			row = append(row, x)
-			for _, y := range g[x] {
-				if y != pre && len(g[y]) < 4 {
-					pre = x
-					x = y
-					break
-				}
-			}
-		}
-		row = append(row, x)
-	}
+    var row []int
+    if degToNode[1] != -1 {
+        // 答案只有一列
+        row = []int{degToNode[1]}
+    } else if degToNode[4] == -1 {
+        // 答案只有两列
+        x := degToNode[2]
+        for _, y := range g[x] {
+            if len(g[y]) == 2 {
+                row = []int{x, y}
+                break
+            }
+        }
+    } else {
+        // 答案至少有三列
+        // 寻找度数为 2333...32 的序列作为第一排
+        x := degToNode[2]
+        row = []int{x}
+        pre := x
+        x = g[x][0]
+        for len(g[x]) == 3 {
+            row = append(row, x)
+            for _, y := range g[x] {
+                if y != pre && len(g[y]) < 4 {
+                    pre = x
+                    x = y
+                    break
+                }
+            }
+        }
+        row = append(row, x) // x 的度数是 2
+    }
 
-	k := len(row)
-	ans := make([][]int, n/k)
-	ans[0] = row
-	vis := make([]bool, n)
-	for _, x := range row {
-		vis[x] = true
-	}
-	for i := 1; i < len(ans); i++ {
-		ans[i] = make([]int, k)
-		for j, x := range ans[i-1] {
-			for _, y := range g[x] {
-				// x 上左右的邻居都访问过了，没访问过的邻居只会在 x 下面
-				if !vis[y] {
-					vis[y] = true
-					ans[i][j] = y
-					break
-				}
-			}
-		}
-	}
-	return ans
+    k := len(row)
+    ans := make([][]int, n/k)
+    ans[0] = row
+    vis := make([]bool, n)
+    for _, x := range row {
+        vis[x] = true
+    }
+    for i := 1; i < len(ans); i++ {
+        ans[i] = make([]int, k)
+        for j, x := range ans[i-1] {
+            for _, y := range g[x] {
+                // x 上左右的邻居都访问过了，没访问过的邻居只会在 x 下面
+                if !vis[y] {
+                    vis[y] = true
+                    ans[i][j] = y
+                    break
+                }
+            }
+        }
+    }
+    return ans
 }
 ```
 
