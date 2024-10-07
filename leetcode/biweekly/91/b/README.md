@@ -240,20 +240,20 @@ public:
 
 ```go [sol-Go]
 func countGoodStrings(low, high, zero, one int) (ans int) {
-	const mod = 1_000_000_007
-	f := make([]int, high+1) // f[i] 表示构造长为 i 的字符串的方案数
-	f[0] = 1 // 构造空串的方案数为 1
-	for i := 1; i <= high; i++ {
-		if i >= zero { f[i] = f[i-zero] }
-		if i >= one  { f[i] = (f[i] + f[i-one]) % mod }
-		if i >= low  { ans = (ans + f[i]) % mod }
-	}
-	return
+    const mod = 1_000_000_007
+    f := make([]int, high+1) // f[i] 表示构造长为 i 的字符串的方案数
+    f[0] = 1 // 构造空串的方案数为 1
+    for i := 1; i <= high; i++ {
+        if i >= zero { f[i] = f[i-zero] }
+        if i >= one  { f[i] = (f[i] + f[i-one]) % mod }
+        if i >= low  { ans = (ans + f[i]) % mod }
+    }
+    return
 }
 ```
 
 ```js [sol-JavaScript]
-var countGoodStrings = function (low, high, zero, one) {
+var countGoodStrings = function(low, high, zero, one) {
     const MOD = 1_000_000_007;
     const f = Array(high + 1).fill(0); // f[i] 表示构造长为 i 的字符串的方案数
     f[0] = 1; // 构造空串的方案数为 1
@@ -294,6 +294,191 @@ impl Solution {
 
 - 时间复杂度：$\mathcal{O}(\textit{high})$。
 - 空间复杂度：$\mathcal{O}(\textit{high})$。
+
+## 优化
+
+如果 $\textit{zero}$ 和 $\textit{one}$ 都是偶数，比如都是 $2$，由于偶数+偶数=偶数，无论如何，我们都不可能得到长为奇数的字符串。
+
+如果此时 $\textit{low}=3,\ \textit{high}=7$，那么我们只需要计算字符串长度为 $4$ 和 $6$ 的情况。或者说，问题的规模可以缩小为 $\textit{low}'=2,\ \textit{high}'=3,\ \textit{zero}'=1,\ \textit{one}'=1$。
+
+一般地，设 $\textit{zero}$ 和 $\textit{one}$ 的最大公约数（GCD）为 $g$，那么问题的规模可以缩小为
+
+$$
+\begin{cases} 
+\textit{low}' = \left\lceil\dfrac{\textit{low}}{g}\right\rceil \\
+\textit{high}' = \left\lfloor\dfrac{\textit{high}}{g}\right\rfloor \\
+\textit{zero}' = \dfrac{\textit{zero}}{g} \\
+\textit{one}' = \dfrac{\textit{one}}{g} \\
+\end{cases}
+$$
+
+关于上取整的计算，当 $a$ 和 $b$ 均为正整数时，我们有
+
+$$
+\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
+$$
+
+讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+
+```py [sol-Python3]
+class Solution:
+    def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
+        g = gcd(zero, one)
+        low = (low - 1) // g + 1
+        high //= g
+        zero //= g
+        one //= g
+
+        MOD = 1_000_000_007
+        f = [1] + [0] * high  # f[i] 表示构造长为 i 的字符串的方案数
+        for i in range(1, high + 1):
+            if i >= zero: f[i] = f[i - zero]
+            if i >= one:  f[i] = (f[i] + f[i - one]) % MOD
+        return sum(f[low:]) % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    public int countGoodStrings(int low, int high, int zero, int one) {
+        int g = gcd(zero, one);
+        low = (low - 1) / g + 1;
+        high /= g;
+        zero /= g;
+        one /= g;
+
+        final int MOD = 1_000_000_007;
+        int ans = 0;
+        int[] f = new int[high + 1]; // f[i] 表示构造长为 i 的字符串的方案数
+        f[0] = 1; // 构造空串的方案数为 1
+        for (int i = 1; i <= high; i++) {
+            if (i >= zero) f[i] = f[i - zero];
+            if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
+            if (i >= low)  ans = (ans + f[i]) % MOD;
+        }
+        return ans;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countGoodStrings(int low, int high, int zero, int one) {
+        int g = gcd(zero, one);
+        low = (low - 1) / g + 1;
+        high /= g;
+        zero /= g;
+        one /= g;
+    
+        const int MOD = 1'000'000'007;
+        int ans = 0;
+        vector<int> f(high + 1); // f[i] 表示构造长为 i 的字符串的方案数
+        f[0] = 1; // 构造空串的方案数为 1
+        for (int i = 1; i <= high; i++) {
+            if (i >= zero) f[i] = f[i - zero];
+            if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
+            if (i >= low)  ans = (ans + f[i]) % MOD;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countGoodStrings(low, high, zero, one int) (ans int) {
+    g := gcd(zero, one)
+    low = (low-1)/g + 1
+    high /= g
+    zero /= g
+    one /= g
+
+    const mod = 1_000_000_007
+    f := make([]int, high+1) // f[i] 表示构造长为 i 的字符串的方案数
+    f[0] = 1 // 构造空串的方案数为 1
+    for i := 1; i <= high; i++ {
+        if i >= zero { f[i] = f[i-zero] }
+        if i >= one  { f[i] = (f[i] + f[i-one]) % mod }
+        if i >= low  { ans = (ans + f[i]) % mod }
+    }
+    return
+}
+
+func gcd(a, b int) int {
+    for a != 0 {
+        a, b = b%a, a
+    }
+    return b
+}
+```
+
+```js [sol-JavaScript]
+var countGoodStrings = function(low, high, zero, one) {
+    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+    const g = gcd(zero, one);
+    low = Math.ceil(low / g);
+    high = Math.floor(high / g);
+    zero /= g;
+    one /= g;
+
+    const MOD = 1_000_000_007;
+    const f = Array(high + 1).fill(0); // f[i] 表示构造长为 i 的字符串的方案数
+    f[0] = 1; // 构造空串的方案数为 1
+    let ans = 0;
+    for (let i = 1; i <= high; i++) {
+        if (i >= zero) f[i] = f[i - zero];
+        if (i >= one)  f[i] = (f[i] + f[i - one]) % MOD;
+        if (i >= low)  ans = (ans + f[i]) % MOD;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn count_good_strings(mut low: i32, mut high: i32, mut zero: i32, mut one: i32) -> i32 {
+        let g = gcd(zero, one);
+        low = (low - 1) / g + 1;
+        high /= g;
+        zero /= g;
+        one /= g;
+
+        const MOD: i32 = 1_000_000_007;
+        let mut ans = 0;
+        let mut f = vec![0; (high + 1) as usize]; // f[i] 表示构造长为 i 的字符串的方案数
+        f[0] = 1; // 构造空串的方案数为 1
+        for i in 1..=high as usize {
+            if i >= zero as usize {
+                f[i] = f[i - zero as usize];
+            }
+            if i >= one as usize {
+                f[i] = (f[i] + f[i - one as usize]) % MOD;
+            }
+            if i >= low as usize {
+                ans = (ans + f[i]) % MOD;
+            }
+        }
+        ans
+    }
+}
+
+fn gcd(a: i32, b: i32) -> i32 {
+    if b == 0 { a } else { gcd(b, a % b) }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}\left(\dfrac{\textit{high}}{g}\right)$。其中 $g$ 为 $\textit{zero}$ 和 $\textit{one}$ 的 GCD。
+- 空间复杂度：$\mathcal{O}\left(\dfrac{\textit{high}}{g}\right)$。
 
 ## 分类题单
 
