@@ -129,7 +129,7 @@ https://ac.nowcoder.com/acm/contest/75174/E
 https://leetcode.cn/problems/find-longest-subarray-lcci/
 https://codeforces.com/problemset/problem/1296/C
 
-## 前后缀分解（右边数字为难度分）
+## 前后缀分解
 部分题目也可以用状态机 DP 解决
 - [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/)（[视频讲解](https://www.bilibili.com/video/BV1Qg411q7ia/?t=3m05s)）
   注：带修改的接雨水 https://codeforces.com/gym/104821/problem/M
@@ -176,7 +176,12 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - 预处理前后缀 GCD，由于前缀 GCD 只有 O(logU) 个不同的值，可以只枚举 O(logU) 个 L 和 O(n) 个 R，
 - 枚举 R 的同时计算修改后的子数组 GCD，然后和前后缀 GCD 求 GCD
 
-#### 定长滑动窗口（右边数字为难度分）
+#### 逆向滑窗
+- [1423. 可获得的最大点数](https://leetcode.cn/problems/maximum-points-you-can-obtain-from-cards/) 1574
+- [1658. 将 x 减到 0 的最小操作数](https://leetcode.cn/problems/minimum-operations-to-reduce-x-to-zero/) 1817
+- [2516. 每种字符至少取 K 个](https://leetcode.cn/problems/take-k-of-each-character-from-left-and-right/) 1948
+
+#### 定长滑动窗口
 - [1456. 定长子串中元音的最大数目](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/) 1263
 - [2269. 找到一个数字的 K 美丽值](https://leetcode.cn/problems/find-the-k-beauty-of-a-number/) 1280
 - [1984. 学生分数的最小差值](https://leetcode.cn/problems/minimum-difference-between-highest-and-lowest-of-k-scores/) 1306
@@ -440,6 +445,7 @@ https://codeforces.com/problemset/problem/339/E 2700
 https://codeforces.com/problemset/problem/1920/B 1100
 https://codeforces.com/problemset/problem/545/D 1300
 https://codeforces.com/problemset/problem/1443/B 1300
+https://codeforces.com/problemset/problem/1498/B 1300 从大到小贪心
 https://codeforces.com/problemset/problem/1902/C 1300
 https://codeforces.com/problemset/problem/388/A 1400
 https://codeforces.com/problemset/problem/437/C 1400
@@ -585,6 +591,7 @@ https://codeforces.com/problemset/problem/1442/A 1800
 https://codeforces.com/problemset/problem/558/C  1900
 https://codeforces.com/problemset/problem/1744/F 2000
 https://codeforces.com/problemset/problem/1610/E 2300
+https://codeforces.com/problemset/problem/2004/F 2600
 
 思维：脑筋急转弯
 LC1503 https://leetcode.cn/problems/last-moment-before-all-ants-fall-out-of-a-plank/
@@ -624,6 +631,7 @@ LC767 https://leetcode.cn/problems/reorganize-string/
 LC667 https://leetcode.cn/problems/beautiful-arrangement-ii/
 LC2745 https://leetcode.cn/problems/construct-the-longest-new-string/ 1607
 LC2573 https://leetcode.cn/problems/find-the-string-with-lcp/ 2682
+LC3311 https://leetcode.cn/problems/construct-2d-grid-matching-graph-layout/
 构造反例 https://leetcode.cn/problems/parallel-courses-iii/solution/tuo-bu-pai-xu-dong-tai-gui-hua-by-endles-dph6/2310439
 构造 TLE 数据 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/solutions/2805413/bitset-you-hua-0-1-bei-bao-by-endlessche-m1xn/comments/2320111
 https://codeforces.com/problemset/problem/1028/B  1200
@@ -703,6 +711,7 @@ https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/898/E 1600
 https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
 https://codeforces.com/problemset/problem/1861/C 1600 好题！
+https://codeforces.com/problemset/problem/1976/C 1600
 https://codeforces.com/problemset/problem/1978/D 1600
 https://codeforces.com/problemset/problem/193/A 1700
 https://codeforces.com/problemset/problem/382/C 1700
@@ -1044,6 +1053,7 @@ func _() {
 	dir8 = []struct{ x, y int }{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}   // 顺时针（矩阵）
 	dir8 = []struct{ x, y int }{{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}} // 马走日
 
+	// https://codeforces.com/problemset/problem/1983/C 1400
 	perm3 := [][]int{{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}}
 	perm4 := [][]int{
 		{0, 1, 2, 3}, {0, 1, 3, 2}, {0, 2, 1, 3}, {0, 2, 3, 1}, {0, 3, 1, 2}, {0, 3, 2, 1},
@@ -1410,8 +1420,9 @@ func _() {
 		_ = query
 	}
 
-	// 带权(等差数列)前缀和
-	// +分块 https://codeforces.com/contest/1921/problem/F
+	// 带权前缀和，权重是等差数列
+	// https://codeforces.com/problemset/problem/1016/C 1800
+	// https://codeforces.com/problemset/problem/1921/F 1900 +分块 
 	{
 		var n int // read
 		a := make([]int, n)
@@ -2578,6 +2589,39 @@ func _() {
 		_ = update
 	}
 
+	// 滑动窗口维护没有逆运算的运算（但是有单调性），例如 OR AND GCD LCM
+	// 时间复杂度 O(n)，考虑每个元素入栈出栈各至多一次
+	// 以 LC3171 为例 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
+	// 如果有二分的需求，可以对从 bottom+1 到 right 的这段单独开个栈（右栈）
+	slidingWindowWithStack := func(a []int, k int) int {
+		ans := math.MaxInt
+		var left, bottom, rightOr int
+		for right, x := range a {
+			rightOr |= x
+			for left <= right && a[left]|rightOr > k {
+				ans = min(ans, (a[left]|rightOr)-k)
+				if bottom <= left {
+					// 重新构建一个栈
+					// 由于 left 即将移出窗口，只需计算到 left+1
+					for i := right - 1; i > left; i-- {
+						a[i] |= a[i+1]
+					}
+					bottom = right
+					rightOr = 0
+				}
+				left++
+			}
+			if left <= right {
+				ans = min(ans, k-(a[left]|rightOr))
+			}
+		}
+		return ans
+	}
+
+	// 注：下面这个代码不是 O(n)，而是 O(nlogU) 
+	// - https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/submissions/571152848/
+	// - 构造方法：左边一串 2^i(i=2~m-1), 中间很多 2^m，右边一串 2^i(i=1~m-1)    这里「一串」指每个 2^i 出现一次
+
 	_ = []any{
 		alphabet,
 		pow10, dir4, dir4R, dir8, perm3, perm4,
@@ -2598,5 +2642,7 @@ func _() {
 		complement, quickSelect, sweepLine, sweepLine2, countCoveredPoints,
 		discrete2D,
 		maintainTop3,
+
+		slidingWindowWithStack,
 	}
 }
