@@ -350,14 +350,13 @@ class Solution:
             right_or |= x
             while left <= right and nums[left] | right_or > k:
                 ans = min(ans, (nums[left] | right_or) - k)
-                if bottom <= left:
+                left += 1
+                if bottom < left:
                     # 重新构建一个栈
-                    # 由于 left 即将移出窗口，只需计算到 left+1
-                    for i in range(right - 1, left, -1):
+                    for i in range(right - 1, left - 1, -1):
                         nums[i] |= nums[i + 1]
                     bottom = right
                     right_or = 0
-                left += 1
             if left <= right:
                 ans = min(ans, k - (nums[left] | right_or))
         return ans
@@ -373,12 +372,12 @@ class Solution:
             while left <= right and nums[left] | right_or > k:
                 d = (nums[left] | right_or) - k
                 if d < ans: ans = d  # 手写 min，效率更高
-                if bottom <= left:
-                    for i in range(right - 1, left, -1):
+                left += 1
+                if bottom < left:
+                    for i in range(right - 1, left - 1, -1):
                         nums[i] |= nums[i + 1]
                     bottom = right
                     right_or = 0
-                left += 1
             if left <= right:
                 d = k - (nums[left] | right_or)
                 if d < ans: ans = d
@@ -396,16 +395,15 @@ class Solution {
             rightOr |= nums[right];
             while (left <= right && (nums[left] | rightOr) > k) {
                 ans = Math.min(ans, (nums[left] | rightOr) - k);
-                if (bottom <= left) {
+                left++;
+                if (bottom < left) {
                     // 重新构建一个栈
-                    // 由于 left 即将移出窗口，只需计算到 left+1
-                    for (int i = right - 1; i > left; i--) {
+                    for (int i = right - 1; i >= left; i--) {
                         nums[i] |= nums[i + 1];
                     }
                     bottom = right;
                     rightOr = 0;
                 }
-                left++;
             }
             if (left <= right) {
                 ans = Math.min(ans, k - (nums[left] | rightOr));
@@ -425,16 +423,15 @@ public:
             right_or |= nums[right];
             while (left <= right && (nums[left] | right_or) > k) {
                 ans = min(ans, (nums[left] | right_or) - k);
-                if (bottom <= left) {
+                left++;
+                if (bottom < left) {
                     // 重新构建一个栈
-                    // 由于 left 即将移出窗口，只需计算到 left+1
-                    for (int i = right - 1; i > left; i--) {
+                    for (int i = right - 1; i >= left; i--) {
                         nums[i] |= nums[i + 1];
                     }
                     bottom = right;
                     right_or = 0;
                 }
-                left++;
             }
             if (left <= right) {
                 ans = min(ans, k - (nums[left] | right_or));
@@ -454,16 +451,15 @@ int minimumDifference(int* nums, int numsSize, int k) {
         right_or |= nums[right];
         while (left <= right && (nums[left] | right_or) > k) {
             ans = MIN(ans, (nums[left] | right_or) - k);
-            if (bottom <= left) {
+            left++;
+            if (bottom < left) {
                 // 重新构建一个栈
-                // 由于 left 即将移出窗口，只需计算到 left+1
-                for (int i = right - 1; i > left; i--) {
+                for (int i = right - 1; i >= left; i--) {
                     nums[i] |= nums[i + 1];
                 }
                 bottom = right;
                 right_or = 0;
             }
-            left++;
         }
         if (left <= right) {
             ans = MIN(ans, k - (nums[left] | right_or));
@@ -481,16 +477,15 @@ func minimumDifference(nums []int, k int) int {
         rightOr |= x
         for left <= right && nums[left]|rightOr > k {
             ans = min(ans, (nums[left]|rightOr)-k)
-            if bottom <= left {
+            left++
+            if bottom < left {
                 // 重新构建一个栈
-                // 由于 left 即将移出窗口，只需计算到 left+1
-                for i := right - 1; i > left; i-- {
+                for i := right - 1; i >= left; i-- {
                     nums[i] |= nums[i+1]
                 }
                 bottom = right
                 rightOr = 0
             }
-            left++
         }
         if left <= right {
             ans = min(ans, k-(nums[left]|rightOr))
@@ -507,16 +502,15 @@ var minimumDifference = function(nums, k) {
         rightOr |= nums[right];
         while (left <= right && (nums[left] | rightOr) > k) {
             ans = Math.min(ans, (nums[left] | rightOr) - k);
-            if (bottom <= left) {
+            left++;
+            if (bottom < left) {
                 // 重新构建一个栈
-                // 由于 left 即将移出窗口，只需计算到 left+1
-                for (let i = right - 1; i > left; i--) {
+                for (let i = right - 1; i >= left; i--) {
                     nums[i] |= nums[i + 1];
                 }
                 bottom = right;
                 rightOr = 0;
             }
-            left++;
         }
         if (left <= right) {
             ans = Math.min(ans, k - (nums[left] | rightOr));
@@ -537,16 +531,15 @@ impl Solution {
             right_or |= nums[right];
             while left <= right && (nums[left] | right_or) > k {
                 ans = ans.min((nums[left] | right_or) - k);
-                if bottom <= left {
+                left += 1;
+                if bottom < left {
                     // 重新构建一个栈
-                    // 由于 left 即将移出窗口，只需计算到 left+1
-                    for i in (left + 1..right).rev() {
+                    for i in (left..right).rev() {
                         nums[i] |= nums[i + 1];
                     }
                     bottom = right;
                     right_or = 0;
                 }
-                left += 1;
             }
             if left <= right {
                 ans = ans.min(k - (nums[left] | right_or));
