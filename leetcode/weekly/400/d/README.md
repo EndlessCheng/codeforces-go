@@ -1,3 +1,5 @@
+## 方法一：LogTrick
+
 怎么计算连续子数组的 OR？
 
 首先，我们有如下 $\mathcal{O}(n^2)$ 的暴力算法：
@@ -285,13 +287,282 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于 $2^{29}-1<10^9<2^{30}-1$，二进制数对应集合的大小不会超过 $29$，因此在 OR 运算下，每个数字至多可以增大 $29$ 次。**总体上看**，二重循环的总循环次数等于每个数字可以增大的次数之和，即 $O(n\log U)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 思考题
+## 方法二：滑动窗口
 
-1. 把 OR 换成 AND 怎么做？[1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/)
-2. 把 OR 换成 GCD 怎么做？
-3. 把 OR 换成 LCM 怎么做？
+由于子数组越长，子数组 OR 的结果越大，有单调性，可以用**滑动窗口**。如果你不了解滑动窗口，可以看视频[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
-欢迎在评论区发表你的思路/代码。
+### 区别
+
+本题和普通滑窗的区别在于，不能只用一个变量 $\textit{or}$ 维护窗口（子数组）的 OR，因为当左端点元素离开窗口时，我们不知道要把 $\textit{or}$ 改成多少。本质上来说，是因为 OR 不像加法，没有逆运算（加法的逆运算是减法）。
+
+### 额外维护一个栈
+
+例如现在窗口的下标为 $\textit{left}=0$ 到 $\textit{right}=3$。当左端点元素 $\textit{nums}[0]$ 离开窗口时，我们必须有一个值能够表示 $\textit{nums}[1]$ 到 $\textit{nums}[3]$ 的 OR。
+
+这里的思路是：
+
+- $\textit{nums}[3]$ 不变，它表示下标从 $3$ 到 $3$ 这个子数组的 OR。
+- 把 $\textit{nums}[2]$ 更新为 $\textit{nums}[2]\ |\ \textit{nums}[3]$。
+- 把 $\textit{nums}[1]$ 更新为 $\textit{nums}[1]\ |\ \textit{nums}[2]$，也就是原数组的 $\textit{nums}[1]\ |\ \textit{nums}[2]\ |\ \textit{nums}[3]$。
+- 想象有一个栈，栈底是 $\textit{nums}[3]$，栈顶是 $\textit{nums}[1]$。
+
+现在窗口元素的 OR，即 $\textit{nums}[1]$ 到 $\textit{nums}[3]$ 的 OR，就存储在栈顶 $\textit{nums}[1]$ 中了。如果又有一个左端点元素离开窗口，我们就弹出栈顶，用新的栈顶 $\textit{nums}[2]$ 表示窗口元素的 OR。
+
+当右端点 $\textit{right}$ 移动时，我们又该如何维护呢？
+
+额外维护一个变量 $\textit{rightOr}$，表示从 $\textit{nums}[4]$ 到 $\textit{nums}[\textit{right}]$ 的 OR。
+
+现在窗口元素分成了两部分：
+
+- 左部：$\textit{nums}[\textit{left}]$ 到 $\textit{nums}[3]$。这些元素的 OR 保存在 $\textit{nums}[\textit{left}]$ 中。
+- 右部：$\textit{nums}[4]$ 到 $\textit{nums}[\textit{right}]$。这些元素的 OR 保存在 $\textit{rightOr}$ 中。
+
+那么计算 $\textit{nums}[\textit{left}]$ 和 $\textit{rightOr}$ 的 OR，就是窗口元素的 OR 了。
+
+但问题又来了，如果我们把栈清空了，也就是左端点移动到 $\textit{left}=4$，又该怎么做呢？
+
+重复之前的过程，从 $i=\textit{right}-1$ 开始，倒序循环到 $\textit{left}$，更新 $\textit{nums}[i]$ 为 $\textit{nums}[i]\ |\ \textit{nums}[i+1]$。相当于我们在计算一个后缀 OR。这个过程结束后，相当于生成了一个栈，栈底是 $\textit{nums}[\textit{right}]$，栈顶是 $\textit{nums}[\textit{left}]$。每个栈中元素 $\textit{nums}[i]$ 表示从 $\textit{nums}[i]$ 到 $\textit{nums}[\textit{right}]$ 的 OR。计算完后，把 $\textit{rightOr}$ 重置为 $0$。
+
+为了记录栈底的位置，我们还需要维护一个额外变量 $\textit{bottom}$。
+
+### 更新答案
+
+最后，来说怎么更新答案。
+
+原问题可以拆分成（等价于）：
+
+- 当窗口元素 OR 大于 $k$ 时，计算窗口元素 OR 的最小值。
+- 当窗口元素 OR 小于等于 $k$ 时，计算窗口元素 OR 的最大值。
+
+所以本题既是一个求最小值的滑窗，又是一个求最大值的滑窗。
+
+具体来说：
+
+- 右端点元素进入窗口后，如果发现 $(\textit{nums}[\textit{left}]\ |\ \textit{rightOr}) > k$，那么用 $(\textit{nums}[\textit{left}]\ |\ \textit{rightOr}) - k$ 更新答案的最小值。
+- 左端点移动结束后（退出内层循环），现在 $(\textit{nums}[\textit{left}]\ |\ \textit{rightOr}) \le k$，那么用 $k - (\textit{nums}[\textit{left}]\ |\ \textit{rightOr})$ 更新答案的最小值。
+
+```py [sol-Python3]
+class Solution:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
+        ans = inf
+        left = bottom = right_or = 0
+        for right, x in enumerate(nums):
+            right_or |= x
+            while left <= right and nums[left] | right_or > k:
+                ans = min(ans, (nums[left] | right_or) - k)
+                if bottom <= left:
+                    # 重新构建一个栈
+                    # 由于 left 即将移出窗口，只需计算到 left+1
+                    for i in range(right - 1, left, -1):
+                        nums[i] |= nums[i + 1]
+                    bottom = right
+                    right_or = 0
+                left += 1
+            if left <= right:
+                ans = min(ans, k - (nums[left] | right_or))
+        return ans
+```
+
+```py [sol-Python3 手写 min]
+class Solution:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
+        ans = inf
+        left = bottom = right_or = 0
+        for right, x in enumerate(nums):
+            right_or |= x
+            while left <= right and nums[left] | right_or > k:
+                d = (nums[left] | right_or) - k
+                if d < ans: ans = d  # 手写 min，效率更高
+                if bottom <= left:
+                    for i in range(right - 1, left, -1):
+                        nums[i] |= nums[i + 1]
+                    bottom = right
+                    right_or = 0
+                left += 1
+            if left <= right:
+                d = k - (nums[left] | right_or)
+                if d < ans: ans = d
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumDifference(int[] nums, int k) {
+        int ans = Integer.MAX_VALUE;
+        int left = 0;
+        int bottom = 0;
+        int rightOr = 0;
+        for (int right = 0; right < nums.length; right++) {
+            rightOr |= nums[right];
+            while (left <= right && (nums[left] | rightOr) > k) {
+                ans = Math.min(ans, (nums[left] | rightOr) - k);
+                if (bottom <= left) {
+                    // 重新构建一个栈
+                    // 由于 left 即将移出窗口，只需计算到 left+1
+                    for (int i = right - 1; i > left; i--) {
+                        nums[i] |= nums[i + 1];
+                    }
+                    bottom = right;
+                    rightOr = 0;
+                }
+                left++;
+            }
+            if (left <= right) {
+                ans = Math.min(ans, k - (nums[left] | rightOr));
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumDifference(vector<int>& nums, int k) {
+        int ans = INT_MAX, left = 0, bottom = 0, right_or = 0;
+        for (int right = 0; right < nums.size(); right++) {
+            right_or |= nums[right];
+            while (left <= right && (nums[left] | right_or) > k) {
+                ans = min(ans, (nums[left] | right_or) - k);
+                if (bottom <= left) {
+                    // 重新构建一个栈
+                    // 由于 left 即将移出窗口，只需计算到 left+1
+                    for (int i = right - 1; i > left; i--) {
+                        nums[i] |= nums[i + 1];
+                    }
+                    bottom = right;
+                    right_or = 0;
+                }
+                left++;
+            }
+            if (left <= right) {
+                ans = min(ans, k - (nums[left] | right_or));
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+#define MIN(a, b) ((b) < (a) ? (b) : (a))
+
+int minimumDifference(int* nums, int numsSize, int k) {
+    int ans = INT_MAX, left = 0, bottom = 0, right_or = 0;
+    for (int right = 0; right < numsSize; right++) {
+        right_or |= nums[right];
+        while (left <= right && (nums[left] | right_or) > k) {
+            ans = MIN(ans, (nums[left] | right_or) - k);
+            if (bottom <= left) {
+                // 重新构建一个栈
+                // 由于 left 即将移出窗口，只需计算到 left+1
+                for (int i = right - 1; i > left; i--) {
+                    nums[i] |= nums[i + 1];
+                }
+                bottom = right;
+                right_or = 0;
+            }
+            left++;
+        }
+        if (left <= right) {
+            ans = MIN(ans, k - (nums[left] | right_or));
+        }
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func minimumDifference(nums []int, k int) int {
+    ans := math.MaxInt
+    var left, bottom, rightOr int
+    for right, x := range nums {
+        rightOr |= x
+        for left <= right && nums[left]|rightOr > k {
+            ans = min(ans, (nums[left]|rightOr)-k)
+            if bottom <= left {
+                // 重新构建一个栈
+                // 由于 left 即将移出窗口，只需计算到 left+1
+                for i := right - 1; i > left; i-- {
+                    nums[i] |= nums[i+1]
+                }
+                bottom = right
+                rightOr = 0
+            }
+            left++
+        }
+        if left <= right {
+            ans = min(ans, k-(nums[left]|rightOr))
+        }
+    }
+    return ans
+}
+```
+
+```js [sol-JavaScript]
+var minimumDifference = function(nums, k) {
+    let ans = Infinity, left = 0, bottom = 0, rightOr = 0;
+    for (let right = 0; right < nums.length; right++) {
+        rightOr |= nums[right];
+        while (left <= right && (nums[left] | rightOr) > k) {
+            ans = Math.min(ans, (nums[left] | rightOr) - k);
+            if (bottom <= left) {
+                // 重新构建一个栈
+                // 由于 left 即将移出窗口，只需计算到 left+1
+                for (let i = right - 1; i > left; i--) {
+                    nums[i] |= nums[i + 1];
+                }
+                bottom = right;
+                rightOr = 0;
+            }
+            left++;
+        }
+        if (left <= right) {
+            ans = Math.min(ans, k - (nums[left] | rightOr));
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn minimum_difference(mut nums: Vec<i32>, k: i32) -> i32 {
+        let mut ans = i32::MAX;
+        let mut left = 0;
+        let mut bottom = 0;
+        let mut right_or = 0;
+        for right in 0..nums.len() {
+            right_or |= nums[right];
+            while left <= right && (nums[left] | right_or) > k {
+                ans = ans.min((nums[left] | right_or) - k);
+                if bottom <= left {
+                    // 重新构建一个栈
+                    // 由于 left 即将移出窗口，只需计算到 left+1
+                    for i in (left + 1..right).rev() {
+                        nums[i] |= nums[i + 1];
+                    }
+                    bottom = right;
+                    right_or = 0;
+                }
+                left += 1;
+            }
+            if left <= right {
+                ans = ans.min(k - (nums[left] | right_or));
+            }
+        }
+        ans
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。虽然我们写了个三重循环，但每个元素至多入栈出栈各一次，所以三重循环的**总**循环次数是 $\mathcal{O}(n)$ 的，所以时间复杂度是 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+更多相似题目，见位运算题单中的「**LogTrick**」。
 
 ## 分类题单
 
