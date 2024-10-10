@@ -50,63 +50,7 @@ $$
 
 最后答案为 $f[\textit{numLaps}]$。
 
-```go [sol1-Go]
-func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
-	minSec := [18]int{}
-	for i := range minSec {
-		minSec[i] = math.MaxInt32
-	}
-	for _, tire := range tires {
-		f, r := tire[0], tire[1]
-		for x, time, sum := 1, f, 0; time <= changeTime+f; x++ {
-			sum += time
-			minSec[x] = min(minSec[x], sum)
-			time *= r
-		}
-	}
-
-	f := make([]int, numLaps+1)
-	f[0] = -changeTime
-	for i := 1; i <= numLaps; i++ {
-		f[i] = math.MaxInt32
-		for j := 1; j <= 17 && j <= i; j++ {
-			f[i] = min(f[i], f[i-j]+minSec[j])
-		}
-		f[i] += changeTime
-	}
-	return f[numLaps]
-}
-
-func min(a, b int) int { if a > b { return b }; return a }
-```
-
-```C++ [sol1-C++]
-class Solution {
-public:
-    int minimumFinishTime(vector<vector<int>> &tires, int changeTime, int numLaps) {
-        vector<int> minSec(18, INT_MAX / 2); // 除二是防止下面计算状态转移时溢出
-        for (auto &tire : tires) {
-            long time = tire[0];
-            for (int x = 1, sum = 0; time <= changeTime + tire[0]; ++x) {
-                sum += time;
-                minSec[x] = min(minSec[x], sum);
-                time *= tire[1];
-            }
-        }
-
-        vector<int> f(numLaps + 1, INT_MAX);
-        f[0] = -changeTime;
-        for (int i = 1; i <= numLaps; ++i) {
-            for (int j = 1; j <= min(17, i); ++j)
-                f[i] = min(f[i], f[i - j] + minSec[j]);
-            f[i] += changeTime;
-        }
-        return f[numLaps];
-    }
-};
-```
-
-```Python [sol1-Python3]
+```py [sol1-Python3]
 class Solution:
     def minimumFinishTime(self, tires: List[List[int]], changeTime: int, numLaps: int) -> int:
         min_sec = [inf] * 18
@@ -149,6 +93,60 @@ class Solution {
         }
         return f[numLaps];
     }
+}
+```
+
+```cpp [sol1-C++]
+class Solution {
+public:
+    int minimumFinishTime(vector<vector<int>> &tires, int changeTime, int numLaps) {
+        vector<int> minSec(18, INT_MAX / 2); // 除二是防止下面计算状态转移时溢出
+        for (auto &tire : tires) {
+            long time = tire[0];
+            for (int x = 1, sum = 0; time <= changeTime + tire[0]; ++x) {
+                sum += time;
+                minSec[x] = min(minSec[x], sum);
+                time *= tire[1];
+            }
+        }
+
+        vector<int> f(numLaps + 1, INT_MAX);
+        f[0] = -changeTime;
+        for (int i = 1; i <= numLaps; ++i) {
+            for (int j = 1; j <= min(17, i); ++j)
+                f[i] = min(f[i], f[i - j] + minSec[j]);
+            f[i] += changeTime;
+        }
+        return f[numLaps];
+    }
+};
+```
+
+```go [sol1-Go]
+func minimumFinishTime(tires [][]int, changeTime, numLaps int) int {
+	minSec := [18]int{}
+	for i := range minSec {
+		minSec[i] = math.MaxInt32
+	}
+	for _, tire := range tires {
+		f, r := tire[0], tire[1]
+		for x, time, sum := 1, f, 0; time <= changeTime+f; x++ {
+			sum += time
+			minSec[x] = min(minSec[x], sum)
+			time *= r
+		}
+	}
+
+	f := make([]int, numLaps+1)
+	f[0] = -changeTime
+	for i := 1; i <= numLaps; i++ {
+		f[i] = math.MaxInt32
+		for j := 1; j <= 17 && j <= i; j++ {
+			f[i] = min(f[i], f[i-j]+minSec[j])
+		}
+		f[i] += changeTime
+	}
+	return f[numLaps]
 }
 ```
 
