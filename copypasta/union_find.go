@@ -34,17 +34,21 @@ https://zhuanlan.zhihu.com/p/553192435
 // 模板题 LC547 https://leetcode.cn/problems/number-of-provinces/
 // LC684 https://leetcode.cn/problems/redundant-connection/
 // LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
+// 并查集+置换 LC2459 https://leetcode.cn/problems/sort-array-by-moving-items-to-empty-space/
 // https://www.luogu.com.cn/problem/P1111
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
-// 基础题 https://codeforces.com/problemset/problem/1167/C
-//       https://codeforces.com/problemset/problem/1411/C
+// 基础题 https://codeforces.com/problemset/problem/1167/C 1400
+//       https://codeforces.com/problemset/problem/1411/C 1700
+// https://codeforces.com/problemset/problem/755/C 1300
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 转换 https://atcoder.jp/contests/abc304/tasks/abc304_e
 // 转换 https://atcoder.jp/contests/abc238/tasks/abc238_e
 // merge 后 from 还有用 https://atcoder.jp/contests/abc279/tasks/abc279_f
 // 处理图上的环 https://codeforces.com/contest/1726/problem/D
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
+// 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
+// - 思考：如果允许圆心在矩形外呢？见我题解下面的讨论
 //
 // 质因子并查集 GCD>1 并查集
 // 预处理质因子（见 math.go 中的 primeDivisorsAll）
@@ -62,9 +66,11 @@ https://zhuanlan.zhihu.com/p/553192435
 // - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
 // - [2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)
 // - [2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)
+// - https://codeforces.com/problemset/problem/1041/C 1600
 // - https://codeforces.com/problemset/problem/724/D
 // - https://codeforces.com/problemset/problem/827/A
 // - https://codeforces.com/problemset/problem/1157/E
+// - https://www.codechef.com/problems/REMSUBARR
 //
 // 树+点权/边权的顺序
 // - LC2421 https://leetcode.cn/problems/number-of-good-paths/
@@ -82,6 +88,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 思维转换 https://nanti.jisuanke.com/t/43488
 //         https://codeforces.com/problemset/problem/1012/B
 //         https://codeforces.com/problemset/problem/1466/F
+// https://codeforces.com/problemset/problem/455/C 2100
 // 前缀和 后缀和 https://codeforces.com/problemset/problem/292/D
 // 维护树或基环树 https://codeforces.com/problemset/problem/859/E
 // 求矩阵的 rank 矩阵 https://codeforces.com/problemset/problem/650/C LC1632 https://leetcode.cn/problems/rank-transform-of-a-matrix/submissions/
@@ -232,15 +239,14 @@ func _(n int) {
 	// - 变形：额外传入数组 nums，计算包含元素值为 queries[i] 的最短的 intervals[i]
 	// LC2158 https://leetcode.cn/problems/amount-of-new-area-painted-each-day/
 	// https://codeforces.com/problemset/problem/371/D 1800 经典题
+	// https://codeforces.com/problemset/problem/2020/D 1800
 	// https://codeforces.com/problemset/problem/724/D 1900
-	mergeRangeTo := func(l, r, to int) { // 常用：to=r+1，这时建议用左闭右开表示区间
-		//if l < 0 {
-		//	l = 0
-		//}
-		//if r > n {
-		//	r = n
-		//}
-		for i := find(l); i <= r; i = find(i + 1) { // initFa 需要开 n+1 空间
+	mergeRangeTo := func(l, r, to int) { 
+		// 常用：to = r + 1，这时建议用左闭右开表示区间
+		// 或者 to = find(r)
+		// l = max(l, 0)
+		// r = min(r, n)
+		for i := find(l); i <= r; i = find(i + 1) { // initFa 需要开 n+1 空间（或者 n+2，如果下标从 1 开始）
 			fa[i] = to
 		}
 	}
