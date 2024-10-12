@@ -159,7 +159,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 
 func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 
-// 其余通用方法见 bst.go
+// 其余通用方法，例如 get/find/prev/next/min/max 见 bst.go
 
 //
 
