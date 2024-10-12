@@ -244,7 +244,7 @@ func _(n int) {
 	mergeRangeTo := func(l, r, to int) { 
 		// 常用：to = r + 1，这时建议用左闭右开表示区间
 		// 或者 to = find(r)
-		// l = max(l, 0)
+		// l = max(l, 1)
 		// r = min(r, n)
 		for i := find(l); i <= r; i = find(i + 1) { // initFa 需要开 n+1 空间（或者 n+2，如果下标从 1 开始）
 			fa[i] = to
