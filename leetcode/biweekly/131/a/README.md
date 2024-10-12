@@ -13,10 +13,10 @@ class Solution:
     def duplicateNumbersXOR(self, nums: List[int]) -> int:
         ans = vis = 0
         for x in nums:
-            if vis >> x & 1:
+            if vis >> x & 1:  # x 在 vis 中
                 ans ^= x
             else:
-                vis |= 1 << x
+                vis |= 1 << x  # 把 x 加到 vis 中
         return ans
 ```
 
@@ -26,10 +26,10 @@ class Solution {
         int ans = 0;
         long vis = 0;
         for (int x : nums) {
-            if ((vis >> x & 1) > 0) {
+            if ((vis >> x & 1) > 0) { // x 在 vis 中
                 ans ^= x;
             } else {
-                vis |= 1L << x;
+                vis |= 1L << x; // 把 x 加到 vis 中
             }
         }
         return ans;
@@ -44,10 +44,10 @@ public:
         int ans = 0;
         long long vis = 0;
         for (int x : nums) {
-            if (vis >> x & 1) {
+            if (vis >> x & 1) { // x 在 vis 中
                 ans ^= x;
             } else {
-                vis |= 1LL << x;
+                vis |= 1LL << x; // 把 x 加到 vis 中
             }
         }
         return ans;
@@ -61,10 +61,10 @@ int duplicateNumbersXOR(int* nums, int numsSize) {
     long long vis = 0;
     for (int i = 0; i < numsSize; i++) {
         int x = nums[i];
-        if (vis >> x & 1) {
+        if (vis >> x & 1) { // x 在 vis 中
             ans ^= x;
         } else {
-            vis |= 1LL << x;
+            vis |= 1LL << x; // 把 x 加到 vis 中
         }
     }
     return ans;
@@ -75,10 +75,10 @@ int duplicateNumbersXOR(int* nums, int numsSize) {
 func duplicateNumbersXOR(nums []int) (ans int) {
 	vis := 0
 	for _, x := range nums {
-		if vis>>x&1 > 0 {
+		if vis>>x&1 > 0 { // x 在 vis 中
 			ans ^= x
 		} else {
-			vis |= 1 << x
+			vis |= 1 << x // 把 x 加到 vis 中
 		}
 	}
 	return
@@ -91,10 +91,10 @@ var duplicateNumbersXOR = function(nums) {
     // JS 的位运算会强转成 32 位整数，需要用 BigInt 处理
     let vis = 0n;
     for (const x of nums) {
-        if (vis >> BigInt(x) & 1n) {
+        if (vis >> BigInt(x) & 1n) { // x 在 vis 中
             ans ^= x;
         } else {
-            vis |= 1n << BigInt(x);
+            vis |= 1n << BigInt(x); // 把 x 加到 vis 中
         }
     }
     return ans;
@@ -107,10 +107,10 @@ impl Solution {
         let mut ans = 0;
         let mut vis = 0i64;
         for x in nums {
-            if (vis >> x & 1) > 0 {
+            if (vis >> x & 1) > 0 { // x 在 vis 中
                 ans ^= x;
             } else {
-                vis |= 1 << x;
+                vis |= 1 << x; // 把 x 加到 vis 中
             }
         }
         ans
