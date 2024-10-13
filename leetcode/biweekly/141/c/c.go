@@ -4,6 +4,32 @@ import "math"
 
 // https://space.bilibili.com/206214
 func maxRemovals(source, pattern string, targetIndices []int) int {
+	m := len(pattern)
+	f := make([]int, m+1)
+	for i := 1; i <= m; i++ {
+		f[i] = math.MinInt
+	}
+	k := 0
+	for i := range source {
+		if k < len(targetIndices) && targetIndices[k] < i {
+			k++
+		}
+		isDel := 0
+		if k < len(targetIndices) && targetIndices[k] == i {
+			isDel = 1
+		}
+		for j := min(i, m-1); j >= 0; j-- {
+			f[j+1] += isDel
+			if source[i] == pattern[j] {
+				f[j+1] = max(f[j+1], f[j])
+			}
+		}
+		f[0] += isDel
+	}
+	return f[m]
+}
+
+func maxRemovals2(source, pattern string, targetIndices []int) int {
 	targetSet := map[int]int{}
 	for _, idx := range targetIndices {
 		targetSet[idx] = 1
