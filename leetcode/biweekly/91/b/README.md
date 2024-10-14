@@ -6,7 +6,7 @@
 
 - 如果 $i\ge \textit{zero}$，那么可以在长为 $i-\textit{zero}$ 的字符串末尾添加 $\textit{zero}$ 个 $0$，方案数为 $f[i-\textit{zero}]$。
 - 如果 $i\ge \textit{one}$，那么可以在长为 $i-\textit{one}$ 的字符串末尾添加 $\textit{one}$ 个 $1$，方案数为 $f[i-\textit{one}]$。
-- 两类方案互相独立，相加得
+- 两类方案互斥（第 $i$ 个字符不能既是 $0$ 又是 $1$），所以用**加法原理**，得
 
 $$
 f[i] = f[i-\textit{zero}] + f[i-\textit{one}]
@@ -495,6 +495,7 @@ fn gcd(a: i32, b: i32) -> i32 {
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
