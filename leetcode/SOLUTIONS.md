@@ -26,6 +26,7 @@
 ||[878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/)|[【图解】二分答案+容斥原理](https://leetcode.cn/problems/nth-magical-number/solution/er-fen-da-an-rong-chi-yuan-li-by-endless-9j34/)|1897|
 ||[2594. 修车的最少时间](https://leetcode.cn/problems/minimum-time-to-repair-cars/)|[二分答案+优化（附题单！）](https://leetcode.cn/problems/minimum-time-to-repair-cars/solution/er-fen-da-an-pythonjavacgo-by-endlessche-keqf/)|1915|
 ||[2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)|[【套路】二分答案！附题单！](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/solution/er-fen-da-an-by-endlesscheng-r418/)|2021|
+||[4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/)|[【图解】循序渐进：从双指针到二分](https://leetcode.cn/problems/median-of-two-sorted-arrays/solution/tu-jie-xun-xu-jian-jin-cong-shuang-zhi-z-p2gd/)|困难|
 ||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+爆搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
 |技巧性枚举|[1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/)|[【图解】非暴力 O(nm) 算法](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/solution/tu-jie-fei-bao-li-onm-suan-fa-pythonjava-k5og/)|1745|
 |前后缀分解|[1653. 使字符串平衡的最少删除次数](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/)|[【图解】前后缀分解，消除分支的技巧！（附动态规划）](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/solution/qian-hou-zhui-fen-jie-yi-zhang-tu-miao-d-dor2/)|1794|
