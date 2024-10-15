@@ -21,6 +21,8 @@ DFS 结束后：
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1zU2zYiEa4/)，欢迎点赞关注~
 
+### 写法一：快速排序/快速选择
+
 ```py [sol-Python3]
 class Solution:
     def kthLargestPerfectSubtree(self, root: Optional[TreeNode], k: int) -> int:
@@ -128,6 +130,131 @@ func kthLargestPerfectSubtree(root *TreeNode, k int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+m\log m)$ 或者 $\mathcal{O}(n)$，其中 $n$ 是二叉树的节点个数，$m$ 是 $\textit{hs}$ 的长度。如果使用快速选择，则时间复杂度为 $\mathcal{O}(n)$，见 C++ 代码中的 `ranges::nth_element`。
+- 空间复杂度：$\mathcal{O}(n)$。递归需要 $\mathcal{O}(n)$ 的栈空间。
+
+### 写法二：计数排序
+
+统计每个高度的出现次数。
+
+叶子的高度改成 $0$，充分利用数组空间。
+
+```py [sol-Python3]
+class Solution:
+    def kthLargestPerfectSubtree(self, root: Optional[TreeNode], k: int) -> int:
+        cnt = [0] * 10
+        def dfs(node: Optional[TreeNode]) -> int:
+            if node is None:
+                return -1
+            left_h = dfs(node.left)
+            right_h = dfs(node.right)
+            if left_h == -2 or left_h != right_h:
+                return -2  # 不合法
+            cnt[left_h + 1] += 1
+            return left_h + 1
+        dfs(root)
+
+        for i in range(len(cnt) - 1, -1, -1):
+            c = cnt[i]
+            if c >= k:
+                return (1 << (i + 1)) - 1
+            k -= c
+        return -1
+```
+
+```java [sol-Java]
+class Solution {
+    public int kthLargestPerfectSubtree(TreeNode root, int k) {
+        int[] cnt = new int[10];
+        dfs(root, cnt);
+
+        for (int i = cnt.length - 1; i >= 0; i--) {
+            int c = cnt[i];
+            if (c >= k) {
+                return (1 << (i + 1)) - 1;
+            }
+            k -= c;
+        }
+        return -1;
+    }
+
+    private int dfs(TreeNode node, int[] cnt) {
+        if (node == null) {
+            return -1;
+        }
+        int leftH = dfs(node.left, cnt);
+        int rightH = dfs(node.right, cnt);
+        if (leftH == -2 || leftH != rightH) {
+            return -2; // 不合法
+        }
+        cnt[leftH + 1]++;
+        return leftH + 1;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int kthLargestPerfectSubtree(TreeNode* root, int k) {
+        int cnt[10]{};
+        auto dfs = [&](auto&& dfs, TreeNode* node) -> int {
+            if (node == nullptr) {
+                return -1;
+            }
+            int left_h = dfs(dfs, node->left);
+            int right_h = dfs(dfs, node->right);
+            if (left_h == -2 || left_h != right_h) {
+                return -2; // 不合法
+            }
+            cnt[left_h + 1]++;
+            return left_h + 1;
+        };
+        dfs(dfs, root);
+
+        for (int i = 9; i >= 0; i--) {
+            int c = cnt[i];
+            if (c >= k) {
+                return (1 << (i + 1)) - 1;
+            }
+            k -= c;
+        }
+        return -1;
+    }
+};
+```
+
+```go [sol-Go]
+func kthLargestPerfectSubtree(root *TreeNode, k int) int {
+	cnt := [10]int{}
+	var dfs func(*TreeNode) int
+	dfs = func(node *TreeNode) int {
+		if node == nil {
+			return -1
+		}
+		leftH := dfs(node.Left)
+		rightH := dfs(node.Right)
+		if leftH == -2 || leftH != rightH {
+			return -2 // 不合法
+		}
+		cnt[leftH+1]++
+		return leftH + 1
+	}
+	dfs(root)
+
+	for i := len(cnt) - 1; i >= 0; i-- {
+		c := cnt[i]
+		if c >= k {
+			return 1<<(i+1) - 1
+		}
+		k -= c
+	}
+	return -1
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是二叉树的节点个数。
 - 空间复杂度：$\mathcal{O}(n)$。递归需要 $\mathcal{O}(n)$ 的栈空间。
 
 更多相似题目，见下面链表二叉树题单中的「**§2.3 自底向上 DFS**」。
