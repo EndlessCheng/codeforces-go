@@ -345,7 +345,7 @@ var handleQuery = function(nums1, nums2, queries) {
     }
 
     build(nums1, 1, 0, n - 1);
-    let ans = [];
+    const ans = [];
     let sum = _.sum(nums2);
     for (const [op, l, r] of queries) {
         if (op === 1) {
