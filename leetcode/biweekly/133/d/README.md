@@ -406,7 +406,7 @@ $$
 
 因此可以去掉第一个维度，反复利用同一个长为 $m+1$ 的一维数组。
 
-代码实现时，前缀和可以直接保存在 $f$ 中。
+代码实现时，前缀和可以直接保存在 $f$ 中。先计算前缀和，再利用前缀和计算和式（子数组和）。
 
 关于取模的技巧，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -431,9 +431,9 @@ class Solution:
                 for j in range(m + 1):
                     f[j] = f[r] if r <= j <= min(i + r, mx) else 0
             else:
-                for j in range(1, mx + 1):
+                for j in range(1, mx + 1):  # 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD
-                for j in range(mx, i, -1):
+                for j in range(mx, i, -1):  # 计算子数组和
                     f[j] = (f[j] - f[j - i - 1]) % MOD
         return f[req[-1]]
 ```
@@ -464,10 +464,10 @@ class Solution {
                 Arrays.fill(f, r + 1, Math.min(i + r, mx) + 1, f[r]);
                 Arrays.fill(f, Math.min(i + r, mx) + 1, m + 1, 0);
             } else {
-                for (int j = 1; j <= mx; j++) {
+                for (int j = 1; j <= mx; j++) { // 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD;
                 }
-                for (int j = mx; j > i; j--) {
+                for (int j = mx; j > i; j--) { // 计算子数组和
                     f[j] = (f[j] - f[j - i - 1] + MOD) % MOD;
                 }
             }
@@ -501,10 +501,10 @@ public:
                 fill(f.begin() + r + 1, f.begin() + min(i + r, mx) + 1, f[r]);
                 fill(f.begin() + min(i + r, mx) + 1, f.end(), 0);
             } else {
-                for (int j = 1; j <= mx; j++) {
+                for (int j = 1; j <= mx; j++) { // 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD;
                 }
-                for (int j = mx; j > i; j--) {
+                for (int j = mx; j > i; j--) { // 计算子数组和
                     f[j] = (f[j] - f[j - i - 1] + MOD) % MOD;
                 }
             }
@@ -543,10 +543,10 @@ func numberOfPermutations(n int, requirements [][]int) int {
 			}
 			clear(f[min(i+r, mx)+1:])
 		} else {
-			for j := 1; j <= mx; j++ {
+			for j := 1; j <= mx; j++ { // 计算前缀和
 				f[j] = (f[j] + f[j-1]) % mod
 			}
-			for j := mx; j > i; j-- {
+			for j := mx; j > i; j-- { // 计算子数组和
 				f[j] = (f[j] - f[j-i-1] + mod) % mod
 			}
 		}
