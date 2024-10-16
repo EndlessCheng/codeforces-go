@@ -74,9 +74,9 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 
 	var statusURL string
 	if isGYM {
-		statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s", urlObj.Host, contestID, problemID)
+		statusURL = fmt.Sprintf("https://%s/gym/%s/status/%s?friends=on", urlObj.Host, contestID, problemID)
 	} else {
-		statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s", urlObj.Host, contestID, problemID)
+		statusURL = fmt.Sprintf("https://%s/problemset/status/%s/problem/%s?friends=on", urlObj.Host, contestID, problemID)
 	}
 
 	if openWebsite {
