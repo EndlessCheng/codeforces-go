@@ -20,6 +20,7 @@ https://codeforces.com/problemset/problem/1010/B 1800
 https://codeforces.com/problemset/problem/1063/C 1900
 https://codeforces.com/problemset/problem/1486/C2 1900 数组
 https://codeforces.com/problemset/problem/1697/D 1900
+https://codeforces.com/problemset/problem/1103/B 2000 需要一些构造能力
 https://codeforces.com/problemset/problem/1624/F 2000 动态二分
 https://codeforces.com/problemset/problem/1363/D 2100
 https://codeforces.com/problemset/problem/713/B 2200 分类讨论
