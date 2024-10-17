@@ -1,17 +1,19 @@
-对于 $\textit{rewardValues}$ 中的数，如果先选大的，就没法再选小的，所以**按照从小到大的顺序选**是最好的。
+## 思路
+
+对于 $\textit{rewardValues}$ 中的数，如果先选大的，就没法再选小的，所以**按照从小到大的顺序选**是最优的。
 
 把 $\textit{rewardValues}$ 从小到大排序。
 
-排序后，问题变成一个标准的 0-1 背包问题，请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+排序后，问题类似 0-1 背包，原理请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
-对于本题，定义 $f[i][j]$ 表示能否从前 $i$ 个数中得到总奖励 $j$。
+定义 $f[i][j]$ 表示能否从前 $i$ 个数中得到总奖励 $j$。
 
 考虑 $v=\textit{rewardValues}[i]$ 选或不选：
 
-- 不选 $v$：$f[i][j] = f[i-1][j]$。
-- 选 $v$：$f[i][j] = f[i-1][j-v]$，前提是 $j\ge v$ 且 $j-v < v$，即 $v\le j<2v$。
+- 不选 $v$，问题变成能否从前 $i-1$ 个数中得到总奖励 $j$，即 $f[i][j] = f[i-1][j]$。
+- 选 $v$，问题变成能否从前 $i-1$ 个数中得到总奖励 $j-v$，即 $f[i][j] = f[i-1][j-v]$，前提是 $j$ 满足 $j\ge v$ 且 $j-v < v$，即 $v\le j<2v$。
 
-满足其一即可，得
+选或不选满足其一即可，所以有
 
 $$
 f[i][j] = f[i-1][j] \vee f[i-1][j-v]
@@ -23,7 +25,9 @@ $$
 
 答案为最大的满足 $f[n][j]=\texttt{true}$ 的 $j$。
 
-这可以解决周赛第三题，但第四题范围很大，需要去掉第一个维度，并用 **bitset** 优化（也可以用 **bigint**）。
+这样可以解决 [3180. 执行操作可获得的最大总奖励 I](https://leetcode.cn/problems/maximum-total-reward-using-operations-i/)，但本题数据范围更大，需要去掉第一个维度，并用 **bitset** 优化（也可以用 **bigint**）。
+
+## 优化一
 
 用一个二进制数 $f$ 保存状态，二进制从低到高第 $j$ 位为 $1$ 表示 $f[j]=\texttt{true}$，为 $0$ 表示 $f[j]=\texttt{false}$。
 
@@ -33,7 +37,7 @@ $$
 
 答案为 $f$ 的最高位，即 $f$ 的二进制长度减一。
 
-代码实现时，可以把 $\textit{rewardValues}$ 中的重复数字去掉，毕竟无法选两个一样的数。
+小优化：代码实现时，可以先把 $\textit{rewardValues}$ 中的重复数字去掉再 DP，毕竟无法选两个一样的数。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1h7421R78s/) 第四题，欢迎点赞关注！
 
@@ -159,7 +163,7 @@ func maxTotalReward(rewardValues []int) int {
 }
 ```
 
-## 优化一
+## 优化二
 
 设 $m=\max(\textit{rewardValues})$，如果数组中包含 $m-1$，则答案为 $2m-1$（因为这是答案的上界），无需计算 DP。
 
@@ -311,7 +315,7 @@ func maxTotalReward(rewardValues []int) int {
 }
 ```
 
-## 优化二
+## 优化三
 
 如果有两个不同元素之和等于 $m-1$，也可以直接返回 $2m-1$。
 
@@ -517,23 +521,26 @@ func maxTotalReward(rewardValues []int) int {
 - 时间复杂度：$\mathcal{O}(nm/w)$，其中 $n$ 是 $\textit{rewardValues}$ 的长度，$m=\max(\textit{rewardValues})$，$w=64$ 或 $32$。
 - 空间复杂度：$\mathcal{O}(n + m/w)$。
 
-#### 相似题目
+## 相似题目
 
 - [1981. 最小化目标值与所选元素的差](https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/) 也可以用 bitset 解决。
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
