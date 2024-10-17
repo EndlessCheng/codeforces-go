@@ -45,7 +45,7 @@ $$
 
 - 如果 $j<\textit{req}[i-1]$，由于 $j$ 只能变小不能变大，无法满足要求，所以 $\textit{dfs}(i,j) = 0$。
 - 如果 $j-i>\textit{req}[i-1]$，即使当前填了最小的数，和左边 $i$ 个数组成了 $i$ 个逆序对，那么剩余的 $j-i$ 还是太大了，无法满足要求，所以 $\textit{dfs}(i,j) = 0$。
-- 否则满足要求，$\textit{dfs}(i,j) = \textit{dfs}(i-1,\textit{req}[i-1])$。
+- 否则令上文中的 $k=j-\textit{req}[i-1]$，就可以把逆序对从 $j$ 减小到 $\textit{req}[i-1]$，从而满足要求。由于只有令 $k=j-\textit{req}[i-1]$ 一种方法，所以 $\textit{dfs}(i,j) = \textit{dfs}(i-1,j-k) = \textit{dfs}(i-1,\textit{req}[i-1])$。
 
 **递归边界**：$\textit{dfs}(0,0)=1$，此时找到了一个符合要求的排列。
 
