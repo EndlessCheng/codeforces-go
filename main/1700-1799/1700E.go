@@ -25,33 +25,7 @@ func cf1700E(in io.Reader, out io.Writer) {
 			i > 0 && a[i-1][j] < a[i][j] ||
 			i+1 < n && a[i+1][j] < a[i][j]
 	}
-	type pair struct{ i, j int }
-	badPos := []pair{} // 坏格子
-	swapPos := map[pair]int{}
-	for i := range n {
-		for j := range m {
-			if ok(i, j) {
-				continue
-			}
-			badPos = append(badPos, pair{i, j}) // 坏格子
-			if len(badPos) >= 4 {
-				Fprint(out, 2)
-				return
-			}
-			// 除了交换 (i,j)，也可以通过交换 (i,j) 的邻居，使自己变成一个好格子
-			swapPos[pair{i, j}] = 0
-			swapPos[pair{i, j - 1}] = 0
-			swapPos[pair{i, j + 1}] = 0
-			swapPos[pair{i - 1, j}] = 0
-			swapPos[pair{i + 1, j}] = 0
-		}
-	}
-	if len(badPos) == 0 {
-		Fprint(out, 0)
-		return
-	}
-
-	// (i,j)，以及 (i,j) 的邻居，都是好格子
+	// 判断 (i,j)，以及 (i,j) 的邻居，是否都是好格子
 	ok2 := func(i, j int) bool {
 		return ok(i, j) &&
 			(j == 0 || ok(i, j-1)) &&
@@ -59,8 +33,27 @@ func cf1700E(in io.Reader, out io.Writer) {
 			(i == 0 || ok(i-1, j)) &&
 			(i+1 == n || ok(i+1, j))
 	}
+
+	// 收集坏格子
+	type pair struct{ i, j int }
+	badPos := []pair{}
+	for i := range n {
+		for j := range m {
+			if !ok(i, j) {
+				badPos = append(badPos, pair{i, j})
+			}
+		}
+	}
+	if len(badPos) == 0 {
+		Fprint(out, 0)
+		return
+	}
+
 	ans := map[pair]struct{}{}
-	for p := range swapPos {
+	// 除了交换 (bi,bj)，也可以通过交换 (bi,bj) 的邻居，使 (bi,bj) 变成一个好格子
+	// 只需检查至多 5 个位置，因为 (bi,bj) 必须变成好格子
+	bi, bj := badPos[0].i, badPos[0].j
+	for _, p := range []pair{{bi, bj}, {bi, bj - 1}, {bi, bj + 1}, {bi - 1, bj}, {bi + 1, bj}} {
 		if p.i < 0 || p.i == n || p.j < 0 || p.j == m {
 			continue
 		}
@@ -84,6 +77,7 @@ func cf1700E(in io.Reader, out io.Writer) {
 			}
 		}
 	}
+
 	if len(ans) > 0 {
 		Fprintln(out, 1, len(ans))
 	} else {
