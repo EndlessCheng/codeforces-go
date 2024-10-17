@@ -18,7 +18,7 @@
 
 因为要解决的问题都形如「$\textit{perm}[0]$ 到 $\textit{perm}[i]$ 的逆序对为 $j$ 的排列个数」，所以用它作为本题的状态定义 $\textit{dfs}(i,j)$。
 
-考虑第 $i$ 个数 $\textit{perm}[i]$ 和左边 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 可以组成的逆序对的个数 $k$：
+考虑 $\textit{perm}[i]$ 和左边 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 可以组成的逆序对的个数 $k$：
 
 - 枚举 $k=0,1,2,\cdots,\min(i,j)$。其中 $\min(i,j)$ 是因为左边只有 $i$ 个数，至多和 $\textit{perm}[i]$ 组成 $i$ 个逆序对。
 - 左边有 $k$ 个数比 $\textit{perm}[i]$ 大，组成了 $k$ 个逆序对，还剩下 $j-k$ 个逆序对，问题变成 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 的逆序对为 $j-k$ 的排列个数，即 $\textit{dfs}(i-1,j-k)$。
