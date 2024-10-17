@@ -25,8 +25,14 @@
 这两种情况取最大值，就得到了 $\textit{dfs}(i,j)$，即
 
 $$
-\textit{dfs}(i,j) = \max(\textit{dfs}(i-1,j) + [i\in \textit{targetIndices}], \textit{dfs}(i-1,j-1))
+\textit{dfs}(i,j) =
+\begin{cases}
+\textit{dfs}(i-1,j) + [i\in \textit{targetIndices}], & j=-1     \\
+\max(\textit{dfs}(i-1,j) + [i\in \textit{targetIndices}], \textit{dfs}(i-1,j-1)), & j \ge 0     \\
+\end{cases}
 $$
+
+其中 $[P]$ 表示：如果 $P$ 成立，那么 $[P]=1$，否则 $[P]=0$。
 
 **递归边界**：
 
@@ -189,7 +195,11 @@ func maxRemovals(source, pattern string, targetIndices []int) int {
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
 $$
-f[i+1][j+1] = \max(f[i][j+1] + [i\in \textit{targetIndices}], f[i][j])
+f[i+1][j+1] =
+\begin{cases}
+f[i][j+1] + [i\in \textit{targetIndices}], & j=-1     \\
+\max(f[i][j+1] + [i\in \textit{targetIndices}], f[i][j]), & j \ge 0     \\
+\end{cases}
 $$
 
 > 问：为什么 $\textit{source}[i]$ 的下标不用变？为什么不是 $\textit{source}[i+1]$？
@@ -333,7 +343,11 @@ func maxRemovals(source, pattern string, targetIndices []int) int {
 状态转移方程改为
 
 $$
-f[j+1] = \max(f[j+1] + [i\in \textit{targetIndices}], f[j])
+f[j+1] =
+\begin{cases}
+f[j+1] + [i\in \textit{targetIndices}], & j=-1     \\
+\max(f[j+1] + [i\in \textit{targetIndices}], f[j]), & j \ge 0     \\
+\end{cases}
 $$
 
 初始值 $f[0]=0$，其余为 $-\infty$。
