@@ -1,4 +1,4 @@
-## 思路
+## 方法一：记录操作次数
 
 由于 $\textit{nums}[i]$ 会被发生在 $i$ 左侧的操作影响，我们先从最左边的 $\textit{nums}[0]$ 开始思考。
 
@@ -14,7 +14,7 @@
 - 如果 $x=0$ 且 $k$ 是奇数，或者 $x=1$ 且 $k$ 是偶数，那么这 $k$ 次操作执行完后 $\textit{nums}[i]$ 变成 $1$。所以如果 $x\ne k\bmod 2$，则不需要操作。
 - 如果 $x=0$ 且 $k$ 是偶数，或者 $x=1$ 且 $k$ 是奇数，那么这 $k$ 次操作执行完后 $\textit{nums}[i]$ 变成 $0$。所以如果 $x= k\bmod 2$，则一定要操作。
 
-## 正确性
+### 正确性
 
 **问**：为什么这样做是对的？
 
@@ -115,6 +115,107 @@ impl Solution {
             }
         }
         k
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：比较相邻元素
+
+在从左到右遍历的过程中：
+
+- 如果 $\textit{nums}[0]=0$，那么要选择下标 $i=0$ 操作一次。
+- 如果 $\textit{nums}[i]=\textit{nums}[i-1]=0$，那么发生在 $\textit{nums}[i-1]$ 上的反转次数必然是奇数，由于（遍历到 $i$ 时）从 $i-1$ 到数组末尾的元素都被反转了奇数次，所以在 $\textit{nums}[i]$ 上的反转次数也是奇数，所以当我们遍历到 $i$ 时，$\textit{nums}[i]$ 一定被反转成了 $1$，所以无需选择下标 $i$ 操作。
+- 如果 $\textit{nums}[i]=\textit{nums}[i-1]=1$，那么发生在 $\textit{nums}[i-1]$ 上的反转次数必然是偶数，所以同样的，发生在 $\textit{nums}[i]$ 上的反转次数也是偶数，所以当我们遍历到 $i$ 时，$\textit{nums}[i]$ 仍然是 $1$，所以无需选择下标 $i$ 操作。
+- 如果 $\textit{nums}[i]=1$ 且 $\textit{nums}[i-1]=0$，那么发生在 $\textit{nums}[i-1]$ 上的反转次数必然是奇数，所以同样的，发生在 $\textit{nums}[i]$ 上的反转次数也是奇数，所以当我们遍历到 $i$ 时，$\textit{nums}[i]$ 一定被反转成了 $0$，所以一定要选择下标 $i$ 操作。
+- 如果 $\textit{nums}[i]=0$ 且 $\textit{nums}[i-1]=1$，那么发生在 $\textit{nums}[i-1]$ 上的反转次数必然是偶数，所以同样的，发生在 $\textit{nums}[i]$ 上的反转次数也是偶数，所以当我们遍历到 $i$ 时，$\textit{nums}[i]$ 仍然是 $0$，所以一定要选择下标 $i$ 操作。
+
+### 算法
+
+1. 初始化答案 $\textit{ans}= \textit{nums}[0]\oplus 1$，其中 $\oplus$ 表示异或。如果 $\textit{nums}[0]=0$，那么要选择下标 $i=0$ 操作一次。
+2. 从 $i=1$ 开始向右遍历 $\textit{nums}$。
+3. 把 $\textit{nums}[i]\oplus\textit{nums}[i-1]$ 加到 $\textit{ans}$ 中。如果 $\textit{nums}[i]$ 和 $\textit{nums}[i-1]$ 不相等，或者说异或结果等于 $1$，那么必须要选择下标 $i$ 操作。
+4. 遍历结束，返回 $\textit{ans}$。
+
+### 答疑
+
+**问**：为什么代码变快了？
+
+**答**：CPU 在遇到分支（条件跳转指令）时会预测代码要执行哪个分支，如果预测正确，CPU 就会继续按照预测的路径执行程序。但如果预测失败，CPU 就需要回滚之前的指令并加载正确的指令，以确保程序执行的正确性。对于本题的一些数据，$0$ 和 $1$ 可以认为是随机出现的，在这种情况下分支预测就会有 $50\%$ 的概率失败，失败导致的回滚和加载操作需要消耗额外的 CPU 周期。方法二直接去掉了 `if` 判断，必然可以带来效率上的提升。
+
+```py [sol-Python3]
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        return (nums[0] ^ 1) + sum(x ^ y for x, y in pairwise(nums))
+```
+
+```java [sol-Java]
+class Solution {
+    public int minOperations(int[] nums) {
+        int ans = nums[0] ^ 1;
+        for (int i = 1; i < nums.length; i++) {
+            ans += nums[i - 1] ^ nums[i];
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minOperations(vector<int>& nums) {
+        int ans = nums[0] ^ 1;
+        for (int i = 1; i < nums.size(); i++) {
+            ans += nums[i - 1] ^ nums[i];
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+int minOperations(int* nums, int numsSize) {
+    int ans = nums[0] ^ 1;
+    for (int i = 1; i < numsSize; i++) {
+        ans += nums[i - 1] ^ nums[i];
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func minOperations(nums []int) int {
+	ans := nums[0] ^ 1
+	for i := 1; i < len(nums); i++ {
+		ans += nums[i-1] ^ nums[i]
+	}
+	return ans
+}
+```
+
+```js [sol-JavaScript]
+var minOperations = function(nums) {
+    let ans = nums[0] ^ 1;
+    for (let i = 1; i < nums.length; i++) {
+        ans += nums[i - 1] ^ nums[i];
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_operations(nums: Vec<i32>) -> i32 {
+        let mut ans = nums[0] ^ 1;
+        for i in 1..nums.len() {
+            ans += nums[i - 1] ^ nums[i];
+        }
+        ans
     }
 }
 ```
