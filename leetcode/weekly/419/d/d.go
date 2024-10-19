@@ -2,10 +2,8 @@ package main
 
 import (
 	"cmp"
-	"github.com/emirpasic/gods/trees/redblacktree"
+	"github.com/emirpasic/gods/v2/trees/redblacktree"
 )
-
-// import "github.com/emirpasic/gods/v2/trees/redblacktree"
 
 // https://space.bilibili.com/206214
 type pair struct{ c, x int }
