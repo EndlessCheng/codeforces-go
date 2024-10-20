@@ -35,7 +35,7 @@ func (t seg) spread(o int) {
 func (t seg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
-		t[o].ones = a[l-1]
+		t[o].ones = a[l]
 		return
 	}
 	m := (l + r) >> 1
@@ -75,11 +75,9 @@ func (t seg) onesCount(o, l, r int) int {
 	return t.onesCount(o<<1, l, r) + t.onesCount(o<<1|1, l, r)
 }
 
-func cf877E(_r io.Reader, _w io.Writer) {
-	in := bufio.NewReader(_r)
+func cf877E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-
 	var n, p, time, q int
 	var op string
 	Fscan(in, &n)
@@ -95,22 +93,20 @@ func cf877E(_r io.Reader, _w io.Writer) {
 
 	b := make([]int, n)
 	nodes := make([]struct{ l, r int }, n)
-	var f func(int) int
-	f = func(v int) int {
+	var dfs func(int)
+	dfs = func(v int) {
+		nodes[v].l = time
 		b[time] = a[v]
 		time++
-		nodes[v].l = time
-		sz := 1
 		for _, w := range g[v] {
-			sz += f(w)
+			dfs(w)
 		}
-		nodes[v].r = nodes[v].l + sz - 1
-		return sz
+		nodes[v].r = time - 1
 	}
-	f(0)
+	dfs(0)
 
 	t := make(seg, 2<<bits.Len(uint(n-1)))
-	t.build(b, 1, 1, n)
+	t.build(b, 1, 0, n-1)
 	for Fscan(in, &q); q > 0; q-- {
 		Fscan(in, &op, &p)
 		o := nodes[p-1]
@@ -122,4 +118,4 @@ func cf877E(_r io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { cf877E(os.Stdin, os.Stdout) }
+//func main() { cf877E(bufio.NewReader(os.Stdin), os.Stdout) }
