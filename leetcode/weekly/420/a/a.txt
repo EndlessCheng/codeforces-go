@@ -1,0 +1,8 @@
+"abc"
+["a","aa","ab","aba","abb","abc"]
+
+"he"
+["a","b","c","d","e","f","g","h","ha","hb","hc","hd","he"]
+
+
+
