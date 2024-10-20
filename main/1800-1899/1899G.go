@@ -27,19 +27,17 @@ func cf1899G(in io.Reader, _w io.Writer) {
 		}
 
 		nodes := make([]struct{ l, r int }, n)
-		dfn := 0
-		var dfs func(int, int) int
-		dfs = func(v, fa int) (size int) {
-			dfn++
+		dfn := 1
+		var dfs func(int, int)
+		dfs = func(v, fa int) {
 			nodes[v].l = dfn
+			dfn++
 			for _, w := range g[v] {
 				if w != fa {
-					size += dfs(w, v)
+					dfs(w, v)
 				}
 			}
-			nodes[v].r = nodes[v].l + size
-			size++
-			return
+			nodes[v].r = dfn - 1
 		}
 		dfs(0, -1)
 
