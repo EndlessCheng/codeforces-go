@@ -2,13 +2,13 @@
 
 举几个例子：
 
-- 如果 $\textit{hours}[i]=1$，那么需要知道左边有多少个模 $24$ 余数是 $23$ 的数，这些数加上 $1$ 都是 $24$ 的倍数。
-- 如果 $\textit{hours}[i]=2$，那么需要知道左边有多少个模 $24$ 余数是 $22$ 的数，这些数加上 $2$ 都是 $24$ 的倍数。
-- 如果 $\textit{hours}[i]=26$，那么需要知道左边有多少个模 $24$ 余数是 $22$ 的数，这些数加上 $26$ 都是 $24$ 的倍数。
+- 如果 $\textit{hours}[i]=1$，那么需要知道左边有多少个模 $24$ 是 $23$ 的数，这些数加上 $1$ 都是 $24$ 的倍数。
+- 如果 $\textit{hours}[i]=2$，那么需要知道左边有多少个模 $24$ 是 $22$ 的数，这些数加上 $2$ 都是 $24$ 的倍数。
+- 如果 $\textit{hours}[i]=26$，那么需要知道左边有多少个模 $24$ 是 $22$ 的数，这些数加上 $26$ 都是 $24$ 的倍数。
 
-一般地，对于 $\textit{hours}[i]$，需要知道左边有多少个模 $24$ 余数是 $24-\textit{hours}[i]\bmod 24$ 的数。
+一般地，对于 $\textit{hours}[i]$，需要知道左边有多少个模 $24$ 是 $24-\textit{hours}[i]\bmod 24$ 的数。
 
-特别地，如果 $\textit{hours}[i]$ 模 $24$ 的余数是 $0$，那么需要知道左边有多少个模 $24$ 余数也是 $0$ 的数。
+特别地，如果 $\textit{hours}[i]$ 模 $24$ 是 $0$，那么需要知道左边有多少个模 $24$ 也是 $0$ 的数。
 
 这两种情况可以合并为：累加左边 
 
@@ -160,6 +160,7 @@ impl Solution {
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
