@@ -7,7 +7,8 @@
 |知识点|题目|题解|难度|
 |---|---|---|---|
 |哈希表|[1. 两数之和](https://leetcode.cn/problems/two-sum/)|[【动画】从两数之和中，我们可以学到什么？](https://leetcode.cn/problems/two-sum/solution/dong-hua-cong-liang-shu-zhi-he-zhong-wo-0yvmj/)|简单|
-|链表|[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
+|链表|[160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)|[【图解】一张图秒懂相交链表！](https://leetcode.cn/problems/intersection-of-two-linked-lists/solution/tu-jie-yi-zhang-tu-miao-dong-xiang-jiao-m6tg1/)|简单|
+||[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
 ||[23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)|[两种方法：最小堆/分治](https://leetcode.cn/problems/merge-k-sorted-lists/solution/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)|困难|
 |双向链表|[146. LRU 缓存](https://leetcode.cn/problems/lru-cache/)|[【图解】一张图秒懂 LRU！](https://leetcode.cn/problems/lru-cache/solution/tu-jie-yi-zhang-tu-miao-dong-lrupythonja-czgt/)|中等|
 ||[460. LFU 缓存](https://leetcode.cn/problems/lfu-cache/)|[【图解】一张图秒懂 LFU！](https://leetcode.cn/problems/lfu-cache/solution/tu-jie-yi-zhang-tu-miao-dong-lfupythonja-f56h/)|困难|
