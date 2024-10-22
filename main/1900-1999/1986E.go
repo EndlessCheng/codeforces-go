@@ -22,12 +22,12 @@ func cf1986E(in io.Reader, out io.Writer) {
 		for _, a := range g {
 			slices.Sort(a)
 			m := len(a)
-			suf := 0
+			s := 0
 			for i := m - 2; i >= 0; i -= 2 {
-				suf += a[i+1] - a[i]
+				s += a[i+1] - a[i]
 			}
 			if m%2 == 0 {
-				ans += suf
+				ans += s
 				continue
 			}
 
@@ -37,14 +37,12 @@ func cf1986E(in io.Reader, out io.Writer) {
 			}
 			odd = true
 
-			mn := suf
-			pre := 0
+			minS := s
 			for i := 1; i < m; i += 2 {
-				pre += a[i] - a[i-1]
-				suf -= a[i+1] - a[i]
-				mn = min(mn, pre+suf)
+				s += a[i] - a[i-1] - (a[i+1] - a[i])
+				minS = min(minS, s)
 			}
-			ans += mn
+			ans += minS
 		}
 		Fprintln(out, ans)
 	}
