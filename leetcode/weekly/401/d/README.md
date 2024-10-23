@@ -6,9 +6,9 @@
 
 排序后，问题类似 0-1 背包，原理请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
-定义 $f[i][j]$ 表示能否从前 $i$ 个数中得到总奖励 $j$。
+定义 $f[i][j]$ 表示能否从 $\textit{rewardValues}$ 的前 $i$ 个数中得到总奖励 $j$。
 
-考虑 $v=\textit{rewardValues}[i]$ 选或不选：
+设 $\textit{rewardValues}$ 的第 $i$ 个数为 $v$，考虑 $v$ 选或不选：
 
 - 不选 $v$，问题变成能否从前 $i-1$ 个数中得到总奖励 $j$，即 $f[i][j] = f[i-1][j]$。
 - 选 $v$，问题变成能否从前 $i-1$ 个数中得到总奖励 $j-v$，即 $f[i][j] = f[i-1][j-v]$，前提是 $j$ 满足 $j\ge v$ 且 $j-v < v$，即 $v\le j<2v$。
