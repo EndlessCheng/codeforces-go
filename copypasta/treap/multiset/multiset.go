@@ -7,8 +7,8 @@ import (
 
 /*
 对标 C++ 的 multiset
-额外维护每个元素的出现次数
-出现次数为 0 的元素自动删除
+额外维护每个 key 的出现次数
+出现次数为 0 的 key 自动删除
 */
 
 type node[K comparable] struct {

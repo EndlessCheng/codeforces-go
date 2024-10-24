@@ -7,7 +7,7 @@ import (
 
 /*
 对标 C++ 的 set
-没有重复元素
+没有重复 key
 */
 
 type node[K comparable] struct {
