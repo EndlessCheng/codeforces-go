@@ -44,6 +44,8 @@ func TestInt(tt *testing.T) {
 	assert.Equal(2, t.kth(2).key)
 	assert.Equal(2, t.kth(3).key)
 	assert.Equal(10, t.kth(4).key)
+	assert.Nil(t.kth(-1))
+	assert.Nil(t.kth(5))
 
 	assert.Equal(0, t.lowerBoundIndex(0))
 	assert.Equal(0, t.lowerBoundIndex(1))
@@ -133,6 +135,8 @@ func TestPair(tt *testing.T) {
 	assert.Equal(pair{1, 2}, t.kth(2).key)
 	assert.Equal(pair{1, 2}, t.kth(3).key)
 	assert.Equal(pair{10, 20}, t.kth(4).key)
+	assert.Nil(t.kth(-1))
+	assert.Nil(t.kth(5))
 
 	assert.Equal(0, t.lowerBoundIndex(pair{}))
 	assert.Equal(0, t.lowerBoundIndex(pair{1, 1}))
