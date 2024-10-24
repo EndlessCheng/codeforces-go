@@ -126,6 +126,8 @@ https://codeforces.com/problemset/problem/1201/C 1400 也可以贪心做
 https://codeforces.com/contest/1993/problem/D 2200
 
 ### 第 K 小/大（部分题目也可以用堆解决）
+第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个（k 从 1 开始）
+第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
 - [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
