@@ -2,14 +2,8 @@ package copypasta
 
 import "time"
 
-/* 维护前 k 小元素和的 treap
-支持添加删除元素
+// 已废弃！请移步新版本泛型代码 ./treap/prefixsum/prefixsum.go
 
-https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
-https://atcoder.jp/contests/abc306/tasks/abc306_e
-https://atcoder.jp/contests/abc287/tasks/abc287_g
-
-*/
 type nodeSum struct {
 	lr       [2]*nodeSum
 	priority uint
