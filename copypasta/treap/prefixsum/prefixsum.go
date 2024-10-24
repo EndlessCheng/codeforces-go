@@ -224,11 +224,11 @@ func newTreap() *treap[int] {
 	}
 }
 
-func newTreapPair() *treap[pair] {
+func newTreapPair(comparator func(a, b pair) int, keyToInt func(key pair) int) *treap[pair] {
 	return &treap[pair]{
 		rd:         uint(time.Now().UnixNano())/2 + 1,
-		comparator: func(a, b pair) int { return cmp.Or(b.c-a.c, b.v-a.v) },
-		keyToInt:   func(key pair) int { return key.v * key.c },
+		comparator: comparator,
+		keyToInt:   keyToInt,
 	}
 }
 
