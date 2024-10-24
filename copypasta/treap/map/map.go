@@ -56,22 +56,22 @@ func (t *treap[K, V]) empty() bool { return t.size() == 0 }
 
 func (t *treap[K, V]) _put(o *node[K, V], key K, value V) *node[K, V] {
 	if o == nil {
-		return &node[K, V]{priority: t.fastRand(), key: key, value: value, subSize: 1}
-	}
-	c := t.comparator(key, o.key)
-	if c == 0 {
-		o.value = value
-		// 无需 maintain
-		return o
-	}
-	// c < 0 去左边，c > 0 去右边
-	d := 0
-	if c > 0 {
-		d = 1
-	}
-	o.son[d] = t._put(o.son[d], key, value)
-	if o.son[d].priority > o.priority {
-		o = o.rotate(d ^ 1)
+		o = &node[K, V]{priority: t.fastRand(), key: key, value: value}
+	} else {
+		c := t.comparator(key, o.key)
+		if c == 0 { // 相等
+			o.value = value
+		} else {
+			// c < 0 去左边，c > 0 去右边
+			d := 0
+			if c > 0 {
+				d = 1
+			}
+			o.son[d] = t._put(o.son[d], key, value)
+			if o.son[d].priority > o.priority {
+				o = o.rotate(d ^ 1)
+			}
+		}
 	}
 	o.maintain()
 	return o
