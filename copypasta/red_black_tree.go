@@ -2,6 +2,8 @@ package copypasta
 
 import . "fmt"
 
+// 泛型版本的平衡搜索树见 treap 文件夹
+
 type rbKeyType int
 type rbValueType int
 type rbColor bool
