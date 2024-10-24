@@ -234,6 +234,6 @@ func newTreapPair() *treap[pair] {
 
 type pair struct{ v, c int }
 
-// 具体用法见本目录下的 prefixsum_example.go 和 test.go 文件
+// 具体用法见本目录下的 prefixsum_example.go
 
 // 旧版写法见外面的 treap_kthsum.go
