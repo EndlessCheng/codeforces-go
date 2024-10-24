@@ -17,7 +17,7 @@ func cf1988D(in io.Reader, out io.Writer) {
 			s += a[i]
 		}
 		g := make([][]int, n)
-		for i := 1; i < n; i++ {
+		for range n - 1 {
 			var v, w int
 			Fscan(in, &v, &w)
 			v--
