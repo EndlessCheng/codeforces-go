@@ -21,12 +21,14 @@ func TestInt(tt *testing.T) {
 	assert.Equal(0, t.upperBoundIndex(0))
 	assert.Nil(t.prev(0))
 	assert.Nil(t.next(0))
+	assert.Nil(t.find(0))
 
 	t.put(1)
 	assert.Equal(1, t.size())
 	assert.False(t.empty())
 	assert.Equal(1, t.min().key)
 	assert.Equal(1, t.max().key)
+	assert.Equal(1, t.find(1).key)
 
 	t.put(10)
 	t.put(2)
