@@ -203,3 +203,5 @@ func newTreapWith[K comparable](comp func(a, b K) int) *treap[K] {
 		comparator: comp,
 	}
 }
+
+// 具体用法见本目录下的 test.go 文件
