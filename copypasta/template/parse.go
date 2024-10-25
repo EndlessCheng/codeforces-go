@@ -25,8 +25,9 @@ func getJson(htmlStr string) (string, error) {
 
 func parseExamples(problemURL string) (examples [][]string, err error) {
 	resp, err := grequests.Get(problemURL, &grequests.RequestOptions{
-		UserAgent: ua,
-		Headers:   map[string]string{"Referer": problemURL},
+		UserAgent:    ua,
+		Headers:      map[string]string{"Referer": problemURL},
+		UseCookieJar: true,
 	})
 	if err != nil {
 		return
