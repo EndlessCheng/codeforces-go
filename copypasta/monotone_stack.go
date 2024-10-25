@@ -147,7 +147,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 如果改成求右侧小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
 	// 不存在时 right[i] = n
 	right := make([]int, len(a))
-	st = []int{len(a)}
+	st = []int{len(a)} // 栈底哨兵，在栈为空时可以直接把 right[i] 赋值为 len(a)
 	for i, v := range slices.Backward(a) {
 		for len(st) > 1 && a[st[len(st)-1]] >= v {
 			st = st[:len(st)-1]
