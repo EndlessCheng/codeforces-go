@@ -169,7 +169,7 @@ func (t *treap[K]) kth(k int) (o *node[K]) {
 // 求 v 的前驱（小于 key 的最大元素）
 func (t *treap[K]) prev(key K) *node[K] { return t.kth(t.lowerBoundIndex(key) - 1) }
 
-// 求 v 的后继（大于 v 的最小元素）
+// 求 v 的后继（大于 key 的最小元素）
 func (t *treap[K]) next(key K) *node[K] { return t.kth(t.upperBoundIndex(key)) }
 
 // <= key 可以用 t.kth(t.upperBoundIndex(key)-1)
@@ -213,8 +213,17 @@ func (t *treap[K]) preSum(k int) (sum int) {
 	return
 }
 
-// 计算 < x 的元素和： t.preSum(t.lowerBoundIndex(x))
-// 计算 <= x 的元素和：t.preSum(t.upperBoundIndex(x))
+// < x 的元素和
+func (t *treap[K]) sumLess(x K) int { return t.preSum(t.lowerBoundIndex(x)) }
+
+// <= x 的元素和
+func (t *treap[K]) sumLessEqual(x K) int { return t.preSum(t.upperBoundIndex(x)) }
+
+// > x 的元素和
+func (t *treap[K]) sumGreater(x K) int { return t.root.getSum() - t.preSum(t.upperBoundIndex(x)) }
+
+// >= x 的元素和
+func (t *treap[K]) sumGreaterEqual(x K) int { return t.root.getSum() - t.preSum(t.lowerBoundIndex(x)) }
 
 func newTreap() *treap[int] {
 	return &treap[int]{
