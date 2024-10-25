@@ -224,15 +224,13 @@ func newTreap() *treap[int] {
 	}
 }
 
-func newTreapPair(comparator func(a, b pair) int, keyToInt func(key pair) int) *treap[pair] {
-	return &treap[pair]{
+func newTreapWith[K comparable](comparator func(a, b K) int, keyToInt func(key K) int) *treap[K] {
+	return &treap[K]{
 		rd:         uint(time.Now().UnixNano())/2 + 1,
 		comparator: comparator,
 		keyToInt:   keyToInt,
 	}
 }
-
-type pair struct{ v, c int }
 
 // 具体用法见本目录下的 prefixsum_example.go
 
