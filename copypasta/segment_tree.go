@@ -538,14 +538,6 @@ func (t lazySeg) spreadAll(o int) {
 // todo https://codeforces.com/problemset/problem/1614/E 2600
 // https://atcoder.jp/contests/abc351/tasks/abc351_f
 // 树套树见 fenwick_tree.go
-const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
-
-type stNode struct {
-	lo, ro *stNode
-	l, r   int
-	val    int
-}
-
 var emptyStNode = &stNode{val: stNodeDefaultVal}
 
 func init() {
@@ -553,10 +545,12 @@ func init() {
 	emptyStNode.ro = emptyStNode
 }
 
-// 0 1e9
-// -2e9 2e9
-func newStRoot(l, r int) *stNode {
-	return &stNode{lo: emptyStNode, ro: emptyStNode, l: l, r: r, val: stNodeDefaultVal}
+const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
+
+type stNode struct {
+	lo, ro *stNode
+	l, r   int
+	val    int
 }
 
 func (stNode) mergeInfo(a, b int) int {
@@ -598,49 +592,40 @@ func (o *stNode) query(l, r int) int {
 	return o.mergeInfo(o.lo.query(l, r), o.ro.query(l, r))
 }
 
+// 询问范围的最小值、最大值
+// 0 1e9
+// -2e9 2e9
+func newStRoot(l, r int) *stNode {
+	return &stNode{lo: emptyStNode, ro: emptyStNode, l: l, r: r, val: stNodeDefaultVal}
+}
+
 // 动态开点线段树·其二·延迟标记（区间修改）
 // https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
 //（内存受限）https://codeforces.com/problemset/problem/1557/D
-const stNodeDefaultTodoVal = 0
+var emptyLazyNode = &lazyNode{sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 
-var lazyRoot = &lazyNode{l: 1, r: 1e9, sum: stNodeDefaultVal}
+func init() {
+	emptyLazyNode.lo = emptyLazyNode
+	emptyLazyNode.ro = emptyLazyNode
+}
+
+const lazyNodeDefaultVal = 0
+const lazyNodeDefaultTodoVal = 0
 
 type lazyNode struct {
 	lo, ro *lazyNode
 	l, r   int
-	sum    int
+	sum    int // info
 	todo   int
 }
 
-func (o *lazyNode) get() int {
-	if o != nil {
-		return o.sum
-	}
-	return stNodeDefaultVal
-}
-
-func (lazyNode) op(a, b int) int {
+func (lazyNode) mergeInfo(a, b int) int {
 	return a + b // max(a, b)
 }
 
 func (o *lazyNode) maintain() {
-	o.sum = o.op(o.lo.get(), o.ro.get())
-}
-
-func (o *lazyNode) build(a []int, l, r int) {
-	o.l, o.r = l, r
-	o.todo = stNodeDefaultTodoVal
-	if l == r {
-		o.sum = a[l-1]
-		return
-	}
-	m := (l + r) >> 1
-	o.lo = &lazyNode{}
-	o.lo.build(a, l, m)
-	o.ro = &lazyNode{}
-	o.ro.build(a, m+1, r)
-	o.maintain()
+	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
 }
 
 func (o *lazyNode) do(add int) {
@@ -650,16 +635,16 @@ func (o *lazyNode) do(add int) {
 
 func (o *lazyNode) spread() {
 	m := (o.l + o.r) >> 1
-	if o.lo == nil {
-		o.lo = &lazyNode{l: o.l, r: m, sum: stNodeDefaultVal}
+	if o.lo == emptyLazyNode {
+		o.lo = &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: o.l, r: m, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 	}
-	if o.ro == nil {
-		o.ro = &lazyNode{l: m + 1, r: o.r, sum: stNodeDefaultVal}
+	if o.ro == emptyLazyNode {
+		o.ro = &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: m + 1, r: o.r, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 	}
-	if todo := o.todo; todo != stNodeDefaultTodoVal {
-		o.lo.do(todo)
-		o.ro.do(todo)
-		o.todo = stNodeDefaultTodoVal
+	if v := o.todo; v != lazyNodeDefaultTodoVal {
+		o.lo.do(v)
+		o.ro.do(v)
+		o.todo = lazyNodeDefaultTodoVal
 	}
 }
 
@@ -680,8 +665,8 @@ func (o *lazyNode) update(l, r int, add int) {
 }
 
 func (o *lazyNode) query(l, r int) int {
-	if o == nil || l > o.r || r < o.l {
-		return stNodeDefaultVal
+	if o == emptyLazyNode || l > o.r || r < o.l {
+		return lazyNodeDefaultVal
 	}
 	if l <= o.l && o.r <= r {
 		return o.sum
@@ -689,7 +674,14 @@ func (o *lazyNode) query(l, r int) int {
 	o.spread()
 	lRes := o.lo.query(l, r)
 	rRes := o.ro.query(l, r)
-	return o.op(lRes, rRes)
+	return o.mergeInfo(lRes, rRes)
+}
+
+// 询问范围的最小值、最大值
+// 0 1e9
+// -2e9 2e9
+func newLazyRoot(l, r int) *lazyNode {
+	return &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: l, r: r, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 }
 
 // EXTRA: 线段树合并
