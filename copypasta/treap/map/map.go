@@ -173,7 +173,7 @@ func (t *treap[K, V]) kth(k int) (o *node[K, V]) {
 // 求 v 的前驱（小于 key 的最大元素）
 func (t *treap[K, V]) prev(key K) *node[K, V] { return t.kth(t.lowerBoundIndex(key) - 1) }
 
-// 求 v 的后继（大于 v 的最小元素）
+// 求 v 的后继（大于 key 的最小元素）
 func (t *treap[K, V]) next(key K) *node[K, V] { return t.kth(t.upperBoundIndex(key)) }
 
 // <= key 可以用 t.kth(t.upperBoundIndex(key)-1)
