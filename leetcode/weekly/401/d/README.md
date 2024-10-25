@@ -64,6 +64,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
+// 超时，请阅读下面的优化二和优化三
 import java.math.BigInteger;
 
 class Solution {
@@ -179,6 +180,12 @@ func maxTotalReward(rewardValues []int) int {
 ## 优化二
 
 设 $m=\max(\textit{rewardValues})$，如果数组中包含 $m-1$，则答案为 $2m-1$（因为这是答案的上界），无需计算 DP。
+
+#### 答疑
+
+**问**：为什么 $2m-1$ 是答案的上界？
+
+**答**：如果最后一步选的数是 $x$，而 $x<m$，那么把 $x$ 替换成 $m$ 也符合要求，矛盾，所以最后一步选的一定是 $m$。在选 $m$ 之前，元素和至多是 $m-1$，选了 $m$ 之后，元素和至多是 $2m-1$。我们无法得到比 $2m-1$ 更大的元素和。
 
 ```py [sol-Python3]
 class Solution:
