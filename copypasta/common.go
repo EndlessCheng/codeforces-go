@@ -28,6 +28,7 @@ https://leetcode.cn/studyplan/programming-skills/
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 力扣题目分类汇总
 https://leetcode.cn/circle/article/04PVPY/
@@ -206,7 +207,9 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - [2067. 等计数子串的数量](https://leetcode.cn/problems/number-of-equal-count-substrings/)（会员题）
 - [2107. 分享 K 个糖果后独特口味的数量](https://leetcode.cn/problems/number-of-unique-flavors-after-sharing-k-candies/)（会员题）
 https://codeforces.com/problemset/problem/716/B 1300
+https://codeforces.com/problemset/problem/1955/D 1400
 https://codeforces.com/problemset/problem/608/B 1500
+https://codeforces.com/problemset/problem/1687/A 1600
 https://codeforces.com/problemset/problem/69/E 1800
 https://codeforces.com/problemset/problem/371/E 2000
 
@@ -601,6 +604,7 @@ LC3012 https://leetcode.cn/problems/minimize-length-of-array-using-operations/
 https://www.codechef.com/problems/CLEARARR 2037
 https://codeforces.com/problemset/problem/1009/B 1400
 https://codeforces.com/problemset/problem/1883/F 1400
+https://codeforces.com/problemset/problem/1904/C 1400
 https://codeforces.com/problemset/problem/1169/B 1500
 https://codeforces.com/problemset/problem/500/C 1600
 https://codeforces.com/problemset/problem/601/A 1600
@@ -707,6 +711,7 @@ https://codeforces.com/problemset/problem/115/B 1500
 https://codeforces.com/problemset/problem/960/B 1500
 https://codeforces.com/problemset/problem/1051/C 1500
 https://codeforces.com/problemset/problem/1180/B 1500
+https://codeforces.com/problemset/problem/1250/L 1500
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/898/E 1600
 https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
