@@ -2389,6 +2389,7 @@ func _(abs func(int) int) {
 	//    最简单的做法就是 min(x1+y1, x2+y2)
 	// 需要转换一下符号 https://atcoder.jp/contests/abc186/tasks/abc186_e
 	// https://codeforces.com/problemset/problem/1748/D
+	// https://codeforces.com/problemset/problem/982/E 2600
 	// LC2910 https://leetcode.cn/problems/minimum-number-of-groups-to-create-a-valid-assignment/
 	solveLinearDiophantineEquations := func(a, b, c int) (n, x1, y1, x2, y2 int) {
 		g, x0, y0 := exgcd(a, b)
@@ -2682,6 +2683,9 @@ func _(abs func(int) int) {
 	// https://oeis.org/A000142
 	// https://en.wikipedia.org/wiki/Stirling%27s_approximation
 	// n! ~ √(2πn)*(n/e)^n
+	// https://oeis.org/A061375 n! 开 n 次方根下取整 Integer part of geometric mean of first n positive integers
+	// https://oeis.org/A214046 n! 开 n 次方根上取整 Least m>0 such that n! <= m^n
+	// 也可以用 math.Gamma(float64(k+1)) 计算 k!
 	factorial := []int{1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800 /*10!*/, 39916800, 479001600}
 
 	// 【模板】快速阶乘算法 https://www.luogu.com.cn/problem/P5282
@@ -3209,7 +3213,7 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// 埃氏筛写法
+	// 调和级数枚举写法
 	sieveMu = func() {
 		const mx int = 1e6
 		mu := [mx + 1]int{1: 1} // int8
