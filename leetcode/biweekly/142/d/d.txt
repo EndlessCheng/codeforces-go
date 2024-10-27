@@ -1,0 +1,14 @@
+"aabbccdd"
+7
+5
+
+"aabbccdd"
+8
+1
+
+"aaabbb"
+3
+8
+
+
+

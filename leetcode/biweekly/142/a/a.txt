@@ -1,0 +1,11 @@
+"abbcccc"
+5
+
+"abcd"
+1
+
+"aaaa"
+4
+
+
+
