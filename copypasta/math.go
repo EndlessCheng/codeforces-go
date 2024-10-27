@@ -3214,7 +3214,7 @@ func _(abs func(int) int) {
 	}
 
 	// 调和级数枚举写法
-	sieveMu = func() {
+	sieveMu2 := func() {
 		const mx int = 1e6
 		mu := [mx + 1]int{1: 1} // int8
 		for i := 1; i <= mx; i++ {
@@ -3535,6 +3535,32 @@ func _(abs func(int) int) {
 	// starting at n until reach 1 or a prime; or -1 if a prime is never reached
 	// https://www.zhihu.com/question/48612677/answer/487252829
 
+	/* hack overflow
+	1<<32 + 95168 = 2^6 * 3 * 7^5 * 11^3
+	1<<32 + 66304 = 2^8 * 5^2 * 11 * 13^2 * 19^2
+	1<<32 + 48704 = 2^6 * 3^2 * 5^3 * 11^2 * 17 * 29
+	1<<32 - 49216 = 2^6 * 3^7 * 5 * 17 * 19^2
+
+	1<<32 - 49216 => https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/13613 hack Java
+	a := []int{2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 5, 17, 19, 19}
+	for i, n := 0, len(a); i < n/2; i++ {
+		a[i], a[n-1-i] = a[n-1-i], a[i]
+	}
+
+	Print("[")
+	for i := range a {
+		Print("[", i+1, ",", i+2, "],")
+	}
+	cur := len(a) + 2
+	for i, c := range a {
+		for j := 1; j < c; j++ {
+			Print("[", i+1, ",", cur, "],")
+			cur++
+		}
+	}
+	Print("]")
+	*/
+
 	_ = []any{
 		primes, primes10k, primes10, primes10_,
 		sqCheck, cubeCheck, sqrt, cbrt, bottomDiff,
@@ -3567,36 +3593,10 @@ func _(abs func(int) int) {
 		stirling1, stirling2, stirling2RowPoly,
 		bellTriangle, bellPoly, setPartition,
 
-		calcMu, sieveMu,
+		calcMu, sieveMu, sieveMu2,
 
 		floorLoop, floorLoopRange, floorLoopRem, floorLoop2D,
 
 		sieveDu,
 	}
 }
-
-/* hack overflow
-1<<32 + 95168 = 2^6 * 3 * 7^5 * 11^3
-1<<32 + 66304 = 2^8 * 5^2 * 11 * 13^2 * 19^2
-1<<32 + 48704 = 2^6 * 3^2 * 5^3 * 11^2 * 17 * 29
-1<<32 - 49216 = 2^6 * 3^7 * 5 * 17 * 19^2
-
-1<<32 - 49216 => https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/13613 hack Java
-a := []int{2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 5, 17, 19, 19}
-for i, n := 0, len(a); i < n/2; i++ {
-	a[i], a[n-1-i] = a[n-1-i], a[i]
-}
-
-Print("[")
-for i := range a {
-	Print("[", i+1, ",", i+2, "],")
-}
-cur := len(a) + 2
-for i, c := range a {
-	for j := 1; j < c; j++ {
-		Print("[", i+1, ",", cur, "],")
-		cur++
-	}
-}
-Print("]")
-*/
