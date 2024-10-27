@@ -44,10 +44,8 @@ func subsequencePairCount(nums []int) int {
 	}
 
 	f := make([][]int, m+1)
-	for i := range f {
-		f[i] = make([]int, m+1)
-	}
 	for g1 := 1; g1 <= m; g1++ {
+		f[g1] = make([]int, m+1)
 		for g2 := 1; g2 <= m; g2++ {
 			l := lcms[g1][g2]
 			c := 0

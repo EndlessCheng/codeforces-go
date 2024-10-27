@@ -635,10 +635,8 @@ func subsequencePairCount(nums []int) int {
 	}
 
 	f := make([][]int, m+1)
-	for i := range f {
-		f[i] = make([]int, m+1)
-	}
 	for g1 := 1; g1 <= m; g1++ {
+		f[g1] = make([]int, m+1)
 		for g2 := 1; g2 <= m; g2++ {
 			l := lcms[g1][g2]
 			c := 0
@@ -678,7 +676,7 @@ func lcm(a, b int) int {
 
 预处理的时间忽略不计。
 
-- 时间复杂度：$\mathcal{O}(n+U^2)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最后的三重循环，循环次数 $\sum\limits_{i} \dfrac{U^2}{i^2} = U^2\sum\limits_{i} \dfrac{1}{i^2} < U^2\cdot \dfrac{\pi}{6}$，即 $\mathcal{O}(U^2)$。
+- 时间复杂度：$\mathcal{O}(n+U^2)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最后的三重循环，循环次数 $\sum\limits_{i} \left(\dfrac{U}{i}\right)^2 = U^2\sum\limits_{i} \dfrac{1}{i^2} < U^2\cdot \dfrac{\pi}{6}$，即 $\mathcal{O}(U^2)$。
 - 空间复杂度：$\mathcal{O}(U^2)$。
 
 ## 分类题单
