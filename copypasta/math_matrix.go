@@ -131,6 +131,7 @@ func (a matrix) pow(n int) matrix {
 	return res
 }
 
+// 操作 k 次
 func solveDP(k int) {
 	// 一般是状态机 DP
 	const size = 26 // DP 数组第二维度的大小
