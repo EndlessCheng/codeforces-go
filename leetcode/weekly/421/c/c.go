@@ -3,52 +3,72 @@ package main
 import "slices"
 
 // https://space.bilibili.com/206214
-func subsequencePairCount(nums []int) int {
-	const mod = 1_000_000_007
-	n := len(nums)
-	m := slices.Max(nums)
-	f := [2][][]int{}
-	for i := range f {
-		f[i] = make([][]int, m+1)
-		for j := range f[i] {
-			f[i][j] = make([]int, m+1)
+const mod = 1_000_000_007
+const mx = 201
+
+var lcms [mx][mx]int
+var pow2, pow3, mu [mx]int
+
+func init() {
+	for i := 1; i < mx; i++ {
+		for j := 1; j < mx; j++ {
+			lcms[i][j] = lcm(i, j)
 		}
 	}
-	for j := 1; j <= m; j++ {
-		f[0][j][j] = 1
+
+	pow2[0], pow3[0] = 1, 1
+	for i := 1; i < mx; i++ {
+		pow2[i] = pow2[i-1] * 2 % mod
+		pow3[i] = pow3[i-1] * 3 % mod
 	}
-	for i, x := range nums {
-		for j := 0; j <= m; j++ {
-			for k := 0; k <= m; k++ {
-				f[(i+1)%2][j][k] = (f[i%2][j][k] + f[i%2][gcd(j, x)][k] + f[i%2][j][gcd(k, x)]) % mod
-			}
+
+	mu[1] = 1
+	for i := 1; i < mx; i++ {
+		for j := i * 2; j < mx; j += i {
+			mu[j] -= mu[i]
 		}
 	}
-	return f[n%2][0][0]
 }
 
 func subsequencePairCount(nums []int) int {
-	const mod = 1_000_000_007
-	n := len(nums)
 	m := slices.Max(nums)
-	f := make([][][]int, n+1)
-	for i := range f {
-		f[i] = make([][]int, m+1)
-		for j := range f[i] {
-			f[i][j] = make([]int, m+1)
+	// cnt[i] 表示 nums 中的 i 的倍数的个数
+	cnt := make([]int, m+1)
+	for _, x := range nums {
+		cnt[x]++
+	}
+	for i := 1; i <= m; i++ {
+		for j := i * 2; j <= m; j += i {
+			cnt[i] += cnt[j] // 统计 i 的倍数的个数
 		}
 	}
-	for j := 1; j <= m; j++ {
-		f[0][j][j] = 1
+
+	f := make([][]int, m+1)
+	for i := range f {
+		f[i] = make([]int, m+1)
 	}
-	for i, x := range nums {
-		for j := 0; j <= m; j++ {
-			for k := 0; k <= m; k++ {
-				f[i+1][j][k] = (f[i][j][k] + f[i][gcd(j, x)][k] + f[i][j][gcd(k, x)]) % mod
+	for g1 := 1; g1 <= m; g1++ {
+		for g2 := 1; g2 <= m; g2++ {
+			l := lcms[g1][g2]
+			c := 0
+			if l <= m {
+				c = cnt[l]
+			}
+			c1, c2 := cnt[g1], cnt[g2]
+			f[g1][g2] = (pow3[c]*pow2[c1+c2-c*2] - pow2[c1] - pow2[c2] + 1) % mod
+		}
+	}
+
+	// 倍数容斥
+	ans := 0
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= m/i; j++ {
+			for k := 1; k <= m/i; k++ {
+				ans += mu[j] * mu[k] * f[j*i][k*i]
 			}
 		}
 	}
-	return f[n][0][0]
+	return (ans%mod + mod) % mod // 保证 ans 非负
 }
 
 func gcd(a, b int) int {
@@ -58,28 +78,8 @@ func gcd(a, b int) int {
 	return b
 }
 
-func subsequencePairCount3(nums []int) int {
-	const mod = 1_000_000_007
-	n := len(nums)
-	m := slices.Max(nums)
-	f := make([][][]int, n+1)
-	for i := range f {
-		f[i] = make([][]int, m+1)
-		for j := range f[i] {
-			f[i][j] = make([]int, m+1)
-		}
-	}
-	for j := 1; j <= m; j++ {
-		f[0][j][j] = 1
-	}
-	for i, x := range nums {
-		for j := m; j >= 0; j-- {
-			for k := m; k >= 0; k-- {
-				f[i+1][j][k] = (f[i][j][k] + f[i][gcd(j, x)][k] + f[i][j][gcd(k, x)]) % mod
-			}
-		}
-	}
-	return f[n][0][0]
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
 }
 
 func subsequencePairCount2(nums []int) int {

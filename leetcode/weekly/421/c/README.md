@@ -1,4 +1,6 @@
-## 一、寻找子问题
+## 方法一：多维 DP
+
+### 1) 寻找子问题
 
 规定空子序列的 GCD 等于 $0$。
 
@@ -14,7 +16,7 @@
 >
 > 注 2：动态规划有「**选或不选**」和「**枚举选哪个**」两种基本思考方式。子序列相邻无关一般是「选或不选」，子序列相邻相关（例如 LIS 问题）一般是「枚举选哪个」。本题用到的是「选或不选」。
 
-## 二、状态定义与状态转移方程
+### 2) 状态定义与状态转移方程
 
 根据上面的讨论，我们需要在递归过程中跟踪以下信息：
 
@@ -42,7 +44,7 @@ $$
 
 **递归入口**：$\textit{dfs}(n-1,0,0)-1$，也就是答案。减一是去掉两个子序列都为空的情况。
 
-## 三、递归搜索 + 保存递归返回值 = 记忆化搜索
+### 3) 递归搜索 + 保存递归返回值 = 记忆化搜索
 
 视频讲解 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
 
@@ -183,7 +185,7 @@ func gcd(a, b int) int {
 - 时间复杂度：$\mathcal{O}(nU^2\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(nU^2)$，单个状态的计算时间为 $\mathcal{O}(\log U)$，所以总的时间复杂度为 $\mathcal{O}(nU^2\log U)$。
 - 空间复杂度：$\mathcal{O}(nU^2)$。保存多少状态，就需要多少空间。
 
-## 四、1:1 翻译成递推
+### 4) 1:1 翻译成递推
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
@@ -319,6 +321,365 @@ func gcd(a, b int) int {
 - 空间复杂度：$\mathcal{O}(nU^2)$。
 
 注：可以预处理 $200$ 内所有数对的 GCD，加快计算效率。另外可以用滚动数组优化空间。
+
+## 方法二：倍数容斥
+
+### 总体思路
+
+1. 定义 $f[g_1][g_2]$ 表示第一个子序列的 GCD 是 $g_1$ 的倍数，第二个子序列的 GCD 是 $g_2$ 的倍数的子序列对的个数。
+2. 利用**倍数容斥**，求出第一个子序列的 GCD 恰好等于 $i$，且第二个子序列的 GCD 也恰好等于 $i$ 的子序列对的个数。
+
+### 计算 $f$
+
+定义 $c[i]$ 表示 $\textit{nums}$ 中的 $i$ 的个数。
+
+定义 $\textit{cnt}[i]$ 表示 $\textit{nums}$ 中的 $i$ 的倍数的个数，即
+
+$$
+\textit{cnt}[i] = c[i]+c[2i]+c[3i] +\cdots = \sum_{j=1}^{\left\lfloor m/i\right\rfloor} c[j\cdot i]
+$$
+
+其中 $m=\max(\textit{nums})$。
+
+计算 $f[g_1][g_2]$：
+
+- 设 $l=\text{LCM}(g_1,g_2),\ c=\textit{cnt}[l],\ c_1 = \textit{cnt}[g_1],\ c_2 = \textit{cnt}[g_2]$。
+- 对于既是 $g_1$ 倍数又是 $g_2$ 倍数的元素（这有 $c$ 个），和方法一的讨论一样，可以不选，也可以选择并放入第一个子序列，或者放入第二个子序列，方案数为 $3^c$。
+- 对于是 $g_1$ 倍数但不是 $l$ 倍数的元素（这有 $c_1-c$ 个），可以不选，也可以选择并放入第一个子序列，方案数为 $2^{c_1-c}$。
+- 对于是 $g_2$ 倍数但不是 $l$ 倍数的元素（这有 $c_2-c$ 个），可以不选，也可以选择并放入第二个子序列，方案数为 $2^{c_2-c}$。
+- 三者互相独立，一共有 $3^c\cdot 2^{c_1+c_2-2c}$ 个方案。
+
+但其中有不合法的方案：
+
+- 减去第一个子序列为空的方案数，也就是所有元素都放入了第二个子序列，方案数为 $2^{c_2}$。
+- 减去第二个子序列为空的方案数，也就是所有元素都放入了第一个子序列，方案数为 $2^{c_1}$。
+- 注意两个子序列都为空的情况，重复减去了，所以要再加回来，方案数为 $1$，因为所有元素都不选的方案只有一个。
+
+综上所述：
+
+$$
+f[g_1][g_2] = 3^c\cdot 2^{c_1+c_2-2c} - 2^{c_1} - 2^{c_2} + 1
+$$
+
+### 倍数容斥
+
+最后，计算第一个子序列的 GCD 恰好等于 $i$，且第二个子序列的 GCD 也恰好等于 $i$ 的子序列对的个数。
+
+这可以用**倍数容斥**。
+
+为方便大家理解，先来计算第一个子序列的 GCD 恰好等于 $i$，第二个子序列的 GCD 随意（$1$ 的倍数）的子序列对的个数。
+
+- 从 $f[i][1]$ 开始，也就是第一个子序列的 GCD 是 $i$ 的倍数的方案数。
+- 从中减去第一个子序列的 GCD 恰好等于 $2i,3i,4i,\cdots$ 的方案数。
+- 减去 $f[2i][1]$。
+- 减去 $f[3i][1]$。
+- $f[4i][1]$ 已经在 $f[2i][1]$ 中了，忽略。
+- 减去 $f[5i][1]$。
+- **加上** $f[6i][1]$，因为 $6i$ 既是 $2i$ 的倍数，又是 $3i$ 的倍数，多减了一次。
+- 依次类推。每个 $f[j\cdot i][1]$ 的前面都有一个系数 $-1$、$0$ 或者 $1$，这正是**莫比乌斯函数** $\mu(j)$。详细介绍请查阅初等数论书籍。
+
+所以第一个子序列的 GCD 恰好等于 $i$，第二个子序列的 GCD 随意（$1$ 的倍数）的子序列对的个数为
+
+$$
+\sum_{j=1}^{\left\lfloor m/i\right\rfloor} \mu(j)f[j\cdot i][1]
+$$
+
+同理，第一个子序列的 GCD 恰好等于 $i$，且第二个子序列的 GCD 也恰好等于 $i$ 的子序列对的个数为
+
+$$
+\sum_{j=1}^{\left\lfloor m/i\right\rfloor} \sum_{k=1}^{\left\lfloor m/i\right\rfloor} \mu(j)\mu(k)f[j\cdot i][k\cdot i]
+$$
+
+最终答案为
+
+$$
+\sum_{i=1}^{m}\sum_{j=1}^{\left\lfloor m/i\right\rfloor} \sum_{k=1}^{\left\lfloor m/i\right\rfloor} \mu(j)\mu(k)f[j\cdot i][k\cdot i]
+$$
+
+```py [sol-Python3]
+MOD = 1_000_000_007
+MX = 201
+
+lcms = [[lcm(i, j) for j in range(MX)] for i in range(MX)]
+
+pow2 = [1] * MX
+pow3 = [1] * MX
+for i in range(1, MX):
+    pow2[i] = pow2[i - 1] * 2 % MOD
+    pow3[i] = pow3[i - 1] * 3 % MOD
+
+mu = [0] * MX
+mu[1] = 1
+for i in range(1, MX):
+    for j in range(i * 2, MX, i):
+        mu[j] -= mu[i]
+
+class Solution:
+    def subsequencePairCount(self, nums: List[int]) -> int:
+        m = max(nums)
+        # cnt[i] 表示 nums 中的 i 的倍数的个数
+        cnt = [0] * (m + 1)
+        for x in nums:
+            cnt[x] += 1
+        for i in range(1, m + 1):
+            for j in range(i * 2, m + 1, i):
+                cnt[i] += cnt[j]  # 统计 i 的倍数的个数
+
+        f = [[0] * (m + 1) for _ in range(m + 1)]
+        for g1 in range(1, m + 1):
+            for g2 in range(1, m + 1):
+                l = lcms[g1][g2]
+                c = cnt[l] if l <= m else 0
+                c1, c2 = cnt[g1], cnt[g2]
+                f[g1][g2] = (pow3[c] * pow2[c1 + c2 - c * 2] - pow2[c1] - pow2[c2] + 1) % MOD
+
+        # 倍数容斥
+        return sum(mu[j] * mu[k] * f[j * i][k * i]
+                   for i in range(1, m + 1)
+                   for j in range(1, m // i + 1)
+                   for k in range(1, m // i + 1)) % MOD
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 201;
+
+    private static final int[][] lcms = new int[MX][MX];
+    private static final int[] pow2 = new int[MX];
+    private static final int[] pow3 = new int[MX];
+    private static final int[] mu = new int[MX];
+
+    static {
+        for (int i = 1; i < MX; i++) {
+            for (int j = 1; j < MX; j++) {
+                lcms[i][j] = lcm(i, j);
+            }
+        }
+
+        pow2[0] = pow3[0] = 1;
+        for (int i = 1; i < MX; i++) {
+            pow2[i] = pow2[i - 1] * 2 % MOD;
+            pow3[i] = (int) ((long) pow3[i - 1] * 3 % MOD);
+        }
+
+        mu[1] = 1;
+        for (int i = 1; i < MX; i++) {
+            for (int j = i * 2; j < MX; j += i) {
+                mu[j] -= mu[i];
+            }
+        }
+    }
+
+    public int subsequencePairCount(int[] nums) {
+        int m = 0;
+        for (int x : nums) {
+            m = Math.max(m, x);
+        }
+
+        // cnt[i] 表示 nums 中的 i 的倍数的个数
+        int[] cnt = new int[m + 1];
+        for (int x : nums) {
+            cnt[x]++;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = i * 2; j <= m; j += i) {
+                cnt[i] += cnt[j]; // 统计 i 的倍数的个数
+            }
+        }
+
+        int[][] f = new int[m + 1][m + 1];
+        for (int g1 = 1; g1 <= m; g1++) {
+            for (int g2 = 1; g2 <= m; g2++) {
+                int l = lcms[g1][g2];
+                int c = l <= m ? cnt[l] : 0;
+                int c1 = cnt[g1];
+                int c2 = cnt[g2];
+                f[g1][g2] = (int) (((long) pow3[c] * pow2[c1 + c2 - c * 2] - pow2[c1] - pow2[c2] + 1) % MOD);
+            }
+        }
+
+        // 倍数容斥
+        long ans = 0;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= m / i; j++) {
+                for (int k = 1; k <= m / i; k++) {
+                    ans += mu[j] * mu[k] * f[j * i][k * i];
+                }
+            }
+        }
+        return (int) ((ans % MOD + MOD) % MOD); // 保证 ans 非负
+    }
+
+    private static int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+
+    private static int lcm(int a, int b) {
+        return a / gcd(a, b) * b;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MOD = 1'000'000'007;
+const int MX = 201;
+
+int lcms[MX][MX], pow2[MX], pow3[MX], mu[MX];
+
+auto init = [] {
+    for (int i = 1; i < MX; i++) {
+        for (int j = 1; j < MX; j++) {
+            lcms[i][j] = lcm(i, j);
+        }
+    }
+
+    pow2[0] = pow3[0] = 1;
+    for (int i = 1; i < MX; i++) {
+        pow2[i] = pow2[i - 1] * 2 % MOD;
+        pow3[i] = (long long) pow3[i - 1] * 3 % MOD;
+    }
+
+    mu[1] = 1;
+    for (int i = 1; i < MX; i++) {
+        for (int j = i * 2; j < MX; j += i) {
+            mu[j] -= mu[i];
+        }
+    }
+    return 0;
+}();
+
+class Solution {
+public:
+    int subsequencePairCount(vector<int>& nums) {
+        int m = ranges::max(nums);
+        // cnt[i] 表示 nums 中的 i 的倍数的个数
+        vector<int> cnt(m + 1);
+        for (int x : nums) {
+            cnt[x]++;
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = i * 2; j <= m; j += i) {
+                cnt[i] += cnt[j]; // 统计 i 的倍数的个数
+            }
+        }
+
+        vector<vector<int>> f(m + 1, vector<int>(m + 1));
+        for (int g1 = 1; g1 <= m; g1++) {
+            for (int g2 = 1; g2 <= m; g2++) {
+                int l = lcms[g1][g2];
+                int c = l <= m ? cnt[l] : 0;
+                int c1 = cnt[g1], c2 = cnt[g2];
+                f[g1][g2] = ((long long) pow3[c] * pow2[c1 + c2 - c * 2] - pow2[c1] - pow2[c2] + 1) % MOD;
+            }
+        }
+
+        // 倍数容斥
+        long long ans = 0;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= m / i; j++) {
+                for (int k = 1; k <= m / i; k++) {
+                    ans += mu[j] * mu[k] * f[j * i][k * i];
+                }
+            }
+        }
+        return (ans % MOD + MOD) % MOD; // 保证 ans 非负
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 1_000_000_007
+const mx = 201
+
+var lcms [mx][mx]int
+var pow2, pow3, mu [mx]int
+
+func init() {
+	for i := 1; i < mx; i++ {
+		for j := 1; j < mx; j++ {
+			lcms[i][j] = lcm(i, j)
+		}
+	}
+
+	pow2[0], pow3[0] = 1, 1
+	for i := 1; i < mx; i++ {
+		pow2[i] = pow2[i-1] * 2 % mod
+		pow3[i] = pow3[i-1] * 3 % mod
+	}
+
+	mu[1] = 1
+	for i := 1; i < mx; i++ {
+		for j := i * 2; j < mx; j += i {
+			mu[j] -= mu[i]
+		}
+	}
+}
+
+func subsequencePairCount(nums []int) int {
+	m := slices.Max(nums)
+	// cnt[i] 表示 nums 中的 i 的倍数的个数
+	cnt := make([]int, m+1)
+	for _, x := range nums {
+		cnt[x]++
+	}
+	for i := 1; i <= m; i++ {
+		for j := i * 2; j <= m; j += i {
+			cnt[i] += cnt[j] // 统计 i 的倍数的个数
+		}
+	}
+
+	f := make([][]int, m+1)
+	for i := range f {
+		f[i] = make([]int, m+1)
+	}
+	for g1 := 1; g1 <= m; g1++ {
+		for g2 := 1; g2 <= m; g2++ {
+			l := lcms[g1][g2]
+			c := 0
+			if l <= m {
+				c = cnt[l]
+			}
+			c1, c2 := cnt[g1], cnt[g2]
+			f[g1][g2] = (pow3[c]*pow2[c1+c2-c*2] - pow2[c1] - pow2[c2] + 1) % mod
+		}
+	}
+
+	// 倍数容斥
+	ans := 0
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= m/i; j++ {
+			for k := 1; k <= m/i; k++ {
+				ans += mu[j] * mu[k] * f[j*i][k*i]
+			}
+		}
+	}
+	return (ans%mod + mod) % mod // 保证 ans 非负
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+
+func lcm(a, b int) int {
+	return a / gcd(a, b) * b
+}
+```
+
+#### 复杂度分析
+
+预处理的时间忽略不计。
+
+- 时间复杂度：$\mathcal{O}(n+U^2)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。最后的三重循环，循环次数 $\sum\limits_{i} \dfrac{U^2}{i^2} = U^2\sum\limits_{i} \dfrac{1}{i^2} < U^2\cdot \dfrac{\pi}{6}$，即 $\mathcal{O}(U^2)$。
+- 空间复杂度：$\mathcal{O}(U^2)$。
 
 ## 分类题单
 
