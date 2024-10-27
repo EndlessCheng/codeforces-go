@@ -105,13 +105,13 @@ func newIdentityMatrix(n int) matrix {
 }
 
 func (a matrix) mul(b matrix) matrix {
-	const mod = 1_000_000_007 // 998244353
 	c := newMatrix(len(a), len(b[0]))
 	for i, row := range a {
 		for j := range b[0] {
 			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod // 注：此处不能化简
+				c[i][j] = (c[i][j] + v*b[k][j]) % mod
 			}
+			// 如果没有负数，可以去掉这个 if
 			if c[i][j] < 0 {
 				c[i][j] += mod
 			}
@@ -142,10 +142,10 @@ func solveDP(k int) {
 		f0[i][0] = 1
 	}
 
-	// 线性递推式中的 f[i][j] += f[i-1][k]，提取系数得 m[j][k] = 1
+	// 递推式中的 f[i][j] += f[i-1][k]，提取系数得 m[j][k] = 1
 	m := newMatrix(size, size)
 	for i := range m {
-		m[i][(i+1)%size] = 1 // 举例
+		m[i][(i+1)%size] = 1 // 举例 f[i][j] = f[i][j+1] + f[i][j+2]
 		m[i][(i+2)%size] = 1
 	}
 	m = m.pow(k).mul(f0)
