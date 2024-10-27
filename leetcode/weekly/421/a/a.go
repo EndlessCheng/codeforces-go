@@ -13,9 +13,9 @@ func maxScore(nums []int) int64 {
 		sufLcm[i] = lcm(sufLcm[i+1], x)
 	}
 
-	ans := sufGcd[0] * sufLcm[0]
+	ans := sufGcd[0] * sufLcm[0] // 不移除元素
 	preGcd, preLcm := 0, 1
-	for i, x := range nums {
+	for i, x := range nums { // 枚举移除 nums[i]
 		ans = max(ans, gcd(preGcd, sufGcd[i+1])*lcm(preLcm, sufLcm[i+1]))
 		preGcd = gcd(preGcd, x)
 		preLcm = lcm(preLcm, x)

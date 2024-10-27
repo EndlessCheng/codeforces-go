@@ -1,9 +1,11 @@
-思路同 [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)，本题维护前后缀的 GCD 和 LCM。
+思路同 [238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/)，本题维护前后缀的 $\text{GCD}$ 和 $\text{LCM}$。
 
 细节：
 
 1. 由于 $0$ 可以被任何非零整数整除，所以 $\text{GCD}(0,x)=x$。
 2. 由于任何整数都是 $1$ 的倍数，所以 $\text{LCM}(1,x)=x$。
+
+> 注：$[1,30]$ 中的所有元素的 $\text{LCM}$ 等于 $2329089562800$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hn1MYhEtC/)，欢迎点赞关注~
 
@@ -17,9 +19,9 @@ class Solution:
             suf_gcd[i] = gcd(suf_gcd[i + 1], nums[i])
             suf_lcm[i] = lcm(suf_lcm[i + 1], nums[i])
 
-        ans = suf_gcd[0] * suf_lcm[0]
+        ans = suf_gcd[0] * suf_lcm[0]  # 不移除元素
         pre_gcd, pre_lcm = 0, 1
-        for i, x in enumerate(nums):
+        for i, x in enumerate(nums):  # 枚举移除 nums[i]
             ans = max(ans, gcd(pre_gcd, suf_gcd[i + 1]) * lcm(pre_lcm, suf_lcm[i + 1]))
             pre_gcd = gcd(pre_gcd, x)
             pre_lcm = lcm(pre_lcm, x)
@@ -38,10 +40,10 @@ class Solution {
             sufLcm[i] = lcm(sufLcm[i + 1], nums[i]);
         }
 
-        long ans = sufGcd[0] * sufLcm[0];
+        long ans = sufGcd[0] * sufLcm[0]; // 不移除元素
         int preGcd = 0;
         long preLcm = 1;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) { // 枚举移除 nums[i]
             ans = Math.max(ans, gcd(preGcd, sufGcd[i + 1]) * lcm(preLcm, sufLcm[i + 1]));
             preGcd = (int) gcd(preGcd, nums[i]);
             preLcm = lcm(preLcm, nums[i]);
@@ -77,10 +79,10 @@ public:
             suf_lcm[i] = lcm(suf_lcm[i + 1], nums[i]);
         }
 
-        long long ans = suf_gcd[0] * suf_lcm[0];
+        long long ans = suf_gcd[0] * suf_lcm[0]; // 不移除元素
         int pre_gcd = 0;
         long long pre_lcm = 1;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) { // 枚举移除 nums[i]
             ans = max(ans, gcd(pre_gcd, suf_gcd[i + 1]) * lcm(pre_lcm, suf_lcm[i + 1]));
             pre_gcd = gcd(pre_gcd, nums[i]);
             pre_lcm = lcm(pre_lcm, nums[i]);
@@ -101,9 +103,9 @@ func maxScore(nums []int) int64 {
 		sufLcm[i] = lcm(sufLcm[i+1], x)
 	}
 
-	ans := sufGcd[0] * sufLcm[0]
+	ans := sufGcd[0] * sufLcm[0] // 不移除元素
 	preGcd, preLcm := 0, 1
-	for i, x := range nums {
+	for i, x := range nums { // 枚举移除 nums[i]
 		ans = max(ans, gcd(preGcd, sufGcd[i+1])*lcm(preLcm, sufLcm[i+1]))
 		preGcd = gcd(preGcd, x)
 		preLcm = lcm(preLcm, x)
