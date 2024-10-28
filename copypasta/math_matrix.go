@@ -85,7 +85,7 @@ https://ac.nowcoder.com/acm/contest/9247/A
 https://codeforces.com/problemset/problem/1117/D a(n) = a(n-1) + a(n-m)
 
 https://www.luogu.com.cn/problem/P9777
-已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n 
+已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n
 由于 f(n) * f(1) = f(n+1) + f(n-1)
 所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 */
@@ -151,8 +151,9 @@ func solveDP(k int) (ans int) {
 	// 现在 m[i][0] 就是 f[k][i] 或者 dfs(k,i)
 	// 特别地，m[0][0] 就是 f[k][0] 或者 dfs(k,0)
 	for _, row := range m {
-		ans += row[0]
+		ans += row[0] // 举例 ans = sum(f[k])
 	}
+	ans %= mod
 
 	return
 }
