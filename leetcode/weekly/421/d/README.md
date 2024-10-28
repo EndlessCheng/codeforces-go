@@ -103,20 +103,17 @@ $M^t$ 可以用**快速幂**计算，原理请看[【图解】一张图秒懂快
 ```py [sol-Python3]
 MOD = 1_000_000_007
 
-# 返回矩阵 a 和矩阵 b 相乘的结果
+# a @ b，其中 @ 是矩阵乘法
 def mul(a: List[List[int]], b: List[List[int]]) -> List[List[int]]:
     return [[sum(x * y for x, y in zip(row, col)) % MOD for col in zip(*b)]
             for row in a]
 
-# 返回 n 个矩阵 a 相乘的结果
-def pow(a: List[List[int]], n: int) -> List[List[int]]:
-    size = len(a)
-    res = [[0] * size for _ in range(size)]
-    for i in range(size):
-        res[i][i] = 1  # 单位矩阵
+# a^n @ f0
+def pow_mul(a: List[List[int]], n: int, f0: List[List[int]]) -> List[List[int]]:
+    res = f0
     while n:
         if n & 1:
-            res = mul(res, a)
+            res = mul(a, res)
         a = mul(a, a)
         n >>= 1
     return res
@@ -124,15 +121,16 @@ def pow(a: List[List[int]], n: int) -> List[List[int]]:
 class Solution:
     def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
         SIZE = 26
+        f0 = [[1] for _ in range(SIZE)]
         m = [[0] * SIZE for _ in range(SIZE)]
         for i, c in enumerate(nums):
             for j in range(i + 1, i + c + 1):
                 m[i][j % SIZE] = 1
-        m = pow(m, t)
+        m = pow_mul(m, t, f0)
 
         ans = 0
         for ch, cnt in Counter(s).items():
-            ans += sum(m[ord(ch) - ord('a')]) * cnt
+            ans += m[ord(ch) - ord('a')][0] * cnt
         return ans % MOD
 ```
 
@@ -141,38 +139,8 @@ import numpy as np
 
 MOD = 1_000_000_007
 
-# 返回 n 个矩阵 a 相乘的结果
-def pow(a: np.ndarray, n: int) -> np.ndarray:
-    res = np.eye(a.shape[0], dtype=object)
-    while n:
-        if n & 1:
-            res = res @ a % MOD
-        a = a @ a % MOD
-        n >>= 1
-    return res
-
-class Solution:
-    def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
-        SIZE = 26
-        m = np.zeros((SIZE, SIZE), dtype=object)
-        for i, c in enumerate(nums):
-            for j in range(i + 1, i + c + 1):
-                m[i, j % SIZE] = 1
-        m = pow(m, t)
-
-        ans = 0
-        for ch, cnt in Counter(s).items():
-            ans += np.sum(m[ord(ch) - ord('a')]) * cnt
-        return ans % MOD
-```
-
-```py [sol-NumPy 写法二]
-import numpy as np
-
-MOD = 1_000_000_007
-
 # a^n @ f0
-def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
+def pow(a: np.ndarray, n: int, f0: np.ndarray) -> np.ndarray:
     res = f0
     while n:
         if n & 1:
@@ -184,12 +152,12 @@ def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
 class Solution:
     def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
         SIZE = 26
+        f0 = np.ones((SIZE,), dtype=object)
         m = np.zeros((SIZE, SIZE), dtype=object)
         for i, c in enumerate(nums):
             for j in range(i + 1, i + c + 1):
                 m[i, j % SIZE] = 1
-        f0 = np.ones((SIZE,), dtype=object)
-        m = pow(m, f0, t)
+        m = pow(m, t, f0)
 
         ans = 0
         for ch, cnt in Counter(s).items():
@@ -197,13 +165,13 @@ class Solution:
         return ans % MOD
 ```
 
-```py [sol-NumPy 写法三]
+```py [sol-NumPy 写法二]
 import numpy as np
 
 MOD = 1_000_000_007
 
 # f0 @ a^n
-def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
+def pow(f0: np.ndarray, a: np.ndarray, n: int) -> np.ndarray:
     res = f0
     while n:
         if n & 1:
@@ -214,14 +182,16 @@ def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
 
 class Solution:
     def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
+        cnt = Counter(s)
+        f0 = np.array([cnt[c] for c in ascii_lowercase], dtype=object)
+
         SIZE = 26
         m = np.zeros((SIZE, SIZE), dtype=object)
         for i, c in enumerate(nums):
             for j in range(i + 1, i + c + 1):
                 m[i, j % SIZE] = 1
-        cnt = Counter(s)
-        f0 = np.array([cnt[c] for c in ascii_lowercase], dtype=object)
-        m = pow(m, f0, t)
+
+        m = pow(f0, m, t)
         return np.sum(m) % MOD
 ```
 
@@ -374,15 +344,12 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-func (a matrix) pow(n int) matrix {
-	res := make(matrix, len(a))
-	for i := range res {
-		res[i] = make([]int, len(a))
-		res[i][i] = 1
-	}
+// a^n * f0
+func (a matrix) powMul(n int, f0 matrix) matrix {
+	res := f0
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = res.mul(a)
+			res = a.mul(res)
 		}
 		a = a.mul(a)
 	}
@@ -391,25 +358,24 @@ func (a matrix) pow(n int) matrix {
 
 func lengthAfterTransformations(s string, t int, nums []int) (ans int) {
 	const size = 26
+	f0 := newMatrix(size, 1)
+	for i := range f0 {
+		f0[i][0] = 1
+	}
 	m := newMatrix(size, size)
 	for i, c := range nums {
 		for j := i + 1; j <= i+c; j++ {
 			m[i][j%size] = 1
 		}
 	}
-	m = m.pow(t)
+	m = m.powMul(t, f0)
 
 	cnt := [26]int{}
 	for _, c := range s {
 		cnt[c-'a']++
 	}
 	for i, row := range m {
-		// m 第 i 行的和就是 f[t][i]
-		fti := 0
-		for _, x := range row {
-			fti += x
-		}
-		ans += fti * cnt[i]
+		ans += row[0] * cnt[i]
 	}
 	return ans % mod
 }

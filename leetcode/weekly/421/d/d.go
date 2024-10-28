@@ -25,15 +25,12 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-func (a matrix) pow(n int) matrix {
-	res := make(matrix, len(a))
-	for i := range res {
-		res[i] = make([]int, len(a))
-		res[i][i] = 1
-	}
+// a^n * f0
+func (a matrix) powMul(n int, f0 matrix) matrix {
+	res := f0
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = res.mul(a)
+			res = a.mul(res)
 		}
 		a = a.mul(a)
 	}
@@ -42,25 +39,24 @@ func (a matrix) pow(n int) matrix {
 
 func lengthAfterTransformations(s string, t int, nums []int) (ans int) {
 	const size = 26
+	f0 := newMatrix(size, 1)
+	for i := range f0 {
+		f0[i][0] = 1
+	}
 	m := newMatrix(size, size)
 	for i, c := range nums {
 		for j := i + 1; j <= i+c; j++ {
 			m[i][j%size] = 1
 		}
 	}
-	m = m.pow(t)
+	m = m.powMul(t, f0)
 
 	cnt := [26]int{}
 	for _, c := range s {
 		cnt[c-'a']++
 	}
 	for i, row := range m {
-		// m 第 i 行的和就是 f[t][i]
-		fti := 0
-		for _, x := range row {
-			fti += x
-		}
-		ans += fti * cnt[i]
+		ans += row[0] * cnt[i]
 	}
 	return ans % mod
 }
