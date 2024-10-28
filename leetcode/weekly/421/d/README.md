@@ -136,6 +136,95 @@ class Solution:
         return ans % MOD
 ```
 
+```py [sol-NumPy]
+import numpy as np
+
+MOD = 1_000_000_007
+
+# 返回 n 个矩阵 a 相乘的结果
+def pow(a: np.ndarray, n: int) -> np.ndarray:
+    res = np.eye(a.shape[0], dtype=object)
+    while n:
+        if n & 1:
+            res = res @ a % MOD
+        a = a @ a % MOD
+        n >>= 1
+    return res
+
+class Solution:
+    def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
+        SIZE = 26
+        m = np.zeros((SIZE, SIZE), dtype=object)
+        for i, c in enumerate(nums):
+            for j in range(i + 1, i + c + 1):
+                m[i, j % SIZE] = 1
+        m = pow(m, t)
+
+        ans = 0
+        for ch, cnt in Counter(s).items():
+            ans += np.sum(m[ord(ch) - ord('a')]) * cnt
+        return ans % MOD
+```
+
+```py [sol-NumPy 写法二]
+import numpy as np
+
+MOD = 1_000_000_007
+
+# a^n @ f0
+def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
+    res = f0
+    while n:
+        if n & 1:
+            res = a @ res % MOD
+        a = a @ a % MOD
+        n >>= 1
+    return res
+
+class Solution:
+    def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
+        SIZE = 26
+        m = np.zeros((SIZE, SIZE), dtype=object)
+        for i, c in enumerate(nums):
+            for j in range(i + 1, i + c + 1):
+                m[i, j % SIZE] = 1
+        f0 = np.ones((SIZE,), dtype=object)
+        m = pow(m, f0, t)
+
+        ans = 0
+        for ch, cnt in Counter(s).items():
+            ans += m[ord(ch) - ord('a')] * cnt
+        return ans % MOD
+```
+
+```py [sol-NumPy 写法三]
+import numpy as np
+
+MOD = 1_000_000_007
+
+# f0 @ a^n
+def pow(a: np.ndarray, f0: np.ndarray, n: int) -> np.ndarray:
+    res = f0
+    while n:
+        if n & 1:
+            res = res @ a % MOD
+        a = a @ a % MOD
+        n >>= 1
+    return res
+
+class Solution:
+    def lengthAfterTransformations(self, s: str, t: int, nums: List[int]) -> int:
+        SIZE = 26
+        m = np.zeros((SIZE, SIZE), dtype=object)
+        for i, c in enumerate(nums):
+            for j in range(i + 1, i + c + 1):
+                m[i, j % SIZE] = 1
+        cnt = Counter(s)
+        f0 = np.array([cnt[c] for c in ascii_lowercase], dtype=object)
+        m = pow(m, f0, t)
+        return np.sum(m) % MOD
+```
+
 ```java [sol-Java]
 class Solution {
     private static final int MOD = 1_000_000_007;
