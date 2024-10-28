@@ -13,7 +13,7 @@
 一般地，设 $c=\textit{nums}[i]$，我们有
 
 $$
-f[i][j] = \sum_{j=i+1}^{i+c} f[i-1][j\bmod 26]
+f[i][j] = \sum_{k=j+1}^{j+c} f[i-1][k\bmod 26]
 $$
 
 初始值 $f[0][j] = 1$。
