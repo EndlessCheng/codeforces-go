@@ -146,11 +146,12 @@ func solveDP(k int) (ans int) {
 		m[i][(i+2)%size] = 1
 	}
 
-	m = m.powMul(k, f0)
+	// fk 和 f0 一样，都是长为 size 的列向量
+	fk := m.powMul(k, f0) 
 
-	// 现在 m[i][0] 就是 f[k][i] 或者 dfs(k,i)
-	// 特别地，m[0][0] 就是 f[k][0] 或者 dfs(k,0)
-	for _, row := range m {
+	// 现在 fk[i][0] 就是 f[k][i] 或者 dfs(k,i)
+	// 特别地，fk[0][0] 就是 f[k][0] 或者 dfs(k,0)
+	for _, row := range fk {
 		ans += row[0] // 举例 ans = sum(f[k])
 	}
 	ans %= mod
