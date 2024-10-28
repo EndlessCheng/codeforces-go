@@ -78,10 +78,14 @@ func rotateMatrix(a matrix) matrix {
 矩阵快速幂优化 DP
 视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
 文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
+m 项递推式，以及包含常数项的情况见《挑战》P201
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://www.luogu.com.cn/problem/P10310
+https://ac.nowcoder.com/acm/contest/9247/A
+https://codeforces.com/problemset/problem/1117/D a(n) = a(n-1) + a(n-m)
 
-已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n https://www.luogu.com.cn/problem/P9777
+https://www.luogu.com.cn/problem/P9777
+已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n 
 由于 f(n) * f(1) = f(n+1) + f(n-1)
 所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 */
@@ -91,15 +95,6 @@ func newMatrix(n, m int) matrix {
 	a := make(matrix, n)
 	for i := range a {
 		a[i] = make([]int, m)
-	}
-	return a
-}
-
-func newIdentityMatrix(n int) matrix {
-	a := make(matrix, n)
-	for i := range a {
-		a[i] = make([]int, n)
-		a[i][i] = 1
 	}
 	return a
 }
@@ -120,11 +115,12 @@ func (a matrix) mul(b matrix) matrix {
 	return c
 }
 
-func (a matrix) pow(n int) matrix {
-	res := newIdentityMatrix(len(a))
+// a^n * f0
+func (a matrix) powMul(n int, f0 matrix) matrix {
+	res := f0
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
-			res = res.mul(a)
+			res = a.mul(res)
 		}
 		a = a.mul(a)
 	}
@@ -132,7 +128,7 @@ func (a matrix) pow(n int) matrix {
 }
 
 // 操作 k 次
-func solveDP(k int) {
+func solveDP(k int) (ans int) {
 	// 一般是状态机 DP
 	const size = 26 // DP 数组第二维度的大小
 
@@ -149,13 +145,39 @@ func solveDP(k int) {
 		m[i][(i+1)%size] = 1 // 举例 f[i][j] = f[i][j+1] + f[i][j+2]
 		m[i][(i+2)%size] = 1
 	}
-	m = m.pow(k).mul(f0)
+
+	m = m.powMul(k, f0)
+
 	// 现在 m[i][0] 就是 f[k][i] 或者 dfs(k,i)
 	// 特别地，m[0][0] 就是 f[k][0] 或者 dfs(k,0)
+	for _, row := range m {
+		ans += row[0]
+	}
 
+	return
 }
 
 // -----------------------------------------------------------------------------
+
+func newIdentityMatrix(n int) matrix {
+	a := make(matrix, n)
+	for i := range a {
+		a[i] = make([]int, n)
+		a[i][i] = 1
+	}
+	return a
+}
+
+func (a matrix) pow(n int) matrix {
+	res := newIdentityMatrix(len(a))
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res.mul(a)
+		}
+		a = a.mul(a)
+	}
+	return res
+}
 
 // 比如 n*n 的国际象棋的马，从 (sx,sy) 走 k 步到 (tx,ty)，需要多少步
 // 这里可以先 O(n^2) 预处理走一步的转移，构建矩阵 a
@@ -173,9 +195,6 @@ func (a matrix) solve(n, sx, sy, tx, ty, k int) int {
 // a(n-1) = a(n-1)
 // 转成矩阵乘法
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
-// https://ac.nowcoder.com/acm/contest/9247/A
-// m 项递推式，以及包含常数项的情况见《挑战》P201
-// a(n) = a(n-1) + a(n-m) https://codeforces.com/problemset/problem/1117/D
 func calcFibonacci(p, q, a0, a1, n int) int {
 	const mod = 1_000_000_007 // 998244353
 	//n--
