@@ -192,6 +192,11 @@ impl Solution {
 
 代码实现时，可以直接枚举取反后的值 $x$，如果 `x & (x >> 1)` 等于 $0$，就把 $x$ 取反后的值（也就是 $i$）加入答案。
 
+如何取反？
+
+1. 创建一个低 $n$ 位全为 $1$ 的二进制数 `mask = (1 << n) - 1`。
+2. 计算 `x ^ mask`，由于 $0$ 和 $1$ 异或后变成了 $1$，$1$ 和 $1$ 异或后变成了 $0$，所以 $x$ 的低 $n$ 位都取反了。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ry411q71f/) 第二题，欢迎点赞关注！
 
 ```py [sol-Python3]
@@ -202,7 +207,7 @@ class Solution:
         for x in range(1 << n):
             if (x >> 1) & x == 0:
                 # 0{n}b 表示长为 n 的有前导零的二进制
-                ans.append(f"{mask ^ x:0{n}b}")
+                ans.append(f"{x ^ mask:0{n}b}")
         return ans
 ```
 
@@ -210,7 +215,7 @@ class Solution:
 class Solution:
     def validStrings(self, n: int) -> List[str]:
         mask = (1 << n) - 1
-        return [f"{mask ^ x:0{n}b}" for x in range(1 << n) if (x >> 1) & x == 0]
+        return [f"{x ^ mask:0{n}b}" for x in range(1 << n) if (x >> 1) & x == 0]
 ```
 
 ```java [sol-Java]
@@ -220,7 +225,7 @@ class Solution {
         int mask = (1 << n) - 1;
         for (int x = 0; x < (1 << n); x++) {
             if (((x >> 1) & x) == 0) {
-                int i = mask ^ x;
+                int i = x ^ mask;
                 // 一种生成前导零的写法：在 i 前面插入 1<<n，转成字符串后再去掉插入的 1<<n
                 ans.add(Integer.toBinaryString((1 << n) | i).substring(1));
             }
@@ -238,7 +243,7 @@ public:
         int mask = (1 << n) - 1;
         for (int x = 0; x < (1 << n); x++) {
             if (((x >> 1) & x) == 0) {
-                ans.push_back(bitset<18>(mask ^ x).to_string().substr(18 - n));
+                ans.push_back(bitset<18>(x ^ mask).to_string().substr(18 - n));
             }
         }
         return ans;
@@ -251,7 +256,7 @@ func validStrings(n int) (ans []string) {
     mask := 1<<n - 1
     for x := range 1 << n {
         if x>>1&x == 0 {
-            ans = append(ans, fmt.Sprintf("%0*b", n, mask^x))
+            ans = append(ans, fmt.Sprintf("%0*b", n, x^mask))
         }
     }
     return
@@ -264,7 +269,7 @@ var validStrings = function(n) {
     const mask = (1 << n) - 1;
     for (let x = 0; x < (1 << n); x++) {
         if (((x >> 1) & x) === 0) {
-            ans.push(_.padStart((mask ^ x).toString(2), n, '0'));
+            ans.push(_.padStart((x ^ mask).toString(2), n, '0'));
         }
     }
     return ans;
@@ -277,7 +282,7 @@ impl Solution {
         let mask = (1 << n) - 1;
         (0..1 << n)
             .filter(|&x| (x >> 1) & x == 0)
-            .map(|x| format!("{:0w$b}", mask ^ x, w = n as usize))
+            .map(|x| format!("{:0w$b}", x ^ mask, w = n as usize))
             .collect()
     }
 }
