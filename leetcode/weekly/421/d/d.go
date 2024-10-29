@@ -16,9 +16,12 @@ func newMatrix(n, m int) matrix {
 func (a matrix) mul(b matrix) matrix {
 	c := newMatrix(len(a), len(b[0]))
 	for i, row := range a {
-		for j := range b[0] {
-			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod
+		for k, x := range row {
+			if x == 0 {
+				continue
+			}
+			for j, y := range b[k] {
+				c[i][j] = (c[i][j] + x*y) % mod
 			}
 		}
 	}
