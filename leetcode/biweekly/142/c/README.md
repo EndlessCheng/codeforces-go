@@ -205,9 +205,9 @@ class Solution {
                 }
             }
         }
-        int ans = f[0][0];
-        for (int j = 1; j < n; j++) {
-            ans = Math.max(ans, f[0][j]);
+        int ans = 0;
+        for (int x : f[0]) {
+            ans = Math.max(ans, x);
         }
         return ans;
     }
