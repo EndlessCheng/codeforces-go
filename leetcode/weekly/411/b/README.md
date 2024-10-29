@@ -103,11 +103,11 @@ public:
             if (i < 0) {
                 return 0;
             }
-            auto& p = memo[i][j]; // 注意这里是引用
-            if (p) { // 之前计算过
-                return p;
+            auto& res = memo[i][j]; // 注意这里是引用
+            if (res) { // 之前计算过
+                return res;
             }
-            return p = max(dfs(dfs, i - 1, j), dfs(dfs, i - 2, j ^ 1)) + c[j][i];
+            return res = max(dfs(dfs, i - 1, j), dfs(dfs, i - 2, j ^ 1)) + c[j][i];
         };
         return max(dfs(dfs, n - 1, 0), dfs(dfs, n - 1, 1));
     }
@@ -143,7 +143,7 @@ func maxEnergyBoost(a, b []int) int64 {
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-具体来说，$f[i+2][j]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示从下标 $[0,i]$ 中选数字，且最后选的是 $a[i]$ 或 $b[i]$ 的情况下，所选元素之和的最大值。这里 $+2$ 是为了把 $\textit{dfs}(-2,j)$ 和 $\textit{dfs}(-1,j)$ 这两个状态也翻译过来，作为 $f$ 数组的初始值。
+具体来说，$f[i+2][j]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示从下标 $[0,i]$ 中选数字，且最后选的是 $a[i]$ 或 $b[i]$ 的情况下，所选元素之和的最大值。这里 $+2$ 是为了把 $\textit{dfs}(-2,j)$ 和 $\textit{dfs}(-1,j)$ 这两个状态也翻译过来，这样我们可以把 $f[0]$ 和 $f[1]$ 作为初始值。
 
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样（注意 $+2$）：
 
@@ -218,15 +218,13 @@ func maxEnergyBoost(a, b []int) int64 {
 
 本题还有另外一种状态定义：考虑选当前元素，还是跳过不选当前元素（切换到另一个数组）。与之对比，本题解的思路是当前元素一定要选，用递归到 $i-2$ 表示跳过 $i-1$ 不选。请你思考：如果数组中有负数，哪种定义方式更符合题目描述？注意有负数也得喝饮料。
 
-## 相似题目
-
-见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**状态机 DP**」。
+更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**五、状态机 DP**」。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -235,8 +233,9 @@ func maxEnergyBoost(a, b []int) int64 {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
