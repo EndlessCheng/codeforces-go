@@ -43,12 +43,7 @@ func nextPermutation(nums []int) {
         }
         nums[i], nums[j] = nums[j], nums[i]
     }
-    reverse := func(a []int) {
-        for i, n := 0, len(a); i < n/2; i++ {
-            a[i], a[n-1-i] = a[n-1-i], a[i]
-        }
-    }
-    reverse(nums[i+1:])
+    slices.Reverse(nums[i+1:])
 }
 
 // LC 37
@@ -147,14 +142,7 @@ func combinationSum(a []int, target int) (ans [][]int) {
 
 // LC 40
 func combinationSum2(a []int, target int) (ans [][]int) {
-    min := func(a, b int) int {
-        if a < b {
-            return a
-        }
-        return b
-    }
-
-    sort.Ints(a)
+    slices.Sort(a)
     var freq [][2]int
     for _, v := range a {
         if freq == nil || v != freq[len(freq)-1][0] {
@@ -165,10 +153,10 @@ func combinationSum2(a []int, target int) (ans [][]int) {
     }
 
     var b []int
-    var f func(p, rest int)
+    var f func(int, int)
     f = func(p, rest int) {
         if rest == 0 {
-            ans = append(ans, append([]int(nil), b...))
+            ans = append(ans, slices.Clone(b))
             return
         }
         if p == len(freq) || rest < freq[p][0] {
@@ -201,74 +189,6 @@ func firstMissingPositive(a []int) int {
         }
     }
     return n + 1
-}
-
-// LC 42 接雨水
-func trap(a []int) (ans int) {
-    n := len(a)
-    if n == 0 {
-        return
-    }
-
-    const border = 2e9
-    type pair struct{ v, i int }
-    posL := make([]int, n)
-    stack := []pair{{border, -1}}
-    for i, v := range a {
-        for {
-            if top := stack[len(stack)-1]; top.v >= v {
-                posL[i] = top.i
-                break
-            }
-            stack = stack[:len(stack)-1]
-        }
-        stack = append(stack, pair{v, i})
-    }
-    posR := make([]int, n)
-    stack = []pair{{border, n}}
-    for i := n - 1; i >= 0; i-- {
-        v := a[i]
-        for {
-            if top := stack[len(stack)-1]; top.v >= v {
-                posR[i] = top.i
-                break
-            }
-            stack = stack[:len(stack)-1]
-        }
-        stack = append(stack, pair{v, i})
-    }
-
-    sum := make([]int, n+1)
-    for i, v := range a {
-        sum[i+1] = sum[i] + v
-    }
-    i := 0
-    for ; posR[i] < n; i = posR[i] {
-        ans += (posR[i]-i)*a[i] - sum[posR[i]] + sum[i]
-    }
-    for j := n - 1; posL[j] >= i; j = posL[j] {
-        ans += (j-posL[j])*a[j] - sum[j+1] + sum[posL[j]+1]
-    }
-    return
-}
-
-// LC 45 跳跃游戏 II
-func jump(a []int) (ans int) {
-    max := func(a, b int) int {
-        if b > a {
-            return b
-        }
-        return a
-    }
-    curR, nxtR := 0, 0
-    for i, d := range a[:len(a)-1] {
-        nxtR = max(nxtR, i+d)
-        if i == curR {
-            curR = nxtR
-            ans++
-        }
-    }
-    return ans
 }
 
 // LC 47 给定一个可包含重复数字的序列，返回所有不重复的全排列
@@ -319,12 +239,6 @@ func totalNQueens(n int) (ans int) {
 
 // LC 55 跳跃游戏
 func canJump(a []int) bool {
-    max := func(a, b int) int {
-        if b > a {
-            return b
-        }
-        return a
-    }
     maxR := 0
     for l, d := range a {
         if l > maxR {
@@ -337,12 +251,6 @@ func canJump(a []int) bool {
 
 // LC 56 合并区间
 func merge(a [][]int) (ans [][]int) {
-    max := func(a, b int) int {
-        if b > a {
-            return b
-        }
-        return a
-    }
     sort.Slice(a, func(i, j int) bool { return a[i][0] < a[j][0] })
     l, maxR := a[0][0], a[0][1]
     for _, p := range a {
@@ -547,12 +455,6 @@ func connect(root *Node) *Node {
 
 // LC 123
 func maxProfitMaxTwice(prices []int) int {
-    max := func(a, b int) int {
-        if a > b {
-            return a
-        }
-        return b
-    }
     buy1, sell1 := -prices[0], 0
     buy2, sell2 := -prices[0], 0
     for i := 1; i < len(prices); i++ {
@@ -566,12 +468,6 @@ func maxProfitMaxTwice(prices []int) int {
 
 // LC 124
 func maxPathSum(root *TreeNode) int {
-    max := func(a, b int) int {
-        if a > b {
-            return a
-        }
-        return b
-    }
     ans := int(-1e18)
     var f func(*TreeNode) int
     f = func(o *TreeNode) int {
@@ -671,12 +567,6 @@ func ladderLength(beginWord string, endWord string, wordList []string) int {
 
 // LC 135
 func candy(ratings []int) (ans int) {
-    max := func(a, b int) int {
-        if a > b {
-            return a
-        }
-        return b
-    }
     n := len(ratings)
     left := make([]int, n)
     for i, r := range ratings {
@@ -815,28 +705,6 @@ func sort2(head, tail *ListNode) *ListNode {
 
 func sortList(head *ListNode) *ListNode {
     return sort2(head, nil)
-}
-
-// LC 152
-func maxProduct(a []int) int {
-    min := func(a, b int) int {
-        if a < b {
-            return a
-        }
-        return b
-    }
-    max := func(a, b int) int {
-        if a > b {
-            return a
-        }
-        return b
-    }
-    mi, mx, ans := a[0], a[0], a[0]
-    for _, v := range a[1:] {
-        mi, mx = min(v, min(v*mi, v*mx)), max(v, max(v*mi, v*mx))
-        ans = max(ans, mx)
-    }
-    return ans
 }
 
 // LC 162
