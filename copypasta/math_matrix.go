@@ -102,13 +102,12 @@ func newMatrix(n, m int) matrix {
 func (a matrix) mul(b matrix) matrix {
 	c := newMatrix(len(a), len(b[0]))
 	for i, row := range a {
-		for j := range b[0] {
-			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod
+		for k, x := range row {
+			if x == 0 {
+				continue
 			}
-			// 如果没有负数，可以去掉这个 if
-			if c[i][j] < 0 {
-				c[i][j] += mod
+			for j, y := range b[k] {
+				c[i][j] = (c[i][j] + x*y) % mod
 			}
 		}
 	}
@@ -147,7 +146,7 @@ func solveDP(k int) (ans int) {
 	}
 
 	// fk 和 f0 一样，都是长为 size 的列向量
-	fk := m.powMul(k, f0) 
+	fk := m.powMul(k, f0)
 
 	// 现在 fk[i][0] 就是 f[k][i] 或者 dfs(k,i)
 	// 特别地，fk[0][0] 就是 f[k][0] 或者 dfs(k,0)
