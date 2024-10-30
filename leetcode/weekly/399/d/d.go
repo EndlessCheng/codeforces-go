@@ -3,12 +3,13 @@ package main
 import "math/bits"
 
 // https://space.bilibili.com/206214
+type data struct {
+	f00 int // 第一个数一定不选，最后一个数一定不选
+	f01 int // 第一个数一定不选，最后一个数可选可不选
+	f10 int // 第一个数可选可不选，最后一个数一定不选
+	f11 int // 第一个数可选可不选，最后一个数可选可不选，也就是没有任何限制
+}
 
-// f00 表示第一个数一定不选，最后一个数一定不选
-// f01 表示第一个数一定不选，最后一个数可选可不选
-// f10 表示第一个数可选可不选，最后一个数一定不选
-// f11 表示第一个数可选可不选，最后一个数可选可不选，也就是没有任何限制
-type data struct{ f00, f01, f10, f11 int }
 type seg []data
 
 func (t seg) maintain(o int) {
@@ -50,6 +51,7 @@ func maximumSumSubsequence(nums []int, queries [][]int) (ans int) {
 	n := len(nums)
 	t := make(seg, 2<<bits.Len(uint(n-1)))
 	t.build(nums, 1, 0, n-1)
+
 	for _, q := range queries {
 		t.update(1, 0, n-1, q[0], q[1])
 		ans += t[1].f11 // 注意 f11 没有任何限制，也就是整个数组的打家劫舍
