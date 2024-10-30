@@ -1,6 +1,8 @@
 **请先阅读**：[从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
-从集合的角度理解，$k$ 必须是 $n$ 的**子集**。如果不是，返回 $-1$。怎么用位运算判断，见上面的文章链接。
+从集合的角度理解，每次操作相当于去掉集合 $n$ 中的一个元素。
+
+要能把 $n$ 变成 $k$，$k$ 必须是 $n$ 的**子集**。如果不是，返回 $-1$。
 
 如果 $k$ 是 $n$ 的子集，答案为从 $n$ 中去掉 $k$ 后的集合大小，即 $n\oplus k$ 的二进制中的 $1$ 的个数。
 
@@ -10,7 +12,9 @@
 
 ### 写法一
 
-如果 $n$ 和 $k$ 的交集还是 $k$，那么 $k$ 就是 $n$ 的子集。 
+如果 $n$ 和 $k$ 的交集是 $k$，那么 $k$ 就是 $n$ 的子集。
+
+交集就是位运算中的 AND（`&`）。
 
 ```py [sol-Python3]
 class Solution:
@@ -74,6 +78,73 @@ impl Solution {
 ```
 
 ### 写法二
+
+如果 $n$ 和 $k$ 的并集是 $n$，那么 $k$ 就是 $n$ 的子集。
+
+并集就是位运算中的 OR（`|`）。
+
+```py [sol-Python3]
+class Solution:
+    def minChanges(self, n: int, k: int) -> int:
+        return -1 if n | k != n else (n ^ k).bit_count()
+```
+
+```java [sol-Java]
+class Solution {
+    public int minChanges(int n, int k) {
+        return (n | k) != n ? -1 : Integer.bitCount(n ^ k);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minChanges(int n, int k) {
+        return (n | k) != n ? -1 : __builtin_popcount(n ^ k);
+    }
+};
+```
+
+```c [sol-C]
+int minChanges(int n, int k) {
+    return (n | k) != n ? -1 : __builtin_popcount(n ^ k);
+}
+```
+
+```go [sol-Go]
+func minChanges(n, k int) int {
+	if n|k != n {
+		return -1
+	}
+	return bits.OnesCount(uint(n ^ k))
+}
+```
+
+```js [sol-JavaScript]
+var minChanges = function(n, k) {
+    return (n | k) !== n ? -1 : bitCount32(n ^ k);
+};
+
+function bitCount32(n) {
+    n = n - ((n >> 1) & 0x55555555);
+    n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
+    return ((n + (n >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_changes(n: i32, k: i32) -> i32 {
+        if n | k != n {
+            return -1;
+        }
+        (n ^ k).count_ones() as _
+    }
+}
+```
+
+### 写法三
 
 如果 $k$ 去掉 $n$ 中所有元素后，变成了空集，那么 $k$ 就是 $n$ 的子集。
 
