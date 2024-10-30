@@ -275,7 +275,7 @@ var validStrings = function(n) {
     const mask = (1 << n) - 1;
     for (let x = 0; x < (1 << n); x++) {
         if (((x >> 1) & x) === 0) {
-            ans.push(_.padStart((x ^ mask).toString(2), n, '0'));
+            ans.push((x ^ mask).toString(2).padStart(n, '0'));
         }
     }
     return ans;
