@@ -6,7 +6,11 @@
 
 > 注：也可以计算 $n-k$ 的二进制中的 $1$ 的个数。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV16Z421N7P2/)，欢迎点赞关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV16Z421N7P2/)，欢迎点赞关注~
+
+### 写法一
+
+如果 $n$ 和 $k$ 的交集还是 $k$，那么 $k$ 就是 $n$ 的子集。 
 
 ```py [sol-Python3]
 class Solution:
@@ -62,6 +66,73 @@ function bitCount32(n) {
 impl Solution {
     pub fn min_changes(n: i32, k: i32) -> i32 {
         if n & k != k {
+            return -1;
+        }
+        (n ^ k).count_ones() as _
+    }
+}
+```
+
+### 写法二
+
+如果 $k$ 去掉 $n$ 中所有元素后，变成了空集，那么 $k$ 就是 $n$ 的子集。
+
+写成代码，如果 `(k & ~n) == 0`，那么 $k$ 就是 $n$ 的子集。
+
+```py [sol-Python3]
+class Solution:
+    def minChanges(self, n: int, k: int) -> int:
+        return -1 if k & ~n else (n ^ k).bit_count()
+```
+
+```java [sol-Java]
+class Solution {
+    public int minChanges(int n, int k) {
+        return (k & ~n) > 0 ? -1 : Integer.bitCount(n ^ k);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minChanges(int n, int k) {
+        return k & ~n ? -1 : __builtin_popcount(n ^ k);
+    }
+};
+```
+
+```c [sol-C]
+int minChanges(int n, int k) {
+    return k & ~n ? -1 : __builtin_popcount(n ^ k);
+}
+```
+
+```go [sol-Go]
+func minChanges(n, k int) int {
+	if k&^n > 0 {
+		return -1
+	}
+	return bits.OnesCount(uint(n ^ k))
+}
+```
+
+```js [sol-JavaScript]
+var minChanges = function(n, k) {
+    return k & ~n ? -1 : bitCount32(n ^ k);
+};
+
+function bitCount32(n) {
+    n = n - ((n >> 1) & 0x55555555);
+    n = (n & 0x33333333) + ((n >> 2) & 0x33333333);
+    return ((n + (n >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+}
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_changes(n: i32, k: i32) -> i32 {
+        if k & !n > 0 {
             return -1;
         }
         (n ^ k).count_ones() as _
