@@ -72,6 +72,11 @@ class Solution:
         # 4 个数分别保存 f00, f01, f10, f11
         t = [[0] * 4 for _ in range(2 << n.bit_length())]
 
+        # 手写 max，效率更高
+        def max(a: int, b: int) -> int:
+            return b if b > a else a
+
+        # 合并左右儿子
         def maintain(o: int):
             a, b = t[o * 2], t[o * 2 + 1]
             t[o][0] = max(a[0] + b[2], a[1] + b[0])
@@ -126,6 +131,7 @@ class Solution {
         return (int) (ans % 1_000_000_007);
     }
 
+    // 合并左右儿子
     private void maintain(long[][] t, int o) {
         long[] a = t[o * 2];
         long[] b = t[o * 2 + 1];
@@ -170,6 +176,7 @@ class Solution {
     // 4 个数分别保存 f00, f01, f10, f11
     vector<array<unsigned int, 4>> t;
 
+    // 合并左右儿子
     void maintain(int o) {
         auto& a = t[o * 2];
         auto& b = t[o * 2 + 1];
@@ -237,6 +244,7 @@ typedef struct {
 
 typedef Data* SegmentTree;
 
+// 合并左右儿子
 void maintain(SegmentTree t, int o) {
     Data a = t[o * 2], b = t[o * 2 + 1];
     t[o].f00 = MAX(a.f00 + b.f10, a.f01 + b.f00);
@@ -297,6 +305,7 @@ type data struct {
 
 type seg []data
 
+// 合并左右儿子
 func (t seg) maintain(o int) {
     a, b := t[o<<1], t[o<<1|1]
     t[o] = data{
@@ -307,6 +316,7 @@ func (t seg) maintain(o int) {
     }
 }
 
+// 用 a 初始化线段树
 func (t seg) build(a []int, o, l, r int) {
     if l == r {
         t[o].f11 = max(a[l], 0)
@@ -318,6 +328,7 @@ func (t seg) build(a []int, o, l, r int) {
     t.maintain(o)
 }
 
+// 把 a[i] 改成 val
 func (t seg) update(o, l, r, i, val int) {
     if l == r {
         t[o].f11 = max(val, 0)
@@ -351,6 +362,7 @@ var maximumSumSubsequence = function(nums, queries) {
     // 4 个数分别保存 f00, f01, f10, f11
     const t = Array.from({length: 2 << (32 - Math.clz32(n))}, () => [0, 0, 0, 0]);
 
+    // 合并左右儿子
     function maintain(o) {
         const a = t[o * 2], b = t[o * 2 + 1];
         t[o][0] = Math.max(a[0] + b[2], a[1] + b[0]);
@@ -413,6 +425,7 @@ impl Solution {
         (ans % 1_000_000_007) as _
     }
 
+    // 合并左右儿子
     fn maintain(t: &mut Vec<Vec<u32>>, o: usize) {
         let l = o * 2;
         let r = o * 2 + 1;
