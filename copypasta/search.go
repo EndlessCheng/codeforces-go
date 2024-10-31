@@ -97,6 +97,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
 
 爆搜+剪枝
+- [3211. 生成不含相邻零的二进制字符串](https://leetcode.cn/problems/generate-binary-strings-without-adjacent-zeros/)
 - [79. 单词搜索](https://leetcode.cn/problems/word-search/)
 - [212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/)
 - [140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/)
@@ -609,6 +610,7 @@ func searchCollection() {
 	// - [805. 数组的均值分割](https://leetcode.cn/problems/split-array-with-same-average/) 1983
 	// - [1755. 最接近目标值的子序列和](https://leetcode.cn/problems/closest-subsequence-sum/) 2364
 	// - [2035. 将数组分成两个数组并最小化数组和的差](https://leetcode.cn/problems/partition-array-into-two-arrays-to-minimize-sum-difference/) 2490
+	// hqz 的题解 https://leetcode.cn/problems/count-almost-equal-pairs-ii/solutions/2892259/on-log2-ufen-lei-tao-lun-meet-in-the-mid-ysyy/
 	// https://codeforces.com/problemset/problem/1006/F 
 	// https://atcoder.jp/contests/abc271/tasks/abc271_f 
 	// https://leetcode.com/discuss/interview-question/2324457/Google-Online-Assessment-Question
@@ -1144,6 +1146,7 @@ NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 
    - https://codeforces.com/contest/616/problem/C 1600
    - 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
    - 可以改一排和一列 https://codeforces.com/problemset/problem/1985/H2
+https://codeforces.com/problemset/problem/1948/C 1300
 https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
 https://codeforces.com/problemset/problem/1365/D 1700

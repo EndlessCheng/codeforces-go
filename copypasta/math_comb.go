@@ -38,12 +38,15 @@ LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会
 - [LCP 25. 古董键盘](https://leetcode.cn/problems/Uh984O/)
 另见下面的「放球问题」
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
+https://codeforces.com/problemset/problem/1879/C 1300
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
+https://codeforces.com/problemset/problem/1999/F 1600
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
+https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
 https://codeforces.com/problemset/problem/213/B 1900
 https://codeforces.com/problemset/problem/1359/E 2000
 https://codeforces.com/problemset/problem/1931/G 2000 放球问题 构造
@@ -61,6 +64,7 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 加强版 https://codeforces.com/contest/1838/problem/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
+https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://atcoder.jp/contests/abc290/tasks/abc290_f
 todo https://www.luogu.com.cn/problem/P6017
 

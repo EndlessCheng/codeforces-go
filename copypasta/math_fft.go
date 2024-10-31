@@ -8,6 +8,9 @@ import (
 /* FFT: fast Fourier transform 快速傅里叶变换
 https://en.wikipedia.org/wiki/Fast_Fourier_transform
 
+https://www.youtube.com/watch?v=h7apO7q16V0
+https://codeforces.com/blog/entry/111371
+
 【推荐】一小时学会快速傅里叶变换 https://zhuanlan.zhihu.com/p/31584464
 多项式基础：插值、函数逼近、快速傅里叶变换 (蒋炎岩) https://www.bilibili.com/video/BV1a14y1M7v1/
 为什么 FFT 可以加速卷积运算 https://www.zhihu.com/question/394657296/answer/2329522108

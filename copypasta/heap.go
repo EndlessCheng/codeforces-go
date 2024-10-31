@@ -92,6 +92,7 @@ https://codeforces.com/problemset/problem/1526/C2 1600
 https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
 https://codeforces.com/problemset/problem/730/I 2000
 - 加强版 https://atcoder.jp/contests/agc018/tasks/agc018_c
+https://codeforces.com/problemset/problem/1974/G 2000
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
@@ -257,6 +258,7 @@ func (h *lazyHeap) pushPop(v int) int {
 // 保证 1 <= k <= windowSize <= n
 // 返回数组 kthSum，其中 kthSum[i] 为 a[i:i+windowSize] 的前 k 小元素和
 // - [3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/) 2540
+// - https://leetcode.cn/problems/find-x-sum-of-all-k-long-subarrays-ii/
 // 另见 treap_kthsum.go
 func slidingWindowKthSum(a []int, windowSize, k int) []int {
 	h := newKthHeap()
@@ -336,5 +338,6 @@ func (h *kthHeap) balance(k int) {
 
 // 其它题目
 // 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
+// - https://www.codechef.com/problems/OKLAMA
 // LC480 滑动窗口中位数 https://leetcode.cn/problems/sliding-window-median/
 // https://codeforces.com/contest/1374/problem/E2 代码 https://codeforces.com/contest/1374/submission/193671570

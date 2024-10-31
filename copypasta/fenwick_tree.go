@@ -50,9 +50,11 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
 
 https://codeforces.com/problemset/problem/1915/F 1500
+https://codeforces.com/problemset/problem/627/B 1700 模板题
 https://codeforces.com/problemset/problem/652/D 1800 区间包含计数
 https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
 https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
+https://codeforces.com/problemset/problem/1891/F 2000 离线 树 回溯
 https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和
 - 联系 https://www.luogu.com.cn/problem/P1972
 https://codeforces.com/problemset/problem/1660/F2 2100 建模

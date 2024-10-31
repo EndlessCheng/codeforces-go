@@ -20,7 +20,7 @@ https://codeforces.com/problemset/problem/1010/B 1800
 https://codeforces.com/problemset/problem/1063/C 1900
 https://codeforces.com/problemset/problem/1486/C2 1900 数组
 https://codeforces.com/problemset/problem/1697/D 1900
-https://codeforces.com/problemset/problem/1103/B 2000 需要一些构造能力
+https://codeforces.com/problemset/problem/1103/B 2000 倍增 + 二分
 https://codeforces.com/problemset/problem/1624/F 2000 动态二分
 https://codeforces.com/problemset/problem/1363/D 2100
 https://codeforces.com/problemset/problem/713/B 2200 分类讨论
@@ -73,8 +73,8 @@ https://codeforces.com/problemset/problem/1174/F 2400
 ## 图
 
 https://codeforces.com/problemset/problem/1815/B 2000
-https://codeforces.com/problemset/problem/1498/E 2200
-https://codeforces.com/problemset/problem/1514/E 2700
+https://codeforces.com/problemset/problem/1498/E 2200 竞赛图 SCC
+https://codeforces.com/problemset/problem/1514/E 2700 竞赛图 SCC
 
 ## 数论
 

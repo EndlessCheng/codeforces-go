@@ -38,12 +38,13 @@ https://codeforces.com/problemset/problem/677/D 2300
 https://codeforces.com/problemset/problem/1468/M 2300 或四元环
 https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/506/D 2400
-见下面的 floorDivide https://codeforces.com/problemset/problem/786/C 2400
-大步+小步，有点分段打表的味道 https://codeforces.com/problemset/problem/1619/H 2400
+https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
+https://codeforces.com/problemset/problem/1619/H 2400 大步+小步，有点分段打表的味道
 https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
-四次方根 https://atcoder.jp/contests/abc293/tasks/abc293_f
+https://atcoder.jp/contests/abc293/tasks/abc293_f 四次方根
+https://atcoder.jp/contests/abc365/tasks/abc365_g
 https://leetcode.com/discuss/interview-question/3517350/
 - Given a list of pairs {L,R} & an array.
   Find out the total number of pairs (i, j) where
