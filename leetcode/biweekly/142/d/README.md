@@ -22,29 +22,33 @@ $$
 
 假设字符串分为 $4$ 组，当前要用这 $4$ 组构造的初始字符串的长度是 $6$。
 
-枚举最后一组的长度：
+由于每组的长度至少是 $1$，为方便计算，先从每组各选 $1$ 个字母，问题转换成从 $4$ 组中额外再选 $6-4=2$ 个字母的方案数。
 
-- 长度是 $1$，问题变成用前 $3$ 组构造长为 $6-1=5$ 的初始字符串的方案数。
-- 长度是 $2$，问题变成用前 $3$ 组构造长为 $6-2=4$ 的初始字符串的方案数。
+枚举从最后一组中选多少个字母：
+
+- 选 $0$ 个，问题变成从前 $3$ 组中选 $2-0=0$ 个字母的方案数。
+- 选 $1$ 个，问题变成从前 $3$ 组中选 $2-1=1$ 个字母的方案数。
 
 ### 状态定义与状态转移方程
 
-根据上面的讨论，定义 $f[i+1][j]$ 表示用前 $i$ 组构造长为 $j$ 的初始字符串的方案数。
+这是一个**多重背包**问题。相当于有 $m=4$ 种物品，第 $i$ 种物品有「第 $i$ 组的大小减一」个，计算至多选 $k-m-1$ 个物品的方案数。
 
-初始值 $f[0][0]=1$，构造空字符串算一种方案。
+根据上面的讨论，定义 $f[i+1][j]$ 表示从前 $i$ 种物品中选**恰好** $j$ 个物品的方案数。
 
-假设第 $i$ 组有 $c$ 个字母，枚举第 $i$ 组的长度 $L=1,2,3,\cdots,c$，问题变成用前 $i-1$ 组构造长为 $j-L$ 的初始字符串的方案数，即 $f[i][j-L]$。
+初始值 $f[0][0]=1$，不选算一种方案（在示例 1 中，这对应字符串 $\texttt{abcd}$）。
+
+假设第 $i$ 种物品有 $c$ 个，枚举选 $L=0,1,2,\cdots,c$ 个物品，问题变成从前 $i-1$ 种物品中选恰好 $j-L$ 个物品的方案数，即 $f[i][j-L]$。
 
 累加得
 
 $$
-f[i+1][j] = \sum_{L=1}^{c} f[i][j-L]
+f[i+1][j] = \sum_{L=0}^{c} f[i][j-L]
 $$
 
 注意要保证 $j-L\ge 0$。上式等价于
 
 $$
-f[i+1][j] = \sum_{p=\max(j-c, 0)}^{j-1} f[i][p]
+f[i+1][j] = \sum_{p=\max(j-c, 0)}^{j} f[i][p]
 $$
 
 ### 前缀和优化
@@ -52,10 +56,10 @@ $$
 定义 $f[i]$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组为 $s$，那么上式等价于
 
 $$
-f[i+1][j] = s[j] - s[\max(j-c, 0)]
+f[i+1][j] = s[j+1] - s[\max(j-c, 0)]
 $$
 
-设一共有 $m$ 组，那么长度小于 $k$ 的初始字符串个数为 $\sum\limits_{j=m}^{k-1}f[m][j]$。
+设一共有 $m$ 组，那么至多选 $k-m-1$ 个物品的方案总数为 $\sum\limits_{j=0}^{k-m-1}f[m][j]$。
 
 特别地，如果 $n<k$（$n$ 为 $\textit{word}$ 的长度），那么无法满足要求，直接返回 $0$。
 
@@ -79,23 +83,26 @@ class Solution:
         for i in range(n):
             cnt += 1
             if i == n - 1 or word[i] != word[i + 1]:
-                if len(cnts) < k:
-                    cnts.append(cnt)
-                ans = ans * cnt % MOD
+                # 如果 cnt = 1，这组字符串必选，无需参与计算
+                if cnt > 1:
+                    if k > 0:
+                        cnts.append(cnt - 1)
+                    ans = ans * cnt % MOD
+                k -= 1  # 注意这里把 k 减小了
                 cnt = 0
 
-        m = len(cnts)
-        if m >= k:  # 任何输入的字符串都至少为 k
+        if k <= 0:
             return ans
 
-        f = [[0] * k for _ in range(m + 1)]
+        f = [[0] * k for _ in range(len(cnts) + 1)]
         f[0][0] = 1
         for i, c in enumerate(cnts):
+            # 计算 f[i] 的前缀和数组 s
             s = list(accumulate(f[i], initial=0))
-            # j <= i 的 f[i][j] 都是 0
-            for j in range(i + 1, k):
-                f[i + 1][j] = (s[j] - s[max(j - c, 0)]) % MOD
-        return (ans - sum(f[m][m:])) % MOD
+            # 计算子数组和
+            for j in range(k):
+                f[i + 1][j] = (s[j + 1] - s[max(j - c, 0)]) % MOD
+        return (ans - sum(f[-1])) % MOD
 ```
 
 ```java [sol-Java]
@@ -113,35 +120,40 @@ class Solution {
         for (int i = 0; i < n; i++) {
             cnt++;
             if (i == n - 1 || word.charAt(i) != word.charAt(i + 1)) {
-                if (cnts.size() < k) {
-                    cnts.add(cnt);
+                // 如果 cnt = 1，这组字符串必选，无需参与计算
+                if (cnt > 1) {
+                    if (k > 0) {
+                        cnts.add(cnt - 1);
+                    }
+                    ans = ans * cnt % MOD;
                 }
-                ans = ans * cnt % MOD;
+                k--; // 注意这里把 k 减小了
                 cnt = 0;
             }
         }
-        
-        int m = cnts.size();
-        if (m >= k) { // 任何输入的字符串都至少为 k
+
+        if (k <= 0) {
             return (int) ans;
         }
 
+        int m = cnts.size();
         int[][] f = new int[m + 1][k];
         f[0][0] = 1;
         int[] s = new int[k + 1];
         for (int i = 0; i < m; i++) {
+            // 计算 f[i] 的前缀和数组 s
             for (int j = 0; j < k; j++) {
                 s[j + 1] = (s[j] + f[i][j]) % MOD;
             }
             int c = cnts.get(i);
-            // j <= i 的 f[i][j] 都是 0
-            for (int j = i + 1; j < k; j++) {
-                f[i + 1][j] = (s[j] - s[Math.max(j - c, 0)]) % MOD;
+            // 计算子数组和
+            for (int j = 0; j < k; j++) {
+                f[i + 1][j] = (s[j + 1] - s[Math.max(j - c, 0)]) % MOD;
             }
         }
 
-        for (int j = m; j < k; j++) {
-            ans -= f[m][j];
+        for (int x : f[m]) {
+            ans -= x;
         }
         return (int) ((ans % MOD + MOD) % MOD); // 保证结果非负
     }
@@ -164,33 +176,38 @@ public:
         for (int i = 0; i < n; i++) {
             cnt++;
             if (i == n - 1 || word[i] != word[i + 1]) {
-                if (cnts.size() < k) {
-                    cnts.push_back(cnt);
+                // 如果 cnt = 1，这组字符串必选，无需参与计算
+                if (cnt > 1) {
+                    if (k > 0) {
+                        cnts.push_back(cnt - 1);
+                    }
+                    ans = ans * cnt % MOD;
                 }
-                ans = ans * cnt % MOD;
+                k--; // 注意这里把 k 减小了
                 cnt = 0;
             }
         }
 
-        int m = cnts.size();
-        if (m >= k) { // 任何输入的字符串都至少为 k
+        if (k <= 0) {
             return ans;
         }
 
+        int m = cnts.size();
         vector<vector<int>> f(m + 1, vector<int>(k));
         f[0][0] = 1;
         vector<int> s(k + 1);
         for (int i = 0; i < m; i++) {
+            // 计算 f[i] 的前缀和数组 s
             for (int j = 0; j < k; j++) {
                 s[j + 1] = (s[j] + f[i][j]) % MOD;
             }
-            // j <= i 的 f[i][j] 都是 0
-            for (int j = i + 1; j < k; j++) {
-                f[i + 1][j] = (s[j] - s[max(j - cnts[i], 0)]) % MOD;
+            // 计算子数组和
+            for (int j = 0; j < k; j++) {
+                f[i + 1][j] = (s[j + 1] - s[max(j - cnts[i], 0)]) % MOD;
             }
         }
 
-        ans -= reduce(f[m].begin() + m, f[m].end(), 0LL);
+        ans -= reduce(f[m].begin(), f[m].end(), 0LL);
         return (ans % MOD + MOD) % MOD; // 保证结果非负
     }
 };
@@ -209,19 +226,23 @@ func possibleStringCount(word string, k int) int {
 	for i := range word {
 		cnt++
 		if i == len(word)-1 || word[i] != word[i+1] {
-			if len(cnts) < k {
-				cnts = append(cnts, cnt)
+			// 如果 cnt = 1，这组字符串必选，无需参与计算
+			if cnt > 1 {
+				if k > 0 {
+					cnts = append(cnts, cnt-1)
+				}
+				ans = ans * cnt % mod
 			}
-			ans = ans * cnt % mod
+			k-- // 注意这里把 k 减小了
 			cnt = 0
 		}
 	}
 
-	m := len(cnts)
-	if m >= k { // 任何输入的字符串都至少为 k
+	if k <= 0 {
 		return ans
 	}
 
+	m := len(cnts)
 	f := make([][]int, m+1)
 	for i := range f {
 		f[i] = make([]int, k)
@@ -229,16 +250,17 @@ func possibleStringCount(word string, k int) int {
 	f[0][0] = 1
 	s := make([]int, k+1)
 	for i, c := range cnts {
+		// 计算 f[i] 的前缀和数组 s
 		for j, v := range f[i] {
 			s[j+1] = (s[j] + v) % mod
 		}
-		// j <= i 的 f[i][j] 都是 0
-		for j := i + 1; j < k; j++ {
-			f[i+1][j] = s[j] - s[max(j-c, 0)]
+		// 计算子数组和
+		for j := range f[i+1] {
+			f[i+1][j] = s[j+1] - s[max(j-c, 0)]
 		}
 	}
 
-	for _, v := range f[m][m:] {
+	for _, v := range f[m] {
 		ans -= v
 	}
 	return (ans%mod + mod) % mod // 保证结果非负
@@ -256,7 +278,7 @@ func possibleStringCount(word string, k int) int {
 
 前缀和直接计算到 $f$ 数组中。
 
-然后和 0-1 背包一样，倒序计算 $f[j] = s[j-1] - s[j-c-1]$。减一是因为原来前缀和中的 $s[0]=0$ 去掉了，$s$ 的长度不是 $k+1$ 而是 $k$。
+然后和 0-1 背包一样，倒序计算 $f[j] = s[j] - s[j-c-1]$。减一是因为原来前缀和中的 $s[0]=0$ 去掉了，$s$ 的长度不是 $k+1$ 而是 $k$。
 
 ```py [sol-Python3]
 class Solution:
@@ -272,26 +294,27 @@ class Solution:
         for i in range(n):
             cnt += 1
             if i == n - 1 or word[i] != word[i + 1]:
-                if len(cnts) < k:  # 保证空间复杂度为 O(k)
-                    cnts.append(cnt)
-                ans = ans * cnt % MOD
+                # 如果 cnt = 1，这组字符串必选，无需参与计算
+                if cnt > 1:
+                    if k > 0:  # 保证空间复杂度为 O(k)
+                        cnts.append(cnt - 1)
+                    ans = ans * cnt % MOD
+                k -= 1  # 注意这里把 k 减小了
                 cnt = 0
 
-        m = len(cnts)
-        if m >= k:  # 任何输入的字符串都至少为 k
+        if k <= 0:
             return ans
 
         f = [0] * k
         f[0] = 1
-        for i, c in enumerate(cnts):
+        for c in cnts:
             # 原地计算 f 的前缀和
             for j in range(1, k):
                 f[j] = (f[j] + f[j - 1]) % MOD
             # 计算子数组和
-            for j in range(k - 1, i, -1):
-                f[j] = f[j - 1] - (f[j - c - 1] if j > c else 0)
-            f[i] = 0
-        return (ans - sum(f[m:])) % MOD
+            for j in range(k - 1, c, -1):
+                f[j] -= f[j - c - 1]
+        return (ans - sum(f)) % MOD
 ```
 
 ```java [sol-Java]
@@ -309,36 +332,37 @@ class Solution {
         for (int i = 0; i < n; i++) {
             cnt++;
             if (i == n - 1 || word.charAt(i) != word.charAt(i + 1)) {
-                if (cnts.size() < k) { // 保证空间复杂度为 O(k)
-                    cnts.add(cnt);
+                // 如果 cnt = 1，这组字符串必选，无需参与计算
+                if (cnt > 1) {
+                    if (k > 0) { // 保证空间复杂度为 O(k)
+                        cnts.add(cnt - 1);
+                    }
+                    ans = ans * cnt % MOD;
                 }
-                ans = ans * cnt % MOD;
+                k--; // 注意这里把 k 减小了
                 cnt = 0;
             }
         }
 
-        int m = cnts.size();
-        if (m >= k) { // 任何输入的字符串都至少为 k
+        if (k <= 0) {
             return (int) ans;
         }
 
         int[] f = new int[k];
         f[0] = 1;
-        for (int i = 0; i < m; i++) {
-            int c = cnts.get(i);
+        for (int c : cnts) {
             // 原地计算 f 的前缀和
             for (int j = 1; j < k; j++) {
                 f[j] = (f[j] + f[j - 1]) % MOD;
             }
             // 计算子数组和
-            for (int j = k - 1; j > i; j--) {
-                f[j] = j > c ? (f[j - 1] - f[j - c - 1]) % MOD : f[j - 1];
+            for (int j = k - 1; j > c; j--) {
+                f[j] = (f[j] - f[j - c - 1]) % MOD;
             }
-            f[i] = 0;
         }
 
-        for (int j = m; j < k; j++) {
-            ans -= f[j];
+        for (int x : f) {
+            ans -= x;
         }
         return (int) ((ans % MOD + MOD) % MOD); // 保证结果非负
     }
@@ -361,35 +385,36 @@ public:
         for (int i = 0; i < n; i++) {
             cnt++;
             if (i == n - 1 || word[i] != word[i + 1]) {
-                if (cnts.size() < k) { // 保证空间复杂度为 O(k)
-                    cnts.push_back(cnt);
+                // 如果 cnt = 1，这组字符串必选，无需参与计算
+                if (cnt > 1) {
+                    if (k > 0) { // 保证空间复杂度为 O(k)
+                        cnts.push_back(cnt - 1);
+                    }
+                    ans = ans * cnt % MOD;
                 }
-                ans = ans * cnt % MOD;
+                k--; // 注意这里把 k 减小了
                 cnt = 0;
             }
         }
 
-        int m = cnts.size();
-        if (m >= k) { // 任何输入的字符串都至少为 k
+        if (k <= 0) {
             return ans;
         }
 
         vector<int> f(k);
         f[0] = 1;
-        for (int i = 0; i < m; i++) {
-            int c = cnts[i];
+        for (int c : cnts) {
             // 原地计算 f 的前缀和
             for (int j = 1; j < k; j++) {
                 f[j] = (f[j] + f[j - 1]) % MOD;
             }
             // 计算子数组和
-            for (int j = k - 1; j > i; j--) {
-                f[j] = j > c ? (f[j - 1] - f[j - c - 1]) % MOD : f[j - 1];
+            for (int j = k - 1; j > c; j--) {
+                f[j] = (f[j] - f[j - c - 1]) % MOD;
             }
-            f[i] = 0;
         }
 
-        ans -= reduce(f.begin() + m, f.end(), 0LL);
+        ans -= reduce(f.begin(), f.end(), 0LL);
         return (ans % MOD + MOD) % MOD; // 保证结果非负
     }
 };
@@ -408,38 +433,37 @@ func possibleStringCount(word string, k int) int {
 	for i := range word {
 		cnt++
 		if i == len(word)-1 || word[i] != word[i+1] {
-			if len(cnts) < k { // 保证空间复杂度为 O(k)
-				cnts = append(cnts, cnt)
+			// 如果 cnt = 1，这组字符串必选，无需参与计算
+			if cnt > 1 {
+				if k > 0 { // 保证空间复杂度为 O(k)
+					cnts = append(cnts, cnt-1)
+				}
+				ans = ans * cnt % mod
 			}
-			ans = ans * cnt % mod
+			k-- // 注意这里把 k 减小了
 			cnt = 0
 		}
 	}
 
-	m := len(cnts)
-	if m >= k { // 任何输入的字符串都至少为 k
+	if k <= 0 {
 		return ans
 	}
 
 	f := make([]int, k)
 	f[0] = 1
-	for i, c := range cnts {
+	for _, c := range cnts {
 		// 原地计算 f 的前缀和
 		for j := 1; j < k; j++ {
 			f[j] = (f[j] + f[j-1]) % mod
 		}
 		// 计算子数组和
-		for j := k - 1; j > i; j-- {
-			f[j] = f[j-1]
-			if j > c {
-				f[j] -= f[j-c-1]
-			}
+		for j := k - 1; j > c; j-- {
+			f[j] -= f[j-c-1]
 		}
-		f[i] = 0
 	}
 
-	for _, v := range f[m:] {
-		ans -= v
+	for _, x := range f {
+		ans -= x
 	}
 	return (ans%mod + mod) % mod // 保证结果非负
 }
@@ -449,6 +473,10 @@ func possibleStringCount(word string, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n + k^2)$，其中 $n$ 是 $\textit{word}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
+
+## 相似题目
+
+- [2902. 和带限制的子多重集合的数目](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/)
 
 更多相似题目，见下面动态规划题单中的「**§11.1 前缀和优化 DP**」。
 
