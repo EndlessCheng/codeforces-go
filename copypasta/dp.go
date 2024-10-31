@@ -1596,6 +1596,7 @@ func _(abs func(int) int) {
 
 	// 多重背包 - 求方案数 - 前缀和优化
 	// 每个物品的体积都是 1
+	// 如果题目要求每种物品至少选一个，可以把每个 cnts[i] 都减一，maxW 减去 len(cnts)，这样就转换成了每种物品至少选 0 个的情况了
 	// 讲解 https://leetcode.cn/problems/find-the-original-typed-string-ii/solutions/2966856/zheng-nan-ze-fan-qian-zhui-he-you-hua-dp-5mi9/
 	// 另见 math_comb.go 中的「多重集组合数」
 	// LC3333 https://leetcode.cn/problems/find-the-original-typed-string-ii/
