@@ -194,7 +194,7 @@ func gcd(a, b int) int {
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
 $$
-f[i+1][j][k] = f[i][j][k] + f[i-1][\text{GCD}(j,x)][k] + f[i][j][\text{GCD}(k,x)]
+f[i+1][j][k] = f[i][j][k] + f[i][\text{GCD}(j,x)][k] + f[i][j][\text{GCD}(k,x)]
 $$
 
 初始值 $f[0][j][j]=1\ (j\ge 0)$，其余为 $0$，翻译自递归边界 $\textit{dfs}(-1,j,j)=1$。注意这里初始化 $f[0][0][0]=0$，这样最后返回答案的时候，就不需要再减一了。
