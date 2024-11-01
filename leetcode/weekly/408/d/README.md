@@ -166,6 +166,49 @@ public:
 };
 ```
 
+```c [sol-C]
+bool inCircle(long long ox, long long oy, long long r, long long x, long long y) {
+    return (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r;
+}
+
+bool dfs(int i, int X, int Y, int** circles, int circlesSize, bool* vis) {
+    long long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
+    if (y1 <= Y && abs(x1 - X) <= r1 ||
+        x1 <= X && y1 <= r1 ||
+        x1 > X && inCircle(x1, y1, r1, X, 0)) {
+        return true;
+    }
+    vis[i] = true;
+    for (int j = 0; j < circlesSize; j++) {
+        long long x2 = circles[j][0], y2 = circles[j][1], r2 = circles[j][2];
+        if (!vis[j] && (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) &&
+            x1 * r2 + x2 * r1 < (r1 + r2) * X &&
+            y1 * r2 + y2 * r1 < (r1 + r2) * Y &&
+            dfs(j, X, Y, circles, circlesSize, vis)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool canReachCorner(int X, int Y, int** circles, int circlesSize, int* circlesColSize) {
+    bool* vis = calloc(circlesSize, sizeof(bool));
+    for (int i = 0; i < circlesSize; i++) {
+        long long x = circles[i][0], y = circles[i][1], r = circles[i][2];
+        if (inCircle(x, y, r, 0, 0) ||
+            inCircle(x, y, r, X, Y) || 
+            !vis[i] && (x <= X && abs(y - Y) <= r ||
+                        y <= Y && x <= r ||
+                        y > Y && inCircle(x, y, r, 0, Y)) && dfs(i, X, Y, circles, circlesSize, vis)) {
+            free(vis);
+            return false;
+        }
+    }
+    free(vis);
+    return true;
+}
+```
+
 ```go [sol-Go]
 // 判断点 (x,y) 是否在圆 (ox,oy,r) 内
 func inCircle(ox, oy, r, x, y int) bool {
@@ -209,6 +252,116 @@ func canReachCorner(X, Y int, circles [][]int) bool {
 func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
+```js [sol-JavaScript]
+var canReachCorner = function(X, Y, circles) {
+    // 判断点 (x, y) 是否在圆 (ox, oy, r) 内
+    function inCircle(ox, oy, r, x, y) {
+        return BigInt(ox - x) * BigInt(ox - x) +
+               BigInt(oy - y) * BigInt(oy - y) <= BigInt(r) * BigInt(r);
+    }
+
+    const BX = BigInt(X), BY = BigInt(Y);
+    const vis = new Array(circles.length).fill(false);
+    function dfs(i) {
+        let [x1, y1, r1] = circles[i];
+        // 圆 i 是否与矩形右边界/下边界相交相切
+        if (y1 <= Y && Math.abs(x1 - X) <= r1 ||
+            x1 <= X && y1 <= r1 ||
+            x1 > X && inCircle(x1, y1, r1, X, 0)) {
+            return true;
+        }
+        x1 = BigInt(x1);
+        y1 = BigInt(y1);
+        r1 = BigInt(r1);
+        vis[i] = true;
+        for (let j = 0; j < circles.length; j++) {
+            if (!vis[j]) {
+                let [x2, y2, r2] = circles[j];
+                x2 = BigInt(x2);
+                y2 = BigInt(y2);
+                r2 = BigInt(r2);
+                // 在两圆相交相切的前提下，点 A 是否严格在矩形内
+                if ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) &&
+                    x1 * r2 + x2 * r1 < (r1 + r2) * BX &&
+                    y1 * r2 + y2 * r1 < (r1 + r2) * BY &&
+                    dfs(j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    for (let i = 0; i < circles.length; i++) {
+        const [x, y, r] = circles[i];
+        if (inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
+            inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
+            // 圆 i 是否与矩形上边界/左边界相交相切
+            !vis[i] && (x <= X && Math.abs(y - Y) <= r ||
+                        y <= Y && x <= r ||
+                        y > Y && inCircle(x, y, r, 0, Y)) && dfs(i)) {
+            return false;
+        }
+    }
+    return true;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn can_reach_corner(x_corner: i32, y_corner: i32, circles: Vec<Vec<i32>>) -> bool {
+        let X = x_corner as i64;
+        let Y = y_corner as i64;
+        let mut vis = vec![false; circles.len()];
+        for i in 0..circles.len() {
+            let x = circles[i][0] as i64;
+            let y = circles[i][1] as i64;
+            let r = circles[i][2] as i64;
+            if Self::in_circle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
+               Self::in_circle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
+               // 圆 i 是否与矩形上边界/左边界相交相切
+               !vis[i] && (x <= X && (y - Y).abs() <= r ||
+                           y <= Y && x <= r ||
+                           y > Y && Self::in_circle(x, y, r, 0, Y)) && Self::dfs(i, X, Y, &circles, &mut vis) {
+                return false;
+            }
+        }
+        true
+    }
+
+    // 判断点 (x,y) 是否在圆 (ox,oy,r) 内
+    fn in_circle(ox: i64, oy: i64, r: i64, x: i64, y: i64) -> bool {
+        (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r
+    }
+
+    fn dfs(i: usize, x: i64, y: i64, circles: &Vec<Vec<i32>>, vis: &mut Vec<bool>) -> bool {
+        let x1 = circles[i][0] as i64;
+        let y1 = circles[i][1] as i64;
+        let r1 = circles[i][2] as i64;
+        // 圆 i 是否与矩形右边界/下边界相交相切
+        if y1 <= y && (x1 - x).abs() <= r1 ||
+           x1 <= x && y1 <= r1 ||
+           x1 > x && Self::in_circle(x1, y1, r1, x, 0) {
+            return true;
+        }
+        vis[i] = true;
+        for (j, c2) in circles.iter().enumerate() {
+            let x2 = c2[0] as i64;
+            let y2 = c2[1] as i64;
+            let r2 = c2[2] as i64;
+            // 在两圆相交相切的前提下，点 A 是否严格在矩形内
+            if !vis[j] && (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) <= (r1 + r2) * (r1 + r2) &&
+               x1 * r2 + x2 * r1 < (r1 + r2) * x &&
+               y1 * r2 + y2 * r1 < (r1 + r2) * y &&
+               Self::dfs(j, x, y, circles, vis) {
+                return true;
+            }
+        }
+        false
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{circles}$ 的长度。
@@ -222,7 +375,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -231,8 +384,9 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
