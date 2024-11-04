@@ -35,20 +35,20 @@ $$
 由于分子可以直接计算，所以下面只计算
 
 $$
-f_9(k_0,k_1,\cdots,k_9) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=9}k_i!\right)\left(\prod\limits_{i=0}^{i=9}(\textit{cnt}[i]-k_i)!\right)}
+f_9(k_0,k_1,\ldots,k_9) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=9}k_i!\right)\left(\prod\limits_{i=0}^{i=9}(\textit{cnt}[i]-k_i)!\right)}
 $$
 
 如果只枚举 $k_9$ 的话，有
 
 $$
-\sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\cdots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} f_8(k_0,k_1,\cdots,k_8)\cdot \dfrac{1}{k_9!(\textit{cnt}[9]-k_9)!}
+\sum_{k_9=0}^{\textit{cnt}[9]} f_9(k_0,k_1,\ldots,k_9) =  \sum_{k_9=0}^{\textit{cnt}[9]} f_8(k_0,k_1,\ldots,k_8)\cdot \dfrac{1}{k_9!(\textit{cnt}[9]-k_9)!}
 $$
 
-其中 $f_8(k_0,k_1,\cdots,k_8) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=8}k_i!\right)\left(\prod\limits_{i=0}^{i=8}(\textit{cnt}[i]-k_i)!\right)}$，这又可以通过枚举 $k_8$ 计算，转换成计算 $f_7(k_0,k_1,\cdots,k_7)$ 的子问题。
+其中 $f_8(k_0,k_1,\ldots,k_8) = \dfrac{1}{\left(\prod\limits_{i=0}^{i=8}k_i!\right)\left(\prod\limits_{i=0}^{i=8}(\textit{cnt}[i]-k_i)!\right)}$，这又可以通过枚举 $k_8$ 计算，转换成计算 $f_7(k_0,k_1,\ldots,k_7)$ 的子问题。
 
 ## 动态规划
 
-对于每个 $i=0,1,2,\cdots,9$，我们需要枚举分配多少个数字 $i$ 给第一个多重集。此外有如下约束：
+对于每个 $i=0,1,2,\ldots,9$，我们需要枚举分配多少个数字 $i$ 给第一个多重集。此外有如下约束：
 
 - 所有数字分配完毕时，第一个多重集的大小必须恰好等于 $\left\lfloor\dfrac{n}{2}\right\rfloor$。此时第二个多重集的大小一定等于 $\left\lceil\dfrac{n}{2}\right\rceil$。
 - 所有数字分配完毕时，第一个多重集的数字之和，必须等于第二个多重集的数字之和。这等价于第一个多重集的数字之和等于 $\dfrac{\textit{total}}{2}$。
@@ -62,7 +62,7 @@ $$
 所以，定义 $\textit{dfs}(i,\textit{left}_1,\textit{leftS})$ 表示在剩余要分配的数字是 $[0,i]$，第一个多重集还剩下 $\textit{left}_1$ 个数字需要分配，第一个多重集还剩下 $\textit{leftS}$ 的元素和需要分配的情况下，下式的结果：
 
 $$
-\sum_{k_i=0}^{\textit{cnt}[i]} f_i(k_0,k_1,\cdots,k_i)
+\sum_{k_i=0}^{\textit{cnt}[i]} f_i(k_0,k_1,\ldots,k_i)
 $$
 
 枚举数字 $i$ 分出 $k$ 个数给第一个多重集，要解决的问题变为：
@@ -70,7 +70,7 @@ $$
 - 剩余要分配的数字是 $[0,i-1]$。
 - 第一个多重集还剩下 $\textit{left}_1 - k$ 个数字需要分配。
 - 第一个多重集还剩下 $\textit{leftS} - k\cdot i$ 的元素和需要分配。
-- 计算的式子为 $\sum\limits_{k_{i-1}=0}^{\textit{cnt}[i-1]} f_{i-1}(k_0,k_1,\cdots,k_{i-1})$。
+- 计算的式子为 $\sum\limits_{k_{i-1}=0}^{\textit{cnt}[i-1]} f_{i-1}(k_0,k_1,\ldots,k_{i-1})$。
 
 即 $\textit{dfs}(i-1,\textit{left}_1 - k, \textit{leftS} - k\cdot i)$。
 
