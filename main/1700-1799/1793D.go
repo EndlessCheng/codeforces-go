@@ -30,7 +30,7 @@ func cf1793D(in io.Reader, out io.Writer) {
 	// 最后 +1 是指整个数组的方案数
 	ans := i*(i+1)/2 + (j-i-1)*(j-i)/2 + (n-j-1)*(n-j)/2 + 1
 	for v = 2; v <= n; v++ {
-		// 计算含 v-1 不含 v 的方案数
+		// 计算含 1,2,...,v-1 不含 v 的方案数
 		i, j = a[v], b[v]
 		if !(l1 < i && i < r1 || l2 < j && j < r2) {
 			l := -1
