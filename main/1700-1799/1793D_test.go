@@ -2,7 +2,9 @@
 package main
 
 import (
+	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
 	"testing"
 )
 
@@ -28,6 +30,79 @@ func Test_cf1793D(t *testing.T) {
 6 5 4 3 2 1`,
 			`11`,
 		},
+		{
+			`2
+2 1
+1 2`,
+			`1`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf1793D)
+}
+
+func TestCompare_cf1793D(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil.NewRandGenerator()
+	inputGenerator := func() string {
+		//return ``
+		rg.Clear()
+		n := rg.Int(1,5)
+		rg.NewLine()
+		rg.Permutation(1, n)
+		rg.Permutation(1, n)
+		return rg.String()
+	}
+
+	// 暴力算法
+	runBF := func(in io.Reader, out io.Writer) {
+		var N int
+		Fscan(in, &N)
+		p, q := make([]int, N), make([]int, N)
+		for i := 0; i < N; i++ {
+			Fscan(in, &p[i])
+		}
+		for i := 0; i < N; i++ {
+			Fscan(in, &q[i])
+		}
+		pos := make([][]int, N+1)
+		for i := 0; i < N; i++ {
+			pos[p[i]] = append(pos[p[i]], i)
+			pos[q[i]] = append(pos[q[i]], i)
+		}
+		res := 1
+		l, r := pos[1][0], pos[1][1]
+		if r < l {
+			l, r = r, l
+		}
+		n := N
+
+		res += l*(l+1)/2 + (n-1-r)*(n-r)/2
+		if r > l {
+			res += (r - l - 1) * (r - l) / 2
+		}
+		for i := 2; i <= N; i++ {
+			l1, r1 := pos[i][0], pos[i][1]
+			if r1 < l1 {
+				l1, r1 = r1, l1
+			}
+			if l1 < l && r1 < l {
+				res += (l - r1) * (n - r)
+			} else if l1 > r && r1 > r {
+				res += (l + 1) * (l1 - r)
+			} else if l1 < l && r1 > r {
+				res += (l - l1) * (r1 - r)
+
+			}
+			if l > l1 {
+				l = l1
+			}
+			if r < r1 {
+				r = r1
+			}
+		}
+		Fprintln(out, res)
+	}
+
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, cf1793D)
 }
