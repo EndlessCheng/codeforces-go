@@ -21,12 +21,12 @@ func cf1793D(in io.Reader, out io.Writer) {
 	}
 
 	i, j := a[1], b[1]
+	l1, r1 := i, i
+	l2, r2 := j, j
 	if i > j {
 		i, j = j, i
 	}
 	ans := i*(i+1)/2 + (j-i-1)*(j-i)/2 + (n-j-1)*(n-j)/2 + 1
-	l1, r1 := a[1], a[1]
-	l2, r2 := b[1], b[1]
 	for v = 2; v <= n; v++ {
 		i, j = a[v], b[v]
 		if !(l1 < i && i < r1 || l2 < j && j < r2) {
