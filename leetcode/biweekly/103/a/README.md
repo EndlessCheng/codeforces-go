@@ -3,7 +3,7 @@
 设数组的最大值为 $m$，答案就是
 
 $$
-m+(m+1)+(m+2)+\ldots + (m+k-1) = \dfrac{(2m+k-1)\cdot k}{2}
+m+(m+1)+(m+2)+\cdots + (m+k-1) = \dfrac{(2m+k-1)\cdot k}{2}
 $$
 
 ```py [sol-Python3]
