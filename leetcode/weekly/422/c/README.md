@@ -20,6 +20,12 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hcS1YCETs/)，欢迎点赞关注~
 
+### 答疑
+
+**问**：为什么代码要判断 `d > dis[i][j]`？可以不写 `continue` 吗？
+
+**答**：对于同一个点 $(i,j)$，例如先入堆一个比较大的 $\textit{dis}[i][j]=10$，后面又把 $\textit{dis}[i][j]$ 更新成 $5$。之后这个 $5$ 会先出堆，然后再把 $10$ 出堆。$10$ 出堆时候是没有必要去更新周围邻居的最短路的，因为 $5$ 出堆之后，就已经把邻居的最短路更新过了，用 $10$ 是无法把邻居的最短路变得更短的，所以直接 `continue`。本题由于只有 $4$ 个邻居，写不写其实无所谓。但如果是一般图，不写这个复杂度就不对了，可能会超时。
+
 ```py [sol-Python3]
 class Solution:
     def minTimeToReach(self, moveTime: List[List[int]]) -> int:
