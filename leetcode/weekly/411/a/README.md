@@ -6,7 +6,7 @@
 
 设以 $i$ 为右端点的合法子串，其左端点**最小**是 $\textit{left}_i$。
 
-那么以 $i$ 为右端点的合法子串，其左端点可以是 $\textit{left}_i,\textit{left}_i+1, \cdots, i$，一共
+那么以 $i$ 为右端点的合法子串，其左端点可以是 $\textit{left}_i,\textit{left}_i+1,\ldots,i$，一共
 
 $$
 i-\textit{left}_i+1
@@ -14,7 +14,9 @@ $$
 
 个，累加到答案中。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1hH4y1c7T5/)，欢迎点赞关注！
+**细节**：字符 $0$ 的 ASCII 值是偶数，字符 $1$ 的 ASCII 值是奇数，所以可以用 ASCII 值 $c\bmod 2$ 得到对应的数字。这也等价于和 $1$ 计算 AND。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1hH4y1c7T5/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -40,7 +42,8 @@ class Solution {
         for (int i = 0; i < s.length; i++) {
             cnt[s[i] & 1]++;
             while (cnt[0] > k && cnt[1] > k) {
-                cnt[s[left++] & 1]--;
+                cnt[s[left] & 1]--;
+                left++;
             }
             ans += i - left + 1;
         }
@@ -57,7 +60,8 @@ public:
         for (int i = 0; i < s.length(); i++) {
             cnt[s[i] & 1]++;
             while (cnt[0] > k && cnt[1] > k) {
-                cnt[s[left++] & 1]--;
+                cnt[s[left] & 1]--;
+                left++;
             }
             ans += i - left + 1;
         }
@@ -87,13 +91,13 @@ func countKConstraintSubstrings(s string, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。注意 $\textit{left}$ 只会增加不会减少，所以二重循环的时间复杂度为 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-更多相似题目，见下面滑动窗口题单中的「**不定长滑动窗口（求子数组个数）**」。
+更多相似题目，见下面滑动窗口题单中的「**§2.3.2 越短越合法**」。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -102,7 +106,10 @@ func countKConstraintSubstrings(s string, k int) (ans int) {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
