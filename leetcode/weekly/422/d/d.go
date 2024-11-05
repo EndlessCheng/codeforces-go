@@ -29,6 +29,57 @@ func countBalancedPermutations(num string) int {
 		return 0
 	}
 
+	n := len(num)
+	n1 := n / 2
+	f := make([][]int, n1+1)
+	for i := range f {
+		f[i] = make([]int, total/2+1)
+	}
+	f[0][0] = 1
+	sc := 0
+	s := 0
+	for i, c := range cnt {
+		sc += c
+		s += c * i
+		// 保证 left2 <= n-n1，即 left1 >= sc-(n-n1)
+		for left1 := min(sc, n1); left1 >= max(sc-(n-n1), 0); left1-- {
+			left2 := sc - left1
+			// 保证分给第二个集合的元素和 <= total/2，即 leftS >= s-total/2
+			for leftS := min(s, total/2); leftS >= max(s-total/2, 0); leftS-- {
+				res := 0
+				for k := max(c-left2, 0); k <= min(c, left1) && k*i <= leftS; k++ {
+					res = (res + f[left1-k][leftS-k*i]*invF[k]%mod*invF[c-k]) % mod
+				}
+				f[left1][leftS] = res
+			}
+		}
+	}
+	return fac[n1] * fac[n-n1] % mod * f[n1][total/2] % mod
+}
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+
+func countBalancedPermutations2(num string) int {
+	cnt := [10]int{}
+	total := 0
+	for _, c := range num {
+		cnt[c-'0']++
+		total += int(c - '0')
+	}
+
+	if total%2 > 0 {
+		return 0
+	}
+
 	for i := 1; i < 10; i++ {
 		cnt[i] += cnt[i-1]
 	}
@@ -71,15 +122,4 @@ func countBalancedPermutations(num string) int {
 		return res
 	}
 	return fac[n1] * fac[n-n1] % mod * dfs(9, n1, total/2) % mod
-}
-
-func pow(x, n int) int {
-	res := 1
-	for ; n > 0; n /= 2 {
-		if n%2 > 0 {
-			res = res * x % mod
-		}
-		x = x * x % mod
-	}
-	return res
 }
