@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1Ae4y1i7PM) 第四题。
-
 ## 提示 1
 
 首先考虑一个简单的情况，$\textit{nums}$ 的所有元素都在 $[\textit{minK},\textit{maxK}]$ 范围内。
@@ -29,6 +27,8 @@ $$
 
 - 为方便计算，可以初始化 $\textit{minI},\ \textit{maxI},\ i_0$ 均为 $-1$。
 - 如果 $\min(\textit{minI},\textit{maxI})-i_0 < 0$，则表示在 $i_0$ 右侧 $\textit{minK}$ 和 $\textit{maxK}$ 没有同时出现，此时以 $i$ 为右端点的合法子数组的个数为 $0$。
+
+[视频讲解](https://www.bilibili.com/video/BV1Ae4y1i7PM) 第四题。
 
 ```py [sol-Python3]
 class Solution:
