@@ -1,6 +1,0 @@
-# top-most EditorConfig file
-root = true
-
-[main.go]
-indent_style = space
-indent_size = 4
