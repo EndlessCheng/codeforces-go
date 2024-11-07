@@ -276,16 +276,13 @@ func Values(head *ListNode) (values []int) {
 }
 
 func BuildListNodeFromInts(a []int) *ListNode {
-	if len(a) == 0 {
-		return nil
-	}
-	head := &ListNode{Val: a[0]}
-	cur := head
-	for _, v := range a[1:] {
+	dummy := ListNode{}
+	cur := &dummy
+	for _, v := range a {
 		cur.Next = &ListNode{Val: v}
 		cur = cur.Next
 	}
-	return head
+	return dummy.Next
 }
 
 func ModifyNodes(head *ListNode, f func([]int) []int) *ListNode {
