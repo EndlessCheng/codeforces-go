@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"container/heap"
 	. "fmt"
 	"io"
 	"sort"
@@ -23,25 +22,26 @@ func cf2009G2(in io.Reader, _w io.Writer) {
 
 		mn := make([]int, n-k+1)
 		cnt := make([]int, n*2-1)
-		h := lazyHeap09{todo: make([]int, n+1)}
+		cc := make([]int, n+1)
+		maxC := 0
 		for r, v := range a {
-			if cnt[v] > 0 {
-				h.del(cnt[v])
-			}
+			cc[cnt[v]]--
 			cnt[v]++
-			h.push(cnt[v])
+			cc[cnt[v]]++
+			maxC = max(maxC, cnt[v])
 
 			l := r + 1 - k
 			if l < 0 {
 				continue
 			}
-			mn[l] = k - h.top()
+			mn[l] = k - maxC
 
 			v = a[l]
-			h.del(cnt[v])
+			cc[cnt[v]]--
 			cnt[v]--
-			if cnt[v] > 0 {
-				h.push(cnt[v])
+			cc[cnt[v]]++
+			if cc[maxC] == 0 {
+				maxC--
 			}
 		}
 
@@ -76,27 +76,3 @@ func cf2009G2(in io.Reader, _w io.Writer) {
 }
 
 //func main() { cf2009G2(bufio.NewReader(os.Stdin), os.Stdout) }
-
-type lazyHeap09 struct {
-	sort.IntSlice
-	todo []int
-}
-
-func (h lazyHeap09) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
-func (h *lazyHeap09) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *lazyHeap09) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
-func (h *lazyHeap09) del(v int)         { h.todo[v]++ }
-func (h *lazyHeap09) push(v int) {
-	if h.todo[v] > 0 {
-		h.todo[v]--
-	} else {
-		heap.Push(h, v)
-	}
-}
-func (h *lazyHeap09) top() int {
-	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
-		h.todo[h.IntSlice[0]]--
-		heap.Pop(h)
-	}
-	return h.IntSlice[0]
-}
