@@ -173,6 +173,7 @@ https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/2008/E 1500
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/1837/F 2400
+https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
 昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
 - 预处理前后缀 GCD，由于前缀 GCD 只有 O(logU) 个不同的值，可以只枚举 O(logU) 个 L 和 O(n) 个 R，
 - 枚举 R 的同时计算修改后的子数组 GCD，然后和前后缀 GCD 求 GCD
@@ -305,7 +306,6 @@ https://codeforces.com/problemset/problem/1765/D
 多指针 https://codeforces.com/problemset/problem/895/B
 https://codeforces.com/contest/1833/problem/F
 计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
-mex https://atcoder.jp/contests/abc194/tasks/abc194_e
 https://codeforces.com/problemset/problem/165/C
 - [1099. 小于 K 的两数之和](https://leetcode.cn/problems/two-sum-less-than-k/)（会员题）
 
@@ -319,6 +319,10 @@ LC360（背向双指针）https://leetcode.cn/problems/sort-transformed-array/
 - [986. 区间列表的交集](https://leetcode.cn/problems/interval-list-intersections/) 1542
 - [1537. 最大得分](https://leetcode.cn/problems/get-the-maximum-score/) 1961
 https://codeforces.com/contest/489/problem/B 1200
+
+MEX
+https://codeforces.com/problemset/problem/1793/D 1800
+https://atcoder.jp/contests/abc194/tasks/abc194_e
 
 相向双指针
 题单 https://leetcode.cn/leetbook/read/sliding-window-and-two-pointers/odt2yh/
@@ -662,6 +666,7 @@ https://codeforces.com/problemset/problem/1156/B  1800 相邻字母在字母表�
 https://codeforces.com/problemset/problem/1267/L  1800
 https://codeforces.com/problemset/problem/1304/D  1800 最短/最长 LIS
 https://codeforces.com/problemset/problem/1554/D  1800
+https://codeforces.com/problemset/problem/1965/B  1800 二进制分解
 https://codeforces.com/problemset/problem/118/C   1900 贪心
 https://codeforces.com/problemset/problem/327/D   1900
 https://codeforces.com/problemset/problem/388/B   1900 两点间恰好 k 条最短路径
@@ -686,15 +691,17 @@ https://codeforces.com/problemset/problem/1689/E 脑筋急转弯
 https://codeforces.com/problemset/problem/1787/E
 
 不变量（想一想，操作不会改变什么）
-https://codeforces.com/contest/1775/problem/E 有点差分的味道，想想前缀和
+https://codeforces.com/problemset/problem/1881/D 1300
+https://codeforces.com/problemset/problem/1365/F 2100 仍然对称
+https://codeforces.com/problemset/problem/1775/E 2100 有点差分的味道，想想前缀和
 https://atcoder.jp/contests/arc119/tasks/arc119_c 操作不影响交错和
-https://codeforces.com/problemset/problem/1365/F 仍然对称
 
 不变量 2（总和）
 把一个环形数组切两刀，分成两段，要求相等，求方案数 => 和为 sum(a)/2 的子数组个数
 LC494 https://leetcode.cn/problems/target-sum/
 
-行列独立 LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
+行列独立
+LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
 
 分类讨论（部分题是易错题）
 https://codeforces.com/problemset/problem/870/C 1300
@@ -2594,6 +2601,41 @@ func _() {
 		_ = update
 	}
 
+	//
+
+	// 维护滑动窗口的 max(cnt.values())
+	// 若用有序集合维护，需要 O(nlogn)，而下面的写法只需要 O(n)
+	// 这里是定长滑窗，也支持不定长滑窗
+	// https://codeforces.com/problemset/problem/2009/G2 2200
+	slidingWindowMaxFreq := func(a []int, windowSize int) []int {
+		n := len(a)
+		ans := make([]int, n-windowSize+1)
+		cnt := map[int]int{}
+		cc := make([]int, n+1)
+		maxC := 0 // max(cnt.values())
+		for r, v := range a {
+			cc[cnt[v]]--
+			cnt[v]++
+			cc[cnt[v]]++
+			maxC = max(maxC, cnt[v])
+
+			l := r + 1 - windowSize
+			if l < 0 {
+				continue
+			}
+			ans[l] = maxC // 记录每个窗口的 max(cnt.values())
+
+			v = a[l]
+			cc[cnt[v]]--
+			cnt[v]--
+			cc[cnt[v]]++
+			if cc[maxC] == 0 { // 注意不用写 for，因为 max(cnt.values()) 只会一点一点变化
+				maxC--
+			}
+		}
+		return ans
+	}
+
 	// 滑动窗口维护没有逆运算的运算（但是有单调性），例如 OR AND GCD LCM
 	// 时间复杂度 O(n)，考虑每个元素入栈出栈各至多一次
 	// 以 LC3171 为例 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/
@@ -2648,6 +2690,6 @@ func _() {
 		discrete2D,
 		maintainTop3,
 
-		slidingWindowWithStack,
+		slidingWindowMaxFreq, slidingWindowWithStack,
 	}
 }
