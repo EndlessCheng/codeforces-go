@@ -57,6 +57,10 @@ https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
 
+#### 单调栈二分
+https://codeforces.com/problemset/problem/91/B 1500
+https://codeforces.com/problemset/problem/2009/G2 2200
+
 #### 矩形系列
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
 - [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
@@ -100,9 +104,6 @@ https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
 https://codeforces.com/problemset/problem/1407/D 2200
 https://codeforces.com/problemset/problem/5/E 2400
-
-#### 单调栈二分
-https://codeforces.com/problemset/problem/91/B 1500
 
 其他
 LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
