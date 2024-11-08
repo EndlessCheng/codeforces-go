@@ -54,8 +54,8 @@ $$
 ```py [sol-Python3]
 class Solution:
     def minFlips(self, a: List[List[int]]) -> int:
-        ans = 0
         m, n = len(a), len(a[0])
+        ans = 0
         for i in range(m // 2):
             row, row2 = a[i], a[-1 - i]
             for j in range(n // 2):
@@ -89,9 +89,9 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int minFlips(int[][] a) {
-        int ans = 0;
         int m = a.length;
         int n = a[0].length;
+        int ans = 0;
         for (int i = 0; i < m / 2; i++) {
             for (int j = 0; j < n / 2; j++) {
                 int cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
@@ -136,11 +136,12 @@ class Solution {
 class Solution {
 public:
     int minFlips(vector<vector<int>>& a) {
-        int m = a.size(), n = a[0].size(), ans = 0;
+        int m = a.size(), n = a[0].size();
+        int ans = 0;
         for (int i = 0; i < m / 2; i++) {
             for (int j = 0; j < n / 2; j++) {
                 int cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
-                ans += min(cnt1, 4 - cnt1);  // 全为 1 或全为 0
+                ans += min(cnt1, 4 - cnt1); // 全为 1 或全为 0
             }
         }
 
@@ -174,6 +175,48 @@ public:
         return ans + (diff ? diff : cnt1 % 4);
     }
 };
+```
+
+```c [sol-C]
+int minFlips(int** a, int gridSize, int* gridColSize) {
+    int m = gridSize, n = gridColSize[0];
+    int ans = 0;
+    for (int i = 0; i < m / 2; i++) {
+        for (int j = 0; j < n / 2; j++) {
+            int cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
+            ans += cnt1 < 4 - cnt1 ? cnt1 : 4 - cnt1; // 全为 1 或全为 0
+        }
+    }
+
+    if (m % 2 && n % 2) {
+        // 正中间的数必须是 0
+        ans += a[m / 2][n / 2];
+    }
+
+    int diff = 0, cnt1 = 0;
+    if (m % 2) {
+        // 统计正中间这一排
+        for (int j = 0; j < n / 2; j++) {
+            if (a[m / 2][j] != a[m / 2][n - 1 - j]) {
+                diff++;
+            } else {
+                cnt1 += a[m / 2][j] * 2;
+            }
+        }
+    }
+    if (n % 2) {
+        // 统计正中间这一列
+        for (int i = 0; i < m / 2; i++) {
+            if (a[i][n / 2] != a[m - 1 - i][n / 2]) {
+                diff++;
+            } else {
+                cnt1 += a[i][n / 2] * 2;
+            }
+        }
+    }
+    
+    return ans + (diff ? diff : cnt1 % 4);
+}
 ```
 
 ```go [sol-Go]
@@ -224,6 +267,94 @@ func minFlips(a [][]int) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+var minFlips = function(a) {
+    const m = a.length, n = a[0].length;
+    let ans = 0;
+    for (let i = 0; i < Math.floor(m / 2); i++) {
+        for (let j = 0; j < Math.floor(n / 2); j++) {
+            const cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
+            ans += Math.min(cnt1, 4 - cnt1); // 全为 1 或全为 0
+        }
+    }
+
+    if (m % 2 && n % 2) {
+        // 正中间的数必须是 0
+        ans += a[Math.floor(m / 2)][Math.floor(n / 2)];
+    }
+
+    let diff = 0, cnt1 = 0;
+    if (m % 2) {
+        // 统计正中间这一排
+        for (let j = 0; j < Math.floor(n / 2); j++) {
+            if (a[Math.floor(m / 2)][j] !== a[Math.floor(m / 2)][n - 1 - j]) {
+                diff++;
+            } else {
+                cnt1 += a[Math.floor(m / 2)][j] * 2;
+            }
+        }
+    }
+    if (n % 2) {
+        // 统计正中间这一列
+        for (let i = 0; i < Math.floor(m / 2); i++) {
+            if (a[i][Math.floor(n / 2)] !== a[m - 1 - i][Math.floor(n / 2)]) {
+                diff++;
+            } else {
+                cnt1 += a[i][Math.floor(n / 2)] * 2;
+            }
+        }
+    }
+
+    return ans + (diff ? diff : cnt1 % 4);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_flips(a: Vec<Vec<i32>>) -> i32 {
+        let m = a.len();
+        let n = a[0].len();
+        let mut ans = 0;
+        for i in 0..m / 2 {
+            for j in 0..n / 2 {
+                let cnt1 = a[i][j] + a[i][n - 1 - j] + a[m - 1 - i][j] + a[m - 1 - i][n - 1 - j];
+                ans += cnt1.min(4 - cnt1);  // 全为 1 或全为 0
+            }
+        }
+
+        if m % 2 == 1 && n % 2 == 1 {
+            // 正中间的数必须是 0
+            ans += a[m / 2][n / 2];
+        }
+
+        let mut diff = 0;
+        let mut cnt1 = 0;
+        if m % 2 == 1 {
+            // 统计正中间这一排
+            for j in 0..n / 2 {
+                if a[m / 2][j] != a[m / 2][n - 1 - j] {
+                    diff += 1;
+                } else {
+                    cnt1 += a[m / 2][j] * 2;
+                }
+            }
+        }
+        if n % 2 == 1 {
+            // 统计正中间这一列
+            for i in 0..m / 2 {
+                if a[i][n / 2] != a[m - 1 - i][n / 2] {
+                    diff += 1;
+                } else {
+                    cnt1 += a[i][n / 2] * 2;
+                }
+            }
+        }
+
+        ans + if diff != 0 { diff } else { cnt1 % 4 }
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
@@ -233,7 +364,7 @@ func minFlips(a [][]int) (ans int) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -242,6 +373,10 @@ func minFlips(a [][]int) (ans int) {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
