@@ -49,7 +49,7 @@ $$
 - 如果 $\textit{diff} > 0$，额外把 $\textit{diff}$ 加入答案。
 - 如果 $\textit{diff} = 0$，额外把 $\textit{cnt}_1\bmod 4$ 加入答案。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1F4421S7XU/) 第三题，欢迎点赞关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1F4421S7XU/) 第三题，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
