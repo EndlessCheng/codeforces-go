@@ -80,29 +80,112 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MIN(a, b) ((b) < (a) ? (b) : (a))
+
+int minFlips(int** grid, int gridSize, int* gridColSize) {
+    int m = gridSize, n = gridColSize[0];
+
+    int diff_row = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n / 2; j++) {
+            if (grid[i][j] != grid[i][n - 1 - j]) {
+                diff_row++;
+            }
+        }
+    }
+
+    int diff_col = 0;
+    for (int j = 0; j < n; j++) {
+        for (int i = 0; i < m / 2; i++) {
+            if (grid[i][j] != grid[m - 1 - i][j]) {
+                diff_col++;
+            }
+        }
+    }
+
+    return MIN(diff_row, diff_col);
+}
+```
+
 ```go [sol-Go]
 func minFlips(grid [][]int) int {
-	m, n := len(grid), len(grid[0])
+    m, n := len(grid), len(grid[0])
 
-	diffRow := 0
-	for _, row := range grid {
-		for j := 0; j < n/2; j++ {
-			if row[j] != row[n-1-j] {
-				diffRow++
-			}
-		}
-	}
+    diffRow := 0
+    for _, row := range grid {
+        for j := 0; j < n/2; j++ {
+            if row[j] != row[n-1-j] {
+                diffRow++
+            }
+        }
+    }
 
-	diffCol := 0
-	for j := 0; j < n; j++ {
-		for i, row := range grid[:m/2] {
-			if row[j] != grid[m-1-i][j] {
-				diffCol++
-			}
-		}
-	}
+    diffCol := 0
+    for j := 0; j < n; j++ {
+        for i, row := range grid[:m/2] {
+            if row[j] != grid[m-1-i][j] {
+                diffCol++
+            }
+        }
+    }
 
-	return min(diffRow, diffCol)
+    return min(diffRow, diffCol)
+}
+```
+
+```js [sol-JavaScript]
+var minFlips = function(grid) {
+    const m = grid.length, n = grid[0].length;
+
+    let diffRow = 0;
+    for (const row of grid) {
+        for (let j = 0; j < n / 2; j++) {
+            if (row[j] !== row[n - 1 - j]) {
+                diffRow++;
+            }
+        }
+    }
+
+    let diffCol = 0;
+    for (let j = 0; j < n; j++) {
+        for (let i = 0; i < m / 2; i++) {
+            if (grid[i][j] !== grid[m - 1 - i][j]) {
+                diffCol++;
+            }
+        }
+    }
+
+    return Math.min(diffRow, diffCol);
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_flips(grid: Vec<Vec<i32>>) -> i32 {
+        let m = grid.len();
+        let n = grid[0].len();
+
+        let mut diff_row = 0;
+        for row in &grid {
+            for j in 0..n / 2 {
+                if row[j] != row[n - 1 - j] {
+                    diff_row += 1;
+                }
+            }
+        }
+
+        let mut diff_col = 0;
+        for j in 0..n {
+            for i in 0..m / 2 {
+                if grid[i][j] != grid[m - 1 - i][j] {
+                    diff_col += 1;
+                }
+            }
+        }
+
+        diff_row.min(diff_col)
+    }
 }
 ```
 
