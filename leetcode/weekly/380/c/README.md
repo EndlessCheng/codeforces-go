@@ -134,44 +134,44 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(k int64, x int) int64 {
-	ans := sort.Search(int(k+1)<<x, func(num int) bool {
-		num++
-		n := bits.Len(uint(num))
-		memo := make([][]int, n)
-		for i := range memo {
-			memo[i] = make([]int, n+1)
-			for j := range memo[i] {
-				memo[i][j] = -1
-			}
-		}
-		var dfs func(int, int, bool) int
-		dfs = func(i, cnt1 int, limitHigh bool) (res int) {
-			if i < 0 {
-				return cnt1
-			}
-			if !limitHigh {
-				p := &memo[i][cnt1]
-				if *p >= 0 {
-					return *p
-				}
-				defer func() { *p = res }()
-			}
-			up := 1
-			if limitHigh {
-				up = num >> i & 1
-			}
-			for d := 0; d <= up; d++ {
-				c := cnt1
-				if d == 1 && (i+1)%x == 0 {
-					c++
-				}
-				res += dfs(i-1, c, limitHigh && d == up)
-			}
-			return
-		}
-		return dfs(n-1, 0, true) > int(k)
-	})
-	return int64(ans)
+    ans := sort.Search(int(k+1)<<x, func(num int) bool {
+        num++
+        n := bits.Len(uint(num))
+        memo := make([][]int, n)
+        for i := range memo {
+            memo[i] = make([]int, n+1)
+            for j := range memo[i] {
+                memo[i][j] = -1
+            }
+        }
+        var dfs func(int, int, bool) int
+        dfs = func(i, cnt1 int, limitHigh bool) (res int) {
+            if i < 0 {
+                return cnt1
+            }
+            if !limitHigh {
+                p := &memo[i][cnt1]
+                if *p >= 0 {
+                    return *p
+                }
+                defer func() { *p = res }()
+            }
+            up := 1
+            if limitHigh {
+                up = num >> i & 1
+            }
+            for d := 0; d <= up; d++ {
+                c := cnt1
+                if d == 1 && (i+1)%x == 0 {
+                    c++
+                }
+                res += dfs(i-1, c, limitHigh && d == up)
+            }
+            return
+        }
+        return dfs(n-1, 0, true) > int(k)
+    })
+    return int64(ans)
 }
 ```
 
@@ -227,15 +227,15 @@ class Solution:
     def findMaximumNumber(self, k: int, x: int) -> int:
         def count(num: int) -> int:
             res = 0
-            i = x - 1
-            n = num >> i
-            while n:
-                res += (n // 2) << i
-                if n % 2:
+            # 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
+            i = x - 1  # 注意比特位从 0 开始，不是从 1 开始，所以要减一
+            while num >> i:
+                n = num >> i
+                res += n >> 1 << i
+                if n & 1:
                     mask = (1 << i) - 1
                     res += (num & mask) + 1
                 i += x
-                n >>= x
             return res
         return bisect_left(range((k + 1) << x), k + 1, key=count) - 1
 ```
@@ -259,10 +259,12 @@ class Solution {
 
     private long countDigitOne(long num, int x) {
         long res = 0;
-        int i = x - 1;
-        for (long n = num >> i; n > 0; n >>= x, i += x) {
-            res += (n / 2) << i;
-            if (n % 2 > 0) {
+        // 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
+        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+        for (int i = x - 1; (num >> i) > 0; i += x) {
+            long n = num >> i;
+            res += n >> 1 << i;
+            if ((n & 1) > 0) {
                 long mask = (1L << i) - 1;
                 res += (num & mask) + 1;
             }
@@ -278,10 +280,12 @@ public:
     long long findMaximumNumber(long long k, int x) {
         auto check = [&](long long num) {
             long long res = 0;
-            int i = x - 1;
-            for (long long n = num >> i; n; n >>= x, i += x) {
-                res += (n / 2) << i;
-                if (n % 2) {
+            // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+            // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+            for (int i = x - 1; num >> i; i += x) {
+                long long n = num >> i;
+                res += n >> 1 << i;
+                if (n & 1) {
                     long long mask = (1LL << i) - 1;
                     res += (num & mask) + 1;
                 }
@@ -302,21 +306,22 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(k int64, x int) int64 {
-	ans := sort.Search(int(k+1)<<x, func(num int) bool {
-		num++
-		res := 0
-		i := x - 1
-		for n := num >> i; n > 0; n >>= x {
-			res += n / 2 << i
-			if n%2 > 0 {
-				mask := 1<<i - 1
-				res += num&mask + 1
-			}
-			i += x
-		}
-		return res > int(k)
-	})
-	return int64(ans)
+    ans := sort.Search(int(k+1)<<x, func(num int) bool {
+        num++
+        res := 0
+        // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+        for i := x - 1; num>>i > 0; i += x {
+            n := num >> i
+            res += n >> 1 << i
+            if n&1 > 0 {
+                mask := 1<<i - 1
+                res += num&mask + 1
+            }
+        }
+        return res > int(k)
+    })
+    return int64(ans)
 }
 ```
 
@@ -402,20 +407,20 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(K int64, x int) int64 {
-	k := int(K)
-	num, pre1 := 0, 0
-	for i := bits.Len(uint((k+1)<<x)) - 1; i >= 0; i-- {
-		cnt := pre1<<i + i/x<<i>>1
-		if cnt > k {
-			continue
-		}
-		k -= cnt
-		num |= 1 << i
-		if (i+1)%x == 0 {
-			pre1++
-		}
-	}
-	return int64(num - 1)
+    k := int(K)
+    num, pre1 := 0, 0
+    for i := bits.Len(uint((k+1)<<x)) - 1; i >= 0; i-- {
+        cnt := pre1<<i + i/x<<i>>1
+        if cnt > k {
+            continue
+        }
+        k -= cnt
+        num |= 1 << i
+        if (i+1)%x == 0 {
+            pre1++
+        }
+    }
+    return int64(num - 1)
 }
 ```
 
@@ -430,7 +435,7 @@ func findMaximumNumber(K int64, x int) int64 {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -439,8 +444,9 @@ func findMaximumNumber(K int64, x int) int64 {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
