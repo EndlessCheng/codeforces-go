@@ -9,4 +9,4 @@
 
 关于遍历 treap 的逻辑，见 [bst.go](../bst.go)。
 
-小 TIPS：某些题目通过插入 $-\infty$ 和 $\infty$ 哨兵，可以减少边界判断。
+TIPS：某些题目通过插入 $-\infty$ 和 $\infty$ 哨兵，可以减少边界判断。
