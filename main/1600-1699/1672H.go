@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"os"
 )
 
 // https://github.com/EndlessCheng
