@@ -7,7 +7,7 @@
 ```py [sol-Python3]
 DIRS = ((-1, 0), (1, 0), (0, -1), (0, 1), (1, 1), (-1, 1), (-1, -1), (1, -1))
 
-class neighborSum:
+class NeighborSum:
     def __init__(self, grid: List[List[int]]):
         n = len(grid)
         s = [[0, 0] for _ in range(n * n)]
@@ -27,12 +27,12 @@ class neighborSum:
 ```
 
 ```java [sol-Java]
-class neighborSum {
+class NeighborSum {
     private static final int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
 
     private final int[][] s;
 
-    public neighborSum(int[][] grid) {
+    public NeighborSum(int[][] grid) {
         int n = grid.length;
         s = new int[n * n][2];
         for (int i = 0; i < n; i++) {
@@ -60,11 +60,11 @@ class neighborSum {
 ```
 
 ```cpp [sol-C++]
-class neighborSum {
+class NeighborSum {
     static constexpr int dirs[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
     vector<array<int, 2>> s;
 public:
-    neighborSum(vector<vector<int>>& grid) {
+    NeighborSum(vector<vector<int>>& grid) {
         int n = grid.size();
         s.resize(n * n);
         for (int i = 0; i < n; i++) {
@@ -93,11 +93,11 @@ public:
 ```go [sol-Go]
 var dirs = []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}}
 
-type neighborSum [][2]int
+type NeighborSum [][2]int
 
-func Constructor(grid [][]int) neighborSum {
+func Constructor(grid [][]int) NeighborSum {
 	n := len(grid)
-	s := make(neighborSum, n*n)
+	s := make(NeighborSum, n*n)
 	for i, row := range grid {
 		for j, v := range row {
 			for k, d := range dirs {
@@ -111,11 +111,11 @@ func Constructor(grid [][]int) neighborSum {
 	return s
 }
 
-func (s neighborSum) AdjacentSum(value int) int {
+func (s NeighborSum) AdjacentSum(value int) int {
 	return s[value][0]
 }
 
-func (s neighborSum) DiagonalSum(value int) int {
+func (s NeighborSum) DiagonalSum(value int) int {
 	return s[value][1]
 }
 ```
