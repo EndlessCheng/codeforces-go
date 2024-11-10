@@ -18,6 +18,8 @@
 
 ![lc3235-2-c.png](https://pic.leetcode.cn/1722579370-cPlOGI-lc3235-2-c.png)
 
+⚠**注意**：$y>Y$ 的情况属于情况一，实际上无需判断。
+
 ### 具体做法
 
 从与矩形【上边界/左边界】相交/相切的圆开始 DFS。
@@ -34,17 +36,11 @@
 ```py [sol-Python3]
 class Solution:
     def canReachCorner(self, X: int, Y: int, circles: List[List[int]]) -> bool:
-        # 判断点 (x,y) 是否在圆 (ox,oy,r) 内
-        def in_circle(ox: int, oy: int, r: int, x: int, y: int) -> bool:
-            return (ox - x) * (ox - x) + (oy - y) * (oy - y) <= r * r
-
         vis = [False] * len(circles)
         def dfs(i: int) -> bool:
             x1, y1, r1 = circles[i]
             # 圆 i 是否与矩形右边界/下边界相交相切
-            if y1 <= Y and abs(x1 - X) <= r1 or \
-               x1 <= X and y1 <= r1 or \
-               x1 > X and in_circle(x1, y1, r1, X, 0):
+            if y1 <= Y and abs(x1 - X) <= r1 or x1 <= X and y1 <= r1:
                 return True
             vis[i] = True
             for j, (x2, y2, r2) in enumerate(circles):
@@ -61,11 +57,9 @@ class Solution:
             # 圆 i 包含矩形左下角 or
             # 圆 i 包含矩形右上角 or
             # 圆 i 与矩形上边界/左边界相交相切
-            if in_circle(x, y, r, 0, 0) or \
-               in_circle(x, y, r, X, Y) or \
-               not vis[i] and (x <= X and abs(y - Y) <= r or
-                               y <= Y and x <= r or
-                               y > Y and in_circle(x, y, r, 0, Y)) and dfs(i):
+            if x * x + y * y <= r * r or \
+               (x - X) * (x - X) + (y - Y) * (y - Y) <= r * r or \
+               not vis[i] and (x <= X and abs(y - Y) <= r or y <= Y and x <= r) and dfs(i):
                 return False
         return True
 ```
@@ -79,9 +73,7 @@ class Solution {
             if (inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
                 inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
                 // 圆 i 是否与矩形上边界/左边界相交相切
-                !vis[i] && (x <= X && Math.abs(y - Y) <= r ||
-                            y <= Y && x <= r ||
-                            y > Y && inCircle(x, y, r, 0, Y)) && dfs(i, X, Y, circles, vis)) {
+                !vis[i] && (x <= X && Math.abs(y - Y) <= r || y <= Y && x <= r) && dfs(i, X, Y, circles, vis)) {
                 return false;
             }
         }
@@ -96,9 +88,7 @@ class Solution {
     private boolean dfs(int i, int X, int Y, int[][] circles, boolean[] vis) {
         long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
         // 圆 i 是否与矩形右边界/下边界相交相切
-        if (y1 <= Y && Math.abs(x1 - X) <= r1 ||
-            x1 <= X && y1 <= r1 ||
-            x1 > X && inCircle(x1, y1, r1, X, 0)) {
+        if (y1 <= Y && Math.abs(x1 - X) <= r1 || x1 <= X && y1 <= r1) {
             return true;
         }
         vis[i] = true;
@@ -132,9 +122,7 @@ public:
         auto dfs = [&](auto&& dfs, int i) -> bool {
             long long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
             // 圆 i 是否与矩形右边界/下边界相交相切
-            if (y1 <= Y && abs(x1 - X) <= r1 ||
-                x1 <= X && y1 <= r1 ||
-                x1 > X && in_circle(x1, y1, r1, X, 0)) {
+            if (y1 <= Y && abs(x1 - X) <= r1 || x1 <= X && y1 <= r1) {
                 return true;
             }
             vis[i] = true;
@@ -155,9 +143,7 @@ public:
             if (in_circle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
                 in_circle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
                 // 圆 i 是否与矩形上边界/左边界相交相切
-                !vis[i] && (x <= X && abs(y - Y) <= r ||
-                            y <= Y && x <= r ||
-                            y > Y && in_circle(x, y, r, 0, Y)) && dfs(dfs, i)) {
+                !vis[i] && (x <= X && abs(y - Y) <= r || y <= Y && x <= r) && dfs(dfs, i)) {
                 return false;
             }
         }
@@ -175,9 +161,7 @@ bool inCircle(long long ox, long long oy, long long r, long long x, long long y)
 bool dfs(int i, int X, int Y, int** circles, int circlesSize, bool* vis) {
     long long x1 = circles[i][0], y1 = circles[i][1], r1 = circles[i][2];
     // 圆 i 是否与矩形右边界/下边界相交相切
-    if (y1 <= Y && abs(x1 - X) <= r1 ||
-        x1 <= X && y1 <= r1 ||
-        x1 > X && inCircle(x1, y1, r1, X, 0)) {
+    if (y1 <= Y && abs(x1 - X) <= r1 || x1 <= X && y1 <= r1) {
         return true;
     }
     vis[i] = true;
@@ -201,9 +185,7 @@ bool canReachCorner(int X, int Y, int** circles, int circlesSize, int* circlesCo
         if (inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
             inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
             // 圆 i 是否与矩形上边界/左边界相交相切
-            !vis[i] && (x <= X && abs(y - Y) <= r ||
-                        y <= Y && x <= r ||
-                        y > Y && inCircle(x, y, r, 0, Y)) && dfs(i, X, Y, circles, circlesSize, vis)) {
+            !vis[i] && (x <= X && abs(y - Y) <= r || y <= Y && x <= r) && dfs(i, X, Y, circles, circlesSize, vis)) {
             free(vis);
             return false;
         }
@@ -225,7 +207,7 @@ func canReachCorner(X, Y int, circles [][]int) bool {
     dfs = func(i int) bool {
         x1, y1, r1 := circles[i][0], circles[i][1], circles[i][2]
         // 圆 i 是否与矩形右边界/下边界相交相切
-        if y1 <= Y && abs(x1-X) <= r1 || x1 <= X && y1 <= r1 || x1 > X && inCircle(x1, y1, r1, X, 0) {
+        if y1 <= Y && abs(x1-X) <= r1 || x1 <= X && y1 <= r1 {
             return true
         }
         vis[i] = true
@@ -246,7 +228,7 @@ func canReachCorner(X, Y int, circles [][]int) bool {
         if inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
             inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
             // 圆 i 是否与矩形上边界/左边界相交相切
-            !vis[i] && (x <= X && abs(y-Y) <= r || y <= Y && x <= r || y > Y && inCircle(x, y, r, 0, Y)) && dfs(i) {
+            !vis[i] && (x <= X && abs(y-Y) <= r || y <= Y && x <= r) && dfs(i) {
             return false
         }
     }
@@ -269,9 +251,7 @@ var canReachCorner = function(X, Y, circles) {
     function dfs(i) {
         let [x1, y1, r1] = circles[i];
         // 圆 i 是否与矩形右边界/下边界相交相切
-        if (y1 <= Y && Math.abs(x1 - X) <= r1 ||
-            x1 <= X && y1 <= r1 ||
-            x1 > X && inCircle(x1, y1, r1, X, 0)) {
+        if (y1 <= Y && Math.abs(x1 - X) <= r1 || x1 <= X && y1 <= r1) {
             return true;
         }
         x1 = BigInt(x1);
@@ -301,9 +281,7 @@ var canReachCorner = function(X, Y, circles) {
         if (inCircle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
             inCircle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
             // 圆 i 是否与矩形上边界/左边界相交相切
-            !vis[i] && (x <= X && Math.abs(y - Y) <= r ||
-                        y <= Y && x <= r ||
-                        y > Y && inCircle(x, y, r, 0, Y)) && dfs(i)) {
+            !vis[i] && (x <= X && Math.abs(y - Y) <= r || y <= Y && x <= r) && dfs(i)) {
             return false;
         }
     }
@@ -324,9 +302,7 @@ impl Solution {
             if Self::in_circle(x, y, r, 0, 0) || // 圆 i 包含矩形左下角
                Self::in_circle(x, y, r, X, Y) || // 圆 i 包含矩形右上角
                // 圆 i 是否与矩形上边界/左边界相交相切
-               !vis[i] && (x <= X && (y - Y).abs() <= r ||
-                           y <= Y && x <= r ||
-                           y > Y && Self::in_circle(x, y, r, 0, Y)) && Self::dfs(i, X, Y, &circles, &mut vis) {
+               !vis[i] && (x <= X && (y - Y).abs() <= r || y <= Y && x <= r) && Self::dfs(i, X, Y, &circles, &mut vis) {
                 return false;
             }
         }
@@ -343,9 +319,7 @@ impl Solution {
         let y1 = circles[i][1] as i64;
         let r1 = circles[i][2] as i64;
         // 圆 i 是否与矩形右边界/下边界相交相切
-        if y1 <= y && (x1 - x).abs() <= r1 ||
-           x1 <= x && y1 <= r1 ||
-           x1 > x && Self::in_circle(x1, y1, r1, x, 0) {
+        if y1 <= y && (x1 - x).abs() <= r1 || x1 <= x && y1 <= r1 {
             return true;
         }
         vis[i] = true;
