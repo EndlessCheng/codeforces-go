@@ -41,11 +41,11 @@ class Solution {
 ```java [sol-Java 数组]
 class Solution {
     public long findMaximumScore(List<Integer> nums) {
-        Object[] a = nums.toArray(); // 转成数组效率更高
+        Integer[] a = nums.toArray(Integer[]::new); // 转成数组效率更高
         long ans = 0;
         int mx = 0;
         for (int i = 0; i < a.length - 1; i++) {
-            mx = Math.max(mx, (int) a[i]);
+            mx = Math.max(mx, a[i]);
             ans += mx;
         }
         return ans;
@@ -103,5 +103,6 @@ func findMaximumScore(nums []int) (ans int64) {
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
