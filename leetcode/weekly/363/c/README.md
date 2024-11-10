@@ -69,16 +69,16 @@ class Solution:
 ```
 
 ```java [sol-Java]
-// 全部转成 int[] 数组，效率比 List<Integer> 更高
 class Solution {
     public int maxNumberOfAlloys(int n, int k, int budget, List<List<Integer>> composition, List<Integer> Stock, List<Integer> Cost) {
         int ans = 0;
         int mx = Collections.min(Stock) + budget;
-        int[] stock = Stock.stream().mapToInt(i -> i).toArray();
-        int[] cost = Cost.stream().mapToInt(i -> i).toArray();
+        Integer[] stock = Stock.toArray(Integer[]::new); // 转成数组更快
+        Integer[] cost = Cost.toArray(Integer[]::new);
         for (List<Integer> Comp : composition) {
-            int[] comp = Comp.stream().mapToInt(i -> i).toArray();
-            int left = ans, right = mx + 1;
+            Integer[] comp = Comp.toArray(Integer[]::new);
+            int left = ans;
+            int right = mx + 1;
             while (left + 1 < right) { // 开区间写法
                 int mid = left + (right - left) / 2;
                 boolean ok = true;
@@ -108,10 +108,10 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int maxNumberOfAlloys(int n, int k, int budget, vector<vector<int>> &composition, vector<int> &stock, vector<int> &cost) {
+    int maxNumberOfAlloys(int n, int, int budget, vector<vector<int>>& composition, vector<int>& stock, vector<int>& cost) {
         int ans = 0;
         int mx = ranges::min(stock) + budget;
-        for (auto &comp : composition) {
+        for (auto& comp : composition) {
             auto check = [&](long long num) -> bool {
                 long long money = 0;
                 for (int i = 0; i < n; i++) {
@@ -159,7 +159,7 @@ func maxNumberOfAlloys(_, _, budget int, composition [][]int, stock, cost []int)
 ```
 
 ```js [sol-JavaScript]
-var maxNumberOfAlloys = function (n, k, budget, composition, stock, cost) {
+var maxNumberOfAlloys = function(n, k, budget, composition, stock, cost) {
     let ans = 0;
     const mx = Math.min(...stock) + budget;
     for (const comp of composition) {
@@ -195,6 +195,23 @@ var maxNumberOfAlloys = function (n, k, budget, composition, stock, cost) {
 - 时间复杂度：$\mathcal{O}(kn\log U)$，其中 $U=\min(\textit{stock}) + \textit{budget}$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 题单·二分答案
+## 分类题单
 
-[【题单】二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. 【本题相关】[二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
