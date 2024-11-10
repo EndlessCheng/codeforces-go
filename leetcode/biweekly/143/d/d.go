@@ -23,7 +23,7 @@ func smallestNumber(s string, t int64) string {
 	s = strings.Repeat("0", cnt) + s
 
 	n := len(s)
-	ans := make([]byte, len(s))
+	ans := bytes.Repeat([]byte{'0'}, n)
 	type pair struct{ i, t int }
 	vis := map[pair]bool{}
 
@@ -40,18 +40,17 @@ func smallestNumber(s string, t int64) string {
 			vis[p] = true
 		}
 
-		x := int(s[i] - '0')
-		low := 1 // 如果没有约束，那么 1~9 随便填（注意这意味着前面填了大于 0 的数）
-		if isLimit && (x > 0 || i < cnt) {
-			low = x
+		if isLimit && i < cnt && dfs(i+1, t, true) { // 填 0（跳过）
+			return true
 		}
-		for d := low; d <= 9; d++ {
+
+		low := 0
+		if isLimit {
+			low = int(s[i] - '0')
+		}
+		for d := max(low, 1); d <= 9; d++ {
 			ans[i] = '0' + byte(d) // 直接覆盖，无需恢复现场
-			newT := t
-			if d > 1 {
-				newT = t / gcd(t, d)
-			}
-			if dfs(i+1, newT, isLimit && d == x) {
+			if dfs(i+1, t/gcd(t, d), isLimit && d == low) {
 				return true
 			}
 		}

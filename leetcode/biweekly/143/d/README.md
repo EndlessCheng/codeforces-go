@@ -75,13 +75,13 @@ class Solution:
             if i == n:
                 return t == 1
 
-            x = int(s[i])
-            # 如果没有约束，那么 1~9 随便填（注意这意味着前面填了大于 0 的数）
-            low = x if is_limit and (x or i < cnt) else 1
-            for d in range(low, 10):
+            if is_limit and i < cnt and dfs(i + 1, t, True):  # 填 0（跳过）
+                return True
+
+            low = int(s[i]) if is_limit else 0
+            for d in range(max(low, 1), 10):
                 ans[i] = d  # 直接覆盖，无需恢复现场
-                new_t = t // gcd(t, d) if d > 1 else t
-                if dfs(i + 1, new_t, is_limit and d == x):
+                if dfs(i + 1, t // gcd(t, d), is_limit and d == low):
                     return True
             return False
 
@@ -119,13 +119,13 @@ class Solution:
                     return False
                 vis[i].add(t)
 
-            x = int(s[i])
-            # 如果没有约束，那么 1~9 随便填（注意这意味着前面填了大于 0 的数）
-            low = x if is_limit and (x or i < cnt) else 1
-            for d in range(low, 10):
+            if is_limit and i < cnt and dfs(i + 1, t, True):  # 填 0（跳过）
+                return True
+
+            low = int(s[i]) if is_limit else 0
+            for d in range(max(low, 1), 10):
                 ans[i] = d  # 直接覆盖，无需恢复现场
-                new_t = t // gcd(t, d) if d > 1 else t
-                if dfs(i + 1, new_t, is_limit and d == x):
+                if dfs(i + 1, t // gcd(t, d), is_limit and d == low):
                     return True
             return False
 
@@ -154,8 +154,11 @@ class Solution {
 
         int n = s.length();
         char[] ans = new char[n];
+        Arrays.fill(ans, '0');
+
         Set<Long>[] vis = new HashSet[n];
         Arrays.setAll(vis, i -> new HashSet<>());
+
         dfs(0, t, true, cnt, s.toCharArray(), ans, vis);
         for (int i = 0; ; i++) {
             if (ans[i] != '0') {
@@ -172,13 +175,14 @@ class Solution {
             return false;
         }
 
-        int x = s[i] - '0';
-        // 如果没有约束，那么 1~9 随便填（注意这意味着前面填了大于 0 的数）
-        int low = isLimit && (x > 0 || i < cnt) ? x : 1;
-        for (int d = low; d <= 9; d++) {
+        if (isLimit && i < cnt && dfs(i + 1, t, true, cnt, s, ans, vis)) { // 填 0（跳过）
+            return true;
+        }
+
+        int low = isLimit ? s[i] - '0' : 0;
+        for (int d = Math.max(low, 1); d <= 9; d++) {
             ans[i] = (char) ('0' + d); // 直接覆盖，无需恢复现场
-            long newT = d > 1 ? t / gcd(t, d) : t;
-            if (dfs(i + 1, newT, isLimit && d == x, cnt, s, ans, vis)) {
+            if (dfs(i + 1, t / gcd(t, d), isLimit && d == low, cnt, s, ans, vis)) {
                 return true;
             }
         }
@@ -217,7 +221,7 @@ public:
         s = string(cnt, '0') + s;
 
         int n = s.length();
-        string ans(n, 0);
+        string ans(n, '0');
         vector<unordered_set<long long>> vis(n);
         auto dfs = [&](auto&& dfs, int i, long long t, bool is_limit) -> bool {
             if (i == n) {
@@ -227,13 +231,14 @@ public:
                 return false;
             }
 
-            int x = s[i] - '0';
-            int low = is_limit && (x > 0 || i < cnt) ? x : 1;
+            if (is_limit && i < cnt && dfs(dfs, i + 1, t, true)) { // 填 0（跳过）
+                return true;
+            }
 
-            for (int d = low; d <= 9; d++) {
+            int low = is_limit ? s[i] - '0' : 0;
+            for (int d = max(low, 1); d <= 9; d++) {
                 ans[i] = '0' + d; // 直接覆盖，无需恢复现场
-                long long new_t = d > 1 ? t / gcd(t, d) : t;
-                if (dfs(dfs, i + 1, new_t, is_limit && d == x)) {
+                if (dfs(dfs, i + 1, t / gcd(t, d), is_limit && d == low)) {
                     return true;
                 }
             }
@@ -265,7 +270,7 @@ func smallestNumber(s string, t int64) string {
 	s = strings.Repeat("0", cnt) + s
 
 	n := len(s)
-	ans := make([]byte, len(s))
+	ans := bytes.Repeat([]byte{'0'}, n)
 	type pair struct{ i, t int }
 	vis := map[pair]bool{}
 
@@ -282,18 +287,17 @@ func smallestNumber(s string, t int64) string {
 			vis[p] = true
 		}
 
-		x := int(s[i] - '0')
-		low := 1 // 如果没有约束，那么 1~9 随便填（注意这意味着前面填了大于 0 的数）
-		if isLimit && (x > 0 || i < cnt) {
-			low = x
+		if isLimit && i < cnt && dfs(i+1, t, true) { // 填 0（跳过）
+			return true
 		}
-		for d := low; d <= 9; d++ {
+
+		low := 0
+		if isLimit {
+			low = int(s[i] - '0')
+		}
+		for d := max(low, 1); d <= 9; d++ {
 			ans[i] = '0' + byte(d) // 直接覆盖，无需恢复现场
-			newT := t
-			if d > 1 {
-				newT = t / gcd(t, d)
-			}
-			if dfs(i+1, newT, isLimit && d == x) {
+			if dfs(i+1, t/gcd(t, d), isLimit && d == low) {
 				return true
 			}
 		}
