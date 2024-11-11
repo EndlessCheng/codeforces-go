@@ -42,14 +42,14 @@ class Solution {
     public boolean findSafeWalk(List<List<Integer>> grid, int health) {
         int m = grid.size();
         int n = grid.get(0).size();
-        Object[][] a = new Object[m][];
+        Integer[][] a = new Integer[m][];
         int[][] dis = new int[m][n];
         for (int i = 0; i < m; i++) {
-            a[i] = grid.get(i).toArray();
+            a[i] = grid.get(i).toArray(Integer[]::new);
             Arrays.fill(dis[i], Integer.MAX_VALUE);
         }
 
-        dis[0][0] = (int) a[0][0];
+        dis[0][0] = a[0][0];
         Deque<int[]> q = new ArrayDeque<>();
         q.addFirst(new int[]{0, 0});
         while (!q.isEmpty()) {
@@ -60,7 +60,7 @@ class Solution {
                 int x = i + d[0];
                 int y = j + d[1];
                 if (0 <= x && x < m && 0 <= y && y < n) {
-                    int cost = (int) a[x][y];
+                    int cost = a[x][y];
                     if (dis[i][j] + cost < dis[x][y]) {
                         dis[x][y] = dis[i][j] + cost;
                         if (cost == 0) {
@@ -179,14 +179,14 @@ class Solution {
     public boolean findSafeWalk(List<List<Integer>> grid, int health) {
         int m = grid.size();
         int n = grid.get(0).size();
-        Object[][] a = new Object[m][];
+        Integer[][] a = new Integer[m][];
         int[][] dis = new int[m][n];
         for (int i = 0; i < m; i++) {
-            a[i] = grid.get(i).toArray();
+            a[i] = grid.get(i).toArray(Integer[]::new);
             Arrays.fill(dis[i], Integer.MAX_VALUE);
         }
 
-        dis[0][0] = (int) a[0][0];
+        dis[0][0] = a[0][0];
         Deque<int[]> q = new ArrayDeque<>();
         q.addFirst(new int[]{0, 0});
         while (true) {
@@ -203,7 +203,7 @@ class Solution {
                 int x = i + d[0];
                 int y = j + d[1];
                 if (0 <= x && x < m && 0 <= y && y < n) {
-                    int cost = (int) a[x][y];
+                    int cost = a[x][y];
                     if (dis[i][j] + cost < dis[x][y]) {
                         dis[x][y] = dis[i][j] + cost;
                         if (cost == 0) {
@@ -324,5 +324,6 @@ func findSafeWalk(grid [][]int, health int) bool {
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
