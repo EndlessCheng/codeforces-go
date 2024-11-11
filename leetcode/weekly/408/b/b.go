@@ -1,12 +1,10 @@
 package main
 
-import (
-	"math"
-)
+import "math"
 
 // https://space.bilibili.com/206214
 const mx = 31622
-var pi = [mx + 1]int{}
+var pi [mx + 1]int
 
 func init() {
 	for i := 2; i <= mx; i++ {
