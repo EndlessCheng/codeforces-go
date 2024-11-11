@@ -1,15 +1,18 @@
 package main
 
-import "sort"
+import (
+	"math"
+	"slices"
+)
 
 // https://space.bilibili.com/206214
 func minimumTotalDistance(robot []int, factory [][]int) int64 {
-	sort.Slice(factory, func(i, j int) bool { return factory[i][0] < factory[j][0] })
-	sort.Ints(robot)
+	slices.SortFunc(factory, func(a, b []int) int { return a[0] - b[0] })
+	slices.Sort(robot)
 	m := len(robot)
 	f := make([]int, m+1)
 	for i := range f {
-		f[i] = 1e18
+		f[i] = math.MaxInt / 2
 	}
 	f[0] = 0
 	for _, fa := range factory {
@@ -23,15 +26,4 @@ func minimumTotalDistance(robot []int, factory [][]int) int64 {
 	return int64(f[m])
 }
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
-}
+func abs(x int) int { if x < 0 { return -x }; return x }
