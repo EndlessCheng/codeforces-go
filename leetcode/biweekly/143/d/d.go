@@ -39,7 +39,7 @@ func smallestNumber(num string, t int64) string {
 		for s[i]++; s[i] <= '9'; s[i]++ {
 			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
 			for j := n - 1; j > i; j-- {
-				if tt == 1 {
+				if tt == 1 { // 后面都填 1
 					s[j] = '1'
 					continue
 				}

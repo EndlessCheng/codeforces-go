@@ -384,7 +384,7 @@ class Solution:
             for s[i] in range(s[i] + 1, 10):
                 tt = left_t[i] // gcd(left_t[i], s[i])
                 for j in range(n - 1, i, -1):
-                    if tt == 1:
+                    if tt == 1:  # 后面都填 1
                         s[j] = 1
                         continue
                     for k in range(9, 1, -1):
@@ -401,8 +401,7 @@ class Solution:
             while t % i == 0:
                 ans.append(str(i))
                 t //= i
-        ans.append('1' * max(n + 1 - len(ans), 0))
-        return ''.join(ans)[::-1]
+        return ''.join(ans[::-1]).rjust(n + 1, '1')  # 前面补 1
 ```
 
 ```java [sol-Java]
@@ -439,7 +438,7 @@ class Solution {
             while (++s[i] <= '9') {
                 long tt = leftT[i] / gcd(leftT[i], s[i] - '0');
                 for (int j = n - 1; j > i; j--) {
-                    if (tt == 1) {
+                    if (tt == 1) { // 后面都填 1
                         s[j] = '1';
                         continue;
                     }
@@ -516,7 +515,7 @@ public:
             while (++s[i] <= '9') {
                 long long tt = left_t[i] / gcd(left_t[i], s[i] - '0');
                 for (int j = n - 1; j > i; j--) {
-                    if (tt == 1) {
+                    if (tt == 1) { // 后面都填 1
                         s[j] = '1';
                         continue;
                     }
@@ -582,7 +581,7 @@ func smallestNumber(num string, t int64) string {
 		for s[i]++; s[i] <= '9'; s[i]++ {
 			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
 			for j := n - 1; j > i; j-- {
-				if tt == 1 {
+				if tt == 1 { // 后面都填 1
 					s[j] = '1'
 					continue
 				}
