@@ -5,7 +5,7 @@
 答案有两种情况：
 
 - 两个子数组属于同一个严格递增段，那么 $k$ 最大是 $\left\lfloor\dfrac{\textit{cnt}}{2}\right\rfloor$。
-- 两个子数组分别属于一对相邻严格递增段，那么 $k$ 最大是 $\min(\textit{preCnt}, \textit{cnt})$。
+- 两个子数组分别属于一对相邻的严格递增段，那么 $k$ 最大是 $\min(\textit{preCnt}, \textit{cnt})$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1JVmBYvEnD/)，欢迎点赞关注~
 
