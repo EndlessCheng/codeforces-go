@@ -14,7 +14,7 @@ $x$ 可以变成 $[x-k,x+k]$ 中的整数。注意对于同一个 $\textit{nums}
 
 如果 $y$ 不在 $\textit{nums}$ 中，那么 $y$ 的最大频率为 $\min(\textit{sumD}, \textit{numOperations})$。
 
-如果 $y$ 在 $\textit{nums}$ 中，且出现了 $\textit{cnt}$ 次，那么有 $\textit{sumD}-\textit{cnt}$ 个其他元素可以变成 $y$，但这不能超过 $\textit{numOperations}$，所以有
+如果 $y$ 在 $\textit{nums}$ 中，且出现了 $\textit{cnt}$ 次，那么有 $\textit{sumD}-\textit{cnt}$ 个其他元素（不等于 $y$ 的数）可以变成 $y$，但这不能超过 $\textit{numOperations}$，所以有
 
 $$
 \min(\textit{sumD}-\textit{cnt}, \textit{numOperations})
