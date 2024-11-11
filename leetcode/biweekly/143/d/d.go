@@ -2,11 +2,84 @@ package main
 
 import (
 	"bytes"
+	"slices"
 	"strings"
 )
 
 // https://space.bilibili.com/206214
-func smallestNumber(s string, t int64) string {
+func smallestNumber(num string, t int64) string {
+	tmp := int(t)
+	for i := 9; i > 1; i-- {
+		for tmp%i == 0 {
+			tmp /= i
+		}
+	}
+	if tmp > 1 { // t 包含大于 7 的质因子
+		return "-1"
+	}
+
+	n := len(num)
+	leftT := make([]int, n+1)
+	leftT[0] = int(t)
+	i0 := n - 1
+	for i, c := range num {
+		if c == '0' {
+			i0 = i
+			break
+		}
+		leftT[i+1] = leftT[i] / gcd(leftT[i], int(c-'0'))
+	}
+	if leftT[n] == 1 { // num 的数位之积是 t 的倍数
+		return num
+	}
+
+	// 假设答案和 num 一样长
+	s := []byte(num)
+	for i := i0; i >= 0; i-- {
+		for s[i]++; s[i] <= '9'; s[i]++ {
+			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
+			for j := n - 1; j > i; j-- {
+				if tt == 1 {
+					s[j] = '1'
+					continue
+				}
+				for k := 9; k > 1; k-- {
+					if tt%k == 0 {
+						s[j] = '0' + byte(k)
+						tt /= k
+						break
+					}
+				}
+			}
+			if tt == 1 {
+				return string(s)
+			}
+		}
+	}
+
+	// 答案一定比 num 长
+	ans := []byte{}
+	for i := int64(9); i > 1; i-- {
+		for t%i == 0 {
+			ans = append(ans, '0'+byte(i))
+			t /= i
+		}
+	}
+	for len(ans) <= n {
+		ans = append(ans, '1')
+	}
+	slices.Reverse(ans)
+	return string(ans)
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+
+func smallestNumber2(s string, t int64) string {
 	tmp, cnt := int(t), 0
 	for _, p := range []int{2, 3, 5, 7} {
 		for tmp%p == 0 {
@@ -60,11 +133,4 @@ func smallestNumber(s string, t int64) string {
 
 	i := bytes.LastIndexByte(ans, '0')
 	return string(ans[i+1:])
-}
-
-func gcd(a, b int) int {
-	for a != 0 {
-		a, b = b%a, a
-	}
-	return b
 }

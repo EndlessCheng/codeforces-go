@@ -1,3 +1,5 @@
+## 方法一：从左到右爆搜
+
 首先，由于数位乘积中的质因子只有 $2,3,5,7$，如果 $t$ 包含其他质因子，那么直接返回 $-1$。如果 $t$ 只包含质因子 $2,3,5,7$，那么答案一定存在。
 
 下文把 $\textit{num}$ 简记为 $s$。其长度为 $n$。
@@ -24,7 +26,7 @@
 综上所述，写一个带 $\textit{vis}$ 的爆搜（回溯），参数有：
 
 - $i$：表示当前填到 $s$ 的第 $i$ 个数位了。
-- $t$：表示 $[i,n-1]$ 所填数位之积必须是 $t$ 的倍数。
+- $t$：表示 $[i,n-1]$ 所填数位，需要满足乘积是 $t$ 的倍数。
 - $\textit{isLimit}$：表示是否受到 $s$ 的约束。如果为 $\texttt{false}$，那么当前数位可以填 $[1,9]$ 中的数；如果为 $\texttt{true}$，那么当前数位只能填 $[\max(s[i],1),9]$ 中的数。这里和 $1$ 取最大值是因为 $s[i]$ 可能为 $0$，但我们不能填 $0$。在受到 $s$ 约束的情况下，如果填的数字为 $s[i]$，那么后面仍然会受到 $s$ 的约束。
 
 递归边界：当 $i=n$ 时，如果 $t=1$，说明当前填法是符合要求的，返回 $\texttt{true}$，否则返回 $\texttt{false}$。
@@ -201,7 +203,7 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-// 超时了，代码仅供参考
+// 超时了，看下面的方法二吧
 class Solution {
 public:
     string smallestNumber(string s, long long t) {
@@ -321,6 +323,310 @@ func gcd(a, b int) int {
 
 - 时间复杂度：$\mathcal{O}(n\log t)$，其中 $n$ 是 $s$ 的长度。注意在 DFS 中，只有 $\mathcal{O}(\log t)$ 个不同的 $t$。
 - 空间复杂度：$\mathcal{O}(n\log t)$。
+
+## 方法二：从右到左枚举
+
+首先，在不修改数字的情况下，把上面递归中的 $t$ 值，记在 $\textit{leftT}$ 中。
+
+定义 $\textit{leftT}[0]=t$，递推式
+
+$$
+\textit{leftT}[i+1] = \dfrac{\textit{leftT}[i]}{\text{GCD}(\textit{leftT}[i], s[i])}
+$$
+
+这样方便我们在从右到左枚举时，知道当前的 $t$ 值。
+
+如果 $\textit{leftT}[n]=1$，说明无需修改，直接返回 $s$。
+
+如果 $s$ 不包含 $0$，那么从 $i=n-1$ 开始倒着枚举：
+
+- 尝试增加 $s[n-1]$，并计算出新的 $t$ 值为 $\dfrac{\textit{leftT}[n-1]}{\text{GCD}(\textit{leftT}[n-1], s[n-1])}$。如果 $t=1$，返回 $s$。
+- 如果 $s[n-1]$ 增加到 $10$，结束增加，继续枚举 $i=n-2$。
+- 尝试增加 $s[n-2]$，并计算出新的 $t$ 值为 $\dfrac{\textit{leftT}[n-2]}{\text{GCD}(\textit{leftT}[n-2], s[n-2])}$。此时 $s[n-1]$ 是可以随便填的，我们可以从 $9$ 枚举到 $1$，如果发现 $s[n-1]$ 可以整除 $t$，则填入数字，并把 $t$ 变成 $\dfrac{t}{s[n-1]}$。如果 $t=1$，返回 $s$。
+
+一般地，倒着枚举 $i$，尝试增加 $s[i]$，并计算出新的 $t$ 值为 $\dfrac{\textit{leftT}[i]}{\text{GCD}(\textit{leftT}[i], s[i])}$。
+
+然后在 $j=n-1,n-2,n-3,\ldots,i+1$ 中填入数字，填入的方式是枚举 $s[j]=9,8,7,\cdots,1$，如果发现 $s[j]$ 可以整除 $t$，则更新 $t$ 为 $\dfrac{t}{s[j]}$，然后继续枚举下一个 $s[j]$。这种填法可以保证我们把大的数字填在了右边，从而使答案尽量小。
+
+填完后如果 $t=1$，返回 $s$。
+
+如果枚举到 $i=0$，仍然没有找到答案，说明答案一定比 $s$ 长，直接按照上面的填法生成答案。
+
+### 细节
+
+如果 $s$ 中有 $0$，那么这个 $0$ 必须要修改。设 $s$ 最左边的 $0$ 的下标为 $i_0$，上面的算法不能从 $i=n-1$ 开始枚举，而是从 $i=i_0$ 开始枚举。
+
+```py [sol-Python3]
+class Solution:
+    def smallestNumber(self, s: str, t: int) -> str:
+        tmp = t
+        for i in range(9, 1, -1):
+            while tmp % i == 0:
+                tmp //= i
+        if tmp > 1:  # t 包含大于 7 的质因子
+            return "-1"
+
+        n = len(s)
+        left_t = [0] * (n + 1)
+        left_t[0] = t
+        i0 = n - 1
+        for i, c in enumerate(s):
+            if c == '0':
+                i0 = i
+                break
+            left_t[i + 1] = left_t[i] // gcd(left_t[i], int(c))
+        if left_t[n] == 1:  # s 的数位之积是 t 的倍数
+            return s
+
+        # 假设答案和 s 一样长
+        s = list(map(int, s))
+        for i in range(i0, -1, -1):
+            for s[i] in range(s[i] + 1, 10):
+                tt = left_t[i] // gcd(left_t[i], s[i])
+                for j in range(n - 1, i, -1):
+                    if tt == 1:
+                        s[j] = 1
+                        continue
+                    for k in range(9, 1, -1):
+                        if tt % k == 0:
+                            s[j] = k
+                            tt //= k
+                            break
+                if tt == 1:
+                    return ''.join(map(str, s))
+
+        # 答案一定比 s 长
+        ans = []
+        for i in range(9, 1, -1):
+            while t % i == 0:
+                ans.append(str(i))
+                t //= i
+        ans.append('1' * max(n + 1 - len(ans), 0))
+        return ''.join(ans)[::-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public String smallestNumber(String num, long t) {
+        long tmp = t;
+        for (int i = 9; i > 1; i--) {
+            while (tmp % i == 0) {
+                tmp /= i;
+            }
+        }
+        if (tmp > 1) { // t 包含大于 7 的质因子
+            return "-1";
+        }
+
+        char[] s = num.toCharArray();
+        int n = s.length;
+        long[] leftT = new long[n + 1];
+        leftT[0] = t;
+        int i0 = n - 1;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '0') {
+                i0 = i;
+                break;
+            }
+            leftT[i + 1] = leftT[i] / gcd(leftT[i], s[i] - '0');
+        }
+        if (leftT[n] == 1) { // num 的数位之积是 t 的倍数
+            return num;
+        }
+
+        // 假设答案和 num 一样长
+        for (int i = i0; i >= 0; i--) {
+            while (++s[i] <= '9') {
+                long tt = leftT[i] / gcd(leftT[i], s[i] - '0');
+                for (int j = n - 1; j > i; j--) {
+                    if (tt == 1) {
+                        s[j] = '1';
+                        continue;
+                    }
+                    for (int k = 9; k > 1; k--) {
+                        if (tt % k == 0) {
+                            s[j] = (char) ('0' + k);
+                            tt /= k;
+                            break;
+                        }
+                    }
+                }
+                if (tt == 1) {
+                    return new String(s);
+                }
+            }
+        }
+
+        // 答案一定比 num 长
+        StringBuilder ans = new StringBuilder();
+        for (int i = 9; i > 1; i--) {
+            while (t % i == 0) {
+                ans.append((char) ('0' + i));
+                t /= i;
+            }
+        }
+        while (ans.length() <= n) {
+            ans.append('1');
+        }
+        return ans.reverse().toString();
+    }
+
+    private long gcd(long a, long b) {
+        while (a != 0) {
+            long tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string smallestNumber(string s, long long t) {
+        long long tmp = t;
+        for (int i = 9; i > 1; i--) {
+            while (tmp % i == 0) {
+                tmp /= i;
+            }
+        }
+        if (tmp > 1) { // t 包含大于 7 的质因子
+            return "-1";
+        }
+
+        int n = s.length();
+        vector<long long> left_t(n + 1);
+        left_t[0] = t;
+        int i0 = n - 1;
+        for (int i = 0; i < n; i++) {
+            if (s[i] == '0') {
+                i0 = i;
+                break;
+            }
+            left_t[i + 1] = left_t[i] / gcd(left_t[i], s[i] - '0');
+        }
+        if (left_t[n] == 1) { // s 的数位之积是 t 的倍数
+            return s;
+        }
+
+        // 假设答案和 s 一样长
+        for (int i = i0; i >= 0; i--) {
+            while (++s[i] <= '9') {
+                long long tt = left_t[i] / gcd(left_t[i], s[i] - '0');
+                for (int j = n - 1; j > i; j--) {
+                    if (tt == 1) {
+                        s[j] = '1';
+                        continue;
+                    }
+                    for (int k = 9; k > 1; k--) {
+                        if (tt % k == 0) {
+                            s[j] = '0' + k;
+                            tt /= k;
+                            break;
+                        }
+                    }
+                }
+                if (tt == 1) {
+                    return s;
+                }
+            }
+        }
+
+        // 答案一定比 s 长
+        string ans;
+        for (int i = 9; i > 1; i--) {
+            while (t % i == 0) {
+                ans += '0' + i;
+                t /= i;
+            }
+        }
+        ans += string(max(n + 1 - (int) ans.length(), 0), '1');
+        ranges::reverse(ans);
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func smallestNumber(num string, t int64) string {
+	tmp := int(t)
+	for i := 9; i > 1; i-- {
+		for tmp%i == 0 {
+			tmp /= i
+		}
+	}
+	if tmp > 1 { // t 包含大于 7 的质因子
+		return "-1"
+	}
+
+	n := len(num)
+	leftT := make([]int, n+1)
+	leftT[0] = int(t)
+	i0 := n - 1
+	for i, c := range num {
+		if c == '0' {
+			i0 = i
+			break
+		}
+		leftT[i+1] = leftT[i] / gcd(leftT[i], int(c-'0'))
+	}
+	if leftT[n] == 1 { // num 的数位之积是 t 的倍数
+		return num
+	}
+
+	// 假设答案和 num 一样长
+	s := []byte(num)
+	for i := i0; i >= 0; i-- {
+		for s[i]++; s[i] <= '9'; s[i]++ {
+			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
+			for j := n - 1; j > i; j-- {
+				if tt == 1 {
+					s[j] = '1'
+					continue
+				}
+				for k := 9; k > 1; k-- {
+					if tt%k == 0 {
+						s[j] = '0' + byte(k)
+						tt /= k
+						break
+					}
+				}
+			}
+			if tt == 1 {
+				return string(s)
+			}
+		}
+	}
+
+	// 答案一定比 num 长
+	ans := []byte{}
+	for i := int64(9); i > 1; i-- {
+		for t%i == 0 {
+			ans = append(ans, '0'+byte(i))
+			t /= i
+		}
+	}
+	for len(ans) <= n {
+		ans = append(ans, '1')
+	}
+	slices.Reverse(ans)
+	return string(ans)
+}
+
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a
+	}
+	return b
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + D^2\log^2 t)$，其中 $n$ 是 $s$ 的长度，$D=9$。分析四重循环的循环次数，如果从 $i=n-1$ 开始循环，$i$ 至多减少 $\mathcal{O}(\log t)$ 次，就一定能在右边填入 $\mathcal{O}(\log t)$ 个数字，所以 $j$ 的循环次数是 $\mathcal{O}(\log t)$。而如果 $i$ 远小于 $n-1$，则一定能填入数字，$j$ 的循环次数是 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
