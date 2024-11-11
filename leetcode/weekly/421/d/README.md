@@ -1,4 +1,4 @@
-先求出单个字母 $\texttt{a},\texttt{b},\cdots,\texttt{z}$ 替换 $t$ 次后的长度。
+先求出单个字母 $\texttt{a},\texttt{b},\ldots,\texttt{z}$ 替换 $t$ 次后的长度。
 
 ## 寻找子问题
 
@@ -96,7 +96,7 @@ $M^t$ 可以用**快速幂**计算，原理请看[【图解】一张图秒懂快
 
 根据矩阵乘法的运算法则，$f[t][j]$ 等于矩阵 $M^t$ 的第 $j$ 行与列向量 $F[0]$ 计算点积。由于 $F[0]$ 全为 $1$，所以 $f[t][j]$ 也等于 $M^t$ 第 $j$ 行的元素和。
 
-一般地，枚举 $i=0,1,\cdots, 25$ 以及 $j=i+1,i+2,\cdots,i+\textit{nums}[i]$，初始化 $M[i][j\bmod 26]=1$。
+一般地，枚举 $i=0,1,\ldots, 25$ 以及 $j=i+1,i+2,\ldots,i+\textit{nums}[i]$，初始化 $M[i][j\bmod 26]=1$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s)，欢迎点赞关注~
 
@@ -198,9 +198,9 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     private static final int MOD = 1_000_000_007;
-    private static final int SIZE = 26;
 
     public int lengthAfterTransformations(String s, int t, List<Integer> nums) {
+        final int SIZE = 26;
         int[][] f0 = new int[SIZE][1];
         for (int i = 0; i < SIZE; i++) {
             f0[i][0] = 1;
