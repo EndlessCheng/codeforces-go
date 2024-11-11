@@ -323,8 +323,8 @@ func gcd(a, b int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log t)$，其中 $n$ 是 $s$ 的长度。注意在 DFS 中，只有 $\mathcal{O}(\log t)$ 个不同的 $t$。
-- 空间复杂度：$\mathcal{O}(n\log t)$。
+- 时间复杂度：$\mathcal{O}(n + D\log^5 t)$，其中 $n$ 是 $s$ 的长度，$D=9$。在 DFS 中，当 $i$ 小于 $\mathcal{O}(n-\log t)$ 时，只要某个 $s[i]$ 增加了 $1$，后面 $\mathcal{O}(\log t)$ 个数字可以随便填，一定可以找到答案。所以主要分析最后 $\mathcal{O}(\log t)$ 个 $i$。此时对应的 $t$，由于其质因子 $2,3,5,7$ 可以取到各自的 $\mathcal{O}(\log t)$ 个不同的幂次，根据乘法原理，总共有 $\mathcal{O}(\log^4 t)$ 个不同的 $t$，再算上枚举 $d$ 的 $D$ 次循环，总的时间复杂度为 $\mathcal{O}(n + D\log^5 t)$。
+- 空间复杂度：$\mathcal{O}(n + \log^5 t)$。
 
 ## 方法二：从右到左枚举
 
