@@ -38,18 +38,13 @@ func smallestNumber(num string, t int64) string {
 	for i := i0; i >= 0; i-- {
 		for s[i]++; s[i] <= '9'; s[i]++ {
 			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
+			k := 9
 			for j := n - 1; j > i; j-- {
-				if tt == 1 { // 后面都填 1
-					s[j] = '1'
-					continue
+				for tt%k > 0 {
+					k--
 				}
-				for k := 9; k > 1; k-- {
-					if tt%k == 0 {
-						s[j] = '0' + byte(k)
-						tt /= k
-						break
-					}
-				}
+				tt /= k
+				s[j] = '0' + byte(k)
 			}
 			if tt == 1 {
 				return string(s)

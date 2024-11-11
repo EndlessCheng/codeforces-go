@@ -1,5 +1,7 @@
 ## 方法一：从左到右爆搜
 
+**阅读提示**：需要至少做过一道数位 DP 题。
+
 首先，由于数位乘积中的质因子只有 $2,3,5,7$，如果 $t$ 包含其他质因子，那么直接返回 $-1$。如果 $t$ 只包含质因子 $2,3,5,7$，那么答案一定存在。
 
 下文把 $\textit{num}$ 简记为 $s$。其长度为 $n$。
@@ -383,15 +385,12 @@ class Solution:
         for i in range(i0, -1, -1):
             for s[i] in range(s[i] + 1, 10):
                 tt = left_t[i] // gcd(left_t[i], s[i])
+                k = 9
                 for j in range(n - 1, i, -1):
-                    if tt == 1:  # 后面都填 1
-                        s[j] = 1
-                        continue
-                    for k in range(9, 1, -1):
-                        if tt % k == 0:
-                            s[j] = k
-                            tt //= k
-                            break
+                    while tt % k:
+                        k -= 1
+                    tt //= k
+                    s[j] = k
                 if tt == 1:
                     return ''.join(map(str, s))
 
@@ -437,18 +436,13 @@ class Solution {
         for (int i = i0; i >= 0; i--) {
             while (++s[i] <= '9') {
                 long tt = leftT[i] / gcd(leftT[i], s[i] - '0');
+                int k = 9;
                 for (int j = n - 1; j > i; j--) {
-                    if (tt == 1) { // 后面都填 1
-                        s[j] = '1';
-                        continue;
+                    while (tt % k != 0) {
+                        k--;
                     }
-                    for (int k = 9; k > 1; k--) {
-                        if (tt % k == 0) {
-                            s[j] = (char) ('0' + k);
-                            tt /= k;
-                            break;
-                        }
-                    }
+                    tt /= k;
+                    s[j] = (char) ('0' + k);
                 }
                 if (tt == 1) {
                     return new String(s);
@@ -514,18 +508,13 @@ public:
         for (int i = i0; i >= 0; i--) {
             while (++s[i] <= '9') {
                 long long tt = left_t[i] / gcd(left_t[i], s[i] - '0');
+                int k = 9;
                 for (int j = n - 1; j > i; j--) {
-                    if (tt == 1) { // 后面都填 1
-                        s[j] = '1';
-                        continue;
+                    while (tt % k) {
+                        k--;
                     }
-                    for (int k = 9; k > 1; k--) {
-                        if (tt % k == 0) {
-                            s[j] = '0' + k;
-                            tt /= k;
-                            break;
-                        }
-                    }
+                    tt /= k;
+                    s[j] = '0' + k;
                 }
                 if (tt == 1) {
                     return s;
@@ -580,18 +569,13 @@ func smallestNumber(num string, t int64) string {
 	for i := i0; i >= 0; i-- {
 		for s[i]++; s[i] <= '9'; s[i]++ {
 			tt := leftT[i] / gcd(leftT[i], int(s[i]-'0'))
+			k := 9
 			for j := n - 1; j > i; j-- {
-				if tt == 1 { // 后面都填 1
-					s[j] = '1'
-					continue
+				for tt%k > 0 {
+					k--
 				}
-				for k := 9; k > 1; k-- {
-					if tt%k == 0 {
-						s[j] = '0' + byte(k)
-						tt /= k
-						break
-					}
-				}
+				tt /= k
+				s[j] = '0' + byte(k)
 			}
 			if tt == 1 {
 				return string(s)
@@ -624,7 +608,7 @@ func gcd(a, b int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + D^2\log^2 t)$，其中 $n$ 是 $s$ 的长度，$D=9$。分析四重循环的循环次数，如果从 $i=n-1$ 开始循环，$i$ 至多减少 $\mathcal{O}(\log t)$ 次，就一定能在右边填入 $\mathcal{O}(\log t)$ 个数字，所以 $j$ 的循环次数是 $\mathcal{O}(\log t)$。而如果 $i$ 远小于 $n-1$，则一定能填入数字，$j$ 的循环次数是 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n + D\log^2 t)$，其中 $n$ 是 $s$ 的长度，$D=9$。分析四重循环的循环次数，如果从 $i=n-1$ 开始循环，$i$ 至多减少 $\mathcal{O}(\log t)$ 次，就一定能在右边填入 $\mathcal{O}(\log t)$ 个数字，所以 $j$ 的循环次数是 $\mathcal{O}(\log t)$。而如果 $i$ 远小于 $n-1$，则一定能填入数字，$j$ 的循环次数是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
