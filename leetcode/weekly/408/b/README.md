@@ -20,7 +20,7 @@ $$
 r-l+1 - \left(\pi(\lfloor\sqrt{r}\rfloor) - \pi(\lfloor\sqrt{l-1}\rfloor)\right)
 $$
 
-如何筛质数？具体请看 [视频讲解](https://www.bilibili.com/video/BV1Mi421a7cZ/) 第二题，欢迎点赞关注~
+如何筛质数？请看 [视频讲解](https://www.bilibili.com/video/BV1Mi421a7cZ/) 第二题，欢迎点赞关注~
 
 ```py [sol-Python3]
 MX = 31622
@@ -47,7 +47,7 @@ class Solution {
         for (int i = 2; i <= MX; i++) {
             if (PI[i] == 0) { // i 是质数
                 PI[i] = PI[i - 1] + 1;
-                for (int j = i * i; j <= MX; j += i) {
+                for (int j = i * i; j <= MX; j += i) { // 注：如果 MX 比较大，小心 i*i 溢出
                     PI[j] = -1; // 标记 i 的倍数为合数
                 }
             } else {
@@ -70,7 +70,7 @@ auto init = [] {
     for (int i = 2; i <= MX; i++) {
         if (pi[i] == 0) { // i 是质数
             pi[i] = pi[i - 1] + 1;
-            for (int j = i * i; j <= MX; j += i) {
+            for (int j = i * i; j <= MX; j += i) { // 注：如果 MX 比较大，小心 i*i 溢出
                 pi[j] = -1; // 标记 i 的倍数为合数
             }
         } else {
@@ -93,22 +93,22 @@ const mx = 31622
 var pi [mx + 1]int
 
 func init() {
-	for i := 2; i <= mx; i++ {
-		if pi[i] == 0 { // i 是质数
-			pi[i] = pi[i-1] + 1
-			for j := i * i; j <= mx; j += i {
-				pi[j] = -1 // 标记 i 的倍数为合数
-			}
-		} else {
-			pi[i] = pi[i-1]
-		}
-	}
+    for i := 2; i <= mx; i++ {
+        if pi[i] == 0 { // i 是质数
+            pi[i] = pi[i-1] + 1
+            for j := i * i; j <= mx; j += i {
+                pi[j] = -1 // 标记 i 的倍数为合数
+            }
+        } else {
+            pi[i] = pi[i-1]
+        }
+    }
 }
 
 func nonSpecialCount(l, r int) int {
-	cntR := pi[int(math.Sqrt(float64(r)))]
-	cntL := pi[int(math.Sqrt(float64(l-1)))]
-	return r - l + 1 - (cntR - cntL)
+    cntR := pi[int(math.Sqrt(float64(r)))]
+    cntL := pi[int(math.Sqrt(float64(l-1)))]
+    return r - l + 1 - (cntR - cntL)
 }
 ```
 
