@@ -315,9 +315,9 @@ impl Solution {
 
 $$
 \begin{cases} 
-\textit{low}' = \left\lceil\dfrac{\textit{low}}{g}\right\rceil \\
-\textit{high}' = \left\lfloor\dfrac{\textit{high}}{g}\right\rfloor \\
-\textit{zero}' = \dfrac{\textit{zero}}{g} \\
+\textit{low}' = \left\lceil\dfrac{\textit{low}}{g}\right\rceil \\[2ex]
+\textit{high}' = \left\lfloor\dfrac{\textit{high}}{g}\right\rfloor \\[2ex]
+\textit{zero}' = \dfrac{\textit{zero}}{g} \\[2ex]
 \textit{one}' = \dfrac{\textit{one}}{g} \\
 \end{cases}
 $$
