@@ -1,6 +1,6 @@
 module github.com/EndlessCheng/codeforces-go
 
-go 1.21
+go 1.23
 
 require (
 	github.com/emirpasic/gods v1.12.0
