@@ -117,8 +117,8 @@ func smallestNumber2(s string, t int64) string {
 			low = int(s[i] - '0')
 		}
 		for d := max(low, 1); d <= 9; d++ {
-			ans[i] = '0' + byte(d) // 直接覆盖，无需恢复现场
 			if dfs(i+1, t/gcd(t, d), isLimit && d == low) {
+				ans[i] = '0' + byte(d)
 				return true
 			}
 		}

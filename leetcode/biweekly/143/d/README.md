@@ -1,19 +1,17 @@
 ## 方法一：从左到右爆搜
 
-**阅读提示**：需要至少做过一道数位 DP 题。
-
 首先，由于数位乘积中的质因子只有 $2,3,5,7$，如果 $t$ 包含其他质因子，那么直接返回 $-1$。如果 $t$ 只包含质因子 $2,3,5,7$，那么答案一定存在。
 
 下文把 $\textit{num}$ 简记为 $s$。其长度为 $n$。
 
 例如 $s=123$，并假设答案的长度也为 $3$。
 
-仿照 [数位 DP](https://www.bilibili.com/video/BV1rS4y1s721/?t=20m05s) 的思路，写一个爆搜（回溯）：
+仿照 [数位 DP](https://www.bilibili.com/video/BV1rS4y1s721/?t=20m05s) 的思路，写一个爆搜：
 
 - 最高位如果填 $1$，那么第二位不能填 $1$（不然小于 $s$ 了），至少要填 $2$。
 - 最高位如果填的数大于 $1$，那么第二位，以及第三位，填的数字不受到 $s$ 的约束，可以填 $[1,9]$ 中的任意数字。
 
-这启发我们也像数位 DP 那样，在回溯的过程中，用一个参数 $\textit{isLimit}$ 表示「是否受到 $s$ 的约束」。
+这启发我们也像数位 DP 那样，在递归的过程中，用一个参数 $\textit{isLimit}$ 表示「是否受到 $s$ 的约束」。
 
 如何判断所填数位之积是 $t$ 的倍数呢？
 
@@ -25,7 +23,7 @@
 
 一般地，如果填的数字是 $d$，那么余下的数位，需要满足乘积是 $\dfrac{t}{\text{GCD}(t,d)}$ 的倍数。
 
-综上所述，写一个带 $\textit{vis}$ 的爆搜（回溯），参数有：
+综上所述，写一个带 $\textit{vis}$ 的爆搜，参数有：
 
 - $i$：表示当前填到 $s$ 的第 $i$ 个数位了。
 - $t$：表示 $[i,n-1]$ 所填数位，需要满足乘积是 $t$ 的倍数。
@@ -51,7 +49,7 @@ $$
 
 注意至少要添加 $1$ 个前导零，因为可能有 $s=999$ 这种情况，即使 $t=2$，答案（$1112$）长度也比 $s$ 要长。
 
-注意添加前导零会影响可以填入的数字，当 $\textit{isLimit}=\texttt{true}$ 且 $i < \textit{cnt}$ 时，我们可以填入 $0$。
+注意添加前导零会影响可以填入的数字，当 $\textit{isLimit}=\texttt{true}$ 且 $i < \textit{cnt}$ 时，我们可以填入 $0$。这和数位 DP 的「跳过不填数字」是一样的。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1cgmBYqEhu/?t=28m31s)，欢迎点赞关注~
 
@@ -72,7 +70,7 @@ class Solution:
         s = '0' * cnt + s
 
         n = len(s)
-        ans = [0] * n
+        ans = ['0'] * n
 
         @cache  # 仅仅作为 vis 标记使用
         def dfs(i: int, t: int, is_limit: bool) -> bool:
@@ -84,14 +82,14 @@ class Solution:
 
             low = int(s[i]) if is_limit else 0
             for d in range(max(low, 1), 10):
-                ans[i] = d  # 直接覆盖，无需恢复现场
                 if dfs(i + 1, t // gcd(t, d), is_limit and d == low):
+                    ans[i] = str(d)
                     return True
             return False
 
         dfs(0, t, True)
         dfs.cache_clear()  # 防止爆内存
-        return ''.join(map(str, ans)).lstrip('0')  # 去掉前导零
+        return ''.join(ans).lstrip('0')  # 去掉前导零
 ```
 
 ```py [sol-Python3 写法二]
@@ -111,7 +109,7 @@ class Solution:
         s = '0' * cnt + s
 
         n = len(s)
-        ans = [0] * n
+        ans = ['0'] * n
         vis = [set() for _ in range(n)]
 
         def dfs(i: int, t: int, is_limit: bool) -> bool:
@@ -128,13 +126,13 @@ class Solution:
 
             low = int(s[i]) if is_limit else 0
             for d in range(max(low, 1), 10):
-                ans[i] = d  # 直接覆盖，无需恢复现场
                 if dfs(i + 1, t // gcd(t, d), is_limit and d == low):
+                    ans[i] = str(d)
                     return True
             return False
 
         dfs(0, t, True)
-        return ''.join(map(str, ans)).lstrip('0')  # 去掉前导零
+        return ''.join(ans).lstrip('0')  # 去掉前导零
 ```
 
 ```java [sol-Java]
@@ -185,8 +183,8 @@ class Solution {
 
         int low = isLimit ? s[i] - '0' : 0;
         for (int d = Math.max(low, 1); d <= 9; d++) {
-            ans[i] = (char) ('0' + d); // 直接覆盖，无需恢复现场
             if (dfs(i + 1, t / gcd(t, d), isLimit && d == low, cnt, s, ans, vis)) {
+                ans[i] = (char) ('0' + d);
                 return true;
             }
         }
@@ -241,8 +239,8 @@ public:
 
             int low = is_limit ? s[i] - '0' : 0;
             for (int d = max(low, 1); d <= 9; d++) {
-                ans[i] = '0' + d; // 直接覆盖，无需恢复现场
                 if (dfs(dfs, i + 1, t / gcd(t, d), is_limit && d == low)) {
+                    ans[i] = '0' + d;
                     return true;
                 }
             }
@@ -300,8 +298,8 @@ func smallestNumber(s string, t int64) string {
 			low = int(s[i] - '0')
 		}
 		for d := max(low, 1); d <= 9; d++ {
-			ans[i] = '0' + byte(d) // 直接覆盖，无需恢复现场
 			if dfs(i+1, t/gcd(t, d), isLimit && d == low) {
+				ans[i] = '0' + byte(d)
 				return true
 			}
 		}
@@ -610,6 +608,10 @@ func gcd(a, b int) int {
 
 - 时间复杂度：$\mathcal{O}(n + D\log^2 t)$，其中 $n$ 是 $s$ 的长度，$D=9$。分析四重循环的循环次数，如果从 $i=n-1$ 开始循环，$i$ 至多减少 $\mathcal{O}(\log t)$ 次，就一定能在右边填入 $\mathcal{O}(\log t)$ 个数字，所以 $j$ 的循环次数是 $\mathcal{O}(\log t)$。而如果 $i$ 远小于 $n-1$，则一定能填入数字，$j$ 的循环次数是 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 相似题目
+
+- [3260. 找出最大的 N 位 K 回文数](https://leetcode.cn/problems/find-the-largest-palindrome-divisible-by-k/) 2370
 
 ## 分类题单
 
