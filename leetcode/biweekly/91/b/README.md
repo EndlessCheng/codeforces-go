@@ -22,6 +22,16 @@ $$
 
 ## 写法一：记忆化搜索
 
+### 答疑
+
+**问**：为什么要把每个 $\textit{dfs}(i)$ 都算一遍？能不能只算一次 $\textit{dfs}(\textit{high})$，然后累加 $\textit{memo}$ 数组中的计算结果？
+
+**答**：这是不对的。比如 $\textit{zero} = \textit{one} = 2$，这种写法不会递归到 $i=\textit{high}-1$ 这个状态，$\textit{memo}[\textit{high}-1]$ 仍然是其初始值 $-1$。
+
+**问**：那我不累加 $\textit{memo}[i]=-1$ 的结果可以吗？
+
+**答**：仍然不行。比如 $\textit{zero} = \textit{one} = 2$ 且 $\textit{high}=5$，我们可以得到长为 $2$ 和 $4$ 的字符串，但这些答案并不能从 $\textit{dfs}(5)$ 中算出来。
+
 ```py [sol-Python3]
 class Solution:
     def countGoodStrings(self, low: int, high: int, zero: int, one: int) -> int:
