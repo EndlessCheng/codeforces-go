@@ -41,13 +41,13 @@ class Solution:
             while cnt[0] > k and cnt[1] > k:
                 cnt[ord(s[l]) & 1] -= 1
                 l += 1
-            left[i] = l
+            left[i] = l  # 记录合法子串右端点 i 对应的最小左端点 l
             # 计算 i-left[i]+1 的前缀和
             pre[i + 1] = pre[i] + i - l + 1
 
         ans = []
         for l, r in queries:
-            j = bisect_left(left, l, l, r + 1)
+            j = bisect_left(left, l, l, r + 1)  # 如果区间内所有数都小于 l，结果是 j=r+1
             ans.append(pre[r + 1] - pre[j] + (j - l + 1) * (j - l) // 2)
         return ans
 ```
@@ -66,7 +66,7 @@ class Solution {
             while (cnt[0] > k && cnt[1] > k) {
                 cnt[s[l++] & 1]--;
             }
-            left[i] = l;
+            left[i] = l; // 记录合法子串右端点 i 对应的最小左端点 l
             // 计算 i-left[i]+1 的前缀和
             sum[i + 1] = sum[i] + i - l + 1;
         }
@@ -75,6 +75,7 @@ class Solution {
         for (int i = 0; i < queries.length; i++) {
             int ql = queries[i][0];
             int qr = queries[i][1];
+            // 如果区间内所有数都小于 ql，结果是 j=qr+1
             int j = lowerBound(left, ql - 1, qr + 1, ql);
             ans[i] = sum[qr + 1] - sum[j] + (long) (j - ql + 1) * (j - ql) / 2;
         }
@@ -114,7 +115,7 @@ public:
             while (cnt[0] > k && cnt[1] > k) {
                 cnt[s[l++] & 1]--;
             }
-            left[i] = l;
+            left[i] = l; // 记录合法子串右端点 i 对应的最小左端点 l
             // 计算 i-left[i]+1 的前缀和
             sum[i + 1] = sum[i] + i - l + 1;
         }
@@ -122,6 +123,7 @@ public:
         vector<long long> ans(queries.size());
         for (int i = 0; i < queries.size(); i++) {
             int l = queries[i][0], r = queries[i][1];
+            // 如果区间内所有数都小于 l，结果是 j=r+1
             int j = lower_bound(left.begin() + l, left.begin() + r + 1, l) - left.begin();
             ans[i] = sum[r + 1] - sum[j] + (long long) (j - l + 1) * (j - l) / 2;
         }
@@ -143,7 +145,7 @@ func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
 			cnt[s[l]&1]--
 			l++
 		}
-		left[i] = l
+		left[i] = l // 记录合法子串右端点 i 对应的最小左端点 l
 		// 计算 i-left[i]+1 的前缀和
 		sum[i+1] = sum[i] + i - l + 1
 	}
@@ -151,7 +153,7 @@ func countKConstraintSubstrings(s string, k int, queries [][]int) []int64 {
 	ans := make([]int64, len(queries))
 	for i, q := range queries {
 		l, r := q[0], q[1]
-		j := l + sort.SearchInts(left[l:r+1], l)
+		j := l + sort.SearchInts(left[l:r+1], l) // 如果区间内所有数都小于 l，结果是 j=r+1
 		ans[i] = int64(sum[r+1] - sum[j] + (j-l+1)*(j-l)/2)
 	}
 	return ans
