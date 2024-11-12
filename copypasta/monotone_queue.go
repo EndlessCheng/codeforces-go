@@ -55,6 +55,7 @@ https://codeforces.com/problemset/problem/1584/E 2300
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
    - 反过来 https://codeforces.com/problemset/problem/1898/B 1500
+https://codeforces.com/problemset/problem/1736/C1 1300
 https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/487/B 2000
 https://codeforces.com/problemset/problem/940/E 2000
