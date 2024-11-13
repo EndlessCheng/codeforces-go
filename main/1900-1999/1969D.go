@@ -26,7 +26,7 @@ func cf1969D(in io.Reader, out io.Writer) {
 		slices.SortFunc(a, func(a, b pair) int { return b.y - a.y })
 
 		s := 0
-		h := hp{make([]int, k)}
+		h := hp69{make([]int, k)}
 		for i, p := range a[:k] {
 			h.IntSlice[i] = p.x
 			s -= p.x
@@ -51,7 +51,7 @@ func cf1969D(in io.Reader, out io.Writer) {
 }
 
 func main() { cf1969D(bufio.NewReader(os.Stdin), os.Stdout) }
-type hp struct{ sort.IntSlice }
-func (h hp) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
-func (hp) Push(any)             {}
-func (hp) Pop() (_ any)         { return }
+type hp69 struct{ sort.IntSlice }
+func (h hp69) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
+func (hp69) Push(any)             {}
+func (hp69) Pop() (_ any)         { return }
