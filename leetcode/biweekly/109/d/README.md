@@ -1,13 +1,27 @@
-把 $n$ 看成背包容量，$n_i^x$ 看成物品，本题就是一个 0-1 背包模板题，具体请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。如果这个视频对你有帮助，欢迎一键三连！
+把 $n$ 看成背包容量，$1^x,2^x,3^x,\cdots$ 看成物品，本题就是一个 **0-1 背包**模板题，具体请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 代码实现时，由于 $n=300,x=1$ 算出来的结果不超过 $64$ 位整数的最大值，所以可以在计算结束后再取模。
 
 ```py [sol-Python3]
+class Solution:
+    def numberOfWays(self, n: int, x: int) -> int:
+        f = [1] + [0] * n
+        for i in range(1, n + 1):
+            v = i ** x
+            if v > n:
+                break
+            for s in range(n, v - 1, -1):
+                f[s] += f[s - v]
+        return f[n] % 1_000_000_007
+```
+
+```py [sol-Python3 预处理 0ms]
+# 预处理所有答案
 MX_N, MX_X = 300, 5
-f = [[1] + [0] * MX_N for _ in range(MX_X)]
-for x in range(MX_X):
+f = [[1] + [0] * MX_N for _ in range(MX_X + 1)]
+for x in range(1, MX_X + 1):
     for i in count(1):
-        v = i ** (x + 1)
+        v = i ** x
         if v > MX_N:
             break
         for s in range(MX_N, v - 1, -1):
@@ -15,7 +29,42 @@ for x in range(MX_X):
 
 class Solution:
     def numberOfWays(self, n: int, x: int) -> int:
-        return f[x - 1][n] % 1_000_000_007
+        return f[x][n] % 1_000_000_007
+```
+
+```java [sol-Java]
+class Solution {
+    int numberOfWays(int n, int x) {
+        long[] f = new long[n + 1];
+        f[0] = 1;
+        // 本题数据范围小，Math.pow 的计算结果一定准确
+        for (int i = 1; Math.pow(i, x) <= n; i++) {
+            int v = (int) Math.pow(i, x);
+            for (int s = n; s >= v; s--) {
+                f[s] += f[s - v];
+            }
+        }
+        return (int) (f[n] % 1_000_000_007);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int numberOfWays(int n, int x) {
+        vector<long long> f(n + 1);
+        f[0] = 1;
+        // 本题数据范围小，pow 的计算结果一定准确
+        for (int i = 1; pow(i, x) <= n; i++) {
+            int v = pow(i, x);
+            for (int s = n; s >= v; s--) {
+                f[s] += f[s - v];
+            }
+        }
+        return f[n] % 1'000'000'007;
+    }
+};
 ```
 
 ```go [sol-Go]
@@ -31,22 +80,18 @@ func numberOfWays(n, x int) int {
 	return f[n] % 1_000_000_007
 }
 
-func pow(x, n int) int {
-	res := 1
-	for ; n > 0; n /= 2 {
-		if n%2 > 0 {
-			res = res * x
-		}
-		x = x * x
-	}
-	return res
+// 本题数据范围小，math.Pow 的计算结果一定准确
+func pow(i, x int) int {
+	return int(math.Pow(float64(i), float64(x)))
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2\log x)$。
+- 时间复杂度：$\mathcal{O}(n\sqrt[x]n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+注：也可以使用快速幂计算 $\texttt{pow}$，原理见[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
 ## 分类题单
 
@@ -63,6 +108,7 @@ func pow(x, n int) int {
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
