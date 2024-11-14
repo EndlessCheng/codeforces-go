@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"container/heap"
 	. "fmt"
 	"io"
-	"os"
 	"slices"
 	"sort"
 )
@@ -50,7 +48,7 @@ func cf1969D(in io.Reader, out io.Writer) {
 	}
 }
 
-func main() { cf1969D(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { cf1969D(bufio.NewReader(os.Stdin), os.Stdout) }
 type hp69 struct{ sort.IntSlice }
 func (h hp69) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
 func (hp69) Push(any)             {}
