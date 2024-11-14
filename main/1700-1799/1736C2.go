@@ -62,7 +62,7 @@ func cf1736C2(in io.Reader, _w io.Writer) {
 				Fprintln(out, ans) // 无影响
 			} else {
 				r := -tar
-				// 左端点为 l,l+1,...,r-1 的区间，右开端点都从 right[i] 缩小为 p
+				// 左端点为 l,l+1,...,r-1 的区间，右开端点从 right[i] 缩小为 p
 				Fprintln(out, ans-(sumR[r]-sumR[l]-(r-l)*p))
 			}
 		} else {
@@ -70,7 +70,7 @@ func cf1736C2(in io.Reader, _w io.Writer) {
 				Fprintln(out, ans) // 无影响
 			} else {
 				ll := max(ge[p], -tar)
-				// 左端点为 ll,ll+1,...,l-1 的区间，都受到 a[p] 影响，右端点从 right 变成 right2
+				// 左端点为 ll,ll+1,...,l-1 的区间，都受到 a[p] 影响，右端点从 right[i] 扩大为 right2[i]
 				Fprintln(out, ans+sumInc[l]-sumInc[ll])
 			}
 		}
