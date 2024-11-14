@@ -10,7 +10,7 @@ func cf903F(in io.Reader, out io.Writer) {
 	var n int
 	Fscan(in, &n)
 	a := [4]int{}
-	s := [4][]byte{}
+	s := [4]string{}
 	Fscan(in, &a[0], &a[1], &a[2], &a[3], &s[0], &s[1], &s[2], &s[3])
 
 	memo := make([][4][1 << 4][1 << 4][1 << 4]int, n)
