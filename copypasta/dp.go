@@ -45,7 +45,8 @@ LC1416 https://leetcode.cn/problems/restore-the-array/ 1920
 LC2944 https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/
 LC2297 https://leetcode.cn/problems/jump-game-viii/
 LCR165 https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof/
-https://codeforces.com/contest/1547/problem/E 1500
+https://codeforces.com/problemset/problem/1547/E 1500
+https://codeforces.com/problemset/problem/1881/E 1500
 https://codeforces.com/problemset/problem/1875/D 1600
 另见「最长递增子序列」
 
@@ -199,6 +200,7 @@ https://codeforces.com/problemset/problem/346/D 2600
 https://codeforces.com/problemset/problem/1461/B 1400
 https://codeforces.com/problemset/problem/553/A 1500
 https://codeforces.com/problemset/problem/1286/A 1800
+https://codeforces.com/problemset/problem/1987/D 1800
 https://codeforces.com/problemset/problem/14/E 1900
 https://codeforces.com/problemset/problem/452/D 1900 题解 https://www.luogu.com.cn/blog/endlesscheng/solution-cf452d
 https://codeforces.com/problemset/problem/687/C 1900
@@ -399,6 +401,10 @@ https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html
 https://wenku.baidu.com/view/7c9de809581b6bd97f19ea72.html 算法合集之《从《鹰蛋》一题浅析对动态规划算法的优化》
 */
 func _(abs func(int) int) {
+	// 如果用（多维）数组记忆化
+	// 小技巧，可以在保存的时候把计算结果 +1（或者 +1e18），取出来的时候 -1（或者 -1e18）
+	// 这样原来的 *p != -1 可以改成 *p > 0，避免初始化 memo 数组时的多重循环
+
 	// 由于数据范围的原因，采用 map 记忆化         dpMap
 	// LC1553 https://leetcode.cn/problems/minimum-number-of-days-to-eat-n-oranges/
 	// LC2998 https://leetcode.cn/problems/minimum-number-of-operations-to-make-x-and-y-equal/
@@ -1598,7 +1604,8 @@ func _(abs func(int) int) {
 	// 每个物品的体积都是 1
 	// 如果题目要求每种物品至少选一个，可以把每个 cnts[i] 都减一，maxW 减去 len(cnts)，这样就转换成了每种物品至少选 0 个的情况了
 	// 讲解 https://leetcode.cn/problems/find-the-original-typed-string-ii/solutions/2966856/zheng-nan-ze-fan-qian-zhui-he-you-hua-dp-5mi9/
-	// 另见 math_comb.go 中的「多重集组合数」
+	// 挑战 pp.68-69 多重集组合数
+	// 另见 math_comb.go 中的「多重集组合数」容斥做法
 	// LC3333 https://leetcode.cn/problems/find-the-original-typed-string-ii/
 	// LC2902 https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/ 2759
 	// LC2585 https://leetcode.cn/problems/number-of-ways-to-earn-points/ 1910
@@ -2088,6 +2095,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/401/D 2000
 	https://codeforces.com/problemset/problem/453/B 2000 与质因数分解结合
 	https://codeforces.com/problemset/problem/895/C 2000
+	https://codeforces.com/problemset/problem/903/F 2200
 	https://codeforces.com/problemset/problem/1316/E 2300 与排序贪心结合
 	https://codeforces.com/problemset/problem/1955/H 2300
 	https://codeforces.com/problemset/problem/1209/E2 2500 循环移位
@@ -2696,6 +2704,8 @@ func _(abs func(int) int) {
 	*/
 
 	// 只做一次记忆化搜索的写法
+	// TIPS：如果题目要求计算 < high 的方案数（high 是个字符串），
+	//       可以在递归到 i=n 时，判断 limitHigh 是否为 true，如果是 true 则表示填入的数字等于 high，返回 0
 	digitDP := func(low, high int, sumUpper int) int {
 		lowS := strconv.Itoa(low) // 不加前导零
 		highS := strconv.Itoa(high)
