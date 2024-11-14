@@ -4,14 +4,13 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"sort"
 )
 
 // https://github.com/EndlessCheng
 func cf1736C2(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	var n, m, l, l2, r2, p, x int
+	var n, m, l, l2, r2, x int
 	Fscan(in, &n)
 	ans := n * (n + 1) / 2
 	right := make([]int, n)
@@ -43,12 +42,21 @@ func cf1736C2(in io.Reader, _w io.Writer) {
 		sumInc[i+1] = sumInc[i] + right2[i] - v
 	}
 
+	ge := make([]int, n+1)
+	p := 0
+	for i := range ge {
+		for right[p] < i {
+			p++
+		}
+		ge[i] = p
+	}
+
 	Fscan(in, &m)
 	for range m {
 		Fscan(in, &p, &x)
 		p--
 		tar := x - p - 1 // 变为 tar
-		l := sort.SearchInts(right, p+1) // 第一个包含 p 的区间
+		l := ge[p+1] // 第一个包含 p 的区间
 		if x <= a[p] {
 			if tar >= -l {
 				Fprintln(out, ans) // 无影响
@@ -61,7 +69,7 @@ func cf1736C2(in io.Reader, _w io.Writer) {
 			if p == 0 || right[p-1] < p-1 {
 				Fprintln(out, ans) // 无影响
 			} else {
-				ll := max(sort.SearchInts(right, p), -tar)
+				ll := max(ge[p], -tar)
 				// 左端点为 ll,ll+1,...,l-1 的区间，都受到 a[p] 影响，右端点从 right 变成 right2
 				Fprintln(out, ans+sumInc[l]-sumInc[ll])
 			}
