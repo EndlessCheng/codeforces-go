@@ -89,7 +89,7 @@ class Solution:
         if n % 2:
             # 统计正中间这一列
             for i in range(m // 2):
-                if a[i][n // 2] != a[- 1 - i][n // 2]:
+                if a[i][n // 2] != a[-1 - i][n // 2]:
                     diff += 1
                 else:
                     cnt1 += a[i][n // 2] * 2
