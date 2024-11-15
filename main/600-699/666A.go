@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"maps"
 	"slices"
 )
 
@@ -38,11 +39,7 @@ func cf666A(in io.Reader, _w io.Writer) {
 	}
 	dfs(n-1, "")
 
-	suf := make([]string, 0, len(ans))
-	for k := range ans {
-		suf = append(suf, k)
-	}
-	slices.Sort(suf)
+	suf := slices.Sorted(maps.Keys(ans))
 	Fprintln(out, len(suf))
 	for _, v := range suf {
 		Fprintln(out, v)
