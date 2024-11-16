@@ -10,7 +10,7 @@ import (
 func cf2031D(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	var T, n, mx int
+	var T, n int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		a := make([]int, n)
@@ -26,7 +26,7 @@ func cf2031D(in io.Reader, _w io.Writer) {
 
 		for i := 0; i < n; {
 			st := i
-			mx = a[i]
+			mx := a[i]
 			for i++; i < n && mx > suf[i]; i++ {
 				mx = max(mx, a[i])
 			}
