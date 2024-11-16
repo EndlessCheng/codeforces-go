@@ -8,7 +8,7 @@ $$
 a[i][j] = a[i][n-1-j] = a[m-1-i][j] = a[m-1-i][n-1-j]
 $$
 
-也就是这四个数要么都是 $0$，要么都是 $1$。其中 $0\le i \le \lfloor m/2 \rfloor,\ 0\le j \le \lfloor n/2 \rfloor$。
+也就是这四个数要么都是 $0$，要么都是 $1$。其中 $0\le i < \lfloor m/2 \rfloor,\ 0\le j < \lfloor n/2 \rfloor$。
 
 设
 
