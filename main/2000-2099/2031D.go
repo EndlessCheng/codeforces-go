@@ -30,7 +30,7 @@ func cf2031D(in io.Reader, _w io.Writer) {
 			for i++; i < n && mx > suf[i]; i++ {
 				mx = max(mx, a[i])
 			}
-			for ; st < i; st++ {
+			for range i - st {
 				Fprint(out, mx, " ")
 			}
 		}
