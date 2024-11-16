@@ -29,9 +29,7 @@ func cf2027D1(in io.Reader, out io.Writer) {
 				for s[k] > s[j]+b[i] {
 					k--
 				}
-				if k > j {
-					f[j] = min(f[j], f[k]+m-1-i)
-				}
+				f[j] = min(f[j], f[k]+m-1-i)
 			}
 		}
 		ans := f[0]
