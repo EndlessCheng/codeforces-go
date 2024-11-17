@@ -6,6 +6,29 @@ import (
 )
 
 // https://space.bilibili.com/206214
+func minZeroArray(nums []int, queries [][]int) int {
+	n := len(nums)
+	diff := make([]int, n+1)
+	sumD, k := 0, 0
+	for i, x := range nums {
+		sumD += diff[i]
+		for k < len(queries) && sumD < x { // 需要添加询问，把 x 减小
+			q := queries[k]
+			l, r, val := q[0], q[1], q[2]
+			diff[l] += val
+			diff[r+1] -= val
+			if l <= i && i <= r { // x 在更新范围中
+				sumD += val
+			}
+			k++
+		}
+		if sumD < x { // 无法更新
+			return -1
+		}
+	}
+	return k
+}
+
 type seg []struct {
 	l, r, mx, todo int
 }
@@ -55,7 +78,7 @@ func (t seg) update(o, l, r, v int) {
 	t.maintain(o)
 }
 
-func minZeroArray(nums []int, queries [][]int) int {
+func minZeroArray3(nums []int, queries [][]int) int {
 	n := len(nums)
 	t := make(seg, 2<<bits.Len(uint(n-1)))
 	t.build(nums, 1, 0, n-1)

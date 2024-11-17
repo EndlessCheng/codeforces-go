@@ -475,17 +475,133 @@ func minZeroArray(nums []int, queries [][]int) int {
 - 时间复杂度：$\mathcal{O}(n+q\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 方法三：双指针+差分数组
+
+和方法一一样，用一个差分数组处理询问。
+
+这次我们从左到右遍历 $x=\textit{nums}[i]$，如果发现 $x>\textit{sumD}$，那么就必须处理询问，直到 $x\le \textit{sumD}$ 为止。
+
+对于询问 $[l,r,\textit{val}]$，如果发现 $l\le i \le r$，那么直接把 $\textit{sumD}$ 增加 $\textit{val}$。
+
+由于处理过的询问无需再处理，所以上述过程可以用双指针实现。
+
+```py [sol-Python3]
+class Solution:
+    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
+        diff = [0] * (len(nums) + 1)
+        sum_d = k = 0
+        for i, (x, d) in enumerate(zip(nums, diff)):
+            sum_d += d
+            while k < len(queries) and sum_d < x:  # 需要添加询问，把 x 减小
+                q = queries[k]
+                l, r, val = q
+                diff[l] += val
+                diff[r + 1] -= val
+                if l <= i <= r:  # x 在更新范围中
+                    sum_d += val
+                k += 1
+            if sum_d < x:  # 无法更新
+                return -1
+        return k
+```
+
+```java [sol-Java]
+class Solution {
+    public int minZeroArray(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int[] diff = new int[n + 1];
+        int sumD = 0;
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            sumD += diff[i];
+            while (k < queries.length && sumD < x) { // 需要添加询问，把 x 减小
+                int[] q = queries[k];
+                int l = q[0], r = q[1], val = q[2];
+                diff[l] += val;
+                diff[r + 1] -= val;
+                if (l <= i && i <= r) { // x 在更新范围中
+                    sumD += val;
+                }
+                k++;
+            }
+            if (sumD < x) { // 无法更新
+                return -1;
+            }
+        }
+        return k;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+        int n = nums.size();
+        vector<int> diff(n + 1);
+        int sum_d = 0, k = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            sum_d += diff[i];
+            while (k < queries.size() && sum_d < x) { // 需要添加询问，把 x 减小
+                auto& q = queries[k];
+                int l = q[0], r = q[1], val = q[2];
+                diff[l] += val;
+                diff[r + 1] -= val;
+                if (l <= i && i <= r) { // x 在更新范围中
+                    sum_d += val;
+                }
+                k++;
+            }
+            if (sum_d < x) { // 无法更新
+                return -1;
+            }
+        }
+        return k;
+    }
+};
+```
+
+```go [sol-Go]
+func minZeroArray(nums []int, queries [][]int) int {
+	n := len(nums)
+	diff := make([]int, n+1)
+	sumD, k := 0, 0
+	for i, x := range nums {
+		sumD += diff[i]
+		for k < len(queries) && sumD < x { // 需要添加询问，把 x 减小
+			q := queries[k]
+			l, r, val := q[0], q[1], q[2]
+			diff[l] += val
+			diff[r+1] -= val
+			if l <= i && i <= r { // x 在更新范围中
+				sumD += val
+			}
+			k++
+		}
+		if sumD < x { // 无法更新
+			return -1
+		}
+	}
+	return k
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+q)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 思考题
 
 如果询问可以按照任意顺序执行呢？这里限制 $\textit{val}=1$。
-
-更多相似题目，见下面二分题单中的「**二分答案：求最小**」以及数据结构题单中的「**§2.1 一维差分**」和「**§8.4 Lazy 线段树**」。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. 【本题相关】[滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. 【本题相关】[二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
