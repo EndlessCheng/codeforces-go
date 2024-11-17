@@ -71,9 +71,11 @@ $$
 \max(d_1,d_2) = \left\lceil\dfrac{\textit{maxR} - \textit{minL}}{3}\right\rceil = \left\lfloor\dfrac{\textit{maxR} - \textit{minL}+2}{3}\right\rfloor
 $$
 
-> 也可以这样理解，在不存在孤立 $-1$（以及前导 $-1$，尾 $-1$）的情况下，上式相当于答案的上界。
+> 也可以这样理解，在不存在孤立 $-1$ 的情况下，上式相当于答案的上界。
 
 如果上式比 $\left\lceil\dfrac{\min(r-\textit{minL},\textit{maxR}-\textit{L})}{2}\right\rceil$ 更小，那么改用上式更新答案的最大值。
+
+注意前导 $-1$ 和尾 $-1$ 是不需要管的，它们不会算出比中间的 $-1$ 更大的绝对差。
 
 ```py [sol-Python3]
 class Solution:
@@ -86,12 +88,6 @@ class Solution:
                 min_l = min(min_l, v)
                 max_r = max(max_r, v)
 
-        def calc_diff(l: int, r: int, big: bool) -> int:
-            d = (min(r - min_l, max_r - l) + 1) // 2
-            if big:
-                d = min(d, (max_r - min_l + 2) // 3)  # d 不能超过上界
-            return d
-
         ans = 0
         pre_i = -1
         for i, v in enumerate(nums):
@@ -101,12 +97,12 @@ class Solution:
                 if i - pre_i == 1:
                     ans = max(ans, abs(v - nums[pre_i]))
                 else:
-                    ans = max(ans, calc_diff(min(nums[pre_i], v), max(nums[pre_i], v), i - pre_i > 2))
-            elif i > 0:
-                ans = max(ans, calc_diff(v, v, False))
+                    l, r = min(nums[pre_i], v), max(nums[pre_i], v)
+                    d = (min(r - min_l, max_r - l) + 1) // 2
+                    if i - pre_i > 2:
+                        d = min(d, (max_r - min_l + 2) // 3)  # d 不能超过上界
+                    ans = max(ans, d)
             pre_i = i
-        if 0 <= pre_i < n - 1:
-            ans = max(ans, calc_diff(nums[pre_i], nums[pre_i], False))
         return ans
 ```
 
@@ -124,6 +120,7 @@ class Solution {
             }
         }
 
+        int ans = 0;
         int preI = -1;
         for (int i = 0; i < n; i++) {
             if (nums[i] == -1) {
@@ -133,27 +130,18 @@ class Solution {
                 if (i - preI == 1) {
                     ans = Math.max(ans, Math.abs(nums[i] - nums[preI]));
                 } else {
-                    updateAns(Math.min(nums[preI], nums[i]), Math.max(nums[preI], nums[i]), i - preI > 2, minL, maxR);
+                    int l = Math.min(nums[preI], nums[i]);
+                    int r = Math.max(nums[preI], nums[i]);
+                    int d = (Math.min(r - minL, maxR - l) + 1) / 2;
+                    if (i - preI > 2) {
+                        d = Math.min(d, (maxR - minL + 2) / 3); // d 不能超过上界
+                    }
+                    ans = Math.max(ans, d);
                 }
-            } else if (i > 0) {
-                updateAns(nums[i], nums[i], false, minL, maxR);
             }
             preI = i;
         }
-        if (0 <= preI && preI < n - 1) {
-            updateAns(nums[preI], nums[preI], false, minL, maxR);
-        }
         return ans;
-    }
-
-    private int ans;
-
-    private void updateAns(int l, int r, boolean big, int minL, int maxR) {
-        int d = (Math.min(r - minL, maxR - l) + 1) / 2;
-        if (big) {
-            d = Math.min(d, (maxR - minL + 2) / 3); // d 不能超过上界
-        }
-        ans = Math.max(ans, d);
     }
 }
 ```
@@ -172,16 +160,7 @@ public:
             }
         }
 
-        int ans = 0;
-        auto update_ans = [&](int l, int r, bool big) {
-            int d = (min(r - min_l, max_r - l) + 1) / 2;
-            if (big) {
-                d = min(d, (max_r - min_l + 2) / 3); // d 不能超过上界
-            }
-            ans = max(ans, d);
-        };
-
-        int pre_i = -1;
+        int ans = 0, pre_i = -1;
         for (int i = 0; i < n; i++) {
             if (nums[i] == -1) {
                 continue;
@@ -190,15 +169,16 @@ public:
                 if (i - pre_i == 1) {
                     ans = max(ans, abs(nums[i] - nums[pre_i]));
                 } else {
-                    update_ans(min(nums[pre_i], nums[i]), max(nums[pre_i], nums[i]), i - pre_i > 2);
+                    int l = min(nums[pre_i], nums[i]);
+                    int r = max(nums[pre_i], nums[i]);
+                    int d = (min(r - min_l, max_r - l) + 1) / 2;
+                    if (i - pre_i > 2) {
+                        d = min(d, (max_r - min_l + 2) / 3); // d 不能超过上界
+                    }
+                    ans = max(ans, d);
                 }
-            } else if (i > 0) {
-                update_ans(nums[i], nums[i], false);
             }
             pre_i = i;
-        }
-        if (0 <= pre_i && pre_i < n - 1) {
-            update_ans(nums[pre_i], nums[pre_i], false);
         }
         return ans;
     }
@@ -207,22 +187,13 @@ public:
 
 ```go [sol-Go]
 func minDifference(nums []int) (ans int) {
-	n := len(nums)
 	// 和空位相邻的最小数字 minL 和最大数字 maxR
 	minL, maxR := math.MaxInt, 0
 	for i, v := range nums {
-		if v != -1 && (i > 0 && nums[i-1] == -1 || i < n-1 && nums[i+1] == -1) {
+		if v != -1 && (i > 0 && nums[i-1] == -1 || i < len(nums)-1 && nums[i+1] == -1) {
 			minL = min(minL, v)
 			maxR = max(maxR, v)
 		}
-	}
-
-	updateAns := func(l, r int, big bool) {
-		d := (min(r-minL, maxR-l) + 1) / 2
-		if big {
-			d = min(d, (maxR-minL+2)/3) // d 不能超过上界
-		}
-		ans = max(ans, d)
 	}
 
 	preI := -1
@@ -234,15 +205,15 @@ func minDifference(nums []int) (ans int) {
 			if i-preI == 1 {
 				ans = max(ans, abs(v-nums[preI]))
 			} else {
-				updateAns(min(nums[preI], v), max(nums[preI], v), i-preI > 2)
+				l, r := min(nums[preI], v), max(nums[preI], v)
+				d := (min(r-minL, maxR-l) + 1) / 2
+				if i-preI > 2 {
+					d = min(d, (maxR-minL+2)/3) // d 不能超过上界
+				}
+				ans = max(ans, d)
 			}
-		} else if i > 0 {
-			updateAns(v, v, false)
 		}
 		preI = i
-	}
-	if 0 <= preI && preI < n-1 {
-		updateAns(nums[preI], nums[preI], false)
 	}
 	return
 }
