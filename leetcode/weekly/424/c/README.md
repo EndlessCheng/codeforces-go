@@ -493,8 +493,7 @@ class Solution:
         for i, (x, d) in enumerate(zip(nums, diff)):
             sum_d += d
             while k < len(queries) and sum_d < x:  # 需要添加询问，把 x 减小
-                q = queries[k]
-                l, r, val = q
+                l, r, val = queries[k]
                 diff[l] += val
                 diff[r + 1] -= val
                 if l <= i <= r:  # x 在更新范围中
