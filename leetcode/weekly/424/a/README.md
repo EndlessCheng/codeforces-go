@@ -41,7 +41,7 @@ class Solution {
             } else if (pre * 2 == total) {
                 ans += 2;
             } else if (Math.abs(pre * 2 - total) == 1) {
-                ans += 1;
+                ans++;
             }
         }
         return ans;
@@ -61,7 +61,7 @@ public:
             } else if (pre * 2 == total) {
                 ans += 2;
             } else if (abs(pre * 2 - total) == 1) {
-                ans += 1;
+                ans++;
             }
         }
         return ans;
@@ -83,7 +83,7 @@ func countValidSelections(nums []int) (ans int) {
 		} else if pre*2 == total {
 			ans += 2
 		} else if abs(pre*2-total) == 1 {
-			ans += 1
+			ans++
 		}
 	}
 	return ans
