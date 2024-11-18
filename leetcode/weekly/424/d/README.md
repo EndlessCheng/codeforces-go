@@ -47,9 +47,9 @@ $$
 
 ## 有连续 -1 的情况
 
-做法类似，例如数组中有一段 $10,\_,\_,20$，那么上面定义的 $l$ 和 $r$ 就分别是 $10$ 和 $20$。
+如果连续空位都填 $x$ 或者都填 $y$，那么做法同上。例如数组中有一段 $10,\_,\_,20$，上面定义的 $l$ 和 $r$ 就分别是 $10$ 和 $20$。按照上面给出的公式计算最大绝对差。
 
-但还有一种情况，我们可以在多个空位中填入两个不同的数，这样可能会有更小的绝对差。
+但是，还可以在连续空位中填入两个不同的数 $x$ 和 $y$，这可能得到更小的绝对差。
 
 **一旦我们填了两个不同的数，就不能再填其他数字了**。
 
@@ -73,7 +73,18 @@ $$
 
 > 也可以这样理解，在不存在孤立 $-1$ 的情况下，上式相当于答案的上界。
 
-如果上式比 $\left\lceil\dfrac{\min(r-\textit{minL},\textit{maxR}-\textit{L})}{2}\right\rceil$ 更小，那么改用上式更新答案的最大值。
+**总结**：
+
+- 连续空位都填 $x$ 或者都填 $y$，最大绝对差为 $\left\lceil\dfrac{\min(r-\textit{minL},\textit{maxR}-\textit{L})}{2}\right\rceil$。
+- 连续空位填 $x$ 以及 $y$，最大绝对差为 $\left\lceil\dfrac{\textit{maxR} - \textit{minL}}{3}\right\rceil$。
+
+二者取最小值，得
+
+$$
+\min\left(\left\lceil\dfrac{\min(r-\textit{minL},\textit{maxR}-\textit{L})}{2}\right\rceil,\left\lceil\dfrac{\textit{maxR} - \textit{minL}}{3}\right\rceil\right)
+$$
+
+用上式更新答案的最大值。
 
 注意前导 $-1$ 和尾 $-1$ 是不需要处理的，它们不会算出比中间的 $-1$ 更大的绝对差。
 
