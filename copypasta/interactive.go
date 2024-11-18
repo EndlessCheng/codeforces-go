@@ -86,7 +86,8 @@ https://codeforces.com/problemset/problem/1355/F 2600
 
 https://codeforces.com/problemset/problem/1503/B 1700 构造、棋盘染色
 https://codeforces.com/problemset/problem/1918/E 2200 快排
-https://codeforces.com/problemset/problem/1137/D 2400 Floyd 判圈
+https://codeforces.com/problemset/problem/1137/D 2400 快慢指针
+- 做法同 LC142. 环形链表 II https://leetcode.cn/problems/linked-list-cycle-ii/
 https://codeforces.com/problemset/problem/1470/C 2500 打表找规律
 https://codeforces.com/problemset/problem/1826/F 2800 数学
 
