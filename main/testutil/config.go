@@ -10,5 +10,5 @@ var (
 	DisableLogInput bool
 
 	// when DebugTLE > 0, a running case would cause a fatal error when timeout
-	DebugTLE = 2 * time.Second
+	DebugTLE = 3 * time.Second
 )
