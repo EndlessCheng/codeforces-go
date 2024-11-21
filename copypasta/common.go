@@ -65,11 +65,15 @@ https://codeforces.com/problemset/problem/681/B 1300
 - [2613. 美数对](https://leetcode.cn/problems/beautiful-pairs/)（会员题）
 - [2964. 可被整除的三元组数量](https://leetcode.cn/problems/number-of-divisible-triplet-sums/)（会员题）
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
-异或 https://codeforces.com/problemset/problem/1800/F 1900
+https://codeforces.com/problemset/problem/318/B 1300 子串
+https://codeforces.com/problemset/problem/1800/F 1900 异或
 
 ## 枚举右，维护左：需要维护两种值（pair）
 https://codeforces.com/problemset/problem/1931/D 1300
 https://leetcode.cn/problems/count-beautiful-substrings-ii/ 2445
+
+## 枚举中间
+https://codeforces.com/problemset/problem/1957/D 1900 前后缀分解 从高到低思考
 
 ## 任意下标 i 和 j
 https://codeforces.com/problemset/problem/1895/C 1400
@@ -172,6 +176,10 @@ https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/2008/E 1500
 https://codeforces.com/problemset/problem/1029/C 1600
+https://codeforces.com/problemset/problem/2028/C 1600
+https://codeforces.com/problemset/problem/2031/D 1700
+https://codeforces.com/problemset/problem/1957/D 1900
+https://codeforces.com/problemset/problem/1969/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
 昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
@@ -312,6 +320,7 @@ https://codeforces.com/problemset/problem/165/C
 单序列双指针
 - [2972. 统计移除递增子数组的数目 II](https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-ii/) 2153
      - https://codeforces.com/problemset/problem/1167/E 2100
+https://codeforces.com/contest/2032/problem/C 1400
 
 双序列双指针
 LC88 https://leetcode.cn/problems/merge-sorted-array/
@@ -390,6 +399,7 @@ https://codeforces.com/problemset/problem/620/C 1500
 https://codeforces.com/problemset/problem/525/C 1600
 https://codeforces.com/problemset/problem/1748/C 1600
 https://codeforces.com/problemset/problem/1849/D 1700
+https://codeforces.com/problemset/problem/2031/D 1700
 
 ### 哨兵
 - [1465. 切割后面积最大的蛋糕](https://leetcode.cn/problems/maximum-area-of-a-piece-of-cake-after-horizontal-and-vertical-cuts/) 1445
@@ -648,6 +658,7 @@ https://codeforces.com/problemset/problem/1717/C  1300
 https://codeforces.com/problemset/problem/1788/C  1300
 https://codeforces.com/problemset/problem/1815/A  1300
 https://codeforces.com/problemset/problem/1978/C  1300
+https://codeforces.com/problemset/problem/2031/C  1300 数学
 https://codeforces.com/problemset/problem/803/A   1400
 https://codeforces.com/problemset/problem/1838/C  1400
 https://codeforces.com/problemset/problem/1863/D  1400
@@ -759,15 +770,17 @@ https://leetcode.cn/problems/maximize-the-number-of-partitions-after-operations/
 https://leetcode.cn/problems/count-the-number-of-houses-at-a-certain-distance-ii/
 
 大量分类讨论
-- [420. 强密码检验器](https://leetcode.cn/problems/strong-password-checker/)
 https://codeforces.com/problemset/problem/796/C 1900
 https://codeforces.com/problemset/problem/1647/D 1900
 https://codeforces.com/problemset/problem/356/C 2100
 https://codeforces.com/problemset/problem/460/D 2300
 https://codeforces.com/problemset/problem/1527/D 2400
+https://codeforces.com/problemset/problem/1736/C2 2400
 https://codeforces.com/problemset/problem/1374/E2 2500
 https://atcoder.jp/contests/arc153/tasks/arc153_c +构造
 https://atcoder.jp/contests/agc015/tasks/agc015_d
+LC420 https://leetcode.cn/problems/strong-password-checker/
+避免大量分类讨论 LC3348 https://leetcode.cn/problems/smallest-divisible-digit-product-ii/
 
 贡献法
 - [2063. 所有子字符串中的元音](https://leetcode.cn/problems/vowels-of-all-substrings/) 1663
@@ -1080,6 +1093,16 @@ func _() {
 		}
 		return x
 	}
+	
+	/*
+	关于上取整的计算，当 $a$ 和 $b$ 均为正整数时，我们有
+
+	$$
+	\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
+	$$
+
+	讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+	*/
 	// - [1936. 新增的最少台阶数](https://leetcode.cn/problems/add-minimum-number-of-rungs/) 1323
 	// - [1785. 构成特定和需要添加的最少元素](https://leetcode.cn/problems/minimum-elements-to-add-to-form-a-given-sum/) 1432
 	ceil := func(a, b int) int {
@@ -1435,16 +1458,14 @@ func _() {
 	// 带权前缀和，权重是等差数列
 	// https://codeforces.com/problemset/problem/1016/C 1800
 	// https://codeforces.com/problemset/problem/1921/F 1900 +分块 
-	{
-		var n int // read
-		a := make([]int, n)
-		// read a ...
-
+	// https://codeforces.com/problemset/problem/2026/D 1900
+	weightedPrefixSum := func(a []int) {
+		n := len(a)
 		sum := make([]int, n+1)
 		iSum := make([]int, n+1)
 		for i, v := range a {
 			sum[i+1] = sum[i] + v
-			iSum[i+1] = iSum[i] + v*(i+1)
+			iSum[i+1] = iSum[i] + (i+1)*v
 		}
 		query := func(l, r int) int { return iSum[r] - iSum[l] - l*(sum[r]-sum[l]) } // [l,r)
 
@@ -1910,8 +1931,9 @@ func _() {
 	https://codeforces.com/problemset/problem/816/B 1400
 	https://codeforces.com/problemset/problem/1700/C 1700
 	https://codeforces.com/problemset/problem/1955/E 1700
-	浮点数差分（也可以用扫描线）https://atcoder.jp/contests/abc274/tasks/abc274_f
-	差分思想 https://codeforces.com/problemset/problem/1634/F 2700
+	https://codeforces.com/problemset/problem/2037/F 2100
+	https://codeforces.com/problemset/problem/1634/F 2700 差分思想
+	https://atcoder.jp/contests/abc274/tasks/abc274_f 浮点数差分（也可以用扫描线）
 	https://www.lanqiao.cn/problems/17164/learning/?contest_id=179
 	*/
 
@@ -2527,8 +2549,8 @@ func _() {
 			q = q[1:]
 			x, y := p.x, p.y
 			if x == 0 || x == lx-1 || y == 0 || y == ly-1 {
-				return -1
-			} // 无穷大
+				return -1 // 无穷大
+			}
 			if !vis[x][y] {
 				vis[x][y] = true
 				ans += (xs[x+1] - xs[x]) * (ys[y+1] - ys[y])
@@ -2676,8 +2698,7 @@ func _() {
 		rotateCopy, rotate, transposeCopy,
 		initPalindromeNumber, // 回文数
 
-		prefixSum, groupPrefixSum, circularRangeSum,
-		bitSum,
+		prefixSum, groupPrefixSum, circularRangeSum, weightedPrefixSum, bitSum,
 		subsetSum, recoverArrayFromSubsetSum, subSumSorted,
 		matrixSum2D, rhombusSum, rowColSum, diagonalSum, rightTriangleSum, contributionSum,
 
