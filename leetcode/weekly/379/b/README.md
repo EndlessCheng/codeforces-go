@@ -68,8 +68,8 @@ public:
 ```
 
 ```c [sol-C]
-#define MAX(a, b) ((b) > (a) ? (b) : (a))
 #define MIN(a, b) ((b) < (a) ? (b) : (a))
+#define MAX(a, b) ((b) > (a) ? (b) : (a))
 
 // m 在 l 和 r 之间（写不写等号都可以）
 int inBetween(int l, int m, int r) {
