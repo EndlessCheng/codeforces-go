@@ -130,7 +130,7 @@ impl Solution {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(m)$，其中 $n$ 是 $\textit{commands}$ 的长度。
+- 时间复杂度：$\mathcal{O}(m)$，其中 $m$ 是 $\textit{commands}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
