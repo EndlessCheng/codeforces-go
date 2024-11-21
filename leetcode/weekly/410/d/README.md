@@ -45,9 +45,9 @@ s[\textit{maxK}], &  \textit{maxK} \ge 0     \\
 \end{cases}
 $$
 
-初始值：$f[0][j] = 1$，其中 $j=0,1,2,\cdots,\textit{nums}[0]$。
+初始值：$f[0][j] = 1$，其中 $j=0,1,2,\ldots,\textit{nums}[0]$。
 
-答案：枚举 $\textit{arr}_1[n-1] = 0,1,2,\cdots,\textit{nums}[n-1]$，累加得 $\sum\limits_{j=0}^{\textit{nums}[n-1]} f[n-1][j]$。
+答案：枚举 $\textit{arr}_1[n-1] = 0,1,2,\ldots,\textit{nums}[n-1]$，累加得 $\sum\limits_{j=0}^{\textit{nums}[n-1]} f[n-1][j]$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Cf421v7Ky/)，欢迎点赞关注！
 
@@ -451,7 +451,7 @@ $$
 一般地，设 $d_i=\max(\textit{nums}[i]-\textit{nums}[i-1],0)$，计算
 
 $$
-m = \textit{nums}[n-1] - (d_1 + d_2 + \cdots + d_{n-1})
+m = \textit{nums}[n-1] - d_1 - d_2 - \cdots - d_{n-1}
 $$
 
 那么答案为
