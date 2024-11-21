@@ -1,97 +1,80 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-type move struct{ dx, dy, t int } // (dx,dy) 表示移动方向，t 表示移动的步数（时间）
-
-func validMovesRook(x, y int) (m []move) {
-	m = append(m, move{}) // 为了方便计算皇后
-	for i := 1; i <= 8; i++ {
-		if i != x {
-			m = append(m, move{(i - x) / abs(i-x), 0, abs(i - x)})
-		}
-	}
-	for j := 1; j <= 8; j++ {
-		if j != y {
-			m = append(m, move{0, (j - y) / abs(j-y), abs(j - y)})
-		}
-	}
-	return
+type move struct {
+	x0, y0 int // 起点 
+	dx, dy int // 移动方向
+	step   int // 移动的步数（时间）
 }
 
-func validMovesBishop(x, y int) (m []move) {
-	m = append(m, move{}) // 为了方便计算皇后
-	for i := 1; i <= 8; i++ {
-		for j := 1; j <= 8; j++ {
-			if (i != x || j != y) && abs(i-x) == abs(j-y) {
-				m = append(m, move{(i - x) / abs(i-x), (j - y) / abs(j-y), abs(i - x)})
-			}
+// 计算位于 (x0,y0) 的棋子在 dirs 这些方向上的所有合法移动
+func generateMoves(x0, y0 int, dirs []struct{ x, y int }) []move {
+	const size = 8
+	moves := []move{{x0, y0, 0, 0, 0}} // 原地不动
+	for _, d := range dirs {
+		// 往 d 方向走 1,2,3,... 步
+		x, y := x0+d.x, y0+d.y
+		for step := 1; 0 < x && x <= size && 0 < y && y <= size; step++ {
+			moves = append(moves, move{x0, y0, d.x, d.y, step})
+			x += d.x
+			y += d.y
 		}
 	}
-	return
+	return moves
 }
 
-func validMovesQueen(x, y int) []move { // 皇后可以有上面两种移动方式
-	return append(append([]move{{}}, validMovesRook(x, y)[1:]...), validMovesBishop(x, y)[1:]...)
-}
-
-// 判断是否合法，即不存在两个棋子占据同一个格子的情况
-func isValid(x1, y1, x2, y2 int, m1, m2 move) bool {
-	for i := 1; i <= m1.t || i <= m2.t; i++ {
-		if i <= m1.t {
-			x1 += m1.dx // 每一秒走一步
+// 判断两个移动是否合法，即不存在同一时刻两个棋子重叠的情况
+func isValid(m1, m2 move) bool {
+	x1, y1 := m1.x0, m1.y0
+	x2, y2 := m2.x0, m2.y0
+	for i := range max(m1.step, m2.step) {
+		// 每一秒走一步
+		if i < m1.step {
+			x1 += m1.dx
 			y1 += m1.dy
 		}
-		if i <= m2.t {
+		if i < m2.step {
 			x2 += m2.dx
 			y2 += m2.dy
 		}
-		if x1 == x2 && y1 == y2 { // 两个棋子占据了同一个格子
+		if x1 == x2 && y1 == y2 { // 重叠
 			return false
 		}
 	}
 	return true
 }
 
+var dirs = []struct{ x, y int }{{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {1, 1}, {-1, 1}, {-1, -1}, {1, -1}} // 上下左右 + 斜向
+var pieceDirs = map[byte][]struct{ x, y int }{'r': dirs[:4], 'b': dirs[4:], 'q': dirs}
+
 func countCombinations(pieces []string, positions [][]int) (ans int) {
 	n := len(pieces)
-	validMoves := make([][]move, n)
-	for i, p := range positions {
-		x, y := p[0], p[1]
-		if pieces[i] == "rook" {
-			validMoves[i] = validMovesRook(x, y) // 预处理所有合法移动
-		} else if pieces[i] == "bishop" {
-			validMoves[i] = validMovesBishop(x, y)
-		} else {
-			validMoves[i] = validMovesQueen(x, y)
-		}
+	// 预处理所有合法移动
+	allMoves := make([][]move, n)
+	for i, pos := range positions {
+		allMoves[i] = generateMoves(pos[0], pos[1], pieceDirs[pieces[i][0]])
 	}
 
-	moves := make([]move, n)
-	var f func(int)
-	f = func(i int) {
+	path := make([]move, n) // 注意 path 的长度是固定的
+	var dfs func(int)
+	dfs = func(i int) {
 		if i == n {
 			ans++
 			return
 		}
-		x1, y1 := positions[i][0], positions[i][1]
 	outer:
-		for _, m := range validMoves[i] { // 枚举当前棋子的所有合法移动
-			for j, pos := range positions[:i] { // 判断该移动是否与前面的棋子的移动相冲突
-				if !isValid(x1, y1, pos[0], pos[1], m, moves[j]) {
-					continue outer
+		// 枚举当前棋子的所有合法移动
+		for _, move1 := range allMoves[i] {
+			// 判断合法移动 move1 是否有效
+			for _, move2 := range path[:i] {
+				if !isValid(move1, move2) {
+					continue outer // 无效，枚举下一个 m1
 				}
 			}
-			moves[i] = m // 无冲突
-			f(i + 1)
+			path[i] = move1 // 直接覆盖，无需恢复现场
+			dfs(i + 1)      // 枚举后续棋子的所有合法移动组合
 		}
 	}
-	f(0)
+	dfs(0)
 	return
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
 }
