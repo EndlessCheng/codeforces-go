@@ -143,6 +143,7 @@
 |思维题|[1657. 确定两个字符串是否接近](https://leetcode.cn/problems/determine-if-two-strings-are-close/)|[理解操作本质+简洁写法](https://leetcode.cn/problems/determine-if-two-strings-are-close/solution/li-jie-cao-zuo-ben-zhi-jian-ji-xie-fa-py-b18i/)|1530|
 ||[1040. 移动石子直到连续 II](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/)|[【图解】下跳棋](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/solution/tu-jie-xia-tiao-qi-pythonjavacgo-by-endl-r1eb/)|2456|
 ||[1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)|[【图解】不会字典树？只用哈希表也能做！](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/solution/bu-hui-zi-dian-shu-zhi-yong-ha-xi-biao-y-p2pu/)|2479|
+||[782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/)|[【图解】逆向思维](https://leetcode.cn/problems/transform-to-chessboard/solution/tu-jie-ni-xiang-si-wei-pythonjavaccgojsr-mixb/)|困难|
 |网格图|[面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)|[【模板】网格图 DFS（附题单！）](https://leetcode.cn/problems/pond-sizes-lcci/solution/mo-ban-wang-ge-tu-dfsfu-ti-dan-by-endles-p0n1/)|中等|
 ||[1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)|[【动画】两种思路：先外后内/出界标记（附题单！）](https://leetcode.cn/problems/number-of-closed-islands/solution/liang-chong-si-lu-xian-wai-hou-nei-chu-j-b1e4/)|1659|
 ||[2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)|[【图解】两种方法：二分答案 / 直接计算](https://leetcode.cn/problems/escape-the-spreading-fire/solution/er-fen-bfspythonjavacgo-by-endlesscheng-ypp1/)|2347|
