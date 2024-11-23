@@ -1,3 +1,5 @@
+## 方法一：两次遍历
+
 遍历 $\textit{pick}$，用一个 $n\times 11$ 大小的矩阵，统计每个玩家得到的每种颜色的球的个数。
 
 然后遍历每个玩家，如果该玩家至少有一种颜色的球大于玩家编号，则把答案加一。
@@ -151,6 +153,138 @@ impl Solution {
             .enumerate()
             .filter(|(i, cnt)| cnt.iter().any(|c| c > i))
             .count() as _
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU+m)$，其中 $m$ 是 $\textit{pick}$ 的长度，$U$ 是 $y_i$ 的最大值。
+- 空间复杂度：$\mathcal{O}(nU)$。
+
+## 方法二：一次遍历
+
+额外创建一个布尔数组 $\textit{won}$。
+
+在统计 $\textit{cnts}[x][y]$ 的过程中，如果发现玩家 $x$ 获得了至少 $x + 1$ 个相同颜色的球，那么答案加一，同时标记 $\textit{won}[x]=\texttt{true}$，避免重复计入答案。
+
+```py [sol-Python3]
+class Solution:
+    def winningPlayerCount(self, n: int, pick: List[List[int]]) -> int:
+        ans = 0
+        cnts = [[0] * 11 for _ in range(n)]
+        won = [False] * n
+        for x, y in pick:
+            cnts[x][y] += 1
+            if not won[x] and cnts[x][y] > x:
+                won[x] = True
+                ans += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int winningPlayerCount(int n, int[][] pick) {
+        int ans = 0;
+        int[][] cnts = new int[n][11];
+        boolean[] won = new boolean[n];
+        for (int[] p : pick) {
+            int x = p[0];
+            int y = p[1];
+            if (!won[x] && ++cnts[x][y] > x) {
+                won[x] = true;
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int winningPlayerCount(int n, vector<vector<int>>& pick) {
+        int ans = 0;
+        vector<array<int, 11>> cnts(n);
+        vector<int> won(n);
+        for (auto& p : pick) {
+            int x = p[0], y = p[1];
+            if (!won[x] && ++cnts[x][y] > x) {
+                won[x] = true;
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+int winningPlayerCount(int n, int** pick, int pickSize, int* pickColSize) {
+    int ans = 0;
+    int (*cnts)[11] = calloc(n, sizeof(int[11]));
+    bool* won = calloc(n, sizeof(bool));
+    for (int i = 0; i < pickSize; i++) {
+        int x = pick[i][0], y = pick[i][1];
+        if (!won[x] && ++cnts[x][y] > x) {
+            won[x] = true;
+            ans++;
+        }
+    }
+    free(cnts);
+    free(won);
+    return ans;
+}
+```
+
+```go [sol-Go]
+func winningPlayerCount(n int, pick [][]int) (ans int) {
+    cnts := make([][11]int, n)
+    won := make([]bool, n)
+    for _, p := range pick {
+        x, y := p[0], p[1]
+        cnts[x][y]++
+        if !won[x] && cnts[x][y] > x {
+            won[x] = true
+            ans++
+        }
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+var winningPlayerCount = function(n, pick) {
+    let ans = 0;
+    const cnts = Array.from({ length: n }, () => Array(11).fill(0));
+    const won = Array(n).fill(false);
+    for (const [x, y] of pick) {
+        if (!won[x] && ++cnts[x][y] > x) {
+            won[x] = true;
+            ans++;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn winning_player_count(n: i32, pick: Vec<Vec<i32>>) -> i32 {
+        let mut ans = 0;
+        let mut cnts = vec![[0; 11]; n as usize];
+        let mut won = vec![false; n as usize];
+        for p in pick {
+            let x = p[0] as usize;
+            let y = p[1] as usize;
+            cnts[x][y] += 1;
+            if !won[x] && cnts[x][y] > x {
+                won[x] = true;
+                ans += 1;
+            }
+        }
+        ans
     }
 }
 ```
