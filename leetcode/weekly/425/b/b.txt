@@ -1,0 +1,17 @@
+"abcd"
+"cdab"
+2
+true
+
+"aabbcc"
+"bbaacc"
+3
+true
+
+"aabbcc"
+"bbaacc"
+2
+false
+
+
+
