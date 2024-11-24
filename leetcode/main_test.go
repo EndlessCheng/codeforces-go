@@ -13,6 +13,7 @@ import (
 )
 
 func TestCompareInf(_t *testing.T) {
+	//return
 	testutil.DebugTLE = 0
 	rg := testutil2.NewRandGenerator()
 	inputGenerator := func() (a []int) {
@@ -45,6 +46,7 @@ func (Foo) F(int) (_ int)     { return }
 func (Foo) G(int) (_ int)     { return }
 
 func TestCompareClassInf(_t *testing.T) {
+	//return
 	testutil.DebugTLE = 0
 	assert := assert.New(_t)
 	rg := testutil2.NewRandGenerator()
