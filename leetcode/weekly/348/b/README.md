@@ -44,7 +44,7 @@ public:
 
 ```c [sol-C]
 int semiOrderedPermutation(int* nums, int n) {
-    int p = 0, q = 0;
+    int p, q;
     for (int i = 0; i < n; i++) {
         if (nums[i] == 1) {
             p = i;
