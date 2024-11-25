@@ -666,7 +666,7 @@ public:
         int ans = 0;
         if (k % 2) {
             // 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
-            for (int i = high - op1; i < high && odd > 0; i++) {
+            for (int i = high - op1; i < high && odd; i++) {
                 int x = nums[i];
                 auto it = st.find(x);
                 if (it != st.end()) {
