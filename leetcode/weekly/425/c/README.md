@@ -645,14 +645,14 @@ public:
         }
 
         // 在 [k,2k-2] 中的数，先把小的数 -k
-        unordered_multiset<int> even;
+        unordered_multiset<int> st;
         int odd = 0;
         for (int i = low; i < high; i++) {
             if (op2) {
                 nums[i] -= k;
                 if (k % 2 && nums[i] % 2) {
                     // nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
-                    even.insert(nums[i]);
+                    st.insert(nums[i]);
                 }
                 op2--;
             } else {
@@ -668,9 +668,9 @@ public:
             // 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
             for (int i = high - op1; i < high && odd > 0; i++) {
                 int x = nums[i];
-                auto it = even.find(x);
-                if (it != even.end()) {
-                    even.erase(it);
+                auto it = st.find(x);
+                if (it != st.end()) {
+                    st.erase(it);
                     odd--;
                     ans--;
                 }
