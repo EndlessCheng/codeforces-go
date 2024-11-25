@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,24 @@ func Test_c(t *testing.T) {
 }
 // https://leetcode.cn/contest/biweekly-contest-144/problems/zero-array-transformation-iii/
 // https://leetcode.cn/problems/zero-array-transformation-iii/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int, qs[][]int) {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 5)
+		a = rg.IntSlice(n, 0, 1)
+		q := rg.Int(1, 3)
+		for range q {
+			l := rg.Int(0, n-1)
+			r := rg.Int(l, n-1)
+			qs = append(qs, []int{l,r})
+		}
+		return
+	}
+	
+	testutil.CompareInf(_t, inputGenerator, maxRemoval, maxRemovalWA)
+}
