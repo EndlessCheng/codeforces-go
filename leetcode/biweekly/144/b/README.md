@@ -1,3 +1,5 @@
+字符串相当于值域为 $[0,25]$ 的数组。如果把本题改成值域为 $[0,10^5]$ 的数组，暴力做法就无法通过了，如何解决这种更一般的情况呢？
+
 我们可以预处理 $\textit{nextCost}$ 和 $\textit{previousCost}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) $\textit{nxtSum}$ 和 $\textit{preSum}$，从而加速操作代价和的计算。
 
 考虑到字母表是环形的，可以把前缀和数组延长一倍，从而变成非环形的。
