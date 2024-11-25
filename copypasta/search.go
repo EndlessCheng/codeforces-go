@@ -1169,6 +1169,7 @@ https://codeforces.com/problemset/problem/1365/D 1700
 - [499. 迷宫 III](https://leetcode.cn/problems/the-maze-iii/)（会员题）
 - [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
 https://codeforces.com/problemset/problem/329/B 1500
+https://codeforces.com/problemset/problem/2041/D 1700
 https://codeforces.com/problemset/problem/1955/H 2300
 https://codeforces.com/problemset/problem/1301/F 2600 BFS 进阶玩法
 - 同色入队 - 往四周走 - 同色跳跃 - 往四周走 - 同色跳跃 - ...
