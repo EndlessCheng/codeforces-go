@@ -7,7 +7,7 @@ func semiOrderedPermutation(nums []int) int {
 	for i, v := range nums {
 		if v == 1 {
 			p = i
-		} else if v == n { // 注意 n>=2
+		} else if v == n {
 			q = i
 		}
 	}
