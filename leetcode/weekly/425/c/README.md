@@ -1,6 +1,8 @@
-[本题视频讲解](https://www.bilibili.com/video/BV1fFB4YGEZY/?t=14m36s)，欢迎点赞关注~
+## 方法一：动态规划
 
-## 一、寻找子问题
+[视频讲解](https://www.bilibili.com/video/BV1fFB4YGEZY/?t=14m36s)，欢迎点赞关注~
+
+### 一、寻找子问题
 
 看示例 1，我们要解决的问题（原问题）是：
 
@@ -19,7 +21,7 @@
 > 
 > 注 2：动态规划有「**选或不选**」和「**枚举选哪个**」两种基本思考方式。子序列相邻无关一般是「选或不选」，子序列相邻相关（例如 LIS 问题）一般是「枚举选哪个」。本题用到的是「选或不选」。
 
-## 二、状态定义与状态转移方程
+### 二、状态定义与状态转移方程
 
 根据上面的讨论，我们需要在递归过程中跟踪以下信息：
 
@@ -42,7 +44,7 @@
 
 **递归入口**：$\textit{dfs}(n-1,\textit{op}_1,\textit{op}_2)$，这是原问题，也是答案。
 
-## 三、递归搜索 + 保存递归返回值 = 记忆化搜索
+### 三、递归搜索 + 保存递归返回值 = 记忆化搜索
 
 考虑到整个递归过程中有大量重复递归调用（递归入参相同）。由于递归函数没有副作用，同样的入参无论计算多少次，算出来的结果都是一样的，因此可以用**记忆化搜索**来优化：
 
@@ -196,7 +198,7 @@ func minArraySum(nums []int, k, op1, op2 int) int {
 - 时间复杂度：$\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$，其中 $n$ 为 $\textit{nums}$ 的长度。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$。
 - 空间复杂度：$\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$。保存多少状态，就需要多少空间。
 
-## 四、1:1 翻译成递推
+### 四、1:1 翻译成递推
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
@@ -329,7 +331,7 @@ func minArraySum(nums []int, k, op1, op2 int) int {
 - 时间复杂度：$\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n\cdot \textit{op}_1\cdot \textit{op}_2)$。
 
-## 五、空间优化
+### 五、空间优化
 
 观察上面的状态转移方程，在计算 $f[i+1]$ 时，只会用到 $f[i]$，不会用到比 $i$ 更早的状态。
 
@@ -449,6 +451,316 @@ func minArraySum(nums []int, k, op1, op2 int) int {
 
 更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**§7.5 多维 DP**」。
 
+## 方法二：贪心
+
+### 核心思路
+
+1. 操作 1（除 $2$ 上取整）应用到大的数上，越大越好。
+2. 操作 2（减 $k$）应用到 $\ge k$ 的数上。对于较小的数，需要细致地讨论。
+
+### 分类讨论
+
+- 在 $[2k-1,\infty)$ 中的数，同一个数可以执行两种操作各一次，其中先除再减比先减再除更优。注意 $2k-1$ 执行操作 1 后变成了 $k$，所以还可以再执行一次操作 2。
+- 在 $[k,2k-2]$ 中的数，只能先减再除。
+  - 对于两个数 $x$ 和 $y$，假设 $x\le y$。如果 $\textit{op}_1= \textit{op}_2=1$，应该怎么操作呢？
+    - 操作 2 给 $x$，操作 1 给 $y$，得到 $(x-k) + \left\lceil\dfrac{y}{2}\right\rceil$。
+    - 操作 2 给 $y$，操作 1 给 $x$，得到 $(y-k) + \left\lceil\dfrac{x}{2}\right\rceil \ge (x-k) + \left\lceil\dfrac{y}{2}\right\rceil$。
+    - 操作 2 和 1 都给 $y$，得到 $x + \left\lceil\dfrac{y-k}{2}\right\rceil \ge (x-k) + \left\lceil\dfrac{y}{2}\right\rceil$。
+    - 操作 2 和 1 都给 $x$，得到 $y + \left\lceil\dfrac{x-k}{2}\right\rceil \ge (x-k) + \left\lceil\dfrac{y}{2}\right\rceil$。
+    - 所以操作 2 给 $x$，操作 1 给 $y$ 是最优的。
+  - 一般地，对于 $[k,2k-2]$ 中的数，**把操作 2 应用到小的数上，操作 1 应用到大的数上**。
+  - 如果这两类操作有交集呢？也就是同一个数执行两种操作各一次。
+    - 如果 $k$ 是偶数，操作方法不变。
+    - 如果 $k$ 是奇数，需要调整执行操作 2 的数，具体见下面的图解。
+- 在 $[0,k-1]$ 中的数，只能执行操作 1。留到最后处理。
+
+![lc3366-c.png](https://pic.leetcode.cn/1732495727-JVfVXC-lc3366-c.png)
+
+### 调整执行操作 2 的数
+
+如果 $k$ 是奇数：
+
+- 用一个哈希表 $\textit{cnt}$ 记录 $[k,2k-2]$ 中执行了操作 2 后的数。这些数操作之前是偶数，操作之后是奇数。
+- 用一个变量 $\textit{odd}$ 记录 $[k,2k-2]$ 中没有执行操作 2 的奇数的个数。
+
+重新排序后，遍历要执行操作 1 的数 $x$，如果此时 $\textit{odd}>0$ 且 $x$ 在 $\textit{cnt}$ 中，那么我们可以调整（重新安排）一次操作 2，把答案减一。然后把 $x$ 从 $\textit{cnt}$ 中去掉，同时把 $\textit{odd}$ 减一。
+
+最后，从大到小执行操作 1。
+
+```py [sol-Python3]
+class Solution:
+    def minArraySum(self, nums: List[int], k: int, op1: int, op2: int) -> int:
+        nums.sort()
+        high = bisect_left(nums, k * 2 - 1)
+        low = bisect_left(nums, k)
+
+        # 在 [2k-1,∞) 中的数，直接先除再减（从大到小操作）
+        for i in range(len(nums) - 1, high - 1, -1):
+            if op1:
+                nums[i] = (nums[i] + 1) // 2
+                op1 -= 1
+            if op2:
+                nums[i] -= k
+                op2 -= 1
+
+        # 在 [k,2k-2] 中的数，先把小的数 -k
+        cnt = defaultdict(int)
+        odd = 0
+        for i in range(low, high):
+            if op2:
+                nums[i] -= k
+                if k % 2 and nums[i] % 2:
+                    # nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
+                    cnt[nums[i]] += 1
+                op2 -= 1
+            else:
+                odd += nums[i] % 2  # 没有执行 -k 的奇数
+
+        # 重新排序（注：这里可以改用合并两个有序数组的做法）
+        nums[:high] = sorted(nums[:high])
+
+        ans = 0
+        if k % 2:
+            # 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
+            for i in range(high - op1, high):
+                if odd == 0:
+                    break
+                x = nums[i]
+                if x in cnt:
+                    cnt[x] -= 1
+                    if cnt[x] == 0:
+                        del cnt[x]
+                    odd -= 1
+                    ans -= 1
+
+        # 最后，从大到小执行操作 1
+        for i in range(high - 1, -1, -1):
+            if op1 == 0:
+                break
+            nums[i] = (nums[i] + 1) // 2
+            op1 -= 1
+
+        return ans + sum(nums)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minArraySum(int[] nums, int k, int op1, int op2) {
+        Arrays.sort(nums);
+        int high = lowerBound(nums, k * 2 - 1);
+        int low = lowerBound(nums, k);
+
+        // 在 [2k-1,∞) 中的数，直接先除再减（从大到小操作）
+        for (int i = nums.length - 1; i >= high; i--) {
+            if (op1 > 0) {
+                nums[i] = (nums[i] + 1) / 2;
+                op1--;
+            }
+            if (op2 > 0) {
+                nums[i] -= k;
+                op2--;
+            }
+        }
+
+        // 在 [k,2k-2] 中的数，先把小的数 -k
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int odd = 0;
+        for (int i = low; i < high; i++) {
+            if (op2 > 0) {
+                nums[i] -= k;
+                if (k % 2 > 0 && nums[i] % 2 > 0) {
+                    // nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
+                    cnt.merge(nums[i], 1, Integer::sum); // cnt[nums[i]]++
+                }
+                op2--;
+            } else {
+                odd += nums[i] % 2; // 没有执行 -k 的奇数
+            }
+        }
+
+        // 重新排序（注：这里可以改用合并两个有序数组的做法）
+        Arrays.sort(nums, 0, high);
+
+        int ans = 0;
+        if (k % 2 > 0) {
+            // 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
+            for (int i = high - op1; i < high && odd > 0; i++) {
+                int x = nums[i];
+                if (cnt.containsKey(x)) {
+                    if (cnt.merge(x, -1, Integer::sum) == 0) { // --cnt[x] == 0
+                        cnt.remove(x);
+                    }
+                    odd--;
+                    ans--;
+                }
+            }
+        }
+
+        // 最后，从大到小执行操作 1
+        for (int i = high - 1; i >= 0 && op1 > 0; i--) {
+            nums[i] = (nums[i] + 1) / 2;
+            op1--;
+        }
+
+        for (int x : nums) {
+            ans += x;
+        }
+        return ans;
+    }
+
+    // 见 https://www.bilibili.com/video/BV1AP41137w7/
+    private int lowerBound(int[] nums, int target) {
+        int left = -1, right = nums.length;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] >= target) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minArraySum(vector<int>& nums, int k, int op1, int op2) {
+        ranges::sort(nums);
+        int high = ranges::lower_bound(nums, k * 2 - 1) - nums.begin();
+        int low = ranges::lower_bound(nums, k) - nums.begin();
+
+        // 在 [2k-1,∞) 中的数，直接先除再减（从大到小操作）
+        for (int i = nums.size() - 1; i >= high; i--) {
+            if (op1) {
+                nums[i] = (nums[i] + 1) / 2;
+                op1--;
+            }
+            if (op2) {
+                nums[i] -= k;
+                op2--;
+            }
+        }
+
+        // 在 [k,2k-2] 中的数，先把小的数 -k
+        unordered_multiset<int> even;
+        int odd = 0;
+        for (int i = low; i < high; i++) {
+            if (op2) {
+                nums[i] -= k;
+                if (k % 2 && nums[i] % 2) {
+                    // nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
+                    even.insert(nums[i]);
+                }
+                op2--;
+            } else {
+                odd += nums[i] % 2; // 没有执行 -k 的奇数
+            }
+        }
+
+        // 重新排序（注：这里可以改用合并两个有序数组的做法）
+        sort(nums.begin(), nums.begin() + high);
+
+        int ans = 0;
+        if (k % 2) {
+            // 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
+            for (int i = high - op1; i < high && odd > 0; i++) {
+                int x = nums[i];
+                auto it = even.find(x);
+                if (it != even.end()) {
+                    even.erase(it);
+                    odd--;
+                    ans--;
+                }
+            }
+        }
+
+        // 最后，从大到小执行操作 1
+        for (int i = high - 1; i >= 0 && op1; i--) {
+            nums[i] = (nums[i] + 1) / 2;
+            op1--;
+        }
+
+        return ans + reduce(nums.begin(), nums.end(), 0);
+    }
+};
+```
+
+```go [sol-Go]
+func minArraySum(nums []int, k, op1, op2 int) int {
+	slices.Sort(nums)
+	high := sort.SearchInts(nums, k*2-1)
+	low := sort.SearchInts(nums, k)
+
+	// 在 [2k-1,∞) 中的数，直接先除再减（从大到小操作）
+	for i := len(nums) - 1; i >= high; i-- {
+		if op1 > 0 {
+			nums[i] = (nums[i] + 1) / 2
+			op1--
+		}
+		if op2 > 0 {
+			nums[i] -= k
+			op2--
+		}
+	}
+
+	// 在 [k,2k-2] 中的数，先把小的数 -k
+	cnt := map[int]int{}
+	odd := 0
+	for i := low; i < high; i++ {
+		if op2 > 0 {
+			nums[i] -= k
+			if k%2 > 0 && nums[i]%2 > 0 {
+				// nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
+				cnt[nums[i]]++
+			}
+			op2--
+		} else {
+			odd += nums[i] % 2 // 没有执行 -k 的奇数
+		}
+	}
+
+	// 重新排序（注：这里可以改用合并两个有序数组的做法）
+	slices.Sort(nums[:high])
+
+	ans := 0
+	if k%2 > 0 {
+		// 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
+		for i := high - op1; i < high && odd > 0; i++ {
+			x := nums[i]
+			if cnt[x] > 0 {
+				cnt[x]--
+				if cnt[x] == 0 {
+					delete(cnt, x)
+				}
+				odd--
+				ans--
+			}
+		}
+	}
+
+	// 最后，从大到小执行操作 1
+	for i := high - 1; i >= 0 && op1 > 0; i-- {
+		nums[i] = (nums[i] + 1) / 2
+		op1--
+	}
+
+	for _, x := range nums {
+		ans += x
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序上。如果细致地处理，结合快速选择算法可以做到 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见 [贪心题单](https://leetcode.cn/circle/discuss/g6KTKL/) 中的「**§1.1 从最小/最大开始贪心**」。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
@@ -462,7 +774,7 @@ func minArraySum(nums []int, k, op1, op2 int) int {
 7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. 【本题相关】[贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 

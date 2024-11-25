@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,21 @@ func Test_c(t *testing.T) {
 }
 // https://leetcode.cn/contest/weekly-contest-425/problems/minimum-array-sum/
 // https://leetcode.cn/problems/minimum-array-sum/
+
+func TestCompareInf(_t *testing.T) {
+	return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int,k,op1,op2 int) {
+		//return
+		rg.Clear()
+		n := rg.Int(1, 3)
+		k = rg.Int(0, 6)
+		a = rg.IntSlice(n, 0, k*3)
+		op1 = rg.Int(0, n)
+		op2 = rg.Int(0, n)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, minArraySumDp2, minArraySum)
+}

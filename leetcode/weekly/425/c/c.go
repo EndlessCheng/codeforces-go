@@ -1,7 +1,76 @@
 package main
 
+import (
+	"slices"
+	"sort"
+)
+
 // https://space.bilibili.com/206214
 func minArraySum(nums []int, k, op1, op2 int) int {
+	slices.Sort(nums)
+	high := sort.SearchInts(nums, k*2-1)
+	low := sort.SearchInts(nums, k)
+
+	// 在 [2k-1,∞) 中的数，直接先除再减（从大到小操作）
+	for i := len(nums) - 1; i >= high; i-- {
+		if op1 > 0 {
+			nums[i] = (nums[i] + 1) / 2
+			op1--
+		}
+		if op2 > 0 {
+			nums[i] -= k
+			op2--
+		}
+	}
+
+	// 在 [k,2k-2] 中的数，先把小的数 -k
+	cnt := map[int]int{}
+	odd := 0
+	for i := low; i < high; i++ {
+		if op2 > 0 {
+			nums[i] -= k
+			if k%2 > 0 && nums[i]%2 > 0 {
+				// nums[i] 原来是偶数，后面有机会把这次 -k 操作留给奇数，得到更小的答案
+				cnt[nums[i]]++
+			}
+			op2--
+		} else {
+			odd += nums[i] % 2 // 没有执行 -k 的奇数
+		}
+	}
+
+	// 重新排序（注：这里可以改用合并两个有序数组的做法）
+	slices.Sort(nums[:high])
+
+	ans := 0
+	if k%2 > 0 {
+		// 调整，对于 [k,2k-2] 中 -k 后还要再 /2 的数，如果原来是偶数，改成给奇数 -k 再 /2，这样答案可以减一
+		for i := high - op1; i < high && odd > 0; i++ {
+			x := nums[i]
+			if cnt[x] > 0 {
+				cnt[x]--
+				if cnt[x] == 0 {
+					delete(cnt, x)
+				}
+				odd--
+				ans--
+			}
+		}
+	}
+
+	// 最后，从大到小执行操作 1
+	for i := high - 1; i >= 0 && op1 > 0; i-- {
+		nums[i] = (nums[i] + 1) / 2
+		op1--
+	}
+
+	for _, x := range nums {
+		ans += x
+	}
+	return ans
+}
+
+func minArraySumDp2(nums []int, k, op1, op2 int) int {
 	f := make([][]int, op1+1)
 	for i := range f {
 		f[i] = make([]int, op2+1)
@@ -32,7 +101,7 @@ func minArraySum(nums []int, k, op1, op2 int) int {
 	return f[op1][op2]
 }
 
-func minArraySum2(nums []int, k, op1, op2 int) int {
+func minArraySumDp3(nums []int, k, op1, op2 int) int {
 	n := len(nums)
 	f := make([][][]int, n+1)
 	for i := range f {
@@ -67,7 +136,7 @@ func minArraySum2(nums []int, k, op1, op2 int) int {
 	return f[n][op1][op2]
 }
 
-func minArraySum3(nums []int, k, op1, op2 int) int {
+func minArraySumMemo(nums []int, k, op1, op2 int) int {
 	n := len(nums)
 	memo := make([][][]int, n)
 	for i := range memo {
