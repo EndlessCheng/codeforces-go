@@ -22,15 +22,21 @@
 
 所以本题不仅是 DP，还是贪心。我们需要把 $c_i - \textit{nc}_i$ 保存到一个数组 $\textit{inc}$ 中（非正数不需要保存），然后把数组从大到小排序，取最大的 $k$ 个或者 $k-1$ 个。
 
+**优化**：如果不删除边也满足要求，即所有点的度数都 $\le k$，则直接返回所有边权之和。
+
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1fFB4YGEZY/?t=26m45s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def maximizeSumOfWeights(self, edges: List[List[int]], k: int) -> int:
-        g = defaultdict(list)
+        g = [[] for _ in range(len(edges) + 1)]
         for x, y, wt in edges:
             g[x].append((y, wt))
             g[y].append((x, wt))
+
+        # 优化
+        if all(len(to) <= k for to in g):
+            return sum(e[2] for e in edges)
 
         def dfs(x: int, fa: int) -> Tuple[int, int]:
             not_choose = 0
@@ -53,11 +59,26 @@ class Solution {
     public long maximizeSumOfWeights(int[][] edges, int k) {
         List<int[]>[] g = new ArrayList[edges.length + 1];
         Arrays.setAll(g, i -> new ArrayList<>());
+        long sumWt = 0;
         for (int[] e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             g[x].add(new int[]{y, wt});
             g[y].add(new int[]{x, wt});
+            sumWt += wt;
         }
+
+        // 优化
+        boolean simple = true;
+        for (List<int[]> to : g) {
+            if (to.size() > k) {
+                simple = false;
+                break;
+            }
+        }
+        if (simple) {
+            return sumWt;
+        }
+
         return dfs(0, -1, g, k)[0]; // notChoose >= choose
     }
 
@@ -96,10 +117,24 @@ class Solution {
 public:
     long long maximizeSumOfWeights(vector<vector<int>>& edges, int k) {
         vector<vector<pair<int, int>>> g(edges.size() + 1);
+        long long sum_wt = 0;
         for (auto& e : edges) {
             int x = e[0], y = e[1], wt = e[2];
             g[x].emplace_back(y, wt);
             g[y].emplace_back(x, wt);
+            sum_wt += wt;
+        }
+
+        // 优化
+        bool simple = true;
+        for (auto& to : g) {
+            if (to.size() > k) {
+                simple = false;
+                break;
+            }
+        }
+        if (simple) {
+            return sum_wt;
         }
 
         auto dfs = [&](auto& dfs, int x, int fa) -> pair<long long, long long> {
@@ -137,10 +172,24 @@ public:
 func maximizeSumOfWeights(edges [][]int, k int) int64 {
 	type edge struct{ to, wt int }
 	g := make([][]edge, len(edges)+1)
+	sumWt := 0
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
 		g[x] = append(g[x], edge{y, wt})
 		g[y] = append(g[y], edge{x, wt})
+		sumWt += wt
+	}
+
+	// 优化
+	simple := true
+	for _, to := range g {
+		if len(to) > k {
+			simple = false
+			break
+		}
+	}
+	if simple {
+		return int64(sumWt)
 	}
 
 	var dfs func(int, int) (int, int)

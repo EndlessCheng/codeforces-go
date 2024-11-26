@@ -6,10 +6,24 @@ import "slices"
 func maximizeSumOfWeights(edges [][]int, k int) int64 {
 	type edge struct{ to, wt int }
 	g := make([][]edge, len(edges)+1)
+	sumWt := 0
 	for _, e := range edges {
 		x, y, wt := e[0], e[1], e[2]
 		g[x] = append(g[x], edge{y, wt})
 		g[y] = append(g[y], edge{x, wt})
+		sumWt += wt
+	}
+
+	// 巨大优化
+	simple := true
+	for _, to := range g {
+		if len(to) > k {
+			simple = false
+			break
+		}
+	}
+	if simple {
+		return int64(sumWt)
 	}
 
 	var dfs func(int, int) (int, int)
