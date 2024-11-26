@@ -14,7 +14,7 @@ func maximizeSumOfWeights(edges [][]int, k int) int64 {
 		sumWt += wt
 	}
 
-	// 巨大优化
+	// 优化
 	simple := true
 	for _, to := range g {
 		if len(to) > k {
