@@ -41,6 +41,7 @@ todo https://codeforces.com/problemset/problem/364/D 2900
 https://codeforces.com/problemset/problem/1746/F 2800
 
 异或哈希 xor hashing
+https://codeforces.com/problemset/problem/1996/G 2200
 https://codeforces.com/problemset/problem/1830/C 2400
 https://codeforces.com/problemset/problem/1771/F 2500
 

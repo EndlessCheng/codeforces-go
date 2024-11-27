@@ -87,6 +87,7 @@ todo https://www.luogu.com.cn/problem/P3396
  https://codeforces.com/contest/455/problem/D
 https://codeforces.com/problemset/problem/13/E 2700
 https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
+https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
 */
 func _(a []int) {
 	// 下标从 0 开始

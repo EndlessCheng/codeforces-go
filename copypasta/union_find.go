@@ -66,16 +66,17 @@ https://zhuanlan.zhihu.com/p/553192435
 // - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
 // - [2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)
 // - [2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)
-// - https://codeforces.com/problemset/problem/1041/C 1600
-// - https://codeforces.com/problemset/problem/724/D
-// - https://codeforces.com/problemset/problem/827/A
-// - https://codeforces.com/problemset/problem/1157/E
-// - https://www.codechef.com/problems/REMSUBARR
+// https://codeforces.com/problemset/problem/1041/C 1600
+// https://codeforces.com/problemset/problem/827/A 1700
+// https://codeforces.com/problemset/problem/1157/E 1700
+// https://codeforces.com/problemset/problem/724/D 1900
+// https://codeforces.com/problemset/problem/2018/D 2200
+// https://www.codechef.com/problems/REMSUBARR
 //
 // 树+点权/边权的顺序
-// - LC2421 https://leetcode.cn/problems/number-of-good-paths/
-// - 贡献法 https://codeforces.com/problemset/problem/915/F
-// - 贡献法 https://atcoder.jp/contests/abc214/tasks/abc214_d
+// LC2421 https://leetcode.cn/problems/number-of-good-paths/
+// 贡献法 https://codeforces.com/problemset/problem/915/F
+// 贡献法 https://atcoder.jp/contests/abc214/tasks/abc214_d
 //
 // LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D

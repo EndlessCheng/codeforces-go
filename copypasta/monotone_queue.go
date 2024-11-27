@@ -24,6 +24,7 @@ todo https://xyzl.blog.luogu.org/DQ-OP-DP
 - [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
 - [LCR 184. 设计自助结算系统](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)
 - [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/) 1672
+- [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/) 同 1438 题
 - [2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/) 1917
 - [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
 - [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456

@@ -349,7 +349,7 @@ func (f fenwickWithSeg) next(l, r, v int) int {
 //
 
 func _(n int) {
-	tree := make([]int, n+1) // int
+	tree := make([]int, n+1)
 	add := func(i, val int) {
 		for ; i < len(tree); i += i & -i {
 			tree[i] += val

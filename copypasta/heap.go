@@ -12,6 +12,9 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
+动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
+https://codeforces.com/problemset/problem/1969/D 1900
+
 #### 第 K 小/大（值/和）
 - [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
 - [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
@@ -215,6 +218,7 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // LC3092 https://leetcode.cn/problems/most-frequent-ids/
 // https://codeforces.com/problemset/problem/1883/D 1500
 // https://codeforces.com/problemset/problem/796/C 1900
+// https://codeforces.com/problemset/problem/2009/G2 2200
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 type lazyHeap struct {
 	sort.IntSlice
@@ -223,7 +227,8 @@ type lazyHeap struct {
 	sum  int // 实际元素和（可选）
 }
 
-func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+// 最大堆
+func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
 func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除

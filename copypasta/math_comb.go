@@ -56,6 +56,7 @@ https://codeforces.com/problemset/problem/1761/D 2100
 https://codeforces.com/problemset/problem/520/E 2200
 https://codeforces.com/problemset/problem/559/C 2200
 https://codeforces.com/problemset/problem/1763/D 2200 推荐 分类讨论
+https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
@@ -384,7 +385,8 @@ func (c *comb) p(n, k int) int {
 // - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
 //    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://codeforces.com/problemset/problem/630/K 1500
-// https://codeforces.com/problemset/problem/900/D 2000 用因子容斥 
+// https://codeforces.com/problemset/problem/900/D 2000 因子容斥
+// https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
 // https://codeforces.com/problemset/problem/1228/E 2300 如何将问题转化成可以容斥的结构 
 // https://codeforces.com/problemset/problem/1342/E 2300
 // https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 

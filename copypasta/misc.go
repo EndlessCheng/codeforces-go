@@ -735,6 +735,7 @@ func minMustPassSum(n, m int, targetCells [][2]int) int {
 
 // 马走日从 (0,0) 到 (x,y) 所需最小步数
 // 无边界 LC1197 https://leetcode.cn/problems/minimum-knight-moves/
+// http://poj.org/problem?id=1915
 // 有边界+打印方案 https://www.acwing.com/problem/content/3527/
 /*
 # https://leetcode.cn/problems/maximum-number-of-moves-to-kill-all-pawns/

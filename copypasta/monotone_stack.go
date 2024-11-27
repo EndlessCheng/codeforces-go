@@ -50,6 +50,7 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
     - 环形数组 https://codeforces.com/problemset/problem/5/E 2400
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
     - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
+    - 应用 https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/) 2482
 - [1776. 车队 II](https://leetcode.cn/problems/car-fleet-ii/) 2531
 - [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
@@ -60,6 +61,8 @@ https://codeforces.com/problemset/problem/1919/D 2100 结论
 #### 单调栈二分
 https://codeforces.com/problemset/problem/91/B 1500
 https://codeforces.com/problemset/problem/2009/G2 2200
+LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
+LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 
 #### 矩形系列
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
@@ -254,6 +257,39 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	return left, right
+}
+
+// 求右边第二个更大元素的下标（注意不是下一个更大元素的下一个更大元素）
+// 如果没有，那么结果为 n
+// 讲解 https://leetcode.cn/problems/next-greater-element-iv/solutions/1935877/by-endlesscheng-q6t5/
+// LC2454 https://leetcode.cn/problems/next-greater-element-iv/ 2175
+// https://atcoder.jp/contests/abc140/tasks/abc140_e
+// https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
+func next2Greater(a []int) ([]int, []int) {
+	n := len(a)
+	right := make([]int, n) // 下一个更大元素（可以省略）
+	for i := range right {
+		right[i] = n
+	}
+	right2 := make([]int, n)
+	for i := range right2 {
+		right2[i] = n
+	}
+	var s, t []int // 双单调栈
+	for i, x := range a {
+		for len(t) > 0 && a[t[len(t)-1]] < x {
+			right2[t[len(t)-1]] = i // t 栈顶的下下个更大元素是 a[i]
+			t = t[:len(t)-1]
+		}
+		j := len(s) - 1
+		for j >= 0 && a[s[j]] < x {
+			right[s[j]] = i // s 栈顶的下一个更大元素是 a[i]
+			j--
+		}
+		t = append(t, s[j+1:]...) // 把从 s 弹出的这一整段元素加到 t
+		s = append(s[:j+1], i)
+	}
+	return right, right2
 }
 
 // 注：若输入的是一个 1~n 的排列，求两侧大于/小于位置有更简单的写法
