@@ -96,6 +96,10 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
 网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
 
+集合划分（贝尔数）https://oeis.org/A000110
+见下面的 partitionSet
+https://codeforces.com/problemset/problem/954/I 2200
+
 爆搜+剪枝
 - [3211. 生成不含相邻零的二进制字符串](https://leetcode.cn/problems/generate-binary-strings-without-adjacent-zeros/)
 - [79. 单词搜索](https://leetcode.cn/problems/word-search/)
@@ -105,6 +109,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [488. 祖玛游戏](https://leetcode.cn/problems/zuma-game/)
 - [638. 大礼包](https://leetcode.cn/problems/shopping-offers/)
 - [1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/) 1882
+- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648 结合二分
 - [面试题 17.25. 单词矩阵](https://leetcode.cn/problems/word-rectangle-lcci/)
 
 关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
@@ -602,6 +607,27 @@ func searchCollection() {
 		return perm
 	}
 
+	// 集合划分（贝尔数）https://oeis.org/A000110
+	// https://codeforces.com/problemset/problem/954/I 2200
+	partitionSet := func(limit int) {
+		roots := make([]int, limit)
+		var dfs func(int, int)
+		dfs = func(i, numOfSets int) {
+			if i == limit {
+				// ...
+				
+				return
+			}
+			roots[i] = numOfSets // 元素 i 单独组成一个集合
+			dfs(i+1, numOfSets+1)
+			for j := range numOfSets {
+				roots[i] = j // 元素 i 加到集合 j 中
+				dfs(i+1, numOfSets)
+			}
+		}
+		dfs(0, 0)
+	}
+
 	// 迭代加深搜索
 	// 限制 DFS 深度（不断提高搜索深度）
 	// http://poj.org/problem?id=2248
@@ -743,6 +769,7 @@ func searchCollection() {
 		iterWithLimits, iterWithLimitsAndSum,
 		combinations, combinationsWithRepetition,
 		permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
+		partitionSet,
 		bigKnapsack, bigKnapsack2,
 	}
 }
