@@ -2,16 +2,28 @@
 
 看示例 1，$\textit{nums}=[2,3,2]$。
 
-如果 $\textit{arr}_1[2]=2$，那么 $\textit{arr}_2[2]=\textit{nums}[2] - \textit{arr}_1[2]=2-2= 0$。考虑枚举 $\textit{arr}_1[1]$ 是多少：
+单调数组对有 $4$ 个：
 
-- 如果 $\textit{arr}_1[1]=0$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=0$。
-- 如果 $\textit{arr}_1[1]=1$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=1$。
-- 如果 $\textit{arr}_1[1]=2$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=2$。
-- 注意 $\textit{arr}_1[1]$ 不能超过 $\textit{arr}_1[2]$，且 $\textit{arr}_2[1] = \textit{nums}[1] - \textit{arr}_1[1]$ 不能低于 $\textit{arr}_2[2]$。
+- $\textit{arr}_1 = [0, 1, 1],\ \textit{arr}_2 = [2, 2, 1]$
+- $\textit{arr}_1 = [0, 1, 2],\ \textit{arr}_2 = [2, 2, 0]$
+- $\textit{arr}_1 = [0, 2, 2],\ \textit{arr}_2 = [2, 1, 0]$
+- $\textit{arr}_1 = [1, 2, 2],\ \textit{arr}_2 = [1, 1, 0]$
 
-累加这些方案数，我们就得到了下标 $0$ 到 $2$ 中的单调数组对的个数，且 $\textit{arr}_1[2]=2$。
+假设 $\textit{arr}_1[2]=2$，那么 $\textit{arr}_2[2]=\textit{nums}[2] - \textit{arr}_1[2]=2-2= 0$。考虑枚举 $\textit{arr}_1[1]$ 是多少：
 
-上面的讨论说明本题的**子问题**是「下标 $0$ 到 $i$ 中的单调数组对的个数，且 $\textit{arr}_1[i]=j$」，将其记作 $f[i][j]$。
+- 如果 $\textit{arr}_1[1]=0$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=0$。（没有这样的单调数组对）
+- 如果 $\textit{arr}_1[1]=1$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=1$。（有 $1$ 个）
+- 如果 $\textit{arr}_1[1]=2$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=2$。（有 $2$ 个）
+- 注意 $\textit{arr}_1[1]$ 不能超过 $\textit{arr}_1[2]$，且 $\textit{arr}_2[1] = \textit{nums}[1] - \textit{arr}_1[1]$ 不能低于 $\textit{arr}_2[2]$。否则不满足 $\textit{arr}_1$ 单调非递减和 $\textit{arr}_2$ 单调非递增的要求。
+
+累加这些个数，我们就得到了在 $\textit{arr}_1[2]=2$ 的情况下，下标 $0$ 到 $2$ 中的单调数组对的个数。（有 $3$ 个）
+
+此外，在 $\textit{arr}_1[2]=1$ 的情况下，下标 $0$ 到 $2$ 中的单调数组对的个数是 $1$；在 $\textit{arr}_1[2]=0$ 的情况下，下标 $0$ 到 $2$ 中的单调数组对的个数是 $0$。
+
+上面的讨论说明：
+
+- 原问题是「下标 $0$ 到 $n-1$ 中的单调数组对的个数，且 $\textit{arr}_1[n-1]=0,1,2,\ldots,\textit{nums}[n-1]$」。
+- 子问题是「下标 $0$ 到 $i$ 中的单调数组对的个数，且 $\textit{arr}_1[i]=j$」，将其记作 $f[i][j]$。
 
 考虑枚举 $\textit{arr}_1[i-1] = k$，那么必须满足 $\textit{arr}_1[i-1]\le \textit{arr}_1[i]$ 且 $\textit{arr}_2[i-1]\ge \textit{arr}_2[i]$，即 $k\le j$ 且 $\textit{nums}[i-1]-k\ge \textit{nums}[i] - j$。
 
@@ -101,7 +113,7 @@ public:
         const int MOD = 1'000'000'007;
         int n = nums.size();
         int m = ranges::max(nums);
-        vector<vector<long long>> f(n, vector<long long>(m + 1));
+        vector f(n, vector<long long>(m + 1));
         vector<long long> s(m + 1);
 
         fill(f[0].begin(), f[0].begin() + nums[0] + 1, 1);
@@ -673,7 +685,7 @@ func pow(x, n int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. 【本题相关】[数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
