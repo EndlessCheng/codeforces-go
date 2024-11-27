@@ -342,16 +342,17 @@ func newSegmentTree(a []int) seg {
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
 // - https://codeforces.com/contest/292/submission/173659179
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
-// https://codeforces.com/problemset/problem/620/E  2100
-// https://codeforces.com/problemset/problem/1295/E 2200
-// https://codeforces.com/problemset/problem/1557/D 2200 max max 离散化 
-// https://codeforces.com/problemset/problem/718/C  2300 矩阵乘法 ∑ 
-// https://codeforces.com/problemset/problem/145/E  2400
-// https://codeforces.com/problemset/problem/1114/F 2400
-// https://codeforces.com/problemset/problem/240/F  2600
-// https://codeforces.com/problemset/problem/1439/C 2600 =max 求和的 O(log^2) 性质 
-// https://codeforces.com/problemset/problem/1614/E 2600
-// https://codeforces.com/problemset/problem/794/F  2800 数位修改 考察对懒标记的理解 
+// https://codeforces.com/problemset/problem/620/E   2100
+// https://codeforces.com/problemset/problem/1295/E  2200
+// https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
+// https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
+// https://codeforces.com/problemset/problem/145/E   2400
+// https://codeforces.com/problemset/problem/1114/F  2400
+// https://codeforces.com/problemset/problem/240/F   2600
+// https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
+// https://codeforces.com/problemset/problem/1614/E  2600
+// https://codeforces.com/problemset/problem/2009/G3 2700
+// https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
