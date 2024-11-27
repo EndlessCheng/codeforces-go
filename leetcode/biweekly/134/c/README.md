@@ -8,6 +8,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Yz421q7dD/) 第三题，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def numberOfAlternatingGroups(self, colors: List[int], k: int) -> int:
@@ -80,7 +82,7 @@ int numberOfAlternatingGroups(int* colors, int n, int k) {
 func numberOfAlternatingGroups(colors []int, k int) (ans int) {
 	n := len(colors)
 	cnt := 0
-	for i := 0; i < n*2; i++ {
+	for i := range n * 2 {
 		if i > 0 && colors[i%n] == colors[(i-1)%n] {
 			cnt = 0
 		}
@@ -122,6 +124,138 @@ impl Solution {
             }
             cnt += 1;
             if i >= n && cnt >= k {
+                ans += 1;
+            }
+        }
+        ans
+    }
+}
+```
+
+## 写法二
+
+一共有 $n$ 个子数组：
+
+- 第一个子数组的下标范围是 $[0,k-1]$。
+- 第二个子数组的下标范围是 $[1,k]$。
+- 第三个子数组的下标范围是 $[2,k+1]$。
+- ……
+- 第 $n$ 个子数组的下标范围是 $[n-1,n+k-2]$。
+
+上面的循环可以改成循环到 $n+k-2$ 为止。由于没有重复统计，无需判断 $i\ge n$。
+
+```py [sol-Python3]
+class Solution:
+    def numberOfAlternatingGroups(self, colors: List[int], k: int) -> int:
+        n = len(colors)
+        ans = cnt = 0
+        for i in range(n + k - 1):
+            if i > 0 and colors[i % n] == colors[(i - 1) % n]:
+                cnt = 0
+            cnt += 1
+            if cnt >= k:
+                ans += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int numberOfAlternatingGroups(int[] colors, int k) {
+        int n = colors.length;
+        int ans = 0;
+        int cnt = 0;
+        for (int i = 0; i < n + k - 1; i++) {
+            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+                cnt = 0;
+            }
+            cnt++;
+            if (cnt >= k) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int numberOfAlternatingGroups(vector<int>& colors, int k) {
+        int n = colors.size();
+        int ans = 0, cnt = 0;
+        for (int i = 0; i < n + k - 1; i++) {
+            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+                cnt = 0;
+            }
+            cnt++;
+            ans += cnt >= k;
+        }
+        return ans;
+    }
+};
+```
+
+```c [sol-C]
+int numberOfAlternatingGroups(int* colors, int n, int k) {
+    int ans = 0, cnt = 0;
+    for (int i = 0; i < n + k - 1; i++) {
+        if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+            cnt = 0;
+        }
+        cnt++;
+        ans += cnt >= k;
+    }
+    return ans;
+}
+```
+
+```go [sol-Go]
+func numberOfAlternatingGroups(colors []int, k int) (ans int) {
+	n := len(colors)
+	cnt := 0
+	for i := range n + k - 1 {
+		if i > 0 && colors[i%n] == colors[(i-1)%n] {
+			cnt = 0
+		}
+		cnt++
+		if cnt >= k {
+			ans++
+		}
+	}
+	return
+}
+```
+
+```js [sol-JavaScript]
+var numberOfAlternatingGroups = function(colors, k) {
+    const n = colors.length;
+    let ans = 0, cnt = 0;
+    for (let i = 0; i < n + k - 1; i++) {
+        if (i > 0 && colors[i % n] === colors[(i - 1) % n]) {
+            cnt = 0;
+        }
+        cnt++;
+        if (cnt >= k) {
+            ans++;
+        }
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn number_of_alternating_groups(colors: Vec<i32>, k: i32) -> i32 {
+        let n = colors.len();
+        let mut ans = 0;
+        let mut cnt = 0;
+        for i in 0..n + k as usize - 1 {
+            if i > 0 && colors[i % n] == colors[(i - 1) % n] {
+                cnt = 0;
+            }
+            cnt += 1;
+            if cnt >= k {
                 ans += 1;
             }
         }
