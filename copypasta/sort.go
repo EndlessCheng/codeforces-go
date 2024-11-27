@@ -80,6 +80,7 @@ https://codeforces.com/problemset/problem/1208/B 1500
 https://codeforces.com/problemset/problem/1665/C 1600
 https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
+https://codeforces.com/problemset/problem/2037/F 2100
 
 ### 二分答案：求最大
 https://codeforces.com/problemset/problem/670/D2 1500
