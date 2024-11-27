@@ -16,7 +16,7 @@ class Solution:
         n = len(colors)
         ans = cnt = 0
         for i in range(n * 2):
-            if i > 0 and colors[i % n] == colors[(i - 1) % n]:
+            if colors[i % n] == colors[(i + 1) % n]:
                 cnt = 0
             cnt += 1
             if i >= n and cnt >= k:
@@ -31,7 +31,7 @@ class Solution {
         int ans = 0;
         int cnt = 0;
         for (int i = 0; i < n * 2; i++) {
-            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+            if (colors[i % n] == colors[(i + 1) % n]) {
                 cnt = 0;
             }
             cnt++;
@@ -51,7 +51,7 @@ public:
         int n = colors.size();
         int ans = 0, cnt = 0;
         for (int i = 0; i < n * 2; i++) {
-            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+            if (colors[i % n] == colors[(i + 1) % n]) {
                 cnt = 0;
             }
             cnt++;
@@ -66,7 +66,7 @@ public:
 int numberOfAlternatingGroups(int* colors, int n, int k) {
     int ans = 0, cnt = 0;
     for (int i = 0; i < n * 2; i++) {
-        if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+        if (colors[i % n] == colors[(i + 1) % n]) {
             cnt = 0;
         }
         cnt++;
@@ -83,7 +83,7 @@ func numberOfAlternatingGroups(colors []int, k int) (ans int) {
 	n := len(colors)
 	cnt := 0
 	for i := range n * 2 {
-		if i > 0 && colors[i%n] == colors[(i-1)%n] {
+		if colors[i%n] == colors[(i+1)%n] {
 			cnt = 0
 		}
 		cnt++
@@ -100,7 +100,7 @@ var numberOfAlternatingGroups = function(colors, k) {
     const n = colors.length;
     let ans = 0, cnt = 0;
     for (let i = 0; i < n * 2; i++) {
-        if (i > 0 && colors[i % n] === colors[(i - 1) % n]) {
+        if (colors[i % n] === colors[(i + 1) % n]) {
             cnt = 0;
         }
         cnt++;
@@ -119,7 +119,7 @@ impl Solution {
         let mut ans = 0;
         let mut cnt = 0;
         for i in 0..n * 2 {
-            if i > 0 && colors[i % n] == colors[(i - 1) % n] {
+            if colors[i % n] == colors[(i + 1) % n] {
                 cnt = 0;
             }
             cnt += 1;
@@ -150,7 +150,7 @@ class Solution:
         n = len(colors)
         ans = cnt = 0
         for i in range(n + k - 1):
-            if i > 0 and colors[i % n] == colors[(i - 1) % n]:
+            if colors[i % n] == colors[(i + 1) % n]:
                 cnt = 0
             cnt += 1
             if cnt >= k:
@@ -165,7 +165,7 @@ class Solution {
         int ans = 0;
         int cnt = 0;
         for (int i = 0; i < n + k - 1; i++) {
-            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+            if (colors[i % n] == colors[(i + 1) % n]) {
                 cnt = 0;
             }
             cnt++;
@@ -185,7 +185,7 @@ public:
         int n = colors.size();
         int ans = 0, cnt = 0;
         for (int i = 0; i < n + k - 1; i++) {
-            if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+            if (colors[i % n] == colors[(i + 1) % n]) {
                 cnt = 0;
             }
             cnt++;
@@ -200,7 +200,7 @@ public:
 int numberOfAlternatingGroups(int* colors, int n, int k) {
     int ans = 0, cnt = 0;
     for (int i = 0; i < n + k - 1; i++) {
-        if (i > 0 && colors[i % n] == colors[(i - 1) % n]) {
+        if (colors[i % n] == colors[(i + 1) % n]) {
             cnt = 0;
         }
         cnt++;
@@ -215,7 +215,7 @@ func numberOfAlternatingGroups(colors []int, k int) (ans int) {
 	n := len(colors)
 	cnt := 0
 	for i := range n + k - 1 {
-		if i > 0 && colors[i%n] == colors[(i-1)%n] {
+		if colors[i%n] == colors[(i+1)%n] {
 			cnt = 0
 		}
 		cnt++
@@ -232,7 +232,7 @@ var numberOfAlternatingGroups = function(colors, k) {
     const n = colors.length;
     let ans = 0, cnt = 0;
     for (let i = 0; i < n + k - 1; i++) {
-        if (i > 0 && colors[i % n] === colors[(i - 1) % n]) {
+        if (colors[i % n] === colors[(i + 1) % n]) {
             cnt = 0;
         }
         cnt++;
@@ -251,7 +251,7 @@ impl Solution {
         let mut ans = 0;
         let mut cnt = 0;
         for i in 0..n + k as usize - 1 {
-            if i > 0 && colors[i % n] == colors[(i - 1) % n] {
+            if colors[i % n] == colors[(i + 1) % n] {
                 cnt = 0;
             }
             cnt += 1;
