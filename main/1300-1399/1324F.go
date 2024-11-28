@@ -12,15 +12,10 @@ func CF1324F(in io.Reader, _w io.Writer) {
 	defer out.Flush()
 	var n int
 	Fscan(in, &n)
-
 	color := make([]int, n)
 	for i := range color {
 		Fscan(in, &color[i])
-		if color[i] == 0 {
-			color[i] = -1
-		}
 	}
-
 	g := make([][]int, n)
 	for range n - 1 {
 		var v, w int
@@ -34,7 +29,7 @@ func CF1324F(in io.Reader, _w io.Writer) {
 	ans := make([]int, n)
 	var dfs func(int, int) int
 	dfs = func(v, fa int) int {
-		res := color[v]
+		res := color[v]*2 - 1
 		for _, w := range g[v] {
 			if w != fa {
 				res += dfs(w, v)
