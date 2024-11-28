@@ -60,6 +60,7 @@ https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异
 https://codeforces.com/problemset/problem/1660/F2 2100 建模
 https://codeforces.com/problemset/problem/301/D 2200 整除对统计
 https://codeforces.com/problemset/problem/369/E 2200 区间统计技巧
+https://codeforces.com/problemset/problem/1045/G 2200 离散化
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
