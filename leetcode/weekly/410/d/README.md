@@ -9,7 +9,7 @@
 - $\textit{arr}_1 = [0, 2, 2],\ \textit{arr}_2 = [2, 1, 0]$
 - $\textit{arr}_1 = [1, 2, 2],\ \textit{arr}_2 = [1, 1, 0]$
 
-假设 $\textit{arr}_1[2]=2$，那么 $\textit{arr}_2[2]=\textit{nums}[2] - \textit{arr}_1[2]=2-2= 0$。考虑枚举 $\textit{arr}_1[1]$ 是多少：
+从右往左思考。假设 $\textit{arr}_1[2]=2$，那么 $\textit{arr}_2[2]=\textit{nums}[2] - \textit{arr}_1[2]=2-2= 0$。考虑枚举 $\textit{arr}_1[1]$ 是多少：
 
 - 如果 $\textit{arr}_1[1]=0$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=0$。（没有这样的单调数组对）
 - 如果 $\textit{arr}_1[1]=1$，那么问题变成计算下标 $0$ 到 $1$ 中的单调数组对的个数，且 $\textit{arr}_1[1]=1$。（有 $1$ 个）
@@ -514,7 +514,10 @@ class Solution:
     def countOfPairs(self, nums: List[int]) -> int:
         m = nums[-1]
         for x, y in pairwise(nums):
-            m -= max(y - x, 0)
+            if y > x:  # 更快的写法：手写 max
+                m -= y - x
+                if m < 0:  # 更快的写法：提前返回 0
+                    return 0
         return comb(m + len(nums), m) if m >= 0 else 0
 ```
 
