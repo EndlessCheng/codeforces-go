@@ -1413,7 +1413,7 @@ func _() {
 		// 一次询问（下标从 1 开始）https://codeforces.com/problemset/problem/1141/E
 		// 多次询问（下标从 0 开始）https://codeforces.com/problemset/problem/1490/G
 
-		_ = []any{distanceSum, targetFromDistanceSum, distanceSumRange, moveSum, maxLow, minHigh}
+		_ = []any{distanceSum, distanceSumRange, moveSum, maxLow, minHigh}
 	}
 
 	// 同余前缀和，a 的下标从 0 开始，md 为模数
