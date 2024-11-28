@@ -12,7 +12,7 @@ func CF1324F(_r io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 
-	var n, v, w int
+	var n int
 	Fscan(in, &n)
 	color := make([]int, n)
 	for i := range color {
@@ -23,6 +23,7 @@ func CF1324F(_r io.Reader, _w io.Writer) {
 	}
 	g := make([][]int, n+1)
 	for i := 0; i < n-1; i++ {
+		var v, w int
 		Fscan(in, &v, &w)
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
@@ -30,23 +31,21 @@ func CF1324F(_r io.Reader, _w io.Writer) {
 	g[1] = append(g[1], 0)
 
 	ans := make([]int, n+1)
-	var f func(v, fa int) int
-	f = func(v, fa int) int {
+	var dfs func(int, int) int
+	dfs = func(v, fa int) int {
 		sum := color[v-1]
 		for _, w := range g[v] {
 			if w != fa {
-				sum += f(w, v)
+				sum += dfs(w, v)
 			}
 		}
 		ans[v] = sum
-		if sum < 0 {
-			return 0
-		}
-		return sum
+		return max(sum, 0)
 	}
-	f(1, 0)
-	var f2 func(v, fa int)
-	f2 = func(v, fa int) {
+	dfs(1, 0)
+
+	var reroot func(int, int)
+	reroot = func(v, fa int) {
 		if ans[v] >= 0 {
 			ans[v] = max(ans[v], ans[fa])
 		} else {
@@ -54,11 +53,12 @@ func CF1324F(_r io.Reader, _w io.Writer) {
 		}
 		for _, w := range g[v] {
 			if w != fa {
-				f2(w, v)
+				reroot(w, v)
 			}
 		}
 	}
-	f2(1, 0)
+	reroot(1, 0)
+
 	for _, v := range ans[1:] {
 		Fprint(out, v, " ")
 	}
