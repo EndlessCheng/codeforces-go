@@ -1,20 +1,41 @@
 package main
 
-import "sort"
+import (
+	"maps"
+	"slices"
+)
 
-func minSetSize(arr []int) (ans int) {
-	cnts := make([]int, 1e5+1)
-	for _, v := range arr {
-		cnts[v]++
+func minSetSize(arr []int) int {
+	cnt := make([]int, slices.Max(arr)+1)
+	for _, x := range arr {
+		cnt[x]++
 	}
-	sort.Ints(cnts)
-	sum := 0
-	for i := len(cnts) - 1; i >= 0; i-- {
-		ans++
-		sum += cnts[i]
-		if sum >= len(arr)/2 {
-			break
+	slices.SortFunc(cnt, func(a, b int) int { return b - a })
+
+	s := 0
+	for i, c := range cnt {
+		s += c
+		if s >= len(arr)/2 {
+			return i + 1
 		}
 	}
-	return
+	panic("impossible")
+}
+
+func minSetSize2(arr []int) int {
+	freq := map[int]int{}
+	for _, x := range arr {
+		freq[x]++
+	}
+
+	cnt := slices.SortedFunc(maps.Values(freq), func(a, b int) int { return b - a })
+
+	s := 0
+	for i, c := range cnt {
+		s += c
+		if s >= len(arr)/2 {
+			return i + 1
+		}
+	}
+	panic("impossible")
 }
