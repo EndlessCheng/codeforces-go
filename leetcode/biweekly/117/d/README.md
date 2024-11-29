@@ -89,7 +89,7 @@ func maxSpending(values [][]int) (ans int64) {
 
 ## 写法二：最小堆
 
-也可以用最小堆实现。
+也可以用最小堆模拟取数的流程。
 
 ```py [sol-Python3]
 class Solution:
