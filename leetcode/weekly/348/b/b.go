@@ -1,16 +1,12 @@
 package main
 
+import "slices"
+
 // https://space.bilibili.com/206214
 func semiOrderedPermutation(nums []int) int {
 	n := len(nums)
-	var p, q int
-	for i, v := range nums {
-		if v == 1 {
-			p = i
-		} else if v == n {
-			q = i
-		}
-	}
+	p := slices.Index(nums, 1)
+	q := slices.Index(nums, n)
 	if p < q {
 		return p + n - 1 - q
 	}
