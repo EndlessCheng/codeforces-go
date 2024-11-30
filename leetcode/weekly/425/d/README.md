@@ -84,7 +84,7 @@ class Solution {
 
     private long[] dfs(int x, int fa, List<int[]>[] g, int k) {
         long notChoose = 0;
-        List<Long> inc = new ArrayList<>();
+        List<Integer> inc = new ArrayList<>();
         for (int[] e : g[x]) {
             int y = e[0];
             if (y == fa) {
@@ -92,7 +92,7 @@ class Solution {
             }
             long[] res = dfs(y, x, g, k);
             notChoose += res[0]; // 先都不选
-            long d = res[1] + e[1] - res[0];
+            int d = (int) (res[1] - res[0]) + e[1];
             if (d > 0) {
                 inc.add(d);
             }
@@ -139,14 +139,14 @@ public:
 
         auto dfs = [&](auto& dfs, int x, int fa) -> pair<long long, long long> {
             long long not_choose = 0;
-            vector<long long> inc;
+            vector<int> inc;
             for (auto& [y, wt] : g[x]) {
                 if (y == fa) {
                     continue;
                 }
                 auto [nc, c] = dfs(dfs, y, x);
                 not_choose += nc; // 先都不选
-                long long d = c + wt - nc;
+                int d = c + wt - nc;
                 if (d > 0) {
                     inc.push_back(d);
                 }
