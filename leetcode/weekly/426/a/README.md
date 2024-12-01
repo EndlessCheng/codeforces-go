@@ -43,6 +43,12 @@ func smallestNumber(n int) int {
 - 时间复杂度：$\mathcal{O}(1)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 思考题
+
+把 $\ge n$ 改成 $>n$ 怎么做？
+
+答案见评论。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
