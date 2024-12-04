@@ -4,6 +4,7 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math"
 	"slices"
 )
 
@@ -15,7 +16,7 @@ func cf2046B(in io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		var a, b []int
-		minB := int(1e9)
+		minB := math.MaxInt
 		for range n {
 			Fscan(in, &v)
 			for len(a) > 0 && v < a[len(a)-1] {
