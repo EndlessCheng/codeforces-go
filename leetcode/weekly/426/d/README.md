@@ -5,7 +5,7 @@
 - 黑色节点的所有邻居都是白色。
 - 白色节点的所有邻居都是黑色。
 
-> 这个想法来自国际象棋的棋盘：所有黑色格子的四方向邻居都是白色格子，所有白色格子的四方向邻居都是黑色格子。
+> 这个想法来自国际象棋的棋盘：所有黑色格子的四方向邻居都是白色格子，所有白色格子的四方向邻居都是黑色格子。也可以从图论的角度理解，因为树一定是二分图。
 
 染色后，从任意节点出发，每走一步，节点的颜色都会改变。所以：
 
@@ -237,7 +237,7 @@ func maxTargetNodes(edges1, edges2 [][]int) []int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
