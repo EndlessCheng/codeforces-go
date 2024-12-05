@@ -17,7 +17,7 @@ class Solution:
     def minMovesToCaptureTheQueen(self, a: int, b: int, c: int, d: int, e: int, f: int) -> int:
         # m 在 l 和 r 之间（写不写等号都可以）
         def in_between(l: int, m: int, r: int) -> bool:
-            return min(l, r) <= m <= max(l, r)
+            return min(l, r) < m < max(l, r)
 
         # 车直接攻击到皇后 or 象直接攻击到皇后
         if a == e and (c != e or not in_between(b, d, f)) or \
@@ -138,6 +138,99 @@ impl Solution {
 }
 ```
 
+另一种写法，如果 $(m-l)\cdot(m-r) > 0$，那么整数 $m$ 不在整数 $l$ 和 $r$ 之间，
+
+```py [sol-Python3]
+class Solution:
+    def minMovesToCaptureTheQueen(self, a: int, b: int, c: int, d: int, e: int, f: int) -> int:
+        # 车直接攻击到皇后 or 象直接攻击到皇后
+        if a == e and (c != e or (d - b) * (d - f) > 0) or \
+           b == f and (d != f or (c - a) * (c - e) > 0) or \
+           c + d == e + f and (a + b != e + f or (a - c) * (a - e) > 0) or \
+           c - d == e - f and (a - b != e - f or (a - c) * (a - e) > 0):
+            return 1
+        return 2
+```
+
+```java [sol-Java]
+class Solution {
+    public int minMovesToCaptureTheQueen(int a, int b, int c, int d, int e, int f) {
+        if (a == e && (c != e || (d - b) * (d - f) > 0) || // 车直接攻击到皇后（同一行）
+            b == f && (d != f || (c - a) * (c - e) > 0) || // 车直接攻击到皇后（同一列）
+            c + d == e + f && (a + b != e + f || (a - c) * (a - e) > 0) || // 象直接攻击到皇后
+            c - d == e - f && (a - b != e - f || (a - c) * (a - e) > 0)) {
+            return 1;
+        }
+        return 2;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minMovesToCaptureTheQueen(int a, int b, int c, int d, int e, int f) {
+        if (a == e && (c != e || (d - b) * (d - f) > 0) || // 车直接攻击到皇后（同一行）
+            b == f && (d != f || (c - a) * (c - e) > 0) || // 车直接攻击到皇后（同一列）
+            c + d == e + f && (a + b != e + f || (a - c) * (a - e) > 0) || // 象直接攻击到皇后
+            c - d == e - f && (a - b != e - f || (a - c) * (a - e) > 0)) {
+            return 1;
+        }
+        return 2;
+    }
+};
+```
+
+```c [sol-C]
+int minMovesToCaptureTheQueen(int a, int b, int c, int d, int e, int f) {
+    if (a == e && (c != e || (d - b) * (d - f) > 0) || // 车直接攻击到皇后（同一行）
+        b == f && (d != f || (c - a) * (c - e) > 0) || // 车直接攻击到皇后（同一列）
+        c + d == e + f && (a + b != e + f || (a - c) * (a - e) > 0) || // 象直接攻击到皇后
+        c - d == e - f && (a - b != e - f || (a - c) * (a - e) > 0)) {
+        return 1;
+    }
+    return 2;
+}
+```
+
+```go [sol-Go]
+func minMovesToCaptureTheQueen(a, b, c, d, e, f int) int {
+    if a == e && (c != e || (d-b)*(d-f) > 0) || // 车直接攻击到皇后（同一行）
+        b == f && (d != f || (c-a)*(c-e) > 0) || // 车直接攻击到皇后（同一列）
+        c+d == e+f && (a+b != e+f || (a-c)*(a-e) > 0) || // 象直接攻击到皇后
+        c-d == e-f && (a-b != e-f || (a-c)*(a-e) > 0) {
+        return 1
+    }
+    return 2
+}
+```
+
+```js [sol-JavaScript]
+var minMovesToCaptureTheQueen = function(a, b, c, d, e, f) {
+    if (a === e && (c !== e || (d - b) * (d - f) > 0) || // 车直接攻击到皇后（同一行）
+        b === f && (d !== f || (c - a) * (c - e) > 0) || // 车直接攻击到皇后（同一列）
+        c + d === e + f && (a + b !== e + f || (a - c) * (a - e) > 0) || // 象直接攻击到皇后
+        c - d === e - f && (a - b !== e - f || (a - c) * (a - e) > 0)) {
+        return 1;
+    }
+    return 2;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn min_moves_to_capture_the_queen(a: i32, b: i32, c: i32, d: i32, e: i32, f: i32) -> i32 {
+        if a == e && (c != e || (d - b) * (d - f) > 0) || // 车直接攻击到皇后（同一行）
+            b == f && (d != f || (c - a) * (c - e) > 0) || // 车直接攻击到皇后（同一列）
+            c + d == e + f && (a + b != e + f || (a - c) * (a - e) > 0) || // 象直接攻击到皇后
+            c - d == e - f && (a - b != e - f || (a - c) * (a - e) > 0) {
+            return 1;
+        }
+        2
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(1)$。
@@ -161,7 +254,7 @@ impl Solution {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
