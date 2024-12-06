@@ -51,8 +51,7 @@ func cf954I(in io.Reader, _w io.Writer) {
 		}
 		mp[c] = sz
 		dfs(c+1, sz+1)
-		for j := range sz {
-			mp[c] = j
+		for mp[c] = range sz {
 			dfs(c+1, sz)
 		}
 	}
