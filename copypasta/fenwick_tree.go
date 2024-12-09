@@ -130,6 +130,7 @@ func (f fenwick) query(l, r int) int {
 // 对于每个询问，计算 [x1,x2] x [y1,y2] 中的点的个数
 // 离线，拆分成两个更小的询问：[1,x2] x [y1,y2] 中的点的个数，减去 [1,x1-1] x [y1,y2] 中的点的个数
 // 一边从小到大枚举 x，一边更新【值域树状数组】，一边回答离线后的询问
+// https://www.luogu.com.cn/problem/P2163
 // LC3382 https://leetcode.cn/problems/maximum-area-rectangle-with-point-constraints-ii/
 // https://codeforces.com/problemset/problem/1899/G 1900
 func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2, y1, y2 int }) []int {
@@ -150,9 +151,15 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 	qs := make([][]data, len(xs))
 	for i, q := range queries {
 		x1 := sort.SearchInts(xs, q.x1) // 离散化，下标从 0 开始
-		x2 := sort.SearchInts(xs, q.x2)
+		x2 := sort.SearchInts(xs, q.x2+1) - 1
+		if x1 > x2 {
+			continue
+		}
 		y1 := sort.SearchInts(ys, q.y1)
-		y2 := sort.SearchInts(ys, q.y2)
+		y2 := sort.SearchInts(ys, q.y2+1) - 1
+		if y1 > y2 {
+			continue
+		}
 		if x1 > 0 {
 			qs[x1-1] = append(qs[x1-1], data{i, -1, y1, y2})
 		}
@@ -161,7 +168,7 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 
 	// 回答询问
 	ans := make([]int, len(queries))
-	t := make(fenwick, len(ys)+1)
+	t := make(fenwick, len(ys)+2)
 	for i, x := range xs { // 从小到大枚举 x
 		// 把横坐标为 x 的所有点都加到树状数组中
 		for _, y := range xMap[x] {
