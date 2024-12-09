@@ -66,8 +66,7 @@ class Solution:
     def maxRectangleArea(self, xCoord: List[int], yCoord: List[int]) -> int:
         x_map = defaultdict(list)  # 同一列的所有点的纵坐标
         y_map = defaultdict(list)  # 同一行的所有点的横坐标
-        for i, x in enumerate(xCoord):
-            y = yCoord[i]
+        for x, y in zip(xCoord, yCoord):
             x_map[x].append(y)
             y_map[y].append(x)
 
