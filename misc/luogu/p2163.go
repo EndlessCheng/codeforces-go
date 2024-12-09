@@ -55,7 +55,7 @@ func p2163(in io.Reader, _w io.Writer) {
 		Fscan(in, &x1, &y1, &x2, &y2)
 		x1 = sort.SearchInts(xs, x1) // 离散化，下标从 0 开始
 		x2 = sort.SearchInts(xs, x2+1) - 1
-		if x2 < 0 {
+		if x1 > x2 {
 			continue
 		}
 		y1 = sort.SearchInts(ys, y1)
