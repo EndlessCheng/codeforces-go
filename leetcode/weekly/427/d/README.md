@@ -180,22 +180,24 @@ class Solution {
 
         // 预处理每个点的正下方的点
         Map<Long, Integer> below = new HashMap<>();
-        for (var entry : xMap.entrySet()) {
-            List<Integer> ys = entry.getValue();
+        for (var e : xMap.entrySet()) {
+            int x = e.getKey();
+            List<Integer> ys = e.getValue();
             ys.sort(null);
             for (int i = 1; i < ys.size(); i++) {
                 // 通过 x<<32|y 的方式，把 (x,y) 压缩成一个 long
-                below.put((long) entry.getKey() << 32 | ys.get(i), ys.get(i - 1));
+                below.put((long) x << 32 | ys.get(i), ys.get(i - 1));
             }
         }
 
         // 预处理每个点的正左边的点
         Map<Long, Integer> left = new HashMap<>();
-        for (var entry : yMap.entrySet()) {
-            List<Integer> xs = entry.getValue();
+        for (var e : yMap.entrySet()) {
+            int y = e.getKey();
+            List<Integer> xs = e.getValue();
             xs.sort(null);
             for (int i = 1; i < xs.size(); i++) {
-                left.put((long) xs.get(i) << 32 | entry.getKey(), xs.get(i - 1));
+                left.put((long) xs.get(i) << 32 | y, xs.get(i - 1));
             }
         }
 
