@@ -23,7 +23,7 @@ func cf2047B(in io.Reader, out io.Writer) {
 			if mx < 0 || c > cnt[mx] {
 				mx = i
 			}
-			if mn < 0 || c <= cnt[mn] {
+			if mn < 0 || c <= cnt[mn] { // = 可以让 mn 尽量靠后
 				mn = i
 			}
 		}
