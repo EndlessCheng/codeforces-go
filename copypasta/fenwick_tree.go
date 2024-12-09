@@ -168,7 +168,7 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 
 	// 回答询问
 	ans := make([]int, len(queries))
-	t := make(fenwick, len(ys)+2)
+	t := make(fenwick, len(ys)+1)
 	for i, x := range xs { // 从小到大枚举 x
 		// 把横坐标为 x 的所有点都加到树状数组中
 		for _, y := range xMap[x] {
