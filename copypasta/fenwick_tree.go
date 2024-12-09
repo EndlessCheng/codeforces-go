@@ -1,7 +1,9 @@
 package copypasta
 
 import (
+	"maps"
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -62,7 +64,8 @@ https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异
 https://codeforces.com/problemset/problem/1660/F2 2100 建模
 https://codeforces.com/problemset/problem/301/D 2200 整除对统计
 https://codeforces.com/problemset/problem/369/E 2200 区间统计技巧
-https://codeforces.com/problemset/problem/1045/G 2200 离散化
+https://codeforces.com/problemset/problem/762/E 2200 离散化
+- https://codeforces.com/problemset/problem/1045/G 2200 同 762E
 https://codeforces.com/problemset/problem/1194/E 2200 多变量统计
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
@@ -123,30 +126,50 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-// 离线二维数点
-// 对于每个询问，回答：a[l:r+1] 中有多少个值在 [lower, upper] 中的数
-// 转换成：a[:r+1] 中的值在 [lower, upper] 中的数，减去 a[:l] 中的值在 [lower, upper] 中的数
-// 一边遍历 a，一边更新【值域树状数组】，一边回答离线后的询问
-// 所有下标均从 0 开始
+// 静态二维数点
+// 对于每个询问，计算 [x1,x2] x [y1,y2] 中的点的个数
+// 离线，拆分成两个更小的询问：[1,x2] x [y1,y2] 中的点的个数，减去 [1,x1-1] x [y1,y2] 中的点的个数
+// 一边从小到大枚举 x=1,2,3,...，一边更新【值域树状数组】，一边回答离线后的询问
+// LC3382 https://leetcode.cn/problems/maximum-area-rectangle-with-point-constraints-ii/
 // https://codeforces.com/problemset/problem/1899/G 1900
-func areaPointCountOffline(a []int, queries []struct{ l, r, lower, upper int }) []int {
-	// 注：如果值域大，可以先把 a[i] 离散化，lower 和 upper 二分转换一下
-	type data struct{ lower, upper, sign, qid int }
-	qs := make([][]data, len(a))
-	for i, q := range queries {
-		l, r, lower, upper := q.l, q.r, q.lower, q.upper
-		if l > 0 {
-			qs[l-1] = append(qs[l-1], data{lower, upper, -1, i})
-		}
-		qs[r] = append(qs[r], data{lower, upper, 1, i})
+func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2, y1, y2 int }) []int {
+	xMap := map[int][]int{} // 同一列的所有点的纵坐标
+	yMap := map[int][]int{} // 同一行的所有点的横坐标（没有用到，可以简单改成 []int，下面排序去重得到 ys）
+	for _, p := range points {
+		x, y := p.x, p.y
+		xMap[x] = append(xMap[x], y)
+		yMap[y] = append(yMap[y], x)
 	}
 
+	// 离散化用
+	xs := slices.Sorted(maps.Keys(xMap))
+	ys := slices.Sorted(maps.Keys(yMap))
+
+	// 离线询问
+	type data struct{ qid, sign, y1, y2 int }
+	qs := make([][]data, len(xs))
+	for i, q := range queries {
+		x1 := sort.SearchInts(xs, q.x1) // 离散化，下标从 0 开始
+		x2 := sort.SearchInts(xs, q.x2)
+		y1 := sort.SearchInts(ys, q.y1)
+		y2 := sort.SearchInts(ys, q.y2)
+		if x1 > 0 {
+			qs[x1-1] = append(qs[x1-1], data{i, -1, y1, y2})
+		}
+		qs[x2] = append(qs[x2], data{i, 1, y1, y2})
+	}
+
+	// 回答询问
 	ans := make([]int, len(queries))
-	t := newFenwickTree(len(a)) // 值域树状数组
-	for i, v := range a {
-		t.update(v, 1)
-		for _, p := range qs[i] {
-			ans[p.qid] += p.sign * t.query(p.lower, p.upper)
+	t := make(fenwick, len(ys)+1)
+	for i, x := range xs {
+		// 把横坐标为 x 的所有点都加到树状数组中
+		for _, y := range xMap[x] {
+			t.update(sort.SearchInts(ys, y)+1, 1) // 离散化，并且下标从 1 开始
+		}
+		for _, q := range qs[i] {
+			// 查询 [y1,y2] 中点的个数
+			ans[q.qid] += q.sign * t.query(q.y1+1, q.y2+1) // 下标从 1 开始
 		}
 	}
 	return ans
