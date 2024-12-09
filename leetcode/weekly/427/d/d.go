@@ -108,7 +108,7 @@ func maxRectangleArea(xCoord, yCoord []int) int64 {
 			tree.add(sort.SearchInts(ys, y) + 1) // 离散化
 		}
 		for _, q := range qs[i] {
-			// 查询 [y1,y2] 中点的个数
+			// 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
 			res[q.qid] += q.sign * tree.query(q.y1+1, q.y2+1)
 		}
 	}

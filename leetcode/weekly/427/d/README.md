@@ -121,7 +121,7 @@ class Solution:
             for y in x_map[x]:
                 tree.add(bisect_left(ys, y) + 1)  # 离散化
             for qid, sign, y1, y2 in qs:
-                # 查询 [y1,y2] 中点的个数
+                # 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
                 res[qid] += sign * tree.query(y1 + 1, y2 + 1)
 
         ans = -1
@@ -259,6 +259,7 @@ class Solution {
                 tree.add(Collections.binarySearch(ys, y) + 1); // 离散化
             }
             for (Data q : qs[i]) {
+                // 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
                 res[q.qid] += q.sign * tree.query(q.y1 + 1, q.y2 + 1);
             }
         }
@@ -407,7 +408,7 @@ public:
                 tree.add(ranges::lower_bound(ys, y) - ys.begin() + 1); // 离散化
             }
             for (auto& [qid, sign, y1, y2] : qs[i]) {
-                // 查询 [y1,y2] 中点的个数
+                // 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
                 res[qid] += sign * tree.query(y1 + 1, y2 + 1);
             }
         }
@@ -432,6 +433,7 @@ func (f fenwick) add(i int) {
 	}
 }
 
+// [1,i] 中的元素和
 func (f fenwick) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += f[i]
@@ -439,6 +441,7 @@ func (f fenwick) pre(i int) (res int) {
 	return
 }
 
+// [l,r] 中的元素和
 func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
@@ -525,7 +528,7 @@ func maxRectangleArea(xCoord, yCoord []int) int64 {
 			tree.add(sort.SearchInts(ys, y) + 1) // 离散化
 		}
 		for _, q := range qs[i] {
-			// 查询 [y1,y2] 中点的个数
+			// 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
 			res[q.qid] += q.sign * tree.query(q.y1+1, q.y2+1)
 		}
 	}
