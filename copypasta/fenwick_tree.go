@@ -168,7 +168,7 @@ func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2
 			t.update(sort.SearchInts(ys, y)+1, 1) // 离散化，并且下标从 1 开始
 		}
 		for _, q := range qs[i] {
-			// 查询 [y1,y2] 中点的个数
+			// 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
 			ans[q.qid] += q.sign * t.query(q.y1+1, q.y2+1) // 下标从 1 开始
 		}
 	}
