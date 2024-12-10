@@ -59,6 +59,12 @@ YES`,
 6 2 3 5`,
 			`YES`,
 		},
+		{
+			`1
+4
+2 4 8 1`,
+			`YES`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf1980D)
 }
