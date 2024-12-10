@@ -8,8 +8,8 @@
 
 遍历 $\textit{points}$，把纵坐标（离散化后）加到**树状数组**中。注意树状数组只保存纵坐标。
 
-1. 对于每个矩形，我们首先会遇到矩形的左下角和左上角（这两个点在 $\textit{points}$ 中一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_1$。用哈希表记录，key 是 $y_2$，value 是左下角的坐标以及 $C_1$。
-2. 然后继续遍历，遇到矩形的右下角和右上角（这两个点在 $\textit{points}$ 中也一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_2$。如果哈希表中记录的左下角纵坐标等于 $y_1$，且 $C_1 + 2 = C_2$，那么这是一个合法的矩形。
+1. 对于每个矩形，我们首先会遇到矩形的左下角和左上角（这两个点在 $\textit{points}$ 中一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_1$。用哈希表（数组）记录，key 是 $y_2$，value 是左下角的坐标以及 $C_1$。
+2. 然后继续遍历，遇到矩形的右下角和右上角（这两个点在 $\textit{points}$ 中也一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_2$。如果哈希表（数组）中记录的左下角纵坐标等于 $y_1$，且 $C_1 + 2 = C_2$，那么这是一个合法的矩形。
 
 > 注意 $\textit{points}$ 中的两个相邻的点，既可以是某个矩形的右下角和右上角，又可以是另一个矩形的左下角和左上角。
 
@@ -48,7 +48,7 @@ class Solution:
         for (x1, y1), (x2, y2) in pairwise(points):
             y = bisect_left(ys, y2) + 1  # 离散化
             tree.add(y)
-            if x1 != x2:
+            if x1 != x2:  # 两点不在同一列
                 continue
             cur = tree.query(bisect_left(ys, y1) + 1, y)
             if y2 in pre and pre[y2][1] == y1 and pre[y2][2] + 2 == cur:
@@ -102,22 +102,25 @@ class Solution {
         long ans = -1;
         Fenwick tree = new Fenwick(n + 1);
         tree.add(Arrays.binarySearch(ys, points[0][1]) + 1); // 离散化
-        Map<Integer, int[]> pre = new HashMap<>();
+        int[][] pre = new int[n][3];
         for (int i = 1; i < n; i++) {
             int x1 = points[i - 1][0];
             int y1 = points[i - 1][1];
             int x2 = points[i][0];
             int y2 = points[i][1];
-            int y = Arrays.binarySearch(ys, y2) + 1; // 离散化
-            tree.add(y);
-            if (x1 != x2) {
+            int y = Arrays.binarySearch(ys, y2); // 离散化
+            tree.add(y + 1);
+            if (x1 != x2) { // 两点不在同一列
                 continue;
             }
-            int cur = tree.query(Arrays.binarySearch(ys, y1) + 1, y);
-            if (pre.containsKey(y2) && pre.get(y2)[1] == y1 && pre.get(y2)[2] + 2 == cur) {
-                ans = Math.max(ans, (long) (x2 - pre.get(y2)[0]) * (y2 - y1));
+            int cur = tree.query(Arrays.binarySearch(ys, y1) + 1, y + 1);
+            int[] p = pre[y];
+            if (p[2] > 0 && p[2] + 2 == cur && p[1] == y1) {
+                ans = Math.max(ans, (long) (x2 - p[0]) * (y2 - y1));
             }
-            pre.put(y2, new int[]{x1, y1, cur});
+            p[0] = x1;
+            p[1] = y1;
+            p[2] = cur;
         }
         return ans;
     }
@@ -171,24 +174,21 @@ public:
         long long ans = -1;
         Fenwick tree(ys.size() + 1);
         tree.add(ranges::lower_bound(ys, points[0].second) - ys.begin() + 1); // 离散化
-        unordered_map<int, tuple<int, int, int>> pre;
+        vector<tuple<int, int, int>> pre(ys.size(), {-1, -1, -1});
         for (int i = 1; i < points.size(); i++) {
             auto& [x1, y1] = points[i - 1];
             auto& [x2, y2] = points[i];
-            int y = ranges::lower_bound(ys, y2) - ys.begin() + 1; // 离散化
-            tree.add(y);
-            if (x1 != x2) {
+            int y = ranges::lower_bound(ys, y2) - ys.begin(); // 离散化
+            tree.add(y + 1);
+            if (x1 != x2) { // 两点不在同一列
                 continue;
             }
-            int cur = tree.query(ranges::lower_bound(ys, y1) - ys.begin() + 1, y);
-            auto it = pre.find(y2);
-            if (it != pre.end()) {
-                auto& [x, y, pre] = it->second;
-                if (y == y1 && pre + 2 == cur) {
-                    ans = max(ans, (long long) (x2 - x) * (y2 - y1));
-                }
+            int cur = tree.query(ranges::lower_bound(ys, y1) - ys.begin() + 1, y + 1);
+            auto& [pre_x, pre_y, p] = pre[y];
+            if (pre_y == y1 && p + 2 == cur) {
+                ans = max(ans, (long long) (x2 - pre_x) * (y2 - y1));
             }
-            pre[y2] = {x1, y1, cur};
+            pre[y] = {x1, y1, cur};
         }
         return ans;
     }
@@ -196,6 +196,7 @@ public:
 ```
 
 ```go [sol-Go]
+// 树状数组模板
 type fenwick []int
 
 func (f fenwick) add(i int) {
@@ -204,6 +205,7 @@ func (f fenwick) add(i int) {
 	}
 }
 
+// [1,i] 中的元素和
 func (f fenwick) pre(i int) (res int) {
 	for ; i > 0; i &= i - 1 {
 		res += f[i]
@@ -211,6 +213,7 @@ func (f fenwick) pre(i int) (res int) {
 	return
 }
 
+// [l,r] 中的元素和
 func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
@@ -231,20 +234,21 @@ func maxRectangleArea(xCoord, ys []int) int64 {
 	tree := make(fenwick, len(ys)+1)
 	tree.add(sort.SearchInts(ys, points[0].y) + 1) // 离散化
 	type tuple struct{ x, y, c int }
-	pre := map[int]tuple{}
+	pre := make([]tuple, len(ys))
 	for i := 1; i < len(points); i++ {
 		x1, y1 := points[i-1].x, points[i-1].y
 		x2, y2 := points[i].x, points[i].y
-		y := sort.SearchInts(ys, y2) + 1 // 离散化
-		tree.add(y)
-		if x1 != x2 {
+		y := sort.SearchInts(ys, y2) // 离散化
+		tree.add(y + 1)
+		if x1 != x2 { // 两点不在同一列
 			continue
 		}
-		cur := tree.query(sort.SearchInts(ys, y1)+1, y)
-		if t, ok := pre[y2]; ok && t.y == y1 && t.c+2 == cur {
-			ans = max(ans, (x2-t.x)*(y2-y1))
+		cur := tree.query(sort.SearchInts(ys, y1)+1, y+1)
+		p := pre[y]
+		if p.c > 0 && p.c+2 == cur && p.y == y1 {
+			ans = max(ans, (x2-p.x)*(y2-y1))
 		}
-		pre[y2] = tuple{x1, y1, cur}
+		pre[y] = tuple{x1, y1, cur}
 	}
 	return int64(ans)
 }
@@ -684,6 +688,7 @@ public:
 ```
 
 ```go [sol-Go]
+// 树状数组模板
 type fenwick []int
 
 func (f fenwick) add(i int) {

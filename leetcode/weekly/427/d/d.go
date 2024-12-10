@@ -42,20 +42,21 @@ func maxRectangleArea(xCoord, ys []int) int64 {
 	tree := make(fenwick, len(ys)+1)
 	tree.add(sort.SearchInts(ys, points[0].y) + 1) // 离散化
 	type tuple struct{ x, y, c int }
-	pre := make(map[int]tuple, len(ys))
+	pre := make([]tuple, len(ys))
 	for i := 1; i < len(points); i++ {
 		x1, y1 := points[i-1].x, points[i-1].y
 		x2, y2 := points[i].x, points[i].y
-		y := sort.SearchInts(ys, y2) + 1 // 离散化
-		tree.add(y)
-		if x1 != x2 {
+		y := sort.SearchInts(ys, y2) // 离散化
+		tree.add(y + 1)
+		if x1 != x2 { // 两点不在同一列
 			continue
 		}
-		cur := tree.query(sort.SearchInts(ys, y1)+1, y)
-		if t, ok := pre[y2]; ok && t.y == y1 && t.c+2 == cur {
-			ans = max(ans, (x2-t.x)*(y2-y1))
+		cur := tree.query(sort.SearchInts(ys, y1)+1, y+1)
+		p := pre[y]
+		if p.c > 0 && p.c+2 == cur && p.y == y1 {
+			ans = max(ans, (x2-p.x)*(y2-y1))
 		}
-		pre[y2] = tuple{x1, y1, cur}
+		pre[y] = tuple{x1, y1, cur}
 	}
 	return int64(ans)
 }
