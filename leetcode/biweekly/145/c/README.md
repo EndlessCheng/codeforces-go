@@ -2,7 +2,7 @@
 
 答案就是从 $n$ 到 $m$ 的最短路长度，加上 $n$。
 
-这可以用 **Dijkstra 算法**解决。
+这可以用 **Dijkstra 算法**解决。[Dijkstra 算法介绍](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)。
 
 代码实现时，不需要连边，而是在 Dijkstra 算法的过程中，计算出 $y$ 是多少。
 
