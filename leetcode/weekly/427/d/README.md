@@ -1,4 +1,263 @@
-本题解旨在解决两个更一般的问题：
+## 思路一
+
+设矩形的左下角为 $(x_1,y_1)$，右上角为 $(x_2,y_2)$。
+
+**核心思路**：计算横坐标 $\le x_1$ 且纵坐标在 $[y_1,y_2]$ 中的点的个数，记作 $\textit{pre}$。然后计算横坐标 $\le x_2$ 且纵坐标在 $[y_1,y_2]$ 中的点的个数，记作 $\textit{cur}$。如果 $\textit{pre}+2 = \textit{cur}$，说明新增的 $2$ 个点是矩形的右下角和右上角，进而说明矩形区域（含边界）只有 $4$ 个点，是合法矩形，用矩形面积 $(x_2-x_1)\cdot(y_2-y_1)$ 更新答案的最大值。
+
+把所有点按照横坐标从小到大排序，横坐标相同的点，按照纵坐标从小到大排序。得到排序后的数组 $\textit{points}$。
+
+遍历 $\textit{points}$，把纵坐标（离散化后）加到**树状数组**中。注意树状数组只保存纵坐标。
+
+1. 对于每个矩形，我们首先会遇到矩形的左下角和左上角（这两个点在 $\textit{points}$ 中一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_1$。用哈希表记录，key 是 $y_2$，value 是左下角的坐标以及 $C_1$。
+2. 然后继续遍历，遇到矩形的右下角和右上角（这两个点在 $\textit{points}$ 中也一定相邻）。在树状数组中查询纵坐标在 $[y_1,y_2]$ 中的点的个数 $C_2$。如果哈希表中记录的左下角纵坐标等于 $y_1$，且 $C_1 + 2 = C_2$，那么这是一个合法的矩形。
+
+> 注意 $\textit{points}$ 中的两个相邻的点，既可以是某个矩形的右下角和右上角，又可以是另一个矩形的左下角和左上角。
+
+```py [sol-Python3]
+# 树状数组模板
+class Fenwick:
+    def __init__(self, n: int):
+        self.tree = [0] * (n + 1)
+
+    def add(self, i: int) -> None:
+        while i < len(self.tree):
+            self.tree[i] += 1
+            i += i & -i
+
+    # [1,i] 中的元素和
+    def pre(self, i: int) -> int:
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i &= i - 1
+        return res
+
+    # [l,r] 中的元素和
+    def query(self, l: int, r: int) -> int:
+        return self.pre(r) - self.pre(l - 1)
+
+class Solution:
+    def maxRectangleArea(self, xCoord: List[int], yCoord: List[int]) -> int:
+        points = sorted(zip(xCoord, yCoord))
+        ys = sorted(set(yCoord))  # 离散化用
+
+        ans = -1
+        tree = Fenwick(len(ys))
+        tree.add(bisect_left(ys, points[0][1]) + 1)  # 离散化
+        pre = {}
+        for (x1, y1), (x2, y2) in pairwise(points):
+            y = bisect_left(ys, y2) + 1  # 离散化
+            tree.add(y)
+            if x1 != x2:
+                continue
+            cur = tree.query(bisect_left(ys, y1) + 1, y)
+            if y2 in pre and pre[y2][1] == y1 and pre[y2][2] + 2 == cur:
+                ans = max(ans, (x2 - pre[y2][0]) * (y2 - y1))
+            pre[y2] = (x1, y1, cur)
+        return ans
+```
+
+```java [sol-Java]
+class Fenwick {
+    private final int[] tree;
+
+    Fenwick(int n) {
+        tree = new int[n];
+    }
+
+    void add(int i) {
+        while (i < tree.length) {
+            tree[i]++;
+            i += i & -i;
+        }
+    }
+
+    // [1,i] 中的元素和
+    int pre(int i) {
+        int res = 0;
+        while (i > 0) {
+            res += tree[i];
+            i -= i & -i;
+        }
+        return res;
+    }
+
+    // [l,r] 中的元素和
+    int query(int l, int r) {
+        return pre(r) - pre(l - 1);
+    }
+}
+
+class Solution {
+    public long maxRectangleArea(int[] xCoord, int[] ys) {
+        int n = xCoord.length;
+        int[][] points = new int[n][2];
+        for (int i = 0; i < n; i++) {
+            points[i][0] = xCoord[i];
+            points[i][1] = ys[i];
+        }
+        Arrays.sort(points, (a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+        Arrays.sort(ys); // 离散化用
+
+        long ans = -1;
+        Fenwick tree = new Fenwick(n + 1);
+        tree.add(Arrays.binarySearch(ys, points[0][1]) + 1); // 离散化
+        Map<Integer, int[]> pre = new HashMap<>();
+        for (int i = 1; i < n; i++) {
+            int x1 = points[i - 1][0];
+            int y1 = points[i - 1][1];
+            int x2 = points[i][0];
+            int y2 = points[i][1];
+            int y = Arrays.binarySearch(ys, y2) + 1; // 离散化
+            tree.add(y);
+            if (x1 != x2) {
+                continue;
+            }
+            int cur = tree.query(Arrays.binarySearch(ys, y1) + 1, y);
+            if (pre.containsKey(y2) && pre.get(y2)[1] == y1 && pre.get(y2)[2] + 2 == cur) {
+                ans = Math.max(ans, (long) (x2 - pre.get(y2)[0]) * (y2 - y1));
+            }
+            pre.put(y2, new int[]{x1, y1, cur});
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+// 树状数组模板
+class Fenwick {
+    vector<int> tree;
+
+public:
+    Fenwick(int n) : tree(n, 0) {}
+
+    void add(int i) {
+        while (i < tree.size()) {
+            tree[i]++;
+            i += i & -i;
+        }
+    }
+
+    // [1,i] 中的元素和
+    int pre(int i) {
+        int res = 0;
+        while (i > 0) {
+            res += tree[i];
+            i -= i & -i;
+        }
+        return res;
+    }
+
+    // [l,r] 中的元素和
+    int query(int l, int r) {
+        return pre(r) - pre(l - 1);
+    }
+};
+
+class Solution {
+public:
+    long long maxRectangleArea(vector<int>& xCoord, vector<int>& ys) {
+        vector<pair<int, int>> points;
+        for (int i = 0; i < xCoord.size(); i++) {
+            points.emplace_back(xCoord[i], ys[i]);
+        }
+        ranges::sort(points);
+
+        // 离散化用
+        ranges::sort(ys);
+        ys.erase(unique(ys.begin(), ys.end()), ys.end()); // 去重
+
+        long long ans = -1;
+        Fenwick tree(ys.size() + 1);
+        tree.add(ranges::lower_bound(ys, points[0].second) - ys.begin() + 1); // 离散化
+        unordered_map<int, tuple<int, int, int>> pre;
+        for (int i = 1; i < points.size(); i++) {
+            auto& [x1, y1] = points[i - 1];
+            auto& [x2, y2] = points[i];
+            int y = ranges::lower_bound(ys, y2) - ys.begin() + 1; // 离散化
+            tree.add(y);
+            if (x1 != x2) {
+                continue;
+            }
+            int cur = tree.query(ranges::lower_bound(ys, y1) - ys.begin() + 1, y);
+            auto it = pre.find(y2);
+            if (it != pre.end()) {
+                auto& [x, y, pre] = it->second;
+                if (y == y1 && pre + 2 == cur) {
+                    ans = max(ans, (long long) (x2 - x) * (y2 - y1));
+                }
+            }
+            pre[y2] = {x1, y1, cur};
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type fenwick []int
+
+func (f fenwick) add(i int) {
+	for ; i < len(f); i += i & -i {
+		f[i]++
+	}
+}
+
+func (f fenwick) pre(i int) (res int) {
+	for ; i > 0; i &= i - 1 {
+		res += f[i]
+	}
+	return
+}
+
+func (f fenwick) query(l, r int) int {
+	return f.pre(r) - f.pre(l-1)
+}
+
+func maxRectangleArea(xCoord, ys []int) int64 {
+	type pair struct{ x, y int }
+	points := make([]pair, len(xCoord))
+	for i := range xCoord {
+		points[i] = pair{xCoord[i], ys[i]}
+	}
+	slices.SortFunc(points, func(a, b pair) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+
+	// 离散化用
+	slices.Sort(ys)
+	ys = slices.Compact(ys)
+
+	ans := -1
+	tree := make(fenwick, len(ys)+1)
+	tree.add(sort.SearchInts(ys, points[0].y) + 1) // 离散化
+	type tuple struct{ x, y, c int }
+	pre := map[int]tuple{}
+	for i := 1; i < len(points); i++ {
+		x1, y1 := points[i-1].x, points[i-1].y
+		x2, y2 := points[i].x, points[i].y
+		y := sort.SearchInts(ys, y2) + 1 // 离散化
+		tree.add(y)
+		if x1 != x2 {
+			continue
+		}
+		cur := tree.query(sort.SearchInts(ys, y1)+1, y)
+		if t, ok := pre[y2]; ok && t.y == y1 && t.c+2 == cur {
+			ans = max(ans, (x2-t.x)*(y2-y1))
+		}
+		pre[y2] = tuple{x1, y1, cur}
+	}
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{xCoord}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 思路二
+
+我们来分别解决两个更一般的问题：
 
 1. 找到所有矩形，这些矩形的边界（除去顶点）不含其他点。
 2. 计算每个矩形区域中的点的个数。本题要求点的个数恰好等于 $4$（四个顶点）。
