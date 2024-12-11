@@ -38,6 +38,9 @@ func CF1822G2(_r io.Reader, _w io.Writer) {
 			ans += c * (c - 1) * (c - 2)
 			ds := _ds[:1]
 			x := v
+			// 计算所有平方因子
+			// 至多是 p^2 * q，因为 pq 不讨论，p^2 下面的 if x > 1 又包括了
+			// 所以 p <= U^(1/3)
 			for _, p := range primes {
 				p2 := p * p
 				if p2 > x {
