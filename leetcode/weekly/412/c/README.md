@@ -1,6 +1,6 @@
 ## 写法一
 
-**核心观察**：对于两个数 $x$ 和 $y$，如果 $x$ 在 $y$ 左边，且 $x\le y$ 以及 $x\cdot \textit{multiplier} > y$，那么操作 $y$ 之后，根据 $x\le y$，我们有 $x\cdot \textit{multiplier} \le y\cdot \textit{multiplier}$，这意味着下一次一定会操作 $x$。继续推导下去，后面的操作顺序是 $y,x,y,x,\cdots$
+**核心观察**：对于两个数 $x$ 和 $y$，如果 $x$ 在 $y$ 左边，且 $x\le y$ 以及 $x\cdot \textit{multiplier} > y$，那么我们会先操作 $x$，然后操作 $y$。由于 $x\cdot \textit{multiplier} \le y\cdot \textit{multiplier}$，这意味着下一次一定会操作 $x$。继续推导下去，后面的操作顺序一定是 $y,x,y,x,\cdots$
 
 这意味着当两个数接近时，我们会**交替操作**这两个数，而**不会连续操作同一个数**。
 
