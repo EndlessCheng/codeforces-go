@@ -157,7 +157,7 @@ func maxAmount(initialCurrency string, pairs1 [][]string, rates1 []float64, pair
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}((n+m)L)$，其中 $n$ 是 $\textit{pairs}_1$ 的长度，$m$ 是 $\textit{pairs}_2$ 的长度，$L=3$ 是单个字符串的长度。
+- 时间复杂度：$\mathcal{O}((n+m)L)$，其中 $n$ 是 $\textit{pairs}_1$ 的长度，$m$ 是 $\textit{pairs}_2$ 的长度，$L$ 是单个字符串的长度（不超过 $3$）。
 - 空间复杂度：$\mathcal{O}((n+m)L)$。
 
 更多相似题目，见下面图论题单中的「**DFS**」。
