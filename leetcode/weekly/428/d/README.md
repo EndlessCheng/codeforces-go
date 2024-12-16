@@ -14,7 +14,7 @@
 - 如果 $6$ 和 $2$ 都单独变成 $3$（使用操作一和操作二），那么需要操作 $(6-3)+(3-2)=4$ 次。
 - 使用 $1$ 次操作三，先把 $6$ 变成 $5$，把 $2$ 变成 $3$，然后再使用 $5-3=2$ 次操作一，一共使用 $1+2=3$ 次操作，就可以把 $6$ 和 $2$ 都变成 $3$。
 
-所以关键在于，恰当地使用操作三。
+所以关键在于，通过恰当地使用操作三，节省操作次数。
 
 > 注意操作三只能用于相邻的两种字母，不能用于连续三种或更多种字母。比如把一个 a 变成 b，然后再把这个 b 变成 c，共执行 $2$ 次操作三，这等价于 $1$ 次操作二和 $1$ 次操作一，我们不会得到更优的结果。
 
@@ -57,9 +57,9 @@ class Solution:
         cnt = Counter(s)
         cnt = [cnt[c] for c in ascii_lowercase]
 
-        ans = len(s)
+        ans = len(s)  # target = 0 时的答案
         f = [0] * 27
-        for target in range(max(cnt) + 1):
+        for target in range(1, max(cnt) + 1):
             f[25] = min(cnt[25], abs(cnt[25] - target))
             for i in range(24, -1, -1):
                 x, y = cnt[i], cnt[i + 1]
@@ -82,9 +82,9 @@ class Solution {
         }
         int m = Arrays.stream(cnt).max().getAsInt();
 
-        int ans = s.length();
+        int ans = s.length(); // target = 0 时的答案
         int[] f = new int[27];
-        for (int target = 0; target <= m; target++) {
+        for (int target = 1; target <= m; target++) {
             f[25] = Math.min(cnt[25], Math.abs(cnt[25] - target));
             for (int i = 24; i >= 0; i--) {
                 int x = cnt[i];
@@ -114,9 +114,9 @@ public:
         }
         int m = ranges::max(cnt);
 
-        int ans = s.length();
+        int ans = s.length(); // target = 0 时的答案
         int f[27]{};
-        for (int target = 0; target <= m; target++) {
+        for (int target = 1; target <= m; target++) {
             f[25] = min(cnt[25], abs(cnt[25] - target));
             for (int i = 24; i >= 0; i--) {
                 int x = cnt[i], y = cnt[i + 1];
@@ -143,9 +143,9 @@ func makeStringGood(s string) int {
 	}
 	m := slices.Max(cnt[:])
 
-	ans := len(s)
+	ans := len(s) // target = 0 时的答案
 	f := [27]int{}
-	for target := 0; target <= m; target++ {
+	for target := 1; target <= m; target++ {
 		f[25] = min(cnt[25], abs(cnt[25]-target))
 		for i := 24; i >= 0; i-- {
 			x, y := cnt[i], cnt[i+1]

@@ -10,9 +10,9 @@ func makeStringGood(s string) int {
 	}
 	m := slices.Max(cnt[:])
 
-	ans := len(s)
+	ans := len(s) // target = 0 时的答案
 	f := [27]int{}
-	for target := 0; target <= m; target++ {
+	for target := 1; target <= m; target++ {
 		f[25] = min(cnt[25], abs(cnt[25]-target))
 		for i := 24; i >= 0; i-- {
 			x, y := cnt[i], cnt[i+1]
