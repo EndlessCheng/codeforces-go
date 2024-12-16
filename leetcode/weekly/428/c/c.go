@@ -29,8 +29,7 @@ func beautifulSplits(nums []int) (ans int) {
 	for i := 1; i < n-1; i++ {
 		z := calcZ(nums[i:])
 		for j := i + 1; j < n; j++ {
-			if i <= j-i && z0[i] >= i || 
-				j-i <= n-j && z[j-i] >= j-i {
+			if i <= j-i && z0[i] >= i || z[j-i] >= j-i {
 				ans++
 			}
 		}
@@ -55,7 +54,7 @@ func beautifulSplits2(nums []int) (ans int) {
 
 	for i := 1; i < n-1; i++ {
 		for j := i + 1; j < n; j++ {
-			if i <= j-i && lcp[0][i] >= i || j-i <= n-j && lcp[i][j] >= j-i {
+			if i <= j-i && lcp[0][i] >= i || lcp[i][j] >= j-i {
 				ans++
 			}
 		}

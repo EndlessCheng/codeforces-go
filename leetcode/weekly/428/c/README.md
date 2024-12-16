@@ -29,6 +29,7 @@
 
 - 第二段的长度 $j-i$ 不超过第三段的长度 $n-j$，即 $j-i \le n-j$。
 - 后缀 $\textit{nums}[i:]$ 和后缀 $\textit{nums}[j:]$ 的最长公共前缀的长度至少是第二段的长度，即 $\textit{lcp}[i][j]\ge j-i$。
+- 实际上，如果 $\textit{lcp}[i][j]\ge j-i$ 成立，那么第三段的长度必然 $\ge j-i$，所以无需判断 $j-i \le n-j$。
 
 ```py [sol-Python3]
 class Solution:
@@ -67,8 +68,7 @@ class Solution {
         int ans = 0;
         for (int i = 1; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (i <= j - i && lcp[0][i] >= i || 
-                    j - i <= n - j && lcp[i][j] >= j - i) {
+                if (i <= j - i && lcp[0][i] >= i || lcp[i][j] >= j - i) {
                     ans++;
                 }
             }
@@ -96,8 +96,7 @@ public:
         int ans = 0;
         for (int i = 1; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (i <= j - i && lcp[0][i] >= i || 
-                    j - i <= n - j && lcp[i][j] >= j - i) {
+                if (i <= j - i && lcp[0][i] >= i || lcp[i][j] >= j - i) {
                     ans++;
                 }
             }
@@ -125,8 +124,7 @@ func beautifulSplits(nums []int) (ans int) {
 
 	for i := 1; i < n-1; i++ {
 		for j := i + 1; j < n; j++ {
-			if i <= j-i && lcp[0][i] >= i ||
-				j-i <= n-j && lcp[i][j] >= j-i {
+			if i <= j-i && lcp[0][i] >= i || lcp[i][j] >= j-i {
 				ans++
 			}
 		}
@@ -174,8 +172,7 @@ class Solution:
         for i in range(1, n - 1):
             z = self.calc_z(nums[i:])
             for j in range(i + 1, n):
-                if i <= j - i and z0[i] >= i or \
-                   j - i <= n - j and z[j - i] >= j - i:
+                if i <= j - i and z0[i] >= i or z[j - i] >= j - i:
                     ans += 1
         return ans
 ```
@@ -189,8 +186,7 @@ class Solution {
         for (int i = 1; i < n - 1; i++) {
             int[] z = calcZ(nums, i);
             for (int j = i + 1; j < n; j++) {
-                if (i <= j - i && z0[i] >= i || 
-                    j - i <= n - j && z[j - i] >= j - i) {
+                if (i <= j - i && z0[i] >= i || z[j - i] >= j - i) {
                     ans++;
                 }
             }
@@ -245,8 +241,7 @@ public:
         for (int i = 1; i < n - 1; i++) {
             vector<int> z = calc_z(nums, i);
             for (int j = i + 1; j < n; j++) {
-                if (i <= j - i && z0[i] >= i || 
-                    j - i <= n - j && z[j - i] >= j - i) {
+                if (i <= j - i && z0[i] >= i || z[j - i] >= j - i) {
                     ans++;
                 }
             }
@@ -284,8 +279,7 @@ public:
         for (int i = 1; i < n - 1; i++) {
             calc_z(z, nums, i);
             for (int j = i + 1; j < n; j++) {
-                if (i <= j - i && z0[i] >= i || 
-                    j - i <= n - j && z[j - i] >= j - i) {
+                if (i <= j - i && z0[i] >= i || z[j - i] >= j - i) {
                     ans++;
                 }
             }
@@ -318,8 +312,7 @@ func beautifulSplits(nums []int) (ans int) {
 	for i := 1; i < n-1; i++ {
 		z := calcZ(nums[i:])
 		for j := i + 1; j < n; j++ {
-			if i <= j-i && z0[i] >= i || 
-				j-i <= n-j && z[j-i] >= j-i {
+			if i <= j-i && z0[i] >= i || z[j-i] >= j-i {
 				ans++
 			}
 		}
