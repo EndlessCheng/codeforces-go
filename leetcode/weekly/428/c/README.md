@@ -45,8 +45,7 @@ class Solution:
         ans = 0
         for i in range(1, n - 1):
             for j in range(i + 1, n):
-                if i <= j - i and lcp[0][i] >= i or \
-                   j - i <= n - j and lcp[i][j] >= j - i:
+                if i <= j - i and lcp[0][i] >= i or lcp[i][j] >= j - i:
                     ans += 1
         return ans
 ```
