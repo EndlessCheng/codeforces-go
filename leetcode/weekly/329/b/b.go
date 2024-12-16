@@ -1,9 +1,9 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214
 func sortTheStudents(score [][]int, k int) [][]int {
-	sort.Slice(score, func(i, j int) bool { return score[i][k] > score[j][k] })
+	slices.SortFunc(score, func(a, b []int) int { return b[k] - a[k] })
 	return score
 }
