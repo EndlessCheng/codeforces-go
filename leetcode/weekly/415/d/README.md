@@ -1,44 +1,296 @@
 ## 题意
 
-把 $\textit{target}$ 划分成若干段，使得每一段都是某个 $\textit{words}[i]$ 的前缀。
+把 $\textit{target}$ 划分成若干段，要求每一段都是某个 $\textit{words}[i]$ 的前缀。
 
-返回**最小划分个数**。如果无法划分，返回 $-1$。
+返回**最小划分成多少段**。如果无法划分，返回 $-1$。
 
-## 方法一：跳跃游戏 + 字符串哈希 + 二分
+## 分析
 
-用划分型 DP 思考，考虑第一段划分多长。
+示例 1 的 $\textit{words}=[\texttt{abc},\texttt{aaaaa},\texttt{bcdef}]$，$\textit{target}=\texttt{aabcdabc}$。
 
-比如示例 1 的 $\textit{target}=\texttt{aabcdabc}$。
+要让划分的段数尽量小，那么每一段的长度要尽量长？
 
-如果第一段能划分出一个长为 $2$ 的子串，即 $\texttt{aa}$，那么也可以划分出一个更短的，长为 $1$ 的子串，即 $\texttt{a}$。
+虽然还不知道要怎么划分，但这启发我们考虑如下内容：
 
-假如我们选择第一段划分出一个长为 $1$ 的子串，那么接下来要解决的问题为：$\textit{target}$ 的长为 $n-1$ 的后缀的最小划分个数，也就是从下标 $1$ 开始，剩余字符串的最小划分个数。
-
-一般地，对于每个 $i$，都计算一个最大的 $\textit{sz}_i$，满足从 $\textit{target}[i]$ 开始的长为 $\textit{sz}_i$ 的子串是某个 $\textit{words}[i]$ 的前缀。
-
-算出 $\textit{sz}_i$ 后，我们可以枚举当前这一段的长度：
-
-- 长为 $1$，那么接下来思考从 $i+1$ 开始，剩余字符串的最小划分个数。
-- 长为 $2$，那么接下来思考从 $i+2$ 开始，剩余字符串的最小划分个数。
+- 从 $\textit{target}[0]$ 开始的段，最长可以是多长？答案是 $2$，因为 $\texttt{aa}$ 是 $\textit{words}[1]=\texttt{aaaaa}$ 的前缀。
+- 从 $\textit{target}[1]$ 开始的段，最长可以是多长？答案是 $3$，因为 $\texttt{abc}$ 是 $\textit{words}[0]=\texttt{abc}$ 的前缀。
+- 从 $\textit{target}[2]$ 开始的段，最长可以是多长？答案是 $3$，因为 $\texttt{bcd}$ 是 $\textit{words}[2]=\texttt{bcdef}$ 的前缀。
 - ……
-- 长为 $\textit{sz}_i$，那么接下来思考从 $i+\textit{sz}_i$ 开始，剩余字符串的最小划分个数。
 
-相当于我们可以从下标 $i$「跳到」下标 $i+1,i+2,\cdots,i+\textit{sz}_i$ 中的任意位置。如果跳到 $n$，表示 $\textit{target}$ 划分完毕。
+注意 $\textit{words}[i]$ 前缀的前缀还是 $\textit{words}[i]$ 的前缀。$\texttt{bcd}$ 是 $\texttt{bcdef}$ 的前缀，意味着 $\texttt{b}$ 和 $\texttt{bc}$ 也是 $\texttt{bcdef}$ 的前缀。如果从 $\textit{target}[2]$ 开始的段，最长可以是 $3$，那么这个段的长度也可以是 $1$ 或者 $2$。
 
-问题转换成：
+如果我们算出了上面这些最长长度 $2,3,3,\cdots$，那么问题就变成：
 
-1. 计算 $\textit{sz}_i$。
-2. 计算从 $0$ 跳到 $n$ 的最小跳跃次数。这类似 [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) 或者 [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)，请看 [我的图解（1326 题）](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solutions/2123855/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/)。
+- 给你一个数组 $\textit{maxJumps} = [2,3,3,\cdots]$。你从 $0$ 开始向右跳。在下标 $i$ 处，可以跳到 $[i+1,i+ \textit{maxJumps}[i]]$ 中的任意下标。目标是到达 $n$，最小要跳多少次？即 [45. 跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/) 或 [1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)。
 
-如何计算 $\textit{sz}_i$？
+示例 1 的 $\textit{maxJumps} = [2, 3, 3, 0, 0, 3, 2, 0]$，跳法是 $0\to 2\to 5\to 8$。
 
-> 可以用字典树 + 枚举，这可以通过 [周赛第三题](https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-i/)，但无法通过本题。
+现在剩下的问题是，如何计算 $\textit{maxJumps}$ 数组？
+
+## 方法一：Z 函数
+
+对于字符串 $s$，定义 $z[i]$ 表示后缀 $s[i:]$ 与 $s$ 的 LCP（最长公共前缀）长度，其中 $s[i:]$ 表示从 $s[i]$ 到 $s[n-1]$ 的子串。
+
+遍历 $\textit{words}$，对于 $\textit{word} =\textit{words}[i]$，构造字符串
+
+$$
+s = \textit{word} + \texttt{#} + \textit{target}
+$$
+
+中间插入 $\texttt{#}$ 目的是避免 $z[i]$ 超过 $\textit{word}$ 的长度。
+
+计算 $s$ 的 $z$ 数组。设 $m$ 为 $\textit{word}$ 的长度加一，那么 $\textit{target}[i:]$ 与 $\textit{word}$ 的最长公共前缀，就是 $z[m+i]$。用 $z[m+i]$ 更新 $\textit{maxJumps}[i]$ 的最大值。
+
+```py [sol-Python3]
+class Solution:
+    def calc_z(self, s: str) -> list[int]:
+        n = len(s)
+        z = [0] * n
+        box_l = box_r = 0  # z-box 左右边界（闭区间）
+        for i in range(1, n):
+            if i <= box_r:
+                z[i] = min(z[i - box_l], box_r - i + 1)
+            while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                box_l, box_r = i, i + z[i]
+                z[i] += 1
+        return z
+
+    # 桥的概念，见我在 45 或 1326 题下的题解
+    def jump(self, max_jumps: List[int]) -> int:
+        ans = 0
+        cur_r = 0  # 已建造的桥的右端点
+        nxt_r = 0  # 下一座桥的右端点的最大值
+        for i, max_jump in enumerate(max_jumps):  # 如果走到 n-1 时没有返回 -1，那么必然可以到达 n
+            nxt_r = max(nxt_r, i + max_jump)
+            if i == cur_r:  # 到达已建造的桥的右端点
+                if i == nxt_r:  # 无论怎么造桥，都无法从 i 到 i+1
+                    return -1
+                cur_r = nxt_r  # 造一座桥
+                ans += 1
+        return ans
+
+    def minValidStrings(self, words: List[str], target: str) -> int:
+        n = len(target)
+        max_jumps = [0] * n
+        for word in words:
+            z = self.calc_z(word + "#" + target)
+            m = len(word) + 1
+            for i in range(n):
+                max_jumps[i] = max(max_jumps[i], z[m + i])
+        return self.jump(max_jumps)
+```
+
+```py [sol-Python3 手动比大小]
+class Solution:
+    def calc_z(self, s: str) -> list[int]:
+        n = len(s)
+        z = [0] * n
+        box_l = box_r = 0  # z-box 左右边界（闭区间）
+        for i in range(1, n):
+            if i <= box_r:
+                # 手动 min，加快速度
+                x = z[i - box_l]
+                y = box_r - i + 1
+                z[i] = x if x < y else y
+            while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+                box_l, box_r = i, i + z[i]
+                z[i] += 1
+        return z
+
+    # 桥的概念，见我在 45 或 1326 题下的题解
+    def jump(self, max_jumps: List[int]) -> int:
+        ans = 0
+        cur_r = 0  # 已建造的桥的右端点
+        nxt_r = 0  # 下一座桥的右端点的最大值
+        for i, max_jump in enumerate(max_jumps):  # 如果走到 n-1 时没有返回 -1，那么必然可以到达 n
+            nxt_r = max(nxt_r, i + max_jump)
+            if i == cur_r:  # 到达已建造的桥的右端点
+                if i == nxt_r:  # 无论怎么造桥，都无法从 i 到 i+1
+                    return -1
+                cur_r = nxt_r  # 造一座桥
+                ans += 1
+        return ans
+
+    def minValidStrings(self, words: List[str], target: str) -> int:
+        n = len(target)
+        max_jumps = [0] * n
+        for word in words:
+            z = self.calc_z(word + "#" + target)
+            m = len(word) + 1
+            for i in range(n):
+                # 手动 max，加快速度
+                if z[m + i] > max_jumps[i]:
+                    max_jumps[i] = z[m + i]
+        return self.jump(max_jumps)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minValidStrings(String[] words, String target) {
+        int n = target.length();
+        int[] maxJumps = new int[n];
+        for (String word : words) {
+            int[] z = calcZ(word + "#" + target);
+            int m = word.length() + 1;
+            for (int i = 0; i < n; i++) {
+                maxJumps[i] = Math.max(maxJumps[i], z[m + i]);
+            }
+        }
+        return jump(maxJumps);
+    }
+
+    private int[] calcZ(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int[] z = new int[n];
+        int boxL = 0;
+        int boxR = 0; // z-box 左右边界（闭区间）
+        for (int i = 1; i < n; i++) {
+            if (i <= boxR) {
+                z[i] = Math.min(z[i - boxL], boxR - i + 1);
+            }
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]]) {
+                boxL = i;
+                boxR = i + z[i];
+                z[i]++;
+            }
+        }
+        return z;
+    }
+
+    // 桥的概念，见我在 45 或 1326 题下的题解
+    private int jump(int[] maxJumps) {
+        int ans = 0;
+        int curR = 0; // 已建造的桥的右端点
+        int nxtR = 0; // 下一座桥的右端点的最大值
+        for (int i = 0; i < maxJumps.length; i++) {
+            nxtR = Math.max(nxtR, i + maxJumps[i]);
+            if (i == curR) { // 到达已建造的桥的右端点
+                if (i == nxtR) { // 无论怎么造桥，都无法从 i 到 i+1
+                    return -1;
+                }
+                curR = nxtR; // 造一座桥
+                ans++;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    vector<int> calc_z(string s) {
+        int n = s.length();
+        vector<int> z(n);
+        int box_l = 0, box_r = 0; // z-box 左右边界（闭区间）
+        for (int i = 1; i < n; i++) {
+            if (i <= box_r) {
+                z[i] = min(z[i - box_l], box_r - i + 1);
+            }
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]]) {
+                box_l = i;
+                box_r = i + z[i];
+                z[i]++;
+            }
+        }
+        return z;
+    }
+
+    // 桥的概念，见我在 45 或 1326 题下的题解
+    int jump(vector<int>& max_jumps) {
+        int ans = 0;
+        int cur_r = 0; // 已建造的桥的右端点
+        int nxt_r = 0; // 下一座桥的右端点的最大值
+        for (int i = 0; i < max_jumps.size(); i++) {
+            nxt_r = max(nxt_r, i + max_jumps[i]);
+            if (i == cur_r) { // 到达已建造的桥的右端点
+                if (i == nxt_r) { // 无论怎么造桥，都无法从 i 到 i+1
+                    return -1;
+                }
+                cur_r = nxt_r; // 造一座桥
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+public:
+    int minValidStrings(vector<string>& words, string& target) {
+        int n = target.length();
+        vector<int> max_jumps(n);
+        for (auto& word : words) {
+            vector<int> z = calc_z(word + "#" + target);
+            int m = word.length() + 1;
+            for (int i = 0; i < n; i++) {
+                max_jumps[i] = max(max_jumps[i], z[m + i]);
+            }
+        }
+        return jump(max_jumps);
+    }
+};
+```
+
+```go [sol-Go]
+func calcZ(s string) []int {
+	n := len(s)
+	z := make([]int, n)
+	boxL, boxR := 0, 0 // z-box 左右边界（闭区间）
+	for i := 1; i < n; i++ {
+		if i <= boxR {
+			z[i] = min(z[i-boxL], boxR-i+1)
+		}
+		for i+z[i] < n && s[z[i]] == s[i+z[i]] {
+			boxL, boxR = i, i+z[i]
+			z[i]++
+		}
+	}
+	return z
+}
+
+// 桥的概念，见我在 45 或 1326 题下的题解
+func jump(maxJumps []int) (ans int) {
+	curR := 0 // 已建造的桥的右端点
+	nxtR := 0 // 下一座桥的右端点的最大值
+	for i, maxJump := range maxJumps {
+		nxtR = max(nxtR, i+maxJump)
+		if i == curR { // 到达已建造的桥的右端点
+			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
+				return -1
+			}
+			curR = nxtR // 造一座桥
+			ans++
+		}
+	}
+	return
+}
+
+func minValidStrings(words []string, target string) int {
+	maxJumps := make([]int, len(target))
+	for _, word := range words {
+		z := calcZ(word + "#" + target)
+		for i, z := range z[len(word)+1:] {
+			maxJumps[i] = max(maxJumps[i], z)
+		}
+	}
+	return jump(maxJumps)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(L+nm)$，其中 $n$ 是 $\textit{target}$ 的长度，$m$ 是 $\textit{words}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
+- 空间复杂度：$\mathcal{O}(l+n)$。其中 $l$ 是 $\textit{words}[i]$ 的长度。
+
+## 方法二：字符串哈希 + 二分
 
 预处理每个 $\textit{words}[i]$ 的每个前缀的字符串哈希值，**按照前缀长度分组**，保存到不同的集合中。每个集合保存的是相同前缀长度的哈希值。
 
 由于 $\textit{words}$ 的长度至多为 $100$，所以每个集合至多保存 $100$ 个哈希值，根据生日攻击理论，单模哈希绰绰有余，碰撞概率很小。
 
-对于 $i$，**二分** $\textit{sz}_i$，每次 `check` 只需要看子串哈希值是否在集合中。原理见 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
+然后对于每个 $i$，二分求出 $\textit{maxJumps}[i]$。
+
+二分的 $\text{check}(\textit{mid})$ 函数怎么写？判断从 $\textit{target}[i]$ 开始的长为 $\textit{mid}$ 的子串，哈希值是否在集合中。
 
 具体请看 [本题视频讲解](https://www.bilibili.com/video/BV1Qp4me2Emz/) 第四题，欢迎点赞关注~
 
@@ -75,9 +327,9 @@ class Solution:
         cur_r = 0  # 已建造的桥的右端点
         nxt_r = 0  # 下一座桥的右端点的最大值
         for i in range(n):
-            check = lambda sz: sub_hash(i, i + sz + 1) not in sets[sz]
-            sz = bisect_left(range(min(n - i, max_len)), True, key=check)
-            nxt_r = max(nxt_r, i + sz)
+            check = lambda j: sub_hash(i, i + j + 1) not in sets[j]
+            max_jump = bisect_left(range(min(n - i, max_len)), True, key=check)
+            nxt_r = max(nxt_r, i + max_jump)
             if i == cur_r:  # 到达已建造的桥的右端点
                 if i == nxt_r:  # 无论怎么造桥，都无法从 i 到 i+1
                     return -1
@@ -123,8 +375,8 @@ class Solution {
         int curR = 0; // 已建造的桥的右端点
         int nxtR = 0; // 下一座桥的右端点的最大值
         for (int i = 0; i < n; i++) {
-            int sz = calcSz(i, preHash, powBase, sets);
-            nxtR = Math.max(nxtR, i + sz);
+            int maxJump = calcMaxJump(i, preHash, powBase, sets);
+            nxtR = Math.max(nxtR, i + maxJump);
             if (i == curR) { // 到达已建造的桥的右端点
                 if (i == nxtR) { // 无论怎么造桥，都无法从 i 到 i+1
                     return -1;
@@ -136,7 +388,7 @@ class Solution {
         return ans;
     }
 
-    private int calcSz(int i, int[] preHash, int[] powBase, Set<Integer>[] sets) {
+    private int calcMaxJump(int i, int[] preHash, int[] powBase, Set<Integer>[] sets) {
         // 开区间二分，left 一定满足要求，right 一定不满足要求
         int left = 0;
         int right = Math.min(preHash.length - 1 - i, sets.length) + 1;
@@ -189,7 +441,8 @@ public:
                 sets[j].insert(h); // 注意 j 从 0 开始
             }
         }
-        auto calc_sz = [&](int i) -> int {
+
+        auto max_jump = [&](int i) -> int {
             // 开区间二分，left 一定满足要求，right 一定不满足要求
             int left = 0, right = min(n - i, max_len) + 1;
             while (left + 1 < right) {
@@ -203,8 +456,7 @@ public:
         int cur_r = 0; // 已建造的桥的右端点
         int nxt_r = 0; // 下一座桥的右端点的最大值
         for (int i = 0; i < n; i++) {
-            int sz = calc_sz(i);
-            nxt_r = max(nxt_r, i + sz);
+            nxt_r = max(nxt_r, i + max_jump(i));
             if (i == cur_r) { // 到达已建造的桥的右端点
                 if (i == nxt_r) { // 无论怎么造桥，都无法从 i 到 i+1
                     return -1;
@@ -258,8 +510,8 @@ func minValidStrings(words []string, target string) (ans int) {
 	curR := 0 // 已建造的桥的右端点
 	nxtR := 0 // 下一座桥的右端点的最大值
 	for i := range target {
-		sz := sort.Search(min(n-i, maxLen), func(sz int) bool { return !sets[sz][subHash(i, i+sz+1)] })
-		nxtR = max(nxtR, i+sz)
+		maxJump := sort.Search(min(n-i, maxLen), func(j int) bool { return !sets[j][subHash(i, i+j+1)] })
+		nxtR = max(nxtR, i+maxJump)
 		if i == curR { // 到达已建造的桥的右端点
 			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
 				return -1
@@ -277,9 +529,7 @@ func minValidStrings(words []string, target string) (ans int) {
 - 时间复杂度：$\mathcal{O}(L + n\log n)$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
 - 空间复杂度：$\mathcal{O}(L + n)$。
 
-## 方法二：AC 自动机优化 DP
-
-方法一用到了字符串哈希，并不能保证 100% 正确。正解是 AC 自动机。
+## 方法三：AC 自动机优化 DP
 
 看示例 1，对比以下两个 $\textit{target}$ 的前缀：
 
@@ -605,18 +855,14 @@ func minValidStrings(words []string, target string) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L|\Sigma| + n)$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和，$|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(L|\Sigma| + n)$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和，$|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。如果把数组替换成哈希表，可以做到 $\mathcal{O}(L+n)$ 的时间复杂度。
 - 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。
-
-## 相似题目
-
-- [3213. 最小代价构造字符串](https://leetcode.cn/problems/construct-string-with-minimum-cost/)
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -626,6 +872,9 @@ func minValidStrings(words []string, target string) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. 【本题相关】[字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

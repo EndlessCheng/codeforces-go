@@ -6,7 +6,51 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func minValidStrings(words []string, target string) (ans int) {
+func calcZ(s string) []int {
+	n := len(s)
+	z := make([]int, n)
+	boxL, boxR := 0, 0 // z-box 左右边界（闭区间）
+	for i := 1; i < n; i++ {
+		if i <= boxR {
+			z[i] = min(z[i-boxL], boxR-i+1)
+		}
+		for i+z[i] < n && s[z[i]] == s[i+z[i]] {
+			boxL, boxR = i, i+z[i]
+			z[i]++
+		}
+	}
+	return z
+}
+
+// 桥的概念，见我在 45 或 1326 题下的题解
+func jump(maxJumps []int) (ans int) {
+	curR := 0 // 已建造的桥的右端点
+	nxtR := 0 // 下一座桥的右端点的最大值
+	for i, maxJump := range maxJumps {
+		nxtR = max(nxtR, i+maxJump)
+		if i == curR { // 到达已建造的桥的右端点
+			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
+				return -1
+			}
+			curR = nxtR // 造一座桥
+			ans++
+		}
+	}
+	return
+}
+
+func minValidStrings(words []string, target string) int {
+	maxJumps := make([]int, len(target))
+	for _, word := range words {
+		z := calcZ(word + "#" + target)
+		for i, z := range z[len(word)+1:] {
+			maxJumps[i] = max(maxJumps[i], z)
+		}
+	}
+	return jump(maxJumps)
+}
+
+func minValidStringsHash(words []string, target string) (ans int) {
 	n := len(target)
 
 	// 多项式字符串哈希（方便计算子串哈希值）
