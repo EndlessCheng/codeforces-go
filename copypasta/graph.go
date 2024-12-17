@@ -4940,7 +4940,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 常见建模方式（下面代码按照这种建模写的）
 // 建模的时候，一般可以理解成在一个矩阵 a 上，每行每列至多选一个数，问所选数字之和的最小值
 // 创建一个（完全）二分图，左部为行，右部为列
-// - 行 -> 列，容量为 1，费用为 grid[i][j]
+// - 行 -> 列，容量为 inf，费用为 grid[i][j]
 // - 超级源点 S -> 行，容量为 1，费用为 0
 // - 列 -> 超级汇点 T，容量为 1，费用为 0
 // 如果求最大值可以把元素值（费用）取反，最后答案再取反
@@ -4948,9 +4948,11 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 如果每列可以选多个，可以修改从右部（列）到超级汇点的容量
 // 如果要限制至多选 k 个元素，可以在超级源点前面再加一个节点，连到超级源点，容量为 k，费用为 0（相当于超级源点的流出量至多为 k）。如果满流，则表示恰好选了 k 个元素
 //
+// 完全二分图 + 一对一 LC3376 https://leetcode.cn/problems/minimum-time-to-break-locks-i/
 // 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 // 完全二分图 + 至多选 k=3 个数 LC3257 https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/
 // 二分图 + 稀疏矩阵 LC3276 https://leetcode.cn/problems/select-cells-in-grid-with-maximum-score/
+// https://codeforces.com/problemset/problem/1107/F 2600
 func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	n := len(a)
 	m := len(a[0])
@@ -4966,7 +4968,7 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	}
 	for i, row := range a {
 		for j, v := range row {
-			addEdge(i, n+j, 1, v) // 如果求最大，改成 -v
+			addEdge(i, n+j, math.MaxInt, v) // 如果求最大，改成 -v
 		}
 		addEdge(S, i, 1, 0) // 如果是一对多，改 cap
 		// 特别地，如果这一行的所有 v 都相同，可以把 S->i 的 cost 改成 v，i->n+j 的 cost 改成 0
