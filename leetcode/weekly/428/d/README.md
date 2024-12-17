@@ -168,6 +168,147 @@ func makeStringGood(s string) int {
 func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
+## 优化
+
+如果 $\textit{cnt}[i]=0$，无需操作，$f[i]=f[i+1]$。
+
+这个优化对 Python 十分显著，其他语言不明显。
+
+```py [sol-Python3]
+class Solution:
+    def makeStringGood(self, s: str) -> int:
+        cnt = Counter(s)
+        cnt = [cnt[c] for c in ascii_lowercase]
+
+        ans = len(s)  # target = 0 时的答案
+        f = [0] * 27
+        for target in range(1, max(cnt) + 1):
+            f[25] = min(cnt[25], abs(cnt[25] - target))
+            for i in range(24, -1, -1):
+                x = cnt[i]
+                if x == 0:
+                    f[i] = f[i + 1]
+                    continue
+                # 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + min(x, abs(x - target))
+                # x 变成 target 或 0，y 变成 target
+                y = cnt[i + 1]
+                if y < target:  # 只有当 y 需要变大时，才去执行第三种操作
+                    t = target if x > target else 0
+                    f[i] = min(f[i], f[i + 2] + max(x - t, target - y))
+            ans = min(ans, f[0])
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int makeStringGood(String s) {
+        int[] cnt = new int[26];
+        for (char b : s.toCharArray()) {
+            cnt[b - 'a']++;
+        }
+        int m = Arrays.stream(cnt).max().getAsInt();
+
+        int ans = s.length(); // target = 0 时的答案
+        int[] f = new int[27];
+        for (int target = 1; target <= m; target++) {
+            f[25] = Math.min(cnt[25], Math.abs(cnt[25] - target));
+            for (int i = 24; i >= 0; i--) {
+                int x = cnt[i];
+                if (x == 0) {
+                    f[i] = f[i + 1];
+                    continue;
+                }
+                // 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + Math.min(x, Math.abs(x - target));
+                // x 变成 target 或 0，y 变成 target
+                int y = cnt[i + 1];
+                if (y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                    int t = x > target ? target : 0;
+                    f[i] = Math.min(f[i], f[i + 2] + Math.max(x - t, target - y));
+                }
+            }
+            ans = Math.min(ans, f[0]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int makeStringGood(string s) {
+        int cnt[26]{};
+        for (char b : s) {
+            cnt[b - 'a']++;
+        }
+        int m = ranges::max(cnt);
+
+        int ans = s.length(); // target = 0 时的答案
+        int f[27]{};
+        for (int target = 1; target <= m; target++) {
+            f[25] = min(cnt[25], abs(cnt[25] - target));
+            for (int i = 24; i >= 0; i--) {
+                int x = cnt[i];
+                if (x == 0) {
+                    f[i] = f[i + 1];
+                    continue;
+                }
+                // 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + min(x, abs(x - target));
+                // x 变成 target 或 0，y 变成 target
+                int y = cnt[i + 1];
+                if (y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                    int t = x > target ? target : 0;
+                    f[i] = min(f[i], f[i + 2] + max(x - t, target - y));
+                }
+            }
+            ans = min(ans, f[0]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func makeStringGood(s string) int {
+	cnt := [26]int{}
+	for _, b := range s {
+		cnt[b-'a']++
+	}
+	m := slices.Max(cnt[:])
+
+	ans := len(s) // target = 0 时的答案
+	f := [27]int{}
+	for target := 1; target <= m; target++ {
+		f[25] = min(cnt[25], abs(cnt[25]-target))
+		for i := 24; i >= 0; i-- {
+			x := cnt[i]
+			if x == 0 {
+				f[i] = f[i+1]
+				continue
+			}
+			// 单独操作 x（变成 target 或 0）
+			f[i] = f[i+1] + min(x, abs(x-target))
+			// x 变成 target 或 0，y 变成 target
+			y := cnt[i+1]
+			if y < target { // 只有当 y 需要变大时，才去执行第三种操作
+				if x > target { // x 变成 target
+					f[i] = min(f[i], f[i+2]+max(x-target, target-y))
+				} else { // x 变成 0
+					f[i] = min(f[i], f[i+2]+max(x, target-y))
+				}
+			}
+		}
+		ans = min(ans, f[0])
+	}
+	return ans
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。

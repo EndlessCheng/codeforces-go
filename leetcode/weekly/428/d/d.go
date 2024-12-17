@@ -15,10 +15,15 @@ func makeStringGood(s string) int {
 	for target := 1; target <= m; target++ {
 		f[25] = min(cnt[25], abs(cnt[25]-target))
 		for i := 24; i >= 0; i-- {
-			x, y := cnt[i], cnt[i+1]
+			x := cnt[i]
+			if x == 0 {
+				f[i] = f[i+1]
+				continue
+			}
 			// 单独操作 x（变成 target 或 0）
 			f[i] = f[i+1] + min(x, abs(x-target))
 			// x 变成 target 或 0，y 变成 target
+			y := cnt[i+1]
 			if y < target { // 只有当 y 需要变大时，才去执行第三种操作
 				if x > target { // x 变成 target
 					f[i] = min(f[i], f[i+2]+max(x-target, target-y))
