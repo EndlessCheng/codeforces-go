@@ -282,7 +282,9 @@ func minValidStrings(words []string, target string) int {
 - 时间复杂度：$\mathcal{O}(L+nm)$，其中 $n$ 是 $\textit{target}$ 的长度，$m$ 是 $\textit{words}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
 - 空间复杂度：$\mathcal{O}(l+n)$。其中 $l$ 是 $\textit{words}[i]$ 的长度。
 
-## 方法二：字符串哈希 + 二分
+## 方法二：字符串哈希
+
+### 写法一：二分
 
 预处理每个 $\textit{words}[i]$ 的每个前缀的字符串哈希值，**按照前缀长度分组**，保存到不同的集合中。每个集合保存的是相同前缀长度的哈希值。
 
@@ -527,6 +529,229 @@ func minValidStrings(words []string, target string) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(L + n\log n)$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
+- 空间复杂度：$\mathcal{O}(L + n)$。
+
+### 写法二：双指针
+
+用**双指针**更新代码中的 $\textit{nxtR}$：
+
+- 外层循环枚举 $i$，内层循环右移 $\textit{nxtR}$。
+- 对于 $\textit{target}$ 的下标从 $i$ 到 $\textit{nxtR}$ 的子串，如果其哈希值在哈希表中，那么把 $\textit{nxtR}$ 加一。
+
+```py [sol-Python3]
+class Solution:
+    def minValidStrings(self, words: List[str], target: str) -> int:
+        n = len(target)
+
+        # 多项式字符串哈希（方便计算子串哈希值）
+        # 哈希函数 hash(s) = s[0] * BASE^(n-1) + s[1] * BASE^(n-2) + ... + s[n-2] * BASE + s[n-1]
+        MOD = 1_070_777_777
+        BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
+        pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(s[:i])
+        for i, b in enumerate(target):
+            pow_base[i + 1] = pow_base[i] * BASE % MOD
+            pre_hash[i + 1] = (pre_hash[i] * BASE + ord(b)) % MOD  # 秦九韶算法计算多项式哈希
+
+        # 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+        # 计算方法类似前缀和
+        def sub_hash(l: int, r: int) -> int:
+            return (pre_hash[r] - pre_hash[l] * pow_base[r - l]) % MOD
+
+        # 保存每个 words[i] 的每个前缀的哈希值，按照长度分组
+        max_len = max(map(len, words))
+        sets = [set() for _ in range(max_len)]
+        for w in words:
+            h = 0
+            for j, b in enumerate(w):
+                h = (h * BASE + ord(b)) % MOD
+                sets[j].add(h)  # 注意 j 从 0 开始
+
+        ans = 0
+        cur_r = 0  # 已建造的桥的右端点
+        nxt_r = 0  # 下一座桥的右端点的最大值
+        for i in range(n):
+            while nxt_r < n and nxt_r - i < max_len and sub_hash(i, nxt_r + 1) in sets[nxt_r - i]:
+                nxt_r += 1  # 尽量伸长
+            if i == cur_r:  # 到达已建造的桥的右端点
+                if i == nxt_r:  # 无论怎么造桥，都无法从 i 到 i+1
+                    return -1
+                cur_r = nxt_r  # 建造下一座桥
+                ans += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 1_070_777_777;
+
+    public int minValidStrings(String[] words, String target) {
+        char[] t = target.toCharArray();
+        int n = t.length;
+
+        // 多项式字符串哈希（方便计算子串哈希值）
+        // 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
+        final int BASE = (int) 8e8 + new Random().nextInt((int) 1e8); // 随机 base，防止 hack
+        int[] powBase = new int[n + 1]; // powBase[i] = base^i
+        int[] preHash = new int[n + 1]; // 前缀哈希值 preHash[i] = hash(target[0] 到 target[i-1])
+        powBase[0] = 1;
+        for (int i = 0; i < n; i++) {
+            powBase[i + 1] = (int) ((long) powBase[i] * BASE % MOD);
+            preHash[i + 1] = (int) (((long) preHash[i] * BASE + t[i]) % MOD); // 秦九韶算法计算多项式哈希
+        }
+
+        int maxLen = 0;
+        for (String w : words) {
+            maxLen = Math.max(maxLen, w.length());
+        }
+        Set<Integer>[] sets = new HashSet[maxLen];
+        Arrays.setAll(sets, i -> new HashSet<>());
+        for (String w : words) {
+            long h = 0;
+            for (int j = 0; j < w.length(); j++) {
+                h = (h * BASE + w.charAt(j)) % MOD;
+                sets[j].add((int) h); // 注意 j 从 0 开始
+            }
+        }
+
+        int ans = 0;
+        int curR = 0; // 已建造的桥的右端点
+        int nxtR = 0; // 下一座桥的右端点的最大值
+        for (int i = 0; i < n; i++) {
+            while (nxtR < n && nxtR - i < maxLen && sets[nxtR - i].contains(subHash(i, nxtR + 1, powBase, preHash))) {
+                nxtR++;
+            }
+            if (i == curR) { // 到达已建造的桥的右端点
+                if (i == nxtR) { // 无论怎么造桥，都无法从 i 到 i+1
+                    return -1;
+                }
+                curR = nxtR; // 造一座桥
+                ans++;
+            }
+        }
+        return ans;
+    }
+
+    private int subHash(int l, int r, int[] powBase, int[] preHash) {
+        return (int) ((((long) preHash[r] - (long) preHash[l] * powBase[r - l]) % MOD + MOD) % MOD);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minValidStrings(const vector<string>& words, const string& target) {
+        int n = target.length();
+
+        // 多项式字符串哈希（方便计算子串哈希值）
+        // 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
+        const int MOD = 1'070'777'777;
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+        const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
+        vector<int> pow_base(n + 1); // pow_base[i] = base^i
+        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(s[:i])
+        pow_base[0] = 1;
+        for (int i = 0; i < n; i++) {
+            pow_base[i + 1] = (long long) pow_base[i] * BASE % MOD;
+            pre_hash[i + 1] = ((long long) pre_hash[i] * BASE + target[i]) % MOD; // 秦九韶算法计算多项式哈希
+        }
+        // 计算 target[l] 到 target[r-1] 的哈希值
+        auto sub_hash = [&](int l, int r) {
+            return ((pre_hash[r] - (long long) pre_hash[l] * pow_base[r - l]) % MOD + MOD) % MOD;
+        };
+
+        int max_len = 0;
+        for (auto& w : words) {
+            max_len = max(max_len, (int) w.length());
+        }
+        vector<unordered_set<int>> sets(max_len);
+        for (auto& w : words) {
+            long long h = 0;
+            for (int j = 0; j < w.size(); j++) {
+                h = (h * BASE + w[j]) % MOD;
+                sets[j].insert(h); // 注意 j 从 0 开始
+            }
+        }
+
+        int ans = 0;
+        int cur_r = 0; // 已建造的桥的右端点
+        int nxt_r = 0; // 下一座桥的右端点的最大值
+        for (int i = 0; i < n; i++) {
+            while (nxt_r < n && nxt_r - i < max_len && sets[nxt_r - i].contains(sub_hash(i, nxt_r + 1))) {
+                nxt_r++;
+            }
+            if (i == cur_r) { // 到达已建造的桥的右端点
+                if (i == nxt_r) { // 无论怎么造桥，都无法从 i 到 i+1
+                    return -1;
+                }
+                cur_r = nxt_r; // 造一座桥
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minValidStrings(words []string, target string) (ans int) {
+	n := len(target)
+
+	// 多项式字符串哈希（方便计算子串哈希值）
+	// 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]
+	const mod = 1_070_777_777
+	base := 9e8 - rand.Intn(1e8) // 随机 base，防止 hack（注意 Go1.20 之后的版本，每次随机的数都不一样）
+	powBase := make([]int, n+1)  // powBase[i] = base^i
+	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(s[:i])
+	powBase[0] = 1
+	for i, b := range target {
+		powBase[i+1] = powBase[i] * base % mod
+		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
+	}
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算方法类似前缀和
+	subHash := func(l, r int) int {
+		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
+	}
+
+	maxLen := 0
+	for _, w := range words {
+		maxLen = max(maxLen, len(w))
+	}
+	sets := make([]map[int]bool, maxLen)
+	for i := range sets {
+		sets[i] = map[int]bool{}
+	}
+	for _, w := range words {
+		h := 0
+		for j, b := range w {
+			h = (h*base + int(b)) % mod
+			sets[j][h] = true // 注意 j 从 0 开始
+		}
+	}
+
+	curR := 0 // 已建造的桥的右端点
+	nxtR := 0 // 下一座桥的右端点的最大值
+	for i := range target {
+		for nxtR < n && nxtR-i < maxLen && sets[nxtR-i][subHash(i, nxtR+1)] {
+			nxtR++
+		}
+		if i == curR { // 到达已建造的桥的右端点
+			if i == nxtR { // 无论怎么造桥，都无法从 i 到 i+1
+				return -1
+			}
+			curR = nxtR // 建造下一座桥
+			ans++
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(L + n)$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。
 - 空间复杂度：$\mathcal{O}(L + n)$。
 
 ## 方法三：AC 自动机优化 DP
