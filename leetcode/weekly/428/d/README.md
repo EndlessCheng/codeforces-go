@@ -172,7 +172,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 如果 $x = \textit{cnt}[i]=0$，无需操作，$f[i]=f[i+1]$。
 
-如果 $y = \textit{cnt}[i+1]=0$，只需单独操作 $x$。
+如果 $y = \textit{cnt}[i+1]=0$，只需单独操作 $x$，$f[i] = f[i+1] + \min(x,|x-\textit{target}|)$。
 
 这个优化对 Python 十分显著，其他语言不明显。
 
