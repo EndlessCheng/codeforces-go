@@ -369,7 +369,7 @@ class Solution {
 
         Set<Integer> targets = new HashSet<>();
         targets.add(cnt[0]);
-        for (int i = 1; i < cnt.length; i++) {
+        for (int i = 1; i < 26; i++) {
             int x = cnt[i - 1];
             int y = cnt[i];
             targets.add(x);
@@ -456,7 +456,7 @@ func makeStringGood(s string) int {
 
 	targets := map[int]struct{}{}
 	targets[cnt[0]] = struct{}{}
-	for i := 1; i < len(cnt); i++ {
+	for i := 1; i < 26; i++ {
 		x, y := cnt[i-1], cnt[i]
 		targets[y] = struct{}{}
 		targets[x+y] = struct{}{}
