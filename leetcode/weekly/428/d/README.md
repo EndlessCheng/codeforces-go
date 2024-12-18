@@ -51,6 +51,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1pnqZYKEqr/?t=40m52s)，欢迎点赞关注~
 
+## 优化前
+
 ```py [sol-Python3]
 class Solution:
     def makeStringGood(self, s: str) -> int:
@@ -168,7 +170,7 @@ func makeStringGood(s string) int {
 func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
-## 优化
+## 优化一
 
 如果 $x = \textit{cnt}[i]=0$，无需操作，$f[i]=f[i+1]$。
 
@@ -314,6 +316,187 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 优化二
+
+不需要枚举那么多种 $\textit{target}$，只需考虑如下数字：
+
+1. $\textit{cnt}[i]$。变成 $\textit{cnt}$ 中的某个数。
+2. $\textit{cnt}[i] + \textit{cnt}[i+1]$。操作三把 $x$ 变成 $0$，把 $y$ 变成 $x+y$。
+3. $\left\lfloor\dfrac{\textit{cnt}[i]+\textit{cnt}[i+1]}{2}\right\rfloor$。操作三把 $x$ 和 $y$ 都变成 $\textit{target}$，取平均值最优。
+4. $\left\lceil\dfrac{\textit{cnt}[i]+\textit{cnt}[i+1]}{2}\right\rceil$。同上。
+
+```py [sol-Python3]
+class Solution:
+    def makeStringGood(self, s: str) -> int:
+        cnt = Counter(s)
+        cnt = [cnt[c] for c in ascii_lowercase]
+
+        targets = set(cnt)
+        for x, y in pairwise(cnt):
+            targets.add(x + y)
+            targets.add((x + y) // 2)
+            targets.add((x + y + 1) // 2)
+
+        ans = len(s)  # target = 0 时的答案
+        f = [0] * 27
+        for target in targets:
+            f[25] = min(cnt[25], abs(cnt[25] - target))
+            for i in range(24, -1, -1):
+                x = cnt[i]
+                if x == 0:
+                    f[i] = f[i + 1]
+                    continue
+                # 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + min(x, abs(x - target))
+                # x 变成 target 或 0，y 变成 target
+                y = cnt[i + 1]
+                if 0 < y < target:  # 只有当 y 需要变大时，才去执行第三种操作
+                    t = target if x > target else 0
+                    f[i] = min(f[i], f[i + 2] + max(x - t, target - y))
+            ans = min(ans, f[0])
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int makeStringGood(String s) {
+        int[] cnt = new int[26];
+        for (char b : s.toCharArray()) {
+            cnt[b - 'a']++;
+        }
+
+        Set<Integer> targets = new HashSet<>();
+        targets.add(cnt[0]);
+        for (int i = 1; i < cnt.length; i++) {
+            int x = cnt[i - 1];
+            int y = cnt[i];
+            targets.add(x);
+            targets.add(x + y);
+            targets.add((x + y) / 2);
+            targets.add((x + y + 1) / 2);
+        }
+
+        int ans = s.length(); // target = 0 时的答案
+        int[] f = new int[27];
+        for (int target : targets) {
+            f[25] = Math.min(cnt[25], Math.abs(cnt[25] - target));
+            for (int i = 24; i >= 0; i--) {
+                int x = cnt[i];
+                if (x == 0) {
+                    f[i] = f[i + 1];
+                    continue;
+                }
+                // 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + Math.min(x, Math.abs(x - target));
+                // x 变成 target 或 0，y 变成 target
+                int y = cnt[i + 1];
+                if (0 < y && y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                    int t = x > target ? target : 0;
+                    f[i] = Math.min(f[i], f[i + 2] + Math.max(x - t, target - y));
+                }
+            }
+            ans = Math.min(ans, f[0]);
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int makeStringGood(string s) {
+        int cnt[26]{};
+        for (char b : s) {
+            cnt[b - 'a']++;
+        }
+
+        unordered_set<int> targets(cnt, cnt + 26);
+        for (int i = 1; i < 26; i++) {
+            int x = cnt[i - 1], y = cnt[i];
+            targets.insert(x + y);
+            targets.insert((x + y) / 2);
+            targets.insert((x + y + 1) / 2);
+        }
+
+        int ans = s.length(); // target = 0 时的答案
+        int f[27]{};
+        for (int target : targets) {
+            f[25] = min(cnt[25], abs(cnt[25] - target));
+            for (int i = 24; i >= 0; i--) {
+                int x = cnt[i];
+                if (x == 0) {
+                    f[i] = f[i + 1];
+                    continue;
+                }
+                // 单独操作 x（变成 target 或 0）
+                f[i] = f[i + 1] + min(x, abs(x - target));
+                // x 变成 target 或 0，y 变成 target
+                int y = cnt[i + 1];
+                if (0 < y && y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                    int t = x > target ? target : 0;
+                    f[i] = min(f[i], f[i + 2] + max(x - t, target - y));
+                }
+            }
+            ans = min(ans, f[0]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func makeStringGood(s string) int {
+	cnt := [26]int{}
+	for _, b := range s {
+		cnt[b-'a']++
+	}
+
+	targets := map[int]struct{}{}
+	targets[cnt[0]] = struct{}{}
+	for i := 1; i < len(cnt); i++ {
+		v, w := cnt[i-1], cnt[i]
+		targets[w] = struct{}{}
+		targets[v+w] = struct{}{}
+		targets[(v+w)/2] = struct{}{}
+		targets[(v+w+1)/2] = struct{}{}
+	}
+
+	ans := len(s) // target = 0 时的答案
+	f := [27]int{}
+	for target := range targets {
+		f[25] = min(cnt[25], abs(cnt[25]-target))
+		for i := 24; i >= 0; i-- {
+			x := cnt[i]
+			if x == 0 {
+				f[i] = f[i+1]
+				continue
+			}
+			// 单独操作 x（变成 target 或 0）
+			f[i] = f[i+1] + min(x, abs(x-target))
+			// x 变成 target 或 0，y 变成 target
+			y := cnt[i+1]
+			if 0 < y && y < target { // 只有当 y 需要变大时，才去执行第三种操作
+				if x > target { // x 变成 target
+					f[i] = min(f[i], f[i+2]+max(x-target, target-y))
+				} else { // x 变成 0
+					f[i] = min(f[i], f[i+2]+max(x, target-y))
+				}
+			}
+		}
+		ans = min(ans, f[0])
+	}
+	return ans
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|^2)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
 ## 思考题
