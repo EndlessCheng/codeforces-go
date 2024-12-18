@@ -216,7 +216,7 @@ class Solution {
     }
 
 public:
-    int minValidStrings(vector<string>& words, string& target) {
+    int minValidStrings(vector<string>& words, string target) {
         int n = target.length();
         vector<int> max_jumps(n);
         for (auto& word : words) {
@@ -411,7 +411,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minValidStrings(const vector<string>& words, const string& target) {
+    int minValidStrings(vector<string>& words, string target) {
         int n = target.length();
 
         // 多项式字符串哈希（方便计算子串哈希值）
@@ -641,7 +641,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minValidStrings(const vector<string>& words, const string& target) {
+    int minValidStrings(vector<string>& words, string target) {
         int n = target.length();
 
         // 多项式字符串哈希（方便计算子串哈希值）
