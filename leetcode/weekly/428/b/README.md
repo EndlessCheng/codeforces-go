@@ -5,8 +5,6 @@
 
 枚举中转货币 $x$，答案为 $\dfrac{\textit{day1Amount}[x]}{\textit{day2Amount}[x]}$ 的最大值。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1pnqZYKEqr/?t=6m10s)，欢迎点赞关注~
-
 ```py [sol-Python3]
 class Solution:
     def calc_amount(self, pairs: List[List[str]], rates: List[float], initialCurrency: str) -> Dict[str, float]:
@@ -159,6 +157,10 @@ func maxAmount(initialCurrency string, pairs1 [][]string, rates1 []float64, pair
 
 - 时间复杂度：$\mathcal{O}((n+m)L)$，其中 $n$ 是 $\textit{pairs}_1$ 的长度，$m$ 是 $\textit{pairs}_2$ 的长度，$L$ 是单个字符串的长度（不超过 $3$）。
 - 空间复杂度：$\mathcal{O}((n+m)L)$。
+
+## 思考题
+
+如果有 $3$ 天或者更多天呢？怎么建图最合适？请看 [视频讲解](https://www.bilibili.com/video/BV1pnqZYKEqr/?t=6m10s)，欢迎点赞关注~
 
 更多相似题目，见下面图论题单中的「**DFS**」。
 
