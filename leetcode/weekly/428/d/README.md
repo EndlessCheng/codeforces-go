@@ -170,7 +170,9 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 ## 优化
 
-如果 $\textit{cnt}[i]=0$，无需操作，$f[i]=f[i+1]$。
+如果 $x = \textit{cnt}[i]=0$，无需操作，$f[i]=f[i+1]$。
+
+如果 $y = \textit{cnt}[i+1]=0$，只需单独操作 $x$。
 
 这个优化对 Python 十分显著，其他语言不明显。
 
@@ -193,7 +195,7 @@ class Solution:
                 f[i] = f[i + 1] + min(x, abs(x - target))
                 # x 变成 target 或 0，y 变成 target
                 y = cnt[i + 1]
-                if y < target:  # 只有当 y 需要变大时，才去执行第三种操作
+                if 0 < y < target:  # 只有当 y 需要变大时，才去执行第三种操作
                     t = target if x > target else 0
                     f[i] = min(f[i], f[i + 2] + max(x - t, target - y))
             ans = min(ans, f[0])
@@ -223,7 +225,7 @@ class Solution {
                 f[i] = f[i + 1] + Math.min(x, Math.abs(x - target));
                 // x 变成 target 或 0，y 变成 target
                 int y = cnt[i + 1];
-                if (y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                if (0 < y && y < target) { // 只有当 y 需要变大时，才去执行第三种操作
                     int t = x > target ? target : 0;
                     f[i] = Math.min(f[i], f[i + 2] + Math.max(x - t, target - y));
                 }
@@ -259,7 +261,7 @@ public:
                 f[i] = f[i + 1] + min(x, abs(x - target));
                 // x 变成 target 或 0，y 变成 target
                 int y = cnt[i + 1];
-                if (y < target) { // 只有当 y 需要变大时，才去执行第三种操作
+                if (0 < y && y < target) { // 只有当 y 需要变大时，才去执行第三种操作
                     int t = x > target ? target : 0;
                     f[i] = min(f[i], f[i + 2] + max(x - t, target - y));
                 }
@@ -293,7 +295,7 @@ func makeStringGood(s string) int {
 			f[i] = f[i+1] + min(x, abs(x-target))
 			// x 变成 target 或 0，y 变成 target
 			y := cnt[i+1]
-			if y < target { // 只有当 y 需要变大时，才去执行第三种操作
+			if 0 < y && y < target { // 只有当 y 需要变大时，才去执行第三种操作
 				if x > target { // x 变成 target
 					f[i] = min(f[i], f[i+2]+max(x-target, target-y))
 				} else { // x 变成 0
