@@ -20,7 +20,7 @@ func (f fenwick42) update(i, l, r int) {
 }
 
 func (f fenwick42) pre(i int) int {
-	maxL, minR := 0, int(1e18)
+	maxL, minR := 0, int(2e9)
 	for ; i > 0; i &= i - 1 {
 		maxL = max(maxL, f[i].maxL)
 		minR = min(minR, f[i].minR)
@@ -48,12 +48,12 @@ func cf2042D(in io.Reader, _w io.Writer) {
 		ans := make([]int, n)
 		t := make(fenwick42, n+1)
 		for i := range t {
-			t[i].minR = 1e18
+			t[i].minR = 2e9
 		}
 		for i, p := range a {
 			l := sort.SearchInts(ls, p.l) + 1
 			if !(i < n-1 && a[i+1].r == p.r && a[i+1].l == p.l) {
-				if superSize := t.pre(l); superSize < 1e9 {
+				if superSize := t.pre(l); superSize < 2e9 {
 					ans[p.i] = superSize - (p.r - p.l)
 				}
 			}
