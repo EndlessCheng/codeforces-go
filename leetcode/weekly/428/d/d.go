@@ -12,11 +12,11 @@ func makeStringGood(s string) int {
 	targets := map[int]struct{}{}
 	targets[cnt[0]] = struct{}{}
 	for i := 1; i < len(cnt); i++ {
-		v, w := cnt[i-1], cnt[i]
-		targets[w] = struct{}{}
-		targets[v+w] = struct{}{}
-		targets[(v+w)/2] = struct{}{}
-		targets[(v+w+1)/2] = struct{}{}
+		x, y := cnt[i-1], cnt[i]
+		targets[y] = struct{}{}
+		targets[x+y] = struct{}{}
+		targets[(x+y)/2] = struct{}{}
+		targets[(x+y+1)/2] = struct{}{}
 	}
 
 	ans := len(s) // target = 0 时的答案
