@@ -2,7 +2,7 @@
 
 由于 $s$ 是由若干长度为 $k$ 的字符串拼接而成，所以 $k$ 一定是 $n$ 的因子。
 
-由于 $10^5$ 以内的因子个数至多为 $128$（$83160$ 的因子个数），所以我们可以暴力枚举 $n$ 的因子作为 $k$。
+由于 $10^5$ 以内的数，因子个数至多为 $128$（$83160$ 的因子个数），所以我们可以暴力枚举 $n$ 的因子 $k$。
 
 然后比较所有首字母下标为 $0,k,2k,3k,\cdots,n-k$ 的长为 $k$ 的子串，所包含的字母及其个数是否一样（同位字符串）。
 
@@ -95,17 +95,20 @@ public:
             for (int j = 0; j < k; j++) {
                 cnt0[s[j] - 'a']++;
             }
+            bool ok = true;
             for (int i = k * 2; i <= n; i += k) {
                 array<int, 26> cnt{};
                 for (int j = i - k; j < i; j++) {
                     cnt[s[j] - 'a']++;
                 }
                 if (cnt != cnt0) {
-                    goto next;
+                    ok = false;
+                    break;
                 }
             }
-            return k;
-            next:;
+            if (ok) {
+                return k;
+            }
         }
         return n;
     }
