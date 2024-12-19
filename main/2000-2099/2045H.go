@@ -41,6 +41,7 @@ func cf2045H(in io.Reader, out io.Writer) {
 	}
 	for i := n - 1; i >= 0; i-- {
 		f[i][n-1] = 1
+		next[i][n-1] = int16(n)
 		p := pair{1, int16(n - 1)}
 		for j := n - 1; j >= i; j-- {
 			if less(i, j+1, j+1, n) {
@@ -50,9 +51,6 @@ func cf2045H(in io.Reader, out io.Writer) {
 				if f[i][j] > p.f {
 					p = pair{f[i][j], int16(j)}
 				}
-			} else {
-				// f[i][j] = 0
-				next[i][j] = int16(n)
 			}
 			sufMax[i][j] = p
 		}
