@@ -31,32 +31,32 @@ func cf2045H(in io.Reader, out io.Writer) {
 	}
 
 	f := make([][]int16, n)
-	type pair struct{ f, k int16 }
-	sufMax := make([][]pair, n)
+	sufMaxK := make([][]int16, n)
 	next := make([][]int16, n)
 	for i := range f {
 		f[i] = make([]int16, n)
-		sufMax[i] = make([]pair, n)
+		sufMaxK[i] = make([]int16, n)
 		next[i] = make([]int16, n)
 	}
 	for i := n - 1; i >= 0; i-- {
 		f[i][n-1] = 1
 		next[i][n-1] = int16(n)
-		p := pair{1, int16(n - 1)}
+		k := int16(n - 1)
 		for j := n - 1; j >= i; j-- {
 			if less(i, j+1, j+1, n) {
 				l := min(int(lcp[i][j+1]), j-i+1)
-				f[i][j] = sufMax[j+1][j+1+l].f + 1
-				next[i][j] = sufMax[j+1][j+1+l].k
-				if f[i][j] > p.f {
-					p = pair{f[i][j], int16(j)}
+				k2 := sufMaxK[j+1][j+1+l]
+				next[i][j] = k2
+				f[i][j] = f[j+1][k2] + 1
+				if f[i][j] > f[i][k] {
+					k = int16(j)
 				}
 			}
-			sufMax[i][j] = p
+			sufMaxK[i][j] = k
 		}
 	}
-	Fprintln(out, sufMax[0][0].f)
-	for i, j := 0, int(sufMax[0][0].k); i < n; i, j = j+1, int(next[i][j]) {
+	Fprintln(out, f[0][sufMaxK[0][0]])
+	for i, j := 0, int(sufMaxK[0][0]); i < n; i, j = j+1, int(next[i][j]) {
 		Fprintln(out, s[i:j+1])
 	}
 }
