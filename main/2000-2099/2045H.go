@@ -51,6 +51,7 @@ func cf2045H(in io.Reader, out io.Writer) {
 					p = pair{f[i][j], int16(j)}
 				}
 			} else {
+				// f[i][j] = 0
 				next[i][j] = int16(n)
 			}
 			sufMax[i][j] = p
