@@ -17,34 +17,27 @@ func init() {
 	}
 }
 
-func comb(n, k int) int {
-	return fac[n] * invFac[k] % mod * invFac[n-k] % mod
-}
-
 func numberOfSequence(n int, a []int) int {
 	m := len(a)
-	total := n - m
-	ans := comb(total, a[0]) * comb(total-a[0], n-a[m-1]-1) % mod
-	total -= a[0] + n - a[m-1] - 1
+	ans := fac[n-m] * invFac[a[0]] % mod * invFac[n-1-a[m-1]] % mod
 	e := 0
 	for i := 1; i < m; i++ {
 		k := a[i] - a[i-1] - 1
 		if k > 0 {
 			e += k - 1
-			ans = ans * comb(total, k) % mod
-			total -= k
+			ans = ans * invFac[k] % mod
 		}
 	}
 	return ans * pow(2, e) % mod
 }
 
-func pow(x, n int) (res int) {
-	res = 1
+func pow(x, n int) int {
+	res := 1
 	for ; n > 0; n /= 2 {
 		if n%2 > 0 {
 			res = res * x % mod
 		}
 		x = x * x % mod
 	}
-	return
+	return res
 }
