@@ -504,7 +504,7 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 ## 变形题
 
 1. 写代码，实现优化二中提到的变形。
-2. 如果可以把 z 改成 a，要怎么做？
+2. 如果可以把 z 改成 a，要怎么做？提示：[213. 打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)。
 3. 如果每种操作都有相应的次数限制呢？即额外输入 $\textit{limit}_1,\textit{limit}_2,\textit{limit}_3$。
 4. 如果每种操作都有相应的代价呢？即额外输入 $\textit{cost}_1,\textit{cost}_2,\textit{cost}_3$。
 
