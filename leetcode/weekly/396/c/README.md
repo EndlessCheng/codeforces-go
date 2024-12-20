@@ -1,3 +1,5 @@
+## 方法一：枚举长度
+
 设 $s$ 的长度为 $n$，$t$ 的长度为 $k$。
 
 由于 $s$ 是由若干长度为 $k$ 的字符串拼接而成，所以 $k$ 一定是 $n$ 的因子。
@@ -10,36 +12,7 @@
 
 请看 [视频讲解](https://www.bilibili.com/video/BV1Nf421U7em/) 第三题，欢迎点赞关注~
 
-```py [sol-Py]
-class Solution:
-    def minAnagramLength(self, s: str) -> int:
-        n = len(s)
-        for k in range(1, n // 2 + 1):
-            if n % k:
-                continue
-            cnt0 = Counter(s[:k])
-            for i in range(k * 2, n + 1, k):
-                if Counter(s[i - k: i]) != cnt0:
-                    break
-            else:
-                return k
-        return n
-```
-
-```py [sol-Py 写法二]
-class Solution:
-    def minAnagramLength(self, s: str) -> int:
-        n = len(s)
-        for k in range(1, n // 2 + 1):
-            if n % k:
-                continue
-            cnt0 = Counter(s[:k])
-            if all(Counter(s[i - k: i]) == cnt0 for i in range(k * 2, n + 1, k)):
-                return k
-        return n
-```
-
-```py [sol-Py 写法三]
+```py [sol-Python3]
 class Solution:
     def minAnagramLength(self, s: str) -> int:
         n = len(s)
@@ -48,6 +21,19 @@ class Solution:
                 continue
             t = sorted(s[:k])
             if all(sorted(s[i - k: i]) == t for i in range(k * 2, n + 1, k)):
+                return k
+        return n
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minAnagramLength(self, s: str) -> int:
+        n = len(s)
+        for k in range(1, n // 2 + 1):
+            if n % k:
+                continue
+            cnt0 = Counter(s[:k])
+            if all(Counter(s[i - k: i]) == cnt0 for i in range(k * 2, n + 1, k)):
                 return k
         return n
 ```
@@ -140,6 +126,185 @@ next:
 	}
 	return n
 }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(A\cdot n)$，其中 $n$ 为 $s$ 的长度，$A$ 为 $n$ 的因子个数。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。其中 $|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+
+## 方法二：枚举次数 + GCD 优化
+
+假设 $s$ 由 $6$ 个 a 和 $4$ 个 $b$ 组成。
+
+那么 $t$ 中的 a 的个数，必须是 $6$ 的因子，这是 $t$ 能连接得到 $s$ 的必要条件。
+
+比如 $t$ 中有 $3$ 个 a，那么 $s$ 由 $\textit{times} = \dfrac{6}{3}=2$ 个 $t$ 和 $t$ 的同位字符串连接而成。注意这里的 $2$ 也是 $6$ 的因子。
+
+同时 $t$ 中的 b 的个数，必须是 $4$ 的因子。所以 $\textit{times}$ 也必须是 $4$ 的因子。
+
+所以 $\textit{times}$ 必须是 $6$ 和 $4$ 的公因子，也就是 $g=\text{GCD}(6,4)=2$ 的因子。
+
+从大到小枚举 $g$ 的因子 $\textit{times}=g,g-1,\ldots,2$，那么方法一中的 $k=\dfrac{n}{\textit{times}}$。后续逻辑同方法一。
+
+如果枚举到 $\textit{times}=2$ 也没有找到答案，那么答案是 $n$。
+
+```py [sol-Python3]
+class Solution:
+    def minAnagramLength(self, s: str) -> int:
+        n = len(s)
+        g = gcd(*Counter(s).values())
+        for times in range(g, 1, -1):
+            if g % times:
+                continue
+            k = n // times
+            t = sorted(s[:k])
+            if all(sorted(s[i - k: i]) == t for i in range(k * 2, n + 1, k)):
+                return k
+        return n
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def minAnagramLength(self, s: str) -> int:
+        n = len(s)
+        g = gcd(*Counter(s).values())
+        for times in range(g, 1, -1):
+            if g % times:
+                continue
+            k = n // times
+            cnt0 = Counter(s[:k])
+            if all(Counter(s[i - k: i]) == cnt0 for i in range(k * 2, n + 1, k)):
+                return k
+        return n
+```
+
+```java [sol-Java]
+class Solution {
+    public int minAnagramLength(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int[] cntAll = new int[26];
+        for (char c : s) {
+            cntAll[c - 'a']++;
+        }
+        int g = 0;
+        for (int c : cntAll) {
+            g = gcd(g, c);
+        }
+        next:
+        for (int times = g; times > 1; times--) {
+            if (g % times > 0) {
+                continue;
+            }
+            int k = n / times;
+            int[] cnt0 = new int[26];
+            for (int j = 0; j < k; j++) {
+                cnt0[s[j] - 'a']++;
+            }
+            for (int i = k * 2; i <= n; i += k) {
+                int[] cnt = new int[26];
+                for (int j = i - k; j < i; j++) {
+                    cnt[s[j] - 'a']++;
+                }
+                if (!Arrays.equals(cnt, cnt0)) {
+                    continue next;
+                }
+            }
+            return k;
+        }
+        return n;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minAnagramLength(string s) {
+        int n = s.length();
+        int cnt_all[26]{};
+        for (char c : s) {
+            cnt_all[c-'a']++;
+        }
+        int g = 0;
+        for (int c : cnt_all) {
+            g = gcd(g, c);
+        }
+        for (int times = g; times > 1; times--) {
+            if (g % times) {
+                continue;
+            }
+            int k = n / times;
+            array<int, 26> cnt0{};
+            for (int j = 0; j < k; j++) {
+                cnt0[s[j] - 'a']++;
+            }
+            bool ok = true;
+            for (int i = k * 2; i <= n; i += k) {
+                array<int, 26> cnt{};
+                for (int j = i - k; j < i; j++) {
+                    cnt[s[j] - 'a']++;
+                }
+                if (cnt != cnt0) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                return k;
+            }
+        }
+        return n;
+    }
+};
+```
+
+```go [sol-Go]
+func minAnagramLength(s string) int {
+	n := len(s)
+	cntAll := [26]int{}
+	for _, c := range s {
+		cntAll[c-'a']++
+	}
+	g := 0
+	for _, c := range cntAll {
+		g = gcd(g, c)
+	}
+next:
+	for times := g; times > 1; times-- {
+		if g%times > 0 {
+			continue
+		}
+		k := n / times
+		cnt0 := [26]int{}
+		for _, b := range s[:k] {
+			cnt0[b-'a']++
+		}
+		for i := k * 2; i <= len(s); i += k {
+			cnt := [26]int{}
+			for _, b := range s[i-k : i] {
+				cnt[b-'a']++
+			}
+			if cnt != cnt0 {
+				continue next
+			}
+		}
+		return k
+	}
+	return n
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 ```
 
 #### 复杂度分析
