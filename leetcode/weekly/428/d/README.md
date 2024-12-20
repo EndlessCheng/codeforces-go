@@ -327,6 +327,8 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 3. $\left\lfloor\dfrac{\textit{cnt}[i]+\textit{cnt}[i+1]}{2}\right\rfloor$。操作三把 $x$ 和 $y$ 都变成 $\textit{target}$，取平均值最优。
 4. $\left\lceil\dfrac{\textit{cnt}[i]+\textit{cnt}[i+1]}{2}\right\rceil$。同上。
 
+如此修改后，即使题目给你一堆询问，每个询问要你计算 $s$ 的一个子串的答案，也能轻松应对。（提示：前缀和）
+
 ```py [sol-Python3]
 class Solution:
     def makeStringGood(self, s: str) -> int:
@@ -499,11 +501,12 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 - 时间复杂度：$\mathcal{O}(n + |\Sigma|^2)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
-## 思考题
+## 变形题
 
-1. 如果可以把 z 改成 a，要怎么做？
-2. 如果每种操作都有相应的次数限制呢？即额外输入 $\textit{limit}_1,\textit{limit}_2,\textit{limit}_3$。
-3. 如果每种操作都有相应的代价呢？即额外输入 $\textit{cost}_1,\textit{cost}_2,\textit{cost}_3$。
+1. 写代码，实现优化二中提到的变形。
+2. 如果可以把 z 改成 a，要怎么做？
+3. 如果每种操作都有相应的次数限制呢？即额外输入 $\textit{limit}_1,\textit{limit}_2,\textit{limit}_3$。
+4. 如果每种操作都有相应的代价呢？即额外输入 $\textit{cost}_1,\textit{cost}_2,\textit{cost}_3$。
 
 更多相似题目，见下面动态规划题单中的「**§7.1 一维 DP**」。
 
