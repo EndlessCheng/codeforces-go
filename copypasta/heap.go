@@ -12,6 +12,8 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
+【疑问】对于所有 1~n 的排列，heapify 后是有序数组的排列，有多少个？
+
 动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
 https://codeforces.com/problemset/problem/1969/D 1900
 
@@ -346,3 +348,7 @@ func (h *kthHeap) balance(k int) {
 // - https://www.codechef.com/problems/OKLAMA
 // LC480 滑动窗口中位数 https://leetcode.cn/problems/sliding-window-median/
 // https://codeforces.com/contest/1374/problem/E2 代码 https://codeforces.com/contest/1374/submission/193671570
+
+// 如果值域比较小，可以用分桶法做到 O(n+U)
+// 特别地，如果 U<=n，则时间复杂度为 O(n)
+// https://leetcode.cn/problems/smallest-substring-with-identical-characters-ii/solutions/3027031/er-fen-da-an-tan-xin-gou-zao-pythonjavac-3i4f/
