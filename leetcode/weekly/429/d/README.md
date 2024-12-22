@@ -230,6 +230,8 @@ func minLength(s string, numOps int) int {
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/?t=28m01s)，欢迎点赞关注~
 
+### 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minLength(self, s: str, numOps: int) -> int:
@@ -361,6 +363,181 @@ func (hp) Pop() (_ any)         { return }
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n + \textit{numOps}\cdot \log n)$，其中 $n$ 是 $s$ 的长度。这里时间复杂度以 Python 和 Go 为主，初始化堆的时间是 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+### 分桶优化
+
+把堆中元素按照最长子段长度分组。每组是个 pair 列表，每个 pair 包含原始子串长度和段数。
+
+这样就不需要堆了，用一个指针 $i$ 表示目前最长子段长度。
+
+每次从第 $i$ 个组中弹出 pair $(k, \textit{seg})$，把 pair $(k, \textit{seg}+1)$ 加到第 $\left\lfloor\dfrac{k}{\textit{seg}+1}\right\rfloor$ 组中。
+
+```py [sol-Python3]
+class Solution:
+    def minLength(self, s: str, numOps: int) -> int:
+        n = len(s)
+        cnt = sum((ord(b) ^ i) & 1 for i, b in enumerate(s))
+        if min(cnt, n - cnt) <= numOps:
+            return 1
+
+        buckets = [[] for _ in range(n + 1)]
+        for _, t in groupby(s):
+            k = len(list(t))
+            buckets[k].append((k, 1))  # 原始子串长度，段数
+
+        i = n
+        for _ in range(numOps):
+            while not buckets[i]:
+                i -= 1
+            if i == 2:
+                return 2
+            k, seg = buckets[i].pop()
+            buckets[k // (seg + 1)].append((k, seg + 1))
+
+        while not buckets[i]:
+            i -= 1
+        return i
+```
+
+```java [sol-Java]
+class Solution {
+    public int minLength(String S, int numOps) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            cnt += (s[i] ^ i) & 1;
+        }
+        if (Math.min(cnt, n - cnt) <= numOps) {
+            return 1;
+        }
+
+        List<int[]>[] buckets = new ArrayList[n + 1];
+        Arrays.setAll(buckets, i -> new ArrayList<>());
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            k++;
+            // 到达连续相同子串的末尾
+            if (i == n - 1 || s[i] != s[i + 1]) {
+                buckets[k].add(new int[]{k, 1}); // 原始子串长度，段数
+                k = 0;
+            }
+        }
+
+        int i = n;
+        while (numOps-- > 0) {
+            while (buckets[i].isEmpty()) {
+                i--;
+            }
+            if (i == 2) {
+                return 2;
+            }
+            int[] p = buckets[i].remove(buckets[i].size() - 1);
+            buckets[p[0] / ++p[1]].add(p);
+        }
+
+        while (buckets[i].isEmpty()) {
+            i--;
+        }
+        return i;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minLength(string s, int numOps) {
+        int n = s.length();
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            cnt += (s[i] ^ i) & 1;
+        }
+        if (min(cnt, n - cnt) <= numOps) {
+            return 1;
+        }
+
+        vector<vector<pair<int, int>>> buckets(n + 1);
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            k++;
+            // 到达连续相同子串的末尾
+            if (i == n - 1 || s[i] != s[i + 1]) {
+                buckets[k].emplace_back(k, 1); // 原始子串长度，段数
+                k = 0;
+            }
+        }
+
+        int i = n;
+        while (numOps--) {
+            while (buckets[i].empty()) {
+                i--;
+            }
+            if (i == 2) {
+                return 2;
+            }
+            auto [k, seg] = buckets[i].back();
+            buckets[i].pop_back();
+            buckets[k / (seg + 1)].emplace_back(k, seg + 1);
+        }
+
+        while (buckets[i].empty()) {
+            i--;
+        }
+        return i;
+    }
+};
+```
+
+```go [sol-Go]
+func minLength(s string, numOps int) int {
+	n := len(s)
+	cnt := 0
+	for i, b := range s {
+		cnt += (int(b) ^ i) & 1
+	}
+	if min(cnt, n-cnt) <= numOps {
+		return 1
+	}
+
+	type pair struct{ k, seg int }
+	h := make([][]pair, n+1)
+	k := 0
+	for i := 0; i < n; i++ {
+		k++
+		// 到达连续相同子串的末尾
+		if i == n-1 || s[i] != s[i+1] {
+			h[k] = append(h[k], pair{k, 1}) // 原始子串长度，段数
+			k = 0
+		}
+	}
+
+	i := n
+	for range numOps {
+		for len(h[i]) == 0 {
+			i--
+		}
+		if i == 2 {
+			return 2
+		}
+		p := h[i][len(h[i])-1]
+		h[i] = h[i][:len(h[i])-1]
+		p.seg++
+		maxSeg := p.k / p.seg
+		h[maxSeg] = append(h[maxSeg], p)
+	}
+
+	for len(h[i]) == 0 {
+		i--
+	}
+	return i
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面二分题单中的「**最小化最大值**」，以及数据结构题单中的「**五、堆（优先队列）**」。

@@ -16,6 +16,49 @@ func minLength(s string, numOps int) int {
 		return 1
 	}
 
+	type pair struct{ k, seg int }
+	h := make([][]pair, n+1)
+	k := 0
+	for i := 0; i < n; i++ {
+		k++
+		// 到达连续相同子串的末尾
+		if i == n-1 || s[i] != s[i+1] {
+			h[k] = append(h[k], pair{k, 1})
+			k = 0
+		}
+	}
+
+	i := n
+	for range numOps {
+		for len(h[i]) == 0 {
+			i--
+		}
+		if i == 2 {
+			return 2
+		}
+		p := h[i][len(h[i])-1]
+		h[i] = h[i][:len(h[i])-1]
+		p.seg++
+		maxSeg := p.k / p.seg
+		h[maxSeg] = append(h[maxSeg], p)
+	}
+
+	for len(h[i]) == 0 {
+		i--
+	}
+	return i
+}
+
+func minLengthHeap(s string, numOps int) int {
+	n := len(s)
+	cnt := 0
+	for i, b := range s {
+		cnt += (int(b) ^ i) & 1
+	}
+	if min(cnt, n-cnt) <= numOps {
+		return 1
+	}
+
 	h := hp{}
 	k := 0
 	for i := 0; i < n; i++ {
@@ -45,7 +88,7 @@ func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (hp) Push(any)             {}
 func (hp) Pop() (_ any)         { return }
 
-func minLength2(s string, numOps int) int {
+func minLengthBS(s string, numOps int) int {
 	n := len(s)
 	return 1 + sort.Search(n-1, func(m int) bool {
 		m++
