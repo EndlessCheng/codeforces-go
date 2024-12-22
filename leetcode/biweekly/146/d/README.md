@@ -207,8 +207,10 @@ func subsequencesWithMiddleMode(nums []int) int {
 
 ## 思考题
 
-1. 如果可以修改元素呢？每改一个数，就问你此时的答案。
-2. 把 $5$ 改成 $k=3,4,6,7$ 这些数呢？规定正中间的数的下标是 $\left\lfloor\dfrac{k}{2}\right\rfloor$。
+1. 改成 $\textit{seq}[0]$ 是众数。
+2. 改成 $\textit{seq}[1]$ 是众数。
+3. 把 $5$ 改成 $k=3,4,6,7$ 这些数呢？规定正中间的数的下标是 $\left\lfloor\dfrac{k}{2}\right\rfloor$。
+4. 如果可以修改元素呢？每改一个数，就问你此时的答案。
 
 ## 分类题单
 
