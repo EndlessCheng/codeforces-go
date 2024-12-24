@@ -99,6 +99,100 @@ func maxDistinctElements(nums []int, k int) (ans int) {
 }
 ```
 
+### 优化
+
+什么情况下，可以直接返回 $n$？
+
+如果所有元素相同，那么我们只能把元素变成 $[x-k,x+k]$ 范围内的数，这一共有 $2k+1$ 个数。所以当 $2k+1 \ge n$ 时，我们可以让所有数都不同，直接返回 $n$。
+
+如果有不同元素，那么当 $2k+1 \ge n$ 时，就更加可以把所有数都变成不同的。
+
+所以只要 $2k+1 \ge n$，就可以直接返回 $n$。
+
+```py [sol-Python3]
+class Solution:
+    def maxDistinctElements(self, nums: List[int], k: int) -> int:
+        if k * 2 + 1 >= len(nums):
+            return len(nums)
+
+        nums.sort()
+        ans = 0
+        pre = -inf  # 记录每个人左边的人的位置
+        for x in nums:
+            x = min(max(x - k, pre + 1), x + k)
+            if x > pre:
+                ans += 1
+                pre = x
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistinctElements(int[] nums, int k) {
+        int n = nums.length;
+        if (k * 2 + 1 >= n) {
+            return n;
+        }
+
+        Arrays.sort(nums);
+        int ans = 0;
+        int pre = Integer.MIN_VALUE; // 记录每个人左边的人的位置
+        for (int x : nums) {
+            x = Math.min(Math.max(x - k, pre + 1), x + k);
+            if (x > pre) {
+                ans++;
+                pre = x;
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistinctElements(vector<int>& nums, int k) {
+        int n = nums.size();
+        if (k * 2 + 1 >= n) {
+            return n;
+        }
+
+        ranges::sort(nums);
+        int ans = 0;
+        int pre = INT_MIN; // 记录每个人左边的人的位置
+        for (int x : nums) {
+            x = clamp(pre + 1, x - k, x + k); // min(max(x - k, pre + 1), x + k)
+            if (x > pre) {
+                ans++;
+                pre = x;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxDistinctElements(nums []int, k int) (ans int) {
+	n := len(nums)
+	if k*2+1 >= n {
+		return n
+	}
+
+	slices.Sort(nums)
+	pre := math.MinInt // 记录每个人左边的人的位置
+	for _, x := range nums {
+		x = min(max(x-k, pre+1), x+k)
+		if x > pre {
+			ans++
+			pre = x
+		}
+	}
+	return
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 是 $\textit{nums}$ 的长度。瓶颈在排序上。
