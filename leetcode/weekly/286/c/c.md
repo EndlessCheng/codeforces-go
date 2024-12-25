@@ -1,10 +1,12 @@
-根据题意，回文数的左半部分为
+只看回文数的左半部分，可以发现左半部分是从 $1000\cdots0$ 开始，逐渐增加的。
+
+具体地，第 $q$ 个回文数的左半部分为
 
 $$
-10^{\Big\lfloor\dfrac{\textit{intLength}-1}{2}\Big\rfloor} + q - 1
+10^{\lfloor\frac{\textit{intLength}-1}{2}\rfloor} + q - 1
 $$
 
-反转这个数，拼到左半部分之后即为第 $q$ 个回文数。
+反转这个数，拼到左半部分之后，即为第 $q$ 个长为 $\textit{intLength}$ 的回文数。
 
 如果 $\textit{intLength}$ 为奇数则先去掉最低位再反转。
 
