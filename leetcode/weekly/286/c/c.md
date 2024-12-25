@@ -16,7 +16,7 @@ class Solution:
         for i, q in enumerate(queries):
             if q <= 9 * base:
                 s = str(base + q - 1)  # 回文数左半部分
-                s += s[-2::-1] if intLength % 2 else s[::-1]
+                s += s[::-1][intLength % 2:]
                 ans[i] = int(s)
         return ans
 ```
