@@ -1,31 +1,41 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-var a = [5]int{20, 50, 100, 200, 500}
+var denominations = [...]int{20, 50, 100, 200, 500}
 
-type ATM [5]int
+const kinds = len(denominations)
 
-func Constructor() ATM { return ATM{} }
+type ATM [kinds]int
 
-func (left *ATM) Deposit(banknotesCount []int) {
+func Constructor() ATM {
+	return ATM{}
+}
+
+func (banknotes *ATM) Deposit(banknotesCount []int) {
+	// 存钱
 	for i, count := range banknotesCount {
-		left[i] += count // 存钱
+		banknotes[i] += count
 	}
 }
 
-func (left *ATM) Withdraw(amount int) []int {
-	ans := make([]int, 5)
-	for i := 4; i >= 0; i-- {
-		ans[i] = min(amount/a[i], left[i])
-		amount -= ans[i] * a[i] // 取钱
+func (banknotes *ATM) Withdraw(amount int) []int {
+	ans := make([]int, kinds)
+
+	// 计算每种钞票所需数量
+	for i := kinds - 1; i >= 0; i-- {
+		ans[i] = min(amount/denominations[i], banknotes[i])
+		amount -= ans[i] * denominations[i]
 	}
-	if amount > 0 { // 没法取恰好 amount
+
+	// 无法取恰好 amount
+	if amount > 0 {
 		return []int{-1}
 	}
+
+	// 取钱
 	for i, count := range ans {
-		left[i] -= count
+		banknotes[i] -= count
 	}
+
 	return ans
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
