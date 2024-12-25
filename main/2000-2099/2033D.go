@@ -9,19 +9,16 @@ import (
 func cf2033D(in io.Reader, out io.Writer) {
 	var T, n, v int
 	for Fscan(in, &T); T > 0; T-- {
-		Fscan(in, &n)
 		ans, s := 0, 0
 		has := map[int]bool{0: true}
-		for range n {
+		for Fscan(in, &n); n > 0; n-- {
 			Fscan(in, &v)
 			s += v
 			if has[s] {
 				ans++
-				s = 0
-				has = map[int]bool{0: true}
-			} else {
-				has[s] = true
+				has = map[int]bool{}
 			}
+			has[s] = true
 		}
 		Fprintln(out, ans)
 	}
