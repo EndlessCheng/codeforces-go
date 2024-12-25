@@ -61,6 +61,6 @@ func main() {
 }
 ```
 
-**时间复杂度**：$\mathcal{O}(m + n\log m)$。
+**时间复杂度**：$\mathcal{O}(m + n\log n)$。如果把 $\textit{pre}$ 改成哈希表，则时间复杂度为 $\mathcal{O}(n\log n)$。
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
