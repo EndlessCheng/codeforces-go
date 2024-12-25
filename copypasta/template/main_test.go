@@ -72,7 +72,7 @@ func TestCompare(_t *testing.T) {
 	// 先用 runBF 跑下样例，检查 runBF 是否正确
 	dir, _ := filepath.Abs(".")
 	testutil.AssertEqualFileCaseWithName(_t, dir, "in*.txt", "ans*.txt", 0, runBF)
-	//testutil.AssertEqualStringCase(t, customTestCases, 0, runBF)
+	//testutil.AssertEqualStringCase(_t, customTestCases, 0, runBF)
 	return
 
 	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, run)
