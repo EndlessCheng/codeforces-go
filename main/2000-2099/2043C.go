@@ -26,7 +26,7 @@ func cf2043C(in io.Reader, _w io.Writer) {
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
 		a := make([]int, n)
-		idx := -1
+		idx := 0
 		for i := range a {
 			Fscan(in, &a[i])
 			if a[i] < -1 || a[i] > 1 {
@@ -41,27 +41,23 @@ func cf2043C(in io.Reader, _w io.Writer) {
 			}
 		}
 
-		if idx < 0 {
-			add(dp43(a))
-		} else {
-			add(dp43(a[:idx]))
-			add(dp43(a[idx+1:]))
-			var l, minL, maxL int
-			for i := idx - 1; i >= 0; i-- {
-				l += a[i]
-				minL = min(minL, l)
-				maxL = max(maxL, l)
-			}
-			var r, minR, maxR int
-			for _, v := range a[idx+1:] {
-				r += v
-				minR = min(minR, r)
-				maxR = max(maxR, r)
-			}
-			add(minL+a[idx]+minR, maxL+a[idx]+maxR)
-			slices.Sort(ans)
-			ans = slices.Compact(ans)
+		add(dp43(a[:idx]))
+		add(dp43(a[idx+1:]))
+		var l, minL, maxL int
+		for i := idx - 1; i >= 0; i-- {
+			l += a[i]
+			minL = min(minL, l)
+			maxL = max(maxL, l)
 		}
+		var r, minR, maxR int
+		for _, v := range a[idx+1:] {
+			r += v
+			minR = min(minR, r)
+			maxR = max(maxR, r)
+		}
+		add(minL+a[idx]+minR, maxL+a[idx]+maxR)
+		slices.Sort(ans)
+		ans = slices.Compact(ans)
 
 		Fprintln(out, len(ans))
 		for _, v := range ans {
