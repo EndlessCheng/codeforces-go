@@ -11,10 +11,10 @@
 ```py [sol-Python3]
 class Solution:
     def isSubstringPresent(self, s: str) -> bool:
-        st = set()
+        vis = set()
         for x, y in pairwise(s):
-            st.add((x, y))
-            if (y, x) in st:
+            vis.add((x, y))
+            if (y, x) in vis:
                 return True
         return False
 ```
