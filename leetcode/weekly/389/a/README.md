@@ -1,6 +1,10 @@
-用一个 $26\times 26$ 的布尔数组（或哈希表）$\textit{vis}$ 记录是否遇到了 $\textit{vis}[x][y]$，其中 $x$ 和 $y$ 是一对相邻字母 $(s[i-1],s[i])$。
+设 $x=s[i-1]$，$y=s[i]$，那么 $x+y$ 是 $s$ 的一个长为 $2$ 的子串。
 
-如果 $\textit{vis}[y][x]$ 为真，则说明 $x+y$ 在反转后的字符串中。
+**核心思路**：$x+y$ 在反转串 $\text{reverse}(s)$ 中，等价于 $y+x$ 在 $s$ 中。
+
+用一个 $26\times 26$ 的布尔数组（或哈希表）$\textit{vis}$，其中 $\textit{vis}[x][y]=\texttt{true}$ 表示遇到了子串 $x+y$。
+
+如果 $\textit{vis}[y][x]$ 为 $\texttt{true}$，则说明 $x+y$ 在反转串 $\text{reverse}(s)$ 中。
 
 [视频讲解](https://www.bilibili.com/video/BV1RH4y1W7DP/)。
 
@@ -130,7 +134,7 @@ func isSubstringPresent(s string) bool {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 为 $\textit{nums}$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(n + |\Sigma|)$，其中 $n$ 为 $\textit{nums}$ 的长度，$|\Sigma|$ 为字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。注意创建一个大小为 $\mathcal{O}(|\Sigma|)$ 的数组需要 $\mathcal{O}(|\Sigma|)$ 的时间。
 - 空间复杂度：$\mathcal{O}(|\Sigma|)$。
 
 ## 分类题单
