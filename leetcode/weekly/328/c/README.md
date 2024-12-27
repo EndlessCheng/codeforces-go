@@ -2,9 +2,9 @@
 
 用一个哈希表 $\textit{cnt}$ 维护子数组内的每个元素的出现次数，以及相同数对的个数 $\textit{pairs}$。
 
-滑动窗口外层循环：从小到大枚举子数组右端点 $\textit{right}$，右端点移动后，$\textit{pairs}$ 增加了 $\textit{cnt}[\textit{nums}[\textit{right}]]$。
+滑动窗口外层循环：从小到大枚举子数组右端点 $\textit{right}$。现在准备把 $x=\textit{nums}[\textit{right}]$ 移入子数组，那么子数组中有 $\textit{cnt}[x]$ 个数和 $x$ 相同，所以 $\textit{pairs}$ 会增加 $\textit{cnt}[x]$。
 
-滑动窗口内层循环：如果发现 $\textit{pairs}\ge k$，说明子数组符合要求，则右移左端点 $\textit{left}$，然后把 $\textit{pairs}$ 减少 $\textit{cnt}[\textit{nums}[\textit{left}]]$。
+滑动窗口内层循环：如果发现 $\textit{pairs}\ge k$，说明子数组符合要求，则右移左端点 $\textit{left}$，把 $\textit{pairs}$ 减少 $\textit{cnt}[\textit{nums}[\textit{left}]]$。
 
 内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\cdots,\textit{left}-1$ 的所有子数组都是合法的，这一共有 $\textit{left}$ 个，加入答案。
 
@@ -93,7 +93,7 @@ func countGood(nums []int, k int) (ans int64) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -103,7 +103,7 @@ func countGood(nums []int, k int) (ans int64) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
