@@ -53,7 +53,7 @@ class Solution {
 class Solution {
 public:
     int countValidSelections(vector<int>& nums) {
-        int total = reduce(nums.begin(), nums.end(), 0);
+        int total = reduce(nums.begin(), nums.end());
         int ans = 0, pre = 0;
         for (int x : nums) {
             if (x) {
