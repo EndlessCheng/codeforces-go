@@ -20,7 +20,7 @@ func cf2051D(in io.Reader, out io.Writer) {
 		lower, upper := s-y, s-x
 		slices.Sort(a)
 		ans := 0
-		left, right := len(a), len(a)
+		left, right := n, n
 		for j, x := range a {
 			for right > 0 && a[right-1] > upper-x {
 				right--
