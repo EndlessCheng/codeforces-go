@@ -15,7 +15,7 @@ func cf2045H(in io.Reader, out io.Writer) {
 		lcp[i] = make([]int16, n+1)
 	}
 	for i := n - 1; i >= 0; i-- {
-		for j := n - 1; j >= 0; j-- {
+		for j := n - 1; j > i; j-- {
 			if s[i] == s[j] {
 				lcp[i][j] = lcp[i+1][j+1] + 1
 			}
