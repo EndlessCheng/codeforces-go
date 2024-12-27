@@ -1,10 +1,6 @@
-本质上是 [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)，每次可以跳 $1$ 到 $3$ 或者 $1$ 到 $4$ 个台阶，计算跳 $n$ 个台阶的方案数。
+本质上是 [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)，每次可以跳 $1$ 到 $3$ 或者 $1$ 到 $4$ 个台阶，计算跳 $\textit{cnt}$ 个台阶的方案数。其中 $\textit{cnt}$ 表示连续相同子串的长度。
 
-把相同字符分为一组，每组内只有一种字符。
-
-考虑如下 DP：
-
-对于字符不为 $\texttt{7}$ 或 $\texttt{9}$ 的情况，定义 $f[i]$ 表示长为 $i$ 的只有一种字符的字符串所对应的文字信息种类数，我们可以将末尾的 $1$ 个、$2$ 个或 $3$ 个字符单独视作一个字母，那么有转移方程
+对于字符不为 $\texttt{7}$ 或 $\texttt{9}$ 的情况，定义一个类似爬楼梯的 DP，即 $f[i]$ 表示长为 $i$ 的只有一种字符的字符串所对应的文字信息种类数，我们可以将末尾的 $1$ 个、$2$ 个或 $3$ 个字符变成一个字母，那么有转移方程
 
 $$
 f[i] = f[i-1]+f[i-2]+f[i-3]
@@ -16,9 +12,7 @@ $$
 g[i] = g[i-1]+g[i-2]+g[i-3]+g[i-4]
 $$
 
-这样能算出每组字符串的文字信息种类数。
-
-由于各个组的打字方案互相独立，根据乘法原理，把各个组的方案数相乘，即为答案。
+由于各个组（连续相同子串）的打字方案互相独立，根据乘法原理，把各个组的方案数相乘，即为答案。
 
 ```python [sol-Python3]
 MOD = 1_000_000_007
@@ -61,7 +55,7 @@ class Solution {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             cnt++;
-            if (i == s.length() - 1 || c != s.charAt(i + 1)) { // 找到一个完整的组
+            if (i == s.length() - 1 || c != s.charAt(i + 1)) {
                 ans = ans * (c != '7' && c != '9' ? f[cnt] : g[cnt]) % MOD;
                 cnt = 0;
             }
@@ -97,7 +91,7 @@ public:
         for (int i = 0; i < s.length(); i++) {
             char c = s[i];
             cnt++;
-            if (i == s.length() - 1 || c != s[i + 1]) { // 找到一个完整的组
+            if (i == s.length() - 1 || c != s[i + 1]) {
                 ans = ans * (c != '7' && c != '9' ? f[cnt] : g[cnt]) % MOD;
                 cnt = 0;
             }
@@ -115,26 +109,26 @@ var f = [mx]int{1, 1, 2, 4}
 var g = f
 
 func init() {
-	for i := 4; i < mx; i++ {
-		f[i] = (f[i-1] + f[i-2] + f[i-3]) % mod
-		g[i] = (g[i-1] + g[i-2] + g[i-3] + g[i-4]) % mod
-	}
+    for i := 4; i < mx; i++ {
+        f[i] = (f[i-1] + f[i-2] + f[i-3]) % mod
+        g[i] = (g[i-1] + g[i-2] + g[i-3] + g[i-4]) % mod
+    }
 }
 
 func countTexts(s string) int {
-	ans, cnt := 1, 0
-	for i, c := range s {
-		cnt++
-		if i == len(s)-1 || byte(c) != s[i+1] { // 找到一个完整的组
-			if c != '7' && c != '9' {
-				ans = ans * f[cnt] % mod
-			} else {
-				ans = ans * g[cnt] % mod
-			}
-			cnt = 0
-		}
-	}
-	return ans
+    ans, cnt := 1, 0
+    for i, c := range s {
+        cnt++
+        if i == len(s)-1 || byte(c) != s[i+1] {
+            if c != '7' && c != '9' {
+                ans = ans * f[cnt] % mod
+            } else {
+                ans = ans * g[cnt] % mod
+            }
+            cnt = 0
+        }
+    }
+    return ans
 }
 ```
 
