@@ -1,8 +1,10 @@
-思路和 [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/) 类似。
+本质上是 [70. 爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)，每次可以跳 $1$ 到 $3$ 或者 $1$ 到 $4$ 个台阶，计算跳 $n$ 个台阶的方案数。
 
-把相同字符分为一组，每组内只有一种字符，考虑如下 DP：
+把相同字符分为一组，每组内只有一种字符。
 
-对于字符不为 $\texttt{7}$ 或 $\texttt{9}$ 的情况，定义 $f[i]$ 表示长为 $i$ 的只有一种字符的字符串对应的文字信息种类数，我们可以将末尾的 $1$ 个、$2$ 个或 $3$ 个字符单独视作一个字母，那么有转移方程
+考虑如下 DP：
+
+对于字符不为 $\texttt{7}$ 或 $\texttt{9}$ 的情况，定义 $f[i]$ 表示长为 $i$ 的只有一种字符的字符串所对应的文字信息种类数，我们可以将末尾的 $1$ 个、$2$ 个或 $3$ 个字符单独视作一个字母，那么有转移方程
 
 $$
 f[i] = f[i-1]+f[i-2]+f[i-3]
@@ -16,7 +18,7 @@ $$
 
 这样能算出每组字符串的文字信息种类数。
 
-由于不同组之间互不影响，根据乘法原理，把不同组的文字信息种类数相乘，得到答案。
+由于各个组的打字方案互相独立，根据乘法原理，把各个组的方案数相乘，即为答案。
 
 ```python [sol-Python3]
 MOD = 1_000_000_007
@@ -70,7 +72,9 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-const int MOD = 1'000'000'007, MX = 100'001;
+const int MOD = 1'000'000'007;
+const int MX = 100'001;
+
 long long f[MX], g[MX];
 
 int init = []() {
@@ -87,7 +91,7 @@ int init = []() {
 
 class Solution {
 public:
-    int countTexts(string& s) {
+    int countTexts(string s) {
         long long ans = 1;
         int cnt = 0;
         for (int i = 0; i < s.length(); i++) {
@@ -121,7 +125,7 @@ func countTexts(s string) int {
 	ans, cnt := 1, 0
 	for i, c := range s {
 		cnt++
-		if i == len(s)-1 || s[i+1] != byte(c) { // 找到一个完整的组
+		if i == len(s)-1 || byte(c) != s[i+1] { // 找到一个完整的组
 			if c != '7' && c != '9' {
 				ans = ans * f[cnt] % mod
 			} else {
@@ -136,14 +140,16 @@ func countTexts(s string) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{pressedKeys}$ 的长度。忽略预处理的时间和空间。
+忽略预处理的时间和空间。
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{pressedKeys}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -153,7 +159,8 @@ func countTexts(s string) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
