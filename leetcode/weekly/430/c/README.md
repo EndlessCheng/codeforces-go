@@ -244,7 +244,13 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 
 本题由于数据范围只有 $[1,1000]$，在这个范围内比较分数是否相等，是无误的，所以也可以直接用浮点数计算。
 
-注：什么情况下用浮点数是错的？见 [2280. 表示一个折线图的最少线段数](https://leetcode.cn/problems/minimum-lines-to-represent-a-line-chart/)。
+### 什么情况下用浮点数是错的？
+
+取两个接近 $1$ 但不相同的分数 $\dfrac{a}{a+1}$ 和 $\dfrac{a-1}{a}$，根据 IEEE 754，在使用双精度浮点数的情况下，如果这两个数的绝对差 $\dfrac{1}{a(a+1)}$ 比 $2^{-52}$ 还小，那么计算机可能会把这两个数舍入到同一个附近的浮点数上。所以当 $a$ 达到 $2^{26}$ 的时候，算法就可能有问题了。本题只有 $1000$，可以放心地使用浮点数除法。
+
+如果用单精度浮点数，就是当 $a$ 达到 $2^{11.5}$ 时才会有问题。所以本题用单精度浮点数也可以。
+
+读者可以做做 [2280. 表示一个折线图的最少线段数](https://leetcode.cn/problems/minimum-lines-to-represent-a-line-chart/) 感受一下。
 
 ```py [sol-Python3]
 class Solution:
@@ -272,18 +278,18 @@ class Solution {
     public long numberOfSubsequences(int[] nums) {
         int n = nums.length;
         long ans = 0;
-        Map<Double, Integer> cnt = new HashMap<>();
+        Map<Float, Integer> cnt = new HashMap<>();
         // 枚举 b 和 c
         for (int i = 4; i < n - 2; i++) {
             // 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
             // 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
-            double b = nums[i - 2];
+            float b = nums[i - 2];
             // 枚举 a
             for (int j = 0; j < i - 3; j++) {
                 cnt.merge(nums[j] / b, 1, Integer::sum);
             }
 
-            double c = nums[i];
+            float c = nums[i];
             // 枚举 d
             for (int j = i + 2; j < n; j++) {
                 ans += cnt.getOrDefault(nums[j] / c, 0);
@@ -300,18 +306,18 @@ public:
     long long numberOfSubsequences(vector<int>& nums) {
         int n = nums.size();
         long long ans = 0;
-        unordered_map<double, int> cnt;
+        unordered_map<float, int> cnt;
         // 枚举 b 和 c
         for (int i = 4; i < n - 2; i++) {
             // 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
             // 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
-            double b = nums[i - 2];
+            float b = nums[i - 2];
             // 枚举 a
             for (int j = 0; j < i - 3; j++) {
                 cnt[nums[j] / b]++;
             }
 
-            double c = nums[i];
+            float c = nums[i];
             // 枚举 d
             for (int j = i + 2; j < n; j++) {
                 ans += cnt[nums[j] / c];
@@ -325,21 +331,21 @@ public:
 ```go [sol-Go]
 func numberOfSubsequences(nums []int) (ans int64) {
 	n := len(nums)
-	cnt := map[float64]int{}
+	cnt := map[float32]int{}
 	// 枚举 b 和 c
 	for i := 4; i < n-2; i++ {
 		// 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
 		// 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
-		b := float64(nums[i-2])
+		b := float32(nums[i-2])
 		// 枚举 a
 		for _, a := range nums[:i-3] {
-			cnt[float64(a)/b]++
+			cnt[float32(a)/b]++
 		}
 
-		c := float64(nums[i])
+		c := float32(nums[i])
 		// 枚举 d
 		for _, d := range nums[i+2:] {
-			ans += int64(cnt[float64(d)/c])
+			ans += int64(cnt[float32(d)/c])
 		}
 	}
 	return
