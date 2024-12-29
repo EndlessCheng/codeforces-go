@@ -253,6 +253,8 @@ class Solution:
         cnt = defaultdict(int)
         # 枚举 b 和 c
         for i in range(4, len(nums) - 2):
+            # 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
+            # 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
             b = nums[i - 2]
             # 枚举 a
             for a in nums[:i - 3]:
@@ -273,6 +275,8 @@ class Solution {
         Map<Double, Integer> cnt = new HashMap<>();
         // 枚举 b 和 c
         for (int i = 4; i < n - 2; i++) {
+            // 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
+            // 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
             double b = nums[i - 2];
             // 枚举 a
             for (int j = 0; j < i - 3; j++) {
@@ -299,6 +303,8 @@ public:
         unordered_map<double, int> cnt;
         // 枚举 b 和 c
         for (int i = 4; i < n - 2; i++) {
+            // 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
+            // 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
             double b = nums[i - 2];
             // 枚举 a
             for (int j = 0; j < i - 3; j++) {
@@ -322,6 +328,8 @@ func numberOfSubsequences(nums []int) (ans int64) {
 	cnt := map[float64]int{}
 	// 枚举 b 和 c
 	for i := 4; i < n-2; i++ {
+		// 增量式更新，本轮循环只需枚举 b=nums[i-2] 这一个数
+		// 至于更前面的 b，已经在前面的循环中添加到 cnt 中了，不能重复添加
 		b := float64(nums[i-2])
 		// 枚举 a
 		for _, a := range nums[:i-3] {
