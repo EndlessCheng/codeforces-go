@@ -30,6 +30,8 @@ $\textit{pre}$ 和 $\textit{suf}$ 可以用两个哈希表分别维护。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ifkqYjEvc/?t=17m53s)，欢迎点赞关注~
 
+### 优化前
+
 ```py [sol-Python3]
 class Solution:
     def subsequencesWithMiddleMode(self, nums: List[int]) -> int:
@@ -170,6 +172,180 @@ func subsequencesWithMiddleMode(nums []int) int {
 		suf[x]++
 	}
 	pre := make(map[int]int, len(suf)) // 预分配空间
+	// 枚举 x，作为子序列正中间的数
+	for left, x := range nums[:n-2] {
+		suf[x]--
+		if left > 1 {
+			right := n - 1 - left
+			preX, sufX := pre[x], suf[x]
+			// 不合法：只有一个 x
+			ans -= comb2(left-preX) * comb2(right-sufX)
+			// 不合法：只有两个 x，且至少有两个 y（y != x）
+			for y, sufY := range suf { // 注意 sufY 可能是 0
+				if y == x {
+					continue
+				}
+				preY := pre[y]
+				// 左边有两个 y，右边有一个 x，即 yy x xz（z 可以等于 y）
+				ans -= comb2(preY) * sufX * (right - sufX)
+				// 右边有两个 y，左边有一个 x，即 zx x yy（z 可以等于 y）
+				ans -= comb2(sufY) * preX * (left - preX)
+				// 左右各有一个 y，另一个 x 在左边，即 xy x yz（z != y）
+				ans -= preY * sufY * preX * (right - sufX - sufY)
+				// 左右各有一个 y，另一个 x 在右边，即 zy x xy（z != y）
+				ans -= preY * sufY * sufX * (left - preX - preY)
+			}
+		}
+		pre[x]++
+	}
+	return ans % 1_000_000_007
+}
+```
+
+### 优化
+
+把 $\textit{nums}$ 离散化，比如把 $[0,10,20,30]$ 压缩成 $[0,1,2,3]$。
+
+这样可以用数组去统计元素个数，比哈希表更快。
+
+> 这个优化对 Python 并不明显。
+
+```java [sol-Java]
+class Solution {
+    public int subsequencesWithMiddleMode(int[] nums) {
+        int n = nums.length;
+        long ans = (long) n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120; // 所有方案数
+
+        int[] a = nums.clone();
+        Arrays.sort(a);
+        int m = 1;
+        for (int i = 1; i < n; i++) {
+            if (a[i] != a[i - 1]) {
+                a[m++] = a[i]; // 原地去重
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            nums[i] = Arrays.binarySearch(a, 0, m, nums[i]);
+        }
+
+        int[] suf = new int[m];
+        for (int x : nums) {
+            suf[x]++;
+        }
+        int[] pre = new int[m];
+        // 枚举 x，作为子序列正中间的数
+        for (int left = 0; left < n - 2; left++) {
+            int x = nums[left];
+            suf[x]--;
+            if (left > 1) {
+                int right = n - 1 - left;
+                int preX = pre[x];
+                int sufX = suf[x];
+                // 不合法：只有一个 x
+                ans -= (long) comb2(left - preX) * comb2(right - sufX);
+                // 不合法：只有两个 x，且至少有两个 y（y != x）
+                for (int y = 0; y < m; y++) {
+                    if (y == x) {
+                        continue;
+                    }
+                    int preY = pre[y];
+                    int sufY = suf[y];
+                    // 左边有两个 y，右边有一个 x，即 yy x xz（z 可以等于 y）
+                    ans -= (long) comb2(preY) * sufX * (right - sufX);
+                    // 右边有两个 y，左边有一个 x，即 zx x yy（z 可以等于 y）
+                    ans -= (long) comb2(sufY) * preX * (left - preX);
+                    // 左右各有一个 y，另一个 x 在左边，即 xy x yz（z != y）
+                    ans -= (long) preY * sufY * preX * (right - sufX - sufY);
+                    // 左右各有一个 y，另一个 x 在右边，即 zy x xy（z != y）
+                    ans -= (long) preY * sufY * sufX * (left - preX - preY);
+                }
+            }
+            pre[x]++;
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+
+    private int comb2(int num) {
+        return num * (num - 1) / 2;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int comb2(int num) {
+        return num * (num - 1) / 2;
+    }
+
+public:
+    int subsequencesWithMiddleMode(vector<int>& nums) {
+        int n = nums.size();
+        long long ans = 1LL * n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120; // 所有方案数
+
+        vector<int> a(nums);
+        ranges::sort(a);
+        a.erase(unique(a.begin(), a.end()), a.end()); // 去重
+        for (int &x : nums) {
+            x = ranges::lower_bound(a, x) - a.begin();
+        }
+
+        vector<int> pre(a.size()), suf(a.size());
+        for (int x : nums) {
+            suf[x]++;
+        }
+        // 枚举 x，作为子序列正中间的数
+        for (int left = 0; left < n - 2; left++) {
+            int x = nums[left];
+            suf[x]--;
+            if (left > 1) {
+                int right = n - 1 - left;
+                int pre_x = pre[x], suf_x = suf[x];
+                // 不合法：只有一个 x
+                ans -= 1LL * comb2(left - pre_x) * comb2(right - suf_x);
+                // 不合法：只有两个 x，且至少有两个 y（y != x）
+                for (int y = 0; y < a.size(); y++) {
+                    if (y == x) {
+                        continue;
+                    }
+                    int pre_y = pre[y], suf_y = suf[y];
+                    // 左边有两个 y，右边有一个 x，即 yy x xz（z 可以等于 y）
+                    ans -= 1LL * comb2(pre_y) * suf_x * (right - suf_x);
+                    // 右边有两个 y，左边有一个 x，即 zx x yy（z 可以等于 y）
+                    ans -= 1LL * comb2(suf_y) * pre_x * (left - pre_x);
+                    // 左右各有一个 y，另一个 x 在左边，即 xy x yz（z != y）
+                    ans -= 1LL * pre_y * suf_y * pre_x * (right - suf_x - suf_y);
+                    // 左右各有一个 y，另一个 x 在右边，即 zy x xy（z != y）
+                    ans -= 1LL * pre_y * suf_y * suf_x * (left - pre_x - pre_y);
+                }
+            }
+            pre[x]++;
+        }
+        return ans % 1'000'000'007;
+    }
+};
+```
+
+```go [sol-Go]
+func comb2(num int) int {
+	return num * (num - 1) / 2
+}
+
+func subsequencesWithMiddleMode(nums []int) int {
+	n := len(nums)
+	ans := n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120 // 所有方案数
+
+	a := slices.Clone(nums)
+	slices.Sort(a)
+	a = slices.Compact(a)
+	for i, x := range nums {
+		nums[i] = sort.SearchInts(a, x)
+	}
+
+	suf := make([]int, len(a))
+	for _, x := range nums {
+		suf[x]++
+	}
+	pre := make([]int, len(a))
 	// 枚举 x，作为子序列正中间的数
 	for left, x := range nums[:n-2] {
 		suf[x]--
