@@ -17,11 +17,11 @@
   $$
   \dbinom {\textit{suf}_y} 2  \cdot \textit{pre}_x \cdot (i- \textit{pre}_x)
   $$
-  - 左右各有一个 $y$，另一个 $x$ 在左边，并且左边另一个数不等于 $x$ 也不等于 $y$（不然就和上面的方案数重复了），方案数为
+  - 左右各一个 $y$，左边还有一个 $x$，右边另一个数不等于 $x$ 也不等于 $y$（不然就和上面的方案数重复了），方案数为
   $$
   \textit{pre}_y\cdot\textit{suf}_y\cdot\textit{pre}_x\cdot(n-1-i-\textit{suf}_x-\textit{suf}_y)
   $$
-  - 左右各有一个 $y$，另一个 $x$ 在右边，并且右边另一个数不等于 $x$ 也不等于 $y$（不然就和上面的方案数重复了），方案数为
+  - 左右各一个 $y$，右边还有一个 $x$，左边另一个数不等于 $x$ 也不等于 $y$（不然就和上面的方案数重复了），方案数为
   $$
   \textit{pre}_y\cdot\textit{suf}_y\cdot\textit{suf}_x\cdot(i-\textit{pre}_x-\textit{pre}_y)
   $$
