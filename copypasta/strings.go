@@ -13,8 +13,9 @@ import (
 )
 
 /*
-API 题
+库函数应用题
 https://codeforces.com/problemset/problem/600/A 1600
+https://atcoder.jp/contests/abc381/tasks/abc381_c split
 
 字符串问题的特殊性：
 不同子串之间会共享一些局部信息，巧妙地利用这些局部信息可以设计出更加高效的算法。
@@ -31,6 +32,13 @@ https://codeforces.com/problemset/problem/1823/D https://codeforces.com/blog/ent
 斐波那契字符串：s(1) = "a", s(2) = "b", s(n) = s(n-1) + s(n-2), n>=3
 
 https://en.wikipedia.org/wiki/Bitap_algorithm shift-or / shift-and / Baeza-Yates–Gonnet algorithm
+
+给你两个字符串 s 和 t，问 s 有多少个子串和 t 是相似的
+相似：如果至多交换一次字符串 S 中的两个相邻字母，使得 S = T，那么 S 和 T 就是相似的。
+
+// Optimal trade-offs for pattern matching with k mismatches
+// https://arxiv.org/abs/1704.01311
+
 */
 
 func _() {
@@ -49,6 +57,9 @@ func _() {
 	//
 	// mod 和 base 一定不能是固定的，哪怕用了双模数也不行！
 	// 见 Anti-hash Test Generator https://heltion.github.io/anti-hash/ https://codeforces.com/blog/entry/129538
+	// - 记得点一下 reverse 按钮
+	// - 回文串题目勾选 ensure that two strings are the reverse of each other
+	// - https://github.com/LeetCode-Feedback/LeetCode-Feedback/issues/24862
 	// 可以用随机 base 避免被 hack
 	//
 	// https://en.wikipedia.org/wiki/Hash_function
@@ -96,20 +107,18 @@ func _() {
 	//                 见 segment_tree.go 中的「区间加等比数列」
 	// - 区间替换成某个数：https://codeforces.com/problemset/problem/580/E 2500
 	// todo 带修回文串 https://atcoder.jp/contests/abc331/tasks/abc331_f
+	//      带修回文串 https://ac.nowcoder.com/acm/contest/90074/E
 	// todo https://www.luogu.com.cn/problem/P2757
 	stringHashSingleMod := func(s string) {
 		// 如果 OJ 的 Go 版本低于 1.20，加上这句话
 		rand.Seed(time.Now().UnixNano())
 
-		// 下面实现的是单模哈希的版本
+		// 下面实现的是单模哈希
 		// 双模哈希见后面
 
+		// mod 和 base 随机其中一个就行，无需两个都随机
 		const mod = 1_070_777_777
 		base := 9e8 - rand.Intn(1e8)
-		// 或者随机质数 mod
-		// mod := 1e9 + rand.Intn(1e9) // 注：随机范围（上下限之差）不能太小，否则可以用多合一拼起来的数据卡掉
-		// isPrime := func(n int) bool { for i := 2; i*i <= n; i++ { if n%i == 0 { return false } }; return true }
-		// for !isPrime(mod) { mod++ }
 
 		// 多项式字符串哈希（方便计算子串哈希值）
 		// 哈希函数 hash(s) = s[0] * base^(n-1) + s[1] * base^(n-2) + ... + s[n-2] * base + s[n-1]   其中 n 为 s 的长度
@@ -128,13 +137,6 @@ func _() {
 			return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
 		}
 
-		// 计算 s[l1:r1] + s[l2:r2] 的哈希值，注意这是左闭右开区间 [l,r)
-		concatHash := func(l1, r1, l2, r2 int) int {
-			h1 := preHash[r1] - preHash[l1]*powBase[r1-l1]
-			h2 := preHash[r2] - preHash[l2]*powBase[r2-l2]
-			return ((h1%mod*powBase[r2-l2]+h2)%mod + mod) % mod
-		}
-
 		// 计算（准备与 s 匹配的）其他字符串的哈希值
 		calcHash := func(t string) (h int) {
 			for _, b := range t {
@@ -143,10 +145,19 @@ func _() {
 			return
 		}
 
-		_ = []any{subHash, concatHash, calcHash}
+		// 计算 s[l1:r1] + s[l2:r2] 的哈希值，注意这是左闭右开区间 [l,r)
+		concatHash := func(l1, r1, l2, r2 int) int {
+			h1 := preHash[r1] - preHash[l1]*powBase[r1-l1]
+			h2 := preHash[r2] - preHash[l2]*powBase[r2-l2]
+			return ((h1%mod*powBase[r2-l2]+h2)%mod + mod) % mod
+		}
+
+		_ = []any{subHash, calcHash, concatHash}
 	}
 
-	// 双模哈希
+	// 双模哈希 1133ms https://leetcode.cn/problems/construct-string-with-minimum-cost/submissions/545112087/
+	// 单模哈希  468ms https://leetcode.cn/problems/construct-string-with-minimum-cost/submissions/545112323/
+	// 时间多一到两倍是正常的（注意内存占用变大了，缓存也会影响性能）
 	stringHashDoubleMod := func(s string) {
 		const mod1 = 1_070_777_777
 		const mod2 = 1_000_000_007
@@ -170,13 +181,6 @@ func _() {
 			return hPair{h1, h2}
 		}
 
-		// 计算 s[l1:r1] + s[l2:r2] 的哈希值
-		concatHash := func(l1, r1, l2, r2 int) hPair {
-			h1 := (((preHash[r1].h1-preHash[l1].h1*powBase[r1-l1].h1)%mod1*powBase[r2-l2].h1+preHash[r2].h1-preHash[l2].h1*powBase[r2-l2].h1)%mod1 + mod1) % mod1
-			h2 := (((preHash[r1].h2-preHash[l1].h2*powBase[r1-l1].h2)%mod2*powBase[r2-l2].h2+preHash[r2].h2-preHash[l2].h2*powBase[r2-l2].h2)%mod2 + mod2) % mod2
-			return hPair{h1, h2}
-		}
-
 		// 计算（准备与 s 匹配的）其他字符串的哈希值
 		calcHash := func(t string) (p hPair) {
 			for _, b := range t {
@@ -186,7 +190,14 @@ func _() {
 			return
 		}
 
-		_ = []any{subHash, concatHash, calcHash}
+		// 计算 s[l1:r1] + s[l2:r2] 的哈希值
+		concatHash := func(l1, r1, l2, r2 int) hPair {
+			h1 := (((preHash[r1].h1-preHash[l1].h1*powBase[r1-l1].h1)%mod1*powBase[r2-l2].h1+preHash[r2].h1-preHash[l2].h1*powBase[r2-l2].h1)%mod1 + mod1) % mod1
+			h2 := (((preHash[r1].h2-preHash[l1].h2*powBase[r1-l1].h2)%mod2*powBase[r2-l2].h2+preHash[r2].h2-preHash[l2].h2*powBase[r2-l2].h2)%mod2 + mod2) % mod2
+			return hPair{h1, h2}
+		}
+
+		_ = []any{subHash, calcHash, concatHash}
 	}
 
 	// todo 二维字符串哈希
@@ -198,6 +209,10 @@ func _() {
 	// KMP (Knuth–Morris–Pratt algorithm)
 	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长的匹配长度    pi[0] = 0
 	// 特别地，pi[n-1] 为 s 的真前缀和真后缀的最长的匹配长度
+	//
+	// KMP 是个不完全的 DFA，而 AC 自动机是一个完全的 DFA
+	// 如果 KMP 也像 AC 自动机那样构建的话，虽然可以消除掉下面代码中的内层循环，但空间需要 * |Σ|
+	//
 	// 我在知乎上对 KMP 的讲解 https://www.zhihu.com/question/21923021/answer/37475572
 	// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 	// https://oi-wiki.org/string/kmp/ todo 统计每个前缀的出现次数
@@ -218,13 +233,14 @@ func _() {
 	// https://codeforces.com/problemset/problem/1137/B 1600 构造
 	// https://codeforces.com/problemset/problem/126/B 1700
 	// https://codeforces.com/problemset/problem/471/D 1800
+	// https://codeforces.com/problemset/problem/1269/B ~1800 做到 O(nlogn)
 	// 与 LCS 结合 https://codeforces.com/problemset/problem/346/B 2000
 	// 与计数 DP 结合 https://codeforces.com/problemset/problem/494/B 2000
 	// https://codeforces.com/problemset/problem/1200/E 2000
 	// 最大匹配个数 https://codeforces.com/problemset/problem/615/C 2000
 	// 与 DP 结合 https://codeforces.com/problemset/problem/1163/D 2100
 	// https://codeforces.com/problemset/problem/526/D 2200
-	// todo 与贝尔数（集合划分）结合 https://codeforces.com/problemset/problem/954/I 2200
+	// https://codeforces.com/problemset/problem/954/I 2200
 	// https://codeforces.com/problemset/problem/1003/F 2200
 	// 构造 t+"#"+s https://codeforces.com/problemset/problem/25/E 2200
 	// - 不加 # 的话会面临 "cabc"+"abca" 这样的例子，算出的 border 是 "cabca"
@@ -254,11 +270,10 @@ func _() {
 	// pi[i] 为 s[:i+1] 的真前缀和真后缀的最长匹配长度    pi[0] = 0
 	// 定义 s[:i+1] 的最大真 border 为 s[:pi[i]]    完整定义见 https://www.luogu.com.cn/problem/P5829
 	// 注：「真」表示不等于整个字符串
-	// 注：很多资料上的 next[i] = pi[i]-1 表示回跳的下标
 	calcPi := func(s string) []int {
 		pi := make([]int, len(s))
 		match := 0
-		for i := 1; i < len(s); i++ {
+		for i := 1; i < len(pi); i++ {
 			v := s[i]
 			for match > 0 && s[match] != v {
 				match = pi[match-1]
@@ -283,8 +298,8 @@ func _() {
 			if pattern[match] == v {
 				match++
 			}
-			if match == len(pattern) {
-				pos = append(pos, i-len(pattern)+1)
+			if match == len(pi) {
+				pos = append(pos, i-len(pi)+1)
 				match = pi[match-1] // 如果不允许重叠，将 cnt 置为 0
 			}
 		}
@@ -335,22 +350,32 @@ func _() {
 
 	// Z-function（扩展 KMP，Z-array）      exkmp
 	// z[i] = LCP(s, s[i:])   串与串后缀的最长公共前缀
+	//
+	// 核心思想：
+	// z-Box：上次暴力匹配的左右边界
+	// z-Box 的「影子」是等长的 s 的前缀，例如 s=abababzabababab 中 s[7:13] 的影子是 s[:6]，这两段是完全一样的
+	// 所以 z-Box 中的后缀，和影子中的后缀是一样的
+	// 如果 i 在 z-Box 中，那么 LCP(s, s[i:]) 可以提前计算出一部分（而不是暴力），
+	// 这可以通过「影子」中的对应位置的 LCP(s, s[i-boxL:]) 得出，
+	// 例如 s=abababzabababab，要计算 LCP(s, s[9:])，可以看影子中的对应位置 LCP(s, s[2:]) = 4，从而直接得到 LCP(s, s[9:]) 至少是 4
+	//
 	// 视频讲解 https://www.bilibili.com/video/BV1it421W7D8/
 	// https://oi-wiki.org/string/z-func/
 	// 可视化 https://personal.utdallas.edu/~besp/demo/John2010/z-algorithm.htm
-	// - abababzabababab
+	// - 用这个 abababzabababab
+	// 如果 i 在 z-Box 中，那么根据 z[i-boxL] 和 z[boxL] 的信息可以推出，有 min(z[i-boxL], boxR-i+1) 的长度是已匹配的，无需暴力匹配
 	// https://cp-algorithms.com/string/z-function.html
 	// https://www.geeksforgeeks.org/z-algorithm-linear-time-pattern-searching-algorithm/
-	// - [3036. 匹配模式数组的子数组数目 II](https://leetcode.cn/problems/number-of-subarrays-that-match-a-pattern-ii/)
-	// - [3008. 找出数组中的美丽下标 II](https://leetcode.cn/problems/find-beautiful-indices-in-the-given-array-ii/) 2016
-	// - [2223. 构造字符串的总得分和](https://leetcode.cn/problems/sum-of-scores-of-built-strings/) 2220
-	// - [3031. 将单词恢复初始状态所需的最短时间 II](https://leetcode.cn/problems/minimum-time-to-revert-word-to-initial-state-ii/) 2278
-	// - LC https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
+	//
+	// 模板题
 	// https://judge.yosupo.jp/problem/zalgorithm
 	// https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	// https://www.luogu.com.cn/problem/P5410
+	//
+	// https://codeforces.com/problemset/problem/2010/C2 1700
 	// todo 结论 https://codeforces.com/problemset/problem/535/D 1900
-	// DP https://codeforces.com/contest/1051/problem/E 2600
+	// https://codeforces.com/problemset/problem/1968/G2 2200
+	// https://codeforces.com/problemset/problem/1051/E 2600 DP 
 	// 最小循环节（允许末尾截断）https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/A
 	// s 和 t 是否本质相同，shift 多少次 https://codeforces.com/edu/course/2/lesson/3/4/practice/contest/272262/problem/B
 	//		即 strings.Index(s+s, t)
@@ -385,7 +410,7 @@ func _() {
 	calcZ := func(s string) []int {
 		n := len(s)
 		z := make([]int, n)
-		boxL, boxR := 0, 0 // z-box 左右边界
+		boxL, boxR := 0, 0 // z-box 左右边界（闭区间）
 		for i := 1; i < n; i++ {
 			if i <= boxR {
 				z[i] = min(z[i-boxL], boxR-i+1)
@@ -434,6 +459,13 @@ func _() {
 		return res
 	}
 
+	// Main–Lorentz 算法
+	// https://oi-wiki.org/string/main-lorentz/
+	mainLorentz := func() {
+		// todo
+	}
+	_ = mainLorentz
+
 	// 最小表示法 - 求串的循环同构串中字典序最小的串
 	// 找到位置 i，从这个位置输出即得到字典序最小的串
 	// https://oi-wiki.org/string/minimal-string/
@@ -467,11 +499,10 @@ func _() {
 
 	// 判断子序列 / 最长匹配长度
 	// 返回 s 最长前缀的长度，满足该前缀是 t 的子序列
-	// - [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)
-	// - [2486. 追加字符以获得子序列](https://leetcode.cn/problems/append-characters-to-string-to-make-subsequence/) 1363
-	// - [3132. 找出与数组相加的整数 II](https://leetcode.cn/problems/find-the-integer-added-to-array-ii/) 1620
-	// - [522. 最长特殊序列 II](https://leetcode.cn/problems/longest-uncommon-subsequence-ii/)
-	// - [1055. 形成字符串的最短路径](https://leetcode.cn/problems/shortest-way-to-form-string/)（会员题）
+	// 见 https://leetcode.cn/circle/discuss/0viNMK/ 中的【判断子序列】
+	// https://leetcode.cn/problems/is-subsequence/
+	// https://leetcode.cn/problems/subsequence-with-the-minimum-score/
+	// - https://leetcode.cn/problems/find-the-lexicographically-smallest-valid-sequence/
 	// https://codeforces.com/problemset/problem/1194/C 1300
 	// https://codeforces.com/problemset/problem/778/A 1700
 	isSubseq := func(s, t string) int {
@@ -539,6 +570,8 @@ func _() {
 	}
 
 	// 最长回文子串 Manacher（马拉车算法）
+	// 视频讲解：https://www.bilibili.com/video/BV1UcyYY4EnQ/
+	// https://blog.csdn.net/synapse7/article/details/18908413
 	// https://www.bilibili.com/video/BV1AX4y1F79W
 	// https://www.bilibili.com/video/BV1ft4y117a4
 	// https://oi-wiki.org/string/manacher/
@@ -546,8 +579,7 @@ func _() {
 	// https://codeforces.com/blog/entry/12143
 	// https://leetcode.cn/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode-solution/
 	// https://www.zhihu.com/question/37289584
-	// https://blog.csdn.net/synapse7/article/details/18908413
-	// http://manacher-viz.s3-website-us-east-1.amazonaws.com
+	// 可视化 http://manacher-viz.s3-website-us-east-1.amazonaws.com
 	//
 	// https://oeis.org/A002620 全为 a 的字符串的奇回文子串个数 floor((n+1)^2/4)
 	// https://oeis.org/A002620 全为 a 的字符串的偶回文子串个数 floor(n^2/4)
@@ -557,8 +589,10 @@ func _() {
 	// 模板题 https://judge.yosupo.jp/problem/enumerate_palindromes
 	//       https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode.cn/problems/longest-palindromic-substring/
-	// https://codeforces.com/problemset/problem/1326/D2
-	// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
+	// https://codeforces.com/problemset/problem/1326/D2 1800 去掉子串后，剩余部分是回文串
+	// https://codeforces.com/problemset/problem/7/D 2200
+	// - https://codeforces.com/problemset/problem/835/D 1900
+	// https://codeforces.com/problemset/problem/1827/C 2600
 	// https://www.luogu.com.cn/problem/P4555
 	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
@@ -576,8 +610,8 @@ func _() {
 		// s 和 t 的下标转换关系：
 		// (si+1)*2 = ti
 		// ti/2-1 = si
-		// ti 为偶数对应奇回文串（从 2 开始）
-		// ti 为奇数对应偶回文串（从 3 开始）
+		// ti 为偶数，对应奇回文串（从 2 开始）
+		// ti 为奇数，对应偶回文串（从 3 开始）
 		t := append(make([]byte, 0, len(s)*2+3), '^')
 		for _, c := range s {
 			t = append(t, '#', byte(c))
@@ -589,39 +623,41 @@ func _() {
 		// 即 [i-halfLen[i]+1,i+halfLen[i]-1] 是 t 上的一个回文子串
 		halfLen := make([]int, len(t)-2)
 		halfLen[1] = 1
-		// r 表示当前右边界下标最大的回文子串的右边界下标+1
-		// mid 为该回文子串的中心位置，二者的关系为 r=mid+halfLen[mid]
-		for i, mid, r := 2, 1, 0; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
+		// boxR 表示当前右边界下标最大的回文子串的右边界下标+1
+		// boxM 为该回文子串的中心位置，二者的关系为 r=mid+halfLen[mid]
+		boxM, boxR := 0, 0
+		for i := 2; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
 			hl := 1
-			if i < r {
-				// 记 i 关于 mid 的对称位置 i'=mid*2-i
-				// 若以 i' 为中心的最长回文子串范围超出了以 mid 为中心的回文串的范围（即 i+halfLen[i'] >= r）
-				// 则 halfLen[i] 应先初始化为已知的回文半径 r-i，然后再继续暴力匹配
+			if i < boxR {
+				// 记 i 关于 boxM 的对称位置 i'=boxM*2-i
+				// 若以 i' 为中心的最长回文子串范围超出了以 boxM 为中心的回文串的范围（即 i+halfLen[i'] >= boxR）
+				// 则 halfLen[i] 应先初始化为已知的回文半径 boxR-i，然后再继续暴力匹配
 				// 否则 halfLen[i] 与 halfLen[i'] 相等
-				hl = min(halfLen[mid*2-i], r-i)
+				hl = min(halfLen[boxM*2-i], boxR-i)
 			}
 			// 暴力扩展
 			// 算法的复杂度取决于这部分执行的次数
-			// 由于扩展之后 r 必然会更新（右移），且扩展的的次数就是 r 右移的次数
-			// 因此算法的复杂度和 t 的长度成正比
+			// 由于扩展之后 boxR 必然会更新（右移），且扩展的的次数就是 boxR 右移的次数
+			// 因此算法的复杂度 = O(len(t)) = O(len(s))
 			for t[i-hl] == t[i+hl] {
 				hl++
-			}
-			if i+hl > r {
-				mid, r = i, i+hl
+				boxM, boxR = i, i+hl
 			}
 			halfLen[i] = hl
 		}
 
 		// t 中回文子串的长度为 hl*2-1
-		// 由于其中 # 的数量总是比字符的数量多 1
+		// 由于其中 # 的数量总是比字母的数量多 1
 		// 因此其在 s 中对应的回文子串的长度为 hl-1
 		// 这一结论可用在下面的各个代码中
 
-		// 判断 s[l..r] 是否为回文串  0<=l<=r<len(s)
-		// 根据下标转换关系得到其在 t 中对应的回文中心下标为 l+r+2
-		// https://codeforces.com/problemset/problem/7/D https://codeforces.com/problemset/problem/835/D
-		isP := func(l, r int) bool { return halfLen[l+r+2]-1 >= r-l+1 } // 或者 halfLen[l+r+2] > r-l+1
+		// 判断闭区间 [l,r] 是否为回文串  0<=l<=r<len(s)
+		// 根据下标转换关系得到子串 s[l:r+1] 在 t 中对应的回文中心下标为 l+r+2
+		// https://codeforces.com/problemset/problem/1326/D2
+		// https://codeforces.com/problemset/problem/7/D 
+		// - https://codeforces.com/problemset/problem/835/D
+		// LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/
+		isP := func(l, r int) bool { return halfLen[l+r+2] > r-l+1 } // halfLen[l+r+2]-1 >= r-l+1
 
 		// 计算最长回文子串的长度，以及所有最长回文子串的首字母在 s 中的下标
 		maxPL, starts := 0, []int{}
@@ -679,12 +715,26 @@ func _() {
 			totP += hl / 2
 		}
 
+		// EXTRA: 线段树区间更新可以求出前缀/后缀回文子串个数
+
+		// todo 任意区间回文子串个数
+
 		_ = []interface{}{isP, midPL}
 	}
 
+	// todo 只考虑奇回文串
+	manacherOdd := func() {}
+	_ = manacherOdd
+
+	// 只考虑偶回文串
+	// todo https://codeforces.com/contest/1827/submission/205941641
+	manacherEven := func() {}
+	_ = manacherEven
+
 	/* 后缀数组
+	https://riteme.site/blog/2016-6-19/sais.html（包含 SA-IS 与 DC3 的效率对比）
+	https://zork.net/~st/jottings/sais.html
 	https://zhuanlan.zhihu.com/p/338547483
-	SA-IS 与 DC3 的效率对比 https://riteme.site/blog/2016-6-19/sais.html#5
 	注：Go1.13 开始使用 SA-IS 算法
 
 	可视化 https://visualgo.net/zh/suffixarray
@@ -700,6 +750,7 @@ func _() {
 	单个字符串
 		模板题
 			https://www.luogu.com.cn/problem/P3809
+			https://atcoder.jp/contests/abc362/tasks/abc362_g 子串计数 注意有重复的 t
 			https://judge.yosupo.jp/problem/suffixarray
 			https://loj.ac/p/111
 		可重叠最长重复子串
@@ -757,7 +808,11 @@ func _() {
 			todo https://codeforces.com/problemset/problem/128/B 2100
 			todo
 	两个字符串
-		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/ SPOJ LCS https://www.luogu.com.cn/problem/SP1811 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B http://poj.org/problem?id=2774
+		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/
+	               LC3135 https://leetcode.cn/problems/equalize-strings-by-adding-or-removing-characters-at-ends/
+	               SPOJ LCS https://www.luogu.com.cn/problem/SP1811
+	               https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/B
+	               http://poj.org/problem?id=2774
 			用 '#' 拼接两字符串，遍历 height[1:] 若 sa[i]<len(s1) != (sa[i-1]<len(s1)) 则更新 maxLen
 		长度不小于 k 的公共子串的个数 http://poj.org/problem?id=3415
 			单调栈
@@ -769,7 +824,8 @@ func _() {
 			构造 s+s+"#"+t+t+"|"
 		todo http://poj.org/problem?id=3729
 	多个字符串
-		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171 LC1923 https://leetcode.cn/problems/longest-common-subpath/ http://poj.org/problem?id=3450
+		多串最长公共子串 SPOJ LCS2 https://www.luogu.com.cn/problem/SP1812 https://loj.ac/p/171
+	        LC1923 https://leetcode.cn/problems/longest-common-subpath/ http://poj.org/problem?id=3450
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数等于字符串个数
 		不小于 k 个字符串中的最长子串 http://poj.org/problem?id=3294
 			拼接，二分答案，对 height 分组，判定组内元素对应不同字符串的个数不小于 k
@@ -886,14 +942,14 @@ func _() {
 		compareSub := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
-			if len1 == len2 && l >= len1 {
-				return 0
-			}
-			if l >= len1 || l >= len2 { // 一个是另一个的前缀
-				if len1 < len2 {
+			if l >= min(len1, len2) {
+				if len1 == len2 { // 相等
+					return 0
+				}
+				if len1 < len2 { // s[l1:r1] 是 s[l2:r2] 的前缀
 					return -1
 				}
-				return 1
+				return 1 // s[l2:r2] 是 s[l1:r1] 的前缀
 			}
 			if rank[l1] < rank[l2] { // 或者 s[l1+l] < s[l2+l]
 				return -1
@@ -1049,16 +1105,74 @@ func _() {
 		return sa
 	}
 
+	// O(n^2) 计算 LCP —— 如果你不想用后缀数组的话
+	// 见字符串题单 https://leetcode.cn/circle/discuss/SJFwQI/
+	// https://codeforces.com/problemset/problem/1948/D 1700 也有更简单的做法
+	// https://codeforces.com/problemset/problem/2045/H 2200
+	lcpArray := func(s string) {
+		n := len(s)
+		lcp := make([][]int, n+1)
+		for i := range lcp {
+			lcp[i] = make([]int, n+1)
+		}
+		for i := n - 1; i >= 0; i-- {
+			for j := n - 1; j >= 0; j-- { // 或者 j >= i，j > i
+				if s[i] == s[j] {
+					lcp[i][j] = lcp[i+1][j+1] + 1
+				}
+			}
+		}
+
+		// 返回 strings.Compare(s[l1:r1], s[l2:r2])
+		// 如果上面写 j >= 0，那么这两个子串没有左右位置要求
+		compare := func(l1, r1, l2, r2 int) int {
+			len1, len2 := r1-l1, r2-l2
+			l := lcp[l1][l2]
+			if l >= min(len1, len2) {
+				if len1 == len2 { // 相等
+					return 0
+				}
+				if len1 < len2 { // <    s[l1:r1] 是 s[l2:r2] 的前缀
+					return -1
+				}
+				return 1 // >    s[l2:r2] 是 s[l1:r1] 的前缀
+			}
+			if s[l1+l] < s[l2+l] { // <
+				return -1
+			}
+			return 1 // >
+		}
+
+		// compare 的简化版
+		less := func(l1, r1, l2, r2 int) bool {
+			len1, len2 := r1-l1, r2-l2
+			l := lcp[l1][l2]
+			if l >= min(len1, len2) {
+				return len1 < len2
+			}
+			return s[l1+l] < s[l2+l]
+		}
+
+		// 判断 s[l1:r1] 是否为 s[l2:r2] 的前缀
+		isPrefix := func(l1, r1, l2, r2 int) bool {
+			len1, len2 := r1-l1, r2-l2
+			return len1 <= len2 && lcp[l1][l2] >= len1
+		}
+
+		_ = []any{compare, less, isPrefix}
+	}
+
 	_ = []any{
 		unsafeToBytes, unsafeToString,
 		indexAll,
 		stringHashSingleMod, stringHashDoubleMod,
-		kmpSearch, calcMinPeriod, failTree,
-		calcZ, zSearch, zCompare,
+		kmpSearch, calcMinPeriod, failTree, // KMP
+		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
 		isSubseq, subsequenceAutomaton,
 		manacher,
-		suffixArray, suffixArrayInt, suffixArrayInt2,
+		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
+		lcpArray,
 	}
 }
 
