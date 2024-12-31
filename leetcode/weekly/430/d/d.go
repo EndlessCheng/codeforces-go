@@ -32,6 +32,6 @@ func comb(n, m int) int {
 	return F[n] * invF[m] % mod * invF[n-m] % mod
 }
 
-func countGoodArrays(n, m, k int) (ans int) {
+func countGoodArrays(n, m, k int) int {
 	return comb(n-1, k) * m % mod * pow(m-1, n-k-1) % mod
 }

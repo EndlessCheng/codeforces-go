@@ -6,6 +6,8 @@
 
 把这 $n-1-k$ 对不同元素，看成 $n-1-k$ 条分割线，分割后得到 $n-k$ 段子数组，每段子数组中的元素都相同。
 
+核心想法：**先划分数组，再填数字**。
+
 现在问题变成：
 
 1. 计算有多少种分割方案，即从 $n-1$ 个空隙中选择 $n-1-k$ 条分割线（或者说隔板）的方案数。即组合数 $C(n-1,n-1-k) = C(n-1,k)$。
@@ -172,7 +174,7 @@ func comb(n, m int) int {
 	return F[n] * invF[m] % mod * invF[n-m] % mod
 }
 
-func countGoodArrays(n, m, k int) (ans int) {
+func countGoodArrays(n, m, k int) int {
 	return comb(n-1, k) * m % mod * pow(m-1, n-k-1) % mod
 }
 ```
