@@ -151,7 +151,7 @@ class Solution {
 public:
     long long maximumValueSum(vector<vector<int>>& board) {
         array<pair<int, int>, 3> p; // 最大、次大、第三大
-        ranges::fill(p, make_pair(INT_MIN, -1));
+        ranges::fill(p, pair(INT_MIN, -1));
 
         auto update = [&](vector<int>& row) {
             for (int j = 0; j < row.size(); j++) {
@@ -183,7 +183,7 @@ public:
         }
 
         long long ans = LLONG_MIN;
-        ranges::fill(p, make_pair(INT_MIN, -1)); // 重置，计算 pre
+        ranges::fill(p, pair(INT_MIN, -1)); // 重置，计算 pre
         for (int i = 1; i < m - 1; i++) {
             update(board[i - 1]);
             for (int j2 = 0; j2 < n; j2++) { // 第二个车
