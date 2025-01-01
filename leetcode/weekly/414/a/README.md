@@ -5,7 +5,7 @@
 3. 然后转成二进制字符串。
 4. 最后，用 `-` 拼接每个二进制字符串。
 
-```py [sol-Python3]
+```py [sol-Py3]
 class Solution:
     def convertDateToBinary(self, date: str) -> str:
         a = date.split('-')
@@ -14,7 +14,7 @@ class Solution:
         return '-'.join(a)
 ```
 
-```py [sol-Python3 一行]
+```py [sol-Py3 一行]
 class Solution:
     def convertDateToBinary(self, date: str) -> str:
         return '-'.join(bin(int(s))[2:] for s in date.split('-'))
@@ -46,13 +46,10 @@ class Solution {
 class Solution {
 public:
     string convertDateToBinary(string date) {
-        auto bin = [](int x) -> string {
-            string s = bitset<32>(x).to_string();
-            return s.substr(s.find('1'));
-        };
-        return bin(stoi(date.substr(0, 4))) + "-" +
-               bin(stoi(date.substr(5, 2))) + "-" +
-               bin(stoi(date.substr(8, 2)));
+        return format("{:b}-{:b}-{:b}",
+                      stoi(date.substr(0, 4)),
+                      stoi(date.substr(5, 2)),
+                      stoi(date.substr(8, 2)));
     }
 };
 ```
