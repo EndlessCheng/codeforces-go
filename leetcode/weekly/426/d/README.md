@@ -149,16 +149,16 @@ public:
             }
 
             array<int, 2> cnt{};
-            auto dfs = [&](auto&& dfs, int x, int fa, int d) -> void {
+            auto dfs = [&](this auto&& dfs, int x, int fa, int d) -> void {
                 cnt[d]++;
                 for (int y : g[x]) {
                     if (y != fa) {
-                        dfs(dfs, y, x, d ^ 1);
+                        dfs(y, x, d ^ 1);
                     }
                 }
             };
-            dfs(dfs, 0, -1, 0);
-            return make_pair(g, cnt);
+            dfs(0, -1, 0);
+            return pair(g, cnt);
         };
 
         auto [_, cnt2] = count(edges2);
@@ -166,15 +166,15 @@ public:
 
         auto [g, cnt1] = count(edges1);
         vector<int> ans(g.size(), max2);
-        auto dfs = [&](auto&& dfs, int x, int fa, int d) -> void {
+        auto dfs = [&](this auto&& dfs, int x, int fa, int d) -> void {
             ans[x] += cnt1[d];
             for (int y : g[x]) {
                 if (y != fa) {
-                    dfs(dfs, y, x, d ^ 1);
+                    dfs(y, x, d ^ 1);
                 }
             }
         };
-        dfs(dfs, 0, -1, 0);
+        dfs(0, -1, 0);
         return ans;
     }
 };
