@@ -170,11 +170,11 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 
 	// 解析样例输入输出
 	const (
-		tokenInputJP  = "入力例"
-		tokenOutputJP = "出力例"
+		tokenInputJP  = "^入力例"
+		tokenOutputJP = "^出力例"
 
-		tokenInputEN  = "Sample Input "
-		tokenOutputEN = "Sample Output "
+		tokenInputEN  = "^Sample Input "
+		tokenOutputEN = "^Sample Output "
 	)
 
 	inputRegex := regexp.MustCompile(tokenInputEN + `\d+`)
