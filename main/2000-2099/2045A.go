@@ -33,7 +33,7 @@ func cf2045A(in io.Reader, out io.Writer) {
 	} else {
 		// 如果没有 NG，那么答案一定是 3 的倍数
 		// 如果只有一个 NG，那么当 n 是 3k+2 时，一定会多出一个字母，例如 AYNGG
-		// 其余情况有充足的 NG，可以灵活调整，答案是 n
+		// 其余情况可以用 NG 和 Y 灵活调整，答案是 n
 		Fprint(out, n-max(n%3-ng, 0))
 	}
 }
