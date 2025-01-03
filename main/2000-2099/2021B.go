@@ -15,13 +15,12 @@ func cf2021B(in io.Reader, out io.Writer) {
 			Fscan(in, &v)
 			cnt[v]++
 		}
-		left := map[int]int{}
 		for i := 0; ; i++ {
-			left[i%x] += cnt[i] - 1
-			if left[i%x] < 0 {
+			if cnt[i] == 0 {
 				Fprintln(out, i)
 				break
 			}
+			cnt[i+x] += cnt[i] - 1
 		}
 	}
 }
