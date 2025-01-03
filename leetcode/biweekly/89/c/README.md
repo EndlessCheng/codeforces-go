@@ -6,6 +6,12 @@
 
 代码实现时可以不用修改 $\textit{nums}$，而是维护 $\textit{extra}$ 变量。
 
+### 细节
+
+开区间二分下界：$\min(\textit{nums})-1$，无法操作。也可以简单地写成 $-1$。
+
+开区间二分上界：$\max(\textit{nums})$，一定可以操作。
+
 附：[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第三题。
 
 ```py [sol-Python3]
@@ -16,7 +22,7 @@ class Solution:
             for i in range(len(nums) - 1, 0, -1):
                 extra = max(nums[i] + extra - limit, 0)
             return nums[0] + extra <= limit
-        return bisect_left(range(max(nums)), True, key=check)
+        return bisect_left(range(max(nums)), True, lo=min(nums), key=check)
 ```
 
 ```java [sol-Java]
@@ -85,8 +91,8 @@ func minimizeArrayValue(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
-- 空间复杂度：$O(1)$，仅用到若干变量。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(1)$，仅用到若干变量。
 
 ## 方法二：分类讨论
 
