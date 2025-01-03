@@ -1,15 +1,28 @@
-想象有一根分割线，把 $\textit{nums}$ 分成左右两部分，左部和右部分别计算所有长为 $k$ 的子序列的 OR 都**有哪些值**。
+## 题意
 
-比如左部计算出的 OR 有 $[2,3,5]$，右部计算出的 OR 有 $[1,3,6]$，两两组合计算 XOR，取其中最大值作为答案。
+从 $\textit{nums}$ 中选一个长为 $2k$ 的子序列，计算其前一半的 OR，后一半的 OR，这两个 OR 再计算 XOR。
 
-把 OR 理解成一个类似加法的东西，本题是一个二维的 0-1 背包。如果你不了解 0-1 背包，或者不理解为什么下面代码 $j$ 要倒序枚举，请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+问：计算出的 XOR 最大能是多少？
 
-考虑计算右部，定义 $f[i][j][x]$ 表示从 $\textit{nums}[i]$ 到 $\textit{nums}[n-1]$ 中选出 $j$ 个数，这些数的 OR 是否等于 $x$。
+## 核心思路
 
-设 $v=\textit{nums}[i]$，用**刷表法**转移：
+- 想象有一根分割线，把 $\textit{nums}$ 分成左右两部分，左和右分别计算所有长为 $k$ 的子序列的 OR 都**有哪些值**。比如左边计算出的 OR 有 $2,3,5$，右边计算出的 OR 有 $1,3,6$，那么两两组合计算 XOR，其中最大值即为答案。
+- 枚举分割线的位置，把 $\textit{nums}$ 分割成一个前缀和一个后缀，问题变成：从前缀/后缀中选一个长为 $k$ 的子序列，这个子序列 OR 的结果能否等于 $x$？
+
+把 OR 理解成一个类似加法的东西，转换成二维 0-1 背包。如果你不了解 0-1 背包，或者不理解为什么下面代码 $j$ 要倒序枚举，请看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+
+> **二维**：指背包有两个约束，一个是所选元素的个数是 $k$，另一个是所选元素的 OR 是 $x$。
+
+## 具体算法
+
+计算后缀。对于 0-1 背包问题，我们定义 $f[i][j][x]$ 表示从 $\textit{nums}[i]$ 到 $\textit{nums}[n-1]$ 中选 $j$ 个数，这些数的 OR 能否等于 $x$。
+
+设 $v=\textit{nums}[i]$，用刷表法转移：
 
 - 不选 $v$，那么 $f[i][j][x] = f[i+1][j][x]$。
-- 选 $v$，如果 $f[i+1][j][x]=\texttt{true}$，那么 $f[i][j+1][x|v]=\texttt{true}$。
+- 选 $v$，如果 $f[i+1][j][x]=\texttt{true}$，那么 $f[i][j+1][x\ |\ v]=\texttt{true}$。
+
+> **刷表法**：本题计算 $x = v\ |\ ?$ 中的 $?$ 是困难的，但计算 $x\ |\ v$ 是很简单的。也就是说，对于状态 $f[i][j][x]$ 而言，其转移来源是谁不好计算，但从 $f[i][j][x]$ 转移到的目标状态 $f[i][j+1][x\ |\ v]$ 是好计算的。在动态规划中，根据转移来源计算状态叫查表法，用当前状态更新其他状态叫刷表法。
 
 初始值 $f[n][0][0]=\texttt{true}$。什么也不选，OR 等于 $0$。
 
@@ -17,13 +30,13 @@
 
 代码实现时，$f$ 的第一个维度可以优化掉。
 
-对于左部 $\textit{pre}$ 的计算也同理。
+对于前缀 $\textit{pre}$ 的计算也同理。
 
-最后，枚举 $i=k-1,k,k+1,\cdots,n-k-1$，两两组合 $\textit{pre}[i]$ 和 $\textit{suf}[i+1]$ 中的元素计算 XOR，取其中最大值作为答案。
+最后，枚举 $i=k-1,k,k+1,\ldots,n-k-1$，两两组合 $\textit{pre}[i]$ 和 $\textit{suf}[i+1]$ 中的数计算 XOR，其中最大值即为答案。
 
-**小优化**：如果在循环中，发现答案 $\textit{ans}$ 达到了理论最大值 $2^7-1$（或者所有元素的 OR），则立刻返回答案。
+小优化：如果在循环中，发现答案 $\textit{ans}$ 达到了理论最大值 $2^7-1$（或者所有元素的 OR），则立刻返回答案。
 
-也可以用哈希集合代替布尔数组，见下面的 Python 优化代码。
+> 也可以用哈希集合代替布尔数组，见下面的 Python 优化代码。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1Ub4mekE1x/) 第三题，欢迎点赞关注~
 
@@ -288,7 +301,7 @@ func maxValue(nums []int, k int) (ans int) {
 
 对于 $\textit{minI}[x]$ 的计算，我们可以在遍历 $\textit{nums}$ 的同时，用一个数组 $\textit{cnt}$ 维护 $\textit{nums}$ 元素的超集的出现次数。如果发现 $\textit{cnt}[x]=k$，说明至少要遍历到 $i$ 才有可能找到 $k$ 个数 OR 等于 $x$，记录 $\textit{minI}[x]=i$。对于 $\textit{maxI}[x]$ 的计算也同理。
 
-对于两数异或最大值的计算，可以用**试填法**解决，见[【图解】421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solutions/2511644/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)。
+对于两数异或最大值的计算，可以用**试填法**解决，原理请看[【图解】421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/solutions/2511644/tu-jie-jian-ji-gao-xiao-yi-tu-miao-dong-1427d/)。
 
 ```py [sol-Python3]
 class Solution:
