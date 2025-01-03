@@ -15,10 +15,10 @@ $$
 - [本题视频讲解](https://www.bilibili.com/video/BV1SN411c7eD/)
 - 更快的做法请看 [2902. 和带限制的子多重集合的数目](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/)
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def waysToReachTarget(self, target: int, types: List[List[int]]) -> int:
-        MOD = 10 ** 9 + 7
+        MOD = 1_000_000_007
         f = [1] + [0] * target
         for count, marks in types:
             for j in range(target, 0, -1):
@@ -28,52 +28,55 @@ class Solution:
         return f[-1]
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
-    private static final int MOD = (int) 1e9 + 7;
-
     public int waysToReachTarget(int target, int[][] types) {
-        var f = new int[target + 1];
+        final int MOD = 1_000_000_007;
+        int[] f = new int[target + 1];
         f[0] = 1;
-        for (var p : types) {
-            int count = p[0], marks = p[1];
-            for (int j = target; j > 0; --j)
-                for (int k = 1; k <= count && k <= j / marks; ++k)
+        for (int[] p : types) {
+            int count = p[0];
+            int marks = p[1];
+            for (int j = target; j > 0; j--) {
+                for (int k = 1; k <= Math.min(count, j / marks); k++) {
                     f[j] = (f[j] + f[j - k * marks]) % MOD;
+                }
+            }
         }
         return f[target];
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
-    const int MOD = 1e9 + 7;
 public:
-    int waysToReachTarget(int target, vector<vector<int>> &types) {
-        int f[target + 1];
-        memset(f, 0, sizeof(f));
+    int waysToReachTarget(int target, vector<vector<int>>& types) {
+        const int MOD = 1e9 + 7;
+        vector<int> f(target + 1);
         f[0] = 1;
-        for (auto &p : types) {
+        for (auto& p : types) {
             int count = p[0], marks = p[1];
-            for (int j = target; j > 0; --j)
-                for (int k = 1; k <= min(count, j / marks); ++k)
+            for (int j = target; j > 0; j--) {
+                for (int k = 1; k <= min(count, j / marks); k++) {
                     f[j] = (f[j] + f[j - k * marks]) % MOD;
+                }
+            }
         }
         return f[target];
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func waysToReachTarget(target int, types [][]int) int {
-	const mod int = 1e9 + 7
+	const mod = 1_000_000_007
 	f := make([]int, target+1)
 	f[0] = 1
 	for _, p := range types {
 		count, marks := p[0], p[1]
 		for j := target; j > 0; j-- {
-			for k := 1; k <= count && k <= j/marks; k++ {
+			for k := 1; k <= min(count, j/marks); k++ {
 				f[j] += f[j-k*marks]
 			}
 			f[j] %= mod
@@ -83,16 +86,28 @@ func waysToReachTarget(target int, types [][]int) int {
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
-- 时间复杂度：$O(TS)$，其中 $T$ 为 $\textit{target}$，$S$ 为所有 $\textit{count}_i$ 之和。
-- 空间复杂度：$O(T)$。
+- 时间复杂度：$\mathcal{O}(\textit{target}\cdot S)$，其中 $S$ 为所有 $\textit{count}_i$ 之和。
+- 空间复杂度：$\mathcal{O}(\textit{target})$。
 
-### 相似题目
+## 分类题单
 
-- [1981. 最小化目标值与所选元素的差](https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/)
-- [2218. 从栈中取出 K 个硬币的最大面值和](https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-### 思考题
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-如果同类型题目需要区分，要怎么做呢？
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
