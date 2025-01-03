@@ -15,25 +15,26 @@ class Solution:
             return 0
 
         # t 的字母出现次数与 s 的字母出现次数之差
-        cnt = defaultdict(int)  # 也可以用 Counter(t)，但是会慢很多
-        for b in t:
-            cnt[b] += 1
+        diff = defaultdict(int)  # 也可以用 Counter(t)，但是会慢很多
+        for c in t:
+            diff[c] += 1
+
         # 窗口内有 less 个字母的出现次数比 t 的少
-        less = len(cnt)
+        less = len(diff)
 
         ans = left = 0
-        for b in s:
-            cnt[b] -= 1
-            if cnt[b] == 0:
-                # 窗口内 b 的出现次数和 t 一样
+        for c in s:
+            diff[c] -= 1
+            if diff[c] == 0:
+                # c 移入窗口后，窗口内 c 的出现次数和 t 的一样
                 less -= 1
             while less == 0:  # 窗口符合要求
-                if cnt[s[left]] == 0:
+                if diff[s[left]] == 0:
                     # s[left] 移出窗口之前，检查出现次数，
-                    # 如果窗口内 s[left] 的出现次数和 t 一样，
+                    # 如果窗口内 s[left] 的出现次数和 t 的一样，
                     # 那么 s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
                     less += 1
-                cnt[s[left]] += 1
+                diff[s[left]] += 1
                 left += 1
             ans += left
         return ans
@@ -48,34 +49,36 @@ class Solution {
 
         char[] s = S.toCharArray();
         char[] t = T.toCharArray();
-        int[] cnt = new int[26]; // t 的字母出现次数与 s 的字母出现次数之差
-        for (char b : t) {
-            cnt[b - 'a']++;
+        int[] diff = new int[26]; // t 的字母出现次数与 s 的字母出现次数之差
+        for (char c : t) {
+            diff[c - 'a']++;
         }
-        int less = 0; // 统计窗口内有多少个字母的出现次数比 t 的少
-        for (int c : cnt) {
-            if (c > 0) {
+
+        // 统计窗口内有多少个字母的出现次数比 t 的少
+        int less = 0;
+        for (int d : diff) {
+            if (d > 0) {
                 less++;
             }
         }
 
         long ans = 0;
         int left = 0;
-        for (char b : s) {
-            cnt[b - 'a']--;
-            if (cnt[b - 'a'] == 0) {
-                // b 移入窗口后，窗口内 b 的出现次数和 t 一样
+        for (char c : s) {
+            diff[c - 'a']--;
+            if (diff[c - 'a'] == 0) {
+                // c 移入窗口后，窗口内 c 的出现次数和 t 的一样
                 less--;
             }
             while (less == 0) { // 窗口符合要求
                 char outChar = s[left++]; // 准备移出窗口的字母
-                if (cnt[outChar - 'a'] == 0) {
+                if (diff[outChar - 'a'] == 0) {
                     // outChar 移出窗口之前检查出现次数，
-                    // 如果窗口内 outChar 的出现次数和 t 一样，
+                    // 如果窗口内 outChar 的出现次数和 t 的一样，
                     // 那么 outChar 移出窗口后，窗口内 outChar 的出现次数比 t 的少
                     less++;
                 }
-                cnt[outChar - 'a']++;
+                diff[outChar - 'a']++;
             }
             ans += left;
         }
@@ -91,34 +94,37 @@ public:
         if (s.length() < t.length()) {
             return 0;
         }
-        int cnt[26]{}; // t 的字母出现次数与 s 的字母出现次数之差
-        for (char b : t) {
-            cnt[b - 'a']++;
+
+        int diff[26]{}; // t 的字母出现次数与 s 的字母出现次数之差
+        for (char c : t) {
+            diff[c - 'a']++;
         }
-        int less = 0; // 统计窗口内有多少个字母的出现次数比 t 的少
-        for (int c : cnt) {
-            if (c > 0) {
+
+        // 统计窗口内有多少个字母的出现次数比 t 的少
+        int less = 0;
+        for (int d : diff) {
+            if (d > 0) {
                 less++;
             }
         }
 
         long long ans = 0;
         int left = 0;
-        for (char b : s) {
-            cnt[b - 'a']--;
-            if (cnt[b - 'a'] == 0) {
-                // b 移入窗口后，窗口内 b 的出现次数和 t 一样
+        for (char c : s) {
+            diff[c - 'a']--;
+            if (diff[c - 'a'] == 0) {
+                // c 移入窗口后，窗口内 c 的出现次数和 t 的一样
                 less--;
             }
             while (less == 0) { // 窗口符合要求
                 char out_char = s[left++]; // 准备移出窗口的字母
-                if (cnt[out_char - 'a'] == 0) {
+                if (diff[out_char - 'a'] == 0) {
                     // out_char 移出窗口之前，检查出现次数，
-                    // 如果窗口内 out_char 的出现次数和 t 一样，
+                    // 如果窗口内 out_char 的出现次数和 t 的一样，
                     // 那么 out_char 移出窗口后，窗口内 out_char 的出现次数比 t 的少
                     less++;
                 }
-                cnt[out_char - 'a']++;
+                diff[out_char - 'a']++;
             }
             ans += left;
         }
@@ -132,32 +138,35 @@ func validSubstringCount(s, t string) (ans int64) {
 	if len(s) < len(t) {
 		return 0
 	}
-	cnt := [26]int{} // t 的字母出现次数与 s 的字母出现次数之差
-	for _, b := range t {
-		cnt[b-'a']++
+
+	diff := [26]int{} // t 的字母出现次数与 s 的字母出现次数之差
+	for _, c := range t {
+		diff[c-'a']++
 	}
-	less := 0 // 统计窗口内有多少个字母的出现次数比 t 的少
-	for _, c := range cnt {
-		if c > 0 {
+
+	// 统计窗口内有多少个字母的出现次数比 t 的少
+	less := 0
+	for _, d := range diff {
+		if d > 0 {
 			less++
 		}
 	}
 
 	left := 0
-	for _, b := range s {
-		cnt[b-'a']--
-		if cnt[b-'a'] == 0 {
-			// 窗口内 b 的出现次数和 t 一样
+	for _, c := range s {
+		diff[c-'a']--
+		if diff[c-'a'] == 0 {
+			// c 移入窗口后，窗口内 c 的出现次数和 t 的一样
 			less--
 		}
 		for less == 0 { // 窗口符合要求
-			if cnt[s[left]-'a'] == 0 {
+			if diff[s[left]-'a'] == 0 {
                 // s[left] 移出窗口之前，检查出现次数，
-                // 如果窗口内 s[left] 的出现次数和 t 一样，
+                // 如果窗口内 s[left] 的出现次数和 t 的一样，
                 // 那么 s[left] 移出窗口后，窗口内 s[left] 的出现次数比 t 的少
 				less++
 			}
-			cnt[s[left]-'a']++
+			diff[s[left]-'a']++
 			left++
 		}
 		ans += int64(left)
@@ -177,7 +186,7 @@ func validSubstringCount(s, t string) (ans int64) {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -187,6 +196,9 @@ func validSubstringCount(s, t string) (ans int64) {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
