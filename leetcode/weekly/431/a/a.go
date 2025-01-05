@@ -3,7 +3,22 @@ package main
 import "slices"
 
 // https://space.bilibili.com/206214
-func maxLength(nums []int) (ans int) {
+func maxLength(nums []int) int {
+	ans, mul, left := 2, 1, 0
+	for right, x := range nums {
+		for gcd(mul, x) > 1 {
+			mul /= nums[left]
+			left++
+		}
+		mul *= x
+		ans = max(ans, right-left+1)
+	}
+	return ans
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+
+func maxLength2(nums []int) (ans int) {
 	mx := slices.Max(nums)
 	allLcm := 1
 	for _, x := range nums {
@@ -25,5 +40,4 @@ func maxLength(nums []int) (ans int) {
 	return
 }
 
-func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 func lcm(a, b int) int { return a / gcd(a, b) * b }

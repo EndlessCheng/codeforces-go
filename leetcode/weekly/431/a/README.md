@@ -1,8 +1,10 @@
-暴力枚举所有子数组，计算子数组的元素乘积、LCM 和 GCD。
+## 方法一：枚举子数组左右端点
 
-注意乘积太大会溢出。设 $\textit{allLcm}$ 为所有元素的 LCM，我们可以枚举到子数组乘积超过 $\textit{allLcm}\cdot \max(\textit{nums})$ 为止，这二者分别是 LCM 的最大值和 GCD 的最大值。
+暴力枚举所有子数组（左右端点），计算子数组的元素乘积、$\text{LCM}$ 和 $\text{GCD}$。
 
-注意题目保证 $n\ge 2$，又由于两个数一定满足题目要求，所以合法子数组是一定存在的，且长度至少是 $2$。
+注意乘积太大会溢出。设 $\textit{allLcm}$ 为所有元素的 $\text{LCM}$，我们可以枚举到子数组乘积超过 $\textit{allLcm}\cdot \max(\textit{nums})$ 为止，这二者分别是 $\text{LCM}$ 的最大值和 $\text{GCD}$ 的最大值。
+
+注意题目保证 $n\ge 2$，又由于两个数一定满足题目要求（见方法二），所以合法子数组是一定存在的，且长度至少是 $2$。
 
 > 注：$\text{LCM}(1,2,\ldots,10)=2520$。
 
@@ -126,7 +128,115 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。计算 LCM 和 GCD 的时间视作 $\mathcal{O}(1)$。
+- 时间复杂度：$\mathcal{O}(n^2\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 方法二：滑动窗口
+
+考虑乘积、$\text{LCM}$ 和 $\text{GCD}$ 的质因数分解中的一个质数 $p$ 的指数 $E$：
+
+- 在子数组乘积中，$E$ 为各个元素的 $p$ 的指数 $e_i$ 之和，即 $E=e_1+e_2+\cdots+e_k$，其中 $k$ 为子数组的长度。
+- 在子数组 $\text{LCM}$ 中，$E$ 为各个元素的 $p$ 的指数 $e_i$ 的最大值，即 $E=\max(e_1,e_2,\ldots,e_k)$。
+- 在子数组 $\text{GCD}$ 中，$E$ 为各个元素的 $p$ 的指数 $e_i$ 的最小值，即 $E=\min(e_1,e_2,\ldots,e_k)$。
+
+如果 $k=2$，那么 $e_1+e_2 = \max(e_1,e_2) + \min(e_1,e_2)$ 恒成立。所以答案至少是 $2$。
+
+如果 $k=3$，那么 $e_1+e_2+e_3 = \max(e_1,e_2,e_3) + \min(e_1,e_2,e_3)$ 当且仅当至少两个 $e_i=0$ 时成立。证明：
+
+- 如果三个数都是 $0$，那么等式显然成立。
+- 如果有两个数是 $0$，设非零的数是 $e_1$，那么等式左边是 $e_1$，右边是 $e_1+0=e_1$，所以等式成立。
+- 如果有一个数是 $0$，设非零的数是 $e_1$ 和 $e_2$，那么等式左边是 $e_1+e_2$，右边是 $e_1+0=e_1$，所以等式不成立（左边大于右边）。
+- 如果没有 $0$，那么等式左边是 $e_1+e_2+e_3$，右边是 $e_1+e_3$（假设 $e_2$ 是中间大小的数），所以等式不成立（左边大于右边）。
+
+推广到一般情况，当 $k\ge 3$ 时，$e_1+e_2+\cdots+e_k = \max(e_1,e_2,\ldots,e_k) + \min(e_1,e_2,\ldots,e_k)$ 当且仅当至少 $k-1$ 个 $e_i=0$ 时成立。
+
+这意味着，如果 $k\ge 3$，那么这 $k$ 个数必须**两两互质**。如果两个数有大于 $1$ 的公因子，那么不满足「至少 $k-1$ 个 $e_i=0$」的要求。
+
+两两互质是一个很强的性质，我们可以把子数组的所有数「压缩」到乘积 $m$ 中，计算乘积与即将加入子数组的数 $x$ 的 $\text{GCD}(m,x)$，如果 $\text{GCD}(m,x)>1$，则说明 $x$ 与子数组的某个数不是互质的。
+
+类似 [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/) 的 [滑动窗口做法](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solutions/1959540/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)，先去掉子数组中的与 $x$ 不互质的数，再把 $x$ 加到子数组中。
+
+```py [sol-Python3]
+class Solution:
+    def maxLength(self, nums: List[int]) -> int:
+        ans = 2
+        mul = 1
+        left = 0
+        for right, x in enumerate(nums):
+            while gcd(mul, x) > 1:
+                mul //= nums[left]
+                left += 1
+            mul *= x
+            ans = max(ans, right - left + 1)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxLength(int[] nums) {
+        int ans = 2;
+        int mul = 1;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            while (gcd(mul, nums[right]) > 1) {
+                mul /= nums[left];
+                left++;
+            }
+            mul *= nums[right];
+            ans = Math.max(ans, right - left + 1);
+        }
+        return ans;
+    }
+
+    private int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxLength(vector<int>& nums) {
+        int ans = 2, mul = 1, left = 0;
+        for (int right = 0; right < nums.size(); right++) {
+            while (gcd(mul, nums[right]) > 1) {
+                mul /= nums[left];
+                left++;
+            }
+            mul *= nums[right];
+            ans = max(ans, right - left + 1);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxLength(nums []int) int {
+	ans, mul, left := 2, 1, 0
+	for right, x := range nums {
+		for gcd(mul, x) > 1 {
+			mul /= nums[left]
+			left++
+		}
+		mul *= x
+		ans = max(ans, right-left+1)
+	}
+	return ans
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
