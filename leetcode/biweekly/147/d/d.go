@@ -14,12 +14,12 @@ func maxSubarraySum(nums []int) int64 {
 	last := map[int]int{}
 
 	update := func(x int) int {
-		res := f          // f[i-1]
+		res := f // f[i-1]
 		f = max(f, 0) + x // f[i] = max(f[i-1], 0) + x
 		if v, ok := last[x]; ok {
 			res = max(res, v+s) // s[i]
 		}
-		s += x // s[i+1]
+		s += x // s[i+1] = s[i] + x
 		last[x] = res - s
 		return res
 	}
