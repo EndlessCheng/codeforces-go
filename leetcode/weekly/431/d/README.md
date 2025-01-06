@@ -136,6 +136,35 @@ public:
 };
 ```
 
+```cpp [sol-C++ 写法二]
+class Solution {
+public:
+    vector<int> maximumWeight(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        struct tuple { int l, r, weight, i; };
+        vector<tuple> a(n);
+        for (int i = 0; i < n; i++) {
+            a[i] = {intervals[i][0], intervals[i][1], intervals[i][2], i};
+        }
+        ranges::sort(a, {}, &tuple::r);
+
+        vector<array<pair<long long, vector<int>>, 5>> f(n + 1);
+        for (int i = 0; i < n; i++) {
+            auto [l, r, weight, idx] = a[i];
+            int k = lower_bound(a.begin(), a.begin() + i, l, [](tuple& t, int val) { return t.r < val; }) - a.begin();
+            for (int j = 1; j < 5; j++) {
+                auto p = f[k][j - 1]; // 注意这会拷贝一份 pair
+                p.first -= weight; // 注意这里是减去 weight，这样取 min 后相当于计算的是最大和
+                p.second.push_back(idx);
+                ranges::sort(p.second);
+                f[i + 1][j] = min(f[i][j], p);
+            }
+        }
+        return f[n][4].second;
+    }
+};
+```
+
 ```go [sol-Go]
 func maximumWeight(intervals [][]int) []int {
 	type tuple struct{ l, r, weight, i int }
@@ -176,7 +205,7 @@ func maximumWeight(intervals [][]int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n(\log n + k^2))$，其中 $n$ 是 $\textit{nums}$ 的长度，$k=4$。注意下标排序是 $\mathcal{O}(k)$ 的，因为除去最后一个数后，前面的数都是有序的，而标准库在处理小数组时，用到的排序是插入排序，所以在这种情况下的排序是 $\mathcal{O}(k)$ 的。
+- 时间复杂度：$\mathcal{O}(n(\log n + k^2))$，其中 $n$ 是 $\textit{nums}$ 的长度，$k=4$。注意下标排序是 $\mathcal{O}(k)$ 的，因为最后一个数前面的数都是有序的，而标准库在处理小数组时，用到的排序是插入排序，在这种情况下插入排序是 $\mathcal{O}(k)$ 的。
 - 空间复杂度：$\mathcal{O}(nk^2)$。有 $\mathcal{O}(nk)$ 个状态，每个状态需要 $\mathcal{O}(k)$ 的空间保存下标列表。
 
 更多相似题目，见下面动态规划题单中的「**§6.4 不相交区间**」和「**§7.5 多维 DP**」。
