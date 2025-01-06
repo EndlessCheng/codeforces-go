@@ -286,9 +286,7 @@ func maxValue(nums []int, k int) (ans int) {
 
 答案是 $3$ 个。考虑 $x$ 中的每个比特 $1$，它来自某个 $\textit{nums}[i]$。
 
-设 $\textit{nums}$ 所有元素 OR 的二进制长度为 $w$（本题数据范围保证 $w\le 7$）。
-
-一般地，我们至多选 $w$ 个 $\textit{nums}[i]$，就能 OR 得到 $x$。
+设 $\textit{nums}$ 所有元素 OR 的二进制中的 $1$ 的个数为 $\textit{ones}$（本题数据范围保证 $textit{ones}\le 7$）。一般地，我们至多选 $\textit{ones}$ 个 $\textit{nums}[i]$，就能 OR 得到 $x$。
 
 但是，本题要求（前缀/后缀）**恰好**选 $k$ 个元素。选的元素越多 OR 越大，那么某些比较小的 $x$ 可能无法 OR 出来。
 
@@ -308,8 +306,7 @@ class Solution:
     def maxValue(self, nums: List[int], k: int) -> int:
         n = len(nums)
         mx = reduce(or_, nums)
-        w = mx.bit_length()
-        k2 = min(k, w)  # 至多选 k2 个数
+        k2 = min(k, mx.bit_count())  # 至多选 k2 个数
 
         suf = [None] * (n - k + 1)
         f = [set() for _ in range(k2 + 1)]
@@ -336,6 +333,7 @@ class Solution:
         pre[0].add(0)
         min_i = [inf] * (mx + 1)
         cnt = [0] * (mx + 1)
+        w = mx.bit_length()  # 用于 findMaximumXOR
         for i, v in enumerate(nums[:-k]):
             for j in range(min(k2 - 1, i), -1, -1):
                 pre[j + 1].update(x | v for x in pre[j])
@@ -357,7 +355,7 @@ class Solution:
         return ans
 
     # 421. 数组中两个数的最大异或值
-    # 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    # 改成两个数组的最大异或值，做法是类似的，仍然可以用【试填法】解决
     def findMaximumXOR(self, a: List[int], b: List[int], w: int) -> int:
         ans = mask = 0
         for i in range(w - 1, -1, -1):  # 从最高位开始枚举
@@ -453,7 +451,7 @@ class Solution {
     }
 
     // 421. 数组中两个数的最大异或值
-    // 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    // 改成两个数组的最大异或值，做法是类似的，仍然可以用【试填法】解决
     private int findMaximumXOR(int[] a, int n, int[] b, int m) {
         int ans = 0;
         int mask = 0;
@@ -483,7 +481,7 @@ class Solution {
     static constexpr int BIT_WIDTH = 7;
 
     // 421. 数组中两个数的最大异或值
-    // 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+    // 改成两个数组的最大异或值，做法是类似的，仍然可以用【试填法】解决
     int findMaximumXOR(vector<int>& a, vector<int>& b) {
         int ans = 0, mask = 0;
         vector<int> seen(1 << BIT_WIDTH);
@@ -660,7 +658,7 @@ func maxValue(nums []int, k int) (ans int) {
 }
 
 // 421. 数组中两个数的最大异或值
-// 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+// 改成两个数组的最大异或值，做法是类似的，仍然可以用【试填法】解决
 func findMaximumXOR(a, b []int) (ans int) {
 	mask := 0
 	for i := bitWidth - 1; i >= 0; i-- { // 从最高位开始枚举

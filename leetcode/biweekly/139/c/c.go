@@ -81,7 +81,7 @@ func maxValue(nums []int, k int) (ans int) {
 }
 
 // 421. 数组中两个数的最大异或值
-// 改成两个数组的最大异或和值，做法是类似的，仍然可以用【试填法】解决
+// 改成两个数组的最大异或值，做法是类似的，仍然可以用【试填法】解决
 func findMaximumXOR(a, b []int) (ans int) {
 	mask := 0
 	for i := bitWidth - 1; i >= 0; i-- { // 从最高位开始枚举
