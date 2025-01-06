@@ -40,15 +40,17 @@ class Solution {
         Arrays.sort(coins, (a, b) -> a[0] - b[0]);
         long ans = maximumWhiteTiles(coins, k);
 
+        // 反转数组
         for (int i = 0, j = coins.length - 1; i < j; i++, j--) {
             int[] tmp = coins[i];
             coins[i] = coins[j];
             coins[j] = tmp;
         }
+        // 反转每个区间
         for (int[] t : coins) {
-            int temp = t[0];
+            int tmp = t[0];
             t[0] = -t[1];
-            t[1] = -temp;
+            t[1] = -tmp;
         }
         return Math.max(ans, maximumWhiteTiles(coins, k));
     }
