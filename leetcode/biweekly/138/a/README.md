@@ -51,6 +51,21 @@ public:
 };
 ```
 
+```c [sol-C]
+#define MIN(a, b) ((b) < (a) ? (b) : (a))
+
+int generateKey(int x, int y, int z) {
+    int ans = 0;
+    for (int pow10 = 1; x && y && z; pow10 *= 10) {
+        ans += MIN(MIN(x % 10, y % 10), z % 10) * pow10;
+        x /= 10;
+        y /= 10;
+        z /= 10;
+    }
+    return ans;
+}
+```
+
 ```go [sol-Go]
 func generateKey(x, y, z int) (ans int) {
 	for pow10 := 1; x > 0 && y > 0 && z > 0; pow10 *= 10 {
@@ -60,6 +75,36 @@ func generateKey(x, y, z int) (ans int) {
 		z /= 10
 	}
 	return
+}
+```
+
+```js [sol-JavaScript]
+var generateKey = function(x, y, z) {
+    let ans = 0;
+    for (let pow10 = 1; x && y && z; pow10 *= 10) {
+        ans += Math.min(x % 10, y % 10, z % 10) * pow10;
+        x = Math.floor(x / 10);
+        y = Math.floor(y / 10);
+        z = Math.floor(z / 10);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn generate_key(mut x: i32, mut y: i32, mut z: i32) -> i32 {
+        let mut ans = 0;
+        let mut pow10 = 1;
+        while x > 0 && y > 0 && z > 0 {
+            ans += (x % 10).min(y % 10).min(z % 10) * pow10;
+            x /= 10;
+            y /= 10;
+            z /= 10;
+            pow10 *= 10;
+        }
+        ans
+    }
 }
 ```
 
