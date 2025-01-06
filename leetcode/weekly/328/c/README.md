@@ -6,7 +6,7 @@
 
 滑动窗口内层循环：如果发现 $\textit{pairs}\ge k$，说明子数组符合要求，则右移左端点 $\textit{left}$，把 $\textit{pairs}$ 减少 $\textit{cnt}[\textit{nums}[\textit{left}]]$。
 
-内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\cdots,\textit{left}-1$ 的所有子数组都是合法的，这一共有 $\textit{left}$ 个，加入答案。
+内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子数组都是合法的，这一共有 $\textit{left}$ 个，加入答案。
 
 ```py [sol-Python3]
 class Solution:
