@@ -601,7 +601,7 @@ $$
   - 如果打算包含两个 $x$，那么需要知道在上一个 $x$ 的位置，$\textit{nonDelMinS} + x$ 是多少，也就是 $\textit{delMinS}[x]$ 中存储的值。于是 $s[i] + 2\cdot x = (s[i] + x) + x$ = $\textit{delMinS}[x] + x$。
   - 如果只打算包含一个 $x$，那么同上，$s[i] + x = \textit{nonDelMinS} + x$。
   - 二者取最小值，得 $\textit{delMinS}[x] = \min(\textit{delMinS}[x], \textit{nonDelMinS}) + x$。
-  - 该递推式可以推广到有更多个 $x$ 的情况。
+  - 该递推式也适用于有更多个 $x$ 的情况。
 
 ⚠**注意**：你可能会问，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间，有多个 $x$ 呢？这样不就包含多个 $x$ 了吗？
 
