@@ -3,6 +3,9 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
+	"slices"
+	"sort"
 	"testing"
 )
 
@@ -13,3 +16,58 @@ func Test_d(t *testing.T) {
 }
 // https://leetcode.cn/contest/weekly-contest-431/problems/maximum-score-of-non-overlapping-intervals/
 // https://leetcode.cn/problems/maximum-score-of-non-overlapping-intervals/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a [][]int) {
+		//return
+		rg.Clear()
+		for range rg.IntOnly(1, 10) {
+			l := rg.IntOnly(1, 10)
+			a = append(a, []int{l, rg.IntOnly(l, 10), rg.IntOnly(1, 10)})
+		}
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, maximumWeight, maximumWeightHack)
+}
+
+func maximumWeightHack(intervals [][]int) []int {
+	type tuple struct{ l, r, weight, i int }
+	a := make([]tuple, len(intervals))
+	for i, interval := range intervals {
+		a[i] = tuple{interval[0], interval[1], interval[2], i}
+	}
+	slices.SortFunc(a, func(a, b tuple) int { return a.r - b.r })
+
+	n := len(intervals)
+	type pair struct {
+		sum int
+		id  []int
+	}
+	f := make([][5]pair, n+1)
+	for i, t := range a {
+		k := sort.Search(i, func(k int) bool { return a[k].r >= t.l })
+		for j := 1; j < 5; j++ {
+			s1 := f[i][j].sum
+			// 为什么是 f[k] 不是 f[k+1]：上面算的是 >= t.l，-1 后得到 < t.l，但由于还要 +1，抵消了
+			s2 := f[k][j-1].sum + t.weight
+			if s1 > s2 {
+				f[i+1][j] = f[i][j]
+				continue
+			}
+			newId := slices.Clone(f[k][j-1].id)
+			newId = append(newId, t.i)
+			//slices.Sort(newId)
+			if s1 == s2 && slices.Compare(f[i][j].id, newId) < 0 {
+				newId = f[i][j].id
+			}
+			f[i+1][j] = pair{s2, newId}
+		}
+	}
+	ans := f[n][4].id
+	slices.Sort(ans)
+	return ans
+}
