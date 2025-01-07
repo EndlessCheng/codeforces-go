@@ -603,13 +603,21 @@ $$
   - 二者取最小值，得 $\textit{delMinS}[x] = \min(\textit{delMinS}[x], \textit{nonDelMinS}) + x$。
   - 该递推式也适用于有更多个 $x$ 的情况。
 
-⚠**注意**：你可能会问，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间，有多个 $x$ 呢？这样不就包含多个 $x$ 了吗？
-
-**解答**：根据上文的 $\textit{delMinS}[x]$ 的递推式，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间有多个 $x$，那么在此之前，我们已经把 $\textit{nonDelMinS} + x$ 更新到 $\textit{delMinS}[x]$ 中了，由于 $x<0$，所以更新之后的 $\textit{delMinS}[x] < \textit{nonDelMinS}$ 一定成立，所以递推式中的 $\min$ 一定会取 $\textit{delMinS}[x]$。换句话说，如果 $\min$ 取的是 $\textit{nonDelMinS}$，那么对应的子数组一定只包含一个 $x$。
-
 代码实现时，前缀和可以只用一个变量 $s$ 表示。其初始值为 $0$，对应着 $s[0]=0$。
 
-⚠**注意**：代码先计算 $s-\textit{allMin}$，再更新 $\textit{allMin}$，以保证子数组是非空的。
+### 答疑
+
+**问**：如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间，有多个 $x$ 呢？这样不就包含多个 $x$ 了吗？
+
+**答**：根据 $\textit{delMinS}[x]$ 的计算过程，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间有多个 $x$，那么在此之前，我们已经把 $\textit{nonDelMinS} + x$ 更新到 $\textit{delMinS}[x]$ 中了，由于 $x<0$，所以更新之后的 $\textit{delMinS}[x] < \textit{nonDelMinS}$ 一定成立，所以递推式中的 $\min$ 一定会取 $\textit{delMinS}[x]$。换句话说，如果 $\min$ 取的是 $\textit{nonDelMinS}$，那么对应的子数组一定只包含一个 $x$。
+
+**问**：如何保证子数组一定是非空的？
+
+**答**：先计算 $s-\textit{allMin}$，再更新 $\textit{allMin}$，以保证子数组是非空的。
+
+**问**：对于 $\textit{nums}=[-1,-1,-1]$，如何理解代码中的 $s-\textit{allMin}$？
+
+**答**：此时 $s-\textit{allMin} = -1$，对应着不删除任何元素（即 $k=0$）的情况。
 
 ```py [sol-Python3]
 class Solution:
