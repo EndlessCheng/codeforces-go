@@ -5,25 +5,41 @@ import "math"
 // https://space.bilibili.com/206214
 func minimumSubarrayLength(nums []int, k int) int {
 	ans := math.MaxInt
-	type pair struct{ or, left int }
-	ors := []pair{} // 保存 (右端点为 i 的子数组 OR, 该子数组左端点的最大值)
-	for i, x := range nums {
-		ors = append(ors, pair{0, i})
-		j := 0
-		for idx := range ors {
-			p := &ors[idx]
-			p.or |= x
-			if p.or >= k {
-				ans = min(ans, i-p.left+1)
-			}
-			if ors[j].or == p.or {
-				ors[j].left = p.left // 原地去重：合并相同值，左端点取靠右的
-			} else {
-				j++
-				ors[j] = *p
+	var left, bottom, rightOr int
+	for right, x := range nums {
+		rightOr |= x
+		for left <= right && nums[left]|rightOr >= k {
+			ans = min(ans, right-left+1)
+			left++
+			if bottom < left {
+				// 重新构建一个栈
+				for i := right - 1; i >= left; i-- {
+					nums[i] |= nums[i+1]
+				}
+				bottom = right
+				rightOr = 0
 			}
 		}
-		ors = ors[:j+1] // 去重：移除多余元素
+	}
+	if ans == math.MaxInt {
+		return -1
+	}
+	return ans
+}
+
+func minimumSubarrayLength2(nums []int, k int) int {
+	ans := math.MaxInt
+	for i, x := range nums {
+		if x >= k {
+			return 1
+		}
+		// 如果 x 是 nums[j] 的子集，就退出循环
+		for j := i - 1; j >= 0 && nums[j]|x != nums[j]; j-- {
+			nums[j] |= x
+			if nums[j] >= k {
+				ans = min(ans, i-j+1)
+			}
+		}
 	}
 	if ans == math.MaxInt {
 		return -1
