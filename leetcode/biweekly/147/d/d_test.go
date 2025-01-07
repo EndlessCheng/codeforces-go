@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -11,5 +12,20 @@ func Test_d(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
 // https://leetcode.cn/contest/biweekly-contest-147/problems/maximize-subarray-sum-after-removing-all-occurrences-of-one-element/
 // https://leetcode.cn/problems/maximize-subarray-sum-after-removing-all-occurrences-of-one-element/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a []int) {
+		//return
+		rg.Clear()
+		a = rg.IntSlice(rg.Int(1, 20), -10, 10)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, maxSubarraySumSeg, maxSubarraySum)
+}

@@ -576,7 +576,142 @@ func maxSubarraySum(nums []int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-更多相似题目，见下面动态规划题单中的「**§11.4 树状数组/线段树优化 DP**」。
+## 方法三：前缀和+枚举右维护左
+
+前置知识：[前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)。
+
+计算 $\textit{nums}$ 的前缀和数组 $s$。
+
+设被删的数是 $x$，答案对应的子数组的下标区间为 $[i,j)$，其中包含 $k$ 个 $x$，那么答案为
+
+$$
+(s[j] - s[i]) - k\cdot x = s[j] - (s[i] + k\cdot x)
+$$
+
+枚举 $j$，那么 $s[i] + k\cdot x$ 越小，答案越大。
+
+所以我们需要在枚举 $j$ 的过程中，维护 $s[i] + k\cdot x$ 的最小值，记作 $\textit{delMinS}[x]$。所有 $\textit{delMinS}[x]$ 的最小值记作 $\textit{allMin}$。用 $s[j]-\textit{allMin}$ 更新答案的最大值。
+
+如何维护 $s[i] + k\cdot x$ 的最小值？
+
+设 $x$ 是当前遍历到的元素，我们要删除它。如果 $x\ge 0$，那么删除没有意义，所以下面只讨论 $x<0$ 的情况：
+
+- 如果 $x$ 是首次遇到（左边没有 $x$），那么 $k=1$，我们需要知道在 $x$ 左边的所有 $s[i]$ 的最小值 $\textit{nonDelMinS}$，这样才能使 $s[i] + k\cdot x = \textit{nonDelMinS} + x$ 最小。把 $\textit{nonDelMinS} + x$ 记录到哈希表 $\textit{delMinS}[x]$ 中。
+- 如果 $x$ 是第二次遇到（左边还有一个 $x$）：
+  - 如果打算包含两个 $x$，那么需要知道在上一个 $x$ 的位置，$\textit{nonDelMinS} + x$ 是多少，也就是 $\textit{delMinS}[x]$ 中存储的值。于是 $s[i] + 2\cdot x = (s[i] + x) + x$ = $\textit{delMinS}[x] + x$。
+  - 如果只打算包含一个 $x$，那么同上，$s[i] + x = \textit{nonDelMinS} + x$。
+  - 二者取最小值，得 $\textit{delMinS}[x] = \min(\textit{delMinS}[x], \textit{nonDelMinS}) + x$。
+  - 该递推式可以推广到有更多个 $x$ 的情况。
+
+⚠**注意**：你可能会问，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间，有多个 $x$ 呢？这样不就包含多个 $x$ 了吗？
+
+**解答**：根据上文的 $\textit{delMinS}[x]$ 的递推式，如果从 $\textit{nonDelMinS}$ 到当前 $x$ 之间有多个 $x$，那么在此之前，我们已经把 $\textit{nonDelMinS} + x$ 更新到 $\textit{delMinS}[x]$ 中了，由于 $x<0$，所以更新之后的 $\textit{delMinS}[x] < \textit{nonDelMinS}$ 一定成立，所以递推式中的 $\min$ 一定会取 $\textit{delMinS}[x]$。换句话说，如果 $\min$ 取的是 $\textit{nonDelMinS}$，那么对应的子数组一定只包含一个 $x$。
+
+代码实现时，前缀和可以只用一个变量 $s$ 表示。其初始值为 $0$，对应着 $s[0]=0$。
+
+⚠**注意**：代码先计算 $s-\textit{allMin}$，再更新 $\textit{allMin}$，以保证子数组是非空的。
+
+```py [sol-Python3]
+class Solution:
+    def maxSubarraySum(self, nums: List[int]) -> int:
+        ans = -inf
+        s = non_del_min_s = all_min = 0
+        del_min_s = defaultdict(int)
+        for x in nums:
+            s += x
+            ans = max(ans, s - all_min)
+            if x < 0:
+                del_min_s[x] = min(del_min_s[x], non_del_min_s) + x
+                all_min = min(all_min, del_min_s[x])
+                non_del_min_s = min(non_del_min_s, s)
+        return ans
+```
+
+```py [sol-Python3 手动比大小]
+class Solution:
+    def maxSubarraySum(self, nums: List[int]) -> int:
+        ans = -inf
+        s = non_del_min_s = all_min = 0
+        del_min_s = defaultdict(int)
+        for x in nums:
+            s += x
+            if s - all_min > ans: ans = s - all_min
+            if x < 0:
+                if non_del_min_s < del_min_s[x]: del_min_s[x] = non_del_min_s
+                del_min_s[x] += x
+                if del_min_s[x] < all_min: all_min = del_min_s[x]
+                if s < non_del_min_s: non_del_min_s = s
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long maxSubarraySum(int[] nums) {
+        long ans = Long.MIN_VALUE;
+        long s = 0; // 前缀和
+        long nonDelMinS = 0; // 最小前缀和
+        Map<Integer, Long> delMinS = new HashMap<>(); // x -> 最小前缀和 + 若干 x
+        long allMin = 0; // 所有 delMinS[x] 的最小值
+        for (int x : nums) {
+            s += x;
+            ans = Math.max(ans, s - allMin);
+            if (x < 0) {
+                long res = Math.min(delMinS.getOrDefault(x, Long.MAX_VALUE), nonDelMinS) + x;
+                delMinS.put(x, res);
+                allMin = Math.min(allMin, res);
+                nonDelMinS = Math.min(nonDelMinS, s);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long maxSubarraySum(vector<int>& nums) {
+        long long ans = INT_MIN;
+        long long s = 0, non_del_min_s = 0, all_min = 0;
+        unordered_map<int, long long> del_min_s;
+        for (int x : nums) {
+            s += x;
+            ans = max(ans, s - all_min);
+            if (x < 0) {
+                del_min_s[x] = min(del_min_s[x], non_del_min_s) + x;
+                all_min = min(all_min, del_min_s[x]);
+                non_del_min_s = min(non_del_min_s, s);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxSubarraySum(nums []int) int64 {
+	ans := math.MinInt
+	var s, nonDelMinS, allMin int
+	delMinS := map[int]int{}
+	for _, x := range nums {
+		s += x
+		ans = max(ans, s-allMin)
+		if x < 0 {
+			delMinS[x] = min(delMinS[x], nonDelMinS) + x
+			allMin = min(allMin, delMinS[x])
+			nonDelMinS = min(nonDelMinS, s)
+		}
+	}
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见下面动态规划题单中的「**§11.4 树状数组/线段树优化 DP**」，数据结构题单中的「**§1.2 前缀和与哈希表**」。
 
 ## 分类题单
 
@@ -589,7 +724,7 @@ func maxSubarraySum(nums []int) int64 {
 5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
-8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+8. 【本题相关】[常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)

@@ -8,13 +8,29 @@ import (
 
 // https://space.bilibili.com/206214
 func maxSubarraySum(nums []int) int64 {
+	ans := math.MinInt
+	var s, nonDelMinS, allMin int
+	delMinS := map[int]int{}
+	for _, x := range nums {
+		s += x
+		ans = max(ans, s-allMin)
+		if x < 0 {
+			delMinS[x] = min(delMinS[x], nonDelMinS) + x
+			allMin = min(allMin, delMinS[x])
+			nonDelMinS = min(nonDelMinS, s)
+		}
+	}
+	return int64(ans)
+}
+
+func maxSubarraySumPS(nums []int) int64 {
 	n := len(nums)
 	f := math.MinInt / 2
 	s := 0
 	last := map[int]int{}
 
 	update := func(x int) int {
-		res := f // f[i-1]
+		res := f          // f[i-1]
 		f = max(f, 0) + x // f[i] = max(f[i-1], 0) + x
 		if v, ok := last[x]; ok {
 			res = max(res, v+s) // s[i]
@@ -107,7 +123,7 @@ func (t seg) query(o, l, r, L, R int) info {
 	return t.mergeInfo(t.query(o<<1, l, m, L, R), t.query(o<<1|1, m+1, r, L, R))
 }
 
-func maxSubarraySum2(nums []int) int64 {
+func maxSubarraySumSeg(nums []int) int64 {
 	n := len(nums)
 	t := make(seg, 2<<bits.Len(uint(n-1)))
 	t.build(nums, 1, 0, n-1)
