@@ -6,9 +6,9 @@
 - 对于 $\texttt{rmv}$，直接把元素从哈希表删掉（或者优先级改成 $-1$）。
 - 对于 $\texttt{execTop}$，不断弹出「货不对板」的堆顶，也就是任务编号和哈希表中记录的数据不一致的堆顶。直到找到一致的数据或者堆为空。
 
-> 注 1：如果你学过 Dijkstra 算法，其中的堆就是懒删除堆。
+> 注 1：如果你学过 Dijkstra 算法，其中的堆就是懒更新堆。
 >
-> 注 2：题目保证输入的 $\textit{tasks}$ 数组中没有重复的 $\textit{taskId}$，但没有明说。
+> 注 2：题目保证输入的 $\textit{tasks}$ 数组中没有重复的 $\textit{taskId}$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1SzrAYMESJ/?t=2m46s)，欢迎点赞关注~
 
