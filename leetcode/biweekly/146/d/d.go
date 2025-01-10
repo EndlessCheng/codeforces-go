@@ -13,19 +13,53 @@ func comb2(num int) int {
 func subsequencesWithMiddleMode(nums []int) int {
 	n := len(nums)
 	ans := n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120 // 所有方案数
+	suf := map[int]int{}
+	for _, num := range nums {
+		suf[num]++
+	}
+	pre := make(map[int]int, len(suf)) // 预分配空间
 
-	a := slices.Clone(nums)
-	slices.Sort(a)
-	a = slices.Compact(a)
-	for i, x := range nums {
-		nums[i] = sort.SearchInts(a, x)
+	var cp, cs, ps, p2s, ps2 int
+	for _, c := range suf {
+		cs += comb2(c)
 	}
 
-	suf := make([]int, len(a))
-	for _, x := range nums {
-		suf[x]++
+	// 枚举 x，作为子序列正中间的数
+	for left, x := range nums[:n-2] {
+		suf[x]--
+		px := pre[x]
+		sx := suf[x]
+
+		cs -= sx
+		ps -= px
+		p2s -= px * px
+		ps2 -= (sx*2 + 1) * px
+
+		right := n - 1 - left
+		ans -= comb2(left-px) * comb2(right-sx)
+		ans -= (cp - comb2(px)) * sx * (right - sx)
+		ans -= (cs - comb2(sx)) * px * (left - px)
+		ans -= ((ps-px*sx)*(right-sx) - (ps2 - px*sx*sx)) * px
+		ans -= ((ps-px*sx)*(left-px)  - (p2s - px*px*sx)) * sx
+
+		cp += px
+		ps += sx
+		ps2 += sx * sx
+		p2s += (px*2 + 1) * sx
+
+		pre[x]++
 	}
-	pre := make([]int, len(a))
+	return ans % 1_000_000_007
+}
+
+func subsequencesWithMiddleMode2(nums []int) int {
+	n := len(nums)
+	ans := n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120 // 所有方案数
+	suf := map[int]int{}
+	for _, num := range nums {
+		suf[num]++
+	}
+	pre := make(map[int]int, len(suf)) // 预分配空间
 	// 枚举 x，作为子序列正中间的数
 	for left, x := range nums[:n-2] {
 		suf[x]--
@@ -55,14 +89,22 @@ func subsequencesWithMiddleMode(nums []int) int {
 	return ans % 1_000_000_007
 }
 
-func subsequencesWithMiddleMode2(nums []int) int {
+func subsequencesWithMiddleMode3(nums []int) int {
 	n := len(nums)
 	ans := n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120 // 所有方案数
-	suf := map[int]int{}
-	for _, num := range nums {
-		suf[num]++
+
+	a := slices.Clone(nums)
+	slices.Sort(a)
+	a = slices.Compact(a)
+	for i, x := range nums {
+		nums[i] = sort.SearchInts(a, x)
 	}
-	pre := make(map[int]int, len(suf)) // 预分配空间
+
+	suf := make([]int, len(a))
+	for _, x := range nums {
+		suf[x]++
+	}
+	pre := make([]int, len(a))
 	// 枚举 x，作为子序列正中间的数
 	for left, x := range nums[:n-2] {
 		suf[x]--

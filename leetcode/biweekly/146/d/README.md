@@ -1,3 +1,5 @@
+## 方法一：枚举
+
 设 $\textit{nums}$ 的长度为 $n$。总方案数为组合数 $\dbinom n 5$，减去不合法的方案数，即为答案。
 
 枚举不合法子序列正中间的数 $x = \textit{nums}[i]$，分类讨论：
@@ -29,8 +31,6 @@
 $\textit{pre}$ 和 $\textit{suf}$ 可以用两个哈希表分别维护。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1ifkqYjEvc/?t=17m53s)，欢迎点赞关注~
-
-### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -202,13 +202,13 @@ func subsequencesWithMiddleMode(nums []int) int {
 }
 ```
 
-### 优化
+### 数组优化
 
 把 $\textit{nums}$ 离散化，比如把 $[0,10,20,30]$ 压缩成 $[0,1,2,3]$。
 
 这样可以用数组去统计元素个数，比哈希表更快。
 
-> 这个优化对 Python 并不明显。
+> 注：这个优化对 Python 并不明显。
 
 ```java [sol-Java]
 class Solution {
@@ -379,6 +379,322 @@ func subsequencesWithMiddleMode(nums []int) int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：式子变形
+
+考虑把方法一的内层循环优化成 $\mathcal{O}(1)$。
+
+内层循环有四个公式，我们一条一条考虑。
+
+### 1)
+
+对于
+
+$$
+\dbinom {\textit{pre}_y} 2  \cdot \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)
+$$
+
+内层循环的总和为
+
+$$
+\begin{aligned}
+    & \sum_{y\ne x}\dbinom {\textit{pre}_y} 2  \cdot \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)      \\
+={} & \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)\cdot \sum_{y\ne x}\dbinom {\textit{pre}_y} 2        \\
+={} & \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)\cdot \left(\sum_{y}\dbinom {\textit{pre}_y} 2 - \dbinom {\textit{pre}_x} 2\right)       \\
+\end{aligned}
+$$
+
+所以核心是维护
+
+$$
+\sum\limits_{y}\dbinom {\textit{pre}_y} 2
+$$
+
+如果 $\textit{pre}_y$ 增加了 $1$，那么上式增加了 
+
+$$
+\dbinom {\textit{pre}_y+1} 2 - \dbinom {\textit{pre}_y} 2 = \textit{pre}_y
+$$
+
+### 2)
+
+对于
+
+$$
+\dbinom {\textit{suf}_y} 2  \cdot \textit{pre}_x \cdot (i- \textit{pre}_x)
+$$
+
+同理，核心是维护
+
+$$
+\sum\limits_{y}\dbinom {\textit{suf}_y} 2
+$$
+
+### 3)
+
+对于
+
+$$
+\textit{pre}_y\cdot\textit{suf}_y\cdot\textit{pre}_x\cdot(n-1-i-\textit{suf}_x-\textit{suf}_y)
+$$
+
+设 $\textit{right}=n-1-i$，内层循环的总和为
+
+$$
+\begin{aligned}
+& \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot\textit{pre}_x\cdot(\textit{right}-\textit{suf}_x-\textit{suf}_y)      \\
+={} & \textit{pre}_x\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot(\textit{right}-\textit{suf}_x-\textit{suf}_y)       \\
+={} & \textit{pre}_x\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot(\textit{right}-\textit{suf}_x)-\textit{pre}_y\cdot\textit{suf}_y^2       \\
+={} & \textit{pre}_x\cdot \left((\textit{right}-\textit{suf}_x)\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y-\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^2\right)       \\
+\end{aligned}
+$$
+
+其中
+
+$$
+\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y = \left(\sum_{y}\textit{pre}_y\cdot\textit{suf}_y\right) - \textit{pre}_x\cdot\textit{suf}_x
+$$
+
+$$
+\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^2 = \left(\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^2\right) - \textit{pre}_x\cdot\textit{suf}_x^2
+$$
+
+所以核心是维护
+
+$$
+\sum_{y}\textit{pre}_y\cdot\textit{suf}_y
+$$
+
+和
+
+$$
+\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^2
+$$
+
+如果 $\textit{pre}_y$ 增加了 $1$，那么上式增加了 $\textit{suf}_y^2$。
+
+如果 $\textit{suf}_y$ 减少了 $1$，设 $\textit{sy}$ 为减少后的值，那么上式减少了 $\textit{pre}_y\cdot ((\textit{sy}+1)^2 - \textit{sy}^2) =\textit{pre}_y\cdot(\textit{sy}\cdot 2 + 1)$。
+
+### 4)
+
+对于
+
+$$
+\textit{pre}_y\cdot\textit{suf}_y\cdot\textit{suf}_x\cdot(i-\textit{pre}_x-\textit{pre}_y)
+$$
+
+同上，需要额外维护
+
+$$
+\sum_{y}\textit{pre}_y^2\cdot\textit{suf}_y
+$$
+
+遍历 $\textit{nums}$，更新 $\textit{pre}$ 和 $\textit{suf}$，同时 $\mathcal{O}(1)$ 维护上述和式，就可以把内层循环优化至 $\mathcal{O}(1)$。
+
+|  变量名 |  含义  |
+|---|---|
+|  $\textit{px}$ | $\textit{pre}_x$  |
+|  $\textit{sx}$ | $\textit{suf}_x$  |
+|  $\textit{cp}$ | $\sum\limits_{y}\dbinom {\textit{pre}_y} 2$  |
+|  $\textit{cs}$ | $\sum\limits_{y}\dbinom {\textit{suf}_y} 2$  |
+|  $\textit{ps}$ | $\sum\limits_{y}\textit{pre}_y\cdot\textit{suf}_y$  |
+|  $p2s$ |  $\sum\limits_{y}\textit{pre}_y^2\cdot\textit{suf}_y$ |
+|  $ps2$ |  $\sum\limits_{y}\textit{pre}_y\cdot\textit{suf}_y^2$ |
+
+```py [sol-Python3]
+class Solution:
+    def subsequencesWithMiddleMode(self, nums: List[int]) -> int:
+        n = len(nums)
+        suf = Counter(nums)
+        pre = defaultdict(int)
+        ans = comb(n, 5)  # 所有方案数
+
+        cp = ps = p2s = ps2 = 0
+        cs = sum(comb(c, 2) for c in suf.values())
+
+        # 枚举 x，作为子序列正中间的数
+        for left, x in enumerate(nums[:-2]):
+            suf[x] -= 1
+            px = pre[x]
+            sx = suf[x]
+
+            cs -= sx
+            ps -= px
+            p2s -= px * px
+            ps2 -= (sx * 2 + 1) * px
+
+            right = n - 1 - left
+            ans -= comb(left - px, 2) * comb(right - sx, 2)
+            ans -= (cp - comb(px, 2)) * sx * (right - sx)
+            ans -= (cs - comb(sx, 2)) * px * (left - px)
+            ans -= ((ps - px * sx) * (right - sx) - (ps2 - px * sx * sx)) * px
+            ans -= ((ps - px * sx) * (left - px)  - (p2s - px * px * sx)) * sx
+
+            cp += px
+            ps += sx
+            ps2 += sx * sx
+            p2s += (px * 2 + 1) * sx
+
+            pre[x] += 1
+
+        return ans % 1_000_000_007
+```
+
+```java [sol-Java]
+class Solution {
+    public int subsequencesWithMiddleMode(int[] nums) {
+        int n = nums.length;
+        long ans = (long) n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120; // 所有方案数
+        Map<Integer, Integer> suf = new HashMap<>();
+        for (int x : nums) {
+            suf.merge(x, 1, Integer::sum); // suf[x]++
+        }
+        Map<Integer, Integer> pre = new HashMap<>(suf.size()); // 预分配空间
+
+        int cp = 0, cs = 0, ps = 0, p2s = 0, ps2 = 0;
+        for (int c : suf.values()) {
+            cs += comb2(c);
+        }
+
+        // 枚举 x，作为子序列正中间的数
+        for (int left = 0; left < n - 2; left++) {
+            int x = nums[left];
+            suf.merge(x, -1, Integer::sum); // suf[x]--
+
+            int px = pre.getOrDefault(x, 0);
+            int sx = suf.get(x);
+
+            cs -= sx;
+            ps -= px;
+            p2s -= px * px;
+            ps2 -= (sx * 2 + 1) * px;
+
+            int right = n - 1 - left;
+            ans -= (long) comb2(left - px) * comb2(right - sx);
+            ans -= (long) (cp - comb2(px)) * sx * (right - sx);
+            ans -= (long) (cs - comb2(sx)) * px * (left - px);
+            ans -= (long) ((ps - px * sx) * (right - sx) - (ps2 - px * sx * sx)) * px;
+            ans -= (long) ((ps - px * sx) * (left - px) - (p2s - px * px * sx)) * sx;
+
+            cp += px;
+            ps += sx;
+            ps2 += sx * sx;
+            p2s += (px * 2 + 1) * sx;
+
+            pre.merge(x, 1, Integer::sum); // pre[x]++
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+
+    private int comb2(int num) {
+        return num * (num - 1) / 2;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    int comb2(int num) {
+        return num * (num - 1) / 2;
+    }
+
+public:
+    int subsequencesWithMiddleMode(vector<int>& nums) {
+        int n = nums.size();
+        long long ans = 1LL * n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120; // 所有方案数
+        unordered_map<int, int> pre, suf;
+        for (int x : nums) {
+            suf[x]++;
+        }
+
+        int cp = 0, cs = 0, ps = 0, p2s = 0, ps2 = 0;
+        for (auto& [_, c] : suf) {
+            cs += comb2(c);
+        }
+
+        // 枚举 x，作为子序列正中间的数
+        for (int left = 0; left < n - 2; left++) {
+            int x = nums[left];
+            suf[x]--;
+            int px = pre[x];
+            int sx = suf[x];
+
+            cs -= sx;
+            ps -= px;
+            p2s -= px * px;
+            ps2 -= (sx * 2 + 1) * px;
+
+            int right = n - 1 - left;
+            ans -= 1LL * comb2(left - px) * comb2(right - sx);
+            ans -= 1LL * (cp - comb2(px)) * sx * (right - sx);
+            ans -= 1LL * (cs - comb2(sx)) * px * (left - px);
+            ans -= 1LL * ((ps - px * sx) * (right - sx) - (ps2 - px * sx * sx)) * px;
+            ans -= 1LL * ((ps - px * sx) * (left - px)  - (p2s - px * px * sx)) * sx;
+
+            cp += px;
+            ps += sx;
+            ps2 += sx * sx;
+            p2s += (px * 2 + 1) * sx;
+
+            pre[x]++;
+        }
+        return ans % 1'000'000'007;
+    }
+};
+```
+
+```go [sol-Go]
+func comb2(num int) int {
+	return num * (num - 1) / 2
+}
+
+func subsequencesWithMiddleMode(nums []int) int {
+	n := len(nums)
+	ans := n * (n - 1) * (n - 2) * (n - 3) * (n - 4) / 120 // 所有方案数
+	suf := map[int]int{}
+	for _, num := range nums {
+		suf[num]++
+	}
+	pre := make(map[int]int, len(suf)) // 预分配空间
+
+	var cp, cs, ps, p2s, ps2 int
+	for _, c := range suf {
+		cs += comb2(c)
+	}
+
+	// 枚举 x，作为子序列正中间的数
+	for left, x := range nums[:n-2] {
+		suf[x]--
+		px := pre[x]
+		sx := suf[x]
+
+		cs -= sx
+		ps -= px
+		p2s -= px * px
+		ps2 -= (sx*2 + 1) * px
+
+		right := n - 1 - left
+		ans -= comb2(left-px) * comb2(right-sx)
+		ans -= (cp - comb2(px)) * sx * (right - sx)
+		ans -= (cs - comb2(sx)) * px * (left - px)
+		ans -= ((ps-px*sx)*(right-sx) - (ps2 - px*sx*sx)) * px
+		ans -= ((ps-px*sx)*(left-px)  - (p2s - px*px*sx)) * sx
+
+		cp += px
+		ps += sx
+		ps2 += sx * sx
+		p2s += (px*2 + 1) * sx
+
+		pre[x]++
+	}
+	return ans % 1_000_000_007
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 思考题
