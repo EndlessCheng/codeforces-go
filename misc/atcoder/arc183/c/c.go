@@ -28,10 +28,6 @@ func run(in io.Reader, out io.Writer) {
 	ban := make([][]pair, n+1)
 	for ; m > 0; m-- {
 		Fscan(in, &l, &r, &x)
-		if l == r {
-			Fprint(out, 0)
-			return
-		}
 		ban[r] = append(ban[r], pair{l, x})
 	}
 
@@ -43,8 +39,7 @@ func run(in io.Reader, out io.Writer) {
 	for l := n; l > 0; l-- {
 		b := make([]bool, n+1)
 		f[l][l-1] = 1
-		f[l][l] = 1
-		for r := l + 1; r <= n; r++ {
+		for r := l; r <= n; r++ {
 			for _, p := range ban[r] {
 				if p.l >= l {
 					b[p.x] = true
