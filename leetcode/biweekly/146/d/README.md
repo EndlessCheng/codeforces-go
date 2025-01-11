@@ -385,7 +385,7 @@ func subsequencesWithMiddleMode(nums []int) int {
 
 考虑把方法一的内层循环优化成 $\mathcal{O}(1)$。
 
-内层循环有四个公式，我们一条一条考虑。
+内层循环有四条公式，我们一条一条分析。
 
 ### 1)
 
