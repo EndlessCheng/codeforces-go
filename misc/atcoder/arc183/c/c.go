@@ -50,9 +50,9 @@ func run(in io.Reader, out io.Writer) {
 					b[p.x] = true
 				}
 			}
-			for k := l; k <= r; k++ {
-				if !b[k] {
-					f[l][r] = (f[l][r] + C(r-l, k-l)*f[l][k-1]%mod*f[k+1][r]) % mod
+			for x := l; x <= r; x++ {
+				if !b[x] {
+					f[l][r] = (f[l][r] + C(r-l, x-l)*f[l][x-1]%mod*f[x+1][r]) % mod
 				}
 			}
 		}
