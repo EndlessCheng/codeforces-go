@@ -202,7 +202,7 @@ func subsequencesWithMiddleMode(nums []int) int {
 }
 ```
 
-### 数组优化
+### 小技巧：用数组代替哈希表
 
 把 $\textit{nums}$ 离散化，比如把 $[0,10,20,30]$ 压缩成 $[0,1,2,3]$。
 
@@ -401,8 +401,13 @@ $$
 \begin{aligned}
     & \sum_{y\ne x}\dbinom {\textit{pre}_y} 2  \cdot \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)      \\
 ={} & \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)\cdot \sum_{y\ne x}\dbinom {\textit{pre}_y} 2        \\
-={} & \textit{suf}_x \cdot (n-1-i- \textit{suf}_x)\cdot \left(\sum_{y}\dbinom {\textit{pre}_y} 2 - \dbinom {\textit{pre}_x} 2\right)       \\
 \end{aligned}
+$$
+
+其中
+
+$$
+\sum_{y\ne x}\dbinom {\textit{pre}_y} 2 = \left(\sum_{y}\dbinom {\textit{pre}_y} 2\right) - \dbinom {\textit{pre}_x} 2
 $$
 
 所以核心是维护
@@ -445,8 +450,8 @@ $$
 \begin{aligned}
 & \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot\textit{pre}_x\cdot(\textit{right}-\textit{suf}_x-\textit{suf}_y)      \\
 ={} & \textit{pre}_x\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot(\textit{right}-\textit{suf}_x-\textit{suf}_y)       \\
-={} & \textit{pre}_x\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot(\textit{right}-\textit{suf}_x)-\textit{pre}_y\cdot\textit{suf}_y^2       \\
-={} & \textit{pre}_x\cdot \left((\textit{right}-\textit{suf}_x)\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y-\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^2\right)       \\
+={} & \textit{pre}_x\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y\cdot(\textit{right}-\textit{suf}_x)-\textit{pre}_y\cdot\textit{suf}_y^{\,2}       \\
+={} & \textit{pre}_x\cdot \left((\textit{right}-\textit{suf}_x)\cdot \sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y-\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^{\,2}\right)       \\
 \end{aligned}
 $$
 
@@ -457,7 +462,7 @@ $$
 $$
 
 $$
-\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^2 = \left(\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^2\right) - \textit{pre}_x\cdot\textit{suf}_x^2
+\sum_{y\ne x}\textit{pre}_y\cdot\textit{suf}_y^{\,2} = \left(\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^{\,2}\right) - \textit{pre}_x\cdot\textit{suf}_x^{\,2}
 $$
 
 所以核心是维护
@@ -469,10 +474,10 @@ $$
 和
 
 $$
-\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^2
+\sum_{y}\textit{pre}_y\cdot\textit{suf}_y^{\,2}
 $$
 
-如果 $\textit{pre}_y$ 增加了 $1$，那么上式增加了 $\textit{suf}_y^2$。
+如果 $\textit{pre}_y$ 增加了 $1$，那么上式增加了 $\textit{suf}_y^{\,2}$。
 
 如果 $\textit{suf}_y$ 减少了 $1$，设 $\textit{sy}$ 为减少后的值，那么上式减少了 $\textit{pre}_y\cdot ((\textit{sy}+1)^2 - \textit{sy}^2) =\textit{pre}_y\cdot(\textit{sy}\cdot 2 + 1)$。
 
@@ -500,7 +505,7 @@ $$
 |  $\textit{cs}$ | $\sum\limits_{y}\dbinom {\textit{suf}_y} 2$  |
 |  $\textit{ps}$ | $\sum\limits_{y}\textit{pre}_y\cdot\textit{suf}_y$  |
 |  $p2s$ |  $\sum\limits_{y}\textit{pre}_y^2\cdot\textit{suf}_y$ |
-|  $ps2$ |  $\sum\limits_{y}\textit{pre}_y\cdot\textit{suf}_y^2$ |
+|  $ps2$ |  $\sum\limits_{y}\textit{pre}_y\cdot\textit{suf}_y^{\,2}$ |
 
 ```py [sol-Python3]
 class Solution:
@@ -516,6 +521,7 @@ class Solution:
         # 枚举 x，作为子序列正中间的数
         for left, x in enumerate(nums[:-2]):
             suf[x] -= 1
+
             px = pre[x]
             sx = suf[x]
 
@@ -617,6 +623,7 @@ public:
         for (int left = 0; left < n - 2; left++) {
             int x = nums[left];
             suf[x]--;
+
             int px = pre[x];
             int sx = suf[x];
 
@@ -666,6 +673,7 @@ func subsequencesWithMiddleMode(nums []int) int {
 	// 枚举 x，作为子序列正中间的数
 	for left, x := range nums[:n-2] {
 		suf[x]--
+
 		px := pre[x]
 		sx := suf[x]
 
