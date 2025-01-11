@@ -27,6 +27,7 @@ func subsequencesWithMiddleMode(nums []int) int {
 	// 枚举 x，作为子序列正中间的数
 	for left, x := range nums[:n-2] {
 		suf[x]--
+
 		px := pre[x]
 		sx := suf[x]
 
