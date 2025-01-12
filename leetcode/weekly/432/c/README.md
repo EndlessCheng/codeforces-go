@@ -295,7 +295,7 @@ public:
         priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
         pq.emplace(0, 0); // (路径最大边权, 节点编号)
         while (!pq.empty()) {
-            int d = pq.top().first, x = pq.top().second;
+            auto [d, x] = pq.top();
             pq.pop();
             if (d > dis[x]) {
                 continue;
