@@ -19,6 +19,12 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 一行]
+class Solution:
+    def zigzagTraversal(self, grid: List[List[int]]) -> List[int]:
+        return list(chain(*(row[::-1] if i % 2 else row for i, row in enumerate(grid))))[::2]
+```
+
 ```java [sol-Java]
 class Solution {
     public List<Integer> zigzagTraversal(int[][] grid) {
