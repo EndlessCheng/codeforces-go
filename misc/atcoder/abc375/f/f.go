@@ -57,10 +57,10 @@ func run(in io.Reader, _w io.Writer) {
 			}
 		}
 	}
-	addEdge := func(from, to, wt int) {
+	addEdge := func(v, w, wt int) {
 		for i := range g {
 			for j := range g {
-				g[i][j] = min(g[i][j], g[i][from]+wt+g[to][j])
+				g[i][j] = min(g[i][j], g[i][v]+wt+g[w][j], g[i][w]+wt+g[v][j])
 			}
 		}
 	}
@@ -71,7 +71,6 @@ func run(in io.Reader, _w io.Writer) {
 		if q.w == 0 {
 			e := es[q.v-1]
 			addEdge(e.v, e.w, e.wt)
-			addEdge(e.w, e.v, e.wt)
 		} else {
 			d := g[q.v-1][q.w-1]
 			if d == inf {
@@ -86,4 +85,3 @@ func run(in io.Reader, _w io.Writer) {
 }
 
 func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
-func min(a, b int) int { if b < a { return b }; return a }
