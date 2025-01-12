@@ -4,7 +4,9 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
+	"math/bits"
 	"os"
+	"slices"
 )
 
 // https://space.bilibili.com/206214
@@ -16,7 +18,8 @@ func run(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i])
 		ans += a[i] / (a[i] & -a[i])
 	}
-	for m := 1; m <= 1<<24; m <<= 1 {
+	mx := bits.Len(uint(slices.Max(a)))
+	for m := 1; m <= 1<<mx; m <<= 1 {
 		type pair struct{ c, s int }
 		cnt := map[int]pair{}
 		s := 0
