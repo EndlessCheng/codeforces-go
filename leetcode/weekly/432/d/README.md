@@ -1,3 +1,5 @@
+## 方法一：从左到右滑窗+单调栈+单调队列
+
 题目要求把子数组操作成递增的（允许相等），这可以贪心地做，具体操作方法见 [3402 题的题解](https://leetcode.cn/problems/minimum-operations-to-make-columns-strictly-increasing/solutions/3033305/cong-shang-dao-xia-tan-xin-pythonjavacgo-dvhp/)。
 
 由于子数组越长，操作次数越多，有单调性，可以用 [滑动窗口【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)解决。
@@ -20,22 +22,32 @@ $$
 
 如果计算操作次数的减少量？
 
-设 $\textit{left}[i]$ 是 $i$ 左侧最近的大于 $\textit{nums}[i]$ 的数的下标。
+**思考的起点**：去掉 $6$ 之后，每个数要变成什么？如何计算要变成的那个数是多少？
 
-- 如果 $\textit{out}=\textit{nums}[\textit{left}[i]$ 离开窗口，那么 $\textit{nums}[i]$ 的操作次数会减少 $\textit{out} - \textit{nums}[i]$。例如上面例子中的 $3$ 和 $4$，操作次数分别减少了 $3$ 和 $2$。
-- 如果 $\textit{left}[i]$ 在离开窗口的数的右边，例如上面例子中的 $\textit{nums}[2]=1$ 以及 $\textit{nums}[3]=2$，他们的 $\textit{left}[i]$ 都是 $1$，这两个数的操作次数仍然受到 $\textit{nums}[1]=3$ 的约束，操作次数的减少量和 $3$ 是一样的。
+设 $\textit{left}[i]$ 是 $i$ 左侧最近的大于 $\textit{nums}[i]$ 的数的下标。
 
 把 $\textit{left}[i]$ 和 $i$ 连边，得到一棵树。$\textit{nums}=[6,3,1,2,4,1,4]$ 如下。为方便大家阅读，图中画的是元素值，实际代码中是下标。
 
 ![lc3420.png](https://pic.leetcode.cn/1736675203-LzPPhO-lc3420.png)
 
-当 $6$ 离开窗口时，我们遍历 $6$ 的儿子节点。
+设 $\textit{out}=6$ 是离开窗口的数，分类讨论：
 
-- 对于第一棵子树 $3$，其中的每个节点的操作次数都减少了 $6-3=3$，子树内有 $3$ 个节点，所以总的操作次数减少了 $(6-3)\cdot 3 = 9$。
-- 对于第二棵子树 $4$，其中的每个节点的操作次数都减少了 $6-4=2$，子树内有 $2$ 个节点，所以总的操作次数减少了 $(6-4)\cdot 2 = 4$。
-- 对于第三棵子树 $4$，如果元素 $4$ 的下标大于窗口右端点 $r$，结束遍历。否则计算方式同上。
+- 如果 $\textit{out}$ 就是在 $i$ 左侧的大于 $\textit{nums}[i]$ 的数，那么 $\textit{out}$ 离开窗口后，$\textit{nums}[i]$ 无需操作，仍然为 $\textit{nums}[i]$。例如上图中的 $3$ 和 $4$。
+- 如果 $\textit{left}[i]$ 在 $\textit{out}$ 的右边，例如上图中的 $1$ 和 $2$，他们左侧大于其的数不是 $\textit{out}$，而是 $3$，所以这两个数操作后都变成了 $3$。
 
-怎么算出子树内的节点个数？可以 DFS。更简单的做法是，算出每个 $x=\textit{nums}[i]$ 右侧 $\ge x$ 的最近元素下标 $\textit{posR}[i]$（如果不存在则为 $n$）。于是子树节点下标范围为 $[i,\textit{posR}[i])$，子树大小就是区间大小，即
+继续思考下去，可以得出如下结论：
+
+- **树中每个节点都要变成其根节点的值。**
+
+$\textit{out}$ 离开窗口，就相当于断开 $\textit{out}$ 及其子节点的边，这会生成三棵更小的树。每棵树中的节点，都要变成其根节点的值。
+
+遍历这三棵 $\textit{out}$ 的子树，计算操作次数的减少量：
+
+- 对于第一棵子树，其中每个节点都要变成 $3$，操作次数都减少了 $6-3=3$，子树内有 $3$ 个节点，所以总的操作次数减少了 $(6-3)\cdot 3 = 9$。
+- 对于第一棵子树，其中每个节点都要变成 $4$，操作次数都减少了 $6-4=2$，子树内有 $2$ 个节点，所以总的操作次数减少了 $(6-4)\cdot 2 = 4$。
+- 对于第三棵子树，如果元素 $4$ 的下标大于窗口右端点 $r$，结束遍历。否则计算方式同上。
+
+怎么计算树的节点个数？可以 DFS。更简单的做法是，算出每个 $x=\textit{nums}[i]$ 右侧 $\ge x$ 的最近元素下标 $\textit{posR}[i]$（如果不存在则为 $n$）。于是子树节点下标范围为 $[i,\textit{posR}[i])$，子树大小就是区间大小，即
 
 $$
 \textit{posR}[i] - i
@@ -53,13 +65,11 @@ $$
 \min(\textit{posR}[i], r+1) - i
 $$
 
-操作次数的减小量为
+对于该子树，操作次数的减小量为
 
 $$
 (\textit{out} - \textit{nums}[i]) \cdot (\min(\textit{posR}[i], r+1) - i)
 $$
-
-其中 $\textit{out}$ 是离开窗口的数。
 
 计算左右最近大于（大于等于）$\textit{nums}[i]$ 的元素下标，可以用 [单调栈【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)。
 
@@ -285,6 +295,194 @@ func countNonDecreasingSubarrays(nums []int, k int) (ans int64) {
 			// 队首已经离开窗口了
 			if q[0] < l {
 				q = q[1:]
+			}
+		}
+
+		ans += int64(r - l + 1)
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：从右到左滑窗+单调栈
+
+从右到左滑窗，可以不需要单调队列，写起来也更加简单。
+
+再来看这棵树。
+
+![lc3420.png](https://pic.leetcode.cn/1736675203-LzPPhO-lc3420.png)
+
+外层循环**倒序**枚举窗口左端点 $l$，内层循环左移窗口右端点 $r$。
+
+例如 $x=\textit{nums}[l]=6$ 进入窗口，那么方法一中的删边就变成了加边，所以操作次数的增加量就是
+
+$$
+(x - v)\cdot \textit{sz}
+$$
+
+其中 $v$ 是子树根节点的值，$\textit{sz}$ 是子树大小。例如子树 $3$ 的操作次数增加了 $(6-3)\cdot 3=9$。
+
+右端点 $\textit{nums}[r]$ 离开窗口更简单，操作次数的减少量，等于 $\textit{nums}[r]$ 所属那棵树的根节点的值，减去 $\textit{nums}[r]$。例如上图中的 $4$ 离开窗口，那么操作次数的减少量就是 $6-4=2$。同时，把 $\textit{nums}[r]$ 所属子树的大小减一。
+
+```py [sol-Python3]
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        ans = cnt = r_tree = 0  # r_tree 表示窗口最右边那棵树在 st 中的下标
+        st = []  # (根节点的值, 树的大小)
+        r = n - 1
+        for l in range(n - 1, -1, -1):
+            # x 进入窗口
+            x = nums[l]
+            size = 1  # 统计以 x 为根的树的大小
+            while st and x >= st[-1][0]:
+                # 以 v 为根的树，现在合并到 x 的下面（x 和 v 连一条边）
+                v, sz = st.pop()
+                size += sz
+                cnt += (x - v) * sz  # 树 v 中的数都变成 x
+            st.append([x, size])
+
+            # 如果从 st 中弹出树包含 r_tree，那么 r_tree 现在指向栈顶这棵树
+            r_tree = min(r_tree, len(st) - 1)
+
+            # 当 cnt 大于 k 时，缩小窗口
+            while cnt > k:
+                # 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
+                cnt -= st[r_tree][0] - nums[r]
+                r -= 1
+                # nums[r] 离开窗口后，树的大小减一
+                st[r_tree][1] -= 1
+                if st[r_tree][1] == 0:  # 这棵树是空的
+                    r_tree += 1  # r_tree 指向左边下一棵树
+
+            ans += r - l + 1
+
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long countNonDecreasingSubarrays(int[] nums, int k) {
+        int n = nums.length;
+        long ans = 0;
+        long cnt = 0;
+        int rTree = 0; // rTree 表示窗口最右边那棵树在 st 中的下标
+        List<int[]> st = new ArrayList<>(); // (根节点的值, 树的大小)
+        int r = n - 1;
+        for (int l = n - 1; l >= 0; l--) {
+            // x 进入窗口
+            int x = nums[l];
+            int size = 1; // 统计以 x 为根的树的大小
+            while (!st.isEmpty() && x >= st.get(st.size() - 1)[0]) {
+                // 以 v 为根的树，现在合并到 x 的下面（x 和 v 连一条边）
+                int[] top = st.remove(st.size() - 1);
+                int v = top[0], sz = top[1];
+                size += sz;
+                cnt += (long) (x - v) * sz; // 树 v 中的数都变成 x
+            }
+            st.add(new int[]{x, size});
+
+            // 如果从 st 中弹出树包含 rTree，那么 rTree 现在指向栈顶这棵树
+            rTree = Math.min(rTree, st.size() - 1);
+
+            // 当 cnt 大于 k 时，缩小窗口
+            while (cnt > k) {
+                // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
+                cnt -= st.get(rTree)[0] - nums[r];
+                r--;
+                // nums[r] 离开窗口后，树的大小减一
+                if (--st.get(rTree)[1] == 0) {
+                    rTree++; // rTree 指向左边下一棵树
+                }
+            }
+
+            ans += r - l + 1;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countNonDecreasingSubarrays(vector<int>& nums, int k) {
+        int n = nums.size();
+        long long ans = 0, cnt = 0;
+        int r_tree = 0; // r_tree 表示窗口最右边那棵树在 st 中的下标
+        vector<pair<int, int>> st; // (根节点的值, 树的大小)
+        int r = n - 1;
+        for (int l = n - 1; l >= 0; l--) {
+            // x 进入窗口
+            int x = nums[l];
+            int size = 1; // 统计以 x 为根的树的大小
+            while (!st.empty() && x >= st.back().first) {
+                // 以 v 为根的树，现在合并到 x 的下面（x 和 v 连一条边）
+                auto [v, sz] = st.back();
+                st.pop_back();
+                size += sz;
+                cnt += (long long) (x - v) * sz; // 树 v 中的数都变成 x
+            }
+            st.emplace_back(x, size);
+
+            // 如果从 st 中弹出树包含 r_tree，那么 r_tree 现在指向栈顶这棵树
+            r_tree = min(r_tree, (int) st.size() - 1);
+
+            // 当 cnt 大于 k 时，缩小窗口
+            while (cnt > k) {
+                // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
+                cnt -= st[r_tree].first - nums[r];
+                r--;
+                // nums[r] 离开窗口后，树的大小减一
+                if (--st[r_tree].second == 0) {
+                    r_tree++; // r_tree 指向左边下一棵树
+                }
+            }
+
+            ans += r - l + 1;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countNonDecreasingSubarrays(nums []int, k int) (ans int64) {
+	n := len(nums)
+	cnt, rTree := 0, 0 // rTree 表示窗口最右边那棵树在 st 中的下标
+	type pair struct{ val, size int } // 根节点的值, 树的大小
+	st := []pair{}
+	r := n - 1
+	for l := n - 1; l >= 0; l-- {
+		// x 进入窗口
+		x := nums[l]
+		size := 1 // 统计以 x 为根的树的大小
+		for len(st) > 0 && x >= st[len(st)-1].val {
+			// 以 val 为根的树，现在合并到 x 的下面（x 和 val 连一条边）
+			p := st[len(st)-1]
+			st = st[:len(st)-1]
+			size += p.size
+			cnt += (x - p.val) * p.size // 树 val 中的数都变成 x
+		}
+		st = append(st, pair{x, size})
+
+		// 如果从 st 中弹出树包含 rTree，那么 rTree 现在指向栈顶这棵树
+		rTree = min(rTree, len(st)-1)
+
+		// 当 cnt 大于 k 时，缩小窗口
+		for cnt > k {
+			// 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
+			cnt -= st[rTree].val - nums[r]
+			r--
+			// nums[r] 离开窗口后，树的大小减一
+			st[rTree].size--
+			if st[rTree].size == 0 { // 这棵树是空的
+				rTree++ // rTree 指向左边下一棵树
 			}
 		}
 
