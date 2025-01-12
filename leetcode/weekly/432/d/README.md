@@ -6,7 +6,7 @@
 
 ### 右端点元素进入窗口
 
-我们需要知道窗口内的最大值，这便是 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)，原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
+我们需要知道窗口内的最大值，即 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)，原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
 设窗口内的最大值为 $\textit{mx}$，那么右端点元素 $x$ 进入窗口后，讨论 $x$ 和 $\textit{mx}$ 的大小关系，操作次数增加了
 
@@ -194,18 +194,18 @@ public:
         int n = nums.size();
         vector<vector<int>> g(n);
         vector<int> pos_r(n, n);
-        vector<int> st;
+        stack<int> st;
         for (int i = 0; i < n; i++) {
             int x = nums[i];
-            while (!st.empty() && x >= nums[st.back()]) {
-                pos_r[st.back()] = i;
-                st.pop_back();
+            while (!st.empty() && x >= nums[st.top()]) {
+                pos_r[st.top()] = i;
+                st.pop();
             }
             // 循环结束后，栈顶就是左侧 > x 的最近元素了
             if (!st.empty()) {
-                g[st.back()].push_back(i);
+                g[st.top()].push_back(i);
             }
-            st.push_back(i);
+            st.push(i);
         }
 
         long long ans = 0;
