@@ -5,7 +5,7 @@
 - 从 $0$ 出发，必须能访问到所有点。
 - 每个点的**入度**至多为 $\textit{threshold}$。
 
-在这种情况下，由于从 $0$ 出发，在不访问重复节点的情况下，DFS 过程是一棵树，所以一定存在一种删边方案，使得每个点的入度恰好为 $1$（除了节点 $0$ 没有入度），因此我们一定能满足 $\textit{threshold}$ 的要求。
+在这种情况下，由于从 $0$ 出发，在不访问重复节点的情况下，DFS 过程是一棵树（叫做 DFS 树），每个节点都只有一个父节点（除了根节点 $0$ 没有父节点）。所以一定存在一种删边方案，使得每个点的入度恰好为 $1$（除了根节点 $0$ 没有入度），因此我们一定能满足 $\textit{threshold}$ 的要求。
 
 所以 $\textit{threshold}$ 是**多余的**。
 
@@ -279,7 +279,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int minMaxWeight(int n, vector<vector<int>>& edges, int _) {
+    int minMaxWeight(int n, vector<vector<int>>& edges, int) {
         if (edges.size() < n - 1) {
             return -1;
         }
@@ -371,6 +371,12 @@ func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; re
 
 - 时间复杂度：$\mathcal{O}(m\log m)$，其中 $m$ 是 $\textit{edges}$ 的长度。
 - 空间复杂度：$\mathcal{O}(m)$。
+
+## 思考题
+
+把题目中的「出去的边」改成「进来的边」，要怎么做？
+
+注意当 $\textit{threshold}=1$ 的时候，这等价于找一条哈密顿路径，是 NP 完全问题。可以用状压 DP 解决，但必须限制数据范围 $n\le 20$。
 
 ## 相似题目
 
