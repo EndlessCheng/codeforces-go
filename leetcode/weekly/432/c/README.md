@@ -304,7 +304,7 @@ public:
                 int new_d = max(d, w);
                 if (new_d < dis[y]) {
                     dis[y] = new_d;
-                    pq.push({new_d, y});
+                    pq.emplace(new_d, y);
                 }
             }
         }
