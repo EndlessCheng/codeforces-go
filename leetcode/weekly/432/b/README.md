@@ -1,4 +1,4 @@
-请先完成不允许感化的版本：[LCR 166. 珠宝的最高价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)，[讲解](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-hui-su-da-epvl/)。
+请先完成不允许感化的版本：[64. 最小路径和](https://leetcode.cn/problems/minimum-path-sum/description/)，[讲解](https://leetcode.cn/problems/minimum-path-sum/solutions/3045828/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-zfb2/)。
 
 本题相当于可以不选路径上的至多 $2$ 个数。
 
@@ -25,7 +25,7 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1HKcue9ETm/?t=3m51s)，欢迎点赞关注~
 
-## 写法一：记忆化搜索
+## 一、记忆化搜索
 
 ```py [sol-Python3]
 class Solution:
@@ -146,18 +146,25 @@ func maximumAmount(coins [][]int) int {
 }
 ```
 
-## 写法二：递推
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{coins}$ 的行数和列数。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(mn)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(mn)$。
+- 空间复杂度：$\mathcal{O}(mn)$。保存多少状态，就需要多少空间。
+
+## 二、1:1 翻译成递推
+
+1:1 地把记忆化搜索翻译成递推，见 [讲解](https://leetcode.cn/problems/minimum-path-sum/solutions/3045828/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-zfb2/)。
+
+代码实现时，可以把 $f[0][1][k]$ 初始化成 $0$，这样我们无需单独计算 $f[1][1]$。
 
 ```py [sol-Python3]
 class Solution:
     def maximumAmount(self, coins: List[List[int]]) -> int:
         m, n = len(coins), len(coins[0])
         f = [[[-inf] * 3 for _ in range(n + 1)] for _ in range(m + 1)]
+        f[0][1] = [0] * 3
         for i, row in enumerate(coins):
             for j, x in enumerate(row):
-                if i == 0 and j == 0:
-                    f[1][1] = [x, max(x, 0), max(x, 0)]
-                    continue
                 f[i + 1][j + 1][0] = max(f[i + 1][j][0], f[i][j + 1][0]) + x
                 f[i + 1][j + 1][1] = max(f[i + 1][j][1] + x, f[i][j + 1][1] + x,
                                          f[i + 1][j][0], f[i][j + 1][0])
@@ -175,15 +182,11 @@ class Solution {
         for (int[] row : f[0]) {
             Arrays.fill(row, Integer.MIN_VALUE);
         }
+        Arrays.fill(f[0][1], 0);
         for (int i = 0; i < m; i++) {
             Arrays.fill(f[i + 1][0], Integer.MIN_VALUE);
             for (int j = 0; j < n; j++) {
                 int x = coins[i][j];
-                if (i == 0 && j == 0) {
-                    f[1][1][0] = x;
-                    f[1][1][1] = f[1][1][2] = Math.max(x, 0);
-                    continue;
-                }
                 f[i + 1][j + 1][0] = Math.max(f[i + 1][j][0], f[i][j + 1][0]) + x;
                 f[i + 1][j + 1][1] = Math.max(
                         Math.max(f[i + 1][j][1], f[i][j + 1][1]) + x,
@@ -206,14 +209,10 @@ public:
     int maximumAmount(vector<vector<int>>& coins) {
         int m = coins.size(), n = coins[0].size();
         vector f(m + 1, vector(n + 1, array<int, 3>{INT_MIN / 2, INT_MIN / 2, INT_MIN / 2}));
+        f[0][1] = {0, 0, 0};
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 int x = coins[i][j];
-                if (i == 0 && j == 0) {
-                    f[1][1][0] = x;
-                    f[1][1][1] = f[1][1][2] = max(x, 0);
-                    continue;
-                }
                 f[i + 1][j + 1][0] = max(f[i + 1][j][0], f[i][j + 1][0]) + x;
                 f[i + 1][j + 1][1] = max({f[i + 1][j][1] + x, f[i][j + 1][1] + x,
                                           f[i + 1][j][0], f[i][j + 1][0]});
@@ -236,15 +235,10 @@ func maximumAmount(coins [][]int) int {
 	for j := range f[0] {
 		f[0][j] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
 	}
+	f[0][1] = [3]int{}
 	for i, row := range coins {
 		f[i+1][0] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
 		for j, x := range row {
-			if i == 0 && j == 0 {
-				f[1][1][0] = x
-				f[1][1][1] = max(x, 0)
-				f[1][1][2] = max(x, 0)
-				continue
-			}
 			f[i+1][j+1][0] = max(f[i+1][j][0], f[i][j+1][0]) + x
 			f[i+1][j+1][1] = max(f[i+1][j][1]+x, f[i][j+1][1]+x, f[i+1][j][0], f[i][j+1][0])
 			f[i+1][j+1][2] = max(f[i+1][j][2]+x, f[i][j+1][2]+x, f[i+1][j][1], f[i][j+1][1])
@@ -258,6 +252,115 @@ func maximumAmount(coins [][]int) int {
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{coins}$ 的行数和列数。
 - 空间复杂度：$\mathcal{O}(mn)$。
+
+## 三、空间优化
+
+举个例子，在计算 $f[1][1]$ 时，会用到 $f[0][1]$，但是之后就不再用到了。那么干脆把 $f[1][1]$ 记到 $f[0][1]$ 中，这样对于 $f[1][2]$ 来说，它需要的数据就在 $f[0][1]$ 和 $f[0][2]$ 中。$f[1][2]$ 算完后也可以同样记到 $f[0][2]$ 中。
+
+所以第一个维度可以去掉。
+
+具体可以看[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)中的讲解。本题的转移方程类似完全背包，故整体采用正序遍历（但内部的 $k$ 要倒序）。
+
+```py [sol-Python3]
+class Solution:
+    def maximumAmount(self, coins: List[List[int]]) -> int:
+        n = len(coins[0])
+        f = [[-inf] * 3 for _ in range(n + 1)]
+        f[1] = [0] * 3
+        for row in coins:
+            for j, x in enumerate(row):
+                f[j + 1][2] = max(f[j][2] + x, f[j + 1][2] + x, f[j][1], f[j + 1][1])
+                f[j + 1][1] = max(f[j][1] + x, f[j + 1][1] + x, f[j][0], f[j + 1][0])
+                f[j + 1][0] = max(f[j][0], f[j + 1][0]) + x
+        return f[n][2]
+```
+
+```py [sol-Python3 手写 max]
+class Solution:
+    def maximumAmount(self, coins: List[List[int]]) -> int:
+        max = lambda a, b: a if a > b else b
+        n = len(coins[0])
+        f = [[-inf] * 3 for _ in range(n + 1)]
+        f[1] = [0] * 3
+        for row in coins:
+            for j, x in enumerate(row):
+                f[j + 1][2] = max(max(f[j][2], f[j + 1][2]) + x, max(f[j][1], f[j + 1][1]))
+                f[j + 1][1] = max(max(f[j][1], f[j + 1][1]) + x, max(f[j][0], f[j + 1][0]))
+                f[j + 1][0] = max(f[j][0], f[j + 1][0]) + x
+        return f[n][2]
+```
+
+```java [sol-Java]
+class Solution {
+    public int maximumAmount(int[][] coins) {
+        int n = coins[0].length;
+        int[][] f = new int[n + 1][3];
+        for (int[] row : f) {
+            Arrays.fill(row, Integer.MIN_VALUE);
+        }
+        Arrays.fill(f[1], 0);
+        for (int[] row : coins) {
+            for (int j = 0; j < n; j++) {
+                int x = row[j];
+                f[j + 1][2] = Math.max(
+                        Math.max(f[j][2], f[j + 1][2]) + x,
+                        Math.max(f[j][1], f[j + 1][1])
+                );
+                f[j + 1][1] = Math.max(
+                        Math.max(f[j][1], f[j + 1][1]) + x,
+                        Math.max(f[j][0], f[j + 1][0])
+                );
+                f[j + 1][0] = Math.max(f[j][0], f[j + 1][0]) + x;
+            }
+        }
+        return f[n][2];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maximumAmount(vector<vector<int>>& coins) {
+        int n = coins[0].size();
+        vector f(n + 1, array<int, 3>{INT_MIN / 2, INT_MIN / 2, INT_MIN / 2});
+        f[1] = {0, 0, 0};
+        for (auto& row : coins) {
+            for (int j = 0; j < n; j++) {
+                int x = row[j];
+                f[j + 1][2] = max({f[j][2] + x, f[j + 1][2] + x, f[j][1], f[j + 1][1]});
+                f[j + 1][1] = max({f[j][1] + x, f[j + 1][1] + x, f[j][0], f[j + 1][0]});
+                f[j + 1][0] = max(f[j][0], f[j + 1][0]) + x;
+            }
+        }
+        return f[n][2];
+    }
+};
+```
+
+```go [sol-Go]
+func maximumAmount(coins [][]int) int {
+	n := len(coins[0])
+	f := make([][3]int, n+1)
+	for j := range f {
+		f[j] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
+	}
+	f[1] = [3]int{}
+	for _, row := range coins {
+		for j, x := range row {
+			f[j+1][2] = max(f[j][2]+x, f[j+1][2]+x, f[j][1], f[j+1][1])
+			f[j+1][1] = max(f[j][1]+x, f[j+1][1]+x, f[j][0], f[j+1][0])
+			f[j+1][0] = max(f[j][0], f[j+1][0]) + x
+		}
+	}
+	return f[n][2]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{coins}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面动态规划题单中的「**二、网格图 DP**」。
 

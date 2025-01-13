@@ -4,6 +4,23 @@ import "math"
 
 // https://space.bilibili.com/206214
 func maximumAmount(coins [][]int) int {
+	n := len(coins[0])
+	f := make([][3]int, n+1)
+	for j := range f {
+		f[j] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
+	}
+	f[1] = [3]int{}
+	for _, row := range coins {
+		for j, x := range row {
+			f[j+1][2] = max(f[j][2]+x, f[j+1][2]+x, f[j][1], f[j+1][1])
+			f[j+1][1] = max(f[j][1]+x, f[j+1][1]+x, f[j][0], f[j+1][0])
+			f[j+1][0] = max(f[j][0], f[j+1][0]) + x
+		}
+	}
+	return f[n][2]
+}
+
+func maximumAmount2(coins [][]int) int {
 	m, n := len(coins), len(coins[0])
 	f := make([][][3]int, m+1)
 	for i := range f {
@@ -12,15 +29,10 @@ func maximumAmount(coins [][]int) int {
 	for j := range f[0] {
 		f[0][j] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
 	}
+	f[0][1] = [3]int{}
 	for i, row := range coins {
 		f[i+1][0] = [3]int{math.MinInt / 2, math.MinInt / 2, math.MinInt / 2}
 		for j, x := range row {
-			if i == 0 && j == 0 {
-				f[1][1][0] = x
-				f[1][1][1] = max(x, 0)
-				f[1][1][2] = max(x, 0)
-				continue
-			}
 			f[i+1][j+1][0] = max(f[i+1][j][0], f[i][j+1][0]) + x
 			f[i+1][j+1][1] = max(f[i+1][j][1]+x, f[i][j+1][1]+x, f[i+1][j][0], f[i][j+1][0])
 			f[i+1][j+1][2] = max(f[i+1][j][2]+x, f[i][j+1][2]+x, f[i+1][j][1], f[i][j+1][1])
@@ -29,7 +41,7 @@ func maximumAmount(coins [][]int) int {
 	return f[m][n][2]
 }
 
-func maximumAmount2(coins [][]int) int {
+func maximumAmount1(coins [][]int) int {
 	m, n := len(coins), len(coins[0])
 	memo := make([][][3]int, m)
 	for i := range memo {
