@@ -71,8 +71,9 @@ func countNonDecreasingSubarrays2(nums []int, k int) (ans int64) {
 		q = append(q, r)
 
 		// 由于队首到队尾单调递减，所以窗口最大值就是队首
-		cnt += max(nums[q[0]]-x, 0)
+		cnt += nums[q[0]] - x
 
+		// 操作次数太多，缩小窗口
 		for cnt > k {
 			out := nums[l] // 离开窗口的元素
 			for _, i := range g[l] {

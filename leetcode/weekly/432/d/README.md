@@ -8,10 +8,10 @@
 
 我们需要知道窗口内的最大值，即 [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)，原理请看 [单调队列【基础算法精讲 27】](https://www.bilibili.com/video/BV1bM411X72E/)。
 
-设窗口内的最大值为 $\textit{mx}$，那么右端点元素 $x$ 进入窗口后，讨论 $x$ 和 $\textit{mx}$ 的大小关系，操作次数增加了
+右端点元素 $x$ 进入窗口后，设窗口内的最大值为 $\textit{mx}$，那么操作次数增加了
 
 $$
-\max(\textit{mx}-x,0)
+\textit{mx}-x
 $$
 
 ### 左端点元素离开窗口
@@ -20,9 +20,13 @@ $$
 
 例如 $\textit{nums}=[6,3,1,2,4,1,4]$，现在窗口内的数为 $[6,3,1,2,4,1]$，这些数都变成 $6$。如果 $6$ 离开了窗口，那么 $[3,1,2,4,1]$ 会变成 $[3,3,3,4,4]$，每个数的操作次数都会变少。
 
-如果计算操作次数的减少量？
+如果计算操作次数的减少量？换句话说，去掉 $6$ 之后，每个数都变成多少了？
 
-**思考的起点**：去掉 $6$ 之后，每个数要变成什么？如何计算要变成的那个数是多少？
+**思考**：去掉 $6$ 之后，哪些数不变（即其最初的值）？哪些数仍然要变大？
+
+**解答**：对于 $3$ 和 $4$ 来说，由于（去掉 $6$ 之后）前面没有它们大的数，所以 $3$ 和 $4$ 不用变。其他数左边仍然有更大的数，所以仍然要变大。
+
+这启发我们引入如下概念。
 
 设 $\textit{left}[i]$ 是 $i$ 左侧最近的大于 $\textit{nums}[i]$ 的数的下标。
 
@@ -33,7 +37,7 @@ $$
 设 $\textit{out}=6$ 是离开窗口的数，分类讨论：
 
 - 如果 $\textit{out}$ 就是在 $i$ 左侧的大于 $\textit{nums}[i]$ 的数，那么 $\textit{out}$ 离开窗口后，$\textit{nums}[i]$ 无需操作，仍然为 $\textit{nums}[i]$。例如上图中的 $3$ 和 $4$。
-- 如果 $\textit{left}[i]$ 在 $\textit{out}$ 的右边，例如上图中的 $1$ 和 $2$，他们左侧大于其的数不是 $\textit{out}$，而是 $3$，所以这两个数操作后都变成了 $3$。
+- 如果 $\textit{left}[i]$ 在 $\textit{out}$ 的右边，例如上图中的 $1$ 和 $2$，它们左侧大于其的数不是 $\textit{out}$，而是 $3$，所以这两个数操作后都变成了 $3$。
 
 继续思考下去，可以得出如下结论：
 
@@ -106,9 +110,9 @@ class Solution:
             q.append(r)
 
             # 由于队首到队尾单调递减，所以窗口最大值就是队首
-            cnt += max(nums[q[0]] - x, 0)
+            cnt += nums[q[0]] - x
 
-            # 当 cnt 大于 k 时，缩小窗口
+            # 操作次数太多，缩小窗口
             while cnt > k:
                 out = nums[l]  # 离开窗口的元素
                 for i in g[l]:
@@ -160,9 +164,9 @@ class Solution {
             q.addLast(r);
 
             // 由于队首到队尾单调递减，所以窗口最大值就是队首
-            cnt += Math.max(nums[q.peekFirst()] - x, 0);
+            cnt += nums[q.peekFirst()] - x;
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 int out = nums[l]; // 离开窗口的元素
                 for (int i : g[l]) {
@@ -220,9 +224,9 @@ public:
             q.push_back(r);
 
             // 由于队首到队尾单调递减，所以窗口最大值就是队首
-            cnt += max(nums[q.front()] - x, 0);
+            cnt += nums[q.front()] - x;
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 int out = nums[l]; // 离开窗口的元素
                 for (int i : g[l]) {
@@ -280,8 +284,9 @@ func countNonDecreasingSubarrays(nums []int, k int) (ans int64) {
 		q = append(q, r)
 
 		// 由于队首到队尾单调递减，所以窗口最大值就是队首
-		cnt += max(nums[q[0]]-x, 0)
+		cnt += nums[q[0]] - x
 
+		// 操作次数太多，缩小窗口
 		for cnt > k {
 			out := nums[l] // 离开窗口的元素
 			for _, i := range g[l] {
@@ -347,7 +352,7 @@ class Solution:
                 cnt += (x - v) * sz  # 树 v 中的数都变成 x
             q.append([x, size])
 
-            # 当 cnt 大于 k 时，缩小窗口
+            # 操作次数太多，缩小窗口
             while cnt > k:
                 # 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
                 tree = q[0]  # 最右边的树
@@ -384,7 +389,7 @@ class Solution {
             }
             q.addFirst(new int[]{x, size});
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 int[] tree = q.peekLast(); // 最右边的树
                 // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
@@ -429,7 +434,7 @@ class Solution {
             // 如果从 q 中弹出树包含 rTree，那么 rTree 现在指向栈顶这棵树
             rTree = Math.min(rTree, q.size() - 1);
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 int[] tree = q.get(rTree); // 最右边的树
                 // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
@@ -470,7 +475,7 @@ public:
             }
             q.emplace_back(x, size);
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 auto& [v, sz] = q.front(); // 最右边的树（注意这里是引用）
                 // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
@@ -515,7 +520,7 @@ public:
             // 如果从 q 中弹出的树包含 r_tree，那么 r_tree 现在指向栈顶这棵树
             r_tree = min(r_tree, (int) q.size() - 1);
 
-            // 当 cnt 大于 k 时，缩小窗口
+            // 操作次数太多，缩小窗口
             while (cnt > k) {
                 auto& [v, sz] = q[r_tree]; // 最右边的树（注意这里是引用）
                 // 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
@@ -554,7 +559,7 @@ func countNonDecreasingSubarrays(nums []int, k int) (ans int64) {
 		}
 		q = append(q, pair{x, size})
 
-		// 当 cnt 大于 k 时，缩小窗口
+		// 操作次数太多，缩小窗口
 		for cnt > k {
 			p := &q[0] // 最右边的树
 			// 操作次数的减少量，等于 nums[r] 所在树的根节点值减去 nums[r]
