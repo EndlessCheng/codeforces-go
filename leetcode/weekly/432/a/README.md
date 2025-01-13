@@ -1,3 +1,5 @@
+## 写法一
+
 用一个变量 $\textit{ok}$ 表示当前数字能否加入答案。初始值为 $\texttt{true}$，每遍历一个数就取反，这样我们可以选一个数，跳过一个数，选一个数，跳过一个数，……
 
 对于下标为奇数的行，倒序遍历（或者将其反转）。
@@ -96,7 +98,104 @@ func zigzagTraversal(grid [][]int) (ans []int) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+## 写法二
+
+前 $2k$ 行一共有 $2kn$ 个数，这必然是偶数。所以 $0,2,4,\cdots$ 行必然是从第一个数开始选的。
+
+对于 $1,3,5,\cdots$ 行：
+
+- 如果 $n$ 是偶数，从下标 $n-1$ 开始选。
+- 如果 $n$ 是奇数，从下标 $n-2$ 开始选。
+
+综合一下，从下标 $n-1-n\bmod 2$ 开始选。
+
+```py [sol-Python3]
+class Solution:
+    def zigzagTraversal(self, grid: List[List[int]]) -> List[int]:
+        end = -1 - len(grid[0]) % 2
+        ans = []
+        for i, row in enumerate(grid):
+            ans.extend(row[end::-2] if i % 2 else row[::2])
+        return ans
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def zigzagTraversal(self, grid: List[List[int]]) -> List[int]:
+        end = -1 - len(grid[0]) % 2
+        return list(chain(*(row[end::-2] if i % 2 else row[::2] for i, row in enumerate(grid))))
+```
+
+```java [sol-Java]
+class Solution {
+    public List<Integer> zigzagTraversal(int[][] grid) {
+        int n = grid[0].length;
+        int end = n - 1 - n % 2;
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < grid.length; i++) {
+            if (i % 2 > 0) {
+                for (int j = end; j >= 0; j -= 2) {
+                    ans.add(grid[i][j]);
+                }
+            } else {
+                for (int j = 0; j < n; j += 2) {
+                    ans.add(grid[i][j]);
+                }
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> zigzagTraversal(vector<vector<int>>& grid) {
+        int n = grid[0].size();
+        int end = n - 1 - n % 2;
+        vector<int> ans;
+        for (int i = 0; i < grid.size(); i++) {
+            if (i % 2) {
+                for (int j = end; j >= 0; j -= 2) {
+                    ans.push_back(grid[i][j]);
+                }
+            } else {
+                for (int j = 0; j < n; j += 2) {
+                    ans.push_back(grid[i][j]);
+                }
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func zigzagTraversal(grid [][]int) (ans []int) {
+	n := len(grid[0])
+	end := n - 1 - n%2
+	for i, row := range grid {
+		if i%2 > 0 {
+			for j := end; j >= 0; j -= 2 {
+				ans = append(ans, row[j])
+			}
+		} else {
+			for j := 0; j < n; j += 2 {
+				ans = append(ans, row[j])
+			}
+		}
+	}
+	return
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。Python 忽略切片的空间。
 
 ## 分类题单
 
