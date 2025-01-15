@@ -11,28 +11,25 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 	}
 
 	var dfs func(int, int) [14]int
-	dfs = func(x, fa int) (res1 [14]int) {
-		res2 := [14]int{}
+	dfs = func(x, fa int) (s [14]int) {
 		for _, y := range g[x] {
 			if y != fa {
-				r := dfs(y, x)
-				for j, v := range r {
-					res1[j] += v
-					if j < 13 {
-						res2[j] += r[j+1]
-					}
+				fy := dfs(y, x)
+				for j, v := range fy {
+					s[j] += v
 				}
 			}
 		}
-		for j := 0; j < 14; j++ {
-			res1[j] = max(res1[j]+coins[x]>>j-k, res2[j]+coins[x]>>(j+1))
+		for j := range 13 {
+			s[j] = max((coins[x]>>j)-k+s[j], (coins[x]>>(j+1))+s[j+1])
 		}
+		s[13] += (coins[x] >> 13) - k
 		return
 	}
 	return dfs(0, -1)[0]
 }
 
-func maximumPoints(edges [][]int, coins []int, k int) int {
+func maximumPoints1(edges [][]int, coins []int, k int) int {
 	n := len(coins)
 	g := make([][]int, n)
 	for _, e := range edges {
@@ -59,7 +56,7 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 		for _, ch := range g[i] {
 			if ch != fa {
 				res1 += dfs(ch, j, i) // 不右移
-				if j < 13 { // j+1 >= 14 相当于 res2 += 0 无需递归
+				if j < 13 {           // j+1 >= 14 相当于 res2 += 0 无需递归
 					res2 += dfs(ch, j+1, i) // 右移
 				}
 			}

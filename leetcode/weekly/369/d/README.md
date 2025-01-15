@@ -185,9 +185,35 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
 
 类似把记忆化搜索 1:1 翻译成递推的过程，我们也可以从下往上算。
 
-去掉参数 $j$，改成每个节点 $i$ 返回一个长为 $14$ 的列表 $r$，其中 $r[j]$ 对应上面 $\textit{dfs}(i,j)$ 的计算结果。
+去掉参数 $j$，改成每个节点 $i$ 返回一个长为 $14$ 的列表 $f_i$，其中 $f_i[j]$ 对应上面 $\textit{dfs}(i,j)$ 的计算结果。
 
-这可以保证每个节点只会访问一次，所以无需记忆化。
+递推式为
+
+$$
+f_i[j] = \max
+\begin{cases}
+(\textit{coins}[i]\ \texttt{>>}\ j)-k + \sum_{\textit{ch}} f_{\textit{ch}}[j]   \\
+(\textit{coins}[i]\ \texttt{>>}\ (j+1)) +  \sum_{\textit{ch}} f_{\textit{ch}}[j+1]    \\
+\end{cases}
+$$
+
+把 $\sum_{\textit{ch}} f_{\textit{ch}}[j]$ 累加到 $s[j]$ 中，上式为
+
+$$
+f_i[j] = \max
+\begin{cases}
+(\textit{coins}[i]\ \texttt{>>}\ j)-k + s[j]   \\
+(\textit{coins}[i]\ \texttt{>>}\ (j+1)) +  s[j+1]    \\
+\end{cases}
+$$
+
+特判 $j=13$ 的情况，上式为
+
+$$
+f_i[13] = (\textit{coins}[i]\ \texttt{>>}\ 13)-k + s[13]
+$$
+
+代码实现时，可以直接把算出的结果原地保存到 $s$ 数组中。
 
 ```py [sol-Python3]
 class Solution:
@@ -198,18 +224,16 @@ class Solution:
             g[y].append(x)
 
         def dfs(x: int, fa: int) -> List[int]:
-            res1 = [0] * 14
-            res2 = [0] * 14
+            s = [0] * 14
             for y in g[x]:
-                if y == fa:
-                    continue
-                r = dfs(y, x)
-                for j, v in enumerate(r):
-                    res1[j] += v
-                    if j < 13:
-                        res2[j] += r[j + 1]
-            return [max(r1 + (coins[x] >> j) - k, r2 + (coins[x] >> (j + 1)))
-                    for j, (r1, r2) in enumerate(zip(res1, res2))]
+                if y != fa:
+                    fy = dfs(y, x)
+                    for j, v in enumerate(fy):
+                        s[j] += v
+            for j in range(13):
+                s[j] = max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1])
+            s[13] += (coins[x] >> 13) - k
+            return s
 
         return dfs(0, -1)[0]
 ```
@@ -229,23 +253,19 @@ class Solution {
     }
 
     private int[] dfs(int x, int fa, List<Integer>[] g, int[] coins, int k) {
-        int[] res1 = new int[14];
-        int[] res2 = new int[14];
+        int[] s = new int[14];
         for (int y : g[x]) {
             if (y == fa) continue;
-            int[] r = dfs(y, x, g, coins, k);
-            for (int j = 0; j < r.length; j++) {
-                res1[j] += r[j];
-                if (j < 13) {
-                    res2[j] += r[j + 1];
-                }
+            int[] fy = dfs(y, x, g, coins, k);
+            for (int j = 0; j < 14; j++) {
+                s[j] += fy[j];
             }
         }
-        // 计算结果直接保存到 res1 中，避免创建新的数组
-        for (int j = 0; j < 14; j++) {
-            res1[j] = Math.max(res1[j] + (coins[x] >> j) - k, res2[j] + (coins[x] >> (j + 1)));
+        for (int j = 0; j < 13; j++) {
+            s[j] = Math.max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1]);
         }
-        return res1;
+        s[13] += (coins[x] >> 13) - k;
+        return s;
     }
 }
 ```
@@ -262,22 +282,19 @@ public:
         }
 
         auto dfs = [&](this auto&& dfs, int x, int fa) -> array<int, 14> {
-            array<int, 14> res1{}, res2{};
+            array<int, 14> s{};
             for (int y : g[x]) {
                 if (y == fa) continue;
-                auto r = dfs(y, x);
+                auto fy = dfs(y, x);
                 for (int j = 0; j < 14; j++) {
-                    res1[j] += r[j];
-                    if (j < 13) {
-                        res2[j] += r[j + 1];
-                    }
+                    s[j] += fy[j];
                 }
             }
-            // 计算结果直接保存到 res1 中，避免创建新的数组
-            for (int j = 0; j < 14; j++) {
-                res1[j] = max(res1[j] + (coins[x] >> j) - k, res2[j] + (coins[x] >> (j + 1)));
+            for (int j = 0; j < 13; j++) {
+                s[j] = max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1]);
             }
-            return res1;
+            s[13] += (coins[x] >> 13) - k;
+            return s;
         };
         return dfs(0, -1)[0];
     }
@@ -295,23 +312,19 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
     }
 
     var dfs func(int, int) [14]int
-    dfs = func(x, fa int) (res1 [14]int) {
-        res2 := [14]int{}
+    dfs = func(x, fa int) (s [14]int) {
         for _, y := range g[x] {
             if y != fa {
-                r := dfs(y, x)
-                for j, v := range r {
-                    res1[j] += v
-                    if j < 13 {
-                        res2[j] += r[j+1]
-                    }
+                fy := dfs(y, x)
+                for j, v := range fy {
+                    s[j] += v
                 }
             }
         }
-        // 计算结果直接保存到 res1 中，避免创建新的数组
-        for j := range 14 {
-            res1[j] = max(res1[j]+coins[x]>>j-k, res2[j]+coins[x]>>(j+1))
+        for j := range 13 {
+            s[j] = max((coins[x]>>j)-k+s[j], (coins[x]>>(j+1))+s[j+1])
         }
+        s[13] += (coins[x] >> 13) - k
         return
     }
     return dfs(0, -1)[0]
