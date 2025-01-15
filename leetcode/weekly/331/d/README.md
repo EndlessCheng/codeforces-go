@@ -31,7 +31,7 @@ $$
 ```py [sol-Python3]
 class Solution:
     def minCost(self, basket1: List[int], basket2: List[int]) -> int:
-        cnt = Counter()
+        cnt = defaultdict(int)
         for x, y in zip(basket1, basket2):
             cnt[x] += 1
             cnt[y] -= 1
