@@ -328,6 +328,8 @@ func (r *RG) BinaryTree(n, st int) (children [][2]int) {
 // 随机父节点
 // 期望树高 https://blog.csdn.net/EI_Captain/article/details/109910307
 // 更严格的随机树见 https://mivik.blog.luogu.org/the-art-of-randomness
+// 叶子节点个数：期望 n/2 个
+// On the number of leaves in a random recursive tree https://projecteuclid.org/journals/brazilian-journal-of-probability-and-statistics/volume-29/issue-4/On-the-number-of-leaves-in-a-random-recursive-tree/10.1214/14-BJPS252.pdf
 func (r *RG) treeEdges(n, st int) (edges [][2]int) {
 	edges = make([][2]int, 0, n-1)
 	for i := 1; i < n; i++ {
@@ -456,6 +458,7 @@ func (r *RG) GraphMatrix(n int, directed bool) (g [][]byte) {
 
 // Graph Hack SPFA
 // GraphHackSPFA generates a undirected grid graph with n nodes, st-index, without self-loops and multiple edges, edge weights in range [minWeight, maxWeight]
+// The return `edges` contains about 2n edges.
 //
 // For example, a 10 nodes 2 row grid graph looks like this:
 // 1-2-3-4-5
@@ -480,14 +483,15 @@ func (r *RG) GraphMatrix(n int, directed bool) (g [][]byte) {
 //
 // Reference:
 // https://blog.csdn.net/qq_45721135/article/details/102472101
+// https://blog.csdn.net/jinzhao1994/article/details/38311561
 // https://www.zhihu.com/question/292283275
 // https://www.zhihu.com/question/268382638
-func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int) (edges [][3]int) {
+func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int, dir bool) (edges [][3]int) {
 	rowLen := n / row
 	m := row*(rowLen-1) + (row-1)*rowLen + n%row
 
 	edges = make([][3]int, 0, m)
-	for i := 0; i < row-1; i++ {
+	for i := range row - 1 {
 		for j := 1 + i*rowLen; j < (i+1)*rowLen; j++ {
 			weight := r._int(minWeight, maxWeight)
 			edges = append(edges, [3]int{j - 1, j, weight})
@@ -501,16 +505,88 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int) (edges [][3]int
 		edges = append(edges, [3]int{j - 1, j, weight})
 	}
 
+	// 有向图添加双向边
+	if dir {
+		for _, e := range edges {
+			edges = append(edges, [3]int{e[1], e[0], e[2]})
+		}
+	}
+
 	rand.Shuffle(len(edges), func(i, j int) { edges[i], edges[j] = edges[j], edges[i] })
 
 	// add st
-	for i := range edges {
-		edges[i][0] += st
-		edges[i][1] += st
+	if st != 0 {
+		for i := range edges {
+			edges[i][0] += st
+			edges[i][1] += st
+		}
 	}
 
 	for _, e := range edges {
 		r.sb.WriteString(fmt.Sprintln(e[0], e[1], e[1]))
+	}
+	return
+}
+
+//func genHackExample() {
+//	sb := &strings.Builder{}
+//	defer func() { writeString(sb.String()) }()
+//	Print := func(a ...interface{}) { sb.WriteString(Sprint(a...)) }
+//	Printf := func(format string, a ...interface{}) { sb.WriteString(Sprintf(format, a...)) }
+//	Println := func(a ...interface{}) { sb.WriteString(Sprintln(a...)) }
+//	_, _, _ = Print, Printf, Println
+//
+//	n := 25000
+//	edges := rg.GraphHackSPFA(n, 6, 0, 1, 1e5)
+//	Println(n)
+//	Print("[")
+//	for i, e := range edges {
+//		if i > 0 {
+//			Print(",")
+//		}
+//		Print("[",e[0],",",e[1],",",e[2],"]")
+//	}
+//	Print("]")
+//}
+
+// https://leetcode.cn/problems/find-edges-in-shortest-paths/
+func simpleQueueExample(n int, edges [][]int) (ans []bool) {
+	f := func(st int) []int {
+		type nb struct{ v, w int }
+		g := make([][]nb, n)
+		for _, e := range edges {
+			v, w, wt := e[0], e[1], e[2]
+			g[v] = append(g[v], nb{w, wt})
+			g[w] = append(g[w], nb{v, wt})
+		}
+		d := make([]int, n)
+		for i := range d {
+			d[i] = 1e18
+		}
+		d[st] = 0
+		q := []nb{{st, 0}}
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			if p.w > d[p.v] {
+				continue
+			}
+			for _, e := range g[p.v] {
+				y, w := e.v, e.w
+				nw := p.w + w
+				if d[y] > nw {
+					d[y] = nw
+					q = append(q, nb{y, nw})
+				}
+			}
+		}
+		return d
+	}
+	d1 := f(0)
+	d2 := f(n - 1)
+	for _, e := range edges {
+		v, w, wt := e[0], e[1], e[2]
+		ans = append(ans, d1[v]+wt+d2[w] == d1[n-1] || d1[w]+wt+d2[v] == d1[n-1])
 	}
 	return
 }
