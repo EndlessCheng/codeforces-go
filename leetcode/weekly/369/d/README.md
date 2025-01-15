@@ -13,7 +13,15 @@
 - 不右移：答案为 $(\textit{coins}[i]\ \texttt{>>}\ j)-k$ 加上 $i$ 的每个子树 $\textit{ch}$ 的 $\textit{dfs}(\textit{ch},j)$。
 - 右移：答案为 $\textit{coins}[i]\ \texttt{>>}\ (j+1)$ 加上 $i$ 的每个子树 $\textit{ch}$ 的 $\textit{dfs}(\textit{ch},j+1)$。
 
-两种情况取最大值，即为 $\textit{dfs}(i,j)$ 的返回值。
+两种情况取最大值，得
+
+$$
+\textit{dfs}(i,j) = \max
+\begin{cases}
+(\textit{coins}[i]\ \texttt{>>}\ j)-k + \sum_{\textit{ch}} \textit{dfs}(\textit{ch},j)    \\
+(\textit{coins}[i]\ \texttt{>>}\ (j+1)) +  \sum_{\textit{ch}} \textit{dfs}(\textit{ch},j+1)    \\
+\end{cases}
+$$
 
 递归入口：$\textit{dfs}(0,0)$。其中 $i=0$ 表示根节点。一开始没有执行右移，所以 $j=0$。
 
