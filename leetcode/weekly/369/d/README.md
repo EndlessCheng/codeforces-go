@@ -1,25 +1,37 @@
-[本题视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/)
+## 方法一：记忆化搜索
 
-## 前置知识：动态规划入门
+`floor(coins[i] / 2)` 等价于 `coins[i] >> 1`。
 
-请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)，制作不易，欢迎点赞！
+右移运算是可以叠加的，即 `(x >> 1) >> 1` 等于 `x >> 2`。
 
-## 写法一：自顶向下（记忆化搜索）
+我们可以在递归的过程中，额外记录从根节点递归到当前节点的过程中，一共执行了多少次右移，也就是子树中的每个节点值需要右移的次数。
 
-把 `floor(coins[i] / 2)` 看成右移操作。
+故定义 $\textit{dfs}(i,j)$ 表示递归到以 $i$ 为根的子树，在上面已经执行了 $j$ 次右移的前提下，我们在这棵子树中最多可以得到多少积分。
 
-一个数最多右移多少次，就变成 $0$ 了？在本题的数据范围下，这至多是 $14$ 次。
+用「选或不选」来思考，即是否执行右移：
 
-同时，右移操作是可以叠加的，我们可以记录子树中的节点值右移了多少次。
+- 不右移：答案为 $(\textit{coins}[i]\ \texttt{>>}\ j)-k$ 加上 $i$ 的每个子树 $\textit{ch}$ 的 $\textit{dfs}(\textit{ch},j)$。
+- 右移：答案为 $\textit{coins}[i]\ \texttt{>>}\ (j+1)$ 加上 $i$ 的每个子树 $\textit{ch}$ 的 $\textit{dfs}(\textit{ch},j+1)$。
 
-所以可以定义 $\textit{dfs}(i,j)$ 表示子树 $i$ 在已经右移 $j$ 次的前提下，最多可以得到多少积分。
+两种情况取最大值，即为 $\textit{dfs}(i,j)$ 的返回值。
 
-用「选或不选」来思考，即是否右移：
+递归入口：$\textit{dfs}(0,0)$。其中 $i=0$ 表示根节点。一开始没有执行右移，所以 $j=0$。
 
-- 不右移：答案为 $(\textit{coins}[i]>>j)-k$ 加上每个子树 $\textit{ch}$ 的 $\textit{dfs}(ch,j)$。
-- 右移：答案为 $\textit{coins}[i]>>(j+1)$ 加上每个子树 $\textit{ch}$ 的 $\textit{dfs}(ch,j+1)$。
+### 细节
 
-这两种情况取最大值。
+一个数最多右移多少次，就变成 $0$ 了？
+
+设 $w$ 是 $\textit{coins}[i]$ 的二进制长度，那么 $\textit{coins}[i]$ 右移 $w$ 次后就是 $0$ 了。
+
+在本题的数据范围下，$w\le 14$。
+
+所以如果在递归过程中发现 $j+1 = 14$，就不执行右移，因为此时 $\textit{dfs}(\textit{ch},j+1)$ 子树中的每个节点值都要右移 $14$ 次，算出的结果一定是 $0$。既然都知道递归的结果了，那就不需要递归了。
+
+此外，为避免错把父亲当作儿子，可以额外传入 $\textit{fa}$ 表示父节点，遍历 $i$ 的邻居时，跳过邻居节点是 $\textit{fa}$ 的情况。
+
+关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/?t=45m18s)
 
 ```py [sol-Python3]
 class Solution:
@@ -29,7 +41,7 @@ class Solution:
             g[x].append(y)
             g[y].append(x)
 
-        @cache
+        @cache  # 缓存装饰器，避免重复计算 dfs 的结果（记忆化）
         def dfs(i: int, j: int, fa: int) -> int:
             res1 = (coins[i] >> j) - k
             res2 = coins[i] >> (j + 1)
@@ -39,6 +51,7 @@ class Solution:
                     if j < 13:  # j+1 >= 14 相当于 res2 += 0，无需递归
                         res2 += dfs(ch, j + 1, i)  # 右移
             return max(res1, res2)
+
         return dfs(0, 0, -1)
 ```
 
@@ -47,15 +60,17 @@ class Solution {
     public int maximumPoints(int[][] edges, int[] coins, int k) {
         int n = coins.length;
         List<Integer>[] g = new ArrayList[n];
-        Arrays.setAll(g, e -> new ArrayList<>());
+        Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : edges) {
-            int x = e[0], y = e[1];
+            int x = e[0];
+            int y = e[1];
             g[x].add(y);
             g[y].add(x);
         }
+
         int[][] memo = new int[n][14];
-        for (int[] m : memo) {
-            Arrays.fill(m, -1); // -1 表示没有计算过
+        for (int[] row : memo) {
+            Arrays.fill(row, -1); // -1 表示没有计算过
         }
         return dfs(0, 0, -1, memo, g, coins, k);
     }
@@ -80,28 +95,11 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-    int dfs(int i, int j, int fa, vector<array<int, 14>> &memo, vector<vector<int>> &g, vector<int> &coins, int k) {
-        int &res = memo[i][j]; // 注意这里是引用
-        if (res != -1) { // 之前计算过
-            return res;
-        }
-        int res1 = (coins[i] >> j) - k;
-        int res2 = coins[i] >> (j + 1);
-        for (int ch: g[i]) {
-            if (ch == fa) continue;
-            res1 += dfs(ch, j, i, memo, g, coins, k); // 不右移
-            if (j < 13) { // j+1 >= 14 相当于 res2 += 0，无需递归
-                res2 += dfs(ch, j + 1, i, memo, g, coins, k); // 右移
-            }
-        }
-        return res = max(res1, res2); // 记忆化
-    };
-
 public:
-    int maximumPoints(vector<vector<int>> &edges, vector<int> &coins, int k) {
+    int maximumPoints(vector<vector<int>>& edges, vector<int>& coins, int k) {
         int n = coins.size();
         vector<vector<int>> g(n);
-        for (auto &e: edges) {
+        for (auto& e: edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x);
@@ -109,59 +107,79 @@ public:
 
         array<int, 14> init_val;
         ranges::fill(init_val, -1); // -1 表示没有计算过
-        vector<array<int, 14>> memo(n, init_val);
-        return dfs(0, 0, -1, memo, g, coins, k);
+        vector memo(n, init_val);
+        auto dfs = [&](this auto&& dfs, int i, int j, int fa) {
+            int& res = memo[i][j]; // 注意这里是引用
+            if (res != -1) { // 之前计算过
+                return res;
+            }
+            int res1 = (coins[i] >> j) - k;
+            int res2 = coins[i] >> (j + 1);
+            for (int ch : g[i]) {
+                if (ch == fa) continue;
+                res1 += dfs(ch, j, i); // 不右移
+                if (j < 13) { // j+1 >= 14 相当于 res2 += 0，无需递归
+                    res2 += dfs(ch, j + 1, i); // 右移
+                }
+            }
+            return res = max(res1, res2); // 记忆化
+        };
+        return dfs(0, 0, -1);
     }
 };
 ```
 
 ```go [sol-Go]
 func maximumPoints(edges [][]int, coins []int, k int) int {
-	n := len(coins)
-	g := make([][]int, n)
-	for _, e := range edges {
-		x, y := e[0], e[1]
-		g[x] = append(g[x], y)
-		g[y] = append(g[y], x)
-	}
+    n := len(coins)
+    g := make([][]int, n)
+    for _, e := range edges {
+        x, y := e[0], e[1]
+        g[x] = append(g[x], y)
+        g[y] = append(g[y], x)
+    }
 
-	memo := make([][14]int, n)
-	for i := range memo {
-		for j := range memo[i] {
-			memo[i][j] = -1
-		}
-	}
-	var dfs func(int, int, int) int
-	dfs = func(i, j, fa int) int {
-		p := &memo[i][j]
-		if *p != -1 {
-			return *p
-		}
-		res1 := coins[i]>>j - k
-		res2 := coins[i] >> (j + 1)
-		for _, ch := range g[i] {
-			if ch != fa {
-				res1 += dfs(ch, j, i) // 不右移
-				if j < 13 { // j+1 >= 14 相当于 res2 += 0 无需递归
-					res2 += dfs(ch, j+1, i) // 右移
-				}
-			}
-		}
-		*p = max(res1, res2)
-		return *p
-	}
-	return dfs(0, 0, -1)
+    memo := make([][14]int, n)
+    for i := range memo {
+        for j := range memo[i] {
+            memo[i][j] = -1
+        }
+    }
+    var dfs func(int, int, int) int
+    dfs = func(i, j, fa int) (res int) {
+        p := &memo[i][j]
+        if *p != -1 {
+            return *p
+        }
+        defer func() { *p = res }()
+        res1 := coins[i]>>j - k
+        res2 := coins[i] >> (j + 1)
+        for _, ch := range g[i] {
+            if ch != fa {
+                res1 += dfs(ch, j, i) // 不右移
+                if j < 13 { // j+1 >= 14 相当于 res2 += 0 无需递归
+                    res2 += dfs(ch, j+1, i) // 右移
+                }
+            }
+        }
+        return max(res1, res2)
+    }
+    return dfs(0, 0, -1)
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{coins}$ 的长度，$U=\max(\textit{coins})$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{coins}$ 的长度，$U=\max(\textit{coins})$。
 - 空间复杂度：$\mathcal{O}(n\log U)$。
 
-## 写法二：自底向上
+## 方法二：递推
 
-类似把记忆化搜索翻译成递推的过程，我们也可以从下往上算：
+类似把记忆化搜索 1:1 翻译成递推的过程，我们也可以从下往上算。
+
+去掉参数 $j$，改成每个节点 $i$ 返回一个长为 $14$ 的列表 $r$，其中 $r[j]$ 对应上面 $\textit{dfs}(i,j)$ 的计算结果。
+
+这可以保证每个节点只会访问一次，所以无需记忆化。
 
 ```py [sol-Python3]
 class Solution:
@@ -175,15 +193,16 @@ class Solution:
             res1 = [0] * 14
             res2 = [0] * 14
             for y in g[x]:
-                if y == fa: continue
+                if y == fa:
+                    continue
                 r = dfs(y, x)
                 for j, v in enumerate(r):
                     res1[j] += v
                     if j < 13:
                         res2[j] += r[j + 1]
-            for j, (r1, r2) in enumerate(zip(res1, res2)):
-                res1[j] = max(r1 + (coins[x] >> j) - k, r2 + (coins[x] >> (j + 1)))
-            return res1
+            return [max(r1 + (coins[x] >> j) - k, r2 + (coins[x] >> (j + 1)))
+                    for j, (r1, r2) in enumerate(zip(res1, res2))]
+
         return dfs(0, -1)[0]
 ```
 
@@ -191,9 +210,10 @@ class Solution:
 class Solution {
     public int maximumPoints(int[][] edges, int[] coins, int k) {
         List<Integer>[] g = new ArrayList[coins.length];
-        Arrays.setAll(g, e -> new ArrayList<>());
+        Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : edges) {
-            int x = e[0], y = e[1];
+            int x = e[0];
+            int y = e[1];
             g[x].add(y);
             g[y].add(x);
         }
@@ -213,7 +233,8 @@ class Solution {
                 }
             }
         }
-        for (int j = 0; j < res1.length; j++) {
+        // 计算结果直接保存到 res1 中，避免创建新的数组
+        for (int j = 0; j < 14; j++) {
             res1[j] = Math.max(res1[j] + (coins[x] >> j) - k, res2[j] + (coins[x] >> (j + 1)));
         }
         return res1;
@@ -224,15 +245,15 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int maximumPoints(vector<vector<int>> &edges, vector<int> &coins, int k) {
+    int maximumPoints(vector<vector<int>>& edges, vector<int>& coins, int k) {
         vector<vector<int>> g(coins.size());
-        for (auto &e : edges) {
+        for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x);
         }
 
-        function<array<int, 14>(int, int)> dfs = [&](int x, int fa) -> array<int, 14> {
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> array<int, 14> {
             array<int, 14> res1{}, res2{};
             for (int y : g[x]) {
                 if (y == fa) continue;
@@ -244,6 +265,7 @@ public:
                     }
                 }
             }
+            // 计算结果直接保存到 res1 中，避免创建新的数组
             for (int j = 0; j < 14; j++) {
                 res1[j] = max(res1[j] + (coins[x] >> j) - k, res2[j] + (coins[x] >> (j + 1)));
             }
@@ -256,38 +278,60 @@ public:
 
 ```go [sol-Go]
 func maximumPoints(edges [][]int, coins []int, k int) int {
-	n := len(coins)
-	g := make([][]int, n)
-	for _, e := range edges {
-		x, y := e[0], e[1]
-		g[x] = append(g[x], y)
-		g[y] = append(g[y], x)
-	}
+    n := len(coins)
+    g := make([][]int, n)
+    for _, e := range edges {
+        x, y := e[0], e[1]
+        g[x] = append(g[x], y)
+        g[y] = append(g[y], x)
+    }
 
-	var dfs func(int, int) [14]int
-	dfs = func(x, fa int) (res1 [14]int) {
-		res2 := [14]int{}
-		for _, y := range g[x] {
-			if y != fa {
-				r := dfs(y, x)
-				for j, v := range r {
-					res1[j] += v
-					if j < 13 {
-						res2[j] += r[j+1]
-					}
-				}
-			}
-		}
-		for j := 0; j < 14; j++ {
-			res1[j] = max(res1[j]+coins[x]>>j-k, res2[j]+coins[x]>>(j+1))
-		}
-		return
-	}
-	return dfs(0, -1)[0]
+    var dfs func(int, int) [14]int
+    dfs = func(x, fa int) (res1 [14]int) {
+        res2 := [14]int{}
+        for _, y := range g[x] {
+            if y != fa {
+                r := dfs(y, x)
+                for j, v := range r {
+                    res1[j] += v
+                    if j < 13 {
+                        res2[j] += r[j+1]
+                    }
+                }
+            }
+        }
+        // 计算结果直接保存到 res1 中，避免创建新的数组
+        for j := range 14 {
+            res1[j] = max(res1[j]+coins[x]>>j-k, res2[j]+coins[x]>>(j+1))
+        }
+        return
+    }
+    return dfs(0, -1)[0]
 }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 为 $\textit{coins}$ 的长度，$U=\max(\textit{coins})$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{coins}$ 的长度，$U=\max(\textit{coins})$。
 - 空间复杂度：$\mathcal{O}(n\log U)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
