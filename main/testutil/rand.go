@@ -537,7 +537,7 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int, dir bool) (edge
 func (r *RG) GraphHackBellmanFord(n, m, st, minWeight, maxWeight int) (edges [][3]int) {
 	edges = make([][3]int, 0, m)
 
-	end := n/3 + 1 // 假定 n=m 的写法，如果 m >= 3n/2 可以改成 n/2
+	end := n/3 + 1 // 假定 n=m 的写法，如果 m >= 3n/2 可以改成 n/2+1
 	for i := 1; i < end; i++ {
 		// 注意不能设为 1，因为 Go 和 Java 的堆只比较边权，不比较节点，这可能会导致小的 maxWeight - i*2 跑到前面去
 		edges = append(edges, [3]int{0, i, i + minWeight})
