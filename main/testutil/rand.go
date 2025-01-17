@@ -529,7 +529,8 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int, dir bool) (edge
 }
 
 // 菊花图
-// m 和 n 数量级一样
+// 要求：m 和 n 数量级一样
+// 要求：0 是起点
 // 0 --- 1 --- end (菊花)
 //   \-- 2 --/
 //   \-- 3 --/
