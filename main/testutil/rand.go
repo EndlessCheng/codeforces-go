@@ -546,7 +546,7 @@ func (r *RG) GraphHackBellmanFord(n, m, st, minWeight, maxWeight int) (edges [][
 	}
 
 	for i := end + 1; len(edges) < m; i++ {
-		edges = append(edges, [3]int{end, i, 1})
+		edges = append(edges, [3]int{end, i, minWeight})
 	}
 
 	// add st
