@@ -528,6 +528,40 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int, dir bool) (edge
 	return
 }
 
+// 菊花图
+// m 和 n 数量级一样
+// 0 --- 1 --- end (菊花)
+//   \-- 2 --/
+//   \-- 3 --/
+func (r *RG) GraphHackBellmanFord(n, m, st, minWeight, maxWeight int) (edges [][3]int) {
+	edges = make([][3]int, 0, m)
+
+	end := n/3 + 1
+	for i := 1; i < end; i++ {
+		// 注意不能设为 1，因为 Go 和 Java 的堆只比较边权，不比较节点，这可能会导致小的 maxWeight - i*2 跑到前面去
+		edges = append(edges, [3]int{0, i, i + minWeight})
+		//edges = append(edges, [3]int{i, end, maxWeight - min(i, end-i)*2}) // 可以卡掉倒着遍历邻居的写法
+		edges = append(edges, [3]int{i, end, maxWeight - i*2})
+	}
+
+	for i := end + 1; len(edges) < m; i++ {
+		edges = append(edges, [3]int{end, i, 1})
+	}
+
+	// add st
+	if st != 0 {
+		for i := range edges {
+			edges[i][0] += st
+			edges[i][1] += st
+		}
+	}
+
+	for _, e := range edges {
+		r.sb.WriteString(fmt.Sprintln(e[0], e[1], e[1]))
+	}
+	return
+}
+
 //func genHackExample() {
 //	sb := &strings.Builder{}
 //	defer func() { writeString(sb.String()) }()
