@@ -20,9 +20,9 @@ func run(in io.Reader, _w io.Writer) {
 		for i := 0; i < n; i++ {
 			Fscan(in, &v)
 			if mp[v] == 0 {
-				mp[v] = rand.Int()
+				mp[v] = rand.Intn(1e13)
 			}
-			s[i+1] = s[i] + v
+			s[i+1] = s[i] + mp[v]
 		}
 		return s
 	}
