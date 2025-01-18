@@ -1,15 +1,12 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 )
 
 // https://github.com/EndlessCheng
-func cf2009D(in io.Reader, _w io.Writer) {
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
+func cf2009D(in io.Reader, out io.Writer) {
 	var T, n, x, y int
 	for Fscan(in, &T); T > 0; T-- {
 		Fscan(in, &n)
