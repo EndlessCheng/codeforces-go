@@ -39,7 +39,7 @@ class Solution:
         def dfs(i: int, j: int) -> int:
             if i < 0:
                 return 0
-            # 不选这一组的任何物品
+            # 不选这一组中的任何物品
             res = dfs(i - 1, j)
             # 枚举选哪个
             for w, v in enumerate(accumulate(piles[i][:j]), 1):
