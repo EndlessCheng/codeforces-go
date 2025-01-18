@@ -123,20 +123,21 @@ func maxValue2(nums []int, k int) (ans int) {
 		}
 	}
 
-	pre := make([][mx]bool, k+1)
-	pre[0][0] = true
+	clear(f)
+	f[0][0] = true
 	for i, v := range nums[:n-k] {
 		for j := min(k-1, i); j >= 0; j-- {
-			for x, hasX := range pre[j] {
+			for x, hasX := range f[j] {
 				if hasX {
-					pre[j+1][x|v] = true
+					f[j+1][x|v] = true
 				}
 			}
 		}
 		if i < k-1 {
 			continue
 		}
-		for x, hasX := range pre[k] {
+		// 这里 f[k] 就是 pre[i]
+		for x, hasX := range f[k] {
 			if hasX {
 				for y, hasY := range suf[i+1] {
 					if hasY {

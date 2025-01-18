@@ -61,16 +61,17 @@ class Solution:
                 suf[i] = f[k].copy()
 
         ans = 0
-        pre = [[False] * (mx + 1) for _ in range(k + 1)]
-        pre[0][0] = True
+        f = [[False] * (mx + 1) for _ in range(k + 1)]
+        f[0][0] = True
         for i, v in enumerate(nums[:-k]):
             for j in range(min(k - 1, i), -1, -1):
-                for x, has_x in enumerate(pre[j]):
+                for x, has_x in enumerate(f[j]):
                     if has_x:
-                        pre[j + 1][x | v] = True
+                        f[j + 1][x | v] = True
             if i < k - 1:
                 continue
-            for x, has_x in enumerate(pre[k]):
+            # 这里 f[k] 就是 pre[i]
+            for x, has_x in enumerate(f[k]):
                 if has_x:
                     for y, has_y in enumerate(suf[i + 1]):
                         if has_y and x ^ y > ans:  # 手写 if
@@ -97,14 +98,15 @@ class Solution:
 
         mx = reduce(or_, nums)
         ans = 0
-        pre = [set() for _ in range(k + 1)]
-        pre[0].add(0)
+        f = [set() for _ in range(k + 1)]
+        f[0].add(0)
         for i, v in enumerate(nums[:-k]):
             for j in range(min(k - 1, i), -1, -1):
-                pre[j + 1].update(x | v for x in pre[j])
+                f[j + 1].update(x | v for x in f[j])
             if i < k - 1:
                 continue
-            ans = max(ans, max(x ^ y for x in pre[k] for y in suf[i + 1]))
+            # 这里 f[k] 就是 pre[i]
+            ans = max(ans, max(x ^ y for x in f[k] for y in suf[i + 1]))
             if ans == mx:
                 return ans
         return ans
@@ -134,22 +136,23 @@ class Solution {
         }
 
         int ans = 0;
-        boolean[][] pre = new boolean[k + 1][MX];
-        pre[0][0] = true;
+        f = new boolean[k + 1][MX];
+        f[0][0] = true;
         for (int i = 0; i < n - k; i++) {
             int v = nums[i];
             for (int j = Math.min(k - 1, i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
-                    if (pre[j][x]) {
-                        pre[j + 1][x | v] = true;
+                    if (f[j][x]) {
+                        f[j + 1][x | v] = true;
                     }
                 }
             }
             if (i < k - 1) {
                 continue;
             }
+            // 这里 f[k] 就是 pre[i]
             for (int x = 0; x < MX; x++) {
-                if (pre[k][x]) {
+                if (f[k][x]) {
                     for (int y = 0; y < MX; y++) {
                         if (suf[i + 1][y]) {
                             ans = Math.max(ans, x ^ y);
@@ -191,22 +194,23 @@ public:
         }
 
         int ans = 0;
-        vector<array<int, MX>> pre(k + 1);
-        pre[0][0] = true;
+        f = vector<array<int, MX>>(k + 1);
+        f[0][0] = true;
         for (int i = 0; i < n - k; i++) {
             int v = nums[i];
             for (int j = min(k - 1, i); j >= 0; j--) {
                 for (int x = 0; x < MX; x++) {
-                    if (pre[j][x]) {
-                        pre[j + 1][x | v] = true;
+                    if (f[j][x]) {
+                        f[j + 1][x | v] = true;
                     }
                 }
             }
             if (i < k - 1) {
                 continue;
             }
+            // 这里 f[k] 就是 pre[i]
             for (int x = 0; x < MX; x++) {
-                if (pre[k][x]) {
+                if (f[k][x]) {
                     for (int y = 0; y < MX; y++) {
                         if (suf[i + 1][y]) {
                             ans = max(ans, x ^ y);
@@ -245,20 +249,21 @@ func maxValue(nums []int, k int) (ans int) {
 		}
 	}
 
-	pre := make([][mx]bool, k+1)
-	pre[0][0] = true
+	clear(f)
+	f[0][0] = true
 	for i, v := range nums[:n-k] {
 		for j := min(k-1, i); j >= 0; j-- {
-			for x, hasX := range pre[j] {
+			for x, hasX := range f[j] {
 				if hasX {
-					pre[j+1][x|v] = true
+					f[j+1][x|v] = true
 				}
 			}
 		}
 		if i < k-1 {
 			continue
 		}
-		for x, hasX := range pre[k] {
+		// 这里 f[k] 就是 pre[i]
+		for x, hasX := range f[k] {
 			if hasX {
 				for y, hasY := range suf[i+1] {
 					if hasY {
@@ -286,7 +291,7 @@ func maxValue(nums []int, k int) (ans int) {
 
 答案是 $3$ 个。考虑 $x$ 中的每个比特 $1$，它来自某个 $\textit{nums}[i]$。
 
-设 $\textit{nums}$ 所有元素 OR 的二进制中的 $1$ 的个数为 $\textit{ones}$（本题数据范围保证 $textit{ones}\le 7$）。一般地，我们至多选 $\textit{ones}$ 个 $\textit{nums}[i]$，就能 OR 得到 $x$。
+设 $\textit{nums}$ 所有元素 OR 的二进制中的 $1$ 的个数为 $\textit{ones}$（本题数据范围保证 $\textit{ones}\le 7$）。一般地，我们至多选 $\textit{ones}$ 个 $\textit{nums}[i]$，就能 OR 得到 $x$。
 
 但是，本题要求（前缀/后缀）**恰好**选 $k$ 个元素。选的元素越多 OR 越大，那么某些比较小的 $x$ 可能无法 OR 出来。
 
