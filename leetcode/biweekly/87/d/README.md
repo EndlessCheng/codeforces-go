@@ -6,6 +6,8 @@
 
 初始钱数必须满足，**在最穷困潦倒的时候，也能完成交易**。
 
+什么时候最穷？完成所有亏钱交易后最穷。
+
 记 $\textit{totalLose}$ 为所有亏钱的 $\textit{cost}-\textit{cashback}$ 之和。
 
 遍历 $\textit{transactions}$，分类讨论：
