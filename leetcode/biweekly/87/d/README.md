@@ -2,16 +2,18 @@
 
 什么是最坏情况？
 
-**先亏钱**（$\textit{cost}>\textit{cashback}$），**再赚钱**（$\textit{cost}\le\textit{cashback}$）。主打一个欲扬先抑。
+先亏钱（$\textit{cost}>\textit{cashback}$），再赚钱（$\textit{cost}\le\textit{cashback}$），主打一个欲扬先抑。
 
-记 $\textit{totalLose}$ 为亏钱时的所有 $\textit{cost}-\textit{cashback}$ 之和。
+初始钱数必须满足，**在最穷困潦倒的时候，也能完成交易**。
+
+记 $\textit{totalLose}$ 为所有亏钱的 $\textit{cost}-\textit{cashback}$ 之和。
 
 遍历 $\textit{transactions}$，分类讨论：
 
 - 对于赚钱的交易，假设这是（亏钱后的）第一笔赚钱的交易，那么初始钱数是多少？为了完成这笔交易，题目要求此时的钱至少是 $\textit{cost}$，即 $\textit{initMoney} - \textit{totalLose} \ge \textit{cost}$，得 $\textit{initMoney}\ge \textit{totalLose}+\textit{cost}$。
 - 对于亏钱的交易，假设这是最后一笔亏钱的交易，那么初始钱数是多少？由于 $\textit{cost}-\textit{cashback}$ 已经计入 $\textit{totalLose}$ 中，需要先从 $\textit{totalLose}$ 中减去 $\textit{cost}-\textit{cashback}$，即 $\textit{initMoney} - (\textit{totalLose}-(\textit{cost}-\textit{cashback})) \ge \textit{cost}$，化简得到 $\textit{initMoney}\ge \textit{totalLose}+\textit{cashback}$。
 
-**上面所有情况取最大值，就能保证在任意一种交易顺序下，都能完成所有交易。**
+所有情况取最大值，就能保证在任意一种交易顺序下，都能完成所有交易。
 
 - 如果赚钱，即 $\textit{cost}\le\textit{cashback}$，那么 $\textit{totalLose}$ 加上的是二者的较小值 $\textit{cost}$。
 - 如果亏钱，即 $\textit{cost}>\textit{cashback}$，那么 $\textit{totalLose}$ 加上的也是二者的较小值 $\textit{cashback}$。
