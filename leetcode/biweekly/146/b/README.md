@@ -195,7 +195,7 @@ func countPathsWithXorValue(grid [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mnU)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数，$U=\max(\textit{grid[i][j]})$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(mnU)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(mnU)$。
+- 时间复杂度：$\mathcal{O}(mnU)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数，$U=\max(\textit{grid}[i][j])$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数等于 $\mathcal{O}(mnU)$，单个状态的计算时间为 $\mathcal{O}(1)$，所以总的时间复杂度为 $\mathcal{O}(mnU)$。
 - 空间复杂度：$\mathcal{O}(mnU)$。保存多少状态，就需要多少空间。
 
 ## 方法二：递推
@@ -331,7 +331,7 @@ func countPathsWithXorValue(grid [][]int, k int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mnU)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数，$U=\max(\textit{grid[i][j]})$。
+- 时间复杂度：$\mathcal{O}(mnU)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数，$U=\max(\textit{grid}[i][j])$。
 - 空间复杂度：$\mathcal{O}(mnU)$。
 
 ## 分类题单
