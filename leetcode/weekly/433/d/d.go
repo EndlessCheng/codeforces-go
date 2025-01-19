@@ -1,7 +1,46 @@
 package main
 
+import "math"
+
 // https://space.bilibili.com/206214
 func minMaxSubarraySum(nums []int, k int) int64 {
+	// 计算最小值的贡献
+	sumSubarrayMins := func() (res int) {
+		st := []int{-1} // 哨兵
+		for r, x := range nums {
+			r0 := r
+			for len(st) > 1 && nums[st[len(st)-1]] >= x {
+				i := st[len(st)-1]
+				st = st[:len(st)-1]
+				l := st[len(st)-1]
+				if r-l-1 <= k {
+					cnt := (i - l) * (r - i)
+					res += nums[i] * cnt // 累加贡献
+				} else {
+					l = max(l, i-k)
+					r = min(r, i+k)
+					// 左端点 > r-k 的子数组个数
+					cnt := (r - i) * (i - (r - k))
+					// 左端点 <= r-k 的子数组个数
+					cnt2 := (l + r + k - i*2 + 1) * (r - l - k) / 2
+					res += nums[i] * (cnt + cnt2) // 累加贡献
+				}
+			}
+			st = append(st, r0)
+		}
+		return
+	}
+	nums = append(nums, math.MinInt)
+	ans := sumSubarrayMins()
+	// 所有元素取反（求最大值），就可以复用同一份代码了
+	for i := range nums {
+		nums[i] = -nums[i]
+	}
+	ans -= sumSubarrayMins()
+	return int64(ans)
+}
+
+func minMaxSubarraySum1(nums []int, k int) int64 {
 	// 计算最小值的贡献
 	sumSubarrayMins := func() (res int) {
 		n := len(nums)
