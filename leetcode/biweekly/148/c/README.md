@@ -29,7 +29,7 @@
 对于从根到当前节点的路径，我们用一个栈 $\textit{dis}$ 维护根到各个节点的距离。那么：
 
 - 路径长度：根到当前节点的距离，减去根到路径最上面节点的距离。前者是 $\textit{dis}$ 的栈顶，后者是 $\textit{dis}[\textit{topDepth}]$。
-- 路径节点个数：当前节点的深度，减去 $\textit{topDepth}$。前者是当前 $\textit{dis}$ 的大小。
+- 路径节点个数：当前节点的深度加一，减去 $\textit{topDepth}$。前者是当前 $\textit{dis}$ 的大小。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1xBwBeEEie/?t=7m25s)，欢迎点赞关注~
 
