@@ -57,12 +57,14 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
+https://atcoder.jp/contests/arc189/tasks/arc189_d
 
 #### 单调栈二分
-https://codeforces.com/problemset/problem/91/B 1500
-https://codeforces.com/problemset/problem/2009/G2 2200
 LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
 LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
+https://codeforces.com/problemset/problem/91/B 1500
+https://atcoder.jp/contests/abc379/tasks/abc379_f 1659=CF1966 也有在线做法
+https://codeforces.com/problemset/problem/2009/G2 2200
 
 #### 矩形系列
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
@@ -80,6 +82,7 @@ LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 - [2030. 含特定字母的最小子序列](https://leetcode.cn/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/) 2562
 https://codeforces.com/problemset/problem/1730/C 1200
 https://codeforces.com/problemset/problem/1905/C 1400
+https://codeforces.com/problemset/problem/2046/B 1600
 https://codeforces.com/problemset/problem/1870/D 1800
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
@@ -128,7 +131,7 @@ https://www.luogu.com.cn/problem/P5788
 https://www.luogu.com.cn/problem/P2866 http://poj.org/problem?id=3250
 NEERC05，UVa 1619 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4494
 */
-func monotoneStack(a []int) ([]int, []int) {
+func monotoneStack(a []int) (ans int) {
 	// 考察局部最小
 	// 如果有相同元素，需要把某一侧循环内的符号改成小于等于
 
@@ -161,38 +164,31 @@ func monotoneStack(a []int) ([]int, []int) {
 		st = append(st, i)
 	}
 
-	sum := make([]int, len(a)+1)
-	for i, v := range a {
-		sum[i+1] = (sum[i] + v) % mod
+	{
+		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
+		leftL := make([]int, len(a))   // a[left[i]] < a[i]
+		rightLE := make([]int, len(a)) // a[right[i]] <= a[i]
+		st := []int{-1}
+		for i, v := range a {
+			for len(st) > 1 && v <= a[st[len(st)-1]] {
+				rightLE[st[len(st)-1]] = i
+				st = st[:len(st)-1]
+			}
+			// 循环结束后，栈顶就是左侧 < v 的最近元素了
+			leftL[i] = st[len(st)-1]
+			st = append(st, i)
+		}
+		for _, i := range st[1:] { // 其它语言的话，在创建 right 数组的时候初始化即可
+			rightLE[i] = len(rightLE)
+		}
 	}
 
 	// EXTRA：计算贡献（注意取模时避免出现负数）
 	// 不需要上面的预处理，只需要一次遍历的写法，请看 https://leetcode.cn/problems/sum-of-subarray-minimums/solution/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/
 	for i, v := range a {
-		_ = v
-		//l, r := left[i]+1, right[i] // [l,r) 左闭右开
-		tot := (i - left[i]) * (right[i] - i)
-		_ = tot
-		//tot := (sum[r] + mod - sum[l]) % mod
-	}
-
-	{
-		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
-		left := make([]int, len(a))  // a[left[i]] < a[i]
-		right := make([]int, len(a)) // a[right[i]] <= a[i]
-		st := []int{-1}
-		for i, v := range a {
-			for len(st) > 1 && v <= a[st[len(st)-1]] {
-				right[st[len(st)-1]] = i
-				st = st[:len(st)-1]
-			}
-			// 循环结束后，栈顶就是左侧 < v 的最近元素了
-			left[i] = st[len(st)-1]
-			st = append(st, i)
-		}
-		for _, i := range st[1:] { // 其它语言的话，在创建 right 数组的时候初始化即可
-			right[i] = len(right)
-		}
+		l, r := left[i], right[i] // (l,r) 左开右开
+		cnt := (i - l) * (r - i)
+		ans += v * cnt // 有 cnt 个子数组以 v 为最值
 	}
 
 	{
@@ -256,7 +252,7 @@ func monotoneStack(a []int) ([]int, []int) {
 		// ans[1:]
 	}
 
-	return left, right
+	return
 }
 
 // 求右边第二个更大元素的下标（注意不是下一个更大元素的下一个更大元素）
