@@ -96,25 +96,25 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-using LL = long long;
-
 class Solution {
 public:
-    int rootCount(vector<vector<int>> &edges, vector<vector<int>> &guesses, int k) {
+    int rootCount(vector<vector<int>>& edges, vector<vector<int>>& guesses, int k) {
+        using LL = long long;
+
         vector<vector<int>> g(edges.size() + 1);
-        for (auto &e : edges) {
+        for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x); // 建图
         }
 
         unordered_set<LL> s;
-        for (auto &e : guesses) { // guesses 转成哈希表
+        for (auto& e : guesses) { // guesses 转成哈希表
             s.insert((LL) e[0] << 32 | e[1]); // 两个 4 字节数压缩成一个 8 字节数
         }
 
         int ans = 0, cnt0 = 0;
-        function<void(int, int)> dfs = [&](int x, int fa) {
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> void {
             for (int y : g[x]) {
                 if (y != fa) {
                     cnt0 += s.count((LL) x << 32 | y); // 以 0 为根时，猜对了
@@ -124,7 +124,7 @@ public:
         };
         dfs(0, -1);
 
-        function<void(int, int, int)> reroot = [&](int x, int fa, int cnt) {
+        auto reroot = [&](this auto&& reroot, int x, int fa, int cnt) -> void {
             ans += cnt >= k; // 此时 cnt 就是以 x 为根时的猜对次数
             for (int y : g[x]) {
                 if (y != fa) {
@@ -190,13 +190,29 @@ func rootCount(edges [][]int, guesses [][]int, k int) (ans int) {
 - 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 为 $\textit{edges}$ 的长度加一，$m$ 为 $\textit{guesses}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n+m)$。
 
-## 相似题目
-
-- [834. 树中距离之和](https://leetcode.cn/problems/sum-of-distances-in-tree/)
-- [310. 最小高度树](https://leetcode.cn/problems/minimum-height-trees/)
-
 ## 思考题
 
 如果把「$u$ 是 $v$ 的父节点」改成「$u$ 是 $v$ 的**祖先节点**」，要怎么做呢？（解答见 [视频](https://www.bilibili.com/video/BV1dY4y1C77x/)）
 
 如果改成「$\textit{guesses}[i]$ 猜对会得到 $\textit{score}[i]$ 分，计算的是以每个点为根时的得分之和」，要怎么做呢？（本题相当于 $\textit{score}[i]$ 均为 $1$）
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
