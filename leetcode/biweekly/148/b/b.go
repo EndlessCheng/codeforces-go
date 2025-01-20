@@ -8,6 +8,9 @@ func minCost(a, b []int, k int64) int64 {
 	for i, x := range a {
 		ans2 += int64(abs(x - b[i]))
 	}
+	if ans2 <= k {
+		return ans2
+	}
 
 	slices.Sort(a)
 	slices.Sort(b)

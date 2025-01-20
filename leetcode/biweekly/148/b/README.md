@@ -4,12 +4,17 @@
 
 如果使用操作一，那么直接把 $a$ 分成 $n$ 个长为 $1$ 的子数组，这样 $a$ 就可以随意排了。
 
-最优配对方式是最小的 $a[i]$ 与最小的 $b[i]$ 一对，次小的 $a[i]$ 与次小的 $b[i]$ 一对。用交换论证法可以证明这样做是最优的，详细解释请看 [视频讲解](https://www.bilibili.com/video/BV1xBwBeEEie/?t=1m49s)，欢迎点赞关注~
+最优配对方式是最小的 $a[i]$ 与最小的 $b[i]$ 一对，次小的 $a[i]$ 与次小的 $b[i]$ 一对。用交换论证法可以证明这样做是最优的，详细解释请看 [视频讲解](https://www.bilibili.com/video/BV1xBwBeEEie/?t=1m49s)。
+
+**优化**：如果 $k$ 很大，比只用操作二还大（或者相等），那么使用操作一一定不会得到更优的答案。所以可以据此提前返回，这样可以省去排序的时间。
 
 ```py [sol-Python3]
 class Solution:
     def minCost(self, a: List[int], b: List[int], k: int) -> int:
         ans2 = sum(abs(x - y) for x, y in zip(a, b))
+        if ans2 <= k:
+            return ans2
+
         a.sort()
         b.sort()
         ans1 = sum(abs(x - y) for x, y in zip(a, b)) + k
@@ -22,6 +27,9 @@ class Solution {
         long ans2 = 0;
         for (int i = 0; i < a.length; i++) {
             ans2 += Math.abs(a[i] - b[i]);
+        }
+        if (ans2 <= k) {
+            return ans2;
         }
 
         Arrays.sort(a);
@@ -44,6 +52,9 @@ public:
         for (int i = 0; i < a.size(); i++) {
             ans2 += abs(a[i] - b[i]);
         }
+        if (ans2 <= k) {
+            return ans2;
+        }
 
         ranges::sort(a);
         ranges::sort(b);
@@ -62,6 +73,9 @@ func minCost(a, b []int, k int64) int64 {
 	ans2 := int64(0)
 	for i, x := range a {
 		ans2 += int64(abs(x - b[i]))
+	}
+	if ans2 <= k {
+		return ans2
 	}
 
 	slices.Sort(a)
