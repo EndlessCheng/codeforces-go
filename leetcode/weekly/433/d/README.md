@@ -2,6 +2,8 @@
 
 本题有长度 $\le k$ 的限制，怎么做？
 
+## 第一种计算方法
+
 设 $x=\textit{nums}[i]$ 是子数组的最小值，设 $x$ 对应的边界为开区间 $(L,R)$（见 907 题我题解中的定义）。
 
 分类讨论：
@@ -29,7 +31,7 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV17RwBeqErJ/?t=37m10s)，欢迎点赞关注~
 
-## 优化前
+### 优化前
 
 ```py [sol-Python3]
 class Solution:
@@ -227,7 +229,7 @@ func minMaxSubarraySum(nums []int, k int) int64 {
 }
 ```
 
-## 优化：减少遍历次数
+### 优化：减少遍历次数
 
 原理见 [907 题解](https://leetcode.cn/problems/sum-of-subarray-minimums/solutions/1930857/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/) 的方法三。
 
@@ -381,6 +383,159 @@ func minMaxSubarraySum(nums []int, k int) int64 {
 		}
 		return
 	}
+	nums = append(nums, math.MinInt)
+	ans := sumSubarrayMins()
+	// 所有元素取反（求最大值），就可以复用同一份代码了
+	for i := range nums {
+		nums[i] = -nums[i]
+	}
+	ans -= sumSubarrayMins()
+	return int64(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 第二种计算方法
+
+设 $x=\textit{nums}[i]$ 是子数组的最小值，设 $x$ 对应的边界为开区间 $(L,R)$（见 907 题我题解中的定义）。
+
+包含 $x$ 的长度至多为 $k$ 的子数组个数，等于：
+
+- 开区间 $(L,R)$ 中的所有长度至多为 $k$ 的子数组个数，
+- 减去开区间 $(L,i)$ 中的长度至多为 $k$ 的子数组个数，
+- 减去开区间 $(i,R)$ 中的长度至多为 $k$ 的子数组个数。
+
+设开区间长度为 $m$，分类讨论：
+
+- 如果 $m\le k$，那么长为 $1$ 的子数组有 $m$ 个，长为 $2$ 的子数组有 $m-1$ 个，……，长为 $m$ 的子数组有 $1$ 个，一共有 $m+(m-1)+\cdots+1=\dfrac{(m+1)m}{2}$ 个子数组。
+- 如果 $m> k$，那么长为 $1$ 的子数组有 $m$ 个，长为 $2$ 的子数组有 $m-1$ 个，……，长为 $k$ 的子数组有 $m-k+1$ 个，一共有 $m+(m-1)+\cdots+(m-k+1)=\dfrac{(2m-k+1)k}{2}$ 个子数组。
+
+```py [sol-Python3]
+class Solution:
+    def sumSubarrayMins(self, nums: List[int], k: int) -> int:
+        count = lambda m: (m * 2 - k + 1) * k // 2 if m > k else (m + 1) * m // 2
+        ans = 0
+        st = [-1]
+        for r, x in enumerate(nums + [-inf]):
+            while len(st) > 1 and nums[st[-1]] >= x:
+                i = st.pop()
+                l = st[-1]
+                cnt = count(r - l - 1) - count(i - l - 1) - count(r - i - 1)
+                ans += nums[i] * cnt
+            st.append(r)
+        return ans
+
+    def minMaxSubarraySum(self, nums: List[int], k: int) -> int:
+        ans = self.sumSubarrayMins(nums, k)
+        ans -= self.sumSubarrayMins([-x for x in nums], k)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public long minMaxSubarraySum(int[] nums, int k) {
+        long ans = sumSubarrayMins(nums, k);
+        // 所有元素取反，就可以复用同一份代码求最大值的贡献了
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = -nums[i];
+        }
+        ans -= sumSubarrayMins(nums, k);
+        return ans;
+    }
+
+    // 计算最小值的贡献
+    private long sumSubarrayMins(int[] nums, int k) {
+        int n = nums.length;
+        Deque<Integer> st = new ArrayDeque<>();
+        st.push(-1);
+        long res = 0;
+        for (int r = 0; r <= n; r++) {
+            int v = r < n ? nums[r] : Integer.MIN_VALUE; // 假设 nums 末尾有个 Integer.MIN_VALUE
+            while (st.size() > 1 && nums[st.peek()] >= v) {
+                int i = st.pop();
+                int l = st.peek();
+                long cnt = count(r - l - 1, k) - count(i - l - 1, k) - count(r - i - 1, k);
+                res += nums[i] * cnt; // 累加贡献
+            }
+            st.push(r);
+        }
+        return res;
+    }
+
+    private long count(int m, int k) {
+        return m > k ? ((long) m * 2 - k + 1) * k / 2 : ((long) m + 1) * m / 2;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minMaxSubarraySum(vector<int>& nums, int k) {
+        auto count = [&](int m) -> long long {
+            return m > k ? 1LL * (m * 2 - k + 1) * k / 2 : 1LL * (m + 1) * m / 2;
+        };
+
+        // 计算最小值的贡献
+        auto sumSubarrayMins = [&]() -> long long {
+            long long res = 0;
+            stack<int> st;
+            st.push(-1); // 哨兵
+            for (int r = 0; r < nums.size(); r++) {
+                while (st.size() > 1 && nums[st.top()] >= nums[r]) {
+                    int i = st.top();
+                    st.pop();
+                    int l = st.top();
+                    long long cnt = count(r - l - 1) - count(i - l - 1) - count(r - i - 1);
+                    res += nums[i] * cnt; // 累加贡献
+                }
+                st.push(r);
+            }
+            return res;
+        };
+
+        nums.push_back(INT_MIN / 2);
+        long long ans = sumSubarrayMins();
+        // 所有元素取反，就可以复用同一份代码求最大值的贡献了
+        for (int& x : nums) {
+            x = -x;
+        }
+        nums.back() *= -1;
+        ans -= sumSubarrayMins();
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minMaxSubarraySum(nums []int, k int) int64 {
+	count := func(m int) int {
+		if m <= k {
+			return (m + 1) * m / 2
+		}
+		return (m*2 - k + 1) * k / 2
+	}
+
+	// 计算最小值的贡献
+	sumSubarrayMins := func() (res int) {
+		st := []int{-1} // 哨兵
+		for r, x := range nums {
+			for len(st) > 1 && nums[st[len(st)-1]] >= x {
+				i := st[len(st)-1]
+				st = st[:len(st)-1]
+				l := st[len(st)-1]
+				cnt := count(r-l-1) - count(i-l-1) - count(r-i-1)
+				res += nums[i] * cnt // 累加贡献
+			}
+			st = append(st, r)
+		}
+		return
+	}
+
 	nums = append(nums, math.MinInt)
 	ans := sumSubarrayMins()
 	// 所有元素取反（求最大值），就可以复用同一份代码了

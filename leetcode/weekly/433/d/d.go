@@ -4,32 +4,29 @@ import "math"
 
 // https://space.bilibili.com/206214
 func minMaxSubarraySum(nums []int, k int) int64 {
+	count := func(m int) int {
+		if m <= k {
+			return (m + 1) * m / 2
+		}
+		return (m*2 - k + 1) * k / 2
+	}
+
 	// 计算最小值的贡献
 	sumSubarrayMins := func() (res int) {
 		st := []int{-1} // 哨兵
 		for r, x := range nums {
-			r0 := r
 			for len(st) > 1 && nums[st[len(st)-1]] >= x {
 				i := st[len(st)-1]
 				st = st[:len(st)-1]
 				l := st[len(st)-1]
-				if r-l-1 <= k {
-					cnt := (i - l) * (r - i)
-					res += nums[i] * cnt // 累加贡献
-				} else {
-					l = max(l, i-k)
-					r = min(r, i+k)
-					// 左端点 > r-k 的子数组个数
-					cnt := (r - i) * (i - (r - k))
-					// 左端点 <= r-k 的子数组个数
-					cnt2 := (l + r + k - i*2 + 1) * (r - l - k) / 2
-					res += nums[i] * (cnt + cnt2) // 累加贡献
-				}
+				cnt := count(r-l-1) - count(i-l-1) - count(r-i-1)
+				res += nums[i] * cnt // 累加贡献
 			}
-			st = append(st, r0)
+			st = append(st, r)
 		}
 		return
 	}
+
 	nums = append(nums, math.MinInt)
 	ans := sumSubarrayMins()
 	// 所有元素取反（求最大值），就可以复用同一份代码了
