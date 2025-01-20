@@ -2,9 +2,8 @@ package main
 
 // https://space.bilibili.com/206214
 func longestSpecialPath(edges [][]int, nums []int) []int {
-	n := len(nums)
 	type edge struct{ to, weight int }
-	g := make([][]edge, n)
+	g := make([][]edge, len(nums))
 	for _, e := range edges {
 		x, y, w := e[0], e[1], e[2]
 		g[x] = append(g[x], edge{y, w})

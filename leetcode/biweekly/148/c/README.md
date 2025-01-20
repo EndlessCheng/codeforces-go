@@ -36,8 +36,7 @@
 ```py [sol-Python3]
 class Solution:
     def longestSpecialPath(self, edges: List[List[int]], nums: List[int]) -> List[int]:
-        n = len(nums)
-        g = [[] for _ in range(n)]
+        g = [[] for _ in nums]
         for x, y, w in edges:
             g[x].append((y, w))
             g[y].append((x, w))
@@ -73,8 +72,7 @@ class Solution {
     private int minNodes = 0;
 
     public int[] longestSpecialPath(int[][] edges, int[] nums) {
-        int n = nums.length;
-        List<int[]>[] g = new ArrayList[n];
+        List<int[]>[] g = new ArrayList[nums.length];
         Arrays.setAll(g, i -> new ArrayList<>());
         for (int[] e : edges) {
             int x = e[0];
@@ -203,9 +201,8 @@ public:
 
 ```go [sol-Go]
 func longestSpecialPath(edges [][]int, nums []int) []int {
-	n := len(nums)
 	type edge struct{ to, weight int }
-	g := make([][]edge, n)
+	g := make([][]edge, len(nums))
 	for _, e := range edges {
 		x, y, w := e[0], e[1], e[2]
 		g[x] = append(g[x], edge{y, w})
