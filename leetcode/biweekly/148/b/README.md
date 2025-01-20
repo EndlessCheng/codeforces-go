@@ -4,9 +4,7 @@
 
 如果使用操作一，那么直接把 $a$ 分成 $n$ 个长为 $1$ 的子数组，这样 $a$ 就可以随意排了。
 
-最优配对方式是最小的 $a[i]$ 与最小的 $b[i]$ 一对，次小的 $a[i]$ 与次小的 $b[i]$ 一对。用交换论证法可以证明这样做是最优的。
-
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1xBwBeEEie/?t=1m49s)，欢迎点赞关注~
+最优配对方式是最小的 $a[i]$ 与最小的 $b[i]$ 一对，次小的 $a[i]$ 与次小的 $b[i]$ 一对。用交换论证法可以证明这样做是最优的，详细解释请看 [视频讲解](https://www.bilibili.com/video/BV1xBwBeEEie/?t=1m49s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
