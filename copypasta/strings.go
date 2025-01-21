@@ -145,6 +145,23 @@ func _() {
 			return
 		}
 
+		// 比较 s[l1:r1] 和 s[l2:r2] 的字典序大小，注意这是左闭右开区间 [l,r)
+		compare := func(l1, r1, l2, r2 int) int {
+			len1, len2 := r1-l1, r2-l2
+			sz := min(len1, len2)
+			// 二分长度求 LCP
+			lcp := sort.Search(sz, func(m int) bool {
+				m++
+				return subHash(l1, l1+m) != subHash(l2, l2+m)
+			})
+			if lcp == sz {
+				// 一个是另一个的前缀，或者完全相等
+				return len1 - len2
+			}
+			// 比较 LCP 的下一个字母
+			return int(s[l1+lcp]) - int(s[l2+lcp])
+		}
+
 		// 计算 s[l1:r1] + s[l2:r2] 的哈希值，注意这是左闭右开区间 [l,r)
 		concatHash := func(l1, r1, l2, r2 int) int {
 			h1 := preHash[r1] - preHash[l1]*powBase[r1-l1]
@@ -152,7 +169,7 @@ func _() {
 			return ((h1%mod*powBase[r2-l2]+h2)%mod + mod) % mod
 		}
 
-		_ = []any{subHash, calcHash, concatHash}
+		_ = []any{subHash, calcHash, compare, concatHash}
 	}
 
 	// 双模哈希 1133ms https://leetcode.cn/problems/construct-string-with-minimum-cost/submissions/545112087/
@@ -524,6 +541,7 @@ func _() {
 
 	// 子序列自动机
 	// 如果值域很大可以用哈希表/数组记录 pos 然后二分查找 https://www.luogu.com.cn/problem/P5826
+	// https://leetcode.cn/problems/is-subsequence/
 	// - [514. 自由之路](https://leetcode.cn/problems/freedom-trail/)
 	// LC727 https://leetcode.cn/problems/minimum-window-subsequence/
 	// LC792 https://leetcode.cn/problems/number-of-matching-subsequences/
@@ -535,9 +553,12 @@ func _() {
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
 	// https://codeforces.com/contest/1845/problem/C
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
+
+	// 写法一
+	// nxt[i][j] 表示下标 > i 的最近字符 j 的下标
 	subsequenceAutomaton := func(s string) {
+		const base = 'a'
 		// build nxt
-		// nxt[i][j] 表示在 i 右侧的字符 j 的最近位置
 		pos := [26]int{}
 		for i := range pos {
 			pos[i] = len(s)
@@ -545,8 +566,7 @@ func _() {
 		nxt := make([][26]int, len(s))
 		for i := len(s) - 1; i >= 0; i-- {
 			nxt[i] = pos
-			pos[s[i]-'a'] = i
-			// 注意这行在下面。我个人更喜欢这种写法，不喜欢写 nxt... +1，让一个指针指向当前位置右侧太奇怪了，不如这种写法清晰
+			pos[s[i]-base] = i
 		}
 
 		// 返回是 s 的子序列的最长的 t 的前缀的长度
@@ -559,12 +579,44 @@ func _() {
 				j = 1 // t[0] 匹配 ok
 			}
 			for ; j < len(t); j++ {
-				i = nxt[i][t[j]-'a']
+				i = nxt[i][t[j]-base]
 				if i == len(s) {
 					break
 				}
 			}
 			return j
+		}
+		_ = match
+	}
+
+	// 写法二
+	// nxt[i][j] 表示下标 >= i 的最近字符 j 的下标
+	subsequenceAutomaton2 := func(s string) {
+		const base = 'a'
+		// build nxt
+		pos := [26]int{}
+		n := len(s)
+		for i := range pos {
+			pos[i] = n
+		}
+		nxt := make([][26]int, n+1)
+		nxt[n] = pos
+		for i := n - 1; i >= 0; i-- {
+			pos[s[i]-base] = i
+			nxt[i] = pos
+		}
+
+		// 返回是 s 的子序列的最长的 t 的前缀的长度
+		match := func(t string) int {
+			i := -1
+			for j, b := range t {
+				i = nxt[i+1][b-base]
+				if i == n { // 找不到 t[j]
+					return j
+				}
+			}
+			// 此时 s[i] 匹配 t[-1]
+			return len(t)
 		}
 		_ = match
 	}
@@ -943,18 +995,11 @@ func _() {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
 			if l >= min(len1, len2) {
-				if len1 == len2 { // 相等
-					return 0
-				}
-				if len1 < len2 { // s[l1:r1] 是 s[l2:r2] 的前缀
-					return -1
-				}
-				return 1 // s[l2:r2] 是 s[l1:r1] 的前缀
+				// 一个是另一个的前缀，或者完全相等
+				return len1 - len2
 			}
-			if rank[l1] < rank[l2] { // 或者 s[l1+l] < s[l2+l]
-				return -1
-			}
-			return 1
+			// 或者 int(s[l1+l]) - int(s[l2+l])
+			return rank[l1] - rank[l2]
 		}
 
 		// EXTRA: 可重叠最长重复子串
@@ -1169,7 +1214,7 @@ func _() {
 		kmpSearch, calcMinPeriod, failTree, // KMP
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
-		isSubseq, subsequenceAutomaton,
+		isSubseq, subsequenceAutomaton, subsequenceAutomaton2,
 		manacher,
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
