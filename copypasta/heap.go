@@ -33,6 +33,7 @@ https://codeforces.com/problemset/problem/1969/D 1900
 https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
+- https://atcoder.jp/contests/abc376/tasks/abc376_e
 https://codeforces.com/problemset/problem/1862/E 1600
 https://codeforces.com/problemset/problem/1862/E 1600
 https://codeforces.com/problemset/problem/1935/C 1800
@@ -229,8 +230,7 @@ type lazyHeap struct {
 	sum  int // 实际元素和（可选）
 }
 
-// 最大堆
-func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
+func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] < h.IntSlice[j] }
 func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除

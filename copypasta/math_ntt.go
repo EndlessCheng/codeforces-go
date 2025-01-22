@@ -84,7 +84,6 @@ On linear recurrences and the math behind them https://codeforces.com/blog/entry
 How to composite (some) polynomials faster? https://codeforces.com/blog/entry/126124
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
-反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
 
 Min-Max容斥
 https://www.luogu.com.cn/blog/Troverld/Min-Max-Inclusion-and-Exclusion

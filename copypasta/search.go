@@ -79,6 +79,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 - [216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)
 - [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
 - [301. 删除无效的括号](https://leetcode.cn/problems/remove-invalid-parentheses/)
+https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举子集
 
 分割
 - [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)

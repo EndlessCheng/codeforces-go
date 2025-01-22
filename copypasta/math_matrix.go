@@ -37,6 +37,12 @@ TR 的数列 https://blog.csdn.net/zyz_bz/article/details/88993616
 3xM 的格子，其中有一些障碍物，求从第二行最左走到第二行最右的方案数，每次可以向右/右上/右下走一步 https://codeforces.com/problemset/problem/954/F
 https://codeforces.com/problemset/problem/166/E
 
+min max 矩阵快速幂
+https://atcoder.jp/contests/abc236/tasks/abc236_g
+
+& xor 矩阵快速幂
+https://atcoder.jp/contests/abc009/tasks/abc009_4
+
 todo poj 2345 3532 3526
 */
 

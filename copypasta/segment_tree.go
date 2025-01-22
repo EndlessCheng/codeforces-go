@@ -35,6 +35,7 @@ import "math/bits"
 
 带修最长连续相同子串 LC2213 https://leetcode.cn/problems/longest-substring-of-one-repeating-character/
 带修最大子段和 https://www.luogu.com.cn/problem/P4513
+- 代码 https://www.luogu.com.cn/record/50262292
 - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
 带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
 带修打家劫舍 https://www.luogu.com.cn/problem/P3097
@@ -51,11 +52,12 @@ import "math/bits"
 // 另见 Kinetic Tournament 树 (KTT) https://www.luogu.com.cn/problem/P5693
 // https://www.luogu.com.cn/problem/P10587
 
-// GCD https://codeforces.com/problemset/problem/914/D 1900
-// 区间最长括号子序列 https://codeforces.com/problemset/problem/380/C 2000
-// 最值及其下标 https://codeforces.com/contest/474/problem/E 2000
-// 区间最短线段长度 https://codeforces.com/problemset/problem/522/D 2000
-// 开方（也可以并查集）https://codeforces.com/problemset/problem/920/F 2000
+// https://codeforces.com/problemset/problem/2050/F 1700 GCD
+// https://codeforces.com/problemset/problem/914/D 1900 GCD 
+// https://codeforces.com/problemset/problem/380/C 2000 区间最长括号子序列 
+// https://codeforces.com/contest/474/problem/E 2000 最值及其下标 
+// https://codeforces.com/problemset/problem/522/D 2000 区间最短线段长度 
+// https://codeforces.com/problemset/problem/920/F 2000 开方（也可以用并查集做）
 // - https://www.luogu.com.cn/problem/P4145
 // - http://acm.hdu.edu.cn/showproblem.php?pid=4027
 // 区间（绝对）众数及其次数（摩尔投票算法）https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_majority_vote_algorithm
@@ -64,24 +66,26 @@ import "math/bits"
 // - https://www.luogu.com.cn/problem/P3567
 // - https://www.luogu.com.cn/problem/P3765
 // - https://codeforces.com/contest/1514/problem/D 2000
-// 区间元素去重后的异或和 https://codeforces.com/problemset/problem/703/D 2100
+// https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和 
 // - 联系 https://www.luogu.com.cn/problem/P1972
-// todo 区间连续递增子数组个数 https://codeforces.com/problemset/problem/1567/E 2200
+// todo https://codeforces.com/problemset/problem/1567/E 2200 区间连续递增子数组个数
 // https://codeforces.com/problemset/problem/1179/C 2200
-// 取模 https://codeforces.com/problemset/problem/438/D 2300
-// k 维曼哈顿（单点修改+区间最大值）https://codeforces.com/problemset/problem/1093/G 2300
-// 转换的好题 https://codeforces.com/problemset/problem/1187/D 2400
-// 区间 swap & reverse https://codeforces.com/problemset/problem/1401/F 2400
+// https://codeforces.com/problemset/problem/1906/F 2200 最大子数组和（非空） 离线
+// https://codeforces.com/problemset/problem/438/D 2300 取模
+// https://codeforces.com/problemset/problem/1093/G 2300 k 维曼哈顿（单点修改+区间最大值）
+// https://codeforces.com/problemset/problem/1187/D 2400 转换的好题
+// https://codeforces.com/problemset/problem/1401/F 2400 区间 swap & reverse
 // - 联想 reverse bit 的递归思路
-// 所有子数组的 mex 的 mex https://codeforces.com/problemset/problem/1436/E 2400
+// https://codeforces.com/problemset/problem/1436/E 2400 所有子数组的 mex 的 mex
 // 区间 mex https://www.luogu.com.cn/problem/P4137
 // - 做法之一是离线+线段树二分 https://www.luogu.com.cn/blog/user7035/solution-p4137
 // - 也可以用树状数组 https://www.luogu.com.cn/blog/Atalod/ti-xie-p4137-post
 // - 反向构造题 https://www.luogu.com.cn/problem/P6852
-// 单点修改 + 不含子序列 abc https://codeforces.com/problemset/problem/1609/E 2400
-// 区间最小的 31 个数 https://codeforces.com/problemset/problem/1665/E 2500
+// https://codeforces.com/problemset/problem/1609/E 2400 单点修改 + 不含子序列 abc
+// https://codeforces.com/problemset/problem/1665/E 2500 区间最小的 31 个数
+// https://codeforces.com/problemset/problem/2042/F 2600 两段最大子段和
 // todo https://codeforces.com/problemset/problem/19/D 2800
-// 最小差值 https://codeforces.com/problemset/problem/765/F 3100
+// https://codeforces.com/problemset/problem/765/F 3100 最小差值
 // - https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
 // - 不允许相等 https://www.luogu.com.cn/problem/P5926
 // https://atcoder.jp/contests/abc285/tasks/abc285_f
@@ -126,6 +130,7 @@ import "math/bits"
 // 这个性质可以用于优化建图
 // https://www.luogu.com.cn/blog/forever-captain/DS-optimize-graph
 // https://codeforces.com/problemset/problem/786/B 2300
+// https://codeforces.com/problemset/problem/1903/F 2500
 // todo https://www.luogu.com.cn/problem/P6348
 
 /* 一些细节
@@ -266,7 +271,7 @@ func (t seg) query(o, l, r int) int {
 func (t seg) queryAll() int { return t[1].val }
 
 // 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最大值
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标，需要线段树维护区间最大值
 //     t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
 // 调用时 o=1
 // https://leetcode.cn/problems/booking-concert-tickets-in-groups/
@@ -288,7 +293,7 @@ func (t seg) findFirst(o, l, r int, f func(int) bool) int {
 }
 
 // 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最小值
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标，需要线段树维护区间最小值
 //     t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
 // 调用时 o=1
 func (t seg) findLast(o, l, r int, f func(int) bool) int {
@@ -346,6 +351,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/1295/E  2200
 // https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
 // https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
+// https://codeforces.com/problemset/problem/1797/E  2300 phi*
 // https://codeforces.com/problemset/problem/145/E   2400
 // https://codeforces.com/problemset/problem/1114/F  2400
 // https://codeforces.com/problemset/problem/240/F   2600
@@ -354,6 +360,7 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/2009/G3 2700
 // https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
+// https://atcoder.jp/contests/abc389/tasks/abc389_f 线段树二分
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
@@ -471,7 +478,7 @@ func (t lazySeg) query(o, l, r int) int {
 func (t lazySeg) queryAll() int { return t[1].sum }
 
 // 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最大值
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标，需要线段树维护区间最大值
 //     t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
 // 调用时 o=1
 func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
@@ -490,7 +497,7 @@ func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
 }
 
 // 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最小值
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标，需要线段树维护区间最小值
 //     t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
 // 调用时 o=1
 func (t lazySeg) findLast(o, l, r int, f func(int) bool) int {
@@ -536,6 +543,8 @@ func (t lazySeg) spreadAll(o int) {
 // LC327 https://leetcode.cn/problems/count-of-range-sum/
 // LC2770 https://leetcode.cn/problems/maximum-number-of-jumps-to-reach-the-last-index/ 1533
 // LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
+// https://codeforces.com/problemset/problem/2000/H 2200
+// - 相似题目 https://www.luogu.com.cn/problem/P2894
 // todo https://codeforces.com/problemset/problem/1614/E 2600
 // https://atcoder.jp/contests/abc351/tasks/abc351_f
 // 树套树见 fenwick_tree.go

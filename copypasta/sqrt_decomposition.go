@@ -45,6 +45,9 @@ https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
 https://atcoder.jp/contests/abc293/tasks/abc293_f 四次方根
 https://atcoder.jp/contests/abc365/tasks/abc365_g
+https://leetcode.cn/problems/maximum-number-of-matching-indices-after-right-shifts/
+- 频率高 (>t) 的字符拿出来做卷积，频率低的字符枚举所有对
+- 这样前一部分复杂度是 O(n/t*n log n)，后一部分是 O(n*t)，取 t=sqrt(n log n) 得复杂度 O(n^1.5 log^0.5 n)
 https://leetcode.com/discuss/interview-question/3517350/
 - Given a list of pairs {L,R} & an array.
   Find out the total number of pairs (i, j) where
