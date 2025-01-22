@@ -180,6 +180,7 @@ https://leetcode.cn/circle/discuss/01LUak/
 有关【网格图】的题目，见 search.go
 
 ### 建图
+https://codeforces.com/problemset/problem/2027/C 1500
 https://codeforces.com/problemset/problem/765/D 1700
 https://codeforces.com/problemset/problem/1635/E 2200
 
@@ -343,7 +344,11 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 	}
 }
 
+// XOR Linked Tree 
+// https://codeforces.com/blog/entry/135239
+
 /* 图上的 DFS
+https://codeforces.com/problemset/problem/744/A 1500
 https://codeforces.com/problemset/problem/659/E 1600
 https://codeforces.com/problemset/problem/1176/E 1700
 https://codeforces.com/contest/1927/problem/F 1900 找包含指定边的环
@@ -1553,6 +1558,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 可视化 https://visualgo.net/zh/sssp
 // https://oi-wiki.org/graph/shortest-path/#dijkstra
 // 最短路问题笔记 https://www.luogu.com.cn/blog/SCN/zui-duan-lu-wen-ti-bi-ji
+// Universal Optimality https://mp.weixin.qq.com/s/V0MlmsoZdcRIZcxsRgAzuA
 //
 // ## 题单：Dijkstra
 // - [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/)
@@ -1580,46 +1586,48 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 //
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C 1900
-// 结合二分 https://codeforces.com/problemset/problem/229/B 1700
 // 最短路个数 https://www.luogu.com.cn/problem/P1144
 //           https://www.luogu.com.cn/problem/P1608
-// 【理解本质】通过最短路找到可以删除的边 https://codeforces.com/problemset/problem/449/B 2000
-// 稠密图 https://atcoder.jp/contests/arc064/tasks/arc064_c
 // 【理解本质】https://atcoder.jp/contests/abc271/tasks/abc271_e
+// https://codeforces.com/problemset/problem/229/B 1700 二分
+// https://codeforces.com/problemset/problem/2023/B 1700 建模
+// https://codeforces.com/problemset/problem/1725/M 1800 分层图最短路
+// https://codeforces.com/problemset/problem/1915/G 1800 双关键字
+// https://codeforces.com/problemset/problem/1842/D 1900 转换
+// https://codeforces.com/problemset/problem/449/B 2000 【理解本质】通过最短路找到可以删除的边
+// https://codeforces.com/problemset/problem/545/E 2000 MST
+// - https://atcoder.jp/contests/arc090/tasks/arc090_c
 // https://codeforces.com/problemset/problem/938/D 2000 超级源点
 // - LC2473 https://leetcode.cn/problems/minimum-cost-to-buy-apples/
-// 建模 https://www.luogu.com.cn/problem/P4644
-// 建模 LC864 https://leetcode.cn/problems/shortest-path-to-get-all-keys/ 2259
-// https://codeforces.com/problemset/problem/1725/M 1800 分层图最短路
-// 建模【好题】https://codeforces.com/contest/1528/problem/D
-// 建模+转换+多源最短路 https://codeforces.com/problemset/problem/1753/D
-// 转换 https://atcoder.jp/contests/abc237/tasks/abc237_e
-// 转换 https://codeforces.com/contest/1842/problem/D
-// 双关键字 https://codeforces.com/contest/1915/problem/G
-// 双关键字+记录路径编号 https://codeforces.com/problemset/problem/507/E
-// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/567/E
+// https://codeforces.com/problemset/problem/507/E 2100 双关键字+记录路径编号 
+// https://codeforces.com/problemset/problem/1005/F 2100
+// https://codeforces.com/problemset/problem/567/E 2200 * 关键边、伪关键边（与割边结合）
+// https://codeforces.com/problemset/problem/715/B 2300
+// https://codeforces.com/problemset/problem/1693/C 2300 转换
+// https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
+// https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
+// https://atcoder.jp/contests/arc064/tasks/arc064_c * 稠密图
+// https://atcoder.jp/contests/abc237/tasks/abc237_e 转换
+// LC864 https://leetcode.cn/problems/shortest-path-to-get-all-keys/ 2259 建模 
+// https://www.luogu.com.cn/problem/P4644 建模 
 // [SDOI2010]大陆争霸 https://www.luogu.com.cn/problem/P2446
 // [AHOI2014/JSOI2014]骑士游戏 https://www.luogu.com.cn/problem/P4042
-// 转换 https://codeforces.com/problemset/problem/1693/C
 // 题目推荐 https://cp-algorithms.com/graph/dijkstra.html#toc-tgt-5
-// 线段树建图优化 https://codeforces.com/problemset/problem/786/B
+// 线段树优化建图 https://codeforces.com/problemset/problem/786/B 2300
 // - todo [SNOI2017] 炸弹 https://www.luogu.com.cn/problem/P5025
-// 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E
+// 涉及到相邻两条边的最短路 https://codeforces.com/contest/1486/problem/E 2200
 // todo 与扩欧结合 https://www.acwing.com/problem/content/3418/
 // 分层图最短路
-//    空间压缩 https://codeforces.com/problemset/problem/1442/C
-//    转换 https://codeforces.com/problemset/problem/1473/E
-// todo 动态最短路 https://codeforces.com/problemset/problem/1163/F
+// - 空间压缩 https://codeforces.com/problemset/problem/1442/C 2400
+// - 转换 https://codeforces.com/problemset/problem/1473/E 2400
+// todo 动态最短路 https://codeforces.com/problemset/problem/1163/F 3000
 // todo 与类似并查集的东西结合 https://ac.nowcoder.com/acm/problem/19789
 //
-// 最短路径树
+// 最短路树
 // todo https://xyzl.blog.luogu.org/Shortest-Path-Tree-SPT
 // 最短路树上跑拓扑排序 LC1786 https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/ 2079
-// 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D
-// todo https://codeforces.com/problemset/problem/1005/F
-// todo MST https://codeforces.com/problemset/problem/545/E
-//  https://atcoder.jp/contests/arc090/tasks/arc090_c
-func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
+// 最短路树上跑拓扑排序 https://codeforces.com/contest/1076/problem/D 1800
+func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 	type neighbor struct{ to, wt int }
 	g := make([][]neighbor, n)
 	for _, e := range edges {
@@ -1629,11 +1637,11 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 	}
 
 	const inf int = 1e18
-	dist = make([]int, n)
-	for i := range dist {
-		dist[i] = inf
+	dis = make([]int, n)
+	for i := range dis {
+		dis[i] = inf
 	}
-	dist[st] = 0
+	dis[st] = 0
 	from := make([]int, n) // 见下面「从 st 到 end 的路径」
 	for i := range from {
 		from[i] = -1
@@ -1645,7 +1653,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 		// 下面循环中的 newD < dist[w] 可能会把重复的节点 w 入堆
 		// 也就是说，堆中可能会包含多个相同节点，且这些相同节点的 dist 值【互不相同】
 		// 那么这个节点第二次及其后面出堆的时候，由于 dist[v] 已经更新成最短路了，其邻居的最短路也已经被更新过了，所以直接跳过
-		if p.dis > dist[v] {
+		if p.dis > dis[v] {
 			continue
 		}
 		// 第 k 个执行到这一行的最短路 dist[v] 就是所有 dist 中第 k 小的最短路
@@ -1653,8 +1661,8 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 		for _, e := range g[v] {
 			w := e.to
 			newD := p.dis + e.wt
-			if newD < dist[w] {
-				dist[w] = newD
+			if newD < dis[w] {
+				dis[w] = newD
 				from[w] = v
 				h.push(dijkstraPair{w, newD})
 			}
@@ -1692,7 +1700,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 			vis[w] = true
 			for _, e := range g[w] {
 				v := e.to
-				if dist[v]+e.wt != dist[w] {
+				if dis[v]+e.wt != dis[w] {
 					continue
 				}
 				// 标记在最短路上的边（建图的时候把边的下标也存进去）
@@ -1707,7 +1715,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 	}
 
 	// EXTRA: 构建有向最短路树（除根节点外的点的入度均为 1）
-	// https://www.acwing.com/problem/content/3631/
+	// https://atcoder.jp/contests/abc252/tasks/abc252_e
 	{
 		g2 := make([][]neighbor, n)
 		vis := make([]bool, n)
@@ -1717,7 +1725,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 				if vis[w] { // 已经有一条指向 w 的边了。若去掉该判断则构建的是 DAG
 					continue
 				}
-				if dist[v]+e.wt == dist[w] {
+				if dis[v]+e.wt == dis[w] {
 					g2[v] = append(g2[v], e)
 					vis[w] = true
 				}
@@ -1735,7 +1743,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 		deg := make([]int, n)
 		for v, es := range g {
 			for _, e := range es {
-				if dist[v]+e.wt == dist[e.to] {
+				if dis[v]+e.wt == dis[e.to] {
 					deg[e.to]++
 				}
 			}
@@ -1748,7 +1756,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dist []int) {
 			v := q[0]
 			q = q[1:]
 			for _, e := range g[v] {
-				if w := e.to; dist[v]+e.wt == dist[w] {
+				if w := e.to; dis[v]+e.wt == dis[w] {
 					// do f[v] -> f[w] ...
 
 					if deg[w]--; deg[w] == 0 {
@@ -1971,6 +1979,9 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dis []int) { // 有负
 // https://en.wikipedia.org/wiki/Min-plus_matrix_multiplication
 // https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html#toc-tgt-5
 //
+// Solving the all pairs shortest path problem after minor update of a large dense graph
+// https://arxiv.org/abs/2412.15122
+//
 // 模板题 https://www.luogu.com.cn/problem/B3647
 // 传递闭包 https://www.luogu.com.cn/problem/B3611
 // 传递闭包+矩阵快速幂 https://codeforces.com/contest/691/problem/E 1900
@@ -2029,6 +2040,7 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 
 	// 动态加边
 	// https://codeforces.com/problemset/problem/25/C
+	// https://atcoder.jp/contests/abc375/tasks/abc375_f
 	// LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/
 	// LC2959 https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/ 结合状压 DP
 	for i := range g {
@@ -2043,7 +2055,7 @@ func (*graph) shortestPathFloydWarshall(n int, edges [][]int) [][]int {
 		}
 		for i := range g {
 			for j := range g {
-				g[i][j] = min(g[i][j], g[i][from]+wt+g[to][j])
+				g[i][j] = min(g[i][j], g[i][from]+wt+g[to][j]) // g[i][to]+wt+g[from][j] 如果是双向边的话额外 min 这种情况
 			}
 		}
 	}
@@ -2340,13 +2352,14 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // - [1584. 连接所有点的最小费用](https://leetcode.cn/problems/min-cost-to-connect-all-points/) 1858
 // - [1135. 最低成本连通所有城市](https://leetcode.cn/problems/connecting-cities-with-minimum-cost/)（会员题）
 // - [1168. 水资源分配优化](https://leetcode.cn/problems/optimize-water-distribution-in-a-village/)（会员题）
-// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D 
+// 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D 2300
 // - [1489. 找到最小生成树里的关键边和伪关键边](https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/) 2572
 // https://atcoder.jp/contests/abc210/tasks/abc210_e 需要一些数论知识 
 // https://atcoder.jp/contests/abc270/tasks/abc270_f 枚举 
 // https://codeforces.com/problemset/problem/1468/J 1800 分类讨论
 // https://codeforces.com/problemset/problem/1095/F 1900 边权为 a[i]+a[j] 的混合 MST 
 // - 完全图找个最小的 a[i] 和其余点连边
+// https://codeforces.com/problemset/problem/1108/F 2100 MST 的唯一性
 // https://codeforces.com/problemset/problem/733/F 2200 与 LCA 结合 
 // https://codeforces.com/problemset/problem/891/C 2300 判断给定的边是否均在同一棵 MST 中 
 // https://codeforces.com/problemset/problem/1408/E 2400 二分图无环 
@@ -2359,6 +2372,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // https://codeforces.com/problemset/problem/632/F 2400 转换
 // https://codeforces.com/problemset/problem/1981/E 2600
 // https://atcoder.jp/contests/abc282/tasks/abc282_e 无环即生成树
+// https://atcoder.jp/contests/abc355/tasks/abc355_f
 // https://atcoder.jp/contests/typical90/tasks/typical90_ai 子树 MST 必须包含特殊点 
 func (*graph) mstKruskal(n int, edges [][]int) int {
 	// 边权范围小的话也可以用桶排
@@ -3546,6 +3560,7 @@ func (*graph) maxWeightedBipartiteMatchingKuhnMunkres(wt [][]int) (match []int, 
 //        https://www.luogu.com.cn/problem/P3387
 //        https://codeforces.com/problemset/problem/721/C 1800
 // 删点 LC310 https://leetcode.cn/problems/minimum-height-trees/
+// - https://codeforces.com/problemset/problem/1881/F
 // https://codeforces.com/problemset/problem/1572/A 1800
 // 混合图拓扑排序+定向 https://codeforces.com/problemset/problem/1385/E 2000
 //                  https://codeforces.com/problemset/problem/1100/E 2200
@@ -3781,19 +3796,19 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 				lowV = min(lowV, dfn[w])
 			}
 		}
-		if dfn[v] == lowV { // 回不去了，再也回不去了，祖先（节点）已成历史
+		if dfn[v] == lowV { // 无法从 v 出发，到达 v 的任一祖先
 			scc := []int{}
 			for {
 				w := st[len(st)-1]
 				st = st[:len(st)-1]
 				// 避免搜索树上的另一棵子树上的点 v，通过横向边，把 dfn[w] 错误地更新到 lowV（注意 dfn[w] 都小于后面新遍历到的点的 dfn 值）
 				dfn[w] = math.MaxInt // 相当于 inStack[w] = false
-				scc = append(scc, w) // 如果要计算 sid，可以在这里写 sid[w] = v
+				scc = append(scc, w) // 如果只要计算 sid，可以在这里写 sid[w] = sccCnt
 				if w == v {
 					break
 				}
 			}
-			allScc = append(allScc, scc)
+			allScc = append(allScc, scc) // sccCnt++
 		}
 		return lowV
 	}
@@ -3816,9 +3831,8 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 		}
 	}
 
-	ns := len(allScc)
-	g2 := make([][]int, ns)
-	deg := make([]int, ns)
+	g2 := make([][]int, len(allScc))
+	deg := make([]int, len(allScc))
 	for v, ws := range g {
 		v = sid[v]
 		for _, w := range ws {
@@ -3858,6 +3872,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 // 建边练习 https://codeforces.com/contest/1971/problem/H
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 
 // - https://atcoder.jp/contests/practice2/tasks/practice2_h
+// https://codeforces.com/problemset/problem/1657/F 2600
 func (G *graph) sat2(n int) []bool {
 	// g 分为左右两部，左部 [0,n-1] 的点表示 x 为假的状态，右部 [n,2*n-1] 的点表示 x 为真的状态
 	// 我们要做的，就是把状态连起来
@@ -4275,6 +4290,7 @@ func (*graph) pseudotreeGrid(a [][]int) []int {
 最大流等于最小割的证明 https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E8%AF%A6%E8%A7%A3.html
 
 todo 网络流建模方式总结
+ https://www.bilibili.com/video/BV1jt4y1t7pd/
  https://www.cnblogs.com/victorique/p/8560656.html
  https://blog.bill.moe/network-flow-models/
  NOI 一轮复习 I：二分图网络流 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-i-er-fen-tu-wang-lao-liu
