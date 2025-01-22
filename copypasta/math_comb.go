@@ -41,9 +41,11 @@ LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会
 https://codeforces.com/problemset/problem/1879/C 1300
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
+https://codeforces.com/problemset/problem/1999/F 1500
 https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
 https://codeforces.com/problemset/problem/1999/F 1600
+https://codeforces.com/problemset/problem/2040/C 1600
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
 https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
@@ -130,6 +132,10 @@ todo 可重集排列组合 https://oi-wiki.org/math/combination/
 todo https://codeforces.com/problemset/problem/451/E
 不相邻的排列 https://oi-wiki.org/math/combination/#_10
 错排 https://oeis.org/A000166 subfactorial numbers  a[0]=1, a[1]=0, a[n]=(n-1)*(a[n-1]+a[n-2])
+- 理解：对于每个数，必须有 n-1 个其余可选位置
+- 当有 n-1 个数的时候，对于每个数，必须有 n-2 个其余可选位置
+- 所以分类讨论的时候，如果 n 去 k，k 没有去 n，那么 k 有 n-2 个其余可选位置，符合定义，这时才能说转换成了 D(n-1)
+- 直接说 n 去 k，k 任意的话，是不符合 D(n-1) 的定义的！
 - [634. 寻找数组的错位排列](https://leetcode.cn/problems/find-the-derangement-of-an-array/)（会员题）
 https://zh.wikipedia.org/wiki/%E9%94%99%E6%8E%92%E9%97%AE%E9%A2%98
 	https://oeis.org/A082491 n! * A000166(n)   a(n+2) = (n+2)*(n+1)*(a(n+1)+(n+1)*a(n))
@@ -387,6 +393,7 @@ func (c *comb) p(n, k int) int {
 // https://codeforces.com/problemset/problem/630/K 1500
 // https://codeforces.com/problemset/problem/900/D 2000 因子容斥
 // https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
+// https://codeforces.com/problemset/problem/451/E 2300 例题
 // https://codeforces.com/problemset/problem/1228/E 2300 如何将问题转化成可以容斥的结构 
 // https://codeforces.com/problemset/problem/1342/E 2300
 // https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 
@@ -421,8 +428,17 @@ func solveInclusionExclusion(a []int) int {
 // https://www.cnblogs.com/Xy-top/p/17657960.html https://iai.sh.cn/problem/839
 // https://leetcode.cn/problems/number-of-dice-rolls-with-target-sum/solutions/2495815/python3-1155zhi-tou-zi-deng-yu-mu-biao-h-4yzp/
 
-/* min-max 反演
+/*
+炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
+
+二项式反演
+本质是容斥
+https://www.bilibili.com/video/BV1Q24y1h7W9/
+反演魔术：反演原理及二项式反演 http://blog.miskcoo.com/2015/12/inversion-magic-binomial-inversion
+
+min-max 反演
 https://www.luogu.com.cn/blog/meizhuhe/min-max-fan-yan-xue-xi-bi-ji
 https://www.zhihu.com/question/630790586/answer/3297271864
 https://uoj.ac/problem/449
+
 */
