@@ -1,6 +1,6 @@
 package main
 
-import "sort"
+import "slices"
 
 // https://space.bilibili.com/206214/dynamic
 func minSumSquareDiff(a, nums2 []int, k1, k2 int) int64 {
@@ -12,13 +12,14 @@ func minSumSquareDiff(a, nums2 []int, k1, k2 int) int64 {
 	}
 	k := k1 + k2
 	if sum <= k {
-		return 0
+		return 0 // 所有 a[i] 均可为 0
 	}
-	sort.Sort(sort.Reverse(sort.IntSlice(a)))
+
+	slices.SortFunc(a, func(a, b int) int { return b - a })
 	a = append(a, 0) // 哨兵
 	for i, v := range a {
 		i++
-		ans -= v * v
+		ans -= v * v // 撤销上面的 ans += a[i] * a[i]
 		if c := i * (v - a[i]); c < k {
 			k -= c
 			continue
@@ -30,9 +31,4 @@ func minSumSquareDiff(a, nums2 []int, k1, k2 int) int64 {
 	return int64(ans)
 }
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
+func abs(x int) int { if x < 0 { return -x }; return x }
