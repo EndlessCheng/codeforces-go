@@ -210,7 +210,7 @@ $$
 特判 $j=13$ 的情况，上式为
 
 $$
-f_i[13] = (\textit{coins}[i]\ \texttt{>>}\ 13)-k + s[13]
+f_i[13] = \max((\textit{coins}[i]\ \texttt{>>}\ 13)-k + s[13],0)
 $$
 
 代码实现时，可以直接把算出的结果原地保存到 $s$ 数组中。
@@ -232,7 +232,7 @@ class Solution:
                         s[j] += v
             for j in range(13):
                 s[j] = max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1])
-            s[13] += (coins[x] >> 13) - k
+            s[13] = max(s[13] + (coins[x] >> 13) - k, 0)
             return s
 
         return dfs(0, -1)[0]
@@ -264,7 +264,7 @@ class Solution {
         for (int j = 0; j < 13; j++) {
             s[j] = Math.max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1]);
         }
-        s[13] += (coins[x] >> 13) - k;
+        s[13] = Math.max(s[13] + (coins[x] >> 13) - k, 0);
         return s;
     }
 }
@@ -293,7 +293,7 @@ public:
             for (int j = 0; j < 13; j++) {
                 s[j] = max((coins[x] >> j) - k + s[j], (coins[x] >> (j + 1)) + s[j + 1]);
             }
-            s[13] += (coins[x] >> 13) - k;
+            s[13] = max(s[13] + (coins[x] >> 13) - k, 0);
             return s;
         };
         return dfs(0, -1)[0];
@@ -322,9 +322,9 @@ func maximumPoints(edges [][]int, coins []int, k int) int {
             }
         }
         for j := range 13 {
-            s[j] = max((coins[x]>>j)-k+s[j], (coins[x]>>(j+1))+s[j+1])
+            s[j] = max(coins[x]>>j-k+s[j], coins[x]>>(j+1)+s[j+1])
         }
-        s[13] += (coins[x] >> 13) - k
+        s[13] = max(s[13]+coins[x]>>13-k, 0)
         return
     }
     return dfs(0, -1)[0]
