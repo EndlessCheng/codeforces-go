@@ -235,6 +235,7 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
+#include <ranges>
 class Solution {
 public:
     long long minCost(int n, vector<vector<int>>& cost) {
@@ -260,7 +261,7 @@ public:
             }
         }
         // 枚举所有初始颜色，取最小值
-        return ranges::min(ranges::min(f.back()));
+        return ranges::min(ranges::transform_view(f.back(), ranges::min));
     }
 };
 ```
