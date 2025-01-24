@@ -4,6 +4,8 @@
 
 设它是 $\textit{num}$，那么 $<\textit{num}$ 的数有 $<x$ 个，$\le\textit{num}$ 的数有 $\ge x$ 个，就说明 $\textit{num}$ 是第 $x$ 小的数。
 
+比如 $[-1,-1,-1]$ 中，第 $1,2,3$ 小的数都是 $-1$。
+
 [视频讲解](https://www.bilibili.com/video/BV1Bs4y1A7Wa/) 第三题。
 
 ```py [sol-Python3]
