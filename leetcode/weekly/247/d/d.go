@@ -1,42 +1,37 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-const mod, mx int = 1e9 + 7, 1e5
-
-var F [mx + 1]int
-
-func init() {
-	F[0] = 1
-	for i := 1; i <= mx; i++ {
-		F[i] = F[i-1] * i % mod
-	}
-}
+const mod = 1_000_000_007
 
 func waysToBuildRooms(prevRoom []int) int {
 	n := len(prevRoom)
 	g := make([][]int, n)
-	for w := 1; w < n; w++ {
-		v := prevRoom[w]
-		g[v] = append(g[v], w)
+	fac := 1
+	for i := 1; i < n; i++ {
+		p := prevRoom[i]
+		g[p] = append(g[p], i)
+		fac = fac * (i + 1) % mod
 	}
+
 	mul := 1
-	var f func(int) int
-	f = func(v int) int {
-		sz := 1
-		for _, w := range g[v] {
-			sz += f(w)
+	var dfs func(int) int
+	dfs = func(x int) int {
+		size := 1
+		for _, y := range g[x] {
+			size += dfs(y)
 		}
-		mul = mul * sz % mod
-		return sz
+		mul = mul * size % mod
+		return size
 	}
-	f(0)
-	return F[n] * pow(mul, mod-2) % mod
+	dfs(0)
+
+	return fac * pow(mul, mod-2) % mod
 }
 
 func pow(x, n int) int {
 	res := 1
-	for ; n > 0; n >>= 1 {
-		if n&1 == 1 {
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
 			res = res * x % mod
 		}
 		x = x * x % mod
