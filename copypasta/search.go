@@ -100,6 +100,7 @@ https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举�
 集合划分（贝尔数）https://oeis.org/A000110
 见下面的 partitionSet
 https://codeforces.com/problemset/problem/954/I 2200
+https://atcoder.jp/contests/abc390/tasks/abc390_d
 
 爆搜+剪枝
 - [3211. 生成不含相邻零的二进制字符串](https://leetcode.cn/problems/generate-binary-strings-without-adjacent-zeros/)
@@ -609,14 +610,38 @@ func searchCollection() {
 	}
 
 	// 集合划分（贝尔数）https://oeis.org/A000110
+
+	// 写法一
+	// https://atcoder.jp/contests/abc390/tasks/abc390_d
+	partitionSet := func(a []int) {
+		groups := []int{}
+		var dfs func(int)
+		dfs = func(i int) {
+			if i == len(a) {
+				// ...
+				return
+			}
+			v := a[i]
+			groups = append(groups, v)
+			dfs(i + 1)
+			groups = groups[:len(groups)-1]
+			for j := range groups {
+				groups[j] += v
+				dfs(i + 1)
+				groups[j] -= v
+			}
+		}
+		dfs(0)
+	}
+
+	// 写法二
 	// https://codeforces.com/problemset/problem/954/I 2200
-	partitionSet := func(limit int) {
+	partitionSet2 := func(limit int) {
 		roots := make([]int, limit)
 		var dfs func(int, int)
 		dfs = func(i, numOfSets int) {
 			if i == limit {
 				// ...
-				
 				return
 			}
 			roots[i] = numOfSets // 元素 i 单独组成一个集合
@@ -770,7 +795,7 @@ func searchCollection() {
 		iterWithLimits, iterWithLimitsAndSum,
 		combinations, combinationsWithRepetition,
 		permutations, permuteAll, nextPermutation, rankPermutation, kthPermutation,
-		partitionSet,
+		partitionSet, partitionSet2,
 		bigKnapsack, bigKnapsack2,
 	}
 }
