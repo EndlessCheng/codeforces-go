@@ -25,7 +25,7 @@ func run(in io.Reader, out io.Writer) {
 		c := 0
 		for _, w := range g[v] {
 			if w != fa {
-				ans = ans * max(k-min(dep+1, 2)-c, 0) % mod
+				ans = ans * (k - min(dep+1, 2) - c) % mod
 				dfs(w, v, dep+1)
 				c++
 			}
