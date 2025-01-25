@@ -253,7 +253,7 @@ import (
 	"os"
 )
 
-// https://space.bilibili.com/206214
+// https://github.com/EndlessCheng
 func run(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
