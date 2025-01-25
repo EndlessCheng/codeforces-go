@@ -25,9 +25,9 @@ func run(in io.Reader, out io.Writer) {
 		c := 0
 		for _, w := range g[v] {
 			if w != fa {
-				ans = ans * (k - min(dep+1, 2) - c) % mod
+				ans = ans * (k - min(dep+1, 2) - c) % mod // 如果题目改成距离 <= 3，这里改成和 3 取 min
 				dfs(w, v, dep+1)
-				c++
+				c++ // 如果题目改成距离 <= 3，这里改成 c += len(g[w])
 			}
 		}
 	}
