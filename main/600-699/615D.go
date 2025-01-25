@@ -29,7 +29,7 @@ func CF615D(_r io.Reader, out io.Writer) {
 	}
 	sq := true
 	for _, c := range e {
-		if c&1 > 0 {
+		if c%2 > 0 {
 			sq = false
 			break
 		}
@@ -38,14 +38,14 @@ func CF615D(_r io.Reader, out io.Writer) {
 	if sq {
 		for i, c := range e {
 			m = m * (c + 1) % (mod - 1)
-			e[i] >>= 1
+			e[i] /= 2
 		}
 	} else {
 		ok := true
 		for _, c := range e {
 			c++
-			if ok && c&1 == 0 {
-				c >>= 1
+			if ok && c%2 == 0 {
+				c /= 2
 				ok = false
 			}
 			m = m * c % (mod - 1)
