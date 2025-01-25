@@ -299,8 +299,7 @@ import (
 // 提交：%s
 // 对拍：%s
 // 最短：%s
-func Test_run(t *testing.T) {
-	t.Log("Current test is [%s]")
+func Test_%s(t *testing.T) {
 	testCases := [][2]string{%s
 		
 	}
