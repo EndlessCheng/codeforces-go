@@ -46,6 +46,7 @@ https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
 https://codeforces.com/problemset/problem/1999/F 1600
 https://codeforces.com/problemset/problem/2040/C 1600
+https://atcoder.jp/contests/abc129/tasks/abc129_e CF1700
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
 https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
@@ -69,6 +70,7 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
 https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://atcoder.jp/contests/abc290/tasks/abc290_f
+https://atcoder.jp/contests/abc160/tasks/abc160_f 2048
 todo https://www.luogu.com.cn/problem/P6017
 
 差分、前缀和与组合数
