@@ -11,7 +11,7 @@ import (
 const mod = 1_000_000_007
 
 func run(in io.Reader, out io.Writer) {
-	const inv3 = 333333336
+	const inv3 = (mod + 1) / 3
 	var s string
 	Fscan(in, &s)
 	ans := 0
