@@ -1,0 +1,14 @@
+2
+[["MESSAGE","10","id1 id0"],["OFFLINE","11","0"],["MESSAGE","71","HERE"]]
+[2,2]
+
+2
+[["MESSAGE","10","id1 id0"],["OFFLINE","11","0"],["MESSAGE","12","ALL"]]
+[2,2]
+
+2
+[["OFFLINE","10","0"],["MESSAGE","12","HERE"]]
+[0,1]
+
+
+
