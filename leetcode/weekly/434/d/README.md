@@ -261,7 +261,7 @@ func supersequences(words []string) [][]int {
 	minSize := math.MaxInt
 	for sub, ok := all, true; ok; ok = sub != all {
 		size := bits.OnesCount(uint(sub))
-		// 剪枝：如果 size > min_size 就不需要判断了
+		// 剪枝：如果 size > minSize 就不需要判断了
 		if size <= minSize && !hasCycle(sub) {
 			if size < minSize {
 				minSize = size
