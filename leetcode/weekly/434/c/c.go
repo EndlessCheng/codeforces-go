@@ -1,12 +1,8 @@
 package main
 
-import "math"
-
 func maxFrequency(nums []int, k int) int {
-	f0 := 0
+	var f0, maxF1, f2 int
 	f1 := [51]int{}
-	f2 := math.MinInt
-	maxF1 := math.MinInt
 	for _, x := range nums {
 		f2 = max(f2, maxF1)
 		f1[x] = max(f1[x], f0) + 1
@@ -26,7 +22,7 @@ func maxFrequency1(nums []int, k int) (ans int) {
 	}
 
 	for target := range set {
-		f0, f1, f2 := 0, math.MinInt, math.MinInt
+		var f0, f1, f2 int
 		for _, x := range nums {
 			f2 = max(f2, f1) + b2i(x == k)
 			f1 = max(f1, f0) + b2i(x == target)

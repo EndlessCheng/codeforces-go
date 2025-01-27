@@ -22,7 +22,7 @@ $\textit{nums}$ 可以分为三段：
 - 「左+中」可以从「左+中」或者「左」转移过来。同上，问题变成 $\textit{nums}[0]$ 到 $\textit{nums}[i-1]$ 最多有多少个数可以等于 $k$。如果 $x=\textit{target}$，那么 $f[i+1][1] = \max(f[i][1], f[i][0]) + 1$，否则 $f[i+1][1] = \max(f[i][1], f[i][0])$。这里从 $f[i][1]$ 转移过来，表示 $\textit{nums}[i-1]$ 也在被修改的子数组中；从 $f[i][0]$ 转移过来，表示 $\textit{nums}[i]$ 是被修改的子数组的第一个数。
 - 「左+中+右」可以从「左+中+右」或者「左+中」转移过来。同上，问题变成 $\textit{nums}[0]$ 到 $\textit{nums}[i-1]$ 最多有多少个数可以等于 $k$。如果 $x=k$，那么 $f[i+1][2] = \max(f[i][2], f[i][1]) + 1$，否则 $f[i+1][2] = \max(f[i][2], f[i][1])$。这里从 $f[i][2]$ 转移过来，表示 $\textit{nums}[i-1]$ 也在被修改的子数组的右边；从 $f[i][1]$ 转移过来，表示 $\textit{nums}[i-1]$ 是被修改的子数组的最后一个数。
 
-初始值 $f[0][0] = 0, f[0][1] = f[0][2] = -\infty$。想象 $\textit{nums}$ 第一个数左边还有一个位置，这个位置只能在「左」。
+初始值 $f[0][0] = f[0][1] = f[0][2] = 0$。本题子数组所有数都增加 $0$ 相当于没有操作，这也等价于子数组可以是空的。既然允许空子数组，那么初始化成 $0$ 也可以。
 
 答案为 $\max(f[n][1], f[n][2])$。最后一个数可以在「中」也可以在「右」。
 
@@ -35,7 +35,7 @@ class Solution:
     def maxFrequency(self, nums: List[int], k: int) -> int:
         ans = 0
         for target in set(nums):
-            f0, f1, f2 = 0, -inf, -inf
+            f0 = f1 = f2 = 0
             for x in nums:
                 f2 = max(f2, f1) + (x == k)
                 f1 = max(f1, f0) + (x == target)
@@ -54,9 +54,7 @@ class Solution {
 
         int ans = 0;
         for (int target : set) {
-            int f0 = 0;
-            int f1 = Integer.MIN_VALUE;
-            int f2 = Integer.MIN_VALUE;
+            int f0 = 0, f1 = 0, f2 = 0;
             for (int x : nums) {
                 f2 = Math.max(f2, f1) + (x == k ? 1 : 0);
                 f1 = Math.max(f1, f0) + (x == target ? 1 : 0);
@@ -76,7 +74,7 @@ public:
         unordered_set<int> st(nums.begin(), nums.end());
         int ans = 0;
         for (int target : st) {
-            int f0 = 0, f1 = INT_MIN, f2 = INT_MIN;
+            int f0 = 0, f1 = 0, f2 = 0;
             for (int x : nums) {
                 f2 = max(f2, f1) + (x == k);
                 f1 = max(f1, f0) + (x == target);
@@ -97,7 +95,7 @@ func maxFrequency(nums []int, k int) (ans int) {
 	}
 
 	for target := range set {
-		f0, f1, f2 := 0, math.MinInt, math.MinInt
+		var f0, f1, f2 int
 		for _, x := range nums {
 			f2 = max(f2, f1) + b2i(x == k)
 			f1 = max(f1, f0) + b2i(x == target)
@@ -136,14 +134,11 @@ $$
 f_2 = \max(f_2, \textit{maxF}_1) + [x=k]
 $$
 
-这里为了方便把所有 $f_1[x]$ 初始化成 $0$。其实无论是方法一还是方法二，$f_1$ 初始化成 $0$ 或者任意负数都可以，毕竟要和 $f_0$ 这个非负数取最大值。
-
 ```py [sol-Python3]
 class Solution:
     def maxFrequency(self, nums: List[int], k: int) -> int:
-        f0 = 0
+        f0 = max_f1 = f2 = 0
         f1 = defaultdict(int)
-        max_f1 = f2 = -inf
         for x in nums:
             f2 = max(f2, max_f1) + (x == k)
             f1[x] = max(f1[x], f0) + 1
@@ -155,10 +150,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int maxFrequency(int[] nums, int k) {
-        int f0 = 0;
+        int f0 = 0, maxF1 = 0, f2 = 0;
         int[] f1 = new int[51];
-        int f2 = Integer.MIN_VALUE;
-        int maxF1 = Integer.MIN_VALUE;
         for (int x : nums) {
             f2 = Math.max(f2, maxF1) + (x == k ? 1 : 0);
             f1[x] = Math.max(f1[x], f0) + 1;
@@ -174,8 +167,7 @@ class Solution {
 class Solution {
 public:
     int maxFrequency(vector<int>& nums, int k) {
-        int f0 = 0, f1[51]{}, f2 = INT_MIN;
-        int max_f1 = INT_MIN;
+        int f0 = 0, f1[51]{}, max_f1 = 0, f2 = 0;
         for (int x : nums) {
             f2 = max(f2, max_f1) + (x == k);
             f1[x] = max(f1[x], f0) + 1;
@@ -189,10 +181,8 @@ public:
 
 ```go [sol-Go]
 func maxFrequency(nums []int, k int) int {
-	f0 := 0
+	var f0, maxF1, f2 int
 	f1 := [51]int{}
-	f2 := math.MinInt
-	maxF1 := math.MinInt
 	for _, x := range nums {
 		f2 = max(f2, maxF1)
 		f1[x] = max(f1[x], f0) + 1
