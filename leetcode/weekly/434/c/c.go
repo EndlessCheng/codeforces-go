@@ -1,6 +1,21 @@
 package main
 
 func maxFrequency(nums []int, k int) int {
+	f0, maxF12 := 0, 0
+	f1 := [51]int{}
+	for _, x := range nums {
+		if x == k {
+			maxF12++
+			f0++
+		} else {
+			f1[x] = max(f1[x], f0) + 1
+			maxF12 = max(maxF12, f1[x])
+		}
+	}
+	return maxF12
+}
+
+func maxFrequency2(nums []int, k int) int {
 	var f0, maxF1, f2 int
 	f1 := [51]int{}
 	for _, x := range nums {

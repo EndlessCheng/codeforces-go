@@ -134,11 +134,15 @@ $$
 f_2 = \max(f_2, \textit{maxF}_1) + [x=k]
 $$
 
+### 写法一
+
 ```py [sol-Python3]
+max = lambda a, b: a if a > b else b  # 手写 max 更快
+
 class Solution:
     def maxFrequency(self, nums: List[int], k: int) -> int:
         f0 = max_f1 = f2 = 0
-        f1 = defaultdict(int)
+        f1 = [0] * 51  # 或者用 defaultdict(int)
         for x in nums:
             f2 = max(f2, max_f1) + (x == k)
             f1[x] = max(f1[x], f0) + 1
@@ -196,9 +200,87 @@ func maxFrequency(nums []int, k int) int {
 }
 ```
 
+### 写法二
+
+把 $\textit{maxF}_1$ 和 $f_2$ 合并成一个变量 $\textit{maxF}_{12}$。当 $x=k$ 的时候，把 $\textit{maxF}_{12}$ 加一。转移方程中的 $\max(f_2, \textit{maxF}_1)$ 无需计算，因为两个变量已经合二为一。
+
+此外，$x=k$ 的时候不需要计算 $f_1[x]$，因为这个状态等价于统计 $k$ 的个数，这也是 $\textit{maxF}_{12}$ 统计的内容。
+
+```py [sol-Python3]
+max = lambda a, b: a if a > b else b  # 手写 max 更快
+
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int) -> int:
+        f0 = max_f12 = 0
+        f1 = [0] * 51  # 或者用 defaultdict(int)
+        for x in nums:
+            if x == k:
+                max_f12 += 1
+                f0 += 1
+            else:
+                f1[x] = max(f1[x], f0) + 1
+                max_f12 = max(max_f12, f1[x])
+        return max_f12
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxFrequency(int[] nums, int k) {
+        int f0 = 0, maxF12 = 0;
+        int[] f1 = new int[51];
+        for (int x : nums) {
+            if (x == k) {
+                maxF12++;
+                f0++;
+            } else {
+                f1[x] = Math.max(f1[x], f0) + 1;
+                maxF12 = Math.max(maxF12, f1[x]);
+            }
+        }
+        return maxF12;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k) {
+        int f0 = 0, f1[51]{}, max_f12 = 0;
+        for (int x : nums) {
+            if (x == k) {
+                max_f12++;
+                f0++;
+            } else {
+                f1[x] = max(f1[x], f0) + 1;
+                max_f12 = max(max_f12, f1[x]);
+            }
+        }
+        return max_f12;
+    }
+};
+```
+
+```go [sol-Go]
+func maxFrequency(nums []int, k int) int {
+	f0, maxF12 := 0, 0
+	f1 := [51]int{}
+	for _, x := range nums {
+		if x == k {
+			maxF12++
+			f0++
+		} else {
+			f1[x] = max(f1[x], f0) + 1
+			maxF12 = max(maxF12, f1[x])
+		}
+	}
+	return maxF12
+}
+```
+
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n+U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 中的不同元素个数。创建数组需要 $\mathcal{O}(U)$ 的时间。
+- 时间复杂度：$\mathcal{O}(n+U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U$ 是 $\textit{nums}$ 中的不同元素个数。注意创建数组需要 $\mathcal{O}(U)$ 的时间。
 - 空间复杂度：$\mathcal{O}(U)$。
 
 ## 变形题
