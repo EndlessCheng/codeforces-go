@@ -2,7 +2,7 @@
 
 由于每个字符串的长度都是 $2$，如果一个字母在公共超序列中出现 $2$ 次，那么把这个字母加到最左边和最右边，即可满足所有字符串。例如把字母 $\texttt{a}$ 加到最左边和最右边，那么所有 $\texttt{a*}$ 和 $\texttt{*a}$ 都能满足。这个性质对于多个出现 $2$ 次的字母也成立。
 
-如果字母的出现次数超过 $2$，那么去掉中间的多余字母也能满足要求。所以每个字母的出现次数要么是 $1$，要么是 $2$。
+如果字母的出现次数超过 $2$，那么去掉中间的多余字母也能满足要求。所以**每个字母在公共超序列中的出现次数要么是 $1$，要么是 $2$**。
 
 ## 枚举子集
 
@@ -14,15 +14,15 @@
 
 ## 建图
 
-下面只考虑两个字母出现次数均为 $1$ 的字符串。
+下面只考虑两个字母都只出现 $1$ 次的字符串。
 
 对于字符串 $s$，相当于一条约束：$s[0]$ 必须在 $s[1]$ 的左边。
 
-如果有 $\texttt{ab},\texttt{bc},\texttt{ca}$ 这三个字符串，那么公共超序列必须是 $\texttt{abca},\texttt{bcab},\texttt{cabc}$ 中的一个，必须有字母出现两次。
+如果有 $\texttt{ab},\texttt{bc},\texttt{ca}$ 这三个字符串，把「$\texttt{a}$ 必须在 $\texttt{b}$ 的左边」和「$\texttt{b}$ 必须在 $\texttt{c}$ 的左边」合并，得到「$\texttt{a}$ 必须在 $\texttt{c}$ 的左边」，但同时 $\texttt{ca}$ 意味着「$\texttt{c}$ 必须在 $\texttt{a}$ 的左边」。如果每个字母都只在公共超序列中出现 $1$ 次，这是无法做到的。换句话说，如果这些约束形成了一个**环状结构**，就不符合要求，因为我们规定这些字母只能出现 $1$ 次。
 
-把「$s[0]$ 必须在 $s[1]$ 的左边」这个规则抽象成有向图，也就是连一条从 $s[0]$ 到 $s[1]$ 的有向边，那么问题变成：
+一般地，把「$s[0]$ 必须在 $s[1]$ 的左边」这个规则抽象成有向图，也就是连一条从 $s[0]$ 到 $s[1]$ 的有向边，那么问题变成：
 
-- 这个有向图是否有环？如果有，那么必须有字母出现两次。
+- 这个有向图是否有环？
 
 做法见 [207. 课程表](https://leetcode.cn/problems/course-schedule/)，可以用**三色标记法**解决，详见 [我的题解](https://leetcode.cn/problems/course-schedule/solutions/2992884/san-se-biao-ji-fa-pythonjavacgojsrust-by-pll7/)。
 
@@ -113,7 +113,7 @@ class Solution {
             sub = (sub - 1) & all;
         } while (sub != all);
 
-        List<List<Integer>> ans = new ArrayList<>();
+        List<List<Integer>> ans = new ArrayList<>(set.size()); // 预分配空间
         for (int s : set) {
             List<Integer> cnt = new ArrayList<>(26);
             for (int i = 0; i < 26; i++) {
