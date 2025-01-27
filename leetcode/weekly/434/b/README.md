@@ -54,7 +54,7 @@ class Solution {
                 }
             } else if (mention.charAt(0) == 'H') {
                 for (int i = 0; i < numberOfUsers; i++) {
-                    if (onlineT[i] <= curT) {
+                    if (onlineT[i] <= curT) { // 在线
                         ans[i]++;
                     }
                 }
@@ -148,7 +148,7 @@ func countMentions(numberOfUsers int, events [][]string) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n + m\log m\log U + L)$，其中 $n$ 是 $\textit{numberOfUsers}$，$m$ 是 $\textit{events}$ 的长度，$U$ 是时间戳的最大值，$L$ 是所有 `mentions_string` 的长度之和。排序需要 $\mathcal{O}(m\log m)$ 次比较，每次比较需要 $\mathcal{O}(\log U)$ 的时间把长为 $\mathcal{O}(U)$ 的字符串转成整数。注：如果预处理这个转换，可以把排序的过程优化至 $\mathcal{O}(m\log m)$。
+- 时间复杂度：$\mathcal{O}(n + m\log m\log U + L)$，其中 $n$ 是 $\textit{numberOfUsers}$，$m$ 是 $\textit{events}$ 的长度，$U$ 是时间戳的最大值，$L$ 是所有 `mentions_string` 的长度之和。排序需要 $\mathcal{O}(m\log m)$ 次比较，每次比较需要 $\mathcal{O}(\log U)$ 的时间把长为 $\mathcal{O}(\log U)$ 的字符串时间戳转成整数。注：如果预处理这个转换，可以把排序的过程优化至 $\mathcal{O}(m\log m)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
