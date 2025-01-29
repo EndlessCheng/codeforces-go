@@ -284,7 +284,7 @@
     - Prufer 序列
 - 其他
   - [位运算笔记 bits.go](/copypasta/bits.go)
-    - bitset
+    - [bitset](/copypasta/bitset.go)
     - 区间位运算 trick（含 GCD）
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 二分答案
@@ -498,6 +498,8 @@ https://www.luogu.com.cn/blog/Troverld/index
 My GoLand `Live Templates` and `Postfix Completion` [settings](/misc/my_goland_template)
 
 ### Useful Tools
+
+[查看汇编](https://godbolt.org/)
 
 [GeoGebra](https://www.geogebra.org/classic)
 
