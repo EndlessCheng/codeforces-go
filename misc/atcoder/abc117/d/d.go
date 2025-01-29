@@ -11,7 +11,7 @@ import (
 // https://github.com/EndlessCheng
 func run(in io.Reader, out io.Writer) {
 	const mx = 40
-	var n, k, v, ans, s int
+	var n, k, v, ans, pre int
 	Fscan(in, &n, &k)
 	cnt := [mx]int{}
 	for i := 0; i < n; i++ {
@@ -21,18 +21,18 @@ func run(in io.Reader, out io.Writer) {
 		}
 	}
 
-	f := [mx + 1]int{}
+	suf := [mx + 1]int{}
 	for i, c := range cnt {
-		f[i+1] = f[i] + max(c, n-c)<<i
+		suf[i+1] = suf[i] + max(c, n-c)<<i
 	}
 
 	k++
 	for i := mx - 1; i >= 0; i-- {
 		if k>>i&1 > 0 {
-			ans = max(ans, s+cnt[i]<<i+f[i])
-			s += (n - cnt[i]) << i
+			ans = max(ans, pre+cnt[i]<<i+suf[i])
+			pre += (n - cnt[i]) << i
 		} else {
-			s += cnt[i] << i
+			pre += cnt[i] << i
 		}
 	}
 	Fprint(out, ans)
