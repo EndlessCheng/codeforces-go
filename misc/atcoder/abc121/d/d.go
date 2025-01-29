@@ -9,16 +9,11 @@ import (
 // https://github.com/EndlessCheng
 func run(in io.Reader, out io.Writer) {
 	preXor := func(n int) int {
-		switch n % 4 {
-		case 0:
-			return n
-		case 1:
-			return 1
-		case 2:
-			return n + 1
-		default:
-			return 0
+		b := n >> 1 & 1
+		if n&1 > 0 {
+			return b ^ 1
 		}
+		return n | b
 	}
 	var l, r int
 	Fscan(in, &l, &r)
