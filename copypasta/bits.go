@@ -2,11 +2,11 @@ package copypasta
 
 import (
 	. "fmt"
+	"maps"
 	"math"
 	"math/bits"
 	"slices"
-	"strconv"
-	"strings"
+	"sort"
 )
 
 /*
@@ -28,8 +28,8 @@ Precedence    Operator
 
 标准库 "math/bits" 包含了位运算常用的函数，如二进制中 1 的个数、二进制表示的长度等
 注意：bits.Len(0) 返回的是 0 而不是 1
-     bits.Len(x) 相当于 int(Log2(x)+eps)+1  x>0
-     或者说 2^(Len(x)-1) <= x < 2^Len(x)    x>0
+     bits.Len(x) 相当于 ceil(log2(x+1))，即代码 int(math.Ceil(math.Log2(float64(x+1))))
+     或者说 2^(bits.Len(x)-1) <= x < 2^bits.Len(x)    x>0
 
 ### 基础题
 - [1486. 数组异或操作](https://leetcode.cn/problems/xor-operation-in-an-array/) 1181
@@ -45,6 +45,7 @@ Precedence    Operator
 - [868. 二进制间距](https://leetcode.cn/problems/binary-gap/) 1307
 - [2917. 找出数组中的 K-or 值](https://leetcode.cn/problems/find-the-k-or-of-an-array/) 1389
 - [693. 交替位二进制数](https://leetcode.cn/problems/binary-number-with-alternating-bits/)
+https://codeforces.com/problemset/problem/1909/B 1200
 
 ### 与或（AND/OR）的性质
 & 和 | 在区间求和上具有单调性（本页面搜索 logTrickCnt）
@@ -58,9 +59,13 @@ Precedence    Operator
 - [2411. 按位或最大的最小子数组长度](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/) 1938
 - [898. 子数组按位或操作](https://leetcode.cn/problems/bitwise-ors-of-subarrays/) 2133
 - [1521. 找到最接近目标值的函数值](https://leetcode.cn/problems/find-a-value-of-a-mysterious-function-closest-to-target/) 2384
+https://codeforces.com/problemset/problem/1991/B 1100
 https://codeforces.com/problemset/problem/1775/B 1300
+https://codeforces.com/problemset/problem/1973/B 1300
+https://codeforces.com/problemset/problem/2020/C 1400
 https://codeforces.com/problemset/problem/1299/A 1500
 https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
+https://codeforces.com/problemset/problem/2036/E 1600
 https://codeforces.com/problemset/problem/1665/E 2500 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数
 https://codeforces.com/problemset/problem/1004/F 2600
 https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
@@ -83,7 +88,15 @@ https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
 - [2857. 统计距离为 k 的点对](https://leetcode.cn/problems/count-pairs-of-points-with-distance-k/) 2082
 https://codeforces.com/problemset/problem/1968/F 1800
 https://codeforces.com/problemset/problem/1895/D 1900
+https://codeforces.com/problemset/problem/1991/D 1900
+https://codeforces.com/problemset/problem/2036/F 1900
+https://codeforces.com/problemset/problem/1088/D 2000 交互
+https://codeforces.com/problemset/problem/1934/D1 2100
 https://codeforces.com/problemset/problem/835/E 2400 交互
+ones(x ^ y) % 2 = (ones(x) + ones(y)) % 2
+
+XOR + OR
+https://codeforces.com/problemset/problem/1946/D 1900
 
 ### 利用 lowbit
 https://codeforces.com/problemset/problem/1689/E
@@ -114,17 +127,27 @@ https://www.luogu.com.cn/blog/endlesscheng/post-ling-cha-ba-ti-ti-mu-lie-biao
 - https://www.nowcoder.com/feed/main/detail/857f180290cd402ea2461b85e94b3db9
 - 这里 ^2 表示子数组中任意两个数的异或
 所有子序列的 + 的 | LC2505 https://leetcode.cn/problems/bitwise-or-of-all-subsequence-sums/
+所有子序列的所有子数组的 + 的 + 的 + https://yukicoder.me/problems/no/2717
 https://ac.nowcoder.com/acm/contest/78807/F 拆位+贡献的好题！
 https://www.lanqiao.cn/problems/10010/learning/?contest_id=157
 https://codeforces.com/problemset/problem/1601/A 1300
 https://codeforces.com/problemset/problem/1362/C 1400
 https://codeforces.com/problemset/problem/1513/B 1400
-https://codeforces.com/problemset/problem/1879/D 1700
+https://codeforces.com/problemset/problem/1879/D 1700 sum(子数组异或和*子数组长度)
 https://codeforces.com/problemset/problem/981/D  1900
 https://codeforces.com/problemset/problem/1895/D 1900
 https://codeforces.com/problemset/problem/1777/F 2400
+https://atcoder.jp/contests/abc117/tasks/abc117_d 1423 “+1”的妙用
 https://atcoder.jp/contests/abc281/tasks/abc281_f
 https://atcoder.jp/contests/arc127/tasks/arc127_d
+
+https://oeis.org/A222423 Sum_{k=0..n} n AND k
+https://oeis.org/A350093 Sum_{k=0..n} n OR k
+https://oeis.org/A224915 Sum_{k=0..n} n XOR k
+https://oeis.org/A224924 Sum_{i=0..n} Sum_{j=0..n} (i AND j)
+https://oeis.org/A258438 Sum_{i=1..n} Sum_{j=1..n} (i OR j)
+https://oeis.org/A224923 Sum_{i=0..n} Sum_{j=0..n} (i XOR j)
+LC3344 https://leetcode.cn/problems/maximum-sized-array/
 
 ### 试填法
 - [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
@@ -133,8 +156,8 @@ https://atcoder.jp/contests/arc127/tasks/arc127_d
 - [3022. 给定操作次数内使剩余元素的或值最小](https://leetcode.cn/problems/minimize-or-of-remaining-elements-using-operations/) 2918
 https://codeforces.com/contest/1918/problem/C 1400
 加法拆位（进位拆位）：涉及到加法进位的题目，可以按照 mod 2^k 拆位
-https://atcoder.jp/contests/abc091/tasks/arc092_b
-所有 a[i]+a[j] 的异或和 https://codeforces.com/problemset/problem/1322/B 2100
+所有 a[i]+a[j] 的异或和 https://atcoder.jp/contests/abc091/tasks/arc092_b
+所有 a[i]+a[j] 的异或和 (i<j) https://codeforces.com/problemset/problem/1322/B 2100
 变形：减法拆位（借位拆位）https://www.luogu.com.cn/problem/P3760
 拆位再合并相同位 https://codeforces.com/problemset/problem/1874/B
 https://ac.nowcoder.com/acm/contest/58860/G 河南省第十四届 ICPC 大学生程序设计竞赛
@@ -158,11 +181,14 @@ a+b = (a|b) + (a&b)
     = (a&b)*2 + (a^b)
     = (a|b)*2 - (a^b)
 (a^b) & (a&b) = 0 恒成立
+ones(x^y) % 2 = (ones(x) + ones(y)) % 2
+ones(x^y^z) % 2 = (ones(x) + ones(y) + ones(z)) % 2
 https://codeforces.com/problemset/problem/1790/E 1400
 https://codeforces.com/problemset/problem/76/D 1700
 https://codeforces.com/problemset/problem/627/A 1700
 https://codeforces.com/problemset/problem/1325/D 1700
 https://codeforces.com/problemset/problem/1368/D 1700
+https://codeforces.com/problemset/problem/1556/D 1800
 https://atcoder.jp/contests/abc050/tasks/arc066_b
 a|b = (^a)&b + a
 + 与 ^ https://codeforces.com/problemset/problem/1732/C2 2100
@@ -392,336 +418,6 @@ https://en.wikipedia.org/wiki/De_Bruijn_sequence
 todo O(1) https://codeforces.com/contest/520/submission/205035892
 */
 
-// Bitset
-// 有时候也可以用 big.Int 代替
-// 部分参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
-// NOTE: 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = append(Bitset(nil), b...) 并返回 b
-// NOTE: 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
-//
-// https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
-// https://codeforces.com/contest/1826/problem/E
-// https://atcoder.jp/contests/abc258/tasks/abc258_g
-const _w = bits.UintSize
-
-func NewBitset(n int) Bitset { return make(Bitset, (n+_w-1)/_w) } // 需要 ceil(n/_w) 个 _w 位整数
-
-type Bitset []uint
-
-func (b Bitset) Has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get / test
-func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }        // 置 1
-func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) }       // 置 0
-func (b Bitset) Flip(p int)     { b[p/_w] ^= 1 << (p % _w) }        // 翻转
-
-func (b Bitset) SetAll1() {
-	for i := range b {
-		b[i] = math.MaxUint
-	}
-}
-
-// 遍历所有 1 的位置
-// 如果对范围有要求，可在 f 中 return p < n
-func (b Bitset) Foreach(f func(p int) (Break bool)) {
-	for i, v := range b {
-		for ; v > 0; v &= v - 1 {
-			j := i*_w | bits.TrailingZeros(v)
-			if f(j) {
-				return
-			}
-		}
-	}
-}
-
-// 返回第一个 0 的下标，若不存在则返回一个不小于 n 的位置
-func (b Bitset) Index0() int {
-	for i, v := range b {
-		if ^v != 0 {
-			return i*_w | bits.TrailingZeros(^v)
-		}
-	}
-	return len(b) * _w
-}
-
-// 返回第一个 1 的下标，若不存在则返回一个不小于 n 的位置（同 C++ 中的 _Find_first）
-func (b Bitset) Index1() int {
-	for i, v := range b {
-		if v != 0 {
-			return i*_w | bits.TrailingZeros(v)
-		}
-	}
-	return len(b) * _w
-}
-
-// 返回下标 >= p 的第一个 1 的下标，若不存在则返回一个不小于 n 的位置（类似 C++ 中的 _Find_next，这里是 >=）
-func (b Bitset) Next1(p int) int {
-	if i := p / _w; i < len(b) {
-		v := b[i] & (^uint(0) << (p % _w)) // mask off bits below bound
-		if v != 0 {
-			return i*_w | bits.TrailingZeros(v)
-		}
-		for i++; i < len(b); i++ {
-			if b[i] != 0 {
-				return i*_w | bits.TrailingZeros(b[i])
-			}
-		}
-	}
-	return len(b) * _w
-}
-
-// 返回下标 >= p 的第一个 0 的下标，若不存在则返回一个不小于 n 的位置
-func (b Bitset) Next0(p int) int {
-	if i := p / _w; i < len(b) {
-		v := b[i]
-		if p%_w > 0 {
-			v |= ^(^uint(0) << (p % _w))
-		}
-		if ^v != 0 {
-			return i*_w | bits.TrailingZeros(^v)
-		}
-		for i++; i < len(b); i++ {
-			if ^b[i] != 0 {
-				return i*_w | bits.TrailingZeros(^b[i])
-			}
-		}
-	}
-	return len(b) * _w
-}
-
-// 返回最后第一个 1 的下标，若不存在则返回 -1
-// 注意 Lsh 后超出 n 的 1
-func (b Bitset) LastIndex1() int {
-	for i := len(b) - 1; i >= 0; i-- {
-		if b[i] != 0 {
-			return i*_w | (bits.Len(b[i]) - 1) // 如果再 +1，需要改成 i*_w + bits.Len(b[i])
-		}
-	}
-	return -1
-}
-
-// += 1 << i，模拟进位
-func (b Bitset) Add(i int) { b.FlipRange(i, b.Next0(i)+1) }
-
-// -= 1 << i，模拟借位
-func (b Bitset) Sub(i int) { b.FlipRange(i, b.Next1(i)+1) }
-
-// 判断 [l,r] 范围内的数是否全为 0
-// https://codeforces.com/contest/1107/problem/D（标准做法是二维前缀和）
-func (b Bitset) All0(l, r int) bool {
-	i := l / _w
-	if i == r/_w {
-		mask := ^uint(0)<<(l%_w) ^ ^uint(0)<<(r%_w)
-		return b[i]&mask == 0
-	}
-	if b[i]>>(l%_w) != 0 {
-		return false
-	}
-	for i++; i < r/_w; i++ {
-		if b[i] != 0 {
-			return false
-		}
-	}
-	mask := ^uint(0) << (r % _w)
-	return b[r/_w]&^mask == 0
-}
-
-// 判断 [l,r] 范围内的数是否全为 1
-func (b Bitset) All1(l, r int) bool {
-	i := l / _w
-	if i == r/_w {
-		mask := ^uint(0)<<(l%_w) ^ ^uint(0)<<(r%_w)
-		return b[i]&mask == mask
-	}
-	mask := ^uint(0) << (l % _w)
-	if b[i]&mask != mask {
-		return false
-	}
-	for i++; i < r/_w; i++ {
-		if ^b[i] != 0 {
-			return false
-		}
-	}
-	mask = ^uint(0) << (r % _w)
-	return ^(b[r/_w] | mask) == 0
-}
-
-// 反转 [l,r) 范围内的比特
-// https://codeforces.com/contest/1705/problem/E
-func (b Bitset) FlipRange(l, r int) {
-	maskL := ^uint(0) << (l % _w)
-	maskR := ^uint(0) << (r % _w)
-	i := l / _w
-	if i == r/_w {
-		b[i] ^= maskL ^ maskR
-		return
-	}
-	b[i] ^= maskL
-	for i++; i < r/_w; i++ {
-		b[i] = ^b[i]
-	}
-	b[i] ^= ^maskR
-}
-
-// 将 [l,r) 范围内的比特全部置 1
-func (b Bitset) SetRange(l, r int) {
-	maskL := ^uint(0) << (l % _w)
-	maskR := ^uint(0) << (r % _w)
-	i := l / _w
-	if i == r/_w {
-		b[i] |= maskL ^ maskR
-		return
-	}
-	b[i] |= maskL
-	for i++; i < r/_w; i++ {
-		b[i] = ^uint(0)
-	}
-	b[i] |= ^maskR
-}
-
-// 将 [l,r) 范围内的比特全部置 0
-func (b Bitset) ResetRange(l, r int) {
-	maskL := ^uint(0) << (l % _w)
-	maskR := ^uint(0) << (r % _w)
-	i := l / _w
-	if i == r/_w {
-		b[i] &= ^maskL | maskR
-		return
-	}
-	b[i] &= ^maskL
-	for i++; i < r/_w; i++ {
-		b[i] = 0
-	}
-	b[i] &= maskR
-}
-
-// 将 >= start 的比特全部置 0
-func (b Bitset) ResetFrom(start int) {
-	i := start / _w
-	b[i] &= ^(^uint(0) << (start % _w))
-	clear(b[i+1:])
-}
-
-// 左移 k 位
-// 注意左移后，超出 n 的 1
-// LC1981 https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/
-// LC3181 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/ 
-func (b Bitset) Lsh(k int) {
-	if k == 0 {
-		return
-	}
-	shift, offset := k/_w, k%_w
-	if shift >= len(b) {
-		clear(b)
-		return
-	}
-	if offset == 0 {
-		// Fast path
-		copy(b[shift:], b)
-	} else {
-		for i := len(b) - 1; i > shift; i-- {
-			b[i] = b[i-shift]<<offset | b[i-shift-1]>>(_w-offset)
-		}
-		b[shift] = b[0] << offset
-	}
-	clear(b[:shift]) // 低位补 0
-}
-
-// 右移 k 位
-func (b Bitset) Rsh(k int) {
-	if k == 0 {
-		return
-	}
-	shift, offset := k/_w, k%_w
-	if shift >= len(b) {
-		clear(b)
-		return
-	}
-	lim := len(b) - 1 - shift
-	if offset == 0 {
-		// Fast path
-		copy(b, b[shift:])
-	} else {
-		for i := 0; i < lim; i++ {
-			b[i] = b[i+shift]>>offset | b[i+shift+1]<<(_w-offset)
-		}
-		// 注意：若前后调用 lsh 和 rsh，需要注意超出 n 的范围的 1 对结果的影响（如果需要，可以把范围开大点）
-		b[lim] = b[len(b)-1] >> offset
-	}
-	clear(b[lim+1:]) // 高位补 0
-}
-
-// 下面几个方法均需保证长度相同
-func (b Bitset) Or(c Bitset) {
-	for i, v := range c {
-		b[i] |= v
-	}
-}
-
-func (b Bitset) And(c Bitset) {
-	for i, v := range c {
-		b[i] &= v
-	}
-}
-
-func (b Bitset) Xor(c Bitset) {
-	for i, v := range c {
-		b[i] ^= v
-	}
-}
-
-func (b Bitset) Equals(c Bitset) bool {
-	for i, v := range b {
-		if v != c[i] {
-			return false
-		}
-	}
-	return true
-}
-
-func (b Bitset) HasSubset(c Bitset) bool {
-	for i, v := range b {
-		if v|c[i] != v {
-			return false
-		}
-	}
-	return true
-}
-
-// 借用 bits 库中的一些方法的名字
-func (b Bitset) OnesCount() (c int) {
-	for _, v := range b {
-		c += bits.OnesCount(v)
-	}
-	return
-}
-func (b Bitset) TrailingZeros() int { return b.Index1() }
-func (b Bitset) Len() int           { return b.LastIndex1() + 1 }
-
-// 返回所有是 1 的位置
-func (b Bitset) AllIndex1() (idx1 []int) {
-	for i, v := range b {
-		for ; v > 0; v &= v - 1 {
-			j := i*_w | bits.TrailingZeros(v)
-			idx1 = append(idx1, j)
-		}
-	}
-	return
-}
-
-func (b Bitset) String() string {
-	bin := &strings.Builder{}
-	for i := len(b) - 1; i >= 0; i-- {
-		v := b[i]
-		if bin.Len() == 0 {
-			if v == 0 {
-				continue
-			}
-			bin.WriteString(strconv.FormatUint(uint64(v), 2))
-		} else {
-			bin.WriteString(Sprintf("%0*b", _w, v))
-		}
-	}
-	return bin.String()
-}
-
 // 注：有关子集枚举的位运算技巧，见 search.go
 func _(x int) {
 	// 利用 -v = ^v+1
@@ -753,9 +449,12 @@ func _(x int) {
 	}
 
 	// x 和 y 二进制的最长公共前缀
+	// 注意 LCP(100, 1) = LCP(100, 001) = 0
 	// 等价于 [x, y] 的区间 AND
+	// 讲解 https://leetcode.cn/problems/bitwise-and-of-numbers-range/solutions/538550/golang-yi-xing-suan-fa-by-endlesscheng-iw6y/
+	// LC201 https://leetcode.cn/problems/bitwise-and-of-numbers-range/
 	lcp := func(x, y int) int {
-		return x & y &^ (1<<bits.Len(uint(x^y)) - 1)
+		return x &^ (1<<bits.Len(uint(x^y)) - 1)
 	}
 	rangeAND := lcp
 
@@ -780,6 +479,8 @@ func _(x int) {
 
 	// [0, n] 的异或和
 	// 公式推导 https://leetcode.cn/problems/xor-operation-in-an-array/solution/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/
+	// LC1486 https://leetcode.cn/problems/xor-operation-in-an-array/
+	// https://codeforces.com/problemset/problem/15/C
 	preXor := func(n int) int {
 		switch n % 4 {
 		case 0:
@@ -844,9 +545,12 @@ func _(x int) {
 
 	//
 
+	// logTrick
+	// 原理讲解 https://leetcode.cn/problems/find-subarray-with-bitwise-or-closest-to-k/solutions/2798206/li-yong-and-de-xing-zhi-pythonjavacgo-by-gg4d/
+
 	// logTrick 的简单版本 · 其一
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
-	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
+	// 二分 https://codeforces.com/problemset/problem/1878/E 1400（难度分低是因为有其他做法）
 	logTrickSimple := func(a []int, k int) int {
 		// 返回最短非空子数组，其 OR >= k
 		// 如果不存在，返回 -1
@@ -993,6 +697,8 @@ func _(x int) {
 	//      https://codeforces.com/problemset/problem/475/D 2000 (见下面的 logTrickCnt)
 	//      https://codeforces.com/problemset/problem/1632/D 2000 (见下面的 logTrickCnt)
 	//      https://codeforces.com/problemset/problem/894/C 1900 已知所有 GCD 还原数组 a 
+	//      https://codeforces.com/problemset/problem/1614/D2 2300
+	//      - https://codeforces.com/problemset/problem/2013/E 2200 巧妙转换
 	//      https://www.luogu.com.cn/problem/P5502 (子数组长度 * 子数组 GCD) 的最大值 (见下面的 logTrickCnt)
 	//      - https://www.lanqiao.cn/problems/18521/learning/?contest_id=191 (子数组元素和 * 子数组 GCD) 的最大值
 	// LCM: LC2470 https://leetcode.cn/problems/number-of-subarrays-with-lcm-equal-to-k/ 1560
@@ -1014,14 +720,17 @@ func _(x int) {
 		return allRes
 	}
 
-	// 进阶：对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果及其出现次数
+	// 进阶：对于数组 a 的所有子数组，返回 op(子数组所有元素) 的全部运算结果及其出现次数
+	// - 进一步地，可以快速地求第 k 小 op 子数组
 	// 甚至还可以做到把每个运算结果对应的每个区间长度的出现次数求出来（需要差分）
 	// LC3097 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	// LC3117 https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/
-	// https://codeforces.com/problemset/problem/475/D
-	// https://codeforces.com/problemset/problem/1632/D
 	// https://codeforces.com/problemset/problem/1878/E 1400
-	// 与单调栈结合 https://codeforces.com/problemset/problem/875/D
+	// https://codeforces.com/problemset/problem/475/D 2000
+	// - https://atcoder.jp/contests/arc023/tasks/arc023_4
+	// https://codeforces.com/problemset/problem/1632/D 2000
+	// https://codeforces.com/problemset/problem/875/D 2200 与单调栈结合
+	// https://codeforces.com/problemset/problem/2005/D 2400 双序列 前后缀分解
 	// CERC13，紫书例题 10-29，UVa 1642 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=825&page=show_problem&problem=4517
 	// https://www.luogu.com.cn/problem/P8569
 	logTrickCnt := func(a []int, op func(x, y int) int) map[int]int {
@@ -1056,6 +765,20 @@ func _(x int) {
 				cnt[p.v] += p.r - p.l
 			}
 		}
+
+		// 预处理
+		keys := slices.Sorted(maps.Keys(cnt))
+		cntPreSum := make([]int, len(keys)+1)
+		for i, key := range keys {
+			cntPreSum[i+1] = cntPreSum[i] + cnt[key]
+		}
+		// 返回 cnt（视作 multiset）中的第 k 小（k 从 1 开始）
+		kth := func(k int) int {
+			i := sort.SearchInts(cntPreSum, k)
+			return keys[i-1]
+		}
+		_ = kth
+
 		return cnt
 	}
 
