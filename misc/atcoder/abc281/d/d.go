@@ -21,7 +21,7 @@ func run(in io.Reader, out io.Writer) {
 	for i := 1; i <= n; i++ {
 		Fscan(in, &v)
 		for j := min(i, k); j > 0; j-- {
-			for s := d - 1; s >= 0; s-- {
+			for s := 0; s < d; s++ {
 				f[j][s] = max(f[j][s], f[j-1][((s-v)%d+d)%d]+v)
 			}
 		}
@@ -34,5 +34,3 @@ func run(in io.Reader, out io.Writer) {
 }
 
 func main() { run(os.Stdin, os.Stdout) }
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
