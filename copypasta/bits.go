@@ -472,15 +472,17 @@ func _(x int) {
 	}
 
 	// [l, r] 的区间 OR
-	// https://codeforces.com/contest/1981/problem/B
+	// https://codeforces.com/problemset/problem/1981/B 1300
 	rangeOR := func(l, r int) int {
 		return l&r | (1<<bits.Len(uint(l^r)) - 1)
 	}
 
 	// [0, n] 的异或和
+	// 支持 n=-1 的情况，此时返回 0
 	// 公式推导 https://leetcode.cn/problems/xor-operation-in-an-array/solution/o1-gong-shi-tui-dao-pythonjavaccgojsrust-le23/
 	// LC1486 https://leetcode.cn/problems/xor-operation-in-an-array/
 	// https://codeforces.com/problemset/problem/15/C
+	// https://atcoder.jp/contests/abc121/tasks/abc121_d 1164
 	preXor := func(n int) int {
 		switch n % 4 {
 		case 0:
@@ -489,12 +491,19 @@ func _(x int) {
 			return 1
 		case 2:
 			return n + 1
-		default: // 包括 -1
+		default:
 			return 0
 		}
 	}
+	// 简化版
+	preXor = func(n int) int {
+		b := n >> 1 & 1
+		if n&1 > 0 {
+			return b ^ 1
+		}
+		return n | b
+	}
 	// [l, r] 的区间 XOR
-	// LC1486 https://leetcode.cn/problems/xor-operation-in-an-array/
 	rangeXor := func(l, r int) int {
 		return preXor(r) ^ preXor(l-1)
 	}
@@ -621,7 +630,6 @@ func _(x int) {
 			// 右端点为 i 且子数组 op 值恰好为 target 时，
 			// 子数组左端点的范围为左闭右开区间 [left, right)
 			// 处理 [left, right) 的逻辑写在这里 ...
-			
 		}
 	}
 
