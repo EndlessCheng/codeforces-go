@@ -283,8 +283,8 @@
     - 树分块
     - Prufer 序列
 - 其他
+  - [bitset](/copypasta/bitset.go)
   - [位运算笔记 bits.go](/copypasta/bits.go)
-    - [bitset](/copypasta/bitset.go)
     - 区间位运算 trick（含 GCD）
   - [二分 三分 sort.go](/copypasta/sort.go)
     - 二分答案
