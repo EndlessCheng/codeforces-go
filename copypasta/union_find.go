@@ -39,6 +39,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 基础题 https://codeforces.com/problemset/problem/1167/C 1400
+//       https://codeforces.com/problemset/problem/2060/E 1500
 //       https://codeforces.com/problemset/problem/1411/C 1700
 // https://codeforces.com/problemset/problem/755/C 1300
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
@@ -49,6 +50,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
 // 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 // - 思考：如果允许圆心在矩形外呢？见我题解下面的讨论
+// https://atcoder.jp/contests/abc383/tasks/abc383_e
 //
 // 质因子并查集 GCD>1 并查集
 // 预处理质因子（见 math.go 中的 primeDivisorsAll）
@@ -639,10 +641,11 @@ func (o *pufNode) merge(x, y int) *pufNode {
 // https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
 // https://loj.ac/p/121
 // https://atcoder.jp/contests/abc302/tasks/abc302_h （基于 https://atcoder.jp/contests/arc111/tasks/arc111_b）
-// todo https://codeforces.com/contest/891/problem/C
-//  https://codeforces.com/problemset/problem/1217/F
-//  https://codeforces.com/contest/1681/problem/F
-// todo Dynamic connectivity contest https://codeforces.com/gym/100551
+// https://www.luogu.com.cn/problem/P5631
+// https://codeforces.com/contest/891/problem/C
+// https://codeforces.com/problemset/problem/1217/F
+// https://codeforces.com/contest/1681/problem/F
+// Dynamic connectivity contest https://codeforces.com/gym/100551
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	if q == 0 {
 		return
