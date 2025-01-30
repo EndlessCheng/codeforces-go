@@ -90,6 +90,12 @@ https://codeforces.com/problemset/problem/1610/C 1600
 https://codeforces.com/problemset/problem/1946/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
 https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
+https://atcoder.jp/contests/abc227/tasks/abc227_d 1643=CF1954
+- https://leetcode.cn/problems/maximum-running-time-of-n-computers/
+
+### 二分间接值
+https://codeforces.com/problemset/problem/2038/B 2100
+https://atcoder.jp/contests/abc389/tasks/abc389_e
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
@@ -117,6 +123,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 - [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
+https://codeforces.com/problemset/problem/2046/C 2100
 https://codeforces.com/problemset/problem/1550/E 2500
 
 ### 最小化中位数
