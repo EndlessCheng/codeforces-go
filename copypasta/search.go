@@ -610,6 +610,7 @@ func searchCollection() {
 	}
 
 	// 集合划分（贝尔数）https://oeis.org/A000110
+	// 前缀和即递归次数  https://oeis.org/A005001 看 n+1 项
 
 	// 写法一
 	// https://atcoder.jp/contests/abc390/tasks/abc390_d
