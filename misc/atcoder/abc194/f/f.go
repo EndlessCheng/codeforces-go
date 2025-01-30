@@ -21,8 +21,8 @@ func run(in io.Reader, out io.Writer) {
 			memo[i][j] = -1
 		}
 	}
-	var dfs func(int, int, bool, bool) int
-	dfs = func(i, mask int, isLimit, isNum bool) (res int) {
+	var dfs func(int, int, bool) int
+	dfs = func(i, mask int, isLimit bool) (res int) {
 		c := bits.OnesCount(uint(mask))
 		if c > k {
 			return 0
@@ -33,15 +33,15 @@ func run(in io.Reader, out io.Writer) {
 			}
 			return 1
 		}
-		if !isLimit && isNum {
+		if !isLimit && mask > 0 {
 			p := &memo[i][c]
 			if *p >= 0 {
 				return *p
 			}
 			defer func() { *p = res }()
 		}
-		if !isNum {
-			res += dfs(i+1, mask, false, false)
+		if mask == 0 {
+			res += dfs(i+1, 0, false)
 		}
 		up := 15
 		if isLimit {
@@ -52,15 +52,15 @@ func run(in io.Reader, out io.Writer) {
 			}
 		}
 		d := 0
-		if !isNum {
+		if mask == 0 {
 			d = 1
 		}
 		for ; d <= up; d++ {
-			res += dfs(i+1, mask|1<<d, isLimit && d == up, true)
+			res += dfs(i+1, mask|1<<d, isLimit && d == up)
 		}
 		return res % mod
 	}
-	Fprint(out, dfs(0, 0, true, false))
+	Fprint(out, dfs(0, 0, true))
 }
 
 func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
