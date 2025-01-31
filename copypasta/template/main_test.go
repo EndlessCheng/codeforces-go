@@ -18,17 +18,13 @@ var customTestCases = [][2]string{
 }
 
 func Test(t *testing.T) {
-	dir, _ := filepath.Abs(".")
-	t.Logf("Current problem is [%s]", filepath.Base(dir))
-
 	if len(customTestCases) > 0 && strings.TrimSpace(customTestCases[0][0]) != "" {
-		tarCase := 0 // -1
-		testutil.AssertEqualStringCaseWithPrefix(t, customTestCases, tarCase, run, "Custom ")
+		testutil.AssertEqualStringCaseWithPrefix(t, customTestCases, 0, run, "Custom ")
 		t.Log("======= custom =======")
 	}
 
-	tarCase := 0 // -1
-	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", tarCase, run)
+	dir, _ := filepath.Abs(".")
+	testutil.AssertEqualFileCaseWithName(t, dir, "in*.txt", "ans*.txt", 0, run)
 }
 
 // 无尽对拍 / 构造 hack 数据
