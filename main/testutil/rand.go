@@ -534,6 +534,7 @@ func (r *RG) GraphHackSPFA(n, row, st, minWeight, maxWeight int, dir bool) (edge
 // 0 --- 1 --- end (菊花)
 //   \-- 2 --/
 //   \-- 3 --/
+// 注：如果没有卡掉，可以试试重边（但感觉没多大意思，毕竟去个重就绕过去了）
 func (r *RG) GraphHackBellmanFord(n, m, st, minWeight, maxWeight int) (edges [][3]int) {
 	edges = make([][3]int, 0, m)
 
