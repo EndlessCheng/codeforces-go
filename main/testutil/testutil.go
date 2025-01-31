@@ -96,8 +96,6 @@ func AssertEqualStringCaseWithPrefix(t *testing.T, testCases [][2]string, target
 		AssertEqualStringCase(t, testCases, 0, runFunc)
 		return
 	}
-
-	t.Log("OK")
 }
 
 func AssertEqualStringCase(t *testing.T, testCases [][2]string, targetCaseNum int, runFunc ioFunc) {
