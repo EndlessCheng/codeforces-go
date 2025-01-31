@@ -146,7 +146,7 @@ func sumOfPower(nums []int, k int) (ans int) {
 
 ## 方法二：一维 0-1 背包
 
-定义 $f[i][j]$ 表示考虑前 $i$ 个数，所选元素和是 $j$ 时的能量和。
+定义 $f[i+1][j]$ 表示在 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 中选子序列，元素和恰好等于 $j$ 的子序列个数。
 
 对于 $\textit{nums}[i]$，它只有三种可能：
 
@@ -230,19 +230,23 @@ func sumOfPower(nums []int, k int) int {
 - 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(k)$。
 
-## 题单：0-1 背包
+## 分类题单
 
-- [2915. 和为目标值的最长子序列的长度](https://leetcode.cn/problems/length-of-the-longest-subsequence-that-sums-to-target/) 1659
-- [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/)
-- [494. 目标和](https://leetcode.cn/problems/target-sum/)
-- [2787. 将一个数字表示成幂的和的方案数](https://leetcode.cn/problems/ways-to-express-an-integer-as-sum-of-powers/) 1818
-- [474. 一和零](https://leetcode.cn/problems/ones-and-zeroes/)（二维）
-- [1049. 最后一块石头的重量 II](https://leetcode.cn/problems/last-stone-weight-ii/) 2092
-- [879. 盈利计划](https://leetcode.cn/problems/profitable-schemes/) 2204
-- [956. 最高的广告牌](https://leetcode.cn/problems/tallest-billboard/) 2381
-- [2518. 好分区的数目](https://leetcode.cn/problems/number-of-great-partitions/) 2415
-- [2742. 给墙壁刷油漆](https://leetcode.cn/problems/painting-the-walls/) 2425
-- [2291. 最大股票收益](https://leetcode.cn/problems/maximum-profit-from-trading-stocks/)（会员题）
-- [2431. 最大限度地提高购买水果的口味](https://leetcode.cn/problems/maximize-total-tastiness-of-purchased-fruits/)（会员题）
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-更多题单，请点我个人主页 - 讨论发布。
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
