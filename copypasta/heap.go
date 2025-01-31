@@ -93,16 +93,18 @@ https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
    - https://www.cnblogs.com/Scarab/p/17672813.html
 - [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 题单 https://www.luogu.com.cn/training/8793
+https://www.luogu.com.cn/problem/P2949 经典题
 https://www.luogu.com.cn/problem/P3045
 https://codeforces.com/problemset/problem/1526/C2 1600
 https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
 https://codeforces.com/problemset/problem/730/I 2000
 - 加强版 https://atcoder.jp/contests/agc018/tasks/agc018_c
 https://codeforces.com/problemset/problem/1974/G 2000
+https://atcoder.jp/contests/abc249/tasks/abc249_f 1786=CF2062
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
+https://atcoder.jp/contests/aising2020/tasks/aising2020_e 2133=CF2324 洛谷 P2949 的加强版
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
-https://atcoder.jp/contests/abc249/tasks/abc249_f
 https://www.cnblogs.com/nth-element/p/11768155.html
 
 #### 模拟费用流
