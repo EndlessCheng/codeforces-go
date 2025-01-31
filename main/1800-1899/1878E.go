@@ -29,7 +29,7 @@ func cf1878E(in io.Reader, _w io.Writer) {
 		ans := make([]int, q)
 		for l := n - 1; l >= 0; l-- {
 			v := a[l]
-			for r := l + 1; r < n && a[r]&v != a[r]; r-- {
+			for r := l + 1; r < n && a[r]&v != a[r]; r++ {
 				a[r] &= v
 			}
 			for _, p := range qs[l] {

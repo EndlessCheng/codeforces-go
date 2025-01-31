@@ -2,7 +2,10 @@
 package main
 
 import (
+	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
+	"strings"
 	"testing"
 )
 
@@ -36,6 +39,74 @@ func Test_cf1878E(t *testing.T) {
 1 5 2 2 
 2 6 -1 5`,
 		},
+		{
+			`1
+3
+4 5 1
+1
+1 1`,
+			`2`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf1878E)
+}
+
+func TestCompare_cf1878E(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil.NewRandGenerator()
+	inputGenerator := func() string {
+		//return ``
+		rg.Clear()
+		rg.One()
+		n := rg.Int(1, 5)
+		rg.NewLine()
+		rg.IntSlice(n, 1, 9)
+		rg.Int(1, 1)
+		rg.NewLine()
+		rg.Int(1, n)
+		rg.Int(1, 5)
+		return rg.String()
+	}
+
+	runBF := func(in io.Reader, out io.Writer) {
+		solve := func(Case int) {
+			var n, q int
+			Fscan(in, &n)
+			a := make([]int, n)
+			for i := range a {
+				Fscan(in, &a[i])
+			}
+			Fscan(in, &q)
+			for range q {
+				var l, k int
+				Fscan(in, &l, &k)
+				l--
+				and := -1
+				res := -1
+				for r := l; r < n; r++ {
+					and &= a[r]
+					if and < k {
+						break
+					}
+					res = r + 1
+				}
+				Fprint(out, res, " ")
+			}
+			Fprintln(out)
+		}
+
+		T := 1
+		Fscan(in, &T)
+		for Case := 1; Case <= T; Case++ {
+			solve(Case)
+		}
+
+		_leftData, _ := io.ReadAll(in)
+		if _s := strings.TrimSpace(string(_leftData)); _s != "" {
+			panic("有未读入的数据：\n" + _s)
+		}
+	}
+
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, cf1878E)
 }
