@@ -370,7 +370,7 @@ class Solution {
         int sub = mask1;
         do {
             int size = Integer.bitCount(sub);
-            // 剪枝：如果 size > maxSize 就不需要判断了
+            // 剪枝：如果 size < maxSize 就不需要判断了
             if (size >= maxSize && !hasCycle(sub, g)) {
                 if (size > maxSize) {
                     maxSize = size;
