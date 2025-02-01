@@ -8,9 +8,7 @@
 
 枚举出现 $2$ 次的字母（枚举子集），那么其余字母只出现 $1$ 次。
 
-这里用二进制和位运算实现。用二进制压缩字母的出现次数，二进制从低到高第 $i$ 位是 $0$ 表示该字母（如果有）在公共超序列中出现 $1$ 次，是 $1$ 表示该字母在公共超序列中出现 $2$ 次。
-
-具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
+这里用二进制和位运算实现。用二进制压缩字母的出现次数，二进制从低到高第 $i$ 位是 $0$ 表示该字母（如果有）在公共超序列中出现 $1$ 次，是 $1$ 表示该字母在公共超序列中出现 $2$ 次。具体请看 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
 
 ## 建图
 
@@ -24,7 +22,7 @@
 
 - 这个有向图是否有环？
 
-做法见 [207. 课程表](https://leetcode.cn/problems/course-schedule/)，可以用**三色标记法**解决，详见 [我的题解](https://leetcode.cn/problems/course-schedule/solutions/2992884/san-se-biao-ji-fa-pythonjavacgojsrust-by-pll7/)。
+做法见 [207. 课程表](https://leetcode.cn/problems/course-schedule/)，可以用**三色标记法**或者拓扑排序解决，详见 [我的题解](https://leetcode.cn/problems/course-schedule/solutions/2992884/san-se-biao-ji-fa-pythonjavacgojsrust-by-pll7/)。
 
 如果无环（也就是有向无环图），则说明我们当前枚举的子集是合法的，加入答案候选项中。
 
@@ -92,7 +90,7 @@ class Solution {
         for (String s : words) {
             int x = s.charAt(0) - 'a';
             int y = s.charAt(1) - 'a';
-            all |= (1 << x) | (1 << y);
+            all |= 1 << x | 1 << y;
             g[x].add(y);
         }
 
@@ -115,7 +113,7 @@ class Solution {
 
         List<List<Integer>> ans = new ArrayList<>(set.size()); // 预分配空间
         for (int s : set) {
-            List<Integer> cnt = new ArrayList<>(26);
+            List<Integer> cnt = new ArrayList<>(26); // 预分配空间
             for (int i = 0; i < 26; i++) {
                 cnt.add((all >> i & 1) + (s >> i & 1));
             }
@@ -127,6 +125,7 @@ class Solution {
     private boolean hasCycle(int sub, List<Integer>[] g) {
         int[] color = new int[26];
         for (int i = 0; i < 26; i++) {
+            // 只遍历不在 sub 中的字母
             if (color[i] == 0 && (sub >> i & 1) == 0 && dfs(i, color, g, sub)) {
                 return true;
             }
@@ -137,6 +136,7 @@ class Solution {
     private boolean dfs(int x, int[] color, List<Integer>[] g, int sub) {
         color[x] = 1;
         for (int y : g[x]) {
+            // 只遍历不在 sub 中的字母
             if ((sub >> y & 1) != 0) {
                 continue;
             }
@@ -159,7 +159,7 @@ public:
         vector<int> g[26]{};
         for (auto& s : words) {
             int x = s[0] - 'a', y = s[1] - 'a';
-            all |= (1 << x) | (1 << y);
+            all |= 1 << x | 1 << y;
             g[x].push_back(y);
         }
 
@@ -259,6 +259,7 @@ func supersequences(words []string) [][]int {
 
 	set := map[int]struct{}{}
 	minSize := math.MaxInt
+	// 枚举 all 的所有子集 sub
 	for sub, ok := all, true; ok; ok = sub != all {
 		size := bits.OnesCount(uint(sub))
 		// 剪枝：如果 size > minSize 就不需要判断了
@@ -277,6 +278,284 @@ func supersequences(words []string) [][]int {
 		cnt := make([]int, 26)
 		for i := range cnt {
 			cnt[i] = all>>i&1 + sub>>i&1
+		}
+		ans = append(ans, cnt)
+	}
+	return ans
+}
+```
+
+## 优化
+
+如果 $s[0]=s[1]$，那么这个字母一定要出现两次，不需要枚举其只出现一次的情况。
+
+为方便计算，这里改成在子集中的字母出现一次，不在子集中的字母出现两次。
+
+```py [sol-Python3]
+class Solution:
+    def supersequences(self, words: List[str]) -> List[List[int]]:
+        # 收集有哪些字母，同时建图
+        all_mask = mask2 = 0
+        g = defaultdict(list)
+        for x, y in words:
+            x, y = ord(x) - ord('a'), ord(y) - ord('a')
+            all_mask |= 1 << x | 1 << y
+            if x == y:
+                mask2 |= 1 << x
+            g[x].append(y)
+
+        # 判断是否有环
+        def has_cycle(sub: int) -> bool:
+            color = [0] * 26
+
+            def dfs(x: int) -> bool:
+                color[x] = 1
+                for y in g[x]:
+                    # 只遍历在 sub 中的字母
+                    if (sub >> y & 1) == 0:
+                        continue
+                    if color[y] == 1 or color[y] == 0 and dfs(y):
+                        return True
+                color[x] = 2
+                return False
+
+            for i, c in enumerate(color):
+                # 只遍历在 sub 中的字母
+                if c == 0 and sub >> i & 1 and dfs(i):
+                    return True
+            return False
+
+        st = set()
+        max_size = 0
+        # 枚举 mask1 的所有子集 sub
+        sub = mask1 = all_mask ^ mask2
+        while True:
+            size = sub.bit_count()
+            # 剪枝：如果 size < max_size 就不需要判断了
+            if size >= max_size and not has_cycle(sub):
+                if size > max_size:
+                    max_size = size
+                    st.clear()
+                st.add(sub)
+            sub = (sub - 1) & mask1
+            if sub == mask1:
+                break
+
+        return [[(all_mask >> i & 1) + ((all_mask ^ sub) >> i & 1) for i in range(26)]
+                for sub in st]
+```
+
+```java [sol-Java]
+class Solution {
+    public List<List<Integer>> supersequences(String[] words) {
+        // 收集有哪些字母，同时建图
+        int all = 0;
+        int mask2 = 0;
+        List<Integer>[] g = new ArrayList[26];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (String s : words) {
+            int x = s.charAt(0) - 'a';
+            int y = s.charAt(1) - 'a';
+            all |= 1 << x | 1 << y;
+            if (x == y) {
+                mask2 |= 1 << x;
+            }
+            g[x].add(y);
+        }
+
+        Set<Integer> set = new HashSet<>();
+        int maxSize = 0;
+        // 枚举 mask1 的所有子集 sub
+        int mask1 = all ^ mask2;
+        int sub = mask1;
+        do {
+            int size = Integer.bitCount(sub);
+            // 剪枝：如果 size > maxSize 就不需要判断了
+            if (size >= maxSize && !hasCycle(sub, g)) {
+                if (size > maxSize) {
+                    maxSize = size;
+                    set.clear();
+                }
+                set.add(sub);
+            }
+            sub = (sub - 1) & mask1;
+        } while (sub != mask1);
+
+        List<List<Integer>> ans = new ArrayList<>(set.size()); // 预分配空间
+        for (int s : set) {
+            List<Integer> cnt = new ArrayList<>(26); // 预分配空间
+            for (int i = 0; i < 26; i++) {
+                cnt.add((all >> i & 1) + ((all ^ s) >> i & 1));
+            }
+            ans.add(cnt);
+        }
+        return ans;
+    }
+
+    private boolean hasCycle(int sub, List<Integer>[] g) {
+        int[] color = new int[26];
+        for (int i = 0; i < 26; i++) {
+            // 只遍历在 sub 中的字母
+            if (color[i] == 0 && (sub >> i & 1) != 0 && dfs(i, color, g, sub)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(int x, int[] color, List<Integer>[] g, int sub) {
+        color[x] = 1;
+        for (int y : g[x]) {
+            // 只遍历在 sub 中的字母
+            if ((sub >> y & 1) == 0) {
+                continue;
+            }
+            if (color[y] == 1 || color[y] == 0 && dfs(y, color, g, sub)) {
+                return true;
+            }
+        }
+        color[x] = 2;
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> supersequences(vector<string>& words) {
+        // 收集有哪些字母，同时建图
+        int all = 0, mask2 = 0;
+        vector<int> g[26]{};
+        for (auto& s : words) {
+            int x = s[0] - 'a', y = s[1] - 'a';
+            all |= 1 << x | 1 << y;
+            if (x == y) {
+                mask2 |= 1 << x;
+            }
+            g[x].push_back(y);
+        }
+
+        // 判断是否有环
+        auto has_cycle = [&](int sub) -> bool {
+            int color[26]{};
+            auto dfs = [&](this auto&& dfs, int x) -> bool {
+                color[x] = 1;
+                for (int y : g[x]) {
+                    // 只遍历在 sub 中的字母
+                    if ((sub >> y & 1) == 0) {
+                        continue;
+                    }
+                    if (color[y] == 1 || color[y] == 0 && dfs(y)) {
+                        return true;
+                    }
+                }
+                color[x] = 2;
+                return false;
+            };
+            for (int i = 0; i < 26; i++) {
+                // 只遍历在 sub 中的字母
+                if (color[i] == 0 && sub >> i & 1 && dfs(i)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        unordered_set<int> st;
+        int max_size = 0;
+        // 枚举 mask1 的所有子集 sub
+        int mask1 = all ^ mask2;
+        int sub = mask1;
+        do {
+            int size = popcount((unsigned) sub);
+            // 剪枝：如果 size < min_size 就不需要判断了
+            if (size >= max_size && !has_cycle(sub)) {
+                if (size > max_size) {
+                    max_size = size;
+                    st.clear();
+                }
+                st.insert(sub);
+            }
+            sub = (sub - 1) & mask1;
+        } while (sub != mask1);
+
+        vector<vector<int>> ans;
+        for (int sub : st) {
+            vector<int> cnt(26);
+            for (int i = 0; i < 26; i++) {
+                cnt[i] = (all >> i & 1) + ((all ^ sub) >> i & 1);
+            }
+            ans.push_back(cnt);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func supersequences(words []string) [][]int {
+	// 收集有哪些字母，同时建图
+	all, mask2 := 0, 0
+	g := [26][]int{}
+	for _, s := range words {
+		x, y := int(s[0]-'a'), int(s[1]-'a')
+		all |= 1<<x | 1<<y
+		if x == y {
+			mask2 |= 1 << x
+		}
+		g[x] = append(g[x], y)
+	}
+
+	// 判断是否有环
+	hasCycle := func(sub int) bool {
+		color := [26]int8{}
+		var dfs func(int) bool
+		dfs = func(x int) bool {
+			color[x] = 1
+			for _, y := range g[x] {
+				// 只遍历在 sub 中的字母
+				if sub>>y&1 == 0 {
+					continue
+				}
+				if color[y] == 1 || color[y] == 0 && dfs(y) {
+					return true
+				}
+			}
+			color[x] = 2
+			return false
+		}
+		for i, c := range color {
+			// 只遍历在 sub 中的字母
+			if c == 0 && sub>>i&1 > 0 && dfs(i) {
+				return true
+			}
+		}
+		return false
+	}
+
+	set := map[int]struct{}{}
+	maxSize := 0
+	mask1 := all ^ mask2
+	// 枚举 mask1 的所有子集 sub
+	for sub, ok := mask1, true; ok; ok = sub != mask1 {
+		size := bits.OnesCount(uint(sub))
+		// 剪枝：如果 size < maxSize 就不需要判断了
+		if size >= maxSize && !hasCycle(sub) {
+			if size > maxSize {
+				maxSize = size
+				clear(set)
+			}
+			set[sub] = struct{}{}
+		}
+		sub = (sub - 1) & mask1
+	}
+
+	ans := make([][]int, 0, len(set)) // 预分配空间
+	for sub := range set {
+		cnt := make([]int, 26)
+		for i := range cnt {
+			cnt[i] = all>>i&1 + (all^sub)>>i&1
 		}
 		ans = append(ans, cnt)
 	}
