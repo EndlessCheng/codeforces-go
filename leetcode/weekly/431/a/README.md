@@ -152,7 +152,7 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 
 这意味着，如果 $k\ge 3$，那么这 $k$ 个数必须**两两互质**。如果两个数有大于 $1$ 的公因子，那么不满足「至少 $k-1$ 个 $e_i=0$」的要求。
 
-两两互质是一个很强的性质，我们可以把子数组的所有数「压缩」到乘积 $m$ 中，计算乘积与即将加入子数组的数 $x$ 的 $\text{GCD}(m,x)$，如果 $\text{GCD}(m,x)>1$，则说明 $x$ 与子数组的某个数不是互质的。
+两两互质是一个很强的性质，我们可以把子数组中的所有数「压缩」到子数组的乘积 $\textit{mul}$ 中，计算 $\textit{mul}$ 与即将加入子数组的数 $x$ 的 $\text{GCD}$，如果 $\text{GCD}(\textit{mul},x)>1$，则说明 $x$ 与子数组的某个数不是互质的。
 
 类似 [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/) 的 [滑动窗口做法](https://leetcode.cn/problems/longest-substring-without-repeating-characters/solutions/1959540/xia-biao-zong-suan-cuo-qing-kan-zhe-by-e-iaks/)，先去掉子数组中的与 $x$ 不互质的数，再把 $x$ 加到子数组中。
 
