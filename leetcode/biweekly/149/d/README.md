@@ -1,0 +1,381 @@
+## 一、寻找子问题
+
+为方便描述，下文把字符串 $\textit{caption}$ 简称为 $s$。
+
+首先，如果 $s$ 的长度小于 $3$，无解，返回空字符串。下文讨论 $s$ 长度至少为 $3$ 的情况。
+
+我们要解决的问题（原问题）是：
+
+- 把 $s$ 的每个连续相同段的长度都变成 $\ge 3$ 的最少操作次数。
+
+为了让答案的字典序最小，从左到右思考。
+
+枚举 $s[0]$ 变成哪个字母。比如变成 $\texttt{a}$，那么：
+
+- 如果 $s[1]$ 也是 $\texttt{a}$，那么问题变成：在 $s[1]=\texttt{a}$ 的前提下，$s[1]$ 到 $s[n-1]$ 的最少操作次数。
+- 什么时候可以枚举其他字母？如果 $s[1]$ 和 $s[2]$ 也是 $\texttt{a}$，就可以保证 $s[0]$ 一定在一个长度至少为 $3$ 的连续相同子串中，这样 $s[3]$ 就可以枚举其他字母 $k$ 了，问题变成：在 $s[3]=k$ 的前提下，$s[3]$ 到 $s[n-1]$ 的最少操作次数。
+
+这些问题都是**和原问题相似的、规模更小的子问题**，可以用**递归**解决。
+
+## 二、状态定义与状态转移方程
+
+根据上面的讨论，我们需要在递归过程中跟踪以下信息：
+
+- $i$：剩余子串从 $s[i]$ 到 $s[n-1]$。
+- $j$：规定 $s[i]$ 变成字母 $j$。
+
+因此，定义状态为 $\textit{dfs}(i,j)$，表示在 $s[i]=j$ 的前提下，$s[i]$ 到 $s[n-1]$ 的最少操作次数。
+
+分类讨论：
+
+- $s[i+1]$ 也是 $j$，问题变成：在 $s[i+1]=j$ 的前提下，$s[i+1]$ 到 $s[n-1]$ 的最少操作次数，即 $\textit{dfs}(i+1,j)$。
+- $s[i+1]$ 和 $s[i+2]$ 也是 $j$，但 $s[i+3]$ 是字母 $k$，问题变成：在 $s[i+3]=k$ 的前提下，$s[i+3]$ 到 $s[n-1]$ 的最少操作次数，即 $\textit{dfs}(i+3,k)$。注意这要求 $s[i+3]$ 到 $s[n-1]$ 的长度至少是 $3$
+  ，也就是 $n-(i+3)\ge 3$，即 $i\le n-6$。
+
+这两种情况取最小值，就得到了 $\textit{dfs}(i,j)$，即
+
+$$
+\textit{dfs}(i,j) = \min\left(\textit{dfs}(i+1,j) + |s[i]-j|,\ \min_{k=0}^{25} \textit{dfs}(i+3,k) + |s[i]-j| + |s[i+1]-j| + |s[i+2]-j| \right)
+$$
+
+注意无需判断 $k\ne j$，这不会得到比 $\textit{dfs}(i+1,j)$ 更优的答案。
+
+**递归边界**：$\textit{dfs}(n,j)=0$。
+
+**递归入口**：$\textit{dfs}(0,j)$。
+
+## 三、递归搜索 + 保存递归返回值 = 记忆化搜索
+
+考虑到整个递归过程中有大量重复递归调用（递归入参相同）。由于递归函数没有副作用，同样的入参无论计算多少次，算出来的结果都是一样的，因此可以用**记忆化搜索**来优化：
+
+- 如果一个状态（递归入参）是第一次遇到，那么可以在返回前，把状态及其结果记到一个 $\textit{memo}$ 数组中。
+- 如果一个状态不是第一次遇到（$\textit{memo}$ 中保存的结果不等于 $\textit{memo}$ 的初始值），那么可以直接返回 $\textit{memo}$ 中保存的结果。
+
+**注意**：$\textit{memo}$ 数组的**初始值**一定不能等于要记忆化的值！例如初始值设置为 $0$，并且要记忆化的 $\textit{dfs}(i,j)$ 也等于 $0$，那就没法判断 $0$
+到底表示第一次遇到这个状态，还是表示之前遇到过了，从而导致记忆化失效。一般把初始值设置为 $-1$。
+
+> Python 用户可以无视上面这段，直接用 `@cache` 装饰器。
+
+具体请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含把记忆化搜索 1:1 翻译成递推的技巧。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1eUF6eaERQ/?t=8m14s)。
+
+为方便大家理解，这里先给出计算最少操作次数的代码。输出具体方案在下文的递推中实现。
+
+```py
+# 只计算最小操作次数的代码
+class Solution:
+    def minCostGoodCaption(self, s: str) -> int:
+        n = len(s)
+        if n < 3:
+            return -1
+
+        s = [ord(c) - ord('a') for c in s]
+        @cache
+        def dfs(i: int, j: int) -> int:
+            if i == n:
+                return 0
+            res = dfs(i + 1, j) + abs(s[i] - j)
+            if i <= n - 6:
+                mn = min(dfs(i + 3, k) for k in range(26))
+                res = min(res, mn + abs(s[i] - j) + abs(s[i + 1] - j) + abs(s[i + 2] - j))
+            return res
+        return min(dfs(0, j) for j in range(26))
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma|^2)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$
+  单个状态的计算时间。本题状态个数等于 $\mathcal{O}(n|\Sigma|)$，单个状态的计算时间为 $\mathcal{O}(|\Sigma|)$，所以总的时间复杂度为 $\mathcal{O}(n|\Sigma|^2)$。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。保存多少状态，就需要多少空间。
+
+## 四、1:1 翻译成递推
+
+我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
+
+具体来说，$f[i][j]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示在 $s[i]=j$ 的前提下，$s[i]$ 到 $s[n-1]$ 的最少操作次数。
+
+相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
+
+$$
+f[i][j] = \min\left(f[i+1][j] + |s[i]-j|,\ \min_{k=0}^{25} f[i+3][k] + |s[i]-j| + |s[i+1]-j| + |s[i+2]-j| \right)
+$$
+
+初始值 $f[n][j]=0$，翻译自递归边界 $\textit{dfs}(n,j)=0$。
+
+先把上面的记忆化搜索 1:1 翻译过来，然后讨论优化和输出具体方案。
+
+```py
+# 只计算最小操作次数的代码
+class Solution:
+    def minCostGoodCaption(self, s: str) -> int:
+        n = len(s)
+        if n < 3:
+            return -1
+
+        s = [ord(c) - ord('a') for c in s]
+        f = [[0] * 26 for _ in range(n + 1)]
+        for i in range(n - 1, -1, -1):
+            for j in range(26):
+                res = f[i + 1][j] + abs(s[i] - j)
+                res2 = min(f[i + 3]) + abs(s[i] - j) + abs(s[i + 1] - j) + abs(s[i + 2] - j) if i <= n - 6 else inf
+                f[i][j] = min(res, res2)
+        return min(f[0])
+```
+
+## 五、时间优化 + 输出具体方案
+
+把 $\min\limits_{k=0}^{25} f[i][k]$ 保存到 $\textit{minF}[i]$ 中，于是转移方程优化成
+
+$$
+f[i][j] = \min\left(f[i+1][j] + |s[i]-j|,\ \textit{minF}[i+3] + |s[i]-j| + |s[i+1]-j| + |s[i+2]-j| \right)
+$$
+
+这样时间复杂度就优化至 $\mathcal{O}(n|\Sigma|)$ 了。
+
+```py
+# 只计算最小操作次数的代码
+class Solution:
+    def minCostGoodCaption(self, s: str) -> int:
+        n = len(s)
+        if n < 3:
+            return -1
+
+        s = [ord(c) - ord('a') for c in s]
+        f = [[0] * 26 for _ in range(n + 1)]
+        min_f = [0] * n
+        for i in range(n - 1, -1, -1):
+            for j in range(26):
+                res = f[i + 1][j] + abs(s[i] - j)
+                res2 = min_f[i + 3] + abs(s[i] - j) + abs(s[i + 1] - j) + abs(s[i + 2] - j) if i <= n - 6 else inf
+                f[i][j] = min(res, res2)
+            min_f[i] = min(f[i])
+        return min_f[0]
+```
+
+本题还需要输出具体方案，这可以在递归的过程中，用一个 $\textit{nxt}$ 数组记录每个状态 $f[i][j]$ 的最优决策来自哪。
+
+此外，我们还需要知道 $\textit{minF}[i]$ 等于哪个 $f[i][j]$，这里的 $j$ 是多少。这需要在计算最小值的过程中，把对应的 $j$ 保存到 $\textit{minJ}[i]$ 中。
+
+于是，当上面代码中出现 $\textit{res}=\textit{res}_2$ 的情况时，需要比较 $\textit{minJ}[i+3]$ 和 $j$ 的大小关系，如果前者更小，那么要从 $\textit{res}_2$ 转移过来。
+
+最终代码：
+
+```py [sol-Python3]
+class Solution:
+    def minCostGoodCaption(self, s: str) -> str:
+        n = len(s)
+        if n < 3:
+            return ""
+
+        s = [ord(c) - ord('a') for c in s]
+        f = [[0] * 26 for _ in range(n + 1)]
+        min_j = [0] * (n + 1)
+        nxt = [[0] * 26 for _ in range(n + 1)]
+        for i in range(n - 1, -1, -1):
+            mn = inf
+            for j in range(26):
+                res = f[i + 1][j] + abs(s[i] - j)
+                res2 = f[i + 3][min_j[i + 3]] + abs(s[i] - j) + abs(s[i + 1] - j) + abs(s[i + 2] - j) if i <= n - 6 else inf
+                if res2 < res or res2 == res and min_j[i + 3] < j:
+                    res = res2
+                    nxt[i][j] = min_j[i + 3]  # 记录转移来源
+                else:
+                    nxt[i][j] = j  # 记录转移来源
+                f[i][j] = res
+                if res < mn:
+                    mn = res
+                    min_j[i] = j  # 记录最小的 f[i][j] 中的 j 是多少
+
+        ans = [''] * n
+        i, j = 0, min_j[0]
+        while i < n:
+            ans[i] = ascii_lowercase[j]
+            k = nxt[i][j]
+            if k == j:
+                i += 1
+            else:
+                ans[i + 2] = ans[i + 1] = ans[i]
+                i += 3
+                j = k
+        return ''.join(ans)
+```
+
+```java [sol-Java]
+class Solution {
+    public String minCostGoodCaption(String S) {
+        int n = S.length();
+        if (n < 3) {
+            return "";
+        }
+
+        char[] s = S.toCharArray();
+        int[][] f = new int[n + 1][26];
+        int[] minJ = new int[n + 1];
+        int[][] nxt = new int[n + 1][26];
+        for (int i = n - 1; i >= 0; i--) {
+            int mn = Integer.MAX_VALUE;
+            for (int j = 0; j < 26; j++) {
+                int res = f[i + 1][j] + Math.abs(s[i] - 'a' - j);
+                int res2 = i <= n - 6 ? f[i + 3][minJ[i + 3]] + Math.abs(s[i] - 'a' - j) + Math.abs(s[i + 1] - 'a' - j) + Math.abs(s[i + 2] - 'a' - j) : Integer.MAX_VALUE;
+                if (res2 < res || res2 == res && minJ[i + 3] < j) {
+                    res = res2;
+                    nxt[i][j] = minJ[i + 3]; // 记录转移来源
+                } else {
+                    nxt[i][j] = j; // 记录转移来源
+                }
+                f[i][j] = res;
+                if (res < mn) {
+                    mn = res;
+                    minJ[i] = j; // 记录最小的 f[i][j] 中的 j 是多少
+                }
+            }
+        }
+
+        char[] ans = new char[n];
+        int i = 0;
+        int j = minJ[0];
+        while (i < n) {
+            ans[i] = (char) ('a' + j);
+            int k = nxt[i][j];
+            if (k == j) {
+                i++;
+            } else {
+                ans[i + 2] = ans[i + 1] = ans[i];
+                i += 3;
+                j = k;
+            }
+        }
+        return new String(ans);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string minCostGoodCaption(string s) {
+        int n = s.size();
+        if (n < 3) {
+            return "";
+        }
+
+        vector<array<int, 26>> f(n + 1);
+        vector<int> min_j(n + 1);
+        vector<array<int, 26>> nxt(n + 1);
+        for (int i = n - 1; i >= 0; i--) {
+            int mn = INT_MAX;
+            for (int j = 0; j < 26; j++) {
+                int res = f[i + 1][j] + abs(s[i] - 'a' - j);
+                int res2 = i <= n - 6 ? f[i + 3][min_j[i + 3]] + abs(s[i] - 'a' - j) + abs(s[i + 1] - 'a' - j) + abs(s[i + 2] - 'a' - j) : INT_MAX;
+                if (res2 < res || res2 == res && min_j[i + 3] < j) {
+                    res = res2;
+                    nxt[i][j] = min_j[i + 3]; // 记录转移来源
+                } else {
+                    nxt[i][j] = j; // 记录转移来源
+                }
+                f[i][j] = res;
+                if (res < mn) {
+                    mn = res;
+                    min_j[i] = j; // 记录最小的 f[i][j] 中的 j 是多少
+                }
+            }
+        }
+
+        string ans(n, 0);
+        int i = 0, j = min_j[0];
+        while (i < n) {
+            ans[i] = 'a' + j;
+            int k = nxt[i][j];
+            if (k == j) {
+                i++;
+            } else {
+                ans[i + 2] = ans[i + 1] = ans[i];
+                i += 3;
+                j = k;
+            }
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minCostGoodCaption(s string) string {
+	n := len(s)
+	if n < 3 {
+		return ""
+	}
+
+	f := make([][26]int, n+1)
+	minJ := make([]int, n+1)
+	nxt := make([][26]int, n+1)
+	for i := n - 1; i >= 0; i-- {
+		mn := math.MaxInt
+		for j := 0; j < 26; j++ {
+			res := f[i+1][j] + abs(int(s[i]-'a')-j)
+			res2 := math.MaxInt
+			if i <= n-6 {
+				res2 = f[i+3][minJ[i+3]] + abs(int(s[i]-'a')-j) + abs(int(s[i+1]-'a')-j) + abs(int(s[i+2]-'a')-j)
+			}
+			if res2 < res || res2 == res && minJ[i+3] < j {
+				res = res2
+				nxt[i][j] = minJ[i+3] // 记录转移来源
+			} else {
+				nxt[i][j] = j // 记录转移来源
+			}
+			f[i][j] = res
+			if res < mn {
+				mn = res
+				minJ[i] = j // 记录最小的 f[i][j] 中的 j 是多少
+			}
+		}
+	}
+
+	ans := make([]byte, n)
+	i, j := 0, minJ[0]
+	for i < n {
+		ans[i] = 'a' + byte(j)
+		k := nxt[i][j]
+		if k == j {
+			i++
+		} else {
+			ans[i+1] = ans[i]
+			ans[i+2] = ans[i]
+			i += 3
+			j = k
+		}
+	}
+	return string(ans)
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
+
+更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**五、状态机 DP**」、「**§7.5 多维 DP**」和「**专题：输出具体方案**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
