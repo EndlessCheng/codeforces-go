@@ -1,0 +1,8 @@
+"aaaaabbc"
+3
+
+"abcabcab"
+1
+
+
+
