@@ -1,9 +1,66 @@
 package main
 
-import "math"
+import (
+	"bytes"
+	"math"
+	"slices"
+)
 
 // https://space.bilibili.com/206214
 func minCostGoodCaption(s string) string {
+	n := len(s)
+	if n < 3 {
+		return ""
+	}
+
+	f := make([]int, n+1)
+	f[n-1], f[n-2] = math.MaxInt/2, math.MaxInt/2
+	t := make([]byte, n+1)
+	size := make([]uint8, n)
+
+	for i := n - 3; i >= 0; i-- {
+		sub := []byte(s[i : i+3])
+		slices.Sort(sub)
+		a, b, c := sub[0], sub[1], sub[2]
+		s3 := int(t[i+3])
+		res := []int{f[i+3] + int(c-a), int(b), s3, s3, s3}
+		size[i] = 3
+
+		if i+4 <= n {
+			sub := []byte(s[i : i+4])
+			slices.Sort(sub)
+			a, b, c, d := sub[0], sub[1], sub[2], sub[3]
+			s4 := int(t[i+4])
+			tp := []int{f[i+4] + int(c-a+d-b), int(b), int(b), s4, s4}
+			if slices.Compare(tp, res) < 0 {
+				res = tp
+				size[i] = 4
+			}
+		}
+
+		if i+5 <= n {
+			sub := []byte(s[i : i+5])
+			slices.Sort(sub)
+			a, b, c, d, e := sub[0], sub[1], sub[2], sub[3], sub[4]
+			tp := []int{f[i+5] + int(d-a+e-b), int(c), int(c), int(c), int(t[i+5])}
+			if slices.Compare(tp, res) < 0 {
+				res = tp
+				size[i] = 5
+			}
+		}
+
+		f[i] = res[0]
+		t[i] = byte(res[1])
+	}
+
+	ans := make([]byte, 0, n)
+	for i := 0; i < n; i += int(size[i]) {
+		ans = append(ans, bytes.Repeat([]byte{t[i]}, int(size[i]))...)
+	}
+	return string(ans)
+}
+
+func minCostGoodCaption2(s string) string {
 	n := len(s)
 	if n < 3 {
 		return ""
@@ -18,7 +75,7 @@ func minCostGoodCaption(s string) string {
 			res := f[i+1][j] + abs(int(s[i]-'a')-j)
 			res2 := math.MaxInt
 			if i <= n-6 {
-				res2 = f[i+3][minJ[i+3]] + abs(int(s[i]-'a')-j) + abs(int(s[i+1]-'a')-j) + abs(int(s[i+1]-'a')-j)
+				res2 = f[i+3][minJ[i+3]] + abs(int(s[i]-'a')-j) + abs(int(s[i+1]-'a')-j) + abs(int(s[i+2]-'a')-j)
 			}
 			if res2 < res || res2 == res && minJ[i+3] < j {
 				res = res2
@@ -51,10 +108,14 @@ func minCostGoodCaption(s string) string {
 	return string(ans)
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
 
-
-func minCostGoodCaption2(s string) string {
+func minCostGoodCaption1(s string) string {
 	n := len(s)
 	if n < 3 {
 		return ""

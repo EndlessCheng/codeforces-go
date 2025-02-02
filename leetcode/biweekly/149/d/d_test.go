@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -11,5 +12,18 @@ func Test_d(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
 // https://leetcode.cn/contest/biweekly-contest-149/problems/minimum-cost-good-caption/
 // https://leetcode.cn/problems/minimum-cost-good-caption/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() string {
+		//return
+		rg.Clear()
+		return rg.Str(6, 15, 'a', 'f')
+	}
+	testutil.CompareInf(_t, inputGenerator, minCostGoodCaption2, minCostGoodCaption)
+}

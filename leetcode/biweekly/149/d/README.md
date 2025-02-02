@@ -357,7 +357,309 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 - 时间复杂度：$\mathcal{O}(n|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
 - 空间复杂度：$\mathcal{O}(n|\Sigma|)$。
 
-更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**五、状态机 DP**」、「**§7.5 多维 DP**」和「**专题：输出具体方案**」。
+## 六、另一种思路：中位数贪心 + DP
+
+注意到，对于长度 $\ge 6$ 的子串：
+
+- 长为 $6$ 的子串可以拆分成两个长为 $3$ 的子串，这两个子串是互相独立的，可以分别计算最小修改次数。
+- 长为 $7$ 的子串可以拆分成长为 $3$ 和 $4$ 的子串，两个子串分别计算最小修改次数。
+- 长为 $8$ 的子串可以拆分成长为 $3$ 和 $5$，或者 $4$ 和 $4$ 的子串，两个子串分别计算最小修改次数。
+- ……
+
+所以本题的「基本元素」只有长为 $3,4,5$ 的子串，换句话说，问题相当于：
+
+- 把 $s$ **划分**成若干长为 $3,4,5$ 的子串，把每个子串中的字母都变成相同的，求最小操作次数。
+
+这可以用**划分型 DP** 解决。
+
+定义 $f[i]$ 表示后缀 $s[i]$ 到 $s[n-1]$ 的最小操作次数。
+
+枚举第一个子串的长度 $3,4,5$：
+
+- 长为 $3$ 的子串，设其中字母分别为 $a,b,c$，不妨设 $a\le b\le c$，根据 [中位数贪心及其证明](https://leetcode.cn/problems/5TxKeK/solution/zhuan-huan-zhong-wei-shu-tan-xin-dui-din-7r9b/)，把所有数变成中位数 $b$ 是最优的，最小操作次数为 $(c-b)+(b-a)=c-a$。
+- 长为 $4$ 的子串，设其中字母分别为 $a,b,c,d$，不妨设 $a\le b\le c\le d$，同理可得最小操作次数为 $c+d-a-b$，都变成 $b$。注意变成 $b$ 到 $c$ 中的字母操作次数都是最小的，由于本题要求答案字典序最小，所以变成 $b$。
+- 长为 $5$ 的子串，设其中字母分别为 $a,b,c,d,e$，不妨设 $a\le b\le c\le d\le e$，同理可得最小操作次数为 $d+e-a-b$，都变成 $c$。
+
+那么有
+
+$$
+f[i] = \min(f[i+3] + \textit{cost}_3, f[i+4] + \textit{cost}_4, f[i+5] + \textit{cost}_5)
+$$
+
+其中 $\textit{cost}_j$ 对应上面长为 $j$ 的子串的最小操作次数。
+
+初始值 $f[n] = 0,\ f[n-1] = f[n-2] = \infty$。
+
+```py
+# 只计算最小操作次数的代码
+class Solution:
+    def minCostGoodCaption(self, s: str) -> int:
+        n = len(s)
+        if n < 3:
+            return -1
+
+        s = list(map(ord, s))
+        f = [0] * (n + 1)
+        f[n - 1] = f[n - 2] = inf
+        for i in range(n - 3, -1, -1):
+            a, _, c = sorted(s[i: i + 3])
+            f[i] = f[i + 3] + c - a
+            if i + 4 <= n:
+                a, b, c, d = sorted(s[i: i + 4])
+                f[i] = min(f[i], f[i + 4] + c + d - a - b)
+            if i + 5 <= n:
+                a, b, _, d, e = sorted(s[i: i + 5])
+                f[i] = min(f[i], f[i + 5] + d + e - a - b)
+        return f[0]
+```
+
+为了输出具体方案，需要额外比较字典序的大小。
+
+为此，$f[i]$ 保存两个值，一个是最小操作次数，另一个是 $s[i]$ 要变成的字母。
+
+仍然枚举第一个子串的长度 $3,4,5$：
+
+- 长为 $3$ 的子串（设字母分别为 $a,b,c$，已排序），算上 $s[i+3]$ 要变成的字母 $t_3$，那么前 $6$ 个字母分别为 $b,b,b,t_3,t_3,t_3$。
+- 长为 $4$ 的子串（设字母分别为 $a,b,c,d$，已排序），算上 $s[i+4]$ 要变成的字母 $t_4$，那么前 $6$ 个字母分别为 $b,b,b,b,t_4,t_4$。
+- 长为 $5$ 的子串（设字母分别为 $a,b,c,d,e$，已排序），算上 $s[i+5]$ 要变成的字母 $t_5$，那么前 $6$ 个字母分别为 $c,c,c,c,c,t_5$。
+
+取前 $6$ 个字母的最小字典序，即为最终的转移来源。
+
+> 为什么不考虑第 $7$ 个字母？这是因为，如果前 $6$ 个字母都一样，那么 $f[i]$ 的最优决策就等同于 $f[i+3]$ 的最优决策。对于 $f[i]$ 而言，第 $7$ 个字母的最优值，就是 $f[i+3]$ 的第 $4$ 个字母的最优值，这已经在 $f[i+3]$ 中计算好了。
+
+由于前 $3$ 个字母都是一样的，我们可以只比较第 $3$ 个到第 $6$ 个字母的字典序。 
+
+```py [sol-Python3]
+class Solution:
+    def minCostGoodCaption(self, s: str) -> str:
+        n = len(s)
+        if n < 3:
+            return ""
+
+        s = list(map(ord, s))
+        f = [0] * (n + 1)
+        f[n - 1] = f[n - 2] = inf
+        t = [0] * (n + 1)
+        size = [3] * n
+
+        for i in range(n - 3, -1, -1):
+            a, b, c = sorted(s[i: i + 3])
+            s3 = t[i + 3]
+            res = (f[i + 3] + c - a, b, s3, s3, s3)
+
+            if i + 4 <= n:
+                a, b, c, d = sorted(s[i: i + 4])
+                s4 = t[i + 4]
+                tp = (f[i + 4] + c + d - a - b, b, b, s4, s4)
+                if tp < res:
+                    res = tp
+                    size[i] = 4
+
+            if i + 5 <= n:
+                a, b, c, d, e = sorted(s[i: i + 5])
+                tp = (f[i + 5] + d + e - a - b, c, c, c, t[i + 5])
+                if tp < res:
+                    res = tp
+                    size[i] = 5
+
+            f[i] = res[0]
+            t[i] = res[1]
+
+        ans = []
+        i = 0
+        while i < n:
+            ans.append(chr(t[i]) * size[i])
+            i += size[i]
+        return ''.join(ans)
+```
+
+```java [sol-Java]
+class Solution {
+    public String minCostGoodCaption(String s) {
+        int n = s.length();
+        if (n < 3) {
+            return "";
+        }
+
+        int[] f = new int[n + 1];
+        f[n - 1] = f[n - 2] = Integer.MAX_VALUE / 2;
+        char[] t = new char[n + 1];
+        byte[] size = new byte[n];
+
+        for (int i = n - 3; i >= 0; i--) {
+            char[] sub = s.substring(i, i + 3).toCharArray();
+            Arrays.sort(sub);
+            char a = sub[0], b = sub[1], c = sub[2];
+            char s3 = t[i + 3];
+            int[] res = {f[i + 3] + (c - a), b, s3, s3, s3};
+            size[i] = 3;
+
+            if (i + 4 <= n) {
+                char[] sub4 = s.substring(i, i + 4).toCharArray();
+                Arrays.sort(sub4);
+                char a4 = sub4[0], b4 = sub4[1], c4 = sub4[2], d4 = sub4[3];
+                char s4 = t[i + 4];
+                int[] tp = {f[i + 4] + (c4 - a4 + d4 - b4), b4, b4, s4, s4};
+                if (less(tp, res)) {
+                    res = tp;
+                    size[i] = 4;
+                }
+            }
+
+            if (i + 5 <= n) {
+                char[] sub5 = s.substring(i, i + 5).toCharArray();
+                Arrays.sort(sub5);
+                char a5 = sub5[0], b5 = sub5[1], c5 = sub5[2], d5 = sub5[3], e5 = sub5[4];
+                int[] tp = {f[i + 5] + (d5 - a5 + e5 - b5), c5, c5, c5, t[i + 5]};
+                if (less(tp, res)) {
+                    res = tp;
+                    size[i] = 5;
+                }
+            }
+
+            f[i] = res[0];
+            t[i] = (char) res[1];
+        }
+
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
+        for (int i = 0; i < n; i += size[i]) {
+            for (int j = 0; j < size[i]; j++) {
+                ans.append(t[i]);
+            }
+        }
+        return ans.toString();
+    }
+
+    private boolean less(int[] a, int[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != b[i]) {
+                return a[i] < b[i];
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string minCostGoodCaption(string s) {
+        int n = s.size();
+        if (n < 3) {
+            return "";
+        }
+
+        vector<int> f(n + 1);
+        f[n - 1] = f[n - 2] = INT_MAX / 2;
+        vector<char> t(n + 1);
+        vector<uint8_t> size(n);
+
+        for (int i = n - 3; i >= 0; i--) {
+            string sub = s.substr(i, 3);
+            ranges::sort(sub);
+            char a = sub[0], b = sub[1], c = sub[2];
+            char s3 = t[i + 3];
+            array<int, 5> res = {f[i + 3] + (c - a), b, s3, s3, s3};
+            size[i] = 3;
+
+            if (i + 4 <= n) {
+                string sub = s.substr(i, 4);
+                ranges::sort(sub);
+                char a = sub[0], b = sub[1], c = sub[2], d = sub[3];
+                char s4 = t[i + 4];
+                array<int, 5> tp = {f[i + 4] + (c - a + d - b), b, b, s4, s4};
+                if (tp < res) {
+                    res = tp;
+                    size[i] = 4;
+                }
+            }
+
+            if (i + 5 <= n) {
+                string sub = s.substr(i, 5);
+                ranges::sort(sub);
+                char a = sub[0], b = sub[1], c = sub[2], d = sub[3], e = sub[4];
+                array<int, 5> tp = {f[i + 5] + (d - a + e - b), c, c, c, t[i + 5]};
+                if (tp < res) {
+                    res = tp;
+                    size[i] = 5;
+                }
+            }
+
+            f[i] = res[0];
+            t[i] = res[1];
+        }
+
+        string ans;
+        for (int i = 0; i < n; i += size[i]) {
+            ans.append(size[i], t[i]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minCostGoodCaption(s string) string {
+	n := len(s)
+	if n < 3 {
+		return ""
+	}
+
+	f := make([]int, n+1)
+	f[n-1], f[n-2] = math.MaxInt/2, math.MaxInt/2
+	t := make([]byte, n+1)
+	size := make([]uint8, n)
+
+	for i := n - 3; i >= 0; i-- {
+		sub := []byte(s[i : i+3])
+		slices.Sort(sub)
+		a, b, c := sub[0], sub[1], sub[2]
+		s3 := int(t[i+3])
+		res := []int{f[i+3] + int(c-a), int(b), s3, s3, s3}
+		size[i] = 3
+
+		if i+4 <= n {
+			sub := []byte(s[i : i+4])
+			slices.Sort(sub)
+			a, b, c, d := sub[0], sub[1], sub[2], sub[3]
+			s4 := int(t[i+4])
+			tp := []int{f[i+4] + int(c-a+d-b), int(b), int(b), s4, s4}
+			if slices.Compare(tp, res) < 0 {
+				res = tp
+				size[i] = 4
+			}
+		}
+
+		if i+5 <= n {
+			sub := []byte(s[i : i+5])
+			slices.Sort(sub)
+			a, b, c, d, e := sub[0], sub[1], sub[2], sub[3], sub[4]
+			tp := []int{f[i+5] + int(d-a+e-b), int(c), int(c), int(c), int(t[i+5])}
+			if slices.Compare(tp, res) < 0 {
+				res = tp
+				size[i] = 5
+			}
+		}
+
+		f[i] = res[0]
+		t[i] = byte(res[1])
+	}
+
+	ans := make([]byte, 0, n)
+	for i := 0; i < n; i += int(size[i]) {
+		ans = append(ans, bytes.Repeat([]byte{t[i]}, int(size[i]))...)
+	}
+	return string(ans)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。这个算法也可以理解成是一个 $\mathcal{O}(nk^2)$ 或者 $\mathcal{O}(nk^2\log k)$ 的算法，其中 $k=3$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/) 中的「**五、状态机 DP**」「**§6.2 最优划分**」「**§7.5 多维 DP**」和「**专题：输出具体方案**」。
 
 ## 分类题单
 
