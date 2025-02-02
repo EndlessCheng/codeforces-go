@@ -15,6 +15,36 @@ func minimumIncrements(nums []int, target []int) int {
 		}
 	}
 
+	f := make([]int, 1<<m)
+	for j := 1; j < 1<<m; j++ {
+		f[j] = math.MaxInt / 2
+	}
+	for _, x := range nums {
+		for j := 1<<m - 1; j > 0; j-- {
+			for sub := j; sub > 0; sub = (sub - 1) & j {
+				l := lcms[sub]
+				f[j] = min(f[j], f[j^sub]+(l-x%l)%l)
+			}
+		}
+	}
+	return f[1<<m-1]
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+func lcm(a, b int) int { return a / gcd(a, b) * b }
+
+func minimumIncrements2(nums []int, target []int) int {
+	// 预处理 target 的所有子集的 LCM
+	m := len(target)
+	lcms := make([]int, 1<<m)
+	lcms[0] = 1
+	for i, t := range target {
+		bit := 1 << i
+		for mask, l := range lcms[:bit] {
+			lcms[bit|mask] = lcm(t, l)
+		}
+	}
+
 	n := len(nums)
 	f := make([][]int, n+1)
 	for i := range f {
@@ -37,10 +67,7 @@ func minimumIncrements(nums []int, target []int) int {
 	return f[n][1<<m-1]
 }
 
-func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
-func lcm(a, b int) int { return a / gcd(a, b) * b }
-
-func minimumIncrements2(nums []int, target []int) int {
+func minimumIncrements1(nums []int, target []int) int {
 	// 计算 target 的所有子集的 LCM
 	m := len(target)
 	lcms := make([]int, 1<<m)

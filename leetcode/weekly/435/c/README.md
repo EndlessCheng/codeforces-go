@@ -1,4 +1,4 @@
-## 寻找子问题
+## 一、寻找子问题
 
 原问题：
 
@@ -9,7 +9,7 @@
 - 不修改，那么问题变成把 $\textit{nums}[0]$ 到 $\textit{nums}[n-1]$ 中的某些数变成 $\textit{target}$ 中各个元素的倍数。
 - 修改，考虑从 $\textit{target}$ 中选出一个非空子集 $\textit{sub}$，把 $x$ 变成 $\textit{sub}$ 中的所有数的倍数，也就是 $\textit{sub}$ 的 LCM（最小公倍数）的倍数。问题变成把 $\textit{nums}[0]$ 到 $\textit{nums}[n-1]$ 中的某些数变成剩余集合 $\textit{target}\setminus \textit{sub}$ 中各个元素的倍数。其中 $\setminus$ 符号表示集合的差。
 
-## 状态设计与状态转移方程
+## 二、状态设计与状态转移方程
 
 根据上面的讨论，我们需要在递归过程中跟踪以下信息：
 
@@ -44,7 +44,7 @@ $$
 
 **递归入口**：$\textit{dfs}(n-1,U)$，这是原问题，也是答案。其中全集 $U=\{0,1,2,\ldots,m-1\}$，其中 $m$ 是 $\textit{target}$ 的长度。
 
-## 细节
+**细节**：
 
 1. $4$ 个两两互质的数的 LCM 至多约为 $(10^4)^4 = 10^{16}$，这超过了 32 位整数最大值，要用 64 位整数。
 2. 用二进制表示集合，原理见 [从集合论到位运算，常见位运算技巧分类总结](https://leetcode.cn/circle/discuss/CaOJ45/)。
@@ -52,7 +52,7 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1D5F6eRECp/?t=14m29s)，欢迎点赞关注~
 
-## 记忆化搜索
+## 三、记忆化搜索
 
 ```py [sol-Python3]
 class Solution:
@@ -225,7 +225,11 @@ func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
 func lcm(a, b int) int { return a / gcd(a, b) * b }
 ```
 
-## 1:1 翻译成递推
+#### 复杂度分析
+
+同递推的复杂度分析。
+
+## 四、1:1 翻译成递推
 
 ```py [sol-Python3]
 class Solution:
@@ -327,7 +331,7 @@ public:
                 }
             }
         }
-        return f[n][(1 << m) - 1];
+        return f[n].back();
     }
 };
 ```
@@ -375,6 +379,137 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 
 - 时间复杂度：$\mathcal{O}(n3^m)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{target}$ 的长度。我们枚举了 $j$ 的所有子集，由于元素个数为 $k$ 的集合有 $\binom m k$ 个，其子集有 $2^k$ 个，根据二项式定理，$\sum\limits_{k=0}^m \binom m k 2^k = (2+1)^m = 3^m$，所以内层循环的时间复杂度为 $\mathcal{O}(3^m)$。预处理 LCM 的时间复杂度为 $\mathcal{O}(2^m\log U)$（$U=\max(\textit{target})$），与 DP 相比可以忽略。其中 $2^m$ 是因为预处理的循环次数之和为 $2^0+2^1+\cdots+2^{m-1} = 2^m-1$。
 - 空间复杂度：$\mathcal{O}(n2^m)$。
+
+## 五、空间优化
+
+观察上面的状态转移方程，在计算 $f[i+1]$ 时，只会用到 $f[i]$，不会用到比 $i$ 更早的状态。
+
+因此可以像 [0-1 背包](https://www.bilibili.com/video/BV16Y411v7Y6/) 那样，去掉第一个维度，把 $f[i+1]$ 和 $f[i]$ 保存到**同一个数组**中。
+
+```py [sol-Python3]
+class Solution:
+    def minimumIncrements(self, nums: List[int], target: List[int]) -> int:
+        m = len(target)
+        lcms = [1] * (1 << m)
+        for i, t in enumerate(target):
+            bit = 1 << i
+            for mask in range(bit):
+                lcms[bit | mask] = lcm(t, lcms[mask])
+
+        n = len(nums)
+        f = [inf] * (1 << m)
+        f[0] = 0
+        for x in nums:
+            for j in range((1 << m) - 1, 0, -1):
+                sub = j
+                while sub:
+                    l = lcms[sub]
+                    f[j] = min(f[j], f[j ^ sub] + (l - x % l) % l)
+                    sub = (sub - 1) & j
+        return f[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumIncrements(int[] nums, int[] target) {
+        int m = target.length;
+        long[] lcms = new long[1 << m];
+        lcms[0] = 1;
+        for (int i = 0; i < m; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                lcms[bit | mask] = lcm(target[i], lcms[mask]);
+            }
+        }
+
+        long[] f = new long[1 << m];
+        Arrays.fill(f, Long.MAX_VALUE / 2);
+        f[0] = 0;
+        for (int x : nums) {
+            for (int j = (1 << m) - 1; j > 0; j--) {
+                for (int sub = j; sub > 0; sub = (sub - 1) & j) {
+                    long l = lcms[sub];
+                    f[j] = Math.min(f[j], f[j ^ sub] + (l - x % l) % l);
+                }
+            }
+        }
+        return (int) f[(1 << m) - 1];
+    }
+
+    private long lcm(long a, long b) {
+        return a / gcd(a, b) * b;
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumIncrements(vector<int>& nums, vector<int>& target) {
+        int m = target.size();
+        vector<long long> lcms(1 << m);
+        lcms[0] = 1;
+        for (int i = 0; i < m; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                lcms[bit | mask] = lcm(target[i], lcms[mask]);
+            }
+        }
+
+        vector<long long> f(1 << m, LLONG_MAX / 2);
+        f[0] = 0;
+        for (int x : nums) {
+            for (int j = (1 << m) - 1; j; j--) {
+                for (int sub = j; sub; sub = (sub - 1) & j) {
+                    long l = lcms[sub];
+                    f[j] = min(f[j], f[j ^ sub] + (l - x % l) % l);
+                }
+            }
+        }
+        return f.back();
+    }
+};
+```
+
+```go [sol-Go]
+func minimumIncrements(nums []int, target []int) int {
+	m := len(target)
+	lcms := make([]int, 1<<m)
+	lcms[0] = 1
+	for i, t := range target {
+		bit := 1 << i
+		for mask, l := range lcms[:bit] {
+			lcms[bit|mask] = lcm(t, l)
+		}
+	}
+
+	f := make([]int, 1<<m)
+	for j := 1; j < 1<<m; j++ {
+		f[j] = math.MaxInt / 2
+	}
+	for _, x := range nums {
+		for j := 1<<m - 1; j > 0; j-- {
+			for sub := j; sub > 0; sub = (sub - 1) & j {
+				l := lcms[sub]
+				f[j] = min(f[j], f[j^sub]+(l-x%l)%l)
+			}
+		}
+	}
+	return f[1<<m-1]
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+func lcm(a, b int) int { return a / gcd(a, b) * b }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n3^m)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{target}$ 的长度。
+- 空间复杂度：$\mathcal{O}(2^m)$。
 
 更多相似题目，见下面动态规划题单中的 §9.4 节。
 
