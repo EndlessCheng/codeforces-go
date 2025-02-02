@@ -1,3 +1,5 @@
+## 方法一
+
 对于曼哈顿距离，由于水平方向的移动和垂直方向的移动互不影响，我们可以把横纵坐标分别计算。
 
 设当前向西走了 $a$ 步，向东走了 $b$ 步。比如 $a=2,\ b=5$。
@@ -109,6 +111,88 @@ func maxDistance(s string, k int) (ans int) {
 		ans = max(ans, f(cnt['N'], cnt['S'])+f(cnt['E'], cnt['W']))
 	}
 	return
+}
+
+func abs(x int) int { if x < 0 { return -x }; return x }
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$ 或 $\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|$ 是字符集合的大小。
+- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+
+## 方法二
+
+设当前位置为 $(x,y)$，那么到原点的曼哈顿距离为 $|x|+|y|$。
+
+通过方法一可知，每操作一次，曼哈顿距离都会增大 $2$，但这不会超过移动的次数 $i+1$。
+
+所以执行完 $s[i]$ 后的答案为
+
+$$
+\min(|x|+|y|+2k,i+1)
+$$
+
+```py [sol-Python3]
+class Solution:
+    def maxDistance(self, s: str, k: int) -> int:
+        ans = x = y = 0
+        for i, c in enumerate(s):
+            if c == 'N': y += 1
+            elif c == 'S': y -= 1
+            elif c == 'E': x += 1
+            else: x -= 1
+            ans = max(ans, min(abs(x) + abs(y) + k * 2, i + 1))
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistance(String s, int k) {
+        int ans = 0, x = 0, y = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == 'N') { y++; }
+            else if (c == 'S') { y--; }
+            else if (c == 'E') { x++; }
+            else { x--; }
+            ans = Math.max(ans, Math.min(Math.abs(x) + Math.abs(y) + k * 2, i + 1));
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistance(string s, int k) {
+        int ans = 0, x = 0, y = 0;
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == 'N') y++;
+            else if (s[i] == 'S') y--;
+            else if (s[i] == 'E') x++;
+            else x--;
+            ans = max(ans, min(abs(x) + abs(y) + k * 2, i + 1));
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func maxDistance(s string, k int) int {
+	ans, x, y := 0, 0, 0
+	for i, c := range s {
+		switch c {
+		case 'N': y++
+		case 'S': y--
+		case 'E': x++
+		default:  x--
+		}
+		ans = max(ans, min(abs(x)+abs(y)+k*2, i+1))
+	}
+	return ans
 }
 
 func abs(x int) int { if x < 0 { return -x }; return x }
