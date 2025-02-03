@@ -521,7 +521,7 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 
 **剪枝**：如果 $\text{LCM}(\textit{sub})$ 比 $m\cdot \max(\textit{nums})$ 还要大，并且也比 $\max(\textit{target})$ 大，那么这样的子集无需计算候选项，因为拆开算操作次数更优。
 
-剪枝后，这个算法在随机数据下跑得更快（力扣出题喜欢出随机数据）。在随机数据下，有 $99\%$ 的概率，任选两个数的 LCM 符合上面的剪枝条件，所以期望只会遍历 $\mathcal{O}(m)$ 次 $\textit{nums}$。
+> 剪枝后，这个算法在随机数据下跑得更快（力扣出题喜欢出随机数据）。在随机数据下，有 $99\%$ 的概率，任选两个数的 LCM 符合上面的剪枝条件，所以期望只会遍历 $\mathcal{O}(m)$ 次 $\textit{nums}$。
 
 ```py [sol-Python3]
 class Solution:
