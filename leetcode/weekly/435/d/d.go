@@ -6,14 +6,14 @@ import "math"
 func maxDifference(s string, k int) int {
 	const inf = math.MaxInt / 2
 	ans := -inf
-	for x := 0; x < 5; x++ {
-		for y := 0; y < 5; y++ {
+	for x := range 5 {
+		for y := range 5 {
 			if y == x {
 				continue
 			}
 			curS := [5]int{}
-			preS := [5][5][5]int{}
-			minS := [5][5][2][2]int{{inf, inf}, {inf, inf}}
+			preS := [5]int{}
+			minS := [2][2]int{{inf, inf}, {inf, inf}}
 			left := 0
 			for i, b := range s {
 				curS[b-'0']++
