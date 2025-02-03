@@ -166,8 +166,8 @@ public:
 func maxDifference(s string, k int) int {
 	const inf = math.MaxInt / 2
 	ans := -inf
-	for x := 0; x < 5; x++ {
-		for y := 0; y < 5; y++ {
+	for x := range 5 {
+		for y := range 5 {
 			if y == x {
 				continue
 			}
