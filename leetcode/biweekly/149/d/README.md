@@ -543,6 +543,63 @@ class Solution {
 }
 ```
 
+```java [sol-Java21]
+class Solution {
+    public String minCostGoodCaption(String s) {
+        int n = s.length();
+        if (n < 3) {
+            return "";
+        }
+
+        int[] f = new int[n + 1];
+        f[n - 1] = f[n - 2] = Integer.MAX_VALUE / 2;
+        char[] t = new char[n + 1];
+        byte[] size = new byte[n];
+
+        for (int i = n - 3; i >= 0; i--) {
+            char[] sub = s.substring(i, i + 3).toCharArray();
+            Arrays.sort(sub);
+            char a = sub[0], b = sub[1], c = sub[2];
+            char s3 = t[i + 3];
+            int[] res = {f[i + 3] + (c - a), b, s3, s3, s3};
+            size[i] = 3;
+
+            if (i + 4 <= n) {
+                char[] sub4 = s.substring(i, i + 4).toCharArray();
+                Arrays.sort(sub4);
+                char a4 = sub4[0], b4 = sub4[1], c4 = sub4[2], d4 = sub4[3];
+                char s4 = t[i + 4];
+                int[] tp = {f[i + 4] + (c4 - a4 + d4 - b4), b4, b4, s4, s4};
+                if (Arrays.compare(tp, res) < 0) {
+                    res = tp;
+                    size[i] = 4;
+                }
+            }
+
+            if (i + 5 <= n) {
+                char[] sub5 = s.substring(i, i + 5).toCharArray();
+                Arrays.sort(sub5);
+                char a5 = sub5[0], b5 = sub5[1], c5 = sub5[2], d5 = sub5[3], e5 = sub5[4];
+                int[] tp = {f[i + 5] + (d5 - a5 + e5 - b5), c5, c5, c5, t[i + 5]};
+                if (Arrays.compare(tp, res) < 0) {
+                    res = tp;
+                    size[i] = 5;
+                }
+            }
+
+            f[i] = res[0];
+            t[i] = (char) res[1];
+        }
+
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
+        for (int i = 0; i < n; i += size[i]) {
+            ans.repeat(t[i], size[i]);
+        }
+        return ans.toString();
+    }
+}
+```
+
 ```cpp [sol-C++]
 class Solution {
 public:
