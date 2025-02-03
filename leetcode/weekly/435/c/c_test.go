@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/EndlessCheng/codeforces-go/leetcode/testutil"
+	testutil2 "github.com/EndlessCheng/codeforces-go/main/testutil"
 	"testing"
 )
 
@@ -13,3 +14,20 @@ func Test_c(t *testing.T) {
 }
 // https://leetcode.cn/contest/weekly-contest-435/problems/minimum-increments-for-target-multiples-in-an-array/
 // https://leetcode.cn/problems/minimum-increments-for-target-multiples-in-an-array/
+
+func TestCompareInf(_t *testing.T) {
+	//return
+	testutil.DebugTLE = 0
+	rg := testutil2.NewRandGenerator()
+	inputGenerator := func() (a, t []int) {
+		//return
+		rg.Clear()
+		m := rg.IntOnly(1, 4)
+		t = rg.IntSlice(m, 1, 20)
+		n := rg.IntOnly(m, 20)
+		a = rg.IntSlice(n, 1, 20)
+		return
+	}
+
+	testutil.CompareInf(_t, inputGenerator, minimumIncrements3, minimumIncrements)
+}

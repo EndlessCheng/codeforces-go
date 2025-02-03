@@ -511,7 +511,239 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 - 时间复杂度：$\mathcal{O}(n3^m)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{target}$ 的长度。
 - 空间复杂度：$\mathcal{O}(2^m)$。
 
-更多相似题目，见下面动态规划题单中的 §9.4 节。
+## 六、时间优化
+
+对于每个非空子集的 $l=\text{LCM}(\textit{sub})$，计算前 $m$ 小的操作次数 $\text{op}(x,l)$（其中 $x$ 是 $\textit{nums}$ 中的数）。要修改的数一定在这 $m$ 个 $x$ 中。如果最小的被其他非空子集使用了，那么我们可以选次小的；如果次小也被其他非空子集使用了，那么选第三小的；如果第三小的也被其他非空子集使用了，那么选第四小的。由于 $\textit{target}$ 只有 $m\le 4$ 个数，所以只需要计算前 $m$ 小的操作次数。这可以用**最大堆**实现。
+
+把这些 $x$ 在 $\textit{nums}$ 中的下标记录到一个哈希表 $\textit{candidateIndices}$ 中。注意这一共只有 $\mathcal{O}(m2^m)$ 个候选项，远远小于 $\textit{nums}$ 的长度。
+
+在 $\textit{candidateIndices}$ 上跑状压 DP，只需要 $\mathcal{O}(m2^m\cdot 3^m)=\mathcal{O}(m6^m)$ 的时间。
+
+**剪枝**：如果 $\text{LCM}(\textit{sub})$ 比 $2\cdot \max(\textit{nums})$ 还要大，并且也比 $\max(\textit{target})$ 大，那么这样的子集无需计算候选项，因为拆开算操作次数更优。
+
+剪枝后，这个算法在随机数据下跑得更快（力扣出题喜欢出随机数据）。在随机数据下，有超过 $99\%$ 的概率，两个数的 LCM 符合上面的剪枝条件，所以期望只会遍历 $\mathcal{O}(m)$ 次 $\textit{nums}$。
+
+```py [sol-Python3]
+class Solution:
+    def minimumIncrements(self, nums: List[int], target: List[int]) -> int:
+        m = len(target)
+        lcms = [1] * (1 << m)
+        for i, t in enumerate(target):
+            bit = 1 << i
+            for mask in range(bit):
+                lcms[bit | mask] = lcm(t, lcms[mask])
+
+        max_lcm = max(max(nums) * 2, max(target))
+        candidate_indices = set()
+        for l in set(lcms[1:]):
+            if l > max_lcm:
+                continue
+            lst = nsmallest(m, (((l - x % l) % l, i) for i, x in enumerate(nums)))
+            for _, i in lst:
+                candidate_indices.add(i)
+
+        f = [inf] * (1 << m)
+        f[0] = 0
+        for i in candidate_indices:
+            x = nums[i]
+            for j in range((1 << m) - 1, 0, -1):
+                sub = j
+                while sub:
+                    l = lcms[sub]
+                    f[j] = min(f[j], f[j ^ sub] + (l - x % l) % l)
+                    sub = (sub - 1) & j
+        return f[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumIncrements(int[] nums, int[] target) {
+        int m = target.length;
+        int u = 1 << m;
+        long[] lcms = new long[u];
+        lcms[0] = 1;
+        for (int i = 0; i < m; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                lcms[bit | mask] = lcm(target[i], lcms[mask]);
+            }
+        }
+
+        int maxLcm = 0;
+        for (int x : nums) {
+            maxLcm = Math.max(maxLcm, x);
+        }
+        maxLcm *= 2;
+        for (int x : target) {
+            maxLcm = Math.max(maxLcm, x);
+        }
+
+        Set<Integer> candidateIndices = new HashSet<>();
+        for (int i = 1; i < u; i++) {
+            if (lcms[i] > maxLcm) {
+                continue;
+            }
+            int l = (int) lcms[i];
+            PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+            for (int j = 0; j < nums.length; j++) {
+                pq.offer(new int[]{(l - nums[j] % l) % l, j});
+                if (pq.size() > m) {
+                    pq.poll();
+                }
+            }
+            while (!pq.isEmpty()) {
+                candidateIndices.add(pq.poll()[1]);
+            }
+        }
+
+        long[] f = new long[u];
+        Arrays.fill(f, Long.MAX_VALUE / 2);
+        f[0] = 0;
+        for (int i : candidateIndices) {
+            int x = nums[i];
+            for (int j = u - 1; j > 0; j--) {
+                for (int sub = j; sub > 0; sub = (sub - 1) & j) {
+                    long l = lcms[sub];
+                    f[j] = Math.min(f[j], f[j ^ sub] + (l - x % l) % l);
+                }
+            }
+        }
+        return (int) f[u - 1];
+    }
+
+    private long lcm(long a, long b) {
+        return a / gcd(a, b) * b;
+    }
+
+    private long gcd(long a, long b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumIncrements(vector<int>& nums, vector<int>& target) {
+        int m = target.size();
+        int u = 1 << m;
+        vector<long long> lcms(u);
+        lcms[0] = 1;
+        for (int i = 0; i < m; i++) {
+            int bit = 1 << i;
+            for (int mask = 0; mask < bit; mask++) {
+                lcms[bit | mask] = lcm(target[i], lcms[mask]);
+            }
+        }
+
+        int max_lcm = max(ranges::max(nums) * 2, ranges::max(target));
+        unordered_set<int> candidate_indices;
+        for (int i = 1; i < u; i++) {
+            if (lcms[i] > max_lcm) {
+                continue;
+            }
+            int l = lcms[i];
+            priority_queue<pair<int, int>> pq;
+            for (int j = 0; j < nums.size(); j++) {
+                pq.emplace((l - nums[j] % l) % l, j);
+                if (pq.size() > m) {
+                    pq.pop();
+                }
+            }
+            while (!pq.empty()) {
+                candidate_indices.insert(pq.top().second);
+                pq.pop();
+            }
+        }
+
+        vector<long long> f(u, LLONG_MAX / 2);
+        f[0] = 0;
+        for (int i : candidate_indices) {
+            int x = nums[i];
+            for (int j = u - 1; j; j--) {
+                for (int sub = j; sub; sub = (sub - 1) & j) {
+                    long l = lcms[sub];
+                    f[j] = min(f[j], f[j ^ sub] + (l - x % l) % l);
+                }
+            }
+        }
+        return f.back();
+    }
+};
+```
+
+```go [sol-Go]
+func minimumIncrements(nums []int, target []int) int {
+	m := len(target)
+	lcms := make([]int, 1<<m)
+	lcms[0] = 1
+	for i, t := range target {
+		bit := 1 << i
+		for mask, l := range lcms[:bit] {
+			lcms[bit|mask] = lcm(t, l)
+		}
+	}
+
+	maxLcm := max(slices.Max(nums)*2, slices.Max(target))
+	candidateIndices := map[int]struct{}{}
+	for _, l := range lcms[1:] {
+		if l > maxLcm {
+			continue
+		}
+		h := hp{}
+		for i, x := range nums {
+			p := pair{(l - x%l) % l, i}
+			if len(h) < m {
+				heap.Push(&h, p)
+			} else {
+				h.update(p)
+			}
+		}
+		for _, p := range h {
+			candidateIndices[p.i] = struct{}{}
+		}
+	}
+
+	f := make([]int, 1<<m)
+	for j := 1; j < 1<<m; j++ {
+		f[j] = math.MaxInt / 2
+	}
+	for i := range candidateIndices {
+		x := nums[i]
+		for j := 1<<m - 1; j > 0; j-- {
+			for sub := j; sub > 0; sub = (sub - 1) & j {
+				l := lcms[sub]
+				f[j] = min(f[j], f[j^sub]+(l-x%l)%l)
+			}
+		}
+	}
+	return f[1<<m-1]
+}
+
+func gcd(a, b int) int { for a != 0 { a, b = b%a, a }; return b }
+func lcm(a, b int) int { return a / gcd(a, b) * b }
+
+type pair struct{ op, i int }
+type hp []pair
+func (h hp) Len() int           { return len(h) }
+func (h hp) Less(i, j int) bool { return h[i].op > h[j].op }
+func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
+func (hp) Pop() (_ any)         { return }
+func (h *hp) update(p pair) {
+	if p.op < (*h)[0].op {
+		(*h)[0] = p
+		heap.Fix(h, 0)
+	}
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n2^m\log m + m6^m)$，其中 $n$ 是 $\textit{nums}$ 的长度，$m$ 是 $\textit{target}$ 的长度。计算候选项 $\textit{candidateIndices}$ 的过程跑了 $\mathcal{O}(2^m)$ 次 $\mathcal{O}(n\log m)$ 的计算前 $m$ 小的算法，得到了 $\mathcal{O}(m2^m)$ 个候选项，所以计算 DP 的过程只需要 $\mathcal{O}(m2^m\cdot 3^m)=\mathcal{O}(m6^m)$ 的时间。注：如果使用快速选择算法代替最大堆，可以做到 $\mathcal{O}(n2^m + m6^m)$ 的时间复杂度。
+- 空间复杂度：$\mathcal{O}(m2^m)$。
+
+更多相似题目，见下面动态规划题单中的「§9.4 子集状压 DP」。
 
 ## 分类题单
 
