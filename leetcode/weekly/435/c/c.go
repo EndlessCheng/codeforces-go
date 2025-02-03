@@ -18,7 +18,7 @@ func minimumIncrements(nums []int, target []int) int {
 		}
 	}
 
-	maxLcm := max(slices.Max(nums)*2, slices.Max(target))
+	maxLcm := max(slices.Max(nums)*m, slices.Max(target))
 	candidateIndices := map[int]struct{}{}
 	for _, l := range lcms[1:] {
 		if l > maxLcm {

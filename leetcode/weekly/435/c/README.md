@@ -519,9 +519,9 @@ func lcm(a, b int) int { return a / gcd(a, b) * b }
 
 在 $\textit{candidateIndices}$ 上跑状压 DP，只需要 $\mathcal{O}(m2^m\cdot 3^m)=\mathcal{O}(m6^m)$ 的时间。
 
-**剪枝**：如果 $\text{LCM}(\textit{sub})$ 比 $2\cdot \max(\textit{nums})$ 还要大，并且也比 $\max(\textit{target})$ 大，那么这样的子集无需计算候选项，因为拆开算操作次数更优。
+**剪枝**：如果 $\text{LCM}(\textit{sub})$ 比 $m\cdot \max(\textit{nums})$ 还要大，并且也比 $\max(\textit{target})$ 大，那么这样的子集无需计算候选项，因为拆开算操作次数更优。
 
-剪枝后，这个算法在随机数据下跑得更快（力扣出题喜欢出随机数据）。在随机数据下，有超过 $99\%$ 的概率，两个数的 LCM 符合上面的剪枝条件，所以期望只会遍历 $\mathcal{O}(m)$ 次 $\textit{nums}$。
+剪枝后，这个算法在随机数据下跑得更快（力扣出题喜欢出随机数据）。在随机数据下，有 $99\%$ 的概率，任选两个数的 LCM 符合上面的剪枝条件，所以期望只会遍历 $\mathcal{O}(m)$ 次 $\textit{nums}$。
 
 ```py [sol-Python3]
 class Solution:
@@ -533,7 +533,7 @@ class Solution:
             for mask in range(bit):
                 lcms[bit | mask] = lcm(t, lcms[mask])
 
-        max_lcm = max(max(nums) * 2, max(target))
+        max_lcm = max(max(nums) * m, max(target))
         candidate_indices = set()
         for l in set(lcms[1:]):
             if l > max_lcm:
@@ -573,7 +573,7 @@ class Solution {
         for (int x : nums) {
             maxLcm = Math.max(maxLcm, x);
         }
-        maxLcm *= 2;
+        maxLcm *= m;
         for (int x : target) {
             maxLcm = Math.max(maxLcm, x);
         }
@@ -636,7 +636,7 @@ public:
             }
         }
 
-        int max_lcm = max(ranges::max(nums) * 2, ranges::max(target));
+        int max_lcm = max(ranges::max(nums) * m, ranges::max(target));
         unordered_set<int> candidate_indices;
         for (int i = 1; i < u; i++) {
             if (lcms[i] > max_lcm) {
@@ -684,7 +684,7 @@ func minimumIncrements(nums []int, target []int) int {
 		}
 	}
 
-	maxLcm := max(slices.Max(nums)*2, slices.Max(target))
+	maxLcm := max(slices.Max(nums)*m, slices.Max(target))
 	candidateIndices := map[int]struct{}{}
 	for _, l := range lcms[1:] {
 		if l > maxLcm {
