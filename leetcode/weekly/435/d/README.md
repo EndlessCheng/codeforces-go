@@ -40,6 +40,8 @@ $$
 - $\textit{sum}[r][x]$ 的奇偶性必须与 $\textit{sum}[l][x]$ **不同**。
 - $\textit{sum}[r][y]$ 的奇偶性必须与 $\textit{sum}[l][y]$ **相同**。
 
+$x$ 个数的奇偶和 $y$ 个数的奇偶两两组合，有 $4$ 种情况，我们需要维护 $4$ 种最小前缀和。
+
 定义 $\textit{minS}[p][q]$ 表示最小的 $\textit{sum}[l][x] - \textit{sum}[l][y]$，其中
 
 - $p=0$ 表示偶数，$p=1$ 表示奇数，$q$ 同理。
@@ -83,8 +85,8 @@ class Solution:
                 pre_s = [0] * 5
                 min_s = [[inf, inf], [inf, inf]]
                 left = 0
-                for i, b in enumerate(s):
-                    cur_s[b] += 1
+                for i, v in enumerate(s):
+                    cur_s[v] += 1
                     r = i + 1
                     while r - left >= k and cur_s[x] > pre_s[x] and cur_s[y] > pre_s[y]:
                         p, q = pre_s[x] & 1, pre_s[y] & 1
