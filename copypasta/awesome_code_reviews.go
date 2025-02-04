@@ -1,6 +1,7 @@
 package copypasta
 
 /* 有思路但是不好实现
+https://codeforces.com/problemset/problem/1974/D 1400
 https://codeforces.com/problemset/problem/1781/C 1600
 https://codeforces.com/problemset/problem/1861/C 1600
 
