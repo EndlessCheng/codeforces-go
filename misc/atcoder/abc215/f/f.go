@@ -17,7 +17,7 @@ func run(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i].x, &a[i].y)
 	}
 	sort.Slice(a, func(i, j int) bool { return a[i].x < a[j].x })
-	ans := sort.Search(1e9, func(low int) bool {
+	ans := sort.Search(a[n-1].x-a[0].x, func(low int) bool {
 		low++
 		mn, mx := int(1e9), 0
 		l := 0
