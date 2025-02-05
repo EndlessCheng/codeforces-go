@@ -19,8 +19,8 @@ func run(in io.Reader, out io.Writer) {
 		Fscan(in, &v, &w, &wt)
 		g[v-1] = append(g[v-1], nb{w - 1, wt})
 	}
+	dis := make([]int, n)
 	for st := range g {
-		dis := make([]int, n)
 		for i := range dis {
 			dis[i] = 1e18
 		}
