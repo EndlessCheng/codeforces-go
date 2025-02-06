@@ -4,7 +4,6 @@ import (
 	"bufio"
 	. "fmt"
 	"io"
-	"math/bits"
 	"os"
 )
 
@@ -17,7 +16,7 @@ func run(in io.Reader, out io.Writer) {
 		Fscan(in, &a[i].v, &a[i].w)
 	}
 	k++
-	for i := bits.Len(uint(k)) - 1; i >= 0; i-- {
+	for i := 30; i >= 0; i-- {
 		if k>>i&1 > 0 {
 			ban ^= 1 << i
 			s := 0
