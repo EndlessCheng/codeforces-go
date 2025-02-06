@@ -8,7 +8,7 @@
 
 这可以用**定长滑动窗口**解决，原理见[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1eUF6eaERQ/?t=2m38s)，欢迎点赞关注~
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1eUF6eaERQ/?t=38s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
