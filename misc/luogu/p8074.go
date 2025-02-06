@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"os"
 	"slices"
 )
 
@@ -61,4 +59,4 @@ func p8074(in io.Reader, out io.Writer) {
 	Fprint(out, ans)
 }
 
-func main() { p8074(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { p8074(bufio.NewReader(os.Stdin), os.Stdout) }
