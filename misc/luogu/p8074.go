@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"slices"
-	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -35,7 +34,7 @@ func p8074(in io.Reader, out io.Writer) {
 		es = append(es, edge{b[i-1].i, b[i].i, b[i].v - b[i-1].v})
 		es = append(es, edge{c[i-1].i, c[i].i, c[i].v - c[i-1].v})
 	}
-	sort.Slice(es, func(i, j int) bool { return es[i].wt < es[j].wt })
+	slices.SortFunc(es, func(a, b edge) int { return a.wt - b.wt })
 
 	fa := make([]int, n)
 	for i := range fa {
