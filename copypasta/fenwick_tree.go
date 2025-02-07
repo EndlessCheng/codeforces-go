@@ -53,6 +53,7 @@ LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-
 
 https://codeforces.com/problemset/problem/1915/F 1500
 https://codeforces.com/problemset/problem/1234/D 1600
+https://atcoder.jp/contests/abc157/tasks/abc157_e 1443~CF1600
 https://codeforces.com/problemset/problem/627/B 1700 模板题
 https://codeforces.com/problemset/problem/652/D 1800 区间包含计数
 https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
@@ -512,22 +513,23 @@ func _(n int) {
 	// LCR 170. 交易逆序对的总数 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 	// 扩展 https://codeforces.com/problemset/problem/362/C 1900
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
-	// todo 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
+	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
 	// https://codeforces.com/problemset/problem/1585/D 1900
 	// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
 	// - https://ac.nowcoder.com/acm/contest/308/D
 	// https://codeforces.com/problemset/problem/749/E 期望 贡献
-	// todo https://codeforces.com/problemset/problem/911/D
-	//  https://codeforces.com/contest/987/problem/E
-	//  https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
-	//  https://atcoder.jp/contests/abc296/tasks/abc296_f
-	//  https://atcoder.jp/contests/arc136/tasks/arc136_b
-	//  https://www.codechef.com/problems/DYNAINV?tab=statement
-	//  https://ac.nowcoder.com/acm/problem/20861
+	// https://atcoder.jp/contests/arc075/tasks/arc075_c
+	// https://codeforces.com/problemset/problem/911/D
+	// https://codeforces.com/contest/987/problem/E
+	// https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
+	// https://atcoder.jp/contests/abc296/tasks/abc296_f
+	// https://atcoder.jp/contests/arc136/tasks/arc136_b
+	// https://www.codechef.com/problems/DYNAINV?tab=statement
+	// https://ac.nowcoder.com/acm/problem/20861
 	// 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
 	// 三元逆序对 https://codeforces.com/problemset/problem/61/E
-	// todo 互质逆序对 小白月赛 87G https://ac.nowcoder.com/acm/contest/73854/G
+	// 互质逆序对 小白月赛 87G https://ac.nowcoder.com/acm/contest/73854/G
 	cntInversions := func(a []int) int {
 		n := len(a)
 		tree := make([]int, n+1)
