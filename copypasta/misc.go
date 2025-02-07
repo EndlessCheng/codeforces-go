@@ -425,8 +425,8 @@ func mergeCount(a []int) int {
 	if n <= 1 {
 		return 0
 	}
-	left := append([]int(nil), a[:n/2]...)
-	right := append([]int(nil), a[n/2:]...)
+	left := slices.Clone(a[:n/2])
+	right := slices.Clone(a[n/2:])
 	cnt := mergeCount(left) + mergeCount(right)
 	l, r := 0, 0
 	for i := range a {
@@ -451,8 +451,8 @@ func mergeCount(a []int) int {
 // LC51 https://leetcode.cn/problems/n-queens/
 // LC52 https://leetcode.cn/problems/n-queens-ii/
 func totalNQueens(n int) (ans int) {
-	var f func(row, columns, diagonals1, diagonals2 int)
-	f = func(row, columns, diagonals1, diagonals2 int) {
+	var dfs func(int, int, int, int)
+	dfs = func(row, columns, diagonals1, diagonals2 int) {
 		if row == 1 {
 			ans++
 			return
@@ -460,11 +460,11 @@ func totalNQueens(n int) (ans int) {
 		availablePositions := (1<<n - 1) &^ (columns | diagonals1 | diagonals2)
 		for availablePositions > 0 {
 			position := availablePositions & -availablePositions
-			f(row+1, columns|position, (diagonals1|position)<<1, (diagonals2|position)>>1)
+			dfs(row+1, columns|position, (diagonals1|position)<<1, (diagonals2|position)>>1)
 			availablePositions &^= position // 移除该比特位
 		}
 	}
-	f(0, 0, 0, 0)
+	dfs(0, 0, 0, 0)
 	return
 }
 
