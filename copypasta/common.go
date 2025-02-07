@@ -819,29 +819,24 @@ Golang 卡常技巧（注：关于 IO 的加速见 io.go）
 测试：哈希表用时是数组的 13 倍（本题瓶颈）
 slice    249ms https://codeforces.com/problemset/submission/570/209063267
 hashmap 3259ms https://codeforces.com/problemset/submission/570/209063603
-*/
 
-// bool2int returns 0 if x is false or 1 if x is true.
-func bool2int(x bool) int {
-	return int(*(*uint8)(unsafe.Pointer(&x)))
-}
+bool to int
+int(*(*uint8)(unsafe.Pointer(&boolVal)))
+
+[]int to []int64
+*(*[]int64)(unsafe.Pointer(&nums))
+
+*/
 
 // slice 作为 map 的 key
 // 长度为 0 的 slice 对应空字符串
 func intSliceAsMapKeyExample(cnt map[string]int, a []int) {
 	// 如果后面还会修改 a，可以先 copy 一份
-	//a = append(a[:0:0], a...)
+	// a = slices.Clone(a)
 	sh := (*reflect.SliceHeader)(unsafe.Pointer(&a))
 	sh.Len *= bits.UintSize / 8 // 装作 byte slice
 	s := *(*string)(unsafe.Pointer(sh))
 	cnt[s]++
-}
-
-// 力扣上的 int 和 int64 是一样的，但是有些题目要求返回 []int64
-// 此时可以用指针强转
-func intsToInt64s(a []int) []int64 {
-	int64s := *(*[]int64)(unsafe.Pointer(&a))
-	return int64s
 }
 
 func _() {
@@ -857,6 +852,12 @@ func _() {
 	dir4 = []struct{ x, y int }{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}     // 右上左下（坐标系，逆时针）
 	dir4R := []struct{ x, y int }{{1, 1}, {-1, 1}, {-1, -1}, {1, -1}} // 斜向
 
+	/* 方向
+	- [1041. 困于环中的机器人](https://leetcode.cn/problems/robot-bounded-in-circle/) 1521
+	- [874. 模拟行走机器人](https://leetcode.cn/problems/walking-robot-simulation/) 1846
+	- [2069. 模拟行走机器人 II](https://leetcode.cn/problems/walking-robot-simulation-ii/) 1919
+	- [3443. K 次修改后的最大曼哈顿距离](https://leetcode.cn/problems/maximum-manhattan-distance-after-k-changes/) ~1900
+	*/
 	dir4 = []struct{ x, y int }{'W': {-1, 0}, 'E': {1, 0}, 'S': {0, -1}, 'N': {0, 1}} // 西东南北（坐标系）
 	dir4 = []struct{ x, y int }{'W': {0, -1}, 'E': {0, 1}, 'S': {1, 0}, 'N': {-1, 0}} // 西东南北（网格）
 	dir4 = []struct{ x, y int }{'L': {-1, 0}, 'R': {1, 0}, 'D': {0, -1}, 'U': {0, 1}} // 左右下上（坐标系）
