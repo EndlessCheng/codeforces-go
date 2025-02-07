@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"slices"
 )
 
 // 3B1B 线性代数的本质 https://www.bilibili.com/video/BV1ys411472E
@@ -63,7 +64,7 @@ func readMatrix(in io.Reader, n, m int) matrix {
 func copyMatrix(a matrix) matrix {
 	b := make(matrix, len(a))
 	for i, row := range a {
-		b[i] = append([]int(nil), row...)
+		b[i] = slices.Clone(row)
 	}
 	return b
 }
