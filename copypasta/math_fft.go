@@ -8,14 +8,15 @@ import (
 /* FFT: fast Fourier transform 快速傅里叶变换
 https://en.wikipedia.org/wiki/Fast_Fourier_transform
 
-https://www.youtube.com/watch?v=h7apO7q16V0
-https://codeforces.com/blog/entry/111371
-
-【推荐】一小时学会快速傅里叶变换 https://zhuanlan.zhihu.com/p/31584464
+视频讲解 https://www.youtube.com/watch?v=h7apO7q16V0
+中文翻译 https://www.bilibili.com/video/BV1za411F76U/
+[Tutorial] FFT https://codeforces.com/blog/entry/111371
+一小时学会快速傅里叶变换 https://zhuanlan.zhihu.com/p/31584464
 多项式基础：插值、函数逼近、快速傅里叶变换 (蒋炎岩) https://www.bilibili.com/video/BV1a14y1M7v1/
 为什么 FFT 可以加速卷积运算 https://www.zhihu.com/question/394657296/answer/2329522108
 傅里叶变换学习笔记 https://www.luogu.com.cn/blog/command-block/fft-xue-xi-bi-ji
 从多项式乘法到快速傅里叶变换 http://blog.miskcoo.com/2015/04/polynomial-multiplication-and-fast-fourier-transform
+整数乘法的长征 by EI https://www.cnblogs.com/Elegia/p/18020040/integer-multiplication
 优化技巧 https://www.luogu.com.cn/blog/105254/qian-tan-fft-zong-ft-dao-fft
 https://codeforces.com/blog/entry/43499 https://codeforces.com/blog/entry/48798
 https://oi-wiki.org/math/poly/fft/
@@ -38,6 +39,7 @@ todo https://github.com/OI-wiki/gitment/discussions/670#discussioncomment-449602
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
 todo https://codeforces.com/problemset/problem/993/E
  https://codeforces.com/gym/104081/problem/K
+ https://atcoder.jp/contests/abc196/tasks/abc196_f 子串失配个数
 */
 
 type fft struct {
