@@ -52,6 +52,7 @@ import "math/bits"
 // 另见 Kinetic Tournament 树 (KTT) https://www.luogu.com.cn/problem/P5693
 // https://www.luogu.com.cn/problem/P10587
 
+// https://www.luogu.com.cn/problem/P4588 乘法 单点修改
 // https://codeforces.com/problemset/problem/2050/F 1700 GCD
 // https://codeforces.com/problemset/problem/914/D 1900 GCD 
 // https://codeforces.com/problemset/problem/380/C 2000 区间最长括号子序列 
