@@ -6,6 +6,9 @@ import (
 )
 
 /* 高精度
+
+为了让电脑更快，他们把“乘法”玩到了极致 https://www.bilibili.com/video/BV1xt1PYgE51/
+
 加减乘除模 https://www.luogu.com.cn/problem/P1932
 - https://www.luogu.com.cn/record/153957114
 https://codeforces.com/problemset/problem/1181/B 1500
@@ -15,6 +18,7 @@ https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/ 可以用
 读入
 v := &big.Int{} // 或者 new(big.Int)
 Fscan(in, v)
+
 */
 
 // 以 s 结尾的方法，s 代表 self
