@@ -32,6 +32,7 @@ class Solution {
         int cnt = 0;
         for (int i = 0; i < nums.size(); i++) {
             cnt++;
+            // i 是严格递增段的末尾
             if (i == nums.size() - 1 || nums.get(i) >= nums.get(i + 1)) {
                 ans = Math.max(ans, Math.max(cnt / 2, Math.min(preCnt, cnt)));
                 preCnt = cnt;
@@ -52,6 +53,7 @@ class Solution {
         int cnt = 0;
         for (int i = 0; i < a.length; i++) {
             cnt++;
+            // i 是严格递增段的末尾
             if (i == a.length - 1 || a[i] >= a[i + 1]) {
                 ans = Math.max(ans, Math.max(cnt / 2, Math.min(preCnt, cnt)));
                 preCnt = cnt;
@@ -70,7 +72,7 @@ public:
         int ans = 0, pre_cnt = 0, cnt = 0;
         for (int i = 0; i < nums.size(); i++) {
             cnt++;
-            if (i == nums.size() - 1 || nums[i] >= nums[i + 1]) {
+            if (i == nums.size() - 1 || nums[i] >= nums[i + 1]) { // i 是严格递增段的末尾
                 ans = max({ans, cnt / 2, min(pre_cnt, cnt)});
                 pre_cnt = cnt;
                 cnt = 0;
