@@ -239,10 +239,6 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	statusURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.LanguageName=Go&f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
 	shortestURL := fmt.Sprintf("https://atcoder.jp/contests/%s/submissions?f.Status=AC&f.Task=%s&orderBy=source_length", contestName, problemName)
 
-	if !isContest {
-		open.Run(statusURL)
-	}
-
 	// 创建 x.go
 	mainFileContent := `package main
 
