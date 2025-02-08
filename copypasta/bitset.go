@@ -17,6 +17,7 @@ import (
 // https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
 // https://codeforces.com/contest/1826/problem/E
 // https://atcoder.jp/contests/abc258/tasks/abc258_g
+// https://atcoder.jp/contests/arc087/tasks/arc087_b
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, (n+_w-1)/_w) } // 需要 ceil(n/_w) 个 _w 位整数
