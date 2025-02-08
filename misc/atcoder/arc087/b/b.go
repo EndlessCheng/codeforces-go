@@ -26,9 +26,9 @@ func run(in io.Reader, out io.Writer) {
 		return f.Bit(x) > 0
 	}
 	if f(a, 2, x-len(a[0])) && f(a, 1, y) {
-		Fprintln(out, "Yes")
+		Fprint(out, "Yes")
 	} else {
-		Fprintln(out, "No")
+		Fprint(out, "No")
 	}
 }
 
