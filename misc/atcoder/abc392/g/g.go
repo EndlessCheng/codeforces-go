@@ -90,6 +90,7 @@ func run(in io.Reader, out io.Writer) {
 		C[i] = int(math.Round(real(A[i])))
 	}
 	for _, v := range a {
+		// ans += (C[v*2] - 1) / 2
 		ans += C[v*2] / 2
 	}
 	Fprint(out, ans)
