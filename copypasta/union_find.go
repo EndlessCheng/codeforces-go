@@ -36,6 +36,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
 // 并查集+置换 LC2459 https://leetcode.cn/problems/sort-array-by-moving-items-to-empty-space/
 // https://www.luogu.com.cn/problem/P1111
+// https://www.luogu.com.cn/problem/P1967 经典题
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
 // 基础题 https://codeforces.com/problemset/problem/1167/C 1400
@@ -51,6 +52,7 @@ https://zhuanlan.zhihu.com/p/553192435
 // 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 // - 思考：如果允许圆心在矩形外呢？见我题解下面的讨论
 // https://atcoder.jp/contests/abc383/tasks/abc383_e
+// https://atcoder.jp/contests/abc392/tasks/abc392_e
 //
 // 质因子并查集 GCD>1 并查集
 // 预处理质因子（见 math.go 中的 primeDivisorsAll）
