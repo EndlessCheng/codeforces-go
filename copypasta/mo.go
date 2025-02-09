@@ -4,6 +4,7 @@ import (
 	. "fmt"
 	"io"
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -33,44 +34,43 @@ import (
 //
 // https://oi-wiki.org/misc/mo-algo/
 // 模板题 https://www.luogu.com.cn/problem/P1494
-// todo https://www.luogu.com.cn/problem/P2709
-// todo https://www.luogu.com.cn/problem/P4462
-//  恰好出现两次 https://www.luogu.com.cn/problem/P7764
-//  https://www.luogu.com.cn/problem/P5673
-//  https://ac.nowcoder.com/acm/problem/25458
-//  至少出现两次 https://ac.nowcoder.com/acm/problem/20545
-//  至少出现 k 次 https://codeforces.com/problemset/problem/375/D
-//  至少出现 k 次 https://www.codechef.com/problems/KCHIPS
+// https://www.luogu.com.cn/problem/P2709
+// https://www.luogu.com.cn/problem/P4462
+// 恰好出现两次 https://www.luogu.com.cn/problem/P7764
+// https://www.luogu.com.cn/problem/P5673
+// https://ac.nowcoder.com/acm/problem/25458
+// 至少出现两次 https://ac.nowcoder.com/acm/problem/20545
+// 至少出现 k 次 https://codeforces.com/problemset/problem/375/D
+// 至少出现 k 次 https://www.codechef.com/problems/KCHIPS
 // https://codeforces.com/contest/220/problem/B
 // https://atcoder.jp/contests/abc242/tasks/abc242_g
 // https://atcoder.jp/contests/abc293/tasks/abc293_g
 // 区间 mex https://blog.csdn.net/includelhc/article/details/79593496
 //     反向构造题 https://www.luogu.com.cn/problem/P6852
-// todo https://codeforces.com/contest/86/problem/D
-//      https://codeforces.com/contest/617/problem/E
-//      https://codeforces.com/contest/877/problem/F
-//      https://www.codechef.com/problems/QCHEF
+// https://codeforces.com/contest/86/problem/D
+// https://codeforces.com/problemset/problem/617/E 2200
+// https://codeforces.com/contest/877/problem/F
+// https://www.codechef.com/problems/QCHEF
 func normalMo(a []int, queries [][]int) []int {
 	n := len(a)
 	m := len(queries)
 	blockSize := int(math.Ceil(float64(n) / math.Sqrt(float64(m))))
-	type moQuery struct{ lb, l, r, qid int } // [l,r)
+	type moQuery struct{ bid, l, r, qid int } // [l,r)
 	qs := make([]moQuery, m)
 	for i, q := range queries {
 		// 输入是从 1 开始的
 		l, r := q[0], q[1] // read...
 		qs[i] = moQuery{l / blockSize, l, r + 1, i}
 	}
-	sort.Slice(qs, func(i, j int) bool {
-		a, b := qs[i], qs[j]
-		if a.lb != b.lb {
-			return a.lb < b.lb
+	slices.SortFunc(qs, func(a, b moQuery) int {
+		if a.bid != b.bid {
+			return a.bid - b.bid
 		}
 		// 奇偶化排序
-		if a.lb&1 == 0 {
-			return a.r < b.r
+		if a.bid&1 == 0 {
+			return a.r - b.r
 		}
-		return a.r > b.r
+		return b.r - a.r
 	})
 
 	cnt := 0
