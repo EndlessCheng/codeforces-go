@@ -99,8 +99,15 @@ func (t *fft) idft(a []complex128) {
 
 // 计算 A(x) 和 B(x) 的卷积 (convolution)
 // c[k] = ∑a[i]*b[k-i], i=0..k
-// 如果求 ∑a[i]*b[i]，可以把 b 反转后再求卷积
 // 入参出参都是次项从低到高的系数
+//
+// EXTRA: 对数组 a 的频率数组 F(x) 计算自卷积，
+//        得到的结果 G(x) 表示两数之和等于 x 的方案数（这两个数之间没有位置约束）
+// https://atcoder.jp/contests/abc392/tasks/abc392_g
+//
+// EXTRA: 如果求 ∑a[i+k]*b[i]，可以把 a 反转后再求卷积
+// https://atcoder.jp/contests/abc196/tasks/abc196_f 
+//        把 a 反转得 ∑a'[n-1-i-k]*b[i]，这样卷积后的 c[n-1-k] 就是结果
 func polyConvFFT(a, b []int) []int {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
