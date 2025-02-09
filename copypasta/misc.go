@@ -413,12 +413,13 @@ func mapPos(a, b []int) []int {
 }
 
 /* 归并排序与逆序对
+一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
 - 归并排序：[912. 排序数组](https://leetcode.cn/problems/sort-an-array/)
 - [LCR 170. 交易逆序对的总数](https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/)
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
 - [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
-一张关于归并排序的好图 https://www.cnblogs.com/chengxiao/p/6194356.html
+https://atcoder.jp/contests/arc075/tasks/arc075_c
 */
 func mergeCount(a []int) int {
 	n := len(a)
