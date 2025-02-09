@@ -14,6 +14,8 @@ https://www.cnblogs.com/cjyyb/p/7499020.html
 
 普通平衡树 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
 文艺平衡树 https://www.luogu.com.cn/problem/P3391
+LC2296 https://leetcode.cn/problems/design-a-text-editor
+https://atcoder.jp/contests/abc392/tasks/abc392_f
 LC1825 https://leetcode.cn/problems/finding-mk-average/ https://leetcode.cn/problems/finding-mk-average/solutions/2067232/by-jessechan-19j2/
 todo https://codeforces.com/problemset/problem/702/F
 
@@ -141,6 +143,10 @@ func (o *spNode) merge(ro *spNode) *spNode {
 }
 
 type splay struct{ root *spNode }
+
+// 文本插入相关代码见 
+// https://atcoder.jp/contests/abc392/submissions/62581499
+// https://leetcode.cn/problems/design-a-text-editor/solutions/1536149/lian-biao-mo-ni-pythonjavacgo-by-endless-egw4/
 
 const (
 	splayMin spKeyType = -2e9
