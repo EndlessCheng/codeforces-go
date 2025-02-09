@@ -23,9 +23,9 @@ todo 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-
 注意：**枚举时要做到不重不漏**
 
 - [1714. 数组中特殊等间距元素的和](https://leetcode.cn/problems/sum-of-special-evenly-spaced-elements-in-array/)（会员题）
-可以从这题上手 https://www.luogu.com.cn/problem/P3396 
-            同 https://codeforces.com/contest/103/problem/D 2100
-https://www.luogu.com.cn/problem/T279521?contestId=65460 
+可以从这题上手 https://www.luogu.com.cn/problem/P3396
+- 同 https://codeforces.com/contest/103/problem/D 2100
+https://www.luogu.com.cn/problem/T279521?contestId=65460
 - https://www.luogu.com.cn/blog/cyffff/solution-JRKSJ-Eltaw
 LCP16 https://leetcode.cn/problems/you-le-yuan-de-you-lan-ji-hua/
 https://codeforces.com/problemset/problem/1921/F 1900
@@ -113,7 +113,7 @@ func _(a []int) {
 	for i := range blocks {
 		b := &blocks[i]
 		b.r = b.l + len(b.origin) - 1
-		b.sorted = append([]int(nil), b.origin...)
+		b.sorted = slices.Clone(b.origin)
 		slices.Sort(b.sorted)
 	}
 	sqrtOp := func(l, r int, v int) { // [l,r], starts at 0
