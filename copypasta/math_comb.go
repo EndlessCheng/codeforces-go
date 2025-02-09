@@ -46,7 +46,9 @@ https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
 https://codeforces.com/problemset/problem/1999/F 1600
 https://codeforces.com/problemset/problem/2040/C 1600
-https://atcoder.jp/contests/abc129/tasks/abc129_e CF1700
+https://atcoder.jp/contests/abc133/tasks/abc133_e 1505~CF1700 变形题：改成距离 <= 3
+https://atcoder.jp/contests/abc156/tasks/abc156_e 1514~CF1700
+https://atcoder.jp/contests/abc129/tasks/abc129_e 1547~CF1700
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
 https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
@@ -86,11 +88,9 @@ https://baike.baidu.com/item/%E6%94%BE%E7%90%83%E9%97%AE%E9%A2%98
 https://www.luogu.com.cn/blog/over-knee-socks/post-ball-box
 https://www.cnblogs.com/Xing-Ling/p/11176939.html
 https://blog.csdn.net/weixin_33759269/article/details/86017932
-- [1641. 统计字典序元音字符串的数目](https://leetcode.cn/problems/count-sorted-vowel-strings/) 1519
-- [1621. 大小为 K 的不重叠线段的数目](https://leetcode.cn/problems/number-of-sets-of-k-non-overlapping-line-segments/) 2198
-- [1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/) 2500
-- [2338. 统计理想数组的数目](https://leetcode.cn/problems/count-the-number-of-ideal-arrays/) 2615
-https://codeforces.com/contest/1931/problem/G 2000
+https://codeforces.com/problemset/problem/1931/G 2000
+https://codeforces.com/problemset/problem/2060/F 2200
+- LC1735 https://leetcode.cn/problems/count-ways-to-make-array-with-product/
 扩展例题 https://codeforces.com/problemset/problem/893/E
 todo 十二重计数法 https://www.luogu.com.cn/problem/P5824
 
