@@ -1,14 +1,10 @@
-> “花费一个 $\log$ 的时间，增加了一个条件。” —— 二分答案
-
 假设 $\textit{gameScore}$ 中的每个数都**至少**为 $\textit{low}$，那么 $\textit{low}$ 越大，操作次数就越多，有单调性，可以**二分答案**。关于二分的原理，请看视频 [二分查找 红蓝染色法【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
 
-由于必须从最左边开始，所以我们要从左到右计算。
+在计算前，还需要说明一个转换关系：我们可以把任何一种或长或短的、来来回回的移动方式，转换成若干组「左右横跳」，也就是先在 $0$ 和 $1$ 之间左右横跳，然后在 $1$ 和 $2$ 之间左右横跳，在 $2$ 和 $3$ 之间左右横跳，……直到最终位置为 $n-1$ 或者 $n-2$。如下图：
 
-在计算前，还需要说明一个转换关系：我们可以把任何一种或长或短的、来来回回的移动方式，转换成若干组「左右横跳」，也就是在 $0$ 和 $1$ 之间的左右横跳，在 $1$ 和 $2$ 之间的左右横跳，在 $2$ 和 $3$ 之间的左右横跳，……依此类推。如下图：
+![lc3449-3-c.png](https://pic.leetcode.cn/1739098814-MZuCoO-lc3449-3-c.png)
 
-![lc3449-2-c.png](https://pic.leetcode.cn/1739093272-IHCWdj-lc3449-2-c.png)
-
-从第一个数开始。设 $p=\textit{points}[0]$，至少要增加 $k=\left\lceil\dfrac{\textit{low}}{p}\right\rceil$ 次。
+从第一个数开始计算。设 $p=\textit{points}[0]$，至少要增加 $k=\left\lceil\dfrac{\textit{low}}{p}\right\rceil$ 次。
 
 第一次操作需要从 $-1$ 走到 $0$，后面的 $k-1$ 次增加可以在 $0$ 和 $1$ 之间左右横跳。
 
@@ -175,6 +171,7 @@ public:
 func maxScore(points []int, m int) int64 {
 	right := (m + 1) / 2 * slices.Min(points)
 	ans := sort.Search(right, func(low int) bool {
+		// 二分最小的不满足要求的 low+1，即可得到最大的满足要求的 low
 		low++
 		left := m
 		pre := 0
