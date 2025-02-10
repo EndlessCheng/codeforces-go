@@ -16,6 +16,7 @@ func init() {
 		"brr", "b",
 		"array", "a",
 		"brray", "b",
+		"elements", "a",
 		"scores", "a",
 		"values", "a",
 		"vals", "a",
