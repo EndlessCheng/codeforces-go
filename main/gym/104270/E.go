@@ -5,6 +5,7 @@ import (
 	. "fmt"
 	"io"
 	"os"
+	"slices"
 	"sort"
 )
 
@@ -19,7 +20,9 @@ func runE(in io.Reader, _w io.Writer) {
 		for i := range a {
 			Fscan(in, &a[i])
 		}
-		ans := sort.Search(1e17, func(low int) bool {
+		u1 := (m + 1) / 2 * slices.Min(a)
+		u2 := m / n * slices.Max(a)
+		ans := sort.Search(min(u1, u2), func(low int) bool {
 			// 二分最小的不满足要求的 low+1，即可得到最大的满足要求的 low
 			low++
 			left := m
@@ -42,4 +45,4 @@ func runE(in io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { runE(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { runE(bufio.NewReader(os.Stdin), os.Stdout) }
