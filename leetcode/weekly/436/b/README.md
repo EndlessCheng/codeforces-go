@@ -1,10 +1,10 @@
 设 $\textit{groups}$ 中的最大值为 $\textit{mx}$。我们直接预处理 $1,2,3,\ldots,\textit{mx}$ 中的每个数能被哪个 $\textit{elements}[i]$ 整除。如果有多个相同的 $\textit{elements}[i]$，只考虑最左边的那个。
 
-从左到右遍历 $\textit{elements}$，设 $x=\textit{elements}[i]$。枚举 $x$ 的倍数 $y$，标记 $y$ 可以被下标为 $i$ 的元素整除，记作 $\textit{target}[y]=i$。标记过的数字不再重复标记。
+从左到右遍历 $\textit{elements}$，设 $x=\textit{elements}[i]$。枚举 $x$ 的倍数 $y=x,2x,3x,\cdots$，标记 $y$ 可以被下标为 $i$ 的元素整除，记作 $\textit{target}[y]=i$。已标记的数字不再重复标记。由于我们是从左到右遍历的，这可以保证如果有多个数字都是 $y$ 的因子，我们只会记录最左边的下标。
 
 ⚠**注意**：如果我们之前遍历过 $x$ 的因子 $d$，那么不用枚举 $x$ 的倍数，因为这些数必然已被 $d$ 标记。例如 $\textit{elements}=[2,4]$，由于 $4$ 的倍数一定都是偶数（$2$ 的倍数），所以 $4$ 的倍数一定都被 $2$ 标记，所以无需枚举 $4$ 的倍数。
 
-> 这个做法也保证了每个数 $x$ 我们只会循环枚举其倍数一次，从而保证时间复杂度不会退化成暴力。
+> 这也保证了每个数 $x$ 我们只会循环枚举其倍数一次，不会在 $\textit{elements}=[2,2,2,\ldots,2]$ 这种数据下退化成暴力。
 
 最后，回答询问，对于 $\textit{groups}[i]$ 来说，答案为 $\textit{target}[\textit{groups}[i]]$。
 
@@ -29,7 +29,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] assignElements(int[] groups, int[] elements) {
-        int mx = Arrays.stream(groups).max().orElse(0);
+        int mx = Arrays.stream(groups).max().getAsInt();
         int[] target = new int[mx + 1];
         Arrays.fill(target, -1);
 
