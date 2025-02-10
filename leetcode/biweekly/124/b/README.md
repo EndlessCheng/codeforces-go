@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1Sm411U7cR/)
-
 ## 提示 1
 
 最后一次操作时，剩下的字母互不相同。
@@ -11,6 +9,8 @@
 设字母的最大出现次数为 $\textit{mx}$。
 
 由于删除是从左到右进行的，最后剩下的就是出现次数等于 $\textit{mx}$ 的靠右字母（相同字母取出现位置最右的）。
+
+[视频讲解](https://www.bilibili.com/video/BV1Sm411U7cR/)
 
 ```py [sol-Python3]
 class Solution:
@@ -44,7 +44,7 @@ class Solution {
         }
         Collections.sort(ids);
 
-        StringBuilder t = new StringBuilder(ids.size());
+        StringBuilder t = new StringBuilder(ids.size()); // 预分配空间
         for (int i : ids) {
             t.append(s[i]);
         }
