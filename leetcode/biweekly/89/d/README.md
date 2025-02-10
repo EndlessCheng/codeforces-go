@@ -1,5 +1,3 @@
-[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第四题。
-
 ## 提示 1
 
 枚举连通块的个数 $i$，则删除的边数为 $i-1$。
@@ -38,6 +36,8 @@
 
 代码实现时，由于点权至少为 $mx=\max(\textit{nums})$，所以连通块的个数至多为 $\left\lfloor\dfrac{\textit{total}}{mx}\right\rfloor$。由于 $\left\lfloor\dfrac{\textit{total}}{mx}\right\rfloor\le n$，因此可以从 $\left\lfloor\dfrac{\textit{total}}{mx}\right\rfloor$ 开始枚举连通块的个数。
 
+[视频讲解](https://www.bilibili.com/video/BV1cV4y157BY) 第四题。
+
 ```py [sol-Python3]
 class Solution:
     def componentValue(self, nums: List[int], edges: List[List[int]]) -> int:
@@ -73,31 +73,37 @@ class Solution {
     public int componentValue(int[] nums, int[][] edges) {
         g = new ArrayList[nums.length];
         Arrays.setAll(g, e -> new ArrayList<>());
-        for (var e : edges) {
+        for (int[] e : edges) {
             int x = e[0], y = e[1];
             g[x].add(y);
             g[y].add(x);
         }
         this.nums = nums;
 
-        var total = Arrays.stream(nums).sum();
-        var max = Arrays.stream(nums).max().orElseThrow();
-        for (var i = total / max; ; --i)
+        int total = Arrays.stream(nums).sum();
+        int max = Arrays.stream(nums).max().getAsInt();
+        for (int i = total / max; ; i--) {
             if (total % i == 0) {
                 target = total / i;
-                if (dfs(0, -1) == 0) return i - 1;
+                if (dfs(0, -1) == 0) {
+                    return i - 1;
+                }
             }
+        }
     }
 
     private int dfs(int x, int fa) {
-        var sum = nums[x];
-        for (var y : g[x])
+        int sum = nums[x];
+        for (int y : g[x]) {
             if (y != fa) {
                 var res = dfs(y, x);
                 if (res < 0) return -1;
                 sum += res;
             }
-        if (sum > target) return -1;
+        }
+        if (sum > target) {
+            return -1;
+        }
         return sum < target ? sum : 0;
     }
 }
@@ -106,34 +112,42 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    int componentValue(vector<int> &nums, vector<vector<int>> &edges) {
+    int componentValue(vector<int>& nums, vector<vector<int>>& edges) {
         vector<vector<int>> g(nums.size());
-        for (auto &e : edges) {
+        for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x);
         }
 
         int target;
-        function<int(int, int)> dfs = [&](int x, int fa) {
+        auto dfs = [&](this auto&& dfs, int x, int fa) -> int {
             int sum = nums[x];
-            for (int y : g[x])
+            for (int y : g[x]) {
                 if (y != fa) {
                     int res = dfs(y, x);
-                    if (res < 0) return -1;
+                    if (res < 0) {
+                        return -1;
+                    }
                     sum += res;
                 }
-            if (sum > target) return -1;
+            }
+            if (sum > target) {
+                return -1;
+            }
             return sum < target ? sum : 0;
         };
 
-        int total = accumulate(nums.begin(), nums.end(), 0);
-        int mx = *max_element(nums.begin(), nums.end());
-        for (int i = total / mx;; --i)
+        int total = reduce(nums.begin(), nums.end());
+        int mx = ranges::max(nums);
+        for (int i = total / mx; ; i--) {
             if (total % i == 0) {
                 target = total / i;
-                if (dfs(0, -1) == 0) return i - 1;
+                if (dfs(0, -1) == 0) {
+                    return i - 1;
+                }
             }
+        }
     }
 };
 ```
@@ -183,12 +197,30 @@ func componentValue(nums []int, edges [][]int) int {
 		}
 	}
 }
-
-func min(a, b int) int { if b < a { return b }; return a }
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$O(n\cdot d(s))$，其中 $n$ 为 $\textit{nums}$ 的长度，$s$ 为所有 $\textit{nums}[i]$ 的和，$d(s)$ 为 $s$ 的因子个数。根据本题的数据范围，$d(s)\le 240$，例如 $s=720720$ 时可以取到等号。
-- 空间复杂度：$O(n)$。
+- 时间复杂度：$\mathcal{O}(n\cdot d(s))$，其中 $n$ 为 $\textit{nums}$ 的长度，$s$ 为所有 $\textit{nums}[i]$ 的和，$d(s)$ 为 $s$ 的因子个数。根据本题的数据范围，$d(s)\le 240$，例如 $s=720720$ 时可以取到等号。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
