@@ -120,8 +120,8 @@ func sortMatrix(grid [][]int) [][]int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。
-- 空间复杂度：$\mathcal{O}(m+n)$。
+- 时间复杂度：$\mathcal{O}(n^2\log n)$，其中 $n$ 为 $\textit{grid}$ 的行数和列数。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目
 
