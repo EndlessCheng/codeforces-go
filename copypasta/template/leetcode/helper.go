@@ -113,10 +113,9 @@ func modifyDefaultCode(code string, funcLos []int, funcList []modifyLineFunc, cu
 //
 
 func findNonASCII(s string) int {
-	// this is faster than `for _, c := range s`, because there is no rune conversion
-	for i := range s {
-		if s[i] > unicode.MaxASCII {
-			return i
+	for i, c := range s {
+		if c > unicode.MaxASCII {
+			return i // [0,i-1] 中的都是 ASCII
 		}
 	}
 	return -1
