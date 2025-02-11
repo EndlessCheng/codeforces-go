@@ -1,4 +1,4 @@
-package main
+package luogu
 
 import (
 	"encoding/json"
@@ -7,8 +7,6 @@ import (
 	"net/url"
 	"strings"
 )
-
-const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 
 func getJson(htmlStr string) (string, error) {
 	const token = `<script id="lentille-context" type="application/json">`
@@ -23,7 +21,7 @@ func getJson(htmlStr string) (string, error) {
 	return url.QueryUnescape(htmlStr[i+len(token) : i+len(token)+j])
 }
 
-func parseExamples(problemURL string) (examples [][]string, err error) {
+func ParseExamples(problemURL string) (examples [][]string, err error) {
 	resp, err := grequests.Get(problemURL, &grequests.RequestOptions{
 		UserAgent:    ua,
 		Headers:      map[string]string{"Referer": problemURL},
