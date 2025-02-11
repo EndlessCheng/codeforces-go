@@ -29,7 +29,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] assignElements(int[] groups, int[] elements) {
-        int mx = Arrays.stream(groups).max().getAsInt();
+        int mx = 0;
+        for (int x : groups) {
+            mx = Math.max(mx, x);
+        }
         int[] target = new int[mx + 1];
         Arrays.fill(target, -1);
 
