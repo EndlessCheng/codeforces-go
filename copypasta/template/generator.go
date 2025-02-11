@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/EndlessCheng/codeforces-go/copypasta/template/luogu"
 	"github.com/skratchdot/open-golang/open"
 	"net/url"
 	"os"
@@ -83,7 +84,7 @@ func GenCodeforcesProblemTemplates(problemURL string, openWebsite bool) error {
 		open.Run(statusURL)
 	}
 
-	example, err := parseExamples(luoguURL)
+	example, err := luogu.ParseExamples(luoguURL)
 	if err != nil {
 		fmt.Println(err)
 	}
