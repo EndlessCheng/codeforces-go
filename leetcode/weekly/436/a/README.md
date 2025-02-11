@@ -125,7 +125,9 @@ func sortMatrix(grid [][]int) [][]int {
 
 ## 相似题目
 
-- [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/) 1548
+- [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/)
+- [2711. 对角线上不同值的数量差](https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/)
+- [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/) 副对角线
 - [562. 矩阵中最长的连续 1 线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
 
 ## 分类题单
