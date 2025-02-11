@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
+
 func getJson(htmlStr string) (string, error) {
 	const token = `<script id="lentille-context" type="application/json">`
 	i := strings.Index(htmlStr, token)
