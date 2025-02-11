@@ -100,7 +100,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maxScore(int[] points, int m) {
-        int mn = Arrays.stream(points).min().getAsInt();
+        int mn = Integer.MAX_VALUE;
+        for (int p : points) {
+            mn = Math.min(mn, p);
+        }
         long left = 0;
         long right = (long) (m + 1) / 2 * mn + 1;
         while (left + 1 < right) {
