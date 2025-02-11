@@ -11,16 +11,16 @@ import (
 const ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36"
 
 func getJson(htmlStr string) (string, error) {
-	const token = `decodeURIComponent("`
+	const token = `<script id="lentille-context" type="application/json">`
 	i := strings.Index(htmlStr, token)
 	if i == -1 {
 		return "", fmt.Errorf("invalid html content %s", htmlStr)
 	}
-	j := strings.Index(htmlStr, `"));`)
+	j := strings.Index(htmlStr[i+len(token):], `</script>`)
 	if j == -1 {
 		return "", fmt.Errorf("invalid html content %s", htmlStr)
 	}
-	return url.QueryUnescape(htmlStr[i+len(token) : j])
+	return url.QueryUnescape(htmlStr[i+len(token) : i+len(token)+j])
 }
 
 func parseExamples(problemURL string) (examples [][]string, err error) {
@@ -45,7 +45,7 @@ func parseExamples(problemURL string) (examples [][]string, err error) {
 			Problem struct {
 				Samples [][]string `json:"samples"`
 			} `json:"problem"`
-		} `json:"currentData"`
+		} `json:"data"`
 	}{}
 	if err = json.Unmarshal([]byte(jsonStr), &d); err != nil {
 		return
