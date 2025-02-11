@@ -22,7 +22,7 @@ class Solution:
                 continue
             for y in range(x, mx + 1, x):  # 枚举 x 的倍数 y
                 if target[y] < 0:  # 没有标记过
-                    target[y] = i  # 标记 y 可以被 x 整除
+                    target[y] = i  # 标记 y 可以被 x 整除（记录 x 的下标）
         return [target[x] for x in groups]  # 回答询问
 ```
 
@@ -43,7 +43,7 @@ class Solution {
             }
             for (int y = x; y <= mx; y += x) { // 枚举 x 的倍数 y
                 if (target[y] < 0) { // 没有标记过
-                    target[y] = i; // 标记 y 可以被 x 整除
+                    target[y] = i; // 标记 y 可以被 x 整除（记录 x 的下标）
                 }
             }
         }
@@ -70,7 +70,7 @@ public:
             }
             for (int y = x; y <= mx; y += x) { // 枚举 x 的倍数 y
                 if (target[y] < 0) { // 没有标记过
-                    target[y] = i; // 标记 y 可以被 x 整除
+                    target[y] = i; // 标记 y 可以被 x 整除（记录 x 的下标）
                 }
             }
         }
@@ -98,7 +98,7 @@ func assignElements(groups []int, elements []int) []int {
 		}
 		for y := x; y <= mx; y += x { // 枚举 x 的倍数 y
 			if target[y] < 0 { // 没有标记过
-				target[y] = i // 标记 y 可以被 x 整除
+				target[y] = i // 标记 y 可以被 x 整除（记录 x 的下标）
 			}
 		}
 	}
