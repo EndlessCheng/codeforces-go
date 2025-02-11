@@ -1084,33 +1084,35 @@ func _(abs func(int) int) {
 		}
 	}
 
+	// 主对角线（从左上到右下）
 	// 第一排在右上，最后一排在左下
-	// 每排从左上到右下
-	// LC2711 https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/
+	// - [2711. 对角线上不同值的数量差](https://leetcode.cn/problems/difference-of-number-of-distinct-values-on-diagonals/) 1429
+	// - [3446. 按对角线进行矩阵排序](https://leetcode.cn/problems/sort-matrix-by-diagonals/) 
 	// - [1329. 将矩阵按对角线排序](https://leetcode.cn/problems/sort-the-matrix-diagonally/) 1548
 	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
+	// 注意下面 loopAntiDiagonal 还有一些题目
 	loopDiagonal := func(n, m int) {
-		for s := 1; s < n+m; s++ {
-			minJ := max(0, m-s)
-			maxJ := min(m-1, n+m-1-s)
+		for K := 1; K < n+m; K++ {
+			minJ := max(m-K, 0)
+			maxJ := min(n+m-1-K, m-1)
 			for j := minJ; j <= maxJ; j++ {
-				i := s + j - m
+				i := K + j - m
 				_ = i
 
 			}
 		}
 	}
 
+	// 副对角线（从左下到右上）
 	// 第一排在左上，最后一排在右下
-	// 每排从左下到右上
-	// LC498 https://leetcode.cn/problems/diagonal-traverse/
-	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）
+	// - [498. 对角线遍历](https://leetcode.cn/problems/diagonal-traverse/)
+	// - [562. 矩阵中最长的连续1线段](https://leetcode.cn/problems/longest-line-of-consecutive-one-in-matrix/)（会员题）主+副
 	loopAntiDiagonal := func(n, m int) {
-		for s := 0; s < n+m-1; s++ {
-			minJ := max(0, s-n+1)
-			maxJ := min(m-1, s)
+		for K := 0; K < n+m-1; K++ {
+			minJ := max(K-n+1, 0)
+			maxJ := min(K, m-1)
 			for j := minJ; j <= maxJ; j++ {
-				i := s - j
+				i := K - j
 				_ = i
 
 			}
