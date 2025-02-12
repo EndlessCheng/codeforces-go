@@ -1,44 +1,26 @@
 package main
 
 type BrowserHistory struct {
+	history []string
+	cur     int // 当前页面是 history[cur]
 }
 
-var (
-	s []string
-	i int
-)
-
-func Constructor(home string) (b BrowserHistory) {
-	s = []string{home}
-	i = 0
-	return
+func Constructor(homepage string) BrowserHistory {
+	return BrowserHistory{[]string{homepage}, 0}
 }
 
-func (*BrowserHistory) Visit(url string) {
-	s = append(s[:i+1], url)
-	i = len(s) - 1
+func (bh *BrowserHistory) Visit(url string) {
+	bh.cur++
+	bh.history = bh.history[:bh.cur]     // 把浏览历史前进的记录全部删除
+	bh.history = append(bh.history, url) // 从当前页跳转访问 url 对应的页面
 }
 
-func (*BrowserHistory) Back(steps int) (ans string) {
-	i -= steps
-	if i < 0 {
-		i = 0
-	}
-	return s[i]
+func (bh *BrowserHistory) Back(steps int) string {
+	bh.cur = max(bh.cur-steps, 0) // 后退 steps 步
+	return bh.history[bh.cur]
 }
 
-func (*BrowserHistory) Forward(steps int) (ans string) {
-	i += steps
-	if i >= len(s) {
-		i = len(s) - 1
-	}
-	return s[i]
+func (bh *BrowserHistory) Forward(steps int) string {
+	bh.cur = min(bh.cur+steps, len(bh.history)-1) // 前进 steps 步
+	return bh.history[bh.cur]
 }
-
-/**
- * Your BrowserHistory object will be instantiated and called as such:
- * obj := Constructor(homepage);
- * obj.Visit(url);
- * param_2 := obj.Back(steps);
- * param_3 := obj.Forward(steps);
- */
