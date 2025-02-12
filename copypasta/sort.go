@@ -8,7 +8,7 @@ import (
 )
 
 /*
-本页面力扣题目已整理至【题单】二分算法（二分答案/最小化最大值/最大化最小值/第K小）
+【题单】二分算法（二分答案/最小化最大值/最大化最小值/第K小）
 https://leetcode.cn/circle/discuss/SqopEo/
 
 https://en.algorithmica.org/hpc/data-structures/binary-search/
@@ -27,18 +27,6 @@ LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
 
 ### 二分查找
-- [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
-- [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
-- [704. 二分查找](https://leetcode.cn/problems/binary-search/)
-- [2529. 正整数和负整数的最大计数](https://leetcode.cn/problems/maximum-count-of-positive-integer-and-negative-integer/) 1196 *应用
-- [2300. 咒语和药水的成功对数](https://leetcode.cn/problems/successful-pairs-of-spells-and-potions/) 1477 *应用
-- [2389. 和有限的最长子序列](https://leetcode.cn/problems/longest-subsequence-with-limited-sum/)
-- [2563. 统计公平数对的数目](https://leetcode.cn/problems/count-the-number-of-fair-pairs/) 1721 *应用
-- [702. 搜索长度未知的有序数组](https://leetcode.cn/problems/search-in-a-sorted-array-of-unknown-size/)（会员题）
-- [1182. 与目标颜色间的最短距离](https://leetcode.cn/problems/shortest-distance-to-target-color/)（会员题）
-- [2819. 购买巧克力后的最小相对损失](https://leetcode.cn/problems/minimum-relative-loss-after-buying-chocolates/)（会员题）
-- [2936. 包含相等值数字块的数量](https://leetcode.cn/problems/number-of-equal-numbers-blocks/)（会员题）
-- [2838. Maximum Coins Heroes Can Collect](https://leetcode.cn/problems/maximum-coins-heroes-can-collect/)（会员题）
 https://codeforces.com/problemset/problem/600/B 1300
 https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
@@ -46,32 +34,9 @@ https://codeforces.com/problemset/problem/1971/E 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
 
 ### 二分答案原理
-
 为什么二分的结果一定就是我们要求的，可不可能无法由数组中的元素组合得到？
 我在 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/ 中说到：
 设答案为 s，那么必然有 f(s−1)<k 且 f(s)≥k。注意这和「第 k 小」是等价的。
-
-### 二分答案
-- [275. H 指数 II](https://leetcode.cn/problems/h-index-ii/) *经典题
-- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/) 1542
-- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/) 1641 *典型题
-- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/) 1646
-- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/) 1676
-- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/) 1725
-- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/) 1766 *经典题
-- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/) 1913
-- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/) 1946
-- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
-- [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 1981
-- [3007. 价值和小于等于 K 的最大数字](https://leetcode.cn/problems/maximum-number-that-sum-of-the-prices-is-less-than-or-equal-to-k/) 2258
-- [3048. 标记所有下标的最早秒数 I](https://leetcode.cn/problems/earliest-second-to-mark-indices-i/) 2263
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
-- [2071. 你可以安排的最多任务数目](https://leetcode.cn/problems/maximum-number-of-tasks-you-can-assign/) 2648
-- [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
-- [1891. 割绳子](https://leetcode.cn/problems/cutting-ribbons/)（会员题）
-- [2137. 通过倒水操作让所有的水桶所含水量相等](https://leetcode.cn/problems/pour-water-between-buckets-to-make-water-levels-equal/)（会员题）
-- [2604. 吃掉所有谷子的最短时间](https://leetcode.cn/problems/minimum-time-to-eat-all-grains/)（会员题）
-- [2702. 使数字变为非正数的最小操作次数](https://leetcode.cn/problems/minimum-operations-to-make-numbers-non-positive/)（会员题）
 
 ### 二分答案：求最小
 https://codeforces.com/problemset/problem/1701/C 1400
@@ -98,17 +63,6 @@ https://codeforces.com/problemset/problem/2038/B 2100
 https://atcoder.jp/contests/abc389/tasks/abc389_e
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
-- [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
-- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/) 1886
-- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/) 1940
-- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
-- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/) 1965 *变形：最大化最小值
-- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/) 2081
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
-- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
-- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
-- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
-- [774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)（会员题）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1840/D 1400
 https://codeforces.com/problemset/problem/883/I 1900 DP
@@ -116,11 +70,6 @@ https://codeforces.com/problemset/problem/1918/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
-- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/) 1920
-   同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
-- [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
-- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-- [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/2046/C 2100
@@ -137,28 +86,10 @@ https://codeforces.com/contest/1993/problem/D 2200
 ### 第 K 小/大（部分题目也可以用堆解决）
 第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个（k 从 1 开始）
 第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
-- [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
-- [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
-- [719. 找出第 K 小的数对距离](https://leetcode.cn/problems/find-k-th-smallest-pair-distance/)
-- [878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/) 1897
-- [1201. 丑数 III](https://leetcode.cn/problems/ugly-number-iii/) 2039
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
-- [786. 第 K 个最小的素数分数](https://leetcode.cn/problems/k-th-smallest-prime-fraction/) 2169
-- [3116. 单面值组合的第 K 小金额](https://leetcode.cn/problems/kth-smallest-amount-with-single-denomination-combination/) 2388
-- [2040. 两个有序数组的第 K 小乘积](https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/) 2518
-- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648
-- [1918. 第 K 小的子数组和](https://leetcode.cn/problems/kth-smallest-subarray-sum/)（会员题）*滑动窗口
 综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
 
-### 其它
-- [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/) 1182
-- [278. 第一个错误的版本](https://leetcode.cn/problems/first-bad-version/)
-- [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
-- [1901. 寻找峰值 II](https://leetcode.cn/problems/find-a-peak-element-ii/)
-- [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
-- [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
-- [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
+### 0-1 分数规划
+题目见下面的「search01」
 
 #### 不好想到的二分（这也能二分？！）
 https://codeforces.com/problemset/problem/1707/A 1600
@@ -672,16 +603,23 @@ func sortCollections() {
 	//     - LC644 https://leetcode.cn/problems/maximum-average-subarray-ii/（会员题）
 	//     - O(n) 做法见 04 年集训队周源论文《浅谈数形结合思想在信息学竞赛中的应用》（或紫书 p.243 例题 8-9，UVa 1451 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=447&page=show_problem&problem=4197）
 	//     https://www.acwing.com/problem/content/104/
-	// 与 0-1 背包结合，即最优比率背包 https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
-	// 与生成树结合，即最优比率生成树 https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
-	// 与负环判定结合，即最优比率环 https://www.luogu.com.cn/problem/P1768 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
-	//     O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
-	// 与网络流结合，即最大密度子图 https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
-	// 与费用流结合，即最优比率流 https://www.luogu.com.cn/problem/P3705
-	// 其他的一些题：
-	//      与 DP 结合 https://codeforces.com/problemset/problem/489/E
-	// 最优比率路径 https://atcoder.jp/contests/abc324/tasks/abc324_f
-	//            https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B
+	// 与 0-1 背包结合，即最优比率背包 
+	// - https://www.luogu.com.cn/problem/P4377 https://ac.nowcoder.com/acm/contest/2271/F
+	// 与生成树结合，即最优比率生成树 
+	// - https://www.luogu.com.cn/problem/P4951 http://poj.org/problem?id=2728
+	// - https://atcoder.jp/contests/arc026/tasks/arc026_4
+	// 与负环判定结合，即最优比率环 
+	// - https://www.luogu.com.cn/problem/P1768 https://www.luogu.com.cn/problem/P2868 https://www.luogu.com.cn/problem/P3199 http://poj.org/problem?id=3621
+	// - O(nm) https://www.luogu.com.cn/blog/rqy/solution-p3199
+	// 与网络流结合，即最大密度子图
+	// - https://www.luogu.com.cn/problem/UVA1389 http://poj.org/problem?id=3155
+	// 与费用流结合，即最优比率流
+	// - https://www.luogu.com.cn/problem/P3705
+	// 最优比率路径 
+	// - https://atcoder.jp/contests/abc324/tasks/abc324_f
+	// - https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B
+	// 其他题目
+	// - 与 DP 结合 https://codeforces.com/problemset/problem/489/E
 	search01 := func(ps [][2]int, k int) float64 {
 		// 必须/至少选 k 对，最大化 ∑ai/∑bi
 		// 如果是算术平均值的话，bi=1
