@@ -8,60 +8,51 @@ import (
 	"sort"
 )
 
-// github.com/EndlessCheng/codeforces-go
-func run(_r io.Reader, _w io.Writer) {
-	in := bufio.NewScanner(_r)
-	in.Split(bufio.ScanWords)
+// https://github.com/EndlessCheng
+func run(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	r := func() (x int) {
-		in.Scan()
-		for _, b := range in.Bytes() {
-			x = x*10 + int(b&15)
-		}
-		return
-	}
-
-	n := r()
+	var n int
+	Fscan(in, &n)
 	a := make([]int, n)
 	for i := range a {
-		a[i] = r()
+		Fscan(in, &a[i])
 	}
 	g := make([][]int, n)
 	for i := 1; i < n; i++ {
-		v, w := r()-1, r()-1
+		var v, w int
+		Fscan(in, &v, &w)
+		v--
+		w--
 		g[v] = append(g[v], w)
 		g[w] = append(g[w], v)
 	}
+
 	ans := make([]int, n)
-	dp := []int{}
-	var f func(v, fa int)
-	f = func(v, fa int) {
-		if i := sort.SearchInts(dp, a[v]); i < len(dp) {
-			old := dp[i]
-			dp[i] = a[v]
-			ans[v] = len(dp)
-			for _, w := range g[v] {
-				if w != fa {
-					f(w, v)
-				}
-			}
-			dp[i] = old
+	f := []int{}
+	var dfs func(int, int)
+	dfs = func(v, fa int) {
+		x := a[v]
+		j := sort.SearchInts(f, x)
+		if j < len(f) {
+			old := f[j]
+			f[j] = x
+			defer func() { f[j] = old }()
 		} else {
-			dp = append(dp, a[v])
-			ans[v] = len(dp)
-			for _, w := range g[v] {
-				if w != fa {
-					f(w, v)
-				}
+			f = append(f, x)
+			defer func() { f = f[:len(f)-1] }()
+		}
+		ans[v] = len(f)
+		for _, w := range g[v] {
+			if w != fa {
+				dfs(w, v)
 			}
-			dp = dp[:len(dp)-1]
 		}
 	}
-	f(0, -1)
+	dfs(0, -1)
 	for _, v := range ans {
 		Fprintln(out, v)
 	}
 }
 
-func main() { run(os.Stdin, os.Stdout) }
+func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
