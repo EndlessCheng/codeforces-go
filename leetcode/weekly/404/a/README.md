@@ -116,7 +116,7 @@ $$
 解得
 
 $$
-k \le \left\lfloor\dfrac{\sqrt{4n+1}-1}{2}\right\rfloor
+k \le \left\lfloor\dfrac{\sqrt{4n+1}-1}{2}\right\rfloor = \left\lfloor\dfrac{\lfloor\sqrt{4n+1}\rfloor-1}{2}\right\rfloor
 $$
 
 ### 答案
@@ -137,7 +137,7 @@ class Solution:
     def maxHeightOfTriangle(self, red: int, blue: int) -> int:
         def f(n: int, m: int) -> int:
             odd = isqrt(n)
-            even = int((sqrt(m * 4 + 1) - 1) / 2)
+            even = (isqrt(m * 4 + 1) - 1) // 2
             return even * 2 + 1 if odd > even else odd * 2
         return max(f(red, blue), f(blue, red))
 ```
@@ -150,7 +150,7 @@ class Solution {
 
     private int f(int n, int m) {
         int odd = (int) Math.sqrt(n);
-        int even = (int) ((Math.sqrt(m * 4 + 1) - 1) / 2);
+        int even = ((int) Math.sqrt(m * 4 + 1) - 1) / 2;
         return odd > even ? even * 2 + 1 : odd * 2;
     }
 }
@@ -160,7 +160,7 @@ class Solution {
 class Solution {
     int f(int n, int m) {
         int odd = sqrt(n);
-        int even = (sqrt(m * 4 + 1) - 1) / 2;
+        int even = ((int) sqrt(m * 4 + 1) - 1) / 2;
         return odd > even ? even * 2 + 1 : odd * 2;
     }
 
@@ -174,7 +174,7 @@ public:
 ```go [sol-Go]
 func f(n, m int) int {
 	odd := int(math.Sqrt(float64(n)))
-	even := int((math.Sqrt(float64(m*4+1)) - 1) / 2)
+	even := (int(math.Sqrt(float64(m*4+1))) - 1) / 2
 	if odd > even {
 		return even*2 + 1
 	}
@@ -195,7 +195,7 @@ func maxHeightOfTriangle(red, blue int) int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -205,7 +205,7 @@ func maxHeightOfTriangle(red, blue int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
