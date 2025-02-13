@@ -19,7 +19,7 @@ func init() {
 	}
 }
 
-func countBalls(lowLimit, highLimit int) (ans int) {
+func countBalls2(lowLimit, highLimit int) (ans int) {
 	for j := 1; j < len(s[0]); j++ {
 		ans = max(ans, s[highLimit][j]-s[lowLimit-1][j])
 	}
@@ -39,14 +39,16 @@ func countBalls1(lowLimit, highLimit int) (ans int) {
 	return
 }
 
-func countBalls3(lowLimit, highLimit int) (ans int) {
+func countBalls(lowLimit, highLimit int) (ans int) {
 	highS := strconv.Itoa(highLimit)
 	n := len(highS)
 	lowS := strconv.Itoa(lowLimit)
 	lowS = strings.Repeat("0", n-len(lowS)) + lowS // 补前导零，和 num2 对齐
 
-	memo := make([][46]int, n)
+	m := int(highS[0]-'0') + (n-1)*9 // 数位和的上界
+	memo := make([][]int, n)
 	for i := range memo {
+		memo[i] = make([]int, m+1)
 		for j := range memo[i] {
 			memo[i][j] = -1
 		}
@@ -83,7 +85,7 @@ func countBalls3(lowLimit, highLimit int) (ans int) {
 		return
 	}
 
-	for j := 1; j <= 45; j++ {
+	for j := 1; j <= m; j++ {
 		ans = max(ans, dfs(0, j, true, true))
 	}
 	return
