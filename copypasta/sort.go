@@ -86,7 +86,8 @@ https://codeforces.com/contest/1993/problem/D 2200
 ### 第 K 小/大（部分题目也可以用堆解决）
 第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个（k 从 1 开始）
 第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
-综合 https://atcoder.jp/contests/abc155/tasks/abc155_d
+https://atcoder.jp/contests/abc155/tasks/abc155_d 1845 综合
+https://atcoder.jp/contests/abc149/tasks/abc149_e 1905
 
 ### 0-1 分数规划
 题目见下面的「search01」
@@ -323,8 +324,6 @@ func sortCollections() {
 		// l == r, f(r+1) == false, and f(l) (= f(r)) == true  =>  answer is l.
 		return l
 	}
-
-	// 好题 https://atcoder.jp/contests/abc149/tasks/abc149_e
 
 	// sort.Search 的使用技巧·其二
 	// 若要求出一个和二分结果相关的东西
