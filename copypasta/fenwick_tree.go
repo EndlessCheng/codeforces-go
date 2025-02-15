@@ -19,15 +19,9 @@ todo 树状数组延申应用 https://www.luogu.com.cn/blog/kingxbz/shu-zhuang-s
 https://oi-wiki.org/ds/bit/
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/FenwickTree.java.html
 
-- [307. 区域和检索 - 数组可修改](https://leetcode.cn/problems/range-sum-query-mutable/) *模板题
-   - https://www.luogu.com.cn/problem/P3374
-- [315. 计算右侧小于当前元素的个数](https://leetcode.cn/problems/count-of-smaller-numbers-after-self/) *逆序对
-- [2426. 满足不等式的数对数目](https://leetcode.cn/problems/number-of-pairs-satisfying-inequality/) 2030
-- [3072. 将元素分配到两个数组中 II](https://leetcode.cn/problems/distribute-elements-into-two-arrays-ii/) 2053
-- [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
-- [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
-- [2519. 统计 K-Big 索引的数量](https://leetcode.cn/problems/count-the-number-of-k-big-indices/)（会员题）
-- [2613. 美数对](https://leetcode.cn/problems/beautiful-pairs/)（会员题）*曼哈顿最近点对
+模板题
+LC307 https://leetcode.cn/problems/range-sum-query-mutable/
+https://www.luogu.com.cn/problem/P3374
 
 关于逆序对，见下面的 cntInversions
 
@@ -76,6 +70,7 @@ https://codeforces.com/problemset/problem/246/E 2400
 https://codeforces.com/problemset/problem/1334/F 2500
 https://codeforces.com/problemset/problem/1635/F 2800
 
+https://atcoder.jp/contests/abc392/tasks/abc392_f 也可以用 Splay 树
 https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
