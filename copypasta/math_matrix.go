@@ -431,6 +431,7 @@ func (a matrix) determinant(mod int) int {
 // 模板题 https://loj.ac/p/113 https://www.luogu.com.cn/problem/P3812
 // 题单 https://www.luogu.com.cn/training/11251
 // https://codeforces.com/problemset/problem/959/F
+// https://atcoder.jp/contests/abc141/tasks/abc141_f
 // todo 构造 https://codeforces.com/problemset/problem/1427/E
 //  https://codeforces.com/problemset/problem/1101/G
 //  https://codeforces.com/problemset/problem/895/C   
