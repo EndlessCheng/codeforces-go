@@ -60,59 +60,19 @@ https://codeforces.com/problemset/problem/954/F
 /* 回溯
 
 子集（也可以用二进制枚举做）
-- [78. 子集](https://leetcode.cn/problems/subsets/)
-- [784. 字母大小写全排列](https://leetcode.cn/problems/letter-case-permutation/) 1342
-- [1286. 字母组合迭代器](https://leetcode.cn/problems/iterator-for-combination/) 1591
-- [LCP 51. 烹饪料理](https://leetcode.cn/problems/UEcfPD/)
-- [2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/) 1719
-- [2212. 射箭比赛中的最大得分](https://leetcode.cn/problems/maximum-points-in-an-archery-competition/) 1869
-- [2151. 基于陈述统计最多好人数](https://leetcode.cn/problems/maximum-good-people-based-on-statements/) 1980
-- [2959. 关闭分部的可行集合数目](https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/) 2077
-- [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/) 2119
-- [1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/) 2309
-- [320. 列举单词的全部缩写](https://leetcode.cn/problems/generalized-abbreviation/)（会员题）
 https://codeforces.com/problemset/problem/550/B 1400
 https://codeforces.com/problemset/problem/962/C 1400
 
 组合
-- [77. 组合](https://leetcode.cn/problems/combinations/)
-- [216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)
-- [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
-- [301. 删除无效的括号](https://leetcode.cn/problems/remove-invalid-parentheses/)
 https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举子集
 
-分割
-- [131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)
-- [306. 累加数](https://leetcode.cn/problems/additive-number/)
-- [93. 复原 IP 地址](https://leetcode.cn/problems/restore-ip-addresses/)
-- [2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/) 1679
-
 排列（部分题目可以用状压 DP 继续优化）
-- [46. 全排列](https://leetcode.cn/problems/permutations/)
-- [51. N 皇后](https://leetcode.cn/problems/n-queens/)
-- [52. N 皇后 II](https://leetcode.cn/problems/n-queens-ii/)
-- [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
-- [1307. 口算难题](https://leetcode.cn/problems/verbal-arithmetic-puzzle/) 2250
-- [2014. 重复 K 次的最长子序列](https://leetcode.cn/problems/longest-subsequence-repeated-k-times/) 2558
-- [267. 回文排列 II](https://leetcode.cn/problems/palindrome-permutation-ii/)（会员题）
 网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
 
 集合划分（贝尔数）https://oeis.org/A000110
 见下面的 partitionSet
 https://codeforces.com/problemset/problem/954/I 2200
 https://atcoder.jp/contests/abc390/tasks/abc390_d
-
-爆搜+剪枝
-- [3211. 生成不含相邻零的二进制字符串](https://leetcode.cn/problems/generate-binary-strings-without-adjacent-zeros/)
-- [79. 单词搜索](https://leetcode.cn/problems/word-search/)
-- [212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/)
-- [140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/)
-- [473. 火柴拼正方形](https://leetcode.cn/problems/matchsticks-to-square/)
-- [488. 祖玛游戏](https://leetcode.cn/problems/zuma-game/)
-- [638. 大礼包](https://leetcode.cn/problems/shopping-offers/)
-- [1255. 得分最高的单词集合](https://leetcode.cn/problems/maximum-score-words-formed-by-letters/) 1882
-- [2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/) 2648 结合二分
-- [面试题 17.25. 单词矩阵](https://leetcode.cn/problems/word-rectangle-lcci/)
 
 关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
 
@@ -1180,24 +1140,9 @@ func _(abs func(int) int) {
 网格/矩阵上的搜索
 NOTE: 对于 n*m 的网格图，BFS 最多只占用 O(min(n,m)) 的空间，而 DFS 最多会占用 O(nm) 的空间
 
-## 题单（右边数字为难度分）
-
-#### 网格图 DFS
-- [200. 岛屿数量](https://leetcode.cn/problems/number-of-islands/)
-- [695. 岛屿的最大面积](https://leetcode.cn/problems/max-area-of-island/)
-- [面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)
-- [463. 岛屿的周长](https://leetcode.cn/problems/island-perimeter/)
-- [2658. 网格图中鱼的最大数目](https://leetcode.cn/problems/maximum-number-of-fish-in-a-grid/) 1490
-- [1034. 边界着色](https://leetcode.cn/problems/coloring-a-border/) 1579
-- [1020. 飞地的数量](https://leetcode.cn/problems/number-of-enclaves/) 1615
-- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
-- [1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/) 1659
-- [130. 被围绕的区域](https://leetcode.cn/problems/surrounded-regions/)
-- [1391. 检查网格中是否存在有效路径](https://leetcode.cn/problems/check-if-there-is-a-valid-path-in-a-grid/) 1746
+网格图 DFS
 - [417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
    - https://codeforces.com/problemset/problem/1651/D 1900
-- [529. 扫雷游戏](https://leetcode.cn/problems/minesweeper/)
-- [1559. 二维网格图中探测环](https://leetcode.cn/problems/detect-cycles-in-2d-grid/) 1838
 - [827. 最大人工岛](https://leetcode.cn/problems/making-a-large-island/) 1934
    - https://codeforces.com/contest/616/problem/C 1600
    - 可以改一排或一列 https://codeforces.com/problemset/problem/1985/H1
@@ -1207,23 +1152,7 @@ https://codeforces.com/problemset/problem/723/D 1600
 https://codeforces.com/problemset/problem/598/D 1700
 https://codeforces.com/problemset/problem/1365/D 1700
 
-#### 网格图 BFS
-- [542. 01 矩阵](https://leetcode.cn/problems/01-matrix/) *多源 BFS
-- [994. 腐烂的橘子](https://leetcode.cn/problems/rotting-oranges/) 1433
-- [2684. 矩阵中移动的最大次数](https://leetcode.cn/problems/maximum-number-of-moves-in-a-grid/) 1626
-- [1926. 迷宫中离入口最近的出口](https://leetcode.cn/problems/nearest-exit-from-entrance-in-maze/) 1638
-- [1091. 二进制矩阵中的最短路径](https://leetcode.cn/problems/shortest-path-in-binary-matrix/) 1658
-- [1162. 地图分析](https://leetcode.cn/problems/as-far-from-land-as-possible/) 1666
-- [1824. 最少侧跳次数](https://leetcode.cn/problems/minimum-sideway-jumps/) 1778 0-1 BFS
-- [934. 最短的桥](https://leetcode.cn/problems/shortest-bridge/) 1826
-- [2146. 价格范围内最高排名的 K 样物品](https://leetcode.cn/problems/k-highest-ranked-items-within-a-price-range/) 1837
-- [1293. 网格中的最短路径](https://leetcode.cn/problems/shortest-path-in-a-grid-with-obstacles-elimination/) 1967
-- [1210. 穿过迷宫的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-reach-target-with-rotations/) 2022
-- [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069 0-1 BFS
-- [490. 迷宫](https://leetcode.cn/problems/the-maze/)（会员题）
-- [505. 迷宫 II](https://leetcode.cn/problems/the-maze-ii/)（会员题）
-- [499. 迷宫 III](https://leetcode.cn/problems/the-maze-iii/)（会员题）
-- [317. 离建筑物最近的距离](https://leetcode.cn/problems/shortest-distance-from-all-buildings/)（会员题）
+网格图 BFS
 https://codeforces.com/problemset/problem/35/C 1500
 https://codeforces.com/problemset/problem/329/B 1500
 https://codeforces.com/problemset/problem/2041/D 1700
@@ -1234,27 +1163,12 @@ https://codeforces.com/problemset/problem/1301/F 2600 BFS 进阶玩法
 https://atcoder.jp/contests/abc317/tasks/abc317_e
 另见 graph.go 中的 0-1 BFS
 
-#### 综合
-- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097
-- [329. 矩阵中的最长递增路径](https://leetcode.cn/problems/longest-increasing-path-in-a-matrix/)
-- [1036. 逃离大迷宫](https://leetcode.cn/problems/escape-a-large-maze/) 2165
-- [864. 获取所有钥匙的最短路径](https://leetcode.cn/problems/shortest-path-to-get-all-keys/) 2259
-- [1263. 推箱子](https://leetcode.cn/problems/minimum-moves-to-move-a-box-to-their-target-location/) 2297
+综合
 - [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/) 2347
    - https://www.luogu.com.cn/problem/UVA11624
-- [2556. 二进制矩阵中翻转最多一次使路径不连通](https://leetcode.cn/problems/disconnect-path-in-a-binary-matrix-by-at-most-one-flip/) 2369
-- [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
-- [2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/) 2582
-- [LCP 13. 寻宝](https://leetcode.cn/problems/xun-bao/)
-- [LCP 31. 变换的迷宫](https://leetcode.cn/problems/Db3wC1/)
-- [LCP 45. 自行车炫技赛场](https://leetcode.cn/problems/kplEvH/)
-- [LCP 75. 传送卷轴](https://leetcode.cn/problems/rdmXM7/)
-- [1728. 猫和老鼠 II](https://leetcode.cn/problems/cat-and-mouse-ii/) 2849
-- [1102. 得分最高的路径](https://leetcode.cn/problems/path-with-maximum-minimum-value/)（会员题）
 易错题 https://codeforces.com/problemset/problem/540/C 2000
 
-#### 其它
+其它
 - [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
 - [59. 螺旋矩阵 II](https://leetcode.cn/problems/spiral-matrix-ii/)
 
