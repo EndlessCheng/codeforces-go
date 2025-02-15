@@ -28,9 +28,8 @@ NTT vs FFT：对于模板题 https://www.luogu.com.cn/problem/P3803 NTT=1.98s(75
 
 卡常技巧
 A modulo multiplication method that is 2x faster than compiler implementation https://codeforces.com/blog/entry/111566
-*/
 
-/* 多项式全家桶
+多项式全家桶
 【推荐】https://www.luogu.com.cn/blog/command-block/ntt-yu-duo-xiang-shi-quan-jia-tong
 https://blog.orzsiyuan.com/search/%E5%A4%9A%E9%A1%B9%E5%BC%8F/2/
 模板 https://blog.orzsiyuan.com/archives/Polynomial-Template/
@@ -48,27 +47,26 @@ todo 卡常板子 https://judge.yosupo.jp/submission/65290
 快速阶乘算法 https://www.luogu.com.cn/problem/P5282
 调和级数求和 https://www.luogu.com.cn/problem/P5702
 
-具体的题目见下面的生成函数部分
-*/
-
-/* 分治 FFT
-todo 半在线卷积小记 https://www.luogu.com.cn/blog/command-block/ban-zai-xian-juan-ji-xiao-ji
-CDQ FFT 半在线卷积的O(nlog^2/loglogn)算法 https://www.qaq-am.com/cdqFFT/
-模板题 https://www.luogu.com.cn/problem/P4721
-https://atcoder.jp/contests/abc267/tasks/abc267_h
-*/
-
-/* GF: generating function 生成函数/母函数/多项式计数
+生成函数/母函数 GF generating function
 https://en.wikipedia.org/wiki/Generating_function
 todo generatingfunctionology https://www2.math.upenn.edu/~wilf/gfologyLinked2.pdf
 
-普通生成函数 OGF
-指数生成函数 EGF 入门题 https://codeforces.com/problemset/problem/891/E 3000
+GF 右移 k 位：乘以 x^k，例如 [3,1,4,1,5] * [0,0,1] = [0,0,3,1,4,1,5]
+GF 左移 k 位：减去前 k 项后，再除以 x^k
+
+GF 的前缀和：除以 1-x，例如 [3,1,4,1,5] * [1,1,1,...] = [3,4,8,9,14,14,14,...]
+GF 的差分：乘以 1-x，例如 [3,1,4,1,5] * [1,-1] = [3,-2,3,-3,4,-5] （去掉首尾两项就是一阶差分）
+
+普通生成函数 OGF Ordinary generating function
+指数生成函数 EGF Exponential generating function 
+- 入门题 https://codeforces.com/problemset/problem/891/E 3000
 狄利克雷生成函数 DGFs
 todo 【推荐】https://www.luogu.com.cn/blog/command-block/sheng-cheng-han-shuo-za-tan
  【推荐】数数入门 https://www.luogu.com.cn/blog/CJL/conut-ru-men
  https://www.bilibili.com/video/BV1Zg411T7Eq
 https://oi-wiki.org/math/gen-func/intro/
+[Tutorial] Generating Functions in Competitive Programming https://codeforces.com/blog/entry/77468 https://codeforces.com/blog/entry/77551
+Some useful power series https://www2.math.upenn.edu/~wilf/gfologyLinked2.pdf
 OGF 展开方式 https://oi-wiki.org/math/gen-func/ogf/#_5
 【数学理论】浅谈 OI 中常用的一些生成函数运算的合法与正确性 https://rqy.moe/Math/gf_correct/ https://www.luogu.com.cn/blog/lx-2003/gf-correct
 一些常见数列的生成函数推导 https://www.luogu.com.cn/blog/nederland/girl-friend
@@ -82,6 +80,9 @@ Optimal Algorithm on Polynomial Composite Set Power Series https://codeforces.co
 On linear recurrences and the math behind them https://codeforces.com/blog/entry/100158
 载谭 Binomial Sum：多项式复合、插值与泰勒展开 https://www.luogu.com.cn/blog/EntropyIncreaser/zai-tan-binomial-sum-duo-xiang-shi-fu-ge-cha-zhi-yu-tai-lei-zhan-kai
 How to composite (some) polynomials faster? https://codeforces.com/blog/entry/126124
+https://maspypy.com/%e5%a4%9a%e9%a0%85%e5%bc%8f%e3%83%bb%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%e6%95%b0%e3%81%88%e4%b8%8a%e3%81%92%e3%81%a8%e3%81%ae%e5%af%be%e5%bf%9c%e4%bb%98%e3%81%91
+https://maspypy.com/%e5%a4%9a%e9%a0%85%e5%bc%8f%e3%83%bb%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%ef%bc%88%ef%bc%92%ef%bc%89%e5%bc%8f%e5%a4%89%e5%bd%a2%e3%81%ab%e3%82%88%e3%82%8b%e8%a7%a3%e6%b3%95
+https://maspypy.com/%e5%a4%9a%e9%a0%85%e5%bc%8f%e3%83%bb%e5%bd%a2%e5%bc%8f%e7%9a%84%e3%81%b9%e3%81%8d%e7%b4%9a%e6%95%b0%ef%bc%88%ef%bc%93%ef%bc%89%e7%b7%9a%e5%bd%a2%e6%bc%b8%e5%8c%96%e5%bc%8f%e3%81%a8%e5%bd%a2%e5%bc%8f
 
 炫酷反演魔术 https://www.luogu.com.cn/blog/command-block/xuan-ku-fan-yan-mo-shu
 
@@ -96,13 +97,28 @@ https://lnrbhaw.github.io/2019/01/05/Min-Max%E5%AE%B9%E6%96%A5%E5%AD%A6%E4%B9%A0
 点双连通图计数 https://www.luogu.com.cn/problem/P5827
 边双连通图计数 https://www.luogu.com.cn/problem/P5828
 
-todo 多项式题单 https://www.luogu.com.cn/training/1008
+分治 FFT
+todo 半在线卷积小记 https://www.luogu.com.cn/blog/command-block/ban-zai-xian-juan-ji-xiao-ji
+CDQ FFT 半在线卷积的O(nlog^2/loglogn)算法 https://www.qaq-am.com/cdqFFT/
+模板题 https://www.luogu.com.cn/problem/P4721
+https://atcoder.jp/contests/abc267/tasks/abc267_h
+
+---
+
+入门题 https://atcoder.jp/contests/abc248/tasks/abc248_c
+- 容斥做法 https://atcoder.jp/contests/abc248/editorial/3818
+https://atcoder.jp/contests/abc276/tasks/abc276_g https://atcoder.jp/contests/abc276/editorial/5185
+题单 https://zhuanlan.zhihu.com/p/575825170
+题单 https://ac.nowcoder.com/acm/contest/24710#question
 https://codeforces.com/problemset/problem/958/F3
 todo https://codeforces.com/contest/438/problem/E
 todo https://leetcode.cn/contest/hust_1024_2023/problems/kzxnaX/
  https://leetcode.cn/circle/discuss/NEDYEC/ 
  https://oi-wiki.org/math/combinatorics/partition/#%E4%BA%94%E8%BE%B9%E5%BD%A2%E6%95%B0%E5%AE%9A%E7%90%86
  https://leetcode.cn/circle/discuss/Qvv72W/view/DJalmi/
+题单 https://www.luogu.com.cn/training/128735
+题单 https://www.luogu.com.cn/training/1008
+题单 https://www.luogu.com.cn/training/3295
 */
 
 const P = 998244353
@@ -312,6 +328,7 @@ func (a poly) integral() poly {
 // 多项式乘法逆 (mod x^n, 下同)
 // 参考 https://blog.orzsiyuan.com/archives/Polynomial-Inversion/
 // https://oi-wiki.org/math/poly/inv/
+// 注：也可以用牛顿迭代法
 // 模板题 https://www.luogu.com.cn/problem/P4238
 func (a poly) inv() poly {
 	n := len(a)
@@ -512,4 +529,4 @@ func (a poly) atan() poly {
 
 // 多项式复合逆
 // todo https://blog.csdn.net/weixin_43973966/article/details/88998646
-// todo 模板题 https://www.luogu.com.cn/problem/P5809
+//  模板题 https://www.luogu.com.cn/problem/P5809

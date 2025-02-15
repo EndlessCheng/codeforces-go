@@ -3,6 +3,7 @@ package copypasta
 import (
 	"math"
 	"math/bits"
+	"slices"
 )
 
 /* FFT: fast Fourier transform 快速傅里叶变换
@@ -37,7 +38,7 @@ https://www.luogu.com.cn/blog/command-block/fft-xue-xi-bi-ji
 
 模板题 https://www.luogu.com.cn/problem/P3803
 todo 推式子 https://www.luogu.com.cn/problem/P3338 花絮 https://zhuanlan.zhihu.com/p/349249817
-todo https://codeforces.com/problemset/problem/993/E
+ https://codeforces.com/problemset/problem/993/E
  https://codeforces.com/gym/104081/problem/K
  https://atcoder.jp/contests/abc196/tasks/abc196_f 子串失配个数
 */
@@ -97,17 +98,16 @@ func (t *fft) idft(a []complex128) {
 	}
 }
 
-// 计算 A(x) 和 B(x) 的卷积 (convolution)
-// c[k] = ∑a[i]*b[k-i], i=0..k
+// 计算两个多项式 A(x) 和 B(x) 的乘积，也叫卷积 (convolution)
+// 结果多项式 C(x)，其中 x^k 的系数为
+//     c[k] = ∑a[i]*b[k-i], i=0~k
 // 入参出参都是次项从低到高的系数
 //
 // EXTRA: 对数组 a 的频率数组 F(x) 计算自卷积，
 //        得到的结果 G(x) 表示两数之和等于 x 的方案数（这两个数之间没有位置约束）
 // https://atcoder.jp/contests/abc392/tasks/abc392_g
 //
-// EXTRA: 如果求 ∑a[i+k]*b[i]，可以把 a 反转后再求卷积
-// https://atcoder.jp/contests/abc196/tasks/abc196_f 
-//        把 a 反转得 ∑a'[n-1-i-k]*b[i]，这样卷积后的 c[n-1-k] 就是结果
+// 关于滑动窗口点积，见后面
 func polyConvFFT(a, b []int) []int {
 	n, m := len(a), len(b)
 	limit := 1 << bits.Len(uint(n+m-1))
@@ -133,9 +133,21 @@ func polyConvFFT(a, b []int) []int {
 	return conv
 }
 
+// 滑动窗口点积
+// 对 a 的每个长为 len(b) 的连续子数组 a'，计算 a' 与 b 的点积 c[i]
+// 也就是求 c[i] = ∑a[i+j]*b[j], j=0~m-1
+// 做法：把 b 反转后求卷积
+// https://atcoder.jp/contests/abc196/tasks/abc196_f 2274=CF2431
+func slidingWindowDotProduct(a, b []int) []int {
+	b = slices.Clone(b) // 避免修改原数组
+	slices.Reverse(b)
+	c := polyConvFFT(a, b)
+	return c[len(b)-1 : len(a)]
+}
+
 // 计算多个多项式的卷积
 // 入参出参都是次项从低到高的系数
-// 可重集大小为 k 的不同子集个数 https://codeforces.com/contest/958/problem/F3
+// https://codeforces.com/contest/958/problem/F3 可重集大小为 k 的不同子集个数
 func polyConvFFTs(coefs [][]int) []int {
 	n := len(coefs)
 	if n == 1 {
