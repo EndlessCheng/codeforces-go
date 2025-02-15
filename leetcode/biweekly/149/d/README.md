@@ -431,6 +431,8 @@ class Solution:
 
 由于前 $3$ 个字母都是一样的，我们可以只比较第 $3$ 个到第 $6$ 个字母的字典序。 
 
+### 优化前
+
 ```py [sol-Python3]
 class Solution:
     def minCostGoodCaption(self, s: str) -> str:
@@ -703,6 +705,247 @@ func minCostGoodCaption(s string) string {
 
 		f[i] = res[0]
 		t[i] = byte(res[1])
+	}
+
+	ans := make([]byte, 0, n)
+	for i := 0; i < n; i += int(size[i]) {
+		ans = append(ans, bytes.Repeat([]byte{t[i]}, int(size[i]))...)
+	}
+	return string(ans)
+}
+```
+
+### 优化
+
+把四个字母压缩到一个 $\texttt{int}$ 中，这样可以快速比较字典序。
+
+```py [sol-Python3]
+# 注：对于 Python 来说这可能是负优化
+class Solution:
+    def minCostGoodCaption(self, s: str) -> str:
+        n = len(s)
+        if n < 3:
+            return ""
+
+        s = list(map(ord, s))
+        f = [0] * (n + 1)
+        f[n - 1] = f[n - 2] = inf
+        t = [0] * (n + 1)
+        size = [3] * n
+
+        for i in range(n - 3, -1, -1):
+            a, b, c = sorted(s[i: i + 3])
+            s3 = t[i + 3]
+            res = f[i + 3] + c - a
+            mask = b << 24 | s3 << 16 | s3 << 8 | s3  # 4 个字母压缩成一个 int，方便比较字典序
+
+            if i + 4 <= n:
+                a, b, c, d = sorted(s[i: i + 4])
+                s4 = t[i + 4]
+                res4 = f[i + 4] + c + d - a - b
+                mask4 = b << 24 | b << 16 | s4 << 8 | s4
+                if res4 < res or res4 == res and mask4 < mask:
+                    res, mask = res4, mask4
+                    size[i] = 4
+
+            if i + 5 <= n:
+                a, b, c, d, e = sorted(s[i: i + 5])
+                res5 = f[i + 5] + d + e - a - b
+                mask5 = c << 24 | c << 16 | c << 8 | t[i + 5]
+                if res5 < res or res5 == res and mask5 < mask:
+                    res, mask = res5, mask5
+                    size[i] = 5
+
+            f[i] = res
+            t[i] = mask >> 24
+
+        ans = []
+        i = 0
+        while i < n:
+            ans.append(chr(t[i]) * size[i])
+            i += size[i]
+        return ''.join(ans)
+```
+
+```java [sol-Java]
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+
+class Solution {
+    public String minCostGoodCaption(String S) {
+        int n = S.length();
+        if (n < 3) {
+            return "";
+        }
+
+        byte[] s = S.getBytes(ISO_8859_1);
+        int[] f = new int[n + 1];
+        f[n - 1] = f[n - 2] = Integer.MAX_VALUE / 2;
+        byte[] t = new byte[n + 1];
+        byte[] size = new byte[n];
+
+        for (int i = n - 3; i >= 0; i--) {
+            byte[] sub = Arrays.copyOfRange(s, i, i + 3); // 效率更高
+            Arrays.sort(sub);
+            byte a = sub[0], b = sub[1], c = sub[2];
+            byte s3 = t[i + 3];
+            int res = f[i + 3] + (c - a);
+            int mask = b << 24 | s3 << 16 | s3 << 8 | s3; // 4 个 byte 压缩成一个 int，方便比较字典序
+            size[i] = 3;
+
+            if (i + 4 <= n) {
+                byte[] sub4 = Arrays.copyOfRange(s, i, i + 4);
+                Arrays.sort(sub4);
+                byte a4 = sub4[0], b4 = sub4[1], c4 = sub4[2], d4 = sub4[3];
+                byte s4 = t[i + 4];
+                int res4 = f[i + 4] + (c4 - a4 + d4 - b4);
+                int mask4 = b4 << 24 | b4 << 16 | s4 << 8 | s4;
+                if (res4 < res || res4 == res && mask4 < mask) {
+                    res = res4;
+                    mask = mask4;
+                    size[i] = 4;
+                }
+            }
+
+            if (i + 5 <= n) {
+                byte[] sub5 = Arrays.copyOfRange(s, i, i + 5);
+                Arrays.sort(sub5);
+                byte a5 = sub5[0], b5 = sub5[1], c5 = sub5[2], d5 = sub5[3], e5 = sub5[4];
+                int res5 = f[i + 5] + (d5 - a5 + e5 - b5);
+                int mask5 = c5 << 24 | c5 << 16 | c5 << 8 | t[i + 5];
+                if (res5 < res || res5 == res && mask5 < mask) {
+                    res = res5;
+                    mask = mask5;
+                    size[i] = 5;
+                }
+            }
+
+            f[i] = res;
+            t[i] = (byte) (mask >> 24);
+        }
+
+        StringBuilder ans = new StringBuilder(n); // 预分配空间
+        for (int i = 0; i < n; i += size[i]) {
+            // Java21 可以简化成 ans.repeat(t[i], size[i]);
+            for (int j = 0; j < size[i]; j++) {
+                ans.append((char) t[i]);
+            }
+        }
+        return ans.toString();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    string minCostGoodCaption(string s) {
+        int n = s.size();
+        if (n < 3) {
+            return "";
+        }
+
+        vector<int> f(n + 1);
+        f[n - 1] = f[n - 2] = INT_MAX / 2;
+        vector<char> t(n + 1);
+        vector<uint8_t> size(n);
+
+        for (int i = n - 3; i >= 0; i--) {
+            string sub = s.substr(i, 3);
+            ranges::sort(sub);
+            char a = sub[0], b = sub[1], c = sub[2];
+            char s3 = t[i + 3];
+            int res = f[i + 3] + (c - a);
+            int mask = b << 24 | s3 << 16 | s3 << 8 | s3; // 4 个 char 压缩成一个 int，方便比较字典序
+            size[i] = 3;
+
+            if (i + 4 <= n) {
+                string sub = s.substr(i, 4);
+                ranges::sort(sub);
+                char a = sub[0], b = sub[1], c = sub[2], d = sub[3];
+                char s4 = t[i + 4];
+                int res4 = f[i + 4] + (c - a + d - b);
+                int mask4 = b << 24 | b << 16 | s4 << 8 | s4;
+                if (res4 < res || res4 == res && mask4 < mask) {
+                    res = res4;
+                    mask = mask4;
+                    size[i] = 4;
+                }
+            }
+
+            if (i + 5 <= n) {
+                string sub = s.substr(i, 5);
+                ranges::sort(sub);
+                char a = sub[0], b = sub[1], c = sub[2], d = sub[3], e = sub[4];
+                int res5 = f[i + 5] + (d - a + e - b);
+                int mask5 = c << 24 | c << 16 | c << 8 | t[i + 5];
+                if (res5 < res || res5 == res && mask5 < mask) {
+                    res = res5;
+                    mask = mask5;
+                    size[i] = 5;
+                }
+            }
+
+            f[i] = res;
+            t[i] = mask >> 24;
+        }
+
+        string ans;
+        for (int i = 0; i < n; i += size[i]) {
+            ans.append(size[i], t[i]);
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func minCostGoodCaption(s string) string {
+	n := len(s)
+	if n < 3 {
+		return ""
+	}
+
+	f := make([]int, n+1)
+	f[n-1], f[n-2] = math.MaxInt/2, math.MaxInt/2
+	t := make([]byte, n+1)
+	size := make([]uint8, n)
+
+	for i := n - 3; i >= 0; i-- {
+		sub := []byte(s[i : i+3])
+		slices.Sort(sub)
+		a, b, c := sub[0], sub[1], sub[2]
+		s3 := int(t[i+3])
+		res := f[i+3] + int(c-a)
+		mask := int(b)<<24 | s3<<16 | s3<<8 | s3 // 4 个 byte 压缩成一个 int，方便比较字典序
+		size[i] = 3
+
+		if i+4 <= n {
+			sub := []byte(s[i : i+4])
+			slices.Sort(sub)
+			a, b, c, d := sub[0], sub[1], sub[2], sub[3]
+			s4 := int(t[i+4])
+			res4 := f[i+4] + int(c-a+d-b)
+			mask4 := int(b)<<24 | int(b)<<16 | s4<<8 | s4
+			if res4 < res || res4 == res && mask4 < mask {
+				res, mask = res4, mask4
+				size[i] = 4
+			}
+		}
+
+		if i+5 <= n {
+			sub := []byte(s[i : i+5])
+			slices.Sort(sub)
+			a, b, c, d, e := sub[0], sub[1], sub[2], sub[3], sub[4]
+			res5 := f[i+5] + int(d-a+e-b)
+			mask5 := int(c)<<24 | int(c)<<16 | int(c)<<8 | int(t[i+5])
+			if res5 < res || res5 == res && mask5 < mask {
+				res, mask = res5, mask5
+				size[i] = 5
+			}
+		}
+
+		f[i] = res
+		t[i] = byte(mask >> 24)
 	}
 
 	ans := make([]byte, 0, n)
