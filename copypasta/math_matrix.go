@@ -133,10 +133,10 @@ func (a matrix) powMul(n int, f0 matrix) matrix {
 	return res
 }
 
+// 一般是状态机 DP
 // 操作 k 次
 func solveDP(k int) (ans int) {
-	// 一般是状态机 DP
-	const size = 26 // DP 数组第二维度的大小
+	const size = 26 // 第二维度的大小
 
 	// DP 初始值（递归边界）
 	// 一般是一个全为 1 的列向量，对应初始值 f[0][j]=1 或者递归边界 dfs(0,j)=1
@@ -145,7 +145,7 @@ func solveDP(k int) (ans int) {
 		f0[i][0] = 1
 	}
 
-	// 递推式中的 f[i][j] += f[i-1][k]，提取系数得 m[j][k] = 1
+	// 递推式中的 f[i][j] += f[i-1][k] * 2，提取系数得 m[j][k] = 2
 	m := newMatrix(size, size)
 	for i := range m {
 		m[i][(i+1)%size] = 1 // 举例 f[i][j] = f[i][j+1] + f[i][j+2]
