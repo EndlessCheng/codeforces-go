@@ -239,11 +239,8 @@ func (a poly) reverse() poly {
 }
 
 func (a poly) reverseCopy() poly {
-	n := len(a)
-	b := make(poly, n)
-	for i, v := range a {
-		b[n-1-i] = v
-	}
+	b := slices.Clone(a)
+	slices.Reverse(b)
 	return b
 }
 
