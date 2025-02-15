@@ -158,7 +158,7 @@ func polyConvFFTs(coefs [][]int) []int {
 }
 
 // 有关快速数论变换（NTT）以及更多多项式运算的内容见 math_ntt.go
-// 如果题目没有取模，但保证计算结果小于 mod，也可以用 NTT 以加快速度
+// 如果题目没有取模，但保证答案小于 mod，也可以用 NTT 以加快速度
 // 效率对比 (go 1.20.6)
 // FFT 789ms https://atcoder.jp/contests/abc196/submissions/62740907
 // NTT 584ms https://atcoder.jp/contests/abc196/submissions/62740827
