@@ -1427,6 +1427,7 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // https://codeforces.com/problemset/problem/715/B 2300 https://leetcode.cn/problems/modify-graph-edge-weights/
 // https://codeforces.com/problemset/problem/1693/C 2300 转换
 // https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
+// https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
 // https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
 // https://atcoder.jp/contests/arc064/tasks/arc064_c * 稠密图
 // https://atcoder.jp/contests/abc237/tasks/abc237_e 转换
@@ -1589,7 +1590,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 		}
 	}
 
-	// EXTRA: 次短路
+	// EXTRA: 次短路 · 其一
 	// 模板题 https://www.luogu.com.cn/problem/P2865
 	// LC2045 https://leetcode.cn/problems/second-minimum-time-to-reach-destination/ 2202
 	// 次短路计数 https://codeforces.com/contest/1650/problem/G http://poj.org/problem?id=3463 https://www.acwing.com/problem/content/385/
@@ -1616,16 +1617,43 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 				w := e.to
 				newD := d + e.wt
 				if newD < dist[w] {
+					dist2[w] = dist[w]
+					dist[w] = newD
 					h.push(dijkstraPair{w, newD})
-					dist[w], newD = newD, dist[w]
-				}
-				if dist[w] < newD && newD < dist2[w] {
-					h.push(dijkstraPair{w, newD})
+				} else if dis[w] < newD && newD < dist2[w] { // 求严格次短路需要写 dis[w] < newD
 					dist2[w] = newD
+					h.push(dijkstraPair{w, newD})
 				}
 			}
 		}
-		//return dist2
+	}
+
+	// EXTRA: 次短路 · 其二
+	// 另一种次短路写法，适用性更广
+	// https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
+	{
+		const inf int = 1e18
+		type pair struct{ d, d2 int }
+		dis := make([]pair, n)
+		for i := range dis {
+			dis[i].d = inf
+			dis[i].d2 = inf
+		}
+		h := dijkstraHeap{{st, 0}}
+		for len(h) > 0 {
+			p := h.pop()
+			v, d := p.v, p.dis
+			if dis[v].d == inf {
+				dis[v].d = d
+			} else if dis[v].d2 == inf && d > dis[v].d { // 如果不要求严格次短路，可以去掉 d > dis[v].d
+				dis[v].d2 = d
+			} else {
+				continue
+			}
+			for _, e := range g[v] {
+				h.push(dijkstraPair{e.to, d + e.wt})
+			}
+		}
 	}
 
 	return
