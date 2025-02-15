@@ -29,10 +29,6 @@ import (
 https://leetcode.cn/studyplan/primers-list/
 https://leetcode.cn/studyplan/programming-skills/ 可选
 
-力扣题目分类汇总
-https://leetcode.cn/circle/article/04PVPY/
-https://leetcode.cn/circle/discuss/vEFf96/
-
 字符串基础
 https://codeforces.com/problemset/problem/1101/B
 https://leetcode.cn/problems/apply-operations-to-make-string-empty/
@@ -49,7 +45,9 @@ https://codeforces.com/problemset/problem/681/B 1300
     - https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/
     - 反向构造 https://codeforces.com/problemset/problem/1927/B 900
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
+https://codeforces.com/problemset/problem/1420/B 1200
 https://codeforces.com/problemset/problem/318/B 1300 子串
+https://codeforces.com/problemset/problem/1926/D 1300
 https://codeforces.com/problemset/problem/1800/F 1900 异或
 
 枚举右，维护左：需要维护两种值（pair）
@@ -147,8 +145,8 @@ https://codeforces.com/problemset/problem/701/C 1500
 https://codeforces.com/problemset/problem/1777/C 1700
 
 不定长滑动窗口（求子数组个数）
-和至少为 k 的子数组个数 https://atcoder.jp/contests/abc130/tasks/abc130_d
-变形：改成子数组 https://codeforces.com/problemset/problem/550/B
+https://atcoder.jp/contests/abc130/tasks/abc130_d 和至少为 k 的子数组个数
+https://codeforces.com/problemset/problem/550/B 变形：改成子数组
 其它题目见【前缀和】
 
 滑窗的同时维护数据
@@ -548,6 +546,7 @@ https://codeforces.com/problemset/problem/1914/F 1900
 https://codeforces.com/problemset/problem/1088/D 2000
 https://codeforces.com/problemset/problem/1763/C 2000
 https://codeforces.com/problemset/problem/1978/E 2000
+https://codeforces.com/problemset/problem/2051/F 2000
 https://codeforces.com/problemset/problem/1811/F 2100
 https://codeforces.com/problemset/problem/1798/E 2300
 https://codeforces.com/problemset/problem/209/C 2400
@@ -618,6 +617,7 @@ https://atcoder.jp/contests/abc127/tasks/abc127_e 1938
 https://atcoder.jp/contests/abc104/tasks/abc104_d 1739=CF2026
 - 抄袭？https://codeforces.com/problemset/problem/1426/F 2000
 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
+https://codeforces.com/group/BJlsDCvlJO/contest/586547/problem/I
 
 增量法
 - [2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/) 2033
@@ -1320,6 +1320,7 @@ func _() {
 	// 二维带权前缀和 https://codeforces.com/problemset/problem/2044/H
 	// 分类讨论 https://www.luogu.com.cn/problem/P3625
 	// - https://atcoder.jp/contests/abc347/tasks/abc347_f
+	// 转换 https://atcoder.jp/contests/agc015/tasks/agc015_c
 	matrixSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])
 		// sum 第一行和第一列都是 0
