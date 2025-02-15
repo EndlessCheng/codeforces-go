@@ -521,6 +521,7 @@ func sortCollections() {
 	// https://codeforces.com/blog/entry/60702
 	// 模板题 https://www.luogu.com.cn/problem/P3382
 	// 模板题 https://ac.nowcoder.com/acm/contest/64272/c
+	// https://atcoder.jp/contests/abc130/tasks/abc130_f 也可以用整数三分
 	// 题目推荐 https://cp-algorithms.com/num_methods/ternary_search.html#toc-tgt-4
 	ternarySearchF := func(l, r float64, f func(x float64) float64) float64 {
 		// 松一点
@@ -551,6 +552,7 @@ func sortCollections() {
 	// https://codeforces.com/problemset?order=BY_SOLVED_DESC&tags=ternary+search
 	// https://codeforces.com/problemset/problem/1355/E
 	// https://codeforces.com/problemset/problem/1301/B (只是举例，不用三分也可做)
+	// https://atcoder.jp/contests/abc130/tasks/abc130_f
 	ternarySearchInt := func(l, r int, f func(x int) int) int {
 		for r-l > 4 { // 最小区间长度根据题目可以扩大点
 			m1 := l + (r-l)/3
