@@ -69,6 +69,7 @@ https://atcoder.jp/contests/agc057/tasks/agc057_b
 https://ac.nowcoder.com/acm/contest/65157/C
 https://www.luogu.com.cn/problem/P7840
 - https://atcoder.jp/contests/abc359/tasks/abc359_f
+https://atcoder.jp/contests/arc051/tasks/arc051_c 1898=CF2147
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
@@ -95,6 +96,7 @@ https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 题单 https://www.luogu.com.cn/training/8793
 https://www.luogu.com.cn/problem/P2949 经典题
 https://www.luogu.com.cn/problem/P3045
+https://www.luogu.com.cn/problem/P11457
 https://codeforces.com/problemset/problem/1526/C2 1600
 https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
 https://codeforces.com/problemset/problem/730/I 2000
