@@ -1590,7 +1590,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 		}
 	}
 
-	// EXTRA: 次短路 · 其一
+	// EXTRA: 次短路·其一
 	// 模板题 https://www.luogu.com.cn/problem/P2865
 	// LC2045 https://leetcode.cn/problems/second-minimum-time-to-reach-destination/ 2202
 	// 次短路计数 https://codeforces.com/contest/1650/problem/G http://poj.org/problem?id=3463 https://www.acwing.com/problem/content/385/
@@ -1628,7 +1628,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 		}
 	}
 
-	// EXTRA: 次短路 · 其二
+	// EXTRA: 次短路·其二
 	// 另一种次短路写法，适用性更广
 	// https://atcoder.jp/contests/abc245/tasks/abc245_g 2270=CF2428
 	{
