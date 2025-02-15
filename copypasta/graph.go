@@ -14,172 +14,9 @@ import (
 本页面的力扣题目已整理至【题单】图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）
 https://leetcode.cn/circle/discuss/01LUak/
 
-### DFS 基础
-
-找连通块、判断是否有环等。部分题目做法不止一种。
-
-- [547. 省份数量](https://leetcode.cn/problems/number-of-provinces/)
-- [1971. 寻找图中是否存在路径](https://leetcode.cn/problems/find-if-path-exists-in-graph/)
-- [797. 所有可能的路径](https://leetcode.cn/problems/all-paths-from-source-to-target/) 1383
-- [841. 钥匙和房间](https://leetcode.cn/problems/keys-and-rooms/) 1412
-- [2316. 统计无向图中无法互相到达点对数](https://leetcode.cn/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/) 1604
-- [1319. 连通网络的操作次数](https://leetcode.cn/problems/number-of-operations-to-make-network-connected/) 1633
-- [2492. 两个城市间路径的最小分数](https://leetcode.cn/problems/minimum-score-of-a-path-between-two-cities/) 1680
-- [2685. 统计完全连通分量的数量](https://leetcode.cn/problems/count-the-number-of-complete-components/) 1769
-- [2192. 有向无环图中一个节点的所有祖先](https://leetcode.cn/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/) 1788
-- [924. 尽量减少恶意软件的传播](https://leetcode.cn/problems/minimize-malware-spread/) 1869
-- [2101. 引爆最多的炸弹](https://leetcode.cn/problems/detonate-the-maximum-bombs/) 1880
-- [802. 找到最终的安全状态](https://leetcode.cn/problems/find-eventual-safe-states/) 1962 三色标记法
-- [2092. 找出知晓秘密的所有专家](https://leetcode.cn/problems/find-all-people-with-secret/) 2004
-- [261. 以图判树](https://leetcode.cn/problems/graph-valid-tree/)（会员题）
-- [323. 无向图中连通分量的数目](https://leetcode.cn/problems/number-of-connected-components-in-an-undirected-graph/)（会员题）
-
-### BFS 基础
-
-求最短路等。
-
-- [1311. 获取你好友已观看的视频](https://leetcode.cn/problems/get-watched-videos-by-your-friends/) 1653
-- [1129. 颜色交替的最短路径](https://leetcode.cn/problems/shortest-path-with-alternating-colors/) 1780
-- [1298. 你能从盒子里获得的最大糖果数](https://leetcode.cn/problems/maximum-candies-you-can-get-from-boxes/) 1825
-- [2039. 网络空闲的时刻](https://leetcode.cn/problems/the-time-when-the-network-becomes-idle/) 1865
-- [2608. 图中的最短环](https://leetcode.cn/problems/shortest-cycle-in-a-graph/) 1904
-
-### 拓扑排序
-
-学习拓扑排序前，请先完成 [1557. 可以到达所有点的最少点数目](https://leetcode.cn/problems/minimum-number-of-vertices-to-reach-all-nodes/)
-
-- [207. 课程表](https://leetcode.cn/problems/course-schedule/)
-- [210. 课程表 II](https://leetcode.cn/problems/course-schedule-ii/)
-- [1462. 课程表 IV](https://leetcode.cn/problems/course-schedule-iv/) 1693
-- [2115. 从给定原材料中找到所有可以做出的菜](https://leetcode.cn/problems/find-all-possible-recipes-from-given-supplies/) 1679
-- [310. 最小高度树](https://leetcode.cn/problems/minimum-height-trees/)
-- [802. 找到最终的安全状态](https://leetcode.cn/problems/find-eventual-safe-states/) 1962
-- [1203. 项目管理](https://leetcode.cn/problems/sort-items-by-groups-respecting-dependencies/) 2419
-- [2603. 收集树中金币](https://leetcode.cn/problems/collect-coins-in-a-tree/) 2712
-- [269. 火星词典](https://leetcode.cn/problems/alien-dictionary/)（会员题）
-- [444. 序列重建](https://leetcode.cn/problems/sequence-reconstruction/)（会员题）
-- [1059. 从始点到终点的所有路径](https://leetcode.cn/problems/all-paths-from-source-lead-to-destination/)（会员题）
-- [1136. 并行课程](https://leetcode.cn/problems/parallel-courses/)（会员题）
-
-### 在拓扑序上 DP
-
-- [2050. 并行课程 III](https://leetcode.cn/problems/parallel-courses-iii/) 2084
-- [1857. 有向图中最大颜色值](https://leetcode.cn/problems/largest-color-value-in-a-directed-graph/) 2313
-
-### 基环树
-
-[基环树介绍](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/solution/nei-xiang-ji-huan-shu-tuo-bu-pai-xu-fen-c1i1b/)
-
-- [684. 冗余连接](https://leetcode.cn/problems/redundant-connection/) 做法不止一种
-- [2359. 找到离给定两个节点最近的节点](https://leetcode.cn/problems/find-closest-node-to-given-two-nodes/) 1715
-- [2360. 图中的最长环](https://leetcode.cn/problems/longest-cycle-in-a-graph/) 1897
-- [2876. 有向图访问计数](https://leetcode.cn/problems/count-visited-nodes-in-a-directed-graph/) 2210
-- [2127. 参加会议的最多员工数](https://leetcode.cn/problems/maximum-employees-to-be-invited-to-a-meeting/) 2449
-- [2836. 在传球游戏中最大化函数值](https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game) 2769
-- [2204. 无向图中到环的距离](https://leetcode.cn/problems/distance-to-a-cycle-in-undirected-graph/)（会员题）
-- [LCP 21. 追逐游戏](https://leetcode.cn/problems/Za25hA/)
-
-### 单源最短路：Dijkstra
-
-[Dijkstra 算法介绍](https://leetcode.cn/problems/network-delay-time/solution/liang-chong-dijkstra-xie-fa-fu-ti-dan-py-ooe8/)
-
-- [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/)
-- [2642. 设计可以求最短路径的图类](https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/) 1811
-- [1514. 概率最大的路径](https://leetcode.cn/problems/path-with-maximum-probability/) 1846
-- [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948 做法不止一种
-- [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069 也可以 0-1 BFS
-- [1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/) 2079
-- [1976. 到达目的地的方案数](https://leetcode.cn/problems/number-of-ways-to-arrive-at-destination/) 2095
-- [2662. 前往目标的最小代价](https://leetcode.cn/problems/minimum-cost-of-a-path-with-special-roads/) 2154
-- [2045. 到达目的地的第二短时间](https://leetcode.cn/problems/second-minimum-time-to-reach-destination/) 2202 也可以 BFS
-- [882. 细分图中的可到达节点](https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/) 2328
-- [2203. 得到要求路径的最小带权子图](https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths/) 2364
-- [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
-- [2699. 修改图中的边权](https://leetcode.cn/problems/modify-graph-edge-weights/) 2874
-- [2093. 前往目标城市的最小费用](https://leetcode.cn/problems/minimum-cost-to-reach-city-with-discounts/)（会员题）
-- [2473. 购买苹果的最低成本](https://leetcode.cn/problems/minimum-cost-to-buy-apples/)（会员题）
-- [2714. 找到最短路径的 K 次跨越](https://leetcode.cn/problems/find-shortest-path-with-k-hops/)（会员题）
-- [2737. 找到最近的标记节点](https://leetcode.cn/problems/find-the-closest-marked-node/)（会员题）
-- [LCP 35. 电动车游城市](https://leetcode.cn/problems/DFPeFJ/)
-- [LCP 56. 信物传送](https://leetcode.cn/problems/6UEx57/) 也可以 0-1 BFS
-
-### 全源最短路：Floyd
-
-[带你发明 Floyd 算法：从记忆化搜索到递推](https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/solution/dai-ni-fa-ming-floyd-suan-fa-cong-ji-yi-m8s51/)
-
-- [2642. 设计可以求最短路径的图类](https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/) 1811
-- [1334. 阈值距离内邻居最少的城市](https://leetcode.cn/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/) 1855
-- [2976. 转换字符串的最小成本 I](https://leetcode.cn/problems/minimum-cost-to-convert-string-i/) 1882
-- [2959. 关闭分部的可行集合数目](https://leetcode.cn/problems/number-of-possible-sets-of-closing-branches/) 2077
-- [2977. 转换字符串的最小成本 II](https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/) 2696
-
-### 最小生成树：Kruskal/Prim
-
-- [1584. 连接所有点的最小费用](https://leetcode.cn/problems/min-cost-to-connect-all-points/) 1858
-- [1489. 找到最小生成树里的关键边和伪关键边](https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/) 2572
-- [1135. 最低成本连通所有城市](https://leetcode.cn/problems/connecting-cities-with-minimum-cost/)（会员题）
-- [1168. 水资源分配优化](https://leetcode.cn/problems/optimize-water-distribution-in-a-village/)（会员题）
-
-### 欧拉路径/欧拉回路：Hierholzer
-
-- [332. 重新安排行程](https://leetcode.cn/problems/reconstruct-itinerary/)
-- [753. 破解保险箱](https://leetcode.cn/problems/cracking-the-safe/) 2274
-- [2097. 合法重新排列数对](https://leetcode.cn/problems/valid-arrangement-of-pairs/) 2651
-
-### 强连通分量/双连通分量：Tarjan
-
-- [928. 尽量减少恶意软件的传播 II](https://leetcode.cn/problems/minimize-malware-spread-ii/) 1985
-- [1192. 查找集群内的关键连接](https://leetcode.cn/problems/critical-connections-in-a-network/) 2085
-- [1568. 使陆地分离的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-disconnect-island/) 2209
-- [LCP 54. 夺回据点](https://leetcode.cn/problems/s5kipK/)
-
-### 二分图（染色判定、最大匹配）
-
-部分题目做法不止一种。难度仅供参考。
-
-- [785. 判断二分图](https://leetcode.cn/problems/is-graph-bipartite/) 1625
-- [886. 可能的二分法](https://leetcode.cn/problems/possible-bipartition/) 1795
-- [1947. 最大兼容性评分和](https://leetcode.cn/problems/maximum-compatibility-score-sum/)
-- [1879. 两个数组最小的异或值之和](https://leetcode.cn/problems/minimum-xor-sum-of-two-arrays/) 2145
-- [1349. 参加考试的最大学生数](https://leetcode.cn/problems/maximum-students-taking-exam/) 2386
-- [2172. 数组的最大与和](https://leetcode.cn/problems/maximum-and-sum-of-array/) 2392
-- [1595. 连通两组点的最小成本](https://leetcode.cn/problems/minimum-cost-to-connect-two-groups-of-points/) 2538
-- [1066. 校园自行车分配 II](https://leetcode.cn/problems/campus-bikes-ii/)（会员题）
-- [1820. 最多邀请的个数](https://leetcode.cn/problems/maximum-number-of-accepted-invitations/)（会员题）
-- [2123. 使矩阵中的 1 互不相邻的最小操作数](https://leetcode.cn/problems/minimum-operations-to-remove-adjacent-ones-in-matrix/)（会员题）
-- [2403. 杀死所有怪物的最短时间](https://leetcode.cn/problems/minimum-time-to-kill-all-monsters/)（会员题）
-- [LCP 04. 覆盖](https://leetcode.cn/problems/broken-board-dominoes/)
-
-### 网络流
-
-做法不止一种。难度仅供参考。
-
-- [2850. 将石头分散到网格图的最少移动次数](https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/) 2001
-- [1349. 参加考试的最大学生数](https://leetcode.cn/problems/maximum-students-taking-exam/) 2386
-- [2172. 数组的最大与和](https://leetcode.cn/problems/maximum-and-sum-of-array/) 2392
-- [LCP 38. 守卫城堡](https://leetcode.cn/problems/7rLGCR/)
-
-### 其它
-
-- [1042. 不邻接植花](https://leetcode.cn/problems/flower-planting-with-no-adjacent/) 1712
-- [787. K 站中转内最便宜的航班](https://leetcode.cn/problems/cheapest-flights-within-k-stops/) 1786
-- [1761. 一个图中连通三元组的最小度数](https://leetcode.cn/problems/minimum-degree-of-a-connected-trio-in-a-graph/) 2005
-- [2508. 添加边使所有节点度数都为偶数](https://leetcode.cn/problems/add-edges-to-make-degrees-of-all-nodes-even/) 2060
-- [1579. 保证图可完全遍历](https://leetcode.cn/problems/remove-max-number-of-edges-to-keep-graph-fully-traversable/) 2132
-- [2065. 最大化一张图中的路径价值](https://leetcode.cn/problems/maximum-path-quality-of-a-graph/) 2178
-- [1697. 检查边长度限制的路径是否存在](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/) 2300
-- [2242. 节点序列的最大得分](https://leetcode.cn/problems/maximum-score-of-a-node-sequence/) 2304
-- [1928. 规定时间内到达终点的最小花费](https://leetcode.cn/problems/minimum-cost-to-reach-destination-in-time/) 2413
-- [2493. 将节点分成尽可能多的组](https://leetcode.cn/problems/divide-nodes-into-the-maximum-number-of-groups/) 2415 **推荐**
-- [1782. 统计点对的数目](https://leetcode.cn/problems/count-pairs-of-nodes/) 2457
-- [277. 搜寻名人](https://leetcode.cn/problems/find-the-celebrity/)（会员题）
-- [1724. 检查边长度限制的路径是否存在 II](https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths-ii/)（会员题）
-- [2077. 殊途同归](https://leetcode.cn/problems/paths-in-maze-that-lead-to-same-room/)（会员题）
-- [LCP 16. 游乐园的游览计划](https://leetcode.cn/problems/you-le-yuan-de-you-lan-ji-hua/)
-
 有关【网格图】的题目，见 search.go
 
-### 建图
+建图
 https://codeforces.com/problemset/problem/2027/C 1500
 https://codeforces.com/problemset/problem/765/D 1700
 https://codeforces.com/problemset/problem/1635/E 2200
@@ -192,10 +29,10 @@ Graph Theory Playlist https://www.youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE
 点权转边权：将一个点拆分成两个点，用一条边连起来，新边的边权就是该点的点权（原图的边的边权视作 0）
 其它情况：也可以用 min/max 等价转换 https://codeforces.com/problemset/problem/915/F
 
-#### 数学归纳法
+数学归纳法
 https://codeforces.com/problemset/problem/1515/F 2600
 
-#### 平面图最小割转最短路
+平面图最小割转最短路
 https://www.luogu.com.cn/problem/P4001
 https://www.luogu.com.cn/problem/P7916
 https://codeforces.com/contest/1749/problem/E 2400
@@ -348,6 +185,8 @@ func (*graph) readGraphList(in io.Reader, n, m int) {
 // https://codeforces.com/blog/entry/135239
 
 /* 图上的 DFS
+https://atcoder.jp/contests/abc126/tasks/abc126_e
+https://atcoder.jp/contests/agc012/tasks/agc012_b 思维扩展
 https://codeforces.com/problemset/problem/744/A 1500
 https://codeforces.com/problemset/problem/659/E 1600
 https://codeforces.com/problemset/problem/1176/E 1700
@@ -459,13 +298,13 @@ func (*graph) dfs(g [][]int, st int) {
 		// https://codeforces.com/problemset/problem/1547/G 2100
 		// 与 AC 自动机结合 https://www.luogu.com.cn/problem/P2444
 		color := make([]int8, len(g))
-		var f func(int) bool
-		f = func(v int) bool {
+		var dfs func(int) bool
+		dfs = func(v int) bool {
 			color[v] = 1
 			for _, w := range g[v] {
 				c := color[w]
 				if c == 0 { // 未访问过，即 DFS 树上的树边【树枝边】
-					if f(w) {
+					if dfs(w) {
 						return true
 					}
 				} else if c == 1 { // 后向边，说明有环
@@ -477,7 +316,7 @@ func (*graph) dfs(g [][]int, st int) {
 		}
 		for i, c := range color {
 			if c == 0 {
-				f(i) // ...
+				dfs(i) // ...
 			}
 		}
 	}
@@ -574,6 +413,7 @@ func (*graph) calcCC(n int, g [][]int) (comps [][]int, ccIDs []int) {
 }
 
 /* 图上的 BFS
+https://atcoder.jp/contests/abc132/tasks/abc132_e 分层图
 https://codeforces.com/problemset/problem/689/B 1600 最短路模板题
 https://codeforces.com/problemset/problem/601/A 1600 脑筋急转弯
 https://codeforces.com/problemset/problem/1721/D 1800 带撤销的 BFS
@@ -1155,20 +995,21 @@ func (*graph) findBridges(n int, edges [][]int) (isBridge []bool) {
 	return
 }
 
-// 无向图的双连通分量 Biconnected Components (BCC) / 重连通图
-// 点双连通分量 v-BCC：任意割点都是至少两个不同点双的公共点
-// 点双也叫 Block
-// 缩点后形成一棵 block-cut tree / BC-tree https://en.wikipedia.org/wiki/Biconnected_component#Block-cut_tree
-// 每条树边恰好在一个点双内
-// 每个点双的点数就是一个极大环的点数
-// https://oi-wiki.org/graph/bcc/
-// https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
-//
-// 模板题 https://www.luogu.com.cn/problem/P8435
-// 好题 https://codeforces.com/problemset/problem/962/F
-// LCP54 https://leetcode.cn/problems/s5kipK/
-// todo 结合树链剖分 https://codeforces.com/problemset/problem/487/E
 /*
+无向图的双连通分量 Biconnected Components (BCC) / 重连通图
+点双连通分量 v-BCC：任意割点都是至少两个不同点双的公共点
+点双也叫 Block
+缩点后形成一棵 block-cut tree / BC-tree https://en.wikipedia.org/wiki/Biconnected_component#Block-cut_tree
+每条树边恰好在一个点双内
+每个点双的点数就是一个极大环的点数
+https://oi-wiki.org/graph/bcc/
+https://www.csie.ntu.edu.tw/~hsinmu/courses/_media/dsa_13spring/horowitz_306_311_biconnected.pdf
+
+模板题 https://www.luogu.com.cn/problem/P8435
+好题 https://codeforces.com/problemset/problem/962/F
+LCP54 https://leetcode.cn/problems/s5kipK/
+todo 结合树链剖分 https://codeforces.com/problemset/problem/487/E
+
 使用 https://csacademy.com/app/graph_editor/ 显示下面的样例
 基础样例 - 一个割点两个简单环
 1 2
@@ -1290,6 +1131,8 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 // 模板题 https://www.luogu.com.cn/problem/P8436
 // 模板题 https://codeforces.com/problemset/problem/1000/E
 // 较为综合的一道题 https://codeforces.com/problemset/problem/732/F
+// https://codeforces.com/gym/104270/problem/B DSU
+// - https://www.luogu.com.cn/problem/P9886
 func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) {
 	isBridge := G.findBridges(n, edges)
 	type neighbor struct{ to, eid int }
@@ -1299,13 +1142,13 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 	bccIDs = make([]int, len(g))
 	idCnt := 0
 	var comp []int
-	var dfs2 func(int)
-	dfs2 = func(v int) {
+	var initBid func(int)
+	initBid = func(v int) {
 		bccIDs[v] = idCnt
 		comp = append(comp, v)
 		for _, e := range g[v] {
 			if w := e.to; !isBridge[e.eid] && bccIDs[w] == 0 {
-				dfs2(w)
+				initBid(w)
 			}
 		}
 	}
@@ -1313,7 +1156,7 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 		if id == 0 {
 			idCnt++
 			comp = []int{}
-			dfs2(i)
+			initBid(i)
 			comps = append(comps, comp)
 		}
 	}
@@ -1331,9 +1174,9 @@ func (G *graph) findEdgeBCC(n int, edges [][]int) (comps [][]int, bccIDs []int) 
 	}
 
 	// 也可以遍历 isBridge，割边两端点 bccIDs 一定不同
-	for eid, b := range isBridge {
+	for i, b := range isBridge {
 		if b {
-			e := edges[eid]
+			e := edges[i]
 			v, w := e[0], e[1]
 			v, w = bccIDs[v]-1, bccIDs[w]-1
 			g2[v] = append(g2[v], w)
@@ -1560,35 +1403,13 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // 最短路问题笔记 https://www.luogu.com.cn/blog/SCN/zui-duan-lu-wen-ti-bi-ji
 // Universal Optimality https://mp.weixin.qq.com/s/V0MlmsoZdcRIZcxsRgAzuA
 //
-// ## 题单：Dijkstra
-// - [743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/)
-// - [3112. 访问消失节点的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-disappearing-nodes/) 1757 理解原理
-// - [2642. 设计可以求最短路径的图类](https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/) 1811
-// - [1514. 概率最大的路径](https://leetcode.cn/problems/path-with-maximum-probability/) 1846
-// - [1631. 最小体力消耗路径](https://leetcode.cn/problems/path-with-minimum-effort/) 1948 *max 做法不止一种
-// - [1368. 使网格图至少有一条有效路径的最小代价](https://leetcode.cn/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/) 2069 也可以 0-1 BFS
-// - [1786. 从第一个节点出发到最后一个节点的受限路径数](https://leetcode.cn/problems/number-of-restricted-paths-from-first-to-last-node/) 2079
-// - [3123. 最短路径中的边](https://leetcode.cn/problems/find-edges-in-shortest-paths/) 2093
-// - [1976. 到达目的地的方案数](https://leetcode.cn/problems/number-of-ways-to-arrive-at-destination/) 2095
-// - [2662. 前往目标的最小代价](https://leetcode.cn/problems/minimum-cost-of-a-path-with-special-roads/) 2154
-// - [2045. 到达目的地的第二短时间](https://leetcode.cn/problems/second-minimum-time-to-reach-destination/) 2202 也可以 BFS
-// - [882. 细分图中的可到达节点](https://leetcode.cn/problems/reachable-nodes-in-subdivided-graph/) 2328
-// - [2203. 得到要求路径的最小带权子图](https://leetcode.cn/problems/minimum-weighted-subgraph-with-the-required-paths/) 2364
-// - [2577. 在网格图中访问一个格子的最少时间](https://leetcode.cn/problems/minimum-time-to-visit-a-cell-in-a-grid/) 2382
-// - [2699. 修改图中的边权](https://leetcode.cn/problems/modify-graph-edge-weights/) 2874
-//     - https://codeforces.com/problemset/problem/715/B 2300
-// - [1102. 得分最高的路径](https://leetcode.cn/problems/path-with-maximum-minimum-value/)（会员题）
-// - [2093. 前往目标城市的最小费用](https://leetcode.cn/problems/minimum-cost-to-reach-city-with-discounts/)（会员题）
-// - [2473. 购买苹果的最低成本](https://leetcode.cn/problems/minimum-cost-to-buy-apples/)（会员题） *超级源点
-// - [2714. 找到最短路径的 K 次跨越](https://leetcode.cn/problems/find-shortest-path-with-k-hops/)（会员题）
-// - [2737. 找到最近的标记节点](https://leetcode.cn/problems/find-the-closest-marked-node/)（会员题）
-// - [LCP 35. 电动车游城市](https://leetcode.cn/problems/DFPeFJ/)
-//
 // 模板题 https://www.luogu.com.cn/problem/P3371 https://www.luogu.com.cn/problem/P4779
 //       https://codeforces.com/problemset/problem/20/C 1900
 // 最短路个数 https://www.luogu.com.cn/problem/P1144
 //           https://www.luogu.com.cn/problem/P1608
 // 【理解本质】https://atcoder.jp/contests/abc271/tasks/abc271_e
+// https://atcoder.jp/contests/abc191/tasks/abc191_e
+// https://atcoder.jp/contests/abc192/tasks/abc192_e
 // https://codeforces.com/problemset/problem/229/B 1700 二分
 // https://codeforces.com/problemset/problem/2023/B 1700 建模
 // https://codeforces.com/problemset/problem/1725/M 1800 分层图最短路
@@ -1599,10 +1420,11 @@ func (h *dijkstraHeap) pop() dijkstraPair   { return heap.Pop(h).(dijkstraPair) 
 // - https://atcoder.jp/contests/arc090/tasks/arc090_c
 // https://codeforces.com/problemset/problem/938/D 2000 超级源点
 // - LC2473 https://leetcode.cn/problems/minimum-cost-to-buy-apples/
+// https://atcoder.jp/contests/abc204/tasks/abc204_e 1710=CF2004
 // https://codeforces.com/problemset/problem/507/E 2100 双关键字+记录路径编号 
 // https://codeforces.com/problemset/problem/1005/F 2100
 // https://codeforces.com/problemset/problem/567/E 2200 * 关键边、伪关键边（与割边结合）
-// https://codeforces.com/problemset/problem/715/B 2300
+// https://codeforces.com/problemset/problem/715/B 2300 https://leetcode.cn/problems/modify-graph-edge-weights/
 // https://codeforces.com/problemset/problem/1693/C 2300 转换
 // https://codeforces.com/problemset/problem/1753/D 2400 建模+转换+多源最短路 
 // https://codeforces.com/problemset/problem/1528/D 2500 建模【好题】
@@ -1641,7 +1463,7 @@ func (*graph) shortestPathDijkstra(n, st int, edges [][]int) (dis []int) {
 	for i := range dis {
 		dis[i] = inf
 	}
-	dis[st] = 0
+	dis[st] = 0            // 如果不写这一行，那么计算出的 dis[st] 是包含 st 的最小环长度
 	from := make([]int, n) // 见下面「从 st 到 end 的路径」
 	for i := range from {
 		from[i] = -1
@@ -1994,8 +1816,9 @@ func (*graph) shortestPathSPFA(n, st int, edges [][]int) (dis []int) { // 有负
 // 动态加点 https://codeforces.com/problemset/problem/295/B
 // 动态加边 LC2642 https://leetcode.cn/problems/design-graph-with-shortest-path-calculator/ 1811
 // - https://codeforces.com/problemset/problem/25/C
+// https://atcoder.jp/contests/abc143/tasks/abc143_e 最少加油次数 跑两次 Floyd
 // DP LC2977 https://leetcode.cn/problems/minimum-cost-to-convert-string-ii/
-// todo https://atcoder.jp/contests/abc243/tasks/abc243_e
+// https://atcoder.jp/contests/abc243/tasks/abc243_e 寻找不影响最短路的边
 // 传递闭包 UVa247 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=4&page=show_problem&problem=183
 // 注：求传递闭包时，若 i-k 不连通，则最内层循环无需运行
 // 任意两点最大边权最小路径 UVa10048 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=12&page=show_problem&problem=989
@@ -2152,12 +1975,12 @@ func (*graph) shortestCycleFloydWarshall(weights [][]int) int {
 	n := len(weights)
 	dist := make([][]int, n)
 	for i := range dist {
-		dist[i] = append([]int(nil), weights[i]...)
+		dist[i] = slices.Clone(weights[i])
 	}
 	ans := inf
 	for k := range dist {
-		for i := 0; i < k; i++ {
-			for j := 0; j < i; j++ {
+		for i := range k {
+			for j := range i {
 				ans = min(ans, dist[i][j]+weights[i][k]+weights[k][j])
 			}
 		}
@@ -2349,21 +2172,20 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // 模板题 https://www.luogu.com.cn/problem/P3366 
 //       https://codeforces.com/edu/course/2/lesson/7/2/practice/contest/289391/problem/E
 //       https://atcoder.jp/contests/abc218/tasks/abc218_e
-// - [1584. 连接所有点的最小费用](https://leetcode.cn/problems/min-cost-to-connect-all-points/) 1858
-// - [1135. 最低成本连通所有城市](https://leetcode.cn/problems/connecting-cities-with-minimum-cost/)（会员题）
-// - [1168. 水资源分配优化](https://leetcode.cn/problems/optimize-water-distribution-in-a-village/)（会员题）
 // 关键边、伪关键边（与割边结合）https://codeforces.com/problemset/problem/160/D 2300
-// - [1489. 找到最小生成树里的关键边和伪关键边](https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/) 2572
-// https://atcoder.jp/contests/abc210/tasks/abc210_e 需要一些数论知识 
-// https://atcoder.jp/contests/abc270/tasks/abc270_f 枚举 
+// - LC1489 https://leetcode.cn/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/
+// https://atcoder.jp/contests/abc210/tasks/abc210_e 需要一些数论知识
+// https://atcoder.jp/contests/abc270/tasks/abc270_f 枚举
 // https://codeforces.com/problemset/problem/1468/J 1800 分类讨论
-// https://codeforces.com/problemset/problem/1095/F 1900 边权为 a[i]+a[j] 的混合 MST 
+// https://codeforces.com/problemset/problem/1095/F 1900 边权为 a[i]+a[j] 的混合 MST
 // - 完全图找个最小的 a[i] 和其余点连边
+// https://atcoder.jp/contests/arc076/tasks/arc076_b 1615=CF1932 需要一点注意力
+// - https://www.luogu.com.cn/problem/P8074
 // https://codeforces.com/problemset/problem/1108/F 2100 MST 的唯一性
-// https://codeforces.com/problemset/problem/733/F 2200 与 LCA 结合 
-// https://codeforces.com/problemset/problem/891/C 2300 判断给定的边是否均在同一棵 MST 中 
-// https://codeforces.com/problemset/problem/1408/E 2400 二分图无环 
-// https://www.luogu.com.cn/problem/P1547 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度 
+// https://codeforces.com/problemset/problem/733/F 2200 与 LCA 结合
+// https://codeforces.com/problemset/problem/891/C 2300 判断给定的边是否均在同一棵 MST 中
+// https://codeforces.com/problemset/problem/1408/E 2400 二分图无环
+// https://www.luogu.com.cn/problem/P1547 最小生成树的最长边：Kruskal 中最后一条加入 MST 中的边的长度
 // https://leetcode.cn/problems/checking-existence-of-edge-length-limited-paths/ EXTRA: 与树链剖分结合可以在线查询两点间路径最大边权的最小值
 // https://codeforces.com/problemset/problem/1149/D todo 只有两种边权的图的 MST 的性质 + 所有 MST 中的单源最短路的最小值 
 // https://ac.nowcoder.com/acm/contest/1056/A 算法竞赛进阶指南 走廊泼水节
@@ -2373,7 +2195,7 @@ func (*graph) minimumSteinerTree(n int, edges [][]int, points []int) int {
 // https://codeforces.com/problemset/problem/1981/E 2600
 // https://atcoder.jp/contests/abc282/tasks/abc282_e 无环即生成树
 // https://atcoder.jp/contests/abc355/tasks/abc355_f
-// https://atcoder.jp/contests/typical90/tasks/typical90_ai 子树 MST 必须包含特殊点 
+// https://atcoder.jp/contests/typical90/tasks/typical90_ai 子树 MST 必须包含特殊点
 func (*graph) mstKruskal(n int, edges [][]int) int {
 	// 边权范围小的话也可以用桶排
 	slices.SortFunc(edges, func(a, b []int) int { return a[2] - b[2] })
@@ -4289,8 +4111,23 @@ func (*graph) pseudotreeGrid(a [][]int) []int {
 
 最大流等于最小割的证明 https://seineo.github.io/%E5%9B%BE%E8%AE%BA%EF%BC%9A%E6%9C%80%E5%A4%A7%E6%B5%81%E6%9C%80%E5%B0%8F%E5%89%B2%E8%AF%A6%E8%A7%A3.html
 
-todo 网络流建模方式总结
- https://www.bilibili.com/video/BV1jt4y1t7pd/
+网络流建模方式总结
+最小割问题秒杀三板斧 https://www.bilibili.com/video/BV1jt4y1t7pd/
+https://atcoder.jp/contests/abc326/tasks/abc326_g
+套三板斧：
+先把所有收益都拿到，然后减去放弃的成就和花费
+这样问题变成计算最小代价
+第一板斧：
+skill 属于 S 集合表示不选择这个技能，属于 T 集合表示选择这个技能
+achieve 属于 T 集合表示不放弃这个成就，属于 S 集合表示放弃这个成就
+第二板斧：
+skill 的每个等级依赖自己的上一个等级，也就是如果该等级选择而上一等级未选择，不合法；此时上一等级属于 S 而下一等级属于 T，因此可以建上一等级到下一等级的边，流量 inf
+achieve 属于 T 合而依赖的 skill 属于 S 集合不合法，因此可以建对应的 skill 到 achieve 的边，流量 inf
+第三板斧：
+S 到 skill 建边，代价为选择这个技能（等级）的代价
+achieve 到 T 建边，流量为其收益
+
+todo
  https://www.cnblogs.com/victorique/p/8560656.html
  https://blog.bill.moe/network-flow-models/
  NOI 一轮复习 I：二分图网络流 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-i-er-fen-tu-wang-lao-liu
@@ -4967,6 +4804,7 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 完全二分图 + 一对一 LC3376 https://leetcode.cn/problems/minimum-time-to-break-locks-i/
 // 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
 // 完全二分图 + 至多选 k=3 个数 LC3257 https://leetcode.cn/problems/maximum-value-sum-by-placing-three-rooks-ii/
+// 多对一 LC2172 https://leetcode.cn/problems/maximum-and-sum-of-array/
 // 二分图 + 稀疏矩阵 LC3276 https://leetcode.cn/problems/select-cells-in-grid-with-maximum-score/
 // https://codeforces.com/problemset/problem/1107/F 2600
 func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
