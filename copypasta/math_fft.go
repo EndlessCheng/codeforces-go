@@ -134,7 +134,7 @@ func polyConvFFT(a, b []int) []int {
 }
 
 // 滑动窗口点积
-// 对 a 的每个长为 len(b) 的连续子数组 a'，计算 a' 与 b 的点积 c[i]
+// 对 a 的每个长为 len(b) 的连续子数组 subarray，计算 subarray 与 b 的点积 c[i]
 // 也就是求 c[i] = ∑a[i+j]*b[j], j=0~m-1
 // 做法：把 b 反转后求卷积
 // https://atcoder.jp/contests/abc196/tasks/abc196_f 2274=CF2431
@@ -157,3 +157,4 @@ func polyConvFFTs(coefs [][]int) []int {
 }
 
 // 有关快速数论变换（NTT）以及更多多项式运算的内容见 math_ntt.go
+// 如果题目没有取模，但保证计算结果小于 mod，也可以用 NTT 以加快速度
