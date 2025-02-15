@@ -24,6 +24,7 @@ class Solution:
         nums.sort()
         ans = 0
         for j, x in enumerate(nums):
+            # 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
             r = bisect_right(nums, upper - x, 0, j)  # <= upper-nums[j] 的 nums[i] 的个数
             l = bisect_left(nums, lower - x, 0, j)  # < lower-nums[j] 的 nums[i] 的个数
             ans += r - l
@@ -36,6 +37,7 @@ class Solution {
         Arrays.sort(nums);
         long ans = 0;
         for (int j = 0; j < nums.length; j++) {
+            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
             int r = lowerBound(nums, j, upper - nums[j] + 1); // <= upper-nums[j] 的 nums[i] 的个数
             int l = lowerBound(nums, j, lower - nums[j]); // < lower-nums[j] 的 nums[i] 的个数
             ans += r - l;
@@ -69,6 +71,7 @@ public:
         ranges::sort(nums);
         long long ans = 0;
         for (int j = 0; j < nums.size(); j++) {
+            // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
             auto r = upper_bound(nums.begin(), nums.begin() + j, upper - nums[j]); // <= upper-nums[j] 的 nums[i] 的个数
             auto l = lower_bound(nums.begin(), nums.begin() + j, lower - nums[j]); // < lower-nums[j] 的 nums[i] 的个数
             ans += r - l;
@@ -80,13 +83,14 @@ public:
 
 ```go [sol-Go]
 func countFairPairs(nums []int, lower, upper int) (ans int64) {
-	slices.Sort(nums)
-	for j, x := range nums {
-		r := sort.SearchInts(nums[:j], upper-x+1) // <= upper-nums[j] 的 nums[i] 的个数
-		l := sort.SearchInts(nums[:j], lower-x) // < lower-nums[j] 的 nums[i] 的个数
-		ans += int64(r - l)
-	}
-	return
+    slices.Sort(nums)
+    for j, x := range nums {
+        // 注意要在 [0, j) 中二分，因为题目要求两个下标 i < j
+        r := sort.SearchInts(nums[:j], upper-x+1) // <= upper-nums[j] 的 nums[i] 的个数
+        l := sort.SearchInts(nums[:j], lower-x) // < lower-nums[j] 的 nums[i] 的个数
+        ans += int64(r - l)
+    }
+    return
 }
 ```
 
@@ -158,18 +162,18 @@ public:
 
 ```go [sol-Go]
 func countFairPairs(nums []int, lower, upper int) (ans int64) {
-	slices.Sort(nums)
-	left, right := len(nums), len(nums)
-	for j, x := range nums {
-		for right > 0 && nums[right-1] > upper-x {
-			right--
-		}
-		for left > 0 && nums[left-1] >= lower-x {
-			left--
-		}
-		ans += int64(min(right, j)-min(left, j))
-	}
-	return
+    slices.Sort(nums)
+    left, right := len(nums), len(nums)
+    for j, x := range nums {
+        for right > 0 && nums[right-1] > upper-x {
+            right--
+        }
+        for left > 0 && nums[left-1] >= lower-x {
+            left--
+        }
+        ans += int64(min(right, j)-min(left, j))
+    }
+    return
 }
 ```
 
