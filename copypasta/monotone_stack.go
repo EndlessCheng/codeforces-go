@@ -57,7 +57,8 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
-https://atcoder.jp/contests/arc189/tasks/arc189_d
+https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
+https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
 
 #### 单调栈二分
 LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
