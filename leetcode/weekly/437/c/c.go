@@ -68,12 +68,12 @@ func maxSubstringLength(s string, k int) bool {
 		}
 	}
 
-	return maxOverlapIntervals(intervals) >= k
+	return maxNonoverlapIntervals(intervals) >= k
 }
 
 // 435. 无重叠区间
 // 直接计算最多能选多少个区间
-func maxOverlapIntervals(intervals [][2]int) (ans int) {
+func maxNonoverlapIntervals(intervals [][2]int) (ans int) {
 	slices.SortFunc(intervals, func(a, b [2]int) int { return a[1] - b[1] })
 	preR := 0
 	for _, p := range intervals {

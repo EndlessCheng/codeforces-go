@@ -67,11 +67,11 @@ class Solution:
             if l > 0 or r < len(s) - 1:
                 intervals.append((l, r))
 
-        return self.maxOverlapIntervals(intervals) >= k
+        return self.maxNonOverlapIntervals(intervals) >= k
 
     # 435. 无重叠区间
     # 直接计算最多能选多少个区间
-    def maxOverlapIntervals(self, intervals: List[Tuple[int, int]]) -> int:
+    def maxNonOverlapIntervals(self, intervals: List[Tuple[int, int]]) -> int:
         intervals.sort(key=lambda x: x[1])
         ans = 0
         pre_r = -1
@@ -138,7 +138,7 @@ class Solution {
             }
         }
 
-        return maxOverlapIntervals(intervals) >= k;
+        return maxNonOverlapIntervals(intervals) >= k;
     }
 
     private int l, r;
@@ -157,7 +157,7 @@ class Solution {
 
     // 435. 无重叠区间
     // 直接计算最多能选多少个区间
-    private int maxOverlapIntervals(List<int[]> intervals) {
+    private int maxNonOverlapIntervals(List<int[]> intervals) {
         intervals.sort((a, b) -> (a[1] - b[1]));
         int ans = 0;
         int preR = -1;
@@ -196,7 +196,7 @@ class Solution {
 class Solution {
     // 435. 无重叠区间
     // 直接计算最多能选多少个区间
-    int maxOverlapIntervals(vector<pair<int, int>>& intervals) {
+    int maxNonOverlapIntervals(vector<pair<int, int>>& intervals) {
         ranges::sort(intervals, {}, &pair<int, int>::second);
         int ans = 0, pre_r = -1;
         for (auto& [l, r] : intervals) {
@@ -270,7 +270,7 @@ public:
             }
         }
 
-        return maxOverlapIntervals(intervals) >= k;
+        return maxNonOverlapIntervals(intervals) >= k;
     }
 };
 ```
@@ -338,12 +338,12 @@ func maxSubstringLength(s string, k int) bool {
         }
     }
 
-    return maxOverlapIntervals(intervals) >= k
+    return maxNonOverlapIntervals(intervals) >= k
 }
 
 // 435. 无重叠区间
 // 直接计算最多能选多少个区间
-func maxOverlapIntervals(intervals [][2]int) (ans int) {
+func maxNonOverlapIntervals(intervals [][2]int) (ans int) {
     slices.SortFunc(intervals, func(a, b [2]int) int { return a[1] - b[1] })
     preR := -1
     for _, p := range intervals {
