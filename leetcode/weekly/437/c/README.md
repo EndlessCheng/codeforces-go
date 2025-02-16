@@ -197,7 +197,7 @@ class Solution {
     // 435. 无重叠区间
     // 直接计算最多能选多少个区间
     int maxOverlapIntervals(vector<pair<int, int>>& intervals) {
-        ranges::sort(intervals, {}, [](auto& a) { return a.second; });
+        ranges::sort(intervals, {}, &pair<int, int>::second);
         int ans = 0, pre_r = -1;
         for (auto& [l, r] : intervals) {
             if (l > pre_r) {
