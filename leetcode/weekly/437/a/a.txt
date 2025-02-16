@@ -1,0 +1,10 @@
+"aaabaaa"
+3
+true
+
+"abc"
+2
+false
+
+
+

@@ -1,0 +1,14 @@
+"abcdbaefab"
+2
+true
+
+"cdefdc"
+3
+false
+
+"abeabe"
+0
+true
+
+
+
