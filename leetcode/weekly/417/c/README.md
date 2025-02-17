@@ -501,7 +501,7 @@ func countOfSubstrings(word string, k int) (ans int64) {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{word}$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$ 或者 $\mathcal{O}(|\Sigma|)$，其中 $|\Sigma|=21$。
 
-更多相似题目，见下面滑动窗口题单中的「**§5.1 三指针滑动窗口**」。
+更多相似题目，见下面滑动窗口题单中的「**§2.3.3 恰好型滑动窗口**」。
 
 ## 分类题单
 
