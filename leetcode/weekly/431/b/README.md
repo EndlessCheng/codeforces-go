@@ -5,7 +5,7 @@
 - 如果在 $s[i]$ 左边没有 $s[i]$ 的镜像字母，那么把下标 $i$ 加到第 $i$ 个栈中。
 - 否则，弹出 $s[i]$ 的镜像字母对应的栈顶，即为我们要找的 $j$。把 $i-j$ 加入答案。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV18srKYLEd8/?t=5m59s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV18srKYLEd8/?t=5m59s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -79,7 +79,7 @@ func calculateScore(s string) (ans int64) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n+|\Sigma|)$，其中 $n$ 是 $s$ 的长度，$|\Sigma|=26$ 是字符集合的大小。
-- 空间复杂度：$\mathcal{O}(|\Sigma|)$。
+- 空间复杂度：$\mathcal{O}(n+|\Sigma|)$。
 
 更多相似题目，见下面数据结构题单中的「**三、栈**」。
 
