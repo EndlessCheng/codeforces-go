@@ -2,7 +2,9 @@
 
 一共有 $\textit{days}=\dfrac{n}{4}$ 天，其中有 $\textit{odd} = \left\lceil\dfrac{\textit{days}}{2}\right\rceil = \left\lfloor\dfrac{\textit{days}+1}{2}\right\rfloor$ 个奇数天，$\textit{even}=\left\lfloor\dfrac{\textit{days}}{2}\right\rfloor$ 个偶数天。
 
-根据题意，**奇数天选最大的，偶数天只能选次大的**。例如 $\textit{odd}=3,\ \textit{even}=2$，我们可以先思考奇数天怎么选（先选前 $3$ 个最大的），再思考偶数天怎么选（再从剩余披萨中跳着选 $2$ 个最大的）。假设披萨从大到小排序，那么选择方案为
+根据题意，**奇数天选最大的，偶数天只能选次大的**。
+
+例如 $\textit{odd}=3,\ \textit{even}=2$，一共需要考虑最大的 $3+2\cdot2=7$ 块披萨，从中选 $3+2=5$ 块披萨。**由于不选的披萨越靠后，元素和就越大**，所以可以先考虑奇数天怎么选（先选前 $3$ 个最大的），再考虑偶数天怎么选（再从剩余披萨中跳着选 $2$ 个最大的）。假设披萨从大到小排序，那么选择方案为
 
 $$
 选选选\underline{\phantom{选}}选\underline{\phantom{选}}选
