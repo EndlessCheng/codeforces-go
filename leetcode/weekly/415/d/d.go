@@ -11,7 +11,7 @@ func minValidStrings(words []string, target string) (ans int) {
 	const mod = 1_070_777_777
 	base := 9e8 - rand.Intn(1e8) // 随机 base，防止 hack（注意 Go1.20 之后的版本，每次随机的数都不一样）
 	powBase := make([]int, n+1)  // powBase[i] = base^i
-	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(s[:i])
+	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(target[:i])
 	powBase[0] = 1
 	for i, b := range target {
 		powBase[i+1] = powBase[i] * base % mod

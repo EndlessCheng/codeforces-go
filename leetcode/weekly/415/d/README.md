@@ -306,7 +306,7 @@ class Solution:
         MOD = 1_070_777_777
         BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
         pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
-        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(s[:i])
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(target[:i])
         for i, b in enumerate(target):
             pow_base[i + 1] = pow_base[i] * BASE % MOD
             pre_hash[i + 1] = (pre_hash[i] * BASE + ord(b)) % MOD  # 秦九韶算法计算多项式哈希
@@ -420,7 +420,7 @@ public:
         mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
         const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
         vector<int> pow_base(n + 1); // pow_base[i] = base^i
-        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(s[:i])
+        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(target[:i])
         pow_base[0] = 1;
         for (int i = 0; i < n; i++) {
             pow_base[i + 1] = (long long) pow_base[i] * BASE % MOD;
@@ -481,7 +481,7 @@ func minValidStrings(words []string, target string) (ans int) {
 	const mod = 1_070_777_777
 	base := 9e8 - rand.Intn(1e8) // 随机 base，防止 hack（注意 Go1.20 之后的版本，每次随机的数都不一样）
 	powBase := make([]int, n+1)  // powBase[i] = base^i
-	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(s[:i])
+	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(target[:i])
 	powBase[0] = 1
 	for i, b := range target {
 		powBase[i+1] = powBase[i] * base % mod
@@ -548,7 +548,7 @@ class Solution:
         MOD = 1_070_777_777
         BASE = randint(8 * 10 ** 8, 9 * 10 ** 8)  # 随机 BASE，防止 hack
         pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
-        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(s[:i])
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(target[:i])
         for i, b in enumerate(target):
             pow_base[i + 1] = pow_base[i] * BASE % MOD
             pre_hash[i + 1] = (pre_hash[i] * BASE + ord(b)) % MOD  # 秦九韶算法计算多项式哈希
@@ -650,7 +650,7 @@ public:
         mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
         const int BASE = uniform_int_distribution<>(8e8, 9e8)(rng); // 随机 base，防止 hack
         vector<int> pow_base(n + 1); // pow_base[i] = base^i
-        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(s[:i])
+        vector<int> pre_hash(n + 1); // 前缀哈希值 pre_hash[i] = hash(target[:i])
         pow_base[0] = 1;
         for (int i = 0; i < n; i++) {
             pow_base[i + 1] = (long long) pow_base[i] * BASE % MOD;
@@ -703,7 +703,7 @@ func minValidStrings(words []string, target string) (ans int) {
 	const mod = 1_070_777_777
 	base := 9e8 - rand.Intn(1e8) // 随机 base，防止 hack（注意 Go1.20 之后的版本，每次随机的数都不一样）
 	powBase := make([]int, n+1)  // powBase[i] = base^i
-	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(s[:i])
+	preHash := make([]int, n+1)  // 前缀哈希值 preHash[i] = hash(target[:i])
 	powBase[0] = 1
 	for i, b := range target {
 		powBase[i+1] = powBase[i] * base % mod
