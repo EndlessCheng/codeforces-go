@@ -13,34 +13,28 @@
 ```py [sol-Python3]
 class Solution:
     def shortestMatchingSubstring(self, s: str, p: str) -> int:
-        star1 = p.find('*')
-        star2 = p.rfind('*')
+        p1, p2, p3 = p.split('*')
 
         # 三段各自在 s 中的所有匹配位置
-        pos1 = self.kmp_search(s, p[:star1])
-        pos2 = self.kmp_search(s, p[star1 + 1: star2])
-        pos3 = self.kmp_search(s, p[star2 + 1:])
-
-        # 每一段的长度
-        len1 = star1
-        len2 = star2 - star1 - 1
-        len3 = len(p) - star2 - 1
+        pos1 = self.kmp_search(s, p1)
+        pos2 = self.kmp_search(s, p2)
+        pos3 = self.kmp_search(s, p3)
 
         ans = inf
         i = k = 0
         # 枚举中间（第二段），维护最近的左右（第一段和第三段）
         for j in pos2:
             # 右边找离 j 最近的子串（但不能重叠）
-            while k < len(pos3) and pos3[k] < j + len2:
+            while k < len(pos3) and pos3[k] < j + len(p2):
                 k += 1
             if k == len(pos3):  # 右边没有
                 break
             # 左边找离 j 最近的子串（但不能重叠）
-            while i < len(pos1) and pos1[i] <= j - len1:
+            while i < len(pos1) and pos1[i] <= j - len(p1):
                 i += 1
             # 循环结束后，pos1[i-1] 是左边离 j 最近的子串下标（首字母在 s 中的下标）
             if i > 0:
-                ans = min(ans, pos3[k] + len3 - pos1[i - 1])
+                ans = min(ans, pos3[k] + len(p3) - pos1[i - 1])
         return -1 if ans == inf else ans
 
     # 计算字符串 p 的 pi 数组
@@ -78,22 +72,17 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    public int shortestMatchingSubstring(String S, String P) {
-        int star1 = P.indexOf('*');
-        int star2 = P.lastIndexOf('*');
-
+    public int shortestMatchingSubstring(String S, String p) {
         char[] s = S.toCharArray();
-        char[] p = P.toCharArray();
+        String[] sp = p.split("\\*", -1);
+        char[] p1 = sp[0].toCharArray();
+        char[] p2 = sp[1].toCharArray();
+        char[] p3 = sp[2].toCharArray();
 
         // 三段各自在 s 中的所有匹配位置
-        List<Integer> pos1 = kmpSearch(s, Arrays.copyOfRange(p, 0, star1));
-        List<Integer> pos2 = kmpSearch(s, Arrays.copyOfRange(p, star1 + 1, star2));
-        List<Integer> pos3 = kmpSearch(s, Arrays.copyOfRange(p, star2 + 1, p.length));
-
-        // 每一段的长度
-        int len1 = star1;
-        int len2 = star2 - star1 - 1;
-        int len3 = p.length - star2 - 1;
+        List<Integer> pos1 = kmpSearch(s, p1);
+        List<Integer> pos2 = kmpSearch(s, p2);
+        List<Integer> pos3 = kmpSearch(s, p3);
 
         int ans = Integer.MAX_VALUE;
         int i = 0;
@@ -101,19 +90,19 @@ class Solution {
         // 枚举中间（第二段），维护最近的左右（第一段和第三段）
         for (int j : pos2) {
             // 右边找离 j 最近的子串（但不能重叠）
-            while (k < pos3.size() && pos3.get(k) < j + len2) {
+            while (k < pos3.size() && pos3.get(k) < j + p2.length) {
                 k++;
             }
             if (k == pos3.size()) { // 右边没有
                 break;
             }
             // 左边找离 j 最近的子串（但不能重叠）
-            while (i < pos1.size() && pos1.get(i) <= j - len1) {
+            while (i < pos1.size() && pos1.get(i) <= j - p1.length) {
                 i++;
             }
             // 循环结束后，pos1.get(i-1) 是左边离 j 最近的子串下标（首字母在 s 中的下标）
             if (i > 0) {
-                ans = Math.min(ans, pos3.get(k) + len3 - pos1.get(i - 1));
+                ans = Math.min(ans, pos3.get(k) + p3.length - pos1.get(i - 1));
             }
         }
         return ans == Integer.MAX_VALUE ? -1 : ans;
@@ -302,37 +291,32 @@ func kmpSearch(s, p string) (pos []int) {
 }
 
 func shortestMatchingSubstring(s, p string) int {
-	star1 := strings.IndexByte(p, '*')
-	star2 := strings.LastIndexByte(p, '*')
+	sp := strings.Split(p, "*")
+	p1, p2, p3 := sp[0], sp[1], sp[2]
 
 	// 三段各自在 s 中的所有匹配位置
-	pos1 := kmpSearch(s, p[:star1])
-	pos2 := kmpSearch(s, p[star1+1:star2])
-	pos3 := kmpSearch(s, p[star2+1:])
-
-	// 每一段的长度
-	len1 := star1
-	len2 := star2 - star1 - 1
-	len3 := len(p) - star2 - 1
+	pos1 := kmpSearch(s, p1)
+	pos2 := kmpSearch(s, p2)
+	pos3 := kmpSearch(s, p3)
 
 	ans := math.MaxInt
 	i, k := 0, 0
 	// 枚举中间（第二段），维护最近的左右（第一段和第三段）
 	for _, j := range pos2 {
 		// 右边找离 j 最近的子串（但不能重叠）
-		for k < len(pos3) && pos3[k] < j+len2 {
+		for k < len(pos3) && pos3[k] < j+len(p2) {
 			k++
 		}
 		if k == len(pos3) { // 右边没有
 			break
 		}
 		// 左边找离 j 最近的子串（但不能重叠）
-		for i < len(pos1) && pos1[i] <= j-len1 {
+		for i < len(pos1) && pos1[i] <= j-len(p1) {
 			i++
 		}
 		// 循环结束后，posL[i-1] 是左边离 j 最近的子串下标（首字母在 s 中的下标）
 		if i > 0 {
-			ans = min(ans, pos3[k]+len3-pos1[i-1])
+			ans = min(ans, pos3[k]+len(p3)-pos1[i-1])
 		}
 	}
 	if ans == math.MaxInt {
