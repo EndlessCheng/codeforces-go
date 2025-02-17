@@ -157,8 +157,9 @@ https://oeis.org/A136485 Number of unit square lattice cells enclosed by origin 
 // https://atcoder.jp/contests/abc191/tasks/abc191_d 
 // https://atcoder.jp/contests/abc243/tasks/abc243_g
 // https://codeforces.com/problemset/problem/1036/F
+// https://codeforces.com/problemset/problem/1862/D
 func isqrt(x int) int {
-	rt := int(math.Sqrt(float64(x)))
+	rt := int(math.Sqrt(float64(x))) // 可能会算多一点点
 	if rt*rt > x {
 		rt--
 	}
@@ -190,7 +191,38 @@ func floorRootN(x, n int) int {
 	return res
 }
 
-const eps = 1e-8
+// 什么时候 (i-1)/i == (i-2)/(i-1) ?
+// 最小的正整数 i 是一个比 1e8 略小的数，比 floor(2^(53/2)) = 94906265 略大一点
+// 94911151
+// 94917164
+// 94920884
+// 94923833
+// 94926354
+// 94928593
+// 94930626
+// 94932503
+// 94934254
+// 94935901
+// 为什么？如果两个数的差小于 2^-52，就可能会 round 到同一个浮点数上
+// LC2280 https://leetcode.cn/problems/minimum-lines-to-represent-a-line-chart/
+//
+// 附：i=134229312 和 i=134229313 这两个相邻的数都满足，这是最小的同时满足且相邻的数字
+//
+// 附：最大的几个负数，比 -2^(52/2) = -67108864 略小一点
+// -67114657
+// -67118898
+// -67121818
+// -67124192
+// -67126245
+func roundErrorExample() {
+	cnt := 0
+	for i := 10; cnt < 10; i++ {
+		if float64(i-1)/float64(i) == float64(i)/float64(i+1) {
+			fmt.Println(i)
+			cnt++
+		}
+	}
+}
 
 // 浮点数 GCD
 // https://codeforces.com/problemset/problem/1/C 2100
@@ -202,6 +234,8 @@ func gcdf(a, b float64) float64 {
 	}
 	return b
 }
+
+const eps = 1e-8
 
 /*
 二维向量（点）
@@ -1080,15 +1114,20 @@ func _(abs func(int) int) {
 		if len(q) < 3 {
 			// 半平面交不足三个点的特殊情况，根据题意来返回
 			// 如果需要避免这种情况，可以先加入一个无穷大矩形对应的四个半平面，再求半平面交
+			// 如果不足三个点，说明面积为 0
 			return nil
 		}
 
 		// 补上首尾半平面的交点
 		q[len(q)-1].p = q[len(q)-1].l.intersection(q[0].l)
+
+		// 注：可以用三角剖分求半平面交的面积
+
 		return q
 	}
 
 	// 点 p 是否在三角形 △abc 内
+	// 一般是整数，浮点比较注意精度
 	inTriangle := func(a, b, c, p vec) bool {
 		pa, pb, pc := a.sub(p), b.sub(p), c.sub(p)
 		return abs(b.sub(a).det(c.sub(a))) == abs(pa.det(pb))+abs(pb.det(pc))+abs(pc.det(pa))
@@ -1208,11 +1247,10 @@ func _(abs func(int) int) {
 		return math.Sqrt(minArea)
 	}
 
-	// todo 矩形面积并
-	// 扫描线算法
-	// https://www.acwing.com/video/2220/
-	// 模板题 https://www.luogu.com.cn/problem/P5490
-	// https://ac.nowcoder.com/acm/contest/66651/C
+	// 矩形面积并（离散化+扫描线）
+	// 见 segment_tree_rect.go
+
+	// todo 矩形周长并
 
 	// todo 三角形面积并
 	// 扫描线算法

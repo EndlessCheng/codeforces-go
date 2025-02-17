@@ -40,6 +40,7 @@
   - [线段树 segment_tree.go](/copypasta/segment_tree.go)
     - 线段树二分
     - 延迟标记（懒标记）
+      - [矩形面积并（扫描线）segment_tree_rect.go](/copypasta/segment_tree_rect.go)
     - 动态开点
     - 线段树合并
     - 线段树分裂
