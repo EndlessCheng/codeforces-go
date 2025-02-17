@@ -28,7 +28,7 @@ $$
 
 其中 $\textit{pizzas}$ 按照从大到小的顺序排序。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1pmAGegEcw/?t=4m)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1pmAGegEcw/?t=4m)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
