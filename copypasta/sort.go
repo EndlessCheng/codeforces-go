@@ -187,7 +187,7 @@ func sortCollections() {
 		}
 
 		// 注：浮点数可以用 Nextafter 算出 > x 的下一个浮点数
-		math.Nextafter(float64(x), math.MaxFloat64) // x=1 时，结果为 1.0000000000000002
+		math.Nextafter(float64(x), math.MaxFloat64)  // x=1 时，结果为 1.0000000000000002
 		math.Nextafter(float64(x), -math.MaxFloat64) // x=1 时，结果为 0.9999999999999999
 
 		_ = []any{
@@ -342,18 +342,6 @@ func sortCollections() {
 		})
 	}
 
-	searchRange64 := func(l, r int64, f func(int64) bool) int64 {
-		for l < r {
-			m := (l + r) >> 1 // l + (r-l)>>1
-			if f(m) {
-				r = m
-			} else {
-				l = m + 1
-			}
-		}
-		return l
-	}
-
 	//
 
 	// 字符串二分 · 其一
@@ -417,9 +405,9 @@ func sortCollections() {
 	kthSmallest := func(a [][]int, k int) int {
 		// 注意 k 从 1 开始
 		n, m := len(a), len(a[0])
-		mi, mx := a[0][0], a[n-1][m-1]
-		ans := sort.Search(mx-mi, func(v int) bool {
-			v += mi
+		mn, mx := a[0][0], a[n-1][m-1]
+		ans := sort.Search(mx-mn, func(v int) bool {
+			v += mn
 			cnt := 0
 			for i, j := 0, m-1; i < n && j >= 0; {
 				if v < a[i][j] {
@@ -430,7 +418,7 @@ func sortCollections() {
 				}
 			}
 			return cnt >= k
-		}) + mi
+		}) + mn
 		return ans
 	}
 
@@ -470,16 +458,16 @@ func sortCollections() {
 		// 上界不会超过 a 的前 log(k) 个元素之和
 		ans := sort.Search(2e9, func(sum int) bool {
 			c := 0
-			var f func(p, s int)
-			f = func(p, s int) {
+			var dfs func(int, int)
+			dfs = func(p, s int) {
 				if c >= k || p == len(a) || s+a[p] > sum {
 					return
 				}
 				c++
-				f(p+1, s+a[p])
-				f(p+1, s)
+				dfs(p+1, s+a[p])
+				dfs(p+1, s)
 			}
-			f(0, 0)
+			dfs(0, 0)
 			return c >= k
 		})
 		return ans
@@ -504,7 +492,7 @@ func sortCollections() {
 		l--
 		r++
 		step := int(math.Log2((r - l) / eps)) // eps 取 1e-8 比较稳妥（一般来说是保留小数位+2）
-		for ; step > 0; step-- {
+		for range step {
 			mid := (l + r) / 2
 			if f(mid) {
 				r = mid // 减小 x
@@ -529,7 +517,7 @@ func sortCollections() {
 		r++
 		const eps = 1e-8 // 保留小数位+2
 		step := int(math.Log((r-l)/eps) / math.Log(1.5))
-		for ; step > 0; step-- {
+		for range step {
 			m1 := l + (r-l)/3
 			m2 := r - (r-l)/3
 			v1, v2 := f(m1), f(m2)
@@ -564,13 +552,13 @@ func sortCollections() {
 				l = m1 // 若求最大值写成 r = m2
 			}
 		}
-		min, minI := f(l), l
+		mnF, mnI := f(l), l
 		for i := l + 1; i <= r; i++ {
-			if v := f(i); v < min {
-				min, minI = v, i
+			if v := f(i); v < mnF {
+				mnF, mnI = v, i
 			}
 		}
-		return minI
+		return mnI
 	}
 
 	// 整数三分·写法二
@@ -641,7 +629,8 @@ func sortCollections() {
 			return s < 0
 		}
 		l, r := -1.0, 1e5+1 // r=max{ai}/min{bi}   也就是根据 ∑ai/∑bi 算出下界和上界，最好松一点
-		for step := int(math.Log2((r - l) / eps)); step > 0; step-- {
+		step := int(math.Log2((r - l) / eps))
+		for range step {
 			mid := (l + r) / 2
 			if f(mid) {
 				r = mid
@@ -736,7 +725,7 @@ func sortCollections() {
 		minSwaps,
 		insertionSort,
 		lowerBound, upperBound, search2,
-		searchRange, searchRange64,
+		searchRange,
 		binarySearchS1, binarySearchS2,
 		kthSmallest, kthSmallestRangeSum, kthSubsetSum,
 		binarySearchF, ternarySearchF, ternarySearchInt, ternarySearchInt2,
