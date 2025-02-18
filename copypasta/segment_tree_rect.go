@@ -97,7 +97,7 @@ func rectangleArea(rectangles [][]int) (ans int) {
 	slices.Sort(xs)
 	xs = slices.Compact(xs)
 
-	// 矩形都是一条线
+	// 没有矩形，或者矩形都是一条线
 	if len(xs) <= 1 {
 		return
 	}
