@@ -10,7 +10,7 @@
 
 ```py [sol-Python3]
 class Solution:
-    def buildTree(self, edges: list[list[int]], k: int) -> Callable[[int, int, int], int]:
+    def buildTree(self, edges: List[List[int]], k: int) -> Callable[[int, int, int], int]:
         g = [[] for _ in range(len(edges) + 1)]
         for x, y in edges:
             g[x].append(y)
