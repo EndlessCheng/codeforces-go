@@ -205,7 +205,7 @@ func separateSquares(squares [][]int) float64 {
 - 时间复杂度：$\mathcal{O}(n\log (MU))$，其中 $n$ 是 $\textit{squares}$ 的长度，$M=10^5$，$U=\max(y_i+l_i)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
-## 方法二：整数二分
+## 方法二：整数二分（写法一）
 
 ### 1)
 
@@ -377,6 +377,169 @@ func separateSquares(squares [][]int) float64 {
 - 时间复杂度：$\mathcal{O}(n\log (MU))$，其中 $n$ 是 $\textit{squares}$ 的长度，$M=10^5$，$U=\max(y_i+l_i)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+## 方法二：整数二分（写法二）
+
+改成在 $0$ 到 $\max(y_i+l_i)$ 中二分最小的**整数** $y$，满足
+
+$$
+\textit{area}_y\cdot 2 \ge \textit{totalArea}
+$$
+
+那么答案就在整数 $y-1$ 到整数 $y$ 之间。
+
+由于输入都是整数，所以从 $y-1$ 到 $y$ 之间，矩形的底边长之和是不变的，由于矩形的高是 $y-(y-1)=1$，所以矩形的底边长之和为
+
+$$
+\textit{sumL} = \textit{area}_y - \textit{area}_{y-1}
+$$
+
+设答案为 $y'$，那么
+
+$$
+\textit{area}_{y'} = \textit{area}_y - (y-y')\cdot \textit{sumL}
+$$
+
+题目要求
+
+$$
+\textit{area}_{y'} \cdot 2 = \textit{totalArea}
+$$
+
+解得
+
+$$
+y' = y - \dfrac{\textit{area}_y - \textit{totalArea}/2}{\textit{sumL}} = y - \dfrac{\textit{area}_y\cdot 2 - \textit{totalArea}}{\textit{sumL}\cdot 2}
+$$
+
+```py [sol-Python3]
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        def calc_area(y: int) -> int:
+            area = 0
+            for _, yi, l in squares:
+                if yi < y:
+                    area += l * min(y - yi, l)
+            return area
+
+        tot_area = sum(l * l for _, _, l in squares)
+        max_y = max(y + l for _, y, l in squares)
+        y = bisect_left(range(max_y), tot_area, key=lambda y: calc_area(y) * 2)
+
+        area_y = calc_area(y)
+        sum_l = area_y - calc_area(y - 1)
+        return y - (area_y * 2 - tot_area) / (sum_l * 2)  # 这样写误差更小
+```
+
+```java [sol-Java]
+class Solution {
+    public double separateSquares(int[][] squares) {
+        double totArea = 0;
+        int maxY = 0;
+        for (int[] sq : squares) {
+            totArea += (long) sq[2] * sq[2];
+            maxY = Math.max(maxY, sq[1] + sq[2]);
+        }
+
+        int left = 0;
+        int right = maxY;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (calcArea(squares, mid) >= totArea / 2) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        int y = right;
+
+        double areaY = calcArea(squares, y);
+        double sumL = areaY - calcArea(squares, y - 1);
+        return y - (areaY - totArea / 2) / sumL;
+    }
+
+    private double calcArea(int[][] squares, int y) {
+        double area = 0;
+        for (int[] sq : squares) {
+            int yi = sq[1];
+            if (yi < y) {
+                int l = sq[2];
+                area += (long) l * Math.min(y - yi, l);
+            }
+        }
+        return area;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    double separateSquares(vector<vector<int>>& squares) {
+        double tot_area = 0;
+        int max_y = 0;
+        for (auto& sq : squares) {
+            tot_area += 1LL * sq[2] * sq[2];
+            max_y = max(max_y, sq[1] + sq[2]);
+        }
+
+        auto calc_area = [&](int y) -> double {
+            double area = 0;
+            for (auto& sq : squares) {
+                int yi = sq[1];
+                if (yi < y) {
+                    int l = sq[2];
+                    area += 1LL * l * min(y - yi, l);
+                }
+            }
+            return area;
+        };
+
+        int left = 0, right = max_y;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (calc_area(mid) >= tot_area / 2 ? right : left) = mid;
+        }
+        int y = right;
+
+        double area_y = calc_area(y);
+        double sum_l = area_y - calc_area(y - 1);
+        return y - (area_y - tot_area / 2) / sum_l;
+    }
+};
+```
+
+```go [sol-Go]
+func separateSquares(squares [][]int) float64 {
+	totArea := 0.
+	maxY := 0
+	for _, sq := range squares {
+		totArea += float64(sq[2] * sq[2])
+		maxY = max(maxY, sq[1]+sq[2])
+	}
+
+	calcArea := func(y int) (area float64) {
+		for _, sq := range squares {
+			yi := sq[1]
+			if yi < y {
+				l := sq[2]
+				area += float64(l * min(y-yi, l))
+			}
+		}
+		return
+	}
+	y := sort.Search(maxY, func(y int) bool { return calcArea(y) >= totArea/2 })
+
+	areaY := calcArea(y)
+	sumL := areaY - calcArea(y-1)
+	return float64(y) - (areaY-totArea/2)/sumL
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $\textit{squares}$ 的长度，$U=\max(y_i+l_i)$。
+- 空间复杂度：$\mathcal{O}(1)$。
+
 ## 方法三：差分+扫描线
 
 ![lc3453.png](https://pic.leetcode.cn/1739709593-ChjPRV-lc3453.png)
@@ -403,7 +566,7 @@ $$
 取等号，解得
 
 $$
-y' = y + \dfrac{\textit{totalArea}/2 - \textit{area}}{\textit{sumL}}
+y' = y + \dfrac{\textit{totalArea}/2 - \textit{area}}{\textit{sumL}} = y + \dfrac{\textit{totalArea} - \textit{area}\cdot 2}{\textit{sumL}\cdot 2}
 $$
 
 即为答案。
@@ -425,7 +588,6 @@ class Solution:
             sum_l += diff[y]  # 矩形底边长度之和
             tmp = area + sum_l * (y2 - y)  # 底边长 * 高 = 新增面积
             if tmp * 2 >= tot_area:
-                # return y + (tot_area / 2 - area) / sum_l
                 return y + (tot_area - area * 2) / (sum_l * 2)  # 这样写误差更小
             area = tmp
 ```

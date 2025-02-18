@@ -8,7 +8,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func separateSquares(squares [][]int) float64 {
+func separateSquares3(squares [][]int) float64 {
 	totArea := 0.
 	diff := map[int]int{}
 	for _, sq := range squares {
@@ -21,13 +21,38 @@ func separateSquares(squares [][]int) float64 {
 	ys := slices.Sorted(maps.Keys(diff))
 	area, sumL := 0., 0
 	for i := 0; ; i++ {
-		sumL += diff[ys[i]] // 矩形底边长度之和
+		sumL += diff[ys[i]]                                // 矩形底边长度之和
 		tmp := area + float64(sumL)*float64(ys[i+1]-ys[i]) // 底边长 * 高 = 新增面积
 		if tmp >= totArea/2 {
 			return float64(ys[i]) + (totArea/2-area)/float64(sumL)
 		}
 		area = tmp
 	}
+}
+
+func separateSquares(squares [][]int) float64 {
+	totArea := 0.
+	maxY := 0
+	for _, sq := range squares {
+		totArea += float64(sq[2] * sq[2])
+		maxY = max(maxY, sq[1]+sq[2])
+	}
+
+	calcArea := func(y int) (area float64) {
+		for _, sq := range squares {
+			yi := sq[1]
+			if yi < y {
+				l := sq[2]
+				area += float64(l * min(y-yi, l))
+			}
+		}
+		return
+	}
+	y := sort.Search(maxY, func(y int) bool { return calcArea(y) >= totArea/2 })
+
+	areaY := calcArea(y)
+	sumL := areaY - calcArea(y-1)
+	return float64(y) - (areaY-totArea/2)/sumL
 }
 
 func separateSquares2(squares [][]int) float64 {
