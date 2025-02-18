@@ -1720,7 +1720,7 @@ func _() {
 	https://www.lanqiao.cn/problems/17164/learning/?contest_id=179
 	*/
 
-	// 二阶差分（金字塔式更新 +1 +2 +3 +4 +3 +2 +1）
+	// 差分套差分（适用于金字塔式更新 +1 +2 +3 +4 +3 +2 +1）
 	// https://ac.nowcoder.com/acm/contest/56446/C
 	// https://www.luogu.com.cn/problem/U318099?contestId=123900
 	// https://codeforces.com/problemset/problem/1661/D 1900 简化
