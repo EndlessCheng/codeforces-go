@@ -84,7 +84,6 @@ func (t segRect) update(o, l, r, v int) {
 
 // 输入格式 (x1,y1,x2,y2)，分别表示矩形的左下角和右上角（平面直角坐标系）
 // 时间复杂度 O(nlogn)，与值域无关
-// LC850 https://leetcode.cn/problems/rectangle-area-ii/
 func rectangleArea(rectangles [][]int) (ans int) {
 	xs := make([]int, 0, len(rectangles)*2)
 	type event struct{ y, lx, rx, delta int }
