@@ -1304,15 +1304,9 @@ func _() {
 
 	// 二维前缀和 sum2d
 	// - [304. 二维区域和检索 - 矩阵不可变](https://leetcode.cn/problems/range-sum-query-2d-immutable/) *模板题
-	// - [1314. 矩阵区域和](https://leetcode.cn/problems/matrix-block-sum/) 1484
-	// - [3070. 元素和小于等于 k 的子矩阵的数目](https://leetcode.cn/problems/count-submatrices-with-top-left-element-and-sum-less-than-k/) 1499
-	// - [1277. 统计全为 1 的正方形子矩阵](https://leetcode.cn/problems/count-square-submatrices-with-all-ones/) 1613  也可以 DP
-	// - [1292. 元素和小于等于阈值的正方形的最大边长](https://leetcode.cn/problems/maximum-side-length-of-a-square-with-sum-less-than-or-equal-to-threshold/) 1735
 	// - [221. 最大正方形](https://leetcode.cn/problems/maximal-square/) 也可以 DP
 	//     - https://codeforces.com/problemset/problem/1301/E 2500
 	//     - 思考：如果是菱形怎么 DP
-	// - [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
-	// - [1074. 元素和为目标值的子矩阵数量](https://leetcode.cn/problems/number-of-submatrices-that-sum-to-target/) 2189
 	// 自加写法 https://codeforces.com/contest/835/submission/120031673
 	// https://codeforces.com/contest/1107/problem/D
 	// https://codeforces.com/problemset/problem/1731/D
@@ -1716,19 +1710,6 @@ func _() {
 
 	/* 差分数组
 	请看 https://leetcode.cn/circle/discuss/FfMCgb/
-	- [1893. 检查是否区域内所有整数都被覆盖](https://leetcode.cn/problems/check-if-all-the-integers-in-a-range-are-covered/) 1307（暴力也可）
-	- [1094. 拼车](https://leetcode.cn/problems/car-pooling/) 1441
-	- [1109. 航班预订统计](https://leetcode.cn/problems/corporate-flight-bookings/) 1570
-	- [2406. 将区间分为最少组数](https://leetcode.cn/problems/divide-intervals-into-minimum-number-of-groups/) 1713
-	- [2381. 字母移位 II](https://leetcode.cn/problems/shifting-letters-ii/) 1793
-	- [995. K 连续位的最小翻转次数](https://leetcode.cn/problems/minimum-number-of-k-consecutive-bit-flips/) 1835
-	- [1943. 描述绘画结果](https://leetcode.cn/problems/describe-the-painting/) 1969
-	- [2251. 花期内花的数目](https://leetcode.cn/problems/number-of-flowers-in-full-bloom/) 2022
-	- [2772. 使数组中的所有元素都等于零](https://leetcode.cn/problems/apply-operations-to-make-all-array-elements-equal-to-zero/) 2029
-	- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-	- [370. 区间加法](https://leetcode.cn/problems/range-addition/)（会员题）
-	- [2237. 计算街道上满足所需亮度的位置数量](https://leetcode.cn/problems/count-positions-on-street-with-required-brightness/)（会员题）
-	- [3009. 折线图上的最大交点数量](https://leetcode.cn/problems/maximum-number-of-intersections-on-the-chart/)（会员题）
 	https://codeforces.com/problemset/problem/816/B 1400
 	https://codeforces.com/problemset/problem/276/C 1500
 	https://codeforces.com/problemset/problem/1700/C 1700
@@ -1739,7 +1720,7 @@ func _() {
 	https://www.lanqiao.cn/problems/17164/learning/?contest_id=179
 	*/
 
-	// 二阶差分（金字塔式更新）
+	// 二阶差分（金字塔式更新 +1 +2 +3 +4 +3 +2 +1）
 	// https://ac.nowcoder.com/acm/contest/56446/C
 	// https://www.luogu.com.cn/problem/U318099?contestId=123900
 	// https://codeforces.com/problemset/problem/1661/D 1900 简化
