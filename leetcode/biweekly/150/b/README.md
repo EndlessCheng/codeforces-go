@@ -99,11 +99,12 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public double separateSquares(int[][] squares) {
-        double totArea = 0;
+        long totArea = 0;
         int maxY = 0;
         for (int[] sq : squares) {
-            totArea += (long) sq[2] * sq[2];
-            maxY = Math.max(maxY, sq[1] + sq[2]);
+            int l = sq[2];
+            totArea += (long) l * l;
+            maxY = Math.max(maxY, sq[1] + l);
         }
 
         double left = 0;
@@ -119,7 +120,7 @@ class Solution {
         return (left + right) / 2; // 区间中点误差小
     }
 
-    private boolean check(int[][] squares, double y, double totArea) {
+    private boolean check(int[][] squares, double y, long totArea) {
         double area = 0;
         for (int[] sq : squares) {
             double yi = sq[1];
@@ -128,7 +129,7 @@ class Solution {
                 area += l * Math.min(y - yi, l);
             }
         }
-        return area >= totArea / 2;
+        return area >= totArea / 2.0;
     }
 }
 ```
@@ -137,11 +138,12 @@ class Solution {
 class Solution {
 public:
     double separateSquares(vector<vector<int>>& squares) {
-        double tot_area = 0;
+        long long tot_area = 0;
         int max_y = 0;
         for (auto& sq : squares) {
-            tot_area += 1LL * sq[2] * sq[2];
-            max_y = max(max_y, sq[1] + sq[2]);
+            int l = sq[2];
+            tot_area += 1LL * l * l;
+            max_y = max(max_y, sq[1] + l);
         }
 
         auto check = [&](double y) -> bool {
@@ -153,7 +155,7 @@ public:
                     area += l * min(y - yi, l);
                 }
             }
-            return area >= tot_area / 2;
+            return area >= tot_area / 2.0;
         };
 
         double left = 0, right = max_y;
@@ -168,11 +170,12 @@ public:
 
 ```go [sol-Go]
 func separateSquares(squares [][]int) float64 {
-	totArea := 0.
+	totArea := 0
 	maxY := 0
 	for _, sq := range squares {
-		totArea += float64(sq[2] * sq[2])
-		maxY = max(maxY, sq[1]+sq[2])
+		l := sq[2]
+		totArea += l * l
+		maxY = max(maxY, sq[1]+l)
 	}
 
 	check := func(y float64) bool {
@@ -184,7 +187,7 @@ func separateSquares(squares [][]int) float64 {
 				area += l * min(y-yi, l)
 			}
 		}
-		return area >= totArea/2
+		return area >= float64(totArea)/2
 	}
 
 	left, right := 0., float64(maxY)
@@ -253,9 +256,7 @@ $$
 2 \sum_{i=0}^{n-1} l_i\cdot\min(\max(\textit{multiY}-y_i\cdot M,0), l_i\cdot M)\ge \textit{totalArea}\cdot M
 $$
 
-这样就可以全程使用整数计算了。
-
-然而，$\textit{totalArea}$ 的值已经超出了 $64$ 位整数的范围，Python 可以方便计算，其他语言要么使用大整数做高精度运算，要么使用浮点数。
+这样就可以全程使用整数计算了，只在最终返回时用到了浮点数。
 
 ```py [sol-Python3]
 class Solution:
@@ -276,20 +277,22 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
+    private static final int M = 100_000;
+
     public double separateSquares(int[][] squares) {
-        double totArea = 0;
+        long totArea = 0;
         int maxY = 0;
         for (int[] sq : squares) {
-            totArea += (long) sq[2] * sq[2];
-            maxY = Math.max(maxY, sq[1] + sq[2]);
+            int l = sq[2];
+            totArea += (long) l * l;
+            maxY = Math.max(maxY, sq[1] + l);
         }
 
-        final int M = 100_000; // 也可以调大，避免累计误差
         long left = 0;
         long right = (long) maxY * M;
         while (left + 1 < right) {
             long mid = (left + right) >>> 1;
-            if (check(squares, (double) mid / M, totArea)) {
+            if (check(squares, mid, totArea)) {
                 right = mid;
             } else {
                 left = mid;
@@ -298,16 +301,16 @@ class Solution {
         return (double) right / M;
     }
 
-    private boolean check(int[][] squares, double y, double totArea) {
-        double area = 0;
+    private boolean check(int[][] squares, long multiY, double totArea) {
+        long area = 0;
         for (int[] sq : squares) {
-            double yi = sq[1];
-            if (yi < y) {
-                double l = sq[2];
-                area += l * Math.min(y - yi, l);
+            long y = sq[1];
+            if (y * M < multiY) {
+                long l = sq[2];
+                area += l * Math.min(multiY - y * M, l * M);
             }
         }
-        return area >= totArea / 2;
+        return area * 2 >= totArea * M;
     }
 }
 ```
@@ -316,25 +319,25 @@ class Solution {
 class Solution {
 public:
     double separateSquares(vector<vector<int>>& squares) {
-        double tot_area = 0;
+        long long tot_area = 0;
         int max_y = 0;
         for (auto& sq : squares) {
-            tot_area += 1LL * sq[2] * sq[2];
-            max_y = max(max_y, sq[1] + sq[2]);
+            int l = sq[2];
+            tot_area += 1LL * l * l;
+            max_y = max(max_y, sq[1] + l);
         }
 
-        const int M = 100'000; // 也可以调大，避免累计误差
+        const int M = 100'000;
         auto check = [&](long long multi_y) -> bool {
-            double y = 1.0 * multi_y / M;
-            double area = 0;
+            long long area = 0;
             for (auto& sq : squares) {
-                double yi = sq[1];
-                if (yi < y) {
-                    double l = sq[2];
-                    area += l * min(y - yi, l);
+                long long y = sq[1];
+                if (y * M < multi_y) {
+                    long long l = sq[2];
+                    area += l * min(multi_y - y * M, l * M);
                 }
             }
-            return area >= tot_area / 2;
+            return area * 2 >= tot_area * M;
         };
 
         long long left = 0, right = 1LL * max_y * M;
@@ -349,24 +352,24 @@ public:
 
 ```go [sol-Go]
 func separateSquares(squares [][]int) float64 {
-	totArea := 0.
+	totArea := 0
 	maxY := 0
 	for _, sq := range squares {
-		totArea += float64(sq[2] * sq[2])
-		maxY = max(maxY, sq[1]+sq[2])
+		l := sq[2]
+		totArea += l * l
+		maxY = max(maxY, sq[1]+l)
 	}
-	const m = 100_000 // 也可以调大，避免累计误差
+
+	const m = 100_000
 	multiY := sort.Search(maxY*m, func(multiY int) bool {
-		y := float64(multiY) / m
-		area := 0.
+		area := 0
 		for _, sq := range squares {
-			yi := float64(sq[1])
-			if yi < y {
-				l := float64(sq[2])
-				area += l * min(y-yi, l)
+			y, l := sq[1], sq[2]
+			if y*m < multiY {
+				area += l * min(multiY-y*m, l*m)
 			}
 		}
-		return area >= totArea/2
+		return area*2 >= totArea*m
 	})
 	return float64(multiY) / m
 }
@@ -435,18 +438,19 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public double separateSquares(int[][] squares) {
-        double totArea = 0;
+        long totArea = 0;
         int maxY = 0;
         for (int[] sq : squares) {
-            totArea += (long) sq[2] * sq[2];
-            maxY = Math.max(maxY, sq[1] + sq[2]);
+            int l = sq[2];
+            totArea += (long) l * l;
+            maxY = Math.max(maxY, sq[1] + l);
         }
 
         int left = 0;
         int right = maxY;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
-            if (calcArea(squares, mid) >= totArea / 2) {
+            if (calcArea(squares, mid) * 2 >= totArea) {
                 right = mid;
             } else {
                 left = mid;
@@ -454,13 +458,13 @@ class Solution {
         }
         int y = right;
 
-        double areaY = calcArea(squares, y);
-        double sumL = areaY - calcArea(squares, y - 1);
-        return y - (areaY - totArea / 2) / sumL;
+        long areaY = calcArea(squares, y);
+        long sumL = areaY - calcArea(squares, y - 1);
+        return y - (areaY * 2 - totArea) / (sumL * 2.0); // 这样写误差更小
     }
 
-    private double calcArea(int[][] squares, int y) {
-        double area = 0;
+    private long calcArea(int[][] squares, int y) {
+        long area = 0;
         for (int[] sq : squares) {
             int yi = sq[1];
             if (yi < y) {
@@ -477,15 +481,16 @@ class Solution {
 class Solution {
 public:
     double separateSquares(vector<vector<int>>& squares) {
-        double tot_area = 0;
+        long long tot_area = 0;
         int max_y = 0;
         for (auto& sq : squares) {
-            tot_area += 1LL * sq[2] * sq[2];
-            max_y = max(max_y, sq[1] + sq[2]);
+            int l = sq[2];
+            tot_area += 1LL * l * l;
+            max_y = max(max_y, sq[1] + l);
         }
 
-        auto calc_area = [&](int y) -> double {
-            double area = 0;
+        auto calc_area = [&](int y) {
+            long long area = 0;
             for (auto& sq : squares) {
                 int yi = sq[1];
                 if (yi < y) {
@@ -499,41 +504,42 @@ public:
         int left = 0, right = max_y;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
-            (calc_area(mid) >= tot_area / 2 ? right : left) = mid;
+            (calc_area(mid) * 2 >= tot_area ? right : left) = mid;
         }
         int y = right;
 
-        double area_y = calc_area(y);
-        double sum_l = area_y - calc_area(y - 1);
-        return y - (area_y - tot_area / 2) / sum_l;
+        long long area_y = calc_area(y);
+        long long sum_l = area_y - calc_area(y - 1);
+        return y - (area_y * 2 - tot_area) / (sum_l * 2.0); // 这样写误差更小
     }
 };
 ```
 
 ```go [sol-Go]
 func separateSquares(squares [][]int) float64 {
-	totArea := 0.
+	totArea := 0
 	maxY := 0
 	for _, sq := range squares {
-		totArea += float64(sq[2] * sq[2])
-		maxY = max(maxY, sq[1]+sq[2])
+		l := sq[2]
+		totArea += l * l
+		maxY = max(maxY, sq[1]+l)
 	}
 
-	calcArea := func(y int) (area float64) {
+	calcArea := func(y int) (area int) {
 		for _, sq := range squares {
 			yi := sq[1]
 			if yi < y {
 				l := sq[2]
-				area += float64(l * min(y-yi, l))
+				area += l * min(y-yi, l)
 			}
 		}
 		return
 	}
-	y := sort.Search(maxY, func(y int) bool { return calcArea(y) >= totArea/2 })
+	y := sort.Search(maxY, func(y int) bool { return calcArea(y)*2 >= totArea })
 
 	areaY := calcArea(y)
 	sumL := areaY - calcArea(y-1)
-	return float64(y) - (areaY-totArea/2)/sumL
+	return float64(y) - float64(areaY*2-totArea)/float64(sumL*2) // 这样写误差更小
 }
 ```
 
@@ -553,27 +559,21 @@ func separateSquares(squares [][]int) float64 {
 
 扫描的过程中，维护面积之和 $\textit{area}$，底边长之和 $\textit{sumL}$。
 
-当前 $y$ 与下一个 $y'$ 之差为 $y'-y$，新的面积之和为
+设当前 $y$ 与下一个 $y'$ 之差为 $y'-y$，则新增面积为
 
 $$
-\textit{area} + \textit{sumL}\cdot (y'-y)
+\textit{sumL}\cdot (y'-y)
 $$
 
 如果发现
 
 $$
-(\textit{area} + \textit{sumL}\cdot (y'-y)) \cdot 2 \ge \textit{totalArea}
+\textit{area} \cdot 2 \ge \textit{totalArea}
 $$
 
-取等号，解得
+那么可以直接算出答案，计算公式和上面「方法二：整数二分（写法二）」是一样的。
 
-$$
-y' = y + \dfrac{\textit{totalArea}/2 - \textit{area}}{\textit{sumL}} = y + \dfrac{\textit{totalArea} - \textit{area}\cdot 2}{\textit{sumL}\cdot 2}
-$$
-
-即为答案。
-
-$\textit{sumL}$ 从 $y$ 到 $y'$ 的增量，可以用**差分**维护。[原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看。
+$\textit{sumL}$ 可以用**差分**维护。[原理讲解](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)，推荐和[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/) 一起看。
 
 ```py [sol-Python3]
 class Solution:
@@ -588,16 +588,15 @@ class Solution:
         area = sum_l = 0
         for y, y2 in pairwise(sorted(diff)):
             sum_l += diff[y]  # 矩形底边长度之和
-            tmp = area + sum_l * (y2 - y)  # 底边长 * 高 = 新增面积
-            if tmp * 2 >= tot_area:
-                return y + (tot_area - area * 2) / (sum_l * 2)  # 这样写误差更小
-            area = tmp
+            area += sum_l * (y2 - y)  # 底边长 * 高 = 新增面积
+            if area * 2 >= tot_area:
+                return y2 - (area * 2 - tot_area) / (sum_l * 2)
 ```
 
 ```java [sol-Java]
 class Solution {
     public double separateSquares(int[][] squares) {
-        double totArea = 0;
+        long totArea = 0;
         TreeMap<Integer, Long> diff = new TreeMap<>();
         for (int[] sq : squares) {
             int y = sq[1];
@@ -607,16 +606,15 @@ class Solution {
             diff.merge(y + (int) l, -l, Long::sum);
         }
 
-        double area = 0;
+        long area = 0;
         long sumL = 0;
         int preY = 0; // 不好计算下一个 y，改成维护上一个 y
         for (var e : diff.entrySet()) {
             int y = e.getKey();
-            double tmp = area + (double) sumL * (y - preY); // 底边长 * 高 = 新增面积
-            if (tmp >= totArea / 2) {
-                return preY + (totArea / 2 - area) / sumL;
+            area += sumL * (y - preY); // 底边长 * 高 = 新增面积
+            if (area * 2 >= totArea) {
+                return y - (area * 2 - totArea) / (sumL * 2.0);
             }
-            area = tmp;
             preY = y;
             sumL += e.getValue(); // 矩形底边长度之和
         }
@@ -629,7 +627,7 @@ class Solution {
 class Solution {
 public:
     double separateSquares(vector<vector<int>>& squares) {
-        double tot_area = 0;
+        long long tot_area = 0;
         map<int, long long> diff;
         for (auto& sq : squares) {
             int y = sq[1], l = sq[2];
@@ -638,16 +636,15 @@ public:
             diff[y + l] -= l;
         }
 
-        double area = 0;
-        long long sum_l = 0;
-        for (auto it = diff.begin(); ; it++) {
+        long long area = 0, sum_l = 0;
+        for (auto it = diff.begin();;) {
             auto [y, sl] = *it;
+            int y2 = (++it)->first;
             sum_l += sl; // 矩形底边长度之和
-            double tmp = area + 1.0 * sum_l * (next(it)->first - y); // 底边长 * 高 = 新增面积
-            if (tmp >= tot_area / 2) {
-                return y + (tot_area / 2 - area) / sum_l;
+            area += sum_l * (y2 - y); // 底边长 * 高 = 新增面积
+            if (area * 2 >= tot_area) {
+                return y2 - (area * 2 - tot_area) / (sum_l * 2.0);
             }
-            area = tmp;
         }
     }
 };
@@ -655,24 +652,23 @@ public:
 
 ```go [sol-Go]
 func separateSquares(squares [][]int) float64 {
-	totArea := 0.
+	totArea := 0
 	diff := map[int]int{}
 	for _, sq := range squares {
 		y, l := sq[1], sq[2]
-		totArea += float64(l * l)
+		totArea += l * l
 		diff[y] += l
 		diff[y+l] -= l
 	}
 
 	ys := slices.Sorted(maps.Keys(diff))
-	area, sumL := 0., 0
+	area, sumL := 0, 0
 	for i := 0; ; i++ {
 		sumL += diff[ys[i]] // 矩形底边长度之和
-		tmp := area + float64(sumL)*float64(ys[i+1]-ys[i]) // 底边长 * 高 = 新增面积
-		if tmp >= totArea/2 {
-			return float64(ys[i]) + (totArea/2-area)/float64(sumL)
+		area += sumL * (ys[i+1] - ys[i]) // 底边长 * 高 = 新增面积
+		if area*2 >= totArea {
+			return float64(ys[i+1]) - float64(area*2-totArea)/float64(sumL*2)
 		}
-		area = tmp
 	}
 }
 ```
