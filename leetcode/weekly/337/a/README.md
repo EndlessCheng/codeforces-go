@@ -63,9 +63,9 @@ func evenOddBit(n int) []int {
 
 ## 方法二：位掩码 + 库函数
 
-利用位掩码 `0x55555555`（二进制的 $01010101\cdots$），与 $n$ 计算 AND，即可取出所有偶数下标比特，然后用库函数统计二进制中的 $1$ 的个数。
+利用位掩码 `0x55555555`（二进制 $0101\cdots 01$），与 $n$ 计算 AND，即可取出所有偶数下标比特，然后用库函数统计其中 $1$ 的个数。
 
-把 `0x55555555` 右移一位，与 $n$ 计算 AND，即可取出所有奇数下标比特，然后用库函数统计二进制中的 $1$ 的个数。
+把 `0x55555555` 左移一位（二进制 $1010\cdots 10$），与 $n$ 计算 AND，即可取出所有奇数下标比特，然后用库函数统计其中 $1$ 的个数。
 
 > 注：因为 $n$ 比较小，你也可以用 `0x555` 作为位掩码。
 
@@ -73,14 +73,14 @@ func evenOddBit(n int) []int {
 class Solution:
     def evenOddBit(self, n: int) -> List[int]:
         MASK = 0x55555555
-        return [(n & MASK).bit_count(), (n & (MASK >> 1)).bit_count()]
+        return [(n & MASK).bit_count(), (n & (MASK << 1)).bit_count()]
 ```
 
 ```java [sol-Java]
 class Solution {
     public int[] evenOddBit(int n) {
         final int MASK = 0x55555555;
-        return new int[]{Integer.bitCount(n & MASK), Integer.bitCount(n & (MASK >> 1))};
+        return new int[]{Integer.bitCount(n & MASK), Integer.bitCount(n & (MASK << 1))};
     }
 }
 ```
@@ -89,8 +89,8 @@ class Solution {
 class Solution {
 public:
     vector<int> evenOddBit(int n) {
-        const unsigned MASK = 0x55555555;
-        return {popcount(n & MASK), popcount(n & (MASK >> 1))};
+        const unsigned MASK = 0x55555555u;
+        return {popcount(n & MASK), popcount(n & (MASK << 1))};
     }
 };
 ```
@@ -98,7 +98,7 @@ public:
 ```go [sol-Go]
 func evenOddBit(n int) []int {
     const mask = 0x55555555
-    return []int{bits.OnesCount(uint(n & mask)), bits.OnesCount(uint(n & (mask >> 1)))}
+    return []int{bits.OnesCount(uint(n & mask)), bits.OnesCount(uint(n & (mask << 1)))}
 }
 ```
 
