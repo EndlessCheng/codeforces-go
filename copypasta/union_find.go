@@ -432,6 +432,7 @@ func moveRobot(start ufPoint, command string) ufPoint {
 // LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
 // 哈希表写法 https://leetcode.cn/problems/groups-of-strings/
 // https://atcoder.jp/contests/arc107/tasks/arc107_c
+// https://atcoder.jp/contests/abc372/tasks/abc372_e
 func _(n int) {
 	groups := n
 	maxSize := 1
