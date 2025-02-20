@@ -46,8 +46,8 @@ class Node:
         self.l = 0
         self.r = 0
         self.min_cover_len = 0  # 区间内被矩形覆盖次数最少的底边长之和
-        self.min_cover = 0  # 区间内被矩形覆盖的最小次数
-        self.todo = 0  # 子树内的所有节点的 min_cover 需要增加的量，注意这可以是负数
+        self.min_cover = 0      # 区间内被矩形覆盖的最小次数
+        self.todo = 0           # 子树内的所有节点的 min_cover 需要增加的量，注意这可以是负数
 
 
 class SegmentTree:
@@ -113,7 +113,7 @@ class Solution:
     def separateSquares(self, squares: List[List[int]]) -> float:
         xs = []
         events = []
-        for (lx, y, l) in squares:
+        for lx, y, l in squares:
             rx = lx + l
             xs.append(lx)
             xs.append(rx)
@@ -363,6 +363,7 @@ private:
     }
 };
 
+// 代码逻辑同 850 题，增加一个 records 数组记录关键数据
 class Solution {
 public:
     double separateSquares(vector<vector<int>>& squares) {
@@ -380,7 +381,7 @@ public:
 
         // 排序去重，方便离散化
         ranges::sort(xs);
-        xs.erase(unique(xs.begin(), xs.end()), xs.end());
+        xs.erase(ranges::unique(xs).begin(), xs.end());
 
         // 初始化线段树
         SegmentTree t(xs);
