@@ -215,6 +215,8 @@ $$
 - $f[1][1][\textit{grid}[0][0]]=1$，翻译自递归边界 $\textit{dfs}(0,0,\textit{grid}[0][0])=1$。
 - 其余为 $0$。
 
+也可以初始化 $f[0][1][0] = 1$，这样无需在递推时特判左上角。
+
 答案为 $f[m][n][k]$，翻译自递归入口 $\textit{dfs}(m-1,n-1,k)$。
 
 ```py [sol-Python3]
@@ -227,11 +229,11 @@ class Solution:
 
         m, n = len(grid), len(grid[0])
         f = [[[0] * u for _ in range(n + 1)] for _ in range(m + 1)]
-        f[1][1][grid[0][0]] = 1
+        f[0][1][0] = 1
         for i, row in enumerate(grid):
             for j, val in enumerate(row):
                 for x in range(u):
-                    f[i + 1][j + 1][x] += (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD
+                    f[i + 1][j + 1][x] = (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD
         return f[m][n][k]
 ```
 
@@ -253,12 +255,12 @@ class Solution {
         int m = grid.length;
         int n = grid[0].length;
         int[][][] f = new int[m + 1][n + 1][u];
-        f[1][1][grid[0][0]] = 1;
+        f[0][1][0] = 1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 int val = grid[i][j];
                 for (int x = 0; x < u; x++) {
-                    f[i + 1][j + 1][x] += (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD;
+                    f[i + 1][j + 1][x] = (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD;
                 }
             }
         }
@@ -283,12 +285,12 @@ public:
 
         int m = grid.size(), n = grid[0].size();
         vector f(m + 1, vector(n + 1, vector<int>(u)));
-        f[1][1][grid[0][0]] = 1;
+        f[0][1][0] = 1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 int val = grid[i][j];
                 for (int x = 0; x < u; x++) {
-                    f[i + 1][j + 1][x] += (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD;
+                    f[i + 1][j + 1][x] = (f[i + 1][j][x ^ val] + f[i][j + 1][x ^ val]) % MOD;
                 }
             }
         }
@@ -317,11 +319,11 @@ func countPathsWithXorValue(grid [][]int, k int) int {
 			f[i][j] = make([]int, u)
 		}
 	}
-	f[1][1][grid[0][0]] = 1
+	f[0][1][0] = 1
 	for i, row := range grid {
 		for j, val := range row {
 			for x := range u {
-				f[i+1][j+1][x] += (f[i+1][j][x^val] + f[i][j+1][x^val]) % mod
+				f[i+1][j+1][x] = (f[i+1][j][x^val] + f[i][j+1][x^val]) % mod
 			}
 		}
 	}
