@@ -195,14 +195,14 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 				raw = strings.TrimSpace(raw)
 				sampleIns = append(sampleIns, raw)
 			} else if outputRegex.MatchString(o.Data) {
-				if o.Parent.NextSibling.FirstChild == nil {
-					// 样例输出为空，例如 https://atcoder.jp/contests/abc150/tasks/abc150_f
-					sampleOuts = append(sampleOuts, "")
-				} else {
-					raw := get()
-					raw = strings.TrimSpace(raw)
-					sampleOuts = append(sampleOuts, raw)
-				}
+				//if o.Parent.NextSibling.FirstChild == nil {
+				//	// 样例输出为空，例如 https://atcoder.jp/contests/abc150/tasks/abc150_f
+				//	sampleOuts = append(sampleOuts, "")
+				//} else {
+				raw := get()
+				raw = strings.TrimSpace(raw)
+				sampleOuts = append(sampleOuts, raw)
+				//}
 			}
 			return
 		}
