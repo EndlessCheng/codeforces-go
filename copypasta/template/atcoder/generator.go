@@ -183,8 +183,15 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 	var f func(*html.Node)
 	f = func(o *html.Node) {
 		if o.Type == html.TextNode {
+			get := func() string {
+				if o.Parent.NextSibling.FirstChild != nil {
+					return o.Parent.NextSibling.FirstChild.Data
+				}
+				// https://atcoder.jp/contests/abc371/tasks/abc371_e
+				return o.Parent.NextSibling.NextSibling.FirstChild.Data
+			}
 			if inputRegex.MatchString(o.Data) {
-				raw := o.Parent.NextSibling.FirstChild.Data
+				raw := get()
 				raw = strings.TrimSpace(raw)
 				sampleIns = append(sampleIns, raw)
 			} else if outputRegex.MatchString(o.Data) {
@@ -192,7 +199,7 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 					// 样例输出为空，例如 https://atcoder.jp/contests/abc150/tasks/abc150_f
 					sampleOuts = append(sampleOuts, "")
 				} else {
-					raw := o.Parent.NextSibling.FirstChild.Data
+					raw := get()
 					raw = strings.TrimSpace(raw)
 					sampleOuts = append(sampleOuts, raw)
 				}
