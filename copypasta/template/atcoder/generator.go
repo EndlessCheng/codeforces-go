@@ -221,12 +221,7 @@ func parseTask(session *grequests.Session, problemURL string) (sampleIns, sample
 }
 
 func genTemplates(session *grequests.Session, problemURL string, isContest bool) error {
-	// 解析样例输入输出
-	ins, outs, err := parseTask(session, problemURL)
-	if err != nil {
-		return err
-	}
-
+	// 检查 URL 是否合法
 	problemName := filepath.Base(problemURL)
 	spIdx := strings.LastIndexByte(problemName, '_')
 	if spIdx < 0 {
@@ -236,8 +231,21 @@ func genTemplates(session *grequests.Session, problemURL string, isContest bool)
 	dirID, taskID := problemName[:spIdx], problemName[spIdx+1:]
 	contestName := strings.ReplaceAll(dirID, "_", "-")
 
-	// 生成目录
+	// 检查是否已经生成过 main 文件
 	dirPath := filepath.Join(contestDir, dirID, taskID) + "/"
+	mainFilePath := dirPath + taskID + ".go"
+	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
+		open.Run(absPath(mainFilePath))
+		return fmt.Errorf("文件已存在！")
+	}
+
+	// 解析样例输入输出
+	ins, outs, err := parseTask(session, problemURL)
+	if err != nil {
+		return err
+	}
+
+	// 成功解析，生成目录
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return err
 	}
@@ -268,14 +276,9 @@ func run(in io.Reader, _w io.Writer) {
 
 func main() { run(bufio.NewReader(os.Stdin), os.Stdout) }
 `
-	mainFilePath := dirPath + taskID + ".go"
 	if !isContest || taskID == "a" {
 		// 比赛时，在 IDE 中打开 A 题
 		defer open.Run(absPath(mainFilePath))
-	}
-	if _, err := os.Stat(mainFilePath); !os.IsNotExist(err) {
-		open.Run(absPath(mainFilePath))
-		return fmt.Errorf("文件已存在！")
 	}
 	if err := os.WriteFile(mainFilePath, []byte(mainFileContent), 0644); err != nil {
 		return err
