@@ -70,6 +70,43 @@ func similarPairs(words []string) (ans int) {
 }
 ```
 
+```js [sol-JavaScript]
+var similarPairs = function(words) {
+    const cnt = new Map();
+    let ans = 0;
+    for (const s of words) {
+        let mask = 0;
+        for (const c of s) {
+            mask |= 1 << (c.charCodeAt(0) - 'a'.charCodeAt(0));
+        }
+        const c = cnt.get(mask) ?? 0
+        ans += c;
+        cnt.set(mask, c + 1);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn similar_pairs(words: Vec<String>) -> i32 {
+        let mut cnt = HashMap::new();
+        let mut ans = 0;
+        for s in words {
+            let mut mask = 0;
+            for c in s.bytes() {
+                mask |= 1 << (c - b'a');
+            }
+            ans += *cnt.get(&mask).unwrap_or(&0);
+            *cnt.entry(mask).or_insert(0) += 1;
+        }
+        ans
+    }
+}
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(L)$，其中 $L$ 为 $\textit{words}$ 中所有字符串的长度之和。
