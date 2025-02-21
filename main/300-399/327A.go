@@ -7,8 +7,8 @@ import (
 
 // https://github.com/EndlessCheng
 func cf327A(in io.Reader, out io.Writer) {
-	var n, v, f0, f1 int
-	f2 := int(-1e9)
+	var n, v, f0 int
+	f1, f2 := int(-1e9), int(-1e9)
 	Fscan(in, &n)
 	for range n {
 		Fscan(in, &v)
