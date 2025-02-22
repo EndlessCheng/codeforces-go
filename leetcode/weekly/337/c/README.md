@@ -249,7 +249,7 @@ func beautifulSubsets(nums []int, k int) int {
 
 把有序集合的 key 转成列表 $a$（或者把哈希表的 key 排序）。例如 $a=[1,3,7]$，相邻的数字如果相差恰好为 $k$，那么不能同时选。
 
-这类似 [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)，如果你还没做过，请先完成这题。[视频讲解](https://www.bilibili.com/video/BV1Xj411K7oF/)
+这类似 [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)，[视频讲解](https://www.bilibili.com/video/BV1Xj411K7oF/)。
 
 设 $a$ 的大小为 $m$。考虑最大的数 $a[m-1]$ 选或不选：
 
