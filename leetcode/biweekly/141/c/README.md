@@ -15,12 +15,12 @@
 
 ## 二、状态定义与状态转移方程
 
-根据上面的讨论，定义状态为 $\textit{dfs}(i,j)$，表示要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i]$ 的子序列，最多可以进行多少次删除操作。
+根据上面的讨论，定义状态为 $\textit{dfs}(i,j)$，表示要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i]$ 的子序列，最多可以执行多少次删除操作。
 
 分类讨论：
 
-- 不选 $\textit{source}[i]$，问题变成要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i-1]$ 的子序列，最多可以进行多少次删除操作，即 $\textit{dfs}(i-1,j)$。如果 $i$ 在 $\textit{targetIndices}$ 中，那么删除次数加一。
-- 如果 $\textit{source}[i]=\textit{pattern}[j]$，那么匹配（都选），问题变成要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j-1]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i-1]$ 的子序列，最多可以进行多少次删除操作，即 $\textit{dfs}(i-1,j-1)$。
+- 不选 $\textit{source}[i]$，问题变成要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i-1]$ 的子序列，最多可以执行多少次删除操作，即 $\textit{dfs}(i-1,j)$。如果 $i$ 在 $\textit{targetIndices}$ 中，那么删除次数加一。
+- 如果 $\textit{source}[i]=\textit{pattern}[j]$，那么匹配（都选），问题变成要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j-1]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i-1]$ 的子序列，最多可以执行多少次删除操作，即 $\textit{dfs}(i-1,j-1)$。
 
 这两种情况取最大值，就得到了 $\textit{dfs}(i,j)$，即
 
@@ -190,7 +190,7 @@ func maxRemovals(source, pattern string, targetIndices []int) int {
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-具体来说，$f[i+1][j+1]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i]$ 的子序列，最多可以进行多少次删除操作。这里 $+1$ 是为了把 $\textit{dfs}(-1,-1)$ 这个状态也翻译过来，这样我们可以把 $f[0][0]$ 作为初始值。
+具体来说，$f[i+1][j+1]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示要使 $\textit{pattern}[0]$ 到 $\textit{pattern}[j]$ 是 $\textit{source}[0]$ 到 $\textit{source}[i]$ 的子序列，最多可以执行多少次删除操作。这里 $+1$ 是为了把 $\textit{dfs}(-1,-1)$ 这个状态也翻译过来，这样我们可以把 $f[0][0]$ 作为初始值。
 
 相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
@@ -487,7 +487,7 @@ func maxRemovals(source, pattern string, targetIndices []int) int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -497,7 +497,7 @@ func maxRemovals(source, pattern string, targetIndices []int) int {
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
 10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
-11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
