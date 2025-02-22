@@ -7,7 +7,7 @@ import (
 
 // https://space.bilibili.com/206214
 func p10725(in io.Reader, out io.Writer) {
-	var n ,ans int
+	var n, ans int
 	Fscan(in, &n)
 	a := make([]int, n)
 	for i := range a {
