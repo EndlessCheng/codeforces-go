@@ -692,7 +692,7 @@ func (a Allocator) FreeMemory(mID int) (ans int) {
 #### 复杂度分析
 
 - 时间复杂度：初始化 $\mathcal{O}(n)$。$\texttt{allocate}$ $\mathcal{O}(\log n)$。$\texttt{freeMemory}$ 均摊 $\mathcal{O}(\log n)$，因为释放内存单元的次数不会超过 $\texttt{allocate}$ 的调用次数。总体时间复杂度 $\mathcal{O}(n+q\log n)$，其中 $q$ 为 $\texttt{allocate}$ 和 $\texttt{freeMemory}$ 的调用次数之和。
-- 空间复杂度：$\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。注意哈希表的大小不会超过 $n$。
 
 ## 分类题单
 
