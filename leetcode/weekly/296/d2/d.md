@@ -1,460 +1,202 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV1w34y1L7yu/) 已出炉，欢迎三连~
+## 方法一：对顶栈
 
----
+创建左右两个栈，头对头（栈顶对栈顶），光标的左右移动就相当于两个栈中的数据来回倒（左手倒右手，右手倒左手）。
 
-## 方法一：双向链表
+对于插入和删除操作，直接在左边那个栈上入栈出栈。
 
-#### 提示 1
-
-注意添加、删除和移动操作均在光标附近完成，且 $\textit{text}$ 的长度和 $k$ 都很小。
-
-#### 提示 2
-
-用链表模拟所有操作，每个节点存储一个字符。
-
-光标指向链表中的一个节点（该节点保存着光标左边的字符）。
-
-#### 提示 3
-
-用一个哨兵节点表示光标位于文本最左侧的情况，此时光标左侧无字符，即指向哨兵节点。
-
-#### 复杂度分析
-
-时空复杂度均与输入量成正比（线性）。
-
-```Python [sol1-Python3]
-# 手写双向链表
-class Node:
-    __slots__ = ('prev', 'next', 'ch')
-
-    def __init__(self, ch=''):
-        self.prev = None
-        self.next = None
-        self.ch = ch
-
-    # 在 self 后插入 node，并返回该 node
-    def insert(self, node: 'Node') -> 'Node':
-        node.prev = self
-        node.next = self.next
-        node.prev.next = node
-        node.next.prev = node
-        return node
-
-    # 从链表中移除 self
-    def remove(self) -> None:
-        self.prev.next = self.next
-        self.next.prev = self.prev
-
+```py [sol-Python3]
 class TextEditor:
     def __init__(self):
-        self.root = self.cur = Node()  # 哨兵节点
-        self.root.prev = self.root
-        self.root.next = self.root  # 初始化双向链表，下面判断节点的 next 若为 self.root，则表示 next 为空
+        self.left = []  # 光标左侧字符
+        self.right = []  # 光标右侧字符
 
     def addText(self, text: str) -> None:
-        for ch in text:
-            self.cur = self.cur.insert(Node(ch))
+        self.left.extend(text)  # 入栈
 
     def deleteText(self, k: int) -> int:
-        k0 = k
-        while k and self.cur != self.root:
-            self.cur = self.cur.prev
-            self.cur.next.remove()
-            k -= 1
-        return k0 - k
+        pre = len(self.left)  # 删除之前的栈大小
+        del self.left[-k:]  # 出栈
+        return pre - len(self.left)  # 减去删除之后的栈大小
 
     def text(self) -> str:
-        s = []
-        k, cur = 10, self.cur
-        while k and cur != self.root:
-            s.append(cur.ch)
-            cur = cur.prev
-            k -= 1
-        return ''.join(reversed(s))
-
-    def cursorLeft(self, k: int) -> str:
-        while k and self.cur != self.root:
-            self.cur = self.cur.prev
-            k -= 1
-        return self.text()
-
-    def cursorRight(self, k: int) -> str:
-        while k and self.cur.next != self.root:
-            self.cur = self.cur.next
-            k -= 1
-        return self.text()
-```
-
-```java [sol1-Java]
-class TextEditor {
-    Node root, cur;
-
-    public TextEditor() {
-        root = cur = new Node(); // 哨兵节点
-        root.prev = root;
-        root.next = root; // 初始化双向链表，下面判断节点的 next 若为 root，则表示 next 为空
-    }
-
-    public void addText(String text) {
-        for (var i = 0; i < text.length(); i++)
-            cur = cur.insert(new Node(text.charAt(i)));
-    }
-
-    public int deleteText(int k) {
-        var k0 = k;
-        for (; k > 0 && cur != root; --k) {
-            cur = cur.prev;
-            cur.next.remove();
-        }
-        return k0 - k;
-    }
-
-    String text() {
-        var s = new StringBuilder();
-        var cur = this.cur;
-        for (var k = 10; k > 0 && cur != root; --k) {
-            s.append(cur.ch);
-            cur = cur.prev;
-        }
-        return s.reverse().toString();
-    }
-
-    public String cursorLeft(int k) {
-        for (; k > 0 && cur != root; --k)
-            cur = cur.prev;
-        return text();
-    }
-
-    public String cursorRight(int k) {
-        for (; k > 0 && cur.next != root; --k)
-            cur = cur.next;
-        return text();
-    }
-}
-
-// 手写双向链表
-class Node {
-    Node prev, next;
-    char ch;
-
-    Node() {}
-
-    Node(char ch) {
-        this.ch = ch;
-    }
-
-    // 在 this 后插入 node，并返回该 node
-    Node insert(Node node) {
-        node.prev = this;
-        node.next = this.next;
-        node.prev.next = node;
-        node.next.prev = node;
-        return node;
-    }
-
-    // 从链表中移除 this
-    void remove() {
-        this.prev.next = this.next;
-        this.next.prev = this.prev;
-    }
-}
-```
-
-```C++ [sol1-C++]
-class TextEditor {
-    list<char> l;
-    list<char>::iterator cur = l.begin();
-
-public:
-    TextEditor() {}
-
-    void addText(string text) {
-        for (char ch : text)
-            l.insert(cur, ch);
-    }
-
-    int deleteText(int k) {
-        int k0 = k;
-        for (; k && cur != l.begin(); --k)
-            cur = l.erase(prev(cur));
-        return k0 - k;
-    }
-
-    string text() {
-        string s;
-        auto it = cur;
-        for (int k = 10; k && it != l.begin(); --k) {
-            it = prev(it);
-            s += *it;
-        }
-        reverse(s.begin(), s.end());
-        return s;
-    }
-
-    string cursorLeft(int k) {
-        for (; k && cur != l.begin(); --k)
-            cur = prev(cur);
-        return text();
-    }
-
-    string cursorRight(int k) {
-        for (; k && cur != l.end(); --k)
-            cur = next(cur);
-        return text();
-    }
-};
-```
-
-```go [sol1-Go]
-type TextEditor struct {
-	*list.List
-	cur *list.Element
-}
-
-func Constructor() TextEditor {
-	l := list.New()
-	return TextEditor{l, l.PushBack(nil)} // 哨兵节点
-}
-
-func (l *TextEditor) AddText(text string) {
-	for _, ch := range text {
-		l.cur = l.InsertAfter(byte(ch), l.cur)
-	}
-}
-
-func (l *TextEditor) DeleteText(k int) int {
-	k0 := k
-	for ; k > 0 && l.cur.Value != nil; k-- {
-		pre := l.cur.Prev()
-		l.Remove(l.cur)
-		l.cur = pre
-	}
-	return k0 - k
-}
-
-func (l *TextEditor) text() string {
-	s := []byte{}
-	for k, cur := 10, l.cur; k > 0 && cur.Value != nil; k-- {
-		s = append(s, cur.Value.(byte))
-		cur = cur.Prev()
-	}
-	for i, n := 0, len(s); i < n/2; i++ {
-		s[i], s[n-1-i] = s[n-1-i], s[i] // reverse s
-	}
-	return string(s)
-}
-
-func (l *TextEditor) CursorLeft(k int) string {
-	for ; k > 0 && l.cur.Value != nil; k-- {
-		l.cur = l.cur.Prev()
-	}
-	return l.text()
-}
-
-func (l *TextEditor) CursorRight(k int) string {
-	for ; k > 0 && l.cur.Next() != nil; k-- {
-		l.cur = l.cur.Next()
-	}
-	return l.text()
-}
-```
-
-
-## 方法二：对顶栈
-
-用两个栈头对头，光标的左右移动就相当于两个栈来回倒；对于插入和删除操作，就相当于在左边那个栈的末尾入栈出栈。
-
-#### 复杂度分析
-
-时空复杂度均与输入量成正比（线性）。
-
-#### 相似题目
-
-- [HDU4699 Editor](http://acm.hdu.edu.cn/showproblem.php?pid=4699)
-
-```Python [sol1-Python3]
-class TextEditor:
-    def __init__(self):
-        self.left, self.right = [], []
-
-    def addText(self, text: str) -> None:
-        self.left.extend(list(text))
-
-    def deleteText(self, k: int) -> int:
-        k0 = k
-        while k and self.left:
-            self.left.pop()
-            k -= 1
-        return k0 - k
-
-    def text(self) -> str:
-        return ''.join(self.left[-10:])
+        return ''.join(self.left[-10:])  # 光标左边至多 10 个字符
 
     def cursorLeft(self, k: int) -> str:
         while k and self.left:
-            self.right.append(self.left.pop())
+            self.right.append(self.left.pop())  # 左手倒右手
             k -= 1
         return self.text()
 
     def cursorRight(self, k: int) -> str:
         while k and self.right:
-            self.left.append(self.right.pop())
+            self.left.append(self.right.pop())  # 右手倒左手
             k -= 1
         return self.text()
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class TextEditor {
-    ArrayList<Character> left = new ArrayList<>(), right = new ArrayList<>();
-
-    public TextEditor() {}
+    private final StringBuilder left = new StringBuilder(); // 光标左侧字符
+    private final StringBuilder right = new StringBuilder(); // 光标右侧字符
 
     public void addText(String text) {
-        for (var i = 0; i < text.length(); i++)
-            left.add(text.charAt(i));
+        left.append(text); // 入栈
     }
 
     public int deleteText(int k) {
-        var k0 = k;
-        for (; k > 0 && !left.isEmpty(); --k)
-            left.remove(left.size() - 1);
-        return k0 - k;
-    }
-
-    String text() {
-        var s = new StringBuilder();
-        for (var i = Math.max(left.size() - 10, 0); i < left.size(); ++i)
-            s.append(left.get(i));
-        return s.toString();
+        k = Math.min(k, left.length());
+        left.setLength(left.length() - k); // 出栈
+        return k;
     }
 
     public String cursorLeft(int k) {
-        for (; k > 0 && !left.isEmpty(); --k)
-            right.add(left.remove(left.size() - 1));
+        while (k > 0 && !left.isEmpty()) {
+            right.append(left.charAt(left.length() - 1)); // 左手倒右手
+            left.setLength(left.length() - 1);
+            k--;
+        }
         return text();
     }
 
     public String cursorRight(int k) {
-        for (; k > 0 && !right.isEmpty(); --k)
-            left.add(right.remove(right.size() - 1));
+        while (k > 0 && !right.isEmpty()) {
+            left.append(right.charAt(right.length() - 1)); // 右手倒左手
+            right.setLength(right.length() - 1);
+            k--;
+        }
         return text();
+    }
+
+    private String text() {
+        // 光标左边至多 10 个字符
+        return left.substring(Math.max(left.length() - 10, 0));
     }
 }
 ```
 
-```C++ [sol1-C++]
+```cpp [sol-C++]
 class TextEditor {
-    vector<char> left, right;
+    string left, right; // 光标左侧、右侧字符
+
+    string text() {
+        // 光标左边至多 10 个字符
+        return left.substr(max((int) left.size() - 10, 0));
+    }
 
 public:
-    TextEditor() {}
-
     void addText(string text) {
-        left.insert(left.end(), text.begin(), text.end());
+        left += text; // 入栈
     }
 
     int deleteText(int k) {
-        int k0 = k;
-        for (; k && !left.empty(); --k)
-            left.pop_back();
-        return k0 - k;
-    }
-
-    string text() {
-        return string(next(left.begin(), max((int) left.size() - 10, 0)), left.end());
+        k = min(k, (int) left.length());
+        left.resize(left.length() - k); // 出栈
+        return k;
     }
 
     string cursorLeft(int k) {
-        for (; k && !left.empty(); --k) {
-            right.emplace_back(left.back());
+        while (k && !left.empty()) {
+            right += left.back(); // 左手倒右手
             left.pop_back();
+            k--;
         }
         return text();
     }
 
     string cursorRight(int k) {
-        for (; k && !right.empty(); --k) {
-            left.emplace_back(right.back());
+        while (k && !right.empty()) {
+            left += right.back(); // 右手倒左手
             right.pop_back();
+            k--;
         }
         return text();
     }
 };
 ```
 
-```go [sol1-Go]
-type TextEditor struct{ l, r []byte }
+```go [sol-Go]
+type TextEditor struct {
+    left, right []byte // 光标左侧、右侧字符
+}
 
-func Constructor() TextEditor { return TextEditor{} }
+func Constructor() TextEditor {
+    return TextEditor{}
+}
 
 func (t *TextEditor) AddText(text string) {
-	t.l = append(t.l, text...)
+    t.left = append(t.left, text...) // 入栈
 }
 
 func (t *TextEditor) DeleteText(k int) int {
-	k0 := k
-	for ; k > 0 && len(t.l) > 0; k-- {
-		t.l = t.l[:len(t.l)-1]
-	}
-	return k0 - k
+    k = min(k, len(t.left))
+    t.left = t.left[:len(t.left)-k] // 出栈
+    return k
 }
 
 func (t *TextEditor) text() string {
-	return string(t.l[max(len(t.l)-10, 0):])
+    // 光标左边至多 10 个字符
+    return string(t.left[max(len(t.left)-10, 0):])
 }
 
 func (t *TextEditor) CursorLeft(k int) string {
-	for ; k > 0 && len(t.l) > 0; k-- {
-		t.r = append(t.r, t.l[len(t.l)-1])
-		t.l = t.l[:len(t.l)-1]
-	}
-	return t.text()
+    for k > 0 && len(t.left) > 0 {
+        t.right = append(t.right, t.left[len(t.left)-1]) // 左手倒右手
+        t.left = t.left[:len(t.left)-1]
+        k--
+    }
+    return t.text()
 }
 
 func (t *TextEditor) CursorRight(k int) string {
-	for ; k > 0 && len(t.r) > 0; k-- {
-		t.l = append(t.l, t.r[len(t.r)-1])
-		t.r = t.r[:len(t.r)-1]
-	}
-	return t.text()
+    for k > 0 && len(t.right) > 0 {
+        t.left = append(t.left, t.right[len(t.right)-1]) // 右手倒左手
+        t.right = t.right[:len(t.right)-1]
+        k--
+    }
+    return t.text()
 }
-
-func max(a, b int) int { if b > a { return b }; return a }
 ```
 
-## 方法三：Splay（超纲）
+#### 复杂度分析
 
-本题还可以用 [Splay](https://oi-wiki.org/ds/splay/) 来模拟文本的添加和删除，由于该算法超纲，感兴趣的同学可以查阅相关资料。具体做法在本题的 [视频讲解](https://www.bilibili.com/video/BV1w34y1L7yu/) 中有说明。完整的 Splay 模板见我的 [算法竞赛模板库](https://github.com/EndlessCheng/codeforces-go/blob/master/copypasta/splay.go)。
+- 时间复杂度：初始化 $\mathcal{O}(1)$，$\texttt{addText}$ 为 $\mathcal{O}(|\textit{text}|)$，其余 $\mathcal{O}(k)$。
+- 空间复杂度：$\mathcal{O}(n)$。其中 $n$ 为所有 $\textit{text}$ 的长度之和。
 
-```go [sol3-Go]
+## 方法二：Splay（选读）
+
+如果 $k$ 很大，要怎么做？有没有复杂度和 $k$ 无关的算法？
+
+可以用 [Splay](https://oi-wiki.org/ds/splay/) 模拟文本的添加和删除。感兴趣的同学可以查阅相关资料。
+
+```go [sol-Go]
 type node struct {
-	ch  [2]*node
-	sz  int
-	key byte
+    ch  [2]*node
+    sz  int
+    key byte
 }
 
 // 设置如下返回值是为了方便使用 node 中的 ch 数组
 func (o *node) cmpKth(k int) int {
-	d := k - o.ch[0].size() - 1
-	switch {
-	case d < 0:
-		return 0 // 左儿子
-	case d > 0:
-		return 1 // 右儿子
-	default:
-		return -1
-	}
+    d := k - o.ch[0].size() - 1
+    switch {
+    case d < 0:
+        return 0 // 左儿子
+    case d > 0:
+        return 1 // 右儿子
+    default:
+        return -1
+    }
 }
 
 func (o *node) size() int {
-	if o != nil {
-		return o.sz
-	}
-	return 0
+    if o != nil {
+        return o.sz
+    }
+    return 0
 }
 
 func (o *node) maintain() {
-	o.sz = 1 + o.ch[0].size() + o.ch[1].size()
+    o.sz = 1 + o.ch[0].size() + o.ch[1].size()
 }
 
 // 构建一棵中序遍历为 [l,r] 的 splay 树
@@ -463,47 +205,47 @@ func (o *node) maintain() {
 //     append 之后应该是 a c b，那么我们可以 a.merge(c.merge(b)) 来完成这一操作
 //     注意 merge 后可能就不满足搜索树的性质了，但是没有关系，中序遍历的结果仍然是正确的，我们只要保证这一点成立，就能正确得到完成所有操作后的最终序列
 func buildSplay(s string) *node {
-	if s == "" {
-		return nil
-	}
-	m := len(s) / 2
-	o := &node{key: s[m]}
-	o.ch[0] = buildSplay(s[:m])
-	o.ch[1] = buildSplay(s[m+1:])
-	o.maintain()
-	return o
+    if s == "" {
+        return nil
+    }
+    m := len(s) / 2
+    o := &node{key: s[m]}
+    o.ch[0] = buildSplay(s[:m])
+    o.ch[1] = buildSplay(s[m+1:])
+    o.maintain()
+    return o
 }
 
 // 旋转，并维护子树大小
 // d=0：左旋，返回 o 的右儿子
 // d=1：右旋，返回 o 的左儿子
 func (o *node) rotate(d int) *node {
-	x := o.ch[d^1]
-	o.ch[d^1] = x.ch[d]
-	x.ch[d] = o
-	o.maintain()
-	x.maintain()
-	return x
+    x := o.ch[d^1]
+    o.ch[d^1] = x.ch[d]
+    x.ch[d] = o
+    o.maintain()
+    x.maintain()
+    return x
 }
 
 // 将子树 o（中序遍历）的第 k 个节点伸展到 o，并返回该节点
 // 1 <= k <= o.size()
 func (o *node) splay(k int) (kth *node) {
-	d := o.cmpKth(k)
-	if d < 0 {
-		return o
-	}
-	k -= d * (o.ch[0].size() + 1)
-	c := o.ch[d]
-	if d2 := c.cmpKth(k); d2 >= 0 {
-		c.ch[d2] = c.ch[d2].splay(k - d2*(c.ch[0].size()+1))
-		if d2 == d {
-			o = o.rotate(d ^ 1)
-		} else {
-			o.ch[d] = c.rotate(d)
-		}
-	}
-	return o.rotate(d ^ 1)
+    d := o.cmpKth(k)
+    if d < 0 {
+        return o
+    }
+    k -= d * (o.ch[0].size() + 1)
+    c := o.ch[d]
+    if d2 := c.cmpKth(k); d2 >= 0 {
+        c.ch[d2] = c.ch[d2].splay(k - d2*(c.ch[0].size()+1))
+        if d2 == d {
+            o = o.rotate(d ^ 1)
+        } else {
+            o.ch[d] = c.rotate(d)
+        }
+    }
+    return o.rotate(d ^ 1)
 }
 
 // 分裂子树 o，把 o（中序遍历）的前 k 个节点放在 lo 子树，其余放在 ro 子树
@@ -511,92 +253,119 @@ func (o *node) splay(k int) (kth *node) {
 // 1 <= k <= o.size()
 // 特别地，k = o.size() 时 ro 为 nil
 func (o *node) split(k int) (lo, ro *node) {
-	lo = o.splay(k)
-	ro = lo.ch[1]
-	lo.ch[1] = nil
-	lo.maintain()
-	return
+    lo = o.splay(k)
+    ro = lo.ch[1]
+    lo.ch[1] = nil
+    lo.maintain()
+    return
 }
 
 // 把子树 ro 合并进子树 o，返回合并前 o（中序遍历）的最后一个节点
 // 相当于把 ro 的中序遍历 append 到 o 的中序遍历之后
 // ro 可以为 nil，但 o 不能为 nil
 func (o *node) merge(ro *node) *node {
-	// 把最大节点伸展上来，这样会空出一个右儿子用来合并 ro
-	o = o.splay(o.size())
-	o.ch[1] = ro
-	o.maintain()
-	return o
+    // 把最大节点伸展上来，这样会空出一个右儿子用来合并 ro
+    o = o.splay(o.size())
+    o.ch[1] = ro
+    o.maintain()
+    return o
 }
 
 type TextEditor struct {
-	root *node
-	cur  int
+    root *node
+    cur  int
 }
 
 func Constructor() TextEditor { return TextEditor{} }
 
 func (t *TextEditor) AddText(text string) {
-	if t.cur == 0 {
-		t.root = buildSplay(text).merge(t.root)
-	} else {
-		lo, ro := t.root.split(t.cur)
-		t.root = lo.merge(buildSplay(text)).merge(ro)
-	}
-	t.cur += len(text)
+    if t.cur == 0 {
+        t.root = buildSplay(text).merge(t.root)
+    } else {
+        lo, ro := t.root.split(t.cur)
+        t.root = lo.merge(buildSplay(text)).merge(ro)
+    }
+    t.cur += len(text)
 }
 
 func (t *TextEditor) DeleteText(k int) int {
-	if t.cur == 0 {
-		return 0
-	}
-	if t.cur <= k { // 左边全部删除
-		_, t.root = t.root.split(t.cur)
-		ans := t.cur
-		t.cur = 0
-		return ans
-	} else {
-		lo, ro := t.root.split(t.cur)
-		t.cur -= k
-		lo, _ = lo.split(t.cur) // 删除中间 k 个
-		t.root = lo.merge(ro)
-		return k
-	}
+    if t.cur == 0 {
+        return 0
+    }
+    if t.cur <= k { // 左边全部删除
+        _, t.root = t.root.split(t.cur)
+        ans := t.cur
+        t.cur = 0
+        return ans
+    } else {
+        lo, ro := t.root.split(t.cur)
+        t.cur -= k
+        lo, _ = lo.split(t.cur) // 删除中间 k 个
+        t.root = lo.merge(ro)
+        return k
+    }
 }
 
 func (t *TextEditor) text() string {
-	if t.cur == 0 {
-		return ""
-	}
-	k := max(t.cur-10, 0)
-	t.root = t.root.splay(k + 1)
-	ans := make([]byte, 1, t.cur-k)
-	ans[0] = t.root.key
-	var inorder func(*node) bool
-	inorder = func(o *node) bool {
-		if o == nil {
-			return false
-		}
-		if inorder(o.ch[0]) || len(ans) == cap(ans) {
-			return true
-		}
-		ans = append(ans, o.key)
-		return inorder(o.ch[1])
-	}
-	inorder(t.root.ch[1])
-	return string(ans)
+    if t.cur == 0 {
+        return ""
+    }
+    k := max(t.cur-10, 0)
+    t.root = t.root.splay(k + 1)
+    ans := make([]byte, 1, t.cur-k)
+    ans[0] = t.root.key
+    var inorder func(*node) bool
+    inorder = func(o *node) bool {
+        if o == nil {
+            return false
+        }
+        if inorder(o.ch[0]) || len(ans) == cap(ans) {
+            return true
+        }
+        ans = append(ans, o.key)
+        return inorder(o.ch[1])
+    }
+    inorder(t.root.ch[1])
+    return string(ans)
 }
 
 func (t *TextEditor) CursorLeft(k int) string {
-	t.cur = max(t.cur-k, 0)
-	return t.text()
+    t.cur = max(t.cur-k, 0)
+    return t.text()
 }
 
 func (t *TextEditor) CursorRight(k int) string {
-	t.cur = min(t.cur+k, t.root.size())
-	return t.text()
+    t.cur = min(t.cur+k, t.root.size())
+    return t.text()
 }
-
-func min(a, b int) int { if a > b { return b }; return a }
-func max(a, b int) int { if a < b { return b }; return a }
 ```
+
+#### 复杂度分析
+
+- 时间复杂度：初始化 $\mathcal{O}(1)$，$\texttt{addText}$ 均摊 $\mathcal{O}(|\textit{text}| + \log n)$，其余均摊 $\mathcal{O}(\log n)$，其中 $n$ 是当前文本的长度之和。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 相似题目（对顶栈）
+
+- [HDU 4699. Editor](http://acm.hdu.edu.cn/showproblem.php?pid=4699)
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
