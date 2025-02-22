@@ -1,28 +1,22 @@
-### 视频讲解
+## 方法一：回溯
 
-两种方法都讲了。见[【周赛 337】](https://www.bilibili.com/video/BV1EL411C7YU/)。
+**前置知识**：[回溯算法套路①子集型回溯【基础算法精讲 14】](https://www.bilibili.com/video/BV1mG4y1A7Gu/)，包含两种写法。
 
-# 方法一：回溯
-
-### 前置知识：子集型回溯
-
-见[【基础算法精讲 14】](https://www.bilibili.com/video/BV1mG4y1A7Gu/)。
-
-### 思路
-
-在枚举 [78. 子集](https://leetcode.cn/problems/subsets/) 的基础上加个判断。
+在枚举 [78. 子集](https://leetcode.cn/problems/subsets/) 的基础上，额外加个判断。
 
 在选择 $x=\textit{nums}[i]$ 的时候，如果之前选过 $x-k$ 或 $x+k$，则不能选，否则可以选。
 
-代码实现时，可以用哈希表或者数组来记录选过的数，从而 $O(1)$ 判断 $x-k$ 和 $x+k$ 是否选过。
+代码实现时，可以用哈希表（或者数组）记录选过的数及其出现次数，从而 $\mathcal{O}(1)$ 判断 $x-k$ 和 $x+k$ 是否选过。
 
-### 写法一：选或不选
+### 写法一：输入视角，选或不选
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def beautifulSubsets(self, nums: List[int], k: int) -> int:
         ans = -1  # 去掉空集
-        cnt = [0] * (max(nums) + k * 2)  # 用数组实现比哈希表更快
+        cnt = defaultdict(int)
+
+        # nums[i] 选或不选
         def dfs(i: int) -> None:
             if i == len(nums):
                 nonlocal ans
@@ -30,369 +24,543 @@ class Solution:
                 return
             dfs(i + 1)  # 不选
             x = nums[i]
-            if cnt[x - k] == 0 and cnt[x + k] == 0:
+            if cnt[x - k] == 0 and cnt[x + k] == 0:  # 可以选
                 cnt[x] += 1  # 选
-                dfs(i + 1)
-                cnt[x] -= 1  # 恢复现场
+                dfs(i + 1)  # 讨论 nums[i+1] 选或不选
+                cnt[x] -= 1  # 撤销，恢复现场
+
         dfs(0)
         return ans
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
-    private int[] nums, cnt;
-    private int k, ans = -1; // 去掉空集
-
     public int beautifulSubsets(int[] nums, int k) {
-        this.nums = nums;
-        this.k = k;
-        cnt = new int[k * 2 + 1001]; // 用数组实现比哈希表更快
-        dfs(0);
+        Map<Integer, Integer> cnt = new HashMap<>();
+        dfs(0, nums, k, cnt);
         return ans;
     }
 
-    private void dfs(int i) {
+    private int ans = -1; // 去掉空集
+
+    // nums[i] 选或不选
+    private void dfs(int i, int[] nums, int k, Map<Integer, Integer> cnt) {
         if (i == nums.length) {
             ans++;
             return;
         }
-        dfs(i + 1); // 不选
-        int x = nums[i] + k; // 避免负数下标
-        if (cnt[x - k] == 0 && cnt[x + k] == 0) {
-            ++cnt[x]; // 选
-            dfs(i + 1);
-            --cnt[x]; // 恢复现场
+        dfs(i + 1, nums, k, cnt); // 不选
+        int x = nums[i];
+        if (cnt.getOrDefault(x - k, 0) == 0 && cnt.getOrDefault(x + k, 0) == 0) { // 可以选
+            cnt.merge(x, 1, Integer::sum); // 选
+            dfs(i + 1, nums, k, cnt); // 讨论 nums[i+1] 选或不选
+            cnt.merge(x, -1, Integer::sum); // 撤销，恢复现场
         }
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int beautifulSubsets(vector<int> &nums, int k) {
+    int beautifulSubsets(vector<int>& nums, int k) {
         int ans = -1; // 去掉空集
-        int cnt[3001]{}; // 用数组实现比哈希表更快
-        function<void(int)> dfs = [&](int i) {
+        unordered_map<int, int> cnt;
+
+        // nums[i] 选或不选
+        auto dfs = [&](this auto&& dfs, int i) -> void {
             if (i == nums.size()) {
                 ans++;
                 return;
             }
             dfs(i + 1); // 不选
-            int x = nums[i] + k; // 避免负数下标
-            if (cnt[x - k] == 0 && cnt[x + k] == 0) {
-                ++cnt[x]; // 选
-                dfs(i + 1);
-                --cnt[x]; // 恢复现场
+            int x = nums[i];
+            if (cnt[x - k] == 0 && cnt[x + k] == 0) { // 可以选
+                cnt[x]++; // 选
+                dfs(i + 1); // 讨论 nums[i+1] 选或不选
+                cnt[x]--; // 撤销，恢复现场
             }
         };
+
         dfs(0);
         return ans;
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func beautifulSubsets(nums []int, k int) int {
-	ans := -1 // 去掉空集
-	cnt := make([]int, 1001+k*2) // 用数组实现比哈希表更快
-	var dfs func(int)
-	dfs = func(i int) {
-		if i == len(nums) {
-			ans++
-			return
-		}
-		dfs(i + 1) // 不选
-		x := nums[i] + k // 避免负数下标
-		if cnt[x-k] == 0 && cnt[x+k] == 0 {
-			cnt[x]++ // 选
-			dfs(i + 1)
-			cnt[x]-- // 恢复现场
-		}
-	}
-	dfs(0)
-	return ans
+    ans := -1 // 去掉空集
+    cnt := map[int]int{}
+
+    // nums[i] 选或不选
+    var dfs func(int)
+    dfs = func(i int) {
+        if i == len(nums) {
+            ans++
+            return
+        }
+        dfs(i + 1) // 不选
+        x := nums[i]
+        if cnt[x-k] == 0 && cnt[x+k] == 0 { // 可以选
+            cnt[x]++ // 选
+            dfs(i + 1) // 讨论 nums[i+1] 选或不选
+            cnt[x]-- // 撤销，恢复现场
+        }
+    }
+
+    dfs(0)
+    return ans
 }
 ```
 
-### 写法二：枚举选哪个
+#### 复杂度分析
 
-```py [sol2-Python3]
+- 时间复杂度：$\mathcal{O}(2^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。搜索树是一棵高为 $\mathcal{O}(n)$ 的二叉树，有 $\mathcal{O}(2^n)$ 个节点。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+### 写法二：答案视角，枚举选哪个
+
+```py [sol-Python3]
 class Solution:
     def beautifulSubsets(self, nums: List[int], k: int) -> int:
         ans = -1  # 去掉空集
-        cnt = [0] * (max(nums) + k * 2)  # 用数组实现比哈希表更快
-        def dfs(i: int) -> None:  # 从 i 开始选
+        cnt = defaultdict(int)
+
+        # 在 [i, n-1] 中选一个数
+        def dfs(i: int) -> None:
             nonlocal ans
             ans += 1
             if i == len(nums):
                 return
             for j in range(i, len(nums)):  # 枚举选哪个
                 x = nums[j]
-                if cnt[x - k] == 0 and cnt[x + k] == 0:
+                if cnt[x - k] == 0 and cnt[x + k] == 0:  # 可以选
                     cnt[x] += 1  # 选
-                    dfs(j + 1)
-                    cnt[x] -= 1  # 恢复现场
+                    dfs(j + 1)  # 下一个数在 [j+1, n-1] 中选
+                    cnt[x] -= 1  # 撤销，恢复现场
+
         dfs(0)
         return ans
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
-    private int[] nums, cnt;
-    private int k, ans = -1; // 去掉空集
-
     public int beautifulSubsets(int[] nums, int k) {
-        this.nums = nums;
-        this.k = k;
-        cnt = new int[k * 2 + 1001]; // 用数组实现比哈希表更快
-        dfs(0);
+        Map<Integer, Integer> cnt = new HashMap<>();
+        dfs(0, nums, k, cnt);
         return ans;
     }
 
-    // 从 i 开始选
-    private void dfs(int i) {
-        ++ans; // 合法子集
-        if (i == nums.length)
-            return;
-        for (int j = i; j < nums.length; ++j) { // 枚举选哪个
-            int x = nums[j] + k; // 避免负数下标
-            if (cnt[x - k] == 0 && cnt[x + k] == 0) {
-                ++cnt[x]; // 选
-                dfs(j + 1);
-                --cnt[x]; // 恢复现场
+    private int ans = -1; // 去掉空集
+
+    private int dfs(int i, int[] nums, int k, Map<Integer, Integer> cnt) {
+        ans++;
+        if (i == nums.length) {
+            return ans;
+        }
+        for (int j = i; j < nums.length; j++) { // 枚举选哪个
+            int x = nums[j];
+            if (cnt.getOrDefault(x - k, 0) == 0 && cnt.getOrDefault(x + k, 0) == 0) { // 可以选
+                cnt.merge(x, 1, Integer::sum); // 选
+                ans = dfs(j + 1, nums, k, cnt); // 下一个数在 [j+1, n-1] 中选
+                cnt.merge(x, -1, Integer::sum); // 撤销，恢复现场
             }
         }
+        return ans;
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int beautifulSubsets(vector<int> &nums, int k) {
+    int beautifulSubsets(vector<int>& nums, int k) {
         int ans = -1; // 去掉空集
-        int cnt[3001]{}; // 用数组实现比哈希表更快
-        function<void(int)> dfs = [&](int i) { // 从 i 开始选
-            ++ans; // 合法子集
-            if (i == nums.size())
+        unordered_map<int, int> cnt;
+
+        // 在 [i, n-1] 中选一个数
+        auto dfs = [&](this auto&& dfs, int i) -> void {
+            ans++;
+            if (i == nums.size()) {
                 return;
-            for (int j = i; j < nums.size(); ++j) { // 枚举选哪个
-                int x = nums[j] + k; // 避免负数下标
-                if (cnt[x - k] == 0 && cnt[x + k] == 0) {
-                    ++cnt[x]; // 选
-                    dfs(j + 1);
-                    --cnt[x]; // 恢复现场
+            }
+            for (int j = i; j < nums.size(); j++) { // 枚举选哪个
+                int x = nums[j];
+                if (cnt[x - k] == 0 && cnt[x + k] == 0) { // 可以选
+                    cnt[x]++; // 选
+                    dfs(j + 1); // 下一个数在 [j+1, n-1] 中选
+                    cnt[x]--; // 撤销，恢复现场
                 }
             }
         };
+
         dfs(0);
         return ans;
     }
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 func beautifulSubsets(nums []int, k int) int {
-	ans := -1 // 去掉空集
-	cnt := make([]int, 1001+k*2)
-	var dfs func(int)
-	dfs = func(i int) { // 从 i 开始选
-		ans++ // 合法子集
-		if i == len(nums) {
-			return
-		}
-		for j := i; j < len(nums); j++ { // 枚举选哪个
-			x := nums[j] + k // 避免负数下标
-			if cnt[x-k] == 0 && cnt[x+k] == 0 {
-				cnt[x]++ // 选
-				dfs(j + 1)
-				cnt[x]-- // 恢复现场
-			}
-		}
-	}
-	dfs(0)
-	return ans
+    ans := -1 // 去掉空集
+    cnt := map[int]int{}
+
+    var dfs func(int)
+    dfs = func(i int) {
+        ans++
+        if i == len(nums) {
+            return
+        }
+        for j := i; j < len(nums); j++ { // 枚举选哪个
+            x := nums[j]
+            if cnt[x-k] == 0 && cnt[x+k] == 0 { // 可以选
+                cnt[x]++ // 选
+                dfs(j + 1) // 下一个数在 [j+1, n-1] 中选
+                cnt[x]-- // 撤销，恢复现场
+            }
+        }
+    }
+
+    dfs(0)
+    return ans
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
-- 时间复杂度：$O(2^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(n)$。用哈希表实现是 $O(n)$。（数组需要一些额外空间，但是更快。）
+- 时间复杂度：$\mathcal{O}(2^n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
 
-### 相似题目
+## 方法二：动态规划
 
-- [78. 子集](https://leetcode.cn/problems/subsets/)
-- [784. 字母大小写全排列](https://leetcode.cn/problems/letter-case-permutation/)
-- [1601. 最多可达成的换楼请求数目](https://leetcode.cn/problems/maximum-number-of-achievable-transfer-requests/)
-- [2397. 被列覆盖的最多行数](https://leetcode.cn/problems/maximum-rows-covered-by-columns/)
+例如 $\textit{nums}=[1,2,3,4,7,8],\ k=2$，我们可以把数组按照模 $k$ 的结果，分成两组：
 
-# 方法二：动态规划
+- $[2,4,8]$，这些数模 $k$ 等于 $0$。
+- $[1,3,7]$，这些数模 $k$ 等于 $1$。
 
-### 前置知识：动态规划基础（打家劫舍）
+从第一组选一些数，从第二组选一些数。第一组中的数字 $x$ 和第二组中的数字 $y$，二者相差一定不等于 $k$（不同余）。
 
-见[【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)。
+这意味着我们**只需考虑每组内选数字的方案数**，然后根据乘法原理，把各个组的方案数相乘，即为答案。
 
-### 前置知识：乘法原理
-
-见 [乘法原理](https://baike.baidu.com/item/%E4%B9%98%E6%B3%95%E5%8E%9F%E7%90%86/7538447)。
-
-### 前置知识：同余
-
-两个数 $x$ 和 $y$，如果 $(x-y)\bmod k = 0$，则称 $x$ 与 $y$ 对模 $k$ 同余，记作
-
-$$
-x\equiv y \pmod k
-$$
-
-例如 $42\equiv 12 \pmod {10}$，$-17\equiv 3 \pmod {10}$。
-
-### 思路
-
-如果两个数模 $k$ **不同余**，那么必然无法相差 $k$。
-
-所以我们可以按照模 $k$ 的结果分组，每一组用哈希表/有序集合统计元素及其出现次数。
+所以按照模 $k$ 的结果分组，每一组用有序集合（或者哈希表）统计元素及其出现次数。
 
 每一组怎么思考呢？
 
-按照 key 从小到大排序后（设这些 key 组成了数组 $g$），相邻的 key 如果相差 $k$，那么不能同时选（类似 [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)）。
+把有序集合的 key 转成列表 $a$（或者把哈希表的 key 排序）。例如 $a=[1,3,7]$，相邻的数字如果相差恰好为 $k$，那么不能同时选。
 
-为什么不考虑非相邻的 key？因为这个组里面的 key 都是模 $k$ 同余的，非相邻的 key 相差大于 $k$。
+这类似 [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)，如果你还没做过，请先完成这题。[视频讲解](https://www.bilibili.com/video/BV1Xj411K7oF/)
 
-设 $g$ 的大小为 $m$。考虑最大的数 $g[m-1]$「选或不选」：
+设 $a$ 的大小为 $m$。考虑最大的数 $a[m-1]$ 选或不选：
 
-- 如果不选 $g[m-1]$，那么问题变成一个 $m-1$ 个数的子问题。
-- 如果选 $g[m-1]$：
-  - 这有 $2^c-1$ 种方案，这里 $c$ 为 $g[m-1]$ 的出现次数；
-  - 如果 $g[m-1]-g[m-2] = k$，那么 $g[m-2]$ 绝对不能选，问题变成一个 $m-2$ 个数的子问题。
-  - 如果 $g[m-1]-g[m-2] \ne k$，那么 $g[m-2]$ 可选可不选，问题变成一个 $m-1$ 个数的子问题。
+- 不选 $a[m-1]$，那么问题变成 $m-1$ 个数的子问题。
+- 选 $a[m-1]$：
+  - 设 $c$ 为 $a[m-1]$ 的出现次数，由于大小为 $c$ 的集合有 $2^c-1$ 个非空子集，所以选至少一个 $a[m-1]$ 的方案数为 $2^c-1$。
+  - 如果 $a[m-1]-a[m-2] = k$，那么 $a[m-2]$ 不能选，问题变成 $m-2$ 个数的子问题。
+  - 如果 $a[m-1]-a[m-2] \ne k$，那么 $a[m-2]$ 可选可不选，问题变成 $m-1$ 个数的子问题。
 
-定义 $f[i]$ 表示考虑前 $i$ 个 key 的方案数，可以得到一个类似打家劫舍的转移方程：
+类似打家劫舍，定义 $f[i+1]$ 表示在 $a[0]$ 到 $a[i]$ 中选数的方案数：
 
-- 如果 $g[i]-g[i-1]=k$，那么 $f[i]=f[i-1]+f[i-2] \cdot( 2^{c_i}-1)$。
-- 如果 $g[i]-g[i-1]\ne k$，那么 $f[i]=f[i-1]\cdot 2^{c_i}$。
+- 不选 $a[i]$，那么问题变成在 $a[0]$ 到 $a[i-1]$ 中选数的方案数，即 $f[i+1] = f[i]$。
+- 选 $a[i]$ 且 $a[i]-a[i-1]=k$，那么问题变成在 $a[0]$ 到 $a[i-2]$ 中选数的方案数，即 $f[i+1] = f[i-1]\cdot (2^{c_i}-1)$。
+- 选 $a[i]$ 且 $a[i]-a[i-1]\ne k$，那么问题变成在 $a[0]$ 到 $a[i-1]$ 中选数的方案数，即 $f[i+1] = f[i]\cdot (2^{c_i}-1)$。
 
-其中 $c_i$ 为 $g[i]$ 的出现次数。
+其中不选和选互斥，方案数根据加法原理相加。
 
-代码实现时，为了避免负数下标，需要偏移一位。
+整理得
 
-每组的初始值为 $f[0]=1$，$f[1] = 2^{c_0}$。
+$$
+f[i+1] =
+\begin{cases}
+f[i] + f[i-1]\cdot (2^{c_i}-1), & a[i]-a[i-1]=k     \\
+f[i]\cdot 2^{c_i}, & a[i]-a[i-1]\ne k    \\
+\end{cases}
+$$
 
-每组的答案为 $f[m]$（因为偏移了一位）。
+其中 $c_i$ 为 $a[i]$ 的出现次数。
 
-根据乘法原理，最终答案为每组的答案的乘积。注意把空集去掉。
+初始值：
 
-```py [sol2-Python3]
+- $f[0]=1$。空集算一个方案。
+- $f[1] = 2^{c_0}$。因为 $a[0]$ 左边没有数字，需要单独计算选 $a[0]$ 的方案数，即 $2^{c_0}-1$，加上不选 $a[0]$ 的方案数 $1$，所以 $f[1] = 2^{c_0}$。
+
+答案：$f[m]$，即在 $a[0]$ 到 $a[m-1]$ 中选数的方案数。
+
+最后，根据乘法原理，把每组的答案相乘，即为答案。但是，虽然每一组都可以不选数，但不能总共一个数都不选，所以要把空集去掉，也就是最终答案要减一。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1EL411C7YU/)。
+
+### 写法一
+
+```py [sol-Python3]
 class Solution:
     def beautifulSubsets(self, nums: List[int], k: int) -> int:
         groups = defaultdict(Counter)
         for x in nums:
+            # 模 k 同余的数分到同一组，记录元素 x 及其出现次数
             groups[x % k][x] += 1
+
         ans = 1
         for cnt in groups.values():
-            g = sorted(cnt.items())
-            m = len(g)
+            # 计算这一组的方案数
+            a = sorted(cnt.items())
+            m = len(a)
             f = [0] * (m + 1)
             f[0] = 1
-            f[1] = 1 << g[0][1]
+            f[1] = 1 << a[0][1]
             for i in range(1, m):
-                if g[i][0] - g[i - 1][0] == k:
-                    f[i + 1] = f[i] + f[i - 1] * ((1 << g[i][1]) - 1)
+                if a[i][0] - a[i - 1][0] == k:
+                    f[i + 1] = f[i] + f[i - 1] * ((1 << a[i][1]) - 1)
                 else:
-                    f[i + 1] = f[i] << g[i][1]
-            ans *= f[m]  # 乘法原理
-        return ans - 1  # -1 去掉空集
+                    f[i + 1] = f[i] << a[i][1]
+            ans *= f[m]  # 每组方案数相乘
+        return ans - 1  # 去掉空集
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
     public int beautifulSubsets(int[] nums, int k) {
-        var groups = new HashMap<Integer, TreeMap<Integer, Integer>>();
-        for (int x : nums)
-            groups.computeIfAbsent((x % k), key -> new TreeMap<>()).merge(x, 1, Integer::sum);
-        int ans = 1;
-        for (var g : groups.values()) {
-            int m = g.size();
-            var f = new int[m + 1];
-            f[0] = 1;
-            int i = 1, pre = 0;
-            for (var e : g.entrySet()) {
-                int cur = e.getKey();
-                if (i > 1 && cur - pre == k)
-                    f[i] = f[i - 1] + f[i - 2] * ((1 << e.getValue()) - 1);
-                else
-                    f[i] = f[i - 1] << e.getValue();
-                pre = cur;
-                ++i;
-            }
-            ans *= f[m]; // 乘法原理
+        Map<Integer, TreeMap<Integer, Integer>> groups = new HashMap<>();
+        for (int x : nums) {
+            // 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+            groups.computeIfAbsent(x % k, i -> new TreeMap<>()).merge(x, 1, Integer::sum);
         }
-        return ans - 1; // -1 去掉空集
+
+        int ans = 1;
+        for (TreeMap<Integer, Integer> cnt : groups.values()) {
+            // 计算这一组的方案数
+            int m = cnt.size();
+            int[] f = new int[m + 1];
+            f[0] = 1;
+            int i = 1;
+            int pre = 0;
+            for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+                int x = e.getKey();
+                int c = e.getValue();
+                if (i > 1 && x - pre == k) {
+                    f[i] = f[i - 1] + f[i - 2] * ((1 << c) - 1);
+                } else {
+                    f[i] = f[i - 1] << c;
+                }
+                pre = x;
+                i++;
+            }
+            ans *= f[m]; // 每组方案数相乘
+        }
+        return ans - 1; // 去掉空集
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int beautifulSubsets(vector<int> &nums, int k) {
+    int beautifulSubsets(vector<int>& nums, int k) {
         unordered_map<int, map<int, int>> groups;
-        for (int x : nums)
-            ++groups[x % k][x];
+        for (int x : nums) {
+            // 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+            groups[x % k][x]++;
+        }
+
         int ans = 1;
-        for (auto&[_, g]: groups) {
-            int m = g.size(), f[m + 1];
-            auto it = g.begin();
+        for (auto& [_, cnt] : groups) {
+            // 计算这一组的方案数
+            int m = cnt.size();
+            vector<int> f(m + 1);
+            auto it = cnt.begin();
             f[0] = 1;
             f[1] = 1 << it++->second;
-            for (int i = 2; it != g.end(); ++it, ++i)
-                if (it->first - prev(it)->first == k)
-                    f[i] = f[i - 1] + f[i - 2] * ((1 << it->second) - 1);
-                else
-                    f[i] = f[i - 1] << it->second;
-            ans *= f[m]; // 乘法原理
+            for (int i = 1; i < m; i++, it++) {
+                int c = it->second;
+                if (it->first - prev(it)->first == k) {
+                    f[i + 1] = f[i] + f[i - 1] * ((1 << c) - 1);
+                } else {
+                    f[i + 1] = f[i] << c;
+                }
+            }
+            ans *= f[m]; // 每组方案数相乘
         }
-        return ans - 1; // -1 去掉空集
+        return ans - 1; // 去掉空集
     }
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
+func beautifulSubsets(nums []int, k int) int {
+    groups := map[int]map[int]int{}
+    for _, x := range nums {
+        // 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+        if groups[x%k] == nil {
+            groups[x%k] = map[int]int{}
+        }
+        groups[x%k][x]++
+    }
+
+    ans := 1
+    for _, cnt := range groups {
+        // 计算这一组的方案数
+        a := slices.Sorted(maps.Keys(cnt))
+        m := len(a)
+        f := make([]int, m+1)
+        f[0] = 1
+        f[1] = 1 << cnt[a[0]]
+        for i := 1; i < m; i++ {
+            c := cnt[a[i]]
+            if a[i]-a[i-1] == k {
+                f[i+1] = f[i] + f[i-1]*(1<<c-1)
+            } else {
+                f[i+1] = f[i] << c
+            }
+        }
+        ans *= f[m] // 每组方案数相乘
+    }
+    return ans - 1 // 去掉空集
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序/维护有序集合上。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+### 写法二：空间优化
+
+同打家劫舍，用两个变量 $f_0$ 和 $f_1$ 滚动计算。
+
+```py [sol-Python3]
+class Solution:
+    def beautifulSubsets(self, nums: List[int], k: int) -> int:
+        groups = defaultdict(Counter)
+        for x in nums:
+            # 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+            groups[x % k][x] += 1
+
+        ans = 1
+        for cnt in groups.values():
+            # 计算这一组的方案数
+            a = sorted(cnt.items())
+            f0, f1 = 1, 1 << a[0][1]
+            for (pre, _), (x, c) in pairwise(a):
+                if x - pre == k:
+                    f0, f1 = f1, f1 + f0 * ((1 << c) - 1)
+                else:
+                    f0, f1 = f1, f1 << c
+            ans *= f1  # 每组方案数相乘
+        return ans - 1  # 去掉空集
+```
+
+```java [sol-Java]
+class Solution {
+    public int beautifulSubsets(int[] nums, int k) {
+        Map<Integer, TreeMap<Integer, Integer>> groups = new HashMap<>();
+        for (int x : nums) {
+            // 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+            groups.computeIfAbsent(x % k, i -> new TreeMap<>()).merge(x, 1, Integer::sum);
+        }
+
+        int ans = 1;
+        for (TreeMap<Integer, Integer> cnt : groups.values()) {
+            // 计算这一组的方案数
+            int f0 = 1;
+            int f1 = 1; // 下面第一轮循环无论进入哪个分支，都会算出 f1 = 1 << c0
+            int pre = 0; // 可以初始化成任意值
+            for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+                int x = e.getKey();
+                int c = e.getValue();
+                int newF = x - pre == k ? f1 + f0 * ((1 << c) - 1) : f1 << c;
+                f0 = f1;
+                f1 = newF;
+                pre = x;
+            }
+            ans *= f1; // 每组方案数相乘
+        }
+        return ans - 1; // 去掉空集
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int beautifulSubsets(vector<int>& nums, int k) {
+        unordered_map<int, map<int, int>> groups;
+        for (int x : nums) {
+            // 模 k 同余的数分到同一组，记录元素 x 及其出现次数
+            groups[x % k][x]++;
+        }
+
+        int ans = 1;
+        for (auto& [_, cnt] : groups) {
+            // 计算这一组的方案数
+            auto it = cnt.begin();
+            int f0 = 1, f1 = 1 << it->second;
+            for (it++; it != cnt.end(); it++) {
+                int c = it->second;
+                int new_f = it->first - prev(it)->first == k ? f1 + f0 * ((1 << c) - 1) : f1 << c;
+                f0 = f1;
+                f1 = new_f;
+            }
+            ans *= f1; // 每组方案数相乘
+        }
+        return ans - 1; // 去掉空集
+    }
+};
+```
+
+```go [sol-Go]
 func beautifulSubsets(nums []int, k int) int {
 	groups := map[int]map[int]int{}
 	for _, x := range nums {
+		// 模 k 同余的数分到同一组，记录元素 x 及其出现次数
 		if groups[x%k] == nil {
 			groups[x%k] = map[int]int{}
 		}
 		groups[x%k][x]++
 	}
+
 	ans := 1
 	for _, cnt := range groups {
-		m := len(cnt)
-		type pair struct{ x, c int }
-		g := make([]pair, 0, m)
-		for x, c := range cnt {
-			g = append(g, pair{x, c})
-		}
-		sort.Slice(g, func(i, j int) bool { return g[i].x < g[j].x })
-		f := make([]int, m+1)
-		f[0] = 1
-		f[1] = 1 << g[0].c
-		for i := 1; i < m; i++ {
-			if g[i].x-g[i-1].x == k {
-				f[i+1] = f[i] + f[i-1]*(1<<g[i].c-1)
+		// 计算这一组的方案数
+		a := slices.Sorted(maps.Keys(cnt))
+		f0, f1, newF := 1, 1<<cnt[a[0]], 0
+		for i := 1; i < len(a); i++ {
+			c := cnt[a[i]]
+			if a[i]-a[i-1] == k {
+				newF = f1 + f0*(1<<c-1)
 			} else {
-				f[i+1] = f[i] << g[i].c
+				newF = f1 << c
 			}
+			f0 = f1
+			f1 = newF
 		}
-		ans *= f[m] // 乘法原理
+		ans *= f1 // 每组方案数相乘
 	}
-	return ans - 1 // -1 去掉空集
+	return ans - 1 // 去掉空集
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
-- 时间复杂度：$O(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(n)$。
+- 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序/维护有序集合上。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

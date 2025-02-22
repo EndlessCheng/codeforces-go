@@ -1,36 +1,37 @@
 package main
 
-import "sort"
+import (
+	"maps"
+	"slices"
+)
 
 // https://space.bilibili.com/206214
 func beautifulSubsets(nums []int, k int) int {
-	ans := 1
 	groups := map[int]map[int]int{}
 	for _, x := range nums {
+		// 模 k 同余的数分到同一组，记录元素 x 及其出现次数
 		if groups[x%k] == nil {
 			groups[x%k] = map[int]int{}
 		}
 		groups[x%k][x]++
 	}
+
+	ans := 1
 	for _, cnt := range groups {
-		m := len(cnt)
-		type pair struct{ x, c int }
-		g := make([]pair, 0, m)
-		for x, c := range cnt {
-			g = append(g, pair{x, c})
-		}
-		sort.Slice(g, func(i, j int) bool { return g[i].x < g[j].x })
-		f := make([]int, m+1)
-		f[0] = 1
-		f[1] = 1 << g[0].c
-		for i := 1; i < m; i++ {
-			if g[i].x-g[i-1].x == k {
-				f[i+1] = f[i] + f[i-1]*(1<<g[i].c-1)
+		// 计算这一组的方案数
+		a := slices.Sorted(maps.Keys(cnt))
+		f0, f1, newF := 1, 1<<cnt[a[0]], 0
+		for i := 1; i < len(a); i++ {
+			c := cnt[a[i]]
+			if a[i]-a[i-1] == k {
+				newF = f1 + f0*(1<<c-1)
 			} else {
-				f[i+1] = f[i] << g[i].c
+				newF = f1 << c
 			}
+			f0 = f1
+			f1 = newF
 		}
-		ans *= f[m]
+		ans *= f1 // 每组方案数相乘
 	}
-	return ans - 1
+	return ans - 1 // 去掉空集
 }
