@@ -42,6 +42,7 @@ class Solution:
                 return 0
             if i == 0:
                 return 1
+            # 提前取模，不然结果会是天文数字，没有那么多空间存得下来
             return (dfs(i - zero) + dfs(i - one)) % MOD
         return sum(dfs(i) for i in range(low, high + 1)) % MOD
 ```
