@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/levigross/grequests"
-	"net/url"
 	"strings"
 )
 
@@ -20,7 +19,9 @@ func getJson(htmlStr string) (string, error) {
 	if j == -1 {
 		return "", fmt.Errorf("invalid html content %s", htmlStr)
 	}
-	return url.QueryUnescape(htmlStr[i+len(token) : i+len(token)+j])
+	jsonStr := htmlStr[i+len(token) : i+len(token)+j]
+	//return url.QueryUnescape(jsonStr)
+	return jsonStr, nil
 }
 
 func ParseExamples(problemURL string) (examples [][]string, err error) {
