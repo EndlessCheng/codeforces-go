@@ -267,7 +267,7 @@ func Constructor(foods, cuisines []string, ratings []int) FoodRatings {
 
 func (r FoodRatings) ChangeRating(food string, newRating int) {
 	p := r.foodMap[food]
-	// 直接添加新数据，后面 highestRated 再删除旧的
+	// 直接添加新数据，后面 HighestRated 再删除旧的
 	heap.Push(r.cuisineMap[p.s], pair{newRating, food})
 	p.rating = newRating
 	r.foodMap[food] = p
