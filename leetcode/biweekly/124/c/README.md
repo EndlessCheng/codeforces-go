@@ -159,7 +159,7 @@ func helper(a []int, target int) int {
 
 答案最大是 $\left\lfloor\dfrac{n}{2}\right\rfloor$。如果可以递归到 $i\ge j$ 的状态，说明可以执行 $\left\lfloor\dfrac{n}{2}\right\rfloor$ 次操作，不需要再计算了，直接返回 $\left\lfloor\dfrac{n}{2}\right\rfloor$。
 
-比如下面代码中，如果发现 `res1` 已经算出了最多的操作次数，那么后面计算 `res2` 和 `res3` 的两个递归就不需要再进行下去了，毕竟算出来的值不可能比 `res1` 还要大。
+比如下面代码中，如果发现 `res1` 已经算出了最多的操作次数，那么后面计算 `res2` 和 `res3` 的两个递归就不用执行了，毕竟算出来的值不可能比 `res1` 还要大。
 
 ```py [sol-Python3]
 class Solution:
@@ -338,9 +338,9 @@ func helper(a []int, target int) (res int, done bool) {
 
 ## 方法二：1:1 翻译成递推
 
-和 $\textit{dfs}(i,j)$ 一样，定义 $f[i][j]$ 表示当前剩余元素从 $\textit{nums}[i]$ 到 $\textit{nums}[j]$，此时最多可以进行的操作次数。转移来源同方法一。
+和 $\textit{dfs}(i,j)$ 一样，定义 $f[i][j]$ 表示当前剩余元素从 $\textit{nums}[i]$ 到 $\textit{nums}[j]$，此时最多可以执行的操作次数。转移来源同方法一。
 
-为避免出现 $j=-1$ 的状态，需要把 $f[i][j]$ 中的 $j$ 加一（相当于在最左边插入一列），即 $f[i][j+1]$ 表示当前剩余元素从 $\textit{nums}[i]$ 到 $\textit{nums}[j]$，此时最多可以进行的操作次数。
+为避免出现 $j=-1$ 的状态，需要把 $f[i][j]$ 中的 $j$ 加一（相当于在最左边插入一列），即 $f[i][j+1]$ 表示当前剩余元素从 $\textit{nums}[i]$ 到 $\textit{nums}[j]$，此时最多可以执行的操作次数。
 
 注：如果记忆化搜索中的三个 `if` 都不成立，就不会继续递归，但递推需要计算所有状态。在随机数据下，**本题递推效率不如记忆化搜索**。
 
@@ -483,7 +483,7 @@ func helper(a []int, target int) int {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -492,7 +492,9 @@ func helper(a []int, target int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
