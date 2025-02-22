@@ -371,8 +371,8 @@ public:
             f[0] = 1;
             f[1] = 1 << it++->second;
             for (int i = 1; i < m; i++, it++) {
-                int c = it->second;
-                if (it->first - prev(it)->first == k) {
+                auto [x, c] = *it;
+                if (x - prev(it)->first == k) {
                     f[i + 1] = f[i] + f[i - 1] * ((1 << c) - 1);
                 } else {
                     f[i + 1] = f[i] << c;
@@ -495,8 +495,8 @@ public:
             auto it = cnt.begin();
             int f0 = 1, f1 = 1 << it->second;
             for (it++; it != cnt.end(); it++) {
-                int c = it->second;
-                int new_f = it->first - prev(it)->first == k ? f1 + f0 * ((1 << c) - 1) : f1 << c;
+                auto [x, c] = *it;
+                int new_f = x - prev(it)->first == k ? f1 + f0 * ((1 << c) - 1) : f1 << c;
                 f0 = f1;
                 f1 = new_f;
             }
