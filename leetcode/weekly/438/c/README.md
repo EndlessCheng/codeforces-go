@@ -468,7 +468,7 @@ int comb(int n, int k) {
     int e2 = p2[n] - p2[k] - p2[n - k];
     return f[n] * inv_f[k] * inv_f[n - k] *
            (e2 ? POW2[(e2 - 1) % 4] : 1) *
-           (p5[n] - p5[k] - p5[n - k] > 0 ? 5 : 1) % MOD;
+           (p5[n] - p5[k] - p5[n - k] ? 5 : 1) % MOD;
 }
 
 class Solution {
