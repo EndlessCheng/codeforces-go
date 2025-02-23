@@ -40,6 +40,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1hiAUeWEUG/?t=3m44s)，欢迎点赞关注~
 
+### 优化前
+
 ```py [sol-Python3]
 MOD = 10
 MX = 100_000
@@ -287,14 +289,282 @@ func hasSameDigits(s string) bool {
 
 预处理的时间和空间忽略不计。
 
-- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $s$ 的长度，$\log U$ 是计算快速幂的时间。如果预处理 $2$ 的幂模 $10$ 和 $5$ 的幂模 $10$（结果是周期序列），可以做到 $\mathcal{O}(n)$。
+- 时间复杂度：$\mathcal{O}(n\log U)$，其中 $n$ 是 $s$ 的长度，$\log U$ 是计算快速幂的时间。
+- 空间复杂度：$\mathcal{O}(1)$。
+
+### 优化
+
+预处理 $2$ 的幂模 $10$ 和 $5$ 的幂模 $10$。
+
+由于 $2^i\bmod 10\ (i>0)$ 按照 $2,4,8,6$ 的周期循环，只需预处理一个长为 $4$ 的数组。
+
+当 $i>0$ 时，$5^i\bmod 10 = 5$ 恒成立，所以无需预处理。
+
+```py [sol-Python3]
+MOD = 10
+MX = 100_000
+POW2 = (2, 4, 8, 6)
+
+f = [0] * (MX + 1)
+inv_f = [0] * (MX + 1)
+p2 = [0] * (MX + 1)
+p5 = [0] * (MX + 1)
+
+f[0] = 1
+for i in range(1, MX + 1):
+    x = i
+    # 计算 2 的幂次
+    e2 = (x & -x).bit_length() - 1
+    x >>= e2
+    # 计算 5 的幂次
+    e5 = 0
+    while x % 5 == 0:
+        e5 += 1
+        x //= 5
+    f[i] = f[i - 1] * x % MOD
+    p2[i] = p2[i - 1] + e2
+    p5[i] = p5[i - 1] + e5
+
+inv_f[MX] = pow(f[MX], 3, MOD)  # 欧拉定理求逆元
+for i in range(MX, 0, -1):
+    x = i
+    x >>= (x & -x).bit_length() - 1
+    while x % 5 == 0:
+        x //= 5
+    inv_f[i - 1] = inv_f[i] * x % MOD
+
+def comb(n: int, k: int) -> int:
+    e2 = p2[n] - p2[k] - p2[n-k]
+    return f[n] * inv_f[k] * inv_f[n - k] * \
+        (POW2[(e2 - 1) % 4] if e2 else 1) * \
+        (5 if p5[n] - p5[k] - p5[n - k] else 1)
+
+class Solution:
+    def hasSameDigits(self, s: str) -> bool:
+        n = len(s)
+        s = map(ord, s)
+        return sum(comb(n - 2, i) * (x - y) for i, (x, y) in enumerate(pairwise(s))) % MOD == 0
+```
+
+```java [sol-Java]
+class Solution {
+    private static final int MOD = 10;
+    private static final int MX = 100_000;
+    private static final int[] POW2 = new int[]{2, 4, 8, 6};
+
+    private static final int[] f = new int[MX + 1];
+    private static final int[] invF = new int[MX + 1];
+    private static final int[] p2 = new int[MX + 1];
+    private static final int[] p5 = new int[MX + 1];
+
+    static {
+        f[0] = 1;
+        for (int i = 1; i <= MX; i++) {
+            int x = i;
+            // 计算 2 的幂次
+            int e2 = Integer.numberOfTrailingZeros(x);
+            x >>= e2;
+            // 计算 5 的幂次
+            int e5 = 0;
+            while (x % 5 == 0) {
+                e5++;
+                x /= 5;
+            }
+            f[i] = f[i - 1] * x % MOD;
+            p2[i] = p2[i - 1] + e2;
+            p5[i] = p5[i - 1] + e5;
+        }
+
+        invF[MX] = pow(f[MX], 3); // 欧拉定理求逆元
+        for (int i = MX; i > 0; i--) {
+            int x = i;
+            x >>= Integer.numberOfTrailingZeros(x);
+            while (x % 5 == 0) {
+                x /= 5;
+            }
+            invF[i - 1] = invF[i] * x % MOD;
+        }
+    }
+
+    private static int pow(int x, int n) {
+        int res = 1;
+        while (n > 0) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+            n /= 2;
+        }
+        return res;
+    }
+
+    private int comb(int n, int k) {
+        int e2 = p2[n] - p2[k] - p2[n - k];
+        return f[n] * invF[k] * invF[n - k] *
+                (e2 ? POW2[(e2 - 1) % 4] : 1) *
+                (p5[n] - p5[k] - p5[n - k] > 0 ? 5 : 1) % MOD;
+    }
+
+    public boolean hasSameDigits(String S) {
+        char[] s = S.toCharArray();
+        int diff = 0;
+        for (int i = 0; i < s.length - 1; i++) {
+            diff += comb(s.length - 2, i) * (s[i] - s[i + 1]);
+        }
+        return diff % MOD == 0;
+    }
+}
+```
+
+```cpp [sol-C++]
+const int MOD = 10;
+const int MX = 100'000;
+const int POW2[4] = {2, 4, 8, 6};
+array<int, MX + 1> f, inv_f, p2, p5;
+
+int qpow(int x, int n) {
+    int res = 1;
+    while (n > 0) {
+        if (n % 2 > 0) {
+            res = res * x % MOD;
+        }
+        x = x * x % MOD;
+        n /= 2;
+    }
+    return res;
+}
+
+auto init = []() {
+    f[0] = 1;
+    for (int i = 1; i <= MX; i++) {
+        int x = i;
+        // 计算 2 的幂次
+        int e2 = countr_zero((unsigned) x);
+        x >>= e2;
+        // 计算 5 的幂次
+        int e5 = 0;
+        while (x % 5 == 0) {
+            e5++;
+            x /= 5;
+        }
+        f[i] = f[i - 1] * x % MOD;
+        p2[i] = p2[i - 1] + e2;
+        p5[i] = p5[i - 1] + e5;
+    }
+
+    inv_f[MX] = qpow(f[MX], 3); // 欧拉定理求逆元
+    for (int i = MX; i > 0; i--) {
+        int x = i;
+        x >>= countr_zero((unsigned) x);
+        while (x % 5 == 0) {
+            x /= 5;
+        }
+        inv_f[i - 1] = inv_f[i] * x % MOD;
+    }
+    return 0;
+}();
+
+int comb(int n, int k) {
+    int e2 = p2[n] - p2[k] - p2[n - k];
+    return f[n] * inv_f[k] * inv_f[n - k] *
+           (e2 ? POW2[(e2 - 1) % 4] : 1) *
+           (p5[n] - p5[k] - p5[n - k] > 0 ? 5 : 1) % MOD;
+}
+
+class Solution {
+public:
+    bool hasSameDigits(string s) {
+        int diff = 0;
+        for (int i = 0; i + 1 < s.size(); i++) {
+            diff += comb(s.size() - 2, i) * (s[i] - s[i + 1]);
+        }
+        return diff % MOD == 0;
+    }
+};
+```
+
+```go [sol-Go]
+const mod = 10
+
+func pow(x, n int) int {
+	res := 1
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = res * x % mod
+		}
+		x = x * x % mod
+	}
+	return res
+}
+
+const mx = 100_000
+
+var f, invF, p2, p5 [mx + 1]int
+
+func init() {
+	f[0] = 1
+	for i := 1; i <= mx; i++ {
+		x := i
+		// 2 的幂次
+		e2 := bits.TrailingZeros(uint(x))
+		x >>= e2
+		// 5 的幂次
+		e5 := 0
+		for x%5 == 0 {
+			e5++
+			x /= 5
+		}
+		f[i] = f[i-1] * x % mod
+		p2[i] = p2[i-1] + e2
+		p5[i] = p5[i-1] + e5
+	}
+
+	invF[mx] = pow(f[mx], 3) // 欧拉定理
+	for i := mx; i > 0; i-- {
+		x := i
+		x >>= bits.TrailingZeros(uint(x))
+		for x%5 == 0 {
+			x /= 5
+		}
+		invF[i-1] = invF[i] * x % mod
+	}
+}
+
+var pow2 = [4]int{2, 4, 8, 6}
+
+func comb(n, k int) int {
+	res := f[n] * invF[k] * invF[n-k]
+	e2 := p2[n] - p2[k] - p2[n-k]
+	if e2 > 0 {
+		res *= pow2[(e2-1)%4]
+	}
+	if p5[n]-p5[k]-p5[n-k] > 0 {
+		res *= 5
+	}
+	return res
+}
+
+func hasSameDigits(s string) bool {
+	diff := 0
+	for i := range len(s) - 1 {
+		diff += comb(len(s)-2, i) * (int(s[i]) - int(s[i+1]))
+	}
+	return diff%mod == 0
+}
+```
+
+#### 复杂度分析
+
+预处理的时间和空间忽略不计。
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $s$ 的长度。
 - 空间复杂度：$\mathcal{O}(1)$。
 
 ## 方法二：扩展 Lucas
 
 证明见 [Lucas 定理](https://oi-wiki.org/math/number-theory/lucas/)。
 
-Lucas 定理可以帮助我们计算 $r_2 = \dbinom {n} {k}\bmod 2$ 和 $r_5 = \dbinom {n} {k}\bmod 5$。
+Lucas 定理可以帮助我们快速计算 $r_2 = \dbinom {n} {k}\bmod 2$ 和 $r_5 = \dbinom {n} {k}\bmod 5$。
 
 根据 [中国剩余定理](https://oi-wiki.org/math/number-theory/crt/) 的计算方法，知道了 $r_2$ 和 $r_5$，那么有
 

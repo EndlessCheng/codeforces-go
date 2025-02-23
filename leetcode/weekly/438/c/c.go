@@ -49,11 +49,18 @@ func init() {
 	}
 }
 
+var pow2 = [4]int{2, 4, 8, 6}
+
 func comb(n, k int) int {
-	// 由于每项都 < 10，所以无需中途取模
-	return f[n] * invF[k] * invF[n-k] *
-		pow(2, p2[n]-p2[k]-p2[n-k]) *
-		pow(5, p5[n]-p5[k]-p5[n-k])
+	res := f[n] * invF[k] * invF[n-k]
+	e2 := p2[n] - p2[k] - p2[n-k]
+	if e2 > 0 {
+		res *= pow2[(e2-1)%4]
+	}
+	if p5[n]-p5[k]-p5[n-k] > 0 {
+		res *= 5
+	}
+	return res
 }
 
 func hasSameDigits(s string) bool {
