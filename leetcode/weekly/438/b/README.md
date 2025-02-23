@@ -18,6 +18,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
+// 更快的写法见【数组】
 class Solution {
     public long maxSum(int[][] grid, int[] limits, int k) {
         List<Integer> a = new ArrayList<>();
@@ -32,6 +33,31 @@ class Solution {
         long ans = 0;
         for (int i = 0; i < k; i++) {
             ans += a.get(i);
+        }
+        return ans;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    public long maxSum(int[][] grid, int[] limits, int k) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] a = new int[m * n];
+        int size = 0;
+        for (int i = 0; i < m; i++) {
+            int[] row = grid[i];
+            Arrays.sort(row);
+            for (int j = n - limits[i]; j < n; j++) {
+                a[size++] = row[j];
+            }
+        }
+
+        Arrays.sort(a, 0, size);
+        long ans = 0;
+        for (int i = size - k; i < size; i++) {
+            ans += a[i];
         }
         return ans;
     }
@@ -88,7 +114,7 @@ func maxSum(grid [][]int, limits []int, k int) (ans int64) {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(mn\log (mn))$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。用快速选择可以做到 $\mathcal{O}(mn)$，见 C++ 代码。
-- 空间复杂度：$\mathcal{O}(mn)$。
+- 空间复杂度：$\mathcal{O}(mn)$，或者 $\textit{limits}[i]$ 之和。
 
 更多相似题目，见下面贪心题单中的「**§1.1 从最小/最大开始贪心**」。
 
