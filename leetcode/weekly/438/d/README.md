@@ -501,7 +501,6 @@ class Solution:
                             return False
                 if a[idx[-1]] - a[idx[0]] <= side * 4 - low:
                     return True
-                idx[0] += 1
             return False
 
         left, right = 1, side + 1
