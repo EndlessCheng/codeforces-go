@@ -10,9 +10,9 @@ class Solution:
         ans = 0
         cnt = defaultdict(int)
         for s in words:
-            mask = 0
+            mask = 0  # 初始化一个空的集合
             for c in s:
-                mask |= 1 << (ord(c) - ord('a'))
+                mask |= 1 << (ord(c) - ord('a'))  # 把 c 加到集合中
             ans += cnt[mask]
             cnt[mask] += 1
         return ans
@@ -24,9 +24,9 @@ class Solution {
         Map<Integer, Integer> cnt = new HashMap<>();
         int ans = 0;
         for (String s : words) {
-            int mask = 0;
+            int mask = 0; // 初始化一个空的集合
             for (char c : s.toCharArray()) {
-                mask |= 1 << (c - 'a');
+                mask |= 1 << (c - 'a'); // 把 c 加到集合中
             }
             int c = cnt.getOrDefault(mask, 0);
             ans += c;
@@ -44,9 +44,9 @@ public:
         unordered_map<int, int> cnt;
         int ans = 0;
         for (auto& s : words) {
-            int mask = 0;
+            int mask = 0; // 初始化一个空的集合
             for (char c : s) {
-                mask |= 1 << (c - 'a');
+                mask |= 1 << (c - 'a'); // 把 c 加到集合中
             }
             ans += cnt[mask]++;
         }
@@ -59,9 +59,9 @@ public:
 func similarPairs(words []string) (ans int) {
     cnt := map[int]int{}
     for _, s := range words {
-        mask := 0
+        mask := 0 // 初始化一个空的集合
         for _, c := range s {
-            mask |= 1 << (c - 'a')
+            mask |= 1 << (c - 'a') // 把 c 加到集合中
         }
         ans += cnt[mask]
         cnt[mask]++
@@ -75,8 +75,9 @@ var similarPairs = function(words) {
     const cnt = new Map();
     let ans = 0;
     for (const s of words) {
-        let mask = 0;
+        let mask = 0; // 初始化一个空的集合
         for (const c of s) {
+            // 把 c 加到集合中
             mask |= 1 << (c.charCodeAt(0) - 'a'.charCodeAt(0));
         }
         const c = cnt.get(mask) ?? 0
@@ -95,12 +96,13 @@ impl Solution {
         let mut cnt = HashMap::new();
         let mut ans = 0;
         for s in words {
-            let mut mask = 0;
+            let mut mask = 0; // 初始化一个空的集合
             for c in s.bytes() {
-                mask |= 1 << (c - b'a');
+                mask |= 1 << (c - b'a'); // 把 c 加到集合中
             }
-            ans += *cnt.get(&mask).unwrap_or(&0);
-            *cnt.entry(mask).or_insert(0) += 1;
+            let e = cnt.entry(mask).or_insert(0);
+            ans += *e;
+            *e += 1;
         }
         ans
     }
