@@ -1,82 +1,47 @@
 package main
 
 import (
+	"math"
 	"slices"
 	"sort"
 )
 
 // https://space.bilibili.com/206214
 func maxDistance(side int, points [][]int, k int) int {
-	type pair struct{ x, y int }
-	var a, b []pair
-	for _, p := range points {
+	// 正方形边上的点，按照顺时针映射到一维数轴上
+	a := make([]int, len(points)+1)
+	for i, p := range points {
 		x, y := p[0], p[1]
-		q := pair{x + y, y - x}
-		if x == 0 && y >= 0 || y == side {
-			a = append(a, q)
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
 		} else {
-			b = append(b, q)
+			a[i] = side*4 - x
 		}
 	}
-
-	cmp := func(a, b pair) int { return a.x - b.x }
-	slices.SortFunc(a, cmp)
-	slices.SortFunc(b, cmp)
-	if len(a) == 0 {
-		// 保证 a 至少有一个点
-		a, b = b, a
-	}
+	slices.Sort(a)
+	a[len(points)] = math.MaxInt / 2 // 哨兵
 
 	// 本题保证 k >= 4，所以最远距离不会超过 side
 	ans := sort.Search(side, func(low int) bool {
+		// 如果 low+1 不满足要求，但 low 满足要求，那么答案就是 low
 		low++
-		for _, p := range a {
-			// 绕一圈
-			// 上半圈（从左往右找）
-			firstX, firstY := p.x, p.y // 第一个点
-			left := k - 1
-			curX, lastY := p.x, p.y
-			for left > 0 {
-				j := sort.Search(len(a), func(i int) bool { return a[i].x >= curX+low })
-				if j == len(a) {
-					break
+	next:
+		for i, start := range a { // 枚举第一个点
+			cur := start
+			for range k - 1 { // 还需要找 k-1 个点
+				i += sort.Search(len(a)-i, func(j int) bool { return a[i+j] >= cur+low })
+				if i == len(a) || a[i] > start+side*4-low { // 不能离第一个点太近
+					continue next
 				}
-				curX = a[j].x
-				lastY = a[j].y
-				left--
+				cur = a[i]
 			}
-			if left == 0 {
-				return false
-			}
-
-			// 下半圈最右边的点
-			j := sort.Search(len(b), func(i int) bool {
-				return max(abs(b[i].x-curX), abs(b[i].y-lastY)) < low
-			}) - 1
-			// 不能和第一个点离得太近
-			if j < 0 || max(abs(b[j].x-firstX), abs(b[j].y-firstY)) < low {
-				continue
-			}
-
-			// 下半圈（从右往左找）
-			left--
-			curX = b[j].x
-			for left > 0 {
-				j := sort.Search(len(b), func(i int) bool { return b[i].x > curX-low }) - 1
-				// 不能和第一个点离得太近
-				if j < 0 || max(abs(b[j].x-firstX), abs(b[j].y-firstY)) < low {
-					break
-				}
-				curX = b[j].x
-				left--
-			}
-			if left == 0 {
-				return false
-			}
+			return false
 		}
 		return true
 	})
 	return ans
 }
-
-func abs(x int) int { if x < 0 { return -x }; return x }

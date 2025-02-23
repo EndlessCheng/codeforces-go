@@ -1,107 +1,267 @@
-**前置知识**：[【图解】曼哈顿距离转切比雪夫距离](https://leetcode.cn/problems/minimize-manhattan-distances/solutions/2716755/tu-jie-man-ha-dun-ju-chi-heng-deng-shi-b-op84/)。
+最大化最小值，考虑二分答案，即二分距离的**下界** $\textit{low}$。为什么？因为 $\textit{low}$ 越大，可以选的点越少，有单调性。
 
-看到最大化最小值，考虑二分答案，即二分距离的下界 $\textit{low}$。
+![lc3464.png](https://pic.leetcode.cn/1740305801-CRFYtB-lc3464.png)
 
-把正方形顺时针旋转 $45$ 度，转成切比雪夫距离
+把正方形拉成一条线，示例 2 按照左边界、上边界、右边界、下边界的顺时针顺序，这 $5$ 个点在一维上的坐标为
 
 $$
-\max(|x_1'-x_2'|,|y_1'-y_2'|)
+a=[0,3,4,5,6]
 $$
 
-这样可以利用正方形的性质：对于上半圈来说，纵坐标之差不会超过横坐标之差，所以**只需比较横坐标之差**！对于下半圈同理。
+现在问题变成：
 
-这样可以暴力枚举所选的第一个点，然后二分横坐标找下一个点，如下图。
+- 能否在 $a$ 中选 $k$ 个数，要求任意两个相邻元素相差至少为 $\textit{low}$，且第一个数和最后一个数相差至多为 $\textit{side}\cdot 4 - \textit{low}$。
+- $\textit{side}\cdot 4 - \textit{low}$ 是因为数组 $a$ 是个环形数组，设第一个点为 $x$，最后一个点为 $y$，那么 $y$ 可以视作负方向上的 $y-\textit{side}\cdot 4$，我们要求 $x-(y-\textit{side}\cdot 4) \ge \textit{low}$，解得 $y-x\le \textit{side}\cdot 4 - \textit{low}$。
 
-![w438d-c.png](https://pic.leetcode.cn/1740283369-FGocTC-w438d-c.png)
+做法：
 
-> 注：本题保证 $k\ge 4$，所以答案不会超过 $\textit{side}$。这也保证了「找下半圈最右点」是有单调性的，是可以二分的。而 $k\le 3$ 时，答案可能会超过 $\textit{side}$，此时找下半圈的最右点时，不一定有单调性，无法二分。
+- 枚举第一个数，不断向后二分找相距至少为 $\textit{low}$ 的最近元素，直到找到 $k$ 个数，或者第一个数和最后一个数相差超过 $\textit{side}\cdot 4 - \textit{low}$ 时停止。
 
-在下半圈的循环过程中，需要保证下半圈最左边的点和上半圈第一个点相距 $\ge \textit{low}$，如果不满足就退出循环。
+⚠**注意**：本题保证 $k\ge 4$，所以答案不会超过 $\textit{side}$。这也保证了如果下一个点不在正方形的当前边或者下一条边上，那么距离是一定满足要求的，所以「二分找下一个点」的做法是正确的。而 $k\le 3$ 时，答案可能会超过 $\textit{side}$，此时「二分找下一个点」的做法是错误的。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+⚠**注意**：不需要找一圈后又绕回到数组的开头继续二分找，因为我们在之前的枚举中，已经枚举了数组开头的数。继续找不会得到更优的答案。
 
-其他语言直播结束后补充。
+下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的。
+
+- 开区间左端点初始值：$1$。一定可以满足要求。
+- 开区间右端点初始值：$\textit{side} + 1$。一定无法满足要求。
+
+```py [sol-Python3]
+class Solution:
+    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+        # 正方形边上的点，按照顺时针映射到一维数轴上
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
+
+        def check(low: int) -> bool:
+            for start in a:  # 枚举第一个点
+                end = start + side * 4 - low
+                cur = start
+                for _ in range(k - 1):  # 还需要找 k-1 个点
+                    j = bisect_left(a, cur + low)
+                    if j == len(a) or a[j] > end:  # 不能离第一个点太近
+                        break
+                    cur = a[j]
+                else:
+                    return True
+            return False
+
+        # 本题保证 k >= 4，所以最远距离不会超过 side
+        left, right = 1, side + 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                left = mid
+            else:
+                right = mid
+        return left
+```
+
+```py [sol-Python3 库函数]
+class Solution:
+    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+        # 正方形边上的点，按照顺时针映射到一维数轴上
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
+
+        def check(low: int) -> bool:
+            # 如果 low+1 不满足要求，但 low 满足要求，那么答案就是 low
+            low += 1
+            for start in a:  # 枚举第一个点
+                end = start + side * 4 - low
+                cur = start
+                for _ in range(k - 1):  # 还需要找 k-1 个点
+                    j = bisect_left(a, cur + low)
+                    if j == len(a) or a[j] > end:  # 不能离第一个点太近
+                        break
+                    cur = a[j]
+                else:
+                    return False
+            return True
+
+        # 本题保证 k >= 4，所以最远距离不会超过 side
+        return bisect_left(range(side), True, key=check)
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistance(int side, int[][] points, int k) {
+        // 正方形边上的点，按照顺时针映射到一维数轴上
+        long[] a = new long[points.length];
+        for (int i = 0; i < points.length; i++) {
+            int x = points[i][0];
+            int y = points[i][1];
+            if (x == 0) {
+                a[i] = y;
+            } else if (y == side) {
+                a[i] = side + x;
+            } else if (x == side) {
+                a[i] = side * 3L - y;
+            } else {
+                a[i] = side * 4L - x;
+            }
+        }
+        Arrays.sort(a);
+
+        // 本题保证 k >= 4，所以最远距离不会超过 side
+        int left = 1;
+        int right = side + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (check(a, side, k, mid)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(long[] a, int side, int k, int low) {
+        next:
+        for (long start : a) { // 枚举第一个点
+            long end = start + side * 4L - low;
+            long cur = start;
+            for (int i = 0; i < k - 1; i++) { // 还需要找 k-1 个点
+                int j = lowerBound(a, cur + low);
+                if (j == a.length || a[j] > end) { // 不能离第一个点太近
+                    continue next;
+                }
+                cur = a[j];
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // 见 https://www.bilibili.com/video/BV1AP41137w7/
+    private int lowerBound(long[] nums, long target) {
+        int left = -1;
+        int right = nums.length;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (nums[mid] >= target) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistance(int side, vector<vector<int>>& points, int k) {
+        // 正方形边上的点，按照顺时针映射到一维数轴上
+        vector<long long> a;
+        for (auto& p : points) {
+            int x = p[0], y = p[1];
+            if (x == 0) {
+                a.push_back(y);
+            } else if (y == side) {
+                a.push_back(side + x);
+            } else if (x == side) {
+                a.push_back(side * 3LL - y);
+            } else {
+                a.push_back(side * 4LL - x);
+            }
+        }
+        ranges::sort(a);
+
+        auto check = [&](int low) -> bool {
+            for (long long start : a) { // 枚举第一个点
+                long long end = start + side * 4LL - low;
+                long long cur = start;
+                for (int i = 0; i < k - 1; i++) { // 还需要找 k-1 个点
+                    auto it = ranges::lower_bound(a, cur + low);
+                    if (it == a.end() || *it > end) { // 不能离第一个点太近
+                        cur = -1;
+                        break;
+                    }
+                    cur = *it;
+                }
+                if (cur >= 0) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // 本题保证 k >= 4，所以最远距离不会超过 side
+        int left = 1, right = side + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? left : right) = mid;
+        }
+        return left;
+    }
+};
+```
 
 ```go [sol-Go]
 func maxDistance(side int, points [][]int, k int) int {
-	type pair struct{ x, y int }
-	var a, b []pair
-	for _, p := range points {
+	// 正方形边上的点，按照顺时针映射到一维数轴上
+	a := make([]int, len(points))
+	for i, p := range points {
 		x, y := p[0], p[1]
-		q := pair{x + y, y - x}
-		if x == 0 && y >= 0 || y == side {
-			a = append(a, q)
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
 		} else {
-			b = append(b, q)
+			a[i] = side*4 - x
 		}
 	}
-
-	cmp := func(a, b pair) int { return a.x - b.x }
-	slices.SortFunc(a, cmp)
-	slices.SortFunc(b, cmp)
-	if len(a) == 0 {
-		// 保证 a 至少有一个点
-		a, b = b, a
-	}
+	slices.Sort(a)
 
 	// 本题保证 k >= 4，所以最远距离不会超过 side
 	ans := sort.Search(side, func(low int) bool {
+		// 如果 low+1 不满足要求，但 low 满足要求，那么答案就是 low
 		low++
-		for _, p := range a {
-			// 绕一圈
-			// 上半圈（从左往右找）
-			firstX, firstY := p.x, p.y // 第一个点
-			left := k - 1
-			curX, lastY := p.x, p.y
-			for left > 0 {
-				j := sort.Search(len(a), func(i int) bool { return a[i].x >= curX+low })
-				if j == len(a) {
-					break
+	next:
+		for i, start := range a { // 枚举第一个点
+			cur := start
+			for range k - 1 { // 还需要找 k-1 个点
+				i += sort.Search(len(a)-i, func(j int) bool { return a[i+j] >= cur+low })
+				if i == len(a) || a[i] > start+side*4-low { // 不能离第一个点太近
+					continue next
 				}
-				curX = a[j].x
-				lastY = a[j].y
-				left--
+				cur = a[i]
 			}
-			if left == 0 {
-				return false
-			}
-
-			// 下半圈最右边的点
-			j := sort.Search(len(b), func(i int) bool {
-				return max(abs(b[i].x-curX), abs(b[i].y-lastY)) < low
-			}) - 1
-			// 不能和第一个点离得太近
-			if j < 0 || max(abs(b[j].x-firstX), abs(b[j].y-firstY)) < low {
-				continue
-			}
-
-			// 下半圈（从右往左找）
-			left--
-			curX = b[j].x
-			for left > 0 {
-				j := sort.Search(len(b), func(i int) bool { return b[i].x > curX-low }) - 1
-				// 不能和第一个点离得太近
-				if j < 0 || max(abs(b[j].x-firstX), abs(b[j].y-firstY)) < low {
-					break
-				}
-				curX = b[j].x
-				left--
-			}
-			if left == 0 {
-				return false
-			}
+			return false
 		}
 		return true
 	})
 	return ans
 }
-
-func abs(x int) int { if x < 0 { return -x }; return x }
 ```
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk \log \textit{side}\log n)$，其中 $n$ 是 $\textit{points}$ 的长度。
+- 时间复杂度：$\mathcal{O}(nk \log \textit{side}\log n)$，其中 $n$ 是 $\textit{points}$ 的长度。由于中途会退出循环，这个复杂度是跑不满的。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
