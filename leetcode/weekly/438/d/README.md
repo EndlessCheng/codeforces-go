@@ -30,7 +30,7 @@ $$
 
 ```py [sol-Python3]
 class Solution:
-    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
         # 正方形边上的点，按照顺时针映射到一维数轴上
         a = []
         for x, y in points:
@@ -70,7 +70,7 @@ class Solution:
 
 ```py [sol-Python3 库函数]
 class Solution:
-    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
         # 正方形边上的点，按照顺时针映射到一维数轴上
         a = []
         for x, y in points:
@@ -282,7 +282,7 @@ func maxDistance(side int, points [][]int, k int) int {
 
 ```py [sol-Python3]
 class Solution:
-    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
         a = []
         for x, y in points:
             if x == 0:
@@ -467,7 +467,7 @@ func maxDistance(side int, points [][]int, k int) int {
 
 ```py [sol-Python3]
 class Solution:
-    def maxDistance(self, side: int, points: list[list[int]], k: int) -> int:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
         a = []
         for x, y in points:
             if x == 0:
