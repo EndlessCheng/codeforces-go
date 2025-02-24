@@ -4,7 +4,7 @@
 
 ```py [sol-Python3]
 class Solution:
-    def maxGoodNumber(self, nums: list[int]) -> int:
+    def maxGoodNumber(self, nums: List[int]) -> int:
         def cmp(a: int, b: int) -> int:
             len_a = a.bit_length()
             len_b = b.bit_length()
