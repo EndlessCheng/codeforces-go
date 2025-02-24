@@ -6,7 +6,7 @@
 
 ```py [sol-Python3]
 class Solution:
-    def minimumSumSubarray(self, nums: list[int], l: int, r: int) -> int:
+    def minimumSumSubarray(self, nums: List[int], l: int, r: int) -> int:
         ans = inf
         n = len(nums)
         for i in range(n - l + 1):
@@ -85,7 +85,7 @@ func minimumSumSubarray(nums []int, l, r int) int {
 
 利用 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/)，问题变成：
 
-- 找到一个小于 $s[j]$ 且离 $s[j]$ 最近的前缀和 $s[i]$，满足 $l\le j-i\le r$。
+- 找到一个小于 $s[j]$ 的最大前缀和 $s[i]$，满足 $l\le j-i\le r$。
 
 枚举 $j$，那么 $i$ 需要满足 $j-r\le i\le j-l$。
 
@@ -94,13 +94,11 @@ func minimumSumSubarray(nums []int, l, r int) int {
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1fFB4YGEZY/?t=3m47s)，欢迎点赞关注~
 
 ```py [sol-Python3]
-from sortedcontainers import SortedList
-
 class Solution:
     def minimumSumSubarray(self, nums: List[int], l: int, r: int) -> int:
         ans = inf
         s = list(accumulate(nums, initial=0))
-        sl = SortedList()
+        sl = SortedList()  # sortedcontainers
         for j in range(l, len(nums) + 1):
             sl.add(s[j - l])
             k = sl.bisect_left(s[j])
