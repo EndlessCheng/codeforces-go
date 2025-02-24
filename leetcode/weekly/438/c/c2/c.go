@@ -21,7 +21,7 @@ func lucas(n, k, p int) int {
 	return c[n%p][k%p] * lucas(n/p, k/p, p) % p
 }
 
-func comb10(n, k int) int {
+func comb(n, k int) int {
 	// 结果至多为 5 + 4 * 6 = 29，无需中途取模
 	return lucas(n, k, 2)*5 + lucas(n, k, 5)*6
 }
@@ -29,7 +29,7 @@ func comb10(n, k int) int {
 func hasSameDigits(s string) bool {
 	diff := 0
 	for i := range len(s) - 1 {
-		diff += comb10(len(s)-2, i) * (int(s[i]) - int(s[i+1]))
+		diff += comb(len(s)-2, i) * (int(s[i]) - int(s[i+1]))
 	}
 	return diff%10 == 0
 }
