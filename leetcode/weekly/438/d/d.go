@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"math/bits"
 	"slices"
 	"sort"
@@ -8,6 +9,99 @@ import (
 
 // https://space.bilibili.com/206214
 func maxDistance(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+
+	f := make([]int, n+1)
+	end := make([]int, n)
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		j := n
+		for i := n - 1; i >= 0; i-- {
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			f[i] = f[j] + 1
+			if f[i] == 1 {
+				end[i] = i // i 自己就是最后一个点
+			} else {
+				end[i] = end[j]
+			}
+			if f[i] == k && a[end[i]]-a[i] <= side*4-low {
+				return false
+			}
+		}
+		return true
+	})
+	return ans
+}
+
+func maxDistance4(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n, n+1)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+	a = append(a, math.MaxInt) // 哨兵
+
+	g := make([][]int, n+1)
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		clear(g)
+		j := n
+		for i := n - 1; i >= 0; i-- {
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			g[j] = append(g[j], i) // 建树
+		}
+
+		st := []int{}
+		var dfs func(int) bool
+		dfs = func(x int) bool {
+			st = append(st, a[x])
+			m := len(st)
+			// 注意栈中多了一个 a[n]，所以是 m > k 不是 >=
+			if m > k && st[m-k]-a[x] <= side*4-low {
+				return true
+			}
+			for _, y := range g[x] {
+				if dfs(y) {
+					return true
+				}
+			}
+			st = st[:m-1] // 恢复现场
+			return false
+		}
+		return !dfs(n)
+	})
+	return ans
+}
+
+func maxDistance3(side int, points [][]int, k int) int {
 	n := len(points)
 	a := make([]int, n)
 	for i, p := range points {
@@ -66,7 +160,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	return ans
 }
 
-func maxDistance3(side int, points [][]int, k int) int {
+func maxDistance22(side int, points [][]int, k int) int {
 	a := make([]int, len(points))
 	for i, p := range points {
 		x, y := p[0], p[1]
@@ -118,7 +212,7 @@ func maxDistance3(side int, points [][]int, k int) int {
 	return ans
 }
 
-func maxDistance2(side int, points [][]int, k int) int {
+func maxDistance21(side int, points [][]int, k int) int {
 	a := make([]int, len(points))
 	for i, p := range points {
 		x, y := p[0], p[1]

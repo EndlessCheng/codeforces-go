@@ -766,7 +766,7 @@ class Solution:
             # 预处理倍增数组 nxt
             j = n
             for i in range(n - 1, -1, -1):  # 转移来源在右边，要倒序计算
-                while j and a[j - 1] >= a[i] + low:
+                while a[j - 1] >= a[i] + low:
                     j -= 1
                 nxt[i][0] = j
                 for l in range(1, mx):
@@ -838,7 +838,7 @@ class Solution {
         int mx = nxt[0].length;
         // 预处理倍增数组 nxt
         for (int i = n - 1, j = n; i >= 0; i--) {
-            while (j > 0 && a[j - 1] >= a[i] + low) {
+            while (a[j - 1] >= a[i] + low) {
                 j--;
             }
             nxt[i][0] = j;
@@ -897,7 +897,7 @@ public:
             // 预处理倍增数组 nxt
             int j = n;
             for (int i = n - 1; i >= 0; i--) { // 转移来源在右边，要倒序计算
-                while (j && a[j - 1] >= a[i] + low) {
+                while (a[j - 1] >= a[i] + low) {
                     j--;
                 }
                 nxt[i][0] = j;
@@ -1000,6 +1000,470 @@ func maxDistance(side int, points [][]int, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n\log n + n\log k \log \textit{side})$，其中 $n$ 是 $\textit{points}$ 的长度。其中 $\mathcal{O}(n\log n)$ 是排序的时间复杂度。
 - 空间复杂度：$\mathcal{O}(n\log k)$。
+
+## 方法四：二分答案 + 建树 + DFS
+
+在方法三的双指针基础上，连一条从 $j$ 到 $i$ 的有向边，我们会得到一棵有向树，根是 $n$。
+
+从 $n$ 开始递归这棵树，同时用一个栈记录从根到当前节点的 $a[x]$ 信息。
+
+当栈中有 $k$ 个点时，记录栈中倒数第 $k$ 个数和栈顶的距离，如果 $\le \textit{side}\cdot 4 - \textit{low}$，则找到了满足要求的 $k$ 的点，结束递归。
+
+⚠**注意**：无需判断 $f[i]>k$ 的情况，因为这意味着之前栈中有 $k$ 个点的时候，首尾两点间的距离足够远（甚至还可以再容纳一个点），一定满足要求。
+
+```py [sol-Python3]
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
+        n = len(a)
+        a.append(inf)  # 哨兵
+
+        def check(low: int) -> bool:
+            g = [[] for _ in range(n + 1)]
+            j = n
+            for i in range(n - 1, -1, -1):
+                while a[j - 1] >= a[i] + low:
+                    j -= 1
+                g[j].append(i)  # 建树
+
+            st = []
+            def dfs(x: int) -> bool:
+                st.append(a[x])
+                # 注意栈中多了一个 a[n]，所以是 m > k 不是 ==
+                if len(st) > k and st[-k] - a[x] <= side * 4 - low:
+                    return True
+                for y in g[x]:
+                    if dfs(y):
+                        return True
+                st.pop()  # 恢复现场
+                return False
+            return dfs(n)
+
+        left, right = 1, side + 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                left = mid
+            else:
+                right = mid
+        return left
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistance(int side, int[][] points, int k) {
+        int n = points.length;
+        long[] a = new long[n + 1];
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0];
+            int y = points[i][1];
+            if (x == 0) {
+                a[i] = y;
+            } else if (y == side) {
+                a[i] = side + x;
+            } else if (x == side) {
+                a[i] = side * 3L - y;
+            } else {
+                a[i] = side * 4L - x;
+            }
+        }
+        a[n] = Long.MAX_VALUE; // 哨兵
+        Arrays.sort(a);
+
+        int left = 1;
+        int right = side + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (check(a, side, k, mid)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(long[] a, int side, int k, int low) {
+        int n = a.length - 1;
+        List<Integer>[] g = new ArrayList[n + 1];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int i = n - 1, j = n; i >= 0; i--) {
+            while (a[j - 1] >= a[i] + low) {
+                j--;
+            }
+            g[j].add(i); // 建树
+        }
+
+        List<Long> st = new ArrayList<>();
+        return dfs(a, g, st, k, side * 4L - low, n);
+    }
+
+    private boolean dfs(long[] a, List<Integer>[] g, List<Long> st, int k, long limit, int x) {
+        st.add(a[x]);
+        int m = st.size();
+        // 注意栈中多了一个 a[n]，所以是 m > k 不是 ==
+        if (m > k && st.get(m - k) - a[x] <= limit) {
+            return true;
+        }
+        for (int y : g[x]) {
+            if (dfs(a, g, st, k, limit, y)) {
+                return true;
+            }
+        }
+        st.remove(m - 1); // 恢复现场
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistance(int side, vector<vector<int>>& points, int k) {
+        vector<long long> a;
+        for (auto& p : points) {
+            int x = p[0], y = p[1];
+            if (x == 0) {
+                a.push_back(y);
+            } else if (y == side) {
+                a.push_back(side + x);
+            } else if (x == side) {
+                a.push_back(side * 3LL - y);
+            } else {
+                a.push_back(side * 4LL - x);
+            }
+        }
+        ranges::sort(a);
+        int n = a.size();
+        a.push_back(LLONG_MAX); // 哨兵
+
+        auto check = [&](int low) -> bool {
+            vector<vector<int>> g(n + 1);
+            int j = n;
+            for (int i = n - 1; i >= 0; i--) {
+                while (a[j - 1] >= a[i] + low) {
+                    j--;
+                }
+                g[j].push_back(i); // 建树
+            }
+
+            vector<long long> st;
+            auto dfs = [&](this auto&& dfs, int x) -> bool {
+                st.push_back(a[x]);
+                int m = st.size();
+                // 注意栈中多了一个 a[n]，所以是 m > k 不是 ==
+                if (m > k && st[m - k] - a[x] <= side * 4LL - low) {
+                    return true;
+                }
+                for (int y : g[x]) {
+                    if (dfs(y)) {
+                        return true;
+                    }
+                }
+                st.pop_back(); // 恢复现场
+                return false;
+            };
+            return dfs(n);
+        };
+
+        int left = 1, right = side + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? left : right) = mid;
+        }
+        return left;
+    }
+};
+```
+
+```go [sol-Go]
+func maxDistance(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n, n+1)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+	a = append(a, math.MaxInt) // 哨兵
+
+	g := make([][]int, n+1)
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		clear(g)
+		j := n
+		for i := n - 1; i >= 0; i-- {
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			g[j] = append(g[j], i) // 建树
+		}
+
+		st := []int{}
+		var dfs func(int) bool
+		dfs = func(x int) bool {
+			st = append(st, a[x])
+			m := len(st)
+			// 注意栈中多了一个 a[n]，所以是 m > k 不是 ==
+			if m > k && st[m-k]-a[x] <= side*4-low {
+				return true
+			}
+			for _, y := range g[x] {
+				if dfs(y) {
+					return true
+				}
+			}
+			st = st[:m-1] // 恢复现场
+			return false
+		}
+		return !dfs(n)
+	})
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + n\log \textit{side})$，其中 $n$ 是 $\textit{points}$ 的长度。其中 $\mathcal{O}(n\log n)$ 是排序的时间复杂度。每次二分的时间为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法五：二分 + 动态规划
+
+定义 $f[i]$ 表示从 $i$ 往后找，最多可以找多少个点（包含 $i$）。
+
+设下一个点的下标为 $j$，那么有
+
+$$
+f[i] = f[j] + 1
+$$
+
+初始值 $f[n] = 0$。
+
+此外，定义 $\textit{end}[i]$ 表示从 $i$ 往后找，最后一个点的下标。
+
+- 如果 $f[i]=1$，那么 $\textit{end}[i]$ 就是 $i$ 自己。
+- 如果 $f[i]>1$，那么 $\textit{end}[i]$ 是从 $j$ 往后找，最后一个点的下标，即 $\textit{end}[j]$。
+
+所以有
+
+$$
+\textit{end}[i] =
+\begin{cases} 
+1, & f[i]=1    \\
+\textit{end}[j], & f[i]>1     \\
+\end{cases}
+$$
+
+如果 $f[i]=k$，且首尾两点的距离 $a[\textit{end}[i]] - a[i] \le \textit{side}\cdot 4 - \textit{low}$，那么满足要求，返回。
+
+⚠**注意**：无需判断 $f[i]>k$ 的情况，因为这意味着之前 $f[i']=k$ 的时候，首尾两点间的距离足够远（甚至还可以再容纳一个点），一定满足要求。
+
+```py [sol-Python3]
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
+
+        n = len(a)
+        f = [0] * (n + 1)
+        end = [0] * n
+
+        def check(low: int) -> bool:
+            j = n
+            for i in range(n - 1, -1, -1):
+                while a[j - 1] >= a[i] + low:
+                    j -= 1
+                f[i] = f[j] + 1
+                end[i] = end[j] if f[i] > 1 else i
+                if f[i] == k and a[end[i]] - a[i] <= side * 4 - low:
+                    return True
+            return False
+
+        left, right = 1, side + 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                left = mid
+            else:
+                right = mid
+        return left
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistance(int side, int[][] points, int k) {
+        int n = points.length;
+        long[] a = new long[n];
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0];
+            int y = points[i][1];
+            if (x == 0) {
+                a[i] = y;
+            } else if (y == side) {
+                a[i] = side + x;
+            } else if (x == side) {
+                a[i] = side * 3L - y;
+            } else {
+                a[i] = side * 4L - x;
+            }
+        }
+        Arrays.sort(a);
+
+        int[] f = new int[n + 1];
+        int[] end = new int[n];
+
+        int left = 1;
+        int right = side + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (check(a, side, k, mid, f, end)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(long[] a, int side, int k, int low, int[] f, int[] end) {
+        int n = a.length;
+        for (int i = n - 1, j = n; i >= 0; i--) {
+            while (a[j - 1] >= a[i] + low) {
+                j--;
+            }
+            f[i] = f[j] + 1;
+            end[i] = f[i] > 1 ? end[j] : i;
+            if (f[i] == k && a[end[i]] - a[i] <= side * 4L - low) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistance(int side, vector<vector<int>>& points, int k) {
+        vector<long long> a;
+        for (auto& p : points) {
+            int x = p[0], y = p[1];
+            if (x == 0) {
+                a.push_back(y);
+            } else if (y == side) {
+                a.push_back(side + x);
+            } else if (x == side) {
+                a.push_back(side * 3LL - y);
+            } else {
+                a.push_back(side * 4LL - x);
+            }
+        }
+        ranges::sort(a);
+
+        int n = a.size();
+        vector<int> f(n + 1), end(n);
+
+        auto check = [&](int low) -> bool {
+            int j = n;
+            for (int i = n - 1; i >= 0; i--) {
+                while (a[j - 1] >= a[i] + low) {
+                    j--;
+                }
+                f[i] = f[j] + 1;
+                end[i] = f[i] > 1 ? end[j] : i;
+                if (f[i] == k && a[end[i]] - a[i] <= side * 4LL - low) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        int left = 1, right = side + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? left : right) = mid;
+        }
+        return left;
+    }
+};
+```
+
+```go [sol-Go]
+func maxDistance(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+
+	f := make([]int, n+1)
+	end := make([]int, n)
+
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		j := n
+		for i := n - 1; i >= 0; i-- {
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			f[i] = f[j] + 1
+			if f[i] == 1 {
+				end[i] = i // i 自己就是最后一个点
+			} else {
+				end[i] = end[j]
+			}
+			if f[i] == k && a[end[i]]-a[i] <= side*4-low {
+				return false
+			}
+		}
+		return true
+	})
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + n\log \textit{side})$，其中 $n$ 是 $\textit{points}$ 的长度。其中 $\mathcal{O}(n\log n)$ 是排序的时间复杂度。每次二分的时间为 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 
