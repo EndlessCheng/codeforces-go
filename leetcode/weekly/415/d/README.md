@@ -43,7 +43,7 @@ $$
 
 ```py [sol-Python3]
 class Solution:
-    def calc_z(self, s: str) -> list[int]:
+    def calc_z(self, s: str) -> List[int]:
         n = len(s)
         z = [0] * n
         box_l = box_r = 0  # z-box 左右边界（闭区间）
@@ -82,7 +82,7 @@ class Solution:
 
 ```py [sol-Python3 手动比大小]
 class Solution:
-    def calc_z(self, s: str) -> list[int]:
+    def calc_z(self, s: str) -> List[int]:
         n = len(s)
         z = [0] * n
         box_l = box_r = 0  # z-box 左右边界（闭区间）
