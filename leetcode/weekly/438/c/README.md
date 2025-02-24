@@ -587,7 +587,7 @@ def lucas(n: int, k: int, p: int) -> int:
         return 1
     return c[n % p][k % p] * lucas(n // p, k // p, p) % p
 
-def comb10(n: int, k: int) -> int:
+def comb(n: int, k: int) -> int:
     # 结果至多为 5 + 4 * 6 = 29，无需中途取模
     return lucas(n, k, 2) * 5 + lucas(n, k, 5) * 6
 
@@ -595,7 +595,7 @@ class Solution:
     def hasSameDigits(self, s: str) -> bool:
         n = len(s)
         s = map(ord, s)
-        return sum(comb10(n - 2, i) * (x - y) for i, (x, y) in enumerate(pairwise(s))) % 10 == 0
+        return sum(comb(n - 2, i) * (x - y) for i, (x, y) in enumerate(pairwise(s))) % 10 == 0
 ```
 
 ```java [sol-Java]
@@ -617,12 +617,12 @@ class Solution {
         char[] s = S.toCharArray();
         int diff = 0;
         for (int i = 0; i < s.length - 1; i++) {
-            diff += comb10(s.length - 2, i) * (s[i] - s[i + 1]);
+            diff += comb(s.length - 2, i) * (s[i] - s[i + 1]);
         }
         return diff % 10 == 0;
     }
 
-    private int comb10(int n, int k) {
+    private int comb(int n, int k) {
         // 结果至多为 5 + 4 * 6 = 29，无需中途取模
         return lucas(n, k, 2) * 5 + lucas(n, k, 5) * 6;
     }
@@ -660,7 +660,7 @@ int lucas(int n, int k, int p) {
     return c[n % p][k % p] * lucas(n / p, k / p, p) % p;
 };
 
-int comb10(int n, int k) {
+int comb(int n, int k) {
     // 结果至多为 5 + 4 * 6 = 29，无需中途取模
     return lucas(n, k, 2) * 5 + lucas(n, k, 5) * 6;
 }
@@ -670,7 +670,7 @@ public:
     bool hasSameDigits(string s) {
         int diff = 0;
         for (int i = 0; i + 1 < s.size(); i++) {
-            diff += comb10(s.size() - 2, i) * (s[i] - s[i + 1]);
+            diff += comb(s.size() - 2, i) * (s[i] - s[i + 1]);
         }
         return diff % 10 == 0;
     }
@@ -700,7 +700,7 @@ func lucas(n, k, p int) int {
 	return c[n%p][k%p] * lucas(n/p, k/p, p) % p
 }
 
-func comb10(n, k int) int {
+func comb(n, k int) int {
 	// 结果至多为 5 + 4 * 6 = 29，无需中途取模
 	return lucas(n, k, 2)*5 + lucas(n, k, 5)*6
 }
@@ -708,7 +708,7 @@ func comb10(n, k int) int {
 func hasSameDigits(s string) bool {
 	diff := 0
 	for i := range len(s) - 1 {
-		diff += comb10(len(s)-2, i) * (int(s[i]) - int(s[i+1]))
+		diff += comb(len(s)-2, i) * (int(s[i]) - int(s[i+1]))
 	}
 	return diff%10 == 0
 }
