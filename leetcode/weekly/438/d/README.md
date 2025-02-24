@@ -15,7 +15,7 @@ $$
 - 能否在数组 $a$ 中选 $k$ 个数，要求任意两个相邻元素相差至少为 $\textit{low}$，且第一个数和最后一个数相差至多为 $\textit{side}\cdot 4 - \textit{low}$。
 - $\textit{side}\cdot 4 - \textit{low}$ 是因为 $a$ 是个环形数组，设第一个点为 $x$，最后一个点为 $y$，那么 $y$ 可以视作负方向上的 $y-\textit{side}\cdot 4$，我们要求 $x-(y-\textit{side}\cdot 4) \ge \textit{low}$，解得 $y-x\le \textit{side}\cdot 4 - \textit{low}$。
 
-## 方法一
+## 方法一：二分答案 + 二分查找
 
 枚举第一个数，不断向后二分找相距至少为 $\textit{low}$ 的最近元素，直到找到 $k$ 个数，或者第一个数和最后一个数相差超过 $\textit{side}\cdot 4 - \textit{low}$ 时停止。
 
@@ -266,7 +266,7 @@ func maxDistance(side int, points [][]int, k int) int {
 - 时间复杂度：$\mathcal{O}(nk \log \textit{side}\log n)$，其中 $n$ 是 $\textit{points}$ 的长度。由于中途会退出循环，这个复杂度是跑不满的。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二：k 个同向指针
+## 方法二：二分答案 + k 个同向指针
 
 把方法一最内层的二分查找，改用 $k$ 个指针维护。
 
@@ -715,6 +715,291 @@ func maxDistance(side int, points [][]int, k int) int {
 
 - 时间复杂度：$\mathcal{O}(n\log n + nk \log \textit{side})$，其中 $n$ 是 $\textit{points}$ 的长度。其中 $\mathcal{O}(n\log n)$ 是排序的时间复杂度。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法三：二分答案 + 倍增
+
+如果 $k$ 更大，上面两个方法就超时了。怎么办？
+
+**前置知识**：[倍增讲解](https://leetcode.cn/problems/kth-ancestor-of-a-tree-node/solution/mo-ban-jiang-jie-shu-shang-bei-zeng-suan-v3rw/)。
+
+在二分中，先预处理 $\textit{nxt}[i][0] = j$ 表示距离 $a[i]$ 至少为 $\textit{low}$ 的下一个点的下标是 $j$。如果不存在则 $j=n$。这可以用双指针计算。
+
+然后倍增，定义 $\textit{nxt}[i][l]$ 表示 $i$ 的下 $2^l$ 个点的下标是 $\textit{nxt}[i][l]$。例如 $\textit{nxt}[i][1]$ 表示 $i$ 的下下个点的下标是 $\textit{nxt}[i][1]$。
+
+转移方程同上面的倍增讲解：
+
+$$
+\textit{nxt}[i][l] = \textit{nxt}[\textit{nxt}[i][l-1]][l-1]
+$$
+
+可以定义 $\textit{nxt}[n][l]=n$ 作为哨兵，简化代码。
+
+然后枚举 $i=0,1,2,\cdots$，往后跳 $k-1$ 步，得到下标 $j$。如果
+
+$$
+a[j] - a[i] \le \textit{side}\cdot 4 - \textit{low}
+$$
+
+成立，则说明可以找到符合要求的 $k$ 个点。
+
+```py [sol-Python3]
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        a = []
+        for x, y in points:
+            if x == 0:
+                a.append(y)
+            elif y == side:
+                a.append(side + x)
+            elif x == side:
+                a.append(side * 3 - y)
+            else:
+                a.append(side * 4 - x)
+        a.sort()
+
+        n = len(a)
+        k -= 1  # 往后跳 k-1 步，这里先减一，方便计算
+        mx = k.bit_length()
+        nxt = [[n] * mx for _ in range(n + 1)]
+    
+        def check(low: int) -> bool:
+            # 预处理倍增数组 nxt
+            j = n
+            for i in range(n - 1, -1, -1):  # 转移来源在右边，要倒序计算
+                while j and a[j - 1] >= a[i] + low:
+                    j -= 1
+                nxt[i][0] = j
+                for l in range(1, mx):
+                    nxt[i][l] = nxt[nxt[i][l - 1]][l - 1]
+    
+            # 枚举起点
+            for i, start in enumerate(a):
+                # 往后跳 k-1 步（注意上面把 k 减一了）
+                cur = i
+                for j in range(mx - 1, -1, -1):
+                    if k >> j & 1:
+                        cur = nxt[cur][j]
+                if cur == n:  # 出界
+                    break
+                if a[cur] - start <= side * 4 - low:
+                    return True
+            return False
+
+        left, right = 1, side + 1
+        while left + 1 < right:
+            mid = (left + right) // 2
+            if check(mid):
+                left = mid
+            else:
+                right = mid
+        return left
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxDistance(int side, int[][] points, int k) {
+        int n = points.length;
+        long[] a = new long[n];
+        for (int i = 0; i < n; i++) {
+            int x = points[i][0];
+            int y = points[i][1];
+            if (x == 0) {
+                a[i] = y;
+            } else if (y == side) {
+                a[i] = side + x;
+            } else if (x == side) {
+                a[i] = side * 3L - y;
+            } else {
+                a[i] = side * 4L - x;
+            }
+        }
+        Arrays.sort(a);
+
+        k--; // 往后跳 k-1 步，这里先减一，方便计算
+        int mx = 32 - Integer.numberOfLeadingZeros(k);
+        int[][] nxt = new int[n + 1][mx];
+        Arrays.fill(nxt[n], n); // 哨兵
+
+        int left = 1;
+        int right = side + 1;
+        while (left + 1 < right) {
+            int mid = (left + right) >>> 1;
+            if (check(a, side, k, nxt, mid)) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+
+    private boolean check(long[] a, int side, int k, int[][] nxt, int low) {
+        int n = a.length;
+        int mx = nxt[0].length;
+        // 预处理倍增数组 nxt
+        for (int i = n - 1, j = n; i >= 0; i--) {
+            while (j > 0 && a[j - 1] >= a[i] + low) {
+                j--;
+            }
+            nxt[i][0] = j;
+            for (int l = 1; l < mx; l++) {
+                nxt[i][l] = nxt[nxt[i][l - 1]][l - 1];
+            }
+        }
+
+        // 枚举起点
+        for (int i = 0; i < n; i++) {
+            int cur = i;
+            // 往后跳 k-1 步（注意上面把 k 减一了）
+            for (int j = mx - 1; j >= 0; j--) {
+                if ((k >> j & 1) > 0) {
+                    cur = nxt[cur][j];
+                }
+            }
+            if (cur == n) { // 出界
+                break;
+            }
+            if (a[cur] - a[i] <= side * 4L - low) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxDistance(int side, vector<vector<int>>& points, int k) {
+        vector<long long> a;
+        for (auto& p : points) {
+            int x = p[0], y = p[1];
+            if (x == 0) {
+                a.push_back(y);
+            } else if (y == side) {
+                a.push_back(side + x);
+            } else if (x == side) {
+                a.push_back(side * 3LL - y);
+            } else {
+                a.push_back(side * 4LL - x);
+            }
+        }
+        ranges::sort(a);
+
+        int n = a.size();
+        k--; // 往后跳 k-1 步，这里先减一，方便计算
+        int high_bit = bit_width((unsigned) k) - 1;
+        vector<array<int, 5>> nxt(n + 1); // 5 可以改为 high_bit+1（这里用 array 而不是 vector，提高访问效率）
+        ranges::fill(nxt[n], n); // 哨兵
+
+        auto check = [&](int low) -> bool {
+            // 预处理倍增数组 nxt
+            int j = n;
+            for (int i = n - 1; i >= 0; i--) { // 转移来源在右边，要倒序计算
+                while (j && a[j - 1] >= a[i] + low) {
+                    j--;
+                }
+                nxt[i][0] = j;
+                for (int k = 1; k <= high_bit; k++) {
+                    nxt[i][k] = nxt[nxt[i][k - 1]][k - 1];
+                }
+            }
+
+            // 枚举起点
+            for (int i = 0; i < n; i++) {
+                int cur = i;
+                // 往后跳 k-1 步（注意上面把 k 减一了）
+                for (int j = high_bit; j >= 0; j--) {
+                    if (k >> j & 1) {
+                        cur = nxt[cur][j];
+                    }
+                }
+                if (cur == n) { // 出界
+                    break;
+                }
+                if (a[cur] - a[i] <= side * 4LL - low) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        int left = 1, right = side + 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            (check(mid) ? left : right) = mid;
+        }
+        return left;
+    }
+};
+```
+
+```go [sol-Go]
+func maxDistance(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+
+	k-- // 往后跳 k-1 步，这里先减一，方便计算
+	highBit := bits.Len(uint(k)) - 1
+	nxt := make([][5]int, n+1) // 5 可以改为 highBit+1（用 array 而不是 slice，提高访问效率）
+	for j := range nxt[n] {
+		nxt[n][j] = n // 哨兵
+	}
+
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		// 预处理倍增数组 nxt
+		j := n
+		for i := n - 1; i >= 0; i-- { // 转移来源在右边，要倒序计算
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			nxt[i][0] = j
+			for k := 1; k <= highBit; k++ {
+				nxt[i][k] = nxt[nxt[i][k-1]][k-1]
+			}
+		}
+
+		// 枚举起点
+		for i, start := range a {
+			// 往后跳 k-1 步（注意上面把 k 减一了）
+			cur := i
+			for j := highBit; j >= 0; j-- {
+				if k>>j&1 > 0 {
+					cur = nxt[cur][j]
+				}
+			}
+			if cur == n { // 出界
+				break
+			}
+			if a[cur]-start <= side*4-low {
+				return false
+			}
+		}
+		return true
+	})
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + n\log k \log \textit{side})$，其中 $n$ 是 $\textit{points}$ 的长度。其中 $\mathcal{O}(n\log n)$ 是排序的时间复杂度。
+- 空间复杂度：$\mathcal{O}(n\log k)$。
 
 ## 分类题单
 

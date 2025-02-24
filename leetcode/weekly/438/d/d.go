@@ -1,12 +1,72 @@
 package main
 
 import (
+	"math/bits"
 	"slices"
 	"sort"
 )
 
 // https://space.bilibili.com/206214
 func maxDistance(side int, points [][]int, k int) int {
+	n := len(points)
+	a := make([]int, n)
+	for i, p := range points {
+		x, y := p[0], p[1]
+		if x == 0 {
+			a[i] = y
+		} else if y == side {
+			a[i] = side + x
+		} else if x == side {
+			a[i] = side*3 - y
+		} else {
+			a[i] = side*4 - x
+		}
+	}
+	slices.Sort(a)
+
+	k-- // 往后跳 k-1 步，这里先减一，方便计算
+	highBit := bits.Len(uint(k)) - 1
+	nxt := make([][5]int, n+1) // 5 可以改为 highBit+1（用 array 而不是 slice，提高访问效率）
+	for j := range nxt[n] {
+		nxt[n][j] = n // 哨兵
+	}
+
+	ans := sort.Search(side, func(low int) bool {
+		low++
+		// 预处理倍增数组 nxt
+		j := n
+		for i := n - 1; i >= 0; i-- {
+			for a[j-1] >= a[i]+low {
+				j--
+			}
+			nxt[i][0] = j
+			for k := 1; k <= highBit; k++ {
+				nxt[i][k] = nxt[nxt[i][k-1]][k-1]
+			}
+		}
+
+		// 枚举起点
+		for i, start := range a {
+			// 往后跳 k-1 步（注意上面把 k 减一了）
+			cur := i
+			for j := highBit; j >= 0; j-- {
+				if k>>j&1 > 0 {
+					cur = nxt[cur][j]
+				}
+			}
+			if cur == n { // 出界
+				break
+			}
+			if a[cur]-start <= side*4-low {
+				return false
+			}
+		}
+		return true
+	})
+	return ans
+}
+
+func maxDistance3(side int, points [][]int, k int) int {
 	a := make([]int, len(points))
 	for i, p := range points {
 		x, y := p[0], p[1]
