@@ -149,7 +149,7 @@ func beautifulSplits(nums []int) (ans int) {
 
 ```py [sol-Python3]
 class Solution:
-    def calc_z(self, s: List[int]) -> list[int]:
+    def calc_z(self, s: List[int]) -> List[int]:
         n = len(s)
         z = [0] * n
         box_l = box_r = 0  # z-box 左右边界
