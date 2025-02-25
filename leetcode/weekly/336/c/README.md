@@ -81,7 +81,8 @@ public:
 ```go [sol-Go]
 func beautifulSubarrays(nums []int) (ans int64) {
     s := 0
-    cnt := map[int]int{0: 1}
+    cnt := make(map[int]int, len(nums)+1) // 预分配空间
+    cnt[0] = 1
     for _, x := range nums {
         s ^= x
         ans += int64(cnt[s])
