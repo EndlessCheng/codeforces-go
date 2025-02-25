@@ -1267,7 +1267,7 @@ $$
 $$
 \textit{end}[i] =
 \begin{cases} 
-1, & f[i]=1    \\
+i, & f[i]=1    \\
 \textit{end}[j], & f[i]>1     \\
 \end{cases}
 $$
