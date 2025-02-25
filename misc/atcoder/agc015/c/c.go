@@ -33,7 +33,7 @@ func run(in io.Reader, _w io.Writer) {
 			if i < n-1 && j < m-1 {
 				sumE[i+1][j+1] = sumE[i+1][j] + sumE[i][j+1] - sumE[i][j]
 				if v == '1' {
-					sumE[i+1][j+1] += int(a[i][j+1]-'0') + int(a[i+1][j]-'0')
+					sumE[i+1][j+1] += int(row[j+1]-'0') + int(a[i+1][j]-'0')
 				}
 			}
 			rowE[i][j+1] = rowE[i][j]
