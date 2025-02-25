@@ -90,6 +90,8 @@ import "math/bits"
 // - https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
 // - 不允许相等 https://www.luogu.com.cn/problem/P5926
 // https://atcoder.jp/contests/abc285/tasks/abc285_f
+// https://atcoder.jp/contests/abc339/tasks/abc339_e 值域线段树
+// https://atcoder.jp/contests/abc356/tasks/abc356_f 动态图连通块大小
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // 力扣 https://leetcode.cn/tag/segment-tree/
@@ -106,6 +108,8 @@ import "math/bits"
 // 线段树二分
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
+// LC2502 https://leetcode.cn/problems/design-memory-allocator/
+// - 加强版 https://www.luogu.com.cn/problem/P2894
 
 // EXTRA: 权值线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
