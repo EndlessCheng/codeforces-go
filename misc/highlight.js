@@ -121,29 +121,28 @@
                 .highlight("最后", colorRed);
             // .highlight("第一", colorRed);
 
-            text = text.replaceAll("Mr. ", "Mr.")
-                .replaceAll("mr. ", "mr.")
-                .replaceAll("Mrs. ", "Mrs.")
-                .replaceAll("Ms. ", "Ms.")
-                .replaceAll("Dr. ", "Dr.")
-                .replaceAll("Co. ", "Co.")
-                .replaceAll("Ltd. ", "Ltd.")
-                .replaceAll("i. e. ", "i.e.")
-                .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
-                .replaceAll("i.e. ", "i.e.")
-                .replaceAll("I.e. ", "I.e.")
-                .replaceAll("E. g. ", "E.g.") // see https://codeforces.com/contest/1551/problem/E
-                .replaceAll("E.g. ", "E.g.")
-                .replaceAll(". $", ".$") // 防止数学公式异常
-                .replaceAll(". \\", ".\\") // 防止数学公式异常
-                .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
-                // So you decided to hold a contest on Codeforces.
-                // The maximum size of an array is $$$k$$$.
-                .replaceAll(". ", ".</p><p>") // 加个换行（英文）
-                .replaceAll(".\n", ".</p><p>") // 加个换行（英文）
-                .replaceAll("。", "。</p><p>") // 加个换行（中文）
-            // .replaceAll("\\dots", "~.~.~.~") // 替换掉省略号
-            // .replaceAll("\\ldots", "~.~.~.~"); // 替换掉省略号
+            text = text.replaceAll("。", "。</p><p>"); // 加个换行（中文）
+                // .replaceAll("Mr. ", "Mr.")
+            //     .replaceAll("mr. ", "mr.")
+            //     .replaceAll("Mrs. ", "Mrs.")
+            //     .replaceAll("Ms. ", "Ms.")
+            //     .replaceAll("Dr. ", "Dr.")
+            //     .replaceAll("Co. ", "Co.")
+            //     .replaceAll("Ltd. ", "Ltd.")
+            //     .replaceAll("i. e. ", "i.e.")
+            //     .replaceAll("i. e. ", "i.e.") // see https://codeforces.com/contest/1535/problem/A
+            //     .replaceAll("i.e. ", "i.e.")
+            //     .replaceAll("I.e. ", "I.e.")
+            //     .replaceAll("E. g. ", "E.g.") // see https://codeforces.com/contest/1551/problem/E
+            //     .replaceAll("E.g. ", "E.g.")
+            //     // .replaceAll(". $", ".$") // 防止数学公式异常
+            //     // .replaceAll(". \\", ".\\") // 防止数学公式异常
+            //     // .replaceAll("...", "⋯") // 特殊处理一些句点，这些是不需要换行处理的
+            //     // .replaceAll(". ", ".</p><p>") // 加个换行（英文）
+            //     // .replaceAll(".\n", ".</p><p>") // 加个换行（英文）
+                
+            // // .replaceAll("\\dots", "~.~.~.~") // 替换掉省略号
+            // // .replaceAll("\\ldots", "~.~.~.~"); // 替换掉省略号
 
             // .replace(/(\$\$\$.+?\$\$\$)/g, "‘$1’"); // 教训：不应该加这个，看似优化实则是帮倒忙
 
