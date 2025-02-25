@@ -1,5 +1,3 @@
-[本题视频讲解](https://www.bilibili.com/video/BV1aC4y1G7dB/)
-
 ## 方法一：枚举
 
 首先，如果 $s$ 中 $1$ 的个数不足 $k$，直接返回空串。
@@ -7,6 +5,8 @@
 否则一定有解。
 
 从 $k$ 开始枚举答案的长度 $\textit{size}$，然后在 $s$ 中枚举所有长为 $\textit{size}$ 的子串，同时维护字典序最小的子串。如果存在一个子串，其中 $1$ 的个数等于 $k$，则返回字典序最小的子串。
+
+[本题视频讲解](https://www.bilibili.com/video/BV1aC4y1G7dB/)
 
 ```py [sol-Python3]
 class Solution:
@@ -61,7 +61,7 @@ public:
             string ans = "";
             for (int i = size; i <= s.length(); i++) {
                 string t = s.substr(i - size, size);
-                if ((ans == "" || t < ans) && count(t.begin(), t.end(), '1') == k) {
+                if ((ans.empty() || t < ans) && ranges::count(t, '1') == k) {
                     ans = t;
                 }
             }
