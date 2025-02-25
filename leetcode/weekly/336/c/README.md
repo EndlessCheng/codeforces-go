@@ -1,121 +1,42 @@
-### 前置知识：前缀异或和
+示例 1 说 $[4,3,1,2,4]$ 是个美丽子数组，来看看为什么。
 
-下文中 $\oplus$ 表示异或运算
-
-对于数组 $\textit{nums}$，定义它的前缀异或和 $\textit{s}[0]=0$，$\textit{s}[i+1] = \bigoplus\limits_{j=0}^{i}\textit{nums}[j]$。
-
-根据这个定义，有 $s[i+1]=s[i]\oplus\textit{nums}[i]$。
-
-例如 $\textit{nums}=[4,3,1,2,4]$，对应的前缀异或和数组为 $s=[0,4,7,6,4,0]$。
-
-通过前缀异或和，我们可以把**子数组的异或和转换成两个前缀异或和的异或**，即
+把每个数都写成二进制：
 
 $$
-\bigoplus_{j=\textit{left}}^{\textit{right}}\textit{nums}[j] = \bigoplus\limits_{j=0}^{\textit{right}}\textit{nums}[j] \oplus \bigoplus\limits_{j=0}^{\textit{left}-1}\textit{nums}[j] = \textit{s}[\textit{right}+1]\oplus \textit{s}[\textit{left}]
+\begin{aligned}
+100     \\
+011     \\
+001     \\
+010     \\
+100     \\
+\end{aligned}
 $$
 
-例如 $\textit{nums}$ 的子数组 $[3,1,2]$ 的异或和就可以用 $s[4]\oplus s[1]=4\oplus 4=0$ 算出来。
+一次操作，可以把某一列中的两个 $1$ 都变成 $0$。
 
-> 注：为方便计算，常用左闭右开区间 $[\textit{left},\textit{right})$ 来表示从 $\textit{nums}[\textit{left}]$ 到 $\textit{nums}[\textit{right}-1]$ 的子数组，此时子数组的异或和为 $\textit{s}[\textit{right}] \oplus \textit{s}[\textit{left}]$。
->
-> 注 2：$s[0]=0$ 表示一个空数组的异或和。为什么要额外定义它？想一想，如果要计算的子数组恰好是一个前缀（从 $\textit{nums}[0]$ 开始），你要用 $s[\textit{right}]$ 异或谁呢？通过定义 $s[0]=0$，任意子数组（包括前缀）都可以表示为两个前缀异或和的异或。
+多次操作，可以把某一列中的偶数个 $1$ 都变成 $0$。
 
-### 提示 1
+所以，如果**每一列都有偶数个** $1$，我们就能把所有数都变成 $0$。反之，如果某一列有奇数个 $1$，就不行。
 
-由于每次操作的都是同一个比特位，可以把每一位单独看。
+注意到 $1\oplus 1=0$（$\oplus$ 表示异或），偶数个 $1$ 的异或和等于 $0$。
 
-### 提示 2
+- 如果每一列都有偶数个 $1$，那么所有数的异或和必然等于 $0$。
+- 如果某一列有奇数个 $1$，那么所有数的异或和必然不等于 $0$。
 
-每次都去掉两个 $1$，要是美丽子数组，需要子数组内这个比特位的 $1$ 的个数是偶数。
+所以美丽子数组等价于：
 
-### 提示 3
+- 子数组的异或和等于 $0$。
 
-由于 $1\oplus 1=0$，把所有比特位合起来看，美丽子数组这等价于子数组的异或和等于 $0$。
+由于异或的运算性质类似加法，可以用 [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/) 的做法（前缀和+哈希表）解决。本题相当于 $k=0$。
 
-### 提示 4
+为什么代码要初始化 $\textit{cnt}[0] = 1$？为什么要先更新 $\textit{ans}$ 再更新 $\textit{cnt}[s]$？请看 560 题 [我的题解](https://leetcode.cn/problems/subarray-sum-equals-k/solutions/2781031/qian-zhui-he-ha-xi-biao-cong-liang-ci-bi-4mwr/)。
 
-利用前缀异或和 $s$，问题相当于在求 $s$ 中有多少对 $s[\textit{left}]$ 和 $s[\textit{right}]$ 满足 $s[\textit{right}]\oplus s[\textit{left}] = 0$，即 $s[\textit{right}]= s[\textit{left}]$，因为异或为 $0$ 的两个数字必然相等。
-
-也就是说，我们实际计算的是 $s$ 中有多少对相同数字。
-
-我们可以一边遍历 $s$，一边用一个哈希表 $\textit{cnt}$ 统计 $s[i]$ 的出现次数，累加遍历中的 $\textit{cnt}[s[i]]$，即为答案。
-
-附：[视频讲解](https://www.bilibili.com/video/BV1d54y1M7Qg/)
-
-```py [sol1-Python3]
-class Solution:
-    def beautifulSubarrays(self, nums: List[int]) -> int:
-        s = list(accumulate(nums, xor, initial=0))
-        ans, cnt = 0, Counter()
-        for x in s:
-            # 先计入答案再统计个数，如果反过来的话，就相当于把空子数组也计入答案了
-            ans += cnt[x]
-            cnt[x] += 1
-        return ans
-```
-
-```java [sol1-Java]
-class Solution {
-    public long beautifulSubarrays(int[] nums) {
-        long ans = 0;
-        int n = nums.length;
-        var s = new int[n + 1];
-        for (int i = 0; i < n; ++i)
-            s[i + 1] = s[i] ^ nums[i];
-        var cnt = new HashMap<Integer, Integer>();
-        for (int x : s) {
-            // 先计入答案再统计个数，如果反过来的话，就相当于把空子数组也计入答案了
-            ans += cnt.getOrDefault(x, 0);
-            cnt.merge(x, 1, Integer::sum);
-        }
-        return ans;
-    }
-}
-```
-
-```cpp [sol1-C++]
-class Solution {
-public:
-    long long beautifulSubarrays(vector<int> &nums) {
-        long long ans = 0;
-        int n = nums.size();
-        vector<int> s(n + 1);
-        for (int i = 0; i < n; ++i)
-            s[i + 1] = s[i] ^ nums[i];
-        unordered_map<int, int> cnt;
-        for (int x : s)
-            // 先计入答案再统计个数，如果反过来的话，就相当于把空子数组也计入答案了
-            ans += cnt[x]++;
-        return ans;
-    }
-};
-```
-
-```go [sol1-Go]
-func beautifulSubarrays(nums []int) (ans int64) {
-	s := make([]int, len(nums)+1)
-	for i, x := range nums {
-		s[i+1] = s[i] ^ x
-	}
-	cnt := map[int]int{}
-	for _, x := range s {
-		// 先计入答案再统计个数，如果反过来的话，就相当于把空子数组也计入答案了
-		ans += int64(cnt[x])
-		cnt[x]++
-	}
-	return
-}
-```
-
-### 优化
-
-也可以一边计算 $s$，一边统计答案。
-
-```py [sol2-Python3]
+```py [sol-Python3]
 class Solution:
     def beautifulSubarrays(self, nums: List[int]) -> int:
         ans = s = 0
-        cnt = Counter({s: 1})  # s[0]
+        cnt = defaultdict(int)
+        cnt[0] = 1
         for x in nums:
             s ^= x
             ans += cnt[s]
@@ -123,30 +44,31 @@ class Solution:
         return ans
 ```
 
-```java [sol2-Java]
+```java [sol-Java]
 class Solution {
     public long beautifulSubarrays(int[] nums) {
         long ans = 0;
         int s = 0;
-        var cnt = new HashMap<Integer, Integer>();
-        cnt.put(s, 1); // s[0]
+        Map<Integer, Integer> cnt = new HashMap<>(nums.length + 1); // 预分配空间
+        cnt.put(0, 1);
         for (int x : nums) {
             s ^= x;
-            ans += cnt.getOrDefault(s, 0);
-            cnt.merge(s, 1, Integer::sum);
+            int c = cnt.getOrDefault(s, 0);
+            ans += c;
+            cnt.put(s, c + 1);
         }
         return ans;
     }
 }
 ```
 
-```cpp [sol2-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    long long beautifulSubarrays(vector<int> &nums) {
+    long long beautifulSubarrays(vector<int>& nums) {
         long long ans = 0;
         int s = 0;
-        unordered_map<int, int> cnt{{s, 1}}; // s[0]
+        unordered_map<int, int> cnt{{0, 1}};
         for (int x : nums) {
             s ^= x;
             ans += cnt[s]++;
@@ -156,36 +78,78 @@ public:
 };
 ```
 
-```go [sol2-Go]
+```go [sol-Go]
 func beautifulSubarrays(nums []int) (ans int64) {
-	s := 0
-	cnt := map[int]int{s: 1} // s[0]
-	for _, x := range nums {
-		s ^= x
-		ans += int64(cnt[s])
-		cnt[s]++
-	}
-	return
+    s := 0
+    cnt := map[int]int{0: 1}
+    for _, x := range nums {
+        s ^= x
+        ans += int64(cnt[s])
+        cnt[s]++
+    }
+    return
 }
 ```
 
-### 复杂度分析
+```js [sol-JavaScript]
+var beautifulSubarrays = function(nums) {
+    let ans = 0, s = 0;
+    const cnt = new Map();
+    cnt.set(0, 1);
+    for (const x of nums) {
+        s ^= x;
+        const c = cnt.get(s) ?? 0;
+        ans += c;
+        cnt.set(s, c + 1);
+    }
+    return ans;
+};
+```
 
-- 时间复杂度：$O(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$O(n)$。
+```rust [sol-Rust]
+use std::collections::HashMap;
 
-### 相似题目
+impl Solution {
+    pub fn beautiful_subarrays(nums: Vec<i32>) -> i64 {
+        let mut ans = 0;
+        let mut s = 0;
+        let mut cnt = HashMap::with_capacity(nums.len() + 1); // 预分配空间
+        cnt.insert(0, 1);
+        for x in nums {
+            s ^= x;
+            let e = cnt.entry(s).or_insert(0);
+            ans += *e as i64;
+            *e += 1;
+        }
+        ans
+    }
+}
+```
 
-推荐按顺序做。
+#### 复杂度分析
 
-- [1. 两数之和](https://leetcode.cn/problems/two-sum/)
-- [560. 和为 K 的子数组](https://leetcode.cn/problems/subarray-sum-equals-k/)
-- [974. 和可被 K 整除的子数组](https://leetcode.cn/problems/subarray-sums-divisible-by-k/)
-- [1590. 使数组和能被 P 整除](https://leetcode.cn/problems/make-sum-divisible-by-p/)
-- [523. 连续的子数组和](https://leetcode.cn/problems/continuous-subarray-sum/)
-- [525. 连续数组](https://leetcode.cn/problems/contiguous-array/)
-- [面试题 17.05. 字母与数字](https://leetcode.cn/problems/find-longest-subarray-lcci/)
-- [1915. 最美子字符串的数目](https://leetcode.cn/problems/number-of-wonderful-substrings/)
-- [930. 和相同的二元子数组](https://leetcode-cn.com/problems/binary-subarrays-with-sum/)
-- [1371. 每个元音包含偶数次的最长子字符串](https://leetcode-cn.com/problems/find-the-longest-substring-containing-vowels-in-even-counts/)
-- [1542. 找出最长的超赞子字符串](https://leetcode-cn.com/problems/find-longest-awesome-substring/)
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见下面数据结构题单中的「**§1.2 前缀和与哈希表**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. 【本题相关】[常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
