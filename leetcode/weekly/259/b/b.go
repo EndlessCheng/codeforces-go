@@ -1,33 +1,25 @@
 package main
 
-// 前缀最大值+后缀最小值
-
 // github.com/EndlessCheng/codeforces-go
-func sumOfBeauties(a []int) (ans int) {
-	n := len(a)
+func sumOfBeauties(nums []int) (ans int) {
+	n := len(nums)
 	sufMin := make([]int, n) // 后缀最小值
-	sufMin[n-1] = a[n-1]
+	sufMin[n-1] = nums[n-1]
 	for i := n - 2; i > 1; i-- {
-		sufMin[i] = min(sufMin[i+1], a[i])
+		sufMin[i] = min(sufMin[i+1], nums[i])
 	}
-	preMax := a[0] // 前缀最大值
+
+	preMax := nums[0] // 前缀最大值
 	for i := 1; i < n-1; i++ {
-		v := a[i]
-		if preMax < v && v < sufMin[i+1] {
+		x := nums[i]
+		// 此时 preMax 表示 [0,i-1] 中的最大值
+		if preMax < x && x < sufMin[i+1] {
 			ans += 2
-		} else if a[i-1] < v && v < a[i+1] {
+		} else if nums[i-1] < x && x < nums[i+1] {
 			ans++
 		}
-		if v > preMax {
-			preMax = v
-		}
+		// 更新后 preMax 表示 [0,i] 中的最大值
+		preMax = max(preMax, x)
 	}
 	return
-}
-
-func min(a, b int) int {
-	if a > b {
-		return b
-	}
-	return a
 }
