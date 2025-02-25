@@ -5,11 +5,12 @@ import "slices"
 // https://space.bilibili.com/206214
 func maxSum(grid [][]int, limits []int, k int) (ans int64) {
 	a := []int{}
+	cmp := func(a, b int) int { return b - a }
 	for i, row := range grid {
-		slices.SortFunc(row, func(a, b int) int { return b - a })
+		slices.SortFunc(row, cmp)
 		a = append(a, row[:limits[i]]...)
 	}
-	slices.SortFunc(a, func(a, b int) int { return b - a })
+	slices.SortFunc(a, cmp)
 	for _, x := range a[:k] {
 		ans += int64(x)
 	}

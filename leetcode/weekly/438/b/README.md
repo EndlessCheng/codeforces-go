@@ -99,11 +99,12 @@ public:
 ```go [sol-Go]
 func maxSum(grid [][]int, limits []int, k int) (ans int64) {
 	a := []int{}
+	cmp := func(a, b int) int { return b - a }
 	for i, row := range grid {
-		slices.SortFunc(row, func(a, b int) int { return b - a })
+		slices.SortFunc(row, cmp)
 		a = append(a, row[:limits[i]]...)
 	}
-	slices.SortFunc(a, func(a, b int) int { return b - a })
+	slices.SortFunc(a, cmp)
 	for _, x := range a[:k] {
 		ans += int64(x)
 	}
@@ -113,7 +114,7 @@ func maxSum(grid [][]int, limits []int, k int) (ans int64) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(mn\log (mn))$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。用快速选择可以做到 $\mathcal{O}(mn)$，见 C++ 代码。
+- 时间复杂度：$\mathcal{O}(mn\log (mn))$ 或 $\mathcal{O}(mn)$，其中 $m$ 和 $n$ 分别为 $\textit{grid}$ 的行数和列数。用快速选择可以做到 $\mathcal{O}(mn)$，见 C++ 代码。
 - 空间复杂度：$\mathcal{O}(mn)$，或者 $\textit{limits}[i]$ 之和。
 
 更多相似题目，见下面贪心题单中的「**§1.1 从最小/最大开始贪心**」。
