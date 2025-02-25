@@ -108,8 +108,6 @@ import "math/bits"
 // 线段树二分
 // LC2286 https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
-// LC2502 https://leetcode.cn/problems/design-memory-allocator/
-// - 加强版 https://www.luogu.com.cn/problem/P2894
 
 // EXTRA: 权值线段树
 // 讲解与习题 https://www.luogu.com.cn/blog/bfqaq/qian-tan-quan-zhi-xian-duan-shu
@@ -349,9 +347,9 @@ func newSegmentTree(a []int) seg {
 // = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F 
 //     https://codeforces.com/problemset/problem/558/E 2300
 // + 某个区间的不小于 x 的最小下标 https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C
-// 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
+// https://codeforces.com/problemset/problem/292/E   1900 单点查询的简化写法
 // - https://codeforces.com/contest/292/submission/173659179
-// 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
+// https://codeforces.com/problemset/problem/1881/G  2000 不含任何长度 >= 2 的回文串 
 // https://codeforces.com/problemset/problem/620/E   2100
 // https://codeforces.com/problemset/problem/1295/E  2200
 // https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
@@ -365,9 +363,14 @@ func newSegmentTree(a []int) seg {
 // https://codeforces.com/problemset/problem/2009/G3 2700
 // https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
-// https://atcoder.jp/contests/abc389/tasks/abc389_f 线段树二分
-// 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
-//                   LCP32 https://leetcode.cn/problems/t3fKg1/
+//
+// 线段树二分
+// https://atcoder.jp/contests/abc389/tasks/abc389_f 
+// LC2502 https://leetcode.cn/problems/design-memory-allocator/
+// - 加强版 https://www.luogu.com.cn/problem/P2894
+// LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/ 线段树二分与更新合并
+// - LCP32 https://leetcode.cn/problems/t3fKg1/
+//
 // 维护平方和 LC2916 https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/
 // todo https://www.luogu.com.cn/problem/P1471
 //  斐波那契 https://codeforces.com/problemset/problem/446/C 2400
