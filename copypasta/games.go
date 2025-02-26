@@ -11,7 +11,7 @@ https://en.wikipedia.org/wiki/Game_theory
 定理 1：没有后继状态的状态是必败状态
 定理 2：一个状态是必胜状态当且仅当存在至少一个必败状态为它的后继状态
 定理 3：一个状态是必败状态当且仅当它的所有后继状态均为必胜状态
-对于定理 1，如果游戏进行不下去了，那么这个玩家就输掉了游戏
+对于定理 1，如果游戏无法继续下去，那么这个玩家就输掉了游戏
 对于定理 2，如果该状态至少有一个后继状态为必败状态，那么玩家可以通过操作到该必败状态；
           此时对手的状态为必败状态——对手必定是失败的，而相反地，自己就获得了胜利
 对于定理 3，如果不存在一个后继状态为必败状态，那么无论如何，玩家只能操作到必胜状态；
@@ -43,7 +43,10 @@ todo https://codeforces.com/problemset/problem/138/D (注：这是挑战上推�
 两端取数问题 https://atcoder.jp/contests/dp/tasks/dp_l
 - LC486 https://leetcode.cn/problems/predict-the-winner/
 - LC877 https://leetcode.cn/problems/stone-game/
-todo 交互+博弈 https://codeforces.com/problemset/problem/1903/E
+
+交互+博弈
+https://codeforces.com/problemset/problem/1934/D2
+todo https://codeforces.com/problemset/problem/1903/E 
 */
 func _() {
 	{
@@ -53,7 +56,7 @@ func _() {
 		// 如果两个人的规则一样，则可以去掉 who
 		// 例题 https://www.lanqiao.cn/problems/8051/learning/?contest_id=146
 		const mx int = 100
-		dp := make([][2]int8, mx+1) // -1 表示败；1 表示胜
+		memo := make([][2]int8, mx+1) // 负数表示败；正数表示胜
 		var f func(int, uint8) int8
 		f = func(i int, who uint8) (res int8) { // 0 为先手；1 为后手
 			// 无法操作的情况
@@ -72,7 +75,7 @@ func _() {
 				}
 			}
 
-			dv := &dp[i][who]
+			dv := &memo[i][who]
 			if *dv != 0 {
 				return *dv
 			}
@@ -81,13 +84,13 @@ func _() {
 			// 检查是否可以转移到必败态
 			if who == 0 {
 				for j := 1; j <= p; j++ {
-					if f(i-j, who^1) == -1 {
+					if f(i-j, who^1) < 0 {
 						return 1
 					}
 				}
 			} else {
 				for j := 1; j <= q; j++ {
-					if f(i-j, who^1) == -1 {
+					if f(i-j, who^1) < 0 {
 						return 1
 					}
 				}
@@ -96,8 +99,8 @@ func _() {
 		}
 		for i := 1; i <= mx; i++ {
 			res := f(i, 0)
-			if res == 1 {
-				Println(i, res)
+			if res > 0 {
+				Println(i)
 			}
 		}
 	}
@@ -123,9 +126,13 @@ func _() {
 	}
 
 	// 异或和不为零则先手必胜
+	// 因为先手可以构造出一个异或和为 0 的局面（把某一堆 a[i] 减少至 a[i]^xorSum），然后就可以模仿对手了
+	// 具体来说，设 xorSum 的最高位为 p，找到第 p 为是 1 的数 a[i]，那么 a[i]^xorSum 必然比 a[i] 小，所以这个减少操作是存在的
 	// https://blog.csdn.net/weixin_44023181/article/details/85619512
 	// 模板题 https://www.luogu.com.cn/problem/P2197
-	// - [1908. Nim 游戏 II](https://leetcode.cn/problems/game-of-nim/)（会员题）
+	// https://codeforces.com/problemset/problem/15/C
+	// https://atcoder.jp/contests/abc368/tasks/abc368_f
+	// LC1908 https://leetcode.cn/problems/game-of-nim/
 	nim := func(a []int) (firstWin bool) {
 		sum := 0
 		for _, v := range a {
