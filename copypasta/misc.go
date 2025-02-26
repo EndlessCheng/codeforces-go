@@ -420,6 +420,7 @@ func mapPos(a, b []int) []int {
 - [327. 区间和的个数](https://leetcode.cn/problems/count-of-range-sum/)
 - [493. 翻转对](https://leetcode.cn/problems/reverse-pairs/)
 https://atcoder.jp/contests/arc075/tasks/arc075_c
+https://atcoder.jp/contests/abc378/tasks/abc378_e
 */
 func mergeCount(a []int) int {
 	n := len(a)
