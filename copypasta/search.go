@@ -10,7 +10,7 @@ import (
 一个实际问题的各种可能情况构成的集合
 由小及大：当状态空间位于边界上或某个小范围内等特殊情形，该状态空间的解往往是已知的。
 若能将此解的应用场景扩大到原问题的状态空间，并且扩展过程的每个步骤具有相似性，就可以考虑使用递推或递归求解。
-换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」进行求解。
+换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」求解。
 
 Self-Avoiding Walk https://mathworld.wolfram.com/Self-AvoidingWalk.html
 
@@ -65,6 +65,7 @@ https://codeforces.com/problemset/problem/962/C 1400
 
 组合
 https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举子集
+https://atcoder.jp/contests/abc386/tasks/abc386_e
 
 排列（部分题目可以用状压 DP 继续优化）
 网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
