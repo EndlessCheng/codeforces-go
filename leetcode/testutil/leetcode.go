@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"reflect"
 	"strconv"
@@ -558,6 +559,8 @@ func RunLeetCodeClassWithFile(t *testing.T, constructor interface{}, filePath st
 	return RunLeetCodeClassWithExamples(t, constructor, examples, targetCaseNum)
 }
 
+var MaxTestCase = math.MaxInt
+
 // 无尽对拍模式
 func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 	ig := reflect.ValueOf(inputGenerator)
@@ -572,7 +575,7 @@ func CompareInf(t *testing.T, inputGenerator, runACFunc, runFunc interface{}) {
 		t.Fatal("different input/output")
 	}
 
-	for tc := 1; ; tc++ {
+	for tc := 1; tc <= MaxTestCase; tc++ {
 		inArgs := ig.Call(nil)
 
 		// 先生成字符串，以免 inArgs 被修改
