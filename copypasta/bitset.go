@@ -8,16 +8,19 @@ import (
 	"strings"
 )
 
-// Bitset
-// 有时候也可以用 big.Int 代替
-// 部分参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
-// NOTE: 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = slices.Clone(b) 并返回 b
-// NOTE: 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
-//
-// https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
-// https://codeforces.com/contest/1826/problem/E
-// https://atcoder.jp/contests/abc258/tasks/abc258_g
-// https://atcoder.jp/contests/arc087/tasks/arc087_b
+/* Bitset
+有时候也可以用 big.Int 代替
+部分参考 C++ 的标准库源码 https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/bitset-source.html
+NOTE: 若要求方法内不修改 b 而是返回一个修改后的拷贝，可以在方法开头加上 b = slices.Clone(b) 并返回 b
+NOTE: 如果效率不够高，可以试试 0-1 线段树，见 segment_tree01.go
+
+https://codeforces.com/problemset/problem/33/D（也可以用 LCA）
+https://codeforces.com/contest/1826/problem/E
+https://atcoder.jp/contests/abc258/tasks/abc258_g
+https://atcoder.jp/contests/arc087/tasks/arc087_b
+https://atcoder.jp/contests/abc348/tasks/abc348_f
+
+*/
 const _w = bits.UintSize
 
 func NewBitset(n int) Bitset { return make(Bitset, (n+_w-1)/_w) } // 需要 ceil(n/_w) 个 _w 位整数
