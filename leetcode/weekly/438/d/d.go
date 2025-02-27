@@ -26,21 +26,23 @@ func maxDistance(side int, points [][]int, k int) int {
 	slices.Sort(a)
 
 	f := make([]int, n+1)
-	end := make([]int, n)
-	ans := sort.Search(side, func(low int) bool {
+	end := make([]int, n) // 改成保存 a[i]，但 C++/Java 这样写就得用 64 位整数了
+
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		j := n
 		for i := n - 1; i >= 0; i-- {
-			for a[j-1] >= a[i]+low {
+			x := a[i]
+			for a[j-1] >= x+low {
 				j--
 			}
 			f[i] = f[j] + 1
 			if f[i] == 1 {
-				end[i] = i // i 自己就是最后一个点
+				end[i] = x // i 自己就是最后一个点
 			} else {
 				end[i] = end[j]
 			}
-			if f[i] == k && a[end[i]]-a[i] <= side*4-low {
+			if f[i] == k && end[i]-x <= side*4-low {
 				return false
 			}
 		}
@@ -68,7 +70,7 @@ func maxDistance4(side int, points [][]int, k int) int {
 	a = append(a, math.MaxInt) // 哨兵
 
 	g := make([][]int, n+1)
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		clear(g)
 		j := n
@@ -125,7 +127,7 @@ func maxDistance3(side int, points [][]int, k int) int {
 		nxt[n][j] = n // 哨兵
 	}
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		// 预处理倍增数组 nxt
 		j := n
@@ -176,7 +178,7 @@ func maxDistance22(side int, points [][]int, k int) int {
 	}
 	slices.Sort(a)
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		idx := make([]int, k)
 		cur := a[0]
@@ -228,7 +230,7 @@ func maxDistance21(side int, points [][]int, k int) int {
 	}
 	slices.Sort(a)
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		idx := make([]int, k)
 		for {

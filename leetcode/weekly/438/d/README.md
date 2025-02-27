@@ -27,6 +27,7 @@ $$
 
 - 开区间左端点初始值：$1$。一定可以满足要求。
 - 开区间右端点初始值：$\textit{side} + 1$。一定无法满足要求。
+- 开区间右端点初始值（优化）：$\left\lfloor\dfrac{\textit{side}\cdot 4}{k}\right\rfloor + 1$。因为均分周长 $\textit{side}\cdot 4$ 的话，两点相距最小值的最大值是 $\left\lfloor\dfrac{\textit{side}\cdot 4}{k}\right\rfloor$，加一后一定无法满足要求。
 
 #### 答疑
 
@@ -63,8 +64,7 @@ class Solution:
                     return True
             return False
 
-        # 本题保证 k >= 4，所以最远距离不会超过 side
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -105,8 +105,7 @@ class Solution:
                     return False
             return True
 
-        # 本题保证 k >= 4，所以最远距离不会超过 side
-        return bisect_left(range(side), True, key=check)
+        return bisect_left(range(side * 4 // k), True, key=check)
 ```
 
 ```java [sol-Java]
@@ -129,9 +128,8 @@ class Solution {
         }
         Arrays.sort(a);
 
-        // 本题保证 k >= 4，所以最远距离不会超过 side
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, mid)) {
@@ -216,8 +214,7 @@ public:
             return false;
         };
 
-        // 本题保证 k >= 4，所以最远距离不会超过 side
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -245,8 +242,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	}
 	slices.Sort(a)
 
-	// 本题保证 k >= 4，所以最远距离不会超过 side
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		// 如果 low+1 不满足要求，但 low 满足要求，那么答案就是 low
 		low++
 	next:
@@ -313,7 +309,7 @@ class Solution:
                     return True
                 idx[0] += 1
 
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -343,7 +339,7 @@ class Solution {
         Arrays.sort(a);
 
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, mid)) {
@@ -414,7 +410,7 @@ public:
         };
 
         // 本题保证 k >= 4，所以最远距离不会超过 side
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -441,7 +437,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	}
 	slices.Sort(a)
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		idx := make([]int, k)
 		for {
@@ -509,7 +505,7 @@ class Solution:
                     return True
             return False
 
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -539,7 +535,7 @@ class Solution {
         Arrays.sort(a);
 
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, mid)) {
@@ -653,7 +649,7 @@ public:
             return false;
         };
 
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -680,7 +676,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	}
 	slices.Sort(a)
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		idx := make([]int, k)
 		cur := a[0]
@@ -791,7 +787,7 @@ class Solution:
                     return True
             return False
 
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -827,7 +823,7 @@ class Solution {
         Arrays.fill(nxt[n], n); // 哨兵
 
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, nxt, mid)) {
@@ -931,7 +927,7 @@ public:
             return false;
         };
 
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -966,7 +962,7 @@ func maxDistance(side int, points [][]int, k int) int {
 		nxt[n][j] = n // 哨兵
 	}
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		// 预处理倍增数组 nxt
 		j := n
@@ -1055,7 +1051,7 @@ class Solution:
                 return False
             return dfs(n)
 
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -1087,7 +1083,7 @@ class Solution {
         Arrays.sort(a);
 
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, mid)) {
@@ -1182,7 +1178,7 @@ public:
             return dfs(n);
         };
 
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -1212,7 +1208,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	a = append(a, math.MaxInt) // 哨兵
 
 	g := make([][]int, n+1)
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		clear(g)
 		j := n
@@ -1312,7 +1308,7 @@ class Solution:
                     return True
             return False
 
-        left, right = 1, side + 1
+        left, right = 1, side * 4 // k + 1
         while left + 1 < right:
             mid = (left + right) // 2
             if check(mid):
@@ -1346,7 +1342,7 @@ class Solution {
         int[] end = new int[n];
 
         int left = 1;
-        int right = side + 1;
+        int right = (int) (side * 4L / k) + 1;
         while (left + 1 < right) {
             int mid = (left + right) >>> 1;
             if (check(a, side, k, mid, f, end)) {
@@ -1412,7 +1408,7 @@ public:
             return false;
         };
 
-        int left = 1, right = side + 1;
+        int left = 1, right = side * 4LL / k + 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             (check(mid) ? left : right) = mid;
@@ -1443,7 +1439,7 @@ func maxDistance(side int, points [][]int, k int) int {
 	f := make([]int, n+1)
 	end := make([]int, n)
 
-	ans := sort.Search(side, func(low int) bool {
+	ans := sort.Search(side*4/k, func(low int) bool {
 		low++
 		j := n
 		for i := n - 1; i >= 0; i-- {
