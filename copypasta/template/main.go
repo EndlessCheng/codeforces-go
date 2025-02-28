@@ -22,8 +22,8 @@ func run(in io.Reader, _w io.Writer) {
 
 	cases := 1
 	Fscan(in, &cases)
-	for curCase := 1; curCase <= cases; curCase++ {
-		ans := solve(curCase)
+	for curCase := range cases {
+		ans := solve(curCase + 1)
 		_ = ans
 		
 	}
