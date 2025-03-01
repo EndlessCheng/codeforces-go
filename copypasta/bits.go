@@ -45,7 +45,7 @@ https://codeforces.com/problemset/problem/2020/C 1400
 https://codeforces.com/problemset/problem/1299/A 1500
 https://codeforces.com/problemset/problem/1775/C 1600 连续数字 AND 等于目标值
 https://codeforces.com/problemset/problem/2036/E 1600
-https://codeforces.com/problemset/problem/1994/E 1900
+https://codeforces.com/problemset/problem/1994/E 2000
 https://codeforces.com/problemset/problem/1665/E 2500 两数 OR 的最小值：只需要知道区间内最小的 bits.Len(U) + 1 个数
 https://codeforces.com/problemset/problem/1004/F 2600
 https://codeforces.com/problemset/problem/1945/H 2600 分类暴力
