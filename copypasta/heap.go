@@ -17,19 +17,7 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
 https://codeforces.com/problemset/problem/1969/D 1900
 
-#### 第 K 小/大（值/和）
-- [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
-- [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
-- [2530. 执行 K 次操作后的最大分数](https://leetcode.cn/problems/maximal-score-after-applying-k-operations/) 1386
-- [1962. 移除石子使总数最小](https://leetcode.cn/problems/remove-stones-to-minimize-the-total/) 1419
-- [2208. 将数组和减半的最少操作次数](https://leetcode.cn/problems/minimum-operations-to-halve-array-sum/) 1550
-- [2233. K 次增加后的最大乘积](https://leetcode.cn/problems/maximum-product-after-k-increments/) 1686
-- [2542. 最大子序列的分数](https://leetcode.cn/problems/maximum-subsequence-score/) 2056
-- [1383. 最大的团队表现值](https://leetcode.cn/problems/maximum-performance-of-a-team/) 2091
-- [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
-    题解 https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/solution/jiang-qing-chu-wei-shi-yao-yi-kai-shi-ya-i0dj/
-- [1439. 有序矩阵中的第 k 个最小数组和](https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/) 2134
-    题解 https://leetcode.cn/problems/find-the-kth-smallest-sum-of-a-matrix-with-sorted-rows/solution/san-chong-suan-fa-bao-li-er-fen-da-an-du-k1vd/
+第 K 小/大（值/和）
 https://atcoder.jp/contests/abc297/tasks/abc297_e
 https://codeforces.com/problemset/problem/1106/D 1500
 https://codeforces.com/problemset/problem/1140/C 1600
@@ -39,18 +27,12 @@ https://codeforces.com/problemset/problem/1862/E 1600
 https://codeforces.com/problemset/problem/1935/C 1800
 https://codeforces.com/problemset/problem/1196/F 2200
 
-#### 懒删除
-本页面搜索【懒删除堆】
-
-#### 模拟
-- [2532. 过桥的时间](https://leetcode.cn/problems/time-to-cross-a-bridge/) 2589
+模拟
+LC2532 https://leetcode.cn/problems/time-to-cross-a-bridge/
 https://codeforces.com/problemset/problem/1985/F
 https://codeforces.com/problemset/problem/1945/G 2500
 
-#### 思维·转换
-- [2054. 两个最好的不重叠活动](https://leetcode.cn/problems/two-best-non-overlapping-events/) 1883
-- [264. 丑数 II](https://leetcode.cn/problems/ugly-number-ii/)
-- [313. 超级丑数](https://leetcode.cn/problems/super-ugly-number/)
+思维·转换
 https://www.luogu.com.cn/problem/P5930
 - 3D 接雨水 LC407 https://leetcode.cn/problems/trapping-rain-water-ii/
 https://www.luogu.com.cn/problem/P2859
@@ -74,25 +56,19 @@ https://atcoder.jp/contests/arc051/tasks/arc051_c 1898=CF2147
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
 
-#### 会议室
+会议室
 https://codeforces.com/problemset/problem/845/C
 https://leetcode.cn/problems/meeting-rooms-ii/
 https://leetcode.cn/problems/meeting-rooms-iii/
 https://leetcode.cn/problems/t3fKg1/
 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 
-#### 基于堆的反悔贪心（反悔堆）
-- [LCP 30. 魔塔游戏](https://leetcode.cn/problems/p0NxJO/)
-- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/) 1962
+基于堆的反悔贪心（反悔堆）
 - [630. 课程表 III](https://leetcode.cn/problems/course-schedule-iii/)
    - JSOI07 建筑抢修 https://www.luogu.com.cn/problem/P4053
-- [871. 最低加油次数](https://leetcode.cn/problems/minimum-number-of-refueling-stops/) 2074
-- [2813. 子序列最大优雅度](https://leetcode.cn/problems/maximum-elegance-of-a-k-length-subsequence/) 2582 也可以用栈
-- [3049. 标记所有下标的最早秒数 II](https://leetcode.cn/problems/earliest-second-to-mark-indices-ii/) 3111
 - [2463. 最小移动总距离](https://leetcode.cn/problems/minimum-total-distance-traveled/) 做到 O((n+m)log(n+m))  模拟费用流
    - https://codeforces.com/problemset/problem/797/F 2600
    - https://www.cnblogs.com/Scarab/p/17672813.html
-- [2599. 使前缀和数组非负](https://leetcode.cn/problems/make-the-prefix-sum-non-negative/)（会员题）
 题单 https://www.luogu.com.cn/training/8793
 https://www.luogu.com.cn/problem/P2949 经典题
 https://www.luogu.com.cn/problem/P3045
@@ -109,7 +85,7 @@ https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
 https://www.cnblogs.com/nth-element/p/11768155.html
 
-#### 模拟费用流
+模拟费用流
 https://www.luogu.com/article/wn7c3auk 模拟费用流小记 by command_block
 https://www.cnblogs.com/Call-me-Eric/p/17878027.html
 https://blog.csdn.net/wyy603/article/details/105038432
@@ -119,7 +95,7 @@ https://www.luogu.com.cn/problem/P1484
 https://codeforces.com/problemset/problem/730/I 2000
 https://www.luogu.com.cn/problem/P6122
 
-#### 区间贪心相关
+区间贪心相关
 最小不相交区间划分数
 - https://www.acwing.com/problem/content/113/
 - https://www.acwing.com/problem/content/908/
