@@ -210,7 +210,7 @@ impl Solution {
                     } else if ch == b {
                         f1 = f0.max(0) - 1;
                         f0 = f1;
-                    } // else { f0 = f0.max(f0); } 可以留到 ch 等于 a 或者 b 的时候计算，f1 不变
+                    } // else { f0 = f0.max(0); } 可以留到 ch 等于 a 或者 b 的时候计算，f1 不变
                     ans = ans.max(f1);
                 }
             }
