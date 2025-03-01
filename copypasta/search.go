@@ -271,6 +271,61 @@ func searchCollection() {
 		return f(0, 0)
 	}
 
+	// 枚举无向图的所有生成树
+	// https://atcoder.jp/contests/abc328/tasks/abc328_e
+	searchMST := func(g [][]struct{ to, wt int }) {
+		n := len(g)
+		// 随便选一个点作为根节点
+		mst := 1 // 0 作为根节点
+		var dfs func(int, int)
+		dfs = func(i, sum int) { // 枚举的同时，维护生成树的边权之和
+			if i == n {
+				// ...
+				return
+			}
+			// 选一个在 MST 中的点 v
+			for v := range n {
+				if mst>>v&1 == 0 {
+					continue
+				}
+				// 选一个不在 MST 中的点 w
+				for _, e := range g[v] {
+					w := e.to
+					if mst>>w&1 == 0 {
+						mst |= 1 << w
+						dfs(i+1, sum+e.wt)
+						mst ^= 1 << w
+					}
+				}
+			}
+		}
+		dfs(1, 0)
+	}
+
+	// 更快的写法
+	searchMST2 := func(g [][]int, mask []int) {
+		mst := 1
+		var dfs func(int, int)
+		dfs = func(i, s int) {
+			if i == len(g) {
+				// ...
+				return
+			}
+			for v, msk := range mask {
+				if mst>>v&1 == 0 {
+					continue
+				}
+				for j := uint(msk &^ mst); j > 0; j &= j - 1 {
+					w := bits.TrailingZeros(j)
+					mst |= 1 << w
+					dfs(i+1, s+g[v][w])
+					mst ^= 1 << w
+				}
+			}
+		}
+		dfs(1, 0)
+	}
+
 	//
 
 	// 生成字符串 s 的所有长度至多为 m 的非空子串（去重，按字典序返回）
@@ -749,7 +804,7 @@ func searchCollection() {
 	// https://www.luogu.com.cn/blog/pks-LOVING/zhun-bei-tou-ri-bao-di-fou-qi-yan-di-blog
 
 	_ = []interface{}{
-		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations,
+		loopAny, chooseAny, chooseAtMost, searchCombinations, searchPermutations, searchMST, searchMST2,
 		genSubStrings,
 		iterWithLimits, iterWithLimitsAndSum,
 		combinations, combinationsWithRepetition,
