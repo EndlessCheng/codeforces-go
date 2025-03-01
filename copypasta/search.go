@@ -25,11 +25,11 @@ https://atcoder.jp/contests/abc328/tasks/abc328_e 生成树
 https://codeforces.com/problemset/problem/954/I 2200
 https://atcoder.jp/contests/abc390/tasks/abc390_d
 
-关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
-
+爆搜
+可行性剪枝 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
 https://www.luogu.com.cn/problem/P1379
 https://codeforces.com/problemset/problem/429/C
-爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
+https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
 https://atcoder.jp/contests/abc197/tasks/abc197_c
 
