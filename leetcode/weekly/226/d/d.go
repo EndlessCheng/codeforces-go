@@ -1,55 +1,34 @@
 package main
 
-// github.com/EndlessCheng/codeforces-go
-func checkPartitioning(s string) (ans bool) {
-	var maxLen []int
-	manacher := func(origin []byte) {
-		n := len(origin)
-		m := 2*n + 2
-		s := make([]byte, m+1)
-		s[0] = '^'
-		for i, c := range origin {
-			s[2*i+1] = '#'
-			s[2*i+2] = c
-		}
-		s[2*n+1] = '#'
-		s[2*n+2] = '$'
-		maxLen = make([]int, m+1)
-		mid, r := 0, 0
-		for i := 2; i < m; i++ {
-			mx := 1
-			if i < r {
-				mx = min(maxLen[2*mid-i], r-i)
-			}
-			for ; s[i-mx] == s[i+mx]; mx++ {
-			}
-			if i+mx > r {
-				mid, r = i, i+mx
-			}
-			maxLen[i] = mx
-		}
-	}
-	// [l,r]  0<=l<=r<n
-	isP := func(l, r int) bool { return maxLen[l+r+2]-1 >= r-l+1 }
+import "math"
 
-	manacher([]byte(s))
+// github.com/EndlessCheng/codeforces-go
+// 1278. 分割回文串 III
+func palindromePartition(s string, k int) int {
 	n := len(s)
-	for i := 1; i < n-1; i++ {
-		if !isP(0, i-1) {
-			continue
-		}
-		for j := i; j < n-1; j++ {
-			if isP(i, j) && isP(j+1, n-1) {
-				return true
+	minChange := make([][]int, n)
+	for i := n - 1; i >= 0; i-- {
+		minChange[i] = make([]int, n)
+		for j := i + 1; j < n; j++ {
+			minChange[i][j] = minChange[i+1][j-1]
+			if s[i] != s[j] {
+				minChange[i][j]++
 			}
 		}
 	}
-	return
+
+	f := minChange[0]
+	for i := 1; i < k; i++ {
+		for r := n - k + i; r >= i; r-- {
+			f[r] = math.MaxInt
+			for l := i; l <= r; l++ {
+				f[r] = min(f[r], f[l-1]+minChange[l][r])
+			}
+		}
+	}
+	return f[n-1]
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
+func checkPartitioning(s string) bool {
+	return palindromePartition(s, 3) == 0
 }
