@@ -6,11 +6,41 @@ import (
 	"sort"
 )
 
-/* 状态空间
-一个实际问题的各种可能情况构成的集合
-由小及大：当状态空间位于边界上或某个小范围内等特殊情形，该状态空间的解往往是已知的。
-若能将此解的应用场景扩大到原问题的状态空间，并且扩展过程的每个步骤具有相似性，就可以考虑使用递推或递归求解。
-换句话说，程序在每个步骤上应该面对相同种类的问题，这些问题都是原问题的一个「子问题」，可能仅在规模或者某些限制条件上有所区别，并且能够使用「求解原问题的程序」求解。
+/* 回溯
+
+子集（也可以用二进制枚举做）
+https://codeforces.com/problemset/problem/550/B 1400
+https://codeforces.com/problemset/problem/962/C 1400
+
+组合
+https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举子集
+https://atcoder.jp/contests/abc386/tasks/abc386_e
+
+排列（部分题目可以用状压 DP 继续优化）
+https://atcoder.jp/contests/abc326/tasks/abc326_d 网格
+https://atcoder.jp/contests/abc328/tasks/abc328_e 生成树
+
+集合划分（贝尔数）https://oeis.org/A000110
+见下面的 partitionSet
+https://codeforces.com/problemset/problem/954/I 2200
+https://atcoder.jp/contests/abc390/tasks/abc390_d
+
+关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
+
+https://www.luogu.com.cn/problem/P1379
+https://codeforces.com/problemset/problem/429/C
+爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
+https://atcoder.jp/contests/abc319/tasks/abc319_c
+https://atcoder.jp/contests/abc197/tasks/abc197_c
+
+https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
+- LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
+https://oeis.org/A104113 Numbers which when chopped into one, two or more parts, added and squared result in the same number
+
+不允许重复的排列：见 nextPermutation
+*/
+
+/* 一些结论
 
 Self-Avoiding Walk https://mathworld.wolfram.com/Self-AvoidingWalk.html
 
@@ -55,39 +85,6 @@ https://oeis.org/A048739 A000129 的前缀和
 https://oeis.org/A001333 Number of n-step non-selfintersecting paths starting at (0,0) with steps of types (1,0), (-1,0) or (0,1)
 https://codeforces.com/problemset/problem/954/F
 
-*/
-
-/* 回溯
-
-子集（也可以用二进制枚举做）
-https://codeforces.com/problemset/problem/550/B 1400
-https://codeforces.com/problemset/problem/962/C 1400
-
-组合
-https://codeforces.com/problemset/problem/1778/C 1600 也可以二进制枚举子集
-https://atcoder.jp/contests/abc386/tasks/abc386_e
-
-排列（部分题目可以用状压 DP 继续优化）
-网格 https://atcoder.jp/contests/abc326/tasks/abc326_d
-
-集合划分（贝尔数）https://oeis.org/A000110
-见下面的 partitionSet
-https://codeforces.com/problemset/problem/954/I 2200
-https://atcoder.jp/contests/abc390/tasks/abc390_d
-
-关于可行性剪枝，见 https://leetcode.cn/problems/combination-sum/solutions/2747858/liang-chong-fang-fa-xuan-huo-bu-xuan-mei-mhf9/
-
-https://www.luogu.com.cn/problem/P1379
-https://codeforces.com/problemset/problem/429/C
-爆搜 https://atcoder.jp/contests/abc233/tasks/abc233_c
-https://atcoder.jp/contests/abc319/tasks/abc319_c
-https://atcoder.jp/contests/abc197/tasks/abc197_c
-
-https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
-- LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
-https://oeis.org/A104113 Numbers which when chopped into one, two or more parts, added and squared result in the same number
-
-不允许重复的排列：见 nextPermutation
 */
 func searchCollection() {
 	// 指数型，即 n 层循环
