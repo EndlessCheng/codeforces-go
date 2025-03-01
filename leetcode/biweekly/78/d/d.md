@@ -71,7 +71,7 @@ class Solution {
         int ans = 0;
         for (char a = 'a'; a <= 'z'; a++) {
             for (char b = 'a'; b <= 'z'; b++) {
-                if (a == b) {
+                if (b == a) {
                     continue;
                 }
                 int f0 = 0;
@@ -99,7 +99,7 @@ public:
         int ans = 0;
         for (char a = 'a'; a <= 'z'; a++) {
             for (char b = 'a'; b <= 'z'; b++) {
-                if (a == b) {
+                if (b == a) {
                     continue;
                 }
                 int f0 = 0, f1 = INT_MIN;
@@ -126,7 +126,7 @@ int largestVariance(char* s) {
     int ans = 0;
     for (char a = 'a'; a <= 'z'; a++) {
         for (char b = 'a'; b <= 'z'; b++) {
-            if (a == b) {
+            if (b == a) {
                 continue;
             }
             int f0 = 0, f1 = INT_MIN;
@@ -149,7 +149,7 @@ int largestVariance(char* s) {
 func largestVariance(s string) (ans int) {
     for a := 'a'; a <= 'z'; a++ {
         for b := 'a'; b <= 'z'; b++ {
-            if a == b {
+            if b == a {
                 continue
             }
             f0, f1 := 0, math.MinInt
@@ -173,7 +173,7 @@ var largestVariance = function(s) {
     let ans = 0;
     for (let a = 97; a <= 122; a++) { // 'a'.charCodeAt(0) === 97
         for (let b = 97; b <= 122; b++) {
-            if (a === b) {
+            if (b === a) {
                 continue;
             }
             let f0 = 0, f1 = -Infinity;
@@ -198,7 +198,7 @@ impl Solution {
         let mut ans = 0;
         for a in b'a'..=b'z' {
             for b in b'a'..=b'z' {
-                if a == b {
+                if b == a {
                     continue;
                 }
                 let mut f0 = 0;
