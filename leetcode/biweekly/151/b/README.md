@@ -10,7 +10,7 @@ $$
 \end{aligned}
 $$
 
-左右两边累加得
+累加等号左边的所有项，累加等号右边的所有项，得
 
 $$
 \textit{copy}[i] - \textit{copy}[0] = \textit{original}[i] - \textit{original}[0]
