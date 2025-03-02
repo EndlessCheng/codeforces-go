@@ -13,10 +13,16 @@ $$
 左右两边累加得
 
 $$
-\textit{copy}[i] - \textit{copy}[0] = \textit{original}[i] - \textit{original}[0] = 定值
+\textit{copy}[i] - \textit{copy}[0] = \textit{original}[i] - \textit{original}[0]
 $$
 
-换句话说，确定了 $\textit{copy}[0]$，那么整个数组也就确定了。
+移项得
+
+$$
+\textit{copy}[i] = \textit{copy}[0] + \textit{original}[i] - \textit{original}[0]
+$$
+
+换句话说，确定了 $\textit{copy}[0]$，那么整个数组也就确定了。所以 $\textit{copy}[0]$ 的取值范围（整数集合）的大小就是答案。
 
 题目要求
 
@@ -24,19 +30,13 @@ $$
 u_i\le \textit{copy}[i] \le v_i
 $$
 
-不等式各项全部加上 $\textit{copy}[0] - \textit{copy}[i]$，得
+设 $d_i = \textit{original}[i] - \textit{original}[0]$，用 $\textit{copy}[i] = \textit{copy}[0] + d_i$ 替换上式中的 $\textit{copy}[i]$，得
 
 $$
-u_i + \textit{copy}[0] - \textit{copy}[i] \le \textit{copy}[0] \le v_i + \textit{copy}[0] - \textit{copy}[i]
+u_i\le \textit{copy}[0] + d_i \le v_i
 $$
 
-根据恒等式
-
-$$
-\textit{copy}[i] - \textit{copy}[0] = \textit{original}[i] - \textit{original}[0] = d_i
-$$
-
-替换，得
+移项得
 
 $$
 u_i - d_i \le \textit{copy}[0] \le v_i - d_i
@@ -57,6 +57,8 @@ $$
 这些区间的**交集**，即为 $\textit{copy}[0]$ 能取到的值。
 
 交集的大小即为答案。如果交集为空，返回 $0$。
+
+怎么算交集的范围？所有区间左端点取最大值，右端点取最小值。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1m39bYiEVV/?t=1m2s)，欢迎点赞关注~
 
