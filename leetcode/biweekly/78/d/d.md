@@ -324,9 +324,7 @@ public:
     int largestVariance(string s) {
         int ans = 0;
         int f0[26][26]{}, f1[26][26];
-        for (auto& row : f1) {
-            ranges::fill(row, INT_MIN);
-        }
+        memset(f1, -0x3f, sizeof(f1)); // 初始化成一个很小的负数
 
         for (char ch : s) {
             ch -= 'a';
@@ -354,7 +352,7 @@ public:
 int largestVariance(char* s) {
     int ans = 0;
     int f0[26][26] = {}, f1[26][26];
-    memset(f1, 0x80, sizeof(f1)); // 初始化成一个很小的负数
+    memset(f1, -0x3f, sizeof(f1)); // 初始化成一个很小的负数
 
     for (int k = 0; s[k]; k++) {
         int ch = s[k] - 'a';
