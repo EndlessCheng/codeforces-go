@@ -25,7 +25,7 @@ func calcZ(s string) []int {
 func generateString(s, t string) string {
 	z := calcZ(t)
 	n, m := len(s), len(t)
-	ans := bytes.Repeat([]byte{'?'}, n+m-1) // '?' 表示待定位置
+	ans := bytes.Repeat([]byte{'?'}, n+m-1)
 	pre := -m
 	for i, b := range s {
 		if b != 'T' {
@@ -37,9 +37,7 @@ func generateString(s, t string) string {
 			return ""
 		}
 		// size 后的内容都是 '?'，填入 t
-		for j := size; j < m; j++ {
-			ans[i+j] = t[j]
-		}
+		copy(ans[i+size:], t[size:])
 		pre = i
 	}
 
@@ -48,7 +46,7 @@ func generateString(s, t string) string {
 	pre = -1
 	for i, c := range ans {
 		if c == '?' {
-			ans[i] = 'a' // 待定位置的初始值为 'a'
+			ans[i] = 'a' // 待定位置的初始值为 a
 			pre = i
 		}
 		preQ[i] = pre
