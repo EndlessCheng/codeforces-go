@@ -1,0 +1,14 @@
+"TFTF"
+"ab"
+"ababa"
+
+"TFTF"
+"abc"
+""
+
+"F"
+"d"
+"a"
+
+
+
