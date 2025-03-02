@@ -2,6 +2,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1m39bYiEVV/)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def transformArray(self, nums: List[int]) -> List[int]:
@@ -44,12 +46,73 @@ func transformArray(nums []int) []int {
 	for _, x := range nums {
 		cnt[x%2]++
 	}
-	for i := range nums {
-		if i < cnt[0] {
-			nums[i] = 0
-		} else {
-			nums[i] = 1
-		}
+	clear(nums[:cnt[0]]) // 置 0
+	for i := cnt[0]; i < len(nums); i++ {
+		nums[i] = 1
+	}
+	return nums
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(1)$。返回值不计入。
+
+## 写法二
+
+也可以只统计 $\textit{cnt}_1$，那么 $\textit{cnt}_0 = n-\textit{cnt}_1$。
+
+```py [sol-Python3]
+class Solution:
+    def transformArray(self, nums: List[int]) -> List[int]:
+        cnt1 = sum(x % 2 for x in nums)
+        cnt0 = len(nums) - cnt1
+        return [0] * cnt0 + [1] * cnt1
+```
+
+```java [sol-Java]
+class Solution {
+    public int[] transformArray(int[] nums) {
+        int cnt1 = 0;
+        for (int x : nums) {
+            cnt1 += x % 2;
+        }
+        int n = nums.length;
+        int cnt0 = n - cnt1;
+        Arrays.fill(nums, 0, cnt0, 0);
+        Arrays.fill(nums, cnt0, n, 1);
+        return nums;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> transformArray(vector<int>& nums) {
+        int cnt1 = 0;
+        for (int x : nums) {
+            cnt1 += x % 2;
+        }
+        fill(nums.begin(), nums.end() - cnt1, 0);
+        fill(nums.end() - cnt1, nums.end(), 1);
+        return nums;
+    }
+};
+```
+
+```go [sol-Go]
+func transformArray(nums []int) []int {
+	cnt1 := 0
+	for _, x := range nums {
+		cnt1 += x % 2
+	}
+	n := len(nums)
+	cnt0 := n - cnt1
+	clear(nums[:cnt0])
+	for i := cnt0; i < n; i++ {
+		nums[i] = 1
 	}
 	return nums
 }

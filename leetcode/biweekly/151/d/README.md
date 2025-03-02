@@ -8,6 +8,7 @@ $[1,n]$ 中有 $\left\lfloor n/2\right\rfloor$ 个偶数，$\left\lceil n/2\righ
 - 这些奇数有 $\left\lceil n/2\right\rceil!$ 个不同的排列。
 
 如果 $n$ 是奇数，那么只能按照奇偶奇偶的顺序填，由于奇偶位置互相独立，根据乘法原理可得方案数为 $\left\lfloor n/2\right\rfloor!\left\lceil n/2\right\rceil!$。
+
 如果 $n$ 是偶数，那么可以按照奇偶奇偶的顺序填，也可以按照偶奇偶奇的顺序填，方案数为 $2\left\lfloor n/2\right\rfloor!\left\lceil n/2\right\rceil!$。
 
 如果 $k$ 比上述方案数还大，返回空列表。
@@ -29,7 +30,7 @@ $[1,n]$ 中有 $\left\lfloor n/2\right\rfloor$ 个偶数，$\left\lceil n/2\righ
 
 设 $k'=k\bmod f[n-1]$，问题变成计算 $n-1$ 个数的字典序第 $k'$ 小的交替排列。这是一个规模更小的子问题，可以用递归/迭代解决。实现细节见代码注释。
 
-注意 $n$ 是偶数的情况，有奇偶奇偶、偶奇偶奇两种顺序，要特殊处理第一个数怎么填。
+注意 $n$ 是偶数的情况，有奇偶奇偶、偶奇偶奇两种顺序，需要特殊处理第一个数怎么填。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1m39bYiEVV/?t=10m23s)，欢迎点赞关注~
 
