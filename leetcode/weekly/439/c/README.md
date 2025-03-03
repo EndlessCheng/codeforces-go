@@ -201,7 +201,7 @@ func maxSum(nums []int, k, m int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}((n-km)k)$，其中 $n$ 是 $\textit{nums}$ 的长度。内层循环的循环次数是 $\mathcal{O}(n-km)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面动态规划题单中的「**§11.1 前缀和优化 DP**」。
