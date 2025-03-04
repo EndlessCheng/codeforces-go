@@ -66,6 +66,8 @@ $$
 
 [本题视频讲解](https://www.bilibili.com/video/BV1m39bYiEVV/?t=6m56s)，欢迎点赞关注~
 
+> 还有一种基于值域的写法，对于 Python3 来说是个巨大优化。
+
 ```py [sol-Python3]
 class Solution:
     def minCost(self, nums: List[int]) -> int:
@@ -83,6 +85,24 @@ class Solution:
         ans = dfs(1, 0)
         dfs.cache_clear()  # 避免超出内存限制
         return ans
+```
+
+```py [sol-Python3 值域写法]
+class Solution:
+    def minCost(self, nums: List[int]) -> int:
+        n = len(nums)
+        @cache
+        def dfs(i: int, a: int) -> int:
+            if i == n:
+                return a
+            if i == n - 1:
+                return max(a, nums[i])
+            a, b, c = sorted([a, nums[i], nums[i + 1]])
+            # 如果一定要去掉最大的 c，那么留下最小的 a 是更好的
+            # 不需要考虑留下 b，也就是 dfs(i + 2, b) + c 的方案，这不如留下更小的 a
+            return min(dfs(i + 2, a) + c,
+                       dfs(i + 2, c) + b)
+        return dfs(1, nums[0])
 ```
 
 ```java [sol-Java]
