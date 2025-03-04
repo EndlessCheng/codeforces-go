@@ -56,7 +56,7 @@ $$
 
 这些区间的**交集**，即为 $\textit{copy}[0]$ 能取到的值。
 
-交集的大小即为答案。如果交集为空，返回 $0$。
+区间交集的大小即为答案。如果交集为空，返回 $0$。
 
 怎么算交集的范围？所有区间左端点取最大值，右端点取最小值。
 
@@ -109,6 +109,68 @@ func countArrays(original []int, bounds [][]int) int {
 		d := original[i] - original[0]
 		mn = max(mn, b[0]-d) // 计算区间交集
 		mx = min(mx, b[1]-d)
+	}
+	return max(mx-mn+1, 0) // 注意交集可能是空的
+}
+```
+
+## 优化
+
+也可以只减去 $\textit{original}[i]$ 而不是 $d_i$。这相当于每个区间都偏移了 $\textit{original}[0]$，所以区间交集的大小是不变的。
+
+这样每次循环可以少算一次减法。
+
+```py [sol-Python3]
+class Solution:
+    def countArrays(self, original: List[int], bounds: List[List[int]]) -> int:
+        mn, mx = -inf, inf
+        for x, (u, v) in zip(original, bounds):
+            mn = max(mn, u - x)  # 计算区间交集
+            mx = min(mx, v - x)
+        return max(mx - mn + 1, 0)  # 注意交集可能是空的
+```
+
+```py [sol-Python3 写法二]
+class Solution:
+    def countArrays(self, original: List[int], bounds: List[List[int]]) -> int:
+        mn = max(b[0] - x for x, b in zip(original, bounds))
+        mx = min(b[1] - x for x, b in zip(original, bounds))
+        return max(mx - mn + 1, 0)
+```
+
+```java [sol-Java]
+class Solution {
+    public int countArrays(int[] original, int[][] bounds) {
+        int mn = Integer.MIN_VALUE, mx = Integer.MAX_VALUE;
+        for (int i = 0; i < bounds.length; i++) {
+            mn = Math.max(mn, bounds[i][0] - original[i]); // 计算区间交集
+            mx = Math.min(mx, bounds[i][1] - original[i]);
+        }
+        return Math.max(mx - mn + 1, 0); // 注意交集可能是空的
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int countArrays(vector<int>& original, vector<vector<int>>& bounds) {
+        int mn = INT_MIN, mx = INT_MAX;
+        for (int i = 0; i < bounds.size(); i++) {
+            mn = max(mn, bounds[i][0] - original[i]); // 计算区间交集
+            mx = min(mx, bounds[i][1] - original[i]);
+        }
+        return max(mx - mn + 1, 0); // 注意交集可能是空的
+    }
+};
+```
+
+```go [sol-Go]
+func countArrays(original []int, bounds [][]int) int {
+	mn, mx := math.MinInt, math.MaxInt
+	for i, b := range bounds {
+		mn = max(mn, b[0]-original[i]) // 计算区间交集
+		mx = min(mx, b[1]-original[i])
 	}
 	return max(mx-mn+1, 0) // 注意交集可能是空的
 }
