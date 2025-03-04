@@ -18,5 +18,5 @@ inputCopy
 abacaba
 outputCopy
 12 4 1 0 0 0 0 `
-	testutil.AssertEqualCase(t, rawText, 0, CF835D)
+	testutil.AssertEqualCase(t, rawText, 0, cf835D)
 }

@@ -1,34 +1,35 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF835D(in io.Reader, _w io.Writer) {
-	out := bufio.NewWriter(_w)
-	defer out.Flush()
-
-	var s []byte
-	Fscan(bufio.NewReader(in), &s)
+func cf835D(in io.Reader, out io.Writer) {
+	var s string
+	Fscan(in, &s)
 	n := len(s)
-	dp := make([][]int, n+1)
-	isP := make([][]bool, n+1)
-	for i := range dp {
-		dp[i] = make([]int, n+1)
-		isP[i] = make([]bool, n+1)
+	isPal := make([][]bool, n)
+	f := make([][]int, n)
+	for i := range f {
+		isPal[i] = make([]bool, n)
+		for j := range isPal[i] {
+			isPal[i][j] = true
+		}
+		f[i] = make([]int, n)
 	}
+
 	ans := make([]int, n+1)
-	for sz := 1; sz <= n; sz++ {
-		for l, r := 1, sz; r <= n; l++ {
-			isP[l][r] = s[l-1] == s[r-1] && (r-l < 2 || isP[l+1][r-1])
-			if isP[l][r] {
-				dp[l][r] = dp[l][l+sz/2-1] + 1
-				ans[dp[l][r]]++
+	ans[1] = n
+	for l := n - 2; l >= 0; l-- {
+		f[l][l] = 1
+		for r := l + 1; r < n; r++ {
+			isPal[l][r] = s[l] == s[r] && isPal[l+1][r-1]
+			if isPal[l][r] {
+				f[l][r] = f[l][(l+r-1)/2] + 1
+				ans[f[l][r]]++
 			}
-			r++
 		}
 	}
 	for i := n; i > 1; i-- {
@@ -39,4 +40,4 @@ func CF835D(in io.Reader, _w io.Writer) {
 	}
 }
 
-//func main() { CF835D(os.Stdin, os.Stdout) }
+//func main() { cf835D(os.Stdin, os.Stdout) }
