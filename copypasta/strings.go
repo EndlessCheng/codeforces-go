@@ -551,6 +551,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/91/A
 	// - https://www.luogu.com.cn/problem/P9572?contestId=124047
 	// - 【子串】 LC686 https://leetcode.cn/problems/repeated-string-match/
+	// https://atcoder.jp/contests/abc138/tasks/abc138_e
 	// https://codeforces.com/contest/1845/problem/C
 	// - 相关 LC2350 https://leetcode.cn/problems/shortest-impossible-sequence-of-rolls/
 
@@ -645,6 +646,7 @@ func _() {
 	// https://codeforces.com/problemset/problem/7/D 2200
 	// - https://codeforces.com/problemset/problem/835/D 1900
 	// https://codeforces.com/problemset/problem/1827/C 2600
+	// https://codeforces.com/problemset/problem/159/D 思考：改成选 k 个怎么做
 	// https://www.luogu.com.cn/problem/P4555
 	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
 	//  https://codeforces.com/problemset/problem/1081/H
@@ -760,14 +762,64 @@ func _() {
 		// https://codeforces.com/contest/1827/problem/C
 
 		// EXTRA: 计算回文子串个数
-		// 易证其为 ∑(halfLen[i]/2)
+		// 答案为 ∑(halfLen[i]/2)，因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串
 		// LC647 https://leetcode.cn/problems/palindromic-substrings/
-		totP := 0
-		for _, hl := range halfLen {
-			totP += hl / 2
+		{
+			totP := 0
+			for _, hl := range halfLen {
+				totP += hl / 2
+			}
 		}
 
-		// EXTRA: 线段树区间更新可以求出前缀/后缀回文子串个数
+		// 利用差分数组，可以预处理以 i 结尾的回文子串的个数，从而进一步算出 s 的所有前缀中的回文子串个数
+		{
+			n := len(s)
+			diff := make([]int, n+1)
+			for i, hl := range halfLen {
+				// 把 t 的下标映射到 s 的下标
+				l, r := (i-hl)/2, (i+hl)/2-2
+				if r < l {
+					continue
+				}
+				mid := (l + r + 1) / 2 // 如果是偶回文串，mid 在正中间右边
+				diff[mid]++
+				diff[r+1]--
+			}
+			cntEnd := diff[:n]
+			for i := 1; i < n; i++ {
+				cntEnd[i] += cntEnd[i-1]
+			}
+
+			// EXTRA：再算一次前缀和，就是右端点 <= i 的回文子串个数（s 的所有前缀中的回文子串个数）
+			for i := 1; i < n; i++ {
+				cntEnd[i] += cntEnd[i-1]
+			}
+		}
+
+		// 利用差分数组，可以预处理以 i 开头的回文子串的个数，从而进一步算出 s 的所有后缀中的回文子串个数
+		{
+			n := len(s)
+			diff := make([]int, n+1)
+			for i, hl := range halfLen {
+				// 把 t 的下标映射到 s 的下标
+				l, r := (i-hl)/2, (i+hl)/2-2
+				if r < l {
+					continue
+				}
+				mid := (l + r) / 2 // 如果是偶回文串，mid 在正中间左边
+				diff[l]++
+				diff[mid+1]--
+			}
+			cntBegin := diff[:n]
+			for i := 1; i < n; i++ {
+				cntBegin[i] += cntBegin[i-1]
+			}
+
+			// EXTRA：再算一次后缀和，就是左端点 >= i 的回文子串个数（s 的所有后缀中的回文子串个数）
+			for i := n - 2; i >= 0; i++ {
+				cntBegin[i] += cntBegin[i+1]
+			}
+		}
 
 		// todo 任意区间回文子串个数
 
