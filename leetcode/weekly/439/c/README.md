@@ -44,6 +44,8 @@ $$
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1QP9bY3EL6/?t=16m57s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def maxSum(self, nums: List[int], k: int, m: int) -> int:
@@ -72,36 +74,6 @@ class Solution {
         }
 
         int[] f = new int[n + 1];
-        int[] d = new int[n + 1];
-        for (int i = 1; i <= k; i++) {
-            for (int j = 0; j <= n; j++) {
-                d[j] = f[j] - s[j];
-            }
-            // f[j] 置为 -inf，因为即使 [0,j) 全选，也没有 i 个长为 m 的子数组
-            Arrays.fill(f, i * m - m, i * m, Integer.MIN_VALUE / 2);
-            int mx = Integer.MIN_VALUE;
-            // 左右两边留出足够空间给其他子数组
-            for (int j = i * m; j <= n - (k - i) * m; j++) {
-                // mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
-                mx = Math.max(mx, d[j - m]);
-                f[j] = Math.max(f[j - 1], mx + s[j]); // 不选 vs 选
-            }
-        }
-        return f[n];
-    }
-}
-```
-
-```java [sol-Java 写法二]
-class Solution {
-    public int maxSum(int[] nums, int k, int m) {
-        int n = nums.length;
-        int[] s = new int[n + 1];
-        for (int i = 0; i < n; i++) {
-            s[i + 1] = s[i] + nums[i]; // 前缀和
-        }
-
-        int[] f = new int[n + 1];
         for (int i = 1; i <= k; i++) {
             int[] nf = new int[n + 1];
             Arrays.fill(nf, Integer.MIN_VALUE / 2);
@@ -120,33 +92,6 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-class Solution {
-public:
-    int maxSum(vector<int>& nums, int k, int m) {
-        int n = nums.size();
-        vector<int> s(n + 1), f(n + 1), d(n + 1);
-        partial_sum(nums.begin(), nums.end(), s.begin() + 1); // 前缀和
-
-        for (int i = 1; i <= k; i++) {
-            for (int j = 0; j <= n; j++) {
-                d[j] = f[j] - s[j];
-            }
-            // f[j] 置为 -inf，因为即使 [0,j) 全选，也没有 i 个长为 m 的子数组
-            fill(f.begin() + (i * m - m), f.begin() + (i * m), INT_MIN / 2);
-            int mx = INT_MIN;
-            // 左右两边留出足够空间给其他子数组
-            for (int j = i * m; j <= n - (k - i) * m; j++) {
-                // mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
-                mx = max(mx, d[j - m]);
-                f[j] = max(f[j - 1], mx + s[j]); // 不选 vs 选
-            }
-        }
-        return f[n];
-    }
-};
-```
-
-```cpp [sol-C++ 写法二]
 class Solution {
 public:
     int maxSum(vector<int>& nums, int k, int m) {
@@ -179,12 +124,122 @@ func maxSum(nums []int, k, m int) int {
 	}
 
 	f := make([]int, n+1)
+	for i := 1; i <= k; i++ {
+		nf := make([]int, n+1)
+		for j := range nf {
+			nf[j] = math.MinInt / 2
+		}
+		mx := math.MinInt
+		// 左右两边留出足够空间给其他子数组
+		for j := i * m; j <= n-(k-i)*m; j++ {
+			// mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+			mx = max(mx, f[j-m]-s[j-m])
+			nf[j] = max(nf[j-1], mx+s[j]) // 不选 vs 选
+		}
+		f = nf
+	}
+	return f[n]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 写法二
+
+```py [sol-Python3]
+class Solution:
+    def maxSum(self, nums: List[int], k: int, m: int) -> int:
+        n = len(nums)
+        s = list(accumulate(nums, initial=0))  # 前缀和
+        f = [0] * (n + 1)
+        d = [0] * (n + 1)
+        for i in range(1, k + 1):
+            for j in range(i * m - m, i * m):
+                d[j] = f[j] - s[j]
+                f[j] = -inf  # 即使 [0,j) 全选，也没有 i 个长为 m 的子数组
+            mx = -inf
+            # 左右两边留出足够空间给其他子数组
+            for j in range(i * m, n - (k - i) * m + 1):
+                # mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = max(mx, d[j - m])
+                d[j] = f[j] - s[j]
+                f[j] = max(f[j - 1], mx + s[j])  # 不选 vs 选
+        return f[n]
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxSum(int[] nums, int k, int m) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i]; // 前缀和
+        }
+
+        int[] f = new int[n + 1];
+        int[] d = new int[n + 1];
+        for (int i = 1; i <= k; i++) {
+            for (int j = i * m - m; j < i * m; j++) {
+                d[j] = f[j] - s[j];
+                f[j] = Integer.MIN_VALUE / 2; // 即使 [0,j) 全选，也没有 i 个长为 m 的子数组
+            }
+            int mx = Integer.MIN_VALUE;
+            // 左右两边留出足够空间给其他子数组
+            for (int j = i * m; j <= n - (k - i) * m; j++) {
+                // mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = Math.max(mx, d[j - m]);
+                d[j] = f[j] - s[j];
+                f[j] = Math.max(f[j - 1], mx + s[j]); // 不选 vs 选
+            }
+        }
+        return f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxSum(vector<int>& nums, int k, int m) {
+        int n = nums.size();
+        vector<int> s(n + 1), f(n + 1), d(n + 1);
+        partial_sum(nums.begin(), nums.end(), s.begin() + 1); // 前缀和
+
+        for (int i = 1; i <= k; i++) {
+            for (int j = i * m - m; j < i * m; j++) {
+                d[j] = f[j] - s[j];
+                f[j] = INT_MIN / 2; // 即使 [0,j) 全选，也没有 i 个长为 m 的子数组
+            }
+            int mx = INT_MIN;
+            // 左右两边留出足够空间给其他子数组
+            for (int j = i * m; j <= n - (k - i) * m; j++) {
+                // mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = max(mx, d[j - m]);
+                d[j] = f[j] - s[j];
+                f[j] = max(f[j - 1], mx + s[j]); // 不选 vs 选
+            }
+        }
+        return f[n];
+    }
+};
+```
+
+```go [sol-Go]
+func maxSum(nums []int, k, m int) int {
+	n := len(nums)
+	s := make([]int, n+1)
+	for i, x := range nums {
+		s[i+1] = s[i] + x
+	}
+
+	f := make([]int, n+1)
 	d := make([]int, n+1)
 	for i := 1; i <= k; i++ {
-		for j, v := range f {
-			d[j] = v - s[j]
-		}
 		for j := i*m - m; j < i*m; j++ {
+			d[j] = f[j] - s[j]
 			f[j] = math.MinInt / 2 // 即使 [0,j) 全选，也没有 i 个长为 m 的子数组
 		}
 		mx := math.MinInt
@@ -192,6 +247,7 @@ func maxSum(nums []int, k, m int) int {
 		for j := i * m; j <= n-(k-i)*m; j++ {
 			// mx 表示最大的 f[L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
 			mx = max(mx, d[j-m])
+			d[j] = f[j] - s[j]
 			f[j] = max(f[j-1], mx+s[j]) // 不选 vs 选
 		}
 	}
@@ -201,7 +257,7 @@ func maxSum(nums []int, k, m int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk)$ 或 $\mathcal{O}((n-km)\cdot k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}((n-km)\cdot k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 更多相似题目，见下面动态规划题单中的「**§11.1 前缀和优化 DP**」。
