@@ -297,7 +297,7 @@ class Solution:
             pre_q[i] = pre
 
         # 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
-        z = self.calc_z(t + "".join(ans))
+        z = self.calc_z(t + ''.join(ans))
 
         # 处理 F
         i = 0
