@@ -342,13 +342,13 @@ class Solution {
         }
 
         // 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
-        int[] z2 = calcZ(t + new String(ans));
+        z = calcZ(t + new String(ans));
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
             }
             // 子串必须不等于 t
-            if (z2[m + i] < m) {
+            if (z[m + i] < m) {
                 continue;
             }
             // 找最后一个待定位置
@@ -363,8 +363,9 @@ class Solution {
         return new String(ans);
     }
 
-    private int[] calcZ(String s) {
-        int n = s.length();
+    private int[] calcZ(String S) {
+        char[] s = S.toCharArray();
+        int n = s.length;
         int[] z = new int[n];
         int boxL = 0; // z-box 左右边界（闭区间）
         int boxR = 0;
@@ -372,7 +373,7 @@ class Solution {
             if (i <= boxR) {
                 z[i] = Math.min(z[i - boxL], boxR - i + 1);
             }
-            while (i + z[i] < n && s.charAt(z[i]) == s.charAt(i + z[i])) {
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]]) {
                 boxL = i;
                 boxR = i + z[i];
                 z[i]++;
