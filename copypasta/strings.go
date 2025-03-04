@@ -647,11 +647,11 @@ func _() {
 	// - https://codeforces.com/problemset/problem/835/D 1900
 	// https://codeforces.com/problemset/problem/1827/C 2600
 	// https://codeforces.com/problemset/problem/159/D 思考：改成选 k 个怎么做
+	// https://codeforces.com/problemset/problem/17/E 2900 相交的回文子串对数
+	// https://codeforces.com/problemset/problem/1081/H 3500
+	// https://www.luogu.com.cn/blog/user25308/proof-cf1081h
 	// https://www.luogu.com.cn/problem/P4555
-	// todo 相交的回文子串对数 https://codeforces.com/problemset/problem/17/E
-	//  https://codeforces.com/problemset/problem/1081/H
-	//  https://www.luogu.com.cn/blog/user25308/proof-cf1081h
-	//  LC1745 分割成三个非空回文子字符串 https://leetcode.cn/problems/palindrome-partitioning-iv/
+	// LC1745 分割成三个非空回文子字符串 https://leetcode.cn/problems/palindrome-partitioning-iv/
 	// LC2472 不重叠回文子字符串（长度至少为 k）的最大数目 https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/
 	// - 只需要考虑长度为 k or k+1 的
 	// todo https://www.luogu.com.cn/problem/P1659
@@ -761,7 +761,7 @@ func _() {
 		// 回文中心越来越大
 		// https://codeforces.com/contest/1827/problem/C
 
-		// EXTRA: 计算回文子串个数
+		// EXTRA: 计算 s 中的回文子串的个数
 		// 答案为 ∑(halfLen[i]/2)，因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串
 		// LC647 https://leetcode.cn/problems/palindromic-substrings/
 		{
@@ -772,13 +772,15 @@ func _() {
 		}
 
 		// 利用差分数组，可以预处理以 i 结尾的回文子串的个数，从而进一步算出 s 的所有前缀中的回文子串个数
+		// https://codeforces.com/problemset/problem/159/D
+		// https://codeforces.com/problemset/problem/17/E 正难则反，变成 CF159D
 		{
 			n := len(s)
 			diff := make([]int, n+1)
 			for i, hl := range halfLen {
 				// 把 t 的下标映射到 s 的下标
 				l, r := (i-hl)/2, (i+hl)/2-2
-				if r < l {
+				if r < l { // 该回文中心没有回文串
 					continue
 				}
 				mid := (l + r + 1) / 2 // 如果是偶回文串，mid 在正中间右边
@@ -790,9 +792,23 @@ func _() {
 				cntEnd[i] += cntEnd[i-1]
 			}
 
-			// EXTRA：再算一次前缀和，就是右端点 <= i 的回文子串个数（s 的所有前缀中的回文子串个数）
+			// EXTRA 1：再算一次前缀和，就是右端点 <= i 的回文子串个数（s 的所有前缀中的回文子串个数）
 			for i := 1; i < n; i++ {
 				cntEnd[i] += cntEnd[i-1]
+			}
+
+			// EXTRA 2：不相交回文子串对数
+			sum := make([]int, n+1)
+			for i, c := range cntEnd { // 基于 EXTRA 1
+				sum[i+1] = sum[i] + c
+			}
+			palPairs := 0
+			for i, hl := range halfLen {
+				l, r := (i-hl)/2, (i+hl)/2-2
+				if r < l { // 该回文中心没有回文串
+					continue
+				}
+				palPairs += sum[(l+r)/2] - sum[max(l-1, 0)]
 			}
 		}
 
