@@ -15,10 +15,8 @@ func longestPalindromicSubsequence(s string, K int) int {
 	f := make([][][]int, K+1)
 	for k := range f {
 		f[k] = make([][]int, n)
-		for j := range f[k] {
-			f[k][j] = make([]int, n)
-		}
 		for i := n - 1; i >= 0; i-- {
+			f[k][i] = make([]int, n)
 			f[k][i][i] = 1
 			for j := i + 1; j < n; j++ {
 				res := max(f[k][i+1][j], f[k][i][j-1])
