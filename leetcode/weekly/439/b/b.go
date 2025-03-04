@@ -3,6 +3,15 @@ package main
 // https://space.bilibili.com/206214
 func longestPalindromicSubsequence(s string, K int) int {
 	n := len(s)
+	cnt := 0
+	for i := range n / 2 {
+		d := abs(int(s[i]) - int(s[n-1-i]))
+		cnt += min(d, 26-d)
+	}
+	if cnt <= K {
+		return n
+	}
+
 	f := make([][][]int, K+1)
 	for k := range f {
 		f[k] = make([][]int, n)
@@ -25,7 +34,12 @@ func longestPalindromicSubsequence(s string, K int) int {
 	return f[K][0][n-1]
 }
 
-func abs(x int) int { if x < 0 { return -x }; return x }
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
 
 func longestPalindromicSubsequence1(s string, k int) int {
 	n := len(s)

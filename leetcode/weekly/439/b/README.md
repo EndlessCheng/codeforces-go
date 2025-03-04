@@ -153,11 +153,20 @@ func abs(x int) int { if x < 0 { return -x }; return x }
 
 为了提高访问缓存的效率，把 $k$ 放到第一个维度。这样第一个维度我们只会访问 $f[k-13],f[k-12],\ldots,f[k]$，减少 cache miss。
 
+此外还有一个**优化**：如果 $s$ 可以在 $k$ 次操作内变成回文串，那么直接返回 $n$。
+
 ```py [sol-Python3]
 class Solution:
     def longestPalindromicSubsequence(self, s: str, K: int) -> int:
         s = list(map(ord, s))  # 避免频繁计算 ord
         n = len(s)
+        cnt = 0
+        for i in range(n // 2):
+            d = abs(s[i] - s[-1 - i])
+            cnt += min(d, 26 - d)
+        if cnt <= K:
+            return n
+
         f = [[[0] * n for _ in range(n)] for _ in range(K + 1)]
         for k in range(K + 1):
             for i in range(n - 1, -1, -1):
@@ -177,6 +186,15 @@ class Solution {
     public int longestPalindromicSubsequence(String S, int K) {
         char[] s = S.toCharArray();
         int n = s.length;
+        int cnt = 0;
+        for (int i = 0; i < n / 2; i++) {
+            int d = Math.abs(s[i] - s[n - 1 - i]);
+            cnt += Math.min(d, 26 - d);
+        }
+        if (cnt <= K) {
+            return n;
+        }
+
         int[][][] f = new int[K + 1][n][n];
         for (int k = 0; k <= K; k++) {
             for (int i = n - 1; i >= 0; i--) {
@@ -202,6 +220,15 @@ class Solution {
 public:
     int longestPalindromicSubsequence(string s, int K) {
         int n = s.size();
+        int cnt = 0;
+        for (int i = 0; i < n / 2; i++) {
+            int d = abs(s[i] - s[n - 1 - i]);
+            cnt += min(d, 26 - d);
+        }
+        if (cnt <= K) {
+            return n;
+        }
+
         vector f(K + 1, vector(n, vector<int>(n)));
         for (int k = 0; k <= K; k++) {
             for (int i = n - 1; i >= 0; i--) {
@@ -225,6 +252,15 @@ public:
 ```go [sol-Go]
 func longestPalindromicSubsequence(s string, K int) int {
 	n := len(s)
+	cnt := 0
+	for i := range n / 2 {
+		d := abs(int(s[i]) - int(s[n-1-i]))
+		cnt += min(d, 26-d)
+	}
+	if cnt <= K {
+		return n
+	}
+
 	f := make([][][]int, K+1)
 	for k := range f {
 		f[k] = make([][]int, n)
