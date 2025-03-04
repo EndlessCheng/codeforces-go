@@ -43,6 +43,8 @@ class Solution:
     def generateString(self, s: str, t: str) -> str:
         n, m = len(s), len(t)
         ans = ['?'] * (n + m - 1)  # ? 表示待定位置
+
+        # 处理 T
         for i, b in enumerate(s):
             if b != 'T':
                 continue
@@ -56,6 +58,7 @@ class Solution:
         old_ans = ans
         ans = ['a' if c == '?' else c for c in ans]  # 待定位置的初始值为 a
 
+        # 处理 F
         for i, b in enumerate(s):
             if b != 'F':
                 continue
@@ -81,6 +84,8 @@ class Solution {
         int m = t.length();
         char[] ans = new char[n + m - 1];
         Arrays.fill(ans, '?'); // '?' 表示待定位置
+
+        // 处理 T
         for (int i = 0; i < n; i++) {
             if (s[i] != 'T') {
                 continue;
@@ -102,6 +107,7 @@ class Solution {
             }
         }
 
+        // 处理 F
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
@@ -135,6 +141,8 @@ public:
     string generateString(string s, string t) {
         int n = s.size(), m = t.size();
         string ans(n + m - 1, '?'); // ? 表示待定位置
+
+        // 处理 T
         for (int i = 0; i < n; i++) {
             if (s[i] != 'T') {
                 continue;
@@ -156,6 +164,7 @@ public:
             }
         }
 
+        // 处理 F
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
@@ -185,47 +194,50 @@ public:
 
 ```go [sol-Go]
 func generateString(s, T string) string {
-	n, m := len(s), len(T)
-	t := []byte(T)
-	ans := bytes.Repeat([]byte{'?'}, n+m-1) // ? 表示待定位置
-	for i, b := range s {
-		if b != 'T' {
-			continue
-		}
-		// sub 必须等于 t
-		sub := ans[i : i+m]
-		for j, c := range sub {
-			if c != '?' && c != t[j] {
-				return ""
-			}
-			sub[j] = t[j]
-		}
-	}
-	oldAns := ans
-	ans = bytes.ReplaceAll(ans, []byte{'?'}, []byte{'a'}) // 待定位置的初始值为 a
+    n, m := len(s), len(T)
+    t := []byte(T)
+    ans := bytes.Repeat([]byte{'?'}, n+m-1) // ? 表示待定位置
+    
+    // 处理 T
+    for i, b := range s {
+        if b != 'T' {
+            continue
+        }
+        // sub 必须等于 t
+        sub := ans[i : i+m]
+        for j, c := range sub {
+            if c != '?' && c != t[j] {
+                return ""
+            }
+            sub[j] = t[j]
+        }
+    }
+    oldAns := ans
+    ans = bytes.ReplaceAll(ans, []byte{'?'}, []byte{'a'}) // 待定位置的初始值为 a
 
+    // 处理 F
 next:
-	for i, b := range s {
-		if b != 'F' {
-			continue
-		}
-		// sub 必须不等于 t 
-		sub := ans[i : i+m]
-		if !bytes.Equal(sub, t) {
-			continue
-		}
-		// 找最后一个待定位置
-		old := oldAns[i : i+m]
-		for j := m - 1; j >= 0; j-- {
-			if old[j] == '?' { // 之前填 a，现在改成 b
-				sub[j] = 'b'
-				continue next
-			}
-		}
-		return ""
-	}
+    for i, b := range s {
+        if b != 'F' {
+            continue
+        }
+        // sub 必须不等于 t 
+        sub := ans[i : i+m]
+        if !bytes.Equal(sub, t) {
+            continue
+        }
+        // 找最后一个待定位置
+        old := oldAns[i : i+m]
+        for j := m - 1; j >= 0; j-- {
+            if old[j] == '?' { // 之前填 a，现在改成 b
+                sub[j] = 'b'
+                continue next
+            }
+        }
+        return ""
+    }
 
-	return string(ans)
+    return string(ans)
 }
 ```
 
@@ -258,9 +270,11 @@ class Solution:
         return z
 
     def generateString(self, s: str, t: str) -> str:
-        z = self.calc_z(t)
         n, m = len(s), len(t)
         ans = ['?'] * (n + m - 1)
+
+        # 处理 T
+        z = self.calc_z(t)
         pre = -m
         for i, b in enumerate(s):
             if b != 'T':
@@ -284,6 +298,8 @@ class Solution:
 
         # 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
         z = self.calc_z(t + "".join(ans))
+
+        # 处理 F
         i = 0
         while i < n:
             if s[i] != 'F':
@@ -306,13 +322,14 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public String generateString(String S, String t) {
-        // 生成符合条件的字符串
-        int[] z = calcZ(t);
         char[] s = S.toCharArray();
         int n = s.length;
         int m = t.length();
         char[] ans = new char[n + m - 1];
         Arrays.fill(ans, '?');
+
+        // 处理 T
+        int[] z = calcZ(t);
         int pre = -m;
         for (int i = 0; i < n; i++) {
             if (s[i] != 'T') {
@@ -343,6 +360,8 @@ class Solution {
 
         // 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
         z = calcZ(t + new String(ans));
+
+        // 处理 F
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
@@ -407,10 +426,11 @@ class Solution {
 
 public:
     string generateString(string s, string t) {
-        // 生成符合条件的字符串
-        vector<int> z = calc_z(t);
         int n = s.size(), m = t.size();
         string ans(n + m - 1, '?');
+
+        // 处理 T
+        vector<int> z = calc_z(t);
         int pre = -m;
         for (int i = 0; i < n; i++) {
             if (s[i] != 'T') {
@@ -441,6 +461,8 @@ public:
 
         // 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
         z = calc_z(t + ans);
+
+        // 处理 F
         for (int i = 0; i < n; i++) {
             if (s[i] != 'F') {
                 continue;
@@ -465,72 +487,76 @@ public:
 
 ```go [sol-Go]
 func calcZ(s string) []int {
-	n := len(s)
-	z := make([]int, n)
-	boxL, boxR := 0, 0 // z-box 左右边界（闭区间）
-	for i := 1; i < n; i++ {
-		if i <= boxR {
-			z[i] = min(z[i-boxL], boxR-i+1)
-		}
-		for i+z[i] < n && s[z[i]] == s[i+z[i]] {
-			boxL, boxR = i, i+z[i]
-			z[i]++
-		}
-	}
-	z[0] = n
-	return z
+    n := len(s)
+    z := make([]int, n)
+    boxL, boxR := 0, 0 // z-box 左右边界（闭区间）
+    for i := 1; i < n; i++ {
+        if i <= boxR {
+            z[i] = min(z[i-boxL], boxR-i+1)
+        }
+        for i+z[i] < n && s[z[i]] == s[i+z[i]] {
+            boxL, boxR = i, i+z[i]
+            z[i]++
+        }
+    }
+    z[0] = n
+    return z
 }
 
 func generateString(s, t string) string {
-	z := calcZ(t)
-	n, m := len(s), len(t)
-	ans := bytes.Repeat([]byte{'?'}, n+m-1)
-	pre := -m
-	for i, b := range s {
-		if b != 'T' {
-			continue
-		}
-		size := max(pre+m-i, 0)
-		// t 的长为 size 的前后缀必须相同
-		if size > 0 && z[m-size] < size {
-			return ""
-		}
-		// size 后的内容都是 '?'，填入 t
-		copy(ans[i+size:], t[size:])
-		pre = i
-	}
+    n, m := len(s), len(t)
+    ans := bytes.Repeat([]byte{'?'}, n+m-1)
 
-	// 计算 <= i 的最近待定位置
-	preQ := make([]int, len(ans))
-	pre = -1
-	for i, c := range ans {
-		if c == '?' {
-			ans[i] = 'a' // 待定位置的初始值为 a
-			pre = i
-		}
-		preQ[i] = pre
-	}
+    // 处理 T
+    pre := -m
+    z := calcZ(t)
+    for i, b := range s {
+        if b != 'T' {
+            continue
+        }
+        size := max(pre+m-i, 0)
+        // t 的长为 size 的前后缀必须相同
+        if size > 0 && z[m-size] < size {
+            return ""
+        }
+        // size 后的内容都是 '?'，填入 t
+        copy(ans[i+size:], t[size:])
+        pre = i
+    }
 
-	// 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
-	z = calcZ(t + string(ans))
-	for i := 0; i < n; i++ {
-		if s[i] != 'F' {
-			continue
-		}
-		// 子串必须不等于 t 
-		if z[m+i] < m {
-			continue
-		}
-		// 找最后一个待定位置
-		j := preQ[i+m-1]
-		if j < i { // 没有
-			return ""
-		}
-		ans[j] = 'b'
-		i = j // 直接跳到 j
-	}
+    // 计算 <= i 的最近待定位置
+    preQ := make([]int, len(ans))
+    pre = -1
+    for i, c := range ans {
+        if c == '?' {
+            ans[i] = 'a' // 待定位置的初始值为 a
+            pre = i
+        }
+        preQ[i] = pre
+    }
 
-	return string(ans)
+    // 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
+    z = calcZ(t + string(ans))
+
+    // 处理 F
+    for i := 0; i < n; i++ {
+        if s[i] != 'F' {
+            continue
+        }
+        // 子串必须不等于 t 
+        if z[m+i] < m {
+            continue
+        }
+        // 找最后一个待定位置
+        j := preQ[i+m-1]
+        if j < i { // 没有
+            return ""
+        }
+        ans[j] = 'b'
+        i = j // 直接跳到 j
+    }
+
+    return string(ans)
 }
 ```
 

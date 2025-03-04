@@ -23,10 +23,12 @@ func calcZ(s string) []int {
 }
 
 func generateString(s, t string) string {
-	z := calcZ(t)
 	n, m := len(s), len(t)
 	ans := bytes.Repeat([]byte{'?'}, n+m-1)
+
+	// 处理 T
 	pre := -m
+	z := calcZ(t)
 	for i, b := range s {
 		if b != 'T' {
 			continue
@@ -54,6 +56,8 @@ func generateString(s, t string) string {
 
 	// 找 ans 中的等于 t 的位置，可以用 KMP 或者 Z 函数
 	z = calcZ(t + string(ans))
+
+	// 处理 F
 	for i := 0; i < n; i++ {
 		if s[i] != 'F' {
 			continue
