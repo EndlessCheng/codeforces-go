@@ -27,9 +27,10 @@ todo https://codeforces.com/contest/455/problem/B
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
 type trieNode struct {
-	son    [26]*trieNode
-	endCnt int
-	val    int
+	son [26]*trieNode
+	cnt int // trieNode 对应的完整字符串的个数
+	sum int // 子树 cnt 之和
+	val int // 额外存储的信息
 }
 
 func (o *trieNode) empty() bool {
@@ -59,9 +60,9 @@ func (t *trie) put(s string, val int) *trieNode {
 			o.son[b] = &trieNode{}
 		}
 		o = o.son[b]
-		//o.endCnt++ // 写法一：统计 o 对应的字符串是多少个完整字符串的前缀（相当于子树 endCnt 之和）
+		o.sum++ // 子树 cnt 之和（o 对应的字符串是多少个完整字符串的前缀）
 	}
-	o.endCnt++ // 写法二：统计 o 上有多少个完整字符串
+	o.cnt++ // o 对应的完整字符串的个数
 	o.val = val
 	return o
 }
@@ -75,7 +76,7 @@ func (t *trie) dfs() {
 			return
 		}
 		// 统计从根到 o 的路径
-		sum += o.endCnt //
+		sum += o.cnt //
 
 		for _, child := range o.son {
 			f(child, sum)
@@ -95,7 +96,7 @@ func (t *trie) find(s string) (*trieNode, bool) {
 		}
 		o = nxt
 	}
-	return o, o.endCnt != 0
+	return o, o.cnt != 0
 }
 
 // 删除字符串 s，返回字符串末尾对应的节点
@@ -110,8 +111,8 @@ func (t *trie) delete(s string) *trieNode {
 			return nil
 		}
 	}
-	o.endCnt--
-	if o.endCnt == 0 {
+	o.cnt--
+	if o.cnt == 0 {
 		for i := len(s) - 1; i >= 0; i-- {
 			f := fa[i]
 			f.son[t.ord(rune(s[i]))] = nil // 完全删除节点
@@ -124,43 +125,54 @@ func (t *trie) delete(s string) *trieNode {
 }
 
 // 求小于 s 的字符串个数
-// 此时 o.endCnt 保存【子树】完整字符串个数
 func (t *trie) rank(s string) (k int) {
 	o := t.root
 	for _, b := range s {
 		b = t.ord(b)
+		// 累加在 b 之前的子树大小
 		for _, son := range o.son[:b] {
 			if son != nil {
-				k += son.endCnt
+				k += son.sum
 			}
 		}
 		o = o.son[b]
 		if o == nil {
 			return
 		}
+		k += o.cnt // 以 b 结尾的字符串个数
 	}
-	//k += o.endCnt // 小于或等于 s 的字符串个数
+	// 上面算的是小于等于 s 的字符串个数
+	// 如果要算小于 s 的字符串个数，要把恰好等于 s 的字符串个数减掉
+	k -= o.cnt
 	return
 }
 
-// 求第 k 小（k 从 0 开始，相当于有 k 个字符串小于返回的字符串 s）
-// 此时 o.endCnt 保存【子树】完整字符串个数
+// 求第 k 小（k 从 0 开始）
+// 相当于 <= s 的字符串至少有 k+1 个
+// ！需要保证 trie 中至少有 k+1 个字符串
 // https://codeforces.com/problemset/problem/557/E
 func (t *trie) kth(k int) (s []byte) {
 	o := t.root
 outer:
 	for {
-		for i, son := range o.son[:] {
-			if son != nil {
-				if k < son.endCnt {
-					o = son
-					s = append(s, t.chr(byte(i)))
-					continue outer
-				}
-				k -= son.endCnt
+		for i, son := range o.son {
+			if son == nil {
+				continue
 			}
+			// 子树 son 中的字符串都比答案小
+			if k >= son.sum {
+				k -= son.sum
+				continue
+			}
+			s = append(s, 'a'+byte(i))
+			k -= son.cnt
+			if k < 0 {
+				return
+			}
+			o = son
+			continue outer
 		}
-		return
+		panic("k is too large (make sure k starts from 0)")
 	}
 }
 
@@ -177,7 +189,7 @@ func (t *trie) countPrefixOfString(s string) (cnt int) {
 		if o == nil {
 			return
 		}
-		cnt += o.endCnt
+		cnt += o.cnt
 	}
 	return
 }
@@ -194,7 +206,7 @@ func (t *trie) countStringHasPrefix(p string) int {
 			return 0
 		}
 	}
-	return o.endCnt
+	return o.cnt
 }
 
 // s 的本质不同子串数量 O(n^2)
@@ -224,7 +236,7 @@ func (t *trie) countDistinctSubstring(s string) (cnt int) {
 // roots[i+1] = roots[i].put(s)
 func (o trieNode) put(s []byte) *trieNode {
 	if len(s) == 0 {
-		o.endCnt++
+		o.cnt++
 		return &o
 	}
 	b := s[0] - 'a' //
