@@ -27,9 +27,9 @@ todo https://codeforces.com/contest/455/problem/B
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
 type trieNode struct {
-	son [26]*trieNode
-	end int
-	val int
+	son    [26]*trieNode
+	endCnt int
+	val    int
 }
 
 func (o *trieNode) empty() bool {
@@ -59,9 +59,9 @@ func (t *trie) put(s string, val int) *trieNode {
 			o.son[b] = &trieNode{}
 		}
 		o = o.son[b]
-		//o.cnt++ // 写法一：统计 o 对应的字符串是多少个完整字符串的前缀
+		//o.endCnt++ // 写法一：统计 o 对应的字符串是多少个完整字符串的前缀（相当于子树 endCnt 之和）
 	}
-	o.end++ // 写法二：统计 o 上有多少个完整字符串
+	o.endCnt++ // 写法二：统计 o 上有多少个完整字符串
 	o.val = val
 	return o
 }
@@ -75,35 +75,13 @@ func (t *trie) dfs() {
 			return
 		}
 		// 统计从根到 o 的路径
-		sum += o.end //
+		sum += o.endCnt //
 
 		for _, child := range o.son {
 			f(child, sum)
 		}
 	}
 	f(t.root, 0)
-}
-
-// 最长连续单词链
-// https://leetcode.com/discuss/interview-question/2255835/Google-or-Onsite-or-Longest-Chain-Words
-func (t *trie) longestChainWords() (ans int) {
-	var f func(*trieNode, int)
-	f = func(o *trieNode, cnt int) {
-		if o == nil {
-			return
-		}
-		if o.end > 0 {
-			cnt++
-			ans = max(ans, cnt)
-		} else {
-			cnt = 0
-		}
-		for _, child := range o.son {
-			f(child, cnt)
-		}
-	}
-	f(t.root, 0)
-	return
 }
 
 // 字符串 s 与字典树中字符串的最长公共前缀
@@ -117,10 +95,7 @@ func (t *trie) find(s string) (*trieNode, bool) {
 		}
 		o = nxt
 	}
-	if o.end == 0 { // 已删除
-		return o, false
-	}
-	return o, true
+	return o, o.endCnt != 0
 }
 
 // 删除字符串 s，返回字符串末尾对应的节点
@@ -135,8 +110,8 @@ func (t *trie) delete(s string) *trieNode {
 			return nil
 		}
 	}
-	o.end--
-	if o.end == 0 {
+	o.endCnt--
+	if o.endCnt == 0 {
 		for i := len(s) - 1; i >= 0; i-- {
 			f := fa[i]
 			f.son[t.ord(rune(s[i]))] = nil // 完全删除节点
@@ -149,14 +124,14 @@ func (t *trie) delete(s string) *trieNode {
 }
 
 // 求小于 s 的字符串个数
-// 此时 o.cnt 保存子树完整字符串个数
+// 此时 o.endCnt 保存【子树】完整字符串个数
 func (t *trie) rank(s string) (k int) {
 	o := t.root
 	for _, b := range s {
 		b = t.ord(b)
 		for _, son := range o.son[:b] {
 			if son != nil {
-				k += son.end
+				k += son.endCnt
 			}
 		}
 		o = o.son[b]
@@ -164,24 +139,25 @@ func (t *trie) rank(s string) (k int) {
 			return
 		}
 	}
-	//k += o.cnt // 这样写就是小于或等于 s 的字符串个数
+	//k += o.endCnt // 小于或等于 s 的字符串个数
 	return
 }
 
 // 求第 k 小（k 从 0 开始，相当于有 k 个字符串小于返回的字符串 s）
-// 此时 o.cnt 保存子树完整字符串个数
+// 此时 o.endCnt 保存【子树】完整字符串个数
+// https://codeforces.com/problemset/problem/557/E
 func (t *trie) kth(k int) (s []byte) {
 	o := t.root
 outer:
 	for {
 		for i, son := range o.son[:] {
 			if son != nil {
-				if k < son.end {
+				if k < son.endCnt {
 					o = son
 					s = append(s, t.chr(byte(i)))
 					continue outer
 				}
-				k -= son.end
+				k -= son.endCnt
 			}
 		}
 		return
@@ -201,13 +177,13 @@ func (t *trie) countPrefixOfString(s string) (cnt int) {
 		if o == nil {
 			return
 		}
-		cnt += o.end
+		cnt += o.endCnt
 	}
 	return
 }
 
 // 返回 trie 中前缀为 p 的字符串个数
-// 此时 o.cnt 保存子树字符串个数
+// 此时 o.endCnt 保存子树字符串个数
 // https://codeforces.com/gym/101628/problem/K
 // LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
 func (t *trie) countStringHasPrefix(p string) int {
@@ -218,7 +194,7 @@ func (t *trie) countStringHasPrefix(p string) int {
 			return 0
 		}
 	}
-	return o.end
+	return o.endCnt
 }
 
 // s 的本质不同子串数量 O(n^2)
@@ -248,7 +224,7 @@ func (t *trie) countDistinctSubstring(s string) (cnt int) {
 // roots[i+1] = roots[i].put(s)
 func (o trieNode) put(s []byte) *trieNode {
 	if len(s) == 0 {
-		o.end++
+		o.endCnt++
 		return &o
 	}
 	b := s[0] - 'a' //
