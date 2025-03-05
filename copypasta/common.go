@@ -45,9 +45,11 @@ https://codeforces.com/problemset/problem/681/B 1300
     - https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/
     - 反向构造 https://codeforces.com/problemset/problem/1927/B 900
 https://leetcode.com/discuss/interview-question/3685049/25-variations-of-Two-sum-question
+https://atcoder.jp/contests/abc342/tasks/abc342_d
 https://codeforces.com/problemset/problem/1420/B 1200
 https://codeforces.com/problemset/problem/318/B 1300 子串
 https://codeforces.com/problemset/problem/1926/D 1300
+https://codeforces.com/problemset/problem/159/D 1500 回文子串
 https://codeforces.com/problemset/problem/1800/F 1900 异或
 
 枚举右，维护左：需要维护两种值（pair）
@@ -56,6 +58,7 @@ https://leetcode.cn/problems/count-beautiful-substrings-ii/ 2445
 
 枚举中间
 https://codeforces.com/problemset/problem/1957/D 1900 前后缀分解 从高到低思考
+https://atcoder.jp/contests/abc102/tasks/arc100_b 1801=CF2073
 
 任意下标 i 和 j
 https://codeforces.com/problemset/problem/1895/C 1400
@@ -104,6 +107,7 @@ https://codeforces.com/problemset/problem/1296/C
 - [926. 将字符串翻转到单调递增](https://leetcode.cn/problems/flip-string-to-monotone-increasing/)
   - https://codeforces.com/problemset/problem/180/C 1400
   - https://codeforces.com/problemset/problem/846/A 1500
+https://codeforces.com/problemset/problem/234/C 1300
 https://codeforces.com/problemset/problem/1178/B 1300
 https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/2026/B 1300 做到 O(n)
@@ -153,40 +157,29 @@ https://codeforces.com/problemset/problem/550/B 变形：改成子数组
 https://codeforces.com/problemset/problem/898/D 1600
 
 多指针
+https://codeforces.com/problemset/problem/602/B 入门题
+https://codeforces.com/problemset/problem/279/B 入门题
 https://codeforces.com/problemset/problem/1971/F 1600
-
-LC2234 https://leetcode.cn/problems/maximum-total-beauty-of-the-gardens/ 2562
-类似 [795. 区间子数组个数](https://leetcode.cn/problems/number-of-subarrays-with-bounded-maximum/) 1817
-入门题 https://codeforces.com/problemset/problem/602/B
-入门题 https://codeforces.com/problemset/problem/279/B
 https://atcoder.jp/contests/abc229/tasks/abc229_d
-LC2271 毯子覆盖的最多白色砖块数 需要多思考一点点 https://leetcode.cn/problems/maximum-white-tiles-covered-by-a-carpet/
-- https://atcoder.jp/contests/abc098/tasks/arc098_b
+https://atcoder.jp/contests/abc098/tasks/arc098_b
 较为复杂 https://atcoder.jp/contests/abc294/tasks/abc294_e
       - https://ac.nowcoder.com/acm/contest/62033/D
 https://codeforces.com/problemset/problem/1208/B
 https://codeforces.com/problemset/problem/1765/D
-多指针 https://codeforces.com/problemset/problem/895/B
+https://codeforces.com/problemset/problem/895/B
 https://codeforces.com/contest/1833/problem/F
 计算有多少子数组，其中有至少 k 个相同的数 https://codeforces.com/problemset/problem/190/D
 https://codeforces.com/problemset/problem/165/C
 - [1099. 小于 K 的两数之和](https://leetcode.cn/problems/two-sum-less-than-k/)（会员题）
 
 单序列双指针
-- [2972. 统计移除递增子数组的数目 II](https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-ii/) 2153
-     - https://codeforces.com/problemset/problem/1167/E 2100
+LC2972 https://leetcode.cn/problems/count-the-number-of-incremovable-subarrays-ii/
+- https://codeforces.com/problemset/problem/1167/E 2100
 https://codeforces.com/contest/2032/problem/C 1400
 
 双序列双指针
-LC88 https://leetcode.cn/problems/merge-sorted-array/
-LC360（背向双指针）https://leetcode.cn/problems/sort-transformed-array/
-- [986. 区间列表的交集](https://leetcode.cn/problems/interval-list-intersections/) 1542
-- [1537. 最大得分](https://leetcode.cn/problems/get-the-maximum-score/) 1961
 https://codeforces.com/contest/489/problem/B 1200
-
-MEX
-https://codeforces.com/problemset/problem/1793/D 1800
-https://atcoder.jp/contests/abc194/tasks/abc194_e
+https://atcoder.jp/contests/abc312/tasks/abc312_f
 
 相向双指针
 题单 https://leetcode.cn/leetbook/read/sliding-window-and-two-pointers/odt2yh/
@@ -198,16 +191,23 @@ https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/probl
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 - 相似题目 https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/
 
-a[i] + b[j] = target 的方案数
-a[i] + b[j] < target 的方案数    相向双指针 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
-                                         https://codeforces.com/problemset/problem/1538/C 1300
-                               - [259. 较小的三数之和](https://leetcode.cn/problems/3sum-smaller/)（会员题）
-a[i] + b[j] > target 的方案数    同上
-a[i] - b[j] = target 的方案数
-a[i] - b[j] < target 的方案数    滑窗
-a[i] - b[j] > target 的方案数    同上 >= https://atcoder.jp/contests/abc353/tasks/abc353_c
-子数组元素和 = < > target 的方案数：用前缀和，转换成上面 a[i] - b[j] 的形式
-子序列元素和 = < > target 的方案数：0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
+a[i] + b[j] <= target 的方案数   
+- 相向双指针
+- https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+- https://codeforces.com/problemset/problem/1538/C 1300
+- https://atcoder.jp/contests/abc366/tasks/abc366_e
+- https://leetcode.cn/problems/3sum-smaller/
+a[i] + b[j] >= target 的方案数
+- 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
+a[i] - b[j] <= target 的方案数
+- 同向双指针
+a[i] - b[j] >= target 的方案数
+- 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
+- https://atcoder.jp/contests/abc353/tasks/abc353_c
+子数组元素和 = < > target 的方案数
+- 用前缀和，转换成上面 a[i] - b[j] 的形式（= 可以转换成 >=t 减去 >=t+1）
+子序列元素和 = < > target 的方案数
+- 0-1 背包恰好/至多/至少，见 https://www.bilibili.com/video/BV16Y411v7Y6/ 末尾的总结
 
 分组循环
 https://leetcode.cn/problems/longest-even-odd-subarray-with-threshold/solution/jiao-ni-yi-ci-xing-ba-dai-ma-xie-dui-on-zuspx/
@@ -308,11 +308,16 @@ https://atcoder.jp/contests/arc147/tasks/arc147_e 难
 https://www.luogu.com.cn/problem/P1016
 https://www.luogu.com.cn/problem/UVA11384 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=25&page=show_problem&problem=2379
 
+交换论证法
+https://atcoder.jp/contests/arc149/tasks/arc149_b
+https://codeforces.com/problemset/problem/437/C 1400 排序不等式
+
 数学思维
 https://codeforces.com/problemset/problem/23/C 2500
 - https://codeforces.com/problemset/problem/798/D 2400
 
 乘法贪心
+https://codeforces.com/problemset/problem/1406/B 1200 5 个数的最大乘积
 https://codeforces.com/problemset/problem/45/I 1400
 https://codeforces.com/problemset/problem/934/A 1400
 https://atcoder.jp/contests/abc173/tasks/abc173_e 1607=CF1926 k 个数的最大乘积
@@ -409,6 +414,10 @@ https://atcoder.jp/contests/abc196/tasks/abc196_e
 https://www.luogu.com.cn/problem/UVA10881 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=20&page=show_problem&problem=1822
 - [LCS 01. 下载插件](https://leetcode.cn/problems/Ju9Xwi/)
 
+MEX
+https://codeforces.com/problemset/problem/1793/D 1800
+https://atcoder.jp/contests/abc194/tasks/abc194_e
+
 注意值域
 LC2653 https://leetcode.cn/problems/sliding-subarray-beauty/ 1786
 LC2250 https://leetcode.cn/problems/count-number-of-rectangles-containing-each-point/ 1998
@@ -441,6 +450,8 @@ https://codeforces.com/problemset/problem/2039/B  1000 分析性质
 https://codeforces.com/problemset/problem/2040/B  1000
 https://codeforces.com/problemset/problem/2044/D  1100 脑筋急转弯
 https://atcoder.jp/contests/keyence2020/tasks/keyence2020_c 625=CF1183
+https://codeforces.com/problemset/problem/482/A   1200
+https://codeforces.com/problemset/problem/651/B   1200
 https://codeforces.com/problemset/problem/1028/B  1200
 https://codeforces.com/problemset/problem/1713/C  1200
 https://codeforces.com/problemset/problem/1717/C  1300
@@ -509,6 +520,7 @@ LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
 
 分类讨论（部分题是易错题）
 https://codeforces.com/problemset/problem/2039/B 1000
+https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
 https://codeforces.com/problemset/problem/870/C 1300
 https://codeforces.com/problemset/problem/1698/C 1300
@@ -621,6 +633,7 @@ https://codeforces.com/group/BJlsDCvlJO/contest/586547/problem/I
 
 增量法
 - [2262. 字符串的总引力](https://leetcode.cn/problems/total-appeal-of-a-string/) 2033
+      https://atcoder.jp/contests/abc371/tasks/abc371_e 一样的题目
       结合线段树优化 DP https://codeforces.com/contest/833/problem/B 2200
 - [828. 统计子串中的唯一字符](https://leetcode.cn/problems/count-unique-characters-of-all-substrings-of-a-given-string/) 2034
 - [2916. 子数组不同元素数目的平方和 II](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/) 2816
@@ -692,7 +705,7 @@ https://www.luogu.com.cn/problem/UVA11464 https://onlinejudge.org/index.php?opti
 考虑每条边产生的负贡献 https://atcoder.jp/contests/abc173/tasks/abc173_f
 考虑符合范围要求的贡献 https://codeforces.com/problemset/problem/1151/E
 和式的另一视角。若每一项的值都在一个范围，不妨考虑另一个问题：值为 x 的项有多少个？https://atcoder.jp/contests/abc162/tasks/abc162_e
-对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列进行区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
+对所有排列考察所有子区间的性质，可以转换成对所有子区间考察所有排列。将子区间内部的排列和区间外部的排列加以区分，内部的性质单独研究，外部的当作 (n-(r-l))! 个排列 https://codeforces.com/problemset/problem/1284/C
 从最大值入手 https://codeforces.com/problemset/problem/1381/B
 等效性 LC1183 https://leetcode.cn/problems/maximum-number-of-ones/
 LC1526 https://leetcode.cn/problems/minimum-number-of-increments-on-subarrays-to-form-a-target-array/
@@ -1127,7 +1140,7 @@ func _() {
 	}
 
 	// 前缀和
-	// LC303 https://leetcode.cn/problems/range-sum-query-immutable/
+	// 模板题 LC303 https://leetcode.cn/problems/range-sum-query-immutable/
 	// https://codeforces.com/problemset/problem/1922/C 1300
 	// https://codeforces.com/problemset/problem/2033/D 1300
 	// https://codeforces.com/problemset/problem/1923/C 1400 构造
@@ -1314,7 +1327,7 @@ func _() {
 	// 二维带权前缀和 https://codeforces.com/problemset/problem/2044/H
 	// 分类讨论 https://www.luogu.com.cn/problem/P3625
 	// - https://atcoder.jp/contests/abc347/tasks/abc347_f
-	// 转换 https://atcoder.jp/contests/agc015/tasks/agc015_c
+	// https://atcoder.jp/contests/agc015/tasks/agc015_c 2241=CF2406 转换
 	matrixSum2D := func(a [][]int) {
 		n, m := len(a), len(a[0])
 		// sum 第一行和第一列都是 0
