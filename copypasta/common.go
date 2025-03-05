@@ -193,18 +193,18 @@ https://atcoder.jp/contests/abc155/tasks/abc155_d
 
 a[i] + b[j] <= target 的方案数   
 - 相向双指针
-- https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
+- LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
 - https://codeforces.com/problemset/problem/1538/C 1300
 - https://atcoder.jp/contests/abc366/tasks/abc366_e
 - https://leetcode.cn/problems/3sum-smaller/
 a[i] + b[j] >= target 的方案数
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
+- https://atcoder.jp/contests/abc353/tasks/abc353_c
 a[i] - b[j] <= target 的方案数
 - 同向双指针
 - 另一种思路：把 b 数组取反再 reverse，就变成 a[i] + (-b[j]) <= target 了
 a[i] - b[j] >= target 的方案数
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
-- https://atcoder.jp/contests/abc353/tasks/abc353_c
 子数组元素和 = < > target 的方案数
 - 用前缀和，转换成上面 a[i] - b[j] 的形式（= 可以转换成 >=t 减去 >=t+1）
 子序列元素和 = < > target 的方案数
