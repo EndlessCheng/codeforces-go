@@ -5,18 +5,6 @@ import (
 	"math/bits"
 )
 
-/*
-## 练习：0-1 trie（右边分数为题目难度）
-
-- [421. 数组中两个数的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-numbers-in-an-array/) ~2000
-- [2935. 找出强数对的最大异或值 II](https://leetcode.cn/problems/maximum-strong-pair-xor-ii/) 2349
-- [1707. 与数组中元素的最大异或值](https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/) 2359
-- [1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/) 2479
-- [1938. 查询最大基因差](https://leetcode.cn/problems/maximum-genetic-difference-query/) 2503
-- [2479. 两个不重叠子树的最大异或值](https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/)（会员题）
-
-*/
-
 // 注：由于用的是指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
@@ -26,11 +14,11 @@ import (
 // LC1707 https://leetcode.cn/problems/maximum-xor-with-an-element-from-array/
 // LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
 // LC2479 利用先序遍历的特点 https://leetcode.cn/problems/maximum-xor-of-two-non-overlapping-subtrees/
-// https://codeforces.com/problemset/problem/706/D
-// 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）https://codeforces.com/problemset/problem/282/E
-// https://codeforces.com/contest/1446/problem/C
-// 字典序最小 https://codeforces.com/problemset/problem/923/C
-// 启发式合并 https://codeforces.com/problemset/problem/1777/F
+// https://codeforces.com/problemset/problem/706/D 1800
+// https://codeforces.com/problemset/problem/923/C 1800 字典序最小
+// https://codeforces.com/problemset/problem/1446/C 2100
+// https://codeforces.com/problemset/problem/282/E 2200 数组前缀异或数组后缀的最大值（前后缀不重叠，但这要求可以无视）
+// https://codeforces.com/problemset/problem/1777/F 2400 启发式合并
 // todo https://codeforces.com/problemset/problem/1055/F
 //  转换 https://codeforces.com/contest/1720/problem/D2
 //  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
@@ -105,7 +93,7 @@ func (t *trie01) minXor(v int) (ans int) {
 // 完全图，边权为 a[v]^a[w]，求 MST
 // Boruvka 算法，分治连边
 // O(nlognlogU)
-// http://codeforces.com/problemset/problem/888/G 2300
+// https://codeforces.com/problemset/problem/888/G 2300
 func xorMST(a []int) (ans int) {
 	var f func([]int, int)
 	f = func(a []int, p int) {
@@ -226,8 +214,8 @@ func (t *trie01) maxXorWithLimitVal(v, limit int) (ans int) {
 // 核心原理是，当 limit+1 的某一位是 1 的时候，若该位异或值取 0，则后面的位是可以取任意数字的
 // 如果在 limit 上而不是 limit+1 上讨论，就要单独处理走到叶子的情况了（恰好等于 limit）
 // LC1803 https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/
-// 补集 https://codeforces.com/problemset/problem/665/E
-// https://codeforces.com/problemset/problem/817/E
+// https://codeforces.com/problemset/problem/817/E 2000
+// https://codeforces.com/problemset/problem/665/E 2100 补集
 func (t *trie01) countLimitXOR(v, limit int) (cnt int) {
 	limit++ // 改成 limit+1（求与 v 异或值小于 limit 的元素个数）
 	o := t.root
@@ -272,7 +260,8 @@ func countLimitXOR(a []int, limit int) int {
 // 原理同 countLimitXOR
 func (t *trie01) maxXorWithLimitXor(v, limit int) (ans int) {
 	limit++ // 改成 <
-	lastO, lastI, lastAns := (*trie01Node)(nil), -2, 0
+	var lastO *trie01Node
+	lastI, lastAns := -2, 0
 	o := t.root
 	for i := trieBitLen - 1; i >= 0; i-- {
 		b := v >> i & 1
