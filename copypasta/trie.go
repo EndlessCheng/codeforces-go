@@ -75,9 +75,9 @@ func (t *trie) dfs() {
 		if o == nil {
 			return
 		}
-		// 统计从根到 o 的路径
-		sum += o.cnt //
-
+		// 统计从 root 到 o 的路径
+		sum += o.cnt
+		// ...
 		for _, child := range o.son {
 			f(child, sum)
 		}
