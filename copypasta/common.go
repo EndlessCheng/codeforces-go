@@ -201,6 +201,7 @@ a[i] + b[j] >= target 的方案数
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
 a[i] - b[j] <= target 的方案数
 - 同向双指针
+- 另一种思路：把 b 数组取反再 reverse，就变成 a[i] + (-b[j]) <= target 了
 a[i] - b[j] >= target 的方案数
 - 反向思维转换成 <，所有方案数减去 < 的方案数，就是 >= 的方案数，所以做法同上
 - https://atcoder.jp/contests/abc353/tasks/abc353_c
