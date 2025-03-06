@@ -554,6 +554,8 @@ func searchCollection() {
 	// https://zh.wikipedia.org/wiki/%E5%BA%B7%E6%89%98%E5%B1%95%E5%BC%80
 	// https://oi-wiki.org/math/cantor/
 	// https://www.luogu.com.cn/problem/P5367
+	// LC60 https://leetcode.cn/problems/permutation-sequence/
+	// LC3109 https://leetcode.cn/problems/find-the-index-of-permutation/
 	// 有重复元素 LC1830 https://leetcode.cn/problems/minimum-number-of-operations-to-make-string-sorted/
 	// https://codeforces.com/problemset/problem/1443/E
 	rankPermutation := func(perm []int) int {
