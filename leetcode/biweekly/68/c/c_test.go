@@ -6,8 +6,7 @@ import (
 	"testing"
 )
 
-func Test(t *testing.T) {
-	t.Log("Current test is [c]")
+func Test_c(t *testing.T) {
 	examples := [][]string{
 		{
 			`"))()))"`, `"010100"`, 
@@ -22,11 +21,11 @@ func Test(t *testing.T) {
 			`false`,
 		},
 		{
-			`"()()((()))(("`, `"111111101101"`,
-			`false`,
+			`"(((())(((())"`, `"111111010111"`,
+			`true`,
 		},
 	}
-	targetCaseNum := -1
+	targetCaseNum := 0
 	if err := testutil.RunLeetCodeFuncWithExamples(t, canBeValid, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}

@@ -1,41 +1,26 @@
 package main
 
-/* 全部变为左括号或右括号
-
-首先 $s$ 长度不能为奇数，此时应直接返回 $\texttt{false}$。
-
-然后就是用括号问题的经典技巧了：通过一个变量记录括号的平衡度。
-
-以变左括号为例，将所有可以变化的括号变为左括号，如果这样中间还是会出现平衡度小于 $0$ 的情况，那么就返回 $\texttt{false}$。多余的平衡度可以通过将左括号变成右括号来实现
-
-*/
-
-// github.com/EndlessCheng/codeforces-go
-func canBeValid(s string, locked string) bool {
-	if len(s)%2 == 1 {
+// https://space.bilibili.com/206214
+func canBeValid(s, locked string) bool {
+	if len(s)%2 > 0 {
 		return false
 	}
-
-	x := 0
-	for i, ch := range s {
-		if ch == '(' || locked[i] == '0' { // 能变左就变左
-			x++
-		} else if x > 0 {
-			x--
-		} else {
-			return false
+	mn, mx := 0, 0
+	for i, b := range s {
+		if locked[i] == '1' { // 不能改
+			d := 1 - int(b%2*2) // 左括号是 1，右括号是 -1
+			mx += d
+			if mx < 0 { // c 不能为负
+				return false
+			}
+			mn += d
+		} else { // 可以改
+			mx++ // 改成右括号
+			mn-- // 改成左括号
+		}
+		if mn < 0 { // c 不能为负
+			mn = 1 // 此时 c 的取值范围都是奇数，最小的奇数是 1
 		}
 	}
-
-	x = 0
-	for i := len(s) - 1; i >= 0; i-- {
-		if s[i] == ')' || locked[i] == '0' { // 能变右就变右
-			x++
-		} else if x > 0 {
-			x--
-		} else {
-			return false
-		}
-	}
-	return true
+	return mn == 0 // 说明最终 c 能是 0
 }
