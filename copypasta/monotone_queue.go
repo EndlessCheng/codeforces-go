@@ -20,23 +20,10 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
 https://blog.csdn.net/weixin_43914593/article/details/105791217 算法竞赛专题解析（13）：DP优化(3)--单调队列优化
 todo https://xyzl.blog.luogu.org/DQ-OP-DP
 
-单调队列求最值等
-- [239. 滑动窗口最大值](https://leetcode.cn/problems/sliding-window-maximum/)
-- [LCR 184. 设计自助结算系统](https://leetcode.cn/problems/dui-lie-de-zui-da-zhi-lcof/)
-- [1438. 绝对差不超过限制的最长连续子数组](https://leetcode.cn/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit/) 1672
-- [2762. 不间断子数组](https://leetcode.cn/problems/continuous-subarrays/) 同 1438 题
-- [2398. 预算内的最多机器人数目](https://leetcode.cn/problems/maximum-number-of-robots-within-budget/) 1917
-- [862. 和至少为 K 的最短子数组](https://leetcode.cn/problems/shortest-subarray-with-sum-at-least-k/) 2307
-- [1499. 满足不等式的最大值](https://leetcode.cn/problems/max-value-of-equation/) 2456
-https://codeforces.com/problemset/problem/6/E 1900
-
 注：如果要维护区间次小值（次大值），可以用 last 记录上一个被 pop 的元素，然后分类讨论：
 - 如果队列中至少有两个元素，那么取队首后面的元素为次小值
 - 否则，次小值为 last
 - 注意 last 的位置在队首左边，需要注意是否小于左边界（或者保证区间长度至少为 2）
-
-单调双端队列
-https://codeforces.com/problemset/problem/1584/E 2300 
 
 单调队列优化 DP
 一般用来维护区间最值
@@ -45,13 +32,8 @@ https://codeforces.com/problemset/problem/1584/E 2300
 2. 计算转移（直接从队首转移）
 3. 把 f[i] 插入队尾前，去掉队尾无用数据
 
-- [2944. 购买水果需要的最少金币数](https://leetcode.cn/problems/minimum-number-of-coins-for-fruits/) 1709 可以用单调队列优化到 $\mathcal{O}(n)$
-- [1696. 跳跃游戏 VI](https://leetcode.cn/problems/jump-game-vi/) 1954
-- [1425. 带限制的子序列和](https://leetcode.cn/problems/constrained-subsequence-sum/) 2032
 - [375. 猜数字大小 II](https://leetcode.cn/problems/guess-number-higher-or-lower-ii/) 可以用单调队列优化到 $\mathcal{O}(n^2)$
       https://leetcode.cn/problems/guess-number-higher-or-lower-ii/solution/cong-ji-yi-hua-sou-suo-on3-dao-dong-tai-q13g9/
-- [1687. 从仓库到码头运输箱子](https://leetcode.cn/problems/delivering-boxes-from-storage-to-ports/) 2610
-- [3117. 划分数组得到最小的值之和](https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/) 2735
 - [2945. 找到最大非递减数组的长度](https://leetcode.cn/problems/find-maximum-non-decreasing-array-length/) 2943
       https://www.luogu.com.cn/problem/P4954 https://www.luogu.com.cn/problem/P2300
       https://iai.sh.cn/problem/565
@@ -71,6 +53,13 @@ https://www.luogu.com.cn/problem/P1419
 todo https://www.luogu.com.cn/problem/P2627
  http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
  老鼠进洞 https://codeforces.com/problemset/problem/797/F
+
+单调队列求最值等
+https://codeforces.com/problemset/problem/6/E 1900
+
+单调双端队列
+https://codeforces.com/problemset/problem/1584/E 2300
+
 */
 type MqData struct {
 	Val int

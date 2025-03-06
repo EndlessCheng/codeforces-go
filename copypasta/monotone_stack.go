@@ -21,6 +21,9 @@ https://www.bilibili.com/video/BV1VN411J7S7/
 【图解单调栈】两种方法，两张图秒懂
 https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/
 
+【题单】单调栈（矩形面积/贡献法/最小字典序）
+https://leetcode.cn/circle/discuss/9oZFK9/
+
 技巧：事先压入一个边界元素到栈底，这样保证循环时栈一定不会为空，从而简化逻辑
 一些转换：
     若区间 [l,r] 的最大值等于 a[r]，则 l 必须 > left[r]
@@ -30,82 +33,51 @@ https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-da
 https://oi-wiki.org/ds/monotonous-stack/
 https://cp-algorithms.com/data_structures/stack_queue_modification.html
 
-#### 单调栈
-- [739. 每日温度](https://leetcode.cn/problems/daily-temperatures/)（单调栈模板题）
-- [1475. 商品折扣后的最终价格](https://leetcode.cn/problems/final-prices-with-a-special-discount-in-a-shop/) 1212
-- [496. 下一个更大元素 I](https://leetcode.cn/problems/next-greater-element-i/)
-- [503. 下一个更大元素 II](https://leetcode.cn/problems/next-greater-element-ii/)
-- [1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/) 1571
-- [962. 最大宽度坡](https://leetcode.cn/problems/maximum-width-ramp/) 1608
-- [901. 股票价格跨度](https://leetcode.cn/problems/online-stock-span/) 1709
-- [42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) *也有其它做法
-- [1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/) 1908
-- [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
-- [456. 132 模式](https://leetcode.cn/problems/132-pattern/) ~2000
 - [3113. 边界元素是最大值的子数组数目](https://leetcode.cn/problems/find-the-number-of-subarrays-where-boundary-elements-are-maximum/) 2046
     - 相似题目 [2421. 好路径的数目](https://leetcode.cn/problems/number-of-good-paths/)
-- [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
 - [1944. 队列中可以看到的人数](https://leetcode.cn/problems/number-of-visible-people-in-a-queue/) 2105
     - 中间的人可以和 i j 身高相等 https://www.luogu.com.cn/problem/P1823
     - 环形数组 https://codeforces.com/problemset/problem/5/E 2400
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
     - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
     - 应用 https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
-- [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/) 2482
-- [1776. 车队 II](https://leetcode.cn/problems/car-fleet-ii/) 2531
-- [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
 https://codeforces.com/problemset/problem/280/B 1800 转换
 https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
 https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
 https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
+https://www.luogu.com.cn/problem/P9290
 
-#### 单调栈二分
+单调栈二分
 LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
 LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 https://codeforces.com/problemset/problem/91/B 1500
 https://atcoder.jp/contests/abc379/tasks/abc379_f 1659=CF1966 也有在线做法
 https://codeforces.com/problemset/problem/2009/G2 2200
 
-#### 矩形系列
-- [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
-- [1793. 好子数组的最大分数](https://leetcode.cn/problems/maximum-score-of-a-good-subarray/) 1946
-- [85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/)
-- [1504. 统计全 1 子矩形](https://leetcode.cn/problems/count-submatrices-with-all-ones/) 1845
-
-#### 字典序最小
-- [316. 去除重复字母](https://leetcode.cn/problems/remove-duplicate-letters/)
-- [316 扩展：重复个数不超过 limit](https://leetcode.cn/contest/tianchi2022/problems/ev2bru/)
+字典序最小
 - [402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) ~1800
    - 402 变形：不允许自动去掉前导零 https://codeforces.com/problemset/problem/1765/N
-- [1673. 找出最具竞争力的子序列](https://leetcode.cn/problems/find-the-most-competitive-subsequence/) 1802
-- [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
-- [2030. 含特定字母的最小子序列](https://leetcode.cn/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/) 2562
 https://codeforces.com/problemset/problem/1730/C 1200
 https://codeforces.com/problemset/problem/1905/C 1400
 https://codeforces.com/problemset/problem/2046/B 1600
 https://codeforces.com/problemset/problem/1870/D 1800
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
-#### 贡献法（计算所有子数组的……的和）
+贡献法（计算所有子数组的……的和）
 - [907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/) 1976
    - https://atcoder.jp/contests/agc057/tasks/agc057_b
 - [2104. 子数组范围和（最大值-最小值）](https://leetcode.cn/problems/sum-of-subarray-ranges/) $\mathcal{O}(n)$ 做法难度大约 2000
    - https://codeforces.com/contest/817/problem/D 1900
 - [1856. 子数组最小乘积的最大值](https://leetcode.cn/problems/maximum-subarray-min-product/) 2051
    - 枚举上下边界 https://atcoder.jp/contests/abc311/tasks/abc311_g
-- [2818. 操作使得分最大](https://leetcode.cn/problems/apply-operations-to-maximize-score/) 2397
-- [2281. 巫师的总力量和（最小值*和）](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/) 2621
 子数组第二大数字的和 https://atcoder.jp/contests/abc140/tasks/abc140_e
 最大值是最小值的倍数 https://codeforces.com/problemset/problem/1730/E 2700
 更多「贡献」话题见 common.go
 
-#### 单调栈优化 DP
-- [1335. 工作计划的最低难度](https://leetcode.cn/problems/minimum-difficulty-of-a-job-schedule/) 2035 按照最大值分类讨论
+单调栈优化 DP
 - [2866. 美丽塔 II](https://leetcode.cn/problems/beautiful-towers-ii/) 2072
     - https://codeforces.com/problemset/problem/1313/C2 1900
-- [2617. 网格图中最少访问的格子数](https://leetcode.cn/problems/minimum-number-of-visited-cells-in-a-grid/) 2582
-- [2355. 你能拿走的最大图书数量](https://leetcode.cn/problems/maximum-number-of-books-you-can-take/)（会员题）
 结合线段树，或者巧妙地在单调栈中去维护最值 https://codeforces.com/problemset/problem/1483/C 2100
 https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
