@@ -544,6 +544,115 @@ func beautifulSubsets(nums []int, k int) int {
 - 时间复杂度：$\mathcal{O}(n\log n)$，其中 $n$ 为 $\textit{nums}$ 的长度。瓶颈在排序/维护有序集合上。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 方法三：动态规划 + 最长连续序列 trick
+
+比如 $k=2$，某一组为 $[1,3,5,9,11,13]$，由于 $5$ 和 $9$ 相差不为 $k$，所以可以进一步拆成两个序列 $[1,3,5]$ 和 $[9,11,13]$。这两个序列互相独立，可以分别计算方案数再相乘。
+
+这两个序列都是公差为 $k$ 的等差数列。利用 [128. 最长连续序列](https://leetcode.cn/problems/longest-consecutive-sequence/)（这题相当于 $k=1$）的技巧，找到等差数列的首项，就能通过不断 $+k$ 找到等差数列中的其他元素。这种做法无需排序，也无需有序集合，从而把方法二的时间复杂度优化到 $\mathcal{O}(n)$，原理见 [我的题解](https://leetcode.cn/problems/longest-consecutive-sequence/solutions/3005726/ha-xi-biao-on-zuo-fa-pythonjavacgojsrust-whop/)。
+
+```py [sol-Python3]
+class Solution:
+    def beautifulSubsets(self, nums: List[int], k: int) -> int:
+        cnt = Counter(nums)
+        ans = 1
+        for x, c in cnt.items():
+            if x - k in cnt:  # x 不是等差数列的首项
+                continue
+            # 计算这一组的方案数
+            f0, f1 = 1, 1 << c
+            x += k
+            while x in cnt:
+                f0, f1 = f1, f1 + f0 * ((1 << cnt[x]) - 1)
+                x += k
+            ans *= f1  # 每组方案数相乘
+        return ans - 1  # 去掉空集
+```
+
+```java [sol-Java]
+class Solution {
+    public int beautifulSubsets(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int x : nums) {
+            cnt.merge(x, 1, Integer::sum);
+        }
+
+        int ans = 1;
+        for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+            int x = e.getKey();
+            if (cnt.containsKey(x - k)) { // x 不是等差数列的首项
+                continue;
+            }
+            // 计算这一组的方案数
+            int f0 = 1;
+            int f1 = 1 << e.getValue();
+            for (x += k; cnt.containsKey(x); x += k) {
+                int newF = f1 + f0 * ((1 << cnt.get(x)) - 1);
+                f0 = f1;
+                f1 = newF;
+            }
+            ans *= f1; // 每组方案数相乘
+        }
+        return ans - 1; // 去掉空集
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int beautifulSubsets(vector<int>& nums, int k) {
+        unordered_map<int, int> cnt;
+        for (int x : nums) {
+            cnt[x]++;
+        }
+
+        int ans = 1;
+        for (auto& [x, c] : cnt) {
+            if (cnt.contains(x - k)) { // x 不是等差数列的首项
+                continue;
+            }
+            // 计算这一组的方案数
+            int f0 = 1, f1 = 1 << c;
+            for (int y = x + k; cnt.contains(y); y += k) {
+                int new_f = f1 + f0 * ((1 << cnt[y]) - 1);
+                f0 = f1;
+                f1 = new_f;
+            }
+            ans *= f1; // 每组方案数相乘
+        }
+        return ans - 1; // 去掉空集
+    }
+};
+```
+
+```go [sol-Go]
+func beautifulSubsets(nums []int, k int) int {
+	cnt := map[int]int{}
+	for _, x := range nums {
+		cnt[x]++
+	}
+
+	ans := 1
+	for x, c := range cnt {
+		if cnt[x-k] > 0 { // x 不是等差数列的首项
+			continue
+		}
+		// 计算这一组的方案数
+		f0, f1 := 1, 1<<c
+		for x += k; cnt[x] > 0; x += k {
+			f0, f1 = f1, f1+f0*(1<<cnt[x]-1)
+		}
+		ans *= f1 // 每组方案数相乘
+	}
+	return ans - 1 // 去掉空集
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。理由见 128 题的复杂度分析。
+- 空间复杂度：$\mathcal{O}(n)$。
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
