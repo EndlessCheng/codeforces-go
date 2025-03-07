@@ -7,7 +7,7 @@ func findMatrix(nums []int) (ans [][]int) {
 		cnt[x]++
 	}
 	for len(cnt) > 0 {
-		row := []int{}
+		row := make([]int, 0, len(cnt)) // 预分配空间
 		for x := range cnt {
 			row = append(row, x)
 			if cnt[x]--; cnt[x] == 0 {
