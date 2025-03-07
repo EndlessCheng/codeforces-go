@@ -37,7 +37,7 @@ $$
 
 此外，为避免错把父亲当作儿子，可以额外传入 $\textit{fa}$ 表示父节点，遍历 $i$ 的邻居时，跳过邻居节点是 $\textit{fa}$ 的情况。
 
-关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)。
+关于记忆化搜索的原理，请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/?t=45m18s)
 
