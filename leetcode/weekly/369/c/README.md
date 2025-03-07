@@ -1,8 +1,6 @@
-[视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/) 第三题。
-
 ## 前置知识
 
-请看视频讲解 [动态规划入门：从记忆化搜索到递推](https://b23.tv/72onpYq)
+请看视频讲解 [动态规划入门：从记忆化搜索到递推【基础算法精讲 17】](https://www.bilibili.com/video/BV1Xj411K7oF/)。
 
 ## 写法一：记忆化搜索
 
@@ -31,6 +29,8 @@
 递归边界：当 $i<0$ 时返回 $0$。
 
 递归入口：$\textit{dfs}(n-1,0)$，即答案。
+
+[视频讲解](https://www.bilibili.com/video/BV1tw411q7VZ/) 第三题。
 
 ```py [sol-Python3]
 class Solution:
@@ -200,7 +200,7 @@ func minIncrementOperations(nums []int, k int) int64 {
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
