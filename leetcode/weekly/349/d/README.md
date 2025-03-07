@@ -1,3 +1,9 @@
+单调栈视频讲解[【基础算法精讲 26】](https://www.bilibili.com/video/BV1VN411J7S7/)
+
+本题讲解：[视频](https://www.bilibili.com/video/BV15V4y1m7Sb/) 第四题。
+
+---
+
 为方便处理，先把 $\textit{nums}_1$ 和 $\textit{nums}_2$ 绑在一起（记作 pair 数组 $a$），按照 $\textit{nums}_1$ 的值**从大到小**排序，然后按照 $x_i$ **从大到小**的顺序回答询问。
 
 对于示例 1 来说，排序后 $a=[(4, 2), (3, 4), (2, 5), (1, 9)]$，然后按照询问下标 $0,2,1$ 的顺序回答询问，即依次回答询问 $[4,1],[2,5],[1,3]$。
@@ -11,9 +17,11 @@
 - 如果 $\textit{nums}_2[j]$ 比之前遍历过的 $\textit{nums}_2[j']$ 要**小**，由于 $\textit{nums}_1[j]$ 已经从大到小排序，所以 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 也比之前遍历过的 $\textit{nums}_1[j']+\textit{nums}_2[j']$ 要小。所以在回答询问时，最大值不可能是 $\textit{nums}_1[j]+\textit{nums}_2[j]$，所以无需考虑这样的 $\textit{nums}_2[j]$。（这种单调性启发我们用**单调栈**来维护。）
 - 如果**相等**，同理，无需考虑。
 - 如果**大于**，就可以把 $\textit{nums}_2[j]$ 入栈（同时把 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 也入栈）。在入栈前，去掉一些无效数据：如果 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 不低于栈顶的 $\textit{nums}_1[j']+\textit{nums}_2[j']$，那么可以弹出栈顶。因为更大的 $\textit{nums}_2[j]$ 更能满足 $\ge y_i$ 的要求，所以栈顶的 $\textit{nums}_1[j']+\textit{nums}_2[j']$ 在后续的询问中，永远不会作为最大值。
-- 代码实现时，可以直接比较 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 与栈顶的值，这是因为如果这一条件成立，由于 $\textit{nums}_1[j]$ 是从大到小处理的，$\textit{nums}_1[j]+\textit{nums}_2[j]$ 能比栈顶的大，说明 $\textit{nums}_2[j]$ 必然不低于栈顶的 $\textit{nums}_2[j']$。
+- 代码实现时，无需比较 $\textit{nums}_2[j]$ 与栈顶的 $\textit{nums}_2[j']$，而是可以直接比较 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 与栈顶的 $\textit{nums}_1[j']+\textit{nums}_2[j']$，这是因为如果这一条件成立，由于 $\textit{nums}_1[j]$ 是从大到小处理的，$\textit{nums}_1[j]+\textit{nums}_2[j]$ 能比栈顶的大，说明 $\textit{nums}_2[j]$ 必然不低于栈顶的 $\textit{nums}_2[j']$。
 
-这样我们会得到一个从栈底到栈顶，$\textit{nums}_2[j]$ 递增，$\textit{nums}_1[j]+\textit{nums}_2[j]$ 递减的单调栈。在单调栈中二分 $\ge y_i$ 的最小的 $\textit{nums}_2[j]$，对应的 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 就是最大的。
+去掉无效数据后，由于 $\textit{nums}_1[j]$ 是从大到小处理的，$\textit{nums}_1[j]+\textit{nums}_2[j]$ 比栈顶的大，说明 $\textit{nums}_2[j]$ 也大于栈顶的 $\textit{nums}_2[j']$。所以从栈底到栈顶，$\textit{nums}_2[j]$ 递增，$\textit{nums}_1[j]+\textit{nums}_2[j]$ 递减。这是一个**单调栈**。
+
+在单调栈中二分 $\ge y_i$ 的最小的 $\textit{nums}_2[j]$，对应的 $\textit{nums}_1[j]+\textit{nums}_2[j]$ 就是最大的。
 
 ```py [sol-Python3]
 class Solution:
@@ -72,7 +80,6 @@ class Solution {
         return ans;
     }
 
-    // 开区间写法，原理请看 b23.tv/AhwfbS2
     private int lowerBound(List<int[]> st, int target) {
         int left = -1, right = st.size(); // 开区间 (left, right)
         while (left + 1 < right) { // 区间不为空
@@ -166,7 +173,7 @@ func maximumSumQueries(nums1, nums2 []int, queries [][]int) []int {
 ```
 
 ```js [sol-JavaScript]
-var maximumSumQueries = function (nums1, nums2, queries) {
+var maximumSumQueries = function(nums1, nums2, queries) {
     const a = _.zip(nums1, nums2).sort((a, b) => b[0] - a[0])
     const qid = [...queries.keys()].sort((i, j) => queries[j][0] - queries[i][0]);
 
@@ -189,8 +196,7 @@ var maximumSumQueries = function (nums1, nums2, queries) {
     return ans;
 };
 
-// 开区间写法，原理请看 b23.tv/AhwfbS2
-var lowerBound = function (st, target) {
+var lowerBound = function(st, target) {
     let left = -1, right = st.length; // 开区间 (left, right)
     while (left + 1 < right) { // 区间不为空
         const mid = left + ((right - left) >> 1);
@@ -208,10 +214,10 @@ var lowerBound = function (st, target) {
 impl Solution {
     pub fn maximum_sum_queries(nums1: Vec<i32>, nums2: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
         let mut a: Vec<(i32, i32)> = nums1.into_iter().zip(nums2.into_iter()).collect();
-        a.sort_by(|x, y| y.0.cmp(&x.0));
+        a.sort_unstable_by(|x, y| y.0.cmp(&x.0));
 
         let mut qid: Vec<usize> = (0..queries.len()).collect();
-        qid.sort_by(|&i, &j| queries[j][0].cmp(&queries[i][0]));
+        qid.sort_unstable_by(|&i, &j| queries[j][0].cmp(&queries[i][0]));
 
         let mut ans = vec![-1; queries.len()];
         let mut st: Vec<(i32, i32)> = Vec::new();
@@ -243,4 +249,23 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n\log n + q\log q + q\log n)$，其中 $n$ 为 $\textit{nums}_1$ 的长度，$q$ 为 $\textit{queries}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n + q)$。
 
-[往期题解精选（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
