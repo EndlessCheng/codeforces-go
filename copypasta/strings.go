@@ -713,64 +713,71 @@ func _() {
 		// https://codeforces.com/problemset/problem/7/D 
 		// - https://codeforces.com/problemset/problem/835/D
 		// LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/
-		isP := func(l, r int) bool { return halfLen[l+r+2] > r-l+1 } // halfLen[l+r+2]-1 >= r-l+1
+		isPal := func(l, r int) bool { return halfLen[l+r+2] > r-l+1 } // halfLen[l+r+2]-1 >= r-l+1
 
-		// 计算最长回文子串的长度，以及所有最长回文子串的首字母在 s 中的下标
-		maxPL, starts := 0, []int{}
-		for i := 2; i < len(halfLen); i++ {
-			if hl := halfLen[i]; hl-1 > maxPL {
-				// 由于 t 中回文子串的首尾字母一定是 #，再根据下标转换关系，可以得到其在 s 中对应的回文子串的区间为：
-				// [(i-hl)/2, (i+hl)/2-2]
-				maxPL, starts = hl-1, []int{(i - hl) / 2}
-			} else if hl-1 == maxPL {
-				starts = append(starts, (i-hl)/2)
-			}
-		}
-
-		// odd=true:  以 s[x] 为回文中心的最长奇回文子串长度
-		// odd=false: 以 s[x] 和 s[x+1] 为回文中心的最长偶回文子串长度
+		// odd=true:  以 s[i] 为回文中心的最长奇回文子串长度
+		// odd=false: 以 s[i] 和 s[i+1] 为回文中心的最长偶回文子串长度
 		// 根据下标转换关系得到其在 t 中对应的回文中心下标
-		midPL := func(x int, odd bool) int {
+		midLen := func(i int, odd bool) int {
 			if odd {
-				return halfLen[x*2+2] - 1
+				return halfLen[i*2+2] - 1
 			}
-			return halfLen[x*2+3] - 1
+			return halfLen[i*2+3] - 1
 		}
 
-		// EXTRA: 计算两个数组，其中
+		// 计算最长回文子串的长度，以及【所有】最长回文子串的首字母在 s 中的下标
+		{
+			maxLen, starts := 0, []int{}
+			for i := 2; i < len(halfLen); i++ {
+				if hl := halfLen[i]; hl-1 > maxLen {
+					// 由于 t 中回文子串的首尾字母一定是 #，再根据下标转换关系，可以得到其在 s 中对应的回文子串的区间为：
+					// [(i-hl)/2, (i+hl)/2-2]
+					maxLen, starts = hl-1, []int{(i - hl) / 2}
+				} else if hl-1 == maxLen {
+					starts = append(starts, (i-hl)/2)
+				}
+			}
+		}
+
+		// 计算 s 中的回文子串的个数
+		// 答案为 ∑(halfLen[i]/2)，因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串
+		// LC647 https://leetcode.cn/problems/palindromic-substrings/
+		{
+			totPal := 0
+			for _, hl := range halfLen {
+				totPal += hl / 2
+			}
+		}
+
+		// 计算两个数组，其中
 		// startPL[i] 表示以 s[i] 为首字母的最长回文子串的长度
 		// endPL[i]   表示以 s[i] 为尾字母的最长回文子串的长度
 		// [国家集训队]最长双回文串 https://www.luogu.com.cn/problem/P4555
 		// LC1960 两个回文子字符串长度的最大乘积 https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
 		// LC214 https://leetcode.cn/problems/shortest-palindrome/
-		startPL := make([]int, len(s))
-		endPL := make([]int, len(s))
-		for i := 2; i < len(halfLen); i++ {
-			hl := halfLen[i]
-			left, right := (i-hl)/2, (i+hl)/2-2 // 见上面计算 maxPL 的注释
-			startPL[left] = max(startPL[left], hl-1)
-			endPL[right] = max(endPL[right], hl-1)
-		}
-		for i := 1; i < len(startPL); i++ {
-			startPL[i] = max(startPL[i], startPL[i-1]-2) // startPL[i] 还可能是一个更长的回文串缩短后的结果，两者取最大值，同时也方便传递
-		}
-		for i := len(endPL) - 2; i >= 0; i-- {
-			endPL[i] = max(endPL[i], endPL[i+1]-2) // 同上
+		{
+			startLen := make([]int, len(s))
+			endLen := make([]int, len(s))
+			for i := 2; i < len(halfLen); i++ {
+				hl := halfLen[i]
+				left, right := (i-hl)/2, (i+hl)/2-2 // 见上面计算 maxPL 的注释
+				startLen[left] = max(startLen[left], hl-1)
+				endLen[right] = max(endLen[right], hl-1)
+			}
+			for i := 1; i < len(startLen); i++ {
+				startLen[i] = max(startLen[i], startLen[i-1]-2) // startPL[i] 还可能是一个更长的回文串缩短后的结果，两者取最大值，同时也方便传递
+			}
+			for i := len(endLen) - 2; i >= 0; i-- {
+				endLen[i] = max(endLen[i], endLen[i+1]-2) // 同上
+			}
 		}
 
-		// todo EXTRA: 以 s[i] 为尾字母的最短回文子串的长度
+		// 以 s[i] 为尾字母的最短回文子串的长度
 		// 结合单调栈
 		// 回文中心越来越大
 		// https://codeforces.com/contest/1827/problem/C
-
-		// EXTRA: 计算 s 中的回文子串的个数
-		// 答案为 ∑(halfLen[i]/2)，因为每个 halfLen[i] 对应的回文子串集合中，有一半是左右两端点是 '#' 的回文子串
-		// LC647 https://leetcode.cn/problems/palindromic-substrings/
 		{
-			totP := 0
-			for _, hl := range halfLen {
-				totP += hl / 2
-			}
+			
 		}
 
 		// 利用差分数组，可以预处理以 i 结尾的回文子串的个数，从而进一步算出 s 的所有前缀中的回文子串个数
@@ -841,7 +848,7 @@ func _() {
 
 		// todo 任意区间回文子串个数
 
-		_ = []interface{}{isP, midPL}
+		_ = []interface{}{isPal, midLen}
 	}
 
 	// 只考虑奇回文串
@@ -870,7 +877,7 @@ func _() {
 	}
 
 	// 只考虑偶回文串
-	// https://codeforces.com/problemset/problem/1827/C 2600
+	// https://codeforces.com/problemset/problem/1827/C 2600 单调栈
 	manacherEven := func(s string) {
 		// 注意没有加首尾哨兵
 		n := len(s)

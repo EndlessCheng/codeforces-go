@@ -83,6 +83,7 @@ https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
 https://codeforces.com/problemset/problem/1407/D 2200
 https://codeforces.com/problemset/problem/5/E 2400
+https://codeforces.com/problemset/problem/1827/C 2600 Manacher
 
 其他
 LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
