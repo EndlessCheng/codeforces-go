@@ -46,6 +46,7 @@ https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
 https://codeforces.com/problemset/problem/1919/D 2100 结论
 https://atcoder.jp/contests/arc189/tasks/arc189_d 2006=CF2228
 https://atcoder.jp/contests/agc029/tasks/agc029_c 2103=CF2302
+https://codeforces.com/problemset/problem/1827/C 2600 Manacher DP
 https://www.luogu.com.cn/problem/P9290
 
 单调栈二分
@@ -83,7 +84,6 @@ https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
 https://codeforces.com/problemset/problem/1407/D 2200
 https://codeforces.com/problemset/problem/5/E 2400
-https://codeforces.com/problemset/problem/1827/C 2600 Manacher
 
 其他
 LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
