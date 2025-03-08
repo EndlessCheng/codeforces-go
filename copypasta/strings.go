@@ -676,11 +676,11 @@ func _() {
 
 		// 定义一个奇回文串的回文半径=(长度+1)/2，即保留回文中心，去掉一侧后的剩余字符串的长度
 		// halfLen[i] 表示在 t 上的以 t[i] 为回文中心的最长回文子串的回文半径
-		// 即 [i-halfLen[i]+1,i+halfLen[i]-1] 是 t 上的一个回文子串
+		// 即闭区间 [i-halfLen[i]+1, i+halfLen[i]-1] 是 t 上的一个回文子串
 		halfLen := make([]int, len(t)-2)
 		halfLen[1] = 1
-		// boxR 表示当前右边界下标最大的回文子串的右边界下标+1
-		// boxM 为该回文子串的中心位置，二者的关系为 r=mid+halfLen[mid]
+		// boxR 表示当前右边界下标最大的回文子串的右边界下标+1（初始化成任意 <= 0 的数都可以）
+		// boxM 为该最大回文子串的中心位置，二者的关系为 boxR = boxM + halfLen[boxM]
 		boxM, boxR := 0, 0
 		for i := 2; i < len(halfLen); i++ { // 循环的起止位置对应着原串的首尾字符
 			hl := 1
@@ -844,15 +844,54 @@ func _() {
 		_ = []interface{}{isP, midPL}
 	}
 
-	// todo 只考虑奇回文串
-	// https://codeforces.com/problemset/problem/30/E
-	manacherOdd := func() {}
-	_ = manacherOdd
+	// 只考虑奇回文串
+	// LC1960 https://leetcode.cn/problems/maximum-product-of-the-length-of-two-palindromic-substrings/
+	// https://codeforces.com/problemset/problem/30/E 2800
+	manacherOdd := func(s string) {
+		// 注意没有加首尾哨兵
+		n := len(s)
+		// halfLen[i] 表示以 s[i] 为回文中心的最长奇回文子串的回文半径
+		// 即闭区间 [i-halfLen[i]+1, i+halfLen[i]-1] 是一个奇回文子串，长为 halfLen[i]*2-1
+		halfLen := make([]int, n)
+		// boxR 表示当前右边界下标最大的奇回文子串的右边界下标+1（初始化成任意 <= 0 的数都可以）
+		// boxM 为该最大奇回文子串的中心位置，二者的关系为 boxR = boxM + halfLen[boxM]
+		boxM, boxR := 0, 0
+		for i := range halfLen {
+			hl := 1
+			if i < boxR {
+				hl = min(halfLen[boxM*2-i], boxR-i)
+			}
+			for i >= hl && i+hl < n && s[i-hl] == s[i+hl] {
+				hl++
+				boxM, boxR = i, i+hl
+			}
+			halfLen[i] = hl
+		}
+	}
 
 	// 只考虑偶回文串
-	// todo https://codeforces.com/contest/1827/submission/205941641
-	manacherEven := func() {}
-	_ = manacherEven
+	// https://codeforces.com/problemset/problem/1827/C 2600
+	manacherEven := func(s string) {
+		// 注意没有加首尾哨兵
+		n := len(s)
+		// halfLen[i] 表示以 s[i],s[i+1] 为回文中心的最长偶回文子串的回文半径
+		// 即闭区间 [i-halfLen[i]+1, i+halfLen[i]] 是一个偶回文子串，长为 halfLen[i]*2
+		halfLen := make([]int, n-1)
+		// boxR 表示当前右边界下标最大的偶回文子串的右边界下标（初始化成任意 <= 0 的数都可以）
+		// boxM 为该最大偶回文子串的中心位置（左），二者的关系为 boxR = boxM + halfLen[boxM]
+		boxM, boxR := 0, 0
+		for i := range halfLen {
+			hl := 0
+			if i < boxR {
+				hl = min(halfLen[boxM*2-i], boxR-i)
+			}
+			for i >= hl && i+hl+1 < n && s[i-hl] == s[i+hl+1] {
+				hl++
+				boxM, boxR = i, i+hl
+			}
+			halfLen[i] = hl
+		}
+	}
 
 	/* 后缀数组
 	https://riteme.site/blog/2016-6-19/sais.html（包含 SA-IS 与 DC3 的效率对比）
@@ -1284,7 +1323,7 @@ func _() {
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
 		isSubseq, subsequenceAutomaton, subsequenceAutomaton2,
-		manacher,
+		manacher, manacherOdd, manacherEven,
 		suffixArray, suffixArrayInt, suffixArrayInt2, // 后缀数组
 		lcpArray,
 	}
