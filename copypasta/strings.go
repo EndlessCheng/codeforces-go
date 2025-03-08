@@ -897,6 +897,7 @@ func _() {
 				boxM, boxR = i, i+hl
 			}
 			halfLen[i] = hl
+			// 此时可以处理右端点在 i+1 的回文串
 		}
 	}
 
