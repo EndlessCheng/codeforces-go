@@ -29,7 +29,7 @@ func maxSum(nums []int, k, m int) int {
 	return f[n]
 }
 
-func maxSum1(nums []int, k, m int) int {
+func maxSum2(nums []int, k, m int) int {
 	n := len(nums)
 	s := make([]int, n+1)
 	for i, x := range nums {
@@ -52,4 +52,29 @@ func maxSum1(nums []int, k, m int) int {
 		f = nf
 	}
 	return f[n]
+}
+
+func maxSum1(nums []int, k, m int) int {
+	n := len(nums)
+	s := make([]int, n+1)
+	for i, x := range nums {
+		s[i+1] = s[i] + x
+	}
+
+	f := make([][]int, k+1)
+	f[0] = make([]int, n+1)
+	for i := 1; i <= k; i++ {
+		f[i] = make([]int, n+1)
+		for j := range f[i] {
+			f[i][j] = math.MinInt / 2
+		}
+		mx := math.MinInt
+		// 左右两边留出足够空间给其他子数组
+		for j := i * m; j <= n-(k-i)*m; j++ {
+			// mx 表示最大的 f[i-1][L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+			mx = max(mx, f[i-1][j-m]-s[j-m])
+			f[i][j] = max(f[i][j-1], mx+s[j]) // 不选 vs 选
+		}
+	}
+	return f[k][n]
 }

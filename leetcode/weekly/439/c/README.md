@@ -40,11 +40,113 @@ $$
 
 这样就可以做到 $\mathcal{O}(nk)$ 时间了。
 
-代码实现时，$f$ 的第一个维度可以优化掉。
-
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1QP9bY3EL6/?t=16m57s)，欢迎点赞关注~
 
 ## 写法一
+
+```py [sol-Python3]
+class Solution:
+    def maxSum(self, nums: List[int], k: int, m: int) -> int:
+        n = len(nums)
+        s = list(accumulate(nums, initial=0))  # 前缀和
+        f = [[-inf] * (n + 1) for _ in range(k + 1)]
+        f[0] = [0] * (n + 1)
+        for i in range(1, k + 1):
+            mx = -inf
+            # 左右两边留出足够空间给其他子数组
+            for j in range(i * m, n - (k - i) * m + 1):
+                # mx 表示最大的 f[i-1][L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = max(mx, f[i - 1][j - m] - s[j - m])
+                f[i][j] = max(f[i][j - 1], mx + s[j])  # 不选 vs 选
+        return f[k][n]
+```
+
+```java [sol-Java]
+class Solution {
+    public int maxSum(int[] nums, int k, int m) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i]; // 前缀和
+        }
+
+        int[][] f = new int[k + 1][n + 1];
+        for (int i = 1; i <= k; i++) {
+            Arrays.fill(f[i], Integer.MIN_VALUE / 2);
+        }
+        for (int i = 1; i <= k; i++) {
+            int mx = Integer.MIN_VALUE;
+            // 左右两边留出足够空间给其他子数组
+            for (int j = i * m; j <= n - (k - i) * m; j++) {
+                // mx 表示最大的 f[i-1][L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = Math.max(mx, f[i - 1][j - m] - s[j - m]);
+                f[i][j] = Math.max(f[i][j - 1], mx + s[j]); // 不选 vs 选
+            }
+        }
+        return f[k][n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int maxSum(vector<int>& nums, int k, int m) {
+        int n = nums.size();
+        vector<int> s(n + 1);
+        partial_sum(nums.begin(), nums.end(), s.begin() + 1); // 前缀和
+
+        vector f(k + 1, vector<int>(n + 1, INT_MIN / 2));
+        f[0] = vector<int>(n + 1);
+        for (int i = 1; i <= k; i++) {
+            int mx = INT_MIN;
+            // 左右两边留出足够空间给其他子数组
+            for (int j = i * m; j <= n - (k - i) * m; j++) {
+                // mx 表示最大的 f[i-1][L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+                mx = max(mx, f[i - 1][j - m] - s[j - m]);
+                f[i][j] = max(f[i][j - 1], mx + s[j]); // 不选 vs 选
+            }
+        }
+        return f[k][n];
+    }
+};
+```
+
+```go [sol-Go]
+func maxSum(nums []int, k, m int) int {
+	n := len(nums)
+	s := make([]int, n+1)
+	for i, x := range nums {
+		s[i+1] = s[i] + x
+	}
+
+	f := make([][]int, k+1)
+	f[0] = make([]int, n+1)
+	for i := 1; i <= k; i++ {
+		f[i] = make([]int, n+1)
+		for j := range f[i] {
+			f[i][j] = math.MinInt / 2
+		}
+		mx := math.MinInt
+		// 左右两边留出足够空间给其他子数组
+		for j := i * m; j <= n-(k-i)*m; j++ {
+			// mx 表示最大的 f[i-1][L]-s[L]，其中 L 在区间 [(i-1)*m, j-m] 中
+			mx = max(mx, f[i-1][j-m]-s[j-m])
+			f[i][j] = max(f[i][j-1], mx+s[j]) // 不选 vs 选
+		}
+	}
+	return f[k][n]
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(nk)$。
+
+## 写法二
+
+$f$ 的第一个维度可以优化掉。
 
 ```py [sol-Python3]
 class Solution:
@@ -147,7 +249,7 @@ func maxSum(nums []int, k, m int) int {
 - 时间复杂度：$\mathcal{O}(nk)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 写法二
+## 写法三
 
 ```py [sol-Python3]
 class Solution:
