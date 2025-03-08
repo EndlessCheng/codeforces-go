@@ -634,6 +634,7 @@ func _() {
 	// https://leetcode.cn/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode-solution/
 	// https://www.zhihu.com/question/37289584
 	// 可视化 http://manacher-viz.s3-website-us-east-1.amazonaws.com
+	// 关于回文分拆的证明 https://codeforces.com/blog/entry/116109 1827C - Palindrome Partition
 	//
 	// https://oeis.org/A002620 全为 a 的字符串的奇回文子串个数 floor((n+1)^2/4)
 	// https://oeis.org/A002620 全为 a 的字符串的偶回文子串个数 floor(n^2/4)
