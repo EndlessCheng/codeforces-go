@@ -515,24 +515,25 @@ func _() {
 	}
 
 	// 判断子序列 / 最长匹配长度
-	// 返回 s 最长前缀的长度，满足该前缀是 t 的子序列
+	// 返回 t 最长前缀的长度，满足该前缀是 s 的子序列
 	// 见 https://leetcode.cn/circle/discuss/0viNMK/ 中的【判断子序列】
 	// https://leetcode.cn/problems/is-subsequence/
 	// https://leetcode.cn/problems/subsequence-with-the-minimum-score/
 	// - https://leetcode.cn/problems/find-the-lexicographically-smallest-valid-sequence/
 	// https://codeforces.com/problemset/problem/1194/C 1300
 	// https://codeforces.com/problemset/problem/778/A 1700
+	// https://codeforces.com/problemset/problem/223/B 1900
 	isSubseq := func(s, t string) int {
-		if s == "" {
+		if t == "" {
 			return 0
 		}
 		cnt := 0
-		for _, b := range t {
-			if s[cnt] != byte(b) {
+		for _, b := range s {
+			if t[cnt] != byte(b) {
 				continue
 			}
 			cnt++
-			if cnt == len(s) {
+			if cnt == len(t) {
 				break
 			}
 		}
@@ -646,7 +647,8 @@ func _() {
 	// https://codeforces.com/problemset/problem/7/D 2200
 	// - https://codeforces.com/problemset/problem/835/D 1900
 	// https://codeforces.com/problemset/problem/1827/C 2600
-	// https://codeforces.com/problemset/problem/159/D 思考：改成选 k 个怎么做
+	// https://codeforces.com/problemset/problem/30/E 2800
+	// https://codeforces.com/problemset/problem/159/D 同 17E    思考：改成选 k 个怎么做
 	// https://codeforces.com/problemset/problem/17/E 2900 相交的回文子串对数
 	// https://codeforces.com/problemset/problem/1081/H 3500
 	// https://www.luogu.com.cn/blog/user25308/proof-cf1081h
@@ -843,6 +845,7 @@ func _() {
 	}
 
 	// todo 只考虑奇回文串
+	// https://codeforces.com/problemset/problem/30/E
 	manacherOdd := func() {}
 	_ = manacherOdd
 
@@ -920,13 +923,11 @@ func _() {
 			 - 任意两后缀的 LCP 之和
 			 对所有 i，求出 ∑j=1..n LCP(i,j) https://atcoder.jp/contests/abc213/tasks/abc213_f
 			 https://atcoder.jp/contests/abc213/tasks/abc213_f
-		从字符串首尾取字符最小化字典序
+		从字符串首尾取字符最小化字典序 todo
 			https://oi-wiki.org/string/sa/#_10
-			todo
-		第 k 小子串
+		第 k 小子串 todo
 			https://www.luogu.com.cn/problem/P3975 不同位置的相同子串算作一个/多个
-			todo https://codeforces.com/problemset/problem/128/B 2100
-			todo
+			https://codeforces.com/problemset/problem/128/B 2100
 	两个字符串
 		最长公共子串 LC718 https://leetcode.cn/problems/maximum-length-of-repeated-subarray/
 	               LC3135 https://leetcode.cn/problems/equalize-strings-by-adding-or-removing-characters-at-ends/
@@ -956,7 +957,7 @@ func _() {
 		acSearch（https://www.luogu.com.cn/problem/P3796）的后缀数组做法
 			拼接所有串（模式+文本，# 隔开），对每个模式 p 找其左右范围，满足该范围内 height[i] >= len(p)，这可以用 ST+二分或线段树二分求出，然后统计区间内的属于文本串的后缀
 		不在其它字符串中出现的最短字典序最小子串 https://leetcode.cn/problems/shortest-uncommon-substring-in-an-array/
-	逆向
+	反向问题
 		todo 根据 sa 反推有多少个能生成 sa 的字符串 https://codeforces.com/problemset/problem/1526/E
 	todo 待整理 http://poj.org/problem?id=3581
 	 https://www.luogu.com.cn/problem/P5546
