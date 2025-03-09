@@ -1,7 +1,3 @@
-视频讲解见[【双周赛 104】](https://www.bilibili.com/video/BV1fV4y1r7e6/)第四题。
-
-## 思路
-
 由于元素的顺序不影响答案，先排序。
 
 设有 $a,b,c,d,e$ 五个数，顺序从小到大。
@@ -37,12 +33,14 @@ $$
 
 这意味着，我们不需要枚举最小值，只需要枚举最大值，就可以把 $s$ 递推计算出来。
 
-> 有关取模的知识点，见文末的讲解。
+记得取模。关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
-```py [sol1-Python3]
+视频讲解见[【双周赛 104】](https://www.bilibili.com/video/BV1fV4y1r7e6/)第四题。
+
+```py [sol-Python3]
 class Solution:
     def sumOfPower(self, nums: List[int]) -> int:
-        MOD = 10 ** 9 + 7
+        MOD = 1_000_000_007
         nums.sort()
         ans = s = 0
         for x in nums:  # x 作为最大值
@@ -51,12 +49,13 @@ class Solution:
         return ans
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int sumOfPower(int[] nums) {
-        final long MOD = (long) 1e9 + 7;
+        final int MOD = 1_000_000_007;
         Arrays.sort(nums);
-        long ans = 0, s = 0;
+        long ans = 0;
+        long s = 0;
         for (long x : nums) { // x 作为最大值
             ans = (ans + x * x % MOD * (x + s)) % MOD; // 中间模一次防止溢出
             s = (s * 2 + x) % MOD; // 递推计算下一个 s
@@ -66,14 +65,14 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int sumOfPower(vector<int> &nums) {
-        const int MOD = 1e9 + 7;
-        sort(nums.begin(), nums.end());
+    int sumOfPower(vector<int>& nums) {
+        const int MOD = 1'000'000'007;
+        ranges::sort(nums);
         int ans = 0, s = 0;
-        for (long long x: nums) { // x 作为最大值
+        for (long long x : nums) { // x 作为最大值
             ans = (ans + x * x % MOD * (x + s)) % MOD; // 中间模一次防止溢出
             s = (s * 2 + x) % MOD; // 递推计算下一个 s
         }
@@ -82,7 +81,7 @@ public:
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func sumOfPower(nums []int) (ans int) {
 	const mod = 1_000_000_007
 	sort.Ints(nums)
@@ -95,17 +94,17 @@ func sumOfPower(nums []int) (ans int) {
 }
 ```
 
-```js [sol1-JavaScript]
-var sumOfPower = function (nums) {
-    const mod = 1e9 + 7;
+```js [sol-JavaScript]
+var sumOfPower = function(nums) {
+    const MOD = 1_000_000_007;
     nums.sort((a, b) => a - b);
     let ans = 0, s = 0;
     for (const x of nums) { // x 作为最大值
         const bx = BigInt(x);
-        ans += Number(bx * bx * (bx + BigInt(s)) % BigInt(mod));
-        s = (s * 2 + x) % mod // 递推计算下一个 s
+        ans += Number(bx * bx * (bx + BigInt(s)) % BigInt(MOD));
+        s = (s * 2 + x) % MOD // 递推计算下一个 s
     }
-    return ans % mod;
+    return ans % MOD;
 };
 ```
 
@@ -125,50 +124,23 @@ var sumOfPower = function (nums) {
 - [2104. 子数组范围和](https://leetcode.cn/problems/sum-of-subarray-ranges/)
 - [2281. 巫师的总力量和](https://leetcode.cn/problems/sum-of-total-strength-of-wizards/)
 
-[往期每日一题题解（按 tag 分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+## 分类题单
 
-## 附：模运算
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
-
-你能把这个结论抽象成数学等式吗？
-
-一般地，涉及到取模的题目，通常会用到如下等式（上面计算的是 $m=10$）：
-
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
-
-$$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
-$$
-
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
-
-第一个等式：
-
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
