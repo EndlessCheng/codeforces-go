@@ -19,7 +19,7 @@ func run(in io.Reader, _w io.Writer) {
 		Fscan(in, &a[i])
 	}
 	type pair struct{ up, i int }
-	qs := make([][]pair, n+1)
+	qs := make([][]pair, n)
 	for i := 0; i < q; i++ {
 		Fscan(in, &r, &up)
 		qs[r-1] = append(qs[r-1], pair{up, i})
