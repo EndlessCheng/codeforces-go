@@ -57,16 +57,9 @@ func maxSubarrays1(n int, conflictingPairs [][]int) int64 {
 	extra := make([]int, n+2)
 	b := []int{n + 1, n + 1} // 维护最小 b 和次小 b
 	for a := n; a > 0; a-- {
-		listB := groups[a]
-		if listB != nil {
-			slices.Sort(listB)
-			if len(listB) > 2 {
-				listB = listB[:2]
-			}
-			b = append(b, listB...)
-			slices.Sort(b)
-			b = b[:2]
-		}
+		b = append(b, groups[a]...)
+		slices.Sort(b)
+		b = b[:2]
 		ans += b[0] - a
 		extra[b[0]] += b[1] - b[0]
 	}

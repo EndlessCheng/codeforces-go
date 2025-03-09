@@ -87,10 +87,29 @@ class Solution:
         extra = [0] * (n + 2)
         b = [n + 1, n + 1]  # 维护最小 b 和次小 b
         for a in range(n, 0, -1):
+            b = sorted(b + groups[a])[:2]
+            ans += b[0] - a
+            extra[b[0]] += b[1] - b[0]
+
+        return ans + max(extra)
+```
+
+```py [sol-Python3 更快写法]
+class Solution:
+    def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
+        groups = [[] for _ in range(n + 1)]
+        for a, b in conflictingPairs:
+            if a > b:
+                a, b = b, a
+            groups[a].append(b)
+
+        ans = 0
+        extra = [0] * (n + 2)
+        b = [n + 1, n + 1]  # 维护最小 b 和次小 b
+        for a in range(n, 0, -1):
             list_b = groups[a]
             if list_b:
-                list_b.sort()
-                b.extend(list_b[:2])
+                b.extend(list_b)
                 b.sort()
                 b = b[:2]
             ans += b[0] - a
@@ -117,19 +136,12 @@ class Solution {
         int b0 = n + 1;
         int b1 = n + 1;
         for (int a = n; a > 0; a--) {
-            List<Integer> listB = groups[a];
-            if (!listB.isEmpty()) {
-                Collections.sort(listB);
-                if (listB.size() > 2) {
-                    listB = listB.subList(0, 2);
-                }
-                for (int b : listB) {
-                    if (b < b0) {
-                        b1 = b0;
-                        b0 = b;
-                    } else if (b < b1) {
-                        b1 = b;
-                    }
+            for (int b : groups[a]) {
+                if (b < b0) {
+                    b1 = b0;
+                    b0 = b;
+                } else if (b < b1) {
+                    b1 = b;
                 }
             }
             ans += b0 - a;
@@ -160,15 +172,9 @@ public:
         vector<int> b = {n + 1, n + 1}; // 维护最小 b 和次小 b
         for (int a = n; a > 0; a--) {
             auto& list_b = groups[a];
-            if (!list_b.empty()) {
-                ranges::sort(list_b);
-                if (list_b.size() > 2) {
-                    list_b.resize(2);
-                }
-                b.insert(b.end(), list_b.begin(), list_b.end());
-                ranges::sort(b);
-                b.resize(2);
-            }
+            b.insert(b.end(), list_b.begin(), list_b.end());
+            ranges::sort(b);
+            b.resize(2);
             ans += b[0] - a;
             extra[b[0]] += b[1] - b[0];
         }
@@ -193,16 +199,9 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 	extra := make([]int, n+2)
 	b := []int{n + 1, n + 1} // 维护最小 b 和次小 b
 	for a := n; a > 0; a-- {
-		listB := groups[a]
-		if listB != nil {
-			slices.Sort(listB)
-			if len(listB) > 2 {
-				listB = listB[:2]
-			}
-			b = append(b, listB...)
-			slices.Sort(b)
-			b = b[:2]
-		}
+		b = append(b, groups[a]...)
+		slices.Sort(b)
+		b = b[:2]
 		ans += b[0] - a
 		extra[b[0]] += b[1] - b[0]
 	}
@@ -213,29 +212,25 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n)$。
+- 时间复杂度：$\mathcal{O}(n\log n)$ 或 $\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 时间复杂度的瓶颈在排序上，下面来优化。
 
 ## 优化
 
-把所有排序的地方都替换成维护前二小，这样时间复杂度就是 $\mathcal{O}(n)$ 了。
+把排序替换成维护前二小，这样时间复杂度就是 $\mathcal{O}(n)$ 了。
 
 此外，$\textit{extra}$ 数组可以优化掉，因为 $b_0$ 只会减少，不会增加，所以相同的 $b_0$ 必定是连续的，我们只需要一个变量维护连续相同 $b_0$ 对应的 $b_1-b_0$ 之和，同时用另一个变量 $\textit{maxExtra}$ 维护 $\textit{extra}$ 的最大值。
 
 ```py [sol-Python3]
 class Solution:
     def maxSubarrays(self, n: int, conflictingPairs: List[List[int]]) -> int:
-        groups = [[n + 1, n + 1] for _ in range(n + 1)]
+        groups = [[] for _ in range(n + 1)]
         for a, b in conflictingPairs:
             if a > b:
                 a, b = b, a
-            g = groups[a]
-            if b < g[0]:
-                g[0], g[1] = b, g[0]
-            elif b < g[1]:
-                g[1] = b
+            groups[a].append(b)
 
         ans = extra = max_extra = 0
         b0 = b1 = n + 1
@@ -250,7 +245,7 @@ class Solution:
             if b0 != pre_b0:
                 extra = 0
             extra += b1 - b0
-            max_extra = max(max_extra, extra)
+            max_extra = max(max_extra, extra)  # 这里改成手动 if 会快不少
 
         return ans + max_extra
 ```
@@ -258,25 +253,12 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long maxSubarrays(int n, int[][] conflictingPairs) {
-        int[][] groups = new int[n + 1][2];
-        for (int[] g : groups) {
-            g[0] = g[1] = n + 1;
-        }
+        List<Integer>[] groups = new ArrayList[n + 1];
+        Arrays.setAll(groups, i -> new ArrayList<>());
         for (int[] p : conflictingPairs) {
             int a = p[0];
             int b = p[1];
-            if (a > b) {
-                int tmp = a;
-                a = b;
-                b = tmp;
-            }
-            int[] g = groups[a];
-            if (b < g[0]) {
-                g[1] = g[0];
-                g[0] = b;
-            } else if (b < g[1]) {
-                g[1] = b;
-            }
+            groups[Math.min(a, b)].add(Math.max(a, b));
         }
 
         long ans = 0;
@@ -311,6 +293,7 @@ class Solution {
 class Solution {
 public:
     long long maxSubarrays(int n, vector<vector<int>>& conflictingPairs) {
+        // vector<array<int, 2>> 比 vector<vector<int>> 快很多
         vector<array<int, 2>> groups(n + 1, {n + 1, n + 1});
         for (auto& p : conflictingPairs) {
             int a = p[0], b = p[1];
@@ -353,7 +336,7 @@ public:
 
 ```go [sol-Go]
 func maxSubarrays(n int, conflictingPairs [][]int) int64 {
-	groups := make([][2]int, n+1)
+	groups := make([][2]int, n+1) // [][2]int 比 [][]int 快很多
 	for i := range groups {
 		groups[i] = [2]int{n + 1, n + 1}
 	}
