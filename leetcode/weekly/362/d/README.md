@@ -74,7 +74,7 @@ $$
 
 利用**矩阵快速幂**（参考 [70. 爬楼梯的官方题解的方法二](https://leetcode.cn/problems/climbing-stairs/solution/pa-lou-ti-by-leetcode-solution/)），可以得到 $f[k][0]$，即本题答案。
 
-关于取模的知识点见文末的讲解。
+关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ```py [sol-Python3]
 class Solution:
@@ -121,7 +121,7 @@ class Solution:
         c = [[0, 0], [0, 0]]
         for i in range(2):
             for j in range(2):
-                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % (10 ** 9 + 7)
+                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % 1_000_000_007
         return c
 
     # 矩阵快速幂
@@ -188,14 +188,12 @@ class Solution {
         return matchCnt;
     }
 
-    private static final long MOD = (long) 1e9 + 7;
-
     // 矩阵乘法
     private long[][] multiply(long[][] a, long[][] b) {
         long[][] c = new long[2][2];
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % MOD;
+                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % 1_000_000_007;
             }
         }
         return c;
@@ -217,21 +215,8 @@ class Solution {
 
 ```cpp [sol-C++]
 class Solution {
-public:
-    int numberOfWays(string s, string t, long long k) {
-        int n = s.length();
-        int c = kmp_search(s + s.substr(0, n - 1), t);
-        vector<vector<long long>> m = {
-            {c - 1, c},
-            {n - c, n - 1 - c}
-        };
-        m = pow(m, k);
-        return m[0][s != t];
-    }
-
-private:
     // KMP 模板
-    vector<int> calc_max_match(string s) {
+    vector<int> calc_max_match(const string& s) {
         vector<int> match(s.length());
         int c = 0;
         for (int i = 1; i < s.length(); i++) {
@@ -249,7 +234,7 @@ private:
 
     // KMP 模板
     // 返回 text 中出现了多少次 pattern（允许 pattern 重叠）
-    int kmp_search(string text, string pattern) {
+    int kmp_search(const string& text, const string& pattern) {
         vector<int> match = calc_max_match(pattern);
         int match_cnt = 0, c = 0;
         for (int i = 0; i < text.length(); i++) {
@@ -268,21 +253,19 @@ private:
         return match_cnt;
     }
 
-    const long long MOD = 1e9 + 7;
-
     // 矩阵乘法
-    vector<vector<long long>> multiply(vector<vector<long long>> &a, vector<vector<long long>> &b) {
+    vector<vector<long long>> multiply(vector<vector<long long>>& a, vector<vector<long long>>& b) {
         vector<vector<long long>> c(2, vector<long long>(2));
         for (int i = 0; i < 2; i++) {
             for (int j = 0; j < 2; j++) {
-                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % MOD;
+                c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % 1'000'000'007;
             }
         }
         return c;
     }
 
     // 矩阵快速幂
-    vector<vector<long long>> pow(vector<vector<long long>> &a, long long n) {
+    vector<vector<long long>> pow(vector<vector<long long>>& a, long long n) {
         vector<vector<long long>> res = {{1, 0}, {0, 1}};
         for (; n; n /= 2) {
             if (n % 2) {
@@ -292,12 +275,22 @@ private:
         }
         return res;
     }
+
+public:
+    int numberOfWays(string s, string t, long long k) {
+        int n = s.length();
+        int c = kmp_search(s + s.substr(0, n - 1), t);
+        vector<vector<long long>> m = {
+            {c - 1, c},
+            {n - c, n - 1 - c}
+        };
+        m = pow(m, k);
+        return m[0][s != t];
+    }
 };
 ```
 
 ```go [sol-Go]
-const mod = 1_000_000_007
-
 type matrix [][]int
 
 func newMatrix(n, m int) matrix {
@@ -322,7 +315,7 @@ func (a matrix) mul(b matrix) matrix {
 	for i, row := range a {
 		for j := range b[0] {
 			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod
+				c[i][j] = (c[i][j] + v*b[k][j]) % 1_000_000_007
 			}
 		}
 	}
@@ -389,7 +382,7 @@ func numberOfWays(s, t string, k int64) int {
 ```
 
 ```js [sol-JavaScript]
-var numberOfWays = function (s, t, k) {
+var numberOfWays = function(s, t, k) {
     const n = s.length;
     const c = kmpSearch(s + s.substring(0, n - 1), t);
     const m = [
@@ -397,12 +390,12 @@ var numberOfWays = function (s, t, k) {
         [BigInt(n - c), BigInt(n - 1 - c)],
     ];
     const res = pow(m, k);
-    return s === t ? res[0][0] : res[0][1];
+    return Number(s === t ? res[0][0] : res[0][1]);
 };
 
 // KMP 模板
 function calcMaxMatch(s) {
-    const match = new Array(s.length).fill(0);
+    const match = Array(s.length).fill(0);
     let c = 0;
     for (let i = 1; i < s.length; i++) {
         const v = s.charAt(i);
@@ -444,7 +437,7 @@ function multiply(a, b) {
     const c = [[0, 0], [0, 0]]
     for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 2; j++) {
-            c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % BigInt(1e9 + 7);
+            c[i][j] = (a[i][0] * b[0][j] + a[i][1] * b[1][j]) % 1_000_000_007n;
         }
     }
     return c;
@@ -478,48 +471,23 @@ function pow(a, n) {
 - [552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)
 - [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
 
-## 算法小课堂：模运算
+## 分类题单
 
-如果让你计算 $1234\cdot 6789$ 的**个位数**，你会如何计算？
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-由于只有个位数会影响到乘积的个位数，那么 $4\cdot 9=36$ 的个位数 $6$ 就是答案。
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. 【本题相关】[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-对于 $1234+6789$ 的个位数，同理，$4+9=13$ 的个位数 $3$ 就是答案。
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
-你能把这个结论抽象成数学等式吗？
-
-一般地，涉及到取模的题目，通常会用到如下等式（上面计算的是 $m=10$）：
-
-$$
-(a+b)\bmod m = ((a\bmod m) + (b\bmod m)) \bmod m
-$$
-
-$$
-(a\cdot b) \bmod m=((a\bmod m)\cdot  (b\bmod m)) \bmod m
-$$
-
-证明：根据**带余除法**，任意整数 $a$ 都可以表示为 $a=km+r$，这里 $r$ 相当于 $a\bmod m$。那么设 $a=k_1m+r_1,\ b=k_2m+r_2$。
-
-第一个等式：
-
-$$
-\begin{aligned}
-&\ (a+b) \bmod m\\
-=&\ ((k_1+k_2) m+r_1+r_2)\bmod m\\
-=&\ (r_1+r_2)\bmod m\\
-=&\ ((a\bmod m) + (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-第二个等式：
-
-$$
-\begin{aligned}
-&\ (a\cdot b) \bmod m\\
-=&\ (k_1k_2m^2+(k_1r_2+k_2r_1)m+r_1r_2)\bmod m\\
-=&\ (r_1r_2)\bmod m\\
-=&\ ((a\bmod m)\cdot  (b\bmod m)) \bmod m
-\end{aligned}
-$$
-
-**根据这两个恒等式，可以随意地对代码中的加法和乘法的结果取模**。
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
