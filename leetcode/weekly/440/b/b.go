@@ -17,7 +17,7 @@ func findMaxSum(nums1, nums2 []int, k int) []int64 {
 	slices.SortFunc(a, func(p, q tuple) int { return p.x - q.x })
 
 	ans := make([]int64, n)
-	h := &hp{}
+	h := hp{make([]int, k)}
 	s := 0
 	for i, t := range a {
 		if i > 0 && t.x == a[i-1].x {
@@ -25,15 +25,24 @@ func findMaxSum(nums1, nums2 []int, k int) []int64 {
 		} else {
 			ans[t.i] = int64(s)
 		}
-		s += t.y
-		heap.Push(h, t.y)
-		if h.Len() > k {
-			s -= heap.Pop(h).(int)
+		y := t.y
+		if i < k {
+			s += y
+			h.IntSlice[i] = y
+			continue
+		}
+		if i == k {
+			heap.Init(&h)
+		}
+		if y > h.IntSlice[0] {
+			s += y - h.IntSlice[0]
+			h.IntSlice[0] = y
+			heap.Fix(&h, 0)
 		}
 	}
 	return ans
 }
 
 type hp struct{ sort.IntSlice }
-func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (hp) Push(any)     {}
+func (hp) Pop() (_ any) { return }

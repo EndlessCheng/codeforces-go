@@ -179,6 +179,24 @@ class Solution:
         return ans
 ```
 
+```py [sol-Python3 更快写法]
+class Solution:
+    def findMaxSum(self, nums1: List[int], nums2: List[int], k: int) -> List[int]:
+        a = sorted((x, y, i) for i, (x, y) in enumerate(zip(nums1, nums2)))
+        n = len(a)
+        ans = [0] * n
+        h = []
+        s = 0
+        for i, (x, y, idx) in enumerate(a):
+            ans[idx] = ans[a[i - 1][2]] if i and x == a[i - 1][0] else s
+            s += y
+            if len(h) < k:
+                heappush(h, y)
+            else:
+                s -= heappushpop(h, y)
+        return ans
+```
+
 ```java [sol-Java]
 class Solution {
     public long[] findMaxSum(int[] nums1, int[] nums2, int k) {
@@ -266,6 +284,48 @@ func findMaxSum(nums1, nums2 []int, k int) []int64 {
 type hp struct{ sort.IntSlice }
 func (h *hp) Push(v any) { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *hp) Pop() any   { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+```
+
+```go [sol-Go 更快写法]
+func findMaxSum(nums1, nums2 []int, k int) []int64 {
+	n := len(nums1)
+	type tuple struct{ x, y, i int }
+	a := make([]tuple, n)
+	for i, x := range nums1 {
+		a[i] = tuple{x, nums2[i], i}
+	}
+	slices.SortFunc(a, func(p, q tuple) int { return p.x - q.x })
+
+	ans := make([]int64, n)
+	h := hp{make([]int, k)}
+	s := 0
+	for i, t := range a {
+		if i > 0 && t.x == a[i-1].x {
+			ans[t.i] = ans[a[i-1].i]
+		} else {
+			ans[t.i] = int64(s)
+		}
+		y := t.y
+		if i < k {
+			s += y
+			h.IntSlice[i] = y
+			continue
+		}
+		if i == k {
+			heap.Init(&h)
+		}
+		if y > h.IntSlice[0] {
+			s += y - h.IntSlice[0]
+			h.IntSlice[0] = y
+			heap.Fix(&h, 0)
+		}
+	}
+	return ans
+}
+
+type hp struct{ sort.IntSlice }
+func (hp) Push(any)     {}
+func (hp) Pop() (_ any) { return }
 ```
 
 #### 复杂度分析
