@@ -74,16 +74,12 @@ public:
         long long tot = reduce(batteries.begin(), batteries.end(), 0L);
         long long l = 0, r = tot / n + 1;
         while (l + 1 < r) {
-            long long x = (l + r) / 2;
+            long long x = l + (r - l) / 2;
             long long sum = 0;
             for (long long b : batteries) {
                 sum += min(b, x);
             }
-            if (n * x <= sum) {
-                l = x;
-            } else {
-                r = x;
-            }
+            (n * x <= sum ? l : r) = x;
         }
         return l;
     }
