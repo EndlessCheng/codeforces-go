@@ -221,6 +221,10 @@ func (t seg) set(o, val int) {
 	t[o].val = t.mergeInfo(t[o].val, val)
 }
 
+func (t seg) maintain(o int) {
+	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
+}
+
 // 下标从 0 开始
 // 调用时 o=1, l=0, r=n-1
 func (t seg) build(a []int, o, l, r int) {
@@ -248,10 +252,6 @@ func (t seg) update(o, i, val int) {
 		t.update(o<<1|1, i, val)
 	}
 	t.maintain(o)
-}
-
-func (t seg) maintain(o int) {
-	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
 }
 
 // 调用时 o=1  [l,r] 0<=l<=r<=n-1
@@ -431,6 +431,10 @@ func (t lazySeg) spread(o int) {
 	}
 }
 
+func (t lazySeg) maintain(o int) {
+	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
+}
+
 // 下标从 0 开始
 // 调用时 o=1, l=0, r=n-1
 func (t lazySeg) build(a []int, o, l, r int) {
@@ -461,10 +465,6 @@ func (t lazySeg) update(o, l, r int, f int) {
 		t.update(o<<1|1, l, r, f)
 	}
 	t.maintain(o)
-}
-
-func (t lazySeg) maintain(o int) {
-	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
 }
 
 // 调用时 o=1  [l,r] 0<=l<=r<=n-1
