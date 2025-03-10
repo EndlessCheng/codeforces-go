@@ -92,6 +92,7 @@ import "math/bits"
 // https://atcoder.jp/contests/abc285/tasks/abc285_f
 // https://atcoder.jp/contests/abc339/tasks/abc339_e 值域线段树
 // https://atcoder.jp/contests/abc356/tasks/abc356_f 动态图连通块大小
+// https://atcoder.jp/contests/abc353/tasks/abc353_g
 //
 // 题目推荐 https://cp-algorithms.com/data_structures/segment_tree.html#toc-tgt-12
 // 力扣 https://leetcode.cn/tag/segment-tree/
@@ -197,13 +198,12 @@ i/n    n i range
 3.9941 1049600 4192257 [1048577,1048577]
 */
 
-// 线段树有两个下标，一个是线段树底层数组的下标，一个是线段树维护的区间的下标。
-// 底层数组的下标：一般是从 1 开始的，从 0 开始也可以，把左右子树下标改成 2*i+1 和 2*i+2 就行。下面的代码从 1 开始。
-// 线段树维护的区间的下标：这个其实无所谓，从 0 从 1 开始都可以。下面的代码从 0 开始。
+// 线段树有两个下标，一个是线段树节点数组的下标，另一个是线段树维护的区间的下标
+// 节点数组的下标：一般是从 1 开始的。如果你想改成从 0 开始，把左右子树下标改成 o*2+1 和 o*2+2 就行
+// 区间的下标：从 0 开始。如果你习惯从 1 开始的数组，也可以改成从 1 开始
 
 // l 和 r 也可以写到方法参数上，实测二者在执行效率上无异
 // 考虑到 debug 和 bug free 上的优点，写到结构体参数中
-// 如果想记录最值及其下标，可以把 val 的类型改成 pair
 type seg []struct {
 	l, r int
 	val  int // info
@@ -410,21 +410,23 @@ func (lazySeg) mergeInfo(a, b int) int {
 	return a + b // % mod
 }
 
-func (t lazySeg) do(o int, v int) {
-	to := &t[o]
+func (lazySeg) mergeTodo(a, b int) int {
+	return a + b // % mod
+}
 
-	// 更新 v 对整个区间的影响
-	to.sum += v * (to.r - to.l + 1)
+func (t lazySeg) apply(o int, f int) {
+	cur := &t[o]
 
-	// 更新 v 对左右儿子的影响
-	to.todo += v
-	// % mod
+	// 更新 f 对整个区间的影响（本例为区间加）
+	cur.sum += f * (cur.r - cur.l + 1) // % mod
+
+	cur.todo = t.mergeTodo(f, cur.todo)
 }
 
 func (t lazySeg) spread(o int) {
-	if v := t[o].todo; v != todoInit {
-		t.do(o<<1, v)
-		t.do(o<<1|1, v)
+	if f := t[o].todo; f != todoInit {
+		t.apply(o<<1, f)
+		t.apply(o<<1|1, f)
 		t[o].todo = todoInit
 	}
 }
@@ -445,18 +447,18 @@ func (t lazySeg) build(a []int, o, l, r int) {
 }
 
 // 调用时 o=1  [l,r] 0<=l<=r<=n-1
-func (t lazySeg) update(o, l, r int, v int) {
+func (t lazySeg) update(o, l, r int, f int) {
 	if l <= t[o].l && t[o].r <= r {
-		t.do(o, v)
+		t.apply(o, f)
 		return
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
-		t.update(o<<1, l, r, v)
+		t.update(o<<1, l, r, f)
 	}
 	if m < r {
-		t.update(o<<1|1, l, r, v)
+		t.update(o<<1|1, l, r, f)
 	}
 	t.maintain(o)
 }
@@ -642,13 +644,17 @@ func (lazyNode) mergeInfo(a, b int) int {
 	return a + b // max(a, b)
 }
 
-func (o *lazyNode) maintain() {
-	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
+func (lazyNode) mergeTodo(a, b int) int {
+	return a + b // max(a, b)
 }
 
-func (o *lazyNode) do(add int) {
-	o.todo += add                  // % mod
-	o.sum += (o.r - o.l + 1) * add // % mod
+func (o *lazyNode) apply(f int) {
+	o.sum += (o.r - o.l + 1) * f    // % mod
+	o.todo = o.mergeTodo(f, o.todo) // % mod
+}
+
+func (o *lazyNode) maintain() {
+	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
 }
 
 func (o *lazyNode) spread() {
@@ -659,16 +665,16 @@ func (o *lazyNode) spread() {
 	if o.ro == emptyLazyNode {
 		o.ro = &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: m + 1, r: o.r, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 	}
-	if v := o.todo; v != lazyNodeDefaultTodoVal {
-		o.lo.do(v)
-		o.ro.do(v)
+	if f := o.todo; f != lazyNodeDefaultTodoVal {
+		o.lo.apply(f)
+		o.ro.apply(f)
 		o.todo = lazyNodeDefaultTodoVal
 	}
 }
 
 func (o *lazyNode) update(l, r int, add int) {
 	if l <= o.l && o.r <= r {
-		o.do(add)
+		o.apply(add)
 		return
 	}
 	o.spread()
