@@ -27,8 +27,7 @@ func (t seg) apply(o int) {
 
 	c0 := d.c0
 	c1 := d.c1
-	sz := c0 + c1
-	d.inv = sz*(sz-1)/2 - c0*(c0-1)/2 - c1*(c1-1)/2 - d.inv
+	d.inv = c0*c1 - d.inv
 	d.c0 = c1
 	d.c1 = c0
 
