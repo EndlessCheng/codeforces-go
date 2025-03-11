@@ -11,6 +11,7 @@ import (
 模板题 LC850 https://leetcode.cn/problems/rectangle-area-ii/
 模板题 https://www.luogu.com.cn/problem/P5490
 LC3454 https://leetcode.cn/problems/separate-squares-ii/
+https://codeforces.com/problemset/problem/258/E 2400 转化
 https://ac.nowcoder.com/acm/contest/66651/C
 */
 
@@ -119,4 +120,38 @@ func rectangleArea(rectangles [][]int) (ans int) {
 		ans += sumLen * (events[i+1].y - e.y) // 新增面积 = 被至少一个矩形覆盖的底边长之和 * 矩形高度
 	}
 	return
+}
+
+// 横纵坐标范围均在 [0,n-1] 中，获取每条水平扫描线经过多少个在矩形中（包括边界）的整点
+// https://codeforces.com/problemset/problem/258/E 2400 转化
+func lineCover(n int, rectangles [][]int) []int {
+	type event struct{ lx, rx, delta int }
+	events := make([][]event, n+1)
+	for _, rect := range rectangles {
+		lx, ly, rx, ry := rect[0], rect[1], rect[2], rect[3]
+		events[ly] = append(events[ly], event{lx, rx, 1})
+		events[ry+1] = append(events[ry+1], event{lx, rx, -1})
+	}
+
+	// 初始化线段树
+	xs := make([]int, n+1)
+	for i := range xs {
+		xs[i] = i
+	}
+	t := make(segRect, 2<<bits.Len(uint(n-1)))
+	t.build(xs, 1, 0, n-1) // 本意上，要把 minCoverLen 都置为 1
+
+	ans := make([]int, n)
+	// 模拟扫描线从下往上移动
+	for i, es := range events[:n] {
+		for _, e := range es {
+			// 注意这里不是 e.rx-1，因为我们算的是点的个数，不是边长
+			t.update(1, e.lx, e.rx, e.delta) // 更新被 [e.lx, e.rx] 覆盖的次数
+		}
+		ans[i] = n              // 总的底边长度
+		if t[1].minCover == 0 { // 需要去掉没被矩形覆盖的长度
+			ans[i] -= t[1].minCoverLen
+		}
+	}
+	return ans
 }
