@@ -356,7 +356,7 @@ func gaussJordanElimination(A matrix, B []int) (sol []float64, infSol bool) {
 		// 消元，构造简化行梯阵式
 		for i := range a {
 			if i != row {
-				// 用当前行对其余行进行消元：从第 i 个式子中消去第 col 个未知数
+				// 用当前行对其余行消元：从第 i 个式子中消去第 col 个未知数
 				for j := col + 1; j <= n; j++ {
 					a[i][j] -= a[i][col] * a[row][j]
 				}
