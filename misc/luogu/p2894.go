@@ -10,12 +10,6 @@ import (
 // https://space.bilibili.com/206214
 type seg2894 []struct{ l, r, pre0, suf0, max0, todo int }
 
-func newSegTree(n int) seg2894 {
-	t := make(seg2894, 2<<bits.Len(uint(n-1)))
-	t.build(1, 0, n-1)
-	return t
-}
-
 func (t seg2894) do(i, v int) {
 	o := &t[i]
 	size := 0
