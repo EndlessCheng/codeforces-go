@@ -19,7 +19,7 @@ type seg2572 []struct {
 
 const setInit2572, flipInit2572 = -1, 0
 
-func mergeInfo(a, b info2572) (c info2572) {
+func (seg2572) mergeInfo(a, b info2572) (c info2572) {
 	c.pre0 = a.pre0
 	if a.cnt1 == 0 {
 		c.pre0 += b.pre0
@@ -91,7 +91,7 @@ func (t seg2572) build(a []int8, o, l, r int) {
 }
 
 func (t seg2572) maintain(o int) {
-	t[o].data = mergeInfo(t[o<<1].data, t[o<<1|1].data)
+	t[o].data = t.mergeInfo(t[o<<1].data, t[o<<1|1].data)
 }
 
 func (t seg2572) update(o, l, r int, v int8) {
@@ -126,7 +126,7 @@ func (t seg2572) query(o, l, r int) info2572 {
 	if l > m {
 		return t.query(o<<1|1, l, r)
 	}
-	return mergeInfo(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	return t.mergeInfo(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
 func p2572(_r io.Reader, _w io.Writer) {
