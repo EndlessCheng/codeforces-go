@@ -382,9 +382,8 @@ func newSegmentTree(a []int) seg {
 //    线段树维护首项的和
 //
 // 【多个更新操作复合】
-// = + max https://www.luogu.com.cn/problem/P1253
-//         代码 https://www.luogu.com.cn/record/138265877
-// * + ∑ https://www.luogu.com.cn/problem/P3373
+// = + max https://www.luogu.com.cn/problem/P1253 代码 https://www.luogu.com.cn/record/207200750
+// * + ∑ https://www.luogu.com.cn/problem/P3373 代码 https://www.luogu.com.cn/record/207204766
 //       LC1622 https://leetcode.cn/problems/fancy-sequence/
 // = + ∑ https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A
 // * + ∑ai^k(k≤10) https://www.zhihu.com/question/564007656 B
@@ -423,16 +422,18 @@ func (t lazySeg) apply(o int, f int) {
 	cur.todo = t.mergeTodo(f, cur.todo)
 }
 
-func (t lazySeg) spread(o int) {
-	if f := t[o].todo; f != todoInit {
-		t.apply(o<<1, f)
-		t.apply(o<<1|1, f)
-		t[o].todo = todoInit
-	}
-}
-
 func (t lazySeg) maintain(o int) {
 	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
+}
+
+func (t lazySeg) spread(o int) {
+	f := t[o].todo
+	if f == todoInit {
+		return
+	}
+	t.apply(o<<1, f)
+	t.apply(o<<1|1, f)
+	t[o].todo = todoInit
 }
 
 // 下标从 0 开始
