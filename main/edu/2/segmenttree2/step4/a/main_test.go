@@ -8,7 +8,6 @@ import (
 )
 
 func Test(t *testing.T) {
-	// TODO: 测试参数的下界和上界！
 	customTestCases := [][2]string{
 		{
 			`5 7
@@ -64,7 +63,7 @@ func Test(t *testing.T) {
 
 // 无尽对拍
 func Test2(t *testing.T) {
-	//return
+	return
 	//rand.Seed(time.Now().UnixNano())
 	inputGenerator := func() string {
 		//return ``
