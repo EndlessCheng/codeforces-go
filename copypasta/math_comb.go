@@ -334,6 +334,8 @@ todo https://atcoder.jp/contests/abc198/tasks/abc198_f
 
 // 一种避免不小心把数组开小的写法（无需思考要开多大的数组）
 // https://codeforces.com/problemset/submission/1794/205053722
+// 组合数模 10 的模板 https://leetcode.cn/problems/check-if-digits-are-equal-in-string-after-operations-ii/solution/mo-shu-wei-he-shu-shi-de-zu-he-shu-by-en-8x7t/
+// - 这题的相似题目 https://atcoder.jp/contests/math-and-algorithm/tasks/math_and_algorithm_bi
 type comb struct{ _f, _invF []int }
 
 func newComb() *comb {
