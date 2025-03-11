@@ -37,6 +37,7 @@ https://codeforces.com/problemset/problem/34/D 1600
 https://atcoder.jp/contests/abc163/tasks/abc163_f 2470=CF2579 树上路径计数
 
 BFS
+https://atcoder.jp/contests/abc070/tasks/abc070_d
 https://codeforces.com/problemset/problem/2018/C 1700
 
 利用递归栈快速标记祖先节点 https://codeforces.com/problemset/problem/1774/E
@@ -46,6 +47,7 @@ https://codeforces.com/problemset/problem/2018/C 1700
 
 树上贪心
 https://codeforces.com/problemset/problem/1029/E 2100
+https://atcoder.jp/contests/agc004/tasks/agc004_d
 
 树上路径异或
 LC2791 https://leetcode.cn/problems/count-paths-that-can-form-a-palindrome-in-a-tree/
@@ -226,29 +228,45 @@ func (*tree) depthSize(n, root int, g [][]int, v int) {
 	slices.SortFunc(g[v], func(a, b int) int { return maxDep[b] - maxDep[a] })
 }
 
-// DFS 序（从 0 开始）
+// DFS 序（进出时间戳）· 其一
+// 核心思路：把树上问题（尤其是子树问题）转换成区间问题
 // 另见后面的 inOutTimestamp
+// 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
 // 讲解：https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/
 //
-// LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/
+// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
+// LC3327 https://leetcode.cn/problems/check-if-dfs-strings-are-palindromes/ 2454
+// https://codeforces.com/problemset/problem/1328/E 1900 例题
 // https://codeforces.com/problemset/problem/1899/G 1900
 // https://codeforces.com/problemset/problem/877/E 2000
 // https://codeforces.com/problemset/problem/383/C 2000
 // https://codeforces.com/problemset/problem/620/E 2100
+// https://codeforces.com/problemset/problem/1528/C 2300 好题（需要充分利用入出时间戳的性质）
+// https://codeforces.com/problemset/problem/2002/D2 2300
+// https://codeforces.com/problemset/problem/258/E 2400
 // https://codeforces.com/problemset/problem/916/E 2400
+// https://codeforces.com/problemset/problem/372/D 2600
+// - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://codeforces.com/problemset/problem/1110/F 2600
-// https://codeforces.com/problemset/problem/163/E 2800 结合 AC 自动机 
+// https://codeforces.com/problemset/problem/1416/D 2600
+// https://codeforces.com/problemset/problem/163/E 2800 AC 自动机 
+// https://codeforces.com/problemset/problem/176/E 3100
 // https://ac.nowcoder.com/acm/contest/6383/B
+// https://ac.nowcoder.com/acm/contest/9247/B 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 
+// - 先用 BFS 建树，然后 DFS 跑建好的树
+// - 也可以不用 BFS，根据完全 k 叉树的性质直接建图：（点的范围从 0 到 n-1）
+// - for w := 1; w < n; w++ { v := (w - 1) / k; g[v] = append(g[v], w) }
+// 其他：见 mo.go 中的树上莫队部分
 func (*tree) dfnOrder(root int, g [][]int, a []int) {
 	n := len(a)
-	newOrder := make([]int, n)
+	dfnToVal := make([]int, n)
 	// 闭区间 [l,r]   0 <= l <= r <= n-1
 	nodes := make([]struct{ l, r int }, n)
-	dfn := 0
+	dfn := 0 // Depth-First Numbering
 	var buildDFN func(int, int)
 	buildDFN = func(v, fa int) {
 		nodes[v].l = dfn
-		newOrder[dfn] = a[v] // 写这里是先序遍历，如果题目要求后序遍历，把这一行和下一行的 dfn++ 移到 for 循环后面
+		dfnToVal[dfn] = a[v] // 写这里是先序遍历，如果题目要求后序遍历，把这一行和下一行的 dfn++ 移到 for 循环后面
 		dfn++
 		for _, w := range g[v] {
 			if w != fa {
@@ -260,6 +278,7 @@ func (*tree) dfnOrder(root int, g [][]int, a []int) {
 	buildDFN(root, -1)
 
 	// 返回 [f 是 v 的祖先节点]
+	// if nodes[v].l > nodes[w].l { v, w = w, v }
 	// f == v 的情况请单独处理
 	// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
 	// 判断给定点集是否都在一条路径上 https://codeforces.com/contest/1702/problem/G2 2000
@@ -314,23 +333,7 @@ func (*tree) dfnOrder(root int, g [][]int, a []int) {
 	_ = isAncestor
 }
 
-// 每个节点的入出时间戳
-// 应用：可以 O(1) 判断 fa 是否为 v 的祖先节点（是否在根到 v 的路径上）
-// 视频讲解 https://www.bilibili.com/video/BV1pW4y1r7xs/
-// 文字讲解 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/
-// LC2322 https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/ 2392
-// https://codeforces.com/problemset/problem/1328/E 1900 例题
-// https://codeforces.com/problemset/problem/1528/C 2300 好题（需要充分利用入出时间戳的性质）
-// https://codeforces.com/problemset/problem/2002/D2 2300
-// https://codeforces.com/problemset/problem/1416/D 2600
-// 给定一棵 n 个点的完全 k 叉树的先序遍历，还原这棵树 https://ac.nowcoder.com/acm/contest/9247/B
-//    先用 BFS 建树，然后 DFS 跑建好的树
-//    也可以不用 BFS，根据完全 k 叉树的性质直接建图：（点的范围从 0 到 n-1）
-//    for w := 1; w < n; w++ {
-//	      v := (w - 1) / k
-//        g[v] = append(g[v], w)
-//    }
-// 其他：见 mo.go 中的树上莫队部分
+// DFS 序（进出时间戳）· 其二
 func (*tree) inOutTimestamp(g [][]int, root int) {
 	// DFS 序
 	timeIn := make([]int, len(g))
@@ -628,11 +631,14 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 //    一棵树最多有两个重心，且相邻
 //    拥有奇数个节点的树只有一个重心
 //    树中所有点到某个点的距离和中，到重心的距离和是最小的；如果有两个重心，那么距离和一样
+//    - 推论：把两棵树通过一条边相连，选择各自的重心相连，可以让所有点对的距离和最小 https://codeforces.com/problemset/problem/294/E 2300
+//    - 这一结论也适用于带边权树
 //    把两棵树通过一条边相连得到一棵新的树，新重心在旧重心的路径上
 //    在一棵树上添加或删除一个叶结点后，重心保持不变或移动至相邻的结点上（换句话说，重心个数可能一个变两个，两个变一个，或者说至多移动半条边）
 //    树的重心一定在根节点的重链上 https://www.luogu.com.cn/problem/P5666
 //    树的重心一定在它重儿子的重心到根节点的路径上 https://www.luogu.com.cn/problem/P5666
 // 常用作点分治中的一个划分步骤
+//
 // https://oi-wiki.org/graph/tree-centroid/
 // https://en.wikipedia.org/wiki/Tree_(graph_theory)#Properties
 //    Every tree has a center consisting of one vertex or two adjacent vertices.
@@ -642,11 +648,13 @@ func (*tree) secondDiameter(st int, g [][]int) int {
 //    In the second case, removal of the edge between the two centroidal vertices splits the tree into two subtrees of exactly n/2 vertices.
 // 树的直径与重心（含动态维护） https://www.luogu.com.cn/blog/Loveti/problem-tree
 // 树重心的性质及动态维护 https://www.cnblogs.com/qlky/p/5781081.html
-// 求两个重心 https://codeforces.com/problemset/problem/1406/C
-// 求每棵子树的重心 https://codeforces.com/problemset/problem/685/B
-// Edge replacement 后哪些点可以是重心 https://codeforces.com/problemset/problem/708/C
+//
+// https://codeforces.com/problemset/problem/1406/C 1700 求两个重心 
+// https://codeforces.com/problemset/problem/685/B 1900 求每棵子树的重心 
+// https://codeforces.com/problemset/problem/294/E 2300
+// https://codeforces.com/problemset/problem/708/C 2300 Edge replacement 后哪些点可以是重心 
 // todo https://atcoder.jp/contests/abc362/tasks/abc362_f 重心性质
-func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
+func (*tree) findCentroid(root int, g [][]int) (centroid int) {
 	minOfMaxSubSize := math.MaxInt
 	var findCt func(int, int) int
 	findCt = func(v, fa int) int {
@@ -659,7 +667,8 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 				size += sz
 			}
 		}
-		maxSubSize = max(maxSubSize, n-size) // 向上的子树大小
+		// NOTE: 如果只能访问 g 的一部分，这里的 len(g) 要改为对应的 size
+		maxSubSize = max(maxSubSize, len(g)-size) // 向上的子树大小
 		if maxSubSize < minOfMaxSubSize {
 			minOfMaxSubSize = maxSubSize
 			centroid = v
@@ -693,11 +702,12 @@ func (*tree) findCentroid(n, root int, g [][]int) (centroid int) {
 // https://codeforces.com/problemset/problem/914/E 2400
 // 好题 https://codeforces.com/contest/1174/problem/F 2400
 // - https://codeforces.com/contest/1174/submission/82371930
-// todo https://codeforces.com/contest/776/problem/F 2800
-//  https://www.luogu.com.cn/problem/P2664
-//  https://www.luogu.com.cn/problem/SP2939
-//  ∑∑min(a[i],a[j])*dis(i,j) https://ac.nowcoder.com/acm/contest/11171/D
-//  UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
+// https://codeforces.com/problemset/problem/293/E 2700 两个距离约束
+// https://codeforces.com/problemset/problem/776/F 2800
+// https://www.luogu.com.cn/problem/P2664
+// https://www.luogu.com.cn/problem/SP2939
+// https://ac.nowcoder.com/acm/contest/11171/D ∑∑min(a[i],a[j])*dis(i,j)
+// UVa12161 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3313
 // 距离相关
 // - https://atcoder.jp/contests/yahoo-procon2018-final/tasks/yahoo_procon2018_final_c
 // - https://leetcode.cn/problems/maximize-the-number-of-target-nodes-after-connecting-trees-i/ 
@@ -1676,9 +1686,11 @@ func (*tree) virtualTree(g [][]int) {
 //            https://codeforces.com/problemset/problem/343/D 2100
 // 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
 // - 也可以转换成子树所有点的 dis 都增加了 delta，用欧拉序+差分树状数组维护
-// 与最小生成树结合（边权）https://codeforces.com/problemset/problem/609/E
-// 好题 https://codeforces.com/contest/1174/problem/F
-// 归并树 https://codeforces.com/problemset/problem/587/C
+// https://codeforces.com/problemset/problem/609/E 2100 与最小生成树结合（边权）
+// https://codeforces.com/problemset/problem/587/C 2200 归并树 
+// https://codeforces.com/problemset/problem/1174/F 2400 好题 
+// https://codeforces.com/problemset/problem/504/E 3000
+// https://atcoder.jp/contests/abc133/tasks/abc133_f
 // todo 题单 https://www.luogu.com.cn/training/1654
 // todo https://www.luogu.com.cn/problem/P5127
 // TODO: 处理边权的情况
@@ -1952,6 +1964,8 @@ func (*tree) heavyLightDecompositionByDepth(n, root int, g [][]int) {
 // https://codeforces.com/contest/741/problem/D
 // https://codeforces.com/problemset/problem/1805/E
 // https://codeforces.com/contest/1824/problem/C
+// https://codeforces.com/gym/104270/problem/B 点双
+// - https://www.luogu.com.cn/problem/P9886
 
 // 写法一：按 map 的大小合并
 // 路径点权异或 https://codeforces.com/problemset/problem/1709/E
@@ -1959,19 +1973,22 @@ func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
 	var f func(int, int, int) map[int]bool
 	f = func(v, fa, xor int) map[int]bool {
 		xor ^= vals[v]
-		m := map[int]bool{xor: true}
+		resMap := map[int]bool{xor: true}
 		for _, w := range g[v] {
 			if w == fa {
 				continue
 			}
 			subM := f(w, v, xor)
-			if len(subM) > len(m) {
-				m, subM = subM, m
+			if len(subM) > len(resMap) {
+				resMap, subM = subM, resMap
 			}
-			// check subM ...
-			maps.Copy(m, subM) // m <- subM
+			for x, rightRes := range subM {
+				_, _ = x, rightRes
+				// ...
+			}
+			maps.Copy(resMap, subM) // resMap <- subM
 		}
-		return m
+		return resMap
 	}
 	f(root, -1, 0)
 }
