@@ -64,7 +64,7 @@ func divisorSubstrings(num, k int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(nk)$，其中 $n=\mathcal{O}(\log \textit{num})$ 是 $\textit{num}$ 的十进制长度。
+- 时间复杂度：$\mathcal{O}((n-k)k)$，其中 $n=\mathcal{O}(\log \textit{num})$ 是 $\textit{num}$ 的十进制长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 方法二：数学
@@ -81,11 +81,11 @@ func divisorSubstrings(num, k int) (ans int) {
 ```py [sol-Python3]
 class Solution:
     def divisorSubstrings(self, num: int, k: int) -> int:
-        m = 10 ** k
+        M = 10 ** k
         ans = 0
         n = num
-        while n >= m // 10:
-            x = n % m
+        while n >= M // 10:
+            x = n % M
             if x > 0 and num % x == 0:
                 ans += 1
             n //= 10
@@ -95,10 +95,10 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int divisorSubstrings(int num, int k) {
-        long m = (long) Math.pow(10, k);
+        final long M = (long) Math.pow(10, k);
         int ans = 0;
-        for (int n = num; n >= m / 10; n /= 10) {
-            int x = (int) (n % m);
+        for (int n = num; n >= M / 10; n /= 10) {
+            int x = (int) (n % M);
             if (x > 0 && num % x == 0) {
                 ans++;
             }
@@ -112,10 +112,10 @@ class Solution {
 class Solution {
 public:
     int divisorSubstrings(int num, int k) {
-        long long m = pow(10, k);
+        const long long M = pow(10, k);
         int ans = 0;
-        for (int n = num; n >= m / 10; n /= 10) {
-            int x = n % m;
+        for (int n = num; n >= M / 10; n /= 10) {
+            int x = n % M;
             if (x > 0 && num % x == 0) {
                 ans++;
             }
