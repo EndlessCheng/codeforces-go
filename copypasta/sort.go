@@ -57,6 +57,7 @@ https://codeforces.com/problemset/problem/1260/D 1900 区间合并
 https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
 https://atcoder.jp/contests/abc227/tasks/abc227_d 1643=CF1954
 - https://leetcode.cn/problems/maximum-running-time-of-n-computers/
+https://atcoder.jp/contests/abc229/tasks/abc229_g
 
 ### 二分间接值
 https://codeforces.com/problemset/problem/2038/B 2100
@@ -72,6 +73,7 @@ https://codeforces.com/problemset/problem/1837/F 2400
 ### 最大化最小值（二分最小值 mn+1，如果满足要求，例如所有元素最后都 >= mn+1 则返回 false，否则返回 true，为什么要这样返回请看下面的【sort.Search 的使用技巧·其一】）
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
+https://atcoder.jp/contests/abc374/tasks/abc374_e 1504=CF1849
 https://codeforces.com/problemset/problem/2046/C 2100
 https://atcoder.jp/contests/abc215/tasks/abc215_f 1853=CF2113
 https://codeforces.com/problemset/problem/1550/E 2500
@@ -88,6 +90,7 @@ https://codeforces.com/contest/1993/problem/D 2200
 第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
 https://atcoder.jp/contests/abc155/tasks/abc155_d 1845 综合
 https://atcoder.jp/contests/abc149/tasks/abc149_e 1905
+https://atcoder.jp/contests/arc173/tasks/arc173_a 也可以用九进制
 
 ### 0-1 分数规划
 题目见下面的「search01」
