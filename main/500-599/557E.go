@@ -9,15 +9,15 @@ import (
 // https://github.com/EndlessCheng
 func init() { debug.SetGCPercent(-1) }
 
-type node struct {
-	son [2]*node
+type node57 struct {
+	son [2]*node57
 	cnt int
 	sum int
 }
 
-type trie struct{ root *node }
+type trie57 struct{ root *node57 }
 
-func (t *trie) put(s []byte, isPal []bool) {
+func (t *trie57) put(s []byte, isPal []bool) {
 	tot := 0
 	for _, b := range isPal {
 		if b {
@@ -28,7 +28,7 @@ func (t *trie) put(s []byte, isPal []bool) {
 	for i, b := range s {
 		b -= 'a'
 		if o.son[b] == nil {
-			o.son[b] = &node{}
+			o.son[b] = &node57{}
 		}
 		o = o.son[b]
 		o.sum += tot
@@ -39,7 +39,7 @@ func (t *trie) put(s []byte, isPal []bool) {
 	}
 }
 
-func (t *trie) kth(k int) (s []byte) {
+func (t *trie57) kth(k int) (s []byte) {
 	o := t.root
 	for {
 		for i, son := range o.son {
@@ -85,7 +85,7 @@ func cf557E(in io.Reader, out io.Writer) {
 		}
 	}
 
-	t := &trie{&node{}}
+	t := &trie57{&node57{}}
 	for i, row := range isPal {
 		t.put(s[i:], row[i:])
 	}
