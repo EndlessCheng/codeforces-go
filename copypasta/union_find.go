@@ -31,28 +31,24 @@ https://zhuanlan.zhihu.com/p/553192435
 //
 // 另见 graph.go 中的 MST
 //
-// 模板题 LC547 https://leetcode.cn/problems/number-of-provinces/
-// LC684 https://leetcode.cn/problems/redundant-connection/
-// LC1267 https://leetcode.cn/problems/count-servers-that-communicate/
-// 并查集+置换 LC2459 https://leetcode.cn/problems/sort-array-by-moving-items-to-empty-space/
 // https://www.luogu.com.cn/problem/P1111
 // https://www.luogu.com.cn/problem/P1967 经典题
 // https://www.luogu.com.cn/problem/P3367
 // https://atcoder.jp/contests/arc097/tasks/arc097_b
-// 基础题 https://codeforces.com/problemset/problem/1167/C 1400
-//       https://codeforces.com/problemset/problem/2060/E 1500
-//       https://codeforces.com/problemset/problem/1411/C 1700
 // https://codeforces.com/problemset/problem/755/C 1300
-// LC1562 https://leetcode.cn/problems/find-latest-group-of-size-m/
-// 转换 https://atcoder.jp/contests/abc304/tasks/abc304_e
-// 转换 https://atcoder.jp/contests/abc238/tasks/abc238_e
-// merge 后 from 还有用 https://atcoder.jp/contests/abc279/tasks/abc279_f
-// 处理图上的环 https://codeforces.com/contest/1726/problem/D
+// https://codeforces.com/problemset/problem/1167/C 1400
+// https://codeforces.com/problemset/problem/2060/E 1500
+// https://codeforces.com/problemset/problem/1411/C 1700
+// https://codeforces.com/problemset/problem/87/D 2300
+// https://atcoder.jp/contests/abc304/tasks/abc304_e 转换
+// https://atcoder.jp/contests/abc238/tasks/abc238_e 转换
+// https://atcoder.jp/contests/abc279/tasks/abc279_f merge 后 from 还有用 
+// https://codeforces.com/problemset/problem/1726/D 2000 处理图上的环
 // https://codeforces.com/problemset/problem/1851/G 2000 离线
-// 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
-// - 思考：如果允许圆心在矩形外呢？见我题解下面的讨论
 // https://atcoder.jp/contests/abc383/tasks/abc383_e
 // https://atcoder.jp/contests/abc392/tasks/abc392_e
+// 并查集+置换 LC2459 https://leetcode.cn/problems/sort-array-by-moving-items-to-empty-space/
+// 对偶图 LC3235 https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 //
 // 质因子并查集 GCD>1 并查集
 // 预处理质因子（见 math.go 中的 primeDivisorsAll）
@@ -66,10 +62,6 @@ https://zhuanlan.zhihu.com/p/553192435
 // 数组标记/区间合并相关
 // - 经典模型是一维区间覆盖染色，通过倒序+并查集解决
 // - 顺带补充下二维的情况（非并查集）：LC2718 https://leetcode.cn/problems/sum-of-matrix-after-queries/
-// - [1851. 包含每个查询的最小区间](https://leetcode.cn/problems/minimum-interval-to-include-each-query/)
-// - [2382. 删除操作后的最大子段和](https://leetcode.cn/problems/maximum-segment-sum-after-removals/)
-// - [2334. 元素值大于变化阈值的子数组](https://leetcode.cn/problems/subarray-with-elements-greater-than-varying-threshold/)
-// - [2612. 最少翻转操作数](https://leetcode.cn/problems/minimum-reverse-operations/)
 // https://codeforces.com/problemset/problem/1041/C 1600
 // https://codeforces.com/problemset/problem/827/A 1700
 // https://codeforces.com/problemset/problem/1157/E 1700
@@ -79,10 +71,10 @@ https://zhuanlan.zhihu.com/p/553192435
 //
 // 树+点权/边权的顺序
 // LC2421 https://leetcode.cn/problems/number-of-good-paths/
+// https://codeforces.com/problemset/problem/87/D 2300
 // 贡献法 https://codeforces.com/problemset/problem/915/F
 // 贡献法 https://atcoder.jp/contests/abc214/tasks/abc214_d
 //
-// LC2503 https://leetcode.cn/problems/maximum-number-of-points-from-grid-queries/
 // 接水问题 https://codeforces.com/problemset/problem/371/D
 // LC407 三维接雨水 https://leetcode.cn/problems/trapping-rain-water-ii/
 // - https://www.luogu.com.cn/problem/P5930 
@@ -498,6 +490,7 @@ func _(n int) {
 // 边权：LC399 除法求值 https://leetcode.cn/problems/evaluate-division/
 //      LC2307 https://leetcode.cn/problems/check-for-contradictions-in-equations/ 也可以 DFS
 // https://codeforces.com/problemset/problem/1788/F 2500
+// https://atcoder.jp/contests/abc396/tasks/abc396_e XOR
 func _(n int) {
 	// 注：kinds 为 2 时可以用异或来代替加减法
 	const kinds = 3
@@ -638,7 +631,6 @@ func (o *pufNode) merge(x, y int) *pufNode {
 }
 
 // 可撤销并查集 回滚并查集
-// 应用：动态图连通性·离线（求 CC 个数或判断 v 和 w 是否连通）
 // https://en.wikipedia.org/wiki/Dynamic_connectivity
 // https://codeforces.com/gym/100551/problem/A
 // https://codeforces.com/edu/course/2/lesson/7/3/practice/contest/289392/problem/C
@@ -649,6 +641,8 @@ func (o *pufNode) merge(x, y int) *pufNode {
 // https://codeforces.com/problemset/problem/1217/F
 // https://codeforces.com/contest/1681/problem/F
 // Dynamic connectivity contest https://codeforces.com/gym/100551
+// 应用：动态图连通性·离线（求 CC 个数或判断 v 和 w 是否连通）
+// todo https://codeforces.com/contest/2069/problem/F
 func dynamicConnectivity(in io.Reader, n, q int) (ans []int) {
 	if q == 0 {
 		return
