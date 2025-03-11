@@ -141,9 +141,9 @@ class SegmentTree {
     }
 
 public:
-    SegmentTree(vector<int>& a) {
-        int n = a.size();
-        mx.resize(2 << bit_width((unsigned) (n - 1)));
+    SegmentTree(const vector<int>& a) {
+        size_t n = a.size();
+        mx.resize(2 << bit_width(n - 1));
         build(a, 1, 0, n - 1);
     }
 
