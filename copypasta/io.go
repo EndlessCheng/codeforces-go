@@ -146,7 +146,7 @@ func fasterIO() {
 	}
 
 	// 读一个非负整数
-	r := func() (x int) {
+	rd := func() (x int) {
 		b := rc()
 		for ; '0' > b || b > '9'; b = rc() {
 			// 某些多组数据的题目，不告诉有多少组数据，那么需要额外判断是否读到了 EOF
@@ -161,7 +161,7 @@ func fasterIO() {
 	}
 
 	// 读一个整数，支持负数
-	r = func() (x int) {
+	rd = func() (x int) {
 		neg := false
 		b := rc()
 		for ; '0' > b || b > '9'; b = rc() {
@@ -268,7 +268,7 @@ func fasterIO() {
 	// 最后，直接用 os.Stdout 输出（最上面的 out 是不需要创建的）
 	os.Stdout.Write(outS)
 
-	_ = []interface{}{r, r1, rs, rsn, readStringUntilEOF, wInt}
+	_ = []interface{}{rd, r1, rs, rsn, readStringUntilEOF, wInt}
 }
 
 // 如果输入按照行来读入更方便的话……
