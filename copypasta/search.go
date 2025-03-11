@@ -32,6 +32,7 @@ https://codeforces.com/problemset/problem/429/C
 https://atcoder.jp/contests/abc233/tasks/abc233_c
 https://atcoder.jp/contests/abc319/tasks/abc319_c
 https://atcoder.jp/contests/abc197/tasks/abc197_c
+https://atcoder.jp/contests/abc396/tasks/abc396_d 图
 
 https://oeis.org/A038206 Can express a(n) with the digits of a(n)^2 in order, only adding plus signs
 - LC2698 https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/
