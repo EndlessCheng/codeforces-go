@@ -16,13 +16,14 @@ todo O(n)-O(1) lca/rmq, not method of 4 russians https://codeforces.com/blog/ent
 todo O(n)-O(1) RMQ https://atcoder.jp/contests/arc165/submissions/45673031
 
 模板题 https://www.luogu.com.cn/problem/P3865
-https://codeforces.com/contest/1709/problem/D
-二分/三指针 https://codeforces.com/problemset/problem/689/D
-变长/种类 https://www.jisuanke.com/contest/11346/challenges
-GCD https://codeforces.com/contest/1548/problem/B
+https://codeforces.com/problemset/problem/1709/D 1700
+https://codeforces.com/problemset/problem/2050/F 1700 GCD
+https://codeforces.com/problemset/problem/1548/B 1800 GCD
+https://codeforces.com/problemset/problem/689/D 2100 二分/三指针
+https://www.jisuanke.com/contest/11346/challenges 变长/种类
 todo https://ac.nowcoder.com/acm/problem/240870 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=53616019
 
-https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
+题单 https://cp-algorithms.com/data_structures/sparse-table.html#toc-tgt-5
 */
 
 type ST [][]int
