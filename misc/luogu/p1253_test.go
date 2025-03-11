@@ -33,7 +33,4 @@ func Test_p1253(t *testing.T) {
 		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, p1253)
-
-	//dir, _ := filepath.Abs(".")
-	//testutil.AssertEqualFileCaseWithName(t, dir, "*.in", "*.out", 0, p1253)
 }

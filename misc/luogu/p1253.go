@@ -8,44 +8,59 @@ import (
 )
 
 // https://space.bilibili.com/206214
-const setInit1253, addInit1253 int = 1e18, 0
+type pair1253 struct{ x, y int }
 
-type seg1253 []struct{ l, r, max, set, add int }
-
-func (t seg1253) doSet(O, v int) {
-	o := &t[O]
-	o.max = v
-	o.set = v
-	o.add = addInit1253
+type lazySeg1253 []struct {
+	l, r int
+	mx   int
+	todo pair1253
 }
 
-func (t seg1253) doAdd(O, v int) {
-	o := &t[O]
-	o.max += v
-	if o.set != setInit1253 {
-		o.set += v
+func (lazySeg1253) mergeInfo(a, b int) int {
+	return max(a, b)
+}
+
+var todoInit1253 = pair1253{2e9, 0}
+
+func (lazySeg1253) mergeTodo(f, old pair1253) pair1253 {
+	if f.x != 2e9 {
+		return f
+	}
+	old.y += f.y
+	return old
+}
+
+func (t lazySeg1253) apply(o int, f pair1253) {
+	cur := &t[o]
+
+	if f.x == 2e9 {
+		cur.mx += f.y
 	} else {
-		o.add += v
+		cur.mx = f.x + f.y
 	}
+
+	cur.todo = t.mergeTodo(f, cur.todo)
 }
 
-func (t seg1253) spread(o int) {
-	if set := t[o].set; set != setInit1253 {
-		t.doSet(o<<1, set)
-		t.doSet(o<<1|1, set)
-		t[o].set = setInit1253
-	} else if add := t[o].add; add != addInit1253 {
-		t.doAdd(o<<1, add)
-		t.doAdd(o<<1|1, add)
-		t[o].add = addInit1253
-	}
+func (t lazySeg1253) maintain(o int) {
+	t[o].mx = t.mergeInfo(t[o<<1].mx, t[o<<1|1].mx)
 }
 
-func (t seg1253) build(a []int, o, l, r int) {
+func (t lazySeg1253) spread(o int) {
+	f := t[o].todo
+	if f == todoInit1253 {
+		return
+	}
+	t.apply(o<<1, f)
+	t.apply(o<<1|1, f)
+	t[o].todo = todoInit1253
+}
+
+func (t lazySeg1253) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
-	t[o].set = setInit1253
+	t[o].todo = todoInit1253
 	if l == r {
-		t[o].max = a[l-1]
+		t[o].mx = a[l]
 		return
 	}
 	m := (l + r) >> 1
@@ -54,45 +69,25 @@ func (t seg1253) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-func (t seg1253) maintain(o int) {
-	t[o].max = max(t[o<<1].max, t[o<<1|1].max)
-}
-
-func (t seg1253) set(o, l, r, v int) {
+func (t lazySeg1253) update(o, l, r int, f pair1253) {
 	if l <= t[o].l && t[o].r <= r {
-		t.doSet(o, v)
+		t.apply(o, f)
 		return
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
 	if l <= m {
-		t.set(o<<1, l, r, v)
+		t.update(o<<1, l, r, f)
 	}
 	if m < r {
-		t.set(o<<1|1, l, r, v)
+		t.update(o<<1|1, l, r, f)
 	}
 	t.maintain(o)
 }
 
-func (t seg1253) add(o, l, r, v int) {
+func (t lazySeg1253) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
-		t.doAdd(o, v)
-		return
-	}
-	t.spread(o)
-	m := (t[o].l + t[o].r) >> 1
-	if l <= m {
-		t.add(o<<1, l, r, v)
-	}
-	if m < r {
-		t.add(o<<1|1, l, r, v)
-	}
-	t.maintain(o)
-}
-
-func (t seg1253) query(o, l, r int) int {
-	if l <= t[o].l && t[o].r <= r {
-		return t[o].max
+		return t[o].mx
 	}
 	t.spread(o)
 	m := (t[o].l + t[o].r) >> 1
@@ -102,16 +97,17 @@ func (t seg1253) query(o, l, r int) int {
 	if l > m {
 		return t.query(o<<1|1, l, r)
 	}
-	return max(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
+	return t.mergeInfo(t.query(o<<1, l, r), t.query(o<<1|1, l, r))
 }
 
-func p1253(_r io.Reader, _w io.Writer) {
+func p1253(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
-	_i, _n, buf := 0, 0, make([]byte, 1<<12)
+	buf := make([]byte, 4096)
+	_i, _n := 0, 0
 	rc := func() byte {
 		if _i == _n {
-			_n, _ = _r.Read(buf)
+			_n, _ = in.Read(buf)
 			if _n == 0 {
 				return 0
 			}
@@ -121,7 +117,7 @@ func p1253(_r io.Reader, _w io.Writer) {
 		_i++
 		return b
 	}
-	ri := func() (x int) {
+	rd := func() (x int) {
 		neg := false
 		b := rc()
 		for ; '0' > b || b > '9'; b = rc() {
@@ -138,19 +134,19 @@ func p1253(_r io.Reader, _w io.Writer) {
 		return
 	}
 
-	n, q := ri(), ri()
+	n, q := rd(), rd()
 	a := make([]int, n)
 	for i := range a {
-		a[i] = ri()
+		a[i] = rd()
 	}
-	t := make(seg1253, 2<<bits.Len(uint(n-1)))
-	t.build(a, 1, 1, n)
+	t := make(lazySeg1253, 2<<bits.Len(uint(n-1)))
+	t.build(a, 1, 0, n-1)
 	for ; q > 0; q-- {
-		op, l, r := ri(), ri(), ri()
+		op, l, r := rd(), rd()-1, rd()-1
 		if op == 1 {
-			t.set(1, l, r, ri())
+			t.update(1, l, r, pair1253{rd(), 0})
 		} else if op == 2 {
-			t.add(1, l, r, ri())
+			t.update(1, l, r, pair1253{2e9, rd()})
 		} else {
 			Fprintln(out, t.query(1, l, r))
 		}
