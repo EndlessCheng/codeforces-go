@@ -10,7 +10,7 @@ import (
 常用于图论或者某些数组统计类题目
 参考 Competitive Programmer’s Handbook Ch.27
 王悦同《根号算法——不只是分块》
-todo 暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-threshold/pu-li-mei-xue-qian-tan-gen-hao-fen-zhi
+暴力美学——浅谈根号分治 https://www.luogu.com.cn/blog/Amateur-threshold/pu-li-mei-xue-qian-tan-gen-hao-fen-zhi
 
 题目花样很多，下面举个例子
 有 n 个对象，每个对象有一个「关于其他对象的统计量」ci（一个数、一个集合的元素个数，等等）
@@ -40,6 +40,7 @@ https://codeforces.com/problemset/problem/342/E 2400
 https://codeforces.com/problemset/problem/506/D 2400
 https://codeforces.com/problemset/problem/786/C 2400 见下面的 floorDivide
 https://codeforces.com/problemset/problem/1619/H 2400 大步+小步，有点分段打表的味道
+https://codeforces.com/problemset/problem/348/C 2500
 https://codeforces.com/problemset/problem/1270/F 2600
 https://codeforces.com/problemset/problem/1039/D 2800
 https://codeforces.com/problemset/problem/1039/E 3400
@@ -76,18 +77,18 @@ https://oi-wiki.org/ds/block-array/
 Unrolled linked list https://en.wikipedia.org/wiki/Unrolled_linked_list
 【推荐】https://www.luogu.com.cn/blog/220037/Sqrt1
 浅谈基础根号算法——分块 https://www.luogu.com.cn/blog/deco/qian-tan-ji-chu-gen-hao-suan-fa-fen-kuai
-todo https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
+https://www.csie.ntu.edu.tw/~sprout/algo2018/ppt_pdf/root_methods.pdf
 区间 rank 的 N 种解法 https://www.luogu.com.cn/blog/Peterprpr/HunterNoHorse
 浅谈归约矩乘 https://www.luogu.com.cn/blog/Ynoi/qian-tan-gui-yue-ju-cheng
 为什么有些题只能用根号科技？https://www.luogu.com.cn/blog/include-c/sqrt-tech
 
 题目推荐 https://cp-algorithms.com/data_structures/sqrt_decomposition.html#toc-tgt-8
 好题 https://codeforces.com/problemset/problem/91/E
-todo 动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
+动态逆序对 https://www.luogu.com.cn/problem/P3157 https://www.luogu.com.cn/problem/UVA11990
 https://cp-algorithms.com/sequences/rmq.html
-todo https://www.luogu.com.cn/problem/P3396
- https://codeforces.com/problemset/problem/1207/F
- https://codeforces.com/contest/455/problem/D
+https://www.luogu.com.cn/problem/P3396
+https://codeforces.com/problemset/problem/1207/F
+https://codeforces.com/contest/455/problem/D
 https://codeforces.com/problemset/problem/13/E 2700
 https://www.luogu.com.cn/problem/P3203 [HN10] 弹飞绵羊
 https://www.nowcoder.com/discuss/353159150542725120 K 题 https://ac.nowcoder.com/acm/contest/view-submission?submissionId=50861318
