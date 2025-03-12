@@ -200,12 +200,10 @@ func p3320(in io.Reader, _w io.Writer) {
 	pa := make([][mx]int, n)
 	dep := make([]int, n)
 	dis := make([]int, n)
-	dfnToV := make([]int, n)
 	vToDFN := make([]int, n)
 	var build func(int, int)
 	build = func(v, p int) {
 		vToDFN[v] = dfn
-		dfnToV[dfn] = v
 		dfn++
 		pa[v][0] = p
 		for _, e := range g[v] {
