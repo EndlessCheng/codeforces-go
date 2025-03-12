@@ -37,6 +37,9 @@ import "math/bits"
 带修最大子段和 https://www.luogu.com.cn/problem/P4513
 - 代码 https://www.luogu.com.cn/record/50262292
 - https://codeforces.com/edu/course/2/lesson/4/2/practice/contest/273278/problem/A
+- https://www.spoj.com/problems/GSS3/ 2007-08-03
+- 2 个最大子段和 https://codeforces.com/problemset/problem/2042/F
+- k 个最大子段和 https://codeforces.com/problemset/problem/280/D 2800 用网络流的思想「反悔」
 带修最大子段和+按位或 https://www.luogu.com.cn/problem/P7492 https://www.luogu.com.cn/contest/42328
 带修打家劫舍 https://www.luogu.com.cn/problem/P3097
 - LC https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/
@@ -85,7 +88,8 @@ import "math/bits"
 // https://codeforces.com/problemset/problem/1609/E 2400 单点修改 + 不含子序列 abc
 // https://codeforces.com/problemset/problem/1665/E 2500 区间最小的 31 个数
 // https://codeforces.com/problemset/problem/2042/F 2600 两段最大子段和
-// todo https://codeforces.com/problemset/problem/19/D 2800
+// https://codeforces.com/problemset/problem/19/D 2800
+// https://codeforces.com/problemset/problem/280/D 2800
 // https://codeforces.com/problemset/problem/765/F 3100 最小差值
 // - https://codeforces.com/problemset/problem/1793/F 2600 和 CF765F 是同一题
 // - 不允许相等 https://www.luogu.com.cn/problem/P5926
@@ -124,10 +128,11 @@ import "math/bits"
 // - 两种 O((n+q)lognlogU) 做法：
 // - 树状数组套动态开点权值线段树（AC）
 // - 动态开点权值线段树套下标平衡树（TLE）https://www.luogu.com.cn/record/136191286
-// todo 二维线段树 https://www.luogu.com.cn/problem/P3437
+// 二维线段树 https://www.luogu.com.cn/problem/P3437
 // - LC308 https://leetcode.cn/problems/range-sum-query-2d-mutable/
-//  https://www.luogu.com.cn/problem/P4514
-//  树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
+// https://www.luogu.com.cn/problem/P4514
+// 树套树 标记永久化 https://www.luogu.com.cn/blog/Hoshino-kaede/chao-leng-men-shuo-ju-jie-gou-er-wei-xian-duan-shu-yang-xie
+// https://codeforces.com/problemset/problem/19/D 2800
 
 // EXTRA: 线段树优化建图
 // 每个位置对应着 O(logn) 个线段树上的节点，每个区间可以拆分成至多 O(logn) 个线段树上的区间
