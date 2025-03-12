@@ -9,7 +9,7 @@
 
 二者相减，所表达的含义就是**恰好**包含 $k$ 个辅音字母了，所以答案为 $f_k - f_{k+1}$。
 
-对于每个问题，由于子串越长，越满足要求，有单调性，所以可以用**滑动窗口**解决。如果你不了解滑动窗口，可以看视频[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
+对于每个问题，由于子串越长越满足要求，子串越短越不满足要求，有单调性，所以可以用**滑动窗口**解决。如果你不了解滑动窗口，可以看视频[【基础算法精讲 03】](https://www.bilibili.com/video/BV1hd4y1r7Gq/)。
 
 如果你之前没有做过统计子串/子数组个数的滑动窗口，推荐先完成 [2962. 统计最大元素出现至少 K 次的子数组](https://leetcode.cn/problems/count-subarrays-where-max-element-appears-at-least-k-times/)（[我的题解](https://leetcode.cn/problems/count-subarrays-where-max-element-appears-at-least-k-times/solutions/2560940/hua-dong-chuang-kou-fu-ti-dan-pythonjava-xvwg/)），这也是一道至少+统计个数的问题，且比本题要简单许多。
 
@@ -21,7 +21,7 @@
 
 **问**：代码中的 `ans += left` 是什么意思？
 
-**答**：滑动窗口的内层循环结束时，右端点**固定**在 $\textit{right}$，左端点在 $0,1,2,\cdots,\textit{left}-1$ 的所有子串都是合法的，这一共有 $\textit{left}$ 个。
+**答**：滑动窗口的内层循环结束时，子串 $[\textit{left},\textit{right}]$ 是不满足要求的，但上一次内层循环是满足要求的，也就是子串 $[\textit{left}-1,\textit{right}]$ 是满足要求的。由于子串越长越满足要求，所以当右端点**固定**在 $\textit{right}$ 时，左端点在 $0,1,2,\ldots,\textit{left}-1$ 的所有子串都是满足要求的，这一共有 $\textit{left}$ 个。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1TqxCeZEmb/)，欢迎点赞关注~
 
