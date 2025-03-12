@@ -22,7 +22,6 @@ import (
 例子是 https://codeforces.com/problemset/problem/1806/E
 注意：**枚举时要做到不重不漏**
 
-- [1714. 数组中特殊等间距元素的和](https://leetcode.cn/problems/sum-of-special-evenly-spaced-elements-in-array/)（会员题）
 可以从这题上手 https://www.luogu.com.cn/problem/P3396
 - 同 https://codeforces.com/contest/103/problem/D 2100
 https://www.luogu.com.cn/problem/T279521?contestId=65460
@@ -49,6 +48,7 @@ https://atcoder.jp/contests/abc365/tasks/abc365_g
 https://leetcode.cn/problems/maximum-number-of-matching-indices-after-right-shifts/
 - 频率高 (>t) 的字符拿出来做卷积，频率低的字符枚举所有对
 - 这样前一部分复杂度是 O(n/t*n log n)，后一部分是 O(n*t)，取 t=sqrt(n log n) 得复杂度 O(n^1.5 log^0.5 n)
+- [1714. 数组中特殊等间距元素的和](https://leetcode.cn/problems/sum-of-special-evenly-spaced-elements-in-array/)（会员题）
 https://leetcode.com/discuss/interview-question/3517350/
 - Given a list of pairs {L,R} & an array.
   Find out the total number of pairs (i, j) where
