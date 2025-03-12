@@ -16,7 +16,7 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public int[] rowAndMaximumOnes(int[][] mat) {
-        int rowIdx = 0;
+        int rowIdx = -1;
         int maxSum = -1;
         for (int i = 0; i < mat.length; i++) {
             int s = Arrays.stream(mat[i]).sum();
@@ -34,7 +34,7 @@ class Solution {
 class Solution {
 public:
     vector<int> rowAndMaximumOnes(vector<vector<int>>& mat) {
-        int row_idx = 0, max_sum = -1;
+        int row_idx = -1, max_sum = -1;
         for (int i = 0; i < mat.size(); i++) {
             int s = reduce(mat[i].begin(), mat[i].end());
             if (s > max_sum) {
@@ -49,7 +49,7 @@ public:
 
 ```c [sol-C]
 int* rowAndMaximumOnes(int** mat, int matSize, int* matColSize, int* returnSize) {
-    int row_idx = 0, max_sum = -1;
+    int row_idx = -1, max_sum = -1;
     for (int i = 0; i < matSize; i++) {
         int s = 0;
         for (int j = 0; j < matColSize[i]; j++) {
@@ -71,7 +71,7 @@ int* rowAndMaximumOnes(int** mat, int matSize, int* matColSize, int* returnSize)
 
 ```go [sol-Go]
 func rowAndMaximumOnes(mat [][]int) []int {
-    rowIdx, maxSum := 0, -1
+    rowIdx, maxSum := -1, -1
     for i, row := range mat {
         s := 0
         for _, x := range row {
@@ -87,7 +87,7 @@ func rowAndMaximumOnes(mat [][]int) []int {
 
 ```js [sol-JavaScript]
 var rowAndMaximumOnes = function(mat) {
-    let rowIdx = 0, maxSum = -1;
+    let rowIdx = -1, maxSum = -1;
     for (let i = 0; i < mat.length; i++) {
         const s = _.sum(mat[i]);
         if (s > maxSum) {
