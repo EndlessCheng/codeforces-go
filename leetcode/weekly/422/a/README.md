@@ -1,12 +1,10 @@
-初始化 $s=0$。
+$奇数之和 = 偶数之和$，等价于 $奇数之和 - 偶数之和 = 0$。把偶数下标对应的数字取相反数，这样只需一个变量 $s$ 记录 $奇数之和 - 偶数之和$。
 
-遍历字符串，奇数下标数字加到 $s$ 中，偶数下标数字的相反数加到 $s$ 中。
+初始化 $s=0$，遍历字符串，奇数下标数字加到 $s$ 中，偶数下标数字的相反数加到 $s$ 中。
 
-如果最终 $s=0$，返回 $\texttt{true}$，否则返回 $\texttt{false}$。
+如果最终 $s=0$，说明奇数下标数字之和等于偶数下标数字之和，返回 $\texttt{true}$，否则返回 $\texttt{false}$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1hcS1YCETs/)，欢迎点赞关注~
-
-```py [sol-Python3]
+```py [sol-Py3]
 class Solution:
     def isBalanced(self, num: str) -> bool:
         s = 0
@@ -15,7 +13,7 @@ class Solution:
         return s == 0
 ```
 
-```py [sol-Python3 切片]
+```py [sol-Py3 切片]
 class Solution:
     def isBalanced(self, num: str) -> bool:
         a = list(map(int, num))
@@ -50,13 +48,67 @@ public:
 };
 ```
 
+```c [sol-C]
+bool isBalanced(const char* num) {
+    int s = 0;
+    for (int i = 0; num[i]; i++) {
+        int c = num[i] - '0';
+        s += i % 2 ? c : -c;
+    }
+    return s == 0;
+}
+```
+
 ```go [sol-Go]
 func isBalanced(num string) bool {
-	s := 0
-	for i, b := range num {
-		s += (i%2*2 - 1) * int(b-'0')
-	}
-	return s == 0
+    s := 0
+    for i, b := range num {
+        c := int(b - '0')
+        if i%2 > 0 {
+            s += c
+        } else {
+            s -= c
+        }
+    }
+    return s == 0
+}
+```
+
+```go [sol-Go 写法二]
+func isBalanced(num string) bool {
+    s := 0
+    for i, b := range num {
+        s += (i%2*2 - 1) * int(b-'0')
+    }
+    return s == 0
+}
+```
+
+```js [sol-JS]
+var isBalanced = function(num) {
+    let s = 0;
+    for (let i = 0; i < num.length; i++) {
+        const d = Number(num[i]);
+        s += i % 2 ? d : -d;
+    }
+    return s === 0;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn is_balanced(num: String) -> bool {
+        let mut s = 0;
+        for (i, c) in num.bytes().enumerate() {
+            let c = (c - b'0') as i32;
+            if i % 2 > 0 {
+                s += c;
+            } else {
+                s -= c;
+            }
+        }
+        s == 0
+    }
 }
 ```
 
