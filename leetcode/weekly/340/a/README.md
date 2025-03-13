@@ -10,7 +10,7 @@
 
 但其实只需枚举 $[2,\left\lfloor\sqrt{n}\right\rfloor]$ 中的整数 $i$。
 
-**证明**：反证法。从小到大枚举，假设我们枚举到了一个超过 $\left\lfloor\sqrt{n}\right\rfloor$ 的整数 $j$，且 $j$ 是 $n$ 的因子，那么 $\dfrac{n}{j}$ 也是 $n$ 的因子。由于 $\dfrac{n}{j} < j$，我们会先枚举到 $i=\dfrac{n}{j}$，再枚举到 $i=j$。但由于 $\dfrac{n}{j}$ 是 $n$ 的因子，我们会在 $i=\dfrac{n}{j}$ 时返回，不可能继续枚举到 $i=j$，矛盾，所以原命题成立。
+**证明**：反证法。从小到大枚举，假设我们枚举到了一个超过 $\left\lfloor\sqrt{n}\right\rfloor$ 的整数 $j$，且 $j$ 是 $n$ 的因子，那么 $\dfrac{n}{j}$ 也是 $n$ 的因子。由于 $\dfrac{n}{j} < j$，我们会先枚举到 $i=\dfrac{n}{j}$，再枚举到 $i=j$。但由于 $\dfrac{n}{j}$ 是 $n$ 的因子，我们会在 $i=\dfrac{n}{j}$ 时停止枚举，不可能继续枚举到 $i=j$，矛盾，所以原命题成立。
 
 ## 细节
 
