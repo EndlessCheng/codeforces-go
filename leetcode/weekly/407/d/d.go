@@ -2,11 +2,20 @@ package main
 
 // https://space.bilibili.com/206214
 func minimumOperations(nums, target []int) int64 {
-	n := len(nums)
-	ans := max(target[0]-nums[0], 0)
-	for i := 1; i < n; i++ {
-		ans += max((target[i]-nums[i])-(target[i-1]-nums[i-1]), 0)
+	posSum, negSum := 0, 0
+	d := target[0] - nums[0]
+	if d > 0 {
+		posSum = d
+	} else {
+		negSum = -d
 	}
-	ans += max(-(target[n-1] - nums[n-1]), 0)
-	return int64(ans)
+	for i := 1; i < len(nums); i++ {
+		d := (target[i] - nums[i]) - (target[i-1] - nums[i-1])
+		if d > 0 {
+			posSum += d
+		} else {
+			negSum -= d
+		}
+	}
+	return int64(max(posSum, negSum))
 }
