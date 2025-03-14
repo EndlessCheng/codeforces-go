@@ -206,15 +206,13 @@ func minReverseOperations(n int, p int, banned []int, k int) []int {
 
 **前置知识**：并查集。
 
-把方法一的有序集合，改成两个列表 $\textit{indices}_0$ 和 $\textit{indices}_1$。
+返璞归真，把方法一的有序集合，合并一个列表 $\textit{indices}=[0,1,2,\ldots,n-1]$。
 
-改成列表后，如何高效地删除元素？
+改成列表后，直接删除列表元素的话，时间复杂度是 $\mathcal{O}(n)$ 的。如何高效地删除元素？
 
-举例说明。假设我们有下标 $0,2,4,6,8$，要把其中的 $4$ 删除。直接删除的话，时间复杂度就太高了。用并查集思考，改成把 $j=4$ 与 $j+2=6$ 合并，也就是调用 $\texttt{merge}(j,j+2)$。这样下次遍历的时候，就可以利用并查集的 $\texttt{find}$ 函数，**跳过**已删除的下标。比如想找 $\ge 4$ 的没有访问过（没被删除）的最小偶数下标，只需要调用并查集的 $\texttt{find}(4)$，结果是 $6$。
+举例说明。假设我们有下标 $0,1,2,3,4$，要把其中的 $2$ 删除。用并查集思考，改成把 $j=2$ 与 $j+2=4$ 合并，也就是调用 $\texttt{merge}(j,j+2)$。这样下次遍历的时候，就可以利用并查集的 $\texttt{find}$ 函数，**跳过**已删除的下标。比如想找 $\ge 2$ 的没有访问过（没被删除）的最小偶数下标，只需要调用并查集的 $\texttt{find}(2)$，结果是 $4$。
 
-代码实现时，$\textit{indices}_0$ 和 $\textit{indices}_1$ 各自用一个并查集维护。并且并查集维护的是 $[0,n-1]$ 中的所有下标（加上哨兵 $n$ 和 $n+1$），这样写起来方便。
-
-代码实现时，$\texttt{merge}(j,j+2)$ 可以优化成 $\texttt{merge}(j,\textit{mx}+2)$。既然范围内的数都要删除，直接一步到位，全部指向下一个没被删除的数，即 $\textit{mx}+2$。注意我们添加了哨兵 $n$ 和 $n+1$，保证 $\textit{mx}+2$ 一定存在，不会下标越界。
+代码实现时，$\texttt{merge}(j,j+2)$ 可以优化成 $\texttt{merge}(j,\textit{mx}+2)$。既然范围内的数都要删除，直接一步到位，全部指向下一个没被删除的数，即 $\textit{mx}+2$。为了保证 $\textit{mx}+2$ 一定存在，可以添加哨兵 $n$ 和 $n+1$。也就是说，并查集的大小是 $n+2$ 而不是 $n$。
 
 ```py [sol-Python3]
 class UnionFind:
@@ -231,10 +229,10 @@ class UnionFind:
 
 class Solution:
     def minReverseOperations(self, n: int, p: int, banned: List[int], k: int) -> List[int]:
-        indices = [UnionFind(n + 2), UnionFind(n + 2)]
-        indices[p % 2].merge(p, p + 2)  # 删除 p
+        indices = UnionFind(n + 2)
+        indices.merge(p, p + 2)  # 删除 p
         for i in banned:
-            indices[i % 2].merge(i, i + 2)  # 删除 i
+            indices.merge(i, i + 2)  # 删除 i
 
         ans = [-1] * n
         ans[p] = 0
@@ -243,13 +241,46 @@ class Solution:
             i = q.popleft()
             mn = max(i - k + 1, k - i - 1)
             mx = min(i + k - 1, n * 2 - k - i - 1)
-            uf = indices[mn % 2]
-            j = uf.find(mn)
+            j = indices.find(mn)
             while j <= mx:
                 ans[j] = ans[i] + 1
                 q.append(j)
-                uf.merge(j, mx + 2)  # 删除 j
-                j = uf.find(j + 2)  # 快速跳到 >= j+2 的下一个下标
+                indices.merge(j, mx + 2)  # 删除 j
+                j = indices.find(j + 2)  # 快速跳到 >= j+2 的下一个下标
+        return ans
+```
+
+```py [sol-Python3 优化]
+class UnionFind:
+    def __init__(self, n: int):
+        self.fa = list(range(n))
+
+    def find(self, x: int) -> int:
+        if self.fa[x] != x:
+            self.fa[x] = self.find(self.fa[x])
+        return self.fa[x]
+
+class Solution:
+    def minReverseOperations(self, n: int, p: int, banned: List[int], k: int) -> List[int]:
+        indices = UnionFind(n + 2)
+        indices.fa[p] += 2  # 删除 p
+        for i in banned:
+            indices.fa[i] += 2  # 删除 i
+
+        ans = [-1] * n
+        ans[p] = 0
+        q = deque([p])
+        while q:
+            i = q.popleft()
+            mn = max(i - k + 1, k - i - 1)
+            mx = min(i + k - 1, n * 2 - k - i - 1)
+            end = indices.find(mx + 2)
+            j = indices.find(mn)
+            while j <= mx:
+                ans[j] = ans[i] + 1
+                q.append(j)
+                indices.fa[j] = end  # 删除 j
+                j = indices.find(j + 2)  # 快速跳到 >= j+2 的下一个下标
         return ans
 ```
 
@@ -278,26 +309,25 @@ class UnionFind {
 
 class Solution {
     public int[] minReverseOperations(int n, int p, int[] banned, int k) {
-        UnionFind[] indices = {new UnionFind(n + 2), new UnionFind(n + 2)};
-        indices[p % 2].merge(p, p + 2); // 删除 p
+        UnionFind indices = new UnionFind(n + 2);
+        indices.merge(p, p + 2); // 删除 p
         for (int i : banned) {
-            indices[i % 2].merge(i, i + 2); // 删除 i
+            indices.merge(i, i + 2); // 删除 i
         }
 
         int[] ans = new int[n];
         Arrays.fill(ans, -1);
         ans[p] = 0;
-        Queue<Integer> q = new ArrayDeque<>();
+        Queue<Integer> q = new ArrayDeque<>(); // 注：如果改用数组模拟队列，可以再快一些
         q.offer(p);
         while (!q.isEmpty()) {
             int i = q.poll();
             int mn = Math.max(i - k + 1, k - i - 1);
             int mx = Math.min(i + k - 1, n * 2 - k - i - 1);
-            UnionFind uf = indices[mn % 2];
-            for (int j = uf.find(mn); j <= mx; j = uf.find(j + 2)) { // 快速跳到 >= j+2 的下一个下标
+            for (int j = indices.find(mn); j <= mx; j = indices.find(j + 2)) { // 快速跳到 >= j+2 的下一个下标
                 ans[j] = ans[i] + 1;
                 q.offer(j);
-                uf.merge(j, mx + 2); // 删除 j
+                indices.merge(j, mx + 2); // 删除 j
             }
         }
         return ans;
@@ -329,10 +359,10 @@ public:
 class Solution {
 public:
     vector<int> minReverseOperations(int n, int p, vector<int>& banned, int k) {
-        UnionFind indices[2] = {UnionFind(n + 2), UnionFind(n + 2)};
-        indices[p % 2].merge(p, p + 2); // 删除 p
+        UnionFind indices(n + 2);
+        indices.merge(p, p + 2); // 删除 p
         for (int i : banned) {
-            indices[i % 2].merge(i, i + 2); // 删除 i
+            indices.merge(i, i + 2); // 删除 i
         }
 
         vector<int> ans(n, -1);
@@ -343,11 +373,10 @@ public:
             int i = q.front(); q.pop();
             int mn = max(i - k + 1, k - i - 1);
             int mx = min(i + k - 1, n * 2 - k - i - 1);
-            auto& uf = indices[mn % 2];
-            for (int j = uf.find(mn); j <= mx; j = uf.find(j + 2)) { // 快速跳到 >= j+2 的下一个下标
+            for (int j = indices.find(mn); j <= mx; j = indices.find(j + 2)) { // 快速跳到 >= j+2 的下一个下标
                 ans[j] = ans[i] + 1;
                 q.push(j);
-                uf.merge(j, mx + 2); // 删除 j
+                indices.merge(j, mx + 2); // 删除 j
             }
         }
         return ans;
@@ -380,10 +409,10 @@ func (uf unionFind) merge(from, to int) {
 }
 
 func minReverseOperations(n, p int, banned []int, k int) []int {
-    indices := []unionFind{newUnionFind(n + 2), newUnionFind(n + 2)}
-    indices[p%2].merge(p, p+2) // 删除 p
+    indices := newUnionFind(n + 2)
+    indices.merge(p, p+2) // 删除 p
     for _, i := range banned {
-        indices[i%2].merge(i, i+2) // 删除 i
+        indices.merge(i, i+2) // 删除 i
     }
 
     ans := make([]int, n)
@@ -397,11 +426,10 @@ func minReverseOperations(n, p int, banned []int, k int) []int {
         q = q[1:]
         mn := max(i-k+1, k-i-1)
         mx := min(i+k-1, n*2-k-i-1)
-        uf := indices[mn%2]
-        for j := uf.find(mn); j <= mx; j = uf.find(j + 2) { // 快速跳到 >= j+2 的下一个下标
+        for j := indices.find(mn); j <= mx; j = indices.find(j + 2) { // 快速跳到 >= j+2 的下一个下标
             ans[j] = ans[i] + 1
             q = append(q, j)
-            uf.merge(j, mx+2) // 删除 j
+            indices.merge(j, mx+2) // 删除 j
         }
     }
     return ans

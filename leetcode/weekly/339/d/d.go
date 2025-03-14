@@ -27,10 +27,10 @@ func (uf unionFind) merge(from, to int) {
 }
 
 func minReverseOperations(n, p int, banned []int, k int) []int {
-	indices := []unionFind{newUnionFind(n + 2), newUnionFind(n + 2)}
-	indices[p%2].merge(p, p+2) // 删除 p
+	indices := newUnionFind(n + 2)
+	indices.merge(p, p+2) // 删除 p
 	for _, i := range banned {
-		indices[i%2].merge(i, i+2) // 删除 i
+		indices.merge(i, i+2) // 删除 i
 	}
 
 	ans := make([]int, n)
@@ -44,11 +44,10 @@ func minReverseOperations(n, p int, banned []int, k int) []int {
 		q = q[1:]
 		mn := max(i-k+1, k-i-1)
 		mx := min(i+k-1, n*2-k-i-1)
-		uf := indices[mn%2]
-		for j := uf.find(mn); j <= mx; j = uf.find(j + 2) { // 快速跳到 >= j+2 的下一个下标
+		for j := indices.find(mn); j <= mx; j = indices.find(j + 2) { // 快速跳到 >= j+2 的下一个下标
 			ans[j] = ans[i] + 1
 			q = append(q, j)
-			uf.merge(j, mx+2) // 删除 j
+			indices.merge(j, mx+2) // 删除 j
 		}
 	}
 	return ans
