@@ -10,35 +10,29 @@ import (
 
 // https://github.com/EndlessCheng
 func run(in io.Reader, out io.Writer) {
-	var n int
-	Fscan(in, &n)
-	a := make([]int, n)
-	for i := range a {
-		Fscan(in, &a[i])
-	}
-
+	var n, v int
 	const k = 1
 	f := [k + 1][]int{}
-	f[0] = []int{a[0]}
-	for j := 1; j <= k; j++ {
-		f[j] = []int{0}
+	for i := range f {
+		f[i] = []int{-2e9}
 	}
-	for _, v := range a[1:] {
-		for j := k; j >= 0; j-- {
-			p := sort.SearchInts(f[j], v)
-			if p < len(f[j]) {
-				f[j][p] = v
+	for Fscan(in, &n); n > 0; n-- {
+		Fscan(in, &v)
+		for i := k; i >= 0; i-- {
+			j := sort.SearchInts(f[i], v)
+			if j < len(f[i]) {
+				f[i][j] = v
 			} else {
-				f[j] = append(f[j], v)
+				f[i] = append(f[i], v)
 			}
-			if j > 0 {
-				g := f[j-1]
-				p = len(g)
+			if i > 0 {
+				g := f[i-1]
+				j = len(g)
 				w := g[len(g)-1] + 1
-				if p < len(f[j]) {
-					f[j][p] = min(f[j][p], w)
+				if j < len(f[i]) {
+					f[i][j] = min(f[i][j], w)
 				} else {
-					f[j] = append(f[j], w)
+					f[i] = append(f[i], w)
 				}
 			}
 		}
@@ -46,7 +40,7 @@ func run(in io.Reader, out io.Writer) {
 
 	ans := 0
 	for _, g := range f {
-		ans = max(ans, len(g))
+		ans = max(ans, len(g)-1)
 	}
 	Fprint(out, ans)
 }
