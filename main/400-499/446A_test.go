@@ -41,7 +41,7 @@ outputCopy
 }
 
 func TestCompareCF446A(t *testing.T) {
-	//return
+	return
 	inputGenerator := func() string {
 		//return ``
 		rg := testutil.NewRandGenerator()
