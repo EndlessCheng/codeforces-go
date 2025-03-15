@@ -125,6 +125,7 @@ class Solution {
     vector<int> dis = {0};
     unordered_map<int, int> last_depth; // 颜色 -> 该颜色最近一次出现的深度 +1，注意这里已经 +1 了
 
+    // 对于本题，dfs 写外面效率更高（可能是 unordered_map 导致）
     void dfs(int x, int fa, int top_depth) {
         int color = nums[x];
         int old_depth = last_depth[color];
