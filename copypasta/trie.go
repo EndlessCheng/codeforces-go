@@ -18,12 +18,15 @@ func init() { debug.SetGCPercent(-1) }
             LC3045 https://leetcode.cn/problems/count-prefix-and-suffix-pairs-ii/
 - 把 (s[i], s[n-1-i]) 插入字典树
 LC527 https://leetcode.cn/problems/word-abbreviation/
-https://codeforces.com/contest/514/problem/C
-回文对（配合 Manacher 可以做到线性复杂度）LC336 https://leetcode.cn/problems/palindrome-pairs/
-与 DP 结合 https://leetcode.cn/problems/re-space-lcci/
-与贪心堆结合 https://codeforces.com/problemset/problem/965/E
-todo https://codeforces.com/contest/455/problem/B
-深刻理解 https://atcoder.jp/contests/abc273/tasks/abc273_e
+LC336 https://leetcode.cn/problems/palindrome-pairs/ 回文对（配合 Manacher 可以做到线性复杂度）
+https://leetcode.cn/problems/re-space-lcci/ 与 DP 结合
+https://codeforces.com/problemset/problem/271/D 1800 满足一些条件的本质不同子串个数
+https://codeforces.com/problemset/problem/455/B 1900
+https://codeforces.com/problemset/problem/113/B 2000 满足一些条件的本质不同子串个数
+https://codeforces.com/problemset/problem/514/C 2000
+https://codeforces.com/problemset/problem/965/E 2200 与贪心堆结合
+https://codeforces.com/problemset/problem/557/E 2300
+https://atcoder.jp/contests/abc273/tasks/abc273_e 深刻理解
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
 type trieNode struct {
@@ -213,6 +216,7 @@ func (t *trie) countStringHasPrefix(p string) int {
 // 做法是插入每个后缀，统计节点数。但题目往往会带上额外的条件
 // https://codeforces.com/problemset/problem/271/D
 // - 注：这题还可以用后缀数组+前缀和二分来做到 O(nlogn)
+// https://codeforces.com/problemset/problem/113/B
 func (t *trie) countDistinctSubstring(s string) (cnt int) {
 	for i := range s {
 		o := t.root
