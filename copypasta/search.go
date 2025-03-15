@@ -19,6 +19,7 @@ https://atcoder.jp/contests/abc386/tasks/abc386_e
 排列（部分题目可以用状压 DP 继续优化）
 https://atcoder.jp/contests/abc326/tasks/abc326_d 网格
 https://atcoder.jp/contests/abc328/tasks/abc328_e 生成树
+https://atcoder.jp/contests/arc105/tasks/arc105_c
 
 集合划分（贝尔数）https://oeis.org/A000110
 见下面的 partitionSet
