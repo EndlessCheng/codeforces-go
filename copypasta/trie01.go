@@ -3,10 +3,8 @@ package copypasta
 import (
 	"math"
 	"math/bits"
+	"runtime/debug"
 )
-
-// 注：由于用的是指针写法，必要时禁止 GC，能加速不少
-// func init() { debug.SetGCPercent(-1) }
 
 // 异或字典树
 // 一棵（所有叶节点深度都相同的）二叉树
@@ -23,6 +21,10 @@ import (
 //  转换 https://codeforces.com/contest/1720/problem/D2
 //  异或和 ≥k 的最短区间 https://acm.hdu.edu.cn/showproblem.php?pid=6955
 //  https://codeforces.com/problemset/problem/1849/F
+
+// 指针写法关闭 GC 可以得到明显加速
+func init() { debug.SetGCPercent(-1) }
+
 type trie01Node struct {
 	son [2]*trie01Node
 	cnt int // 子树叶子数
