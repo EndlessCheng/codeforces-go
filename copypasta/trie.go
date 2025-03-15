@@ -1,5 +1,7 @@
 package copypasta
 
+import "runtime/debug"
+
 /* 前缀树/字典树/单词查找树
 适用于多串前缀/后缀匹配
 另类解读：如果将字符串长度视作定值 L 的话，trie 树是一种 O(nL) 排序，O(L) 查询的数据结构
@@ -8,9 +10,6 @@ https://www.quora.com/q/threadsiiithyderabad/Tutorial-on-Trie-and-example-proble
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieST.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TrieSET.java.html
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/TST.java.html
-
-注：由于用的是指针写法，必要时禁止 GC，能加速不少
-func init() { debug.SetGCPercent(-1) }
 
 模板题 LC208 https://leetcode.cn/problems/implement-trie-prefix-tree/
 最长匹配后缀 https://leetcode.cn/problems/longest-common-suffix-queries/
@@ -29,6 +28,10 @@ https://codeforces.com/problemset/problem/557/E 2300
 https://atcoder.jp/contests/abc273/tasks/abc273_e 深刻理解
 https://atcoder.jp/contests/abc353/tasks/abc353_e
 */
+
+// 指针写法关闭 GC 可以得到明显加速
+func init() { debug.SetGCPercent(-1) }
+
 type trieNode struct {
 	son [26]*trieNode
 	cnt int // trieNode 对应的完整字符串的个数
