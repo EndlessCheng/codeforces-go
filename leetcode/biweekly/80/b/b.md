@@ -41,7 +41,8 @@ class Solution {
         Arrays.sort(potions);
         for (int i = 0; i < spells.length; i++) {
             long target = (success - 1) / spells[i];
-            if (target < potions[potions.length - 1]) { // 防止 long 转成 int 截断
+            if (target < potions[potions.length - 1]) {
+                // 这样写每次二分就只用比两个 int 的大小，避免把 potions 中的元素转成 long 比较
                 spells[i] = potions.length - upperBound(potions, (int) target);
             } else {
                 spells[i] = 0;
@@ -77,7 +78,7 @@ public:
         for (int &x : spells) {
             long long target = (success - 1) / x;
             if (target < potions.back()) {
-                // 这样写每次二分就只用 int 比较，避免把 potions 中的元素转成 long long 比较
+                // 这样写每次二分就只用比两个 int 的大小，避免把 potions 中的元素转成 long long 比较
                 x = potions.end() - ranges::upper_bound(potions, (int) target);
             } else {
                 x = 0;
@@ -112,7 +113,7 @@ int* successfulPairs(int* spells, int spellsSize, int* potions, int potionsSize,
     for (int i = 0; i < spellsSize; i++) {
         long long target = (success - 1) / spells[i];
         if (target < potions[potionsSize - 1]) {
-            // 这样写每次二分就只用 int 比较，避免把 potions 中的元素转成 long long 比较
+            // 这样写每次二分就只用比两个 int 的大小，避免把 potions 中的元素转成 long long 比较
             spells[i] = potionsSize - upperBound(potions, potionsSize, target);
         } else {
             spells[i] = 0;
@@ -178,7 +179,7 @@ impl Solution {
         let last = potions[potions.len() - 1] as i64;
         for x in spells.iter_mut() {
             let target = (success - 1) / *x as i64;
-            if target < last { // 防止 i64 转成 i32 截断（这样不需要把 potions 转成 i64 比较）
+            if target < last { // 防止 i64 转成 i32 截断（这样不需要把 potions 中的数转成 i64 比较）
                 let j = potions.partition_point(|&x| x <= target as i32);
                 *x = (potions.len() - j) as i32;
             } else {
