@@ -49,7 +49,7 @@ public:
 ```
 
 ```c [sol-C]
-bool isBalanced(const char* num) {
+bool isBalanced(char* num) {
     int s = 0;
     for (int i = 0; num[i]; i++) {
         int c = num[i] - '0';
