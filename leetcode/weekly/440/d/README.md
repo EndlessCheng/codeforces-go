@@ -381,6 +381,10 @@ func maxSubarrays(n int, conflictingPairs [][]int) int64 {
 - 时间复杂度：$\mathcal{O}(n)$。
 - 空间复杂度：$\mathcal{O}(n)$。
 
+## 思考题
+
+如果可以删两个呢？
+
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
