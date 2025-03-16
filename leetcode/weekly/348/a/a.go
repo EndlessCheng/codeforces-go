@@ -10,3 +10,11 @@ func minimizedStringLength(s string) int {
 	}
 	return bits.OnesCount(mask)
 }
+
+func minimizedStringLength1(s string) int {
+	set := map[rune]struct{}{}
+	for _, c := range s {
+		set[c] = struct{}{}
+	}
+	return len(set)
+}
