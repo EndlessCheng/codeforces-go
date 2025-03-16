@@ -72,7 +72,7 @@ public:
         int i = formula.find('+');
         string s = formula.substr(1, i - 1);
         string t = formula.substr(i + 1);
-        // 注意 s 不在 data 中的时候，这样写会把 s 插入 data，这里没有判断，就简单写了
+        // 注意 s 不在 data 中的时候，data[s] 会把 s 插入 data，这里从简没有判断
         return (isupper(s[0]) ? data[s] : stoi(s)) +
                (isupper(t[0]) ? data[t] : stoi(t));
     }
