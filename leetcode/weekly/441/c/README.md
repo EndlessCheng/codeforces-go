@@ -26,6 +26,7 @@ class Solution:
         f = [[True] + [False] * x for x in nums]
         for k, (l, r, val) in enumerate(queries):
             for i in range(l, r + 1):
+                if f[i][-1]: continue  # 小优化：已经满足要求，不计算
                 for j in range(nums[i], val - 1, -1):
                     f[i][j] = f[i][j] or f[i][j - val]
             if all(fi[-1] for fi in f):
@@ -51,6 +52,7 @@ class Solution {
             int[] q = queries[k];
             int val = q[2];
             for (int i = q[0]; i <= q[1]; i++) {
+                if (f[i][nums[i]]) continue; // 小优化：已经满足要求，不计算
                 for (int j = nums[i]; j >= val; j--) {
                     f[i][j] = f[i][j] || f[i][j - val];
                 }
@@ -90,6 +92,7 @@ public:
             auto& q = queries[k];
             int val = q[2];
             for (int i = q[0]; i <= q[1]; i++) {
+                if (f[i][nums[i]]) continue; // 小优化：已经满足要求，不计算
                 for (int j = nums[i]; j >= val; j--) {
                     f[i][j] = f[i][j] || f[i][j - val];
                 }
@@ -128,6 +131,9 @@ next:
 	for k, q := range queries {
 		val := q[2]
 		for i := q[0]; i <= q[1]; i++ {
+			if f[i][nums[i]] {
+				continue // 小优化：已经满足要求，不计算
+			}
 			for j := nums[i]; j >= val; j-- {
 				f[i][j] = f[i][j] || f[i][j-val]
 			}
@@ -188,7 +194,9 @@ class Solution {
         for (int k = 0; k < queries.length; k++) {
             int[] q = queries[k];
             for (int i = q[0]; i <= q[1]; i++) {
-                f[i] = f[i].or(f[i].shiftLeft(q[2])); // 本题 val 比较小，超出 nums[i] 比特位没有去掉
+                if (!f[i].testBit(nums[i])) { // 小优化：已经满足要求，不计算
+                    f[i] = f[i].or(f[i].shiftLeft(q[2]));
+                }
             }
             boolean ok = true;
             for (int i = 0; i < n; i++) {
@@ -224,7 +232,9 @@ public:
             auto& q = queries[k];
             int val = q[2];
             for (int i = q[0]; i <= q[1]; i++) {
-                f[i] |= f[i] << val;
+                if (!f[i][nums[i]]) { // 小优化：已经满足要求，不计算
+                    f[i] |= f[i] << val;
+                }
             }
             bool ok = true;
             for (int i = 0; i < n; i++) {
@@ -260,7 +270,9 @@ next:
 	for k, q := range queries {
 		val := uint(q[2])
 		for i := q[0]; i <= q[1]; i++ {
-			f[i].Or(f[i], p.Lsh(f[i], val)) // 本题 val 比较小，超出 nums[i] 比特位没有去掉
+			if f[i].Bit(nums[i]) == 0 { // 小优化：已经满足要求，不计算
+				f[i].Or(f[i], p.Lsh(f[i], val))
+			}
 		}
 		for i, x := range nums {
 			if f[i].Bit(x) == 0 {
@@ -275,7 +287,7 @@ next:
 
 #### 复杂度分析
 
-以下分析，基于去掉超出 $\textit{nums}[i]$ 的比特位的写法。
+以下分析，不考虑超出 $\textit{nums}[i]$ 的比特位。
 
 - 时间复杂度：$\mathcal{O}(qnU / w)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
 - 空间复杂度：$\mathcal{O}(nU / w)$。

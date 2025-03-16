@@ -20,7 +20,9 @@ next:
 	for k, q := range queries {
 		val := uint(q[2])
 		for i := q[0]; i <= q[1]; i++ {
-			f[i].Or(f[i], p.Lsh(f[i], val))
+			if f[i].Bit(nums[i]) == 0 {
+				f[i].Or(f[i], p.Lsh(f[i], val))
+			}
 		}
 		for i, x := range nums {
 			if f[i].Bit(x) == 0 {
@@ -50,6 +52,9 @@ next:
 	for k, q := range queries {
 		val := q[2]
 		for i := q[0]; i <= q[1]; i++ {
+			if f[i][nums[i]] {
+				continue
+			}
 			for j := nums[i]; j >= val; j-- {
 				f[i][j] = f[i][j] || f[i][j-val]
 			}
