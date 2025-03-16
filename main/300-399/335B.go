@@ -25,27 +25,20 @@ func cf335B(in io.Reader, out io.Writer) {
 	for i := range f {
 		f[i] = make([]int, n)
 	}
-	dp := func(odd int) {
-		for i := n - 1; i >= 0; i-- {
-			f[i][i] = odd
-			for j := i + 1; j < n; j++ {
-				if s[i] == s[j] {
-					f[i][j] = f[i+1][j-1] + 2
-				} else {
-					f[i][j] = max(f[i+1][j], f[i][j-1])
-				}
+	for i := n - 1; i >= 0; i-- {
+		f[i][i] = 1
+		for j := i + 1; j < n; j++ {
+			if s[i] == s[j] {
+				f[i][j] = f[i+1][j-1] + 2
+			} else {
+				f[i][j] = max(f[i+1][j], f[i][j-1])
 			}
 		}
-	}
-	dp(0)
-	ok := f[0][n-1] >= 100
-	if !ok {
-		dp(1)
 	}
 
 	t := []byte{}
 	i, j := 0, n-1
-	for i < j && (!ok || len(t) < 50) {
+	for i < j && len(t) < 50 {
 		if s[i] == s[j] {
 			t = append(t, s[i])
 			i++
@@ -58,11 +51,10 @@ func cf335B(in io.Reader, out io.Writer) {
 	}
 	rev := slices.Clone(t)
 	slices.Reverse(rev)
-	if !ok && i == j {
+	if i == j && len(t) < 50 {
 		t = append(t, s[i])
 	}
-	t = append(t, rev...)
-	Fprintf(out, "%s", t)
+	Fprintf(out, "%s%s", t, rev)
 }
 
 //func main() { cf335B(bufio.NewReader(os.Stdin), os.Stdout) }
