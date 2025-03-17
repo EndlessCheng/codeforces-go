@@ -150,7 +150,7 @@ public:
 
         vector<int> idx(n);
         ranges::iota(idx, 0);
-        ranges::sort(idx, {}, [&](int i) { return words[i]; });
+        ranges::sort(idx, {}, [&](int i) -> auto& { return words[i]; }); // 注意要返回引用，不然会 copy
 
         // 计算最大 LCP 长度和次大 LCP 长度，同时记录最大 LCP 来自哪里
         int mx = -1, mx2 = -1, mx_i = -1;
