@@ -2,11 +2,51 @@ package main
 
 import (
 	"math/big"
+	"slices"
 	"sort"
 )
 
 // https://space.bilibili.com/206214
-func minZeroArray(nums []int, queries [][]int) int {
+func minZeroArray42(nums []int, queries [][]int) int {
+	m := len(queries)
+	cnts := make([][][11]int, m+1)
+	cnts[0] = make([][11]int, len(nums))
+	for k, q := range queries {
+		cnts[k+1] = slices.Clone(cnts[k])
+		for i := q[0]; i <= q[1]; i++ {
+			cnts[k+1][i][q[2]]++
+		}
+	}
+	ans := sort.Search(m+1, func(mx int) bool {
+		p := new(big.Int)
+	next:
+		for i, x := range nums {
+			if x == 0 {
+				continue
+			}
+			// 多重背包（二进制优化）
+			f := big.NewInt(1)
+			for v, num := range cnts[mx][i] {
+				for pow2 := 1; num > 0; pow2 *= 2 {
+					k := min(pow2, num)
+					f.Or(f, p.Lsh(f, uint(v*k)))
+					if f.Bit(x) > 0 {
+						continue next
+					}
+					num -= k
+				}
+			}
+			return false
+		}
+		return true
+	})
+	if ans <= m {
+		return ans
+	}
+	return -1
+}
+
+func minZeroArray4(nums []int, queries [][]int) int {
 	ans := sort.Search(len(queries)+1, func(mx int) bool {
 		p := new(big.Int)
 	next:
