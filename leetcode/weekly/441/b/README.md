@@ -286,7 +286,7 @@ func solveQueries(nums []int, queries []int) []int {
 }
 ```
 
-### 优化
+### 优化（一）
 
 一次遍历同时计算 $\textit{left}$ 和 $\textit{right}$。（类似单调栈）
 
@@ -402,6 +402,144 @@ func solveQueries(nums []int, queries []int) []int {
 			queries[qi] = -1
 		} else {
 			queries[qi] = min(i-l, right[i]-i)
+		}
+	}
+	return queries
+}
+```
+
+### 优化（二）
+
+上面的写法并不是真正的一次遍历，因为遍历了 $\textit{nums}$ 两次。
+
+要做到真正的一次遍历，需要记录每个元素首次出现的位置和最后一次出现的位置。
+
+```py [sol-Python3]
+class Solution:
+    def solveQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        n = len(nums)
+        left = [0] * n
+        right = [0] * n
+        first = {}  # 记录首次出现的位置
+        last = {}  # 记录最后一次出现的位置
+        for i, x in enumerate(nums):
+            left[i] = j = last.get(x, -1)
+            if j >= 0:
+                right[j] = i
+            if x not in first:
+                first[x] = i
+            last[x] = i
+
+        for qi, i in enumerate(queries):
+            l = left[i] if left[i] >= 0 else last[nums[i]] - n
+            if i - l == n:
+                queries[qi] = -1
+            else:
+                r = right[i] or first[nums[i]] + n
+                queries[qi] = min(i - l, r - i)
+        return queries
+```
+
+```java [sol-Java]
+class Solution {
+    public List<Integer> solveQueries(int[] nums, int[] queries) {
+        int n = nums.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Map<Integer, Integer> first = new HashMap<>(); // 记录首次出现的位置
+        Map<Integer, Integer> last = new HashMap<>(); // 记录最后一次出现的位置
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            left[i] = last.getOrDefault(x, -1);
+            if (left[i] >= 0) {
+                right[left[i]] = i;
+            }
+            first.putIfAbsent(x, i);
+            last.put(x, i);
+        }
+
+        List<Integer> ans = new ArrayList<>(queries.length);
+        for (int i : queries) {
+            int l = left[i] >= 0 ? left[i] : last.get(nums[i]) - n;
+            if (i - l == n) {
+                ans.add(-1);
+            } else {
+                int r = right[i] > 0 ? right[i] : first.get(nums[i]) + n;
+                ans.add(Math.min(i - l, r - i));
+            }
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<int> solveQueries(vector<int>& nums, vector<int>& queries) {
+        int n = nums.size();
+        vector<int> left(n), right(n);
+        unordered_map<int, int> first, last; // 记录首次出现和最后一次出现的位置
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            left[i] = last.contains(x) ? last[x] : -1;
+            if (left[i] >= 0) {
+                right[left[i]] = i;
+            }
+            if (!first.contains(x)) {
+                first[x] = i;
+            }
+            last[x] = i;
+        }
+
+        for (int& i : queries) {
+            int l = left[i] >= 0 ? left[i] : last[nums[i]] - n;
+            if (i - l == n) {
+                i = -1;
+            } else {
+                int r = right[i] ? right[i] : first[nums[i]] + n;
+                i = min(i - l, r - i);
+            }
+        }
+        return queries;
+    }
+};
+```
+
+```go [sol-Go]
+func solveQueries(nums []int, queries []int) []int {
+	n := len(nums)
+	left := make([]int, n)
+	right := make([]int, n)
+	first := map[int]int{} // 首次出现的位置
+	last := map[int]int{}  // 最后一次出现的位置
+	for i, x := range nums {
+		j, ok := last[nums[i]]
+		if ok {
+			left[i] = j
+			right[j] = i
+		} else {
+			left[i] = -1
+		}
+		if _, ok := first[x]; !ok {
+			first[x] = i
+		}
+		last[x] = i
+	}
+
+	for qi, i := range queries {
+		l := left[i]
+		if l < 0 {
+			l = last[nums[i]] - n
+		}
+		if i-l == n {
+			queries[qi] = -1
+		} else {
+			r := right[i]
+			if r == 0 {
+				r = first[nums[i]] + n
+			}
+			queries[qi] = min(i-l, r-i)
 		}
 	}
 	return queries

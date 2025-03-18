@@ -10,6 +10,44 @@ func solveQueries(nums []int, queries []int) []int {
 	n := len(nums)
 	left := make([]int, n)
 	right := make([]int, n)
+	first := map[int]int{} // 首次出现的位置
+	last := map[int]int{}  // 最后一次出现的位置
+	for i, x := range nums {
+		j, ok := last[nums[i]]
+		if ok {
+			left[i] = j
+			right[j] = i
+		} else {
+			left[i] = -1
+		}
+		if _, ok := first[x]; !ok {
+			first[x] = i
+		}
+		last[x] = i
+	}
+
+	for qi, i := range queries {
+		l := left[i]
+		if l < 0 {
+			l = last[nums[i]] - n
+		}
+		if i-l == n {
+			queries[qi] = -1
+		} else {
+			r := right[i]
+			if r == 0 {
+				r = first[nums[i]] + n
+			}
+			queries[qi] = min(i-l, r-i)
+		}
+	}
+	return queries
+}
+
+func solveQueries3(nums []int, queries []int) []int {
+	n := len(nums)
+	left := make([]int, n)
+	right := make([]int, n)
 	pos := map[int]int{}
 	for i := -n; i < n; i++ {
 		if i >= 0 {
