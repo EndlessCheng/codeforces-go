@@ -27,6 +27,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1JYQ8YWEvD/?t=30m42s)，欢迎点赞关注~
 
+## 写法一
+
 ```py [sol-Python3]
 class Solution:
     def beautifulNumbers(self, l: int, r: int) -> int:
@@ -49,7 +51,7 @@ class Solution:
                 d = 1  # 下面循环从 1 开始
             else:
                 d = lo
-            # 枚举填数位 d
+            # 枚举填数字 d
             for d in range(d, hi + 1):
                 res += dfs(i + 1, m * d, s + d, limit_low and d == lo, limit_high and d == hi)
             return res
@@ -179,7 +181,7 @@ func beautifulNumbers(l, r int) int {
 			res = dfs(i+1, 1, 0, true, false) // 什么也不填
 			d = 1 // 下面循环从 1 开始
 		}
-		// 枚举填数位 d
+		// 枚举填数字 d
 		for ; d <= hi; d++ {
 			res += dfs(i+1, m*d, s+d, limitLow && d == lo, limitHigh && d == hi)
 		}
@@ -191,8 +193,182 @@ func beautifulNumbers(l, r int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n^6D^2)$，其中 $n$ 是 $r$ 的十进制长度，$D=10$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数为 $\mathcal{O}(n^6D)$，即 $i$ 的个数 $\mathcal{O}(n)$、$m$ 的个数 $\mathcal{O}(n^4)$（见下文证明）、$s$ 的个数 $\mathcal{O}(nD)$ 三者相乘。单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(n^6D^2)$。
+- 时间复杂度：$\mathcal{O}(n^6D^2)$，其中 $n$ 是 $r$ 的十进制长度，$D=10$。由于每个状态只会计算一次，动态规划的时间复杂度 $=$ 状态个数 $\times$ 单个状态的计算时间。本题状态个数为 $\mathcal{O}(n^6D)$，即 $i$ 的个数 $\mathcal{O}(n)$、$m$ 的个数 $\mathcal{O}(n^4)$（见文末的证明）、$s$ 的个数 $\mathcal{O}(nD)$ 三者相乘。单个状态的计算时间为 $\mathcal{O}(D)$，所以总的时间复杂度为 $\mathcal{O}(n^6D^2)$。
 - 空间复杂度：$\mathcal{O}(n^6D)$。保存多少状态，就需要多少空间。
+
+## 写法二
+
+转换成 $[1,r]$ 的美丽整数个数，减去 $[1,l-1]$ 的美丽整数个数。
+
+使用 [数位 DP v1.0 模板](https://www.bilibili.com/video/BV1rS4y1s721/?t=19m36s) 解决，这样可以把 $\textit{dfs}$ 写在外面，多个测试数据之间可以**复用**记忆化搜索的结果。
+
+为了保证可以复用，需要把个位数的下标统一为 $0$，十位数的下标统一为 $1$，依此类推。
+
+```py [sol-Python3]
+memo = {}
+high = []
+
+def dfs(i: int, m: int, s: int, is_limit: bool, is_num: bool) -> int:
+    if i < 0:
+        return 1 if s and m % s == 0 else 0
+
+    t = (m, i, s)
+    if not is_limit and is_num and t in memo:
+        return memo[t]
+
+    # 什么也不填
+    res = 0 if is_num else dfs(i - 1, m, s, False, False)
+    hi = high[i] if is_limit else 9
+    # 枚举填哪个数字
+    for d in range(0 if is_num else 1, hi + 1):
+        res += dfs(i - 1, m * d, s + d, is_limit and d == hi, True)
+
+    if not is_limit and is_num:
+        memo[t] = res
+    return res
+
+class Solution:
+    def beautifulNumbers(self, l: int, r: int) -> int:
+        def calc(r: int) -> int:
+            global high
+            high = list(map(int, str(r)))[::-1]
+            return dfs(len(high) - 1, 1, 0, True, False)
+        return calc(r) - calc(l - 1)
+```
+
+```java [sol-Java]
+class Solution {
+    private static final Map<Long, Integer> memo = new HashMap<>();
+
+    public int beautifulNumbers(int l, int r) {
+        return calc(r) - calc(l - 1);
+    }
+
+    private int calc(int r) {
+        char[] high = new StringBuilder(String.valueOf(r)).reverse().toString().toCharArray();
+        return dfs(high.length - 1, 1, 0, true, false, high);
+    }
+
+    private int dfs(int i, int m, int s, boolean isLimit, boolean isNum, char[] high) {
+        if (i < 0) {
+            return s > 0 && m % s == 0 ? 1 : 0;
+        }
+
+        long mask = (long) m << 32 | i << 16 | s;
+        if (!isLimit && isNum && memo.containsKey(mask)) {
+            return memo.get(mask);
+        }
+
+        // 什么也不填
+        int res = isNum ? 0 : dfs(i - 1, m, s, false, false, high);
+        int hi = isLimit ? high[i] - '0' : 9;
+        // 枚举填哪个数字
+        for (int d = isNum ? 0 : 1; d <= hi; d++) {
+            res += dfs(i - 1, m * d, s + d, isLimit && d == hi, true, high);
+        }
+
+        if (!isLimit && isNum) {
+            memo.put(mask, res);
+        }
+        return res;
+    }
+}
+```
+
+```cpp [sol-C++]
+unordered_map<long long, int> memo;
+string high;
+
+int dfs(int i, int m, int s, bool is_limit, bool is_num) {
+    if (i < 0) {
+        return s && m % s == 0;
+    }
+
+    long long mask = (long long) m << 32 | i << 16 | s;
+    if (!is_limit && is_num && memo.contains(mask)) {
+        return memo[mask];
+    }
+
+    // 什么也不填
+    int res = is_num ? 0 : dfs(i - 1, m, s, false, false);
+    int hi = is_limit ? high[i] - '0' : 9;
+    // 枚举填哪个数字
+    for (int d = 1 - is_num; d <= hi; d++) {
+        res += dfs(i - 1, m * d, s + d, is_limit && d == hi, true);
+    }
+
+    if (!is_limit && is_num) {
+        memo[mask] = res;
+    }
+    return res;
+}
+
+class Solution {
+    int calc(int r) {
+        high = to_string(r);
+        ranges::reverse(high);
+        return dfs(high.size() - 1, 1, 0, true, false);
+    }
+
+public:
+    int beautifulNumbers(int l, int r) {
+        return calc(r) - calc(l - 1);
+    }
+};
+```
+
+```go [sol-Go]
+type tuple struct{ i, m, s int }
+
+var memo = map[tuple]int{}
+var high []byte
+
+func dfs(i, m, s int, isLimit, isNum bool) (res int) {
+	if i < 0 {
+		if s == 0 || m%s > 0 {
+			return 0
+		}
+		return 1
+	}
+	if !isLimit && isNum {
+		t := tuple{i, m, s}
+		if v, ok := memo[t]; ok {
+			return v
+		}
+		defer func() { memo[t] = res }()
+	}
+
+	hi := 9
+	if isLimit {
+		hi = int(high[i] - '0')
+	}
+
+	d := 0
+	if !isNum {
+		res = dfs(i-1, m, s, false, false) // 什么也不填
+		d = 1
+	}
+	// 枚举填数字 d
+	for ; d <= hi; d++ {
+		res += dfs(i-1, m*d, s+d, isLimit && d == hi, true)
+	}
+	return
+}
+
+func calc(r int) int {
+	high = []byte(strconv.Itoa(r))
+	slices.Reverse(high)
+	return dfs(len(high)-1, 1, 0, true, false)
+}
+
+func beautifulNumbers(l, r int) int {
+	return calc(r) - calc(l-1)
+}
+```
+
+#### 复杂度分析
+
+同写法一。
 
 ## 有多少个不同乘积
 
@@ -218,7 +394,7 @@ $$
 - 如果 $m=k-1$，那么 $a$ 的范围为 $[0,3(k-1)]$，$b$ 的范围为 $[1,2]$（选 $3$ 或者 $9$），这新增了 $(3(k-1)+1)\cdot 2$ 个 $(a,b)$。
 - 如果 $m=k-2$，那么 $a$ 的范围为 $[0,3(k-2)]$，$b$ 的范围为 $[2,4]$，其中 $b=2$ 的情况之前算过，所以新增了 $(3(k-2)+1)\cdot 2$ 个 $(a,b)$。
 - 如果 $m=k-3$，那么 $a$ 的范围为 $[0,3(k-3)]$，$b$ 的范围为 $[3,6]$，其中 $b=3,4$ 的情况之前算过，所以新增了 $(3(k-3)+1)\cdot 2$ 个 $(a,b)$。
-- 依此类推，每次会新增 $(3m+1)\cdot 2$ 个 $(a,b)$。一直到 $m=0$。
+- 依此类推，每次会新增 $(3m+1)\cdot 2$ 个 $(a,b)$，一直到 $m=0$。
 
 累加得
 
@@ -229,7 +405,7 @@ $$
 然后考虑数字 $6$，设我们选了 $m$ 个 $\{1,2,4,8\}$ 中的数：
 
 - 如果 $m=k-1$，那么 $a$ 的范围为 $[0,3(k-1)]$，$b=0$（因为得留一个数出来选 $6$）。只有当 $a=3(k-1)$ 的时候，和 $6$ 相乘才会产生 $1$ 个新的 $(a,b)$。
-- 如果 $m=k-2$，那么 $a$ 的范围为 $[0,3(k-2)]$，如果选两个 $6$，这不会产生新的 $(a,b)$。只有选一个 $6$、且 $a=3(k-2),\ b=2$ 的时候，和 $6$ 相乘才会产生 $1$ 个新的 $(a,b)$。
+- 如果 $m=k-2$，那么 $a$ 的范围为 $[0,3(k-2)]$，如果选两个 $6$，这不会产生新的 $(a,b)$。只有选一个 $6$，且 $a=3(k-2),\ b=2$ 的时候，和 $6$ 相乘才会产生 $1$ 个新的 $(a,b)$。
 - 依此类推，对于 $[0,k-1]$ 中的每个 $m$，都会产生 $1$ 个新的 $(a,b)$，一共产生了 $k$ 个新的 $(a,b)$。
 
 所以一共有
