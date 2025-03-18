@@ -32,6 +32,7 @@ https://codeforces.com/problemset/problem/1538/C 1300
 https://codeforces.com/problemset/problem/165/B 1500
 https://codeforces.com/problemset/problem/1971/E 1500
 https://atcoder.jp/contests/abc248/tasks/abc248_d
+https://atcoder.jp/contests/abc334/tasks/abc334_d 前缀和
 
 ### 二分答案原理
 为什么二分的结果一定就是我们要求的，可不可能无法由数组中的元素组合得到？
