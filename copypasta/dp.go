@@ -2721,7 +2721,7 @@ func _(abs func(int) int) {
 		// 第二种写法（前导零影响答案）
 		// 注意，仍然无需使用 isNum
 		// 下面是计算每个数位乘积的代码，这种情况下就要区分【前导零】和【数字中的零】了，
-		// 前导零是不能相乘，而数字中的零是可以相乘的
+		// 前导零不能相乘，而数字中的零可以相乘
 		var dfs func(int, int, bool, bool) int
 		dfs = func(i, mul int, limitLow, limitHigh bool) (res int) {
 			if i == n {
