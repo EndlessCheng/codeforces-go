@@ -26,6 +26,7 @@ func run(in io.Reader, out io.Writer) {
 				f[i] = append(f[i], v)
 			}
 			if i > 0 {
+				// 注意这里没有二分，完全取决于 len(g)
 				g := f[i-1]
 				j = len(g)
 				w := g[len(g)-1] + 1
