@@ -27,8 +27,7 @@ NOTE: 记录从 x 到根的路径上的每个点到 x 的距离，就可以从 y
 On the number of leaves in a random recursive tree https://projecteuclid.org/journals/brazilian-journal-of-probability-and-statistics/volume-29/issue-4/On-the-number-of-leaves-in-a-random-recursive-tree/10.1214/14-BJPS252.pdf
 
 简单 DFS
-- [2368. 受限条件下可到达节点的数目](https://leetcode.cn/problems/reachable-nodes-with-restrictions/) 1477
-- [3004. 相同颜色的最大子树](https://leetcode.cn/problems/maximum-subtree-of-the-same-color/)（会员题）
+https://atcoder.jp/contests/abc333/tasks/abc333_d
 https://codeforces.com/problemset/problem/1675/D 1300 树分成尽量少的链
 https://codeforces.com/problemset/problem/580/C 1500
 https://codeforces.com/problemset/problem/34/D 1600
@@ -1084,6 +1083,8 @@ func (*tree) centroidDecompositionTree(g [][]struct{ to, wt int }, root int, a [
 // https://codeforces.com/problemset/problem/1535/E 2200
 // https://codeforces.com/problemset/problem/379/F 2400
 // https://codeforces.com/problemset/problem/916/E 2400
+// https://codeforces.com/problemset/problem/372/D 2600
+// - 先把这题做了 https://www.luogu.com.cn/problem/P3320
 // https://ac.nowcoder.com/acm/contest/6913/C 路径点权乘积 
 //
 // 维护元素和 LC2836 https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/
@@ -1106,18 +1107,20 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 	const mx = 17 // bits.Len(最大节点数)
 	pa := make([][mx]int, len(g))
 	dep := make([]int, len(g)) // 根节点的深度为 0
+	//dis := make([]int, len(g))
 	var buildPa func(int, int)
 	buildPa = func(v, p int) {
 		pa[v][0] = p
 		for _, w := range g[v] {
 			if w != p {
 				dep[w] = dep[v] + 1
+				//dis[w] = dis[w] + e.wt
 				buildPa(w, v)
 			}
 		}
 	}
 	buildPa(root, -1) // pa[root][0] = -1
-	for i := 0; i+1 < mx; i++ {
+	for i := range mx - 1 {
 		for v := range pa {
 			if p := pa[v][i]; p != -1 {
 				pa[v][i+1] = pa[p][i]
@@ -1154,6 +1157,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		return pa[v][0]
 	}
 	getDis := func(v, w int) int { return dep[v] + dep[w] - dep[getLCA(v, w)]*2 }
+	//getDis := func(v, w int) int { return dis[v] + dis[w] - dis[getLCA(v, w)]*2 }
 
 	// EXTRA: 输入 v 和 to，to 可能是 v 的子孙，返回从 v 到 to 路径上的第二个节点（v 的一个儿子）
 	// 如果 to 不是 v 的子孙，返回 -1
@@ -1991,6 +1995,49 @@ func (*tree) smallToLarge(root int, g [][]int, vals []int) { // vals 为点权
 		return resMap
 	}
 	f(root, -1, 0)
+}
+
+// 应用：两个同色点的最远距离
+// 改成颜色不同呢？见 dp.go 中的 maxDisOfDiffColor
+func (*tree) maxDisOfSameColor(a []int, es [][]int) (ans int) {
+	n := len(a)
+	type nb struct{ to, wt int }
+	g := make([][]nb, n)
+	for _, e := range es {
+		v, w, wt := e[0], e[1], e[2]
+		g[v] = append(g[v], nb{w, wt})
+		g[w] = append(g[w], nb{v, wt})
+	}
+
+	var dfs func(int, int) (map[int]int, int)
+	dfs = func(v, fa int) (resMap map[int]int, todo int) {
+		resMap = map[int]int{a[v]: 0}
+		for _, e := range g[v] {
+			w := e.to
+			if w == fa {
+				continue
+			}
+			subM, td := dfs(w, v)
+			td += e.wt
+			if len(subM) > len(resMap) {
+				resMap, subM = subM, resMap
+				todo, td = td, todo
+			}
+			for x, rightL := range subM {
+				rightL += td
+				// 左右两条链拼成路径
+				if leftL, ok := resMap[x]; ok {
+					ans = max(ans, (leftL+todo)+rightL)
+					resMap[x] = max(leftL, rightL-todo)
+				} else {
+					resMap[x] = rightL - todo // 统一
+				}
+			}
+		}
+		return
+	}
+	dfs(0, -1)
+	return
 }
 
 // 写法二：轻重儿子合并 · map 版本
