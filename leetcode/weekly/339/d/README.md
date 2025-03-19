@@ -72,11 +72,9 @@ class Solution:
             sl = indices[mn % 2]
             idx = sl.bisect_left(mn)
             while sl[idx] <= mx:
-                j = sl[idx]
+                j = sl.pop(idx)  # 注意 pop(idx) 会使后续元素向左移，不需要写 idx += 1
                 ans[j] = ans[i] + 1  # 移动一步
                 q.append(j)
-                sl.pop(idx)
-                # 注意 pop(idx) 会使后续元素向左移，不需要写 idx += 1
         return ans
 ```
 
