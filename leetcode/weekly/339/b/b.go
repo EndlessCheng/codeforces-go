@@ -2,6 +2,19 @@ package main
 
 // https://space.bilibili.com/206214
 func findMatrix(nums []int) (ans [][]int) {
+	cnt := make([]int, len(nums)+1)
+	for _, x := range nums {
+		c := cnt[x]
+		if c == len(ans) { // 需要加一行
+			ans = append(ans, []int{})
+		}
+		ans[c] = append(ans[c], x)
+		cnt[x]++
+	}
+	return
+}
+
+func findMatrix1(nums []int) (ans [][]int) {
 	cnt := map[int]int{}
 	for _, x := range nums {
 		cnt[x]++

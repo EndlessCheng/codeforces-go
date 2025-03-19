@@ -1,3 +1,5 @@
+## 方法一
+
 ![lc2610-c.png](https://pic.leetcode.cn/1741320320-YkycVn-lc2610-c.png){:width=350}
 
 ```py [sol-Python3]
@@ -178,6 +180,120 @@ impl Solution {
                     cnt.remove(&x); // 去掉出现次数为 0 的元素
                 }
             }
+        }
+        ans
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：一次遍历
+
+一边遍历 $\textit{nums}$，一边统计每个元素的出现次数。
+
+一个数出现了多少次，就加到第几行。
+
+- 首次遇到 $\textit{nums}[i]=1$，加到第一行。
+- 再次遇到 $\textit{nums}[i]=1$，加到第二行。
+- 第三次遇到 $\textit{nums}[i]=1$，加到第三行。
+
+此外，由于本题保证元素值在 $[1,n]$ 中，可以用数组代替哈希表，效率更高。
+
+```py [sol-Python3]
+class Solution:
+    def findMatrix(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        cnt = [0] * (len(nums) + 1)
+        for x in nums:
+            if cnt[x] == len(ans):  # 需要加一行
+                ans.append([])
+            ans[cnt[x]].append(x)
+            cnt[x] += 1
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    public List<List<Integer>> findMatrix(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        int[] cnt = new int[nums.length + 1];
+        for (int x : nums) {
+            if (cnt[x] == ans.size()) { // 需要加一行
+                ans.add(new ArrayList<>());
+            }
+            ans.get(cnt[x]).add(x);
+            cnt[x]++;
+        }
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    vector<vector<int>> findMatrix(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> cnt(nums.size() + 1);
+        for (int x : nums) {
+            int& c = cnt[x];
+            if (c == ans.size()) { // 需要加一行
+                ans.emplace_back();
+            }
+            ans[c].push_back(x);
+            c++;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func findMatrix(nums []int) (ans [][]int) {
+    cnt := make([]int, len(nums)+1)
+    for _, x := range nums {
+        c := cnt[x]
+        if c == len(ans) { // 需要加一行
+            ans = append(ans, []int{})
+        }
+        ans[c] = append(ans[c], x)
+        cnt[x]++
+    }
+    return
+}
+```
+
+```js [sol-JavaScript]
+var findMatrix = function(nums) {
+    const ans = [];
+    const cnt = Array(nums.length + 1).fill(0);
+    for (const x of nums) {
+        if (cnt[x] === ans.length) { // 需要加一行
+            ans.push([]);
+        }
+        ans[cnt[x]].push(x);
+        cnt[x]++;
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+impl Solution {
+    pub fn find_matrix(nums: Vec<i32>) -> Vec<Vec<i32>> {
+        let mut ans = vec![];
+        let mut cnt = vec![0; nums.len() + 1];
+        for x in nums {
+            let y = x as usize;
+            if cnt[y] == ans.len() { // 需要加一行
+                ans.push(vec![]);
+            }
+            ans[cnt[y]].push(x);
+            cnt[y] += 1;
         }
         ans
     }
