@@ -20,6 +20,9 @@ https://atcoder.jp/contests/abc381/tasks/abc381_c split
 字符串问题的特殊性：
 不同子串之间会共享一些局部信息，巧妙地利用这些局部信息可以设计出更加高效的算法。
 
+LCP 性质及其证明
+https://leetcode.cn/problems/longest-common-prefix-of-k-strings-after-removal/solutions/3613732/pai-xu-lcp-xing-zhi-jian-ji-xie-fa-pytho-6p8e/
+
 todo NOI 一轮复习 II：字符串 https://www.luogu.com.cn/blog/ix-35/noi-yi-lun-fu-xi-ii-zi-fu-chuan
 金策 字符串算法选讲 https://www.bilibili.com/video/BV11K4y1p7a5 https://www.bilibili.com/video/BV19541177KU
     PDF 见 https://github.com/EndlessCheng/cp-pdf
