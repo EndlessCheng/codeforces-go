@@ -25,7 +25,7 @@ func Test(t *testing.T) {
 		
 	}
 	targetCaseNum := 0 // -1
-	if err := testutil.RunLeetCodeFuncWithExamples(t, subsetXORSum2, examples, targetCaseNum); err != nil {
+	if err := testutil.RunLeetCodeFuncWithExamples(t, subsetXORSum, examples, targetCaseNum); err != nil {
 		t.Fatal(err)
 	}
 }
