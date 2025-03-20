@@ -171,7 +171,7 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 方法二
+## 方法二：空间优化
 
 设 $\textit{nums}$ 所有数的 OR 为 $\textit{allOr}$。
 
