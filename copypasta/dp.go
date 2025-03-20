@@ -941,6 +941,70 @@ func _(abs func(int) int) {
 		return lis
 	}
 
+	// 修改 a 中至多 k 个数后的 LIS 长度
+	// k=1 https://atcoder.jp/contests/abc360/tasks/abc360_g
+	lisModify := func(a []int, k int) int {
+		f := make([][]int, k+1)
+		for i := range f {
+			f[i] = []int{math.MinInt} // 哨兵
+		}
+		for _, v := range a {
+			for i := k; i >= 0; i-- {
+				j := sort.SearchInts(f[i], v)
+				if j < len(f[i]) {
+					f[i][j] = v
+				} else {
+					f[i] = append(f[i], v)
+				}
+				if i > 0 {
+					// 注意这里没有二分，完全取决于 len(g)
+					g := f[i-1]
+					j = len(g)
+					w := g[len(g)-1] + 1
+					if j < len(f[i]) {
+						f[i][j] = min(f[i][j], w)
+					} else {
+						f[i] = append(f[i], w)
+					}
+				}
+			}
+		}
+
+		ans := 0
+		for _, g := range f {
+			ans = max(ans, len(g)-1) // 减去哨兵
+		}
+		return ans
+	}
+
+	// 撤销 LIS
+	// https://www.lanqiao.cn/problems/2088/learning/ https://www.luogu.com.cn/problem/P8776
+	lisRollback := func(a []int) {
+		pre := []int{}
+		type pair struct{ i, v int }
+		rollback := make([]pair, len(a))
+		for i, v := range a {
+			j := sort.SearchInts(pre, v)
+			if j < len(pre) {
+				rollback[i] = pair{j, pre[j]}
+				pre[j] = v
+			} else {
+				rollback[i] = pair{j, -1} // 注意题目是否有负数
+				pre = append(pre, v)
+			}
+		}
+
+		for i := len(a) - 1; i >= 0; i-- {
+			p := rollback[i]
+			if p.v < 0 {
+				pre = pre[:len(pre)-1]
+			} else {
+				pre[p.i] = p.v
+			}
+			// ...
+		}
+	}
+
 	// LIS 方案数 O(nlogn)
 	// 原理见下面这题官方题解的方法二
 	// LC673 https://leetcode.cn/problems/number-of-longest-increasing-subsequence/
@@ -3022,15 +3086,18 @@ func _(abs func(int) int) {
 	线段树 LC2407 https://leetcode.cn/problems/longest-increasing-subsequence-ii/ 2280
 	变量优化 O(n) LC2746 https://leetcode.cn/problems/decremental-string-concatenation/
 	https://atcoder.jp/contests/abc339/tasks/abc339_e 入门 值域线段树
-	https://codeforces.com/problemset/problem/597/C 长为 k 的上升子序列个数
 	https://atcoder.jp/contests/dp/tasks/dp_w Lazy 线段树
-	https://codeforces.com/problemset/problem/1667/B
-	https://atcoder.jp/contests/arc073/tasks/arc073_d https://www.luogu.com.cn/problem/T190609?contestId=48376 https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
-	https://codeforces.com/problemset/problem/66/E
-	https://codeforces.com/problemset/problem/1788/E
-	https://codeforces.com/contest/833/problem/B 2200
+	https://atcoder.jp/contests/arc073/tasks/arc073_d
+	- https://www.luogu.com.cn/problem/T190609?contestId=48376
+	- https://www.luogu.com.cn/blog/abruce-home/ti-xie-nao-zhong
+	https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
+	https://codeforces.com/problemset/problem/66/E 2000
+	https://codeforces.com/problemset/problem/1667/B 2100
+	https://codeforces.com/problemset/problem/833/B 2200
+	- k=3 https://atcoder.jp/contests/abc397/tasks/abc397_f
 	https://codeforces.com/problemset/problem/1295/E 2200
-	https://codeforces.com/contest/1842/problem/E 2300
+	https://codeforces.com/problemset/problem/1788/E 2200
+	https://codeforces.com/problemset/problem/1842/E 2300
 	https://codeforces.com/problemset/problem/1609/E 2400 分治 线段树
 	https://atcoder.jp/contests/abc353/tasks/abc353_g 线段树 式子变形
 	https://atcoder.jp/contests/abc397/tasks/abc397_f 线段树 划分型 DP
@@ -4036,7 +4103,7 @@ func _(abs func(int) int) {
 		minimumArea,
 
 		lcs, lcsPath, lcsCount,
-		lisSlow, lis, lisAll, cntLis, lcis, lcisPath, countLIS,
+		lisSlow, lis, lisAll, lisModify, lisRollback, cntLis, lcis, lcisPath, countLIS,
 		distinctSubsequence,
 		palindromeO1Space, isPalindrome, minPalindromeCut,
 
