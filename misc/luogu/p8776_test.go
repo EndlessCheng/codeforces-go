@@ -2,7 +2,11 @@
 package main
 
 import (
+	. "fmt"
 	"github.com/EndlessCheng/codeforces-go/main/testutil"
+	"io"
+	"slices"
+	"sort"
 	"testing"
 )
 
@@ -16,4 +20,52 @@ func Test_p8776(t *testing.T) {
 		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, p8776)
+}
+
+func TestCompare_p8776(_t *testing.T) {
+	return
+	testutil.DebugTLE = 0
+	rg := testutil.NewRandGenerator()
+	const maxV = 10
+	inputGenerator := func() string {
+		//return ``
+		rg.Clear()
+		n := rg.Int(1, 13)
+		rg.Int(1, n)
+		rg.NewLine()
+		rg.IntSlice(n, 1, maxV)
+		return rg.String()
+	}
+
+	// 暴力算法
+	runBF := func(in io.Reader, out io.Writer) {
+		var n, k int
+		Fscan(in, &n, &k)
+		a := make([]int, n)
+		for i := range a {
+			Fscan(in, &a[i])
+		}
+		ans := 0
+		for i := k; i <= n; i++ {
+			for v := 1; v <= maxV; v++ {
+				b := slices.Clone(a)
+				for j := i - k; j < i; j++ {
+					b[j] = v
+				}
+				f := []int{}
+				for _, v := range b {
+					j := sort.SearchInts(f, v+1) 
+					if j < len(f) {
+						f[j] = v
+					} else {
+						f = append(f, v)
+					}
+				}
+				ans = max(ans, len(f))
+			}
+		}
+		Fprint(out, ans)
+	}
+
+	testutil.AssertEqualRunResultsInf(_t, inputGenerator, runBF, p8776)
 }
