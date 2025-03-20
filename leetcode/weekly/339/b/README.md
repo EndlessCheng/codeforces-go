@@ -171,15 +171,15 @@ impl Solution {
         let mut ans = vec![];
         while !cnt.is_empty() { // 还有剩余元素
             let row = cnt.keys().cloned().collect::<Vec<_>>();
-            ans.push(row.clone());
             // cnt 中的每个元素的出现次数都减一
-            for x in row {
-                let c = cnt.get_mut(&x).unwrap();
+            for x in &row {
+                let c = cnt.get_mut(x).unwrap();
                 *c -= 1;
                 if *c == 0 {
-                    cnt.remove(&x); // 去掉出现次数为 0 的元素
+                    cnt.remove(x); // 去掉出现次数为 0 的元素
                 }
             }
+            ans.push(row);
         }
         ans
     }
@@ -200,6 +200,8 @@ impl Solution {
 - 首次遇到 $\textit{nums}[i]=1$，加到第一行。
 - 再次遇到 $\textit{nums}[i]=1$，加到第二行。
 - 第三次遇到 $\textit{nums}[i]=1$，加到第三行。
+
+这样既可以保证每行不会有相同元素，又可以保证用到的行数是最小的。
 
 此外，由于本题保证元素值在 $[1,n]$ 中，可以用数组代替哈希表，效率更高。
 
