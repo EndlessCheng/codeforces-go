@@ -66,7 +66,7 @@ public:
         vector<int> f(n + 1);
         for (int end = 0; end < n; end++) {
             f[end + 1] = f[end];
-            for (auto& [start, gold]: groups[end]) {
+            for (auto& [start, gold] : groups[end]) {
                 f[end + 1] = max(f[end + 1], f[start] + gold);
             }
         }
