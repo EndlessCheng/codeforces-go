@@ -21,7 +21,7 @@ func p1896(in io.Reader, out io.Writer) {
 		}
 	}
 	var f func(int, int, int) int
-	f = func(i int, s int, k int) (res int) {
+	f = func(i, s, k int) (res int) {
 		if i < 0 {
 			if k > 0 {
 				return
