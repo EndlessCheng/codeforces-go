@@ -6,7 +6,7 @@
 
 - 从 $\textit{vals}$ 的前缀中选一些数，元素和能否恰好等于 $\textit{nums}[i]$？
 
-这是 0-1 背包的标准应用，原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
+这是 0-1 背包。[416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) 是本题的简单版本。原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
 从前往后遍历 $\textit{queries}$，计算 0-1 背包，如果每个 $\textit{nums}[i]$ 都能通过一些数的相加得到，那么返回此时 $\textit{queries}$ 的下标加一。
 
@@ -14,7 +14,7 @@
 
 如果遍历完 $\textit{queries}$ 也没有返回答案，那么返回 $-1$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1JYQ8YWEvD/?t=21m27s)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1JYQ8YWEvD/?t=21m27s)。
 
 ## 写法一：布尔数组
 
@@ -115,13 +115,10 @@ public:
 
 ```go [sol-Go]
 func minZeroArray(nums []int, queries [][]int) int {
-	for _, x := range nums {
-		if x > 0 {
-			goto normal
-		}
+	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
+		return 0 // nums 全为 0
 	}
-	return 0 // nums 全为 0
-normal:
+
 	f := make([][]bool, len(nums))
 	for i, x := range nums {
 		f[i] = make([]bool, x+1)
@@ -254,13 +251,10 @@ public:
 
 ```go [sol-Go]
 func minZeroArray(nums []int, queries [][]int) int {
-	for _, x := range nums {
-		if x > 0 {
-			goto normal
-		}
+	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
+		return 0 // nums 全为 0
 	}
-	return 0
-normal:
+
 	f := make([]*big.Int, len(nums))
 	for i := range f {
 		f[i] = big.NewInt(1)

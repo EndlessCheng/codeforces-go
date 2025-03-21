@@ -7,6 +7,43 @@ import (
 )
 
 // https://space.bilibili.com/206214
+func minZeroArray(nums []int, queries [][]int) int {
+	ans := (slices.Max(nums) + 9) / 10
+	m := len(queries)
+	cnts := make([][11]int, m+1)
+	for i, x := range nums {
+		if x == 0 {
+			continue
+		}
+		for k, q := range queries {
+			cnts[k+1] = cnts[k]
+			if q[0] <= i && i <= q[1] {
+				cnts[k+1][q[2]]++
+			}
+		}
+		ans += sort.Search(m+1-ans, func(mx int) bool {
+			mx += ans
+			p := new(big.Int)
+			f := big.NewInt(1)
+			for v, num := range cnts[mx] {
+				for pow2 := 1; num > 0; pow2 *= 2 {
+					k := min(pow2, num)
+					f.Or(f, p.Lsh(f, uint(v*k)))
+					if f.Bit(x) > 0 {
+						return true
+					}
+					num -= k
+				}
+			}
+			return false
+		})
+		if ans > m {
+			return -1
+		}
+	}
+	return ans
+}
+
 func minZeroArray42(nums []int, queries [][]int) int {
 	m := len(queries)
 	cnts := make([][][11]int, m+1)
@@ -106,13 +143,10 @@ func minZeroArray3(nums []int, queries [][]int) (ans int) {
 }
 
 func minZeroArray2(nums []int, queries [][]int) int {
-	for _, x := range nums {
-		if x > 0 {
-			goto normal
-		}
+	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
+		return 0
 	}
-	return 0
-normal:
+
 	f := make([]*big.Int, len(nums))
 	for i := range f {
 		f[i] = big.NewInt(1)
@@ -137,13 +171,10 @@ next:
 }
 
 func minZeroArray1(nums []int, queries [][]int) int {
-	for _, x := range nums {
-		if x > 0 {
-			goto normal
-		}
+	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
+		return 0
 	}
-	return 0
-normal:
+
 	n := len(nums)
 	f := make([][]bool, n)
 	for i, x := range nums {
