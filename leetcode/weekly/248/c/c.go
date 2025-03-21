@@ -1,7 +1,7 @@
 package main
 
 // github.com/EndlessCheng/codeforces-go
-const mod int = 1e9 + 7
+const mod = 1_000_000_007
 
 func countGoodNumbers(n int64) int {
 	return pow(5, (int(n)+1)/2) * pow(4, int(n)/2) % mod
