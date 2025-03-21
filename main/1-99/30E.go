@@ -33,9 +33,11 @@ func cf30E(in io.Reader, out io.Writer) {
 	pi := calcPi(string(rev) + "#" + s)[n:] // 注意 pi[0] 对应 '#'
 	preMaxI := make([]int, n+1)
 	for i := 1; i <= n; i++ {
-		preMaxI[i] = preMaxI[i-1]
-		if pi[i] > pi[preMaxI[i]] {
+		j := preMaxI[i-1]
+		if pi[i] > pi[j] {
 			preMaxI[i] = i
+		} else {
+			preMaxI[i] = j
 		}
 	}
 
