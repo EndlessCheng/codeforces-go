@@ -1331,7 +1331,7 @@ func _() {
 		unsafeToBytes, unsafeToString,
 		indexAll,
 		stringHashSingleMod, stringHashDoubleMod,
-		kmpSearch, calcMinPeriod, failTree, // KMP
+		calcPi, kmpSearch, calcMinPeriod, failTree, // KMP
 		calcZ, zSearch, zCompare, // Z 函数
 		smallestRepresentation,
 		isSubseq, subsequenceAutomaton, subsequenceAutomaton2,
