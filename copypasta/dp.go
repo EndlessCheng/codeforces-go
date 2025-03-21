@@ -2091,7 +2091,8 @@ func _(abs func(int) int) {
 	常用于处理包含排列的问题等
 	NOTE: 若问题无法划分成小问题，必须考虑各种可能的情况，则可能是 NP 完全问题
 
-	教你一步步思考状压 DP：从记忆化搜索到递推，附题单 https://leetcode.cn/problems/beautiful-arrangement/solution/jiao-ni-yi-bu-bu-si-kao-zhuang-ya-dpcong-c6kd/
+	教你一步步思考状压 DP：从记忆化搜索到递推，附题单
+	https://leetcode.cn/problems/beautiful-arrangement/solution/jiao-ni-yi-bu-bu-si-kao-zhuang-ya-dpcong-c6kd/
 
 	状压 DP 本质上就是在集合与集合之间转移，所以一定要能熟练地把集合语言翻译成位运算
 	推荐阅读《从集合论到位运算，常见位运算技巧分类总结！》https://leetcode.cn/circle/discuss/CaOJ45/
@@ -2110,6 +2111,9 @@ func _(abs func(int) int) {
 	LC1125 状压 0-1 背包 https://leetcode.cn/problems/smallest-sufficient-team/
 	todo LCP82 https://leetcode.cn/problems/cnHoX6/
 	https://www.luogu.com.cn/problem/P1879
+	https://www.luogu.com.cn/problem/P2704 状态设计 三进制状压 DP（也可以算作枚举子集的子集，三进制子集的子集有 6^m 个）
+	- 注：一般地，k 进制子集的子集有 [k*(k+1)/2]^m 个。由于各个位互相独立，每一位为 k 个数选 2 个数的「可重组合数」，即 C(k+1,2)
+	- 注：这样思考可以推广到子集的子集的子集的……的个数，套多少层就是选多少个数
 	https://codeforces.com/problemset/problem/16/E 1900 与概率 DP 结合
 	https://codeforces.com/problemset/problem/401/D 2000
 	https://codeforces.com/problemset/problem/453/B 2000 与质因数分解结合
@@ -2121,7 +2125,8 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/599/E 2600 树上子集状压 DP
 	https://codeforces.com/problemset/problem/1430/G 2600
 	https://atcoder.jp/contests/abc359/tasks/abc359_d
-	https://www.luogu.com.cn/problem/P5369 状态设计的好题
+	https://atcoder.jp/contests/abc396/tasks/abc396_g 状态设计
+	https://www.luogu.com.cn/problem/P5369 状态设计
 
 	todo 汉密尔顿路径/回路 Hamiltonian path
 	https://en.wikipedia.org/wiki/Hamiltonian_path
@@ -2343,6 +2348,7 @@ func _(abs func(int) int) {
 	// 例如：f[set] = max{f[set^sub] + sum of sub} for all valid sub
 	//
 	// 模板题 https://atcoder.jp/contests/dp/tasks/dp_u
+	// https://www.luogu.com.cn/problem/P1896 棋盘放 k 个将，不能互相攻击
 	// - [1723. 完成所有工作的最短时间](https://leetcode.cn/problems/find-minimum-time-to-finish-all-jobs/) 2284 *子集划分型
 	// - [1349. 参加考试的最大学生数](https://leetcode.cn/problems/maximum-students-taking-exam/) 2386
 	//    - https://codeforces.com/contest/1926/problem/F
@@ -4117,7 +4123,7 @@ func _(abs func(int) int) {
 
 		// 期望 DP
 
-		permDP, permDP2, tsp, longestSimplePath, countCycle,
+		permDP, permDP2, tsp, longestSimplePath, countCycle, // 状压 DP
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
 		digitDP, digitDP2, calcSum, kth666, // 数位 DP
