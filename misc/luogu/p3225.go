@@ -71,20 +71,21 @@ func p3225(in io.Reader, _w io.Writer) {
 		tarjan(0, -1)
 
 		ans, ways := 0, 1
-		for _, cc := range comps {
-			cutCnt := 0
-			for _, v := range cc {
-				if isCut[v] {
-					cutCnt++
+		if len(comps) == 1 {
+			sz := len(comps[0])
+			ans, ways = 2, sz*(sz-1)/2
+		} else {
+			for _, cc := range comps {
+				cutCnt := 0
+				for _, v := range cc {
+					if isCut[v] {
+						cutCnt++
+					}
 				}
-			}
-			sz := len(cc)
-			if cutCnt == 0 {
-				ans += 2
-				ways *= sz * (sz - 1) / 2
-			} else if cutCnt == 1 {
-				ans++
-				ways *= sz - 1
+				if cutCnt == 1 {
+					ans++
+					ways *= len(cc) - 1
+				}
 			}
 		}
 		Fprintf(out, "Case %d: %d %d\n", T, ans, ways)
