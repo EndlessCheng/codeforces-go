@@ -1096,6 +1096,8 @@ func (G *graph) findVertexBCC(g [][]int) (comps [][]int, bccIDs []int) {
 		}
 	}
 
+	// 注：如果 g 是连通图，那么如果 len(comps) == 1，则没有割点；否则每个 v-DCC 至少有一个割点
+
 	// EXTRA: 缩点
 	// BCC 和割点作为新图中的节点，并在每个割点与包含它的所有 BCC 之间连边
 	cutIDs := make([]int, len(g))
