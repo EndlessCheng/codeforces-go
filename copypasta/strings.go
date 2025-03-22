@@ -278,7 +278,6 @@ func _() {
 	//  https://www.luogu.com.cn/problem/P3435
 	//  https://www.luogu.com.cn/problem/UVA11022
 	//  https://www.luogu.com.cn/problem/P4824
-	//  https://www.luogu.com.cn/problem/P2375
 	//  https://www.luogu.com.cn/problem/P7114
 	//  https://www.luogu.com.cn/problem/P3426
 	//  https://www.luogu.com.cn/problem/P3193
@@ -392,6 +391,7 @@ func _() {
 	// https://codeforces.com/edu/course/2/lesson/3/3/practice/contest/272263/problem/A
 	// https://www.luogu.com.cn/problem/P5410
 	//
+	// https://www.luogu.com.cn/problem/P2375
 	// https://codeforces.com/problemset/problem/2010/C2 1700
 	// todo 结论 https://codeforces.com/problemset/problem/535/D 1900
 	// https://codeforces.com/problemset/problem/1968/G2 2200
@@ -525,7 +525,7 @@ func _() {
 	// - https://leetcode.cn/problems/find-the-lexicographically-smallest-valid-sequence/
 	// https://codeforces.com/problemset/problem/1194/C 1300
 	// https://codeforces.com/problemset/problem/778/A 1700
-	// https://codeforces.com/problemset/problem/223/B 1900
+	// https://codeforces.com/problemset/problem/223/B 1900 记录 s 的每个字母匹配到 t 中的第几个
 	isSubseq := func(s, t string) int {
 		if t == "" {
 			return 0
