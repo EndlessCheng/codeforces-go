@@ -59,7 +59,7 @@ func p3225(in io.Reader, _w io.Writer) {
 						}
 						comps = append(comps, cc)
 					}
-				} else {
+				} else if w != fa {
 					lowV = min(lowV, dfn[w])
 				}
 			}
