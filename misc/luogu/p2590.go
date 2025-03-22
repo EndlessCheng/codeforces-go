@@ -148,8 +148,8 @@ func p2590(in io.Reader, _w io.Writer) {
 		}
 		do(ov.dfn, ow.dfn)
 	}
-	updatePath := func(v, w, add int) { doPath(v, w, func(l, r int) { t.update(1, l, add) }) }
-	queryPath := func(v, w int) (sum data2590) { sum.mx = -1e18; doPath(v, w, func(l, r int) { sum = mergeInfo2590(sum, t.query(1, l, r)) }); return }
+	updatePath := func(v, w, val int) { doPath(v, w, func(l, r int) { t.update(1, l, val) }) }
+	queryPath := func(v, w int) (res data2590) { res.mx = -1e18; doPath(v, w, func(l, r int) { res = mergeInfo2590(res, t.query(1, l, r)) }); return }
 
 	for Fscan(in, &q); q > 0; q-- {
 		var v, w int
