@@ -1,4 +1,4 @@
-## 思路
+## 方法一：0-1 背包
 
 由于题目让我们选的是范围 $[l_i, r_i]$ 内的一个下标**子集**，所以每个 $\textit{nums}[i]$ 是**互相独立**的，可以分别计算。
 
@@ -8,67 +8,65 @@
 
 这是 0-1 背包。[416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) 是本题的简单版本。原理见[【基础算法精讲 18】](https://www.bilibili.com/video/BV16Y411v7Y6/)。
 
-从前往后遍历 $\textit{queries}$，计算 0-1 背包，如果每个 $\textit{nums}[i]$ 都能通过一些数的相加得到，那么返回此时 $\textit{queries}$ 的下标加一。
+每个 $\textit{nums}[i]$ 算出的答案取最大值，即为最终答案。
 
-注意特判 $\textit{nums}$ 全为 $0$ 的情况，此时无需操作，返回 $0$。
-
-如果遍历完 $\textit{queries}$ 也没有返回答案，那么返回 $-1$。
+注意特判 $\textit{nums}[i]=0$ 的情况，此时无需操作。
 
 [本题视频讲解](https://www.bilibili.com/video/BV1JYQ8YWEvD/?t=21m27s)。
 
-## 写法一：布尔数组
+### 写法一：布尔数组
 
 ```py [sol-Python3]
 class Solution:
     def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
-        if all(x == 0 for x in nums):
-            return 0  # nums 全为 0
-        f = [[True] + [False] * x for x in nums]
-        for k, (l, r, val) in enumerate(queries):
-            for i in range(l, r + 1):
-                if f[i][-1]: continue  # 小优化：已经满足要求，不计算
-                for j in range(nums[i], val - 1, -1):
-                    f[i][j] = f[i][j] or f[i][j - val]
-            if all(fi[-1] for fi in f):
-                return k + 1
-        return -1
+        ans = 0
+        for i, x in enumerate(nums):  # 每个 nums[i] 单独计算 0-1 背包
+            if x == 0:
+                continue
+            f = [True] + [False] * x
+            for k, (l, r, val) in enumerate(queries):
+                if not l <= i <= r:
+                    continue
+                for j in range(x, val - 1, -1):
+                    f[j] = f[j] or f[j - val]
+                if f[x]:  # 满足要求
+                    ans = max(ans, k + 1)
+                    break
+            else:  # 没有中途 break，说明无法满足要求
+                return -1
+        return ans
 ```
 
 ```java [sol-Java]
 class Solution {
     public int minZeroArray(int[] nums, int[][] queries) {
-        if (Arrays.stream(nums).allMatch(x -> x == 0)) {
-            return 0; // nums 全为 0
-        }
-
-        int n = nums.length;
-        boolean[][] f = new boolean[n][];
-        for (int i = 0; i < n; i++) {
-            f[i] = new boolean[nums[i] + 1];
-            f[i][0] = true;
-        }
-
-        for (int k = 0; k < queries.length; k++) {
-            int[] q = queries[k];
-            int val = q[2];
-            for (int i = q[0]; i <= q[1]; i++) {
-                if (f[i][nums[i]]) continue; // 小优化：已经满足要求，不计算
-                for (int j = nums[i]; j >= val; j--) {
-                    f[i][j] = f[i][j] || f[i][j - val];
-                }
+        int ans = 0;
+        for (int i = 0; i < nums.length; i++) { // 每个 nums[i] 单独计算 0-1 背包
+            int x = nums[i];
+            if (x == 0) {
+                continue;
             }
-            boolean ok = true;
-            for (int i = 0; i < n; i++) {
-                if (!f[i][nums[i]]) {
-                    ok = false;
+            boolean[] f = new boolean[x + 1];
+            f[0] = true;
+            for (int k = 0; k < queries.length; k++) {
+                int[] q = queries[k];
+                if (i < q[0] || i > q[1]) {
+                    continue;
+                }
+                int val = q[2];
+                for (int j = x; j >= val; j--) {
+                    f[j] = f[j] || f[j - val];
+                }
+                if (f[x]) { // 满足要求
+                    ans = Math.max(ans, k + 1);
                     break;
                 }
             }
-            if (ok) {
-                return k + 1;
+            if (!f[x]) { // 所有操作都执行完了也无法满足
+                return -1;
             }
         }
-        return -1;
+        return ans;
     }
 }
 ```
@@ -77,218 +75,80 @@ class Solution {
 class Solution {
 public:
     int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
-        if (ranges::all_of(nums, [](int x) { return x == 0; })) {
-            return 0; // nums 全为 0
-        }
-
-        int n = nums.size();
-        vector<vector<int>> f(n);
-        for (int i = 0; i < n; i++) {
-            f[i].resize(nums[i] + 1);
-            f[i][0] = true;
-        }
-
-        for (int k = 0; k < queries.size(); k++) {
-            auto& q = queries[k];
-            int val = q[2];
-            for (int i = q[0]; i <= q[1]; i++) {
-                if (f[i][nums[i]]) continue; // 小优化：已经满足要求，不计算
-                for (int j = nums[i]; j >= val; j--) {
-                    f[i][j] = f[i][j] || f[i][j - val];
-                }
+        int ans = 0;
+        for (int i = 0; i < nums.size(); i++) { // 每个 nums[i] 单独计算 0-1 背包
+            int x = nums[i];
+            if (x == 0) {
+                continue;
             }
-            bool ok = true;
-            for (auto& fi : f) {
-                if (!fi.back()) {
-                    ok = false;
+            vector<int> f(x + 1);
+            f[0] = true;
+            for (int k = 0; k < queries.size(); k++) {
+                auto& q = queries[k];
+                if (i < q[0] || i > q[1]) {
+                    continue;
+                }
+                int val = q[2];
+                for (int j = x; j >= val; j--) {
+                    f[j] = f[j] || f[j - val];
+                }
+                if (f[x]) { // 满足要求
+                    ans = max(ans, k + 1);
                     break;
                 }
             }
-            if (ok) {
-                return k + 1;
+            if (!f[x]) { // 所有操作都执行完了也无法满足
+                return -1;
             }
         }
-        return -1;
+        return ans;
     }
 };
 ```
 
 ```go [sol-Go]
-func minZeroArray(nums []int, queries [][]int) int {
-	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
-		return 0 // nums 全为 0
-	}
-
-	f := make([][]bool, len(nums))
-	for i, x := range nums {
-		f[i] = make([]bool, x+1)
-		f[i][0] = true
-	}
-next:
-	for k, q := range queries {
-		val := q[2]
-		for i := q[0]; i <= q[1]; i++ {
-			if f[i][nums[i]] {
-				continue // 小优化：已经满足要求，不计算
+func minZeroArray(nums []int, queries [][]int) (ans int) {
+	for i, x := range nums { // 每个 nums[i] 单独计算 0-1 背包
+		if x == 0 {
+			continue
+		}
+		f := make([]bool, x+1)
+		f[0] = true
+		for k, q := range queries {
+			if i < q[0] || i > q[1] {
+				continue
 			}
-			for j := nums[i]; j >= val; j-- {
-				f[i][j] = f[i][j] || f[i][j-val]
+			val := q[2]
+			for j := x; j >= val; j-- {
+				f[j] = f[j] || f[j-val]
+			}
+			if f[x] { // 满足要求
+				ans = max(ans, k+1)
+				break
 			}
 		}
-		for i, x := range nums {
-			if !f[i][x] {
-				continue next
-			}
+		if !f[x] { // 所有操作都执行完了也无法满足
+			return -1
 		}
-		return k + 1
 	}
-	return -1
+	return
 }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(qnU)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
-- 空间复杂度：$\mathcal{O}(nU)$。
+- 空间复杂度：$\mathcal{O}(U)$。
 
-## 写法二：bitset
+### 写法二：bitset
 
 用 bitset（视作一个二进制数）代替布尔数组。二进制数从低到高第 $i$ 位是 $0$，表示布尔数组的第 $i$ 个数是 $\texttt{false}$；从低到高第 $i$ 位是 $1$，表示布尔数组的第 $i$ 个数是 $\texttt{true}$。
 
-转移方程等价于，设 $s=f[i]$，把 $s$ 中的每个比特位增加 $\textit{val}$，即左移 $\textit{val}$ 位，再与 $f[i]$ 计算 OR。前者对应选择一个值为 $\textit{val}$ 的物品，后者对应不选。
+转移方程等价于，把 $f$ 中的每个比特位增加 $\textit{val}$，即左移 $\textit{val}$ 位，然后跟原来 $f$ 计算 OR。前者对应选择一个值为 $\textit{val}$ 的物品，后者对应不选。
 
-判断 $f[i][x]$ 是否为 $\texttt{true}$，等价于判断 $f[i]$ 的第 $x$ 位是否为 $1$，即 `(f[i] >> x & 1) == 1`。
+判断 $f[x]$ 是否为 $\texttt{true}$，等价于判断 $f$ 的第 $x$ 位是否为 $1$，即 `(f >> x & 1) == 1`。
 
 更多位运算技巧，请看 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
-
-```py [sol-Python3]
-class Solution:
-    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
-        if all(x == 0 for x in nums):
-            return 0  # nums 全为 0
-        f = [1] * len(nums)
-        for k, (l, r, val) in enumerate(queries):
-            for i in range(l, r + 1):
-                f[i] |= f[i] << val  # 本题 val 比较小，超出 nums[i] 比特位没有去掉
-            if all(fi >> x & 1 for fi, x in zip(f, nums)):
-                return k + 1
-        return -1
-```
-
-```java [sol-Java]
-import java.math.BigInteger;
-
-class Solution {
-    public int minZeroArray(int[] nums, int[][] queries) {
-        if (Arrays.stream(nums).allMatch(x -> x == 0)) {
-            return 0; // nums 全为 0
-        }
-
-        int n = nums.length;
-        BigInteger[] f = new BigInteger[n];
-        Arrays.fill(f, BigInteger.ONE);
-
-        for (int k = 0; k < queries.length; k++) {
-            int[] q = queries[k];
-            for (int i = q[0]; i <= q[1]; i++) {
-                if (!f[i].testBit(nums[i])) { // 小优化：已经满足要求，不计算
-                    f[i] = f[i].or(f[i].shiftLeft(q[2]));
-                }
-            }
-            boolean ok = true;
-            for (int i = 0; i < n; i++) {
-                if (!f[i].testBit(nums[i])) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) {
-                return k + 1;
-            }
-        }
-        return -1;
-    }
-}
-```
-
-```cpp [sol-C++]
-class Solution {
-public:
-    int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
-        if (ranges::all_of(nums, [](int x) { return x == 0; })) {
-            return 0; // nums 全为 0
-        }
-
-        int n = nums.size();
-        vector<bitset<1001>> f(n);
-        for (auto& bs : f) {
-            bs.set(0);
-        }
-
-        for (int k = 0; k < queries.size(); k++) {
-            auto& q = queries[k];
-            int val = q[2];
-            for (int i = q[0]; i <= q[1]; i++) {
-                if (!f[i][nums[i]]) { // 小优化：已经满足要求，不计算
-                    f[i] |= f[i] << val;
-                }
-            }
-            bool ok = true;
-            for (int i = 0; i < n; i++) {
-                if (!f[i][nums[i]]) {
-                    ok = false;
-                    break;
-                }
-            }
-            if (ok) {
-                return k + 1;
-            }
-        }
-        return -1;
-    }
-};
-```
-
-```go [sol-Go]
-func minZeroArray(nums []int, queries [][]int) int {
-	if !slices.ContainsFunc(nums, func(x int) bool { return x > 0 }) {
-		return 0 // nums 全为 0
-	}
-
-	f := make([]*big.Int, len(nums))
-	for i := range f {
-		f[i] = big.NewInt(1)
-	}
-	p := new(big.Int)
-next:
-	for k, q := range queries {
-		val := uint(q[2])
-		for i := q[0]; i <= q[1]; i++ {
-			if f[i].Bit(nums[i]) == 0 { // 小优化：已经满足要求，不计算
-				f[i].Or(f[i], p.Lsh(f[i], val))
-			}
-		}
-		for i, x := range nums {
-			if f[i].Bit(x) == 0 {
-				continue next
-			}
-		}
-		return k + 1
-	}
-	return -1
-}
-```
-
-#### 复杂度分析
-
-以下分析，不考虑超出 $\textit{nums}[i]$ 的比特位。
-
-- 时间复杂度：$\mathcal{O}(qnU / w)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
-- 空间复杂度：$\mathcal{O}(nU / w)$。
-
-## 写法三
-
-也可以单独计算每个 $\textit{nums}[i]$，空间复杂度更小。
 
 ```py [sol-Python3]
 class Solution:
@@ -299,8 +159,9 @@ class Solution:
                 continue
             f = 1
             for k, (l, r, val) in enumerate(queries):
-                if l <= i <= r:
-                    f |= f << val
+                if not l <= i <= r:
+                    continue
+                f |= f << val
                 if f >> x & 1:
                     ans = max(ans, k + 1)
                     break
@@ -323,9 +184,10 @@ class Solution {
             BigInteger f = BigInteger.ONE;
             for (int k = 0; k < queries.length; k++) {
                 int[] q = queries[k];
-                if (q[0] <= i && i <= q[1]) {
-                    f = f.or(f.shiftLeft(q[2]));
+                if (i < q[0] || i > q[1]) {
+                    continue;
                 }
+                f = f.or(f.shiftLeft(q[2]));
                 if (f.testBit(x)) {
                     ans = Math.max(ans, k + 1);
                     break;
@@ -354,9 +216,10 @@ public:
             f.set(0);
             for (int k = 0; k < queries.size(); k++) {
                 auto& q = queries[k];
-                if (q[0] <= i && i <= q[1]) {
-                    f |= f << q[2];
+                if (i < q[0] || i > q[1]) {
+                    continue;
                 }
+                f |= f << q[2];
                 if (f[x]) {
                     ans = max(ans, k + 1);
                     break;
@@ -380,9 +243,10 @@ func minZeroArray(nums []int, queries [][]int) (ans int) {
 		}
 		f := big.NewInt(1)
 		for k, q := range queries {
-			if q[0] <= i && i <= q[1] {
-				f.Or(f, p.Lsh(f, uint(q[2])))
+			if i < q[0] || i > q[1] {
+				continue
 			}
+			f.Or(f, p.Lsh(f, uint(q[2])))
 			if f.Bit(x) > 0 {
 				ans = max(ans, k+1)
 				break
@@ -403,9 +267,15 @@ func minZeroArray(nums []int, queries [][]int) (ans int) {
 - 时间复杂度：$\mathcal{O}(qnU / w)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
 - 空间复杂度：$\mathcal{O}(U / w)$。
 
-## 写法四：二分答案 + 多重背包 + 二进制优化
+## 方法二：二分答案 + 多重背包 + 二进制优化
 
 由于本题 $\textit{val}_i$ 很小，可以二分答案，统计每个 $\textit{val}_i$ 的出现次数，这样变成多重背包问题，可以用二进制优化。
+
+下面代码采用开区间二分，这仅仅是二分的一种写法，使用闭区间或者半闭半开区间都是可以的。
+
+- 开区间左端点初始值：$-1$。一定无法满足要求。
+- 开区间左端点初始值（优化）：$\left\lceil\dfrac{\max(\textit{nums})}{\max(\textit{val}_i)}\right\rceil-1$。
+- 开区间右端点初始值：$m+1$，其中 $m$ 是 $\textit{queries}$ 的长度。如果二分结果为 $m+1$，那么返回 $-1$。
 
 > 注：这个写法理论时间复杂度更优，但实际运行时间不如上面的写法。
 
@@ -429,7 +299,7 @@ class Solution:
                     k1 = 1
                     while num:
                         k = min(k1, num)
-                        f |= f << (v * k)
+                        f |= f << (v * k)  # 视作一个大小为 v*k 的物品
                         num -= k
                         k1 *= 2
                     if f >> x & 1:
@@ -438,7 +308,8 @@ class Solution:
                     return False
             return True
 
-        ans = bisect_left(range(len(queries) + 1), True, key=check)
+        left = (max(nums) + max_val - 1) // max_val
+        ans = bisect_left(range(len(queries) + 1), True, lo=left, key=check)
         return ans if ans <= len(queries) else -1
 ```
 
@@ -479,7 +350,7 @@ class Solution {
                 int num = cnt[v];
                 for (int pow2 = 1; num > 0 && !f.testBit(x); pow2 *= 2) {
                     int k = Math.min(pow2, num);
-                    f = f.or(f.shiftLeft(v * k));
+                    f = f.or(f.shiftLeft(v * k)); // 视作一个大小为 v*k 的物品
                     num -= k;
                 }
             }
@@ -516,7 +387,7 @@ public:
                     int num = cnt[v];
                     for (int pow2 = 1; num && !f[x]; pow2 *= 2) {
                         int k = min(pow2, num);
-                        f |= f << (v * k);
+                        f |= f << (v * k); // 视作一个大小为 v*k 的物品
                         num -= k;
                     }
                 }
@@ -557,7 +428,7 @@ func minZeroArray(nums []int, queries [][]int) int {
 			for v, num := range cnt {
 				for pow2 := 1; num > 0; pow2 *= 2 {
 					k := min(pow2, num)
-					f.Or(f, p.Lsh(f, uint(v*k)))
+					f.Or(f, p.Lsh(f, uint(v*k))) // 视作一个大小为 v*k 的物品
 					if f.Bit(x) > 0 {
 						continue next
 					}
