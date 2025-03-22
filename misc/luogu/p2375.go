@@ -25,7 +25,7 @@ func p2375(in io.Reader, out io.Writer) {
 				z[i]++
 			}
 			diff[i]++
-			diff[min(i+z[i], i*2)]--
+			diff[i+min(z[i], i)]--
 		}
 		ans, sd := 1, 1
 		for _, d := range diff[:n] {
