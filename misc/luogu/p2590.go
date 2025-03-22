@@ -5,7 +5,6 @@ import (
 	. "fmt"
 	"io"
 	"math/bits"
-	"os"
 )
 
 // https://space.bilibili.com/206214
@@ -167,4 +166,4 @@ func p2590(in io.Reader, _w io.Writer) {
 	}
 }
 
-func main() { p2590(bufio.NewReader(os.Stdin), os.Stdout) }
+//func main() { p2590(bufio.NewReader(os.Stdin), os.Stdout) }
