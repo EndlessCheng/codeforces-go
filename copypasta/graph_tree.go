@@ -1683,8 +1683,9 @@ func (*tree) virtualTree(g [][]int) {
 // 注：若没有修改操作，更简单的做法见 lcaBinaryLifting（路径查询）以及 dfnOrder（子树查询）
 // 注：如果只有路径修改+查询，可以用欧拉序列 + 树状数组/线段树，见《挑战》p.332
 //
-// 模板题（点权）https://www.luogu.com.cn/problem/P3384
-//            https://codeforces.com/problemset/problem/343/D 2100
+// 模板题（点权）https://www.luogu.com.cn/problem/P2590
+//             https://www.luogu.com.cn/problem/P3384
+//             https://codeforces.com/problemset/problem/343/D 2100
 // 模板题（边权）https://atcoder.jp/contests/abc294/tasks/abc294_g
 // - 也可以转换成子树所有点的 dis 都增加了 delta，用欧拉序+差分树状数组维护
 // https://codeforces.com/problemset/problem/609/E 2100 与最小生成树结合（边权）
@@ -1701,11 +1702,11 @@ func (*tree) virtualTree(g [][]int) {
 // todo NOI21 轻重边 https://www.luogu.com.cn/problem/P7735
 //  https://www.luogu.com.cn/problem/P4211
 // 结合广义圆方树 https://codeforces.com/problemset/problem/487/E
-func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int) { // vals 为点权
-	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 1 开始）
+func (*tree) heavyLightDecomposition(root int, g [][]int, vals []int) { // vals 为点权
+	// 深度，子树大小，重儿子，父节点，所处重链顶点（深度最小），DFS 序（作为线段树中的编号，从 0 开始）
 	type node struct{ depth, size, hson, fa, top, dfn int }
-	nodes := make([]node, n)
-	//idv := make([]int, n+1) // idv[nodes[v].dfn] == v
+	nodes := make([]node, len(g))
+	//idv := make([]int, len(g)) // idv[nodes[v].dfn] == v
 	var build func(int, int, int) int
 	build = func(v, fa, dep int) int {
 		size, hsz, hson := 1, 0, -1
@@ -1744,7 +1745,7 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int) { // va
 	markTop(root, root)
 
 	// 按照 DFS 序对应的点权初始化线段树
-	dfnVals := make([]int, n)
+	dfnVals := make([]int, len(g))
 	for i, v := range vals {
 		dfnVals[nodes[i].dfn] = v
 	}
@@ -1772,9 +1773,9 @@ func (*tree) heavyLightDecomposition(n, root int, g [][]int, vals []int) { // va
 		// TODO: 边权下，处理轻边的情况
 	}
 	updatePath := func(v, w, add int) { doPath(v, w, func(l, r int) { t.update(1, l, r, add) }) }
-	queryPath := func(v, w int) (sum int) { doPath(v, w, func(l, r int) { sum += t.query(1, l, r) }); return } // % mod
+	queryPath := func(v, w int) (mx int) { mx = -1e18; doPath(v, w, func(l, r int) { mx = max(mx, t.query(1, l, r)) }); return } // % mod
 	updateSubtree := func(v, add int) { o := nodes[v]; t.update(1, o.dfn, o.dfn+o.size-1, add) }
-	querySubtree := func(v int) (sum int) { o := nodes[v]; return t.query(1, o.dfn, o.dfn+o.size-1) }
+	querySubtree := func(v int) int { o := nodes[v]; return t.query(1, o.dfn, o.dfn+o.size-1) }
 
 	// EXTRA: 寻找以 st 为重链顶点的重链
 	// hPath[-1] 即为重链末端节点
