@@ -1114,7 +1114,7 @@ func (*tree) lcaBinaryLifting(root int, g [][]int) {
 		for _, w := range g[v] {
 			if w != p {
 				dep[w] = dep[v] + 1
-				//dis[w] = dis[w] + e.wt
+				//dis[w] = dis[v] + e.wt
 				buildPa(w, v)
 			}
 		}
@@ -1493,14 +1493,14 @@ func (*tree) lcaTarjan(root int, edges, queries [][]int) []int {
 // todo https://loj.ac/d/1698
 // 模板题（点权）https://www.luogu.com.cn/problem/P3128 LC2646 https://leetcode.cn/problems/minimize-the-total-price-of-the-trips/
 // 模板题（边权）https://codeforces.com/problemset/problem/191/C
-// todo https://www.luogu.com.cn/problem/P2680
+// https://www.luogu.com.cn/problem/P2680 好题
 // https://codeforces.com/problemset/problem/1707/C
 func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 	var pa [][]int
 	var getLCA func(int, int) int
 
 	diff := make([]int, n)
-	update := func(v, w int, val int) {
+	update := func(v, w, val int) {
 		diff[v] += val
 		diff[w] += val
 		lca := getLCA(v, w)
@@ -1517,23 +1517,20 @@ func (*tree) differenceInTree(n, root int, g, queries [][]int) []int {
 
 	// 自底向上求出每个点的点权/边权
 	ans := make([]int, n)
-	var f func(v, fa int) int
-	f = func(v, fa int) int {
-		sum := diff[v]
+	var sumDiff func(int, int) int
+	sumDiff = func(v, fa int) int {
+		sumD := diff[v]
 		for _, w := range g[v] {
 			if w != fa {
-				// 边权的话在这里记录 ans
-				//s := f(w, v)
-				//ans[e.eid] = s
-				//sum += s
-				sum += f(w, v)
+				s := sumDiff(w, v)
+				//ans[e.eid] = s // 边权
+				sumD += s
 			}
 		}
-		// 点权的话在这里记录 ans
-		ans[v] = sum
-		return sum
+		ans[v] = sumD // 点权
+		return sumD
 	}
-	f(root, -1)
+	sumDiff(root, -1)
 
 	return ans
 }
