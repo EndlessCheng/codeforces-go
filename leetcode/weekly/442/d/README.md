@@ -20,7 +20,7 @@ $$
 \max\left(\left\lceil\dfrac{\textit{tot}}{2}\right\rceil, \textit{mx}\right)
 $$
 
-**证明**：见 [证明/构造方案](https://leetcode.cn/problems/reorganize-string/solution/tan-xin-gou-zao-pai-xu-bu-pai-xu-liang-c-h9jg/)。
+见 [证明](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/solution/tan-xin-ju-ti-gou-zao-fang-an-pythonjava-3xyq/)。
 
 对于本题，由于相邻数字的操作次数相差至多为 $1$，所以
 
