@@ -295,7 +295,7 @@ class Solution:
 class Solution {
     public long minTime(int[] skill, int[] mana) {
         int n = skill.length;
-        int[] s = new int[n + 1]; // skill 的前缀和
+        int[] s = new int[n + 1];
         for (int i = 0; i < n; i++) {
             s[i + 1] = s[i] + skill[i];
         }
@@ -424,9 +424,9 @@ $$
 \dfrac{1}{i+1}
 $$
 
-record 的期望长度，等于每个位置能否成为新的最大值，能就是 $1$，不能就是 $0$。
+record 的期望长度，等于「每个位置能否成为新的最大值」之和，能就贡献 $1$，不能就贡献 $0$。
 
-由期望的计算公式可得，record 的期望长度为
+所以 $\textit{skill}[i]$ 给期望的贡献是 $\dfrac{1}{i+1}$。所以 record 的期望长度为
 
 $$
 \sum_{i=0}^{n-1} \dfrac{1}{i+1}
