@@ -12,7 +12,7 @@
 
 如何计算 $f(d)$？对 $\textit{price}$ 从小到大排序，贪心地计算 $f(d)$：
 
-- 第一个数 $\textit{price}[0]$ 一定可以选。
+- 第一个数 $\textit{price}[0]$ 一定可以选。如果有其他不选 $\textit{price}[0]$ 的方案，那么把该方案中的第一个数改成 $\textit{price}[0]$，也满足要求。或者说，选 $\textit{price}[0]$，后面可以选的数比不选 $\textit{price}[0]$ 更多。
 - 假设上一个选的数是 $\textit{pre}$，那么当 $\textit{price}[i] \ge \textit{pre}+d$ 时，才可以选 $\textit{price}[i]$。
 
 ## 细节
