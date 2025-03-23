@@ -20,22 +20,44 @@ func cf238C(in io.Reader, out io.Writer) {
 		g[w] = append(g[w], nb{v, 1})
 	}
 
-	ans := n
-	for i := range n {
-		inv := 0
-		var dfs func(int, int) int
-		dfs = func(v, fa int) (res int) {
+	invCnt := make([]int, n)
+	var dfs0 func(int, int)
+	dfs0 = func(v, fa int) {
+		for _, e := range g[v] {
+			w := e.to
+			if w != fa {
+				dfs0(w, v)
+				invCnt[0] += e.inv
+			}
+		}
+	}
+	dfs0(0, -1)
+
+	var reroot func(int, int)
+	reroot = func(v, fa int) {
+		for _, e := range g[v] {
+			w := e.to
+			if w != fa {
+				invCnt[w] = invCnt[v] + 1 - e.inv*2
+				reroot(w, v)
+			}
+		}
+	}
+	reroot(0, -1)
+
+	ans := int(1e9)
+	for i, invI := range invCnt {
+		var dfs func(int, int, int, int, int)
+		dfs = func(v, fa, dep, f0, f1 int) {
+			ans = min(ans, (invI+invCnt[v]-dep)/2+f1)
 			for _, e := range g[v] {
 				w := e.to
 				if w != fa {
-					inv += e.inv
-					res = max(res, dfs(w, v)+e.inv)
+					dfs(w, v, dep+1, f0+e.inv, min(f1, f0)+1-e.inv)
 				}
 			}
-			return
 		}
-		res := dfs(i, -1)
-		ans = min(ans, inv-res)
+		dfs(i, -1, 0, 0, 0)
 	}
 	Fprint(out, ans)
 }
