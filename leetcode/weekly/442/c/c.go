@@ -1,7 +1,7 @@
 package main
 
 // https://space.bilibili.com/206214
-func minTime(skill []int, mana []int) int64 {
+func minTime(skill, mana []int) int64 {
 	n, m := len(skill), len(mana)
 	s := make([]int, n+1)
 	for i, x := range skill {
