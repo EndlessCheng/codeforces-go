@@ -1,3 +1,5 @@
+## 方法一：正反两次扫描
+
 为了计算酿造药水的时间，定义 $\textit{lastFinish}[i]$ 表示巫师 $i$ 完成上一瓶药水的时间。
 
 示例 1 在处理完 $\textit{mana}[0]$ 后，有
@@ -116,6 +118,323 @@ func minTime(skill, mana []int) int64 {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：递推开始时间
+
+由于酿造药水的过程是连续的，所以知道了开始时间（或者完成时间）就能知道每个 $\textit{lastFinish}[i]$。所以 $\textit{lastFinish}$ 数组是多余的。
+
+设开始酿造 $\textit{mana}[j]$ 的时间为 $\textit{start}_j$，那么有
+
+$$
+\textit{lastFinish}_j[i] = \textit{start}_j + \textit{mana}[j]\cdot \sum_{k=0}^{i} \textit{skill}[k]
+$$
+
+在已知 $\textit{start}_{j-1}$ 的前提下，能否递推算出 $\textit{start}_j$？
+
+哪位巫师决定了开始时间？假设第 $i$ 位巫师决定了开始时间，那么这位巫师**完成** $\textit{mana}[j-1]$ 的时间，同时也是他**开始** $\textit{mana}[j]$ 的时间。
+
+所以有
+
+$$
+\textit{lastFinish}_{j-1}[i] + \textit{mana}[j]\cdot \textit{skill}[i] = \textit{lastFinish}_j[i]
+$$
+
+两边代入 $\textit{lastFinish}_j[i]$ 的式子，得
+
+$$
+\textit{start}_{j-1} + \textit{mana}[j-1]\cdot \sum_{k=0}^{i} \textit{skill}[k] + \textit{mana}[j]\cdot \textit{skill}[i] = \textit{start}_j + \textit{mana}[j]\cdot \sum_{k=0}^{i} \textit{skill}[k]
+$$
+
+变形得
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \textit{mana}[j-1]\cdot \sum_{k=0}^{i} \textit{skill}[k] - \textit{mana}[j]\cdot \sum_{k=0}^{i-1} \textit{skill}[k]
+$$
+
+计算 $\textit{skill}$ 的 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 数组 $s$，上式为
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \textit{mana}[j-1]\cdot s[i+1] - \textit{mana}[j]\cdot s[i]
+$$
+
+枚举 $i$，取所有情况的最大值，得
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \max_{i=0}^{n-1} \left\{\textit{mana}[j-1]\cdot s[i+1] - \textit{mana}[j]\cdot s[i]\right\}
+$$
+
+初始值 $\textit{start}_0 = 0$。
+
+答案为 $\textit{lastFinish}_{m-1}[n-1] = \textit{start}_{m-1} + \textit{mana}[m-1]\cdot \sum\limits_{k=0}^{n-1} \textit{skill}[k]$。
+
+```py [sol-Python3]
+class Solution:
+    def minTime(self, skill: List[int], mana: List[int]) -> int:
+        n = len(skill)
+        s = list(accumulate(skill, initial=0))  # skill 的前缀和
+        start = 0
+        for pre, cur in pairwise(mana):
+            start += max(pre * s[i + 1] - cur * s[i] for i in range(n))
+        return start + mana[-1] * s[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public long minTime(int[] skill, int[] mana) {
+        int n = skill.length;
+        int[] s = new int[n + 1]; // skill 的前缀和
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + skill[i];
+        }
+
+        int m = mana.length;
+        long start = 0;
+        for (int j = 1; j < m; j++) {
+            long mx = 0;
+            for (int i = 0; i < n; i++) {
+                mx = Math.max(mx, (long) mana[j - 1] * s[i + 1] - (long) mana[j] * s[i]);
+            }
+            start += mx;
+        }
+        return start + (long) mana[m - 1] * s[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minTime(vector<int>& skill, vector<int>& mana) {
+        int n = skill.size(), m = mana.size();
+        vector<int> s(n + 1); // skill 的前缀和
+        partial_sum(skill.begin(), skill.end(), s.begin() + 1);
+
+        long long start = 0;
+        for (int j = 1; j < m; j++) {
+            long long mx = 0;
+            for (int i = 0; i < n; i++) {
+                mx = max(mx, 1LL * mana[j - 1] * s[i + 1] - 1LL * mana[j] * s[i]);
+            }
+            start += mx;
+        }
+        return start + (long long) mana[m - 1] * s[n];
+    }
+};
+```
+
+```go [sol-Go]
+func minTime(skill []int, mana []int) int64 {
+	n, m := len(skill), len(mana)
+	s := make([]int, n+1) // skill 的前缀和
+	for i, x := range skill {
+		s[i+1] = s[i] + x
+	}
+
+	start := 0
+	for j := 1; j < m; j++ {
+		mx := 0
+		for i := range n {
+			mx = max(mx, mana[j-1]*s[i+1]-mana[j]*s[i])
+		}
+		start += mx
+	}
+	return int64(start + mana[m-1]*s[n])
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。如果在遍历的同时计算前缀和，则可以做到 $\mathcal{O}(1)$ 空间。
+
+## 方法三：record 优化
+
+将递推式
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \max_{i=0}^{n-1} \left\{\textit{mana}[j-1]\cdot s[i+1] - \textit{mana}[j]\cdot s[i]\right\}
+$$
+
+变形为
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \max_{i=0}^{n-1} \left\{(\textit{mana}[j-1]-\textit{mana}[j])\cdot s[i]  + \textit{mana}[j-1]\cdot \textit{skill}[i] \right\}
+$$
+
+设 $d = \textit{mana}[j-1]-\textit{mana}[j]$。分类讨论：
+
+- 如果 $d > 0$。由于 $s$ 是单调递增数组，比如 $\textit{skill}[3] < \textit{skill}[5]$，那么 $i=3$ 绝对不会算出最大值。但如果 $\textit{skill}[3] > \textit{skill}[5]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**后缀 record**，这才是可能成为最大值的数据。其中后缀 record 的意思是，倒序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- 如果 $d < 0$。由于 $s$ 是单调递增数组，比如 $\textit{skill}[5] < \textit{skill}[3]$，那么 $i=5$ 绝对不会算出最大值。但如果 $\textit{skill}[5] > \textit{skill}[3]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**前缀 record**，这才是可能成为最大值的数据。其中前缀 record 的意思是，正序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- $d = 0$ 的情况可以并入 $d>0$ 的情况。
+
+```py [sol-Python3]
+class Solution:
+    def minTime(self, skill: List[int], mana: List[int]) -> int:
+        n = len(skill)
+        s = list(accumulate(skill, initial=0))
+
+        suf_record = [n - 1]
+        for i in range(n - 2, -1, -1):
+            if skill[i] > skill[suf_record[-1]]:
+                suf_record.append(i)
+
+        pre_record = [0]
+        for i in range(1, n):
+            if skill[i] > skill[pre_record[-1]]:
+                pre_record.append(i)
+
+        start = 0
+        for pre, cur in pairwise(mana):
+            record = pre_record if pre < cur else suf_record
+            start += max(pre * s[i + 1] - cur * s[i] for i in record)
+        return start + mana[-1] * s[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    public long minTime(int[] skill, int[] mana) {
+        int n = skill.length;
+        int[] s = new int[n + 1]; // skill 的前缀和
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + skill[i];
+        }
+
+        List<Integer> suf = new ArrayList<>();
+        suf.add(n - 1);
+        for (int i = n - 2; i >= 0; i--) {
+            if (skill[i] > skill[suf.getLast()]) {
+                suf.add(i);
+            }
+        }
+
+        List<Integer> pre = new ArrayList<>();
+        pre.add(0);
+        for (int i = 1; i < n; i++) {
+            if (skill[i] > skill[pre.getLast()]) {
+                pre.add(i);
+            }
+        }
+
+        int m = mana.length;
+        long start = 0;
+        for (int j = 1; j < m; j++) {
+            List<Integer> record = mana[j - 1] < mana[j] ? pre : suf;
+            long mx = 0;
+            for (int i : record) {
+                mx = Math.max(mx, (long) mana[j - 1] * s[i + 1] - (long) mana[j] * s[i]);
+            }
+            start += mx;
+        }
+        return start + (long) mana[m - 1] * s[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long minTime(vector<int>& skill, vector<int>& mana) {
+        int n = skill.size(), m = mana.size();
+        vector<int> s(n + 1);
+        partial_sum(skill.begin(), skill.end(), s.begin() + 1);
+
+        vector<int> suf = {n - 1};
+        for (int i = n - 2; i >= 0; i--) {
+            if (skill[i] > skill[suf.back()]) {
+                suf.push_back(i);
+            }
+        }
+
+        vector<int> pre = {0};
+        for (int i = 1; i < n; i++) {
+            if (skill[i] > skill[pre.back()]) {
+                pre.push_back(i);
+            }
+        }
+
+        long long start = 0;
+        for (int j = 1; j < m; j++) {
+            auto& record = mana[j - 1] < mana[j] ? pre : suf;
+            long long mx = 0;
+            for (int i : record) {
+                mx = max(mx, 1LL * mana[j - 1] * s[i + 1] - 1LL * mana[j] * s[i]);
+            }
+            start += mx;
+        }
+        return start + (long long) mana[m - 1] * s[n];
+    }
+};
+```
+
+```go [sol-Go]
+func minTime(skill []int, mana []int) int64 {
+	n, m := len(skill), len(mana)
+	s := make([]int, n+1)
+	for i, x := range skill {
+		s[i+1] = s[i] + x
+	}
+
+	suf := []int{n - 1}
+	for i := n - 2; i >= 0; i-- {
+		if skill[i] > skill[suf[len(suf)-1]] {
+			suf = append(suf, i)
+		}
+	}
+
+	pre := []int{0}
+	for i := 1; i < n; i++ {
+		if skill[i] > skill[pre[len(pre)-1]] {
+			pre = append(pre, i)
+		}
+	}
+
+	start := 0
+	for j := 1; j < m; j++ {
+		record := suf
+		if mana[j-1] < mana[j] {
+			record = pre
+		}
+		mx := 0
+		for _, i := range record {
+			mx = max(mx, mana[j-1]*s[i+1]-mana[j]*s[i])
+		}
+		start += mx
+	}
+	return int64(start + mana[m-1]*s[n])
+}
+```
+
+#### 复杂度分析（最坏情况）
+
+- 时间复杂度：$\mathcal{O}(nm)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+#### 复杂度分析（随机情况）
+
+力扣喜欢出随机数据，上述算法在随机数据下的性能如何？
+
+换句话说，record 的期望长度是多少？
+
+为方便分析，假设 $\textit{skill}$ 是一个随机的 $[1,n]$ 的排列。
+
+$\textit{skill}[i]$ 如果是一个新的最大值，那么它是 $[0,i]$ 中的最大值。在随机排列的情况下，$[0,i]$ 中的排列也是随机的，所以这等价于排列的最后一个数是最大值的概率，即
+
+$$
+\dfrac{1}{i+1}
+$$
+
+record 的期望长度，等于每个位置能否成为新的最大值，能就是 $1$，不能就是 $0$。
+
+由期望的计算公式可得，record 的期望长度为
+
+$$
+\sum_{i=0}^{n-1} \dfrac{1}{i+1}
+$$
+
+由调和级数可知，record 的期望长度为 $\mathcal{O}(\log n)$。
+
+- 时间复杂度：$\mathcal{O}(m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目
