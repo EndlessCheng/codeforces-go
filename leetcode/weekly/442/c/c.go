@@ -11,7 +11,7 @@ func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
 func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x }
 func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y }
 
-// Graham 扫描法，计算 points 的上凸包
+// Andrew 算法，计算 points 的上凸包
 // 由于横坐标是严格递增的，无需排序
 func convexHull(points []vec) []vec {
 	q := points[:0]

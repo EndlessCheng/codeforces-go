@@ -264,8 +264,8 @@ $$
 
 设 $d = \textit{mana}[j-1]-\textit{mana}[j]$。分类讨论：
 
-- 如果 $d > 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[3] < \textit{skill}[5]$，那么 $i=3$ 绝对不会算出最大值；但如果 $\textit{skill}[3] > \textit{skill}[5]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**后缀 record**，这才是可能成为最大值的数据。其中后缀 record 的意思是，倒序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
-- 如果 $d < 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[5] < \textit{skill}[3]$，那么 $i=5$ 绝对不会算出最大值；但如果 $\textit{skill}[5] > \textit{skill}[3]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**前缀 record**，这才是可能成为最大值的数据。其中前缀 record 的意思是，正序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- 如果 $d > 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[3] < \textit{skill}[5]$，那么 $i=3$ 绝对不会算出最大值；但如果 $\textit{skill}[3] > \textit{skill}[5]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**逆序 record**，这才是可能成为最大值的数据。其中逆序 record 的意思是，倒序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- 如果 $d < 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[5] < \textit{skill}[3]$，那么 $i=5$ 绝对不会算出最大值；但如果 $\textit{skill}[5] > \textit{skill}[3]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**正序 record**，这才是可能成为最大值的数据。其中正序 record 的意思是，正序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
 - $d = 0$ 的情况可以并入 $d>0$ 的情况。
 
 ```py [sol-Python3]
@@ -458,7 +458,7 @@ func minTime(skill, mana []int) int64 {
 
 力扣喜欢出随机数据，上述算法在随机数据下的性能如何？
 
-换句话说，record 的期望长度是多少？
+换句话说，在随机数据下，record 的期望长度是多少？
 
 为方便分析，假设 $\textit{skill}$ 是一个随机的 $[1,n]$ 的排列。
 
@@ -483,7 +483,7 @@ $$
 
 ## 方法四：凸包 + 二分
 
-**前置知识**：二维计算几何，凸包，Graham 扫描法。
+**前置知识**：二维计算几何，凸包，Andrew 算法。
 
 把递推式
 
@@ -511,7 +511,7 @@ $$
 
 根据点积的几何意义，我们求的是 $\mathbf{v}_i$ 在 $\mathbf{p}$ 方向上的投影长度，再乘以 $\mathbf{p}$ 的模长 $||\mathbf{p}||$。由于 $||\mathbf{p}||$ 是个定值，所以要最大化投影长度。
 
-考虑 $\mathbf{v}_i$ 的**上凸包**（用 Graham 扫描法计算），在凸包内的点，就像是山坳，比凸包顶点的投影长度小。所以只需考虑凸包顶点。
+考虑 $\mathbf{v}_i$ 的**上凸包**（用 Andrew 算法计算），在凸包内的点，就像是山坳，比凸包顶点的投影长度短。所以只需考虑凸包顶点。
 
 这样有一个很好的性质：顺时针（或者逆时针）遍历凸包顶点，$\mathbf{p}\cdot \mathbf{v}_i$ 会先变大再变小（单峰函数）。那么要计算最大值，就类似 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，**二分**首个「下坡」的位置，具体见 [我的题解](https://leetcode.cn/problems/peak-index-in-a-mountain-array/solutions/2984800/er-fen-gen-ju-shang-po-huan-shi-xia-po-p-uoev/)。
 
@@ -533,8 +533,8 @@ class Vec:
         return self.x * b.x + self.y * b.y
 
 class Solution:
-    # Graham 扫描法，计算 points 的上凸包
-    # 由于横坐标是严格递增的，所以无需排序
+    # Andrew 算法，计算 points 的上凸包
+    # 由于横坐标（前缀和）是严格递增的，所以无需排序
     def convex_hull(self, points: List[Vec]) -> List[Vec]:
         q = []
         for p in points:
@@ -574,8 +574,8 @@ class Solution {
         }
     }
 
-    // Graham 扫描法，计算 points 的上凸包
-    // 由于横坐标是严格递增的，所以无需排序
+    // Andrew 算法，计算 points 的上凸包
+    // 由于横坐标（前缀和）是严格递增的，所以无需排序
     private List<Vec> convexHull(Vec[] points) {
         List<Vec> q = new ArrayList<>();
         for (Vec p : points) {
@@ -627,8 +627,8 @@ struct Vec {
 };
 
 class Solution {
-    // Graham 扫描法，计算 points 的上凸包
-    // 由于横坐标是严格递增的，所以无需排序
+    // Andrew 算法，计算 points 的上凸包
+    // 由于横坐标（前缀和）是严格递增的，所以无需排序
     vector<Vec> convex_hull(vector<Vec>& points) {
         vector<Vec> q;
         for (auto& p : points) {
@@ -674,8 +674,8 @@ func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
 func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x }
 func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y }
 
-// Graham 扫描法，计算 points 的上凸包
-// 由于横坐标是严格递增的，所以无需排序
+// Andrew 算法，计算 points 的上凸包
+// 由于横坐标（前缀和）是严格递增的，所以无需排序
 func convexHull(points []vec) (q []vec) {
 	for _, p := range points {
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) >= 0 {
