@@ -146,7 +146,7 @@ $$
 \textit{start}_{j-1} + \textit{mana}[j-1]\cdot \sum_{k=0}^{i} \textit{skill}[k] + \textit{mana}[j]\cdot \textit{skill}[i] = \textit{start}_j + \textit{mana}[j]\cdot \sum_{k=0}^{i} \textit{skill}[k]
 $$
 
-变形得
+移项得
 
 $$
 \textit{start}_j = \textit{start}_{j-1} + \textit{mana}[j-1]\cdot \sum_{k=0}^{i} \textit{skill}[k] - \textit{mana}[j]\cdot \sum_{k=0}^{i-1} \textit{skill}[k]
@@ -158,7 +158,7 @@ $$
 \textit{start}_j = \textit{start}_{j-1} + \textit{mana}[j-1]\cdot s[i+1] - \textit{mana}[j]\cdot s[i]
 $$
 
-枚举 $i$，取所有情况的最大值，得
+枚举 $i$，取最大值，得
 
 $$
 \textit{start}_j = \textit{start}_{j-1} + \max_{i=0}^{n-1} \left\{\textit{mana}[j-1]\cdot s[i+1] - \textit{mana}[j]\cdot s[i]\right\}
@@ -166,7 +166,7 @@ $$
 
 初始值 $\textit{start}_0 = 0$。
 
-答案为 $\textit{lastFinish}_{m-1}[n-1] = \textit{start}_{m-1} + \textit{mana}[m-1]\cdot \sum\limits_{k=0}^{n-1} \textit{skill}[k]$。
+答案为 $\textit{lastFinish}_{m-1}[n-1] = \textit{start}_{m-1} + \textit{mana}[m-1]\cdot s[n]$。
 
 ```py [sol-Python3]
 class Solution:
@@ -218,13 +218,13 @@ public:
             }
             start += mx;
         }
-        return start + (long long) mana[m - 1] * s[n];
+        return start + 1LL * mana[m - 1] * s[n];
     }
 };
 ```
 
 ```go [sol-Go]
-func minTime(skill []int, mana []int) int64 {
+func minTime(skill, mana []int) int64 {
 	n, m := len(skill), len(mana)
 	s := make([]int, n+1) // skill 的前缀和
 	for i, x := range skill {
@@ -264,8 +264,8 @@ $$
 
 设 $d = \textit{mana}[j-1]-\textit{mana}[j]$。分类讨论：
 
-- 如果 $d > 0$。由于 $s$ 是单调递增数组，比如 $\textit{skill}[3] < \textit{skill}[5]$，那么 $i=3$ 绝对不会算出最大值。但如果 $\textit{skill}[3] > \textit{skill}[5]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**后缀 record**，这才是可能成为最大值的数据。其中后缀 record 的意思是，倒序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
-- 如果 $d < 0$。由于 $s$ 是单调递增数组，比如 $\textit{skill}[5] < \textit{skill}[3]$，那么 $i=5$ 绝对不会算出最大值。但如果 $\textit{skill}[5] > \textit{skill}[3]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**前缀 record**，这才是可能成为最大值的数据。其中前缀 record 的意思是，正序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- 如果 $d > 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[3] < \textit{skill}[5]$，那么 $i=3$ 绝对不会算出最大值；但如果 $\textit{skill}[3] > \textit{skill}[5]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**后缀 record**，这才是可能成为最大值的数据。其中后缀 record 的意思是，倒序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
+- 如果 $d < 0$。由于 $s$ 是单调递增数组，如果 $\textit{skill}[5] < \textit{skill}[3]$，那么 $i=5$ 绝对不会算出最大值；但如果 $\textit{skill}[5] > \textit{skill}[3]$，谁会算出最大值就不一定了。所以我们只需要考虑 $\textit{skill}$ 的**前缀 record**，这才是可能成为最大值的数据。其中前缀 record 的意思是，正序遍历 $\textit{skill}$，每次遍历到更大的数，就记录下标。
 - $d = 0$ 的情况可以并入 $d>0$ 的情况。
 
 ```py [sol-Python3]
@@ -331,6 +331,50 @@ class Solution {
 }
 ```
 
+```java [sol-Java 数组]
+class Solution {
+    public long minTime(int[] skill, int[] mana) {
+        int n = skill.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + skill[i];
+        }
+
+        int[] suf = new int[n];
+        int sufLen = 0;
+        suf[sufLen++] = n - 1;
+        for (int i = n - 2; i >= 0; i--) {
+            if (skill[i] > skill[suf[sufLen - 1]]) {
+                suf[sufLen++] = i;
+            }
+        }
+
+        int[] pre = new int[n];
+        int preLen = 0;
+        pre[preLen++] = 0;
+        for (int i = 1; i < n; i++) {
+            if (skill[i] > skill[pre[preLen - 1]]) {
+                pre[preLen++] = i;
+            }
+        }
+
+        int m = mana.length;
+        long start = 0;
+        for (int j = 1; j < m; j++) {
+            int[] record = mana[j - 1] < mana[j] ? pre : suf;
+            int recordLen = mana[j - 1] < mana[j] ? preLen : sufLen;
+            long mx = 0;
+            for (int k = 0; k < recordLen; k++) {
+                int i = record[k];
+                mx = Math.max(mx, (long) mana[j - 1] * s[i + 1] - (long) mana[j] * s[i]);
+            }
+            start += mx;
+        }
+        return start + (long) mana[m - 1] * s[n];
+    }
+}
+```
+
 ```cpp [sol-C++]
 class Solution {
 public:
@@ -362,13 +406,13 @@ public:
             }
             start += mx;
         }
-        return start + (long long) mana[m - 1] * s[n];
+        return start + 1LL * mana[m - 1] * s[n];
     }
 };
 ```
 
 ```go [sol-Go]
-func minTime(skill []int, mana []int) int64 {
+func minTime(skill, mana []int) int64 {
 	n, m := len(skill), len(mana)
 	s := make([]int, n+1)
 	for i, x := range skill {
@@ -418,7 +462,7 @@ func minTime(skill []int, mana []int) int64 {
 
 为方便分析，假设 $\textit{skill}$ 是一个随机的 $[1,n]$ 的排列。
 
-$\textit{skill}[i]$ 如果是一个新的最大值，那么它是 $[0,i]$ 中的最大值。在随机排列的情况下，$[0,i]$ 中的排列也是随机的，所以这等价于排列的最后一个数是最大值的概率，即
+$\textit{skill}[i]$ 如果是一个新的最大值，那么它是 $[0,i]$ 中的最大值。在随机排列的情况下，$[0,i]$ 中的排列也是随机的，所以这等价于该排列的最后一个数是最大值的概率，即
 
 $$
 \dfrac{1}{i+1}
@@ -432,9 +476,240 @@ $$
 \sum_{i=0}^{n-1} \dfrac{1}{i+1}
 $$
 
-由调和级数可知，record 的期望长度为 $\mathcal{O}(\log n)$。
+由调和级数可知，record 的期望长度为 $\Theta(\log n)$。
 
-- 时间复杂度：$\mathcal{O}(m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 平均情况下的时间复杂度：$\Theta(n + m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法四：凸包 + 二分
+
+**前置知识**：二维计算几何，凸包，Graham 扫描法。
+
+把递推式
+
+$$
+\textit{start}_j = \textit{start}_{j-1} + \max_{i=0}^{n-1} \left\{(\textit{mana}[j-1]-\textit{mana}[j])\cdot s[i]  + \textit{mana}[j-1]\cdot \textit{skill}[i] \right\}
+$$
+
+中的 
+
+$$
+(\textit{mana}[j-1]-\textit{mana}[j])\cdot s[i]  + \textit{mana}[j-1]\cdot \textit{skill}[i]
+$$
+
+改成点积的形式，这样我们能得到来自几何意义上的观察。
+
+设向量 $\mathbf{v}_i = (s[i],\textit{skill}[i])$。
+
+设向量 $\mathbf{p} = (\textit{mana}[j-1]-\textit{mana}[j], \textit{mana}[j-1])$。
+
+那么我们求的是
+
+$$
+\max_{i=0}^{n-1} \mathbf{p}\cdot \mathbf{v}_i
+$$
+
+根据点积的几何意义，我们求的是 $\mathbf{v}_i$ 在 $\mathbf{p}$ 方向上的投影长度，再乘以 $\mathbf{p}$ 的模长 $||\mathbf{p}||$。由于 $||\mathbf{p}||$ 是个定值，所以要最大化投影长度。
+
+考虑 $\mathbf{v}_i$ 的**上凸包**（用 Graham 扫描法计算），在凸包内的点，就像是山坳，比凸包顶点的投影长度小。所以只需考虑凸包顶点。
+
+这样有一个很好的性质：顺时针（或者逆时针）遍历凸包顶点，$\mathbf{p}\cdot \mathbf{v}_i$ 会先变大再变小（单峰函数）。那么要计算最大值，就类似 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，**二分**首个「下坡」的位置，具体见 [我的题解](https://leetcode.cn/problems/peak-index-in-a-mountain-array/solutions/2984800/er-fen-gen-ju-shang-po-huan-shi-xia-po-p-uoev/)。
+
+```py [sol-Python3]
+class Vec:
+    __slots__ = 'x', 'y'
+
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    def sub(self, b: "Vec") -> "Vec":
+        return Vec(self.x - b.x, self.y - b.y)
+
+    def det(self, b: "Vec") -> int:
+        return self.x * b.y - self.y * b.x
+
+    def dot(self, b: "Vec") -> int:
+        return self.x * b.x + self.y * b.y
+
+class Solution:
+    # Graham 扫描法，计算 points 的上凸包
+    # 由于横坐标是严格递增的，所以无需排序
+    def convex_hull(self, points: List[Vec]) -> List[Vec]:
+        q = []
+        for p in points:
+            while len(q) > 1 and q[-1].sub(q[-2]).det(p.sub(q[-1])) >= 0:
+                q.pop()
+            q.append(p)
+        return q
+
+    def minTime(self, skill: List[int], mana: List[int]) -> int:
+        s = list(accumulate(skill, initial=0))
+        vs = [Vec(pre_sum, x) for pre_sum, x in zip(s, skill)]
+        vs = self.convex_hull(vs)  # 去掉无用数据
+
+        start = 0
+        for pre, cur in pairwise(mana):
+            p = Vec(pre - cur, pre)
+            # p.dot(vs[i]) 是个单峰函数，二分找最大值
+            check = lambda i: p.dot(vs[i]) > p.dot(vs[i + 1])
+            i = bisect_left(range(len(vs) - 1), True, key=check)
+            start += p.dot(vs[i])
+        return start + mana[-1] * s[-1]
+```
+
+```java [sol-Java]
+class Solution {
+    private record Vec(int x, int y) {
+        Vec sub(Vec b) {
+            return new Vec(x - b.x, y - b.y);
+        }
+
+        long det(Vec b) {
+            return (long) x * b.y - (long) y * b.x;
+        }
+
+        long dot(Vec b) {
+            return (long) x * b.x + (long) y * b.y;
+        }
+    }
+
+    // Graham 扫描法，计算 points 的上凸包
+    // 由于横坐标是严格递增的，所以无需排序
+    private List<Vec> convexHull(Vec[] points) {
+        List<Vec> q = new ArrayList<>();
+        for (Vec p : points) {
+            while (q.size() > 1 && q.getLast().sub(q.get(q.size() - 2)).det(p.sub(q.getLast())) >= 0) {
+                q.removeLast();
+            }
+            q.add(p);
+        }
+        return q;
+    }
+
+    public long minTime(int[] skill, int[] mana) {
+        int n = skill.length;
+        int[] s = new int[n + 1];
+        Vec[] points = new Vec[n];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + skill[i];
+            points[i] = new Vec(s[i], skill[i]);
+        }
+        List<Vec> vs = convexHull(points); // 去掉无用数据
+
+        int m = mana.length;
+        long start = 0;
+        for (int j = 1; j < m; j++) {
+            Vec p = new Vec(mana[j - 1] - mana[j], mana[j - 1]);
+            // p.dot(vs[i]) 是个单峰函数，二分找最大值
+            int l = -1, r = vs.size() - 1;
+            while (l + 1 < r) {
+                int mid = (l + r) >>> 1;
+                if (p.dot(vs.get(mid)) > p.dot(vs.get(mid + 1))) {
+                    r = mid;
+                } else {
+                    l = mid;
+                }
+            }
+            start += p.dot(vs.get(r));
+        }
+        return start + (long) mana[m - 1] * s[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+struct Vec {
+    int x, y;
+    Vec sub(const Vec& b) { return {x - b.x, y - b.y}; }
+    long long det(const Vec& b) { return 1LL * x * b.y - 1LL * y * b.x; }
+    long long dot(const Vec& b) { return 1LL * x * b.x + 1LL * y * b.y; }
+};
+
+class Solution {
+    // Graham 扫描法，计算 points 的上凸包
+    // 由于横坐标是严格递增的，所以无需排序
+    vector<Vec> convex_hull(vector<Vec>& points) {
+        vector<Vec> q;
+        for (auto& p : points) {
+            while (q.size() > 1 && q.back().sub(q[q.size() - 2]).det(p.sub(q.back())) >= 0) {
+                q.pop_back();
+            }
+            q.push_back(p);
+        }
+        return q;
+    }
+
+public:
+    long long minTime(vector<int>& skill, vector<int>& mana) {
+        int n = skill.size(), m = mana.size();
+        vector<int> s(n + 1);
+        vector<Vec> vs(n);
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + skill[i];
+            vs[i] = {s[i], skill[i]};
+        }
+        vs = convex_hull(vs); // 去掉无用数据
+
+        long long start = 0;
+        for (int j = 1; j < m; j++) {
+            Vec p = {mana[j - 1] - mana[j], mana[j - 1]};
+            // p.dot(vs[i]) 是个单峰函数，二分找最大值
+            int l = -1, r = vs.size() - 1;
+            while (l + 1 < r) {
+                int mid = l + (r - l) / 2;
+                (p.dot(vs[mid]) > p.dot(vs[mid + 1]) ? r : l) = mid;
+            }
+            start += p.dot(vs[r]);
+        }
+        return start + 1LL * mana[m - 1] * s[n];
+    }
+};
+```
+
+```go [sol-Go]
+type vec struct{ x, y int }
+
+func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
+func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x }
+func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y }
+
+// Graham 扫描法，计算 points 的上凸包
+// 由于横坐标是严格递增的，所以无需排序
+func convexHull(points []vec) (q []vec) {
+	for _, p := range points {
+		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) >= 0 {
+			q = q[:len(q)-1]
+		}
+		q = append(q, p)
+	}
+	return
+}
+
+func minTime(skill, mana []int) int64 {
+	n, m := len(skill), len(mana)
+	s := make([]int, n+1)
+	vs := make([]vec, n)
+	for i, x := range skill {
+		s[i+1] = s[i] + x
+		vs[i] = vec{s[i], x}
+	}
+	vs = convexHull(vs) // 去掉无用数据
+
+	start := 0
+	for j := 1; j < m; j++ {
+		p := vec{mana[j-1] - mana[j], mana[j-1]}
+		// p.dot(vs[i]) 是个单峰函数，二分找最大值
+		i := sort.Search(len(vs)-1, func(i int) bool { return p.dot(vs[i]) > p.dot(vs[i+1]) })
+		start += p.dot(vs[i])
+	}
+	return int64(start + mana[m-1]*s[n])
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n + m\log n)$，其中 $n$ 是 $\textit{skill}$ 的长度，$m$ 是 $\textit{mana}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 相似题目
