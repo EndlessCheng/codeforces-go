@@ -974,36 +974,57 @@ func _(abs func(int) int) {
 		return float64(area) / 2
 	}
 
-	// 求凸包 葛立恒扫描法 Graham's scan
+	// 求凸包 Andrew 算法
 	// 使用单调栈，保存的向量是有极角序的
 	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
 	// 求上凸包就从倒数第二个点开始继续求
+	// https://en.wikipedia.org/wiki/Convex_hull_algorithms
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的整点凸多边形的顶点数为 O(M^(2/3)) 个
 	// 模板题 https://www.luogu.com.cn/problem/P2742 
 	// - LC587 https://leetcode.cn/problems/erect-the-fence/
+	// LC3494 https://leetcode.cn/problems/find-the-minimum-amount-of-time-to-brew-potions/
 	// 构造 LCP15 https://leetcode.cn/problems/you-le-yuan-de-mi-gong/
 	// 转换 https://codeforces.com/problemset/problem/1142/C
 	// 限制区间长度的区间最大均值问题 https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/A
 	// 转换（求二维完全背包极限 lim_{maxW->∞} dp[maxW]/maxW）https://atcoder.jp/contests/abc275/tasks/abc275_g
 	// todo poj 2187 1113 1912 3608 2079 3246 3689
 	convexHull := func(ps []vec) (q []vec) {
+		//slices.SortFunc(ps, func(a, b vec) int { return cmp.Or(a.x-b.x, a.y-b.y) })
 		sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
+		// 下凸包（从左到右）
 		for _, p := range ps {
 			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
 			q = append(q, p)
 		}
-		sz := len(q)
+		// 上凸包（从右到左）
+		downSize := len(q)
+		// 注意下凸包的最后一个点，已经是上凸包的（右边）第一个点了，所以从 n-2 开始遍历
 		for i := len(ps) - 2; i >= 0; i-- {
 			p := ps[i]
-			for len(q) > sz && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+			for len(q) > downSize && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
 			q = append(q, p)
 		}
-		q = q[:len(q)-1] // 如果需要首尾相同则去掉这行
+		// 此时首尾是同一个点 ps[0]，需要去掉
+		q = q[:len(q)-1]
+		return
+	}
+
+	// 只计算上凸包（从左到右）
+	// https://leetcode.cn/problems/find-the-minimum-amount-of-time-to-brew-potions/
+	convexHull2 := func(ps []vec) (q []vec) {
+		//slices.SortFunc(ps, func(a, b vec) int { return cmp.Or(a.x-b.x, a.y-b.y) })
+		sort.Slice(ps, func(i, j int) bool { return ps[i].less(ps[j]) })
+		for _, p := range ps {
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) >= 0 { // 注意这里是 >=
+				q = q[:len(q)-1]
+			}
+			q = append(q, p)
+		}
 		return
 	}
 
@@ -1261,7 +1282,9 @@ func _(abs func(int) int) {
 
 	_ = []any{
 		readVec, leftMostVec, rightMostVec,
-		readPolygon, polygonArea, rotatingCalipers, convexHullPerimeter,
+		readPolygon, polygonArea,
+		convexHull, convexHull2,
+		rotatingCalipers, convexHullPerimeter,
 		halfPlanesIntersection,
 		inTriangle, inConvexPolygon, inAnyPolygon,
 		isRectangleAnyOrder, minAreaRect,
