@@ -155,17 +155,23 @@ impl Solution {
 
 枚举 $k$，我们需要知道 $k$ 左边 $\textit{nums}[i] - \textit{nums}[j]$ 的最大值。
 
-类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，我们可以在遍历的过程中，维护 $\textit{nums}[i]$ 的最大值 $\textit{preMax}$，同时维护 $\textit{preMax}$ 减 $\textit{nums}[j]$ 的最大值 $\textit{maxDiff}$，即为 $k$ 左边 $\textit{nums}[i] - \textit{nums}[j]$ 的最大值。
+类似 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)，为了计算 $\textit{nums}[i] - \textit{nums}[j]$ 的最大值，我们需要知道 $j$ 左边的 $\textit{nums}[i]$ 的最大值。
 
-### 答疑
+因此，在遍历的过程中：
 
-**问**：为什么要先更新 $\textit{ans}$ 再更新 $\textit{maxDiff}$ 最后更新 $\textit{preMax}$？能否修改这几行代码的顺序？
+- 维护 $\textit{nums}[i]$ 的最大值 $\textit{preMax}$。
+- 维护 $\textit{preMax} - \textit{nums}[j]$ 的最大值 $\textit{maxDiff}$。
+- 计算 $\textit{maxDiff} \cdot \textit{nums}[k]$，更新答案的最大值。
 
-**答**：这个顺序是精心设置的：
+代码实现时，要先更新 $\textit{ans}$，再更新 $\textit{maxDiff}$，最后更新 $\textit{preMax}$。为什么？
 
-- 首先更新 $\textit{ans}$，此时 $\textit{maxDiff}$ 还没有更新，表示当前元素**左边**两个数的最大差值。
-- 然后更新 $\textit{maxDiff}$，此时 $\textit{preMax}$ 还没有更新，表示当前元素**左边**的最大值。
+这个顺序是精心设置的：
+
+- 首先更新 $\textit{ans}$，此时 $\textit{maxDiff}$ 还没有更新，表示在当前元素**左边**的两个数的最大差值。
+- 然后更新 $\textit{maxDiff}$，此时 $\textit{preMax}$ 还没有更新，表示在当前元素**左边**的最大值。
 - 最后更新 $\textit{preMax}$。
+
+能否修改更新顺序？
 
 $\textit{ans}$ 依赖 $\textit{maxDiff}$，$\textit{maxDiff}$ 依赖 $\textit{preMax}$。如果修改更新顺序，那么 $\textit{maxDiff}$ 或者 $\textit{preMax}$ 会包含当前元素，就不是**左边**元素的计算结果了，这违反了题目 $i<j<k$ 的规定。
 
