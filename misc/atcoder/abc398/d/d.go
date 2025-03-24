@@ -7,8 +7,8 @@ import (
 
 // https://github.com/EndlessCheng
 func run(in io.Reader, out io.Writer) {
-	dir4 := []struct{ x, y int }{'W': {1, 0}, 'E': {-1, 0}, 'S': {0, -1}, 'N': {0, 1}}
 	type pair struct{ x, y int }
+	dir4 := []pair{'W': {1, 0}, 'E': {-1, 0}, 'S': {0, -1}, 'N': {0, 1}}
 	var man, fire pair
 	var s []byte
 	Fscan(in, &s, &man.y, &man.x, &s)
