@@ -13,6 +13,12 @@ class Solution:
         return sum(st) if st else max(nums)
 ```
 
+```py [sol-Python3 写法二]
+class Solution:
+    def maxSum(self, nums: List[int]) -> int:
+        return sum(set(x for x in nums if x >= 0)) or max(nums)
+```
+
 ```java [sol-Java]
 class Solution {
     public int maxSum(int[] nums) {
