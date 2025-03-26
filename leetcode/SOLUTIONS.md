@@ -40,6 +40,7 @@
 |差分数组|[1094. 拼车](https://leetcode.cn/problems/car-pooling/)|[【模板讲解】差分数组](https://leetcode.cn/problems/car-pooling/solution/suan-fa-xiao-ke-tang-chai-fen-shu-zu-fu-9d4ra/)|1441|
 ||[2251. 花期内花的数目](https://leetcode.cn/problems/number-of-flowers-in-full-bloom/)|[两种方法：二分/差分](https://leetcode.cn/problems/number-of-flowers-in-full-bloom/solution/chai-fen-pythonjavacgo-by-endlesscheng-wz35/)|2022|
 ||[2132. 用邮票贴满网格图](https://leetcode.cn/problems/stamping-the-grid/)|[【图解】从一维差分到二维差分](https://leetcode.cn/problems/stamping-the-grid/solution/wu-nao-zuo-fa-er-wei-qian-zhui-he-er-wei-zwiu/)|2364|
+|合法括号字符串|[2116. 判断一个括号字符串是否有效](https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/)|[如何处理合法括号字符串？](https://leetcode.cn/problems/check-if-a-parentheses-string-can-be-valid/solutions/1178043/zheng-fan-liang-ci-bian-li-by-endlessche-z8ac/)|2038|
 |单调栈|[1019. 链表中的下一个更大节点](https://leetcode.cn/problems/next-greater-node-in-linked-list/)|[【图解单调栈】两种方法，两张图秒懂！](https://leetcode.cn/problems/next-greater-node-in-linked-list/solution/tu-jie-dan-diao-zhan-liang-chong-fang-fa-v9ab/)|1571|
 ||[1124. 表现良好的最长时间段](https://leetcode.cn/problems/longest-well-performing-interval/)|[【图解】两种做法，两张图秒懂！](https://leetcode.cn/problems/longest-well-performing-interval/solution/liang-chong-zuo-fa-liang-zhang-tu-miao-d-hysl/)|1908|
 ||[907. 子数组的最小值之和](https://leetcode.cn/problems/sum-of-subarray-minimums/)|[【图解】贡献法+单调栈+三种实现版本](https://leetcode.cn/problems/sum-of-subarray-minimums/solution/gong-xian-fa-dan-diao-zhan-san-chong-shi-gxa5/)|1976|
