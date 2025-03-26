@@ -23,35 +23,38 @@ func p6669(in io.Reader, out io.Writer) {
 		}
 		memo := map[args]int{}
 		var dfs func(int, bool, bool, bool, bool) int
-		dfs = func(p int, greater, less, limN, limM bool) int {
+		dfs = func(p int, greater, limI, limN, limM bool) int {
 			if p < 0 {
 				if greater {
 					return 1
 				}
 				return 0
 			}
-			t := args{p, greater, less, limN, limM}
+			t := args{p, greater, limI, limN, limM}
 			if v, ok := memo[t]; ok {
 				return v
 			}
-			hiN, hiM := k-1, k-1
+
+			hiN := k - 1
 			if limN {
 				hiN = a[p][0]
 			}
+			hiM := k - 1
 			if limM {
 				hiM = a[p][1]
 			}
+
 			res := 0
 			for i := 0; i <= hiN; i++ {
-				for j := 0; (less || j <= i) && j <= hiM; j++ {
-					res += dfs(p-1, greater || j > i, less || j < i, limN && i == hiN, limM && j == hiM)
+				for j := 0; (!limI || j <= i) && j <= hiM; j++ {
+					res += dfs(p-1, greater || j > i, limI && j == i, limN && i == hiN, limM && j == hiM)
 				}
 			}
 			res %= mod
 			memo[t] = res
 			return res
 		}
-		Fprintln(out, dfs(len(a)-1, false, false, true, true))
+		Fprintln(out, dfs(len(a)-1, false, true, true, true))
 	}
 }
 
