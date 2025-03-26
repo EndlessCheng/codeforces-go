@@ -205,35 +205,35 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 type lazyHeap struct {
 	sort.IntSlice
-	todo map[int]int
-	size int // 实际大小
-	sum  int // 实际元素和（可选）
+	removeCnt map[int]int
+	size      int // 实际大小
+	sum       int // 实际元素和（可选）
 }
 
-func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] < h.IntSlice[j] }
-func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
-func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
-func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除
+//func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] < h.IntSlice[j] }
+func (h *lazyHeap) Push(v any)   { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *lazyHeap) Pop() any     { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
+func (h *lazyHeap) empty() bool  { return h.size == 0 }
+func (h *lazyHeap) remove(v int) { h.removeCnt[v]++; h.size--; h.sum -= v } // 懒删除
+func (h *lazyHeap) pop() int     { h.applyRemove(); h.size--; v := heap.Pop(h).(int); h.sum -= v; return v }
+func (h *lazyHeap) top() int     { h.applyRemove(); return h.IntSlice[0] }
 func (h *lazyHeap) push(v int) {
-	if h.todo[v] > 0 {
-		h.todo[v]--
+	if h.removeCnt[v] > 0 {
+		h.removeCnt[v]--
 	} else {
 		heap.Push(h, v)
 	}
 	h.size++
 	h.sum += v
 }
-func (h *lazyHeap) _do() {
-	for h.Len() > 0 && h.todo[h.IntSlice[0]] > 0 {
-		h.todo[h.IntSlice[0]]--
+func (h *lazyHeap) applyRemove() {
+	for h.Len() > 0 && h.removeCnt[h.IntSlice[0]] > 0 {
+		h.removeCnt[h.IntSlice[0]]--
 		heap.Pop(h)
 	}
 }
-func (h *lazyHeap) pop() int    { h._do(); h.size--; v := heap.Pop(h).(int); h.sum -= v; return v }
-func (h *lazyHeap) top() int    { h._do(); return h.IntSlice[0] }
-func (h *lazyHeap) empty() bool { return h.size == 0 }
 func (h *lazyHeap) pushPop(v int) int {
-	if h.size > 0 && v < h.top() { // 最大堆，v 比堆顶小就替换堆顶
+	if h.size > 0 && v > h.top() { // 最小堆，v 比堆顶大就替换堆顶
 		h.sum += v - h.IntSlice[0]
 		v, h.IntSlice[0] = h.IntSlice[0], v
 		heap.Fix(h, 0)
@@ -273,7 +273,10 @@ type kthHeap struct {
 }
 
 func newKthHeap() *kthHeap {
-	return &kthHeap{&lazyHeap{todo: map[int]int{}}, &lazyHeap{todo: map[int]int{}}}
+	return &kthHeap{
+		&lazyHeap{removeCnt: map[int]int{}},
+		&lazyHeap{removeCnt: map[int]int{}},
+	}
 }
 
 func (h *kthHeap) empty() bool {
@@ -306,10 +309,10 @@ func (h *kthHeap) add(v int) {
 // 保证 h.l 大小不变
 func (h *kthHeap) del(v int) {
 	if v <= h.l.top() {
-		h.l.del(v)
+		h.l.remove(v)
 		h.r2l()
 	} else {
-		h.r.del(-v)
+		h.r.remove(-v)
 	}
 }
 
