@@ -160,7 +160,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     // 计算字符串 p 的 pi 数组
-    vector<int> calcPi(string& p) {
+    vector<int> calcPi(const string& p) {
         vector<int> pi(p.size());
         int match = 0;
         for (int i = 1; i < p.size(); i++) {
@@ -177,11 +177,11 @@ class Solution {
     }
 
     // 在文本串 s 中查找模式串 p，返回所有成功匹配的位置（p[0] 在 s 中的下标）
-    vector<int> kmp_search(string& s, string p) {
+    vector<int> kmp_search(const string& s, const string& p) {
         if (p.empty()) {
             // s 的所有位置都能匹配空串，包括 s.size()
             vector<int> pos(s.size() + 1);
-            iota(pos.begin(), pos.end(), 0);
+            ranges::iota(pos, 0);
             return pos;
         }
 
