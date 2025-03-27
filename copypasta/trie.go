@@ -239,7 +239,8 @@ func (t *trie) countDistinctSubstring(s string) (cnt int) {
 }
 
 // 构造长为 n 的字符串 s，让 https://codeforces.com/problemset/problem/114/D 用到的 node 个数尽量多
-// node 个数 约为 n*(n+1)/2 - n*(n-26)/52
+// node 个数约为 n*(n+1)/2 - n*(n-26)/52
+// 注意这个构造方法用于 CF114D 这题，对于一般场合，用 maxTrieNode(n/26, 'a'~'z') 合起来会更多
 func maxTrieNode(n int, tar byte) string {
 	s := make([]byte, 0, n)
 	cnt := 0
