@@ -1,6 +1,9 @@
 package copypasta
 
-import "runtime/debug"
+import (
+	"bytes"
+	"runtime/debug"
+)
 
 /* 前缀树/字典树/单词查找树
 适用于多串前缀/后缀匹配
@@ -107,7 +110,7 @@ func (t *trie) find(s string) (*trieNode, bool) {
 
 // 删除字符串 s，返回字符串末尾对应的节点
 // LC1804 https://leetcode.cn/problems/implement-trie-ii-prefix-tree/
-func (t *trie) delete(s string) *trieNode {
+func (t *trie) remove(s string) *trieNode {
 	fa := make([]*trieNode, len(s))
 	o := t.root
 	for i, b := range s {
@@ -233,6 +236,27 @@ func (t *trie) countDistinctSubstring(s string) (cnt int) {
 		}
 	}
 	return
+}
+
+// 构造长为 n 的字符串 s，让 https://codeforces.com/problemset/problem/114/D 用到的 node 个数尽量多
+// node 个数 约为 n*(n+1)/2 - n*(n-26)/52
+func maxTrieNode(n int, tar byte) string {
+	s := make([]byte, 0, n)
+	cnt := 0
+	for ch := byte('a'); ch <= 'z'; ch++ {
+		if ch == tar {
+			continue
+		}
+		m := (n + 1) / 26 // 最后一组末尾没有字母，我们假设有字母，那么虚拟的长度是 n+1
+		if cnt < (n+1)%26 {
+			m++
+		}
+		cnt++
+		s = append(s, bytes.Repeat([]byte{tar}, m-1)...)
+		s = append(s, ch)
+	}
+	s = append(s, bytes.Repeat([]byte{tar}, n-len(s))...) // 最后一组
+	return string(s)
 }
 
 // EXTRA: 可持久化字典树
