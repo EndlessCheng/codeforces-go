@@ -34,6 +34,12 @@ ab
 ba`,
 			`1`,
 		},
+		{
+			`aaaaaaaaa
+aa
+aaa`,
+			`7`,
+		},
 	}
 	testutil.AssertEqualStringCase(t, testCases, 0, cf113B)
 }

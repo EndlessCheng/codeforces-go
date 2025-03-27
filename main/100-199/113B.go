@@ -3,11 +3,14 @@ package main
 import (
 	. "fmt"
 	"io"
-	"runtime/debug"
 )
 
 // https://github.com/EndlessCheng
-func init() { debug.SetGCPercent(-1) }
+type node13 struct {
+	son [26]uint32
+	end bool
+}
+var memo13 = [2e6]node13{{}}
 
 func cf113B(in io.Reader, out io.Writer) {
 	calcPi := func(s []byte) []int {
@@ -52,22 +55,21 @@ func cf113B(in io.Reader, out io.Writer) {
 	}
 
 	ans := 0
-	type node struct {
-		son [26]*node
-		end bool
-	}
-	rt := &node{}
+	nodes := memo13[:1]
+	root := uint32(0)
+	mn := max(len(p), len(q)) - 1
 	for _, i := range kmpSearch(s, p) {
 		i -= len(p) - 1
-		o := rt
+		o := root
 		for j, b := range s[i:] {
 			b -= 'a'
-			if o.son[b] == nil {
-				o.son[b] = &node{}
+			if nodes[o].son[b] == 0 {
+				nodes[o].son[b] = uint32(len(nodes))
+				nodes = append(nodes, node13{})
 			}
-			o = o.son[b]
-			if !o.end && sufEnd[i+j] {
-				o.end = true
+			o = nodes[o].son[b]
+			if j >= mn && sufEnd[i+j] && !nodes[o].end {
+				nodes[o].end = true
 				ans++
 			}
 		}
