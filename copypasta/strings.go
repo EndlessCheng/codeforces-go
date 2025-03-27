@@ -598,17 +598,14 @@ func _() {
 	// nxt[i][j] 表示下标 >= i 的最近字符 j 的下标
 	subsequenceAutomaton2 := func(s string) {
 		const base = 'a'
-		// build nxt
-		pos := [26]int{}
 		n := len(s)
-		for i := range pos {
-			pos[i] = n
-		}
 		nxt := make([][26]int, n+1)
-		nxt[n] = pos
+		for j := range nxt[n] {
+			nxt[n][j] = n
+		}
 		for i := n - 1; i >= 0; i-- {
-			pos[s[i]-base] = i
-			nxt[i] = pos
+			nxt[i] = nxt[i+1]
+			nxt[i][s[i]-base] = i
 		}
 
 		// 返回是 s 的子序列的最长的 t 的前缀的长度
@@ -647,6 +644,7 @@ func _() {
 	// 模板题 https://judge.yosupo.jp/problem/enumerate_palindromes
 	//       https://www.luogu.com.cn/problem/P3805
 	//       LC5 https://leetcode.cn/problems/longest-palindromic-substring/
+	// https://atcoder.jp/contests/abc398/tasks/abc398_f
 	// https://codeforces.com/problemset/problem/1326/D2 1800 去掉子串后，剩余部分是回文串
 	// https://codeforces.com/problemset/problem/7/D 2200
 	// - https://codeforces.com/problemset/problem/835/D 1900
