@@ -350,9 +350,9 @@ func findMinimumTime(strength []int, k int) int {
 
 建图：
 
-- 从 $i$ 向 $j$ 连边，容量为 $1$，费用为 $\left\lceil\dfrac{\textit{strength}[i]}{1 + k\cdot j}\right\rceil$。
+- 从 $i$ 向 $n+j$ 连边，容量为 $1$，费用为 $\left\lceil\dfrac{\textit{strength}[i]}{1 + k\cdot j}\right\rceil$。
 - 从超级源点 $S=2n$ 向每个 $i$ 连边，容量为 $1$，费用 $0$。
-- 从每个 $j$ 向超级汇点 $T=2n+1$ 连边，容量为 $1$，费用为 $0$。
+- 从 $n+j$ 向超级汇点 $T=2n+1$ 连边，容量为 $1$，费用为 $0$。
 
 计算从 $S$ 到 $T$ 的最小费用流，满流时的费用即为答案。
 
