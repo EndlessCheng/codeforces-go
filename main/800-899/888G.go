@@ -8,27 +8,27 @@ import (
 )
 
 // https://space.bilibili.com/206214
-type trieNode struct{ son [2]*trieNode }
+type node88 struct{ son [2]*node88 }
 
-type trie struct{ root *trieNode }
+type trie88 struct{ root *node88 }
 
-const trieBitLen = 30
+const trieBitLen88 = 30
 
-func (t *trie) put(v int32) *trieNode {
+func (t *trie88) put(v int32) *node88 {
 	o := t.root
-	for i := trieBitLen - 1; i >= 0; i-- {
+	for i := trieBitLen88 - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
-			o.son[b] = &trieNode{}
+			o.son[b] = &node88{}
 		}
 		o = o.son[b]
 	}
 	return o
 }
 
-func (t *trie) minXor(v int32) (ans int) {
+func (t *trie88) minXor(v int32) (ans int) {
 	o := t.root
-	for i := trieBitLen - 1; i >= 0; i-- {
+	for i := trieBitLen88 - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
 			ans |= 1 << i
@@ -59,7 +59,7 @@ func CF888G(_r io.Reader, out io.Writer) {
 			b[k] = append(b[k], v)
 		}
 		if b[0] != nil && b[1] != nil {
-			t := &trie{&trieNode{}}
+			t := &trie88{&node88{}}
 			for _, v := range b[0] {
 				t.put(v)
 			}
