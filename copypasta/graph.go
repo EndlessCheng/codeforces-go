@@ -3250,6 +3250,7 @@ func (*graph) maxBipartiteMatchingHungarian(g [][]int) (match []int, cnt int) {
 // 匈牙利算法 · 写法二
 // 适用左右两侧节点有明确区分的情况，要求 g 中存储的是左侧到右侧的单向边
 // 常见于棋盘放置 1x2 骨牌，或者一些排列型约束的题目
+// https://atcoder.jp/contests/practice2/tasks/practice2_d
 // 找 m 个完美匹配 https://atcoder.jp/contests/abc317/tasks/abc317_g
 // https://codeforces.com/problemset/problem/1139/E 2400
 func (*graph) maxBipartiteMatchingHungarianLR(nl, nr int, g [][]int) (matchL []int, cnt int) {
@@ -4527,6 +4528,7 @@ https://yhx-12243.github.io/OI-transit/records/lydsy1143%3Blg4298.html
 //
 // 模板题 https://www.luogu.com.cn/problem/P3376
 //       https://www.luogu.com.cn/problem/P2740
+// 骨牌/瓷砖铺设 + 输出具体方案 https://atcoder.jp/contests/practice2/tasks/practice2_d
 func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	type neighbor struct{ to, rid, cap, eid int } // rid 为反向边在邻接表中的下标
 	g := make([][]neighbor, n)
@@ -4540,7 +4542,7 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 	}
 
 	{
-		// 最大匹配的建图
+		// 二分图最大匹配的建图
 		st := len(a) + len(b)
 		end := st + 1
 		type neighbor struct{ to, rid, cap int }
@@ -4551,16 +4553,18 @@ func (*graph) maxFlowDinic(n, st, end int, edges [][]int, a, b []int) int {
 		}
 		// 超级源点连左部，右部连超级汇点，所有边的容量均为 1，最大流即为最大匹配
 		for i, v := range a {
-			addEdge(st, i, 1) // 如果题目允许一对多，比如一对二，把 1 改成 2
 			for j, w := range b {
 				if v+w < 100 { // 和题目有关，满足该约束即可匹配 a[i] 和 b[j]
 					addEdge(i, j+len(a), 1)
 				}
 			}
+			addEdge(st, i, 1) // 如果题目允许一对多，比如一对二，把 1 改成 2
 		}
 		for j := range b {
 			addEdge(j+len(a), end, 1) // 如果题目允许多对一，比如二对一，把 1 改成 2
 		}
+
+		// 算完最大流后，如果要输出具体方案，可以遍历左部 -> 右部的边，cap == 0 的边就是在最大匹配中的边
 	}
 
 	d := make([]int, len(g))
