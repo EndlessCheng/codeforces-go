@@ -4916,15 +4916,13 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // https://codeforces.com/problemset/problem/237/E 2000
 //
 // 常见建模方式（下面代码按照这种建模写的）
-// 建模的时候，一般可以理解成在一个矩阵 a 上，每行每列至多选一个数，问所选数字之和的最小值
+// 建模的时候，一般可以理解成在一个矩阵 a 上，每行每列至多选 K 个数，问所选数字之和的最小值
 // 创建一个（完全）二分图，左部为行，右部为列
-// - 行 -> 列，容量为 inf，费用为 grid[i][j]
-// - 超级源点 S -> 行，容量为 1，费用为 0
-// - 列 -> 超级汇点 T，容量为 1，费用为 0
-// 如果求最大值可以把元素值（费用）取反，最后答案再取反
-// 如果每行可以选多个，可以修改从超级源点到左部（行）的容量
-// 如果每列可以选多个，可以修改从右部（列）到超级汇点的容量
-// 如果要限制至多选 k 个元素，可以在超级源点前面再加一个节点，连到超级源点，容量为 k，费用为 0（相当于超级源点的流出量至多为 k）。如果满流，则表示恰好选了 k 个元素
+// - 行 -> 列，容量为 1，费用为 grid[i][j]（如果同一个元素可以重复选，则容量为 inf；如果至多选 mx[i][j] 个，则容量为 mx[i][j]）
+// - 超级源点 S -> 行，容量为 K，费用为 0（K 表示每行至多选 K 个数）
+// - 列 -> 超级汇点 T，容量为 K，费用为 0（K 表示每列至多选 K 个数）
+// 如果要限制总共至多选 lim 个元素，可以在超级源点前面再加一个节点 S0，连到超级源点，容量为 lim，费用为 0（相当于超级源点的流出量至多为 lim）
+//     如果满流，则表示恰好选了 lim 个元素
 //
 // 完全二分图 + 一对一 LC3376 https://leetcode.cn/problems/minimum-time-to-break-locks-i/
 // 完全二分图 + 一对多 LC2850 https://leetcode.cn/problems/minimum-moves-to-spread-stones-over-grid/
@@ -4932,6 +4930,12 @@ func (*graph) minimumCutStoerWagner(dist [][]int) int {
 // 多对一 LC2172 https://leetcode.cn/problems/maximum-and-sum-of-array/
 // 二分图 + 稀疏矩阵 LC3276 https://leetcode.cn/problems/select-cells-in-grid-with-maximum-score/
 // https://codeforces.com/problemset/problem/1107/F 2600
+// 最大费用流 + 输出具体方案 https://atcoder.jp/contests/practice2/tasks/practice2_e
+// - 所有 cost 取相反数，变成最小费用流
+// - 注意可能某次增广算出来的最短路是正数，导致满流的时候不是最大费用
+// - 所以要先跑一遍 MCMF，记录增广过程中最大的费用对应的流 tarFlow；然后再跑一遍 MCMF，限制总共至多选 tarFlow 个元素
+// - 最终答案为 -minCost
+// - 代码 https://atcoder.jp/contests/practice2/submissions/64239460
 func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	n := len(a)
 	m := len(a[0])
@@ -4947,7 +4951,7 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	}
 	for i, row := range a {
 		for j, v := range row {
-			addEdge(i, n+j, math.MaxInt, v) // 如果求最大，改成 -v
+			addEdge(i, n+j, 1, v) // 如果求最大，改成 -v
 		}
 		addEdge(S, i, 1, 0) // 如果是一对多，改 cap
 		// 特别地，如果这一行的所有 v 都相同，可以把 S->i 的 cost 改成 v，i->n+j 的 cost 改成 0
@@ -4955,7 +4959,7 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 	for j := range a[0] {
 		addEdge(n+j, T, 1, 0) // 如果是多对一，改 cap
 	}
-	//addEdge(T+1, S, k, 0) // 如果要限制至多选 k 个元素（g 的大小改成 T+2）
+	//addEdge(T+1, S, k, 0) // 如果要限制至多选 k 个元素（把 g 的大小改成 T+2）
 
 	dis := make([]int, len(g))
 	type vi struct{ v, i int }
@@ -5013,6 +5017,16 @@ func (*graph) minCostFlowSPFA(a [][]int) (int, int) {
 		maxFlow += minF
 		minCost += dis[T] * minF
 	}
+
+	// 输出具体方案
+	for _, to := range g[:n] {
+		for _, e := range to[:m] {
+			if e.cap == 0 { // 或者小于其初始值
+				// 选了 a[i][j]
+			}
+		}
+	}
+
 	return maxFlow, minCost
 }
 
