@@ -29,6 +29,7 @@ func cf56D(in io.Reader, out io.Writer) {
 	}
 	Fprintln(out, f[n][m])
 
+	// 注：也可以迭代，从右往左操作，比如可以这样写 https://codeforces.com/problemset/submission/56/7486578
 	var output func(int, int)
 	output = func(i, j int) {
 		switch {
