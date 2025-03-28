@@ -1,51 +1,70 @@
-看到「长度固定的子数组」就要想到滑动窗口！
+[【套路】教你解决定长滑窗！适用于所有定长滑窗题目！](https://leetcode.cn/problems/maximum-number-of-vowels-in-a-substring-of-given-length/solutions/2809359/tao-lu-jiao-ni-jie-jue-ding-chang-hua-ch-fzfo/)
 
-维护窗口内的元素出现次数 $\textit{cnt}$，以及元素和 $\textit{sum}$。
+### 定长滑窗套路
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1um4y1M7Rv/) 第三题。
+1. **入**：元素 $x=\textit{nums}[i]$ 进入窗口，把 $x$ 加到元素和 $s$ 中，把 $x$ 加到哈希表中（统计 $x$ 的出现次数）。如果 $i<k-1$ 则重复第一步。
+2. **更新**：如果哈希表的大小 $\ge m$，用 $s$ 更新答案的最大值。
+3. **出**：元素 $x=\textit{nums}[i-k+1]$ 离开窗口，把 $s$ 减少 $x$，把哈希表中 $x$ 的出现次数减一。⚠**注意**：如果 $x$ 的出现次数变成 $0$，要从哈希表中删除 $x$，否则哈希表的大小不正确。
 
 ```py [sol-Python3]
 class Solution:
     def maxSum(self, nums: List[int], m: int, k: int) -> int:
-        ans = 0
-        s = sum(nums[:k - 1])  # 先统计 k-1 个数
-        cnt = Counter(nums[:k - 1])
-        for out, in_ in zip(nums, nums[k - 1:]):
-            s += in_  # 再添加一个数就是 k 个数了
-            cnt[in_] += 1
+        ans = s = 0
+        cnt = defaultdict(int)
+        for i, x in enumerate(nums):
+            # 1. 进入窗口
+            s += x
+            cnt[x] += 1
+
+            left = i - k + 1
+            if left < 0:  # 窗口大小不足 k
+                continue
+
+            # 2. 更新答案
             if len(cnt) >= m:
                 ans = max(ans, s)
 
-            s -= out  # 下一个子数组不包含 out，移出窗口
+            # 3. 离开窗口
+            out = nums[left]
+            s -= out
             cnt[out] -= 1
             if cnt[out] == 0:
                 del cnt[out]
+
         return ans
 ```
 
 ```java [sol-Java]
 class Solution {
     public long maxSum(List<Integer> nums, int m, int k) {
-        Integer[] a = nums.toArray(Integer[]::new);
-        long ans = 0; // 注意元素相加会超过 int，要用 long
-        long sum = 0;
+        Integer[] a = nums.toArray(Integer[]::new); // 转成数组效率高
+
+        long ans = 0;
+        long s = 0;
         Map<Integer, Integer> cnt = new HashMap<>();
 
-        for (int i = 0; i < k - 1; i++) { // 先统计 k-1 个数
-            sum += a[i];
+        for (int i = 0; i < a.length; i++) {
+            // 1. 进入窗口
+            s += a[i];
             cnt.merge(a[i], 1, Integer::sum); // cnt[a[i]]++
-        }
 
-        for (int i = k - 1; i < nums.size(); i++) {
-            sum += a[i]; // 再添加一个数就是 k 个数了
-            cnt.merge(a[i], 1, Integer::sum); // cnt[a[i]]++
-            if (cnt.size() >= m) {
-                ans = Math.max(ans, sum);
+            int left = i - k + 1;
+            if (left < 0) { // 窗口大小不足 k
+                continue;
             }
 
-            int out = a[i - k + 1];
-            sum -= out; // 下一个子数组不包含 out，移出窗口
-            if (cnt.merge(out, -1, Integer::sum) == 0) { // --cnt[out] == 0
+            // 2. 更新答案
+            if (cnt.size() >= m) {
+                ans = Math.max(ans, s);
+            }
+
+            // 3. 离开窗口
+            int out = a[left];
+            s -= out;
+            int c = cnt.get(out);
+            if (c > 1) {
+                cnt.put(out, c - 1);
+            } else {
                 cnt.remove(out);
             }
         }
@@ -58,24 +77,27 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
 public:
-    long long maxSum(vector<int> &nums, int m, int k) {
-        long long ans = 0, sum = 0; // 注意元素相加会超过 int，要用 long long
+    long long maxSum(vector<int>& nums, int m, int k) {
+        long long ans = 0, s = 0;
         unordered_map<int, int> cnt;
-
-        for (int i = 0; i < k - 1; i++) { // 先统计 k-1 个数
-            sum += nums[i];
+        for (int i = 0; i < nums.size(); i++) {
+            // 1. 进入窗口
+            s += nums[i];
             cnt[nums[i]]++;
-        }
 
-        for (int i = k - 1; i < nums.size(); i++) {
-            sum += nums[i]; // 再添加一个数就是 k 个数了
-            cnt[nums[i]]++;
-            if (cnt.size() >= m) {
-                ans = max(ans, sum);
+            int left = i - k + 1;
+            if (left < 0) { // 窗口大小不足 k
+                continue;
             }
 
-            int out = nums[i - k + 1];
-            sum -= out; // 下一个子数组不包含 out，移出窗口
+            // 2. 更新答案
+            if (cnt.size() >= m) {
+                ans = max(ans, s);
+            }
+
+            // 3. 离开窗口
+            int out = nums[left];
+            s -= out;
             if (--cnt[out] == 0) {
                 cnt.erase(out);
             }
@@ -88,37 +110,114 @@ public:
 
 ```go [sol-Go]
 func maxSum(nums []int, m, k int) (ans int64) {
-    sum := int64(0)
+    s := int64(0)
     cnt := map[int]int{}
-
-    for _, x := range nums[:k-1] { // 先统计 k-1 个数
-        sum += int64(x)
+    for i, x := range nums {
+        // 1. 进入窗口
+        s += int64(x)
         cnt[x]++
-    }
 
-    for i, in := range nums[k-1:] {
-        sum += int64(in) // 再添加一个数就是 k 个数了
-        cnt[in]++
-        if len(cnt) >= m && sum > ans {
-            ans = sum
+        left := i - k + 1
+        if left < 0 { // 窗口大小不足 k
+            continue
         }
 
-        out := nums[i]
-        sum -= int64(out) // 下一个子数组不包含 out，移出窗口
+        // 2. 更新答案
+        if len(cnt) >= m {
+            ans = max(ans, s)
+        }
+
+        // 3. 离开窗口
+        out := nums[left]
+        s -= int64(out)
         cnt[out]--
         if cnt[out] == 0 {
             delete(cnt, out)
         }
     }
-
     return
+}
+```
+
+```js [sol-JavaScript]
+var maxSum = function(nums, m, k) {
+    const cnt = new Map();
+    let ans = 0, s = 0;
+
+    for (let i = 0; i < nums.length; i++) {
+        // 1. 进入窗口
+        s += nums[i];
+        cnt.set(nums[i], (cnt.get(nums[i]) ?? 0) + 1);
+
+        let left = i - k + 1;
+        if (left < 0) { // 窗口大小不足 k
+            continue;
+        }
+
+        // 2. 更新答案
+        if (cnt.size >= m) {
+            ans = Math.max(ans, s);
+        }
+
+        // 3. 离开窗口
+        const out = nums[left];
+        s -= out;
+        const c = cnt.get(out);
+        if (c > 1) {
+            cnt.set(out, c - 1);            
+        } else {
+            cnt.delete(out);        
+        }
+    }
+
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn max_sum(nums: Vec<i32>, m: i32, k: i32) -> i64 {
+        let m = m as usize;
+        let k = k as usize;
+        let mut ans = 0;
+        let mut s = 0;
+        let mut cnt = HashMap::new();
+
+        for (i, &x) in nums.iter().enumerate() {
+            // 1. 进入窗口
+            s += x as i64;
+            *cnt.entry(x).or_insert(0) += 1;
+
+            if i < k - 1 { // 窗口大小不足 k
+                continue;
+            }
+
+            // 2. 更新答案
+            if cnt.len() >= m {
+                ans = ans.max(s);
+            }
+
+            // 3. 离开窗口
+            let out = nums[i - k + 1];
+            s -= out as i64;
+            let c = cnt.entry(out).or_insert(0);
+            *c -= 1;
+            if *c == 0 {
+                cnt.remove(&out);
+            }
+        }
+
+        ans
+    }
 }
 ```
 
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(k)$。哈希表的大小不会超过窗口长度，即 $k$。
+- 空间复杂度：$\mathcal{O}(k)$。哈希表的大小不会超过窗口长度 $k$。
 
 ## 分类题单
 
