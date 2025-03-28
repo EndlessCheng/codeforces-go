@@ -9,7 +9,6 @@ import (
 
 // https://space.bilibili.com/206214
 type node88 struct{ son [2]*node88 }
-
 type trie88 struct{ root *node88 }
 
 const trieBitLen88 = 30
