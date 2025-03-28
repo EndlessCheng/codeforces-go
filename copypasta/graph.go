@@ -3817,7 +3817,7 @@ func (*graph) sccTarjan(g [][]int) ([][]int, []int) {
 // 定义 Ai 表示「选 Xi」，这样若两个旗子 i j 满足 |Xi-Xj|<D 时，就相当于 Ai Aj 至少一个为假。其他情况类似 
 // - https://atcoder.jp/contests/practice2/tasks/practice2_h
 // https://codeforces.com/problemset/problem/1657/F 2600
-func (G *graph) sat2(n int) []bool {
+func (G *graph) twoSAT(n int) []bool {
 	// g 分为左右两部，左部 [0,n-1] 的点表示 x 为假的状态，右部 [n,2*n-1] 的点表示 x 为真的状态
 	// 我们要做的，就是把状态连起来
 	// 比如根据题意，若 x 为真，可以推出 y 为假
