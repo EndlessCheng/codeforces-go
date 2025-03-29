@@ -1,25 +1,31 @@
 package main
 
 // https://space.bilibili.com/206214
-func maximumSubarraySum(nums []int, k int) int64 {
-	ans, sum := 0, 0
+func maximumSubarraySum(nums []int, k int) (ans int64) {
+	s := int64(0)
 	cnt := map[int]int{}
-	for _, x := range nums[:k-1] {
+	for i, x := range nums {
+		// 1. 进入窗口
+		s += int64(x)
 		cnt[x]++
-		sum += x
-	}
-	for i := k - 1; i < len(nums); i++ {
-		cnt[nums[i]]++ // 移入元素
-		sum += nums[i]
-		if len(cnt) == k && sum > ans {
-			ans = sum
+
+		left := i - k + 1
+		if left < 0 { // 窗口大小不足 k
+			continue
 		}
-		x := nums[i+1-k]
-		cnt[x]-- // 移出元素
-		if cnt[x] == 0 {
-			delete(cnt, x)
+
+		// 2. 更新答案
+		if len(cnt) == k {
+			ans = max(ans, s)
 		}
-		sum -= x
+
+		// 3. 离开窗口
+		out := nums[left]
+		s -= int64(out)
+		cnt[out]--
+		if cnt[out] == 0 {
+			delete(cnt, out)
+		}
 	}
-	return int64(ans)
+	return
 }
