@@ -7,7 +7,6 @@ import (
 
 // https://space.bilibili.com/206214
 type pair struct{ l, r int } // 左闭右开
-
 type ST [][]int
 
 func newST(a []pair) ST {
@@ -26,7 +25,7 @@ func newST(a []pair) ST {
 	return st
 }
 
-// [l,r) 左闭右开
+// 查询区间最大值，[l,r) 左闭右开
 func (st ST) query(l, r int) int {
 	if l >= r {
 		return 0
@@ -53,7 +52,7 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 	}
 	a = append(a, pair{n + 1, n + 1}) // 哨兵
 
-	calc := func(x, y int) int {
+	merge := func(x, y int) int {
 		if x > 0 && y > 0 {
 			return x + y
 		}
@@ -70,12 +69,12 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 		mx := 0
 		if i <= j { // [ql,qr) 中有完整的区间
 			mx = max(
-				st.query(i, j),                   // 相邻完整区间的长度之和的最大值
-				calc(a[i-1].r-ql, a[i].r-a[i].l), // i-1 残缺区间 + i
-				calc(qr-a[j+1].l, a[j].r-a[j].l), // j+1 残缺区间 + j
+				st.query(i, j),                    // 相邻完整区间的长度之和的最大值
+				merge(a[i-1].r-ql, a[i].r-a[i].l), // 残缺区间 i-1 + 完整区间 i
+				merge(qr-a[j+1].l, a[j].r-a[j].l), // 残缺区间 j+1 + 完整区间 j
 			)
 		} else if i == j+1 { // [ql,qr) 中有两个相邻的残缺区间
-			mx = calc(a[i-1].r-ql, qr-a[j+1].l) // i-1 残缺区间 + j+1 残缺区间
+			mx = merge(a[i-1].r-ql, qr-a[j+1].l) // 残缺区间 i-1 + 残缺区间 j+1
 		}
 		ans[qi] = total1 + mx
 	}

@@ -56,7 +56,7 @@ class Solution:
                 start = i + 1
         a.append((n + 1, n + 1))  # 哨兵
 
-        def calc(x: int, y: int) -> int:
+        def merge(x: int, y: int) -> int:
             return x + y if x > 0 and y > 0 else 0
 
         st = SparseTable(a)
@@ -69,11 +69,11 @@ class Solution:
             if i <= j:  # [ql,qr) 中有完整的区间
                 mx = max(
                     st.query(i, j),  # 相邻完整区间的长度之和的最大值
-                    calc(a[i - 1][1] - ql, a[i][1] - a[i][0]),  # i-1 残缺区间 + i
-                    calc(qr - a[j + 1][0], a[j][1] - a[j][0]),  # j+1 残缺区间 + j
+                    merge(a[i - 1][1] - ql, a[i][1] - a[i][0]),  # 残缺区间 i-1 + 完整区间 i
+                    merge(qr - a[j + 1][0], a[j][1] - a[j][0]),  # 残缺区间 j+1 + 完整区间 j
                 )
             elif i == j + 1:  # [ql,qr) 中有两个相邻的残缺区间
-                mx = calc(a[i - 1][1] - ql, qr - a[j + 1][0])  # i-1 残缺区间 + j+1 残缺区间
+                mx = merge(a[i - 1][1] - ql, qr - a[j + 1][0])  # 残缺区间 i-1 + 残缺区间 j+1
             ans.append(total1 + mx)
         return ans
 ```
@@ -135,27 +135,30 @@ class Solution {
             int ql = queries[qi][0];
             int qr = queries[qi][1] + 1; // 左闭右开
 
+            // a 中没有重复的区间左右端点，可以直接用库函数二分
+            // 找第一个区间，左端点 >= ql
             int i = Collections.binarySearch(a, new Pair(ql, 0), (p, q) -> p.l - q.l);
             if (i < 0) i = ~i;
-            int j = Collections.binarySearch(a, new Pair(0, qr), (p, q) -> p.r - q.r);
+            // 找最后一个区间，右端点 <= qr
+            int j = Collections.binarySearch(a, new Pair(0, qr + 1), (p, q) -> p.r - q.r);
             if (j < 0) j = ~j;
             j--;
 
             int mx = 0;
             if (i <= j) { // [ql,qr) 中有完整的区间
                 int full = st.query(i, j); // 相邻完整区间的长度之和的最大值
-                int sl = calc(a.get(i - 1).r - ql, a.get(i).r - a.get(i).l); // i-1 残缺区间 + i
-                int sr = calc(qr - a.get(j + 1).l, a.get(j).r - a.get(j).l); // j+1 残缺区间 + j
+                int sl = merge(a.get(i - 1).r - ql, a.get(i).r - a.get(i).l); // 残缺区间 i-1 + 完整区间 i
+                int sr = merge(qr - a.get(j + 1).l, a.get(j).r - a.get(j).l); // 残缺区间 j+1 + 完整区间 j
                 mx = Math.max(full, Math.max(sl, sr));
             } else if (i == j + 1) { // [ql,qr) 中有两个相邻的残缺区间
-                mx = calc(a.get(i - 1).r - ql, qr - a.get(j + 1).l); // i-1 残缺区间 + j+1 残缺区间
+                mx = merge(a.get(i - 1).r - ql, qr - a.get(j + 1).l); // 残缺区间 i-1 + 残缺区间 j+1
             }
             ans.add(total1 + mx);
         }
         return ans;
     }
 
-    private int calc(int x, int y) {
+    private int merge(int x, int y) {
         return x > 0 && y > 0 ? x + y : 0;
     }
 }
@@ -211,7 +214,7 @@ public:
         }
         a.emplace_back(n + 1, n + 1); // 哨兵
 
-        auto calc = [](int x, int y) {
+        auto merge = [](int x, int y) {
             return x > 0 && y > 0 ? x + y : 0;
         };
 
@@ -225,11 +228,11 @@ public:
             if (i <= j) { // [ql,qr) 中有完整的区间
                 mx = max({
                      st.query(i, j), // 相邻完整区间的长度之和的最大值
-                     calc(a[i - 1].r - ql, a[i].r - a[i].l), // i-1 残缺区间 + i
-                     calc(qr - a[j + 1].l, a[j].r - a[j].l), // j+1 残缺区间 + j
+                     merge(a[i - 1].r - ql, a[i].r - a[i].l), // 残缺区间 i-1 + 完整区间 i
+                     merge(qr - a[j + 1].l, a[j].r - a[j].l), // 残缺区间 j+1 + 完整区间 j
                  });
             } else if (i == j + 1) { // [ql,qr) 中有两个相邻的残缺区间
-                mx = calc(a[i - 1].r - ql, qr - a[j + 1].l); // i-1 残缺区间 + j+1 残缺区间
+                mx = merge(a[i - 1].r - ql, qr - a[j + 1].l); // 残缺区间 i-1 + 残缺区间 j+1
             }
             ans[qi] = total1 + mx;
         }
@@ -285,7 +288,7 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 	}
 	a = append(a, pair{n + 1, n + 1}) // 哨兵
 
-	calc := func(x, y int) int {
+	merge := func(x, y int) int {
 		if x > 0 && y > 0 {
 			return x + y
 		}
@@ -302,12 +305,12 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 		mx := 0
 		if i <= j { // [ql,qr) 中有完整的区间
 			mx = max(
-				st.query(i, j),                   // 相邻完整区间的长度之和的最大值
-				calc(a[i-1].r-ql, a[i].r-a[i].l), // i-1 残缺区间 + i
-				calc(qr-a[j+1].l, a[j].r-a[j].l), // j+1 残缺区间 + j
+				st.query(i, j),                    // 相邻完整区间的长度之和的最大值
+				merge(a[i-1].r-ql, a[i].r-a[i].l), // 残缺区间 i-1 + 完整区间 i
+				merge(qr-a[j+1].l, a[j].r-a[j].l), // 残缺区间 j+1 + 完整区间 j
 			)
 		} else if i == j+1 { // [ql,qr) 中有两个相邻的残缺区间
-			mx = calc(a[i-1].r-ql, qr-a[j+1].l) // i-1 残缺区间 + j+1 残缺区间
+			mx = merge(a[i-1].r-ql, qr-a[j+1].l) // 残缺区间 i-1 + 残缺区间 j+1
 		}
 		ans[qi] = total1 + mx
 	}
