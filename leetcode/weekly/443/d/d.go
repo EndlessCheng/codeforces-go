@@ -7,7 +7,7 @@ import (
 )
 
 // https://space.bilibili.com/206214
-func minOperations(nums []int, x, k int) int64 {
+func minOperations1(nums []int, x, k int) int64 {
 	n := len(nums)
 	dis := medianSlidingWindow(nums, x)
 	f := make([][]int, k+1)
@@ -23,9 +23,25 @@ func minOperations(nums []int, x, k int) int64 {
 	return int64(f[k][n])
 }
 
-// 返回 nums 的所有长为 windowSize 的子数组的（到子数组中位数的）距离和
-func medianSlidingWindow(nums []int, windowSize int) []int {
-	ans := make([]int, len(nums)-windowSize+1)
+func minOperations(nums []int, x, k int) int64 {
+	n := len(nums)
+	dis := medianSlidingWindow(nums, x)
+	f := make([]int, n+1)
+	g := make([]int, n+1) // 滚动数组
+	for i := 1; i <= k; i++ {
+		g[i*x-1] = math.MaxInt
+		for j := i * x; j <= n-(k-i)*x; j++ { // 左右留出足够空间给其他子数组
+			g[j] = min(g[j-1], f[j-x]+dis[j-x]) // j-x 为子数组左端点
+		}
+		f, g = g, f
+	}
+	return int64(f[n])
+}
+
+// 480. 滑动窗口中位数（有改动）
+// 返回 nums 的所有长为 k 的子数组的（到子数组中位数的）距离和
+func medianSlidingWindow(nums []int, k int) []int {
+	ans := make([]int, len(nums)-k+1)
 	left := newLazyHeap()  // 最大堆（元素取反）
 	right := newLazyHeap() // 最小堆
 
@@ -37,7 +53,7 @@ func medianSlidingWindow(nums []int, windowSize int) []int {
 			right.push(-left.pushPop(-in))
 		}
 
-		l := i + 1 - windowSize
+		l := i + 1 - k
 		if l < 0 { // 窗口大小不足 k
 			continue
 		}
@@ -75,7 +91,7 @@ type lazyHeap struct {
 	sort.IntSlice
 	removeCnt map[int]int // 每个元素剩余需要删除的次数
 	size      int         // 实际大小
-	sum       int         // 堆中元素和
+	sum       int         // 堆中元素总和
 }
 
 // 必须实现的两个接口

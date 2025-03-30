@@ -1,7 +1,3 @@
-滑动窗口中位数 + 划分型 DP（Python/Java/C++/Go）
-
----
-
 ## 把数组中的数都变成哪个数最优？
 
 给定数组，每次操作可以把其中一个数加一/减一，把所有数都变成一样的，最少要操作多少次？
@@ -54,9 +50,370 @@ $$
 
 答案为 $f[k][n]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV17yZzYbEP8/?t=37m44s)，欢迎点赞关注~
 
-其他语言稍后补充。
+```py [sol-Python3]
+class LazyHeap:
+    def __init__(self):
+        self.heap = []
+        self.remove_cnt = defaultdict(int)  # 每个元素剩余需要删除的次数
+        self.size = 0  # 实际大小
+        self.sum = 0  # 堆中元素总和
+
+    # 删除
+    def remove(self, x: int) -> None:
+        self.remove_cnt[x] += 1  # 懒删除
+        self.size -= 1
+        self.sum -= x
+
+    # 正式执行删除操作
+    def apply_remove(self) -> None:
+        while self.heap and self.remove_cnt[self.heap[0]] > 0:
+            self.remove_cnt[self.heap[0]] -= 1
+            heappop(self.heap)
+
+    # 查看堆顶
+    def top(self) -> int:
+        self.apply_remove()
+        return self.heap[0]
+
+    # 出堆
+    def pop(self) -> int:
+        self.apply_remove()
+        self.size -= 1
+        self.sum -= self.heap[0]
+        return heappop(self.heap)
+
+    # 入堆
+    def push(self, x: int) -> None:
+        if self.remove_cnt[x] > 0:
+            self.remove_cnt[x] -= 1  # 抵消之前的删除
+        else:
+            heappush(self.heap, x)
+        self.size += 1
+        self.sum += x
+
+    # push(x) 然后 pop()
+    def pushpop(self, x: int) -> int:
+        self.apply_remove()
+        if not self.heap or x <= self.heap[0]:
+            return x
+        self.sum += x - self.heap[0]
+        return heappushpop(self.heap, x)
+
+
+class Solution:
+    # 480. 滑动窗口中位数（有改动）
+    # 返回 nums 的所有长为 k 的子数组的（到子数组中位数的）距离和
+    def medianSlidingWindow(self, nums: list[int], k: int) -> list[int]:
+        ans = [0] * (len(nums) - k + 1)
+        left = LazyHeap()  # 最大堆（元素取反）
+        right = LazyHeap()  # 最小堆
+
+        for i, x in enumerate(nums):
+            # 1. 进入窗口
+            if left.size == right.size:
+                left.push(-right.pushpop(x))
+            else:
+                right.push(-left.pushpop(-x))
+
+            l = i + 1 - k
+            if l < 0:  # 窗口大小不足 k
+                continue
+
+            # 2. 计算答案
+            v = -left.top()
+            s1 = v * left.size + left.sum  # sum 取反
+            s2 = right.sum - v * right.size
+            ans[l] = s1 + s2
+
+            # 3. 离开窗口
+            x = nums[l]
+            if x <= -left.top():
+                left.remove(-x)
+                if left.size < right.size:
+                    left.push(-right.pop())  # 平衡两个堆的大小
+            else:
+                right.remove(x)
+                if left.size > right.size + 1:
+                    right.push(-left.pop())  # 平衡两个堆的大小
+
+        return ans
+
+    def minOperations(self, nums: List[int], x: int, k: int) -> int:
+        n = len(nums)
+        dis = self.medianSlidingWindow(nums, x)
+        f = [[0] * (n + 1) for _ in range(k + 1)]
+        for i in range(1, k + 1):
+            f[i][i * x - 1] = inf
+            for j in range(i * x, n - (k - i) * x + 1):  # 左右留出足够空间给其他子数组
+                f[i][j] = min(f[i][j - 1], f[i - 1][j - x] + dis[j - x])  # j-x 为子数组左端点
+        return f[k][n]
+```
+
+```java [sol-Java]
+class LazyHeap extends PriorityQueue<Integer> {
+    private final Map<Integer, Integer> removeCnt = new HashMap<>(); // 每个元素剩余需要删除的次数
+    private int size = 0; // 实际大小
+    private long sum = 0; // 堆中元素总和
+
+    public LazyHeap(Comparator<Integer> comparator) {
+        super(comparator);
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public long sum() {
+        return sum;
+    }
+
+    // 删除
+    public void remove(int x) {
+        removeCnt.merge(x, 1, Integer::sum); // 懒删除
+        size--;
+        sum -= x;
+    }
+
+    // 正式执行删除操作
+    private void applyRemove() {
+        while (removeCnt.getOrDefault(peek(), 0) > 0) {
+            removeCnt.merge(poll(), -1, Integer::sum);
+        }
+    }
+
+    // 查看堆顶
+    public int top() {
+        applyRemove();
+        return peek();
+    }
+
+    // 出堆
+    public int pop() {
+        applyRemove();
+        size--;
+        sum -= peek();
+        return poll();
+    }
+
+    // 入堆
+    public void push(int x) {
+        int c = removeCnt.getOrDefault(x, 0);
+        if (c > 0) {
+            removeCnt.put(x, c - 1); // 抵消之前的删除
+        } else {
+            offer(x);
+        }
+        size++;
+        sum += x;
+    }
+
+    // push(x) 然后 pop()
+    public int pushPop(int x) {
+        applyRemove();
+        sum += x;
+        offer(x);
+        sum -= peek();
+        return poll();
+    }
+}
+
+class Solution {
+    public long minOperations(int[] nums, int x, int k) {
+        int n = nums.length;
+        long[] dis = medianSlidingWindow(nums, x);
+        long[][] f = new long[k + 1][n + 1];
+        for (int i = 1; i <= k; i++) {
+            f[i][i * x - 1] = Long.MAX_VALUE;
+            for (int j = i * x; j <= n - (k - i) * x; j++) { // 左右留出足够空间给其他子数组
+                f[i][j] = Math.min(f[i][j - 1], f[i - 1][j - x] + dis[j - x]); // j-x 为子数组左端点
+            }
+        }
+        return f[k][n];
+    }
+
+    // 480. 滑动窗口中位数（有改动）
+    // 返回 nums 的所有长为 k 的子数组的（到子数组中位数的）距离和
+    private long[] medianSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        long[] ans = new long[n - k + 1];
+        LazyHeap left = new LazyHeap((a, b) -> Integer.compare(b, a)); // 最大堆
+        LazyHeap right = new LazyHeap(Integer::compare); // 最小堆
+
+        for (int i = 0; i < n; i++) {
+            // 1. 进入窗口
+            int in = nums[i];
+            if (left.size() == right.size()) {
+                left.push(right.pushPop(in));
+            } else {
+                right.push(left.pushPop(in));
+            }
+
+            int l = i + 1 - k;
+            if (l < 0) { // 窗口大小不足 k
+                continue;
+            }
+
+            // 2. 计算答案
+            long v = left.top();
+            long s1 = v * left.size() - left.sum();
+            long s2 = right.sum() - v * right.size();
+            ans[l] = s1 + s2;
+
+            // 3. 离开窗口
+            int out = nums[l];
+            if (out <= left.top()) {
+                left.remove(out);
+                if (left.size() < right.size()) {
+                    left.push(right.pop()); // 平衡两个堆的大小
+                }
+            } else {
+                right.remove(out);
+                if (left.size() > right.size() + 1) {
+                    right.push(left.pop()); // 平衡两个堆的大小
+                }
+            }
+        }
+
+        return ans;
+    }
+}
+```
+
+```cpp [sol-C++]
+template<typename T, typename Compare = less<T>>
+class LazyHeap {
+    priority_queue<T, vector<T>, Compare> pq;
+    unordered_map<T, int> remove_cnt; // 每个元素剩余需要删除的次数
+    size_t sz = 0; // 实际大小
+    long long s = 0; // 堆中元素总和
+
+    // 正式执行删除操作
+    void apply_remove() {
+        while (!pq.empty() && remove_cnt[pq.top()] > 0) {
+            remove_cnt[pq.top()]--;
+            pq.pop();
+        }
+    }
+
+public:
+    size_t size() {
+        return sz;
+    }
+
+    long long sum() {
+        return s;
+    }
+
+    // 删除
+    void remove(T x) {
+        remove_cnt[x]++; // 懒删除
+        sz--;
+        s -= x;
+    }
+
+    // 查看堆顶
+    T top() {
+        apply_remove();
+        return pq.top();
+    }
+
+    // 出堆
+    T pop() {
+        apply_remove();
+        T x = pq.top();
+        pq.pop();
+        sz--;
+        s -= x;
+        return x;
+    }
+
+    // 入堆
+    void push(T x) {
+        if (remove_cnt[x] > 0) {
+            remove_cnt[x]--; // 抵消之前的删除
+        } else {
+            pq.push(x);
+        }
+        sz++;
+        s += x;
+    }
+
+    // push(x) 然后 pop()
+    T push_pop(T x) {
+        apply_remove();
+        pq.push(x);
+        s += x;
+        x = pq.top();
+        pq.pop();
+        s -= x;
+        return x;
+    }
+};
+
+class Solution {
+    // 480. 滑动窗口中位数（有改动）
+    // 返回 nums 的所有长为 k 的子数组的（到子数组中位数的）距离和
+    vector<long long> medianSlidingWindow(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<long long> ans(n - k + 1);
+        LazyHeap<int> left; // 最大堆
+        LazyHeap<int, greater<int>> right; // 最小堆
+
+        for (int i = 0; i < n; i++) {
+            // 1. 进入窗口
+            int in = nums[i];
+            if (left.size() == right.size()) {
+                left.push(right.push_pop(in));
+            } else {
+                right.push(left.push_pop(in));
+            }
+
+            int l = i + 1 - k;
+            if (l < 0) { // 窗口大小不足 k
+                continue;
+            }
+
+            // 2. 计算答案
+            long long v = left.top();
+            long long s1 = v * left.size() - left.sum();
+            long long s2 = right.sum() - v * right.size();
+            ans[l] = s1 + s2;
+
+            // 3. 离开窗口
+            int out = nums[l];
+            if (out <= left.top()) {
+                left.remove(out);
+                if (left.size() < right.size()) {
+                    left.push(right.pop()); // 平衡两个堆的大小
+                }
+            } else {
+                right.remove(out);
+                if (left.size() > right.size() + 1) {
+                    right.push(left.pop()); // 平衡两个堆的大小
+                }
+            }
+        }
+
+        return ans;
+    }
+
+public:
+    long long minOperations(vector<int>& nums, int x, int k) {
+        int n = nums.size();
+        vector<long long> dis = medianSlidingWindow(nums, x);
+        vector f(k + 1, vector<long long>(n + 1));
+        for (int i = 1; i <= k; i++) {
+            f[i][i * x - 1] = LLONG_MAX;
+            for (int j = i * x; j <= n - (k - i) * x; j++) { // 左右留出足够空间给其他子数组
+                f[i][j] = min(f[i][j - 1], f[i - 1][j - x] + dis[j - x]); // j-x 为子数组左端点
+            }
+        }
+        return f[k][n];
+    }
+};
+```
 
 ```go [sol-Go]
 func minOperations(nums []int, x, k int) int64 {
@@ -75,9 +432,10 @@ func minOperations(nums []int, x, k int) int64 {
 	return int64(f[k][n])
 }
 
-// 返回 nums 的所有长为 windowSize 的子数组的（到子数组中位数的）距离和
-func medianSlidingWindow(nums []int, windowSize int) []int {
-	ans := make([]int, len(nums)-windowSize+1)
+// 480. 滑动窗口中位数（有改动）
+// 返回 nums 的所有长为 k 的子数组的（到子数组中位数的）距离和
+func medianSlidingWindow(nums []int, k int) []int {
+	ans := make([]int, len(nums)-k+1)
 	left := newLazyHeap()  // 最大堆（元素取反）
 	right := newLazyHeap() // 最小堆
 
@@ -89,7 +447,7 @@ func medianSlidingWindow(nums []int, windowSize int) []int {
 			right.push(-left.pushPop(-in))
 		}
 
-		l := i + 1 - windowSize
+		l := i + 1 - k
 		if l < 0 { // 窗口大小不足 k
 			continue
 		}
@@ -127,7 +485,7 @@ type lazyHeap struct {
 	sort.IntSlice
 	removeCnt map[int]int // 每个元素剩余需要删除的次数
 	size      int         // 实际大小
-	sum       int         // 堆中元素和
+	sum       int         // 堆中元素总和
 }
 
 // 必须实现的两个接口
@@ -185,10 +543,91 @@ func (h *lazyHeap) pushPop(v int) int {
 }
 ```
 
+## 空间优化
+
+```py [sol-Python3]
+class Solution:
+    # medianSlidingWindow 同上，略
+
+    def minOperations(self, nums: List[int], x: int, k: int) -> int:
+        n = len(nums)
+        dis = self.medianSlidingWindow(nums, x)
+        f = [0] * (n + 1)
+        g = [0] * (n + 1)  # 滚动数组
+        for i in range(1, k + 1):
+            g[i * x - 1] = inf
+            for j in range(i * x, n - (k - i) * x + 1):
+                g[j] = min(g[j - 1], f[j - x] + dis[j - x])
+            f, g = g, f
+        return f[n]
+```
+
+```java [sol-Java]
+class Solution {
+    public long minOperations(int[] nums, int x, int k) {
+        int n = nums.length;
+        long[] dis = medianSlidingWindow(nums, x);
+        long[] f = new long[n + 1];
+        long[] g = new long[n + 1]; // 滚动数组
+        for (int i = 1; i <= k; i++) {
+            g[i * x - 1] = Long.MAX_VALUE;
+            for (int j = i * x; j <= n - (k - i) * x; j++) {
+                g[j] = Math.min(g[j - 1], f[j - x] + dis[j - x]);
+            }
+            long[] tmp = f;
+            f = g;
+            g = tmp;
+        }
+        return f[n];
+    }
+
+    // medianSlidingWindow 同上，略
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+    // medianSlidingWindow 同上，略
+public:
+    long long minOperations(vector<int>& nums, int x, int k) {
+        int n = nums.size();
+        vector<long long> dis = medianSlidingWindow(nums, x);
+        vector<long long> f(n + 1), g(n + 1); // 滚动数组
+        for (int i = 1; i <= k; i++) {
+            g[i * x - 1] = LLONG_MAX;
+            for (int j = i * x; j <= n - (k - i) * x; j++) {
+                g[j] = min(g[j - 1], f[j - x] + dis[j - x]);
+            }
+            swap(f, g);
+        }
+        return f[n];
+    }
+};
+```
+
+```go [sol-Go]
+func minOperations(nums []int, x, k int) int64 {
+	n := len(nums)
+	dis := medianSlidingWindow(nums, x)
+	f := make([]int, n+1)
+	g := make([]int, n+1) // 滚动数组
+	for i := 1; i <= k; i++ {
+		g[i*x-1] = math.MaxInt
+		for j := i * x; j <= n-(k-i)*x; j++ {
+			g[j] = min(g[j-1], f[j-x]+dis[j-x])
+		}
+		f, g = g, f
+	}
+	return int64(f[n])
+}
+
+// medianSlidingWindow 同上，略
+```
+
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n\log n + n(n-kx))$，其中 $n$ 是 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(nk)$。可以滚动数组优化到 $\mathcal{O}(n)$。
+- 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
 

@@ -6,7 +6,7 @@
 
 代码实现时，直接原地修改 $\textit{cost}$，这样可以做到 $\mathcal{O}(1)$ 空间。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV17yZzYbEP8/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
