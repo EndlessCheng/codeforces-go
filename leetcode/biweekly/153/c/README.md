@@ -1,3 +1,5 @@
+## 式子变形
+
 题目给出的式子有子数组和，我们先用 [前缀和](https://leetcode.cn/problems/range-sum-query-immutable/solution/qian-zhui-he-ji-qi-kuo-zhan-fu-ti-dan-py-vaar/) 将其简化。
 
 定义 $\textit{sumNum}[i+1]$ 表示 $\textit{nums}[0]$ 到 $\textit{nums}[i]$ 的元素和。
@@ -42,6 +44,8 @@ $$
 
 > 注意上式和原式并不一定相等，但计算所有子数组的上式之和后，是相等的。
 
+## 划分型 DP
+
 根据 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「§5.2 最优划分」，定义 $f[i+1]$ 表示下标 $[0,i]$ 分割后的最小总代价。
 
 枚举最后一个子数组的左端点 $j$，问题变成下标 $[0,j-1]$ 分割后的最小总代价，即 $f[j]$。其中 $j$ 最小是 $0$，最大是 $i$。
@@ -56,7 +60,7 @@ $$
 
 答案为 $f[n]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=15m21s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

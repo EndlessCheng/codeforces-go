@@ -1,6 +1,6 @@
 用 $\texttt{z}$ 的下一个字符 $\texttt{\{}$ 减去 $s[i]$，就是字母反转后的值。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:

@@ -10,13 +10,17 @@
 
 - 如果 $[\textit{ql},\textit{qr})$ 中没有完整的区间，但包含一段完整的 $\texttt{1}$，那么 $\textit{mx}$ 为两个残缺的区间长度之和。
 - 如果 $[\textit{ql},\textit{qr})$ 中有完整的区间，那么 $\textit{mx}$ 为以下三种情况的最大值：
-   - $[\textit{ql},\textit{qr})$ 中的相邻完整区间的长度之和的最大值。这可以用线段树或者 ST 表统计。
+   - $[\textit{ql},\textit{qr})$ 中的相邻完整区间的长度之和的最大值。这可以用线段树或者 ST 表统计。线段树的模板见 [数据结构题单](https://leetcode.cn/circle/discuss/mOr1u6/)。
    - $\textit{ql}$ 所处的残缺区间与 $[\textit{ql},\textit{qr})$ 的第一个完整区间的长度之和。
    - $\textit{qr}$ 所处的残缺区间与 $[\textit{ql},\textit{qr})$ 的最后一个完整区间的长度之和。
 
 计算 $[\textit{ql},\textit{qr})$ 中的第一个完整区间和最后一个完整区间，可以用二分查找。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+对于最后一个完整区间，可以先二分找到右端点 $> \textit{qr}$ 的第一个区间，这个区间的左边相邻区间，就是最后一个完整区间。
+
+代码实现时，可以用哨兵简化代码，无需判断下标是否在边界上。可以把计算两个区间长度之和的逻辑，封装成一个函数。
+
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=6m9s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class SparseTable:
@@ -29,7 +33,7 @@ class SparseTable:
                 st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
         self.st = st
 
-    # [l,r) 左闭右开
+    # 查询区间最大值，[l,r) 左闭右开
     def query(self, l: int, r: int) -> int:
         if l >= r:
             return 0
@@ -96,6 +100,7 @@ class Solution {
             }
         }
 
+        // 查询区间最大值，[l,r) 左闭右开
         int query(int l, int r) {
             if (l >= r) {
                 return 0;
@@ -130,9 +135,9 @@ class Solution {
             int ql = queries[qi][0];
             int qr = queries[qi][1] + 1; // 左闭右开
 
-            int i = Collections.binarySearch(a, new Pair(ql, 0), Comparator.comparingInt(p -> p.l));
+            int i = Collections.binarySearch(a, new Pair(ql, 0), (p, q) -> p.l - q.l);
             if (i < 0) i = ~i;
-            int j = Collections.binarySearch(a, new Pair(0, qr), Comparator.comparingInt(p -> p.r));
+            int j = Collections.binarySearch(a, new Pair(0, qr), (p, q) -> p.r - q.r);
             if (j < 0) j = ~j;
             j--;
 
@@ -177,6 +182,7 @@ public:
         }
     }
 
+    // 查询区间最大值，[l,r) 左闭右开
     int query(int l, int r) const {
         if (l >= r) {
             return 0;
@@ -252,7 +258,7 @@ func newST(a []pair) ST {
 	return st
 }
 
-// [l,r) 左闭右开
+// 查询区间最大值，[l,r) 左闭右开
 func (st ST) query(l, r int) int {
 	if l >= r {
 		return 0

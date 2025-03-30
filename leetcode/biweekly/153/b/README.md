@@ -1,58 +1,60 @@
 ⚠**注意**：题目求的是 $\texttt{1}$ 的个数，并没有要求这些 $\texttt{1}$ 是连续的。
 
-根据题意，答案为 $s$ 中 $\texttt{1}$ 的个数，加上一个 $\texttt{010}$ 子串中的 $\texttt{0}$ 的个数。我们需要找一个 $\texttt{0}$ 最多的 $\texttt{010}$ 子串。
+根据题意，答案为 $s$ 中 $\texttt{1}$ 的个数，加上一个 $\texttt{010}$ 子串中的 $\texttt{0}$ 的个数。这里 $\texttt{010}$ 子串是指一段连续的 $\texttt{0}$，紧跟着一段连续的 $\texttt{1}$，再紧跟着一段连续的 $\texttt{0}$。
+
+我们需要找一个 $\texttt{0}$ 最多的 $\texttt{010}$ 子串。
 
 遍历 $s$ 的过程中，记录连续相同段的长度 $\textit{cnt}$，以及上一段连续 $\texttt{0}$ 的个数 $\textit{pre}_0$。如果当前这段是 $\texttt{0}$，那么用 $\textit{pre}_0+\textit{cnt}$ 更新 $\textit{mx}$。
 
 最终答案为 $s$ 中 $\texttt{1}$ 的个数加上 $\textit{mx}$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=1m33s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
     def maxActiveSectionsAfterTrade(self, s: str) -> int:
-        ans = mx = cnt = 0
+        total1 = mx = cnt = 0
         pre0 = -inf
         for i, b in enumerate(s):
             cnt += 1
-            if i == len(s) - 1 or b != s[i + 1]:
+            if i == len(s) - 1 or b != s[i + 1]:  # i 是这一段的末尾
                 if b == '1':
-                    ans += cnt
+                    total1 += cnt
                 else:
                     mx = max(mx, pre0 + cnt)
                     pre0 = cnt
                 cnt = 0
-        return ans + mx
+        return total1 + mx
 ```
 
 ```py [sol-Python3 groupby]
 class Solution:
     def maxActiveSectionsAfterTrade(self, s: str) -> int:
-        ans = mx = 0
+        total1 = mx = 0
         pre0 = -inf
         for b, group in groupby(s):
             cnt = len(list(group))
             if b == '1':
-                ans += cnt
+                total1 += cnt
             else:
                 mx = max(mx, pre0 + cnt)
                 pre0 = cnt
-        return ans + mx
+        return total1 + mx
 ```
 
 ```java [sol-Java]
 class Solution {
     public int maxActiveSectionsAfterTrade(String S) {
         char[] s = S.toCharArray();
-        int ans = 0;
+        int total1 = 0;
         int mx = 0;
         int pre0 = Integer.MIN_VALUE;
         int cnt = 0;
         for (int i = 0; i < s.length; i++) {
             cnt++;
-            if (i == s.length - 1 || s[i] != s[i + 1]) {
+            if (i == s.length - 1 || s[i] != s[i + 1]) { // i 是这一段的末尾
                 if (s[i] == '1') {
-                    ans += cnt;
+                    total1 += cnt;
                 } else {
                     mx = Math.max(mx, pre0 + cnt);
                     pre0 = cnt;
@@ -60,7 +62,7 @@ class Solution {
                 cnt = 0;
             }
         }
-        return ans + mx;
+        return total1 + mx;
     }
 }
 ```
@@ -69,12 +71,12 @@ class Solution {
 class Solution {
 public:
     int maxActiveSectionsAfterTrade(string s) {
-        int ans = 0, mx = 0, pre0 = INT_MIN, cnt = 0;
+        int total1 = 0, mx = 0, pre0 = INT_MIN, cnt = 0;
         for (int i = 0; i < s.size(); i++) {
             cnt++;
-            if (i == s.size() - 1 || s[i] != s[i + 1]) {
+            if (i == s.size() - 1 || s[i] != s[i + 1]) { // i 是这一段的末尾
                 if (s[i] == '1') {
-                    ans += cnt;
+                    total1 += cnt;
                 } else {
                     mx = max(mx, pre0 + cnt);
                     pre0 = cnt;
@@ -82,7 +84,7 @@ public:
                 cnt = 0;
             }
         }
-        return ans + mx;
+        return total1 + mx;
     }
 };
 ```
@@ -94,7 +96,7 @@ func maxActiveSectionsAfterTrade(s string) (ans int) {
 	cnt := 0
 	for i := range len(s) {
 		cnt++
-		if i == len(s)-1 || s[i] != s[i+1] {
+		if i == len(s)-1 || s[i] != s[i+1] { // i 是这一段的末尾
 			if s[i] == '1' {
 				ans += cnt
 			} else {
