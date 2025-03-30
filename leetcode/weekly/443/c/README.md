@@ -1,27 +1,25 @@
-## 初步分类
+## 分类
 
 设 $s$ 中选的子串为 $x$，$t$ 中选的子串为 $y$。字符串 $A$ 的长度记作 $|A|$。
 
-答案有如下三种情况：
+有如下三种情况：
 
-- $|x|=|y|$。
+- $|x|=|y|$。这类似**最长公共子串**问题，见 [718. 最长重复子数组](https://leetcode.cn/problems/maximum-length-of-repeated-subarray/)。
 - $|x|>|y|$。这意味着 $x$ 的长为 $|x|-|y|$ 后缀是一个回文串。
-- $|x|<|y|$。
-
-我们只需要计算 $|x|\ge |y|$ 的情况，对于 $|x| < |y|$ 的情况，可以计算 $\text{reverse}(t)$ 和 $\text{reverse}(s)$，复用同一份代码。
+- $|x|<|y|$。我们只需要计算 $|x|\ge |y|$ 的情况，对于 $|x| < |y|$ 的情况，等同于 $s=\text{reverse}(t)$，$t=\text{reverse}(s)$，可以复用同一个逻辑。
 
 ## |x| = |y|
 
-回想一下 [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/)。
+回想一下 [1143. 最长公共子序列](https://leetcode.cn/problems/longest-common-subsequence/)。这里是连续的子串。
 
-定义 $f[i+1][j]$ 表示以 $s[i]$ 结尾的子串（倒序）与以 $t[j]$ 开头的子串的最长匹配长度。
+定义 $f[i+1][j]$ 表示以 $s[i]$ 结尾的子串（倒序）与以 $t[j]$ 开头的子串的**最长匹配长度**。
 
 - 如果 $s[i]\ne t[j]$，那么 $f[i+1][j] = 0$。
 - 如果 $s[i]= t[j]$，那么问题变成以 $s[i-1]$ 结尾的子串（倒序）与以 $t[j+1]$ 开头的子串的最长匹配长度，在这个基础上加一，即 $f[i+1][j] = f[i][j+1] + 1$。
 
 初始值 $f[0][j] = f[i][|t|] = 0$。
 
-$|x|=|y|$ 时，答案为所有 $f[i][j]$ 的最大值乘以 $2$。
+$|x|=|y|$ 时，答案为所有 $f[i][j]$ 的最大值（即全局最长匹配长度）乘以 $2$（在 $s$ 和 $t$ 中各选一个一样长的子串）。
 
 ## |x| > |y|
 
@@ -39,7 +37,7 @@ $$
 
 代码实现时，用一个数组 $\textit{mx}[i]$ 记录 $\max\limits_{j=0}^{|t|-1} f[i][j]$。
 
-下午两点 [B站@灵茶山艾府](https://space.bilibili.com/206214) 直播讲题，欢迎关注！
+具体请看 [视频讲解](https://www.bilibili.com/video/BV17yZzYbEP8/?t=4m28s)，欢迎点赞关注~
 
 ```py [sol-Python3]
 class Solution:
@@ -103,9 +101,9 @@ class Solution {
     }
 
     public int longestPalindrome(String s, String t) {
-        String rs = new StringBuilder(s).reverse().toString();
-        String rt = new StringBuilder(t).reverse().toString();
-        return Math.max(calc(s, t), calc(rt, rs));
+        String revS = new StringBuilder(s).reverse().toString();
+        String revT = new StringBuilder(t).reverse().toString();
+        return Math.max(calc(s, t), calc(revT, revS));
     }
 }
 ```
@@ -142,10 +140,10 @@ public:
     }
 
     int longestPalindrome(string s, string t) {
-        string rs = s, rt = t;
-        ranges::reverse(rs);
-        ranges::reverse(rt);
-        return max(calc(s, t), calc(rt, rs));
+        string rev_s = s, rev_t = t;
+        ranges::reverse(rev_s);
+        ranges::reverse(rev_t);
+        return max(calc(s, t), calc(rev_t, rev_s));
     }
 };
 ```
@@ -198,7 +196,121 @@ func reverse(s string) string {
 - 时间复杂度：$\mathcal{O}(nm+n^2+m^2)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
 - 空间复杂度：$\mathcal{O}(n^2+m^2)$。用滚动数组可以优化至 $\mathcal{O}(n+m)$。
 
-**注**：利用后缀数组 + 高度数组 + Manacher 算法，可以把时间复杂度优化到 $\mathcal{O}(n+m)$。后面补充。
+## 附：后缀数组 + 高度数组 + Manacher 算法
+
+### 前置知识
+
+1. [后缀数组](https://oi-wiki.org/string/sa/)。
+2. [Manacher 算法【视频讲解】](https://www.bilibili.com/video/BV1UcyYY4EnQ/)。
+
+利用后缀数组的高度数组，可以求出方法一中的 $\textit{mx}$ 数组，具体见代码。
+
+计算每个回文中心的最长回文子串，可以用 Manacher 算法。
+
+```go [sol-Go]
+func calc(s, t string) int {
+	// ts = t + "#" + s
+	ts := append([]byte(t), '#')
+	tmp := []byte(s)
+	slices.Reverse(tmp)
+	ts = append(ts, tmp...)
+	sa := (*struct {
+		_  []byte
+		sa []int32
+	})(unsafe.Pointer(suffixarray.New(ts))).sa
+
+	// 后缀名次数组 rank
+	// 后缀 ts[i:] 位于后缀字典序中的第 rank[i] 个
+	// 特别地，rank[0] 即 ts 在后缀字典序中的排名，rank[n-1] 即 ts[n-1:] 在字典序中的排名
+	rank := make([]int, len(sa))
+	for i, p := range sa {
+		rank[p] = i
+	}
+
+	// 高度数组 height
+	// sa 中相邻后缀的最长公共前缀 LCP
+	// height[0] = height[len(sa)] = 0（哨兵）
+	// height[i] = LCP(ts[sa[i]:], ts[sa[i-1]:])
+	height := make([]int, len(sa)+1)
+	h := 0
+	for i, rk := range rank {
+		if h > 0 {
+			h--
+		}
+		if rk > 0 {
+			for j := int(sa[rk-1]); i+h < len(ts) && j+h < len(ts) && ts[i+h] == ts[j+h]; h++ {
+			}
+		}
+		height[rk] = h
+	}
+
+	mx := make([]int, len(s)+1)
+	lcp := 0
+	// sa[0] 对应 '#' 开头的后缀，不遍历
+	for i := 1; i < len(sa); i++ {
+		if int(sa[i]) < len(t) {
+			lcp = math.MaxInt // 找到了 t 中的后缀，可以开始计算 LCP
+		} else {
+			lcp = min(lcp, height[i])
+			mx[int(sa[i])-len(t)-1] = lcp
+		}
+	}
+	lcp = 0
+	for i := len(sa) - 1; i > 0; i-- { // 反着再来一遍
+		if int(sa[i]) < len(t) {
+			lcp = math.MaxInt
+		} else {
+			lcp = min(lcp, height[i+1])
+			j := int(sa[i]) - len(t) - 1
+			mx[j] = max(mx[j], lcp)
+		}
+	}
+	slices.Reverse(mx)
+	ans := slices.Max(mx) * 2 // |x| = |y| 的情况
+
+	// 计算 |x| > |y| 的情况
+	s2 := append(make([]byte, 0, len(s)*2+3), '^')
+	for _, c := range s {
+		s2 = append(s2, '#', byte(c))
+	}
+	s2 = append(s2, '#', '$')
+	halfLen := make([]int, len(s2)-2)
+	halfLen[1] = 1
+	boxM, boxR := 0, 0
+	for i := 2; i < len(halfLen); i++ {
+		hl := 1
+		if i < boxR {
+			hl = min(halfLen[boxM*2-i], boxR-i)
+		}
+		for s2[i-hl] == s2[i+hl] {
+			hl++
+			boxM, boxR = i, i+hl
+		}
+		halfLen[i] = hl
+
+		if hl > 1 { // 回文子串不为空
+			l := (i - hl) / 2 // 回文子串左端点
+			ans = max(ans, hl-1+mx[l]*2)
+		}
+	}
+	return ans
+}
+
+func longestPalindrome(s, t string) int {
+	return max(calc(s, t), calc(reverse(t), reverse(s)))
+}
+
+func reverse(s string) string {
+	t := []byte(s)
+	slices.Reverse(t)
+	return string(t)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n+m)$，其中 $n$ 是 $s$ 的长度，$m$ 是 $t$ 的长度。
+- 空间复杂度：$\mathcal{O}(n+m)$。
 
 ## 分类题单
 
