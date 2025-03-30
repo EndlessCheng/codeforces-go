@@ -1,7 +1,3 @@
-本题 [视频讲解](https://www.bilibili.com/video/BV1pW4y1r7xs) 已出炉，欢迎点赞三连~
-
----
-
 单独考虑一侧的房子，定义 $f[i]$ 表示前 $i$ 个地块的放置方案数，其中第 $i$ 个地块可以放房子，也可以不放房子。
 
 考虑第 $i$ 个地块：
@@ -22,10 +18,13 @@ $$
 
 由于两侧的房屋互相独立，根据乘法原理，答案为 $f[n]^2$。
 
+[本题视频讲解](https://www.bilibili.com/video/BV1pW4y1r7xs)
+
 ```py [sol-Python3]
-MOD = 10 ** 9 + 7
+MOD = 1_000_000_007
+MX = 10_001
 f = [1, 2]
-for _ in range(10 ** 4 - 1):
+while len(f) < MX:
     f.append((f[-1] + f[-2]) % MOD)
 
 class Solution:
@@ -35,8 +34,9 @@ class Solution:
 
 ```java [sol-Java]
 class Solution {
-    static final int MOD = (int) 1e9 + 7, MX = (int) 1e4;
-    static final int[] f = new int[MX];
+    private static final int MOD = 1_000_000_007;
+    private static final int MX = 10_001;
+    private static final int[] f = new int[MX];
 
     static {
         f[0] = 1;
@@ -53,7 +53,8 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-const int MOD = 1e9 + 7, MX = 1e4 + 1;
+const int MOD = 1'000'000'007;
+const int MX = 10'001;
 int f[MX] = {1, 2};
 
 int init = []() {
@@ -66,16 +67,18 @@ int init = []() {
 class Solution {
 public:
     int countHousePlacements(int n) {
-        return (long) f[n] * f[n] % MOD;
+        return 1LL * f[n] * f[n] % MOD;
     }
 };
 ```
 
 ```go [sol-Go]
-const mod int = 1e9 + 7
-var f = [1e4 + 1]int{1, 2}
+const mod = 1_000_000_007
+
+var f = [10_001]int{1, 2}
+
 func init() {
-	for i := 2; i <= 1e4; i++ {
+	for i := 2; i < len(f); i++ {
 		f[i] = (f[i-1] + f[i-2]) % mod
 	}
 }
@@ -87,7 +90,10 @@ func countHousePlacements(n int) int {
 
 #### 复杂度分析
 
-忽略预处理的时间，时间空间复杂度均为 $\mathcal{O}(1)$。
+忽略预处理的时间和空间。
+
+- 时间复杂度：$\mathcal{O}(1)$。
+- 空间复杂度：$\mathcal{O}(1)$。
 
 ## 分类题单
 
