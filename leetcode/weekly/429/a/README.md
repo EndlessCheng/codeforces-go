@@ -1,4 +1,6 @@
-倒着遍历 $\textit{nums}$。如果 $\textit{nums}[i]$ 在右边遇到过，那么说明下标在 $[0,i]$ 中的元素都要移除，这需要操作
+示例 1 的 $\textit{nums} = [1,2,3,4,2,3,3,5,7]$，我们可以倒着遍历 $\textit{nums}$，遍历到 $\textit{nums}[5]=3$ 时，发现之前遍历过相同的数 $\textit{nums}[6]=3$，这意味着 $\textit{nums}[0..5]=[1,2,3,4,2,3]$ 都要移除，操作 $2$ 次。
+
+一般地，倒着遍历 $\textit{nums}$，如果 $\textit{nums}[i]$ 之前遍历过，意味着下标在 $[0,i]$ 中的元素都要移除，这需要操作
 
 $$
 \left\lceil\dfrac{i+1}{3}\right\rceil = \left\lfloor\dfrac{i}{3}\right\rfloor + 1
@@ -6,7 +8,7 @@ $$
 
 次。
 
-如果 $\textit{nums}$ 本来就没有重复元素，返回 $0$。
+如果 $\textit{nums}$ 没有重复元素，返回 $0$。
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/)，欢迎点赞关注~
 
@@ -53,14 +55,43 @@ public:
 
 ```go [sol-Go]
 func minimumOperations(nums []int) int {
-	seen := map[int]bool{}
-	for i, x := range slices.Backward(nums) {
-		if seen[x] {
-			return i/3 + 1
-		}
-		seen[x] = true
-	}
-	return 0
+    seen := map[int]struct{}{}
+    for i, x := range slices.Backward(nums) {
+        if _, ok := seen[x]; ok {
+            return i/3 + 1
+        }
+        seen[x] = struct{}{}
+    }
+    return 0
+}
+```
+
+```js [sol-JavaScript]
+var minimumOperations = function(nums) {
+    const seen = new Set();
+    for (let i = nums.length - 1; i >= 0; i--) {
+        if (seen.has(nums[i])) { // nums[i] 在 seen 中
+            return Math.floor(i / 3) + 1;
+        }
+        seen.add(nums[i]);
+    }
+    return 0;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashSet;
+
+impl Solution {
+    pub fn minimum_operations(nums: Vec<i32>) -> i32 {
+        let mut seen = HashSet::new();
+        for (i, x) in nums.into_iter().enumerate().rev() {
+            if !seen.insert(x) { // x 在 seen 中
+                return i as i32 / 3 + 1;
+            }
+        }
+        0
+    }
 }
 ```
 
@@ -87,3 +118,5 @@ func minimumOperations(nums []int) int {
 12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
