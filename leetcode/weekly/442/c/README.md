@@ -523,7 +523,7 @@ class Vec:
         self.x = x
         self.y = y
 
-    def sub(self, b: "Vec") -> "Vec":
+    def __sub__(self, b: "Vec") -> "Vec":
         return Vec(self.x - b.x, self.y - b.y)
 
     def det(self, b: "Vec") -> int:
@@ -538,7 +538,7 @@ class Solution:
     def convex_hull(self, points: List[Vec]) -> List[Vec]:
         q = []
         for p in points:
-            while len(q) > 1 and q[-1].sub(q[-2]).det(p.sub(q[-1])) >= 0:
+            while len(q) > 1 and (q[-1] - q[-2]).det(p - q[-1]) >= 0:
                 q.pop()
             q.append(p)
         return q
@@ -621,7 +621,7 @@ class Solution {
 ```cpp [sol-C++]
 struct Vec {
     int x, y;
-    Vec sub(const Vec& b) { return {x - b.x, y - b.y}; }
+    Vec operator-(const Vec& b) { return {x - b.x, y - b.y}; }
     long long det(const Vec& b) { return 1LL * x * b.y - 1LL * y * b.x; }
     long long dot(const Vec& b) { return 1LL * x * b.x + 1LL * y * b.y; }
 };
@@ -632,7 +632,7 @@ class Solution {
     vector<Vec> convex_hull(vector<Vec>& points) {
         vector<Vec> q;
         for (auto& p : points) {
-            while (q.size() > 1 && q.back().sub(q[q.size() - 2]).det(p.sub(q.back())) >= 0) {
+            while (q.size() > 1 && (q.back() - q[q.size() - 2]).det(p - q.back()) >= 0) {
                 q.pop_back();
             }
             q.push_back(p);
