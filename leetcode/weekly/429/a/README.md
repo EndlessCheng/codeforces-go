@@ -10,7 +10,7 @@ $$
 
 如果 $\textit{nums}$ 没有重复元素，返回 $0$。
 
-具体请看 [视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/)，欢迎点赞关注~
+[本题视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/)
 
 ```py [sol-Python3]
 class Solution:
@@ -70,7 +70,7 @@ func minimumOperations(nums []int) int {
 var minimumOperations = function(nums) {
     const seen = new Set();
     for (let i = nums.length - 1; i >= 0; i--) {
-        if (seen.has(nums[i])) { // nums[i] 在 seen 中
+        if (seen.has(nums[i])) {
             return Math.floor(i / 3) + 1;
         }
         seen.add(nums[i]);
