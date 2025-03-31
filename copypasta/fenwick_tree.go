@@ -25,6 +25,11 @@ https://www.luogu.com.cn/problem/P3374
 
 关于逆序对，见下面的 cntInversions
 
+问：给一堆区间，计算有多少对区间相交。
+答：按右端点从小到大排序，这样之前遍历过的区间一定在左边。
+   然后查询 [l,r] 中有多少个之前遍历过的区间的右端点，即为在 [l,r] 左边的与 [l,r] 相交的区间个数。
+   至于其他的与 [l,r] 相交的区间，会在后续遍历中统计。
+
 https://codeforces.com/problemset/problem/1234/D 1600
 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
 https://atcoder.jp/contests/arc075/tasks/arc075_c
@@ -55,6 +60,7 @@ https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
 https://codeforces.com/problemset/problem/2042/D 1900
 https://codeforces.com/problemset/problem/629/D 2000
 https://codeforces.com/problemset/problem/1891/F 2000 离线 树 回溯
+https://codeforces.com/problemset/problem/165/D 2100
 https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和
 - 联系 https://www.luogu.com.cn/problem/P1972
 https://codeforces.com/problemset/problem/1660/F2 2100 建模
@@ -72,6 +78,7 @@ https://codeforces.com/problemset/problem/1635/F 2800
 https://atcoder.jp/contests/abc392/tasks/abc392_f 也可以用 Splay 树
 https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://atcoder.jp/contests/abc221/tasks/abc221_e
+https://atcoder.jp/contests/abc368/tasks/abc368_g
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
 贡献 https://www.lanqiao.cn/problems/12467/learning/?contest_id=167
 https://codeforces.com/gym/101649 I 题
@@ -506,25 +513,26 @@ func _(n int) {
 	// 如果 a 范围较大则需要离散化（但这样还不如直接用归并排序）
 	// 归并做法见 misc.go 中的 mergeCount
 	// LCR 170. 交易逆序对的总数 https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
-	// 扩展 https://codeforces.com/problemset/problem/362/C 1900
 	// 环形最小逆序对 https://www.luogu.com.cn/problem/solution/P2995
-	// 扩展：某些位置上的数待定时的逆序对的期望值 https://codeforces.com/problemset/problem/1096/F
-	// https://codeforces.com/problemset/problem/1585/D 1900
 	// https://codeforces.com/edu/course/2/lesson/4/3/practice/contest/274545/problem/A
 	// 逆序对的奇偶性 https://www.luogu.com.cn/blog/203623/sol-p3760-tjoi2017-yi-huo-hu
 	// - https://ac.nowcoder.com/acm/contest/308/D
-	// https://codeforces.com/problemset/problem/749/E 期望 贡献
-	// https://atcoder.jp/contests/arc075/tasks/arc075_c
-	// https://codeforces.com/problemset/problem/911/D
-	// https://codeforces.com/contest/987/problem/E
-	// https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
+	// https://codeforces.com/problemset/problem/911/D 1800
+	// https://codeforces.com/problemset/problem/986/B 1800
+	// https://codeforces.com/problemset/problem/61/E 1900 三元逆序对
+	// https://codeforces.com/problemset/problem/362/C 1900 扩展
+	// https://codeforces.com/problemset/problem/1585/D 1900
+	// https://codeforces.com/problemset/problem/540/E 2100 1e9 范围逆序对
+	// https://codeforces.com/problemset/problem/1096/F 2300 扩展：某些位置上的数待定时的逆序对的期望值 
+	// https://codeforces.com/problemset/problem/749/E 2400 期望 贡献
 	// https://atcoder.jp/contests/abc296/tasks/abc296_f
 	// https://atcoder.jp/contests/arc136/tasks/arc136_b
-	// https://www.codechef.com/problems/DYNAINV?tab=statement
+	// https://atcoder.jp/contests/abc396/tasks/abc396_f
+	// https://atcoder.jp/contests/arc075/tasks/arc075_c
+	// https://atcoder.jp/contests/chokudai_S001/tasks/chokudai_S001_l
 	// https://ac.nowcoder.com/acm/problem/20861
-	// 1e9 范围逆序对 https://codeforces.com/problemset/problem/540/E
-	// 三元逆序对 https://codeforces.com/problemset/problem/61/E
-	// 互质逆序对 小白月赛 87G https://ac.nowcoder.com/acm/contest/73854/G
+	// https://ac.nowcoder.com/acm/contest/73854/G 互质逆序对 小白月赛 87G
+	// https://www.codechef.com/problems/DYNAINV?tab=statement
 	cntInversions := func(a []int) int {
 		n := len(a)
 		tree := make([]int, n+1)
