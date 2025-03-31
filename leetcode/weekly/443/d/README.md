@@ -626,7 +626,7 @@ func minOperations(nums []int, x, k int) int64 {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n\log n + n(n-kx))$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 时间复杂度：$\mathcal{O}(n\log n + (n-kx)k)$，其中 $n$ 是 $\textit{nums}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
