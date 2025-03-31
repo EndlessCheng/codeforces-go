@@ -203,6 +203,10 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // https://codeforces.com/problemset/problem/796/C 1900
 // https://codeforces.com/problemset/problem/2009/G2 2200
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
+func newLazyHeap() *lazyHeap {
+	return &lazyHeap{removeCnt: map[int]int{}}
+}
+
 type lazyHeap struct {
 	sort.IntSlice
 	removeCnt map[int]int
@@ -239,6 +243,58 @@ func (h *lazyHeap) pushPop(v int) int {
 		heap.Fix(h, 0)
 	}
 	return v
+}
+
+// 滑动窗口中位数 / 距离和
+// LC480 https://leetcode.cn/problems/sliding-window-median/
+// LC3505 https://leetcode.cn/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/
+func medianSlidingWindow(nums []int, k int) []float64 {
+	ans := make([]float64, len(nums)-k+1)
+	left := newLazyHeap()  // 最大堆（元素取反）
+	right := newLazyHeap() // 最小堆
+
+	for i, in := range nums {
+		// 1. 进入窗口
+		if left.size == right.size {
+			left.push(-right.pushPop(in))
+		} else {
+			right.push(-left.pushPop(-in))
+		}
+
+		l := i + 1 - k
+		if l < 0 { // 窗口大小不足 k
+			continue
+		}
+
+		// 2. 计算答案（中位数）
+		if k%2 > 0 {
+			ans[l] = float64(-left.top())
+		} else {
+			ans[l] = float64(right.top()-left.top()) / 2
+		}
+
+		// 2. 计算答案（窗口元素到中位数的距离和）
+		median := -left.top()
+		s1 := median*left.size + left.sum // sum 取反
+		s2 := right.sum - median*right.size
+		_ = s1 + s2 // 距离和
+
+		// 3. 离开窗口
+		out := nums[l]
+		if out <= -left.top() {
+			left.remove(-out)
+			if left.size < right.size {
+				left.push(-right.pop()) // 平衡两个堆的大小
+			}
+		} else {
+			right.remove(out)
+			if left.size > right.size+1 {
+				right.push(-left.pop()) // 平衡两个堆的大小
+			}
+		}
+	}
+
+	return ans
 }
 
 // 对顶堆：滑动窗口前 k 小元素和
@@ -329,7 +385,6 @@ func (h *kthHeap) balance(k int) {
 // 其它题目
 // 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
 // - https://www.codechef.com/problems/OKLAMA
-// LC480 滑动窗口中位数 https://leetcode.cn/problems/sliding-window-median/
 // https://codeforces.com/contest/1374/problem/E2 代码 https://codeforces.com/contest/1374/submission/193671570
 
 // 如果值域比较小，可以用分桶法做到 O(n+U)
