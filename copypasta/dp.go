@@ -280,7 +280,7 @@ https://codeforces.com/problemset/problem/1479/B2
 入门计数 DP https://atcoder.jp/contests/abc248/tasks/abc248_c
 入门计数 DP LC1079 https://leetcode.cn/problems/letter-tile-possibilities/
 - 相似技巧 LC1681 https://leetcode.cn/problems/minimum-incompatibility/discussion/comments/2051770
-https://codeforces.com/problemset/problem/414/B 1400
+https://codeforces.com/problemset/problem/414/B 1400 刷表法
 https://codeforces.com/problemset/problem/1794/D 1900
 https://codeforces.com/problemset/problem/1767/C 2100 带约束的计数 DP
 https://codeforces.com/problemset/problem/2060/F 2200
@@ -1008,6 +1008,7 @@ func _(abs func(int) int) {
 	// LIS 方案数 O(nlogn)
 	// 原理见下面这题官方题解的方法二
 	// LC673 https://leetcode.cn/problems/number-of-longest-increasing-subsequence/
+	// https://www.luogu.com.cn/problem/P1108
 	cntLis := func(a []int) int {
 		g := [][]int{}   // 保留所有历史信息
 		cnt := [][]int{} // 个数前缀和
@@ -1778,6 +1779,55 @@ func _(abs func(int) int) {
 			return f
 		}
 		return dfs(root)[maxW]
+	}
+
+	/* 划分型 DP ①
+	 */
+	splitDP := func(a, vals []int) {
+		st := NewST(vals)
+		// 左闭右开
+		cost := func(l, r int) int {
+			return st.Query(l, r)
+		}
+
+		n := len(a)
+		f := make([]int, n+1)     // f[i] 表示 a[:i] 的最优值
+		for i := 1; i <= n; i++ { // 子数组右开端点
+			f[i] = math.MaxInt
+			for l := i - 1; l >= 0; l-- { // 枚举子数组左闭端点
+				f[i] = min(f[i], f[l]+cost(l, i))
+			}
+		}
+	}
+
+	/* 划分型 DP ②
+	时间复杂度（空间优化后）是 O((n-k*sz)k)
+	https://leetcode.cn/problems/sum-of-k-subarrays-with-length-at-least-m/ 式子变形
+	https://leetcode.cn/problems/minimum-operations-to-make-elements-within-k-subarrays-equal/
+	*/
+	splitDPWithLimit := func(a, vals []int, k, sz int) int {
+		st := NewST(vals)
+		cost := func(l, r int) int {
+			return st.Query(l, r)
+		}
+
+		// 选恰好 k 个子数组，每个子数组的长度恰好为 sz，代价为 cost(i,j)，左闭右开
+		n := len(a)
+		f := make([][]int, k+1)
+		for i := range f {
+			f[i] = make([]int, n+1)
+		}
+		for i := 1; i <= k; i++ {
+			f[i][i*sz-1] = 1e18
+			// 左右留出足够空间给其他子数组
+			for j := i * sz; j <= n-(k-i)*sz; j++ { // 子数组右开端点
+				// 不选 a[i] => f[i][j-1]
+				// 选 a[i]   => f[i-1][l] + cost(l, j)    子数组为 [l, j)
+				l := j - sz
+				f[i][j] = min(f[i][j-1], f[i-1][l]+cost(l, j))
+			}
+		}
+		return f[k][n]
 	}
 
 	/* 区间 DP
@@ -2720,6 +2770,9 @@ func _(abs func(int) int) {
 	https://codeforces.com/gym/104337/problem/B 【妙】数位众数，把 freq 排序作为 key
 	todo https://codeforces.com/problemset/problem/1245/F
 	【转换】选两个不超过 U 的数，满足异或和为 target https://atcoder.jp/contests/arc133/tasks/arc133_d 2658
+	https://www.luogu.com.cn/problem/P6669 两个上界约束
+	- https://www.luogu.com.cn/problem/P8688
+	- https://codeforces.com/problemset/problem/582/D 3300 模数为 p^a
 	https://lightoj.com/problem/investigation
 	http://acm.hdu.edu.cn/showproblem.php?pid=4507
 	http://acm.hdu.edu.cn/showproblem.php?pid=3886
@@ -2987,6 +3040,66 @@ func _(abs func(int) int) {
 		return f(0, 0, true, false).sum
 	}
 
+	// 二维数位 DP
+	// https://www.luogu.com.cn/problem/P6669
+	//  - https://www.luogu.com.cn/problem/P8688 需要优化
+	//  - https://codeforces.com/problemset/problem/582/D 3300 模数为 p^a
+	digitDP2D := func(n, m, k int) int {
+		// 以 https://www.luogu.com.cn/problem/P6669 为例
+		// 要求 0 <= i <= n 且 0 <= j <= min(i, m)
+		// 统计 k 进制下，至少有一位 j[p] > i[p] 的数字个数
+		// 前导零不影响答案
+		m = min(m, n)
+		a := [][2]int{}
+		for ; n > 0; n /= k {
+			a = append(a, [2]int{n % k, m % k})
+			m /= k
+		}
+		// 如果 map 慢，可以改成 int 数组 + vis 数组的写法
+		// 注：如果想用全局 memo，可以记忆化 p, greater, limI
+		type args struct {
+			p                    int
+			gr, limI, limN, limM bool
+		}
+		memo := map[args]int{}
+		var dfs func(int, bool, bool, bool, bool) int
+		dfs = func(p int, greater, limI, limN, limM bool) int {
+			if p < 0 {
+				if greater {
+					return 1
+				}
+				return 0
+			}
+			t := args{p, greater, limI, limN, limM}
+			if v, ok := memo[t]; ok {
+				return v
+			}
+
+			hiN := k - 1
+			if limN {
+				hiN = a[p][0]
+			}
+			hiM := k - 1
+			if limM {
+				hiM = a[p][1]
+			}
+
+			res := 0
+			for i := 0; i <= hiN; i++ {
+				// 如果之前出现 j < i 的情况，那么当前位不受到 i 的约束
+				for j := 0; (!limI || j <= i) && j <= hiM; j++ {
+					res += dfs(p-1, greater || j > i, limI && j == i, limN && i == hiN, limM && j == hiM)
+				}
+			}
+			res %= mod
+			memo[t] = res
+			return res
+		}
+		// 因为 a 是从低位到高位，所以入口是 len(a)-1
+		ans := dfs(len(a)-1, false, true, true, true)
+		return ans
+	}
+
 	// 试填法
 	// 第 k 个包含 3 个连续的 6 的数 https://www.acwing.com/problem/content/312/
 	kth666 := func(k int) (ans []byte) {
@@ -3045,6 +3158,7 @@ func _(abs func(int) int) {
 	https://atcoder.jp/contests/arc060/tasks/arc060_c
 	https://www.luogu.com.cn/problem/P1081 开车旅行
 	https://www.luogu.com.cn/problem/P3147 合并数字
+	https://www.luogu.com.cn/problem/P1613
 	计算重复 https://www.acwing.com/problem/content/296/
 	*/
 	binaryLifting := func(segs, qs []struct{ l, r int }) []int {
@@ -3159,7 +3273,14 @@ func _(abs func(int) int) {
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
 	//
-	// 若状态转移方程具有类似于 f[i] = min{f[j]-a[i]*b[j]}, j<i 的形式，方程中包含一个 i 和 j 的乘积项，且序列 a 和 b 均单调递增
+	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} f[j]+a[i]*b[j]，包含 a[i] 和 b[j] 的乘积项
+	//
+	// 理解方法一：点积的几何意义（向量投影长度）
+	// 推荐，比斜率、截距好想很多
+	// 讲解 https://leetcode.cn/problems/minimum-cost-to-divide-array-into-subarrays/solutions/3633352/hua-fen-xing-dp-shi-zi-bian-xing-pythonj-cwi9/
+	// - 注：原题是经典例题 https://www.luogu.com.cn/problem/P2365
+	//
+	// 理解方法二：斜率、截距
 	// 若将 (b[j],f[j]) 看作二维平面上的点，则 f[i] 就是所有斜率为 a[i] 且过其中一点的直线中，与 y 轴的最小截距
 	// 我们可以用一个单调队列来维护 (b[j],f[j]) 的相邻点所构成的下凸包
 	// 对于斜率 a[i]，我们需要在队列中寻找一个位置 k，其左侧斜率小于 a[i]，右侧斜率大于 a[i]，此时经过点 (b[k],f[k]) 能取到最小截距
@@ -3172,7 +3293,7 @@ func _(abs func(int) int) {
 	//
 	// https://oi-wiki.org/dp/opt/slope/
 	// https://cp-algorithms.com/geometry/convex_hull_trick.html
-	// todo https://www.bilibili.com/video/BV178411W7Aj/
+	// https://www.bilibili.com/video/BV178411W7Aj/
 	// https://www.luogu.com.cn/blog/ChenXingLing/post-xue-xi-bi-ji-dong-tai-gui-hua-xie-shuai-you-hua-dp-chao-yang-x
 	// https://www.luogu.com.cn/blog/ningago-lsh/xie-lv-you-hua-dp
 	// https://blog.csdn.net/weixin_43914593/article/details/105560357 算法竞赛专题解析（12）：DP优化(2)--斜率(凸壳)优化
@@ -3180,8 +3301,6 @@ func _(abs func(int) int) {
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
 	//
-	// todo - [LCP 59. 搭桥过河](https://leetcode.cn/problems/NfY1m5/)
-	// - [2263. 数组变为有序的最小操作次数](https://leetcode.cn/problems/make-array-non-decreasing-or-non-increasing/)（会员题）
 	// https://codeforces.com/problemset/problem/319/C 2100
 	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
 	// todo https://atcoder.jp/contests/dp/tasks/dp_z
@@ -3193,6 +3312,33 @@ func _(abs func(int) int) {
 	//  https://codeforces.com/problemset/problem/631/E 2600
 	//  结合李超线段树 https://codeforces.com/contest/1175/problem/G 3000
 	cht := func(a, b []int) int {
+		// 用点积来理解，用 Andrew 算法计算凸包
+		// f[i] = min_{j=0}^{i-1} f[j]+a[i]*b[j]
+		// 保证 b 是单调递增的
+		// 设 v[j] = (b[j], f[j])
+		// 设 p = (a[i], 1)
+		// 问题变成求 p.dot(v[j]) 的最小值
+		// 这可以在下凸包中二分找谷底
+		q := []vec{{b[0], 0}} // 一般我们定义 f[0] = 0
+		for i := 1; i < len(a); i++ {
+			p := vec{a[i], 1}
+			// 用 Andrew 算法计算下凸包
+			// p.dot(q[i]) 是个（下）单峰函数，二分找最小值，即第一个上坡
+			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
+			// （优化）如果 a[i] 有单调性，二分可以改成双指针，见 https://leetcode.cn/problems/minimum-cost-to-divide-array-into-subarrays/ 我的题解
+			j := sort.Search(len(q)-1, func(j int) bool { return p.dot(q[j]) < p.dot(q[j+1]) })
+			fi := p.dot(q[j])
+			p = vec{b[i], fi}
+			// ！如果转移方程是求 max，下面的 <= 改成 >=，也就是计算上凸包
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+				q = q[:len(q)-1]
+			}
+			q = append(q, p)
+		}
+		return int(q[len(q)-1].y)
+	}
+
+	cht2 := func(a, b []int) int {
 		n := len(a)
 		f := make([]int, n)
 		// 计算两点间的斜率，若分子分母均在 32 位整数范围内，可以去掉浮点，改用乘法（或者用 lessPair）
@@ -3392,6 +3538,7 @@ func _(abs func(int) int) {
 	https://codeforces.com/problemset/problem/1249/F 2200 好题
 	https://codeforces.com/problemset/problem/1292/C 2300
 	https://codeforces.com/problemset/problem/1453/E 2300 好题
+	https://codeforces.com/problemset/problem/238/C ~2400 做到 O(n)
 	https://codeforces.com/problemset/problem/1059/E 2400 取往上冲的最高的点（子树）
 	https://atcoder.jp/contests/abc259/tasks/abc259_f
 	https://atcoder.jp/contests/abc239/tasks/abc239_e
@@ -3807,6 +3954,7 @@ func _(abs func(int) int) {
 	// https://atcoder.jp/contests/abc220/tasks/abc220_f
 	// https://codeforces.com/problemset/problem/1324/F 1800 类似最大子数组和
 	// https://codeforces.com/problemset/problem/109/C 1900 也有组合数学做法
+	// https://codeforces.com/problemset/problem/238/C 2100 有 O(n) 做法
 	// https://codeforces.com/problemset/problem/791/D 2100 任意两点距离除以 k 的上取整之和
 	// https://atcoder.jp/contests/abc160/tasks/abc160_f 2048=CF2260
 	// https://codeforces.com/problemset/problem/494/D 2700 式子变形
@@ -3814,25 +3962,25 @@ func _(abs func(int) int) {
 		ans := make([]int, len(g))
 		size := make([]int, len(g))
 		var dfs func(int, int, int)
-		dfs = func(x, fa, depth int) {
-			ans[0] += depth // 
-			size[x] = 1
-			for _, y := range g[x] {
-				if y != fa {
-					dfs(y, x, depth+1)
-					// ans[0] += ...
-					size[x] += size[y]
+		dfs = func(v, fa, depth int) {
+			ans[0] += depth // 点相关
+			size[v] = 1
+			for _, w := range g[v] {
+				if w != fa {
+					dfs(w, v, depth+1)
+					// ans[0] += ... // 边相关
+					size[v] += size[w]
 				}
 			}
 		}
 		dfs(0, -1, 0)
 
 		var reroot func(int, int)
-		reroot = func(x, fa int) {
-			for _, y := range g[x] {
-				if y != fa {
-					ans[y] = ans[x] + len(g) - size[y]*2 //
-					reroot(y, x)
+		reroot = func(v, fa int) {
+			for _, w := range g[v] {
+				if w != fa {
+					ans[w] = ans[v] + len(g) - size[w]*2 // 1-e.inv*2
+					reroot(w, v)
 				}
 			}
 		}
@@ -4119,6 +4267,8 @@ func _(abs func(int) int) {
 		groupKnapsack, groupKnapsackFill,
 		treeKnapsack,
 
+		splitDP, splitDPWithLimit,
+
 		longestPalindromeSubsequence, mergeStones, countPalindromes,
 
 		// 期望 DP
@@ -4126,13 +4276,14 @@ func _(abs func(int) int) {
 		permDP, permDP2, tsp, longestSimplePath, countCycle, // 状压 DP
 		subsubDP, subsubDP2, subsubDPMemo, sosDP, plugDP,
 
-		digitDP, digitDP2, calcSum, kth666, // 数位 DP
+		digitDP, digitDP2, calcSum, digitDP2D, kth666, // 数位 DP
 
 		binaryLifting,
 
 		// 数据结构优化 DP
 
-		cht, wqs,
+		cht, cht2,
+		wqs,
 
 		diameter, countDiameter, maxDisOfDiffColor, countPath, countVerticesOnDiameter, maxPathSum,
 		maxIndependentSetOfTree, minVertexCoverOfTree, minDominatingSetOfTree, maxMatchingOfTree,
