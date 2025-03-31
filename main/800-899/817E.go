@@ -10,21 +10,21 @@ import (
 // https://github.com/EndlessCheng
 func init() { debug.SetGCPercent(-1) }
 
-type node struct {
-	son [2]*node
+type node17 struct {
+	son [2]*node17
 	cnt int
 }
 
-type trie struct{ root *node }
+type trie17 struct{ root *node17 }
 
-const trieBitLen = 27
+const trieBitLen17 = 27
 
-func (t *trie) put(v int) *node {
+func (t *trie17) put(v int) *node17 {
 	o := t.root
-	for i := trieBitLen - 1; i >= 0; i-- {
+	for i := trieBitLen17 - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if o.son[b] == nil {
-			o.son[b] = &node{}
+			o.son[b] = &node17{}
 		}
 		o = o.son[b]
 		o.cnt++
@@ -32,18 +32,18 @@ func (t *trie) put(v int) *node {
 	return o
 }
 
-func (t *trie) del(v int) *node {
+func (t *trie17) del(v int) *node17 {
 	o := t.root
-	for i := trieBitLen - 1; i >= 0; i-- {
+	for i := trieBitLen17 - 1; i >= 0; i-- {
 		o = o.son[v>>i&1]
 		o.cnt--
 	}
 	return o
 }
 
-func (t *trie) countLimitXOR(v, limit int) (cnt int) {
+func (t *trie17) countLimitXOR(v, limit int) (cnt int) {
 	o := t.root
-	for i := trieBitLen - 1; i >= 0; i-- {
+	for i := trieBitLen17 - 1; i >= 0; i-- {
 		b := v >> i & 1
 		if limit>>i&1 > 0 {
 			if o.son[b] != nil {
@@ -63,7 +63,7 @@ func cf817E(in io.Reader, _w io.Writer) {
 	out := bufio.NewWriter(_w)
 	defer out.Flush()
 	var q, op, v, l int
-	t := trie{&node{}}
+	t := trie17{&node17{}}
 	Fscan(in, &q)
 	for range q {
 		Fscan(in, &op, &v)
