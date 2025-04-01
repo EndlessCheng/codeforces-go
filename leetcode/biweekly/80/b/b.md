@@ -1,12 +1,12 @@
 对于正整数，$xy\ge\textit{success}$ 等价于 $y\ge\left\lceil\dfrac{\textit{success}}{x}\right\rceil$。
 
-为了方便二分，可以利用如下等式： 
+为了方便二分，可以利用如下恒等式： 
 
 $$
 \left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a+b-1}{b}\right\rfloor = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
 $$
 
-讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
+证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
 根据上式，我们有
 
