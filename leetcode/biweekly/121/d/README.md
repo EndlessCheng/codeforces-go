@@ -31,9 +31,9 @@
 ```py [sol-Python3]
 class Solution:
     def numberOfPowerfulInt(self, start: int, finish: int, limit: int, s: str) -> int:
-        high = str(finish)
+        high = list(map(int, str(finish)))  # 避免在 dfs 中频繁使用 int
         n = len(high)
-        low = str(start).zfill(n)  # 补前导零，和 high 对齐
+        low = list(map(int, str(start).zfill(n)))  # 补前导零，和 high 对齐
         diff = n - len(s)
 
         @cache
@@ -43,8 +43,8 @@ class Solution:
 
             # 第 i 个数位可以从 lo 枚举到 hi
             # 如果对数位还有其它约束，应当只在下面的 for 循环做限制，不应修改 lo 或 hi
-            lo = int(low[i]) if limit_low else 0
-            hi = int(high[i]) if limit_high else 9
+            lo = low[i] if limit_low else 0
+            hi = high[i] if limit_high else 9
 
             res = 0
             if i < diff:  # 枚举这个数位填什么
