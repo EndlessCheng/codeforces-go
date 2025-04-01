@@ -120,7 +120,7 @@ func countSymmetricIntegers(low, high int) (ans int) {
 ```py [sol-Python3]
 class Solution:
     def countSymmetricIntegers(self, low: int, high: int) -> int:
-        high = list(map(int, str(high)))
+        high = list(map(int, str(high)))  # 避免在 dfs 中频繁调用 int()
         n = len(high)
         low = list(map(int, str(low).zfill(n)))  # 补前导零，和 high 对齐
 
