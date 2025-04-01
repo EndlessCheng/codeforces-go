@@ -113,6 +113,7 @@ https://codeforces.com/problemset/problem/1443/B 1300
 https://codeforces.com/problemset/problem/2026/B 1300 做到 O(n)
 https://codeforces.com/problemset/problem/1706/C 1400
 https://codeforces.com/problemset/problem/1980/D 1400 pairwise 的前后缀分解
+https://codeforces.com/problemset/problem/1492/C 1500
 https://codeforces.com/problemset/problem/2008/E 1500
 https://codeforces.com/problemset/problem/1029/C 1600
 https://codeforces.com/problemset/problem/2028/C 1600
@@ -121,6 +122,7 @@ https://codeforces.com/problemset/problem/1957/D 1900
 https://codeforces.com/problemset/problem/1969/D 1900
 https://codeforces.com/problemset/problem/1837/F 2400
 https://codeforces.com/problemset/problem/2005/D 2400 GCD logTrick
+https://codeforces.com/problemset/problem/835/F 2500
 昆明 2024：至多修改一个子数组 [L,R] ：把元素都加上 k，最大化整个数组的 GCD
 - 预处理前后缀 GCD，由于前缀 GCD 只有 O(logU) 个不同的值，可以只枚举 O(logU) 个 L 和 O(n) 个 R，
 - 枚举 R 的同时计算修改后的子数组 GCD，然后和前后缀 GCD 求 GCD
@@ -180,6 +182,7 @@ https://codeforces.com/contest/2032/problem/C 1400
 双序列双指针
 https://codeforces.com/contest/489/problem/B 1200
 https://atcoder.jp/contests/abc312/tasks/abc312_f
+另见 strings.go 中的 isSubseq
 
 相向双指针
 题单 https://leetcode.cn/leetbook/read/sliding-window-and-two-pointers/odt2yh/
@@ -191,7 +194,7 @@ https://www.facebook.com/codingcompetitions/hacker-cup/2023/practice-round/probl
 https://atcoder.jp/contests/abc155/tasks/abc155_d
 - 相似题目 https://leetcode.cn/problems/kth-smallest-product-of-two-sorted-arrays/
 
-a[i] + b[j] <= target 的方案数   
+a[i] + b[j] <= target 的方案数
 - 相向双指针
 - LC2824 https://leetcode.cn/problems/count-pairs-whose-sum-is-less-than-target/
 - https://codeforces.com/problemset/problem/1538/C 1300
@@ -331,6 +334,7 @@ https://codeforces.com/problemset/problem/710/B 1400
 中位数相关 https://codeforces.com/problemset/problem/166/C 1500 *可以做到对不同的 x 用 O(log n) 时间回答
 
 排序不等式
+https://codeforces.com/problemset/problem/2065/D 1200
 https://codeforces.com/problemset/problem/276/C 1500
 https://codeforces.com/problemset/problem/1165/E 1600
 
@@ -338,6 +342,7 @@ https://codeforces.com/problemset/problem/1165/E 1600
 每次取两个数减一，最后剩下的数最小 / 操作次数最多 https://cs.stackexchange.com/a/145450
 - [1953. 你可以工作的最大周数](https://leetcode.cn/problems/maximum-number-of-weeks-for-which-you-can-work/) 1804
    - https://codeforces.com/problemset/problem/1579/D 1400
+https://codeforces.com/problemset/problem/296/A 1100
 https://codeforces.com/problemset/problem/1521/E 2700 二维+对角不同
 
 每次取数组中大于 0 的连续一段同时减 1，求使数组全为 0 的最少操作次数
@@ -347,7 +352,9 @@ https://codeforces.com/problemset/problem/448/C
 邻项交换（最小代价排序/字典序最小） Exchange Arguments
 https://codeforces.com/blog/entry/63533
 某些题目和逆序对有关
-LC1665. 完成所有任务的最少初始能量 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/ 1901
+https://www.luogu.com.cn/problem/P1842 [USACO05NOV] 奶牛玩杂技
+https://www.luogu.com.cn/problem/P1080 [NOIP2012 提高] 国王游戏
+LC1665 https://leetcode.cn/problems/minimum-initial-energy-to-finish-tasks/ 1901
 - https://www.luogu.com.cn/problem/P3619
 https://codeforces.com/problemset/problem/1638/B 1100
 https://codeforces.com/problemset/problem/920/C 1400
@@ -355,7 +362,7 @@ https://codeforces.com/problemset/problem/435/B 1400
 https://codeforces.com/contest/246/problem/A 900
 https://atcoder.jp/contests/arc147/tasks/arc147_b
 https://atcoder.jp/contests/abc268/tasks/abc268_f
-相邻两数之差的绝对值为 1 https://ac.nowcoder.com/acm/contest/65259/C
+https://ac.nowcoder.com/acm/contest/65259/C 相邻两数之差的绝对值为 1
 
 非邻项交换（最小代价排序/字典序最小）
 某些题目可以在 i 到 a[i] 之间连边建图
@@ -520,6 +527,8 @@ LC494 https://leetcode.cn/problems/target-sum/
 LC3189 https://leetcode.cn/problems/minimum-moves-to-get-a-peaceful-board/
 
 分类讨论（部分题是易错题）
+https://codeforces.com/problemset/problem/862/A 1000
+https://codeforces.com/problemset/problem/1931/C 1000
 https://codeforces.com/problemset/problem/2039/B 1000
 https://codeforces.com/problemset/problem/262/B 1200
 https://codeforces.com/problemset/problem/1364/A 1200
@@ -538,6 +547,7 @@ https://codeforces.com/problemset/problem/960/B 1500
 https://codeforces.com/problemset/problem/1051/C 1500
 https://codeforces.com/problemset/problem/1180/B 1500
 https://codeforces.com/problemset/problem/1250/L 1500
+https://codeforces.com/problemset/problem/150/B 1600
 https://codeforces.com/problemset/problem/750/C 1600 *也有偏数学的做法
 https://codeforces.com/problemset/problem/898/E 1600
 https://codeforces.com/problemset/problem/1822/E 1600 样例给的挺良心的
@@ -618,6 +628,7 @@ https://codeforces.com/problemset/problem/912/D 2100
 https://codeforces.com/problemset/problem/1808/D 2100
 https://codeforces.com/problemset/problem/520/E 2200
 https://codeforces.com/problemset/problem/1208/E 2200
+https://codeforces.com/problemset/problem/294/E 2300
 https://codeforces.com/problemset/problem/2063/E 2300
 https://codeforces.com/problemset/problem/749/E 2400
 https://codeforces.com/problemset/problem/915/F 2400
@@ -655,7 +666,8 @@ https://codeforces.com/problemset/problem/521/D
 先撤销，再恢复
 LC3187 https://leetcode.cn/problems/peaks-in-array/
 
-合法括号字符串 (Regular Bracket Sequence, RBS)
+合法括号字符串（Regular Bracket Sequence, RBS）
+https://codeforces.com/problemset/problem/1469/A 1000
 https://codeforces.com/problemset/problem/1097/C 1400
 https://codeforces.com/problemset/problem/1837/D 1400
 https://codeforces.com/problemset/problem/990/C 1500
@@ -897,26 +909,10 @@ func _() {
 		return x
 	}
 
-	/*
-		关于上取整的计算，当 $a$ 和 $b$ 均为正整数时，我们有
-
-		$$
-		\left\lceil\dfrac{a}{b}\right\rceil = \left\lfloor\dfrac{a-1}{b}\right\rfloor + 1
-		$$
-
-		讨论 $a$ 被 $b$ 整除，和不被 $b$ 整除两种情况，可以证明上式的正确性。
-	*/
+	// 上取整下取整转换公式的证明 https://zhuanlan.zhihu.com/p/1890356682149838951
 	// - [1936. 新增的最少台阶数](https://leetcode.cn/problems/add-minimum-number-of-rungs/) 1323
 	// - [1785. 构成特定和需要添加的最少元素](https://leetcode.cn/problems/minimum-elements-to-add-to-form-a-given-sum/) 1432
 	ceil := func(a, b int) int {
-		// assert a >= 0 && b > 0
-		if a == 0 {
-			return 0
-		}
-		return (a-1)/b + 1
-	}
-	// 另一种写法，无需考虑 a 为 0 的情况
-	ceil = func(a, b int) int {
 		return (a + b - 1) / b
 	}
 
