@@ -31,7 +31,7 @@
 ```py [sol-Python3]
 class Solution:
     def numberOfPowerfulInt(self, start: int, finish: int, limit: int, s: str) -> int:
-        high = list(map(int, str(finish)))  # 避免在 dfs 中频繁使用 int
+        high = list(map(int, str(finish)))  # 避免在 dfs 中频繁调用 int()
         n = len(high)
         low = list(map(int, str(start).zfill(n)))  # 补前导零，和 high 对齐
         diff = n - len(s)
