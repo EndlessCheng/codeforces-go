@@ -44,7 +44,7 @@ $$
 
 > 注意上式和原式并不一定相等，但计算所有子数组的上式之和后，是相等的。
 
-## 划分型 DP
+## 方法一：划分型 DP
 
 根据 [动态规划题单](https://leetcode.cn/circle/discuss/tXLS3i/)「§5.2 最优划分」，定义 $f[i+1]$ 表示下标 $[0,i]$ 分割后的最小总代价。
 
@@ -145,6 +145,266 @@ func minimumCost(nums, cost []int, k int) int64 {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}(n^2)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+## 方法二：凸包 + 双指针 / 双端队列
+
+**前置知识**：二维计算几何，凸包，Andrew 算法。
+
+同 [3494. 酿造药水需要的最少总时间](https://leetcode.cn/problems/find-the-minimum-amount-of-time-to-brew-potions/)，方法一中的状态转移方程，也可以改成点积的形式，从而可以用凸包优化。
+
+首先把递推式变形，把 $\min$ 中和 $j$ 无关的量提出来：
+
+$$
+\begin{aligned}
+f[i+1] ={} & \min_{j=0}^{i} f[j] + \textit{sumNum}[i+1] \cdot (s[i+1] - s[j]) + k\cdot (s[n] - s[j])   \\
+       ={} & \textit{sumNum}[i+1] \cdot s[i+1] + k\cdot s[n] + \min_{j=0}^{i} f[j] - (\textit{sumNum}[i+1] + k) \cdot s[j] \\
+\end{aligned}
+$$
+
+把其中的
+
+$$
+f[j] - (\textit{sumNum}[i+1] + k) \cdot s[j]
+$$
+
+改成点积的形式，这样我们能得到来自几何意义上的观察。
+
+设向量 $\mathbf{v}_j = (s[j], f[j])$。
+
+设向量 $\mathbf{p} = (-\textit{sumNum}[i+1] - k, 1)$。
+
+那么我们求的是
+
+$$
+\min_{j=0}^{i} \mathbf{p}\cdot \mathbf{v}_j
+$$
+
+根据点积的几何意义，我们求的是 $\mathbf{v}_j$ 在 $\mathbf{p}$ 方向上的投影长度，再乘以 $\mathbf{p}$ 的模长 $||\mathbf{p}||$。由于 $||\mathbf{p}||$ 是个定值，所以要最小化投影长度。
+
+考虑 $\mathbf{v}_j$ 的**下凸包**（用 Andrew 算法计算），在凸包内的点，比凸包顶点的投影长度长。所以只需考虑凸包顶点。
+
+> 由于 $s[j]$ 是单调递增的，求下凸包无需排序。
+
+这样有一个很好的性质：从左到右遍历凸包顶点，$\mathbf{p}\cdot \mathbf{v}_j$ 会先变小再变大（单峰函数）。那么要计算最小值，就类似 [852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/)，**二分**首个「上坡」的位置，具体见 [我的题解](https://leetcode.cn/problems/peak-index-in-a-mountain-array/solutions/2984800/er-fen-gen-ju-shang-po-huan-shi-xia-po-p-uoev/)。
+
+实际上不需要二分。由于 $-\textit{sumNum}[i+1] - k$ 是单调递减的，也可以双指针（或者双端队列）。
+
+```py [sol-Python3]
+class Vec:
+    __slots__ = 'x', 'y'
+
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    def __sub__(self, b: "Vec") -> "Vec":
+        return Vec(self.x - b.x, self.y - b.y)
+
+    def det(self, b: "Vec") -> int:
+        return self.x * b.y - self.y * b.x
+
+    def dot(self, b: "Vec") -> int:
+        return self.x * b.x + self.y * b.y
+
+class Solution:
+    def minimumCost(self, nums: List[int], cost: List[int], k: int) -> int:
+        total_cost = sum(cost)
+
+        q = deque([Vec(0, 0)])
+        sum_num = sum_cost = 0
+        for x, c in zip(nums, cost):
+            sum_num += x
+            sum_cost += c
+
+            p = Vec(-sum_num - k, 1)
+            while len(q) > 1 and p.dot(q[0]) >= p.dot(q[1]):
+                q.popleft()
+
+            # 增量地构建下凸包
+            p = Vec(sum_cost, p.dot(q[0]) + sum_num * sum_cost + k * total_cost)
+            while len(q) > 1 and (q[-1] - q[-2]).det(p - q[-1]) <= 0:
+                q.pop()
+            q.append(p)
+
+        return q[-1].y
+```
+
+```java [sol-Java]
+class Solution {
+    private record Vec(long x, long y) {
+        Vec sub(Vec b) {
+            return new Vec(x - b.x, y - b.y);
+        }
+
+        long det(Vec b) {
+            return x * b.y - y * b.x;
+        }
+
+        long dot(Vec b) {
+            return x * b.x + y * b.y;
+        }
+    }
+
+    public long minimumCost(int[] nums, int[] cost, int k) {
+        int totalCost = 0;
+        for (int c : cost) {
+            totalCost += c;
+        }
+
+        List<Vec> q = new ArrayList<>();
+        q.add(new Vec(0, 0));
+        int sumNum = 0;
+        int sumCost = 0;
+        int j = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            sumNum += nums[i];
+            sumCost += cost[i];
+
+            Vec p = new Vec(-sumNum - k, 1);
+            while (j + 1 < q.size() && p.dot(q.get(j)) >= p.dot(q.get(j + 1))) {
+                j++;
+            }
+
+            // 增量地构建下凸包
+            p = new Vec(sumCost, p.dot(q.get(j)) + (long) sumNum * sumCost + k * totalCost);
+            while (q.size() - j > 1 && q.getLast().sub(q.get(q.size() - 2)).det(p.sub(q.getLast())) <= 0) {
+                q.removeLast();
+            }
+            q.add(p);
+        }
+
+        return q.getLast().y;
+    }
+}
+```
+
+```java [sol-Java 数组]
+class Solution {
+    private record Vec(long x, long y) {
+        Vec sub(Vec b) {
+            return new Vec(x - b.x, y - b.y);
+        }
+
+        long det(Vec b) {
+            return x * b.y - y * b.x;
+        }
+
+        long dot(Vec b) {
+            return x * b.x + y * b.y;
+        }
+    }
+
+    public long minimumCost(int[] nums, int[] cost, int k) {
+        int totalCost = 0;
+        for (int c : cost) {
+            totalCost += c;
+        }
+
+        Vec[] q = new Vec[nums.length + 1];
+        int n = 0;
+        q[n++] = new Vec(0, 0);
+        int sumNum = 0;
+        int sumCost = 0;
+        int j = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            sumNum += nums[i];
+            sumCost += cost[i];
+
+            Vec p = new Vec(-sumNum - k, 1);
+            while (j + 1 < n && p.dot(q[j]) >= p.dot(q[j + 1])) {
+                j++;
+            }
+
+            // 增量地构建下凸包
+            p = new Vec(sumCost, p.dot(q[j]) + (long) sumNum * sumCost + k * totalCost);
+            while (n - j > 1 && q[n - 1].sub(q[n - 2]).det(p.sub(q[n - 1])) <= 0) {
+                n--;
+            }
+            q[n++] = p;
+        }
+
+        return q[n - 1].y;
+    }
+}
+```
+
+```cpp [sol-C++]
+struct Vec {
+    long long x, y;
+    Vec operator-(const Vec& b) { return {x - b.x, y - b.y}; }
+    long long det(const Vec& b) { return x * b.y - y * b.x; }
+    long long dot(const Vec& b) { return x * b.x + y * b.y; }
+};
+
+class Solution {
+public:
+    long long minimumCost(vector<int>& nums, vector<int>& cost, int k) {
+        int total_cost = reduce(cost.begin(), cost.end());
+
+        deque<Vec> q = {{0, 0}};
+        int sum_num = 0, sum_cost = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            sum_num += nums[i];
+            sum_cost += cost[i];
+
+            Vec p = {-sum_num - k, 1};
+            while (q.size() > 1 && p.dot(q[0]) >= p.dot(q[1])) {
+                q.pop_front();
+            }
+
+            // 增量地构建下凸包
+            p = {sum_cost, p.dot(q[0]) + 1LL * sum_num * sum_cost + k * total_cost};
+            while (q.size() > 1 && (q.back() - q[q.size() - 2]).det(p - q.back()) <= 0) {
+                q.pop_back();
+            }
+            q.push_back(p);
+        }
+        return q.back().y;
+    }
+};
+```
+
+```go [sol-Go]
+type vec struct{ x, y int }
+
+func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
+func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x }
+func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y }
+
+func minimumCost(nums, cost []int, k int) int64 {
+	totalCost := 0
+	for _, c := range cost {
+		totalCost += c
+	}
+
+	q := []vec{{}}
+	sumNum, sumCost := 0, 0
+	for i, x := range nums {
+		sumNum += x
+		sumCost += cost[i]
+
+		p := vec{-sumNum - k, 1}
+		for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) {
+			q = q[1:]
+		}
+
+		// 增量地构建下凸包
+		p = vec{sumCost, p.dot(q[0]) + sumNum*sumCost + k*totalCost}
+		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+			q = q[:len(q)-1]
+		}
+		q = append(q, p)
+	}
+	return int64(q[len(q)-1].y)
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个点入队出队各至多一次。
 - 空间复杂度：$\mathcal{O}(n)$。
 
 ## 分类题单
