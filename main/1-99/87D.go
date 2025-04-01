@@ -39,8 +39,12 @@ func cf87D(in io.Reader, _w io.Writer) {
 	}
 	dfs(0, -1)
 
-	for i, e := range es {
-		es[i].dep = min(dep[e.v], dep[e.w])
+	for i := range es {
+		e := &es[i]
+		if dep[e.v] > dep[e.w] {
+			e.v, e.w = e.w, e.v
+		}
+		e.dep = dep[e.v]
 	}
 	slices.SortFunc(es, func(a, b edge) int { return cmp.Or(a.wt-b.wt, b.dep-a.dep) })
 
@@ -63,24 +67,18 @@ func cf87D(in io.Reader, _w io.Writer) {
 
 	mx := 0
 	ans := []int{}
-	tmp := make([]int, n)
 	for i := 0; i < n-1; {
 		st := i
 		wt := es[st].wt
 		for ; i < n-1 && es[i].wt == wt; i++ {
 			v, w := es[i].v, es[i].w
-			if dep[v] > dep[w] {
-				v, w = w, v
-			}
-			tmp[i] = sz[w]
 			fv := find(v)
 			fa[w] = fv
 			sz[fv] += sz[w]
 		}
 		for ; st < i; st++ {
 			e := es[st]
-			fv := find(e.v)
-			s := tmp[st] * (sz[fv] - tmp[st])
+			s := sz[e.w] * (sz[find(e.v)] - sz[e.w])
 			if s > mx {
 				mx = s
 				ans = []int{e.i}
