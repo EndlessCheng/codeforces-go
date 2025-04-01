@@ -28,7 +28,7 @@ func minimumCost(nums, cost []int, k int) int64 {
 			q = q[1:]
 		}
 
-		// 增量地构建下凸包
+		// 一边算 DP 一边构建下凸包
 		p = vec{sumCost, p.dot(q[0]) + sumNum*sumCost + k*totalCost}
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 			q = q[:len(q)-1]

@@ -221,7 +221,7 @@ class Solution:
             while len(q) > 1 and p.dot(q[0]) >= p.dot(q[1]):
                 q.popleft()
 
-            # 增量地构建下凸包
+            # 一边算 DP 一边构建下凸包
             p = Vec(sum_cost, p.dot(q[0]) + sum_num * sum_cost + k * total_cost)
             while len(q) > 1 and (q[-1] - q[-2]).det(p - q[-1]) <= 0:
                 q.pop()
@@ -267,7 +267,7 @@ class Solution {
                 j++;
             }
 
-            // 增量地构建下凸包
+            // 一边算 DP 一边构建下凸包
             p = new Vec(sumCost, p.dot(q.get(j)) + (long) sumNum * sumCost + k * totalCost);
             while (q.size() - j > 1 && q.getLast().sub(q.get(q.size() - 2)).det(p.sub(q.getLast())) <= 0) {
                 q.removeLast();
@@ -318,7 +318,7 @@ class Solution {
                 j++;
             }
 
-            // 增量地构建下凸包
+            // 一边算 DP 一边构建下凸包
             p = new Vec(sumCost, p.dot(q[j]) + (long) sumNum * sumCost + k * totalCost);
             while (n - j > 1 && q[n - 1].sub(q[n - 2]).det(p.sub(q[n - 1])) <= 0) {
                 n--;
@@ -355,7 +355,7 @@ public:
                 q.pop_front();
             }
 
-            // 增量地构建下凸包
+            // 一边算 DP 一边构建下凸包
             p = {sum_cost, p.dot(q[0]) + 1LL * sum_num * sum_cost + k * total_cost};
             while (q.size() > 1 && (q.back() - q[q.size() - 2]).det(p - q.back()) <= 0) {
                 q.pop_back();
@@ -391,7 +391,7 @@ func minimumCost(nums, cost []int, k int) int64 {
 			q = q[1:]
 		}
 
-		// 增量地构建下凸包
+		// 一边算 DP 一边构建下凸包
 		p = vec{sumCost, p.dot(q[0]) + sumNum*sumCost + k*totalCost}
 		for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
 			q = q[:len(q)-1]
