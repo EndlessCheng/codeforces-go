@@ -31,10 +31,9 @@
 ```py [sol-Python3]
 class Solution:
     def numberOfPowerfulInt(self, start: int, finish: int, limit: int, s: str) -> int:
-        low = str(start)
         high = str(finish)
         n = len(high)
-        low = '0' * (n - len(low)) + low  # 补前导零，和 high 对齐
+        low = str(start).zfill(n)  # 补前导零，和 high 对齐
         diff = n - len(s)
 
         @cache
