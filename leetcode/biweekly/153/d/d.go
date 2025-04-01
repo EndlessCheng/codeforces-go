@@ -2,7 +2,6 @@ package main
 
 import (
 	"math/bits"
-	"sort"
 )
 
 // https://space.bilibili.com/206214
@@ -37,20 +36,21 @@ func (st ST) query(l, r int) int {
 func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 	n := len(s)
 	total1 := 0
-	// 统计连续 0 段对应的区间（左闭右开）
-	a := []pair{{-1, -1}} // 哨兵
+	belong := make([]int, n) // 每个 0 所属的区间下标，每个 1 右边最近的 0 区间下标
+	a := []pair{{-1, -1}}
 	start := 0
-	for i := range n {
-		if i == n-1 || s[i] != s[i+1] {
+	for i, b := range s {
+		belong[i] = len(a)
+		if i == n-1 || byte(b) != s[i+1] {
 			if s[i] == '1' {
 				total1 += i - start + 1
 			} else {
-				a = append(a, pair{start, i + 1}) // 左闭右开
+				a = append(a, pair{start, i + 1})
 			}
 			start = i + 1
 		}
 	}
-	a = append(a, pair{n + 1, n + 1}) // 哨兵
+	a = append(a, pair{n + 1, n + 1})
 
 	merge := func(x, y int) int {
 		if x > 0 && y > 0 {
@@ -60,21 +60,29 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 	}
 
 	st := newST(a)
-	m := len(a)
 	ans := make([]int, len(queries))
 	for qi, q := range queries {
-		ql, qr := q[0], q[1]+1 // 左闭右开
-		i := sort.Search(m, func(i int) bool { return a[i].l >= ql })
-		j := sort.Search(m, func(i int) bool { return a[i].r > qr }) - 1
+		ql, qr := q[0], q[1]
+
+		i := belong[ql]
+		if ql > 0 && s[ql] == '0' && s[ql-1] == '0' {
+			i++ // i 在残缺区间中
+		}
+		j := belong[qr] - 1
+		if qr+1 < n && s[qr] == '0' && s[qr+1] == '1' {
+			j++ // j 刚好在完整区间的右端点，无需减一
+		}
+		qr++
+
 		mx := 0
-		if i <= j { // [ql,qr) 中有完整的区间
+		if i <= j {
 			mx = max(
-				st.query(i, j),                    // 相邻完整区间的长度之和的最大值
-				merge(a[i-1].r-ql, a[i].r-a[i].l), // 残缺区间 i-1 + 完整区间 i
-				merge(qr-a[j+1].l, a[j].r-a[j].l), // 残缺区间 j+1 + 完整区间 j
+				st.query(i, j),
+				merge(a[i-1].r-ql, a[i].r-a[i].l),
+				merge(qr-a[j+1].l, a[j].r-a[j].l),
 			)
-		} else if i == j+1 { // [ql,qr) 中有两个相邻的残缺区间
-			mx = merge(a[i-1].r-ql, qr-a[j+1].l) // 残缺区间 i-1 + 残缺区间 j+1
+		} else if i == j+1 {
+			mx = merge(a[i-1].r-ql, qr-a[j+1].l)
 		}
 		ans[qi] = total1 + mx
 	}

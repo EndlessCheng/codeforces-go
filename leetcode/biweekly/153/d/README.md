@@ -22,6 +22,8 @@
 
 具体请看 [视频讲解](https://www.bilibili.com/video/BV1JrZzYhEHt/?t=6m9s)，欢迎点赞关注~
 
+## 写法一：二分查找
+
 ```py [sol-Python3]
 class SparseTable:
     def __init__(self, a: List[Tuple[int, int]]):
@@ -47,9 +49,9 @@ class Solution:
         # 统计连续 0 段对应的区间（左闭右开）
         a = [(-1, -1)]  # 哨兵
         start = 0
-        for i in range(n):
-            if i == n - 1 or s[i] != s[i + 1]:
-                if s[i] == '1':
+        for i, b in enumerate(s):
+            if i == n - 1 or b != s[i + 1]:
+                if b == '1':
                     total1 += i - start + 1
                 else:
                     a.append((start, i + 1))  # 左闭右开
@@ -131,9 +133,9 @@ class Solution {
 
         SparseTable st = new SparseTable(a);
         List<Integer> ans = new ArrayList<>(queries.length);
-        for (int qi = 0; qi < queries.length; qi++) {
-            int ql = queries[qi][0];
-            int qr = queries[qi][1] + 1; // 左闭右开
+        for (int[] query : queries) {
+            int ql = query[0];
+            int qr = query[1] + 1; // 左闭右开
 
             // a 中没有重复的区间左右端点，可以直接用库函数二分
             // 找第一个区间，左端点 >= ql
@@ -165,7 +167,7 @@ class Solution {
 ```
 
 ```cpp [sol-C++]
-struct Pair { int l, r; };// 左闭右开
+struct Pair { int l, r; }; // 左闭右开
 
 class SparseTable {
     vector<vector<int>> st;
@@ -321,6 +323,334 @@ func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
 #### 复杂度分析
 
 - 时间复杂度：$\mathcal{O}((n+q)\log n)$，其中 $n$ 是 $s$ 的长度。
+- 空间复杂度：$\mathcal{O}(n\log n)$。
+
+## 写法二：标记每个字符所属区间
+
+```py [sol-Python3]
+class SparseTable:
+    def __init__(self, a: List[Tuple[int, int]]):
+        n = len(a) - 1
+        m = n.bit_length()
+        st = [[r1 - l1 + r2 - l2] + [0] * (m - 1) for (l1, r1), (l2, r2) in pairwise(a)]
+        for j in range(1, m):
+            for i in range(n - (1 << j) + 1):
+                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+        self.st = st
+
+    def query(self, l: int, r: int) -> int:
+        if l >= r:
+            return 0
+        k = (r - l).bit_length() - 1
+        return max(self.st[l][k], self.st[r - (1 << k)][k])
+
+class Solution:
+    def maxActiveSectionsAfterTrade(self, s: str, queries: List[List[int]]) -> List[int]:
+        n = len(s)
+        total1 = 0
+        belong = [0] * n  # 每个 0 所属的区间下标，每个 1 右边最近的 0 区间下标
+        a = [(-1, -1)]
+        start = 0
+        for i, b in enumerate(s):
+            belong[i] = len(a)  # 标记
+            if i == n - 1 or b != s[i + 1]:
+                if b == '1':
+                    total1 += i - start + 1
+                else:
+                    a.append((start, i + 1))
+                start = i + 1
+        a.append((n + 1, n + 1))
+
+        def merge(x: int, y: int) -> int:
+            return x + y if x > 0 and y > 0 else 0
+
+        st = SparseTable(a)
+        ans = []
+        for ql, qr in queries:
+            i = belong[ql]
+            if ql and s[ql] == '0' == s[ql - 1]:
+                i += 1  # i 在残缺区间中
+            j = belong[qr] - 1
+            if qr + 1 < n and s[qr] == '0' != s[qr + 1]:
+                j += 1  # j 刚好在完整区间的右端点，无需减一
+            qr += 1
+
+            mx = 0
+            if i <= j:
+                mx = max(
+                    st.query(i, j),
+                    merge(a[i - 1][1] - ql, a[i][1] - a[i][0]),
+                    merge(qr - a[j + 1][0], a[j][1] - a[j][0]),
+                )
+            elif i == j + 1:
+                mx = merge(a[i - 1][1] - ql, qr - a[j + 1][0])
+            ans.append(total1 + mx)
+        return ans
+```
+
+```java [sol-Java]
+class Solution {
+    private record Pair(int l, int r) {
+    }
+
+    private static class SparseTable {
+        private final int[][] st;
+
+        SparseTable(List<Pair> a) {
+            int n = a.size() - 1;
+            int sz = 32 - Integer.numberOfLeadingZeros(n);
+            st = new int[n][sz];
+            for (int i = 0; i < n; i++) {
+                st[i][0] = a.get(i).r - a.get(i).l + a.get(i + 1).r - a.get(i + 1).l;
+            }
+            for (int j = 1; j < sz; j++) {
+                for (int i = 0; i + (1 << j) <= n; i++) {
+                    st[i][j] = Math.max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+                }
+            }
+        }
+
+        int query(int l, int r) {
+            if (l >= r) {
+                return 0;
+            }
+            int k = 32 - Integer.numberOfLeadingZeros(r - l) - 1;
+            return Math.max(st[l][k], st[r - (1 << k)][k]);
+        }
+    }
+
+    public List<Integer> maxActiveSectionsAfterTrade(String S, int[][] queries) {
+        char[] s = S.toCharArray();
+        int n = s.length;
+        int total1 = 0;
+        int[] belong = new int[n]; // 每个 0 所属的区间下标，每个 1 右边最近的 0 区间下标
+        List<Pair> a = new ArrayList<>();
+        a.add(new Pair(-1, -1));
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            belong[i] = a.size(); // 标记
+            if (i == n - 1 || s[i] != s[i + 1]) {
+                if (s[i] == '1') {
+                    total1 += i - start + 1;
+                } else {
+                    a.add(new Pair(start, i + 1));
+                }
+                start = i + 1;
+            }
+        }
+        a.add(new Pair(n + 1, n + 1));
+
+        SparseTable st = new SparseTable(a);
+        List<Integer> ans = new ArrayList<>(queries.length);
+        for (int[] query : queries) {
+            int ql = query[0];
+            int qr = query[1];
+
+            int i = belong[ql];
+            if (ql > 0 && s[ql] == '0' && s[ql - 1] == '0') {
+                i++; // i 在残缺区间中
+            }
+            int j = belong[qr] - 1;
+            if (qr + 1 < n && s[qr] == '0' && s[qr + 1] == '1') {
+                j++; // j 刚好在完整区间的右端点，无需减一
+            }
+            qr++;
+
+            int mx = 0;
+            if (i <= j) {
+                int full = st.query(i, j);
+                int sl = merge(a.get(i - 1).r - ql, a.get(i).r - a.get(i).l);
+                int sr = merge(qr - a.get(j + 1).l, a.get(j).r - a.get(j).l);
+                mx = Math.max(full, Math.max(sl, sr));
+            } else if (i == j + 1) {
+                mx = merge(a.get(i - 1).r - ql, qr - a.get(j + 1).l);
+            }
+            ans.add(total1 + mx);
+        }
+        return ans;
+    }
+
+    private int merge(int x, int y) {
+        return x > 0 && y > 0 ? x + y : 0;
+    }
+}
+```
+
+```cpp [sol-C++]
+struct Pair { int l, r; };
+
+class SparseTable {
+    vector<vector<int>> st;
+
+public:
+    SparseTable(vector<Pair>& a) {
+        int n = a.size() - 1;
+        int sz = bit_width(unsigned(n));
+        st.resize(n, vector<int>(sz));
+        for (int i = 0; i < n; i++) {
+            st[i][0] = a[i].r - a[i].l + a[i + 1].r - a[i + 1].l;
+        }
+        for (int j = 1; j < sz; j++) {
+            for (int i = 0; i + (1 << j) <= n; i++) {
+                st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
+            }
+        }
+    }
+
+    int query(int l, int r) const {
+        if (l >= r) {
+            return 0;
+        }
+        int k = bit_width(unsigned(r - l)) - 1;
+        return max(st[l][k], st[r - (1 << k)][k]);
+    }
+};
+
+class Solution {
+public:
+    vector<int> maxActiveSectionsAfterTrade(string s, vector<vector<int>>& queries) {
+        int n = s.size();
+        int total1 = 0;
+        vector<int> belong(n); // 每个 0 所属的区间下标，每个 1 右边最近的 0 区间下标
+        vector<Pair> a = {{-1, -1}};
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            belong[i] = a.size(); // 标记
+            if (i == n - 1 || s[i] != s[i + 1]) {
+                if (s[i] == '1') {
+                    total1 += i - start + 1;
+                } else {
+                    a.emplace_back(start, i + 1);
+                }
+                start = i + 1;
+            }
+        }
+        a.emplace_back(n + 1, n + 1);
+
+        auto merge = [](int x, int y) {
+            return x > 0 && y > 0 ? x + y : 0;
+        };
+
+        SparseTable st(a);
+        vector<int> ans(queries.size());
+        for (int qi = 0; qi < queries.size(); qi++) {
+            int ql = queries[qi][0], qr = queries[qi][1];
+
+            int i = belong[ql];
+            if (ql > 0 && s[ql] == '0' && s[ql - 1] == '0') {
+                i++; // i 在残缺区间中
+            }
+            int j = belong[qr] - 1;
+            if (qr + 1 < n && s[qr] == '0' && s[qr + 1] == '1') {
+                j++; // j 刚好在完整区间的右端点，无需减一
+            }
+            qr++;
+
+            int mx = 0;
+            if (i <= j) {
+                mx = max({
+                     st.query(i, j),
+                     merge(a[i - 1].r - ql, a[i].r - a[i].l),
+                     merge(qr - a[j + 1].l, a[j].r - a[j].l),
+                 });
+            } else if (i == j + 1) {
+                mx = merge(a[i - 1].r - ql, qr - a[j + 1].l);
+            }
+            ans[qi] = total1 + mx;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+type pair struct{ l, r int }
+type ST [][]int
+
+func newST(a []pair) ST {
+	n := len(a) - 1
+	sz := bits.Len(uint(n))
+	st := make(ST, n)
+	for i, p := range a[:n] {
+		st[i] = make([]int, sz)
+		st[i][0] = p.r - p.l + a[i+1].r - a[i+1].l
+	}
+	for j := 1; j < sz; j++ {
+		for i := 0; i+1<<j <= n; i++ {
+			st[i][j] = max(st[i][j-1], st[i+1<<(j-1)][j-1])
+		}
+	}
+	return st
+}
+
+func (st ST) query(l, r int) int {
+	if l >= r {
+		return 0
+	}
+	k := bits.Len(uint(r-l)) - 1
+	return max(st[l][k], st[r-1<<k][k])
+}
+
+func maxActiveSectionsAfterTrade(s string, queries [][]int) []int {
+	n := len(s)
+	total1 := 0
+	belong := make([]int, n) // 每个 0 所属的区间下标，每个 1 右边最近的 0 区间下标
+	a := []pair{{-1, -1}}
+	start := 0
+	for i, b := range s {
+		belong[i] = len(a) // 记录
+		if i == n-1 || byte(b) != s[i+1] {
+			if s[i] == '1' {
+				total1 += i - start + 1
+			} else {
+				a = append(a, pair{start, i + 1})
+			}
+			start = i + 1
+		}
+	}
+	a = append(a, pair{n + 1, n + 1})
+
+	merge := func(x, y int) int {
+		if x > 0 && y > 0 {
+			return x + y
+		}
+		return 0
+	}
+
+	st := newST(a)
+	ans := make([]int, len(queries))
+	for qi, q := range queries {
+		ql, qr := q[0], q[1]
+
+		i := belong[ql]
+		if ql > 0 && s[ql] == '0' && s[ql-1] == '0' {
+			i++ // i 在残缺区间中
+		}
+		j := belong[qr] - 1
+		if qr+1 < n && s[qr] == '0' && s[qr+1] == '1' {
+			j++ // j 刚好在完整区间的右端点，无需减一
+		}
+		qr++
+
+		mx := 0
+		if i <= j {
+			mx = max(
+				st.query(i, j),
+				merge(a[i-1].r-ql, a[i].r-a[i].l),
+				merge(qr-a[j+1].l, a[j].r-a[j].l),
+			)
+		} else if i == j+1 {
+			mx = merge(a[i-1].r-ql, qr-a[j+1].l)
+		}
+		ans[qi] = total1 + mx
+	}
+	return ans
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n\log n + q)$，其中 $n$ 是 $s$ 的长度。预处理后，可以做到 $\mathcal{O}(1)$ 回答每个询问！
 - 空间复杂度：$\mathcal{O}(n\log n)$。
 
 ## 分类题单
