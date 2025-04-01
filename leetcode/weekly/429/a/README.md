@@ -6,11 +6,9 @@ $$
 \left\lceil\dfrac{i+1}{3}\right\rceil = \left\lfloor\dfrac{i}{3}\right\rfloor + 1
 $$
 
-次。
+次。证明见 [上取整下取整转换公式的证明](https://zhuanlan.zhihu.com/p/1890356682149838951)。
 
 如果 $\textit{nums}$ 没有重复元素，返回 $0$。
-
-[本题视频讲解](https://www.bilibili.com/video/BV1wmkqYREnP/)
 
 ```py [sol-Python3]
 class Solution:
