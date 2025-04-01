@@ -153,29 +153,30 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     private char[] lowS, highS;
-    private int n, diffLh;
+    private int n, m, diffLh;
     private int[][][] memo;
 
     public int countSymmetricIntegers(int low, int high) {
         lowS = String.valueOf(low).toCharArray();
         highS = String.valueOf(high).toCharArray();
         n = highS.length;
+        m = n / 2;
         diffLh = n - lowS.length;
 
-        memo = new int[n][n][n * 18 + 1];
+        memo = new int[n][diffLh + 1][m * 18 + 1]; // 注意 start <= diffLh
         for (int[][] mat : memo) {
             for (int[] row : mat) {
                 Arrays.fill(row, -1);
             }
         }
 
-        // 初始化 diff = n * 9，避免出现负数导致 memo 下标越界
-        return dfs(0, -1, n * 9, true, true);
+        // 初始化 diff = m * 9，避免出现负数导致 memo 下标越界
+        return dfs(0, -1, m * 9, true, true);
     }
 
     private int dfs(int i, int start, int diff, boolean limitLow, boolean limitHigh) {
         if (i == n) {
-            return diff == n * 9 ? 1 : 0;
+            return diff == m * 9 ? 1 : 0;
         }
 
         // start 当 isNum 用
@@ -215,13 +216,13 @@ class Solution {
 public:
     int countSymmetricIntegers(int low, int high) {
         string low_s = to_string(low), high_s = to_string(high);
-        int n = high_s.size();
+        int n = high_s.size(), m = n / 2;
         int diff_lh = n - low_s.size();
 
-        vector memo(n, vector(n, vector<int>(n * 18 + 1, -1)));
+        vector memo(n, vector(diff_lh + 1, vector<int>(m * 18 + 1, -1))); // 注意 start <= diff_lh
         auto dfs = [&](this auto&& dfs, int i, int start, int diff, bool limit_low, bool limit_high) -> int {
             if (i == n) {
-                return diff == n * 9;
+                return diff == m * 9;
             }
 
             // start 当 is_num 用
@@ -254,8 +255,8 @@ public:
             return res;
         };
 
-        // 初始化 diff = n * 9，避免出现负数导致 memo 下标越界
-        return dfs(0, -1, n * 9, true, true);
+        // 初始化 diff = m * 9，避免出现负数导致 memo 下标越界
+        return dfs(0, -1, m * 9, true, true);
     }
 };
 ```
@@ -265,13 +266,14 @@ func countSymmetricIntegers(low, high int) int {
     lowS := strconv.Itoa(low)
     highS := strconv.Itoa(high)
     n := len(highS)
+    m := n / 2
     diffLH := n - len(lowS)
 
     memo := make([][][]int, n)
     for i := range memo {
-        memo[i] = make([][]int, n)
+        memo[i] = make([][]int, diffLH+1) // start <= diffLH
         for j := range memo[i] {
-            memo[i][j] = make([]int, n*18+1)
+            memo[i][j] = make([]int, m*18+1)
             for k := range memo[i][j] {
                 memo[i][j][k] = -1
             }
@@ -285,9 +287,10 @@ func countSymmetricIntegers(low, high int) int {
             }
             return 1
         }
+
         // start 当 isNum 用
         if start != -1 && !limitLow && !limitHigh {
-            p := &memo[i][start][diff+n*9]
+            p := &memo[i][start][diff+m*9]
             if *p != -1 {
                 return *p
             }

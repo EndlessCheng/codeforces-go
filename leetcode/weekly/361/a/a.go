@@ -7,13 +7,14 @@ func countSymmetricIntegers(low, high int) int {
 	lowS := strconv.Itoa(low)
 	highS := strconv.Itoa(high)
 	n := len(highS)
+	m := n / 2
 	diffLH := n - len(lowS)
 
 	memo := make([][][]int, n)
 	for i := range memo {
-		memo[i] = make([][]int, n)
+		memo[i] = make([][]int, diffLH+1) // start <= diffLH
 		for j := range memo[i] {
-			memo[i][j] = make([]int, n*18+1)
+			memo[i][j] = make([]int, m*18+1)
 			for k := range memo[i][j] {
 				memo[i][j][k] = -1
 			}
@@ -27,8 +28,10 @@ func countSymmetricIntegers(low, high int) int {
 			}
 			return 1
 		}
+
+		// start 当 isNum 用
 		if start != -1 && !limitLow && !limitHigh {
-			p := &memo[i][start][diff+n*9]
+			p := &memo[i][start][diff+m*9]
 			if *p != -1 {
 				return *p
 			}
