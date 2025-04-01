@@ -1020,35 +1020,43 @@ func _() {
 		// 后缀数组 sa（后缀序）
 		// sa[i] 表示后缀字典序中的第 i 个字符串在 s 中的位置
 		// 特别地，后缀 s[sa[0]:] 字典序最小，后缀 s[sa[n-1]:] 字典序最大
-		//sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").UnsafeAddr()))
-		sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
-
-		{
-			// 不用反射（推荐）
-			type _tp struct {
-				_  []byte
-				sa []int32
-			}
-			sa = (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa
+		type _tp struct {
+			_  []byte
+			sa []int32
 		}
+		sa := (*_tp)(unsafe.Pointer(suffixarray.New([]byte(s)))).sa
 
-		// 后缀名次数组 rank（相当于 sa 的反函数）
+		// 其他写法
+		// sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+		// sa := *(*[]int)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").UnsafeAddr())) // 旧版
+
+		// 计算后缀名次数组
 		// 后缀 s[i:] 位于后缀字典序中的第 rank[i] 个
 		// 特别地，rank[0] 即 s 在后缀字典序中的排名，rank[n-1] 即 s[n-1:] 在字典序中的排名
+		// 相当于 sa 的反函数，即 rank[sa[i]] = i
 		rank := make([]int, len(sa))
 		for i, p := range sa {
 			rank[p] = i
 		}
 
-		// 高度数组 height
-		// height[0] = 0
+		// 计算高度数组（也叫 LCP 数组）
+		// height[0] = height[len(sa)] = 0（哨兵）
 		// height[i] = LCP(s[sa[i]:], s[sa[i-1]:])
 		// 由于 height 数组的性质，可以和二分/单调栈/单调队列结合
 		// 见 https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/D
 		// 	  https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/E
 		//    https://codeforces.com/problemset/problem/873/F
-		height := make([]int, len(sa))
+		height := make([]int, len(sa)+1)
 		h := 0
+		// 计算 s 与 s[sa[rank[0]-1]:] 的 LCP（记作 LCP0）
+		// 计算 s[1:] 与 s[sa[rank[1]-1]:] 的 LCP（记作 LCP1）
+		// 计算 s[2:] 与 s[sa[rank[2]-1]:] 的 LCP
+		// ...
+		// 计算 s[n-1:] 与 s[sa[rank[n-1]-1]:] 的 LCP
+		// 从 LCP0 到 LCP1，我们只去掉了 s[0] 和 s[sa[rank[0]-1]] 这两个字符
+		// 所以 LCP1 >= LCP0 - 1
+		// 这样就能加快 LCP 的计算了（类似滑动窗口）
+		// 注：上面只计算了 n-1 对 LCP，因为我们跳过了 rank[i] = 0 的情况
 		for i, rk := range rank {
 			if h > 0 {
 				h--
