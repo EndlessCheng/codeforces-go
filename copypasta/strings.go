@@ -1097,35 +1097,19 @@ func _() {
 			return _q(ri+1, rj+1)
 		}
 
-		// EXTRA: 比较两个子串，返回 s[l1:r1] == s[l2:r2]，注意这里是左闭右开区间
-		// https://www.acwing.com/problem/content/140/
-		equalSub := func(l1, r1, l2, r2 int) bool {
-			len1, len2 := r1-l1, r2-l2
-			return len1 == len2 && lcp(l1, l2) >= len1
-		}
-
-		// EXTRA: 比较两个子串，返回 s[l1:r1] < s[l2:r2]，注意这里是左闭右开区间
+		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意是左闭右开区间
 		// https://codeforces.com/edu/course/2/lesson/2/5/practice/contest/269656/problem/C
-		lessSub := func(l1, r1, l2, r2 int) bool {
-			len1, len2 := r1-l1, r2-l2
-			if l := lcp(l1, l2); l >= len1 || l >= len2 { // 一个是另一个的前缀
-				return len1 < len2
-			}
-			return rank[l1] < rank[l2] // 或者 s[l1+l] < s[l2+l]
-		}
-
-		// EXTRA: 比较两个子串，返回 strings.Compare(s[l1:r1], s[l2:r2])，注意这里是左闭右开区间
 		// https://codeforces.com/problemset/problem/611/D
 		// LC1977 https://leetcode.cn/problems/number-of-ways-to-separate-numbers/
-		compareSub := func(l1, r1, l2, r2 int) int {
+		compareSubstring := func(l1, r1, l2, r2 int) int {
 			len1, len2 := r1-l1, r2-l2
 			l := lcp(l1, l2)
 			if l >= min(len1, len2) {
-				// 一个是另一个的前缀，或者完全相等
+				// 一个是子串另一个子串的前缀，或者完全相等
 				return len1 - len2
 			}
-			// 或者 int(s[l1+l]) - int(s[l2+l])
-			return rank[l1] - rank[l2]
+			// 此时两个子串一定不相等
+			return rank[l1] - rank[l2] // int(s[l1+l]) - int(s[l2+l])
 		}
 
 		// EXTRA: 可重叠最长重复子串
@@ -1196,7 +1180,7 @@ func _() {
 			return sa[i:j]
 		}
 
-		_ = []any{lessSub, compareSub, equalSub, longestDupSubstring, findAllSubstring, lookUp}
+		_ = []any{compareSubstring, longestDupSubstring, findAllSubstring, lookUp}
 	}
 
 	// 若输入为 []int32，通过将每个元素拆成 4 个 byte，来满足调库条件
