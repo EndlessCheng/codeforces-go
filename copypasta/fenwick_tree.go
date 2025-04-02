@@ -8,6 +8,9 @@ import (
 )
 
 /* 树状数组（Fenwick Tree），二叉索引树（Binary Index Tree, BIT）
+
+树状数组 = 没有右子树的线段树
+
 https://en.wikipedia.org/wiki/Fenwick_tree
 【推荐阅读】带你发明树状数组！https://leetcode.cn/problems/range-sum-query-mutable/solution/dai-ni-fa-ming-shu-zhuang-shu-zu-fu-shu-lyfll/
 
