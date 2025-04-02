@@ -30,7 +30,7 @@ $$
 \end{aligned}
 $$
 
-如此变形后，我们可以把 $A+B+C$ 当作第一段的 $i \cdot (s[r+1] - s[l])$，把 $B+C$ 当作第二段的 $i \cdot (s[r+1] - s[l])$，把 $C$ 当作第三段的 $i \cdot (s[r+1] - s[l])$。
+如此变形后，我们可以把 $A+B+C$ 当作第一段的 $i \cdot (s[r+1] - s[l])$，把 $B+C$ 当作第二段的 $i \cdot (s[r+1] - s[l])$，把 $C$ 当作第三段的 $i \cdot (s[r+1] - s[l])$。详细证明见文末的 **Abel 求和公式**。
 
 换句话说，我们可以跨越时空，把未来要计算的内容，放到现在计算！
 
@@ -406,6 +406,46 @@ func minimumCost(nums, cost []int, k int) int64 {
 
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。每个点入队出队各至多一次。
 - 空间复杂度：$\mathcal{O}(n)$。
+
+## 附：Abel 求和公式
+
+回想一下连续积分中的分部积分公式
+
+$$
+\int_a^b f(x)g'(x)\,\mathrm{d}x = \left[f(x)g(x)\right]_a^b - \int_a^b f'(x)g(x)\,\mathrm{d}x
+$$
+
+它的离散形式，叫做 Abel 求和公式
+
+$$
+\sum_{i=m}^{n} a_i b_i = S_n a_n - \sum_{i=m}^{n-1} S_i (a_{i+1} - a_i)
+$$
+
+其中 $S_n = \sum\limits_{i=m}^{n} b_i$。
+
+**证明**：
+
+$$
+\begin{aligned}
+    & \sum_{i=m}^{n} a_i b_i      \\
+={} & \sum_{i=m}^{n} a_i (S_i - S_{i-1})        \\
+={} & \sum_{i=m}^{n} a_nS_n - a_nS_{n-1} + a_{n-1}S_{n-1} - a_{n-1}S_{n-2} + \cdots + a_{m+1}S_{m+1} - a_{m+1}S_m + a_mS_m        \\
+={} & a_nS_n - \sum_{i=m}^{n-1} S_i (a_{i+1} - a_i)        \\
+\end{aligned}
+$$
+
+本题相当于 $a_i = i$，$b_i$ 为 $\textit{cost}$ 的第 $i$ 个子数组和。那么 $S_i$ 就是 $\textit{cost}$ 的前 $i$ 个子数组和，即前缀和。
+
+假设分割成 $k$ 个子数组。代入 Abel 求和公式，得
+
+$$
+\begin{aligned}
+\sum_{i=1}^{k} i b_i ={}& i S_k - \sum_{i=1}^{k-1} S_i \\
+={} & S_k + (S_k - S_1) + (S_k - S_2) + \cdots + (S_k - S_{k-1})        \\
+\end{aligned}
+$$
+
+其中 $S_k$ 是整个 $\textit{cost}$ 的元素和，$S_k - S_i$ 是 $\textit{cost}$ 的后缀和。上式相当于 $k$ 个 $\textit{cost}$ 的后缀和，这正是题解开头得出的结论。
 
 ## 分类题单
 
