@@ -387,6 +387,40 @@ func countPairs(nums []int) int {
 - 时间复杂度：$\mathcal{O}(n\log n + n\log^4 U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(n + \log^4 U)$。
 
+## 附：meet in the middle + bitset
+
+```py [sol-Python3]
+POW10 = [10 ** i for i in range(7)]
+
+class Solution:
+    def countPairs(self, nums: List[int]) -> int:
+        ans = 0
+        m = len(str(max(nums)))
+        num_to_idx = defaultdict(int)
+        for p, x in enumerate(nums):
+            st = {x}  # 不交换
+            a = list(map(int, str(x).zfill(m)))
+            a.reverse()  # 由于补前导零了，反转可以保证下标和 POW10 能对上
+            for i in range(m):
+                for j in range(i + 1, m):
+                    if a[i] == a[j]:  # 跳过相同数字
+                        continue
+                    st.add(x + (a[j] - a[i]) * (POW10[i] - POW10[j]))  # 交换一次
+
+            idx = 0
+            bp = 1 << p
+            for v in st:
+                idx |= num_to_idx[v]  # 前面还有哪些数，也能变成 v
+                num_to_idx[v] |= bp  # 把 p 加到「能变成 v」的集合中
+            ans += idx.bit_count()
+        return ans
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(\frac{n^2}{w}\log^2 U)$，其中 $n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
+- 空间复杂度：$\mathcal{O}(\frac{n^2}{w}\log^2 U)$。
+
 更多相似题目，见下面数据结构题单中的「**常用技巧**」。
 
 ## 分类题单
