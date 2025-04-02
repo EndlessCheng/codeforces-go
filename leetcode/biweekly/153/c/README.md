@@ -409,7 +409,7 @@ func minimumCost(nums, cost []int, k int) int64 {
 
 ## 附：Abel 求和公式
 
-回想一下连续积分中的分部积分公式
+连续积分的分部积分公式为
 
 $$
 \int_a^b f(x)g'(x)\,\mathrm{d}x = \left[f(x)g(x)\right]_a^b - \int_a^b f'(x)g(x)\,\mathrm{d}x
@@ -421,7 +421,7 @@ $$
 \sum_{i=m}^{n} a_i b_i = a_nS_n - \sum_{i=m}^{n-1} (a_{i+1} - a_i) S_i
 $$
 
-其中 $S_n = \sum\limits_{i=m}^{n} b_i$。
+其中 $S_i = \sum\limits_{k=m}^{i} b_k$。
 
 **证明**：
 
@@ -434,7 +434,7 @@ $$
 \end{aligned}
 $$
 
-本题相当于 $a_i = i$，$b_i$ 为 $\textit{cost}$ 的第 $i$ 个子数组和。那么 $S_i$ 就是 $\textit{cost}$ 的前 $i$ 个子数组和，即前缀和。
+本题相当于 $a_i = i$，$b_i$ 为 $\textit{cost}$ 的第 $i$ 个子数组和。那么 $S_i$ 就是 $\textit{cost}$ 的前 $i$ 个子数组和的前缀和（注意不是 $\textit{cost}$ 的前缀和）。
 
 假设分割成 $k$ 个子数组。代入 Abel 求和公式，得
 
