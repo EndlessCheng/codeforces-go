@@ -418,7 +418,7 @@ $$
 它的离散形式，叫做 Abel 求和公式
 
 $$
-\sum_{i=m}^{n} a_i b_i = S_n a_n - \sum_{i=m}^{n-1} S_i (a_{i+1} - a_i)
+\sum_{i=m}^{n} a_i b_i = a_nS_n - \sum_{i=m}^{n-1} (a_{i+1} - a_i) S_i
 $$
 
 其中 $S_n = \sum\limits_{i=m}^{n} b_i$。
@@ -430,7 +430,7 @@ $$
     & \sum_{i=m}^{n} a_i b_i      \\
 ={} & \sum_{i=m}^{n} a_i (S_i - S_{i-1})        \\
 ={} & \sum_{i=m}^{n} a_nS_n - a_nS_{n-1} + a_{n-1}S_{n-1} - a_{n-1}S_{n-2} + \cdots + a_{m+1}S_{m+1} - a_{m+1}S_m + a_mS_m        \\
-={} & a_nS_n - \sum_{i=m}^{n-1} S_i (a_{i+1} - a_i)        \\
+={} & a_nS_n - \sum_{i=m}^{n-1} (a_{i+1} - a_i) S_i        \\
 \end{aligned}
 $$
 
