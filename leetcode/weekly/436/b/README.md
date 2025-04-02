@@ -113,7 +113,7 @@ func assignElements(groups []int, elements []int) []int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(U\log n + m)$，其中 $n$ 是 $\textit{elements}$ 的长度，$m$ 是 $\textit{groups}$ 的长度，$U=\max(\textit{groups})$。代码中的二重循环，根据**调和级数**可得，循环次数为 $\mathcal{O}(U\log n)$。
+- 时间复杂度：$\mathcal{O}(n + U\log n + m)$，其中 $n$ 是 $\textit{elements}$ 的长度，$m$ 是 $\textit{groups}$ 的长度，$U=\max(\textit{groups})$。代码中的二重循环，根据**调和级数**可得，循环次数为 $\mathcal{O}(n + U\log n)$。
 - 空间复杂度：$\mathcal{O}(U)$。返回值不计入。
 
 更多相似题目，可以在数学题单中搜索「**调和级数**」。
