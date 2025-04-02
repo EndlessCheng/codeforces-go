@@ -1,29 +1,28 @@
 package main
 
 import (
-	"bufio"
 	. "fmt"
 	"io"
-	"sort"
+	"slices"
 )
 
 // github.com/EndlessCheng/codeforces-go
-func CF1175D(_r io.Reader, out io.Writer) {
-	in := bufio.NewReader(_r)
+func CF1175D(in io.Reader, out io.Writer) {
 	var n, k int
 	Fscan(in, &n, &k)
-	sum := make([]int64, n+1)
+	s := make([]int, n+1)
 	for i := 1; i <= n; i++ {
-		Fscan(in, &sum[i])
-		sum[i] += sum[i-1]
+		Fscan(in, &s[i])
+		s[i] += s[i-1]
 	}
-	ans := int64(k) * sum[n]
-	sum = sum[1 : len(sum)-1]
-	sort.Slice(sum, func(i, j int) bool { return sum[i] < sum[j] })
-	for _, s := range sum[:k-1] {
-		ans -= s
+
+	ans := k * s[n]
+	s = s[1:n]
+	slices.Sort(s)
+	for _, v := range s[:k-1] {
+		ans -= v
 	}
 	Fprint(out, ans)
 }
 
-//func main() { CF1175D(os.Stdin, os.Stdout) }
+//func main() { CF1175D(bufio.NewReader(os.Stdin), os.Stdout) }
