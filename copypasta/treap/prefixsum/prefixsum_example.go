@@ -1,4 +1,4 @@
-package multiset
+package treap
 
 import "cmp"
 
