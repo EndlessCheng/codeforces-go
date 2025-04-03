@@ -409,13 +409,13 @@ func minimumCost(nums, cost []int, k int) int64 {
 
 ## 附：Abel 求和公式
 
-连续积分的分部积分公式为
+分部积分法
 
 $$
 \int_a^b f(x)g'(x)\,\mathrm{d}x = \left[f(x)g(x)\right]_a^b - \int_a^b f'(x)g(x)\,\mathrm{d}x
 $$
 
-它的离散形式，叫做 Abel 求和公式
+的离散形式，叫做 Abel 求和公式
 
 $$
 \sum_{i=m}^{n} a_i b_i = a_nS_n - \sum_{i=m}^{n-1} (a_{i+1} - a_i) S_i
