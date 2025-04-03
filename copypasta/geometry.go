@@ -974,10 +974,11 @@ func _(abs func(int) int) {
 		return float64(area) / 2
 	}
 
-	// 求凸包 Andrew 算法
+	// 求凸包 Andrew 算法（Andrew's monotone chain convex hull algorithm）
 	// 使用单调栈，保存的向量是有极角序的
 	// 求下凸包：从最左边的点开始遍历，同时用一根绳子逆时针绕圈，理想的顺序是下一个点的位置在绳子前进方向的左侧，如果某个点会导致绳子向右走，那么就需要出栈
 	// 求上凸包就从倒数第二个点开始继续求
+	// https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 	// https://en.wikipedia.org/wiki/Convex_hull_algorithms
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/GrahamScan.java.html
 	// NOTE: 坐标值范围不超过 M 的整点凸多边形的顶点数为 O(M^(2/3)) 个
@@ -1026,6 +1027,17 @@ func _(abs func(int) int) {
 			q = append(q, p)
 		}
 		return
+	}
+
+	// 动态凸包
+	// 用平衡树加点
+	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
+	// 模板题 https://codeforces.com/problemset/problem/70/D
+	// https://www.luogu.com.cn/problem/P2521
+	// https://www.luogu.com.cn/problem/P4027
+	dynamicConvexHull := func(ps []vec) {
+		// 见 70D.go
+		// https://codeforces.com/contest/70/submission/313671578
 	}
 
 	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
