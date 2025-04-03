@@ -1,41 +1,142 @@
-下午 2 点在 B 站直播讲周赛和双周赛的题目，感兴趣的小伙伴可以来 [关注](https://space.bilibili.com/206214/dynamic) 一波哦~
+**前置题目**：[1512. 好数对的数目](https://leetcode.cn/problems/number-of-good-pairs/)
 
----
-
-将题目中的式子变形得
+题目要求
 
 $$
-\textit{nums}[i]-i \ne \textit{nums}[j]-i
+j - i \ne \textit{nums}[j] - \textit{nums}[i]
 $$
 
-为了方便计算，我们可以算出满足
+移项得
 
 $$
-\textit{nums}[i]-i = \textit{nums}[j]-i
+\textit{nums}[i]-i \ne \textit{nums}[j]-j
 $$
 
-的下标对数，这可以一边遍历，一边统计。然后用所有对数 $\dfrac{n(n-1)}{2}$ 减去，即为答案。
+正难则反，用总数对个数 $\dfrac{n(n-1)}{2}$ 减去满足
 
-```py [sol1-Python3]
+$$
+\textit{nums}[i]-i = \textit{nums}[j]-j
+$$
+
+的数对个数，即为答案。
+
+计算满足 $\textit{nums}[i]-i = \textit{nums}[j]-j$ 的数对个数，做法同 1512 题。
+
+为什么要先更新 $\textit{ans}$，再更新 $\textit{cnt}$？理由见 1512 题 [我的题解](https://leetcode.cn/problems/number-of-good-pairs/solutions/2974653/mei-ju-you-wei-hu-zuo-pythonjavaccgojsru-7u5v/)。
+
+```py [sol-Python3]
 class Solution:
     def countBadPairs(self, nums: List[int]) -> int:
-        n, cnt = len(nums), Counter()
-        ans = n * (n - 1) // 2
-        for i, num in enumerate(nums):
-            ans -= cnt[num - i]
-            cnt[num - i] += 1
+        ans = comb(len(nums), 2)
+        cnt = defaultdict(int)
+        for i, x in enumerate(nums):
+            ans -= cnt[x - i]
+            cnt[x - i] += 1
         return ans
 ```
 
-```go [sol1-Go]
-func countBadPairs(nums []int) int64 {
-	n := len(nums)
-	ans := n * (n - 1) / 2
-	cnt := map[int]int{}
-	for i, num := range nums {
-		ans -= cnt[num-i]
-		cnt[num-i]++
-	}
-	return int64(ans)
+```java [sol-Java]
+class Solution {
+    public long countBadPairs(int[] nums) {
+        int n = nums.length;
+        long ans = (long) n * (n - 1) / 2;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int x = nums[i] - i;
+            int c = cnt.getOrDefault(x, 0);
+            ans -= c;
+            cnt.put(x, c + 1);
+        }
+        return ans;
+    }
 }
 ```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    long long countBadPairs(vector<int>& nums) {
+        int n = nums.size();
+        long long ans = 1LL * n * (n - 1) / 2;
+        unordered_map<int, int> cnt;
+        for (int i = 0; i < n; i++) {
+            ans -= cnt[nums[i] - i]++;
+        }
+        return ans;
+    }
+};
+```
+
+```go [sol-Go]
+func countBadPairs(nums []int) int64 {
+    n := len(nums)
+    ans := n * (n - 1) / 2
+    cnt := map[int]int{}
+    for i, x := range nums {
+        ans -= cnt[x-i]
+        cnt[x-i]++
+    }
+    return int64(ans)
+}
+```
+
+```js [sol-JavaScript]
+var countBadPairs = function(nums) {
+    const n = nums.length;
+    let ans = n * (n - 1) / 2;
+    const cnt = new Map();
+    for (let i = 0; i < n; i++) {
+        const x = nums[i] - i;
+        const c = cnt.get(x) ?? 0;
+        ans -= c;
+        cnt.set(x, c + 1);
+    }
+    return ans;
+};
+```
+
+```rust [sol-Rust]
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn count_bad_pairs(nums: Vec<i32>) -> i64 {
+        let n = nums.len() as i64;
+        let mut ans = n * (n - 1) / 2;
+        let mut cnt = HashMap::new();
+        for (i, x) in nums.into_iter().enumerate() {
+            let e = cnt.entry(x - i as i32).or_insert(0);
+            ans -= *e as i64;
+            *e += 1;
+        }
+        ans
+    }
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 是 $\textit{nums}$ 的长度。
+- 空间复杂度：$\mathcal{O}(n)$。
+
+更多相似题目，见下面数据结构题单中的「**§0.1 枚举右，维护左**」。
+
+## 分类题单
+
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
