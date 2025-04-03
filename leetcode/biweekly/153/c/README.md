@@ -412,7 +412,7 @@ func minimumCost(nums, cost []int, k int) int64 {
 分部积分法
 
 $$
-\int_a^b f(x)g'(x)\,\mathrm{d}x = \left[f(x)g(x)\right]_a^b - \int_a^b f'(x)g(x)\,\mathrm{d}x
+\int_a^b f(x)g'(x)\,\mathrm{d}x = \left. f(x)g(x) \right|_a^b - \int_a^b f'(x)g(x)\,\mathrm{d}x
 $$
 
 的离散形式，叫做 Abel 求和公式
