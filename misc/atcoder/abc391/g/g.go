@@ -19,8 +19,8 @@ func run(in io.Reader, out io.Writer) {
 	}
 	f[0][0] = 1
 	for i := range m {
-		for c := byte('a'); c <= 'z'; c++ {
-			for diff, fv := range f[i] {
+		for diff, fv := range f[i] {
+			for c := byte('a'); c <= 'z'; c++ {
 				var lcs, newLcs, newDiff int
 				for j, b := range s {
 					one := diff >> j & 1
