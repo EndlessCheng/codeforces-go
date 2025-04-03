@@ -10,7 +10,7 @@ $$
 
 本题一次可以操作两个数，这等价于：
 
-- 每次操作把 $\textit{ops}$ 中的两个数都减去 $1$，问：要让 $a$ 中没有正数，至少要操作多少次？
+- 每次操作把 $\textit{ops}$ 中的两个数都减去 $1$，问：要让 $\textit{ops}$ 中没有正数，至少要操作多少次？
 
 **分析**：设 $\textit{tot}=\sum \textit{ops}[i]$，$\textit{mx}=\max(\textit{ops})$。假如每次可以把 $\textit{tot}$ 减少 $2$，那么把 $\textit{tot}$ 减少到 $\le 0$，至少要操作 $\left\lceil\dfrac{\textit{tot}}{2}\right\rceil$ 次。但如果 $\textit{mx}$ 很大，操作次数就等于 $\textit{mx}$（每次操作选 $\textit{mx}$ 和另一个数）。
 
