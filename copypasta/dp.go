@@ -49,12 +49,13 @@ https://codeforces.com/problemset/problem/1627/E 2200 刷表法 双指针
 见下面的「最长公共子序列」，包含大量扩展题目
 https://codeforces.com/problemset/problem/2050/E 1500
 
-③ 划分型 DP：最小化/最大化分割出的子数组个数等
+③ 划分型 DP：最优分割
 LC132 https://leetcode.cn/problems/palindrome-partitioning-ii/
 - 至多 k 个 https://codeforces.com/problemset/problem/137/D
 https://codeforces.com/problemset/problem/1005/D 1500
 https://codeforces.com/problemset/problem/1714/D 1600 允许重叠 输出方案
 https://www.luogu.com.cn/problem/P1874
+https://www.luogu.com.cn/problem/P2627 需要优化
 
 ④ 划分型 DP：将数组分成恰好（或至多）k 个连续子数组，求解与这些子数组有关的最优值
 一般定义 f[i][j] 表示将 a[:j] 分成 i 个连续子数组所得到的最优解
@@ -79,6 +80,7 @@ https://codeforces.com/problemset/problem/1920/E 2000
 https://codeforces.com/problemset/problem/2027/D2 2200 在 DP 数组上滑窗
 https://codeforces.com/problemset/problem/2045/H 2200
 https://codeforces.com/problemset/problem/6/D 2600
+https://www.luogu.com.cn/problem/P2258
 
 输出具体方案
 做这一道题就够了 https://codeforces.com/problemset/problem/56/D 2100
@@ -702,6 +704,9 @@ func _(abs func(int) int) {
 	// - f[c][mask]，其中 mask 记录字母 c 在每个字符串中的出现位置，0 表示左边那个，1 表示右边那个
 	// https://atcoder.jp/contests/abc185/tasks/abc185_e 权值 
 	// https://atcoder.jp/contests/abc130/tasks/abc130_e 相同子序列个数
+	// https://atcoder.jp/contests/abc391/tasks/abc391_g DP 套 DP
+	// - https://www.luogu.com.cn/problem/P10614
+	// - https://www.luogu.com.cn/problem/P4590
 	// 2020 多校第二场 https://acm.hdu.edu.cn/showproblem.php?pid=6774
 	lcs := func(s, t []byte) int {
 		// f[i][j] = LCS(s[:i], t[:j])
@@ -1327,6 +1332,7 @@ func _(abs func(int) int) {
 	// https://codeforces.com/problemset/problem/577/B 1900 抽屉原理
 	// https://codeforces.com/problemset/problem/687/C 1900 恰好组成 k 的数中能恰好组成哪些数
 	// https://codeforces.com/problemset/problem/864/E 2000 打印方案
+	// https://atcoder.jp/contests/abc383/tasks/abc383_f 1706=CF2001 深刻理解 0-1 背包 & 完全背包
 	// https://codeforces.com/problemset/problem/981/E 2200 转移对象是下标
 	// https://codeforces.com/problemset/problem/1203/F2 2300 排序+转换
 	// 正难则反 https://atcoder.jp/contests/tenka1-2019/tasks/tenka1_2019_d 2237=CF2403
@@ -1501,16 +1507,14 @@ func _(abs func(int) int) {
 		}
 	}
 
-	// todo 回退背包
-
 	// 完全背包   Unbounded Knapsack
 	// 视频讲解 https://www.bilibili.com/video/BV16Y411v7Y6/
 	// 更快的做法 https://www.zhihu.com/question/26547156/answer/1181239468
 	// https://github.com/hqztrue/shared_materials/blob/master/codeforces/101064%20L.%20The%20Knapsack%20problem%20156ms_short.cpp
 	// https://www.luogu.com.cn/problem/P1616
-	// 至少 https://www.luogu.com.cn/problem/P2918
-	// 恰好装满 LC322 https://leetcode.cn/problems/coin-change/
-	// EXTRA: 恰好装满+打印方案 LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/
+	// https://www.luogu.com.cn/problem/P2918 至少
+	// LC322 https://leetcode.cn/problems/coin-change/ 恰好装满 
+	// LC1449 https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/ 恰好装满+打印方案 
 	// 【脑洞】求极限：lim_{maxW->∞} f[maxW]/maxW
 	unboundedKnapsack := func(values, weights []int, maxW int) int {
 		f := make([]int, maxW+1) // fill
@@ -1552,7 +1556,9 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P6771 http://poj.org/problem?id=2392
 	// https://codeforces.com/contest/999/problem/F
 	// https://codeforces.com/problemset/problem/95/E
-	// todo 打印方案
+	// https://atcoder.jp/contests/abc373/tasks/abc373_f 2018=CF2237 变形
+
+	// 思考题：打印方案
 
 	// 多重背包 - 未优化
 	// 转换（价值主导）https://codeforces.com/problemset/problem/922/E（由于要取 min 所以不能用二进制优化）
@@ -1759,15 +1765,18 @@ func _(abs func(int) int) {
 	// NOIP06·提高 金明的预算方案 https://www.luogu.com.cn/problem/P1064
 	// https://atcoder.jp/contests/abc207/tasks/abc207_f
 	treeKnapsack := func(g [][]int, items []struct{ value, weight int }, root, maxW int) int {
-		var dfs func(int) []int
-		dfs = func(v int) []int {
+		var dfs func(int, int) []int
+		dfs = func(v, fa int) []int {
 			it := items[v]
 			f := make([]int, maxW+1)
 			for i := it.weight; i <= maxW; i++ {
 				f[i] = it.value // 根节点必须选
 			}
 			for _, to := range g[v] {
-				ft := dfs(to)
+				if to == fa {
+					continue
+				}
+				ft := dfs(to, v)
 				for j := maxW; j >= it.weight; j-- {
 					// 类似分组背包，枚举分给子树 to 的容量 w，对应的子树的最大价值为 dt[w]
 					// w 不可超过 j-it.w，否则无法选择根节点
@@ -1778,7 +1787,7 @@ func _(abs func(int) int) {
 			}
 			return f
 		}
-		return dfs(root)[maxW]
+		return dfs(root, -1)[maxW]
 	}
 
 	/* 划分型 DP ①
@@ -3273,7 +3282,7 @@ func _(abs func(int) int) {
 
 	// 斜率优化 / 凸包优化 (Convex Hull Trick, CHT)
 	//
-	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} f[j]+a[i]*b[j]，包含 a[i] 和 b[j] 的乘积项
+	// 状态转移方程形如 f[i] = min_{j=0}^{i-1} k[i]*f[j]+a[i]*b[j]，包含 i 和 j 的乘积项
 	//
 	// 理解方法一：点积的几何意义（向量投影长度）
 	// 推荐，比斜率、截距好想很多
@@ -3301,9 +3310,10 @@ func _(abs func(int) int) {
 	// https://zhuanlan.zhihu.com/p/363772434
 	// https://codeforces.com/blog/entry/63823
 	//
+	// https://atcoder.jp/contests/dp/tasks/dp_z
 	// https://codeforces.com/problemset/problem/319/C 2100
+	// https://www.luogu.com.cn/problem/P5017
 	// https://www.luogu.com.cn/problem/P2365 https://www.luogu.com.cn/problem/P5785 http://poj.org/problem?id=1180
-	// todo https://atcoder.jp/contests/dp/tasks/dp_z
 	// todo https://www.luogu.com.cn/problem/P2900
 	//  https://www.luogu.com.cn/problem/P3195 https://loj.ac/p/10188
 	//  http://poj.org/problem?id=3709
@@ -3311,32 +3321,39 @@ func _(abs func(int) int) {
 	//  https://codeforces.com/problemset/problem/1715/E 2400
 	//  https://codeforces.com/problemset/problem/631/E 2600
 	//  结合李超线段树 https://codeforces.com/contest/1175/problem/G 3000
-	cht := func(a, b []int) int {
+	cht := func(a, b, k []int, C int) int {
 		// 用点积来理解，用 Andrew 算法计算凸包
-		// f[i] = min_{j=0}^{i-1} f[j]+a[i]*b[j]
+		// f[i] = min_{j=0}^{i-1} a[i]*b[j] + k[i]*f[j] + C
 		// 保证 b 是单调递增的
 		// 设 v[j] = (b[j], f[j])
-		// 设 p = (a[i], 1)
-		// 问题变成求 p.dot(v[j]) 的最小值
+		// 设 p = (a[i], k[i])
+		// 问题变成求 p.dot(v[j]) 的最小值 + C
 		// 这可以在下凸包中二分找谷底
-		q := []vec{{b[0], 0}} // 一般我们定义 f[0] = 0
-		for i := 1; i < len(a); i++ {
-			p := vec{a[i], 1}
+
+		f := make([]int, len(a))
+		// f[0] = ...
+		q := []vec{{b[0], k[0] * f[0]}} // 0 单独算
+		for i := 1; i < len(a); i++ {   // a 一般是个前缀和数组，长为 n+1
+			p := vec{a[i], k[i]}
 			// 用 Andrew 算法计算下凸包
 			// p.dot(q[i]) 是个（下）单峰函数，二分找最小值，即第一个上坡
 			// ！如果是转移方程是求 max，把 < 改成 >，即第一个下坡
-			// （优化）如果 a[i] 有单调性，二分可以改成双指针，见 https://leetcode.cn/problems/minimum-cost-to-divide-array-into-subarrays/ 我的题解
 			j := sort.Search(len(q)-1, func(j int) bool { return p.dot(q[j]) < p.dot(q[j+1]) })
-			fi := p.dot(q[j])
-			p = vec{b[i], fi}
+			// 如果 a[i] 有单调性，二分可以改成双指针（求 max 改成 <=）
+			// for len(q) > 1 && p.dot(q[0]) >= p.dot(q[1]) { q = q[1:] }; f[i] = p.dot(q[0]) + C
+			f[i] = p.dot(q[j]) + C
+
+			vi := vec{b[i], f[i]}
 			// ！如果转移方程是求 max，下面的 <= 改成 >=，也就是计算上凸包
-			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(p.sub(q[len(q)-1])) <= 0 {
+			for len(q) > 1 && q[len(q)-1].sub(q[len(q)-2]).det(vi.sub(q[len(q)-1])) <= 0 {
 				q = q[:len(q)-1]
 			}
-			q = append(q, p)
+			q = append(q, vi)
 		}
-		return int(q[len(q)-1].y)
+		return f[len(f)-1] // q[len(q)-1].y
 	}
+
+	// 平衡树维护凸包见 70D.go https://codeforces.com/problemset/problem/70/D
 
 	cht2 := func(a, b []int) int {
 		n := len(a)
