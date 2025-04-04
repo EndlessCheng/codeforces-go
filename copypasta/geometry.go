@@ -243,22 +243,22 @@ const eps = 1e-8
 */
 type vec struct{ x, y int }
 
+func (a vec) sub(b vec) vec { return vec{a.x - b.x, a.y - b.y} }
+func (a vec) dot(b vec) int { return a.x*b.x + a.y*b.y } // 点积，用来判断两向量同向/异向
+func (a vec) det(b vec) int { return a.x*b.y - a.y*b.x } // 叉积的 z 分量的值，用来判断两向量的左右关系   cross
+
 func (a vec) add(b vec) vec       { return vec{a.x + b.x, a.y + b.y} }
-func (a vec) sub(b vec) vec       { return vec{a.x - b.x, a.y - b.y} }
-func (a vec) dot(b vec) int       { return a.x*b.x + a.y*b.y }
-func (a vec) det(b vec) int       { return a.x*b.y - a.y*b.x } // cross
-func (a vec) len2() int           { return a.x*a.x + a.y*a.y }
-func (a vec) dis2(b vec) int      { return a.sub(b).len2() }
-func (a vec) len() float64        { return math.Sqrt(float64(a.x*a.x + a.y*a.y)) }
-func (a vec) dis(b vec) float64   { return a.sub(b).len() }
-func (a vec) vecF() vecF          { return vecF{float64(a.x), float64(a.y)} }
 func (a vec) mul(k int) vec       { return vec{a.x * k, a.y * k} }
 func (a vecF) div(k float64) vecF { return vecF{a.x / k, a.y / k} }
+func (a vec) len2() int           { return a.x*a.x + a.y*a.y }                     // 模长的平方
+func (a vec) len() float64        { return math.Sqrt(float64(a.x*a.x + a.y*a.y)) } // 模长
+func (a vec) dis2(b vec) int      { return a.sub(b).len2() }
+func (a vec) dis(b vec) float64   { return a.sub(b).len() }
 
-func (a *vec) adds(b vec)         { a.x += b.x; a.y += b.y }
-func (a *vec) subs(b vec)         { a.x -= b.x; a.y -= b.y }
-func (a *vec) muls(k int)         { a.x *= k; a.y *= k }
-func (a *vecF) divs(k float64)    { a.x /= k; a.y /= k }
+func (a *vec) adds(b vec)      { a.x += b.x; a.y += b.y }
+func (a *vec) subs(b vec)      { a.x -= b.x; a.y -= b.y }
+func (a *vec) muls(k int)      { a.x *= k; a.y *= k }
+func (a *vecF) divs(k float64) { a.x /= k; a.y /= k }
 
 func (a vec) less(b vec) bool     { return a.x < b.x || a.x == b.x && a.y < b.y }
 func (a vecF) less(b vecF) bool   { return a.x+eps < b.x || a.x < b.x+eps && a.y+eps < b.y }
@@ -266,7 +266,7 @@ func (a vecF) equals(b vecF) bool { return math.Abs(a.x-b.x) < eps && math.Abs(a
 func (a vec) parallel(b vec) bool { return a.det(b) == 0 }
 func (a vec) mulVec(b vec) vec    { return vec{a.x*b.x - a.y*b.y, a.x*b.y + b.x*a.y} }
 func (a vec) polarAngle() float64 { return math.Atan2(float64(a.y), float64(a.x)) }
-func (a vec) reverse() vec        { return vec{-a.x, -a.y} }
+func (a vec) reverse() vec        { return vec{-a.x, -a.y} } // 反向
 func (a vec) sign() int {
 	if a.y < 0 || a.y == 0 && a.x < 0 {
 		return -1
@@ -283,8 +283,12 @@ func (a vec) rotateCCW90() vec { return vec{-a.y, a.x} } // 逆时针旋转 90°
 func (a vec) rotateCW90() vec  { return vec{a.y, -a.x} } // 顺时针旋转 90°
 
 // 逆时针旋转，传入旋转的弧度
-func (a vecF) rotateCCW(rad float64) vecF {
-	return vecF{a.x*math.Cos(rad) - a.y*math.Sin(rad), a.x*math.Sin(rad) + a.y*math.Cos(rad)}
+func (a vec) rotateCCW(rad float64) vecF {
+	sin, cos := math.Sincos(rad)
+	return vecF{
+		float64(a.x)*cos - float64(a.y)*sin,
+		float64(a.x)*sin + float64(a.y)*cos,
+	}
 }
 
 // 单位向量
@@ -388,7 +392,7 @@ type line struct{ p1, p2 vec }
 func (a line) vec() vec              { return a.p2.sub(a.p1) }
 func (a lineF) point(t float64) vecF { return a.p1.add(a.vec().mul(t)) }
 
-// 点 a 是否在 l 左侧
+// 点 a 是否严格在 l 左侧
 func (a vecF) onLeft(l lineF) bool { return l.vec().det(a.sub(l.p1)) > eps }
 
 // 点 a 是否在直线 l 上
@@ -596,6 +600,9 @@ func (a vec) perpendicular(l line) line {
 圆
 线与圆
 圆与圆
+
+https://codeforces.com/problemset/problem/908/C 1500
+
 */
 type circle struct {
 	vec
@@ -604,10 +611,12 @@ type circle struct {
 
 // 圆心角对应的点
 func (o circle) point(rad float64) vecF {
-	return vecF{float64(o.x) + float64(o.r)*math.Cos(rad), float64(o.y) + float64(o.r)*math.Sin(rad)}
+	sin, cos := math.Sincos(rad)
+	return vecF{float64(o.x) + float64(o.r)*cos, float64(o.y) + float64(o.r)*sin}
 }
 func (o circleF) point(rad float64) vecF {
-	return vecF{o.x + o.r*math.Cos(rad), o.y + o.r*math.Sin(rad)}
+	sin, cos := math.Sincos(rad)
+	return vecF{o.x + o.r*cos, o.y + o.r*sin}
 }
 
 // 三点确定一圆
@@ -656,20 +665,20 @@ func (o circleF) intersectionLine(l lineF) (ps []vecF, t1, t2 float64) {
 
 // 两圆交点
 // 另一种写法是解二元二次方程组，精度更优
+// https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 func (o circle) intersectionCircle(b circle) (ps []vecF, normal bool) {
 	a := o
 	if a.r < b.r {
-		a, b = b, a
+		a, b = b, a // 注意这里 swap 了
 	}
 	ab := b.sub(a.vec)
 	dab2 := ab.len2()
 	diffR, sumR := a.r-b.r, a.r+b.r
-	if dab2 == 0 {
-		// 重合
-		if diffR == 0 {
+	if dab2 == 0 { // 圆心重合
+		if diffR == 0 { // 两圆完全一样
 			return
 		}
-		return nil, true
+		return nil, true // 一个包含另一个
 	}
 	normal = true
 	if sumR*sumR < dab2 || diffR*diffR > dab2 {
@@ -831,6 +840,8 @@ func maxCoveredPoints(ps []vec, r int) int {
 // x1<x2, y1<y2
 // https://www.zhihu.com/question/24251545/answer/27184960
 // LC1401 https://leetcode.cn/problems/circle-and-rectangle-overlapping/
+// todo 返回和矩形的那些边相交/相切 
+//   https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/
 func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 	cx, cy := float64(x1+x2)/2, float64(y1+y2)/2               // 矩形中心
 	hx, hy := float64(x2-x1)/2, float64(y2-y1)/2               // 矩形半长
@@ -838,6 +849,9 @@ func isCircleRectangleOverlap(r, ox, oy, x1, y1, x2, y2 int) bool {
 	x, y = max(x-hx, 0), max(y-hy, 0)                          // 求圆心至矩形的最短距离矢量
 	return x*x+y*y < float64(r*r)+eps
 }
+
+// todo 两圆的【两个交点的连线】与【圆心连线】的交点
+//  https://leetcode.cn/circle/discuss/GNUiDD/view/Q4wDFD/
 
 // 圆与扫描线
 // todo https://blog.csdn.net/hzj1054689699/article/details/87861808
@@ -912,15 +926,16 @@ func _(abs func(int) int) {
 	// 返回最近点对距离的平方
 	// https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/ClosestPair.java.html
 	// 模板题 https://www.luogu.com.cn/problem/P1429
+	// - https://www.luogu.com.cn/problem/P7883 加强版
 	// - https://codeforces.com/problemset/problem/429/D
 	// todo 字典序最小 LC2613 https://leetcode.cn/problems/beautiful-pairs/
 	// 变形：改成求「距离为平面最近点对距离的两倍」的点对个数，做法应该是类似的
 	// bichromatic closest pair 有两种类型的点，只需要额外判断类型是否不同即可 https://www.acwing.com/problem/content/121/ http://poj.org/problem?id=3714
 	var closestPair func([]vec) int
 	closestPair = func(ps []vec) int {
-		// 调用 closestPair 前需保证没有重复的点，并特判 n == 1 的情况
-		// ps 必须按照 x 坐标升序：
-		// sort.Slice(ps, func(i, j int) bool { return ps[i].x < ps[j].x })
+		// ！调用 closestPair 前需保证没有重复的点，并特判 n == 1 的情况
+		// ！ps 必须按照 x 坐标升序：
+		//   slices.SortFunc(ps, func(a, b vec) int { return a.x - b.x })
 		n := len(ps)
 		if n <= 1 {
 			return math.MaxInt
@@ -1036,8 +1051,60 @@ func _(abs func(int) int) {
 	// https://www.luogu.com.cn/problem/P2521
 	// https://www.luogu.com.cn/problem/P4027
 	dynamicConvexHull := func(ps []vec) {
-		// 见 70D.go
-		// https://codeforces.com/contest/70/submission/313671578
+		det := func(x1, y1, x2, y2 int) int { return x1*y2 - x2*y1 }
+		_remove := func(t *treapM[int, int], i int) bool {
+			if i <= 0 || i+1 >= t.size() {
+				return false
+			}
+			pre := t.kth(i - 1)
+			cur := t.kth(i)
+			nxt := t.kth(i + 1)
+			if det(cur.key-pre.key, cur.value-pre.value, nxt.key-pre.key, nxt.value-pre.value) >= 0 {
+				t.delete(cur.key)
+				return true
+			}
+			return false
+		}
+		contains := func(t *treapM[int, int], x, y int) bool {
+			i := t.lowerBoundIndex(x)
+			if i == t.size() {
+				return false
+			}
+			cur := t.kth(i)
+			if cur.key == x {
+				return y <= cur.value
+			}
+			if i == 0 {
+				return false
+			}
+			pre := t.kth(i - 1)
+			return det(cur.key-pre.key, cur.value-pre.value, x-pre.key, y-pre.value) <= 0
+		}
+		insert := func(t *treapM[int, int], x, y int) bool {
+			if contains(t, x, y) {
+				return false
+			}
+			t.put(x, y)
+			idx := t.lowerBoundIndex(x)
+			for j := idx + 1; _remove(t, j); {
+			}
+			for j := idx - 1; _remove(t, j); j-- {
+			}
+			return true
+		}
+
+		topC := newMap[int, int]()  // 上凸包
+		downC := newMap[int, int]() // 下凸包
+		addPoint := func(x, y int) bool {
+			ok1 := insert(topC, x, y)
+			ok2 := insert(downC, x, -y) // 上下都要插入
+			return ok1 || ok2
+		}
+		hasPoint := func(x, y int) bool {
+			return contains(topC, x, y) && contains(downC, x, -y)
+		}
+
+		_ = []any{addPoint, hasPoint}
 	}
 
 	// 旋转卡壳求最远点对（凸包直径） Rotating calipers
@@ -1078,10 +1145,6 @@ func _(abs func(int) int) {
 	// todo 最小矩形覆盖/最小外接矩形
 	// https://www.luogu.com.cn/problem/P3187
 	// UVa 10173 https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=13&page=show_problem&problem=1114
-
-	// todo 动态凸包
-	// https://en.wikipedia.org/wiki/Dynamic_convex_hull
-	// 模板题 https://codeforces.com/problemset/problem/70/D
 
 	// todo 闵可夫斯基和 Minkowski sum
 	// https://en.wikipedia.org/wiki/Minkowski_addition
@@ -1295,7 +1358,7 @@ func _(abs func(int) int) {
 	_ = []any{
 		readVec, leftMostVec, rightMostVec,
 		readPolygon, polygonArea,
-		convexHull, convexHull2,
+		convexHull, convexHull2, dynamicConvexHull,
 		rotatingCalipers, convexHullPerimeter,
 		halfPlanesIntersection,
 		inTriangle, inConvexPolygon, inAnyPolygon,
@@ -1332,7 +1395,7 @@ func vec3Collections() {
 // 空间三角形相交
 
 // 下面这些仅作为占位符表示，实际使用的时候复制上面的模板，类型改成 float64 同时 vecF 替换成 vec 等
-// todo 泛型
+// todo 怎么做更优雅一些呢？泛型好像不那么适配
 type vecF struct{ x, y float64 }
 type lineF struct{ p1, p2 vecF }
 type vec3F struct{ x, y, z int }
@@ -1342,15 +1405,14 @@ type circleF struct {
 	r float64
 }
 
-func (vecF) add(vecF) (_ vecF)         { return }
-func (vecF) sub(vecF) (_ vecF)         { return }
-func (vecF) mul(float64) (_ vecF)      { return }
-func (vecF) dot(vecF) (_ float64)      { return }
-func (vecF) det(vecF) (_ float64)      { return }
-func (vecF) len() (_ float64)          { return }
-func (vecF) len2() (_ float64)         { return }
-func (vecF) dis(vecF) (_ float64)      { return }
-func (vecF) dis2(vecF) (_ float64)     { return }
-func (vecF) polarAngle() (_ float64)   { return }
-func (vec) rotateCCW(float64) (_ vecF) { return }
-func (lineF) vec() (_ vecF)            { return }
+func (vecF) add(vecF) (_ vecF)       { return }
+func (vecF) sub(vecF) (_ vecF)       { return }
+func (vecF) mul(float64) (_ vecF)    { return }
+func (vecF) dot(vecF) (_ float64)    { return }
+func (vecF) det(vecF) (_ float64)    { return }
+func (vecF) len() (_ float64)        { return }
+func (vecF) len2() (_ float64)       { return }
+func (vecF) dis(vecF) (_ float64)    { return }
+func (vecF) dis2(vecF) (_ float64)   { return }
+func (vecF) polarAngle() (_ float64) { return }
+func (lineF) vec() (_ vecF)          { return }
