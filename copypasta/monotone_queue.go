@@ -46,13 +46,13 @@ https://codeforces.com/problemset/problem/1237/D 2000
 https://codeforces.com/problemset/problem/1077/F2 2100
 https://codeforces.com/problemset/problem/1216/F 2100
 https://codeforces.com/problemset/problem/797/F 2600
+https://www.luogu.com.cn/problem/P2627 划分型 DP
 https://www.luogu.com.cn/problem/P3572
 https://www.luogu.com.cn/problem/P3594
 https://www.luogu.com.cn/problem/P3957
 https://www.luogu.com.cn/problem/P1419
-todo https://www.luogu.com.cn/problem/P2627
- http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
- 老鼠进洞 https://codeforces.com/problemset/problem/797/F
+http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1070
+老鼠进洞 https://codeforces.com/problemset/problem/797/F
 
 单调队列求最值等
 https://codeforces.com/problemset/problem/6/E 1900
