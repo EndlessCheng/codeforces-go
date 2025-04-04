@@ -26,7 +26,7 @@
 
 **代码实现时，由于我们不需要得到一个严格的拓扑序，所以简单地用栈或者数组代替队列，也是可以的。**
 
-```py [sol1-Python3]
+```py [sol-Python3]
 class Solution:
     def collectTheCoins(self, coins: List[int], edges: List[List[int]]) -> int:
         n = len(coins)
@@ -62,14 +62,14 @@ class Solution:
         return max(left_edges * 2, 0)
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int collectTheCoins(int[] coins, int[][] edges) {
         int n = coins.length;
-        List<Integer> g[] = new ArrayList[n];
+        List<Integer>[] g = new ArrayList[n];
         Arrays.setAll(g, e -> new ArrayList<>());
-        var deg = new int[n];
-        for (var e : edges) {
+        int[] deg = new int[n];
+        for (int[] e : edges) {
             int x = e[0], y = e[1];
             g[x].add(y);
             g[y].add(x); // 建图
@@ -79,7 +79,7 @@ class Solution {
 
         int leftEdges = n - 1; // 剩余边数
         // 拓扑排序，去掉没有金币的子树
-        var q = new ArrayDeque<Integer>();
+        Queue<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < n; i++) {
             if (deg[i] == 1 && coins[i] == 0) { // 没有金币的叶子
                 q.add(i);
@@ -113,14 +113,14 @@ class Solution {
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int collectTheCoins(vector<int> &coins, vector<vector<int>> &edges) {
+    int collectTheCoins(vector<int>& coins, vector<vector<int>>& edges) {
         int n = coins.size();
         vector<vector<int>> g(n);
         vector<int> deg(n);
-        for (auto &e: edges) {
+        for (auto& e : edges) {
             int x = e[0], y = e[1];
             g[x].push_back(y);
             g[y].push_back(x); // 建图
@@ -131,32 +131,41 @@ public:
         int left_edges = n - 1; // 剩余边数
         // 拓扑排序，去掉没有金币的子树
         vector<int> q;
-        for (int i = 0; i < n; i++)
-            if (deg[i] == 1 && coins[i] == 0) // 没有金币的叶子
+        for (int i = 0; i < n; i++) {
+            if (deg[i] == 1 && coins[i] == 0) { // 没有金币的叶子
                 q.push_back(i);
+            }
+        }
         while (!q.empty()) {
             left_edges--; // 删除节点 x（到其父节点的边）
             int x = q.back(); q.pop_back();
-            for (int y: g[x])
-                if (--deg[y] == 1 && coins[y] == 0) // 没有金币的叶子
+            for (int y : g[x]) {
+                if (--deg[y] == 1 && coins[y] == 0) { // 没有金币的叶子
                     q.push_back(y);
+                }
+            }
         }
 
         // 再次拓扑排序
-        for (int i = 0; i < n; i++)
-            if (deg[i] == 1 && coins[i]) // 有金币的叶子（判断 coins[i] 是避免把没有金币的叶子也算进来）
+        for (int i = 0; i < n; i++) {
+            if (deg[i] == 1 && coins[i]) { // 有金币的叶子（判断 coins[i] 是避免把没有金币的叶子也算进来）
                 q.push_back(i);
+            }
+        }
         left_edges -= q.size(); // 删除所有叶子（到其父节点的边）
-        for (int x: q) // 遍历所有叶子
-            for (int y: g[x])
-                if (--deg[y] == 1) // y 现在是叶子了
+        for (int x : q) { // 遍历所有叶子
+            for (int y : g[x]) {
+                if (--deg[y] == 1) { // y 现在是叶子了
                     left_edges--; // 删除 y（到其父节点的边）
+                }
+            }
+        }
         return max(left_edges * 2, 0);
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func collectTheCoins(coins []int, edges [][]int) int {
 	n := len(coins)
 	g := make([][]int, n)
@@ -210,8 +219,8 @@ func collectTheCoins(coins []int, edges [][]int) int {
 func max(a, b int) int { if b > a { return b }; return a }
 ```
 
-```js [sol1-JavaScript]
-var collectTheCoins = function (coins, edges) {
+```js [sol-JavaScript]
+var collectTheCoins = function(coins, edges) {
     const n = coins.length;
     const g = Array(n).fill(null).map(() => []);
     for (const [x, y] of edges) {
@@ -255,7 +264,7 @@ var collectTheCoins = function (coins, edges) {
 };
 ```
 
-```rust [sol1-Rust]
+```rust [sol-Rust]
 impl Solution {
     pub fn collect_the_coins(coins: Vec<i32>, edges: Vec<Vec<i32>>) -> i32 {
         let n = coins.len();
@@ -313,10 +322,23 @@ impl Solution {
 - 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{coins}$ 的长度。
 - 空间复杂度：$\mathcal{O}(n)$。
 
-## 相似题目
+## 分类题单
 
-- [310. 最小高度树](https://leetcode.cn/problems/minimum-height-trees/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
+
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 
 欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
-
-更多精彩题解，请看 [往期题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
