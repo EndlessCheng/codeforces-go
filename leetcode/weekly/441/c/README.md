@@ -137,7 +137,7 @@ func minZeroArray(nums []int, queries [][]int) (ans int) {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(qnU)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$。
+- 时间复杂度：$\mathcal{O}(nqU)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$U=\max(\textit{nums})$。
 - 空间复杂度：$\mathcal{O}(U)$。
 
 ### 写法二：bitset
@@ -264,7 +264,7 @@ func minZeroArray(nums []int, queries [][]int) (ans int) {
 
 以下分析，不考虑超出 $\textit{nums}[i]$ 的比特位。
 
-- 时间复杂度：$\mathcal{O}(qnU / w)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
+- 时间复杂度：$\mathcal{O}(nqU / w)$，其中 $n$ 是 $\textit{nums}$ 的长度，$q$ 是 $\textit{queries}$ 的长度，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
 - 空间复杂度：$\mathcal{O}(U / w)$。
 
 ## 方法二：二分答案 + 多重背包 + 二进制优化
@@ -277,7 +277,9 @@ func minZeroArray(nums []int, queries [][]int) (ans int) {
 - 开区间左端点初始值（优化）：$\left\lceil\dfrac{\max(\textit{nums})}{\max(\textit{val}_i)}\right\rceil-1$。
 - 开区间右端点初始值：$m+1$，其中 $m$ 是 $\textit{queries}$ 的长度。如果二分结果为 $m+1$，那么返回 $-1$。
 
-> 注：这个写法理论时间复杂度更优，但实际运行时间不如上面的写法。
+注 1：也可以对每个 $\textit{nums}[i]$ 单独二分，这样可以用到 [2861. 最大合金数](https://leetcode.cn/problems/maximum-number-of-alloys/) 的技巧，把当前答案作为二分的下界。（减一后是开区间的左端点）
+
+注 2：方法二理论时间复杂度更优，但实际运行时间不如方法一。
 
 ```py [sol-Python3]
 class Solution:
@@ -450,8 +452,8 @@ func minZeroArray(nums []int, queries [][]int) int {
 
 以下分析，不考虑超出 $\textit{nums}[i]$ 的比特位。
 
-- 时间复杂度：$\mathcal{O}((q + V(U/w)\log q)\ n\log q)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$V=\max(\textit{val}_i)$，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
-- 空间复杂度：$\mathcal{O}(V + U / w)$。
+- 时间复杂度：$\mathcal{O}(n(q + V(U/w)\log q)\log q)$，其中 $q$ 是 $\textit{queries}$ 的长度，$n$ 是 $\textit{nums}$ 的长度，$V=\max(\textit{val}_i)$，$U=\max(\textit{nums})$，$w=32$ 或 $64$。
+- 空间复杂度：$\mathcal{O}(V + U/w)$。
 
 更多相似题目，见下面动态规划题单中的「**§3.1 0-1 背包**」。
 
