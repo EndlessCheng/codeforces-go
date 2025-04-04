@@ -1,10 +1,13 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func minimizeMax(nums []int, p int) int {
-	sort.Ints(nums)
+	slices.Sort(nums)
 	n := len(nums)
 	return sort.Search(nums[n-1]-nums[0], func(mx int) bool {
 		cnt := 0

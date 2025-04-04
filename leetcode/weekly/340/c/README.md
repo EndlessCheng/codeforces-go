@@ -1,7 +1,3 @@
-### 本题视频讲解
-
-见[【周赛 340】](https://www.bilibili.com/video/BV1iN411w7my/)。
-
 ### 前置知识：二分
 
 见 [二分查找【基础算法精讲 04】](https://www.bilibili.com/video/BV1AP41137w7/)。
@@ -11,8 +7,6 @@
 看到「最大化最小值」或者「最小化最大值」就要想到**二分答案**，这是一个固定的套路。
 
 为什么？一般来说，二分的值越大，越能/不能满足要求；二分的值越小，越不能/能满足要求，有单调性，可以二分。
-
-> 更多题目见文末的题单。
 
 ### 提示 2
 
@@ -34,11 +28,13 @@
 - 由于「$n-2$ 个数的最多数对个数」$\ge$「$n-3$ 个数的最多数对个数」，所以如果可以选 $\textit{nums}[0]$ 和 $\textit{nums}[1]$，那么直接选就行。
 - 依此类推，不断缩小问题规模。所以遍历一遍数组就能求出最多数对个数，具体见代码。
 
-```py [sol1-Python3]
+[本题视频讲解](https://www.bilibili.com/video/BV1iN411w7my/)
+
+```py [sol-Python3]
 class Solution:
     def minimizeMax(self, nums: List[int], p: int) -> int:
         nums.sort()
-        def f(mx: int) -> int:
+        def check(mx: int) -> int:
             cnt = i = 0
             while i < len(nums) - 1:
                 if nums[i + 1] - nums[i] <= mx:  # 都选
@@ -46,96 +42,104 @@ class Solution:
                     i += 2
                 else:  # 不选 nums[i]
                     i += 1
-            return cnt
-        return bisect_left(range(nums[-1] - nums[0]), p, key=f)
+            return cnt >= p
+        return bisect_left(range(nums[-1] - nums[0]), True, key=check)
 ```
 
-```java [sol1-Java]
+```java [sol-Java]
 class Solution {
     public int minimizeMax(int[] nums, int p) {
         Arrays.sort(nums);
-        int n = nums.length, left = -1, right = nums[n - 1] - nums[0]; // 开区间
+        int left = -1;
+        int right = nums[nums.length - 1] - nums[0]; // 开区间
         while (left + 1 < right) { // 开区间
-            int mid = (left + right) >>> 1, cnt = 0;
-            for (int i = 0; i < n - 1; ++i)
-                if (nums[i + 1] - nums[i] <= mid) { // 都选
-                    ++cnt;
-                    ++i;
-                }
-            if (cnt >= p) right = mid;
-            else left = mid;
+            int mid = (left + right) >>> 1;
+            if (check(mid, nums, p)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
         }
         return right;
+    }
+
+    private boolean check(int mx, int[] nums, int p) {
+        int cnt = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i + 1] - nums[i] <= mx) { // 都选
+                cnt++;
+                i++;
+            }
+        }
+        return cnt >= p;
     }
 }
 ```
 
-```cpp [sol1-C++]
+```cpp [sol-C++]
 class Solution {
 public:
-    int minimizeMax(vector<int> &nums, int p) {
-        sort(nums.begin(), nums.end());
+    int minimizeMax(vector<int>& nums, int p) {
+        ranges::sort(nums);
+        auto check = [&](int mx) -> bool {
+            int cnt = 0;
+            for (int i = 0; i < nums.size() - 1; i++) {
+                if (nums[i + 1] - nums[i] <= mx) { // 都选
+                    cnt++;
+                    i++;
+                }
+            }
+            return cnt >= p;
+        };
         int left = -1, right = nums.back() - nums[0]; // 开区间
         while (left + 1 < right) { // 开区间
-            int mid = left + (right - left) / 2, cnt = 0;
-            for (int i = 0; i < nums.size() - 1; ++i)
-                if (nums[i + 1] - nums[i] <= mid) { // 都选
-                    ++cnt;
-                    ++i;
-                }
-            (cnt >= p ? right : left) = mid;
+            int mid = left + (right - left) / 2;
+            (check(mid) ? right : left) = mid;
         }
         return right;
     }
 };
 ```
 
-```go [sol1-Go]
+```go [sol-Go]
 func minimizeMax(nums []int, p int) int {
-	sort.Ints(nums)
-	n := len(nums)
-	return sort.Search(nums[n-1]-nums[0], func(mx int) bool {
-		cnt := 0
-		for i := 0; i < n-1; i++ {
-			if nums[i+1]-nums[i] <= mx { // 都选
-				cnt++
-				i++
-			}
-		}
-		return cnt >= p
-	})
+    slices.Sort(nums)
+    n := len(nums)
+    return sort.Search(nums[n-1]-nums[0], func(mx int) bool {
+        cnt := 0
+        for i := 0; i < n-1; i++ {
+            if nums[i+1]-nums[i] <= mx { // 都选
+                cnt++
+                i++
+            }
+        }
+        return cnt >= p
+    })
 }
 ```
 
-### 复杂度分析
+#### 复杂度分析
 
-- 时间复杂度：$O(n\log n + n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})-\min(\textit{nums})$。
-- 空间复杂度：$O(1)$。忽略排序时的栈空间，仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(n\log n + n\log U)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})-\min(\textit{nums})$。
+- 空间复杂度：$\mathcal{O}(1)$。忽略排序时的栈空间，仅用到若干额外变量。
 
-### 二分答案·题单
+## 分类题单
 
-#### 二分答案（按照难度分排序）
-- [875. 爱吃香蕉的珂珂](https://leetcode.cn/problems/koko-eating-bananas/)
-- [1283. 使结果不超过阈值的最小除数](https://leetcode.cn/problems/find-the-smallest-divisor-given-a-threshold/)
-- [2187. 完成旅途的最少时间](https://leetcode.cn/problems/minimum-time-to-complete-trips/)
-- [2226. 每个小孩最多能分到多少糖果](https://leetcode.cn/problems/maximum-candies-allocated-to-k-children/)
-- [1870. 准时到达的列车最小时速](https://leetcode.cn/problems/minimum-speed-to-arrive-on-time/)
-- [1011. 在 D 天内送达包裹的能力](https://leetcode.cn/problems/capacity-to-ship-packages-within-d-days/)
-- [2064. 分配给商店的最多商品的最小值](https://leetcode.cn/problems/minimized-maximum-of-products-distributed-to-any-store/)
-- [1760. 袋子里最少数目的球](https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/)
-- [1482. 制作 m 束花所需的最少天数](https://leetcode.cn/problems/minimum-number-of-days-to-make-m-bouquets/)
-- [1642. 可以到达的最远建筑](https://leetcode.cn/problems/furthest-building-you-can-reach/)
-- [1898. 可移除字符的最大数目](https://leetcode.cn/problems/maximum-number-of-removable-characters/)
-- [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/)
-- [2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-#### 最小化最大值
-- [2439. 最小化数组中的最大值](https://leetcode.cn/problems/minimize-maximum-of-array/)
-- [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/)
-- [2560. 打家劫舍 IV](https://leetcode.cn/problems/house-robber-iv/)
-- [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
+2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
+4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
+7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
+8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
-#### 最大化最小值
-- [1552. 两球之间的磁力](https://leetcode.cn/problems/magnetic-force-between-two-balls/)
-- [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)
-- [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/)
+[我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
