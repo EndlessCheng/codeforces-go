@@ -92,10 +92,3 @@ func run(_r io.Reader, out io.Writer) {
 }
 
 func main() { run(os.Stdin, os.Stdout) }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
