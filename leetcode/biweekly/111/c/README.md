@@ -266,8 +266,81 @@ func minimumOperations(nums []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(n)$，其中 $n$ 为 $\textit{nums}$ 的长度。
-- 空间复杂度：$\mathcal{O}(1)$。仅用到若干额外变量。
+- 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})=3$。
+- 空间复杂度：$\mathcal{O}(U)$。
+
+## 方法三：合法子序列 DP
+
+这是一个固定的套路，见动态规划题单中的「§7.2 合法子序列 DP」。
+
+一般定义 $f[x]$ 表示以元素 $x$ 结尾的合法子序列的最长长度/个数/元素和，从子序列的倒数第二个数转移过来。
+
+本题倒数第二个数记作 $j$，那么必须满足 $j\le x$。
+
+转移方程为
+
+$$
+f[x] = \max_{j=1}^{x} f[j] + 1
+$$
+
+其中 $+1$ 表示在以 $j$ 结尾的子序列的末尾添加一个 $x$，得到以 $x$ 结尾的子序列。
+
+初始值 $f[x] = 0$。
+
+答案为 $n - \max(f)$。
+
+```py [sol-Python3]
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        f = [0] * 4
+        for x in nums:
+            f[x] = max(f[1: x + 1]) + 1
+        return len(nums) - max(f)
+```
+
+```java [sol-Java]
+class Solution {
+    public int minimumOperations(List<Integer> nums) {
+        int[] f = new int[4];
+        for (int x : nums) {
+            int mx = 0;
+            for (int j = 1; j <= x; j++) {
+                mx = Math.max(mx, f[j]);
+            }
+            f[x] = mx + 1;
+        }
+        return nums.size() - Arrays.stream(f).max().getAsInt();
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumOperations(vector<int>& nums) {
+        int f[4]{};
+        for (int x : nums) {
+            f[x] = *max_element(f + 1, f + x + 1) + 1;
+        }
+        return nums.size() - ranges::max(f);
+    }
+};
+```
+
+```go [sol-Go]
+func minimumOperations(nums []int) int {
+	f := [4]int{}
+	for _, x := range nums {
+		f[x] = slices.Max(f[1:x+1]) + 1
+	}
+	return len(nums) - slices.Max(f[:])
+}
+```
+
+#### 复杂度分析
+
+- 时间复杂度：$\mathcal{O}(nU)$，其中 $n$ 为 $\textit{nums}$ 的长度，$U=\max(\textit{nums})=3$。
+- 空间复杂度：$\mathcal{O}(U)$。
 
 ## 分类题单
 

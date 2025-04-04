@@ -1,9 +1,20 @@
 package main
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 // https://space.bilibili.com/206214
 func minimumOperations(nums []int) int {
+	f := [4]int{}
+	for _, x := range nums {
+		f[x] = slices.Max(f[1:x+1]) + 1
+	}
+	return len(nums) - slices.Max(f[:])
+}
+
+func minimumOperations3(nums []int) int {
 	f := [4]int{}
 	for _, x := range nums {
 		f[x]++
