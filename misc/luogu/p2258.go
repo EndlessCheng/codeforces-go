@@ -58,7 +58,7 @@ func p2258(in io.Reader, out io.Writer) {
 				f[j] += col[j]
 			}
 		}
-		ans = min(ans, slices.Min(f[c-1:m]))
+		ans = min(ans, slices.Min(f[c-1:]))
 	}
 	Fprint(out, ans)
 }
